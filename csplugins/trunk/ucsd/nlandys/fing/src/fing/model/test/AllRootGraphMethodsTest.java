@@ -1133,9 +1133,9 @@ public final class AllRootGraphMethodsTest
         root.isMetaParent(root.getEdge(edgeInx[6]),
                           root.getNode(nodeInx[2])))
       throw new IllegalStateException("wrong edge meta relationships");
-//     if (root.isMetaParent(root.getEdge(edgeInx[1]),
-//                           root.getNode(nodeInx[3])))
-//       throw new IllegalStateException("wrong edge meta relationships");
+    if (root.isMetaParent(root.getEdge(edgeInx[1]),
+                          root.getNode(nodeInx[3])))
+      throw new IllegalStateException("wrong edge meta relationships");
     if (!(root.isMetaParent(root.getEdge(edgeInx[0]),
                             root.getNode(nodeInx[3])) &&
           root.isMetaParent(root.getEdge(edgeInx[2]),
@@ -1153,19 +1153,18 @@ public final class AllRootGraphMethodsTest
           root.isEdgeMetaParent(edgeInx[6], nodeInx[4])))
       throw new IllegalStateException("missing edge meta relationship");
 
-//     // metaParentsList(Edge).
-//     if (root.metaParentsList(root2Edge) != null)
-//       throw new IllegalStateException("expected null edge parents");
-//     nodesList = root.metaParentsList(root.getEdge(edgeInx[6]));
-//     if (nodesList.size() != 2)
-//       throw new IllegalStateException("wrong number of edge parents");
-//     int[] metaParents = new int[nodesList.size()];
-//     for (int i = 0; i < nodesList.size(); i++) {
-//       Node foo = (Node) nodesList.get(i);
-//       if (foo == null) System.out.println("foo is null");
-//       metaParents[i] = foo.getRootGraphIndex(); }
-//     for (int i = 0;; i++) if (metaParents[i] == nodeInx[3]) break;
-//     for (int i = 0;; i++) if (metaParents[i] == nodeInx[4]) break;
+    // metaParentsList(Edge).
+    if (root.metaParentsList(root2Edge) != null)
+      throw new IllegalStateException("expected null edge parents");
+    nodesList = root.metaParentsList(root.getEdge(edgeInx[6]));
+    if (nodesList.size() != 2)
+      throw new IllegalStateException("wrong number of edge parents");
+    int[] metaParents = new int[nodesList.size()];
+    for (int i = 0; i < nodesList.size(); i++) {
+      Node foo = (Node) nodesList.get(i);
+      metaParents[i] = foo.getRootGraphIndex(); }
+    for (int i = 0;; i++) if (metaParents[i] == nodeInx[3]) break;
+    for (int i = 0;; i++) if (metaParents[i] == nodeInx[4]) break;
 
 //     // edgeMetaParentsList(int).
 //     if (root.edgeMetaParentsList(0) != null ||
