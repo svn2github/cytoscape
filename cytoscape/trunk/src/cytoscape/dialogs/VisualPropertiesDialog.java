@@ -7,28 +7,20 @@
 package cytoscape.dialogs;
 //---------------------------------------------------------------------------------------
 import javax.swing.*;
-import javax.swing.JSlider; 
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.AbstractAction;
-import java.awt.BorderLayout;
 import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.event.*;
 import java.text.NumberFormat;
-
-import javax.swing.colorchooser.*;
 import java.util.HashMap;
 import java.util.Map;
+
 import cytoscape.data.*;
 import cytoscape.vizmap.*;
 import cytoscape.dialogs.NewSlider;
 import cytoscape.util.MutableColor;
 import cytoscape.dialogs.GeneralColorDialogListener;
-//import csplugins.activePathsNew.data.ActivePathFinderParameters;
 //--------------------------------------------------------------------------------------
 public class VisualPropertiesDialog extends JDialog {
 
@@ -48,8 +40,6 @@ public VisualPropertiesDialog (Frame parentFrame,
 
   aMapper = mapper;
   nColor = new MutableColor(getBasicColor(VizMapperCategories.NODE_FILL_COLOR));
-  //ppColor = new Color(0,0,255);
-  //pdColor = new Color(255,0,0);
   ppColor = new MutableColor(getDMColor(VizMapperCategories.EDGE_COLOR, "pp"));
   pdColor = new MutableColor(getDMColor(VizMapperCategories.EDGE_COLOR, "pd"));
   bgColor = new MutableColor(getBasicColor(VizMapperCategories.BG_COLOR));
@@ -98,7 +88,7 @@ public VisualPropertiesDialog (Frame parentFrame,
   setContentPane (mainPanel);
 } // PopupDialog ctor
 
-//--------------------------------------------------------------------------------------
+
 public class ApplyAction extends AbstractAction {
   ApplyAction () {
       super ("");
@@ -115,7 +105,7 @@ public class ApplyAction extends AbstractAction {
       VisualPropertiesDialog.this.dispose ();
   }
 
-} // QuitAction
+} // ApplyAction
 
 
     private Color getBasicColor(Integer category) {
@@ -153,48 +143,3 @@ public class ApplyAction extends AbstractAction {
 } // class VisualPropertiesDialog
 
 
-
-
-
-//-----------------------------------------------------------------------------
-
-/*
-public class ColorChooserDialog extends JDialog {
-    public ColorChooserDialog(JDialog parentDialog, String whatFor) {
-        super(parentDialog, "Choose Color for " + whatFor);
-
-        //Set up the banner at the top of the window
-        final JLabel banner = new JLabel("Choose Color for " + whatFor,
-                                         JLabel.CENTER);
-        banner.setForeground(Color.yellow);
-        banner.setBackground(Color.blue);
-        banner.setOpaque(true);
-        banner.setFont(new Font("SansSerif", Font.BOLD, 24));
-        banner.setPreferredSize(new Dimension(100, 65));
-
-        JPanel bannerPanel = new JPanel(new BorderLayout());
-        bannerPanel.add(banner, BorderLayout.CENTER);
-        bannerPanel.setBorder(BorderFactory.createTitledBorder("Banner"));
-
-        //Set up color chooser for setting text color
-        final JColorChooser tcc = new JColorChooser(banner.getForeground());
-        tcc.getSelectionModel().addChangeListener(
-            new ChangeListener() {
-                public void stateChanged(ChangeEvent e) {
-                    Color newColor = tcc.getColor();
-                    banner.setForeground(newColor);
-                }
-            }
-        );
-        tcc.setBorder(BorderFactory.createTitledBorder(
-                                             "Choose Text Color"));
-
-        //Add the components to the demo frame
-        Container contentPane = getContentPane();
-        contentPane.add(bannerPanel, BorderLayout.CENTER);
-        contentPane.add(tcc, BorderLayout.SOUTH);
-    }
-    
-}
-    
-*/
