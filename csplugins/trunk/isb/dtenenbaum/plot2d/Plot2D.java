@@ -1,6 +1,6 @@
 //Plot2D.java
 
-package csplugins.isb.dante.plot2d;
+package csplugins.isb.dtenenbaum.plot2d;
 
 
 // TODO - get rid of legacy UI and LegendPanel code
@@ -51,7 +51,7 @@ import javax.swing.border.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
 
-import csplugins.trial.pshannon.dataCube.DataMatrixLens;
+import csplugins.isb.pshannon.dataMatrix.DataMatrixLens;
 
 /**
  * A rewrite of the csplugins.expressionData.Plot2D class that uses 

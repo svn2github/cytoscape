@@ -1,6 +1,6 @@
 //LegendTableCellRenderer
 
-package csplugins.isb.dante.plot2d;
+package csplugins.isb.dtenenbaum.plot2d;
 
 import javax.swing.*;
 import javax.swing.border.*;

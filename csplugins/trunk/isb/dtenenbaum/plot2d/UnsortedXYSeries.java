@@ -1,6 +1,6 @@
 //UnsortedXYSeries
 
-package csplugins.isb.dante.plot2d;
+package csplugins.isb.dtenenbaum.plot2d;
 
 
 import java.io.Serializable;
