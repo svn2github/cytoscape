@@ -25,16 +25,28 @@ public class MaxProduct
     private int MAX_PATH_LEN = 3;
     private int KO_EXPLAIN_CUTOFF = 3;
 
+    private boolean decomposeModel;
+    
     private long start;
 
     public MaxProduct()
     {
-
+        decomposeModel = true;
     }
 
     public InteractionGraph getInteractionGraph()
     {
         return _ig;
+    }
+
+    /**
+     *
+     * @param value If true, algorithm will return decomposed submodels.
+     * Otherwise all paths and edges will be put into one model.
+     */
+    public void setDecomposeModel(boolean value)
+    {
+        decomposeModel = value;
     }
     
     public void setInteractionFile(String interaction) //throws Exception
@@ -151,14 +163,17 @@ public class MaxProduct
         log("Creating factor graph");
         
         FactorGraph fg =  FactorGraph.create(ig, paths); 
-        
-        log("Running max product and decompose");
-        fg.runMaxProductAndDecompose();
-        
-        /*
-        log("Running max product");
-        fg.runMaxProduct();
-        */
+
+        if(decomposeModel)
+        {
+            log("Running recursive max product. Output decomposed models.");
+            fg.runMaxProductAndDecompose();
+        }
+        else
+        {
+            log("Running recursive max product. Output single model.");
+            fg.runMaxProduct();
+        }
         
         log("Updating interaction graph");
         fg.updateInteractionGraph();

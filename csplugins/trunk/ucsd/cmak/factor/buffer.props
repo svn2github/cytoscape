@@ -1,0 +1,10 @@
+max.path.length=2
+interaction.network=/cellar/users/cmak/data/buffering/mms+pp-p0.02-01dec2004.sif
+expression.file=/cellar/users/cmak/data/buffering/buffered-genes.pscores
+expression.threshold=0.99
+edge.attributes=/cellar/users/cmak/data/buffering/mms+pp-p0.02-01dec2004.ea
+protein-DNA.threshold=0.02
+output.dir=result
+output.filename=buffer_mms_newlr_mergeall_2_0.99_0.02
+min.ko.per.model=1
+decomposeModel=false

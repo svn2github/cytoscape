@@ -777,14 +777,128 @@ public class FactorGraph
      *
      * FIX: termination condition.
      */
-    public void runMaxProduct()  throws AlgorithmException
+    public void runMaxProductNonrecursive()  throws AlgorithmException
     {
         _runMaxProduct();
         updateEdgeAnnotation();
 
         //System.out.println(printAdj());
     }
+
+    public void runMaxProduct() throws AlgorithmException
+    {
+        Submodel invariant = recursiveMaxProduct();
+        
+        _submodels.add(0, invariant);
+        _submodels = mergeAllSubmodels(_submodels);
+        
+        // annotate edges of submodel
+        annotateSubmodelEdges(_submodels);
+
+        // send submodels to interaction graph
+        _ig.setSubmodels(_submodels);
+    }
     
+    
+    /**
+     * Run the max product algorithm and decompose the active network
+     * into submodels.
+     *
+     * FIX: termination condition.
+     */
+    public void runMaxProductAndDecompose() throws AlgorithmException
+    {
+        Submodel invariant = recursiveMaxProduct();
+        
+        logger.info("submodels before merge");
+        printSubmodels(_submodels);
+        
+        // merge submodels
+        _submodels = mergeSubmodels(_submodels);
+
+        printSubmodels(_submodels);
+        
+        // filter submodels that do not explain any knockout effects
+        if(filter)
+        {
+            for(ListIterator it = _submodels.listIterator(); it.hasNext();)
+            {
+                Submodel m = (Submodel) it.next(); 
+                int numKO = countKO(m);
+                m.setNumExplainedKO(numKO);
+                if( numKO < 1 )
+                {
+                    logger.info("Submodel " + m.getId() + " explains no KO's");
+                                
+                    it.remove();
+                }
+            }
+        }
+
+        // make the invariant model the first submodel
+        _submodels.add(0, invariant);
+                
+        // annotate edges of submodel
+        annotateSubmodelEdges(_submodels);
+
+        // print submodels
+        logger.info("### Decomposed models: " + _submodels.size());
+        
+        for(Iterator it = _submodels.iterator(); it.hasNext();)
+        {
+            logger.info(toString((Submodel) it.next()));
+        }
+        
+        logger.info("### Found " + _submodels.size() + " submodels");
+        
+        // send submodels to interaction graph
+        _ig.setSubmodels(_submodels);
+    }
+
+
+    
+    /**
+     * Recursively run the max product algorithm until all model
+     * variables have been uniquely deterimed.
+     *
+     * @return the invariant model.  Other models are added to the
+     * _submodels array.
+     * @throws AlgorithmException
+     */
+    private Submodel recursiveMaxProduct() throws AlgorithmException
+    {
+        _submodels.clear();
+
+        _runMaxProduct();
+        Submodel invariant = fixUniqueVars();
+        invariant.setInvariant(true);
+        invariant.setNumExplainedKO(countKO(invariant));
+        
+        logger.info("added invariant submodel with "
+                    + invariant.size() + " vars");
+        
+        // annotate invariant edges in the interaction graph
+        updateEdgeAnnotation();
+        
+        // first fix degenerate sign variables
+        int x=0;
+        x += recursivelyFixVars(_sign);
+        
+        // now fix any other non-sign variables that are degenerate
+        x += recursivelyFixVars(_dir);
+
+        logger.info("Called max product method " + x + " times");
+
+        logger.info("### Generated " + _submodels.size()
+                    + " submodels + 1 invariant model");
+        
+        // update the edge annotations now that all variables are fixed.
+        updateEdgeAnnotation();
+
+        return invariant;
+    }
+
+
     private void _runMaxProduct()  throws AlgorithmException
     {
         _vars.trimToSize();
@@ -831,98 +945,9 @@ public class FactorGraph
         }
     }
 
+
+
     
-    /**
-     * Run the max product algorithm and decompose the active network
-     * into submodels.
-     *
-     * FIX: termination condition.
-     */
-    public void runMaxProductAndDecompose() throws AlgorithmException
-    {
-        _submodels.clear();
-
-        _runMaxProduct();
-        Submodel invariant = fixUniqueVars();
-        invariant.setInvariant(true);
-        invariant.setNumExplainedKO(countKO(invariant));
-        
-        /*
-        IntArrayList vars = invariant.getVars();
-
-        for(int x=0; x < vars.size(); x++)
-        {
-            System.out.println("invariant: " + vars.get(x)
-                               + " " + getVarNode(vars.get(x)));
-        }
-        */
-        
-        logger.info("added invariant submodel with "
-                    + invariant.size() + " vars");
-        
-        // annotate invariant edges in the interaction graph
-        updateEdgeAnnotation();
-        
-        // first fix degenerate sign variables
-        int x=0;
-        x += recursivelyFixVars(_sign);
-        
-        // now fix any other non-sign variables that are degenerate
-        x += recursivelyFixVars(_dir);
-
-        logger.info("Called max product method " + x + " times");
-
-        logger.info("### Generated " + _submodels.size()
-                    + " submodels + 1 invariant model");
-        
-        // update the edge annotations now that all variables are fixed.
-        updateEdgeAnnotation();
-
-        logger.info("submodels before merge");
-        printSubmodels(_submodels);
-        
-        // merge submodels
-        _submodels = mergeSubmodels(_submodels);
-
-        printSubmodels(_submodels);
-        
-        // filter submodels that do not explain any knockout effects
-        if(filter)
-        {
-            for(ListIterator it = _submodels.listIterator(); it.hasNext();)
-            {
-                Submodel m = (Submodel) it.next(); 
-                int numKO = countKO(m);
-                m.setNumExplainedKO(numKO);
-                if( numKO < 1 )
-                {
-                    logger.info("Submodel " + m.getId() + " explains no KO's");
-                                
-                    it.remove();
-                }
-            }
-        }
-
-        // make the invariant model the first submodel
-        _submodels.add(0, invariant);
-        
-        // annotate edges of submodel
-        annotateSubmodelEdges(_submodels);
-
-        // print submodels
-        logger.info("### Decomposed models: " + _submodels.size());
-        
-        for(Iterator it = _submodels.iterator(); it.hasNext();)
-        {
-            logger.info(toString((Submodel) it.next()));
-        }
-        
-        logger.info("### Found " + _submodels.size() + " submodels");
-        
-        // send submodels to interaction graph
-        _ig.setSubmodels(_submodels);
-    }
-
     private void printSubmodels(List submodels)
     {
         for(int x=0; x < submodels.size(); x++)
@@ -1041,6 +1066,28 @@ public class FactorGraph
 
         return merged;
     }
+
+
+    /**
+     * Merge all submodels into one model
+     *
+     * @param models a list of Submodel objects
+     * @return a list containing the merged model
+     */
+    public List mergeAllSubmodels(List models)
+    {
+        List merged = new ArrayList();
+
+        Submodel m0 = (Submodel) models.get(0);
+        for(int x=1; x < models.size(); x++)
+        {
+            m0.merge((Submodel) models.get(x));
+        }
+
+        merged.add(m0);
+        return merged;
+    }
+
     
 
     /**

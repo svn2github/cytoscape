@@ -13,12 +13,15 @@ my $base = "$dir/$run";
 
 $cmd .= " -l embedded ";
 $cmd .= " -n /cellar/users/cmak/data/orf2name.noa ";
+$cmd .= " -n /cellar/users/cmak/data/buffering/wt-mms-response.noa ";
 $cmd .= " -n ${base}_type.noa ";
 #$cmd .= " -n ${base}_ncount.noa ";
 $cmd .= " -j ${base}_dir.eda ";
 $cmd .= " -j ${base}_sign.eda ";
 $cmd .= " -j ${base}_model.eda ";
 $cmd .= " -j ${base}_path.eda ";
+$cmd .= " -j /cellar/users/cmak/data/buffering/TFbuffering30nov2004.ea ";
+$cmd .= " -j /cellar/users/cmak/data/location/plusMinusMMS.ea ";
 
 foreach $f (@files)
 {

@@ -461,17 +461,20 @@ public class DFSPath
 
 
     /**
+     * Efficiently calculate the other endpoint of the edge that is not
+     * equal to "source"
      * 
-     *
      * @param edgeLabel the edge
      * @param source the source node
      * @return the other endpoint of the edge that is not "source"
      */
     private int _getRelativeTarget(int edgeLabel, int source)
     {
+
+        /* safer, but worse performance method
         int s = _edges[edgeLabel][SOURCE];
         int t = _edges[edgeLabel][TARGET];
-        
+
         if(source == s)
         {
             return t;
@@ -487,6 +490,27 @@ public class DFSPath
                                + " is not an endpoint of edge labeled:" + edgeLabel);
             return t;
         }
+        */
+
+        /* better performance, Nerius suggestion
+         * (Note: ^ == bitwise XOR)
+         *
+         * Assumption: s = source node ot edge, t = target node of edge,
+         *             "source" is equal to either s or t.
+         * Proof:
+         * 
+         * Suppose source == s, then (s ^ s) = 0 and (0 ^ t) = t
+         *     and we return t. OK.
+         *     
+         * Suppose source == t, consider the four cases that can occur
+         * when comparing bits in s and t.
+         *  case 1 (s=0, t=0): t ^ s = 0, 0 ^ t = 0 = s.  OK
+         *  case 2 (s=1, t=1): t ^ s = 0, 0 ^ t = 1 = s.  OK
+         *  case 3 (s=1, t=0): t^s = 1, 1 ^ t = 1 = s.  OK
+         *  case 4 (s=0, t=1): t^s = 1, 1 ^ t = 0 = s.  OK
+         *     
+         */
+        return ((source ^ _edges[edgeLabel][SOURCE]) ^ _edges[edgeLabel][TARGET]);
     }
 
     /**
