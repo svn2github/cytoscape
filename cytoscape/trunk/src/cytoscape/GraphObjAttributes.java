@@ -388,8 +388,10 @@ public HashMap getObjectMap()
  */
 public void addNameMap (HashMap nameMapping)
 {
+ 
   nameFinder.putAll (nameMapping);
   
+
   Set keySet = nameMapping.keySet();
   Iterator it = keySet.iterator();
   HashMap objectMap = new HashMap();
@@ -419,6 +421,9 @@ public void addObjectMap(HashMap objectMapping)
  */
 public String getCanonicalName (Object graphObject)
 { 
+  if(nameFinder == null){
+    System.out.println("oh oh, nameFinder is NULL !!!!!!!!!!!!!!");
+  }
   return (String) nameFinder.get (graphObject);
 }
 //--------------------------------------------------------------------------------
@@ -833,7 +838,9 @@ public void deleteAttribute (String attributeName)
  */
 public void deleteAttribute (String attributeName, String graphObjectName)
 {
-  if (!hasAttribute (attributeName)) return;
+  if (!hasAttribute (attributeName)) {
+    return;
+  }
   HashMap oneAttributeMap = getAttribute (attributeName);
   oneAttributeMap.remove (graphObjectName);
 
@@ -1092,16 +1099,16 @@ public String processFileHeader (String text)
 public void readAttributesFromFile (String filename)
    throws FileNotFoundException, IllegalArgumentException, NumberFormatException
 {
-  readAttributesFromFile (null, "unknown",  filename);
+  readAttributesFromFile (null, "unknown",  filename, true);
 }
 //--------------------------------------------------------------------------------
 public void readAttributesFromFile (File file)
    throws FileNotFoundException, IllegalArgumentException, NumberFormatException
 {
-  readAttributesFromFile (null, "unknown",  file.getPath ());
+  readAttributesFromFile (null, "unknown",  file.getPath (), true);
 }
 //--------------------------------------------------------------------------------
-//public void readAttributesFromFile (BioDataServer dataServer, String species, String filename)
+//public void readAttributesFromFile(BioDataServer dataServer, String species, String filename)
 //   throws FileNotFoundException, IllegalArgumentException, NumberFormatException
 //{
 //  readAttributesFromFile (dataServer, species, new File (filename));
@@ -1171,7 +1178,7 @@ static public Object createInstanceFromString (Class requestedClass, String ctor
  *  <p>
  *
  */
-public void readAttributesFromFile (BioDataServer dataServer, String species, String filename)
+public void readAttributesFromFile (BioDataServer dataServer, String species, String filename, boolean canonicalize)
    throws FileNotFoundException, IllegalArgumentException, NumberFormatException
 {
 
@@ -1191,6 +1198,7 @@ public void readAttributesFromFile (BioDataServer dataServer, String species, St
   catch (Exception e0) {
     System.err.println ("-- Exception while reading attributes file " + filename);
     System.err.println (e0.getMessage ());
+    e0.printStackTrace();
     return;
     }
 
@@ -1202,7 +1210,7 @@ public void readAttributesFromFile (BioDataServer dataServer, String species, St
 
   String attributeName = processFileHeader (lineTokenizer.nextToken().trim ());
   boolean extractingFirstValue = true; 
-  boolean attributeHasStringValue = true;   // the default
+  boolean attributeHasStringValue = true;   // he default
 
   while (lineTokenizer.hasMoreElements ()) {
     String newLine = (String) lineTokenizer.nextElement ();
@@ -1213,9 +1221,9 @@ public void readAttributesFromFile (BioDataServer dataServer, String species, St
       throw new IllegalArgumentException ("cannot parse line number " + lineNumber +
                                           ":\n\t" + newLine);
     String graphObjectName = strtok2.nextToken().trim();
-    if (dataServer != null)
+    if (canonicalize && dataServer != null){
       graphObjectName = dataServer.getCanonicalName (species, graphObjectName);
-
+    }
     // System.out.println ("--- reading attribute for graphObjectName: " + graphObjectName);
     String rawString = newLine.substring (newLine.indexOf ("=") + 1).trim();
     String [] rawList;
