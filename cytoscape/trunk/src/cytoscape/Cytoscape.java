@@ -406,7 +406,7 @@ public abstract class Cytoscape {
     return nullNetwork;
   }
 
-  public static CyNetworkView getCurrentNetworkView ( String network_id ) {
+  public static CyNetworkView getNetworkView ( String network_id ) {
     if ( network_id == null ) 
       return nullNetworkView;
 
@@ -1009,11 +1009,6 @@ public abstract class Cytoscape {
   }
   
 
-
-  public static CyNetworkView getNetworkView ( String network_id ) {
-    // System.out.println( "Getting Network View for: "+network_id );
-    return ( CyNetworkView )getNetworkViewMap().get( network_id );
-  }
 
 
 

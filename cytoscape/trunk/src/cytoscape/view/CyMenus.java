@@ -344,7 +344,7 @@ public class CyMenus  implements GraphViewChangeListener {
 
     //fill the Data menu
     addAction( new DisplayBrowserAction() );
-    addAction( new GraphObjectSelectionAction() );
+    //addAction( new GraphObjectSelectionAction() );
    
     //fill the Select menu
     selectMenu.add( new SelectionModeAction() );
@@ -367,9 +367,6 @@ public class CyMenus  implements GraphViewChangeListener {
     addAction( new UnHideSelectedEdgesAction() );
     addAction( new SelectAllEdgesAction() );
     addAction( new DeSelectAllEdgesAction() );
-
-    addAction( new NewWindowSelectedNodesOnlyAction() );
-    addAction( new NewWindowSelectedNodesEdgesAction() );
 
     addAction( new NewWindowSelectedNodesOnlyAction() );
     addAction( new NewWindowSelectedNodesEdgesAction() );

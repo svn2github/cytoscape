@@ -31,9 +31,9 @@ public class ColtCyNetwork
   implements CyNetwork {
     
 
-  public static int uid_counter = 0;
+  private static int uid_counter = 0;
 
-  protected String identifier;
+  private String identifier;
   protected String title;
    
   /**

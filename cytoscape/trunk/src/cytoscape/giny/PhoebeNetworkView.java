@@ -71,7 +71,6 @@ public class PhoebeNetworkView
     this.statusLabel = new JLabel();
     ( ( JComponent )getComponent() ).add(statusLabel, BorderLayout.SOUTH);
     updateStatusLabel();
-    addViewContextMenus();
     clientData = new HashMap();
 
     enableNodeSelection();
@@ -432,79 +431,5 @@ public class PhoebeNetworkView
     return inverse;
   }
 
-  //-------------------------------//
-  // Misc Startup
-
-
-  /**
-   * Adds some useful context menus to the graph view.
-   */
-  protected void addViewContextMenus() {
-    // Add some Node Context Menu Items
-    
-    addContextMethod( "class phoebe.PNodeView",
-                           "cytoscape.graphutil.NodeAction",
-                           "getTitle",
-                           new Object[] { ( CyNetworkView )this } );
-    
-    addContextMethod( "class phoebe.PNodeView",
-                           "cytoscape.graphutil.NodeAction",
-                           "openWebInfo",
-                           new Object[] { ( CyNetworkView )this } );
-
-
-    addContextMethod( "class phoebe.PNodeView",
-                           "cytoscape.graphutil.NodeAction",
-                           "viewNodeAttributeBrowser",
-                           new Object[] { ( CyNetworkView )this } );
-
-    addContextMethod( "class phoebe.PNodeView",
-                           "cytoscape.graphutil.NodeAction",
-                           "editNode",
-                           new Object[] { ( CyNetworkView )this } );
-
-    addContextMethod( "class phoebe.PNodeView",
-                           "cytoscape.graphutil.NodeAction",
-                           "changeFirstNeighbors",
-                           new Object[] {  ( CyNetworkView )this } );
-
-    addContextMethod( "edu.umd.cs.piccolo.PNodeView",
-                           "cytoscape.graphutil.NodeAction",
-                           "zoomToNode",
-                           new Object[] { ( CyNetworkView )this } );
-
-    // Add some Edge Context Menus
-    addContextMethod( "class phoebe.PEdgeView",
-                           "cytoscape.graphutil.EdgeAction",
-                           "getTitle",
-                           new Object[] { ( CyNetworkView )this } );
-    addContextMethod( "class phoebe.PEdgeView",
-                           "cytoscape.graphutil.EdgeAction",
-                           "editEdge",
-                           new Object[] { ( CyNetworkView )this } );
-    addContextMethod( "class phoebe.PEdgeView",
-                           "cytoscape.graphutil.EdgeAction",
-                           "viewEdgeAttributeBrowser",
-                           new Object[] { ( CyNetworkView )this } );
-    addContextMethod( "class phoebe.PEdgeView",
-                           "cytoscape.graphutil.EdgeAction",
-                           "openWebInfo",
-                           new Object[] { ( CyNetworkView )this } );
-
-
-    // Add some Edge-end Context menus
-    addContextMethod( "class phoebe.util.PEdgeEndIcon",
-                           "cytoscape.graphutil.EdgeAction",
-                           "edgeEndColor",
-                           new Object[] { ( CyNetworkView )this } );
-    addContextMethod( "class phoebe.util.PEdgeEndIcon",
-                           "cytoscape.graphutil.EdgeAction",
-                           "edgeEndBorderColor",
-                           new Object[] { ( CyNetworkView )this } );
-
-  }
-
-
-
-
+  
 }
