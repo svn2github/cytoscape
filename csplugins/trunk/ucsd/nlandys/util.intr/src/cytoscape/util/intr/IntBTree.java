@@ -133,7 +133,7 @@ public final class IntBTree
                 newNode.data.children, newNode.sliceCount);
           split(newSplit, n.data.splitVals,
                 newNode.data.splitVals, newNode.sliceCount - 1);
-          n.data.deepCount = 0; // Update the deep count.
+          n.data.deepCount = 0; // Update the deep count in both nodes.
           if (isLeafNode(newChild)) {
             for (int i = 0; i < n.sliceCount; i++)
               n.data.deepCount += n.data.children[i].sliceCount;
@@ -330,6 +330,28 @@ public final class IntBTree
       return count; }
   }
 
+  /*
+   * Recursively enumerates all values under this node.  Enumerate in
+   * non-descending order.
+   */
+  private final IntEnumerator enumerateAll(Node n)
+  {
+    // In the algorithm that follows, each node (counting internal and leaf
+    // nodes) is placed on the stack exactly once.  The number of nodes
+    // (internal and external) is strictly less than twice the number of leaf
+    // nodes.  Therefore, enumerating all elements under a node takes no more
+    // than O(p) time where p is the number of leaf nodes under the node.
+
+    // Add node n to stack.
+    // While the stack is not empty do the following:
+    //   Pop the next element off of the stack.
+    //   If this new element is a leaf node
+    //     then 
+    //   otherwise this node is an internal node, so push all of its
+    //     children onto the stack
+    return null;
+  }
+
 //   /**
 //    * Returns an enumeration of all entries in the range
 //    * [xStart, xStart + spanSize) currently in this structure; the entries
@@ -430,6 +452,26 @@ public final class IntBTree
       children = new Node[maxBranches];
     }
 
+  }
+
+  private final static class NodeStack
+  {
+    private Node[] stack;
+    private int currentSize = 0;
+    private NodeStack() { stack = new Node[3]; }
+    private final void push(Node value) {
+      try { stack[currentSize++] = value; }
+      catch (ArrayIndexOutOfBoundsException e) {
+        final int newStackSize = (int)
+          Math.min((long) Integer.MAX_VALUE, ((long) stack.length) * 2l + 1l);
+        if (newStackSize == stack.length)
+          throw new IllegalStateException
+            ("cannot allocate large enough array");
+        final Node[] newStack = new Node[newStackSize];;
+        System.arraycopy(stack, 0, newStack, 0, stack.length);
+        stack = newStack;
+        stack[currentSize] = value; } }
+    private final Node pop() { return stack[--currentSize]; }
   }
 
   public static void main(String[] args)
