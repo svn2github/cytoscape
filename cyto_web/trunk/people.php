@@ -82,7 +82,7 @@
     <td>Nerius Landys</td>
     <td>Robert<br />Sheridan</td>
     <td>Chris Workman</td>
-    <td>&nbsp;</td>
+    <td>Richard<br />Bonneau</td>
   </tr>
   <tr>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
