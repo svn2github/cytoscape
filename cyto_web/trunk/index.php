@@ -56,7 +56,7 @@
 				 <big><b><I>New!</I>&nbsp;&nbsp;Announcing Cytoscape 2.0 </b></big>
 				<table width="100%">
 					<tr valign="top">
-						<td width="47%" valign="top" ">
+						<td width="47%" valign="top">
 							The Cytoscape Team is pleased to release Cytoscape 2.0.
 							<BR><BR>New Features include:
 							<ul>
