@@ -175,7 +175,7 @@ public class EmbeddedLayouter implements Layouter {
 	}
 
 
-	System.out.println("WeightedLayout ("+nC+" nodes)");
+	//System.out.println("WeightedLayout ("+nC+" nodes)");
 
 
 	// rescaler
@@ -299,7 +299,7 @@ public class EmbeddedLayouter implements Layouter {
 	// the main loop.  iterate a metric bajillion times
 	for (int iter = 1; iter <= iterations; iter++) {
 	    int pct = (int)(((double)iter / (double)iterations)*100);
-	    System.out.print("  "+pct+"%  \r");
+	    //System.out.print("  "+pct+"%  \r");
 
 	    // damping factor 25*(log base 2 of iterations+1)
 	    double damp = 25.0*Math.log(iter+1)/LOG2; // Math.log(2.0);
@@ -418,7 +418,7 @@ public class EmbeddedLayouter implements Layouter {
 
 	// all done, move nodes in graph to reflect
 	// new positions
-	System.out.println("");
+	//System.out.println("");
 	for (int i = 0; i < nC; i++) {
 	    //System.out.println("  1:"+xpos[i]+","+ypos[i]);
 	    graph.setCenter(nodeList[i], xpos[i], ypos[i]);
@@ -533,7 +533,7 @@ public class EmbeddedLayouter implements Layouter {
 
 	for (int iter = 1; iter <= iterations; iter++) {
 	    int pct = (int)(((double)iter / (double)iterations)*100);
-	    System.out.print("  "+pct+"%   \r");
+	    //System.out.print("  "+pct+"%   \r");
 
 	    // damping factor 50*(log base 2 of iterations+1)
 	    double damp = 50.0*Math.log(iter+1)/LOG2; // Math.log(2.0);
@@ -708,7 +708,7 @@ public class EmbeddedLayouter implements Layouter {
 	}
 
 
-	System.out.println("");
+	//System.out.println("");
 	for (int i = 0; i < nC; i++) {
 	    //System.out.println("  2:"+xpos[i]+","+ypos[i]);
 	    graph.setCenter(nodeList[i], xpos[i], ypos[i]);
