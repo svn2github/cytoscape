@@ -30,6 +30,7 @@ public class DefaultPanel extends JPanel implements ChangeListener {
     this.parentDialog = parentDialog;
     this.vmm = vmm;
 
+
     //  Register class to receive notifications of changes in the
     //  GlobalAppearance Calculator.
     VisualStyle vs = vmm.getVisualStyle();
