@@ -177,13 +177,6 @@ class BetweenPathwayThread extends Thread{
   }
 
 
-  /**
-   * Check whether the thread results in an error condition
-   */
-  public boolean isError(){
-    return exception == null;
-  }
-
   public Vector prune(Vector old){
     Vector results = new Vector();
     ProgressMonitor myMonitor = new ProgressMonitor(Cytoscape.getDesktop(),"Pruning results",null,0,100);
