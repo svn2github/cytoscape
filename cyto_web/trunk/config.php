@@ -5,7 +5,7 @@
 
 #  Specifies whether we are running in production on cytoscape.org.
 #  If set to false, we assume a local test server set-up
-$in_production = true;
+$in_production = false;
 
 if ($in_production == true) {
 	#  The Real Cytoscape Data File
@@ -27,7 +27,7 @@ $cyto1_src = "cytoscapeSource-v1.1.1.tar.gz";
 # Cytoscape 2.0 Release File Names
 $cyto2_gz = "cytoscape-v2.0ALPHA4.tar.gz";
 $cyto2_zip = "cytoscape-v2.0ALPHA4.zip";
-$cyto2_src = "cytoscapeSource-v2.0ALPHA4.tar.gz";
+$cyto2_src = "cytoscape-v2.0ALPHA4.tar.gz";
 
 # URL for Cytoscape Install Anywhere
 $cyto1_install_anywhere = $isb_base . "installer/installer1.1.1/install.htm";
