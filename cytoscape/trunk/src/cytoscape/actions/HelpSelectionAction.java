@@ -38,8 +38,8 @@ public class HelpSelectionAction extends AbstractAction   {
                                    "- Memorial Sloan-Kettering Cancer Center (MSKCC)"
                                   );
      
-	JOptionPane.showMessageDialog(null, "Cytoscape version " + tmp.version + "\n"
-                                      + "Build date: " + tmp.getBuildDate() + "\n\n"
+	JOptionPane.showMessageDialog(null, tmp.getVersion() + "\n\n"
+                                      // + "Build date: " + tmp.getBuildDate() + "\n\n"
                                       + blerb
                                      );
     }

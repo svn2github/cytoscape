@@ -34,15 +34,15 @@
 //-----------------------------------------------------------------------------------
 package cytoscape;
 //-----------------------------------------------------------------------------------
-import java.util.Date;
-//-----------------------------------------------------------------------------------
 public class CytoscapeVersion {
 
   /** */
   public static String version = "1.1";	
   private String versionString = "1.1";
   private String dateString = "2003/05/12";
-  private Date   buildDate = new Date();
+  // would need ant or build script to modify this value
+  // maybe dateString should serve this purpose?
+  //private String buildDate = "2003/09/18";
 
   private String [] briefHistory = {
       "0.1   (2001/12/12) initial version",
@@ -71,12 +71,6 @@ public class CytoscapeVersion {
 public String getVersion ()
 {
   return "Cytoscape version: " + versionString + ", " + dateString;
-}
-//-----------------------------------------------------------------------------------
-// 20030915 cworkman
-public String getBuildDate ()
-{
-  return buildDate.toString();
 }
 //------------------------------------------------------------------------------
 public String toString ()
