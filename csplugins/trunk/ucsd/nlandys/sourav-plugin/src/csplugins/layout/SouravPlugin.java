@@ -23,7 +23,7 @@ public class SouravPlugin extends CytoscapePlugin
   {
     IntEnumerator enum = hash.elements();
     while (enum.numRemaining() > 0)
-      arr[beginIndex++] = enum.nextInt();
+      arr[beginIndex++] = ~enum.nextInt();
   }
 
   public SouravPlugin()
@@ -38,11 +38,10 @@ public class SouravPlugin extends CytoscapePlugin
           int numUniqueAttrs = 0;
           for (int i = 0; i < edgeInxs.length; i++)
           {
-            Object souravsAttrObj =
+            Double souravsAttrObj = (Double)
               cyNet.getNodeAttributeValue(edgeInxs[i], "cluster");
             if (souravsAttrObj == null) continue;
-            int souravsAttrInt = (int)
-              Double.parseDouble((String) souravsAttrObj);
+            int souravsAttrInt = (int) (souravsAttrObj.doubleValue());
             if (hash.get(souravsAttrInt) < 0) { // Not in hash yet.
               hash.put(souravsAttrInt, numUniqueAttrs++); }
           }
@@ -51,13 +50,12 @@ public class SouravPlugin extends CytoscapePlugin
             nodeAttrMap[i] = new IntHash(); }
           for (int i = 0; i < edgeInxs.length; i++)
           {
-            Object souravsAttrObj =
+            Double souravsAttrObj = (Double)
               cyNet.getNodeAttributeValue(edgeInxs[i], "cluster");
             if (souravsAttrObj == null) continue;
-            int souravsAttrInt = (int)
-              Double.parseDouble((String) souravsAttrObj);
+            int souravsAttrInt = (int) (souravsAttrObj.doubleValue());
             int index = hash.get(souravsAttrInt);
-            nodeAttrMap[index].put(edgeInxs[i]);
+            nodeAttrMap[index].put(~edgeInxs[i]);
           }
           for (int i = 0; i < nodeAttrMap.length; i++)
           {
@@ -65,13 +63,13 @@ public class SouravPlugin extends CytoscapePlugin
             IntEnumerator nodeEnum = nodeAttrMap[i].elements();
             while (nodeEnum.numRemaining() > 0)
             {
-              int node = nodeEnum.nextInt();
+              int node = ~nodeEnum.nextInt();
               int[] neighborsArray = cyNet.neighborsArray(node);
               for (int j = 0; j < neighborsArray.length; j++)
               {
                 int neighbor = neighborsArray[j];
-                if (nodeAttrMap[i].get(neighbor) < 0)
-                  neighbors.put(neighbor);
+                if (nodeAttrMap[i].get(~neighbor) < 0)
+                  neighbors.put(~neighbor);
               }
             }
             int[] allNodes = new int[size(nodeAttrMap[i]) + size(neighbors)];
