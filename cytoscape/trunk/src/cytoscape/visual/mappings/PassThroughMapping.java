@@ -115,11 +115,19 @@ public class PassThroughMapping implements ObjectMapping {
 	    }
 	}
         //OK, try returning the attrValue itself
-        if (rangeClass.isInstance(attrValue)) {
-		return attrValue;
-        } else {
-            return null;
+        if (rangeClass.isInstance(attrValue)) {return attrValue;}
+        
+        //if range class is String, try converting value to String
+        if (rangeClass.equals(String.class)) {
+            String stringConvert = attrValue.toString();
+            //sanity check to prevent ridiculously long labels
+            if (stringConvert.length() > 20) {
+                stringConvert = stringConvert.substring(0, 20) + "...";
+            }
+            return stringConvert;
         }
+        //attribute value is just no good; return null
+        return null;
     }
     
     /**
