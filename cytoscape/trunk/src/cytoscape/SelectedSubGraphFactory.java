@@ -25,7 +25,7 @@ public class SelectedSubGraphFactory {
 
 //------------------------------------------------------------------------------
 public SelectedSubGraphFactory (Graph2D parentGraph, GraphObjAttributes nodeAttributes,
-                         GraphObjAttributes edgeAttributes) 
+                                GraphObjAttributes edgeAttributes) 
 {
 
   this.parentGraph = parentGraph;
@@ -36,6 +36,7 @@ public SelectedSubGraphFactory (Graph2D parentGraph, GraphObjAttributes nodeAttr
 
   for (nc.toFirst (); nc.ok (); nc.next ()) { 
     String canonicalName = parentNodeAttributes.getCanonicalName (nc.node ());
+    //System.out.println ("factory, canonicalName: " + canonicalName);
     if (canonicalName != null) {
       String commonName = (String) parentNodeAttributes.getValue ("commonName", canonicalName);
       if (commonName != null) 
@@ -58,7 +59,10 @@ public SelectedSubGraphFactory (Graph2D parentGraph, GraphObjAttributes nodeAttr
     String commonName = subGraph.getLabelText (newNode);
     String canonicalName = (String) parentNameMap.get (commonName);
     NodeRealizer r = subGraph.getRealizer (newNode);
-    r.setLabelText (canonicalName);
+    if (canonicalName != null)
+      r.setLabelText (canonicalName); 
+    else
+      r.setLabelText (commonName); 
     newNodeAttributes.addNameMapping (canonicalName, newNode);
     // System.out.println (" new graph, commonName: " + commonName + "   canonical: " + canonicalName); 
     }
