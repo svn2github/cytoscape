@@ -14,11 +14,8 @@ import javax.swing.event.*;
 import javax.swing.JOptionPane;
 
 import java.io.*;
-import java.util.Hashtable;
-import java.util.HashMap;
-import java.util.Vector;
-import java.util.Enumeration;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.util.logging.*;
 
 import y.base.*;
 import y.view.*;
@@ -73,6 +70,7 @@ public class CytoscapeWindow extends JPanel implements FilterDialogClient { // i
   protected Graph2D graph;
   protected String geometryFilename;
   protected String expressionDataFilename;
+  protected Logger logger;
 
   protected JFrame mainFrame;
   protected JMenuBar menuBar;
@@ -124,6 +122,7 @@ public class CytoscapeWindow extends JPanel implements FilterDialogClient { // i
 //------------------------------------------------------------------------------
 public CytoscapeWindow (cytoscape parentApp,
                         CytoscapeConfig config,
+                        Logger logger,
                         Graph2D graph, 
                         ExpressionData expressionData,
                         BioDataServer bioDataServer,
@@ -136,11 +135,15 @@ public CytoscapeWindow (cytoscape parentApp,
    throws Exception
 {
   this.parentApp = parentApp;
+  this.logger = logger;
   this.graph = graph;
   this.geometryFilename = geometryFilename;
   this.expressionDataFilename = expressionDataFilename;
   this.bioDataServer = bioDataServer;
   this.expressionData = expressionData;
+  this.config = config;
+
+  // setupLogging ();
 
   if (nodeAttributes != null) 
     this.nodeAttributes = nodeAttributes;
@@ -160,7 +163,6 @@ public CytoscapeWindow (cytoscape parentApp,
     this.windowTitle = "";
   else
     this.windowTitle = title;
-  this.config = config;
 
   initializeWidgets ();
 
@@ -178,9 +180,37 @@ public CytoscapeWindow (cytoscape parentApp,
 
 } // ctor
 //------------------------------------------------------------------------------
+/**
+ * configure logging:  cytoscape.props specifies what level of logging
+ * messages are written to the console; by default, only SEVERE messages
+ * are written.  in time, more control of logging (i.e., optional logging
+ * to a file, disabling console logging, per-plugin logging) will be provided
+ */
+protected void setupLogging ()
+{
+  logger = Logger.getLogger ("global"); 
+  Properties properties = getConfiguration().getProperties();
+  String level = properties.getProperty ("logging", "SEVERE");
+
+  if (level.equalsIgnoreCase ("severe"))
+    logger.setLevel (Level.SEVERE);
+  else if (level.equalsIgnoreCase ("warning"))
+    logger.setLevel (Level.WARNING);
+  else if (level.equalsIgnoreCase ("info"))
+    logger.setLevel (Level.INFO);
+  else if (level.equalsIgnoreCase ("config"))
+    logger.setLevel (Level.CONFIG);
+
+} // setupLogging
+//------------------------------------------------------------------------------
+public Logger getLogger ()
+{
+  return logger;
+}
+//------------------------------------------------------------------------------
 public void windowStateChanged (WindowEvent e)
 {
-  System.out.println ("--- windowStateChanged: " + e);
+  logger.info ("--- windowStateChanged: " + e);
 }
 //------------------------------------------------------------------------------
 public CytoscapeConfig getConfiguration() {
@@ -421,7 +451,7 @@ public Node getNode (String canonicalNodeName)
   for (int i=0; i < nodes.length; i++) {
     Node node = nodes [i];
     String canonicalName = nodeAttributes.getCanonicalName (node);
-    // System.out.println (" -- checking " + canonicalNodeName + " against " + canonicalName + " " + node);
+    logger.warning (" -- checking " + canonicalNodeName + " against " + canonicalName + " " + node);
     if (canonicalNodeName.equals (canonicalName)) 
       return node;
     }
@@ -996,7 +1026,7 @@ protected void updateEdgeVisibilityFromNodeVisibility ()
 //------------------------------------------------------------------------------
 public void applyLayout (boolean animated)
 {
-  System.out.print ("starting layout...");  System.out.flush ();
+  logger.warning ("starting layout...");
   setInteractivity (false);
   layouter.doLayout (graphView.getGraph2D ());
 
@@ -1004,7 +1034,7 @@ public void applyLayout (boolean animated)
   graphView.setZoom (graphView.getZoom ()*0.9);
 
   setInteractivity (true);
-  System.out.println (" done");
+  logger.info (" done");
 
 } // applyLayout
 
@@ -1069,7 +1099,7 @@ public void applyLayoutSelection() {
 
     // other layouters
     else {
-	System.out.print ("starting layout...");  System.out.flush ();
+	logger.warning ("starting layout..."); 
 	setInteractivity (false);
 
 	Subgraph subgraph = new Subgraph(g, g.selectedNodes());
@@ -1087,7 +1117,7 @@ public void applyLayoutSelection() {
 	}
 
 	setInteractivity (true);
-	System.out.println("  done");
+	logger.info("  done");
     }
 }
 
@@ -1139,7 +1169,7 @@ protected class PrintPropsAction extends AbstractAction   {
       String [] attributeNames = nodeAttributes.getAttributeNames ();
       for (int i=0; i < attributeNames.length; i++) {
 	  String attributeName = attributeNames [i];
-	  System.out.println(attributeName);
+	  logger.info(attributeName);
       }
   }
 
@@ -1656,16 +1686,16 @@ protected class DisplayAttributesOfSelectedNodesAction extends AbstractAction {
   public void actionPerformed (ActionEvent e) {
     Graph2D g = graphView.getGraph2D ();
     NodeCursor nc = g.selectedNodes (); 
-    System.out.println ("debug, selected node count: " + nc.size ());
+    logger.info ("debug, selected node count: " + nc.size ());
     for (nc.toFirst (); nc.ok (); nc.next ()) { // get the canonical name of the old node
       String canonicalName = nodeAttributes.getCanonicalName (nc.node ());
-      System.out.println (canonicalName + ": " + nodeAttributes.getAttributes (canonicalName));
+      logger.info (canonicalName + ": " + nodeAttributes.getAttributes (canonicalName));
       } // for
     EdgeCursor ec = g.selectedEdges (); 
-    System.out.println ("debug, selected edge count: " + ec.size ());
+    logger.info ("debug, selected edge count: " + ec.size ());
     for (ec.toFirst (); ec.ok (); ec.next ()) { // get the canonical name of the old node
       String edgeName = edgeAttributes.getCanonicalName (ec.edge ());
-      System.out.println (edgeName + ": " + edgeAttributes.getAttributes (edgeName));
+      logger.info (edgeName + ": " + edgeAttributes.getAttributes (edgeName));
       } // for
     }
 }
@@ -1678,7 +1708,6 @@ protected class NewWindowSelectedNodesOnlyAction extends AbstractAction   {
     Graph2D subGraph = factory.getSubGraph ();
     GraphObjAttributes newNodeAttributes = factory.getNodeAttributes ();
     GraphObjAttributes newEdgeAttributes = factory.getEdgeAttributes ();
-    //System.out.println ("newEdgeAttributes: " + newEdgeAttributes);
 
     String title = "selection";
     if (titleForCurrentSelection != null) 
@@ -1686,7 +1715,7 @@ protected class NewWindowSelectedNodesOnlyAction extends AbstractAction   {
     try {
       boolean requestFreshLayout = true;
       CytoscapeWindow newWindow =
-          new CytoscapeWindow  (parentApp, config, subGraph, expressionData, 
+          new CytoscapeWindow  (parentApp, config, logger, subGraph, expressionData, 
                                 bioDataServer, newNodeAttributes, newEdgeAttributes, 
                                 "dataSourceName", expressionDataFilename, title, 
                                 requestFreshLayout);
@@ -1733,7 +1762,7 @@ protected class NewWindowSelectedNodesEdgesAction extends AbstractAction   {
       try {
 	  boolean requestFreshLayout = true;
 	  CytoscapeWindow newWindow =
-	      new CytoscapeWindow  (parentApp, config, subGraph,
+	      new CytoscapeWindow  (parentApp, config, logger, subGraph,
 				    expressionData, bioDataServer,
 				    newNodeAttributes, newEdgeAttributes, 
 				    "dataSourceName", expressionDataFilename,
@@ -1786,7 +1815,7 @@ public void cloneWindow ()
   try {
     boolean requestFreshLayout = true;
     CytoscapeWindow newWindow =
-        new CytoscapeWindow  (parentApp, config, subGraph, expressionData, 
+        new CytoscapeWindow  (parentApp, config, logger, subGraph, expressionData, 
                               bioDataServer, newNodeAttributes, newEdgeAttributes, 
                               "dataSourceName", expressionDataFilename, title, 
                               requestFreshLayout);
@@ -1831,7 +1860,7 @@ class SelectedSubGraphMaker {
     nc.toFirst ();
     subGraph = new Graph2D (parentGraph, nc);
     Node [] newNodes = subGraph.getNodeArray ();
-    // System.out.println ("nodes in new subgraph: " + newNodes.length);
+    logger.warning ("nodes in new subgraph: " + newNodes.length);
 
     newNodeAttributes = (GraphObjAttributes) parentNodeAttributes.clone ();
     newNodeAttributes.clearNameMap ();
@@ -1843,7 +1872,6 @@ class SelectedSubGraphMaker {
       NodeRealizer r = subGraph.getRealizer (newNode);
       r.setLabelText (canonicalName);
       newNodeAttributes.addNameMapping (canonicalName, newNode);
-      //System.out.println (" new graph, commonName: " + commonName + "   canonical: " + canonicalName); 
       }
 
     newEdgeAttributes = (GraphObjAttributes) parentEdgeAttributes.clone ();
@@ -1864,8 +1892,6 @@ protected class ShowConditionAction extends AbstractAction   {
     }
 
   public void actionPerformed (ActionEvent e) {
-    //System.out.println ("show " + conditionName);
-    // displayNodesWithExpressionValues (conditionName);
     }
 }
 //------------------------------------------------------------------------------
@@ -1893,7 +1919,7 @@ protected class ExitAction extends AbstractAction  {
   ExitAction () { super ("Exit"); }
 
   public void actionPerformed (ActionEvent e) {
-    parentApp.exit ();
+    parentApp.exit (0);
   }
 }
 //------------------------------------------------------------------------------
@@ -2102,9 +2128,6 @@ class EditGraphMode extends EditMode {
    allowBendCreation (true);
    showNodeTips (true);
    showEdgeTips (true);
-   //System.out.println ("EditGraphMode, createEdgeMode: " + getCreateEdgeMode ());
-   //setCreateEdgeMode (new CreateEdgeMode ());
-   //System.out.println ("EditGraphMode, createEdgeMode: " + getCreateEdgeMode ());
    }
   protected String getNodeTip (Node node) {
     String geneName = graphView.getGraph2D().getRealizer(node).getLabelText();
@@ -2136,7 +2159,7 @@ class EditGraphMode extends EditMode {
     } // nodeCreated
 
   protected void edgeCreated (Edge e) {
-    System.out.println ("edge created: " + e);
+    logger.info ("edge created: " + e);
     }
 
   protected String getEdgeTip (Edge edge) {
@@ -2150,7 +2173,7 @@ class CreateEdgeMode extends ViewMode {
     super ();
     }
   protected void edgeCreated (Edge e) {
-    System.out.println ("edge created: " + e);
+    logger.info ("edge created: " + e);
     }
 
 } // CreateEdgeMode 
@@ -2236,7 +2259,6 @@ protected HashMap configureNewNode (Node node)
   OptionHandler options = new OptionHandler ("New Node");
 
   String [] attributeNames = nodeAttributes.getAttributeNames ();
-  //System.out.println ("attributes: " + attributeNames.length);
 
   if (attributeNames.length == 0) {
     options.addComment ("commonName is required; canonicalName is optional and defaults to commonName");
@@ -2261,7 +2283,6 @@ protected HashMap configureNewNode (Node node)
   if (attributeNames.length == 0) {
     result.put ("commonName", (String) options.get ("commonName"));
     result.put ("canonicalName", (String) options.get ("canonicalName"));
-    //System.out.println ("result: " + result);
     }
   else for (int i=0; i < attributeNames.length; i++) {
     String attributeName = attributeNames [i];
