@@ -3,11 +3,11 @@
 <head>
   <meta http-equiv="content-type"
  content="text/html; charset=ISO-8859-1">
-  <title>Command Line Arguments</title>
+  <title>Command Line Arguments and Properties</title>
 </head>
 <body>
 <h1 class="western" style="page-break-before: always;">Command Line
-Arguments</h1>
+Arguments and Properties</h1>
 Cytoscape recognizes a number of optional command
 line
 arguments, including run-time specification of network files and
@@ -180,25 +180,8 @@ plugins&#8230;&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
 &nbsp; Specify
-the list of resource plugins
-<h2 style="font-family: monospace;"><span style="font-family: serif;">Java
-System
-properties</span><o:p></o:p></h2>
-<span style="font-weight: bold; font-family: serif;">&nbsp;&nbsp;
--Djava.awt.headless=</span><span style="font-family: serif;">[
-true | false ]&nbsp;&nbsp;&nbsp; </span><br style="font-family: serif;">
-<span style="font-family: serif;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-&nbsp; Similar to command
-line argument &#8211;headless | -noView;
-run in headless mode, </span><br style="font-family: serif;">
-<span style="font-family: serif;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-&nbsp; do not create and
-display the GUI</span><br>
-<br style="font-family: monospace;">
+the list of resource plugins<br>
+<br>
 Most data sets may also be loaded
 after Cytoscape is running. See the sections on <i>6. Loading Gene
 Expression Data
@@ -209,6 +192,202 @@ Additional command line arguments
 that are not recognized by the Cytoscape core are passed to the
 PlugIn modules. Please refer to the documentation for each specific
 PlugIn for more details.<br>
+<br style="font-family: monospace;">
+<meta http-equiv="CONTENT-TYPE" content="text/html; charset=utf-8">
+<title>Cytoscape Manual</title>
+<meta name="GENERATOR" content="OpenOffice.org 1.1.0  (Linux)">
+<meta name="AUTHOR" content="owen">
+<meta name="CREATED" content="20050222;12050000">
+<meta name="CHANGEDBY" content="Administrator">
+<meta name="CHANGED" content="20050222;12380000">
+<style>
+	<!--
+		@page { size: 8.27in 11.69in; margin: 0.79in }
+		P { margin-bottom: 0.08in }
+	--></style>
+<h2><big><font size="4"><big><b>Cytoscape Properties</b></big></font></big></h2>
+<p style="margin-left: 2.5in; text-indent: -2.5in; margin-bottom: 0in;">
+<br>
+</p>
+<p style="margin-bottom: 0in;"><a
+ href="images/new-PreferencesDialog.jpg"><img
+ alt="Preferences Dialog"
+ style="border: 0px solid ; height: 333px; width: 315px;" hspace="13"
+ align="right" name="Graphic16" src="images/new-PreferencesDialog.jpg"></a>The
+Cytoscape Preferences Dialog, accessed via Edit-&gt;Preferences&#8230;,
+has sections for general properties display/editing and plugins
+specification via the properties mechanism. Preferences in Cytoscape
+are stored in the form of Java properties specified in the
+cytoscape.props file located in the users&#8217; working directory, home
+directory or Cytoscape distribution directory. This file is
+automatically loaded at startup time and written upon normal exit of
+the application.</p>
+<p style="margin-bottom: 0in;">Cytoscape properties are displayed in
+the Properties section of the dialog. These properties are
+configurable via Add, Modify and Delete operations.</p>
+<p style="margin-bottom: 0in;">The specification of plugins to be
+loaded into Cytoscape at startup time is also supported in
+cytoscape.props and accessible in this dialog under the Plugins
+section. In this special case, the plugins property specifies a
+comma-separated list of jar files or URLs to jar files containing
+plugins. This property is parsed into its constituents and presented
+and managed in the Plugins table, as at left.</p>
+<p style="margin-bottom: 0in;"><br>
+</p>
+<p style="margin-left: 2.5in; text-indent: -2.5in; margin-bottom: 0in;">
+<br>
+</p>
+<p style="margin-left: 2.5in; text-indent: -2.5in; margin-bottom: 0in;">
+Some common properties are described below.</p>
+<p style="margin-left: 2.5in; text-indent: -2.5in; margin-bottom: 0in;">
+<br>
+</p>
+<center>
+<table border="1" bordercolor="#000000" cellpadding="8" cellspacing="0"
+ style="height: 740px; width: 90%;">
+  <col width="175"> <col width="96"> <col width="277"> <col
+ width="72"> <thead> <tr valign="top">
+    <td width="175">
+    <p><b>Property name</b></p>
+    </td>
+    <td width="96">
+    <p><b>Default value</b></p>
+    </td>
+    <td style="width: 277px;">
+    <p><b>Valid values</b></p>
+    </td>
+    <td width="72">
+    <p><b>Related command line argument</b></p>
+    </td>
+  </tr>
+  </thead> <tbody>
+    <tr valign="top">
+      <td width="175">
+      <p>defaultSpeciesName</p>
+      </td>
+      <td width="96">
+      <p>PleaseSpecify</p>
+      </td>
+      <td width="277">
+      <p style="margin-bottom: 0in;">species names</p>
+      <p style="margin-bottom: 0in;">this value must match the name in
+the first line of the file specified in the bioDataServer&#8217;s manifest
+for synonyms</p>
+      <p>e.g., for yeast synonyms, specify Saccharomyces cerevisiae</p>
+      </td>
+      <td width="72">
+      <p style="margin-bottom: 0in;"> -s</p>
+      <p>-species</p>
+      </td>
+    </tr>
+    <tr valign="top">
+      <td width="175">
+      <p>bioDataServer</p>
+      </td>
+      <td width="96">
+      <p>PleaseSpecify</p>
+      </td>
+      <td width="277">
+      <p>annotation/manifest, and other manifest file locations</p>
+      </td>
+      <td width="72">
+      <p style="margin-bottom: 0in;">-b</p>
+      <p>-BDS</p>
+      </td>
+    </tr>
+    <tr valign="top">
+      <td width="175">
+      <p>viewThreshold</p>
+      </td>
+      <td style="width: 96px;">
+      <div style="text-align: center;"> </div>
+      <p style="text-align: center;">500</p>
+      </td>
+      <td width="277">
+      <p>integers &gt; 0</p>
+      </td>
+      <td width="72">
+      <p style="margin-bottom: 0in;">-vt</p>
+      <p>--VT</p>
+      </td>
+    </tr>
+    <tr valign="top">
+      <td width="175">
+      <p>secondaryViewThreshold</p>
+      </td>
+      <td width="96">
+      <p>2000</p>
+      </td>
+      <td width="277">
+      <p>integers &gt; 0</p>
+      </td>
+      <td width="72">
+      <p><br>
+      </p>
+      </td>
+    </tr>
+    <tr valign="top">
+      <td width="175">
+      <p>viewType</p>
+      </td>
+      <td width="96">
+      <p>tabbed</p>
+      </td>
+      <td width="277">
+      <p>tabbed</p>
+      </td>
+      <td width="72">
+      <p><br>
+      </p>
+      </td>
+    </tr>
+    <tr valign="top">
+      <td width="175">
+      <p>plugins</p>
+      </td>
+      <td width="96">
+      <p><br>
+      </p>
+      </td>
+      <td style="width: 277px;">
+      <p>comma-separated list of jar files containing plugins, or URL&#8217;s
+to jar files containing plugins (e.g., http://server/my-plugin.jar)</p>
+      </td>
+      <td width="72">
+      <p style="margin-bottom: 0in;">-p</p>
+      <p style="margin-bottom: 0in;">-plugin </p>
+      <p style="margin-bottom: 0in;">--JLD </p>
+      <p style="margin-bottom: 0in;">--JLW </p>
+      <p>--JLL</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</center>
+<p style="margin-left: 2.5in; text-indent: -2.5in; margin-bottom: 0in;">
+<br>
+</p>
+<p style="margin-left: 2.5in; text-indent: -2.5in; margin-bottom: 0in;">
+<br>
+</p>
+<h2><big><b><font size="4"><big>Java System properties</big></font></b></big></h2>
+<p style="margin-left: 2.5in; text-indent: -2.5in; margin-bottom: 0in;">
+<br>
+</p>
+<p style="margin-bottom: 0in;">Cytoscape also honors a new Java system
+property introduced in Java 1.4: java.awt.headless. This property
+allows the Java system to run without Graphics support; Cytoscape
+running in this mode allows users to run non-graphical analyses as
+batch jobs or on systems without keyboard/mouse/display capabilities,
+such as compute servers.</p>
+<p style="margin-left: 2.5in; text-indent: -2.5in; margin-bottom: 0in;">
+<br>
+</p>
+<p style="margin-left: 2.5in; text-indent: -2.5in; margin-bottom: 0in;">
+<b>-Djava.awt.headless=[ true | false ]</b> Similar to command line
+argument &#8211;headless | -noView; run in headless mode, do not create
+and display the GUI</p>
+<br>
 <br style="font-family: monospace;">
 </body>
 </html>
