@@ -7,28 +7,41 @@
 
 package cytoscape.graphutil;
 
-import cytoscape.*;
 import cytoscape.view.*;
-import cytoscape.data.*;
 import cytoscape.browsers.*;
-import cytoscape.util.*;
 
 import java.util.*;
 import giny.model.*;
 import giny.view.*;
 import phoebe.*;
 import edu.umd.cs.piccolo.*;
-import edu.umd.cs.piccolox.*;
-import edu.umd.cs.piccolox.util.*;
-import edu.umd.cs.piccolox.handles.*;
-import edu.umd.cs.piccolo.event.*;
 import edu.umd.cs.piccolo.activities.*;
-import edu.umd.cs.piccolo.nodes.*;
-import edu.umd.cs.piccolo.util.*;
 import javax.swing.*;
 import java.awt.event.*;
 
 public class NodeAction {
+    final static String SHAPEMENUCAPTION[] = {
+        "Diamond","Ellipse","Hexagon","Octagon","Triangle","Parallelogram","Rectangle"};
+    final static int SHAPEMENUVALUE[] = {
+        PNodeView.DIAMOND,PNodeView.ELLIPSE,PNodeView.HEXAGON,PNodeView.OCTAGON,
+        PNodeView.TRIANGLE,PNodeView.PARALELLOGRAM,PNodeView.RECTANGLE};
+    private static class ShapeMenuAction extends AbstractAction {
+        private int i;
+        private PNodeView nv;
+        public ShapeMenuAction(int index, PNodeView nodeview) {
+            super(SHAPEMENUCAPTION[index]);
+            i = index;
+            nv = nodeview;
+        }
+        public void actionPerformed(ActionEvent e) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                    nv.setShape(SHAPEMENUVALUE[i]);
+                }
+            });
+        }
+    }
 
   public NodeAction () {
   }
@@ -70,7 +83,7 @@ public class NodeAction {
                     }
                     objects = new Object[ nodes.size() ];
                     for ( int i = 0; i < nodes.size(); ++i ) {
-                      objects[i] = ( Object )( ( NodeView )nodes.get(i) ).getNode();
+                      objects[i] = ( ( NodeView )nodes.get(i) ).getNode();
                     }
                   } else {
                     objects = new Object[] { view.getNode() };
@@ -96,10 +109,8 @@ public class NodeAction {
     final GraphView v = network.getView();
     final PNodeView nv = ( PNodeView )node;
 
-    JMenu edit_menu = new JMenu( "<html>Node Editing <I><small>(short-term)</I></small></html>");
-
-
-    edit_menu.add( new JMenuItem( new AbstractAction( "Color" ) {
+    JMenu editMenu = new JMenu( "<html>Node Editing <I><small>(short-term)</I></small></html>");
+    editMenu.add( new JMenuItem( new AbstractAction( "Color" ) {
          public void actionPerformed ( ActionEvent e ) {
            // Do this in the GUI Event Dispatch thread...
            SwingUtilities.invokeLater( new Runnable() {
@@ -108,74 +119,16 @@ public class NodeAction {
                  nv.setUnselectedPaint( color.showDialog( v.getComponent() , "Choose a Node Color", (java.awt.Color)nv.getUnselectedPaint() ) );
                } } ); } } ) );
 
-    JMenuItem jmi;
-    JMenu shape_menu = new JMenu( "Shape" );
-    jmi = new JCheckBoxMenuItem( new AbstractAction( "Diamond") {
-         public void actionPerformed ( ActionEvent e ) {
-           // Do this in the GUI Event Dispatch thread...
-           SwingUtilities.invokeLater( new Runnable() {
-               public void run() {
-                 nv.setShape( PNodeView.DIAMOND );
-               } } ); } } );
-    jmi.setSelected(nv.getShape() == PNodeView.DIAMOND);
-    shape_menu.add(jmi);
-    jmi = new JCheckBoxMenuItem( new AbstractAction( "Ellipse" ) {
-         public void actionPerformed ( ActionEvent e ) {
-           // Do this in the GUI Event Dispatch thread...
-           SwingUtilities.invokeLater( new Runnable() {
-               public void run() {
-                 nv.setShape( PNodeView.ELLIPSE );
-               } } ); } } );
-    jmi.setSelected(nv.getShape() == PNodeView.ELLIPSE);
-    shape_menu.add(jmi);
-    jmi = new JCheckBoxMenuItem( new AbstractAction( "Hexagon" ) {
-         public void actionPerformed ( ActionEvent e ) {
-           // Do this in the GUI Event Dispatch thread...
-           SwingUtilities.invokeLater( new Runnable() {
-               public void run() {
-                 nv.setShape( PNodeView.HEXAGON );
-               } } ); } } );
-    jmi.setSelected(nv.getShape() == PNodeView.HEXAGON);
-    shape_menu.add(jmi);
-    jmi = new JCheckBoxMenuItem( new AbstractAction( "Octagon" ) {
-         public void actionPerformed ( ActionEvent e ) {
-           // Do this in the GUI Event Dispatch thread...
-           SwingUtilities.invokeLater( new Runnable() {
-               public void run() {
-                 nv.setShape( PNodeView.OCTAGON );
-               } } ); } } );
-    jmi.setSelected(nv.getShape() == PNodeView.OCTAGON);
-    shape_menu.add(jmi);
-    jmi = new JCheckBoxMenuItem( new AbstractAction( "Triangle" ) {
-         public void actionPerformed ( ActionEvent e ) {
-           // Do this in the GUI Event Dispatch thread...
-           SwingUtilities.invokeLater( new Runnable() {
-               public void run() {
-                 nv.setShape( PNodeView.TRIANGLE );
-               } } ); } } );
-    jmi.setSelected(nv.getShape() == PNodeView.TRIANGLE);
-    shape_menu.add(jmi);
-    jmi = new JCheckBoxMenuItem( new AbstractAction( "Parallelogram" ) {
-         public void actionPerformed ( ActionEvent e ) {
-           // Do this in the GUI Event Dispatch thread...
-           SwingUtilities.invokeLater( new Runnable() {
-               public void run() {
-                 nv.setShape( PNodeView.PARALELLOGRAM );
-               } } ); } } );
-    jmi.setSelected(nv.getShape() == PNodeView.PARALELLOGRAM);
-    shape_menu.add(jmi);
-    jmi = new JCheckBoxMenuItem( new AbstractAction( "Rectangle" ) {
-         public void actionPerformed ( ActionEvent e ) {
-           // Do this in the GUI Event Dispatch thread...
-           SwingUtilities.invokeLater( new Runnable() {
-               public void run() {
-                 nv.setShape( PNodeView.RECTANGLE );
-               } } ); } } );
-    jmi.setSelected(nv.getShape() == PNodeView.RECTANGLE);
-    shape_menu.add(jmi);
-
-    edit_menu.add( shape_menu );
-    return edit_menu;
+    int i;
+    JCheckBoxMenuItem jmi;
+    JMenu shapeMenu = new JMenu( "Shape" );
+    for (i = 0; i < SHAPEMENUCAPTION.length; i++) {
+        jmi = new JCheckBoxMenuItem( new ShapeMenuAction(i, nv));
+        jmi.setSelected(nv.getShape() == SHAPEMENUVALUE[i]);
+        shapeMenu.add(jmi);
+    }
+    editMenu.add(shapeMenu);
+    return editMenu;
 }
 
 
