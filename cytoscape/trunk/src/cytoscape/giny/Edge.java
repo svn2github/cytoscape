@@ -1,12 +1,14 @@
 package cytoscape.giny;
 
+import cytoscape.CyNode;
+
 /**
  * @deprecated
  */
 public interface Edge extends giny.model.Edge {
 
-  public Node getSourceNode ();
+  public CyNode getSourceNode ();
 
-  public Node getTargetNode ();
+  public CyNode getTargetNode ();
 
 }

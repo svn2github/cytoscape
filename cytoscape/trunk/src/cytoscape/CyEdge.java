@@ -18,18 +18,19 @@ public class CyEdge implements cytoscape.giny.Edge {
     this.m_identifier = new Integer(m_rootGraphIndex).toString();
   }
 
+
   /**
    * @deprecated
    */
-  public Node getSourceNode () {
-    return ( cytoscape.giny.Node )getSource();
+  public CyNode getSourceNode () {
+    return (CyNode) getSource();
   }
 
   /**
    * @deprecated
    */
-  public Node getTargetNode () {
-    return ( cytoscape.giny.Node )getTarget();
+  public CyNode getTargetNode () {
+    return (CyNode)getTarget();
   }
 
   public giny.model.Node getSource()
