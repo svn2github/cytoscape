@@ -31,10 +31,19 @@ public LabelTextPanel (GraphObjAttributes nodeAttribs,
   GridBagConstraints c = new GridBagConstraints();
   this.setLayout (gridbag);
 
-  theList = new JList(attributeNames);
+  DefaultListModel listModel = new DefaultListModel();
+  for (int i=0; i < attributeNames.length; i++)
+      listModel.addElement(attributeNames [i]);
+  listModel.addElement("canonicalName");
+
+  // now constructing from the listModel instead of
+  // attributeNames so that "canonicalName" can be
+  // on the list.
+  theList = new JList(listModel);
+
   theList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
   theList.addListSelectionListener(new SharedListSelectionHandler());
-
+  theList.setSelectedValue(nodeLabelKey.getString(),true);
   /*
     for (int i=0; i < attributeNames.length; i++) {
     String attributeName = attributeNames [i];
@@ -56,7 +65,6 @@ public class SharedListSelectionHandler implements ListSelectionListener {
 	nodeLabelKey.setString(jl.getSelectedValue().toString());
     }
 }
-
 
 } // class LabelTextPanel
 

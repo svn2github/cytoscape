@@ -406,6 +406,13 @@ protected void displayCommonNodeNames ()
 } // displayCommonNodeNames
 
 
+/**
+ *  displayNodeLabels()
+ *  attempts to display the hashed graphObjAttribute value
+ *  at key "key" as the label on every node.  Special case
+ *  if the key is "canonicalName": canonicalName is stored
+ *  in a different data structure, so we access it differently.
+ */
 protected void displayNodeLabels (String key)
 {
     Node [] nodes = graph.getNodeArray ();
@@ -413,11 +420,15 @@ protected void displayNodeLabels (String key)
     for (int i=0; i < nodes.length; i++) {
 	Node node = nodes [i];
 	String canonicalName = getCanonicalNodeName(node);
-	HashMap attribmap = nodeAttributes.getAttributes(canonicalName);
-	Object newObjectWithName  = (Object)attribmap.get(key);
 	String newName = "";
-	if(newObjectWithName != null)
-	    newName = newObjectWithName.toString();
+	if(key!="canonicalName") {
+	    HashMap attribmap = nodeAttributes.getAttributes(canonicalName);
+	    Object newObjectWithName  = (Object)attribmap.get(key);
+	    if(newObjectWithName != null)
+		newName = newObjectWithName.toString();
+	}
+	else
+	    newName = canonicalName;
 	NodeRealizer r = graphView.getGraph2D().getRealizer(node);
 	r.setLabelText (newName);
     }
