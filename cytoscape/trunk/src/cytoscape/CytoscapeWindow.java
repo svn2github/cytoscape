@@ -433,12 +433,18 @@ protected JMenuBar createMenuBar ()
   deleteSelectionMenuItem = editMenu.add (new DeleteSelectedAction ());
   deleteSelectionMenuItem.setEnabled (false);
 
-
   JMenu selectiveDisplayMenu = new JMenu ("Select");
   selectiveDisplayMenu.setToolTipText ("Select nodes by different criteria");
   menuBar.add (selectiveDisplayMenu);
   selectiveDisplayMenu.add (new DeselectAllAction ());
-
+  if (bioDataServer != null) selectiveDisplayMenu.add (new GoIDSelectAction ());
+  selectiveDisplayMenu.add (new AlphabeticalSelectionAction ());
+  mi = selectiveDisplayMenu.add (new DisplaySelectedInNewWindowAction ());
+  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+  
+  mi = selectiveDisplayMenu.add (new DisplayAttributesOfSelectedNodesAction ());
+  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_D, ActionEvent.CTRL_MASK));
+  
   JMenu layoutMenu = new JMenu ("Layout");
   layoutMenu.setToolTipText ("Apply new layout algorithm to graph");
   menuBar.add (layoutMenu);
@@ -452,13 +458,6 @@ protected JMenuBar createMenuBar ()
   opsMenu = new JMenu ("Ops"); // always create the ops menu
   menuBar.add (opsMenu);
 
-  selectiveDisplayMenu.add (new AlphabeticalSelectionAction ());
-  mi = selectiveDisplayMenu.add (new DisplaySelectedInNewWindowAction ());
-  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_S, ActionEvent.CTRL_MASK));
-  
-  mi = selectiveDisplayMenu.add (new DisplayAttributesOfSelectedNodesAction ());
-  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_D, ActionEvent.CTRL_MASK));
-  
   return menuBar;
 
 } // createMenuBar
@@ -592,6 +591,60 @@ protected void selectNodesStartingWith (String key)
   redrawGraph ();
 
 } // selectDisplyToNodesStartingWith ...
+//------------------------------------------------------------------------------
+protected void selectNodesSharingGoID (int goID)
+{
+  Graph2D g = graphView.getGraph2D();
+  Node [] nodes = graphView.getGraph2D().getNodeArray();
+
+  try {
+    for (int n=0; n < nodes.length; n++) {
+      String nodeName = graphView.getGraph2D().getLabelText (nodes [n]);
+      int [] bioProcessIDs = bioDataServer.getBioProcessIDs (nodeName);
+      int [] molFuncIDs = bioDataServer.getMolecularFunctionIDs (nodeName);
+      int [] cellularComponentIDs = bioDataServer.getCellularComponentIDs (nodeName);
+      int [] allIDs = new int [bioProcessIDs.length +
+                               molFuncIDs.length +
+                               cellularComponentIDs.length];
+      int d=0;  // destination (allIDs) index
+  
+      for (int i=0; i < bioProcessIDs.length; i++)
+        allIDs [d++] = bioProcessIDs [i];
+  
+      for (int i=0; i < molFuncIDs.length; i++)
+        allIDs [d++] = molFuncIDs [i];
+  
+      for (int i=0; i < cellularComponentIDs.length; i++)
+        allIDs [d++] = cellularComponentIDs [i];
+  
+      Vector allPaths = new Vector ();
+      for (int i=0; i < allIDs.length; i++) {
+        Vector tmp = bioDataServer.getAllBioProcessPaths (allIDs [i]);
+        for (int t=0; t < tmp.size (); t++)
+          allPaths.addElement (tmp.elementAt (t));
+        } // for i
+  
+      boolean matched = false;
+      for (int v=0; v < allPaths.size (); v++) {
+        Vector path = (Vector) allPaths.elementAt (v);
+        for (int p=path.size()-1; p >= 0; p--) {
+          Integer ID = (Integer) path.elementAt (p);
+          int id = ID.intValue ();
+          if (id == goID) {
+            matched = true;
+            // todo: break out of inner and outer loops from here
+            }
+          } // for p
+        } // for v
+      NodeRealizer nodeRealizer = graphView.getGraph2D().getRealizer(nodes [n]);
+      nodeRealizer.setSelected (matched);
+      } // for n
+    } // try
+  catch (Exception ignoreForNow) {;}
+
+  redrawGraph ();
+
+} // selectNodesSharingGoId
 //------------------------------------------------------------------------------
 protected void setNodeSelected (Node node, boolean visible)
 {
@@ -747,6 +800,23 @@ protected class RandomLayoutAction extends AbstractAction   {
     }
 }
 //-----------------------------------------------------------------------------
+protected class GoIDSelectAction extends AbstractAction   {
+  GoIDSelectAction () { super ("By GO ID"); }
+
+  public void actionPerformed (ActionEvent e) {
+    String answer = 
+      (String) JOptionPane.showInputDialog (mainFrame, "Select genes with GO ID");
+    if (answer != null && answer.length () > 0) try {
+      int goID = Integer.parseInt (answer);
+      selectNodesSharingGoID (goID);
+      }
+    catch (NumberFormatException nfe) {
+      JOptionPane.showMessageDialog (mainFrame, "Not an integer: " + answer);
+      }
+    } // actionPerformed
+
+}// GoIDSelectAction
+//------------------------------------------------------------------------------
 protected class AlphabeticalSelectionAction extends AbstractAction   {
   AlphabeticalSelectionAction () { super ("By Name"); }
 
