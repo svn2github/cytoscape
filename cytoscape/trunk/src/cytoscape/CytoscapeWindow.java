@@ -1507,11 +1507,13 @@ protected class ShowConditionAction extends AbstractAction   {
 //------------------------------------------------------------------------------
 protected void loadGML (String filename)
 {
-  GMLIOHandler ioh = new GMLIOHandler ();
-  ioh.read (graphView.getGraph2D (), filename);
-  graph = graphView.getGraph2D ();
-  displayGraph (false);
-
+    GMLReader reader = new GMLReader(geometryFilename);
+    reader.read();
+    graph = reader.getGraph();
+    GraphObjAttributes gmlEdgeAttributes = reader.getEdgeAttributes ();
+    edgeAttributes.add(gmlEdgeAttributes);
+    edgeAttributes.addNameMap(gmlEdgeAttributes.getNameMap ());
+    displayGraph (false);
 } // loadGML
 //------------------------------------------------------------------------------
 protected void loadInteraction (String filename)

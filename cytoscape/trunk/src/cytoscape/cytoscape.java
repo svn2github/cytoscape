@@ -75,8 +75,12 @@ public cytoscape (String [] args) throws Exception
   if (geometryFilename != null) {
     System.out.print ("reading " + geometryFilename + "...");
     System.out.flush ();
-    GMLReader gmlReader = new GMLReader (geometryFilename);
-    graph = gmlReader.read ();
+    GMLReader reader = new GMLReader(geometryFilename);
+    reader.read();
+    graph = reader.getGraph();
+    GraphObjAttributes gmlEdgeAttributes = reader.getEdgeAttributes ();
+    edgeAttributes.add (gmlEdgeAttributes);
+    edgeAttributes.addNameMap(gmlEdgeAttributes.getNameMap ());
     System.out.println ("  done");
     title = geometryFilename;
     requestFreshLayout = false;
