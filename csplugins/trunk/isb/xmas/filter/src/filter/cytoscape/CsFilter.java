@@ -12,7 +12,19 @@ import cytoscape.CyNetwork;
 import javax.swing.*;
 import filter.cytoscape.network.*;
 
-public class CsFilter extends AbstractPlugin {
+
+import java.util.*;
+import java.awt.event.*;
+
+import java.beans.*;
+import java.io.*;
+
+
+public class CsFilter 
+  extends 
+    AbstractPlugin 
+  implements 
+    PropertyChangeListener {
  protected JFrame frame;
   protected CyWindow window;
   protected CyNetwork network;
@@ -24,7 +36,59 @@ public class CsFilter extends AbstractPlugin {
     initialize();
   }
 
+  public void propertyChange ( PropertyChangeEvent e ) {
+    if ( e.getPropertyName() == Cytoscape.CYTOSCAPE_EXIT ) {
+      Set filters = FilterManager.defaultManager().getFilters( true );
+      Iterator i = filters.iterator();
+      // StringBuffer buffer = new StringBuffer();
+      try {
+
+        File filter_file = Cytoscape.getCytoscapeObj().getConfigFile( "filter.props" );
+
+        BufferedWriter writer = new BufferedWriter(new FileWriter( filter_file ));
+        
+        while ( i.hasNext() ) {
+          try {
+            writer.write( FilterManager.defaultManager().getFilter( ( String )i.next() ).output() );
+            writer.newLine();
+          } catch ( Exception ex ) {
+            System.out.println( "Error with Filter output" );
+          }
+         
+        }
+
+        writer.close();
+      } catch ( Exception ex ) {
+        System.out.println( "Filter Write error" );
+        ex.printStackTrace();
+      }
+
+    }
+  }
+
   public void initialize () {
+
+    Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener( this );
+    
+    try {
+      File filter_file = Cytoscape.getCytoscapeObj().getConfigFile( "filter.props" );
+      BufferedReader in
+        = new BufferedReader(new FileReader(filter_file));
+      String oneLine = in.readLine();
+      while (oneLine != null) {
+        if (oneLine.startsWith("#")) {
+          // comment
+        } else {
+           FilterManager.defaultManager().createFilterFromString( oneLine );
+        }
+        oneLine = in.readLine();
+      }
+      in.close();
+    } catch ( Exception ex ) {
+      System.out.println( "Filter Read error" );
+      ex.printStackTrace();
+    }
+    
 
     ImageIcon icon = new ImageIcon( JarLoader.getLoader().getObjectIfYouWantIt( "filter36.gif" ) );
     ImageIcon icon2 = new ImageIcon( JarLoader.getLoader().getObjectIfYouWantIt( "filter16.gif" ) );
@@ -39,6 +103,45 @@ public class CsFilter extends AbstractPlugin {
     window.getCyMenus().addCytoscapeAction( can );
     FilterDataView fdv = new FilterDataView( null );
     window.getCyMenus().addCytoscapeAction( fdv );
+
+    JMenuItem spew = new JMenuItem( new AbstractAction( "spew" ) {
+         public void actionPerformed ( ActionEvent e ) {
+           // Do this in the GUI Event Dispatch thread...
+           SwingUtilities.invokeLater( new Runnable() {
+               public void run() {
+                 Set filters = FilterManager.defaultManager().getFilters( true );
+                 Iterator i = filters.iterator();
+                 int count = 0;
+                 while ( i.hasNext() ) {
+                   System.out.println( "Filter: "+count+" "+
+                                       FilterManager.defaultManager().getFilter( ( String )i.next() ).output() );
+                   count++;
+                 }
+                 
+
+               } } ); } } );
+    window.getCyMenus().getMenuBar().getMenu( "Filters" ).add( spew );
+
+
+     JMenuItem make = new JMenuItem( new AbstractAction( "make" ) {
+         public void actionPerformed ( ActionEvent e ) {
+           // Do this in the GUI Event Dispatch thread...
+           SwingUtilities.invokeLater( new Runnable() {
+               public void run() {
+                 FilterManager.defaultManager().createFilterFromString( "filter.cytoscape.StringPatternFilter,Edge,canonicalName,hello,hello" );
+                 FilterManager.defaultManager().createFilterFromString( "filter.cytoscape.StringPatternFilter,Node,canonicalName,2134324,Regex: 32" );
+                 FilterManager.defaultManager().createFilterFromString( "filter.cytoscape.StringPatternFilter,Node,canonicalName,YD*4*W,Custom Filter from typing it in" );
+                 FilterManager.defaultManager().createFilterFromString( "filter.cytoscape.NumericAttributeFilter,<,Node,gal1RG.sigexp,0.02,LT 2" );
+                 FilterManager.defaultManager().createFilterFromString( "filter.cytoscape.NumericAttributeFilter,=,Node,gal1RG.sigexp,0.02,EQ 2" );
+                 FilterManager.defaultManager().createFilterFromString( "filter.cytoscape.NodeTopologyFilter,3,4,hello,Topo1" );
+                 FilterManager.defaultManager().createFilterFromString( "filter.cytoscape.BooleanMetaFilter,LT 2:Custom Filter from typing it in:Topology Filter mine,AT LEAST ONE,Boolean Filter test1" );
+
+
+                
+           } } ); } } );
+     
+    
+     window.getCyMenus().getMenuBar().getMenu( "Filters" ).add( make );
 
      
      //FilterManager.defaultManager().addEditor( new DefaultFilterEditor() );

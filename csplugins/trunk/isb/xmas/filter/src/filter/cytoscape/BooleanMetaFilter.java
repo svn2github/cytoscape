@@ -55,10 +55,42 @@ public class BooleanMetaFilter
    */  
   public BooleanMetaFilter (Object [] filters, 
                             String comparison, String identifier ) {
-				this.filters = filters;
-				this.comparison = comparison;
+    
+    if ( filters.length > 0 && filters[0] instanceof String ) {
+      // read from file, get the Filters
+      Object[] actual_filters = new Object[filters.length];
+      for ( int i = 0; i < filters.length; ++i ) {
+        actual_filters[i] = FilterManager.defaultManager().getFilter( ( String )filters[i] );
+      }
+      this.filters = actual_filters;
+    } else
+      this.filters = filters;
+
+    this.comparison = comparison;
     this.identifier =identifier;
   }
+  
+  /**
+   * Creates a new BooleanMetaFilter
+   */  
+  public BooleanMetaFilter ( String filter_strings, 
+                             String comparison, 
+                             String identifier ) {
+    
+
+    String[] filters = filter_strings.split(":");
+    Object[] actual_filters = new Object[filters.length];
+    for ( int i = 0; i < filters.length; ++i ) {
+      actual_filters[i] = FilterManager.defaultManager().getFilter( filters[i] );
+    }
+     
+    this.filters = actual_filters;
+
+    this.comparison = comparison;
+    this.identifier =identifier;
+  }
+  
+ 
   
   //----------------------------------------//
   // Implements Filter
@@ -184,7 +216,16 @@ public class BooleanMetaFilter
   //----------------------------------------//
 
   public String output () {
-    return null;
+    StringBuffer buffer = new StringBuffer();
+    buffer.append( "filter.cytoscape.BooleanMetaFilter,");
+    for ( int i = 0; i < filters.length; ++i ) {
+      buffer.append(filters[i].toString());
+      if ( i != filters.length - 1 ) 
+        buffer.append(":");
+    }
+    buffer.append( ","+getComparison()+"," );
+    buffer.append( toString() );
+    return buffer.toString();
   }
   
   public Filter input ( String desc ) {

@@ -30,22 +30,22 @@ public class NumericAttributeFilter
   //----------------------------------------//
   protected String selectedAttribute;
   protected Number searchNumber;
-		protected String comparison;
-		protected Class classType;
-		protected Class NODE_CLASS;
-		protected Class EDGE_CLASS;
-		public static String EQUAL = "=";
-		public static String LESS = "<";
-		public static String GREATER = ">";
-		public static String NODE = "Node";
-		public static String EDGE = "Edge";
+  protected String comparison;
+  protected Class classType;
+  protected Class NODE_CLASS;
+  protected Class EDGE_CLASS;
+  public static String EQUAL = "=";
+  public static String LESS = "<";
+  public static String GREATER = ">";
+  public static String NODE = "Node";
+  public static String EDGE = "Edge";
 		
   public static String SEARCH_NUMBER_EVENT = "SEARCH_STRING_EVENT";
   public static String SELECTED_ATTRIBUTE_EVENT = "SELECTED_ATTRIBUTE_EVENT";
   public static String FILTER_NAME_EVENT = "FILTER_NAME_EVENT";
-		public static String CLASS_TYPE_EVENT = "CLASS_TYPE";
+  public static String CLASS_TYPE_EVENT = "CLASS_TYPE";
   public static String FILTER_ID = "NumericAttributeFilter";
-		public static String COMPARISON_EVENT = "COMPARISON_EVENT";
+  public static String COMPARISON_EVENT = "COMPARISON_EVENT";
 		
   //----------------------------------------//
   // Cytoscape specific Variables
@@ -68,24 +68,47 @@ public class NumericAttributeFilter
    * Creates a new NumericAttributeFilter
    */  
   public NumericAttributeFilter ( CyWindow cyWindow,
-										String comparison,
-										String classString,
-                            String selectedAttribute, 
-                            Number searchNumber,
-                            String identifier ) {
+                                  String comparison,
+                                  String classString,
+                                  String selectedAttribute, 
+                                  Number searchNumber,
+                                  String identifier ) {
     this.cyWindow = cyWindow;
-				this.comparison = comparison;
-				try{
-								NODE_CLASS = Class.forName("giny.model.Node");
-								EDGE_CLASS = Class.forName("giny.model.Edge");
-				}catch(Exception e){
-								e.printStackTrace();
-				}
+    this.comparison = comparison;
+    try{
+      NODE_CLASS = Class.forName("giny.model.Node");
+      EDGE_CLASS = Class.forName("giny.model.Edge");
+    }catch(Exception e){
+      e.printStackTrace();
+    }
     this.selectedAttribute = selectedAttribute;  
     this.searchNumber = searchNumber;
     this.identifier =identifier;
-				setClassType(classString);
+    setClassType(classString);
   }
+
+  /**
+   * Creates a new NumericAttributeFilter
+   */  
+  public NumericAttributeFilter ( String comparison,
+                                  String classString,
+                                  String selectedAttribute, 
+                                  String searchNumber,
+                                  String identifier ) {
+    this.cyWindow = Cytoscape.getDesktop();
+    this.comparison = comparison;
+    try{
+      NODE_CLASS = Class.forName("giny.model.Node");
+      EDGE_CLASS = Class.forName("giny.model.Edge");
+    }catch(Exception e){
+      e.printStackTrace();
+    }
+    this.selectedAttribute = selectedAttribute;  
+    this.searchNumber = new Double( searchNumber );
+    this.identifier =identifier;
+    setClassType(classString);
+  }
+
   
   //----------------------------------------//
   // Implements Filter
@@ -118,40 +141,40 @@ public class NumericAttributeFilter
    * matches any of the Text from the TextField
    */
   public boolean passesFilter ( Object object ) {
-				if ( !classType.isInstance(object)) {
+    if ( !classType.isInstance(object)) {
       return false;
-				}
-				GraphObjAttributes objectAttributes = null;
-				if(classType.equals(NODE_CLASS)){
-								objectAttributes = cyWindow.getNetwork().getNodeAttributes();
-				}
-				else{
-								objectAttributes = cyWindow.getNetwork().getEdgeAttributes();
-				}
-				String name = objectAttributes.getCanonicalName(object);
-				if(name == null){
-								return false;
-				}
-				Number value = (Number)objectAttributes.getValue( selectedAttribute,name );
-				if( value == null){
-								return false;
-				}
-				if(comparison == EQUAL){
-								return searchNumber.doubleValue() == value.doubleValue();
-				}
-				else if(comparison == LESS){
-								return searchNumber.doubleValue() > value.doubleValue();
-				}
-				else if(comparison == GREATER){
-								return searchNumber.doubleValue() < value.doubleValue();
-				}
-				else{
-          //System.err.println("Comparison not identified");
-          return false;
-				}
+    }
+    GraphObjAttributes objectAttributes = null;
+    if(classType.equals(NODE_CLASS)){
+      objectAttributes = cyWindow.getNetwork().getNodeAttributes();
+    }
+    else{
+      objectAttributes = cyWindow.getNetwork().getEdgeAttributes();
+    }
+    String name = objectAttributes.getCanonicalName(object);
+    if(name == null){
+      return false;
+    }
+    Number value = (Number)objectAttributes.getValue( selectedAttribute,name );
+    if( value == null){
+      return false;
+    }
+    if(comparison == EQUAL){
+      return searchNumber.doubleValue() == value.doubleValue();
+    }
+    else if(comparison == LESS){
+      return searchNumber.doubleValue() > value.doubleValue();
+    }
+    else if(comparison == GREATER){
+      return searchNumber.doubleValue() < value.doubleValue();
+    }
+    else{
+      //System.err.println("Comparison not identified");
+      return false;
+    }
 				
 				
-		}
+  }
 
   public Class[] getPassingTypes () {
     return null;
@@ -160,11 +183,11 @@ public class NumericAttributeFilter
   public boolean equals ( Object other_object ) {
     /*if ( other_object instanceof NumericAttributeFilter ) {
       if ( ( ( NumericAttributeFilter )other_object).getSearchNumber().equals( getSearchNumber() ) ) {
-        return true;
+      return true;
       }
-    }
-    return false;*/
-						return super.equals(other_object);
+      }
+      return false;*/
+    return super.equals(other_object);
   }
   
   public Object clone () {
@@ -187,10 +210,10 @@ public class NumericAttributeFilter
     } else if ( e.getPropertyName() == SELECTED_ATTRIBUTE_EVENT ) {
       setSelectedAttribute( ( String )e.getNewValue() );
     } else if (e.getPropertyName() == CLASS_TYPE_EVENT)  {
-						setClassType((String)e.getNewValue());
-				} else if (e.getPropertyName() == COMPARISON_EVENT){
-								setComparison((String)e.getNewValue());
-				}
+      setClassType((String)e.getNewValue());
+    } else if (e.getPropertyName() == COMPARISON_EVENT){
+      setComparison((String)e.getNewValue());
+    }
   }
   
   // SearchString /////////////////////////////////
@@ -223,32 +246,32 @@ public class NumericAttributeFilter
     pcs.firePropertyChange( SELECTED_ATTRIBUTE_EVENT, null, selectedAttribute );
   }
 
-		public void setClassType(String classString){
-						if(classString == NODE){
-										this.classType = NODE_CLASS;
-						}else{
-										this.classType = EDGE_CLASS;
-						}
+  public void setClassType(String classString){
+    if(classString == NODE || classString.equals("Node")){
+      this.classType = NODE_CLASS;
+    }else{
+      this.classType = EDGE_CLASS;
+    }
 						
-						pcs.firePropertyChange(CLASS_TYPE_EVENT,null,classString);
-		}
+    pcs.firePropertyChange(CLASS_TYPE_EVENT,null,classString);
+  }
 
-		public String getClassType(){
-						if(classType == NODE_CLASS){
-										return NODE;
-						}else{
-										return EDGE;
-						}
-		}
+  public String getClassType(){
+    if(classType == NODE_CLASS){
+      return NODE;
+    }else{
+      return EDGE;
+    }
+  }
 
-		public void setComparison(String comparison){
-						this.comparison = comparison;
-						pcs.firePropertyChange(COMPARISON_EVENT,null,comparison);	
-		}
+  public void setComparison(String comparison){
+    this.comparison = comparison;
+    pcs.firePropertyChange(COMPARISON_EVENT,null,comparison);	
+  }
 
-		public String getComparison(){
-						return comparison;
-		}
+  public String getComparison(){
+    return comparison;
+  }
 		
   
   
@@ -259,7 +282,14 @@ public class NumericAttributeFilter
   //----------------------------------------//
 
   public String output () {
-    return null;
+    StringBuffer buffer = new StringBuffer();
+    buffer.append( "filter.cytoscape.NumericAttributeFilter,");
+    buffer.append( getComparison()+"," );
+    buffer.append( getClassType()+"," );
+    buffer.append( getSelectedAttribute()+"," );
+    buffer.append( getSearchNumber()+"," );
+    buffer.append( toString() );
+    return buffer.toString();
   }
   
   public Filter input ( String desc ) {

@@ -207,5 +207,41 @@ public class FilterManager {
     fireFilterEvent();
   }
 
+  public Filter createFilterFromString ( String desc ) {
+    String[] array = desc.split( "," );
+    
+    if ( array[0].equals( "filter.cytoscape.StringPatternFilter" ) ) {
+      System.out.println( "Found String Filter" );
+      Filter new_filter = new filter.cytoscape.StringPatternFilter( array[1], array[2], array[3], array[4] );
+      addFilter( new_filter );
+      return new_filter;
+    } else if ( array[0].equals( "filter.cytoscape.NumericAttributeFilter" ) ) {
+      System.out.println( "Found Numeric Filter" );
+      Filter new_filter = new filter.cytoscape.NumericAttributeFilter( array[1], array[2], array[3], array[4], array[5] );
+      addFilter( new_filter );
+      return new_filter;
+    } else if ( array[0].equals( "filter.cytoscape.NodeTopologyFilter" ) ) {
+      System.out.println( "Found Topology Filter" );
+      Filter new_filter = new filter.cytoscape.NodeTopologyFilter( array[1], array[2], array[3], array[4] );
+      addFilter( new_filter );
+      return new_filter;
+    } else if ( array[0].equals( "filter.cytoscape.BooleanMetaFilter" ) ) {
+      System.out.println( "Found Boolean Filter" );
+      Filter new_filter = new filter.cytoscape.BooleanMetaFilter( array[1], array[2], array[3] );
+      addFilter( new_filter );
+      return new_filter;
+    } else if ( array[0].equals( "filter.cytoscape.InteractionFilter" ) ) {
+      System.out.println( "Found Interaction Filter" );
+      Filter new_filter = new filter.cytoscape.InteractionFilter( array[1], array[2], array[3] );
+      addFilter( new_filter );
+      return new_filter;
+    }
+
+
+    return null;
+  }
+
+
+
 
 }

@@ -67,6 +67,21 @@ public class InteractionFilter
     this.identifier =identifier;
   }
   
+  /**
+   * Creates a new InteractionFilter
+   */  
+  public InteractionFilter ( String filter, 
+                             String target,
+                             String identifier ) {
+    this.cyWindow = Cytoscape.getDesktop();
+    this.filter = FilterManager.defaultManager().getFilter( filter );
+    this.target = target;  
+    this.identifier =identifier;
+  }
+  
+  
+
+
   //----------------------------------------//
   // Implements Filter
   //----------------------------------------//
@@ -177,7 +192,12 @@ public class InteractionFilter
   //----------------------------------------//
 
   public String output () {
-    return null;
+    StringBuffer buffer = new StringBuffer();
+    buffer.append( "filter.cytoscape.InteractionFilter,");
+    buffer.append( getFilter().toString()+"," );
+    buffer.append( getTarget()+"," );
+    buffer.append( toString() );
+    return buffer.toString();
   }
   
   public Filter input ( String desc ) {

@@ -66,6 +66,25 @@ implements Filter  {
 		this.identifier =identifier;
 	}
 
+  /**
+	 * Creates a new NodeTopologyFilter
+	 */  
+	public NodeTopologyFilter (	String count,
+                              String distance,
+                              String filter,
+                              String identifier) {
+		this.cyWindow = Cytoscape.getDesktop();
+		this.count = new Integer( count );
+		this.distance = new Integer( distance );
+		this.filter = FilterManager.defaultManager().getFilter( filter );
+		this.identifier =identifier;
+
+    //System.out.println( "created topology filter: "+count+" "+distance+" "+filter+" "+identifier );
+
+	}
+
+
+
 	//----------------------------------------//
 	// Implements Filter
 	//----------------------------------------//
@@ -207,7 +226,13 @@ implements Filter  {
 	//----------------------------------------//
 
 	public String output () {
-		return null;
+    StringBuffer buffer = new StringBuffer();
+    buffer.append( "filter.cytoscape.NodeTopologyFilter,");
+    buffer.append( getCount()+"," );
+    buffer.append( getDistance()+"," );
+    buffer.append( getFilter().toString()+"," );
+    buffer.append( toString() );
+    return buffer.toString();
 	}
 
 	public Filter input ( String desc ) {
