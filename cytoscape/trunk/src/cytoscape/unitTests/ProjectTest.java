@@ -20,11 +20,12 @@ public void setUp() throws Exception {}
 public void tearDown() throws Exception {}
 //------------------------------------------------------------------------------
 public void testAll() throws Exception {
-    File projectFile = new File("sampleProject.pro");
+    String filename = "src/cytoscape/unitTests/sampleProject.pro";
+    File projectFile = new File(filename);
     File directory = projectFile.getAbsoluteFile().getParentFile();
-    Project project = new Project("sampleProject.pro");
+    Project project = new Project(filename);
     
-    assertTrue( project.getProjectFilename().equals("sampleProject.pro") );
+    assertTrue( project.getProjectFilename().equals(filename) );
     String intName = (new File(directory, "network.sif")).getPath();
     assertTrue( project.getInteractionsFilename().equals(intName) );
     String geomName = (new File(directory, "network.gml")).getPath();
