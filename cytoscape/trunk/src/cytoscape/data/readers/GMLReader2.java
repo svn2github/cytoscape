@@ -199,32 +199,28 @@ public class GMLReader2 implements GraphReader {
               String targetName = (String) node_labels.get
                       (gml_id2order.get(targets.get(idx)));
               String edgeName = sourceName + " (" + label + ") " + targetName;
-              if (edgeNameSet.add(edgeName)) {
-                  Edge edge = (Edge) Cytoscape.getEdgeNetworkData().
-                          getGraphObject(edgeName);
-                  if (edge == null) {
-                      Node node_1 = Cytoscape.getCyNode(sourceName);
-                      Node node_2 = Cytoscape.getCyNode(targetName);
-                      edge = (Edge) rootGraph.getEdge
-                              (rootGraph.createEdge(node_1, node_2));
-                      edgeAttributes.add(Semantics.INTERACTION, edgeName, label);
-                      edgeAttributes.addNameMapping(edgeName, edge);
-                  }
-                  //Edge edge = (Edge)Cytoscape.getCyEdge(sourceName,
-                  //				edgeName,
-                  //				targetName,
-                  //				label);
-                  giny_edges.add(edge.getRootGraphIndex());
-                  ((KeyValue) edge_root_index_pairs.get(idx)).value =
-                          (new Integer(edge.getRootGraphIndex()));
-              } else {
-                  throw new GMLException("Edges between the same nodes must have unique types: duplicate is between " + sourceName + " and " + targetName);
-                  //((KeyValue)edge_root_index_pairs.get(idx)).value = null;
-              }
-          } else {
-              throw new GMLException("Non-existant source/target node for edge with gml (source,target): " + sources.get(idx) + "," + targets.get(idx));
-              //((KeyValue)edge_root_index_pairs.get(idx)).value = null;
-          }
+              int duplicate_count = 1;
+	      while(!edgeNameSet.add(edgeName)) {
+		edgeName = sourceName + " (" + label + 
+		  ") " + targetName + "_" + duplicate_count;
+		duplicate_count += 1;
+	      }
+	      Edge edge = (Edge) Cytoscape.getEdgeNetworkData().
+		getGraphObject(edgeName);
+	      if (edge == null) {
+		Node node_1 = Cytoscape.getCyNode(sourceName);
+		Node node_2 = Cytoscape.getCyNode(targetName);
+		edge = (Edge) rootGraph.getEdge
+		  (rootGraph.createEdge(node_1, node_2));
+		edgeAttributes.add(Semantics.INTERACTION, edgeName, label);
+		edgeAttributes.addNameMapping(edgeName, edge);
+	      }
+	      giny_edges.add(edge.getRootGraphIndex());
+	      ((KeyValue) edge_root_index_pairs.get(idx)).value =
+		(new Integer(edge.getRootGraphIndex()));
+	  } else {
+	    throw new GMLException("Non-existant source/target node for edge with gml (source,target): " + sources.get(idx) + "," + targets.get(idx));
+	  }
       }
       edgeNameSet = null;
 
