@@ -32,7 +32,71 @@ public class BMTest extends AbstractPlugin {
     cyWindow.getCyMenus().getOperationsMenu().add(new HideSelectedNodesEdgesAction());
     cyWindow.getCyMenus().getOperationsMenu().add(new RestoreHiddenNodesAction());
     cyWindow.getCyMenus().getOperationsMenu().add(new CollapseSelectedNodes());
+    cyWindow.getCyMenus().getOperationsMenu().add(new UncollapseSelectedNodes());
   }//BMTest
+
+  public class UncollapseSelectedNodes extends AbstractAction {
+    public UncollapseSelectedNodes (){super("Uncollapse Selected Nodes");}
+    public void actionPerformed (ActionEvent event){
+      System.out.println("In UncollapseSelectedNodes.actionPerformed()");
+      GraphView graphView = cyWindow.getView();
+      //put up a dialog if there are no selected nodes
+      if (graphView.getSelectedNodes().size() == 0) {
+        JOptionPane.showMessageDialog(cyWindow.getMainFrame(),
+                                      "Please select one or more nodes.");
+        return;
+      }
+      
+      CyNetwork cyNetwork = cyWindow.getNetwork();
+      GraphPerspective mainGraphPerspective = cyNetwork.getGraphPerspective();
+      
+      // Get the selected nodes that are parent nodes
+      java.util.List selectedNodeViewsList = graphView.getSelectedNodes();
+      HashSet parentNodeViews = new HashSet();
+      Iterator it = selectedNodeViewsList.iterator();
+      while(it.hasNext()){
+        NodeView nodeView = (NodeView)it.next();
+        Node node = nodeView.getNode();
+        System.out.println("Selected node = " + node);
+        // See if the node has a graph perspective
+        System.out.println("About to call node.getGraphPerspective()...");
+        // THIS CRASHES: 
+        // (apparently same cause as crashes in CollapseSelectedNodes.actionPerformed)
+        GraphPerspective nodeGP = node.getGraphPerspective();
+        System.out.println("...done");
+        if(nodeGP != null){
+          parentNodeViews.add(nodeView);
+          System.out.println("Node " + node + " is a parent node.");
+        }else{
+          System.out.println("Node " + node + " is NOT a parent node.");
+        }
+      }//while it
+      // Uncollapse
+      String callerID = "UncollapseSelectedNodes.actionPerformed";
+      cyNetwork.beginActivity(callerID);
+      it = parentNodeViews.iterator();
+      while(it.hasNext()){
+        NodeView pNodeView = (NodeView)it.next();
+        Node pNode = pNodeView.getNode();
+        GraphPerspective childGP = pNode.getGraphPerspective();
+        // Unhide the nodes and edges
+        System.out.println("About to unhide nodes and edges in mainGraphPerspective...");
+        java.util.List nodesList = childGP.nodesList();
+        java.util.List edgesList = childGP.edgesList();
+        mainGraphPerspective.restoreNodes(nodesList);
+        mainGraphPerspective.restoreEdges(edgesList);
+        System.out.println("...done unhiding nodes and edges in mainGraphPerspective.");
+        // Hide the parent node
+        System.out.println("About to hide the parent node in mainGraphPerspective" + pNode + " ...");
+        mainGraphPerspective.hideNode(pNode);
+        System.out.println("...done hiding parent node");
+      }//while it
+
+      cyNetwork.endActivity(callerID);
+      // Apply vizmaps
+      cyWindow.redrawGraph();
+    }//actionPerformed
+  }//UncollapseSelectedNodes
 
   public class CollapseSelectedNodes extends AbstractAction {
     public CollapseSelectedNodes (){super("Collapse Selected Nodes");}
@@ -79,6 +143,7 @@ public class BMTest extends AbstractPlugin {
       // THIS CRASHES TOO:
       //int rgParentNodeIndex = rootGraph.createNode(childNodesRootIndices, null);
       int rgParentNodeIndex = rootGraph.createNode();
+      // THIS TOO:
       Node parentNode = rootGraph.getNode(rgParentNodeIndex);
       System.out.println("Calling parentNode.setGraphPerspective()...");
       parentNode.setGraphPerspective(childGraphPerspective);
