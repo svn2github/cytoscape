@@ -42,17 +42,19 @@ import java.util.Enumeration;
 
 import cytoscape.data.mRNAMeasurement;
 import cytoscape.data.ExpressionData;
+import cytoscape.unitTests.AllTests;
 //------------------------------------------------------------------------------
 public class ExpressionDataTest extends TestCase {
 
-  private static String testDataDir = "../../testData";
-  private static String testDataFile = testDataDir + "/gal1.22x5.mRNA";
+  private static String testDataDir = "testData";
+  private static String testDataFilename = "/gal1.22x5.mRNA";
 
 //------------------------------------------------------------------------------
 public ExpressionDataTest (String name) 
 {
   super (name);
 }
+
 //------------------------------------------------------------------------------
 public void setUp () throws Exception
 {
@@ -64,8 +66,8 @@ public void tearDown () throws Exception
 //------------------------------------------------------------------------------
 public void testCtor () throws Exception
 { 
-  System.out.println ("testCtor");
-  ExpressionData data = new ExpressionData (testDataFile);
+  AllTests.standardOut ("testCtor");
+  ExpressionData data = new ExpressionData (testDataDir + testDataFilename);
   Vector measurements = data.getAllMeasurements ();
   assertTrue (data.getNumberOfGenes () == measurements.size ());
   if ( data.getNumberOfGenes() > 0 ) {
@@ -86,8 +88,8 @@ public void testCtor () throws Exception
 //-------------------------------------------------------------------------
 public void testGetConditionNames () throws Exception
 {
-  System.out.println ("testGetConditionNames");
-  ExpressionData data = new ExpressionData (testDataFile);
+  AllTests.standardOut ("testGetConditionNames");
+  ExpressionData data = new ExpressionData (testDataDir + testDataFilename);
   String [] conditionNames = data.getConditionNames ();
   assertTrue (conditionNames.length == data.getNumberOfConditions ());
 
@@ -95,8 +97,8 @@ public void testGetConditionNames () throws Exception
 //-------------------------------------------------------------------------
 public void testGetGeneNames () throws Exception
 {
-  System.out.println ("testGetGeneNames");
-  ExpressionData data = new ExpressionData (testDataFile);
+  AllTests.standardOut ("testGetGeneNames");
+  ExpressionData data = new ExpressionData (testDataDir + testDataFilename);
   String [] geneNames = data.getGeneNames ();
   //for (int i=0; i < geneNames.length; i++)
   //  System.out.println (geneNames [i]);
@@ -108,8 +110,8 @@ public void testGetGeneNames () throws Exception
 //-------------------------------------------------------------------------
 public void testGetGeneDescriptors () throws Exception
 {
-  System.out.println ("testGetGeneDescriptors");
-  ExpressionData data = new ExpressionData (testDataFile);
+  AllTests.standardOut ("testGetGeneDescriptors");
+  ExpressionData data = new ExpressionData (testDataDir + testDataFilename);
   String [] geneDescriptors = data.getGeneDescriptors ();
   //for (int i=0; i < geneDescriptors.length; i++)
   //  System.out.println (geneDescriptors [i]);
@@ -121,8 +123,8 @@ public void testGetGeneDescriptors () throws Exception
 //-------------------------------------------------------------------------
 public void testGetMeasurement () throws Exception
 {
-  System.out.println ("testGetMeasurement");
-  ExpressionData data = new ExpressionData (testDataFile);
+  AllTests.standardOut ("testGetMeasurement");
+  ExpressionData data = new ExpressionData (testDataDir + testDataFilename);
 
   if ( data.getNumberOfGenes() > 0 && data.getNumberOfConditions() > 0) {
       String gene = data.getGeneNames () [0];
@@ -145,11 +147,18 @@ public void testGetMeasurement () throws Exception
 public static void main (String [] args) 
 {
   if (args.length == 1)
-    testDataFile = args [0];
+    testDataDir = args [0];
+
+  File tester = new File (testDataDir);
+  if (!(tester.canRead () && tester.isDirectory ())) {
+    System.err.println ("error! ExpressionDataTest cannot read relative directory '" + 
+                         testDataDir + "'");
+    System.exit (1);
+    }
 
   junit.textui.TestRunner.run (new TestSuite (ExpressionDataTest.class));
-}
+
+}// main
+
 //------------------------------------------------------------------------------
 } // ExpressionDataTest
-
-

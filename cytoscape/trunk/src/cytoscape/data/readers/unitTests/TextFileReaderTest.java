@@ -38,6 +38,7 @@ import junit.framework.*;
 import java.io.*;
 import java.util.*;
 import cytoscape.data.readers.TextFileReader;
+import cytoscape.unitTests.AllTests;
 //-----------------------------------------------------------------------------------------
 public class TextFileReaderTest extends TestCase {
 
@@ -58,8 +59,15 @@ public void tearDown () throws Exception
 //------------------------------------------------------------------------------
 public void testSimple () throws Exception
 { 
-  System.out.println ("testCtor");
-  TextFileReader reader = new TextFileReader ("TextFileReaderTest.java");
+  AllTests.standardOut("testCtor");
+  TextFileReader reader = null;
+  if (AllTests.runAllTests()) {
+      reader = new TextFileReader
+              ("src/cytoscape/data/readers/unitTests/TextFileReaderTest.java");
+
+  } else {
+      reader = new TextFileReader ("TextFileReaderTest.java");
+  }
   int count = reader.read ();
   String text = reader.getText ();
   String signature = "asdasdfasdfasdfadfadfasfasfsafl;lkj97927287";

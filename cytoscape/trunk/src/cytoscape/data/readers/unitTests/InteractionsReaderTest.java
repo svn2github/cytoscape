@@ -46,16 +46,18 @@ import y.view.Graph2D;
 import cytoscape.data.Interaction;
 import cytoscape.data.readers.InteractionsReader;
 import cytoscape.GraphObjAttributes;
+import cytoscape.unitTests.AllTests;
 import cytoscape.data.servers.BioDataServer;
 //-----------------------------------------------------------------------------------------
 public class InteractionsReaderTest extends TestCase {
-
+  private boolean runAllTests = false;
   private BioDataServer nullServer = null;
   private String species = "unknown";
 //------------------------------------------------------------------------------
 public InteractionsReaderTest (String name) 
 {
   super (name);
+   runAllTests = AllTests.runAllTests();
 }
 //------------------------------------------------------------------------------
 public void setUp () throws Exception
@@ -65,12 +67,13 @@ public void setUp () throws Exception
 public void tearDown () throws Exception
 {
 }
+
 //------------------------------------------------------------------------------
 public void testReadFromTypicalFile () throws Exception
 // 'typical' means that all lines have the form "node1 pd node2 [node3 node4 ...]
 { 
-  System.out.println ("testFromTypicalFile");
-  InteractionsReader reader = new InteractionsReader (nullServer, species, "sample.sif");
+  AllTests.standardOut("testFromTypicalFile");
+  InteractionsReader reader = this.getReader("sample.sif");
   reader.read ();
   assertTrue (reader.getCount () == 25);
   Interaction [] interactions = reader.getAllInteractions ();
@@ -88,8 +91,8 @@ public void testReadFileWithNoInteractions () throws Exception
 //   "node1"
 // that is, with no interaction type and no target
 { 
-  System.out.println ("testReadFileWithNoInteractions");
-  InteractionsReader reader = new InteractionsReader (nullServer, species, "degenerate.sif");
+  AllTests.standardOut ("testReadFileWithNoInteractions");
+  InteractionsReader reader = this.getReader("degenerate.sif");
   reader.read ();
   assertTrue (reader.getCount () == 9);
   Interaction [] interactions = reader.getAllInteractions ();
@@ -104,8 +107,8 @@ public void testReadFileWithNoInteractions () throws Exception
 //-------------------------------------------------------------------------
 public void testGetGraph () throws Exception
 { 
-  System.out.println ("testGetGraph");
-  InteractionsReader reader = new InteractionsReader (nullServer, species, "sample.sif");
+  AllTests.standardOut ("testGetGraph");
+  InteractionsReader reader = this.getReader("sample.sif");
   reader.read ();
   assertTrue (reader.getCount () == 25);
 
@@ -124,8 +127,8 @@ public void testGetGraphAndEdgeAttributes () throws Exception
 // GraphObjAttributes object; that it has the right size; that the keys
 // look like "node1::node2", and that the values are simple strings
 { 
-  System.out.println ("testGetGraphAndEdgeAttributes");
-  InteractionsReader reader = new InteractionsReader (nullServer, species, "sample.sif");
+  AllTests.standardOut ("testGetGraphAndEdgeAttributes");
+  InteractionsReader reader = this.getReader("sample.sif");
   reader.read ();
   assertTrue (reader.getCount () == 25);
 
@@ -161,9 +164,9 @@ public void testGetGraphAndEdgeAttributes () throws Exception
  **/ 
 public void testReadMultiWordProteinsFile () throws Exception
 { 
-  System.out.println ("testReadMultiWordProteinsFile");
+  AllTests.standardOut ("testReadMultiWordProteinsFile");
   String filename = "multiWordProteins.sif";
-  InteractionsReader reader = new InteractionsReader (nullServer, species, filename);
+  InteractionsReader reader = this.getReader(filename);
   reader.read ();
   assertTrue (reader.getCount () == 29);
   Interaction [] interactions = reader.getAllInteractions ();
@@ -196,9 +199,9 @@ public void testReadMultiWordProteinsFile () throws Exception
  **/ 
 public void testReadMultiWordProteinsFileWithErrantSpaces () throws Exception
 { 
-  System.out.println ("testReadMultiWordProteinsFileWithErrantSpaces");
+  AllTests.standardOut ("testReadMultiWordProteinsFileWithErrantSpaces");
   String filename = "multiWordProteinsFileTrailingSpaces.sif";
-  InteractionsReader reader = new InteractionsReader (nullServer, species, filename);
+  InteractionsReader reader = this.getReader(filename);
   reader.read ();
   assertTrue (reader.getCount () == 29);
   Interaction [] interactions = reader.getAllInteractions ();
@@ -221,6 +224,15 @@ public void testReadMultiWordProteinsFileWithErrantSpaces () throws Exception
   assertTrue (interactions [28].getTargets()[2].equals ("HJKOL coltrane"));
  
 } // testReadMultiWordProteinsFileWithErrantSpaces
+
+private InteractionsReader getReader (String file) {
+    if (runAllTests) {
+        file = new String ("src/cytoscape/data/readers/unitTests/"+file);
+    }
+    InteractionsReader reader = new InteractionsReader (nullServer, species, file);
+    return reader;
+}
+
 //-------------------------------------------------------------------------
 public static void main (String [] args) 
 {
@@ -228,5 +240,3 @@ public static void main (String [] args)
 }
 //------------------------------------------------------------------------------
 } // InteractionsReaderTest
-
-

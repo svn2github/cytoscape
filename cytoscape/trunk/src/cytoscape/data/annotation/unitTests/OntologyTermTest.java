@@ -38,6 +38,7 @@ import junit.framework.*;
 import java.io.*;
 
 import cytoscape.data.annotation.*;
+import cytoscape.unitTests.AllTests;
 //------------------------------------------------------------------------------
 /**
  * test the OntologyTerm class
@@ -65,7 +66,7 @@ public void tearDown () throws Exception
  */
 public void testCtor () throws Exception
 { 
-  System.out.println ("testCtor");
+  AllTests.standardOut("testCtor");
 
   String name = "Carbohydrate Metabolism";
   int id = 80001;
@@ -86,7 +87,7 @@ public void testCtor () throws Exception
 //-------------------------------------------------------------------------
 public void testAddParentsAndContainers () throws Exception
 { 
-  System.out.println ("testAddParentsAndContainers");
+  AllTests.standardOut ("testAddParentsAndContainers");
 
   String name = "Carbohydrate Metabolism";
   int id = 80001;

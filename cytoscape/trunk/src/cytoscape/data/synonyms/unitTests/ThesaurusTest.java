@@ -38,6 +38,7 @@ import junit.framework.*;
 import java.io.*;
 
 import cytoscape.data.synonyms.*;
+import cytoscape.unitTests.AllTests;
 //------------------------------------------------------------------------------
 /**
  * test the Thesaurus class
@@ -65,7 +66,7 @@ public void tearDown () throws Exception
  */
 public void testCtor () throws Exception
 { 
-  System.out.println ("testCtor");
+  AllTests.standardOut("testCtor");
   String species = "fugu";
   Thesaurus thesaurus = new Thesaurus (species);
   assertTrue (thesaurus.canonicalNameCount () == 0);
@@ -78,7 +79,7 @@ public void testCtor () throws Exception
  */
 public void testAddSimplePairs () throws Exception
 { 
-  System.out.println ("testAddSimplePairs");
+  AllTests.standardOut ("testAddSimplePairs");
 
   String [] canonical = {"YCR097W", "YCR096C", "YMR056C","YBR085W"};
   String [] common    = {"MAT1A",   "MATA2",   "AAC1",   "AAC3"};
@@ -109,7 +110,7 @@ public void testAddSimplePairs () throws Exception
  */
 public void testAddDuplicatePairs () throws Exception
 { 
-  System.out.println ("testAddDuplicatePairs");
+  AllTests.standardOut ("testAddDuplicatePairs");
 
   String [] canonical = {"YCR097W", "YCR096C", "YMR056C","YBR085W"};
   String [] common    = {"MAT1A",   "MATA2",   "AAC1",   "AAC3"};
@@ -149,7 +150,7 @@ public void testAddDuplicatePairs () throws Exception
  */
 public void testAddRemoveAddAgain () throws Exception
 { 
-  System.out.println ("testAddRemoveAddAgain");
+  AllTests.standardOut ("testAddRemoveAddAgain");
 
   String [] canonical = {"YCR097W", "YCR096C", "YMR056C","YBR085W"};
   String [] common    = {"MAT1A",   "MATA2",   "AAC1",   "AAC3"};
@@ -189,7 +190,7 @@ public void testAddRemoveAddAgain () throws Exception
  */
 public void testAddAlternateCommonNames () throws Exception
 { 
-  System.out.println ("testAddAlternateCommonNames");
+  AllTests.standardOut ("testAddAlternateCommonNames");
 
   String []  canonical = {"YCR097W", "YCR096C", "YMR056C","YBR085W"};
   String []     common = {"MAT1A",   "MATA2",   "AAC1",   "AAC3"};

@@ -44,15 +44,18 @@ import y.base.*;
 import y.view.Graph2D;
 
 import cytoscape.data.readers.GMLReader;
+import cytoscape.unitTests.AllTests;
 //-----------------------------------------------------------------------------------------
 public class GMLReaderTest extends TestCase {
-
   private static String testDataDir;
 
 //------------------------------------------------------------------------------
 public GMLReaderTest (String name) 
 {
   super (name);
+  if(AllTests.runAllTests()) {
+      testDataDir = "testData";
+  }
 }
 //------------------------------------------------------------------------------
 public void setUp () throws Exception
@@ -65,7 +68,7 @@ public void tearDown () throws Exception
 //------------------------------------------------------------------------------
 public void testSmallGraphRead () throws Exception
 { 
-  System.out.println ("testSmallGraphRead");
+  AllTests.standardOut("testSmallGraphRead");
   GMLReader reader = new GMLReader (testDataDir + "/gal.gml");
   reader.read ();
   Graph2D graph = reader.getGraph ();
@@ -76,7 +79,7 @@ public void testSmallGraphRead () throws Exception
 //-------------------------------------------------------------------------
 public void testMediumGraphRead () throws Exception
 { 
-  System.out.println ("testMediumGraphRead");
+  AllTests.standardOut ("testMediumGraphRead");
   GMLReader reader = new GMLReader (testDataDir + "/noLabels.gml");
   reader.read ();
   Graph2D graph = reader.getGraph ();
@@ -98,5 +101,3 @@ public static void main (String[] args)
 }
 //------------------------------------------------------------------------------
 } // GMLReaderTest
-
-

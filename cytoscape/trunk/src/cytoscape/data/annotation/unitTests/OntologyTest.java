@@ -39,6 +39,7 @@ import java.io.*;
 import java.util.*;
 
 import cytoscape.data.annotation.*;
+import cytoscape.unitTests.AllTests;
 //------------------------------------------------------------------------------
 /**
  * test the Ontology class
@@ -66,7 +67,7 @@ public void tearDown () throws Exception
  */
 public void testCtor () throws Exception
 { 
-  System.out.println ("testCtor");
+  AllTests.standardOut("testCtor");
   String expectedCurator = "KEGG";
   String expectedOntologyType = "Metabolic Pathways";
 
@@ -87,7 +88,7 @@ public void testCtor () throws Exception
  */
 public void testAdd () throws Exception
 { 
-  System.out.println ("testAdd");
+  AllTests.standardOut("testAdd");
   String curator = "KEGG";
   String ontologyType = "Metabolic Pathways";
   Ontology ontology = new Ontology (curator, ontologyType);
@@ -120,7 +121,7 @@ public void testAdd () throws Exception
  */
 public void testGetHierarchyInts () throws Exception
 { 
-  System.out.println ("testGetHierarchyInts");
+  AllTests.standardOut("testGetHierarchyInts");
   Ontology ontology = Utils.createMinimalKeggMetabolicPathwayOntology ();
 
     // a node with a single parent
@@ -163,7 +164,7 @@ public void testGetHierarchyInts () throws Exception
  */
 public void testGetHierarchyNames () throws Exception
 { 
-  System.out.println ("testGetHierarchyNames");
+  AllTests.standardOut("testGetHierarchyNames");
   Ontology ontology = Utils.createMinimalKeggMetabolicPathwayOntology ();
 
     // a node with a single parent
@@ -212,8 +213,8 @@ private void printHierarchy (int [][] hierarchy)
   for (int i=0; i < hierarchy.length; i++) {
     int [] path = hierarchy [i];
     for (int j=0; j < path.length; j++)
-      System.out.print (path [j] + " ");
-    System.out.println ();
+      AllTests.standardOut(path [j] + " ");
+      AllTests.standardOut("\n");
     } // for i
 
 } // printHierarchy
@@ -223,10 +224,10 @@ private void printHierarchy (String [][] hierarchy)
   for (int i=0; i < hierarchy.length; i++) {
     String [] path = hierarchy [i];
     for (int j=0; j < path.length; j++) {
-      System.out.print (path [j]);
-      if (j < (path.length -1)) System.out.print (", ");
+      AllTests.standardOut(path [j]);
+      if (j < (path.length -1)) AllTests.standardOut (", ");
       }
-    System.out.println ();
+    AllTests.standardOut("\n");
     } // for i
 
 } // printHierarchy

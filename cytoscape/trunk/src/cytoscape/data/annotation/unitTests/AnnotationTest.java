@@ -41,6 +41,7 @@ import junit.framework.*;
 import java.io.*;
 
 import cytoscape.data.annotation.*;
+import cytoscape.unitTests.AllTests;
 //------------------------------------------------------------------------------
 /**
  * test the Annotation class
@@ -68,7 +69,7 @@ public void tearDown () throws Exception
  */
 public void testCtor () throws Exception
 { 
-  System.out.println ("testCtor");
+  AllTests.standardOut("testCtor");
   Ontology ontology = Utils.createMinimalKeggMetabolicPathwayOntology ();
   String species = "Saccharomyces cerevisiae";
   String type = "pathways";
@@ -89,7 +90,7 @@ public void testCtor () throws Exception
  */
 public void testAdd () throws Exception
 { 
-  System.out.println ("testAdd");
+  AllTests.standardOut ("testAdd");
   Ontology ontology = Utils.createMinimalKeggMetabolicPathwayOntology ();
   Annotation annotation = new Annotation ("Halobacterium Sp.", "pathways", ontology);
                                                  
@@ -115,7 +116,7 @@ public void testAdd () throws Exception
  */
 public void testGet () throws Exception
 { 
-  System.out.println ("testGet");
+  AllTests.standardOut ("testGet");
 
   Ontology ontology = Utils.createMinimalKeggMetabolicPathwayOntology ();
   Annotation annotation = new Annotation ("Halobacterium Sp.", "pathways", ontology);
@@ -160,7 +161,7 @@ public void testGet () throws Exception
  */
 public void testMaxDepth () throws Exception
 { 
-  System.out.println ("testMaxDepth");
+  AllTests.standardOut ("testMaxDepth");
 
   Ontology ontology = Utils.createMinimalKeggMetabolicPathwayOntology ();
   Annotation annotation = new Annotation ("Halobacterium Sp.", "pathways", ontology);

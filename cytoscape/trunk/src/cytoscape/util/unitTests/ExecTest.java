@@ -36,18 +36,22 @@ package cytoscape.util.unitTests;
 //---------------------------------------------------------------------------
 import junit.framework.*;
 import cytoscape.util.Exec;
+import cytoscape.unitTests.AllTests;
+
 import java.util.Enumeration;
 //---------------------------------------------------------------------------
 public class ExecTest extends TestCase {
+
 //---------------------------------------------------------------------------
-public ExecTest (String name) 
+public ExecTest (String name)
 {
-  super (name);
+    super (name);
 }
+
 //---------------------------------------------------------------------------
 public void noTestBasic () 
 {
-  System.out.println ("testBasic");
+  AllTests.standardOut ("testBasic");
 
   String [] cmd = new String [2];
   cmd [0] = "ls";
@@ -85,7 +89,7 @@ public void noTestBasic ()
 //---------------------------------------------------------------------------
 public void testBasicWithThreadedExec () throws Exception
 {
-  System.out.println ("testBasicWithThreadedExec");
+  AllTests.standardOut ("testBasicWithThreadedExec");
 
   String [] cmd = new String [2];
   cmd [0] = "ls";
@@ -97,14 +101,14 @@ public void testBasicWithThreadedExec () throws Exception
   String stdout = child.getStdoutAsString ();
   String stderr = child.getStderrAsString ();
 
-  System.out.println ("stdout: " + stdout);
-  System.out.println ("stderr: " + stderr);
+  AllTests.standardOut  ("stdout: " + stdout);
+  AllTests.standardOut  ("stderr: " + stderr);
 
 } // testBasicWithThreadedExec
 //---------------------------------------------------------------------------
 public void testBasicWithThreadedExec2 () throws Exception
 {
-  System.out.println ("testBasicWithThreadedExec2");
+  AllTests.standardOut ("testBasicWithThreadedExec2");
 
   String [] cmd = new String [2];
   cmd [0] = "ls";
@@ -116,21 +120,21 @@ public void testBasicWithThreadedExec2 () throws Exception
   String stdout = child.getStdoutAsString ();
   String stderr = child.getStderrAsString ();
 
-  System.out.println ("stdout: " + stdout);
-  System.out.println ("stderr: " + stderr);
+  AllTests.standardOut ("stdout: " + stdout);
+  AllTests.standardOut ("stderr: " + stderr);
 
 } // testBasicWithThreadedExec2
 //---------------------------------------------------------------------------
 public void notestBasicInBackground () 
 {
-  System.out.println ("testBasicInBackground");
+  AllTests.standardOut ("testBasicInBackground");
 
   String [] cmd = new String [1];
   cmd [0] = "date";
 
   Exec child = new Exec (cmd);
   child.setRunInBackground (true);
-  System.out.println ("cmd: " + child.getCmd ());
+  AllTests.standardOut ("cmd: " + child.getCmd ());
   int result = child.run ();
   // assertTrue (result == 0);
 
@@ -140,7 +144,7 @@ public void notestBasicInBackground ()
   while (iterator.hasMoreElements ()) {
     String newLine = (String) iterator.nextElement ();
     sb.append (newLine);
-    System.out.println (newLine);
+    AllTests.standardOut (newLine);
     sb.append ("\n");
     }
 
@@ -148,20 +152,20 @@ public void notestBasicInBackground ()
   sb.append ("=========== STDERR =============\n");
   while (iterator.hasMoreElements ()) {
     String newLine = (String) iterator.nextElement ();
-    System.out.println (newLine);
+    AllTests.standardOut (newLine);
     sb.append (newLine);
     sb.append ("\n");
     }
 
   String fullResult = sb.toString ();
   //assertTrue (fullResult.indexOf ("ExecTest.class") >= 0);
-  System.out.println ("--> " + fullResult + " <--");
+  AllTests.standardOut ("--> " + fullResult + " <--");
 
 } // testBasicInBackground
 //---------------------------------------------------------------------------
 public void notestUsingStandardInput () 
 {
-  System.out.println ("testUsingStandardInput");
+  AllTests.standardOut ("testUsingStandardInput");
 
   String [] cmd = {"cat"};
   Exec child = new Exec (cmd);
@@ -229,7 +233,7 @@ public void disabled_testRunNetscape ()
   String fullResult = sb.toString ();
   //assertTrue (fullResult.indexOf ("ExecTest.java") >= 0);
   //assertTrue (fullResult.indexOf ("ExecTest.class") >= 0);
-  System.out.println (fullResult);
+  AllTests.standardOut (fullResult);
 
 }
 //---------------------------------------------------------------------------
@@ -239,5 +243,3 @@ public static void main (String[] args)
 }
 //---------------------------------------------------------------------------
 } // ExecTest
-
-

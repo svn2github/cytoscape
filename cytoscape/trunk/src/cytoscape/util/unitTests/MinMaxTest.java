@@ -39,19 +39,20 @@ import java.io.*;
 
 import cytoscape.util.MinMaxInt;
 import cytoscape.util.MinMaxDouble;
+import cytoscape.unitTests.AllTests;
 //------------------------------------------------------------------------------
 public class MinMaxTest extends TestCase {
-
 
 //------------------------------------------------------------------------------
 public MinMaxTest (String name) 
 {
   super (name);
 }
+
 //------------------------------------------------------------------------------
 public void testMinMaxDoubleVector () throws Exception
 { 
-  System.out.println ("testMinMaxDoubleVector");
+  AllTests.standardOut ("testMinMaxDoubleVector");
   double min = -888.88;
   double max = 123456.789;
   double [] input = {1.0, 23.2, 18.5, -100.232, max, min};
@@ -63,7 +64,7 @@ public void testMinMaxDoubleVector () throws Exception
 //-------------------------------------------------------------------------
 public void testMinMaxDoubleMatrix () throws Exception
 { 
-  System.out.println ("testMinMaxDoubleMatrix");
+  AllTests.standardOut ("testMinMaxDoubleMatrix");
   double min = -888.88;
   double max = 123456.789;
   double [][] input = {{1.0, 23.2, 18.5, -100.232, max,  min},
@@ -77,7 +78,7 @@ public void testMinMaxDoubleMatrix () throws Exception
 //-------------------------------------------------------------------------
 public void testMinMaxIntVector () throws Exception
 { 
-  System.out.println ("testMinMaxIntVector");
+  AllTests.standardOut ("testMinMaxIntVector");
   int min = -888;
   int max = 123456;
   int [] input = {1, 232, 18, -100, max, min};
@@ -90,7 +91,7 @@ public void testMinMaxIntVector () throws Exception
 //-------------------------------------------------------------------------
 public void testMinMaxIntMatrix () throws Exception
 { 
-  System.out.println ("testMinMaxIntMatrix");
+  AllTests.standardOut ("testMinMaxIntMatrix");
   int min = -888;
   int max = 123456;
   int [][] input = {{1, 23, 18, -100, max,  min},
@@ -109,5 +110,3 @@ public static void main (String[] args)
 }
 //------------------------------------------------------------------------------
 } // MinMaxTest
-
-

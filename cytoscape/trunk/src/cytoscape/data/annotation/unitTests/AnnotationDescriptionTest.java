@@ -38,6 +38,7 @@ import junit.framework.*;
 import java.io.*;
 
 import cytoscape.data.annotation.*;
+import cytoscape.unitTests.AllTests;
 //------------------------------------------------------------------------------
 /**
  *  test the AnnotationDescription class, especially with regard to 
@@ -66,7 +67,7 @@ public void tearDown () throws Exception
  */
 public void testCtor () throws Exception
 { 
-  System.out.println ("testCtor");
+  AllTests.standardOut("testCtor");
   String species = "Halobacterium sp.";
   String curator = "KEGG";
   String type = "Metabolic Pathway";
@@ -86,7 +87,7 @@ public void testCtor () throws Exception
  */
 public void testEquals () throws Exception
 { 
-  System.out.println ("testEquals");
+  AllTests.standardOut("testEquals");
   String species = "Halobacterium sp.";
   String curator = "KEGG";
   String type = "Metabolic Pathway";

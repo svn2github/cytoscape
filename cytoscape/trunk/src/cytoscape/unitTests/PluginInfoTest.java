@@ -61,7 +61,7 @@ public void tearDown () throws Exception
 //------------------------------------------------------------------------------
 public void testDefaultCtor () throws Exception
 { 
-  // System.out.println ("testDefaultCtor");
+  AllTests.standardOut("testDefaultCtor");
   PluginInfo pi = new PluginInfo ();
 
   assertTrue (pi.getAttributeName () == null);
@@ -72,7 +72,7 @@ public void testDefaultCtor () throws Exception
 //-------------------------------------------------------------------------
 public void testSettersAndGetters () throws Exception
 { 
-  // System.out.println ("testSettersAndGetters");
+  AllTests.standardOut ("testSettersAndGetters");
   PluginInfo pi = new PluginInfo ();
 
   String attributeName = "FOO";
@@ -91,7 +91,7 @@ public void testSettersAndGetters () throws Exception
 //-------------------------------------------------------------------------
 public void testArgCtor () throws Exception
 { 
-  // System.out.println ("testArgCtor");
+  AllTests.standardOut ("testArgCtor");
 
   String attributeName = "FOO";
   String fileExtension = "foo";
@@ -110,5 +110,3 @@ public static void main (String [] args)
 }
 //------------------------------------------------------------------------------
 } // PluginInfoTest
-
-

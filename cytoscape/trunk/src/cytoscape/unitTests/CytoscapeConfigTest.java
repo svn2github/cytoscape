@@ -45,6 +45,11 @@ import java.util.Properties;
 
 public class CytoscapeConfigTest extends TestCase {
 
+     // local build.xml may reassign the directory so that this program
+     // can find the -current- directory when this is run from the current
+     // directory
+
+  private static String testDataDirectory = ""; 
     /**
      * Constructor.
      * @param name Name of Test.
@@ -58,7 +63,7 @@ public class CytoscapeConfigTest extends TestCase {
      * @throws Exception All Exceptions.
      */
     public void testAllArgs() throws Exception {
-        //System.out.println ("testAllArgs");
+        AllTests.standardOut("testAllArgs");
 
         String bioDataDirectory = "../data/GO";
         String geometryFilename = "../data/galFiltered.gml";
@@ -87,6 +92,7 @@ public class CytoscapeConfigTest extends TestCase {
                          "-l", defaultLayoutStrategy,
                          "-h",
                          "-v",
+                         "-x",
         };
 
         CytoscapeConfig config = new CytoscapeConfig(args);
@@ -95,6 +101,7 @@ public class CytoscapeConfigTest extends TestCase {
         assertTrue(config.getGeometryFilename().equals(geometryFilename));
         assertTrue(config.getInteractionsFilename().equals(interactionsFilename));
         assertTrue(config.getExpressionFilename().equals(expressionFilename));
+        assertTrue(config.getWhetherToCopyExpToAttribs() == false);
 
         assertTrue(config.getNumberOfNodeAttributeFiles() == 3);
         String[] nafs = config.getNodeAttributeFilenames();
@@ -117,7 +124,7 @@ public class CytoscapeConfigTest extends TestCase {
                     af.equals(edgeAttributeFile2));
         }
 
-        // System.out.println ("--------------------- config: \n" + config.toString ());
+        AllTests.standardOut ("--------------------- config: \n" + config.toString ());
         assertTrue(config.helpRequested());
         assertTrue(config.displayVersion());
 
@@ -144,9 +151,9 @@ public class CytoscapeConfigTest extends TestCase {
     } // testAllArgs
 
     public void testReadProjectFile_1() throws Exception {
-        // System.out.println ("testReadProjectFile_1");
+        AllTests.standardOut ("testReadProjectFile_1");
 
-        String projectFilename = "src/cytoscape/unitTests/test1.cpr";
+        String projectFilename = testDataDirectory + "src/cytoscape/unitTests/test1.cpr";
         // get the name of the absolute path to the current directory, to allow
         // us to check the files named in the project file, which are always
         // made into absolute paths
@@ -185,9 +192,9 @@ public class CytoscapeConfigTest extends TestCase {
     } // testReadProjectFile_1
 
     public void testReadProjectFile_2() throws Exception {
-        // System.out.println ("testReadProjectFile_2");
+        AllTests.standardOut ("testReadProjectFile_2");
 
-        String projectFilename = "src/cytoscape/unitTests/test2.cpr";
+        String projectFilename = testDataDirectory + "src/cytoscape/unitTests/test2.cpr";
         // get the name of the absolute path to the current directory, to allow
         // us to check the files named in the project file, which are always
         // made into absolute paths
@@ -233,7 +240,7 @@ public class CytoscapeConfigTest extends TestCase {
     } // testReadProjectFile_2
 
     public void testForExpectedNullValues() throws Exception {
-        //  System.out.println ("testForExpectedNullValues");
+        AllTests.standardOut ("testForExpectedNullValues");
 
         String[] args = {"-h"};
 
@@ -245,6 +252,7 @@ public class CytoscapeConfigTest extends TestCase {
         assertTrue(config.getAllDataFileNames().length == 0);
         assertTrue(config.getDefaultSpeciesName() == null);
         assertTrue(config.helpRequested());
+        assertTrue(config.getWhetherToCopyExpToAttribs());
         assertTrue(!config.inputsError());
 
 
@@ -255,7 +263,7 @@ public class CytoscapeConfigTest extends TestCase {
      *  an interactions file) are detected and reported as an error
      */
     public void testLegalArgs0() throws Exception {
-        //  System.out.println ("testLegalArgs0");
+        AllTests.standardOut ("testLegalArgs0");
 
         String geometryFilename = "../data/galFiltered.gml";
         String interactionsFilename = "../data/tideker0/yeastSmall.intr";
@@ -274,7 +282,7 @@ public class CytoscapeConfigTest extends TestCase {
      * override and extend them
      */
     public void testReadProperties() throws Exception {
-        // System.out.println ("testReadProperties");
+        AllTests.standardOut ("testReadProperties");
         //  Set CYTOSCAPE HOME
         System.setProperty ("CYTOSCAPE_HOME", "src/cytoscape/unitTests/");
         String[] args = new String[0];
@@ -291,7 +299,7 @@ public class CytoscapeConfigTest extends TestCase {
     } // testReadProperties
 
     public void testConfigDirectFromProperties() throws Exception {
-        // System.out.println ("testConfigDirectFromProperties");
+        AllTests.standardOut ("testConfigDirectFromProperties");
         //  Set CYTOSCAPE HOME
         System.setProperty ("CYTOSCAPE_HOME", "src/cytoscape/unitTests/");
         String[] args = new String[0];
@@ -302,6 +310,10 @@ public class CytoscapeConfigTest extends TestCase {
     } // testReadProperties
 
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(new TestSuite(CytoscapeConfigTest.class));
+      if (args.length == 1)
+        testDataDirectory = args [0];
+       System.out.println ("testDataDirectory: " + testDataDirectory);
+
+       junit.textui.TestRunner.run(new TestSuite(CytoscapeConfigTest.class));
     }
 }

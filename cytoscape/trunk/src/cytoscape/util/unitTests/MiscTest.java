@@ -39,16 +39,19 @@ import java.io.*;
 import java.util.*;
 
 import cytoscape.util.Misc;
+import cytoscape.unitTests.AllTests;
+
 import java.awt.Color;
 //------------------------------------------------------------------------------
 public class MiscTest extends TestCase {
-
+    private boolean runAll = false;
 
 //------------------------------------------------------------------------------
 public MiscTest (String name) 
 {
   super (name);
 }
+
 //------------------------------------------------------------------------------
 public void setUp () throws Exception
 {
@@ -60,7 +63,7 @@ public void tearDown () throws Exception
 //------------------------------------------------------------------------------
 public void testParseRGBTest () throws Exception
 { 
-  System.out.println ("testRGBParseText");
+  AllTests.standardOut ("testRGBParseText");
   Color result = Misc.parseRGBText ("0,0,0");
   assertTrue (result.equals (Color.black));
 
@@ -81,7 +84,7 @@ public void testParseRGBTest () throws Exception
 //-------------------------------------------------------------------------
 public void testParseList () throws Exception
 { 
-  System.out.println ("testParseList");
+  AllTests.standardOut ("testParseList");
 
   String delimiter = "::";
   String startToken = "(";
@@ -207,7 +210,7 @@ public void testParseList () throws Exception
 //------------------------------------------------------------------------------
 public void testGetPropertyValues () throws Exception
 { 
-  System.out.println ("testGetPropertyValues");
+  AllTests.standardOut ("testGetPropertyValues");
   Properties props = new Properties ();
   props.put ("dog", "dozer");
   props.put ("cat", "(ernie::louie)");
@@ -231,5 +234,3 @@ public static void main (String[] args)
 }
 //------------------------------------------------------------------------------
 } // MiscTest
-
-

@@ -43,6 +43,7 @@ import junit.framework.*;
 
 import cytoscape.data.synonyms.*;
 import cytoscape.data.synonyms.readers.ThesaurusFlatFileReader;
+import cytoscape.unitTests.AllTests;
 //------------------------------------------------------------------------------
 /**
  * test the ThesaurusFlatFileReader class
@@ -69,9 +70,13 @@ public void tearDown () throws Exception
  */
 public void testReadSmallYeastThesaurus () throws Exception
 { 
-  System.out.println ("testReadSmallYeastThesaurus");
+  AllTests.standardOut("testReadSmallYeastThesaurus");
 
   String filename = "sampleData/yeastSmall.txt";
+  if (AllTests.runAllTests()) {
+      filename =
+        "src/cytoscape/data/synonyms/readers/unitTests/sampleData/yeastSmall.txt";
+  }
   ThesaurusFlatFileReader reader = new ThesaurusFlatFileReader (filename);
   Thesaurus thesaurus = reader.getThesaurus ();
 
@@ -97,7 +102,7 @@ public void testReadSmallYeastThesaurus () throws Exception
       assertTrue (alternateNames[2].equals ("REB2"));
       } // i == 6
     for (int j=0; j < alternateNames.length; j++)
-      System.out.println (canonical [i] + " -> " + alternateNames [j]);
+      AllTests.standardOut(canonical [i] + " -> " + alternateNames [j]);
     assertTrue (alternateNames.length == alternateNameCount [i]);
     }
   

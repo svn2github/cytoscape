@@ -38,6 +38,7 @@ import junit.framework.*;
 import java.io.*;
 import cytoscape.data.annotation.*;
 import cytoscape.data.annotation.readers.*;
+import cytoscape.unitTests.AllTests;
 //------------------------------------------------------------------------------
 /**
  * test the Annotation class
@@ -87,11 +88,16 @@ public void tearDown () throws Exception
  */
 public void testHaloKegg () throws Exception
 { 
-  System.out.println ("testHaloKegg");
-  String filename = "../../kegg/haloMetabolicPathway.xml";
+  AllTests.standardOut("testHaloKegg");
+  String filename = null;
+  if (AllTests.runAllTests()) {
+    filename = "src/cytoscape/data/kegg/haloMetabolicPathway.xml";
+  } else {
+    filename = "../../kegg/haloMetabolicPathway.xml";
+  }
   AnnotationXmlReader reader = new AnnotationXmlReader (new File (filename));
   Annotation keggHalo = reader.getAnnotation ();
-  System.out.println (keggHalo);
+  AllTests.standardOut (keggHalo.toString());
   String orf = "VNG0606G";
   int [] terms = keggHalo.getClassifications (orf);
 
@@ -99,13 +105,13 @@ public void testHaloKegg () throws Exception
   assertTrue (terms.length == 3);
   for (int i=0; i < terms.length; i++) {
     int [][] paths = ontology.getAllHierarchyPaths (terms [i]);
-    System.out.print (orf + ": " + terms [i] + " paths: " + paths.length + ":  ");
+    AllTests.standardOut  (orf + ": " + terms [i] + " paths: " + paths.length + ":  ");
     for (int p=0; p < paths.length; p++) {
       assertTrue (paths[p].length == 3);
       for (int q=0; q < paths [p].length; q++)
-        System.out.print (paths [p][q] + "  ");
+        AllTests.standardOut (paths [p][q] + "  ");
       } // for p
-      System.out.println ();
+      AllTests.standardOut ("\n");
     } // for i
 
 } // testHaloKegg

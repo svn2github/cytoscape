@@ -42,15 +42,16 @@ import java.util.Hashtable;
 import java.util.Enumeration;
 
 import cytoscape.data.Interaction;
+import cytoscape.unitTests.AllTests;
 //------------------------------------------------------------------------------
 public class InteractionTest extends TestCase {
-
 
 //------------------------------------------------------------------------------
 public InteractionTest (String name) 
 {
   super (name);
 }
+
 //------------------------------------------------------------------------------
 public void setUp () throws Exception
 {
@@ -62,7 +63,7 @@ public void tearDown () throws Exception
 //------------------------------------------------------------------------------
 public void test3ArgCtor () throws Exception
 { 
-  System.out.println ("test3ArgCtor");
+  AllTests.standardOut ("test3ArgCtor");
 
   String source = "YNL312W";
   String type = "pd";
@@ -79,7 +80,7 @@ public void test3ArgCtor () throws Exception
 //-------------------------------------------------------------------------
 public void test1ArgCtor () throws Exception
 { 
-  System.out.println ("test1ArgCtor");
+  AllTests.standardOut ("test1ArgCtor");
 
   String rawText0 = "YNL312W pp YPL111W";
   Interaction inter0 = new Interaction (rawText0);
@@ -103,7 +104,7 @@ public void test1ArgCtorOnDegenerateFrom () throws Exception
 // a degenerate form has -only- a source node:  no interaction type
 // and no target node
 { 
-  System.out.println ("test1ArgCtorOnDegenerateForm");
+  AllTests.standardOut ("test1ArgCtorOnDegenerateForm");
 
   String rawText0 = "YNL312W";
   Interaction inter0 = new Interaction (rawText0);
@@ -119,5 +120,3 @@ public static void main (String[] args)
 }
 //------------------------------------------------------------------------------
 } // InteractionTest
-
-

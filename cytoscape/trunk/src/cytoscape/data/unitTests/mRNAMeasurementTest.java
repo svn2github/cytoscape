@@ -38,6 +38,7 @@ import junit.framework.*;
 import java.io.*;
 
 import cytoscape.data.mRNAMeasurement;
+import cytoscape.unitTests.AllTests;
 //------------------------------------------------------------------------------
 public class mRNAMeasurementTest extends TestCase {
 
@@ -58,7 +59,7 @@ public void tearDown () throws Exception
 //------------------------------------------------------------------------------
 public void testCtor () throws Exception
 { 
-  System.out.println ("testCtor");
+  AllTests.standardOut ("testCtor");
   mRNAMeasurement measurement = new mRNAMeasurement ("-0.315", "10.495");
   assertTrue (measurement.getRatio () == -0.315);
   assertTrue (measurement.getSignificance () == 10.495);

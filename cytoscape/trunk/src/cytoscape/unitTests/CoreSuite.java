@@ -24,7 +24,6 @@ public class CoreSuite extends TestCase {
         suite.addTestSuite(PluginInfoTest.class);
         suite.addTestSuite(PluginLoaderTest.class);
         suite.addTestSuite(SelectedSubGraphFactoryTest.class);
-        suite.addTestSuite(ProjectTest.class);
         suite.setName("Core Cytoscape Tests");
         return suite;
     }

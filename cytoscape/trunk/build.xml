@@ -198,4 +198,13 @@
 		classpathref="classpath_obfuscated" fork="true">
        		</java> 
 	</target>
+
+        <!-- Target to Run all Cytoscape Unit Tests -->
+        <target name="test" depends="compile"
+                description="Runs all Cytoscape Unit Tests.">
+                <java classname="cytoscape.unitTests.AllTests"
+                classpathref="classpath" fork="true">
+                <arg line="-ui"/>
+                </java>
+        </target>
 </project>

@@ -38,6 +38,7 @@ import junit.framework.*;
 import java.io.*;
 import java.util.*;
 import cytoscape.data.readers.TextJarReader;
+import cytoscape.unitTests.AllTests;
 //-----------------------------------------------------------------------------------------
 public class TextJarReaderTest extends TestCase {
 
@@ -58,8 +59,11 @@ public void tearDown () throws Exception
 //------------------------------------------------------------------------------
 public void testSimple () throws Exception
 { 
-  System.out.println ("testCtor");
+  AllTests.standardOut("testCtor");
   TextJarReader reader = new TextJarReader ("jabberwocky.txt");
+  if (AllTests.runAllTests()) {
+      reader = new TextJarReader ("jabberwocky.txt");
+  }
   int count = reader.read ();
   String text = reader.getText ();
 

@@ -68,7 +68,7 @@ public void tearDown () throws Exception
  */
 public void testCtor () throws Exception
 { 
-  // System.out.println ("testCtor");
+  AllTests.standardOut ("testCtor");
   Graph2D graph = new Graph2D ();
   GraphObjAttributes nodeAttributes = new GraphObjAttributes ();
   GraphObjAttributes edgeAttributes = new GraphObjAttributes ();
@@ -124,7 +124,7 @@ private void  createEdgeAndAttribute (String nodeName1, String nodeName2,
  */
 public void testSubGraphOperation () throws Exception
 { 
-  // System.out.println ("testSubGraphOperation");
+  AllTests.standardOut ("testSubGraphOperation");
 
   String [] canonicalNames = {"g0", 
                               "g1",
@@ -239,7 +239,7 @@ public void testSubGraphOperation () throws Exception
     realizer.setSelected (true);
     }
 
-  // System.out.println ("--------- edgeAttributes of original" + edgeAttributes);
+  AllTests.standardOut ("--------- edgeAttributes of original" + edgeAttributes);
   SelectedSubGraphFactory factory = 
       new SelectedSubGraphFactory (graph, nodeAttributes, edgeAttributes);
 
@@ -283,7 +283,7 @@ public void testSubGraphOperation () throws Exception
  */
 public void testForSurplusEdges () throws Exception
 { 
-  // System.out.println ("testNoSurplusEdges");
+  AllTests.standardOut ("testNoSurplusEdges");
 
   Graph2D graph = new Graph2D ();
 
@@ -327,7 +327,7 @@ public void testForSurplusEdges () throws Exception
  */
 public void testGraphWithoutLabels () throws Exception
 {
-  //  System.out.println ("testGraphWithoutLabels");
+  AllTests.standardOut ("testGraphWithoutLabels");
 
   Graph2D graph = new Graph2D ();
   
