@@ -160,11 +160,17 @@ public class FlagFilter implements Filter, GraphPerspectiveChangeListener {
      *                             than giny.model.Node objects
      */
     public Set setFlaggedNodes(Collection nodesToSet, boolean newState) {
-        Set returnSet = new HashSet();
+        
+      //System.out.println( "SettingFlaggedNodes" );
+      
+      Set returnSet = new HashSet();
         if (nodesToSet == null) {return returnSet;}
         if (newState == true) {
             for (Iterator i = nodesToSet.iterator(); i.hasNext(); ) {
                 Node node = (Node)i.next();
+
+                //System.out.println( "Flagging node"+node );
+
                 if (!graph.containsNode(node)) {continue;}
                 boolean setChanged = flaggedNodes.add(node);
                 if (setChanged) {returnSet.add(node);}
@@ -173,8 +179,12 @@ public class FlagFilter implements Filter, GraphPerspectiveChangeListener {
         } else {
             for (Iterator i = nodesToSet.iterator(); i.hasNext(); ) {
                 Node node = (Node)i.next();
+                //System.out.println( "UNFlagging node"+node );
                 boolean setChanged = flaggedNodes.remove(node);
-                if (setChanged) {returnSet.add(node);}
+                if (setChanged) {
+                  //System.out.println( setChanged+" Set Changed: "+node);
+                  returnSet.add(node);
+                }
             }
             if (returnSet.size() > 0) {fireEvent(returnSet, false);}
         }

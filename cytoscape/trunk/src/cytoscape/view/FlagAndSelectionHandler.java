@@ -82,29 +82,48 @@ public class FlagAndSelectionHandler implements FlagEventListener, GraphViewChan
      * state in the FlagFilter object.
      */
     public void graphViewChanged(GraphViewChangeEvent event) {
+
+      
+
         //GINY bug: the event we get frequently has the correct indices
         //but incorrect Node and Edge objects. For now we get around this
         //by converting indices to graph objects ourselves
         GraphView source = (GraphView)event.getSource();
         RootGraph rootGraph = source.getGraphPerspective().getRootGraph();
         if (event.isNodesSelectedType()) {
+          //System.out.println( "Nodes slected type:" );
+          //System.out.println( "FlagAndSelectionHandler: "+event);
+          //System.out.println( event.getSelectedNodeIndices()+" <- nodes selected" );
+          int[] nodes = event.getSelectedNodeIndices();
+          for ( int i = 0; i < nodes.length; ++i ) {
+            //System.out.println( "Selected mnode: "+nodes[i]);
+          }
             //Node[] selNodes = event.getSelectedNodes();
             //List selList = Arrays.asList(selNodes);
             int[] selIndices = event.getSelectedNodeIndices();
             List selList = new ArrayList();
             for (int index = 0; index < selIndices.length; index++) {
                 Node node = rootGraph.getNode(selIndices[index]);
+                //System.out.println( "Adding node: "+node);
                 selList.add(node);
             }
+            //System.out.println( "Contents of selList: " );
+            //for( Iterator i = selList.iterator(); i.hasNext(); ) {
+            //  System.out.println( "NOde: "+i.next() );
+            //}
+
             flagFilter.setFlaggedNodes(selList, true);
         } else if (event.isNodesUnselectedType()) {
             //Node[] unselNodes = event.getUnselectedNodes();
             //List unselList = Arrays.asList(unselNodes);
+          //System.out.println( "nodes UNse;ected" );
+
             int[] unselIndices = event.getUnselectedNodeIndices();
             List unselList = new ArrayList();
             for (int index = 0; index < unselIndices.length; index++) {
                 Node node = rootGraph.getNode(unselIndices[index]);
                 unselList.add(node);
+                //System.out.println( "Unselected node:"+node+" "+node.getRootGraphIndex() );
             }
             flagFilter.setFlaggedNodes(unselList, false);
         } else if (event.isEdgesSelectedType()) {
