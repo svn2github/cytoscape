@@ -77,8 +77,6 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
    *
    * @param graph the graph layout object that this layout algorithm
    *   operates on.
-   * @exception UnsupportedOperationException
-   *   if <code>graph.areAllNodesMovable()</code> returns <code>false</code>.
    **/
   public SpringEmbeddedLayouter2(MutableGraphLayout graph)
   {
@@ -141,7 +139,10 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
       if (alreadyMoved) throw new IllegalStateException
                           ("already moved nodes in underlying graph");
       return graph.getNumNodes(); }
-    void setNodePosition(int nodeIndex, double X, double Y) {
+    boolean isMovableNode(int nodeIndex) {
+      return graph.isMovableNode(nodeIndex); }
+    void setNodePosition(boolean overrideMovableCheck,
+                         int nodeIndex, double X, double Y) {
       // This is a debugging statement.
       if (alreadyMoved) throw new IllegalStateException
                           ("already moved nodes in underlying graph");
@@ -149,6 +150,9 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
       if (nodeIndex < 0 || nodeIndex >= graph.getNumNodes())
         throw new IndexOutOfBoundsException
           ("nodeIndex out of bounds: " + nodeIndex);
+      // This is a debugging statement.
+      if ((!overrideMovableCheck) && !isMovableNode(nodeIndex))
+        throw new UnsupportedOperationException();
       movedNodes.put(new Integer(nodeIndex), new Point2D.Double(X, Y)); }
     Point2D getNodePosition(int nodeIndex) {
       // This is a debugging statement.
@@ -188,14 +192,14 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
       // We now know min and max; iterate again to move all nodes.
       for (int nodeIx = 0; nodeIx < graph.getNumNodes(); nodeIx++) {
         Point2D nodePos;
-        if ((nodePos = (Point2D) movedNodes.get(new Integer(nodeIx))) == null)
-          nodePos = graph.getNodePosition(nodeIx);
-        graph.setNodePosition
-          (nodeIx,
-           Math.min(Math.max(0, (nodePos.getX() - minX) * xScaleFactor),
-                    graph.getMaxWidth()),
-           Math.min(Math.max(0, (nodePos.getY() - minY) * yScaleFactor),
-                    graph.getMaxHeight())); }
+        if ((nodePos = (Point2D) movedNodes.get(new Integer(nodeIx))) != null
+            && isMovableNode(nodeIx))
+          graph.setNodePosition
+            (nodeIx,
+             Math.min(Math.max(0, (nodePos.getX() - minX) * xScaleFactor),
+                      graph.getMaxWidth()),
+             Math.min(Math.max(0, (nodePos.getY() - minY) * yScaleFactor),
+                      graph.getMaxHeight())); }
       movedNodes = null;
       graph = null; }
   }
@@ -368,7 +372,7 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
         euclideanDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
         if (((float) euclideanDistance) > 0.0001) break;
         graph.setNodePosition
-          (otherNode,
+          (true, otherNode,
            graph.getNodePosition(otherNode).getX() +
            (0.001d * (new java.util.Random()).nextDouble()),
            graph.getNodePosition(otherNode).getY() +
@@ -706,7 +710,7 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
        denominator
        );
     Point2D p = graph.getNodePosition(node);
-    graph.setNodePosition(node, p.getX() + deltaX, p.getY() + deltaY);
+    graph.setNodePosition(false, node, p.getX() + deltaX, p.getY() + deltaY);
   }
 
   /**
@@ -788,10 +792,12 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
       // Initialize this layout pass.
       potentialEnergy[0] = 0.0;
       partialsList.clear();
+      furthestNodePartials = null;
 
       // Calculate all node distances.  Keep track of the furthest.
       for (int nodeIndex = 0; nodeIndex < m_nodeCount; nodeIndex++)
       {
+        if (!m_autoScaleGraph.isMovableNode(nodeIndex)) continue;
         if (m_halt) return;
         if (m_layoutPass == 0)
           m_percentComplete.setPercentCompleted((int) currentProgress);
