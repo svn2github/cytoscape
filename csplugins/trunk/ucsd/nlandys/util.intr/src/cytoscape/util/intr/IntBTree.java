@@ -1,7 +1,7 @@
 package cytoscape.util.intr;
 
 /**
- * A B<sup>+</sup>-Tree that stores integers.
+ * A B<sup>+</sup>-tree that stores integers.
  */
 public final class IntBTree
 {
@@ -324,7 +324,7 @@ public final class IntBTree
    * IMPORTANT: The returned enumeration becomes invalid as soon as any
    * structure-modifying operation (insert or delete) is performed on this
    * tree.  Accessing an invalid enumeration's methods will result in
-   * unpredictable and ill-defined behavior in the enumeration, but will
+   * unpredictable and ill-defined behavior in that enumeration, but will
    * have no effect on the integrity of underlying tree structure.<p>
    * NOTE: If xMin > xMax, the results of this operation are undefined (chunks
    * may be blown, in fact).<p>
@@ -337,7 +337,7 @@ public final class IntBTree
    * @param xMin the lower [inclusive] bound of the range to search.
    * @param xMax the upper [inclusive] bound of the range to search.
    * @return an non-descending enumeration of all entries matching this search
-   *   query, duplicated included.
+   *   query, duplicates included.
    */
   public final IntEnumerator searchRange(final int xMin, final int xMax)
   {
