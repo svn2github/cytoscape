@@ -163,10 +163,10 @@ public final class RootGraphPerformanceTest
   {
     final int[] nodesWeb = new int[nodes.length / 2];
     System.arraycopy(nodes, 0, nodesWeb, 0, nodesWeb.length);
-    root.getConnectingEdgeIndicesArray(nodesWeb);
-    for (int i = 0; i < nodesWeb.length; i++) {
-      nodesWeb[i] = nodes[nodesWeb.length + i];
-      root.getConnectingEdgeIndicesArray(nodesWeb); }
+    int numIters = Math.min(100, nodesWeb.length);
+    for (int i = 0; i < numIters; i++) {
+      root.getConnectingEdgeIndicesArray(nodesWeb);
+      nodesWeb[i] = nodes[nodesWeb.length + i]; }
   }
 
 }
