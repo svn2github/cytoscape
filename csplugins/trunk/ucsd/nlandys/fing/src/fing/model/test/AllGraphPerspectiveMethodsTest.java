@@ -47,6 +47,12 @@ public final class AllGraphPerspectiveMethodsTest
     for (int i = 0; i < edgeInx.length; i++)
       if (persp.restoreEdge(edgeInx[i]) != edgeInx[i])
         throw new IllegalStateException("unable to restore edge");
+    int minNodeInx = 0;
+    for (int i = 0; i < nodeInx.length; i++)
+      minNodeInx = Math.min(minNodeInx, nodeInx[i]);
+    int minEdgeInx = 0;
+    for (int i = 0; i < edgeInx.length; i++)
+      minEdgeInx = Math.min(minEdgeInx, edgeInx[i]);
 
     // Not testing GraphPerspectiveChangeListener methods.
 
@@ -123,6 +129,55 @@ public final class AllGraphPerspectiveMethodsTest
         ("size of edges List and length of edge indices array don't match");
     for (int j = 0; j < edgeInx.length; j++) {
       for (int i = 1;; i++) { if (edgeIndicesArray[i] == edgeInx[j]) break; } }
+
+    // getEdgeIndicesArray(int, int, boolean, boolean).
+    int[] connEdges;
+    connEdges = persp.getEdgeIndicesArray(nodeInx[1], nodeInx[0], false, true);
+    if (connEdges.length != 2)
+      throw new IllegalStateException("not 2 connecting edges");
+    for (int i = 0;; i++) if (connEdges[i] == edgeInx[0]) break;
+    for (int i = 0;; i++) if (connEdges[i] == edgeInx[5]) break;
+    connEdges = persp.getEdgeIndicesArray(nodeInx[0], nodeInx[3], true, true);
+    if (connEdges.length != 0)
+      throw new IllegalStateException("not 0 connecting edges");
+    connEdges = persp.getEdgeIndicesArray(nodeInx[1], nodeInx[2], false, true);
+    if (connEdges.length != 0)
+      throw new IllegalStateException("not 0 connecting edges");
+    connEdges = persp.getEdgeIndicesArray(nodeInx[2], nodeInx[1], true, false);
+    if (connEdges.length != 1)
+      throw new IllegalStateException("not 1 connecting edge");
+    for (int i = 0;; i++) if (connEdges[i] == edgeInx[1]) break;
+    connEdges =
+      persp.getEdgeIndicesArray(nodeInx[2], nodeInx[2], false, false);
+    if (connEdges.length != 1)
+      throw new IllegalStateException("not 1 connecting edge");
+    for (int i = 0;; i++) if (connEdges[i] == edgeInx[3]) break;
+    connEdges = persp.getEdgeIndicesArray(nodeInx[2], nodeInx[2], true, true);
+    if (connEdges.length != 1)
+      throw new IllegalStateException("not 1 connecting edge");
+    for (int i = 0;; i++) if (connEdges[i] == edgeInx[3]) break;
+    connEdges =
+      persp.getEdgeIndicesArray(nodeInx[2], nodeInx[3], false, false);
+    if (connEdges.length != 0)
+      throw new IllegalStateException("not 0 connecting edges");
+    connEdges =
+      persp.getEdgeIndicesArray(nodeInx[3], nodeInx[2], false, false);
+    if (connEdges.length != 1)
+      throw new IllegalStateException("not 1 connecting edge");
+    for (int i = 0;; i++) if (connEdges[i] == edgeInx[6]) break;
+    connEdges = persp.getEdgeIndicesArray(nodeInx[4], nodeInx[0], true, true);
+    if (connEdges.length != 0)
+      throw new IllegalStateException("not 0 connecting edges");
+    connEdges = persp.getEdgeIndicesArray(99, 0, true, true);
+    if (connEdges != null) throw new IllegalStateException("not null");
+    connEdges = persp.getEdgeIndicesArray(nodeInx[0], minNodeInx - 1,
+                                         true, false);
+    if (connEdges != null) throw new IllegalStateException("not null");
+    if (persp.getEdgeIndicesArray(Integer.MAX_VALUE, Integer.MIN_VALUE,
+                                 true, false) != null ||
+        persp.getEdgeIndicesArray(Integer.MIN_VALUE, Integer.MAX_VALUE,
+                                 false, false) != null)
+      throw new IllegalStateException("not null");
   }
 
 }
