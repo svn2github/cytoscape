@@ -102,11 +102,55 @@ public final class IntIntHash
     for (index = key % (((~key) >>> 31) * m_size);
          m_keys[index] >= 0 && m_keys[index] != key;
          index = (index + incr) % m_size) {
-      // Caching increment, which is an expensive operation, at the expense
-      // of having an if statement.  I don't want to compute the increment
-      // before this 'for' loop in case we get an immediate hit.
       if (incr == 0) { incr = 1 + (key % (m_size - 1)); } }
     return m_vals[index];
+  }
+
+  /**
+   * Returns an enumeration of keys in this hashtable, ordered
+   * arbitrarily.<p>
+   * The returned enumeration becomes "invalid" as soon as any other method
+   * on this hashtable instance is called; calling methods on an invalid
+   * enumeration will cause undefined behavior in the enumerator.  Actually,
+   * one method will not invalidate this enumeration: the get(int) method.
+   * The returned enumerator has absolutely no effect on the underlying
+   * hashtable.<p>
+   * This method returns a value in constant time.  The returned enumerator
+   * returns successive keys in [amortized] time complexity O(1).
+   */
+  public final IntEnumerator keys()
+  {
+    return enumeration(m_keys);
+  }
+
+  /**
+   * Returns an enumeration of values in this hashtable, ordered
+   * arbitrarily.<p>
+   * The returned enumeration becomes "invalid" as soon as any other method
+   * on this hashtable instance is called; calling methods on an invalid
+   * enumeration will cause undefined behavior in the enumerator.  Actually,
+   * one method will not invalidate this enumeration: the get(int) method.
+   * The returned enumerator has absolutely no effect on the underlying
+   * hashtable.<p>
+   * This method returns a value in constant time.  The returned enumerator
+   * returns successive values in [amortized] time complexity O(1).
+   */
+  public final IntEnumerator values()
+  {
+    return enumeration(m_vals);
+  }
+
+  private final IntEnumerator enumeration(final int[] arr)
+  {
+    final int numElements = m_elements;
+    return new IntEnumerator() {
+        int elements = numElements;
+        int index = -1;
+        public int numRemaining() { return elements; }
+        public int nextInt() {
+          while (arr[++index] < 0) { }
+          elements--;
+          return arr[index]; } };
   }
 
   private int[] m_keyDump = null;
