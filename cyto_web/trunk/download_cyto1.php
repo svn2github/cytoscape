@@ -28,16 +28,6 @@
 		</p>
 		<ul>
 			<li>
-				<a href='<?= $cyto1_gz_west ?>' >
-					Unix 
-				</a>
-				- 
-				<a href='<?= $cyto1_zip_west ?>'>
-					Windows 
-				</a>
-				- USA, West Coast (Seattle, WA). 
-			</li>
-			<li>
 				<a href='<?= $cyto1_gz_east ?>' >
 					Unix 
 				</a>
@@ -54,7 +44,6 @@
 		<h4>Option 3:  Download the Complete Source Code for Cytoscape:
 		</h4>
     		<UL>
-		    <li><a href='<?= $cyto1_source_west ?>'>Cytoscape source</a> - USA, West Coast (Seattle, WA).</li>
 		    <li><a href='<?= $cyto1_source_east ?>'>Cytoscape source</a> - USA, East Coast (New York, NY).</li>  
 		</UL>
 	<p>&nbsp;&nbsp;<b>Note:</b>
