@@ -1,5 +1,6 @@
 package fing.util.test;
 
+import fing.util.IntIterator;
 import fing.util.MinIntHeap;
 
 import java.io.IOException;
@@ -104,7 +105,11 @@ public class MinIntHeapPerformance
   private static final int[] _THE_TEST_CASE_(int[] elements)
   {
     _THE_HEAP_ = new MinIntHeap(elements, 0, elements.length);
-    return _THE_HEAP_._orderedElements(true);
+    IntIterator iter = _THE_HEAP_.orderedElements(true);
+    final int[] returnThis = new int[iter.numRemaining()];
+    for (int i = 0; i < returnThis.length; i++)
+      returnThis[i] = iter.nextInt();
+    return returnThis;
   }
 
 }
