@@ -35,6 +35,7 @@ public class NetworkPanel
 
   JTreeTable treeTable;
   NetworkTreeNode root;
+  JPanel navigatorPanel;
 
   private CytoscapeDesktop cytoscapeDesktop;
 
@@ -61,8 +62,18 @@ public class NetworkPanel
     treeTable.getColumn( "Edges" ).setMaxWidth(40);
 
     //treeTable.setMaximumSize( new Dimension( 150,  ) );
-    add( new JScrollPane( treeTable ), BorderLayout.CENTER );
+    navigatorPanel = new JPanel();
+
+    JScrollPane scroll = new JScrollPane( treeTable );
     
+    
+    JSplitPane split = new JSplitPane( JSplitPane.VERTICAL_SPLIT, scroll, navigatorPanel );
+    add( split );
+
+  }
+
+  public JPanel getNavigatorPanel () {
+    return navigatorPanel;
   }
 
   public SwingPropertyChangeSupport getSwingPropertyChangeSupport() {

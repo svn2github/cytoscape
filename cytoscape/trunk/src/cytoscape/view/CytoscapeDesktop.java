@@ -308,6 +308,10 @@ public class CytoscapeDesktop
 
   }
 
+  public NetworkPanel getNetworkPanel () {
+    return networkPanel;
+  }
+
   //----------------------------------------//
   // Common Desktop Variables
 

@@ -7,34 +7,69 @@ import javax.swing.event.*;
 
 import java.awt.Dimension;
 import cytoscape.view.CyNetworkView;
-import phoebe.PGraphView;
+import phoebe.event.BirdsEyeView;
 import cytoscape.dialogs.GraphObjectSelection;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.Cytoscape;
+import cytoscape.view.CytoscapeDesktop;
+import cytoscape.giny.PhoebeNetworkView;
+import java.beans.*;
 
-public class BirdsEyeViewAction extends CytoscapeAction {
+import edu.umd.cs.piccolo.PLayer;
+
+public class BirdsEyeViewAction 
+  extends 
+    CytoscapeAction 
+  implements 
+    PropertyChangeListener {
+
+  BirdsEyeView bev;
+  
 
   public BirdsEyeViewAction () {
     super("Birds Eye View");
     setPreferredMenu( "Visualization" );
+    
+   
+
+  }
+
+  public void propertyChange ( PropertyChangeEvent e ) {
+    if ( e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED || e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS ) {
+      bev.disconnect();
+      bev.connect(  ( ( PhoebeNetworkView )Cytoscape.getCurrentNetworkView() ).getCanvas(), new PLayer[] { ( ( PhoebeNetworkView )Cytoscape.getCurrentNetworkView() ).getCanvas().getLayer() } );
+      bev.updateFromViewed();
+    }
+
   }
 
   public void actionPerformed (ActionEvent e) {
+
+
+    bev = new BirdsEyeView();
+    bev.connect(  ( ( PhoebeNetworkView )Cytoscape.getCurrentNetworkView() ).getCanvas(), new PLayer[] { ( ( PhoebeNetworkView )Cytoscape.getCurrentNetworkView() ).getCanvas().getLayer() } );
+      
+    bev.setSize( Cytoscape.getDesktop().getNetworkPanel().getNavigatorPanel().getSize( null ) );
+    Cytoscape.getDesktop().getNetworkPanel().getNavigatorPanel().add( bev );
+    //Cytoscape.getDesktop().getNetworkPanel().getNavigatorPanel().add( new JLabel( "Birds Eye View " ) ); 
+    Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener( this );
+    bev.updateFromViewed();
 	
-    JFrame dialog = new JFrame("Navigator");
-    final PGraphView pview = (PGraphView)Cytoscape.getCurrentNetworkView();
+  //   JFrame dialog = new JFrame("Navigator");
+//     final PGraphView pview = (PGraphView)Cytoscape.getCurrentNetworkView();
     
-     dialog.getContentPane().add( pview.getBirdsEyeView() );
+//      dialog.getContentPane().add( pview.getBirdsEyeView() );
     
-     dialog.addWindowListener(new WindowAdapter() {
-         public void windowClosing(WindowEvent we) {
-          ( (phoebe.event.BirdsEyeView)pview.getBirdsEyeView() ).disconnect();
-         }
-       });
+//      dialog.addWindowListener(new WindowAdapter() {
+//          public void windowClosing(WindowEvent we) {
+           
+//           ( (phoebe.event.BirdsEyeView)pview.getBirdsEyeView() ).disconnect();
+//          }
+//        });
      
-     dialog.pack();
-     dialog.setSize(new Dimension ( 200, 200));
-     dialog.setVisible( true );
+//      dialog.pack();
+//      dialog.setSize(new Dimension ( 200, 200));
+//      dialog.setVisible( true );
      
   }
 
