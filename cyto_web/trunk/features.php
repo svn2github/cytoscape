@@ -20,9 +20,9 @@
 <? include "nav.php"; ?>
 <div id="indent">
 	<P>
-	<i>Cytoscape</i> is a bioinformatics software platform for <b><i>visualizing</i></b> molecular interaction networks and <b><i>integrating </i></b>these interactions with gene expression profiles and other state data. &nbsp;Additional features are available as plug-ins.&nbsp; Plug-ins are available for network and molecular profiling analyses, new layouts, additional file format support and connection with databases. Plug-ins may be developed using the Cytoscape open Java software architecture by anyone and plug-in <a href="community.php"> community development</a> is encouraged.
+	<i>Cytoscape</i> is a bioinformatics software platform for <b><i>visualizing</i></b> molecular interaction networks and <b><i>integrating </i></b>these interactions with gene expression profiles and other state data. &nbsp;Additional features are available as plugins.&nbsp; Plugins are available for network and molecular profiling analyses, new layouts, additional file format support and connection with databases. Plugins may be developed using the Cytoscape open Java software architecture by anyone and plugin <a href="community.php"> community development</a> is encouraged.
 	<p>
-		The current version of Cytoscape is v2.0 was released in July 2004 with the following features:
+		Cytoscape supports the following features:
 		<br>
 	</p>
 	<h3>Input</h3>
@@ -68,7 +68,7 @@
 	<h3>Analysis</h3>
 	<ul type="square">
 		<li>
-			Plug-ins available for network and molecular profile analysis. For example:
+			Plugins available for network and molecular profile analysis. For example:
 		</li>
 		<li>
 			Filter the network to select subsets of nodes and/or interactions based on the current data. &nbsp;For instance, users may select nodes involved in a threshold number of interactions, nodes that share a particular GO annotation, or nodes whose gene expression levels change significantly in one or more conditions according to p-values loaded with the gene expression data.
@@ -80,19 +80,13 @@
 			Find clusters (highly interconnected regions) in any network loaded into Cytoscape. Depending on the type of network, clusters may mean different things. For instance, clusters in a protein-protein interaction network have been shown to be protein complexes and parts of pathways. Clusters in a protein similarity network represent protein families.
 		</li>
 		<li>
-			More plug-ins available on the <a href="plugins2.php">plug-ins page</a>.
+			More plugins available on the <a href="plugins2.php">plugins page</a>.
 		</li>
 	</ul>
 	<p>
-		&nbsp;
+		Cytoscape was initially made public in July, 2002 (v0.8); the second release (v0.9) was in November, 2002. and v1.0 was released in March 2002.&nbsp; Version 1.1.1 is the last stable release for the 1.0 series.&nbsp; Version 1.1.1 has some of the features listed above and some additional features, such as the ability to add and remove nodes and undo actions.&nbsp;
 	</p>
-	<p>
-		Cytoscape was initially made public in July, 2002 (v0.8); the second release (v0.9) was in November, 2002. and v1.0 was released in March 2002.&nbsp; Version 1.1.1 is the last stable release for the 1.0 series.&nbsp; Version 1.1.1 has some of the features listed above and some additional features, such as the ability to add and remove nodes and undo actions.&nbsp; Some plug-ins are also only available for version 1.1.1&nbsp; These features will be migrated to version 2.0 in the future.
-	</p>
-	<p>
-		<br>
-		The <b>Cytoscape</b> project is an ongoing collaboration between the <a href="http://www.systemsbiology.org">Institute for Systems Biology</a>, <a href="http://www.ucsd.edu/">University of California, San Diego</a>, <a href="http://www.mskcc.org">Memorial Sloan-Kettering Cancer Center</a> and the <a href="http://www.pasteur.fr">Institut Pasteur</a>.
-</div>
+	</div>
 <? include "footer.php"; ?>
 </body>
 </html>
