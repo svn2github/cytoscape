@@ -24,7 +24,7 @@ public class ObjectToString {
     /**
      * Constructs and returns a String representation of the given Object.
      */
-    public String getStringValue(Object o) {
+    public static String getStringValue(Object o) {
         if (o instanceof Color) {
             return Misc.getRGBText((Color)o);
         } else if (o instanceof LineType) {
@@ -44,7 +44,7 @@ public class ObjectToString {
         }
     }
     
-    public String getStringValue(Font f) {
+    public static String getStringValue(Font f) {
         String name = f.getName();
         int style = f.getStyle();
         String styleString = "plain";
