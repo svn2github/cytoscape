@@ -79,19 +79,28 @@ public class VisualMappingManager {
       return null;
     }
   }
-
-    public void applyAppearances() {
-
-      // TODO: Remove
-      //System.out.println("VisualMappingManager.applyAppearances()");
-      
-	Graph2DView graphView = cytoscapeWindow.getGraphView();
-
-	/** first apply the node appearance to all nodes */
-        NodeAppearanceCalculator nodeAppearanceCalculator =
-                visualStyle.getNodeAppearanceCalculator();
-	Node [] nodes = graphView.getGraph2D().getNodeArray();
-	for (int i=0; i < nodes.length; i++) {
+  
+  public void applyNodeFillColor (){
+    Graph2DView graphView = cytoscapeWindow.getGraphView();
+    NodeAppearanceCalculator nodeAppearanceCalculator =
+      visualStyle.getNodeAppearanceCalculator();
+    Node [] nodes = graphView.getGraph2D().getNodeArray();
+    for (int i=0; i < nodes.length; i++) {
+	    Node node = nodes [i];
+	    NodeAppearance na = new NodeAppearance();
+	    nodeAppearanceCalculator.calculateNodeAppearance(na,node,network);
+	    NodeRealizer nr = graphView.getGraph2D().getRealizer(node);
+	    nr.setFillColor(na.getFillColor());
+    }
+  }
+  
+  public void applyNodeAppearances (){
+    
+    Graph2DView graphView = cytoscapeWindow.getGraphView();
+    NodeAppearanceCalculator nodeAppearanceCalculator =
+      visualStyle.getNodeAppearanceCalculator();
+    Node [] nodes = graphView.getGraph2D().getNodeArray();
+    for (int i=0; i < nodes.length; i++) {
 	    Node node = nodes [i];
 	    NodeAppearance na = new NodeAppearance();
 	    nodeAppearanceCalculator.calculateNodeAppearance(na,node,network);
@@ -102,20 +111,24 @@ public class VisualMappingManager {
 	    nr.setHeight(na.getHeight());
 	    nr.setWidth(na.getWidth());
 	    if (nr instanceof ShapeNodeRealizer) {
-		ShapeNodeRealizer snr = (ShapeNodeRealizer)nr;
-		snr.setShapeType(na.getShape());
+        ShapeNodeRealizer snr = (ShapeNodeRealizer)nr;
+        snr.setShapeType(na.getShape());
 	    }
 	    NodeLabel nl = nr.getLabel();
 	    nl.setText(na.getLabel());
 	    nl.setFont(na.getFont());
 	    //nr.setToolTip(na.getToolTip()); // how do you do this?
-	}
+    }
+    
+  }
 
-	/** then apply the edge appearance to all edges */
-        EdgeAppearanceCalculator edgeAppearanceCalculator =
-                visualStyle.getEdgeAppearanceCalculator();
-        Edge[] edges = graphView.getGraph2D().getEdgeArray();
-	for (int i=0; i < edges.length; i++) {
+  public void applyEdgeAppearances (){
+    Graph2DView graphView = cytoscapeWindow.getGraphView();
+    
+    EdgeAppearanceCalculator edgeAppearanceCalculator =
+      visualStyle.getEdgeAppearanceCalculator();
+    Edge[] edges = graphView.getGraph2D().getEdgeArray();
+    for (int i=0; i < edges.length; i++) {
 	    Edge edge = edges[i];
 	    EdgeAppearance ea = new EdgeAppearance();
 	    edgeAppearanceCalculator.calculateEdgeAppearance(ea,edge,network);
@@ -131,26 +144,43 @@ public class VisualMappingManager {
 	    el.setFont(ea.getFont());
 	    er.addLabel(el);
 	    //er.setToolTip(ea.getToolTip()); // how do you do this?
-	}
-        
-        /** now apply global appearances */
-        GlobalAppearanceCalculator globalAppearanceCalculator =
-        visualStyle.getGlobalAppearanceCalculator();
-        GlobalAppearance ga = globalAppearanceCalculator.calculateGlobalAppearance(network);
-        DefaultBackgroundRenderer bgRender =
-                (DefaultBackgroundRenderer)graphView.getBackgroundRenderer();
-        bgRender.setColor( ga.getBackgroundColor() );
-        NodeRealizer.setSloppySelectionColor( ga.getSloppySelectionColor() );
-
-        //don't repaint here; instead, rely on caller to call redrawGraph()
-        //in CytoscapeWindow, which will call this method
- 
-        /** finally, have CytoscapeWindow update. */
-        //graphView.updateView(); // forces the view to update its contents
-        // paintImmediately() needed because sometimes updates can be buffered
-        //graphView.paintImmediately(0,0,graphView.getWidth(),
-        //			   graphView.getHeight());
-        //cytoscapeWindow.updateStatusText();
     }
+  }
+
+  public void applyGlobalAppearances (){
+    Graph2DView graphView = cytoscapeWindow.getGraphView();
+    GlobalAppearanceCalculator globalAppearanceCalculator =
+      visualStyle.getGlobalAppearanceCalculator();
+    GlobalAppearance ga = globalAppearanceCalculator.calculateGlobalAppearance(network);
+    DefaultBackgroundRenderer bgRender =
+      (DefaultBackgroundRenderer)graphView.getBackgroundRenderer();
+    bgRender.setColor( ga.getBackgroundColor() );
+    NodeRealizer.setSloppySelectionColor( ga.getSloppySelectionColor() );
+  }
+  
+  public void applyAppearances() {
+    
+
+    /** first apply the node appearance to all nodes */
+    applyNodeAppearances();
+    
+
+    /** then apply the edge appearance to all edges */
+    applyEdgeAppearances();
+    
+        
+    /** now apply global appearances */
+    applyGlobalAppearances();
+        
+    //don't repaint here; instead, rely on caller to call redrawGraph()
+    //in CytoscapeWindow, which will call this method
+    
+    /** finally, have CytoscapeWindow update. */
+    //graphView.updateView(); // forces the view to update its contents
+    // paintImmediately() needed because sometimes updates can be buffered
+    //graphView.paintImmediately(0,0,graphView.getWidth(),
+    //			   graphView.getHeight());
+    //cytoscapeWindow.updateStatusText();
+  }
 }
 
