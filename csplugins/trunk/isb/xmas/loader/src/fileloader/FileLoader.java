@@ -309,8 +309,7 @@ public class FileLoader {
                 
       Set networks = Cytoscape.getNetworkSet();
       for ( Iterator iter = networks.iterator(); iter.hasNext(); ) {
-        String id = ( String )iter.next();
-        CyNetwork network = Cytoscape.getNetwork( id );
+        CyNetwork network = ( CyNetwork )iter.next();
         if ( Cytoscape.getNetworkView( id ) == null ) {
           // create SIF file from the network
           zip.putNextEntry( new ZipEntry(network.getIdentifier()+". "+network.getTitle()+".sif" ));

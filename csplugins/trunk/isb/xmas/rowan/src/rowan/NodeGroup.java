@@ -38,12 +38,6 @@ class NodeGroup extends PPath
     node.addPropertyChangeListener( this );
   }
 
-
- //  public void addChild ( PNode node ) {
-//     super.addChild( node );
-//      node.addPropertyChangeListener( this );
-//   }
-
   public void propertyChange(PropertyChangeEvent evt) {
      computeGroupBounds();
    }
@@ -62,8 +56,7 @@ class NodeGroup extends PPath
     
     setBounds( bounds );
     
-    // System.out.println( "Bounds: "+bounds );
-   }
+  }
 
 	/**
 	 * Change the default paint to fill an expanded bounding box based on its children's bounds
@@ -78,44 +71,6 @@ class NodeGroup extends PPath
     g2.draw( cachedChildBounds );
     
 	}
-				
-// 	/**
-// 	 * Change the full bounds computation to take into account that we are expanding the children's bounds
-// 	 * Do this instead of overriding getBoundsReference() since the node is not volatile
-// 	 */
-// 	public PBounds computeFullBounds(PBounds dstBounds) {
-//     PBounds bounds = new PBounds();
-//      Iterator i = children.iterator();
-//      while ( i.hasNext() ) {
-//        bounds.add( ( (PNode)i.next() ).getFullBounds() );
-//      }
-    
-//      bounds.setRect(bounds.getX()-INDENT,bounds.getY()-INDENT,bounds.getWidth()+2*INDENT,bounds.getHeight()+2*INDENT);
-//      cachedChildBounds = bounds;
-// 		return bounds;		
-// 	}
-						
-// 	/**
-// 	 * This is a crucial step.  We have to override this method to invalidate the paint each time the bounds are changed so
-// 	 * we repaint the correct region
-// 	 */
-// 	public boolean validateFullBounds() {
-// 		 PBounds bounds = new PBounds();
-//      Iterator i = children.iterator();
-//      while ( i.hasNext() ) {
-//        bounds.add( ( (PNode)i.next() ).getFullBounds() );
-//      }
-    
-//      bounds.setRect(bounds.getX()-INDENT,bounds.getY()-INDENT,bounds.getWidth()+2*INDENT,bounds.getHeight()+2*INDENT);
-//      cachedChildBounds = bounds;
 
-//      comparisonBounds =  bounds;
-//       //getUnionOfChildrenBounds(comparisonBounds);
-	
-// 		if (!cachedChildBounds.equals(comparisonBounds)) {
-// 			setPaintInvalid(true);
-// 		}
-// 		return super.validateFullBounds();	
-// 	}
 }
 		

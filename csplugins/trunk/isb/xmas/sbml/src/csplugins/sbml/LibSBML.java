@@ -44,7 +44,7 @@ public abstract class LibSBML {
     for (int i = 0; i < model.getNumCompartments(); i++) {
       Compartment comp = ( Compartment )listOf_compartments.get(i);
       CyNetwork network = Cytoscape.createNetwork( new int[] {}, new int[] {},comp.getName(), parent_network );
-      Cytoscape.createNetworkView( network );
+      //Cytoscape.createNetworkView( network );
       cID2network.put( comp.getName(), network );
       System.out.println( "LibSBML-- Network Created for Compartment: "+comp.getName() );
     }
@@ -65,7 +65,7 @@ public abstract class LibSBML {
 
       CyNetwork network = ( CyNetwork )cID2network.get( species.getCompartment() );
       network.restoreNode( node );
-      Cytoscape.getNetworkView( network.getIdentifier() ).getNodeView( node ).setUnselectedPaint( java.awt.Color.red );
+      //Cytoscape.getNetworkView( network.getIdentifier() ).getNodeView( node ).setUnselectedPaint( java.awt.Color.red );
 
       System.out.println( "LibSBML-- species created: "+species.getName()+" "+node.getRootGraphIndex() );
 
@@ -91,6 +91,8 @@ public abstract class LibSBML {
       ListOf products = reaction.getListOfProducts();
       ListOf reactants = reaction.getListOfReactants();
 
+      String sbml_compartment = null;
+
    
       System.out.println( "LibSBML-- reaction created: "+reaction_node.getIdentifier() );
 
@@ -99,8 +101,11 @@ public abstract class LibSBML {
         System.out.println( "LibSBML-- product: "+ species.getSpecies() );
         CyNode product = Cytoscape.getCyNode( species.getSpecies(), false );
         CyEdge edge = Cytoscape.getCyEdge( reaction_node, product, Semantics.INTERACTION, "reaction-product", true );
-        ( ( CyNetwork )cID2network.get( Cytoscape.getNodeAttributeValue( product, "sbml compartment" ) ) ).restoreNode( node );
-        ( ( CyNetwork )cID2network.get( Cytoscape.getNodeAttributeValue( product, "sbml compartment" ) ) ).restoreEdge( edge );
+
+        if ( sbml_compartment == null ) 
+          sbml_compartment =  ( String )Cytoscape.getNodeAttributeValue( product, "sbml compartment" );
+        ( ( CyNetwork )cID2network.get( sbml_compartment ) ).restoreNode( node );
+        ( ( CyNetwork )cID2network.get( sbml_compartment ) ).restoreEdge( edge );
        
         if ( is_reversable ) {
           Cytoscape.setEdgeAttributeValue( edge, "sbml reaction type", "reversable reaction-product" );
@@ -118,8 +123,13 @@ public abstract class LibSBML {
         System.out.println( "LibSBML-- reactant: "+ species.getSpecies() );
         CyNode reactant = Cytoscape.getCyNode( species.getSpecies(), false );
         CyEdge edge = Cytoscape.getCyEdge( reaction_node, reactant, Semantics.INTERACTION, "reaction-reactant", true );
-        ( ( CyNetwork )cID2network.get( Cytoscape.getNodeAttributeValue( reactant, "sbml compartment" ) ) ).restoreNode( node );
-        ( ( CyNetwork )cID2network.get( Cytoscape.getNodeAttributeValue( reactant, "sbml compartment" ) ) ).restoreEdge( edge );
+      
+        if ( sbml_compartment == null ) 
+          sbml_compartment =  ( String )Cytoscape.getNodeAttributeValue( reactant, "sbml compartment" );
+        ( ( CyNetwork )cID2network.get( sbml_compartment ) ).restoreNode( node );
+        ( ( CyNetwork )cID2network.get( sbml_compartment ) ).restoreEdge( edge );
+
+
         if ( is_reversable ) {
           Cytoscape.setEdgeAttributeValue( edge, "sbml reaction type", "reversable reaction-reactant" );
         } else {
@@ -133,12 +143,12 @@ public abstract class LibSBML {
       for ( int i = 0; i < modifiers.getNumItems(); ++i ) {
         ModifierSpeciesReference species = (ModifierSpeciesReference)modifiers.get(i);
         System.out.println( "LibSBML-- modifier: "+ species.getSpecies() );
-        CyNode modifier = Cytoscape.getCyNode( species.getSpecies(), false );
+        CyNode modifier = Cytoscape.getCyNode( species.getSpecies(), true );
         Cytoscape.setNodeAttributeValue( modifier, "sbml type", "modifier" );
         CyEdge edge = Cytoscape.getCyEdge( reaction_node, modifier, Semantics.INTERACTION, "reaction-modifier", true );
-        ( ( CyNetwork )cID2network.get( Cytoscape.getNodeAttributeValue( modifier, "sbml compartment" ) ) ).restoreNode( node );
-        ( ( CyNetwork )cID2network.get( Cytoscape.getNodeAttributeValue( modifier, "sbml compartment" ) ) ).restoreEdge( edge );
-        
+
+        ( ( CyNetwork )cID2network.get( sbml_compartment ) ).restoreNode( modifier );
+        ( ( CyNetwork )cID2network.get( sbml_compartment ) ).restoreEdge( edge );
 
         reaction_node.addModifier( modifier.getRootGraphIndex() );
       

@@ -19,7 +19,7 @@ import giny.view.NodeView;
 import giny.view.Label;
 import giny.util.*;
 
-import com.sun.glf.goodies.*;
+
 
 /**
  * @author Rowan Christmas

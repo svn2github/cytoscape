@@ -42,6 +42,9 @@ public class DropShadowTest {
       PPath path = ( PPath )i.next();
       PPath shadow = new PPath( path.getPathReference(), null );
       int offset = 3;
+
+      System.out.println( "Creatig drop shadow for: "+path );
+
       shadow.setBounds( path.getX() + offset, path.getY() + offset, path.getWidth(), path.getHeight() );
       RadialGradientPaint rgp = new RadialGradientPaint( shadow.getBounds(), 
                                                        new Color( 0, 0, 0, .2f ),

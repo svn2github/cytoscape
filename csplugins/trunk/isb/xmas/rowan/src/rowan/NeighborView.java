@@ -223,7 +223,7 @@ public class NeighborView
     vector.add( "Current Network" );
     while ( i.hasNext() ) {
       //System.out.println( i.next().getClass() );
-      CyNetwork net = Cytoscape.getNetwork( ( String )i.next() );
+      CyNetwork net = ( CyNetwork )i.next();
       titleIdMap.put( net.getTitle(), net.getIdentifier() );
       vector.add( net.getTitle() );
     }
@@ -239,7 +239,7 @@ public class NeighborView
     Vector vector = new Vector();
     vector.add( "Current Network" );
     while ( i.hasNext() ) {
-      CyNetwork net = Cytoscape.getNetwork( ( String )i.next() );
+      CyNetwork net = ( CyNetwork )i.next();
       titleIdMap.put( net.getTitle(), net.getIdentifier() );
       vector.add( net.getTitle() );
     }

@@ -49,7 +49,6 @@ public class Cut extends CytoscapeAction {
     //network.hideEdges( e );
     network.hideNodes( nodes );
    
-
     EditPlugin.getNodeClipBoard().elements( nodes );
     EditPlugin.getEdgeClipBoard().elements( edges );
     EditPlugin.setNetworkClipBoard( network.getIdentifier() );

@@ -2,6 +2,7 @@ package csplugins.edit;
 
 import cytoscape.*;
 import cytoscape.plugin.*;
+import cytoscape.plugin.jar.*;
 import cytoscape.util.*;
 import cern.colt.list.*;
 
@@ -48,11 +49,16 @@ public class EditPlugin extends CytoscapePlugin {
     Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "Edit" ).add( undoItem );
     Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "Edit" ).add( redoItem );
 
-    cut = new Cut(null);
+    ImageIcon cuticon = new ImageIcon( JarLoader.getLoader().getObjectIfYouWantIt( "editcut.png" ) );
+    ImageIcon copyicon = new ImageIcon( JarLoader.getLoader().getObjectIfYouWantIt( "editcopy.png" ) );
+    ImageIcon pasteicon = new ImageIcon( JarLoader.getLoader().getObjectIfYouWantIt( "editpaste.png" ) );
+
+ 
+    cut = new Cut(cuticon);
     Cytoscape.getDesktop().getCyMenus().addAction( cut );
-    copy = new Copy(null);
+    copy = new Copy(copyicon);
     Cytoscape.getDesktop().getCyMenus().addAction( copy );
-    paste = new Paste(null);
+    paste = new Paste(pasteicon);
     Cytoscape.getDesktop().getCyMenus().addAction( paste );
 
   }

@@ -21,6 +21,20 @@ public class LoaderPlugin extends CytoscapePlugin {
 
   protected void initialize () {
 
+    String[] args = Cytoscape.getCytoscapeObj().getConfiguration().getArgs();
+    for ( int i = 0; i < args.length; ++i ) {
+      if ( args[i].startsWith( "-ss" ) ) {
+        i++;
+        FileLoader.loadFileToAttributes( args[i], true, true, "\t" );
+      } else if ( args[i].startsWith( "-edge" ) ) {
+        i++;
+        FileLoader.loadFileToAttributes( args[i], false, true, "\t" );
+      }
+    }
+
+
+
+
     Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.Load").add( new JMenuItem ( new AbstractAction( "Load Spread Sheet" ) {
         public void actionPerformed ( java.awt.event.ActionEvent e ) {
           // Do this in the GUI Event Dispatch thread...

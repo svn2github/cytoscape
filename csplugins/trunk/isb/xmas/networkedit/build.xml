@@ -1,0 +1,211 @@
+<project name="networkedit" default="networkedit" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init-networkedit">
+    <tstamp/>
+    <property name="networkedit.Name" value="networkedit"/>
+    <property name="networkedit.name" value="networkedit"/>
+    <property name="networkedit.version" value="0.1"/>
+    <property name="networkedit.year" value="200"/>
+
+    <echo message="Building ${networkedit.name} version ${networkedit.version}."/>
+
+    <!-- Inheritable properties -->
+    <property name="debug" value="on"/>
+    <property name="optimize" value="off"/>
+    <property name="deprecation" value="on"/>
+    <property name="nowarn" value="true"/>
+    <property name="fork" value="false"/>
+    <property name="networkedit.root.dir" value="."/>
+    <property name="networkedit.lib.dir" value="${networkedit.root.dir}/lib"/>
+    <property name="cytoscape.lib.dir" value="${networkedit.root.dir}/../../../../cytoscape/lib"/>
+    <property name="cytoscape.plugin.dir" value="${networkedit.root.dir}/../../../../cytoscape/plugins"/>
+    <path id="project.class.path">
+      <pathelement path="${java.class.path}/"/>
+    </path>
+
+    <!-- Define the directories -->
+    <property name="networkedit.root.dir" value="./"/>
+    <property name="networkedit.src.dir" value="${networkedit.root.dir}/src"/>
+    <property name="networkedit.classes.dir" value="${networkedit.root.dir}/classes"/>
+    <property name="networkedit.javadoc.dir" value="${javadoc.dir}/networkedit"/>
+    <property name="networkedit.resources.dir" value="${networkedit.root.dir}/resources"/>
+    <property name="networkedit.manifest.dir" value="${networkedit.root.dir}/manifest"/>
+    <property name="networkedit.packages" value="networkedit.*"/>
+    <!-- Subdirectory for test reports -->
+    <property name="networkedit.tests.reports.dir" value="${networkedit.root.dir}/reports/tests" />
+    <property name="cytoscape.lib" value="../../cytoscape/lib" />
+
+    <!-- Define the condition for compilation -->
+    <property name="cytoscape.jar" value="${networkedit.lib.dir}/cytoscape.jar"/>
+    <property name="colt.jar" value="${networkedit.lib.dir}/colt.jar"/>
+    
+
+    <condition property="cytoscape.present">
+      <and> 
+	  		<available file="${cytoscape.jar}"/> 
+				<available file="${colt.jar}"/> 
+		  </and>
+    </condition>
+
+    <!-- Define excludes for networkedit compile and javadoc -->
+    <property name="networkedit.excludes" value="**/notyet/*"/>
+    <property name="networkedit.tests.excludes" value="**/notyet/*"/>
+    <property name="networkedit.packages.excludes" value="**.test.*,**.notyet.*"/>
+
+    <path id="networkedit.project.class.path">
+      <pathelement location="${networkedit.classes.dir}"/>
+      <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/piccolox.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/piccolo.jar"/>
+      <pathelement path="${project.class.path}/"/>
+    </path>
+
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the networkedit project                                           -->
+  <!-- =================================================================== -->
+  <target name="compile-networkedit" depends="init-networkedit"  >
+
+   <echo message=" COMPILE networkedit "/>
+
+    <mkdir dir="${networkedit.classes.dir}"/>
+    <javac srcdir="${networkedit.src.dir}"
+           excludes="${networkedit.excludes}"
+           classpathref="networkedit.project.class.path"
+           destdir="${networkedit.classes.dir}"
+           debug="${debug}"
+           nowarn="${nowarn}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the networkedit.jar file                                           -->
+  <!-- =================================================================== -->
+  <target name="networkedit" depends="compile-networkedit"  >
+    <jar destfile="networkedit.jar" manifest="${networkedit.manifest.dir}/networkedit.manifest">
+      <fileset
+        dir="${networkedit.classes.dir}"
+        includes="**"/>
+      <fileset
+        dir="${networkedit.root.dir}/lib"
+        includes="resources/**"/>
+      <fileset 
+        dir="${networkedit.root.dir}/images"/>
+    </jar>
+    <copy todir="${networkedit.lib.dir}" file="networkedit.jar"/>
+    <copy todir="${cytoscape.plugin.dir}" file="networkedit.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the networkedit tests                                             -->
+  <!-- =================================================================== -->
+  <target name="compile-tests" depends="networkedit"  >
+    <mkdir dir="${networkedit.classes.dir}"/>
+    <javac srcdir="${networkedit.src.dir}"
+           includes="**/test/*"
+           excludes="${networkedit.tests.excludes}"
+           classpathref="networkedit.project.class.path"
+           destdir="${networkedit.classes.dir}"
+           debug="${debug}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the networkedit-tests.jar file                                     -->
+  <!-- =================================================================== -->
+  <target name="tests" depends="compile-tests"  >
+    <jar jarfile="networkedit-tests.jar"
+         basedir="${networkedit.classes.dir}"
+         includes="**/test/*"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Build all jars                                                      -->
+  <!-- =================================================================== -->
+  <target name="all" depends="networkedit"/>
+
+   <!-- =================================================================== -->
+  <!-- Run the Plugin                                                      -->
+  <!-- =================================================================== -->
+  <target name="run" depends="networkedit" >
+     
+     <java classname="cytoscape.cytoscape" 
+           classpathref="networkedit.project.class.path"
+           fork="true"/>
+           <arg line = "-y giny"/>
+           <arg line = "--JLD"/>
+           <arg line = "${networkedit.lib.dir}/networkedit.jar"/>
+           
+
+  </target>
+
+
+
+  <!-- =================================================================== -->
+  <!-- Runs the tests in networkedit-tests.jar                                    -->
+  <!-- =================================================================== -->
+  <target name="runtests" depends="tests"  >
+    <mkdir dir="${networkedit.tests.reports.dir}"/>
+    <junit
+       printsummary="yes"
+       haltonfailure="no"
+       dir="${networkedit.classes.dir}"
+       maxmemory="1G"
+    >
+      <formatter type="plain" usefile="true" />
+      <classpath refid="networkedit.project.class.path"/>
+      <!-- The junit task doesn't support 'if' so we test for JUnit here -->
+      <batchtest fork="yes" todir="${networkedit.tests.reports.dir}" if="junit.present">
+        <fileset
+           dir="${networkedit.classes.dir}"
+           includes="**/test/*"
+           excludes="${networkedit.tests.excludes}"
+        />
+      </batchtest>
+    </junit>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the API documentation                                       -->
+  <!-- =================================================================== -->
+  <target name="docs" depends="init-networkedit" >
+    <mkdir dir="${networkedit.javadoc.dir}"/>
+    <javadoc packagenames="${networkedit.packages}"
+             excludepackagenames="${networkedit.packages.excludes}"
+             sourcepath="${networkedit.src.dir}"
+             destdir="${networkedit.javadoc.dir}"
+             classpathref="networkedit.project.class.path"
+             author="true"
+             version="true"
+             use="true"
+             splitindex="true"
+             noindex="false"
+             windowtitle="${networkedit.Name} API"
+             doctitle="${networkedit.Name}"
+    />
+  </target>
+ 
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init-networkedit">
+    <delete dir="${networkedit.classes.dir}"/>
+    <delete file="networkedit.jar"/>
+    <delete file="networkedit-tests.jar"/>
+  </target>
+
+</project>
+
+<!-- End of file -->
