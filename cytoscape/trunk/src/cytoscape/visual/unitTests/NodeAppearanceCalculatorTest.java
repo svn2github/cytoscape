@@ -94,12 +94,13 @@ public class NodeAppearanceCalculatorTest extends TestCase {
        
         
         CyNetwork network1 = Cytoscape.createNetwork( Cytoscape.
-                                            getRootGraph().
-                                            getNodeIndicesArray(),
-                                            Cytoscape.
-                                            getRootGraph().
-                                            getEdgeIndicesArray() );
-       
+                                                      getRootGraph().
+                                                      getNodeIndicesArray(),
+                                                      Cytoscape.
+                                                      getRootGraph().
+                                                      getEdgeIndicesArray(),
+                                                      null);
+        
         NodeAppearanceCalculator nac = new NodeAppearanceCalculator();
         nac.setNodeSizeLocked(false);
         
@@ -116,11 +117,12 @@ public class NodeAppearanceCalculatorTest extends TestCase {
         
 
         CyNetwork network2 = Cytoscape.createNetwork( Cytoscape.
-                                            getRootGraph().
-                                            getNodeIndicesArray(),
-                                            Cytoscape.
-                                            getRootGraph().
-                                            getEdgeIndicesArray() );
+                                                      getRootGraph().
+                                                      getNodeIndicesArray(),
+                                                      Cytoscape.
+                                                      getRootGraph().
+                                                      getEdgeIndicesArray(),
+                                                      null);
 
         GraphObjAttributes secondNodeAttr = Cytoscape.getNodeNetworkData();
         String secondName = "second node";

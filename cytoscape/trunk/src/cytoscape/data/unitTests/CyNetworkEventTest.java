@@ -22,7 +22,7 @@ public void tearDown() throws Exception {}
 public void testBasic() throws Exception { 
   
   Cytoscape.clearCytoscape();
-  CyNetwork network = Cytoscape.createNetwork();
+  CyNetwork network = Cytoscape.createNetwork(null);
     //test begin event
     CyNetworkEvent e0 = new CyNetworkEvent(network, CyNetworkEvent.BEGIN);
     assertTrue( e0.getNetwork() == network );

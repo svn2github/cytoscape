@@ -15,7 +15,10 @@ import cytoscape.data.readers.*;
 import cytoscape.data.servers.BioDataServer;
 
 import giny.util.AbstractLayout;
+import giny.model.Node;
+import giny.model.Edge;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
@@ -212,7 +215,7 @@ public abstract class Cytoscape {
 
   }
 
-  public static CyEdge getCyEdge ( CyNode node_1, CyNode node_2, String attribute, Object attribute_value, boolean create ) {
+  public static CyEdge getCyEdge ( Node node_1, Node node_2, String attribute, Object attribute_value, boolean create ) {
     
     Set edges = new HashSet();
     if ( Cytoscape.getRootGraph().getEdgeCount() != 0 ) {
@@ -283,7 +286,7 @@ public abstract class Cytoscape {
    * @param attribute the name of the requested attribute
    * @return the value for the give node, for the given attribute
    */
-  public static Object getNodeAttributeValue ( CyNode node, String attribute ) {
+  public static Object getNodeAttributeValue ( Node node, String attribute ) {
     return Cytoscape.getNodeNetworkData().get( attribute, 
                                                Cytoscape.getNodeNetworkData().getCanonicalName( node ) );
   }
@@ -291,7 +294,7 @@ public abstract class Cytoscape {
   /**
    * Return the requested Attribute for the given Edge
    */
-  public static Object getEdgeAttributeValue ( CyEdge edge, String attribute ) {
+  public static Object getEdgeAttributeValue ( Edge edge, String attribute ) {
     return Cytoscape.getEdgeNetworkData().get( attribute, 
                                                Cytoscape.getEdgeNetworkData().getCanonicalName( edge ) );
   }
@@ -306,7 +309,7 @@ public abstract class Cytoscape {
   /**
    * Return all available Attributes for the given Nodes
    */
-  public static String[] getNodeAttributesList ( CyNode[] nodes ) {
+  public static String[] getNodeAttributesList ( Node[] nodes ) {
     return Cytoscape.getNodeNetworkData().getAttributeNames();
   }
 
@@ -320,7 +323,7 @@ public abstract class Cytoscape {
   /**
    * Return all available Attributes for the given Edges
    */
-  public static String[] getNodeAttributesList ( CyEdge[] edges ) {
+  public static String[] getNodeAttributesList ( Edge[] edges ) {
     return Cytoscape.getEdgeNetworkData().getAttributeNames();
   }
 
@@ -332,7 +335,7 @@ public abstract class Cytoscape {
    * @param value the value to be set
    * @return if it overwrites a previous value
    */
-  public static boolean setNodeAttributeValue ( CyNode node, String attribute, Object value ) {
+  public static boolean setNodeAttributeValue ( Node node, String attribute, Object value ) {
     return Cytoscape.getNodeNetworkData().set( attribute, 
                                                Cytoscape.
                                                getNodeNetworkData().
@@ -346,7 +349,7 @@ public abstract class Cytoscape {
   /**
    * Return the requested Attribute for the given Edge
    */
-  public static boolean setEdgeAttributeValue ( CyEdge edge, String attribute, Object value ) {
+  public static boolean setEdgeAttributeValue ( Edge edge, String attribute, Object value ) {
     return Cytoscape.getEdgeNetworkData().set( attribute, 
                                                Cytoscape.
                                                getEdgeNetworkData().
@@ -570,6 +573,7 @@ public abstract class Cytoscape {
  
   /**
    * Creates a new, empty Network. 
+   * @param title the title of the new network.
    */
   public static CyNetwork createNetwork ( String title ) {
     CyNetwork network =  getRootGraph().createNetwork( new int[] {}, new int[] {} );
@@ -581,6 +585,7 @@ public abstract class Cytoscape {
    * Creates a new Network 
    * @param nodes the indeces of nodes
    * @param edges the indeces of edges
+   * @param title the title of the new network.
    */
   public static CyNetwork createNetwork ( int[] nodes, int[] edges, String title ) {
     CyNetwork network = getRootGraph().createNetwork( nodes, edges );
@@ -591,54 +596,27 @@ public abstract class Cytoscape {
    
   /**
    * Creates a new Network 
-   * @param nodes the indeces of nodes
-   * @param edges the indeces of edges
+   * @param nodes a collection of nodes
+   * @param edges a collection of edges
+   * @param title the title of the new network.
    */
-  public static CyNetwork createNetwork ( giny.model.Node[] nodes, 
-                                          giny.model.Edge[] edges,
+  public static CyNetwork createNetwork ( Collection nodes, 
+                                          Collection edges,
                                           String title ) {
-    CyNetwork network = getRootGraph().createNetwork( nodes, edges );
+    Node[] node_array = ( Node[] )nodes.toArray( new Node[]{} );
+    Edge[] edge_array = ( Edge[] )edges.toArray( new Edge[]{} );
+
+    CyNetwork network = getRootGraph().createNetwork( node_array, edge_array );
     addNetwork( network, title  );
     return network;
   }
-
-  /**
-   * Creates a new, empty Network. 
-   */
-  public static CyNetwork createNetwork () {
-    CyNetwork network =  getRootGraph().createNetwork( new int[] {}, new int[] {} );
-    addNetwork( network );
-    return network;
-  }
-  
-  /**
-   * Creates a new Network 
-   * @param nodes the indeces of nodes
-   * @param edges the indeces of edges
-   */
-  public static CyNetwork createNetwork ( int[] nodes, int[] edges ) {
-    CyNetwork network = getRootGraph().createNetwork( nodes, edges );
-    addNetwork( network );
-    return network;
-  }
-
    
-  /**
-   * Creates a new Network 
-   * @param nodes the indeces of nodes
-   * @param edges the indeces of edges
-   */
-  public static CyNetwork createNetwork ( giny.model.Node[] nodes, giny.model.Edge[] edges ) {
-    CyNetwork network = getRootGraph().createNetwork( nodes, edges );
-    addNetwork( network );
-    return network;
-  }
-
   /**
    * Creates a new Network, that inherits from the given ParentNetwork
    * @param nodes the indeces of nodes
    * @param edges the indeces of edges
-   * @param param the parent of the this Network
+   * @param child_title the title of the new network.
+   * @param param the parent of the this Network 
    */
   public static CyNetwork createNetwork ( int[] nodes, int[] edges, String child_title, CyNetwork parent ) {
     CyNetwork network = getRootGraph().createNetwork( nodes, edges );
@@ -652,12 +630,16 @@ public abstract class Cytoscape {
    * @param edges the indeces of edges
    * @param param the parent of the this Network
    */
-  public static  CyNetwork createNetwork ( giny.model.Node[] nodes, giny.model.Edge[] edges,  String child_title, CyNetwork parent ) {
-    CyNetwork network = getRootGraph().createNetwork( nodes, edges );
+  public static  CyNetwork createNetwork ( Collection nodes, 
+                                           Collection edges,  
+                                           String child_title, 
+                                           CyNetwork parent ) {
+    Node[] node_array = ( Node[] )nodes.toArray( new Node[]{} );
+    Edge[] edge_array = ( Edge[] )edges.toArray( new Edge[]{} );
+    CyNetwork network = getRootGraph().createNetwork( node_array, edge_array );
     addNetwork( network, child_title, parent );
     return network;
   }
-
 
 
   /**
@@ -709,7 +691,7 @@ public abstract class Cytoscape {
       // TODO: come up with a really good way of supporting arbitrary 
       // file types via plugin support.
       System.err.println( "File Type not Supported, sorry" );
-      return Cytoscape.createNetwork();
+      return Cytoscape.createNetwork(null);
     }
 
     // have the GraphReader read the give file
@@ -918,7 +900,7 @@ public abstract class Cytoscape {
 
     if (network == null) {//no graph specified, or unable to read
 	    //create a default network
-	    network = createNetwork();
+	    network = createNetwork(null);
     }
 	
     //load attributes files
@@ -1017,11 +999,7 @@ public abstract class Cytoscape {
   }
   
 
-
-
-
-
-
+  
   protected static void firePropertyChange ( String property_type,
                                              Object old_value,
                                              Object new_value ) {

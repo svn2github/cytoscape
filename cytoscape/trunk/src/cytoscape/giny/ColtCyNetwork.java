@@ -4,6 +4,8 @@ import java.util.*;
 
 import giny.model.RootGraph;
 import giny.model.GraphPerspective;
+import giny.model.Node;
+import giny.model.Edge;
 
 import coltginy.ColtGraphPerspective;
 import cern.colt.map.*;
@@ -335,9 +337,111 @@ public class ColtCyNetwork
   }
   
   /**
-   * Returns the default object for flagging graph objects.
+    * Returns the default object for flagging graph objects.
+    */
+  protected FlagFilter getFlagger() {return flagger;}
+
+  //--------------------//
+  // Flagging 
+  
+
+  public void flagAllNodes () {
+    flagger.flagAllNodes();
+  }
+
+  public void flagAllEdges () {
+    flagger.flagAllEdges();
+  }
+  
+  public void unFlagAllNodes () {
+    flagger.flagAllNodes();
+  }
+
+  public void unFlagAllEdges () {
+    flagger.flagAllEdges();
+  }
+
+  /**
+   * Flags a node
    */
-  public FlagFilter getFlagger() {return flagger;}
+  public void setFlagged ( Node node, boolean state ) {
+    flagger.setFlagged( node, state );
+  }
+
+  /**
+   * Flag a group of node
+   */
+  public void setFlaggedNodes ( Collection nodes, boolean state ) {
+    flagger.setFlaggedNodes( nodes, state );
+  }
+
+  /**
+   * Flag a group of nodes using their indices
+   */
+  public void  setFlaggedNodes( int[] nodes, boolean state ) {
+    for ( int i = 0; i < nodes.length; ++i ) {
+      flagger.setFlagged( getNode( nodes[i] ), state );
+    }
+  }
+
+  /**
+   * Flags a edge
+   */
+  public void setFlagged ( Edge edge, boolean state ) {
+    flagger.setFlagged( edge, state );
+  }
+
+  /**
+   * Flag a group of edge
+   */
+  public void setFlaggedEdges ( Collection edges, boolean state ) {
+    flagger.setFlaggedEdges( edges, state );
+  }
+
+  /**
+   * Flag a group of edges using their indices
+   */
+  public void  setFlaggedEdges( int[] edges, boolean state ) {
+    for ( int i = 0; i < edges.length; ++i ) {
+      flagger.setFlagged( getEdge( edges[i] ), state );
+    }
+  }
+
+  public boolean isFlagged ( Node node ) {
+    return flagger.isFlagged( node );
+  }
+
+  public boolean isFlagged ( Edge edge ) {
+    return flagger.isFlagged( edge );
+  }
+
+  public Set getFlaggedNodes () {
+    return flagger.getFlaggedNodes();
+  }
+
+  public Set getFlaggedEdges () {
+    return flagger.getFlaggedEdges();
+  }
+
+  public int[] getFlaggedNodeIndicesArray () {
+    Set set = flagger.getFlaggedNodes();
+    int[] nodes = new int[ set.size() ];
+    int count = 0;
+    for ( Iterator i = set.iterator(); i.hasNext(); count++) {
+      nodes[count] = ( ( Node )i.next() ).getRootGraphIndex();
+    }
+    return nodes;
+  }
+
+  public int[] getFlaggedEdgeIndicesArray () {
+    Set set = flagger.getFlaggedEdges();
+    int[] edges = new int[ set.size() ];
+    int count = 0;
+    for ( Iterator i = set.iterator(); i.hasNext(); count++) {
+      edges[count] = ( ( Edge )i.next() ).getRootGraphIndex();
+    }
+    return edges;
+  }
 
   
    //----------------------------------------//
@@ -355,7 +459,7 @@ public class ColtCyNetwork
    * @param attribute the name of the requested attribute
    * @return the value for the give node, for the given attribute
    */
-  public Object getNodeAttributeValue ( CyNode node, String attribute ) {
+  public Object getNodeAttributeValue ( Node node, String attribute ) {
     return Cytoscape.getNodeNetworkData().get( attribute, 
                                                Cytoscape.getNodeNetworkData().getCanonicalName( node ) );
   }
@@ -371,7 +475,7 @@ public class ColtCyNetwork
   /**
    * Return the requested Attribute for the given Edge
    */
-  public Object getEdgeAttributeValue ( CyEdge edge, String attribute ) {
+  public Object getEdgeAttributeValue ( Edge edge, String attribute ) {
     return Cytoscape.getEdgeNetworkData().get( attribute, 
                                                Cytoscape.getEdgeNetworkData().getCanonicalName( edge ) );
   }
@@ -394,7 +498,7 @@ public class ColtCyNetwork
   /**
    * Return all available Attributes for the given Nodes
    */
-  public String[] getNodeAttributesList ( CyNode[] nodes ) {
+  public String[] getNodeAttributesList ( Node[] nodes ) {
     return Cytoscape.getNodeNetworkData().getAttributeNames();
   }
 
@@ -408,7 +512,7 @@ public class ColtCyNetwork
   /**
    * Return all available Attributes for the given Edges
    */
-  public String[] getNodeAttributesList ( CyEdge[] edges ) {
+  public String[] getNodeAttributesList ( Edge[] edges ) {
     return Cytoscape.getEdgeNetworkData().getAttributeNames();
   }
 
@@ -420,7 +524,7 @@ public class ColtCyNetwork
    * @param value the value to be set
    * @return if it overwrites a previous value
    */
-  public boolean setNodeAttributeValue ( CyNode node, String attribute, Object value ) {
+  public boolean setNodeAttributeValue ( Node node, String attribute, Object value ) {
     return Cytoscape.getNodeNetworkData().set( attribute, 
                                                Cytoscape.
                                                getNodeNetworkData().
@@ -446,7 +550,7 @@ public class ColtCyNetwork
   /**
    * Return the requested Attribute for the given Edge
    */
-  public boolean setEdgeAttributeValue ( CyEdge edge, String attribute, Object value ) {
+  public boolean setEdgeAttributeValue ( Edge edge, String attribute, Object value ) {
     return Cytoscape.getEdgeNetworkData().set( attribute, 
                                                Cytoscape.
                                                getEdgeNetworkData().
@@ -563,7 +667,7 @@ public class ColtCyNetwork
    * Cytoscape
    * @return the Network Index of this node
    */
-  public CyNode addNode ( CyNode cytoscape_node ) {
+  public CyNode addNode ( Node cytoscape_node ) {
     return ( CyNode )restoreNode( cytoscape_node);
   }
  
@@ -617,7 +721,7 @@ public class ColtCyNetwork
    * Cytoscape
    * @return the Network Index of this edge
    */
-  public CyEdge addEdge ( CyEdge cytoscape_edge ) {
+  public CyEdge addEdge ( Edge cytoscape_edge ) {
     return ( CyEdge )restoreEdge( cytoscape_edge );
   }
  

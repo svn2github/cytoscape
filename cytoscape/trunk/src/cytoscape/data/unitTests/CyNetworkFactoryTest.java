@@ -27,7 +27,7 @@ public class CyNetworkFactoryTest extends TestCase {
   public void tearDown() throws Exception {}
 
   public void testCreateEmptyNetwork() throws Exception {
-    CyNetwork network = Cytoscape.createNetwork();
+    CyNetwork network = Cytoscape.createNetwork(null);
     assertTrue( network != null );
     assertTrue( network.getNodeCount() == 0 );
     assertTrue( network.getEdgeCount() == 0 );

@@ -25,7 +25,8 @@ public class CloneGraphInNewWindowAction extends CytoscapeAction {
      
     CyNetwork current_network = Cytoscape.getCurrentNetwork();
     CyNetwork new_network = Cytoscape.createNetwork( current_network.getNodeIndicesArray(),
-                                                     current_network.getEdgeIndicesArray() );
+                                                     current_network.getEdgeIndicesArray(),
+                                                     current_network.getTitle()+" copy");
     new_network.setExpressionData( current_network.getExpressionData() );
 
     String title = " selection";

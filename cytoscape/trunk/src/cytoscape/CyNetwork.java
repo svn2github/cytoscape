@@ -1,5 +1,7 @@
 package cytoscape;
 
+import giny.model.Node;
+import giny.model.Edge;
 import giny.model.GraphPerspective;
 import java.util.*;
 
@@ -126,12 +128,64 @@ public interface CyNetwork extends GraphPerspective {
    */
   public GraphPerspective getGraphPerspective();
 
-  /**
-   * Returns the default object for flagging graph objects.
-   */
-  public FlagFilter getFlagger();
+  // /**
+//    * Returns the default object for flagging graph objects.
+//    */
+//   public FlagFilter getFlagger();
 
+  //--------------------//
+  // Flagging 
   
+  public void flagAllNodes () ;
+
+  public void flagAllEdges ()  ;
+  
+  public void unFlagAllNodes ()  ;
+
+  public void unFlagAllEdges ()  ;
+
+  /**
+   * Flags a node
+   */
+  public void setFlagged ( Node node, boolean state )  ;
+
+  /**
+   * Flag a group of node
+   */
+  public void setFlaggedNodes ( Collection nodes, boolean state )  ;
+
+  /**
+   * Flag a group of nodes using their indices
+   */
+  public void  setFlaggedNodes( int[] nodes, boolean state )  ;
+
+  /**
+   * Flags a edge
+   */
+  public void setFlagged ( Edge edge, boolean state )  ;
+
+  /**
+   * Flag a group of edge
+   */
+  public void setFlaggedEdges ( Collection edges, boolean state ) ; 
+
+  /**
+   * Flag a group of edges using their indices
+   */
+  public void  setFlaggedEdges( int[] edges, boolean state )  ;
+
+  public boolean isFlagged ( Node node )  ;
+   
+  public boolean isFlagged ( Edge edge )  ;
+
+  public Set getFlaggedNodes ()  ;
+
+  public Set getFlaggedEdges ()  ;
+
+  public int[] getFlaggedNodeIndicesArray ()  ;
+
+  public int[] getFlaggedEdgeIndicesArray ()  ;
+
 
   //--------------------//
   // Member Data
@@ -144,7 +198,7 @@ public interface CyNetwork extends GraphPerspective {
    * @param attribute the name of the requested attribute
    * @return the value for the give node, for the given attribute
    */
-  public Object getNodeAttributeValue ( CyNode node, String attribute );
+  public Object getNodeAttributeValue ( Node node, String attribute );
 
   /**
    * Return the requested Attribute for the given Node
@@ -154,7 +208,7 @@ public interface CyNetwork extends GraphPerspective {
   /**
    * Return the requested Attribute for the given Edge
    */
-  public Object getEdgeAttributeValue ( CyEdge edge, String attribute );
+  public Object getEdgeAttributeValue ( Edge edge, String attribute );
 
   /**
    * Return the requested Attribute for the given Edge
@@ -169,7 +223,7 @@ public interface CyNetwork extends GraphPerspective {
   /**
    * Return all available Attributes for the given Nodes
    */
-  public String[] getNodeAttributesList ( CyNode[] nodes);
+  public String[] getNodeAttributesList ( Node[] nodes);
 
   /**
    * Return all availble Attributes for the Edges in this CyNetwork
@@ -179,7 +233,7 @@ public interface CyNetwork extends GraphPerspective {
   /**
    * Return all available Attributes for the given Edges
    */
-  public String[] getNodeAttributesList ( CyEdge[] edges );
+  public String[] getNodeAttributesList ( Edge[] edges );
 
   //set
 
@@ -190,7 +244,7 @@ public interface CyNetwork extends GraphPerspective {
    * @param value the value to be set
    * @return if it overwrites a previous value
    */
-  public boolean setNodeAttributeValue ( CyNode node, String attribute, Object value );
+  public boolean setNodeAttributeValue ( Node node, String attribute, Object value );
 
   /**
    * Return the requested Attribute for the given Node
@@ -200,7 +254,7 @@ public interface CyNetwork extends GraphPerspective {
   /**
    * Return the requested Attribute for the given Edge
    */
-  public boolean setEdgeAttributeValue ( CyEdge edge, String attribute, Object value );
+  public boolean setEdgeAttributeValue ( Edge edge, String attribute, Object value );
 
   /**
    * Return the requested Attribute for the given Edge
@@ -257,7 +311,7 @@ public interface CyNetwork extends GraphPerspective {
    * Cytoscape
    * @return the Network Index of this node
    */
-  public CyNode addNode ( CyNode cytoscape_node );
+  public CyNode addNode ( Node cytoscape_node );
  
   /**
    * This will remove this node from the Network. However,
@@ -288,7 +342,7 @@ public interface CyNetwork extends GraphPerspective {
    * Cytoscape
    * @return the Network Index of this edge
    */
-  public CyEdge addEdge ( CyEdge cytoscape_edge );
+  public CyEdge addEdge ( Edge cytoscape_edge );
  
   /**
    * This will remove this edge from the Network. However,

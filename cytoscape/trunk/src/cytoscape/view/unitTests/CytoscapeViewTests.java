@@ -73,9 +73,9 @@ public void setUp () throws Exception
     node2 = Cytoscape.getCyNode("node2", true);
     edge1 = Cytoscape.getCyEdge("node1", "node1 (pp) node2", "node2", "pp");
     edge2 = Cytoscape.getCyEdge("node2", "node2 (pp) node1", "node1", "pp");
-    Node[] nodeArray = {node1, node2};
-    Edge[] edgeArray = {edge1, edge2};
-    network = Cytoscape.createNetwork(nodeArray, edgeArray);
+    int[] nodeArray = { node1.getRootGraphIndex(), node2.getRootGraphIndex() };
+    int[] edgeArray = { edge1.getRootGraphIndex(), edge2.getRootGraphIndex() };
+    network = Cytoscape.createNetwork(nodeArray, edgeArray, null);
     view = Cytoscape.createNetworkView(network);
     nodeView1 = view.getNodeView(node1);
     nodeView2 = view.getNodeView(node2);
@@ -92,21 +92,21 @@ public void tearDown () throws Exception
  */
 public void testFilterToView() throws Exception {
     checkState(false, false, false, false);
-    network.getFlagger().setFlagged(node1, true);
+    network.setFlagged(node1, true);
     checkState(true, false, false, false);
-    network.getFlagger().setFlagged(edge2, true);
+    network.setFlagged(edge2, true);
     checkState(true, false, false, true);
-    network.getFlagger().flagAllNodes();
+    network.flagAllNodes();
     checkState(true, true, false, true);
-    network.getFlagger().flagAllEdges();
+    network.flagAllEdges();
     checkState(true, true, true, true);
-    network.getFlagger().setFlagged(node2, false);
+    network.setFlagged(node2, false);
     checkState(true, false, true, true);
-    network.getFlagger().setFlagged(edge1, false);
+    network.setFlagged(edge1, false);
     checkState(true, false, false, true);
-    network.getFlagger().unflagAllEdges();
+    network.unFlagAllEdges();
     checkState(true, false, false, false);
-    network.getFlagger().unflagAllNodes();
+    network.unFlagAllNodes();
     checkState(false, false, false, false);
 }
 //-------------------------------------------------------------------------
@@ -138,10 +138,10 @@ public void testViewToFilter() throws Exception {
  * defined by the arguments.
  */
 public void checkState(boolean n1, boolean n2, boolean e1, boolean e2) {
-    assertTrue( network.getFlagger().isFlagged(node1) == n1 );
-    assertTrue( network.getFlagger().isFlagged(node2) == n2 );
-    assertTrue( network.getFlagger().isFlagged(edge1) == e1 );
-    assertTrue( network.getFlagger().isFlagged(edge2) == e2 );
+  assertTrue( network.isFlagged(node1) == n1 );
+    assertTrue( network.isFlagged(node2) == n2 );
+    assertTrue( network.isFlagged(edge1) == e1 );
+    assertTrue( network.isFlagged(edge2) == e2 );
     assertTrue( nodeView1.isSelected() == n1 );
     assertTrue( nodeView2.isSelected() == n2 );
     assertTrue( edgeView1.isSelected() == e1 );
