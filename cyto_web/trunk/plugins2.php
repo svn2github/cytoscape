@@ -151,6 +151,67 @@ Also included is a spreadsheet importer.
            [<a href="ftp://baker.systemsbiology.net/pub/xmas/plugins/course.cytoproj.zip">Download Test Project</a>]
 					</td>
 				</tr>        
+					</td>
+				</tr>                                                                                      
+    	<tr><td colspan=3><HR></TD></TR>
+
+				<tr>
+					<td width="20%" valign="top">
+
+						<b>DataMatrix PlugIn</B><font size="-1">
+							<br>
+							Version: .8 BETA
+							<br>
+							Release Date: August 12, 2004</font>
+					</td>
+					<td width="60%" valign="top">
+This plugin provides a number of integrated tools for exploring and visualizing experimental data in association with the Cytoscape network view.  
+Read in tab-delimited text files, in which there is one row for each gene or protein, and as many columns as there are experimental conditions.  The following operations are then possible:
+
+<ol>
+  <li> examine the numerical data in a spreadsheet display
+  <li> view x-y plots of selected rows
+  <li> find other rows (other genes) with correlated profiles
+  <li> selectively enable or disable columns of data
+  <li> get selections from, or propogate selections to, the Cytoscape network
+  <li> animate the Cytoscape network based upon the experimental data, mapping (for instance) log10 ratios to node color, and statistical
+       significance to node size
+  <li> for the skilled user:  use the python console, and write scripts to create custom operations on, or selections from, the data
+</ol>
+
+
+						<p>
+							Released by: Paul Shannon, Baliga Group, <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>.
+						</p>
+					</td>
+					<td width="20%" valign="top">
+					 [<a href="http://db.systemsbiology.net/cytoscape/ftp/DataMatrixPlugin.jar">Download PlugIn .jar</a>]<br>
+					</td>
+				</tr>        
+    	<tr><td colspan=3><HR></TD></TR>
+
+				<tr>
+					<td width="20%" valign="top">
+
+						<b>Python Console PlugIn</B><font size="-1">
+							<br>
+							Version: .1 BETA
+							<br>
+							Release Date: August 12, 2004</font>
+					</td>
+					<td width="60%" valign="top">
+For the skilled user, this plugin adds scripting to Cytoscape.  <a href="http://www.python.org">Python</a> is a very popular language,
+not unlike Perl, but with (many of us feel) a much more natural syntax.  We have just begun to explore the possibilities Python
+adds to Cytoscape; an inventory of these, along with demonstrations and tutorials will shortly appear below.
+
+						<p>
+							Released by: Paul Shannon, Baliga Group, <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>.
+						</p>
+					</td>
+					<td width="20%" valign="top">
+					 [<a href="http://db.systemsbiology.net/cytoscape/ftp/PythonConsolePlugin.jar">Download PlugIn .jar</a>]<br>
+					</td>
+				</tr>        
       </tbody>
 		</table>
 
