@@ -267,7 +267,7 @@ public class CyMenus {
       mi = loadSubMenu.add(new LoadNodeAttributesAction(networkView));
       mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK));
       mi = loadSubMenu.add(new LoadEdgeAttributesAction(networkView));
-      mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_J, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK));
+      mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK));
       mi = loadSubMenu.add(new LoadExpressionMatrixAction(networkView));
       mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.CTRL_MASK));
       mi = loadSubMenu.add(new LoadBioDataServerAction(networkView));
