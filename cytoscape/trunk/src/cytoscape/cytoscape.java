@@ -49,7 +49,7 @@ import cytoscape.view.CyWindow;
 import com.jgoodies.plaf.FontSizeHints;
 import com.jgoodies.plaf.LookUtils;
 import com.jgoodies.plaf.Options;
-import com.jgoodies.plaf.plastic.Plastic3DLookAndFeel
+import com.jgoodies.plaf.plastic.Plastic3DLookAndFeel;
 
 
 
