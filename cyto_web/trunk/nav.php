@@ -16,20 +16,16 @@
 						Screenshots 
 					</a>
 					| 
-					<a href="people.php">
-						Dev team 
-					</a>
-					| 
 					<a href="plugins2.php">
 						PlugIns 
 					</a>
 					| 
-					<a href="download.php?file=cyto2">
-						Download Cytoscape 2.0
-					</a>
+					<a href="community.php">
+						Community 
+					</a>					
 					| 
-					<a href="download.php?file=cyto1">
-						Download Cytoscape 1.1 
+					<a href="downloads.php">
+						Download
 					</a>
 					| 
 					<a href="http://www.cbio.mskcc.org/cytoscape/bugs/">
