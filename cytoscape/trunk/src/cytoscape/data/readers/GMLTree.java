@@ -321,13 +321,29 @@ public class GMLTree{
    * @param delim A string representing the delimiter used in keys
    * @param type The type of vector to return. See public static values for specifying type
    * @return A vector. The type of this vector is determined by type
-   */
+   * @deprecated use anonymous String arrays instead
+  */
   public Vector getVector(String keys,String delim,int type){
     Vector keyVector = new Vector();
     StringTokenizer tokenizer = new StringTokenizer(keys, delim);
     while(tokenizer.hasMoreTokens()){
       keyVector.add(tokenizer.nextToken());
     }
+    return getVector(keyVector,type);
+  }
+
+
+  /**
+   * Return a vector of information stored in gmlNodes
+   * @param keys a string array containing the sequence of keys used to lookup the values in the tree
+   * @param type The type fo vector to return. See public static values for specifiying type
+   * @return A vector. The type of the objects in the vector is determined by type
+   */
+  public Vector getVector(String [] keys, int type){
+    Vector keyVector = new Vector(keys.length);
+    for ( int i = 0; i < keys.length ; i++) {
+      keyVector.add(keys[i]);
+    } // end of for ()
     return getVector(keyVector,type);
   }
 
