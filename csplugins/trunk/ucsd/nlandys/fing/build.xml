@@ -20,7 +20,9 @@
   <target name="doc">
     <javadoc destdir="${javadoc.dir}"
              source="1.4">
-     
+      <fileset dir="${src.dir}">
+        <include name="fing/model/*.java"/>
+      </fileset>
       <classpath>
         <fileset dir="${lib.dir}">
           <include name="*.jar"/>
