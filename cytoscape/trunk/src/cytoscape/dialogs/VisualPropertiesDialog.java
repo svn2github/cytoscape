@@ -40,6 +40,7 @@ public class VisualPropertiesDialog extends JDialog {
     MutableColor nColor;
     MutableColor bColor;
     MutableColor bgColor;
+    MutableColor eColor;
     MutableString localNodeLabelKey;
     MutableString parentNodeLabelKey;
     MutableString localEdgeKey;
@@ -62,15 +63,15 @@ public VisualPropertiesDialog (Frame parentFrame,
   nColor = new MutableColor(getBasicColor(VizMapperCategories.NODE_FILL_COLOR));
   bColor = new MutableColor(getBasicColor(VizMapperCategories.NODE_BORDER_COLOR));
   bgColor = new MutableColor(getBasicColor(VizMapperCategories.BG_COLOR));
+  eColor = new MutableColor(getBasicColor(VizMapperCategories.EDGE_COLOR));
   localNodeLabelKey = new MutableString(nodeLabelKey.getString());
   parentNodeLabelKey = nodeLabelKey;
   this.applied = applied;
 
-  JPanel mainPanel = new JPanel ();
-  GridBagLayout gridbag = new GridBagLayout(); 
-  GridBagConstraints c = new GridBagConstraints();
-  MiscGB.pad(c,5,5);
-  mainPanel.setLayout (gridbag);
+  GridBagGroup gbg = new GridBagGroup();
+  
+  JPanel mainPanel = gbg.panel;
+  MiscGB.pad(gbg.constraints,5,5);
 
   BorderedPanel defaultBP = new BorderedPanel("Defaults");
   JPanel defaultPanel = defaultBP.getPanel();
@@ -78,27 +79,33 @@ public VisualPropertiesDialog (Frame parentFrame,
   GridBagConstraints defaultC = defaultBP.getConstraints();
   MiscGB.pad(defaultC,5,5);
 
+  int yPos=0;
+  int yDef=0;
 
   JButton colorButton = new JButton("Node Color");
   JLabel colorLabel = MiscGB.createColorLabel(nColor.getColor());
   colorButton.addActionListener(new
       GeneralColorDialogListener(this,nColor,colorLabel,
   				 "Choose a Node Color"));
-  MiscGB.set(defaultC,0,0,1,1,GridBagConstraints.HORIZONTAL);
+  MiscGB.set(defaultC,0,yDef,1,1,GridBagConstraints.HORIZONTAL);
   MiscGB.insert(defaultPanel,colorButton,defaultLayout,defaultC);
-  MiscGB.set(defaultC,1,0);
+  MiscGB.set(defaultC,1,yDef);
   MiscGB.insert(defaultPanel,colorLabel,defaultLayout,defaultC);
+
+  yDef++;
 
   JButton borderColorButton = new JButton("Node Border Color");
   JLabel borderColorLabel = MiscGB.createColorLabel(bColor.getColor());
   borderColorButton.addActionListener(new
       GeneralColorDialogListener(this,bColor,borderColorLabel,
   				 "Choose a Node Border Color"));
-  MiscGB.set(defaultC,1,2);
+  MiscGB.set(defaultC,1,yDef);
   MiscGB.insert(defaultPanel,borderColorLabel,defaultLayout,defaultC);
 
-  MiscGB.set(defaultC,0,2,1,1,GridBagConstraints.HORIZONTAL);
+  MiscGB.set(defaultC,0,yDef,1,1,GridBagConstraints.HORIZONTAL);
   MiscGB.insert(defaultPanel,borderColorButton,defaultLayout,defaultC);
+
+  yDef++;
 
   JButton bgColorButton
       = new JButton("Background Color");
@@ -106,43 +113,51 @@ public VisualPropertiesDialog (Frame parentFrame,
   bgColorButton.addActionListener(new
       GeneralColorDialogListener(this,bgColor,bgColorLabel,
   				 "Choose a Background Color"));
-  MiscGB.set(defaultC,1,3);
+  MiscGB.set(defaultC,1,yDef);
   MiscGB.insert(defaultPanel,bgColorLabel,defaultLayout,defaultC);
 
-  MiscGB.set(defaultC,0,3,1,1,GridBagConstraints.HORIZONTAL);
+  MiscGB.set(defaultC,0,yDef,1,1,GridBagConstraints.HORIZONTAL);
   MiscGB.insert(defaultPanel,bgColorButton,defaultLayout,defaultC);
+
+  yDef++;
 
   sizeDefault = 
       new IntegerEntryField
 	  ("Node Size",
 	   ((Integer)aMapper.getDefaultValue(VizMapperCategories.NODE_HEIGHT)).intValue(),
 	   500);
-  MiscGB.set(defaultC,0,4);
+  MiscGB.set(defaultC,0,yDef);
   MiscGB.insert(defaultPanel,sizeDefault.getLabel(),defaultLayout,defaultC);
-  MiscGB.set(defaultC,1,4);
+  MiscGB.set(defaultC,1,yDef);
   MiscGB.insert(defaultPanel,sizeDefault.getField(),defaultLayout,defaultC);
 
+  yDef++;
+
   initializeShapeDefault();
-  MiscGB.set(defaultC,0,5,1,1,GridBagConstraints.HORIZONTAL);
+  MiscGB.set(defaultC,0,yDef,1,1,GridBagConstraints.HORIZONTAL);
   MiscGB.insert(defaultPanel,shapeDefault.getButton(),defaultLayout,defaultC);
-  MiscGB.set(defaultC,1,5);
+  MiscGB.set(defaultC,1,yDef);
   MiscGB.insert(defaultPanel,shapeDefault.getLabel(),defaultLayout,defaultC);
 
+  yDef++;
+
   initializeLineTypeDefault();
-  MiscGB.set(defaultC,0,6,1,1,GridBagConstraints.HORIZONTAL);
+  MiscGB.set(defaultC,0,yDef,1,1,GridBagConstraints.HORIZONTAL);
   MiscGB.insert(defaultPanel,lineTypeDefault.getButton(),defaultLayout,defaultC);
-  MiscGB.set(defaultC,1,6);
+  MiscGB.set(defaultC,1,yDef);
   MiscGB.insert(defaultPanel,lineTypeDefault.getLabel(),defaultLayout,defaultC);
 
+  yDef++;
+
   initializeArrowDefault();
-  MiscGB.set(defaultC,0,7,1,1,GridBagConstraints.HORIZONTAL);
+  MiscGB.set(defaultC,0,yDef,1,1,GridBagConstraints.HORIZONTAL);
   MiscGB.insert(defaultPanel,arrowDefault.getButton(),defaultLayout,defaultC);
-  MiscGB.set(defaultC,1,7);
+  MiscGB.set(defaultC,1,yDef);
   MiscGB.insert(defaultPanel,arrowDefault.getLabel(),defaultLayout,defaultC);
 
   //////////////////////////////////////////////
-  MiscGB.set(c,0,0,2,1,GridBagConstraints.HORIZONTAL);
-  MiscGB.insert(mainPanel,defaultPanel,gridbag,c);
+  MiscGB.insert(gbg,defaultPanel,0,yPos,2,1,GridBagConstraints.HORIZONTAL);
+
 
   //////////////////////////////////////////////
   BorderedPanel labelBP = new BorderedPanel("Node Label Mapping");
@@ -150,12 +165,13 @@ public VisualPropertiesDialog (Frame parentFrame,
   GridBagLayout labelLayout = labelBP.getLayout();
   GridBagConstraints labelConstraints = labelBP.getConstraints();
 
+  yPos++;
+
   JPanel labelTextPanel
       = new LabelTextPanel(nodeAttribs,localNodeLabelKey);
   MiscGB.set(labelConstraints,0,0);
   MiscGB.insert(labelPanel,labelTextPanel,labelLayout,labelConstraints);
-  MiscGB.set(c,0,8,2,1,GridBagConstraints.HORIZONTAL);
-  MiscGB.insert(mainPanel,labelPanel,gridbag,c);
+  MiscGB.insert(gbg,labelPanel,0,yPos,2,1,GridBagConstraints.HORIZONTAL);
 
   //////////////////////////////////////////////
   BorderedPanel edgeBP = new BorderedPanel("Edge Color Mapping");
@@ -163,23 +179,24 @@ public VisualPropertiesDialog (Frame parentFrame,
   GridBagLayout edgeLayout = edgeBP.getLayout();
   GridBagConstraints edgeConstraints = edgeBP.getConstraints();
   
+  yPos++;
+
   if(localEdgeKey==null) localEdgeKey = new MutableString("temp");
   edgeTextPanel
       = new EdgeTextPanel(edgeAttribs,aMapper,parentFrame,localEdgeKey);
   MiscGB.set(edgeConstraints,0,0);
   MiscGB.insert(edgePanel,edgeTextPanel,edgeLayout,edgeConstraints);
-  MiscGB.set(c,0,9,2,1,GridBagConstraints.HORIZONTAL);
-  MiscGB.insert(mainPanel,edgePanel,gridbag,c);
+  MiscGB.insert(gbg,edgePanel,0,yPos,2,1,GridBagConstraints.HORIZONTAL);
+
+  yPos++;
 
   JButton applyButton = new JButton ("Apply");
   applyButton.addActionListener (new ApplyAction ());
-  MiscGB.set(c,0,10);
-  MiscGB.insert(mainPanel,applyButton,gridbag,c);
+  MiscGB.insert(gbg,applyButton,0,yPos);
 
   JButton cancelButton = new JButton ("Cancel");
   cancelButton.addActionListener (new CancelAction ());
-  MiscGB.set(c,1,10);
-  MiscGB.insert(mainPanel,cancelButton,gridbag,c);
+  MiscGB.insert(gbg,cancelButton,1,yPos);
 
   setContentPane (mainPanel);
 } // PopupDialog ctor
