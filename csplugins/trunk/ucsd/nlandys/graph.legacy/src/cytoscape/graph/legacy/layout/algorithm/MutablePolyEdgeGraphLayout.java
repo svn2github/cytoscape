@@ -5,6 +5,8 @@ import cytoscape.graph.legacy.layout.PolyEdgeGraphLayout;
 /**
  * This class extends <code>MutableGraphLayout</code> to offer the possibility
  * of defining poly-line edges (as opposed to just straight-line edges).
+ * @deprecated Please avoid looking at or using this code -- this code
+ *   is going away in the next Cytoscape release (the one after 2.1).
  **/
 public interface MutablePolyEdgeGraphLayout
   extends PolyEdgeGraphLayout, MutableGraphLayout

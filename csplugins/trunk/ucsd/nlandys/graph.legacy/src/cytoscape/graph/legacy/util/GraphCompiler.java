@@ -14,6 +14,8 @@ import java.util.Hashtable;
  * An instance of this class &quot;compiles&quot; a <code>GraphTopology</code>
  * and provides several bits of useful information about the graph.<p>
  * An instance of this class is meant to be used by a single thread only.<p>
+ * @deprecated Please avoid looking at or using this code -- this code
+ *   is going away in the next Cytoscape release (the one after 2.1).
  **/
 public final class GraphCompiler implements NodeNeighbors
 {

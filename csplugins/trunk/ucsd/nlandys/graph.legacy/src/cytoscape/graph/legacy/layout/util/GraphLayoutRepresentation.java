@@ -8,6 +8,8 @@ import cytoscape.graph.legacy.util.GraphTopologyRepresentation;
  * whose only purpose is to represent a graph layout based on structure
  * defined in arrays of integer and floating-point numbers.
  * Methods on an instance of this class have no hooks into outside code.
+ * @deprecated Please avoid looking at or using this code -- this code
+ *   is going away in the next Cytoscape release (the one after 2.1).
  **/
 public class GraphLayoutRepresentation
   extends GraphTopologyRepresentation

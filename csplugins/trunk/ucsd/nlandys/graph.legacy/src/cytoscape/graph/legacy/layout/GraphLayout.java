@@ -5,6 +5,8 @@ import cytoscape.graph.legacy.GraphTopology;
 /**
  * This class represents not just a graph's topology but also a layout of its
  * nodes in 2D space (a &quot;straight-line graph drawing&quot;).
+ * @deprecated Please avoid looking at or using this code -- this code
+ *   is going away in the next Cytoscape release (the one after 2.1).
  **/
 public interface GraphLayout extends GraphTopology
 {

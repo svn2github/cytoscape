@@ -16,6 +16,8 @@ import cytoscape.graph.legacy.IndexIterator;
  * {S[0], S[1], ... S[N]} where
  * each S[i] is the straight-line segment starting
  * at P[i] and ending at P[i+1].
+ * @deprecated Please avoid looking at or using this code -- this code
+ *   is going away in the next Cytoscape release (the one after 2.1).
  **/
 public interface PolyEdgeGraphLayout extends GraphLayout
 {

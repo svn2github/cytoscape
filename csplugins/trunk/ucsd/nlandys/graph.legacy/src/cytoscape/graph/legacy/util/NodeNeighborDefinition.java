@@ -13,6 +13,8 @@ package cytoscape.graph.legacy.util;
  * On the  other hand if node A <i>is</i> a neighbor of node B according to
  * the original definition in <code>GraphCompiler</code>, then this interface
  * is able to define that node A <i>is not</i> a neighbor of node B.
+ * @deprecated Please avoid looking at or using this code -- this code
+ *   is going away in the next Cytoscape release (the one after 2.1).
  **/
 public interface NodeNeighborDefinition
 {

@@ -15,6 +15,10 @@
 
   <!-- This does not do anything useful by itself; used by other targets. -->
   <target name="init">
+    <echo>
+WARNING!!!  All code in this project is deprecated.  You
+should avoid using or looking at this code at all costs.
+    </echo>
     <uptodate property="buildfile-generated"
               targetfile="${build.dir}/build.xml">
       <srcfiles dir="${basedir}/.build"

@@ -9,6 +9,8 @@ import java.util.NoSuchElementException;
  * unless you're the author.
  * </b><p>
  * Creates an <code>IndexIterator</code> object out of an array of integers.
+ * @deprecated Please avoid looking at or using this code -- this code
+ *   is going away in the next Cytoscape release (the one after 2.1).
  **/
 public class ArrayIterator implements IndexIterator
 {

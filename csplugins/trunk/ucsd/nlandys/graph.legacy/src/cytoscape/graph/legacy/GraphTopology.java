@@ -47,6 +47,8 @@ package cytoscape.graph.legacy;
  * not mean, however, that instances of this interface are not mutable.  A
  * sub-interface extending <code>GraphTopology</code> could be defined which
  * exposes mutable functionality.
+ * @deprecated Please avoid looking at or using this code -- this code
+ *   is going away in the next Cytoscape release (the one after 2.1).
  **/
 public interface GraphTopology
 {

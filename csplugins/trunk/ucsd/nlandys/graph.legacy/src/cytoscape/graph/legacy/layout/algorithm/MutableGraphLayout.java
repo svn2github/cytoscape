@@ -4,6 +4,8 @@ import cytoscape.graph.legacy.layout.GraphLayout;
 
 /**
  * This class offers a hook for layout algorithms to operate on.
+ * @deprecated Please avoid looking at or using this code -- this code
+ *   is going away in the next Cytoscape release (the one after 2.1).
  */
 public interface MutableGraphLayout extends GraphLayout
 {

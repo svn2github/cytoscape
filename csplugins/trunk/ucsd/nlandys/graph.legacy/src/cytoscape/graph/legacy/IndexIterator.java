@@ -8,6 +8,8 @@ import java.util.NoSuchElementException;
  * unless you're the author.
  * </b><p>
  * An iterator over a set of indices.
+ * @deprecated Please avoid looking at or using this code -- this code
+ *   is going away in the next Cytoscape release (the one after 2.1).
  **/
 public interface IndexIterator
 {

@@ -9,6 +9,8 @@ import cytoscape.graph.legacy.layout.util.GraphLayoutRepresentation;
  * represent a mutable graph layout based on structure defined in arrays of
  * integers and floating-point numbers.
  * Methods on an instance of this class have no hooks into outside code.
+ * @deprecated Please avoid looking at or using this code -- this code
+ *   is going away in the next Cytoscape release (the one after 2.1).
  **/
 public class MutableGraphLayoutRepresentation
   extends GraphLayoutRepresentation

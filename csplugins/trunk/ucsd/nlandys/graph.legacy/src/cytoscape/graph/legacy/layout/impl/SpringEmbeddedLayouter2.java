@@ -26,6 +26,8 @@ import java.util.List;
  * <code>MutableGraphLayout</code> objects whose nodes are not all movable.<p>
  * This class is seriously due for a complete re-write.  The algorithm is
  * slow as heck.
+ * @deprecated Please avoid looking at or using this code -- this code
+ *   is going away in the next Cytoscape release (the one after 2.1).
  **/
 public final class SpringEmbeddedLayouter2 implements Task
 {

@@ -13,6 +13,8 @@ package cytoscape.graph.legacy;
  * may choose to access a legacy graph implementation's node adjacency list
  * information instead of computing it inside of this &quot;wrapper&quot;
  * graph framework - that's exactly what this interface is for.
+ * @deprecated Please avoid looking at or using this code -- this code
+ *   is going away in the next Cytoscape release (the one after 2.1).
  */
 public interface NodeNeighbors
 {

@@ -7,6 +7,8 @@ import cytoscape.graph.legacy.GraphTopology;
  * whose only purpose is to represent a non-mutable graph topology based on
  * structure defined in arrays of integers.
  * Methods on an instance of this class have no hooks into outside code.
+ * @deprecated Please avoid looking at or using this code -- this code
+ *   is going away in the next Cytoscape release (the one after 2.1).
  **/
 public class GraphTopologyRepresentation implements GraphTopology
 {
