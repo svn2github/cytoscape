@@ -24,8 +24,8 @@ OBJS =	ActivePathsFinderBridge.class \
         cytoscape.class
 
 
-default: checkkEnv activePathsDirectory objs dataDirectories dialogsDirectory nativelib \
-         layoutDirectory
+default: checkkEnv activePathsDirectory objs dataDirectories \
+         dialogsDirectory nativelib layoutDirectory
 
 objs: $(OBJS)
 
@@ -91,11 +91,21 @@ doc:
             -windowtitle cytoscape \
     -doctitle "cytoscape"
 
-	
+#
+# --- run0
+# start the program without loading any data from the command line
+#
 
 run0:
 	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape
 
+#
+# --- run1
+# Display the 330 "galFiltered" genes, with tideker's expression data 
+# (5936 genes by 20 conditions); use the flat-file version of GO gene 
+# annotation.  These data are very similar to those used in the Science
+# paper, Ideker et al, April 2001.
+# 
 
 run1: 
 	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
@@ -103,14 +113,30 @@ run1:
           -e $(CYTOSCAPE_DATA)/gal.5936x20.mrna \
           -b $(CYTOSCAPE_DATA)/GO
 
+#
+# --- run1a
+# like run1, but no GO data and no gene common names
+#
+
 run1a: 
 	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
           -g $(CYTOSCAPE_DATA)/galFiltered.gml \
           -e $(CYTOSCAPE_DATA)/gal.5936x20.mrna
 
+#
+# --- run1b
+# like run1a, but with no expression data
+#
+
 run1b: 
 	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
           -g $(CYTOSCAPE_DATA)/galFiltered.gml
+
+#
+# --- run1c
+# like run1,  adding one (of several possible) active path finding parameters,
+# enough to cause the active paths calculation to start automatically
+#
 
 run1c: 
 	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
@@ -120,16 +146,31 @@ run1c:
           --APni 10000 \
           --APrs 17
 
+#
+# --- run1d
+# like run1, but biodata comes from a local RMI server, not flat files
+#
+
 run1d:
 	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
           -g $(CYTOSCAPE_DATA)/galFiltered.gml \
           -e $(CYTOSCAPE_DATA)/gal.5936x20.mrna \
-          -b rmi://hazel/biodata
+          -b rmi://localhost/biodata
+
+#
+# --- run1e
+# a small (32 gene) interactions dataset, with an RMI biodata server
+#
 
 run1e: 
 	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
           -i $(CYTOSCAPE_DATA)/tideker0/yeastSmall.intr \
           -b rmi://localhost/biodata
+
+#
+# --- run1f
+# like run1, but with local RMI biodata server
+#
 
 run1f: 
 	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
@@ -137,25 +178,48 @@ run1f:
           -e $(CYTOSCAPE_DATA)/gal.5936x20.mrna \
           -b rmi://localhost/biodata
 
+#
+# --- run2
+#  Demonstrates the use of node attributes which are not expression data
+#  'fooB' is a derived measure of the connectivity-related significance of
+#  each node in the graph:  delete this node, and x number of edges drop out.
+#
 
 run2:
 	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
           -g $(CYTOSCAPE_DATA)/galFiltered.gml \
           -n $(CYTOSCAPE_DATA)/galFiltered.fooB \
           -b $(CYTOSCAPE_DATA)/GO
+#
+# --- run2a
+#  like run2, but without file-based biodata server
 
 run2a:
 	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
           -g $(CYTOSCAPE_DATA)/galFiltered.gml \
           -n $(CYTOSCAPE_DATA)/galFiltered.fooB 
 
+#
+# --- run3 
+# Demonstrates use of a minimal "interactions" file from which a full graph
+# is created.  The normal galactose expression data used, along with 
+# the GO data
+#
 
 run3:
 	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
           -i $(CYTOSCAPE_DATA)/tideker0/yeastSmall.intr \
           -e $(CYTOSCAPE_DATA)/gal.5936x20.mrna \
           -b $(CYTOSCAPE_DATA)/GO
-
+#
+# --- run3a
+#  Demonstrates two things:
+#    1. how to supply a minimal "interactions" file from which a full graph
+#       is created
+#    2. provides two small files specifying different edge attributes, to
+#       test and illustrate the programs ability to control the appearance
+#       of graph edges as a function of edge attribute values
+#
 
 run3a:
 	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
@@ -163,59 +227,35 @@ run3a:
           -j $(CYTOSCAPE_DATA)/tideker0/yeastSmall.edgeAttr.0 \
           -j $(CYTOSCAPE_DATA)/tideker0/yeastSmall.edgeAttr.1
 
+#
+# --- run4
+#   nitin baliga's halobacterium data (exceedingly preliminary...)
+#
 
 run4:
 	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
           -i $(CYTOSCAPE_DATA)/nitin/network.intr 
-
+#
+# --- run5
+#  tideker's 7000 node data set, with 28MB expression data 
+#  matrix (does not yet work!)
+#     
 run5:
 	java -Xmx1024MB -Djava.library.path=. cytoscape.cytoscape \
           -g /users/tideker/cytoscape$(CYTOSCAPE_DATA)/network7000.gml \
           -e /users/tideker/cytoscape$(CYTOSCAPE_DATA)/Nov10_1.pvals \
           -b $(CYTOSCAPE_DATA)/GO
-
+#
+# --- run5
+#  tideker's 7000 node data set, with the 'usual' expression data
+#     
 run5a:
 	java -Xmx1024MB -Djava.library.path=. cytoscape.cytoscape \
           -g $(CYTOSCAPE_DATA)/tidekerBig/network7000.gml \
           -e $(CYTOSCAPE_DATA)/gal.5936x20.mrna \
           -b $(CYTOSCAPE_DATA)/GO
 
-help:
-	tail -36 ./makefile
 
-#================================================================================================
-# run targets:
-# 
-# run0: start the program without loading any data from the command line
-#
-# run1: Display the 330 "galFiltered" genes, with tideker's expression data (5936 genes
-#       by 20 conditions); use the flat-file version of GO gene annotation.  These
-#       data are very similar to those used in the Science paper, Ideker et al, 2001.
-# 
-# run1a: like run1, but no GO data
-#
-# run1b: like run1a, but no expression data
-#
-# run1c: like run1b, but adds one (of several possible) active path finding parameters,
-#        enought to cause the active paths calculation to start automatically
-#
-# run2: Demonstrates the use of node attributes which are not expression data
-#       'fooB' is a derived measure of the connectivity-related significance of
-#       each node in the graph:  delete this node, and x number of edges drop out.
-# 
-# run3: Demonstrates use of a minimal "interactions" file from which a full graph
-#       is created.  The normal galactose expression data used, along with the GO data
-#
-# run3a: Demonstrates two things:
-#         1. how to supply a minimal "interactions" file from which a full graph
-#            is created
-#         2. provides two small files specifying different edge attributes, to
-#            test and illustrate the programs ability to control the appearance
-#            of graph edges as a function of edge attribute values
-#
-# run4: nitin baliga's halobacterium data (exceedingly preliminary...)
-#
-# run5: tideker's 7000 node data set, with 28MB expression data matrix (does not yet work!)
-#     
-# run5a: tideker's 7000 node data set, with 1.6MB expression data matrix
-#================================================================================================
+help:
+	egrep "^#" makefile | sed "s/^#//"
+
