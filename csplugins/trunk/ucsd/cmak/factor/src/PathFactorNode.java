@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import java.util.logging.Logger;
+import java.util.logging.Level;
 
 import cern.colt.bitvector.BitVector;
 
@@ -13,6 +14,9 @@ public class PathFactorNode extends FactorNode
     private static Logger logger = Logger.getLogger(PathFactorNode.class.getName());
 
 
+    private static final boolean LOG_FINE = (logger.getLevel() != null &&
+                                             logger.getLevel().intValue() <= Level.FINE.intValue());
+    
     protected static final double ep1 = 0.7; // epsilon 1
     protected static final double ep2 = 0.299; // epsilon 2
     protected static final double ep3 = 0.001; // epsilon 2
@@ -27,9 +31,29 @@ public class PathFactorNode extends FactorNode
         return __singleton;
     }
 
+    /*
+    private int maxPathLen;
+    private ArrayList plusComboCache;
+    private ArrayList minusComboCache;
+    private ArrayList comboCache;
+    */
+    
     protected PathFactorNode()
     {
         super(NodeType.PATH_FACTOR);
+        /*
+        this.maxPathLen = maxPathLen;
+        plusComboCache = new ArrayList();
+        minusComboCache = new ArrayList();
+        comboCache = new ArrayList();
+
+        for(int x=1; x <= maxPathLen; x++)
+        {
+            plusComboCache.add(enumerate(x, State.PLUS));
+            minusComboCache.add(enumerate(x, State.MINUS));
+            comboCache.add(enumerate(x));
+        }
+        */
     }
 
     /**
@@ -63,7 +87,6 @@ public class PathFactorNode extends FactorNode
                 tt = em.getVariableType();
                 continue;
             }
-            
 
             ProbTable p = em.v2f();
             incoming.add(p);
@@ -162,11 +185,15 @@ public class PathFactorNode extends FactorNode
                                                        pathNotExplains);
             pt.init(probs);
 
-            logger.fine("P(" + other + ") other=" + probs[ss.getIndex(other)]);
-            logger.fine("P(" + explanatory + ") explanatory=" + probs[ss.getIndex(explanatory)]);
-            logger.fine("pe=" + pathExplains);
-            logger.fine("pu=" + pathUnconstrained);
-            logger.fine("pne=" + pathNotExplains);
+            if(LOG_FINE)
+            {
+                logger.fine("P(" + other + ") other=" + probs[ss.getIndex(other)]);
+                logger.fine("P(" + explanatory + ") explanatory=" + probs[ss.getIndex(explanatory)]);
+                logger.fine("pe=" + pathExplains);
+                logger.fine("pu=" + pathUnconstrained);
+                logger.fine("pne=" + pathNotExplains);
+            }
+
             
             return pt;
         }
@@ -201,10 +228,13 @@ public class PathFactorNode extends FactorNode
                                                       
             pt.init(probs);
 
-            logger.fine("pe+ =" + pathExplainsPlus);
-            logger.fine("pe- =" + pathExplainsMinus);
-            logger.fine("pu=" + pathUnconstrained);
-            logger.fine("pne=" + pathNotExplains);
+            if(LOG_FINE)
+            {
+                logger.fine("pe+ =" + pathExplainsPlus);
+                logger.fine("pe- =" + pathExplainsMinus);
+                logger.fine("pu=" + pathUnconstrained);
+                logger.fine("pne=" + pathNotExplains);
+            }
             
             return pt;
         }
@@ -228,10 +258,13 @@ public class PathFactorNode extends FactorNode
  
             pt.init(probs);
 
-            logger.fine("P(0)=" + probs[ss.getIndex(State.ZERO)]);
-            logger.fine("P(1)=" + probs[ss.getIndex(State.ONE)]);
-            logger.fine("pe=" + pathExplains);
-            logger.fine("pu=" + pathUnconstrained);
+            if(LOG_FINE)
+            {
+                logger.fine("P(0)=" + probs[ss.getIndex(State.ZERO)]);
+                logger.fine("P(1)=" + probs[ss.getIndex(State.ONE)]);
+                logger.fine("pe=" + pathExplains);
+                logger.fine("pu=" + pathUnconstrained);
+            }
             
             return pt;
         }
@@ -259,11 +292,14 @@ public class PathFactorNode extends FactorNode
             probs[ss.getIndex(State.MINUS)] = Math.max(pathExplainsMinus, pathNotExplains); 
  
             pt.init(probs);
-            
-            logger.fine("P(0)=" + probs[ss.getIndex(State.ZERO)]);
-            logger.fine("pe+ =" + pathExplainsPlus);
-            logger.fine("pe- =" + pathExplainsMinus);
-            logger.fine("pne=" + pathNotExplains);
+
+            if(LOG_FINE)
+            {
+                logger.fine("P(0)=" + probs[ss.getIndex(State.ZERO)]);
+                logger.fine("pe+ =" + pathExplainsPlus);
+                logger.fine("pe- =" + pathExplainsMinus);
+                logger.fine("pne=" + pathNotExplains);
+            }
             
             return pt;
         }
@@ -296,17 +332,22 @@ public class PathFactorNode extends FactorNode
         
         if(k.maxState() == State.ZERO)
         {
+            /*
             logger.fine("kmax is zero: 0=" + k.prob(State.ZERO) + " +=" + k.prob(State.PLUS)
                         + " -=" + k.prob(State.MINUS)
                         + " unique=" + k.hasUniqueMax());
+            */
             pathNotExplains = 0;
         }
         else
         {
+            /*
             logger.fine("kmax is: " + k.max() + " 0=" + k.prob(State.ZERO) + " +=" + k.prob(State.PLUS)
                         + " -=" + k.prob(State.MINUS)
                         + " maxState=" + k.maxState()
                         + " unique=" + k.hasUniqueMax());
+            */
+            
             pathNotExplains = Math.max(ep2 * sigma.prob(State.ZERO) * maxDSX * k.max(),
                                        ep3 * sigma.prob(State.ONE) * maxDSX * k.max());
         }
@@ -431,15 +472,17 @@ public class PathFactorNode extends FactorNode
     {
         if(k.maxState() == State.ZERO)
         {
+            /*
             logger.fine("kmax is zero: 0=" + k.prob(State.ZERO) + " +=" + k.prob(State.PLUS)
                         + " -=" + k.prob(State.MINUS)
                         + " unique=" + k.hasUniqueMax());
+            */
             return 0;
         }
 
         if((sigma.maxState() == State.ZERO) && (sigma.max() == 0))
         {
-            logger.fine("sigma is zero");
+            //logger.fine("sigma is zero");
             return 0;
             
         }
@@ -622,7 +665,7 @@ public class PathFactorNode extends FactorNode
         {
             for(int bit=0, numBits=combos[v].size(); bit < numBits; bit++)
             {
-                if(combos[v].get(bit) == true)
+                if(combos[v].getQuick(bit) == true)
                 {
                     vals[v] *= probMinus[bit];
                 }
@@ -657,6 +700,12 @@ public class PathFactorNode extends FactorNode
      */
     protected BitVector[][] enumerate(int numSigns)
     {
+        /*
+        if(numSigns <= maxPathLen)
+        {
+            return (BitVector[][]) comboCache.get(numSigns);
+        }
+        */
         int numCombos = (int) Math.pow(2, numSigns - 1);
 
         BitVector[][] combos = new BitVector[2][numCombos];
@@ -739,6 +788,20 @@ public class PathFactorNode extends FactorNode
      */
     protected BitVector[] enumerate(int numSigns, State pORm)
     {
+        /*
+        if(numSigns <= maxPathLen)
+        {
+            if(pORm == State.PLUS)
+            {
+                return (BitVector[]) plusComboCache.get(numSigns);
+            }
+            else
+            {
+                return (BitVector[]) minusComboCache.get(numSigns);
+            }
+        }
+        */
+        
         int numCombos = (int) Math.pow(2, numSigns - 1);
         BitVector[] combos = new BitVector[numCombos];
 

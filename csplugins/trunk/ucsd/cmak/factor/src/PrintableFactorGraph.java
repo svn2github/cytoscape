@@ -204,7 +204,8 @@ public class PrintableFactorGraph extends FactorGraph
      */
     public void writeSif(String filename) throws IOException
     {
-        CyUtil.writeSif(_g, filename + "_facgraph.sif");
+        // reimplement this.
+        //CyUtil.writeSif(_g, filename + "_facgraph.sif");
 
         writeNodeAttr(filename + "_facgraph");
     }

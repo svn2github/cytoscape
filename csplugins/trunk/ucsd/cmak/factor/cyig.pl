@@ -14,6 +14,7 @@ my $base = "$dir/$run";
 $cmd .= " -l embedded ";
 $cmd .= " -n /cellar/users/cmak/data/orf2name+alias.noa ";
 $cmd .= " -n ${base}_type.noa ";
+#$cmd .= " -n ${base}_ncount.noa ";
 $cmd .= " -j ${base}_dir.eda ";
 $cmd .= " -j ${base}_sign.eda ";
 $cmd .= " -j ${base}_model.eda ";

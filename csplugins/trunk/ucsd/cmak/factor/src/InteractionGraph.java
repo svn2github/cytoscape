@@ -466,12 +466,12 @@ public class InteractionGraph
                                                                //+ m.getId()
                                                                + modelNum
                                                                + ".sif"));
-        writeEdges(out, m.getEdges());
+        writeEdges(out, m.getEdges(), 1);
         out.close();
     }
 
 
-    private void writeEdges(PrintStream out, List edges)
+    private void writeEdges(PrintStream out, List edges, int neighborCutoff)
         throws IOException
     {
 
@@ -480,29 +480,43 @@ public class InteractionGraph
             AnnotatedEdge ae = (AnnotatedEdge) edges.get(x);
 
             int e = ae.interactionIndex;
+            int src = _graph.getEdgeSourceIndex(e);
+            int target = _graph.getEdgeTargetIndex(e);
+
+            /*
+            int dirSrc = src;
+
+            if(ae.maxDir == State.MINUS)
+            {
+                dirSrc = target;
+            }
+            
+            if(_graph.getOutDegree(dirSrc) > neighborCutoff)
+            {
+            */
             
             String type = " x ";
             if(_edge2type.containsKey(e))
             {
                 type = (String) _edge2type.get(e);
             }
-
+            
             StringBuffer b = new StringBuffer();
-            b.append(node2Name(_graph.getEdgeSourceIndex(e)));
+            b.append(node2Name(src));
             b.append(" ");
             b.append(type);
             b.append(" ");
-            b.append(node2Name(_graph.getEdgeTargetIndex(e)));
+            b.append(node2Name(target));
             
             out.println(b.toString());
         }
-
+        //}
     }
     
     public void writeGraph(String filename) throws IOException
     {
         PrintStream out = new PrintStream(new FileOutputStream(filename + ".sif"));
-        writeEdges(out, _activeEdges);
+        writeEdges(out, _activeEdges, 0);
         out.close();
 
         writeAttributes(filename);
@@ -525,6 +539,12 @@ public class InteractionGraph
         out = new PrintStream(new FileOutputStream(filename + "_type.noa"));
         writeNodeTypes(out);
         out.close();
+
+        /*
+        out = new PrintStream(new FileOutputStream(filename + "_ncount.noa"));
+        writeNodeNeighborCount(out);
+        out.close();
+        */
     }
 
     
@@ -599,6 +619,33 @@ public class InteractionGraph
         }       
     }
 
+    /*
+    private void writeNodeNeighborCount(PrintStream out)
+    {
+        //out.println("NeighborCount (class=java.lang.Integer)");
+        out.println("NeighborCount (class=java.lang.Integer)");
+
+        for(int x=0; x < _activeEdges.size(); x++)
+        {
+            AnnotatedEdge ae = (AnnotatedEdge) _activeEdges.get(x);
+            StringBuffer b = new StringBuffer(edgeName(ae.interactionIndex));
+            b.append(" = ");
+            b.append(ae.maxDir);
+            
+            out.println(b.toString());
+        }
+
+        
+        IntArrayList nodes = _node2name.keys();
+
+        for(int n=0, N =nodes.size(); n < N; n++)
+        {
+            int node = nodes.get(n);
+            out.println(node2Name(node) + " = " + _graph.getOutDegree(node));
+        }       
+    }
+    */
+    
     private void writeNodeTypes(PrintStream out)
     {
         out.println("NodeType (class=java.lang.String)");

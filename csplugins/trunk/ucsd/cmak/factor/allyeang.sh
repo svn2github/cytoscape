@@ -34,7 +34,7 @@ ${EXP} \
 ${DATA}/yall.edgeattr \
 ${EDGE} \
 testOut \
-test_yall_${PATH}_${EXP}_${EDGE}
+test_yall_maxcon_${PATH}_${EXP}_${EDGE}
 #profile 
 #STE12candidategenes.txt
 #
