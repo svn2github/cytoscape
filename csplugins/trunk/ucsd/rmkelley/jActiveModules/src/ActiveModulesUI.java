@@ -31,20 +31,22 @@ public class ActiveModulesUI extends CytoscapePlugin {
   public ActiveModulesUI () {
     System.err.println("Starting jActiveModules plugin!\n");
     /* initialize variables */
-    	
+    JMenu topMenu = new JMenu("jActiveModules");
+    Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add(topMenu);
+
     /* Add function calls to Cytoscape menus */
-    Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add ( new SetParametersAction() );
-    Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add ( new FindActivePathsAction () );
-    Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add ( new ScoreSubComponentAction () );
-    Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add ( new RandomizeAndRunAction () );
+    topMenu.add ( new SetParametersAction() );
+    topMenu.add ( new FindActivePathsAction () );
+    topMenu.add ( new ScoreSubComponentAction () );
+    topMenu.add ( new RandomizeAndRunAction () );
 
     //cytoscapeWindow.getCyMenus().getOperationsMenu().add ( new ScoreSubComponentAction () );
     //cytoscapeWindow.getCyMenus().getOperationsMenu().add ( new RandomizeAndRunAction () );
 
     /* check for command line arguments to run right away */
-    //String[] args = Cytoscape.getCytoscapeObj().getConfiguration().getArgs();
-    String [] args = CytoscapeInit.getArgs();
-				ActivePathsCommandLineParser parser = new ActivePathsCommandLineParser(args);
+    String[] args = Cytoscape.getCytoscapeObj().getConfiguration().getArgs();
+    //String [] args = CytoscapeInit.getArgs();
+    ActivePathsCommandLineParser parser = new ActivePathsCommandLineParser(args);
     apfParams = parser.getActivePathFinderParameters();
     if (parser.shouldRunActivePaths()) {
       activePaths = new ActivePaths(Cytoscape.getCurrentNetwork(),apfParams);

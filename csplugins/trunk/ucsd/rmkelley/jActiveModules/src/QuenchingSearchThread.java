@@ -21,7 +21,7 @@ public class QuenchingSearchThread extends SearchThread{
 	super(graph,resultPaths,nodes,apfParams);
 	super.oldPaths = oldPaths;
 	HashSet temp = new HashSet();
-	for(Iterator pathIt = resultPaths.iterator();pathIt.hasNext();){
+	for(Iterator pathIt = oldPaths.iterator();pathIt.hasNext();){
 	  for(Iterator nodeIt = ((Component)pathIt.next()).getNodes().iterator();nodeIt.hasNext();){
 	    temp.add(nodeIt.next());
 	  }

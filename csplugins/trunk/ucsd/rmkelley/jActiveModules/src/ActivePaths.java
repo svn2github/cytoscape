@@ -221,11 +221,14 @@ public class ActivePaths implements ActivePathViewer, Runnable {
 			   String pathTitle)
   {
     titleForCurrentSelection = pathTitle;
+    FlagFilter flagger = cyNetwork.getFlagger();
     //cytoscapeWindow.selectNodesByName (activePath.getNodes (), clearOthersFirst);
     if(clearOthersFirst){
-      cyNetwork.unFlagAllNodes();
+      //cyNetwork.unFlagAllNodes();
+      flagger.unflagAllNodes();
     }
-    cyNetwork.setFlaggedNodes(activePath.getNodes(),true);
+    flagger.setFlaggedNodes(activePath.getNodes(),true);
+    //cyNetwork.setFlaggedNodes(activePath.getNodes(),true);
     
   }
   //------------------------------------------------------------------------------
