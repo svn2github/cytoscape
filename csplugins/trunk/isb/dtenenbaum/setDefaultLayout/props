@@ -5,4 +5,4 @@ visualStyle=cell phone
 #plugin.2.load=csplugins.trial.pshannon.projectIO.ProjectIOPlugin
 plugin.ylayout.load=yfiles.YFilesLayoutPlugin
 plugin.setdefaultlayout.load=csplugins.isb.dtenenbaum.setDefaultLayout.SetDefaultLayoutPlugin
-plugin.centerView.load=csplugins.isb.dtenenbaum.setDefaultLayout.CenterViewPlugin
+#plugin.centerView.load=csplugins.isb.dtenenbaum.setDefaultLayout.CenterViewPlugin

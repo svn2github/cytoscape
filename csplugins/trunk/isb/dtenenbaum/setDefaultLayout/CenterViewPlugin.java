@@ -2,7 +2,11 @@ package csplugins.isb.dtenenbaum.setDefaultLayout;
 
 import cytoscape.*;
 import cytoscape.view.*;
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.actions.FitContentAction;
 import cytoscape.plugin.*;
+
+import java.awt.event.ActionEvent;
 import java.beans.*;
 
 import phoebe.PGraphView;
@@ -38,9 +42,26 @@ public class CenterViewPlugin
 
       System.out.println("trying to fit content....");
       //PGraphView vue =(PGraphView) Cytoscape.getCurrentNetworkView();
-      PGraphView vue =(PGraphView) view;
-      vue.getCanvas().getCamera().animateViewToCenterBounds( vue.getCanvas().getLayer().getFullBounds(), true, 50l );
+      //PGraphView vue =(PGraphView) view;
+      //vue.getCanvas().getCamera().animateViewToCenterBounds( vue.getCanvas().getLayer().getFullBounds(), true, 50l );
+      FitContentAction fca = new FitContentAction();
+      fca.actionPerformed(null);
       System.out.println("done");
+      view.redrawGraph(true,true);
+      
+      
+      
+      // vmm (below) is null. why?
+      /*
+      VisualMappingManager vmm = view.getVizMapManager();
+      if (null == vmm)
+      	System.out.println("vmm is null");
+      else
+      	System.out.println("vmm " +vmm);
+      vmm.getNetworkView().redrawGraph(false, true);
+      */
+
+      
     }
   }
 }

@@ -37,27 +37,21 @@ public class SetDefaultLayoutPlugin extends CytoscapePlugin implements
 
 	public void propertyChange(PropertyChangeEvent e) {
 
+		System.out.println("Expect to see a big long stack trace after this.");
+		System.out.println("Don't worry, it doesn't affect anything.");
 		if (e.getPropertyName() == Cytoscape.ATTRIBUTES_CHANGED) {
-			System.out.println("trying to display colors...");
 			Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
-			System.out.println("done");
 		}
 
 		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
 			CyNetworkView view = (CyNetworkView) e.getNewValue();
 
-			System.out.println("trying to change layout...");
 			YFilesLayout layout = new YFilesLayout(view, false);
 			layout.doLayout(YFilesLayout.ORGANIC, 0);
-			System.out.println("done");
 
-
-			System.out.println("trying to fit content....");
 			view.fitContent();
-			System.out.println("done");
-
-
 		}
+		System.out.println("The previous big long stack trace can be ignored.");
 	}
 }
 
