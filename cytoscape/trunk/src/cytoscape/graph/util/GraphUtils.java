@@ -1,6 +1,8 @@
 package cytoscape.graph.util;
 
 import cytoscape.graph.GraphTopology;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 /**
  * This class &quot;compiles&quot; a <code>GraphTopology</code> and provides
@@ -73,7 +75,8 @@ public final class GraphUtils
    *   <i>B is a directed neighbor of node at index
    *   <code>nodeIndex</code></i>; every entry in the returned array will
    *   lie in the interval
-   *   <nobr><code>[0, graph.getNumNodex() - 1]</code></nobr>.
+   *   <nobr><code>[0, graph.getNumNodex() - 1]</code></nobr>; this method
+   *   never returns <code>null</code>.
    * @exception IndexOutOfBoundsException if <code>nodeIndex</code> is not
    *   in the interval <nobr><code>[0, graph.getNumNodes() - 1]</code></nobr>.
    **/
@@ -81,7 +84,33 @@ public final class GraphUtils
                                          boolean honorDirectedEdges)
   {
     ensureCompileGraph();
-    return null;
+
+    // Compute using the brute-force method; optimize when this class
+    // evolves more.  We could optimize A LOT if we were required to
+    // compute the neighbors of every node in the graph.
+    if (nodeIndex < 0 || nodeIndex >= graph.getNumNodes())
+      throw new IndexOutOfBoundsException
+        ("nodeIndex is out of range with value " + nodeIndex);
+    final Hashtable nodeNeighInx = new Hashtable();
+    for (int edgeIndex = 0; edgeIndex < graph.getNumEdges(); edgeIndex++)
+    {
+      boolean nodeIsSource = false;
+      if (((nodeIndex == graph.getEdgeNodeIndex(edgeIndex, true)) &&
+           (nodeIsSource = true)) ||
+          (((!graph.isDirectedEdge(edgeIndex)) || (!honorDirectedEdges)) &&
+           (nodeIndex == graph.getEdgeNodeIndex(edgeIndex, false))))
+      {
+        Integer neighborToPut =
+          new Integer(graph.getEdgeNodeIndex(edgeIndex, !nodeIsSource));
+        // We're using Hashtable to automatically filter duplicates for us.
+        nodeNeighInx.put(neighborToPut, neighborToPut);
+      }
+    }
+    final int[] returnThis = new int[nodeNeighInx.size()];
+    Enumeration values = nodeNeighInx.elements();
+    for (int i = 0; i < returnThis.length; i++)
+      returnThis[i] = ((Integer) values.nextElement()).intValue();
+    return returnThis;
   }
 
   private void ensureCompileGraph()
