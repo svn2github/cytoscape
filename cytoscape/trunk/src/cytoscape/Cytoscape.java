@@ -31,7 +31,13 @@ import javax.swing.JOptionPane;
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeEvent;
 
-
+/**
+ * This class, Cytoscape is <i>the</i> primary class in the API.
+ * 
+ * All Nodes and Edges must be created using the methods getCyNode and getCyEdge, available only in this class.  Once A node or edge is created using these methods it can then be added to a CyNetwork, where it can be used algorithmically.<BR>
+<BR>
+The methods get/setNode/EdgeAttributeValue allow you to assocate data with nodes or edges. That data is then carried into all CyNetworks where that Node/Edge is present.
+ */
 public abstract class Cytoscape {
   
   public static String NETWORK_CREATED = "NETWORK_CREATED";

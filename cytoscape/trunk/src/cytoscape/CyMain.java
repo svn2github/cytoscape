@@ -147,7 +147,7 @@ public class CyMain implements WindowListener {
     Iterator ii = config.getInteractionsFilenames().iterator();
     while ( gi.hasNext() ) {
       CyNetwork network = Cytoscape.createNetwork( (String)gi.next(),
-                                                   Cytoscape.FILE_GML,
+                                                   Cytoscape.FILE_BY_SUFFIX,
                                                    false,
                                                    null,
                                                    null );
@@ -313,6 +313,8 @@ public class CyMain implements WindowListener {
         laf.setMyCurrentTheme( new com.jgoodies.plaf.plastic.theme.ExperienceBlue() );
         UIManager.setLookAndFeel( laf );
         
+       
+
       }
     } catch (Exception e) {
       System.err.println("Can't set look & feel:" + e);

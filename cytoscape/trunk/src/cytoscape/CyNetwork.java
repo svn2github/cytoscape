@@ -10,7 +10,25 @@ import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.FlagFilter;
 import cytoscape.data.FlagEventListener;
 
-
+/**
+ *CyNetwork is the primary class for algorithm writing.&nbsp; All
+algorithms should take a CyNetwork as input, and do their best to only
+use the API of CyNetwork.&nbsp; Plugins that want to affect the display
+of a graph can look into using CyNetworkView as well.<br>
+<br>
+A CyNetwork can create Nodes or Edges.&nbsp; Any Nodes or Edges that
+wish to be added to a CyNetwork firt need to be created in <span
+ style="font-style: italic;">Cytoscape.</span>&nbsp; <br>
+<br>
+The methods that are defined by CyNetwork mostly deal with data
+integration and flagging of nodes/edges.&nbsp; All methods that deal
+with graph traversal are part of the inherited API of the
+GraphPerspective class.&nbsp; Links to which can be found at the bottom
+of the methods list.&nbsp; <br>
+<br>
+In general, all methods are supported for working with Nodes/Edges as
+objects, and as indices.<br>
+ */
 public interface CyNetwork extends GraphPerspective {
 
   /**
