@@ -213,13 +213,22 @@ class FRootGraph implements RootGraph
   }
 
   public int createNode(Node[] nodes, Edge[] edges) {
+    // I don't care how inefficient this is because I don't like meta nodes.
+    final GraphPerspective persp = createGraphPerspective(nodes, edges);
+    if (persp == null) return 0;
+    return createNode(persp); }
+
+  public int createNode(GraphPerspective perspective) {
+    // Casting to check that we aren't going to get garbage nodes and edges.
+    if (((FGraphPerspective) perspective).getRootGraph() != this) return 0;
     throw new UnsupportedOperationException("meta nodes not yet supported"); }
 
-  public int createNode(GraphPerspective persoective) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
-
-  public int createNode(int[] nodeIndices, int[] edgeindices) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+  public int createNode(int[] nodeIndices, int[] edgeIndices) {
+    // I don't care how inefficient this is because I don't like meta nodes.
+    final GraphPerspective persp =
+      createGraphPerspective(nodeIndices, edgeIndices);
+    if (persp == null) return 0;
+    return createNode(persp); }
 
   public int[] createNodes(int numNewNodes) {
     final int[] returnThis = new int[numNewNodes];
