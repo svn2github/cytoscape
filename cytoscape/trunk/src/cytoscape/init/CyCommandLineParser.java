@@ -37,15 +37,29 @@ public class CyCommandLineParser {
 
   boolean helpRequested = false;
 
-  public static String HELP = "/n"+
-"java -Xmx1G -server -jar cytoscape.jar [options]\n"+
-    "-h : display this help message\n"+
-    "-p [file+]: load a jar from the local file system or from a http address, or specify a manifest of jar files to load\n"+
-    "-g [file+]: specifies any number of network files to load ";
+//  public static String HELP = 
+//"java -Xmx1G -server -jar cytoscape.jar [options]\n"+
+//    "-h : display this help message\n"+
+//    "-p [file+]: load a jar from the local file system or from a http address, or specify a manifest of jar files to load\n"+
+//    "-g [file+]: specifies any number of network files to load ";
+
+  public static String helpString = "";
 
   ////////////////////////////////////////
   // Constructor
   public CyCommandLineParser () {
+
+   // use ResourceBundle for static strings like Help/Usage text
+   // -- could lead to localizable versions of Cytoscape in the future...
+    try {
+      ResourceBundle coreStrings = ResourceBundle.getBundle(
+				"cytoscape.resources.CoreStrings",
+				Locale.getDefault());
+      helpString = coreStrings.getString("USAGE");
+    } catch (MissingResourceException mre) {
+      mre.printStackTrace();
+    }
+
      bioDataServer = null;
      noCanonicalization = false;
      expressionFiles = new ArrayList();
@@ -75,8 +89,8 @@ public class CyCommandLineParser {
     return helpRequested;
   }
 
-  public String geHelp() {
-    return HELP;
+  public static String getHelp() {
+    return helpString;
   }
 
 
