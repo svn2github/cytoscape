@@ -338,6 +338,43 @@ class FRootGraph //implements RootGraph
     }
   }
 
+  // This method has been marked deprecated in the Giny API.
+  public boolean isNeighbor(Node a, Node b)
+  {
+    if (a.getRootGraph() == this && b.getRootGraph() == this)
+    {
+      return isNeighbor(a.getRootGraphIndex(), b.getRootGraphIndex());
+    }
+    else
+    {
+      return false;
+    }
+  }
+
+  public boolean isNeighbor(int nodeInxA, int nodeInxB)
+  {
+    final int positiveNodeInxA = ~nodeInxA;
+    final int positiveNodeInxB = ~nodeInxB;
+    final IntEnumerator aAdj;
+    final IntEnumerator bAdj;
+    try {
+      aAdj = m_graph.adjacentEdges(positiveNodeInxA, true, true, true);
+      bAdj = m_graph.adjacentEdges(positiveNodeInxB, true, true, true); }
+    catch (IllegalArgumentException e) { return false; }
+    final IntEnumerator theAdj =
+      ((aAdj.numRemaining{} < bAdj.numRemaining()) ? aAdj : bAdj);
+    final int adjPositiveNode =
+      ((theAdj == aAdj) ? positiveNodeInxA : positiveNodeInxB);
+    final int neighPositiveNode =
+      ((theAdj == aAdj) ? positiveNodeInxB : positiveNodeInxA);
+    while (theAdj.numRemaining() > 0) {
+      final int adjEdge = theAdj.nextInt();
+      if ((m_graph.sourceNode(adjEdge) ^ m_graph.targetNode(adjEdge) ^
+           adjPositiveNode) == neighPositiveNode)
+        return true; }
+    return false;
+  }
+
   public int[] getAdjacentEdgeIndicesArray(int nodeInx,
                                            boolean a,
                                            boolean b,
