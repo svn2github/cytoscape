@@ -45,9 +45,9 @@
 
         <target name="cspluginsjar" depends="csplugins">
                 <taskdef resource="genjar.properties" classpath="${lib.dir}/GenJar.jar"/>
-                <delete file="${build.dir}/csplugins.jar"/>
+                <delete file="${build.dir}/dreiss_csplugins.jar"/>
 
-                <genjar jarfile="${build.dir}/csplugins.jar">
+                <genjar jarfile="${build.dir}/dreiss_csplugins.jar">
                     <classpath refid="classpath"/>
                     <class><fileset dir="${build.classes}">
                          <include name="csplugins/**/*.class"/>

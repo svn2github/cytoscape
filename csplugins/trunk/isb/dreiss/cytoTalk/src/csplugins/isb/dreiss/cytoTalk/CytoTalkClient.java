@@ -15,19 +15,6 @@ public class CytoTalkClient {
 	Vector args = new Vector();
 	XmlRpcClient client;
 
-	public boolean doLayout(  ) throws XmlRpcException, IOException {
-		args.clear();
-		Object out = client.execute( SERVICE_NAME + ".doLayout", args );
-		return ( (Boolean) out ).booleanValue();
-	}
-
-	public boolean setTitle( String arg0 ) throws XmlRpcException, IOException {
-		args.clear();
-		args.add( arg0 );
-		Object out = client.execute( SERVICE_NAME + ".setTitle", args );
-		return ( (Boolean) out ).booleanValue();
-	}
-
 	public int isRunning(  ) throws XmlRpcException, IOException {
 		args.clear();
 		Object out = client.execute( SERVICE_NAME + ".isRunning", args );
@@ -55,6 +42,13 @@ public class CytoTalkClient {
 	public boolean exposeAll(  ) throws XmlRpcException, IOException {
 		args.clear();
 		Object out = client.execute( SERVICE_NAME + ".exposeAll", args );
+		return ( (Boolean) out ).booleanValue();
+	}
+
+	public boolean setTitle( String arg0 ) throws XmlRpcException, IOException {
+		args.clear();
+		args.add( arg0 );
+		Object out = client.execute( SERVICE_NAME + ".setTitle", args );
 		return ( (Boolean) out ).booleanValue();
 	}
 
@@ -602,6 +596,12 @@ public class CytoTalkClient {
 	public boolean relayoutGraph(  ) throws XmlRpcException, IOException {
 		args.clear();
 		Object out = client.execute( SERVICE_NAME + ".relayoutGraph", args );
+		return ( (Boolean) out ).booleanValue();
+	}
+
+	public boolean doLayout(  ) throws XmlRpcException, IOException {
+		args.clear();
+		Object out = client.execute( SERVICE_NAME + ".doLayout", args );
 		return ( (Boolean) out ).booleanValue();
 	}
 
