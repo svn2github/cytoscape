@@ -167,6 +167,7 @@ public class CytoscapeDesktop
 //       e.printStackTrace();
 //     }
 
+    setIconImage( Toolkit.getDefaultToolkit().getImage( getClass().getResource("images/icon.gif") ) );
 
     JPanel main_panel = new JPanel();
 
