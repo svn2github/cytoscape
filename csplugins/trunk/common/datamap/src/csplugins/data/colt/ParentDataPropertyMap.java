@@ -1,58 +1,25 @@
 package csplugins.data.colt;
 
+import csplugins.data.*;
+
+import cern.colt.matrix.*;
+import cern.colt.map.*;
+import cern.colt.list.*;
+
+import com.sosnoski.util.hashmap.*;
+
+import java.util.*;
+
 public class ParentDataPropertyMap 
-  implements DataPropertyMap, DataMatrix {
+  extends DataPropertyMap {
 
- 
-  /**
-   * Since every SharedIdentifiable object set is assigned 
-   * a uniqueID that is an int, we can store the data in
-   * cern.colt.matrix.impl.SparseMatrix2D.  This will allow
-   * for the easy return of 2-dimensional data sets, the
-   * returned data set can then be combined however the user
-   * feels is appropriate.
-   */
-  protected ObjectMatrix2D dataMatrix;
-
-  /**
-   * The names of the Attributes are stored in a 1D Matrix.  
-   * This will allow for the fast lookup of attribute names
-   * given the indices.  The normal use will be to find out which 
-   * attributes A SharedIdentifiable, or group of SharedIdentifiable
-   * objects has, find the non-null columns, and return the list of 
-   * available attributes.  This is always equal to the number of columns
-   * in the dataMatrix.
-   * 
-   * By having a colt matrix, it will also be easy to put a subset into
-   * a returned data set.
-   * 
-   */ 
-  protected ObjectMatrix1D attributeIntNameVector;
-
-  /**
-   * This matrix will simply be a list of Integers.
-   */
-  protected ObjectMatrix1D identifierVector;
-
-  /**
-   * This is _the_ one palce to reverse lookup Attribute strings 
-   * to their ints.
-   */
-  protected StringIntHashMap attributeIntMap;
+  protected int DEFAULT_MATRIX_SIZE = 10;
 
 
-  /**
-   * This is _the_ primary reverse lookup for aliases to uids. 
-   */
-  protected StringIntHashMap identifierUniqueIDMap;
 
+  protected String identifier = "ParentDataPropertyMap";
 
-  /**
-   * The map of RootGraphIndices to the uid.
-   */
-  protected OpenIntIntHashMap nodeUIDMap;
-  protected OpenIntIntHashMap edgeUIDMap;
-
+  private int currentUID = 0;
 
   //----------------------------------------//
   // Constructors
@@ -65,9 +32,10 @@ public class ParentDataPropertyMap
   public ParentDataPropertyMap () {
      
     this.dataMatrix = create2DMatrix();
-    this.attributeIntNameVector = create1DMatrix();
+    this.attributeVector = create1DMatrix();
     this.identifierVector = create1DMatrix();
-    this.identifierUniqueIDMap = createStringIntHashMap();
+    this.identifierIntMap = createObjectIntHashMap();
+    this.attributeIntMap = createStringIntHashMap();
     this.nodeUIDMap = createIntIntHashMap();
     this.edgeUIDMap = createIntIntHashMap();
   }
@@ -77,22 +45,36 @@ public class ParentDataPropertyMap
    * @param uids number of unique identifiers
    * @param atts number of attributes
    */
-  public ParentDataPropertyMap () {
+  public ParentDataPropertyMap ( int uids, int atts ) {
     this.dataMatrix = create2DMatrix( uids, atts );
-    this.attributeIntNameVector = create1DMatrix( atts );
+    this.attributeVector = create1DMatrix( atts );
     this.identifierVector = create1DMatrix( uids );
-    this.identifierUniqueIDMap = createStringIntHashMap( uids );
+    this.identifierIntMap = createObjectIntHashMap( uids );
+    this.attributeIntMap = createStringIntHashMap( atts );
+    this.nodeUIDMap = createIntIntHashMap();
+    this.edgeUIDMap = createIntIntHashMap();
+    currentUID = uids;
   }
 
   
 
-
+  /**
+   * Create a new ParentDataPropertyMap with the given data.
+   */
   public ParentDataPropertyMap ( Object[][] data,
                                  String[] attributes,
                                  String[] identifiers ) {
 
   }
 
+
+  
+  /**
+   * @return a default name
+   */
+  public String getIdentifier () {
+    return identifier;
+  }
 
 
   //----------------------------------------//
@@ -103,16 +85,28 @@ public class ParentDataPropertyMap
     return dataMatrix;
   }
 
-  protected ObjectMatrix1D getAttributeIntNameVector () {
-    return attributeIntNameVector;
+  protected ObjectMatrix1D getAttributeVector () {
+    return attributeVector;
   }
 
   protected ObjectMatrix1D getIdentifierVector () {
     return identifierVector;
   }
 
-  protected StringIntHashMap getIdentifierUniqueIDMap () {
-    return identifierUniqueIDMap;
+  protected StringIntHashMap getAttributeIntMap () {
+    return attributeIntMap;
+  }
+
+  protected ObjectIntHashMap getIdentifierIntMap () {
+    return identifierIntMap;
+  }
+ 
+  protected OpenIntIntHashMap getNodeUIDMap () {
+    return nodeUIDMap;
+  }
+  
+  protected OpenIntIntHashMap getEdgeUIDMap () {
+    return edgeUIDMap;
   }
  
   //----------------------------------------//
@@ -120,15 +114,23 @@ public class ParentDataPropertyMap
   //----------------------------------------//
 
   /**
+   * Returns all the attribute names in this DataPropertyMap
+   * by returning the Array of values in the attributeVector.
+   *
    * @return all of the available attributes in this DataPropertyMap
    */
   public String[] getAttributes () {
-    return ( String[] )attributeIntNameVector.toArray();
+    return ( String[] )attributeVector.toArray();
   }
 
   /**
    * Return the available attributes for the given 
    * uniqueIDs
+   *
+   * @param uniqueIDs an array of UIDS that presumably belong to 
+   *                  this DataPropertyMap
+   * @return the array of all attributes that are present in one 
+   *         or more of 
    */
   public String[] getAttributes ( int[] uniqueIDs ) {
 
@@ -167,7 +169,7 @@ public class ParentDataPropertyMap
     col.trimToSize();
     
     // take a view of just the used columns from the name matrix
-    ObjectMatrix1D used_attributes = attributeIntNameVector.viewSelection( col.elements() );
+    ObjectMatrix1D used_attributes = attributeVector.viewSelection( col.elements() );
     return ( String[] )used_attributes.toArray();
      
   }
@@ -176,6 +178,8 @@ public class ParentDataPropertyMap
    * Return the number of Attributes
    */
   public int getAttributeCount () {
+    // this should be the same size as
+    // attributeVector as well.
     return dataMatrix.columns();
   }
 
@@ -206,6 +210,8 @@ public class ParentDataPropertyMap
   // Data Loading and Maintentance Methods
   //----------------------------------------//
 
+  //--------------------//
+  // uids
 
   /**
    * This is a basic assign.  This will essentially inititate a new
@@ -215,24 +221,40 @@ public class ParentDataPropertyMap
    * assigned uid if this id was known.
    */
   public int assignUID ( String id ) {
-    if ( identifierUniqueIDMap.containsKey( id ) ) {
-      return identifierUniqueIDMap.get( id );
+    if ( identifierIntMap.containsKey( id ) ) {
+      return identifierIntMap.get( id );
     }
 
     // this is a new id that has not been previously added as an alias.
     int new_uid = getNewUID();
-    identifierUniqueIDMap.add( id, new_uid );
+    identifierIntMap.add( id, new_uid );
+    return new_uid;
+
+  }
+
+  /**
+   * This is a basic assign.  This will essentially inititate a new
+   * uid for the given string.
+   * @param id the ID ( often unique.. ) of the object to be assigned a uid
+   * @return the uid that was assigned tothis object, or the the previsouly 
+   * assigned uid if this id was known.
+   */
+  public int assignUID ( Object id ) {
+    if ( identifierIntMap.containsKey( id ) ) {
+      return identifierIntMap.get( id );
+    }
+
+    // this is a new id that has not been previously added as an alias.
+    int new_uid = getNewUID();
+    identifierIntMap.add( id, new_uid );
     return new_uid;
 
   }
   
 
   /**
-   * This will equate Aliases with each other.
-   * If the aliases given are not currently assigned to a uid, then
-   * one will be assigned.
+   * This will assign multiple Aliases to the same UID.  
    *
-   * <B>NOTE: </B>I am not supporting uid equation just yet...
    * @param aliases an array of aliases to be assigned to the same
    *                uid. It can only have ONE alias that already has
    *                a uid.
@@ -242,13 +264,13 @@ public class ParentDataPropertyMap
   public int assignUID ( String[] aliases ) {
     int current_uid = -1;
     for ( int i = 0; i < aliases.length; ++i ) {
-      if ( identifierUniqueIDMap.containsKey( aliases[i] ) ) {
+      if ( identifierIntMap.containsKey( aliases[i] ) ) {
         if ( current_uid != -1 ) {
           // fail since we don't support uid equation
           // TODO: add uid equation
           return -1;
         }
-        current_uid = identifierUniqueIDMap.get( aliases[i] );
+        current_uid = identifierIntMap.get( aliases[i] );
       }  
     }
    
@@ -259,7 +281,7 @@ public class ParentDataPropertyMap
     }
 
     for ( int i = 0; i < aliases.length; ++i ) {
-      identifierUniqueIDMap.add( aliases[i], current_uid );
+      identifierIntMap.add( aliases[i], current_uid );
     }
     return current_uid;
 
@@ -278,7 +300,7 @@ public class ParentDataPropertyMap
     if ( nodeUIDMap.get( root_graph_index ) != 0 ) {
       int uid = getNewUID();
       nodeUIDMap.put( root_graph_index, uid );
-      identifierUniqueIDMap.add( "node: "+root_graph_index, uid );
+      identifierIntMap.add( "node: "+root_graph_index, uid );
     }
     return nodeUIDMap.get( root_graph_index );
   }
@@ -295,7 +317,7 @@ public class ParentDataPropertyMap
     if ( edgeUIDMap.get( root_graph_index ) != 0 ) {
       int uid = getNewUID();
       edgeUIDMap.put( root_graph_index, uid );
-      identifierUniqueIDMap.add( "edge: "+root_graph_index, uid );
+      identifierIntMap.add( "edge: "+root_graph_index, uid );
     }
     return edgeUIDMap.get( root_graph_index );
   }
@@ -307,7 +329,7 @@ public class ParentDataPropertyMap
   public int assignNodeUID ( int node_root_graph_index, String[] aliases ) {
     int current_uid = nodeUIDMap.get( node_root_graph_index );
     for ( int i = 0; i < aliases.length; ++i ) {
-      if ( identifierUniqueIDMap.containsKey( aliases[i] ) ) {
+      if ( identifierIntMap.containsKey( aliases[i] ) ) {
         // only the node can have a uid prior
         return 0;
       }
@@ -318,7 +340,7 @@ public class ParentDataPropertyMap
     }
      
     for ( int i = 0; i < aliases.length; ++i ) {
-       identifierUniqueIDMap.add( aliases[i], current_uid );
+       identifierIntMap.add( aliases[i], current_uid );
     }
     return current_uid;
 
@@ -330,7 +352,7 @@ public class ParentDataPropertyMap
   public int assignEdgeUID ( int edge_root_graph_index, String[] aliases ) {
     int current_uid = edgeUIDMap.get( edge_root_graph_index );
     for ( int i = 0; i < aliases.length; ++i ) {
-      if ( identifierUniqueIDMap.containsKey( aliases[i] ) ) {
+      if ( identifierIntMap.containsKey( aliases[i] ) ) {
         // only the edge can have a uid prior
         return 0;
       }
@@ -341,15 +363,53 @@ public class ParentDataPropertyMap
     }
      
     for ( int i = 0; i < aliases.length; ++i ) {
-       identifierUniqueIDMap.add( aliases[i], current_uid );
+       identifierIntMap.add( aliases[i], current_uid );
     }
     return current_uid;
 
   }
 
+  /**
+   * @return the uid for a given alias
+   */
+  public int getUID ( String alias ) {
+    return identifierIntMap.get( alias );
+  }
+
+  /**
+   * @return the uid for given SharedIdentifiable
+   */
+  public int getUID ( SharedIdentifiable si ) {
+    return identifierIntMap.get( si.getIdentifier() );
+  }
+
+  /**
+   * @return the uid for the given Object
+   */
+  public int getUID ( Object si ) {
+     return 0;
+  }
+  
+  private int getNewUID () {
+    currentUID++;
+    return currentUID;
+  }
+
+  //--------------------//
+  // attributes
+
+  public int getAttributeID ( String attribute ) {
+    return attributeIntMap.get( attribute );
+  }
+
 
   //--------------------//
   // Single triplet settings
+
+  public void set ( int uniqueID, int attribute, Object value ) {
+    dataMatrix.setQuick( uniqueID, attribute, value );
+  }
+
 
   /**
    * New Attributes can be added to id nums, or strings.
@@ -360,7 +420,7 @@ public class ParentDataPropertyMap
    * a succesful input, or -2 denoting an unsuccessful 
    * input.
    */
-  public int set ( int uniqueID, String attribute, Object value ) {
+  public void set ( int uniqueID, String attribute, Object value ) {
     dataMatrix.setQuick( uniqueID, attributeIntMap.get( attribute ), value );
   }
 
@@ -373,7 +433,7 @@ public class ParentDataPropertyMap
    * a succesful input, or -2 denoting an unsuccessful 
    * input.
    */
-  public int set ( String alias, String attribute, Object value ) {
+  public void set ( String alias, String attribute, Object value ) {
     dataMatrix.setQuick( getUID( alias ), attributeIntMap.get( attribute ), value );
   }
 
@@ -387,7 +447,7 @@ public class ParentDataPropertyMap
    * a succesful input, or -2 denoting an unsuccessful 
    * input.
    */
-  public int set ( SharedIdentifiable si, String attribute, Object value ) {
+  public void set ( SharedIdentifiable si, String attribute, Object value ) {
     dataMatrix.setQuick( getUID( si.getIdentifier() ), attributeIntMap.get( attribute ), value );
   }
 
@@ -400,7 +460,7 @@ public class ParentDataPropertyMap
    * a succesful input, or -2 denoting an unsuccessful 
    * input.
    */
-  public int set ( Object si, String attribute, Object value ) {
+  public void set ( Object si, String attribute, Object value ) {
     dataMatrix.setQuick( getUID( si ), attributeIntMap.get( attribute ), value );
   }
 
@@ -487,7 +547,7 @@ public class ParentDataPropertyMap
    * uniqueID and Attribute
    */
   public Object getValue ( int uniqueID, String attribute ) {
-    return dataMatrix.getQuick( uniqueID, attributeNameMap.get( attribute ) );
+    return dataMatrix.getQuick( uniqueID, getAttributeID( attribute ) );
   }
 
   /**
@@ -496,7 +556,7 @@ public class ParentDataPropertyMap
    */
   public Object getValue ( SharedIdentifiable ident, String attribute ) {
     return dataMatrix.getQuick( getUID( ident ),
-                                attributeNameMap.get( attribute ) );
+                                getAttributeID( attribute ) );
   }
 
   /**
@@ -505,7 +565,7 @@ public class ParentDataPropertyMap
    */
   public Object getValue ( String ident, String attribute ) {
     return dataMatrix.getQuick( getUID( ident ),
-                                attributeNameMap.get( attribute ) );
+                                getAttributeID( attribute ) );
   }
 
   /**
@@ -539,8 +599,8 @@ public class ParentDataPropertyMap
    *<B>Note:</B> if the same index is given twice, you will get back a DataPropertyMap that
    * contains two references to that index.
    */
-  public DataPropertyMap getData ( int[] shared_identifiables, int[] attributes ) {
-    return new DataPropertyMap( shared_identifiables, attributes );
+  public DataPropertyMap getDataPropertyMap ( int[] shared_identifiables, int[] attributes ) {
+    return new ChildDataPropertyMap( this, shared_identifiables, attributes );
   }
    
   /**
@@ -550,19 +610,19 @@ public class ParentDataPropertyMap
    *<B>Note:</B> if the same index is given twice, you will get back a DataPropertyMap that
    * contains two references to that index.
    */
-  public DataPropertyMap getData ( String[] shared_identifiables, String[] attributes ) {
+  public DataPropertyMap getDataPropertyMap ( String[] shared_identifiables, String[] attributes ) {
     IntArrayList idents = new IntArrayList( shared_identifiables.length );
     IntArrayList attrib = new IntArrayList( attributes.length );
     for ( int i = 0; i < shared_identifiables.length; ++i ) {
       idents.add( getUID( shared_identifiables[i] ) );
     }
     for ( int i = 0; i < attributes.length; ++i ) {
-      attrib.add( attributeNameMap.get( attributes[i] ) );
+      attrib.add( getAttributeID( attributes[i] ) );
     }
     idents.trimToSize();
     attrib.trimToSize();
 
-    return new DataPropertyMap( idents.elements(), attrib.elements() );
+    return new ChildDataPropertyMap( this, idents.elements(), attrib.elements() );
   }
 
   
@@ -593,7 +653,7 @@ public class ParentDataPropertyMap
 
     int num_values = value_list.size();
     for( int value_i = 0; value_i < num_values; value_i++ ) {
-      new_node_data.setQuick(
+      new_matrix.setQuick(
         row_list.getQuick( value_i ),
         column_list.getQuick( value_i ),
         value_list.getQuick( value_i )
@@ -649,6 +709,26 @@ public class ParentDataPropertyMap
     return ObjectFactory1D.dense.make( data );
   }
   
+  
+  /**
+   * Create a new StringIntHashMap of a default size, the actual
+   * size will be the next closest prime to accomadate the 
+   * least number of collisions.
+   */
+  protected OpenIntIntHashMap createIntIntHashMap () {
+    return new OpenIntIntHashMap( PrimeFinder.nextPrime( DEFAULT_MATRIX_SIZE ) );
+  }
+
+  /**
+   * Create a new StringIntHashMap of the given size. the actual
+   * size will be the next closest prime to accomadate the 
+   * least number of collisions.
+   */
+  protected OpenIntIntHashMap createIntIntHashMap ( int size ) {
+    return new OpenIntIntHashMap( PrimeFinder.nextPrime( size ) );
+  }
+
+
   /**
    * Create a new StringIntHashMap of a default size, the actual
    * size will be the next closest prime to accomadate the 
@@ -683,377 +763,43 @@ public class ParentDataPropertyMap
     }
     return string_int_hash_map;
   }
-
-
-  //----------------------------------------//
-  // Implements DataMatrix 
-  //----------------------------------------//
-
-  /**
-   * @return a default name
-   */
-  public String getName () {
-    if ( parentDataPropertyMap == null ) {
-      return "TopLevel DataPropertyMap";
-    } 
-    return "Child DataPropertyMap";
-  }
  
-  /**
-   * Set size makes a call to growMatrix which will
-   * make a new matrix and repopulate it with the 
-   * new data.
-   */
-  public void setSize ( int rows, int columns ) {
-    growMatrix( rows, columns );
-  }
 
-  /**
-   * This method is a wrapper around the more general
-   * "setValue"
+   /**
+   * Create a new ObjectIntHashMap of a default size, the actual
+   * size will be the next closest prime to accomadate the 
+   * least number of collisions.
    */
-  public void set ( int row, int column, double value ) {
-    dataMatrix.setQuick( row, column, new Double( value ) );
+  protected ObjectIntHashMap createObjectIntHashMap () {
+    return new ObjectIntHashMap( PrimeFinder.nextPrime( DEFAULT_MATRIX_SIZE ) );
   }
 
   /**
-   * This method populates the 1D attributeIntNameVector with new values,
-   * and update the attributeNameMap with the appropriate values.
+   * Create a new ObjectIntHashMap of the given size. the actual
+   * size will be the next closest prime to accomadate the 
+   * least number of collisions.
    */
-  public void setColumnTitles ( String [] new_titles ) {
-    this.attributeIntNameVector = create1DMatrix( new_titles );
-    this.attributeNameMap = createStringIntHashMap( this.attributeIntNameVector );
-  }
-
-  public void setRowTitles ( String [] new_names ) {
-    this.identifierVector = create1DMatrix( new_names  );
-    this.sharedIndentifierUniqueIntMap = createStringIntHashMap( this.identifierVector );
-  }
-
-  public int getRowCount () {
-    return dataMatrix.rows();
+  protected ObjectIntHashMap createObjectIntHashMap ( int size ) {
+    return new ObjectIntHashMap( PrimeFinder.nextPrime( size ) );
   }
 
   /**
-   * returns a count of all enabled columns
+   * Create and populate a ObjectIntHashMap based on the 
+   * given 1DMatrix.  The keys will be the contents of the
+   * matrix, the values the location of the object in the matrix.
    */
-  public int getColumnCount () {
-    return dataMatrix.columns();
-  }
-
-  public double get ( int row, int column ) {
-    return ( ( Double )dataMatrix.getQuick( row, column ) ).doubleValue();
-  }
- 
-  /**
-   * returns the original data, ignoring swapped and/or disabled columns.
-   */
-  public double[] getUntransformed ( int row ) {
-    ObjectMatrix1D row_data = dataMatrix.viewRow( row );
-    double[] double_data = new double[ row_data.size() ];
-    for ( int i = 0; i < double_data.length; ++i ) {
-      double_data[i] = row_data.getQuick( i );
+  protected ObjectIntHashMap createObjectIntHashMap ( ObjectMatrix1D matrix ) {
+    IntArrayList index_list = new IntArrayList();
+    ObjectArrayList value_list = new ObjectArrayList();
+    matrix.getNonZeros( index_list, value_list );
+    ObjectIntHashMap object_int_hash_map = new ObjectIntHashMap( PrimeFinder.nextPrime( value_list.size() ) );
+    for ( int i = 0; i < value_list.size(); ++i ) {
+      object_int_hash_map.add( ( Object )value_list.get( i ),
+                               index_list.get( i ) );
     }
-    return double_data;
-  }
-
-  public double[] get ( int row ) {
-    ObjectMatrix1D row_data = dataMatrix.viewRow( row );
-    double[] double_data = new double[ row_data.size() ];
-    for ( int i = 0; i < double_data.length; ++i ) {
-      double_data[i] = row_data.getQuick( i );
-    }
-    return double_data;
-  }
-
-  public double[] get ( String rowName ) {
-    int uid = sharedIndentifierUniqueIntMap.get( rowName );
-    uid = childUniqueIDMap.get( uid );
-    ObjectMatrix1D row_data = dataMatrix.viewRow( uid );
-    double[] double_data = new double[ row_data.size() ];
-    for ( int i = 0; i < double_data.length; ++i ) {
-      double_data[i] = row_data.getQuick( i );
-    }
-    return double_data;
-  }
-
-  public String[] getRowTitles () {
-    // not exactly sure what to do, since
-    // rowTitles are not set in stone.
-    return null;
-  }
-
-  public String[] getUnmaskedColumnTitles () {
-    String[] column_names = new String[ attributeIntNameVector.size() ];
-    for ( int i = 0; i < column_names.length; ++i ) {
-      column_names[i] = attributeIntNameVector.getQuick( i );
-    }
-    return column_names;
-  }
-
-  public String[] getColumnTitles () {
-    String[] column_names = new String[ attributeIntNameVector.size() ];
-    for ( int i = 0; i < column_names.length; ++i ) {
-      column_names[i] = attributeIntNameVector.getQuick( i );
-    }
-    return column_names;
-  }
-
-  public String toString () {
-    return dataMatrix.toString();
-  }
-  
-
-  //----------------------------------------//
-  // DataMatrixLens Implementation
-  //----------------------------------------//
-
-  /**
-   * I feel that this should restore the Lens to the
-   * state that it had before any switching and stuff.
-   */
-  public void clear ();
-  
-
-  /**
-   * Returns the name of the underlying matrix.
-   */
-  public String getMatrixName () {
-    return getName();
+    return object_int_hash_map;
   }
  
 
-  /**
-   * Sets  the state (enabled or disabled) of a given column.
-   * 
-   * This is tricky as it does not necessarily make sense for
-   * having a view...
-   * 
-   * @param column The column to change the state of.
-   * @param newState Whether the column should be enabled.
-   */
-  public void setColumnState ( int column, boolean newState ) {
-
-    
-    
-  }
-
-
-
-  /**
-   * Returns an array of booleans, one for each column, indicating whether
-   * the given column is enabled.
-   * @return
-   */
-  public boolean[] getColumnState ();
-
-  /**
-   * Returns a boolean indicating whether the specified column is enabled.
-   * @param column The column to check.
-   * @return 
-   */
-  public boolean getColumnState ( int column );
-
-  /**
-   * Moves the column at position <code>from</code> to 
-   * position <code>to</code>.
-   * @param from
-   * @param to
-   */
-  public void swapColumnOrder ( int from, int to );
-
-
-  /**
-   * Returns the order (position) of the specified column. 
-   * 
-   * @param column The original position of the column in the underlying matrix.
-   * @return The current position of that column.
-   */
-  public int getColumnOrder ( int column );
-
-  /**
-   * Returns the number of columns, regardless of how many are enabled.
-   * @return
-   */
-  public int getRawColumnCount ();
-
-
-  /**
-   * Returns the number of enabled columns.
-   * @return
-   */
-  public int getEnabledColumnCount ();
-  
-
-  /**
-   * Returns the number of selected rows. 
-   * @return
-   */
-  public int getSelectedRowCount ();
-
-  /**
-   * Returns a list of indexes into the underlying matrix representing
-   * the current user selection. Functionally equivalent to the method of the
-   * same name in the JTable class.
-   * @return
-   */
-  public int[] getSelectedRowIndexes ();
-
-  /**
-   * Returns the total number of rows in the matrix.
-   * @return 
-   */
-  public int getRawRowCount ();
-
-  /**
-   * Sets the user's selection of rows.
-   * 
-   * @param selectedRows An array of the row indices in the underlying matrix
-   * which are to be selected.
-   */
-  public void setSelectedRows ( int[] selectedRows );
-
-
-  /**
-   * Returns a row from the underlying matrix, unaffected by user changes to 
-   * column order, state, or row selection.
-   * @param row the index of the row to return.
-   * @return
-   */
-  public double[] getRaw ( int row );
-
-  /**
-   * Returns a row from the underlying matrix, unaffected by user changes to 
-   * column order, state, or row selection. 
-   * @param rowName The name of the row to return
-   * @return
-   */
-  public double[] getRaw ( String rowName );
-
-  /**
-   * Returns a double value from the underlying matrix, unaffected
-   * by user changes to column order, state, or row selection.
-   * @param row The row to retrieve a value from
-   * @param column The column to retrieve a value from
-   * @return
-   */
-  public double getRaw ( int row, int column );
-
-  /**
-   * Returns a row which reflects user changes to column order and state,
-   * but not selected rows.
-   * @param row the index of the row to return
-   * @return
-   */
-  public double[] getFromAll ( int row );
-
-  /**
-   * Returns a row which reflects user changes to column order and state,
-   * but not selected rows.
-   * @param rowName The name of the row to return 
-   * @return
-   */
-  public double[] getFromAll ( String rowName );
-
-  /**
-   * Returns a double value which reflects user changes to column order and state,
-   * but not selected rows. 
-   * @param row The index of the row from which to retrieve a value
-   * @param column The index of the column from which to retrieve a value
-   * @return
-   */
-  public double getFromAll ( int row, int column );
-
-  /**
-   * Returns a row which reflects user changes to column order and state,
-   * AND row selection. 
-   * @param row The index, within the subset of selected rows, of the desired row.
-   * @return
-   */
-  public double[] getFromSelected ( int row );
-
-  /**
-   * Returns a row which reflects user changes to column order and state,
-   * AND row selection
-   * @param rowName The name of the row to return
-   * @return
-   */
-  public double[] getFromSelected ( String rowName );
-
-  public double getFromSelected ( int row, int column );
-
-  /**
-   * This method takes as its argument an int representing an index of 
-   * one of the selected rows. It returns the index of that row in the
-   * underlying matrix. Do we really need a method for this?
-   * 
-   * TODO - find a better name for this method.
-   * @param index
-   * @return
-   */
-  private int getRowIndexFromSelection ( int index );
-
-
-
-  /**
-   *  use column ordering, and column status, to create and return
-   *  a possibly transformed view of the data row
-   */
-  public double [] adjustForColumnOrderAndState ( double [] row );
-  
-
-  /**
-   *  use column titles to create and return
-   *  a possibly transformed view of the column titles
-   */
-  public String [] adjustForColumnOrderAndState (String [] columnTitles);
-    // <columnTitles> includes column 0, which never changes its position.
-    // so start, below, by creating an array which is 1 element shorter, and
-    // therefore equal in length to the number of data columns in the matrix.
-    // add the column zero label to the list, then traverse the data column
-    // titles, placing them as the columnOrder & columnStatus info decree.
-    // adjustForColumnOrderAndState (String [])
-
-
-  /**
-   * Returns all row titles regardless of user selection.
-   * @return
-   */
-  public String[] getAllRowTitles ();
-
-  /**
-   * Return the row titles in the user selection.
-   * @return
-   */
-  public String[] getSelectedRowTitles ();
-
-  /**
-   * Returns the unfiltered column titles in the unfiltered column order.
-   * @deprecated Use getAllColumnTitles() instead.
-   */
-  public String[] getUnmaskedColumnTitles ();
  
-  /**
-   * Returns the unfiltered column titles in the unfiltered column order.
-   */
-  public String[] getAllColumnTitles ();
-
-  /**
-   * Returns the filtered column titles, along with the header column
-   * which is always at position 0. 
-   * The following always holds true:
-   * getFilteredColumnTitles().length = getEnabledColumnCount() + 1;
-   * @return
-   */
-  public String [] getFilteredColumnTitles ();
-
-  /**
-   * Returns a string representation of this DataMatrixLens
-   * 
-   * @param allRows Whether to show all rows (true) or just the selected rows.
-   * @return
-   */
-  public String toString ( boolean allRows );
-
-
 }

@@ -77,7 +77,8 @@
    <echo message=" COMPILE datamap "/>
 
     <mkdir dir="${datamap.classes.dir}"/>
-    <javac srcdir="${datamap.src.dir}"
+    <javac compiler="jikes"
+           srcdir="${datamap.src.dir}"
            excludes="${datamap.excludes}"
            classpathref="datamap.project.class.path"
            destdir="${datamap.classes.dir}"
