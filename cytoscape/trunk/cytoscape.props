@@ -98,3 +98,6 @@ plugin.activePathsNew.className=csplugins.activePathsNew.ActivePaths
 #plugin.activePathsNew.fileExtension=mrna
 plugin.activePathsNew.fileExtension=pvals
 
+plugin.expressionData.className=csplugins.expressionData.ExpressionDataUI
+plugin.expressionData.fileExtension=pvals
+plugin.expressionData.fileExtension=mrna
