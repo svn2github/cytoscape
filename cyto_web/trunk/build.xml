@@ -23,7 +23,7 @@
 	<target name="deploy" description="Deploys Web Site to cytoscape.org"
 		depends="env, config_prod">
 		<ftp server="cytoscape.org" 
-			remotedir="/html/new" 
+			remotedir="/html" 
 			verbose="yes"
 			userid="${cyto.user}"
 			password="${password}"
