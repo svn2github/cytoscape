@@ -15,9 +15,10 @@ import giny.view.NodeView;
 import giny.model.RootGraphChangeListener;
 import giny.model.RootGraphChangeEvent;
 
-import cytoscape.plugin.AbstractPlugin;
+import cytoscape.Cytoscape;
+import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.data.GraphObjAttributes;
-import cytoscape.data.CyNetwork;
+import cytoscape.CyNetwork;
 import cytoscape.util.GinyFactory;
 import cytoscape.data.Semantics;
 import cytoscape.view.CyWindow;
@@ -32,21 +33,19 @@ import cytoscape.data.readers.GMLTree;
  * and psuedo-attraction between homologous nodes (node will actuall be attracted to
  * that is "offset" away from the real node.
  */
-public class DualLayout extends AbstractPlugin{
+public class DualLayout extends CytoscapePlugin{
 
-  CyWindow cyWindow;
   DualLayoutCommandLineParser parser;
   public static String NEW_TITLE = "Split Graph";
   /**
    * This constructor saves the cyWindow argument (the window to which this
    * plugin is attached) and adds an item to the operations menu.
    */
-  public DualLayout(CyWindow cyWindow) {
-    this.cyWindow = cyWindow;
-    cyWindow.getCyMenus().getOperationsMenu().add( new DualLayoutAction() );
-    parser = new DualLayoutCommandLineParser(cyWindow.getCytoscapeObj().getConfiguration().getArgs());
-    if(parser.run() && !cyWindow.getWindowTitle().endsWith(NEW_TITLE)){
-      Thread t = new DualLayoutTask(cyWindow.getNetwork(),cyWindow,parser); 
+  public DualLayout() {
+    Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add( new DualLayoutAction() );
+    parser = new DualLayoutCommandLineParser(Cytoscape.getCytoscapeObj().getConfiguration().getArgs());
+    if(parser.run()){
+      Thread t = new DualLayoutTask(Cytoscape.getCurrentNetwork(),parser,Cytoscape.getCurrentNetwork().getTitle()+" - Split Graph"); 
       t.start();
     }
   }
@@ -76,9 +75,8 @@ public class DualLayout extends AbstractPlugin{
     public void actionPerformed(ActionEvent ae) {
 
       //inform listeners that we're doing an operation on the network
-      Thread t = new DualLayoutTask(cyWindow.getNetwork(),cyWindow,parser); 
+      Thread t = new DualLayoutTask(Cytoscape.getCurrentNetwork(),parser,Cytoscape.getCurrentNetwork().getTitle()+" - Split"); 
       t.start();
-      
     }
   }
 }

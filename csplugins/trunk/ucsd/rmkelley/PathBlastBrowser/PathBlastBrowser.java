@@ -17,12 +17,15 @@ import giny.view.NodeView;
 import giny.model.RootGraphChangeListener;
 import giny.model.RootGraphChangeEvent;
 
-import cytoscape.plugin.AbstractPlugin;
+import cytoscape.CyNode;
+import cytoscape.CyEdge;
+import cytoscape.Cytoscape;
+import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.data.GraphObjAttributes;
-import cytoscape.data.CyNetwork;
+import cytoscape.CyNetwork;
 import cytoscape.data.CyNetworkFactory;
 import cytoscape.data.readers.GMLReader;
-import cytoscape.view.CyWindow;
+import cytoscape.view.CyNetworkView;
 import cytoscape.util.GinyFactory;
 import cytoscape.actions.FitContentAction;
 import cytoscape.data.Semantics;
@@ -37,9 +40,8 @@ import phoebe.PGraphView;
  * This plugin will display is used to browser a number of gml files created
  * by DualLayout.
  */
-public class PathBlastBrowser extends AbstractPlugin{
+public class PathBlastBrowser extends CytoscapePlugin{
 
-  CyWindow cyWindow;
   /**
    * Print out debugging information
    */
@@ -49,9 +51,8 @@ public class PathBlastBrowser extends AbstractPlugin{
    * This constructor saves the cyWindow argument (the window to which this
    * plugin is attached) and adds an item to the operations menu.
    */
-  public PathBlastBrowser(CyWindow cyWindow) {
-    this.cyWindow = cyWindow;
-    cyWindow.getCyMenus().getOperationsMenu().add( new LoadPathBlastGMLAction( cyWindow ) );
+  public PathBlastBrowser() {
+    Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add( new LoadPathBlastGMLAction( ) );
   }
 
   /**
@@ -70,15 +71,10 @@ public class PathBlastBrowser extends AbstractPlugin{
 class LoadPathBlastGMLAction extends AbstractAction {
 
   /**
-   * This is the window we are operating on
-   */
-  CyWindow cyWindow;
-  /**
    * The constructor sets the text that should appear on the menu item.
    */
-  public LoadPathBlastGMLAction(CyWindow cyWindow){
+  public LoadPathBlastGMLAction(){
     super("Create overlap graph from SIF files");
-    this.cyWindow = cyWindow;
   }
 
 
@@ -87,7 +83,7 @@ class LoadPathBlastGMLAction extends AbstractAction {
    */
   public void actionPerformed(ActionEvent ae) {
     //inform listeners that we're doing an operation on the network
-    Thread t = new LoadPathBlastGMLTask(cyWindow); 
+    Thread t = new LoadPathBlastGMLTask(); 
     t.start();
   }
 }
@@ -97,7 +93,6 @@ class LoadPathBlastGMLAction extends AbstractAction {
  * menu to display the subgraph located at each node
  */
 class LoadPathBlastGMLTask extends Thread{
-  CyWindow cyWindow;
   /**
    * The string use to split name is homology nodes
    */
@@ -125,12 +120,7 @@ class LoadPathBlastGMLTask extends Thread{
   private static String OVERLAP_INTERACTION = "ov";
   private static String HOMOLOGY_INTERACTION = "hm";
   private HashMap node2CyNetwork;
-  /**
-   * Stores the cyWindow object for later reference
-   */
-  public LoadPathBlastGMLTask(CyWindow cyWindow){
-    this.cyWindow = cyWindow;
-  }
+ 
 
   /**
    * Starts thread execution
@@ -139,7 +129,7 @@ class LoadPathBlastGMLTask extends Thread{
     JFileChooser chooser = new JFileChooser();
     chooser.setMultiSelectionEnabled(true);
     chooser.setDialogTitle(TITLE);
-    int returnVal = chooser.showOpenDialog(cyWindow.getMainFrame());
+    int returnVal = chooser.showOpenDialog(Cytoscape.getDesktop());
     if(returnVal != JFileChooser.APPROVE_OPTION){
       if(PathBlastBrowser.DEBUG){
 	System.out.println("File selection cancelled");
@@ -161,13 +151,12 @@ class LoadPathBlastGMLTask extends Thread{
     CyNetwork newNetwork = createOverlapGraph(cyNetwork2Name,cyNetwork2NameSet);	
     //set up the canonicalName mapping here
     //create a new window and add this network to that window
-    cyWindow.getNetwork().setNewGraphFrom(newNetwork, false);
-    //CyWindow newWindow = new CyWindow(cyWindow.getCytoscapeObj(), newNetwork, "Overlap Graph");
+    Cytoscape.createNetworkView(newNetwork);
+
     //create a new menu item and actionlistener for that window
-    cyWindow.getCyMenus().getOperationsMenu().add(new ShowGMLAction(cyWindow,node2CyNetwork));	 	
-    cyWindow.getCyMenus().getOperationsMenu().add(new SaveImagesAction(cyWindow,node2CyNetwork));
+    Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add(new ShowGMLAction(node2CyNetwork));	 	
+    Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add(new SaveImagesAction(node2CyNetwork));
     //newWindow.showWindow();
-    cyWindow.getCyMenus().setNodesRequiredItemsEnabled();
   }
 
   
@@ -185,19 +174,18 @@ class LoadPathBlastGMLTask extends Thread{
    * of overlaps created from this graph
    */
   public CyNetwork createOverlapGraph(HashMap cyNetwork2Name, HashMap cyNetwork2NameSet){
-    RootGraph rootGraph = GinyFactory.createRootGraph();
-    GraphObjAttributes nodeAttributes = new GraphObjAttributes();
-    GraphObjAttributes edgeAttributes = new GraphObjAttributes();
+    CyNetwork overlapNetwork = Cytoscape.createNetwork();
+    
     //create the nodes for this graph, also create a mapping from GMLTree objects to nodes in the graph
     HashMap cyNetwork2Node = new HashMap();	
     node2CyNetwork = new HashMap();
     Iterator cyNetworkIt = cyNetwork2Name.keySet().iterator();
     while(cyNetworkIt.hasNext()){
       CyNetwork cyNetwork = (CyNetwork)cyNetworkIt.next();
-      Node newNode = rootGraph.getNode(rootGraph.createNode());
       String name = (String)cyNetwork2Name.get(cyNetwork);
-      newNode.setIdentifier(name);
-      nodeAttributes.addNameMapping(name,newNode);
+      CyNode newNode = overlapNetwork.addNode(Cytoscape.getCyNode(name,true));
+      
+
       cyNetwork2Node.put(cyNetwork,newNode);
       node2CyNetwork.put(newNode,cyNetwork);
       //add the attributes about the identity of the nodes in the subtree
@@ -206,9 +194,7 @@ class LoadPathBlastGMLTask extends Thread{
       while(nameIt.hasNext()){
 	String compatName = (String)nameIt.next();
 	String [] speciesNames = compatName.split(SPLIT_STRING);
-	for (int  idx = 0; idx < speciesNames.length; idx++) {
-	  nodeAttributes.append(SPECIES_NODES_ATTRIBUTE+idx,name,speciesNames[idx]);
-	} // end of for (int  = 0;  < ; ++)
+	overlapNetwork.setNodeAttributeValue(newNode,SPECIES_NODES_ATTRIBUTE,Arrays.asList(speciesNames));
       }
     }
 
@@ -229,18 +215,19 @@ class LoadPathBlastGMLTask extends Thread{
 	
 	if(percent > REQUIRED_OVERLAP){
 	  //create an edge between the two correpsonding nodes
-	  Node sourceNode = (Node)cyNetwork2Node.get(cyNetworkVec.get(idx));
-	  Node targetNode = (Node)cyNetwork2Node.get(cyNetworkVec.get(idy));
-	  Edge newEdge = rootGraph.getEdge(rootGraph.createEdge(sourceNode,targetNode));
-	  String name = nodeAttributes.getCanonicalName(sourceNode)+" ("+OVERLAP_INTERACTION+") "+nodeAttributes.getCanonicalName(targetNode);
-	  newEdge.setIdentifier(name);
-	  edgeAttributes.addNameMapping(name,newEdge);
-	  edgeAttributes.set(COUNT_ATTRIBUTE,name,new Double(percent));
-	  edgeAttributes.set(INTERACTION_ATTRIBUTE,name,OVERLAP_INTERACTION);	
+	  CyNode sourceNode = (CyNode)cyNetwork2Node.get(cyNetworkVec.get(idx));
+	  CyNode targetNode = (CyNode)cyNetwork2Node.get(cyNetworkVec.get(idy));
+	  String sourceName = (String)overlapNetwork.getNodeAttributeValue(sourceNode,Semantics.CANONICAL_NAME);
+	  String targetName = (String)overlapNetwork.getNodeAttributeValue(targetNode,Semantics.CANONICAL_NAME);
+	  String name = sourceName+ " ("+OVERLAP_INTERACTION+") "+targetName;
+	  CyEdge newEdge = overlapNetwork.addEdge(Cytoscape.getCyEdge(sourceName,name,targetName,OVERLAP_INTERACTION));
+	  overlapNetwork.setEdgeAttributeValue(newEdge,COUNT_ATTRIBUTE,new Double(percent));
 	}
       }
     }
-    return new CyNetwork(rootGraph,nodeAttributes,edgeAttributes);
+    overlapNetwork.setTitle("Overlap Graph");
+    return overlapNetwork;
+    
   }
   
   
@@ -278,7 +265,8 @@ class LoadPathBlastGMLTask extends Thread{
     for(int idx = 0;idx<sifFiles.length;idx++){
       File sifFile = sifFiles[idx];
       try{
-	CyNetwork cyNetwork = CyNetworkFactory.createNetworkFromInteractionsFile(sifFile.getAbsolutePath());
+	//CyNetwork cyNetwork = CyNetworkFactory.createNetworkFromInteractionsFile(sifFile.getAbsolutePath());
+	CyNetwork cyNetwork = Cytoscape.createNetwork(sifFile.getAbsolutePath(),Cytoscape.FILE_SIF,true,Cytoscape.getCytoscapeObj().getBioDataServer(),"");
 	result.put(cyNetwork,sifFile.getName());
       }catch(Exception e){
 	System.err.println("Failed to read the sif file specified by "+sifFile.getAbsolutePath());
@@ -293,10 +281,6 @@ class LoadPathBlastGMLTask extends Thread{
  * Creates a new thread to load up the GML file in a separate window.
  */			
 class ShowGMLAction extends AbstractAction {	
-  /** 
-   *This is the window containing the overlap graph
-   */
-  CyWindow cyWindow;
   /**			
    * This contains a mapping from nodes in the network to the GMLTree associated with that ndoe	
    */
@@ -304,10 +288,9 @@ class ShowGMLAction extends AbstractAction {
   /**					
    * The constructor sets the text that should appear on the menu item.
    */									
-  public ShowGMLAction(CyWindow cyWindow, HashMap node2CyNetwork){	
+  public ShowGMLAction(HashMap node2CyNetwork){	
     super("Show GML");							
     this.node2CyNetwork = node2CyNetwork;
-    this.cyWindow = cyWindow;			
   }						
 						
 						
@@ -315,20 +298,16 @@ class ShowGMLAction extends AbstractAction {
    * This method is called when the user selects the menu item.
    */								
   public void actionPerformed(ActionEvent ae) {			
-    List selectedNodes = cyWindow.getView().getSelectedNodes();	
+    List selectedNodes = Cytoscape.getCurrentNetworkView().getSelectedNodes();	
     if(selectedNodes.size() > 0){				
-      Node selectedNode = ((NodeView)selectedNodes.get(0)).getNode();
-      Thread t = new ShowGMLThread(selectedNode,node2CyNetwork,cyWindow,false);
+      CyNode selectedNode = (CyNode)((NodeView)selectedNodes.get(0)).getNode();
+      Thread t = new ShowGMLThread(selectedNode,node2CyNetwork,false);
       t.start();								
     }										
   }										
 }	
 
 class SaveImagesAction extends AbstractAction {
-  /**
-   * This is the window containing the overlap graph
-   */
-  CyWindow cyWindow;
   /**			
    * This contains a mapping from nodes in the network to the GMLTree associated with that ndoe	
    */
@@ -336,18 +315,17 @@ class SaveImagesAction extends AbstractAction {
   /**					
    * The constructor sets the text that should appear on the menu item.
    */									
-  public SaveImagesAction(CyWindow cyWindow, HashMap node2CyNetwork){	
+  public SaveImagesAction(HashMap node2CyNetwork){	
     super("Save All Layouts to Images");							
     this.node2CyNetwork = node2CyNetwork;
-    this.cyWindow = cyWindow;			
   }						
     
   /**						
    * This method is called when the user selects the menu item.
    */								
   public void actionPerformed(ActionEvent ae) {			
-    for ( Iterator nodeIt = cyWindow.getView().getGraphPerspective().nodesIterator();nodeIt.hasNext();) {
-      Thread t = new ShowGMLThread((Node)nodeIt.next(),node2CyNetwork,cyWindow,true);
+    for ( Iterator nodeIt = Cytoscape.getCurrentNetwork().nodesIterator();nodeIt.hasNext();) {
+      Thread t = new ShowGMLThread((CyNode)nodeIt.next(),node2CyNetwork,true);
       t.start();								
       try {
 	t.join();
@@ -367,29 +345,18 @@ class ShowGMLThread extends Thread{
    * Whether to save the layout to an image
    */
   private boolean save;
-  /**										
-   * The old window with the overlap graph, bascially just need this to geta  reference to the global
-   * cytoscape thingy											
-   */													
-  private CyWindow overlapWindow;								
-  /**													
-   * The new winodw in which to display the gml,							
-   * may have to create this										
-   */													
-  private static CyWindow newWindow;									
   /**													
    * The node that was selected in the graph								
    */													
-  private Node selectedNode;											
-  private HashMap node2CyNetwork;								
+  private CyNode selectedNode;											
+  private HashMap node2CyNetwork;
   /**													
    * Keeps track of the CyNetworks we have already 							
    * created so we don't have to create them again							
    */													
-  public ShowGMLThread(Node selectedNode, HashMap node2CyNetwork, CyWindow overlapWindow, boolean save){		
+  public ShowGMLThread(CyNode selectedNode, HashMap node2CyNetwork, boolean save){		
     this.node2CyNetwork = node2CyNetwork;								
     this.selectedNode = selectedNode;									
-    this.overlapWindow = overlapWindow;									
     this.save = save;
   }													
 													
@@ -398,38 +365,32 @@ class ShowGMLThread extends Thread{
    * to display in hte window that has already been created						
    */													
   public void run(){											
-    synchronized (overlapWindow){									
-      
-      if (newWindow == null) {
-	newWindow = new CyWindow(overlapWindow.getCytoscapeObj(),new CyNetwork(GinyFactory.createRootGraph(),overlapWindow.getNetwork().getNodeAttributes(),overlapWindow.getNetwork().getEdgeAttributes()),"Split Graph");
-	newWindow.showWindow();
-      } // end of if ()
-      DualLayoutCommandLineParser parser = new DualLayoutCommandLineParser(overlapWindow.getCytoscapeObj().getConfiguration().getArgs());
-      CyNetwork cyNetwork = (CyNetwork)node2CyNetwork.get(selectedNode);
-      Thread t = new DualLayoutTask(cyNetwork,newWindow,parser);
-      
-      t.start();
+    DualLayoutCommandLineParser parser = new DualLayoutCommandLineParser(Cytoscape.getCytoscapeObj().getConfiguration().getArgs());
+    CyNetwork cyNetwork = (CyNetwork)node2CyNetwork.get(selectedNode);
+    //CyNetworkView cyNetworkView = Cytoscape.createNetworkView(cyNetwork);
+    String title = (String)Cytoscape.getCurrentNetwork().getNodeAttributeValue(selectedNode,Semantics.CANONICAL_NAME);
+    Thread t = new DualLayoutTask(cyNetwork,parser,title+" - Split Graph");
+    t.start();
+    try {
+      t.join();
+    } catch (Exception e) {
+      System.err.println("Failed to rejoin thread, exiting");
+      e.printStackTrace();
+      return;
+    } // end of try-catch
+      //Semantics.applyNamingServices(newWindow.getNetwork(),overlapWindow.getCytoscapeObj());
+    
+    FitContentAction fitAction = new FitContentAction();							   
+    fitAction.actionPerformed(new ActionEvent(this,0,""));								   
+    //newWindow.getVizMapManager().applyAppearances();
+    if ( save) {
       try {
-	t.join();
-      } catch (Exception e) {
-	System.err.println("Failed to rejoin thread, exiting");
+	ImageIO.write((BufferedImage)((PGraphView)(Cytoscape.getCurrentNetworkView())).getCanvas().getLayer().toImage(),"png",new File(selectedNode.getIdentifier()+".png"));  
+      } catch ( Exception e) {
 	e.printStackTrace();
-	return;
       } // end of try-catch
-      Semantics.applyNamingServices(newWindow.getNetwork(),overlapWindow.getCytoscapeObj());
-      newWindow.getMainFrame().setVisible(false);
-      FitContentAction fitAction = new FitContentAction(newWindow);							   
-      fitAction.actionPerformed(new ActionEvent(this,0,""));								   
-      newWindow.getMainFrame().setVisible(true);
-      newWindow.getCyMenus().setNodesRequiredItemsEnabled();
-      if ( save) {
-	try {
-	  ImageIO.write((BufferedImage)((PGraphView)(newWindow.getView())).getCanvas().getLayer().toImage(),"png",new File(selectedNode.getIdentifier()+".png"));  
-	} catch ( Exception e) {
-	  e.printStackTrace();
-	} // end of try-catch
-      } // end of if ()
-    }
+    } // end of if ()
   }
 }
+
 

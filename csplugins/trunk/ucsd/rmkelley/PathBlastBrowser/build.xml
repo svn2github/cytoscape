@@ -53,12 +53,9 @@
 
 	<!-- Target to debug with socket debugger -->
 	<target name="test" depends="jar" description="Runs jar to debug">
-		<java classname="cytoscape.cytoscape" classpathref="classpath_run" fork="true">
-			<arg line="--JLD build/${plugin.name}.jar --DLedges"/>
-			<jvmarg value="-Xdebug"/>
-			<jvmarg value="-Xnoagent"/>
-			<jvmarg value="-Djava.compiler=NONE"/>
-			<jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,suspend=n"/>
+		<java classname="cytoscape.CyMain" classpathref="classpath_run" fork="true">
+			<arg line="-n testData/species.na -b /cellar/bds/all2/annotationAndSynonyms --JLD build/${plugin.name}.jar --DLedges"/>
+			<jvmarg value="-Xmx512m"/>
 		</java>
 	</target>
 	
