@@ -41,7 +41,7 @@ public final class MinIntHeap
    * This constructor tosses length elements from the array arr, beginning
    * at index beginIndex, onto a new heap.  The new heap will not be
    * ordered.<p>
-   * A copy of the input array is made.  The input array is never modified.
+   * The input array is never modified.
    */
   public MinIntHeap(int[] arr, int beginIndex, int length)
   {
@@ -332,7 +332,7 @@ public final class MinIntHeap
    *   of where elements are copied to.
    * @exception IndexOutOfBoundsException if the output array is not large
    *   enough to store all elements in this heap.
-   * @exception Use orderedElements(boolean) or deleteMin() instead.
+   * @deprecated Use orderedElements(boolean) or deleteMin() instead.
    * @see #orderedElements(boolean)
    * @see #deleteMin()
    */
