@@ -1,0 +1,71 @@
+<project name="graph parser" default="antlr" basedir=".">
+    <description>
+        simple example build file
+    </description>
+  <!-- set global properties for this build -->
+  <property name="grammar" location="grammar"/>
+  <property name="build" location="build"/>
+  <property name="gsrc" location="${build}/src"/>
+  <property name="src" location="src"/>
+  <property name="dist"  location="dist"/>
+  <property name="lib"  location="../lib"/>
+  <property name="doc"  location="doc"/>
+
+
+   <path id="project.class.path">
+       <fileset dir="${lib}">
+	   <include name="*.jar"/>
+       </fileset>
+       <pathelement location="./${build}"/>
+    </path>
+
+
+  <target name="init">
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${build}"/>
+    <mkdir dir="${gsrc}"/>
+
+  </target>
+
+  <target name="doc">
+
+    <!-- Create the build directory structure used by compile -->
+    <delete dir="${doc}"/>
+    <mkdir dir="${doc}"/>
+    <javadoc sourcepath="${src}" destdir="${doc}">
+       <fileset dir="${src}">
+	  <exclude name="**/*Test*"/>
+        </fileset>
+    </javadoc>
+  </target>
+
+
+  <target name="antlr" depends="init"
+        description="generate source using ANTLR and compile" >
+
+   <antlr target="${grammar}/test.g"
+           outputdirectory="${gsrc}"/>
+
+
+    <antlr target="${grammar}/graph.g"
+           outputdirectory="${gsrc}"/>
+
+
+    <!-- Compile the java code from ${src} into ${build} -->
+    <javac  destdir="${build}" deprecation="no">
+         <src path="${src}"/>
+         <src path="${gsrc}"/>
+         <classpath refid="project.class.path"/>
+    </javac>
+
+  </target>
+
+  <target name="clean"
+        description="clean up" >
+    <!-- Delete the ${build} and ${dist} directory trees -->
+    <delete dir="${build}"/>
+    <delete dir="${dist}"/>
+  </target>
+</project>
