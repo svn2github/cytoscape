@@ -25,16 +25,15 @@ class FGraphPerspective implements GraphPerspective
 {
 
   public void addGraphPerspectiveChangeListener
-    (GraphPerspectiveChangeListener listener)
-  { // This method is not thread safe; synchronize on an object to make it so.
-    m_lis[0] = GraphPerspectiveChangeListenerChain.add(m_lis[0], listener);
-  }
+    (GraphPerspectiveChangeListener listener) {
+    // This method is not thread safe; synchronize on an object to make it so.
+    m_lis[0] = GraphPerspectiveChangeListenerChain.add(m_lis[0], listener); }
 
   public void removeGraphPerspectiveChangeListener
-    (GraphPerspectiveChangeListener listener)
-  { // This method is not thread safe; synchronize on an object to make it so.
-    m_lis[0] = GraphPerspectiveChangeListenerChain.remove(m_lis[0], listener);
-  }
+    (GraphPerspectiveChangeListener listener) {
+    // This method is not thread safe; synchronize on an object to make it so.
+    m_lis[0] = GraphPerspectiveChangeListenerChain.remove
+      (m_lis[0], listener); }
 
   // The object returned shares the same RootGraph with this object.
   public Object clone()
@@ -54,10 +53,8 @@ class FGraphPerspective implements GraphPerspective
     return new FGraphPerspective(m_root, rootGraphNodeInx, rootGraphEdgeInx);
   }
 
-  public RootGraph getRootGraph()
-  {
-    return m_root;
-  }
+  public RootGraph getRootGraph() {
+    return m_root; }
 
   public int getNodeCount()
   {
@@ -163,41 +160,30 @@ class FGraphPerspective implements GraphPerspective
     return returnThis;
   }
 
-  public Node hideNode(Node node)
-  {
+  public Node hideNode(Node node) {
     if (node.getRootGraph() == m_root &&
         hideNode(node.getRootGraphIndex()) != 0) return node;
-    else return null;
-  }
+    else return null; }
 
-  public int hideNode(int rootGraphNodeInx)
-  {
-    return m_weeder.hideNode(this, rootGraphNodeInx);
-  }
+  public int hideNode(int rootGraphNodeInx) {
+    return m_weeder.hideNode(this, rootGraphNodeInx); }
 
-  public java.util.List hideNodes(java.util.List nodes)
-  {
+  public java.util.List hideNodes(java.util.List nodes) {
     final java.util.ArrayList returnThis = new java.util.ArrayList();
     for (int i = 0; i < nodes.size(); i++)
       if (hideNode((Node) nodes.get(i)) != null)
         returnThis.add(nodes.get(i));
-    return returnThis;
-  }
+    return returnThis; }
 
-  public int[] hideNodes(int[] rootGraphNodeInx)
-  {
-    return m_weeder.hideNodes(this, rootGraphNodeInx);
-  }
+  public int[] hideNodes(int[] rootGraphNodeInx) {
+    return m_weeder.hideNodes(this, rootGraphNodeInx); }
 
-  public Node restoreNode(Node node)
-  {
+  public Node restoreNode(Node node) {
     if (node.getRootGraph() == m_root &&
         restoreNode(node.getRootGraphIndex()) != 0) return node;
-    else return null;
-  }
+    else return null; }
 
-  public int restoreNode(int rootGraphNodeInx)
-  {
+  public int restoreNode(int rootGraphNodeInx) {
     final int returnThis = _restoreNode(rootGraphNodeInx);
     if (returnThis != 0) {
       final GraphPerspectiveChangeListener listener = m_lis[0];
@@ -205,8 +191,7 @@ class FGraphPerspective implements GraphPerspective
         listener.graphPerspectiveChanged
           (new GraphPerspectiveNodesRestoredEvent
            (this, new int[] { rootGraphNodeInx })); } }
-    return returnThis;
-  }
+    return returnThis; }
 
   private int _restoreNode(int rootGraphNodeInx)
   {
@@ -236,8 +221,7 @@ class FGraphPerspective implements GraphPerspective
     throw new IllegalStateException("not implemented yet");
   }
 
-  public int[] restoreNodes(int[] rootGraphNodeInx)
-  {
+  public int[] restoreNodes(int[] rootGraphNodeInx) {
     m_heap.empty();
     final MinIntHeap successes = m_heap;
     final int[] returnThis = new int[rootGraphNodeInx.length];
@@ -254,43 +238,33 @@ class FGraphPerspective implements GraphPerspective
           successArr[++index] = rootGraphNodeInx[enum.nextInt()];
         listener.graphPerspectiveChanged
           (new GraphPerspectiveNodesRestoredEvent(this, successArr)); } }
-    return returnThis;
-  }
+    return returnThis; }
 
-  public Edge hideEdge(Edge edge)
-  {
+  public Edge hideEdge(Edge edge) {
     if (edge.getRootGraph() == m_root &&
         hideEdge(edge.getRootGraphIndex()) != 0) return edge;
-    else return null;
-  }
+    else return null; }
 
-  public int hideEdge(int rootGraphEdgeInx)
-  {
-    return m_weeder.hideEdge(this, rootGraphEdgeInx);
-  }
+  public int hideEdge(int rootGraphEdgeInx) {
+    return m_weeder.hideEdge(this, rootGraphEdgeInx); }
 
   // This methods has been marked deprecated in the Giny API.
-  public java.util.List hideEdges(java.util.List edges)
-  {
+  public java.util.List hideEdges(java.util.List edges) {
     final java.util.ArrayList returnThis = new java.util.ArrayList();
     for (int i = 0; i < edges.size(); i++)
       if (hideEdge((Edge) edges.get(i)) != null)
         returnThis.add(edges.get(i));
-    return returnThis;
-  }
+    return returnThis; }
 
-  public int[] hideEdges(int[] rootGraphEdgeInx)
-  {
-    return m_weeder.hideEdges(this, rootGraphEdgeInx);
-  }
+  public int[] hideEdges(int[] rootGraphEdgeInx) {
+    return m_weeder.hideEdges(this, rootGraphEdgeInx); }
 
   public Edge restoreEdge(Edge edge)
   {
     throw new IllegalStateException("not implemented yet");
   }
 
-  public int restoreEdge(int rootGraphEdgeInx)
-  {
+  public int restoreEdge(int rootGraphEdgeInx) {
     final int returnThis = _restoreEdge(rootGraphEdgeInx);
     if (returnThis != 0) {
       final GraphPerspectiveChangeListener listener = m_lis[0];
@@ -298,8 +272,7 @@ class FGraphPerspective implements GraphPerspective
         listener.graphPerspectiveChanged
           (new GraphPerspectiveEdgesRestoredEvent
            (this, new int[] { rootGraphEdgeInx })); } }
-    return returnThis;
-  }
+    return returnThis; }
 
   private int _restoreEdge(int rootGraphEdgeInx)
   {
