@@ -6,11 +6,13 @@
 #------------------------------------------------------------------------
 # implicit main starts here
 
-  $errorFound = 0;
+  $errorsFound = 0;
 
   checkJavaVersion ();
   checkJavaHome ();
   checkClassPath ();
+ 
+  exit $errorsFound;
 
 # end of implicit main
 #-------------------------------------------------------------------------
@@ -216,7 +218,7 @@ sub getParentDirectory
 #-------------------------------------------------------------------------
 sub printError 
 {
-  $errorFound = 1;
+  $errorsFound = 1;
   my $msg = $_[0];
   printf ("================== ERROR!\n%s\n", $msg);
 
