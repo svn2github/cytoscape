@@ -40,12 +40,13 @@ import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.net.URL;
+import javax.jnlp.*;
 import java.util.*;
 import java.io.*;
 import java.awt.datatransfer.*;
 
 import cytoscape.GraphObjAttributes;
-import cytoscape.util.Exec;
+import cytoscape.util.*;
 
 import y.base.*;
 //---------------------------------------------------------------------------------------
@@ -452,6 +453,21 @@ class MyMouseListener implements MouseListener
 //-------------------------------------------------------------------------------
 protected void displayWebPage (URL url)
 {
+  try {
+    BasicService bs = (BasicService) ServiceManager.lookup ("javax.jnlp.BasicService");
+    bs.showDocument (url);
+    }
+  catch (Exception ex) {
+    String msg = "<html>You need to invoke Cytsocape through Java Web Start <br>" + 
+                 "in order to make use of your web browser from within the program.<br><br>" +
+                 "Error message: " + ex.getMessage () + "</html>";
+    JOptionPane.showMessageDialog (TabbedBrowser.this, msg);
+    }
+
+} // displayWebPage
+//-------------------------------------------------------------------------------
+protected void oldDisplayWebPage (URL url)
+{
   String [] cmd = new String [2];
   //cmd [0] = "/users/pshannon/data/human/jdrf/web";
   //cmd [0] = "./web";
@@ -471,7 +487,6 @@ protected void displayWebPage (URL url)
     System.out.println (stderr.elementAt (i));
 
 } // displayWebPage
-
 //-------------------------------------------------------------------------------
 // this class is needed by interface ClipboardOwner
 public void lostOwnership(Clipboard clipboard, Transferable contents) {}
