@@ -3,6 +3,7 @@ package fing.model;
 import giny.model.Node;
 import giny.model.RootGraph;
 
+// This class is currently not being used.  Thus its constructor is private.
 final class RootGraphNodesCreatedEvent extends RootGraphChangeEventAdapter
 {
 
@@ -11,7 +12,7 @@ final class RootGraphNodesCreatedEvent extends RootGraphChangeEventAdapter
   // Note that no copy of the array createdNodeInx is made - the exact
   // array reference is kept.  Methods on this class return this same
   // array reference.
-  RootGraphNodesCreatedEvent(RootGraph rootGraph, int[] createdNodeInx)
+  private RootGraphNodesCreatedEvent(RootGraph rootGraph, int[] createdNodeInx)
   {
     super(rootGraph);
     m_createdNodeInx = createdNodeInx;
