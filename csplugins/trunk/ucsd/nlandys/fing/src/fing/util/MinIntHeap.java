@@ -200,9 +200,14 @@ public final class MinIntHeap
                                           int parentIndex,
                                           int size)
   {
-    for (int childIndex = parentIndex * 2; childIndex <= size;
+    // parentIndex is at most m_currentSize / 2.
+    for (int childIndex = parentIndex * 2;
+         childIndex > 0 // Check for overflow.
+           && childIndex <= size;
          parentIndex = childIndex, childIndex = childIndex * 2) {
-      if (childIndex + 1 <= size && heap[childIndex + 1] < heap[childIndex])
+      // childIndex is a multiple of 2, so childIndex + 1 will not overflow.
+      if (childIndex + 1 <= size &&
+          heap[childIndex + 1] < heap[childIndex])
         childIndex++;
       if (heap[childIndex] < heap[parentIndex])
         swap(heap, parentIndex, childIndex);
