@@ -54,18 +54,18 @@ public interface DynamicGraph
   public int createNode();
 
   /**
-   * Removes the specified node from this graph.  Returns true if and only
-   * if the specified node was in this graph at the time this method was
-   * called.  A return value of true implies that the specified node has
-   * been successfully removed from this graph.<p>
+   * Removes the specified node from this graph.  Returns -1 if the specified
+   * node does not exist in this graph, otherwise returns the input node (the
+   * node to be removed).  A non-negative return value implies that the
+   * specified node has been successfully removed from this graph.<p>
    * Note that removal of a node necessitates the removal of any edge
    * touching that node.
    *
    * @param node the node that is to be removed from this graph.
-   * @return true if and only if the specified node existed in this graph
-   *   at the time this operation was started.
+   * @return -1 if specified node does not exist in graph, otherwise
+   *   the input node.
    */
-  public boolean removeNode(int node);
+  public int removeNode(int node);
 
   /**
    * Creates a new edge in this graph, having source node, target node,
@@ -87,18 +87,18 @@ public interface DynamicGraph
   public int createEdge(int sourceNode, int targetNode, boolean directed);
 
   /**
-   * Removes the specified edge from this graph.  Returns true if and only
-   * if the specified edge was in this graph at the time this method was
-   * called.  A return value of true implies that the specified edge has
-   * been successfully removed from this graph.<p>
+   * Removes the specified edge from this graph.  Returns -1 if the specified
+   * edge does not exist in this graph, otherwise returns the input edge (the
+   * edge to be removed).  A non-negative return value implies that the
+   * specified edge has been successfully removed from this graph.<p>
    * Note that removing an edge does not cause that edge's endpoint nodes
    * to be removed from this graph.
    *
    * @param edge the edge that is to be removed from this graph.
-   * @return true if and only if the specified edge existed in this graph
-   *   at the time this operation was started.
+   * @return -1 if specified edge does not exist in graph, otherwise
+   *   the input edge.
    */
-  public boolean removeEdge(int edge);
+  public int removeEdge(int edge);
 
   /**
    * Determines whether or not a node exists in this graph.
