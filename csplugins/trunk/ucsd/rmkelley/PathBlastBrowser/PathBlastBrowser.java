@@ -242,10 +242,9 @@ class LoadPathBlastGMLTask extends Thread{
     HashMap result = new HashMap();
     while(cyNetworkIt.hasNext()){
       CyNetwork currentCyNetwork = ((CyNetwork)cyNetworkIt.next());
-      RootGraph rootGraph = currentCyNetwork.getRootGraph();
       HashSet compatLabels = new HashSet();
       GraphObjAttributes nodeAttributes = currentCyNetwork.getNodeAttributes();
-      Iterator nodeIt = rootGraph.nodesList().iterator();
+      Iterator nodeIt = currentCyNetwork.nodesList().iterator();
       while(nodeIt.hasNext()){
 	String currentName = nodeAttributes.getCanonicalName(nodeIt.next());
 	compatLabels.add(currentName);
