@@ -673,6 +673,16 @@ class FRootGraph implements RootGraph, DynamicGraph
     if (metaRelationships == null || !metaRelationships.hasNext())
       return false;
     m_metaGraph.edgeRemove(metaRelationships.nextInt());
+    if (m_metaGraph.edgesAdjacent(metaParent, true, true, false).
+        numRemaining() == 0) { // Remove disconnected meta-element.
+      m_nativeToMetaNodeInxMap.put(nativeParent, Integer.MAX_VALUE);
+      m_metaToNativeInxMap.setIntAtIndex(0, metaParent);
+      m_metaGraph.nodeRemove(metaParent); }
+    if (m_metaGraph.edgesAdjacent(metaChildNode, true, true, false).
+        numRemaining() == 0) { // Remove disconnected meta-element.
+      m_nativeToMetaNodeInxMap.put(nativeChildNode, Integer.MAX_VALUE);
+      m_metaToNativeInxMap.setIntAtIndex(0, metaChildNode);
+      m_metaGraph.nodeRemove(metaChildNode); }
     // Remove this line later on when everything works.
     if (metaRelationships.hasNext())
       throw new IllegalStateException("internal error");
@@ -686,7 +696,7 @@ class FRootGraph implements RootGraph, DynamicGraph
                             parent.getRootGraphIndex()); }
 
   public boolean isNodeMetaParent(int childNodeInx, int parentNodeInx) {
-    return isNodeMetaChild(parentNodeInx, childNodeInx, false); }
+    return isNodeMetaChild(parentNodeInx, childNodeInx); }
 
   public java.util.List metaParentsList(Node node) {
     if (node.getRootGraph() != this) return null;
@@ -722,13 +732,27 @@ class FRootGraph implements RootGraph, DynamicGraph
   public boolean isMetaChild(Node parent, Node child) {
     return isMetaParent(child, parent); }
 
-  public boolean isNodeMetaChild(int parentNodeInx, int childNodeInx) {
-    return isNodeMetaParent(childNodeInx, parentNodeInx); }
+  public boolean isNodeMetaChild(int parentNodeInx, int childNodeInx)
+  {
+    final int nativeParent = ~parentNodeInx;
+    final int nativeChildNode = ~childNodeInx;
+    if (!(m_graph.nodeExists(nativeParent) &&
+          m_graph.nodeExists(nativeChildNode))) return false;
+    final int metaParent = m_nativeToMetaNodeInxMap.get(nativeParent);
+    final int metaChildNode = m_nativeToMetaNodeInxMap.get(nativeChildNode);
+    final IntIterator metaRelationshipsIter = m_metaGraph.edgesConnecting
+      (metaParent, metaChildNode, true, false, false);
+    if (metaRelationshipsIter == null || !metaRelationshipsIter.hasNext())
+      return false;
+    return true;
+  }
 
   public boolean isNodeMetaChild(int parentNodeInx, int childNodeInx,
                                  boolean recursive)
   {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
+    if (!recursive) return isNodeMetaChild(parentNodeInx, childNodeInx);
+    throw new UnsupportedOperationException
+      ("recursive meta node method not yet supported");
   }
 
   public java.util.List nodeMetaChildrenList(Node node) {
