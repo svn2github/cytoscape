@@ -327,6 +327,7 @@ public final class IntBTree
       else if (leftSib != null && leftSib.sliceCount > m_minBranches) {
         // We could shift values from sibling that has greater count.
         // Might want to optimize in this way later.
+        // Left sibling shift more efficient.
         leftSib.sliceCount = shiftFromLeftSibling
           (foundInx, n.values, leftSib.values, leftSib.sliceCount);
         n.sliceCount = leftSib.values[leftSib.sliceCount];
