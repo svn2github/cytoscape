@@ -62,7 +62,7 @@
 			-->
 			<td width="120">
 				<h1>
-					<a href="http://cbio.mskcc.org/cytoscape/javadoc/">
+					<a href="developer.php">
 						Developer Docs 
 					</a>
 				</h1>

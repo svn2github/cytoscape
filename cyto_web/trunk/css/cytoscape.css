@@ -62,6 +62,16 @@ body {
  padding-right: 10px;
 }
 
+
+#code {
+ height: 50px;
+ width: 100%;
+ color: #333399;
+ font-family: Courier;
+ font-size: 14px;
+ font-weight: bold;
+}
+
 #links {
  width: 100%;
  color: #000000;
@@ -260,3 +270,35 @@ body {
 
 .slate a:link { color: #5B5BB2; }
 .slate a:visited { color: #5E5E77; }
+
+.codebox {
+color: #333399;
+	font-family: Courier;
+	font-size: 14px;
+font-weight: bold;
+	padding: 5px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;	
+}
+
+.codebox h3 {
+	color: #333399;
+}
+
+
+.codebox ul {
+	padding: 0px;
+	margin: 0.5em;
+	padding-left: 0.5em;
+	list-style: none;
+}
+	
+.codebox li:before {
+	content: "\00BB \0020";
+}
+
+
+.lightyellow {
+  background-color: #FDFDCA;
+	border: 1px solid #007100;
+}
