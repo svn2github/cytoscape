@@ -73,6 +73,7 @@ public class GOBRegistry
    */
   public boolean assignAttribute(int objID, int attrID, Object attrValue)
   {
+    return false;
   }
 
   /**
@@ -145,31 +146,105 @@ public class GOBRegistry
   }
 
   /**
-   * NOTE: You are strongly encouraged to not use this method; use one of the
-   * access methods that return a specific type instead.
+   * NOTE: Instead of using this method, you are encouraged to use one of the
+   * XXXAttributeValue() methods that return a specific type of object.
    */
   public Object attributeValue(int objID, int attrID)
   {
     return null;
   }
 
-  // We will have to throw a RuntimeException subclass if there's a type
-  // mismatch or if specified obj attr map does not exist.
+  /**
+   * @param objID an object identifier that was previously used in
+   *   assigning an attribute value in the specified attribute definition
+   *   domain (attrID).
+   * @param attrID an identifier of an attribute definition that was
+   *   created using defineAttribute().
+   * @return the value that was previously assigned to specified object
+   *   in specified attribute definition domain.
+   * @exception ClassCastException if the specified attribute definition
+   *   (attrID) exists but is not of type ATTR_TYPE_BOOLEAN, regardless of
+   *   whether or not the specified object (objID) is recognized by this
+   *   registry.
+   * @exception NoSuchElementException if the specified attribute definition
+   *   (attrID) exists but there is no corresponding attribute value assinged
+   *   to specified object; note that Java try/catch blocks are a huge
+   *   performance bottleneck when exceptions are thrown.
+   * @exception IllegalArgumentException if no attribute definition with
+   *   specified ID (attrID) exists.
+   */
   public boolean booleanAttributeValue(int objID, int attrID)
   {
     throw new RuntimeException();
   }
 
+  /**
+   * @param objID an object identifier that was previously used in
+   *   assigning an attribute value in the specified attribute definition
+   *   domain (attrID).
+   * @param attrID an identifier of an attribute definition that was created
+   *   using defineAttribute().
+   * @return the value that was previously assigned to specified object
+   *   in specified attribute definition domain.
+   * @exception ClassCastException if the specified attribute definition
+   *   (attrID) exists but is not of type ATTR_TYPE_DOUBLE, regardless of
+   *   whether or not the specified object (objID) is recongnized by this
+   *   registry.
+   * @exception NoSuchElementException if the specified attribute definition
+   *   (attrID) exists but there is no corresponding attribute value assigned
+   *   to specified object; note that Java try/catch blocks are a huge
+   *   performance bottleneck when exceptions are thrown.
+   * @exception IllegalArgumentException if no attribute definition with
+   *   specified ID (attrID) exists.
+   */
   public double doubleAttributeValue(int objID, int attrID)
   {
     throw new RuntimeException();
   }
 
+  /**
+   * @param objID an object identifier that was previously used in
+   *   assigning an attribute value in the specified attribute definition
+   *   domain (attrID).
+   * @param attrID an identifier of an attribute definition that was
+   *   created using defineAttribute().
+   * @return the value that was previously assigned to specified object
+   *   in specified attribute definition domain.
+   * @exception ClassCastException if the specified attribute definition
+   *   (attrID) exists but is not of type ATTR_TYPE_LONG, regardless of
+   *   whether or not the specified object (objID) is recognized by this
+   *   registry.
+   * @exception NoSuchElementException if the specified attribute definition
+   *   (attrID) exists but there is no corresponding attribute value assinged
+   *   to specified object; note that Java try/catch blocks are a huge
+   *   performance bottleneck when exceptions are thrown.
+   * @exception IllegalArgumentException if no attribute definition with
+   *   specified ID (attrID) exists.
+   */
   public long longAttributeValue(int objID, int attrID)
   {
     throw new RuntimeException();
   }
 
+  /**
+   * @param objID an object identifier that was previously used in
+   *   assigning an attribute value in the specified attribute definition
+   *   domain (attrID).
+   * @param attrID an identifier of an attribute definition that was
+   *   created using defineAttribute().
+   * @return the value that was previously assigned to specified object
+   *   in specified attribute definition domain.
+   * @exception ClassCastException if the specified attribute definition
+   *   (attrID) exists but is not of type ATTR_TYPE_STRING, regardless of
+   *   whether or not the specified object (objID) is recognized by this
+   *   registry.
+   * @exception NoSuchElementException if the specified attribute definition
+   *   (attrID) exists but there is no corresponding attribute value assinged
+   *   to specified object; note that Java try/catch blocks are a huge
+   *   performance bottleneck when exceptions are thrown.
+   * @exception IllegalArgumentException if no attribute definition with
+   *   specified ID (attrID) exists.
+   */
   public String stringAttributeValue(int objID, int attrID)
   {
     throw new RuntimeException();
