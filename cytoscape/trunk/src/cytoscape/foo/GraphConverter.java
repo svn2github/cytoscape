@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Vector;
 
 /**
- * This is the glue which holds <code>cytoscape.graph</code> and Giny
- * together.<p>
  * This class is very temporary.  It is in heavy flux until some other
  * APIs which are not part of core Cytoscape are finalized.
  * And yes, this class does belong in the core.  It's not a plugin, I feel.
@@ -394,27 +392,25 @@ public final class GraphConverter
     NodeView[] nodeTranslation = myLayout.m_nodeTranslation;
     EdgeView[] edgeTranslation = myLayout.m_edgeTranslation;
 
-    // I'm following the logic used in yfiles.YFilesLayout.  Giny is
-    // very finicky with respect to edge anchor points; if you don't do things
-    // in a particular undocumented way it will not draw edge anchor points
-    // correctly.  Yes, I've come to the conlusion that Giny sucks.
+    // Remove edge anchor points before moving nodes.
+    for (int e = 0; e < edgeTranslation.length; e++)
+      edgeTranslation[e].getBend().removeAllHandles();
 
     // Move nodes in underlying Giny.
-    for (int n = 0; n < nodeTranslation.length; n++) {
-      NodeView nodeV = nodeTranslation[n];
-      nodeV.setXPosition(layout.getNodePosition(n, true) + myLayout.m_xOff);
-      nodeV.setYPosition(layout.getNodePosition(n, false) + myLayout.m_yOff); }
+    for (int n = 0; n < nodeTranslation.length; n++)
+      nodeTranslation[n].setOffset
+        (layout.getNodePosition(n, true) + myLayout.m_xOff,
+         layout.getNodePosition(n, false) + myLayout.m_yOff);
 
     // Set edge anchor points in underlying Giny.
     for (int e = 0; e < edgeTranslation.length; e++) {
-      EdgeView edgeV = edgeTranslation[e];
-      edgeV.clearBends();
-      Bend bend = edgeV.getBend();
-      for (int a = 0; a < layout.getNumAnchors(e); a++) {
-        Point2D point = new Point2D.Double
-          (layout.getAnchorPosition(e, a, true) + myLayout.m_xOff,
-           layout.getAnchorPosition(e, a, false) + myLayout.m_yOff);
-        bend.addHandle(point); } }
+      Vector anchorList = new Vector();
+      for (int a = 0; a < layout.getNumAnchors(e); a++)
+        anchorList.add
+          (new Point2D.Double
+           (layout.getAnchorPosition(e, a, true) + myLayout.m_xOff,
+            layout.getAnchorPosition(e, a, false) + myLayout.m_yOff));
+      edgeTranslation[e].getBend().setHandles(anchorList); }
   }
 
   /**
