@@ -296,6 +296,26 @@ run6a:
 #          -b $(CYTOSCAPE_DATA)/GO
 
 
+sga:
+	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
+          -i ../data/sga.intr \
+          -b $(CYTOSCAPE_DATA)/GO
+
+sgalethal:
+	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
+          -i ../data/sga-lethal.intr \
+          -b $(CYTOSCAPE_DATA)/GO
+
+sgasample:
+	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
+          -i ../data/sga-sample.intr \
+          -b $(CYTOSCAPE_DATA)/GO
+
+namin:
+	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
+          -i ../data/all.intr \
+          -b $(CYTOSCAPE_DATA)/GO
+
 help:
 	egrep "^#" makefile | sed "s/^#//"
 
