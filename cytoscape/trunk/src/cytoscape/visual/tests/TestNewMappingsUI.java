@@ -4,7 +4,7 @@
 // $Date$
 // $Author$
 //--------------------------------------------------------------------------
-package cytoscape.visual;
+package cytoscape.visual.tests;
 //--------------------------------------------------------------------------
 import java.util.Properties;
 import java.io.*;
@@ -24,6 +24,7 @@ import cytoscape.data.*;
 import cytoscape.visual.mappings.*;
 import cytoscape.visual.calculators.*;
 import cytoscape.visual.ui.*;
+import cytoscape.visual.*;
 
 import cytoscape.vizmap.Interpolator;
 import cytoscape.vizmap.LinearNumberToColorInterpolator;

@@ -11,8 +11,7 @@ JC=javac
 .java.class: 
 	$(JC) $<
 
-OBJS = TestNewMappingsUI.class \
-       NodeAppearanceCalculator.class \
+OBJS = NodeAppearanceCalculator.class \
        ValueDisplayer.class \
        PopupIconChooser.class \
        EdgeAppearanceCalculator.class \
@@ -24,7 +23,7 @@ OBJS = TestNewMappingsUI.class \
        OldStyleCalculatorIO.class \
        PropertiesTester.class
 
-default: calculatorDir mappingDir uiDir parserDir objs
+default: calculatorDir mappingDir uiDir parserDir testDir objs
 
 objs: $(OBJS)
 
@@ -43,9 +42,14 @@ uiDir:
 parserDir:
 	(cd parsers; make)
 
+testDir:
+	(cd tests; make)
+
 clean:
 	- rm *.class
 	- (cd dialogs; make clean)
 	- (cd calculators; make clean)
 	- (cd mappings; make clean)
 	- (cd ui; make clean)
+	- (cd parsers; make clean)
+	- (cd tests; make clean)
