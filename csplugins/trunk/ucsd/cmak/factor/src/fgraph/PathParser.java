@@ -145,8 +145,8 @@ public class PathParser
      */
     private State getDir(int edge, int pathSource)
     {
-        int source = ig.getRootGraph().getEdgeSourceIndex(edge);
-        int target = ig.getRootGraph().getEdgeTargetIndex(edge);
+        int source = ig.getBioGraph().getEdgeSourceIndex(edge);
+        int target = ig.getBioGraph().getEdgeTargetIndex(edge);
 
         if(source == pathSource)
         {

@@ -33,8 +33,8 @@ public class BioGraphTest extends TestCase
         
          
         
-        assertEquals("Num nodes", 5411, g.numNodes());
-        assertEquals("Num edges", 35941, g.numEdges());
+        assertEquals("Num nodes", 5411, g.getNodeCount());
+        assertEquals("Num edges", 35941, g.getEdgeCount());
     }
 
     
@@ -55,8 +55,8 @@ public class BioGraphTest extends TestCase
                    g.edgeExists("YBR123C", "YAL001C", "pp"));
         
          
-        assertEquals("Num nodes", 5075, g.numNodes());
-        assertEquals("Num edges", 22357, g.numEdges());
+        assertEquals("Num nodes", 5075, g.getNodeCount());
+        assertEquals("Num edges", 22357, g.getEdgeCount());
     }
        
 }

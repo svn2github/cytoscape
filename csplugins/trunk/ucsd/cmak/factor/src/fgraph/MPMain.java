@@ -76,15 +76,19 @@ public class MPMain
             {
                 mp = new MaxProduct();
             }
-            
+
+            /*
             if(!candidate.equals(""))
             {
                 mp.setInteractionFile(interactionSif, candidate);
             }
             else
             {
-                mp.setInteractionFile(interactionSif);
+            mp.setInteractionFile(interactionSif);
             }
+            */
+
+            mp.setInteractionFile(interactionSif);
             
             mp.setDecomposeModel(decompose);
             mp.setMaxPathLength(pathLength);

@@ -56,6 +56,11 @@ public class SetMap
         }
     }
 
+    public boolean containsKey(Object key)
+    {
+        return _m.containsKey(key);
+    }
+    
     /**
      * @return true if val is in the Set associated with key, false otherwise.
      */

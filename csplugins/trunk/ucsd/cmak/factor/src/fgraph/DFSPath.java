@@ -23,7 +23,7 @@ import cern.colt.map.OpenIntObjectHashMap;
 import cern.colt.list.IntArrayList;
 import cern.colt.list.ObjectArrayList;
 
-import giny.model.RootGraph;
+import netan.BioGraph;
 
 /**
  * A class that uses Depth First Search to efficiently
@@ -49,7 +49,7 @@ public class DFSPath
     private InteractionGraph ig;
 
     // the InteractionGraph's underlying RootGraph
-    private RootGraph g;
+    private BioGraph g;
     private int numNodes;
     private int numEdges;
 
@@ -59,7 +59,7 @@ public class DFSPath
     // map root graph node indices to an integer label in the set [0,numNodes]
     private OpenIntIntHashMap _nodeLabelMap;
     private int[] _label2node;
-    
+
     // map root graph edge indices to an integer label in the set [0, numEdges]
     private OpenIntIntHashMap _edgeLabelMap;
 
@@ -111,11 +111,11 @@ public class DFSPath
     public DFSPath(InteractionGraph graph)
     {
         ig = graph;
-        g = ig.getRootGraph();
+        g = ig.getBioGraph();
         numNodes = g.getNodeCount();
         numEdges = g.getEdgeCount();
 
-        nodes = g.getNodeIndicesArray();
+        nodes = g.nodes();
 
         // map graph indices to a label in the set [0,numNodes]
         _nodeLabelMap = new OpenIntIntHashMap(numNodes);
@@ -139,7 +139,6 @@ public class DFSPath
         catch(IOException e)
         {
             e.printStackTrace();
-
         }
     }
     
@@ -193,7 +192,7 @@ public class DFSPath
             
             color[n] = WHITE;
 
-            int[] adj = g.getAdjacentEdgeIndicesArray(node, true, false, true);
+            int[] adj = g.getAdjacentEdges(node, true, false, true);
             if(adj == null)
             {
                 adj = new int[0];
@@ -276,7 +275,7 @@ public class DFSPath
      */
     protected void dfsVisit(int edge, int edgeLabel, int source,
                             int depth, int maxDepth,
-                            int[] curPath) 
+                            int[] curPath)
     {
 
         // duplicate code from _getRelativeTarget
@@ -532,7 +531,7 @@ public class DFSPath
      */
     private void _initEdges()
     {
-        int[] edges = g.getEdgeIndicesArray();
+        int[] edges = g.edges();
 
         _edges = new int[edges.length][2];
         _edgeLabelMap = new OpenIntIntHashMap(edges.length);

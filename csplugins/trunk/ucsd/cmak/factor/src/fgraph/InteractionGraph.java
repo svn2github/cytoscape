@@ -3,6 +3,9 @@ package fgraph;
 import fgraph.util.ObjectIntMap;
 import fgraph.util.Target2PathMap;
 
+import netan.BioGraph;
+import netan.EdgeType;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -21,7 +24,7 @@ import java.util.logging.Logger;
 import cytoscape.data.mRNAMeasurement;
 import cytoscape.util.GinyFactory;
 
-//import fing.model.FingRootGraphFactory;
+import fing.model.FingRootGraphFactory;
 
 import giny.model.RootGraph;
 import giny.model.Node;
@@ -43,28 +46,35 @@ public class InteractionGraph
     private static Logger logger = Logger.getLogger(FactorGraph.class.getName());
 
     private double PVAL_THRESH = 1;
+    
+
+    private BioGraph _bioGraph;
+
+    /*
 
     private int _edgeCount;
     private int _nodeCount;
     
     private RootGraph _graph;
     private OpenIntObjectHashMap _node2name;
-    private OpenIntObjectHashMap _edge2type;
+
+    // map the name of a node in the sif file to an index in the RootGraph
+     
+    private ObjectIntMap _name2node; 
+     */
+    /*private OpenIntObjectHashMap _edge2type;
     
     private OpenIntIntHashMap _edge2pd; // used to efficiently calculate isProteinDNA
 
     private static final int UNDIRECTED = 1;
     private static final int DIR_S2T = 2; // edge is directed src -> target
     private static final int DIR_T2S = 3; // edge is directed target -> src
-
+    */
+    
     private List _activeEdges;
 
     // submodels
     private List _submodels;
-
-    /* map the name of a node in the sif file to an index in the RootGraph
-     */
-    private ObjectIntMap _name2node; 
 
     private ExpressionDataIF _expressionData;
 
@@ -74,16 +84,17 @@ public class InteractionGraph
     // map edge index to pval (if p-d edge) or probability (if p-p edge).
     private OpenIntDoubleHashMap _edgePvalMap;
 
+    /*
     InteractionGraph(int nodeCount, int edgeCount)
     {
         _nodeCount = nodeCount;
         _edgeCount = edgeCount;
         
-        _graph = GinyFactory.createRootGraph(nodeCount, edgeCount);
-        //_graph = FingRootGraphFactory.instantiateRootGraph();
+        //_graph = GinyFactory.createRootGraph(nodeCount, edgeCount);
+        _graph = FingRootGraphFactory.instantiateRootGraph();
         
         // calling ensureCapacity results in better performance
-        _graph.ensureCapacity(nodeCount, edgeCount);
+        //_graph.ensureCapacity(nodeCount, edgeCount);
         
         // Map each node index to a node name
         _node2name = new OpenIntObjectHashMap(nodeCount);
@@ -94,22 +105,33 @@ public class InteractionGraph
 
         _edgePvalMap = new OpenIntDoubleHashMap();
     }
+    */
 
-    int numEdges()
+    InteractionGraph(BioGraph g)
     {
-        return _graph.getEdgeCount();
+        
+        _bioGraph = g;
+
+        //_nodeCount = g.numNode();
+        //_edgeCount = g.numEdges();
+        
+        // Map each node index to a node name
+        //_node2name = new OpenIntObjectHashMap(nodeCount);
+        //_name2node = new ObjectIntMap(nodeCount);
+
+        //_edge2type = new OpenIntObjectHashMap( edgeCount );
+        //_edge2pd = new OpenIntIntHashMap( edgeCount );
+
+        _edgePvalMap = new OpenIntDoubleHashMap();
     }
 
-    int numNodes()
-    {
-        return _graph.getNodeCount();
-    }
-
+    
     OpenIntDoubleHashMap getEdgePvalMap()
     {
         return _edgePvalMap;
     }
-    
+
+    /*
     int[] createNodes(int num)
     {
         return _graph.createNodes(num);
@@ -120,12 +142,13 @@ public class InteractionGraph
         _node2name.put(index, nodeName);
         _name2node.put(nodeName, index);
     }
+    */
     
-    public RootGraph getRootGraph()
+    public BioGraph getBioGraph()
     {
-        return _graph;
+        return _bioGraph;
     }
-
+    
     /**
      *
      * @param
@@ -134,22 +157,24 @@ public class InteractionGraph
      */
     public int[] getEdgeIndicesArray(int source, int target)
     {
-        return _graph.getEdgeIndicesArray(source, target, true);
+        //return _graph.getEdgeIndicesArray(source, target, true);
+        return _bioGraph.edgesConnecting(source, target);
     }
     
     public boolean containsNode(String name)
     {
-        return _name2node.containsKey(name);
+        return _bioGraph.nodeNames().contains(name);
     }
     
     public int name2Node(String name)
     {
-        return _name2node.get(name);
+        //return _name2node.get(name);
+        return _bioGraph.getNodeId(name);
     }
 
     public String node2Name(int node)
     {
-        return (String) _node2name.get(node);
+        return _bioGraph.getNodeName(node);
     }
 
     /**
@@ -159,9 +184,9 @@ public class InteractionGraph
      */
     String edgeName(int edgeIndex)
     {
-        int src = _graph.getEdgeSourceIndex(edgeIndex);
-        int tgt = _graph.getEdgeTargetIndex(edgeIndex);
-        String type = (String) _edge2type.get(edgeIndex);
+        int src = _bioGraph.getEdgeSourceIndex(edgeIndex);
+        int tgt = _bioGraph.getEdgeTargetIndex(edgeIndex);
+        String type = _bioGraph.getEdgeType(edgeIndex);
 
         return edgeName(src, tgt, type);
     }
@@ -187,16 +212,16 @@ public class InteractionGraph
         
         if(ae.maxDir == State.MINUS)
         {
-            src = _graph.getEdgeTargetIndex(edgeIndex);
-            tgt = _graph.getEdgeSourceIndex(edgeIndex);
+            src = _bioGraph.getEdgeTargetIndex(edgeIndex);
+            tgt = _bioGraph.getEdgeSourceIndex(edgeIndex);
         }
         else
         {
-            src = _graph.getEdgeSourceIndex(edgeIndex);
-            tgt = _graph.getEdgeTargetIndex(edgeIndex);
+            src = _bioGraph.getEdgeSourceIndex(edgeIndex);
+            tgt = _bioGraph.getEdgeTargetIndex(edgeIndex);
         }
 
-        String type = (String) _edge2type.get(edgeIndex);
+        String type = _bioGraph.getEdgeType(edgeIndex);
 
         return edgeName(src, tgt, type);
     }
@@ -204,11 +229,11 @@ public class InteractionGraph
     String edgeName(int src, int tgt, String type)
     {
         StringBuffer b = new StringBuffer();
-        b.append(node2Name(src));
+        b.append(_bioGraph.getNodeName(src));
         b.append(" (");
         b.append(type);
         b.append(") ");
-        b.append(node2Name(tgt));
+        b.append(_bioGraph.getNodeName(tgt));
 
         return b.toString();
     }
@@ -221,9 +246,9 @@ public class InteractionGraph
     public String edgeLabel(int edgeIndex)
     {
         StringBuffer b = new StringBuffer();
-        b.append(node2Name(_graph.getEdgeSourceIndex(edgeIndex)));
+        b.append(node2Name(_bioGraph.getEdgeSourceIndex(edgeIndex)));
         b.append(".");
-        b.append(node2Name(_graph.getEdgeTargetIndex(edgeIndex)));
+        b.append(node2Name(_bioGraph.getEdgeTargetIndex(edgeIndex)));
 
         return b.toString();
     }
@@ -234,37 +259,14 @@ public class InteractionGraph
      */
     public boolean isProteinDNA(int edgeIndex)
     {
-        if(_edge2pd.containsKey(edgeIndex))
-        {
-            int val = _edge2pd.get(edgeIndex);
-
-            if(val != UNDIRECTED)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        
-        return false;
+        return _bioGraph.getEdgeType(edgeIndex).equals(EdgeType.PD);
     }
 
     public State getFixedDir(int edgeIndex)
     {
-        if(_edge2pd.containsKey(edgeIndex))
+        if(isProteinDNA(edgeIndex))
         {
-            int val = _edge2pd.get(edgeIndex);
-
-            if(val == DIR_S2T)
-            {
-                return State.PLUS;
-            }
-            else if (val == DIR_T2S)
-            {
-                return State.MINUS;
-            }
+            return State.PLUS;
         }
 
         System.err.println("getFixedDir called with non-protein-DNA edge: " +
@@ -304,8 +306,9 @@ public class InteractionGraph
         toRemove.trimToSize();
         
         logger.info("Removing " + toRemove.size() +
-                           " protein-DNA edges. pvalue threshold = " + pvalue);
-        _graph.removeEdges(toRemove.elements());
+                    " protein-DNA edges. pvalue threshold = " + pvalue);
+
+        _bioGraph.removeEdges(toRemove.elements());
     }
     
     /**
@@ -393,12 +396,12 @@ public class InteractionGraph
 
     int[] edges()
     {
-        return _graph.getEdgeIndicesArray();
+        return _bioGraph.edges();
     }
 
     /**
      * Create edges in this interaction graph
-     */
+     *
     void createEdges(int[] src, int[] tgt, String[] types, boolean directed)
     {
         // create the edges in the RootGraph
@@ -422,7 +425,8 @@ public class InteractionGraph
         }
 
     }
-
+    */
+    
     int[] getKOIndices()
     {
         String[] conds = _expressionData.getConditionNames();
@@ -443,10 +447,11 @@ public class InteractionGraph
     }
 
        
-    
+
+    /*
     private void augmentSubmodel(Submodel model)
     {
-        int[] nodes = _graph.getNodeIndicesArray();
+        int[] nodes = _bioGraph.nodes();
         int[] kos = getKOIndices();
         
         // find diff exp genes
@@ -487,7 +492,9 @@ public class InteractionGraph
         logger.info("Found " + num + " ko/gene pairs");
         logger.info("Found " + uniqueAffected.size() + " unique genes");
     }
+    */
     
+
     /**
      * Print this interaction graph
      */
@@ -495,7 +502,7 @@ public class InteractionGraph
     {
         StringBuffer buf = new StringBuffer();
 
-        for(Iterator it = _graph.edgesIterator(); it.hasNext(); )
+        for(Iterator it = _bioGraph.edgesIterator(); it.hasNext(); )
         {
             Edge e = (Edge) it.next();
 
@@ -506,11 +513,11 @@ public class InteractionGraph
             int tid = t.getRootGraphIndex();
 
             buf.append("E=" + e.getIdentifier()
-                       + " from=" + _node2name.get(sid) 
+                       + " from=" + _bioGraph.getNodeName(sid) 
                        + " [" + sid + "]"
-                       + " to=" + _node2name.get(tid)
+                       + " to=" + _bioGraph.getNodeName(tid)
                        + " [" + tid + "]"
-                       + " type=" + _edge2type.get(e.getRootGraphIndex())
+                       + " type=" + _bioGraph.getEdgeType(e.getRootGraphIndex())
                        + "\n");
             
         }
@@ -590,7 +597,7 @@ public class InteractionGraph
         {
             Submodel m = (Submodel) _submodels.get(x);
 
-            augmentSubmodel(m);
+            //augmentSubmodel(m);
             
             if(m.getNumExplainedKO() >= filter)
             {
@@ -650,13 +657,13 @@ public class InteractionGraph
             
             if(ae.maxDir == State.PLUS)
             {
-                src = _graph.getEdgeSourceIndex(e);
-                target = _graph.getEdgeTargetIndex(e);
+                src = _bioGraph.getEdgeSourceIndex(e);
+                target = _bioGraph.getEdgeTargetIndex(e);
             }
             else if (ae.maxDir == State.MINUS)
             {
-                src = _graph.getEdgeTargetIndex(e);
-                target = _graph.getEdgeSourceIndex(e);
+                src = _bioGraph.getEdgeTargetIndex(e);
+                target = _bioGraph.getEdgeSourceIndex(e);
             }
             else
             {
@@ -664,11 +671,7 @@ public class InteractionGraph
                                       + ae.maxDir);
             }
             
-            String type = " x ";
-            if(_edge2type.containsKey(e))
-            {
-                type = (String) _edge2type.get(e);
-            }
+            String type = _bioGraph.getEdgeType(e);
             
             StringBuffer b = new StringBuffer();
             b.append(node2Name(src));
@@ -844,12 +847,12 @@ public class InteractionGraph
     private void writeNodeLabels(PrintStream out)
     {
         out.println("NodeName (class=java.lang.String)");
-        
-        IntArrayList nodes = _node2name.keys();
 
-        for(int n=0, N =nodes.size(); n < N; n++)
+        int[] nodes = _bioGraph.nodes();
+
+        for(int n=0, N =nodes.length; n < N; n++)
         {
-            out.println(nodes.get(n) + " = " + _node2name.get(nodes.get(n)));
+            out.println(nodes[n] + " = " + _bioGraph.getNodeName(nodes[n]));
         }       
     }
 

@@ -1,5 +1,7 @@
 package fgraph;
 
+import netan.BioGraph;
+
 import fgraph.util.ObjectIntMap;
 
 import cytoscape.data.Interaction;
@@ -55,12 +57,39 @@ public class InteractionGraphFactory
         return directedPattern.matcher(type).matches();
     }
 
+
     
     /**
      * Factory method to create and InteractionGraph from a .sif file
      * Note: does not throw FileNotFoundException if filename is not found
      * @param filename The name of the file. 
      */
+    public static InteractionGraph createFromSif(String filename)
+        throws IOException, BadInputException
+    {
+        BioGraph g = new BioGraph(filename);
+
+        /*
+        List interactions = loadInteractions(filename);
+
+        InteractionGraph g = createFromInteractions(interactions, false);
+        */
+        
+        logger.info("Created BioGraph with: " + g.getEdgeCount()
+                    + " edges and " + g.getNodeCount() + " nodes.");
+
+        InteractionGraph ig = new InteractionGraph(g);
+
+        return ig;
+        
+    }
+
+    
+    /**
+     * Factory method to create and InteractionGraph from a .sif file
+     * Note: does not throw FileNotFoundException if filename is not found
+     * @param filename The name of the file. 
+     *
     public static InteractionGraph createFromSif(String filename)
         //throws Exception
     {
@@ -74,13 +103,14 @@ public class InteractionGraphFactory
         return g;
         
     }
+    */
 
-
+    /*
     private static String canonicalizeName(String name)
     {
         return name;
     }
-
+    */
     
     /**
      * Edges labelled "ypd" or "mms" are directed
@@ -91,7 +121,7 @@ public class InteractionGraphFactory
      * is input, then take the first edge that appears in the list.
      * 
      * 
-     */
+     *
     private static InteractionGraph createFromInteractions(List interactions, 
                                                            boolean canonicalize)
     {
@@ -129,7 +159,9 @@ public class InteractionGraphFactory
             {
                 String targetNodeName = targets[t];
                 if(canonicalize) targetNodeName = canonicalizeName (targetNodeName);
-
+    */
+                
+                /*
                 if(sourceName.equals("YLR182W") &&
                    targetNodeName.equals("YDL101C"))
                 {
@@ -137,8 +169,8 @@ public class InteractionGraphFactory
                                 + interaction.getType() +
                                 " DUN1");
                 }
-                
-                if((directed &&
+                */
+    /*          if((directed &&
                     !edgeTracker.containsMapping(sourceName, targetNodeName))
                    ||
                    (!directed &&
@@ -149,16 +181,18 @@ public class InteractionGraphFactory
                     edgeTracker.put(sourceName, targetNodeName);
                     edgeCount++;
                     
-
+    */
+                    /*
                     if(sourceName.equals("YLR182W") &&
                        targetNodeName.equals("YDL101C"))
                     {
                         logger.info("   adding edge to tracker");
                     }
-
+                    */
 
                     // ypd and mms are directed edges from ChIP-CHIP experiments
-                    if(sourceName.equals(targetNodeName))
+    /*
+    if(sourceName.equals(targetNodeName))
                     {
                         selfEdges++;
                     }
@@ -186,14 +220,15 @@ public class InteractionGraphFactory
             if(duplicates.size() > 0)
             {
                 it.remove();
-
+    */
+                /*
                 if(sourceName.equals("YLR182W"))
                 {
                     logger.info("   removing SWI6: " + interaction);
                 }
-
-                
-                for(int t=0; t < targets.length; t++)
+                */
+    /*
+    for(int t=0; t < targets.length; t++)
                 {
                     if(!duplicates.contains(t))
                     {
@@ -222,7 +257,7 @@ public class InteractionGraphFactory
             g.addNodeName(nIndices[i], nodeName);
             i++;
         }
-        
+    */  
         /* 
          * for efficiency, create all of the edges at once
          * after source and target node index arrays
@@ -232,7 +267,7 @@ public class InteractionGraphFactory
          * record edge source and target node indices
          *
          */
-        
+    /*  
         String targetNodeName = null;
         String sourceName = null;
 
@@ -240,13 +275,13 @@ public class InteractionGraphFactory
         int targetIndex = 0;
 
         Interaction interaction = null;
-
+    */
         /*
         System.out.println("interactions=" + interactions.size());
         System.out.println("edges=" + edgeCount);
         System.out.println("selfEdges=" + selfEdges);
         */
-
+    /*
         int[] Dsrc = new int[numDirected];
         int[] Dtgt = new int[numDirected];
 
@@ -287,8 +322,8 @@ public class InteractionGraphFactory
                     targetNodeName = targets[t];
 
                 targetIndex = g.name2Node(targetNodeName);
-
-
+    */
+                /*
                 if(sourceName.equals("YLR182W") &&
                    targetNodeName.equals("YDL101C"))
                 {
@@ -296,7 +331,8 @@ public class InteractionGraphFactory
                                 + interaction.getType() +
                                 " DUN1");
                 }
-                
+                */
+    /*          
                 String type = interaction.getType();
                 // record edge endpoints
                 if(sourceIndex == targetIndex)
@@ -305,11 +341,12 @@ public class InteractionGraphFactory
                     Usrc[undirCt] = sourceIndex;
                     Utgt[undirCt] = targetIndex;
                     undirCt++;
-                    
+    */
                     /*selfTypes[selfCt] = interaction.getType();
                     self[selfCt]  = sourceIndex;
                     selfCt++;
                     */
+    /*                    
                 }
                 else if( isDirected(type) )
                 {
@@ -327,7 +364,7 @@ public class InteractionGraphFactory
                 }
             }
         }
-
+    */
         /*
         System.out.println("x=" + x);
         System.out.println("selfCt=" + selfCt);
@@ -335,12 +372,13 @@ public class InteractionGraphFactory
         */
 
         //g.createEdges(self, self, selfTypes, false);
-        g.createEdges(Usrc, Utgt, undirectedTypes, false);
+    /*
+    g.createEdges(Usrc, Utgt, undirectedTypes, false);
         g.createEdges(Dsrc, Dtgt, directedTypes, true);
 
         return g;
     } // createRootGraphFromInteractionData
-
+    */
     
     /**
      * Given a list of interactions, return a set of unique nodes
@@ -348,7 +386,7 @@ public class InteractionGraphFactory
      * 
      * @param interactions
      * @return a set of Strings
-     */
+     *
     private static Set getUniqueNodes(List interactions, boolean canonicalize)
     {
         Set nodeNameSet = new HashSet();
@@ -377,8 +415,9 @@ public class InteractionGraphFactory
         
         return nodeNameSet;
     }
+    */
 
-    
+    /*
     private static List loadInteractions(String filename)
     {
         String rawText = "";
@@ -440,7 +479,7 @@ public class InteractionGraphFactory
         return g;
 
     }
-
+    */
     /**
      * 1. remove duplicate interactions
      * 2. remove protein-protein edges that overlap with a protein-DNA edge
@@ -451,7 +490,7 @@ public class InteractionGraphFactory
     {
     }
     
-    
+    /*
     private static Set loadCandidateGenes(String filename)
         throws IOException
     {
@@ -528,7 +567,7 @@ public class InteractionGraphFactory
 
         return n;
     }
-
+    */
 
     /**
      * Load an edge attributes file and store the data in
@@ -548,7 +587,7 @@ public class InteractionGraphFactory
           OpenIntDoubleHashMap pvMap = g.getEdgePvalMap();
           pvMap.ensureCapacity(m.size());
 
-          ObjectIntMap name2edge = new ObjectIntMap( g.numEdges() );          
+          ObjectIntMap name2edge = new ObjectIntMap( g.getBioGraph().getEdgeCount() );          
 
           int[] edges = g.edges();
 

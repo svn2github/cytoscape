@@ -52,7 +52,8 @@ public class MaxProduct
         decomposeModel = value;
     }
     
-    public void setInteractionFile(String interaction) //throws Exception
+    public void setInteractionFile(String interaction)
+        throws IOException, BadInputException
     {
         _interaction = interaction;
 
@@ -61,6 +62,7 @@ public class MaxProduct
 
     }
 
+    /*
     public void setInteractionFile(String interaction, String candidateGenes)
         //throws Exception
     {
@@ -71,7 +73,7 @@ public class MaxProduct
         logger.info("Candidate gene file: " + _candidateGenes);
         _ig = InteractionGraphFactory.createFromSif(_interaction, _candidateGenes);
     }
-
+    */
     
     public void setMaxPathLength(int i)
     {

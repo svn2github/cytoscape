@@ -9,6 +9,8 @@ import cern.colt.list.IntArrayList;
 
 import giny.model.RootGraph;
 
+import netan.BioGraph;
+
 /**
  * A class that implements Breadth First Search
  *
@@ -23,7 +25,7 @@ public class BFS
     final static int NIL = 0;
 
     private InteractionGraph ig;
-    private RootGraph g;
+    private BioGraph g;
     private int numNodes;
     private int numEdges;
         
@@ -41,12 +43,12 @@ public class BFS
     public BFS(InteractionGraph graph)
     {
         ig = graph;
-        g = ig.getRootGraph();
+        g = ig.getBioGraph();
         numNodes = g.getNodeCount();
         numEdges = g.getEdgeCount();
         
         infinity = numEdges + 1;
-        nodes = g.getNodeIndicesArray();
+        nodes = g.nodes();
 
         // map graph indices to a label in the set [0,numNodes]
         labelMap = new OpenIntIntHashMap(numNodes);
@@ -115,7 +117,7 @@ public class BFS
     private int[] getReachableNeighbors(int node)
     {
         // include undirected and outgoing edges
-        int[] adj = g.getAdjacentEdgeIndicesArray(node, true, false, true);
+        int[] adj = g.getAdjacentEdges(node, true, false, true);
         int[] neighbors;
         if(adj != null)
         {

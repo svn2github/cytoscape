@@ -6,6 +6,8 @@ import java.util.*;
 
 import giny.model.*;
 
+import netan.BioGraph;
+
 public class InteractionGraphTest extends TestCase
 {
     private String _testDir = "test-data" + File.separator;
@@ -22,7 +24,7 @@ public class InteractionGraphTest extends TestCase
         System.out.println("Loading: " + _sif);
         InteractionGraph ig = InteractionGraphFactory.createFromSif(_sif);
 
-        RootGraph g = ig.getRootGraph();
+        BioGraph g = ig.getBioGraph();
 
         assertEquals("num nodes", 4, g.getNodeCount());
         assertEquals("num edges", 4, g.getEdgeCount());
@@ -67,7 +69,7 @@ public class InteractionGraphTest extends TestCase
         System.out.println("Loading: " + sif +", " + ed);
         
         InteractionGraph ig = InteractionGraphFactory.createFromSif(sif);
-        RootGraph g = ig.getRootGraph();
+        BioGraph g = ig.getBioGraph();
         
         assertEquals("num nodes before threshold set", 7, g.getNodeCount());
         assertEquals("num edges before threshold set", 11, g.getEdgeCount());

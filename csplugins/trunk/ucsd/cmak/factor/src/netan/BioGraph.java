@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Collections;
+import java.util.Iterator;
 
 import java.util.logging.Logger;
 
@@ -49,6 +50,17 @@ public class BioGraph
     private OpenIntObjectHashMap _nodeId2name;
     private ObjectIntMap _name2nodeId;
 
+    
+    private static final int UNDIRECTED = 1;
+    private static final int DIR_S2T = 2; // edge is directed src -> target
+    private static final int DIR_T2S = 3; // edge is directed target -> src
+
+    // map each edge index to the edge type
+    private OpenIntObjectHashMap _edge2type;
+
+    // used to efficiently calculate isProteinDNA
+    private OpenIntIntHashMap _edge2pd; 
+
     // map a String edge type to a Set of edge ids of that type.
     private SetMap _edgeType;
     
@@ -59,6 +71,10 @@ public class BioGraph
         _nodeId2name = new OpenIntObjectHashMap();
         _name2nodeId = new ObjectIntMap();
         _edgeType = new SetMap();
+
+        _edge2type = new OpenIntObjectHashMap();
+        _edge2pd = new OpenIntIntHashMap();
+        
         
         loadSif(sifFile);
     }
@@ -68,16 +84,28 @@ public class BioGraph
         return _name2nodeId.keySet();
     }
 
-    public int numNodes()
+    public int getNodeCount()
     {
         return _g.getNodeCount();
     }
 
-    public int numEdges()
+    public int getEdgeCount()
     {
         return _g.getEdgeCount();
     }
 
+    public int getEdgeCount(String edgeType)
+    {
+        if(_edgeType.containsKey(edgeType))
+        {
+            return _edgeType.get(edgeType).size();
+        }
+
+        return 0;
+
+    }
+
+    
     /*
     public int[] incomingEdges(String type, String node)
     {
@@ -163,10 +191,22 @@ public class BioGraph
     }
 
     
+    public int[] getAdjacentEdges(int node,
+                                  boolean undirected,
+                                  boolean incoming,
+                                  boolean outgoing)
+    {
+        return _g.getAdjacentEdgeIndicesArray(node,
+                                              undirected,
+                                              incoming,
+                                              outgoing);
+    }
+
+    
     private int[] adjacentEdges(String type, int node,
-                                boolean undirected,
-                                boolean incoming,
-                                boolean outgoing)
+                               boolean undirected,
+                               boolean incoming,
+                               boolean outgoing)
     {
         Set edges = _edgeType.get(type);
 
@@ -290,6 +330,16 @@ public class BioGraph
                 {
                     int e = _g.createEdge(s, t, EdgeType.isDirected(type));
                     _edgeType.put(type, new Integer(e));
+
+                    _edge2type.put(e, type);
+                    if(EdgeType.isDirected(type))
+                    {
+                        _edge2pd.put(e, DIR_S2T);
+                    }
+                    else
+                    {
+                        _edge2pd.put(e, UNDIRECTED);
+                    }
                 }
                 
             }
@@ -299,8 +349,8 @@ public class BioGraph
             throw new BadInputException(sifFile, e);
         }
 
-        logger.info("Done loading sif: numNodes=" + numNodes()
-                    + " numEdges=" + numEdges());
+        logger.info("Done loading sif: numNodes=" + getNodeCount()
+                    + " numEdges=" + getNodeCount());
     }
 
 
@@ -341,7 +391,12 @@ public class BioGraph
     }
 
 
-    private int[] edgesConnecting(int s, int t)
+    public boolean edgeExists(int s, int t)
+    {
+        return _g.edgeExists(s, t);
+    }
+    
+    public int[] edgesConnecting(int s, int t)
     {
         int[] edges = _g.getEdgeIndicesArray(s, t, true);
 
@@ -361,7 +416,7 @@ public class BioGraph
      * @param nodeName the name of the node
      * @return the node id, newly created if necessary
      */
-    private int getNodeId(String nodeName)
+    public int getNodeId(String nodeName)
     {
         if(_name2nodeId.containsKey(nodeName))
         {
@@ -375,5 +430,55 @@ public class BioGraph
         return id;
     }
 
+    public String getNodeName(int id)
+    {
+        if(_nodeId2name.containsKey(id))
+        {
+            return (String) _nodeId2name.get(id);
+        }
 
+        return "";
+    }
+
+    public int getEdgeSourceIndex(int edgeIndex)
+    {
+        return _g.getEdgeSourceIndex(edgeIndex);
+    }
+
+    public int getEdgeTargetIndex(int edgeIndex)
+    {
+        return _g.getEdgeTargetIndex(edgeIndex);
+    }
+
+    public String getEdgeType(int edgeIndex)
+    {
+        if(_edge2type.containsKey(edgeIndex))
+        {
+            return (String) _edge2type.get(edgeIndex);
+        }
+
+        return "";
+    }
+
+    public int[] edges()
+    {
+        return _g.getEdgeIndicesArray();
+    }
+
+    public int[] nodes()
+    {
+        return _g.getNodeIndicesArray();
+    }
+
+    public Iterator edgesIterator()
+    {
+        return _g.edgesIterator();
+    }
+
+    
+    public void removeEdges(int[] edges)
+    {
+        _g.removeEdges(edges);
+    }
 }
+

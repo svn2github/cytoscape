@@ -21,12 +21,12 @@ set DATA=$HOME/data
 
 set PATH=2
 set EXP=0.78
-set EDGE=0.01
+set EDGE=0.02
 set DECOMPOSE=false
 set YEANG_DATA_FORMAT=false
 
-set ALL=ymp-27Feb05-p0.05
-#set ALL=all-p0.02-27Feb05
+#set ALL=ymp-27Feb05-p0.05
+set ALL=all-p0.02-27Feb05
 #set MMS=mms+pp-p0.02-07dec2004
 set NETWORK=${ALL}
 set NET_LABEL=ymp
