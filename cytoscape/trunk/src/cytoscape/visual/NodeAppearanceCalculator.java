@@ -15,6 +15,7 @@ import y.view.LineType;
 import y.view.Arrow;
 import y.view.ShapeNodeRealizer;
 
+import cytoscape.GraphObjAttributes;
 import cytoscape.visual.calculators.*;
 import cytoscape.visual.parsers.*;
 //----------------------------------------------------------------------------
@@ -36,6 +37,16 @@ public class NodeAppearanceCalculator implements Cloneable {
 
     // true if node width/height locked
     private boolean nodeSizeLocked = true;
+    
+    public static final String nodeFillColorBypass = "node.fillColor";
+    public static final String nodeBorderColorBypass = "node.borderColor";
+    public static final String nodeLineTypeBypass = "node.lineType";
+    public static final String nodeShapeBypass = "node.shape";
+    public static final String nodeWidthBypass = "node.width";
+    public static final String nodeHeightBypass = "node.height";
+    public static final String nodeLabelBypass = "node.label";
+    public static final String nodeToolTipBypass = "node.toolTip";
+    public static final String nodeFontBypass = "node.font";
 
     NodeColorCalculator nodeFillColorCalculator;
     NodeColorCalculator nodeBorderColorCalculator;
@@ -147,9 +158,18 @@ public class NodeAppearanceCalculator implements Cloneable {
     public NodeColorCalculator getNodeFillColorCalculator() {return nodeFillColorCalculator;}
     public void setNodeFillColorCalculator(NodeColorCalculator c) {nodeFillColorCalculator = c;}
     public Color calculateNodeFillColor(Node node, Network network) {
-        if (node == null || network == null || nodeFillColorCalculator == null) {
-            return defaultNodeFillColor;
+        if (node == null || network == null) {return defaultNodeFillColor;}
+        //look for a suitable value in a specific data attribute
+        GraphObjAttributes nodeAttributes = network.getNodeAttributes();
+        String name = nodeAttributes.getCanonicalName(node);
+        Object attrValue = nodeAttributes.getValue(nodeFillColorBypass, name);
+        if (attrValue instanceof Color) {return (Color)attrValue;}
+        if (attrValue instanceof String) {
+            Color c = (new ColorParser()).parseColor((String)attrValue);
+            if (c != null) {return c;}
         }
+        //try to get a value from the calculator
+        if (nodeFillColorCalculator == null) {return defaultNodeFillColor;}
         Color c = nodeFillColorCalculator.calculateNodeColor(node, network);
         return (c == null) ? defaultNodeFillColor : c;
     }
@@ -161,9 +181,18 @@ public class NodeAppearanceCalculator implements Cloneable {
     public NodeColorCalculator getNodeBorderColorCalculator() {return nodeBorderColorCalculator;}
     public void setNodeBorderColorCalculator(NodeColorCalculator c) {nodeBorderColorCalculator = c;}
     public Color calculateNodeBorderColor(Node node, Network network) {
-        if (node == null || network == null || nodeBorderColorCalculator == null) {
-            return defaultNodeBorderColor;
+        if (node == null || network == null) {return defaultNodeBorderColor;}
+        //look for a suitable value in a specific data attribute
+        GraphObjAttributes nodeAttributes = network.getNodeAttributes();
+        String name = nodeAttributes.getCanonicalName(node);
+        Object attrValue = nodeAttributes.getValue(nodeBorderColorBypass, name);
+        if (attrValue instanceof Color) {return (Color)attrValue;}
+        if (attrValue instanceof String) {
+            Color c = (new ColorParser()).parseColor((String)attrValue);
+            if (c != null) {return c;}
         }
+        //try to get a value from the calculator
+        if (nodeBorderColorCalculator == null) {return defaultNodeBorderColor;}
         Color c = nodeBorderColorCalculator.calculateNodeColor(node, network);
         return (c == null) ? defaultNodeBorderColor : c;
     }
@@ -175,9 +204,18 @@ public class NodeAppearanceCalculator implements Cloneable {
     public NodeLineTypeCalculator getNodeLineTypeCalculator() {return nodeLineTypeCalculator;}
     public void setNodeLineTypeCalculator(NodeLineTypeCalculator c) {nodeLineTypeCalculator = c;}
     public LineType calculateNodeLineType(Node node, Network network) {
-        if (node == null || network == null || nodeLineTypeCalculator == null) {
-            return defaultNodeLineType;
+        if (node == null || network == null) {return defaultNodeLineType;}
+        //look for a suitable value in a specific data attribute
+        GraphObjAttributes nodeAttributes = network.getNodeAttributes();
+        String name = nodeAttributes.getCanonicalName(node);
+        Object attrValue = nodeAttributes.getValue(nodeLineTypeBypass, name);
+        if (attrValue instanceof LineType) {return (LineType)attrValue;}
+        if (attrValue instanceof String) {
+            LineType lt = (new LineTypeParser()).parseLineType((String)attrValue);
+            if (lt != null) {return lt;}
         }
+        //try to get a value from the calculator
+        if (nodeLineTypeCalculator == null) {return defaultNodeLineType;}
         LineType lt = nodeLineTypeCalculator.calculateNodeLineType(node, network);
         return (lt == null) ? defaultNodeLineType : lt;
     }
@@ -189,9 +227,22 @@ public class NodeAppearanceCalculator implements Cloneable {
     public NodeShapeCalculator getNodeShapeCalculator() {return nodeShapeCalculator;}
     public void setNodeShapeCalculator(NodeShapeCalculator c) {nodeShapeCalculator = c;}
     public byte calculateNodeShape(Node node, Network network) {
-        if (node == null || network == null || nodeShapeCalculator == null) {
-            return defaultNodeShape;
+        if (node == null || network == null) {return defaultNodeShape;}
+        //look for a suitable value in a specific data attribute
+        GraphObjAttributes nodeAttributes = network.getNodeAttributes();
+        String name = nodeAttributes.getCanonicalName(node);
+        Object attrValue = nodeAttributes.getValue(nodeShapeBypass, name);
+        if (attrValue instanceof Byte) {
+            byte s = ((Byte)attrValue).byteValue();
+            if (isValidShape(s)) {return s;}
         }
+        if (attrValue instanceof String) {
+            Byte b = (new NodeShapeParser()).parseNodeShape((String)attrValue);
+            byte s = b.byteValue();
+            if (isValidShape(s)) {return s;}
+        }
+        //try to get a value from the calculator
+        if (nodeShapeCalculator == null) {return defaultNodeShape;}
         byte s = nodeShapeCalculator.calculateNodeShape(node, network);
         return (isValidShape(s)) ? s : defaultNodeShape;
     }
@@ -226,9 +277,18 @@ public class NodeAppearanceCalculator implements Cloneable {
     public NodeSizeCalculator getNodeWidthCalculator() {return nodeWidthCalculator;}
     public void setNodeWidthCalculator(NodeSizeCalculator c) {nodeWidthCalculator = c;}
     public double calculateNodeWidth(Node node, Network network) {
-        if (node == null || network == null || nodeWidthCalculator == null) {
-            return defaultNodeWidth;
+        if (node == null || network == null) {return defaultNodeWidth;}
+        //look for a suitable value in a specific data attribute
+        GraphObjAttributes nodeAttributes = network.getNodeAttributes();
+        String name = nodeAttributes.getCanonicalName(node);
+        Object attrValue = nodeAttributes.getValue(nodeWidthBypass, name);
+        if (attrValue instanceof Double) {return ((Double)attrValue).doubleValue();}
+        if (attrValue instanceof String) {
+            Double dObj = (new DoubleParser()).parseDouble((String)attrValue);
+            if (dObj != null) {return dObj.doubleValue();}
         }
+        //try to get a value from the calculator
+        if (nodeWidthCalculator == null) {return defaultNodeWidth;}
         double d = nodeWidthCalculator.calculateNodeSize(node, network);
         return (d <= 0.0) ? defaultNodeWidth : d;
     }
@@ -240,9 +300,18 @@ public class NodeAppearanceCalculator implements Cloneable {
     public NodeSizeCalculator getNodeHeightCalculator() {return nodeHeightCalculator;}
     public void setNodeHeightCalculator(NodeSizeCalculator c) {nodeHeightCalculator = c;}
     public double calculateNodeHeight(Node node, Network network) {
-        if (node == null || network == null || nodeHeightCalculator == null) {
-            return defaultNodeHeight;
+        if (node == null || network == null) {return defaultNodeHeight;}
+        //look for a suitable value in a specific data attribute
+        GraphObjAttributes nodeAttributes = network.getNodeAttributes();
+        String name = nodeAttributes.getCanonicalName(node);
+        Object attrValue = nodeAttributes.getValue(nodeHeightBypass, name);
+        if (attrValue instanceof Double) {return ((Double)attrValue).doubleValue();}
+        if (attrValue instanceof String) {
+            Double dObj = (new DoubleParser()).parseDouble((String)attrValue);
+            if (dObj != null) {return dObj.doubleValue();}
         }
+        //try to get a value from the calculator
+        if (nodeHeightCalculator == null) {return defaultNodeHeight;}
         double d = nodeHeightCalculator.calculateNodeSize(node, network);
         return (d <= 0.0) ? defaultNodeHeight : d;
     }
@@ -261,9 +330,14 @@ public class NodeAppearanceCalculator implements Cloneable {
     public NodeLabelCalculator getNodeLabelCalculator() {return nodeLabelCalculator;}
     public void setNodeLabelCalculator(NodeLabelCalculator c) {nodeLabelCalculator = c;}
     public String calculateNodeLabel(Node node, Network network) {
-        if (node == null || network == null || nodeLabelCalculator == null) {
-            return defaultNodeLabel;
-        }
+        if (node == null || network == null) {return defaultNodeLabel;}
+        //look for a suitable value in a specific data attribute
+        GraphObjAttributes nodeAttributes = network.getNodeAttributes();
+        String name = nodeAttributes.getCanonicalName(node);
+        Object attrValue = nodeAttributes.getValue(nodeLabelBypass, name);
+        if (attrValue instanceof String) {return (String)attrValue;}
+        //try to get a value from the calculator
+        if (nodeLabelCalculator == null) {return defaultNodeLabel;}
         String s = nodeLabelCalculator.calculateNodeLabel(node, network);
         return (s == null) ? defaultNodeLabel : s;
     }
@@ -275,9 +349,14 @@ public class NodeAppearanceCalculator implements Cloneable {
     public NodeToolTipCalculator getNodeToolTipCalculator() {return nodeToolTipCalculator;}
     public void setNodeToolTipCalculator(NodeToolTipCalculator c) {nodeToolTipCalculator = c;}
     public String calculateNodeToolTip(Node node, Network network) {
-        if (node == null || network == null || nodeToolTipCalculator == null) {
-            return defaultNodeToolTip;
-        }
+        if (node == null || network == null) {return defaultNodeToolTip;}
+        //look for a suitable value in a specific data attribute
+        GraphObjAttributes nodeAttributes = network.getNodeAttributes();
+        String name = nodeAttributes.getCanonicalName(node);
+        Object attrValue = nodeAttributes.getValue(nodeToolTipBypass, name);
+        if (attrValue instanceof String) {return (String)attrValue;}
+        //try to get a value from the calculator
+        if (nodeToolTipCalculator == null) {return defaultNodeToolTip;}
         String s = nodeToolTipCalculator.calculateNodeToolTip(node, network);
         return (s == null) ? defaultNodeToolTip : s;
     }
@@ -306,8 +385,18 @@ public class NodeAppearanceCalculator implements Cloneable {
     public void setNodeFontSizeCalculator(NodeFontSizeCalculator c) {nodeFontSizeCalculator = c;}
     
     public Font calculateNodeFont(Node node, Network network) {
-	if (node == null || network == null ||
-	    (nodeFontFaceCalculator == null && nodeFontSizeCalculator == null)) {
+	if (node == null || network == null) {return defaultNodeFont;}
+        //look for a suitable value in a specific data attribute
+        GraphObjAttributes nodeAttributes = network.getNodeAttributes();
+        String name = nodeAttributes.getCanonicalName(node);
+        Object attrValue = nodeAttributes.getValue(nodeFontBypass, name);
+        if (attrValue instanceof Font) {return (Font)attrValue;}
+        if (attrValue instanceof String) {
+            Font f = (new FontParser()).parseFont((String)attrValue);
+            if (f != null) {return f;}
+        }
+        //try to get a value from the calculators
+        if (nodeFontFaceCalculator == null && nodeFontSizeCalculator == null) {
 	    return defaultNodeFont;
 	}
 	Font f;

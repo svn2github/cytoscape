@@ -5,7 +5,7 @@
 # $Author$
 #-------------------------------------------------------------------------
 
-JC=javac
+JC=javac -source 1.4
 
 .SUFFIXES: .java .class
 .java.class: 
