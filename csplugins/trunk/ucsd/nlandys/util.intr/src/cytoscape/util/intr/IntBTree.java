@@ -419,6 +419,44 @@ public final class IntBTree
     for (int i = startInx, o = 0; i < origLen;) arr[o++] = arr[i++];
   }
 
+  /*
+   * I give an example:
+   *
+   *
+   *   INPUTS
+   *   ======
+   *
+   *        +---+---+---+---+---+---+
+   *   arr: |   |   | Z | K | C |   |
+   *        +---+---+---+---+---+---+
+   *
+   *   startInx: 2
+   *
+   *   origLen: 5
+   *
+   *   nullOut: true
+   *
+   *
+   *   OUTPUTS
+   *   =======
+   *
+   *        +---+---+---+---+---+---+
+   *   arr: | Z | K | C | / | / |   |
+   *        +---+---+---+---+---+---+
+   *
+   *   The trailing entries (the two '/' in example output) are nulled out
+   *   if and only if parameter nullOut is true.
+   */
+  private final static void shiftToBeginning(final Node[] arr,
+                                             final int startInx,
+                                             final int origLen,
+                                             final boolean nullOut)
+  {
+    int o = 0;
+    for (int i = startInx; i < origLen;) arr[o++] = arr[i++];
+    if (nullOut) for (int i = o; i < origLen; i++) arr[i] = null;
+  }
+
   /**
    * Returns the number of entries of the integer x in this tree.
    * This method has a time complexity of O(log(N)) where N is the total
