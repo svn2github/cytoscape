@@ -1066,6 +1066,41 @@ public final class AllRootGraphMethodsTest
     for (int i = 0;; i++) if (nodeChildInx[i] == nodeInx[2]) break;
     for (int i = 0;; i++) if (nodeChildInx[i] == nodeInx[3]) break;
     for (int i = 0;; i++) if (nodeChildInx[i] == nodeInx[4]) break;
+
+    // getChildlessMetaDescendants(int).
+    if (root.getChildlessMetaDescendants(0) != null ||
+        root.getChildlessMetaDescendants(Integer.MAX_VALUE) != null ||
+        root.getChildlessMetaDescendants(Integer.MIN_VALUE) != null ||
+        root.getChildlessMetaDescendants(minNodeInx - 1) != null ||
+        root.getChildlessMetaDescendants(12) != null)
+      throw new IllegalStateException("expected null childless descendants");
+    if (root.getChildlessMetaDescendants(nodeInx[1]).length != 0)
+      throw new IllegalStateException("expected no childless descendants");
+    nodeChildInx = root.getChildlessMetaDescendants(nodeInx[0]);
+    if (nodeChildInx.length != 2)
+      throw new IllegalStateException("wrong number of childless descendants");
+    for (int i = 0;; i++) if (nodeChildInx[i] == nodeInx[1]) break;
+    for (int i = 0;; i++) if (nodeChildInx[i] == nodeInx[2]) break;
+
+    // isMetaParent(Edge, Node).
+
+    // isEdgeMetaParent(int, int).
+
+    // metaParentsList(Edge).
+
+    // edgeMetaParentsList(int).
+
+    // getEdgeMetaParentIndicesArray(int).
+
+    // isMetaChild(Node, Edge).
+
+    // isEdgeMetaChild(int, int).
+
+    // edgeMetaChildrenList(Node).
+
+    // edgeMetaChildrenList(int).
+
+    // getEdgeMetaChildIndicesArray(int).
   }
 
 }
