@@ -1,4 +1,6 @@
-package ucsd.rmkelley.PathBlastBrowser;
+package csplugins.ucsd.rmkelley.PathBlastBrowser;
+import csplugins.ucsd.rmkelley.PathBlastBrowser.Layout.DualLayoutTask;
+import csplugins.ucsd.rmkelley.PathBlastBrowser.Layout.DualLayoutCommandLineParser;
 import java.util.*;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
@@ -18,11 +20,13 @@ import giny.model.RootGraphChangeEvent;
 import cytoscape.AbstractPlugin;
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.CyNetwork;
+import cytoscape.data.CyNetworkFactory;
 import cytoscape.data.readers.GMLReader;
 import cytoscape.view.CyWindow;
 import cytoscape.util.GinyFactory;
 import cytoscape.actions.FitContentAction;
 import cytoscape.data.Semantics;
+
 
 /**
  * This plugin will display is used to browser a number of gml files created
@@ -68,7 +72,7 @@ class LoadPathBlastGMLAction extends AbstractAction {
    * The constructor sets the text that should appear on the menu item.
    */
   public LoadPathBlastGMLAction(CyWindow cyWindow){
-    super("Load GML Files");
+    super("Load SIF Files");
     this.cyWindow = cyWindow;
   }
 
@@ -90,14 +94,18 @@ class LoadPathBlastGMLAction extends AbstractAction {
 class LoadPathBlastGMLTask extends Thread{
   CyWindow cyWindow;
   /**
+   * The string use to split name is homology nodes
+   */
+  private static String SPLIT_STRING = "\\|";
+  /**
    * Title for the file selection dialog
    */
-  private static String TITLE = "Select all GML files";
+  private static String TITLE = "Select all SIF files";
   /**
    * This was is used to specify the overlap required
    * for adding an edge ot the graph
    */
-  private static int REQUIRED_OVERLAP = 2;
+  private static int REQUIRED_OVERLAP = 1;
   /**
    * Teh attribute with which to associate data
    * that contains information about the number of 
@@ -112,7 +120,7 @@ class LoadPathBlastGMLTask extends Thread{
    */
   private static String OVERLAP_INTERACTION = "ov";
   private static String HOMOLOGY_INTERACTION = "hm";
-  private HashMap node2GMLReader;
+  private HashMap node2CyNetwork;
   /**
    * Stores the cyWindow object for later reference
    */
@@ -136,23 +144,22 @@ class LoadPathBlastGMLTask extends Thread{
     }
 
     //create a list of gmltrees, one for each file
-    HashMap GMLReader2Name = null; 
-    GMLReader2Name = createGMLReader2Name(chooser.getSelectedFiles());
+    HashMap cyNetwork2Name  = createCyNetwork2Name(chooser.getSelectedFiles());
 
     //for each gmltree, create an associated hash of node identifier strings,
     //this hash will be used to determine the overlap between the networks
     //and eventually create the overlap graph
-    HashMap GMLReader2NameSet = createGMLReader2NameSet(GMLReader2Name.keySet());
+    HashMap cyNetwork2NameSet = createCyNetwork2NameSet(cyNetwork2Name.keySet());
 
     //create a root graph using the information about the file names
     //and the node names contained, as a side effect this also creates
     //a hash from node2GMLTree
-    CyNetwork newNetwork = createOverlapGraph(GMLReader2Name,GMLReader2NameSet);	
+    CyNetwork newNetwork = createOverlapGraph(cyNetwork2Name,cyNetwork2NameSet);	
     //set up the canonicalName mapping here
     //create a new window and add this network to that window
     CyWindow newWindow = new CyWindow(cyWindow.getCytoscapeObj(), newNetwork, "Overlap Graph");
     //create a new menu item and actionlistener for that window
-    newWindow.getCyMenus().getOperationsMenu().add(new ShowGMLAction(newWindow,node2GMLReader));	 	
+    newWindow.getCyMenus().getOperationsMenu().add(new ShowGMLAction(newWindow,node2CyNetwork));	 	
     newWindow.showWindow();
     
   }
@@ -171,38 +178,38 @@ class LoadPathBlastGMLTask extends Thread{
    * names mapped for all of the object. The edges also have a count attribute which counts the number
    * of overlaps created from this graph
    */
-  public CyNetwork createOverlapGraph(HashMap GMLReader2Name, HashMap GMLReader2NameSet){
+  public CyNetwork createOverlapGraph(HashMap cyNetwork2Name, HashMap cyNetwork2NameSet){
     RootGraph rootGraph = GinyFactory.createRootGraph();
     GraphObjAttributes nodeAttributes = new GraphObjAttributes();
     GraphObjAttributes edgeAttributes = new GraphObjAttributes();
     //create the nodes for this graph, also create a mapping from GMLTree objects to nodes in the graph
-    HashMap GMLReader2Node = new HashMap();	
-    node2GMLReader = new HashMap();
-    Iterator GMLReaderIt = GMLReader2Name.keySet().iterator();
-    while(GMLReaderIt.hasNext()){
-      GMLReader currentReader = (GMLReader)GMLReaderIt.next();
+    HashMap cyNetwork2Node = new HashMap();	
+    node2CyNetwork = new HashMap();
+    Iterator cyNetworkIt = cyNetwork2Name.keySet().iterator();
+    while(cyNetworkIt.hasNext()){
+      CyNetwork cyNetwork = (CyNetwork)cyNetworkIt.next();
       Node newNode = rootGraph.getNode(rootGraph.createNode());
-      String name = (String)GMLReader2Name.get(currentReader);
+      String name = (String)cyNetwork2Name.get(cyNetwork);
       newNode.setIdentifier(name);
       nodeAttributes.addNameMapping(name,newNode);
-      GMLReader2Node.put(currentReader,newNode);
-      node2GMLReader.put(newNode,currentReader);
+      cyNetwork2Node.put(cyNetwork,newNode);
+      node2CyNetwork.put(newNode,cyNetwork);
       //add the attributes about the identity of the nodes in the subtree
-      HashSet nameSet = (HashSet)GMLReader2NameSet.get(currentReader);
+      HashSet nameSet = (HashSet)cyNetwork2NameSet.get(cyNetwork);
       Iterator nameIt = nameSet.iterator();
       while(nameIt.hasNext()){
 	String compatName = (String)nameIt.next();
-	String [] speciesNames = compatName.split("\\|");
+	String [] speciesNames = compatName.split(SPLIT_STRING);
 	nodeAttributes.append(SPECIES1NODES_ATTRIBUTE,name,speciesNames[0]);
 	nodeAttributes.append(SPECIES2NODES_ATTRIBUTE,name,speciesNames[1]);
       }
     }
 
-    Vector GMLReaderVec = new Vector(GMLReader2Name.keySet());
-    for(int idx=0;idx<GMLReaderVec.size();idx++){
-      for(int idy = idx+1;idy<GMLReaderVec.size();idy++){
-	Set xSet = (Set)GMLReader2NameSet.get(GMLReaderVec.get(idx));
-	Set ySet = (Set)GMLReader2NameSet.get(GMLReaderVec.get(idy));
+    Vector cyNetworkVec = new Vector(cyNetwork2Name.keySet());
+    for(int idx=0;idx<cyNetworkVec.size();idx++){
+      for(int idy = idx+1;idy<cyNetworkVec.size();idy++){
+	Set xSet = (Set)cyNetwork2NameSet.get(cyNetworkVec.get(idx));
+	Set ySet = (Set)cyNetwork2NameSet.get(cyNetworkVec.get(idy));
 	Iterator xIt = xSet.iterator();
 	int count = 0;
 	while(xIt.hasNext()){
@@ -212,8 +219,8 @@ class LoadPathBlastGMLTask extends Thread{
 	}
 	if(count >= REQUIRED_OVERLAP){
 	  //create an edge between the two correpsonding nodes
-	  Node sourceNode = (Node)GMLReader2Node.get(GMLReaderVec.get(idx));
-	  Node targetNode = (Node)GMLReader2Node.get(GMLReaderVec.get(idy));
+	  Node sourceNode = (Node)cyNetwork2Node.get(cyNetworkVec.get(idx));
+	  Node targetNode = (Node)cyNetwork2Node.get(cyNetworkVec.get(idy));
 	  Edge newEdge = rootGraph.getEdge(rootGraph.createEdge(sourceNode,targetNode));
 	  String name = nodeAttributes.getCanonicalName(sourceNode)+" ("+OVERLAP_INTERACTION+") "+nodeAttributes.getCanonicalName(targetNode);
 	  newEdge.setIdentifier(name);
@@ -226,55 +233,27 @@ class LoadPathBlastGMLTask extends Thread{
     return new CyNetwork(rootGraph,nodeAttributes,edgeAttributes);
   }
   
-  /**
-   * split the name of a node in the compatability graph into the names of
-   * the component nodes
-   */
-  //private String [] split(String s,String split){
-  //  String [] result = new String [2];
-  //  int index = s.indexOf(split);
-  //  result[0] = s.substring(0,index);
-  //  result[1] = s.substring(index + 1,s.length());
-  //  return result;
-  //}
-
+  
   /**
    * Take in a list of GMLTrees and creates a hashmap which maps from a GMLTree
    * to a set of the identifiers of all of the nodes in that GMLTree
    * @param GMLTrees a List of GMLTree objects
    * @return as described above
    */
-  public HashMap createGMLReader2NameSet(Collection GMLReaders){
-    Iterator GMLReaderIt = GMLReaders.iterator();
+  public HashMap createCyNetwork2NameSet(Collection cyNetworks){
+    Iterator cyNetworkIt = cyNetworks.iterator();
     HashMap result = new HashMap();
-    while(GMLReaderIt.hasNext()){
-      GMLReader currentReader = ((GMLReader)GMLReaderIt.next());
-      RootGraph rootGraph = currentReader.getRootGraph();
+    while(cyNetworkIt.hasNext()){
+      CyNetwork currentCyNetwork = ((CyNetwork)cyNetworkIt.next());
+      RootGraph rootGraph = currentCyNetwork.getRootGraph();
       HashSet compatLabels = new HashSet();
-      GraphObjAttributes edgeAttributes = currentReader.getEdgeAttributes();
-      /*String [] edgeNames = currentReader.getEdgeAttributes().getObjectNames("interaction");
-	for(int idx=0;idx<edgeNames.length;idx++){
-	String currentName = edgeNames[idx];
-	//check to see if this is a homology edge
-	if(currentReader.getEdgeAttributes().get("interaction",currentName).equals("hm")){
-	int index = currentName.indexOf(" (hm) ");
-	System.err.println(currentName);
-	String compatName = currentName.substring(0,index)+"|"+currentName.substring(index+6,currentName.length());
-	System.err.println(compatName);
-	compatLabels.add(compatName);
-	}
-	}*/
-      Iterator edgeIt = rootGraph.edgesList().iterator();
-      while(edgeIt.hasNext()){
-	String currentName = edgeAttributes.getCanonicalName(edgeIt.next());
-	if(edgeAttributes.get("interaction",currentName).equals("hm")){
-	  int index = currentName.indexOf(" (hm) ");
-	  String compatName = currentName.substring(0,index)+"|"+currentName.substring(index+6,currentName.length());
-	  compatLabels.add(compatName);
-	}
+      GraphObjAttributes nodeAttributes = currentCyNetwork.getNodeAttributes();
+      Iterator nodeIt = rootGraph.nodesList().iterator();
+      while(nodeIt.hasNext()){
+	String currentName = nodeAttributes.getCanonicalName(nodeIt.next());
+	compatLabels.add(currentName);
       }
-      result.put(currentReader,compatLabels);
-      //System.err.println(""+compatLabels);
+      result.put(currentCyNetwork,compatLabels);
     }
     return result;
   }
@@ -284,16 +263,15 @@ class LoadPathBlastGMLTask extends Thread{
    * @return A HashMap which maps from a filename to the gmlTree which as created
    * using the data containted in that filename.
    */
-  public HashMap createGMLReader2Name(File [] gmlFiles){
+  public HashMap createCyNetwork2Name(File [] sifFiles){
     HashMap result = new HashMap();
-    for(int idx = 0;idx<gmlFiles.length;idx++){
-      File gmlFile = gmlFiles[idx];
+    for(int idx = 0;idx<sifFiles.length;idx++){
+      File sifFile = sifFiles[idx];
       try{
-	GMLReader gReader = new GMLReader(gmlFile.getAbsolutePath());
-	gReader.read();
-	result.put(gReader,gmlFile.getName());
+	CyNetwork cyNetwork = CyNetworkFactory.createNetworkFromInteractionsFile(sifFile.getAbsolutePath());
+	result.put(cyNetwork,sifFile.getName());
       }catch(Exception e){
-	System.err.println("Failed to read the gml file specified by "+gmlFile.getAbsolutePath());
+	System.err.println("Failed to read the sif file specified by "+sifFile.getAbsolutePath());
       }
 
     }
@@ -301,195 +279,99 @@ class LoadPathBlastGMLTask extends Thread{
   }
 }
 
-/**
+/**			
  * Creates a new thread to load up the GML file in a separate window.
- */
-class ShowGMLAction extends AbstractAction {
-
-  /**
-   * This is the window containing the overlap graph
+ */			
+class ShowGMLAction extends AbstractAction {	
+  /** 
+   *This is the window containing the overlap graph
    */
   CyWindow cyWindow;
-  /**
-   * This contains a mapping from nodes in the network to the GMLTree associated with that ndoe
+  /**			
+   * This contains a mapping from nodes in the network to the GMLTree associated with that ndoe	
    */
-  HashMap node2GMLReader;
-  /**
+  HashMap node2CyNetwork;
+  /**					
    * The constructor sets the text that should appear on the menu item.
-   */
-  public ShowGMLAction(CyWindow cyWindow, HashMap node2GMLReader){
-    super("Show GML");
-    this.node2GMLReader = node2GMLReader;
-    this.cyWindow = cyWindow;
-  }
-
-
-  /**
+   */									
+  public ShowGMLAction(CyWindow cyWindow, HashMap node2CyNetwork){	
+    super("Show GML");							
+    this.node2CyNetwork = node2CyNetwork;
+    this.cyWindow = cyWindow;			
+  }						
+						
+						
+  /**						
    * This method is called when the user selects the menu item.
-   */
-  public void actionPerformed(ActionEvent ae) {
-    List selectedNodes = cyWindow.getView().getSelectedNodes();
-    if(selectedNodes.size() > 0){
+   */								
+  public void actionPerformed(ActionEvent ae) {			
+    List selectedNodes = cyWindow.getView().getSelectedNodes();	
+    if(selectedNodes.size() > 0){				
       Node selectedNode = ((NodeView)selectedNodes.get(0)).getNode();
-      Thread t = new ShowGMLThread(selectedNode,node2GMLReader,cyWindow);
-      t.start();
-    }
-  }
-}
-/**
- * Load up the specified GMLFile in a window 
- */
-class ShowGMLThread extends Thread{
-  /**
+      Thread t = new ShowGMLThread(selectedNode,node2CyNetwork,cyWindow);
+      t.start();								
+    }										
+  }										
+}										
+/**										
+ * Load up the specified GMLFile in a window 					
+ */										
+class ShowGMLThread extends Thread{						
+  /**										
    * The old window with the overlap graph, bascially just need this to geta  reference to the global
-   * cytoscape thingy
-   */
-  private static CyWindow overlapWindow;
-  /**
-   * The new winodw in which to display the gml,
-   * may have to create this
-   */
-  private static CyWindow newWindow;
-  /**
-   * The node that was selected in the graph
-   */
-  Node selectedNode;
-  private static HashMap node2GMLReader;
-  /**
-   * Keeps track of the CyNetworks we have already 
-   * created so we don't have to create them again
-   */
-  private static HashMap node2CyNetwork;
-  public ShowGMLThread(Node selectedNode, HashMap node2GMLReader, CyWindow overlapWindow){
-    this.node2GMLReader = node2GMLReader;
-    this.selectedNode = selectedNode;
-    this.overlapWindow = overlapWindow;
-    if(node2CyNetwork == null){
-      node2CyNetwork = new HashMap();
-    }
-  }
-
-  /**
-   * Make a new window and show the graph associated with thte node, or try
-   * to display in hte window that has already been created
-   */
-  public void run(){
-    synchronized (node2CyNetwork){
-      CyNetwork cyNetwork = (CyNetwork)node2CyNetwork.get(selectedNode);
-      if(cyNetwork == null){
-	GMLReader currentReader = (GMLReader)node2GMLReader.get(selectedNode);
-	cyNetwork = new CyNetwork(currentReader.getRootGraph(),currentReader.getNodeAttributes(),currentReader.getEdgeAttributes());
-	//copy over node attributes, but keep our name mapping	
-	//cyNetwork.getNodeAttributes().addClassMap(overlapWindow.getNetwork().getNodeAttributes().getClassMap());
-	//cyNetwork.getNodeAttributes().set(overlapWindow.getNetwork().getNodeAttributes());
-	node2CyNetwork.put(selectedNode,cyNetwork);
-      }
-
-      Semantics.applyNamingServices(cyNetwork,overlapWindow.getCytoscapeObj());																	
-      if(newWindow == null){
-	newWindow = new CyWindow(overlapWindow.getCytoscapeObj(),cyNetwork,"Split Graph");
+   * cytoscape thingy											
+   */													
+  private CyWindow overlapWindow;								
+  /**													
+   * The new winodw in which to display the gml,							
+   * may have to create this										
+   */													
+  private static CyWindow newWindow;									
+  /**													
+   * The node that was selected in the graph								
+   */													
+  private Node selectedNode;											
+  private HashMap node2CyNetwork;								
+  /**													
+   * Keeps track of the CyNetworks we have already 							
+   * created so we don't have to create them again							
+   */													
+  public ShowGMLThread(Node selectedNode, HashMap node2CyNetwork, CyWindow overlapWindow){		
+    this.node2CyNetwork = node2CyNetwork;								
+    this.selectedNode = selectedNode;									
+    this.overlapWindow = overlapWindow;									
+  }													
+													
+  /**													
+   * Make a new window and show the graph associated with thte node, or try				
+   * to display in hte window that has already been created						
+   */													
+  public void run(){											
+    synchronized (overlapWindow){									
+      
+      if (newWindow == null) {
+	newWindow = new CyWindow(overlapWindow.getCytoscapeObj(),CyNetworkFactory.createEmptyNetwork(),"Split Graph");
 	newWindow.showWindow();
-      }
-      else{
-	  newWindow.getNetwork().setNewGraphFrom(cyNetwork,false);
-      }
+      } // end of if ()
+      DualLayoutCommandLineParser parser = new DualLayoutCommandLineParser(overlapWindow.getCytoscapeObj().getConfiguration().getArgs());
+      CyNetwork cyNetwork = (CyNetwork)node2CyNetwork.get(selectedNode);
+      Thread t = new DualLayoutTask(cyNetwork,newWindow,parser);
+      
+      t.start();
+      try {
+	t.join();
+      } catch (Exception e) {
+	System.err.println("Failed to rejoin thread, exiting");
+	e.printStackTrace();
+	return;
+      } // end of try-catch
+      Semantics.applyNamingServices(newWindow.getNetwork(),overlapWindow.getCytoscapeObj());
       newWindow.getMainFrame().setVisible(false);
-      //cyNetwork.getEdgeAttributes().set(overlapWindow.getNetwork().getEdgeAttributes());
-      layout(cyNetwork);	
-      //make everythign fit in the view
-      FitContentAction fitAction = new FitContentAction(newWindow);
-      fitAction.actionPerformed(new ActionEvent(this,0,""));
-      newWindow.getMainFrame().setVisible(true);
-    }
-  }
-  /**
-   * Layout the nodes in the window
-   * @param uses the nodeAttributes of the cyNetwork file to figure out what the identifier name of each node would be
-   */
-  private void layout(CyNetwork myNetwork){
-    GraphView myView = newWindow.getView();
-    GMLReader gmlReader = (GMLReader)node2GMLReader.get(selectedNode);
-    gmlReader.layoutByGML(myView,myNetwork);	
-  }
-
-  /**
-   * Create a cyNetwork from the global GMLTree object.
-   * This will only be called if the CyNetwork has not been
-   * created before, not that this really takes that long anyway
-   */
-  /*private CyNetwork createCyNetwork(){
-  //need to create a new cynetwork for this node
-  //using hte gmlTree object we already have	
-  RootGraph rootGraph = GinyFactory.createRootGraph();
-  GraphObjAttributes nodeAttributes = new GraphObjAttributes();
-  GraphObjAttributes edgeAttributes = new GraphObjAttributes();
-  // create and read the GML file
-
-  GMLTree gmlTree = (GMLTree)node2GMLTree.get(selectedNode);
-  Vector nodeIds = gmlTree.getVector("graph|node|id","|",GMLTree.INTEGER);
-  Vector nodeLabels = gmlTree.getVector("graph|node|label","|",GMLTree.STRING);
-
-  // in case gml node ids are not ordered consecutively (0..n)
-  Hashtable nodeNameMap  = new Hashtable(nodeIds.size());
-  for(int i=0; i<nodeIds.size(); i++) {
-  nodeNameMap.put(nodeIds.get(i), nodeLabels.get(i));
-  }
-
-  Vector edgeSources = gmlTree.getVector("graph|edge|source","|",GMLTree.INTEGER);
-  Vector edgeTargets = gmlTree.getVector("graph|edge|target","|",GMLTree.INTEGER);
-  Vector edgeLabels = gmlTree.getVector("graph|edge|label|","|",GMLTree.STRING);
-
-
-  String et = "pp";
-  if(edgeLabels.isEmpty()) {
-  for(int i=0; i < edgeSources.size(); i++) {
-  edgeLabels.add(et);
-  }
-  }
-
-  //---------------------------------------------------------------------------
-  // loop through all of the nodes (using a hash to avoid duplicates)
-  // adding nodes to the rootGraph. 
-  // Create the nodeName mapping in nodeAttributes
-  //---------------------------------------------------------------------------
-  Hashtable nodeHash = new Hashtable ();
-  String nodeName, interactionType;
-  for(int i=0; i<nodeIds.size(); i++) {
-  nodeName = (String) nodeNameMap.get(nodeIds.get(i));
-  //if(canonicalize) nodeName = canonicalizeName(nodeName);	      
-  if (!nodeHash.containsKey(nodeName)) {
-  Node node = rootGraph.getNode(rootGraph.createNode());
-  node.setIdentifier(nodeName);
-  nodeHash.put(nodeName, node);
-  nodeAttributes.addNameMapping(nodeName, node);
-  }
-  }
-  //---------------------------------------------------------------------------
-  // loop over the interactions creating edges between all sources and their 
-  // respective targets.
-  // for each edge, save the source-target pair, and their interaction type,
-  // in edgeAttributes -- a hash of a hash of name-value pairs, like this:
-  // ???  edgeAttributes ["interaction"] = interactionHash
-  // ???  interactionHash [sourceNode::targetNode] = "pd"
-  //---------------------------------------------------------------------------
-  String sourceName, targetName, edgeName;
-  for (int i=0; i < edgeSources.size(); i++) {
-  sourceName = (String) nodeNameMap.get(edgeSources.get(i));
-  targetName = (String) nodeNameMap.get(edgeTargets.get(i));
-  interactionType = (String) edgeLabels.get(i);
-
-  Node sourceNode = (Node) nodeHash.get(sourceName);
-  Node targetNode = (Node) nodeHash.get(targetName);
-  Edge edge = rootGraph.getEdge(rootGraph.createEdge(sourceNode, targetNode));
-  edgeName = sourceName + " (" + interactionType + ") " + targetName;
-  int previousMatchingEntries = edgeAttributes.countIdentical(edgeName);
-  if (previousMatchingEntries > 0)
-  edgeName = edgeName + "_" + previousMatchingEntries;
-  edgeAttributes.add("interaction", edgeName, interactionType);
-  edgeAttributes.addNameMapping(edgeName, edge);
-  }
-
-  return new CyNetwork(rootGraph,nodeAttributes,edgeAttributes);
-  }*/
+      FitContentAction fitAction = new FitContentAction(newWindow);									
+      fitAction.actionPerformed(new ActionEvent(this,0,""));										
+      newWindow.getMainFrame().setVisible(true);											
+    }																	
+  }																	
+ 																	
 }
 
