@@ -50,6 +50,7 @@ import cytoscape.data.servers.*;
 import cytoscape.dialogs.*;
 import cytoscape.layout.*;
 import cytoscape.vizmap.*;
+import cytoscape.viewmodes.*;
 import cytoscape.util.MutableString;
 import cytoscape.util.MutableBool;
 
@@ -2235,6 +2236,9 @@ class ReadOnlyGraphMode extends EditMode {
    allowBendCreation (false);
    showNodeTips (true);
    showEdgeTips (true);
+
+   // added by dramage 2002-08-16
+   setMoveSelectionMode(new StraightLineMoveMode());
    }
   protected String getNodeTip (Node node) {
     String geneName = graphView.getGraph2D().getRealizer(node).getLabelText();
@@ -2303,6 +2307,9 @@ protected class NodeAttributesPopupMode extends PopupMode {
 
 } // inner class NodeAttributesPopupMode
 //---------------------------------------------------------------------------------------
+
+
+
 protected HashMap configureNewNode (Node node)
 {
   OptionHandler options = new OptionHandler ("New Node");
