@@ -149,7 +149,8 @@ Ideker T, Ozier O, Schwikowski B, Siegel A. Discovering regulatory and signaling
 	if ($option == "2") { 
 		include "feed.php"; 
 	} else {
-		include "news.php"; 
+		include "news.php";
+		include "community_box.php";
 	}
 	echo "<P>";
 	include "collab.php";
