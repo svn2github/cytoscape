@@ -58,6 +58,7 @@ public class CytoscapeInit
   
   // Configuration variables
   private static boolean useView = true;
+  private static boolean suppressView = false;
   private static String viewType = "tabbed";
   private static int viewThreshold;
 
@@ -69,6 +70,7 @@ public class CytoscapeInit
   private static final String fWHITESPACE_AND_QUOTES = " \t\r\n\"";
   private static final String fQUOTES_ONLY ="\"";
   private static final String fDOUBLE_QUOTE = "\"";
+
 
   /**
    * Calling the constructor sets up the CytoscapeInit Object to be a
@@ -141,6 +143,11 @@ public class CytoscapeInit
     if ( System.getProperty( "java.awt.headless" ) == "true" ) {
       useView = false;
     }
+    suppressView = cli.suppressView();
+
+
+    
+
 
     // see if we are in headless mode
     // show splash screen, if appropriate
@@ -214,6 +221,10 @@ public class CytoscapeInit
     return useView;
   }
 
+  public static boolean suppressView () {
+    return suppressView;
+  }
+  
   private boolean isDoubleQuote( String aToken ){
     return aToken.equals(fDOUBLE_QUOTE);
   }

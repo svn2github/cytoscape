@@ -425,13 +425,17 @@ public final class GraphConverter
 
     // Move nodes in underlying Giny.
     for (int n = 0; n < nodeTranslation.length; n++) {
-//       nodeTranslation[n].setOffset
-//         (layout.getNodePosition(n, true) + myLayout.m_xOff,
-//          layout.getNodePosition(n, false) + myLayout.m_yOff);
+
       nodeTranslation[n].setXPosition
         (layout.getNodePosition(n, true) + myLayout.m_xOff);
       nodeTranslation[n].setYPosition
-        (layout.getNodePosition(n, false) + myLayout.m_yOff); }
+        (layout.getNodePosition(n, false) + myLayout.m_yOff); 
+
+      // nodeTranslation[n].setOffset( layout.getNodePosition(n, true) + myLayout.m_xOff,
+      //                              layout.getNodePosition(n, false) + myLayout.m_yOff );
+
+      
+    }
 
     // Set edge anchor points in underlying Giny.
     for (int e = 0; e < edgeTranslation.length; e++) {

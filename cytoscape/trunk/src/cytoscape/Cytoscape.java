@@ -924,11 +924,15 @@ public abstract class Cytoscape {
        String errString = "Unable to load expression data from "
          + filename;
        String title = "Load Expression Data";
-       JOptionPane.showMessageDialog( getDesktop(),
-                                      errString, 
-                                      title,
-                                      JOptionPane.ERROR_MESSAGE);
-       return false;
+
+       if ( CytoscapeInit.suppressView() ) {
+         JOptionPane.showMessageDialog( getDesktop(),
+                                        errString, 
+                                        title,
+                                        JOptionPane.ERROR_MESSAGE);
+         return false;
+       }
+       
      }
        
      if ( copy_atts ) {
@@ -936,13 +940,15 @@ public abstract class Cytoscape {
        firePropertyChange( ATTRIBUTES_CHANGED,null,null );
      }
 
-     //display a description of the data in a dialog
-     String expDescript = expressionData.getDescription();
-     String title = "Load Expression Data";
-     JOptionPane.showMessageDialog( getDesktop(),
-                                    expDescript, 
-                                    title,
-                                    JOptionPane.PLAIN_MESSAGE );
+     if ( CytoscapeInit.suppressView() ) {
+       //display a description of the data in a dialog
+       String expDescript = expressionData.getDescription();
+       String title = "Load Expression Data";
+       JOptionPane.showMessageDialog( getDesktop(),
+                                      expDescript, 
+                                      title,
+                                      JOptionPane.PLAIN_MESSAGE );
+     }
      return true;
   }
 

@@ -32,7 +32,7 @@ public class CyCommandLineParser {
   ArrayList scripts;
   boolean inScript;
   ArrayList currentScript;
-
+  boolean suppressView;
 
   boolean helpRequested = false;
 
@@ -65,6 +65,7 @@ public class CyCommandLineParser {
      viewThreshold = null;
      inScript = false;
      scripts = new ArrayList();
+     suppressView = false;
   }
 
 
@@ -86,6 +87,11 @@ public class CyCommandLineParser {
   public String getSpecifiedPropsFile () {
     return specifiedPropsFileLocation;
   }
+
+  public boolean suppressView () {
+    return suppressView;
+  }
+                                  
 
   public boolean useView () {
     return useView;
@@ -260,6 +266,14 @@ public class CyCommandLineParser {
         //System.out.println( "there will be no view" );
         useView = false;
       }
+
+      // noDialog
+      else if ( Strings.isLike( args[i], "-noDialog", 0, true ) ||
+                Strings.isLike( args[i], "-suppressView", 0, true ) ) {
+        i++;
+        suppressView = false;
+      }
+
 
       // viewThreshold
       else if ( Strings.isLike( args[i], "--VT", 0, true ) ||
