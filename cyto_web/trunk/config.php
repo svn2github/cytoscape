@@ -12,65 +12,51 @@
 $news_option = "atom";
 
 #################################################
-#  Specifies the Current Cytoscape Release Version
-#  Update this version number after each release.
-#################################################
-$version = "v2.00";
-
-
-#################################################
 #  Production Setting
 #  Specifies whether we are running in production on cytoscape.org.
 #  If set to false, we assume a local test server set-up
 
 #################################################
-$in_production = true;
-
+$in_production = false;
 
 #################################################
-#  Base URLs for ISB and cBio
+#  Base URL(s)
 #  Note:  as long as we keep the same paths, these should not be
 #  updated.
 #################################################
-$isb_base = "http://db.systemsbiology.net:8080/cytoscape/download/";
 $cbio_base = "http://www.cbio.mskcc.org/cytoscape/release/";
-
 
 #################################################
 # Cytoscape 1.1 Release File Names
 # Note:  these probably don't need to ever be updated.
 #################################################
-$cyto1_gz = "cytoscape-v1.1.1.tar.gz";
-$cyto1_zip = "cytoscape-v1.1.1.zip";
-$cyto1_src = "cytoscapeSource-v1.1.1.tar.gz";
-
-# URL for Cytoscape 1.1 Zip/Tar.gz Files (East Coast)
-$cyto1_gz_east= $cbio_base . $cyto1_gz;
-$cyto1_zip_east= $cbio_base . $cyto1_zip;
-
-# URL for Cytoscape 1.1 Source
-$cyto1_source_east= $cbio_base . $cyto1_src;
+$cyto1_gz_east= $cbio_base . "cytoscape-v1.1.1.tar.gz";
+$cyto1_zip_east= $cbio_base . "cytoscape-v1.1.1.zip";
+$cyto1_source_east= $cbio_base . "cytoscapeSource-v1.1.1.tar.gz";
 
 #################################################
 # Cytoscape 2.0 Release File Names
 # Note:  these probably don't need to ever be updated.
 #################################################
-$cyto2_gz = "cytoscape-" . $version  . ".tar.gz";
-$cyto2_zip = "cytoscape-" . $version  . ".zip";
-$cyto2_src = "cytoscapeSource-" . $version . ".tar.gz";
-$cyto2_mac = "cytoscape.dmg.zip";
+$cyto2_gz_east= $cbio_base . "cytoscape-2.00.tar.gz";
+$cyto2_zip_east= $cbio_base . "cytoscape-2.00.zip";
+$cyto2_source_east= $cbio_base . "cytoscapeSource-2.00.tar.gz";
+$cyto2_mac_east= $cbio_base . "cytoscape-2.00.dmg.zip";
 
-# URL for Cytoscape 2.0 and Source
-$cyto2_gz_east= $cbio_base . $cyto2_gz;
-$cyto2_zip_east= $cbio_base . $cyto2_zip;
-$cyto2_source_east= $cbio_base . $cyto2_src;
-$cyto2_mac_east= $cbio_base . $cyto2_mac;
+#################################################
+# Cytoscape 2.1 Release File Names
+#################################################
+$cyto2_1_gz_east= $cbio_base . "cytoscape-2.1.tar.gz";
+$cyto2_1_zip_east= $cbio_base . "cytoscape-2.1.zip";
+$cyto2_1_source_east= $cbio_base . "cytoscapeSource-2.1.tar.gz";
+$cyto2_1_mac_east= $cbio_base . "cytoscape-2.1.dmg.zip";
 
 #################################################
 # URL for Cytoscape Install Anywhere
 #################################################
-$cyto1_install_anywhere = $isb_base . "installer/installer1.1.1/install.htm";
+$cyto1_install_anywhere = "http://db.systemsbiology.net:8080/cytoscape/download/installer/installer1.1.1/install.htm";
 $cyto2_install_anywhere = "ftp://baker.systemsbiology.net/pub/xmas/cytoscape2.0/cytoscape2.0_Build_Output/Web_Installers/install.htm";
+$cyto2_1_install_anywhere = "To be provided by Rowan";
 
 #  Production Settings
 #  Do not Modify
