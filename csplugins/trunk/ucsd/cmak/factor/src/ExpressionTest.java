@@ -2,7 +2,7 @@ import junit.framework.*;
 import java.util.*;
 
 import cytoscape.data.ExpressionData;
-import cytoscape.data.CachedExpressionData;
+//import cytoscape.data.CachedExpressionData;
 import cytoscape.data.mRNAMeasurement;
 
 public class ExpressionTest extends TestCase
@@ -43,7 +43,8 @@ public class ExpressionTest extends TestCase
         //loadCached(25000);
     }
     */
-    
+
+    /*
     private void loadCached(int sz) throws Exception
     {
         //CachedExpressionData.CACHE_SIZE = sz;
@@ -58,7 +59,7 @@ public class ExpressionTest extends TestCase
         assertEquals("gene=YHR007C, cond=ade16: ratio", 0.03, m.getRatio(), 0.01);
         assertEquals("gene=YHR007C, cond=ade16: ratio", 0.793, m.getSignificance(), 0.001);
     }
-
+    */
     /*
     public void testCache()
     {

@@ -44,17 +44,18 @@ public class FactorNodeTest extends AbstractNodeTest
         x.add(pt2em(createEdge( .55, .45))); // target for edge
         x.add(pt2em(createEdge( .35, .65)));
         x.add(pt2em(createDir( .2, .8), State.PLUS)); // target for dir
-        x.add(pt2em(createDir( .4, .6), State.MINUS));
+        x.add(pt2em(createDir( .4, .6), State.MINUS)); // target for dir2
         x.add(pt2em(createSign(.2, .8)));
         x.add(pt2em(createSign(.4, .6))); // target for sign
-        x.add(pt2em(createKO(.1, .23, .67))); // target for ko
+        x.add(pt2em(createKO(.23, .67, .1))); // target for ko
         x.add(pt2em(createPathActive(.85, .15))); //target for path active
 
     }
 
     public void testMaxProductEdge() throws AlgorithmException
     {
-        ProbTable pt = f.maxProduct(x, 0, VariableNode.createEdge());
+        System.out.println("### test Edge");
+        ProbTable pt = f.maxProduct(x, 0, VariableNode.createEdge(1));
 
         double cs = ep1*.65*.8*.6*.8*.6*.67*.85;
         double pe = 1*.35*.2*.6*.8*.6*.67*.85;
@@ -65,7 +66,8 @@ public class FactorNodeTest extends AbstractNodeTest
 
     public void testMaxProductDir() throws AlgorithmException
     {
-        ProbTable pt = f.maxProduct(x, 2, VariableNode.createDirection());
+        System.out.println("### test Dir");
+        ProbTable pt = f.maxProduct(x, 2, VariableNode.createDirection(1));
 
         double cs = ep1*.55*.65*.6*.8*.6*.67*.85;
         double pe = 1*.55*.35*.6*.8*.6*.67*.85;
@@ -73,11 +75,23 @@ public class FactorNodeTest extends AbstractNodeTest
         checkProbsPM(pt, pe, cs);
     }
 
+    public void testMaxProductDir2() throws AlgorithmException
+    {
+        System.out.println("### test Dir2");
+        ProbTable pt = f.maxProduct(x, 3, VariableNode.createDirection(1));
 
+        double cs = ep1*.55*.65*.8*.8*.6*.67*.85;
+        double pe = 1*.55*.35*.2*.8*.6*.67*.85;
+
+        checkProbsPM(pt, cs, pe);
+    }
+
+
+    
     public void testMaxProductSign() throws AlgorithmException
     {
         System.out.println("### test Sign");
-        ProbTable pt = f.maxProduct(x, 5,  VariableNode.createSign());
+        ProbTable pt = f.maxProduct(x, 5,  VariableNode.createSign(1));
 
         double p = ep1*.55*.65*.8*.6*.8*.67*.15;
         double m = 1*.55*.35*.2*.6*.8*.67*.85;
@@ -87,20 +101,23 @@ public class FactorNodeTest extends AbstractNodeTest
 
     public void testMaxProductPathActive() throws AlgorithmException
     {
-        ProbTable pt = f.maxProduct(x, 7, VariableNode.createPathActive());
+        System.out.println("### test PathActive");
+        ProbTable pt = f.maxProduct(x, 7, VariableNode.createPathActive(1));
 
-        double cs = ep1*.55*.65*.8*.6*.8*.6*.67;
-        double pe = ep1*.55*.65*.8*.6*.8*.6*.67;
+        double cv = ep1*.55*.65*.8*.6*.8*.6*.67;
+        double pi = 1*.55*.35*.2*.6*.8*.6*.67;
 
+        System.out.println("cv=" + cv);
+        System.out.println("pi=" + pi);
 
-        checkProbs10(pt, pe, cs);
+        checkProbs10(pt, pi, cv);
     }
 
 
     public void testMaxProductKO() throws AlgorithmException
     {
         System.out.println("### test KO");
-        ProbTable pt = f.maxProduct(x, 6, VariableNode.createKO());
+        ProbTable pt = f.maxProduct(x, 6, VariableNode.createKO(1, 2));
 
         double z = ep1*.55*.65*.8*.6*.8*.6*.85;
         double p = ep2*.55*.65*.8*.6*.8*.6*.85;
@@ -133,14 +150,14 @@ public class FactorNodeTest extends AbstractNodeTest
         s.add(createSign(.2, .8));
         s.add(createSign(.4, .6));
 
-        ProbTable k1 = createKO(.1, .23, .67);
+        ProbTable k1 = createKO(.23, .67, .1);
         ProbTable sigma = createPathActive(.85, .15);
 
         double pe = f.computePathExplains(x, d, dirStates, k1, sigma, s);
 
         assertEquals("path explains", 1*.55*.35*.2*.6*.8*.6*.67*.85, pe, 0.000000000001);
 
-        ProbTable k2 = createKO(.1, .67, .23);
+        ProbTable k2 = createKO(.67, .23, .1);
         pe = f.computePathExplains(x, d, dirStates, k2, sigma, s);
 
         assertEquals("path explains", 1*.55*.35*.2*.6*.8*.4*.67*.85, pe, 0.000000000001);
@@ -194,8 +211,8 @@ public class FactorNodeTest extends AbstractNodeTest
     
     public void testMaximizeSignK()
     {
-        ProbTable kM = createKO(.1, .15, .75);
-        ProbTable kP = createKO(.1, .75, .15);
+        ProbTable kM = createKO(.15, .75, .1);
+        ProbTable kP = createKO(.75, .15, .1);
 
         List l = new ArrayList();
         l.add(createSign(.2, .8));

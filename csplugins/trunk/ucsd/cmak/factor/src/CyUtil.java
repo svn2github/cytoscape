@@ -9,6 +9,9 @@ import java.io.IOException;
 
 import java.util.Iterator;
 
+import cern.colt.map.OpenIntObjectHashMap;
+
+
 public class CyUtil
 {
     private static final String NL = "\n";
@@ -28,24 +31,51 @@ public class CyUtil
         System.out.println("Printing E=" + g.getEdgeCount() 
                            + " N=" + g.getNodeCount());
         */
-        for(Iterator it = g.edgesIterator(); it.hasNext(); )
+        int[] edges = g.getEdgeIndicesArray();
+        for(int x=0; x < edges.length; x++ )
         {
-            Edge e = (Edge) it.next();
+            int e = edges[x];
 
-            Node s = (Node) e.getSource();
-            Node t = (Node) e.getTarget();
-
-            /*
-            System.out.println("Writing E=" + e.getIdentifier()
-                               + " from=" + s.getIdentifier() + " to=" 
-                               + t.getIdentifier());
-            */
-            out.println(s.getIdentifier() + " x " + t.getIdentifier());
+            out.println(g.getEdgeSourceIndex(e) + " x " + g.getEdgeTargetIndex(e));
         }
         
         out.close();
    }
 
+    public static void writeSif(RootGraph g, String filename,
+                                OpenIntObjectHashMap edge2type) throws IOException
+    {
+        PrintWriter out = new PrintWriter(new FileWriter(filename));
+
+        /**
+        System.out.println("Printing E=" + g.getEdgeCount() 
+                           + " N=" + g.getNodeCount());
+        */
+
+        int[] edges = g.getEdgeIndicesArray();
+        for(int x=0; x < edges.length; x++ )
+        {
+            int e = edges[x];
+
+            String type = " x ";
+            if(edge2type.containsKey(e))
+            {
+                type = (String) edge2type.get(e);
+            }
+            StringBuffer b = new StringBuffer();
+            b.append(g.getEdgeSourceIndex(e));
+            b.append(" ");
+            b.append(type);
+            b.append(" ");
+            b.append(g.getEdgeTargetIndex(e));
+
+            out.println(b.toString());
+        }
+        
+        out.close();
+   }
+
+    
     /**
      * Write a RootGraph to a Cytoscape .sif file.
      */
@@ -53,16 +83,14 @@ public class CyUtil
     {
         StringBuffer b = new StringBuffer();
 
-        for(Iterator it = g.edgesIterator(); it.hasNext(); )
+        int[] edges = g.getEdgeIndicesArray();
+        for(int x=0; x < edges.length; x++ )
         {
-            Edge e = (Edge) it.next();
+            int e = edges[x];
 
-            Node s = (Node) e.getSource();
-            Node t = (Node) e.getTarget();
-
-            b.append(s.getRootGraphIndex());
+            b.append(g.getEdgeSourceIndex(e));
             b.append(S);
-            if(e.isDirected())
+            if(g.isEdgeDirected(e))
             {
                 b.append(dE);
             }
@@ -71,7 +99,7 @@ public class CyUtil
                 b.append(uE);
             }
             b.append(S);
-            b.append(t.getRootGraphIndex());
+            b.append(g.getEdgeTargetIndex(e));
             b.append(NL);
         }
         

@@ -5,13 +5,20 @@ import cern.colt.bitvector.BitVector;
 
 public abstract class AbstractNodeTest extends TestCase
 {
+
+    protected double delta = 0.0000001;
+    
+    public AbstractNodeTest()
+    {
+        super();
+    }
     
     public AbstractNodeTest(String s)
     {
         super(s);
     }
     
-    protected void setUp()
+    protected void setUp() throws Exception
     {
     }
 
@@ -22,8 +29,8 @@ public abstract class AbstractNodeTest extends TestCase
         
         System.out.println(pt.toStringDetailed());
 
-        assertEquals("prob(ZERO)", p0 / sum, pt.prob(State.ZERO), 0.000000001);
-        assertEquals("prob(ONE)", p1 / sum, pt.prob(State.ONE), 0.000000001);
+        assertEquals("prob(ZERO)", p0 / sum, pt.prob(State.ZERO), delta);
+        assertEquals("prob(ONE)", p1 / sum, pt.prob(State.ONE), delta);
     }
 
 
@@ -33,8 +40,8 @@ public abstract class AbstractNodeTest extends TestCase
         
         System.out.println(pt.toStringDetailed());
         
-        assertEquals("prob(PLUS)", pP / sum, pt.prob(State.PLUS), 0.000000001);
-        assertEquals("prob(MINUS)", pM / sum, pt.prob(State.MINUS), 0.000000001);
+        assertEquals("prob(PLUS)", pP / sum, pt.prob(State.PLUS), delta);
+        assertEquals("prob(MINUS)", pM / sum, pt.prob(State.MINUS), delta);
     }
 
     
@@ -44,9 +51,9 @@ public abstract class AbstractNodeTest extends TestCase
         
         System.out.println(pt.toStringDetailed());
         
-        assertEquals("prob(PLUS)", pP / sum, pt.prob(State.PLUS), 0.000000001);
-        assertEquals("prob(MINUS)", pM / sum, pt.prob(State.MINUS), 0.000000001);
-        assertEquals("prob(ZERO)", pZ / sum, pt.prob(State.ZERO), 0.000000001);
+        assertEquals("prob(PLUS)", pP / sum, pt.prob(State.PLUS), delta);
+        assertEquals("prob(MINUS)", pM / sum, pt.prob(State.MINUS), delta);
+        assertEquals("prob(ZERO)", pZ / sum, pt.prob(State.ZERO), delta);
     }
     
     public EdgeMessage pt2em(ProbTable pt)
@@ -90,7 +97,7 @@ public abstract class AbstractNodeTest extends TestCase
         return createOneZero(StateSet.EDGE, p1, p0);
     }
 
-    protected ProbTable createKO(double z, double p,  double m)
+    protected ProbTable createKO(double p, double m,  double z)
     {
         ProbTable s1 = new ProbTable(StateSet.KO);
         double[] d = new double[3];

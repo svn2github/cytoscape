@@ -22,6 +22,11 @@ public class IntListMap
         _m = new OpenIntObjectHashMap(initialCapacity);
     }
 
+    public void ensureCapacity(int c)
+    {
+        _m.ensureCapacity(c);
+    }
+    
     public void put(int key, List value)
     {
         _m.put(key, value);

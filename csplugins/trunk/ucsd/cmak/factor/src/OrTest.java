@@ -24,7 +24,7 @@ public class OrTest extends AbstractNodeTest
 
     public void testMaxProductEdge1() throws AlgorithmException
     {
-        ProbTable pt = f.maxProduct(x, 1, VariableNode.createPathActive());
+        ProbTable pt = f.maxProduct(x, 1, VariableNode.createPathActive(1));
 
         double p0 = Math.max(Math.max(.4*.8*.7, .6*.2*.7), .6*.8*.3);
         double p1 = .6*.8*.7;
@@ -35,7 +35,7 @@ public class OrTest extends AbstractNodeTest
 
     public void testMaxProductEdge3() throws AlgorithmException
     {
-        ProbTable pt = f.maxProduct(x, 3, VariableNode.createPathActive());
+        ProbTable pt = f.maxProduct(x, 3, VariableNode.createPathActive(1));
 
         double p0 = .6*.85*.8;
         double p1 = .6*.85*.8;

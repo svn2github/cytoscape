@@ -22,6 +22,23 @@ public class EdgeMessage
         this.dir = dir;
     }
 
+    public String toString()
+    {
+        StringBuffer b = new StringBuffer("{");
+        //b.append("f2v: ");
+        //b.append(f2v.toString());
+        b.append(" v2f: ");
+        b.append(v2f.toString());
+        if(dir != null)
+        {
+            b.append(" dir: ");
+            b.append(dir);
+        }
+        b.append("}");
+        
+        return b.toString();
+    }
+    
 
     /**
      * @return If this message connects a direction node to a path factor node,

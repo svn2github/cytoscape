@@ -1,10 +1,13 @@
 import junit.framework.*;
 import java.util.*;
+import java.io.*;
 
 import giny.model.*;
 
 public class FGTest extends AbstractPathTest
 {
+    private String outputDir = "testOut";
+
     private String _sif = "test2.sif";
     private String _dfs = "pathtest.sif";
     private String _all = "all.sif";
@@ -50,10 +53,9 @@ public class FGTest extends AbstractPathTest
         PathResult r = runPath(ig, sources, 5, expectedPaths);
         r.print(ig);
         
-        FactorGraph fg = new FactorGraph(ig, r); 
-
-        fg.writeSif(fname + ".sif");
-        fg.writeNodeAttr(fname);
+        PrintableFactorGraph fg = PrintableFactorGraph.createPrintable(ig, r); 
+        
+        fg.writeSif(outputDir + File.separator + fname);
 
         fg.writeNodeProbs(System.out);
     }

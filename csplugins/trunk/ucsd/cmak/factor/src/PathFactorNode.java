@@ -15,15 +15,34 @@ public class PathFactorNode implements FactorNode
     private static final int ODD = 1; // product of signs == -1
     private static final int EVEN = 0; // product of sings == +1
 
+    /*
+    private static MAX_PATH_LEN = 5;
+    
+    private Object[] _signCache;
+    private Object[] _signCachePLUS;
+    private Object[] _signCacheMINUS;
+    */
+    
     private static PathFactorNode __singleton = new PathFactorNode();
-
+    
     public static PathFactorNode getInstance()
     {
         return __singleton;
     }
 
-    private PathFactorNode()
+    protected PathFactorNode()
     {
+        /*_signCache = new Object[MAX_PATH_LEN];
+        _signCachePLUS = new Object[MAX_PATH_LEN];
+        _signCacheMINUS = new Object[MAX_PATH_LEN];
+
+        for(int x=0; x < MAX_PATH_LEN; x++)
+        {
+            _signCache[x] = enumerate(x);
+            _signCachePLUS[x] = enumerate(x, State.PLUS);
+            _signCacheMINUS[x] = enumerate(x, State.MINUS);
+        }
+        */
     }
 
     /**
@@ -111,11 +130,12 @@ public class PathFactorNode implements FactorNode
                                                      pathViolates);
             pt.init(probs);
 
+            /*
             System.out.println("cv=" + probs[ss.getIndex(State.ZERO)]);
             System.out.println("pe=" + pathExplains);
             System.out.println("pi=" + pathInactive);
             System.out.println("pv=" + pathViolates);
-
+            */
 
             return pt;
         }
@@ -125,23 +145,27 @@ public class PathFactorNode implements FactorNode
             StateSet ss = StateSet.DIR;
             ProbTable pt = new ProbTable(ss);
 
+            State explanatory = ((EdgeMessage) allMsgs.get(tIndex)).getDir();
+            State other = explanatory == State.PLUS ? State.MINUS : State.PLUS;
+            
             double pathExplains = computePathExplains(x, d, dirStates, k, sigma, s);
             double tmpProb = maximize(x, 1) * maximize(d, 1) * maximize(s, 1);
             double pathInactive = ep1 * tmpProb * k.max() * sigma.prob(State.ZERO);
             double pathViolates = ep2 * tmpProb * k.prob(State.ZERO) * sigma.prob(State.ONE);
 
             double[] probs = new double[ss.size()];
-            probs[ss.getIndex(State.MINUS)] = maximize(incoming, ep1);
-            probs[ss.getIndex(State.PLUS)] = maximize(pathExplains, 
-                                                      pathInactive, 
-                                                      pathViolates);
+            probs[ss.getIndex(other)] = maximize(incoming, ep1); // constraint violated
+            probs[ss.getIndex(explanatory)] = maximize(pathExplains, 
+                                                       pathInactive, 
+                                                       pathViolates);
             pt.init(probs);
 
-            System.out.println("cv=" + probs[ss.getIndex(State.MINUS)]);
-            System.out.println("pe=" + pathExplains);
+            /*
+            System.out.println("cv=" + probs[ss.getIndex(other)] + " " + other);
+            System.out.println("pe=" + pathExplains + " " + explanatory);
             System.out.println("pi=" + pathInactive);
             System.out.println("pv=" + pathViolates);
-            
+            */
             return pt;
         }
         else if (tt == NodeType.SIGN)
@@ -170,11 +194,13 @@ public class PathFactorNode implements FactorNode
                                                       pathViolates);
             pt.init(probs);
 
+            /*
             System.out.println("pe+ =" + pathExplainsPlus);
             System.out.println("pe- =" + pathExplainsMinus);
             System.out.println("pi=" + pathInactive);
             System.out.println("pv=" + pathViolates);
-
+            */
+            
             return pt;
         }
         else if (tt == NodeType.PATH_ACTIVE)
@@ -183,17 +209,20 @@ public class PathFactorNode implements FactorNode
             ProbTable pt = new ProbTable(ss);
 
             double pathExplains = computePathExplains(x, d, dirStates, k, s);
-            double pathInactive = ep1 * maximize(x, 1) * maximize(d, 1) * maximize(s, 1) * k.max();
+            double pathInactive = ep1 * maximize(x, 1) * maximize(d, 1) * maximize(s, 1) * k.prob(State.ZERO);
+            
             double[] probs = new double[ss.size()];
             probs[ss.getIndex(State.ZERO)] = maximize(incoming, ep1);
             probs[ss.getIndex(State.ONE)] = Math.max(pathExplains, pathInactive); 
  
             pt.init(probs);
-           
+
+            /*
             System.out.println("cv=" + probs[ss.getIndex(State.ZERO)]);
             System.out.println("pe=" + pathExplains);
             System.out.println("pi=" + pathInactive);
-
+            */
+            
             return pt;
         }
         else if (tt == NodeType.KO)
@@ -208,6 +237,7 @@ public class PathFactorNode implements FactorNode
             double pathExplainsMinus = computePathExplainsFixKO(x, d, dirStates,
                                                                 sigma, 
                                                                 s, State.MINUS);
+
             double pathViolates = ep2 * maximize(x, 1) * maximize(d, 1) * maximize(s, 1) * sigma.prob(State.ONE);
 
             double[] probs = new double[ss.size()];
@@ -216,12 +246,14 @@ public class PathFactorNode implements FactorNode
             probs[ss.getIndex(State.MINUS)] = Math.max(pathExplainsMinus, pathViolates); 
  
             pt.init(probs);
-           
+
+            /*
             System.out.println("cv=" + probs[ss.getIndex(State.ZERO)]);
             System.out.println("pe+ =" + pathExplainsPlus);
             System.out.println("pe- =" + pathExplainsMinus);
             System.out.println("pv=" + pathViolates);
-
+            */
+            
             return pt;
         }
         else
@@ -283,6 +315,8 @@ public class PathFactorNode implements FactorNode
      * @param s messages from sign nodes
      * @param sigma messages from sigma node
      * @param k messages from knockout effect node
+     * @param fixedSign State.PLUS | State.MINUS that the target sign variable
+     *  will be fixed to.
      */
     protected double computePathExplainsFixSign(List x, List d, List dirStates,
                                                 ProbTable k, 
@@ -413,8 +447,20 @@ public class PathFactorNode implements FactorNode
      */
     protected double maximizeSign(List signs, ProbTable k, State fixedSign)
     {
+        // signs.size() == 0 only if a factor node is connected to one
+        // sign variable and that sign variable is the target.
+        // Hence, its max value is determined by k and fixedSign.
         if(! (signs.size() > 0))
         {
+            if(fixedSign == State.PLUS)
+            {
+                return k.prob(State.MINUS);
+            }
+            else if(fixedSign == State.MINUS)
+            {
+                return k.prob(State.PLUS);
+            }
+
             return 1;
         }
         

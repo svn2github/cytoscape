@@ -2,9 +2,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 
+import cern.colt.bitvector.BitVector;
 import cern.colt.map.OpenIntIntHashMap;
 import cern.colt.map.OpenIntObjectHashMap;
 import cern.colt.list.IntArrayList;
+import cern.colt.list.ObjectArrayList;
 
 import giny.model.RootGraph;
 
@@ -18,6 +20,9 @@ public class DFSPath
     final static int WHITE = 0; // undiscovered
     final static int GREY = 1; // discovered
     final static int BLACK = 2; // finished
+
+    final static int SOURCE = 0; // index of source in _edges[][]
+    final static int TARGET = 1; // index of target in _edges[][]
     
     final static int NIL = 0;
     
@@ -33,12 +38,22 @@ public class DFSPath
     // map graph indices to a label in the set [0,numNodes]
     private OpenIntIntHashMap labelMap;
 
+    private OpenIntIntHashMap _edgeLabelMap;
+
+    private int[][] _edges;
+    
     // map target node to IntArrayList path
     private Target2PathMap target2pathMap;
 
     // map nodes to adjacent edges
-    private OpenIntObjectHashMap adjMap;
-
+    //private OpenIntObjectHashMap adjMap;
+    private ObjectArrayList _adjacentEdges;
+    
+    // bits indicating whether a gene is affected by
+    // the current koNode
+    // if(_affected.get(n) == true) then the gene with label n is affected.
+    private BitVector _affected;
+    
     // data structure that holds results of path search
     private PathResult result;
 
@@ -47,9 +62,11 @@ public class DFSPath
     private int[] dt; // discovery time
     private int[] ft; // finish time
         
-    private int koNode;
+    private int _koNode;
     private int pathCount;
 
+    private int notCounted;
+    
     public DFSPath(InteractionGraph graph)
     {
         ig = graph;
@@ -68,9 +85,11 @@ public class DFSPath
         //dt = new int[numNodes]; // discovery time
         //ft = new int[numNodes]; // finish time
 
-        adjMap = new OpenIntObjectHashMap(numNodes);
+        //adjMap = new OpenIntObjectHashMap(numNodes);
+        _adjacentEdges = new ObjectArrayList(numNodes);
+        _affected = new BitVector(numNodes);
     }
-
+    
     /**
      * Enumerate all paths from the sourceNode to its targets.
      * All paths will consist of less that or equal to "maxDepth" edges.
@@ -82,6 +101,7 @@ public class DFSPath
         return findPaths(new int[] {sourceNode}, maxDepth);
     }
 
+    
     /**
      * Find paths from multiple sources to all of their targets.
      * All paths will consist of less that or equal to "maxDepth" edges.
@@ -90,22 +110,38 @@ public class DFSPath
      */
     public PathResult findPaths(int[] sources, int maxDepth)
     {
+        System.out.println("DFSPath: numNodes=" + numNodes +
+                           " numEdges=" + numEdges);
+        
         // initialize data structures
         result = new PathResult(numNodes, numEdges);
         labelMap.clear();
-        adjMap.clear();
+        _adjacentEdges.clear();
+
         for(int n = 0; n < numNodes; n++)
         {
-            color[n] = WHITE;
             labelMap.put(nodes[n], n);
+
+            color[n] = WHITE;
+
+            int[] adj = g.getAdjacentEdgeIndicesArray(nodes[n], true, false, true);
+            if(adj == null)
+            {
+                adj = new int[0];
+            }
+            _adjacentEdges.add(adj);
         }
 
+        _initEdges();
+        
         pathCount = 0;
-
+        notCounted = 0;
+        
         for(int s=0; s < sources.length; s++)
         {
             int sourceNode = sources[s];
-            koNode = sourceNode;
+
+            _initIsAffected(sourceNode);
 
             if(!labelMap.containsKey(sourceNode))
             {
@@ -119,12 +155,17 @@ public class DFSPath
             color[l] = GREY; // the source node is part of every path
             
             int depth = 0;
-            int[] adj = _getAdjacentEdges(sourceNode);
+            int[] adj = _getAdjacentEdges(l);
             for(int e=0; e < adj.length; e++)
             {
-                dfsVisit(adj[e], sourceNode, depth, maxDepth);
+                int edgeLabel = _edgeLabelMap.get(adj[e]);
+                dfsVisit(adj[e], edgeLabel, sourceNode, depth, maxDepth);
             }
             color[l] = WHITE; // unmark the source.
+
+            System.out.println("DFSPath finished: " + sourceNode + " total paths = "
+                               + pathCount + ". Paths not counted = " +
+                               notCounted);
         }
 
         result.setPathCount(pathCount);
@@ -136,14 +177,15 @@ public class DFSPath
     /**
      * 
      */
-    protected void dfsVisit(int edge, int source, int depth, int maxDepth) 
+    protected void dfsVisit(int edge, int edgeLabel,
+                            int source, int depth, int maxDepth) 
     {
         int target;
         State dir;
 
         // how to return the dir from _getRelativeTarget
-        int s = g.getEdgeSourceIndex(edge);
-        int t = g.getEdgeTargetIndex(edge);
+        int s = _edges[edgeLabel][SOURCE];
+        int t = _edges[edgeLabel][TARGET];
 
         if(source == s)
         {
@@ -177,23 +219,28 @@ public class DFSPath
          * If constraints satisfied, then "pathCount" identifies a path from
          * the knockout to "target".
          */
-        if(isAffected(target) && isProteinDNA(edge))
+        if(isAffected(tLabel) && isProteinDNA(edge))
         { 
             target2pathMap.addPath(target, pathCount);
             pathCount++;
         }
+        else
+        {
+            notCounted += 1;
+        }
         
         if(depth < maxDepth)
         {
-            int[] adj = _getAdjacentEdges(target);
+            int[] adj = _getAdjacentEdges(tLabel);
 
             for(int e=0; e < adj.length; e++)
             {
-                int neighbor = _getRelativeTarget(adj[e], target);
-                int l = labelMap.get(neighbor);
-                if(color[l] != GREY)
+                int adjLabel = _edgeLabelMap.get(adj[e]);
+                int neighbor = _getRelativeTarget(adjLabel, target);
+                int nLabel = labelMap.get(neighbor);
+                if(color[nLabel] != GREY)
                 {
-                    dfsVisit(adj[e], target, depth, maxDepth);
+                    dfsVisit(adj[e], adjLabel, target, depth, maxDepth);
                 }
             }
         }
@@ -220,17 +267,57 @@ public class DFSPath
     }
 
     
-    protected boolean isAffected(int node)
+    protected boolean isAffected(int nodeLabel)
     {
-        return ig.expressionChanges(koNode, node);
+        return _affected.get(nodeLabel);
     }
 
 
-    private int _getRelativeTarget(int edge, int source)
+    /**
+     * Initialize the affected BitVector.
+     * The labelMap maps each node to an integer label, i (0<=i< numNodes)
+     * The i-th bit in "affected" is set if the gene corresponding to
+     * label, i, is affected by knocking out "knockoutNode".
+     */
+    private void _initIsAffected(int knockoutNode)
     {
-        int s = g.getEdgeSourceIndex(edge);
-        int t = g.getEdgeTargetIndex(edge);
+        _koNode = knockoutNode;
 
+        _affected.clear();
+        
+        for(int n = 0; n < nodes.length; n++)
+        {
+            int node = nodes[n];
+            
+            if(ig.expressionChanges(_koNode, node))
+            {
+                _affected.set(labelMap.get(node));
+            }
+        }
+    }
+
+    private void _initEdges()
+    {
+        int[] edges = g.getEdgeIndicesArray();
+
+        _edges = new int[edges.length][2];
+        _edgeLabelMap = new OpenIntIntHashMap(edges.length);
+        
+        for(int x=0; x < edges.length; x++)
+        {
+            int e= edges[x];
+            _edgeLabelMap.put(e, x);
+            _edges[x][SOURCE] = g.getEdgeSourceIndex(e);
+            _edges[x][TARGET] = g.getEdgeTargetIndex(e);
+        }
+    }
+
+    
+    private int _getRelativeTarget(int edgeLabel, int source)
+    {
+        int s = _edges[edgeLabel][SOURCE];
+        int t = _edges[edgeLabel][TARGET];
+        
         if(source == s)
         {
             return t;
@@ -243,71 +330,16 @@ public class DFSPath
         {
             // should not get here
             System.err.println("ERROR: _getRelativeTarget: " + source 
-                               + " is not an endpoint of " + edge);
+                               + " is not an endpoint of edge labeled:" + edgeLabel);
             return t;
         }
     }
 
-    private int[] _getAdjacentEdges(int node)
+    private int[] _getAdjacentEdges(int nodeLabel)
     {
-
-        // cache array of adjacent edges because getAdjacenctEdgeIndicesArray()
-        // is an expensive GINY operation.
-        if(adjMap.containsKey(node))
-        {
-            return (int[]) adjMap.get(node);
-        }
-        else
-        {
-            /* include undirected edges = true
-             * include incoming edges = false
-             * include outgoing edges = true
-             */
-            int[] adj = g.getAdjacentEdgeIndicesArray(node, true, false, true);
-            
-            if(adj == null)
-            {
-                adj = new int[0];
-            }
-            
-            adjMap.put(node, adj);
-            
-            return adj;
-        }
+        return (int[]) _adjacentEdges.get(nodeLabel);
     }
 
-    /*
-    private int[] _getReachableNeighbors(int node)
-    {
-        // include undirected and outgoing edges
-        int[] adj = g.getAdjacentEdgeIndicesArray(node, true, false, true);
-        int[] neighbors;
-        if(adj != null)
-        {
-            neighbors = new int[adj.length];
-
-            for(int e=0; e < adj.length; e++)
-            {
-                int src = g.getEdgeSourceIndex(adj[e]);
-                int tgt = g.getEdgeTargetIndex(adj[e]);
-                if(node == src)
-                {
-                    neighbors[e] = tgt;
-                }
-                else
-                {
-                    neighbors[e] = src;
-                }
-            }
-        }
-        else
-        {
-            neighbors = new int[0];
-        }
-        
-        return neighbors;
-    }
-    */
     void trace()
     {
 
@@ -327,23 +359,6 @@ public class DFSPath
             return "none";
         }
     }
-
-    /*
-    boolean checkPred(int[][] expected)
-    {
-        return check(expected, pred);
-    }
-
-    boolean checkDiscovery(int[][] expected)
-    {
-        return check(expected, dt);
-    }
-
-    boolean checkFinish(int[][] expected)
-    {
-        return check(expected, ft);
-    }
-    */
 
     private boolean check(int[][] expected, int[] data)
     {

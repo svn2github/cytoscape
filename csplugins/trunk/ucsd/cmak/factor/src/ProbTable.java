@@ -22,6 +22,21 @@ public class ProbTable
         _uniqueMax = false;
     }
 
+    /**
+     *
+     *
+     * @param
+     * @return a copy of the probability array of this table.
+     * @throws
+     */
+    double[] currentProbs()
+    {
+        double[] d = new double[_probs.length];
+        System.arraycopy(_probs, 0, d, 0, _probs.length);
+
+        return d;
+    }
+    
     public void init(double[] p)
     {
         System.arraycopy(p, 0, _probs, 0, p.length);
@@ -55,9 +70,13 @@ public class ProbTable
         {
             sum += _probs[x];
         }
-        for(int x=0, n=_probs.length; x < n; x++)
+
+        if(sum != 0)
         {
-            _probs[x] = _probs[x]/sum;
+            for(int x=0, n=_probs.length; x < n; x++)
+            {
+                _probs[x] = _probs[x]/sum;
+            }
         }
     }
 
