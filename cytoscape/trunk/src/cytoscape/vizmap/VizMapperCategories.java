@@ -46,19 +46,19 @@ public class VizMapperCategories implements AttributeMapperCategories {
     //------------------------------------------------------------------
 
     public Color getNodeFillColor(Map attrBundle, AttributeMapper mapper) {
-	return (Color)mapper.getRangeValue(attrBundle,NODE_FILL_COLOR);
+	return (Color)getRangeValue(attrBundle, mapper, NODE_FILL_COLOR);
     }
 
     public Color getNodeBorderColor(Map attrBundle, AttributeMapper mapper) {
-	return (Color)mapper.getRangeValue(attrBundle,NODE_BORDER_COLOR);
+	return (Color)getRangeValue(attrBundle, mapper, NODE_BORDER_COLOR);
     }
     
     public LineType getNodeBorderLineType(Map attrBundle, AttributeMapper mapper) {
-        return (LineType)mapper.getRangeValue(attrBundle,NODE_BORDER_LINETYPE);
+        return (LineType)getRangeValue(attrBundle, mapper, NODE_BORDER_LINETYPE);
     }
 
     public double getNodeHeight(Map attrBundle, AttributeMapper mapper) {
-	Double d = (Double)mapper.getRangeValue(attrBundle,NODE_HEIGHT);
+	Double d = (Double)getRangeValue(attrBundle, mapper, NODE_HEIGHT);
 	if (d == null) {
 	    return 0;
 	} else {
@@ -67,7 +67,7 @@ public class VizMapperCategories implements AttributeMapperCategories {
     }
 
     public double getNodeWidth(Map attrBundle, AttributeMapper mapper) {
-	Double d = (Double)mapper.getRangeValue(attrBundle,NODE_WIDTH);
+	Double d = (Double)getRangeValue(attrBundle, mapper, NODE_WIDTH);
 	if (d == null) {
 	    return 0;
 	} else {
@@ -76,7 +76,7 @@ public class VizMapperCategories implements AttributeMapperCategories {
     }
 
     public byte getNodeShape(Map attrBundle, AttributeMapper mapper) {
-	Byte b = (Byte)mapper.getRangeValue(attrBundle,NODE_SHAPE);
+	Byte b = (Byte)getRangeValue(attrBundle, mapper, NODE_SHAPE);
 	if (b == null) {
 	    return 0;
 	} else {
@@ -86,7 +86,7 @@ public class VizMapperCategories implements AttributeMapperCategories {
 
 
     public Color getEdgeColor(Map attrBundle, AttributeMapper mapper) {
-	return (Color)mapper.getRangeValue(attrBundle,EDGE_COLOR);
+	return (Color)getRangeValue(attrBundle, mapper, EDGE_COLOR);
     }
 
     public Color getBGColor(AttributeMapper mapper) {
@@ -94,19 +94,46 @@ public class VizMapperCategories implements AttributeMapperCategories {
     }
 
     public LineType getEdgeLineType(Map attrBundle, AttributeMapper mapper) {
-	return (LineType)mapper.getRangeValue(attrBundle,EDGE_LINETYPE);
+	return (LineType)getRangeValue(attrBundle, mapper, EDGE_LINETYPE);
     }
 
-    public Arrow getEdgeSourceDecoration(Map attrBundle,
-					 AttributeMapper mapper) {
-	return (Arrow)mapper.getRangeValue(attrBundle,EDGE_SOURCE_DECORATION);
+    public Arrow getEdgeSourceDecoration(Map attrBundle,AttributeMapper mapper) {
+	return (Arrow)getRangeValue(attrBundle, mapper, EDGE_SOURCE_DECORATION);
     }
 
-    public Arrow getEdgeTargetDecoration(Map attrBundle,
-						AttributeMapper mapper) {
-	return (Arrow)mapper.getRangeValue(attrBundle,EDGE_TARGET_DECORATION);
+    public Arrow getEdgeTargetDecoration(Map attrBundle, AttributeMapper mapper) {
+	return (Arrow)getRangeValue(attrBundle, mapper, EDGE_TARGET_DECORATION);
     }
-
+    
+    /**
+     * This helper method first checks for a data attribute with the same name
+     * as a visual attribute name. If found and it has a String value, that value
+     * is parsed and returned as the visual attribute value. Otherwise, delegates to
+     * the AttributeMapper argument.
+     */
+    public Object getRangeValue(Map attrBundle, AttributeMapper mapper,
+                                Integer rangeAttribute) {
+        String propName = (String)getPropertyNamesMap().get(rangeAttribute);
+        if (propName == null || attrBundle == null) {
+            return mapper.getRangeValue(attrBundle, rangeAttribute);
+        }
+        Object propVal = attrBundle.get(propName);
+        if (propVal == null) {
+            return mapper.getRangeValue(attrBundle, rangeAttribute);
+        }
+        if ( !(propVal instanceof String) ) {
+            System.err.println("Unexpected data attribute value:");
+            System.err.println("    " + propName + " = " + propVal);
+            System.err.println("    Expected a String, class = " + propVal.getClass() );
+            return mapper.getRangeValue(attrBundle, rangeAttribute);
+        }
+        Object returnVal = parseRangeAttributeValue(rangeAttribute, (String)propVal);
+        if (returnVal == null) {
+            return mapper.getRangeValue(attrBundle, rangeAttribute);
+        } else {
+            return returnVal;
+        }
+    }
     //------------------------------------------------------------------
 
     public Map getInitialDefaults() {
