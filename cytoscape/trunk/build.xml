@@ -46,7 +46,7 @@
     <property name="zip_release.dir" value="zip_release"/>
 
     <!-- Mac OS X Application Directory -->
-    <property name="mac_app.dir" value="Cytoscape.app"/>
+    <property name="mac_app.dir" value="${release.dir}/Cytoscape.app"/>
 
     <!-- ======================================================= -->
     <!-- Cytoscape ClassPath definition                          -->
@@ -462,29 +462,29 @@
 
 
     <!-- ======================================================= -->
-    <!-- Create Mac OS X Application                             -->
-    <!-- Uses the Mac OS X Jar Bundler                           -->
-    <!-- Information available at:  http://developer.apple.com/
-            documentation/Java/Conceptual/Jar_Bundler/           -->
-    <!-- Questions?  email:  cerami@cbio.mskcc.org	             -->
+    <!-- Create Mac OS X Application Bundle                      -->
+    <!-- Questions?  email:  cerami@cbio.mskcc.org               -->
     <!-- ======================================================= -->
-    <target name="mac" depends="compile, jar"
-        description="Creates a Mac-specific application via the Mac OS X Jar Bundler.">
+    <target name="mac" depends="release"
+        description="Creates a Mac-specific application in an Application Bundle directory.">
         <delete dir="${mac_app.dir}"/>
         <mkdir dir="${mac_app.dir}"/>
         <copy todir="${mac_app.dir}">
             <fileset dir="tools/mac_template"/>
         </copy>
-        <copy todir="${mac_app.dir}/Contents/Resources/Java">
-            <fileset dir="${lib.dir}">
-                <include name="*.jar"/>
-            </fileset>
-        </copy>
-        <copy todir="${mac_app.dir}/Contents/Resources/Java">
-            <fileset dir="${build.dir}">
-                <include name="cytoscape.jar"/>
-            </fileset>
-        </copy>
+
+        <!-- Create a symbolic link to the plugin directory -->
+        <exec executable="ln" dir="${mac_app.dir}">
+            <arg line="-s ../plugins plugins"/>
+        </exec>
+
+        <!-- Create a symbolic link to the Cytoscape JAR in the parent directory -->
+        <!-- This way there is only one cytoscape.jar to update  -->
+        <exec executable="ln" dir="${mac_app.dir}/Contents/Resources/Java">
+            <arg line="-s ../../../../cytoscape.jar cytoscape.jar"/>
+        </exec>
+
+        <move file="${mac_app.dir}/mac.jar" todir="${release.dir}/plugins"/>
 
         <!-- Set Files to executable -->
         <chmod
@@ -493,10 +493,8 @@
         <chmod file="${mac_app.dir}/Contents/Info.plist" perm="+x"/>
         <chmod file="${mac_app.dir}/Contents/PkgInfo" perm="+x"/>
 
-        <java classname="cytoscape.util.MacAppConfig"
-            classpathref="classpath" fork="true">
-        </java>
-
-        <echo message="Mac OS X App is now ready.  See Cytoscape.app"/>
+        <echo message="Mac OS X App is now ready. See Cytoscape.app in release directory."/>
+        <echo message="The release directory should be renamed to Cytoscape2.0, placed in a"/>
+        <echo message="disk image (.dmg, created by Disk Utility) and zipped up for release."/>
     </target>
 </project>

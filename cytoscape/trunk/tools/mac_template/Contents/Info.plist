@@ -24,9 +24,9 @@
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
 			<key>LSIsAppleDefaultForType</key>
-			<true/>
+			<true />
 			<key>LSTypeIsPackage</key>
-			<true/>
+			<true />
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
@@ -44,9 +44,9 @@
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
 			<key>LSIsAppleDefaultForType</key>
-			<true/>
+			<true />
 			<key>LSTypeIsPackage</key>
-			<true/>
+			<true />
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
@@ -70,10 +70,11 @@
 		<key>JVMVersion</key>
 		<string>1.4+</string>
                 <key>Arguments</key>
-		<string>--JLD  $JAVAROOT/plugins</string>
+		<string>--JLD $APP_PACKAGE/plugins</string>
 		<key>ClassPath</key>
-			<JAR_ARRAY>
-			</JAR_ARRAY>
+			<array>
+                        <string>$JAVAROOT/cytoscape.jar</string>
+                        </array>
 		<key>Properties</key>
 		<dict>
 			<key>apple.awt.brushMetalLook</key>
@@ -86,7 +87,7 @@
 		<key>VMOptions</key>
 		<array>
 			<string>-Xms19M</string>
-			<string>-Xmx400M</string>
+			<string>-Xmx512M</string>
 		</array>
 	</dict>
 </dict>
