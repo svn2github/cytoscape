@@ -43,7 +43,7 @@ public class GraphTest
          " edge " + edge + " with source " + graph.sourceNode(edge) +
          " and target " + graph.targetNode(edge) + "."); }
     System.out.println();
-    System.out.println("All adjacent edges for node...");
+    System.out.println("All adjacent edges...");
     nodesEnum = graph.nodes();
     while (nodesEnum.numRemaining() > 0) {
       final int node = nodesEnum.nextInt();
@@ -54,7 +54,7 @@ public class GraphTest
         System.out.print(edge + " "); }
       System.out.println(); }
     System.out.println();
-    System.out.println("All undirected adjacent edges for node...");
+    System.out.println("All undirected adjacent edges...");
     nodesEnum = graph.nodes();
     while (nodesEnum.numRemaining() > 0) {
       final int node = nodesEnum.nextInt();
@@ -66,7 +66,7 @@ public class GraphTest
       System.out.println(); }
     System.out.println();
     System.out.println
-      ("All undirected and incoming adjacent edges for node...");
+      ("All undirected and incoming adjacent edges...");
     nodesEnum = graph.nodes();
     while (nodesEnum.numRemaining() > 0) {
       final int node = nodesEnum.nextInt();
@@ -77,7 +77,7 @@ public class GraphTest
         System.out.print(edge + " "); }
       System.out.println(); }
     System.out.println();
-    System.out.println("All outgoing adjacent edges for node...");
+    System.out.println("All outgoing adjacent edges...");
     nodesEnum = graph.nodes();
     while (nodesEnum.numRemaining() > 0) {
       final int node = nodesEnum.nextInt();
@@ -88,7 +88,7 @@ public class GraphTest
         System.out.print(edge + " "); }
       System.out.println(); }
     System.out.println();
-    System.out.println("All outgoing and incoming adjacent edges for node...");
+    System.out.println("All outgoing and incoming adjacent edges...");
     nodesEnum = graph.nodes();
     while (nodesEnum.numRemaining() > 0) {
       final int node = nodesEnum.nextInt();
@@ -99,6 +99,22 @@ public class GraphTest
         System.out.print(edge + " "); }
       System.out.println(); }
     System.out.println();
+    for (int i = 0; i < nodes.length; i++)
+      if (i % 3 == 0) {
+        System.out.println("Removing node " + nodes[i] + "...");
+        graph.removeNode(nodes[i]); }
+    System.out.println();
+    System.out.println("All adjacent edges...");
+    nodesEnum = graph.nodes();
+    while (nodesEnum.numRemaining() > 0) {
+      final int node = nodesEnum.nextInt();
+      IntEnumerator adjEdges = graph.adjacentEdges(node, true, true, true);
+      System.out.print("For node " + node + ": ");
+      while (adjEdges.numRemaining() > 0) {
+        final int edge = adjEdges.nextInt();
+        System.out.print(edge + " "); }
+      System.out.println(); }
+    System.out.println();    
   }
 
 }
