@@ -40,6 +40,7 @@ import cytoscape.*;
 import cytoscape.view.*;
 import cytoscape.util.*;
 import giny.view.*;
+import giny.util.GraphPartition;
 import cytoscape.layout.*;
 
 import cern.colt.map.*;
@@ -131,9 +132,7 @@ public class RadialTreeLayoutAlgorithm extends AbstractLayout {
   private double RADIUSY;
   private double ROOTX;
   private double ROOTY;
-
-  private CyNetworkView view;
-  private CyNetwork network;
+  CyNetwork parent;
   OpenIntIntHashMap radialTreeVisited;
   int layoutStep;
 
@@ -157,42 +156,88 @@ public class RadialTreeLayoutAlgorithm extends AbstractLayout {
   public Object construct () {
     
 
-    view = networkView;
+    parent = ( CyNetwork )network;
+    List partions = GraphPartition.partition( parent );
+    Iterator i = partions.iterator();
+
+    double last_x = 0;
+    double last_y = 0;
+    double sum_x = 0;
+    double sum_y = 0;
+
+    double node_count = ( double )parent.getNodeCount();
+    node_count = Math.sqrt( node_count );
+    // now we know how many nodes on a side
+    // give each node 100 room
+    node_count *= 100;
+
+    double _x = 0;
+    double _y = 0;
+    double incr = 20;
+    boolean ones = false;
     
-    radialTreeVisited = new OpenIntIntHashMap( view.getNodeViewCount() );
+    double small_x = Double.MAX_VALUE;
+
+    while ( i.hasNext() ) {
+      int[] nodes = ( int[] )i.next();
+       if ( nodes.length == 0 ) {
+         continue;
+       }
+      network = parent.createGraphPerspective( nodes, parent.getConnectingEdgeIndicesArray( nodes ) );
+
+      //System.out.println( "Net size: "+network.getNodeCount()+ " parnet size: "+parent.getNodeCount() );
+
+      initialize();
+    
+      radialTreeVisited = new OpenIntIntHashMap( network.getNodeCount() );
   
-
-    // search all roots
-    int[] roots = getRoots();
-
-    TreeNode tree = getSpanningTree( roots);
+      // search all roots
+      int[] roots = getRoots();
+      TreeNode tree = getSpanningTree( roots);
         
-    if (null == tree) {
-      return null;
+      if (null == tree) {
+        return null;
+      }
+
+      double depth = tree.getDepth();
+      
+      double WIDTH = getCurrentSize().getWidth();
+      
+      ROOTX = WIDTH / 2.0;
+      RADIUSX = ROOTX / depth;
+      
+      double HEIGHT = getCurrentSize().getHeight();
+      ROOTY = HEIGHT / 2.0;
+      RADIUSY = ROOTY / depth;
+      
+      layoutTree0( tree);
+
+      move( sum_x, sum_y );
+      sum_x += currentSize.getWidth();
+
+      
+      if ( currentSize.getHeight() > last_y ) {
+        //System.out.println( "new y is: "+currentSize.getHeight() );
+        last_y = currentSize.getHeight();
+
+      }
+     
+
+      if ( sum_x > node_count ) {
+        sum_x = 0;
+        sum_y+= last_y;
+        last_y = 0;
+      }
+
     }
 
-    double depth = tree.getDepth();
-        
-    double WIDTH = getCurrentSize().getWidth();
-
-    ROOTX = WIDTH / 2.0;
-    RADIUSX = ROOTX / depth;
-        
-    double HEIGHT = getCurrentSize().getHeight();
-    ROOTY = HEIGHT / 2.0;
-    RADIUSY = ROOTY / depth;
-        
-   
-    layoutTree0( tree);
+      Iterator n = networkView.getNodeViewsIterator();
+      while ( n.hasNext() ) {
+        ( ( NodeView )n.next() ).setNodePosition( true );
+      }
 
 
-    Iterator nodes = networkView.getNodeViewsIterator();
-    while ( nodes.hasNext() ) {
-      ( ( NodeView )nodes.next() ).setNodePosition( true );
-    }
-
-
-    return tree;
+    return null;
 
   }
 
@@ -244,6 +289,7 @@ public class RadialTreeLayoutAlgorithm extends AbstractLayout {
         node.x = ROOTX + ((level * RADIUSX) * Math.cos(node.angle));
         node.y = ROOTY + ((level * RADIUSY) * Math.sin(node.angle));
 
+        //System.out.println( "placing node: "+node_index+" : "+network.getRootGraphNodeIndex( node_index ) );
         placeView( node_index, node.x, node.y);
 
         // Is it a parent node?
@@ -289,26 +335,26 @@ public class RadialTreeLayoutAlgorithm extends AbstractLayout {
   }
 
   private void placeView( int node_index, double x, double y) {
-    view.setNodeDoubleProperty( node_index, CyNetworkView.NODE_X_POSITION, x );
-    view.setNodeDoubleProperty( node_index, CyNetworkView.NODE_Y_POSITION, y );
+
+    //System.out.println( "Placeing: "+node_index );//+" network contains: "+network.containsNode( parent.getNode( node_index ), false ) );
+
+    networkView.setNodeDoubleProperty( node_index, CyNetworkView.NODE_X_POSITION, x );
+    networkView.setNodeDoubleProperty( node_index, CyNetworkView.NODE_Y_POSITION, y );
   }
 
   
 
   private int[] getRoots () {
     
-    // get the network, get the nodes
-    CyNetwork network = view.getNetwork();
     int[] nodes = network.getNodeIndicesArray();
+
+    //System.out.println( "roots: "+nodes.length );
 
     IntArrayList roots = new IntArrayList();
 
     for (int i = 0; i < nodes.length; i++) {
       
-      int[] in = network.getAdjacentEdgeIndicesArray( nodes[i], false, true, false );
-      int[] out = network.getAdjacentEdgeIndicesArray( nodes[i], false, false, true );
-
-      if ( in.length == 0 && out.length != 0 )
+      if ( network.getInDegree( nodes[i], false ) == 0 && network.getOutDegree( nodes[i], true ) != 0 )
         roots.add( nodes[i] );
     }
 
@@ -325,15 +371,14 @@ public class RadialTreeLayoutAlgorithm extends AbstractLayout {
   private TreeNode getSpanningTree ( int[] roots ) {
 
     // get the network, get the nodes
-    CyNetwork network = view.getNetwork();
     int[] nodes = network.getNodeIndicesArray();
-
+    //System.out.println( "spanning : "+nodes.length );
     TreeNode node;
 
     //if ( roots.length == 0 ) {
       // pick an arbitrary node
       
-    roots = view.getSelectedNodeIndices();
+    // roots = view.getSelectedNodeIndices();
     if ( roots.length == 0 ) {
       roots = new int[] {nodes[ (int )(nodes.length * Math.random()) ]};
     }
@@ -357,9 +402,10 @@ public class RadialTreeLayoutAlgorithm extends AbstractLayout {
 
     for ( int i = 0; i < children.length; i++ ) {
       
-      if ( radialTreeVisited.get( children[i] ) != 1 ) {
-        radialTreeVisited.put( children[i], 1 );
-        TreeNode childNode = new TreeNode( children[i] );
+      if ( radialTreeVisited.get( network.getRootGraphNodeIndex(children[i]) ) != 1 ) {
+        radialTreeVisited.put( network.getRootGraphNodeIndex( children[i] ), 1 );
+        //System.out.println( "construct TreeNode: "+network.getRootGraphNodeIndex(children[i]) );
+        TreeNode childNode = new TreeNode( network.getRootGraphNodeIndex(children[i]) );
         node.addChild(childNode);
       }
     }
