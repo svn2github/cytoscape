@@ -12,7 +12,7 @@ public class IntBTreeTest
     System.out.println
       ("Instantiated new IntBTree.");
     final int[] arr = new int[]
-      { 5, 8, 1, 3, 8, 3, 0, 9, 1, 2, 7, 3, 3, 0, 4, 3, 1, 3, 3 };
+      { 5, 8, 1, 3, 8, 3, 0, 9, 1, 7, 3, 3, 0, 4, 3, 1, 3, 3 };
     System.out.print
       ("My int[] is: { ");
     for (int i = 0; i < arr.length - 1; i++)
@@ -38,8 +38,8 @@ public class IntBTreeTest
       System.out.println
         ("The count of integer " + countThese[i] + " is " +
          tree.count(countThese[i]) + ".");
-    final int[] xMins = new int[] { Integer.MIN_VALUE, -23, 1 };
-    final int[] xMaxs = new int[] { 3, 99, 2 };
+    final int[] xMins = new int[] { Integer.MIN_VALUE, -23, 1, 3, 2, 3, 8, 4 };
+    final int[] xMaxs = new int[] { 3, 99, 2, Integer.MAX_VALUE, 6, 4, 8, 4 };
     for (int i = 0; i < xMins.length; i++) {
       System.out.print("In range [" + xMins[i] + ", " + xMaxs[i] + "]: ");
       iter = tree.searchRange(xMins[i], xMaxs[i]);
