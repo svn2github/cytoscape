@@ -12,7 +12,8 @@ JC=javac
 OBJS = GroupWiseLayouter.class GroupingAlgorithm.class \
        GroupWiseNodeGrouper.class DegreeGrouper.class \
        Subgraph.class EmbeddedLayouter.class \
-       ReduceEquivalentNodes.class HierarchicalLayoutDialog.class
+       ReduceEquivalentNodes.class HierarchicalLayoutDialog.class \
+       RotateLayoutHelper.class
 
 
 default: objs 
