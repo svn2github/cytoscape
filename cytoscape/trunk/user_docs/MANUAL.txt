@@ -404,24 +404,26 @@ Through the use of the Combination filter, it is therefore possible to
 construct arbitrarily complex selection queries.
 
 FOR EXAMPLE:
-Load the sample network (sampleData/gal1-20.pval) and expression data
-set (sampleData/galFiltered.gml) as described in the preceding
-sections.  Launch the Filters dialog from the menu bar and choose the
-Topology1 tab.  Specify "3" as the minimum number of neighbors, "1" as
-the depth, and choose "No" for the option "Apply Filter Until Stable
-Point".  Pressing "Select" highlights the 64 nodes in the network with
-more than 3 immediate neighbors.  Increase the depth to "2" and press
-"Select" again.  This will select 117 additional nodes that lack 3
-immediate neighbors but that have 3 neighbors within a distance of 2
-edges away.  Next, hide all of the nonselected nodes using the menu
-command View -> Node Selection -> Invert followed by View -> Node
-Selection -> Hide.  As indicated in the message panel on the bottom
-right of the main Cytoscape window, this operation takes the network
-from 329 nodes / 357 edges to 256 nodes / 299 edges.
+Load the sample network (sampleData/gal1-20.pval) from File -> Load -> GML.
+Then load the expression data set (sampleData/galFiltered.gml) as described 
+in the preceding sections (File -> Load -> Expression Matrix File).  
+Launch the Filters dialog from the menu bar and choose the Topology1 tab.  
+Specify "3" as the minimum number of neighbors, "1" as the depth, and 
+choose "No" for the option "Apply Filter Until Stable Point".  
+Pressing "Select" highlights the 64 nodes in the network with more than 
+3 immediate neighbors.  Increase the depth to "2" and press "Select" again.
+This will select 117 additional nodes that lack 3 immediate neighbors 
+but that have 3 neighbors within a distance of 2 edges away.  Next, hide 
+all of the nonselected nodes using the menu command View -> Node Selection 
+-> Invert followed by View -> Node Selection -> Hide.  As indicated in 
+the message panel on the bottom right of the main Cytoscape window, this 
+operation takes the network from 329 nodes / 357 edges to 256 nodes / 299 edges.
 
 ######################################################################
 10. FINDING ACTIVE SUBSYSTEMS ########################################
 ######################################################################
+
+Note: Only Linux
 
 In model organisms such as yeast, large databases of protein-protein
 and protein-DNA interactions have become an extremely important
