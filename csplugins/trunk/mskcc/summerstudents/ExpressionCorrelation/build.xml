@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<!-- build.xml - Build file for Expression correlation plugin -->
+<project name="ExpressionCorrelation" default="jar" basedir=".">
+
+	<!-- Name of Plug In -->
+	<!-- Change this to the name of your Plug In -->
+	<!-- The name is used to create the plugin JAR file -->
+	<property name="plugin.name" value="ExpressionCorrelation"/>
+
+  	<!-- The directory containing source code -->
+  	<property name="src.dir" value="src"/>
+
+	<!--  The directory containing library jar files -->
+	<property name="lib.dir" value="../../../../cytoscape/lib"/>
+
+  	<!-- Temporary build directories -->
+ 	<property name="build.dir" value="build"/>
+  	<property name="build.classes" value="${build.dir}/classes"/>
+
+	<!-- Global "magic" property for <javac> -->
+	<property name="build.compiler" value="modern"/>
+
+	<!-- Classpath with all lib JAR Files and all Cytoscape Core classes -->
+	<path id="classpath">
+		<pathelement path="${build.classes}"/>
+		<pathelement path="../../../../cytoscape/build/classes"/>
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar"/>
+		</fileset>
+	</path>
+
+  	<!-- Target to create the build directories prior to compilation -->
+  	<target name="prepare">
+    		<mkdir dir="${build.dir}"/>
+    		<mkdir dir="${build.classes}"/>
+  	</target>
+
+	<!--  Target to clean out all directories -->
+  	<target name="clean" description="Removes all generated files.">
+    		<delete dir="${build.dir}"/>
+  	</target>
+
+	<!--  Target to compile all Plug In Code -->
+  	<target name="compile" depends="prepare"
+		description="Compiles all PlugIn source code.">
+    		<javac srcdir="${src.dir}" destdir="${build.classes}" nowarn="on" source="1.4">
+			<include name="org/**"/>
+			<classpath refid="classpath"/>
+		</javac>
+	</target>
+
+	<!--  Create PlugIn Jar File -->
+   	<target name="jar" depends="compile" description="Creates PlugIn Jar File.">
+	   <jar destfile="${build.dir}/${plugin.name}.jar">
+			<fileset dir="${build.classes}"/>
+		</jar>
+		<echo message="${plugin.name}.jar is now complete.  It is located in build/ directory"/>
+	</target>
+
+	<!-- Target to Run JavaDoc -->
+	<target name="doc" description="Runs JavaDoc.">
+		<javadoc destdir="javadoc" source="1.4" classpathref="classpath"
+		link="http://java.sun.com/j2se/1.4.2/docs/api/">
+
+		<packageset dir="${src.dir}">
+			<include name="csplugins/**"/>
+		</packageset>
+		</javadoc>
+	</target>
+</project>
