@@ -374,10 +374,11 @@ public class MCODEResultsDialog extends JDialog {
 						//this call creates a WindowOpened event, which is caught by
 						//cytoscape.java, enabling that class to manage the set of windows
 						//and quit when the last window is closed
-						CyWindow newWindow = new CyWindow(cyWindow.getCytoscapeObj(),
-						        newNetwork, title);
+                        Cytoscape.createNetworkView(newNetwork, title);
+						//CyWindow newWindow = new CyWindow(cyWindow.getCytoscapeObj(),
+						//        newNetwork, title);
 						//layout new complex and fit it to window
-						PGraphView view = (PGraphView) newWindow.getView();
+						PGraphView view = (PGraphView) Cytoscape.getCurrentNetworkView();
 						//randomize node positions before layout so that they don't all layout in a line
 						//(so they don't fall into a local minimum for the SpringEmbedder)
 						//If the SpringEmbedder implementation changes, this code may need to be removed
@@ -389,9 +390,7 @@ public class MCODEResultsDialog extends JDialog {
 						}
 						SpringEmbeddedLayouter lay = new SpringEmbeddedLayouter(view);
 						lay.doLayout();
-						newWindow.showWindow(500, 500);
-						view.getCanvas().getCamera().animateViewToCenterBounds(
-						        view.getCanvas().getLayer().getGlobalFullBounds(), true, 400l);
+                        view.fitContent();
 					} catch (Exception e2) {
 						System.err.println("Exception when creating new window");
 						e2.printStackTrace();
