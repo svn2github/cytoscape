@@ -80,7 +80,8 @@ public final class MinIntHeap
 
   /**
    * Tosses a new element onto the heap.  The heap will be become
-   * unordered after this operation; this operation takes constant time.
+   * unordered after this operation; this operation takes constant
+   * [amortized] time.
    */
   public final void toss(int x)
   {
@@ -116,7 +117,12 @@ public final class MinIntHeap
    * this operation, taking O(log(N)) time where N is the number of
    * elements in this heap (average time is actually constant regardless of
    * size of heap).  If this heap is not ordered when this operation is called,
-   * adds specified element to heap in constant time.
+   * adds specified element to heap in constant time.<p>
+   * If the underlying data structure is not large enough to hold an
+   * additional element, the structure is made larger; the process of making
+   * the underlying structure larger takes O(N) time; the enlargening
+   * operation doubles the size of the underlying structure.  Therefore,
+   * the time complexities described above are amortized time complexities.
    */
   public final void insert(int x)
   {
