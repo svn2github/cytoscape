@@ -38,7 +38,7 @@ import java.util.*;
 
 import giny.model.*;
 import giny.view.*;
-
+import cytoscape.Cytoscape;
 import cytoscape.data.FlagFilter;
 import cytoscape.view.FlagAndSelectionHandler;
 import cytoscape.unitTests.AllTests;
@@ -65,7 +65,7 @@ public FlagAndSelectionHandlerTest (String name)
 //------------------------------------------------------------------------------
 public void setUp () throws Exception
 {
-    RootGraph rootGraph = new cytoscape.giny.CytoscapeRootGraph();
+  RootGraph rootGraph = Cytoscape.getRootGraph();
     node1 = rootGraph.getNode(rootGraph.createNode());
     node2 = rootGraph.getNode(rootGraph.createNode());
     edge1 = rootGraph.getEdge(rootGraph.createEdge(node1, node2));

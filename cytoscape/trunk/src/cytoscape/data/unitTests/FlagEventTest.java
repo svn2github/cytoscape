@@ -37,7 +37,7 @@ import java.io.*;
 import java.util.*;
 
 import giny.model.*;
-
+import cytoscape.Cytoscape;
 import cytoscape.data.FlagFilter;
 import cytoscape.data.FlagEvent;
 import cytoscape.unitTests.AllTests;
@@ -73,7 +73,7 @@ public void testConstants() throws Exception {
 }
 //------------------------------------------------------------------------------
 public void testCtor () throws Exception { 
-    RootGraph rootGraph = new cytoscape.giny.CytoscapeRootGraph();
+  RootGraph rootGraph = Cytoscape.getRootGraph();
     Node node1 = rootGraph.getNode(rootGraph.createNode());
     Node node2 = rootGraph.getNode(rootGraph.createNode());
     Edge edge1 = rootGraph.getEdge(rootGraph.createEdge(node1, node2));
