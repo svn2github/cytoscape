@@ -10,6 +10,7 @@ import javax.swing.table.*;
 import java.io.*;
 
 import cytoscape.*;
+import cytoscape.util.*;
 
 public class FileLoaderUI 
   extends 
@@ -178,15 +179,19 @@ public class FileLoaderUI
     
 
     if ( e.getSource() == browse ) {
-      File currentDirectory = Cytoscape.getCytoscapeObj().getCurrentDirectory();
-      JFileChooser chooser = new JFileChooser(currentDirectory);
-      if ( chooser.showOpenDialog( Cytoscape.getDesktop() ) == 
-           chooser.APPROVE_OPTION) {
-        currentDirectory = chooser.getCurrentDirectory();
-        Cytoscape.getCytoscapeObj().setCurrentDirectory(currentDirectory);
-        file = chooser.getSelectedFile();
+     
+      // get the file name
+      final String name;
+      try {
+        name = FileUtil.getFile( "Load Spreadsheet",
+                                 FileUtil.LOAD,
+                                 new cytoscape.util.CyFileFilter[] {} ).toString();
+      } catch ( Exception exp ) {
+        // this is because the selection was canceled
+        return;
       }
-      fileField.setText( file.toString() );
+      fileField.setText( name );
+      updatePreview();
     } 
 
    
@@ -195,6 +200,7 @@ public class FileLoaderUI
         file = new File( fileField.getText() );
       } catch ( Exception ex ) {
         System.out.println( "File Field error" );
+        updatePreview();
       }
     }
 

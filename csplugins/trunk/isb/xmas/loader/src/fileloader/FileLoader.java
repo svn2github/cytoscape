@@ -176,8 +176,8 @@ public class FileLoader {
                       
         } else if ( entry.getName().endsWith( "sif" ) ) {
           // create the sif file reader
-          reader = new InteractionsReader( Cytoscape.getCytoscapeObj().getBioDataServer(), 
-                                           Semantics.getDefaultSpecies(Cytoscape.getCurrentNetwork(), Cytoscape.getCytoscapeObj() ),
+          reader = new InteractionsReader( Cytoscape.getBioDataServer(), 
+                                           CytoscapeInit.getDefaultSpeciesName(),
                                            entry_buffer.toString(), 
                                            true);
                       

@@ -10,7 +10,7 @@ import cytoscape.view.*;
 import cytoscape.data.readers.*;
 import cytoscape.plugin.*;
 import cytoscape.data.*;
-
+import cytoscape.util.*;
 import giny.model.*;
 
 public class LoaderPlugin extends CytoscapePlugin {
@@ -21,7 +21,7 @@ public class LoaderPlugin extends CytoscapePlugin {
 
   protected void initialize () {
 
-    String[] args = Cytoscape.getCytoscapeObj().getConfiguration().getArgs();
+    String[] args = CytoscapeInit.getArgs();
     for ( int i = 0; i < args.length; ++i ) {
       if ( args[i].startsWith( "-ss" ) ) {
         i++;
@@ -54,16 +54,18 @@ public class LoaderPlugin extends CytoscapePlugin {
           // Do this in the GUI Event Dispatch thread...
           SwingUtilities.invokeLater( new Runnable() {
               public void run() {
-                File file = null;
-                File currentDirectory = Cytoscape.getCytoscapeObj().getCurrentDirectory();
-                JFileChooser chooser = new JFileChooser(currentDirectory);
-                if ( chooser.showOpenDialog( Cytoscape.getDesktop() ) == 
-                     chooser.APPROVE_OPTION) {
-                  currentDirectory = chooser.getCurrentDirectory();
-                  Cytoscape.getCytoscapeObj().setCurrentDirectory(currentDirectory);
-                  file = chooser.getSelectedFile();
+
+                // get the file name
+                final String name;
+                try {
+                  name = FileUtil.getFile( "Load Project",
+                                           FileUtil.LOAD,
+                                           new CyFileFilter[] {} ).toString();
+                } catch ( Exception exp ) {
+                  // this is because the selection was canceled
+                  return;
                 }
-                FileLoader.loadCytoscape( file.toString() );
+                FileLoader.loadCytoscape( name );
                 Cytoscape.firePropertyChange( Cytoscape.ATTRIBUTES_CHANGED, null, null );
               }
             } ); } } ) );
@@ -75,16 +77,17 @@ public class LoaderPlugin extends CytoscapePlugin {
           // Do this in the GUI Event Dispatch thread...
           SwingUtilities.invokeLater( new Runnable() {
               public void run() {
-                File file = null;
-                File currentDirectory = Cytoscape.getCytoscapeObj().getCurrentDirectory();
-                JFileChooser chooser = new JFileChooser(currentDirectory);
-                if ( chooser.showOpenDialog( Cytoscape.getDesktop() ) == 
-                     chooser.APPROVE_OPTION) {
-                  currentDirectory = chooser.getCurrentDirectory();
-                  Cytoscape.getCytoscapeObj().setCurrentDirectory(currentDirectory);
-                  file = chooser.getSelectedFile();
+                // get the file name
+                final String name;
+                try {
+                  name = FileUtil.getFile( "save Project",
+                                           FileUtil.SAVE,
+                                           new CyFileFilter[] {} ).toString();
+                } catch ( Exception exp ) {
+                  // this is because the selection was canceled
+                  return;
                 }
-                FileLoader.saveCytoscape( file.toString() );
+                FileLoader.saveCytoscape( name );
                 Cytoscape.firePropertyChange( Cytoscape.ATTRIBUTES_CHANGED,null, null );
               }
             } ); } } ) );

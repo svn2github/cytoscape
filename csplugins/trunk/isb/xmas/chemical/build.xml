@@ -1,0 +1,213 @@
+<project name="chemical" default="chemical" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init-chemical">
+    <tstamp/>
+    <property name="chemical.Name" value="chemical"/>
+    <property name="chemical.name" value="chemical"/>
+    <property name="chemical.version" value="0.1"/>
+    <property name="chemical.year" value="200"/>
+
+    <echo message="Building ${chemical.name} version ${chemical.version}."/>
+
+    <!-- Inheritable properties -->
+    <property name="debug" value="on"/>
+    <property name="optimize" value="off"/>
+    <property name="deprecation" value="on"/>
+    <property name="nowarn" value="true"/>
+    <property name="fork" value="false"/>
+    <property name="chemical.root.dir" value="."/>
+    <property name="chemical.lib.dir" value="${chemical.root.dir}/lib"/>
+    <property name="cytoscape.lib.dir" value="${chemical.root.dir}/../../../../cytoscape/lib"/>
+    <property name="cytoscape.plugin.dir" value="${chemical.root.dir}/../../../../cytoscape/plugins"/>
+    <path id="project.class.path">
+      <pathelement path="${java.class.path}/"/>
+    </path>
+
+    <!-- Define the directories -->
+    <property name="chemical.root.dir" value="./"/>
+    <property name="chemical.src.dir" value="${chemical.root.dir}/src"/>
+    <property name="chemical.classes.dir" value="${chemical.root.dir}/classes"/>
+    <property name="chemical.javadoc.dir" value="${javadoc.dir}/chemical"/>
+    <property name="chemical.resources.dir" value="${chemical.root.dir}/resources"/>
+    <property name="chemical.manifest.dir" value="${chemical.root.dir}/manifest"/>
+    <property name="chemical.packages" value="chemical.*"/>
+    <!-- Subdirectory for test reports -->
+    <property name="chemical.tests.reports.dir" value="${chemical.root.dir}/reports/tests" />
+    <property name="cytoscape.lib" value="../../cytoscape/lib" />
+
+    <!-- Define the condition for compilation -->
+    <property name="cytoscape.jar" value="${chemical.lib.dir}/cytoscape.jar"/>
+    <property name="colt.jar" value="${chemical.lib.dir}/colt.jar"/>
+    
+
+    <condition property="cytoscape.present">
+      <and> 
+	  		<available file="${cytoscape.jar}"/> 
+				<available file="${colt.jar}"/> 
+		  </and>
+    </condition>
+
+    <!-- Define excludes for chemical compile and javadoc -->
+    <property name="chemical.excludes" value="**/notyet/*"/>
+    <property name="chemical.tests.excludes" value="**/notyet/*"/>
+    <property name="chemical.packages.excludes" value="**.test.*,**.notyet.*"/>
+
+    <path id="chemical.project.class.path">
+      <pathelement location="${chemical.classes.dir}"/>
+      <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/../plugins/filter.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/piccolo.jar"/>
+      <pathelement path="${project.class.path}/"/>
+    </path>
+
+   
+
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the chemical project                                           -->
+  <!-- =================================================================== -->
+  <target name="compile-chemical" depends="init-chemical"  >
+
+   <echo message=" COMPILE chemical "/>
+
+    <mkdir dir="${chemical.classes.dir}"/>
+    <javac srcdir="${chemical.src.dir}"
+           excludes="${chemical.excludes}"
+           classpathref="chemical.project.class.path"
+           destdir="${chemical.classes.dir}"
+           debug="${debug}"
+           nowarn="${nowarn}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the chemical.jar file                                           -->
+  <!-- =================================================================== -->
+  <target name="chemical" depends="compile-chemical"  >
+    <jar destfile="chemical.jar" manifest="${chemical.manifest.dir}/chemical.manifest">
+      <fileset
+        dir="${chemical.classes.dir}"
+        includes="**"/>
+      <fileset
+        dir="${chemical.root.dir}/lib"
+        includes="resources/**"/>
+      <fileset 
+        dir="${chemical.root.dir}/images"/>
+    </jar>
+    <copy todir="${chemical.lib.dir}" file="chemical.jar"/>
+    <copy todir="${cytoscape.plugin.dir}" file="chemical.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the chemical tests                                             -->
+  <!-- =================================================================== -->
+  <target name="compile-tests" depends="chemical"  >
+    <mkdir dir="${chemical.classes.dir}"/>
+    <javac srcdir="${chemical.src.dir}"
+           includes="**/test/*"
+           excludes="${chemical.tests.excludes}"
+           classpathref="chemical.project.class.path"
+           destdir="${chemical.classes.dir}"
+           debug="${debug}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the chemical-tests.jar file                                     -->
+  <!-- =================================================================== -->
+  <target name="tests" depends="compile-tests"  >
+    <jar jarfile="chemical-tests.jar"
+         basedir="${chemical.classes.dir}"
+         includes="**/test/*"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Build all jars                                                      -->
+  <!-- =================================================================== -->
+  <target name="all" depends="chemical"/>
+
+   <!-- =================================================================== -->
+  <!-- Run the Plugin                                                      -->
+  <!-- =================================================================== -->
+  <target name="run" depends="chemical" >
+     
+     <java classname="cytoscape.cytoscape" 
+           classpathref="chemical.project.class.path"
+           fork="true"/>
+           <arg line = "-y giny"/>
+           <arg line = "--JLD"/>
+           <arg line = "${chemical.lib.dir}/chemical.jar"/>
+           
+
+  </target>
+
+
+
+  <!-- =================================================================== -->
+  <!-- Runs the tests in chemical-tests.jar                                    -->
+  <!-- =================================================================== -->
+  <target name="runtests" depends="tests"  >
+    <mkdir dir="${chemical.tests.reports.dir}"/>
+    <junit
+       printsummary="yes"
+       haltonfailure="no"
+       dir="${chemical.classes.dir}"
+       maxmemory="1G"
+    >
+      <formatter type="plain" usefile="true" />
+      <classpath refid="chemical.project.class.path"/>
+      <!-- The junit task doesn't support 'if' so we test for JUnit here -->
+      <batchtest fork="yes" todir="${chemical.tests.reports.dir}" if="junit.present">
+        <fileset
+           dir="${chemical.classes.dir}"
+           includes="**/test/*"
+           excludes="${chemical.tests.excludes}"
+        />
+      </batchtest>
+    </junit>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the API documentation                                       -->
+  <!-- =================================================================== -->
+  <target name="docs" depends="init-chemical" >
+    <mkdir dir="${chemical.javadoc.dir}"/>
+    <javadoc packagenames="${chemical.packages}"
+             excludepackagenames="${chemical.packages.excludes}"
+             sourcepath="${chemical.src.dir}"
+             destdir="${chemical.javadoc.dir}"
+             classpathref="chemical.project.class.path"
+             author="true"
+             version="true"
+             use="true"
+             splitindex="true"
+             noindex="false"
+             windowtitle="${chemical.Name} API"
+             doctitle="${chemical.Name}"
+    />
+  </target>
+ 
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init-chemical">
+    <delete dir="${chemical.classes.dir}"/>
+    <delete file="chemical.jar"/>
+    <delete file="chemical-tests.jar"/>
+  </target>
+
+</project>
+
+<!-- End of file -->

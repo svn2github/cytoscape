@@ -153,8 +153,7 @@ public class EdgeAction {
                   TabbedBrowser nodeBrowser = new TabbedBrowser (objects,
                                                     network.getNetwork().getEdgeAttributes(),
                                                     new Vector(),
-                                                    Cytoscape.getCytoscapeObj().
-                                                    getConfiguration().getProperties().
+                                                    CytoscapeInit.getProperties().
                                                     getProperty("webBrowserScript",
                                                                  "noScriptDefined") ,
                                                     TabbedBrowser.BROWSING_NODES );

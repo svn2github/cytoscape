@@ -37,15 +37,7 @@ public class MacPlugin extends CytoscapePlugin implements ApplicationListener {
 
   public void handleOpenFile ( ApplicationEvent event ) {
     String file = event.getFilename();
-   
-    CyNetwork newNetwork = Cytoscape.createNetworkFromFile( file );
-    
-  
-    
-    if ( newNetwork.getNodeCount() < 500 ) {
-      Cytoscape.createNetworkView( newNetwork );
-    }
-        
+    Cytoscape.createNetworkFromFile( file );
   } 
  
 
@@ -57,7 +49,7 @@ public class MacPlugin extends CytoscapePlugin implements ApplicationListener {
   }
  
   public void handleQuit ( ApplicationEvent event ) {
-    Cytoscape.getCytoscapeObj().getParentApp().exit(0);
+    Cytoscape.exit();
   }
 
   public void handleReOpenApplication ( ApplicationEvent event ){
