@@ -333,22 +333,9 @@ public class CyMenus {
     mi = selectEdgesSubMenu.add(new SelectAllEdgesAction(networkView));
     mi = selectEdgesSubMenu.add(new DeSelectAllEdgesAction(networkView));
 
-    mi = selectNodesSubMenu.add(new SelectFirstNeighborsAction(networkView));
-    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK));
-
     // RHC Added Menu Items
     //selectNodesSubMenu.add(new GraphObjectSelectionAction(networkView));
-    menuBar.addAction( new GraphObjectSelectionAction( networkView ) );
     //editMenu.add( new SquiggleAction( networkView ) ); 
-    vizMenu.add( new BirdsEyeViewAction( networkView ) );
-    
-    menuBar.addAction( new AnimatedLayoutAction( networkView ) );
-    
-    vizMenu.add ( new BackgroundColorAction (networkView) );
-
-
-    selectNodesSubMenu.add(new AlphabeticalSelectionAction(networkView));
-    selectNodesSubMenu.add(new ListFromFileSelectionAction(networkView));
 
     mi = displayNWSubMenu.add(new NewWindowSelectedNodesOnlyAction(cyWindow));
     mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.SHIFT_MASK|ActionEvent.CTRL_MASK));
@@ -379,9 +366,8 @@ public class CyMenus {
 
     //fill the Visualization menu
     vizMenu.add( new BirdsEyeViewAction( networkView ) );
-    JMenu showExpressionData = new JMenu ("Show Expression Data" );
+    //JMenu showExpressionData = new JMenu ("Show Expression Data" );
   
-    
     vizMenu.add ( new BackgroundColorAction (networkView) );
     this.vizMenuItem = vizMenu.add(new SetVisualPropertiesAction(cyWindow));
     this.disableVizMapperItem = vizMenu.add(new ToggleVisualMapperAction(cyWindow, false));
