@@ -20,6 +20,8 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -109,8 +111,8 @@ public class RotationScaleLayoutAction extends CytoscapeAction
     final JCheckBox chx = new JCheckBox("Move Selected Nodes Only");
     chx.setBorder(new EmptyBorder(5, 5, 5, 5));
     if (noNodesSelected) chx.setEnabled(false);
-    chx.addChangeListener(new ChangeListener() {
-        public void stateChanged(ChangeEvent e) {
+    chx.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
           nativeGraph[0] = GraphConverter2.getGraphReference
             (128.0d, true, chx.isSelected());
           rotation[0] = new RotationLayouter(nativeGraph[0]);
