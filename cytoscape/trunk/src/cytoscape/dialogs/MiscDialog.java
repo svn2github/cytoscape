@@ -10,6 +10,7 @@ import java.io.*;
 import java.awt.Color;
 import java.awt.Polygon;
 import java.util.*;
+import java.net.URL;
 
 import javax.swing.*;
 
@@ -58,11 +59,14 @@ public class MiscDialog {
 	return h;
     }
 
-    public static ImageIcon[] getArrowIcons() {
+    public ImageIcon[] getArrowIcons() {
 	String p = getDialogImagePath();
 	if(p==null) return new ImageIcon [0];
 
 	ImageIcon [] arrowIcons = new ImageIcon [7];
+
+	// THIS SHOULD WORK!
+	System.out.println("Yo!: "+locateImage("arrow_delta.jpg"));
 	arrowIcons[0] = new ImageIcon(p+"arrow_delta.jpg", "DELTA");
 	arrowIcons[1] = new ImageIcon(p+"arrow_diamond.jpg", "DIAMOND");
 	arrowIcons[2] = new ImageIcon(p+"arrow_standard.jpg", "STANDARD");
@@ -105,7 +109,7 @@ public class MiscDialog {
 	return h;
     }
 
-    public static ImageIcon[] getShapeIcons() {
+    public ImageIcon[] getShapeIcons() {
 	String p = getDialogImagePath();
 	if(p==null) return new ImageIcon [0];
 
@@ -164,7 +168,7 @@ public class MiscDialog {
 	return h;
     }
 
-    public static ImageIcon[] getLineTypeIcons() {
+    public ImageIcon[] getLineTypeIcons() {
 	String p = getDialogImagePath();
 	if(p==null) return new ImageIcon [0];
 
@@ -201,5 +205,10 @@ public class MiscDialog {
     }
 
 
-
+    /**
+     * Get the image from the .jar file
+     */
+    private URL locateImage(String imageFilename) {
+	return this.getClass().getClassLoader().getResource(imageFilename);
+    }
 }
