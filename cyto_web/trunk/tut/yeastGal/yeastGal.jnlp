@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jnlp
-  codebase="http://cytoscape.org/new/tut/yeastGal/"
-  href="http://cytoscape.org/new/tut/yeastGal/yeastGal.jnlp">
+  codebase="http://cytoscape.org/tut/yeastGal/"
+  href="http://cytoscape.org/tut/yeastGal/yeastGal.jnlp">
   <information>
     <title>Cytoscape Tutorial #3</title>
     <vendor>Cytoscape.org</vendor>
@@ -24,21 +24,21 @@
     <argument>-p</argument>
     <argument>jar://projectFile</argument>
     <argument>--JLW</argument>
-    <argument>http://cytoscape.org/new/tut/common/yLayouts.jar</argument>
+    <argument>http://cytoscape.org/tut/common/yLayouts.jar</argument>
     <argument>--JLW</argument>
-    <argument>http://cytoscape.org/new/tut/common/layout.jar</argument>
+    <argument>http://cytoscape.org/tut/common/layout.jar</argument>
     <argument>--JLW</argument>
-    <argument>http://cytoscape.org/new/tut/common/jgraphLayout.jar</argument>
+    <argument>http://cytoscape.org/tut/common/jgraphLayout.jar</argument>
     <argument>--JLW</argument>
-    <argument>http://cytoscape.org/new/tut/common/HierarchicalLayout.jar</argument>
+    <argument>http://cytoscape.org/tut/common/HierarchicalLayout.jar</argument>
     <argument>--JLW</argument>
-    <argument>http://cytoscape.org/new/tut/common/control.jar</argument>
+    <argument>http://cytoscape.org/tut/common/control.jar</argument>
     <argument>--JLW</argument>
-    <argument>http://cytoscape.org/new/tut/common/diff.jar</argument>
+    <argument>http://cytoscape.org/tut/common/diff.jar</argument>
     <argument>--JLW</argument>
-    <argument>http://cytoscape.org/new/tut/common/filter.jar</argument>
+    <argument>http://cytoscape.org/tut/common/filter.jar</argument>
     <argument>--JLW</argument>
-    <argument>http://cytoscape.org/new/tut/common/SigAttributes.jar</argument>
+    <argument>http://cytoscape.org/tut/common/SigAttributes.jar</argument>
     <argument>-s</argument>
     <argument>Saccharomyces cerevisiae</argument>
     <argument>-b</argument>
