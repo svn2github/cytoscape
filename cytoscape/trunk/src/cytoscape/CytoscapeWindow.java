@@ -549,6 +549,7 @@ protected JMenuBar createMenuBar ()
   viewEdgeSubMenu.add(new HideSelectedEdgesAction());
   JMenu selectMenu = new JMenu("Select");
   viewMenu.add(selectMenu);
+  selectMenu.add (new EdgeTypeDialogAction ());
   mi = selectMenu.add (new SelectFirstNeighborsAction ());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_F, ActionEvent.CTRL_MASK));
   selectMenu.add (new AlphabeticalSelectionAction ());
@@ -1326,7 +1327,7 @@ protected class GoIDSelectAction extends AbstractAction   {
 }// GoIDSelectAction
 //------------------------------------------------------------------------------
 protected class AlphabeticalSelectionAction extends AbstractAction   {
-  AlphabeticalSelectionAction () { super ("By Name"); }
+  AlphabeticalSelectionAction () { super ("Nodes By Name"); }
 
   public void actionPerformed (ActionEvent e) {
     String answer = 
@@ -1338,7 +1339,7 @@ protected class AlphabeticalSelectionAction extends AbstractAction   {
 }
 //------------------------------------------------------------------------------
 protected class ListFromFileSelectionAction extends AbstractAction   {
-  ListFromFileSelectionAction () { super ("From File"); }
+  ListFromFileSelectionAction () { super ("Nodes From File"); }
 
     public void actionPerformed (ActionEvent e) {
 	boolean cancelSelectionAction = !useSelectionFile();
@@ -2115,9 +2116,24 @@ protected class MainFilterDialogAction extends AbstractAction  {
 
 protected class MenuFilterAction extends MainFilterDialogAction  {
     MenuFilterAction () {
-	super("Custom..."); 
+	super("Nodes..."); 
     }
 }
+
+protected class EdgeTypeDialogAction extends AbstractAction  {
+    EdgeTypeDialogAction () {
+	super("Edges by Interaction Type"); 
+    }
+   public void actionPerformed (ActionEvent e) {
+       String[] interactionTypes = getInteractionTypes();
+       new EdgeTypeDialogIndep (CytoscapeWindow.this,
+			   mainFrame,
+			   graph,  edgeAttributes,
+			   graphHider,
+			   interactionTypes);
+   }
+}
+
 protected String[] getInteractionTypes() {
     String[] interactionTypes;
     // figure out the interaction types dynamically

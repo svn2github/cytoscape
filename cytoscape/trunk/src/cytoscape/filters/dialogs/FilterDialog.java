@@ -32,6 +32,8 @@ public abstract class FilterDialog {
     public static int NODE_TYPE = 6;
     public static int PATHWAY = 7;
 
+    public static int EDGE_TYPE = 8;
+
     private int type;
 
     /**

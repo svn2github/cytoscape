@@ -16,7 +16,8 @@ import cytoscape.*;
 public class InteractionFilter extends Filter {
     GraphObjAttributes edgeAttributes;
     String[] accTypes;
-
+    // source, target or both
+    String search;
     public InteractionFilter(Graph2D graph,
 			     GraphObjAttributes edgeAttributes,
 			     Filter flaggableF,
@@ -25,6 +26,7 @@ public class InteractionFilter extends Filter {
 	super(graph, flaggableF);
 	this.edgeAttributes = edgeAttributes;
 	this.accTypes = accTypes;
+	search = "both";
     }
 
     public InteractionFilter(Graph2D graph,
@@ -34,6 +36,31 @@ public class InteractionFilter extends Filter {
 	super(graph);
 	this.edgeAttributes = edgeAttributes;
 	this.accTypes = accTypes;
+	search = "both";
+    }
+
+
+    public InteractionFilter(Graph2D graph,
+			     GraphObjAttributes edgeAttributes,
+			     Filter flaggableF,
+			     String[] accTypes,
+			     String search) {
+
+	super(graph, flaggableF);
+	this.edgeAttributes = edgeAttributes;
+	this.accTypes = accTypes;
+	this.search = search;
+    }
+
+    public InteractionFilter(Graph2D graph,
+			     GraphObjAttributes edgeAttributes,
+			     String[] accTypes,
+			     String search) {
+
+	super(graph);
+	this.edgeAttributes = edgeAttributes;
+	this.accTypes = accTypes;
+	this.search = search;
     }
 
     public NodeList get(NodeList hidden) {
@@ -48,7 +75,7 @@ public class InteractionFilter extends Filter {
 
 		boolean flagNode = true;
 	    findAccType:
-		for (EdgeCursor ec = node.edges(); ec.ok(); ec.next()) {
+		for (EdgeCursor ec = getCursor(node, search); ec.ok(); ec.next()) {
 		    Edge edge = ec.edge();
 		    String edgeType = getType(edge);
 		    for (int i = 0; i < accTypes.length; i++) {
@@ -73,4 +100,15 @@ public class InteractionFilter extends Filter {
 	return type;
     }
 
+    public static EdgeCursor getCursor(Node node, String search) {
+	EdgeCursor ec;
+	if (search.equals("source")) {
+	    ec = node.outEdges();
+	} else if (search.equals("target")) {
+	    ec = node.inEdges();
+	} else {
+	    ec = node.edges();
+	}
+	return ec;
+    }
 }
