@@ -35,9 +35,8 @@ public class ValueListener implements ItemListener {
     }
 
     /**
-     *  The ValueDisplayer being reflected by this listener was changed.
-     *  Make the appropriate changes to the underlying data in the mapper
-     *  and notify interested listeners that state has changed.
+     * Item State Change.
+     * @param e ItemEvent.
      */
     public void itemStateChanged(ItemEvent e) {
         Object o = ((ValueDisplayer) e.getItemSelectable()).getValue();
@@ -47,6 +46,18 @@ public class ValueListener implements ItemListener {
             range.lesserValue = o;
         } else if (offset == ContinuousUI.EQUAL) {
             range.equalValue = o;
+            int numPoints = cm.getAllPoints().size();
+            //  Update Values which are not accessible from UI
+            if (numPoints > 1) {
+                if (index == 0) {
+                    range.greaterValue = o;
+                } else if (index == numPoints -1) {
+                    range.lesserValue = o;
+                } else {
+                    range.lesserValue = o;
+                    range.greaterValue = o;
+                }
+            }
         } else if (offset == ContinuousUI.GREATER) {
             range.greaterValue = o;
         }
