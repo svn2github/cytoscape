@@ -33,7 +33,9 @@
 // $Author$
 //----------------------------------------------------------------------------
 package cytoscape.data.readers;
-import java.io.FileNotFoundException;
+import java.io.*;
+import java.util.jar.*;
+import java.net.*;
 import y.view.Graph2D;
 import cytoscape.GraphObjAttributes;
 import cytoscape.CytoscapeConfig;
@@ -43,6 +45,45 @@ import cytoscape.data.readers.*;
 //----------------------------------------------------------------------------
 public class FileReadingAbstractions {
 
+//----------------------------------------------------------------------------
+/**
+ * This method constructs an InputStream from a file specified by the
+ * filename argument. The tricky bit is that this filename could represent
+ * an ordinary file, or a file within a jar archive, indicated by the
+ * leading text "jar://" in the filename. This method is designed to handle
+ * both cases. If the file represents a properties file, this InputStream
+ * can be used directly by the load method of Properties; if, instead, the
+ * text as characters is desired, then the returned InputStream can be
+ * wrapped by the caller in an InputStreamReader.
+ *
+ * A null value is returned if the filename is null, or if the InputStream
+ * cannot be constructed for any reason (usually some kind of IOException).
+ */
+public static InputStream getInputStream(String filename) {
+    if (filename == null) {return null;}
+    
+    try {
+        if (filename.trim().startsWith ("jar://")) {
+            String realFile = filename.substring (6);
+            ClassLoader cl = FileReadingAbstractions.class.getClassLoader();
+            URL url = cl.getResource(realFile);
+            JarURLConnection juc = (JarURLConnection) url.openConnection();
+            JarFile jarFile = juc.getJarFile();
+            InputStream is = jarFile.getInputStream(jarFile.getJarEntry(realFile));
+            return is;
+        } else {
+            InputStream is = new FileInputStream(filename);
+            return is;
+        }
+    } catch (Exception e) {
+        System.err.println("In FileReadingAbstractions.getInputStream:");
+        String err = "Exception while constructing InputStream from file " + filename;
+        System.err.println(err);
+        e.printStackTrace();
+        System.err.println("returning null and continuing execution");
+    }
+    return null;
+}
 //----------------------------------------------------------------------------
 public static Graph2D loadGMLBasic (String filename, 
                                     GraphObjAttributes edgeAttributes) 
