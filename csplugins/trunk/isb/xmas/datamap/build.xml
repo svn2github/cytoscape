@@ -1,0 +1,208 @@
+<project name="datamap" default="datamap" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init-datamap">
+    <tstamp/>
+    <property name="datamap.Name" value="datamap"/>
+    <property name="datamap.name" value="datamap"/>
+    <property name="datamap.version" value="0.1"/>
+    <property name="datamap.year" value="200"/>
+
+    <echo message="Building ${datamap.name} version ${datamap.version}."/>
+
+    <!-- Inheritable properties -->
+    <property name="debug" value="on"/>
+    <property name="optimize" value="off"/>
+    <property name="deprecation" value="on"/>
+    <property name="nowarn" value="true"/>
+    <property name="fork" value="false"/>
+    <property name="datamap.root.dir" value="."/>
+    <property name="datamap.lib.dir" value="${datamap.root.dir}/lib"/>
+    <property name="cytoscape.lib.dir" value="${datamap.root.dir}/../../../../cytoscape/lib"/>
+    <path id="project.class.path">
+      <pathelement path="${java.class.path}/"/>
+    </path>
+
+    <!-- Define the directories -->
+    <property name="datamap.root.dir" value="./"/>
+    <property name="datamap.src.dir" value="${datamap.root.dir}/src"/>
+    <property name="datamap.classes.dir" value="${datamap.root.dir}/classes"/>
+    <property name="datamap.javadoc.dir" value="${javadoc.dir}/datamap"/>
+    <property name="datamap.resources.dir" value="${datamap.root.dir}/resources"/>
+    <property name="datamap.manifest.dir" value="${datamap.root.dir}/manifest"/>
+    <property name="datamap.packages" value="datamap.*"/>
+    <!-- Subdirectory for test reports -->
+    <property name="datamap.tests.reports.dir" value="${datamap.root.dir}/reports/tests" />
+    <property name="cytoscape.lib" value="../../cytoscape/lib" />
+
+    <!-- Define the condition for compilation -->
+    <property name="cytoscape.jar" value="${datamap.lib.dir}/cytoscape.jar"/>
+    <property name="colt.jar" value="${datamap.lib.dir}/colt.jar"/>
+    
+
+    <condition property="cytoscape.present">
+      <and> 
+	  		<available file="${cytoscape.jar}"/> 
+				<available file="${colt.jar}"/> 
+		  </and>
+    </condition>
+
+    <!-- Define excludes for datamap compile and javadoc -->
+    <property name="datamap.excludes" value="**/notyet/*"/>
+    <property name="datamap.tests.excludes" value="**/notyet/*"/>
+    <property name="datamap.packages.excludes" value="**.test.*,**.notyet.*"/>
+
+    <path id="datamap.project.class.path">
+      <pathelement location="${datamap.classes.dir}"/>
+      <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/tclib.jar"/>
+      <pathelement path="${project.class.path}/"/>
+    </path>
+
+   
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the datamap project                                           -->
+  <!-- =================================================================== -->
+  <target name="compile-datamap" depends="init-datamap"  >
+
+   <echo message=" COMPILE datamap "/>
+
+    <mkdir dir="${datamap.classes.dir}"/>
+    <javac srcdir="${datamap.src.dir}"
+           excludes="${datamap.excludes}"
+           classpathref="datamap.project.class.path"
+           destdir="${datamap.classes.dir}"
+           debug="${debug}"
+           nowarn="${nowarn}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the datamap.jar file                                           -->
+  <!-- =================================================================== -->
+  <target name="datamap" depends="compile-datamap"  >
+    <jar destfile="datamap.jar" manifest="${datamap.manifest.dir}/datamap.manifest">
+      <fileset
+        dir="${datamap.classes.dir}"
+        includes="**"/>
+      <fileset
+        dir="${datamap.root.dir}/lib"
+        includes="resources/**"/>
+    </jar>
+    <copy todir="${datamap.lib.dir}" file="datamap.jar"/>
+    <copy todir="${cytoscape.lib.dir}" file="datamap.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the datamap tests                                             -->
+  <!-- =================================================================== -->
+  <target name="compile-tests" depends="datamap"  >
+    <mkdir dir="${datamap.classes.dir}"/>
+    <javac srcdir="${datamap.src.dir}"
+           includes="**/test/*"
+           excludes="${datamap.tests.excludes}"
+           classpathref="datamap.project.class.path"
+           destdir="${datamap.classes.dir}"
+           debug="${debug}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the datamap-tests.jar file                                     -->
+  <!-- =================================================================== -->
+  <target name="tests" depends="compile-tests"  >
+    <jar jarfile="datamap-tests.jar"
+         basedir="${datamap.classes.dir}"
+         includes="**/test/*"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Build all jars                                                      -->
+  <!-- =================================================================== -->
+  <target name="all" depends="datamap"/>
+
+   <!-- =================================================================== -->
+  <!-- Run the Plugin                                                      -->
+  <!-- =================================================================== -->
+  <target name="run" depends="datamap" >
+     
+     <java classname="cytoscape.cytoscape" 
+           classpathref="datamap.project.class.path"
+           fork="true"/>
+           <arg line = "-y giny"/>
+           <arg line = "--JLD"/>
+           <arg line = "${datamap.lib.dir}/datamap.jar"/>
+           
+
+  </target>
+
+
+
+  <!-- =================================================================== -->
+  <!-- Runs the tests in datamap-tests.jar                                    -->
+  <!-- =================================================================== -->
+  <target name="runtests" depends="tests"  >
+    <mkdir dir="${datamap.tests.reports.dir}"/>
+    <junit
+       printsummary="yes"
+       haltonfailure="no"
+       dir="${datamap.classes.dir}"
+       maxmemory="1G"
+    >
+      <formatter type="plain" usefile="true" />
+      <classpath refid="datamap.project.class.path"/>
+      <!-- The junit task doesn't support 'if' so we test for JUnit here -->
+      <batchtest fork="yes" todir="${datamap.tests.reports.dir}" if="junit.present">
+        <fileset
+           dir="${datamap.classes.dir}"
+           includes="**/test/*"
+           excludes="${datamap.tests.excludes}"
+        />
+      </batchtest>
+    </junit>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the API documentation                                       -->
+  <!-- =================================================================== -->
+  <target name="docs" depends="init-datamap" >
+    <mkdir dir="${datamap.javadoc.dir}"/>
+    <javadoc packagenames="${datamap.packages}"
+             excludepackagenames="${datamap.packages.excludes}"
+             sourcepath="${datamap.src.dir}"
+             destdir="${datamap.javadoc.dir}"
+             classpathref="datamap.project.class.path"
+             author="true"
+             version="true"
+             use="true"
+             splitindex="true"
+             noindex="false"
+             windowtitle="${datamap.Name} API"
+             doctitle="${datamap.Name}"
+    />
+  </target>
+ 
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init-datamap">
+    <delete dir="${datamap.classes.dir}"/>
+    <delete file="datamap.jar"/>
+    <delete file="datamap-tests.jar"/>
+  </target>
+
+</project>
+
+<!-- End of file -->

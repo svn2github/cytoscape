@@ -27,7 +27,7 @@ import phoebe.*;
 public class FilterUsePanel extends JPanel 
   implements PropertyChangeListener,
              ActionListener {
-
+  FilterEditorPanel filterEditorPanel;
   FilterListPanel filterListPanel;
   JRadioButton hideFailed, grayFailed, selectPassed;
   JButton apply, addFilters, removeFilters;
@@ -43,18 +43,24 @@ public class FilterUsePanel extends JPanel
     super();
     this.network = network;
     this.window = window;
-    
-    add( createActionPanel(), BorderLayout.NORTH );
 
+    //--------------------//
+    // FilterEditorPanel
+    filterEditorPanel = new FilterEditorPanel();
 
     //--------------------//
     // Selected Filter Panel
     JPanel selected_filter_panel = new JPanel();
-    selected_filter_panel.setBorder( new TitledBorder( "Selected Filters" ) );
+    selected_filter_panel.setBorder( new TitledBorder( "Available Filters" ) );
     filterListPanel = new FilterListPanel( FilterListPanel.SHOW_TOGETHER );
     selected_filter_panel.add( filterListPanel );
-    add( selected_filter_panel, BorderLayout.CENTER );
+    
 
+    //--------------------//
+    // Use Panel
+    JPanel use_panel = new JPanel();
+    use_panel.setBorder( new TitledBorder( "Take Action and Combine" ) );
+    use_panel.add( createActionPanel(), BorderLayout.SOUTH );
     ButtonGroup logic_group = new ButtonGroup();
     and = new JRadioButton( "AND", true );
     or = new JRadioButton( "OR", false );
@@ -67,17 +73,14 @@ public class FilterUsePanel extends JPanel
     logic_group.add( and );
     logic_group.add( or );
     logic_group.add( xor );
-    selected_filter_panel.add( logic_panel, BorderLayout.NORTH );
+    use_panel.add( logic_panel, BorderLayout.NORTH );
 
 
-    JPanel filter_control_panel = new JPanel();
-    addFilters = new JButton( "<-" );
-    addFilters.addActionListener( this );
-    removeFilters = new JButton( "->" );
-    removeFilters.addActionListener( this );
-   
+    JSplitPane pane0 = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, selected_filter_panel, use_panel );
+    JSplitPane pane1 = new JSplitPane( JSplitPane.VERTICAL_SPLIT, filterEditorPanel, pane0 );
+    add( pane1 );
 
-
+    filterListPanel.getSwingPropertyChangeSupport().addPropertyChangeListener( filterEditorPanel );
   
   }
   

@@ -9,7 +9,6 @@ import javax.swing.tree.*;
 public class FilterView extends JPanel {
 
   FilterEditorPanel filterEditorPanel;
-  FilterTreeView filterTreeView;
   FilterListPanel filterListPanel;
 
 
@@ -26,9 +25,8 @@ public class FilterView extends JPanel {
 
     filterEditorPanel = new FilterEditorPanel();
     filterListPanel = new FilterListPanel( FilterListPanel.SHOW_TOGETHER);
-    filterTreeView = new FilterTreeView( filterListPanel);
-    JSplitPane pane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, filterTreeView, filterListPanel );
-    JSplitPane pane0 = new JSplitPane( JSplitPane.VERTICAL_SPLIT, filterEditorPanel, pane );
+    JSplitPane pane0 = new JSplitPane( JSplitPane.VERTICAL_SPLIT, filterEditorPanel, filterListPanel );
+    
     add( pane0 );
 
     filterListPanel.getSwingPropertyChangeSupport().addPropertyChangeListener( filterEditorPanel );

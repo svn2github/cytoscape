@@ -6,6 +6,9 @@ import integration.readers.*;
 import javax.swing.*;
 import java.awt.*;
 
+import com.jgoodies.plaf.FontSizeHints;
+import com.jgoodies.plaf.LookUtils;
+import com.jgoodies.plaf.Options;
 public class IntegrationWindow extends JPanel {
 
 
@@ -47,27 +50,43 @@ public class IntegrationWindow extends JPanel {
 
   public static void main ( String[] args ) {
     
-     if ( System.getProperty("os.name" ).startsWith("Windows") ) {
-      try {
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-      } catch (  Exception e ) {
-        // TODO: Error handling.
-        System.err.println( "Hey. Error loading L&F: " + e );
-        // TODO: REMOVE
-        e.printStackTrace();
-      }
-   } else {
+//      if ( System.getProperty("os.name" ).startsWith("Windows") ) {
+//       try {
+//         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//       } catch (  Exception e ) {
+//         // TODO: Error handling.
+//         System.err.println( "Hey. Error loading L&F: " + e );
+//         // TODO: REMOVE
+//         e.printStackTrace();
+//       }
+//    } else {
 
 
-         try { 
-         UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-       } catch( Exception e ) {
-         // TODO: Error handling.
-         System.err.println( "Hey. Error loading L&F: " + e );
-         // TODO: REMOVE
-         e.printStackTrace();
-       }
-   }
+//          try { 
+//          UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+//        } catch( Exception e ) {
+//          // TODO: Error handling.
+//          System.err.println( "Hey. Error loading L&F: " + e );
+//          // TODO: REMOVE
+//          e.printStackTrace();
+//        }
+//    }
+
+    UIManager.put(Options.USE_SYSTEM_FONTS_APP_KEY, Boolean.TRUE);
+    Options.setGlobalFontSizeHints(FontSizeHints.MIXED);
+    Options.setDefaultIconSize(new Dimension(18, 18));
+    
+    String lafName =
+      LookUtils.isWindowsXP()
+      ? Options.getCrossPlatformLookAndFeelClassName()
+      : Options.getSystemLookAndFeelClassName();
+    
+    try {
+      UIManager.setLookAndFeel(lafName);
+    } catch (Exception e) {
+      System.err.println("Can't set look & feel:" + e);
+    }
+    
 
 
     IntegrationWindow w = new IntegrationWindow(); 

@@ -77,21 +77,21 @@ public class CsNodeInteractionFilterEditor
     nameField = new JTextField(15);
     namePanel.add( new JLabel( "Filter Name" ) );
     namePanel.add( nameField );
-    add( namePanel );
+    add( namePanel, BorderLayout.NORTH  );
 
     JPanel attribute_panel = new JPanel();
     edgeAttributeBox = new JComboBox( edgeAttributes.getAttributeNames() );
     edgeAttributeBox.setEditable( false );
     edgeAttributeBox.addActionListener( this );
     attribute_panel.add( edgeAttributeBox );
-    add( attribute_panel );
+    add( attribute_panel, BorderLayout.NORTH  );
 
     JPanel search_panel = new JPanel();
     searchBox = new JComboBox();
     searchBox.setEditable( true );
     searchBox.addActionListener( this );
     search_panel.add( searchBox );
-    add( search_panel );
+    add( search_panel, BorderLayout.SOUTH  );
 
     JPanel end_panel = new JPanel();
     sourceNodeButton = new JRadioButton( "source" );
@@ -107,7 +107,7 @@ public class CsNodeInteractionFilterEditor
     sourceNodeButton.addActionListener( this );
     targetNodeButton.addActionListener( this );
     bothNodesButton.addActionListener( this );
-    add( end_panel );
+    add( end_panel, BorderLayout.SOUTH );
 
     add( new JButton (new AbstractAction( "Update" ) {
           public void actionPerformed ( ActionEvent e ) {

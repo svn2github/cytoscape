@@ -34,7 +34,8 @@ public class FilterEditorPanel
 
   public void initialize() {
 
-  
+    setBorder( new TitledBorder( "Edit and Create Filters" ) );
+
     editorIndexMap = new HashMap();
     editorCount = 0;
 
@@ -44,9 +45,9 @@ public class FilterEditorPanel
 
     editorTabs = new JTabbedPane();
 
-    addButton = new JButton( "Add" );
-    removeButton = new JButton( "Remove" );
-    resetButton = new JButton( "Reset" );
+    addButton =    new JButton( "   Add    " );
+    removeButton = new JButton( "  Remove  " );
+    resetButton =  new JButton( "   Reset  " );
     addButton.addActionListener( this );
     removeButton.addActionListener( this );
     resetButton.addActionListener( this );
