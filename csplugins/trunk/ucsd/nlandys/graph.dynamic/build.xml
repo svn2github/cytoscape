@@ -18,6 +18,7 @@
              source="1.4">
       <fileset dir="${src.dir}">
         <include name="cytoscape/graph/dynamic/*.java"/>
+        <include name="cytoscape/graph/dynamic/util/*.java"/>
       </fileset>
       <classpath>
         <fileset dir="${lib.dir}">
