@@ -1,4 +1,12 @@
 <div id="footer">
+
+<b>Federal funding for Cytoscape is provided by a grant from the 
+<a href="http://www.nigms.nih.gov">National Institute of General Medical Sciences (NIGMS)</a> of the 
+<a href="http://www.nih.gov">National Institutes of Health (NIH)</a> under award number GM070743-01.
+Corporate funding is provided through a contract from
+<a href="http://www.unilever.com">Unilever PLC</a>. 
+</b>
+<p>
 	<a href="index.php">
 		Cytoscape home 
 	</a>

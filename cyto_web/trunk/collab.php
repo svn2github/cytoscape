@@ -1,6 +1,5 @@
 <div class="roundbox blue_outline">
-<br>
-	The <b> Cytoscape </b> project is an ongoing collaboration between: 
+The <b> Cytoscape </b> project is an ongoing collaboration between: 
 <br>
 <table cellpadding="2" cellspacing="2" border="0" width="100%" align="center">
 
