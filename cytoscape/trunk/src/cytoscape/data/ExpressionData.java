@@ -38,6 +38,7 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.Hashtable;
 import java.util.HashMap;
+import java.io.Serializable;
 
 import java.io.FileReader;
 import java.io.BufferedReader;
@@ -105,7 +106,7 @@ import cytoscape.data.readers.*;
  *  where there are N I's, each an integer representing the number of
  *  significant genes in that condition.
  */
-public class ExpressionData {
+public class ExpressionData implements Serializable{
 
     public static final int MAX_LINE_SIZE = 8192;
 
@@ -145,6 +146,10 @@ public class ExpressionData {
 	this.initDataStructures();
 	this.loadData(filename);
     }
+
+  public String getFileName(){
+    return filename;
+  }
 
     private void initDataStructures() {
 	/* on overflow, capacity of vector will be increased by
