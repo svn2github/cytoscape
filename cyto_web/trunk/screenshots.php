@@ -20,7 +20,7 @@
 <? include "nav.php"; ?>
 <div id="indent">
 	<p>
-		The screenshot below shows the main window of <i>Cytoscape 2.0,</i> displaying a network of protein-protein and protein-DNA interactions among 332 yeast genes.
+		The screenshot below shows the main window of <i>Cytoscape</i> displaying a network of protein-protein and protein-DNA interactions among 332 yeast genes.
 	</p>
 	<p>
 		<img src="screenshots/cytoscapeWindow2.gif" width="726" height="737" alt="main cytoscape window"> 
@@ -39,22 +39,6 @@
 		<br>
 		<img src="screenshots/VisualStyles.gif" width="888" height="777" alt="Visual Styles"> 
  
-	</p>
-	<hr width="100%" size="2">
-	<p>
-		The attributes window displays a summary of Gene Ontology (GO) information and expression ratios for each of ten seleted genes.Hyperlinks to the GO database are also provided.
-		<br>
-		<br>
-		<img src="screenshots/nodeInfoDialog.jpg" width="818" height="249" alt="gene info"> 
-	</p>
-	<hr width="100%" size="2">
-	<p>
-	</p>
-	<p>
-		Cytoscape implements an algorithm for finding "active pathways", <i> i.e.</i>, subnetworks of genes that jointly show significant differential expression over a set of experimental conditions observed by microarray experiment. The image below show the results of a run of this algorithm. Several active paths have been found; the highest scoring one has 22 genes identified as being active in three of the 20 experimental conditions. From here, one can view a graph with only these genes, display the expression data for any of the conditions, and examine Gene Ontology (GO) information available to assess the biological significance of this network.
-	</p>
-	<p>
-		<img src="screenshots/activePathsDialog.jpg" width="513" height="529" alt="summary of active paths"> 
 	</p>
 </div>
 </div>
