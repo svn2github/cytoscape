@@ -3,6 +3,10 @@
 		Cytoscape home 
 	</a>
 	| 
+	<a href="people.php">
+		Dev team 
+	</a>
+	| 
 	<a href="http://www.systemsbiology.org">
 		ISB 
 	</a>
@@ -21,10 +25,6 @@
 	| 
 	<a href="http://www.cbio.mskcc.org/cytoscape/bugs/">
 		Report a bug 
-	</a>
-	| 
-	<a href="mailto:bugs@cytoscape.org">
-		Problems using Cytoscape? 
 	</a>
 	| &copy; 2001-2004 Cytoscape. 
 </div>
