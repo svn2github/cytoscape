@@ -22,11 +22,12 @@ public final class RotationLayouter
     for (int i = 0; i < graph.getNumNodes(); i++)
     {
       if (!graph.isMovableNode(i)) continue;
-      Point2D nodePosition = graph.getNodePosition(i);
-      xMin = Math.min(xMin, nodePosition.getX());
-      xMax = Math.max(xMax, nodePosition.getX());
-      yMin = Math.min(yMin, nodePosition.getY());
-      yMax = Math.max(yMax, nodePosition.getY());
+      double nodeXPosition = graph.getNodePosition(i, true);
+      double nodeYPosition = graph.getNodePosition(i, false);
+      xMin = Math.min(xMin, nodeXPosition);
+      xMax = Math.max(xMax, nodeXPosition);
+      yMin = Math.min(yMin, nodeYPosition);
+      yMax = Math.max(yMax, nodeYPosition);
     }
     if (xMax < 0) return; // No nodes are movable.
     final double xRectCenter = (xMin + xMax) / 2.0d;
@@ -65,19 +66,26 @@ public final class RotationLayouter
                              (yRectCenter - graph.getMaxHeight()) /
                              (yRectCenter - yMax));
     final Scale3D scale = new Scale3D(scaleFactor, scaleFactor, 1.0d);
+
+    // Finally, we've found the transform we're going to use to move
+    // nodes.  Everything up to now was just a calculation to arrive at
+    // a suitable realTransform.
     final AffineTransform3D realTransform =
       toOrig.concatenatePost(rotation.concatenatePost(scale.concatenatePost
                                                       (fromOrig)));
-    double[] pointBuff = new double[3];
-    for (int i = 0; i < graph.getNumNodes(); i++) {
+
+    final double[] pointBuff = new double[3];
+    for (int i = 0; i < graph.getNumNodes(); i++)
+    {
       if (!graph.isMovableNode(i)) continue;
-      Point2D nodePosition = graph.getNodePosition(i);
-      pointBuff[0] = nodePosition.getX(); pointBuff[1] = nodePosition.getY();
+      pointBuff[0] = graph.getNodePosition(i, true);
+      pointBuff[1] = graph.getNodePosition(i, false);
       realTransform.transformArr(pointBuff);
-      graph.setNodePosition
-        (i,
-         Math.max(0.0d, Math.min(graph.getMaxWidth(), pointBuff[0])),
-         Math.max(0.0d, Math.min(graph.getMaxHeight(), pointBuff[1]))); }
+      // If we later find that, because of floating-point rounding errors,
+      // some moved points fall outside of boundary, then we should adjust
+      // our scale transform to make it shrink the graph by epsilon more.
+      graph.setNodePosition(i, pointBuff[0], pointBuff[1]);
+    }
   }
 
 }
