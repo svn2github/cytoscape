@@ -1,21 +1,11 @@
 <div id="footer">
-
-<table border="0" cellpadding="0" cellspacing="0">
-  <tr>
-    <td align="center" valign="top">
-	<img src="images/nih40T.gif">
-	<img src="images/unilever40T.gif">
-    </td>
-    <td>
-	<b>Federal funding for Cytoscape is provided by a grant from the 
+<b>Funding for Cytoscape is provided by a federal grant from the U.S.
 <a href="http://www.nigms.nih.gov">National Institute of General Medical Sciences (NIGMS)</a> of the 
 <a href="http://www.nih.gov">National Institutes of Health (NIH)</a> under award number GM070743-01.
 Corporate funding is provided through a contract from
 <a href="http://www.unilever.com">Unilever PLC</a>. 
 </b>
-    </td>
- <tr>
-</table>
+<p>
 <center>
 	<a href="index.php">
 		Cytoscape home 
