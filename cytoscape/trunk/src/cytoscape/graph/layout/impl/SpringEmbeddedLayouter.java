@@ -5,8 +5,10 @@ import cytoscape.graph.layout.algorithm.LayoutAlgorithm;
 import cytoscape.graph.layout.algorithm.MutableGraphLayout;
 import cytoscape.graph.util.GraphUtils;
 import cytoscape.process.PercentCompletedCallback;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -61,6 +63,8 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
 
   private boolean m_halt = false;
 
+  private final AutoScalingGraphLayout m_autoScaleGraph;
+
   /**
    * Constructs an object which is able to perform a specific layout algorithm
    * on a graph.  An instance of this class will perform a layout at most
@@ -99,6 +103,76 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
     m_anticollisionSpringStrength = DEFAULT_ANTICOLLISION_SPRING_STRENGTH;
     m_nodeCount = m_graph.getNumNodes();
     m_edgeCount = m_graph.getNumEdges();
+    m_autoScaleGraph = new AutoScalingGraphLayout(m_graph);
+  }
+
+  private static class AutoScalingGraphLayout
+  {
+    private MutableGraphLayout graph;
+    private boolean alreadyMoved = false;
+    AutoScalingGraphLayout(MutableGraphLayout graph) {
+      this.graph = graph; }
+    private Hashtable movedNodes = new Hashtable();
+    int getNumNodes() {
+      // This is a debugging statement.
+      if (alreadyMoved) throw new IllegalStateException
+                          ("already moved nodes in underlying graph");
+      return graph.getNumNodes(); }
+    void setNodePosition(int nodeIndex, double X, double Y) {
+      // This is a debugging statement.
+      if (alreadyMoved) throw new IllegalStateException
+                          ("already moved nodes in underlying graph");
+      // This is a debugging statement.
+      if (nodeIndex < 0 || nodeIndex >= graph.getNumNodes())
+        throw new IndexOutOfBoundsException
+          ("nodeIndex out of bounds: " + nodeIndex);
+      movedNodes.put(new Integer(nodeIndex), new Point2D.Double(X, Y)); }
+    Point2D getNodePosition(int nodeIndex) {
+      // This is a debugging statement.
+      if (alreadyMoved) throw new IllegalStateException
+                          ("already moved nodes in underlying graph");
+      // This is a debugging statement.
+      if (nodeIndex < 0 || nodeIndex >= graph.getNumNodes())
+        throw new IndexOutOfBoundsException
+          ("nodeIndex out of bounds: " + nodeIndex);
+      Object o = movedNodes.get(new Integer(nodeIndex));
+      if (o == null) return graph.getNodePosition(nodeIndex);
+      else return (Point2D) o; }
+    void moveUnderlyingNodes() {
+      if (alreadyMoved) throw new IllegalStateException
+                          ("already moved nodes in underlying graph");
+      alreadyMoved = true;
+      double minX = Double.MAX_VALUE;
+      double maxX = Double.MIN_VALUE;
+      double minY = Double.MAX_VALUE;
+      double maxY = Double.MIN_VALUE;
+      // We iterate once through just to find min and max bounds for node pos.
+      for (int nodeIx = 0; nodeIx < graph.getNumNodes(); nodeIx++) {
+        Point2D nodePos;
+        if ((nodePos = (Point2D) movedNodes.get(new Integer(nodeIx))) == null)
+          nodePos = graph.getNodePosition(nodeIx);
+        minX = Math.min(minX, nodePos.getX());
+        maxX = Math.max(maxX, nodePos.getX());
+        minY = Math.min(minY, nodePos.getY());
+        maxY = Math.max(maxY, nodePos.getY()); }
+      // Compute scaling factors.
+      double xScaleFactor;
+      if (maxX - minX == 0) xScaleFactor = 1;
+      else xScaleFactor = graph.getMaxWidth() / (maxX - minX);
+      double yScaleFactor;
+      if (maxY - minY == 0) yScaleFactor = 1;
+      else yScaleFactor = graph.getMaxHeight() / (maxY - minY);
+      // We now know min and max; iterate again to move all nodes.
+      for (int nodeIx = 0; nodeIx < graph.getNumNodes(); nodeIx++) {
+        Point2D nodePos;
+        if ((nodePos = (Point2D) movedNodes.get(new Integer(nodeIx))) == null)
+          nodePos = graph.getNodePosition(nodeIx);
+        graph.setNodePosition
+          (nodeIx,
+           (nodePos.getX() - minX) * xScaleFactor,
+           (nodePos.getY() - minY) * yScaleFactor); }
+      movedNodes = null;
+      graph = null; }
   }
 
   private static class PartialDerivatives
@@ -224,7 +298,7 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
      List partialsList,
      double[] potentialEnergy,
      boolean reversed,
-     final MutableGraphLayout graph)
+     final AutoScalingGraphLayout graph)
   {
     partials.reset();
     int node = partials.nodeIndex;
@@ -561,13 +635,41 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
     return furthestPartials;
   }
 
-  private static PartialDerivatives moveNode
+  private PartialDerivatives moveNode
     (PartialDerivatives partials,
      List partialsList,
      double[] potentialEnergy,
-     MutableGraphLayout graph)
+     AutoScalingGraphLayout graph)
   {
-    return null;
+    int node = partials.nodeIndex;
+    PartialDerivatives startingPartials = new PartialDerivatives(partials);
+    calculatePartials(partials, partialsList, potentialEnergy, true, graph);
+    simpleMoveNode(startingPartials, graph);
+    return calculatePartials(partials, partialsList, potentialEnergy, false,
+                             graph);
+  }
+
+  private static void simpleMoveNode(PartialDerivatives partials,
+                                     AutoScalingGraphLayout graph)
+  {
+    int node = partials.nodeIndex;
+    double denominator =
+      ((partials.xx * partials.yy) -
+       (partials.xy * partials.xy));
+    double deltaX =
+      (
+       ((-partials.x * partials.yy) -
+        (-partials.y * partials.xy)) /
+       denominator
+       );
+    double deltaY =
+      (
+       ((-partials.y * partials.xx) -
+        (-partials.x * partials.xy)) /
+       denominator
+       );
+    Point2D p = graph.getNodePosition(node);
+    graph.setNodePosition(node, p.getX() + deltaX, p.getY() + deltaY);
   }
 
   /**
@@ -636,7 +738,8 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
       for (int nodeIndex = 0; nodeIndex < m_nodeCount; nodeIndex++)
       {
         partials = new PartialDerivatives(nodeIndex);
-        calculatePartials(partials, null, potentialEnergy, false, m_graph);
+        calculatePartials(partials, null, potentialEnergy, false,
+                          m_autoScaleGraph);
         partialsList.add(partials);
         if ((furthestNodePartials == null) ||
             (partials.euclideanDistance >
@@ -649,8 +752,11 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
               euclideanDistanceThreshold);
            iterations_i++) {
         furthestNodePartials = moveNode(furthestNodePartials, partialsList,
-                                        potentialEnergy, m_graph); }
+                                        potentialEnergy,
+                                        m_autoScaleGraph); }
     }
+    // The last thing we do is trigger node movement in the underlying graph.
+    m_autoScaleGraph.moveUnderlyingNodes();
   }
 
   /**
@@ -663,585 +769,5 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
   {
     m_halt = true;
   }
-
-  /*
-  public Object construct () {
-
-
-      setupForLayoutPass();
-
-      //System.out.println( " DO Layout Pass " );
-      
-      // initialize this layout pass
-      potential_energy.reset();
-      partials_list.clear();
-
-      // Calculate all node distances.  Keep track of the furthest.
-      node_views_iterator = graphView.getNodeViewsIterator();
-      while( node_views_iterator.hasNext() ) {
-        node_view = ( NodeView )node_views_iterator.next();
-
-        //System.out.println( "Calculate Partials for: "+node_view.getGraphPerspectiveIndex() );
-
-        partials = new PartialDerivatives( node_view );
-        calculatePartials(
-          partials,  
-          null,
-          potential_energy,
-          false
-        );
-        partials_list.add( partials );
-        if( ( furthest_node_partials == null ) ||
-            ( partials.euclideanDistance >
-              furthest_node_partials.euclideanDistance )
-          ) {
-          //  //System.out.println( "P: "+furthest_node_partials.euclideanDistance+" E: "+partials.euclideanDistance );
-          furthest_node_partials = partials;
-        }
-      }
-
-      // Until num_iterations, or the furthest node is not-so-fur, move the
-      // furthest node towards where it wants to be.
-      for( int iterations_i = 0;
-           ( ( iterations_i < num_iterations ) &&
-             ( furthest_node_partials.euclideanDistance >=
-               euclidean_distance_threshold ) );
-           iterations_i++
-         ) {
-        // TODO: REMOVE
-        //System.out.println( "At iteration " + layoutPass + ":" + iterations_i + ", furthest_node_partials is " + furthest_node_partials + "." );
-        furthest_node_partials =
-          moveNode( furthest_node_partials, partials_list, potential_energy );
-      } // End for each iteration, attempt to minimize the total potential
-        // energy by moving the node that is furthest from where it should be.
-    } // End for each layout pass
-    return null;
-  } // doLayout()
-
-  // If partials_list is given, adjust all partials (bidirectional) for the
-  // current location of the given partials and return the new furthest node's
-  // partials.  Otherwise, just adjust the given partials (using the
-  // graphView's nodeViewsIterator), and return it.  If reversed is true then
-  // partials_list must be provided and all adjustments made by a non-reversed
-  // call (with the same partials with the same graphNodeView at the same
-  // location) will be undone.
-  // Complexity is O( #Nodes ).
-  protected PartialDerivatives calculatePartials (
-    PartialDerivatives partials,
-    List partials_list,
-    PotentialEnergy potential_energy,
-    boolean reversed
-  ) {
-
-    partials.reset();
-
-    NodeView node_view = partials.getNodeView();
-    int node_view_index = node_view.getGraphPerspectiveIndex() - 1;
-    double node_view_radius = node_view.getWidth();
-    double node_view_x = node_view.getXPosition();
-    double node_view_y = node_view.getYPosition();
-
-
-    //System.out.println( "index: "+node_view_index+" x: "+node_view_x+" y:" +node_view_y );
-
-    PartialDerivatives other_node_partials = null;
-    NodeView other_node_view;
-    int other_node_view_index;
-    double other_node_view_radius;
-
-    PartialDerivatives furthest_partials = null;
-
-    Iterator iterator;
-    if( partials_list == null ) {
-      iterator = graphView.getNodeViewsIterator();
-    } else {
-      iterator = partials_list.iterator();
-    }
-    double delta_x;
-    double delta_y;
-    double euclidean_distance;
-    double euclidean_distance_cubed;
-    double distance_from_rest;
-    double distance_from_touching;
-    double incremental_change;
-    while( iterator.hasNext() ) {
-      if( partials_list == null ) {
-        other_node_view = ( NodeView )iterator.next();
-      } else {
-        other_node_partials = ( PartialDerivatives )iterator.next();
-        other_node_view = other_node_partials.getNodeView();
-      }
-
-      
-
-      //System.out.println( "Node_View: "+ (node_view.getGraphPerspectiveIndex() - 1 ));
-      //System.out.println( "Other_Node_View: "+ (other_node_view.getGraphPerspectiveIndex() - 1 ) );
-
-      if ( node_view.getGraphPerspectiveIndex() - 1 == other_node_view.getGraphPerspectiveIndex() - 1 ) {
-        //System.out.println( "Nodes are the same. " );
-        continue;
-      }
-
-      other_node_view_index = other_node_view.getGraphPerspectiveIndex() - 1;
-      other_node_view_radius = other_node_view.getWidth();
-
-      delta_x = ( node_view_x - other_node_view.getXPosition() );
-      delta_y = ( node_view_y - other_node_view.getYPosition() );
-
-      //System.out.println( "Delta's Calculated: "+delta_y+ "  "+delta_x );
-
-      euclidean_distance =
-        Math.sqrt( ( delta_x * delta_x ) + ( delta_y * delta_y ) );
-      euclidean_distance_cubed = Math.pow( euclidean_distance, 3 );
-
-
-      //System.out.println( "Euclidean_Distance: "+euclidean_distance+" Euclidean_Distance_Cubed: "+euclidean_distance_cubed );
-
-      distance_from_touching =
-        ( euclidean_distance -
-          ( node_view_radius + other_node_view_radius ) );
-
-      //System.out.println( "Distance_From_Touching: "+distance_from_touching );
-
-      incremental_change =
-        ( nodeDistanceSpringScalars[ layoutPass ] *
-          ( nodeDistanceSpringStrengths[ node_view_index ][ other_node_view_index ] *
-            ( delta_x -
-              (
-               ( nodeDistanceSpringRestLengths[ node_view_index ][ other_node_view_index ] *
-                 delta_x ) /
-               euclidean_distance
-              )
-            )
-          )
-        );
-
-      //System.out.println( "Incremental_Change: "+incremental_change );
-
-      if( !reversed ) {
-        partials.x += incremental_change;
-      }
-      if( other_node_partials != null ) {
-        incremental_change =
-          ( nodeDistanceSpringScalars[ layoutPass ] *
-            ( nodeDistanceSpringStrengths[ other_node_view_index ][ node_view_index ] *
-              ( -delta_x -
-                (
-                 ( nodeDistanceSpringRestLengths[ other_node_view_index ][ node_view_index ] *
-                   -delta_x ) /
-                 euclidean_distance
-                )
-              )
-            )
-          );
-        if( reversed ) {
-          other_node_partials.x -= incremental_change;
-        } else {
-          other_node_partials.x += incremental_change;
-        }
-      }
-      if( distance_from_touching < 0.0 ) {
-        incremental_change =
-          ( anticollisionSpringScalars[ layoutPass ] *
-            ( anticollisionSpringStrength *
-              ( delta_x -
-                (
-                 ( ( node_view_radius + other_node_view_radius ) *
-                   delta_x ) /
-                 euclidean_distance
-                )
-              )
-            )
-          );
-        if( !reversed ) {
-          partials.x += incremental_change;
-        }
-        if( other_node_partials != null ) {
-          incremental_change =
-            ( anticollisionSpringScalars[ layoutPass ] *
-              ( anticollisionSpringStrength *
-                ( -delta_x -
-                  (
-                   ( ( node_view_radius + other_node_view_radius ) *
-                     -delta_x ) /
-                   euclidean_distance
-                  )
-                )
-              )
-            );
-          if( reversed ) {
-            other_node_partials.x -= incremental_change;
-            //System.out.println( "Other_Node_Partials (-): "+other_node_partials.x );
-          } else {
-            other_node_partials.x += incremental_change;
-            //System.out.println( "Other_Node_Partials (+): "+other_node_partials.x );
-          }
-        }
-      }
-      incremental_change =
-        ( nodeDistanceSpringScalars[ layoutPass ] *
-          ( nodeDistanceSpringStrengths[ node_view_index ][ other_node_view_index ] *
-            ( delta_y -
-              (
-               ( nodeDistanceSpringRestLengths[ node_view_index ][ other_node_view_index ] *
-                 delta_y ) /
-               euclidean_distance
-              )
-            )
-          )
-        );
-
-      //System.out.println( "Incremental_Change: "+incremental_change );
-
-      if( !reversed ) {
-        partials.y += incremental_change;
-      }
-      if( other_node_partials != null ) {
-        incremental_change =
-          ( nodeDistanceSpringScalars[ layoutPass ] *
-            ( nodeDistanceSpringStrengths[ other_node_view_index ][ node_view_index ] *
-              ( -delta_y -
-                (
-                 ( nodeDistanceSpringRestLengths[ other_node_view_index ][ node_view_index ] *
-                   -delta_y ) /
-                 euclidean_distance
-                )
-              )
-            )
-          );
-        if( reversed ) {
-          other_node_partials.y -= incremental_change;
-        } else {
-          other_node_partials.y += incremental_change;
-        }
-      }
-      if( distance_from_touching < 0.0 ) {
-        incremental_change =
-          ( anticollisionSpringScalars[ layoutPass ] *
-            ( anticollisionSpringStrength *
-              ( delta_y -
-                (
-                 ( ( node_view_radius + other_node_view_radius ) *
-                   delta_y ) /
-                 euclidean_distance
-                )
-              )
-            )
-          );
-        if( !reversed ) {
-          partials.y += incremental_change;
-        }
-        if( other_node_partials != null ) {
-          incremental_change =
-            ( anticollisionSpringScalars[ layoutPass ] *
-              ( anticollisionSpringStrength *
-                ( -delta_y -
-                  (
-                   ( ( node_view_radius + other_node_view_radius ) *
-                     -delta_y ) /
-                   euclidean_distance
-                  )
-                )
-              )
-            );
-          if( reversed ) {
-            other_node_partials.y -= incremental_change;
-          } else {
-            other_node_partials.y += incremental_change;
-          }
-        }
-      }
-
-      incremental_change =
-        ( nodeDistanceSpringScalars[ layoutPass ] *
-          ( nodeDistanceSpringStrengths[ node_view_index ][ other_node_view_index ] *
-            ( 1.0 -
-              (
-               ( nodeDistanceSpringRestLengths[ node_view_index ][ other_node_view_index ] *
-                 ( delta_y * delta_y )
-               ) /
-               euclidean_distance_cubed
-              )
-            )
-          )
-        );
-      //System.out.println( "Incremental_Change: "+incremental_change );
-
-      if( reversed ) {
-        if( other_node_partials != null ) {
-          other_node_partials.xx -= incremental_change;
-        }
-      } else {
-        partials.xx += incremental_change;
-        if( other_node_partials != null ) {
-          other_node_partials.xx += incremental_change;
-        }
-      }
-      if( distance_from_touching < 0.0 ) {
-        incremental_change =
-          ( anticollisionSpringScalars[ layoutPass ] *
-            ( anticollisionSpringStrength *
-              ( 1.0 -
-                (
-                 ( ( node_view_radius + other_node_view_radius ) *
-                   ( delta_y * delta_y )
-                 ) /
-                 euclidean_distance_cubed
-                )
-              )
-            )
-          );
-        if( reversed ) {
-          if( other_node_partials != null ) {
-            other_node_partials.xx -= incremental_change;
-          }
-        } else {
-          partials.xx += incremental_change;
-          if( other_node_partials != null ) {
-            other_node_partials.xx += incremental_change;
-          }
-        }
-      }
-      incremental_change =
-        ( nodeDistanceSpringScalars[ layoutPass ] *
-          ( nodeDistanceSpringStrengths[ node_view_index ][ other_node_view_index ] *
-            ( 1.0 -
-              (
-               ( nodeDistanceSpringRestLengths[ node_view_index ][ other_node_view_index ] *
-                 ( delta_x * delta_x )
-               ) /
-               euclidean_distance_cubed
-              )
-            )
-          )
-        );
-
-      //System.out.println( "Incremental_Change: "+incremental_change );
-
-      if( reversed ) {
-        if( other_node_partials != null ) {
-          other_node_partials.yy -= incremental_change;
-        }
-      } else {
-        partials.yy += incremental_change;
-        if( other_node_partials != null ) {
-          other_node_partials.yy += incremental_change;
-        }
-      }
-      if( distance_from_touching < 0.0 ) {
-        incremental_change =
-          ( anticollisionSpringScalars[ layoutPass ] *
-            ( anticollisionSpringStrength *
-              ( 1.0 -
-                (
-                 ( ( node_view_radius + other_node_view_radius ) *
-                   ( delta_x * delta_x )
-                 ) /
-                 euclidean_distance_cubed
-                )
-              )
-            )
-          );
-        if( reversed ) {
-          if( other_node_partials != null ) {
-            other_node_partials.yy -= incremental_change;
-          }
-        } else {
-          partials.yy += incremental_change;
-          if( other_node_partials != null ) {
-            other_node_partials.yy += incremental_change;
-          }
-        }
-      }
-      incremental_change =
-        ( nodeDistanceSpringScalars[ layoutPass ] *
-          ( nodeDistanceSpringStrengths[ node_view_index ][ other_node_view_index ] *
-            ( ( nodeDistanceSpringRestLengths[ node_view_index ][ other_node_view_index ] *
-                ( delta_x * delta_y )
-              ) /
-              euclidean_distance_cubed
-            )
-          )
-        );
-
-      //System.out.println( "Incremental_Change: "+incremental_change );
-
-      if( reversed ) {
-        if( other_node_partials != null ) {
-          other_node_partials.xy -= incremental_change;
-        }
-      } else {
-        partials.xy += incremental_change;
-        if( other_node_partials != null ) {
-          other_node_partials.xy += incremental_change;
-        }
-      }
-      if( distance_from_touching < 0.0 ) {
-        incremental_change =
-          ( anticollisionSpringScalars[ layoutPass ] *
-            ( anticollisionSpringStrength *
-              (
-               ( ( node_view_radius + other_node_view_radius ) *
-                 ( delta_x * delta_y )
-               ) /
-               euclidean_distance_cubed
-              )
-            )
-          );
-        if( reversed ) {
-          if( other_node_partials != null ) {
-            other_node_partials.xy -= incremental_change;
-          }
-        } else {
-          partials.xy += incremental_change;
-          if( other_node_partials != null ) {
-            other_node_partials.xy += incremental_change;
-          }
-        }
-      }
-
-      distance_from_rest =
-        ( euclidean_distance -
-          nodeDistanceSpringRestLengths[ node_view_index ][ other_node_view_index ]
-        );
-      incremental_change =
-        ( nodeDistanceSpringScalars[ layoutPass ] *
-          ( ( nodeDistanceSpringStrengths[ node_view_index ][ other_node_view_index ] *
-              ( distance_from_rest * distance_from_rest )
-            ) /
-            2
-          )
-        );
-
-      //System.out.println( "Distance_From_Rest: "+distance_from_rest+" Incremental_Change: "+incremental_change );
-
-      if( reversed ) {
-        if( other_node_partials != null ) {
-          potential_energy.totalEnergy -= incremental_change;
-        }
-      } else {
-        potential_energy.totalEnergy += incremental_change;
-        if( other_node_partials != null ) {
-          potential_energy.totalEnergy += incremental_change;
-        }
-      }
-      if( distance_from_touching < 0.0 ) {
-        incremental_change =
-          ( anticollisionSpringScalars[ layoutPass ] *
-            ( ( anticollisionSpringStrength *
-                ( distance_from_touching * distance_from_touching )
-              ) /
-              2
-            )
-          );
-        if( reversed ) {
-          if( other_node_partials != null ) {
-            potential_energy.totalEnergy -= incremental_change;
-          }
-        } else {
-          potential_energy.totalEnergy += incremental_change;
-          if( other_node_partials != null ) {
-            potential_energy.totalEnergy += incremental_change;
-          }
-        }
-      }
-      if( other_node_partials != null ) {
-        other_node_partials.euclideanDistance =
-          Math.sqrt( ( other_node_partials.x * other_node_partials.x ) +
-                     ( other_node_partials.y * other_node_partials.y ) );
-        if( ( furthest_partials == null ) ||
-            ( other_node_partials.euclideanDistance >
-              furthest_partials.euclideanDistance )
-          ) {
-          furthest_partials = other_node_partials;
-        }
-      }
-
-    }
-
-    if( !reversed ) {
-      partials.euclideanDistance =
-        Math.sqrt( ( partials.x * partials.x ) +
-                   ( partials.y * partials.y ) );
-    }
-
-    if( ( furthest_partials == null ) ||
-        ( partials.euclideanDistance >
-          furthest_partials.euclideanDistance )
-        ) {
-      furthest_partials = partials;
-    }
-
-    //System.out.println( "Furthest_Partials: "+furthest_partials );
-
-    return furthest_partials;
-  } // calculatePartials( PartialDerivatives, List, PotentialEnergy, boolean )
-
-  // Move the node with the given partials and adjust all partials in the given
-  // List to reflect that move, and adjust the potential energy too.
-  // @return the PartialDerivatives of the furthest node after the move.
-  protected PartialDerivatives moveNode (
-    PartialDerivatives partials,
-    List partials_list,
-    PotentialEnergy potential_energy
-  ) {
-    NodeView node_view = partials.getNodeView();
-
-    PartialDerivatives starting_partials = new PartialDerivatives( partials );
-    calculatePartials(
-      partials,
-      partials_list,
-      potential_energy,
-      true
-    );
-    simpleMoveNode( starting_partials );
-    return
-      calculatePartials(
-        partials,
-        partials_list,
-        potential_energy,
-        false
-      );
-  } // moveNode( PartialDerivatives, List, PotentialEnergy )
-
-  protected void simpleMoveNode (
-    PartialDerivatives partials
-  ) {
-    NodeView node_view = partials.getNodeView();
-    double denomenator =
-      ( ( partials.xx * partials.yy ) -
-        ( partials.xy * partials.xy ) );
-    double delta_x =
-      (
-       ( ( -partials.x * partials.yy ) -
-         ( -partials.y * partials.xy ) ) /
-       denomenator
-      );
-    double delta_y =
-      (
-       ( ( -partials.y * partials.xx ) -
-         ( -partials.x * partials.xy ) ) /
-       denomenator
-      );
-
-    // REMOVE
-    //System.out.println( "moving node \"" + node_view + "\" to ( " + ( node_view.getXPosition() + delta_x ) + ", " + ( node_view.getYPosition() + delta_y ) + " )." );
-
-    // TODO: figure out movement
-    //node_view.setXPosition(
-    //  node_view.getXPosition() + delta_x
-    //);
-    //node_view.setYPosition(
-    //  node_view.getYPosition() + delta_y
-    //);
-
-    Point2D p = node_view.getOffset();
-    node_view.setOffset( p.getX() + delta_x, p.getY() + delta_y );
-
-  } // simpleMoveNode( PartialDerivatives )
-
-
-
-*/
 
 }
