@@ -603,12 +603,37 @@ public final class AllGraphPerspectiveMethodsTest
       throw new IllegalStateException("not degree -1");
 
     // getIndex(Node).
+    if (persp.getIndex(root2Node) != 0 ||
+        persp.getIndex(nodeNotInPersp) != 0)
+      throw new IllegalStateException("index not 0");
+    if (persp.getIndex(persp.getNode(nodeInx[2])) != nodeInx[2])
+      throw new IllegalStateException("wrong node index");
 
     // getNodeIndex(int).
+    if (persp.getNodeIndex(nodeInx[1]) != nodeInx[1] ||
+        persp.getNodeIndex(nodeNotInPersp.getRootGraphIndex()) != 0 ||
+        persp.getNodeIndex(minNodeInx - 1) != 0 ||
+        persp.getNodeIndex(Integer.MAX_VALUE) != 0 ||
+        persp.getNodeIndex(1) != 0)
+      throw new IllegalStateException("bad getNodeIndex(int)");
 
     // getRootGraphNodeIndex(int).
+    if (persp.getRootGraphNodeIndex(nodeInx[3]) != nodeInx[3] ||
+        persp.getRootGraphNodeIndex(nodeNotInPersp.getRootGraphIndex()) != 0 ||
+        persp.getRootGraphNodeIndex(minNodeInx - 1) != 0 ||
+        persp.getRootGraphNodeIndex(Integer.MIN_VALUE) != 0 ||
+        persp.getRootGraphNodeIndex(1) != 0)
+      throw new IllegalStateException("bad getRootGraphNodeIndex(int)");
 
     // getNode(int).
+    if (persp.getNode(minNodeInx - 1) != null ||
+        persp.getNode(0) != null ||
+        persp.getNode(23) != null ||
+        persp.getNode(nodeNotInPersp.getRootGraphIndex()) != null)
+      throw new IllegalStateException("not null");
+    if (persp.getNode(Integer.MAX_VALUE) != null ||
+        persp.getNode(Integer.MIN_VALUE) != null)
+      throw new IllegalStateException("not null");
 
     // getIndex(Edge).
 
