@@ -24,7 +24,7 @@
 						Community 
 					</a>					
 					| 
-					<a href="downloads.php">
+					<a href="download_list.php">
 						Download
 					</a>
 					| 
