@@ -226,7 +226,9 @@ public final class GraphConverter
    * All distances are preserved from to Cytoscape graph to the return object.
    **/
   public static MutablePolyEdgeGraphLayout getGraphCopy
-    (double percentBorder, boolean preserveEdgeAnchors)
+    (double percentBorder,
+     boolean preserveEdgeAnchors,
+     boolean onlySelectedNodesMovable)
   {
     if (percentBorder < 0.0d)
       throw new IllegalArgumentException("percentBorder < 0.0");
@@ -452,7 +454,9 @@ public final class GraphConverter
    * while operating on this return object.
    **/
   public static MutablePolyEdgeGraphLayout getGraphReference
-    (double percentBorder, boolean preserveEdgeAnchors)
+    (double percentBorder,
+     boolean preserveEdgeAnchors,
+     boolean onlySelectedNodesMovable)
   {
     if (percentBorder < 0.0d)
       throw new IllegalArgumentException("percentBorder < 0.0");

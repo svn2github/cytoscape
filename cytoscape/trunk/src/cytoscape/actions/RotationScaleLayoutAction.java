@@ -32,7 +32,7 @@ public class RotationScaleLayoutAction extends CytoscapeAction
   public void actionPerformed(ActionEvent e)
   {
     final MutablePolyEdgeGraphLayout nativeGraph =
-      GraphConverter.getGraphCopy(20.0d, true);
+      GraphConverter.getGraphCopy(20.0d, true, true);
     final RotationLayouter rotation = new RotationLayouter(nativeGraph);
     final ScaleLayouter scale = new ScaleLayouter(nativeGraph);
     Frame cyFrame = Cytoscape.getDesktop();

@@ -25,7 +25,7 @@ public class SpringEmbeddedLayoutAction extends CytoscapeAction
   public void actionPerformed(ActionEvent e)
   {
     final MutablePolyEdgeGraphLayout nativeGraph =
-      GraphConverter.getGraphCopy(0.0d, false);
+      GraphConverter.getGraphCopy(0.0d, false, true);
     SpringEmbeddedLayouter2 layoutAlg =
       new SpringEmbeddedLayouter2(nativeGraph);
 
