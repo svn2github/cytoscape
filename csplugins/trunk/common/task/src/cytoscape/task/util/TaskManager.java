@@ -20,8 +20,9 @@ public class TaskManager {
     public static JTask executeTask(Task task, JTaskConfig config) {
 
         //  Validate incoming task parameter.
-        if (task == null)
+        if (task == null) {
             throw new NullPointerException("Task is null");
+        }
 
         //  If JTaskConfig is null, use the bare bones configuration options.
         if (config == null) {
@@ -51,7 +52,7 @@ public class TaskManager {
 class TaskWrapper extends Thread {
     private Task task;
     private JTask jTask;
-    private final Object m_lock = new Object();
+    private final Object lock = new Object();
     private boolean ran = false;
     private boolean running = false;
     private boolean stop = false;
@@ -74,7 +75,7 @@ class TaskWrapper extends Thread {
      * <code>IllegalStateException</code>.
      */
     public void run() {
-        synchronized (m_lock) {
+        synchronized (lock) {
             if (ran) {
                 throw new IllegalStateException
                         ("Task already running or ran");
@@ -83,8 +84,10 @@ class TaskWrapper extends Thread {
         }
 
         // Guaranteed to get to this line of code at most once.
-        synchronized (m_lock) {
-            if (stop) return;
+        synchronized (lock) {
+            if (stop) {
+                return;
+            }
             running = true;
         }
         try {
@@ -95,9 +98,9 @@ class TaskWrapper extends Thread {
             //  Inform the UI Component that the task is now done
             jTask.setDone();
 
-            synchronized (m_lock) {
+            synchronized (lock) {
                 running = false;
-                m_lock.notifyAll();
+                lock.notifyAll();
             }
         }
     }
