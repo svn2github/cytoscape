@@ -19,13 +19,6 @@ public final class GraphCompiler
   public static final long NO_COMPILER_HINTS =              0x0000000000000000;
 
   /**
-   * The compiler compiles flagged functionalality in the constructor if this
-   * flag is set; otherwise compilation is triggered only the first time
-   * corresponding functionality is asked for.
-   **/
-  public static final long IMMEDIATE_COMPILE =              0x0000000000000001;
-
-  /**
    * Hints to the compiler that <code>getNeighboringNodeIndices()</code>
    * will be used so that node neighbors lists should be compiled.
    * Compiling node neighbors information takes O(e) time where e is the
@@ -75,6 +68,16 @@ public final class GraphCompiler
    **/
   public final GraphTopology graph;
 
+  // The least restrictive definition.
+  private final static NodeNeighborDefinition s_defaultNeighDef =
+    new NodeNeighborDefinition() {
+      public boolean isNodeNeighbor(int edgeIndex,
+                                    int nodeAIndex,
+                                    int nodeBIndex) {
+        return true; } };
+
+  private NodeNeighborDefinition m_neighDef = s_defaultNeighDef;
+
   /**
    * <font color="#ff0000">IMPORTANT:</font> The <code>GraphTopology</code>
    * object passed to this constructor must have a non-mutable topology.  The
@@ -97,50 +100,63 @@ public final class GraphCompiler
   }
 
   /**
+   * Sets node neighbor definition to the specified definition, or to the
+   * default definition if <code>neighDef</code> is <code>null</code>.
+   * This method must be called before node neighbors are compiled.
+   * Your safest bet is to call this right after construction of this object.
+   *
+   * @exception IllegalStateException if node neighbors have already been
+   *   compiled.
+   **/
+  public void setNodeNeighborDefinition(NodeNeighborDefinition neighDef)
+  {
+    if (m_nodeNeighborsCompiled)
+      throw new IllegalStateException("node neighbors already compiled");
+    m_neighDef = ((neighDef == null) ? s_defaultNeighDef : neighDef);
+  }
+
+  /**
    * Returns a neighboring nodes list.<p>
    * Let's define a binary relation on nodes in a graph, called
    * <i>neighbor</i>: Node A is a <i>neighbor</i> of node
-   * B if and only if at least one of the following is true:
-   * <ol><li>There exists a directed edge E such that B is the source node of
-   *         E and such that A is the target node of E.</li>
-   *     <li>There exists an undirected edge F such that A and B are endpoints
-   *         of F.</li></ol><p>
+   * B if and only if there exists an edge E such that A and B are
+   * endpoints of E.<p>
+   * What I mean by A and B being <i>endpoints</i>
+   * of an edge E: Node A is an <i>endpoint</i> of edge E if and only if
+   * at least one of the following is true:
+   * <ol><li>E is directed and A is the source node of E.</li>
+   *     <li>E is directed and B is the target node of E.</li>
+   *     <li>E is undirected and A is &quot;node 0&quot; of E.</li>
+   *     <li>E is undirected and B is &quot;node 1&quot; of E.</li></ol><p>
+   * It can be proven that the <i>neighbors</i> relation on the set of nodes
+   * in a graph is <i>symmetric</i>; that is, if A is a neighbor of B then
+   * B is a neighbor of A.<p>
    * If node N is the node at index <code>nodeIndex</code> then this method
    * returns indices of all nodes Q such that Q is a neighbor of
    * node N.<p>
    * Let's now look at some examples so that we get a feeling for how
    * this method behaves (referring back to the definition).
-   * <ul><li>A graph has exactly 2 [unique] nodes A and B and exactly one edge
-   *         E which is undirected; A is &quot;node 0&quot; of E and B is
-   *         &quot;node 1&quot; of E.  if we ask
-   *         to get neighbors of A with this method, it should (and will)
-   *         return a list of length 1, containing only node B.  Let's
-   *         prove why A is not returned as a neighboring node of A.
-   *         Assume A is a neighbor of A.  There exist no directed
-   *         edges in this graph, therefore condition 2 in the definition
-   *         of <i>neighbor</i> must hold true.  That is,
-   *         there exists an undirected edge whose end nodes are A and A.
-   *         But this is incorrect.  Therefore our assumption is false - that
-   *         is, A is <i>not</i> a directed neighbor of A.  Therefore A
+   * <ul><li>A graph has exactly 2 [unique] nodes G and H and exactly one edge
+   *         W which is undirected; G is &quot;node 0&quot; of W and H is
+   *         &quot;node 1&quot; of W.  if we ask
+   *         to get neighbors of G with this method, it should (and will)
+   *         return a list of length 1, containing only node H.  Let's
+   *         prove why G is not returned as a neighboring node of G.
+   *         Assume G is a neighbor of G.  By definition, it follows that
+   *         there exists an edge E such that E has endpoint nodes G and G.
+   *         There exists only a single edge, and so W must have endpoint nodes
+   *         G and G.
+   *         By definition of <i>endpoint</i>, at least one of 1-4 is true.
+   *         But all of 1-4 are false.  Contradiction.
+   *         Therefore our assumption is false - that
+   *         is, A is <i>not</i> a neighbor of A.  Therefore A
    *         will not be returned in the list of neighboring nodes of A.</li>
-   * </ul><p>
-   * <font color="#ff0000">IMPORTANT EDITORIAL NOTE:</font> The author of this
-   * algorithm needs to modify the interface to the algorithm to allow
-   * developers to provide custom definitions of <i>directed
-   * neighbor</i>; this definition should be an interface, which, if not
-   * provided by a programmer, will default to the definition stated above.
-   * Providing this &quot;hook&quot; for this definition will also make
-   * the <code>honorDirectedEdges</code> parameter go away -
-   * <code>honorDirectedEdges</code> is just trying to provide more
-   * flexibility for defining <code>directed neighbor</code> without
-   * providing full ability to define this.
+   * </ul>
    *
    * @param nodeIndex the index of the node whose neighbors we're trying
    *   to find.
-   * @param honorDirectedEdges we treat directed edges as undirected if
-   *   and only if this is <code>false</code>.
    * @return a non-repeating list of indices of all nodes B such that
-   *   <i>B is a directed neighbor of node at index
+   *   <i>B is a neighbor of node at index
    *   <code>nodeIndex</code></i>; every entry in the returned iterator will
    *   lie in the interval
    *   <nobr><code>[0, graph.getNumNodex() - 1]</code></nobr>; this method
@@ -148,8 +164,7 @@ public final class GraphCompiler
    * @exception IndexOutOfBoundsException if <code>nodeIndex</code> is not
    *   in the interval <nobr><code>[0, graph.getNumNodes() - 1]</code></nobr>.
    **/
-  public IndexIterator getNeighboringNodeIndices(int nodeIndex,
-                                                 boolean honorDirectedEdges)
+  public IndexIterator getNeighboringNodeIndices(int nodeIndex)
   {
     compileNodeNeighbors();
 
@@ -157,47 +172,10 @@ public final class GraphCompiler
       throw new IndexOutOfBoundsException
         ("nodeIndex is out of range with value " + nodeIndex);
 
-    if (honorDirectedEdges)
-    {
-      Hashtable specificNeighbors = m_nodeNeighbors[nodeIndex];
-      if (specificNeighbors == null)
-        specificNeighbors = m_dummyEmptyHashtable;
-      final int[] returnThis = new int[specificNeighbors.size()];
-      Enumeration values = specificNeighbors.elements();
-      for (int i = 0; i < returnThis.length; i++)
-        returnThis[i] = ((Integer) values.nextElement()).intValue();
-      return new ArrayIterator(returnThis);
-    }
-    else
-    {
-      Hashtable specificRealNeighbors = m_nodeNeighbors[nodeIndex];
-      Hashtable specificFakeNeighbors = m_fakeNodeNeighbors[nodeIndex];
-      if (specificRealNeighbors == null)
-        specificRealNeighbors = m_dummyEmptyHashtable;
-      if (specificFakeNeighbors == null)
-        specificFakeNeighbors = m_dummyEmptyHashtable;
-
-      // We're going to use the following hashtable to filter duplicates.
-      Hashtable returnValues = new Hashtable();
-      Enumeration values = specificRealNeighbors.elements();
-      for (int i = 0; i < specificRealNeighbors.size(); i++) {
-        Object o = values.nextElement();
-        returnValues.put(o, o); }
-      values = specificFakeNeighbors.elements();
-      for (int i = 0; i < specificFakeNeighbors.size(); i++) {
-        Object o = values.nextElement();
-        returnValues.put(o, o); }
-      final int[] returnThis = new int[returnValues.size()];
-      values = returnValues.elements();
-      for (int i = 0; i < returnThis.length; i++)
-        returnThis[i] = ((Integer) values.nextElement()).intValue();
-      return new ArrayIterator(returnThis);
-    }
+    return new ArrayIterator(m_nodeNeighbors[nodeIndex]);
   }
 
-  private Hashtable[] m_nodeNeighbors = null;
-  private Hashtable[] m_fakeNodeNeighbors = null;
-  private final Hashtable m_dummyEmptyHashtable = new Hashtable();
+  private int[][] m_nodeNeighbors = null;
   private boolean m_nodeNeighborsCompiled = false;
 
   private void compileNodeNeighbors()
@@ -205,25 +183,31 @@ public final class GraphCompiler
     if (m_nodeNeighborsCompiled) return;
     m_nodeNeighborsCompiled = true;
 
-    m_nodeNeighbors = new Hashtable[graph.getNumNodes()];
-    m_fakeNodeNeighbors = new Hashtable[graph.getNumNodes()];
+    final Hashtable[] nodeNeighbors = new Hashtable[graph.getNumNodes()];
+    for (int i = 0; i < nodeNeighbors.length; i++)
+      nodeNeighbors[i] = new Hashtable();
     for (int edgeIndex = 0; edgeIndex < graph.getNumEdges(); edgeIndex++)
     {
-      Integer sourceNode =
-        new Integer(graph.getEdgeNodeIndex(edgeIndex, true));
-      Integer targetNode =
-        new Integer(graph.getEdgeNodeIndex(edgeIndex, false));
-      Hashtable specificNeighbors = m_nodeNeighbors[sourceNode.intValue()];
-      if (specificNeighbors == null) specificNeighbors = new Hashtable();
-      specificNeighbors.put(targetNode, targetNode);
-      m_nodeNeighbors[sourceNode.intValue()] = specificNeighbors;
-      Hashtable[] oppositePut;
-      if (graph.isDirectedEdge(edgeIndex)) oppositePut = m_fakeNodeNeighbors;
-      else oppositePut = m_nodeNeighbors;
-      specificNeighbors = oppositePut[targetNode.intValue()];
-      if (specificNeighbors == null) specificNeighbors = new Hashtable();
-      specificNeighbors.put(sourceNode, sourceNode);
-      oppositePut[targetNode.intValue()] = specificNeighbors;
+      Integer nodeA = new Integer(graph.getEdgeNodeIndex(edgeIndex, true));
+      Integer nodeB = new Integer(graph.getEdgeNodeIndex(edgeIndex, false));
+      for (int i = 0; i < 2; i++) {
+        if (nodeNeighbors[nodeA.intValue()].get(nodeB) == null &&
+            m_neighDef.isNodeNeighbor(edgeIndex,
+                                      nodeA.intValue(), nodeB.intValue()))
+          nodeNeighbors[nodeA.intValue()].put(nodeB, nodeB);
+        Integer temp = nodeB;
+        nodeB = nodeA;
+        nodeA = temp; }
+    }
+    m_neighDef = null; // Dereference because we're done using this.
+    m_nodeNeighbors = new int[graph.getNumNodes()][];
+    for (int i = 0; i < m_nodeNeighbors.length; i++)
+    {
+      Hashtable neighborsHash = nodeNeighbors[i];
+      m_nodeNeighbors[i] = new int[neighborsHash.size()];
+      Enumeration values = neighborsHash.elements();
+      for (int j = 0; j < m_nodeNeighbors[i].length; j++)
+        m_nodeNeighbors[i][j] = ((Integer) values.nextElement()).intValue();
     }
   }
 
