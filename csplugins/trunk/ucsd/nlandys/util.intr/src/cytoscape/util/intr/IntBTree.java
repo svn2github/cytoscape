@@ -200,8 +200,9 @@ public final class IntBTree
    *   overflowBuff: | 6 | 6 | 8 | 9 | / | / | / |
    *                 +---+---+---+---+---+---+---+
    */
-  private final void split(final int newVal, final int[] origBuff,
-                           final int[] overflowBuff, final int overflowCount)
+  private final static void split(final int newVal, final int[] origBuff,
+                                  final int[] overflowBuff,
+                                  final int overflowCount)
   {
     int[] currentArr = overflowBuff;
     int currentInx = overflowCount;
@@ -259,9 +260,10 @@ public final class IntBTree
    *   every other node would entail specifying newInx as -1, which is not
    *   allowed.
    */
-  private final void split(Node newNode, final int newInx,
-                           final Node[] origNodes, final Node[] overflowNodes,
-                           final int overflowCount)
+  private final static void split(Node newNode, final int newInx,
+                                  final Node[] origNodes,
+                                  final Node[] overflowNodes,
+                                  final int overflowCount)
   {
     Node[] currentNodes = overflowNodes;
     int currentInx = overflowCount;
