@@ -23,6 +23,10 @@ import java.io.PrintStream;
  *
  * <p>
  * Ref: Kschischang, Frey, Loeliger. IEEE Trans Inf Theory. Feb 2001
+ * 
+ * 
+ *  TODO: Separate Max-Product code from factor graph construction code
+ * 
  */
 public class FactorGraph
 {
@@ -43,34 +47,50 @@ public class FactorGraph
     // map path number to path-factor node index
     private OpenIntIntHashMap _pathMap; 
 
-    private IntArrayList _pathActive;
-    private IntArrayList _vars;
-    private IntArrayList _factors;
+    protected IntArrayList _pathActive;
+    protected IntArrayList _vars;
+    protected IntArrayList _factors;
+    protected IntArrayList _sign;
     
     // map interaction edge index to AnnotatedEdge
     protected OpenIntObjectHashMap _edgeMap;
-    
 
+    // map edge presence variable index to AnnotatedEdge object
+    protected OpenIntObjectHashMap _x2aeMap;
+
+    // map edge direction variable index to AnnotatedEdge object
+    protected OpenIntObjectHashMap _d2aeMap;
+    
+    // map edge sign variable index to AnnotatedEdge object
+    protected OpenIntObjectHashMap _s2aeMap;
+    
     // the InteractionGraph that this FactorGraph is based on
     protected InteractionGraph _ig;
 
     // the PathResults that this FactorGraph is based on
-    private PathResult _paths;
+    protected PathResult _paths;
     
     // adjaceny list of edge messages
     // maps a factor graph node index to the List of EdgeMessages
     // that connect that node to its neighbors in the factor graph.
     // Used for MaxProduct algorithm.
-    private IntListMap _adjacencyMap;
+    protected IntListMap _adjacencyMap;
 
+    // dependency relationships between nodes
+    protected DependencyGraph _dependencyGraph;
 
+    protected List _submodels;
+    
     /**
      * So the PrintableFactorGraph subclass can use
      * a different type of underlying graph
      */
     protected RootGraph _newRootGraph()
     {
-        return new DummyRootGraph();
+        //return new DummyRootGraph();
+        //return GinyFactory.createRootGraph();
+
+        return new AdjacencyListRootGraph();
     }
 
 
@@ -79,6 +99,10 @@ public class FactorGraph
         _ig = ig;
         _paths = pathResults;
         _g = _newRootGraph();
+
+        _dependencyGraph = new DependencyGraph(_g.getNodeCount());
+
+        _submodels = new ArrayList();
         
         IntListMap edge2path = pathResults.getEdge2PathMap();
 
@@ -88,7 +112,7 @@ public class FactorGraph
         
         IntArrayList kos = pathResults.getKOs();
         IntArrayList edges = edge2path.keys();
-
+        
         // number of nodes in factor graph =
         //     2 * #knockouts
         //   + 2*number-of-paths 
@@ -111,12 +135,19 @@ public class FactorGraph
 
         _nodeMap = new OpenIntObjectHashMap(nN);
         _pathMap = new OpenIntIntHashMap(pathResults.getPathCount());
+
         _edgeMap = new OpenIntObjectHashMap(edges.size());
+        _x2aeMap = new OpenIntObjectHashMap(edges.size());
+        _d2aeMap = new OpenIntObjectHashMap(edges.size());
+        _s2aeMap = new OpenIntObjectHashMap(edges.size());
+
         _adjacencyMap = new IntListMap(nN);
             
         _pathActive = new IntArrayList(pathResults.getPathCount());
         _factors = new IntArrayList(kos.size() + pathResults.getPathCount());
         _vars = new IntArrayList(nN - kos.size() - pathResults.getPathCount());
+
+        _sign = new IntArrayList(edges.size());
     }
 
     public static FactorGraph create(InteractionGraph ig, PathResult pathResults)
@@ -225,9 +256,24 @@ public class FactorGraph
      */
     private int connect(int varNode, int facNode, State dir)
     {
+        /*
         EdgeMessage em = new EdgeMessage((VariableNode) _nodeMap.get(varNode),
                                          (FactorNode) _nodeMap.get(facNode),
                                          dir);
+        */
+
+        EdgeMessage em;
+        if(dir != null)
+        {
+            em = new EdgeMessage((VariableNode) _nodeMap.get(varNode),
+                                 varNode, facNode, dir);
+        }
+        else
+        {
+            em = new EdgeMessage((VariableNode) _nodeMap.get(varNode),
+                                 varNode, facNode);
+        }
+        
         _adjacencyMap.add(varNode, em);
         _adjacencyMap.add(facNode, em);
         
@@ -240,12 +286,7 @@ public class FactorGraph
      */
     private int connect(int varNode, int facNode)
     {
-        EdgeMessage em = new EdgeMessage((VariableNode) _nodeMap.get(varNode),
-                                         (FactorNode) _nodeMap.get(facNode));
-        _adjacencyMap.add(varNode, em);
-        _adjacencyMap.add(facNode, em);
-        
-        return _g.createEdge(varNode, facNode, false);
+        return connect(varNode, facNode, null);
     }
 
     /**
@@ -262,6 +303,9 @@ public class FactorGraph
         ae.label = _ig.edgeLabel(interactionEdgeIndex);
         
         _edgeMap.put(interactionEdgeIndex, ae);
+        _x2aeMap.put(ae.fgIndex, ae);
+        _d2aeMap.put(ae.dirIndex, ae);
+        _s2aeMap.put(ae.signIndex, ae);
 
         return ae;
     }
@@ -312,7 +356,7 @@ public class FactorGraph
     protected int createSign(int interactionEdgeIndex)
     {
         int node = _g.createNode();
-
+        _sign.add(node);
         _vars.add(node);
         _nodeMap.put(node, VariableNode.createSign(interactionEdgeIndex));
         return node;
@@ -476,14 +520,17 @@ public class FactorGraph
             AnnotatedEdge ae = (AnnotatedEdge) aes.get(n);
 
             if((ae.maxState == State.ONE)
-               &&  _paths.isEdgeOnPath(ae.interactionIndex,
-                                       activePaths))
+               && _paths.isEdgeOnPath(ae.interactionIndex, activePaths)
+                && ae.maxSign != null)
             {
                 activeEdges.add(ae);
             }
         }
         
         _ig.setActiveEdges(activeEdges);
+
+        System.out.println("Found " + activePaths.length + " active paths");
+        System.out.println("Found " + activeEdges.size() + " active edges");
     }
 
     int[] getActivePaths()
@@ -505,12 +552,19 @@ public class FactorGraph
         return l.elements();
     }
 
+
     /**
      * Run the max product algorithm.
      *
      * FIX: termination condition. decompose degenerate networks.
      */
     public void runMaxProduct()  throws AlgorithmException
+    {
+        _runMaxProduct();
+        updateEdgeAnnotation();
+    }
+    
+    private void _runMaxProduct()  throws AlgorithmException
     {
         _vars.trimToSize();
         _factors.trimToSize();
@@ -519,22 +573,504 @@ public class FactorGraph
         int[] f = _factors.elements();
 
         initVar2Factor(v);
-        computeFactor2Var(f);
-        computeVar2Factor(v);
+        
+        int N = 2  * _paths.getMaxPathLength();
 
-        for(int x=0; x < 2; x++)
+        System.out.println("Running max product " + N + " iterations");
+        
+        for(int x=0; x < N; x++)
         {
             computeFactor2Var(f);
             computeVar2Factor(v);
         }
-
-        updateEdgeAnnotation();
     }
 
-    private void updateEdgeAnnotation()
+    private void partitionFactorGraph()
+    {
+        
+        /*
+        // divide the factor graph into connected components
+        DFS dfs = new DFS(_g);
+        GraphForrest components = dfs.traverse();
+
+        System.out.println("Found " + components.size() + " trees by DFS");
+
+        // separate the sign variables from non-sign vars in each
+        // connected components.
+        GraphForrest signs = new GraphForrest();
+        GraphForrest others = new GraphForrest();
+                
+        for(Iterator it = components.iterator(); it.hasNext();)
+        {
+            IntArrayList nodes = (IntArrayList) it.next();
+            System.out.println("tree has " + nodes.size() + " nodes.");
+
+            IntArrayList s= signs.newTree();
+            IntArrayList o= others.newTree();
+
+            for(int x=0; x < nodes.size(); x++)
+            {
+                int v = nodes.get(x);
+                FGNode fgn =  (FGNode) _nodeMap.get(v);   
+                if(!fgn.isType(NodeType.FACTOR))
+                {
+                    if(fgn.isType(NodeType.SIGN))
+                    {
+                        // inefficient because fixDegenerateVar must
+                        // translate the int "v" back into a Node object
+                        s.add(v);
+                    }
+                    else
+                    {
+                        
+                        o.add(v);
+                    }
+                }
+            }
+
+            System.out.println("   " + s.size() + " signs");
+            System.out.println("   " + o.size() + " other");
+        }
+        
+        // sort the sign nodes in each component by degree
+        List sortedSigns = new ArrayList();
+        for(Iterator it = signs.iterator(); it.hasNext();)
+        {
+            IntArrayList l = sortNodesByDegree((IntArrayList) it.next());
+            sortedSigns.add(l);
+        }
+        */
+
+    }
+    
+    /**
+     * Run the max product algorithm.
+     *
+     * FIX: termination condition. decompose degenerate networks.
+     */
+    public void runMaxProductAndDecompose() throws AlgorithmException
+    {
+        _submodels.clear();
+
+        _runMaxProduct();
+        fixUniqueVars();
+
+        // annotate invariant edges in the interaction graph
+        List invariantModel = updateEdgeAnnotation();
+
+        _submodels.add(invariantModel);
+        
+        //partitionFactorGraph();
+        
+        IntArrayList allSortedSign = sortNodesByDegree(_sign);
+
+        //System.out.println(printAdj());
+        
+        // first fix degenerate sign variables
+        int x=0;
+        x += recursivelyFixVars(_sign);
+        
+        // now fix any other non-sign variables that are degenerate
+        x += recursivelyFixVars(_vars);
+        
+        System.out.println("Called max product method " + x + " times");
+
+        // update the edge annotations now that all variables are fixed.
+        updateEdgeAnnotation();
+
+        System.out.println("### Dependency Graph");
+        System.out.println(CyUtil.toString(_dependencyGraph.getRootGraph(),
+                                           _dependencyGraph.getDep2InteractionMap())
+                           );
+
+        // break dependecy graph into connected components
+
+
+        // send connected components to interaction graph
+    }
+
+
+    private int recursivelyFixVars(IntArrayList varNodes)
+    {
+        int x=0;
+        while(!allFixed(varNodes))
+        {
+            x++;
+
+            // at each iteration, fix one sign variable in each connected
+            // component of the factor graph
+            System.out.println("### fix var loop: " + x);
+           
+            /*for(int y=0; y < sortedSigns.size(); y++)
+            {
+                int var = chooseDegenerateVar((IntArrayList) sortedSigns.get(y));
+
+                if(var < 0)
+                {
+                    fixVar(var);
+                }
+            }
+            */
+
+            int var = chooseDegenerateVar(varNodes);
+            
+            if(var < 0)
+            {
+                fixVar(var);
+            }
+            
+            _runMaxProduct();
+            fixUniqueVars(var);
+        }
+        
+        return x;
+    }
+    
+    /**
+     * @return the list of nodes sorted by degree
+     */
+    private IntArrayList sortNodesByDegree(IntArrayList nodes)
+    {
+        OpenIntIntHashMap map = new OpenIntIntHashMap(nodes.size());
+        
+        for(int x=0; x < nodes.size(); x++)
+        {
+            int v = nodes.get(x);
+
+            List messages = _adjacencyMap.get(v);
+
+            map.put(v, messages.size());
+        }
+
+        IntArrayList sortedNodes = new IntArrayList(nodes.size());
+        map.keysSortedByValue(sortedNodes);
+        return sortedNodes;
+    }
+
+    /**
+     *
+     *
+     * @param nodes a list of root graph node indicies
+     * @return true if all of the nodes in "nodes" are fixed.  
+     */
+    private boolean allFixed(IntArrayList nodes)
+    {
+        for(int x=0; x < nodes.size(); x++)
+        {
+            int v = nodes.get(x);
+
+            if(!isVarFixed(v))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    
+    /**
+     * Fix all variables that have a unique max
+     */
+    private void fixUniqueVars()
+    {
+        int ct = 0;
+        
+        for(int x=0; x < _vars.size(); x++)
+        {
+            int v = _vars.get(x);
+            VariableNode vn = (VariableNode) _nodeMap.get(v);
+
+            ProbTable pt = vn.getProbs();
+
+            if(!vn.isFixed())
+            {
+                if(pt.hasUniqueMax())
+                {
+                    vn.fixState(pt.maxState());
+                    ct++;
+                }
+            }
+        }
+
+        System.out.println("fixed " + ct + " variables of " + _vars.size());
+    }
+
+    /**
+     * Fix all variables that have a unique max.
+     * Establish dependency relationship from fixedNode to
+     * the newly fixed nodes.
+     */
+    private void fixUniqueVars(int fixedNode)
+    {
+        int ct = 0;
+
+        for(int x=0; x < _vars.size(); x++)
+        {
+            int v = _vars.get(x);
+            VariableNode vn = (VariableNode) _nodeMap.get(v);
+
+            ProbTable pt = vn.getProbs();
+
+            if(!vn.isFixed())
+            {
+                if(pt.hasUniqueMax())
+                {
+                    setDependency(fixedNode, v, pt.maxState());
+                    vn.fixState(pt.maxState());
+                    ct++;
+                }
+            }
+        }
+
+        System.out.println("fixed " + ct + " variables of " + _vars.size());
+    }
+
+    /**
+     * Record a dependency established by fixing "fixedNode
+     *
+     * @param fixedNode the degerate variable that was manually fixed
+     * @param node a variable that was uniquely determined by the last
+     *             run of the max product algorith,
+     */
+    private void setDependency(int fixedNode, int node, State max)
+    {
+        System.out.println("setDependency: " + fixedNode + ", " + node
+                           + " max=" + max);
+
+        updateDepGraph(fixedNode, node);
+        
+        // identify variables that are connected to the factor nodes
+        // that are connected to this variable
+
+        List messages = _adjacencyMap.get(node);
+        for(int m=0, M=messages.size(); m < M; m++)
+        {
+            EdgeMessage em = (EdgeMessage) messages.get(m);
+
+            int fac = em.getFactorIndex();
+
+            List fmsg = _adjacencyMap.get(fac);
+            for(int x=0, N=fmsg.size(); x < N; x++)
+            {
+
+                int y = ((EdgeMessage) fmsg.get(x)).getVariableIndex();
+                
+                if(y != node && isVarFixed(y))
+                {
+                    //System.out.println("update dependency graph: " + y + ", " + node);
+                    updateDepGraph(y, node);
+                }
+            }
+
+        }
+
+    }
+
+    private boolean isInvariant(int node)
+    {
+        FGNode fgn = (FGNode) _nodeMap.get(node);
+
+        if(fgn.isType(NodeType.EDGE))
+        {
+            return ((AnnotatedEdge) _x2aeMap.get(node)).invariant;
+        }
+        else if(fgn.isType(NodeType.SIGN))
+        {
+            return ((AnnotatedEdge)_s2aeMap.get(node)).invariant;
+        }
+        else if(fgn.isType(NodeType.DIR))
+        {
+            return ((AnnotatedEdge)_d2aeMap.get(node)).invariant;
+        }
+
+        return false;
+    }
+    
+    /**
+     * Update dependency graph with relationship: n2 depends on n1.
+     *
+     * @param n2 the dependent node
+     * @param n1 the node that n2 is dependent on
+     */
+    private void updateDepGraph(int n1, int n2)
+    {
+        int edge1 = nodeIndex2InteractionIndex(n1);
+        int edge2 = nodeIndex2InteractionIndex(n2);
+
+        if(edge1 != 0 && edge2 != 0
+           && edge1 != edge2
+           && !isInvariant(n1))
+        {
+            //            System.out.println("isInvariant: " + edge1 + " " + isInvariant(n1));
+            _dependencyGraph.add(edge1, edge2);
+        }
+    }
+    
+
+    /**
+     *
+     *
+     * @param node index of a node in the factor graph
+     * @return if node is an edge presence, sign or direction variable, then
+     * return the index of the edge in the interaction graph that corresponds
+     * to the variable. Return 0 otherwise.
+     */
+    private int nodeIndex2InteractionIndex(int node)
+    {
+        FGNode fgn = (FGNode) _nodeMap.get(node);
+
+        if(fgn.isType(NodeType.EDGE))
+        {
+            return ((AnnotatedEdge) _x2aeMap.get(node)).interactionIndex;
+        }
+        else if(fgn.isType(NodeType.SIGN))
+        {
+            return ((AnnotatedEdge)_s2aeMap.get(node)).interactionIndex;
+        }
+        else if(fgn.isType(NodeType.DIR))
+        {
+            return ((AnnotatedEdge)_d2aeMap.get(node)).interactionIndex;
+        }
+
+        return 0;
+    }
+    
+    /**
+     * @param sortedNodes nodes sorted by degree in ascending order
+     * 
+     * @return the root graph index of a degenerate variable, or zero if
+     * all variables are fixed.
+     */
+    private int chooseDegenerateVar(IntArrayList sortedNodes)
+    {
+        for(int x=sortedNodes.size() - 1; x >= 0; x--)
+        {
+            int v = sortedNodes.get(x);
+
+            if(!isVarFixed(v))
+            {
+                return v;
+            }
+        }
+
+        return 0;
+    }
+
+    private boolean isVarFixed(int varIndex)
+    {
+        VariableNode vn = (VariableNode) _nodeMap.get(varIndex);
+
+        return vn.isFixed();
+    }
+    
+    /**
+     * Fix "var" to a specific state.  Choose the state randomly
+     *
+     * @param var the root graph index of the variable to fix
+     */
+    private void fixVar(int var)
+    {
+        System.out.println("fixvar called on " + var);
+
+        if(_nodeMap.containsKey(var))
+        {
+            VariableNode vn = (VariableNode) _nodeMap.get(var);
+
+            if(vn.isFixed())
+            {
+                return;
+            }
+            
+            ProbTable pt = vn.getProbs();
+            if(pt.hasUniqueMax())
+            {
+                vn.fixState(pt.maxState());
+            }
+            else
+            {
+                StateSet ss = vn.stateSet();
+
+                if(ss == StateSet.PATH_ACTIVE)
+                {
+                    vn.fixState(State.ZERO);
+                    System.out.println("fixing path active for path "
+                                       + vn.getId()
+                                       + " to " + State.ZERO);
+                                        
+                }
+                else if (ss == StateSet.EDGE)
+                {
+                    vn.fixState(State.ONE);
+
+                    System.out.println("fixing edge value for "
+                                       + _ig.edgeName(vn.getId())
+                                       + " to " + State.ONE);
+                
+                }
+                else if (ss == StateSet.SIGN)
+                {
+                    vn.fixState(State.MINUS);
+                    
+                    System.out.println("fixing sign for "
+                                       + _ig.edgeName(vn.getId())
+                                       + " to " + State.MINUS);
+                                    
+                }
+                else if (ss == StateSet.DIR)
+                {
+                    vn.fixState(State.PLUS);
+
+                    System.out.println("fixing dir for "
+                                       + _ig.edgeName(vn.getId())
+                                       + " to " + State.PLUS);
+                        
+                }
+                else if(ss == StateSet.KO)
+                {
+                    System.out.println("fixing ko for "
+                                       + _ig.node2Name(vn.getId())
+                                       + " - "
+                                       + _ig.node2Name(vn.getId2()));
+                    
+                    // P(+1) == P(-1) -> choose +1
+                    if(Math.abs(pt.prob(State.PLUS) - pt.prob(State.MINUS)) > 1e-20)
+                    {
+                        vn.fixState(State.PLUS);
+                    }
+                    // P(0) == P(-1) -> choose -1
+                    else if (Math.abs(pt.prob(State.ZERO) - pt.prob(State.MINUS)) > 1e-20)
+                    {
+                        vn.fixState(State.MINUS);
+                    }
+                    // last case: P(0) == P(+1) -> choose +1
+                    else
+                    {
+                        vn.fixState(State.PLUS);
+                    }
+                }
+                else
+                {
+                    // pick a state at random
+                    Iterator it = ss.iterator();
+                    if(it.hasNext())
+                    {
+                        vn.fixState((State) it.next());
+                    }
+                }
+                
+            }
+        }
+    }
+
+    /**
+     * Set the max state, direction, and sign for each edge
+     *
+     */
+    protected List updateEdgeAnnotation()
     {
         ObjectArrayList aes = _edgeMap.values();
-
+        List invariant = new ArrayList();
+        
         for(int x=0; x < aes.size(); x++)
         {
             AnnotatedEdge ae = (AnnotatedEdge) aes.get(x);
@@ -542,30 +1078,60 @@ public class FactorGraph
             ae.maxState = maxState(ae.fgIndex);
             ae.maxDir = maxState(ae.dirIndex);
             ae.maxSign = maxState(ae.signIndex);
+
+            if(ae.maxState != null &&
+               ae.maxDir != null &&
+               ae.maxSign != null)
+            {
+                //                System.out.println("setting invariant to true for: " + ae.interactionIndex);
+                ae.invariant = true;
+                invariant.add(ae);
+            }
         }
+
+        return invariant;
     }
-    
-    private void computeVar2Factor(int[] nodes)
+
+    /**
+     * Compute variable to factor messages
+     *
+     * @param nodes the root graph indicies of variable nodes
+     * @return false
+     */
+    protected boolean computeVar2Factor(int[] nodes)
     {
+        boolean noChange = false;
+        
         for(int x=0, N=nodes.length; x < N; x++)
         {
             int n = nodes[x];
             VariableNode vn = (VariableNode) _nodeMap.get(n);
 
             List messages = _adjacencyMap.get(n);
-            vn.maxProduct(messages);
+            vn.maxProduct(messages, false);
 
+            /* no need since EdgeMessages have a ref to ProbTables?
+             * is this unsafe?
             ProbTable pt = vn.getProbs();
-            
+
             for(int m=0, M=messages.size(); m < M; m++)
             {
                 EdgeMessage em = (EdgeMessage) messages.get(m);
                 em.v2f(pt);
             }
+            */
         }
+
+        return noChange;
     }
-    
-    private void computeFactor2Var(int[] nodes) throws AlgorithmException
+
+    /**
+     * Compute factor to variable messages
+     *
+     * @param nodes the root graph indicies of factor nodes
+     * @throws AlgorithmException
+     */
+    protected void computeFactor2Var(int[] nodes) throws AlgorithmException
     {
         for(int x=0, N=nodes.length; x < N; x++)
         {
@@ -581,8 +1147,13 @@ public class FactorGraph
             }
         }
     }
-    
-    private void initVar2Factor(int[] nodes)
+
+    /**
+     * Initialize messages from variable to factor nodes
+     *
+     * @param nodes root graph indices of variable nodes
+     */
+    protected void initVar2Factor(int[] nodes)
     {
         for(int x=0, N=nodes.length; x < N; x++)
         {

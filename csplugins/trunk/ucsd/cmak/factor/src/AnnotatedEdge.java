@@ -3,6 +3,7 @@ class AnnotatedEdge
     AnnotatedEdge(int interactionIndex)
     {
         this.interactionIndex = interactionIndex;
+        invariant = false;
     }
     
     int interactionIndex;
@@ -16,6 +17,8 @@ class AnnotatedEdge
     State maxDir;
     State maxSign;
 
+    boolean invariant;
+    
     public String toString()
     {
         StringBuffer b = new StringBuffer();

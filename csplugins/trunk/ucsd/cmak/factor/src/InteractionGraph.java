@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.HashSet;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.ListIterator;
 
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -65,6 +66,9 @@ public class InteractionGraph
 
     private ExpressionData _expressionData;
 
+    // paths found on this interaction graph using the _expressionData
+    private PathResult _paths;
+    
     // map edge index to pval (if p-d edge) or probability (if p-p edge).
     private OpenIntDoubleHashMap _edgePvalMap;
 
@@ -172,11 +176,14 @@ public class InteractionGraph
               Map.Entry e = (Map.Entry) it.next();
 
               //System.out.print("edge key=" + e.getKey() + " val=" +  e.getValue());
-              int i = _name2edge.get(e.getKey());
-
-              //System.out.println(" mapped to index: " + i);
-
-              _edgePvalMap.put(i, ((Double) e.getValue()).doubleValue());
+              if(_name2edge.containsKey(e.getKey()))
+              {
+                  int i = _name2edge.get(e.getKey());
+                  
+                  //System.out.println(" mapped to index: " + i);
+                  
+                  _edgePvalMap.put(i, ((Double) e.getValue()).doubleValue());
+              }
           }
           
     }
@@ -260,6 +267,7 @@ public class InteractionGraph
     {
         return _expressionData.getConditionNames();
     }
+
     
     /**
      * Set the threshold used by expressionChanges to determine whether
@@ -284,7 +292,115 @@ public class InteractionGraph
         return null;
     }
 
+    
+    private static Set loadCandidateGenes(String filename)
+        throws IOException
+    {
+        String rawText = "";
+        List interactions = new ArrayList();
 
+        TextFileReader reader = new TextFileReader (filename);
+        
+        int len = reader.read ();
+        
+        if(len > 0)
+        {
+            rawText = reader.getText ();
+        }
+        else
+        {
+            throw new IOException("loadCandidateGenes: TextFileReader error");
+        }
+
+        StringTokenizer strtok = new StringTokenizer (rawText, "\n");
+
+        Set genes = new HashSet();
+        
+        while(strtok.hasMoreTokens())
+        {
+            String[] g = strtok.nextToken().trim().split("\\s+");
+            for(int x=0; x < g.length; x++)
+            {
+                //System.out.println("c = " + g[x]);
+                genes.add(g[x]);
+            }
+        }
+
+        return genes;
+    }
+
+    private static int filterInteractions(List interactions, Set candidates)
+    {
+        int n=0;
+        
+        for(ListIterator it = interactions.listIterator(); it.hasNext();)
+        {
+            Interaction i = (Interaction) it.next();
+            boolean remove = false;
+            
+            if(!candidates.contains(i.getSource()))
+            {
+                remove = true;
+                
+            }
+            else
+            {
+                String[] targets = i.getTargets();
+                for(int x=0; x < targets.length; x++)
+                {
+                    if(!candidates.contains(targets[x]))
+                    {
+                        remove = true;
+                        break;
+                    }
+                }
+            }
+
+            if(remove)
+            {
+                it.remove();
+                n++;
+            }
+                
+        }
+
+        return n;
+    }
+
+    public void setPaths(PathResult paths)
+    {
+        _paths = paths;
+    }
+    
+    public static InteractionGraph createFromSif(String sifFile,
+                                                 String candidateGenes)
+        throws Exception
+    {
+        List interactions = loadInteractions(sifFile);
+        
+        try
+        {
+            int i = interactions.size();
+            Set candidates = loadCandidateGenes(candidateGenes);
+            System.out.println("Parsed " + candidates.size() + " candidate gene names.");
+            
+            int x = filterInteractions(interactions, candidates);
+            System.out.println("Removed " + x + " of " + i + " interactions."
+                               + (i - x) + " remain.");
+        }
+        catch(IOException e)
+        {
+            System.err.println("Error reading candidate genes file: " + candidateGenes);
+            e.printStackTrace();
+        }
+        
+        InteractionGraph g = new InteractionGraph();
+        g.createRootGraphFromInteractions(interactions, false);
+
+        return g;
+
+    }
+    
     /**
      * Factory method to create and InteractionGraph from a .sif file
      * Note: does not throw FileNotFoundException if filename is not found
@@ -292,6 +408,17 @@ public class InteractionGraph
      */
     public static InteractionGraph createFromSif(String filename)
         throws Exception
+    {
+        List interactions = loadInteractions(filename);
+
+        InteractionGraph g = new InteractionGraph();
+        g.createRootGraphFromInteractions(interactions, false);
+
+        return g;
+        
+    }
+
+    private static List loadInteractions(String filename)
     {
         String rawText = "";
         //BioDataServer bds = new BioDataServer(_defaultBioDataDir);
@@ -318,11 +445,7 @@ public class InteractionGraph
             interactions.add (new Interaction(newLine, delimiter));
         }
 
-        InteractionGraph g = new InteractionGraph();
-        g.createRootGraphFromInteractions(interactions, false);
-
-        return g;
-
+        return interactions;
     }
 
     /**
@@ -370,6 +493,10 @@ public class InteractionGraph
         out = new PrintStream(new FileOutputStream(filename + "_sign.eda"));
         writeEdgeSign(out);
         out.close();
+
+        out = new PrintStream(new FileOutputStream(filename + "_type.noa"));
+        writeNodeTypes(out);
+        out.close();
     }
 
     private void writeEdgeDir(PrintStream out)
@@ -414,6 +541,19 @@ public class InteractionGraph
         }       
     }
 
+    private void writeNodeTypes(PrintStream out)
+    {
+        out.println("NodeType (class=java.lang.String)");
+        
+        IntArrayList nodes = _paths.getKOs();
+
+        for(int n=0, N =nodes.size(); n < N; n++)
+        {
+            out.println(node2Name(nodes.get(n)) + " = KO");
+        }       
+    }
+
+    
     protected String canonicalizeName(String name)
     {
         return name;
@@ -514,9 +654,6 @@ public class InteractionGraph
          * for efficiency, create all of the edges at once
          * after source and target node index arrays
          * have been created
-         *
-         * needs to be modified for creating directed (ypd)
-         * vs undirected edges
          *
          * loop over the interactions
          * record edge source and target node indices
@@ -652,7 +789,7 @@ public class InteractionGraph
 
     }
 
-    private String edgeName(int edgeIndex)
+    String edgeName(int edgeIndex)
     {
         int src = _graph.getEdgeSourceIndex(edgeIndex);
         int tgt = _graph.getEdgeTargetIndex(edgeIndex);

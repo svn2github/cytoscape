@@ -51,7 +51,7 @@ public class FGTest extends AbstractPathTest
     {
 
         PathResult r = runPath(ig, sources, 5, expectedPaths);
-        r.print(ig);
+        System.out.println(r.toString(ig));
         
         PrintableFactorGraph fg = PrintableFactorGraph.createPrintable(ig, r); 
         

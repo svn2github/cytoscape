@@ -5,7 +5,7 @@ import java.io.*;
 
 import giny.model.*;
 
-public class MaxProductTest extends AbstractPathTest
+public class ProfileMPTest extends AbstractPathTest
 {
     private String _sif = "test2.sif";
     private String _dfs = "pathtest.sif";
@@ -23,42 +23,27 @@ public class MaxProductTest extends AbstractPathTest
             f.mkdirs();
         }
     }
-
-    /*
     
-    public void testFG2() throws Exception
+    public void testFG3() throws Exception
     {
-        MaxProduct mp = new PrintFGMaxProduct();
-        mp.setInteractionFile("fgtest.sif");
-        mp.setMaxPathLength(5);
-        mp.setExpressionFile("fg2.pvals", 1e-2);
-        mp.setEdgeFile("fgtest.eda", -1);
-        mp.run(outputDir, "fgtest_fg2");
-        
-    }
-    */
-
-    public void testFG2Decompose() throws Exception
-    {
-        MaxProduct mp = new PrintFGMaxProduct();
-        mp.setInteractionFile("fgtest.sif");
-        mp.setMaxPathLength(5);
-        mp.setExpressionFile("fg2.pvals", 1e-2);
-        mp.setEdgeFile("fgtest.eda", -1);
-        mp.run(outputDir, "fgtest_fg2");
-        
-    }
-
-    
-    
-    /*    public void testFG3() throws Exception
-    {
-        MaxProduct mp = new PrintFGMaxProduct();
+        MaxProduct mp = new ProfileMaxProduct();
         mp.setInteractionFile("fgtest.sif");
         mp.setMaxPathLength(5);
         mp.setExpressionFile("fg3.pvals", 1e-2);
         mp.setEdgeFile("fgtest.eda", -1);
         mp.run(outputDir, "fgtest_fg3");
         
-        }*/
+    }
+
+        
+    public void testFG2() throws Exception
+    {
+        MaxProduct mp = new ProfileMaxProduct();
+        mp.setInteractionFile("fgtest.sif");
+        mp.setMaxPathLength(5);
+        mp.setExpressionFile("fg2.pvals", 1e-2);
+        mp.setEdgeFile("fgtest.eda", -1);
+        mp.run(outputDir, "fgtest_fg2");
+        
+    }
 }

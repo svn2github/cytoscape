@@ -9,66 +9,23 @@ import cern.colt.list.IntArrayList;
 public class MaxProduct
 {
     String _interaction;
+    String _candidateGenes;
     String _expressionData;
     String _edgeData;
     double _thresh;
 
-    InteractionGraph _ig;
+    private InteractionGraph _ig;
 
-    int MAX_PATH_LEN = 3;
+    private int MAX_PATH_LEN = 3;
 
-    long start;
+    private long start;
 
-    static final String usage =
-        "Usage: <max path len> \n" +
-        "       <interaction sif file>\n" +
-        "       <expression pvals>\n" +
-        "       <expression pval threshold>\n" +
-        "       <Cytoscape-format edge attribute file>\n" +
-        "       <protein-DNA pvalue threshold: -1 to use all>\n" +
-        "       <output directory>\n" +
-        "       <output base filename>\n" +
-        "       [true <optional if factor graph should be written to a file>]\n";
-    
-    public static void main(String[] args)
+    public MaxProduct()
     {
-        if(args.length < 7)
-        {
-            System.err.println(usage);
-            System.exit(1);
-        }
-        
-        int pathLength = Integer.parseInt(args[0]);
 
-        String i = args[1];
-        String exp = args[2];
-        double expThresh = Double.parseDouble(args[3]);
-        String edge = args[4];
-        double edgeThresh = Double.parseDouble(args[5]);
-        String outdir = args[6];
-        String outfile = args[7];
-
-        boolean printFactorGraph = false;
-        if(args[8] != null)
-        {
-            printFactorGraph = Boolean.valueOf(args[8]).booleanValue();
-        }
-        
-        try
-        {
-            MaxProduct mp = new MaxProduct(i);
-            mp.setMaxPathLength(pathLength);
-            mp.setExpressionFile(exp, expThresh);
-            mp.setEdgeFile(edge, edgeThresh);
-            mp.run(outdir, outfile, printFactorGraph);
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
     }
-    
-    public MaxProduct(String interaction) throws Exception
+
+    public void setInteractionFile(String interaction) throws Exception
     {
         _interaction = interaction;
 
@@ -76,10 +33,17 @@ public class MaxProduct
         _ig = InteractionGraph.createFromSif(_interaction);
     }
 
-    public void setProteinDNAThreshold(double pval)
+    public void setInteractionFile(String interaction, String candidateGenes)
+       throws Exception
     {
+        _interaction = interaction;
+        _candidateGenes = candidateGenes;
 
+        System.out.println("Reading interaction file: " + _interaction);
+        System.out.println("Candidate gene file: " + _candidateGenes);
+        _ig = InteractionGraph.createFromSif(_interaction, _candidateGenes);
     }
+
     
     public void setMaxPathLength(int i)
     {
@@ -118,12 +82,45 @@ public class MaxProduct
     }
 
     
-    public void run(String outputDir, String outputFile, boolean printFactorGraph)
+    public void run(String outputDir, String outputFile)
         throws IOException, AlgorithmException
     {
         //System.out.println(_ig.toString());
         start = System.currentTimeMillis();
+
+        PathResult paths = findPaths();
+        log("Found paths: " + paths.getPathCount());
+
+        log(paths.toString(_ig));
         
+        _run(paths, _ig, outputDir, outputFile);
+    }
+
+
+    protected void _run(PathResult paths, InteractionGraph ig,
+                        String outputDir, String outputFile)
+        throws IOException, AlgorithmException
+    {
+        log("Creating factor graph");
+
+        String fname = outputDir + File.separator + outputFile;
+        
+        FactorGraph fg =  FactorGraph.create(ig, paths); 
+
+        log("Running max product and decompose");
+        fg.runMaxProductAndDecompose();
+                
+        log("Updating interaction graph");
+        fg.updateInteractionGraph();
+
+        log("Writing interaction graph sif file: " + fname);
+        ig.writeGraph(fname);
+
+        log("Done. ");
+    }
+
+    protected PathResult findPaths()
+    {
         String[] conds = _ig.getConditionNames();
         log("conditions: " + Arrays.asList(conds));
         
@@ -133,7 +130,8 @@ public class MaxProduct
         {
             if(_ig.containsNode(conds[x]))
             {
-                ko.add(_ig.name2Node(conds[x]));
+                int i = _ig.name2Node(conds[x]); 
+                ko.add(i);
             }
         }
         ko.trimToSize();
@@ -149,49 +147,12 @@ public class MaxProduct
 
         PathResult paths = d.findPaths(ko.elements(), MAX_PATH_LEN);
 
-        log("Found paths: " + paths.getPathCount());
-        //paths.print(_ig);
-
-        log("Creating factor graph. Print graph =" + printFactorGraph);
-
-        String fname = outputDir + File.separator + outputFile;
+        _ig.setPaths(paths);
         
-        FactorGraph fg;
-        if(printFactorGraph)
-        {
-            fg = PrintableFactorGraph.createPrintable(_ig, paths);
-            
-            log("Writing factor graph sif file: " + fname);
-            
-            ((PrintableFactorGraph) fg).writeSif(fname);
-            
-            ((PrintableFactorGraph) fg).writeNodeProbs(System.out);
-        }
-        else
-        {
-            fg = FactorGraph.create(_ig, paths); 
-        }
-        
-        log("Running max product");
-        fg.runMaxProduct();
-
-        //log(fg.printAdj());
-
-        if(printFactorGraph)
-        {
-            ((PrintableFactorGraph) fg).printMaxConfig();
-        }
-        
-        log("Updating interaction graph");
-        fg.updateInteractionGraph();
-
-        log("Writing interaction graph sif file: " + fname);
-        _ig.writeGraph(fname);
-
-        log("Done. ");
+        return paths;
     }
 
-    private void log(String s)
+    protected void log(String s)
     {
         double t = (System.currentTimeMillis() - start)/1000d;
         System.out.println(s + ". [" + t + "]");

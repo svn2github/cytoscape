@@ -23,7 +23,7 @@ public class DFSPathTest extends AbstractPathTest
         System.out.println(ig.toString());
 
         PathResult results = runPath(ig, ig.name2Node("B"), 5, 3);
-        results.print(ig);
+        System.out.println(results.toString(ig));
     }
 
     
@@ -37,7 +37,7 @@ public class DFSPathTest extends AbstractPathTest
         System.out.println(ig.toString());
 
         PathResult results = runPath(ig, ig.name2Node("a"), 5, 3);
-        results.print(ig);
+        System.out.println(results.toString(ig));
     }
 
     
@@ -52,7 +52,7 @@ public class DFSPathTest extends AbstractPathTest
         int[] sources = {ig.name2Node("A"), ig.name2Node("F")};
 
         PathResult results = runPath(ig, sources , 5, 10);
-        results.print(ig);
+        System.out.println(results.toString(ig));
     }
 
 

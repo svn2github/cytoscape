@@ -1,6 +1,6 @@
 import java.util.List;
 
-public class OrFactorNode implements FactorNode
+public class OrFactorNode extends FactorNode
 {
     protected static final double epOR = 0.001;
     

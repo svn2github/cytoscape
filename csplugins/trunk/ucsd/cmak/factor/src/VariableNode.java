@@ -2,10 +2,12 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.Iterator;
 
-public class VariableNode
+public class VariableNode extends FGNode
 {
+    private static final double EPSILON = 1e-10;
+    
     protected ProbTable probTable;
-    protected NodeType type;
+
     protected StateSet states;
     protected boolean isFixed;
     protected State fixedState;
@@ -57,7 +59,8 @@ public class VariableNode
 
     private VariableNode(NodeType t, StateSet s, int id1, int id2)
     {
-        type = t;
+        super(t);
+
         states = s;
         probTable = new ProbTable(s);
         isFixed = false;
@@ -151,13 +154,20 @@ public class VariableNode
     /**
      * Multiply all of the messages in the list and update this
      * node's probability table.
+     * 
+     * @return true if the probs of this variable do not change.
      */
-    public void maxProduct(List incomingMsgs)
+    public boolean maxProduct(List incomingMsgs)
     {
-        // do nothing if this probabilites of this node have been fixed
+        return maxProduct(incomingMsgs, false);
+    }
+    
+    public boolean maxProduct(List incomingMsgs, boolean checkEqual)
+    {
+        // do nothing if the probabilites of this node have been fixed
         if(isFixed)
         {
-            return;
+            return true;
         }
         
         for(int m=0, N=incomingMsgs.size(); m < N; m++)
@@ -166,7 +176,7 @@ public class VariableNode
             if(this.states != em.f2v().stateSet())
             {
                 System.err.println("VariableNode.maxProduct called with inconsistent messages: " + em.f2v().stateSet());
-                return;
+                return true;
             }
         }
 
@@ -191,8 +201,30 @@ public class VariableNode
                 newProb[i] *= em.f2v().prob(s);
             }
         }
+        boolean isEqual = false;
+
+        if(checkEqual)
+        {
+            isEqual = probTable.equals(newProb, EPSILON);
+
+            /*
+            if(!isEqual)
+            {
+                
+              System.out.println("  isEquals=" + isEqual + " " + type() + " " + getId());
+              for(int x=0; x < newProb.length; x++)
+              {
+              System.out.println("     " + newProb[x] + ", " +
+              probTable.currentProbs()[x]);
+              }
+                
+            }
+            */
+        }
         
         probTable.init(newProb);
+        
+        return isEqual;
     }
     
     /**
@@ -219,10 +251,6 @@ public class VariableNode
         return fixedState;
     }
     
-    public NodeType type()
-    {
-        return type;
-    }
 
     public StateSet stateSet()
     {
@@ -232,7 +260,7 @@ public class VariableNode
     public String toString()
     {
         StringBuffer b = new StringBuffer();
-        b.append(type.toString());
+        b.append(super.type());
         b.append("\n");
         b.append(probTable.toString());
         

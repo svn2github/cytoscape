@@ -5,6 +5,8 @@ import java.util.Iterator;
  */
 public class ProbTable
 {
+    private static final double EPSILON = 1e-10;
+
     private StateSet _ss;
     private double[] _probs;
 
@@ -41,7 +43,7 @@ public class ProbTable
     {
         System.arraycopy(p, 0, _probs, 0, p.length);
 
-        _normalize();
+        _normalize(_probs);
         _findMax();
     }
 
@@ -52,30 +54,36 @@ public class ProbTable
         _indOfMax = 0;
         for(int x=0, n=_probs.length; x < n; x++)
         {
-            if(_probs[x] > _probs[_indOfMax])
+            double diff = _probs[x] - _probs[_indOfMax];
+
+            if( diff > EPSILON)
+            //if(_probs[x] > _probs[_indOfMax])
             {
+                // probs[x] is the new max
                 _indOfMax = x;
             }
-            if(_probs[x] == _probs[_indOfMax] && x != _indOfMax)
+
+            //if(_probs[x] == _probs[_indOfMax] && x != _indOfMax)
+            if(Math.abs(diff) < EPSILON && x != _indOfMax)
             {
                 _uniqueMax = false;
             }
         }
     }
 
-    private void _normalize()
+    private void _normalize(double[] p)
     {
         double sum = 0;
-        for(int x=0, n=_probs.length; x < n; x++)
+        for(int x=0, n=p.length; x < n; x++)
         {
-            sum += _probs[x];
+            sum += p[x];
         }
 
-        if(sum != 0)
+        if(sum != 0 && sum != 1)
         {
-            for(int x=0, n=_probs.length; x < n; x++)
+            for(int x=0, n=p.length; x < n; x++)
             {
-                _probs[x] = _probs[x]/sum;
+                p[x] = p[x]/sum;
             }
         }
     }
@@ -122,11 +130,62 @@ public class ProbTable
             {
                 _probs[x] = _probs[x] * p.prob(_ss.getState(x));
             }
-            _normalize();
+            _normalize(_probs);
             _findMax();
         }
     }
 
+    /**
+     * @return true if the probabilites of this ProbTable are equal to the
+     * probs of "p" within epsilon e.
+     */
+    public boolean equals(ProbTable p, double epsilon)
+    {
+        if(p.stateSet() == this.stateSet())
+        {
+            for(int x=0, n=_ss.size(); x < n; x++)
+            {
+                if(Math.abs(_probs[x] - p.prob(_ss.getState(x))) > epsilon)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        return false;
+    }
+    
+
+    /**
+     * @return true if the probabilites of this ProbTable are equal to the
+     * probs of "p" within epsilon e.
+     */
+    public boolean equals(double[] p, double epsilon)
+    {
+        if(p.length == _probs.length)
+        {
+            _normalize(p);
+            
+            // check each element of p againt _probs
+            for(int x=0, n=p.length; x < n; x++)
+            {
+                if(Math.abs(_probs[x] - p[x]) > epsilon)
+                {
+                    /*
+                    System.out.println("ne: " + Math.abs(_probs[x] - p[x]) +
+                                       " " + _probs[x] + " " + p[x]);
+                    */
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    
     public String toStringDetailed()
     {
         String tab = "\t";

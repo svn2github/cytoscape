@@ -606,7 +606,15 @@ public class AdjacencyListRootGraph implements RootGraph
      * @param edge_index the index in this RootGraph of the Edge
      * @return true iff the edge is directed
      */
-    public boolean isEdgeDirected ( int edge_index ) {  throw new UnsupportedOperationException();}
+    public boolean isEdgeDirected ( int edge_index )
+    {
+        assertEdgeExists(edge_index,  "isEdgeDirected: " + edge_index);
+        
+        EdgeStructure es = (EdgeStructure) _edges.get(edge_index);
+
+        return !es.isUndirected();
+
+    }
 
 
     /**

@@ -20,7 +20,6 @@ public class DFS
     
     final static int NIL = 0;
     
-    private InteractionGraph ig;
     private RootGraph g;
     private int numNodes;
     private int numEdges;
@@ -39,10 +38,9 @@ public class DFS
         
     private int time;
 
-    public DFS(InteractionGraph graph)
+    public DFS(RootGraph graph)
     {
-        ig = graph;
-        g = ig.getRootGraph();
+        g = graph;
         numNodes = g.getNodeCount();
         numEdges = g.getEdgeCount();
         
@@ -58,39 +56,81 @@ public class DFS
         ft = new int[numNodes]; // finish time
     }
 
-    public void traverse()
+    /**
+     * Traverse the graph using depth first search.
+     * @return the number of trees in the graph
+     *
+    public int traverse()
     {
         // initialize data structures
         labelMap.clear();
-        for(int n = 0; n < numNodes; n++)
+        for(int x = 0; x < numNodes; x++)
         {
-            color[n] = WHITE;
-            pred[n] = NIL;
-            dt[n] = 0;
-            ft[n] = 0;
-            labelMap.put(nodes[n], n);
+            color[x] = WHITE;
+            pred[x] = NIL;
+            dt[x] = 0;
+            ft[x] = 0;
+            labelMap.put(nodes[x], x);
         }
 
         time = 0;
-        for(int n=0; n < nodes.length; n++)
+        int trees = 0;
+        for(int x=0; x < nodes.length; x++)
         {
-            int l = labelMap.get(nodes[n]);
+            int label = labelMap.get(nodes[x]);
 
-            if(color[l] == WHITE)
+            if(color[label] == WHITE)
             {
-                _dfsVisit(nodes[n], l);
+                _dfsVisit(nodes[x], label);
+                trees++;
             }
         }
+
+        return trees;
+    }
+    */
+
+    public GraphForrest traverse()
+    {
+        // initialize data structures
+        labelMap.clear();
+        for(int x = 0; x < numNodes; x++)
+        {
+            color[x] = WHITE;
+            pred[x] = NIL;
+            dt[x] = 0;
+            ft[x] = 0;
+            labelMap.put(nodes[x], x);
+        }
+
+        time = 0;
+        GraphForrest forrest = new GraphForrest();
+        
+        for(int x=0; x < nodes.length; x++)
+        {
+            int label = labelMap.get(nodes[x]);
+
+            if(color[label] == WHITE)
+            {
+                _dfsVisit(nodes[x], label, forrest.newTree());
+            }
+        }
+
+        return forrest;
     }
 
+
+    
     /**
      * @return time
      */
-    private void _dfsVisit(int node, int label)
+    private void _dfsVisit(int node, int label, IntArrayList tree)
     {
         color[label] = GREY;
         time++;
         dt[label] = time;
+
+        tree.add(node);
         
         int[] neighbors = _getReachableNeighbors(node);
         for(int n=0; n < neighbors.length; n++)
@@ -99,7 +139,7 @@ public class DFS
             if(color[ln] == WHITE)
             {
                 pred[ln] = node;
-                _dfsVisit(neighbors[n], ln);
+                _dfsVisit(neighbors[n], ln, tree);
             }
         }
         color[label] = BLACK;

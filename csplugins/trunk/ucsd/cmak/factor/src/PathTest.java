@@ -55,7 +55,7 @@ public class PathTest extends TestCase
         System.out.println("Finding paths on graph:");
         System.out.println("===");
 
-        DFS d = new DFS(ig);
+        DFS d = new DFS(ig.getRootGraph());
 
         List paths = d.genPaths(source, 5);
 

@@ -1,7 +1,12 @@
 import java.util.List;
 
-public interface FactorNode
+public abstract class FactorNode extends FGNode
 {
-    public ProbTable maxProduct(List incomingMsgs, int n, VariableNode target)
+    public FactorNode()
+    {
+        super(NodeType.FACTOR);
+    }
+    
+    public abstract ProbTable maxProduct(List incomingMsgs, int n, VariableNode target)
         throws AlgorithmException;
 }

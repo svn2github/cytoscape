@@ -58,7 +58,7 @@ public abstract class AbstractNodeTest extends TestCase
     
     public EdgeMessage pt2em(ProbTable pt)
     {
-        EdgeMessage em = new EdgeMessage(null, null);
+        EdgeMessage em = new EdgeMessage(null, 0, 0);
         em.v2f(pt);
         em.f2v(pt);
 
@@ -68,7 +68,7 @@ public abstract class AbstractNodeTest extends TestCase
 
     public EdgeMessage pt2em(ProbTable pt, State dir)
     {
-        EdgeMessage em = new EdgeMessage(null, null, dir);
+        EdgeMessage em = new EdgeMessage(null, 0, 0, dir);
         em.v2f(pt);
         em.f2v(pt);
 

@@ -6,7 +6,7 @@ import cern.colt.bitvector.BitVector;
 
 import java.lang.Math;
 
-public class PathFactorNode implements FactorNode
+public class PathFactorNode extends FactorNode
 {
     protected static final double ep1 = 0.7; // epsilon 1
     protected static final double ep2 = 0.299; // epsilon 2
@@ -15,14 +15,6 @@ public class PathFactorNode implements FactorNode
     private static final int ODD = 1; // product of signs == -1
     private static final int EVEN = 0; // product of sings == +1
 
-    /*
-    private static MAX_PATH_LEN = 5;
-    
-    private Object[] _signCache;
-    private Object[] _signCachePLUS;
-    private Object[] _signCacheMINUS;
-    */
-    
     private static PathFactorNode __singleton = new PathFactorNode();
     
     public static PathFactorNode getInstance()
@@ -32,17 +24,6 @@ public class PathFactorNode implements FactorNode
 
     protected PathFactorNode()
     {
-        /*_signCache = new Object[MAX_PATH_LEN];
-        _signCachePLUS = new Object[MAX_PATH_LEN];
-        _signCacheMINUS = new Object[MAX_PATH_LEN];
-
-        for(int x=0; x < MAX_PATH_LEN; x++)
-        {
-            _signCache[x] = enumerate(x);
-            _signCachePLUS[x] = enumerate(x, State.PLUS);
-            _signCacheMINUS[x] = enumerate(x, State.MINUS);
-        }
-        */
     }
 
     /**
@@ -493,48 +474,59 @@ public class PathFactorNode implements FactorNode
         }
                 
         // compute the probability of each combo of signs
-        double[] maxPlus = new double[plusCombos.length];
-        double[] maxMinus = new double[minusCombos.length];
 
-        Arrays.fill(maxPlus, k.prob(State.PLUS));
-        Arrays.fill(maxMinus, k.prob(State.MINUS));
+        double maxPlus = _maxComboProb(k.prob(State.PLUS), plusCombos,
+                                       probPlus, probMinus);
 
-        for(int x=0; x <= 1 ; x++)
+        double maxMinus = _maxComboProb(k.prob(State.MINUS), minusCombos,
+                                        probPlus, probMinus);
+
+        // return the max value.
+        return Math.max(maxPlus, maxMinus);
+    }
+
+
+    /**
+     * Compute the probability of each on the combos and return
+     * the max. Each combo is a BitVector.
+     * <p>
+     * The length of the probPlus and probMinus must be equal to the number
+     * of bits in each combo.
+     * 
+     * @param initialProb The initial probability of each combo
+     * @param combos the combiniations
+     * @param probPlus the probability vector for the sign variables.
+     *        The i-th element is the probability that i-th bit in the combo is 1
+     * @param probMinus the probability vector for the sign variables.
+     *        The i-th element is the probability that i-th bit in the combo is 0
+     * @return the probability of the most likely combi
+     */
+    private double _maxComboProb(double initialProb, BitVector[] combos,
+                                 double[] probPlus, double[] probMinus)
+    {
+        double[] vals = new double[combos.length];
+        Arrays.fill(vals, initialProb);
+        
+        for(int v=0; v < combos.length; v++)
         {
-            BitVector[] combos;
-            double[] vals;
-            if(x==0) {
-                combos=plusCombos;
-                vals=maxPlus;
-            }
-            else
+            for(int bit=0, numBits=combos[v].size(); bit < numBits; bit++)
             {
-                combos=minusCombos;
-                vals=maxMinus;
-            }
-            
-            for(int v=0; v < combos.length; v++)
-            {
-                for(int bit=0, numBits=combos[v].size(); bit < numBits; bit++)
+                if(combos[v].get(bit) == true)
                 {
-                    if(combos[v].get(bit) == true)
-                    {
-                        vals[v] *= probMinus[bit];
-                    }
-                    else
-                    {
-                        vals[v] *= probPlus[bit];
-                    }
+                    vals[v] *= probMinus[bit];
+                }
+                else
+                {
+                    vals[v] *= probPlus[bit];
                 }
             }
         }
         
         // Sort values into ascending numerical order
-        Arrays.sort(maxPlus);
-        Arrays.sort(maxMinus);
-
-        // return the max value.
-        return Math.max(maxPlus[maxPlus.length - 1], maxMinus[maxMinus.length - 1]);
+        Arrays.sort(vals);
+        
+        // return the max
+        return vals[vals.length - 1];
     }
 
     /**
@@ -617,31 +609,10 @@ public class PathFactorNode implements FactorNode
             probPlus[x] = pt.prob(State.PLUS);
             probMinus[x] = pt.prob(State.MINUS);
         }
-                
-        // compute the probability of each combo of signs
-        double[] max = new double[validCombos.length];
-        Arrays.fill(max, 1);
- 
-        for(int v=0; v < validCombos.length; v++)
-        {
-            for(int bit=0, numBits=validCombos[v].size(); bit < numBits; bit++)
-            {
-                if(validCombos[v].get(bit) == true)
-                {
-                    max[v] *= probMinus[bit];
-                }
-                else
-                {
-                    max[v] *= probPlus[bit];
-                }
-            }
-        }
-
-        // Sort values into ascending numerical order
-        Arrays.sort(max);
-
-        // return the max value.
-        return max[max.length - 1];
+        
+        double max = _maxComboProb(1, validCombos,
+                                   probPlus, probMinus);
+        return max;
     }
     
     /**

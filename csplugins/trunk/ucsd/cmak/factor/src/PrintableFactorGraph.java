@@ -31,6 +31,22 @@ public class PrintableFactorGraph extends FactorGraph
     // map node index to label used for Cytoscape visualization
     private OpenIntObjectHashMap _nodeLabel;
 
+    protected String getNodeLabel(int node)
+    {
+        StringBuffer b = new StringBuffer();
+
+        if(_nodeLabel.containsKey(node))
+        {
+            b.append(_nodeLabel.get(node));
+        }
+        else
+        {
+            b.append(node);
+        }
+
+        return b.toString();
+    }
+    
     protected PrintableFactorGraph(InteractionGraph ig, PathResult pathResults)
     {
         super(ig, pathResults);

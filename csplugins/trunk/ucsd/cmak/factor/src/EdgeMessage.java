@@ -3,12 +3,15 @@ public class EdgeMessage
 {
     protected ProbTable v2f;
     protected ProbTable f2v;
-    protected VariableNode v;
-    protected FactorNode f;
+    protected VariableNode varNode;
+    //protected FactorNode f;
 
+    protected int v;
+    protected int f;
+    
     protected State dir;
     
-    public EdgeMessage(VariableNode vn, FactorNode fn)
+    /*    public EdgeMessage(VariableNode vn, FactorNode fn)
     {
         this.v = vn;
         this.f = fn;
@@ -21,7 +24,25 @@ public class EdgeMessage
         this.f = fn;
         this.dir = dir;
     }
+    */
+    
+    public EdgeMessage(VariableNode varNode, int vn, int fn)
+    {
+        this.varNode = varNode;
+        this.v = vn;
+        this.f = fn;
+    }
 
+
+    public EdgeMessage(VariableNode varNode, int vn, int fn, State dir)
+    {
+        this.varNode = varNode;
+        this.v = vn;
+        this.f = fn;
+        this.dir = dir;
+    }
+
+    
     public String toString()
     {
         StringBuffer b = new StringBuffer("{");
@@ -54,14 +75,26 @@ public class EdgeMessage
     
     public VariableNode getVariable()
     {
-        return v;
+        return varNode;
     }
-        
+    /*    
     public FactorNode getFactor()
     {
         return f;
     }
+    */
+    
+    public int getVariableIndex()
+    {
+        return v;
+    }
+        
+    public int getFactorIndex()
+    {
+        return f;
+    }
 
+    
     public void v2f(ProbTable p)
     {
         v2f = p;

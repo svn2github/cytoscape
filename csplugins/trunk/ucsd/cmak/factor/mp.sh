@@ -13,13 +13,25 @@
 #
 # -Xrunhprof:cpu=samples,depth=8
 #
-java  -Xmx512m MaxProduct \
-3 \
+set PATH=3
+set EXP=0.02
+set EDGE=0.001
+
+set TS=`date +%F-%H.%M`
+
+echo "### mp.sh time = ${TS}"
+echo "### mp.sh MAX_PATH_LEN = ${PATH}"
+echo "### mp.sh expression pvalue threshold =  ${EXP}"
+echo "### mp.sh PD edge pvalue threshold = ${EDGE}"
+
+java  -Xmx512m MPMain \
+${PATH} \
 all.sif \
 ../../data/data_full_subset_orfs.pvals \
-.02 \
+${EXP} \
 ../../data/all.edgeattr \
-.01 \
+${EDGE} \
 testOut \
-test_full
-
+test_full_${PATH}_${EXP}_${EDGE}_${TS} 
+#profile 
+#STE12candidategenes.txt

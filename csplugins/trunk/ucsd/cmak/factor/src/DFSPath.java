@@ -114,7 +114,7 @@ public class DFSPath
                            " numEdges=" + numEdges);
         
         // initialize data structures
-        result = new PathResult(numNodes, numEdges);
+        result = new PathResult(maxDepth, numNodes, numEdges);
         labelMap.clear();
         _adjacentEdges.clear();
 

@@ -14,6 +14,8 @@ public class NodeType
     public static final NodeType DIR = new NodeType("edge_dir");
     public static final NodeType PATH_ACTIVE = new NodeType("path_active");
     public static final NodeType KO = new NodeType("ko");
+
+    public static final NodeType FACTOR = new NodeType("factor");
     
 }
 

@@ -8,6 +8,23 @@ public class ProbTableTest extends TestCase
 
     }
 
+    public void testEquals()
+    {
+        System.out.println("### testEquals");
+        double ep = 0.001;
+        
+        ProbTable pt1 = create(StateSet.EDGE, 0.1, 0.9);
+        ProbTable pt2 = create(StateSet.EDGE, 0.1, 0.9);
+        ProbTable pt3 = create(StateSet.EDGE, 0.2, 0.8);
+        ProbTable pt4 = create(StateSet.EDGE, 0.101, 0.899);
+        ProbTable pt5 = create(StateSet.EDGE, 0.1001, 0.8999);
+
+        assertTrue("equal probs", pt1.equals(pt2, ep));
+        assertTrue("unequal probs", !pt1.equals(pt3, ep));
+        assertTrue("equal probs small difference", !pt1.equals(pt4, ep));
+        assertTrue("equal probs small difference", pt1.equals(pt5, ep));
+    }
+    
     // helper to create a ptable from a StateSet with 2 states.
     // p0 is expected to be the max
     public void helper2(StateSet s, double p0, double p1)

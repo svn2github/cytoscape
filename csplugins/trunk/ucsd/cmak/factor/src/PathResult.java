@@ -6,7 +6,6 @@ import cern.colt.map.OpenIntIntHashMap;
 import cern.colt.map.OpenIntObjectHashMap;
 import cern.colt.list.IntArrayList;
 
-
 public class PathResult
 {
     // Map indicies of edges to a List of Intervals (paths).
@@ -15,8 +14,8 @@ public class PathResult
     
     /**
      * Maps knock-outs (referenced by its index in the interaction RootGraph)
-     * to a Target2PathMap
-     * each Target2PathMap maps the targets (referenced by indicies in the 
+     * to a Target2PathMap.
+     * Each Target2PathMap maps the targets (referenced by indicies in the 
      * interaction RootGraph) of the knockout to an
      * IntArrayList of paths that connect the knockout to the target
      */
@@ -27,9 +26,18 @@ public class PathResult
     private int _pathCount;
 
     private int _numNodes;
-        
-    PathResult(int numNodes, int numEdges)
+    
+    private int _maxPathLength;
+    
+    /**
+     *  Create a new path results
+     *
+     * @param numNodes number of nodes in the interaction graph
+     * @param numEdges number of edges in the interaction graph
+     */
+    PathResult(int maxPathLength, int numNodes, int numEdges)
     {
+        _maxPathLength = maxPathLength;
         _numNodes = numNodes;
         _pathIntervalMap = new IntListMap(numEdges);
 
@@ -46,6 +54,12 @@ public class PathResult
         return _pathCount;
     }
 
+    int getMaxPathLength()
+    {
+        return _maxPathLength;
+    }
+
+    
     /**
      * @return a map of edge indices to DFSPath.Interval objects.
      */
@@ -174,10 +188,14 @@ public class PathResult
         }
     }
 
-    public void print(InteractionGraph ig)
+    public String toString(InteractionGraph ig)
     {
-        System.out.println("pathCount: " + _pathCount);
-
+        StringBuffer b = new StringBuffer();
+        
+        b.append("pathCount: ");
+        b.append(_pathCount);
+        b.append("\n");
+        
         IntArrayList edges = _pathIntervalMap.keys();
         for(int x=0, N=edges.size(); x < N; x++)
         {
@@ -187,14 +205,19 @@ public class PathResult
 
             if(ig != null)
             {
-                System.out.print("edge " + ig.edgeLabel(edge) + ": paths-> ");
+                b.append("edge ");
+                b.append(ig.edgeLabel(edge));
+                b.append(": paths-> ");
             }
             else
             {
-                System.out.print("edge " + edge + ": paths-> ");
+                b.append("edge ");
+                b.append(edge);
+                b.append(": paths-> ");
             }
 
-            System.out.println(l);
+            b.append(l);
+            b.append("\n");
         }
 
         IntArrayList kos = _ko2targetMap.keys();
@@ -209,11 +232,19 @@ public class PathResult
                 int t = targets.get(y);
                 IntArrayList l = (IntArrayList) target2pathMap.get(t);
                 
-                System.out.print(ig.node2Name(ko) + ": target node " +
-                                 ig.node2Name(t) + ": paths-> ");
-                System.out.println(l.toString());
+                b.append(ig.node2Name(ko));
+                b.append(": target node ");
+                b.append(ig.node2Name(t));
+                b.append(": paths-> ");
+                b.append(l.toString());
+                b.append("\n");
             }
         }
-        System.out.println("pathCount: " + _pathCount);
+        b.append("pathCount: ");
+        b.append(_pathCount);
+        b.append("\n");
+
+        return b.toString();
     }
+    
 }
