@@ -32,11 +32,13 @@ public final class GraphCompiler implements NodeNeighbors
    **/
   public static final long COMPILE_NODE_NEIGHBORS =         0x0000000000000002;
 
+  public static final long COMPILE_ADJACENT_EDGES =         0x0000000000000004;
+
   /**
    * Hints to the compiler that <code>getShortestPaths()</code> will be
    * used so that shortest path information should be compiled.
    **/
-  public static final long COMPILE_SHORTEST_PATHS =         0x0000000000000004;
+  public static final long COMPILE_SHORTEST_PATHS =         0x0000000000000008;
 
   /**
    * Hints to the compiler that pretty much all functionality provided by this
