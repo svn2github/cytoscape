@@ -292,7 +292,8 @@ class FGraphPerspective implements GraphPerspective
   private final MinIntHeap m_heap__restoreEdge = new MinIntHeap();
 
   // Returns 0 if unsuccessful; otherwise returns the root index of edge.
-  private int _restoreEdge(final int rootGraphEdgeInx) {
+  private int _restoreEdge(final int rootGraphEdgeInx)
+  {
     if (!(rootGraphEdgeInx < 0)) return 0;
     int nativeEdgeInx = m_rootToNativeEdgeInxMap.get(~rootGraphEdgeInx);
     if (m_root.getEdge(rootGraphEdgeInx) == null ||
@@ -661,19 +662,34 @@ class FGraphPerspective implements GraphPerspective
     if (rootGraphEdgeInx != 0) return m_root.getEdge(rootGraphEdgeInx);
     else return null; }
 
-  public int getEdgeSourceIndex(int perspEdgeInx)
+  public int getEdgeSourceIndex(int edgeInx)
   {
-    throw new IllegalStateException("not implemented yet");
+    if (!(edgeInx < 0)) return 0;
+    final int nativeEdgeInx = m_rootToNativeEdgeInxMap.get(edgeInx);
+    final int nativeSrcNodeInx;
+    try { nativeSrcNodeInx = m_graph.sourceNode(nativeEdgeInx); }
+    catch (IllegalArgumentException e) { return 0; }
+    try { return m_nativeToRootNodeInxMap.getIntAtIndex(nativeSrcNodeInx); }
+    catch (ArrayIndexOutOfBoundsException e) { return 0; }
   }
 
-  public int getEdgeTargetIndex(int perspEdgeInx)
+  public int getEdgeTargetIndex(int edgeInx)
   {
-    throw new IllegalStateException("not implemented yet");
+    if (!(edgeInx < 0)) return 0;
+    final int nativeEdgeInx = m_rootToNativeEdgeInxMap.get(edgeInx);
+    final int nativeTrgNodeInx;
+    try { nativeTrgNodeInx = m_graph.targetNode(nativeEdgeInx); }
+    catch (IllegalArgumentException e) { return 0; }
+    try { return m_nativeToRootNodeInxMap.getIntAtIndex(nativeTrgNodeInx); }
+    catch (ArrayIndexOutOfBoundsException e) { return 0; }
   }
 
-  public boolean isEdgeDirected(int perspEdgeInx)
+  // Throws IllegalArgumentException
+  public boolean isEdgeDirected(int edgeInx)
   {
-    throw new IllegalStateException("not implemented yet");
+    if (!(edgeInx < 0))
+      throw new IllegalArgumentException("edge index is not negative");
+    return m_graph.isDirectedEdge(m_rootToNativeEdgeInxMap.get(edgeInx)) == 1;
   }
 
   public boolean isMetaParent(Node child, Node parent)
