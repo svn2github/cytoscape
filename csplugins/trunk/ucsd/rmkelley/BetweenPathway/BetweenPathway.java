@@ -55,6 +55,9 @@ public class BetweenPathway extends CytoscapePlugin{
 				    BetweenPathwayThread2 thread = new BetweenPathwayThread2(options);
 				    try{
 				      thread.setPhysicalNetwork(options.physicalNetwork);
+				      Vector directedTypes = new Vector();
+				      directedTypes.add("pd");
+				      //options.geneticNetwork = (new EdgeRandomizer(options.geneticNetwork,directedTypes)).randomizeNetwork();
 				      thread.setGeneticNetwork(options.geneticNetwork);
 				      thread.loadGeneticScores(options.geneticScores);
 				      thread.loadPhysicalScores(options.physicalScores);
@@ -66,21 +69,22 @@ public class BetweenPathway extends CytoscapePlugin{
 					options.cutoff = 0.0;
 					CyNetwork geneticNetwork = options.geneticNetwork;
 					double [] scores = new double[options.iterations];
-					EdgeRandomizer randomizer = new EdgeRandomizer(geneticNetwork,new Vector());
+					EdgeRandomizer randomizer = new EdgeRandomizer(geneticNetwork,directedTypes);
 					for(int idx=0 ; idx<options.iterations ; idx++){
-					  System.err.println(idx);
-					  thread.setGeneticNetwork(randomizer.randomizeNetwork());	
+					  CyNetwork randomNetwork = randomizer.randomizeNetwork();
+					  thread.setGeneticNetwork(randomNetwork);	
 					  thread.run();
 					  Vector results = thread.getResults(); 
 					  if(results.size() > 0){
 					    scores[idx] = ((NetworkModel)results.firstElement()).score;
+					    System.err.println(scores[idx]);
 					  }
 					  else{
 					    scores[idx] = 0.0;
 					  }
-					  int [] old_edges = options.geneticNetwork.getEdgeIndicesArray();
-					  //Cytoscape.destroyNetwork(options.geneticNetwork);
-					  //Cytoscape.getRootGraph().removeEdges(old_edges);
+					  int [] old_edges = randomNetwork.getEdgeIndicesArray();
+					  Cytoscape.destroyNetwork(randomNetwork);
+					  Cytoscape.getRootGraph().removeEdges(old_edges);
 					}
 					/*
 					 *now that we have an array of random scores, 
