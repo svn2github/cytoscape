@@ -34,97 +34,130 @@ public final class FingRootGraphFactory
    * <tr><th>method</th><th>time complexity</th></tr>
    * <tr>
    * <td>createGraphPerspective(Node[], Edge[])</td>
-   * <td></td>
+   * <td>A GraphPerspective is created in O(N + E) time, where N is the
+   *     length of the Node input array and E is the length of the Edge
+   *     input array.</td>
    * </tr><tr>
    * <td>createGraphPerspective(int[], int[])</td>
-   * <td></td>
+   * <td>A GraphPerspective is created in O(N + E) time, where N is the
+   *     length of the first input int array and E is the length of the
+   *     second input int array.</td>
    * </tr><tr>
    * <td>ensureCapacity(int, int)</td>
-   * <td></td>
+   * <td>This method returns in constant time.</td>
    * </tr><tr>
    * <td>getNodeCount()</td>
-   * <td></td>
+   * <td>The total node count is calculated in constant time.</td>
    * </tr><tr>
    * <td>getEdgeCount()</td>
-   * <td></td>
+   * <td>The total edge count is calculated in constant time.</td>
    * </tr><tr>
    * <td>nodesIterator()</td>
-   * <td></td>
+   * <td>An Iterator is returned in constant time.  Each successive element
+   *     in the iteration is returned in constant time.</td>
    * </tr><tr>
    * <td>nodesList()</td>
-   * <td></td>
+   * <td>A List of Node objects is returned in O(N) time, where N is the
+   *     number of nodes in this RootGraph.</td>
    * </tr><tr>
    * <td>getNodeIndicesArray()</td>
-   * <td></td>
+   * <td>An array of node indices is returned in O(N) time, where N is the
+   *     number of nodes in this RootGraph.</td>
    * </tr><tr>
    * <td>edgesIterator()</td>
-   * <td></td>
+   * <td>An iterator is returned in constant time.  Each successive element
+   *     in the iteration is returned in constant time.</td>
    * </tr><tr>
    * <td>edgesList()</td>
-   * <td></td>
+   * <td>A List of Edge objects is returned in O(E) time, where E is the
+   *     number of edges in this RootGraph.</td>
    * </tr><tr>
    * <td>getEdgeIndicesArray()</td>
-   * <td></td>
+   * <td>An array of edge indices is returned in O(E) time, where E is the
+   *     number of edges in this RootGraph.</td>
    * </tr><tr>
    * <td>removeNode(Node)</td>
-   * <td></td>
+   * <td>See removeNode(int).</td>
    * </tr><tr>
    * <td>removeNode(int)</td>
-   * <td></td>
+   * <td>Essentially, the operation of removing a node takes O(E) time where
+   *     E is the number of edges touching the node being removed.  However,
+   *     this is no longer an absolute truth once many GraphPerspective
+   *     objects are created from this RootGraph, or many meta-node
+   *     relationships are created which involve the node being removed.
+   *     It is very difficult to determine exact time complexity for this
+   *     operation taking all circumstances into account.</td>
    * </tr><tr>
    * <td>removeNodes(List)</td>
-   * <td></td>
+   * <td>See removeNode(Node).  This method removes each node
+   *     successively.</td>
    * </tr><tr>
    * <td>removeNodes(int[])</td>
-   * <td></td>
+   * <td>See removeNode(int).  This method removes each node
+   *     successively.</td>
    * </tr><tr>
    * <td>createNode()</td>
-   * <td></td>
+   * <td>A node is created in constant time.</td>
    * </tr><tr>
    * <td>createNode(Node[], Edge[])</td>
-   * <td></td>
+   * <td>This meta-node operation takes O(N + E) time, where N is the
+   *     length of the input Node array and E is the length of the input
+   *     Edge array.</td>
    * </tr><tr>
    * <td>createNode(GraphPerspective)</td>
-   * <td></td>
+   * <td>This meta-node operation takes O(N + E) time, where N is the
+   *     number of nodes in specified GraphPerspective and E is the
+   *     number of edges in specified GraphPerspective.</td>
    * </tr><tr>
    * <td>createNode(int[], int[])</td>
-   * <td></td>
+   * <td>This meta-node operation takes O(N + E) time, where N is the
+   *     length of the first input int array and E is the length of the
+   *     second input int array.</td>
    * </tr><tr>
    * <td>createNodes(int)</td>
-   * <td></td>
+   * <td>See createNode().  This creates the specified number of nodes
+   *     successively.</td>
    * </tr><tr>
    * <td>removeEdge(Edge)</td>
-   * <td></td>
+   * <td>See removeEdge(int).</td>
    * </tr><tr>
    * <td>removeEdge(int)</td>
-   * <td></td>
+   * <td>Essentially, the operation of removing an edge takes constant time.
+   *     However, this is no longer an absolute truth once many
+   *     GraphPerspective objects are created from this RootGraph, or many
+   *     meta-node relationships are created which involve the edge being
+   *     removed.  It is very difficult to determine exact time complexity
+   *     for this operation taking all circumstances into account.</td>
    * </tr><tr>
    * <td>removeEdges(List)</td>
-   * <td></td>
+   * <td>See removeEdge(Edge).  This removes each edge successively.</td>
    * </tr><tr>
    * <td>removeEdges(int[])</td>
-   * <td></td>
+   * <td>See removeEdge(int).  This removes each edge successively.</td>
    * </tr><tr>
    * <td>createEdge(Node, Node)</td>
-   * <td></td>
+   * <td>See createEdge(Node, Node, boolean).</td>
    * </tr><tr>
    * <td>createEdge(Node, Node, boolean)</td>
-   * <td></td>
+   * <td>See createEdge(int, int, boolean).</td>
    * </tr><tr>
    * <td>createEdge(int, int)</td>
-   * <td></td>
+   * <td>See createEdge(int, int, boolean).</td>
    * </tr><tr>
    * <td>createEdge(int, int, boolean)</td>
-   * <td></td>
+   * <td>The operation of creating an edge is performed in constant time.</td>
    * </tr><tr>
    * <td>createEdges(int[], int[], boolean)</td>
-   * <td></td>
+   * <td>See createEdge(int, int, boolean).  This creates each edge
+   *     in succession.</td>
    * </tr><tr>
    * <td>containsNode(Node)</td>
-   * <td></td>
+   * <td>Determining whether or not a node is in a RootGraph takes
+   *     constant time.</td>
    * </tr><tr>
    * <td>containsEdge(Edge)</td>
-   * <td></td>
+   * <td>Determining whether or not an edge is in a RootGraph takes
+   *     constant time.</td>
    * </tr><tr>
    * <td>neighborsList(Node)</td>
    * <td></td>
