@@ -266,7 +266,7 @@ protected void initialize() {
 	   // setLayout( new BorderLayout() );  
 	    //this.view = new PGraphView();
     	   // add(graphView, BorderLayout.CENTER);
-	   this.setBackground(Color.WHITE);
+	   this.setBackground(Color.BLACK);
 	   
 		
 	}	
@@ -307,7 +307,7 @@ protected void updateGraphView() {
 	display = view.getComponent();
 	add( display, BorderLayout.CENTER);
 
-	view.setBackgroundPaint(Color.WHITE);
+	view.setBackgroundPaint(Color.BLACK);
 
 	java.util.List nodes = view.getNodeViewsList();
 	    for ( Iterator i= nodes.iterator(); i.hasNext();)
@@ -316,9 +316,9 @@ protected void updateGraphView() {
 		    String label = nv.getNode().getIdentifier();
 		    //System.out.println("Setting label " + label);
 		    nv.setLabel(label);
-		    nv.setShape(NodeView.ELLIPSE);
-		    nv.setUnselectedPaint(Color.pink);
-		    nv.setSelectedPaint(((Color)nv.getUnselectedPaint()).darker());
+		    nv.setShape( NodeView.ELLIPSE );
+		    nv.setUnselectedPaint( DEFAULT_PAINT );
+		    nv.setSelectedPaint( ((Color)nv.getUnselectedPaint()).darker() );
 		    nv.setBorderPaint(Color.black);
 	    }
 	    
@@ -332,7 +332,7 @@ protected void updateGraphView() {
 		    ev.setTargetEdgeEndPaint(Color.CYAN);
 		    ev.setSourceEdgeEndPaint(Color.CYAN);
 		    //ev.setLineType(EdgeView.CURVED_LINES);
-		    ev.setStroke(new BasicStroke(0.9f));
+		    ev.setStroke(new BasicStroke(5f));
 	    }
 	    // add context menues
 	    addViewContextMenues();
