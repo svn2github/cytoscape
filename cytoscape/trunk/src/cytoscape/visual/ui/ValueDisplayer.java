@@ -347,9 +347,6 @@ public class ValueDisplayer extends JButton {
     private void setInputIconListener(String title, String objectName,
 				      Object startObject,
 				      JDialog parentDialog, byte type) {
-	// set up button to display icon only
-	this.setContentAreaFilled(false);
-
 	// get icons - cannot be done from a static context
 	ImageIcon[] icons = null;
 	HashMap iToS = null;
@@ -375,11 +372,10 @@ public class ValueDisplayer extends JButton {
 	    break;
 	}
 
-	ImageIcon currentIcon;
-	if (startObject == null) {
-	    currentIcon = icons[0];
-	}
-	else {
+	ImageIcon currentIcon = null;
+	if (startObject != null) {
+            // set up button to display icon only
+            this.setContentAreaFilled(false);
 	    // find the right icon
 	    String ltName = (String)iToS.get(startObject);
 	    int iconIndex = 0;
@@ -393,11 +389,11 @@ public class ValueDisplayer extends JButton {
                     iconIndex = 0;
             }
 	    currentIcon = icons[iconIndex];
+            // set currentIcon
+            this.setIcon(currentIcon);
+            this.inputObj = sToI.get(currentIcon.getDescription());
 	}
-	// set currentIcon
-	this.setIcon(currentIcon);
-	this.inputObj = sToI.get(currentIcon.getDescription());
-
+	
 	this.inputListener = new IconListener(title, objectName, icons, sToI,
 					      currentIcon, parentDialog, this);
 	addActionListener(this.inputListener);
@@ -427,6 +423,8 @@ public class ValueDisplayer extends JButton {
 	    if (enabled) {
 		ImageIcon icon = chooser.showDialog();
 		if (icon != null) {
+                    // set up button to display icon only
+                    parent.setContentAreaFilled(false);
 		    // set the new icon to be displayed
 		    parent.setIcon(icon);
 
@@ -589,9 +587,9 @@ public class ValueDisplayer extends JButton {
         } else if (sampleObj instanceof LineType) {
             return getDisplayForIcons(parent, title, null, LINETYPE);
         } else if (sampleObj instanceof Byte) {
-            return getDisplayForIcons(parent, title, new Byte(ShapeNodeRealizer.ELLIPSE), NODESHAPE);
+            return getDisplayForIcons(parent, title, null, NODESHAPE);
         } else if (sampleObj instanceof Arrow) {
-            return getDisplayForIcons(parent, title, Arrow.NONE, ARROW);
+            return getDisplayForIcons(parent, title, null, ARROW);
         } else if (sampleObj instanceof String) {
             return getDisplayForString(parent, title, null );
         } else if (sampleObj instanceof Number) {
