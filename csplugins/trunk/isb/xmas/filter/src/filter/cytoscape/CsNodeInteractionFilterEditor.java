@@ -72,11 +72,26 @@ public class CsNodeInteractionFilterEditor
 
     identifier = "Node Interactions";
     setBorder( new TitledBorder( "Node Interaction Based on Edges Filter" ) );
+    setLayout( new BorderLayout() );
 
     JPanel namePanel = new JPanel();
     nameField = new JTextField(15);
     namePanel.add( new JLabel( "Filter Name" ) );
     namePanel.add( nameField );
+    namePanel.add(  new JButton (new AbstractAction( "Update" ) {
+          public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  String[] atts = edgeAttributes.getAttributeNames();
+                  System.out.println( "There are: "+atts.length+" attributes." );
+                  for ( int i = 0; i < atts.length; ++i ) {
+                    System.out.println( i+". "+atts[i] );
+                  }
+                  edgeAttributeBox.setModel( new DefaultComboBoxModel( edgeAttributes.getAttributeNames() ) );
+                  //( ( DefaultComboBoxModel )attributeBox.getModel() ).addElement( "canonicalName" );
+                }
+              } ); } } ) );
     add( namePanel, BorderLayout.NORTH  );
 
     JPanel attribute_panel = new JPanel();
@@ -84,14 +99,13 @@ public class CsNodeInteractionFilterEditor
     edgeAttributeBox.setEditable( false );
     edgeAttributeBox.addActionListener( this );
     attribute_panel.add( edgeAttributeBox );
-    add( attribute_panel, BorderLayout.NORTH  );
-
-    JPanel search_panel = new JPanel();
+      
     searchBox = new JComboBox();
     searchBox.setEditable( true );
     searchBox.addActionListener( this );
-    search_panel.add( searchBox );
-    add( search_panel, BorderLayout.SOUTH  );
+    attribute_panel.add( searchBox );
+    add( attribute_panel, BorderLayout.CENTER  );
+
 
     JPanel end_panel = new JPanel();
     sourceNodeButton = new JRadioButton( "source" );
@@ -107,22 +121,7 @@ public class CsNodeInteractionFilterEditor
     sourceNodeButton.addActionListener( this );
     targetNodeButton.addActionListener( this );
     bothNodesButton.addActionListener( this );
-    add( end_panel, BorderLayout.SOUTH );
-
-    add( new JButton (new AbstractAction( "Update" ) {
-          public void actionPerformed ( ActionEvent e ) {
-            // Do this in the GUI Event Dispatch thread...
-            SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
-                  String[] atts = edgeAttributes.getAttributeNames();
-                  System.out.println( "There are: "+atts.length+" attributes." );
-                  for ( int i = 0; i < atts.length; ++i ) {
-                    System.out.println( i+". "+atts[i] );
-                  }
-                  edgeAttributeBox.setModel( new DefaultComboBoxModel( edgeAttributes.getAttributeNames() ) );
-                  //( ( DefaultComboBoxModel )attributeBox.getModel() ).addElement( "canonicalName" );
-                }
-              } ); } } ) );
+    attribute_panel.add( end_panel, BorderLayout.SOUTH );
                
 
     setDefaults();

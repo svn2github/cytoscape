@@ -8,25 +8,39 @@ import cytoscape.util.*;
 import filter.model.*;
 import filter.view.*;
 
-public class CsFilter extends AbstractPlugin {
+import javax.swing.*;
 
+public class CsFilter extends AbstractPlugin {
+ protected JFrame frame;
   protected CyWindow window;
   protected CyNetwork network;
+  protected FilterUsePanel filterUsePanel;
 
   public CsFilter ( CyWindow window ) {
 
     this.window = window;
     this.network = window.getNetwork();
-    ( ( CytoscapeMenuBar )window.getCyMenus().getMenuBar() ).
-      addAction( new FilterPlugin( network, window ) );
-    ( ( CytoscapeMenuBar )window.getCyMenus().getMenuBar() ).
-      addAction( new EditorAction() );
+    
+
+    initialize();
+  }
+
+  public void initialize () {
+
+    ImageIcon icon =  new ImageIcon( getClass().getResource("/filter36.gif") );
+    ImageIcon icon2 =  new ImageIcon( getClass().getResource("/filter16.gif") );
+    FilterPlugin action = new FilterPlugin( network, window, icon, this );
+    FilterMenuItem menu_action = new FilterMenuItem(  network, window, icon2, this );
+    window.getCyMenus().addCytoscapeAction( ( CytoscapeAction )action );
+    window.getCyMenus().addCytoscapeAction( ( CytoscapeAction )menu_action );
+
      
      FilterManager.defaultManager().addEditor( new DefaultFilterEditor() );
      FilterManager.defaultManager().addEditor( new FilterTreeEditor() );
      FilterManager.defaultManager().addEditor( new CsNodeTypeFilterEditor( window.getNetwork() ) );
      FilterManager.defaultManager().addEditor( new CsEdgeTypeFilterEditor( window.getNetwork() ) );
      FilterManager.defaultManager().addEditor( new CsNodeInteractionFilterEditor( window.getNetwork() ) );
+     FilterManager.defaultManager().addEditor( new CsAttributeValueFilterEditor( window.getNetwork() ) );
 
   }
 
@@ -34,5 +48,20 @@ public class CsFilter extends AbstractPlugin {
     return "New Filters";
   }
 
+  public  FilterUsePanel getFilterUsePanel () {
+    if ( filterUsePanel == null ) {
+      filterUsePanel = new FilterUsePanel( network, window );
+     }
+    return filterUsePanel;
+  }
+                
+  public void show () {
+    if ( frame == null ) {
+      frame = new JFrame( "Use Filters" );
+      frame.getContentPane().add( getFilterUsePanel() );
+      frame.pack();
+    }
+    frame.setVisible( true );
+  }
 
 }

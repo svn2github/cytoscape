@@ -21,6 +21,7 @@
     <property name="filter.root.dir" value="."/>
     <property name="filter.lib.dir" value="${filter.root.dir}/lib"/>
     <property name="cytoscape.lib.dir" value="${filter.root.dir}/../../../../cytoscape/lib"/>
+    <property name="cytoscape.plugin.dir" value="${filter.root.dir}/../../../../cytoscape/plugins"/>
     <path id="project.class.path">
       <pathelement path="${java.class.path}/"/>
     </path>
@@ -102,9 +103,11 @@
       <fileset
         dir="${filter.root.dir}/lib"
         includes="resources/**"/>
+      <fileset 
+        dir="${filter.root.dir}/images"/>
     </jar>
     <copy todir="${filter.lib.dir}" file="filter.jar"/>
-    <copy todir="${cytoscape.lib.dir}" file="filter.jar"/>
+    <copy todir="${cytoscape.plugin.dir}" file="filter.jar"/>
   </target>
 
   <!-- =================================================================== -->

@@ -51,7 +51,7 @@ public class FilterUsePanel extends JPanel
     //--------------------//
     // Selected Filter Panel
     JPanel selected_filter_panel = new JPanel();
-    selected_filter_panel.setBorder( new TitledBorder( "Available Filters" ) );
+    //selected_filter_panel.setBorder( new TitledBorder( "Available Filters" ) );
     filterListPanel = new FilterListPanel( FilterListPanel.SHOW_TOGETHER );
     selected_filter_panel.add( filterListPanel );
     
@@ -84,6 +84,10 @@ public class FilterUsePanel extends JPanel
   
   }
   
+  public FilterListPanel getFilterListPanel () {
+    return filterListPanel;
+  }
+
   public void propertyChange ( PropertyChangeEvent e ) {
 
      if ( e.getPropertyName() == FilterListPanel.FILTER_SELECTED ) {

@@ -103,13 +103,18 @@ public class FilterTreeEditor
     filterControlPanel.add( removeFilterChild );
 
 
+    filterListPanel = new FilterListPanel( FilterListPanel.SHOW_TOGETHER );
+
     // Rowan hates layout issues.
     JPanel a = new JPanel();
     a.add( titlePanel );
     a.add( filterControlPanel );
 
-   JSplitPane b = new JSplitPane( JSplitPane.VERTICAL_SPLIT, a, scroll );
-   add( b );
+    setLayout( new BorderLayout() );
+    add( a, BorderLayout.NORTH );
+    add( scroll, BorderLayout.CENTER );
+    add( filterListPanel, BorderLayout.WEST );
+
   }
  
   //----------------------------------------//

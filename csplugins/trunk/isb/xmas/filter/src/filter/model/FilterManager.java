@@ -160,8 +160,11 @@ public class FilterManager {
     return true;
   }
   
+  /**
+   * Add/Replace
+   */
   public boolean addFilter ( Filter filter ) {
-    if (  filter == null || filterExists( filter.toString() )  ) {
+    if (  filter == null  ) {
       return false;
     }
     filterMap.put( filter.toString(), filter );

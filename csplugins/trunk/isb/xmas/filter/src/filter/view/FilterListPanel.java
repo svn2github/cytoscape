@@ -13,9 +13,7 @@ import javax.swing.event.SwingPropertyChangeSupport;
 import ViolinStrings.Strings;
 
 /**
- * A FilterListPanel can be chosen to have one or two Panels on creation.
- * It can show either Filters ( w/ out Trees ), Filters ( + Trees ), 
- * FilterTrees, or Fitlers and FilterTrees in different Lists. Each List will
+ * A FilterListPanel will
  * be able to search through its contents based on the Filter title using
  * wildcard search
  */
@@ -63,8 +61,8 @@ public class FilterListPanel
 
     JPanel searchPanel = new JPanel();
     searchPanel.setBorder( new TitledBorder( "Search Filters" ) );
-    searchPanel.add( new JLabel( "Search Filters: " ) );
-    searchField = new JTextField( 20 );
+    //searchPanel.add( new JLabel( "Search Filters: " ) );
+    searchField = new JTextField( 10 );
     searchField.addActionListener( this );
     searchPanel.add( searchField );
     searchPanel.add( new JButton (new AbstractAction( "Go!" ) {
@@ -110,27 +108,28 @@ public class FilterListPanel
       compoundList = new JList();
       compoundList.addListSelectionListener( this );
       updateLists();
-      listPanel.setBorder( new TitledBorder( "Filters and FilterTrees" ) );
+      //listPanel.setBorder( new TitledBorder( "Filters and FilterTrees" ) );
       JScrollPane scroll = new JScrollPane( compoundList );
       listPanel.add( scroll, BorderLayout.SOUTH );
     } else if ( type == SHOW_TREES ) {
       filterTreeList = new JList();
       filterTreeList.addListSelectionListener( this );
       updateLists();
-      listPanel.setBorder( new TitledBorder( "FilterTrees" ) );
+      //listPanel.setBorder( new TitledBorder( "FilterTrees" ) );
       JScrollPane scroll = new JScrollPane( filterTreeList );
       listPanel.add( scroll, BorderLayout.SOUTH );
     } else {
       filterList = new JList();
       filterList.addListSelectionListener( this );
       updateLists();
-      listPanel.setBorder( new TitledBorder( "Filters" ) );
+      //listPanel.setBorder( new TitledBorder( "Filters" ) );
       JScrollPane scroll = new JScrollPane( filterList );
       listPanel.add( scroll, BorderLayout.SOUTH );
     }
 
-    JSplitPane split = new JSplitPane( JSplitPane.VERTICAL_SPLIT, searchPanel, listPanel );
-    add( split );
+    setLayout( new BorderLayout() );
+    add( searchPanel, BorderLayout.NORTH );
+    add( listPanel, BorderLayout.CENTER );
 
   }
 

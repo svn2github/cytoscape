@@ -7,15 +7,16 @@ import cytoscape.data.*;
 import cytoscape.view.*;
 import cytoscape.util.*;
 
-public class FilterPlugin extends CytoscapeAction {
+public class FilterMenuItem extends CytoscapeAction {
 
+ 
   protected JFrame frame;
   protected CyNetwork network;
   protected CyWindow window;
- protected CsFilter csfilter;
+  protected CsFilter csfilter;
 
-  public FilterPlugin ( CyNetwork network, CyWindow window, ImageIcon icon, CsFilter csfilter  ) {
-    super( "", icon );
+  public FilterMenuItem ( CyNetwork network, CyWindow window, ImageIcon icon, CsFilter csfilter ) {
+    super( "Use Filters", icon );
     this.network = network;
     this.window = window;
     this.csfilter = csfilter;
@@ -29,17 +30,16 @@ public class FilterPlugin extends CytoscapeAction {
                                             
 
   public void actionPerformed (ActionEvent e) {
-     csfilter.show();
-  
-    
+   
+    csfilter.show();
   }
 
   public boolean isInToolBar () {
-    return true;
+    return false;
   }
 
   public boolean isInMenuBar () {
-    return false;
+    return true;
   }
 
 
