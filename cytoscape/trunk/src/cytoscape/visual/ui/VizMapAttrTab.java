@@ -359,18 +359,18 @@ public class VizMapAttrTab extends VizMapTab {
      */
     void switchCalculator(Calculator calc) {
         //do nothing if the new calculator is the same as the current one
-        if (calc == null || calc.equals(this.currentCalculator)) {return;}
+        if (calc != null && calc.equals(this.currentCalculator)) {return;}
         
         setCurrentCalculator(calc); //handles listeners
 
-	// tell the respective appearance calculators
+    	// tell the respective appearance calculators
         // this method doesn't fire an event to come back to us
         VizUIUtilities.setCurrentCalculator(VMM.getVisualStyle(), this.type, calc);
 	
         //get the view of the new calculator
-	refreshUI();
+	    refreshUI();
         //redraw the graph
-	VMM.getNetworkView().redrawGraph(false, true);
+	    VMM.getNetworkView().redrawGraph(false, true);
     }
     
     /**
