@@ -356,9 +356,19 @@ public class ExpressionData {
     public String[] getGeneNames() {
 	return (String[])geneNames.toArray(new String[0]);
     }
+    public Vector getGeneNamesVector() { return geneNames; }
+    public void setGeneNames(Vector newNames) {	
+	geneNames = newNames; 
+	geneNameToIndex.clear();
+	for (int i=0; i<geneNames.size(); i++) {
+	    geneNameToIndex.put( geneNames.get(i), new Integer(i) );
+	}
+    }
     public String[] getGeneDescriptors() {
 	return (String[])geneDescripts.toArray(new String[0]);
     }
+    public Vector getGeneDescriptorsVector() { return geneDescripts; }
+    public void setGeneDescriptors(Vector newDescripts) { geneDescripts = newDescripts; }
     public String[] getConditionNames() {
 	return (String[])condNames.toArray(new String[0]);
     }
