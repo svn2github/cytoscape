@@ -5,7 +5,7 @@ import java.io.File;
 import java.util.List;
 import java.util.ArrayList;
 
-public class SubmodelOutput
+public class SubmodelOutputFiles
 {
     List models;
     File edgeDir;
@@ -13,7 +13,7 @@ public class SubmodelOutput
     //    File edgeModel;
     File nodeType;
 
-    public SubmodelOutput()
+    public SubmodelOutputFiles()
     {
         models = new ArrayList();
     }

@@ -10,6 +10,8 @@ import java.io.FileOutputStream;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import java.util.logging.Logger;
@@ -140,11 +142,50 @@ public class InteractionGraph
         return (String) _node2name.get(node);
     }
 
-
+    /**
+     * @param edgeIndex the root graph index of an edge in the
+     * interaction graph.
+     * @return a String of the form: source-node (edge-type) target-node
+     */
     String edgeName(int edgeIndex)
     {
         int src = _graph.getEdgeSourceIndex(edgeIndex);
         int tgt = _graph.getEdgeTargetIndex(edgeIndex);
+        String type = (String) _edge2type.get(edgeIndex);
+
+        return edgeName(src, tgt, type);
+    }
+    
+    /**
+     * Return the edge name for an annotated edge.
+     * The order of the nodes will be consistent with the
+     * EdgeDirection. ie. If the maxDir of the annotated edge
+     * is PLUS then the edge name will be:
+     * source-node (type) target-node.
+     * <p>
+     * If the maxDir is MINUS then the edge name will be:
+     * target-node (type) source-node
+     * 
+     * @param ae an edge
+     * @return a String that uniquely identifies the input edge
+     */
+    String edgeName(AnnotatedEdge ae)
+    {
+        int edgeIndex = ae.interactionIndex;
+        int src = 0;
+        int tgt = 0;
+        
+        if(ae.maxDir == State.MINUS)
+        {
+            src = _graph.getEdgeTargetIndex(edgeIndex);
+            tgt = _graph.getEdgeSourceIndex(edgeIndex);
+        }
+        else
+        {
+            src = _graph.getEdgeSourceIndex(edgeIndex);
+            tgt = _graph.getEdgeTargetIndex(edgeIndex);
+        }
+
         String type = (String) _edge2type.get(edgeIndex);
 
         return edgeName(src, tgt, type);
@@ -471,26 +512,28 @@ public class InteractionGraph
      * @see #writeSubmodel()
      */ 
 
-    public SubmodelOutput writeGraphAsSubmodels(String filename, int filter)
+    public SubmodelOutputFiles writeGraphAsSubmodels(String filename, int filter)
         throws IOException
     {
         logger.info("writing submodels explaining >= " + filter
                     + " ko experiments");
 
-        SubmodelOutput output = new SubmodelOutput();
+        SubmodelOutputFiles output = new SubmodelOutputFiles();
+        Set edges = new HashSet();
         int cnt = 0;
         for(int x=0; x < _submodels.size(); x++)
         {
             Submodel m = (Submodel) _submodels.get(x);
             if(m.getNumExplainedKO() >= filter)
             {
+                edges.addAll(m.getEdges());
                 File f = writeSubmodel(m, filename, cnt);
                 output.addModel(f);
                 cnt++;
             }
         }
 
-        writeAttributes(filename, output);
+        writeAttributes(edges, filename, output);
 
         return output;
     }
@@ -504,7 +547,8 @@ public class InteractionGraph
      *
      * @throws
      */
-    private File writeSubmodel(Submodel m, String filename, int modelNum) throws IOException
+    private File writeSubmodel(Submodel m, String filename, int modelNum)
+        throws IOException
     {
         StringBuffer b = new StringBuffer(filename);
         b.append("-");
@@ -532,9 +576,29 @@ public class InteractionGraph
             AnnotatedEdge ae = (AnnotatedEdge) edges.get(x);
 
             int e = ae.interactionIndex;
-            int src = _graph.getEdgeSourceIndex(e);
-            int target = _graph.getEdgeTargetIndex(e);
 
+            int src;
+            int target;
+
+            logger.info("writing edge: x=" + ae.maxState
+                        + " d=" + ae.maxDir
+                        + " s=" + ae.maxSign);
+            
+            if(ae.maxDir == State.PLUS)
+            {
+                src = _graph.getEdgeSourceIndex(e);
+                target = _graph.getEdgeTargetIndex(e);
+            }
+            else if (ae.maxDir == State.MINUS)
+            {
+                src = _graph.getEdgeTargetIndex(e);
+                target = _graph.getEdgeSourceIndex(e);
+            }
+            else
+            {
+                throw new IOException("Unexpected edge direction state: "
+                                      + ae.maxDir);
+            }
             /*
             int dirSrc = src;
 
@@ -567,34 +631,49 @@ public class InteractionGraph
     
     public void writeGraph(String filename) throws IOException
     {
-        SubmodelOutput output = new SubmodelOutput();
+        SubmodelOutputFiles output = new SubmodelOutputFiles();
         File model = new File(filename + ".sif");
         PrintStream out = new PrintStream(new FileOutputStream(model));
         writeEdges(out, _activeEdges, 0);
         out.close();
         output.addModel(model);
 
-        writeAttributes(filename, output);
+        Set edges = new HashSet(_activeEdges);
+        
+        writeAttributes(edges, filename, output);
     }
 
-    private void writeAttributes(String filename, SubmodelOutput output)
+    /**
+     *
+     *
+     * @param edges The edges to write attributes for.
+     * A Set of AnnotatedEdge objects.
+     * @param filename the base filename to use.  This method will append the
+     * appropriate extensions.  Edge directions will be written to a file
+     * filename_dir.eda.  Edge Signs will be written to: filename_sign.eda.
+     * Node types will be written to: filename_type.noa.
+     * @param output data structure to keep track of the Files that
+     * are created.
+     */
+    private void writeAttributes(Set edges, String filename,
+                                 SubmodelOutputFiles output)
         throws IOException
     {
         File f = new File(filename + "_dir.eda");
         PrintStream out = new PrintStream(new FileOutputStream(f));
-        writeEdgeDir(out);
+        writeEdgeDir(edges, out);
         out.close();
         output.setEdgeDir(f);
 
         File f2 = new File(filename + "_sign.eda");
         out = new PrintStream(new FileOutputStream(f2));
-        writeEdgeSign(out);
+        writeEdgeSign(edges, out);
         out.close();
         output.setEdgeSign(f2);
 
         File f3 = new File(filename + "_model.eda");
         out = new PrintStream(new FileOutputStream(f3));
-        writeEdgeModel(out);
+        writeEdgeModel(edges, out);
         out.close();
         //output.setEdgeSign(f2);
 
@@ -612,13 +691,13 @@ public class InteractionGraph
     }
 
     
-    private void writeEdgeDir(PrintStream out) throws IOException
+    private void writeEdgeDir(Set edges, PrintStream out) throws IOException
     {
         out.println("EdgeDirection (class=java.lang.String)");
-        for(int x=0; x < _activeEdges.size(); x++)
+        for(Iterator it = edges.iterator(); it.hasNext(); )
         {
-            AnnotatedEdge ae = (AnnotatedEdge) _activeEdges.get(x);
-            StringBuffer b = new StringBuffer(edgeName(ae.interactionIndex));
+            AnnotatedEdge ae = (AnnotatedEdge) it.next();
+            StringBuffer b = new StringBuffer(edgeName(ae));
             b.append(" = ");
             b.append(ae.maxDir);
             
@@ -627,13 +706,13 @@ public class InteractionGraph
         
     }
     
-    private void writeEdgeSign(PrintStream out)
+    private void writeEdgeSign(Set edges, PrintStream out)
     {
         out.println("EdgeSign (class=java.lang.String)");
-        for(int x=0; x < _activeEdges.size(); x++)
+        for(Iterator it = edges.iterator(); it.hasNext(); )
         {
-            AnnotatedEdge ae = (AnnotatedEdge) _activeEdges.get(x);
-            StringBuffer b = new StringBuffer(edgeName(ae.interactionIndex));
+            AnnotatedEdge ae = (AnnotatedEdge) it.next();
+            StringBuffer b = new StringBuffer(edgeName(ae));
             b.append(" = ");
             b.append(ae.maxSign);
             
@@ -641,13 +720,13 @@ public class InteractionGraph
         }
     }
 
-    private void writeEdgeModel(PrintStream out)
+    private void writeEdgeModel(Set edges, PrintStream out)
     {
         out.println("EdgeModel (class=java.lang.String)");
-        for(int x=0; x < _activeEdges.size(); x++)
+        for(Iterator it = edges.iterator(); it.hasNext(); )
         {
-            AnnotatedEdge ae = (AnnotatedEdge) _activeEdges.get(x);
-            StringBuffer b = new StringBuffer(edgeName(ae.interactionIndex));
+            AnnotatedEdge ae = (AnnotatedEdge) it.next();
+            StringBuffer b = new StringBuffer(edgeName(ae));
             b.append(" = ");
             b.append(list2String(ae.submodels));
             
@@ -692,7 +771,7 @@ public class InteractionGraph
         for(int x=0; x < _activeEdges.size(); x++)
         {
             AnnotatedEdge ae = (AnnotatedEdge) _activeEdges.get(x);
-            StringBuffer b = new StringBuffer(edgeName(ae.interactionIndex));
+            StringBuffer b = new StringBuffer(edgeName(ae));
             b.append(" = ");
             b.append(ae.maxDir);
             

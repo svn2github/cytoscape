@@ -16,7 +16,7 @@ import java.util.logging.LogManager;
 import fgraph.AlgorithmException;
 import fgraph.MaxProduct;
 import fgraph.InteractionGraph;
-import fgraph.SubmodelOutput;
+import fgraph.SubmodelOutputFiles;
 
 import phoebe.PGraphView;
 
@@ -278,7 +278,7 @@ public class RunDialog extends JDialog implements ActionListener
         {
             try
             {
-                SubmodelOutput output = runMaxProduct();
+                SubmodelOutputFiles output = runMaxProduct();
                 
                 loadModels(output);
                 loadAttributes(output);
@@ -298,7 +298,7 @@ public class RunDialog extends JDialog implements ActionListener
         }
     }
 
-    private SubmodelOutput runMaxProduct()
+    private SubmodelOutputFiles runMaxProduct()
         throws AlgorithmException, IOException
     {
         String sif = sifField.getText();
@@ -333,12 +333,12 @@ public class RunDialog extends JDialog implements ActionListener
                            + minKO
                            + " KO experiments");
         
-        SubmodelOutput output = ig.writeGraphAsSubmodels(fname, minKO);
+        SubmodelOutputFiles output = ig.writeGraphAsSubmodels(fname, minKO);
         
         return output;
     }
 
-    private void loadModels(SubmodelOutput output)
+    private void loadModels(SubmodelOutputFiles output)
     {
         List models = output.getModels();
         
@@ -379,7 +379,7 @@ public class RunDialog extends JDialog implements ActionListener
         }
     }
     
-    private void loadAttributes(SubmodelOutput output)
+    private void loadAttributes(SubmodelOutputFiles output)
     {
         File nodeType = output.getNodeType();
         File edgeDir = output.getEdgeDir();

@@ -12,7 +12,7 @@ my $cmd = "cytoscape.sh ";
 my $base = "$dir/$run";
 
 $cmd .= " -l embedded ";
-$cmd .= " -n /cellar/users/cmak/data/orf2name+alias.noa ";
+$cmd .= " -n /cellar/users/cmak/data/orf2name.noa ";
 $cmd .= " -n ${base}_type.noa ";
 #$cmd .= " -n ${base}_ncount.noa ";
 $cmd .= " -j ${base}_dir.eda ";
