@@ -70,7 +70,7 @@
 		<key>JVMVersion</key>
 		<string>1.4+</string>
                 <key>Arguments</key>
-		<string>--JLD $APP_PACKAGE/plugins</string>
+		<string>--JLD $APP_PACKAGE/plugins >--JLD $APP_PACKAGE/all_plugins</string>
 		<key>ClassPath</key>
 			<array>
                         <string>$JAVAROOT/cytoscape.jar</string>
