@@ -5,10 +5,10 @@
 	<!-- Name of Plug In -->
 	<!-- Change this to the name of your Plug In -->
 	<!-- The name is used to create the plugin JAR file -->
-	<property name="plugin.name" value="LayoutPlugins"/>
+	<property name="plugin.name" value="JungLayouter"/>
 
   	<!-- The directory containing source code -->
-  	<property name="src.dir" value="."/>
+  	<property name="src.dir" value="./src"/>
 
         <!-- The main cytoscape Directory -->
         <property name="cytoscape.dir" value="../../../../cytoscape"/>
