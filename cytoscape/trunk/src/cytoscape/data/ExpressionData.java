@@ -38,6 +38,7 @@ import java.util.*;
 import java.io.*;
 
 import cytoscape.*;
+import cytoscape.task.TaskMonitor;
 import cytoscape.data.*;
 
 import cytoscape.data.readers.*;
@@ -100,6 +101,7 @@ import cytoscape.data.readers.*;
  *  significant genes in that condition.<P>
  */
 public class ExpressionData implements Serializable{
+  private TaskMonitor taskMonitor;
 
   public static final int MAX_LINE_SIZE = 8192;
   
@@ -140,7 +142,7 @@ public class ExpressionData implements Serializable{
   haveSigValues = false;
 	this.initDataStructures();
     }
-    public ExpressionData(String filename) {
+    public ExpressionData(String filename) throws IOException {
 	this.filename = null;
 	numGenes = 0;
 	numConds = 0;
@@ -148,6 +150,18 @@ public class ExpressionData implements Serializable{
         haveSigValues = false;
 	this.initDataStructures();
 	this.loadData(filename);
+    }
+
+    public ExpressionData(String filename, TaskMonitor taskMonitor)
+            throws IOException {
+        this.taskMonitor = taskMonitor;
+        this.filename = null;
+        numGenes = 0;
+        numConds = 0;
+        extraTokens = 0;
+            haveSigValues = false;
+        this.initDataStructures();
+        this.loadData(filename);
     }
 
   public String getFileName(){
@@ -184,16 +198,11 @@ public class ExpressionData implements Serializable{
 
 //--------------------------------------------------------------------
 
-    public boolean oldLoadData(String filename) {
+    public boolean oldLoadData(String filename) throws IOException {
 	if (filename == null) {return false;}
 	BufferedReader input;
-	try {
-	    input = new BufferedReader(new FileReader(filename),
+    input = new BufferedReader(new FileReader(filename),
 				       MAX_LINE_SIZE);
-	} catch (IOException e) {
-	    System.err.println("Error trying to open data file " + filename);
-	    return false;
-	}
 
 	String headerLine = this.readOneLine(input);
 	if (isHeaderLineNull(headerLine,input,filename)) {return false;}
@@ -208,16 +217,13 @@ public class ExpressionData implements Serializable{
 	// if we don't, 3 is the minimum number.  Ergo:
 	// either way, we need 3, and if we expectPvals, we need 4.
 	if ((numTokens < 3) || ((numTokens<4)&&expectPvals)) {
-	    System.err.println("Bad header format in data file " + filename);
-	    System.err.println("Number of tokens parsed: " + numTokens);
+        StringBuffer msg = new StringBuffer();
+	    msg.append ("Bad header format in data file " + filename);
+	    msg.append ("\nNumber of tokens parsed: " + numTokens);
 	    for (int i=0; i<numTokens; i++) {
-		System.err.println("Token " + i + ": "
-				   + headerTok.nextToken() );
+		    msg.append("\nToken " + i + ": " + headerTok.nextToken() );
 	    }
-	    try {
-		input.close();
-	    } catch (IOException e) {}
-	    return false;
+        throw new IOException (msg.toString());
 	}
 
 	double tmpF = numTokens/2.0;
@@ -235,10 +241,6 @@ public class ExpressionData implements Serializable{
 	}
 	else { numberOfConditions = numTokens - 2; }
 
-	System.out.println("parsed " + numTokens + " tokens from header line,"
-			   + " representing " + numberOfConditions
-			   + " conditions.");
-
 	/* eat the first two tokens from the header line */
 	headerTok.nextToken();
 	headerTok.nextToken();
@@ -253,11 +255,12 @@ public class ExpressionData implements Serializable{
 	    for (int i=0; i<numberOfConditions; i++) {
 		String title = headerTok.nextToken();
 		if ( !(title.equals( cNames.get(i) )) ) {
-		    System.err.println("Expecting both ratios and p-values.\n");
-		    System.err.println("Condition name mismatch in header line"
+            StringBuffer msg = new StringBuffer();
+		    msg.append ("Expecting both ratios and p-values.\n");
+		    msg.append ("Condition name mismatch in header line"
 				       + " of data file " + filename + ": "
 				       + cNames.get(i) + " vs. " + title);
-		    return false;
+		    throw new IOException (msg.toString());
 		}
 	    }
 	}
@@ -304,13 +307,11 @@ public class ExpressionData implements Serializable{
     }//oldLoadData
 
 //--------------------------------------------------------------------
-public boolean loadData (String filename) 
-{
+public boolean loadData (String filename) throws IOException {
   if (filename == null) 
    return false;
 
   String rawText;
-  try {
     if (filename.trim().startsWith ("jar://")) {
       TextJarReader reader = new TextJarReader (filename);
       reader.read ();
@@ -321,12 +322,6 @@ public boolean loadData (String filename)
       reader.read ();
       rawText = reader.getText ();
       }
-    }
-  catch (Exception e0) {
-    System.err.println ("-- Exception while reading expression file " + filename);
-    System.err.println (e0.getMessage ());
-    return false;
-    }
   String [] lines = rawText.split ("\n");
 
   int lineCount = 0;
@@ -353,12 +348,14 @@ public boolean loadData (String filename)
     // if we don't, 3 is the minimum number.  Ergo:
     // either way, we need 3, and if we expectPvals, we need 4.
   if ((numTokens < 3) || ((numTokens<4)&&expectPvals)) {
-    System.err.println("Bad header format in data file " + filename);
-    System.err.println("Number of tokens parsed: " + numTokens);
-    for (int i=0; i<numTokens; i++)
-      System.err.println("Token " + i + ": " + headerTok.nextToken() );
-    return false;
-    } // if
+      StringBuffer msg =  new StringBuffer
+              ("Invalid header format in data file.");
+      msg.append ("\nNumber of tokens parsed: " + numTokens);
+      for (int i=0; i<numTokens; i++) {
+        msg.append("\nToken " + i + ": " + headerTok.nextToken() );
+      }
+      throw new IOException (msg.toString());
+    }
 
   double tmpF = numTokens/2.0;
   int tmpI = (int)Math.rint(tmpF);
@@ -378,10 +375,6 @@ public boolean loadData (String filename)
     numberOfConditions = numTokens - 2; 
     }
 
-  System.out.println ("parsed " + numTokens + " tokens from header line," +
-                      " representing " + numberOfConditions +
-                      " conditions.");
-
     /* eat the first two tokens from the header line */
   headerTok.nextToken ();
   headerTok.nextToken ();
@@ -394,11 +387,12 @@ public boolean loadData (String filename)
      for (int i=0; i<numberOfConditions; i++) {
        String title = headerTok.nextToken();
        if ( !(title.equals( cNames.get(i) )) ) {
-         System.err.println("Expecting both ratios and p-values.\n");
-         System.err.println("Condition name mismatch in header line"
+           StringBuffer msg = new StringBuffer();
+           msg.append ("Expecting both ratios and p-values.\n");
+           msg.append ("Condition name mismatch in header line"
                             + " of data file " + filename + ": "
                             + cNames.get(i) + " vs. " + title);
-         return false;
+           throw new IOException (msg.toString());
          } // if !title
        } // for i
     } // if expectPvals
@@ -417,8 +411,18 @@ public boolean loadData (String filename)
     }
 
     /* parse rest of file line by line */
-  for (int i = lineCount; i < lines.length; i++)
+  if (taskMonitor != null) {
+    taskMonitor.setStatus("Reading in Data...");
+  }
+  for (int i = lineCount; i < lines.length; i++) {
+
+      if (taskMonitor != null) {
+        double percentComplete = ((double) i / lines.length) * 100.0;
+        taskMonitor.setPercentCompleted((int) percentComplete);
+      }
+
     parseOneLine (lines [i], lineCount, expectPvals);
+  }
 
     /* save numGenes and build hash of gene names to indices */
   this.numGenes = geneNames.size();
@@ -455,7 +459,6 @@ public boolean loadData (String filename)
 		    names.put( titleObject, titleObject);
 		}
 		else {retval=true;}
-		//System.out.println("retval : " + retval);
 	    }
 	}
 
@@ -463,34 +466,22 @@ public boolean loadData (String filename)
     }
     
     private boolean isHeaderLineNull(String hline, BufferedReader input,
-				     String filename) {
-	if (hline == null) {
-	    System.err.println("Could not read header line from data file "
-			       + filename);
-	    try {
-		input.close();
-	    } catch (IOException e) {
-	    }
-	    return true;
-	}
-	else { return false; }
+				     String filename) throws IOException {
+	    if (hline == null) {
+            throw new IOException
+                    ("Could not read header line from data file: " + filename);
+        }
+        return false;
     }
 
     // added by iliana on 11.25.2002
     // it is convenient for users to load their MTX files as they are
     // the current code requires them to remove the first line
     private boolean isHeaderLineMTXHeader(String hline){
-	boolean b = false;
-	String pattern = "\t+RATIOS\t+LAMBDAS";
-	
-	try{
-	    b = hline.matches(pattern);
-	}catch (Exception e){
-	    System.out.println("EXCEPTION in isHeaderLineMTXHeader: " + e);
-	    System.out.flush();
-	}
-	
-	return b;
+	  boolean b = false;
+	  String pattern = "\t+RATIOS\t+LAMBDAS";
+	  b = hline.matches(pattern);
+	  return b;
     }
 
     private String readOneLine(BufferedReader f) {
@@ -502,10 +493,13 @@ public boolean loadData (String filename)
 	return s;
     }
 
-    private void parseOneLine(String oneLine, int lineCount) {
-	parseOneLine(oneLine,lineCount,true);
+    private void parseOneLine(String oneLine, int lineCount)
+            throws IOException {
+	    parseOneLine(oneLine,lineCount,true);
     }
-    private void parseOneLine(String oneLine, int lineCount, boolean sig_vals) {
+
+    private void parseOneLine(String oneLine, int lineCount, boolean sig_vals)
+            throws IOException {
 	StringTokenizer strtok = new StringTokenizer(oneLine);
 	int numTokens = strtok.countTokens();
 
@@ -516,9 +510,8 @@ public boolean loadData (String filename)
 
 	if ( (sig_vals && (numTokens < 2*numConds + 2)) ||
 	     ((!sig_vals)&&numTokens<numConds+2) ) {
-	    System.out.println("Warning: parse error on line " + lineCount
+	        throw new IOException ("Warning: parse error on line " + lineCount
 			       + "  tokens read: " + numTokens);
-	    return;
 	}
 
 	geneNames.add(gName);
@@ -721,25 +714,42 @@ public boolean loadData (String filename)
     }
 
 
-    /** copies ExpressionData data structure into
-     *  GraphObjAttributes data structure.        */
-    public void copyToAttribs(GraphObjAttributes nodeAttribs) {
-	String[] condNames = getConditionNames();
-	for(int condNum=0; condNum<condNames.length; condNum++) {
-	    String condName = condNames[condNum];
-	    String eStr = condName + "exp";
-	    String sStr = condName + "sig";
-	    for (int i=0; i<geneNames.size(); i++) {
-		String canName = (String)geneNames.get(i);
-		mRNAMeasurement mm =  getMeasurement(canName,condName);
-		if(mm!=null) {
-		    nodeAttribs.add(eStr,canName,mm.getRatio());
-		    nodeAttribs.add(sStr,canName,mm.getSignificance());
-		}
-	    }
-	    nodeAttribs.setClass(eStr,Double.class);
-	    nodeAttribs.setClass(sStr,Double.class);
-	}
+    /**
+     * Copies ExpressionData data structure into
+     * GraphObjAttributes data structure.
+     * @param nodeAttribs Node Attributes Object.
+     * @param taskMonitor Task Monitor.  Can be null.
+     */
+    public void copyToAttribs(GraphObjAttributes nodeAttribs,
+            TaskMonitor taskMonitor) {
+        //  A small optimization;  only perform mapping when we actually
+        //  have attributes.
+        if (nodeAttribs.numberOfAttributes() > 0) {
+            String[] condNames = getConditionNames();
+            for(int condNum=0; condNum<condNames.length; condNum++) {
+                String condName = condNames[condNum];
+                String eStr = condName + "exp";
+                String sStr = condName + "sig";
+                for (int i=0; i<geneNames.size(); i++) {
+                    String canName = (String)geneNames.get(i);
+                    mRNAMeasurement mm =  getMeasurement(canName,condName);
+                    if(mm!=null) {
+                        nodeAttribs.add(eStr,canName,mm.getRatio());
+                        nodeAttribs.add(sStr,canName,mm.getSignificance());
+                    }
+                    //  Report on Progress to the Task Monitor.
+                    if (taskMonitor != null) {
+                        int currentCoordinate = condNum * geneNames.size() + i;
+                        int matrixSize = condNames.length * geneNames.size();
+                        double percent = ((double) currentCoordinate / matrixSize)
+                            * 100.0;
+                        taskMonitor.setPercentCompleted((int) percent);
+                    }
+                }
+                nodeAttribs.setClass(eStr,Double.class);
+                nodeAttribs.setClass(sStr,Double.class);
+            }
+    }
     }
 }
 
