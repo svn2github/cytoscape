@@ -459,7 +459,36 @@ Networks by using Filters that you have created.
 				<td width="20%" valign="top">
 					[<a href="http://www.oracle.com/technology/industries/life_sciences/ls_sample_code.html">Download</a>]
 				</td>
-			</tr>	
+			</tr>
+			<tr>
+				<td colspan="4">
+					<hr>
+				</td>
+			</tr>				
+			<tr>
+				<td width="20%" valign="top">
+					<b>PeSca (Path Extraction by Smallest Cost Algorithm) Project</b><font size="-1">
+						<br>
+						Version: 1.0
+						<br>
+						Release Date: March, 2005</font>
+				</td>
+				<td width="40%" valign="top">
+					<p>
+					PeSca is a Cytoscape's plugin able to find the shortest interaction
+					path between two proteins in a Cytoscape's network. It is tested under
+					Cytoscape 2.1.
+					<p>
+						Released by: Michele Petterlini
+					</p>
+				</td>
+				<td width="20%" valign="top">
+				Verified to work in 2.1.
+				</td>				
+				<td width="20%" valign="top">
+					[<a href="http://www.petterlini.it/pesca/">PeSca Web Site and Download</a>]
+				</td>
+			</tr>			
 			<tr>
 				<td colspan="4">
 					<hr>
