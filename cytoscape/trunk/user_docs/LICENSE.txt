@@ -1,13 +1,9 @@
 ################################################
 # CYTOSCAPE LICENSE AGREEMENT : GNU LGPL       #
-# Cytoscape v. 1.1 (Release 2); October 2003   #
+# Cytoscape v. 2.1; February 2005              #
 # http://www.cytoscape.org                     #
 #                                              # 
-# (c) Paul Shannon, Owen Ozier,                #
-# Andrew Markiel, Daniel Ramage, Nada Amin,    #
-# Mindy Chang, Jonathan Wang,                  #
-# Benno Schwikowski and Trey Ideker 2002-2003  #
-#                                              # 
+# (c) The Cytoscape Collaboration              #
 ################################################
 
 		  GNU LESSER GENERAL PUBLIC LICENSE
