@@ -130,15 +130,31 @@ public final class MinIntHeap
     arr[index2] = temp;
   }
 
+  /**
+   * If other methods in this heap are called while iterating through
+   * the return value, behavior of the iterator is undefined.
+   */
   public final IntIterator orderedElements(boolean pruneDuplicates,
                                            boolean reverseOrder)
   {
     return null;
   }
 
+  /**
+   * Returns an iteration over all the elements currently in this heap;
+   * the order of elements in the retruned iteration is undefined.<p>
+   * If other methods in this heap are called while iterating through
+   * the return value, behavior of the iterator is undefined.
+   * @see #orderedElements(boolean, boolean)
+   */
   public final IntIterator elements()
   {
-    return null;
+    final int[] heap = m_heap;
+    final int size = m_currentSize;
+    return new IntIterator() {
+        int index = 0;
+        public int numRemaining() { return size - index; }
+        public int nextInt() { return heap[++index]; } };
   }
 
 }
