@@ -703,7 +703,20 @@ class FRootGraph implements RootGraph, DynamicGraph
 
   public int[] getNodeMetaParentIndicesArray(int nodeInx)
   {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
+    final int nativeChildNode = ~nodeInx;
+    if (!m_graph.nodeExists(nativeChildNode)) return null;
+    final int metaChildNode = m_nativeToMetaNodeInxMap.get(nativeChildNode);
+    final IntEnumerator metaRelationshipsEnum =
+      m_metaGraph.edgesAdjacent(metaChildNode, false, true, false);
+    if (metaRelationshipsEnum == null) return new int[0];
+    final int[] returnThis = new int[metaRelationshipsEnum.numRemaining()];
+    for (int i = 0; i < returnThis.length; i++) {
+      final int metaRelationship = metaRelationshipsEnum.nextInt();
+      // Something that is the source of a meta-relationship edge is a node
+      // in the original graph.
+      final int metaParent = m_metaGraph.edgeSource(metaRelationship);
+      returnThis[i] = ~(m_metaToNativeInxMap.getIntAtIndex(metaParent) - 1); }
+    return returnThis;
   }
 
   public boolean isMetaChild(Node parent, Node child) {
