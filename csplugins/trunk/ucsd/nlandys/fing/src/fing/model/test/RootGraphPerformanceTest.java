@@ -107,7 +107,8 @@ public final class RootGraphPerformanceTest
       int node2 = Math.abs(randomInt2) % nodes.length;
       sourceInxCreatedEdges[inx + offsetCreatedEdges] = node1;
       targetInxCreatedEdges[inx + offsetCreatedEdges] = node2;
-      directedCreatedEdges[inx + offsetCreatedEdges] = directed;
+      directedCreatedEdges[inx + offsetCreatedEdges] =
+        directed && (node1 != node2);
       returnThis[inx++] =
         root.createEdge(nodes[node1], nodes[node2],
                         directed && (node1 != node2)); }
