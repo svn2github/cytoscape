@@ -37,7 +37,7 @@ public class EdgeManipulationAction extends AbstractAction {
         } // for i
         if (attributesTree.size() > 0) {
             JDialog dialog = new GinyEdgeControlDialog(networkView,
-                                                       attributesTree, "Control Edges");
+                                                       attributesTree, "Edge Selection Control");
             dialog.pack();
             dialog.setLocationRelativeTo(networkView.getMainFrame());
             dialog.setVisible(true);
