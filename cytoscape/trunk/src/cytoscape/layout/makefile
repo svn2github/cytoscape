@@ -9,7 +9,9 @@ JC=javac
 .java.class: 
 	$(JC) $<
 
-OBJS = GroupWiseLayouter.class GroupWiseNodeGrouper.class Subgraph.class
+OBJS = GroupWiseLayouter.class GroupingAlgorithm.class \
+       GroupWiseNodeGrouper.class DegreeGrouper.class \
+       Subgraph.class EmbeddedLayouter.class
 
 
 default: objs 

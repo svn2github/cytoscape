@@ -1,5 +1,5 @@
 //
-// GraphWiseLayouter.java
+// GroupWiseLayouter.java
 //
 // the oh-so-group-wise layout algorithm
 //
@@ -25,26 +25,32 @@ import y.layout.transformer.GraphTransformer;
 import javax.swing.JOptionPane;
 
 public class GroupWiseLayouter implements Layouter {
-    public GroupWiseLayouter () {
+    // the object used to group the subgraphs
+    GroupingAlgorithm iGrouper;
+
+    
+    // GroupWiseLayouter
+    //
+    // save the grouping algorithm for later
+    public GroupWiseLayouter (GroupingAlgorithm aGrouper) {
+	iGrouper = aGrouper;
     }
 
 
-    // canLayoutCore
+    // canLayout
     //
     // can we layout the graph?
-    //public boolean canLayoutCore(LayoutGraph graph) {
     public boolean canLayout(LayoutGraph graph) {
 	return true;
     }
 
 
-    // doLayoutCore
+    // doLayout
     //
     // do the layouting of graph
-    //public void doLayoutCore(LayoutGraph graph) {
     public void doLayout(LayoutGraph graph) {
 	// compare node number to threshold
-	if (graph.nodeCount() >= 100) {
+	if (graph.nodeCount() >= 40) {
 	    // large node count: do grouping
 	    
 	    // step 0: ask how many groups
@@ -81,27 +87,27 @@ public class GroupWiseLayouter implements Layouter {
 
 	
 	    // step 1: group nodes
-	    GroupWiseNodeGrouper grouper = new GroupWiseNodeGrouper(graph);
-	    Subgraph group = grouper.getNodeGrouping(numGroups);
+	    iGrouper.useGraph(graph);
+	    Subgraph group = iGrouper.getNodeGrouping(numGroups);
 
 	    // return if unable to group
 	    if (group == null)
 		return;
 
 	    // step 2: lay out group
-	    layoutGrouping(group);
+	    // step 2.1: find average node size
+	    float size = 0.0f;
+	    for (NodeCursor nc = group.nodes(); nc.ok(); nc.next())
+		size += (float)group.getWidth(nc.node());
 
-	    // now scale it up
-	    // TEMP!! find a better way to do this
-	    GraphTransformer scaler = new GraphTransformer();
-	    scaler.setOperation(GraphTransformer.SCALE);
-	    double sf =  ((double)graph.nodeCount())
-		/ ((double)(numGroups));
-	    scaler.setScaleFactor(sf);
-	    scaler.doLayoutCore(group);
-	    
+	    size /= group.nodeCount();
+
+	    // size of graph = avg node size * 2.0 apart * num nodes
+	    size *= Math.sqrt(group.nodeCount())*2.0f;
+	    layoutGrouping(group, size, size);
+
 	    // step 3: insert changes into full graph
-	    grouper.putNodeGrouping(group);
+	    iGrouper.putNodeGrouping(group);
 
 
 	    // step 4: lay out clusters
@@ -109,11 +115,20 @@ public class GroupWiseLayouter implements Layouter {
 		// save the current node center
 		YPoint center = group.getCenter(nc.node());
 
-		// step 4.1: get cluster from grouper
-		Subgraph cluster = grouper.getClusterByNode(nc.node(),group);
+		// TEMP!!: see the sizes of the nodes in the full graph
+		//graph.setSize(group.mapSubFullNode(nc.node()),
+		//	      group.getWidth(nc.node()),
+		//	      group.getHeight(nc.node()));
 
-		// step 4.2: layout cluster
-		layoutCluster(cluster);
+
+
+		// step 4.1: get cluster from grouper
+		Subgraph cluster = iGrouper.getClusterByNode(nc.node(),group);
+
+		// step 4.2: layout cluster to target width and height
+		layoutCluster(cluster,
+			      (float)group.getWidth(nc.node()),
+			      (float)group.getHeight(nc.node()));
 
 		// shift its position
 		Rectangle rect = cluster.getBoundingBox();
@@ -123,7 +138,7 @@ public class GroupWiseLayouter implements Layouter {
 
 
 		// step 4.3: put cluster back into graph
-		grouper.putClusterByNode(nc.node(), cluster);
+		iGrouper.putClusterByNode(cluster);
 	    }
 
 
@@ -142,25 +157,45 @@ public class GroupWiseLayouter implements Layouter {
     //
     // layout the graph of nodes representing
     // group positions
-    private void layoutGrouping (LayoutGraph graph) {
-	OrganicLayouter mule = new OrganicLayouter();
+    private void layoutGrouping (LayoutGraph graph,
+				 float width, float height) {
+	//OrganicLayouter mule = new OrganicLayouter();
 	//CircularLayouter mule = new CircularLayouter();
 	//mule.getSingleCycleLayouter().setMinimalRadius(240.0);
 	//mule.getBalloonLayouter().setMinimalEdgeLength(120);
-	mule.doLayout(graph);
+	//mule.setObeyNodeSize(true);
+
+	Node[] nodeList = graph.getNodeArray();
+	int nC = graph.nodeCount();
+	// center the clusters at around 0
+	for (int i = 0; i < nC; i++)
+	    graph.setCenter(nodeList[i],
+			    10*(Math.random()-.5),
+			    10*(Math.random()-.5));
+
+	WeightedLayouter mule = new WeightedLayouter(width, height);
+      	mule.doLayout(graph);
     }
 
 
-    private void layoutCluster(LayoutGraph cluster) {
-	Node[] nodeList = cluster.getNodeArray();
-	int nC = cluster.nodeCount();
+
+    // layoutCluster
+    //
+    // layout the graph of nodes in a cluster
+    private void layoutCluster(LayoutGraph cluster,
+			       float width, float height) {
+	//Node[] nodeList = cluster.getNodeArray();
+	//int nC = cluster.nodeCount();
 
 	// center the clusters at 0
-	for (int i = 0; i < nC; i++)
-	    cluster.setCenter(nodeList[i], 0.0, 0.0);
+	//for (int i = 0; i < nC; i++)
+	//    cluster.setCenter(nodeList[i],
+	//		      10*(Math.random()-.5),
+	//		      10*(Math.random()-.5));
 	
 	// do a circular layout on them
-	CircularLayouter bob = new CircularLayouter();
+	//CircularLayouter bob = new CircularLayouter();
+	WeightedLayouter bob = new WeightedLayouter(width, height);
 	bob.doLayout(cluster);
     }
 }

@@ -23,8 +23,7 @@ public class Subgraph extends CopiedLayoutGraph {
 
     // mapping table for iGraph Node => iFullGraph node
     HashMap iSFNodeMap;
-    // HashMap iSFOffsetMap;
-
+    HashMap iFSNodeMap;
 
 
     // constructor
@@ -47,6 +46,7 @@ public class Subgraph extends CopiedLayoutGraph {
 	int nC = nodeCount();
 
 	iSFNodeMap = new HashMap();
+	iFSNodeMap = new HashMap();
 	//iSFOffsetMap = new HashMap();
 
 	// remove nodes from graph that aren't in aNodeSubset
@@ -64,6 +64,7 @@ public class Subgraph extends CopiedLayoutGraph {
 	    // and remove nodes not in subset
 	    if (keep) {
 		iSFNodeMap.put(gList[i], fList[i]);
+		iFSNodeMap.put(fList[i], gList[i]);
 		//iSFOffsetMap.put(gList[i], new Integer(i));
 	    } else
 		removeNode(gList[i]);
@@ -96,11 +97,105 @@ public class Subgraph extends CopiedLayoutGraph {
     }
 
 
+
+    // createNode
+    //
+    // create a node, linked to a node in parent
+    public Node createNode(Node aParentNode) {
+	Node bob = createNode();
+
+	iSFNodeMap.put(bob, aParentNode);
+	iFSNodeMap.put(aParentNode, bob);
+
+	return bob;
+    }
+
+
+    // mergeNodes
+    //
+    // adjoin second node to first, keeping edges in tact.
+    // TEMP!! NEEDS MAJOR OPTIMIZATION
+    public void mergeNodes(Node aParent, Node aChild) {
+	// get connectedness list
+	int[][] connected = GroupingAlgorithm.gaConnected(this);
+
+	// find child index
+	Node[] nodeList = getNodeArray();
+	int c = 0, p = 0;
+	for (int i = 0; i < nodeCount(); i++) {
+	    if (nodeList[i] == aChild)
+		c = i;
+	    if (nodeList[i] == aParent)
+		p = i;
+	}
+
+	// update edges
+	for (int i = 0; i < nodeCount(); i++) {
+	    switch (connected[c][i]) {
+	    case GroupingAlgorithm.CONNECTED_BI:
+		switch (connected[p][i]) {
+		case GroupingAlgorithm.CONNECTED_TO:
+		    createEdge(nodeList[i], nodeList[p]);
+		    break;
+		case GroupingAlgorithm.CONNECTED_FROM:
+		    createEdge(nodeList[p], nodeList[i]);
+		    break;
+		case GroupingAlgorithm.NOT_CONNECTED:
+		    createEdge(nodeList[i], nodeList[p]);
+		    createEdge(nodeList[p], nodeList[i]);
+		    break;
+		} connected[p][i] = connected[i][p]
+		      = GroupingAlgorithm.CONNECTED_BI;
+		break;
+
+	    case GroupingAlgorithm.CONNECTED_TO:
+		switch (connected[p][i]) {
+		case GroupingAlgorithm.CONNECTED_FROM:
+		    createEdge(nodeList[p], nodeList[i]);
+		    connected[p][i] = connected[i][p]
+			= GroupingAlgorithm.CONNECTED_BI;
+		    break;
+		case GroupingAlgorithm.NOT_CONNECTED:
+		    createEdge(nodeList[p], nodeList[i]);
+		    connected[p][i] = GroupingAlgorithm.CONNECTED_TO;
+		    connected[i][p] = GroupingAlgorithm.CONNECTED_FROM;
+		    break;
+		} break;
+
+	    case GroupingAlgorithm.CONNECTED_FROM:
+		switch (connected[p][i]) {
+		case GroupingAlgorithm.CONNECTED_TO:
+		    createEdge(nodeList[i], nodeList[p]);
+		    connected[p][i] = connected[i][p]
+			= GroupingAlgorithm.CONNECTED_BI;
+		    break;
+		case GroupingAlgorithm.NOT_CONNECTED:
+		    createEdge(nodeList[i], nodeList[p]);
+		    connected[p][i] = GroupingAlgorithm.CONNECTED_FROM;
+		    connected[i][p] = GroupingAlgorithm.CONNECTED_TO;
+		    break;
+		} break;
+	    }
+	}
+		
+
+	removeNode(aChild);
+    }
+
+
     // mapSubFullNode
     //
     // map a node from the subgraph to node in full
     public Node mapSubFullNode(Node aNode) {
 	return ((Node)iSFNodeMap.get(aNode));
+    }
+
+
+    // mapFullSubNode
+    //
+    // map a node from the full graph to a subgraph node
+    public Node mapFullSubNode(Node aNode) {
+	return ((Node)iFSNodeMap.get(aNode));
     }
 
 

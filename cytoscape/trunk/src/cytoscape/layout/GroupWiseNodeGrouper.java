@@ -15,27 +15,22 @@ import java.util.*;
 import y.base.*;
 import y.layout.*;
 
+import y.geom.*;
+import y.util.*;
+
 import javax.swing.JOptionPane;
 import javax.swing.JFileChooser;
 
 
-public class GroupWiseNodeGrouper {
-    // the graph
-    LayoutGraph iGraph;
-
+public class GroupWiseNodeGrouper extends GroupingAlgorithm {
     // vectors linking each sub-graph
-    // node with its children
-    HashMap iCNHash; // iCN hashed by Node
+    // node with its children & vice-versa
+    HashMap iCNHash; // child nodes hashed by Node
+    HashMap iPNHash; // parent nodes hashed by Node
 
     // full cluster map (list of nodes
     // to pair to squish the graph)
     int[][] iClusterMap;
-
-    // static values for connectedness table
-    final static int NOT_CONNECTED = 0;
-    final static int CONNECTED_TO = 1;
-    final static int CONNECTED_FROM = 2;
-    final static int CONNECTED_BI = 3;
 
     // table with whether or not two given
     // nodes in iGraph are connected.
@@ -47,59 +42,26 @@ public class GroupWiseNodeGrouper {
     static final String CSM_VERSION = "#CSM:0.6";
 
 
-    // GroupWiseNodeGrouper
+    // useGraph(LayoutGraph aGraph)
     //
-    // initialize memory structures
-    public GroupWiseNodeGrouper (LayoutGraph aGraph) {
-	iGraph = aGraph;
+    // initialize memory structures for graph
+    public void useGraph(LayoutGraph aGraph) {
+	// do super-processing
+	super.useGraph(aGraph);
 
-	Node[] nodeList = iGraph.getNodeArray();
-	int nC = iGraph.nodeCount();
-
-
-	// initialize connectedness table
-	iConnected = new int[nC][nC];
-       	for (int i = 0; i < nC; i++)
-	    for (int j = 0; j < nC; j++)
-		iConnected[i][j] = NOT_CONNECTED;
-
-	// iterate over edges to set up connectedness
-	for (EdgeCursor edges = iGraph.edges(); edges.ok(); edges.next()) {
-	    int s = 0; int t = 0;
-
-	    for (int i = 0; i < nC; i++) {
-		if (nodeList[i] == edges.edge().source())
-		    s = i;
-		else if (nodeList[i] == edges.edge().target())
-		    t = i;
-	    }
-
-	    // update connectedness considering directionality
-	    if (iConnected[s][t] == CONNECTED_FROM)
-		iConnected[s][t] = iConnected[t][s] = CONNECTED_BI;
-	    else {
-		iConnected[s][t] = CONNECTED_TO;
-		iConnected[t][s] = CONNECTED_FROM;
-	    }
-	}
+	// save connectedness
+	iConnected = gaConnected(iGraph);
     }
 
 
 
 
 
-    ////
-    //
-    // public interface methods
-    //
-    ////
-
-
     // getNodeGrouping
     //
     // compress iGraph down to *groups* subgroups
     // and put the results in iGraph in a reversible
-    // fashion (returning iGraph to calling proc)
+    // fashion (returning graph to calling proc)
     public Subgraph getNodeGrouping(int aGroupCount) {
 	// run the clustering algo, to populate
 	// iClusterMap array
@@ -228,9 +190,26 @@ public class GroupWiseNodeGrouper {
 	System.out.println("\r  Done.");
 
 
-	// remove gobbled nodes
+	// 1) set sizes of nodes in subgraph to be proportional
+	//    number of child nodes
+	// 2) remove gobbled nodes
 	for (int i = 0; i < nodeMap.size(); i++) {
 	    int c = ((Integer)nodeMap.elementAt(i)).intValue();
+	    
+	    double size = subgraph.getWidth(nodeList[c])
+		* Math.sqrt(iCN[c].size()+1) * 6.0;
+
+	    subgraph.setSize(nodeList[c], size, size);
+
+	    //int size = iCN[c].size() + 1;
+	    //size = (size > 1000 ? 1000 : size);
+
+	    //YDimension nodeSize = subgraph.getSize(nodeList[c]);
+	    // System.out.println(nodeSize.getWidth() + ":"+ size);
+	    //subgraph.setSize(nodeList[c],
+	    //	     nodeSize.getWidth()*size,
+	    //	     nodeSize.getHeight()*size);
+	    
 	    for (int j = 0; j < iCN[c].size(); j++)
 		subgraph.removeNode((Node)iCN[c].elementAt(j));
 	}
@@ -244,6 +223,7 @@ public class GroupWiseNodeGrouper {
 	//  b) it points to nodes in iGraph (as opposed
 	//     to nodes in subgraph)
 	iCNHash = new HashMap();
+	iPNHash = new HashMap();
 
 	Node[] fullList = iGraph.getNodeArray();
 
@@ -256,8 +236,39 @@ public class GroupWiseNodeGrouper {
 						(Node)iCN[i].elementAt(j)));
 
 	    iCNHash.put(fullList[i], nList);
+
+	    // make each node its own parent, initially
+	    iPNHash.put(fullList[i], fullList[i]);
 	}
 
+
+	// create a hash mapping of nodes to their parent node
+
+	Iterator parentIter = (iCNHash.entrySet()).iterator();
+	while (parentIter.hasNext()) {
+	    Map.Entry parent = (Map.Entry)parentIter.next();
+
+	    NodeList childList = (NodeList) parent.getValue();
+	    for (int i = 0; i < childList.size(); i++)
+		iPNHash.put(childList.elementAt(i), parent.getKey());
+	}
+
+	// remove parents that are themselves children
+	boolean changed = true;
+	while (changed) {
+	    changed = false;
+	    
+	    Iterator childIter = (iPNHash.entrySet()).iterator();
+	    while (childIter.hasNext()) {
+		Map.Entry bob = (Map.Entry)childIter.next();
+
+		// if parent has parent, make parent's parent our parent
+		if (iPNHash.get(bob.getValue()) != bob.getValue()) {
+		    iPNHash.put(bob.getKey(), iPNHash.get(bob.getValue()));
+		    changed = true;
+		}
+	    }
+	}
 
 	// all done!  return the subgraph
 	return subgraph;
@@ -267,9 +278,9 @@ public class GroupWiseNodeGrouper {
     // putNodeGrouping
     //
     // reinsert the node grouping into the mail graph
-    public void putNodeGrouping(Subgraph group) {
-	group.reInsert();
-    }
+    //public void putNodeGrouping(Subgraph group) {
+    //group.reInsert();
+    //}
 
 
     // getClusterByNode
@@ -277,24 +288,74 @@ public class GroupWiseNodeGrouper {
     // return a GraphMap corresponding to the
     // nodes from iGraph that have been grouped
     // to aNode in iGraph
-    public Subgraph getClusterByNode(Node node, Subgraph group) {
-	NodeList nodes = (NodeList)iCNHash.get(group.mapSubFullNode(node));
-	return new Subgraph(iGraph, nodes.nodes());
+    public Subgraph getClusterByNode(Node groupNode, Subgraph group) {
+	NodeList nodes = (NodeList)iCNHash.get(group.mapSubFullNode(groupNode));
+	nodes.addLast(group.mapSubFullNode(groupNode));
+	Subgraph cluster = new Subgraph(iGraph, nodes.nodes());
+
+	// data provider of sluggishness for each node
+	NodeMap slug = cluster.createNodeMap();
+
+	Node[] nodeList = iGraph.getNodeArray();
+	int nC = iGraph.nodeCount();
+
+	// set initial placement of nodes inside box AND
+	// initialize data provider - everyone starts with 1.0
+	// factor of slowing for WeightedLayouter
+	for (NodeCursor nc = cluster.nodes(); nc.ok(); nc.next()) {
+	    // node in full graph, parent in full graph
+	    Node node = cluster.mapSubFullNode(nc.node());
+	    Node parent = (Node)iPNHash.get(node);
+	    //System.out.println(" clustered " + node.toString() + " with " + parent.toString());
+	    
+	    // find node offset in full graph
+	    int offset;
+	    for (offset = 0; offset < nC; offset++)
+		if (nodeList[offset] == node)
+		    break;
+
+	    // vector sum of position relative to other clusters
+	    double vx = 0, vy = 0;
+
+	    // iterate over nodes in parent
+	    for (int i = 0; i < nC; i++) {
+		if (iConnected[offset][i] != NOT_CONNECTED)
+		    if ((Node)iPNHash.get(nodeList[i]) != parent) {
+			Node bob = (Node)iPNHash.get(nodeList[i]);
+			double dx = iGraph.getCenterX(bob)
+			    - iGraph.getCenterX(parent);
+			double dy = iGraph.getCenterY(bob)
+			    - iGraph.getCenterY(parent);
+
+			double h = Math.sqrt(dx*dx + dy*dy);
+			vx += dx/h;
+			vy += dy/h;
+		    }
+	    }
+
+
+
+	    if (vx != 0.0 || vy != 0.0) {
+		double size = iGraph.getWidth(parent) * 3.0
+		    * Math.sqrt(((NodeList)iCNHash.get(parent)).size()+1);
+		//double size = 1000;
+
+		cluster.setCenter(nc.node(),
+				  vx * size,
+				  vy * size);
+		slug.setDouble(nc.node(), .25);
+	    } else {
+		cluster.setCenter(nc.node(),
+				  10*(Math.random()-.5),
+				  10*(Math.random()-.5));
+		slug.setDouble(nc.node(), 1.0);
+	    }
+	}
+
+	// edge nodes - these should move at 1/4 speed
+	cluster.addDataProvider("Cytoscape:slug", slug);
+	return cluster;
     }
-
-
-    // putClusterByNode
-    //
-    // position nodes in iGraph to relative positions in
-    // *cluster* (cluster identified by *node)
-    public void putClusterByNode(Node aNode, Subgraph aCluster) {
-	aCluster.reInsert();
-    }
-
-
-
-
-
 
 
 
@@ -422,7 +483,7 @@ public class GroupWiseNodeGrouper {
     // generate cluster map from the graph
     private boolean cmGenerate() {
 	// step 1: calculate distance matrix
-	float[][] dm = getDistanceMatrix();
+	float[][] dm = getFastDistanceMatrix();
 
 	// step 2: condense distance matrix
 	iClusterMap = new int[iGraph.nodeCount()-1][2];
@@ -573,6 +634,175 @@ public class GroupWiseNodeGrouper {
 
 
 
+
+
+
+
+    /**
+     * @return a symmetrical matrix of distances the given nodes.  The
+     * diagonal of the returned matrix will be 0s, and all cells i,j such that
+     * nodes with "index"es i and j are adjacent will have value 1.
+     */
+    private float[][] getFastDistanceMatrix() {
+
+	// get node list and allocate space for
+	// the distance matrix
+	int nC = iGraph.nodeCount();
+	float[][] dm = new float[nC][nC];
+	LinkedList[] lla = new LinkedList[nC];
+	for(int i=0; i<nC; i++)
+	    lla[i] = new LinkedList();
+	//System.err.println( "Fast Alg" );
+
+	// We don't have to make new Integers all the time, so we store the index
+	// Objects in this array for reuse.
+	Integer[] integers = new Integer[ nC ];
+	for(int i=0; i<nC; i++)
+	    integers[i] = new Integer(i);
+	    
+	for(int from_node_int=0; from_node_int< nC; from_node_int++) {
+	    //System.err.println( from_node_int );
+	    lla[from_node_int].clear();
+	    for(int to_node_int=0; to_node_int< nC; to_node_int++) {
+		if (iConnected[from_node_int][to_node_int] != NOT_CONNECTED) {
+		    lla[from_node_int].add(integers[to_node_int]);
+		    //System.out.println("found edge " + from_node_int + " " + to_node_int);
+		}
+	    }
+	}
+
+	// TODO: REMOVE
+	System.err.println( "Calculating all node distances.." );
+	
+	
+	// Fill the nodes array with the nodes in their proper index locations.
+	int index;
+	LinkedList from_node_ll;
+	
+	LinkedList queue = new LinkedList();
+	boolean[] completed_nodes = new boolean[ nC ];
+	Iterator neighbors;
+	LinkedList to_node_ll;
+	int neighbor_index;
+	int to_node_distance;
+	int neighbor_distance;
+	for( int from_node_index = 0;
+	     from_node_index < nC;
+	     from_node_index++ ) {
+	    from_node_ll = lla[from_node_index];
+	    if( from_node_ll.getFirst() == null ) {
+		// Make the distances in this row all Integer.MAX_VALUE.
+		Arrays.fill( dm[ from_node_index ], nC+2 );
+		continue;
+	    }
+	    
+	    /*
+	      // TODO: REMOVE
+	      System.err.print( "Calculating node distances from graph node " +
+	      from_node );
+	      System.err.flush();
+	    */
+	    
+	    // Make the distances row and initialize it.
+	    Arrays.fill( dm[ from_node_index ], nC+2 );
+	    dm[ from_node_index ][ from_node_index ] = 0;
+	    
+	    // Reset the completed nodes array.
+	    Arrays.fill( completed_nodes, false );
+	    
+	    // Add the start node to the queue.
+	    queue.add( integers[from_node_index] );
+	    
+	    while( !( queue.isEmpty() ) ) {
+		
+		index = ( (Integer)queue.removeFirst()).intValue();
+		if( completed_nodes[ index ] ) {
+		    continue;
+		}
+		completed_nodes[ index ] = true;
+		
+		to_node_ll = lla[index];
+		to_node_distance = (int)dm[ from_node_index ][ index ];
+		
+		if( index < from_node_index ) {
+		    // Oh boy.  We've already got every distance from/to this node.
+		    int distance_through_to_node;
+		    for( int i = 0; i < nC; i++ ) {
+			if( (int)dm[ index ][ i ] == nC+2 ) {
+			    continue;
+			}
+			distance_through_to_node =
+			    to_node_distance + (int)dm[ index ][ i ];
+			if( distance_through_to_node <=
+			    (int)dm[ from_node_index ][ i ] ) {
+			    // Any immediate neighbor of a node that's already been
+			    // calculated for that does not already have a shorter path
+			    // calculated from from_node never will, and is thus complete.
+			    if( (int)dm[ index ][ i ] == 1 ) { 
+				completed_nodes[ i ] = true;
+			    }
+			    dm[ from_node_index ][ i ] =
+				(float)distance_through_to_node;
+			}
+		    } // End for every node, update the distance using the distance from
+		    // to_node.
+		    // So now we don't need to put any neighbors on the queue or
+		    // anything, since they've already been taken care of by the previous
+		    // calculation.
+		    continue;
+		} // End if to_node has already had all of its distances calculated.
+		
+		neighbors = to_node_ll.listIterator(0);
+		
+		while( neighbors.hasNext() ) {
+		    neighbor_index = ((Integer)neighbors.next()).intValue();
+		    
+		    if( completed_nodes[ neighbor_index ] ) {
+			// We've already done everything we can here.
+			continue;
+		    }
+		    
+		    neighbor_distance = (int)dm[ from_node_index ][ neighbor_index ];
+		    
+		    if( ( to_node_distance != nC+2 ) &&
+			( neighbor_distance > ( to_node_distance + 1 ) ) ) {
+			dm[ from_node_index ][ neighbor_index ] =
+			    (float)( to_node_distance + 1 );
+			queue.addLast( integers[neighbor_index] );
+		    }
+		    
+		    // TODO: REMOVE
+		    /*
+		      System.err.print( "." );
+		      System.err.flush();
+		    */
+		    
+		} // For each of the next nodes' neighbors
+		// TODO: REMOVE
+		/*
+		  System.err.print( "|" );
+		  System.err.flush();
+		*/
+	    } // For each to_node, in order of their (present) distances
+	    
+	    // TODO: REMOVE
+	    /*
+	      System.err.println( "done." );
+	    */
+	    
+	} // For each from_node
+	
+	// TODO: REMOVE
+	System.err.println( "..Done calculating all node distances." );
+	
+	return dm; // owoUP
+    } // calculateAllNodeDistances(..)
+
+
+
+
+
+
     // condenseCondenseMatrix
     //
     // grouping phase 2: matrix condensation
@@ -581,6 +811,10 @@ public class GroupWiseNodeGrouper {
 	int[] weight = new int[iGraph.nodeCount()];
 	for (int i = 0; i < iGraph.nodeCount(); i++)
 	    weight[i] = 1;
+
+	//int[] label = new int[iGraph.nodeCount()];
+	//for (int i = 0; i < iGraph.nodeCount(); i++)
+	//    label[i] = i;
 
 	
 	for (int nC = iGraph.nodeCount(); nC > 1; nC--) {
@@ -612,6 +846,12 @@ public class GroupWiseNodeGrouper {
 	    for (int i = 0; i < nC; i++) {
 		int pct = Math.round((((float) i) / ((float) nC))*100);
 		System.out.print("   \r  "+pct+"%");
+		
+		if((i>=jMin)&&(i<nC-1)) {
+		    weightNew[i] = weight[i+1];
+		    //label[i] = label[i+1];
+		    //System.out.println(" update "+i+" " + label[i]);
+		}
 
 		// ignore row j
 		if (i != jMin) {
