@@ -234,6 +234,11 @@ protected void initializeWidgets ()
 {
   setLayout (new BorderLayout ());  
   graphView = new Graph2DView ();
+
+  // added owo 2002.04.18
+  DefaultBackgroundRenderer renderer = new DefaultBackgroundRenderer (graphView);
+  graphView.setBackgroundRenderer (renderer);
+
   add (graphView, BorderLayout.CENTER);
   graphView.setPreferredSize (new Dimension (DEFAULT_WIDTH, DEFAULT_HEIGHT));
 
@@ -284,6 +289,15 @@ public void displayGraph (boolean doLayout)
 public void renderNodesAndEdges ()
 {
   Node [] nodes = graphView.getGraph2D().getNodeArray();
+
+  Color bgColor =
+      vizMapperCategories.getBGColor(vizMapper);
+  if(bgColor != null) {
+      //graphView.setBackground(bgColor);
+      DefaultBackgroundRenderer bgr = (DefaultBackgroundRenderer)graphView.getBackgroundRenderer();
+      bgr.setColor(bgColor);
+      //CytoscapeWindow.this.setBackground(bgColor);
+  }
 
   for (int i=0; i < nodes.length; i++) {
     Node node = nodes [i];
@@ -526,8 +540,8 @@ protected JMenuBar createMenuBar ()
   menuBar.add (opsMenu);
 
   vizMenu = new JMenu ("Visualization"); // always create the viz menu
-  //menuBar.add (vizMenu);
-  //vizMenu.add (new SetVisualPropertiesAction ());
+  menuBar.add (vizMenu);
+  vizMenu.add (new SetVisualPropertiesAction ());
   
   return menuBar;
 
