@@ -113,7 +113,12 @@ public final class GraphConverter2
           return nodeView.getYPosition() - yOff; }
 
         // MutableGraphLayout methods.
-        public boolean isMovableNode(int node) { return true; }
+        public boolean isMovableNode(int node) {
+          NodeView nodeView = graphView.getNodeView(node);
+          if (nodeView == null) throw new IllegalArgumentException
+                                  ("node " + node + " not in this graph");
+          if (noNodesSelected) return true;
+          return nodeView.isSelected(); }
         public void setNodePosition(int node, double xPos, double yPos) {}
 
         // PolyEdgeGraphLayout methods.
