@@ -11,7 +11,7 @@ public interface IndexIterator
   /**
    * Returns the next index in the iteration.
    * @return the next index in the iteration.
-   * @exception NoSUchElementException if the iteration has no more
+   * @exception NoSuchElementException if the iteration has no more
    *   indices.
    **/
   public int next();

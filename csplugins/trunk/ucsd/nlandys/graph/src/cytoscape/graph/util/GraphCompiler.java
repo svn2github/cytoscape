@@ -145,12 +145,10 @@ public final class GraphCompiler
    *         Assume G is a neighbor of G.  By definition, it follows that
    *         there exists an edge E such that E has endpoint nodes G and G.
    *         There exists only a single edge, and so W must have endpoint nodes
-   *         G and G.
-   *         By definition of <i>endpoint</i>, at least one of 1-4 is true.
-   *         But all of 1-4 are false.  Contradiction.
+   *         G and G.  Contradiction.
    *         Therefore our assumption is false - that
-   *         is, A is <i>not</i> a neighbor of A.  Therefore A
-   *         will not be returned in the list of neighboring nodes of A.</li>
+   *         is, G is <i>not</i> a neighbor of G.  Therefore G
+   *         will not be returned in the list of neighboring nodes of G.</li>
    * </ul>
    *
    * @param nodeIndex the index of the node whose neighbors we're trying

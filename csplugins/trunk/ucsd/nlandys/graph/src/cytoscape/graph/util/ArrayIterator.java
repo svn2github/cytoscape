@@ -21,8 +21,7 @@ public class ArrayIterator implements IndexIterator
    * No copy of the <code>indices</code> array is made.
    *
    * @exception NullPointerException
-   *   <blockquote>if <nobr><code>indices == null</code></nobr>.
-   *   </blockquote>
+   *   if <nobr><code>indices == null</code></nobr>.
    **/
   public ArrayIterator(int[] indices)
   {
@@ -38,15 +37,12 @@ public class ArrayIterator implements IndexIterator
    * No copy of the <code>indices</code> array is made.
    *
    * @exception NullPointerException
-   *   <blockquote>if <nobr><code>indices == null</code></nobr>.
-   *   </blockquote>
+   *   if <nobr><code>indices == null</code></nobr>.
    * @exception IllegalArgumentException
-   *   <blockquote>if <nobr><code>length < 0</code></nobr>.
-   *   </blockquote>
+   *   if <nobr><code>length < 0</code></nobr>.
    * @exception ArrayIndexOutOfBoundsException
-   *   <blockquote>if <nobr><code>beginIndex < 0</code></nobr> or if
+   *   if <nobr><code>beginIndex < 0</code></nobr> or if
    *   <nobr><code>beginIndex + length > indices.length</code></nobr>.
-   *   </blockquote>
    **/
   public ArrayIterator(int[] indices, int beginIndex, int length)
   {

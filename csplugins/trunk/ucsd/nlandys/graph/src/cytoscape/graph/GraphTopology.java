@@ -55,7 +55,7 @@ public interface GraphTopology
    * Returns the number of nodes in this graph.  In other methods of this
    * interface a node is referenced by its index.  Indexes of nodes start
    * at <code>0</code> and end at <nobr><code>getNumNodes() - 1</code></nobr>,
-   * inclusive.
+   * inclusive.<p>
    * Note: a graph which contains an edge must also contain at least one
    * node; therefore, there are certain constraints on allowable return values.
    * For example, if <code>getNumEdges()</code> returns <code>1</code>

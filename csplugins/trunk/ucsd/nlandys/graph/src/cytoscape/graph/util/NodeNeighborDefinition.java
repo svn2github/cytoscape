@@ -14,12 +14,14 @@ public interface NodeNeighborDefinition
 {
 
   /**
+   * Lets programmers override the default definition of
+   * <i>node neighbor</i>.
    * This method defines the answer to the question:
    * in a given graph, does edge E at edge
    * index <code>edgeIndex</code>, whose endpoint nodes have indices
    * <code>nodeAIndex</code> and <code>nodeBIndex</code>, have the property
    * that makes node at index <code>nodeAIndex</code> a neighbor of node
-   * at index </code>nodeBIndex</code>?  The way we've stated this (and the way
+   * at index <code>nodeBIndex</code>?  The way we've stated this (and the way
    * this interface was designed) makes the definition of node neighbors
    * base itself on examining exactly one edge at a time, ingoring all
    * other topological aspects of the graph (other edges, other nodes, etc.)
@@ -31,10 +33,11 @@ public interface NodeNeighborDefinition
    * <code>true</code> for some combination of edge index <code>e</code>,
    * node index <code>a</code>, and node index <code>b</code> such that
    * there exists, in our graph, an edge with index <code>e</code> whose
-   * end-nodes have indices <code>a</code> and <code>b</code>.<p>
+   * end-nodes have indices <code>a</code> and <code>b</code> (notice that
+   * I'm talking about endpoints, not source and target nodes).<p>
    * You should notice right away that that this definition
    * defines a binary relation on our set of nodes which is a subset of
-   * the original <code>neighbor</code> binary relation defined in
+   * the original <i>neighbor</i> binary relation defined in
    * <code>GraphTopology</code>.  This is exactly what I mean by a restricting
    * (or narrowing) definition.<p>
    * In order for this definition to function properly in a framework,
@@ -44,8 +47,8 @@ public interface NodeNeighborDefinition
    * <code>isNodeNeighbor()</code>, it would be superfluous (but not
    * necessarily harmful) to call this method again against the same
    * nodes and order of nodes, but against a differnt edge.  &quot;You can't
-   * undo node A being a neighbor of node B once an edge has defined
-   * &quot;.  This hook is able to define a
+   * undo node A being a neighbor of node B once an edge has defined it
+   * so&quot;.  This hook is able to define a
    * &quot;neighbor&quot; binary relation on our node set which in not
    * necessarily symmetric (non-symmetric means:
    * if '~' stands for &quot;is a neighbor
