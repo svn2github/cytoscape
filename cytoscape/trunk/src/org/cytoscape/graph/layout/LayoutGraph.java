@@ -3,6 +3,9 @@ package org.cytoscape.graph.layout;
 import java.awt.geom.Point2D;
 import org.cytoscape.graph.Graph;
 
+/**
+ * This class offers a hook for layout algorithms to operate on.
+ */
 public interface LayoutGraph extends Graph
 {
 
