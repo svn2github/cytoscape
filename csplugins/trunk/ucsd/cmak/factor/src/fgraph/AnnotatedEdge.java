@@ -28,6 +28,8 @@ class AnnotatedEdge
 
     IntArrayList submodels;
 
+    int[] paths;
+    
     void addSubmodel(int m)
     {
         submodels.add(m);
@@ -53,7 +55,12 @@ class AnnotatedEdge
         b.append(maxSign);
         b.append(" active=");
         b.append(active);
-
+        if(paths != null)
+        {
+            b.append(" numPaths=");
+            b.append(paths.length);
+        }
+        
         return b.toString();
     }
 }

@@ -16,6 +16,7 @@ public class Submodel
     private List _edges;
     private int _explainedKO;
     private int _depVars;
+    private int[] _activePaths; // paths that are active when this model is created
     
     public Submodel()
     {
@@ -226,6 +227,28 @@ public class Submodel
         }
     }
 
+    public void setActivePaths(int[] activePaths)
+    {
+        _activePaths = activePaths;
+    }
+
+    public int[] getActivePaths()
+    {
+        return _activePaths;
+    }
+    
+    /**
+     * Find all active paths that are covered by edges in this model.
+     *
+     * @param activePaths a list of active paths
+     * @param paths data structure mapping edges to paths
+     *
+    public void recordActivePaths(int[] activePaths, PathResults paths)
+    {
+
+    }
+    */
+    
     public String toString()
     {
         return Integer.toString(getId());

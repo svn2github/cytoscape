@@ -53,7 +53,8 @@
     <mkdir dir="${doc}"/>
     <javadoc sourcepath="${src}" destdir="${doc}">
        <fileset dir="${src}">
-	  <exclude name="**/*Test*"/>
+	  <include name="**/*.java"/>
+	  <exclude name="**/*Test.java"/>
         </fileset>
     </javadoc>
   </target>

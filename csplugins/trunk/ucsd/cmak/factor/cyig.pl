@@ -18,6 +18,7 @@ $cmd .= " -n ${base}_type.noa ";
 $cmd .= " -j ${base}_dir.eda ";
 $cmd .= " -j ${base}_sign.eda ";
 $cmd .= " -j ${base}_model.eda ";
+$cmd .= " -j ${base}_path.eda ";
 
 foreach $f (@files)
 {

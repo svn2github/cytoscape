@@ -666,17 +666,24 @@ public class InteractionGraph
         out.close();
         output.setEdgeSign(f2);
 
-        File f3 = new File(filename + "_model.eda");
+        File f3 = new File(filename + "_path.eda");
         out = new PrintStream(new FileOutputStream(f3));
+        writeEdgePath(edges, out);
+        out.close();
+        output.setEdgePath(f3);
+
+        File f4 = new File(filename + "_model.eda");
+        out = new PrintStream(new FileOutputStream(f4));
         writeEdgeModel(edges, out);
         out.close();
-        //output.setEdgeModel(f3);
+        output.setEdgeModel(f4);
 
-        File f4 = new File(filename + "_type.noa");
-        out = new PrintStream(new FileOutputStream(f4));
+        
+        File f5 = new File(filename + "_type.noa");
+        out = new PrintStream(new FileOutputStream(f5));
         writeNodeTypes(out);
         out.close();
-        output.setNodeType(f4);
+        output.setNodeType(f5);
 
         /*
         out = new PrintStream(new FileOutputStream(filename + "_ncount.noa"));
@@ -730,6 +737,37 @@ public class InteractionGraph
         
     }
 
+    private void writeEdgePath(Set edges, PrintStream out)
+    {
+        out.println("EdgePath (class=java.lang.String)");
+        for(Iterator it = edges.iterator(); it.hasNext(); )
+        {
+            AnnotatedEdge ae = (AnnotatedEdge) it.next();
+            StringBuffer b = new StringBuffer(edgeName(ae));
+            b.append(" = ");
+            b.append(array2String(ae.paths));
+            
+            out.println(b.toString());
+        }
+        
+    }
+
+    private String array2String(int[] a)
+    {
+        StringBuffer b = new StringBuffer();
+        for(int x=0; x < a.length; x++)
+        {
+            b.append(a[x]);
+            if(x < a.length - 1)
+            {
+                b.append(", ");
+            }
+        }
+
+        return b.toString();
+    }
+
+    
     private String list2String(IntArrayList l)
     {
         StringBuffer b = new StringBuffer();

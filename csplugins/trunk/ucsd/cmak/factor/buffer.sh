@@ -36,8 +36,8 @@ ${EXP} \
 ${DATA}/buffering/mms+pp-p0.02-01dec2004.ea \
 ${EDGE} \
 result \
-buffer_mms_newlr_${PATH}_${EXP}_${EDGE} \
-3
+buffer_mms_newlr_b1_${PATH}_${EXP}_${EDGE} \
+1
 #profile 
 #STE12candidategenes.txt
 #

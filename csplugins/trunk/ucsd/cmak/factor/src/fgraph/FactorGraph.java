@@ -144,6 +144,10 @@ public class FactorGraph
         return _nextEdgeIndex--;
     }
 
+    /**
+     * Protected constructor.  A FactorGraph should always be created using
+     * the factory method.
+     */
     protected FactorGraph(InteractionGraph ig, PathResult pathResults)
     {
         _ig = ig;
@@ -223,6 +227,14 @@ public class FactorGraph
 
     }
 
+    /**
+     * Factory method for creating a FactorGraph from an InteractionGraph
+     * and a set of Paths.
+     *
+     * @param i the interaction graph
+     * @param pathResults candidate paths that explain knockout effects
+     * @return a FactorGraph
+     */
     public static FactorGraph create(InteractionGraph ig, PathResult pathResults)
     {
         FactorGraph fg = new FactorGraph(ig, pathResults);
@@ -706,7 +718,7 @@ public class FactorGraph
     }
 
 
-        /**
+    /**
      * Set the max state, direction, and sign for each edge
      *
      */
@@ -736,11 +748,14 @@ public class FactorGraph
             }
             */
 
+            int[] paths = _paths.pathsThroughEdge(ae.interactionIndex,
+                                                  activePaths);
             if((ae.maxState == State.ONE)
-               && _paths.isEdgeOnPath(ae.interactionIndex, activePaths)
+               && (paths.length > 0)
                && ae.maxSign != null)
             {
                 ae.active = true;
+                ae.paths = paths;
                 activeEdges.add(ae);
             }
         }
@@ -818,7 +833,8 @@ public class FactorGraph
 
     
     /**
-     * Run the max product algorithm.
+     * Run the max product algorithm and decompose the active network
+     * into submodels.
      *
      * FIX: termination condition.
      */
@@ -930,7 +946,10 @@ public class FactorGraph
     
     /**
      * FIX THIS.  Currently incorrect 10/30/04
-     *
+     * It returns the number of knocked-out transcription factors
+     * that have at least one target in the model.  We want to
+     * return the number of knockout effects.
+     * 
      * @return the number of knockout effects explained in
      * a submodel
      */
@@ -950,7 +969,15 @@ public class FactorGraph
         return cnt;
     }
 
-    
+    /**
+     * Examine the factor graph variables and add physical
+     * interactions edges to each model.
+     * <p>
+     * For each sign variable in a model, add the corresponding physical
+     * edge to the model if the edge is on an active path.
+     *
+     * @param models a list of Submodels
+     */    
     public void annotateSubmodelEdges(List models)
     {
         for(int x=0; x < models.size(); x++)
@@ -975,7 +1002,13 @@ public class FactorGraph
             }
         }
     }
-    
+
+    /**
+     * Merge submodels that share one or more edges.
+     *
+     * @param models a list of Submodel objects
+     * @return a list of merged models
+     */
     public List mergeSubmodels(List models)
     {
         List merged = new ArrayList();
@@ -1010,6 +1043,14 @@ public class FactorGraph
     }
     
 
+    /**
+     * Manually fix a var in the input list, re-run the max-product
+     * algorithm, fix the vars that are uniquely determined, recurse
+     * until all nodes in the input list are fixed.
+     *
+     * @param varNodes a list of variable node indices
+     * @return the number of variables that were manually fixed.
+     */
     private int recursivelyFixVars(IntArrayList varNodes)
         throws AlgorithmException
     {
@@ -1031,9 +1072,15 @@ public class FactorGraph
                 fixVar(var);
             
                 _runMaxProduct();
+
+                // find all active paths (ie. sigma vars with max state == 1)
+                //int[] activePaths = getActivePaths();
+                    
                 Submodel model = fixUniqueVars(var);
+                
+                //model.setActivePaths(activePaths);
+                
                 _submodels.add(model);
-                //notFixed -= model.getNumDepVars();
                 logger.info("added submodel " + model.getId()
                             + " with " + model.size() + " vars. "
                             + countDegenerate(varNodes) + " vars still not fixed");
@@ -1049,6 +1096,8 @@ public class FactorGraph
     }
 
     /**
+     * This is a helper method for @see #recursivelyFixVars
+     * 
      * @param nodes a list of variable nodes indicies
      * @return the number of variables that are not fixed.
      */
@@ -1124,12 +1173,30 @@ public class FactorGraph
      */
     private Submodel fixUniqueVars()
     {
-        return _fixUniqueVars_Helper(0, true);
+        Submodel model = new Submodel();
+        model.setInvariant(true);
+
+        _fixUniqueVars_Helper(model);
+        
+        return model;
     }
 
     private Submodel fixUniqueVars(int fixedNode)
     {
-        return _fixUniqueVars_Helper(fixedNode, false);
+        Submodel model = new Submodel();
+        model.setIndependentVar(fixedNode);
+
+        IntArrayList depVars = _fixUniqueVars_Helper(model);
+
+        // add variables that influence the
+        // potential functions that determine each dependent variable
+        for(int x=0; x < depVars.size(); x++)
+        {
+            int v = depVars.get(x);
+            addInferredVars(model, fixedNode, v);
+        }
+        
+        return model;
     }
 
     
@@ -1143,19 +1210,8 @@ public class FactorGraph
      * @param invariant TRUE if the returned model is the invariant model,
      * FALSE otherwise.
      */
-    private Submodel _fixUniqueVars_Helper(int indepVar, boolean invariant)
+    private IntArrayList _fixUniqueVars_Helper(Submodel model)
     {
-        Submodel model = new Submodel();
-
-        if(!invariant)
-        {
-            model.setIndependentVar(indepVar);
-        }
-        else
-        {
-            model.setInvariant(true);
-        }
-        
         int ct = 0;
         IntArrayList depVars = new IntArrayList();
 
@@ -1167,20 +1223,7 @@ public class FactorGraph
 
         model.setNumDepVars(ct);
         
-        //printInfluenceCnt();
-        
-        if (!invariant)
-        {
-            // add variables that influence the
-            // potential functions that determine each dependent variable
-            for(int x=0; x < depVars.size(); x++)
-            {
-                int v = depVars.get(x);
-                addInferredVars(model, indepVar, v);
-            }
-        }
-        
-        return model;
+        return depVars;
     }
     
     private int addUniqueVarsToModel(Submodel model,
@@ -1246,6 +1289,14 @@ public class FactorGraph
         return ct;
     }
 
+    /**
+     * Decrement the influence count of "varNode" by 1.
+     * The influence count of a variable is the number of
+     * non-fixed node that are 1 factor-node away from
+     * "varNode"
+     *
+     * @param varNode the variable node
+     */
     private void decrementInfluenceCount(int varNode)
     {
         if(FINER)
@@ -1266,25 +1317,6 @@ public class FactorGraph
             }
         }
     }
-    
-    /**
-     * @param
-     * @return
-     * @throws
-     *
-    private void addToModel(Submodel m, int var, VariableNode vn)
-    {
-        m.addVar(var);
-
-        
-        //if(!m.isInvariant())
-       // {
-        //    System.out.println("setting inSubmodel: " + vn);
-        //    vn.setInSubmodel(true);
-        //}
-        
-    }
-    */
 
     /**
      * Check if a knockout is explained by at least one path.
@@ -1480,90 +1512,6 @@ public class FactorGraph
         
     }
 
-    
-    /**
-     * Check if the path constrained by facNode:
-     *   1) contains indepVar
-     *   2) all x,d,s,ko, vars are fixed
-     *   3) no edges are in another model (vars?)
-     *
-     * Return all d,s, ko vars except indepVar and depVar.
-     * 
-     * @param
-     * @return the indexes of all d,s, ko vars excluding indepVar, depVar,
-     *         and any var that is already in the model.
-     *
-    private IntArrayList isUniqueActivePath(Submodel model, int facNode,
-                                            int indepVar, int depVar)
-    {
-        List fmsg = _adjacencyMap.get(facNode);
-        IntArrayList newVars = new IntArrayList(fmsg.size());
-        boolean containsIV = false;
-        boolean containsDV = false;
-        boolean allFixed = true;
-        boolean containsSharedEdge = false;
-        
-        System.out.println("isPathActive for: " + facNode
-                           + " vars=" + fmsg.size()
-                           + " IV=" + indepVar
-                           + " DV=" + depVar);
-        
-        for(int x=0, N=fmsg.size(); x < N; x++)
-        {
-            // v is the index of variable connected to the factor node
-            int v = ((EdgeMessage) fmsg.get(x)).getVariableIndex();
-            VariableNode vn = getVarNode(v);
-
-            System.out.println("### found node: " + v + " " + vn);
-
-            if(vn.isType(NodeType.KO))
-            {
-                System.out.println("### found KO");
-            }
-            
-            if(v == indepVar)
-            {
-                System.out.println("found IV");
-                containsIV = true;
-            }
-            else if (v == depVar)
-            {
-                System.out.println("found DV");
-                containsDV = true;
-            }
-            else if((vn.isType(NodeType.SIGN) ||
-                     vn.isType(NodeType.DIR) ||
-                     vn.isType(NodeType.EDGE)))
-            {
-                if(!vn.isFixed())
-                {
-                    System.out.println("not fixed found: " + v + ", "+ vn);
-                    allFixed = false;
-                    break;
-                }
-                else if(vn.isInSubmodel())
-                {
-                    System.out.println("shared found: " + v + ", " + vn);
-                    containsSharedEdge = true;
-                    break;
-                }
-            }
-            else if(model.acceptsType(vn.type()) &&
-                    !model.containsVar(v))
-            {
-                newVars.add(v);
-            }
-        }
-        
-        if (!allFixed || containsSharedEdge || !containsIV || !containsDV)
-        {
-            newVars.clear();
-        }
-
-        return newVars;
-        
-    }
-    */
     
     /**
      * Fix "var" to a specific state.  Choose the state randomly
@@ -1800,7 +1748,8 @@ public class FactorGraph
     
 
     /**
-     * Print the most recently passed messages incoming and outgoing of a specific node.
+     * Print the most recently passed messages incoming and outgoing
+     * of a specific node.
      *
      * @param node the node to print
 
@@ -1981,6 +1930,109 @@ public class FactorGraph
         return b.toString();
     }
 
+    
+    /**
+     * Check if the path constrained by facNode:
+     *   1) contains indepVar
+     *   2) all x,d,s,ko, vars are fixed
+     *   3) no edges are in another model (vars?)
+     *
+     * Return all d,s, ko vars except indepVar and depVar.
+     * 
+     * @param
+     * @return the indexes of all d,s, ko vars excluding indepVar, depVar,
+     *         and any var that is already in the model.
+     *
+    private IntArrayList isUniqueActivePath(Submodel model, int facNode,
+                                            int indepVar, int depVar)
+    {
+        List fmsg = _adjacencyMap.get(facNode);
+        IntArrayList newVars = new IntArrayList(fmsg.size());
+        boolean containsIV = false;
+        boolean containsDV = false;
+        boolean allFixed = true;
+        boolean containsSharedEdge = false;
+        
+        System.out.println("isPathActive for: " + facNode
+                           + " vars=" + fmsg.size()
+                           + " IV=" + indepVar
+                           + " DV=" + depVar);
+        
+        for(int x=0, N=fmsg.size(); x < N; x++)
+        {
+            // v is the index of variable connected to the factor node
+            int v = ((EdgeMessage) fmsg.get(x)).getVariableIndex();
+            VariableNode vn = getVarNode(v);
+
+            System.out.println("### found node: " + v + " " + vn);
+
+            if(vn.isType(NodeType.KO))
+            {
+                System.out.println("### found KO");
+            }
+            
+            if(v == indepVar)
+            {
+                System.out.println("found IV");
+                containsIV = true;
+            }
+            else if (v == depVar)
+            {
+                System.out.println("found DV");
+                containsDV = true;
+            }
+            else if((vn.isType(NodeType.SIGN) ||
+                     vn.isType(NodeType.DIR) ||
+                     vn.isType(NodeType.EDGE)))
+            {
+                if(!vn.isFixed())
+                {
+                    System.out.println("not fixed found: " + v + ", "+ vn);
+                    allFixed = false;
+                    break;
+                }
+                else if(vn.isInSubmodel())
+                {
+                    System.out.println("shared found: " + v + ", " + vn);
+                    containsSharedEdge = true;
+                    break;
+                }
+            }
+            else if(model.acceptsType(vn.type()) &&
+                    !model.containsVar(v))
+            {
+                newVars.add(v);
+            }
+        }
+        
+        if (!allFixed || containsSharedEdge || !containsIV || !containsDV)
+        {
+            newVars.clear();
+        }
+
+        return newVars;
+        
+    }
+    */
+    
+    /**
+     * @param
+     * @return
+     * @throws
+     *
+    private void addToModel(Submodel m, int var, VariableNode vn)
+    {
+        m.addVar(var);
+
+        
+        //if(!m.isInvariant())
+       // {
+        //    System.out.println("setting inSubmodel: " + vn);
+        //    vn.setInSubmodel(true);
+        //}
+        
+    }
+    */
 
     /**
      * @param sortedNodes nodes sorted by degree in ascending order

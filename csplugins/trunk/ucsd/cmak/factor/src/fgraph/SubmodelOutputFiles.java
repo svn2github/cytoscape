@@ -10,7 +10,8 @@ public class SubmodelOutputFiles
     List models;
     File edgeDir;
     File edgeSign;
-    //    File edgeModel;
+    File edgeModel;
+    File edgePath;
     File nodeType;
 
     public SubmodelOutputFiles()
@@ -38,6 +39,17 @@ public class SubmodelOutputFiles
         nodeType = f;
     }
 
+    public void setEdgeModel(File f)
+    {
+        edgeModel = f;
+    }
+
+    public void setEdgePath(File f)
+    {
+        edgePath = f;
+    }
+
+    
     public List getModels()
     {
         return models;
@@ -56,5 +68,15 @@ public class SubmodelOutputFiles
     public File getNodeType()
     {
         return nodeType;
+    }
+
+    public File getEdgeModel()
+    {
+        return edgeModel;
+    }
+
+    public File getEdgePath()
+    {
+        return edgePath;
     }
 }

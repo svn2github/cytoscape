@@ -112,6 +112,39 @@ public class PathResult
         return false;
     }
 
+
+    /**
+     * Is there a more efficient way to do this?
+     *
+     * @param edge the edge
+     * @param path an array of paths to test
+     * @return The paths that pass through the edge
+     */
+    public int[] pathsThroughEdge(int edge, int[] path)
+    {
+        IntArrayList ok = new IntArrayList();
+
+        if(_pathIntervalMap.containsKey(edge))
+        {
+            List intervals = _pathIntervalMap.get(edge);
+
+            for(int x=0, N=intervals.size(); x < N; x++)
+            {
+                for(int p=0; p < path.length; p++)
+                {
+                    if( ((Interval) intervals.get(x)).contains(path[p]))
+                    {
+                        ok.add(path[p]);
+                    }
+                }
+            }
+        }
+        ok.trimToSize();
+        
+        return ok.elements();
+    }
+
+    
     
     public IntArrayList getKOs()
     {
