@@ -328,7 +328,7 @@ public class InteractionGraph
      */ 
     public void loadExpressionDataYeangFormat(String filename)
     {
-        _expressionData = new ExpressionData(filename);
+
     }
 
     
