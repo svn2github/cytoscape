@@ -218,7 +218,7 @@
     <!-- ======================================================= -->
 
     <!-- Target to Run JavaDoc -->
-    <target name="doc" description="Runs JavaDoc.">
+    <target name="doc" description="Runs JavaDoc." depends="compile">
         <javadoc destdir="${javadoc.public.dir}"
                  source="1.4"
                  Windowtitle="Cytoscape2.0 API"
