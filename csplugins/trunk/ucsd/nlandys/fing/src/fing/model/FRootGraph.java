@@ -45,7 +45,7 @@ class FRootGraph //implements RootGraph
           return nodes.numRemaining() > 0; }
         public Object next() {
           if (!hasNext()) throw new NoSuchElementException();
-          return 
+          return getNode(~(nodes.nextInt())); } };
   }
 
   // This method has been marked deprecated in the Giny API.
@@ -61,16 +61,22 @@ class FRootGraph //implements RootGraph
   // This method has been marked deprecated in the Giny API.
   public int[] getNodeIndicesArray()
   {
-    final int[] returnThis = new int[getNodeCount()];
-    NodesIterator nIter = (NodesIterator) nodesIterator();
+    IntEnumerator nodes = m_graph.nodeIndices();
+    final int[] returnThis = new int[nodes.numRemaining()];
     for (int i = 0; i < returnThis.length; i++)
-      returnThis[i] = nIter.nextNode().getRootGraphIndex();
+      returnThis[i] = nodes.nextInt();
     return returnThis;
   }
 
   public Iterator edgesIterator()
   {
-    return new EdgesIterator();
+    final IntEnumerator edges = m_graph.edgeIndices();
+    return new Iterator() {
+        public boolean hasNext() {
+          return edges.numRemaining() > 0; }
+        public Object next() {
+          if (!hasNext()) throw new NoSuchElementException();
+          return getEdge(~(edges.nextInt())); } };
   }
 
   // This method has been marked deprecated in the Giny API.
@@ -86,10 +92,10 @@ class FRootGraph //implements RootGraph
   // This method has been marked deprecated in the Giny API.
   public int[] getEdgeIndicesArray()
   {
-    final int[] returnThis = new int[getEdgeCount()];
-    EdgesIterator eIter = (EdgesIterator) edgesIterator();
+    IntEnumerator edges = m_graph.edgeIndices();
+    final int[] returnThis = new int[edges.numRemaining()];
     for (int i = 0; i < returnThis.length; i++)
-      returnThis[i] = eIter.nextEdge().getRootGraphIndex();
+      returnThis[i] = edges.nextInt();
     return returnThis;
   }
 
@@ -102,14 +108,25 @@ class FRootGraph //implements RootGraph
 
   public int removeNode(int nodeInx)
   {
-    return 0;
+    final int positiveNodeIndex = ~nodeInx;
+    IntEnumerator edgeInxEnum;
+    try { edgeInxEnum = m_graph.adjacentEdgeIndices
+            (positiveNodeIndex, true, true, true); }
+    catch (IllegalArgumentException e) { return 0; }
+    while (edgeInxEnum.numRemaining() > 0)
+      // Does this iteration remain valid even while doing add/remove?
+      removeEdge(~(edgeInxEnum.nextInt()));
+    if (m_graph.removeNode(positiveNodeIndex)) {
+      m_nodes.setNodeAtIndex(null, positiveNodeIndex);
+      
+      return nodeInx; }
+    else { return 0; }
   }
 
   // This method has been marked deprecated in the Giny API.
   public java.util.List removeNodes(java.util.List nodes)
   {
-    final java.util.ArrayList returnThis =
-      new java.util.ArrayList(nodes.size());
+    final java.util.ArrayList returnThis = new java.util.ArrayList();
     for (int i = 0; i < nodes.size(); i++)
       if (removeNode((Node) nodes.get(i)) != null)
         returnThis.add(nodes.get(i));
@@ -130,7 +147,19 @@ class FRootGraph //implements RootGraph
 
   public int createNode()
   {
-    return 0;
+    final int positiveNodeIndex = m_graph.createNode();
+    if (positiveNodeIndex < 0) { return 0; }
+    else {
+      final int returnThis = ~positiveNodeIndex;
+      // Theoretically I could postpone the creation of this object
+      // and use a bit array to mark indices of nodes which aren't
+      // instantiated yet.  This would complicate the code somewhat.
+      FNode newNode = m_nodeDepo.getNode();
+      newNode.m_rootGraph = this;
+      newNode.m_rootGraphIndex = returnThis;
+      newNode.m_identifier = null;
+      m_nodes.setNodeAtIndex(newNode, positiveNodeIndex);
+      return returnThis; }
   }
 
   public int createNode(Node[] nodes, Edge[] edges)
@@ -166,16 +195,19 @@ class FRootGraph //implements RootGraph
     else return null;
   }
 
-  public int removeEdge(int edgeIndex)
+  public int removeEdge(int edgeInx)
   {
-    return 0;
+    final int positiveEdgeIndex = ~edgeInx;
+    if (m_graph.removeEdge(positiveEdgeIndex)) {
+      m_edges.setNodeAtIndex(null, positiveEdgeIndex);
+      return edgeInx; }
+    else { return 0; }
   }
 
   // This method has been marked deprecated in the Giny API.
   public java.util.List removeEdges(java.util.List edges)
   {
-    final java.util.ArrayList returnThis =
-      new java.util.ArrayList(edges.size());
+    final java.util.ArrayList returnThis = new java.util.ArrayList();
     for (int i = 0; i < edges.size(); i++)
       if (removeEdge((Edge) edges.get(i)) != null)
         returnThis.add(edges.get(i));
@@ -276,36 +308,29 @@ class FRootGraph //implements RootGraph
     }
   }
 
+  // The relationship between indices (both node and edge) in this
+  // RootGraph and in the UnderlyingRootGraph is "flip the bits":
+  // rootGraphIndex == ~(underlyingRootGraphIndex)
   final UnderlyingRootGraph m_graph;
+
+  // This heap is re-used by many methods.  Make sure to empty() it before
+  // using it.  You can use it as a bag of integers, to sort integers, or
+  // to filter integer duplicates.
   final MinIntHeap m_heap = new MinIntHeap();
+
+  // This is our "node factory" and "node recyclery".
+  final NodeDepository m_nodeDepo = new NodeDepository();
+
+  // This is our "edge factory" and "edge recyclery".
+  final EdgeDepository m_edgeDepo = new EdgeDepository();
+
+  // This is our index-to-node mapping.
+  final NodeArray m_nodes = new NodeArray();
+
+  // This is our index-to-edge mapping.
+  final EdgeArray m_edges = new EdgeArray();
 
   // Package visible constructor.
   FRootGraph(UnderlyingRootGraph graph) { m_graph = graph; }
-
-  /*
-  static class NodesIterator implements Iterator
-  {
-    public boolean hasNext() {
-      return false; }
-    public FNode nextNode() {
-      throw new NoSuchElementException(); }
-    public Object next() {
-      return nextNode(); }
-    public void remove() {
-      throw new UnsupportedOperationException(); }
-  }
-
-  static class EdgesIterator implements Iterator
-  {
-    public boolean hasNext() {
-      return false; }
-    public FEdge nextEdge() {
-      throw new NoSuchElementException(); }
-    public Object next() {
-      return nextEdge(); }
-    public void remove() {
-      throw new UnsupportedOperationException(); }
-  }
-  */
 
 }
