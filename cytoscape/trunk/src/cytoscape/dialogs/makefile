@@ -10,7 +10,7 @@ JC=javac
 .SUFFIXES: .java .class
 .java.class: 
 	$(JC) $<
-
+#ColorNodesFromFileDialog.class
 OBJS = ColorPopupButton.class \
         ColorScaleTable.class \
         ExpressionDataPopupTable.class \
@@ -29,11 +29,10 @@ OBJS = ColorPopupButton.class \
         JointIntegerEntry.class \
         RotateSelectionDialog.class \
         EdgePopupMenu.class \
-        EdgeAttributesPopupDetails.class \
+	EdgeAttributesPopupDetails.class \
         ShrinkExpandGraph.class \
         ShrinkExpandGraphUI.class \
         EdgeControlDialog.class
-
 
 
 default: objs 
