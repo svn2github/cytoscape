@@ -801,7 +801,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
     final java.util.List returnThis =
       new java.util.ArrayList(parentInxArr.length);
     for (int i = 0; i < parentInxArr.length; i++)
-      returnThis.add(getNode(parentInxArr[i]));
+      returnThis.add(m_root.getNode(parentInxArr[i]));
     return returnThis; }
 
   public int[] getNodeMetaParentIndicesArray(int nodeInx) {
@@ -823,13 +823,30 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
       m_root.isNodeMetaChild(parentNodeInx, childNodeInx); }
 
   public java.util.List nodeMetaChildrenList(Node node) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+    if (!(node.getRootGraph() == m_root)) return null;
+    return nodeMetaChildrenList(node.getRootGraphIndex()); }
 
-  public java.util.List nodeMetaChildrenList(int perspParentInx) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+  public java.util.List nodeMetaChildrenList(int parentInx) {
+    final int[] childrenInxArr = getNodeMetaChildIndicesArray(parentInx);
+    if (childrenInxArr == null) return null;
+    final java.util.List returnThis =
+      new java.util.ArrayList(childrenInxArr.length);
+    for (int i = 0; i < childrenInxArr.length; i++)
+      returnThis.add(m_root.getNode(childrenInxArr[i]));
+    return returnThis; }
 
-  public int[] getNodeMetaChildIndicesArray(int perspNodeInx) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+  public int[] getNodeMetaChildIndicesArray(int parentInx) {
+    if (!containsNode(parentInx)) return null;
+    final int[] allChildrenInx =
+      m_root.getNodeMetaChildIndicesArray(parentInx);
+    m_heap.empty();
+    final MinIntHeap childrenBucket = m_heap;
+    for (int i = 0; i < allChildrenInx.length; i++)
+      if (containsNode(allChildrenInx[i]))
+        childrenBucket.toss(allChildrenInx[i]);
+    final int[] returnThis = new int[childrenBucket.size()];
+    childrenBucket.copyInto(returnThis, 0);
+    return returnThis; }
 
   public boolean isMetaParent(Edge child, Node parent) {
     throw new UnsupportedOperationException("meta nodes not yet supported"); }
