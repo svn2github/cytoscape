@@ -373,25 +373,21 @@ class BetweenPathwayThread2 extends Thread{
 	  double this_genetic_score = genetic_score + calculateGeneticIncrease(newSources,newTargets,sourceMembers,targetMembers);
 	  double this_physical_source_score = physical_source_score + calculatePhysicalIncrease(newSources,sourceMembers);
 	  double this_physical_target_score = physical_target_score + calculatePhysicalIncrease(newTargets,targetMembers);
-	  int source_size = sourceMembers.size()+newSources.size();
-	  int target_size = targetMembers.size()+newTargets.size();
+	  //int source_size = sourceMembers.size()+newSources.size();
+	  //int target_size = targetMembers.size()+newTargets.size();
 	  /*
 	   * Here we calculate the number of potential
 	   * edges for each type of edges (physical vs genetic
 	   */
-	  int this_genetic_size = (source_size*target_size);
-	  int this_physical_source_size = Math.max(1,(source_size*(source_size-1)/2));
-	  int this_physical_target_size = Math.max(1,(target_size*(target_size-1)/2));
-	  int total_size = this_genetic_size + this_physical_source_size + this_physical_target_size;
+	  //int this_genetic_size = (source_size*target_size);
+	  //int this_physical_source_size = Math.max(1,(source_size*(source_size-1)/2));
+	  //int this_physical_target_size = Math.max(1,(target_size*(target_size-1)/2));
+	  //int total_size = this_genetic_size + this_physical_source_size + this_physical_target_size;
 	  //double this_score = (this_genetic_size*this_physical_source_score/this_physical_source_size)+(this_genetic_size*this_physical_target_score/this_physical_target_size)+this_genetic_score;
 	  //double this_score = ( this_genetic_score/this_genetic_size + this_physical_source_score/this_physical_source_size + this_physical_target_score/this_physical_target_size ) *Math.log(total_size);
 	  //double this_score = ((this_genetic_score/this_genetic_size)*((this_physical_source_score+this_physical_target_score)/(this_physical_source_size+this_physical_target_size)))*total_size;
-	  double this_score = ((this_genetic_score/this_genetic_size)*(this_physical_source_score/this_physical_source_size)*(this_physical_target_score/this_physical_target_size))*total_size;
-	  if((this_genetic_score < 0 || this_physical_source_score<0 || this_physical_target_score < 0) && this_score > 0){
-	    this_score = -this_score;
-	  }
 
-	  if(this_score > best_score){
+	  if(((this_physical_source_score+this_physical_target_score)>=(physical_source_score_physical_target_score)) && this_score > best_score){
 	    bestCandidate = candidate;
 	    best_score = this_score;
 	    best_physical_source_score = this_physical_source_score;
