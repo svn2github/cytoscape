@@ -6,10 +6,10 @@ import java.util.NoSuchElementException;
 public class GOBRegistry
 {
 
-  public final int ATTR_TYPE_BOOLEAN = 2;
-  public final int ATTR_TYPE_DOUBLE = 3;
-  public final int ATTR_TYPE_LONG = 5;
-  public final int ATTR_TYPE_STRING = 6;
+  public final byte ATTR_TYPE_BOOLEAN = 2;
+  public final byte ATTR_TYPE_DOUBLE = 3;
+  public final byte ATTR_TYPE_LONG = 5;
+  public final byte ATTR_TYPE_STRING = 6;
 
   /**
    * @param type one of the ATTR_TYPE_* constants.
@@ -19,7 +19,7 @@ public class GOBRegistry
    * @exception IllegalArgumentException if the type specified is not one
    *   of the ATTR_TYPE_* constants.
    */
-  public int defineAttribute(int type)
+  public int defineAttribute(byte type)
   {
     throw new IllegalArgumentException("not implemented yet - pardon me");
   }
@@ -31,7 +31,7 @@ public class GOBRegistry
    * @exception IllegalArgumentException if no attribute definition with
    *   specified ID (defID) exists.
    */
-  public int attributeType(int defID)
+  public byte attributeType(int defID)
   {
     throw new IllegalArgumentException();
   }
