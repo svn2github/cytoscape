@@ -13,7 +13,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.JOptionPane;
 
-import java.io.File;
+import java.io.*;
 import java.util.Hashtable;
 import java.util.HashMap;
 import java.util.Vector;
@@ -41,6 +41,7 @@ import java.awt.print.PrinterException;
 import java.awt.print.Printable;
 import java.awt.print.PrinterJob;
 import javax.print.attribute.*;
+
 import y.option.OptionHandler; 
 import y.view.Graph2DPrinter;
 
@@ -402,6 +403,7 @@ protected JMenuBar createMenuBar ()
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_E, ActionEvent.CTRL_MASK));
 
   fileMenu.add (new SaveAsGMLAction ());
+  fileMenu.add (new SaveAsInteractionsAction ());
   fileMenu.add (new PrintAction ());
 
   mi = fileMenu.add (new CloseWindowAction ());
@@ -414,15 +416,11 @@ protected JMenuBar createMenuBar ()
   JMenu editMenu = new JMenu ("Edit");
   menuBar.add (editMenu);
 
-  //JMenu modeMenu = new JMenu ("Mode");
-  //menuBar.add (modeMenu);
   ButtonGroup modeGroup = new ButtonGroup ();
   JRadioButtonMenuItem readOnlyModeButton = new JRadioButtonMenuItem ("Read-only mode");
   JRadioButtonMenuItem editModeButton = new JRadioButtonMenuItem ("Edit mode for nodes and edges");
   modeGroup.add (readOnlyModeButton);
   modeGroup.add (editModeButton);
-  //modeMenu.add (readOnlyModeButton);
-  //modeMenu.add (editModeButton);
   editMenu.add (readOnlyModeButton);
   editMenu.add (editModeButton);
   readOnlyModeButton.setSelected (true);
@@ -444,6 +442,8 @@ protected JMenuBar createMenuBar ()
   
   mi = selectiveDisplayMenu.add (new DisplayAttributesOfSelectedNodesAction ());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_D, ActionEvent.CTRL_MASK));
+  mi = selectiveDisplayMenu.add (new SelectFirstNeighborsAction ());
+  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_F, ActionEvent.CTRL_MASK));
   
   JMenu layoutMenu = new JMenu ("Layout");
   layoutMenu.setToolTipText ("Apply new layout algorithm to graph");
@@ -594,6 +594,7 @@ protected void selectNodesStartingWith (String key)
 //------------------------------------------------------------------------------
 protected void selectNodesSharingGoID (int goID)
 {
+  setInteractivity (false);
   Graph2D g = graphView.getGraph2D();
   Node [] nodes = graphView.getGraph2D().getNodeArray();
 
@@ -642,6 +643,7 @@ protected void selectNodesSharingGoID (int goID)
     } // try
   catch (Exception ignoreForNow) {;}
 
+  setInteractivity (true);
   redrawGraph ();
 
 } // selectNodesSharingGoId
@@ -860,6 +862,41 @@ protected class EditModeAction extends AbstractAction   {
 }
 //------------------------------------------------------------------------------
 /**
+ *  select every first neighbor (directly connected nodes) of the currently
+ *  selected nodes.
+ */
+protected class SelectFirstNeighborsAction extends AbstractAction {
+  SelectFirstNeighborsAction () { 
+      super ("First neighbors of selected nodes"); 
+      }
+  public void actionPerformed (ActionEvent e) {
+    Graph2D g = graphView.getGraph2D ();
+    NodeCursor nc = g.selectedNodes (); 
+    Vector newNodes = new Vector ();
+    for (nc.toFirst (); nc.ok (); nc.next ()) {
+      Node node = nc.node ();
+      EdgeCursor ec = node.edges ();
+      for (ec.toFirst (); ec.ok (); ec.next ()) {
+        Edge edge = ec.edge ();
+        Node source = edge.source ();
+        if (!newNodes.contains (source))
+          newNodes.add (source);
+        Node target = edge.target ();
+        if (!newNodes.contains (target))
+          newNodes.add (target);
+        } // for edges
+      } // for selected nodes
+    for (int i=0; i < newNodes.size (); i++) {
+      Node node = (Node) newNodes.elementAt (i);
+      NodeRealizer realizer = graphView.getGraph2D().getRealizer (node);
+      realizer.setSelected (true);
+      }
+    redrawGraph ();
+    } // actionPerformed
+
+} // SelectFirstNeighborsAction
+//------------------------------------------------------------------------------
+/**
  * a temporary debugging aid (pshannon, mar 2002): all attributes of the 
  * selected nodes are printed to stdout.
  */
@@ -1009,6 +1046,54 @@ protected class CloseWindowAction extends AbstractAction  {
   }
 }
 //------------------------------------------------------------------------------
+/**
+ *  write out the current graph to the specified file, using the standard
+ *  interactions format:  nodeA edgeType nodeB.
+ *  for example: <code>
+ *
+ *     YMR056C pp YLL013C
+ *     YCR107W pp YBR265W
+ *
+ *  </code>  
+ */
+protected class SaveAsInteractionsAction extends AbstractAction  
+{
+  SaveAsInteractionsAction () {super ("Save As Interactions..."); }
+
+  public void actionPerformed (ActionEvent e) {
+    File currentDirectory = new File (System.getProperty ("user.dir"));
+    JFileChooser chooser = new JFileChooser (currentDirectory);
+    if (chooser.showSaveDialog (CytoscapeWindow.this) == chooser.APPROVE_OPTION) {
+      String name = chooser.getSelectedFile ().toString ();
+      if (!name.endsWith (".intr")) name = name + ".intr";
+      try {
+        FileWriter fileWriter = new FileWriter (name);
+        Node [] nodes = graphView.getGraph2D().getNodeArray();
+        for (int i=0; i < nodes.length; i++) {
+          Node node = nodes [i];
+          String canonicalName = getCanonicalNodeName (node);
+          EdgeCursor ec = node.outEdges ();
+          for (ec.toFirst (); ec.ok (); ec.next ()) {
+             Edge edge = ec.edge ();
+             Node target = edge.target ();
+             String canonicalTargetName = getCanonicalNodeName (target);
+             fileWriter.write (canonicalName);
+             fileWriter.write (" xx ");
+             fileWriter.write (canonicalTargetName);
+             fileWriter.write ("\n");
+             } // for ec
+          }  // for i
+          fileWriter.close ();
+          } 
+        catch (IOException ioe) {
+          System.err.println ("Error while writing " + name);
+          ioe.printStackTrace ();
+          } // catch
+      } // if
+    }  // actionPerformed
+
+} // SaveAsInteractionsAction
+//------------------------------------------------------------------------------
 protected class SaveAsGMLAction extends AbstractAction  
 {
   SaveAsGMLAction () {super ("Save As GML..."); }
@@ -1023,7 +1108,7 @@ protected class SaveAsGMLAction extends AbstractAction
       } // if
     }
 
-} // SaveAsAction
+} // SaveAsGMLAction
 //------------------------------------------------------------------------------
 protected class LoadGMLFileAction extends AbstractAction {
   LoadGMLFileAction () { super ("GML..."); }
@@ -1147,9 +1232,9 @@ class EditGraphMode extends EditMode {
    allowBendCreation (true);
    showNodeTips (true);
    showEdgeTips (true);
-   System.out.println ("EditGraphMode, createEdgeMode: " + getCreateEdgeMode ());
-   // setCreateEdgeMode (new CreateEdgeMode ());
-   System.out.println ("EditGraphMode, createEdgeMode: " + getCreateEdgeMode ());
+   //System.out.println ("EditGraphMode, createEdgeMode: " + getCreateEdgeMode ());
+   //setCreateEdgeMode (new CreateEdgeMode ());
+   //System.out.println ("EditGraphMode, createEdgeMode: " + getCreateEdgeMode ());
    }
   protected String getNodeTip (Node node) {
     String geneName = graphView.getGraph2D().getRealizer(node).getLabelText();
