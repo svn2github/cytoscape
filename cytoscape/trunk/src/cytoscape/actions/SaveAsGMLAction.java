@@ -18,7 +18,7 @@ public class SaveAsGMLAction extends AbstractAction {
     NetworkView networkView;
     
     public SaveAsGMLAction (NetworkView networkView) {
-        super("As GML...");
+        super("Graph as GML...");
         this.networkView = networkView;
     }
     

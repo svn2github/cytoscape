@@ -637,7 +637,8 @@ public void updateUndoRedoMenuItemStatus() {
 public boolean loadGML(String filename) {
     Graph2D newGraph = FileReadingAbstractions.loadGMLBasic(filename,
                                                this.getEdgeAttributes(),
-                                               this.getConfiguration().getCanonicalize());
+					       this.getConfiguration().getCanonicalize(),
+					       this.getConfiguration().isYFiles());
     if (newGraph == null) {return false;}//couldn't read the graph
     
     //set graph after initializing data attributes

@@ -115,22 +115,19 @@ public cytoscape (String [] args) throws Exception {
         logger.severe(sb.toString());
     }
     if (geometryFilename != null) {
-        if (config.isYFiles()) {
-            logger.info("reading " + geometryFilename + "...");
-            network = CyNetworkFactory.createNetworkFromGMLFile(geometryFilename);
-	    logger.info("  done");
-            title = geometryFilename;
-        } else {
-            System.out.println("Giny graph library does not support GML yet, unable to load GML file: " + geometryFilename);	    
-        }
-    } else if (interactionsFilename != null) {
+	logger.info("reading " + geometryFilename + "...");
+	network = CyNetworkFactory.createNetworkFromGMLFile(geometryFilename, config.isYFiles());
+	logger.info("  done");
+	title = geometryFilename;
+    } 
+    else if (interactionsFilename != null) {
         logger.info("reading " + interactionsFilename + "...");
         network =
-            CyNetworkFactory.createNetworkFromInteractionsFile(interactionsFilename,
-                                                               canonicalize,
-                                                               bioDataServer,
-                                                               defaultSpecies,
-                                                               config.isYFiles() );
+            CyNetworkFactory.createNetworkFromInteractionsFile( interactionsFilename,
+                                                                canonicalize,
+                                                                bioDataServer,
+                                                                defaultSpecies,
+                                                                config.isYFiles() );
 	logger.info("  done");
         title = interactionsFilename;
     }

@@ -18,7 +18,7 @@ public class SaveVisibleNodesAction extends AbstractAction {
     NetworkView networkView;
     
     public SaveVisibleNodesAction (NetworkView networkView) {
-        super("Visible Nodes");
+        super("Visible Nodes as List...");
         this.networkView = networkView;
     }
 

@@ -18,7 +18,7 @@ public class SaveSelectedNodesAction extends AbstractAction {
     NetworkView networkView;
     
     public SaveSelectedNodesAction (NetworkView networkView) {
-        super("Selected Nodes");
+        super("Selected Nodes as List...");
         this.networkView = networkView;
     }
 

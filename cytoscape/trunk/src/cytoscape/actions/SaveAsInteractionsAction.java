@@ -34,7 +34,7 @@ public class SaveAsInteractionsAction extends AbstractAction {
     NetworkView networkView;
     
   public SaveAsInteractionsAction(NetworkView networkView) {
-      super("As Interactions...");
+      super("Graph as Interactions...");
       this.networkView = networkView;
   }
 
