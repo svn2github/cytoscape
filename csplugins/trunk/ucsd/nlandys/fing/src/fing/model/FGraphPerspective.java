@@ -58,7 +58,7 @@ class FGraphPerspective implements GraphPerspective
 
   public int getNodeCount()
   {
-    throw new IllegalStateException("not implemented yet");
+    
   }
 
   public int getEdgeCount()
@@ -541,6 +541,11 @@ class FGraphPerspective implements GraphPerspective
     throw new IllegalStateException("not implemented yet");
   }
 
+  public void finalize()
+  {
+    m_root.removeRootGraphChangeListener(m_changeSniffer);
+  }
+
   // Nodes and edges in this graph are called "native indices" throughout
   // this class.
   private final DynamicGraph m_graph =
@@ -554,8 +559,8 @@ class FGraphPerspective implements GraphPerspective
   private final GraphPerspectiveChangeListener[] m_lis =
     new GraphPerspectiveChangeListener[1];
 
-  private int m_numNodes;
-  private int m_numEdges;
+  // We need to remove this listener from the RootGraph during finalize().
+  private final RootGraphChangeSniffer m_changeSniffer;
 
   // RootGraph indices are negative in these arrays.
   private final IntArray m_nativeToRootNodeInxMap = new IntArray();
@@ -575,14 +580,12 @@ class FGraphPerspective implements GraphPerspective
                     IntEnumerator rootGraphEdgeInx)
   {
     m_root = root;
-    m_numNodes = rootGraphNodeInx.numRemaining();
-    m_numEdges = rootGraphEdgeInx.numRemaining();
-    for (int i = 0; i < m_numNodes; i++) {
+    while (rootGraphNodeInx.numRemaining() > 0) {
       final int rootNodeInx = rootGraphNodeInx.nextInt();
       final int nativeNodeInx = m_graph.createNode();
       m_nativeToRootNodeInxMap.setIntAtIndex(rootNodeInx, nativeNodeInx);
       m_rootToNativeNodeInxMap.put(~rootNodeInx, nativeNodeInx); }
-    for (int i = 0; i < m_numEdges; i++) {
+    while (rootGraphEdgeInx.numRemaining() > 0) {
       final int rootEdgeInx = rootGraphEdgeInx.nextInt();
       final int rootEdgeSourceInx = m_root.getEdgeSourceIndex(rootEdgeInx);
       final int rootEdgeTargetInx = m_root.getEdgeTargetIndex(rootEdgeInx);
@@ -596,6 +599,9 @@ class FGraphPerspective implements GraphPerspective
                            rootEdgeDirected);
       m_nativeToRootEdgeInxMap.setIntAtIndex(rootEdgeInx, nativeEdgeInx);
       m_rootToNativeEdgeInxMap.put(~rootEdgeInx, nativeEdgeInx); }
+    m_weeder = new GraphWeeder(m_graph, m_lis);
+    m_changeSniffer = new RootGraphChangeSniffer(m_weeder);
+    m_root.addRootGraphChangeListener(m_changeSniffer);
   }
 
   // Cannot have any recursize reference to a FGraphPerspective in this
@@ -604,6 +610,13 @@ class FGraphPerspective implements GraphPerspective
   private final static class RootGraphChangeSniffer
     implements RootGraphChangeListener
   {
+
+    private final GraphWeeder m_weeder;
+
+    private RootGraphChangeSniffer(GraphWeeder weeder)
+    {
+      m_weeder = weeder;
+    }
 
     public final void rootGraphChanged(RootGraphChangeEvent evt)
     {
