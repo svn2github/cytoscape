@@ -365,7 +365,14 @@ public void testCountDuplicateNamesForAttribute () throws Exception
   System.out.println ("testCountDuplicateNamesForAttribute");
 
   GraphObjAttributes attributes = new GraphObjAttributes ();
+  attributes.initCountMap();
 
+  assertTrue (attributes.countIdentical ("A") == 0); 
+  assertTrue (attributes.countIdentical ("B") == 0);
+  assertTrue (attributes.countIdentical ("A") == 1);
+  assertTrue (attributes.countIdentical ("A") == 2);
+  assertTrue (attributes.countIdentical ("B") == 1);
+  /*
   assertTrue (attributes.countIdentical ("interaction", "VNG0382G -> VNG1230G") == 0);
 
   attributes.add ("interaction", "VNG0382G -> VNG1230G", "phylogeneticPattern");
@@ -373,7 +380,8 @@ public void testCountDuplicateNamesForAttribute () throws Exception
 
   attributes.add ("interaction", "VNG0382G -> VNG1230G_1", "phylogeneticPattern");
   assertTrue (attributes.countIdentical ("interaction", "VNG0382G -> VNG1230G") == 2);
-
+  */
+  attributes.finalCountMap();
 } // testCountDuplicateNamesForAttribute
 //-------------------------------------------------------------------------
 /**

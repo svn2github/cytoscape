@@ -315,7 +315,8 @@ public void setAttributes (String canonicalName, HashMap bundle)
  */
 
 /**
- * A hash to keep a count of how many times a certain name has been used.
+ * A hash to keep a TEMPORARY count of how many times a certain name has been COUNTED.
+ * It should only be trused if every object created is counted once, systematically.
  */
 private Hashtable countIdMap = null;
 
