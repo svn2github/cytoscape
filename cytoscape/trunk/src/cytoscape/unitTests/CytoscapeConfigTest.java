@@ -13,7 +13,6 @@ import java.io.*;
 import java.util.*;
 
 import cytoscape.CytoscapeConfig;
-//import cytoscape.plugins.activePaths.data.ActivePathFinderParameters;
 //------------------------------------------------------------------------------
 public class CytoscapeConfigTest extends TestCase {
 
@@ -47,7 +46,7 @@ public void testAllArgs () throws Exception
   String edgeAttributeFile1 = "xxx.edgeA";
   String edgeAttributeFile2 = "xxx.edgeB";
 
-  double activePathSignificanceThreshold = 32.0;
+  String defaultSpeciesName = "Halobacterium sp.";
 
   String [] args = {"-b", bioDataDirectory, 
                     "-g", geometryFilename, 
@@ -58,6 +57,7 @@ public void testAllArgs () throws Exception
                     "-n", nodeAttributeFile3,
                     "-j", edgeAttributeFile1,
                     "-j", edgeAttributeFile2,
+                    "-s", defaultSpeciesName,
                     "-h",
                     "-v",
                     };
@@ -108,6 +108,8 @@ public void testAllArgs () throws Exception
     if (extensions [i].equals ("intr")) foundIntr = true;
     }
 
+  assertTrue (config.getDefaultSpeciesName().equals (defaultSpeciesName));
+
   assertTrue (foundFooB);
   assertTrue (foundIntr);
 
@@ -125,148 +127,12 @@ public void testForExpectedNullValues () throws Exception
   assertTrue (config.getInteractionsFilename() == null);
   assertTrue (config.getExpressionFilename() == null);
   assertTrue (config.getAllDataFileNames().length == 0);
+  assertTrue (config.getDefaultSpeciesName().equals ("n/a"));
   assertTrue (config.helpRequested());
   assertTrue (!config.inputsError ());
 
 
 } // testForExpectedNullValues
-//-------------------------------------------------------------------------
-/*******************************************************
-public void testNoActivePathParameters () throws Exception
-{ 
-  System.out.println ("testNoActivePathParameters");
-  String [] args = new String [0];
-  CytoscapeConfig config = new CytoscapeConfig (args);
-  assertTrue (config.activePathParametersPresent () == false);
-
-}
-//-------------------------------------------------------------------------
-public void testAllActivePathParameters () throws Exception
-{ 
-  System.out.println ("testNoActivePathParameters");
-
-  double significanceThreshold = 18.45;
-  double initialTemperature = 10.8; 
-  double finalTemperature = 0.2;
-  int totalIterations = 499;
-  int numberOfPaths = 43;
-  int displayInterval = 503;
-  int randomSeed = 123;
-
-  String [] args =  
-   {"--APsig", (new Double (significanceThreshold)).toString (),
-    "--APt0",  (new Double (initialTemperature)).toString (),
-    "--APtf",  (new Double (finalTemperature)).toString (),
-    "--APni",  (new Integer (totalIterations)).toString (),
-    "--APnp",  (new Integer (numberOfPaths)).toString (),
-    "--APdi",  (new Integer (displayInterval)).toString (),
-    "--APrs",  (new Integer (randomSeed)).toString ()};
-
-  CytoscapeConfig config = new CytoscapeConfig (args);
-  assertTrue (config.activePathParametersPresent () == true);
-  ActivePathFinderParameters apfp = config.getActivePathParameters();
-  // System.out.println (apfp.toString());
-  assertTrue (config.getActivePathParameters().getTotalIterations() == totalIterations);
-  assertTrue (config.getActivePathParameters().getSignificanceThreshold() == 
-                                                                 significanceThreshold);
-  assertTrue (config.getActivePathParameters().getInitialTemperature() == initialTemperature);
-  assertTrue (config.getActivePathParameters().getFinalTemperature() == finalTemperature);
-  assertTrue (config.getActivePathParameters().getNumberOfPaths () == numberOfPaths);
-  assertTrue (config.getActivePathParameters().getDisplayInterval() == displayInterval);
-  assertTrue (config.getActivePathParameters().getRandomSeed() == randomSeed);
-
-
-} // testAllActivePathParameters
-//-------------------------------------------------------------------------
-public void testAllActivePathAndRegularParameters () throws Exception
-{ 
-  System.out.println ("testAllActivePathAndRegularParameters");
-
-  String bioDataDirectory = "../data/GO";
-  String geometryFilename = "../data/galFiltered.gml";
-  String interactionsFilename = "../data/tideker0/yeastSmall.intr";
-  String expressionFilename   = "../data/tideker0/gal1-20.mrna";
-  String nodeAttributeFile1 = "fooB";
-  String nodeAttributeFile2 = "barA";
-  String nodeAttributeFile3 = "zooC";
-
-  String edgeAttributeFile1 = "edgeA";
-  String edgeAttributeFile2 = "edgeB";
-
-
-
-  double significanceThreshold = 18.45;
-  double initialTemperature = 10.8; 
-  double finalTemperature = 0.2;
-  int totalIterations = 499;
-  int numberOfPaths = 43;
-  int displayInterval = 503;
-  int randomSeed = 123;
-
-
-  String [] args =  
-    {"-b", bioDataDirectory, 
-     "-g", geometryFilename, 
-     "-i", interactionsFilename, 
-     "-e", expressionFilename, 
-     "-n", nodeAttributeFile1,
-     "-n", nodeAttributeFile2,
-     "-n", nodeAttributeFile3,
-     "-j", edgeAttributeFile1,
-     "-j", edgeAttributeFile2,
-     "-h",
-     "-v",
-    "--APsig", (new Double (significanceThreshold)).toString (),
-    "--APt0",  (new Double (initialTemperature)).toString (),
-    "--APtf",  (new Double (finalTemperature)).toString (),
-    "--APni",  (new Integer (totalIterations)).toString (),
-    "--APnp",  (new Integer (numberOfPaths)).toString (),
-    "--APdi",  (new Integer (displayInterval)).toString (),
-    "--APrs",  (new Integer (randomSeed)).toString ()};
-
-  CytoscapeConfig config = new CytoscapeConfig (args);
-  assertTrue (config.activePathParametersPresent () == true);
-  assertTrue (config.getActivePathParameters().getTotalIterations() == totalIterations);
-  assertTrue (config.getActivePathParameters().getSignificanceThreshold() == 
-                                                                 significanceThreshold);
-  assertTrue (config.getActivePathParameters().getInitialTemperature() == initialTemperature);
-  assertTrue (config.getActivePathParameters().getFinalTemperature() == finalTemperature);
-  assertTrue (config.getActivePathParameters().getNumberOfPaths () == numberOfPaths);
-  assertTrue (config.getActivePathParameters().getDisplayInterval() == displayInterval);
-  assertTrue (config.getActivePathParameters().getRandomSeed() == randomSeed);
-
-  assertTrue (config.getBioDataDirectory().equals (bioDataDirectory));
-  assertTrue (config.getGeometryFilename().equals (geometryFilename));
-  assertTrue (config.getInteractionsFilename().equals (interactionsFilename));
-  assertTrue (config.getExpressionFilename().equals (expressionFilename));
-
-  assertTrue (config.getNumberOfNodeAttributeFiles() == 3);
-  String [] nafs = config.getNodeAttributeFilenames ();
-  assertTrue (nafs.length == 3);
-
-  for (int i=0; i < nafs.length; i++) {
-    String af = nafs [i];
-    assertTrue (af.equals (nodeAttributeFile1) ||
-                af.equals (nodeAttributeFile2) ||
-                af.equals (nodeAttributeFile3));
-    } // for i
-
-  assertTrue (config.getNumberOfEdgeAttributeFiles() == 2);
-  String [] eafs = config.getEdgeAttributeFilenames ();
-  assertTrue (eafs.length == 2);
-
-  for (int i=0; i < eafs.length; i++) {
-    String af = eafs [i];
-    assertTrue (af.equals (edgeAttributeFile1) ||
-                af.equals (edgeAttributeFile2));
-    } // for i
-
-  assertTrue (config.helpRequested ());
-  assertTrue (config.displayVersion ());
-  // assertTrue (!config.inputsError ());
-
-} // testAllActivePathAndRegularParameters
-*******************************************************/
 //-------------------------------------------------------------------------
 /**
  *  ensure that multiple sources of the input graph (e.g., a gml file, and
@@ -287,40 +153,6 @@ public void testLegalArgs0 () throws Exception
   assertTrue (config.inputsError ());
 
 } // testLegalArgs0
-//-------------------------------------------------------------------------
-/**
- * ensure that if active path calculation is requested -- by the presence
- * of at least one active path parameter on the command line -- that the
- * other prerequisites of that calcuation are present:  a graph, and
- * expression data
- */
-/***************************
-public void testLegalArgs1 () throws Exception
-{ 
-  System.out.println ("testLegalArgs1");
-
-  String [] args0 = {"-g",    "xxx.gml",
-                    "-e",     "expessionData",
-                    "--APni", "5000"};
-
-  CytoscapeConfig config = new CytoscapeConfig (args0);
-  assertTrue (!config.inputsError ());
-
-  String [] args1 = {"-g",     "xxx.gml",
-                     "--APni", "5000"};
-
-  config = new CytoscapeConfig (args1);
-  assertTrue (config.inputsError ());
-
-  String [] args2 = {"-e",     "expessionData",
-                     "--APni", "5000"};
-
-  config = new CytoscapeConfig (args2);
-  assertTrue (config.inputsError ());
-  
-
-} // testLegalArgs1
-***********************/
 //-------------------------------------------------------------------------
 /**
  * make sure that system properties are read, and that user props can

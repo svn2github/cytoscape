@@ -89,6 +89,7 @@ public class CytoscapeWindow extends JPanel implements FilterDialogClient { // i
   protected ViewMode readOnlyGraphMode = new ReadOnlyGraphMode ();
   protected ViewMode currentGraphMode = readOnlyGraphMode;
   protected ViewMode nodeAttributesPopupMode = new NodeAttributesPopupMode ();
+  protected ViewMode currentPopupMode = nodeAttributesPopupMode;
   protected boolean viewModesInstalled = false;
 
   protected BioDataServer bioDataServer;
@@ -177,6 +178,7 @@ public CytoscapeWindow (cytoscape parentApp,
 
   PluginLoader pluginLoader = new PluginLoader (this, config, nodeAttributes, edgeAttributes);
   pluginLoader.load ();
+  logger.info (pluginLoader.getMessages ());
 
 } // ctor
 //------------------------------------------------------------------------------
@@ -344,6 +346,28 @@ public String getCanonicalNodeName (Node node)
   return nodeAttributes.getCanonicalName (node);
 
 } // getCanonicalNodeName
+//------------------------------------------------------------------------------
+public String getDefaultSpecies ()
+{
+  String species = config.getDefaultSpeciesName ();
+  if (species != null)
+    return species;
+
+  species = getConfiguration().getProperties().getProperty ("species", "unknown");
+  return species;
+
+} // getSpecies
+//------------------------------------------------------------------------------
+public String getSpecies (Node node)
+{
+  String species = nodeAttributes.getStringValue ("species", 
+                                                  nodeAttributes.getCanonicalName (node));
+  if (species != null)
+    return species;
+
+  return getDefaultSpecies ();
+
+} // getSpecies
 //------------------------------------------------------------------------------
 protected void displayNewGraph (boolean doLayout)
 {
@@ -555,12 +579,23 @@ public JMenu getLayoutMenu ()
   return layoutMenu;
 }
 //------------------------------------------------------------------------------
+public void setPopupMode (PopupMode newMode)
+{
+  if (currentPopupMode != null) {
+    graphView.removeViewMode (currentPopupMode);
+    currentPopupMode = newMode;
+    }
+
+  graphView.addViewMode (newMode);
+
+} // setPopupMode
+//------------------------------------------------------------------------------
 public void setInteractivity (boolean newState)
 {
   if (newState == true) { // turn interactivity ON
     if (!viewModesInstalled) {
       graphView.addViewMode (currentGraphMode);
-      graphView.addViewMode (nodeAttributesPopupMode);
+      graphView.addViewMode (currentPopupMode);
       viewModesInstalled = true;
       }
     graphView.setViewCursor (defaultCursor);
@@ -569,7 +604,7 @@ public void setInteractivity (boolean newState)
   else {  // turn interactivity OFF
     if (viewModesInstalled) {
       graphView.removeViewMode (currentGraphMode);
-      graphView.removeViewMode (nodeAttributesPopupMode); 
+      graphView.removeViewMode (currentPopupMode); 
       viewModesInstalled = false;
       }
     graphView.setViewCursor (busyCursor);
@@ -1350,12 +1385,15 @@ protected class HierarchicalLayoutAction extends AbstractAction   {
     
     public void actionPerformed (ActionEvent e) {
 	
+      /********************
 	if (hDialog == null)
 	    hDialog = new HierarchicalLayoutDialog (mainFrame);
 	hDialog.pack ();
 	hDialog.setLocationRelativeTo (mainFrame);
 	hDialog.setVisible (true);
 	layouter = hDialog.getLayouter();
+      ********************/
+      layouter = new HierarchicLayouter ();
     }
 }
 //------------------------------------------------------------------------------

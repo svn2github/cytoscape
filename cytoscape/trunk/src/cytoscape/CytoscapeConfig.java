@@ -18,7 +18,7 @@ import gnu.getopt.LongOpt;
  */
 public class CytoscapeConfig {
 
-  protected String argSpecificationString = "n:j:g:b:i:he:vW;";
+  protected String argSpecificationString = "n:j:g:b:i:he:vWs:;";
 
   protected String [] commandLineArguments;
   protected String[] argsCopy;
@@ -31,6 +31,7 @@ public class CytoscapeConfig {
   protected String interactionsFilename = null;
   protected Vector nodeAttributeFilenames = new Vector ();
   protected Vector edgeAttributeFilenames = new Vector ();
+  protected String defaultSpeciesName = null;
 
   protected StringBuffer errorMessages = new StringBuffer ();
     // system and user property files use the same name
@@ -40,10 +41,10 @@ public class CytoscapeConfig {
 public CytoscapeConfig (String [] args)
 {
   props = readProperties ();
-  //make a copy of the args to parse here (getopt can mangle the array it parses)
+    // make a copy of the args to parse here (getopt can mangle the array it parses)
   commandLineArguments = new String[args.length];
   System.arraycopy(args, 0, commandLineArguments, 0, args.length);
-  //make a copy of the arguments for later use
+    // make a copy of the arguments for later use
   argsCopy = new String[args.length];
   System.arraycopy(args, 0, argsCopy, 0, args.length);
   parseArgs ();
@@ -139,6 +140,11 @@ public String [] getAllDataFileExtensions ()
   return (String []) allExtensions.toArray (new String [0]);
 
 } // getAllDataFileExtensions
+//------------------------------------------------------------------------------------------
+public String getDefaultSpeciesName ()
+{
+  return defaultSpeciesName;
+}
 //------------------------------------------------------------------------------------------
 public boolean helpRequested ()
 {
@@ -273,6 +279,9 @@ protected void parseArgs ()
      case 'h':
        helpRequested = true;
        break;
+     case 's':
+       defaultSpeciesName = g.getOptarg ();
+       break;
      case 'v':
        displayVersion = true;
        break;
@@ -328,6 +337,7 @@ public String getUsage ()
    sb.append (" -b  <bioData directory>           (./biodata\n");
    sb.append (" -i  <interactions filename>       (yyyy.intr)\n");
    sb.append (" -e  <expression filename>         (zzz.mrna)\n");
+   sb.append (" -s  <default species name>        (\"Saccharomyces cerversiae\")\n");
    sb.append (" -n  <nodeAttributes filename>     (zero or more)\n");
    sb.append (" -j  <edgeAttributes filename>     (zero or more)\n");
    sb.append ("\n");
@@ -347,6 +357,7 @@ public String toString ()
    sb.append ("        interactions file: " + interactionsFilename + "\n");
    sb.append ("          expression file: " + expressionFilename + "\n");
    sb.append ("         bioDataDirectory: " + bioDataDirectory + "\n");
+   sb.append ("       defaultSpeciesName: " + defaultSpeciesName + "\n");
  
    for (int i=0; i < nodeAttributeFilenames.size (); i++)
      sb.append ("        nodeAttributeFile: " + (String) nodeAttributeFilenames.get(i) + "\n");
