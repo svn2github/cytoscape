@@ -368,10 +368,41 @@ class FGraphPerspective implements GraphPerspective
     throw new UnsupportedOperationException("meta nodes not yet supported");
   }
 
-  public GraphPerspective join(GraphPerspective persp)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  public GraphPerspective join(GraphPerspective persp) {
+    final FGraphPerspective thisPersp = this;
+    final FGraphPerspective otherPersp;
+    try { otherPersp = (FGraphPerspective) persp; }
+    catch (ClassCastException e) { return this; }
+    if (otherPersp.m_root != thisPersp.m_root) return this;
+    final IntEnumerator thisNativeNodes = thisPersp.m_graph.nodes();
+    final IntEnumerator otherNativeNodes = otherPersp.m_graph.nodes();
+    final IntEnumerator rootGraphNodeInx =
+      new IntEnumerator() {
+        public int numRemaining() {
+          return thisNativeNodes.numRemaining() +
+            otherNativeNodes.numRemaining(); }
+        public int nextInt() {
+          if (thisNativeNodes.numRemaining() > 0)
+            return thisPersp.m_nativeToRootNodeInxMap.getIntAtIndex
+              (thisNativeNodes.nextInt());
+          else
+            return otherPersp.m_nativeToRootNodeInxMap.getIntAtIndex
+              (otherNativeNodes.nextInt()); } };
+    final IntEnumerator thisNativeEdges = thisPersp.m_graph.edges();
+    final IntEnumerator otherNativeEdges = otherPersp.m_graph.edges();
+    final IntEnumerator rootGraphEdgeInx =
+      new IntEnumerator() {
+        public int numRemaining() {
+          return thisNativeEdges.numRemaining() +
+            otherNativeEdges.numRemaining(); }
+        public int nextInt() {
+          if (thisNativeEdges.numRemaining() > 0)
+            return thisPersp.m_nativeToRootEdgeInxMap.getIntAtIndex
+              (thisNativeEdges.nextInt());
+          else
+            return otherPersp.m_nativeToRootEdgeInxMap.getIntAtIndex
+              (otherNativeEdges.nextInt()); } };
+    return new FGraphPerspective(m_root, rootGraphNodeInx, rootGraphEdgeInx); }
 
   public GraphPerspective createGraphPerspective(Node[] nodes, Edge[] edges)
   {
