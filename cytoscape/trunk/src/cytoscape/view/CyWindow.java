@@ -313,7 +313,7 @@ protected void addViewContextMenus() {
   view.addContextMethod( "class phoebe.PNodeView",
                          "cytoscape.graphutil.NodeAction",
                          "editNode",
-                         new Object[] {view } );
+                         new Object[] { ( NetworkView )this } );
 
   view.addContextMethod( "class phoebe.PNodeView",
                          "cytoscape.graphutil.NodeAction",
