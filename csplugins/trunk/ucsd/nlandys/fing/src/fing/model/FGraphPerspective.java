@@ -161,16 +161,6 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
   public int[] getNodeIndicesArray()
   {
     IntEnumerator nodes = m_graph.nodes();
-    // According to the API spec, we must return an array with 0 at index 0.
-    final int[] returnThis = new int[nodes.numRemaining() + 1];
-    for (int i = 1; i < returnThis.length; i++)
-      returnThis[i] = m_nativeToRootNodeInxMap.getIntAtIndex(nodes.nextInt());
-    return returnThis;
-  }
-
-  int[] _getNodeIndicesArray()
-  {
-    IntEnumerator nodes = m_graph.nodes();
     final int[] returnThis = new int[nodes.numRemaining()];
     for (int i = 0; i < returnThis.length; i++)
       returnThis[i] = m_nativeToRootNodeInxMap.getIntAtIndex(nodes.nextInt());
@@ -199,16 +189,6 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
     return returnThis; }
 
   public int[] getEdgeIndicesArray()
-  {
-    IntEnumerator edges = m_graph.edges();
-    // According to the API spec, we must return an array with 0 at index 0.
-    final int[] returnThis = new int[edges.numRemaining() + 1];
-    for (int i = 1; i < returnThis.length; i++)
-      returnThis[i] = m_nativeToRootEdgeInxMap.getIntAtIndex(edges.nextInt());
-    return returnThis;
-  }
-
-  int[] _getEdgeIndicesArray()
   {
     IntEnumerator edges = m_graph.edges();
     final int[] returnThis = new int[edges.numRemaining()];
@@ -445,7 +425,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
     if (nativeInx >= 0 && nativeInx != Integer.MAX_VALUE) return true;
     if (!recurse) return false;
     final int[] recursiveChildNodes =
-      m_root.getNodeMetaChildIndicesArray(_getNodeIndicesArray());
+      m_root.getNodeMetaChildIndicesArray(getNodeIndicesArray());
     for (int i = 0; i < recursiveChildNodes.length; i++)
       if (recursiveChildNodes[i] == node.getRootGraphIndex()) return true;
     return false; }
@@ -464,7 +444,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
     if (nativeInx >= 0 && nativeInx != Integer.MAX_VALUE) return true;
     if (!recurse) return false;
     final int[] recursiveChildEdges =
-      m_root.getEdgeMetaChildIndicesArray(_getNodeIndicesArray());
+      m_root.getEdgeMetaChildIndicesArray(getNodeIndicesArray());
     for (int i = 0; i < recursiveChildEdges.length; i++)
       if (recursiveChildEdges[i] == edge.getRootGraphIndex()) return true;
     return false; }
