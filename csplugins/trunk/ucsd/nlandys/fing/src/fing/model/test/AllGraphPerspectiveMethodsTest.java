@@ -471,6 +471,100 @@ public final class AllGraphPerspectiveMethodsTest
         persp.getEdgeIndicesArray(Integer.MIN_VALUE,
                                   Integer.MAX_VALUE, false) != null)
       throw new IllegalStateException("not null");
+
+    // getInDegree(Node).
+
+    // getInDegree(int).
+
+    // getInDegree(Node, boolean).
+
+    // getInDegree(int, boolean).
+
+    // getOutDegree(Node).
+
+    // getOutDegree(int).
+
+    // getOutDegree(Node, boolean).
+
+    // getOutDegree(int, boolean).
+
+    // getDegree(Node).
+
+    // getDegree(int).
+
+    // getIndex(Node).
+
+    // getNodeIndex(int).
+
+    // getRootGraphNodeIndex(int).
+
+    // getNode(int).
+
+    // getIndex(Edge).
+
+    // getEdgeIndex(int).
+
+    // getRootGraphEdgeIndex(int).
+
+    // getEdge(int).
+
+    // getEdgeSourceIndex(int).
+
+    // getEdgeTargetIndex(int).
+
+    // isEdgeDirected(int).
+
+    // isMetaParent(Node, Node).
+
+    // isNodeMetaParent(int, int).
+
+    // metaParentsList(Node).
+
+    // nodeMetaParentsList(int).
+
+    // getNodeMetaParentIndicesArray(int).
+
+    // isMetaChild(Node, Node).
+
+    // isNodeMetaChild(int, int).
+
+    // nodeMetaChildrenList(Node).
+
+    // nodeMetaChildrenList(int).
+
+    // getNodeMetaChildIndicesArray(int).
+
+    // isMetaParent(Edge, Node).
+
+    // isEdgeMetaParent(int, int).
+
+    // metaParentsList(Edge).
+
+    // edgeMetaParentsList(int).
+
+    // getEdgeMetaParentIndicesArray(int).
+
+    // isMetaChild(Node, Edge).
+
+    // isEdgeMetaChild(int, int).
+
+    // edgeMetaChildrenList(Node).
+
+    // edgeMetaChildRenList(int).
+
+    // getEdgeMetaChildIndicesArray(int).
+
+    // getAdjacentEdgesList(Node, boolean, boolean, boolean).
+
+    // getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean).
+
+    // getConnectingEdges(List).
+
+    // getConnectingEdgeIndicesArray(int[]).
+
+    // getConnectingNodeIndicesArray(int[]).
+
+    // createGraphPerspective(int[]).
   }
 
 }
