@@ -2,6 +2,12 @@ package cytoscape.graph.dynamic.util;
 
 import cytoscape.graph.dynamic.DynamicGraph;
 
+/**
+ * A factory for getting cytoscape.graph.dynamic.DynamicGraph instances.
+ * This DynamicGraph implementation requires a bare minimum of roughly 64
+ * metabytes for a graph with one million edges and a hundred thousand nodes.
+ * That is, the memory requirements are roughly 64 bytes per node and edge.
+ */
 public final class DynamicGraphFactory
 {
 
