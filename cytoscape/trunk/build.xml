@@ -37,10 +37,10 @@
     <property name="build.compiler" value="modern"/>
 
     <!-- Release number -->
-    <property name="version" value="2.00"/>
+    <property name="version" value="2.1"/>
 
     <!-- Temporary Release Directory -->
-    <property name="release.dir" value="${build.dir}/release"/>
+    <property name="release.dir" value="${build.dir}/cytoscape-v${version}"/>
 
     <!-- Temporary Zip/Gzipped Release Directory -->
     <property name="zip_release.dir" value="${build.dir}/zip_release"/>
@@ -446,7 +446,7 @@
 
         <echo>
             ---------------------------------------
-            Creating zip/tar.gz files.
+            Creating zip/tar.gz release bundles.
             ---------------------------------------
         </echo>
         <mkdir dir="${zip_release.dir}"/>
@@ -483,6 +483,7 @@
         <gzip src="${zip_release.dir}/cytoscapeSource-v${version}.tar"
               zipfile="${zip_release.dir}/cytoscapeSource-v${version}.tar.gz"/>
         <delete file="${zip_release.dir}/cytoscapeSource-v${version}.tar"/>
+
     </target>
 
 
