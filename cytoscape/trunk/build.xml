@@ -42,6 +42,9 @@
     <property name="dirname.release.dir"
               value="cytoscape-v${version}"/>
 
+    <!-- Web Start Directory -->
+    <property name="webstart.dir" value="${build.dir}/webstart"/>
+
     <!-- Temporary Release Directory -->
     <property name="release.dir" value="${build.dir}/${dirname.release.dir}"/>
 
@@ -439,6 +442,7 @@
         </copy>
     </target>
 
+  
     <!-- ======================================================= -->
     <!-- Create Cytoscape Distribution                           -->
     <!-- Final releases are made available in zip_release/ dir   -->
@@ -494,6 +498,7 @@
               zipfile="${zip_release.dir}/cytoscapeSource-v${version}.tar.gz"/>
         <delete file="${zip_release.dir}/cytoscapeSource-v${version}.tar"/>
     </target>
+
 
 
     <!-- ======================================================= -->
@@ -557,5 +562,122 @@
             <arg value="${lib.dir}"/>
         </java>
     </target>
+
+    
+    <!-- ======================================================= -->
+    <!-- Create Cytoscape WebStart Distribution                           -->
+    <!-- Questions?  email:  cerami@cbio.mskcc.org	         -->
+    <!-- ======================================================= -->
+    <target name="webstart" depends="jar"
+            description="Creates Cytoscape Webstart Release">
+
+        <echo>
+            ***********************************************
+            Creating Cytoscape Webstart Release
+            * NOTE: If this is your first time using Webstart:
+            * you must create a keystore:
+            * keytool -genkey -alias cytoscape -keypass secret
+            * enter "secret" for the password. 
+            ***********************************************
+        </echo>
+
+        <!-- Create Webstart Directory -->
+        <mkdir dir="${webstart.dir}"/>
+        <mkdir dir="${webstart.dir}/plugins"/>
+        
+        <echo>
+             ------------------------------------
+             All Files in the data directory are
+             being included in data.jar
+             ------------------------------------
+        </echo>
+
+        <jar destfile="${webstart.dir}/data.jar"
+             basedir="data"
+             includes="**"/>
+        <signjar jar="${webstart.dir}/data.jar"
+                 alias="cytoscape"
+                 storepass="secret"/>
+
+        <echo>
+            ---------------------------------------
+            Copying over all necessary JAR files.
+            ---------------------------------------
+        </echo>
+        
+        <copy file="${basedir}/cy1.jnlp"
+              tofile="${webstart.dir}/cy1.jnlp"/>
+
+
+        <copy file="${basedir}/cytoscape.jar"
+              tofile="${webstart.dir}/cytoscape.jar"/>
+        <signjar jar="${webstart.dir}/cytoscape.jar"
+                 alias="cytoscape"
+                 storepass="secret"/>
+
+        <copy toDir="${webstart.dir}/lib">
+          <fileset dir="${lib.dir}" includes="*.jar"/>
+        </copy>
+
+         <signjar alias="cytoscape"
+                  storepass="secret">
+                  <fileset  dir="${webstart.dir}/lib"
+                  includes="*.jar"/>
+        </signjar>
+        
+      
+
+        <!-- Copy over props files -->
+        <echo>
+            ---------------------------------------
+            Copying over all property files.
+            ---------------------------------------
+        </echo>
+        <copy file="${basedir}/cytoscape.props"
+              tofile="${webstart.dir}/cytoscape.props"/>
+        <copy file="${basedir}/vizmap.props"
+              tofile="${webstart.dir}/vizmap.props"/>
+
+   
+
+        <!-- Copy over Webstart PlugIns -->
+        <echo>
+            ---------------------------------------
+            Copying over PlugIns.
+            ---------------------------------------
+        </echo>
+        <copy todir="${webstart.dir}/plugins">
+            <fileset dir="plugins">
+                <include name="*.jar"/>
+            </fileset>
+        </copy>
+        <copy file="plugins/pluginsContents.txt"
+              todir="${webstart.dir}/plugins"/>
+
+         <signjar alias="cytoscape"
+                  storepass="secret">
+                   <fileset dir="${webstart.dir}/plugins"  includes="*.jar"/>
+         </signjar>
+
+         
+
+
+
+    </target>
+
+    <target name="webstart-extras" depends="webstart"
+            description="add extra plugins into webstart">
+        <echo>
+            ---------------------------------------
+            Copying over extra PlugIns.
+            ---------------------------------------
+        </echo>
+        <copy todir="${webstart.dir}/plugins">
+            <fileset dir="plugins/extras">
+                <include name="*.jar"/>
+            </fileset>
+        </copy>
+    </target>
+
 
 </project>
