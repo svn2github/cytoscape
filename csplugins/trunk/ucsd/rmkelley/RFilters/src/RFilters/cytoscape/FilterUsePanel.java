@@ -159,10 +159,11 @@ public class FilterUsePanel extends JPanel
     
     Filter filter = filterListPanel.getSelectedFilter();
     //System.out.println( "Window: "+window );
-    network = window.getNetwork();
+    //network = window.getNetwork();
     //System.out.println( "Network: "+network );
     //System.out.println( "GP: "+network.getGraphPerspective() );
-
+				network = Cytoscape.getCurrentNetwork();
+				
     List nodes_list = network.getGraphPerspective().nodesList();
     List edges_list = network.getGraphPerspective().edgesList();
     Iterator nodes;
