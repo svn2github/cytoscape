@@ -61,7 +61,7 @@ public final class MinIntHeap
   {
     checkSize();
     m_heap[++m_currentSize] = x;
-    if (m_orderOK) percolateUp(m_currentSize);
+    if (m_orderOK) percolateUp(m_heap, m_currentSize);
   }
 
   /**
@@ -77,7 +77,8 @@ public final class MinIntHeap
   public final int findMin()
   {
     if (!m_orderOK) { // Fix heap.
-      for (int i = m_currentSize / 2; i > 0; i--) percolateDown(i);
+      for (int i = m_currentSize / 2; i > 0; i--)
+        percolateDown(m_heap, i, m_currentSize);
       m_orderOK = true; }
     return m_heap[1];
   }
@@ -97,11 +98,12 @@ public final class MinIntHeap
   public final int deleteMin()
   {
     if (!m_orderOK) { // Fix heap.
-      for (int i = m_currentSize / 2; i > 0; i--) percolateDown(i);
+      for (int i = m_currentSize / 2; i > 0; i--)
+        percolateDown(m_heap, i, m_currentSize);
       m_orderOK = true; }
     final int returnThis = m_heap[1];
     m_heap[1] = m_heap[m_currentSize--];
-    percolateDown(1);
+    percolateDown(m_heap, 1, m_currentSize);
     return returnThis;
   }
 
@@ -113,23 +115,25 @@ public final class MinIntHeap
     m_heap = newHeap;
   }
 
-  private final void percolateUp(int childIndex)
+  private static final void percolateUp(int[] heap,
+                                        int childIndex)
   {
     for (int parentIndex = childIndex / 2;
-         m_heap[childIndex] < m_heap[parentIndex];
+         heap[childIndex] < heap[parentIndex];
          childIndex = parentIndex, parentIndex = parentIndex / 2)
-      swap(m_heap, parentIndex, childIndex);
+      swap(heap, parentIndex, childIndex);
   }
 
-  private final void percolateDown(int parentIndex)
+  private static final void percolateDown(int[] heap,
+                                          int parentIndex,
+                                          int size)
   {
-    for (int childIndex = parentIndex * 2; childIndex <= m_currentSize;
+    for (int childIndex = parentIndex * 2; childIndex <= size;
          parentIndex = childIndex, childIndex = childIndex * 2) {
-      if (childIndex + 1 <= m_currentSize &&
-          m_heap[childIndex + 1] < m_heap[childIndex])
+      if (childIndex + 1 <= size && heap[childIndex + 1] < heap[childIndex])
         childIndex++;
-      if (m_heap[childIndex] < m_heap[parentIndex])
-        swap(m_heap, parentIndex, childIndex);
+      if (heap[childIndex] < heap[parentIndex])
+        swap(heap, parentIndex, childIndex);
       else break; }
   }
 
@@ -157,7 +161,8 @@ public final class MinIntHeap
    * will cause undefined behavior in both the iterator and in the underlying
    * heap.<p>
    * Calling this function automatically causes this heap to become
-   * unordered.
+   * unordered.  No elements are added or removed from this heap as a
+   * result of using the returned iterator.
    */
   public final IntIterator orderedElements(boolean pruneDuplicates,
                                            boolean reverseOrder)
@@ -169,11 +174,18 @@ public final class MinIntHeap
     else // We can do lazy computations.
     {
       if (!m_orderOK) // Fix heap.
-        for (int i = m_currentSize / 2; i > 0; i--) percolateDown(i);
+        for (int i = m_currentSize / 2; i > 0; i--)
+          percolateDown(m_heap, i, m_currentSize);
       else m_orderOK = false;
+      final int[] heap = m_heap;
+      final int size = m_currentSize;
       return new IntIterator() {
-          public int numRemaining() { return -1; }
-          public int nextInt() { return 1; } };
+          int index = 0;
+          public int numRemaining() { return size - index; }
+          public int nextInt()
+          {
+            
+          } };
     }
   }
 
