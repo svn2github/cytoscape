@@ -38,9 +38,7 @@ import javax.swing.event.MenuListener;
 import javax.swing.event.MenuEvent;
 
 import cytoscape.CytoscapeObj;
-import cytoscape.AbstractPlugin;
-import cytoscape.jarLoader.JarPluginLoaderAction;
-import cytoscape.jarLoader.JarPluginDirectoryAction;
+import cytoscape.plugin.AbstractPlugin;
 import cytoscape.actions.*;
 import cytoscape.dialogs.ShrinkExpandGraphUI;
 import cytoscape.data.annotation.AnnotationGui;
@@ -425,8 +423,8 @@ newState = true; //TODO: remove this once the GraphViewChangeListener system is 
     vizMapperItem = vizMenu.add(new ToggleVisualMapperAction(cyWindow));
 
     menuBar.addAction( new AnimatedLayoutAction( networkView ) );
-    opsMenu.add(new JarPluginLoaderAction (cyWindow.getCytoscapeObj()));
-    opsMenu.add(new JarPluginDirectoryAction (cyWindow.getCytoscapeObj()));
+    opsMenu.add(new LoadPluginAction (cyWindow.getCytoscapeObj()));
+    opsMenu.add(new LoadPluginDirectoryAction (cyWindow.getCytoscapeObj()));
     opsMenu.addSeparator();
 
   }

@@ -38,7 +38,7 @@ import cytoscape.data.servers.BioDataServer;
 import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.CalculatorCatalogFactory;
 import cytoscape.visual.CalculatorIO;
-import cytoscape.jarLoader.JarLoaderCommandLineParser;
+import cytoscape.plugin.JarLoaderCommandLineParser;
 import cytoscape.plugin.PluginRegistry;
 import cytoscape.plugin.PluginLoader;
 import cytoscape.plugin.AbstractPlugin;

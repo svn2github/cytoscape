@@ -9,7 +9,7 @@ package cytoscape.plugin;
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
 import cytoscape.CytoscapeObj;
-import cytoscape.jarLoader.JarPluginDirectoryAction;
+import cytoscape.actions.LoadPluginDirectoryAction;
 
 /**
  * This class searches the command-line arguments for arguments specifying
@@ -65,9 +65,9 @@ public class JarLoaderCommandLineParser {
                     tmp = g.getOptarg();
                     // try to load the jars.
                     messageBuffer.append("Command line to load jars from directory: "+tmp);
-                    JarPluginDirectoryAction jpda = new JarPluginDirectoryAction(cyObj);;
-                    jpda.setDir(tmp);
-                    jpda.tryDirectory();
+                    LoadPluginDirectoryAction lpda = new LoadPluginDirectoryAction(cyObj);;
+                    lpda.setDir(tmp);
+                    lpda.tryDirectory();
                     break;
                 case 1:
                     tmp = g.getOptarg();
