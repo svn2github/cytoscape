@@ -6,4 +6,4 @@ eda=edgeAttributes2.eda
 layout=embedded
 species=Saccharomyces cerevisiae
 dataServer=annotationsAndSynonyms
-props=/net/compbio/cytoscape/projects/galFiltered/cytoscape.props
+props=cytoscape.props
