@@ -26,6 +26,7 @@ OBJS = ColorPopupButton.class \
         IconPopupButton.class \
         MiscDialog.class \
         MiscGB.class \
+        GridBagGroup.class \
         EdgeTextPanel.class \
 	NewStringPopupDialog.class \
 

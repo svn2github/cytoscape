@@ -13,6 +13,7 @@ import javax.swing.*;
 import java.awt.*;
 
 import cytoscape.util.Misc;
+import cytoscape.dialogs.GridBagGroup;
 
 //------------------------------------------------------------------------------
 public class MiscGB {
@@ -47,6 +48,27 @@ public class MiscGB {
 	if(panel==null) System.out.println("panel is null");
 	bag.setConstraints(comp,c);
 	panel.add(comp);
+    }
+
+    public static void insert (GridBagGroup gbg,
+			       Component comp,
+			       int x, int y) {
+	set(gbg.constraints, x, y);
+	insert(gbg.panel, comp, gbg.gridbag, gbg.constraints);
+    }
+
+    public static void insert (GridBagGroup gbg,
+			       Component comp,
+			       int x, int y, int w, int h) {
+	set(gbg.constraints, x, y, w, h);
+	insert(gbg.panel, comp, gbg.gridbag, gbg.constraints);
+    }
+
+    public static void insert (GridBagGroup gbg,
+			       Component comp,
+			       int x, int y, int w, int h, int f) {
+	set(gbg.constraints, x, y, w, h, f);
+	insert(gbg.panel, comp, gbg.gridbag, gbg.constraints);
     }
 
     public static JLabel createColorLabel(Color c) {
