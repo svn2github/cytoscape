@@ -126,6 +126,8 @@ class ParseYeang extends ParseMain
                 
                 for(int x=0; x < emList.size(); x++)
                 {
+                    logger.info("### loop=" + y
+                                + ", em=" +x + " testing edge msg list");
                     testMaxProduct(fn, (List) emList.get(x));
                 }
             }

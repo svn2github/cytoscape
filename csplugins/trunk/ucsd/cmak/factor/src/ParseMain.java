@@ -160,12 +160,13 @@ class ParseMain
             }
         }
 
+        logger.info(" ");
         logger.info(pass + " passed. " + fail + " failed. "
                     + diffmax + " had different max.");
         
         if(fail > 0)
         {
-            logger.info(" ");
+
             for(int x=0; x < edgeMessages.size() ;x++)
             {
                 EdgeMessage em = (EdgeMessage) edgeMessages.get(x);
@@ -182,6 +183,7 @@ class ParseMain
                     logger.info(em.toString());
                 }
             }
+            logger.info(" ");
         }
     }
     
@@ -226,6 +228,7 @@ class ParseMain
                     fn = OrFactorNode.getInstance();
                 }
 
+                logger.info("### " + x + " testing edge msg list");
                 testMaxProduct(fn, (List) emList.get(x));
             }
         } catch(Exception e) {
