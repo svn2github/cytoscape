@@ -145,7 +145,7 @@ public class GMLReader implements GraphReader {
       //Node node = Cytoscape.getRootGraph().getNode(Cytoscape.getRootGraph().createNode());
       //Node node = (Node)nodeIt.next();
       
-      Node node = ( Node )Cytoscape.getCyNode( nodeName );
+      Node node = ( Node )Cytoscape.getCyNode( nodeName, true );
 
       //Node node = Cytoscape.getRootGraph().getNode( new_nodes[i] );
       nodes.add( node.getRootGraphIndex() );

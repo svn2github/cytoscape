@@ -195,6 +195,13 @@ public class NetworkViewManager
       e = null;
     }
 
+    // handle a NetworkView destroyed
+    else if ( e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_DESTROYED ) {
+      CyNetworkView view = ( CyNetworkView )e.getNewValue();
+      removeView( view );
+      e = null;
+    }
+
   }
 
   /**
@@ -245,6 +252,37 @@ public class NetworkViewManager
         }
       }
     }
+  }
+
+  protected void removeView ( CyNetworkView view ) {
+    
+    if ( VIEW_TYPE == CytoscapeDesktop.TABBED_VIEW ) {
+      try {
+        ( ( JTabbedPane )container ).
+          remove( (Component)networkViewMap.get( view.getNetwork().getIdentifier() ) );
+      } catch ( Exception e ) {
+        // possible error
+      }
+    } 
+
+    else if ( VIEW_TYPE == CytoscapeDesktop.INTERNAL_VIEW ) {
+      try {
+        ( ( JInternalFrame )networkViewMap.get(  view.getNetwork().getIdentifier() ) ).dispose();
+      } catch ( Exception e ) {
+        System.err.println( "Network View unable to be killed" );
+      }
+    }
+    
+    else if ( VIEW_TYPE == CytoscapeDesktop.EXTERNAL_VIEW ) {
+      try {
+        ( ( JFrame )networkViewMap.get( view.getNetwork().getIdentifier()  ) ).dispose();
+      } catch ( Exception e ) {
+        System.err.println( "Network View unable to be killed" );
+      }
+    }
+   
+    networkViewMap.remove( view.getNetwork().getIdentifier() );
+
   }
 
   /**

@@ -5,6 +5,7 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.ExpressionData;
+import cytoscape.data.Semantics;
 import cytoscape.data.readers.*;
 import cytoscape.data.servers.BioDataServer;
 
@@ -156,7 +157,7 @@ public abstract class Cytoscape {
   }
 
   public static CyNode getCyNode ( String alias ) {
-    return getCyNode( alias, true );
+    return getCyNode( alias, false );
   }
 
   /**
@@ -221,6 +222,9 @@ public abstract class Cytoscape {
    */
   private static String canonicalizeName ( String name ) {
     String canonicalName = name;
+
+    //System.out.println( "Biodataserver is: "+bioDataServer );
+
     if ( bioDataServer != null) {
       canonicalName = bioDataServer.getCanonicalName (species, name);
       if(canonicalName == null){canonicalName = name;}
@@ -349,6 +353,48 @@ public abstract class Cytoscape {
     return networkViewMap;
   }
 
+  public static void destroyNetwork ( String network_id ) {
+    destroyNetwork( ( CyNetwork )getNetworkMap().get( network_id ) );
+  }
+  
+  public static void destroyNetwork ( CyNetwork network ) {
+    getNetworkMap().remove( network.getIdentifier() );
+    if ( viewExists( network.getIdentifier() ) )
+      destroyNetworkView( network );
+    firePropertyChange( NETWORK_DESTROYED,
+                        null,
+                        network.getIdentifier() );
+    
+    // theoretically this should not be set to null till after the events firing is done
+    network = null;
+  }
+
+  public static void destroyNetworkView ( CyNetworkView view ) {
+
+    //  System.out.println( "destroying: "+view.getIdentifier()+" : "+getNetworkViewMap().get( view.getIdentifier() ) );
+
+    getNetworkViewMap().remove( view.getIdentifier() );
+
+           
+    //    System.out.println( "gone from hash: "+view.getIdentifier()+" : "+getNetworkViewMap().get( view.getIdentifier() ) );
+             
+    firePropertyChange( CytoscapeDesktop.NETWORK_VIEW_DESTROYED,
+                        null,
+                        view );
+    // theoretically this should not be set to null till after the events firing is done
+    view = null;
+    // TODO: do we want here?
+    System.gc();
+  }
+
+  public static void destroyNetworkView ( String network_view_id ) {
+    destroyNetworkView( ( CyNetworkView )getNetworkViewMap().get( network_view_id ) );
+  }
+
+  public static void destroyNetworkView ( CyNetwork network ) {
+    destroyNetworkView( ( CyNetworkView )getNetworkViewMap().get( network.getIdentifier() ) );
+  }
+
   protected static void addNetwork ( CyNetwork network ) {
     addNetwork( network, null, null );
   }
@@ -367,7 +413,9 @@ public abstract class Cytoscape {
     if ( parent != null ) {
       p_id = parent.getIdentifier();
     }
-    
+
+    Semantics.applyNamingServices( network, getCytoscapeObj() );
+
     firePropertyChange( NETWORK_CREATED,
                         p_id,
                         network.getIdentifier() );
@@ -375,7 +423,6 @@ public abstract class Cytoscape {
 
     // createNetworkView( network );
   }
-
  
   /**
    * Creates a new, empty Network. 
@@ -748,6 +795,10 @@ public abstract class Cytoscape {
   //TODO: title
   public static CyNetworkView createNetworkView ( CyNetwork network, String title ) {
      
+    if ( network == nullNetwork ) {
+      return nullNetworkView;
+    }
+
     System.out.println( "Creating View from: "+network.getIdentifier()+" : "+network.getIdentifier() );
     if ( viewExists( network.getIdentifier() ) )
       return getNetworkView( network.getIdentifier() );
@@ -758,6 +809,7 @@ public abstract class Cytoscape {
 
 
     CyNetworkView view = new PhoebeNetworkView ( network, title );
+    view.setIdentifier( network.getIdentifier() );
     getNetworkViewMap().put( network.getIdentifier(), view );
     view.setTitle( network.getTitle() );
     // System.out.println( "Just Created a PhoebeNetworkView: "+network.getIdentifier()+

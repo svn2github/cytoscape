@@ -53,7 +53,7 @@ public class NetworkPanel
     treeTable.getTree().setRootVisible( false );
 
     ToolTipManager.sharedInstance().registerComponent(treeTable.getTree());
-    treeTable.getTree().setCellRenderer(new MyRenderer() );
+    treeTable.getTree().setCellRenderer( new MyRenderer() );
 
 
     treeTable.getColumn( "Network" ).setMaxWidth(100);
@@ -69,7 +69,27 @@ public class NetworkPanel
     return pcs;
   }
 
-  //TODO: update to allow for children
+  public void removeNetwork ( String network_id ) {
+
+    NetworkTreeNode node = getNetworkNode( network_id );
+    Enumeration children = node.children();
+    NetworkTreeNode child = null;
+    while ( children.hasMoreElements() ){
+      child = ( NetworkTreeNode )children.nextElement();
+      child.removeFromParent();
+      root.add( child );
+    }
+    node.removeFromParent();
+    treeTable.getTree().collapsePath( new TreePath( new TreeNode[] {root} ) );
+    treeTable.getTree().updateUI();
+    //TreePath path = new TreePath( child.getPath() );
+    //treeTable.getTree().expandPath( path );
+    //treeTable.getTree().scrollPathToVisible( path );
+    treeTable.doLayout();
+    
+  }
+
+
   public void addNetwork ( String network_id, String parent_id ) {
     // first see if it exists
     if ( getNetworkNode( network_id ) == null ) {
@@ -134,6 +154,10 @@ public class NetworkPanel
    
     if ( e.getPropertyName() == Cytoscape.NETWORK_CREATED ) {
       addNetwork( ( String )e.getNewValue(), ( String )e.getOldValue() );
+    } 
+
+    if ( e.getPropertyName() == Cytoscape.NETWORK_DESTROYED ) {
+      removeNetwork( ( String )e.getNewValue() );
     } 
 
     else if ( e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED ) {

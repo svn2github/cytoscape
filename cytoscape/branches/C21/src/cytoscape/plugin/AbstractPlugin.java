@@ -105,18 +105,17 @@ public abstract class AbstractPlugin {
             
 
             if (ctor != null) {
-                try {
-                    Object[] args = new Object[1];
-                    args[0] = cyWindow;
-                    System.out.println( "Creating new Instance of: "+pluginClass );
-                    return ctor.newInstance(args) != null;
-                } catch (Exception e) {
-                    System.err.println("In AbstractPlugin.loadPlugin:");
-                    System.err.println("Exception while constructing plugin instance:");
-                    System.err.println(e.getMessage());
-                    e.printStackTrace();
-                    return false;
-                }
+              try {
+                Object[] args = new Object[1];
+                args[0] = cyWindow;
+                return ctor.newInstance(args) != null;
+              } catch (Exception e) {
+                System.err.println("In AbstractPlugin.loadPlugin:");
+                System.err.println("Exception while constructing plugin instance:");
+                System.err.println(e.getMessage());
+                e.printStackTrace();
+                return false;
+              }
             }
         }
         return false;

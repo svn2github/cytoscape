@@ -632,8 +632,10 @@ public class CytoscapeDesktop
       getSelectedItem();
 
     CyNetworkView old_view = Cytoscape.getCurrentNetworkView();
-    old_view.putClientData( VISUAL_STYLE, old_style );
-    old_view.putClientData( VIZMAP_ENABLED, new Boolean( old_view.getVisualMapperEnabled() ) );
+    if ( old_view != null ) {
+      old_view.putClientData( VISUAL_STYLE, old_style );
+      old_view.putClientData( VIZMAP_ENABLED, new Boolean( old_view.getVisualMapperEnabled() ) );
+    }
 
     // set the current Network/View
     Cytoscape.setCurrentNetwork( network_id );
@@ -708,6 +710,17 @@ public class CytoscapeDesktop
         pcs.firePropertyChange( e );
       }
 
+      else if ( e.getPropertyName() == Cytoscape.NETWORK_DESTROYED ) {
+        // fire the event so that the NetworkPanel can catch it
+        pcs.firePropertyChange( e );
+      }
+
+      else if ( e.getPropertyName() == NETWORK_VIEW_DESTROYED ) {
+        // remove the view from the GraphViewController
+        getGraphViewController().removeGraphView( ( CyNetworkView )e.getNewValue() );
+        // pass on the event 
+        pcs.firePropertyChange( e );
+      }
    
   }
   

@@ -114,7 +114,7 @@ public class LoadGraphFileAction extends CytoscapeAction {
      
       if ( newNetwork != null ) {//valid read
         //apply the semantics we usually expect
-        Semantics.applyNamingServices( newNetwork, Cytoscape.getCytoscapeObj() );
+        //Semantics.applyNamingServices( newNetwork, Cytoscape.getCytoscapeObj() );
         //  networkView.getGraphViewController().stopListening();
         //         networkView.getNetwork().setNewGraphFrom(newNetwork, false);
         //         networkView.getGraphViewController().resumeListening();

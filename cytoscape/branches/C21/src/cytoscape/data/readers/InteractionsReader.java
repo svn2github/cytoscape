@@ -203,7 +203,7 @@ public class InteractionsReader implements GraphReader {
       
 
       // use the static method
-      Node node = ( Node )Cytoscape.getCyNode( nodeName );
+      Node node = ( Node )Cytoscape.getCyNode( nodeName, true );
       node_indices.add( node.getRootGraphIndex() );
       //nodes.put(nodeName, node);
 

@@ -11,7 +11,7 @@ import javax.swing.*;
 import java.io.*;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
-import cytoscape.plugin.JarClassLoader;
+import cytoscape.plugin.jar.JarLoader;
 
 /**
  * This class provides an action for loading Cytoscape plugins from jar files
@@ -78,8 +78,9 @@ public class LoadPluginDirectoryAction extends CytoscapeAction {
             if(!(fileList[i].endsWith(".jar"))) continue;
             String jarString = file.getPath() + slashString + fileList[i];
             try {
-              JarClassLoader jcl = new JarClassLoader("file:" + jarString );
-                jcl.loadRelevantClasses();
+              JarLoader.loadJar( jarString );
+              //JarClassLoader jcl = new JarClassLoader("file:" + jarString );
+              //jcl.loadRelevantClasses();
             }
             catch (Exception e1) {
                 System.err.println ("Error loading jar: " + e1.getMessage ());
