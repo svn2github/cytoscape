@@ -158,7 +158,7 @@ public CytoscapeWindow (cytoscape parentApp,
   initializeWidgets ();
 
   displayCommonNodeNames ();
-  displayGraph (doFreshLayout);
+  displayNewGraph (doFreshLayout);
 
   mainFrame.setVisible (true);
   mainFrame.addWindowListener (parentApp);
@@ -186,8 +186,16 @@ public GraphHider getGraphHider ()
   return graphHider;
 }
 //------------------------------------------------------------------------------
-public void redrawGraph ()
+public void redrawGraph() {
+  redrawGraph(false);
+}
+//------------------------------------------------------------------------------
+public void redrawGraph (boolean doLayout)
 {
+  applyVizmapSettings();
+  if (doLayout) {
+    applyLayout(false);
+  }
   graphView.paintImmediately (0, 0, graphView.getWidth(), graphView.getHeight());
   int nodeCount = graphView.getGraph2D().nodeCount();
   int edgeCount = graphView.getGraph2D().edgeCount();
@@ -263,7 +271,7 @@ public String getCanonicalNodeName (Node node)
 
 } // getCanonicalNodeName
 //------------------------------------------------------------------------------
-public void displayGraph (boolean doLayout)
+protected void displayNewGraph (boolean doLayout)
 {
   if (graph == null) graph = new Graph2D ();
 
@@ -274,19 +282,14 @@ public void displayGraph (boolean doLayout)
   graphView.setGraph2D (graph);
   graphHider = new GraphHider (graph);
 
-  if (doLayout) {
-    applyLayout (false);
-    }
+  this.redrawGraph(doLayout);
 
   graphView.fitContent ();
   graphView.setZoom (graphView.getZoom ()*0.9);
 
-  //redrawGraph ();  commented out 4/9/02 AM
-  renderNodesAndEdges();    //implicitly calls redrawGraph()
-
 } // displayGraph
 //------------------------------------------------------------------------------
-public void renderNodesAndEdges ()
+protected void applyVizmapSettings ()
 {
   Node [] nodes = graphView.getGraph2D().getNodeArray();
 
@@ -345,8 +348,6 @@ public void renderNodesAndEdges ()
     er.setTargetArrow(targetArrow);
     cursor.cyclicNext ();
   } // for i
-
-  redrawGraph ();
 
 } // renderNodesAndEdges
 //------------------------------------------------------------------------------
@@ -1033,19 +1034,10 @@ protected class SetVisualPropertiesAction extends AbstractAction   {
 	vizDialog.setVisible (true);
 	
 	displayNodeLabels(labelKey.getString());
-	renderNodesAndEdges();//implicitly calls redrawGraph()
+        redrawGraph();
     }
 
 }
-//------------------------------------------------------------------------------
-protected class RenderAction extends AbstractAction  
-{
-   RenderAction () {super ("Render"); } 
-   public void actionPerformed (ActionEvent e) {
-     renderNodesAndEdges ();
-     }
-
-} // inner class RenderAction
 //------------------------------------------------------------------------------
 protected class HideEdgesAction extends AbstractAction   {
   HideEdgesAction () { super ("Hide Edges"); }
@@ -1513,7 +1505,7 @@ protected void loadGML (String filename)
     GraphObjAttributes gmlEdgeAttributes = reader.getEdgeAttributes ();
     edgeAttributes.add(gmlEdgeAttributes);
     edgeAttributes.addNameMap(gmlEdgeAttributes.getNameMap ());
-    displayGraph (false);
+    displayNewGraph (false);
 } // loadGML
 //------------------------------------------------------------------------------
 protected void loadInteraction (String filename)
@@ -1524,7 +1516,7 @@ protected void loadInteraction (String filename)
   GraphObjAttributes interactionEdgeAttributes = reader.getEdgeAttributes ();
   edgeAttributes.add (interactionEdgeAttributes);
   edgeAttributes.addNameMap (interactionEdgeAttributes.getNameMap ());
-  displayGraph (true);
+  displayNewGraph (true);
 
 } // loadInteraction
 //------------------------------------------------------------------------------
