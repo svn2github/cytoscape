@@ -265,9 +265,21 @@ class FGraphPerspective implements GraphPerspective
     throw new IllegalStateException("not implemented yet");
   }
 
-  public int restoreEdge(int perspEdgeInx)
+  public int restoreEdge(int rootGraphEdgeInx)
   {
-    throw new IllegalStateException("not implemented yet");
+    final int returnThis = _restoreEdge(rootGraphEdgeInx);
+    if (returnThis != 0) {
+      final GraphPerspectiveChangeListener listener = m_lis[0];
+      if (listener != null) {
+        listener.graphPerspectiveChanged
+          (new GraphPerspectiveEdgesRestoredEvent
+           (this, new int[] { rootGraphEdgeInx })); } }
+    return returnThis;
+  }
+
+  private int _restoreEdge(int rootGraphEdgeInx)
+  {
+    return -1;
   }
 
   public java.util.List restoreEdges(java.util.List edges)
