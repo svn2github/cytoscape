@@ -1,5 +1,10 @@
-# jar.make:  make jars needed for the cytoscape program
+# makefile for tools/jars
 # type 'make help' to get a description of the targets
+#-------------------------------------------------------------------------
+# $Revision$
+# $Date$
+# $Author$
+#-------------------------------------------------------------------------
 
 #AUXJAR_UNPACKED_DIR=$(PWD)/aux
 AUXJAR_UNPACKED_DIR=/common/aux
