@@ -32,6 +32,13 @@ public final class IntIntHash
   private int m_size;
   private int m_thresholdSize;
 
+  // These are caching variables.  The idea is that programmers will
+  // frequently first do a get(), and based on that result, will perform
+  // some other operations and then maybe do a put() operation with the same
+  // key as the previous get() operation.
+  private int m_prevKey;
+  private int m_prevInx;
+
   /**
    * Create a new hashtable.
    */
@@ -52,6 +59,8 @@ public final class IntIntHash
     m_size = INITIAL_SIZE;
     m_thresholdSize = (int) (THRESHOLD_FACTOR * (double) m_size);
     for (int i = 0; i < m_size; i++) { m_keys[i] = -1; m_vals[i] = -1; }
+    m_prevKey = -1;
+    m_prevInx = -1;
   }
 
   /**
@@ -66,27 +75,20 @@ public final class IntIntHash
    */
   public final int put(final int key, final int value)
   {
+    if (key < 0) throw new IllegalArgumentException("key is negative");
+    if (value < 0) throw new IllegalArgumentException("value is negative");
     checkSize();
-    int incr = 0;
     int index;
-    try {
-      for (index = key % (((~key) >>> 31) * m_size);
+    if (key == m_prevKey) index = m_prevInx;
+    else {
+      int incr = 0;
+      for (index = key % m_size;
            m_keys[index] >= 0 && m_keys[index] != key;
-           index = (index + incr) % m_size) {
-        // Caching increment, which is an expensive operation, at the expense
-        // of having an if statement.  I don't want to compute the increment
-        // before this 'for' loop in case we get an immediate hit.
-        if (incr == 0) { incr = 1 + (key % (m_size - 1)); } } }
-    catch (ArithmeticException exc) {
-      throw new IllegalArgumentException("key is negative"); }
+           index = (index + incr) % m_size)
+        if (incr == 0) incr = 1 + (key % (m_size - 1));
+      m_prevKey = key; m_prevInx = index; }
     final int returnVal = m_vals[index];
-    // One if and only if value is non-negative.
-    final int oneOrZero = (~value) >>> 31;
-    try {
-      // Make this throw ArrayIndexOutOfBoundException if value is negative.
-      m_vals[(index * oneOrZero) + (oneOrZero - 1)] = value; }
-    catch (ArrayIndexOutOfBoundsException exc) {
-      throw new IllegalArgumentException("value is negative"); }
+    m_vals[index] = value;
     m_keys[index] = key;
     m_elements += (returnVal >>> 31);
     return returnVal;
@@ -102,15 +104,16 @@ public final class IntIntHash
    */
   public final int get(final int key)
   {
-    int incr = 0;
+    if (key < 0) throw new IllegalArgumentException("key is negative");
     int index;
-    try {
-      for (index = key % (((~key) >>> 31) * m_size);
+    if (key == m_prevKey) index = m_prevInx;
+    else {
+      int incr = 0;
+      for (index = key % m_size;
            m_keys[index] >= 0 && m_keys[index] != key;
-           index = (index + incr) % m_size) {
-        if (incr == 0) { incr = 1 + (key % (m_size - 1)); } } }
-    catch (ArithmeticException exc) {
-      throw new IllegalArgumentException("key is negative"); }
+           index = (index + incr) % m_size)
+        if (incr == 0) incr = 1 + (key % (m_size - 1));
+      m_prevKey = key; m_prevInx = index; }
     return m_vals[index];
   }
 
@@ -156,7 +159,7 @@ public final class IntIntHash
         int index = -1;
         public int numRemaining() { return elements; }
         public int nextInt() {
-          while (arr[++index] < 0) { }
+          while (arr[++index] < 0);
           elements--;
           return arr[index]; } };
   }
@@ -171,7 +174,7 @@ public final class IntIntHash
       final int newSize;
       try {
         int primesInx = 0;
-        while (m_size != PRIMES[primesInx++]) { }
+        while (m_size != PRIMES[primesInx++]);
         newSize = PRIMES[primesInx]; }
       catch (ArrayIndexOutOfBoundsException e) {
         throw new IllegalStateException
@@ -191,14 +194,16 @@ public final class IntIntHash
       int newIndex;
       int oldIndex = -1;
       for (int i = 0; i < m_elements; i++) {
-        while (m_keyDump[++oldIndex] < 0) { }
+        while (m_keyDump[++oldIndex] < 0);
         incr = 0;
         for (newIndex = m_keyDump[oldIndex] % m_size;
              m_keys[newIndex] >= 0;
-             newIndex = (newIndex + incr) % m_size) {
-          if (incr == 0) { incr = 1 + (m_keyDump[oldIndex] % (m_size - 1)); } }
+             newIndex = (newIndex + incr) % m_size)
+          if (incr == 0) incr = 1 + (m_keyDump[oldIndex] % (m_size - 1));
         m_keys[newIndex] = m_keyDump[oldIndex];
         m_vals[newIndex] = m_valDump[oldIndex]; }
+      m_prevKey = -1;
+      m_prevInx = -1;
     }
   }
 
