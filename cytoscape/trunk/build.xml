@@ -80,7 +80,6 @@
         <mkdir dir="${build.dir}"/>
         <mkdir dir="${build.dir}/docs"/>
         <mkdir dir="${build.classes}"/>
-        <mkdir dir="${build.classes}/images"/>
         <mkdir dir="${dist.dir}"/>
 
         <!-- copy over images -->
