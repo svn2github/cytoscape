@@ -528,9 +528,9 @@
         <chmod file="${mac_app.dir}/Contents/Info.plist" perm="+x"/>
         <chmod file="${mac_app.dir}/Contents/PkgInfo" perm="+x"/>
 
-        <echo message="Mac OS X App is now ready. See Cytoscape.app in release directory."/>
-        <echo message="The release directory should be renamed to Cytoscape2.0, placed in a"/>
-        <echo message="disk image (.dmg, created by Disk Utility) and zipped up for release."/>
+	<echo message="Mac OS X App is now ready. See ${mac_app.dir}."/>
+	<echo message="To complete the Mac release, you must next create a disk image."/>
+	<echo message="Complete details are available in README.txt."/>
     </target>
 
     <!-- ======================================================= -->
