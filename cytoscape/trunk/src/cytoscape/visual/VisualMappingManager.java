@@ -74,6 +74,8 @@ public class VisualMappingManager {
     }
 
     public void applyAppearances() {
+	long timeTracker = System.currentTimeMillis();
+
 	Graph2DView graphView = cytoscapeWindow.getGraphView();
 
 	/** first apply the node appearance to all nodes */
@@ -133,8 +135,13 @@ public class VisualMappingManager {
                 (DefaultBackgroundRenderer)graphView.getBackgroundRenderer();
         bgRender.setColor( ga.getBackgroundColor() );
         NodeRealizer.setSloppySelectionColor( ga.getSloppySelectionColor() );
-      
-	
+
+	/** finally, have CytoscapeWindow update. */
+	graphView.updateView(); // forces the view to update its contents
+	// paintImmediately() needed because sometimes updates can be buffered
+	graphView.paintImmediately(0,0,graphView.getWdith(),
+				   graphView.getHeight());
+	cytoscapeWindow.updateStatusText();
     }
 }
 
