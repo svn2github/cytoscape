@@ -928,6 +928,40 @@ class FRootGraph implements RootGraph, DynamicGraph
     return getNodeMetaChildIndicesArray(new int[] { parentNodeInx });
   }
 
+  // Package visible method for FGraphPerspective.  This method is recursive.
+  int[] getEdgeMetaChildIndicesArray(int[] parentIndices)
+  {
+    // Depth first search.
+    m_hash.empty();
+    final IntHash metaVisited = m_hash;
+    m_stack.empty();
+    final IntStack metaPending = m_stack;
+    m_hash2.empty();
+    final IntHash nativeChildEdgeBucket = m_hash2;
+    for (int i = 0; i < parentIndices.length; i++) {
+      final int nativeParent = ~parentIndices[i];
+      if (!m_graph.nodeExists(nativeParent)) return null;
+      final int metaParent = m_nativeToMetaNodeInxMap.get(nativeParent);
+      if (metaParent < 0 || metaParent == Integer.MAX_VALUE) continue;
+      if (metaVisited.put(metaParent) < 0) metaPending.push(metaParent); }
+    while (metaPending.size() > 0) {
+      final int currMeta = metaPending.pop();
+      final IntEnumerator relationships = m_metaGraph.edgesAdjacent
+        (currMeta, true, false, false);
+      while (relationships.numRemaining() > 0) {
+        final int aChild = m_metaGraph.edgeTarget(relationships.nextInt());
+        if (m_metaToNativeInxMap.getIntAtIndex(aChild) < 0) // An edge.
+          nativeChildEdgeBucket.put
+            (~m_metaToNativeInxMap.getIntAtIndex(aChild));
+        else // A node.
+          if (metaVisited.put(aChild) < 0) metaPending.push(aChild); } }
+    final IntEnumerator returnElements = nativeChildEdgeBucket.elements();
+    final int[] returnThis = new int[returnElements.numRemaining()];
+    for (int i = 0; i < returnThis.length; i++)
+      returnThis[i] = ~returnElements.nextInt();
+    return returnThis;
+  }
+
   public int[] getChildlessMetaDescendants(int nodeInx)
   {
     final int nativeParent = ~nodeInx;
