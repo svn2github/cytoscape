@@ -558,7 +558,8 @@ protected void readProjectFile ()
     
   if (dataServers.length >= 1) {
     String tmp = dataServers [0];
-    if (!tmp.startsWith ("rmi://")) {
+    if ((!tmp.startsWith ("rmi://")) && 
+        (!tmp.startsWith ("jar://"))) {
       bioDataDirectory = absolutizeFilename (projectFileDirectoryAbsolute, tmp);
       }
     else
