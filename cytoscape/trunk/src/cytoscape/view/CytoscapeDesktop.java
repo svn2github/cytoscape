@@ -10,7 +10,7 @@ import cytoscape.view.CyMenus;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CyNodeView;
 import cytoscape.view.CyEdgeView;
-
+import cytoscape.plugin.*;
 import cytoscape.visual.*;
 import cytoscape.visual.ui.*;
 
@@ -37,11 +37,12 @@ public class CytoscapeDesktop
   extends 
     JFrame 
   implements
+    PluginListener,
     PropertyChangeListener,
     CyWindow {
    
 
-
+  protected long lastPluginRegistryUpdate;
   //--------------------//
   // Static variables
 
@@ -272,6 +273,9 @@ public class CytoscapeDesktop
     //------------------------------//
     // Window Closing, Program Shutdown
 
+    
+    Cytoscape.getCytoscapeObj().getPluginRegistry().addPluginListener( this );
+
     //add a listener to save the visual mapping catalog on exit
     //this should eventually be replaced by a method in Cytoscape.java itself
     //to save the catalog just before exiting the program
@@ -477,6 +481,42 @@ public class CytoscapeDesktop
    * @deprecated
    */
   public void switchToEditMode (){
+  }
+
+
+   /**
+   * Load in the Plugins
+   */
+  public void setupPlugins () {
+    updatePlugins();
+  }
+  /**
+   * Implemenation of the PluginListener interface. Triggers update of
+   * currently loaded plugins.
+   */
+  public void pluginRegistryChanged(PluginEvent event) {
+    updatePlugins();
+  }
+  protected void updatePlugins () {
+
+    //poll Plugin Registry for new plugins since last update
+    PluginUpdateList pul = Cytoscape.getCytoscapeObj().getPluginRegistry().getPluginsLoadedSince(lastPluginRegistryUpdate);
+    Class neededPlugin[] = pul.getPluginArray();
+    for (int i = 0; i < neededPlugin.length; i++) {
+
+      if ( AbstractPlugin.class .isAssignableFrom( neededPlugin[i] ) ) {
+        // System.out.println( "AbstractPlugin Loaded" );
+        AbstractPlugin.loadPlugin( neededPlugin[i], 
+                                   Cytoscape.getCytoscapeObj(),
+                                   ( cytoscape.view.CyWindow ) Cytoscape.getDesktop() );
+      } 
+
+      else if ( CytoscapePlugin.class.isAssignableFrom( neededPlugin[i] ) ) {
+        // System.out.println( "CytoscapePlugin Loaded" );
+        CytoscapePlugin.loadPlugin( neededPlugin[i] );
+      }
+    }
+    lastPluginRegistryUpdate = pul.getTimestamp();
   }
 
 

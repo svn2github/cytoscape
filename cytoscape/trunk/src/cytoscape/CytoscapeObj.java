@@ -29,8 +29,9 @@
 // $Date$
 // $Author$
 //-------------------------------------------------------------------------
+
 package cytoscape;
-//-------------------------------------------------------------------------
+
 import java.util.logging.Logger;
 import java.io.File;
 
@@ -39,89 +40,84 @@ import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.CalculatorCatalogFactory;
 import cytoscape.visual.CalculatorIO;
 import cytoscape.plugin.*;
-//-------------------------------------------------------------------------
+
 /**
  * An object representing a single instance of Cytoscape. This class holds
  * references to globally unique objects like the CytoscapeConfig and the
  * bioDataServer.
  */
-public class CytoscapeObj 
-  implements
-    PluginListener {
+public class CytoscapeObj {
+ 
 
-    protected CyMain parentApp;
-    protected CytoscapeConfig config;
-    protected Logger logger;
-    protected BioDataServer bioDataServer;
-    protected PluginRegistry pluginRegistry;
-    protected static CalculatorCatalog calculatorCatalog;
-    protected File currentDirectory;
-    //List networks = new ArrayList();
-    //List cyWindows = new ArrayList();
-   protected long lastPluginRegistryUpdate;
+  protected CyMain parentApp;
+  protected CytoscapeConfig config;
+  protected Logger logger;
+  protected BioDataServer bioDataServer;
+  protected PluginRegistry pluginRegistry;
+  protected static CalculatorCatalog calculatorCatalog;
+  protected File currentDirectory;
+  //List networks = new ArrayList();
+  //List cyWindows = new ArrayList();
+  protected long lastPluginRegistryUpdate;
 
-/**
- * Constructor taking just a CytoscapeConfig object. The constructor
- * will attempt to use the specifications in the config object to
- * construct the other global objects.
- *
- * @throws NullPointerException  if the argument is null
- */
-public CytoscapeObj(CytoscapeConfig config) {
-    this.parentApp = null;
-    this.config = config;
-    this.logger = Logger.getLogger("global");
-    this.bioDataServer = null;
-    this.pluginRegistry = new PluginRegistry();
-    this.pluginRegistry.addPluginListener( this );
-    if (config.getBioDataDirectory() != null) {
-        try {
-            this.bioDataServer = new BioDataServer(config.getBioDataDirectory());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    Cytoscape.setCytoscapeObj( this );
-    registerCommandLinePlugins();
-    //eventually should wait until a window requests the catalog
-    loadCalculatorCatalog();
-    this.currentDirectory = new File(System.getProperty("user.dir"));
-}
-//------------------------------------------------------------------------------
-/**
- * Constructor that assumes that someone else has constructed most of
- * the global objects, which are passed in as arguments.
- *
- * The CytoscapeConfig argument should not be null, as many operations
- * expect a fully functional CytoscapeConfig object to exist. The other
- * arguments may be null; a new Logger will be constructed if that
- * argument is null.
- */
-public CytoscapeObj(CyMain parentApp, CytoscapeConfig config,
-                    Logger logger, BioDataServer bioDataServer) {
+  /**
+   * Constructor taking just a CytoscapeConfig object. The constructor
+   * will attempt to use the specifications in the config object to
+   * construct the other global objects.
+   *
+   * @throws NullPointerException  if the argument is null
+   */
+  public CytoscapeObj( CytoscapeConfig config ) {
+    this( null,
+          config,
+          null,
+          null );
+  }
+
+  /**
+   * Constructor that assumes that someone else has constructed most of
+   * the global objects, which are passed in as arguments.
+   *
+   * The CytoscapeConfig argument should not be null, as many operations
+   * expect a fully functional CytoscapeConfig object to exist. The other
+   * arguments may be null; a new Logger will be constructed if that
+   * argument is null.
+   */
+  public CytoscapeObj ( CyMain parentApp, 
+                        CytoscapeConfig config,
+                        Logger logger, 
+                        BioDataServer bioDataServer ) {
     this.parentApp = parentApp;
     this.config = config;
     if (logger == null) {
-        this.logger = Logger.getLogger("global");
+      this.logger = Logger.getLogger("global");
     } else {
-        this.logger = logger;
+      this.logger = logger;
     }
     this.bioDataServer = bioDataServer;
+    if ( config.getBioDataDirectory() != null && bioDataServer == null ) {
+      try {
+        this.bioDataServer = new BioDataServer(config.getBioDataDirectory());
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
     this.pluginRegistry = new PluginRegistry();
+    //this.pluginRegistry.addPluginListener( this );
     Cytoscape.setCytoscapeObj( this );
     registerCommandLinePlugins();
     //TODO: eventually should wait until a window requests the catalog
     loadCalculatorCatalog();
     this.currentDirectory = new File(System.getProperty("user.dir"));
-}
-//------------------------------------------------------------------------------
-/**
- * Loads plugins by via the plugin loading helper classes.
- *
- * @see AbstractPlugin
- * @see PluginLoader
- */
-public void registerCommandLinePlugins() {
+  }
+
+  /**
+   * Loads plugins by via the plugin loading helper classes.
+   *
+   * @see AbstractPlugin
+   * @see PluginLoader
+   */
+  public void registerCommandLinePlugins() {
     JarLoaderCommandLineParser parser = new JarLoaderCommandLineParser(this);
     parser.parseArgs(config.getArgs());
     logger.info(parser.getMessages());
@@ -129,138 +125,102 @@ public void registerCommandLinePlugins() {
     pluginLoader.load(config.getProperties());
     logger.info(pluginLoader.getMessages());
 
-}
+  }
 
 
+ 
+
+  //------------------------------------------------------------------------------
   /**
-   * Load in the Plugins
+   * If this CytoscapeObj object was constructed from cytoscape.java,
+   * then this method returns a reference to that parent object;
+   * else returns null.
    */
-  public void setupPlugins () {
-    updatePlugins();
-  }
+  public CyMain getParentApp() {return parentApp;}
+  //------------------------------------------------------------------------------
   /**
-   * Implemenation of the PluginListener interface. Triggers update of
-   * currently loaded plugins.
+   * Returns the global config object. Almost always non-null.
    */
-  public void pluginRegistryChanged(PluginEvent event) {
-    updatePlugins();
-  }
-  protected void updatePlugins () {
-
-    // System.out.println( "CD PluginRegistry Changed: "+event );
-
-    //poll Plugin Registry for new plugins since last update
-    PluginUpdateList pul = Cytoscape.getCytoscapeObj().getPluginRegistry().getPluginsLoadedSince(lastPluginRegistryUpdate);
-    Class neededPlugin[] = pul.getPluginArray();
-    for (int i = 0; i < neededPlugin.length; i++) {
-
-      if ( AbstractPlugin.class .isAssignableFrom( neededPlugin[i] ) ) {
-        // System.out.println( "AbstractPlugin Loaded" );
-        AbstractPlugin.loadPlugin( neededPlugin[i], 
-                                   Cytoscape.getCytoscapeObj(), 
-                                   ( cytoscape.view.CyWindow ) Cytoscape.getDesktop() );
-      } 
-
-      else if ( CytoscapePlugin.class.isAssignableFrom( neededPlugin[i] ) ) {
-        // System.out.println( "CytoscapePlugin Loaded" );
-        CytoscapePlugin.loadPlugin( neededPlugin[i] );
-      }
-    }
-    lastPluginRegistryUpdate = pul.getTimestamp();
-  }
-
-
-//------------------------------------------------------------------------------
-/**
- * If this CytoscapeObj object was constructed from cytoscape.java,
- * then this method returns a reference to that parent object;
- * else returns null.
- */
-public CyMain getParentApp() {return parentApp;}
-//------------------------------------------------------------------------------
-/**
- * Returns the global config object. Almost always non-null.
- */
-public CytoscapeConfig getConfiguration() {return config;}
-//------------------------------------------------------------------------------
-/**
- * Returns the global logging object; guaranteed to be non-null.
- */
-public Logger getLogger() {return logger;}
-//------------------------------------------------------------------------------
-/**
- * Returns the (possibly null) bioDataServer.
- *
- * @see BioDataServer
- */
-public BioDataServer getBioDataServer() {return bioDataServer;}
-//------------------------------------------------------------------------------
-/**
- * Sets the global bioDataServer. null values are allowed.
- */
-public void setBioDataServer(BioDataServer newServer) {
+  public CytoscapeConfig getConfiguration() {return config;}
+  //------------------------------------------------------------------------------
+  /**
+   * Returns the global logging object; guaranteed to be non-null.
+   */
+  public Logger getLogger() {return logger;}
+  //------------------------------------------------------------------------------
+  /**
+   * Returns the (possibly null) bioDataServer.
+   *
+   * @see BioDataServer
+   */
+  public BioDataServer getBioDataServer() {return bioDataServer;}
+  //------------------------------------------------------------------------------
+  /**
+   * Sets the global bioDataServer. null values are allowed.
+   */
+  public void setBioDataServer(BioDataServer newServer) {
     this.bioDataServer = newServer;
-}
-//------------------------------------------------------------------------------
-/**
- * Returns the PluginRegistry.
- *
- * @see PluginRegistry
- */
-public PluginRegistry getPluginRegistry() {return pluginRegistry;}
-//------------------------------------------------------------------------------
-/**
- * Attempts to load a CalculatorCatalog object, using the information
- * from the CytoscapeConfig object.
- *
- * Does nothing if a catalog has already been loaded.
- *
- * @see CalculatorCatalog
- * @see CalculatorCatalogFactory
- */
-public void loadCalculatorCatalog() {
+  }
+  //------------------------------------------------------------------------------
+  /**
+   * Returns the PluginRegistry.
+   *
+   * @see PluginRegistry
+   */
+  public PluginRegistry getPluginRegistry() {return pluginRegistry;}
+  //------------------------------------------------------------------------------
+  /**
+   * Attempts to load a CalculatorCatalog object, using the information
+   * from the CytoscapeConfig object.
+   *
+   * Does nothing if a catalog has already been loaded.
+   *
+   * @see CalculatorCatalog
+   * @see CalculatorCatalogFactory
+   */
+  public void loadCalculatorCatalog() {
     if (calculatorCatalog == null) {
-        calculatorCatalog =
-            CalculatorCatalogFactory.loadCalculatorCatalog(getConfiguration());
+      calculatorCatalog =
+        CalculatorCatalogFactory.loadCalculatorCatalog(getConfiguration());
     }
-}
-//------------------------------------------------------------------------------
-/**
- * Saves the CalculatorCatalog to the file 'vizmap.props' in the user's
- * home directory.
- *
- * @see CalculatorCatalog
- * @see CalculatorIO
- */
-public void saveCalculatorCatalog() {
-  File userHomePropsFile = new File(System.getProperty ("user.home"), "vizmap.props");
-  CalculatorIO.storeCatalog(calculatorCatalog, userHomePropsFile);
-}
-//------------------------------------------------------------------------------
-/**
- * Returns the global catalog of visual mapping calculators.
- *
- * @see CalculatorCatalog
- */
-public CalculatorCatalog getCalculatorCatalog() {
+  }
+  //------------------------------------------------------------------------------
+  /**
+   * Saves the CalculatorCatalog to the file 'vizmap.props' in the user's
+   * home directory.
+   *
+   * @see CalculatorCatalog
+   * @see CalculatorIO
+   */
+  public void saveCalculatorCatalog() {
+    File userHomePropsFile = new File(System.getProperty ("user.home"), "vizmap.props");
+    CalculatorIO.storeCatalog(calculatorCatalog, userHomePropsFile);
+  }
+  //------------------------------------------------------------------------------
+  /**
+   * Returns the global catalog of visual mapping calculators.
+   *
+   * @see CalculatorCatalog
+   */
+  public CalculatorCatalog getCalculatorCatalog() {
     return calculatorCatalog;
-}
-//------------------------------------------------------------------------------
-/**
- * Returns the directory set by the last call to setCurrentDirectory;
- * initialized to the value of System.getProperty("user.dir").
- *
- * @see #setCurrentDirectory
- */
-public File getCurrentDirectory() {return currentDirectory;}
-//------------------------------------------------------------------------------
-/**
- * Sets the current directory. File browsing operations often set this
- * so that later browsing will start from the last opened location.
- */
-public void setCurrentDirectory(File newDirectory) {
+  }
+  //------------------------------------------------------------------------------
+  /**
+   * Returns the directory set by the last call to setCurrentDirectory;
+   * initialized to the value of System.getProperty("user.dir").
+   *
+   * @see #setCurrentDirectory
+   */
+  public File getCurrentDirectory() {return currentDirectory;}
+  //------------------------------------------------------------------------------
+  /**
+   * Sets the current directory. File browsing operations often set this
+   * so that later browsing will start from the last opened location.
+   */
+  public void setCurrentDirectory(File newDirectory) {
     this.currentDirectory = newDirectory;
-}
-//------------------------------------------------------------------------------
+  }
+  //------------------------------------------------------------------------------
 }
 

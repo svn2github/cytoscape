@@ -196,7 +196,7 @@ public class CyMain implements WindowListener {
 
 
     
-    Cytoscape.getCytoscapeObj().setupPlugins();
+    Cytoscape.getDesktop().setupPlugins();
 
     if (splashScreen!=null) {splashScreen.advance(100);}
   } // ctor

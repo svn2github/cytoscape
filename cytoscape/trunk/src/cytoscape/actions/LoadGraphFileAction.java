@@ -127,21 +127,35 @@ public class LoadGraphFileAction extends CytoscapeAction {
           newNetwork.putClientData( "GML", Cytoscape.getLastGraphReaderForDoingLayout() );
         }
 
-        System.out.println( "New Nodes: "+ (Cytoscape.getRootGraph().getNodeCount()- root_nodes ) );
-        System.out.println( "New Edges: "+ (Cytoscape.getRootGraph().getEdgeCount()- root_edges ) );
+        int nn = Cytoscape.getRootGraph().getNodeCount()- root_nodes;
+        int ne = Cytoscape.getRootGraph().getEdgeCount()- root_edges;
         
 
-        //give the user some confirmation
-        String lineSep = System.getProperty("line.separator");
         StringBuffer sb = new StringBuffer();
+        String lineSep = System.getProperty("line.separator");
+        //give the user some confirmation
         sb.append("Succesfully loaded graph from " + name + lineSep);
         sb.append("Graph contains " + newNetwork.getNodeCount());
         sb.append(" nodes and " + newNetwork.getEdgeCount());
-        sb.append(" edges.");
+        sb.append(" edges."+lineSep);
+        sb.append("There were "+nn+" unique nodes, and "+ne+" unique edges."+lineSep+lineSep);
+        
+        if ( newNetwork.getNodeCount() < 500 ) {
+          sb.append( "Your Network is Under 500 nodes, a View  will be automatically created." );
+        } else { 
+          sb.append( "Your Network is Over 500 nodes, a View  will be not be created."+lineSep+"If you wish to view this Network use \"Create View\" from the \"Edit\" menu." );
+        }
         JOptionPane.showMessageDialog( Cytoscape.getDesktop(),
                                       sb.toString(),
                                       "Load graph successful",
                                       JOptionPane.INFORMATION_MESSAGE);
+
+        if ( newNetwork.getNodeCount() < 500 ) {
+          Cytoscape.createNetworkView( newNetwork );
+        }
+      
+
+
       } else {//give the user an error dialog
         String lineSep = System.getProperty("line.separator");
         StringBuffer sb = new StringBuffer();

@@ -26,7 +26,7 @@
 // $Date$
 // $Author: iliana
 //-----------------------------------------------------------------
-package csplugins.util;
+package cytoscape.util;
 //-----------------------------------------------------------------
 import java.awt.Dialog;
 import java.awt.Frame;
