@@ -794,6 +794,7 @@ public void updateStatusText (int nodeAdjust, int edgeAdjust) {
                        + " ("+selectedNodes+" selected)"
                        + " Edges: " + edgeCount
                        + " ("+selectedEdges+" selected)");
+		       
 }
 
 /**
@@ -807,6 +808,7 @@ public void updateStatusText (int nodeAdjust, int edgeAdjust) {
  * coming change.
  */
 public void selectionStateChanged(Graph2DSelectionEvent e) {
+	
     if (e.isEdgeSelection()) {
         updateStatusText(0,
                          (graph.isSelected((Edge)e.getSubject()) ? -1 : +1));
@@ -815,8 +817,11 @@ public void selectionStateChanged(Graph2DSelectionEvent e) {
                          0);
     }
 }
+
+
 //------------------------------------------------------------------------------
 public void onGraph2DSelectionEvent(y.view.Graph2DSelectionEvent e) {
+	updateStatusText();
 }
 //------------------------------------------------------------------------------
 public JFrame getMainFrame ()
