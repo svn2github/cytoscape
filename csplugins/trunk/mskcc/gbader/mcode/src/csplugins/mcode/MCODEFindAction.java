@@ -55,6 +55,7 @@ public class MCODEFindAction implements ActionListener {
 	 * Cytoscape Window.
 	 */
 	private CyWindow cyWindow;
+	private MCODEResultsDialog resultDialog;
 
 	/**
 	 * Defines an <code>Action</code> object with a default
@@ -112,11 +113,11 @@ public class MCODEFindAction implements ActionListener {
 			network.endActivity(callerID);
 			return;
 		}
-		//print out complexes
-		for (int i = 0; i < complexes.size(); i++) {
-			ArrayList complex = (ArrayList) complexes.get(i);
-			System.err.println("Complex "+(i+1)+":" + complex.toString());
-		}
+		//display complexes in a new non modal dialog box
+		resultDialog = new MCODEResultsDialog(cyWindow.getMainFrame(), cyWindow, complexes);
+		resultDialog.pack();
+		resultDialog.setSize(200, 100);
+		resultDialog.setVisible(true);
 
 		//and tell listeners that we're done
 		network.endActivity(callerID);

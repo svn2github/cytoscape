@@ -206,6 +206,18 @@ public class MCODEAlgorithm {
 		return(nodeInfo.score);
 	}
 
+	//Score a complex - currently ranks larger, denser complexes higher
+	public double scoreComplex(GraphPerspective gpComplex) {
+		int numNodes = 0;
+		double density = 0.0, score = 0.0;
+
+		numNodes = gpComplex.getNodeCount();
+		density = calcDensity(gpComplex, true);
+		score = density * numNodes;
+
+		return (score);
+	}
+
 	//Calculates node information for each node according to the original MCODE publication
 	//This information is used to score the nodes
 	private NodeInfo calcNodeInfo(GraphPerspective gpInputGraph, int nodeIndex) {
