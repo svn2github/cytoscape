@@ -51,19 +51,27 @@ public class MiscGB {
     public static void pad(GridBagConstraints c, int padx, int pady) {
 	c.ipadx = padx;	c.ipady = pady;
     }
+    public static void inset(GridBagConstraints c, int b, int l, int r, int t) {
+	c.insets = new Insets(b,l,r,t);
+    }
+    public static void inset(GridBagConstraints c, int s) {
+	inset(c,s,s,s,s);
+    }
     public static void set(GridBagConstraints c,
-			   int x, int y, int w, int h, int f) {
+			   int x, int y, int w, int h,
+			   int weightx, int weighty, int f) {
 	c.gridx = x;	c.gridy = y;
 	c.gridwidth = w;	c.gridheight = h;
+	c.weightx = weightx;    c.weighty = weighty;
 	c.fill = f;
     }
     public static void set(GridBagConstraints c,
 			   int x, int y, int w, int h) {
-	set(c,x,y,w,h,GridBagConstraints.NONE);
+	set(c,x,y,w,h,0,0,GridBagConstraints.NONE);
     }
     public static void set(GridBagConstraints c,
 			   int x, int y) {
-	set(c,x,y,1,1,GridBagConstraints.NONE);
+	set(c,x,y,1,1,0,0,GridBagConstraints.NONE);
     }
 
     // inserts a component into a panel with a GridBagLayout.
@@ -96,7 +104,14 @@ public class MiscGB {
     public static void insert (GridBagGroup gbg,
 			       Component comp,
 			       int x, int y, int w, int h, int f) {
-	set(gbg.constraints, x, y, w, h, f);
+	set(gbg.constraints, x, y, w, h, 0, 0, f);
+	insert(gbg.panel, comp, gbg.gridbag, gbg.constraints);
+    }
+    public static void insert(GridBagGroup gbg,
+			      Component comp,
+			      int x, int y, int w, int h,
+			      int weightx, int weighty, int f) {
+	set(gbg.constraints, x, y, w, h, weightx, weighty, f);
 	insert(gbg.panel, comp, gbg.gridbag, gbg.constraints);
     }
 
