@@ -109,6 +109,7 @@ import java.util.HashMap;
  */
 public class CytoscapeWindow extends JPanel implements FilterDialogClient, Graph2DSelectionListener {
 
+    public static final String NO_PLUGINS = "No plugins loaded";
   protected static final int DEFAULT_WIDTH = 700;
   protected static final int DEFAULT_HEIGHT = 700;
 
@@ -633,7 +634,10 @@ public Logger getLogger ()
 public void loadPlugins () {
 
     // clear the operations menu
-    opsMenu.removeAll();
+    //opsMenu.removeAll();
+    // this was removed 2003.05.06 by Owen Ozier because
+    // there is now only one call made to loadPlugins in
+    // the entire core; thus there is no need to remove any..
 
     // load plugins
     PluginLoader pluginLoader
@@ -644,7 +648,7 @@ public void loadPlugins () {
 
     // add default unselectable "no plugins loaded" if none loaded
     if (opsMenu.getItemCount() == 0) {
-        JMenuItem none = new JMenuItem("No plugins loaded");
+        JMenuItem none = new JMenuItem(NO_PLUGINS);
         none.setEnabled(false);
         opsMenu.add(none);
     }

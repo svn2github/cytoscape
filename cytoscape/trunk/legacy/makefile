@@ -31,7 +31,7 @@ subdirectories: dataDirectories browserDirectory \
          vizmapDirectory dialogsDirectory \
          layoutDirectory utilDirectory \
 	 viewDirectory undoDirectory filtersDirectory \
-	 visualDirectory jarLoader
+	 visualDirectory jarLoaderDirectory
 
 objs: $(OBJS)
 
@@ -76,6 +76,9 @@ undoDirectory:
 
 filtersDirectory: 
 	(cd filters; make)
+
+jarLoaderDirectory: 
+	(cd jarLoader; make)
 
 test: objs
 	(cd unitTests; make)

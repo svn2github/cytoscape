@@ -11,6 +11,7 @@ import java.net.*;
 import java.lang.reflect.*;
 import java.util.jar.*;
 import java.util.*;
+import javax.swing.*;
 
 /**
  * A class loader for loading jar files, both local and remote.
@@ -145,6 +146,21 @@ public class JarClassLoader extends URLClassLoader {
 	    Constructor ctor = pluginClass.getConstructor (argClasses);
 	    Object plugin = ctor.newInstance (args);
 	    System.out.println("Loaded plugin: " + name);
+
+	    /**
+	     * if the "No plugins loaded" message is currently
+	     * in the operations menu, and it is no longer valid
+	     * because there are other items in the operations menu,
+	     * then remove it.
+	     */
+	    JMenu ops = cytoscapeWindow.getOperationsMenu();
+	    if(ops.getItemCount()>0) {
+		String s = ops.getItem(0).getText();
+		if (s.equals(CytoscapeWindow.NO_PLUGINS)) {
+		    ops.remove(0);
+		    //System.out.println("REMOVED");
+		}
+	    }
 	}
 	catch (Exception e) {
 	    System.err.println ("Error instantiating plugin: "
