@@ -28,12 +28,13 @@ echo "### mp.sh PD edge pvalue threshold = ${EDGE}"
 
 java  -Xmx512m MPMain \
 ${PATH} \
-all.sif \
-${DATA}/data_full_subset_orfs.pvals \
+${DATA}/yall.sif \
+${DATA}/yeang-hughes.pvals \
 ${EXP} \
-${DATA}/all.edgeattr \
+${DATA}/yall.edgeattr \
 ${EDGE} \
 testOut \
-test_full_${PATH}_${EXP}_${EDGE}
+test_yall_${PATH}_${EXP}_${EDGE}
 #profile 
 #STE12candidategenes.txt
+#
