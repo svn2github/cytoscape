@@ -221,7 +221,7 @@ public final class FingRootGraphFactory
    *     one node and F is the number of edges touching the other node.</td>
    * </tr><tr>
    * <td>getEdgeCount(int, int, boolean)</td>
-   * <td>The operation of determining the number of existig edges starting at
+   * <td>The operation of determining the number of existing edges starting at
    *     one [specified] node and ending at another [specified] node has
    *     time complexity O(min(E, F)), where E is the number of edges touching
    *     one node and F is the number of edges touching the other node.</td>
@@ -242,64 +242,81 @@ public final class FingRootGraphFactory
    *     of the input array.</td>
    * </tr><tr>
    * <td>getEdgeIndicesArray(int, int, boolean, boolean)</td>
-   * <td></td>
+   * <td>The operation of finding all edges [meeting certain criteria,
+   *     specified by two boolean input parameters] starting at one [specified]
+   *     node and ending at another [specified] node has time complexity
+   *     O(min(E, F)), where E is the total number of edges touching the
+   *     start node and F is the total number of edges touching the end
+   *     node.</td>
    * </tr><tr>
    * <td>edgesList(Node, Node)</td>
-   * <td></td>
+   * <td>The operation of finding all edges starting at one [specified]
+   *     node and ending at another [specified] node has time complexity
+   *     O(min(E, F)), where E is the total number of edges touching the
+   *     start node and F is the total number of edges touching the end
+   *     node.</td>
    * </tr><tr>
    * <td>edgesList(int, int, boolean)</td>
-   * <td></td>
+   * <td>The operation of finding all edges starting at one [specified]
+   *     node and ending at another [specified] node has time complexity
+   *     O(min(E, F)), where E is the total number of edges touching the
+   *     start node and F is the total number of edges touching the end
+   *     node.</td>
    * </tr><tr>
    * <td>getEdgeIndicesArray(int, int, boolean)</td>
-   * <td></td>
+   * <td>The operation of finding all edges starting at one [specified]
+   *     node and ending at another [specified] node has time complexity
+   *     O(min(E, F)), where E is the total number of edges touching the
+   *     start node and F is the total number of edges touching the end
+   *     node.</td>
    * </tr><tr>
    * <td>getInDegree(int)</td>
-   * <td></td>
+   * <td>All degree-computing methods are executed in constant time.</td>
    * </tr><tr>
    * <td>getInDegree(Node, boolean)</td>
-   * <td></td>
+   * <td>All degree-computing methods are executed in constant time.</td>
    * </tr><tr>
    * <td>getInDegree(int, boolean)</td>
-   * <td></td>
+   * <td>All degree-computing methods are executed in constant time.</td>
    * </tr><tr>
    * <td>getOutDegree(Node)</td>
-   * <td></td>
+   * <td>All degree-computing methods are executed in constant time.</td>
    * </tr><tr>
    * <td>getOutDegree(int)</td>
-   * <td></td>
+   * <td>All degree-computing methods are executed in constant time.</td>
    * </tr><tr>
    * <td>getOutDegree(Node, boolean)</td>
-   * <td></td>
+   * <td>All degree-computing methods are executed in constant time.</td>
    * </tr><tr>
    * <td>getOutDegree(int, boolean)</td>
-   * <td></td>
+   * <td>All degree-computing methods are executed in constant time.</td>
    * </tr><tr>
    * <td>getDegree(Node)</td>
-   * <td></td>
+   * <td>All degree-computing methods are executed in constant time.</td>
    * </tr><tr>
    * <td>getDegree(int)</td>
-   * <td></td>
+   * <td>All degree-computing methods are executed in constant time.</td>
    * </tr><tr>
    * <td>getIndex(Node)</td>
-   * <td></td>
+   * <td>The index of a node is computed in constant time.</td>
    * </tr><tr>
    * <td>getNode(int)</td>
-   * <td></td>
+   * <td>A node is retrieved in constant time.</td>
    * </tr><tr>
    * <td>getIndex(Edge)</td>
-   * <td></td>
+   * <td>The index of an edge is computed in constant time.</td>
    * </tr><tr>
    * <td>getEdge(int)</td>
-   * <td></td>
+   * <td>An edge is retrieved in constant time.</td>
    * </tr><tr>
    * <td>getEdgeSourceIndex(int)</td>
-   * <td></td>
+   * <td>The source node of an edge is determined in constant time.</td>
    * </tr><tr>
    * <td>getEdgeTargetIndex(int)</td>
-   * <td></td>
+   * <td>The target node of an edge is determined in constant time.</td>
    * </tr><tr>
    * <td>isEdgeDirected(int)</td>
-   * <td></td>
+   * <td>The directedness of an edge is determined in constant time.</td>
    * </tr><tr>
    * <td>addMetaChild(Node, Node)</td>
    * <td></td>
