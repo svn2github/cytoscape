@@ -166,14 +166,20 @@ final class DynamicGraphRepresentation implements DynamicGraph
     if (e == null) return false;
     final Node source = m_nodes.getNodeAtIndex(e.sourceNode);
     final Node target = m_nodes.getNodeAtIndex(e.targetNode);
+    // After running some tests, it seems that these exceptions being thrown
+    // are really slowing down removeEdge() operations.
     try { e.prevOutEdge.nextOutEdge = e.nextOutEdge; }
-    catch (NullPointerException exc) { source.firstOutEdge = e.nextOutEdge; }
+    catch (NullPointerException exc) { // e.prevOutEdge is null.
+      source.firstOutEdge = e.nextOutEdge; }
     try { e.nextOutEdge.prevOutEdge = e.prevOutEdge; }
-    catch (NullPointerException exc) { }
+    catch (NullPointerException exc) { // e.nextOutEdge is null.
+      ; }
     try { e.prevInEdge.nextInEdge = e.nextInEdge; }
-    catch (NullPointerException exc) { target.firstInEdge = e.nextInEdge; }
+    catch (NullPointerException exc) { // e.prevInEdge is null.
+      target.firstInEdge = e.nextInEdge; }
     try { e.nextInEdge.prevInEdge = e.prevInEdge; }
-    catch (NullPointerException exc) { }
+    catch (NullPointerException exc) { // e.nextInEdge is null.
+      ; }
     if (e.directed) { source.outDegree--; target.inDegree--; }
     else { source.undDegree--; target.undDegree--; }
     if (source == target) { // Self-edge.
