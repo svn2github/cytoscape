@@ -380,22 +380,26 @@ public final class IntBTree
   public final IntEnumerator searchRange(int xMin, int xMax)
   {
     final NodeStack nodeStack = new NodeStack();
-    final int totalCount = searchRange(m_root, nodeStack,
+    final int totalCount = searchRange(m_root, nodeStack
                                        xMin, xMax,
                                        Integer.MIN_VALUE, Integer.MAX_VALUE);
     return new IntEnumerator() {
-        public int numRemaining() {
-          return 0;
-        }
+        private int count = totalCount;
+        public int numRemaining() { return count; }
         public int nextInt() {
-          return -1;
-        } };
+          int returnThis = -1;
+          count--;
+          return returnThis; } };
   }
 
   /*
-   * returns the count.
+   * Returns the count.  The node stack is added to, never read from.
+   * The elements added to the node stack -- leaf nodes should be iterated
+   * through and appropriate values examined; internal nodes represent
+   * regions of the tree which can be included, as whole, as part of the
+   * range query.
    */
-  private final int searchRange(Node n, NodeStack nodeStack,
+  private final int searchRange(Node n, NodeStack nodeStack
                                 int xMin, int xMax,
                                 int minBound, int maxBound)
   {
