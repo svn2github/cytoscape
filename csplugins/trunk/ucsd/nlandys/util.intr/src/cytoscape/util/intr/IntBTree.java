@@ -313,8 +313,7 @@ public final class IntBTree
       for (int i = -1; i < n.sliceCount;)
         if (x >= n.values[++i]) {
           if (x == n.values[i]) count++;
-          else break; }
-      return count; }
+          else break; } }
     else { // Internal node.
       int currentMax = maxBound;
       int currentMin;
@@ -326,8 +325,8 @@ public final class IntBTree
           else {
             count += count(n.data.children[i + 1], x, currentMin, currentMax);
             if (currentMin < x) break; } }
-        currentMax = currentMin; }
-      return count; }
+        currentMax = currentMin; } }
+    return count;
   }
 
   
