@@ -907,6 +907,10 @@ public abstract class Cytoscape {
     return expressionData;
   }
 
+  public static void setExpressionData (ExpressionData expData) {
+      expressionData = expData;
+  }
+
   /**
    * Load Expression Data
    */
@@ -931,7 +935,7 @@ public abstract class Cytoscape {
      }
        
      if ( copy_atts ) {
-       expressionData.copyToAttribs( getNodeNetworkData() );
+       expressionData.copyToAttribs( getNodeNetworkData(), null);
        firePropertyChange( ATTRIBUTES_CHANGED,null,null );
      }
 
