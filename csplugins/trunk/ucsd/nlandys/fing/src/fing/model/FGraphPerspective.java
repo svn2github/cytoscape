@@ -58,12 +58,12 @@ class FGraphPerspective implements GraphPerspective
 
   public int getNodeCount()
   {
-    
+    return m_graph.nodes().numRemaining();
   }
 
   public int getEdgeCount()
   {
-    throw new IllegalStateException("not implemented yet");
+    return m_graph.edges().numRemaining();
   }
 
   public Iterator nodesIterator()
@@ -558,6 +558,8 @@ class FGraphPerspective implements GraphPerspective
   // current listener is.
   private final GraphPerspectiveChangeListener[] m_lis =
     new GraphPerspectiveChangeListener[1];
+
+  private final GraphWeeder m_weeder;
 
   // We need to remove this listener from the RootGraph during finalize().
   private final RootGraphChangeSniffer m_changeSniffer;
