@@ -349,6 +349,8 @@ protected void createTreeNodes (DefaultMutableTreeNode root,
                            descriptions[i].getSpecies ());
     branch = new DefaultMutableTreeNode (descriptions [i]);
     Annotation annotation = dataServer.getAnnotation (descriptions [i]);
+    if (annotation == null) 
+      continue;
     int maxDepth = annotation.maxDepth ();
     for (int level=0; level < maxDepth; level++) 
       branch.add (new DefaultMutableTreeNode (new Integer (level + 1)));
