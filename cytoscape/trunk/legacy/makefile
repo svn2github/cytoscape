@@ -135,7 +135,7 @@ run1:
 run1o:
 	$(JAVA) cytoscape.cytoscape \
           -g $(CYTOSCAPE_DATA)/galFiltered.gml \
-          -e /common/data/exp/gal/data_gal1-20.pvals \
+          -e $(CYTOSCAPE_DATA)/gal1-20.pvals \
           -b $(CYTOSCAPE_DATA)/GO
 run1o2:
 	$(JAVA) cytoscape.cytoscape \
