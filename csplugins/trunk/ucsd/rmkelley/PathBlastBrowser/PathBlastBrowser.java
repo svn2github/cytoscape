@@ -18,7 +18,7 @@ import giny.model.RootGraphChangeEvent;
 import cytoscape.AbstractPlugin;
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.CyNetwork;
-import cytoscape.data.readers.GMLTree;
+import cytoscape.data.readers.GMLReader;
 import cytoscape.view.CyWindow;
 import cytoscape.util.GinyFactory;
 import cytoscape.actions.FitContentAction;
@@ -111,7 +111,7 @@ class LoadPathBlastGMLTask extends Thread{
 									*/
 								private static String OVERLAP_INTERACTION = "ov";
 								private static String HOMOLOGY_INTERACTION = "hm";
-								private HashMap node2GMLTree;
+								private HashMap node2GMLReader;
 								/**
 									* Stores the cyWindow object for later reference
 									*/
@@ -135,29 +135,23 @@ class LoadPathBlastGMLTask extends Thread{
 																}
 
 																//create a list of gmltrees, one for each file
-																HashMap GMLTree2Name = null; 
-																try{
-																								GMLTree2Name = createGMLTree2Name(chooser.getSelectedFiles());
-																}catch(Exception e){
-																								System.out.println("Failed to read in all GML files");
-																								return;
-																}
-
+																HashMap GMLReader2Name = null; 
+																GMLReader2Name = createGMLReader2Name(chooser.getSelectedFiles());
 
 																//for each gmltree, create an associated hash of node identifier strings,
 																//this hash will be used to determine the overlap between the networks
 																//and eventually create the overlap graph
-																HashMap GMLTree2NameSet = createGMLTree2NameSet(GMLTree2Name.keySet());
+																HashMap GMLReader2NameSet = createGMLReader2NameSet(GMLReader2Name.keySet());
 
 																//create a root graph using the information about the file names
 																//and the node names contained, as a side effect this also creates
 																//a hash from node2GMLTree 
-																CyNetwork newNetwork = createOverlapGraph(GMLTree2Name,GMLTree2NameSet);	
+																CyNetwork newNetwork = createOverlapGraph(GMLReader2Name,GMLReader2NameSet);	
 																//set up the canonicalName mapping here
 																//create a new window and add this network to that window
 																CyWindow newWindow = new CyWindow(cyWindow.getCytoscapeObj(), newNetwork, "Overlap Graph");
 																//create a new menu item and actionlistener for that window
-																newWindow.getCyMenus().getOperationsMenu().add(new ShowGMLAction(newWindow,node2GMLTree));	 	
+																newWindow.getCyMenus().getOperationsMenu().add(new ShowGMLAction(newWindow,node2GMLReader));	 	
 																newWindow.showWindow();
 								}
 
@@ -174,24 +168,24 @@ class LoadPathBlastGMLTask extends Thread{
 									* names mapped for all of the object. The edges also have a count attribute which counts the number
 									* of overlaps created from this graph
 									*/
-								public CyNetwork createOverlapGraph(HashMap GMLTree2Name, HashMap GMLTree2NameSet){
+								public CyNetwork createOverlapGraph(HashMap GMLReader2Name, HashMap GMLReader2NameSet){
 																RootGraph rootGraph = GinyFactory.createRootGraph();
 																GraphObjAttributes nodeAttributes = new GraphObjAttributes();
 																GraphObjAttributes edgeAttributes = new GraphObjAttributes();
 																//create the nodes for this graph, also create a mapping from GMLTree objects to nodes in the graph
-																HashMap GMLTree2Node = new HashMap();	
-																node2GMLTree = new HashMap();
-																Iterator GMLTreeIt = GMLTree2Name.keySet().iterator();
-																while(GMLTreeIt.hasNext()){
-																								GMLTree current = (GMLTree)GMLTreeIt.next();
+																HashMap GMLReader2Node = new HashMap();	
+																node2GMLReader = new HashMap();
+																Iterator GMLReaderIt = GMLReader2Name.keySet().iterator();
+																while(GMLReaderIt.hasNext()){
+																								GMLReader currentReader = (GMLReader)GMLReaderIt.next();
 																								Node newNode = rootGraph.getNode(rootGraph.createNode());
-																								String name = (String)GMLTree2Name.get(current);
+																								String name = (String)GMLReader2Name.get(currentReader);
 																								newNode.setIdentifier(name);
 																								nodeAttributes.addNameMapping(name,newNode);
-																								GMLTree2Node.put(current,newNode);
-																								node2GMLTree.put(newNode,current);
+																								GMLReader2Node.put(currentReader,newNode);
+																								node2GMLReader.put(newNode,currentReader);
 																								//add the attributes about the identity of the nodes in the subtree
-																								HashSet nameSet = (HashSet)GMLTree2NameSet.get(current);
+																								HashSet nameSet = (HashSet)GMLReader2NameSet.get(currentReader);
 																								Iterator nameIt = nameSet.iterator();
 																								while(nameIt.hasNext()){
 																												String compatName = (String)nameIt.next();
@@ -201,11 +195,11 @@ class LoadPathBlastGMLTask extends Thread{
 																								}
 																}
 
-																Vector GMLTreeVec = new Vector(GMLTree2Name.keySet());
-																for(int idx=0;idx<GMLTreeVec.size();idx++){
-																								for(int idy = idx+1;idy<GMLTreeVec.size();idy++){
-																																Set xSet = (Set)GMLTree2NameSet.get(GMLTreeVec.get(idx));
-																																Set ySet = (Set)GMLTree2NameSet.get(GMLTreeVec.get(idy));
+																Vector GMLReaderVec = new Vector(GMLReader2Name.keySet());
+																for(int idx=0;idx<GMLReaderVec.size();idx++){
+																								for(int idy = idx+1;idy<GMLReaderVec.size();idy++){
+																																Set xSet = (Set)GMLReader2NameSet.get(GMLReaderVec.get(idx));
+																																Set ySet = (Set)GMLReader2NameSet.get(GMLReaderVec.get(idy));
 																																Iterator xIt = xSet.iterator();
 																																int count = 0;
 																																while(xIt.hasNext()){
@@ -215,8 +209,8 @@ class LoadPathBlastGMLTask extends Thread{
 																																}
 																																if(count >= REQUIRED_OVERLAP){
 																																				//create an edge between the two correpsonding nodes
-																																				Node sourceNode = (Node)GMLTree2Node.get(GMLTreeVec.get(idx));
-																																				Node targetNode = (Node)GMLTree2Node.get(GMLTreeVec.get(idy));
+																																				Node sourceNode = (Node)GMLReader2Node.get(GMLReaderVec.get(idx));
+																																				Node targetNode = (Node)GMLReader2Node.get(GMLReaderVec.get(idy));
 																																				Edge newEdge = rootGraph.getEdge(rootGraph.createEdge(sourceNode,targetNode));
 																																				String name = nodeAttributes.getCanonicalName(sourceNode)+" ("+OVERLAP_INTERACTION+") "+nodeAttributes.getCanonicalName(targetNode);
 																																				newEdge.setIdentifier(name);
@@ -246,29 +240,26 @@ class LoadPathBlastGMLTask extends Thread{
 									* @param GMLTrees a List of GMLTree objects
 									* @return as described above
 									*/
-								public HashMap createGMLTree2NameSet(Collection GMLTrees){
-																Iterator GMLTreeIt = GMLTrees.iterator();
+								public HashMap createGMLReader2NameSet(Collection GMLReaders){
+																Iterator GMLReaderIt = GMLReaders.iterator();
 																HashMap result = new HashMap();
-																while(GMLTreeIt.hasNext()){
-																								GMLTree current = ((GMLTree)GMLTreeIt.next());
+																while(GMLReaderIt.hasNext()){
+																								GMLReader currentReader = ((GMLReader)GMLReaderIt.next());
 																								HashSet compatLabels = new HashSet();
-																								Vector nodeLabels = current.getVector("graph|node|label","|",GMLTree.STRING);
-																								Vector nodeIds = current.getVector("graph|node|id","|",GMLTree.INTEGER);
-																								HashMap id2Label = new HashMap();
-																								for(int idx=0;idx<nodeLabels.size();idx++){
-																												id2Label.put(nodeIds.get(idx),nodeLabels.get(idx));
-																								}
-																								Vector edgeLabels = current.getVector("graph|edge|label","|",GMLTree.STRING);
-																								Vector edgeSources = current.getVector("graph|edge|source","|",GMLTree.INTEGER);
-																								Vector edgeTargets = current.getVector("graph|edge|target","|",GMLTree.INTEGER);
-																								for(int idx=0;idx<edgeLabels.size();idx++){
-																												if(edgeLabels.get(idx).equals(HOMOLOGY_INTERACTION)){
-																																String sourceLabel = (String)id2Label.get(edgeSources.get(idx));
-																																String targetLabel = (String)id2Label.get(edgeTargets.get(idx));
-																																compatLabels.add(sourceLabel+"|"+targetLabel);
+																								String [] edgeNames = currentReader.getEdgeAttributes().getObjectNames("interaction");
+																								for(int idx=0;idx<edgeNames.length;idx++){
+																												String currentName = edgeNames[idx];
+																												//check to see if this is a homology edge
+																												if(currentReader.getEdgeAttributes().get("interaction",currentName).equals("hm")){
+																																int index = currentName.indexOf(" (hm) ");
+																																System.err.println(currentName);
+																																String compatName = currentName.substring(0,index)+"|"+currentName.substring(index+6,currentName.length());
+																																System.err.println(compatName);
+																																compatLabels.add(compatName);
 																												}
 																								}
-																								result.put(current,compatLabels);
+																								result.put(currentReader,compatLabels);
+																								System.err.println(""+compatLabels);
 																}
 																return result;
 								}
@@ -278,13 +269,20 @@ class LoadPathBlastGMLTask extends Thread{
 									* @return A HashMap which maps from a filename to the gmlTree which as created
 									* using the data containted in that filename.
 									*/
-								public HashMap createGMLTree2Name(File [] gmlFiles){
-																HashMap result = new HashMap();
-																for(int idx = 0;idx<gmlFiles.length;idx++){
-																								File gmlFile = gmlFiles[idx];
-																								result.put(new GMLTree(gmlFile.getAbsolutePath()),gmlFile.getName());
+								public HashMap createGMLReader2Name(File [] gmlFiles){
+												HashMap result = new HashMap();
+												for(int idx = 0;idx<gmlFiles.length;idx++){
+																File gmlFile = gmlFiles[idx];
+																try{
+																				GMLReader gReader = new GMLReader(gmlFile.getAbsolutePath());
+																				gReader.read();
+																				result.put(gReader,gmlFile.getName());
+																}catch(Exception e){
+																				System.err.println("Failed to read the gml file specified by "+gmlFile.getAbsolutePath());
 																}
-																return result;
+
+												}
+												return result;
 								}
 }
 
@@ -300,13 +298,13 @@ class ShowGMLAction extends AbstractAction {
 								/**
 									* This contains a mapping from nodes in the network to the GMLTree associated with that ndoe
 									*/
-								HashMap node2GMLTree;
+								HashMap node2GMLReader;
 								/**
 									* The constructor sets the text that should appear on the menu item.
 									*/
-								public ShowGMLAction(CyWindow cyWindow, HashMap node2GMLTree){
+								public ShowGMLAction(CyWindow cyWindow, HashMap node2GMLReader){
 																super("Show GML");
-																this.node2GMLTree = node2GMLTree;
+																this.node2GMLReader = node2GMLReader;
 																this.cyWindow = cyWindow;
 								}
 
@@ -318,7 +316,7 @@ class ShowGMLAction extends AbstractAction {
 																List selectedNodes = cyWindow.getView().getSelectedNodes();
 																if(selectedNodes.size() > 0){
 																								Node selectedNode = ((NodeView)selectedNodes.get(0)).getNode();
-																								Thread t = new ShowGMLThread(selectedNode,node2GMLTree,cyWindow);
+																								Thread t = new ShowGMLThread(selectedNode,node2GMLReader,cyWindow);
 																								t.start();
 																}
 								}
@@ -341,14 +339,14 @@ class ShowGMLThread extends Thread{
 									* The node that was selected in the graph
 									*/
 								Node selectedNode;
-								private static HashMap node2GMLTree;
+								private static HashMap node2GMLReader;
 								/**
 									* Keeps track of the CyNetworks we have already 
 									* created so we don't have to create them again
 									*/
 								private static HashMap node2CyNetwork;
-								public ShowGMLThread(Node selectedNode, HashMap node2GMLTree, CyWindow overlapWindow){
-																this.node2GMLTree = node2GMLTree;
+								public ShowGMLThread(Node selectedNode, HashMap node2GMLReader, CyWindow overlapWindow){
+																this.node2GMLReader = node2GMLReader;
 																this.selectedNode = selectedNode;
 																this.overlapWindow = overlapWindow;
 																if(node2CyNetwork == null){
@@ -364,7 +362,8 @@ class ShowGMLThread extends Thread{
 																synchronized (node2CyNetwork){
 																								CyNetwork cyNetwork = (CyNetwork)node2CyNetwork.get(selectedNode);
 																								if(cyNetwork == null){
-																																cyNetwork = createCyNetwork();
+																												GMLReader currentReader = (GMLReader)node2GMLReader.get(selectedNode);
+																																cyNetwork = new CyNetwork(currentReader.getRootGraph(),currentReader.getNodeAttributes(),currentReader.getEdgeAttributes());
 																																node2CyNetwork.put(selectedNode,cyNetwork);
 																								}
 																								if(newWindow == null){
@@ -396,22 +395,8 @@ class ShowGMLThread extends Thread{
 									*/
 								private void layout(CyNetwork myNetwork){
 																GraphView myView = newWindow.getView();
-																GMLTree gmlTree = (GMLTree)node2GMLTree.get(selectedNode);
-																Vector nodeLabels  = gmlTree.getVector("graph|node|label","|",GMLTree.STRING);
-																Vector nodeX = gmlTree.getVector("graph|node|graphics|x","|",GMLTree.DOUBLE);
-																Vector nodeY = gmlTree.getVector("graph|node|graphics|y","|",GMLTree.DOUBLE);
-																Iterator it = nodeLabels.iterator();
-																GraphObjAttributes nodeAttributes = myNetwork.getNodeAttributes();
-																for(int i=0;i<nodeLabels.size();i++){
-																								String nodeName = (String)nodeLabels.get(i);
-																								Number X = (Number) nodeX.get(i);
-																								Number Y = (Number) nodeY.get(i);
-																								//get the node associated with that node label
-																								Node current = (Node)nodeAttributes.getGraphObject(nodeName);
-																								NodeView currentView = myView.getNodeView(current);
-																								currentView.setXPosition(X.doubleValue());
-																								currentView.setYPosition(Y.doubleValue());
-																}
+																GMLReader gmlReader = (GMLReader)node2GMLReader.get(selectedNode);
+																gmlReader.layoutByGML(myView,myNetwork);	
 								}
 
 								/**
@@ -419,7 +404,7 @@ class ShowGMLThread extends Thread{
 									* This will only be called if the CyNetwork has not been
 									* created before, not that this really takes that long anyway
 									*/
-								private CyNetwork createCyNetwork(){
+								/*private CyNetwork createCyNetwork(){
 																//need to create a new cynetwork for this node
 																//using hte gmlTree object we already have	
 																RootGraph rootGraph = GinyFactory.createRootGraph();
@@ -492,6 +477,6 @@ class ShowGMLThread extends Thread{
 																}
 
 																return new CyNetwork(rootGraph,nodeAttributes,edgeAttributes);
-								}
+								}*/
 }
 
