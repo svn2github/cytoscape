@@ -209,13 +209,13 @@ body {
 }
 
 #footer a:link {
- color: #666666;
+ color: #444444;
 }
 #footer a:active, .footer a:hover {
  color: #005599;
 }
 #footer a:visited {
- color: #aaaaaa;
+ color: #777777;
 }
 
 .roundbox {
