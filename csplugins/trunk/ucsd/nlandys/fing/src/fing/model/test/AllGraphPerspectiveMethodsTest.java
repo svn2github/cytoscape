@@ -911,8 +911,39 @@ public final class AllGraphPerspectiveMethodsTest
       throw new IllegalStateException("expected null children nodes");
 
     // isMetaParent(Edge, Node).
+    if (!(persp.isMetaParent(persp.getEdge(edgeInx[6]),
+                             persp.getNode(nodeInx[3])) &&
+          persp.isMetaParent(persp.getEdge(edgeInx[2]),
+                             persp.getNode(nodeInx[4])) &&
+          persp.isMetaParent(persp.getEdge(edgeInx[0]),
+                             persp.getNode(nodeInx[3]))))
+      throw new IllegalStateException("expected meta-edge relationship");
+    if (persp.isMetaParent(persp.getEdge(edgeInx[6]),
+                           persp.getNode(nodeInx[0])) ||
+        persp.isMetaParent(persp.getEdge(edgeInx[1]),
+                           persp.getNode(nodeInx[4])) ||
+        persp.isMetaParent(persp.getEdge(edgeInx[3]),
+                           persp.getNode(nodeInx[1])))
+      throw new IllegalStateException("unexpected meta-edge relationship");
+    if (persp.isMetaParent(edge1NotInPersp, persp.getNode(nodeInx[3])) ||
+        persp.isMetaParent(edge2NotInPersp, persp.getNode(nodeInx[4])) ||
+        persp.isMetaParent(root2Edge, persp.getNode(nodeInx[0])) ||
+        persp.isMetaParent(persp.getEdge(edgeInx[1]), nodeNotInPersp))
+      throw new IllegalStateException("totally wrong meta-edge relationship");
 
     // isEdgeMetaParent(int, int).
+    if (!(persp.isEdgeMetaParent(edgeInx[4], nodeInx[0]) &&
+          persp.isEdgeMetaParent(edgeInx[6], nodeInx[4])))
+      throw new IllegalStateException("missing edge meta-relationship");
+    if (persp.isEdgeMetaParent(edgeInx[4], nodeInx[1]) ||
+        persp.isEdgeMetaParent(edgeInx[2], nodeInx[0]) ||
+        persp.isEdgeMetaParent(edgeInx[1], nodeInx[4]))
+      throw new IllegalStateException("unexpected edge meta-relationship");
+    if (persp.isEdgeMetaParent(0, 1) ||
+        persp.isEdgeMetaParent(edge1NotInPersp.getRootGraphIndex(),
+                               nodeInx[0]) ||
+        persp.isEdgeMetaParent(Integer.MIN_VALUE, Integer.MAX_VALUE))
+      throw new IllegalStateException("totally wrong edge meta-relationship");
 
     // metaParentsList(Edge).
 
