@@ -40,8 +40,6 @@ public class SpringEmbeddedLayoutAction extends CytoscapeAction
     // because it's part of the "public API".
     CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
     final int numNodesInTopology = graphView.getNodeViewCount();
-    final double maxLayoutDimension = 400.0d +
-      Math.sqrt(((double) (numNodesInTopology * numNodesInTopology)) * 100.0d);
 
     // Definiition of nodeTranslation:
     // nodeindexTranslation[i] defines, for node at index i in our
@@ -67,7 +65,6 @@ public class SpringEmbeddedLayoutAction extends CytoscapeAction
     boolean[] mobility = new boolean[numNodesInTopology];
     final boolean noNodesSelected =
       (graphView.getSelectedNodeIndices().length == 0);
-    //      graphView.getSelectedEdges().isEmpty();
 
     while (nodeIterator.hasNext())
     {
@@ -124,29 +121,17 @@ public class SpringEmbeddedLayoutAction extends CytoscapeAction
       undirectedEdgeTargetNodeIndices[i] = edge[1]; }
     final double[] nodeXPositions = new double[numNodesInTopology];
     final double[] nodeYPositions = new double[numNodesInTopology];
-    final double xScaleFactor;
-    if (((float) (maxX - minX)) == 0.0) xScaleFactor = 1.0d;
-    else xScaleFactor = maxLayoutDimension / (maxX - minX);
-    final double yScaleFactor;
-    if (((float) (maxY - minY)) == 0.0) yScaleFactor = 1.0d;
-    else yScaleFactor = maxLayoutDimension / (maxY - minY);
     for (int i = 0; i < numNodesInTopology; i++) {
-      nodeXPositions[i] =
-        Math.min(maxLayoutDimension,
-                 Math.max(0.0d, (nodeTranslation[i].getXPosition() - minX) *
-                          xScaleFactor));
-      nodeYPositions[i] =
-        Math.min(maxLayoutDimension,
-                 Math.max(0.0d, (nodeTranslation[i].getYPosition() - minY) *
-                          yScaleFactor)); }
+      nodeXPositions[i] = nodeTranslation[i].getXPosition() - minX;
+      nodeYPositions[i] = nodeTranslation[i].getYPosition() - minY; }
     final MutableGraphLayoutRepresentation nativeGraph =
       new MutableGraphLayoutRepresentation(numNodesInTopology,
                                            directedEdgeSourceNodeIndices,
                                            directedEdgeTargetNodeIndices,
                                            undirectedEdgeSourceNodeIndices,
                                            undirectedEdgeTargetNodeIndices,
-                                           maxLayoutDimension,
-                                           maxLayoutDimension,
+                                           maxX - minX,
+                                           maxY - minY,
                                            nodeXPositions,
                                            nodeYPositions,
                                            mobility);
@@ -186,9 +171,10 @@ public class SpringEmbeddedLayoutAction extends CytoscapeAction
     // END: The thread and process related code ends here.
     //////////////////////////////////////////////////////
 
-    for (int i = 0; i < nodeTranslation.length; i++) {
-      nodeTranslation[i].setOffset(nativeGraph.getNodePosition(i).getX(),
-                                   nativeGraph.getNodePosition(i).getY()); }
+    for (int i = 0; i < nodeTranslation.length; i++)
+      nodeTranslation[i].setOffset
+        (nativeGraph.getNodePosition(i).getX() + minX,
+         nativeGraph.getNodePosition(i).getY() + minY);
   }
 
 }
