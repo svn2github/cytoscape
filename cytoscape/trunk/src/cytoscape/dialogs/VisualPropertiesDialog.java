@@ -110,9 +110,12 @@ public VisualPropertiesDialog (Frame parentFrame,
   sizeDefaults =
       new JointIntegerEntry
 	  ("Node","Height","Width",
-	   ((Integer)aMapper.getDefaultValue(VizMapperCategories.NODE_HEIGHT)).intValue(),
-	   ((Integer)aMapper.getDefaultValue(VizMapperCategories.NODE_WIDTH)).intValue(),
+	   (int)(((Double)aMapper.getDefaultValue(VizMapperCategories.NODE_HEIGHT)).doubleValue()),
+	   (int)(((Double)aMapper.getDefaultValue(VizMapperCategories.NODE_WIDTH)).doubleValue()),
 	   500,500);
+  //	   ((Integer)aMapper.getDefaultValue(VizMapperCategories.NODE_HEIGHT)).intValue(),
+  //	   ((Integer)aMapper.getDefaultValue(VizMapperCategories.NODE_WIDTH)).intValue(),
+
   MiscGB.insert(defGBG,sizeDefaults.getConstraintLabel(),0,yDef);
   MiscGB.insert(defGBG,sizeDefaults.getConstraintBox(),1,yDef);
   yDef++;
@@ -194,11 +197,15 @@ public class ApplyAction extends AbstractAction {
 	if(line != null)
 	    o = aMapper.setDefaultValue(VizMapperCategories.EDGE_LINETYPE, line);
 	Integer height = sizeDefaults.getInteger("Height");
-	if(height != null)
-	    o = aMapper.setDefaultValue(VizMapperCategories.NODE_HEIGHT, height);
+	if(height != null) {
+	    Double heightD = new Double(height.intValue());
+	    o = aMapper.setDefaultValue(VizMapperCategories.NODE_HEIGHT, heightD);
+	}
 	Integer width = sizeDefaults.getInteger("Width");
-	if(width != null)
-	    o = aMapper.setDefaultValue(VizMapperCategories.NODE_WIDTH, width);
+	if(width != null) {
+	    Double widthD = new Double(width.intValue());
+	    o = aMapper.setDefaultValue(VizMapperCategories.NODE_WIDTH, widthD);
+	}
 	Color border = bColor.getColor();
 	if(border != null)
 	    o = aMapper.setDefaultValue(VizMapperCategories.NODE_BORDER_COLOR, border);
@@ -301,7 +308,7 @@ public class CancelAction extends AbstractAction {
      */
 
     private void initializeArrowDefault() {
-	int ns = ((Integer)aMapper.getDefaultValue(VizMapperCategories.NODE_HEIGHT)).intValue();
+	int ns = (int)((Double)aMapper.getDefaultValue(VizMapperCategories.NODE_HEIGHT)).doubleValue();
 	Object currentArrow =  aMapper.getDefaultValue(VizMapperCategories.EDGE_TARGET_DECORATION);
 
 	HashMap arrowToString = MiscDialog.getArrowToStringHashMap(ns);
