@@ -115,10 +115,9 @@ public final class IntHash
   /**
    * Returns an enumeration of elements in this hashtable, ordered
    * arbitrarily.<p>
-   * The returned enumeration becomes "invalid" as soon as any other method
-   * on this hashtable instance is called; calling methods on an invalid
-   * enumeration will cause undefined behavior in the enumerator.  Actually,
-   * one method will not invalidate this enumeration: the get(int) method.
+   * The returned enumeration becomes "invalid" as soon as put(int) or empty()
+   * is called on this hashtable; calling methods on an invalid
+   * enumeration will cause undefined behavior in the enumerator.
    * The returned enumerator has absolutely no effect on the underlying
    * hashtable.<p>
    * This method returns in constant time.  The returned enumerator
