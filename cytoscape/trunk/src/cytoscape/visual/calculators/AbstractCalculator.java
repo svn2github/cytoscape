@@ -186,8 +186,8 @@ public abstract class AbstractCalculator implements Calculator {
      * @param	attrName	the name of the newly selected attribute
      * @param   network         the Network on which this attribute is defined
      * @deprecated Only supports one mapping, use
-     *		{@link #updateAttribute(String, ObjectMapping)} or
-     *		{@link #updateAttribute(String, int)} instead.
+     *		{@link #updateAttribute(String, Network, ObjectMapping)} or
+     *		{@link #updateAttribute(String, Newtork, int)) instead.
      */
     void updateAttribute(String attrName, Network network) {
 	this.getMapping().setControllingAttributeName(attrName, network, false);
@@ -196,7 +196,7 @@ public abstract class AbstractCalculator implements Calculator {
     /**
      * updateAttribute is called when the currently selected attribute changes.
      * Any changes needed in the mapping UI should be performed at this point.
-     * Use {@link #updateAttribute(String, int)} for best performance.
+     * Use {@link #updateAttribute(String, Network, int)} for best performance.
      *
      * @param	attrName	the name of the newly selected attribute
      * @param   network         the Network on which this attribute is defined
@@ -245,7 +245,7 @@ public abstract class AbstractCalculator implements Calculator {
      * Get the UI for calculators. Display a JComboBox with attributes in the given
      * GraphObjAttributes whose data are instances of the classes accepted by each
      * ObjectMapping. The resulting JComboBox calls
-     * {@link #updateAttribute(String, int)} when frobbed.
+     * {@link #updateAttribute(String, Network, int)} when frobbed.
      *
      * @param	attr	GraphObjAttributes to look up attributes from
      * @return	UI with controlling attribute selection facilities
