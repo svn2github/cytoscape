@@ -33,7 +33,6 @@ class BetweenPathwayThread extends Thread{
   }
 
   public void run(){
-    System.err.println("Between Pathway Thread started");
     //number of physical interactions allowed between pathways
     int cross_count_limit = 1;
     //get the two networks which will be used for the search
@@ -63,16 +62,19 @@ class BetweenPathwayThread extends Thread{
     }
     Vector results = new Vector();
     //start a search from each individual genetic interactions
-    ProgressMonitor myMonitor = new ProgressMonitor(Cytoscape.getDesktop(),null,"Searching for Network Models",0,geneticNetwork.getEdgeCount());
-    myMonitor.setMillisToPopup(50);
+    ProgressMonitor myMonitor = null;
+    
     int progress = 0;
     Iterator geneticIt = null;
     if(options.selectedSearch){
       geneticIt = geneticNetwork.getFlaggedEdges().iterator();
+      myMonitor = new ProgressMonitor(Cytoscape.getDesktop(),null,"Searching for Network Models",0,geneticNetwork.getFlaggedEdges().size());
     }
     else{
       geneticIt = geneticNetwork.edgesIterator();
+      myMonitor = new ProgressMonitor(Cytoscape.getDesktop(),null,"Searching for Network Models",0,geneticNetwork.getEdgeCount());    
     }
+    myMonitor.setMillisToPopup(1);
     while(geneticIt.hasNext()){
       if(myMonitor.isCanceled()){
 	throw new RuntimeException("Search cancelled");
@@ -112,6 +114,9 @@ class BetweenPathwayThread extends Thread{
       double significant_increase = 0;
       while(improved){
 	improved = false;
+	if(myMonitor.isCanceled()){
+	  throw new RuntimeException("Search cancelled");
+	}
 	for(int idx=0;idx<2;idx++){
 	  int opposite = 1-idx;
 	  Node bestCandidate = null;
@@ -185,6 +190,9 @@ class BetweenPathwayThread extends Thread{
     int update_interval = (int)Math.ceil(old.size()/100.0);
     int count = 0;
     for(Iterator modelIt = old.iterator();modelIt.hasNext();){
+      if(myMonitor.isCanceled()){
+	throw new RuntimeException("Search cancelled");
+      }
       if(count%update_interval == 0){
 	myMonitor.setProgress(count/update_interval);
       }

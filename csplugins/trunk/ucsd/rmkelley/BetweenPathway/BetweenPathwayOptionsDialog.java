@@ -22,6 +22,7 @@ import java.awt.event.*;
 import cytoscape.layout.*;
 import java.awt.Dimension;
 import java.beans.*;
+import ucsd.rmkelley.Util.RyanDialog;
 
 public class BetweenPathwayOptionsDialog extends RyanDialog implements PropertyChangeListener{
   NetworkSelectionPanel geneticPanel,physicalPanel;
@@ -39,7 +40,6 @@ public class BetweenPathwayOptionsDialog extends RyanDialog implements PropertyC
    * used
    */
   public BetweenPathwayOptionsDialog(){
-    currentDirectory = Cytoscape.getCytoscapeObj().getCurrentDirectory();
     setTitle("Between-Pathway Search Options");
     geneticPanel = new NetworkSelectionPanel(this);
     physicalPanel = new NetworkSelectionPanel(this);
@@ -124,7 +124,6 @@ public class BetweenPathwayOptionsDialog extends RyanDialog implements PropertyC
    */
   public void setCurrentDirectory(File currentDirectory){
     this.currentDirectory = currentDirectory;
-    Cytoscape.getCytoscapeObj().setCurrentDirectory(currentDirectory);
   }
 
   
@@ -179,18 +178,5 @@ public class BetweenPathwayOptionsDialog extends RyanDialog implements PropertyC
       ok.setToolTipText(text);
     }
 
-  }
-  public void hide(){
-    super.hide();
-    synchronized(this){
-      notify();
-    }
-  }
-  
-  public void dispose(){
-    super.dispose();
-    synchronized(this){
-      notify();
-    }
   }
 }

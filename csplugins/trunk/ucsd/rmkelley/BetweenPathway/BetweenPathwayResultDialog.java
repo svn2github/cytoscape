@@ -22,18 +22,51 @@ import java.awt.event.*;
 import cytoscape.layout.*;
 import java.awt.Dimension;
 import javax.swing.border.TitledBorder;
+import ucsd.rmkelley.Util.RyanDialog;
 
-class BetweenPathwayResultDialog extends JDialog implements ListSelectionListener{
+class BetweenPathwayResultDialog extends RyanDialog implements ListSelectionListener{
   Vector results;
   JTable table;
   JButton viewButton;
   CyNetwork geneticNetwork,physicalNetwork;
+  
+
+  /**
+   * Creates a dialog which will display the values 
+   * of a previous run svaed inot a file
+   */
+  public BetweenPathwayResultDialog(File inputFile) throws IOException{
+    /*
+     * Try to find the gentic network
+     */
+    BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+    
+    geneticNetwork = getNetworkByTitle(reader.readLine());
+    physicalNetwork = getNetworkByTitle(reader.readLine());
+    results = new Vector();
+    while(reader.ready()){
+      String [] splat = reader.readLine().split("\t");
+      int id = new Integer(splat[0]).intValue();
+      Set one = string2NodeSet(splat[1]);
+      Set two = string2NodeSet(splat[2]);
+      double score = new Double(splat[3]).doubleValue();
+      results.add(new NetworkModel(id,one,two,score));
+    }
+    initialize();
+  }
+
+  
   public BetweenPathwayResultDialog(CyNetwork geneticNetwork, CyNetwork physicalNetwork, Vector results){
     this.results = results;
     this.geneticNetwork = geneticNetwork;
     this.physicalNetwork = physicalNetwork;
+    initialize();
+  }
 
-
+  /**
+   * Does all hte initialization of display componenets
+   */
+  public void initialize(){
     setTitle("Results");
     /*
      * Initialize the table which is usedto display the results
@@ -83,9 +116,43 @@ class BetweenPathwayResultDialog extends JDialog implements ListSelectionListene
 	  }
 	}
       });
+    JButton saveButton = new JButton("Save results");
+    saveButton.addActionListener(new ActionListener(){
+	public void actionPerformed(ActionEvent ae){
+	  BetweenPathwayResultDialog.this.disableInput();
+	  JFileChooser chooser = new JFileChooser();
+	  chooser.setDialogTitle("Choose Destination File");
+	  int returnVal = chooser.showSaveDialog(Cytoscape.getDesktop());
+	  if(returnVal == JFileChooser.APPROVE_OPTION){
+	    try{
+	      saveResults(chooser.getSelectedFile());
+	    }catch(Exception e){
+	      JOptionPane.showMessageDialog(Cytoscape.getDesktop(),e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);	    
+	    }
+	  }
+	  BetweenPathwayResultDialog.this.enableInput();
+	}
+      });
     southPanel.add(viewButton);
+    southPanel.add(saveButton);
     getContentPane().add(southPanel,BorderLayout.SOUTH);
     pack();
+  }
+
+  /**
+   * Return the first network which matches the given 
+   * title. Throws an exception if no such network exists
+   */
+  public CyNetwork getNetworkByTitle(String title){
+    Set networkSet = Cytoscape.getNetworkSet();
+    for(Iterator networkIt = networkSet.iterator();networkIt.hasNext();){
+      CyNetwork cyNetwork = (CyNetwork)networkIt.next();
+      if(cyNetwork.getTitle().equals(title)){
+	return cyNetwork;
+      }
+    }
+    throw new RuntimeException("No network found with title "+title+", please load this network and try again");
+
   }
 
   public void valueChanged(ListSelectionEvent e){
@@ -102,5 +169,63 @@ class BetweenPathwayResultDialog extends JDialog implements ListSelectionListene
       viewButton.setEnabled(false);
     }
   }
+
+
+  protected void saveResults(File outputFile) throws IOException{
+    PrintStream stream = new PrintStream(new FileOutputStream(outputFile));
+    stream.println(geneticNetwork.getTitle());
+    stream.println(physicalNetwork.getTitle());
+    for(Iterator modelIt = results.iterator();modelIt.hasNext();){
+      NetworkModel model = (NetworkModel)modelIt.next();
+      stream.print(model.ID);
+      stream.print("\t"+nodeSet2String(model.one));
+      stream.print("\t"+nodeSet2String(model.two));
+      stream.println("\t"+model.score);
+    }
+    stream.close();
+
+  }
+
+  /**
+   * Create a set of nodes from a colon-delimitd list
+   * If a node correpsonding to a particular string
+   * can not be found, a runtime exception will be thrown
+   */
+  protected Set string2NodeSet(String nodesString){
+    Set result = new HashSet();
+    String [] splat = nodesString.split("::");
+    for(int idx = 0; idx < splat.length;idx++){
+      Node node = Cytoscape.getCyNode(splat[idx]);
+      if(node == null){
+	throw new RuntimeException("Could not find the node named "+splat[idx]+" from the input file");
+      }
+      else{
+	result.add(node);
+      }
+    }
+    return result;
+	  
+  }
+
+  /**
+   * Create a colon delimited list of node names
+   * from a set of nodes
+   */
+  protected String nodeSet2String(Set nodes){
+    String result = "";
+    Iterator nodeIt = nodes.iterator();
+    if(nodes.size() > 0){
+      Node node = (Node)nodes.iterator().next();
+      result = node.getIdentifier();
+    }
+    if(nodes.size() > 1){
+      while(nodeIt.hasNext()){
+	result += "::" + ((Node)nodeIt.next()).getIdentifier();
+      }
+    }
+    return result;
+  }
+
+      
   
 }

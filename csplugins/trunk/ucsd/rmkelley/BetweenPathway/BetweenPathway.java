@@ -41,46 +41,51 @@ public class BetweenPathway extends CytoscapePlugin{
    */
   
   public BetweenPathway(){
-    Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add( new TestAction() );
-  }
-    
-   
-
-  public class TestAction extends AbstractAction{
-    
-    public TestAction() {super("Find Between Pathway Models");}
-    
-    /**
-     * This method is called when the user selects the menu item.
-     */
-    public void actionPerformed(ActionEvent ae) {
-      dialog = new BetweenPathwayOptionsDialog();
-      dialog.show();
-         
-      new Thread(new Runnable(){
-	  public void run(){
-	    try{
-	      synchronized(dialog){
-		dialog.wait();
-	      }
-	    }catch(Exception e){
-	    }
-	    if(!dialog.isCancelled()){
-	      BetweenPathwayThread thread = new BetweenPathwayThread(dialog.getOptions());
-	      try{
-		thread.run();
-	      }
+    Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add( new AbstractAction("Find Between Pathway Models"){
+	public void actionPerformed(ActionEvent ae) {
+	  if(dialog == null){
+	    dialog = new BetweenPathwayOptionsDialog();
+	  }
+	  new Thread(new Runnable(){
+	      public void run(){
+		dialog.show();
+		if(!dialog.isCancelled()){
+		  BetweenPathwayThread thread = new BetweenPathwayThread(dialog.getOptions());
+		  try{
+		    thread.run();
+		  }
 	      catch(Exception e){
 		JOptionPane.showMessageDialog(Cytoscape.getDesktop(),e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);	    
 	      }
 	      catch(OutOfMemoryError e){
 		JOptionPane.showMessageDialog(Cytoscape.getDesktop(),"Out of memory","Error",JOptionPane.ERROR_MESSAGE);	    
 	      }
+		}
+	      }}).start();
+	  
+	} 
+      });
+
+    Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add( new AbstractAction("Load previous results"){
+      public void actionPerformed(ActionEvent ae){
+	new Thread(new Runnable(){
+	    public void run(){
+	      JFileChooser chooser = new JFileChooser();
+	      int returnVal = chooser.showOpenDialog(Cytoscape.getDesktop());
+	      if(returnVal == JFileChooser.APPROVE_OPTION) {
+		try{
+		  BetweenPathwayResultDialog results = new BetweenPathwayResultDialog(chooser.getSelectedFile());
+		  results.show();
+		}catch(Exception e){
+		  JOptionPane.showMessageDialog(Cytoscape.getDesktop(),e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);	    
+		}
+	      }
 	    }
-	  }}).start();
-   
-    }
+	  }).start();
+      }
+      });
   }
+    
 }
 
 

@@ -42,15 +42,12 @@ class NetworkSelectionPanel extends JPanel{
     setLayout(new BorderLayout());
     this.dialog = dialog;
     pcs = new PropertyChangeSupport(this);
-    Vector model = new Vector();
-    for(Iterator networkIt = Cytoscape.getNetworkSet().iterator();networkIt.hasNext();){
-      model.add(new NetworkContainer((CyNetwork)networkIt.next()));
-    }
+   
 
     JPanel centerPanel = new JPanel();
     centerPanel.setBorder(new TitledBorder("Select one of the following available networks"));
     centerPanel.setLayout(new BorderLayout());
-    list = new JList(model);
+    list = new JList(new NetworkListModel());
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     list.addListSelectionListener(new ListSelectionListener(){
 	public void valueChanged(ListSelectionEvent e){
@@ -75,7 +72,13 @@ class NetworkSelectionPanel extends JPanel{
     JButton change = new JButton("Select score file");
     change.addActionListener(new ActionListener(){
 	public void actionPerformed(ActionEvent ae){
-	  JFileChooser chooser = new JFileChooser(NetworkSelectionPanel.this.dialog.getCurrentDirectory());
+	  File currentDirectory = NetworkSelectionPanel.this.dialog.getCurrentDirectory();
+	  JFileChooser chooser = null;
+	  if(currentDirectory != null){
+	    chooser = new JFileChooser(currentDirectory);
+	  }else{
+	    chooser = new JFileChooser();
+	  }
 	  NetworkSelectionPanel.this.dialog.disableInput();
 	  int returnVal = chooser.showOpenDialog(Cytoscape.getDesktop());
 	  if(returnVal == JFileChooser.APPROVE_OPTION) {
@@ -86,6 +89,7 @@ class NetworkSelectionPanel extends JPanel{
 	    pcs.firePropertyChange("",null,null);
 	  }
 	  NetworkSelectionPanel.this.dialog.enableInput();
+	  NetworkSelectionPanel.this.dialog.pack();
 	  NetworkSelectionPanel.this.dialog.toFront();
 	}});
     generate = new JButton("Generate new score file");
@@ -106,17 +110,10 @@ class NetworkSelectionPanel extends JPanel{
 	   * have to add a selection change listener to the list
 	   */
 	  randomDialog = new EdgeRandomizationDialog(((NetworkContainer)list.getSelectedValue()).getNetwork());
-	  randomDialog.show();
-	  
+	 	  
 	  new Thread(new Runnable(){
 	      public void run(){
-		try{
-		  synchronized(randomDialog){
-		    randomDialog.wait();
-		  }
-		}catch(Exception e){
-		  e.printStackTrace();
-		}
+		randomDialog.show();
 		if(!randomDialog.isCancelled()){
 		  try{
 		    EdgeRandomizationThread thread = new EdgeRandomizationThread(randomDialog.getOptions());
@@ -134,6 +131,7 @@ class NetworkSelectionPanel extends JPanel{
 		}
 		NetworkSelectionPanel.this.dialog.enableInput();
 		NetworkSelectionPanel.this.dialog.pack();
+		NetworkSelectionPanel.this.dialog.toFront();
 	      }}).start();
 	}});
     southPanel.add(change);
@@ -209,4 +207,35 @@ class NetworkSelectionPanel extends JPanel{
   }
 
 
+}
+
+
+class NetworkListModel extends DefaultListModel implements PropertyChangeListener{
+  protected HashMap id2Container = new HashMap();
+  public NetworkListModel(){
+    for(Iterator networkIt = Cytoscape.getNetworkSet().iterator();networkIt.hasNext();){
+      NetworkContainer container = new NetworkContainer((CyNetwork)networkIt.next());
+      id2Container.put(container.getNetwork().getIdentifier(),container);
+      addElement(container);
+    }
+    Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
+  }
+
+  public void propertyChange(PropertyChangeEvent pce){
+    if(pce.getPropertyName() == Cytoscape.NETWORK_CREATED){
+      String id = (String)pce.getNewValue();
+      CyNetwork network = Cytoscape.getNetwork(id); 
+      NetworkContainer container = new NetworkContainer(network);
+      id2Container.put(network.getIdentifier(),container);
+      addElement(container);
+    }
+    else if(pce.getPropertyName() == Cytoscape.NETWORK_DESTROYED){
+      String id = (String)pce.getNewValue();
+      NetworkContainer container = (NetworkContainer)id2Container.get(id);
+      if(container != null){
+	id2Container.remove(id);
+	removeElement(container);
+      }
+    }
+  }
 }
