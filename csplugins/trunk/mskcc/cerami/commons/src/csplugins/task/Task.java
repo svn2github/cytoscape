@@ -134,7 +134,7 @@ public interface Task extends Runnable {
     String getHumanReadableErrorMessage();
 
     /**
-     * Interrupts task.
+     * Interrupts the task.
      */
     void interrupt();
 
@@ -146,7 +146,7 @@ public interface Task extends Runnable {
     boolean isInterrupted();
 
     /**
-     * Determines if the task is Done.
+     * Determines if the task is done.
      *
      * @return true of false.
      */
