@@ -128,13 +128,11 @@ public final class AllGraphPerspectiveMethodsTest
 
     // getNodeIndicesArray().
     int[] nodeIndicesArray = persp.getNodeIndicesArray();
-    if (nodeIndicesArray.length != nodesList.size() + 1)
+    if (nodeIndicesArray.length != nodesList.size())
       throw new IllegalStateException
         ("size of nodes List and length of node indices array don't match");
-    if (nodeIndicesArray[0] != 0)
-      throw new IllegalStateException("expected 0 at index 0");
     for (int j = 0; j < nodeInx.length; j++) {
-      for (int i = 1;; i++) { if (nodeIndicesArray[i] == nodeInx[j]) break; } }
+      for (int i = 0;; i++) { if (nodeIndicesArray[i] == nodeInx[j]) break; } }
 
     // edgesIterator().
     Iterator edgesIter = persp.edgesIterator();
@@ -150,11 +148,11 @@ public final class AllGraphPerspectiveMethodsTest
 
     // getEdgeIndicesArray().
     int[] edgeIndicesArray = persp.getEdgeIndicesArray();
-    if (edgeIndicesArray.length != edgesList.size() + 1)
+    if (edgeIndicesArray.length != edgesList.size())
       throw new IllegalStateException
         ("size of edges List and length of edge indices array don't match");
     for (int j = 0; j < edgeInx.length; j++) {
-      for (int i = 1;; i++) { if (edgeIndicesArray[i] == edgeInx[j]) break; } }
+      for (int i = 0;; i++) { if (edgeIndicesArray[i] == edgeInx[j]) break; } }
 
     // getEdgeIndicesArray(int, int, boolean, boolean).
     int[] connEdges;
