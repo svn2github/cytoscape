@@ -519,6 +519,41 @@ class FRootGraph //implements RootGraph
     return returnThis;
   }
 
+  public int[] getEdgeIndicesArray(int fromNodeInx,
+                                   int toNodeInx,
+                                   boolean undirecteedEdges,
+                                   boolean bothDirections)
+  {
+    final int positiveFromNodeInx = ~fromNodeInx;
+    final int positiveToNodeInx = ~toNodeInx;
+    final IntEnumerator fromAdj;
+    final IntEnumerator toAdj;
+    try {
+      fromAdj = m_graph.adjacentEdges(positiveFromNodeInx,
+                                      undirectedEdges, bothDirections, true);
+      toAdj = m_graph.adjacentEdges(positiveToNodeInx,
+                                    undirectedEdges, true, bothDirections); }
+    catch (IllegalArgumentException e) { return new int[]; }
+    final IntEnumerator theAdj =
+      ((fromAdj.numRemaining() < toAdj.numRemaining()) ? fromAdj : toAdj);
+    final int adjPositiveNode =
+      ((theAdj == fromAdj) ? positiveFromNodeInx : positiveToNodeInx);
+    final int neighPositiveNode =
+      ((theAdj == fromAdj) ? positiveToNodeInx : positiveFromNodeInx);
+    m_hash.empty();
+    final IntHash edgeBucket = m_hash;
+    while (theAdj.numRemaining() > 0) {
+      final int adjEdge = theAdj.nextInt();
+      if ((m_graph.sourceNode(adjEdge) ^ m_graph.targetNode(adjEdge) ^
+           adjPositiveNode) == neighPositiveNode)
+        edgeBucket.put(adjEdge); }
+    final IntEnumeration edges = edgeBucket.elements();
+    final int[] returnThis = new int[edges.numRemaining()];
+    for (int i = 0; i < returnThis.length; i++)
+      returnThis[i] = ~(edges.nextInt());
+    return returnThis;
+  }
+
   public Node getNode(int nodeInx)
   {
     if (nodeInx < 0) return m_nodes.getNodeAtIndex(~nodeInx);
