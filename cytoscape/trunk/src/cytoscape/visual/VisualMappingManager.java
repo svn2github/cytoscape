@@ -15,6 +15,7 @@ import giny.model.Edge;
 import giny.view.GraphView;
 import giny.view.NodeView;
 import giny.view.EdgeView;
+import giny.view.Label;
 
 import cytoscape.data.CyNetwork;
 import cytoscape.view.NetworkView;
@@ -186,7 +187,9 @@ public class VisualMappingManager extends SubjectBase {
             nodeView.setShape( ShapeNodeRealizer.getGinyShape(na.getShape()) );
             nodeView.getLabel().setText( na.getLabel() );
 
-            //can't set font yet
+            Label label = nodeView.getLabel();
+            label.setFont(na.getFont());
+
             //can't set tooltip yet
         }
     }
