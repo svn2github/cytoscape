@@ -87,8 +87,8 @@ public class CsFilter
     }
     
 
-    ImageIcon icon = new ImageIcon( JarLoader.getLoader().getObjectIfYouWantIt( "filter36.gif" ) );
-    ImageIcon icon2 = new ImageIcon( JarLoader.getLoader().getObjectIfYouWantIt( "filter16.gif" ) );
+    ImageIcon icon = new ImageIcon( getClass().getResource( "/filter36.gif" ) );
+    ImageIcon icon2 = new ImageIcon( getClass().getResource( "/filter16.gif" ) );
                                     //getClass().getResource("filter16.gif") );
     FilterPlugin action = new FilterPlugin( network, window, icon, this );
     FilterMenuItem menu_action = new FilterMenuItem(  network, window, icon2, this );

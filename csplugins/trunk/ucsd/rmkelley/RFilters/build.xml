@@ -20,6 +20,7 @@
     <property name="fork" value="false"/>
     <property name="filter.root.dir" value="."/>
     <property name="filter.lib.dir" value="${filter.root.dir}/lib"/>
+    <property name="cytoscape.dir" value="${filter.root.dir}/../../../../cytoscape"/>
     <property name="cytoscape.lib.dir" value="${filter.root.dir}/../../../../cytoscape/lib"/>
     <property name="cytoscape.plugin.dir" value="${filter.root.dir}/../../../../cytoscape/plugins"/>
     <path id="project.class.path">
@@ -58,8 +59,8 @@
     <path id="filter.project.class.path">
       <pathelement location="${filter.classes.dir}"/>
       <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/cytoscape.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/y.jar"/>
+      <pathelement location="${cytoscape.dir}/cytoscape.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/violinstrings-1.0.2.jar"/>
       <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
       <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
       <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
