@@ -192,11 +192,6 @@ public Graph2D getGraph ()
   return graph;
 }
 //------------------------------------------------------------------------------
-public void setGraph (2D getGraph ()
-{  
-  this.graph;
-}
-//------------------------------------------------------------------------------
 public GraphHider getGraphHider ()
 {  
   return graphHider;
