@@ -2,6 +2,7 @@ package cytoscape.graph.dynamic.util;
 
 import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.util.intr.IntEnumerator;
+import cytoscape.util.intr.IntStack;
 
 class DynamicGraphRepresentation implements DynamicGraph
 {
@@ -9,12 +10,22 @@ class DynamicGraphRepresentation implements DynamicGraph
   private int m_nodeCount;
   private Node m_firstNode;
   private int m_edgeCount;
+  private NodeArray m_nodes;
+  private EdgeArray m_edges;
+  private IntStack m_freeNodes;
+  private IntStack m_freeEdges;
+  private EdgeDepot m_edgeDepot;
 
   DynamicGraphRepresentation()
   {
     m_nodeCount = 0;
     m_firstNode = null;
     m_edgeCount = 0;
+    m_nodes = new NodeArray();
+    m_edges = new EdgeArray();
+    m_freeNodes = new IntStack();
+    m_freeEdges = new IntStack();
+    m_edgeDepot = new EdgeDepot();
   }
 
   public IntEnumerator nodes()
@@ -50,7 +61,7 @@ class DynamicGraphRepresentation implements DynamicGraph
                  node = node.m_nextNode, edge = node.m_firstOutEdge) { }
             node = node.m_nextNode;
             returnThis = edge.m_edgeId; }
-          edge = edge.m_nextAdjEdge;
+          edge = edge.m_nextOutEdge;
           numRemaining--;
           return returnThis; } };
   }
@@ -67,7 +78,23 @@ class DynamicGraphRepresentation implements DynamicGraph
 
   public boolean removeEdge(int edge)
   {
-    return false;
+    final Edge e;
+    try { e = m_edges.getEdgeAtIndex(edge); }
+    catch (ArrayIndexOutOfBoundsException exc) {
+      // edge is negative or Integer.MAX_VALUE.
+      throw new IllegalArgumentException("edge is negative"); }
+    if (e == null) return false;
+    m_edges.setEdgeAtIndex(null, edge);
+    m_freeEdges.push(edge);
+    try { e.m_prevOutEdge.m_nextOutEdge = e.m_nextOutEdge; }
+    catch (NullPointerException exc) { // e.m_prevOutEdge is null.
+      m_nodes.getNodeAtIndex(e.m_sourceNode).m_firstOutEdge =
+        e.m_nextOutEdge; }
+    try { e.m_prevInEdge.m_nextInEdge = e.m_nextInEdge; }
+    catch (NullPointerException exc) { // e.m_prevInEdge is null.
+      m_nodes.getNodeAtIndex(e.m_targetNode).m_firstInEdge = e.m_nextInEdge; }
+    m_edgeDepot.recycleEdge(e);
+    return true;
   }
 
   public int createEdge(int sourceNode, int targetNode, boolean directed)

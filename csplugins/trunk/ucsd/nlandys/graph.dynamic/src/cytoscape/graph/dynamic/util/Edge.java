@@ -5,8 +5,10 @@ class Edge
 {
 
   int m_edgeId;
-  Edge m_nextAdjEdge;
-  Edge m_prevAdjEdge;
+  Edge m_nextOutEdge;
+  Edge m_prevOutEdge;
+  Edge m_nextInEdge;
+  Edge m_prevInEdge;
   boolean m_directed;
   int m_sourceNode;
   int m_targetNode;
