@@ -66,7 +66,7 @@ class DynamicGraphRepresentation implements DynamicGraph
         public int nextInt() {
           int returnThis;
           try { returnThis = edge.edgeId; }
-          catch (NullPointerException e) {
+          catch (NullPointerException exc) {
             for (edge = node.firstOutEdge;
                  edge == null;
                  node = node.nextNode, edge = node.firstOutEdge) { }
@@ -106,7 +106,7 @@ class DynamicGraphRepresentation implements DynamicGraph
     else returnThis = ++m_maxNode;
     m_nodes.setNodeAtIndex(n, returnThis);
     n.nextNode = m_firstNode;
-    try { m_firstNode.prevNode = n; } catch (NullPointerException e) { }
+    try { m_firstNode.prevNode = n; } catch (NullPointerException exc) { }
     m_firstNode = n;
     n.nodeId = returnThis;
     n.outDegree = 0; n.inDegree = 0; n.undDegree = 0;
@@ -143,7 +143,38 @@ class DynamicGraphRepresentation implements DynamicGraph
 
   public int createEdge(int sourceNode, int targetNode, boolean directed)
   {
-    return -1;
+    final Node source;
+    final Node target;
+    try { source = m_nodes.getNodeAtIndex(sourceNode); }
+    catch (ArrayIndexOutOfBoundsException exc) {
+      // sourceNode is negative or Integer.MAX_VALUE.
+      throw new IllegalArgumentException("sourceNode is negative"); }
+    try { target = m_nodes.getNodeAtIndex(targetNode); }
+    catch (ArrayIndexOutOfBoundsException exc) {
+      // targetNode is negative or Integer.MAX_VALUE.
+      throw new IllegalArgumentException("targetNode is negative"); }
+    if (source == null || target == null) return -1;
+    m_edgeCount++;
+    final Edge e = m_edgeDepot.getEdge();
+    final int returnThis;
+    if (m_freeEdges.size() > 0) returnThis = m_freeEdges.pop();
+    else returnThis = ++m_maxEdge;
+    m_edges.setEdgeAtIndex(e, returnThis);
+    if (directed) { source.outDegree++; target.inDegree++; }
+    else { source.undDegree++; target.undDegree++; }
+    e.nextOutEdge = source.firstOutEdge;
+    try { source.firstOutEdge.prevOutEdge = e; }
+    catch (NullPointerException exc) { }
+    source.firstOutEdge = e;
+    e.nextInEdge = target.firstInEdge;
+    try { target.firstInEdge.prevInEdge = e; }
+    catch (NullPointerException exc) { }
+    target.firstInEdge = e;
+    e.edgeId = returnThis;
+    e.directed = directed;
+    e.sourceNode = sourceNode;
+    e.targetNode = targetNode;
+    return returnThis;
   }
 
   public boolean containsNode(int node)
