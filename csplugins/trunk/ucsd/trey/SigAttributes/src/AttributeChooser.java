@@ -6,12 +6,16 @@ import java.awt.*;
 public class AttributeChooser extends JDialog implements ActionListener{
 
     Component parent;
+    String [] attributes;
+    String [] annotations;
     JTabbedPane tabbedPane;
     String chosenAttribute;
+    String [] chosenNameAttrs;
     double chosenCutoff;
     int maxNumber;
     JComboBox attributeSelector;
     JComboBox annotationSelector;
+    JList nameSelector;
     JTextField cutoffField;
     JTextField maxField;
     double DEFAULT_PVALUE = 0.001;
@@ -20,6 +24,8 @@ public class AttributeChooser extends JDialog implements ActionListener{
     public AttributeChooser(String [] attributes, String [] annotations, Component parent){
 	setTitle ("Significant Functions");
 	this.parent = parent;
+	this.attributes = attributes;
+	this.annotations = annotations;
 	JPanel mainPanel = new JPanel ();
 	mainPanel.setLayout(new BorderLayout());
 
@@ -32,24 +38,31 @@ public class AttributeChooser extends JDialog implements ActionListener{
 	tabbedPane.addTab("By Attribute", makeAttributePanel(attributes) );
 	tabbedPane.addTab("By Annotation", makeAnnotationPanel(annotations) );
 
-	// set up cutoffs
-	JPanel cutoffPane = new JPanel(new GridLayout(2,2));
+	// set up cutoffs and protein names chooser
+	JPanel cutoffPane = new JPanel(new GridLayout(3,2));
 	cutoffField = new JTextField(Double.toString(DEFAULT_PVALUE));
 	maxField = new JTextField(Integer.toString(DEFAULT_MAX));
 	JLabel cutoffLabel = new JLabel("Pvalue Cutoff", JLabel.LEFT);
-	JLabel maxLabel = new JLabel("Max # attributes", JLabel.LEFT);
+	JLabel maxLabel = new JLabel("Max # Attributes", JLabel.LEFT);
+	JLabel nameLabel = new JLabel("Attribute(s)for Name Lookup  ");
+	nameSelector = new JList(attributes);
+	JScrollPane scrollPane = new JScrollPane(nameSelector, 
+						 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+						 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+	nameSelector.setVisibleRowCount(0);
 	cutoffPane.add(cutoffLabel);
 	cutoffPane.add(cutoffField);
 	cutoffPane.add(maxLabel);
 	cutoffPane.add(maxField);
-	
+	cutoffPane.add(nameLabel);
+	cutoffPane.add(scrollPane);
+
 	// set up button
 	JPanel buttonPane = new JPanel();
 	buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
 	buttonPane.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 	buttonPane.add(cutoffPane);
 	buttonPane.add(Box.createHorizontalGlue());
-	buttonPane.add(Box.createRigidArea(new Dimension(100,0)));
 	buttonPane.add(Box.createRigidArea(new Dimension(100,0)));
 	JButton ok = new JButton("OK");
 	ok.addActionListener(this);
@@ -80,6 +93,10 @@ public class AttributeChooser extends JDialog implements ActionListener{
     public String getAttribute(){
 	return chosenAttribute;
     }
+
+    public String [] getNameAttribute() {
+	return chosenNameAttrs;
+    }
     
     public double getCutoff() {
 	return chosenCutoff;
@@ -108,6 +125,9 @@ public class AttributeChooser extends JDialog implements ActionListener{
 
 	chosenCutoff    =  Double.parseDouble(cutoffField.getText());
 	maxNumber       =  Integer.parseInt(maxField.getText());
+	int [] indices  =  nameSelector.getSelectedIndices();
+	chosenNameAttrs = new String [indices.length];
+	for (int i=0; i<indices.length; i++) chosenNameAttrs[i] = attributes[indices[i]];
 	synchronized (this){
 	    notify();
 	}

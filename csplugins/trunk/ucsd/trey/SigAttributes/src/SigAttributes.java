@@ -110,26 +110,33 @@ public class SigAttributes extends AbstractPlugin {
 	public void run(){
             //get all of the required data
 	    String [] attrs = nodeAttr.getAttributeNames();
-	    AnnotationDescription [] annotD = bds.getAnnotationDescriptions();
-	    String [] annots = new String [annotD.length];
-	    for (int i=0; i<annotD.length; i++) annots[i] = annotD[i].toString();
+	    String [] annots;
+	    try { 
+		AnnotationDescription [] annotD = bds.getAnnotationDescriptions();
+		annots = new String [annotD.length];
+		for (int i=0; i<annotD.length; i++) annots[i] = annotD[i].toString();
+	    } catch (NullPointerException ex) { annots = new String [0]; }
 
 	    // choose Attribute or Annotation storing functional info of interest
 	    AttributeChooser chooser = new AttributeChooser(attrs, annots, cyWindow);
 	    chooser.showDialog();
-	    String chosenAttr   = chooser.getAttribute();
-	    double pvalueCutoff = chooser.getCutoff();
-	    int maxNum          = chooser.getMaxNumber();
-	    if (chooser.useAttributes())  runAttributes(chosenAttr, pvalueCutoff, maxNum);
-	    if (chooser.useAnnotations()) runAnnotations(chosenAttr, pvalueCutoff, maxNum);
+	    String chosenAttr     = chooser.getAttribute();
+	    String [] chosenNames = chooser.getNameAttribute();
+	    double pvalueCutoff   = chooser.getCutoff();
+	    int maxNum            = chooser.getMaxNumber();
+	    if (chooser.useAttributes())  runAttributes(chosenAttr, chosenNames, 
+							pvalueCutoff, maxNum);
+	    if (chooser.useAnnotations()) runAnnotations(chosenAttr, chosenNames,
+							 pvalueCutoff, maxNum);
 	}
 
-	private void runAttributes(String chosenAttr, double pvalueCutoff, int maxNum) {
+	private void runAttributes(String chosenAttr, String [] chosenNames,
+				   double pvalueCutoff, int maxNum) {
 	    
 	    // get all genes and selected genes
 	    String [] allFunctions = nodeAttr.getUniqueStringValues(chosenAttr);
 	    String [] allGeneNames = nodeAttr.getObjectNames(chosenAttr);
-	    String [] nodeNames = getSelectedNodes();	    
+	    String [] nodeNames = getSelectedNames(chosenNames);	    
 	    System.err.println("Attribute has " + allFunctions.length + 
 			       " values over " + allGeneNames.length + " genes");
 	    
@@ -153,7 +160,11 @@ public class SigAttributes extends AbstractPlugin {
 	    }
 	}
 
-	private void runAnnotations (String chosenAnnot, double pvalueCutoff, int maxNum) {
+	private void runAnnotations (String chosenAnnot, String [] chosenNames,
+				     double pvalueCutoff, int maxNum) {
+
+	    // cannot run unless annotations exist
+	    if (bds == null) return;
 
 	    // get annotations from BioDataServer and ensure not null
 	    AnnotationDescription [] annotDesc = bds.getAnnotationDescriptions();
@@ -164,7 +175,7 @@ public class SigAttributes extends AbstractPlugin {
 
 	    // get all genes and selected genes
 	    String [] allGeneNames = annotation.getNames();
-	    String [] nodeNames = getSelectedNodes();
+	    String [] nodeNames = getSelectedNames(chosenNames);
 
 	    // get # occurrences of each function across all genes and selected genes	    
 	    HashMap allFunctionCount = getFunctionCount(allGeneNames, annotation);
@@ -259,18 +270,19 @@ public class SigAttributes extends AbstractPlugin {
 	    return result;
 	} // end flatten
 
-	private String [] getSelectedNodes() {
-	    // make an array of selected node names
+	private String [] getSelectedNames(String [] nameAttrs) {
+	    // make an array of selected names, allowing more than one name per node
 	    int [] nodeIndices = graphView.getSelectedNodeIndices();
-	    String [] nodeNames = new String [nodeIndices.length];
+	    HashSet nodeNames = new HashSet();  // ensures nodes only occur once
 	    for (int i=0; i<nodeIndices.length; i++) {
 		int nodeIndex = nodeIndices[i];
 		Node node = graphPerspective.getNode(nodeIndex);
-		nodeNames[i] = node.getIdentifier();
-		//System.err.println("Node " + nodeNames[i]);
+		for (int j=0; j<nameAttrs.length; j++) 
+		    nodeNames.addAll(nodeAttr.getList(nameAttrs[j], node.getIdentifier()));
 	    }
-	    return nodeNames;
-	} // end getSelectedNodes
+	    //System.err.println("Node " + nodeNames);
+	    return (String []) nodeNames.toArray(new String [0]);
+	} // end getSelectedNames
 
 	private Vector getSignificance (HashMap thisFunctionCount, HashMap allFunctionCount,
 					double pvalueCutoff, int maxNumber) {
@@ -293,9 +305,13 @@ public class SigAttributes extends AbstractPlugin {
 	    int sigCount = 0;
 	    for (Iterator it = funAndPvals.iterator(); it.hasNext(); ) {
 		FunAndPval funAndPval = (FunAndPval) it.next();
-		OntologyTerm term = 
-		    annotation.getOntology().getTerm(Integer.parseInt(funAndPval.getFunction()));
-		System.err.println(funAndPval + " " + term.getName());
+		System.err.print(funAndPval);
+		if (annotation != null) {
+		    OntologyTerm term = 
+		     annotation.getOntology().getTerm(Integer.parseInt(funAndPval.getFunction()));
+		    System.err.print(" " + term.getName());
+		}
+		System.err.println();
 		if (funAndPval.getPvalue() < pvalueCutoff && sigCount++ < maxNumber) 
 		    sigFunctions.add(funAndPval.getFunction());
 	    }		
