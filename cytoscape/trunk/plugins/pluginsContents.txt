@@ -42,13 +42,6 @@ Attributes". This item allows you to scan for significant attributes
 loaded onto the network. The scan can be performed by Attribute
 or by Annotation, and is based on a group of selected nodes.
 
-control.jar
------------
-This plugin add a choice to the Layout menu labelled "Align". This item
-will display a toolbar which allow you to align and distribute selected
-nodes relative to each other (Align/Distribute horizontal
-left/center/right, Align/Distribute vertical top/center/bottom)
-
 diff.jar
 --------
 This plugin add a choice to the Data menu labelled "Diff". In order for
