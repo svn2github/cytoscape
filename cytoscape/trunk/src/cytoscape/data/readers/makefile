@@ -16,6 +16,7 @@ OBJS =  BindingPairXmlReader.class \
         GeneProductXmlReader.class \
         GeneSynonymXmlReader.class \
         GMLReader.class \
+	GMLWriter.class \
         GoPathTerminatorTextReader.class \
         GoTermXmlReader.class \
         InteractionsReader.class \
