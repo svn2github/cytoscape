@@ -34,6 +34,11 @@ public final class IntStack
       m_stack[m_currentSize++] = val; }
   }
 
+  public final int peek()
+  {
+    return m_stack[m_currentSize - 1];
+  }
+
   public final int pop()
   {
     try { return m_stack[--m_currentSize]; }
