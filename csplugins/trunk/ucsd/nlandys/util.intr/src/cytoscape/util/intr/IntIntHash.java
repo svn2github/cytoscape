@@ -61,6 +61,7 @@ public final class IntIntHash
    * is associated with specified key at the time of this call.<p>
    * Insertions into the hashtable are performed in [amortized] time
    * complexity O(1).
+   *
    * @exception IllegalArgumentException if either key or value is negative.
    */
   public final int put(final int key, final int value)
@@ -96,6 +97,7 @@ public final class IntIntHash
    * currently bound to the specified key.<p>
    * Searches in this hashtable are performed in [amortized] time
    * complexity O(1).
+   *
    * @exception IllegalArgumentException if key is negative.
    */
   public final int get(final int key)

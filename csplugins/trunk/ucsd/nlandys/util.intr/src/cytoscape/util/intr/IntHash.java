@@ -62,6 +62,7 @@ public final class IntHash
    * not in this hashtable prior to this call.<p>
    * Insertions into the hashtable are performed in [amortized] time
    * complexity O(1).
+   *
    * @exception IllegalArgumentException if value is negative.
    */
   public final int put(final int value)
@@ -91,6 +92,7 @@ public final class IntHash
    * returns -1.<p>
    * Searches in this hashtable are performed in [amortized] time
    * complexity O(1).
+   *
    * @exception IllegalArgumentException if value is negative.
    */
   public final int get(final int value)
