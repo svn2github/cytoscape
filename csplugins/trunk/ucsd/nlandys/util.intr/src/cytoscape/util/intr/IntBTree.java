@@ -494,6 +494,7 @@ public final class IntBTree
     private final void push(Node value) {
       try { stack[currentSize++] = value; }
       catch (ArrayIndexOutOfBoundsException e) {
+        currentSize--;
         final int newStackSize = (int)
           Math.min((long) Integer.MAX_VALUE, ((long) stack.length) * 2l + 1l);
         if (newStackSize == stack.length)
@@ -502,8 +503,12 @@ public final class IntBTree
         final Node[] newStack = new Node[newStackSize];;
         System.arraycopy(stack, 0, newStack, 0, stack.length);
         stack = newStack;
-        stack[currentSize] = value; } }
-    private final Node pop() { return stack[--currentSize]; }
+        stack[currentSize++] = value; } }
+    private final Node pop() {
+      try { return stack[--currentSize]; }
+      catch (ArrayIndexOutOfBoundsException e) {
+        currentSize++;
+        throw e; } }
   }
 
   public static void main(String[] args)
