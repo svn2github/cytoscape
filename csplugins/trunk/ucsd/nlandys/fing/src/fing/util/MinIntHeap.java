@@ -84,8 +84,29 @@ public final class MinIntHeap
    */
   public final void toss(int x)
   {
-    checkSize();
+    checkSize(1);
     m_heap[++m_currentSize] = x;
+    m_orderOK = false;
+  }
+
+  /**
+   * Tosses a bunch of new elements onto the heap at once.  The heap will
+   * become unordered after this operation; this operation takes
+   * O(N) time where N is the number of elements being tossed onto the heap.
+   * @param elements an array containing elements to be tossed onto this heap.
+   * @param beginIndex the index in the elements array from which to start
+   *   tossing elements onto this heap.
+   * @param length the number of contiguous elements in the elements array
+   *   to toss onto this heap.
+   */
+  public final void toss(int[] elements, int beginIndex, int length)
+  {
+    if (length < 0)
+      throw new IllegalArgumentException("length cannot be negative");
+    checkSize(length);
+    System.arraycopy(elements, beginIndex,
+                     m_heap, m_currentSize + 1, length);
+    m_currentSize += length;
     m_orderOK = false;
   }
 
@@ -99,7 +120,7 @@ public final class MinIntHeap
    */
   public final void insert(int x)
   {
-    checkSize();
+    checkSize(1);
     m_heap[++m_currentSize] = x;
     if (m_orderOK) percolateUp(m_heap, m_currentSize);
   }
@@ -148,10 +169,11 @@ public final class MinIntHeap
     return returnThis;
   }
 
-  private final void checkSize()
+  private final void checkSize(int newElements)
   {
-    if (m_currentSize < m_heap.length - 1) return;
-    final int[] newHeap = new int[m_heap.length * 2 + 1];
+    if (m_currentSize < m_heap.length - newElements) return;
+    final int[] newHeap = new int[Math.max(m_heap.length * 2 + 1,
+                                           m_heap.length + newElements)];
     System.arraycopy(m_heap, 0, newHeap, 0, m_heap.length);
     m_heap = newHeap;
   }
