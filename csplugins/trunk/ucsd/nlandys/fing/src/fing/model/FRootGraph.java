@@ -574,7 +574,7 @@ class FRootGraph implements RootGraph
   // Throws IllegalArgumentException.
   public boolean isEdgeDirected(int edgeInx)
   {
-    return m_graph.isDirectedEdge(~edgeInx);
+    return m_graph.isDirectedEdge(~edgeInx) == 1;
   }
 
   public boolean addMetaChild(Node parent, Node child) {
