@@ -8,6 +8,9 @@ import cern.colt.map.*;
 import cytoscape.util.intr.*;
 import java.util.Collection;
 
+import giny.model.Node;
+import giny.model.Edge;
+
 public class CytoscapeFingRootGraph  
   extends FingExtensibleRootGraph 
   implements  CytoscapeRootGraph {

@@ -1,8 +1,9 @@
 package cytoscape;
 
 import giny.model.*;
+import cytoscape.giny.Node;
 
-public class CyEdge implements Edge {
+public class CyEdge implements cytoscape.giny.Edge {
 
 
   // Variables specific to public get/set methods.
@@ -17,13 +18,27 @@ public class CyEdge implements Edge {
     this.m_identifier = new Integer(m_rootGraphIndex).toString();
   }
 
-  public Node getSource()
+  /**
+   * @deprecated
+   */
+  public Node getSourceNode () {
+    return ( cytoscape.giny.Node )getSource();
+  }
+
+  /**
+   * @deprecated
+   */
+  public Node getTargetNode () {
+    return ( cytoscape.giny.Node )getTarget();
+  }
+
+  public giny.model.Node getSource()
   {
     return m_rootGraph.getNode
       (m_rootGraph.getEdgeSourceIndex(m_rootGraphIndex));
   }
 
-  public Node getTarget()
+  public giny.model.Node getTarget()
   {
     return m_rootGraph.getNode
       (m_rootGraph.getEdgeTargetIndex(m_rootGraphIndex));

@@ -4,7 +4,7 @@ import giny.model.*;
 
 
   // Package visible class.
-public class CyNode implements Node
+public class CyNode implements cytoscape.giny.Node
 {
 
   // Variables specific to public get/set methods.
