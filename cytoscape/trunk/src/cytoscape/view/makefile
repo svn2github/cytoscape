@@ -1,4 +1,4 @@
-# makefile for cytoscape.viewmodes package
+# makefile for cytoscape.view package
 #-------------------------------------------------------------------------
 # $Revision$
 # $Date$
