@@ -266,7 +266,7 @@ class FRootGraph implements RootGraph, DynamicGraph
     m_metaToNativeInxMap.setIntAtIndex(nativeParentNodeInx + 1,
                                        metaParentNodeInx);
     m_nativeToMetaNodeInxMap.put(nativeParentNodeInx, metaParentNodeInx);
-    for (int i = 0; i < perspNodeInxArr.length; i++) {
+    for (int i = 1; i < perspNodeInxArr.length; i++) {
       final int nativeChildNodeInx = ~perspNodeInxArr[i];
       int metaChildNodeInx = m_nativeToMetaNodeInxMap.get(nativeChildNodeInx);
       if (metaChildNodeInx < 0 || metaChildNodeInx == Integer.MAX_VALUE) {
@@ -276,7 +276,7 @@ class FRootGraph implements RootGraph, DynamicGraph
         m_nativeToMetaNodeInxMap.put(nativeChildNodeInx, metaChildNodeInx); }
       // This edge can't yet exist because we just created metaParentNodeInx.
       m_metaGraph.edgeCreate(metaParentNodeInx, metaChildNodeInx, true); }
-    for (int i = 0; i < perspEdgeInxArr.length; i++) {
+    for (int i = 1; i < perspEdgeInxArr.length; i++) {
       final int nativeChildEdgeInx = ~perspEdgeInxArr[i];
       int metaChildEdgeInx = m_nativeToMetaEdgeInxMap.get(nativeChildEdgeInx);
       if (metaChildEdgeInx < 0 || metaChildEdgeInx == Integer.MAX_VALUE) {
