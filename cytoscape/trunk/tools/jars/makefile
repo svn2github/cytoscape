@@ -84,7 +84,7 @@ cyto-auxjar:
 #
 
 obf:
-	java -cp retroguard.jar RetroGuard cytoscape.jar cytoscape-obf.jar script.rgs
+	java -cp retroguard.jar RetroGuard cytoscape.jar cytoscape-obf.jar script.rgs cytoscape-obf.log
 
 
 help:

@@ -8,11 +8,15 @@
 .class cytoscape/*/*/* protected
 .class cytoscape/*/*/*/* protected
 .class cytoscape/*/*/*/*/* protected
+.class cytoscape/*/*/*/*/*/* protected
+.class cytoscape/*/*/*/*/*/*/* protected
 .class csplugins/* protected
 .class csplugins/*/* protected
 .class csplugins/*/*/* protected
 .class csplugins/*/*/*/* protected
 .class csplugins/*/*/*/*/* protected
+.class csplugins/*/*/*/*/*/* protected
+.class csplugins/*/*/*/*/*/*/* protected
 .class gnu/* protected
 .class gnu/*/* protected
 .class gnu/*/*/* protected
