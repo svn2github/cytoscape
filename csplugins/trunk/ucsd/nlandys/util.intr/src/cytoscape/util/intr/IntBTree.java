@@ -1,7 +1,7 @@
 package cytoscape.util.intr;
 
 /**
- * This is actually a B+-tree.
+ * This is a B+-tree that stores integers.
  */
 public final class IntBTree
 {
@@ -11,14 +11,10 @@ public final class IntBTree
   // are split evenly when they get full.
   private final static int MAX_BRANCHES = 3;
 
-//   private final int m_min_capacity;
-  private final int[] m_buff; // Poor man's algorithms; optimize later.
   private Node m_root;
 
   public IntBTree()
   {
-//     m_min_capacity = (int) Math.ceil(((double) MAX_BRANCHES) / 2.0d);
-    m_buff = new int[MAX_BRANCHES + 1];
     m_root = new Node(MAX_BRANCHES, true);
   }
 
@@ -51,7 +47,9 @@ public final class IntBTree
   // the node returned is the right sibling of node n.  If the returned node
   // is a leaf node then the first value of the node is to be the new split
   // index; if return value is internal node, then the split index to be used
-  // is returnValue.data.splitVals[returnValue.sliceCount - 1].
+  // is n.data.splitVals[n.sliceCount - 1] (This is something that this
+  // method sets; it's this method saying "use this index in the higher
+  // levels".)
   private Node insert(Node n, int x)
   {
     if (isLeafNode(n))
@@ -70,21 +68,7 @@ public final class IntBTree
         int combinedCount = MAX_BRANCHES + 1;
         n.sliceCount = combinedCount >> 1; // Divide by two.
         newNode.sliceCount = combinedCount - n.sliceCount;
-        Node currentNode = newNode;
-        int currentInx = currentNode.sliceCount;
-        boolean found = false;
-        for (int i = MAX_BRANCHES - 1; i >= 0; i--) {
-          if ((!found) && (x >= n.values[i])) {
-            currentNode.values[--currentInx] = x;
-            found = true;
-            if (currentNode == n) break;
-            i++; }
-          else { currentNode.values[--currentInx] = n.values[i]; }
-          if (currentInx == 0) {
-            if (found) break;
-            currentNode = n;
-            currentInx = currentNode.sliceCount; } }
-        if (!found) currentNode.values[0] = x;
+        split(x, n.values, newNode.values, newNode.sliceCount);
         return newNode; }
     }
     else
@@ -94,7 +78,7 @@ public final class IntBTree
         if (x >= n.data.splitVals[i]) {
           foundPath = i + 1;
           break; } }
-      Node oldChild = n.data.children[foundPath]; // Remove reference later.
+      Node oldChild = n.data.children[foundPath];
       Node newChild = insert(oldChild, x);
       if (newChild == null) {
         n.data.deepCount++;
@@ -103,7 +87,7 @@ public final class IntBTree
       { // A split was performed at one level deeper.
         int newSplit;
         if (isLeafNode(newChild)) newSplit = newChild.values[0];
-        else newSplit = newChild.data.splitVals[newChild.sliceCount - 1];
+        else newSplit = oldChild.data.splitVals[oldChild.sliceCount - 1];
         if (n.sliceCount < MAX_BRANCHES) { // There's room here.
           for (int j = n.sliceCount - 1; j > foundPath;) {
             n.data.children[j + 1] = n.data.children[j];
@@ -118,80 +102,12 @@ public final class IntBTree
           int combinedCount = MAX_BRANCHES + 1;
           n.sliceCount = combinedCount >> 1; // Divide by two.
           newNode.sliceCount = combinedCount - n.sliceCount;
-          Node currentNode = newNode;
-          int currentInx = currentNode.sliceCount;
-          boolean found = false;
-          for (int i = MAX_BRANCHES - 1; i >= 0; i--) {
-            if ((!found) && (i == foundPath)) {
-              currentNode.data.children[--currentInx] = newChild;
-              found = true;
-              if (currentNode == n) break;
-              i++; }
-            else {
-              currentNode.data.children[--currentInx] = n.data.children[i]; }
-            if (currentInx == 0) {
-              if (found) break;
-              currentNode = n;
-              currentInx = currentNode.sliceCount; } }
-          for (int i = n.splitCount; i < MAX_BRANCHES; i++)
-            n.data.children[i] = null; // Remove pointers for garbage collect.
-          currentNode = newNode;
-          currentInx = currentNode.sliceCount - 1;
-          found = false;
-          for (int i = MAX_BRANCHES - 2; i >= 0; i--) {
-            if ((!found) && (newSplit >= n.data.splitVals[i])) {
-              currentNode.data.splitVals[--currentInx] = newSplit;
-              found = true;
-              if (currentNode == n) break;
-              i++; }
-            else {
-              currentNode.data.splitVals[--currentInx] = n.data.splitVals[i]; }
-            if (currentInx == 0) {
-              if (i == 0) {
-                newNode.data.splitVals[newNode.sliceCount - 1] = newSplit; }
-              else {
-                newNode.data.splitVals[newNode.sliceCount - 1] =
-                  n.data.splitVals[--i]; }
-              if (found) break;
-              currentNode = n;
-              currentInx = currentNode.sliceCount - 1; } }
-
+          split(newChild, foundPath, n.data.children,
+                newNode.data.children, newNode.sliceCount);
+          split(newSplit, n.data.splitVals,
+                newNode.data.splitVals, newNode.sliceCount - 1);
           // Todo: Update deep counts.
           return newNode; }
-
-
-//           // Being poor but correct, we're going to use poor man's m_buff.
-//           System.arraycopy(n.data.splitVals, 0, m_buff, 0, foundPath);
-//           m_buff[foundPath] = newSplit;
-//           System.arraycopy(n.data.splitVals, foundPath, m_buff, foundPath + 1,
-//                            n.sliceCount - (foundPath + 1));
-//           Node[] nodeBuff = new Node[n.sliceCount + 1];
-//           System.arraycopy(n.data.children, 0, nodeBuff, 0, foundPath + 1);
-//           nodeBuff[foundPath + 1] = newChild;
-//           System.arraycopy(n.data.children, foundPath + 1,
-//                            nodeBuff, foundPath + 2,
-//                            n.sliceCount - (foundPath + 1));
-//           int combinedSplitCount = n.sliceCount;
-//           int middleInx = combinedSplitCount >> 1; // Divide by two.
-//           Node returnThis = new Node(MAX_BRANCHES, false);
-//           System.arraycopy(m_buff, 0,
-//                            n.data.splitVals, 0, middleInx); // Superfluous?
-//           System.arraycopy(nodeBuff, 0, n.data.children, 0,
-//                            middleInx + 1); // Superfluous?
-//           n.sliceCount = middleInx + 1;
-//           System.arraycopy(m_buff, middleInx + 1,
-//                            returnThis.data.splitVals, 0,
-//                            combinedSplitCount - (middleInx + 1));
-//           // Todo: Remove dangling pointers so garbage collect.
-//           // Todo: Put more data into right (new) sibling.
-//           // Todo: Update deep counts.
-//           System.arraycopy(nodeBuff, middleInx + 1,
-//                            returnThis.data.children, 0,
-//                            combinedSplitCount - middleInx);
-//           returnThis.sliceCount = combinedSplitCount - middleInx;
-//           returnThis.data.splitVals[combinedSplitCount - (middleInx + 1)] =
-//             m_buff[middleInx];
-//           return returnThis; }
       }
     }
   }
@@ -238,7 +154,7 @@ public final class IntBTree
       if ((!found) && (newVal >= origBuff[i])) {
         currentArr[--currentInx] = newVal;
         found = true;
-        if (currentArr == splitThis) break;
+        if (currentArr == origBuff) break;
         i++; }
       else { currentArr[--currentInx] = origBuff[i]; }
       if (currentInx == 0) {
@@ -246,6 +162,69 @@ public final class IntBTree
         currentArr = origBuff;
         currentInx = origBuff.length - overflowCount + 1; } }
     if (!found) currentArr[0] = newVal;
+  }
+
+  /*
+   * It's tedious to rigorously define what this method does.  I give an
+   * example:
+   *
+   *
+   *   INPUTS
+   *   ======
+   *
+   *   newNode: Z
+   *
+   *   newInx: 5
+   *
+   *              +---+---+---+---+---+---+---+
+   *   origNodes: | Q | I | E | A | Y | N | W |
+   *              +---+---+---+---+---+---+---+
+   *
+   *                  +---+---+---+---+---+---+---+
+   *   overflowNodes: | / | / | / | / | / | / | / |
+   *                  +---+---+---+---+---+---+---+
+   *
+   *   overflowCount: 4
+   *
+   *
+   *   OUTPUTS
+   *   =======
+   *
+   *             +---+---+---+---+---+---+---+
+   *   origBuff: | Q | I | E | A | / | / | / |
+   *             +---+---+---+---+---+---+---+
+   *
+   *                 +---+---+---+---+---+---+---+
+   *   overflowBuff: | Y | N | Z | W | / | / | / |
+   *                 +---+---+---+---+---+---+---+
+   *
+   *   In addition, the "unused" entries in origBuff are nulled out (remove
+   *   pointers to enable garbage collection).
+   *
+   *   Note tht newInx means to put the new node after the existing node
+   *   at index newInx in the original array.  Placing the new node before
+   *   every other node would entail specifying newInx as -1, which is not
+   *   allowed.
+   */
+  private void split(Node newNode, int newInx, Node[] origNodes,
+                     Node[] overflowNodes, int overflowCount)
+  {
+    Node[] currentNodes = overflowNodes;
+    int currentInx = overflowCount;
+    boolean found = false;
+    for (int i = origNodes.length - 1; i >= 0; i--) {
+      if ((!found) && (i == newInx)) {
+        currentNodes[--currentInx] = newNode;
+        found = true;
+        if (currentNodes == origNodes) break;
+        i++; }
+      else { currentNodes[--currentInx] = origNodes[i]; }
+      if (currentInx == 0) {
+        if (found) break;
+        currentNodes = origNodes;
+        currentInx = origNodes.length - overflowCount + 1; } }
+    for (int i = origNodes.length - overflowCount + 1; i < origNodes.length;
+         i++) origNodes[i] = null;
   }
 
   /**
@@ -277,41 +256,41 @@ public final class IntBTree
     return 0;
   }
 
-  /**
-   * Returns the number of entries of the integer x in this tree.
-   * This method is superfluous because we can use searchRange(x, 1) to
-   * get the same information; I'm implementing this method as a warm-up
-   * to the more difficult methods.
-   * @param x the integer whose count to query.
-   * @return the number of entries x currently in this structure.
-   */
-  public int count(int x)
-  {
-    return count(m_root, x);
-  }
+//   /**
+//    * Returns the number of entries of the integer x in this tree.
+//    * This method is superfluous because we can use searchRange(x, 1) to
+//    * get the same information; I'm implementing this method as a warm-up
+//    * to the more difficult methods.
+//    * @param x the integer whose count to query.
+//    * @return the number of entries x currently in this structure.
+//    */
+//   public int count(int x)
+//   {
+//     return count(m_root, x);
+//   }
 
-  private int count(Node n, int x)
-  {
-    if (isLeafNode(n)) {
-      int count = 0;
-      for (int i = 0; i < n.sliceCount; i++) { // For the sake of simple
-        if (n.values[i] == x) count++; }       // code, don't abort on over.
-      return count; }
-    else {
-      // Poor man's algorithm; optimize later.
-      m_buff[0] = Integer.MIN_VALUE;
-      System.arraycopy(n.data.splitVals, 0, m_buff, 1, n.sliceCount - 1);
-      m_buff[n.sliceCount] = Integer.MAX_VALUE;
-      int count = 0;
-      for (int i = 0; i < n.sliceCount; i++)
-      {
-        if (x >= m_buff[i] && x <= m_buff[i + 1]) {
-          if (m_buff[i] == m_buff[i + 1]) count += n.data.deepCount;
-          else count += count(n.data.children[i], x); }
-      }
-      return count;
-    }
-  }
+//   private int count(Node n, int x)
+//   {
+//     if (isLeafNode(n)) {
+//       int count = 0;
+//       for (int i = 0; i < n.sliceCount; i++) { // For the sake of simple
+//         if (n.values[i] == x) count++; }       // code, don't abort on over.
+//       return count; }
+//     else {
+//       // Poor man's algorithm; optimize later.
+//       m_buff[0] = Integer.MIN_VALUE;
+//       System.arraycopy(n.data.splitVals, 0, m_buff, 1, n.sliceCount - 1);
+//       m_buff[n.sliceCount] = Integer.MAX_VALUE;
+//       int count = 0;
+//       for (int i = 0; i < n.sliceCount; i++)
+//       {
+//         if (x >= m_buff[i] && x <= m_buff[i + 1]) {
+//           if (m_buff[i] == m_buff[i + 1]) count += n.data.deepCount;
+//           else count += count(n.data.children[i], x); }
+//       }
+//       return count;
+//     }
+//   }
 
   /**
    * Returns an enumeration of all entries in the range
