@@ -140,6 +140,7 @@ public class LoadGraphFileAction extends CytoscapeAction {
           sb.append( "Your Network is Under "+CytoscapeInit.getViewThreshold() +" nodes, a View  will be automatically created." );
         } else { 
           sb.append( "Your Network is Over nodes "+CytoscapeInit.getViewThreshold() +", a View  will be not be created."+lineSep+"If you wish to view this Network use \"Create View\" from the \"Edit\" menu." );
+          cytoscape.foo.RandomRenderableSubgraphLogic.justDoIt(newNetwork[0]);
         }
         JOptionPane.showMessageDialog( Cytoscape.getDesktop(),
                                       sb.toString(),
