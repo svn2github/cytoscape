@@ -2,7 +2,15 @@ package cytoscape.graph.layout.algorithm;
 
 /**
  * Represents a <code>MutableGraphLayout</code> with an added constraint
- * such that only certain nodes can be moved.
+ * such that only certain nodes can be moved.<p>
+ * Note from the author on Fri Oct  8 15:20:20 PDT 2004:
+ * I don't like the fact that a more restrictive interface
+ * <code>SubMutableGraphLayout</code> extends
+ * a less restrictive interface <code>MutableGraphLayout</code>.
+ * If we cast our instance of <code>SubMutableGraphLayout</code> to
+ * a <code>MutableGraphLayout</code> and give it to someone, they won't know
+ * that they're only allowed to move certain nodes.  This is a bad design
+ * and needs some re-thinking.
  **/
 public interface SubMutableGraphLayout extends MutableGraphLayout
 {
