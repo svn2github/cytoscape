@@ -27,8 +27,26 @@
 				<b>
 					Principal Investigators:</b>
 			</big>
-			Trey Ideker, Benno Schwikowski, Chris Sander, and Hamid Bolouri
 			<br>
+			<br>
+</blockquote>
+<table cellpadding="8" cellspacing="0" border="0">
+  <tr><!-- Stupid table wants to put itself all the way to the left lol! -->
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
+    <td>Trey Ideker<br /></td>
+    <td>Benno<br />Schwikowski</td>
+    <td>Chris Sander</td>
+    <td>Hamid Bolouri</td>
+  </tr>
+  <tr>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
+    <td><img src="people_photos/trey.jpg"></img></td>
+    <td><img src="people_photos/benno.jpg"></img></td>
+    <td><img src="people_photos/chris_s.jpg"></img></td>
+    <td><img src="people_photos/hamid.jpg"></img></td>
+  </tr>
+</table>
+<blockquote>
 			<br>
 			Schwikowski Laboratory Pages
 			<br>
@@ -43,6 +61,7 @@
 			<a href="http://www.systemsbiology.org/Default.aspx?pagename=hamidbolouri">
 				Bolouri Laboratory Pages
 			</a>
+			<br>
 			<br>
 			<br>
 			<hr width="100%" size="2">
@@ -68,22 +87,23 @@
     <td><img src="people_photos/gary.jpg"></img></td>
     <td><img src="people_photos/ethan.jpg"></img></td>
     <td><img src="people_photos/rowan.jpg"></img></td>
+  </tr>
   <tr><td colspan=6>&nbsp;</td></tr>
   <tr>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
-    <td>Trey Ideker</td>
     <td>Ryan Kelley</td>
     <td>Nerius Landys</td>
     <td>Robert Sheridan</td>
-    <td colspan=3>Chris Workman</td>
+    <td>Chris Workman</td>
+    <td>&nbsp;</td>
   </tr>
   <tr>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
-    <td><img src="people_photos/trey.jpg"></img></td>
     <td><img src="people_photos/ryan.jpg"></img></td>
     <td><img src="people_photos/nerius.jpg"></img></td>
     <td><img src="people_photos/robert.jpg"></img></td>
     <td><img src="people_photos/chris.jpg"></img></td>
+    <td>&nbsp;</td>
   </tr>
 </table>
 <blockquote>
