@@ -28,14 +28,53 @@ public class FlagAndSelectionHandler implements FlagEventListener, GraphViewChan
     
     /**
      * Standard constructor takes the flag filter and the view that should be
-     * synchronized. It is assumed that the two objects are synchronized when
-     * supplied to this constructor.
+     * synchronized. On construction, this object will synchronize the filter
+     * and view by turning on flags or selections that are currently on in
+     * one of the two objects.
      */
     public FlagAndSelectionHandler(FlagFilter flagFilter, GraphView view) {
         this.flagFilter = flagFilter;
-        flagFilter.addFlagEventListener(this);
         this.view = view;
+        syncFilterAndView();
+        flagFilter.addFlagEventListener(this);
         view.addGraphViewChangeListener(this);
+    }
+    
+    /**
+     * Synchronizes the filter and view of this object by selecting every
+     * object that is currently flagged and vice versa.
+     */
+    private void syncFilterAndView() {
+        Set flaggedNodes = flagFilter.getFlaggedNodes();
+        Set flaggedEdges = flagFilter.getFlaggedEdges();
+        List selectedNodes = view.getSelectedNodes();
+        List selectedEdges = view.getSelectedEdges();
+        //select all nodes that are flagged but not currently selected
+        for (Iterator iter = flaggedNodes.iterator(); iter.hasNext(); ) {
+            Node node = (Node)iter.next();
+            NodeView nv = view.getNodeView(node);
+            if ( nv == null || nv.isSelected() ) {continue;}
+            nv.setSelected(true);
+        }
+        //select all edges that are flagged but not currently selected
+        for (Iterator iter = flaggedEdges.iterator(); iter.hasNext(); ) {
+            Edge edge = (Edge)iter.next();
+            EdgeView ev = view.getEdgeView(edge);
+            if ( ev == null || ev.isSelected() ) {continue;}
+            ev.setSelected(true);
+        }
+        //flag all nodes that are selected but not currently flagged
+        for (Iterator iter = selectedNodes.iterator(); iter.hasNext(); ) {
+            NodeView nv = (NodeView)iter.next();
+            Node node = nv.getNode();
+            flagFilter.setFlagged(node, true); //does nothing if already flagged
+        }
+        //flag all edges that are selected but not currently flagged
+        for (Iterator iter = selectedEdges.iterator(); iter.hasNext(); ) {
+            EdgeView ev = (EdgeView)iter.next();
+            Edge edge = ev.getEdge();
+            flagFilter.setFlagged(edge, true); //does nothing if already flagged
+        }
     }
     
     /**
@@ -132,7 +171,7 @@ public class FlagAndSelectionHandler implements FlagEventListener, GraphViewChan
     }
     
     /**
-     * Helper method to set selection for an edg view.
+     * Helper method to set selection for an edge view.
      */
     private void setEdgeSelected(Edge edge, boolean selectOn) {
         EdgeView edgeView = view.getEdgeView(edge);

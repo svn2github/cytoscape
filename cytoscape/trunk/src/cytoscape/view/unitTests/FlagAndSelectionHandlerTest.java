@@ -80,7 +80,14 @@ public void setUp () throws Exception
     nodeView2 = view.getNodeView(node2);
     edgeView1 = view.getEdgeView(edge1);
     edgeView2 = view.getEdgeView(edge2);
+    //set an initial state to make sure the handler synchronizes properly
+    filter.setFlagged(node1, true);
+    edgeView2.setSelected(true);
     handler = new FlagAndSelectionHandler(filter, view);
+    assertTrue( filter.isFlagged(edge2) );
+    assertTrue( nodeView1.isSelected() );
+    filter.unflagAllNodes();
+    filter.unflagAllEdges();
 }
 //------------------------------------------------------------------------------
 public void tearDown () throws Exception
