@@ -1,6 +1,7 @@
 package cytoscape.util.intr;
 
 /**
+ * A dynamically growing array of integers.
  * Valid indices: [0, Integer.MAX_VALUE - 1].
  */
 public final class IntArray
@@ -18,7 +19,11 @@ public final class IntArray
   /**
    * Returns the value at specified index.
    * This method will not increase the size of the underlying array, no
-   * matter what.
+   * matter what.  The value returned by this method will be 0 unless a
+   * value at given index has been previously specified with
+   * setIntAtIndex(int, int).
+   * @exception ArrayIndexOutOfBoundsException if index is negative or
+   *   Integer.MAX_VALUE.
    */
   public final int getIntAtIndex(int index)
   {
@@ -35,6 +40,11 @@ public final class IntArray
    *   1. value is not zero and
    *   2. index is greater than or equal to the length of the underlying
    *      array.
+   * <p>
+   * NOTE: Setting very large indices to non-zero values implies instantiating
+   * a very large underlying data structure.
+   * @exception ArrayIndexOutOfBoundsException if index is negative or
+   *   Integer.MAX_VALUE.
    */
   public final void setIntAtIndex(int value, int index)
   {
