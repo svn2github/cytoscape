@@ -860,7 +860,7 @@ class FRootGraph implements RootGraph, DynamicGraph
     m_stack.empty();
     final IntStack metaPending = m_stack;
     m_hash2.empty();
-    final IntHash rootChildlessNodeBucket = m_hash2;
+    final IntHash nativeChildlessNodeBucket = m_hash2;
     metaVisited.put(metaParent);
     metaPending.push(metaParent);
     while (metaPending.size() > 0) {
@@ -874,12 +874,12 @@ class FRootGraph implements RootGraph, DynamicGraph
           metaPending.push(aChild);
           if (m_metaGraph.edgesAdjacent
               (aChild, true, false, false).numRemaining() == 0)
-            rootChildlessNodeBucket.put
-              (~(m_metaToNativeInxMap.getIntAtIndex(aChild) - 1)); } } }
-    final IntEnumerator returnElements = rootChildlessNodeBucket.elements();
+            nativeChildlessNodeBucket.put
+              (m_metaToNativeInxMap.getIntAtIndex(aChild) - 1); } } }
+    final IntEnumerator returnElements = nativeChildlessNodeBucket.elements();
     final int[] returnThis = new int[returnElements.numRemaining()];
     for (int i = 0; i < returnThis.length; i++)
-      returnThis[i] = returnElements.nextInt();
+      returnThis[i] = ~returnElements.nextInt();
     return returnThis;
   }
 
