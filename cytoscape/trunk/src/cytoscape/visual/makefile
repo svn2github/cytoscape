@@ -9,7 +9,7 @@ JC=javac
 
 .SUFFIXES: .java .class
 .java.class: 
-	$(JC) -g $<
+	$(JC) $<
 
 OBJS = TestNewMappingsUI.class \
        NodeAppearanceCalculator.class \
