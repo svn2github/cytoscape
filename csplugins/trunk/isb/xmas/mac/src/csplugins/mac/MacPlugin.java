@@ -2,60 +2,55 @@ package csplugins.mac;
 
 import com.apple.eawt.*;
 import com.apple.eio.*;
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
+import cytoscape.actions.HelpAboutAction;
+import cytoscape.plugin.CytoscapePlugin;
 
-import cytoscape.*;
-import cytoscape.data.*;
-import cytoscape.util.*;
-import cytoscape.view.*;
-import cytoscape.plugin.*;
-
-import javax.swing.*;
+import java.awt.event.ActionEvent;
 
 public class MacPlugin extends CytoscapePlugin implements ApplicationListener {
 
+    Application app;
 
-  Application app;
-  
-  public MacPlugin () {
+    public MacPlugin() {
 
-    this.app = Application.getApplication();
-    app.addApplicationListener( this );
+        this.app = Application.getApplication();
+        app.addApplicationListener(this);
 
-  }
+    }
 
+    public void handleAbout(ApplicationEvent event) {
+        new HelpAboutAction().actionPerformed(new ActionEvent(this, 0, "About"));
+        event.setHandled(true);
+    }
 
-  public void handleAbout ( ApplicationEvent event ) {
-   //  JFrame frame = new JFrame( "About Cytoscape" );
-//     frame.getContentPane().add( new JLabel( "<HTML><BIG>Cytoscape 2.0</big><br><br>Macing done by Rowan</HTML>" ) );
-//     frame.pack();
-//     frame.setVisible( true );
-  }
+    public void handleOpenApplication(ApplicationEvent event) {
+    }
 
-  public void handleOpenApplication ( ApplicationEvent event ) {
-  }
- 
+    public void handleOpenFile(ApplicationEvent event) {
+        String file = event.getFilename();
 
-  public void handleOpenFile ( ApplicationEvent event ) {
-    String file = event.getFilename();
-    Cytoscape.createNetworkFromFile( file );
-  } 
- 
+        CyNetwork newNetwork = Cytoscape.createNetworkFromFile(file);
 
-  public void handlePreferences ( ApplicationEvent event ) {
-  }
- 
+        if (newNetwork.getNodeCount() < CytoscapeInit.getViewThreshold()) {
+            Cytoscape.createNetworkView(newNetwork);
+        }
+        event.setHandled(true);
+    }
 
-  public void handlePrintFile ( ApplicationEvent event ) {
-  }
- 
-  public void handleQuit ( ApplicationEvent event ) {
-    Cytoscape.exit();
-  }
+    public void handlePreferences(ApplicationEvent event) {
+    }
 
-  public void handleReOpenApplication ( ApplicationEvent event ){
-  }
+    public void handlePrintFile(ApplicationEvent event) {
+    }
 
-    
+    public void handleQuit(ApplicationEvent event) {
+        Cytoscape.exit();
+        event.setHandled(true);
+    }
 
-
+    public void handleReOpenApplication(ApplicationEvent event) {
+    }
 }
