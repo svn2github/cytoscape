@@ -417,6 +417,12 @@ public class OldStyleCalculatorIO {
      * the old format in the props argument. Also installs any entries found
      * in the "default" node appearance calculator, so that they will be
      * automatically activated the next time the user runs Cytoscape.
+     *
+     * The old visual mappings defintion style did not have entries for node
+     * labels. Assuming the user wants node labels, we grab the node label
+     * calculator from the default visual style and set the visual style we
+     * create here to use that calculator.  This assumes that CytoscapeWindow,
+     * when loading the visual styles, has created a suitable default.
      */
     private static void loadNodeAppearanceCalculator(Properties props,
                                                      CalculatorCatalog catalog,
@@ -425,6 +431,9 @@ public class OldStyleCalculatorIO {
         NodeAppearanceCalculator nac = vs.getNodeAppearanceCalculator();
         //we'll also store any entries in the default nac
         NodeAppearanceCalculator defNAC = defVS.getNodeAppearanceCalculator();
+        
+        //set the node label calculator
+        nac.setNodeLabelCalculator( defNAC.getNodeLabelCalculator() );
         
         String defaultNodeFillString = props.getProperty("node.fillColor.default");
         if (defaultNodeFillString != null) {

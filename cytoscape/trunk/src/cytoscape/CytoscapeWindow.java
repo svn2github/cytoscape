@@ -326,7 +326,25 @@ private void loadVizMapper() {
 
   //now load using the constructed Properties object
   CalculatorIO.loadCalculators(calcProps, cc);
-  //load in old style vizmappings
+  
+  //make sure a default visual style exists, creating as needed
+  //this must be done before loading the old-style visual mappings,
+  //since that class works with the default visual style
+  VisualStyle defaultVS = cc.getVisualStyle("default");
+  if (defaultVS == null) {
+      defaultVS = new VisualStyle("default");
+      //setup the default to at least put canonical names on the nodes
+      String cName = "canonical names as node labels";
+      NodeLabelCalculator nlc = cc.getNodeLabelCalculator(cName);
+      if (nlc == null) {
+          ObjectMapping m = new PassThroughMapping(new String(), "canonicalName");
+          nlc = new GenericNodeLabelCalculator(cName, m);
+      }
+      defaultVS.getNodeAppearanceCalculator().setNodeLabelCalculator(nlc);
+      cc.addVisualStyle(defaultVS);
+  }
+  
+  //now load in old style vizmappings
   Properties configProps = config.getProperties();
   OldStyleCalculatorIO.checkForCalculators(configProps, cc);
   
@@ -334,21 +352,8 @@ private void loadVizMapper() {
   VisualStyle vs = null;
   String vsName = configProps.getProperty("visualStyle");
   if (vsName != null) {vs = cc.getVisualStyle(vsName);}
-  if (vs == null) {//none specified, or not found
-      //get the default visual style from the catalog
-      vs = cc.getVisualStyle("default");
-      if (vs == null) {//catalog doesn't have a default
-          vs = new VisualStyle("default");
-          //setup the default to at least put canonical names on the nodes
-          String cName = "canonical names as node labels";
-          NodeLabelCalculator nlc = cc.getNodeLabelCalculator(cName);
-          if (nlc == null) {
-              ObjectMapping m = new PassThroughMapping(new String(), "canonicalName");
-              nlc = new GenericNodeLabelCalculator(cName, m);
-          }
-          vs.getNodeAppearanceCalculator().setNodeLabelCalculator(nlc);
-          cc.addVisualStyle(vs);
-      }
+  if (vs == null) {//none specified, or not found; use the default
+      vs = defaultVS;
   }
   
   //for testing purposes

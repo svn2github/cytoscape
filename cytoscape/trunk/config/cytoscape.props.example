@@ -3,8 +3,7 @@ species=Saccharomyces cerevisiae
 enableUndo=true
 
 # pick calculators from the vizmap.props file
-nodeAppearanceCalculator=Basic
-edgeAppearanceCalculator=Basic
+visualStyle=default
 
 #--------------------------------------------------------------------
 # plugins. for each plugin, specify
