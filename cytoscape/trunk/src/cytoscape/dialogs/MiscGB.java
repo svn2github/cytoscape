@@ -13,6 +13,7 @@ import javax.swing.*;
 import java.awt.*;
 
 import cytoscape.util.Misc;
+import cytoscape.util.MutableColor;
 import cytoscape.dialogs.GridBagGroup;
 
 //------------------------------------------------------------------------------
@@ -77,5 +78,15 @@ public class MiscGB {
 	label.setBackground(c);
 	return label;
     }
+
+    public static JButton buttonAndColor(JDialog parent, MutableColor mc,
+					 JLabel l, String bTitle) {
+	JButton jb = new JButton(bTitle);
+	jb.addActionListener
+	    (new GeneralColorDialogListener
+		(parent,mc,l,"Choose a " + bTitle));
+	return jb;
+    }
+
 }
 

@@ -26,7 +26,6 @@ import cytoscape.dialogs.NewSlider;
 import cytoscape.util.MutableColor;
 import cytoscape.util.MutableString;
 import cytoscape.util.MutableBool;
-import cytoscape.dialogs.GeneralColorDialogListener;
 import cytoscape.dialogs.MiscGB;
 //--------------------------------------------------------------------------------------
 public class VisualPropertiesDialog extends JDialog {
@@ -79,30 +78,22 @@ public VisualPropertiesDialog (Frame parentFrame,
   int yPos=0;
   int yDef=0;
 
-  JButton colorButton = new JButton("Node Color");
   JLabel colorLabel = MiscGB.createColorLabel(nColor.getColor());
-  colorButton.addActionListener(new
-      GeneralColorDialogListener(this,nColor,colorLabel,
-  				 "Choose a Node Color"));
+  JButton colorButton = MiscGB.buttonAndColor(this,nColor,colorLabel,"Node Color");
   MiscGB.insert(defGBG,colorButton,0,yDef,1,1,GridBagConstraints.HORIZONTAL);
   MiscGB.insert(defGBG,colorLabel,1,yDef);
   yDef++;
 
-  JButton borderColorButton = new JButton("Node Border Color");
   JLabel borderColorLabel = MiscGB.createColorLabel(bColor.getColor());
-  borderColorButton.addActionListener(new
-      GeneralColorDialogListener(this,bColor,borderColorLabel,
-  				 "Choose a Node Border Color"));
+  JButton borderColorButton = MiscGB.buttonAndColor(this,bColor,borderColorLabel,
+						    "Node Border Color");
   MiscGB.insert(defGBG,borderColorLabel,1,yDef);
   MiscGB.insert(defGBG,borderColorButton,0,yDef,1,1,GridBagConstraints.HORIZONTAL);
   yDef++;
 
-  JButton bgColorButton
-      = new JButton("Background Color");
   JLabel bgColorLabel = MiscGB.createColorLabel(bgColor.getColor());
-  bgColorButton.addActionListener(new
-      GeneralColorDialogListener(this,bgColor,bgColorLabel,
-  				 "Choose a Background Color"));
+  JButton bgColorButton = MiscGB.buttonAndColor(this,bgColor,bgColorLabel,
+						    "Background Color");
   MiscGB.insert(defGBG,bgColorLabel,1,yDef);
   MiscGB.insert(defGBG,bgColorButton,0,yDef,1,1,GridBagConstraints.HORIZONTAL);
   yDef++;
