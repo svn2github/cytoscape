@@ -83,9 +83,9 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException();
     // END: Extra checking code that can be removed later.
 
-//     // Test add/remove nodes and edges before other tests.
-//     // We leave the graph with the same topology after these tests as
-//     // existed before these tests.
+    // Test add/remove nodes and edges before other tests.
+    // We leave the graph with the same topology after these tests as
+    // existed before these tests.
 //     if (root.removeNode(nodeInx[1]) != nodeInx[1])
 //       throw new IllegalStateException("removal of node failed");
 //     if (root.removeEdge(edgeInx[0]) != 0 ||
@@ -95,8 +95,8 @@ public final class AllRootGraphMethodsTest
 //       throw new IllegalStateException("removal failure failed - edge");
 //     if (root.removeNode(nodeInx[1]) != 0)
 //       throw new IllegalStateException("removal failure failed - node");
-//     if (root.removeEdge(edgeInx[6]) != edgeInx[6])
-//       throw new IllegalStateException("removal of edge failed");
+    if (root.removeEdge(edgeInx[6]) != edgeInx[6])
+      throw new IllegalStateException("removal of edge failed");
 //     if (root.removeEdge(edgeInx[6]) != 0)
 //       throw new IllegalStateException("removal failure failed - edge");
 //     if (root.removeNode(0) != 0 ||
@@ -119,7 +119,7 @@ public final class AllRootGraphMethodsTest
 //     edgeInx[1] = root.createEdge(nodeInx[1], nodeInx[2], false);
 //     edgeInx[4] = root.createEdge(nodeInx[1], nodeInx[1], false);
 //     edgeInx[5] = root.createEdge(nodeInx[1], nodeInx[0], true);
-//     edgeInx[6] = root.createEdge(nodeInx[3], nodeInx[2], true);
+    edgeInx[6] = root.createEdge(nodeInx[3], nodeInx[2], true);
 // //     root.removeEdge(deleteThisEdge);
 //     int deleteThisNode = root.createNode();
 //     int deleteThisEdge1 = root.createEdge(nodeInx[0], nodeInx[1], false);
@@ -128,15 +128,16 @@ public final class AllRootGraphMethodsTest
 //     root.removeNode(deleteThisNode);
 //     root.removeEdge(deleteThisEdge1);
 //     root.removeEdge(deleteThisEdge2);
-//     // Meta-nodes.  First restore what was there originally.
+    // Meta-nodes.  First restore what was there originally.
 // //     if (root.isMetaParent(root.getEdge(edgeInx[1]),
 // //                           root.getNode(nodeInx[3])))
 // //       throw new IllegalStateException();
 //     if (!(root.addEdgeMetaChild(nodeInx[3], edgeInx[0]) &&
-//           root.addEdgeMetaChild(nodeInx[0], edgeInx[4]) &&
-//           root.addEdgeMetaChild(nodeInx[4], edgeInx[6]) &&
-//           root.addEdgeMetaChild(nodeInx[3], edgeInx[6])))
+//           root.addEdgeMetaChild(nodeInx[0], edgeInx[4])))
 //       throw new IllegalStateException("errors during restoration");
+    if (!(root.addEdgeMetaChild(nodeInx[4], edgeInx[6]) &&
+          root.addEdgeMetaChild(nodeInx[3], edgeInx[6])))
+      throw new IllegalStateException("errors during restoration");
 // //     if (root.isMetaParent(root.getEdge(edgeInx[1]),
 // //                           root.getNode(nodeInx[3])))
 // //       throw new IllegalStateException();
