@@ -407,6 +407,12 @@ public class NetworkPanel
 	    //display the popup
 	    popup.show(e.getComponent(),e.getX(), e.getY());
 	  } 
+          // if no network is selected, disable the menu
+          if (treeTable.getSelectedRow() == -1) {
+	      createViewItem.setEnabled(false);
+	      destroyViewItem.setEnabled(false);
+          }
+
 	}
       }
     }
