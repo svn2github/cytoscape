@@ -615,11 +615,13 @@ public void selectNodesByName (String [] nodeNames, boolean clearAllSelectionsFi
     String graphNodeName = getCanonicalNodeName (nodes [i]);
     NodeRealizer nodeRealizer = graphView.getGraph2D().getRealizer(nodes [i]);
     boolean matched = false;
-    for (int n=0; n < nodeNames.length; n++)
+    for (int n=0; n < nodeNames.length; n++) {
+      // String canonicalName = biodataSever.getCanonicalName (nodes [i]);
       if (nodeNames [n].equalsIgnoreCase (graphNodeName)) {
         matched = true;
         break;
-        }
+        } // if matched
+      } // for n
     if (clearAllSelectionsFirst && !matched)
       nodeRealizer.setSelected (false);
     else if (matched)
