@@ -33,34 +33,21 @@
 <table cellpadding="8" cellspacing="0" border="0">
   <tr><!-- Stupid table wants to put itself all the way to the left lol! -->
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
-    <td>Trey Ideker</td>
-    <td>Benno<br />Schwikowski</td>
-    <td>Chris Sander</td>
-    <td>Hamid Bolouri</td>
+    <td><a href="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab/">Trey Ideker</a></td>
+    <td><a href="http://www.cbio.mskcc.org/">Chris Sander</a></td>
+    <td><a href="http://www.systemsbiology.org/Default.aspx?pagename=hamidbolouri">Hamid Bolouri</a></td>
+    <td><a href="http://www.gmd.de/People/Benno.Schwikowski/">Benno<br />Schwikowski<a/></td>
   </tr>
   <tr>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
     <td><img src="people_photos/trey.jpg"></img></td>
-    <td><img src="people_photos/benno.jpg"></img></td>
     <td><img src="people_photos/chris_s.jpg"></img></td>
     <td><img src="people_photos/hamid.jpg"></img></td>
+    <td><img src="people_photos/benno.jpg"></img></td>
   </tr>
 </table>
 <blockquote>
-			<br>
-			Schwikowski Laboratory Pages
-			<br>
-			<a href="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab/">
-				Ideker Laboratory Pages
-			</a>
-			<br>
-			<a href="http://www.cbio.mskcc.org">
-				Sander Laboratory Pages
-			</a>
-			<br>
-			<a href="http://www.systemsbiology.org/Default.aspx?pagename=hamidbolouri">
-				Bolouri Laboratory Pages
-			</a>
+			<small><i>The link on each name will take you to the lab webpage of that person.</i></small>
 			<br>
 			<br>
 			<br>
