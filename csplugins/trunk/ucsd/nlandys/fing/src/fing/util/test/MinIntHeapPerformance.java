@@ -132,12 +132,15 @@ public class MinIntHeapPerformance
         System.out.println(uniqueElements[i]);
 
     // Run repeated test if that's what the command line told us.
-    else
+    if (repeat)
     {
-      IntEnumerator iter = _REPEAT_TEST_CASE_(elements);
-      final int numElements = iter.numRemaining();
-      for (int i = 0; i < numElements; i++)
-        System.out.println(iter.nextInt());
+      for (int i = 0; i < uniqueElements.length; i++) uniqueElements[i] = 0;
+      millisBegin = System.currentTimeMillis();
+      _REPEAT_TEST_CASE_(elements, uniqueElements);
+      millisEnd = System.currentTimeMillis();
+      System.err.println((millisEnd - millisBegin) + " (repeated test)");
+      for (int i = 0; i < uniqueElements.length; i++)
+        System.out.println(uniqueElements[i]);
     }
   }
 
@@ -154,21 +157,24 @@ public class MinIntHeapPerformance
   // much memory was consumed by our algorithm (may be implemented in future).
   static MinIntHeap _THE_HEAP_ = null;
 
-  private static final int[] _THE_TEST_CASE_(int[] elements)
+  private static final int[] _THE_TEST_CASE_(final int[] elements)
   {
     _THE_HEAP_ = new MinIntHeap(elements, 0, elements.length);
-    IntEnumerator iter = _THE_HEAP_.orderedElements(true);
+    final IntEnumerator iter = _THE_HEAP_.orderedElements(true);
     final int[] returnThis = new int[iter.numRemaining()];
-    for (int i = 0; i < returnThis.length; i++)
-      returnThis[i] = iter.nextInt();
+    final int numElements = returnThis.length;
+    for (int i = 0; i < numElements; i++) returnThis[i] = iter.nextInt();
     return returnThis;
   }
 
-  private static final IntEnumerator _REPEAT_TEST_CASE_(int[] elements)
+  private static final void _REPEAT_TEST_CASE_(final int[] elements,
+                                               final int[] output)
   {
     _THE_HEAP_.empty();
     _THE_HEAP_.toss(elements, 0, elements.length);
-    return _THE_HEAP_.orderedElements(true);
+    final IntEnumerator iter = _THE_HEAP_.orderedElements(true);
+    final int numElements = iter.numRemaining();
+    for (int i = 0; i < numElements; i++) output[i] = iter.nextInt();
   }
 
 }
