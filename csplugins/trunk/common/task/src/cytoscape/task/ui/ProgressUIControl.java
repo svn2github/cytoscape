@@ -1,52 +1,61 @@
 package cytoscape.task.ui;
 
-import cytoscape.task.PercentCompletedCallback;
+import cytoscape.task.TaskMonitor;
 import java.awt.EventQueue;
 import java.awt.Frame;
 import javax.swing.JDialog;
 
 /**
- * Provides functionality to set percent completed, show, and dispose of
- * a progress dialog.
+ * Provides functionality to set percent completed (or set indeterminate),
+ * show status string, show that an error has occurred,
+ * show the dialog, and dispose of the progress dialog.
  **/
-public final class ProgressUIControl implements PercentCompletedCallback
+public final class ProgressUIControl implements TaskMonitor
 {
 
   private final boolean[] m_monitor;
   private final JDialog m_dialog;
-  private final PercentCompletedCallback m_percentHook;
+  private final TaskMonitor m_monitorHook;
   private final Frame m_parent;
 
   /* Package visible only. */
   ProgressUIControl(boolean[] monitor,
                     JDialog dialog,
-                    PercentCompletedCallback percentHook,
+                    TaskMonitor monitorHook,
                     Frame parent)
   {
     m_monitor = monitor;
     m_dialog = dialog;
-    m_percentHook = percentHook;
+    m_monitorHook = monitorHook;
     m_parent = parent;
   }
 
   /**
    * This is a hook to set the percent completed in a progress bar UI.
-   * This method can be called from any thread, but repeated calls should
-   * happen from the same thread.  If this method is never
-   * called, the progress UI will have a generic animating progress bar
-   * with no &quot;percent completed&quot; information.
    *
    * @param percent represents percent completed of a task - must
-   *   be in the range <nobr><code>[0, 100]</code></nobr>.
+   *   be in the range <nobr><code>[0, 100]</code></nobr>, or <code>-1</code>
+   *   to set the progress bar to indeterminate.
    * @exception IllegalArgumentException if <code>percent</code> is not in
-   *   the interval <nobr><code>[0, 100]</code></nobr>.
+   *   the interval <nobr><code>[-1, 100]</code></nobr>.
    **/
   public void setPercentCompleted(int percent)
   {
-    if (percent < 0 || percent > 100)
+    if (percent < -1 || percent > 100)
       throw new IllegalArgumentException
-        ("percent must be in the range [0, 100]");
-    m_percentHook.setPercentCompleted(percent);
+        ("percent must be in the range [-1, 100]");
+    m_monitorHook.setPercentCompleted(percent);
+  }
+
+  public void setException(Throwable t, String userErrorMessage)
+  {
+    m_monitorHook.setException(t, userErrorMessage);
+  }
+
+  public void setStatus(String message)
+  {
+    if (message == null) throw new NullPointerException("message is null");
+    m_monitorHook.setStatus(message);
   }
 
   /**
