@@ -632,7 +632,7 @@ class FGraphPerspective implements GraphPerspective
     public final void rootGraphChanged(RootGraphChangeEvent evt)
     {
       if ((evt.getType() & RootGraphChangeEvent.NODES_REMOVED_TYPE) != 0)
-        m_weeder.hideNodes(evt.getRemovedNodes());
+        m_weeder.hideNodes(evt.getSource(), evt.getRemovedNodes());
       if ((evt.getType() & RootGraphChangeEvent.EDGES_REMOVED_TYPE) != 0)
         m_weeder.hideEdges(evt.getRemovedEdges());
     }
@@ -679,7 +679,7 @@ class FGraphPerspective implements GraphPerspective
 
     // RootGraphChangeSniffer is not to call this method.  We rely on
     // the specified node still existing in the RootGraph in this method.
-    private final int hideNode(int rootGraphNodeInx)
+    private final int hideNode(GraphPerspective source, int rootGraphNodeInx)
     {
       final int returnThis = _hideNode(rootGraphNodeInx);
       if (returnThis != 0) {
@@ -688,7 +688,7 @@ class FGraphPerspective implements GraphPerspective
           final Node removedNode = m_root.getNode(rootGraphNodeInx);
           listener.graphPerspectiveChanged
             (new GraphPerspectiveNodesHiddenEvent
-             (m_root, new Node[] { removedNode })); } }
+             (source, new Node[] { removedNode })); } }
       return returnThis;
     }
 
@@ -725,9 +725,24 @@ class FGraphPerspective implements GraphPerspective
              ("internal error - node didn't exist, its adjacent edges did");
     }
 
-    private final int[] hideNodes(Node[] nodes)
+    private final int[] hideNodes(Object source, Node[] nodes)
     {
-      return null;
+      final MinIntHeap successes = new MinIntHeap();
+      final int[] returnThis = new int[nodes.length];
+      for (int i = 0; i < nodes.length; i++) {
+        returnThis[i] = _hideNode(nodes[i].getRootGraphIndex());
+        if (returnThis[i] != 0) successes.toss(i); }
+      if (successes.size() > 0) {
+        final GraphPerspectiveChangeListener listener = m_lis[0];
+        if (listener != null) {
+          final Node[] successArr = new Node[successes.size()];
+          final IntEnumerator enum = successes.elements();
+          int index = -1;
+          while (enum.numRemaining() > 0)
+            successArr[++index] = nodes[enum.nextInt()];
+          listener.graphPerspectiveChanged
+            (new GraphPerspectiveNodesHiddenEvent(source, successArr)); } }
+      return returnThis;          
     }
 
     private final int hideEdge(Edge edge)
