@@ -36,20 +36,18 @@ class FGraphPerspective implements GraphPerspective
   // The object returned shares the same RootGraph with this object.
   public Object clone()
   {
-    final int numNodes = m_numNodes;
+    final IntEnumerator nativeNodes = m_graph.nodes();
     final IntEnumerator rootGraphNodeInx = new IntEnumerator() {
-        private int index = 0;
-        public int numRemaining() { return numNodes - index; }
+        public int numRemaining() { return nativeNodes.numRemaining(); }
         public int nextInt() {
-          // Fill this in.
-          return -1; } };
-    final int numEdges = m_numEdges;
+          return m_nativeToRootNodeInxMap.getIntAtIndex
+            (nativeNodes.nextInt()); } };
+    final IntEnumerator nativeEdges = m_graph.edges();
     final IntEnumerator rootGraphEdgeInx = new IntEnumerator() {
-        private int index = 0;
-        public int numRemaining() { return numEdges - index; }
+        public int numRemaining() { return nativeEdges.numRemaining(); }
         public int nextInt() {
-          // Fill this in.
-          return -1; } };
+          return m_nativeToRootEdgeInxMap.getIntAtIndex
+            (nativeEdges.nextInt()); } };
     return new FGraphPerspective(m_root, rootGraphNodeInx, rootGraphEdgeInx);
   }
 
@@ -580,13 +578,24 @@ class FGraphPerspective implements GraphPerspective
     m_numNodes = rootGraphNodeInx.numRemaining();
     m_numEdges = rootGraphEdgeInx.numRemaining();
     for (int i = 0; i < m_numNodes; i++) {
-      final int rootGraphInx = rootGraphNodeInx.nextInt();
-      // Fill this in.
-    }
+      final int rootNodeInx = rootGraphNodeInx.nextInt();
+      final int nativeNodeInx = m_graph.createNode();
+      m_nativeToRootNodeInxMap.setIntAtIndex(rootNodeInx, nativeNodeInx);
+      m_rootToNativeNodeInxMap.put(~rootNodeInx, nativeNodeInx); }
     for (int i = 0; i < m_numEdges; i++) {
-      final int rootGraphInx = rootGraphEdgeInx.nextInt();
-      // Fill this in.
-    }
+      final int rootEdgeInx = rootGraphEdgeInx.nextInt();
+      final int rootEdgeSourceInx = m_root.getEdgeSourceIndex(rootEdgeInx);
+      final int rootEdgeTargetInx = m_root.getEdgeTargetIndex(rootEdgeInx);
+      final boolean rootEdgeDirected = m_root.isEdgeDirected(rootEdgeInx);
+      final int nativeEdgeSourceInx =
+        m_rootToNativeNodeInxMap.get(~rootEdgeSourceInx);
+      final int nativeEdgeTargetInx =
+        m_rootToNativeNodeInxMap.get(~rootEdgeTargetInx);
+      final int nativeEdgeInx =
+        m_graph.createEdge(nativeEdgeSourceInx, nativeEdgeTargetInx,
+                           rootEdgeDirected);
+      m_nativeToRootEdgeInxMap.setIntAtIndex(rootEdgeInx, nativeEdgeInx);
+      m_rootToNativeEdgeInxMap.put(~rootEdgeInx, nativeEdgeInx); }
   }
 
   // Cannot have any recursize reference to a FGraphPerspective in this
