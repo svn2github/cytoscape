@@ -64,7 +64,6 @@ public interface DynamicGraph
    * @param node the node that is to be removed from this graph.
    * @return true if and only if the specified node existed in this graph
    *   at the time this operation was started.
-   * @exception IllegalArgumentException if node is negative.
    */
   public boolean removeNode(int node);
 
@@ -84,8 +83,6 @@ public interface DynamicGraph
    *   is true.
    * @return the newly created edge or -1 if either the source or target node
    *   specified does not exist in this graph.
-   * @exception IllegalArgumentException if either source or target node
-   *   specified is negative.
    */
   public int createEdge(int sourceNode, int targetNode, boolean directed);
 
@@ -100,7 +97,6 @@ public interface DynamicGraph
    * @param edge the edge that is to be removed from this graph.
    * @return true if and only if the specified edge existed in this graph
    *   at the time this operation was started.
-   * @exception IllegalArgumentException if edge is negative.
    */
   public boolean removeEdge(int edge);
 
@@ -117,7 +113,6 @@ public interface DynamicGraph
    * @param node the [potentially existing] node in this graph whose existence
    *   we're querying.
    * @return the existence of specified node in this graph.
-   * @exception IllegalArgumentException if node is negative.
    */
   public boolean containsNode(int node);
 
@@ -131,7 +126,6 @@ public interface DynamicGraph
    *   directedness we're seeking.
    * @return 1 if specified edge is directed, 0 if specified edge is
    *   undirected, and -1 if specified edge does not exist in this graph.
-   * @exception IllegalArgumentException if edge is negative.
    */
   public byte edgeType(int edge);
 
@@ -143,7 +137,6 @@ public interface DynamicGraph
    * @param edge the edge in this graph whose source node we're seeking.
    * @return the source node of specified edge or -1 if specified edge does
    *   not exist in this graph.
-   * @exception IllegalArgumentException if edge is negative.
    */
   public int sourceNode(int edge);
 
@@ -155,7 +148,6 @@ public interface DynamicGraph
    * @param edge the edge in this graph whose target node we're seeking.
    * @return the target node of specified edge or -1 if specified edge does
    *   not exist in this graph.
-   * @exception IllegalArgumentException if edge is negative.
    */
   public int targetNode(int edge);
 
@@ -187,7 +179,6 @@ public interface DynamicGraph
    *   enumeration.
    * @return an enumeration of edges adjacent to the node specified
    *   or null if specified node does not exist in this graph.
-   * @exception IllegalArgumentException if node is negative.
    */
   public IntEnumerator adjacentEdges(int node, boolean outgoing,
                                      boolean incoming, boolean undirected);
@@ -231,7 +222,6 @@ public interface DynamicGraph
    * @return an iteration of edges connecting node0 with node1 in a fashion
    *   specified by boolean input parameters or null if either of node0 or
    *   node1 does not exist in this graph.
-   * @exception IllegalArgumentException if node0 or node1 is negative.
    * @deprecated This method may go away at some point; please use
    *   adjacentEdges(int, boolean, boolean, boolean) where it is reasonable
    *   to do so.
