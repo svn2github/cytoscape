@@ -23,7 +23,9 @@ public class FitContentAction extends AbstractAction {
       //networkView.getView().fitContent();
         //currently appears to do nothing -AM 12-17-2003
         PGraphView view =(PGraphView) networkView.getView();
-        view.getCanvas().getCamera().animateViewToCenterBounds( view.getCanvas().getLayer().getGlobalFullBounds(), true, 50l );
-    }
+        view.getCanvas().getCamera().animateViewToCenterBounds( view.getCanvas().getLayer().getFullBounds(), true, 50l );
+ 
+
+   }
 }
 

@@ -157,7 +157,8 @@ protected void doInit(CytoscapeObj globalInstance, CyNetwork network, String tit
     loadVizMapper();
     //applyLayout(); do not layout by the default, too slow
     redrawGraph(false, true);
-    view.fitContent();
+    //view.fitContent();
+    setNewNetwork( getNetwork() );
     view.setZoom(view.getZoom()*0.9);
     
     setInteractivity(true);
@@ -175,6 +176,7 @@ protected void doInit(CytoscapeObj globalInstance, CyNetwork network, String tit
     //is this strictly necessary, since cytoscape.java listens for
     //WindowOpened events? -AM 2003/06/24
     mainFrame.addWindowListener( globalInstance.getParentApp() );
+
 }
 //------------------------------------------------------------------------------
 /**
@@ -677,12 +679,14 @@ public void onCyNetworkEvent(CyNetworkEvent event) {
  * in the status label, updating the number of hidden nodes/edges.
  */
 public void graphViewChanged ( GraphViewChangeEvent event) {
+
     int [] nodes = event.getHiddenNodeIndices();
     int[] edges = event.getHiddenEdgeIndices();
     //these arrays apparently can be null; count these as 0 hidden -AM 2004-03-30
     int nodeCount = (nodes == null) ? 0 : nodes.length;
     int edgeCount = (edges == null) ? 0 : edges.length;
     updateStatusLabel(nodeCount, edgeCount);
+
 }
 //------------------------------------------------------------------------------
 /**

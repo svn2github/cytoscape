@@ -18,6 +18,9 @@ public class GraphObjectSelectionAction extends CytoscapeAction {
     setAcceleratorCombo( java.awt.event.KeyEvent.VK_T, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK );
   }
 
+	/**
+	 * This Should go away
+   **/
   public void actionPerformed (ActionEvent e) {
     JDialog dialog = new JDialog( );
     dialog.getContentPane().add( new GraphObjectSelection( networkView ) );

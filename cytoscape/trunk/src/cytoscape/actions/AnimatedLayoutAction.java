@@ -67,6 +67,16 @@ public class AnimatedLayoutAction extends AbstractAction {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
+
+                   try {
+                     Class classs = Class.forName( "csplugins.sbw.SBWConnector" );
+                     System.out.println( "Class Made: "+classs );
+                   } catch ( Exception e ) {
+                     e.printStackTrace();
+                   }
+
+
+
                   PGraphView gv = ( PGraphView )networkView.getView();
                   ISOMLayout isom = new ISOMLayout( gv );
                   isom.doLayout();
