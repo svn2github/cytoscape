@@ -2,15 +2,20 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import java.util.logging.Logger;
+
 import cern.colt.bitvector.BitVector;
 
 import java.lang.Math;
 
 public class PathFactorNode extends FactorNode
 {
+    private static Logger logger = Logger.getLogger(PathFactorNode.class.getName());
+
+
     protected static final double ep1 = 0.7; // epsilon 1
     protected static final double ep2 = 0.299; // epsilon 2
-
+    protected static final double ep3 = 0.001; // epsilon 2
 
     private static final int ODD = 1; // product of signs == -1
     private static final int EVEN = 0; // product of sings == +1
@@ -24,6 +29,7 @@ public class PathFactorNode extends FactorNode
 
     protected PathFactorNode()
     {
+        super(NodeType.PATH_FACTOR);
     }
 
     /**
@@ -32,7 +38,7 @@ public class PathFactorNode extends FactorNode
      * that corresponds to messages passed from the factor node to the target 
      * @param target the target of the message
      */
-    public ProbTable maxProduct(List allMsgs, int tIndex, VariableNode target)
+    public ProbTable maxProduct(List allMsgs, int tIndex)
         throws AlgorithmException
     {
         List incoming = new ArrayList();
@@ -46,14 +52,19 @@ public class PathFactorNode extends FactorNode
         // organize the incoming messages
         int numSig = 0;
         int numK = 0;
+        NodeType tt = null;
+        
         for(int m=0, N = allMsgs.size(); m < N; m++)
         {
+            EdgeMessage em = (EdgeMessage) allMsgs.get(m);
+            
             if(m == tIndex)
             {
+                tt = em.getVariableType();
                 continue;
             }
             
-            EdgeMessage em = (EdgeMessage) allMsgs.get(m);
+
             ProbTable p = em.v2f();
             incoming.add(p);
             
@@ -83,7 +94,7 @@ public class PathFactorNode extends FactorNode
             }
             else
             {
-                System.err.println("Unexpected StateSet encountered: " + si);
+                logger.severe("Unexpected StateSet encountered: " + si);
             }
         }
 
@@ -92,61 +103,71 @@ public class PathFactorNode extends FactorNode
             throw new AlgorithmException("> 1 message received from path-active or KO node");
         }
         
-        
-        NodeType tt = target.type();
         if(tt == NodeType.EDGE)
         {
             StateSet ss = StateSet.EDGE;
             ProbTable pt = new ProbTable(ss);
 
-            double pathExplains = computePathExplains(x, d, dirStates, k, sigma, s);
-            double tmpProb = maximize(x, 1) * maximize(d, 1) * maximize(s, 1);
-            double pathInactive = ep1 * tmpProb * k.max() * sigma.prob(State.ZERO);
-            double pathViolates = ep2 * tmpProb * k.prob(State.ZERO) * sigma.prob(State.ONE);
+            //double pathExplains = computePathExplains(x, d, dirStates, k, sigma, s);
+            //double pathInactive = ep1 * sigma.prob(State.ZERO) * unconstrained;
+            //double pathViolates = ep2 * sigma.prob(State.ONE) * unconstrained;
 
+            double pathExplains = computeExplains_XDKSigmaS(x, d, dirStates, k, sigma, s);
+            double maxDSX = maximize(x) * maximize(d) * maximize(s);
+            double pathUnconstrained = computePathUnconstrained(maxDSX, k, sigma);
+            double pathNotExplains = computePathNotExplains(maxDSX, k, sigma);
+            
             double[] probs = new double[ss.size()];
-            probs[ss.getIndex(State.ZERO)] = maximize(incoming, ep1);
+            //probs[ss.getIndex(State.ZERO)] = maximize(incoming, ep1);
+            probs[ss.getIndex(State.ZERO)] = Math.max(pathUnconstrained, pathNotExplains);
             probs[ss.getIndex(State.ONE)] = maximize(pathExplains, 
-                                                     pathInactive, 
-                                                     pathViolates);
+                                                     pathUnconstrained, 
+                                                     pathNotExplains);
             pt.init(probs);
 
-            /*
-            System.out.println("cv=" + probs[ss.getIndex(State.ZERO)]);
-            System.out.println("pe=" + pathExplains);
-            System.out.println("pi=" + pathInactive);
-            System.out.println("pv=" + pathViolates);
-            */
+            logger.fine("P(0)=" + probs[ss.getIndex(State.ZERO)]);
+            logger.fine("P(1)=" + probs[ss.getIndex(State.ONE)]);
+            logger.fine("pe=" + pathExplains);
+            logger.fine("pu=" + pathUnconstrained);
+            logger.fine("pne=" + pathNotExplains);
 
             return pt;
         }
         else if (tt == NodeType.DIR)
         {
-            // this is incorrect.  d must be consistent with k
             StateSet ss = StateSet.DIR;
             ProbTable pt = new ProbTable(ss);
 
+            // find the state of DIR that is consistent with the path being explanatory
             State explanatory = ((EdgeMessage) allMsgs.get(tIndex)).getDir();
-            State other = explanatory == State.PLUS ? State.MINUS : State.PLUS;
-            
-            double pathExplains = computePathExplains(x, d, dirStates, k, sigma, s);
-            double tmpProb = maximize(x, 1) * maximize(d, 1) * maximize(s, 1);
-            double pathInactive = ep1 * tmpProb * k.max() * sigma.prob(State.ZERO);
-            double pathViolates = ep2 * tmpProb * k.prob(State.ZERO) * sigma.prob(State.ONE);
 
+            // if explanatory is PLUS, the other state is MINUS, and vice versa.
+            State other = (explanatory == State.PLUS ? State.MINUS : State.PLUS);
+            
+            //double pathExplains = computePathExplains(x, d, dirStates, k, sigma, s);
+            //double unconstrained = k.max() * maximize(x, 1) * maximize(d, 1) * maximize(s, 1);
+            //double pathInactive = ep1 * sigma.prob(State.ZERO) * unconstrained;
+            //double pathViolates = ep2 * sigma.prob(State.ONE) * unconstrained;
+
+            double pathExplains = computeExplains_XDKSigmaS(x, d, dirStates, k, sigma, s);
+            double maxDSX = maximize(x) * maximize(d) * maximize(s);
+            double pathUnconstrained = computePathUnconstrained(maxDSX, k, sigma);
+            double pathNotExplains = computePathNotExplains(maxDSX, k, sigma);
+            
             double[] probs = new double[ss.size()];
-            probs[ss.getIndex(other)] = maximize(incoming, ep1); // constraint violated
+            //probs[ss.getIndex(other)] = maximize(incoming, ep1); // constraint violated
+            probs[ss.getIndex(other)] = Math.max(pathUnconstrained, pathNotExplains);
             probs[ss.getIndex(explanatory)] = maximize(pathExplains, 
-                                                       pathInactive, 
-                                                       pathViolates);
+                                                       pathUnconstrained, 
+                                                       pathNotExplains);
             pt.init(probs);
 
-            /*
-            System.out.println("cv=" + probs[ss.getIndex(other)] + " " + other);
-            System.out.println("pe=" + pathExplains + " " + explanatory);
-            System.out.println("pi=" + pathInactive);
-            System.out.println("pv=" + pathViolates);
-            */
+            logger.fine("P(" + other + ") other=" + probs[ss.getIndex(other)]);
+            logger.fine("P(" + explanatory + ") explanatory=" + probs[ss.getIndex(explanatory)]);
+            logger.fine("pe=" + pathExplains);
+            logger.fine("pu=" + pathUnconstrained);
+            logger.fine("pne=" + pathNotExplains);
+            
             return pt;
         }
         else if (tt == NodeType.SIGN)
@@ -154,33 +175,36 @@ public class PathFactorNode extends FactorNode
             StateSet ss = StateSet.SIGN;
             ProbTable pt = new ProbTable(ss);
 
-            double pathExplainsMinus = computePathExplainsFixSign(x, d, dirStates,
+            double pathExplainsMinus = computeExplains_FixSign(x, d, dirStates,
                                                                   k, sigma, 
                                                                   s, State.MINUS);
 
-            double pathExplainsPlus = computePathExplainsFixSign(x, d, dirStates,
+            double pathExplainsPlus = computeExplains_FixSign(x, d, dirStates,
                                                                  k, sigma, 
                                                                  s, State.PLUS);
-            double tmpProb = maximize(x, 1) * maximize(d, 1) * maximize(s, 1);
-            double pathInactive = ep1 * tmpProb * k.max() * sigma.prob(State.ZERO);
-            double pathViolates = ep2 * tmpProb * k.prob(State.ZERO) * sigma.prob(State.ONE);
+
+            double maxDSX = maximize(x) * maximize(d) * maximize(s);
+            double pathUnconstrained = computePathUnconstrained(maxDSX, k, sigma);
+            double pathNotExplains = computePathNotExplains(maxDSX, k, sigma);
+            
+            //double pathInactive = ep1 * sigma.prob(State.ZERO) * unconstrained;
+            //double pathViolates = ep2 * sigma.prob(State.ONE) * unconstrained;
 
             double[] probs = new double[ss.size()];
             probs[ss.getIndex(State.MINUS)] = maximize(pathExplainsMinus, 
-                                                      pathInactive, 
-                                                      pathViolates);
+                                                      pathUnconstrained, 
+                                                      pathNotExplains);
 
-            probs[ss.getIndex(State.PLUS)] = maximize(pathExplainsPlus, 
-                                                      pathInactive, 
-                                                      pathViolates);
+            probs[ss.getIndex(State.PLUS)] = maximize(pathExplainsPlus,
+                                                      pathUnconstrained, 
+                                                      pathNotExplains);
+                                                      
             pt.init(probs);
 
-            /*
-            System.out.println("pe+ =" + pathExplainsPlus);
-            System.out.println("pe- =" + pathExplainsMinus);
-            System.out.println("pi=" + pathInactive);
-            System.out.println("pv=" + pathViolates);
-            */
+            logger.fine("pe+ =" + pathExplainsPlus);
+            logger.fine("pe- =" + pathExplainsMinus);
+            logger.fine("pu=" + pathUnconstrained);
+            logger.fine("pne=" + pathNotExplains);
             
             return pt;
         }
@@ -189,20 +213,25 @@ public class PathFactorNode extends FactorNode
             StateSet ss = StateSet.PATH_ACTIVE;
             ProbTable pt = new ProbTable(ss);
 
-            double pathExplains = computePathExplains(x, d, dirStates, k, s);
-            double pathInactive = ep1 * maximize(x, 1) * maximize(d, 1) * maximize(s, 1) * k.prob(State.ZERO);
-            
+            double pathExplains = computeExplains_XDKS(x, d, dirStates, k, s);
+            double maxDSX = maximize(x) * maximize(d) * maximize(s);
+            double pathUnconstrained = ep2 * k.prob(State.ZERO) * maxDSX;
+
             double[] probs = new double[ss.size()];
-            probs[ss.getIndex(State.ZERO)] = maximize(incoming, ep1);
-            probs[ss.getIndex(State.ONE)] = Math.max(pathExplains, pathInactive); 
+            //probs[ss.getIndex(State.ZERO)] = maximize(incoming, ep1);
+            probs[ss.getIndex(State.ZERO)] = Math.max(pathUnconstrained,
+                                                      ep2 * k.max() * maxDSX);
+            
+            probs[ss.getIndex(State.ONE)] = maximize(pathExplains,
+                                                     pathUnconstrained,
+                                                     ep3 * k.max() * maxDSX);
  
             pt.init(probs);
 
-            /*
-            System.out.println("cv=" + probs[ss.getIndex(State.ZERO)]);
-            System.out.println("pe=" + pathExplains);
-            System.out.println("pi=" + pathInactive);
-            */
+            logger.fine("P(0)=" + probs[ss.getIndex(State.ZERO)]);
+            logger.fine("P(1)=" + probs[ss.getIndex(State.ONE)]);
+            logger.fine("pe=" + pathExplains);
+            logger.fine("pu=" + pathUnconstrained);
             
             return pt;
         }
@@ -211,39 +240,66 @@ public class PathFactorNode extends FactorNode
             StateSet ss = StateSet.KO;
             ProbTable pt = new ProbTable(ss);
 
-            double pathExplainsPlus = computePathExplainsFixKO(x, d, dirStates,
+            double pathExplainsPlus = computeExplains_FixKO(x, d, dirStates,
                                                                sigma, 
                                                                s, State.PLUS);
 
-            double pathExplainsMinus = computePathExplainsFixKO(x, d, dirStates,
+            double pathExplainsMinus = computeExplains_FixKO(x, d, dirStates,
                                                                 sigma, 
                                                                 s, State.MINUS);
 
-            double pathViolates = ep2 * maximize(x, 1) * maximize(d, 1) * maximize(s, 1) * sigma.prob(State.ONE);
+            double maxDSX = maximize(x) * maximize(d) * maximize(s);
+            double pathNotExplains = Math.max(ep2 * sigma.prob(State.ZERO) * maxDSX,
+                                              ep3 * sigma.prob(State.ONE) * maxDSX);
+            
 
             double[] probs = new double[ss.size()];
-            probs[ss.getIndex(State.ZERO)] = maximize(incoming, ep1);
-            probs[ss.getIndex(State.PLUS)] = Math.max(pathExplainsPlus, pathViolates); 
-            probs[ss.getIndex(State.MINUS)] = Math.max(pathExplainsMinus, pathViolates); 
+            probs[ss.getIndex(State.ZERO)] = maximize(incoming, ep2);
+            probs[ss.getIndex(State.PLUS)] = Math.max(pathExplainsPlus, pathNotExplains); 
+            probs[ss.getIndex(State.MINUS)] = Math.max(pathExplainsMinus, pathNotExplains); 
  
             pt.init(probs);
-
-            /*
-            System.out.println("cv=" + probs[ss.getIndex(State.ZERO)]);
-            System.out.println("pe+ =" + pathExplainsPlus);
-            System.out.println("pe- =" + pathExplainsMinus);
-            System.out.println("pv=" + pathViolates);
-            */
+            
+            logger.fine("P(0)=" + probs[ss.getIndex(State.ZERO)]);
+            logger.fine("pe+ =" + pathExplainsPlus);
+            logger.fine("pe- =" + pathExplainsMinus);
+            logger.fine("pne=" + pathNotExplains);
             
             return pt;
         }
         else
         {
-            System.err.println("Unknown target variable type: " + tt);
+            logger.severe("Unknown target variable type: " + tt);
             return null;
         }
     }
 
+    protected double computePathUnconstrained(double maxDSX,
+                                              ProbTable k, 
+                                              ProbTable sigma)
+    {
+        return ep2 * k.prob(State.ZERO) * sigma.max() * maxDSX;
+    }
+
+    
+    protected double computePathNotExplains(double maxDSX,
+                                            ProbTable k, ProbTable sigma)
+    {
+        double pathNotExplains = 0;
+        
+        if(k.hasUniqueMax() && (k.maxState() == State.ZERO))
+        {
+            pathNotExplains = 0;
+        }
+        else
+        {
+            pathNotExplains = Math.max(ep2 * sigma.prob(State.ZERO) * maxDSX * k.max(),
+                                       ep3 * sigma.prob(State.ONE) * maxDSX * k.max());
+        }
+
+        return pathNotExplains;
+    }
+    
     /**
      * @return Prod [ msgs(x==1), msgs(all d consistent with path), 
      *                max { msgs(s) : Prod s == -k, k = fixed} ]
@@ -258,11 +314,11 @@ public class PathFactorNode extends FactorNode
      * @param sigma message from knockout effect node
      * @param State state that the KO will be fixed
      */
-    protected double computePathExplainsFixKO(List x, List d, List dirStates,
+    protected double computeExplains_FixKO(List x, List d, List dirStates,
                                               ProbTable sigma, 
                                               List s, State fixed)
     {
-        double m = 1;
+        double m = ep1;
 
         // all edge presences must be 1
         m *= computeProbFixState(x, State.ONE);
@@ -299,12 +355,12 @@ public class PathFactorNode extends FactorNode
      * @param fixedSign State.PLUS | State.MINUS that the target sign variable
      *  will be fixed to.
      */
-    protected double computePathExplainsFixSign(List x, List d, List dirStates,
+    protected double computeExplains_FixSign(List x, List d, List dirStates,
                                                 ProbTable k, 
                                                 ProbTable sigma, 
                                                 List s, State fixedSign)
     {
-        double m = 1;
+        double m = ep1;
 
         // all edge presences must be 1
         m *= computeProbFixState(x, State.ONE);
@@ -337,16 +393,16 @@ public class PathFactorNode extends FactorNode
      * @param sigma messages from sigma node
      * @param k messages from knockout effect node
      */
-    protected double computePathExplains(List x, List d, List dirStates,
-                                         ProbTable k, ProbTable sigma, 
-                                         List s)
+    protected double computeExplains_XDKSigmaS(List x, List d, List dirStates,
+                                               ProbTable k, ProbTable sigma, 
+                                               List s)
     {
-        double m = 1;
+        double m = ep1;
 
         // sigma must be 1
         m *= sigma.prob(State.ONE);
 
-        m *= computePathExplains(x, d, dirStates, k, s);
+        m *= computeExplains_XDKS(x, d, dirStates, k, s);
 
         return m;
     }
@@ -366,10 +422,10 @@ public class PathFactorNode extends FactorNode
      * @param s messages from sign nodes
      * @param k messages from knockout effect node
      */
-    protected double computePathExplains(List x, List d, List dirStates,
-                                         ProbTable k, List s)
+    protected double computeExplains_XDKS(List x, List d, List dirStates,
+                                          ProbTable k, List s)
     {
-        double m = 1;
+        double m = ep1;
 
         // all edge presences must be 1
         m *= computeProbFixState(x, State.ONE);
@@ -383,6 +439,9 @@ public class PathFactorNode extends FactorNode
         return m;
     }
 
+
+
+    
     // directions must match dir implied by path
     protected double computeProbDir(List d, List dirStates)
     {
@@ -558,7 +617,7 @@ public class PathFactorNode extends FactorNode
             if(par == ODD)
             {
                 /*
-                System.out.println("adding odd  combo: x=" + x + 
+                logger.finest("adding odd  combo: x=" + x + 
                                    " p=" + p + " n=" + n +
                                    " parity=" + parity(x));
                 */
@@ -568,7 +627,7 @@ public class PathFactorNode extends FactorNode
             }
             else
             {
-                /*System.out.println("adding even combo: x=" + x + 
+                /*logger.finest("adding even combo: x=" + x + 
                                    " m=" + m + " n=" + n +
                                    " parity=" + parity(x));
                 */
@@ -703,6 +762,17 @@ public class PathFactorNode extends FactorNode
         return Math.max(Math.max(d1, d2), d3);
     }
 
+    /**
+     * @return the product of the max probability of each message in the List
+     *
+     * @param messages a List of ProbTable objects
+     */ 
+    private double maximize(List messages)
+    {
+        return maximize(messages, 1);
+    }
+
+    
     /**
      * @return weight * (the product of the max probability of each of the
      * messages in the List)

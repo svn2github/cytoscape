@@ -273,12 +273,12 @@ public class FactorGraph
         EdgeMessage em;
         if(dir != null)
         {
-            em = new EdgeMessage(getVarNode(varNode),
+            em = new EdgeMessage(getVarNode(varNode).type(),
                                  varNode, facNode, dir);
         }
         else
         {
-            em = new EdgeMessage(getVarNode(varNode),
+            em = new EdgeMessage(getVarNode(varNode).type(),
                                  varNode, facNode);
         }
         
@@ -657,6 +657,8 @@ public class FactorGraph
     {
         _runMaxProduct();
         updateEdgeAnnotation();
+
+        System.out.println(printAdj());
     }
     
     private void _runMaxProduct()  throws AlgorithmException
@@ -670,7 +672,8 @@ public class FactorGraph
         initVar2Factor(v);
         
         int N = 2  * _paths.getMaxPathLength();
-
+        //int N = 1;
+        
         System.out.println("Running max product " + N + " iterations");
         
         for(int x=0; x < N; x++)
@@ -678,6 +681,8 @@ public class FactorGraph
             computeFactor2Var(f);
             computeVar2Factor(v);
         }
+
+        System.out.println(printAdj());
     }
 
     
@@ -712,6 +717,8 @@ public class FactorGraph
         
         // now fix any other non-sign variables that are degenerate
         x += recursivelyFixVars(_dir);
+
+
         
         System.out.println("Called max product method " + x + " times");
 
@@ -1441,7 +1448,7 @@ public class FactorGraph
             {
                 EdgeMessage em = (EdgeMessage) messages.get(m);
 
-                em.f2v(fn.maxProduct(messages, m, em.getVariable()));
+                em.f2v(fn.maxProduct(messages, m));
             }
         }
     }
@@ -1468,6 +1475,12 @@ public class FactorGraph
         }
     }
 
+    private NodeType _getNodeType(int node)
+    {
+        FGNode o = (FGNode) _nodeMap.get(node);
+        return o.type();
+    }
+    
     /**
      * For debugging, print the adjacency list map containing
      * the most recent set of messages passed in the factor graph.
@@ -1478,20 +1491,98 @@ public class FactorGraph
         IntArrayList keys = _adjacencyMap.keys();
         for(int x=0; x < keys.size(); x++)
         {
-            int k = keys.get(x);
-            b.append(k);
-            b.append("  {\n");
+            int node = keys.get(x);
+            boolean isVar = false;
 
-            List l = _adjacencyMap.get(k);
-            for(int m=0; m < l.size(); m++)
+            FGNode o = (FGNode) _nodeMap.get(node);
+            if(o instanceof VariableNode)
             {
-                EdgeMessage em = (EdgeMessage) l.get(m);
-                b.append("    v2f ");
-                b.append(em.v2f());
-                b.append("\n");
-                b.append("    f2v ");
-                b.append(em.f2v());
-                b.append("\n");
+                isVar = true;
+            }
+
+            b.append(node);
+            b.append(" ");
+            b.append(o.type());
+            b.append(" ");
+            
+            if(isVar)
+            {
+                b.append(" Variable ");
+            }
+            else
+            {
+                b.append(" Factor ");
+            }
+            b.append(" { \n");
+
+            
+            List l = _adjacencyMap.get(node);
+            if(isVar)
+            {
+                for(int m=0; m < l.size(); m++)
+                {
+                    EdgeMessage em = (EdgeMessage) l.get(m);
+                    
+                    if(m==0)
+                    {
+                        b.append("    v2f (");
+                        b.append(em.getVariableIndex());
+                        b.append(" ");
+                        b.append(em.getFactorIndex());
+                        b.append(") ");
+                        b.append(em.v2f());
+                        b.append("\n");
+                    }
+                    
+                    b.append("    f2v (");
+                    b.append(em.getFactorIndex());
+                    b.append(" ");
+                    b.append(em.getVariableIndex());
+                    b.append(") f=");
+                    b.append(_getNodeType(em.getFactorIndex()));
+                    b.append(" ");
+                    b.append(em.f2v());
+                    b.append("\n");
+                }}
+            else
+            {
+                for(int m=0; m < l.size(); m++)
+                {
+                    EdgeMessage em = (EdgeMessage) l.get(m);
+
+                    
+                    b.append("    f2v (");
+                    b.append(em.getFactorIndex());
+                    b.append(" ");
+                    b.append(em.getVariableIndex());
+                    b.append(") " + m + " t");
+                    b.append(type2String(_getNodeType(em.getVariableIndex())));
+                    b.append(" ");
+                    b.append(em.f2v());
+                    b.append("\n");
+                }
+                    
+                for(int m=0; m < l.size(); m++)
+                {
+                    EdgeMessage em = (EdgeMessage) l.get(m);
+
+                    NodeType t = _getNodeType(em.getVariableIndex());
+                    
+                    b.append("    v2f (");
+                    b.append(em.getVariableIndex());
+                    b.append(" ");
+                    b.append(em.getFactorIndex());
+                    b.append(") " + m + " ");
+                    b.append(type2String(t));
+                    b.append(" ");
+                    b.append(em.v2f());
+                    if(t == NodeType.DIR)
+                    {
+                        b.append(" ");
+                        b.append(em.getDir());
+                    }
+                    b.append("\n");
+                }
             }
             b.append("  }\n");
         }
@@ -1499,6 +1590,31 @@ public class FactorGraph
         return b.toString();
     }
 
+    private String type2String(NodeType t)
+    {
+        if(t == NodeType.EDGE)
+        {
+            return "x";
+        }
+        else if(t == NodeType.DIR)
+        {
+            return "d";
+        }
+        else if(t == NodeType.SIGN)
+        {
+            return "s";
+        }
+        else if(t == NodeType.PATH_ACTIVE)
+        {
+            return "p";
+        }
+        else if(t == NodeType.KO)
+        {
+            return "k";
+        }
+        return "?";
+    }
+    
     public String toString()
     {
         return CyUtil.toString(_g);

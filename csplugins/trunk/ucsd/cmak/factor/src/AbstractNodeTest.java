@@ -56,9 +56,9 @@ public abstract class AbstractNodeTest extends TestCase
         assertEquals("prob(ZERO)", pZ / sum, pt.prob(State.ZERO), delta);
     }
     
-    public EdgeMessage pt2em(ProbTable pt)
+    public EdgeMessage pt2em(ProbTable pt, NodeType t)
     {
-        EdgeMessage em = new EdgeMessage(null, 0, 0);
+        EdgeMessage em = new EdgeMessage(t, 0, 0);
         em.v2f(pt);
         em.f2v(pt);
 
@@ -66,9 +66,9 @@ public abstract class AbstractNodeTest extends TestCase
     }
 
 
-    public EdgeMessage pt2em(ProbTable pt, State dir)
+    public EdgeMessage pt2em(ProbTable pt, NodeType t, State dir)
     {
-        EdgeMessage em = new EdgeMessage(null, 0, 0, dir);
+        EdgeMessage em = new EdgeMessage(t, 0, 0, dir);
         em.v2f(pt);
         em.f2v(pt);
 
@@ -87,17 +87,17 @@ public abstract class AbstractNodeTest extends TestCase
         return createPlusMinus(StateSet.DIR, p, m);
     }
 
-    protected ProbTable createPathActive(double p1, double p0)
+    protected ProbTable createPathActive(double p0, double p1)
     {
-        return createOneZero(StateSet.PATH_ACTIVE, p1, p0);
+        return createZeroOne(StateSet.PATH_ACTIVE, p0, p1);
     }
 
-    protected ProbTable createEdge(double p1, double p0)
+    protected ProbTable createEdge(double p0, double p1)
     {
-        return createOneZero(StateSet.EDGE, p1, p0);
+        return createZeroOne(StateSet.EDGE, p0, p1);
     }
 
-    protected ProbTable createKO(double p, double m,  double z)
+    protected ProbTable createKO(double z, double p, double m)
     {
         ProbTable s1 = new ProbTable(StateSet.KO);
         double[] d = new double[3];
@@ -132,5 +132,18 @@ public abstract class AbstractNodeTest extends TestCase
     }
 
 
+    
+    private ProbTable createZeroOne(StateSet ss, double zero, double one)
+    {
+        ProbTable s1 = new ProbTable(ss);
+        double[] d = new double[2];
+        d[ss.getIndex(State.ZERO)] = zero;
+        d[ss.getIndex(State.ONE)] = one;
+        s1.init(d);
+
+        return s1;
+    }
+
+   
 
 }

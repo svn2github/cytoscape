@@ -16,6 +16,8 @@ public class NodeType
     public static final NodeType KO = new NodeType("ko");
 
     public static final NodeType FACTOR = new NodeType("factor");
+    public static final NodeType OR_FACTOR = new NodeType("or_factor");
+    public static final NodeType PATH_FACTOR = new NodeType("path_factor");
     
 }
 

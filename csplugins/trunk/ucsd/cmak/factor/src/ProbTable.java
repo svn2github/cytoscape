@@ -219,7 +219,7 @@ public class ProbTable
             sb.append(prob(s));
             if(it.hasNext())
             {
-                sb.append(", ");
+                sb.append(" ");
             }
         }
         sb.append(']');

@@ -10,7 +10,8 @@
   <property name="doc"  location="doc"/>
   <property name="test.out"  location="testOut"/>
   <property name="test.report"  location="test-report"/>
-
+  <property name="grammar" location="grammar"/>
+  <property name="gsrc" location="${build}/src"/>
 
    <path id="project.class.path">
        <fileset dir="${lib}">
@@ -58,10 +59,34 @@
   </target>
 
 
-  <target name="compile" depends="init"
+  <target name="antlr" depends="init"
+        description="generate source using ANTLR and compile" >
+    <mkdir dir="${gsrc}"/>
+
+   <antlr target="${grammar}/message.g"
+           outputdirectory="${gsrc}"/>
+
+    <!-- Compile the java code from ${src} into ${build}
+    <javac  destdir="${build}" deprecation="no">
+         <src path="${src}"/> 
+        <src path="${gsrc}"/>
+         <include name="ParseMain.java"/>
+         <include name="T.java"/>
+         <include name="L.java"/>
+         <include name="P.java"/>
+         <include name="TTokenTypes.java"/>
+
+         <classpath refid="project.class.path"/>
+    </javac>
+    -->
+  </target>
+
+
+  <target name="compile" depends="init, antlr"
         description="compile the source " >
     <!-- Compile the java code from ${src} into ${build} -->
     <javac srcdir="${src}" destdir="${build}" deprecation="no">
+         <src path="${gsrc}"/>
          <classpath refid="project.class.path"/>
     </javac>
 

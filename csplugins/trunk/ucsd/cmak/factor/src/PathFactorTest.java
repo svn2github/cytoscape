@@ -41,21 +41,21 @@ public class PathFactorTest extends AbstractNodeTest
         f = PathFactorNode.getInstance();
 
         x = new ArrayList();
-        x.add(pt2em(createEdge( .55, .45))); // target for edge
-        x.add(pt2em(createEdge( .35, .65)));
-        x.add(pt2em(createDir( .2, .8), State.PLUS)); // target for dir
-        x.add(pt2em(createDir( .4, .6), State.MINUS)); // target for dir2
-        x.add(pt2em(createSign(.2, .8)));
-        x.add(pt2em(createSign(.4, .6))); // target for sign
-        x.add(pt2em(createKO(.23, .67, .1))); // target for ko
-        x.add(pt2em(createPathActive(.85, .15))); //target for path active
+        x.add(pt2em(createEdge( .55, .45), NodeType.EDGE)); // target for edge
+        x.add(pt2em(createEdge( .35, .65), NodeType.EDGE));
+        x.add(pt2em(createDir( .2, .8), NodeType.DIR, State.PLUS)); // target for dir
+        x.add(pt2em(createDir( .4, .6), NodeType.DIR, State.MINUS)); // target for dir2
+        x.add(pt2em(createSign(.2, .8), NodeType.SIGN));
+        x.add(pt2em(createSign(.4, .6), NodeType.SIGN)); // target for sign
+        x.add(pt2em(createKO(.23, .67, .1), NodeType.KO)); // target for ko
+        x.add(pt2em(createPathActive(.85, .15), NodeType.PATH_ACTIVE)); //target for path active
 
     }
 
     public void testMaxProductEdge() throws AlgorithmException
     {
         System.out.println("### test Edge");
-        ProbTable pt = f.maxProduct(x, 0, VariableNode.createEdge(1));
+        ProbTable pt = f.maxProduct(x, 0);
 
         double cs = ep1*.65*.8*.6*.8*.6*.67*.85;
         double pe = 1*.35*.2*.6*.8*.6*.67*.85;
@@ -67,7 +67,7 @@ public class PathFactorTest extends AbstractNodeTest
     public void testMaxProductDir() throws AlgorithmException
     {
         System.out.println("### test Dir");
-        ProbTable pt = f.maxProduct(x, 2, VariableNode.createDirection(1));
+        ProbTable pt = f.maxProduct(x, 2);
 
         double cs = ep1*.55*.65*.6*.8*.6*.67*.85;
         double pe = 1*.55*.35*.6*.8*.6*.67*.85;
@@ -78,7 +78,7 @@ public class PathFactorTest extends AbstractNodeTest
     public void testMaxProductDir2() throws AlgorithmException
     {
         System.out.println("### test Dir2");
-        ProbTable pt = f.maxProduct(x, 3, VariableNode.createDirection(1));
+        ProbTable pt = f.maxProduct(x, 3);
 
         double cs = ep1*.55*.65*.8*.8*.6*.67*.85;
         double pe = 1*.55*.35*.2*.8*.6*.67*.85;
@@ -91,7 +91,7 @@ public class PathFactorTest extends AbstractNodeTest
     public void testMaxProductSign() throws AlgorithmException
     {
         System.out.println("### test Sign");
-        ProbTable pt = f.maxProduct(x, 5,  VariableNode.createSign(1));
+        ProbTable pt = f.maxProduct(x, 5);
 
         double p = ep1*.55*.65*.8*.6*.8*.67*.15;
         double m = 1*.55*.35*.2*.6*.8*.67*.85;
@@ -102,7 +102,7 @@ public class PathFactorTest extends AbstractNodeTest
     public void testMaxProductPathActive() throws AlgorithmException
     {
         System.out.println("### test PathActive");
-        ProbTable pt = f.maxProduct(x, 7, VariableNode.createPathActive(1));
+        ProbTable pt = f.maxProduct(x, 7);
 
         double cv = ep1*.55*.65*.8*.6*.8*.6*.67;
         double pi = 1*.55*.35*.2*.6*.8*.6*.67;
@@ -117,7 +117,7 @@ public class PathFactorTest extends AbstractNodeTest
     public void testMaxProductKO() throws AlgorithmException
     {
         System.out.println("### test KO");
-        ProbTable pt = f.maxProduct(x, 6, VariableNode.createKO(1, 2));
+        ProbTable pt = f.maxProduct(x, 6);
 
         double z = ep1*.55*.65*.8*.6*.8*.6*.85;
         double p = ep2*.55*.65*.8*.6*.8*.6*.85;
@@ -153,12 +153,12 @@ public class PathFactorTest extends AbstractNodeTest
         ProbTable k1 = createKO(.23, .67, .1);
         ProbTable sigma = createPathActive(.85, .15);
 
-        double pe = f.computePathExplains(x, d, dirStates, k1, sigma, s);
+        double pe = f.computeExplains_XDKSigmaS(x, d, dirStates, k1, sigma, s);
 
         assertEquals("path explains", 1*.55*.35*.2*.6*.8*.6*.67*.85, pe, 0.000000000001);
 
         ProbTable k2 = createKO(.67, .23, .1);
-        pe = f.computePathExplains(x, d, dirStates, k2, sigma, s);
+        pe = f.computeExplains_XDKSigmaS(x, d, dirStates, k2, sigma, s);
 
         assertEquals("path explains", 1*.55*.35*.2*.6*.8*.4*.67*.85, pe, 0.000000000001);
         

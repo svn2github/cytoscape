@@ -40,7 +40,7 @@ public class MaxProductTest extends AbstractPathTest
 
     public void testFG2Decompose() throws Exception
     {
-        MaxProduct mp = new PrintFGMaxProduct();
+        MaxProduct mp = new MaxProduct();
         mp.setInteractionFile("fgtest.sif");
         mp.setMaxPathLength(5);
         mp.setExpressionFile("fg2.pvals", 1e-2);

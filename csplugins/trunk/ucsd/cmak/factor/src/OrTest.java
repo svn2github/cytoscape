@@ -15,16 +15,16 @@ public class OrTest extends AbstractNodeTest
         f = OrFactorNode.getInstance();
 
         x = new ArrayList();
-        x.add(pt2em(createPathActive(.4, .6)));
-        x.add(pt2em(createPathActive(.85, .15))); // target node
-        x.add(pt2em(createPathActive(.2, .8)));
-        x.add(pt2em(createPathActive(.3, .7)));
+        x.add(pt2em(createPathActive(.4, .6), NodeType.PATH_ACTIVE));
+        x.add(pt2em(createPathActive(.85, .15), NodeType.PATH_ACTIVE)); // target node
+        x.add(pt2em(createPathActive(.2, .8), NodeType.PATH_ACTIVE));
+        x.add(pt2em(createPathActive(.3, .7), NodeType.PATH_ACTIVE));
 
     }
 
     public void testMaxProductEdge1() throws AlgorithmException
     {
-        ProbTable pt = f.maxProduct(x, 1, VariableNode.createPathActive(1));
+        ProbTable pt = f.maxProduct(x, 1);
 
         double p0 = Math.max(Math.max(.4*.8*.7, .6*.2*.7), .6*.8*.3);
         double p1 = .6*.8*.7;
@@ -35,7 +35,7 @@ public class OrTest extends AbstractNodeTest
 
     public void testMaxProductEdge3() throws AlgorithmException
     {
-        ProbTable pt = f.maxProduct(x, 3, VariableNode.createPathActive(1));
+        ProbTable pt = f.maxProduct(x, 3);
 
         double p0 = .6*.85*.8;
         double p1 = .6*.85*.8;

@@ -42,18 +42,29 @@
   </target>
 
 
-  <target name="antlr" depends="init"
+
+  <target name="antlr.test" depends="init"
         description="generate source using ANTLR and compile" >
 
    <antlr target="${grammar}/test.g"
            outputdirectory="${gsrc}"/>
 
+    <!-- Compile the java code from ${src} into ${build} -->
+    <javac  destdir="${build}" deprecation="no">
+         <src path="${src}"/>
+         <src path="${gsrc}"/>
+         <classpath refid="project.class.path"/>
+    </javac>
 
-    <antlr target="${grammar}/graph.g"
+  </target>
+
+
+  <target name="antlr" depends="init"
+        description="generate source using ANTLR and compile" >
+
+   <antlr target="${grammar}/message.g"
            outputdirectory="${gsrc}"/>
 
-    <antlr target="${grammar}/feature.g"
-           outputdirectory="${gsrc}"/>
     <!-- Compile the java code from ${src} into ${build} -->
     <javac  destdir="${build}" deprecation="no">
          <src path="${src}"/>

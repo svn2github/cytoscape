@@ -14,8 +14,8 @@
 # -Xrunhprof:cpu=samples,depth=8
 #
 set PATH=3
-set EXP=0.02
-set EDGE=0.001
+set EXP=0.002
+set EDGE=0.0001
 
 set TS=`date +%F-%H.%M`
 

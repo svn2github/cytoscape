@@ -6,7 +6,12 @@ public abstract class FactorNode extends FGNode
     {
         super(NodeType.FACTOR);
     }
+
+    public FactorNode(NodeType type)
+    {
+        super(type);
+    }
     
-    public abstract ProbTable maxProduct(List incomingMsgs, int n, VariableNode target)
+    public abstract ProbTable maxProduct(List incomingMsgs, int n)
         throws AlgorithmException;
 }

@@ -8,11 +8,11 @@ public class VariableNodeTest extends AbstractNodeTest
     protected void setUp()
     {
         l = new ArrayList();
-        l.add(pt2em(createEdge(.7, .3)));
-        l.add(pt2em(createEdge(.65, .35)));
-        l.add(pt2em(createEdge(.5, .5)));
-        l.add(pt2em(createEdge(.4, .6)));
-        l.add(pt2em(createEdge(.2, .8)));
+        l.add(pt2em(createEdge(.7, .3), NodeType.EDGE));
+        l.add(pt2em(createEdge(.65, .35), NodeType.EDGE));
+        l.add(pt2em(createEdge(.5, .5), NodeType.EDGE));
+        l.add(pt2em(createEdge(.4, .6), NodeType.EDGE));
+        l.add(pt2em(createEdge(.2, .8), NodeType.EDGE));
         
     }
 
@@ -60,7 +60,7 @@ public class VariableNodeTest extends AbstractNodeTest
 
         checkProbs10(n.getProbs(), p1, p0);
 
-        l.add(pt2em(createEdge(.42, .58)));
+        l.add(pt2em(createEdge(.42, .58), NodeType.EDGE));
 
         n.maxProduct(l);
         p1 *= .42;
@@ -88,7 +88,7 @@ public class VariableNodeTest extends AbstractNodeTest
 
         checkProbs10(n.getProbs(), p1, p0);
 
-        l.add(pt2em(createEdge(.42, .58)));
+        l.add(pt2em(createEdge(.42, .58), NodeType.EDGE));
 
         n.maxProduct(l);
         p1 *= .42;
@@ -100,7 +100,7 @@ public class VariableNodeTest extends AbstractNodeTest
     
     public void testMaxProductBadMessages()
     {
-        l.add(pt2em(createSign(.8, .2)));
+        l.add(pt2em(createSign(.8, .2), NodeType.SIGN));
         
         VariableNode n = VariableNode.createEdge(1);
         n.maxProduct(l);

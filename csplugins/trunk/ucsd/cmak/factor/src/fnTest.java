@@ -10,11 +10,13 @@ public class fnTest extends AbstractNodeTest
     private double ep1 = PathFactorNode.ep1;
     private double ep2 = PathFactorNode.ep2;
 
-    private static final String S = "^(\\d+)\\s+";
-    private static final String P = "\\s+(0?\\.\\d+)";
+    //    private static final String S = "^(\\d+)\\s+";
+    private static final String S = "^.*\\Q)\\E\\s+(\\d+)\\s+";
+    private static final String P = "\\s*([0\\.\\d]+)";
     private static final String E = "\\s*$";
     private static final String D = "\\s+(\\Q+1\\E|\\Q-1\\E)";
-
+    private static final String LB = "\\s*\\[";
+    private static final String RB = "\\s*\\]";
 
     private static boolean debug = false;
     
@@ -81,15 +83,18 @@ public class fnTest extends AbstractNodeTest
         
         for(int x=0; x < tests.size(); x++)
         {
+            System.out.println("running " + x);
             Test t = (Test) tests.get(x);
-
-            System.out.println(">>> Running test: " + t);
+            ProbTable pt = null;
             
-            VariableNode n = (VariableNode) targetMap.get(t.index);
-            ProbTable pt = f.maxProduct(messages, t.index.intValue(), n);
-
             try
             {
+                
+                System.out.println(">>> Running test: " + t);
+                
+                VariableNode n = (VariableNode) targetMap.get(t.index);
+                pt = f.maxProduct(messages, t.index.intValue());
+                
                 t.checkResult(pt);
                 System.out.println(">>> ok\n");
             }
@@ -103,8 +108,6 @@ public class fnTest extends AbstractNodeTest
                 errors.add(e);
                 failed(t.type, t, pt);
             }
-
-
         }
     }
 
@@ -115,7 +118,10 @@ public class fnTest extends AbstractNodeTest
         b.append(" ");
         b.append(t.toString());
         b.append("\n   ");
-        b.append(results.toString());
+        if(results != null)
+        {
+            b.append(results.toString());
+        }
         b.append("\n");
         
         System.out.println(b.toString());
@@ -149,9 +155,15 @@ public class fnTest extends AbstractNodeTest
                 
         while((line = in.readLine()) != null)
         {
+            if(debug)
+            {
+                System.out.println("matching: " + line);
+            }
+            
             for(int m=0; m < matchers.size(); m++)
             {
                 LineMatcher lm = (LineMatcher) matchers.get(m);
+
                 if(lm.match(line))
                 {
                     break;
@@ -205,32 +217,34 @@ public class fnTest extends AbstractNodeTest
 
     class EdgeMatcher extends LineMatcher
     {
-        EdgeMatcher() {  super(S+"(x)" + P + P + E);  }
-
+        EdgeMatcher() {  super(S + "x" + LB + P + P + RB + E);  }
+        
         void process()
         {
             Integer i = Integer.valueOf(m.group(1));
             targetMap.put(i, VariableNode.createEdge(i.intValue()));
             
-            messages.add(pt2em(createEdge( Double.parseDouble(m.group(3)),
-                                           Double.parseDouble(m.group(4))))
+            messages.add(pt2em(createEdge( Double.parseDouble(m.group(2)),
+                                           Double.parseDouble(m.group(3)))
+                               , NodeType.EDGE)
                          );
         }
     }
 
     class DirMatcher extends LineMatcher
     {
-        DirMatcher()  { super(S+"(d)" + P + P + D + E); }
+        DirMatcher()  { super(S + "d" + LB + P + P + D + RB + E); }
 
         void process()
         {
             Integer i = Integer.valueOf(m.group(1));
             targetMap.put(i, VariableNode.createDirection(i.intValue()));
             
-            State st = m.group(5).equals("+1") ? State.PLUS : State.MINUS;
+            State st = m.group(4).equals("+1") ? State.PLUS : State.MINUS;
             
-            messages.add(pt2em(createDir( Double.parseDouble(m.group(3)),
-                                          Double.parseDouble(m.group(4))),
+            messages.add(pt2em(createDir( Double.parseDouble(m.group(2)),
+                                          Double.parseDouble(m.group(3)))
+                               , NodeType.DIR,
                                st)
                          );
         }
@@ -238,15 +252,16 @@ public class fnTest extends AbstractNodeTest
 
     class SignMatcher extends LineMatcher
     {
-        SignMatcher()  { super(S+"(s)" + P + P + E); }
+        SignMatcher()  { super(S + "s" + LB + P + P + RB +  E); }
 
         void process()
         {
             Integer i = Integer.valueOf(m.group(1));
             targetMap.put(i, VariableNode.createSign(i.intValue()));
             
-            messages.add(pt2em(createSign( Double.parseDouble(m.group(3)),
-                                    Double.parseDouble(m.group(4))))
+            messages.add(pt2em(createSign( Double.parseDouble(m.group(2)),
+                                    Double.parseDouble(m.group(3)))
+                               , NodeType.SIGN)
                       );
         }
     }
@@ -254,15 +269,16 @@ public class fnTest extends AbstractNodeTest
 
     class PathMatcher extends LineMatcher
     {
-       PathMatcher()  { super(S+"(p)" + P + P + E); }
+       PathMatcher()  { super(S + "p" + LB + P + P + RB + E); }
 
         void process()
         {
             Integer i = Integer.valueOf(m.group(1));
             targetMap.put(i, VariableNode.createPathActive(i.intValue()));
             
-            messages.add(pt2em(createPathActive( Double.parseDouble(m.group(3)),
-                                                 Double.parseDouble(m.group(4))))
+            messages.add(pt2em(createPathActive( Double.parseDouble(m.group(2)),
+                                                 Double.parseDouble(m.group(3)))
+                               , NodeType.PATH_ACTIVE)
                          );
         }
     }
@@ -270,28 +286,29 @@ public class fnTest extends AbstractNodeTest
     
     class KOMatcher extends LineMatcher
     {
-        KOMatcher()  { super(S+"(k)" + P + P + P + E); }
+        KOMatcher()  { super(S + "k" + LB + P + P + P + RB + E); }
 
         void process()
         {
             Integer i = Integer.valueOf(m.group(1));
             targetMap.put(i, VariableNode.createKO(1, i.intValue()));
             
-            messages.add(pt2em(createKO( Double.parseDouble(m.group(3)),
-                                         Double.parseDouble(m.group(4)),
-                                         Double.parseDouble(m.group(5))))
+            messages.add(pt2em(createKO( Double.parseDouble(m.group(2)),
+                                         Double.parseDouble(m.group(3)),
+                                         Double.parseDouble(m.group(4)))
+                               , NodeType.KO)
                          );
         }
     }
 
     class OneZeroMatcher extends LineMatcher
     {
-        OneZeroMatcher()  { super("^(tx|tp)\\s+(\\d+)" + P + P + E); }
+        OneZeroMatcher()  { super(S + "(tx|tp)" + LB + P + P + RB + E); }
 
         void process()
         {
-            tests.add(new OneZeroTest(m.group(1),
-                                      new Integer(m.group(2)),
+            tests.add(new OneZeroTest(m.group(2),
+                                      new Integer(m.group(1)),
                                       new double[] {
                                           Double.parseDouble(m.group(3)),
                                           Double.parseDouble(m.group(4))}
@@ -303,12 +320,12 @@ public class fnTest extends AbstractNodeTest
     
     class PMMatcher extends LineMatcher
     {
-        PMMatcher()  { super("^(td|ts)\\s+(\\d+)" + P + P + E); }
+        PMMatcher()  { super(S + "(td|ts)" + LB + P + P + RB + E); }
 
         void process()
         {
-            tests.add(new PMTest(m.group(1),
-                                 new Integer(m.group(2)),
+            tests.add(new PMTest(m.group(2),
+                                 new Integer(m.group(1)),
                                  new double[] {
                                      Double.parseDouble(m.group(3)),
                                      Double.parseDouble(m.group(4))}
@@ -320,12 +337,12 @@ public class fnTest extends AbstractNodeTest
     
     class PMZMatcher extends LineMatcher
     {
-        PMZMatcher()  { super("^(tk)\\s+(\\d+)" + P + P + P + E); }
+        PMZMatcher()  { super(S + "(tk)" + LB + P + P + P + RB + E); }
 
         void process()
         {
-            tests.add(new KOTest(m.group(1),
-                                 new Integer(m.group(2)),
+            tests.add(new KOTest(m.group(2),
+                                 new Integer(m.group(1)),
                                  new double[] {
                                      Double.parseDouble(m.group(3)),
                                      Double.parseDouble(m.group(4)),

@@ -108,9 +108,15 @@ public class MaxProduct
         
         FactorGraph fg =  FactorGraph.create(ig, paths); 
 
+        
         log("Running max product and decompose");
         fg.runMaxProductAndDecompose();
-                
+        
+        /*
+        log("Running max product");
+        fg.runMaxProduct();
+        */
+        
         log("Updating interaction graph");
         fg.updateInteractionGraph();
 
