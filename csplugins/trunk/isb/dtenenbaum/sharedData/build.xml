@@ -1,0 +1,94 @@
+<!-- WARNING: YOU MUST EDIT THIS FILE BY HAND FOR THE runWithCytoscape
+     TARGET TO WORK. YOU MUST CHANGE A LINE BELOW TO POINT TO A COMPLETE
+     AND UNOBFUSCATED CYTOSCAPE.JAR. THIS BUILD FILE ALSO ASSUMES THAT YOU ARE
+     WORKING IN A COMPLETE CSPLUGINS TREE. -->	
+
+<project name="sharedObjects" default="runWithCytoscape" basedir="../..">
+
+
+    <description>
+        build file for SharedData (csplugins.sharedData)
+    </description>
+  <!-- set global properties for this build -->
+  <property name="src" location="."/>
+  <property name="pkg" location="csplugins/isb/dtenenbaum/sharedData"/>
+  <property name="pkg_name" value="csplugins/isb/dtenenbaum/sharedData"/>
+  <property name="pkg.name" value="csplugins.isb.dtenenbaum.sharedData"/>
+
+  <!-- EDIT HERE TO POINT TO COMPLETE AND UNOBFUSCATED CYTOSCAPE.JAR: -->
+  <property name="cytoscape_jar_location" 
+    location="c:/eclipse/workspace/datacube/lib"/>
+  <property name="global_lib" location="csplugins/lib"/>
+
+
+  <property name="bin"  location="../bin"/>
+  <property name="lib"  location="${pkg}/lib"/>
+  <property name="dist"  location="."/>
+  
+  <property environment="env"/>
+  
+  <property name="javahome" location="${env.JAVA_HOME}"/>
+  
+  <!-- Global "magic" property for <javac> -->
+  <property name="build.compiler" value="modern"/>
+  
+
+   <path id="project.class.path">
+           <pathelement location="${javahome}lib/tools.jar"/>
+           <pathelement location="${dist}"/>
+           <pathelement location="${bin}"/>
+           <pathelement location="${cytoscape_jar_location}/cytoscape.jar"/>
+           <pathelement location="${global_lib}/colt.jar"/>
+           <pathelement location="${global_lib}/junit.jar"/>
+  </path>
+
+
+  <target name="foo">
+	<echo message="${env.JAVA_HOME}lib/tools.jar"/>
+  
+  </target>
+
+  
+
+  <target name="init">
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the build directory structure used by compile -->
+  </target>
+
+
+
+  <target name="compile" depends="init"
+        description="compile the source " >
+    <!-- Compile the java code from ${src} into ${bin} -->
+    <echo message="JAVA_HOME is set to = ${env.JAVA_HOME}"/>
+    <echo message="CLASSPATH is set to = ${env.CLASSPATH}"/>
+    
+    <mkdir dir="${bin}"/>
+    <javac srcdir="${pkg}" destdir="${bin}">
+    	<classpath refid="project.class.path"/>
+    </javac>
+  </target>
+
+  <!-- need to make sure that shared data plugin is loaded in cytoscape props -->
+  <target name="runWithCytoscape" depends="compile"
+    description="Run cytoscape with the datacube browser available">
+      <java classname="cytoscape.cytoscape" fork="true"
+        dir="csplugins/trial/pshannon/dataCube/demo/mflory">
+        <classpath refid="project.class.path"/>
+        <arg value="-i"/>
+        <arg value="network.sif"/>
+        <arg value="--matrix"/>
+        <arg value="matrix.expression"/>
+        <arg value="--matrix"/>
+        <arg value="matrix.icat"/>
+      </java>
+  </target>
+
+
+
+  <target name="clean"
+        description="clean up" >
+     <!-- nothing here yet -->
+  </target>
+</project>
