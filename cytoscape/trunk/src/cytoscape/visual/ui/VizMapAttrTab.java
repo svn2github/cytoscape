@@ -308,6 +308,7 @@ public class VizMapAttrTab extends VizMapTab {
 	*/
         Collection calculators = getCalculators(this.type);
         Vector comboCalcs = new Vector(calculators);
+
         //it's possible the current calculator isn't in the catalog; if so,
         //add it to the combo box
         if ( currentCalculator != null && !(calculators.contains(currentCalculator)) ) {
@@ -664,7 +665,11 @@ public class VizMapAttrTab extends VizMapTab {
             }
             
 	    Calculator temp = currentCalculator;
-	    switchCalculator(null);
+        //  Code changed by Ethan Cerami;  code now calls setCurrentCalculator
+        //  instead of switchCalculator.  This prevents the currently selected
+        //  calculator from being added back to the JComboBox, after it has
+        //  been deleted.  Bug Reference # 0000223.
+        setCurrentCalculator(null);
 	    catalog.removeCalculator(temp); // triggers events that switch the calculator
 	}    
     }
