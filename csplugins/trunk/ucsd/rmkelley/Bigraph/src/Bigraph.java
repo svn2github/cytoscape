@@ -14,7 +14,7 @@ import giny.model.RootGraphChangeListener;
 import giny.model.RootGraphChangeEvent;
 
 import cytoscape.AbstractPlugin;
-import cytoscape.GraphObjAttributes;
+import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.CyNetwork;
 import cytoscape.view.CyWindow;
 
@@ -32,154 +32,156 @@ import cytoscape.view.CyWindow;
  */
 public class Bigraph extends AbstractPlugin {
     
-    CyWindow cyWindow;
+  CyWindow cyWindow;
     
     
+  /**
+   * This constructor saves the cyWindow argument (the window to which this
+   * plugin is attached) and adds an item to the operations menu.
+   */
+  public Bigraph(CyWindow cyWindow) {
+    this.cyWindow = cyWindow;
+    cyWindow.getCyMenus().getOperationsMenu().add( new SamplePluginAction() );
+  }
+    
+  /**
+   * This class gets attached to the menu item.
+   */
+  public class SamplePluginAction extends AbstractAction {
+        
     /**
-     * This constructor saves the cyWindow argument (the window to which this
-     * plugin is attached) and adds an item to the operations menu.
+     * The constructor sets the text that should appear on the menu item.
      */
-    public Bigraph(CyWindow cyWindow) {
-        this.cyWindow = cyWindow;
-        cyWindow.getCyMenus().getOperationsMenu().add( new SamplePluginAction() );
+    public SamplePluginAction() {super("Generate Bigraph");}
+        
+    /**
+     * Gives a description of this plugin.
+     */
+    public String describe() {
+      StringBuffer sb = new StringBuffer();
+      sb.append("This graph converts a graph into a bigraph");
+      return sb.toString();
     }
-    
+        
     /**
-     * This class gets attached to the menu item.
+     * This method is called when the user selects the menu item.
      */
-    public class SamplePluginAction extends AbstractAction {
-        
-        /**
-         * The constructor sets the text that should appear on the menu item.
-         */
-        public SamplePluginAction() {super("Generate Bigraph");}
-        
-        /**
-         * Gives a description of this plugin.
-         */
-        public String describe() {
-            StringBuffer sb = new StringBuffer();
-            sb.append("This graph converts a graph into a bigraph");
-            return sb.toString();
-        }
-        
-	        /**
-         * This method is called when the user selects the menu item.
-         */
-        public void actionPerformed(ActionEvent ae) {
-            //get the graph view object from the window.
-            GraphView graphView = cyWindow.getView();
-            //get the network object; this contains the graph
-            CyNetwork network = cyWindow.getNetwork();
-            //can't continue if either of these is null
-            if (graphView == null || network == null) {return;}
+    public void actionPerformed(ActionEvent ae) {
+      //get the graph view object from the window.
+      GraphView graphView = cyWindow.getView();
+      //get the network object; this contains the graph
+      CyNetwork network = cyWindow.getNetwork();
+      //can't continue if either of these is null
+      if (graphView == null || network == null) {return;}
             
-	    //inform listeners that we're doing an operation on the network
-            String callerID = "SamplePluginAction.actionPerformed";
-            network.beginActivity(callerID);
-            //this is the graph structure; it should never be null,
-            GraphPerspective graphPerspective = network.getGraphPerspective();
-            if (graphPerspective == null) {
-                System.err.println("In " + callerID + ":");
-                System.err.println("Unexpected null graph perspective in network");
-                network.endActivity(callerID);
-                return;
-            }
-            //and the view should be a view on this structure
-            if (graphView.getGraphPerspective() != graphPerspective) {
-                System.err.println("In " + callerID + ":");
-                System.err.println("graph view is not a view on network's graph perspective");
-                network.endActivity(callerID);
-                return;
-            }
-	    Thread t = new BigraphThread(cyWindow);
-	    t.start();
-	    network.endActivity(callerID);
+      //inform listeners that we're doing an operation on the network
+      String callerID = "SamplePluginAction.actionPerformed";
+      network.beginActivity(callerID);
+      //this is the graph structure; it should never be null,
+      GraphPerspective graphPerspective = network.getGraphPerspective();
+      if (graphPerspective == null) {
+	System.err.println("In " + callerID + ":");
+	System.err.println("Unexpected null graph perspective in network");
+	network.endActivity(callerID);
+	return;
+      }
+      //and the view should be a view on this structure
+      if (graphView.getGraphPerspective() != graphPerspective) {
+	System.err.println("In " + callerID + ":");
+	System.err.println("graph view is not a view on network's graph perspective");
+	network.endActivity(callerID);
+	return;
+      }
+      Thread t = new BigraphThread(cyWindow);
+      t.start();
+      network.endActivity(callerID);
            
-	}
     }
+  }
 
-    class BigraphThread extends Thread{
-   	CyWindow cyWindow;
-	public BigraphThread(CyWindow cyWindow){
-		this.cyWindow = cyWindow;
-	}
-    	public void run(){
-	   //this is the node attributes; never null
-	   GraphObjAttributes oldEdgeAttributes = cyWindow.getNetwork().getEdgeAttributes();
-	   GraphObjAttributes oldNodeAttributes = cyWindow.getNetwork().getNodeAttributes();
-	   String [] attributeNames = oldEdgeAttributes.getAttributeNames();
-	   String attributeName = AttributeChooser.getAttribute(attributeNames);
+  class BigraphThread extends Thread{
+    CyWindow cyWindow;
+    public BigraphThread(CyWindow cyWindow){
+      this.cyWindow = cyWindow;
+    }
+    public void run(){
+      //this is the node attributes; never null
+      GraphObjAttributes oldEdgeAttributes = cyWindow.getNetwork().getEdgeAttributes();
+      GraphObjAttributes oldNodeAttributes = cyWindow.getNetwork().getNodeAttributes();
+      String [] attributeNames = oldEdgeAttributes.getAttributeNames();
+      String attributeName = AttributeChooser.getAttribute(attributeNames);
 	
-	   Iterator oldEdgeIt = cyWindow.getNetwork().getRootGraph().edgesList().iterator();
-	   HashMap newEdgeNodes = new HashMap();
-	   HashMap newNodeNodes = new HashMap();
-	   CyNetwork biCyNetwork = new CyNetwork();
-	   RootGraph biRootGraph = biCyNetwork.getRootGraph();
-	   GraphObjAttributes biNodeAttributes = biCyNetwork.getNodeAttributes();
-	   GraphPerspective biGraphPerspective = biCyNetwork.getGraphPerspective();
+      Iterator oldEdgeIt = cyWindow.getNetwork().getRootGraph().edgesList().iterator();
+      HashMap newEdgeNodes = new HashMap();
+      HashMap newNodeNodes = new HashMap();
+      CyNetwork biCyNetwork = new CyNetwork();
+      RootGraph biRootGraph = biCyNetwork.getRootGraph();
+      GraphObjAttributes biNodeAttributes = biCyNetwork.getNodeAttributes();
+      GraphPerspective biGraphPerspective = biCyNetwork.getGraphPerspective();
 
-	   while(oldEdgeIt.hasNext()){
-	   	Edge oldEdge = (Edge)oldEdgeIt.next();
-	   	if(!oldEdge.isDirected()){
-			System.out.println("Undirected edge");
-		}
-		String attribute = (String)oldEdgeAttributes.get(attributeName,oldEdgeAttributes.getCanonicalName(oldEdge));	
-	   	//if we have not seen this class of edge before, make a new edge node for it
-		if(!newEdgeNodes.containsKey(attribute)){
-			//create the node for this edge
-			Node newNode = biRootGraph.getNode(biRootGraph.createNode());
-			newEdgeNodes.put(attribute,newNode);
-			biNodeAttributes.addNameMapping(attribute,newNode);
-			biGraphPerspective.restoreNode(newNode);
-		}
+      while(oldEdgeIt.hasNext()){
+	Edge oldEdge = (Edge)oldEdgeIt.next();
+	if(!oldEdge.isDirected()){
+	  System.out.println("Undirected edge");
+	}
+	String attribute = (String)oldEdgeAttributes.get(attributeName,oldEdgeAttributes.getCanonicalName(oldEdge));	
+	//if we have not seen this class of edge before, make a new edge node for it
+	if(!newEdgeNodes.containsKey(attribute)){
+	  //create the node for this edge
+	  Node newNode = biRootGraph.getNode(biRootGraph.createNode());
+	  newEdgeNodes.put(attribute,newNode);
+	  biNodeAttributes.addNameMapping(attribute,newNode);
+	  biGraphPerspective.restoreNode(newNode);
+	}
 
-		Node newNode = (Node)newEdgeNodes.get(attribute); 	
+	Node newNode = (Node)newEdgeNodes.get(attribute); 	
 	   	
-		Node oldTarget = oldEdge.getTarget();
-		String targetName = oldNodeAttributes.getCanonicalName(oldTarget);
-		if(!newNodeNodes.containsKey(targetName)){
-			Node newTarget = biRootGraph.getNode(biRootGraph.createNode());
-			newNodeNodes.put(targetName,newTarget);
-			biNodeAttributes.addNameMapping(targetName,newTarget);
-			biGraphPerspective.restoreNode(newTarget);
-		}
-		Node newTarget = (Node)newNodeNodes.get(targetName);
-		biGraphPerspective.restoreEdge(biRootGraph.getEdge(biRootGraph.createEdge(newNode,newTarget)));
-	   
-		Node oldSource = oldEdge.getSource();
-		String sourceName = oldNodeAttributes.getCanonicalName(oldSource);
-		if(!newNodeNodes.containsKey(sourceName)){
-			Node newSource = biRootGraph.getNode(biRootGraph.createNode());
-			newNodeNodes.put(sourceName,newSource);
-			biNodeAttributes.addNameMapping(sourceName,newSource);
-			biGraphPerspective.restoreNode(newSource);
-		}
-		Node newSource = (Node)newNodeNodes.get(sourceName);
+	Node oldTarget = oldEdge.getTarget();
+	String targetName = oldNodeAttributes.getCanonicalName(oldTarget);
+	if(!newNodeNodes.containsKey(targetName)){
+	  Node newTarget = biRootGraph.getNode(biRootGraph.createNode());
+	  newNodeNodes.put(targetName,newTarget);
+	  biNodeAttributes.addNameMapping(targetName,newTarget);
+	  biGraphPerspective.restoreNode(newTarget);
+	}
+	Node newTarget = (Node)newNodeNodes.get(targetName);
+	if (!biRootGraph.edgeExists(newNode,newTarget)) {
+	  biGraphPerspective.restoreEdge(biRootGraph.getEdge(biRootGraph.createEdge(newNode,newTarget)));
+	}
+	Node oldSource = oldEdge.getSource();
+	String sourceName = oldNodeAttributes.getCanonicalName(oldSource);
+	if(!newNodeNodes.containsKey(sourceName)){
+	  Node newSource = biRootGraph.getNode(biRootGraph.createNode());
+	  newNodeNodes.put(sourceName,newSource);
+	  biNodeAttributes.addNameMapping(sourceName,newSource);
+	  biGraphPerspective.restoreNode(newSource);
+	}
+	Node newSource = (Node)newNodeNodes.get(sourceName);
+	if (!biRootGraph.edgeExists(newSource,newNode)) {
 		biGraphPerspective.restoreEdge(biRootGraph.getEdge(biRootGraph.createEdge(newSource,newNode)));
-		
-
-	   }
-
-	   System.out.println(""+biRootGraph.getNodeCount());
-	   System.out.println(""+biCyNetwork.getGraphPerspective().getNodeCount());
- 	   CyWindow newCyWindow = new CyWindow(cyWindow.getCytoscapeObj(),biCyNetwork,"Bigraph");
-	   newCyWindow.showWindow(); 
-	   newCyWindow.setNewNetwork(biCyNetwork);  	  
-	}
-	
-	class MyRootGraphListener implements RootGraphChangeListener{
-		GraphPerspective graphPerspective;
-		public MyRootGraphListener(GraphPerspective graphPerspective){
-			this.graphPerspective = graphPerspective;
-		}
-		public void rootGraphChanged(RootGraphChangeEvent event){
-			graphPerspective.restoreNodes(Arrays.asList(event.getCreatedNodes()));
-			graphPerspective.restoreEdges(Arrays.asList(event.getCreatedEdges()));
-		}
 	}
 
+      }
+
+      System.out.println(""+biRootGraph.getNodeCount());
+      System.out.println(""+biCyNetwork.getGraphPerspective().getNodeCount());
+      CyWindow newCyWindow = new CyWindow(cyWindow.getCytoscapeObj(),biCyNetwork,"Bigraph");
+      newCyWindow.showWindow(); 
+      newCyWindow.setNewNetwork(biCyNetwork);  	  
     }
+	
+    class MyRootGraphListener implements RootGraphChangeListener{
+      GraphPerspective graphPerspective;
+      public MyRootGraphListener(GraphPerspective graphPerspective){
+	this.graphPerspective = graphPerspective;
+      }
+      public void rootGraphChanged(RootGraphChangeEvent event){
+	graphPerspective.restoreNodes(Arrays.asList(event.getCreatedNodes()));
+	graphPerspective.restoreEdges(Arrays.asList(event.getCreatedEdges()));
+      }
+    }
+
+  }
 
 	
 }
