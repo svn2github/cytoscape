@@ -7,11 +7,8 @@ import cytoscape.*;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.plugin.CytoscapePlugin;
-<<<<<<< MetaNodeViewerCytoPlugin.java
-import cytoscape.plugin.jar.JarLoader;
+//import cytoscape.plugin.jar.JarLoader;
 import java.beans.*;
-=======
->>>>>>> 1.8
 
 /**
  * A plug-in that provides operations to create meta-nodes,
