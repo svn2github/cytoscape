@@ -9,11 +9,13 @@ import cytoscape.process.Task;
 
 /**
  * This class encapsulates the logic needed to perform a layout on a graph.
+ * An instance of this class performs a layout on a given graph at most
+ * once.<p>
  * One of the goals of this class is to limit the set
  * of dependent classes and packages to an absolute minimum.  This class
  * should be so concise that it would be a simple effort to
  * provide layout algorithms as web services using this layout framework.
- */
+ **/
 public abstract class LayoutAlgorithm implements Task
 {
 
@@ -43,7 +45,7 @@ public abstract class LayoutAlgorithm implements Task
    * If an asynchronous call to <code>halt()</code> is made while
    * <code>run()</code> is executing, <code>run()</code> should make an effort
    * to abort its operations and exit as soon as possible.
-   */
+   **/
   public abstract void run();
 
   /**
@@ -60,7 +62,7 @@ public abstract class LayoutAlgorithm implements Task
    * <code>halt()</code> should do nothing.
    * There is no guarantee that <code>halt()</code> will be called on
    * and instance of this class.
-   */
+   **/
   public abstract void halt();
 
 }
