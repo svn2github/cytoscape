@@ -297,7 +297,7 @@ public class TaskMonitorUI extends JFrame implements ActionListener {
 
         //  Conditionally Close Window only when Task is Done.
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        this.addWindowListener(new WindowAdapter (){
+        this.addWindowListener(new WindowAdapter () {
             public void windowClosing(WindowEvent e) {
                 if (task.isDone()) {
                     timer.stop();
