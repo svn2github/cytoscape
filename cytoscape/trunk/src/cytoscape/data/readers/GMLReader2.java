@@ -6,6 +6,7 @@ import java.awt.geom.Point2D;
 import giny.model.*;
 import giny.view.*;
 import cytoscape.*;
+import cytoscape.util.PercentUtil;
 import cytoscape.task.TaskMonitor;
 import cytoscape.data.Semantics;
 
@@ -70,6 +71,7 @@ public class GMLReader2 implements GraphReader {
   Vector node_labels,edge_labels,edge_root_index_pairs,node_root_index_pairs;
   IntArrayList giny_nodes,giny_edges;
   private TaskMonitor taskMonitor;
+  private PercentUtil percentUtil;
 
   /**
    * Constructor.
@@ -87,6 +89,7 @@ public class GMLReader2 implements GraphReader {
   public GMLReader2 (String filename, TaskMonitor taskMonitor) {
     this.filename = filename;
     this.taskMonitor = taskMonitor;
+    percentUtil = new PercentUtil (5);
   }
 
   public void read( boolean canonicalize ){
@@ -150,18 +153,13 @@ public class GMLReader2 implements GraphReader {
       OpenIntIntHashMap gml_id2order = new OpenIntIntHashMap(nodes.size());
       Set nodeNameSet = new HashSet(nodes.size());
 
-      //  Report Status Message
-      if (taskMonitor != null) {
-          taskMonitor.setStatus ("Adding Nodes to Network");
-      }
-
       //  Add All Nodes to Network
       for (int idx = 0; idx < nodes.size(); idx++) {
 
           //  Report Status Value
           if (taskMonitor != null) {
-              double percent = ((double) idx / nodes.size()) * 100.0;
-              taskMonitor.setPercentCompleted((int) percent);
+              taskMonitor.setPercentCompleted
+                      (percentUtil.getGlobalPercent(2, idx, nodes.size()));
           }
           String label = (String) node_labels.get(idx);
           if (nodeNameSet.add(label)) {
@@ -179,11 +177,6 @@ public class GMLReader2 implements GraphReader {
       }
       nodeNameSet = null;
 
-      //  Report Status Message
-      if (taskMonitor != null) {
-          taskMonitor.setStatus ("Adding Nodes to Network");
-      }
-
       giny_edges = new IntArrayList(sources.size());
       Set edgeNameSet = new HashSet(sources.size());
       GraphObjAttributes edgeAttributes = Cytoscape.getEdgeNetworkData();
@@ -194,8 +187,8 @@ public class GMLReader2 implements GraphReader {
 
           //  Report Status Value
           if (taskMonitor != null) {
-              double percent = ((double) idx / sources.size()) * 100.0;
-              taskMonitor.setPercentCompleted((int) percent);
+              taskMonitor.setPercentCompleted(percentUtil.getGlobalPercent
+                      (3, idx, sources.size()));
           }
 
           if (gml_id2order.containsKey(sources.get(idx))
@@ -243,16 +236,13 @@ public class GMLReader2 implements GraphReader {
    */
   protected void readGML(List list){
     //  Report Progress Message
-    if (taskMonitor != null) {
-        taskMonitor.setStatus("Parsing GML Data...");
-    }
     int counter = 0;
     for(Iterator it = list.iterator();it.hasNext();){
 
       //  Report Progress Value
       if (taskMonitor != null) {
-          double percent = ((double) counter / list.size()) * 100.0;
-          taskMonitor.setPercentCompleted((int) percent);
+          taskMonitor.setPercentCompleted(percentUtil.getGlobalPercent
+                  (1, counter, list.size()));
           counter++;
       }
 

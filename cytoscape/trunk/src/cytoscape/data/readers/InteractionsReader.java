@@ -43,6 +43,7 @@ import giny.model.*;
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.Interaction;
 import cytoscape.*;
+import cytoscape.util.PercentUtil;
 import cytoscape.task.TaskMonitor;
 import cytoscape.data.servers.*;
 import cytoscape.data.readers.*;
@@ -55,6 +56,7 @@ import cern.colt.map.OpenIntIntHashMap;
  */
 public class InteractionsReader implements GraphReader {
   private TaskMonitor taskMonitor;
+  private PercentUtil percentUtil;
 
   /**
    * The File to be loaded
@@ -122,7 +124,6 @@ public class InteractionsReader implements GraphReader {
   public void layout(GraphView view){}
   //----------------------------------------------------------------------------------------
   public void read ( boolean canonicalize ) throws IOException {
-
     String rawText;
     if ( !is_zip ) {
         if (filename.trim().startsWith ("jar://")) {
@@ -145,20 +146,25 @@ public class InteractionsReader implements GraphReader {
 
     String [] lines = rawText.split ("\n");
 
+    //  There are a total of 6 steps to read in a complete SIF File
     if (taskMonitor != null) {
-        taskMonitor.setStatus("Reading in Data...");
+        percentUtil = new PercentUtil (6);
     }
+
+    System.out.println("****START");
     for (int i=0; i<lines.length; i++) {
 
       if (taskMonitor != null) {
-          double percent = ((double) i / lines.length) * 100.0;
-          taskMonitor.setPercentCompleted((int) percent);
+          taskMonitor.setPercentCompleted
+                  (percentUtil.getGlobalPercent(1, i, lines.length));
       }
       String newLine = lines[i];
       Interaction newInteraction = new Interaction (newLine, delimiter);
       allInteractions.addElement (newInteraction);
     }
+    System.out.println("****END");
     createRootGraphFromInteractionData (canonicalize);
+
   }
   //-----------------------------------------------------------------------------------------
   /**
@@ -211,10 +217,6 @@ public class InteractionsReader implements GraphReader {
     Set nodeNameSet = new HashSet();
     int edgeCount = 0;
 
-    if (taskMonitor != null) {
-        taskMonitor.setStatus("Processing Interactions");
-    }
-
     for (int i=0; i<interactions.length; i++) {
       Interaction interaction = interactions [i];
       String sourceName = interaction.getSource();
@@ -229,8 +231,8 @@ public class InteractionsReader implements GraphReader {
         edgeCount++;
       }
       if (taskMonitor != null) {
-          double percent = ((double) i / interactions.length) * 100.0;
-          taskMonitor.setPercentCompleted((int) percent);
+          taskMonitor.setPercentCompleted
+                  (percentUtil.getGlobalPercent(2, i, interactions.length));
       }
     }
 
@@ -241,17 +243,14 @@ public class InteractionsReader implements GraphReader {
 
     //now create all of the nodes, storing a hash from name to node
     // Map nodes = new HashMap();
-
-    if (taskMonitor != null) {
-        taskMonitor.setStatus("Adding Nodes to Network");
-    }
     int counter = 0;
     for (Iterator si = nodeNameSet.iterator(); si.hasNext(); ) {
       String nodeName = (String)si.next();
 
       if (taskMonitor != null) {
-          double percent = ((double)counter / nodeNameSet.size()) * 100.0;
-          taskMonitor.setPercentCompleted((int) percent);
+          taskMonitor.setPercentCompleted
+                  (percentUtil.getGlobalPercent
+                  (3, counter, nodeNameSet.size()));
           counter++;
       }
 
@@ -277,17 +276,12 @@ public class InteractionsReader implements GraphReader {
     //   Cytoscape.getEdgeNetworkData() ["interaction"] = interactionHash
     //   interactionHash [sourceNode::targetNode] = "pd"
     //---------------------------------------------------------------------------
-
-    if (taskMonitor != null) {
-        taskMonitor.setStatus("Adding Edges to Network");
-    }
-
     String targetNodeName;
     for (int i=0; i < interactions.length; i++) {
 
       if (taskMonitor != null) {
-          double percent = ((double) i / interactions.length) * 100.0;
-          taskMonitor.setPercentCompleted((int) percent);
+          taskMonitor.setPercentCompleted
+                  (percentUtil.getGlobalPercent(4, i, interactions.length));
       }
 
       Interaction interaction = interactions [i];
@@ -305,8 +299,6 @@ public class InteractionsReader implements GraphReader {
           targetNodeName = canonicalizeName (targets [t]);
         else
           targetNodeName = targets[t];
-
-        
 
         //Node targetNode = (Node) nodes.get (targetNodeName);
         String edgeName = nodeName + " (" + interactionType + ") " + targetNodeName;
