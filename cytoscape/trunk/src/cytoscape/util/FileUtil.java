@@ -18,24 +18,6 @@ public abstract class FileUtil {
   public static int SAVE = FileDialog.SAVE;
   public static int CUSTOM = LOAD + SAVE;
 
-
-  /**
-   * Returns a File object, this method should be used instead
-   * of rolling your own JFileChooser.
-   *
-   * @return the location of the selcted file
-   * @param title the title of the dialog box
-   * @param load_save_custom a flag for the type of file dialog
-   */
- public static File getFile ( String title, 
-                              int load_save_custom ) {
-   return getFile( title,
-                   load_save_custom,
-                   new CyFileFilter[] {},
-                   null,
-                   null );
- }
-
  /**
    * Returns a File object, this method should be used instead
    * of rolling your own JFileChooser.
@@ -79,7 +61,7 @@ public abstract class FileUtil {
 
     File start = null;
     if ( start_dir == null ) {
-      start = CytoscapeInit.getMRUD();
+      //start = CyInit.getCurrentDirectory();
     } else {
       start = new File( start_dir );
     }
@@ -100,13 +82,13 @@ public abstract class FileUtil {
       if ( filters.length != 0 )
         chooser.setFilenameFilter( filters[0] );
 
-      chooser.setDirectory( start.toString() );
+      //chooser.setDirectory( start.toString() );
       chooser.show();
       
       if ( chooser.getFile() != null ) {
         File result = new File(chooser.getDirectory()+"/"+ chooser.getFile() );
         if ( start_dir == null )
-          CytoscapeInit.setMRUD( new File( chooser.getDirectory() ) );
+          //CyInit.setCurrentDirectory( new File( chooser.getDirectory() ) );
         return result;
       }
       return null;
@@ -139,8 +121,8 @@ public abstract class FileUtil {
         }
       }
 
-      if ( result != null && start_dir == null )
-      CytoscapeInit.setMRUD( chooser.getCurrentDirectory() );
+      //if ( result != null && start_dir == null )
+      //CyInit.setCurrentDirectory( chooser.getCurrentDirectory() );
 
       return result;
     }

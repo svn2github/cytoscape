@@ -42,6 +42,7 @@ import javax.help.CSH;		// Context Sensitive Help convenience object...
 import javax.swing.KeyStroke;
 
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeObj;
 import cytoscape.CyNetwork;
 import cytoscape.view.CyNetworkView;
 
@@ -321,7 +322,9 @@ public class CyMenus  implements GraphViewChangeListener {
     addAction( new SaveAsInteractionsAction() );
     addAction( new SaveNodeAttributesAction() );
     addAction( new SaveEdgeAttributesAction() );
-
+    // what does this do?
+    //saveSubMenu.add(new SaveVisibleNodesAction(networkView));
+    //saveSubMenu.add(new SaveSelectedNodesAction(networkView));
       
     // Print Actions
     
@@ -331,8 +334,9 @@ public class CyMenus  implements GraphViewChangeListener {
     addAction( menuExportAction );
 
     //Exit
-    addAction( new ExitAction() );
-    
+    if ( Cytoscape.getCytoscapeObj().getParentApp() != null ) {
+      addAction( new ExitAction() );
+    }
 
     //fill the Edit menu
     //TODO: make the Squiggle Stuff be better
@@ -411,6 +415,13 @@ public class CyMenus  implements GraphViewChangeListener {
     helpMenu.addSeparator();
     helpMenu.add( helpAboutMenuItem );
      
+
+    //menuBar.addAction( new AnimatedLayoutAction( networkView ) );
+    
+    addAction( new LoadPluginAction() );
+    addAction( new LoadPluginDirectoryAction() );
+    opsMenu.addSeparator();
+
   }
 
   /**

@@ -25,6 +25,10 @@ public interface CyWindow {
   public void showWindow() ;
 
 
+  /**
+   * Returns a reference to the global Cytoscape object.
+   */
+  public CytoscapeObj getCytoscapeObj ();
 
   /**
    * returns the network displayed in this window.

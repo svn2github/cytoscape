@@ -35,6 +35,7 @@ package cytoscape.plugin;
 import java.lang.reflect.Constructor;
 
 import cytoscape.view.CyWindow;
+import cytoscape.CytoscapeObj;
 
 /**
 * @deprecated
@@ -77,7 +78,7 @@ public abstract class AbstractPlugin {
      *
      * @return true if the plugin was successfulyl constructed, false otherwise
      */
-    public static boolean loadPlugin(Class pluginClass, 
+    public static boolean loadPlugin(Class pluginClass, CytoscapeObj cytoscapeObj,
                                      CyWindow cyWindow) {
         if (pluginClass == null) {return false;}
 
@@ -94,6 +95,19 @@ public abstract class AbstractPlugin {
             } catch ( Exception e ) {
               e.printStackTrace();
             }
+
+
+// (SecurityException se) {
+//                 System.err.println("In AbstractPlugin.loadPlugin:");
+//                 System.err.println(se.getMessage());
+//                 se.printStackTrace();
+//                 return false;
+//             } catch (NoSuchMethodException nsme) {
+//                 //ignore, there are other constructors to look for
+//             }
+
+            
+
             if (ctor != null) {
               try {
                 Object[] args = new Object[1];

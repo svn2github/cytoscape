@@ -46,6 +46,7 @@ public class AlphabeticalSelectionAction
       String search_string = searchField.getText();
       CyNetworkUtilities.selectNodesStartingWith( Cytoscape.getCurrentNetwork(),
                                                   search_string,
+                                                  Cytoscape.getCytoscapeObj(), 
                                                   Cytoscape.getCurrentNetworkView() );
       return;
     }

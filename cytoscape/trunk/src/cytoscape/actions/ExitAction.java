@@ -21,6 +21,9 @@ public class ExitAction extends CytoscapeAction {
   }
     
   public void actionPerformed (ActionEvent e) {
+    //TODO: Other Exit stuff....
+    //Cytoscape.getCytoscapeObj().saveCalculatorCatalog();
+    //Cytoscape.getCytoscapeObj().getParentApp().exit(0);
     Cytoscape.exit();
   }
 }

@@ -39,6 +39,7 @@ import giny.model.*;
 import giny.view.*;
 
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeObj;
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.view.CyNetworkView;
 import cytoscape.CyNetwork;
@@ -124,7 +125,7 @@ public static boolean saveVisibleNodeNames(CyNetwork network, String filename) {
  * match the given key, allowing multiple selection queries to be concatenated.
  */
 public static boolean selectNodesStartingWith(CyNetwork network, String key,
-                                              CyNetworkView networkView) {
+                                           CytoscapeObj cytoscapeObj, CyNetworkView networkView) {
     if (network == null || key == null || networkView == null) {return false;}
     key = key.toLowerCase();
     boolean found = false;
@@ -143,7 +144,7 @@ public static boolean selectNodesStartingWith(CyNetwork network, String key,
 	    found = true;
         } else {
             //this list always includes the canonical name itself
-            List synonyms = Semantics.getAllSynonyms(canonicalName, network );
+            List synonyms = Semantics.getAllSynonyms(canonicalName, network, cytoscapeObj);
             for (Iterator synI = synonyms.iterator(); synI.hasNext(); ) {
                 String synonym = (String)synI.next();
                 if ( Strings.isLike(synonym, key, 0, true ) ) {

@@ -1,5 +1,6 @@
 package cytoscape.view;
 
+import cytoscape.CytoscapeObj;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
@@ -41,6 +42,7 @@ public class CytoscapeDesktop
   extends 
     JFrame 
   implements
+    PluginListener,
     PropertyChangeListener,
     CyWindow {
    
@@ -288,9 +290,20 @@ public class CytoscapeDesktop
 
     //------------------------------//
     // Set up the VizMapper
-    setupVizMapper( main_panel );
+   setupVizMapper( main_panel );
     
+    //------------------------------//
+    // Window Closing, Program Shutdown
+
     
+    Cytoscape.getCytoscapeObj().getPluginRegistry().addPluginListener( this );
+
+    //add a listener to save the visual mapping catalog on exit
+    //this should eventually be replaced by a method in Cytoscape.java itself
+    //to save the catalog just before exiting the program
+    //TODO: Allow other things to be notified if the
+    //      Program is exiting.
+    final CytoscapeObj theCytoscapeObj = Cytoscape.getCytoscapeObj();
     final CytoscapeDesktop thisWindow = this;
     addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent we) {
@@ -301,11 +314,18 @@ public class CytoscapeDesktop
         }
     });
     
+    //add the parent app as a listener, to manage the session when this window closes
+    //is this strictly necessary, since cytoscape.java listens for
+    //WindowOpened events? -AM 2003/06/24
+    addWindowListener( Cytoscape.getCytoscapeObj().getParentApp() );
+   
+
+
     // show the Desktop
     setContentPane( main_panel );
     pack();
     if ( VIEW_TYPE != EXTERNAL_VIEW )
-      setSize( 800, 700 );
+      setSize( 700, 700 );
     setVisible( true );
 
   }
@@ -325,6 +345,15 @@ public class CytoscapeDesktop
   // Common Desktop Variables
 
 
+  /**
+   * Returns a reference to the global Cytoscape object. Now available statically using:
+   * {@link cytoscape.Cytoscape#getCytoscapeObj} 
+   * @deprecated
+   */
+  public CytoscapeObj getCytoscapeObj () {
+    return Cytoscape.getCytoscapeObj();
+  }
+  
   /**
    * This will return the network currently under focus. however use this:
    * {@link cytoscape.Cytoscape#getCurrentNetwork}
@@ -501,6 +530,44 @@ public class CytoscapeDesktop
 
 
   /**
+   * Load in the Plugins
+   */
+  public void setupPlugins () {
+    updatePlugins();
+  }
+  /**
+   * Implemenation of the PluginListener interface. Triggers update of
+   * currently loaded plugins.
+   */
+  public void pluginRegistryChanged(PluginEvent event) {
+    updatePlugins();
+  }
+  protected void updatePlugins () {
+
+    //poll Plugin Registry for new plugins since last update
+    PluginUpdateList pul = Cytoscape.getCytoscapeObj().getPluginRegistry().getPluginsLoadedSince(lastPluginRegistryUpdate);
+    Class neededPlugin[] = pul.getPluginArray();
+    for (int i = 0; i < neededPlugin.length; i++) {
+
+      if ( AbstractPlugin.class .isAssignableFrom( neededPlugin[i] ) ) {
+        // System.out.println( "AbstractPlugin Loaded" );
+        AbstractPlugin.loadPlugin( neededPlugin[i], 
+                                   Cytoscape.getCytoscapeObj(),
+                                   ( cytoscape.view.CyWindow ) Cytoscape.getDesktop() );
+      } 
+
+      else if ( CytoscapePlugin.class.isAssignableFrom( neededPlugin[i] ) ) {
+        // System.out.println( "CytoscapePlugin Loaded" );
+        CytoscapePlugin.loadPlugin( neededPlugin[i] );
+      }
+    }
+    lastPluginRegistryUpdate = pul.getTimestamp();
+  }
+
+
+ 
+ 
+  /**
    * Returns the visual mapping manager that controls the appearance
    * of nodes and edges in this display.
    */
@@ -520,11 +587,30 @@ public class CytoscapeDesktop
    */
   protected void setupVizMapper ( JPanel panel ) {
     
-    //TODO:
-    // why does the vizmapper care whicih network is focused
+    // BUG: vizMapper.applyAppearances() gets called twice here
+    
+    CalculatorCatalog calculatorCatalog = Cytoscape.getCytoscapeObj().getCalculatorCatalog();
 
-    this.vizMapper = new VisualMappingManager( Cytoscape.getCurrentNetworkView() );
+//     //try to get visual style from properties
+    Properties configProps = Cytoscape.getCytoscapeObj().getConfiguration().getProperties();
+    VisualStyle vs = null;
+    String vsName = configProps.getProperty("defaultVisualStyle", "default");
+    //if (vsName != null) {
+    System.out.println( "VS Name: "+vsName );
+    vs = calculatorCatalog.getVisualStyle(vsName);
+    if (vs == null) {
+      //none specified, or not found; use the default
+      vs = calculatorCatalog.getVisualStyle("default");
+    }
 
+    // create the VisualMappingManager using default values for now
+    // TODO: as CyNetworkViews get the focus the VizMapper will update
+    //       and the constructor should reflect this.
+    this.vizMapper = new VisualMappingManager( Cytoscape.getCurrentNetworkView(),
+                                               calculatorCatalog, 
+                                               vs,
+                                               Cytoscape.getCytoscapeObj().getLogger());
+    
     // create the VizMapUI
     this.vizMapUI = new VizMapUI( this.vizMapper, 
                                   this );
