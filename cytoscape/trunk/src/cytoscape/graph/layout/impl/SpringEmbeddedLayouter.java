@@ -2,6 +2,7 @@ package cytoscape.graph.layout.impl;
 
 import cytoscape.graph.layout.algorithm.LayoutAlgorithm;
 import cytoscape.graph.layout.algorithm.MutableGraphLayout;
+import cytoscape.process.PercentCompletedCallback;
 
 /**
  * An implementation of Kamada and Kawai's spring embedded layout algorithm.
@@ -9,11 +10,14 @@ import cytoscape.graph.layout.algorithm.MutableGraphLayout;
 public final class SpringEmbeddedLayouter extends LayoutAlgorithm
 {
 
-  private static final int DEFAULT_NUM_LAYOUT_PASSES = 2;
-  private static final double DEFAULT_AVERAGE_ITERATIONS_PER_NODE = 20.0;
+  private static final
+    int DEFAULT_NUM_LAYOUT_PASSES = 2;
+  private static final
+    double DEFAULT_AVERAGE_ITERATIONS_PER_NODE = 20.0;
   private static final
     double[] DEFAULT_NODE_DISTANCE_SPRING_SCALARS = new double[] { 1.0, 1.0 };
-  private static final double DEFAULT_NODE_DISTANCE_STRENGTH_CONSTANT = 15.0;
+  private static final
+    double DEFAULT_NODE_DISTANCE_STRENGTH_CONSTANT = 15.0;
   private static final
     double DEFAULT_NODE_DISTANCE_REST_LENGTH_CONSTANT = 200.0;
   private static final
@@ -22,7 +26,8 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
     double DEFAULT_DISCONNECTED_NODE_DISTANCE_SPRING_REST_LENGTH = 2500.0;
   public static final
     double[] DEFAULT_ANTICOLLISION_SPRING_SCALARS = new double[] { 0.0, 1.0 };
-  public static final double DEFAULT_ANTICOLLISION_SPRING_STRENGTH = 100.0;
+  public static final
+    double DEFAULT_ANTICOLLISION_SPRING_STRENGTH = 100.0;
 
   private final int m_numLayoutPasses;
   private final double m_averageIterationsPerNode;
@@ -37,14 +42,30 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
   private double[][] m_nodeDistanceSpringStrengths;
   private double[][] m_nodeDistanceSpringRestLengths;
 
-
   private final int m_nodeCount;
   private final int m_edgeCount;
   private int m_layoutPass;
 
-  boolean m_halt = false;
+  private boolean m_halt = false;
 
-  public SpringEmbeddedLayouter(MutableGraphLayout graph)
+  /**
+   * A word about the <code>PercentCompletedCallback</code> parameter that
+   * is passed to this constructor.  <code>percentComplete</code> may be
+   * <code>null</code>, in which case this layout algorithm will not report
+   * percent completed to the parent application.  If
+   * <code>percentComplete</code> is not <code>null</code> then this object
+   * will call <code>percentComplete.setPercentCompleted()</code> <i>ONLY</i>
+   * from the thread that calls <code>run()</code>, as frequently as this
+   * object sees fit.
+   *
+   * @param graph the graph layout object that this layout algorithm
+   *   operates on.
+   * @param percentComplete a hook that a parent application may pass in
+   *   in order to get information regarding what percentage of the layout
+   *   has been completed.
+   **/
+  public SpringEmbeddedLayouter(MutableGraphLayout graph,
+                                PercentCompletedCallback percentComplete)
   {
     super(graph);
     m_numLayoutPasses = DEFAULT_NUM_LAYOUT_PASSES;
@@ -63,11 +84,21 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
     m_edgeCount = m_graph.getNumEdges();
   }
 
+  /**
+   * This starts the layout process.  This method is called by a parent
+   * application using this layout algorithm.
+   **/
   public void run()
   {
     if (m_halt) return;
   }
 
+  /**
+   * Signals to a running layout that it's time to abort and exit.  This
+   * method is called by a parent application using this layout algorithm.
+   * This method will return immediately when called.  <code>run()</code>
+   * will return eventually, and soon after calling <code>halt()</code>.
+   **/
   public void halt()
   {
     m_halt = true;

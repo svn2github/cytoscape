@@ -16,18 +16,23 @@ public interface PercentCompletedCallback
 
   /**
    * This is a hook for a child process to report to its parent application
-   * what percentage of a task it has completed.  This may only be an
-   * educated guess on the child process' part; repeated calls to this
+   * what percentage of a task it has completed.  Typically, the parent
+   * application implements this method and offers it as a hook to its
+   * child process.  A child process may make an educated guess as to what
+   * percentage of the task it has completed; repeated calls to this
    * method do not guarantee ascending values of <code>percent</code>.  The
    * parent application will use this information submitted by the child
    * process to present a percent completed progress bar to a user, for
-   * example.  There may be other uses also.<p>
+   * example.  Other uses may include having a parent application
+   * programmatically abort a child process if it sees that the child
+   * process will take too long.<p>
    * A word regarding threads.  Most importantly, this method <i>MUST</i> be
    * called from a single thread only.  However, this single thread may be
    * <i>ANY</i> thread (e.g., the AWT event dispatch thread or a custom
    * thread that has been started), unless the parent application has a
    * specific contract with a child process which states which thread is
-   * allowed to call this method.
+   * allowed to call this method.<p>
+   * This method should not block; it should return quickly.
    *
    * @exception IllegalThreadStateException may be thrown if more than one
    *   thread is trying to access this method on a given instance; note that
