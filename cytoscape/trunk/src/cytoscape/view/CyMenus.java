@@ -287,7 +287,8 @@ newState = true; //TODO: remove this once the GraphViewChangeListener system is 
               public void menuCanceled(MenuEvent e) {}
               public void menuDeselected(MenuEvent e) {}
               public void menuSelected(MenuEvent e) {
-                  Class neededPlugin[] = cyWindow.getCytoscapeObj().getPluginsLoadedSince(lastOpsMenuRefresh);
+                  Class neededPlugin[] =
+                          cyWindow.getCytoscapeObj().getPluginRegistry().getPluginsLoadedSince(lastOpsMenuRefresh);
                   for (int i = 0; i < neededPlugin.length; i++) {
                           AbstractPlugin.loadPlugin(neededPlugin[i], cyWindow.getCytoscapeObj(),
                                                   cyWindow );

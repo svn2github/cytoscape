@@ -107,7 +107,7 @@ public class PluginLoader {
     {
         try {
             Class pluginClass = Class.forName (className);
-            cyObject.addPluginToRegistry(pluginClass);
+            cyObject.getPluginRegistry().addPluginToRegistry(pluginClass);
         } catch (Exception e) {
             e.printStackTrace ();
             System.err.println (e.getMessage ());

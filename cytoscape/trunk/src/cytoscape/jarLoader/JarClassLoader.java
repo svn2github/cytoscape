@@ -13,7 +13,7 @@ import java.util.*;
 
 import cytoscape.AbstractPlugin;
 import cytoscape.CytoscapeObj;
-import cytoscape.view.CyWindow;
+import cytoscape.plugin.*;
 
 /**
  * A class loader for loading jar files, both local and remote.
@@ -123,17 +123,17 @@ public class JarClassLoader extends URLClassLoader {
     {
         try {
             Class pluginClass = loadClass(name);
-            cyObj.addPluginToRegistry(pluginClass);
+            cyObj.getPluginRegistry().addPluginToRegistry(pluginClass);
             System.out.println("Loaded plugin: " + name);
         }
         catch (ClassNotFoundException e) {
             System.err.println("Error: plugin class " + name + " was not found.\n");
         }
 
-        catch (CytoscapeObj.NotAPluginException e) {
+        catch (NotAPluginException e) {
             System.err.println("Error: plugin class " + name + " is not a plugin.\n");
         }
-        catch (CytoscapeObj.PluginAlreadyRegisteredException e) {
+        catch (PluginAlreadyRegisteredException e) {
             System.err.println("Error: plugin class " + name + " already Registered.\n");
         }
     }

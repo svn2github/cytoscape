@@ -32,33 +32,24 @@
 package cytoscape.view;
 //-------------------------------------------------------------------------
 import java.util.*;
-import java.io.*;
-
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.event.*;
 
 //imports for giny graph library support
-import giny.model.RootGraph;
-import giny.model.GraphPerspective;
 import giny.util.SpringEmbeddedLayouter;
 import giny.view.GraphView;
 import giny.view.EdgeView;
 import giny.view.NodeView;
 import giny.view.GraphViewChangeListener;
 import giny.view.GraphViewChangeEvent;
-import giny.view.Label;
 import cytoscape.util.GinyFactory;  //for creating Giny objects
 
 import cytoscape.*;
-import cytoscape.jarLoader.*;
-import cytoscape.graphutil.*;
 import cytoscape.data.*;
 //import cytoscape.view.*;
 import cytoscape.visual.*;
 import cytoscape.visual.ui.VizMapUI;
-import cytoscape.actions.SetVisualPropertiesAction;
 //-------------------------------------------------------------------------
 /**
  * This class represents a visible window displaying a network. It includes
