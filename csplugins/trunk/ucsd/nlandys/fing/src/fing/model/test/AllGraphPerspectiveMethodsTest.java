@@ -56,17 +56,19 @@ public final class AllGraphPerspectiveMethodsTest
     final Edge root2Edge = (Edge) root2.edgesIterator().next();
     final Node nodeNotInPersp = root.getNode(root.createNode());
     final Edge edge1NotInPersp = root.getEdge
-      (root.createEdge(nodeInx[1], nodeInx[0], true));
+      (root.createEdge(nodeInx[1], nodeInx[3], true));
     final Edge edge2NotInPersp = root.getEdge
       (root.createEdge(nodeInx[2], nodeNotInPersp.getRootGraphIndex(), false));
     root.addNodeMetaChild(nodeInx[2], nodeNotInPersp.getRootGraphIndex());
     root.addEdgeMetaChild(nodeInx[3], edge1NotInPersp.getRootGraphIndex());
+    int[] rootNodeInx = root.getNodeIndicesArray();
     int minNodeInx = 0;
-    for (int i = 0; i < nodeInx.length; i++)
-      minNodeInx = Math.min(minNodeInx, nodeInx[i]);
+    for (int i = 0; i < rootNodeInx.length; i++)
+      minNodeInx = Math.min(minNodeInx, rootNodeInx[i]);
+    int[] rootEdgeInx = root.getEdgeIndicesArray();
     int minEdgeInx = 0;
-    for (int i = 0; i < edgeInx.length; i++)
-      minEdgeInx = Math.min(minEdgeInx, edgeInx[i]);
+    for (int i = 0; i < rootEdgeInx.length; i++)
+      minEdgeInx = Math.min(minEdgeInx, rootEdgeInx[i]);
 
     // Not testing GraphPerspectiveChangeListener methods.
 
@@ -292,6 +294,39 @@ public final class AllGraphPerspectiveMethodsTest
         persp.neighborsArray(1) != null ||
         persp.neighborsArray(minNodeInx - 1) != null)
       throw new IllegalStateException("expected null");
+
+    // isNeighbor(Node, Node).
+    if (persp.isNeighbor(persp.getNode(nodeInx[4]), persp.getNode(nodeInx[4])))
+      throw new IllegalStateException("node with no edges is its own neigh");
+    if (persp.isNeighbor(persp.getNode(nodeInx[3]), persp.getNode(nodeInx[1])))
+      throw new IllegalStateException("nodes are neighbors");
+    if (!persp.isNeighbor(persp.getNode(nodeInx[1]),
+                          persp.getNode(nodeInx[0])))
+      throw new IllegalStateException("nodes are not neighbors");
+    if (persp.isNeighbor(root2Node, persp.getNode(nodeInx[2])))
+      throw new IllegalStateException("nodes from another graph is neighbor");
+    if (persp.isNeighbor(persp.getNode(nodeInx[0]), nodeNotInPersp))
+      throw new IllegalStateException("neighbor with node not in GraphPersp");
+
+    // isNeighbor(int, int).
+    if (persp.isNeighbor(nodeInx[1], nodeInx[3]) ||
+        !root.isNeighbor(nodeInx[1], nodeInx[3]))
+      throw new IllegalStateException("bad neighbors");
+    if (!persp.isNeighbor(nodeInx[1], nodeInx[1]))
+      throw new IllegalStateException("node with self edge not neigbhor");
+    if (persp.isNeighbor(nodeInx[0], nodeInx[0]))
+      throw new IllegalStateException("node with no self edge is neighbor");
+    if (persp.isNeighbor(98, 99))
+      throw new IllegalStateException("positive nodes are neighbors");
+    if (!persp.isNeighbor(nodeInx[3], nodeInx[2]))
+      throw new IllegalStateException("nodes are not neighbors");
+    if (!persp.isNeighbor(nodeInx[1], nodeInx[2]))
+      throw new IllegalStateException("nodes are not neighbors");
+    if (persp.isNeighbor(Integer.MAX_VALUE, Integer.MIN_VALUE) ||
+        persp.isNeighbor(Integer.MIN_VALUE, Integer.MAX_VALUE) ||
+        persp.isNeighbor(minNodeInx - 1, nodeInx[0]) ||
+        persp.isNeighbor(0, 1))
+      throw new IllegalStateException("extreme neighbors");
   }
 
 }
