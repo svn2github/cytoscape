@@ -39,8 +39,8 @@ public final class MinIntHeap
   }
 
   /**
-   * Tosses a new element onto the heap.  The order of the heap will be
-   * ruined after this operation; this operation takes constant time.
+   * Tosses a new element onto the heap.  The heap will be become
+   * unordered after this operation; this operation takes constant time.
    */
   public final void toss(int x)
   {
