@@ -11,6 +11,7 @@ import giny.view.NodeView;
 import java.awt.geom.Point2D;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -285,13 +286,14 @@ public final class GraphConverter
     while (edgeIterator.hasNext())
     {
       EdgeView currentEdgeView = (EdgeView) edgeIterator.next();
-      Point2D[] anchors = currentEdgeView.getBend().getDrawPoints();
-      for (int a = 0; a < anchors.length; a++) {
+      List anchors = currentEdgeView.getBend().getHandles();
+      for (int a = 0; a < anchors.size(); a++) {
         System.out.println("anchor");
-        minX = Math.min(minX, anchors[a].getX());
-        maxX = Math.max(maxX, anchors[a].getX());
-        minY = Math.min(minY, anchors[a].getY());
-        maxY = Math.max(maxY, anchors[a].getY()); }
+        Point2D point = (Point2D) anchors.get(a);
+        minX = Math.min(minX, point.getX());
+        maxX = Math.max(maxX, point.getX());
+        minY = Math.min(minY, point.getY());
+        maxY = Math.max(maxY, point.getY()); }
       Edge currentEdge = currentEdgeView.getEdge();
       int ginySourceNodeIndex = currentEdge.getSource().getRootGraphIndex();
       int ginyTargetNodeIndex = currentEdge.getTarget().getRootGraphIndex();
@@ -342,12 +344,13 @@ public final class GraphConverter
     final double[][] edgeAnchorXPositions = new double[numEdgesInTopology][];
     final double[][] edgeAnchorYPositions = new double[numEdgesInTopology][];
     for (int e = 0; e < edgeTranslation.length; e++) {
-      Point2D[] anchors = edgeTranslation[e].getBend().getDrawPoints();
-      edgeAnchorXPositions[e] = new double[anchors.length];
-      edgeAnchorYPositions[e] = new double[anchors.length];
-      for (int a = 0; a < anchors.length; a++) {
-        edgeAnchorXPositions[e][a] = anchors[a].getX() - xOff;
-        edgeAnchorYPositions[e][a] = anchors[a].getY() - yOff; } }
+      List anchors = edgeTranslation[e].getBend().getHandles();
+      edgeAnchorXPositions[e] = new double[anchors.size()];
+      edgeAnchorYPositions[e] = new double[anchors.size()];
+      for (int a = 0; a < anchors.size(); a++) {
+        Point2D point = (Point2D) anchors.get(a);
+        edgeAnchorXPositions[e][a] = point.getX() - xOff;
+        edgeAnchorYPositions[e][a] = point.getY() - yOff; } }
     return new MyCMutableGraphLayout(numNodesInTopology,
                                      directedEdgeSourceNodeIndices,
                                      directedEdgeTargetNodeIndices,
@@ -481,12 +484,13 @@ public final class GraphConverter
     {
       EdgeView currentEdge = (EdgeView) edgeIterator.next();
       edgeTranslation[edgeIndex] = currentEdge;
-      Point2D[] handles = currentEdge.getBend().getDrawPoints();
-      for (int h = 0; h < handles.length; h++) {
-        minX = Math.min(minX, handles[h].getX());
-        maxX = Math.max(maxX, handles[h].getX());
-        minY = Math.min(minY, handles[h].getY());
-        maxY = Math.max(maxY, handles[h].getY()); }
+      List handles = currentEdge.getBend().getHandles();
+      for (int h = 0; h < handles.size(); h++) {
+        Point2D point = (Point2D) handles.get(h);
+        minX = Math.min(minX, point.getX());
+        maxX = Math.max(maxX, point.getX());
+        minY = Math.min(minY, point.getY());
+        maxY = Math.max(maxY, point.getY()); }
       edgeIndex++;
     }
     if (edgeIndex != numEdgesInTopology)
