@@ -21,8 +21,8 @@ public final class AddRemoveTest
     final RootGraph root = getRootGraph(args);
 
     int[] nodeInx;
-    final int[] edgeInx = new int[10000];
-    final int[] nodeNums = new int[] { 2000, 1999, 2002 };
+    final int[] edgeInx = new int[100000];
+    final int[] nodeNums = new int[] { 20000, 19990, 20020 };
     final int iterations = 10000;
     for (int foo = 0; foo < iterations; foo++)
     {
