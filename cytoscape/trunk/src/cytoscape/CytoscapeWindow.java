@@ -649,6 +649,26 @@ protected void applyVizmapSettings ()
         ShapeNodeRealizer snr = (ShapeNodeRealizer)nr;
         snr.setShapeType(nodeShape);
     }
+
+    if((nodeColor.getRed()<128)&&
+       (nodeColor.getGreen()<128)&&
+       (nodeColor.getBlue()<128)) {
+	NodeLabel nodeLabel = nr.getLabel ();
+	nodeLabel.setTextColor(new Color(255,255,255));
+	/*
+	int newR = 255 - nodeColor.getRed();
+	int newG = 255 - nodeColor.getGreen();
+	int newB = 255 - nodeColor.getBlue();
+	nodeLabel.setTextColor(new Color(newR,newG,newB));
+	*/
+	nr.setLabel(nodeLabel);  // is this line important?
+    }
+    else {
+	NodeLabel nodeLabel = nr.getLabel ();
+	nodeLabel.setTextColor(new Color(0,0,0));
+	nr.setLabel(nodeLabel);  // is this line important?
+    }
+
     // System.out.println(canonicalName + " " + nodeColor + " " + nodeBorderColor + " " + nodeBorderLinetype + " " + nodeHeight + " " 
     //	       + nodeShape);
     //System.out.flush();
