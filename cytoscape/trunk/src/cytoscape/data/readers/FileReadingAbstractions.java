@@ -42,11 +42,14 @@ public class FileReadingAbstractions {
 		try {
 		    nodeAttributes.readAttributesFromFile (nAFilenames[i]);
 		} catch (NumberFormatException nfe) {
-		    continue;
+		    System.err.println (nfe.getMessage ());
+                    nfe.printStackTrace ();
 		} catch (IllegalArgumentException iae) {
-		    continue;
+		    System.err.println (iae.getMessage ());
+                    iae.printStackTrace ();
 		} catch (FileNotFoundException fnfe) {
-		    continue;
+		    System.err.println (fnfe.getMessage ());
+                    fnfe.printStackTrace ();
 		}
 	    }
 
