@@ -32,9 +32,9 @@ public class DiscreteMapping extends TreeMap implements ObjectMapping {
     String attrName;  //the name of the controlling data attribute
     protected byte mapType; //node or edge; specifies which attributes to use
     protected HashSet mappedKeys;
-    protected GridBagGroup gbgInternal;
     protected JScrollPane listScrollPane;
     protected JDialog parentDialog;
+    protected JPanel internalPanel; // panel with all the mapping buttons
     private JPanel myUI = new JPanel(false); // the UI panel - memoize it
     private boolean UICreated = false;
 
@@ -51,6 +51,8 @@ public class DiscreteMapping extends TreeMap implements ObjectMapping {
 	this.mapType = mapType;
         if (attrName != null)
 	    setControllingAttributeName(attrName, null, false);
+	this.internalPanel = new JPanel();
+	this.internalPanel.setLayout(new BoxLayout(this.internalPanel, BoxLayout.Y_AXIS));
     }
 
 
@@ -262,7 +264,9 @@ public class DiscreteMapping extends TreeMap implements ObjectMapping {
 
 	if (!this.UICreated) {
 	    //GridBagGroup g = new GridBagGroup();
-	    gbgInternal = new GridBagGroup();
+	    //gbgInternal = new GridBagGroup();
+
+	    this.internalPanel.removeAll();
 	    this.myUI.removeAll();
 
 	    // check that there is a valid attribute set
@@ -272,42 +276,51 @@ public class DiscreteMapping extends TreeMap implements ObjectMapping {
 		//this.UICreated remains false
 		return myUI;
 	    }
-
-	    Iterator keyIter = this.mappedKeys.iterator();
+	    
+	    Object[] keyArray = this.mappedKeys.toArray();
+	    //Iterator keyIter = this.mappedKeys.iterator();
 	    int numKeys = this.mappedKeys.size();
 
-	    for (int yPos = 0; keyIter.hasNext(); yPos++) {
-		Object keyObject = keyIter.next();
-		String keyString = keyObject.toString();
-		// create button
-		JButton mapButton = new JButton(keyString);
-		// get current mapping
-		Object currentMapping = get(keyObject);
-		ValueDisplayer mapValue;
-		if (currentMapping == null) {
-		    // display default selection
-		    mapValue = ValueDisplayer.getDisplayFor(parent, "Define Discrete Mapping", defaultObj);
-		}
-		else { // display current mapping
-		    mapValue = ValueDisplayer.getDisplayFor(parent, "Define Discrete Mapping", get(keyObject));
-		}
-	    
-		mapValue.addItemListener(new ValueChangeListener(keyObject));
-		mapButton.addActionListener(mapValue.getInputListener());
-		
-		// set constraints to help with layout
-		if (yPos == numKeys - 1) {
-		    MiscGB.insert(gbgInternal, mapButton, 0, yPos, GridBagConstraints.RELATIVE, GridBagConstraints.REMAINDER, GridBagConstraints.BOTH);
-		    MiscGB.insert(gbgInternal, mapValue, 1, yPos, GridBagConstraints.REMAINDER, GridBagConstraints.REMAINDER, GridBagConstraints.BOTH);
-		}
-		else {
-		    // dump into the panel
-		    MiscGB.insert(gbgInternal, mapButton, 0, yPos, GridBagConstraints.RELATIVE, 1, GridBagConstraints.BOTH);
-		    MiscGB.insert(gbgInternal, mapValue, 1, yPos, GridBagConstraints.REMAINDER, 1, GridBagConstraints.BOTH);
-		}
-	    }
+	    // have to handle the case where number of keys*2 > GridBagLayout.MAXGRIDSIZE, which is 512
+	    // but has no accessor so 512 must be hard-coded.
+	    int numGridBags = (int) Math.ceil(((double) numKeys * 2) / 512);
 
+	    for (int gbgIndex = 0; gbgIndex < numGridBags; gbgIndex++) {
+		GridBagGroup gbgInternal = new GridBagGroup();
+		for (int arrIndex = gbgIndex * 256, yPos = 0; yPos < 256 && arrIndex < keyArray.length; yPos++, arrIndex++) {
+		    Object keyObject = keyArray[arrIndex];
+		    String keyString = keyObject.toString();
+		    // create button
+		    JButton mapButton = new JButton(keyString);
+		    // get current mapping
+		    Object currentMapping = get(keyObject);
+		    ValueDisplayer mapValue;
+		    if (currentMapping == null) {
+			// display default selection
+			mapValue = ValueDisplayer.getDisplayFor(parent, "Define Discrete Mapping", defaultObj);
+		    }
+		    else { // display current mapping
+			mapValue = ValueDisplayer.getDisplayFor(parent, "Define Discrete Mapping", get(keyObject));
+		    }
+	    
+		    mapValue.addItemListener(new ValueChangeListener(keyObject));
+		    mapButton.addActionListener(mapValue.getInputListener());
+		
+		    // set constraints to help with layout
+		    if (yPos == numKeys - 1) {
+			MiscGB.insert(gbgInternal, mapButton, 0, yPos, GridBagConstraints.RELATIVE, GridBagConstraints.REMAINDER, GridBagConstraints.BOTH);
+			MiscGB.insert(gbgInternal, mapValue, 1, yPos, GridBagConstraints.REMAINDER, GridBagConstraints.REMAINDER, GridBagConstraints.BOTH);
+		    }
+		    else {
+			// dump into the panel
+			MiscGB.insert(gbgInternal, mapButton, 0, yPos, GridBagConstraints.RELATIVE, 1, GridBagConstraints.BOTH);
+			MiscGB.insert(gbgInternal, mapValue, 1, yPos, GridBagConstraints.REMAINDER, 1, GridBagConstraints.BOTH);
+		    }
+		}
+		this.internalPanel.add(gbgInternal.panel);
+	    }
 	    resetScrollPane();
+	    this.UICreated = true;
 	}
 	return myUI;
     }
@@ -315,7 +328,7 @@ public class DiscreteMapping extends TreeMap implements ObjectMapping {
     private void resetScrollPane() {
 	// set up the scrollable pane
 	listScrollPane = new
-	    JScrollPane(gbgInternal.panel,
+	    JScrollPane(this.internalPanel,
 			ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 			ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 	myUI.add(listScrollPane);
@@ -325,11 +338,14 @@ public class DiscreteMapping extends TreeMap implements ObjectMapping {
 	int prefHeight = (int) d.getHeight();
 	if (prefHeight > 200)
 	    prefHeight = 200;
-	listScrollPane.setPreferredSize(new Dimension((int) d.getWidth(),
+	listScrollPane.setPreferredSize(new Dimension((int) d.getWidth() + 10,
 						      prefHeight));
 	// because parentDialog is only passed in at getUI and not construction time
-	if (parentDialog != null)
+	if (parentDialog != null) {
+	    parentDialog.pack();
 	    parentDialog.validate();
+	    parentDialog.repaint();
+	}
     }
             
     /**
