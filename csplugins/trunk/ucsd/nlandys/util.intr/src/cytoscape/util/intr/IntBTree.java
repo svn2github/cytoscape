@@ -337,7 +337,7 @@ public final class IntBTree
           // are no elements remaining, albeit in an unpredictable way.  Also,
           // terrible things will happen if the tree is mutated while we
           // iterate.
-          int returnThis = 0xffffffff; // To keep compiler from complaining.
+          int returnThis = 0x80000000; // To keep compiler from complaining.
           if (currentLeafNode == null) {
             while (true) {
               currentLeafNode = nodeStack.pop();
@@ -348,12 +348,12 @@ public final class IntBTree
                 wholeLeafNodes += currentLeafNode.sliceCount; } }
           if (wholeLeafNodes > 0) {
             returnThis = currentLeafNode.values[currentNodeInx]; }
-          else {
+          else
             for (int i = currentNodeInx; i < currentLeafNode.sliceCount; i++)
               if (currentLeafNode.values[i] >= xMin) { // Don't check max.
                 returnThis = currentLeafNode.values[i];
-                break; } }
-          if (currentNodeInx++ == currentLeafNode.sliceCount) {
+                break; }
+          if (++currentNodeInx == currentLeafNode.sliceCount) {
             currentLeafNode = null;
             if (wholeLeafNodes > 0) wholeLeafNodes--; }
           count--;
@@ -379,56 +379,47 @@ public final class IntBTree
       count += (isLeafNode(n) ? n.sliceCount : n.data.deepCount);
       nodeStack.push(n); }
     else { // Cannot trivially include node; must recurse.
+      if (isLeafNode(n)) {
+        int i = 0;
+        for (; i < n.sliceCount; i++) if (xMin <= n.values[i]) break;
+        for (int j = i; j < n.sliceCount; j++) {
+          if (n.values[j] <= xMax) count++;
+          else break; }
+        if (count > 0) nodeStack.push(n); }
+      else { // Internal node.
+        int currentMax = maxBound;
+        int currentMin;
+        Node nodeTemp;
+        for (int i = n.sliceCount - 2; i >= -1; i--) {
+          currentMin = ((i < 0) ? minBound : n.data.splitVals[i]);
 
-    if (isLeafNode(n)) {
-      int i = 0;
-      for (; i < n.sliceCount; i++) if (xMin <= n.values[i]) break;
-      for (int j = i; j < n.sliceCount; j++) {
-        if (n.values[j] <= xMax) count++;
-        else break; }
-      if (count > 0) nodeStack.push(n); }
-    else { // Internal node.
+          // If [currentMin, currentMax] subset of [xMin, xMax]
+          //   then include n.data.children[i + 1] in its entirety by
+          //   adding its deep count to total and placing it on the stack.
 
+          if (currentMin >= xMin && currentMax <= xMax) { // Subset of.
+            nodeTemp = n.data.children[i + 1];
+            count += nodeTemp.data.deepCount;
+            nodeStack.push(nodeTemp); }
 
+          // Else if [currentMin, currentMax] intersects [xMin, xMax]
+          //   then recurse down child = n.data.children[i + 1] by calling
+          //   searchRange(child, nodeStack, xMin, xMax, currentMin,
+          //   currentMax), adding its output to our total count.
 
+          else if (Math.max(currentMin, xMin) <= Math.min(currentMax, xMax)) {
+            nodeTemp = n.data.children[i + 1];
+            count += searchRange(nodeTemp, nodeStack, xMin, xMax,
+                                 currentMin, currentMax); }
 
-      int currentMax = maxBound;
-      int currentMin;
-      Node nodeTemp;
-      for (int i = n.sliceCount - 2; i >= -1; i--) {
-        currentMin = ((i < 0) ? minBound : n.data.splitVals[i]);
+          // Else
+          //   [currentMin, currentMax] does not intersect [xMin, xMax] so
+          //   do nothing.
 
-        // If [currentMin, currentMax] subset of [xMin, xMax]
-        //   then include n.data.children[i + 1] in its entirety by
-        //   adding its deep count to total and placing it on the stack.
+          else { }
 
-        if (currentMin >= xMin && currentMax <= xMax) { // Subset of.
-          nodeTemp = n.data.children[i + 1];
-          count += nodeTemp.data.deepCount;
-          nodeStack.push(nodeTemp); }
-
-        // Else if [currentMin, currentMax] intersects [xMin, xMax]
-        //   then recurse down child = n.data.children[i + 1] by calling
-        //   searchRange(child, nodeStack, xMin, xMax, currentMin, currentMax),
-        //   adding its output to our total count.
-
-        else if (Math.max(currentMin, xMin) <= Math.min(currentMax, xMax)) {
-          nodeTemp = n.data.children[i + 1];
-          count += searchRange(nodeTemp, nodeStack, xMin, xMax,
-                               currentMin, currentMax); }
-
-        // Else
-        //   [currentMin, currentMax] does not intersect [xMin, xMax] so
-        //   do nothing.
-
-        else { }
-
-        currentMax = currentMin; }
-
-
-
-
-    }
+          currentMax = currentMin; }
+      }
     }
     return count;
   }
