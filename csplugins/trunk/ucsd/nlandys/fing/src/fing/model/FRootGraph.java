@@ -316,8 +316,8 @@ class FRootGraph implements RootGraph
       getNode(node.getRootGraphIndex()) != null; }
 
   public boolean containsEdge(Edge edge) {
-    return edge.getRootGraph() == this
-      && getEdge(edge.getRootGraphIndex()) != null; }
+    return edge.getRootGraph() == this &&
+      getEdge(edge.getRootGraphIndex()) != null; }
 
   // This method has been marked deprecated in the Giny API.
   public java.util.List neighborsList(Node node) {
