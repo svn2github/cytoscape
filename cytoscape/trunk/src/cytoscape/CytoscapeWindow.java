@@ -1521,19 +1521,24 @@ protected class ListFromFileSelectionAction extends AbstractAction   {
 //------------------------------------------------------------------------------
 // this is public so activePaths can get at it;
 // active paths depends on saveVisibleNodeNames () to save state periodically.
-public boolean saveVisibleNodeNames ()
+
+public boolean saveVisibleNodeNames () { 
+    return saveVisibleNodeNames("visibleNodes.txt"); 
+}
+
+public boolean saveVisibleNodeNames (String filename)
 {
     Graph2D g = graphView.getGraph2D();
     Node [] nodes = graphView.getGraph2D().getNodeArray();
-    
-    File file = new File("visibleNodes.txt");
+    File file = new File(filename);
     try {
 	FileWriter fout = new FileWriter(file);
 	for (int i=0; i < nodes.length; i++) {
 	    Node node = nodes [i];
 	    NodeRealizer r = graphView.getGraph2D().getRealizer(node);
 	    String defaultName = r.getLabelText ();
-	    fout.write(r.getLabelText() + "\n");
+	    String canonicalName = nodeAttributes.getCanonicalName (node);
+	    fout.write(canonicalName + "\n");
 	} // for i
 	fout.close();
 	return true;
@@ -1546,22 +1551,25 @@ public boolean saveVisibleNodeNames ()
 	  
 } // saveVisibleNodeNames
 
-
-
 //------------------------------------------------------------------------------
 protected class SaveVisibleNodesAction extends AbstractAction   {
   SaveVisibleNodesAction () { super ("Visible Nodes"); }
 
     public void actionPerformed (ActionEvent e) {
-	boolean itWorked = saveVisibleNodeNames ();
-	Object[] options = {"OK"};
-	if(itWorked) {
-	    JOptionPane.showOptionDialog(null,
+	JFileChooser chooser = new JFileChooser (currentDirectory);
+	if (chooser.showSaveDialog (CytoscapeWindow.this) == chooser.APPROVE_OPTION) {
+	    String name = chooser.getSelectedFile ().toString ();
+	    currentDirectory = chooser.getCurrentDirectory();
+	    boolean itWorked = saveVisibleNodeNames (name);
+	    Object[] options = {"OK"};
+	    if(itWorked) {
+		JOptionPane.showOptionDialog(null,
 					 "Visible Nodes Saved.",
 					 "Visible Nodes Saved.",
 					 JOptionPane.DEFAULT_OPTION,
 					 JOptionPane.PLAIN_MESSAGE,
 					 null, options, options[0]);
+	    }
 	}
     }
 }
@@ -1913,7 +1921,7 @@ protected class SaveAsInteractionsAction extends AbstractAction
     if (chooser.showSaveDialog (CytoscapeWindow.this) == chooser.APPROVE_OPTION) {
       String name = chooser.getSelectedFile ().toString ();
       currentDirectory = chooser.getCurrentDirectory();
-      if (!name.endsWith (".intr")) name = name + ".intr";
+      if (!name.endsWith (".sif")) name = name + ".sif";
       try {
         FileWriter fileWriter = new FileWriter (name);
         Node [] nodes = graphView.getGraph2D().getNodeArray();
