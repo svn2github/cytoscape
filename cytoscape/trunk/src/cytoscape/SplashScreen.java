@@ -78,22 +78,12 @@ public class SplashScreen extends Canvas implements Runnable
 		win.show();
 
 		
-		for (;;) 
+		while (progress < 100)
 		{
 			try {
-				if (progress >= 100)
-				{
-					progressBar.setIndeterminate(true);
-					progressBar.setString("Loading and laying out the graph...");
-					
-				}
-				
-				else
-				{
-					t.sleep(200);
-					progressBar.setValue(progress);
-					progress++;
-				}
+			    t.sleep(200);
+			    progressBar.setValue(progress);
+			    progress++;
 			}
 		
 			catch(InterruptedException ie)
@@ -101,6 +91,8 @@ public class SplashScreen extends Canvas implements Runnable
 				
 			}
 		}
+		progressBar.setIndeterminate(true);
+		progressBar.setString("Loading and laying out the graph...");
          }
      
  
