@@ -940,6 +940,50 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("wrong number of parent nodes");
     for (int i = 0;; i++) if (parentInx[i] == nodeInx[0]) break;
     for (int i = 0;; i++) if (parentInx[i] == nodeInx[4]) break;
+
+    // isMetaChild(Node, Node).
+    if (root.isMetaChild(root2Node, root2Node) ||
+        root.isMetaChild(root.getNode(nodeInx[1]),
+                         root.getNode(nodeInx[2])) ||
+        root.isMetaChild(root.getNode(nodeInx[2]),
+                         root.getNode(nodeInx[1])))
+      throw new IllegalStateException("unexpected meta child");
+    if (!(root.isMetaChild(root.getNode(nodeInx[4]),
+                           root.getNode(nodeInx[4])) &&
+          root.isMetaChild(root.getNode(nodeInx[3]),
+                           root.getNode(nodeInx[2])) &&
+          root.isMetaChild(root.getNode(nodeInx[0]),
+                           root.getNode(nodeInx[1]))))
+      throw new IllegalStateException("missing meta relationship");
+
+    // isNodeMetaChild(int, int).
+    if (root.isNodeMetaChild(0, 0) ||
+        root.isNodeMetaChild(Integer.MIN_VALUE, 87) ||
+        root.isNodeMetaChild(nodeInx[0], Integer.MAX_VALUE) ||
+        root.isNodeMetaChild(minNodeInx - 1, nodeInx[1]) ||
+        root.isNodeMetaChild(nodeInx[0], nodeInx[3]) ||
+        root.isNodeMetaChild(nodeInx[1], nodeInx[0]))
+      throw new IllegalStateException("unexpected meta relationship");
+    if (!(root.isNodeMetaChild(nodeInx[0], nodeInx[1]) &&
+          root.isNodeMetaChild(nodeInx[3], nodeInx[3]) &&
+          root.isNodeMetaChild(nodeInx[0], nodeInx[4])))
+      throw new IllegalStateException("missing meta relationship");
+
+    // isNodeMetaChild(int, int, boolean).
+    if (root.isNodeMetaChild(0, 0, true) ||
+        root.isNodeMetaChild(Integer.MIN_VALUE, Integer.MAX_VALUE, true) ||
+        root.isNodeMetaChild(Integer.MAX_VALUE, Integer.MIN_VALUE, true) ||
+        root.isNodeMetaChild(minNodeInx - 1, nodeInx[1], true) ||
+        root.isNodeMetaChild(nodeInx[0], nodeInx[3], false) ||
+        root.isNodeMetaChild(nodeInx[2], nodeInx[4], true) ||
+        root.isNodeMetaChild(nodeInx[1], nodeInx[0], true))
+      throw new IllegalStateException("unexpected recursive meta child");
+    if (!(root.isNodeMetaChild(nodeInx[0], nodeInx[3], true) &&
+          root.isNodeMetaChild(nodeInx[0], nodeInx[0], true) &&
+          root.isNodeMetaChild(nodeInx[0], nodeInx[2], true) &&
+          root.isNodeMetaChild(nodeInx[4], nodeInx[1], true) &&
+          root.isNodeMetaChild(nodeInx[3], nodeInx[4], true)))
+      throw new IllegalStateException("missing recursive meta child");
   }
 
 }
