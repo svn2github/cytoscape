@@ -71,6 +71,7 @@ public class InteractionsReader implements GraphReader {
    */
   protected Vector allInteractions = new Vector ();
   GraphObjAttributes edgeAttributes = new GraphObjAttributes ();
+  GraphObjAttributes nodeAttributes = new GraphObjAttributes ();
   Graph2D graph;
   RootGraph rootGraph;
   BioDataServer dataServer;
@@ -299,27 +300,25 @@ public class InteractionsReader implements GraphReader {
     for (int i=0; i < interactions.length; i++) {
 	Interaction interaction = interactions [i];
 	//System.out.println ("source: " + interaction.getSource ());
-	if(canonicalize)
-	    nodeName = canonicalizeName (interaction.getSource ());
-	else
-	    nodeName = interaction.getSource();
+	nodeName = interaction.getSource();
+	if(canonicalize) nodeName = canonicalizeName (interaction.getSource ());
 	
 	if (!nodes.containsKey (nodeName)) {
 	    giny.model.Node node = rootGraph.getNode(rootGraph.createNode ());
 	    node.setIdentifier(nodeName);
 	    nodes.put (nodeName, node);
+	    nodeAttributes.addNameMapping(nodeName, node);
 	}
 	String [] targets = interaction.getTargets ();
 	for (int t=0; t < targets.length; t++) {
-	    if(canonicalize)
-		targetNodeName = canonicalizeName (targets [t]);
-	    else
-		targetNodeName = targets[t];
+	    targetNodeName = targets[t];
+	    if(canonicalize) targetNodeName = canonicalizeName (targets [t]);
 	    
 	    if (!nodes.containsKey (targetNodeName)) {
 		giny.model.Node node = rootGraph.getNode(rootGraph.createNode ());
 		node.setIdentifier(targetNodeName);
 		nodes.put (targetNodeName, node);
+		nodeAttributes.addNameMapping(nodeName, node);
 	    } // if target node is previously unknown
 	} // for t
     } // i
@@ -335,10 +334,8 @@ public class InteractionsReader implements GraphReader {
 
     for (int i=0; i < interactions.length; i++) {
       Interaction interaction = interactions [i];
-      if(canonicalize)
-	  nodeName = canonicalizeName (interaction.getSource ());
-      else
-	  nodeName = interaction.getSource();
+      nodeName = interaction.getSource();
+      if(canonicalize) nodeName = canonicalizeName (interaction.getSource ());
     
       String interactionType = interaction.getType ();
       giny.model.Node sourceNode = (giny.model.Node) nodes.get (nodeName);
@@ -374,6 +371,12 @@ public class InteractionsReader implements GraphReader {
     return rootGraph;
 
   } // createGraph
+  //------------------------------------------------------------------------------------
+  public GraphObjAttributes getNodeAttributes ()
+  {
+    return nodeAttributes;
+
+  } // getNodeAttributes
   //------------------------------------------------------------------------------------
   public GraphObjAttributes getEdgeAttributes ()
   {
