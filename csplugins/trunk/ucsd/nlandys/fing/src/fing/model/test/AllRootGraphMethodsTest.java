@@ -37,19 +37,6 @@ public final class AllRootGraphMethodsTest
     nodeInx[nodeInx.length - 1] = root.createNode
       (null, new int[] { edgeInx[6], edgeInx[2] }); // Should have nodes
       // nodeInx[0], nodeInx[2], and nodeInx[3].
-
-    // BEGIN: Extra checking code that can be removed later.
-    int[] childNodeInxArr = root.getNodeMetaChildIndicesArray(nodeInx[4]);
-    int[] childEdgeInxArr = root.getEdgeMetaChildIndicesArray(nodeInx[4]);
-    if (childNodeInxArr.length != 3 || childEdgeInxArr.length != 2)
-      throw new IllegalStateException();
-    for (int i = 0;; i++) if (childNodeInxArr[i] == nodeInx[0]) break;
-    for (int i = 0;; i++) if (childNodeInxArr[i] == nodeInx[2]) break;
-    for (int i = 0;; i++) if (childNodeInxArr[i] == nodeInx[3]) break;
-    for (int i = 0;; i++) if (childEdgeInxArr[i] == edgeInx[2]) break;
-    for (int i = 0;; i++) if (childEdgeInxArr[i] == edgeInx[6]) break;
-    // END: Extra checking code that can be removed later.
-
     if (!(root.addNodeMetaChild(nodeInx[0], nodeInx[1]) &&
           root.addNodeMetaChild(nodeInx[0], nodeInx[4]) &&
           root.addNodeMetaChild(nodeInx[3], nodeInx[1]) &&
@@ -58,30 +45,12 @@ public final class AllRootGraphMethodsTest
           root.addEdgeMetaChild(nodeInx[3], edgeInx[0]) &&
           root.addEdgeMetaChild(nodeInx[0], edgeInx[4])))
       throw new IllegalStateException("unable to create meta relationship");
-
-    // BEGIN: Extra checking code that can be removed later.
-    if (root.addNodeMetaChild(nodeInx[0], nodeInx[1]) ||
-        root.addNodeMetaChild(nodeInx[0], nodeInx[4]) ||
-        root.addNodeMetaChild(nodeInx[3], nodeInx[1]) ||
-        root.addNodeMetaChild(nodeInx[4], nodeInx[4]) ||
-        root.addEdgeMetaChild(nodeInx[3], edgeInx[6]) ||
-        root.addEdgeMetaChild(nodeInx[3], edgeInx[0]) ||
-        root.addEdgeMetaChild(nodeInx[0], edgeInx[4]))
-      throw new IllegalStateException("able to create meta relationship");
-    // END: Extra checking code that can be removed later.
-
     for (int i = 0; i < nodeInx.length; i++)
       if (nodeInx[i] >= 0)
         throw new IllegalStateException("non-negative node");
     for (int i = 0; i < edgeInx.length; i++)
       if (edgeInx[i] >= 0)
         throw new IllegalStateException("non-negative edge");
-
-    // BEGIN: Extra checking code that can be removed later.
-    if (root.isMetaParent(root.getEdge(edgeInx[1]),
-                          root.getNode(nodeInx[3])))
-      throw new IllegalStateException();
-    // END: Extra checking code that can be removed later.
 
     // Test add/remove nodes and edges before other tests.
     // We leave the graph with the same topology after these tests as
