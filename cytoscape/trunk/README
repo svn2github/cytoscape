@@ -5,7 +5,7 @@ I.  Doing a Clean Checkout
 ==========================
 
 If this is the first time reading this, make sure that you have done a clean checkout.  To
-do this, delete your local installation of cytoscape.  Then, set your CVSROOT environment
+do this, create a backup of your local installation of cytoscape.  Then, set your CVSROOT environment
 variable to point to:  /common/cvsdir4.
 
 Then, do a clean check-out:
