@@ -604,11 +604,8 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
     if (!(fromNodeInx < 0 && toNodeInx < 0)) return false;
     final int nativeFromNode = m_rootToNativeNodeInxMap.get(fromNodeInx);
     final int nativeToNode = m_rootToNativeNodeInxMap.get(toNodeInx);
-    final IntIterator nativeConnEdgeIter;
-    try {
-      nativeConnEdgeIter = m_graph.edgesConnecting
-        (nativeFromNode, nativeToNode, true, false, true); }
-    catch (IllegalArgumentException e) { return false; }
+    final IntIterator nativeConnEdgeIter = m_graph.edgesConnecting
+      (nativeFromNode, nativeToNode, true, false, true);
     if (nativeConnEdgeIter == null) return false;
     return nativeConnEdgeIter.hasNext();
   }
@@ -666,10 +663,8 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
   {
     if (!(nodeInx < 0)) return -1;
     final int nativeNodeInx = m_rootToNativeNodeInxMap.get(~nodeInx);
-    final IntEnumerator adj;
-    try { adj = m_graph.edgesAdjacent
-            (nativeNodeInx, false, true, countUndirectedEdges); }
-    catch (IllegalArgumentException e) { return -1; }
+    final IntEnumerator adj = m_graph.edgesAdjacent
+      (nativeNodeInx, false, true, countUndirectedEdges);
     if (adj == null) return -1;
     return adj.numRemaining();
   }
@@ -691,10 +686,8 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
   {
     if (!(nodeInx < 0)) return -1;
     final int nativeNodeInx = m_rootToNativeNodeInxMap.get(~nodeInx);
-    final IntEnumerator adj;
-    try { adj = m_graph.edgesAdjacent
-            (nativeNodeInx, true, false, countUndirectedEdges); }
-    catch (IllegalArgumentException e) { return -1; }
+    final IntEnumerator adj = m_graph.edgesAdjacent
+      (nativeNodeInx, true, false, countUndirectedEdges);
     if (adj == null) return -1;
     return adj.numRemaining();
   }
@@ -708,9 +701,8 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
   {
     if (!(nodeInx < 0)) return -1;
     final int nativeNodeInx = m_rootToNativeNodeInxMap.get(~nodeInx);
-    final IntEnumerator adj;
-    try { adj = m_graph.edgesAdjacent(nativeNodeInx, true, true, true); }
-    catch (IllegalArgumentException e) { return -1; }
+    final IntEnumerator adj =
+      m_graph.edgesAdjacent(nativeNodeInx, true, true, true);
     if (adj == null) return -1;
     return adj.numRemaining();
   }
@@ -769,22 +761,18 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
   {
     if (!(edgeInx < 0)) return 0;
     final int nativeEdgeInx = m_rootToNativeEdgeInxMap.get(~edgeInx);
-    final int nativeSrcNodeInx;
-    try { nativeSrcNodeInx = m_graph.edgeSource(nativeEdgeInx); }
-    catch (IllegalArgumentException e) { return 0; }
-    try { return m_nativeToRootNodeInxMap.getIntAtIndex(nativeSrcNodeInx); }
-    catch (ArrayIndexOutOfBoundsException e) { return 0; }
+    final int nativeSrcNodeInx = m_graph.edgeSource(nativeEdgeInx);
+    if (nativeSrcNodeInx < 0) return 0;
+    return m_nativeToRootNodeInxMap.getIntAtIndex(nativeSrcNodeInx);
   }
 
   public int getEdgeTargetIndex(int edgeInx)
   {
     if (!(edgeInx < 0)) return 0;
     final int nativeEdgeInx = m_rootToNativeEdgeInxMap.get(~edgeInx);
-    final int nativeTrgNodeInx;
-    try { nativeTrgNodeInx = m_graph.edgeTarget(nativeEdgeInx); }
-    catch (IllegalArgumentException e) { return 0; }
-    try { return m_nativeToRootNodeInxMap.getIntAtIndex(nativeTrgNodeInx); }
-    catch (ArrayIndexOutOfBoundsException e) { return 0; }
+    final int nativeTrgNodeInx = m_graph.edgeTarget(nativeEdgeInx);
+    if (nativeTrgNodeInx < 0) return 0;
+    return m_nativeToRootNodeInxMap.getIntAtIndex(nativeTrgNodeInx);
   }
 
   // Throws IllegalArgumentException
@@ -948,10 +936,8 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
   {
     if (!(nodeInx < 0)) return null;
     final int nativeNodeInx = m_rootToNativeNodeInxMap.get(~nodeInx);
-    final IntEnumerator adj;
-    try { adj = m_graph.edgesAdjacent(nativeNodeInx, outgoingDirected,
-                                      incomingDirected, undirected); }
-    catch (IllegalArgumentException e) { return null; }
+    final IntEnumerator adj = m_graph.edgesAdjacent
+      (nativeNodeInx, outgoingDirected, incomingDirected, undirected);
     if (adj == null) return null;
     final int[] returnThis = new int[adj.numRemaining()];
     for (int i = 0; i < returnThis.length; i++)
@@ -982,10 +968,8 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
     for (int i = 0; i < nodeInx.length; i++) {
       if (!(nodeInx[i] < 0)) continue;
       final int nativeNodeInx = m_rootToNativeNodeInxMap.get(~nodeInx[i]);
-      try {
-        if (m_graph.nodeExists(nativeNodeInx))
-          nativeNodeBucket.put(nativeNodeInx); }
-      catch (IllegalArgumentException e) { } }
+      if (m_graph.nodeExists(nativeNodeInx))
+        nativeNodeBucket.put(nativeNodeInx); }
     m_hash.empty();
     final IntHash nativeEdgeBucket = m_hash;
     final IntEnumerator nativeNodeEnum = nativeNodeBucket.elements();
