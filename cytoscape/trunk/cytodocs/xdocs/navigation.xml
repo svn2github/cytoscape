@@ -2,21 +2,14 @@
 <project name="Cytoscape">
     <title>Cytoscape</title>
     <body>
-        <menu name="Tech Docs">
-            <item href="/todo.html" name="To Do"/>
-        </menu>
         <menu name="How-to Docs">
-        	<item href="/build_cs_plugin.html" name="How to Build Cytoscape
-        	plug ins"/>
+		<item href="/plugins/PlugInDevGuide.pdf" name="Plugin Developer Guide"/>
         </menu>
 	<menu name="Graph Library Tech Docs">
 		<item href="graph.html" name="Graph Library Doc"/>
 	</menu>
         <menu name="Data Services Tech Docs">
-            <item href="/data_use_cases.html" name="Use Cases"/>
-            <item href="/tech_arch.html" name="Architectural Overview"/>
-	    <item href="/phase1.html" name="Phase 1 Development Plan"/>
-	    <item href="/phase2.html" name="Phase 2 Development Plan"/>
+               <item href="./ds/index.html" name="Data Services Site"/>
         </menu>
         <footer>
 		<a href="http://www.cytoscape.org">Cytoscape home</a>
