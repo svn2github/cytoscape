@@ -2931,9 +2931,7 @@ protected class LoadExpressionMatrixAction extends AbstractAction {
  *   adds a JCheckBox at the bottom of the chooser, asking
  *   whether to copy expression data to attributes.  The
  *   state of this box can be accessed using the method
- *   {@link
- *   getWhetherToCopyExpToAttribs
- *   getWhetherToCopyExpToAttribs()}.
+ *   getWhetherToCopyExpToAttribs().
  *
  *   @see #getWhetherToCopyExpToAttribs
  */
@@ -2953,8 +2951,7 @@ protected class ExpFileChooser extends JFileChooser {
 	jd.pack();
 	return jd;
     }
-    /** inner class for listening to the JCheckBox
-     *  {@link cytoscape.CytoscapeWindow.ExpFileChooser.jcb jcb}
+    /** inner class for listening to the JCheckBox jcb
      *  and updating the boolean copyToAttribs when appropriate.
      *  {@link cytoscape.CytoscapeWindow.ExpFileChooser.copyToAttribs
      *  copyToAttribs} when appropriate. 
@@ -2969,8 +2966,7 @@ protected class ExpFileChooser extends JFileChooser {
 	    }
 	}
     }
-    /** method for accessing last state of JCheckBox
-     *  {@link cytoscape.CytoscapeWindow.ExpFileChooser.jcb jcb}. */
+    /** method for accessing last state of JCheckBox jcb */
     public boolean getWhetherToCopyExpToAttribs() {
 	return copyToAttribs;
     }

@@ -48,8 +48,8 @@ import cytoscape.data.annotation.readers.*;
  *  (integers) in the ontology.  from this assignment, the full ontological hierarchy
  *  can be deduced.
  *  
- *  @see cytoscape.data.thesaurus.Thesaurus
- *  @see cytoscape.data.thesaurus.Ontology
+ *  @see cytoscape.data.synonyms.Thesaurus
+ *  @see cytoscape.data.annotation.Ontology
  */
 public class loadThesaurus {
 //------------------------------------------------------------------------------

@@ -96,7 +96,7 @@ public abstract class FilterDialog {
      * @param guessType The type to compare with
      * @return True if the filter dialog is of the given type
      * 
-     * @see TOPOLOGY
+     * @see #TOPOLOGY
      */
     public boolean isType(int guessType) {
 	return type == guessType;
@@ -251,7 +251,7 @@ public abstract class FilterDialog {
     }
 
     /**
-     * Calls {@link createFieldPanel(String labelString, JComponent field)}
+     * Calls {@link #createFieldPanel(String labelString, JComponent field)}
      * with an empty label.
      */
     public static JPanel createFieldPanel(JComponent field) {
