@@ -20,9 +20,10 @@ public class UnHideSelectedAction extends AbstractAction  {
     }
 
     public void actionPerformed (ActionEvent e) {		
-        GinyUtils.unHideSelectedNodes(networkView.getView());
-        GinyUtils.unHideSelectedEdges(networkView.getView());
-	networkView.redrawGraph(false, true);	
+      //GinyUtils.unHideSelectedNodes(networkView.getView());
+      //GinyUtils.unHideSelectedEdges(networkView.getView());
+      //networkView.redrawGraph(false, true);	
+      GinyUtils.unHideAll( cytoscape.Cytoscape.getCurrentNetworkView() );
     }//action performed
 }
 

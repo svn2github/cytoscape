@@ -13,14 +13,15 @@ import cytoscape.Cytoscape;
 public class UnHideSelectedNodesAction extends CytoscapeAction  {
 
     public UnHideSelectedNodesAction () {
-        super ("UnHide selection");
+        super ("Show All");
         setPreferredMenu( "Select.Nodes" );
         setAcceleratorCombo( java.awt.event.KeyEvent.VK_H, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK );
     }
 
     public void actionPerformed (ActionEvent e) {		
-        GinyUtils.unHideSelectedNodes( Cytoscape.getCurrentNetworkView() );
-        GinyUtils.unHideSelectedEdges( Cytoscape.getCurrentNetworkView() );
-     }//action performed
+      //GinyUtils.unHideSelectedNodes( Cytoscape.getCurrentNetworkView() );
+      //GinyUtils.unHideSelectedEdges( Cytoscape.getCurrentNetworkView() );
+      GinyUtils.unHideAll( cytoscape.Cytoscape.getCurrentNetworkView() );
+    }//action performed
 }
 
