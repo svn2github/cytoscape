@@ -208,6 +208,15 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
     return returnThis;
   }
 
+  int[] _getEdgeIndicesArray()
+  {
+    IntEnumerator edges = m_graph.edges();
+    final int[] returnThis = new int[edges.numRemaining()];
+    for (int i = 0; i < returnThis.length; i++)
+      returnThis[i] = m_nativeToRootEdgeInxMap.getIntAtIndex(edges.nextInt());
+    return returnThis;
+  }
+
   public int[] getEdgeIndicesArray(int rootGraphFromNodeInx,
                                    int rootGraphToNodeInx,
                                    boolean undirectedEdges,
@@ -455,7 +464,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
     if (nativeInx >= 0 && nativeInx != Integer.MAX_VALUE) return true;
     if (!recurse) return false;
     final int[] recursiveChildEdges =
-      m_root.getEdgeMetaChildIndicesArray(getNodeIndicesArray());
+      m_root.getEdgeMetaChildIndicesArray(_getNodeIndicesArray());
     for (int i = 0; i < recursiveChildEdges.length; i++)
       if (recursiveChildEdges[i] == edge.getRootGraphIndex()) return true;
     return false; }
