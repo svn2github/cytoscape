@@ -139,7 +139,7 @@ public final class IntHash
       final int newSize;
       try {
         int primesInx = 0;
-        while (m_arr.length != PRIMES[primesInx++]) { }
+        while (m_size != PRIMES[primesInx++]) { }
         newSize = PRIMES[primesInx]; }
       catch (ArrayIndexOutOfBoundsException e) {
         throw new IllegalStateException
