@@ -473,12 +473,58 @@ public final class AllGraphPerspectiveMethodsTest
       throw new IllegalStateException("not null");
 
     // getInDegree(Node).
+    if (persp.getInDegree(root2Node) != -1 ||
+        persp.getInDegree(nodeNotInPersp) != -1)
+      throw new IllegalStateException("not in degree -1 for other node");
+    if (persp.getInDegree(persp.getNode(nodeInx[2])) != 3)
+      throw new IllegalStateException("not in degree 3 for node");
+    if (persp.getInDegree(persp.getNode(nodeInx[3])) != 0)
+      throw new IllegalStateException("not in degree 0 for node");
+    if (persp.getInDegree(persp.getNode(nodeInx[4])) != 0)
+      throw new IllegalStateException("not in degree 0 for node");
+    if (persp.getInDegree(persp.getNode(nodeInx[0])) != 2)
+      throw new IllegalStateException("not in degree 2 for node");
+    if (persp.getInDegree(persp.getNode(nodeInx[1])) != 3)
+      throw new IllegalStateException("not in degree 3 for node");
 
     // getInDegree(int).
+    if (persp.getInDegree(minNodeInx - 1) != -1 ||
+        persp.getInDegree(0) != -1 ||
+        persp.getInDegree(99) != -1)
+      throw new IllegalStateException("not in degree -1");
+    if (persp.getInDegree(nodeInx[1]) != 3)
+      throw new IllegalStateException("not in degree 3");
+    if (persp.getInDegree(nodeInx[0]) != 2)
+      throw new IllegalStateException("not in degree 2");
+    if (persp.getInDegree(Integer.MAX_VALUE) != -1)
+      throw new IllegalStateException("not in degree -1");
 
     // getInDegree(Node, boolean).
+    if (persp.getInDegree(root2Node, true) != -1 ||
+        persp.getInDegree(nodeNotInPersp, false) != -1)
+      throw new IllegalStateException("not in degree -1 for other node");
+    if (persp.getInDegree(persp.getNode(nodeInx[1]), false) != 1)
+      throw new IllegalStateException("not in degree 1");
+    if (persp.getInDegree(persp.getNode(nodeInx[2]), false) != 2)
+      throw new IllegalStateException("not in degree 2");
+    if (persp.getInDegree(persp.getNode(nodeInx[2]), true) != 3)
+      throw new IllegalStateException("not in degree 3");
 
     // getInDegree(int, boolean).
+    if (persp.getInDegree(minNodeInx - 1, false) != -1 ||
+        persp.getInDegree(0, true) != -1 ||
+        persp.getInDegree(99, false) != -1)
+      throw new IllegalStateException("not in degree -1");
+    if (persp.getInDegree(nodeInx[0], true) != 2)
+      throw new IllegalStateException("not in degree 2");
+    if (persp.getInDegree(nodeInx[0], false) != 2)
+      throw new IllegalStateException("not in degree 2");
+    if (persp.getInDegree(nodeInx[4], true) != 0)
+      throw new IllegalStateException("not in degree 0");
+    if (persp.getInDegree(nodeInx[1], false) != 1)
+      throw new IllegalStateException("not in degree 1");
+    if (persp.getInDegree(Integer.MIN_VALUE, true) != -1)
+      throw new IllegalStateException("not in degree -1");
 
     // getOutDegree(Node).
 
