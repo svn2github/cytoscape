@@ -6,6 +6,7 @@ import giny.model.GraphPerspective;
 import giny.model.Node;
 import giny.model.RootGraph;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -1155,8 +1156,87 @@ public final class AllGraphPerspectiveMethodsTest
       throw new IllegalStateException("expected null adjacent edge inx arr");
 
     // getConnectingEdges(List).
+    ArrayList nodeInputList = new ArrayList(3);
+    nodeInputList.add(0, persp.getNode(nodeInx[0]));
+    nodeInputList.add(1, persp.getNode(nodeInx[3]));
+    nodeInputList.add(2, persp.getNode(nodeInx[2]));
+    List connectingEdgesList = persp.getConnectingEdges(nodeInputList);
+    if (connectingEdgesList.size() != 3)
+      throw new IllegalStateException("expected 3 connecting edges");
+    for (int i = 0;; i++)
+      if (((Edge) connectingEdgesList.get(i)).getRootGraphIndex() ==
+          edgeInx[2]) break;
+    for (int i = 0;; i++)
+      if (((Edge) connectingEdgesList.get(i)).getRootGraphIndex() ==
+          edgeInx[3]) break;
+    for (int i = 0;; i++)
+      if (((Edge) connectingEdgesList.get(i)).getRootGraphIndex() ==
+          edgeInx[6]) break;
+    nodeInputList = new ArrayList(3);
+    nodeInputList.add(0, persp.getNode(nodeInx[2]));
+    nodeInputList.add(1, persp.getNode(nodeInx[0]));
+    nodeInputList.add(2, persp.getNode(nodeInx[1]));
+    connectingEdgesList = persp.getConnectingEdges(nodeInputList);
+    if (connectingEdgesList.size() != 6)
+      throw new IllegalStateException("expected 6 connecting nodes");
+    for (int i = 0; i < connectingEdgesList.size(); i++)
+      if (((Edge) connectingEdgesList.get(i)).getRootGraphIndex() ==
+          edgeInx[6]) throw new IllegalStateException("wrong connecting edge");
+    nodeInputList = new ArrayList(2);
+    nodeInputList.add(0, persp.getNode(nodeInx[0]));
+    nodeInputList.add(1, nodeNotInPersp);
+    if (persp.getConnectingEdges(nodeInputList) != null)
+      throw new IllegalStateException("expected null connecting edges");
+    nodeInputList = new ArrayList(2);
+    nodeInputList.add(0, root2Node);
+    nodeInputList.add(1, persp.getNode(nodeInx[1]));
+    if (persp.getConnectingEdges(nodeInputList) != null)
+      throw new IllegalStateException("expected null connecting edges");
 
     // getConnectingEdgeIndicesArray(int[]).
+    int[] nodeInputInxArr = new int[4];
+    nodeInputInxArr[0] = nodeInx[0];
+    nodeInputInxArr[1] = nodeInx[2];
+    nodeInputInxArr[2] = nodeInx[3];
+    nodeInputInxArr[3] = nodeInx[4];
+    int[] connectingEdgeInx =
+      persp.getConnectingEdgeIndicesArray(nodeInputInxArr);
+    if (connectingEdgeInx.length != 3)
+      throw new IllegalStateException("expected 3 connecting edges");
+    for (int i = 0;; i++) if (connectingEdgeInx[i] == edgeInx[2]) break;
+    for (int i = 0;; i++) if (connectingEdgeInx[i] == edgeInx[3]) break;
+    for (int i = 0;; i++) if (connectingEdgeInx[i] == edgeInx[6]) break;
+    nodeInputInxArr = new int[2];
+    nodeInputInxArr[0] = nodeInx[0];
+    nodeInputInxArr[1] = nodeInx[1];
+    connectingEdgeInx = persp.getConnectingEdgeIndicesArray(nodeInputInxArr);
+    if (connectingEdgeInx.length != 3)
+      throw new IllegalStateException("expected 3 connecting edges");
+    for (int i = 0;; i++) if (connectingEdgeInx[i] == edgeInx[0]) break;
+    for (int i = 0;; i++) if (connectingEdgeInx[i] == edgeInx[4]) break;
+    for (int i = 0;; i++) if (connectingEdgeInx[i] == edgeInx[5]) break;
+    nodeInputInxArr = new int[2];
+    nodeInputInxArr[0] = nodeInx[4];
+    nodeInputInxArr[1] = nodeInx[2];
+    connectingEdgeInx = persp.getConnectingEdgeIndicesArray(nodeInputInxArr);
+    if (connectingEdgeInx.length != 1)
+      throw new IllegalStateException("expected 1 connecting edge");
+    for (int i = 0;; i++) if (connectingEdgeInx[i] == edgeInx[3]) break;
+    nodeInputInxArr = new int[3];
+    nodeInputInxArr[0] = nodeInx[4];
+    nodeInputInxArr[1] = nodeInx[3];
+    nodeInputInxArr[2] = nodeInx[0];
+    connectingEdgeInx = persp.getConnectingEdgeIndicesArray(nodeInputInxArr);
+    if (connectingEdgeInx.length != 0)
+      throw new IllegalStateException("expected no connecting edges");
+    if (persp.getConnectingEdgeIndicesArray(new int[100]) != null ||
+        persp.getConnectingEdgeIndicesArray
+        (new int[] { Integer.MAX_VALUE, Integer.MIN_VALUE }) != null ||
+        persp.getConnectingEdgeIndicesArray
+        (new int[] { minNodeInx - 1, nodeInx[1] }) != null ||
+        persp.getConnectingEdgeIndicesArray
+        (new int[] { nodeInx[1], nodeNotInPersp.getRootGraphIndex() }) != null)
+      throw new IllegalStateException("expected null connecting edge inx");
 
     // getConnectingNodeIndicesArray(int[]).
 
