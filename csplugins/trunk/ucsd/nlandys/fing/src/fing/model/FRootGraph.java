@@ -35,13 +35,23 @@ class FRootGraph implements RootGraph
     m_lis = RootGraphChangeListenerChain.remove(m_lis, listener);
   }
 
-  public GraphPerspective createGraphPerspective(Node[] nodes, Edge[] edges)
-  {
+  public GraphPerspective createGraphPerspective(Node[] nodes, Edge[] edges) {
+//     if (nodes == null) nodes = new Node[0];
+//     if (edges == null) edges = new Edge[0];
     return null;
   }
 
-  public GraphPerspective createGraphPerspective(int[] nodeInx, int[] edgeInx)
-  {
+  public GraphPerspective createGraphPerspective(int[] nodeInx,
+                                                 int[] edgeInx) {
+//     if (nodeInx == null) nodeInx = new int[0];
+//     if (edgeInx == null) edgeInx = new int[0];
+//     // There are more edges than nodes so we'll use m_hash for the edges.
+//     final IntHash nodeBucket = new IntHash();
+//     m_hash.empty();
+//     final IntHash edgeBucket = m_hash;
+//     for (int i = 0; i < nodeInx.length; i++) {
+//       final int rootNodeInxCandidate = nodeInx[i];
+//     }
     return null;
   }
 
@@ -636,7 +646,8 @@ class FRootGraph implements RootGraph
     else return 0; }
 
   public Node getNode(int nodeInx) {
-    if (nodeInx < 0) return m_nodes.getNodeAtIndex(~nodeInx);
+    if (nodeInx < 0 && nodeInx != 0x80000000)
+      return m_nodes.getNodeAtIndex(~nodeInx);
     else return null; }
 
   public int getIndex(Edge edge) {
@@ -644,7 +655,8 @@ class FRootGraph implements RootGraph
     else return 0; }
 
   public Edge getEdge(int edgeInx) {
-    if (edgeInx < 0) return m_edges.getEdgeAtIndex(~edgeInx);
+    if (edgeInx < 0 && edgeInx != 0x80000000)
+      return m_edges.getEdgeAtIndex(~edgeInx);
     else return null; }
 
   public int getEdgeSourceIndex(int edgeInx)
