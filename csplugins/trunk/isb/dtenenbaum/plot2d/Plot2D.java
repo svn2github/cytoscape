@@ -1342,11 +1342,9 @@ class ML implements ChartMouseListener {
 			
 			Object[] selObjs = itemList.getSelectedValues();
 			int[] selected = itemList.getSelectedIndices();
-			System.out.println("num of selected items: " + selected.length);
 			Hashtable selHash = new Hashtable();
 			for (int i = 0; i < selected.length; i++) {
 				LegendItem li = (LegendItem)selObjs[i];
-				//System.out.println("selected: " + li.getLabel());
 				selHash.put(li.getLabel(),"~");
 			}
 			
@@ -1354,7 +1352,6 @@ class ML implements ChartMouseListener {
 			
 			LegendItemCollection lic = plot.getLegendItems();
 			
-			//XYItemRenderer ren = plot.getRenderer();
 			CategoryItemRenderer ren = plot.getRenderer();
 			
 			Color bgColor = new Color(230,230,230);
@@ -1363,7 +1360,6 @@ class ML implements ChartMouseListener {
 			Enumeration selKeys = selHash.keys();
 			while (selKeys.hasMoreElements()) {
 				String rowTitle = (String) selKeys.nextElement();
-				//System.out.println("rowTitle = " + rowTitle);
 				int newRowId;
 				Number[] data = new Number[dataset.getColumnCount()];
 				for (int j = 0; j < dataset.getColumnCount(); j++) {
@@ -1377,16 +1373,15 @@ class ML implements ChartMouseListener {
 				}
 				newRowId = dataset.getRowIndex(rowTitle);
 				Paint savedPaint = (Paint)sPaints.get(rowTitle);
-				System.out.println("id = "+ newRowId + ", row =  " + rowTitle +", paint = " + savedPaint);
-				ren.setSeriesPaint(newRowId, savedPaint);
 			}
 
 			
 			for (int i = 0; i < dataset.getRowCount(); i++) {
-				System.out.println("row " + i + " is called " + dataset.getRowKey(i));
 				String s = (String)selHash.get(dataset.getRowKey(i));
 				if (null == s) {
 					ren.setSeriesPaint(i, bgColor);
+				} else {
+					ren.setSeriesPaint(i, (Paint)sPaints.get(dataset.getRowKey(i)));
 				}
 			}
 			
