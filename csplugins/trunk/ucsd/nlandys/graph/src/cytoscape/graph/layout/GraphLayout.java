@@ -12,7 +12,7 @@ public interface GraphLayout extends GraphTopology
   /**
    * Returns the maximum allowable value of X positions of nodes.
    * All X positions of nodes in this graph will lie in the interval
-   * <nobr><code>[0, getMaxWidth()]</code></nobr>.
+   * <nobr><code>[0.0, getMaxWidth()]</code></nobr>.
    *
    * @see #getNodePosition(int, boolean)
    **/
@@ -21,7 +21,7 @@ public interface GraphLayout extends GraphTopology
   /**
    * Returns the maximum allowable value of Y positions of nodes.
    * All Y positions of nodes in this graph will lie in the interval
-   * <nobr><code>[0, getMaxHeight()]</code></nobr>.
+   * <nobr><code>[0.0, getMaxHeight()]</code></nobr>.
    *
    * @see #getNodePosition(int, boolean)
    **/

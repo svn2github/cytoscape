@@ -46,7 +46,11 @@ public interface PolyEdgeGraphLayout extends GraphLayout
    * @param xPosition if <code>true</code>, return X position of anchor point;
    *   if <code>false</code>, return Y position of anchor point.
    * @return the X or Y position of anchor point with index
-   *   <code>anchorIndex</code> within edge at index <code>edgeIndex</code>.
+   *   <code>anchorIndex</code> within edge at index <code>edgeIndex</code>;
+   *   X return values are within the interval
+   *   <nobr><code>[0.0, getMaxWidth()]</code></nobr> and Y return values
+   *   are within the interval <nobr><code>[0.0, getMaxHeight()]</code></nobr>.
+   *
    * @exception IndexOutOfBoundsException if <code>edgeIndex</code> is not in
    *   the interval <nobr><code>[0, getNumEdges() - 1]</code></nobr>.
    * @exception IndexOutOfBoundsException if <code>anchorIndex</code> is not
