@@ -9,13 +9,15 @@ import javax.swing.border.*;
 import javax.swing.table.*;
 import java.io.*;
 
+import cytoscape.*;
+
 public class FileLoaderUI 
   extends 
     JFrame 
   implements 
     ActionListener {
 
-  JComboBox otherBox, textDelimeter;
+  JTextField otherBox, textDelimeter;
   JTextField fileField, fixedField;
   JButton load, browse;
   JRadioButton fixed, delimited, nodes, edges;
@@ -24,7 +26,7 @@ public class FileLoaderUI
 
 
   JTable previewTable;
-  TableModel previewModel;
+  DefaultTableModel previewModel;
 
   File file;
 
@@ -57,7 +59,11 @@ public class FileLoaderUI
     file_panel.add( new JLabel( "File:" ) );
     file_panel.add( fileField );
     file_panel.add( browse );
+    load = new JButton( "Load" );
+    load.addActionListener( this );
+    file_panel.add( load );
     
+
     JPanel ne_panel = new JPanel();
     ne_panel.add( nodes );
     ne_panel.add( edges );
@@ -73,20 +79,24 @@ public class FileLoaderUI
 
     tab = new JCheckBox( "Tab" );
     tab.addActionListener( this );
+    tab.setSelected( true );
     comma = new JCheckBox( "Comma" );
-    tab.addActionListener( this );
+    comma.addActionListener( this );
     semicolon = new JCheckBox( "Semicolon" );
     semicolon.addActionListener( this );
     space = new JCheckBox( "Space" );
     space.addActionListener( this );
     other = new JCheckBox( "Other" );
     other.addActionListener( this );
-    otherBox = getOtherComboBox();
+    otherBox = new JTextField( 5 );
     otherBox.addActionListener( this );
     merge = new JCheckBox("Merge Delimiters");
     merge.addActionListener( this );
-    textDelimeter = createTextDelimiterBox();
+    textDelimeter = new JTextField( 5 );
     textDelimeter.addActionListener( this );
+ 
+
+
 
     ButtonGroup g2 = new ButtonGroup();
     fixed = new JRadioButton("Fixed Width");
@@ -122,7 +132,16 @@ public class FileLoaderUI
 
     previewModel = new DefaultTableModel();
     previewTable = new JTable( previewModel );
-    JScrollPane scroll = new JScrollPane( previewTable );
+
+    JPanel table = new JPanel();
+    table.setLayout( new BorderLayout () );
+    table.add( previewTable.getTableHeader(), BorderLayout.PAGE_START);
+    table.add( previewTable, BorderLayout.CENTER );
+    
+
+    JScrollPane scroll = new JScrollPane( table );
+    scroll.setSize( new Dimension( 300, 100 ) );
+
 
     JSplitPane split = new JSplitPane( JSplitPane.VERTICAL_SPLIT, top_panel, scroll );
 
@@ -135,7 +154,124 @@ public class FileLoaderUI
 
   public void actionPerformed ( java.awt.event.ActionEvent e ) {
 
+    if ( e.getSource() == load ) {
+
+      StringBuffer delim = new StringBuffer();
+      if ( tab.isSelected() )
+        delim.append( "\t" );
+      else if ( comma.isSelected() )
+        delim.append(", " );
+      else if ( other.isSelected() )
+        delim.append( otherBox.getText() );
+      else if ( space.isSelected() )
+        delim.append( " " );
+      else if ( semicolon.isSelected() )
+        delim.append( ";" );
+      
+      FileLoader.loadFileToAttributes( file.toString(),
+                                       nodes.isSelected(),
+                                       delimited.isSelected(),
+                                       delim.toString() );
+      return;
+    }
+    
+
+    if ( e.getSource() == browse ) {
+      File currentDirectory = Cytoscape.getCytoscapeObj().getCurrentDirectory();
+      JFileChooser chooser = new JFileChooser(currentDirectory);
+      if ( chooser.showOpenDialog( Cytoscape.getDesktop() ) == 
+           chooser.APPROVE_OPTION) {
+        currentDirectory = chooser.getCurrentDirectory();
+        Cytoscape.getCytoscapeObj().setCurrentDirectory(currentDirectory);
+        file = chooser.getSelectedFile();
+      }
+      fileField.setText( file.toString() );
+    } 
+
+   
+    else if ( e.getSource() == fileField ) {
+      try {
+        file = new File( fileField.getText() );
+      } catch ( Exception ex ) {
+        System.out.println( "File Field error" );
+      }
+    }
+
+    updatePreview();
+
   }
+
+  private void updatePreview () {
+
+    if ( file == null )
+      return;
+
+    Vector data = new Vector( 20 );
+
+    StringBuffer delim = new StringBuffer();
+    if ( tab.isSelected() )
+      delim.append( "\t" );
+    else if ( comma.isSelected() )
+      delim.append(", " );
+    else if ( other.isSelected() )
+      delim.append( otherBox.getText() );
+    else if ( space.isSelected() )
+      delim.append( " " );
+    else if ( semicolon.isSelected() )
+      delim.append( ";" );
+
+    Vector titles = null;
+    int max_col = 0;
+
+    try {
+      BufferedReader in
+        = new BufferedReader(new FileReader( file ) );
+      String oneLine = in.readLine();
+      int count = 0;
+      while (oneLine != null && count++ < 20 ) {
+         
+        if (oneLine.startsWith("#")) {
+          // comment
+        } else {
+          // read nodes in
+          String[] line = oneLine.split( delim.toString() );
+          if ( titles == null ) {
+            // populate the title vector
+            titles = new Vector( line.length );
+            for ( int i = 0; i < line.length; ++i ) {
+              titles.add( line[i] );
+            }
+          } else {
+            Vector row = new Vector( line.length );
+            for ( int i = 0; i < line.length; ++i ) {
+              row.add( line[i] );
+            }
+            data.add( row );
+          }
+        }        
+        oneLine = in.readLine();
+      }
+      
+        in.close();
+    } catch ( Exception ex ) {
+      System.out.println( "File Read error" );
+      ex.printStackTrace();
+    }
+
+    if ( titles.size() < data.size() ) {
+      for ( int i = titles.size(); i < data.size(); ++i ) {
+        titles.add( file.toString()+" col "+i );
+      }
+    }
+
+    previewModel.setDataVector( data, titles );
+
+
+
+  }
+  
+
+
 
   public JComboBox getOtherComboBox () {
     return new JComboBox();
