@@ -1,0 +1,201 @@
+Developing Cytoscape Plugins Using Jython and Java Web Start
+
+Author: Dan Tenenbaum
+Created: 9/10/04
+
+Overview
+
+This document is intended to be a compendium of tips and tricks necessary to
+make Cytoscape, Java, Jython, and Java Web Start all cooperate with each other.
+These instructions should be sufficient to make this possible; however, there 
+are several things that are not accomplished that should be accomplished first
+before you can use Jython/JWS/Cytoscape in an optimal manner--those things are:
+
+- Port both the console and non-console plugins to Cytoscape 2, making 
+  them both as generic as possible so they can be reused for many different
+  applications.
+
+- (There is a python console plugin as part of cytoscape 2, but it will not 
+  fully work with java web start and needs to be updated)
+
+- As part of the porting process, move all necessary classes into a single package
+  (where possible).  As of now, you will find things in somewhat nonintuitive
+  places.
+
+- After porting, move this document into that package where it should live.
+
+
+Why Two Plugins?
+
+In this document I discuss two plugins--I'll call them the console and
+non-console plugins. Use the console plugin if you want your application
+to display a jython console. Use the non-console plugin if you want
+your application to run jython code but not show a console. A typical
+scenario would be to use the console plugin during development, but
+use the non-console plugin when you deploy your application as a
+Java Web Start. 
+
+The two plugins are basically identical, except
+-On startup, the console plugin merely adds a "Start Python Console" item
+ to the Plugins menu. When you start the console, it puts some important
+ objects into the jython namespace (a PythonConsole in this case) and runs
+ the script __run__.py packaged with the application. (more on this later)
+ 
+-On startup, the non-console plugin puts some important objects into
+ the jython namespace (an instance of PythonInterpreter in this case)
+ and then displays a progress bar that cycles until all of the bootstrap
+ code in __run__.py has executed. For example, in the cell phone simulation
+ the bootstrap code consists of setting up UI elements, and when the
+ progress bar is finished, there is a new menu (Simulation) visible
+ on the menu bar.
+ 
+It seems reasonable that one might want to combine the functionality of
+the two plugins--for example, to have an application that functions like
+the non-console plugin, but have it create a menu option that opens a console.
+The console should have the same namespace as the underlying interpreter,
+but should not run any bootstrap code on its own. I have somewhat 
+tentatively explored this option as of now.
+
+How The Plugins Work
+
+When you try and import a jython module, jython looks at its sys.path
+for scripts and jar files that can be imported. In typical standalone
+usage, the sys.path contains the current directory and the Lib folder
+of the jython installation. The programmer can also arbitrarily add
+other locations to the sys.path.
+
+When running as a Java Web Start, this scenario is not possible. The 
+jython core and standard libraries must be packaged with the web start.
+
+Everything included in a Java Web Start must come from a jar file. When
+a JWS application is downloaded onto a user's computer, JWS caches the jars
+on the user's hard drive--however it mangles the names of the jars, so 
+there is no easy nonprogrammatic way to figure out which classes/scripts are
+in which jars. In fact, the cached jars are not even guaranteed to
+have a jar extension (this is where SyspathArchiveHack, discussed later,
+comes in).
+
+The plugin can figure all this out, though. But first you have to set up
+your application in a specific way. As always, you need to package
+all Java classes your application needs into jars, sign the jars
+and include them in the JNLP descriptor file. With jython, you should
+include the jython.jar file from your jython distribution. 
+
+There are two additional jars you must create. One is called 
+jython-lib.jar by convention and contains the standard jython libraries.
+You create it like this:
+
+$ cd jython2-1 (or wherever your jython distribution is)
+$ cd Lib
+$ jar cf ~/jython-lib.jar .
+
+That creates jython-lib.jar in your home directory. 
+
+You should create another jar that contains all of your custom
+jython code that you want to be available to the application.
+You can call this jar whatever you want, but it is recommended
+that the name refer to the specific application to which the jar
+belongs. The top level of this jar file must contain a file
+called __run__.py which in turn must contain the jython code you
+want to execute when the plugin is activated. More later on __run__.py.
+
+The plugin then uses two predefined anchors called "string.py" and 
+"__run__.py". The plugin uses classloader methods to determine which jar
+file each of those files comes from. When it finds the jar containing
+"string.py," it knows it has found the path to the standard jython
+library and it adds it to sys.path; when it finds the jar containing
+"__run__.py" it knows it has found your custom jython code, 
+and it adds it to sys.path and then executes "__run__.py".
+
+
+Running Standalone (not as a Web Start)
+
+When you are developing your application and running it locally on
+your system (not as a java web start) you still need to create a jar
+file containing your custom scripts. Every time you make a change to
+your scripts, you need to rebuild the jar. This is easily accomplished
+in an ant or make target.
+
+About __run__.py
+
+This file should contain minimal code. It should restrict itself
+to importing necessary modules, then calling functions or classes
+in those modules. The called modules should not contain any global
+code (that is, code that is outside of functions and classes) unless
+it is just initialization code or unit testing code that only runs
+if '__name__' == '__main__'.
+
+Jython Development Guidelines
+
+Just about anything you can do in regular jython development you
+can do in this web start enviroment. However, there are some exceptions:
+
+- When running as a web start, you can't import any standard
+  jython libraries which rely upon socket.py. 
+
+- In some cases (usually involving java classes that are not part of
+  the standard Java SDK), imports   fail. However, if you execute
+  the command:
+     sys.add_package('fully.qualified.package.name')
+  before you do your import, it will then work. So it's good practice to 
+  put that command before each import.
+
+- If there is an error in a module, the console will report the errors in
+  the module, and then say that the module can't be found. For a long time
+  I was just looking at the last part of this error message and thought that
+  there was a problem with importing. The problem was an error in my module.
+
+- In the cell phone simulator I found that I had to mark names as
+  global (using the "global name" syntax) if I wanted to be able to
+  run methods that were in other scripts. That was because I was not
+  using "import" to get those modules into my namespace, but rather 
+  a function that would get the code from the jar file and execute
+  and run it. Using "import" is strongly recommended over that latter
+  approach. It should obviate this sort of problem but if you still
+  run into it, try marking "public" identifiers as global.
+  
+- Corollary to the previous: do not use too much of my cell phone
+  code as an example of How Things Should Be Done. The cell phone
+  simulator was a "learn by doing" project, and I learned that I wasn't
+  always doing things in the best way. Most importantly, 
+  use "import" as recommended above. Also, when doing UI tasks
+  that take a long time to complete (such as the phone tree), do not
+  do all the fancy python threading stuff I used--instead use 
+  javax.swing.SwingUtilities.invokeLater(). This method takes
+  a Runnable as an argument so you should still be able to communicate
+  with that thread, if you need to stop it, for example. (I have an
+  example of this that I will check in and then point to here.)
+
+About the plugin classes
+
+Here is a list of the important classes and where they can be found.
+All paths are relative to cvsdir4. This section will be updated when
+plugins are ported to cytoscape 2 and cvsdir5.
+
+The non-console plugin:
+csplugins/isb/dtenenbaum/cellphone/CellPhonePlugin.java
+
+Obviously it should be moved out of that package since you would use it
+in applications other than the cell phone. This will happen when it is ported.
+
+The console plugin:
+csplugins/trial/pshannon/spy/PyConsolePlugin.java
+This also depends on all the other .java files in that directory.
+(The non-console plugin depends upon a few as well--this will all be
+reorganized into one package that makes more sense)
+
+Both plugins depend on the following classes that are important
+and should be singled out for mention:
+
+csplugins/trial/pshannon/spy/ImportPyLibs.java
+This class is the one that figures out which jar files contain
+custom and standard jython modules.
+
+org/python/core/SyspathArchiveHack.java
+ImportPyLibs uses this class. This class must be in the org.python.core
+package because it calls a private constructor and overrides a private
+method in that package. This class exists to get around the fact that
+cached Web Start jar names do not always end with a ".jar" extension.
+
+A quick look at these classes is highly recommended.
+

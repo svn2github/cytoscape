@@ -1,0 +1,16 @@
+<project name="jythonpluginstest" default="mkjar" basedir=".">
+<description/>
+
+	
+
+
+
+<target name="mkjar">
+	<jar destfile="jythonpluginstest.jar"
+		basedir="scripts"
+		includes="**/*"/>
+</target>
+
+
+
+</project>

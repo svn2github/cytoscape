@@ -1,0 +1,5 @@
+defaultVisualStyle=cell phone
+visualStyle=cell phone
+plugin.layoutplugin.load=csplugins.isb.dtenenbaum.setDefaultLayout.SetDefaultLayoutPlugin
+plugin.pyconsoleplugin.load=csplugins.isb.dtenenbaum.jython.PyConsolePlugin
+#plugin.nonconsoleplugin.load=csplugins.isb.dtenenbaum.jython.NonConsolePlugin
