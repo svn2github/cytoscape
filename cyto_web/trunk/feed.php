@@ -17,7 +17,7 @@ foreach ($rss->items as $item ) {
 	$title = $item[title];
 	$url   = $item[link];
 	echo "<a href=$url>$title</a></li><BR>\n";
-	echo " <UL><LI>$summary2</UL>";
+	echo " <UL><LI>$summary2 [cont.]</UL>";
 	
 	#print_r(array_keys($item));
 	echo "<BR>";
