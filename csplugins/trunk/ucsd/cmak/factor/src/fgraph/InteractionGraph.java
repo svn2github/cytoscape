@@ -319,11 +319,19 @@ public class InteractionGraph
      * Load expression data from the file
      */ 
     public void loadExpressionData(String filename)
-
     {
         _expressionData = new ExpressionData(filename);
     }
 
+    /**
+     * Load expression data from the file
+     */ 
+    public void loadExpressionDataYeangFormat(String filename)
+    {
+        _expressionData = new ExpressionData(filename);
+    }
+
+    
     /**
      * @return true if knocking out "koNode" causes the expression of
      * "targetNode" to change.  Use PVAL_THRESH as a cutoff.
