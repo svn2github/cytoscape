@@ -23,7 +23,6 @@ import cytoscape.layout.*;
 import java.awt.Dimension;
 
 class BetweenPathwayThread2 extends Thread{
-    //double DENSITY_FACTOR = 5.62519903;
   double absent_score = .00001;
   double physical_beta = 0.9;
   double genetic_beta = 0.9;
@@ -31,7 +30,7 @@ class BetweenPathwayThread2 extends Thread{
   double physical_logOneMinusBeta = Math.log(1-physical_beta);
   double genetic_logBeta = Math.log(genetic_beta);
   double genetic_logOneMinusBeta = Math.log(1-genetic_beta);
-  double overlap_cutoff = 0.33;
+  double overlap_cutoff = 0.30;
   BetweenPathwayOptions options;
   double [][] physicalScores;
   double [][] geneticScores;
@@ -117,26 +116,8 @@ class BetweenPathwayThread2 extends Thread{
 	continue;
       }
       int max_depth = 2;
-      /*
-       * These arrays will keep a list of all paths of nodes of a particular
-       * length from the source node
-       */
-      //List [] sourcePaths = new List[max_depth+1];
-      /*
-	List [] sourcePaths = new List[max_depth+1];
-	List [] targetPaths = new List[max_depth+1];
-	for(int idx = 0;idx < sourcePaths.length;idx++){
-	sourcePaths[idx] = new Vector();
-	targetPaths[idx] = new Vector();
-	}
-	Vector path = new Vector(1);
-	path.add(source);
-	sourcePaths[0].add(path);
-	path = new Vector(1);
-	path.add(target);
-	targetPaths[0].add(path);
-      */
-      
+
+            
       /*
        * The find all paths function will recursively
        * fill the paths array will all paths of the
@@ -144,80 +125,21 @@ class BetweenPathwayThread2 extends Thread{
        * those paths that are present in the genetic
        * network.
        */
-      Stack nodeStack = new Stack();
-      nodeStack.push(source);
-      for(Iterator geneticIt = geneticNetwork.getAdjacentEdgesList(source,true,true,true).iterator();geneticIt.hasNext();){
-	Edge neighborEdge = (Edge)geneticIt.next();
-	if(neighborEdge.getSource() == neighborEdge.getTarget()){
-	  continue;
-	}
-	if(neighborEdge.getSource() == source){
-	  neighbors.add(new NeighborEdge(neighborEdge,(List)node2Path.get(neighborEdge.getSource()),(List)node2Path.get(neighborEdge.getTarget()),false));
-	}
-	else{
-	  neighbors.add(new NeighborEdge(neighborEdge,(List)node2Path.get(neighborEdge.getTarget()),(List)node2Path.get(neighborEdge.getSource()),true));
-	}
-      }
-      findAllPaths(nodeStack,max_depth,(List)node2Path.get(target),true,neighbors);
-      nodeStack = new Stack();
-      nodeStack.push(target);
-      for(Iterator geneticIt = geneticNetwork.getAdjacentEdgesList(target,true,true,true).iterator();geneticIt.hasNext();){
-	Edge neighborEdge = (Edge)geneticIt.next();
-	if(neighborEdge.getSource() == neighborEdge.getTarget()){
-	  continue;
-	}
-	if(neighborEdge.getSource() == target){
-	  neighbors.add(new NeighborEdge(neighborEdge,(List)node2Path.get(neighborEdge.getTarget()),(List)node2Path.get(neighborEdge.getSource()),true));
-	}
-	else{
-	  neighbors.add(new NeighborEdge(neighborEdge,(List)node2Path.get(neighborEdge.getSource()),(List)node2Path.get(neighborEdge.getTarget()),false));
-	}
-      }
-      findAllPaths(nodeStack,max_depth,(List)node2Path.get(source),false,neighbors);
-      /*
-	Stack nodeStack = new Stack();
-	nodeStack.push(source);
-	findAllPaths(nodeStack,max_depth,sourcePaths);
-	nodeStack = new Stack();
-	nodeStack.push(target);
-	findAllPaths(nodeStack,max_depth,targetPaths);
-      */
-
-      /*
-	for(Iterator nodesIt = geneticNetwork.nodesIterator();nodesIt.hasNext();){
-	Node fauxNeighbor = (Node)nodesIt.next();
-	if(fauxNeighbor != source){
-	Vector sourcePath = new Vector(2);
-	sourcePath.add(source);
-	sourcePath.add(fauxNeighbor);
-	sourcePaths[1].add(sourcePath);
-	}
-	}
-      */
       
       /*
-	for(int idx=0;idx<sourcePaths.length;idx++){
-	for(int idy=0;idy<targetPaths.length-idx;idy++){
-	for(Iterator sourcePathIt = sourcePaths[idx].iterator();sourcePathIt.hasNext();){
-	List sourcePath = (List)sourcePathIt.next();
-	for(Iterator targetPathIt = targetPaths[idy].iterator();targetPathIt.hasNext();){
-	List targetPath = (List)targetPathIt.next();
-	Node sourceNeighbor = (Node)sourcePath.get(sourcePath.size()-1);
-	Node targetNeighbor = (Node)targetPath.get(targetPath.size()-1);
-	List edges = geneticNetwork.edgesList(sourceNeighbor,targetNeighbor);
-	if(edges != null){
-	neighbors.add(new NeighborEdge((Edge)edges.get(0),sourcePath,targetPath,false));
-	}
-	edges = geneticNetwork.edgesList(targetNeighbor,sourceNeighbor);
-	if(edges != null){
-	neighbors.add(new NeighborEdge((Edge)edges.get(0),targetPath,sourcePath,true));
-	}
-	}
-	}
-	}
-	}
-      */
-
+       * So first we will find all paths that are within a certain depth
+       * of the source (and are present in the genetic network), We will add them
+       * to a hash that will map from node => path
+       */
+      
+      HashMap nodeNeighbor2Paths = new HashMap();
+      Stack nodeStack = new Stack();
+      nodeStack.push(source);
+      findSourcePaths(nodeStack,max_depth,target,nodeNeighbor2Paths);
+      nodeStack.pop();
+      nodeStack.push(target);
+      findNeighborEdges(nodeStack,max_depth,source,nodeNeighbor2Paths,neighbors);
+      nodeStack.pop();
       neighbors.trimToSize();
       edgeNeighborMap.put(edge,neighbors);
     }
@@ -370,13 +292,28 @@ class BetweenPathwayThread2 extends Thread{
 	    continue;
 	  }
 
-	  double this_genetic_score = genetic_score + calculateGeneticIncrease(newSources,newTargets,sourceMembers,targetMembers);
+	  
 	  double this_physical_source_score = physical_source_score + calculatePhysicalIncrease(newSources,sourceMembers);
 	  double this_physical_target_score = physical_target_score + calculatePhysicalIncrease(newTargets,targetMembers);
-	  
-	  if(((this_physical_source_score+this_physical_target_score)>=(physical_source_score+physical_target_score)) && 
-	     this_genetic_score > best_genetic_score){
+	  int source_size = newSources.size()+sourceMembers.size();
+	  int target_size = newTargets.size()+targetMembers.size();
+	  double sourceMax = source_size*7.5;
+	  double targetMax = target_size*7.5;
+
+	  double temp1 = Math.max(0,Math.min(sourceMax,this_physical_source_score));
+	  double temp2 = Math.max(0,Math.min(targetMax,this_physical_target_score));
+	  //double source_FDR = score2SuccessRate(this_physical_source_score);
+	  //double target_FDR = score2SuccessRate(this_physical_target_score);
+	  double this_genetic_score = genetic_score + calculateGeneticIncrease(newSources,newTargets,sourceMembers,targetMembers);
+	  if(this_genetic_score < 0){
+	    continue;
+	  }
+	  //double this_score = this_genetic_score*source_FDR*target_FDR;
+	  //double this_score = this_genetic_score*(temp1/sourceMax)*(temp2/targetMax);
+	  double this_score = this_genetic_score + this_physical_source_score + this_physical_target_score;
+	  if(this_score>best_score){
 	    bestCandidate = candidate;
+	    best_score = this_score;
 	    best_physical_source_score = this_physical_source_score;
 	    best_physical_target_score = this_physical_target_score;
 	    best_genetic_score = this_genetic_score;
@@ -387,6 +324,7 @@ class BetweenPathwayThread2 extends Thread{
 	}
 	if(improved){
 	  cross_count_total += best_cross_count;
+	  score = best_score;
 	  genetic_score = best_genetic_score;
 	  physical_source_score = best_physical_source_score;
 	  physical_target_score = best_physical_target_score;
@@ -411,8 +349,9 @@ class BetweenPathwayThread2 extends Thread{
       results.add(new NetworkModel(progress,
 				   sourceMembers,
 				   targetMembers,
-				   genetic_score,
-				   physical_source_score+physical_target_score,
+				   score,
+				   physical_source_score,
+				   physical_target_score,
 				   genetic_score));
       if(myMonitor.isCanceled()){
 	//throw new RuntimeException("Search cancelled");
@@ -425,70 +364,191 @@ class BetweenPathwayThread2 extends Thread{
     results = prune(results);
   }
 
-  //  protected void findAllPaths(Stack nodeStack, int max_depth, List [] sourcePaths){
-  //     Node currentNode = (Node)nodeStack.peek();
-  //     List currentNodeNeighbors = physicalNetwork.neighborsList(currentNode);
-  //     if(currentNodeNeighbors != null){
-  //       for(Iterator neighborIt = currentNodeNeighbors.iterator();neighborIt.hasNext();){
-  // 	Node neighbor = (Node)neighborIt.next();
-  // 	/*
-  // 	 * I want the path to consist only
-  // 	 * of unique nodes
-  // 	 */
-  // 	if(!nodeStack.contains(neighbor)){
-  // 	  nodeStack.push(neighbor);
-  // 	  if(geneticNetwork.containsNode(neighbor)){
-  // 	    Vector path = new Vector(nodeStack);
-  // 	    sourcePaths[sourcePaths.length-max_depth].add(path);
-  // 	  }
-  // 	  if(max_depth > 1){
-  // 	    findAllPaths(nodeStack,max_depth-1,sourcePaths);
-  // 	  }
-  // 	  nodeStack.pop();
-  // 	}
-  //       }
-  //     }
-  //   }
+//   protected void findAllPaths(Stack nodeStack, int max_depth, Node otherNode, List [] sourcePaths){
+//     Node currentNode = (Node)nodeStack.peek();
+//     List currentNodeNeighbors = physicalNetwork.neighborsList(currentNode);
+//     if(currentNodeNeighbors != null){
+//       for(Iterator neighborIt = currentNodeNeighbors.iterator();neighborIt.hasNext();){
+// 	Node neighbor = (Node)neighborIt.next();
+//   	/*
+//   	 * I want the path to consist only
+//   	 * of unique nodes
+//   	 */
+//   	if(!nodeStack.contains(neighbor)){
+//   	  nodeStack.push(neighbor);
+//   	  if(geneticNetwork.containsNode(neighbor)){
+//   	    Vector path = new Vector(nodeStack);
+//   	    sourcePaths[sourcePaths.length-max_depth].add(path);
+//   	  }
+//   	  if(max_depth > 1){
+//   	    findAllPaths(nodeStack,max_depth-1,sourcePaths);
+//   	  }
+//   	  nodeStack.pop();
+//   	}
+//       }
+//     }
+//   }
+  
 
-  protected void findAllPaths(Stack nodeStack, int max_depth, List otherPath, boolean searchFromSource, List results){
-    Node currentNode = (Node)nodeStack.peek();
-    List currentNodeNeighbors = physicalNetwork.neighborsList(currentNode);
-    if(currentNodeNeighbors != null){
-      for(Iterator neighborIt = currentNodeNeighbors.iterator();neighborIt.hasNext();){
-	Node neighbor = (Node)neighborIt.next();
-	/*
-	 * I want the path to consist only
-	 * of unique nodes and I don't want the unique
-	 * path to go through the edge oppostive
-	 */
-	if(!nodeStack.contains(neighbor) && neighbor != otherPath.get(0)){
-	  nodeStack.push(neighbor);
-	  if(geneticNetwork.containsNode(neighbor)){
-	    Vector path = new Vector(nodeStack);
-	    for(Iterator geneticIt = geneticNetwork.getAdjacentEdgesList(neighbor,true,true,true).iterator();geneticIt.hasNext();){
-	      Edge edge = (Edge)geneticIt.next();
-	      if(edge.getSource() != edge.getTarget()){
-		if(edge.getSource() == neighbor ^ searchFromSource){
-		  results.add(new NeighborEdge(edge,path,otherPath,false));
-		}
-		else{
-		  results.add(new NeighborEdge(edge,otherPath,path,true));
-		}
-	      }
+    protected void findSourcePaths(Stack nodeStack, int max_depth, Node otherNode, HashMap node2Paths){
+      Node currentNode = (Node)nodeStack.peek();
+      if(geneticNetwork.containsNode(currentNode)){
+	Vector path = new Vector(nodeStack);
+	Vector pathList = (Vector)node2Paths.get(nodeStack.peek());
+	if(pathList == null){
+	  pathList = new Vector();
+	  node2Paths.put(nodeStack.peek(),pathList);
+	}
+	pathList.add(path);
+      }
+      if(max_depth > 0){
+	List currentNodeNeighbors = physicalNetwork.neighborsList(currentNode);
+	if(currentNodeNeighbors != null){
+	  for(Iterator neighborIt = currentNodeNeighbors.iterator();neighborIt.hasNext();){
+	    Node neighbor = (Node)neighborIt.next();
+	    /*
+	     * I want the path to consist only
+	     * of unique nodes
+	     */
+	    if(!nodeStack.contains(neighbor) && neighbor != otherNode){
+	      nodeStack.push(neighbor);
+	      findSourcePaths(nodeStack,max_depth-1,otherNode,node2Paths);
+	      nodeStack.pop();
 	    }
 	  }
-	  if(max_depth > 1){
-	    findAllPaths(nodeStack,max_depth-1,otherPath,searchFromSource,results);
+	}
+      }
+    }
+  
+  protected void findNeighborEdges(Stack nodeStack, int max_depth, Node otherNode, HashMap node2Paths, Vector results){
+    Node currentNode = (Node)nodeStack.peek();
+    if(geneticNetwork.containsNode(currentNode)){
+      for(Iterator geneticIt = geneticNetwork.getAdjacentEdgesList(currentNode,true,true,true).iterator();geneticIt.hasNext();){
+	Edge edge = (Edge)geneticIt.next();
+	if(edge.getSource() == currentNode){
+	  if(node2Paths.containsKey(edge.getTarget())){
+	    Vector targetPath = new Vector(nodeStack);
+	    for(Iterator pathIt = ((List)node2Paths.get(edge.getTarget())).iterator();pathIt.hasNext();){
+	      results.add(new NeighborEdge(edge,targetPath,(List)pathIt.next(),true));
+	    }
 	  }
-	  nodeStack.pop();
+	}
+	else{
+	  if(node2Paths.containsKey(edge.getSource())){
+	    Vector targetPath = new Vector(nodeStack);
+	    for(Iterator pathIt = ((List)node2Paths.get(edge.getSource())).iterator();pathIt.hasNext();){
+	      results.add(new NeighborEdge(edge,(List)pathIt.next(),targetPath,false));
+	    }
+	  }
+	}
+      }
+      if(max_depth > 0){
+	List currentNodeNeighbors = physicalNetwork.neighborsList(currentNode);
+	if(currentNodeNeighbors != null){
+	  for(Iterator neighborIt = currentNodeNeighbors.iterator();neighborIt.hasNext();){
+	    Node neighbor = (Node)neighborIt.next();
+	    /*
+	     * I want the path to consist only
+	     * of unique nodes
+	     */
+	    if(!nodeStack.contains(neighbor) && neighbor != otherNode){
+	      nodeStack.push(neighbor);
+	      findNeighborEdges(nodeStack,max_depth-1,otherNode,node2Paths,results);
+	      nodeStack.pop();
+	    }
+	  }
 	}
       }
     }
   }
+  /**
+   * The purpose of this function is to map from a physical
+   * score to an FDR rate associated with that particular score
+   * This is used to fudge with the genetic score for a bi-partite
+   * thingy, Right now I am kind of guesstimating, but eventually
+   * I plan on using learned data
+   */
+  protected double score2SuccessRate(double score){
+    double MAX_SCORE = 15.0;
+    double adjusted_score = Math.min(MAX_SCORE,score);
+    adjusted_score = Math.max(0,adjusted_score);
+    return adjusted_score/MAX_SCORE;
+  }
+
+//   protected void findAllPaths(Stack nodeStack, int max_depth, List otherPath, boolean searchFromSource, List results){
+//     Node currentNode = (Node)nodeStack.peek();
+//     List currentNodeNeighbors = physicalNetwork.neighborsList(currentNode);
+//     if(currentNodeNeighbors != null){
+//       for(Iterator neighborIt = currentNodeNeighbors.iterator();neighborIt.hasNext();){
+// 	Node neighbor = (Node)neighborIt.next();
+// 	/*
+// 	 * I want the path to consist only
+// 	 * of unique nodes and I don't want the unique
+// 	 * path to go through the edge oppostive
+// 	 */
+// 	if(!nodeStack.contains(neighbor) && neighbor != otherPath.get(0)){
+// 	  nodeStack.push(neighbor);
+// 	  if(geneticNetwork.containsNode(neighbor)){
+// 	    Vector path = new Vector(nodeStack);
+// 	    for(Iterator geneticIt = geneticNetwork.getAdjacentEdgesList(neighbor,true,true,true).iterator();geneticIt.hasNext();){
+// 	      Edge edge = (Edge)geneticIt.next();
+// 	      if(edge.getSource() != edge.getTarget()){
+// 		if(edge.getSource() == neighbor ^ searchFromSource){
+// 		  results.add(new NeighborEdge(edge,path,otherPath,false));
+// 		}
+// 		else{
+// 		  results.add(new NeighborEdge(edge,otherPath,path,true));
+// 		}
+// 	      }
+// 	    }
+// 	  }
+// 	  if(max_depth > 1){
+// 	    findAllPaths(nodeStack,max_depth-1,otherPath,searchFromSource,results);
+// 	  }
+// 	  nodeStack.pop();
+// 	}
+//       }
+//     }
+//   }
 
   public Vector getResults(){
     return results;
   }
+
+//   protected Vector prune(Vector old){
+//     Vector results = new Vector();
+//     ProgressMonitor myMonitor = new ProgressMonitor(Cytoscape.getDesktop(),"Pruning results",null,0,100);
+//     myMonitor.setMillisToPopup(50);
+//     int update_interval = (int)Math.ceil(old.size()/100.0);
+//     int count = 0;
+//     for(Iterator modelIt = old.iterator();modelIt.hasNext();){
+//       if(myMonitor.isCanceled()){
+// 	throw new RuntimeException("Search cancelled");
+//       }
+//       if(count%update_interval == 0){
+// 	myMonitor.setProgress(count/update_interval);
+//       }
+//       boolean overlap = false;
+//       NetworkModel current = (NetworkModel)modelIt.next();
+//       if(current.one.size() < 2 || current.two.size() < 2 || current.score < options.cutoff){
+// 	overlap = true;
+//       }
+//       else{
+// 	for(Iterator oldModelIt = results.iterator();oldModelIt.hasNext();){
+// 	  NetworkModel oldModel = (NetworkModel)oldModelIt.next();
+// 	  if(overlap(oldModel,current)){
+// 	    overlap = true;
+// 	    break;
+// 	  }
+// 	}
+//       }
+//       if(!overlap){
+// 	results.add(current);
+//       }
+//     }
+//     myMonitor.close();
+//     return results;
+//   }
 
   protected Vector prune(Vector old){
     Vector results = new Vector();
@@ -496,6 +556,7 @@ class BetweenPathwayThread2 extends Thread{
     myMonitor.setMillisToPopup(50);
     int update_interval = (int)Math.ceil(old.size()/100.0);
     int count = 0;
+    HashSet foundNodes = new HashSet();
     for(Iterator modelIt = old.iterator();modelIt.hasNext();){
       if(myMonitor.isCanceled()){
 	throw new RuntimeException("Search cancelled");
@@ -503,22 +564,30 @@ class BetweenPathwayThread2 extends Thread{
       if(count%update_interval == 0){
 	myMonitor.setProgress(count/update_interval);
       }
-      boolean overlap = false;
       NetworkModel current = (NetworkModel)modelIt.next();
+      boolean model_added = false;
       if(current.one.size() < 2 || current.two.size() < 2 || current.score < options.cutoff){
-	overlap = true;
+	continue;
       }
-      else{
-	for(Iterator oldModelIt = results.iterator();oldModelIt.hasNext();){
-	  NetworkModel oldModel = (NetworkModel)oldModelIt.next();
-	  if(overlap(oldModel,current)){
-	    overlap = true;
-	    break;
+      for(Iterator nodeIt = current.one.iterator();nodeIt.hasNext();){
+	Object node = nodeIt.next();
+	if(!foundNodes.contains(node)){
+	  foundNodes.add(node);
+	  if(!model_added){
+	    results.add(current);
+	    model_added = true;
 	  }
 	}
       }
-      if(!overlap){
-	results.add(current);
+      for(Iterator nodeIt = current.two.iterator();nodeIt.hasNext();){
+	Object node = nodeIt.next();
+	if(!foundNodes.contains(node)){
+	  foundNodes.add(node);
+	  if(!model_added){
+	    results.add(current);
+	    model_added = true;
+	  }
+	}
       }
     }
     myMonitor.close();
@@ -750,11 +819,11 @@ class BetweenPathwayThread2 extends Thread{
     double result = 0;
     boolean candidatePresent = physicalNetwork.containsNode(candidate);
     if(candidatePresent){
-      int candidateIndex = physicalNetwork.getIndex(candidate);
+      int candidateIndex = physicalNetwork.getIndex(candidate)-1;
       for(Iterator memberIt = members.iterator();memberIt.hasNext();){
 	Node member = (Node)memberIt.next();
 	if(physicalNetwork.containsNode(member)){
-	  int memberIndex = physicalNetwork.getIndex(member);
+	  int memberIndex = physicalNetwork.getIndex(member)-1;
 	  int one = Math.max(candidateIndex,memberIndex);
 	  int two = Math.min(candidateIndex,memberIndex);
 	  if(physicalNetwork.isNeighbor(candidate,member)){

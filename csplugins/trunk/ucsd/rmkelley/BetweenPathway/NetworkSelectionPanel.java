@@ -123,6 +123,7 @@ class NetworkSelectionPanel extends JPanel{
 		    pcs.firePropertyChange("",null,null);
 		  }
 		  catch(Exception e){
+		    e.printStackTrace();
 		    JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Failed to generate score file","Error", JOptionPane.ERROR_MESSAGE);
 		  }
 		  catch(OutOfMemoryError e){

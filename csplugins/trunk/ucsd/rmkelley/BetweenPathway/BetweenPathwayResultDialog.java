@@ -50,9 +50,10 @@ class BetweenPathwayResultDialog extends RyanDialog implements ListSelectionList
       Set one = string2NodeSet(splat[1]);
       Set two = string2NodeSet(splat[2]);
       double score = Double.parseDouble(splat[3]);
-      double physical_score = Double.parseDouble(splat[4]);
-      double genetic_score = Double.parseDouble(splat[5]);
-      results.add(new NetworkModel(id,one,two,score,physical_score,genetic_score));
+      double physical_source_score = Double.parseDouble(splat[4]);
+      double physical_target_score = Double.parseDouble(splat[5]);
+      double genetic_score = Double.parseDouble(splat[6]);
+      results.add(new NetworkModel(id,one,two,score,physical_source_score,physical_target_score,genetic_score));
     }
     initialize();
   }
@@ -183,7 +184,8 @@ class BetweenPathwayResultDialog extends RyanDialog implements ListSelectionList
       stream.print("\t"+nodeSet2String(model.one));
       stream.print("\t"+nodeSet2String(model.two));
       stream.println("\t"+model.score);
-      stream.println("\t"+model.physical_score);
+      stream.println("\t"+model.physical_source_score);
+      stream.println("\t"+model.physical_target_score);
       stream.println("\t"+model.genetic_score);
     }
     stream.close();
