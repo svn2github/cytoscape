@@ -1,5 +1,7 @@
 package csplugins.mcode;
 
+
+
 /** Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
  **
  ** Code written by: Gary Bader
@@ -197,5 +199,15 @@ public class MCODEParameterSet {
 
     public void setDefaultRowHeight(int defaultRowHeight) {
         this.defaultRowHeight = defaultRowHeight;
+    }
+
+    public String toString() {
+        String lineSep = System.getProperty("line.separator");
+        StringBuffer sb = new StringBuffer();
+        sb.append("Scoring Step: Include Loops: "+includeLoops+" Degree Cutoff: "+degreeCutOff+ lineSep);
+        sb.append("Cluster Finding Step: Node Score Cutoff: "+nodeScoreCutOff+" Haircut: "+haircut+" Fluff: "+fluff
+        + ((fluff) ? (" Fluff Density Cutoff "+fluffNodeDensityCutOff) : "")+" Max. Depth from Seed: "+
+                maxDepthFromStart+lineSep);
+        return sb.toString();
     }
 }

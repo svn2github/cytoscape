@@ -95,6 +95,14 @@ public class MCODEAlgorithm {
         return lastFindTime;
     }
 
+    /**
+     * Get the parameter set used for this instance of MCODEAlgorithm
+     * @return The parameter set used
+     */
+    public MCODEParameterSet getParams() {
+        return params;
+    }
+
 	/**
      * Step 1: Score the graph and save scores as node attributes.  Scores are also
      * saved internally in your instance of MCODEAlgorithm.

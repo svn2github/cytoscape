@@ -3,16 +3,20 @@ package csplugins.mcode;
 import cytoscape.CyNetwork;
 import cytoscape.util.GinyFactory;
 import giny.model.GraphPerspective;
+import giny.model.Node;
 import giny.util.SpringEmbeddedLayouter;
 import giny.view.EdgeView;
 import giny.view.NodeView;
 import phoebe.PGraphView;
 
+import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Iterator;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.NumberFormat;
+import java.util.*;
 
 /**
  * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
@@ -155,5 +159,71 @@ public class MCODEUtil {
             outputNodeIndices[j] = ((Integer) i.next()).intValue();
         }
         return (outputNodeIndices);
+    }
+
+    /**
+     * Utility method to get the names of all the nodes in a GraphPerspective
+     *
+     * @param gpInput The input graph perspective to get the names from
+     * @return A concatenated set of all node names (separated by a comma)
+     */
+    public static StringBuffer getNodeNameList(GraphPerspective gpInput) {
+        Iterator i = gpInput.nodesIterator();
+        StringBuffer sb = new StringBuffer();
+        while (i.hasNext()) {
+            Node node = (Node) i.next();
+            sb.append(node.getIdentifier());
+            if (i.hasNext()) {
+                sb.append(", ");
+            }
+        }
+        return (sb);
+    }
+
+    /**
+     * Save MCODE results to a file
+     * @param alg The algorithm instance containing parameters, etc.
+     * @param complexes The list of complexes
+     * @param network The network source of the complexes
+     * @param fileName The file name to write to
+     * @return
+     */
+    public static boolean saveMCODEResults(MCODEAlgorithm alg, ArrayList complexes, CyNetwork network, String fileName) {
+        if (alg==null || complexes == null || network == null || fileName == null) {
+            return false;
+        }
+
+        String lineSep = System.getProperty("line.separator");
+        try {
+            File file = new File(fileName);
+            FileWriter fout = new FileWriter(file);
+            //write header
+            fout.write("MCODE Plugin Results"+ lineSep);
+            fout.write("Date: "+DateFormat.getDateTimeInstance().format(new Date()) + lineSep + lineSep);
+            fout.write("Parameters:" + lineSep +alg.getParams().toString() + lineSep);
+            fout.write("Complex	Score (Density*#Proteins)\tProteins\tInteractions\tProtein names" + lineSep);
+            //get GraphPerspectives for all complexes, score and rank them
+            //convert the ArrayList to an array of GraphPerspectives and sort it by complex score
+            GraphPerspective[] gpComplexArray = MCODEUtil.convertComplexListToSortedNetworkList(complexes, network, alg);
+            for (int i = 0; i < gpComplexArray.length; i++) {
+                GraphPerspective gpComplex = gpComplexArray[i];
+                fout.write((i+1)+"\t"); //rank
+                NumberFormat nf = NumberFormat.getInstance();
+                nf.setMaximumFractionDigits(3);
+                fout.write(nf.format(alg.scoreComplex(gpComplex)) + "\t");
+                //complex size - format: (# prot, # intx)
+                fout.write(gpComplex.getNodeCount() + "\t");
+                fout.write(gpComplex.getEdgeCount() + "\t");
+                //create a string of node names - this can be long
+                fout.write(getNodeNameList(gpComplex).toString() + lineSep);
+            }
+            fout.close();
+            return true;
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, e.toString(),
+                    "Error Writing to \"" + fileName + "\"",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
     }
 }

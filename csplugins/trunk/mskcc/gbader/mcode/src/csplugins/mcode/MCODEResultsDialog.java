@@ -22,6 +22,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.text.NumberFormat;
 import java.util.*;
 import java.util.List;
@@ -160,6 +161,11 @@ public class MCODEResultsDialog extends JDialog {
 		newWindowCheckBox.setToolTipText("If checked, will create a new child network of the selected complex.\n" +
 		        "If not checked, will just select complexes in the main window.");
 		bottomPanel.add(newWindowCheckBox, BorderLayout.WEST);
+        //the Save button
+        JButton saveButton = new JButton("Save");
+        saveButton.addActionListener(new MCODEResultsDialog.SaveAction(this, complexes, network));
+        saveButton.setToolTipText("Save result summary to a file");
+        bottomPanel.add(saveButton, BorderLayout.CENTER);
 		//the OK button
 		JButton okButton = new JButton("Done");
 		okButton.addActionListener(new MCODEResultsDialog.OKAction(this));
@@ -196,7 +202,7 @@ public class MCODEResultsDialog extends JDialog {
 				//complex size - format: (# prot, # intx)
 				data[i][2] = new String(gpComplex.getNodeCount() + "," + gpComplex.getEdgeCount());
 				//create a string of node names - this can be long
-				data[i][3] = getNodeNameList(gpComplex);
+				data[i][3] = MCODEUtil.getNodeNameList(gpComplex);
 				//create an image for each complex - make it a nice layout of the complex
                 Image image;
                 if(imageList!=null) {
@@ -207,24 +213,6 @@ public class MCODEResultsDialog extends JDialog {
                 }
 				data[i][4] = new ImageIcon(image);
 			}
-		}
-
-        /**
-         * Utility method to get the names of all the nodes in a GraphPerspective
-         * @param gpInput The input graph perspective to get the names from
-         * @return A concatenated set of all node names (separated by a comma)
-         */
-		private StringBuffer getNodeNameList(GraphPerspective gpInput) {
-			Iterator i = gpInput.nodesIterator();
-			StringBuffer sb = new StringBuffer();
-			while (i.hasNext()) {
-				Node node = (Node) i.next();
-				sb.append(node.getIdentifier());
-				if (i.hasNext()) {
-					sb.append(", ");
-				}
-			}
-			return (sb);
 		}
 
 		public String getColumnName(int col) {
@@ -284,6 +272,40 @@ public class MCODEResultsDialog extends JDialog {
 			dialog.dispose();
 		}
 	}
+
+    /**
+     * Handles the Save press for this dialog (save results to a file)
+     */
+    private class SaveAction extends AbstractAction {
+        private JDialog popup;
+        private ArrayList complexes;
+        private CyNetwork network;
+
+        /**
+         * Save action constructor
+         * @param popup The parent dialog
+         * @param complexes Complexes to save
+         * @param network Network complexes are from for information about complex components
+         */
+        SaveAction(JDialog popup, ArrayList complexes, CyNetwork network) {
+            super("");
+            this.popup = popup;
+            this.complexes = complexes;
+            this.network = network;
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            //call save method in MCODE
+            File currentDirectory = Cytoscape.getCytoscapeObj().getCurrentDirectory();
+            JFileChooser chooser = new JFileChooser(currentDirectory);
+            if (chooser.showSaveDialog(popup) == JFileChooser.APPROVE_OPTION) {
+                String fileName = chooser.getSelectedFile().toString();
+                currentDirectory = chooser.getCurrentDirectory();
+                Cytoscape.getCytoscapeObj().setCurrentDirectory(currentDirectory);
+                MCODEUtil.saveMCODEResults(alg, complexes, network, fileName);
+            }
+        }
+    }
 
     /**
      * Handles the new window parameter choice
