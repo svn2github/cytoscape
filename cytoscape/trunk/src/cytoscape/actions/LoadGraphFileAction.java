@@ -280,6 +280,8 @@ class LoadNetworkTask implements Task {
         taskMonitor.setStatus("Creating Cytoscape Network...");
         taskMonitor.setPercentCompleted(-1);
         final CyNetwork network[] = new CyNetwork[1];
+
+        //  If the graph is small enough, the view gets created here
         network[0] = Cytoscape.createNetwork(nodes, edges,
             CyNetworkNaming.getSuggestedNetworkTitle (title));
 
