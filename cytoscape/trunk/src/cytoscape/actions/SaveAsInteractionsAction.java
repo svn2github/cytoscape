@@ -60,7 +60,7 @@ public class SaveAsInteractionsAction extends CytoscapeAction {
             GraphObjAttributes edgeAttributes = Cytoscape.getEdgeNetworkData();
 
             //  Create LoadNetwork Task
-            SaveToSifTask task = new SaveToSifTask(fileName,
+            SaveAsSifTask task = new SaveAsSifTask(fileName,
                     nodeAttributes, edgeAttributes);
 
             //  Configure JTask Dialog Pop-Up Box
@@ -78,9 +78,9 @@ public class SaveAsInteractionsAction extends CytoscapeAction {
 }
 
 /**
- * Task to Save Interaction Data.
+ * Task to Save Graph Data to SIF Format.
  */
-class SaveToSifTask implements Task {
+class SaveAsSifTask implements Task {
     private String fileName;
     private GraphObjAttributes nodeAttributes;
     private GraphObjAttributes edgeAttributes;
@@ -92,7 +92,7 @@ class SaveToSifTask implements Task {
      * @param nodeAttributes    All Node Attributes
      * @param edgeAttributes    All Edge Attributes
      */
-    SaveToSifTask (String fileName, GraphObjAttributes nodeAttributes,
+    SaveAsSifTask (String fileName, GraphObjAttributes nodeAttributes,
         GraphObjAttributes edgeAttributes) {
         this.fileName = fileName;
         this.nodeAttributes = nodeAttributes;
@@ -104,23 +104,21 @@ class SaveToSifTask implements Task {
      */
     public void run() {
         taskMonitor.setStatus("Saving Interactions...");
-
         try {
             CyNetworkView networkView = Cytoscape.getCurrentNetworkView();
             List nodeList = networkView.getNetwork().nodesList();
 
             if (nodeList.size() == 0) {
-                throw new IllegalArgumentException ("Network is empty.");
+                throw new IllegalArgumentException ("Graph is empty.");
             }
             saveInteractions();
-            File file = new File (fileName);
             taskMonitor.setPercentCompleted (100);
             taskMonitor.setStatus("Graph successfully saved to:  "
-                    + file.getAbsolutePath());
+                    + fileName);
         } catch (IllegalArgumentException e) {
-            taskMonitor.setException(e, "Network is Empty.  Cannot be saved.");
+            taskMonitor.setException(e, "Graph is Empty.  Cannot be saved.");
         } catch (IOException e) {
-            taskMonitor.setException(e, "Unable to save interactions.");
+            taskMonitor.setException(e, "Unable to save graph.");
         }
     }
 
