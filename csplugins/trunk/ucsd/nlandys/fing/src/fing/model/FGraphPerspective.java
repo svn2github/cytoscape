@@ -792,13 +792,28 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
     return isNodeMetaChild(parentNodeInx, childNodeInx); }
 
   public java.util.List metaParentsList(Node node) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+    if (!(node.getRootGraph() == m_root)) return null;
+    return nodeMetaParentsList(node.getRootGraphIndex()); }
 
-  public java.util.List nodeMetaParentsList(int perspNodeInx) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+  public java.util.List nodeMetaParentsList(int nodeInx) {
+    final int[] parentInxArr = getNodeMetaParentIndicesArray(nodeInx);
+    if (parentInxArr == null) return null;
+    final java.util.List returnThis =
+      new java.util.ArrayList(parentInxArr.length);
+    for (int i = 0; i < parentInxArr.length; i++)
+      returnThis.add(getNode(parentInxArr[i]));
+    return returnThis; }
 
-  public int[] getNodeMetaParentIndicesArray(int perspNodeInx) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+  public int[] getNodeMetaParentIndicesArray(int nodeInx) {
+    if (!containsNode(nodeInx)) return null;
+    final int[] allParentInx = m_root.getNodeMetaParentIndicesArray(nodeInx);
+    m_heap.empty();
+    final MinIntHeap parentsBucket = m_heap;
+    for (int i = 0; i < allParentInx.length; i++)
+      if (containsNode(allParentInx[i])) parentsBucket.toss(allParentInx[i]);
+    final int[] returnThis = new int[parentsBucket.size()];
+    parentsBucket.copyInto(returnThis, 0);
+    return returnThis; }
 
   public boolean isMetaChild(Node parent, Node child) {
     return isMetaParent(child, parent); }
