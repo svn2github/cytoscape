@@ -14,7 +14,12 @@ public final class FingRootGraphFactory
 
   /**
    * Returns a new instance of giny.model.RootGraph.  Obviously, a new
-   * RootGraph instance contains no nodes or edges.
+   * RootGraph instance contains no nodes or edges.<p>
+   * A secret feature is that the returned object not only implements
+   * RootGraph - it also implements cytoscape.graph.dynamic.DynamicGraph.
+   * In other words, you can cast the return value to DynamicGraph.  The
+   * relationship between RootGraph indices and DynamicGraph nodes and edges
+   * is they are complements of each other.  Complement is '~' in Java.
    */
   public final static RootGraph instantiateRootGraph()
   {
