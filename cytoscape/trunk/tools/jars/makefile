@@ -47,9 +47,8 @@ jar:
 	(cd ../../..; jar uvf $(JARFILE) `find cytoscape/* -name "*.class" -print`)
 	(cd ../../..; jar uvf $(JARFILE) `find cytoscape/* -name "*.jpg" -print`)
 	(cd ../../..; jar uvf $(JARFILE) `find cytoscape/* -name "*.gif" -print`)
-	(cd ../../..; jar uvf $(JARFILE) `find csplugins/expressionData -name "*.class" -print`)
-	(cd ../../..; jar uvf $(JARFILE) `find csplugins/filtersPlugin -name "*.class" -print`)
 	(cd ../../..; jar uvf $(JARFILE) `find csplugins/jarLoader -name "*.class" -print`)
+	(cd ../../..; jar uvf $(JARFILE) `find csplugins/activeModules -name "*.class" -print`)
 	(cd ../../..; jar uvf $(JARFILE) `find csplugins/vectormath -name "*.class" -print`)
 	(cd $(AUXJAR_UNPACKED_DIR); jar uvf $(JARFILE) `find gnu/* -name "*.class" -print`)
 	(cd $(AUXJAR_UNPACKED_DIR); jar uvf $(JARFILE) `find gnu/* -name "*.properties" -print`)
@@ -60,6 +59,8 @@ jar:
 #	(cd $(VISADDIR); jar uvf $(JARFILE) `find visad/* -name "*.class"`)
 #	(cd ../../..; jar uvf $(JARFILE) `find csplugins/vectormath -name "*.class" -print`)
 #	(cd ../../..; jar uvf $(JARFILE) `find csplugins/* -name "*.class" -print`)
+#	(cd ../../..; jar uvf $(JARFILE) `find csplugins/expressionData -name "*.class" -print`)
+#	(cd ../../..; jar uvf $(JARFILE) `find csplugins/filtersPlugin -name "*.class" -print`)
 
 
 #  
