@@ -946,10 +946,57 @@ public final class AllGraphPerspectiveMethodsTest
       throw new IllegalStateException("totally wrong edge meta-relationship");
 
     // metaParentsList(Edge).
+    parentsList = persp.metaParentsList(persp.getEdge(edgeInx[5]));
+    if (parentsList.size() != 0)
+      throw new IllegalStateException("edge has no parents");
+    parentsList = persp.metaParentsList(persp.getEdge(edgeInx[2]));
+    if (parentsList.size() != 1)
+      throw new IllegalStateException("wrong number of edge parents");
+    for (int i = 0;; i++)
+      if (((Node) parentsList.get(i)).getRootGraphIndex() == nodeInx[4]) break;
+    if (persp.metaParentsList(root2Edge) != null ||
+        persp.metaParentsList(edge1NotInPersp) != null ||
+        persp.metaParentsList(edge2NotInPersp) != null)
+      throw new IllegalStateException("expected null edge parents list");
 
     // edgeMetaParentsList(int).
+    parentsList = persp.edgeMetaParentsList(edgeInx[0]);
+    if (parentsList.size() != 1)
+      throw new IllegalStateException("wrong number of edge parents");
+    for (int i = 0;; i++)
+      if (((Node) parentsList.get(i)).getRootGraphIndex() == nodeInx[3]) break;
+    parentsList = persp.edgeMetaParentsList(edgeInx[1]);
+    if (parentsList.size() != 0)
+      throw new IllegalStateException("expected 0 edge parents");
+    if (persp.edgeMetaParentsList(0) != null ||
+        persp.edgeMetaParentsList(1) != null ||
+        persp.edgeMetaParentsList(minEdgeInx - 1) != null ||
+        persp.edgeMetaParentsList(Integer.MIN_VALUE + 1) != null ||
+        persp.edgeMetaParentsList(Integer.MIN_VALUE) != null ||
+        persp.edgeMetaParentsList(edge1NotInPersp.getRootGraphIndex()) != null)
+      throw new IllegalStateException("totally wrong edge meta parents");
 
     // getEdgeMetaParentIndicesArray(int).
+    parentInx = persp.getEdgeMetaParentIndicesArray(edgeInx[3]);
+    if (parentInx.length != 0)
+      throw new IllegalStateException("expected 0 edge parents");
+    parentInx = persp.getEdgeMetaParentIndicesArray(edgeInx[4]);
+    if (parentInx.length != 1)
+      throw new IllegalStateException("expected 1 edge parent");
+    for (int i = 0;; i++) if (parentInx[i] == nodeInx[0]) break;
+    parentInx = persp.getEdgeMetaParentIndicesArray(edgeInx[6]);
+    if (parentInx.length != 2)
+      throw new IllegalStateException("expected 2 edge parent");
+    for (int i = 0;; i++) if (parentInx[i] == nodeInx[4]) break;
+    for (int i = 0;; i++) if (parentInx[i] == nodeInx[3]) break;
+    if (persp.getEdgeMetaParentIndicesArray(0) != null ||
+        persp.getEdgeMetaParentIndicesArray(2) != null ||
+        persp.getEdgeMetaParentIndicesArray(Integer.MAX_VALUE) != null ||
+        persp.getEdgeMetaParentIndicesArray(Integer.MIN_VALUE) != null ||
+        persp.getEdgeMetaParentIndicesArray(minEdgeInx - 1) != null ||
+        persp.getEdgeMetaParentIndicesArray
+        (edge2NotInPersp.getRootGraphIndex()) != null)
+      throw new IllegalStateException("totally wrong edge meta parents");
 
     // isMetaChild(Node, Edge).
 
