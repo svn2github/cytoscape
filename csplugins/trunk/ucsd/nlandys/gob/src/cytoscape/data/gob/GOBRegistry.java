@@ -50,4 +50,53 @@ public class GOBRegistry
     return null;
   }
 
+  public void assignAttribute(int objID, int attrID, Object attrValue)
+  {
+  }
+
+  public void assignBooleanAttribute(int objID, int attrID, boolean attrValue)
+  {
+  }
+
+  public void assignDoubleAttribute(int objID, int attrID, boolean attrValue)
+  {
+  }
+
+  public void assignLongAttribute(int objID, int attrID, long attrValue)
+  {
+  }
+
+  public void assignStringAttribute(int objID, int attrID, String attrValue)
+  {
+  }
+
+  public IntEnumerator assignedAttributes(int objID)
+  {
+  }
+
+  public IntEnumerator objects()
+  {
+  }
+
+  /**
+   * Forgets that any value for the specified attribute was ever assigned to
+   * the specified object.
+   * @return true if and only if a value for the specified attribute is
+   *   assigned to the specified object at the time this method is called.
+   */
+  public boolean forgetAttribute(int objID, int attrID)
+  {
+    return false;
+  }
+
+  /**
+   * Forgets all attribute values that have been assigned to the specified
+   * object ID.
+   * @return true if and only if the specified object ID is currently
+   *   registered as having at least one attribute value assigned to it.
+   */
+  public boolean forgetObject(int objID)
+  {
+  }
+
 }
