@@ -76,12 +76,12 @@ test: objs
 	(cd vizmap/unitTests; make)
 	(cd util/unitTests; make)
 	(cd data/unitTests; make)
-	(data/annotation/unitTests; make)
-	(data/annotation/readers/unitTests; make)
-	(data/readers/unitTests; make)
-	(data/servers/unitTests; make)
-	(data/synonyms/unitTests; make)
-	(data/synonyms/readers/unitTests; make)
+	(cd data/annotation/unitTests; make)
+	(cd data/annotation/readers/unitTests; make)
+	(cd data/readers/unitTests; make)
+	(cd data/servers/unitTests; make)
+	(cd data/synonyms/unitTests; make)
+	(cd data/synonyms/readers/unitTests; make)
 
 clean:
 	- rm *.class core
