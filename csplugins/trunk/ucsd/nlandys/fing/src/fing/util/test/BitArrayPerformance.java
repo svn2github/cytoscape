@@ -20,6 +20,9 @@ public class BitArrayPerformance
   public static void main(String[] args) throws Exception
   {
     int N = Integer.parseInt(args[0]);
+    boolean repeat = false;
+    if (args.length > 1 && args[1].equalsIgnoreCase("repeat"))
+      repeat = true;
     int[] elements = new int[N];
     InputStream in = System.in;
     byte[] buff = new byte[4];
@@ -56,15 +59,28 @@ public class BitArrayPerformance
     long millisEnd = System.currentTimeMillis();
 
     // Print the time taken to standard error.
-    System.err.println(millisEnd - millisBegin);
+    if (!repeat) System.err.println(millisEnd - millisBegin);
 
     // Sort the array.  We can use the same heap that we used as a bucket
     // to now sort the integers.
     IntEnumerator sortedElements = _THE_HEAP_.orderedElements(false);
 
     // Print sorted array to standard out.
-    while (sortedElements.numRemaining() > 0)
-      System.out.println(sortedElements.nextInt());
+    if (!repeat)
+      while (sortedElements.numRemaining() > 0)
+        System.out.println(sortedElements.nextInt());
+
+    // Run repeated test if that's what the command line told us.
+    if (repeat)
+    {
+      for (int i = 0; i < uniqueElements.length; i++) uniqueElements[i] = 0;
+      millisBegin = System.currentTimeMillis();
+      _REPEAT_TEST_CASE_(elements, uniqueElements);
+      millisEnd = System.currentTimeMillis();
+      System.err.println((millisEnd - millisBegin) + " (repeated test)");
+      for (int i = 0; i < uniqueElements.length; i++)
+        System.out.println(uniqueElements[i]);
+    }
   }
 
   private static final int assembleInt(byte[] fourConsecutiveBytes)
@@ -85,7 +101,7 @@ public class BitArrayPerformance
   // bit in the array to true).
   static MinIntHeap _THE_HEAP_ = null;
 
-  private static final int[] _THE_TEST_CASE_(int[] elements)
+  private static final int[] _THE_TEST_CASE_(final int[] elements)
   {
     // The dynamic range of the integers in this array happens to be the
     // same as the number of integers in this array based on our test case
@@ -96,11 +112,25 @@ public class BitArrayPerformance
       if (!_THE_BIT_ARRAY_.get(elements[i])) {
         _THE_HEAP_.toss(elements[i]);
         _THE_BIT_ARRAY_.set(elements[i]); }
-    IntEnumerator iter = _THE_HEAP_.elements();
+    final IntEnumerator iter = _THE_HEAP_.elements();
     final int[] returnThis = new int[iter.numRemaining()];
-    for (int i = 0; i < returnThis.length; i++)
-      returnThis[i] = iter.nextInt();
+    final int numElements = returnThis.length;
+    for (int i = 0; i < numElements; i++) returnThis[i] = iter.nextInt();
     return returnThis;
+  }
+
+  private static final void _REPEAT_TEST_CASE_(final int[] elements,
+                                               final int[] output)
+  {
+    _THE_HEAP_.empty();
+    _THE_BIT_ARRAY_.clear(0, elements.length);
+    for (int i = 0; i < elements.length; i++)
+      if (!_THE_BIT_ARRAY_.get(elements[i])) {
+        _THE_HEAP_.toss(elements[i]);
+        _THE_BIT_ARRAY_.set(elements[i]); }
+    if (_THE_HEAP_.size() != output.length)
+      throw new IllegalStateException("output array is incorrect size");
+    _THE_HEAP_.copyInto(output);
   }
 
 }
