@@ -24,12 +24,10 @@
 
 package common.algorithms.hierarchicalClustering;
 
-//import csplugins.util.*; //TODO: Remove
 import giny.util.SwingWorker;
 import giny.util.MonitorableTask;
 import java.util.*;
 import java.io.*;
-//import y.base.Node; //TODO: Remove
 
 /**
  * @author Iliana Avila-Campillo iavila@systemsbiology.org
@@ -74,8 +72,11 @@ public class HierarchicalClustering
 
   // A GUI that displays the Hierarchical Tree
   transient protected HCAnimator hcAnimator;
-  // Whether or not to show the hcAnimator
+  // Whether or not to show the hcAnimator while the clustering is happening
   protected boolean showAnimator = false;
+  // Whether to instantiate the hcAnimator at all (when in GINY mode set to false)
+  // false by default since we are in cvsdir5
+  protected boolean createAnimator = false;
 
   /**
    * Constructor, use when clustering in one dimension only, or in both dimensions
@@ -280,9 +281,13 @@ public class HierarchicalClustering
     this.hcAnimator = null;
     if( dimension == ROWS ) {
       count = rowCount;
-      this.hcAnimator = new HCAnimator (this.rowEisenClusterLeaves);
+      if(this.createAnimator){
+        this.hcAnimator = new HCAnimator (this.rowEisenClusterLeaves);
+      }
     } else if( dimension == COLS ) {
-      this.hcAnimator = new HCAnimator (this.colEisenClusterLeaves);
+      if(this.createAnimator){
+        this.hcAnimator = new HCAnimator (this.colEisenClusterLeaves);
+      }
       count = colCount;
     } else {
       throw new IllegalArgumentException( "The dimension argument must be either ROWS or COLS.  "+
@@ -290,7 +295,7 @@ public class HierarchicalClustering
                                           + dimension + ", is not valid." );
     }
     
-    if(this.showAnimator){
+    if(this.hcAnimator != null && this.showAnimator){
       this.hcAnimator.setVisible(true);
       this.hcAnimator.drawHCTree(true);
     }
@@ -373,8 +378,10 @@ public class HierarchicalClustering
     */
     //if(this.showAnimator){
     if(!this.canceled){
-      this.hcAnimator.setVisible(true);
-      this.hcAnimator.drawHCTree(true);
+      if(this.hcAnimator != null){
+        this.hcAnimator.setVisible(true);
+        this.hcAnimator.drawHCTree(true);
+      }
     }
     //}
   } // cluster( int )
@@ -551,10 +558,12 @@ public class HierarchicalClustering
       redraw = true;
     }
     
-    this.hcAnimator.joinNodes( new_node.toString(),
-                               node_pair.nodeOne.toString(),
-                               node_pair.nodeTwo.toString(),
-                               redraw);
+    if(this.hcAnimator != null){
+      this.hcAnimator.joinNodes( new_node.toString(),
+                                 node_pair.nodeOne.toString(),
+                                 node_pair.nodeTwo.toString(),
+                                 redraw);
+    }
     
     // Get needed variables depending on the current dimension
     JoiningCondition joining_condition;
@@ -1156,7 +1165,8 @@ public class HierarchicalClustering
 
   /**
    * @return the <code>HCAnimator</code> that displays the Hierarchical-Tree that was last
-   * computed.
+   * computed, or null if <code>this.createAnimator</code> is false or if the tree has not yet been
+   * calculated
    */
   public HCAnimator getHCAnimator (){
     return this.hcAnimator;
