@@ -101,6 +101,8 @@ public final class AllRootGraphMethodsTest
     if (root.createGraphPerspective(new int[] { twoNodeInx[0], 0 },
                                     new int[] { twoEdgeInx[0], 9999 }) != null)
       throw new IllegalStateException("GraphPerspective is not null");
+    if (root.createGraphPerspective(new int[] { 1 }, null) != null)
+      throw new IllegalStateException("GraphPerspective is not null");
 
     // getNodeCount() and getEdgeCount().
     if (root.getNodeCount() != 5 || root.getEdgeCount() != 7)
@@ -199,6 +201,8 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("node with self edge not neigbhor");
     if (root.isNeighbor(nodeInx[0], nodeInx[0]))
       throw new IllegalStateException("node with no self edge is neighbor");
+    if (root.isNeighbor(98, 99))
+      throw new IllegalStateException("positive nodes are neighbors");
     if (!root.isNeighbor(nodeInx[3], nodeInx[2]))
       throw new IllegalStateException("nodes are not neighbors");
     if (!root.isNeighbor(nodeInx[1], nodeInx[2]))
@@ -222,6 +226,8 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("edge exists on node with no edge");
     if (root.edgeExists(nodeInx[0], nodeInx[0]))
       throw new IllegalStateException("self-edge exists");
+    if (root.edgeExists(98, 99))
+      throw new IllegalStateException("edge exists between positive nodes");
     if (!root.edgeExists(nodeInx[1], nodeInx[1]))
       throw new IllegalStateException("self-edge does not exist [undirected]");
     if (!root.edgeExists(nodeInx[2], nodeInx[2]))
@@ -250,6 +256,8 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("edge count not 0");
     if (root.getEdgeCount(nodeInx[1], nodeInx[1], true) != 1)
       throw new IllegalStateException("edge count not 1 for und. self edge");
+    if (root.getEdgeCount(99, 98, true) != -1)
+      throw new IllegalStateException("edge count not -1");
 
     // getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean).
     int[] adjEdges = root.getAdjacentEdgeIndicesArray
@@ -282,13 +290,15 @@ public final class AllRootGraphMethodsTest
     int minEdgeInx = 0;
     for (int i = 0; i < edgeInx.length; i++)
       minEdgeInx = Math.min(minEdgeInx, edgeInx[i]);
+    adjEdges = root.getAdjacentEdgeIndicesArray(99, true, true, true);
+    if (adjEdges != null) throw new IllegalStateException("not null");
     adjEdges = root.getAdjacentEdgeIndicesArray
       (minEdgeInx - 1, true, true, true);
     if (adjEdges != null) throw new IllegalStateException("not null");
     adjEdges = root.getAdjacentEdgeIndicesArray(0, true, true, true);
     if (adjEdges != null) throw new IllegalStateException("not null");
 
-    // getConnectingEdgeIndicesArray(int[])
+    // getConnectingEdgeIndicesArray(int[]).
     int[] connEdges = root.getConnectingEdgeIndicesArray(nodeInx);
     if (connEdges.length != edgeInx.length)
       throw new IllegalStateException("edge arrays not same length");
@@ -326,15 +336,60 @@ public final class AllRootGraphMethodsTest
     int minNodeInx = 0;
     for (int i = 0; i < nodeInx.length; i++)
       minNodeInx = Math.min(minNodeInx, nodeInx[i]);
+    someNodes = new int[] { 99 };
+    connEdges = root.getConnectingEdgeIndicesArray(someNodes);
+    if (connEdges != null) throw new IllegalStateException("not null");
     someNodes = new int[] { nodeInx[0], nodeInx[1],
                             minNodeInx - 1, nodeInx[2] };
     connEdges = root.getConnectingEdgeIndicesArray(someNodes);
-    if (connEdges != null)
-      throw new IllegalStateException("connecting edges not null");
+    if (connEdges != null) throw new IllegalStateException("not null");
     someNodes = new int[] { nodeInx[4], 0 };
     connEdges = root.getConnectingEdgeIndicesArray(someNodes);
-    if (connEdges != null)
-      throw new IllegalStateException("connecting edges not null");
+    if (connEdges != null) throw new IllegalStateException("not null");
+
+    // getConnectingNodeIndicesArray(int[]).
+    int[] connNodes = root.getConnectingNodeIndicesArray(edgeInx);
+    if (connNodes.length != 4)
+      throw new IllegalStateException("not 4 connecting nodes");
+    for (int i = 0; i < nodeInx.length; i++)
+      if (i != 4)
+        for (int j = 0;; j++) if (connNodes[j] == nodeInx[i]) break;
+    int[] someEdges = new int[] { edgeInx[0], edgeInx[3], edgeInx[5] };
+    connNodes = root.getConnectingNodeIndicesArray(someEdges);
+    if (connNodes.length != 3)
+      throw new IllegalStateException("not 3 connecting nodes");
+    for (int i = 0;; i++) if (connNodes[i] == nodeInx[0]) break;
+    for (int i = 0;; i++) if (connNodes[i] == nodeInx[1]) break;
+    for (int i = 0;; i++) if (connNodes[i] == nodeInx[2]) break;
+    someEdges = new int[] { edgeInx[6] };
+    connNodes = root.getConnectingNodeIndicesArray(someEdges);
+    if (connNodes.length != 2)
+      throw new IllegalStateException("not 2 connecting nodes");
+    for (int i = 0;; i++) if (connNodes[i] == nodeInx[2]) break;
+    for (int i = 0;; i++) if (connNodes[i] == nodeInx[3]) break;
+    someEdges = new int[] { edgeInx[4], edgeInx[3] };
+    connNodes = root.getConnectingNodeIndicesArray(someEdges);
+    if (connNodes.length != 2)
+      throw new IllegalStateException("not 2 connecting nodes");
+    for (int i = 0;; i++) if (connNodes[i] == nodeInx[1]) break;
+    for (int i = 0;; i++) if (connNodes[i] == nodeInx[2]) break;
+    someEdges = new int[] { edgeInx[5], edgeInx[6] };
+    connNodes = root.getConnectingNodeIndicesArray(someEdges);
+    if (connNodes.length != 4)
+      throw new IllegalStateException("not 4 connecting nodes");
+    for (int i = 0;; i++) if (connNodes[i] == nodeInx[0]) break;
+    for (int i = 0;; i++) if (connNodes[i] == nodeInx[1]) break;
+    for (int i = 0;; i++) if (connNodes[i] == nodeInx[2]) break;
+    for (int i = 0;; i++) if (connNodes[i] == nodeInx[3]) break;
+    someEdges = new int[] { 99 };
+    connNodes = root.getConnectingNodeIndicesArray(someEdges);
+    if (connNodes != null) throw new IllegalStateException("not null");
+    someEdges = new int[] { minEdgeInx - 1 };
+    connNodes = root.getConnectingNodeIndicesArray(someEdges);
+    if (connNodes != null) throw new IllegalStateException("not null");
+    someEdges = new int[] { edgeInx[0], 0, edgeInx[1] };
+    connNodes = root.getConnectingNodeIndicesArray(someEdges);
+    if (connNodes != null) throw new IllegalStateException("not null");
   }
 
 }
