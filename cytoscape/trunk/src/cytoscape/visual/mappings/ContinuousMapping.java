@@ -7,6 +7,7 @@ package cytoscape.visual.mappings;
 //----------------------------------------------------------------------------
 import java.util.*;
 import javax.swing.*;
+import java.awt.Color;
 import java.awt.event.*;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -51,6 +52,17 @@ public class ContinuousMapping extends TreeMap implements ObjectMapping {
 	if (mapType != ObjectMapping.EDGE_MAPPING &&
 	    mapType != ObjectMapping.NODE_MAPPING) {
 	    throw new IllegalArgumentException("Unknown mapping type " + mapType);
+	}
+	if (i == null) {
+	    if (Color.class.isAssignableFrom(this.rangeClass)) {
+		i = new LinearNumberToColorInterpolator();
+	    }
+	    else if (Number.class.isAssignableFrom(this.rangeClass)) {
+		i = new LinearNumberToNumberInterpolator();
+	    }
+	    else {
+		i = new FlatInterpolator();
+	    }
 	}
 	this.mapType = mapType;
         setControllingAttributeName(attrName, null, false);
