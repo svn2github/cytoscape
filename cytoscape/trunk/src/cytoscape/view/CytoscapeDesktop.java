@@ -28,6 +28,11 @@ import javax.swing.*;
 import javax.swing.event.*;
 import java.beans.*;
 
+import javax.help.HelpBroker;
+import javax.help.HelpSet;
+import javax.help.CSH;
+import javax.help.CSH.*;
+
 /**
  * The CytoscapeDesktop is the central Window
  * for working with Cytoscape
@@ -102,6 +107,11 @@ public class CytoscapeDesktop
    */
   protected NetworkViewManager networkViewManager;
 
+
+  /**
+   * The HelpBroker provides access to JavaHelp
+   */
+  protected CyHelpBroker cyHelpBroker;
   
   //--------------------//
   // Event Support
@@ -158,17 +168,33 @@ public class CytoscapeDesktop
   
   protected void initialize () {
   
-    setIconImage( Toolkit.getDefaultToolkit().getImage( getClass().getResource("images/c16.png") ) );
+    setIconImage( Toolkit.getDefaultToolkit().getImage(
+			getClass().getResource("images/c16.png") ) );
+
+    // initialize Help system with Cytoscape help set - define context-sensitive
+    // help as we create components
+    cyHelpBroker = new CyHelpBroker();
 
     JPanel main_panel = new JPanel();
 
     main_panel.setLayout( new BorderLayout() );
+    // enable context-sensitive help generally
+    getHelpBroker().enableHelpKey(getRootPane(),"intro", null);
+
+    // enable context-sensitive help for main panel
+    getHelpBroker().enableHelp(main_panel,"intro", null);
 
     //------------------------------//
     // Set up the Panels, Menus, and Event Firing
 
     networkPanel = new NetworkPanel( this );
+    // enable context-sensitive help for networkPanel
+    getHelpBroker().enableHelp(networkPanel,"network-view-manager", null);
+
     cyMenus = new CyMenus();
+    // enable context-sensitive help for menus/menubar
+    getHelpBroker().enableHelp(cyMenus.getMenuBar(),"menus", null);
+
     networkViewManager = new NetworkViewManager( this );
 
 
@@ -206,7 +232,11 @@ public class CytoscapeDesktop
     networkPanel.getSwingPropertyChangeSupport().addPropertyChangeListener( this );
 
 
+    // initialize Menus
     cyMenus.initializeMenus();
+
+    // initialize Help Menu
+    cyMenus.initializeHelp(cyHelpBroker.getHelpBroker());
 
     // create the CytoscapeDesktop
     if ( VIEW_TYPE == TABBED_VIEW ) {
@@ -302,6 +332,13 @@ public class CytoscapeDesktop
 
   public NetworkPanel getNetworkPanel () {
     return networkPanel;
+  }
+
+  public HelpBroker getHelpBroker () {
+    return cyHelpBroker.getHelpBroker();
+  }
+  public HelpSet getHelpSet() {
+    return cyHelpBroker.getHelpSet();
   }
 
   //----------------------------------------//

@@ -36,7 +36,10 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.MenuListener;
 import javax.swing.event.MenuEvent;
-
+import javax.help.HelpBroker;
+import javax.help.CSH.*;
+import javax.help.CSH;		// Context Sensitive Help convenience object...
+import javax.swing.KeyStroke;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeObj;
@@ -55,6 +58,8 @@ import cytoscape.util.CytoscapeMenuBar;
 import cytoscape.util.CytoscapeToolBar;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.CreditScreen;
+
+import cytoscape.visual.ui.VizMapUI;
 
 import giny.view.GraphViewChangeListener;
 import giny.view.GraphViewChangeEvent;
@@ -76,12 +81,16 @@ public class CyMenus  implements GraphViewChangeListener {
   JMenu displayNWSubMenu;
   JMenu layoutMenu;
   JMenu vizMenu;
+  JMenu helpMenu;
 
   CytoscapeAction menuPrintAction, menuExportAction;
   JMenuItem vizMenuItem,vizMapperItem;
+  JMenuItem helpContentsMenuItem, helpContextSensitiveMenuItem,
+		helpAboutMenuItem;
 
-  JButton saveButton;
-  JButton vizButton;
+  JButton loadButton, saveButton, zoomInButton, zoomOutButton,
+	zoomSelectedButton, zoomDisplayAllButton, showAllButton, 
+	hideSelectedButton, annotationButton, vizButton;
   JMenu opsMenu;
   CytoscapeToolBar toolBar;
   boolean nodesRequiredItemsEnabled;
@@ -134,6 +143,10 @@ public class CyMenus  implements GraphViewChangeListener {
    * Returns the menu with items related to visualiation.
    */
   public JMenu getVizMenu() {return vizMenu;}
+  /**
+   * Returns the help menu.
+   */
+  public JMenu getHelpMenu() {return helpMenu;}
   /**
    * Returns the menu with items associated with plug-ins.
    * Most plug-ins grab this menu and add their menu option.
@@ -263,6 +276,7 @@ public class CyMenus  implements GraphViewChangeListener {
     layoutMenu  = menuBar.getMenu( "Layout" );
     vizMenu     = menuBar.getMenu( "Visualization" );
     opsMenu     = menuBar.getMenu( "Plugins" );
+    helpMenu    = menuBar.getMenu( "Help" );
   }
 
   /**
@@ -296,59 +310,12 @@ public class CyMenus  implements GraphViewChangeListener {
    */
   private void fillMenuBar() {
      
-    //JMenu help_menu = new JMenu();
-    JMenuItem about = new JMenuItem( new AbstractAction( "Cytoscape Credits" ) {
-        public void actionPerformed ( ActionEvent e ) {
-          // Do this in the GUI Event Dispatch thread...
-          SwingUtilities.invokeLater( new Runnable() {
-              public void run() {
-               StringBuffer lines = new StringBuffer();
-                  lines.append("Cytoscape is a collaboration \n" );
-                  lines.append("between the Institute for Systems\n" );
-                  lines.append("Biology, University of California,\n" );
-                  lines.append("San Diaego, Memorial Sloan Kettering\n" );
-                  lines.append("Cancer Center and the\n" );
-                  lines.append("Institute Pasteur\n" ); 
-                  lines.append(" \n" );
-                  lines.append("Cytosape 2.0 Primary Developers\n" );
-                  lines.append("Iliana Avila-Campillo,  Ethan Cerami,\n" );
-                  lines.append("Rowan Christmas, Ryan Kelley, Andrew\n" );
-                  lines.append("Markiel, and Chris Workman\n" );
-                  lines.append(" \n" );
-                  lines.append(" \n" );
-                  lines.append("ISB: Hamid Bolouri (PI) \n" );
-                  lines.append("Paul Shannon, David Reiss, James\n" );
-                  lines.append("Taylor, Larissa KamenkoVich and \n" );
-                  lines.append("Paul Edlefsen ( GINY Library )\n" );
-                  lines.append(" \n" );
-                  lines.append("UCSD: Trey Ideker (PI) \n" );
-                  lines.append("Jonathan Wang,  Nada Amin, and \n" );
-                  lines.append("Owen Ozier\n" );
-                  lines.append(" \n" );
-                  lines.append("MSKCC: Chris Sander (PI) \n" );
-                  lines.append("Gary Bader,  Robert Sheridan\n" );
-                  lines.append(" \n" );
-                  lines.append("IP: Benno Shwikowski (PI) \n" );
-                  lines.append(" \n" );
-                  lines.append("Addional Collaborators\n" );
-                  
-                  
-                CreditScreen.showCredits( getClass().getResource("/cytoscape/images/CytoscapeCredits.png"), lines.toString() );
-                                  
-              } } ); } } );
-    //help_menu.add( about );
-    //menuBar.setHelpMenu( help_menu );
-    getMenuBar().getMenu( "File.Help" ).add( about );
-
-
     //fill the Load submenu
     addAction( new LoadGraphFileAction( this ) );
     addAction( new LoadNodeAttributesAction() );
     addAction( new LoadEdgeAttributesAction() );
     addAction( new LoadExpressionMatrixAction() );
     addAction( new LoadBioDataServerAction() );
-
-
 
     //fill the Save submenu
     addAction( new SaveAsGMLAction() );
@@ -386,7 +353,6 @@ public class CyMenus  implements GraphViewChangeListener {
     selectMenu.add( new SelectionModeAction() );
 
     displayNWSubMenu = menuBar.getMenu( "Select.To New Network" );
-
 
     addAction( new InvertSelectedNodesAction() );
     addAction( new HideSelectedNodesAction() );
@@ -429,6 +395,26 @@ public class CyMenus  implements GraphViewChangeListener {
     menuBar.getMenu( "Visualization" ).add( vizMapperItem );
 
 
+    // Help menu
+    // use the usual *Action class for menu entries which have static actions
+    helpAboutMenuItem = new JMenuItem( new HelpAboutAction() );
+
+    // for Contents and Context Sensitive help, don't use *Action class
+    // since actions encapsulated by HelpBroker and need run-time data
+    helpContentsMenuItem = new JMenuItem("Contents...",KeyEvent.VK_C);
+    helpContentsMenuItem.setAccelerator(KeyStroke.getKeyStroke("F1"));
+    ImageIcon contextSensitiveHelpIcon = new ImageIcon(
+					"images/contextSensitiveHelp.gif");
+    helpContextSensitiveMenuItem = new JMenuItem("Context Sensitive...",
+					contextSensitiveHelpIcon);
+    helpContextSensitiveMenuItem.setAccelerator(
+					KeyStroke.getKeyStroke("shift F1"));
+    helpMenu.add( helpContentsMenuItem );
+    helpMenu.add( helpContextSensitiveMenuItem );
+    helpMenu.addSeparator();
+    helpMenu.add( helpAboutMenuItem );
+     
+
     //menuBar.addAction( new AnimatedLayoutAction( networkView ) );
     
     addAction( new LoadPluginAction() );
@@ -442,13 +428,11 @@ public class CyMenus  implements GraphViewChangeListener {
    */
   private void fillToolBar() {
     
-    JButton b;
-
-    b = toolBar.add( new LoadGraphFileAction(  this, false ) );
-    b.setIcon( new ImageIcon(getClass().getResource("images/new/load36.gif") ) );
-    b.setToolTipText("Load Graph");
-    b.setBorderPainted(false);
-    b.setRolloverEnabled(true);
+    loadButton = toolBar.add( new LoadGraphFileAction(  this, false ) );
+    loadButton.setIcon( new ImageIcon(getClass().getResource("images/new/load36.gif") ) );
+    loadButton.setToolTipText("Load Graph");
+    loadButton.setBorderPainted(false);
+    loadButton.setRolloverEnabled(true);
 
     saveButton = toolBar.add( new SaveAsGMLAction(false ) );
     saveButton.setIcon( new ImageIcon(getClass().getResource("images/new/save36.gif") ) );
@@ -459,10 +443,8 @@ public class CyMenus  implements GraphViewChangeListener {
 
     toolBar.addSeparator();
 
-
-
     final ZoomAction zoom_in = new ZoomAction( 1.1);
-    final JButton zoomInButton = new JButton();
+    zoomInButton = new JButton();
     zoomInButton.setIcon(new ImageIcon(getClass().getResource("images/new/zoom_in36.gif")));
     zoomInButton.setToolTipText("Zoom In");
     zoomInButton.setBorderPainted(false);
@@ -471,23 +453,18 @@ public class CyMenus  implements GraphViewChangeListener {
         public void 	mouseClicked(MouseEvent e) {
           zoom_in.zoom();
         }
-
         public void 	mouseEntered(MouseEvent e) {}
-
         public void 	mouseExited(MouseEvent e) {}
-
         public void 	mousePressed(MouseEvent e) {
           zoomInButton.setSelected( true );
         }
-
         public void 	mouseReleased(MouseEvent e) {
           zoomInButton.setSelected( false );
         }
       } );
 
-
     final ZoomAction zoom_out = new ZoomAction( 0.9);
-    final JButton zoomOutButton = new JButton();
+    zoomOutButton = new JButton();
     zoomOutButton.setIcon(new ImageIcon(getClass().getResource("images/new/zoom_out36.gif")));
     zoomOutButton.setToolTipText("Zoom Out");
     zoomOutButton.setBorderPainted(false);
@@ -496,20 +473,15 @@ public class CyMenus  implements GraphViewChangeListener {
         public void 	mouseClicked(MouseEvent e) {
           zoom_out.zoom();
         }
-
         public void 	mouseEntered(MouseEvent e) {}
-
         public void 	mouseExited(MouseEvent e) {}
-
         public void 	mousePressed(MouseEvent e) {
           zoomOutButton.setSelected( true );
         }
-
         public void 	mouseReleased(MouseEvent e) {
           zoomOutButton.setSelected( false );
         }
       } );
-
 
     zoomOutButton.addMouseWheelListener( new MouseWheelListener () {
         public void	mouseWheelMoved(MouseWheelEvent e) {
@@ -518,11 +490,9 @@ public class CyMenus  implements GraphViewChangeListener {
           } else {
             zoom_out.zoom();
           }
-
         }
       }
                                          );
-
     zoomInButton.addMouseWheelListener( new MouseWheelListener () {
         public void	mouseWheelMoved(MouseWheelEvent e) {
           if ( e.getWheelRotation() < 0 ) {
@@ -537,35 +507,35 @@ public class CyMenus  implements GraphViewChangeListener {
     toolBar.add( zoomOutButton );
     toolBar.add( zoomInButton );
 
-    b = toolBar.add( new ZoomSelectedAction() );
-    b.setIcon(new ImageIcon(getClass().getResource("images/new/crop36.gif")));
-    b.setToolTipText("Zoom Selected Region");
-    b.setBorderPainted(false);
+    zoomSelectedButton = toolBar.add( new ZoomSelectedAction() );
+    zoomSelectedButton.setIcon(new ImageIcon(getClass().getResource("images/new/crop36.gif")));
+    zoomSelectedButton.setToolTipText("Zoom Selected Region");
+    zoomSelectedButton.setBorderPainted(false);
 
-    b = toolBar.add( new FitContentAction() );
-    b.setIcon(new ImageIcon(getClass().getResource("images/new/fit36.gif")));
-    b.setToolTipText("Zoom out to display all of current Graph");
-    b.setBorderPainted(false);
+    zoomDisplayAllButton = toolBar.add( new FitContentAction() );
+    zoomDisplayAllButton.setIcon(new ImageIcon(getClass().getResource("images/new/fit36.gif")));
+    zoomDisplayAllButton.setToolTipText("Zoom out to display all of current Graph");
+    zoomDisplayAllButton.setBorderPainted(false);
 
     // toolBar.addSeparator();
 
-    b = toolBar.add( new ShowAllAction() );
-    b.setIcon(new ImageIcon(getClass().getResource("images/new/add36.gif")));
-    b.setToolTipText("Show all Nodes and Edges (unhiding as necessary)");
-    b.setBorderPainted(false);
+    showAllButton = toolBar.add( new ShowAllAction() );
+    showAllButton.setIcon(new ImageIcon(getClass().getResource("images/new/add36.gif")));
+    showAllButton.setToolTipText("Show all Nodes and Edges (unhiding as necessary)");
+    showAllButton.setBorderPainted(false);
 
 
-    b = toolBar.add( new HideSelectedAction( false ) );
-    b.setIcon(new ImageIcon(getClass().getResource("images/new/delete36.gif")));
-    b.setToolTipText("Hide Selected Region");
-    b.setBorderPainted(false);
+    hideSelectedButton = toolBar.add( new HideSelectedAction( false ) );
+    hideSelectedButton.setIcon(new ImageIcon(getClass().getResource("images/new/delete36.gif")));
+    hideSelectedButton.setToolTipText("Hide Selected Region");
+    hideSelectedButton.setBorderPainted(false);
 
     toolBar.addSeparator();
 
-    b = toolBar.add( new AnnotationGui() );
-    b.setIcon(new ImageIcon(getClass().getResource("images/new/ontology36.gif")));
-    b.setToolTipText("Add Annotation Ontology to Nodes");
-    b.setBorderPainted(false);
+    annotationButton = toolBar.add( new AnnotationGui() );
+    annotationButton.setIcon(new ImageIcon(getClass().getResource("images/new/ontology36.gif")));
+    annotationButton.setToolTipText("Add Annotation Ontology to Nodes");
+    annotationButton.setBorderPainted(false);
 
     toolBar.addSeparator();
 
@@ -575,5 +545,40 @@ public class CyMenus  implements GraphViewChangeListener {
     vizButton.setBorderPainted(false);
 
   }//createToolBar
+
+
+  /**
+   * Register the help set and help broker with the various components
+   */
+  void initializeHelp(HelpBroker hb) {
+    hb.enableHelp(helpContentsMenuItem,"intro",null);
+    helpContentsMenuItem.addActionListener(new CSH.DisplayHelpFromSource(hb));
+    helpContextSensitiveMenuItem.addActionListener(
+	new CSH.DisplayHelpAfterTracking(hb));
+
+    // add Help support for toolbar
+    hb.enableHelp(toolBar,"toolbar",null);
+
+    // add Help support for toolbar buttons
+    hb.enableHelp(loadButton,"toolbar-load",null);
+    hb.enableHelp(saveButton,"toolbar-load",null);
+    hb.enableHelp(zoomInButton,"toolbar-zoom",null);
+    hb.enableHelp(zoomOutButton,"toolbar-zoom",null);
+    hb.enableHelp(zoomSelectedButton,"toolbar-zoom",null);
+    hb.enableHelp(zoomDisplayAllButton,"toolbar-zoom",null);
+    hb.enableHelp(showAllButton,"toolbar-hide",null);
+    hb.enableHelp(hideSelectedButton,"toolbar-hide",null);
+    hb.enableHelp(annotationButton,"toolbar-annotate",null);
+    hb.enableHelp(vizButton,"toolbar-setVisProps",null);
+
+    // add Help support for visual properties combo box created elsewhere
+    // but in this toolbar
+/* MDA - can't get this to work... can't get access to public method?
+   VizMapUI vizMapUI = Cytoscape.getDesktop().getVizMapUI();
+    hb.enableHelp(vizMapUI.getToolbarComboBox(),
+			"toolbar-setVisProps",null);
+*/
+  }
+
 }
 

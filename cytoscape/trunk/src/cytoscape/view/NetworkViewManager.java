@@ -69,6 +69,11 @@ public class NetworkViewManager
     } else if ( VIEW_TYPE == CytoscapeDesktop.EXTERNAL_VIEW ) {
       container = null;
     }
+
+    // add Help hooks
+    cytoscapeDesktop.getHelpBroker().enableHelp(container,
+						"network-view-manager", null);
+
     networkViewMap = new HashMap();
     componentMap = new HashMap();
   }
