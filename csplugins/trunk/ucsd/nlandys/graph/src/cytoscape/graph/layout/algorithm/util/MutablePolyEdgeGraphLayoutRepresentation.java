@@ -113,10 +113,12 @@ public class MutablePolyEdgeGraphLayoutRepresentation
           ("for anchor points belonging to edge at index " + i +
            ", the number of X positions is not the same as the number of " +
            "Y positions");
-      System.arraycopy(edgeAnchorXPositions[i], 0, m_edgeAnchorXPositions[i],
-                       0, edgeAnchorXPositions[i].length);
-      System.arraycopy(edgeAnchorYPositions[i], 0, m_edgeAnchorYPositions[i],
-                       0, edgeAnchorYPositions[i].length);
+      if (edgeAnchorXPositions[i] != null)
+        System.arraycopy(edgeAnchorXPositions[i], 0, m_edgeAnchorXPositions[i],
+                         0, edgeAnchorXPositions[i].length);
+      if (edgeAnchorYPositions[i] != null)
+        System.arraycopy(edgeAnchorYPositions[i], 0, m_edgeAnchorYPositions[i],
+                         0, edgeAnchorYPositions[i].length);
       m_edgeAnchorCount[i] = m_edgeAnchorXPositions[i].length;
       for (int j = 0; j < m_edgeAnchorXPositions[i].length; j++) {
         if (m_edgeAnchorXPositions[i][j] < 0.0d ||
