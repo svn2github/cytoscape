@@ -39,7 +39,6 @@
 	} else if ($file  == "cyto1_src") {
 		$title = "Download Cytoscape 1.1 Source";
 	}
-	
 	if (isset($submit) && $error_flag == false) {
 		$title = "Thank you!";
 	}
@@ -74,7 +73,7 @@
 		$now = date("F j, Y, g:i a");  
 		$ip = getenv(REMOTE_ADDR);
 		$log = "$now\t$ip\t$file\t$name\t$org\t$email\n";
-		$fr = fopen("data/cytoscape.log", 'a');
+		$fr = fopen($cyto_data, 'a');
 		fputs($fr, $log);
 		fclose($fr);
 ?>
