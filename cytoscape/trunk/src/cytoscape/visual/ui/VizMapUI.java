@@ -113,18 +113,17 @@ public class VizMapUI extends JDialog {
 	
 	// node/edge/default selector
 	ButtonGroup grp = new ButtonGroup();
-	JToggleButton nodeSelect = new JToggleButton("Node Attributes", true);
+
+    JToggleButton nodeSelect = new JToggleButton("Node Attributes", true);
 	JToggleButton edgeSelect = new JToggleButton("Edge Attributes", false);
 	JToggleButton defSelect = new JToggleButton("Global Defaults", false);
 	grp.add(defSelect);
 	grp.add(nodeSelect);
 	grp.add(edgeSelect);
-	Color nodeColor = new Color(130, 150, 129);
-	Color edgeColor = new Color(124, 134, 173);
-	Color defColor = new Color(201,201,15);
-	nodeSelect.addActionListener(new AttrSelector(nodePane,nodeColor));
-	edgeSelect.addActionListener(new AttrSelector(edgePane,edgeColor));
-	defSelect.addActionListener(new AttrSelector(defaultPane,defColor));
+
+	nodeSelect.addActionListener(new AttrSelector(nodePane));
+	edgeSelect.addActionListener(new AttrSelector(edgePane));
+	defSelect.addActionListener(new AttrSelector(defaultPane));
 	
 	this.attrSelectorPanel = new JPanel(new FlowLayout(), false);
 	attrSelectorPanel.add(nodeSelect);
@@ -143,6 +142,7 @@ public class VizMapUI extends JDialog {
 	//JButton applyButton = new JButton("Apply");
 	//applyButton.addActionListener(new ApplyAction());
 	JButton closeButton = new JButton("Close");
+
 	closeButton.addActionListener(new CloseAction());
 	//actionButtonsPanel.add(applyButton);
 	actionButtonsPanel.add(closeButton);
@@ -478,17 +478,13 @@ public class VizMapUI extends JDialog {
     
     private class AttrSelector implements ActionListener {
 	private JComponent myTab;
-	private Color bgColor;
-	private AttrSelector(JComponent myTab, Color bg) {
+
+	private AttrSelector(JComponent myTab) {
 	    this.myTab = myTab;
-	    this.bgColor = bg;
 	}
 	public void actionPerformed(ActionEvent e) {
 	    tabPaneContainer.removeAll();
 	    tabPaneContainer.add(myTab);
-	    tabPaneContainer.setBackground(bgColor);
-	    actionButtonsPanel.setBackground(bgColor);
-	    attrSelectorPanel.setBackground(bgColor);
 	    pack();
 	    repaint();
 	}
