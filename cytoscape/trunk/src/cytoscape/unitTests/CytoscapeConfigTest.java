@@ -1,6 +1,6 @@
 // CytoscapeConfigTest.java:  a junit test for the class which sets run-time configuration,
 
-/** Copyright (c) 2002 Institute for Sytems Biology and the Whitehead Institute
+/** Copyright (c) 2002 Institute for Systems Biology and the Whitehead Institute
  **
  ** This library is free software; you can redistribute it and/or modify it
  ** under the terms of the GNU Lesser General Public License as published
@@ -11,15 +11,15 @@
  ** WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
  ** MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
  ** documentation provided hereunder is on an "as is" basis, and the
- ** California Institute of Technology and Japan Science and Technology
- ** Corporation have no obligations to provide maintenance, support,
+ ** Institute of Systems Biology and the Whitehead Institute 
+ ** have no obligations to provide maintenance, support,
  ** updates, enhancements or modifications.  In no event shall the
- ** California Institute of Technology or the Japan Science and Technology
- ** Corporation be liable to any party for direct, indirect, special,
+ ** Institute of Systems Biology and the Whitehead Institute 
+ ** be liable to any party for direct, indirect, special,
  ** incidental or consequential damages, including lost profits, arising
  ** out of the use of this software and its documentation, even if the
- ** California Institute of Technology and/or Japan Science and Technology
- ** Corporation have been advised of the possibility of such damage.  See
+ ** Institute of Systems Biology and the Whitehead Institute 
+ ** have been advised of the possibility of such damage.  See
  ** the GNU Lesser General Public License for more details.
  ** 
  ** You should have received a copy of the GNU Lesser General Public License
@@ -76,6 +76,7 @@ public void testAllArgs () throws Exception
 
   String defaultSpeciesName = "Halobacterium sp.";
   String defaultLayoutStrategy = "hierarchical";
+
 
   String [] args = {"-b", bioDataDirectory, 
                     "-g", geometryFilename, 
@@ -145,6 +146,97 @@ public void testAllArgs () throws Exception
   assertTrue (foundIntr);
 
 } // testAllArgs
+//-------------------------------------------------------------------------
+public void testReadProjectFile_1 () throws Exception
+{ 
+  System.out.println ("testReadProjectFile_1");
+
+  String projectFilename = "test1.cpr";
+    // get the name of the absolute path to the current directory, to allow
+    // us to check the files named in the project file, which are always
+    // made into absolute paths
+
+  String dir = new File (projectFilename).getAbsoluteFile().getParentFile().getPath();
+
+  String [] args = {"-p", projectFilename};
+
+  CytoscapeConfig config = new CytoscapeConfig (args);
+
+  assertTrue (config.getProjectFilename().equals (projectFilename));
+  assertTrue (config.getGeometryFilename().equals (dir + "/galFiltered.gml"));
+  assertTrue (config.getInteractionsFilename().equals (dir + "/galFiltered.sif"));
+
+  //assertTrue (config.getExpressionFilename().equals (expressionFilename));
+
+  assertTrue (config.getNumberOfNodeAttributeFiles() == 2);
+
+  String [] nafs = config.getNodeAttributeFilenames ();
+  assertTrue (nafs.length == 2);
+
+  for (int i=0; i < nafs.length; i++) {
+    String af = nafs [i];
+    assertTrue (af.equals (dir + "/nodeAttributes1.noa") ||
+                af.equals (dir + "/nodeAttributes2.noa"));
+    } // for i
+
+  assertTrue (config.getNumberOfEdgeAttributeFiles() == 2);
+
+  assertTrue (config.getDefaultSpeciesName().equals ("Saccharomyces cerevisiae"));
+  assertTrue (config.getDefaultLayoutStrategy().equals ("hierarchical"));
+  System.out.println (config.getBioDataDirectory());
+  assertTrue (config.getBioDataDirectory().equals ("rmi://hazel/yeast"));
+
+
+} // testReadProjectFile_1
+//-------------------------------------------------------------------------
+public void testReadProjectFile_2 () throws Exception
+{ 
+  System.out.println ("testReadProjectFile_2");
+
+  String projectFilename = "test2.cpr";
+    // get the name of the absolute path to the current directory, to allow
+    // us to check the files named in the project file, which are always
+    // made into absolute paths
+
+  String dir = new File (projectFilename).getAbsoluteFile().getParentFile().getPath();
+
+  String [] args = {"-p", projectFilename};
+
+  CytoscapeConfig config = new CytoscapeConfig (args);
+
+  assertTrue (config.getProjectFilename().equals (projectFilename));
+  assertTrue (config.getGeometryFilename().equals (dir + "/galFiltered.gml"));
+  assertTrue (config.getInteractionsFilename() == null);
+
+  //assertTrue (config.getExpressionFilename().equals (expressionFilename));
+
+  assertTrue (config.getNumberOfNodeAttributeFiles() == 2);
+  assertTrue (config.getNumberOfEdgeAttributeFiles() == 2);
+  String [] nafs = config.getNodeAttributeFilenames ();
+  assertTrue (nafs.length == 2);
+
+  for (int i=0; i < nafs.length; i++) {
+    String af = nafs [i];
+    assertTrue (af.equals (dir + "/nodeAttributes1.noa") ||
+                af.equals (dir + "/nodeAttributes2.noa"));
+    } // for i
+
+  assertTrue (config.getNumberOfEdgeAttributeFiles() == 2);
+  String [] eafs = config.getEdgeAttributeFilenames ();
+  assertTrue (eafs.length == 2);
+
+  for (int i=0; i < eafs.length; i++) {
+    String af = eafs [i];
+    assertTrue (af.equals (dir + "/edgeAttributes1.eda") ||
+                af.equals (dir + "/edgeAttributes2.eda"));
+    } // for i
+
+  assertTrue (config.getDefaultSpeciesName().equals ("Saccharomyces cerevisiae"));
+    // layout is set to 'embedded' in test2.cpr, but cytoscape.props says hierarchical
+  assertTrue (config.getDefaultLayoutStrategy().equals ("hierarchical"));
+  assertTrue (config.getBioDataDirectory().equals (dir + "/annotationsAndSynonyms"));
+
+} // testReadProjectFile_2
 //-------------------------------------------------------------------------
 public void testForExpectedNullValues () throws Exception
 { 
@@ -223,4 +315,5 @@ public static void main (String[] args)
 }
 //------------------------------------------------------------------------------
 } // CytoscapeConfigTest
+
 
