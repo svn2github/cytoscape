@@ -245,8 +245,11 @@ class LoadPathBlastGMLTask extends Thread{
 																HashMap result = new HashMap();
 																while(GMLReaderIt.hasNext()){
 																								GMLReader currentReader = ((GMLReader)GMLReaderIt.next());
+																								RootGraph rootGraph = currentReader.getRootGraph();
 																								HashSet compatLabels = new HashSet();
-																								String [] edgeNames = currentReader.getEdgeAttributes().getObjectNames("interaction");
+																								GraphObjAttributes edgeAttributes = currentReader.getEdgeAttributes();
+																								
+																								/*String [] edgeNames = currentReader.getEdgeAttributes().getObjectNames("interaction");
 																								for(int idx=0;idx<edgeNames.length;idx++){
 																												String currentName = edgeNames[idx];
 																												//check to see if this is a homology edge
@@ -257,7 +260,17 @@ class LoadPathBlastGMLTask extends Thread{
 																																System.err.println(compatName);
 																																compatLabels.add(compatName);
 																												}
+																								}*/
+																								Iterator edgeIt = rootGraph.edgesList().iterator();
+																								while(edgeIt.hasNext()){
+																												String currentName = edgeAttributes.getCanonicalName(edgeIt.next());
+																												if(edgeAttributes.get("interaction",currentName).equals("hm")){
+																																int index = currentName.indexOf(" (hm) ");
+																																String compatName = currentName.substring(0,index)+"|"+currentName.substring(index+6,currentName.length());
+																																compatLabels.add(compatName);
+																												}
 																								}
+																								
 																								result.put(currentReader,compatLabels);
 																								System.err.println(""+compatLabels);
 																}
