@@ -49,8 +49,6 @@ public final class MinIntHeap
 
   /**
    * Returns the number of elements currently in this heap.
-   * @deprecated Use elements().numRemaining() instead.
-   * @see #elements()
    */
   public final int size()
   {
