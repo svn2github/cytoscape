@@ -1,0 +1,63 @@
+<?xml version = "1.0"?>
+<project name = "dynamicXpr" default = "compile" basedir = ".">
+   
+   <property name = "src" location = "src"/>
+   <property name = "build" location = "build"/>
+   <property name = "build.compiler" value = "modern"/>
+   <property name = "lib" location = "../../../../cytoscape/lib"/>
+   <property name = "jar"  location = "jar"/>
+
+   <property name="cytoscape.plugin.dir" value="../../../../cytoscape/plugins"/>
+
+   <path id = "classpath_compile">
+       <fileset dir = "${lib}">
+          <include name = "**/*.jar"/>
+       </fileset>
+   </path>
+
+   <path id = "classpath_run">
+       <fileset dir = "${lib}">
+          <include name = "**/*.jar"/>
+       </fileset>
+   </path>
+
+   <target name="prepare" depends="clean">
+      <mkdir dir="${build}"/>
+   </target>
+
+   <target name="compile" depends = "prepare" description="Compile">
+   <!-- Compile the java code from ${src} into ${build} -->
+   <javac source = "1.4" srcdir = "${src}" destdir="${build}">
+      <classpath refid = "classpath_compile"/>
+   </javac>
+   <!-- Copy icon images -->
+   <mkdir dir = "${build}/dynamicXpr/dialogs/images"/>
+     <copy toDir = "${build}/dynamicXpr/dialogs/images">
+        <fileset dir = "${src}/dynamicXpr/dialogs/images" casesensitive = "yes">
+             <include name = "**/*.jpg"/>   
+        </fileset>
+     </copy> 
+   </target>
+   
+   <target name="clean" description="clean up" >
+      <!-- Delete the ${build} ${jar} directory trees -->
+      <delete dir="${build}"/>
+      <delete dir="${jar}"/>
+   </target>
+
+   <target name="jar" depends="compile" description="makes a jar">
+   <mkdir dir = "${jar}"/>
+   <jar jarfile="${jar}/dynxpr.jar">
+      <fileset dir="${build}"/>
+   </jar>
+    <copy todir="${cytoscape.plugin.dir}" file="jar/dynxpr.jar"/>
+   </target>
+
+   <target name = "run" depends="jar" description = "Run">
+      <java classname = "cytoscape.CyMain" classpathref = "classpath_run"
+          fork = "true" maxmemory = "1g">
+          <arg line = "--JLD"/>
+          <arg file = "${jar}/dynxpr.jar"/>
+      </java>
+    </target>
+</project>
