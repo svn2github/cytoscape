@@ -31,14 +31,14 @@
            <pathelement location="${lib}/jcommon-0.9.5.jar"/>
            <pathelement location="${lib}/jfreechart-0.9.20.jar"/>
            <pathelement location="${dist}"/>
-           <pathelement location="${bin}"/>
-           <pathelement location="${bin}"/>
+		   <pathelement location="${bin}"/> <!-- defined in build.properties -->
+           <pathelement location="${build}"/>
            <pathelement location="${global_lib}/cyto-aux.jar"/>
            <pathelement location="${jython.jar.location}/jython.jar"/>
            <pathelement location="${spyconsole.jar.location}/spyconsole.jar"/>
            <pathelement location="${y.jar.location}/y.jar"/>
            <pathelement location="${jnlp.jar.location}/jnlp.jar"/>
-           <pathelement location="${junit.jar.location}/junit.jar"/>
+           <pathelement location="${cytoscape.lib}/junit.jar"/>
            <pathelement location="${cytoscape.lib}/giny.jar"/>
            <pathelement location="${cytoscape.lib}/getopt.jar"/>
            <pathelement location="${cytoscape.lib}/looks-1.1.3.jar"/>
