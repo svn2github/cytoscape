@@ -351,10 +351,20 @@ public class VizMapUI extends JDialog {
 						  JOptionPane.ERROR_MESSAGE);
 		    return;
 		}
-		catalog.removeVisualStyle(currentStyle.getName());
-		currentStyle = (VisualStyle) styles.iterator().next();
-		VMM.setVisualStyle(currentStyle);
-		resetStyles();
+                //make sure the user really wants to do this
+                String styleName = currentStyle.getName();
+                String checkString = "Are you sure you want to permanently delete"
+                     + " the visual style named '" + styleName + "'?";
+                int ich = JOptionPane.showConfirmDialog(myself,
+                                                        checkString,
+                                                        "Confirm Delete Style",
+                                                        JOptionPane.YES_NO_OPTION);
+                if (ich == JOptionPane.YES_OPTION) {
+                    catalog.removeVisualStyle(currentStyle.getName());
+                    currentStyle = (VisualStyle) styles.iterator().next();
+                    VMM.setVisualStyle(currentStyle);
+                    resetStyles();
+                }
 	    }
 	}
 
