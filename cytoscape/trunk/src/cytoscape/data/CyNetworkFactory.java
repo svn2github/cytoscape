@@ -150,13 +150,13 @@ public class CyNetworkFactory {
      */
     public static CyNetwork createNetworkFromGraphReader( GraphReader reader,
 							     boolean canonicalize ) {
-	try {
-	    reader.read();
-	} catch (Exception e) {
-	    System.err.println(e.getMessage());
-	    e.printStackTrace();
-	    return null;
-	}
+      try {
+        reader.read();
+      } catch (Exception e) {
+        System.err.println(e.getMessage());
+        e.printStackTrace();
+        return null;
+      }
         
         RootGraph rootGraph = reader.getRootGraph();
         if (rootGraph == null) {return null;} //unable to parse into a graph

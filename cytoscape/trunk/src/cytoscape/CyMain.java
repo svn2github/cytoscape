@@ -71,8 +71,8 @@ public class CyMain implements WindowListener {
   protected CytoscapeVersion version = new CytoscapeVersion();
   protected Logger logger;
   protected SplashScreen splashScreen;
-//------------------------------------------------------------------------------
-public CyMain (String [] args) throws Exception {
+  //------------------------------------------------------------------------------
+  public CyMain (String [] args) throws Exception {
     splashScreen = new SplashScreen();
     //parse args and config files into config object
     CytoscapeConfig config = new CytoscapeConfig(args);
@@ -80,20 +80,20 @@ public CyMain (String [] args) throws Exception {
 
     //handle special cases of arguments
     if (config.helpRequested()) {
-        System.out.println(version);
-        System.out.println(config.getUsage());
-        exit(0);
+      System.out.println(version);
+      System.out.println(config.getUsage());
+      exit(0);
     }
     else if (config.inputsError()) {
-        System.out.println(version);
-        System.out.println("------------- Inputs Error");
-        System.out.println(config.getUsage ());
-        System.out.println(config);
-        exit(1);
+      System.out.println(version);
+      System.out.println("------------- Inputs Error");
+      System.out.println(config.getUsage ());
+      System.out.println(config);
+      exit(1);
     }
     else if (config.displayVersion()) {
-        System.out.println (version);
-        exit(0);
+      System.out.println (version);
+      exit(0);
     }
 
     //set up the logger
@@ -105,13 +105,13 @@ public CyMain (String [] args) throws Exception {
     String bioDataDirectory = config.getBioDataDirectory();
     BioDataServer bioDataServer = null;
     if (bioDataDirectory != null) {
-        try {
-            bioDataServer = new BioDataServer(bioDataDirectory);
-        } catch (Exception e) {
-            logger.severe("Unable to load bioDataServer from '" + bioDataDirectory + "'");
-            logger.severe(e.getMessage());
-            e.printStackTrace();
-        }
+      try {
+        bioDataServer = new BioDataServer(bioDataDirectory);
+      } catch (Exception e) {
+        logger.severe("Unable to load bioDataServer from '" + bioDataDirectory + "'");
+        logger.severe(e.getMessage());
+        e.printStackTrace();
+      }
     }
 
     //create the global CytoscapeObj object
@@ -129,18 +129,18 @@ public CyMain (String [] args) throws Exception {
     String geometryFilename = config.getGeometryFilename();
     String interactionsFilename = config.getInteractionsFilename();
     if (geometryFilename != null && interactionsFilename != null) {
-        StringBuffer sb = new StringBuffer("Config specifies both interactions file '");
-        sb.append(interactionsFilename + "' and GML file '" + geometryFilename + "'");
-        sb.append("; using GML file");
-        logger.severe(sb.toString());
+      StringBuffer sb = new StringBuffer("Config specifies both interactions file '");
+      sb.append(interactionsFilename + "' and GML file '" + geometryFilename + "'");
+      sb.append("; using GML file");
+      logger.severe(sb.toString());
     }
     GraphReader reader = null;
     if (geometryFilename != null) {
-	logger.info("reading " + geometryFilename + "...");
-	//network = CyNetworkFactory.createNetworkFromGMLFile(geometryFilename);
-	reader = new GMLReader(geometryFilename);
-	logger.info("  done");
-	title = geometryFilename;
+      logger.info("reading " + geometryFilename + "...");
+      //network = CyNetworkFactory.createNetworkFromGMLFile(geometryFilename);
+      reader = new GMLReader(geometryFilename);
+      logger.info("  done");
+      title = geometryFilename;
     }
     else if (interactionsFilename != null) {
       logger.info("reading " + interactionsFilename + "...");
@@ -153,13 +153,15 @@ public CyMain (String [] args) throws Exception {
       logger.info("  done");
       title = interactionsFilename;
     }
-    network = CyNetworkFactory.createNetworkFromGraphReader(reader,canonicalize);
+    
+    if ( reader != null ) 
+      network = CyNetworkFactory.createNetworkFromGraphReader(reader,canonicalize);
 
     if (network == null) {//none specified, or failed to read
-        logger.info("no graph read, creating empty network");
-        network = CyNetworkFactory.createEmptyNetwork();
-        splashScreen.noGraph = true;
-        title = "(Untitled)";
+      logger.info("no graph read, creating empty network");
+      network = CyNetworkFactory.createEmptyNetwork();
+      splashScreen.noGraph = true;
+      title = "(Untitled)";
     }
     //add the semantics we usually expect
     Semantics.applyNamingServices(network, cytoscapeObj);
@@ -175,19 +177,19 @@ public CyMain (String [] args) throws Exception {
     //load expression data if specified
     String expDataFilename = config.getExpressionFilename();
     if (expDataFilename != null) {
-        logger.info("reading " + expDataFilename + "...");
-        try {
-            ExpressionData expData = new ExpressionData(expDataFilename);
-            network.setExpressionData(expData);
-            if (config.getWhetherToCopyExpToAttribs()) {
-                expData.copyToAttribs(network.getNodeAttributes());
-            }
-        } catch (Exception e) {
-            logger.severe("Exception reading expression data file '" + expDataFilename + "'");
-            logger.severe(e.getMessage());
-            e.printStackTrace();
+      logger.info("reading " + expDataFilename + "...");
+      try {
+        ExpressionData expData = new ExpressionData(expDataFilename);
+        network.setExpressionData(expData);
+        if (config.getWhetherToCopyExpToAttribs()) {
+          expData.copyToAttribs(network.getNodeAttributes());
         }
-        logger.info("  done");
+      } catch (Exception e) {
+        logger.severe("Exception reading expression data file '" + expDataFilename + "'");
+        logger.severe(e.getMessage());
+        e.printStackTrace();
+      }
+      logger.info("  done");
     }
     if (splashScreen!=null) {splashScreen.advance(90);}
 
@@ -197,121 +199,122 @@ public CyMain (String [] args) throws Exception {
     //if (geometryFilename != null) {
     //GMLReader reader = new GMLReader(geometryFilename);
     //reader.layoutByGML(cyWindow.getView(), cyWindow.getNetwork());
-    //}
-    reader.layout(cyWindow.getView());
+    //} 
+    if ( reader != null ) 
+      reader.layout(cyWindow.getView());
 
     cyWindow.showWindow();
 
     if (splashScreen!=null) {splashScreen.advance(100);}
-} // ctor
-//------------------------------------------------------------------------------
-/**
- * configure logging:  cytoscape.props specifies what level of logging
- * messages are written to the console; by default, only SEVERE messages
- * are written.  in time, more control of logging (i.e., optional logging
- * to a file, disabling console logging, per-window or per-plugin logging)
- * can be provided
- */
-protected void setupLogger (CytoscapeConfig config) {
+  } // ctor
+  //------------------------------------------------------------------------------
+  /**
+   * configure logging:  cytoscape.props specifies what level of logging
+   * messages are written to the console; by default, only SEVERE messages
+   * are written.  in time, more control of logging (i.e., optional logging
+   * to a file, disabling console logging, per-window or per-plugin logging)
+   * can be provided
+   */
+  protected void setupLogger (CytoscapeConfig config) {
     logger = Logger.getLogger("global");
     Properties properties = config.getProperties();
     String level = properties.getProperty("logging", "SEVERE");
 
     if (level.equalsIgnoreCase("severe")) {
-        logger.setLevel(Level.SEVERE);
+      logger.setLevel(Level.SEVERE);
     } else if (level.equalsIgnoreCase("warning")) {
-        logger.setLevel(Level.WARNING);
+      logger.setLevel(Level.WARNING);
     } else if (level.equalsIgnoreCase("info")) {
-        logger.setLevel(Level.INFO);
+      logger.setLevel(Level.INFO);
     } else if (level.equalsIgnoreCase("config")) {
-        logger.setLevel(Level.CONFIG);
+      logger.setLevel(Level.CONFIG);
     } else if (level.equalsIgnoreCase("all")) {
-        logger.setLevel(Level.ALL);
+      logger.setLevel(Level.ALL);
     } else if (level.equalsIgnoreCase("none")) {
-        logger.setLevel(Level.OFF);
+      logger.setLevel(Level.OFF);
     } else if (level.equalsIgnoreCase("off")) {
-        logger.setLevel(Level.OFF);
+      logger.setLevel(Level.OFF);
     }
-}
-//------------------------------------------------------------------------------
-public void windowActivated   (WindowEvent e) {
+  }
+  //------------------------------------------------------------------------------
+  public void windowActivated   (WindowEvent e) {
     if(splashScreen != null) {
-        splashScreen.advance(200);
-        splashScreen.dispose();
-        splashScreen = null;
+      splashScreen.advance(200);
+      splashScreen.dispose();
+      splashScreen = null;
     }
-}
-//------------------------------------------------------------------------------
-/**
- * on linux (at least) a killed window generates a 'windowClosed' event; trap that here
- */
-public void windowClosing     (WindowEvent e) {windowClosed (e);}
-public void windowDeactivated (WindowEvent e) {}
-public void windowDeiconified (WindowEvent e) {}
-public void windowIconified   (WindowEvent e) {}
+  }
+  //------------------------------------------------------------------------------
+  /**
+   * on linux (at least) a killed window generates a 'windowClosed' event; trap that here
+   */
+  public void windowClosing     (WindowEvent e) {windowClosed (e);}
+  public void windowDeactivated (WindowEvent e) {}
+  public void windowDeiconified (WindowEvent e) {}
+  public void windowIconified   (WindowEvent e) {}
 
-//------------------------------------------------------------------------------
-public void windowOpened      (WindowEvent e) {
+  //------------------------------------------------------------------------------
+  public void windowOpened      (WindowEvent e) {
     if(splashScreen != null) {
-        splashScreen.advance(200);
-        splashScreen.dispose();
-        splashScreen = null;
+      splashScreen.advance(200);
+      splashScreen.dispose();
+      splashScreen = null;
     }
     windows.add (e.getWindow ());
-}
-//------------------------------------------------------------------------------
-public void windowClosed     (WindowEvent e) {
+  }
+  //------------------------------------------------------------------------------
+  public void windowClosed     (WindowEvent e) {
     Window window = e.getWindow();
     if (windows.contains(window)) {windows.remove (window);}
 
     if (windows.size () == 0) {
-        logger.info("all windows closed, exiting...");
-        exit(0);
+      logger.info("all windows closed, exiting...");
+      exit(0);
     }
-}
+  }
 
-public CyWindow getMainWindow()
-{
-	return cyWindow;
-}
-//------------------------------------------------------------------------------
-public void exit(int exitCode) {
+  public CyWindow getMainWindow()
+  {
+    return cyWindow;
+  }
+  //------------------------------------------------------------------------------
+  public void exit(int exitCode) {
     for (int i=0; i < windows.size (); i++) {
-        Window w = (Window) windows.elementAt(i);
-        w.dispose();
+      Window w = (Window) windows.elementAt(i);
+      w.dispose();
     }
     System.exit(exitCode);
-}
-//------------------------------------------------------------------------------
-public static void main(String args []) throws Exception {
+  }
+  //------------------------------------------------------------------------------
+  public static void main(String args []) throws Exception {
 
-  UIManager.put(Options.USE_SYSTEM_FONTS_APP_KEY, Boolean.TRUE);
-  Options.setGlobalFontSizeHints(FontSizeHints.MIXED);
-  Options.setDefaultIconSize(new Dimension(18, 18));
+    UIManager.put(Options.USE_SYSTEM_FONTS_APP_KEY, Boolean.TRUE);
+    Options.setGlobalFontSizeHints(FontSizeHints.MIXED);
+    Options.setDefaultIconSize(new Dimension(18, 18));
 
-  try {
-     if ( LookUtils.isWindowsXP() ) {
-       // use XP L&F
-       UIManager.setLookAndFeel( Options.getSystemLookAndFeelClassName() );
-     } else if ( System.getProperty("os.name").startsWith( "Mac" ) ) {
-       // do nothing, I like the OS X L&F
-     } else {
-       // this is for for *nix
-       // I happen to like this color combo, there are others
-       Plastic3DLookAndFeel laf = new Plastic3DLookAndFeel();
-       laf.setTabStyle( Plastic3DLookAndFeel.TAB_STYLE_METAL_VALUE );
-       laf.setHighContrastFocusColorsEnabled(true);
-       laf.setMyCurrentTheme( new com.jgoodies.plaf.plastic.theme.ExperienceBlue() );
-       UIManager.setLookAndFeel( laf );
-     }
-   } catch (Exception e) {
-     System.err.println("Can't set look & feel:" + e);
-   }
+    try {
+      if ( LookUtils.isWindowsXP() ) {
+        // use XP L&F
+        UIManager.setLookAndFeel( Options.getSystemLookAndFeelClassName() );
+      } else if ( System.getProperty("os.name").startsWith( "Mac" ) ) {
+        // do nothing, I like the OS X L&F
+      } else {
+        // this is for for *nix
+        // I happen to like this color combo, there are others
+        Plastic3DLookAndFeel laf = new Plastic3DLookAndFeel();
+        laf.setTabStyle( Plastic3DLookAndFeel.TAB_STYLE_METAL_VALUE );
+        laf.setHighContrastFocusColorsEnabled(true);
+        laf.setMyCurrentTheme( new com.jgoodies.plaf.plastic.theme.ExperienceBlue() );
+        UIManager.setLookAndFeel( laf );
+      }
+    } catch (Exception e) {
+      System.err.println("Can't set look & feel:" + e);
+    }
 
 
 
     CyMain app = new CyMain(args);
-} // main
-//------------------------------------------------------------------------------
+  } // main
+  //------------------------------------------------------------------------------
 }
 
