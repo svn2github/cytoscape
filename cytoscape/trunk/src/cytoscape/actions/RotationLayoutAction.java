@@ -106,10 +106,10 @@ public class RotationLayoutAction extends CytoscapeAction
     final double[] nodeXPositions = new double[numNodes];
     final double[] nodeYPositions = new double[numNodes];
     for (int i = 0; i < numNodes; i++) {
-      nodeXPositions[i] = nodeTranslation[i].getXPosition() - minX +
-        ((maxX - minX) / 2);
-      nodeYPositions[i] = nodeTranslation[i].getYPosition() - minY +
-        ((maxY - minY) / 2); }
+      nodeXPositions[i] =
+        nodeTranslation[i].getXPosition() - minX + ((maxX - minX) / 2);
+      nodeYPositions[i] =
+        nodeTranslation[i].getYPosition() - minY + ((maxY - minY) / 2); }
     final MutableGraphLayoutRepresentation nativeGraph =
       new MutableGraphLayoutRepresentation(numNodes,
                                            directedEdgeSourceNodeIndices,
