@@ -5,8 +5,8 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 
 /**
- * This class &quot;compiles&quot; a <code>GraphTopology</code> and provides
- * several computations on the graph.<p>
+ * An instance of this class &quot;compiles&quot; a <code>GraphTopology</code>
+ * and provides several computations on the graph.<p>
  * An instance of this class is meant to be used by a single thread only.<p>
  * This class is very tentative at this point - it may go away soon.
  **/
@@ -117,6 +117,8 @@ public final class GraphUtils
   {
     // As this class matures more we should implement a single compilation
     // to avoid overhead on every method call.
+    if (m_compiled) return;
+    m_compiled = true;
   }
 
 }
