@@ -56,7 +56,11 @@ public class VizMapUI extends JDialog {
     private JPanel tabPaneContainer;
     /** Keeps track of contained tabs */
     private VizMapTab[] tabs;
-
+    /**
+     *  All known VisualStyles
+     */
+    protected Collection styles;
+	
     // kludge!
     private boolean initialized = false;
 
@@ -96,7 +100,7 @@ public class VizMapUI extends JDialog {
 	    if (i == EDGE_LABEL_FONT)
 		tab = new VizMapFontTab(this, VMM, i);
 	    else
-		    tab = new VizMapAttrTab(this, VMM, i);
+		tab = new VizMapAttrTab(this, VMM, i);
 	    edgePane.add(tab);
 	    tabs[i] = tab;
 	}
@@ -154,11 +158,6 @@ public class VizMapUI extends JDialog {
      */
     protected class StyleSelector extends JPanel {
 	/**
-	 *  All known VisualStyles
-	 */
-	protected Collection styles;
-	
-	/**
 	 *  Reference to catalog
 	 */
 	protected CalculatorCatalog catalog;
@@ -190,7 +189,7 @@ public class VizMapUI extends JDialog {
 	    super(false);
 	    this.mainUIDialog = parent;
 	    this.catalog = VMM.getCalculatorCatalog();
-	    this.styles = catalog.getVisualStyles();
+	    styles = catalog.getVisualStyles();
 	    this.styleGBG = new GridBagGroup("Style");
 	    MiscGB.pad(styleGBG.constraints, 2, 2);
 	    MiscGB.inset(styleGBG.constraints, 3);
@@ -239,7 +238,7 @@ public class VizMapUI extends JDialog {
 		if (newName.equals(ret))
 		    return ret;
 		int alt = JOptionPane.showConfirmDialog(mainUIDialog,
-							"Visual styler with name " + ret + " already exists,\nrename to " + newName + " okay?",
+							"Visual style with name " + ret + " already exists,\nrename to " + newName + " okay?",
 							"Duplicate visual style name",
 							JOptionPane.YES_NO_OPTION,
 							JOptionPane.WARNING_MESSAGE,
@@ -258,6 +257,7 @@ public class VizMapUI extends JDialog {
 		    return;
 		currentStyle = new VisualStyle(name);
 		catalog.addVisualStyle(currentStyle);
+		VMM.setVisualStyle(currentStyle);
 		resetStyles();
 	    }
 	}
@@ -274,8 +274,16 @@ public class VizMapUI extends JDialog {
 
 	protected class RmStyleListener extends AbstractAction {
 	    public void actionPerformed(ActionEvent e) {
+		if (styles.size() == 1) {
+		    JOptionPane.showMessageDialog(mainUIDialog,
+						  "There must be at least one visual style",
+						  "Cannot remove style",
+						  JOptionPane.ERROR_MESSAGE);
+		    return;
+		}
 		catalog.removeVisualStyle(currentStyle.getName());
 		currentStyle = (VisualStyle) styles.iterator().next();
+		VMM.setVisualStyle(currentStyle);
 		resetStyles();
 	    }
 	}
@@ -287,14 +295,17 @@ public class VizMapUI extends JDialog {
 		    clone = (VisualStyle) currentStyle.clone();
 		}
 		catch (CloneNotSupportedException exc) {
+		    System.err.println("Clone not supported exception!");
 		}
 		// get new name for clone
 		String newName = getStyleName(clone);
 		if (newName == null)
 		    return;
 		clone.setName(newName);
-		currentStyle = clone;
 		catalog.addVisualStyle(clone);
+		currentStyle = clone;
+		VMM.setVisualStyle(currentStyle);
+		resetStyles();
 	    }
 	}
 	
@@ -318,7 +329,7 @@ public class VizMapUI extends JDialog {
 		styleArray[i] = (VisualStyle)styleIter.next();
 	    }
 	    this.styleComboBox = new JComboBox(styleArray);
-
+	    this.styleComboBox.setSelectedItem(null);
 	    // attach listener
 	    this.styleComboBox.addItemListener(new StyleSelectionListener());
 	    if (this.currentStyle == null)
@@ -331,11 +342,13 @@ public class VizMapUI extends JDialog {
 	 */
 	public void resetStyles() {
 	    // reset local style collection
-	    this.styles = catalog.getVisualStyles();
+	    styles = catalog.getVisualStyles();
 	    if (this.styleComboBox != null)
-		styleGBG.panel.remove(this.styleComboBox);
+		this.styleGBG.panel.remove(this.styleComboBox);
 	    setupStyleComboBox();
-	    MiscGB.insert(styleGBG, styleComboBox, 0, 0, 4, 1, 1, 0, GridBagConstraints.HORIZONTAL);
+	    MiscGB.insert(this.styleGBG, this.styleComboBox, 0, 0, 4, 1, 1, 0, GridBagConstraints.HORIZONTAL);
+	    validate();
+	    repaint();
 	}
     }
     

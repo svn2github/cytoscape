@@ -111,7 +111,9 @@ public class VizMapAttrTab extends VizMapTab {
 	// register to listen for changes in the catalog
 	catalog.addChangeListener(new CatalogListener(), this.type);
 
-	visualStyleChanged();
+	// visualStyleChanged();
+	// don't need in constructor since triggered by StyleSelector construction
+	// in VizMapUI
     }
     
     /**
@@ -143,7 +145,7 @@ public class VizMapAttrTab extends VizMapTab {
 	    comboArray[i] = calcIter.next();
 	}
 	this.calcComboBox = new JComboBox(comboArray);
-	
+	this.calcComboBox.setSelectedItem(null);
 	// attach listener
 	this.calcComboBox.addItemListener(new calcComboSelectionListener());
 
@@ -440,9 +442,14 @@ public class VizMapAttrTab extends VizMapTab {
     // remove calculator button pressed
     private class RmCalcListener extends AbstractAction {
 	public void actionPerformed(ActionEvent e) {
-	    catalog.removeCalculator(currentCalculator);
-	    switchCalculator(null);
-	    /* switchCalculator must be called explicitly in this method because we use
+	    if (currentCalculator == null) {
+		return;
+	    }
+	    Calculator temp = currentCalculator;
+	    currentCalculator = null;
+	    catalog.removeCalculator(temp); // triggers events that switch the calculator
+	    /* switchCalculator(null);
+	       switchCalculator must be called explicitly in this method because we use
 	       setSelectedIndex(0) to set the current calculator to null in setupCalcComboBox,
 	       which does not trigger an event.
 	    */
@@ -461,11 +468,10 @@ public class VizMapAttrTab extends VizMapTab {
     private class calcComboSelectionListener implements ItemListener {
 	public void itemStateChanged(ItemEvent e) {
 	    if (e.getStateChange() == ItemEvent.SELECTED) {
-		Object selected = calcComboBox.getSelectedItem();
-		if (selected.equals("None")) { // "None" selected, use null
+		if (calcComboBox.getSelectedIndex() == 0) // "None" selected, use null
 		    switchCalculator(null);
-		}
 		else {
+		    Object selected = calcComboBox.getSelectedItem();
 		    switchCalculator((Calculator) selected);
 		}
 	    }
@@ -558,7 +564,6 @@ public class VizMapAttrTab extends VizMapTab {
 	    }
 	}
 	this.currentCalculator = c;
-	refreshUI();
 
 	/*
 	Dimension d = this.calcPanel.getMaximumSize();
@@ -633,8 +638,7 @@ public class VizMapAttrTab extends VizMapTab {
 	    nodeCalc.setNodeFontSizeCalculator((NodeFontSizeCalculator) c);
 	    break;
 	}
-	super.validate();
-	super.repaint();
+	refreshUI();
 	mainUIDialog.pack();
 	mainUIDialog.repaint();
     }
