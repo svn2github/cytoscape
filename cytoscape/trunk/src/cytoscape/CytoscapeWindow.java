@@ -251,7 +251,7 @@ public CytoscapeWindow (cytoscape parentApp,
   // the JarLoader depends on the graph already being set, which is setGraph.
   initializeWidgets ();
   setGraph (graph);
-  JarLoaderUI jlu = new JarLoaderUI(CytoscapeWindow.this,loadSubMenu);
+  //JarLoaderUI jlu = new JarLoaderUI(CytoscapeWindow.this,loadSubMenu);
 
   JButton annotationButton = toolbar.add (new AnnotationGui (CytoscapeWindow.this));
 
@@ -280,6 +280,7 @@ public CytoscapeWindow (cytoscape parentApp,
   // instantiated CytoscapeWindow
 
   loadPlugins ();
+  JarLoaderUI jlu = new JarLoaderUI(CytoscapeWindow.this,loadSubMenu);
   setPopupMode (new NodeBrowsingMode ());
   // System.out.println ("----------------- edgeAttributes\n" + edgeAttributes);
 
