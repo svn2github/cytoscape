@@ -28,6 +28,10 @@
     <? include "nav_tut.php"; ?>
     <div id="indent">
 
+<center>
+<h2>Cytoscape Budding Yeast Demo</h2>
+</center>
+
 Run Cytoscape with full 
 <a href="http://www.geneontology.org" target="_top">Gene Ontology</a>
 <!--a href="http://www.genome.ad.jp/kegg/" target="_top">KEGG</a --> annotation, a thesaurus
@@ -44,7 +48,7 @@ This starts Cytoscape on your own computer, after downloading the program and an
 from our website.  (On subsequent runs, 
 the program or annotation will not be downloaded again unless we have new versions or new 
 annotation for you to use.) If Cytoscape does not start, please look at the
-<a href="tut/index.php">instructions</a> for some places to get help.<center>
+<a href="tutorial.php">instructions</a> for some places to get help.<center>
 <h3> Loading Your Network</h3>
 </center>
 

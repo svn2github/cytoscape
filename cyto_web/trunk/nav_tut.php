@@ -1,9 +1,8 @@
 <table cellspacing="0" cellpadding="2" border="0" summary="" id="links">
 	<tbody>
 		<tr>
-			<td colspan="6" id="caption">
+			<td colspan="6" id="first">
 				<h1>
-					Cytoscape:
 					<a href="tutorial.php">
 						Tutorial Introduction
 					</a>
@@ -16,9 +15,9 @@
 						Tutorial 2: Small Network 
 					</a>
 					| 
-					<a href="yeastGal.php">
-						Tutorial 3: Gene Expression Profile 
-					</a>					
+					<!--<a href="yeastGal.php">-->
+						Tutorial 3: Gene Expression Profile (Coming Soon)
+					<!--</a>-->					
 				</h1>
 			</td>
 		</tr>

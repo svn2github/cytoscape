@@ -27,6 +27,11 @@
     <? include "nav.php"; ?>
     <? include "nav_tut.php"; ?>
     <div id="indent">
+
+<center>
+<h2>Cytoscape Tutorial Introduction</h2>
+</center>
+
 Cytoscape is a computer program which is useful for biological data integration 
 in the context of a network, and for visualizing and performing calculations on 
 biological networks. Many useful capabilities are built into the platform's 
@@ -38,8 +43,12 @@ This set of web pages contains a set of tutorials for Cytoscape. You may want to
 <p>
 
 Using <a href="http://java.sun.com/docs/books/tutorial/information/javawebstart.html"> Java Web Start</a>, 
-you may run these demos on your personal computer. If the tutorials don't work 
-when you click on the link to start it, you may need to install <a href="http://java.sun.com/docs/books/tutorial/information/javawebstart.html"> Java Web Start</a>.<p>The following web browsers 
+you may run these demos/tutorials on your personal computer. If the tutorials don't work 
+when you click on the link to start it, you may need to install <a href="http://java.sun.com/docs/books/tutorial/information/javawebstart.html"> Java Web Start</a>.
+Using Java Web Start in general has some <a href="tut_security.php">security issues</a>.
+<p>
+
+The following web browsers 
 are supported for these tutorials:<BR>
 <ul>
   <li> Netscape 5.0 or later

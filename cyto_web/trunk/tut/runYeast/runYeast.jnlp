@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jnlp
-  codebase="http://www.cbio.mskcc.org/~bader/software/test/runYeast/"
-  href="http://www.cbio.mskcc.org/~bader/software/test/runYeast/runYeast.jnlp">
+  codebase="http://cytoscape.org/new/tut/runYeast/"
+  href="http://cytoscape.org/new/tut/runYeast/runYeast.jnlp">
   <information>
-    <title>Cytoscape Tutorial #1 - Budding Yeast Demo</title>
+    <title>Cytoscape Budding Yeast Demo</title>
     <vendor>Cytoscape.org</vendor>
     <homepage href="http://cytoscape.org/"/>
     <description>Cytoscape Tutorial #1</description> 
@@ -24,21 +24,21 @@
     <argument>-p</argument>
     <argument>jar://projectFile</argument>
     <argument>--JLW</argument>
-    <argument>http://www.cbio.mskcc.org/~bader/software/test/common/yLayouts.jar</argument>
+    <argument>http://cytoscape.org/new/tut/common/yLayouts.jar</argument>
     <argument>--JLW</argument>
-    <argument>http://www.cbio.mskcc.org/~bader/software/test/common/layout.jar</argument>
+    <argument>http://cytoscape.org/new/tut/common/layout.jar</argument>
     <argument>--JLW</argument>
-    <argument>http://www.cbio.mskcc.org/~bader/software/test/common/jgraphLayout.jar</argument>
+    <argument>http://cytoscape.org/new/tut/common/jgraphLayout.jar</argument>
     <argument>--JLW</argument>
-    <argument>http://www.cbio.mskcc.org/~bader/software/test/common/HierarchicalLayout.jar</argument>
+    <argument>http://cytoscape.org/new/tut/common/HierarchicalLayout.jar</argument>
     <argument>--JLW</argument>
-    <argument>http://www.cbio.mskcc.org/~bader/software/test/common/control.jar</argument>
+    <argument>http://cytoscape.org/new/tut/common/control.jar</argument>
     <argument>--JLW</argument>
-    <argument>http://www.cbio.mskcc.org/~bader/software/test/common/diff.jar</argument>
+    <argument>http://cytoscape.org/new/tut/common/diff.jar</argument>
     <argument>--JLW</argument>
-    <argument>http://www.cbio.mskcc.org/~bader/software/test/common/filter.jar</argument>
+    <argument>http://cytoscape.org/new/tut/common/filter.jar</argument>
     <argument>--JLW</argument>
-    <argument>http://www.cbio.mskcc.org/~bader/software/test/common/SigAttributes.jar</argument>
+    <argument>http://cytoscape.org/new/tut/common/SigAttributes.jar</argument>
     <argument>-s</argument>
     <argument>Saccharomyces cerevisiae</argument>
     <argument>-b</argument>

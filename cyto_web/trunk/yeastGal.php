@@ -34,7 +34,7 @@
  </h2>
 </center>
 
-This examples takes up where the first example leaves off.  Here you
+This example takes up where the first one leaves off.  Here you
 will learn how to display changes in expression, and how to discover
 correlations in gene expression.<p>
 Begin by clicking here:  
@@ -43,7 +43,7 @@ Begin by clicking here:  
 program and annotation from our website. (On subsequent runs, the program or 
 annotation will not be downloaded again unless we have new versions or new 
 annotation for you to use.) If Cytoscape does not start, please look at the
-<a href="tut/index.php">instructions</a> for some places to get help.</p><p> If at any point you wish
+<a href="tutorial.php">instructions</a> for some places to get help.</p><p> If at any point you wish
 to restart this tutorial, just click again on the <b>WEB START</b> link just above. <p>
 
 The 331 genes in this network were selected from the full yeast genome based 

@@ -32,36 +32,36 @@
 <h2> A Small Network from Saccharomyces cerevisiae </h2>
 </center>
 
-Here we show you the basic cytoscape operations. You will: load
-a small network of genes and interactions from yeast; examine
-expression data we have collected for the genes;  explore the
+This tutorial provides a basic introduction to the Cytoscape platform. You will explore a small network of yeast proteins with some attached expression and annotation data;  explore the
 <a href="http://www.geneontology.org">Gene Ontology</a> (GO) annotation of those 
 genes, and layout the graph and add interactions to the network based on the GO 
 annotation.<p>
 
-Once you have completed this tutorial, you will be prepared to explore
-more complicated systems within Cytoscape, and you will be ready to learn how to 
-load and view your own data.
+Once you have completed this tutorial, the next tutorial will present some advanced tools for analyzing networks, the plugin system of Cytoscape, and how to load your own data.
 
 <p>
 Begin by clicking here: &nbsp;
 <font size=+1>
-<a href="tut/cy.jnlp">WEB START</a>.
+<a href="tut/yeastSmall/yeastSmall.jnlp">WEB START</a> (download size: 7 MB).
 </font>&nbsp; This starts Cytoscape on your own computer, after downloading the 
 program and annotation from our website. (On subsequent runs, the program or 
 annotation will not be downloaded again unless we have new versions or new 
 annotation for you to use.) If Cytoscape does not start, please look at the
-<a href="tut/index.php">instructions</a> for some places to get help.<p> If at any point you wish
+<a href="tutorial.php">instructions</a> for some places to get help.<p> If at any point you wish
 to restart this tutorial, just click again on the <b>WEB START</b> link just above.
 
 
 <br><br> <center> <h3> Introduction </h3> </center> <br>
 
+After clicking the web start link above, you should see a splash screen while the program is loading the network and data.<P>
+
 The 29-gene network you now see before you, displayed in a Cytoscape
 window,  is centered on the <b><i>GAL</i></b> genes from yeast, which
 are involved in galactose metabolism.  This metabolic pathway, and its
-regulation, is among the best-studied systems in molecular
+regulation, is one of the better studied systems in yeast molecular
 biology.<p> 
+
+The main portion of the window displays the network that was loaded. The status bar at the bottom of the window show the number of nodes and edges in the network, as well as the number of selected and hidden graph objects (more on this below). At the top of the window are a menu bar with a number of menus, and a toolbar containing icons for commonly used operations. Each icon has a tooltip describing its function.<P>
 
 <b>BIOLOGICAL CONTEXT:</b>&nbsp;In the presence of
 galactose, GAL4 activates a number of genes which in turn code enzymes
@@ -87,23 +87,25 @@ In the displayed network,
 
 <br>
 <center>
-<h3> Toolbars, Scrollbars, and Navigation </h3>
+<h3> Navigation </h3>
 </center>
 
-<ul>
-   <p><li> Locate the toolbar just below the menubar at the top of the cytoscape window.
-           &nbsp; It contains clickable icons, each of which results in a different
-           operation on the graph.  Many of these operations change the zoom level,
-           or contents of the network.<p><li> Let your mouse linger over any of these toolbar icons for
-           a second, and you will see a 'tooltip' appear which explains what
-           that icon will do.
-   <p><li> A common action is to zoom in or out. &nbsp; On the toolbar, click on 
-           <img src="tut/zoom_in36.gif" align="absbottom" width="36" height="36">
-           to zoom in on the network. &nbsp; To zoom out, click on
-           <img src="tut/zoom_out36.gif" align="absbottom" width="36" height="36">.
-   <p><li> Whenever only a portion of the network is visible in the Cytoscape window,
-           scrollbars appear.  By sliding them back and forth (or up and down) hidden portions 
-           of the network come into view.</ul>
+With the full network in view, it's difficult to see the details of any
+particular node or edge (this is particularly true when viewing larger
+networks). To zoom in, click this icon
+<IMG src="zoom_in36.gif" align="absbottom"> in the toolbar; to zoom out again,
+click this icon
+<IMG src="zoom_out36.gif" align="absbottom">. When part of the network is off
+the visible screen, scrollbars appear allowing you to scroll the display. You
+can also pan and zoom using the mouse in the graph display window. Use middle-click and drag to pan the
+view, right-click and drag right to zoom in, and right-click and drag left to
+zoom out. To fit the entire graph to the screen, click this icon
+<IMG src="fit36.gif" align="absbottom"> in the toolbar.<P>
+
+The labels for nodes only appear at a sufficiently high
+zoom level. In this tutorial, Cytoscape is configured to display the common
+gene name on each node. Try zooming in close enough to read the labels, and
+find the GAL4 gene.
 
 <center>
 <h3> Selection </h3>
@@ -126,6 +128,10 @@ select nodes in the graph:
  <ul>
     <li> Draw a box around the nodes by dragging the mouse with the left button held down
     <li> Simply click directly on a node.  Shift-click to select multiple nodes
+    <li> The default behavior is to select only the nodes that are included in the
+selection box; you can change this via the <strong>Select</strong> menu to
+select only edges, or both nodes and edges. To zoom to the current selection,
+click this icon <IMG src="crop36.gif" align="absbottom"> in the toolbar.
  </ul>
 
 Try this: &nbsp;
@@ -152,21 +158,22 @@ In Cytoscape, you can associate any kind of data with any node or
 edge.  We call these associated data <b><i> attributes</i></b>.  We often
 use these <b>data</b> attributes to control the display of <b>visual</b> attributes of
 the graph, something we discuss at length below.  All of the nodes in
-this particular network have an <b><i>expression</i></b> attribute, a rational
+this particular network have an <b><i>expression</i></b> attribute, a double-precision rational
 number which we obtained from microarray experiments.  You can examine the expression
 of any node or nodes by
  
 <ul>
    <p><li> Selecting the node or nodes your are interested in.
    <p><li> Clicking with the right mouse button on one of the nodes and 
-   selecting the Attribute Browser option.<p><li> You will then see a "Node Browser" dialog box pop up, which has many
+   selecting the Attribute Browser option. (Or selecting the Data->Show Attribute Browser menu option)<p>
+<li> You will then see a "Node Browser" dialog box pop up, which has many
            tabs.  You can see the expression values for the genes you selected
            by clicking on the <b> expression tab</b>.  (The <b> customize tab </b>
            in the node browser allows you to construct a view of just those data attributes you
            care about; this is especially useful when there are many different
            data attributes.)<p><li> One of the attributes we load for each gene is a link to the Saccharomyces
            Genome Database (SGD).  By clicking in the node browser cell labeled
-           'SGD' your web browser will display the SGD page for that gene.</ul>
+           'SGD' your web browser will display the SGD page for that gene.  (Note: a known bug with some browsers, especially some versions of Mozilla, may prevent you from opening new web pages this way).</ul>
 
 <p>
 
@@ -177,10 +184,13 @@ of any node or nodes by
 </center>
 <br>
 
-The <a href="http://www.geneontology.org">Gene Ontology (GO) Project</a> annotates genes
-from many organisms with the same controlled vocabulary of molecular functions, 
-cellular processes and cellular locations.  Cytoscape makes full
-use of the GO annotation, as you will see below.  Please try the following steps:
+Several large projects, including the <a href="www.geneontology.org">Gene
+Ontology Consortium</a> (GO) and the <a href="www.genome.ac.jp">Kyoto
+Encyclopedia of Genes and Genomes</a> (KEGG), provide annotation information
+for genes and proteins for many different species using a controlled
+vocabulary. Cytoscape is able to integrate this information with the
+displayed biomolecular network. Here, we will learn how to explore and assign
+GO annotation to the proteins in our network. Follow the steps below:
  
 <ol>
    <p><li> At the far right of the tool bar, press the icon which looks like
@@ -246,6 +256,13 @@ network.  Here is an example.<ol>
    <li>Press the <b>Delete created nodes/edges</b> button to remove the edges 
    and label nodes you just added.</li>
 </ol>
+
+<HR>
+
+<center><H3>Tutorial complete!</H3></center>
+
+You now know the basic operations that Cytoscape provides to explore a network
+and its associated data.  Other tutorials cover more advanced Cytoscape functions.
 
     </div>
     <? include "footer.php"; ?>
