@@ -351,10 +351,10 @@ public class CyMenus {
     selectNodesSubMenu.add(new ListFromFileSelectionAction(networkView));
 
     mi = displayNWSubMenu.add(new NewWindowSelectedNodesOnlyAction(cyWindow));
-    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
+    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.SHIFT_MASK|ActionEvent.CTRL_MASK));
     mi = displayNWSubMenu.add(new NewWindowSelectedNodesEdgesAction(cyWindow));
     mi = displayNWSubMenu.add(new CloneGraphInNewWindowAction(cyWindow));
-    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, ActionEvent.CTRL_MASK));
+    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
     
     mi = selectMenu.add(new SelectAllAction(networkView));
     mi = selectMenu.add(new DeselectAllAction(networkView));
