@@ -21,8 +21,34 @@ import java.util.NoSuchElementException;
 
 // Package visible class.  Use factory to get instance.
 // This implementation of giny.model is safe to use with a single thread only.
-class FRootGraph implements RootGraph
+class FRootGraph implements RootGraph, DynamicGraph
 {
+
+  ////////////////////////////////////
+  // BEGIN: Implements DynamicGraph //
+  ////////////////////////////////////
+  public IntEnumerator nodes() { return m_graph.nodes(); }
+  public IntEnumerator edges() { return m_graph.edges(); }
+  public int nodeCreate() { return ~createNode(); }
+  public boolean nodeRemove(int node) { return removeNode(~node) != 0; }
+  public int edgeCreate(int sourceNode, int targetNode, boolean directed) {
+    return ~createEdge(~sourceNode, ~targetNode, directed); }
+  public boolean edgeRemove(int edge) { return removeEdge(~edge) != 0; }
+  public boolean nodeExists(int node) { return m_graph.nodeExists(node); }
+  public byte edgeType(int edge) { return m_graph.edgeType(edge); }
+  public int edgeSource(int edge) { return m_graph.edgeSource(edge); }
+  public int edgeTarget(int edge) { return m_graph.edgeTarget(edge); }
+  public IntEnumerator edgesAdjacent(int node, boolean outgoing,
+                                     boolean incoming, boolean undirected) {
+    return m_graph.edgesAdjacent(node, outgoing, incoming, undirected); }
+  public IntIterator edgesConnecting(int node0, int node1,
+                                     boolean outgoing, boolean incoming,
+                                     boolean undirected) {
+    return m_graph.edgesConnecting(node0, node1, outgoing,
+                                   incoming, undirected); }
+  //////////////////////////////////
+  // END: Implements DynamicGraph //
+  //////////////////////////////////
 
   // Not specified by giny.model.RootGraph.  GraphPerspective implementation
   // in this package relies on this method.
