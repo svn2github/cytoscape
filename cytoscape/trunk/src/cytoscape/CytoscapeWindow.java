@@ -796,6 +796,22 @@ public void selectNodes (Node [] nodesToSelect, boolean clearAllSelectionsFirst)
   redrawGraph ();
 
 } // selectNodesByName
+//-----------------------------------------------------------------------------
+public void deselectAllNodes(boolean redrawGraph){
+    if(redrawGraph){
+	deselectAllNodes();
+    }else{
+	//Graph2D g = graphView.getGraph2D();
+	//Node [] nodes = graphView.getGraph2D().getNodeArray();
+	Node [] nodes = graph.getNodeArray();
+	for (int i=0; i < nodes.length; i++) {
+	    //NodeRealizer nodeRealizer = graphView.getGraph2D().getRealizer(nodes [i]);
+	    //nodeRealizer.setSelected (false);
+	    this.graph.setSelected(nodes[i],false);
+	} // for i
+    }
+    
+}
 //------------------------------------------------------------------------------
 public void deselectAllNodes ()
 {
@@ -995,7 +1011,7 @@ public void applyLayout (boolean animated)
 // applyLayoutSelection
 //
 // apply layout, but only on currently selected nodes
-protected void applyLayoutSelection() {
+public void applyLayoutSelection() {
     Graph2D g = graphView.getGraph2D();
 
     // special case for EmbeddedLayouter: layout whole graph,
