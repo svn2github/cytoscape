@@ -73,7 +73,9 @@ public void testCtor () throws Exception
   PluginLoader loader = new PluginLoader (null, new CytoscapeConfig (args),
                                           nodeAttributes, edgeAttributes);
 
-  assertTrue (loader.getClassesToLoad().length == 2);
+  String[] allClasses = loader.getClassesToLoad();
+  assertTrue( Arrays.asList(allClasses).contains("cytoscape.plugins.demo.Foo") );
+  assertTrue( Arrays.asList(allClasses).contains("cytoscape.plugins.demo.Bar") );
 
   
 } // testDefaultCtor
