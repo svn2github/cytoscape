@@ -13,6 +13,10 @@
     <delete dir="${build.dir}"/>
   </target>
 
+  <target name="classpath">
+    <echo message="${basedir}/lib/cytoscape-util-intr.jar:${build.dir}/cytoscape-graph-dynamic.jar"/>
+  </target>
+
   <target name="doc">
     <javadoc destdir="${javadoc.dir}"
              source="1.4">
