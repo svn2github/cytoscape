@@ -107,22 +107,28 @@ class FGraphPerspective implements GraphPerspective
 
   public Node hideNode(Node node)
   {
-    throw new IllegalStateException("not implemented yet");
+    if (node.getRootGraph() == m_root &&
+        hideNode(node.getRootGraphIndex()) < 0) return node;
+    else return null;
   }
 
-  public int hideNode(int perspNodeInx)
+  public int hideNode(int rootGraphNodeInx)
   {
-    throw new IllegalStateException("not implemented yet");
+    return m_weeder.hideNode(this, rootGraphNodeInx);
   }
 
   public java.util.List hideNodes(java.util.List nodes)
   {
-    throw new IllegalStateException("not implemented yet");
+    final java.util.ArrayList returnThis = new java.util.ArrayList();
+    for (int i = 0; i < nodes.size(); i++)
+      if (hideNode((Node) nodes.get(i)) != null)
+        returnThis.add(nodes.get(i));
+    return returnThis;
   }
 
-  public int[] hideNodes(int[] perspNodeInx)
+  public int[] hideNodes(int[] rootGraphNodeInx)
   {
-    throw new IllegalStateException("not implemented yet");
+    return m_weeder.hideNodes(this, rootGraphNodeInx);
   }
 
   public Node restoreNode(Node node)
@@ -732,14 +738,38 @@ class FGraphPerspective implements GraphPerspective
              ("internal error - node didn't exist, its adjacent edges did");
     }
 
-    private final int[] hideNodes(Object source, Node[] nodes)
+    // RootGraphChangeSniffer is not to call this method.  We rely on
+    // the specified nodes still existing in the RootGraph in this method.
+    private final int[] hideNodes(GraphPerspective source, int[] rootNodeInx)
+    {
+      // We can't use m_heap here because it's use by every _hideNode().
+      final MinIntHeap successes = new MinIntHeap();
+      final int[] returnThis = new int[rootNodeInx.length];
+      for (int i = 0; i < rootNodeInx.length; i++) {
+        returnThis[i] = _hideNode(this, rootNodeInx[i]);
+        if (returnThis[i] != 0) successes.toss(i); }
+      if (successes.size() > 0) {
+        final GraphPerspectiveChangeListener listener = m_lis[0];
+        if (listener != null) {
+          final Node[] successArr = new Node[successes.size()];
+          final IntEnumerator enum = successes.elements();
+          int index = -1;
+          while (enum.numRemaining() > 0)
+            successArr[++index] = m_root.getNode(rootNodeInx[enum.nextInt()]);
+          listener.graphPerspectiveChanged
+            (new GraphPerspectiveNodesHiddenEvent(source, successArr)); } }
+      return returnThis;
+    }
+
+    // Entries in the nodes array may not be null.
+    // This method is to be called by RootGraphChangeSniffer.
+    private final void hideNodes(Object source, Node[] nodes)
     {
       // We can't use m_heap here because it's used be every _hideNode().
       final MinIntHeap successes = new MinIntHeap();
-      final int[] returnThis = new int[nodes.length];
       for (int i = 0; i < nodes.length; i++) {
-        returnThis[i] = _hideNode(source, nodes[i].getRootGraphIndex());
-        if (returnThis[i] != 0) successes.toss(i); }
+        if (_hideNode(source, nodes[i].getRootGraphIndex()) != 0)
+          successes.toss(i); }
       if (successes.size() > 0) {
         final GraphPerspectiveChangeListener listener = m_lis[0];
         if (listener != null) {
@@ -750,7 +780,6 @@ class FGraphPerspective implements GraphPerspective
             successArr[++index] = nodes[enum.nextInt()];
           listener.graphPerspectiveChanged
             (new GraphPerspectiveNodesHiddenEvent(source, successArr)); } }
-      return returnThis;          
     }
 
     // RootGraphChangeSniffer is not to call this method.  We rely on
