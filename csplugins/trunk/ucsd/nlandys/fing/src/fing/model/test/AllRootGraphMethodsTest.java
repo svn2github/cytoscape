@@ -490,6 +490,30 @@ public final class AllRootGraphMethodsTest
     if (connEdges != null) throw new IllegalStateException("not null");
     connEdges = root.getEdgeIndicesArray(nodeInx[1], 99, true);
     if (connEdges != null) throw new IllegalStateException("not null");
+
+    // getInDegree(Node).
+    if (root.getInDegree(root2Node) != -1)
+      throw new IllegalStateException("not in degree -1 for other node");
+    if (root.getInDegree(root.getNode(nodeInx[2])) != 3)
+      throw new IllegalStateException("not in degree 3 for node");
+    if (root.getInDegree(root.getNode(nodeInx[3])) != 0)
+      throw new IllegalStateException("not in degree 0 for node");
+    if (root.getInDegree(root.getNode(nodeInx[4])) != 0)
+      throw new IllegalStateException("not in degree 0 for node");
+    if (root.getInDegree(root.getNode(nodeInx[0])) != 2)
+      throw new IllegalStateException("not in degree 2 for node");
+    if (root.getInDegree(root.getNode(nodeInx[1])) != 3)
+      throw new IllegalStateException("not in degree 3 for node");
+
+    // getInDegree(int).
+    if (root.getInDegree(minNodeInx - 1) != -1 ||
+        root.getInDegree(0) != -1 ||
+        root.getInDegree(99) != -1)
+      throw new IllegalStateException("not in degree -1");
+    if (root.getInDegree(nodeInx[1]) != 3)
+      throw new IllegalStateException("not in degree 3");
+    if (root.getInDegree(nodeInx[0]) != 2)
+      throw new IllegalStateException("not in degree 2");
   }
 
 }
