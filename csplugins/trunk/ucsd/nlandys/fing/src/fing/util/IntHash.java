@@ -63,23 +63,22 @@ public final class IntHash
 
   /**
    * Determines whether or not the value specified is in this hashtable.
-   * Returns true if and only if the value specified is in this hashtable.<p>
+   * Returns the value specified if this value is in the hashtable; otherwise
+   * returns -1.<p>
    * It is an error to pass negative values to this method.  Passing
    * negative values to this method will result in undefined behavior of
    * this hashtable.
    */
-  public final boolean get(final int value)
+  public final int get(final int value)
   {
-    final int h1OfKey = value % m_size;
-    int valInArr = m_arr[h1OfKey];
-    if (valInArr < 0) return false;
-    if (valInArr == value) return true;
-    final int h2OfKey = 1 + (value % (m_size - 1));
-    int index = (h1OfKey + h2OfKey) % m_size;
-    valInArr = m_arr[index];
-    while (true) {
-      if (valInArr < 0) return false;
-      if (valInArr == value) return true; }
+    final int size = m_size;
+    int index;
+    // The one thing about ths 'for' loop that I don't like is that we're
+    // calculating (value % (size - 1)) more than once potentially.
+    for (index = value % size;
+         m_arr[index] >= 0 && m_arr[index] != value;
+         index = (index + 1 + (value % (size - 1))) % size) { }
+    return m_arr[index];
   }
 
   /**
