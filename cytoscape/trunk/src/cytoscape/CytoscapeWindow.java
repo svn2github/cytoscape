@@ -807,8 +807,15 @@ public void applyLayout (boolean animated)
 //
 // apply layout, but only on currently selected nodes
 protected void applyLayoutSelection() {
+    // special case for EmbeddedLayouter: layout whole graph fixing most nodes
+    if (layouter.getClass().getName().endsWith("EmbeddedLayouter")) {
+	
+    }
+
+    
     System.out.print ("starting layout...");  System.out.flush ();
     setInteractivity (false);
+
 
     Graph2D g = graphView.getGraph2D();
     Subgraph subgraph = new Subgraph(g, g.selectedNodes());
@@ -824,7 +831,7 @@ protected void applyLayoutSelection() {
 	e.clearBends();
 	cursor.cyclicNext();
     }
-    
+
     setInteractivity (true);
     System.out.println("  done");
 }
