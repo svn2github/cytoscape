@@ -63,7 +63,8 @@ public class FilterUsePanel extends JPanel
     //add( pane0 );
     add(pane0);
     filterListPanel.getSwingPropertyChangeSupport().addPropertyChangeListener( filterEditorPanel );
-  
+    filterListPanel.getSwingPropertyChangeSupport().addPropertyChangeListener( this );
+
   }
   
   public FilterListPanel getFilterListPanel () {
@@ -73,10 +74,15 @@ public class FilterUsePanel extends JPanel
   public void propertyChange ( PropertyChangeEvent e ) {
 
     if ( e.getPropertyName() == FilterListPanel.FILTER_SELECTED ) {
+      removeButton.setEnabled(true);
+      apply.setEnabled(true);
       // do something on a Filter Selected
-    }
-
+    }else if ( e.getPropertyName() == FilterListPanel.NO_SELECTION ) {
+      removeButton.setEnabled(false);
+      apply.setEnabled(false);
+    } // end of if ()
   }
+    
   public JPanel createManagePanel(){
     JPanel result = new JPanel();
     result.setBorder(new TitledBorder("Manage Filters"));
@@ -84,6 +90,7 @@ public class FilterUsePanel extends JPanel
     addButton.addActionListener(this);
     removeButton = new JButton("Remove selected filter");
     removeButton.addActionListener(this);
+    removeButton.setEnabled(false);
     result.add(addButton);
     result.add(removeButton);
     return result;
@@ -189,18 +196,17 @@ public class FilterUsePanel extends JPanel
 
     select = new JCheckBox( "Select Passed" );
     hide = new JCheckBox( "Hide Failed" );
+    apply = new JButton ( new AbstractAction( "Apply filter" ){
+	public void actionPerformed(ActionEvent e){
+	  SwingUtilities.invokeLater(new Runnable(){
+	      public void run(){
+		testObjects();
+	      }
+	    });}});
+    apply.setEnabled(false);
     actionPanel.add(select);
     actionPanel.add(hide);
-
-    actionPanel.add( new JButton (new AbstractAction( "Go!" ) {
-	public void actionPerformed ( ActionEvent e ) {
-	  // Do this in the GUI Event Dispatch thread...
-	  SwingUtilities.invokeLater( new Runnable() {
-	      public void run() {
-		//do the action
-		testObjects();
-	      } //run
-	    } ); } } ) );
+    actionPanel.add(apply);
     return actionPanel;
   }
   

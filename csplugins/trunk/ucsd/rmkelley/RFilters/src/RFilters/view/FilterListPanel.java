@@ -42,7 +42,7 @@ public class FilterListPanel
     JPanel listPanel = new JPanel();
     listPanel.setBorder( new TitledBorder( "Available Filters" ) );
 
-    filterList = new JList();
+    filterList = new JList(FilterManager.defaultManager());
     filterList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     filterList.addListSelectionListener( this );
     updateLists();
@@ -83,16 +83,17 @@ public class FilterListPanel
   //}
 
   public void propertyChange ( PropertyChangeEvent e ) {
-    updateLists();
+    //updateLists();
   }
 
   protected void updateLists () {
-    filterModel = new DefaultListModel();
-    filterModel.ensureCapacity(FilterManager.defaultManager().getFilterCount());
-    for(Iterator i = FilterManager.defaultManager().getFilters();i.hasNext();){
-      filterModel.addElement(i.next());
-    }
+    //System.err.println("update list");
+    //filterModel = new DefaultListModel();
+    //filterModel.ensureCapacity(FilterManager.defaultManager().getFilterCount());
+    //for(Iterator i = FilterManager.defaultManager().getFilters();i.hasNext();){
+    //  filterModel.addElement(i.next());
+    //}
     //filterList.setModel(filterModel);
-    filterList.setModel(FilterManager.defaultManager());
+    //filterList.setModel(FilterManager.defaultManager());
   }
 }

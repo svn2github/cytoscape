@@ -20,23 +20,24 @@ public class FilterEditorPanel
   extends JPanel 
   implements PropertyChangeListener{
 
-  FilterEditor currentEditor;
+  JPanel currentEditor;
+  JPanel defaultPanel;
   public FilterEditorPanel () {
     super();
     initialize();
   }
 
   public void initialize() {
-    currentEditor = (FilterEditor)FilterEditorManager.defaultManager().getEditors().next();
+    defaultPanel = new DefaultPanel(); 
+    currentEditor = defaultPanel;
     add(currentEditor);
-    currentEditor.setEnabled(false);
   }
   
-  public void setActiveEditor ( FilterEditor editor ) {
+  public void setActivePanel ( JPanel editor ) {
     remove(currentEditor);
     add(editor);
-    editor.setEnabled(true);
     validate();
+    paint(getGraphics());
     currentEditor = editor;
     System.err.println("Set editor active");
   }
@@ -46,12 +47,25 @@ public class FilterEditorPanel
       Filter f = ((FilterListPanel)e.getSource()).getSelectedFilter();
       FilterEditor editor = FilterEditorManager.defaultManager().getEditorForFilter(f);
       editor.editFilter(f);
-      setActiveEditor(editor);
+      setActivePanel(editor);
     }else if( e.getPropertyName() == FilterListPanel.NO_SELECTION ){
-      currentEditor.setEnabled(false);
+      setActivePanel(defaultPanel);
     }
   }
+}
 
+class DefaultPanel extends JPanel{
+  public DefaultPanel(){
+    JTextArea text = new JTextArea();
+    text.setLineWrap(true);
+    text.setWrapStyleWord(true);
+    text.setEditable(false);
+    text.setText("There is no filter currently selected. To edit a filter, select it from the list. If the list is empty, you can create a new filter with the \"Create new filter\" button.");
+    text.setColumns(25);
+    text.setBackground(this.getBackground());
+    setLayout(new BorderLayout());
+    add(text,BorderLayout.CENTER);
+  }
 }
     
 

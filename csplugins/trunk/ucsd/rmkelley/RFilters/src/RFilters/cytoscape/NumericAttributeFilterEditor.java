@@ -17,7 +17,6 @@ import cytoscape.data.GraphObjAttributes;
 import filter.view.*;
 import filter.model.*;
 import cytoscape.CyNetwork;
-import ViolinStrings.Strings;
 
 /**
  * This is a Cytoscape specific filter that will pass nodes if
@@ -26,22 +25,26 @@ import ViolinStrings.Strings;
 
 public class NumericAttributeFilterEditor 
   extends FilterEditor 
-  implements ActionListener {
+  implements ActionListener,FocusListener {
          
   /**
    * This is the Name that will go in the Tab 
    * and is returned by the "toString" method
    */
-  protected String identifier;
-
+  
   protected JTextField nameField;
   protected JComboBox classBox;
   protected JTextField searchField;
   protected JComboBox attributeBox;
   protected JComboBox comparisonBox;
 
+  protected String identifier;
+
+  protected String filterName;
   protected Number searchNumber;
   protected String selectedAttribute;
+  protected String selectedClass;
+  protected String comparison;
 
   protected NumericAttributeFilter filter;
 
@@ -49,23 +52,17 @@ public class NumericAttributeFilterEditor
   //protected GraphObjAttributes objectAttributes;
 
   protected Number DEFAULT_SEARCH_NUMBER = new Double(0);
-  protected Number RESET_SEARCH_NUMBER;
-
   protected String DEFAULT_FILTER_NAME = "Numeric: ";
-  protected String RESET_FITLER_NAME;
-
   protected String DEFAULT_SELECTED_ATTRIBUTE = "";
-  protected String RESET_SELECTED_ATTRIBUTE;
-
   protected String DEFAULT_COMPARISON = NumericAttributeFilter.EQUAL;
-  protected String RESET_COMPARISON = "";
+  protected String DEFAULT_CLASS = NumericAttributeFilter.NODE;
 
-  protected String RESET_CLASS;
   protected Class NODE_CLASS;
   protected Class EDGE_CLASS;
   protected Class NUMBER_CLASS;
-  protected String DEFAULT_CLASS = NumericAttributeFilter.NODE; 
   protected Class filterClass;
+  protected ComboBoxModel nodeAttributeModel;
+  protected ComboBoxModel edgeAttributeModel;
 
   public NumericAttributeFilterEditor ( CyWindow cyWindow ) {
     super();
@@ -75,6 +72,8 @@ public class NumericAttributeFilterEditor
       NODE_CLASS = Class.forName("giny.model.Node");
       EDGE_CLASS = Class.forName("giny.model.Edge");
       filterClass = Class.forName("filter.cytoscape.NumericAttributeFilter");
+      nodeAttributeModel = new NodeAttributeComboBoxModel(NUMBER_CLASS);
+      edgeAttributeModel = new EdgeAttributeComboBoxModel(NUMBER_CLASS);
     }catch(Exception e){
       e.printStackTrace();
     }
@@ -88,6 +87,8 @@ public class NumericAttributeFilterEditor
     nameField = new JTextField(15);
     namePanel.add( new JLabel( "Filter Name" ) );
     namePanel.add( nameField );
+    nameField.addActionListener(this);
+    nameField.addFocusListener(this);
     add( namePanel,BorderLayout.NORTH );
 
     JPanel all_panel = new JPanel();
@@ -109,6 +110,7 @@ public class NumericAttributeFilterEditor
     attributeBox = new JComboBox();
     attributeBox.setEditable(false);
     attributeBox.addActionListener(this);
+    attributeBox.setModel(AttributeManager.nodeAttributeManager());
     middlePanel.add(attributeBox);
 
     JPanel bottomPanel = new JPanel();	
@@ -126,30 +128,13 @@ public class NumericAttributeFilterEditor
     searchField = new JTextField(10);
     searchField.setEditable( true );
     searchField.addActionListener( this );
+    searchField.addFocusListener(this);
     bottomPanel.add(searchField);
 				
     all_panel.add(topPanel);
     all_panel.add(middlePanel);
     all_panel.add(bottomPanel);
     //updateAttributeBox(NODE_CLASS);
-    add( new JButton (new AbstractAction( "Update List of Attributes" ) {
-	public void actionPerformed ( ActionEvent e ) {
-	  // Do this in the GUI Event Dispatch thread...
-	  SwingUtilities.invokeLater( new Runnable() {
-	      public void run() {
-		/*String[] atts = objectAttributes.getAttributeNames();
-		  System.out.println( "There are: "+atts.length+" attributes." );
-		  for ( int i = 0; i < atts.length; ++i ) {
-		  System.out.println( i+". "+atts[i] );
-		  }
-		  attributeBox.setModel( new DefaultComboBoxModel( objectAttributes.getAttributeNames() ) );
-		  //( ( DefaultComboBoxModel )attributeBox.getModel() ).addElement( "canonicalName" );
-		  */
-		updateAttributeBox();
-	      }
-	    } ); } } ),BorderLayout.SOUTH );
-
-    setDefaults();
     add(all_panel,BorderLayout.CENTER);
   }
 
@@ -173,21 +158,6 @@ public class NumericAttributeFilterEditor
     return NumericAttributeFilter.FILTER_DESCRIPTION;
   }
 
-  /** 
-   * Returns a new Filter, or the Modified Filter 
-   */
-  public Filter getFilter() {
-    updateName();
-    Number search_item = getSearchNumber(); 
-    String attr_item = getSelectedAttribute();
-    String currentClass = getSelectedClass(); 
-    String currentComparison = getSelectedComparison();
-    if ( currentClass == null || currentComparison == null ||search_item == null || attr_item == null || nameField.getText() == null ) {
-      return null;
-    }
-    return new NumericAttributeFilter( cyWindow, currentComparison, currentClass, attr_item, search_item, nameField.getText() );
-  }
-
   /**
    * Create a new filter with the given name initialized to the default values
    */
@@ -205,32 +175,15 @@ public class NumericAttributeFilterEditor
       // good, this Filter is of the right type
       getSwingPropertyChangeSupport().removePropertyChangeListener( this.filter );
       this.filter = ( NumericAttributeFilter )filter;
-      readInFilter();
+      setFilterName(this.filter.toString());
+      setSearchNumber(this.filter.getSearchNumber());
+      setSelectedAttribute(this.filter.getSelectedAttribute());
+      setSelectedClass(this.filter.getClassType());
+      setSelectedComparison(this.filter.getComparison());
+      updateName();
       getSwingPropertyChangeSupport().addPropertyChangeListener( this.filter );
     }
   }
-
-  /**
-   * If the Filter is null, then set all values to it, otherwise reset 
-   * to the Defaults.
-   */
-  public void reset () {
-    if ( filter == null ) {
-      setDefaults();
-    } else {
-      resetFilter();
-    }
-  }
-
-  /**
-   * Clears the Filter, and sets to Defaults.
-   */
-  public void clear () {
-    filter = null;
-    getSwingPropertyChangeSupport().removePropertyChangeListener( filter );
-    setDefaults();
-  }
-
 
   //----------------------------------------//
   // NumericAttributeFilter Methods
@@ -244,164 +197,132 @@ public class NumericAttributeFilterEditor
   // Filter Name ///////////////////////////////////////
 
   public String getFilterName () {
-    return nameField.getText();
+    return filterName;
   }
 
   public void setFilterName ( String name ) {
     nameField.setText( name );
+    filterName = name;
+    fireFilterNameChanged();
   }
 
   // Search String /////////////////////////////////////
   
   public Number getSearchNumber () {
-    String numberString = searchField.getText();
-    try{
-      searchNumber = new Double(numberString);
-    }catch(Exception e){
-      searchNumber = DEFAULT_SEARCH_NUMBER;
-      searchField.setText(searchNumber.toString());
-    }
     return searchNumber;
+    
   }
 
   public void setSearchNumber ( Number searchNumber ) {
     this.searchNumber = searchNumber;
     searchField.setText( searchNumber.toString() );
+    fireSearchNumberChanged();
   }
 
   // Selected Attribute ////////////////////////////////
   
   public String getSelectedAttribute () {
-    if(attributeBox.getItemCount()==0){
-      return null;
-    }
-    return ( String )attributeBox.getSelectedItem();
+    return selectedAttribute;
   }
 
   public void setSelectedAttribute ( String new_attr ) {
-    updateAttributeBox();
+    selectedAttribute = new_attr;
     attributeBox.setSelectedItem( new_attr );
+    fireAttributeChanged();
   }
 
   public String getSelectedClass(){
-    return (String)classBox.getSelectedItem();
+    return selectedClass;
   }
 
   public void setSelectedClass(String newClass){
+    selectedClass = newClass;
+    if ( selectedClass == NumericAttributeFilter.NODE) {
+      attributeBox.setModel(nodeAttributeModel);
+      attributeBox.setSelectedItem(selectedAttribute);    
+    } // end of if ()
+    else {
+      attributeBox.setModel(edgeAttributeModel);
+      attributeBox.setSelectedItem(selectedAttribute);
+    } // end of else
     classBox.setSelectedItem(newClass);
+    fireClassChanged();
+    setSelectedAttribute((String)attributeBox.getSelectedItem());
   }
 
   public String getSelectedComparison(){
-    return (String)comparisonBox.getSelectedItem();
+    return comparison;
   }
 
   public void setSelectedComparison(String comparison){
+    this.comparison = comparison;
     comparisonBox.setSelectedItem(comparison);
+    fireComparisonChanged();
   }
 
   public void actionPerformed ( ActionEvent e ) {
-    if ( e.getSource() == searchField ) {
-      fireSearchNumberChanged();
-    } else if ( e.getSource() == nameField ) {
-      fireFilterNameChanged();
-    } else if ( e.getSource() == attributeBox ) {
-      fireAttributeChanged();
-    } else if( e.getSource() == classBox ){
-      fireClassChanged();
-    } else if( e.getSource() == comparisonBox){
-      fireComparisonChanged();
-    }
-    
-    updateName();
+    handleEvent(e);
   }
 
+  private void handleEvent(AWTEvent e){
+    if ( e.getSource() == nameField) {
+      setFilterName(nameField.getText());
+    } // end of if ()
+    else {
+      if ( e.getSource() == searchField ) {
+	String numberString = searchField.getText();
+	Number searchNumber = null;
+	try{
+	  searchNumber = new Double(numberString);
+	}catch(Exception except){
+	  searchNumber = DEFAULT_SEARCH_NUMBER;
+	  searchField.setText(searchNumber.toString());
+	}
+	setSearchNumber(searchNumber);
+      } else if ( e.getSource() == attributeBox ) {
+	setSelectedAttribute((String)attributeBox.getSelectedItem());
+      } else if( e.getSource() == classBox ){
+	setSelectedClass((String)classBox.getSelectedItem());
+      } else if( e.getSource() == comparisonBox){
+	setSelectedComparison((String)comparisonBox.getSelectedItem());
+      }
+      updateName();
+    }
+  }
 
+  public void focusGained(FocusEvent e){};
+  public void focusLost(FocusEvent e){
+    handleEvent(e);
+  }
+ 
   public void updateName () {
-
     StringBuffer buffer = new StringBuffer();
-  
     buffer.append( getSelectedClass() + " : " );
     buffer.append( getSelectedAttribute() );
     buffer.append( getSelectedComparison() );
     buffer.append( getSearchNumber() );
-
-    nameField.setText( buffer.toString() );
+    setFilterName(buffer.toString());
   }
 
 
   public void fireSearchNumberChanged () {
-
     pcs.firePropertyChange( NumericAttributeFilter.SEARCH_NUMBER_EVENT, null, getSearchNumber() );
   }
 
   public void fireFilterNameChanged () {
-    pcs.firePropertyChange( NumericAttributeFilter.FILTER_NAME_EVENT, null, nameField.getText() );
+    pcs.firePropertyChange( NumericAttributeFilter.FILTER_NAME_EVENT, null, getFilterName() );
   }
 
   public void fireComparisonChanged(){
     pcs.firePropertyChange(NumericAttributeFilter.COMPARISON_EVENT, null, getSelectedComparison() );
   }
   public void fireClassChanged(){
-    updateAttributeBox();
     pcs.firePropertyChange( NumericAttributeFilter.CLASS_TYPE_EVENT,null, getSelectedClass());
-		
   }
   public void fireAttributeChanged () {
-    String new_attr = getSelectedAttribute();
-    //searchBox.setModel( new DefaultComboBoxModel( objectAttributes.getUniqueValues( new_attr ) ) );
     pcs.firePropertyChange( NumericAttributeFilter.SELECTED_ATTRIBUTE_EVENT, null, getSelectedAttribute() );
   }
 
-  public void updateAttributeBox(){
-    GraphObjAttributes objectAttributes = null;
-    String type = getSelectedClass();
-    if(type.equals(NumericAttributeFilter.NODE)){
-      objectAttributes = cyWindow.getNetwork().getNodeAttributes();
-    }
-    else{
-      objectAttributes = cyWindow.getNetwork().getEdgeAttributes();
-    }
-    String [] attributeNames = objectAttributes.getAttributeNames();
-    Vector stringAttributes = new Vector();
-    for(int idx=0;idx<attributeNames.length;idx++){
-      if(NUMBER_CLASS.isAssignableFrom(objectAttributes.getClass(attributeNames[idx]))){
-	stringAttributes.add(attributeNames[idx]);
-      }	
-    }
-    attributeBox.removeAllItems();
-    Iterator attrIt = stringAttributes.iterator();
-    while(attrIt.hasNext()){
-      attributeBox.addItem(attrIt.next());
-    }
-    if(attributeBox.getItemCount() != 0){
-      attributeBox.setSelectedIndex(0);
-    }
-    fireAttributeChanged();
-	
-  }
-  public void setDefaults () {
-    setSearchNumber( DEFAULT_SEARCH_NUMBER );
-    setFilterName( DEFAULT_FILTER_NAME );
-    setSelectedClass(DEFAULT_CLASS); 
-    setSelectedAttribute( DEFAULT_SELECTED_ATTRIBUTE );
-    setSelectedComparison(DEFAULT_COMPARISON);	
-  }
-
-  public void readInFilter () {
-    RESET_SEARCH_NUMBER = filter.getSearchNumber();
-    RESET_FITLER_NAME = filter.toString();
-    RESET_SELECTED_ATTRIBUTE = filter.getSelectedAttribute();
-    RESET_CLASS = filter.getClassType();
-    RESET_COMPARISON = filter.getComparison();
-    resetFilter();
-  }
-
-  public void resetFilter () {
-    setSearchNumber( RESET_SEARCH_NUMBER );
-    setFilterName( RESET_FITLER_NAME );
-    setSelectedClass(RESET_CLASS);
-    setSelectedComparison(RESET_COMPARISON);
-    setSelectedAttribute(RESET_SELECTED_ATTRIBUTE);
-    fireFilterNameChanged();
-  }
+  
+ 
 }

@@ -44,16 +44,14 @@ public class FilterManager implements ListModel, PropertyChangeListener{
 
   public void fireFilterEvent () {
     pcs.firePropertyChange( FILTER_EVENT, null, null );
-    notifyListeners();
-    
   }
+  
   public void notifyListeners(){
     for(Iterator listenIt = listeners.iterator();listenIt.hasNext();){
       ((ListDataListener)listenIt.next()).contentsChanged(new ListDataEvent(this,ListDataEvent.CONTENTS_CHANGED,0,filterList.size()));
-      
     }
   }
-
+  
   /**
    * Add/Replace
    */
@@ -61,11 +59,13 @@ public class FilterManager implements ListModel, PropertyChangeListener{
     filterList.add(filter);
     filter.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
     fireFilterEvent();
+    notifyListeners();
   }
 
   public boolean removeFilter(Filter filter){
     boolean result = filterList.remove(filter);
     fireFilterEvent();
+    notifyListeners();
     return result;
   }
 
@@ -96,6 +96,7 @@ public class FilterManager implements ListModel, PropertyChangeListener{
   //implements PropertyChange
   public void propertyChange(PropertyChangeEvent pce){
     notifyListeners();
+    fireFilterEvent();
   }
 
   //implements ListModel

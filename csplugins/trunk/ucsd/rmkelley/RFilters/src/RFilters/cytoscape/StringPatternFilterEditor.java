@@ -25,7 +25,7 @@ import ViolinStrings.Strings;
 
 public class StringPatternFilterEditor 
   extends FilterEditor 
-  implements ActionListener {
+  implements ActionListener,FocusListener {
          
   /**
    * This is the Name that will go in the Tab 
@@ -40,18 +40,15 @@ public class StringPatternFilterEditor
 
   protected String searchString;
   protected String selectedAttribute;
+  protected String selectedClass;
 
   protected StringPatternFilter filter;
 
   protected CyWindow cyWindow;
   protected String DEFAULT_SEARCH_STRING = "";
-  protected String RESET_SEARCH_STRING;
-
   protected String DEFAULT_FILTER_NAME = "Regex: ";
-  protected String RESET_FITLER_NAME;
-
   protected String DEFAULT_SELECTED_ATTRIBUTE = "";
-  protected String RESET_SELECTED_ATTRIBUTE;
+
 
   protected String RESET_CLASS;
   protected Class NODE_CLASS;
@@ -59,6 +56,10 @@ public class StringPatternFilterEditor
   protected Class STRING_CLASS;
   protected String DEFAULT_CLASS = StringPatternFilter.NODE; 
   protected Class filterClass;
+
+  protected ComboBoxModel nodeAttributeModel;
+  protected ComboBoxModel edgeAttributeModel;
+
 
   public StringPatternFilterEditor ( CyWindow cyWindow ) {
     super();
@@ -68,6 +69,8 @@ public class StringPatternFilterEditor
       NODE_CLASS = Class.forName("giny.model.Node");
       EDGE_CLASS = Class.forName("giny.model.Edge");
       filterClass = Class.forName("filter.cytoscape.StringPatternFilter");
+      nodeAttributeModel = new NodeAttributeComboBoxModel(STRING_CLASS);
+      edgeAttributeModel = new EdgeAttributeComboBoxModel(STRING_CLASS);
     }catch(Exception e){
       e.printStackTrace();
     }
@@ -79,8 +82,11 @@ public class StringPatternFilterEditor
 
     JPanel namePanel = new JPanel();
     nameField = new JTextField(15);
+    nameField.addActionListener(this);
+    nameField.addFocusListener(this);
     namePanel.add( new JLabel( "Filter Name" ) );
     namePanel.add( nameField );
+   
     add( namePanel,BorderLayout.NORTH );
 
     JPanel all_panel = new JPanel();
@@ -108,29 +114,14 @@ public class StringPatternFilterEditor
     searchField = new JTextField(10);
     searchField.setEditable( true );
     searchField.addActionListener( this );
+    searchField.addFocusListener(this);
     bottomPanel.add(searchField);
 
     all_panel.add(topPanel);
     all_panel.add(middlePanel);
     all_panel.add(bottomPanel);
-    add( new JButton (new AbstractAction( "Update List of Attributes" ) {
-	public void actionPerformed ( ActionEvent e ) {
-	  // Do this in the GUI Event Dispatch thread...
-	  SwingUtilities.invokeLater( new Runnable() {
-	      public void run() {
-		/*String[] atts = objectAttributes.getAttributeNames();
-		  System.out.println( "There are: "+atts.length+" attributes." );
-		  for ( int i = 0; i < atts.length; ++i ) {
-		  System.out.println( i+". "+atts[i] );
-		  }
-		  attributeBox.setModel( new DefaultComboBoxModel( objectAttributes.getAttributeNames() ) );
-		  //( ( DefaultComboBoxModel )attributeBox.getModel() ).addElement( "canonicalName" );
-		  */ 
-		updateAttributeBox();
-	      }
-	    } ); } } ),BorderLayout.SOUTH );
     add(all_panel,BorderLayout.CENTER);
-    setDefaults();
+
   }
 
 
@@ -153,20 +144,6 @@ public class StringPatternFilterEditor
     return StringPatternFilter.FILTER_ID;
   }
 
-  /** 
-   * Returns a new Filter, or the Modified Filter 
-   */
-  public Filter getFilter() {
-    updateName();
-    String search_item = getSearchString();
-    String attr_item = getSelectedAttribute();
-    String currentClass = getSelectedClass(); 
-    if ( currentClass == null || search_item == null || attr_item == null || nameField.getText() == null ) {
-      return null;
-    }
-    return new StringPatternFilter( cyWindow, currentClass, attr_item, search_item, nameField.getText() );
-  }
-
   /**
    * Creates a new filter initialized to the default values with the given name
    */
@@ -182,33 +159,15 @@ public class StringPatternFilterEditor
     if ( filter instanceof StringPatternFilter ) {
       // good, this Filter is of the right type
       getSwingPropertyChangeSupport().removePropertyChangeListener( this.filter );
-      this.filter = ( StringPatternFilter )filter;
-      readInFilter();
+      this.filter = ( StringPatternFilter )filter;      
+      setSearchString(this.filter.getSearchString());
+      setFilterName(this.filter.toString());
+      setSelectedAttribute(this.filter.getSelectedAttribute());
+      setSelectedClass(this.filter.getClassType());
+      updateName();
       getSwingPropertyChangeSupport().addPropertyChangeListener( this.filter );
     }
   }
-
-  /**
-   * If the Filter is null, then set all values to it, otherwise reset 
-   * to the Defaults.
-   */
-  public void reset () {
-    if ( filter == null ) {
-      setDefaults();
-    } else {
-      resetFilter();
-    }
-  }
-
-  /**
-   * Clears the Filter, and sets to Defaults.
-   */
-  public void clear () {
-    filter = null;
-    getSwingPropertyChangeSupport().removePropertyChangeListener( filter );
-    setDefaults();
-  }
-
 
   //----------------------------------------//
   // StringPatternFilter Methods
@@ -222,141 +181,104 @@ public class StringPatternFilterEditor
   // Filter Name ///////////////////////////////////////
 
   public String getFilterName () {
-    return nameField.getText();
+    return identifier;
   }
 
   public void setFilterName ( String name ) {
     nameField.setText( name );
+    identifier = name;
+    fireFilterNameChanged();
   }
 
   // Search String /////////////////////////////////////
   
   public String getSearchString () {
-    return searchField.getText();
+    return searchString;
   }
 
   public void setSearchString ( String search_string ) {
+    searchString = search_string;
     searchField.setText( search_string );
+    fireSearchStringChanged();
   }
 
   // Selected Attribute ////////////////////////////////
   
   public String getSelectedAttribute () {
-    if(attributeBox.getItemCount() ==0){
-      return null;
-    }
-    return ( String )attributeBox.getSelectedItem();
+    return selectedAttribute;
   }
 
   public void setSelectedAttribute ( String new_attr ) {
-    updateAttributeBox();
-    attributeBox.setSelectedItem( new_attr );
+    selectedAttribute = new_attr;
+    attributeBox.setSelectedItem(new_attr);
+    fireAttributeChanged();
   }
 
   public String getSelectedClass(){
-    return (String)classBox.getSelectedItem();
+    return selectedClass;
   }
 
   public void setSelectedClass(String newClass){
+    selectedClass = newClass;
+    if ( selectedClass == NumericAttributeFilter.NODE) {
+      attributeBox.setModel(AttributeManager.nodeAttributeManager());
+      attributeBox.setSelectedItem(selectedAttribute);    
+    } // end of if ()
+    else {
+      attributeBox.setModel(AttributeManager.edgeAttributeManager());
+      attributeBox.setSelectedItem(selectedAttribute);
+    } // end of else    
     classBox.setSelectedItem(newClass);
+    fireClassChanged();
+    setSelectedAttribute((String)attributeBox.getSelectedItem());
   }
 
-  public void actionPerformed ( ActionEvent e ) {
+  public void handleEvent ( AWTEvent e ) {
     if ( e.getSource() == searchField ) {
-      fireSearchStringChanged();
+      setSearchString(searchField.getText());
     } else if ( e.getSource() == nameField ) {
-      fireFilterNameChanged();
+      setFilterName(nameField.getText());
     } else if ( e.getSource() == attributeBox ) {
-      fireAttributeChanged();
+      setSelectedAttribute((String)attributeBox.getSelectedItem());
     } else if( e.getSource() == classBox ){
-      fireClassChanged();
+      setSelectedClass((String)classBox.getSelectedItem());
     }
-
     updateName();
+  }
 
+  public void actionPerformed(ActionEvent ae){
+    handleEvent(ae);
+  }
+
+  public void focusGained(FocusEvent e){};
+
+  public void focusLost(FocusEvent e){
+    handleEvent(e);
   }
 
   public void updateName () {
-
     StringBuffer buffer = new StringBuffer();
-    // buffer.append( "SF: ");
     buffer.append( getSelectedClass() + " : " );
     buffer.append( getSelectedAttribute()+" ~ " );
     buffer.append( getSearchString() );
-
-    nameField.setText( buffer.toString() );
+    setFilterName(buffer.toString());
   }
-
 
   public void fireSearchStringChanged () {
     pcs.firePropertyChange( StringPatternFilter.SEARCH_STRING_EVENT, null, getSearchString() );
   }
 
   public void fireFilterNameChanged () {
-    pcs.firePropertyChange( StringPatternFilter.FILTER_NAME_EVENT, null, nameField.getText() );
+    pcs.firePropertyChange( StringPatternFilter.FILTER_NAME_EVENT, null, getFilterName() );
   }
  
   public void fireClassChanged(){
-    updateAttributeBox();
     pcs.firePropertyChange( StringPatternFilter.CLASS_TYPE_EVENT,null, getSelectedClass());
 		
   }
+
   public void fireAttributeChanged () {
-    String new_attr = getSelectedAttribute();
-    //if(new_attr != null && !new_attr.equals("")){
-    //		searchBox.setModel( new DefaultComboBoxModel( objectAttributes.getUniqueValues( new_attr ) ) );
-    //}
     pcs.firePropertyChange( StringPatternFilter.SELECTED_ATTRIBUTE_EVENT, null, getSelectedAttribute() );
   }
 
-  public void updateAttributeBox(){
-    GraphObjAttributes objectAttributes = null;
-    String type = getSelectedClass();
-    if(type.equals(StringPatternFilter.NODE)){
-      objectAttributes = cyWindow.getNetwork().getNodeAttributes();
-    }
-    else{
-      objectAttributes = cyWindow.getNetwork().getEdgeAttributes();
-    }
-    String [] attributeNames = objectAttributes.getAttributeNames();
-    Arrays.sort( attributeNames );
-    Vector stringAttributes = new Vector();
-    for(int idx=0;idx<attributeNames.length;idx++){
-      if(STRING_CLASS.isAssignableFrom(objectAttributes.getClass(attributeNames[idx]))){
-	stringAttributes.add(attributeNames[idx]);
-      }	
-    }
-    attributeBox.removeAllItems();
-    Iterator attrIt = stringAttributes.iterator();
-    while(attrIt.hasNext()){
-      attributeBox.addItem(attrIt.next());
-    }
-    if(attributeBox.getItemCount() != 0){
-      attributeBox.setSelectedIndex(0);
-    }
-    fireAttributeChanged();
-	
-  }
-  public void setDefaults () {
-    setSearchString( DEFAULT_SEARCH_STRING );
-    setFilterName( DEFAULT_FILTER_NAME );
-    setSelectedClass(DEFAULT_CLASS); 
-    setSelectedAttribute( DEFAULT_SELECTED_ATTRIBUTE );
-  }
-
-  public void readInFilter () {
-    RESET_SEARCH_STRING = filter.getSearchString();
-    RESET_FITLER_NAME = filter.toString();
-    RESET_SELECTED_ATTRIBUTE = filter.getSelectedAttribute();
-    RESET_CLASS = filter.getClassType();
-    resetFilter();
-  }
-
-  public void resetFilter () {
-    setSearchString( RESET_SEARCH_STRING );
-    setFilterName( RESET_FITLER_NAME );
-    setSelectedClass(RESET_CLASS);
-    setSelectedAttribute( RESET_SELECTED_ATTRIBUTE );
-    fireFilterNameChanged();
-  }
 }

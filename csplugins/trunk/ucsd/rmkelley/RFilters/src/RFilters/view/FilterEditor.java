@@ -36,23 +36,6 @@ public abstract class  FilterEditor extends JPanel {
   public abstract void editFilter ( Filter filter );
 
   /**
-   * This Editor should be able to return the Editor that it is working on,
-   * this can be either a Filter that is being edited, or a new Filter.
-   */
-  public abstract Filter getFilter ();
-
-  /**
-   * Resets  all of tnhe Editor Fields, if a new Editor, or reverts
-   * back to the values that were read in when a Filter was read in.
-   */
-  public abstract void reset ();
-
-  /**
-   * Clear the FilterEditor
-   */
-  public abstract void clear ();
-    
-  /**
    * Create a filter initialized to the proper default values
    */
   public abstract Filter createDefaultFilter();

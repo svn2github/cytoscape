@@ -129,6 +129,7 @@ public class NumericAttributeFilter
    */
   public void setIdentifier ( String new_id ) {
     this.identifier = new_id;
+    pcs.firePropertyChange(FILTER_NAME_EVENT,null,new_id);
   }
 
   
@@ -226,35 +227,25 @@ public class NumericAttributeFilter
 
   public void setSearchNumber ( Number searchNumber ) {
     this.searchNumber = searchNumber;
-    fireSearchNumberChanged();
-  }
-
-  public void fireSearchNumberChanged () {
     pcs.firePropertyChange( SEARCH_NUMBER_EVENT, null, searchNumber );
   }
 
   // Selected_Attribute ///////////////////////////
-
   public String getSelectedAttribute () {
     return selectedAttribute;
   }
 
   public void setSelectedAttribute ( String new_attr ) {
     this.selectedAttribute = new_attr;
-    fireSelectedAttributeModified();
-  }
-
-  public void fireSelectedAttributeModified () {
     pcs.firePropertyChange( SELECTED_ATTRIBUTE_EVENT, null, selectedAttribute );
   }
 
-  public void setClassType(String classString){
+   public void setClassType(String classString){
     if(classString == NODE || classString.equals("Node")){
       this.classType = NODE_CLASS;
     }else{
       this.classType = EDGE_CLASS;
     }
-						
     pcs.firePropertyChange(CLASS_TYPE_EVENT,null,classString);
   }
 
