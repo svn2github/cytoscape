@@ -70,8 +70,11 @@ public final class MinIntHeap
    */
   public final void toss(int x)
   {
-    checkSize(1);
-    m_heap[++m_currentSize] = x;
+    try { m_heap[++m_currentSize] = x; }
+    catch (ArrayIndexOutOfBoundsException e) {
+      m_currentSize--;
+      checkSize(1);
+      m_heap[++m_currentSize] = x; }
     m_orderOK = false;
   }
 
@@ -163,8 +166,13 @@ public final class MinIntHeap
   private final void checkSize(int newElements)
   {
     if (m_currentSize < m_heap.length - newElements) return;
-    final int[] newHeap = new int[Math.max(m_heap.length * 2 + 1,
-                                           m_heap.length + newElements)];
+    final long newHeapSize =
+      Math.max(((long) m_heap.length) + (long) newElements,
+               Math.min((long) Integer.MAX_VALUE,
+                        ((long) m_heap.length) * 2l + 1l));
+    if (newHeapSize > (long) Integer.MAX_VALUE)
+      throw new IllegalStateException("cannot allocate large enough array");
+    final int[] newHeap = new int[(int) newHeapSize];
     System.arraycopy(m_heap, 0, newHeap, 0, m_heap.length);
     m_heap = newHeap;
   }
