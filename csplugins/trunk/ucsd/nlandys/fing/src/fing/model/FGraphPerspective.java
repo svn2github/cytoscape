@@ -4,6 +4,7 @@ import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.graph.dynamic.util.DynamicGraphFactory;
 import cytoscape.util.intr.IntArray;
 import cytoscape.util.intr.IntEnumerator;
+import cytoscape.util.intr.IntIterator;
 import cytoscape.util.intr.IntIntHash;
 import cytoscape.util.intr.MinIntHeap;
 
@@ -134,12 +135,32 @@ class FGraphPerspective implements GraphPerspective
     return returnThis;
   }
 
-  public int[] getEdgeIndicesArray(int perspFromNodeInx,
-                                   int perspToNodeInx,
-                                   boolean includeUndirected,
-                                   boolean includeBothDirections)
+  // This method has been marked deprecated in the Giny API.
+  public int[] getEdgeIndicesArray(int rootGraphFromNodeInx,
+                                   int rootGraphToNodeInx,
+                                   boolean undirectedEdges,
+                                   boolean bothDirections)
   {
-    throw new IllegalStateException("not implemented yet");
+    if (!(rootGraphFromNodeInx < 0 && rootGraphToNodeInx < 0)) return null;
+    final int nativeFromNodeInx =
+      m_rootToNativeNodeInxMap.get(~rootGraphFromNodeInx);
+    final int nativeToNodeInx =
+      m_rootToNativeNodeInxMap.get(~rootGraphToNodeInx);
+    final IntIterator connectingEdges;
+    try {
+      connectingEdges = m_graph.connectingEdges
+        (nativeFromNodeInx, nativeToNodeInx, true, bothDirections,
+         undirectedEdges); }
+    catch (IllegalArgumentException e) { return null; }
+    if (connectingEdges == null) return null;
+    m_heap.empty();
+    final MinIntHeap edgeBucket = m_heap;
+    while (connectingEdges.hasNext())
+      edgeBucket.toss(m_nativeToRootNodeInxMap.getIntAtIndex
+                      (connectingEdges.nextInt()));
+    final int[] returnThis = new int[edgeBucket.size()];
+    edgeBucket.copyInto(returnThis, 0);
+    return returnThis;
   }
 
   public Node hideNode(Node node)
@@ -617,6 +638,10 @@ class FGraphPerspective implements GraphPerspective
   private final IntIntHash m_rootToNativeNodeInxMap;
   private final IntIntHash m_rootToNativeEdgeInxMap;
 
+  // This is a utilitarian heap that is used as a bucket of ints.
+  // Don't forget to empty() it before using it.
+  private final MinIntHeap m_heap;
+
   private final GraphWeeder m_weeder;
 
   // We need to remove this listener from the RootGraph during finalize().
@@ -637,11 +662,12 @@ class FGraphPerspective implements GraphPerspective
     m_nativeToRootEdgeInxMap = new IntArray();
     m_rootToNativeNodeInxMap = new IntIntHash();
     m_rootToNativeEdgeInxMap = new IntIntHash();
+    m_heap = new MinIntHeap();
     m_weeder = new GraphWeeder(m_root, m_graph,
                                m_nativeToRootNodeInxMap,
                                m_nativeToRootEdgeInxMap,
                                m_rootToNativeNodeInxMap,
-                               m_rootToNativeEdgeInxMap, m_lis);
+                               m_rootToNativeEdgeInxMap, m_lis, m_heap);
     m_changeSniffer = new RootGraphChangeSniffer(m_weeder);
     while (rootGraphNodeInx.numRemaining() > 0) {
       final int rootNodeInx = rootGraphNodeInx.nextInt();
@@ -710,13 +736,18 @@ class FGraphPerspective implements GraphPerspective
     // modifying the entry at index 0 in this array.
     private final GraphPerspectiveChangeListener[] m_lis;
 
+    // This is a utilitarian heap that is used as a bucket of ints.
+    // Don't forget to empty() it before using it.
+    private final MinIntHeap m_heap;
+
     private GraphWeeder(RootGraph root,
                         DynamicGraph graph,
                         IntArray nativeToRootNodeInxMap,
                         IntArray nativeToRootEdgeInxMap,
                         IntIntHash rootToNativeNodeInxMap,
                         IntIntHash rootToNativeEdgeInxMap,
-                        GraphPerspectiveChangeListener[] listener)
+                        GraphPerspectiveChangeListener[] listener,
+                        MinIntHeap heap)
     {
       m_root = root;
       m_graph = graph;
@@ -725,6 +756,7 @@ class FGraphPerspective implements GraphPerspective
       m_rootToNativeNodeInxMap = rootToNativeNodeInxMap;
       m_rootToNativeEdgeInxMap = rootToNativeEdgeInxMap;
       m_lis = listener;
+      m_heap = heap;
     }
 
     // RootGraphChangeSniffer is not to call this method.  We rely on
@@ -849,8 +881,6 @@ class FGraphPerspective implements GraphPerspective
       catch (IllegalArgumentException e) { }
       return 0;
     }
-
-    private final MinIntHeap m_heap = new MinIntHeap();
 
     // RootGraphChangeSniffer is not to call this method.  We rely on
     // the specified edges still existing in the RootGraph in this method.
