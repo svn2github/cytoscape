@@ -99,6 +99,9 @@ public class CyWindow extends JPanel implements GraphViewChangeListener,CyNetwor
      *  {@link #vizMapper vizMapper}.
      */
     protected VizMapUI vizMapUI;
+    
+    //flag indicating whether the vizmapper is enabled
+    protected boolean visualMapperEnabled = true;
 
     //save constructor variable here to draw graph later
     protected boolean windowDisplayed = false;
@@ -386,18 +389,10 @@ protected void loadVizMapper() {
     this.vizMapUI = new VizMapUI(this.vizMapper, this.mainFrame);
     vizMapper.setUI(vizMapUI);
 
-    // add vizmapper to toolbar
-    JToolBar toolBar = getCyMenus().getToolBar();
-    toolBar.addSeparator();
-    JButton b = toolBar.add(new SetVisualPropertiesAction(this, false));
-    b.setIcon(new ImageIcon(getClass().getResource("images/new/color_wheel36.gif")));
-    b.setToolTipText("Set Visual Properties");
-    b.setBorderPainted(false);
-
     // easy-access visual styles changer
+    JToolBar toolBar = getCyMenus().getToolBar();
     toolBar.add(vizMapUI.getStyleSelector().getToolbarComboBox());
     toolBar.addSeparator();
-
 }
 //------------------------------------------------------------------------------
 /**
@@ -579,7 +574,8 @@ public void redrawGraph(boolean doLayout) {
 /**
  * Redraws the graph. A new layout will be performed if the first
  * argument is true, and the visual appearances will be recalculated
- * and reapplied by the visual mapper if the second argument is true.
+ * and reapplied by the visual mapper if the second argument is true
+ * and the visual mapper is not disabled.
  */
 public void redrawGraph(boolean doLayout, boolean applyAppearances) {
     if (view == null) {return;}
@@ -614,13 +610,32 @@ public void applySelLayout() {
 /**
  * Uses the visual mapper to calculate and set the visual appearance
  * of nodes, edges, and certain global properties using the node and
- * edge dat aattributes.
+ * edge data attributes.
+ *
+ * This method does nothing if the visual mapper is currently disabled.
  *
  * @see VisualMappingManager
  */
 protected void applyVizmapSettings() {
-    if (getVizMapManager() != null) {
+    if (getVizMapManager() != null && this.visualMapperEnabled) {
         getVizMapManager().applyAppearances();
+    }
+}
+//------------------------------------------------------------------------------
+/**
+ * Enables the visual mapper if the argument is true, otherwise disables the
+ * visual mapper. When the vsual mapper is disabled, the corresponding menu items
+ * are disabled and the visual mappings will not be reapplied when the graph
+ * is redrawn, even if requested.
+ *
+ * When enabling the visual mapper, this method forces a redraw of the graph
+ * to reapply the current visual style.
+ */
+public void setVisualMapperEnabled(boolean newState) {
+    if (this.visualMapperEnabled != newState) {
+        this.visualMapperEnabled = newState;
+        getCyMenus().setVisualMapperItemsEnabled(newState);
+        if (newState == true) {redrawGraph(false, true);}
     }
 }
 //------------------------------------------------------------------------------

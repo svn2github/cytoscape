@@ -59,6 +59,8 @@ public class CyMenus {
   JMenu selectMenu;
   JMenu layoutMenu;
   JMenu vizMenu;
+  JMenuItem vizMenuItem, disableVizMapperItem, enableVizMapperItem;
+  JButton vizButton;
   JMenu opsMenu;
   JMenuItem NO_OPERATIONS;
   CytoscapeToolBar toolBar;
@@ -183,6 +185,18 @@ public class CyMenus {
       if (deleteSelectionMenuItem != null) {
           deleteSelectionMenuItem.setEnabled(false);
       }
+  }
+  
+  /**
+   * Enables the menu items related to the visual mapper if the argument
+   * is true, else disables them. This method should only be called from
+   * the window that holds this menu.
+   */
+  public void setVisualMapperItemsEnabled(boolean newState) {
+      vizMenuItem.setEnabled(newState);
+      vizButton.setEnabled(newState);
+      this.disableVizMapperItem.setEnabled(newState);
+      this.enableVizMapperItem.setEnabled(!newState);
   }
 
   /**
@@ -333,9 +347,10 @@ public class CyMenus {
     //fill the Layout menu
     //need to add Giny layout operations
         
-    layoutMenu.addSeparator();
-    mi = layoutMenu.add(new LayoutAction(networkView));
-    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.CTRL_MASK));
+    //layoutMenu.addSeparator();
+    //mi = layoutMenu.add(new LayoutAction(networkView));
+    //mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.CTRL_MASK));
+    layoutMenu.add(new SpringEmbeddedLayoutAction(networkView));
         
     layoutMenu.addSeparator();
     JMenu alignSubMenu = new JMenu("Align Selected Nodes");
@@ -349,7 +364,10 @@ public class CyMenus {
       new ShrinkExpandGraphUI(cyWindow, layoutMenu);  
 
     //fill the Visualization menu
-    vizMenu.add(new SetVisualPropertiesAction(cyWindow));
+    this.vizMenuItem = vizMenu.add(new SetVisualPropertiesAction(cyWindow));
+    this.disableVizMapperItem = vizMenu.add(new ToggleVisualMapperAction(cyWindow, false));
+    this.enableVizMapperItem = vizMenu.add(new ToggleVisualMapperAction(cyWindow, true));
+    this.enableVizMapperItem.setEnabled(false);
   }
     
   /**
@@ -413,6 +431,14 @@ public class CyMenus {
     b.setIcon(new ImageIcon(getClass().getResource("images/AnnotationGui.gif")));
     b.setToolTipText("add annotation to nodes");
     b.setBorderPainted(false);
+    
+    toolBar.addSeparator();
+    
+    this.vizButton = toolBar.add(new SetVisualPropertiesAction(cyWindow, false));
+    vizButton.setIcon(new ImageIcon(getClass().getResource("images/new/color_wheel36.gif")));
+    vizButton.setToolTipText("Set Visual Properties");
+    vizButton.setBorderPainted(false);
+
   }//createToolBar
 }
 
