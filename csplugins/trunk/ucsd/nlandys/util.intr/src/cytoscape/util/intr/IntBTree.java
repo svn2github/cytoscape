@@ -611,6 +611,39 @@ public final class IntBTree
     return returnThis;
   }
 
+  /*
+   * I give an example:
+   *
+   *
+   *   INPUTS
+   *   ======
+   *
+   *   holeInx: 1
+   *
+   *            +---+---+---+---+---+---+---+
+   *   thisArr: | 7 |   | 9 | 4 |   |   |   |
+   *            +---+---+---+---+---+---+---+
+   *
+   *            +---+---+---+---+---+---+---+
+   *   leftArr: | 8 | 0 | 2 | 5 |   |   |   |
+   *            +---+---+---+---+---+---+---+
+   *
+   *   (The number of elements in both arrays is assumed to be m_minBranches.)
+   *
+   *
+   *   OUTPUTS
+   *   =======
+   *
+   *            +---+---+---+---+---+---+---+
+   *   leftArr: | 8 | 0 | 2 | 5 | 7 | 9 | 4 |
+   *            +---+---+---+---+---+---+---+
+   */
+  private final void mergeWithLeftSibling(final int holeInx,
+                                          final int[] thisArr,
+                                          final int[] rightArr)
+  {
+  }
+
   /**
    * Returns the number of entries of the integer x in this tree.
    * This method has a time complexity of O(log(N)) where N is the total
