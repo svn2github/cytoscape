@@ -5,7 +5,7 @@ package csplugins.isb.pshannon.dataMatrix.gui.actions;
 import csplugins.isb.pshannon.dataMatrix.*;
 import csplugins.isb.pshannon.dataMatrix.gui.*;
 
-import csplugins.isb.dante.plot2d.*;
+import csplugins.isb.dtenenbaum.plot2d.*;
 
 import javax.swing.*;
 import javax.swing.event.*;
