@@ -1,20 +1,19 @@
-package fing.util.test;
+package cytoscape.util.intr.test;
 
-import fing.util.IntEnumerator;
-import fing.util.IntHash;
+import cytoscape.util.intr.IntEnumerator;
+import cytoscape.util.intr.MinIntHeap;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.BitSet;
 
-public class IntHashPerformance
+public class BitSetPerformance
 {
 
   /**
    * This test is analagous to fing.util.test.MinIntHeapPerformance, only
-   * it uses a hashtable instead of a heap.  So the purpose of this test
-   * is to compare the performance between a heap and a hashtable when using
+   * it uses a bit array instead of a heap.  So the purpose of this test
+   * is to compare the performance between a heap and a bit array when using
    * these object solely for the purpose of pruning duplicate integers from a
    * set of integers.
    */
@@ -62,14 +61,14 @@ public class IntHashPerformance
     // Print the time taken to standard error.
     if (!repeat) System.err.println(millisEnd - millisBegin);
 
+    // Sort the array.  We can use the same heap that we used as a bucket
+    // to now sort the integers.
+    IntEnumerator sortedElements = _THE_HEAP_.orderedElements(false);
+
     // Print sorted array to standard out.
-    if (!repeat) {
-      ArrayList arrList = new ArrayList();
-      for (int i = 0; i < uniqueElements.length; i++)
-        arrList.add(new Integer(uniqueElements[i]));
-      Collections.sort(arrList);
-      for (int i = 0; i < arrList.size(); i++)
-        System.out.println(((Integer) arrList.get(i)).intValue()); }
+    if (!repeat)
+      while (sortedElements.numRemaining() > 0)
+        System.out.println(sortedElements.nextInt());
 
     // Run repeated test if that's what the command line told us.
     if (repeat)
@@ -79,12 +78,10 @@ public class IntHashPerformance
       _REPEAT_TEST_CASE_(elements, uniqueElements);
       millisEnd = System.currentTimeMillis();
       System.err.println((millisEnd - millisBegin) + " (repeated test)");
-      ArrayList arrList = new ArrayList();
-      for (int i = 0; i < uniqueElements.length; i++)
-        arrList.add(new Integer(uniqueElements[i]));
-      Collections.sort(arrList);
-      for (int i = 0; i < arrList.size(); i++)
-        System.out.println(((Integer) arrList.get(i)).intValue());
+      _THE_HEAP_.empty();
+      _THE_HEAP_.toss(uniqueElements, 0, uniqueElements.length);
+      while (_THE_HEAP_.size() > 0)
+        System.out.println(_THE_HEAP_.deleteMin());
     }
   }
 
@@ -99,31 +96,43 @@ public class IntHashPerformance
 
   // Keep a reference to our data structure so that we can determine how
   // much memory was consumed by our algorithm (may be implemented in future).
-  static IntHash _THE_HASHTABLE_ = null;
+  static BitSet _THE_BIT_ARRAY_ = null;
+  // The heap is used only for the purpose of being a bucket of unique
+  // integers; we add an integer to this bucket if and only the bit array
+  // tells us that the value at index integer is false (and then we set the
+  // bit in the array to true).
+  static MinIntHeap _THE_HEAP_ = null;
 
-  private static final int[] _THE_TEST_CASE_(int[] elements)
+  private static final int[] _THE_TEST_CASE_(final int[] elements)
   {
-    _THE_HASHTABLE_ = new IntHash();
-    for (int i = 0; i < elements.length; i++) {
-      _THE_HASHTABLE_.put(elements[i]); }
-    final IntEnumerator iter = _THE_HASHTABLE_.elements();
+    // The dynamic range of the integers in this array happens to be the
+    // same as the number of integers in this array based on our test case
+    // definition.
+    _THE_BIT_ARRAY_ = new BitSet(elements.length);
+    _THE_HEAP_ = new MinIntHeap();
+    for (int i = 0; i < elements.length; i++)
+      if (!_THE_BIT_ARRAY_.get(elements[i])) {
+        _THE_HEAP_.toss(elements[i]);
+        _THE_BIT_ARRAY_.set(elements[i]); }
+    final IntEnumerator iter = _THE_HEAP_.elements();
     final int[] returnThis = new int[iter.numRemaining()];
-    for (int i = 0; i < returnThis.length; i++)
-      returnThis[i] = iter.nextInt();
+    final int numElements = returnThis.length;
+    for (int i = 0; i < numElements; i++) returnThis[i] = iter.nextInt();
     return returnThis;
   }
 
   private static final void _REPEAT_TEST_CASE_(final int[] elements,
                                                final int[] output)
   {
-    _THE_HASHTABLE_.empty();
+    _THE_HEAP_.empty();
+    _THE_BIT_ARRAY_.clear(0, elements.length);
     for (int i = 0; i < elements.length; i++)
-      _THE_HASHTABLE_.put(elements[i]);
-    IntEnumerator iter = _THE_HASHTABLE_.elements();
-    if (iter.numRemaining() != output.length)
-      throw new IllegalStateException("output aray is incorrect size");
-    for (int i = 0; i < output.length; i++)
-      output[i] = iter.nextInt();
+      if (!_THE_BIT_ARRAY_.get(elements[i])) {
+        _THE_HEAP_.toss(elements[i]);
+        _THE_BIT_ARRAY_.set(elements[i]); }
+    if (_THE_HEAP_.size() != output.length)
+      throw new IllegalStateException("output array is incorrect size");
+    _THE_HEAP_.copyInto(output, 0);
   }
 
 }

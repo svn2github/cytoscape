@@ -1,4 +1,4 @@
-package fing.util;
+package cytoscape.util.intr;
 
 /**
  * A heap is an implementation of a priority queue.  A priority queue is a

@@ -1,7 +1,7 @@
-package fing.util.test;
+package cytoscape.util.intr.test;
 
-import fing.util.IntEnumerator;
-import fing.util.MinIntHeap;
+import cytoscape.util.intr.IntEnumerator;
+import cytoscape.util.intr.MinIntHeap;
 
 public class MinIntHeapTest
 {

@@ -1,6 +1,6 @@
 package fing.model;
 
-import fing.util.IntEnumerator;
+import cytoscape.util.intr.IntEnumerator;
 
 // Edges and nodes are non-negative.
 interface UnderlyingRootGraph

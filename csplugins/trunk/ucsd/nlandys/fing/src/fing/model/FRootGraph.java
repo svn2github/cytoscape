@@ -1,8 +1,8 @@
 package fing.model;
 
-import fing.util.IntEnumerator;
-import fing.util.IntHash;
-import fing.util.MinIntHeap;
+import cytoscape.util.intr.IntEnumerator;
+import cytoscape.util.intr.IntHash;
+import cytoscape.util.intr.MinIntHeap;
 
 import giny.model.Edge;
 import giny.model.GraphPerspective;

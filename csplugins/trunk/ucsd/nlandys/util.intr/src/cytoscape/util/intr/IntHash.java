@@ -1,4 +1,4 @@
-package fing.util;
+package cytoscape.util.intr;
 
 /**
  * An insert-only hashtable that has non-negative 32 bit integer elements;

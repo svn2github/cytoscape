@@ -1,4 +1,4 @@
-package fing.util;
+package cytoscape.util.intr;
 
 /**
  * An enumeration over a set of 32 bit integers.

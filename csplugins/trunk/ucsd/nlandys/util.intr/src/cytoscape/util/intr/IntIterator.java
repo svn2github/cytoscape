@@ -1,4 +1,4 @@
-package fing.util;
+package cytoscape.util.intr;
 
 public interface IntIterator
 {
