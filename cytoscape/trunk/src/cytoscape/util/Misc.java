@@ -63,7 +63,6 @@ public class Misc {
 	p.addPoint(-size,size/2);
 	p.addPoint(-(size*3)/4,0);
 	p.addPoint(-size,-size/2);
-	System.out.println("scalable arrow " + sizeText);
 	return Arrow.addCustomArrow("scalableArrow" + sizeText,p,new Color(255,255,255));
     }
 //------------------------------------------------------------------------------
