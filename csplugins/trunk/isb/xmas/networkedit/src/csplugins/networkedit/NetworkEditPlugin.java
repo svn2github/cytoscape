@@ -3,7 +3,6 @@ package csplugins.networkedit;
 import cytoscape.*;
 import cytoscape.view.*;
 import cytoscape.plugin.*;
-import cytoscape.plugin.jar.*;
 import cytoscape.util.*;
 import cern.colt.list.*;
 

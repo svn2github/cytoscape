@@ -271,7 +271,7 @@ public class AddAttributes
       edges = Cytoscape.getRootGraph().getEdgeIndicesArray();
     } else {
       String network_id = ( String )titleIdMap.get( networkBox.getSelectedItem() );
-      CyNetwork selected_network  = Cytoscape.getCyNetwork( network_id );
+      CyNetwork selected_network  = Cytoscape.getNetwork( network_id );
       nodes = selected_network.getNodeIndicesArray();
       edges = selected_network.getEdgeIndicesArray();
     }

@@ -2,7 +2,6 @@ package csplugins.edit;
 
 import cytoscape.*;
 import cytoscape.plugin.*;
-import cytoscape.plugin.jar.*;
 import cytoscape.util.*;
 import cern.colt.list.*;
 

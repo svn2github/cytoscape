@@ -58,7 +58,7 @@
     <path id="metabolic.project.class.path">
       <pathelement location="${metabolic.classes.dir}"/>
       <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
-      <pathelement location="${cytoscape.lib.dir}/cytoscape.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/../cytoscape.jar"/>
       <pathelement location="${cytoscape.lib.dir}/y.jar"/>
       <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
       <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
@@ -78,8 +78,7 @@
    <echo message=" COMPILE metabolic "/>
 
     <mkdir dir="${metabolic.classes.dir}"/>
-    <javac compiler="jikes"
-           srcdir="${metabolic.src.dir}"
+    <javac srcdir="${metabolic.src.dir}"
            excludes="${metabolic.excludes}"
            classpathref="metabolic.project.class.path"
            destdir="${metabolic.classes.dir}"
