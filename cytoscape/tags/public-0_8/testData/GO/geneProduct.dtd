@@ -1,0 +1,9 @@
+<?xml encoding="US-ASCII"?>
+<!-- Revision: 60 1.2 data/personal.dtd, docs, xml4j2, xml4j2_0_9  -->
+<!ELEMENT geneProducts (geneProduct)+>
+<!ELEMENT geneProduct (symbol,
+                       molecularFunction?,cellularComponent?,biologicalProcess?)>
+<!ELEMENT symbol (#PCDATA)>
+<!ELEMENT molecularFunction (#PCDATA)>
+<!ELEMENT cellularComponent (#PCDATA)>
+<!ELEMENT biologicalProcess (#PCDATA)>

@@ -1,0 +1,1415 @@
+LEDA.GRAPH
+unknown
+unknown
+332
+|{YKR026C	GCN3	[]	[]	[]}|
+|{YOR204W	DED1	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[]	[]}|
+|{YGR218W	CRM1	[]	[]	[]}|
+|{YGL097W	SRM1	[]	[]	[]}|
+|{YLR249W	YEF3	[biosynthesis::protein metabolism and modification::]	[translation elongation factor::]	[ribosome::]}|
+|{YGL229C	SAP4	[cell cycle::]	[protein serine/threonine phosphatase::]	[cytoplasm::]}|
+|{YLR293C	GSP1	[]	[]	[]}|
+|{YLR153C	ACS2	[]	[acetate--CoA ligase::]	[]}|
+|{YMR146C	TIF34	[]	[]	[]}|
+|{YDR429C	TIF35	[]	[]	[]}|
+|{YPR080W	TEF1	[biosynthesis::protein metabolism and modification::]	[translation elongation factor::]	[ribosome::]}|
+|{YBR118W	TEF2	[biosynthesis::protein metabolism and modification::]	[translation elongation factor::]	[ribosome::]}|
+|{YOL123W	HRP1	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[]	[]}|
+|{YPL211W	NIP7	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::cell organization and biogenesis::]	[protein binding::]	[nucleolus::cytosolic large ribosomal (60S) subunit::]}|
+|{YAL003W	EFB1	[biosynthesis::protein metabolism and modification::]	[translation elongation factor::]	[ribosome::]}|
+|{YJL030W	MAD2	[cell cycle::]	[molecular_function unknown::]	[nucleus::]}|
+|{YJL013C	MAD3	[cell cycle::]	[molecular_function unknown::]	[nucleus::]}|
+|{YGL122C	NAB2	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[]	[]}|
+|{YBR112C	SSN6	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[]	[]}|
+|{YGR019W	UGA1	[]	[4-aminobutyrate aminotransferase::]	[]}|
+|{YGR014W	MSB2	[cell organization and biogenesis::]	[molecular_function unknown::]	[integral plasma membrane protein::]}|
+|{YGR203W	YGR203W	[biological_process unknown::]	[molecular_function unknown::]	[]}|
+|{YPR062W	FCY1	[]	[cytosine deaminase::]	[]}|
+|{YOL086C	ADH1	[]	[acylglycerone-phosphate reductase::]	[]}|
+|{YOR362C	PRE10	[catabolism::protein metabolism and modification::]	[multicatalytic endopeptidase::]	[20S core proteasome::]}|
+|{YGL044C	RNA15	[]	[]	[]}|
+|{YCR084C	TUP1	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[]	[]}|
+|{YDL078C	MDH3	[coenzymes and prosthetic group metabolism::energy pathways::lipid metabolism::]	[malic enzyme::]	[peroxisomal matrix::]}|
+|{YER112W	LSM4	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[]	[]}|
+|{YDL113C	YDL113C	[biological_process unknown::]	[molecular_function unknown::]	[]}|
+|{YJR022W	LSM8	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[]	[]}|
+|{YER124C	YER124C	[]	[]	[]}|
+|{YER116C	YER116C	[]	[]	[]}|
+|{YNL307C	MCK1	[phosphate metabolism::protein metabolism and modification::cell cycle::sporulation (sensu Saccharomyces)::]	[protein threonine/tyrosine kinase::]	[soluble fraction::]}|
+|{YCL040W	GLK1	[energy pathways::catabolism::carbohydrate metabolism::]	[glucokinase::]	[cytosol::]}|
+|{YNL216W	RAP1	[cell organization and biogenesis::nucleobase, nucleoside, nucleotide and nucleic acid metabolism::stress response::cell communication::]	[transcription factor::]	[nucleus::]}|
+|{YAL030W	SNC1	[transport::]	[v-SNARE::]	[Golgi-plasma membrane transport vesicle::]}|
+|{YBR155W	CNS1	[biological_process unknown::]	[molecular_function unknown::]	[]}|
+|{YOR327C	SNC2	[transport::]	[v-SNARE::]	[Golgi-plasma membrane transport vesicle::]}|
+|{YER062C	HOR2	[cell communication::carbohydrate metabolism::]	[glycerol-1-phosphatase::]	[cellular_component unknown::]}|
+|{YDR412W	YDR412W	[biological_process unknown::]	[molecular_function unknown::]	[cytoplasm::]}|
+|{YDL014W	NOP1	[cell organization and biogenesis::nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[small nuclear ribonucleoprotein::]	[box C+D snoRNP protein::]}|
+|{YPL222W	YPL222W	[biological_process unknown::]	[molecular_function unknown::]	[]}|
+|{YOR310C	NOP5	[cell organization and biogenesis::nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[small nuclear ribonucleoprotein::]	[box C+D snoRNP protein::]}|
+|{YER179W	DMC1	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::cell cycle::]	[DNA binding::]	[nucleus::]}|
+|{YOR361C	PRT1	[biosynthesis::protein metabolism and modification::]	[translation initiation factor::]	[cytoplasm::]}|
+|{YBR043C	YBR043C	[biological_process unknown::]	[]	[]}|
+|{YOR326W	MYO2	[cell organization and biogenesis::budding::transport::]	[microfilament motor::]	[actin cable (sensu Saccharomyces)::actin cap (sensu Saccharomyces)::]}|
+|{YMR186W	HSC82	[protein metabolism and modification::stress response::]	[heat shock protein::chaperone::plasma membrane cation-transporting ATPase::]	[cellular_component unknown::]}|
+|{YDL236W	PHO13	[]	[4-nitrophenylphosphatase::]	[]}|
+|{YKL028W	TFA1	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[general RNA polymerase II transcription factor::]	[transcription factor TFIIE::]}|
+|{YEL009C	GCN4	[]	[transcription factor::]	[]}|
+|{YOL059W	GPD2	[]	[UDP-N-acetylmuramate dehydrogenase::]	[]}|
+|{YMR138W	CIN4	[cell organization and biogenesis::]	[GTP binding::]	[microtubule::]}|
+|{YER102W	RPS8B	[biosynthesis::protein metabolism and modification::]	[structural protein of ribosome::]	[cytosolic small ribosomal (40S) subunit::]}|
+|{YCL032W	STE50	[]	[]	[]}|
+|{YIL045W	PIG2	[]	[]	[]}|
+|{YDL075W	RPL31A	[biosynthesis::protein metabolism and modification::]	[structural protein of ribosome::]	[cytosolic large ribosomal (60S) subunit::]}|
+|{YCR012W	PGK1	[energy pathways::catabolism::carbohydrate metabolism::]	[phosphoglycerate kinase::]	[cytosol::]}|
+|{YBR019C	GAL10	[carbohydrate metabolism::]	[UDP-glucose 4-epimerase::]	[cytoplasm::]}|
+|{YOL051W	GAL11	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[RNA polymerase II transcription mediator::]	[mediator complex::]}|
+|{YHR198C	YHR198C	[biological_process unknown::]	[molecular_function unknown::]	[]}|
+|{YOR178C	GAC1	[energy pathways::nucleobase, nucleoside, nucleotide and nucleic acid metabolism::cell cycle::stress response::cell communication::carbohydrate metabolism::]	[protein phosphatase type 1::]	[protein phosphatase type 1::]}|
+|{YMR108W	ILV2	[]	[acetolactate synthase::]	[]}|
+|{YIR009W	MSL1	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[]	[]}|
+|{YNL236W	SIN4	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[]	[mediator complex::]}|
+|{YML032C	RAD52	[]	[]	[]}|
+|{YLR116W	MSL5	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[]	[]}|
+|{YCR086W	YCR086W	[]	[]	[]}|
+|{YDR309C	GIC2	[cell organization and biogenesis::budding::cell communication::]	[small GTPase regulatory/interacting protein::]	[actin cap (sensu Saccharomyces)::]}|
+|{YOR303W	CPA1	[biosynthesis::nitrogen metabolism::amino acid and derivative metabolism::]	[carbamoyl-phosphate synthase (glutamine-hydrolyzing)::]	[cytosol::]}|
+|{YGR058W	YGR058W	[biological_process unknown::]	[molecular_function unknown::]	[]}|
+|{YJR109C	CPA2	[biosynthesis::nitrogen metabolism::amino acid and derivative metabolism::]	[carbamoyl-phosphate synthase (glutamine-hydrolyzing)::]	[cytosol::]}|
+|{YIL015W	BAR1	[protein metabolism and modification::developmental processes::cell-cell fusion::]	[aspartic-type endopeptidase::]	[periplasmic space::]}|
+|{YLR256W	HAP1	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[]	[]}|
+|{YGL237C	HAP2	[]	[]	[]}|
+|{YBL021C	HAP3	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[]	[]}|
+|{YDR311W	TFB1	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::cell cycle::]	[general RNA polymerase II transcription factor::]	[transcription factor TFIIH::]}|
+|{YPL149W	APG5	[autophagy::protein targeting::]	[molecular_function unknown::]	[cellular_component unknown::]}|
+|{YKL109W	HAP4	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[]	[]}|
+|{YMR043W	MCM1	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[]	[]}|
+|{YHR171W	APG7	[autophagy::protein targeting::]	[ubiquitin-like conjugating enzyme::]	[cellular_component unknown::]}|
+|{YNR050C	LYS9	[]	[saccharopine dehydrogenase (NADP+, L-glutamate forming)::]	[]}|
+|{YGR254W	ENO1	[energy pathways::catabolism::carbohydrate metabolism::]	[phosphopyruvate hydratase::]	[enolase::]}|
+|{YHR174W	ENO2	[energy pathways::catabolism::carbohydrate metabolism::]	[phosphopyruvate hydratase::]	[enolase::]}|
+|{YJL203W	PRP21	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[]	[]}|
+|{YLL021W	SPA2	[cell shape and cell size control::cell organization and biogenesis::budding::cell communication::]	[cytoskeletal regulatory protein binding::]	[polarisome::actin cap (sensu Saccharomyces)::]}|
+|{YIL133C	RPL16A	[biosynthesis::protein metabolism and modification::]	[RNA binding::structural protein of ribosome::]	[cytosolic large ribosomal (60S) subunit::]}|
+|{YGL013C	PDR1	[transport::]	[]	[]}|
+|{YNL069C	RPL16B	[biosynthesis::protein metabolism and modification::]	[RNA binding::structural protein of ribosome::]	[cytosolic large ribosomal (60S) subunit::]}|
+|{YKL101W	HSL1	[phosphate metabolism::protein metabolism and modification::budding::cell cycle::]	[protein kinase::]	[septin ring::]}|
+|{YCL067C	ALPHA2	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::developmental processes::]	[transcription co-repressor::]	[nucleus::]}|
+|{YDL013W	HEX3	[]	[molecular_function unknown::]	[]}|
+|{YBL005W	PDR3	[transport::]	[transcription factor::]	[]}|
+|{YDR323C	PEP7	[transport::]	[vesicle fusion::]	[peripheral plasma membrane protein::cytoplasm::]}|
+|{YKR099W	BAS1	[]	[transcription factor::]	[]}|
+|{YLR044C	PDC1	[]	[alpha-1,3-mannosyl-glycoprotein beta-1,2-N-acetylglucosaminyltransferase::]	[]}|
+|{YLR134W	PDC5	[]	[alpha-1,3-mannosyl-glycoprotein beta-1,2-N-acetylglucosaminyltransferase::]	[]}|
+|{YLR214W	FRE1	[ion homeostasis::]	[]	[]}|
+|{YGL008C	PMA1	[]	[]	[]}|
+|{YPR035W	GLN1	[]	[glutamate--ammonia ligase::]	[]}|
+|{YER040W	GLN3	[]	[transcription factor::]	[]}|
+|{YDR100W	YDR100W	[biological_process unknown::]	[molecular_function unknown::]	[]}|
+|{YNL098C	RAS2	[cell shape and cell size control::sporulation (sensu Saccharomyces)::cell communication::]	[RAS small monomeric GTPase::]	[plasma membrane::]}|
+|{YOR290C	SNF2	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[non-specific RNA polymerase II transcription factor::]	[nucleosome remodeling complex::]}|
+|{YDL194W	SNF3	[transport::]	[glucose permease::]	[]}|
+|{YGL115W	SNF4	[]	[]	[]}|
+|{YPL089C	RLM1	[cell communication::]	[transcription factor::]	[nucleus::]}|
+|{YGL208W	SIP2	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[]	[]}|
+|{YJL089W	SIP4	[]	[transcription factor::]	[]}|
+|{YMR021C	MAC1	[]	[transcription factor::]	[]}|
+|{YMR005W	MPT1	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[RNA polymerase II transcription factor::]	[TFIID complex::]}|
+|{YDR335W	MSN5	[protein targeting::]	[importin alpha export receptor::]	[nucleus::]}|
+|{YLL028W	TPO1	[transport::]	[]	[]}|
+|{YIL143C	SSL2	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::cell cycle::]	[DNA helicase::general RNA polymerase II transcription factor::]	[transcription factor TFIIH::]}|
+|{YDL081C	RPP1A	[biosynthesis::protein metabolism and modification::]	[structural protein of ribosome::]	[cytosolic large ribosomal (60S) subunit::]}|
+|{YDL130W	RPP1B	[biosynthesis::protein metabolism and modification::]	[structural protein of ribosome::]	[cytosolic large ribosomal (60S) subunit::]}|
+|{YOL136C	PFK27	[]	[6-phosphofructo-2-kinase::]	[]}|
+|{YNL050C	YNL050C	[biological_process unknown::]	[molecular_function unknown::]	[]}|
+|{YOR215C	YOR215C	[biological_process unknown::]	[molecular_function unknown::]	[]}|
+|{YKL012W	PRP40	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[]	[]}|
+|{YHR141C	RPL42B	[biosynthesis::protein metabolism and modification::]	[structural protein of ribosome::]	[cytosolic large ribosomal (60S) subunit::]}|
+|{YER056CA	RPL34A	[]	[]	[]}|
+|{YEL015W	YEL015W	[biological_process unknown::]	[molecular_function unknown::]	[]}|
+|{YIL052C	RPL34B	[biosynthesis::protein metabolism and modification::]	[structural protein of ribosome::]	[cytosolic large ribosomal (60S) subunit::]}|
+|{YHR135C	YCK1	[phosphate metabolism::protein metabolism and modification::cell communication::]	[casein kinase I::]	[plasma membrane::]}|
+|{YOL120C	RPL18A	[biosynthesis::protein metabolism and modification::]	[structural protein of ribosome::]	[cytosolic large ribosomal (60S) subunit::]}|
+|{YMR309C	NIP1	[]	[]	[]}|
+|{YNL154C	YCK2	[phosphate metabolism::protein metabolism and modification::cell communication::]	[casein kinase I::]	[plasma membrane::]}|
+|{YNL301C	RPL18B	[biosynthesis::protein metabolism and modification::]	[structural protein of ribosome::]	[cytosolic large ribosomal (60S) subunit::]}|
+|{YER145C	FTR1	[transport::]	[]	[]}|
+|{	ADE5	[]	[]	[]}|
+|{YER143W	DDI1	[biological_process unknown::]	[molecular_function unknown::]	[]}|
+|{YJR066W	TOR1	[cell organization and biogenesis::cell cycle::cell communication::]	[phosphatidylinositol 3-kinase::]	[cellular_component unknown::]}|
+|{YDR382W	RPP2B	[biosynthesis::protein metabolism and modification::]	[structural protein of ribosome::]	[cytosolic large ribosomal (60S) subunit::]}|
+|{YPL111W	CAR1	[]	[arginase::]	[]}|
+|{YER065C	ICL1	[]	[isocitrate lyase::]	[]}|
+|{YFL039C	ACT1	[cell organization and biogenesis::budding::cell cycle::cell communication::transport::]	[structural protein of cytoskeleton::]	[actin cable (sensu Saccharomyces)::actin cortical patch (sensu Saccharomyces)::actin filament::cytokinetic ring (sensu Saccharomyces)::]}|
+|{YJL219W	HXT9	[transport::]	[]	[]}|
+|{YPL075W	GCR1	[energy pathways::catabolism::carbohydrate metabolism::]	[]	[]}|
+|{YNL199C	GCR2	[energy pathways::catabolism::carbohydrate metabolism::]	[]	[]}|
+|{	MEL1	[]	[]	[]}|
+|{YML054C	CYB2	[]	[L-lactate dehydrogenase (cytochrome)::]	[]}|
+|{YLR321C	SFH1	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[molecular_function unknown::]	[nucleosome remodeling complex::]}|
+|{YBR072W	HSP26	[protein metabolism and modification::stress response::]	[heat shock protein::]	[nucleus::cytoplasm::]}|
+|{YOR202W	HIS3	[biosynthesis::amino acid and derivative metabolism::]	[imidazoleglycerol-phosphate dehydratase::]	[cytosol::]}|
+|{YCL030C	HIS4	[biosynthesis::amino acid and derivative metabolism::]	[phosphoribosyl-AMP cyclohydrolase::histidinol dehydrogenase::phosphoribosyl-ATP pyrophosphatase::]	[cell::]}|
+|{YBL069W	AST1	[]	[]	[]}|
+|{YJL190C	RPS22A	[biosynthesis::protein metabolism and modification::]	[structural protein of ribosome::]	[cytosolic small ribosomal (40S) subunit::]}|
+|{YML007W	YAP1	[]	[]	[]}|
+|{YBR248C	HIS7	[biosynthesis::amino acid and derivative metabolism::]	[imidazoleglycerol-phosphate synthase::]	[cell::]}|
+|{YKL204W	YKL204W	[]	[]	[]}|
+|{YLR284C	ECI1	[lipid metabolism::]	[delta(3)-cis-delta(2)-trans-enoyl-CoA isomerase::]	[peroxisome::]}|
+|{YNL116W	YNL116W	[biological_process unknown::]	[molecular_function unknown::]	[]}|
+|{YNL189W	SRP1	[]	[protein carrier::]	[importin, alpha-subunit::]}|
+|{YDR184C	ATC1	[]	[]	[]}|
+|{YNL311C	YNL311C	[biological_process unknown::]	[molecular_function unknown::]	[]}|
+|{YKL001C	MET14	[sulfur metabolism::amino acid and derivative metabolism::]	[adenylsulfate kinase::]	[cellular_component unknown::]}|
+|{YOL058W	ARG1	[biosynthesis::nitrogen metabolism::amino acid and derivative metabolism::]	[argininosuccinate synthase::]	[cytosol::]}|
+|{YFR014C	CMK1	[phosphate metabolism::protein metabolism and modification::cell communication::]	[calmodulin-dependent protein kinase I::]	[cytoplasm::]}|
+|{YOL016C	CMK2	[phosphate metabolism::protein metabolism and modification::cell communication::]	[calcium/calmodulin-dependent protein kinase::]	[cytoplasm::]}|
+|{YPR167C	MET16	[sulfur metabolism::amino acid and derivative metabolism::]	[phosphoadenylyl-sulfate reductase (thioredoxin)::]	[cellular_component unknown::]}|
+|{YJL036W	SNX4	[]	[molecular_function unknown::]	[]}|
+|{YJR048W	CYC1	[phosphate metabolism::electron transport::]	[]	[]}|
+|{YEL039C	CYC7	[physiological processes::]	[]	[]}|
+|{YEL041W	YEL041W	[biological_process unknown::]	[molecular_function unknown::]	[]}|
+|{YHR053C	CUP1A	[]	[]	[]}|
+|{YHR055C	CUP1B	[]	[]	[]}|
+|{YNL167C	SKO1	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[]	[]}|
+|{YJL159W	HSP150	[cell organization and biogenesis::]	[cell wall structural protein::]	[cell wall::]}|
+|{YDL063C	YDL063C	[biological_process unknown::]	[molecular_function unknown::]	[]}|
+|{YGL161C	YGL161C	[biological_process unknown::]	[molecular_function unknown::]	[]}|
+|{YMR183C	SSO2	[transport::]	[t-SNARE::]	[integral plasma membrane protein::]}|
+|{YMR291W	YMR291W	[biological_process unknown::]	[molecular_function unknown::]	[]}|
+|{YGR048W	UFD1	[]	[molecular_function unknown::]	[]}|
+|{YAL040C	CLN3	[cell cycle::]	[G1/S-specific cyclin::]	[nucleus::]}|
+|{YDR171W	HSP42	[cell organization and biogenesis::stress response::]	[heat shock protein::chaperone::]	[cytoskeleton::]}|
+|{YFR034C	PHO4	[]	[transcription factor::]	[]}|
+|{YBR093C	PHO5	[phosphate metabolism::]	[acid phosphatase::]	[periplasmic space::]}|
+|{YER074W	RPS24A	[biosynthesis::protein metabolism and modification::]	[structural protein of ribosome::]	[cytosolic small ribosomal (40S) subunit::]}|
+|{YIL069C	RPS24B	[biosynthesis::protein metabolism and modification::]	[structural protein of ribosome::]	[cytosolic small ribosomal (40S) subunit::]}|
+|{YMR300C	ADE4	[]	[amidophosphoribosyltransferase::]	[]}|
+|{YFR037C	RSC8	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[molecular_function unknown::]	[nucleosome remodeling complex::]}|
+|{YDR032C	YDR032C	[]	[]	[]}|
+|{YOR315W	YOR315W	[biological_process unknown::]	[molecular_function unknown::]	[]}|
+|{YER133W	GLC7	[energy pathways::nucleobase, nucleoside, nucleotide and nucleic acid metabolism::cell cycle::stress response::cell communication::carbohydrate metabolism::]	[protein phosphatase type 1::]	[protein phosphatase type 1::]}|
+|{YGL035C	MIG1	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::carbohydrate metabolism::]	[transcription co-repressor::DNA binding::]	[nucleus::cytoplasm::]}|
+|{YMR311C	GLC8	[]	[molecular_function unknown::]	[]}|
+|{YFL038C	YPT1	[transport::]	[RAB small monomeric GTPase::]	[endoplasmic reticulum membrane::Golgi membrane::]}|
+|{YOR355W	GDS1	[]	[molecular_function unknown::]	[]}|
+|{YML074C	NPI46	[protein metabolism and modification::]	[peptidylprolyl isomerase::]	[nucleolus::]}|
+|{YMR058W	FET3	[transport::]	[multicopper ferroxidase iron transport mediator::]	[plasma membrane::]}|
+|{YML123C	PHO84	[transport::]	[inorganic phosphate transporter::]	[integral plasma membrane protein::]}|
+|{YPL031C	PHO85	[energy pathways::phosphate metabolism::protein metabolism and modification::cell cycle::carbohydrate metabolism::]	[glycogen synthase kinase 3::cyclin-dependent protein kinase::]	[]}|
+|{YAL038W	CDC19	[energy pathways::catabolism::carbohydrate metabolism::]	[pyruvate kinase::]	[cytosol::]}|
+|{YER103W	SSA4	[protein metabolism and modification::stress response::protein targeting::]	[heat shock protein::chaperone::]	[cytoplasm::]}|
+|{YML051W	GAL80	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::carbohydrate metabolism::]	[transcription co-repressor::]	[nucleus::]}|
+|{YLL019C	KNS1	[phosphate metabolism::protein metabolism and modification::]	[protein tyrosine kinase::protein serine/threonine kinase::]	[]}|
+|{YML024W	RPS17A	[cell organization and biogenesis::biosynthesis::protein metabolism and modification::]	[structural protein of ribosome::]	[cytosolic small ribosomal (40S) subunit::]}|
+|{YOR039W	CKB2	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::cell organization and biogenesis::phosphate metabolism::protein metabolism and modification::ion homeostasis::cell cycle::cell communication::]	[casein kinase II::]	[casein kinase II::]}|
+|{YER111C	SWI4	[cell cycle::]	[transcription factor::]	[]}|
+|{YIL105C	YIL105C	[biological_process unknown::]	[molecular_function unknown::]	[]}|
+|{YER090W	TRP2	[]	[anthranilate synthase::]	[]}|
+|{YDR146C	SWI5	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::cell cycle::]	[transcriptional activator::]	[cytosol::nucleus::]}|
+|{YKL211C	TRP3	[]	[indole-3-glycerol-phosphate synthase::]	[]}|
+|{YDR354W	TRP4	[]	[anthranilate phosphoribosyltransferase::]	[]}|
+|{YKR097W	PCK1	[energy pathways::]	[phosphoenolpyruvate carboxykinase (ATP)::]	[cytosol::]}|
+|{YNL113W	RPC19	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[DNA-directed RNA polymerase I::DNA-directed RNA polymerase III::]	[DNA-directed RNA polymerase I::DNA-directed RNA polymerase III::]}|
+|{YLR310C	CDC25	[cell cycle::cell communication::]	[RAS guanyl-nucleotide exchange factor::]	[plasma membrane::cytoplasm::]}|
+|{YNL047C	YNL047C	[biological_process unknown::]	[molecular_function unknown::]	[]}|
+|{YBR160W	CDC28	[phosphate metabolism::protein metabolism and modification::cell cycle::]	[cyclin-dependent protein kinase::]	[cytoplasm::]}|
+|{YDR174W	HMO1	[]	[]	[]}|
+|{YIL113W	YIL113W	[]	[protein tyrosine phosphatase::]	[]}|
+|{YNR007C	AUT1	[autophagy::protein targeting::]	[molecular_function unknown::]	[cellular_component unknown::]}|
+|{YLR117C	SYF3	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::cell cycle::]	[molecular_function unknown::]	[spliceosome::]}|
+|{YFL017C	GNA1	[biosynthesis::carbohydrate metabolism::]	[glucosamine-phosphate N-acetyltransferase::]	[]}|
+|{YMR044W	YMR044W	[]	[]	[]}|
+|{YOL149W	DCP1	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::catabolism::]	[]	[]}|
+|{YOR036W	PEP12	[transport::]	[t-SNARE::]	[Golgi-vacuole transport vesicle::endosome::Golgi apparatus::vacuole::]}|
+|{YGL106W	MLC1	[cell organization and biogenesis::budding::cell cycle::transport::]	[microfilament motor::]	[actin cap (sensu Saccharomyces)::]}|
+|{YLR191W	PEX13	[cell organization and biogenesis::protein targeting::]	[protein binding::]	[peroxisomal membrane::]}|
+|{YER110C	KAP123	[]	[]	[]}|
+|{YGL153W	PEX14	[protein targeting::]	[protein binding::]	[peroxisomal membrane::]}|
+|{YBR135W	CKS1	[cell cycle::]	[molecular_function unknown::]	[cellular_component unknown::]}|
+|{YHR071W	PCL5	[cell cycle::]	[]	[]}|
+|{YNL214W	PEX17	[cell organization and biogenesis::]	[protein binding::]	[peroxisomal membrane::]}|
+|{YJR060W	CBF1	[cell cycle::]	[]	[]}|
+|{YOR089C	VPS21	[transport::]	[]	[]}|
+|{YNL117W	MLS1	[energy pathways::]	[malate synthase::]	[peroxisomal matrix::]}|
+|{YLR175W	CBF5	[cell organization and biogenesis::nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[pseudouridylate synthase::small nuclear ribonucleoprotein::]	[box H+ACA snoRNP protein::]}|
+|{YDR167W	TAF25	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::protein metabolism and modification::cell cycle::]	[general RNA polymerase II transcription factor::]	[SAGA complex::TFIID complex::]}|
+|{YGR108W	CLB1	[cell cycle::]	[G2/M-specific cyclin::]	[cellular_component unknown::]}|
+|{YDR244W	PEX5	[cell organization and biogenesis::protein targeting::]	[peroxisome targeting sequence binding::peroxisome targeting signal receptor::]	[peroxisome::cytosol::]}|
+|{YPL131W	RPL5	[cell organization and biogenesis::biosynthesis::protein metabolism and modification::]	[RNA binding::structural protein of ribosome::]	[cytosolic large ribosomal (60S) subunit::]}|
+|{YPR119W	CLB2	[cell cycle::]	[G2/M-specific cyclin::]	[cellular_component unknown::]}|
+|{YDR142C	PEX7	[cell organization and biogenesis::protein targeting::]	[peroxisome targeting signal receptor::]	[peroxisomal matrix::]}|
+|{YIL160C	POT1	[lipid metabolism::]	[acetyl-CoA C-acyltransferase::]	[peroxisomal matrix::]}|
+|{YBR020W	GAL1	[carbohydrate metabolism::]	[galactokinase::]	[Golgi apparatus::plasma membrane::]}|
+|{YLR081W	GAL2	[transport::carbohydrate metabolism::]	[galactose transporter::]	[plasma membrane::]}|
+|{YDR009W	GAL3	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::carbohydrate metabolism::]	[molecular_function unknown::]	[nucleus::]}|
+|{YPL248C	GAL4	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::carbohydrate metabolism::]	[transcriptional activator::]	[nucleus::]}|
+|{YLR109W	AHP1	[stress response::cell communication::]	[alkyl hydroperoxide reductase::]	[]}|
+|{YAR007C	RFA1	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::cell cycle::]	[single-stranded DNA binding::RNA binding::double-stranded DNA binding::damaged DNA binding::DNA replication factor::]	[DNA replication factor A complex::]}|
+|{YKL161C	YKL161C	[biological_process unknown::]	[]	[]}|
+|{YPL201C	YPL201C	[biological_process unknown::]	[molecular_function unknown::]	[]}|
+|{YBR018C	GAL7	[carbohydrate metabolism::]	[UTP--hexose-1-phosphate uridylyltransferase::]	[cytoplasm::]}|
+|{YNL312W	RFA2	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::cell cycle::]	[DNA replication factor::]	[DNA replication factor A complex::]}|
+|{YLR075W	RPL10	[cell organization and biogenesis::biosynthesis::protein metabolism and modification::]	[structural protein of ribosome::]	[cytosolic large ribosomal (60S) subunit::]}|
+|{YLR229C	CDC42	[cell shape and cell size control::cell organization and biogenesis::developmental processes::budding::cell-cell fusion::cell communication::]	[signal transducer::RHO small monomeric GTPase::]	[bud tip::soluble fraction::plasma membrane::bud neck::shmoo tip::]}|
+|{YPL240C	HSP82	[protein metabolism and modification::stress response::]	[heat shock protein::chaperonin ATPase::plasma membrane cation-transporting ATPase::]	[cellular_component unknown::]}|
+|{YOL156W	HXT11	[transport::]	[]	[]}|
+|{YML064C	TEM1	[cell cycle::cell communication::]	[small monomeric GTPase::]	[cellular_component unknown::]}|
+|{YER052C	HOM3	[]	[aspartate kinase::]	[]}|
+|{YPR124W	CTR1	[transport::]	[]	[]}|
+|{YGL166W	CUP2	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[]	[]}|
+|{YBR190W	YBR190W	[biological_process unknown::]	[molecular_function unknown::]	[]}|
+|{YGL134W	PCL10	[cell cycle::]	[]	[]}|
+|{YJL194W	CDC6	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::cell cycle::]	[adenosinetriphosphatase::DNA clamp loader::]	[pre-replicative complex::]}|
+|{YOR167C	RPS28A	[biosynthesis::protein metabolism and modification::]	[structural protein of ribosome::]	[cytosolic small ribosomal (40S) subunit::]}|
+|{YLR264W	RPS28B	[biosynthesis::protein metabolism and modification::]	[structural protein of ribosome::]	[cytosolic small ribosomal (40S) subunit::]}|
+|{YBL050W	SEC17	[]	[]	[]}|
+|{YDR461W	MFA1	[developmental processes::cell-cell fusion::cell communication::]	[pheromone::]	[extracellular::]}|
+|{YNL145W	MFA2	[developmental processes::cell-cell fusion::]	[]	[]}|
+|{YBR274W	CHK1	[cell cycle::]	[]	[]}|
+|{YPR110C	RPC40	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[DNA-directed RNA polymerase I::DNA-directed RNA polymerase III::]	[DNA-directed RNA polymerase I::DNA-directed RNA polymerase III::]}|
+|{YLR452C	SST2	[developmental processes::cell-cell fusion::cell communication::]	[GTPase activator::]	[plasma membrane::]}|
+|{YDR299W	BFR2	[]	[molecular_function unknown::]	[]}|
+|{YIL074C	SER33	[biosynthesis::amino acid and derivative metabolism::]	[phosphoglycerate dehydrogenase::]	[cellular_component unknown::]}|
+|{YLR319C	BUD6	[cell organization and biogenesis::budding::cell cycle::cell communication::]	[cytoskeletal regulatory protein binding::]	[polarisome::actin cap (sensu Saccharomyces)::]}|
+|{YGL073W	HSF1	[stress response::cell communication::]	[transcription factor::]	[nucleus::]}|
+|{YOR120W	GCY1	[biological_process unknown::]	[molecular_function unknown::]	[]}|
+|{YOL127W	RPL25	[cell organization and biogenesis::biosynthesis::protein metabolism and modification::]	[RNA binding::structural protein of ribosome::]	[cytosolic large ribosomal (60S) subunit::]}|
+|{YPR041W	TIF5	[]	[]	[]}|
+|{YNL135C	FPR1	[biological_process unknown::]	[peptidylprolyl isomerase::]	[cytoplasm::]}|
+|{YBR217W	APG12	[autophagy::protein targeting::]	[molecular_function unknown::]	[membrane fraction::]}|
+|{YHR179W	OYE2	[]	[NADPH dehydrogenase::]	[]}|
+|{YMR255W	GFD1	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[molecular_function unknown::]	[nuclear pore::cytoplasm::]}|
+|{YLR258W	GSY2	[energy pathways::carbohydrate metabolism::]	[glycogen (starch) synthase::]	[cellular_component unknown::]}|
+|{YDL215C	GDH2	[]	[glutamate dehydrogenase::]	[]}|
+|{YLR432W	YLR432W	[]	[]	[]}|
+|{YER079W	YER079W	[biological_process unknown::]	[molecular_function unknown::]	[]}|
+|{YDL030W	PRP9	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[]	[]}|
+|{YLR362W	STE11	[cell shape and cell size control::phosphate metabolism::protein metabolism and modification::developmental processes::cell-cell fusion::cell communication::]	[MAP kinase kinase kinase::]	[cytoplasm::]}|
+|{YHR084W	STE12	[cell shape and cell size control::nucleobase, nucleoside, nucleotide and nucleic acid metabolism::developmental processes::cell-cell fusion::]	[transcription factor::]	[nucleus::]}|
+|{YNL164C	YNL164C	[biological_process unknown::]	[molecular_function unknown::]	[]}|
+|{YPR102C	RPL11A	[cell organization and biogenesis::biosynthesis::protein metabolism and modification::]	[structural protein of ribosome::]	[cytosolic large ribosomal (60S) subunit::]}|
+|{YGR085C	RPL11B	[cell organization and biogenesis::biosynthesis::protein metabolism and modification::]	[structural protein of ribosome::]	[cytosolic large ribosomal (60S) subunit::]}|
+|{YKL074C	MUD2	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[pre-mRNA splicing factor::mRNA binding::]	[commitment complex::]}|
+|{YPR010C	RPA135	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[DNA-directed RNA polymerase I::]	[DNA-directed RNA polymerase I::]}|
+|{YGR088W	CTT1	[stress response::]	[catalase::]	[cytoplasm::]}|
+|{YER081W	SER3	[biosynthesis::amino acid and derivative metabolism::]	[phosphoglycerate dehydrogenase::]	[cellular_component unknown::]}|
+|{YPR113W	PIS1	[biosynthesis::lipid metabolism::]	[CDP-diacylglycerol-inositol 3-phosphatidyltransferase::]	[endoplasmic reticulum::]}|
+|{YDR050C	TPI1	[energy pathways::catabolism::carbohydrate metabolism::]	[triosephosphate isomerase::]	[cytosol::]}|
+|{YIL070C	MAM33	[physiological processes::]	[]	[]}|
+|{YIL061C	SNP1	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[]	[]}|
+|{YGR046W	YGR046W	[biological_process unknown::]	[molecular_function unknown::]	[]}|
+|{YNL091W	YNL091W	[biological_process unknown::]	[molecular_function unknown::]	[]}|
+|{YHR030C	SLT2	[phosphate metabolism::protein metabolism and modification::cell communication::]	[MAP kinase::]	[nucleus::]}|
+|{YPR048W	TAH18	[biological_process unknown::]	[molecular_function unknown::]	[]}|
+|{YHR005C	GPA1	[developmental processes::cell-cell fusion::cell communication::]	[heterotrimeric G-protein GTPase, alpha subunit::]	[heterotrimeric G-protein complex::plasma membrane::]}|
+|{YDR070C	YDR070C	[biological_process unknown::]	[molecular_function unknown::]	[]}|
+|{YLR377C	FBP1	[energy pathways::]	[fructose-bisphosphatase::]	[cytosol::]}|
+|{YJL157C	FAR1	[developmental processes::cell-cell fusion::cell cycle::]	[cyclin-dependent protein kinase inhibitor::]	[nucleus::cytoplasm::]}|
+|{YNL036W	NCE103	[]	[molecular_function unknown::]	[]}|
+|{YML114C	YML114C	[]	[]	[]}|
+|{YMR117C	SPC24	[cell organization and biogenesis::]	[structural protein of cytoskeleton::]	[spindle pole body::]}|
+|{YOR264W	YOR264W	[]	[]	[]}|
+|{YHR115C	YHR115C	[biological_process unknown::]	[molecular_function unknown::]	[]}|
+|{YGR009C	SEC9	[transport::]	[v-SNARE::]	[Golgi-plasma membrane transport vesicle::]}|
+|{YDL088C	ASM4	[cell organization and biogenesis::nucleobase, nucleoside, nucleotide and nucleic acid metabolism::protein targeting::]	[structural protein::]	[nuclear pore::]}|
+|{YLR197W	SIK1	[cell organization and biogenesis::nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[small nuclear ribonucleoprotein::]	[box C+D snoRNP protein::]}|
+|{YGL202W	ARO8	[]	[]	[]}|
+|{YIL162W	SUC2	[catabolism::carbohydrate metabolism::]	[beta-fructofuranosidase::]	[]}|
+|{YBR170C	NPL4	[cell organization and biogenesis::nucleobase, nucleoside, nucleotide and nucleic acid metabolism::protein targeting::]	[structural protein::]	[nuclear pore::]}|
+|{YFL026W	STE2	[developmental processes::cell-cell fusion::]	[mating-type alpha-factor pheromone receptor::]	[integral plasma membrane protein::]}|
+|{YOR212W	STE4	[developmental processes::cell-cell fusion::cell communication::]	[heterotrimeric G-protein GTPase, beta subunit::]	[heterotrimeric G-protein complex::plasma membrane::]}|
+|{YDR103W	STE5	[developmental processes::cell-cell fusion::cell communication::]	[MAP-kinase scaffold protein::]	[nucleus::plasma membrane::]}|
+|{YDL023C	YDL023C	[biological_process unknown::]	[molecular_function unknown::]	[]}|
+|{YLR340W	RPP0	[cell organization and biogenesis::biosynthesis::protein metabolism and modification::]	[structural protein of ribosome::]	[cytosolic large ribosomal (60S) subunit::]}|
+|{YGR136W	YGR136W	[biological_process unknown::]	[molecular_function unknown::]	[cellular_component unknown::]}|
+|{YBR109C	CMD1	[cell organization and biogenesis::budding::cell cycle::]	[calcium binding::]	[bud tip::central plaque of spindle pole body::bud neck::incipient bud site::cytoplasm::shmoo tip::]}|
+|{YDR395W	SXM1	[]	[]	[]}|
+|{YLR345W	YLR345W	[biological_process unknown::]	[molecular_function unknown::]	[]}|
+|{YBL079W	NUP170	[cell organization and biogenesis::nucleobase, nucleoside, nucleotide and nucleic acid metabolism::protein targeting::]	[structural protein::]	[nuclear pore::]}|
+|{YBR050C	REG2	[]	[]	[]}|
+|{YBR045C	GIP1	[]	[]	[]}|
+|{YER054C	GIP2	[]	[]	[]}|
+|{YPR145W	ASN1	[]	[asparagine synthase (glutamine-hydrolyzing)::]	[]}|
+|{YNR053C	YNR053C	[]	[]	[]}|
+|{YGR074W	SMD1	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[]	[]}|
+|{YDR277C	MTH1	[transport::]	[]	[]}|
+|{YBL026W	LSM2	[nucleobase, nucleoside, nucleotide and nucleic acid metabolism::]	[]	[]}|
+362
+1 18 0 |{0}|
+3 4 0 |{0}|
+4 2 0 |{0}|
+5 11 0 |{0}|
+5 12 0 |{0}|
+7 4 0 |{0}|
+9 10 0 |{0}|
+10 216 0 |{0}|
+11 15 0 |{0}|
+12 15 0 |{0}|
+13 26 0 |{0}|
+14 21 0 |{0}|
+16 6 0 |{0}|
+17 6 0 |{0}|
+18 13 0 |{0}|
+21 16 0 |{0}|
+21 17 0 |{0}|
+22 295 0 |{0}|
+27 19 0 |{0}|
+27 92 0 |{0}|
+29 259 0 |{0}|
+31 83 0 |{0}|
+31 119 0 |{0}|
+31 124 0 |{0}|
+31 259 0 |{0}|
+31 260 0 |{0}|
+31 329 0 |{0}|
+33 93 0 |{0}|
+34 195 0 |{0}|
+36 59 0 |{0}|
+36 84 0 |{0}|
+36 85 0 |{0}|
+36 88 0 |{0}|
+36 97 0 |{0}|
+36 127 0 |{0}|
+36 130 0 |{0}|
+36 147 0 |{0}|
+36 177 0 |{0}|
+36 179 0 |{0}|
+36 180 0 |{0}|
+36 181 0 |{0}|
+36 195 0 |{0}|
+36 272 0 |{0}|
+36 293 0 |{0}|
+36 24 0 |{0}|
+37 133 0 |{0}|
+39 133 0 |{0}|
+40 245 0 |{0}|
+41 69 0 |{0}|
+41 89 0 |{0}|
+41 215 0 |{0}|
+41 235 0 |{0}|
+42 44 0 |{0}|
+45 97 0 |{0}|
+45 98 0 |{0}|
+45 202 0 |{0}|
+46 128 0 |{0}|
+46 10 0 |{0}|
+48 220 0 |{0}|
+49 38 0 |{0}|
+52 64 0 |{0}|
+52 146 0 |{0}|
+52 147 0 |{0}|
+52 151 0 |{0}|
+52 159 0 |{0}|
+52 182 0 |{0}|
+54 122 0 |{0}|
+54 242 0 |{0}|
+56 184 0 |{0}|
+56 283 0 |{0}|
+56 317 0 |{0}|
+59 227 0 |{0}|
+60 61 0 |{0}|
+60 187 0 |{0}|
+61 238 0 |{0}|
+61 239 0 |{0}|
+61 241 0 |{0}|
+61 246 0 |{0}|
+65 96 0 |{0}|
+65 115 0 |{0}|
+65 156 0 |{0}|
+65 297 0 |{0}|
+66 121 0 |{0}|
+67 247 0 |{0}|
+68 121 0 |{0}|
+69 307 0 |{0}|
+70 249 0 |{0}|
+72 307 0 |{0}|
+73 71 0 |{0}|
+75 143 0 |{0}|
+75 164 0 |{0}|
+75 165 0 |{0}|
+76 164 0 |{0}|
+77 164 0 |{0}|
+78 51 0 |{0}|
+79 82 0 |{0}|
+79 275 0 |{0}|
+80 76 0 |{0}|
+80 77 0 |{0}|
+80 164 0 |{0}|
+80 187 0 |{0}|
+81 74 0 |{0}|
+81 170 0 |{0}|
+81 207 0 |{0}|
+81 232 0 |{0}|
+81 262 0 |{0}|
+81 263 0 |{0}|
+81 303 0 |{0}|
+81 315 0 |{0}|
+82 41 0 |{0}|
+82 214 0 |{0}|
+83 54 0 |{0}|
+86 118 0 |{0}|
+87 283 0 |{0}|
+89 139 0 |{0}|
+89 251 0 |{0}|
+91 211 0 |{0}|
+92 74 0 |{0}|
+92 81 0 |{0}|
+92 262 0 |{0}|
+92 315 0 |{0}|
+94 139 0 |{0}|
+95 219 0 |{0}|
+100 81 0 |{0}|
+102 101 0 |{0}|
+102 20 0 |{0}|
+104 209 0 |{0}|
+107 109 0 |{0}|
+108 298 0 |{0}|
+110 137 0 |{0}|
+110 207 0 |{0}|
+110 302 0 |{0}|
+111 99 0 |{0}|
+113 212 0 |{0}|
+114 255 0 |{0}|
+115 78 0 |{0}|
+116 319 0 |{0}|
+121 288 0 |{0}|
+124 252 0 |{0}|
+126 154 0 |{0}|
+128 210 0 |{0}|
+129 152 0 |{0}|
+132 96 0 |{0}|
+134 68 0 |{0}|
+135 117 0 |{0}|
+135 138 0 |{0}|
+138 35 0 |{0}|
+138 276 0 |{0}|
+140 59 0 |{0}|
+140 84 0 |{0}|
+140 85 0 |{0}|
+140 141 0 |{0}|
+140 293 0 |{0}|
+140 24 0 |{0}|
+141 299 0 |{0}|
+142 187 0 |{0}|
+144 41 0 |{0}|
+145 270 0 |{0}|
+147 96 0 |{0}|
+148 100 0 |{0}|
+155 50 0 |{0}|
+155 136 0 |{0}|
+155 137 0 |{0}|
+155 23 0 |{0}|
+156 269 0 |{0}|
+157 158 0 |{0}|
+159 155 0 |{0}|
+161 321 0 |{0}|
+163 30 0 |{0}|
+166 308 0 |{0}|
+169 146 0 |{0}|
+171 234 0 |{0}|
+172 103 0 |{0}|
+173 309 0 |{0}|
+174 107 0 |{0}|
+175 43 0 |{0}|
+176 81 0 |{0}|
+178 179 0 |{0}|
+183 105 0 |{0}|
+186 41 0 |{0}|
+186 63 0 |{0}|
+186 185 0 |{0}|
+186 188 0 |{0}|
+186 325 0 |{0}|
+187 97 0 |{0}|
+187 302 0 |{0}|
+187 313 0 |{0}|
+189 219 0 |{0}|
+190 297 0 |{0}|
+191 149 0 |{0}|
+192 131 0 |{0}|
+193 178 0 |{0}|
+194 225 0 |{0}|
+195 140 0 |{0}|
+197 238 0 |{0}|
+197 240 0 |{0}|
+198 213 0 |{0}|
+199 36 0 |{0}|
+200 71 0 |{0}|
+201 81 0 |{0}|
+204 81 0 |{0}|
+204 187 0 |{0}|
+205 203 0 |{0}|
+206 52 0 |{0}|
+208 265 0 |{0}|
+209 196 0 |{0}|
+210 202 0 |{0}|
+211 81 0 |{0}|
+211 232 0 |{0}|
+213 298 0 |{0}|
+215 256 0 |{0}|
+216 53 0 |{0}|
+216 55 0 |{0}|
+216 25 0 |{0}|
+217 295 0 |{0}|
+218 259 0 |{0}|
+219 103 0 |{0}|
+219 172 0 |{0}|
+221 223 0 |{0}|
+222 150 0 |{0}|
+224 55 0 |{0}|
+226 223 0 |{0}|
+227 162 0 |{0}|
+228 95 0 |{0}|
+229 110 0 |{0}|
+230 34 0 |{0}|
+231 280 0 |{0}|
+232 224 0 |{0}|
+233 221 0 |{0}|
+233 223 0 |{0}|
+233 226 0 |{0}|
+233 236 0 |{0}|
+233 28 0 |{0}|
+235 81 0 |{0}|
+236 223 0 |{0}|
+236 237 0 |{0}|
+238 187 0 |{0}|
+240 187 0 |{0}|
+241 60 0 |{0}|
+241 142 0 |{0}|
+241 164 0 |{0}|
+241 187 0 |{0}|
+241 197 0 |{0}|
+241 197 0 |{0}|
+241 238 0 |{0}|
+241 239 0 |{0}|
+241 246 0 |{0}|
+243 67 0 |{0}|
+243 136 0 |{0}|
+244 108 0 |{0}|
+247 136 0 |{0}|
+248 286 0 |{0}|
+249 303 0 |{0}|
+250 38 0 |{0}|
+250 219 0 |{0}|
+251 94 0 |{0}|
+252 62 0 |{0}|
+252 153 0 |{0}|
+252 212 0 |{0}|
+253 274 0 |{0}|
+254 111 0 |{0}|
+255 167 0 |{0}|
+255 168 0 |{0}|
+257 194 0 |{0}|
+257 278 0 |{0}|
+258 81 0 |{0}|
+260 29 0 |{0}|
+260 218 0 |{0}|
+260 332 0 |{0}|
+261 219 0 |{0}|
+263 92 0 |{0}|
+263 284 0 |{0}|
+264 277 0 |{0}|
+266 300 0 |{0}|
+267 258 0 |{0}|
+268 157 0 |{0}|
+269 283 0 |{0}|
+270 63 0 |{0}|
+270 167 0 |{0}|
+270 168 0 |{0}|
+270 196 0 |{0}|
+271 241 0 |{0}|
+273 46 0 |{0}|
+273 128 0 |{0}|
+274 212 0 |{0}|
+275 214 0 |{0}|
+277 18 0 |{0}|
+278 57 0 |{0}|
+278 264 0 |{0}|
+279 102 0 |{0}|
+279 280 0 |{0}|
+281 126 0 |{0}|
+281 129 0 |{0}|
+282 93 0 |{0}|
+282 112 0 |{0}|
+283 32 0 |{0}|
+283 49 0 |{0}|
+283 250 0 |{0}|
+284 81 0 |{0}|
+284 262 0 |{0}|
+284 315 0 |{0}|
+287 248 0 |{0}|
+287 322 0 |{0}|
+288 187 0 |{0}|
+290 75 0 |{0}|
+291 268 0 |{0}|
+292 81 0 |{0}|
+294 143 0 |{0}|
+295 93 0 |{0}|
+295 141 0 |{0}|
+295 8 0 |{0}|
+296 66 0 |{0}|
+297 285 0 |{0}|
+298 87 0 |{0}|
+298 201 0 |{0}|
+299 190 0 |{0}|
+299 279 0 |{0}|
+300 283 0 |{0}|
+301 216 0 |{0}|
+303 176 0 |{0}|
+303 316 0 |{0}|
+304 65 0 |{0}|
+305 231 0 |{0}|
+306 56 0 |{0}|
+306 289 0 |{0}|
+308 120 0 |{0}|
+309 37 0 |{0}|
+309 39 0 |{0}|
+309 113 0 |{0}|
+309 261 0 |{0}|
+310 222 0 |{0}|
+311 42 0 |{0}|
+311 44 0 |{0}|
+312 330 0 |{0}|
+313 169 0 |{0}|
+314 175 0 |{0}|
+316 283 0 |{0}|
+317 283 0 |{0}|
+318 170 0 |{0}|
+320 72 0 |{0}|
+321 48 0 |{0}|
+321 160 0 |{0}|
+322 58 0 |{0}|
+322 88 0 |{0}|
+322 90 0 |{0}|
+322 123 0 |{0}|
+322 125 0 |{0}|
+322 272 0 |{0}|
+322 286 0 |{0}|
+323 144 0 |{0}|
+324 310 0 |{0}|
+326 57 0 |{0}|
+326 63 0 |{0}|
+327 186 0 |{0}|
+327 326 0 |{0}|
+328 306 0 |{0}|
+329 86 0 |{0}|
+329 282 0 |{0}|
+330 47 0 |{0}|
+331 31 0 |{0}|
+331 106 0 |{0}|
+332 259 0 |{0}|
+# version string
+GraphWin 1.320000
+# scaling  wxmin  wymin  wxmax  wymax
+13.5 -34.98425 -19.99534 32.19376 37.48
+# node label font and size
+1 0.15
+# edge label font and size
+0 12
+# node index format
+%d
+# edge index format
+%d
+# multi-edge distance
+5
+# 
+# node infos
+# x y shape bclr bwidth r1 r2 clr ltype lclr lpos lstr
+15.26422 6.147992 0 15 0.01 0.4953 0.4953 16 1 1 4 GCN3
+19.05101 4.837136 0 15 0.01 0.4191 0.4191 16 1 1 4 DED1
+19.65823 6.118847 0 15 0.01 0.3906 0.3906 16 1 1 4 CRM1
+18.20047 6.123402 0 15 0.01 0.4169 0.4169 16 1 1 4 SRM1
+21.32879 8.307219 0 15 0.01 0.4054 0.4054 16 1 1 4 YEF3
+3.42198 -2.171689 0 15 0.01 0.4103 0.4103 16 1 1 4 SAP4
+17.60565 4.818676 0 15 0.01 0.4444 0.4444 16 1 1 4 GSP1
+4.753109 24.89957 0 15 0.01 0.3941 0.3941 16 1 1 4 ACS2
+11.958 13.83057 0 15 0.01 0.4146 0.4146 16 1 1 4 TIF34
+11.28066 15.01231 0 15 0.01 0.4239 0.4239 16 1 1 4 TIF35
+20.56534 7.260651 0 15 0.01 0.4382 0.4382 16 1 1 4 TEF1
+20.50215 9.347319 0 15 0.01 0.4099 0.4099 16 1 1 4 TEF2
+17.53595 7.295094 0 15 0.01 0.4157 0.4157 16 1 1 4 HRP1
+0.5460705 -1.684015 0 15 0.01 0.4737 0.4737 16 1 1 4 NIP7
+19.69447 8.263308 0 15 0.01 0.4288 0.4288 16 1 1 4 EFB1
+2.091057 -2.583115 0 15 0.01 0.4586 0.4586 16 1 1 4 MAD2
+3.06907 -0.8901196 0 15 0.01 0.4157 0.4157 16 1 1 4 MAD3
+16.10352 7.296951 0 15 0.01 0.3914 0.3914 16 1 1 4 NAB2
+-13.62128 -4.49967 0 15 0.01 0.3957 0.3957 16 1 1 4 SSN6
+1.823518 12.76289 0 15 0.01 0.4522 0.4522 16 1 1 4 UGA1
+1.76353 -1.320237 0 15 0.01 0.406 0.406 16 1 1 4 MSB2
+16.35125 16.04701 0 15 0.01 0.4183 0.4183 16 1 1 4 YGR203W
+-5.779663 13.70055 0 15 0.01 0.4259 0.4259 16 1 1 4 FCY1
+1.881068 25.33383 0 15 0.01 0.4635 0.4635 16 1 1 4 ADH1
+-7.503452 3.812659 0 15 0.01 0.4003 0.4003 16 1 1 4 PRE10
+18.9503 7.071188 0 15 0.01 0.4146 0.4146 16 1 1 4 RNA15
+-14.5986 -3.12297 0 15 0.01 0.4545 0.4545 16 1 1 4 TUP1
+18.44849 1.15851 0 15 0.01 0.3925 0.3925 16 1 1 4 MDH3
+19.9885 12.73187 0 15 0.01 0.4282 0.4282 16 1 1 4 LSM4
+14.95841 -9.722577 0 15 0.01 0.4007 0.4007 16 1 1 4 YDL113C
+18.46679 12.67216 0 15 0.01 0.506 0.506 16 1 1 4 LSM8
+-0.7657364 1.631321 0 15 0.01 0.4152 0.4152 16 1 1 4 YER124C
+17.48812 15.20487 0 15 0.01 0.4085 0.4085 16 1 1 4 YER116C
+4.918232 26.65212 0 15 0.01 0.4066 0.4066 16 1 1 4 MCK1
+-4.576525 27.74307 0 15 0.01 0.475 0.475 16 1 1 4 GLK1
+-0.7982283 29.66486 0 15 0.01 0.4025 0.4025 16 1 1 4 RAP1
+13.62496 -7.845649 0 15 0.01 0.3955 0.3955 16 1 1 4 SNC1
+4.19756 0.8692201 0 15 0.01 0.4692 0.4692 16 1 1 4 CNS1
+14.19866 -6.681033 0 15 0.01 0.4095 0.4095 16 1 1 4 SNC2
+-11.40524 10.11835 0 15 0.01 0.5879 0.5879 16 1 1 4 HOR2
+-4.051034 -7.47842 0 15 0.01 0.4869 0.4869 16 1 1 4 YDR412W
+20.20458 14.10768 0 15 0.01 0.413 0.413 16 1 1 4 NOP1
+16.08989 -9.429514 0 15 0.01 0.4723 0.4723 16 1 1 4 YPL222W
+21.59291 14.16878 0 15 0.01 0.4953 0.4953 16 1 1 4 NOP5
+-2.122368 23.06196 0 15 0.01 0.3939 0.3939 16 1 1 4 DMC1
+12.66119 14.71373 0 15 0.01 0.4003 0.4003 16 1 1 4 PRT1
+-17.5981 4.058964 0 15 0.01 0.396 0.396 16 1 1 4 YBR043C
+9.587423 1.325645 0 15 0.01 0.4729 0.4729 16 1 1 4 MYO2
+3.036122 1.367475 0 15 0.01 0.3914 0.3914 16 1 1 4 HSC82
+-4.838592 12.16818 0 15 0.01 0.4467 0.4467 16 1 1 4 PHO13
+9.896749 9.585785 0 15 0.01 0.4249 0.4249 16 1 1 4 TFA1
+-3.157525 11.90306 0 15 0.01 0.3968 0.3968 16 1 1 4 GCN4
+-6.638368 4.634281 0 15 0.01 0.453 0.453 16 1 1 4 GPD2
+16.19126 11.53362 0 15 0.01 0.4259 0.4259 16 1 1 4 CIN4
+-7.144263 2.523582 0 15 0.01 0.4616 0.4616 16 1 1 4 RPS8B
+0.9999982 3.166969 0 15 0.01 0.3978 0.3978 16 1 1 4 STE50
+-5.499387 -15.68727 0 15 0.01 0.4717 0.4717 16 1 1 4 PIG2
+0.5718013 33.02032 0 15 0.01 0.4785 0.4785 16 1 1 4 RPL31A
+-0.08045638 24.34141 0 15 0.01 0.4343 0.4343 16 1 1 4 PGK1
+-14.03515 22.69783 0 15 0.01 0.7638 0.7638 16 1 1 4 GAL10
+-15.55958 20.82692 0 15 0.01 0.4124 0.4124 16 1 1 4 GAL11
+16.959 8.94785 0 15 0.01 0.4662 0.4662 16 1 1 4 YHR198C
+-5.995989 -14.35364 0 15 0.01 0.4871 0.4871 16 1 1 4 GAC1
+-3.88046 10.32856 0 15 0.01 0.4317 0.4317 16 1 1 4 ILV2
+8.616634 9.511215 0 15 0.01 0.4497 0.4497 16 1 1 4 MSL1
+15.35849 10.1731 0 15 0.01 0.4099 0.4099 16 1 1 4 SIN4
+-5.569391 17.03988 0 15 0.01 0.4101 0.4101 16 1 1 4 RAD52
+14.38401 9.313684 0 15 0.01 0.4017 0.4017 16 1 1 4 MSL5
+-0.6674336 -4.881523 0 15 0.01 0.452 0.452 16 1 1 4 YCR086W
+-4.435291 -1.258764 0 15 0.01 0.4122 0.4122 16 1 1 4 GIC2
+0.1529114 17.93327 0 15 0.01 0.4159 0.4159 16 1 1 4 CPA1
+0.4768208 -4.918821 0 15 0.01 0.4191 0.4191 16 1 1 4 YGR058W
+-1.22953 18.50185 0 15 0.01 0.39 0.39 16 1 1 4 CPA2
+-11.38793 -3.594066 0 15 0.01 0.4288 0.4288 16 1 1 4 BAR1
+-22.73114 10.99621 0 15 0.01 0.4114 0.4114 16 1 1 4 HAP1
+-19.7761 12.39733 0 15 0.01 0.3939 0.3939 16 1 1 4 HAP2
+-21.45264 10.92288 0 15 0.01 0.4514 0.4514 16 1 1 4 HAP3
+10.95339 8.505594 0 15 0.01 0.4017 0.4017 16 1 1 4 TFB1
+7.942229 -6.139023 0 15 0.01 0.4187 0.4187 16 1 1 4 APG5
+-20.29261 11.25319 0 15 0.01 0.4378 0.4378 16 1 1 4 HAP4
+-10.10448 0.329151 0 15 0.01 0.5144 0.5144 16 1 1 4 MCM1
+6.975702 -7.140882 0 15 0.01 0.4393 0.4393 16 1 1 4 APG7
+17.02042 12.61415 0 15 0.01 0.4212 0.4212 16 1 1 4 LYS9
+3.397015 27.14592 0 15 0.01 0.3988 0.3988 16 1 1 4 ENO1
+2.687483 26.09875 0 15 0.01 0.396 0.396 16 1 1 4 ENO2
+18.09793 19.60453 0 15 0.01 0.4945 0.4945 16 1 1 4 PRP21
+-0.3970685 -0.6629866 0 15 0.01 0.4007 0.4007 16 1 1 4 SPA2
+1.321765 31.65966 0 15 0.01 0.4506 0.4506 16 1 1 4 RPL16A
+3.761728 -10.66701 0 15 0.01 0.4175 0.4175 16 1 1 4 PDR1
+3.365598 32.69039 0 15 0.01 0.4442 0.4442 16 1 1 4 RPL16B
+-6.018169 1.327208 0 15 0.01 0.5343 0.5343 16 1 1 4 HSL1
+-14.45565 -1.588648 0 15 0.01 0.4183 0.4183 16 1 1 4 ALPHA2
+17.63535 16.50536 0 15 0.01 0.4005 0.4005 16 1 1 4 HEX3
+5.052023 -10.67095 0 15 0.01 0.39 0.39 16 1 -1 4 PDR3
+11.7799 -8.420299 0 15 0.01 0.3908 0.3908 16 1 1 4 PEP7
+-0.1251593 12.5766 0 15 0.01 0.5261 0.5261 16 1 1 4 BAS1
+-2.280265 24.7267 0 15 0.01 0.4091 0.4091 16 1 1 4 PDC1
+-1.228198 24.48058 0 15 0.01 0.4033 0.4033 16 1 1 4 PDC5
+-21.94405 -6.315539 0 15 0.01 0.421 0.421 16 1 1 4 FRE1
+-10.82368 2.920018 0 15 0.01 0.4522 0.4522 16 1 1 4 PMA1
+2.841343 16.32225 0 15 0.01 0.6049 0.6049 16 1 1 4 GLN1
+1.853891 14.67596 0 15 0.01 0.5072 0.5072 16 1 1 4 GLN3
+10.43914 -8.947841 0 15 0.01 0.4345 0.4345 16 1 1 4 YDR100W
+-18.27268 -11.54352 0 15 0.01 0.4062 0.4062 16 1 1 4 RAS2
+19.44864 17.70546 0 15 0.01 0.4136 0.4136 16 1 1 4 SNF2
+19.53546 15.86248 0 15 0.01 0.4598 0.4598 16 1 1 4 SNF3
+15.97116 17.82856 0 15 0.01 0.4122 0.4122 16 1 1 4 SNF4
+-6.815611 -4.224406 0 15 0.01 0.3997 0.3997 16 1 1 4 RLM1
+15.57142 19.46652 0 15 0.01 0.4516 0.4516 16 1 1 4 SIP2
+-12.76975 9.043107 0 15 0.01 0.398 0.398 16 1 1 4 SIP4
+-20.70184 -5.316257 0 15 0.01 0.3947 0.3947 16 1 1 4 MAC1
+16.83171 19.59687 0 15 0.01 0.4596 0.4596 16 1 1 4 MPT1
+9.296312 7.219514 0 15 0.01 0.3964 0.3964 16 1 1 4 MSN5
+-12.94986 -16.46567 0 15 0.01 0.3966 0.3966 16 1 1 4 TPO1
+9.688142 8.233827 0 15 0.01 0.3982 0.3982 16 1 1 4 SSL2
+-6.549586 31.31611 0 15 0.01 0.4077 0.4077 16 1 1 4 RPP1A
+-4.771903 32.76702 0 15 0.01 0.4132 0.4132 16 1 1 4 RPP1B
+5.680158 27.8439 0 15 0.01 0.4505 0.4505 16 1 1 4 PFK27
+17.53019 13.91095 0 15 0.01 0.42 0.42 16 1 1 4 YNL050C
+15.83265 12.98368 0 15 0.01 0.4019 0.4019 16 1 1 4 YOR215C
+15.66468 9.078658 0 15 0.01 0.4333 0.4333 16 1 1 4 PRP40
+17.48632 11.39713 0 15 0.01 0.462 0.462 16 1 1 4 RPL42B
+3.669453 34.24349 0 15 0.01 0.4701 0.4701 16 1 1 4 RPL34A
+19.03715 9.484076 0 15 0.01 0.4114 0.4114 16 1 1 4 YEL015W
+0.5776826 34.23537 0 15 0.01 0.4811 0.4811 16 1 1 4 RPL34B
+9.535495 -1.041083 0 15 0.01 0.4015 0.4015 16 1 1 4 YCK1
+-3.931344 31.4178 0 15 0.01 0.4399 0.4399 16 1 1 4 RPL18A
+13.87434 15.79707 0 15 0.01 0.4376 0.4376 16 1 1 4 NIP1
+10.29632 -0.1108814 0 15 0.01 0.3943 0.3943 16 1 1 4 YCK2
+-3.542545 32.71331 0 15 0.01 0.4356 0.4356 16 1 1 4 RPL18B
+-19.03423 -7.290029 0 15 0.01 0.5361 0.5361 16 1 1 4 FTR1
+-1.578037 12.0732 0 15 0.01 0.39 0.39 16 1 -1 4 ADE5
+14.67891 -8.567212 0 15 0.01 0.4333 0.4333 16 1 1 4 DDI1
+13.08364 9.473818 0 15 0.01 0.4762 0.4762 16 1 1 4 TOR1
+-5.154069 31.55669 0 15 0.01 0.3966 0.3966 16 1 1 4 RPP2B
+-6.883617 14.30362 0 15 0.01 0.4501 0.4501 16 1 1 4 CAR1
+-12.90143 10.73421 0 15 0.01 0.501 0.501 16 1 1 4 ICL1
+-6.770037 29.10349 0 15 0.01 0.4272 0.4272 16 1 1 4 ACT1
+3.757589 -12.30833 0 15 0.01 0.5078 0.5078 16 1 1 4 HXT9
+3.688784 23.28661 0 15 0.01 0.4311 0.4311 16 1 1 4 GCR1
+4.928634 23.34284 0 15 0.01 0.4132 0.4132 16 1 1 4 GCR2
+-16.31031 18.7604 0 15 0.01 0.39 0.39 16 1 -1 4 MEL1
+-23.35842 12.82827 0 15 0.01 0.5509 0.5509 16 1 1 4 CYB2
+-4.028183 -5.485035 0 15 0.01 0.4875 0.4875 16 1 1 4 SFH1
+-14.51596 -10.323 0 15 0.01 0.5351 0.5351 16 1 1 4 HSP26
+-5.142736 10.80503 0 15 0.01 0.5277 0.5277 16 1 1 4 HIS3
+-1.717234 13.83755 0 15 0.01 0.5659 0.5659 16 1 1 4 HIS4
+-11.10736 4.502351 0 15 0.01 0.4731 0.4731 16 1 1 4 AST1
+-0.1863576 35.41069 0 15 0.01 0.4834 0.4834 16 1 1 4 RPS22A
+-17.13561 -13.14946 0 15 0.01 0.4017 0.4017 16 1 1 4 YAP1
+-1.360132 10.50015 0 15 0.01 0.6183 0.6183 16 1 1 4 HIS7
+11.62535 -0.2280536 0 15 0.01 0.3955 0.3955 16 1 1 4 YKL204W
+17.88305 9.675412 0 15 0.01 0.4116 0.4116 16 1 1 4 ECI1
+10.04398 -2.364143 0 15 0.01 0.4066 0.4066 16 1 1 4 YNL116W
+-6.779948 12.06921 0 15 0.01 0.4056 0.4056 16 1 1 4 SRP1
+8.453805 8.040824 0 15 0.01 0.5466 0.5466 16 1 1 4 ATC1
+-0.2957335 16.41808 0 15 0.01 0.4707 0.4707 16 1 1 4 YNL311C
+0.3806152 15.35645 0 15 0.01 0.4809 0.4809 16 1 1 4 MET14
+-4.535746 13.46601 0 15 0.01 0.4887 0.4887 16 1 1 4 ARG1
+7.229345 3.079979 0 15 0.01 0.459 0.459 16 1 1 4 CMK1
+7.985585 1.442015 0 15 0.01 0.4173 0.4173 16 1 1 4 CMK2
+-3.54845 18.8349 0 15 0.01 0.5924 0.5924 16 1 1 4 MET16
+13.69331 -9.878598 0 15 0.01 0.399 0.399 16 1 1 4 SNX4
+-21.90199 13.1224 0 15 0.01 0.4165 0.4165 16 1 1 4 CYC1
+-24.42482 9.322338 0 15 0.01 0.4506 0.4506 16 1 1 4 CYC7
+15.03063 14.10863 0 15 0.01 0.4657 0.4657 16 1 1 4 YEL041W
+-13.13099 -13.4441 0 15 0.01 0.5402 0.5402 16 1 1 4 CUP1A
+-14.88624 -13.60787 0 15 0.01 0.5286 0.5286 16 1 1 4 CUP1B
+-10.61698 17.65321 0 15 0.01 0.4226 0.4226 16 1 1 4 SKO1
+-12.02273 2.036461 0 15 0.01 0.3937 0.3937 16 1 1 4 HSP150
+-7.341666 33.63125 0 15 0.01 0.452 0.452 16 1 1 4 YDL063C
+9.585107 -7.973958 0 15 0.01 0.414 0.414 16 1 1 4 YGL161C
+13.0054 -8.89792 0 15 0.01 0.4064 0.4064 16 1 1 4 SSO2
+14.43751 18.52919 0 15 0.01 0.4672 0.4672 16 1 1 4 YMR291W
+16.05045 -7.777908 0 15 0.01 0.4177 0.4177 16 1 1 4 UFD1
+-7.761859 -1.31599 0 15 0.01 0.4423 0.4423 16 1 1 4 CLN3
+-3.967036 26.47422 0 15 0.01 0.4475 0.4475 16 1 1 4 HSP42
+-5.360734 26.35458 0 15 0.01 0.4415 0.4415 16 1 1 4 PHO4
+-3.495681 25.4572 0 15 0.01 0.3982 0.3982 16 1 1 4 PHO5
+-1.690437 33.84126 0 15 0.01 0.4696 0.4696 16 1 1 4 RPS24A
+-0.6941306 34.12945 0 15 0.01 0.476 0.476 16 1 1 4 RPS24B
+-3.288225 14.01803 0 15 0.01 0.6431 0.6431 16 1 1 4 ADE4
+20.4402 16.95086 0 15 0.01 0.4276 0.4276 16 1 1 4 RSC8
+0.007551717 2.508109 0 15 0.01 0.443 0.443 16 1 1 4 YDR032C
+-3.647665 -11.96102 0 15 0.01 0.4781 0.4781 16 1 1 4 YOR315W
+-4.826857 -12.71264 0 15 0.01 0.4113 0.4113 16 1 1 4 GLC7
+-13.64973 20.54381 0 15 0.01 0.4503 0.4503 16 1 1 4 MIG1
+-6.221535 -12.73923 0 15 0.01 0.3951 0.3951 16 1 1 4 GLC8
+10.3463 -6.201736 0 15 0.01 0.3937 0.3937 16 1 1 4 YPT1
+9.959947 11.87482 0 15 0.01 0.4001 0.4001 16 1 1 4 GDS1
+-1.654104 34.99644 0 15 0.01 0.4471 0.4471 16 1 1 4 NPI46
+-20.42275 -6.680431 0 15 0.01 0.4267 0.4267 16 1 1 4 FET3
+-4.682901 25.03411 0 15 0.01 0.4142 0.4142 16 1 1 4 PHO84
+-3.511639 -16.68131 0 15 0.01 0.4138 0.4138 16 1 1 4 PHO85
+4.084296 28.12035 0 15 0.01 0.3902 0.3902 16 1 1 4 CDC19
+-15.64725 -11.7712 0 15 0.01 0.3986 0.3986 16 1 1 4 SSA4
+-18.84916 20.24348 0 15 0.01 0.5117 0.5117 16 1 1 4 GAL80
+-2.555683 -3.390218 0 15 0.01 0.4267 0.4267 16 1 1 4 KNS1
+-2.662374 33.34104 0 15 0.01 0.4723 0.4723 16 1 1 4 RPS17A
+1.306502 16.93249 0 15 0.01 0.4093 0.4093 16 1 1 4 CKB2
+-9.263323 -3.723146 0 15 0.01 0.3953 0.3953 16 1 1 4 SWI4
+12.30334 15.73721 0 15 0.01 0.396 0.396 16 1 1 4 YIL105C
+-1.33251 15.49525 0 15 0.01 0.4534 0.4534 16 1 1 4 TRP2
+-9.744242 3.067766 0 15 0.01 0.4247 0.4247 16 1 1 4 SWI5
+-2.574682 16.22321 0 15 0.01 0.5097 0.5097 16 1 1 4 TRP3
+-2.531214 9.998262 0 15 0.01 0.4189 0.4189 16 1 1 4 TRP4
+-12.70561 7.357944 0 15 0.01 0.6135 0.6135 16 1 1 4 PCK1
+-2.857084 34.62089 0 15 0.01 0.5673 0.5673 16 1 1 4 RPC19
+-16.95812 -11.56516 0 15 0.01 0.3902 0.3902 16 1 1 4 CDC25
+13.12215 16.86789 0 15 0.01 0.3978 0.3978 16 1 1 4 YNL047C
+-7.400681 1.304814 0 15 0.01 0.4374 0.4374 16 1 1 4 CDC28
+10.8478 7.305579 0 15 0.01 0.4163 0.4163 16 1 1 4 HMO1
+-5.111489 -3.461947 0 15 0.01 0.4148 0.4148 16 1 1 4 YIL113W
+8.245983 -7.918622 0 15 0.01 0.4261 0.4261 16 1 1 4 AUT1
+-5.412154 -6.740234 0 15 0.01 0.4294 0.4294 16 1 1 4 SYF3
+-6.178743 3.475521 0 15 0.01 0.4099 0.4099 16 1 1 4 GNA1
+15.44573 15.31285 0 15 0.01 0.3949 0.3949 16 1 1 4 YMR044W
+19.78879 10.35088 0 15 0.01 0.4345 0.4345 16 1 1 4 DCP1
+10.86183 -7.605163 0 15 0.01 0.3919 0.3919 16 1 1 4 PEP12
+10.3223 2.964988 0 15 0.01 0.4588 0.4588 16 1 1 4 MLC1
+19.04531 -2.076093 0 15 0.01 0.4027 0.4027 16 1 1 4 PEX13
+-16.51717 -14.42553 0 15 0.01 0.43 0.43 16 1 1 4 KAP123
+16.75885 -1.104395 0 15 0.01 0.3982 0.3982 16 1 1 4 PEX14
+-8.487249 2.799871 0 15 0.01 0.3972 0.3972 16 1 1 4 CKS1
+-2.095599 -16.45306 0 15 0.01 0.5226 0.5226 16 1 1 4 PCL5
+17.48097 -2.673373 0 15 0.01 0.391 0.391 16 1 1 4 PEX17
+-1.995689 19.67636 0 15 0.01 0.4711 0.4711 16 1 1 4 CBF1
+12.04984 -9.588105 0 15 0.01 0.4007 0.4007 16 1 1 4 VPS21
+-14.30488 8.42196 0 15 0.01 0.4421 0.4421 16 1 1 4 MLS1
+14.20544 19.76354 0 15 0.01 0.4797 0.4797 16 1 1 4 CBF5
+13.14968 13.05621 0 15 0.01 0.4423 0.4423 16 1 1 4 TAF25
+-9.039514 1.613446 0 15 0.01 0.5109 0.5109 16 1 1 4 CLB1
+18.68144 -0.5787904 0 15 0.01 0.3925 0.3925 16 1 1 4 PEX5
+-5.725328 34.00709 0 15 0.01 0.4202 0.4202 16 1 1 4 RPL5
+-10.37037 -3.945298 0 15 0.01 0.4448 0.4448 16 1 1 4 CLB2
+17.48853 0.1606426 0 15 0.01 0.4249 0.4249 16 1 1 4 PEX7
+16.88671 1.264794 0 15 0.01 0.5314 0.5314 16 1 1 4 POT1
+-18.55923 18.42754 0 15 0.01 0.7556 0.7556 16 1 1 4 GAL1
+-17.18827 23.72998 0 15 0.01 0.505 0.505 16 1 1 4 GAL2
+-19.16522 21.87422 0 15 0.01 0.5869 0.5869 16 1 1 4 GAL3
+-16.96904 20.85086 0 15 0.01 0.4253 0.4253 16 1 1 4 GAL4
+16.81326 10.20432 0 15 0.01 0.4483 0.4483 16 1 1 4 AHP1
+-5.249988 15.26476 0 15 0.01 0.3941 0.3941 16 1 1 4 RFA1
+-5.216273 -4.869653 0 15 0.01 0.4896 0.4896 16 1 1 4 YKL161C
+-11.15053 8.179201 0 15 0.01 0.6361 0.6361 16 1 1 4 YPL201C
+-15.52285 23.48795 0 15 0.01 0.7742 0.7742 16 1 1 4 GAL7
+-6.900356 16.12549 0 15 0.01 0.4153 0.4153 16 1 1 4 RFA2
+2.132577 35.69443 0 15 0.01 0.4341 0.4341 16 1 1 4 RPL10
+-5.822778 -0.9741631 0 15 0.01 0.4048 0.4048 16 1 1 4 CDC42
+2.859339 0.2676799 0 15 0.01 0.4327 0.4327 16 1 1 4 HSP82
+5.018054 -12.29681 0 15 0.01 0.4302 0.4302 16 1 1 4 HXT11
+18.24562 8.308828 0 15 0.01 0.39 0.39 16 1 1 4 TEM1
+13.75591 6.192529 0 15 0.01 0.6287 0.6287 16 1 1 4 HOM3
+-19.5612 -4.211075 0 15 0.01 0.4842 0.4842 16 1 1 4 CTR1
+-13.46336 -15.20634 0 15 0.01 0.4091 0.4091 16 1 1 4 CUP2
+-6.666717 -6.860091 0 15 0.01 0.46 0.46 16 1 1 4 YBR190W
+-4.934067 -16.95154 0 15 0.01 0.5043 0.5043 16 1 1 4 PCL10
+-8.46592 -2.280054 0 15 0.01 0.5376 0.5376 16 1 1 4 CDC6
+19.30019 11.41316 0 15 0.01 0.444 0.444 16 1 1 4 RPS28A
+20.67868 11.51482 0 15 0.01 0.46 0.46 16 1 1 4 RPS28B
+11.47058 -6.232274 0 15 0.01 0.3999 0.3999 16 1 1 4 SEC17
+-12.09223 -1.30742 0 15 0.01 0.4333 0.4333 16 1 1 4 MFA1
+-12.09711 -0.3093288 0 15 0.01 0.4171 0.4171 16 1 1 4 MFA2
+16.15694 5.21946 0 15 0.01 0.42 0.42 16 1 1 4 CHK1
+-4.338069 34.34387 0 15 0.01 0.4557 0.4557 16 1 1 4 RPC40
+0.7361469 -0.5428886 0 15 0.01 0.4633 0.4633 16 1 1 4 SST2
+-6.678509 -2.06193 0 15 0.01 0.483 0.483 16 1 1 4 BFR2
+-1.521782 17.02455 0 15 0.01 0.4963 0.4963 16 1 1 4 SER33
+3.162764 2.355442 0 15 0.01 0.4372 0.4372 16 1 1 4 BUD6
+-14.1595 -12.15364 0 15 0.01 0.4198 0.4198 16 1 1 4 HSF1
+-18.46115 23.20114 0 15 0.01 0.4684 0.4684 16 1 1 4 GCY1
+2.688034 31.54274 0 15 0.01 0.4723 0.4723 16 1 1 4 RPL25
+13.87315 14.35102 0 15 0.01 0.4467 0.4467 16 1 1 4 TIF5
+14.70733 7.138635 0 15 0.01 0.3949 0.3949 16 1 1 4 FPR1
+9.045699 -6.901875 0 15 0.01 0.4922 0.4922 16 1 1 4 APG12
+-8.481772 29.11269 0 15 0.01 0.3943 0.3943 16 1 1 4 OYE2
+17.01195 6.218901 0 15 0.01 0.4358 0.4358 16 1 1 4 GFD1
+-4.128876 -15.16825 0 15 0.01 0.4553 0.4553 16 1 1 4 GSY2
+3.365615 13.26409 0 15 0.01 0.39 0.39 16 1 1 4 GDH2
+3.823595 14.88136 0 15 0.01 0.4296 0.4296 16 1 1 4 YLR432W
+10.90529 -1.471007 0 15 0.01 0.4462 0.4462 16 1 1 4 YER079W
+17.17885 17.94863 0 15 0.01 0.435 0.435 16 1 1 4 PRP9
+1.12578 1.332069 0 15 0.01 0.4072 0.4072 16 1 1 4 STE11
+-14.50262 0.3491095 0 15 0.01 0.5058 0.5058 16 1 1 4 STE12
+8.312174 10.9591 0 15 0.01 0.4914 0.4914 16 1 1 4 YNL164C
+1.043114 35.40884 0 15 0.01 0.4649 0.4649 16 1 1 4 RPL11A
+3.189332 35.34772 0 15 0.01 0.4698 0.4698 16 1 1 4 RPL11B
+13.94197 8.30174 0 15 0.01 0.4347 0.4347 16 1 1 4 MUD2
+-4.148775 9.175718 0 15 0.01 0.4651 0.4651 16 1 1 4 RPA135
+-23.14031 8.638356 0 15 0.01 0.4715 0.4715 16 1 1 4 CTT1
+-3.107316 17.52647 0 15 0.01 0.4816 0.4816 16 1 1 4 SER3
+-12.17607 0.8974315 0 15 0.01 0.3916 0.3916 16 1 1 4 PIS1
+0.967549 24.71521 0 15 0.01 0.4044 0.4044 16 1 1 4 TPI1
+-23.81795 14.32798 0 15 0.01 0.4286 0.4286 16 1 1 4 MAM33
+14.38743 17.10957 0 15 0.01 0.4891 0.4891 16 1 1 4 SNP1
+14.04104 10.41109 0 15 0.01 0.4181 0.4181 16 1 1 4 YGR046W
+9.657601 10.74075 0 15 0.01 0.4249 0.4249 16 1 1 4 YNL091W
+-7.79274 -3.271169 0 15 0.01 0.4374 0.4374 16 1 1 4 SLT2
+8.507218 12.15343 0 15 0.01 0.3931 0.3931 16 1 1 4 TAH18
+1.840934 -0.1574486 0 15 0.01 0.4493 0.4493 16 1 1 4 GPA1
+-5.307198 2.548113 0 15 0.01 0.4865 0.4865 16 1 1 4 YDR070C
+-14.34784 9.980498 0 15 0.01 0.593 0.593 16 1 1 4 FBP1
+-7.188427 0.02319598 0 15 0.01 0.5442 0.5442 16 1 1 4 FAR1
+7.349651 8.502626 0 15 0.01 0.4877 0.4877 16 1 1 4 NCE103
+14.51813 13.09298 0 15 0.01 0.4152 0.4152 16 1 1 4 YML114C
+-0.5275178 7.000821 0 15 0.01 0.4754 0.4754 16 1 1 4 SPC24
+-0.3008833 -5.988303 0 15 0.01 0.4902 0.4902 16 1 1 4 YOR264W
+16.42942 14.72013 0 15 0.01 0.404 0.404 16 1 1 4 YHR115C
+12.3906 -7.3005 0 15 0.01 0.4194 0.4194 16 1 1 4 SEC9
+-15.71515 -15.58241 0 15 0.01 0.4005 0.4005 16 1 1 4 ASM4
+20.81268 15.64785 0 15 0.01 0.4717 0.4717 16 1 1 4 SIK1
+-19.9316 1.791871 0 15 0.01 0.4436 0.4436 16 1 1 4 ARO8
+-12.26479 19.35208 0 15 0.01 0.5183 0.5183 16 1 1 4 SUC2
+16.01237 -6.168148 0 15 0.01 0.438 0.438 16 1 1 4 NPL4
+-11.88419 -2.501264 0 15 0.01 0.4666 0.4666 16 1 1 4 STE2
+-0.6111817 0.4859412 0 15 0.01 0.4288 0.4288 16 1 1 4 STE4
+2.150706 2.839533 0 15 0.01 0.4138 0.4138 16 1 1 4 STE5
+-13.2962 2.40159 0 15 0.01 0.4588 0.4588 16 1 1 4 YDL023C
+-6.053032 32.57058 0 15 0.01 0.4105 0.4105 16 1 1 4 RPP0
+0.964764 -6.004948 0 15 0.01 0.4302 0.4302 16 1 1 4 YGR136W
+8.747851 3.0123 0 15 0.01 0.3925 0.3925 16 1 1 4 CMD1
+2.059384 33.45224 0 15 0.01 0.3921 0.3921 16 1 1 4 SXM1
+-3.144566 -4.407736 0 15 0.01 0.4284 0.4284 16 1 1 4 YLR345W
+-14.81597 -16.73107 0 15 0.01 0.391 0.391 16 1 1 4 NUP170
+-5.446123 -11.50931 0 15 0.01 0.5378 0.5378 16 1 1 4 REG2
+-4.760631 -13.91952 0 15 0.01 0.5838 0.5838 16 1 1 4 GIP1
+-3.602296 -13.23867 0 15 0.01 0.4224 0.4224 16 1 1 4 GIP2
+-0.07556773 11.22133 0 15 0.01 0.5164 0.5164 16 1 1 4 ASN1
+18.41264 17.49589 0 15 0.01 0.4744 0.4744 16 1 1 4 YNR053C
+-18.80298 2.955551 0 15 0.01 0.4212 0.4212 16 1 1 4 SMD1
+19.10541 14.60392 0 15 0.01 0.4462 0.4462 16 1 1 4 MTH1
+21.42649 12.75004 0 15 0.01 0.4395 0.4395 16 1 1 4 LSM2
+# 
+# edge infos
+# width clr shape style dir ltype lclr lpos sanch tanch poly lstr
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (15.55638,6.547947) (15.87265,6.980896) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (19.26763,6.120067) (18.61737,6.122099) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (18.43042,5.775653) (18.81985,5.18672) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (21.08987,7.979702) (20.82359,7.614667) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (21.07655,8.624591) (20.75719,9.026424) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (17.79,5.223037) (18.02753,5.744064) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (11.75183,14.19027) (11.49146,14.64454) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 4 (10.89079,14.8459) (1.837552,10.98158) (-0.9733967,10.29492) (-5.930035,3.801347) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (20.27799,7.591483) (19.97565,7.939572) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (20.25725,9.018625) (19.95067,8.607158) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (17.94654,7.230094) (18.5408,7.136016) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (0.9999423,-1.548398) (1.374524,-1.436472) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (2.5292,-2.447673) (3.029982,-2.292867) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (3.179435,-1.290901) (3.313049,-1.776113) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (16.49492,7.296444) (17.12025,7.295633) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (1.865454,-1.713235) (1.975928,-2.139201) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (2.149142,-1.193195) (2.674245,-1.020197) 
+0.1030596 4 0 0 0 1 1 5 (0,0) (0,0) 2 (15.98335,16.24607) (14.8176,16.87682) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-14.3355,-3.493579) (-13.85034,-4.177008) 
+0.1030596 4 0 0 0 1 1 5 (0,0) (0,0) 2 (-14.55644,-2.67043) (-14.49445,-2.005144) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (19.79036,12.35227) (19.50564,11.80677) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (17.9612,12.65188) (17.44128,12.63103) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (18.16163,13.07578) (17.78349,13.57593) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 3 (18.44291,12.16672) (18.38717,10.98697) (18.87384,9.861675) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (18.74609,12.25023) (19.05511,11.78339) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (18.91513,12.43757) (20.2711,11.72808) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 3 (18.42519,13.17645) (18.2854,14.87084) (18.38967,17.02205) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (17.53407,15.61078) (17.5903,16.1074) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (4.71742,27.00567) (4.277009,27.78106) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-0.7444451,29.26597) (-0.1384888,24.77182) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-0.4531525,29.45767) (3.055111,27.35121) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-0.516881,29.37702) (2.410679,26.38194) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-0.5050941,29.94068) (0.9936004,31.35087) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-0.913928,29.27935) (-2.162668,25.11853) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-1.149489,29.86139) (-3.547445,31.20301) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-1.067525,29.964) (-3.251102,32.38957) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 4 (-0.9779634,29.30472) (-7.670803,15.89406) (-3.158581,15.55694) (-2.080781,14.27123) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-1.08186,29.37927) (-3.651694,26.79173) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-1.015457,29.32601) (-3.280773,25.79243) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-0.8823174,30.05848) (-1.59233,33.38202) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-0.788846,30.06725) (-0.7052261,33.65358) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-0.4144714,29.54346) (3.712266,28.23804) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-0.4438668,29.85574) (2.27222,31.31876) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-0.6629857,29.28576) (0.831668,25.0961) 
+0.1030596 5 0 0 1 1 1 5 (0,0) (0,0) 2 (-0.5864744,29.32256) (1.637222,25.728) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (13.95131,-8.069074) (14.32137,-8.322433) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (14.2997,-7.077872) (14.572,-8.147309) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-11.32868,9.535457) (-11.23337,8.809884) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-3.664782,-7.181973) (-1.026,-5.156721) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-3.600233,-7.662404) (3.375182,-10.50925) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-4.479041,-7.246296) (-5.034692,-6.944946) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-4.476021,-7.240811) (-9.98213,-4.162362) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (20.61718,14.12584) (21.09809,14.147) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-2.159562,23.4541) (-2.241636,24.31943) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-1.912331,23.39519) (-1.443248,24.1394) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 3 (-1.822965,22.806) (3.556239,18.20734) (11.92224,15.84483) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (12.95977,14.98036) (13.54794,15.5056) 
+0.1030596 4 0 0 0 1 1 5 (0,0) (0,0) 2 (12.26994,14.79835) (11.69498,14.9227) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (9.780865,1.757171) (10.13463,2.546329) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (3.39582,1.213165) (3.766364,1.054203) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-3.323098,11.54245) (-3.700325,10.72088) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-3.504751,11.71101) (-4.680964,11.06044) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-2.92056,12.22133) (-2.055184,13.38364) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-2.844727,11.65891) (-1.847539,10.88058) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-3.419965,12.20068) (-4.212524,13.09947) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-3.182,12.2991) (-3.248559,13.37615) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (16.61481,11.48898) (17.02686,11.44555) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (16.37176,11.14786) (16.62326,10.61037) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (0.6685821,2.94695) (0.3766249,2.753127) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (1.027203,2.7701) (1.097932,1.738316) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (1.38261,3.058096) (1.752705,2.952785) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 2 (-0.2453984,23.93965) (-1.816771,20.11216) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 2 (-14.51762,22.1057) (-15.29908,21.14663) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 2 (-13.90062,21.94597) (-13.72904,20.98707) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-15.88163,20.56932) (-17.96917,18.89952) 
+0.1030596 4 2 0 1 1 1 5 (0,0) (0,0) 2 (-15.76136,21.18658) (-16.94118,23.28956) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-15.97192,20.83392) (-16.5438,20.84364) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-15.55389,21.23928) (-15.53354,22.71382) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (8.192268,9.660023) (0.3713025,12.40251) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (8.905641,9.166679) (9.432233,8.538907) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (8.567137,9.064247) (8.513967,8.584103) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (8.90721,9.854428) (9.383049,10.41646) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (15.46893,9.778357) (15.54794,9.495935) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-5.907407,16.80766) (-6.558054,16.36066) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (14.77911,9.241176) (15.2385,9.15687) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-0.5253281,-5.310603) (-0.4549986,-5.52296) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-4.839084,-1.175938) (-5.426234,-1.055502) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (0.230339,-5.257778) (-0.01258601,-5.591843) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-0.8688449,18.3535) (-0.2317269,18.09147) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-22.8644,11.38543) (-23.17997,12.30707) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-22.58167,11.3795) (-22.05331,12.73436) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-23.02375,10.70702) (-24.10433,9.639081) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-20.14891,12.52448) (-21.50779,12.98795) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-21.54299,11.36515) (-21.81862,12.71433) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (10.67249,8.792752) (10.19387,9.282043) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (7.651525,-6.440354) (7.280709,-6.824725) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (8.28664,-6.377121) (8.640829,-6.62198) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-20.11247,11.65221) (-19.93817,12.03832) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-20.71367,11.1333) (-21.0185,11.0465) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-20.57826,11.58496) (-21.63024,12.80677) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 3 (-19.89441,11.43515) (-14.50404,13.89833) (-13.70715,20.09719) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-10.26442,-0.1597521) (-11.2546,-3.18652) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-10.48873,0.6711457) (-11.72864,1.774713) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 3 (-10.38985,0.7571356) (-12.865,4.469236) (-12.73941,6.745376) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-9.776131,0.7251235) (-9.365629,1.220168) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-10.5016,0.002190758) (-11.75772,-1.032008) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-10.59435,0.1721875) (-11.6999,-0.1820553) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-9.592888,0.2754743) (-7.729656,0.07998225) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-10.37829,-0.1063178) (-11.63582,-2.106261) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (6.536608,-7.154323) (-3.564362,-7.463523) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (7.350357,-7.370268) (7.882585,-7.696129) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (16.764,12.28) (16.45054,11.8715) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (17.68588,19.87793) (6.055542,27.59483) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-0.1539436,-0.3444732) (0.8787112,1.008389) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (3.760675,-11.08451) (3.75887,-11.80053) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (4.016618,-10.99767) (4.755411,-11.95609) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-6.552399,1.318555) (-6.963338,1.311898) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 3 (-14.21947,-1.93389) (-13.17421,-3.461786) (-11.81556,-3.562399) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 4 (-14.27833,-1.209789) (-13.70562,0.01389947) (-13.2173,0.1431605) (-10.61796,0.2984704) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-14.04028,-1.539222) (-12.52249,-1.358618) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-14.06144,-1.728554) (-12.32392,-2.345204) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (4.810159,-10.97689) (4.072509,-11.90998) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (11.48767,-8.16083) (11.15489,-7.865362) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 2 (-10.70273,2.484294) (-10.24207,0.8248086) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (2.114781,15.11092) (2.530199,15.80351) 
+0.1030596 5 0 0 1 1 1 5 (0,0) (0,0) 2 (1.845839,14.16882) (1.830696,13.21503) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-17.86654,-11.55021) (-17.34827,-11.55874) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (15.87343,18.22901) (15.67849,19.0278) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-7.101718,-3.945295) (-7.479647,-3.576606) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-12.80065,9.439906) (-12.86254,10.23472) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-12.75461,8.645395) (-12.72894,7.971) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-13.11193,9.246366) (-13.838,9.677653) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-21.00938,-5.563656) (-21.61602,-6.051655) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (9.692104,7.24147) (10.43214,7.282521) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-13.09961,-16.09843) (-13.30889,-15.58516) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (10.07746,8.31745) (10.56065,8.421236) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-6.399534,31.69519) (-6.204114,32.18889) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (15.26969,8.900523) (14.33824,8.48045) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (18.80733,9.142851) (18.46348,8.632304) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (9.67953,-1.415858) (9.898115,-1.984608) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (13.62281,16.15515) (13.35081,16.54237) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (10.6891,-0.14551) (11.23138,-0.1933196) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 2 (-1.20953,12.20088) (-0.6222656,12.40436) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (13.55627,9.415616) (13.98532,9.36278) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-5.034653,31.93488) (-4.896318,32.373) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-5.372237,31.22549) (-6.535036,29.46025) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-6.406991,28.87833) (-4.980192,27.99343) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-7.197231,29.10579) (-8.087478,29.11057) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (3.273633,23.40279) (0.3377758,24.22437) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (3.656285,23.71648) (3.427079,26.74825) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (3.544178,23.69273) (2.820315,25.72569) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (4.119441,23.30614) (4.515858,23.32412) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (3.307086,23.48699) (1.325607,24.52724) 
+0.1030596 5 0 0 1 1 1 5 (0,0) (0,0) 2 (3.40344,23.60976) (2.187858,24.98639) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (5.054503,22.94928) (8.387472,12.52785) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 2 (-15.98636,18.97755) (-14.02377,20.29309) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-4.033771,-5.972503) (-4.045453,-6.991552) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 2 (-14.41369,-10.84824) (-14.23974,-11.74158) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 2 (-1.273618,13.4862) (-0.5375755,12.90324) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-11.02387,4.036675) (-10.90348,3.365121) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-6.374874,12.08986) (-5.284713,12.14544) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-6.798746,12.47437) (-6.862756,13.854) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-7.176234,11.98279) (-12.41194,10.84096) 
+0.1030596 4 0 0 0 1 1 5 (0,0) (0,0) 2 (-6.56793,12.41498) (-6.002292,13.33747) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (8.081426,7.640692) (3.460612,2.675489) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-0.04282237,16.0211) (0.1222235,15.76203) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-4.950646,13.20777) (-6.435599,12.28353) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (8.167819,1.817421) (8.576447,2.659204) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (14.08931,-9.829761) (14.56072,-9.771623) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (15.45734,14.29517) (16.05925,14.5583) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 3 (-10.4945,17.24875) (-8.221171,9.741318) (-5.6415,10.63269) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-6.901411,33.73362) (-6.134609,33.91192) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (9.858069,-8.285226) (10.15266,-8.62116) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (12.85943,-8.518641) (12.54124,-7.691912) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (14.86247,18.33505) (15.59623,17.99984) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (16.06042,-8.195489) (16.07861,-8.957349) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 2 (-8.12382,-1.061798) (-9.683516,0.03352235) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-4.962891,26.16316) (-3.854506,25.62985) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (20.09993,17.20981) (19.77777,17.45498) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-4.766552,-12.30578) (-4.122423,-7.960058) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-5.065513,-13.04762) (-5.71335,-13.95693) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-4.480022,-12.49157) (-4.05083,-12.218) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-5.238082,-12.72048) (-5.826507,-12.7317) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-5.015063,-12.34693) (-5.200032,-11.9875) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-13.22712,20.69929) (-2.664205,24.58545) 
+0.1030596 4 2 0 1 1 1 5 (0,0) (0,0) 2 (-13.67942,20.09449) (-14.30874,10.57221) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-13.3084,20.2501) (-12.65766,19.69014) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (10.48205,-6.571292) (10.7267,-7.237297) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (9.856879,11.48822) (9.767057,11.15131) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-1.223813,35.11788) (-0.6515834,35.27939) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-20.03205,-6.851961) (-19.52511,-7.074521) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 2 (-4.872055,25.4026) (-5.159113,25.96181) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-3.103112,-16.61546) (-2.611539,-16.53622) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 2 (4.052475,27.73145) (3.72394,23.71627) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-18.76848,19.73818) (-18.67836,19.17369) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-18.94652,20.74583) (-19.05355,21.29804) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-2.982215,-3.402189) (-4.696852,-3.45031) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 2 (-2.44877,32.9198) (-0.9802644,30.02384) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (0.9973313,17.20071) (0.4670675,17.66073) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 2 (-9.343665,-3.336097) (-9.999932,-0.1745126) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 2 (-9.79963,2.646693) (-10.03739,0.8391576) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 3 (-9.710387,3.491114) (-9.22413,9.571578) (-13.48129,20.1262) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-2.134932,15.9655) (-1.723686,15.72449) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 2 (-2.66206,10.3962) (-3.033582,11.52611) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-3.414713,34.51658) (-3.890138,34.42766) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-16.57265,-11.62575) (-16.04102,-11.70931) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (12.88883,16.5457) (12.53561,16.05794) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 2 (-7.812114,1.156349) (-9.620619,0.5037519) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-7.830525,1.385764) (-8.53744,1.518893) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-5.525243,-3.432507) (-7.356443,-3.302213) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-5.839608,-6.781072) (-6.208802,-6.816343) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-6.329876,3.856542) (-6.471344,4.213197) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-6.470632,3.187738) (-6.815559,2.847663) 
+0.1030596 4 0 0 0 1 1 5 (0,0) (0,0) 2 (-6.57598,3.576618) (-7.115518,3.71393) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (15.24531,15.65311) (14.63566,16.68814) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (19.60722,10.74563) (19.48572,11.00978) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (10.74415,-7.978977) (10.56961,-8.533393) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (10.48532,-7.713921) (9.982846,-7.859067) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (18.67469,-1.918587) (17.12533,-1.260141) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-16.7047,-14.03858) (-16.96042,-13.51094) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-8.098197,2.719832) (-7.596394,2.616598) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (17.3175,-2.318187) (16.92533,-1.466122) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-2.409881,19.4519) (-3.027611,19.11715) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (11.9596,-9.197699) (11.86791,-8.801059) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 2 (-13.89506,8.587783) (-13.13869,8.893825) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (13.82016,20.04932) (5.244804,26.40989) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 3 (12.70781,13.0368) (8.93229,12.87099) (4.223356,14.72405) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-8.823911,2.076624) (-8.65487,2.439772) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (18.77413,-0.9601898) (18.95021,-1.684782) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (18.30283,-0.6822953) (17.14295,-0.999387) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (18.48627,-0.9193258) (17.6754,-2.334139) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (18.34783,-0.3720012) (17.84968,-0.06321662) 
+0.1030596 4 0 0 0 1 1 5 (0,0) (0,0) 2 (18.62928,-0.189772) (18.50065,0.7694916) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 2 (-10.34275,-3.501356) (-10.13642,-0.1842567) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (17.27623,-0.2074185) (16.95781,-0.7594623) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (17.28518,0.5337235) (17.14103,0.7982013) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 2 (-17.86535,18.72664) (-14.06325,20.36556) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 3 (-18.57982,21.8323) (-15.29229,21.59688) (-14.02881,20.78685) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-16.60912,21.07744) (-14.68153,22.29091) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-16.84122,20.44522) (-16.42752,19.13237) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 3 (-17.01219,20.42775) (-17.50125,15.63211) (-21.54019,13.32873) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 3 (-16.67838,20.54038) (-15.89829,19.70712) (-14.07176,20.38677) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-17.27162,20.55199) (-18.33874,20.20725) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-17.38929,20.91622) (-18.45641,20.57148) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-17.20237,20.49528) (-18.14469,19.05927) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-17.00133,21.27493) (-17.14993,23.22644) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-16.76454,21.22377) (-15.89512,22.80913) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-5.319779,15.65263) (-5.496767,16.63626) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-5.58966,15.06492) (-6.495679,14.53186) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-5.670314,-4.686472) (-6.444941,-4.373951) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-6.89654,15.71021) (-6.887752,14.7537) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (1.712665,35.58435) (1.49282,35.52673) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-6.14968,-0.7354204) (-6.74895,-0.297762) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (3.254,0.445083) (3.769608,0.6768523) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (3.167793,-0.03577638) (10.58246,-7.33032) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 2 (5.02704,-11.8667) (5.043877,-11.06086) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (17.89633,8.482309) (17.37654,8.740473) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (18.14561,8.685787) (17.9886,9.277576) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (17.85916,8.256418) (11.26032,7.361523) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (14.20171,6.63584) (14.42731,6.860182) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 2 (-19.90894,-4.548008) (-20.41837,-5.041603) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-13.38754,-14.80433) (-13.23111,-13.97494) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-13.73537,-14.90077) (-14.53478,-14.0027) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-4.438628,-16.85742) (-3.918168,-16.75854) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-4.726539,-16.49192) (-4.316239,-15.58321) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 2 (-8.751826,-1.824783) (-9.830912,-0.1064725) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (20.45177,11.91496) (20.19973,12.35939) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (20.39929,11.14939) (20.05269,10.69605) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (20.91691,11.90833) (21.19888,12.37407) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (11.30848,-6.597848) (11.02069,-7.246903) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 2 (-12.46375,-0.5082) (-14.08796,-1.389205) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 2 (-12.49941,-0.1992105) (-14.01477,0.2155736) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (16.42997,5.538609) (16.72865,5.887746) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (1.173589,-0.3902731) (1.416711,-0.3054523) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-7.157952,-2.120438) (-7.932279,-2.214932) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-1.076931,16.8045) (-0.7176387,16.62678) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (2.772096,2.159172) (1.489641,1.514872) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-13.75416,-12.26288) (-6.46631,-14.22689) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-13.89785,-12.48193) (-13.46768,-13.02166) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-14.34716,-12.52916) (-14.64994,-13.13503) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-14.56608,-12.04912) (-15.2612,-11.87044) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 2 (-18.2101,22.8057) (-17.19699,21.20991) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (13.4452,14.47909) (13.04468,14.59896) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (13.87352,14.79772) (13.87398,15.35947) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (14.3128,7.1557) (11.26371,7.287589) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (8.741409,-7.288745) (8.509408,-7.583707) 
+0.1030596 4 0 0 0 1 1 5 (0,0) (0,0) 2 (16.73113,6.552158) (16.35573,6.997647) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-4.554666,-15.3295) (-5.05826,-15.52021) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 3 (-3.892169,-14.77932) (2.782517,-3.812217) (15.80887,4.984411) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 2 (3.080591,13.53029) (2.224569,14.32977) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (3.471877,13.63933) (3.706543,14.46801) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (10.47957,-1.337389) (9.91857,-1.161315) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (10.72295,-1.063763) (10.45745,-0.470757) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (17.31003,17.53388) (17.51457,16.88721) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (17.0892,18.37429) (16.92643,19.14714) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (0.7235823,1.3957) (-0.355637,1.56644) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (1.53291,1.339615) (2.644789,1.360222) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (1.472791,1.119007) (2.490597,0.4940839) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 3 (-13.99777,0.3181004) (-12.78643,0.2436968) (-10.61862,0.3127691) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 2 (-14.08577,0.06263128) (-12.44933,-1.062005) 
+0.1030596 5 2 0 1 1 1 5 (0,0) (0,0) 3 (-14.25982,-0.09460241) (-13.53327,-1.422334) (-12.27465,-2.245804) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (2.742943,35.49418) (2.545045,35.5591) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (2.948772,34.94418) (2.260158,33.78904) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 6 (13.77236,7.901495) (12.1536,4.081621) (-4.186488,0.9937307) (-7.596034,4.403277) (-8.128759,5.817209) (-13.49166,20.12217) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 2 (-23.05969,9.102913) (-22.80148,10.59087) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-2.648173,17.38112) (-1.99494,17.17433) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 2 (-11.79842,0.7938347) (-10.60055,0.4652343) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-23.69238,13.91819) (-23.51982,13.355) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (14.86828,17.02012) (17.24161,16.57861) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (13.97903,17.3787) (5.273654,23.11547) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 4 (13.98479,17.38724) (9.353999,20.58069) (6.370356,22.2929) (4.960879,24.56469) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (14.45248,10.33677) (14.95512,10.24597) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (9.238188,10.80882) (8.797228,10.88038) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-7.38024,-3.125695) (-0.7749577,-0.7962543) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-8.210838,-3.39967) (-8.885467,-3.607014) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (8.893282,12.07939) (9.567008,11.95018) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (8.12298,12.23643) (3.746822,13.18174) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (1.646467,0.247586) (1.302025,0.9649866) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-5.640362,2.902632) (-5.898036,3.176821) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-7.402639,-0.477071) (-7.587758,-0.9093967) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-6.645569,0.06138902) (-1.038924,0.4558472) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (7.731214,8.806371) (8.264801,9.231137) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (14.10308,13.08183) (13.59182,13.06809) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-0.3515571,6.559184) (0.8527598,3.536517) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-0.9350635,7.24559) (-3.750059,8.936253) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (16.29811,14.33806) (15.96327,13.36376) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (12.77425,-7.469937) (13.26317,-7.685867) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (12.78736,-7.164565) (13.81127,-6.81376) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 3 (12.5257,-6.903454) (15.37841,1.480712) (9.584628,6.947472) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (12.1169,-6.982715) (11.73155,-6.535283) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-15.94333,-15.25327) (-16.27218,-14.77891) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (20.63945,15.20911) (20.35625,14.49182) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (21.03276,15.23064) (21.36181,14.60686) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-19.62276,2.110304) (-19.09622,2.653198) 
+0.1030596 5 2 0 2 1 1 5 (0,0) (0,0) 2 (-11.90393,18.98004) (-10.91121,17.95656) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (16.02273,-6.606025) (16.04057,-7.360325) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-0.2256875,0.6737274) (0.7597043,1.153742) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (1.918045,2.497335) (1.35473,1.668809) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-12.85517,2.275138) (-12.40118,2.14497) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (0.7884697,-5.612529) (0.6485663,-5.301114) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (8.922756,2.660925) (9.37669,1.748996) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (8.35574,3.029776) (7.68789,3.059542) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (1.682835,33.34291) (1.031324,33.15374) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (1.910179,33.08964) (1.493231,32.07636) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (2.398084,33.25469) (2.981894,32.91419) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (2.411286,33.62518) (3.247548,34.03615) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (1.712725,33.63546) (1.003027,34.01056) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (2.181998,33.0798) (2.54034,31.99135) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (1.87865,33.8002) (1.257404,34.99627) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-3.416248,-4.738969) (-3.719021,-5.108107) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-15.05698,-16.42319) (-15.46828,-15.89778) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-4.985739,-14.45817) (-5.317504,-15.25205) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-5.311413,-14.11307) (-5.536438,-14.19215) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-3.990403,-13.07195) (-4.448949,-12.87498) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-3.966449,-13.45271) (-4.257334,-13.62369) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-0.1305517,10.70787) (-0.4768993,7.473519) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (18.34261,17.96509) (18.17092,19.11545) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (17.96728,17.65932) (17.58722,17.79878) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (-18.49235,3.240018) (-17.89014,3.791517) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (18.96536,14.18027) (18.62561,13.15259) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (19.24969,15.02615) (19.38679,15.42738) 
+0.1030596 4 2 0 0 1 1 5 (0,0) (0,0) 2 (21.05442,12.51611) (19.67607,11.64949) 
+
+
