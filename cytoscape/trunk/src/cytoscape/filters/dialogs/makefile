@@ -17,6 +17,8 @@ OBJS =  InteractionDialog.class \
 	MainFilterDialog.class \
 	CenterDialog.class \
 	CombinationDialog.class \
+	AttributeDialog.class \
+	AttributeSelection.class \
 	EdgeTypeDialog.class \
 	MutableBoolean.class \
 	EdgeTypeDialogIndep.class \

@@ -74,6 +74,7 @@ public class MainFilterDialog extends JDialog {
 	FilterDialog.INTERACTION, 
 	FilterDialog.NODE_TYPE,	
 	FilterDialog.EXPRESSION,
+	FilterDialog.ATTRIBUTE,
 	FilterDialog.COMBINATION
     };
 
@@ -230,6 +231,8 @@ public class MainFilterDialog extends JDialog {
 	    dialog = new InteractionDialog(edgeAttributes, interactionTypes);
 	} else if (type == FilterDialog.NODE_TYPE) {
 	    dialog = new NodeTypeDialog(nodeAttributes);
+	} else if (type == FilterDialog.ATTRIBUTE) {
+	    dialog = new AttributeDialog(nodeAttributes);
 	} else {
 	    // topology by default
 	    dialog = new TopologyDialog();

@@ -22,6 +22,7 @@ OBJS =  CombinationFilter.class \
 	Filter.class \
 	TopologyFilter.class \
 	InteractionFilter.class \
+	AttributeFilter.class \
 	TopologyOnePassFilter.class \
 	ListFilter.class \
 	TrueFilter.class
