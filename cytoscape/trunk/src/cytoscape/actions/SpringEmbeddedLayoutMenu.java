@@ -15,11 +15,11 @@ import cytoscape.task.util.TaskManager;
 import cytoscape.view.CyNetworkView;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 
 /**
  * VERY STRONG WARNING!!!
@@ -41,11 +41,11 @@ public class SpringEmbeddedLayoutMenu extends JMenu
     add(m_wholeGraph);
     m_selectedNodesOnly = new JMenuItem(new SpringEmbeddedLayoutAction(true));
     add(m_selectedNodesOnly);
-    final JMenu myself = this;
-    addMouseListener(new MouseAdapter() {
-        public void mouseEntered(MouseEvent e)
+    addMenuListener(new MenuListener() {
+        public void menuCanceled(MenuEvent e) {}
+        public void menuDeselected(MenuEvent e) {}
+        public void menuSelected(MenuEvent e)
         {
-          if (!myself.isEnabled()) return;
           CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
           if (graphView.getSelectedNodeIndices().length == 0)
             m_selectedNodesOnly.setEnabled(false);

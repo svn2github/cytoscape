@@ -265,8 +265,10 @@ public class CyMenus  implements GraphViewChangeListener {
     menuBar = new CytoscapeMenuBar();
     fileMenu    = menuBar.getMenu( "File" );
     final JMenu f_fileMenu = fileMenu;
-    fileMenu.addMouseListener(new MouseAdapter() {
-        public void mouseEntered(MouseEvent e)
+    fileMenu.addMenuListener(new MenuListener() {
+        public void menuCanceled(MenuEvent e) {}
+        public void menuDeselected(MenuEvent e) {}
+        public void menuSelected(MenuEvent e)
         {
           CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
           boolean inactive = false;
@@ -288,8 +290,10 @@ public class CyMenus  implements GraphViewChangeListener {
     saveSubMenu = menuBar.getMenu( "File.Save" );
     editMenu    = menuBar.getMenu( "Edit" );
     final JMenu f_editMenu = editMenu;
-    editMenu.addMouseListener(new MouseAdapter() {
-        public void mouseEntered(MouseEvent e)
+    editMenu.addMenuListener(new MenuListener() {
+        public void menuCanceled(MenuEvent e) {}
+        public void menuDeselected(MenuEvent e) {}
+        public void menuSelected(MenuEvent e)
         {
           CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
           boolean inactive = false;
@@ -307,8 +311,10 @@ public class CyMenus  implements GraphViewChangeListener {
         } });
     dataMenu    = menuBar.getMenu( "Data" );
     final JMenu f_dataMenu = dataMenu;
-    dataMenu.addMouseListener(new MouseAdapter() {
-        public void mouseEntered(MouseEvent e)
+    dataMenu.addMenuListener(new MenuListener() {
+        public void menuCanceled(MenuEvent e) {}
+        public void menuDeselected(MenuEvent e) {}
+        public void menuSelected(MenuEvent e)
         {
           CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
           boolean inactive = false;
@@ -324,8 +330,10 @@ public class CyMenus  implements GraphViewChangeListener {
         } });
     selectMenu  = menuBar.getMenu( "Select" );
     final JMenu f_selectMenu = selectMenu;
-    selectMenu.addMouseListener(new MouseAdapter() {
-        public void mouseEntered(MouseEvent e)
+    selectMenu.addMenuListener(new MenuListener() {
+        public void menuCanceled(MenuEvent e) {}
+        public void menuDeselected(MenuEvent e) {}
+        public void menuSelected(MenuEvent e)
         {
           CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
           boolean inactive = false;
@@ -341,8 +349,10 @@ public class CyMenus  implements GraphViewChangeListener {
         } });
     layoutMenu  = menuBar.getMenu( "Layout" );
     final JMenu f_layoutMenu = layoutMenu;
-    layoutMenu.addMouseListener(new MouseAdapter() {
-        public void mouseEntered(MouseEvent e)
+    layoutMenu.addMenuListener(new MenuListener() {
+        public void menuCanceled(MenuEvent e) {}
+        public void menuDeselected(MenuEvent e) {}
+        public void menuSelected(MenuEvent e)
         {
           CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
           boolean inactive = false;
