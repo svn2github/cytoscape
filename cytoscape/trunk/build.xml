@@ -184,7 +184,7 @@
     <!-- ======================================================= -->
 
     <!-- Target to Run JavaDoc -->
-    <target name="doc" description="Runs JavaDoc.">
+    <target name="doc-private" description="Runs JavaDoc.">
         <javadoc destdir="API"
             source="1.4"
             classpathref="classpath"
@@ -201,6 +201,47 @@
             </packageset>
         </javadoc>
     </target>
+
+    <!-- ======================================================= -->
+    <!-- Make the Public JavaDocs for Cytoscape                         -->
+    <!-- ======================================================= -->
+
+    <!-- Target to Run JavaDoc -->
+    <target name="doc" description="Runs JavaDoc.">
+        <javadoc destdir="API"
+            source="1.4"
+            Windowtitle="Cytoscape2.0 API"
+            header="Cytoscape2.0 (c)2004 ISB, MSKCC, UCSD"
+            footer="www.cytoscape.org"
+classpathref="classpath"
+            overview="${src.dir}/org/mskcc/dataservices/overview.html"
+            link="http://csbi.sourceforge.net/api/">
+
+            <fileset dir="${src.dir}">
+              <include name="cytoscape/*.java" />
+              <include name="cytoscape/util/*.java" />
+              <include name="cytoscape/util/swing/*.java" />
+              <include name="cytoscape/plugin/*.java" />
+              <include name="cytoscape/plugin/jar/JarLoader.java" />
+              <include name="cytoscape/plugin/jar/SimpleClassLoader.java" />
+              <include name="cytoscape/data/ExpressionData.java" />
+              <include name="cytoscape/data/Semantics.java" />
+              <include name="cytoscape/view/CytoscapeDesktop.java" />
+              <include name="cytoscape/view/CyNetworkView.java" />
+              <include name="cytoscape/view/CyMenus.java" />
+              <include name="cytoscape/visual/VisualStyle.java" />
+              <include name="cytoscape/visual/VisualMappingManager.java" />
+              <include name="cytoscape/layout/*.java" />
+              <include name="cytoscape/data/servers/BioDataServer*.java" />
+            </fileset>
+
+        
+         <doctitle>Cytoscape API</doctitle>
+        
+         </javadoc>
+    </target>
+
+
 
     <!-- ======================================================= -->
     <!-- Create the Cytoscape Jar file                           -->

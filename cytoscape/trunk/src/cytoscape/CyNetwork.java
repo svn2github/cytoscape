@@ -5,12 +5,27 @@ import java.util.*;
 
 import cytoscape.data.ExpressionData;
 import cytoscape.data.GraphObjAttributes;
-
+/*
 // save for linking 
 //javadoc -d API -link file:///users/xmas/CSBI/giny/API/ -private `find . -name "*.java" -print`
 
-//javadoc -d PUBLIC -public -link http://csbi.sourceforge.net/API/ -link http://java.sun.com/j2se/1.4.2/docs/api/ src/cytoscape/*.java src/cytoscape/plugin/*.java src/cytoscape/plugin/jar/JarLoader.java src/cytoscape/util/*.java src/cytoscape/util/swing/*.java src/cytoscape/data/ExpressionData.java src/cytoscape/data/Semantics.java src/cytoscape/view/CytoscapeDesktop.java src/cytoscape/view/CyMenus.java src/cytoscape/view/CyNetworkView.java src/cytoscape/visual/VisualStyle.java src/cytoscape/visual/VisualMappingManager.java src/cytoscape/plugin/jar/SimpleClassLoader.java src/cytoscape/layout/*.java src/cytoscape/data/servers/BioDataServer*.java
-
+//javadoc -d PUBLIC -public -link http://csbi.sourceforge.net/API/ -link http://java.sun.com/j2se/1.4.2/docs/api/ 
+src/cytoscape/*.java 
+src/cytoscape/plugin/*.java 
+src/cytoscape/plugin/jar/JarLoader.java 
+src/cytoscape/util/*.java 
+src/cytoscape/util/swing/*.java 
+src/cytoscape/data/ExpressionData.java 
+src/cytoscape/data/Semantics.java 
+src/cytoscape/view/CytoscapeDesktop.java 
+src/cytoscape/view/CyMenus.java 
+src/cytoscape/view/CyNetworkView.java 
+src/cytoscape/visual/VisualStyle.java 
+src/cytoscape/visual/VisualMappingManager.java 
+src/cytoscape/plugin/jar/SimpleClassLoader.java 
+src/cytoscape/layout/*.java 
+src/cytoscape/data/servers/BioDataServer*.java
+*/
 
 public interface CyNetwork extends GraphPerspective {
 
