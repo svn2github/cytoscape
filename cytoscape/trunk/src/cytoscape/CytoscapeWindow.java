@@ -689,6 +689,7 @@ protected JMenuBar createMenuBar ()
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_I, ActionEvent.CTRL_MASK));
   mi = loadSubMenu.add (new LoadExpressionMatrixAction ());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_E, ActionEvent.CTRL_MASK));
+  mi = loadSubMenu.add (new LoadBioDataServerAction ());
 
   JMenu saveSubMenu = new JMenu ("Save");
   fileMenu.add (saveSubMenu);
@@ -2170,6 +2171,34 @@ protected class LoadExpressionMatrixAction extends AbstractAction {
     } // actionPerformed
 
 } // inner class LoadExpressionMatrix
+
+
+/**
+ * Action allows the loading of a BioDataServer from the gui.
+ *
+ * added by dramage 2002-08-20
+ */
+protected class LoadBioDataServerAction extends AbstractAction {
+    LoadBioDataServerAction () { super ("Bio Data Server..."); }
+
+    public void actionPerformed (ActionEvent e) {
+	JFileChooser chooser = new JFileChooser (currentDirectory);
+	chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+	if (chooser.showOpenDialog (CytoscapeWindow.this)
+	    == chooser.APPROVE_OPTION) {
+
+	    currentDirectory = chooser.getCurrentDirectory();
+	    String bioDataDirectory = chooser.getSelectedFile().toString();
+	    bioDataServer = BioDataServerFactory.create (bioDataDirectory);
+	    displayCommonNodeNames();
+	    redrawGraph();
+	}
+	    
+    }
+}
+
+
 //------------------------------------------------------------------------------
 protected class DeleteSelectionAction extends AbstractAction {
   DeleteSelectionAction () { super ("Delete Selection"); }
