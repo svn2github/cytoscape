@@ -1,5 +1,9 @@
 package cytoscape.util.intr;
 
+/**
+ * A utility class which conveniently converts an array of integers into
+ * an IntEnumerator (and enumeration of integers).
+ */
 public final class ArrayIntEnumerator implements IntEnumerator
 {
 
