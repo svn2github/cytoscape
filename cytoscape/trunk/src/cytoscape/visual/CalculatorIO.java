@@ -6,6 +6,7 @@
 package cytoscape.visual;
 //----------------------------------------------------------------------------
 import java.util.*;
+import java.io.*;
 
 import cytoscape.visual.calculators.*;
 //----------------------------------------------------------------------------
@@ -52,7 +53,137 @@ public class CalculatorIO {
     public static final String nodeAppearanceBaseKey = "nodeAppearanceCalculator";
     public static final String edgeAppearanceBaseKey = "edgeAppearanceCalculator";
     
-
+    
+    /**
+     * Writes the contents of a CalculatorCatalog to the specified file as a
+     * properties file.
+     * This method sorts the lines of text produced by the store method of
+     * Properties, so that the properties descriptions of the calculators are
+     * reasonably human-readable.
+     */
+    public static void storeCatalog(CalculatorCatalog catalog, String filename) {
+        try {
+            //construct the header comment for the file
+            String lineSep = System.getProperty("line.separator");
+            StringBuffer header = new StringBuffer();
+            header.append("This file specifies visual mappings for Cytoscape");
+            header.append(" and has been automatically generated.").append(lineSep);
+            header.append("# WARNING: any changes you make to this file while");
+            header.append(" Cytoscape is running may be overwritten.").append(lineSep);
+            header.append("# Any changes may make these visual mappings unreadable.");
+            header.append(lineSep);
+            header.append("# Please make sure you know what you are doing before");
+            header.append(" modifying this file by hand.").append(lineSep);
+            
+            //writer that writes final version to file;
+            //created now so that we crash early if the file is unwritable
+            BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
+            
+            //get a Properties description of the catalog
+            Properties props = getProperties(catalog);
+            //and dump it to a buffer of bytes
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            props.store( buffer, header.toString() );
+            
+            //convert the bytes to a String we can read from
+            String theData = buffer.toString();
+            BufferedReader reader = new BufferedReader(new StringReader(theData));
+            //read all the lines and store them in a container object
+            //store the header lines separately so they don't get sorted
+            List headerLines = new ArrayList();
+            List lines = new ArrayList();
+            String oneLine = reader.readLine();
+            while (oneLine != null) {
+                if (oneLine.startsWith("#")) {
+                    headerLines.add(oneLine);
+                } else {
+                    lines.add(oneLine);
+                }
+                oneLine = reader.readLine();
+            }
+            
+            //now sort all the non-header lines
+            Collections.sort(lines);
+            //and write to file
+            for (Iterator li = headerLines.iterator(); li.hasNext(); ) {
+                String theLine = (String)li.next();
+                writer.write(theLine, 0, theLine.length());
+                writer.newLine();
+            }
+            for (Iterator li = lines.iterator(); li.hasNext(); ) {
+                String theLine = (String)li.next();
+                writer.write(theLine, 0, theLine.length());
+                writer.newLine();
+            }
+            writer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+            
+    /**
+     * Given a CalculatorCatalog, assembles a Properties object representing all of the
+     * calculators contained in the catalog. The resulting Properties object, if passed
+     * to the loadCalculators method, would reconstruct all the calculators. This method
+     * works by getting each set of calculators from the catalog and calling the
+     * getProperties method on each calculator with the proper header for the property key.
+     */
+    public static Properties getProperties(CalculatorCatalog catalog) {
+        Properties newProps = new Properties();
+        
+        //gather properties for node calculators
+        addProperties(newProps, catalog.getNodeColorCalculators(), nodeColorBaseKey);
+        addProperties(newProps, catalog.getNodeLineTypeCalculators(), nodeLineTypeBaseKey);
+        addProperties(newProps, catalog.getNodeShapeCalculators(), nodeShapeBaseKey);
+        addProperties(newProps, catalog.getNodeSizeCalculators(), nodeSizeBaseKey);
+        addProperties(newProps, catalog.getNodeLabelCalculators(), nodeLabelBaseKey);
+        addProperties(newProps, catalog.getNodeToolTipCalculators(), nodeToolTipBaseKey);
+        addProperties(newProps, catalog.getNodeFontFaceCalculators(), nodeFontFaceBaseKey);
+        addProperties(newProps, catalog.getNodeFontSizeCalculators(), nodeFontSizeBaseKey);
+        //gather properties for edge calculators
+        addProperties(newProps, catalog.getEdgeColorCalculators(), edgeColorBaseKey);
+        addProperties(newProps, catalog.getEdgeLineTypeCalculators(), edgeLineTypeBaseKey);
+        addProperties(newProps, catalog.getEdgeArrowCalculators(), edgeArrowBaseKey);
+        addProperties(newProps, catalog.getEdgeLabelCalculators(), edgeLabelBaseKey);
+        addProperties(newProps, catalog.getEdgeToolTipCalculators(), edgeToolTipBaseKey);
+        addProperties(newProps, catalog.getEdgeFontFaceCalculators(), edgeFontFaceBaseKey);
+        addProperties(newProps, catalog.getEdgeFontSizeCalculators(), edgeFontSizeBaseKey);
+        
+        //node appearance calculators
+        Collection nacNames = catalog.getNodeAppearanceCalculatorNames();
+        for (Iterator i = nacNames.iterator(); i.hasNext(); ) {
+            String name = (String)i.next();
+            NodeAppearanceCalculator nac = catalog.getNodeAppearanceCalculator(name);
+            String baseKey = nodeAppearanceBaseKey + "." + name;
+            Properties props = nac.getProperties(baseKey);
+            newProps.putAll(props);
+        }
+        Collection eacNames = catalog.getEdgeAppearanceCalculatorNames();
+        for (Iterator i = eacNames.iterator(); i.hasNext(); ) {
+            String name = (String)i.next();
+            EdgeAppearanceCalculator eac = catalog.getEdgeAppearanceCalculator(name);
+            String baseKey = edgeAppearanceBaseKey + "." + name;
+            Properties props = eac.getProperties(baseKey);
+            newProps.putAll(props);
+        }
+        
+        return newProps;
+    }
+    
+    /**
+     * Given a collection of calculators and a base key, gets the properties description from
+     * each calculator and adds all the properties to the supplied Properties argument.
+     */
+    private static void addProperties(Properties newProps, Collection calcs, String baseKey) {
+        for (Iterator i = calcs.iterator(); i.hasNext(); ) {
+            Calculator c = (Calculator)i.next();
+            String calcBaseKey = baseKey + "." + c.toString();
+            Properties props = CalculatorFactory.getProperties(c, calcBaseKey);
+            newProps.putAll(props);
+        }
+    }
+    
+    
     /**
      * Equivalent to loadCalculators(props, catalog, true);
      */
@@ -212,68 +343,7 @@ public class CalculatorIO {
             catalog.addEdgeAppearanceCalculator(name, eac);
         }
     }
-    
-    /**
-     * Given a CalculatorCatalog, assembles a Properties object representing all of the
-     * calculators contained in the catalog. The resulting Properties object, if passed
-     * to the loadCalculators method, would reconstruct all the calculators. This method
-     * works by getting each set of calculators from the catalog and calling the
-     * getProperties method on each calculator with the proper header for the property key.
-     */
-    public static Properties getProperties(CalculatorCatalog catalog) {
-        Properties newProps = new Properties();
-        
-        //gather properties for node calculators
-        addProperties(newProps, catalog.getNodeColorCalculators(), nodeColorBaseKey);
-        addProperties(newProps, catalog.getNodeLineTypeCalculators(), nodeLineTypeBaseKey);
-        addProperties(newProps, catalog.getNodeShapeCalculators(), nodeShapeBaseKey);
-        addProperties(newProps, catalog.getNodeSizeCalculators(), nodeSizeBaseKey);
-        addProperties(newProps, catalog.getNodeLabelCalculators(), nodeLabelBaseKey);
-        addProperties(newProps, catalog.getNodeToolTipCalculators(), nodeToolTipBaseKey);
-        addProperties(newProps, catalog.getNodeFontFaceCalculators(), nodeFontFaceBaseKey);
-        addProperties(newProps, catalog.getNodeFontSizeCalculators(), nodeFontSizeBaseKey);
-        //gather properties for edge calculators
-        addProperties(newProps, catalog.getEdgeColorCalculators(), edgeColorBaseKey);
-        addProperties(newProps, catalog.getEdgeLineTypeCalculators(), edgeLineTypeBaseKey);
-        addProperties(newProps, catalog.getEdgeArrowCalculators(), edgeArrowBaseKey);
-        addProperties(newProps, catalog.getEdgeLabelCalculators(), edgeLabelBaseKey);
-        addProperties(newProps, catalog.getEdgeToolTipCalculators(), edgeToolTipBaseKey);
-        addProperties(newProps, catalog.getEdgeFontFaceCalculators(), edgeFontFaceBaseKey);
-        addProperties(newProps, catalog.getEdgeFontSizeCalculators(), edgeFontSizeBaseKey);
-        
-        //node appearance calculators
-        Collection nacNames = catalog.getNodeAppearanceCalculatorNames();
-        for (Iterator i = nacNames.iterator(); i.hasNext(); ) {
-            String name = (String)i.next();
-            NodeAppearanceCalculator nac = catalog.getNodeAppearanceCalculator(name);
-            String baseKey = nodeAppearanceBaseKey + "." + name;
-            Properties props = nac.getProperties(baseKey);
-            newProps.putAll(props);
-        }
-        Collection eacNames = catalog.getEdgeAppearanceCalculatorNames();
-        for (Iterator i = eacNames.iterator(); i.hasNext(); ) {
-            String name = (String)i.next();
-            EdgeAppearanceCalculator eac = catalog.getEdgeAppearanceCalculator(name);
-            String baseKey = edgeAppearanceBaseKey + "." + name;
-            Properties props = eac.getProperties(baseKey);
-            newProps.putAll(props);
-        }
-        
-        return newProps;
-    }
-    
-    /**
-     * Given a collection of calculators and a base key, gets the properties description from
-     * each calculator and adds all the properties to the supplied Properties argument.
-     */
-    private static void addProperties(Properties newProps, Collection calcs, String baseKey) {
-        for (Iterator i = calcs.iterator(); i.hasNext(); ) {
-            Calculator c = (Calculator)i.next();
-            String calcBaseKey = baseKey + "." + c.toString();
-            Properties props = CalculatorFactory.getProperties(c, calcBaseKey);
-            newProps.putAll(props);
-        }
-    }
+
     
     /**
      * The supplied Map m maps names to Properties objects that hold all the
@@ -341,7 +411,7 @@ public class CalculatorIO {
      * Given a Calculator of a given type and a CalculatorCatalog, removes any
      * existing calculator of the same type and name.
      */
-    private static void removeDuplicate(Calculator c, CalculatorCatalog catalog) {
+    public static void removeDuplicate(Calculator c, CalculatorCatalog catalog) {
         String name = c.toString();
         if (c instanceof NodeColorCalculator) {
             catalog.removeNodeColorCalculator(name);
@@ -381,7 +451,7 @@ public class CalculatorIO {
      * gets a new unique name from the catalog and applied it to the
      * calculator argument.
      */
-    private static void renameAsNeeded(Calculator c, CalculatorCatalog catalog) {
+    public static void renameAsNeeded(Calculator c, CalculatorCatalog catalog) {
         String name = c.toString();
         String newName;
         if (c instanceof NodeColorCalculator) {
