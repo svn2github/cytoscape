@@ -17,6 +17,10 @@ class DynamicGraphRepresentation implements DynamicGraph
   private final EdgeDepot m_edgeDepot;
   private final NodeDepot m_nodeDepot;
 
+  // Use this as a bag of integers in various operations.  Don't forget to
+  // empty() it before using it.
+  private final IntStack m_stack;
+
   DynamicGraphRepresentation()
   {
     m_nodeCount = 0;
@@ -28,6 +32,7 @@ class DynamicGraphRepresentation implements DynamicGraph
     m_freeEdges = new IntStack();
     m_edgeDepot = new EdgeDepot();
     m_nodeDepot = new NodeDepot();
+    m_stack = new IntStack();
   }
 
   public IntEnumerator nodes()
@@ -70,7 +75,21 @@ class DynamicGraphRepresentation implements DynamicGraph
 
   public boolean removeNode(int node)
   {
-    return false;
+    IntEnumerator edges = adjacentEdges(node, true, true, true);
+    if (edges == null) return false;
+    m_stack.empty();
+    while (edges.numRemaining() > 0) m_stack.push(edges.nextInt());
+    while (m_stack.size() > 0) removeEdge(m_stack.pop());
+    final Node n = m_nodes.getNodeAtIndex(node);
+    try { n.prevNode.nextNode = n.nextNode; }
+    catch (NullPointerException exc) { m_firstNode = n.nextNode; }
+    m_nodes.setNodeAtIndex(null, node);
+    m_freeNodes.push(node);
+    n.nextNode = null; n.prevNode = null;
+    n.firstOutEdge = null; n.firstInEdge = null;
+    m_nodeDepot.recycleNode(n);
+    m_nodeCount--;
+    return true;
   }
 
   public int createNode()
