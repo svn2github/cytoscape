@@ -33,6 +33,48 @@ public final class AllRootGraphMethodsTest
     edgeInx[5] = root.createEdge(nodeInx[1], nodeInx[0], true);
     edgeInx[6] = root.createEdge(nodeInx[3], nodeInx[2], true);
 
+    // Test add/remove nodes and edges before other tests.
+    // We leave the graph with the same topology after these tests as
+    // existed before these tests.
+    if (root.removeNode(nodeInx[1]) != nodeInx[1])
+      throw new IllegalStateException("removal of node failed");
+    if (root.removeEdge(edgeInx[0]) != 0 ||
+        root.removeEdge(edgeInx[1]) != 0 ||
+        root.removeEdge(edgeInx[4]) != 0 ||
+        root.removeEdge(edgeInx[5]) != 0)
+      throw new IllegalStateException("removal failure failed - edge");
+    if (root.removeNode(nodeInx[1]) != 0)
+      throw new IllegalStateException("removal failure failed - node");
+    if (root.removeEdge(edgeInx[6]) != edgeInx[6])
+      throw new IllegalStateException("removal of edge failed");
+    if (root.removeEdge(edgeInx[6]) != 0)
+      throw new IllegalStateException("removal failure failed - edge");
+    if (root.removeNode(0) != 0 ||
+        root.removeNode(Integer.MAX_VALUE) != 0 ||
+        root.removeNode(Integer.MIN_VALUE) != 0)
+      throw new IllegalStateException("removal failure failed - node");
+    if (root.removeEdge(0) != 0 ||
+        root.removeEdge(Integer.MAX_VALUE) != 0 ||
+        root.removeNode(Integer.MIN_VALUE) != 0)
+      throw new IllegalStateException("removal failure failed - edge");
+    if (root.createEdge(Integer.MAX_VALUE, Integer.MAX_VALUE, true) != 0 ||
+        root.createEdge(Integer.MIN_VALUE, Integer.MIN_VALUE, false) != 0 ||
+        root.createEdge(0, 0, true) != 0)
+      throw new IllegalStateException("creation failure failed - edge");
+    nodeInx[1] = root.createNode();
+    edgeInx[0] = root.createEdge(nodeInx[0], nodeInx[1], true);
+    edgeInx[1] = root.createEdge(nodeInx[1], nodeInx[2], false);
+    edgeInx[4] = root.createEdge(nodeInx[1], nodeInx[1], false);
+    edgeInx[5] = root.createEdge(nodeInx[1], nodeInx[0], true);
+    edgeInx[6] = root.createEdge(nodeInx[3], nodeInx[2], true);
+    int deleteThisNode = root.createNode();
+    int deleteThisEdge1 = root.createEdge(nodeInx[0], nodeInx[1], false);
+    int deleteThisEdge2 = root.createEdge(nodeInx[4], nodeInx[2], false);
+    root.createEdge(deleteThisNode, nodeInx[1], true);
+    root.removeNode(deleteThisNode);
+    root.removeEdge(deleteThisEdge1);
+    root.removeEdge(deleteThisEdge2);
+
     // nodesIterator() and edgesIterator().
     Iterator nodesIter = root.nodesIterator();
     Iterator edgesIter = root.edgesIterator();
