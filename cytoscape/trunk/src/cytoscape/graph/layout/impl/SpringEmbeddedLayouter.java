@@ -95,6 +95,15 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
   public void run()
   {
     if (m_halt) return;
+
+    // Stop if all nodes are closer together than this euclidean distance.
+    final double euclideanDistanceThreshold =
+      (0.5 * (m_nodeCount + m_edgeCount));
+
+    final int numIterations =
+      (int) (m_averageIterationsPerNode * m_nodeCount / m_numLayoutPasses);
+
+
   }
 
   /**
@@ -110,16 +119,8 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
 
   /*
   public Object construct () {
-    // Stop if all nodes are closer together than this euclidean distance.
-    // TODO: Why is this an appropriate threshold?
-    double euclidean_distance_threshold =
-      ( 0.5 * ( nodeCount + edgeCount ) );
 
-    // Stop if the potential energy doesn't go down anymore.
-    double potential_energy_percent_change_threshold = .001;
 
-    int num_iterations = ( int )
-      ( ( nodeCount * averageIterationsPerNode ) / numLayoutPasses );
 
     List partials_list = createPartialsList();
     PotentialEnergy potential_energy = new PotentialEnergy();
