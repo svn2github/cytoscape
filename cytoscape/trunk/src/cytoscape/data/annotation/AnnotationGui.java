@@ -82,9 +82,9 @@ public AnnotationGui (CyWindow cyWindow)
 {
   super ();
   this.cyWindow = cyWindow;
-  dataServer = cyWindow.getCytoscapeObj().getBioDataServer ();
+  /*dataServer = cyWindow.getCytoscapeObj().getBioDataServer ();
   if (dataServer != null)
-    annotationDescriptions = dataServer.getAnnotationDescriptions ();
+  annotationDescriptions = dataServer.getAnnotationDescriptions ();*/
   
   //defaultSpecies = Semantics.getDefaultSpecies(cyWindow.getNetwork(),cyWindow.getCytoscapeObj() );
 
@@ -92,15 +92,21 @@ public AnnotationGui (CyWindow cyWindow)
 //----------------------------------------------------------------------------------------
 public void actionPerformed (ActionEvent e) 
 {
+
+  dataServer = cyWindow.getCytoscapeObj().getBioDataServer();
   if (dataServer == null) {
     JOptionPane.showMessageDialog (null, "No annotations are available.",
                                    "Error!", JOptionPane.ERROR_MESSAGE);
     return;
-    }
+  }
+  else{
+    annotationDescriptions = dataServer.getAnnotationDescriptions();
+  }
   
   //if (this.attributeLayouter == null) {
   //    this.attributeLayouter = new AttributeLayout (cyWindow);
   //}
+  Semantics.applyNamingServices(cyWindow.getNetwork(), cyWindow.getCytoscapeObj());
   
   defaultSpecies = Semantics.getDefaultSpecies(cyWindow.getNetwork(),cyWindow.getCytoscapeObj() );
   //if (this.mainDialog == null) {
