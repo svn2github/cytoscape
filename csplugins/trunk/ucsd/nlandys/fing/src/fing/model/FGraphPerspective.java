@@ -424,8 +424,16 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
       nativeInx != Integer.MAX_VALUE; }
 
   public boolean containsNode(Node node, boolean recurse) {
-    if (!recurse) return containsNode(node);
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+    if (node.getRootGraph() != m_root) return false;
+    final int nativeInx =
+      m_rootToNativeNodeInxMap.get(~(node.getRootGraphIndex()));
+    if (nativeInx >= 0 && nativeInx != Integer.MAX_VALUE) return true;
+    if (!recurse) return false;
+    final int[] recursiveChildNodes =
+      m_root.getNodeMetaChildIndicesArray(getNodeIndicesArray());
+    for (int i = 0; i < recursiveChildNodes.length; i++)
+      if (recursiveChildNodes[i] == node.getRootGraphIndex()) return true;
+    return false; }
 
   public boolean containsEdge(Edge edge) {
     int nativeInx;
@@ -435,8 +443,16 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
       nativeInx != Integer.MAX_VALUE; }
 
   public boolean containsEdge(Edge edge, boolean recurse) {
-    if (!recurse) return containsEdge(edge);
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+    if (edge.getRootGraph() != m_root) return false;
+    final int nativeInx =
+      m_rootToNativeEdgeInxMap.get(~(edge.getRootGraphIndex()));
+    if (nativeInx >= 0 && nativeInx != Integer.MAX_VALUE) return true;
+    if (!recurse) return false;
+    final int[] recursiveChildEdges =
+      m_root.getEdgeMetaChildIndicesArray(getNodeIndicesArray());
+    for (int i = 0; i < recursiveChildEdges.length; i++)
+      if (recursiveChildEdges[i] == edge.getRootGraphIndex()) return true;
+    return false; }
 
   public GraphPerspective join(GraphPerspective persp) {
     final FGraphPerspective thisPersp = this;
