@@ -42,7 +42,7 @@ public class NewWindowSelectedNodesEdgesAction extends AbstractAction {
                 newEdgeAttributes, oldNetwork.getExpressionData() );
         newNetwork.setNeedsLayout(true);
       
-        //oldNetwork.endActivity(callerID);
+        oldNetwork.endActivity(callerID);
         
         String title =  " selection";
         try {
