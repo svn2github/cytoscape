@@ -16,7 +16,6 @@ import java.util.Iterator;
 
 import java.util.logging.Logger;
 
-//import cytoscape.data.CachedExpressionData;
 import cytoscape.data.ExpressionData;
 import cytoscape.data.mRNAMeasurement;
 
@@ -579,10 +578,6 @@ public class InteractionGraph
 
             int src;
             int target;
-
-            logger.info("writing edge: x=" + ae.maxState
-                        + " d=" + ae.maxDir
-                        + " s=" + ae.maxSign);
             
             if(ae.maxDir == State.PLUS)
             {
@@ -675,7 +670,7 @@ public class InteractionGraph
         out = new PrintStream(new FileOutputStream(f3));
         writeEdgeModel(edges, out);
         out.close();
-        //output.setEdgeSign(f2);
+        //output.setEdgeModel(f3);
 
         File f4 = new File(filename + "_type.noa");
         out = new PrintStream(new FileOutputStream(f4));
