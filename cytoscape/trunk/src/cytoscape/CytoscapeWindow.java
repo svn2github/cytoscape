@@ -250,6 +250,12 @@ public CytoscapeWindow (cytoscape parentApp,
   displayCommonNodeNames ();
   displayNewGraph (doFreshLayout);
 
+  //add a listener to save the visual mapping catalog on exit
+  mainFrame.addWindowListener(new WindowAdapter() {
+      public void windowClosing(WindowEvent we) {
+          saveCalculatorCatalog();
+      }
+  });
   mainFrame.addWindowListener (parentApp);
   mainFrame.setVisible (true);
 
@@ -270,40 +276,77 @@ private void loadVizMapper() {
   cc.addMapping("Discrete Mapper", DiscreteMapping.class);
   cc.addMapping("Continuous Mapper", ContinuousMapping.class);
   cc.addMapping("Passthrough Mapper", PassThroughMapping.class);
-  //set some standard attribute calculators
-  //cc.addNodeLabelCalculator(getPassThroughNLC());
-  //cc.addNodeColorCalculator(getContinuousNFCC());
-  //cc.addNodeColorCalculator(getMultipointContinuousNFCC());
-  //cc.addEdgeLabelCalculator(getPassThroughELC());
-  //cc.addNodeSizeCalculator(getMultipointContinuousNSC());
+
   //load in calculators from file
-  Properties props = new Properties();
-  try {
-      InputStream is = new FileInputStream("vizmap.props");
-      props.load(is);
+  //we look for, in order, a file in CYTOSCAPE_HOME, one in the current directory,
+  //then one in the user's home directory. Note that this is a different order than
+  //for cytoscape.props, because we always write vizmaps to the home directory
+  Properties calcProps = new Properties();
+  String vizPropsFileName = "vizmap.props";
+  try {//load from CYTOSCAPE_HOME if defined
+    File propsFile = new File(System.getProperty ("CYTOSCAPE_HOME"), vizPropsFileName);
+    if (propsFile != null && propsFile.canRead()) {
+      Properties loadProps = new Properties();
+      InputStream is = new FileInputStream(propsFile);
+      loadProps.load(is);
       is.close();
+      calcProps.putAll(loadProps);
+    }
   } catch (Exception ioe) {
       ioe.printStackTrace();
   }
-  CalculatorIO.loadCalculators(props, cc);
+  try {//load from current directory if file exists
+    File userSpecialPropsFile = new File(System.getProperty ("user.dir"), vizPropsFileName);
+    if (userSpecialPropsFile != null && userSpecialPropsFile.canRead()) {
+      Properties loadProps = new Properties();
+      InputStream is = new FileInputStream(userSpecialPropsFile);
+      loadProps.load(is);
+      is.close();
+      calcProps.putAll(loadProps);
+    }
+  } catch (Exception ioe) {
+      ioe.printStackTrace();
+  }
+  try {//load last from user's home directory, to which we write
+    File userHomePropsFile = new File(System.getProperty ("user.home"), vizPropsFileName);
+    if (userHomePropsFile != null && userHomePropsFile.canRead()) {
+      Properties loadProps = new Properties();
+      InputStream is = new FileInputStream(userHomePropsFile);
+      loadProps.load(is);
+      is.close();
+      calcProps.putAll(loadProps);
+    }
+  } catch (Exception ioe) {
+      ioe.printStackTrace();
+  }
+  //now load using the constructed Properties object
+  CalculatorIO.loadCalculators(calcProps, cc);
   //load in old style vizmappings
   Properties configProps = config.getProperties();
-  OldStyleCalculatorIO.loadCalculators(configProps, cc);
+  OldStyleCalculatorIO.checkForCalculators(configProps, cc);
   
   //try to get appearance calculator names from properties
   NodeAppearanceCalculator nac = null;
   String nacName = configProps.getProperty("nodeAppearanceCalculator");
   if (nacName != null) {nac = cc.getNodeAppearanceCalculator(nacName);}
   if (nac == null) {//none specified, or not found
-      //we know the old style calculator reader created a suitable nac
-      nac = cc.getNodeAppearanceCalculator(OldStyleCalculatorIO.calcName);
+      if (OldStyleCalculatorIO.loaded) {//use these loaded calculators
+          nac = cc.getNodeAppearanceCalculator(OldStyleCalculatorIO.calcName);
+      }
+      if (nac == null) {//not loaded, or not found
+          nac = new NodeAppearanceCalculator();
+      }
   }
   EdgeAppearanceCalculator eac = null;
   String eacName = configProps.getProperty("edgeAppearanceCalculator");
   if (eacName != null) {eac = cc.getEdgeAppearanceCalculator(eacName);}
   if (eac == null) {//none specified, or not found
-      //we know the old style calculator reader created a suitable eac
-      eac = cc.getEdgeAppearanceCalculator(OldStyleCalculatorIO.calcName);
+      if (OldStyleCalculatorIO.loaded) {//use these loaded calculators
+          eac = cc.getEdgeAppearanceCalculator(OldStyleCalculatorIO.calcName);
+      }
+      if (eac == null) {//not loaded, or not found
+          eac = new EdgeAppearanceCalculator();
+      }
   }
   
   //for testing purposes
@@ -327,6 +370,15 @@ private void loadVizMapper() {
   this.vizMapper = new VisualMappingManager(this, nac, eac, cc);
   this.network = new Network(this);
   this.vizMapUI = new VizMapUI(this.vizMapper);
+}
+
+/**
+ * Saves the CalculatorCatalog to the file 'vizmap.props' in the user's
+ * home directory.
+ */
+public void saveCalculatorCatalog() {
+  File userHomePropsFile = new File(System.getProperty ("user.home"), "vizmap.props");
+  CalculatorIO.storeCatalog(vizMapper.getCalculatorCatalog(), userHomePropsFile);
 }
 
     // various default definitions
@@ -2552,6 +2604,8 @@ protected class NewWindowSelectedNodesOnlyAction extends AbstractAction   {
   NewWindowSelectedNodesOnlyAction () { super ("Selected nodes, All edges"); }
 
   public void actionPerformed (ActionEvent e) {
+    //save the vizmapper
+    saveCalculatorCatalog();
     SelectedSubGraphFactory factory = new SelectedSubGraphFactory (graph, nodeAttributes, edgeAttributes);
     Graph2D subGraph = factory.getSubGraph ();
     GraphObjAttributes newNodeAttributes = factory.getNodeAttributes ();
@@ -2582,6 +2636,8 @@ protected class NewWindowSelectedNodesEdgesAction extends AbstractAction   {
   NewWindowSelectedNodesEdgesAction () { super ("Selected nodes, Selected edges"); }
 
   public void actionPerformed (ActionEvent e) {
+      //save the vizmapper
+      saveCalculatorCatalog();
       // allows us to temporarily hide unselected nodes/edges
       GraphHider hider = new GraphHider(graph);
 
@@ -2649,6 +2705,8 @@ protected class CloneGraphInNewWindowAction extends AbstractAction   {
  */
 public void cloneWindow ()
 {
+  //save the vizmapper
+  saveCalculatorCatalog();
   Node [] nodes = graph.getNodeArray ();
   for (int i=0; i < nodes.length; i++)
     graph.setSelected (nodes [i], true);
@@ -2789,6 +2847,7 @@ protected class ExitAction extends AbstractAction  {
   ExitAction () { super ("Exit"); }
 
   public void actionPerformed (ActionEvent e) {
+    saveCalculatorCatalog();
     parentApp.exit (0);
   }
 }
@@ -2797,6 +2856,7 @@ protected class CloseWindowAction extends AbstractAction  {
   CloseWindowAction () { super ("Close"); }
 
   public void actionPerformed (ActionEvent e) {
+    saveCalculatorCatalog();
     mainFrame.dispose ();
   }
 }
