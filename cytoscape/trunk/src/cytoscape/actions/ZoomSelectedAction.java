@@ -50,7 +50,7 @@ public class ZoomSelectedAction extends AbstractAction {
         networkView.getNetwork().endActivity(callerID);
       } else {
         // GINY
-        GraphView view = networkView.getView();
+        PGraphView view = (PGraphView)networkView.getView();
         List selected_nodes = view.getSelectedNodes();
 
         if ( selected_nodes.size() == 0 ) 

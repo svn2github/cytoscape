@@ -54,7 +54,7 @@ public class PrintAction extends AbstractAction  {
 
 	    } else {// using giny
 		     
-		PGraphView ginyView = networkView.getView();
+		PGraphView ginyView = (PGraphView)networkView.getView();
 		ginyView.getCanvas().getLayer().print();
 	    }
 

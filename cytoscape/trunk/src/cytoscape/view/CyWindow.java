@@ -60,7 +60,7 @@ import giny.view.NodeView;
 import giny.view.GraphViewChangeListener;
 import giny.view.GraphViewChangeEvent;
 
-import phoebe.*;
+import phoebe.PGraphView;
 //import phoebe.util.*;
 //import phoebe.event.*;
 
@@ -103,7 +103,7 @@ CyNetworkListener, NetworkView {
     
     protected Layouter layouter;
     protected Graph2DView graphView;
-    protected PGraphView  view;
+    protected GraphView  view;
     protected Component display;
     
     protected ViewMode editGraphMode;
@@ -303,16 +303,16 @@ protected void updateGraphView() {
 	
 	GraphPerspective gp = network.getGraphPerspective();
 	
-	view = new PGraphView(network.getGraphPerspective());
+	view = (GraphView)new PGraphView(network.getGraphPerspective());
 	display = view.getComponent();
 	add( display, BorderLayout.CENTER);
 
 	view.setBackgroundPaint(Color.BLACK);
 
-	java.util.List nodes = view.getNodeViewsList();
-	    for ( Iterator i= nodes.iterator(); i.hasNext();)
+	Iterator i = view.getNodeViewsIterator();
+	    while ( i.hasNext())
 	    {
-		    PNodeView nv = (PNodeView)i.next();
+		    NodeView nv = (NodeView)i.next();
 		    String label = nv.getNode().getIdentifier();
 		    //System.out.println("Setting label " + label);
 		    nv.setLabel(label);
@@ -324,9 +324,9 @@ protected void updateGraphView() {
 	    
 	    //edges
 	    java.util.List edges = view.getEdgeViewsList();
-	    for ( Iterator i= edges.iterator(); i.hasNext();)
+	    for ( Iterator ie= edges.iterator(); ie.hasNext();)
 	    {
-		    PEdgeView ev = (PEdgeView)i.next();
+		   EdgeView ev = (EdgeView)ie.next();
 		    ev.setUnselectedPaint(Color.blue);
 		    ev.setTargetEdgeEnd(EdgeView.ARROW_END);
 		    ev.setTargetEdgeEndPaint(Color.CYAN);
@@ -628,7 +628,10 @@ public Graph2DView getGraphView() {return graphView;}
 /**
  * Returns the UI component that renders the displayed graph.
  */
-public PGraphView getView() {return view;}
+public GraphView getView() {return view;}
+
+
+
 //------------------------------------------------------------------------------
 /**
  * Returns the current layouter. Guaranteed to be non-null.
@@ -967,7 +970,7 @@ public void applyLayout(boolean animated) {
  * Performs a layout operation on the giny graph displayed in this window,
  * using the default layouter for now
  */
-public void applyLayout(PGraphView lview) {
+public void applyLayout(GraphView lview) {
 	SpringEmbeddedLayouter lay = new SpringEmbeddedLayouter(lview);
 	lay.doLayout();
 }

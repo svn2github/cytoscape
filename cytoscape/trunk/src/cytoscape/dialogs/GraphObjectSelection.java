@@ -195,7 +195,7 @@ public class GraphObjectSelection extends JPanel implements ActionListener {
 
    public void actionPerformed ( ActionEvent event ) {
      // when ENTER is pressed do a search
-     this.graphView = networkView.getView();
+     this.graphView = (PGraphView)networkView.getView();
     performSearch();    
     
     // update the view
@@ -256,42 +256,42 @@ public class GraphObjectSelection extends JPanel implements ActionListener {
     if ( hideFailed.isSelected() ) {
       
       // restore all EdgeViews prior to hiding
-      networkView.getView().showGraphObjects( networkView.getView().getEdgeViewsList() );
+      graphView.showGraphObjects( graphView.getEdgeViewsList() );
       Iterator all_nodes = networkView.getView().getGraphPerspective().nodesList().iterator();
       while ( all_nodes.hasNext() ) {
         Node node =  ( Node )all_nodes.next();
         if ( passes.contains( node.getIdentifier() ) ) {
-          networkView.getView().showNodeView( networkView.getView().getNodeView( node ), false );
+          graphView.showNodeView( graphView.getNodeView( node ), false );
         } else {
-          networkView.getView().hideNodeView(  networkView.getView().getNodeView( node ) );
+          graphView.hideNodeView(  graphView.getNodeView( node ) );
         }
       }
     } 
     // gray the Failed
     else if ( grayFailed.isSelected() ) {
-      networkView.getView().showGraphObjects( networkView.getView().getEdgeViewsList() );
-      networkView.getView().showGraphObjects( networkView.getView().getNodeViewsList() );
-      Iterator all_nodes = networkView.getView().getGraphPerspective().nodesList().iterator();
+      graphView.showGraphObjects( graphView.getEdgeViewsList() );
+      graphView.showGraphObjects( graphView.getNodeViewsList() );
+      Iterator all_nodes = graphView.getGraphPerspective().nodesList().iterator();
       while ( all_nodes.hasNext() ) {
         Node node =  ( Node )all_nodes.next();
         if ( passes.contains( node.getIdentifier() ) ) {
-          networkView.getView().getNodeView( node ).setTransparency( 1f );
+          graphView.getNodeView( node ).setTransparency( 1f );
         } else {
-          networkView.getView().getNodeView( node ).setTransparency( 0.5f );
+          graphView.getNodeView( node ).setTransparency( 0.5f );
         }
       }
     } 
     // select those who passed 
     else if ( selectPassed.isSelected() ) {
-      networkView.getView().showGraphObjects( networkView.getView().getEdgeViewsList() );
-      networkView.getView().showGraphObjects( networkView.getView().getNodeViewsList() );
-      Iterator all_nodes = networkView.getView().getGraphPerspective().nodesList().iterator();
+      graphView.showGraphObjects( graphView.getEdgeViewsList() );
+      graphView.showGraphObjects( graphView.getNodeViewsList() );
+      Iterator all_nodes = graphView.getGraphPerspective().nodesList().iterator();
       while ( all_nodes.hasNext() ) {
         Node node =  ( Node )all_nodes.next();
         if ( passes.contains( node.getIdentifier() ) ) {
-          networkView.getView().getNodeView( node ).setSelected( true );
+          graphView.getNodeView( node ).setSelected( true );
         } else {
-          networkView.getView().getNodeView( node ).setSelected( false );
+          graphView.getNodeView( node ).setSelected( false );
         }
       }
 

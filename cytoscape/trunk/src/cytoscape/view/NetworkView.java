@@ -35,8 +35,8 @@ import javax.swing.JFrame;
 
 import y.view.Graph2DView;
 import y.layout.Layouter;
-
-import phoebe.PGraphView;
+import giny.view.GraphView;
+//import phoebe.PGraphView;
 
 import cytoscape.CytoscapeObj;
 import cytoscape.data.CyNetwork;
@@ -72,9 +72,9 @@ public interface NetworkView {
     Graph2DView getGraphView();
     
     /**
-     * @return A GINY GraphVIew
+     * @return A GINY GraphView
      */
-    PGraphView getView();
+    GraphView getView();
 
     /**
      * Return the frame in which the graph is displayed. Useful for constructing
@@ -107,6 +107,6 @@ public interface NetworkView {
     /**
     * added for giny, applies the layout on the view
     */
-    void applyLayout ( PGraphView view );
+    void applyLayout ( GraphView view );
 }
 

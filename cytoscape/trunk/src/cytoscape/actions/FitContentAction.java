@@ -25,7 +25,7 @@ public class FitContentAction extends AbstractAction {
         networkView.redrawGraph(false, false);
       } else {
         // GINY
-        PGraphView view = networkView.getView();
+        PGraphView view =(PGraphView) networkView.getView();
         view.getCanvas().getCamera().animateViewToCenterBounds( view.getCanvas().getLayer().getGlobalFullBounds(), true, 500l );
       }
     }

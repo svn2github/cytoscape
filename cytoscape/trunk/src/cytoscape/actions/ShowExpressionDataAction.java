@@ -49,7 +49,7 @@ public class ShowExpressionDataAction extends AbstractAction  {
 	  //not implemented for y files
 	}
 	else { // using giny
-		PGraphView graphView = networkView.getView();
+		PGraphView graphView = (PGraphView)networkView.getView();
 		java.util.List list = graphView.getNodeViewsList();
             Iterator i = list.iterator();
             while (i.hasNext())
