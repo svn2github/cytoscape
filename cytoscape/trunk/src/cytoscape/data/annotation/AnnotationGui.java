@@ -311,7 +311,8 @@ protected Node [] getNodesByAttributeValues (String attributeName, String [] tar
     if (canonicalName == null) continue;
     Object attributeValue = (Object) nodeAttributes.getValue (attributeName, canonicalName);
     if (attributeValue == null) continue;
-    String [] parsedCategories = GraphObjAttributes.unpackPossiblyCompoundStringAttributeValue (attributeValue);
+    String [] parsedCategories = 
+          GraphObjAttributes.unpackPossiblyCompoundStringAttributeValue (attributeValue);
     for (int c=0; c < parsedCategories.length; c++) {
       for (int t=0; t < targetValues.length; t++)
         if (targetValues [t].equals (parsedCategories [c]))
@@ -349,8 +350,10 @@ protected void createTreeNodes (DefaultMutableTreeNode root,
                            descriptions[i].getSpecies ());
     branch = new DefaultMutableTreeNode (descriptions [i]);
     Annotation annotation = dataServer.getAnnotation (descriptions [i]);
-    if (annotation == null) 
+   
+    if (annotation == null) {
       continue;
+      }
     int maxDepth = annotation.maxDepth ();
     for (int level=0; level < maxDepth; level++) 
       branch.add (new DefaultMutableTreeNode (new Integer (level + 1)));
