@@ -1,12 +1,14 @@
 Task Interface:
 ---------------
 
-Update Build file to use junit.jar
-Update Build file to run samples.
-Update Build file to run JUnit Tests
 Run Ant Checkstyle
 Create Package HTML Javadocs
+Get Screenshots
+Update IntelliJ to run JUnit Tests
+Discuss Stoppable/Haltable, etc.
 
+[DONE] Update Build file to run samples.
+[DONE] Update Build file to use junit.jar
 [DONE] Ensure that JTask adheres to all the right policies
 [DONE] Ensure that SampleTask adheres to all the right policies
 [DONE] Add TimeStringUtil Test Class
