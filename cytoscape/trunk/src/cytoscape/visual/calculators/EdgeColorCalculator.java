@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 
 import giny.model.Edge;
 
-import cytoscape.data.CyNetwork;
+import cytoscape.CyNetwork;
 //----------------------------------------------------------------------------
 public interface EdgeColorCalculator extends Calculator{
     

@@ -71,8 +71,14 @@ public class CyMain implements WindowListener {
   protected CytoscapeVersion version = new CytoscapeVersion();
   protected Logger logger;
   protected SplashScreen splashScreen;
-  //------------------------------------------------------------------------------
-  public CyMain (String [] args) throws Exception {
+ 
+
+  /**
+   * Primary Method for Starting Cytoscape. Use the passed
+   * args to create a CytoscapeConfig object.
+   */
+  public CyMain ( String [] args ) throws Exception {
+    
     splashScreen = new SplashScreen();
     //parse args and config files into config object
     CytoscapeConfig config = new CytoscapeConfig(args);
@@ -128,50 +134,55 @@ public class CyMain implements WindowListener {
     CyNetwork network = null;
     String geometryFilename = config.getGeometryFilename();
     String interactionsFilename = config.getInteractionsFilename();
-    if (geometryFilename != null && interactionsFilename != null) {
+
+    if ( geometryFilename != null && interactionsFilename != null ) {
       StringBuffer sb = new StringBuffer("Config specifies both interactions file '");
       sb.append(interactionsFilename + "' and GML file '" + geometryFilename + "'");
       sb.append("; using GML file");
       logger.severe(sb.toString());
     }
-    GraphReader reader = null;
-    if (geometryFilename != null) {
+
+     if ( geometryFilename != null ) {
+ 
       logger.info("reading " + geometryFilename + "...");
-      //network = CyNetworkFactory.createNetworkFromGMLFile(geometryFilename);
-      reader = new GMLReader(geometryFilename);
+      network = Cytoscape.createNetwork( geometryFilename,
+                                         Cytoscape.FILE_GML,
+                                         false,
+                                         null,
+                                         null );
       logger.info("  done");
       title = geometryFilename;
     }
-    else if (interactionsFilename != null) {
+
+    else if ( interactionsFilename != null ) {
       logger.info("reading " + interactionsFilename + "...");
-      //network =
-      //CyNetworkFactory.createNetworkFromInteractionsFile( interactionsFilename,
-      //canonicalize,
-      //						    bioDataServer,
-      //                                                        defaultSpecies );
-      reader = new InteractionsReader(bioDataServer,defaultSpecies,interactionsFilename);
+     
+      network = Cytoscape.createNetwork( interactionsFilename,
+                                         Cytoscape.FILE_SIF,
+                                         true,
+                                         bioDataServer,
+                                         defaultSpecies );
       logger.info("  done");
       title = interactionsFilename;
     }
     
-    if ( reader != null ) 
-      network = CyNetworkFactory.createNetworkFromGraphReader(reader,canonicalize);
-
-    if (network == null) {//none specified, or failed to read
+     if (network == null) {//none specified, or failed to read
       logger.info("no graph read, creating empty network");
-      network = CyNetworkFactory.createEmptyNetwork();
+      network = Cytoscape.createNetwork();
       splashScreen.noGraph = true;
       title = "(Untitled)";
     }
+     
     //add the semantics we usually expect
-    Semantics.applyNamingServices(network, cytoscapeObj);
+     Semantics.applyNamingServices(network, cytoscapeObj);
 
     //load any specified data attribute files
     logger.info("reading attribute files");
-    CyNetworkFactory.loadAttributes(network,
-                                    config.getNodeAttributeFilenames(),
-                                    config.getEdgeAttributeFilenames(),
-                                    canonicalize, bioDataServer, defaultSpecies);
+    Cytoscape.loadAttributes( config.getNodeAttributeFilenames(),
+                              config.getEdgeAttributeFilenames(),
+                              canonicalize, 
+                              bioDataServer, 
+                              defaultSpecies);
     logger.info(" done");
 
     //load expression data if specified
@@ -182,7 +193,7 @@ public class CyMain implements WindowListener {
         ExpressionData expData = new ExpressionData(expDataFilename);
         network.setExpressionData(expData);
         if (config.getWhetherToCopyExpToAttribs()) {
-          expData.copyToAttribs(network.getNodeAttributes());
+          expData.copyToAttribs( Cytoscape.getNodeNetworkData() );
         }
       } catch (Exception e) {
         logger.severe("Exception reading expression data file '" + expDataFilename + "'");
@@ -195,19 +206,15 @@ public class CyMain implements WindowListener {
 
     //create the window
     cyWindow = new CyWindow(cytoscapeObj, network, title);
-
-    //if (geometryFilename != null) {
-    //GMLReader reader = new GMLReader(geometryFilename);
-    //reader.layoutByGML(cyWindow.getView(), cyWindow.getNetwork());
-    //} 
-    if ( reader != null ) 
-      reader.layout(cyWindow.getView());
+   
+    //if ( reader != null ) 
+    //  reader.layout(cyWindow.getView());
 
     cyWindow.showWindow();
 
     if (splashScreen!=null) {splashScreen.advance(100);}
   } // ctor
-  //------------------------------------------------------------------------------
+  
   /**
    * configure logging:  cytoscape.props specifies what level of logging
    * messages are written to the console; by default, only SEVERE messages
@@ -236,7 +243,7 @@ public class CyMain implements WindowListener {
       logger.setLevel(Level.OFF);
     }
   }
-  //------------------------------------------------------------------------------
+ 
   public void windowActivated   (WindowEvent e) {
     if(splashScreen != null) {
       splashScreen.advance(200);

@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JDialog;
 import javax.swing.event.ChangeListener;
 import cytoscape.visual.mappings.ObjectMapping;
-import cytoscape.data.CyNetwork;
+import cytoscape.CyNetwork;
 //------------------------------------------------------------------------------
 /**
  *  Calculator specifies a super-interface for all calculator interfaces.

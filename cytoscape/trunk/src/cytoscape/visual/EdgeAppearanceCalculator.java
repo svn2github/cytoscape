@@ -14,7 +14,7 @@ import giny.model.Edge;
 import cytoscape.visual.LineType;
 import cytoscape.visual.Arrow;
 
-import cytoscape.data.CyNetwork;
+import cytoscape.CyNetwork;
 import cytoscape.visual.calculators.*;
 import cytoscape.visual.parsers.*;
 //----------------------------------------------------------------------------

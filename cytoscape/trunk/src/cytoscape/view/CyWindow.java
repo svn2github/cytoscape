@@ -52,7 +52,9 @@ import cytoscape.plugin.PluginListener;
 import cytoscape.plugin.PluginEvent;
 import cytoscape.plugin.AbstractPlugin;
 import cytoscape.plugin.PluginUpdateList;
-import cytoscape.data.*;
+import cytoscape.data.ExpressionData;
+import cytoscape.data.GraphObjAttributes;
+
 //import cytoscape.view.*;
 import cytoscape.visual.*;
 import cytoscape.visual.ui.VizMapUI;

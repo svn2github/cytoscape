@@ -10,7 +10,7 @@ import java.util.Properties;
 import javax.swing.JPanel;
 import javax.swing.JDialog;
 import javax.swing.event.ChangeListener;
-import cytoscape.data.CyNetwork;
+import cytoscape.CyNetwork;
 import cytoscape.visual.parsers.ValueParser;
 //----------------------------------------------------------------------------
 /**

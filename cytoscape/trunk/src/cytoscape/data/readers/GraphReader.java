@@ -39,12 +39,22 @@ import giny.model.RootGraph;
 import giny.view.GraphView;
 //-----------------------------------------------------------------------------
 public interface GraphReader {
+
   public void read();
+
   public void read(boolean canonicalizeNodeNames);
+
   public RootGraph getRootGraph();
+
   public GraphObjAttributes getNodeAttributes ();
+
   public GraphObjAttributes getEdgeAttributes ();
+
   public void layout(GraphView myView);
+
+  public int[] getNodeIndicesArray ();
+
+  public int[] getEdgeIndicesArray ();
 }
 
 

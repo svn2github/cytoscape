@@ -5,7 +5,7 @@
 //--------------------------------------------------------------------------
 package cytoscape.visual.calculators;
 //--------------------------------------------------------------------------
-import cytoscape.data.CyNetwork;
+import cytoscape.CyNetwork;
 import java.awt.Font;
 import giny.model.Edge;
 //--------------------------------------------------------------------------

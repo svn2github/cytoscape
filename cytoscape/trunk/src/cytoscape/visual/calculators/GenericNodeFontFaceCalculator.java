@@ -12,7 +12,7 @@ import javax.swing.*;
 
 import giny.model.Node;
 
-import cytoscape.data.CyNetwork;
+import cytoscape.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.FontParser;
 //--------------------------------------------------------------------------

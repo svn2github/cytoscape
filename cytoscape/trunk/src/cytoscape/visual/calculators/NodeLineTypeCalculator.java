@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 import giny.model.Node;
 import cytoscape.visual.LineType;
 
-import cytoscape.data.CyNetwork;
+import cytoscape.CyNetwork;
 //----------------------------------------------------------------------------
 public interface NodeLineTypeCalculator extends Calculator {
     

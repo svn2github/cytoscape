@@ -13,8 +13,10 @@ import java.io.File;
 import java.util.Date;
 
 
-import cytoscape.CytoscapeObj;
-import cytoscape.data.*;
+import cytoscape.*;
+import cytoscape.data.GraphObjAttributes;
+import cytoscape.data.ExpressionData;
+import cytoscape.data.Semantics;
 import cytoscape.view.NetworkView;
 import cytoscape.view.CyMenus;
 import cytoscape.util.CyFileFilter;
@@ -91,13 +93,27 @@ public class LoadGraphFileAction extends AbstractAction {
       String species = Semantics.getDefaultSpecies(networkView.getNetwork(), cytoscapeObj);
       GraphReader reader = null;
       if(isGML) {
-	reader = new GMLReader(name);
-	//newNetwork = CyNetworkFactory.createNetworkFromGMLFile( name );
+
+
+        newNetwork = Cytoscape.createNetwork( name,
+                                              Cytoscape.FILE_GML,
+                                              canonicalize,
+                                              cytoscapeObj.getBioDataServer(),
+                                              species );
+        //reader = new GMLReader(name);
+        //newNetwork = CyNetworkFactory.createNetworkFromGMLFile( name );
       }
       else {
-	reader = new InteractionsReader(cytoscapeObj.getBioDataServer(),species,name);
+
+        newNetwork = Cytoscape.createNetwork( name,
+                                              Cytoscape.FILE_SIF,
+                                              canonicalize,
+                                              cytoscapeObj.getBioDataServer(),
+                                              species );
+
+        //	reader = new InteractionsReader(cytoscapeObj.getBioDataServer(),species,name);
       } // end of else
-      newNetwork = CyNetworkFactory.createNetworkFromGraphReader(reader,canonicalize);
+      // newNetwork = CyNetworkFactory.createNetworkFromGraphReader(reader,canonicalize);
       //else {
       //    boolean canonicalize = Semantics.getCanonicalize(cytoscapeObj);
       //    String  species = Semantics.getDefaultSpecies( networkView.getNetwork(), cytoscapeObj );
@@ -148,7 +164,7 @@ public class LoadGraphFileAction extends AbstractAction {
 	//    GMLReader reader = new GMLReader(name);
 	//    reader.layoutByGML(networkView.getView(), newNetwork);
 	//}
-	reader.layout(networkView.getView());
+	//reader.layout(networkView.getView());
 	//give the user some confirmation
 	String lineSep = System.getProperty("line.separator");
 	StringBuffer sb = new StringBuffer();

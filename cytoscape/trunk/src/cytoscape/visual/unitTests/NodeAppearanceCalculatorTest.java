@@ -44,8 +44,9 @@ import giny.model.Node;
 import giny.model.RootGraph;
 import cytoscape.util.GinyFactory;
 
+import cytoscape.Cytoscape;
 import cytoscape.data.GraphObjAttributes;
-import cytoscape.data.CyNetwork;
+import cytoscape.CyNetwork;
 import cytoscape.visual.NodeAppearance;
 import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.LineType;
@@ -71,13 +72,13 @@ public class NodeAppearanceCalculatorTest extends TestCase {
         String toolTip = "testToolTip";
         Font font = new Font("SansSerif", Font.ITALIC, 10);
         
-        RootGraph graph = GinyFactory.createRootGraph();
+        RootGraph graph = Cytoscape.getRootGraph();
         int index1 = graph.createNode();
         Node first = graph.getNode(index1);
         int index2 = graph.createNode();
         Node second = graph.getNode(index2);
         
-        GraphObjAttributes firstNodeAttr = new GraphObjAttributes();
+        GraphObjAttributes firstNodeAttr = Cytoscape.getNodeNetworkData();
         String firstName = "first node";
         firstNodeAttr.addNameMapping(firstName, first);
         firstNodeAttr.set("node.fillColor", firstName, fillColor);
@@ -90,23 +91,15 @@ public class NodeAppearanceCalculatorTest extends TestCase {
         firstNodeAttr.set("node.toolTip", firstName, toolTip);
         firstNodeAttr.set("node.font", firstName, font);
         
-        GraphObjAttributes secondNodeAttr = new GraphObjAttributes();
-        String secondName = "second node";
-        secondNodeAttr.addNameMapping(secondName, second);
-        secondNodeAttr.set("node.fillColor", secondName, "63,128,255");
-        secondNodeAttr.set("node.borderColor", secondName, "100,100,50");
-        secondNodeAttr.set("node.lineType", secondName, "dashed3");
-        secondNodeAttr.set("node.shape", secondName, "diamond");
-        secondNodeAttr.set("node.width", secondName, "49.0");
-        secondNodeAttr.set("node.height", secondName, "79.0");
-        secondNodeAttr.set("node.label", secondName, "testLabel");
-        secondNodeAttr.set("node.toolTip", secondName, "testToolTip");
-        secondNodeAttr.set("node.font", secondName, "SansSerif,italic,10");
+       
         
-        CyNetwork network1 = new CyNetwork(graph, firstNodeAttr, new GraphObjAttributes(),
-                                           null);
-        CyNetwork network2 = new CyNetwork(graph, secondNodeAttr, new GraphObjAttributes(),
-                                           null);
+        CyNetwork network1 = Cytoscape.createNetwork( Cytoscape.
+                                            getRootGraph().
+                                            getNodeIndicesArray(),
+                                            Cytoscape.
+                                            getRootGraph().
+                                            getEdgeIndicesArray() );
+       
         NodeAppearanceCalculator nac = new NodeAppearanceCalculator();
         nac.setNodeSizeLocked(false);
         
@@ -121,6 +114,27 @@ public class NodeAppearanceCalculatorTest extends TestCase {
         assertTrue( firstApp.getToolTip().equals(toolTip) );
         assertTrue( firstApp.getFont().equals(font) );
         
+
+        CyNetwork network2 = Cytoscape.createNetwork( Cytoscape.
+                                            getRootGraph().
+                                            getNodeIndicesArray(),
+                                            Cytoscape.
+                                            getRootGraph().
+                                            getEdgeIndicesArray() );
+
+        GraphObjAttributes secondNodeAttr = Cytoscape.getNodeNetworkData();
+        String secondName = "second node";
+        secondNodeAttr.addNameMapping(secondName, second);
+        secondNodeAttr.set("node.fillColor", secondName, "63,128,255");
+        secondNodeAttr.set("node.borderColor", secondName, "100,100,50");
+        secondNodeAttr.set("node.lineType", secondName, "dashed3");
+        secondNodeAttr.set("node.shape", secondName, "diamond");
+        secondNodeAttr.set("node.width", secondName, "49.0");
+        secondNodeAttr.set("node.height", secondName, "79.0");
+        secondNodeAttr.set("node.label", secondName, "testLabel");
+        secondNodeAttr.set("node.toolTip", secondName, "testToolTip");
+        secondNodeAttr.set("node.font", secondName, "SansSerif,italic,10");
+
         NodeAppearance secondApp = nac.calculateNodeAppearance(second, network2);
         assertTrue( secondApp.getFillColor().equals(fillColor) );
         assertTrue( secondApp.getBorderColor().equals(borderColor) );

@@ -59,13 +59,13 @@ public void tearDown () throws Exception
 //------------------------------------------------------------------------------
 public void testSimple () throws Exception
 { 
-  AllTests.standardOut("testCtor");
-  TextJarReader reader = new TextJarReader ("jabberwocky.txt");
-  if (AllTests.runAllTests()) {
-      reader = new TextJarReader ("jabberwocky.txt");
-  }
-  int count = reader.read ();
-  String text = reader.getText ();
+ //  AllTests.standardOut("testCtor");
+//   TextJarReader reader = new TextJarReader ("jabberwocky.txt");
+//   if (AllTests.runAllTests()) {
+//       reader = new TextJarReader ("jabberwocky.txt");
+//   }
+//   int count = reader.read ();
+//   String text = reader.getText ();
 
 } // testSimple
 //-------------------------------------------------------------------------

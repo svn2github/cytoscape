@@ -18,7 +18,7 @@ import giny.view.*;
 
 import cytoscape.view.NetworkView;
 import cytoscape.CytoscapeObj;
-import cytoscape.data.CyNetwork;
+import cytoscape.CyNetwork;
 import cytoscape.data.Semantics;
 //-------------------------------------------------------------------------
 public class ListFromFileSelectionAction extends AbstractAction {

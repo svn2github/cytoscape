@@ -41,7 +41,7 @@ import giny.view.*;
 import cytoscape.CytoscapeObj;
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.view.NetworkView;
-
+import cytoscape.CyNetwork;
 import ViolinStrings.Strings;
 
 //-------------------------------------------------------------------------

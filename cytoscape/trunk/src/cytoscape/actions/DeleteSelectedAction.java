@@ -12,7 +12,7 @@ import java.util.*;
 import giny.model.GraphPerspective;
 import giny.view.GraphView;
 
-import cytoscape.data.CyNetwork;
+import cytoscape.CyNetwork;
 import cytoscape.view.NetworkView;
 import cytoscape.data.GraphObjAttributes;
 //-------------------------------------------------------------------------

@@ -9,8 +9,7 @@ import junit.framework.*;
 import java.io.*;
 import java.util.*;
 
-import cytoscape.data.CyNetwork;
-import cytoscape.data.CyNetworkEvent;
+import cytoscape.*;
 //-----------------------------------------------------------------------------------------
 public class CyNetworkEventTest extends TestCase {
 //------------------------------------------------------------------------------
@@ -21,7 +20,9 @@ public void setUp() throws Exception {}
 public void tearDown() throws Exception {}
 //------------------------------------------------------------------------------
 public void testBasic() throws Exception { 
-    CyNetwork network = new CyNetwork();
+  
+  Cytoscape.clearCytoscape();
+  CyNetwork network = Cytoscape.createNetwork();
     //test begin event
     CyNetworkEvent e0 = new CyNetworkEvent(network, CyNetworkEvent.BEGIN);
     assertTrue( e0.getNetwork() == network );

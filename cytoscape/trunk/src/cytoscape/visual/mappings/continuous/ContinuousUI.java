@@ -5,7 +5,7 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual.mappings.continuous;
 
-import cytoscape.data.CyNetwork;
+import cytoscape.CyNetwork;
 import cytoscape.dialogs.GridBagGroup;
 import cytoscape.dialogs.MiscGB;
 import cytoscape.visual.mappings.BoundaryRangeValues;

@@ -37,7 +37,7 @@ import giny.view.GraphView;
 //import phoebe.PGraphView;
 
 import cytoscape.CytoscapeObj;
-import cytoscape.data.CyNetwork;
+import cytoscape.CyNetwork;
 import cytoscape.visual.VisualMappingManager;
 //-------------------------------------------------------------------------
 /**
@@ -58,7 +58,7 @@ public interface NetworkView {
     /**
     *
     */
-    void setNewNetwork(CyNetwork newNetwork);
+    void setNewNetwork( CyNetwork newNetwork);
     
     /**
      *

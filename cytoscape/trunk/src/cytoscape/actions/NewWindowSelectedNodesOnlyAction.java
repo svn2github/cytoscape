@@ -13,7 +13,7 @@ import giny.model.GraphPerspective;
 import giny.view.GraphView;
 
 import cytoscape.data.GraphObjAttributes;
-import cytoscape.data.CyNetwork;
+import cytoscape.*;
 import cytoscape.view.CyWindow;
 //-------------------------------------------------------------------------
 public class NewWindowSelectedNodesOnlyAction extends AbstractAction {
@@ -32,16 +32,9 @@ public class NewWindowSelectedNodesOnlyAction extends AbstractAction {
         oldNetwork.beginActivity(callerID);
         GraphView view = cyWindow.getView();
         int [] nodes = view.getSelectedNodeIndices();
-        //int[] edges = view.getSelectedEdgeIndices();
-      	GraphPerspective subGraph = view.getGraphPerspective().createGraphPerspective(nodes);//, edges);
-        GraphObjAttributes newNodeAttributes = oldNetwork.getNodeAttributes();
-        GraphObjAttributes newEdgeAttributes = oldNetwork.getEdgeAttributes();
-
-        CyNetwork newNetwork = new CyNetwork(subGraph, newNodeAttributes,
-                newEdgeAttributes, oldNetwork.getExpressionData() );
-        newNetwork.setNeedsLayout(true);
-
-        oldNetwork.endActivity(callerID);
+       
+        CyNetwork newNetwork = Cytoscape.createNetwork( nodes, oldNetwork.getConnectingEdgeIndicesArray( nodes ) );
+        newNetwork.setExpressionData( oldNetwork.getExpressionData() );
 
         String title = " selection";
         try {

@@ -11,7 +11,7 @@ import javax.swing.AbstractAction;
 
 import giny.model.GraphPerspective;
 
-import cytoscape.data.CyNetwork;
+import cytoscape.*;
 import cytoscape.view.CyWindow;
 //-------------------------------------------------------------------------
 public class CloneGraphInNewWindowAction extends AbstractAction {
@@ -27,17 +27,11 @@ public class CloneGraphInNewWindowAction extends AbstractAction {
         cyWindow.getCytoscapeObj().saveCalculatorCatalog();
         CyNetwork oldNetwork = cyWindow.getNetwork();
         String callerID = "CloneGraphInNewWindowAction.actionPerformed";
-        oldNetwork.beginActivity(callerID);
-      	GraphPerspective subGraph =
-                (GraphPerspective)oldNetwork.getGraphPerspective().clone();
-
-        CyNetwork newNetwork = new CyNetwork(subGraph,
-                                             oldNetwork.getNodeAttributes(),
-                                             oldNetwork.getEdgeAttributes(),
-                                             oldNetwork.getExpressionData() );
-        newNetwork.setNeedsLayout(false);
-        oldNetwork.endActivity(callerID);
-
+        
+        CyNetwork newNetwork = Cytoscape.createNetwork( oldNetwork.getNodeIndicesArray(),
+                                                        oldNetwork.getEdgeIndicesArray() );
+        // TODO: unify
+        newNetwork.setExpressionData( oldNetwork.getExpressionData() );
         String title = " cloned whole graph";
         try {
             //this call creates a WindowOpened event, which is caught by

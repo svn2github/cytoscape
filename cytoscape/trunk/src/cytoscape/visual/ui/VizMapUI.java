@@ -15,9 +15,9 @@ import cytoscape.visual.*;
 import cytoscape.visual.calculators.*;
 import cytoscape.dialogs.GridBagGroup;
 import cytoscape.dialogs.MiscGB;
-import cytoscape.data.CyNetworkListener;
-import cytoscape.data.CyNetwork;
-import cytoscape.data.CyNetworkEvent;
+import cytoscape.CyNetworkListener;
+import cytoscape.CyNetwork;
+import cytoscape.CyNetworkEvent;
 //------------------------------------------------------------------------------
 
 /**

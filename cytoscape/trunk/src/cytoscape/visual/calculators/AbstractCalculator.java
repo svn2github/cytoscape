@@ -17,7 +17,7 @@ import cytoscape.dialogs.GridBagGroup;
 import cytoscape.dialogs.MiscGB;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.mappings.MappingFactory;
-import cytoscape.data.CyNetwork;
+import cytoscape.CyNetwork;
 //------------------------------------------------------------------------------
 /**
  * AbstractCalculator is the top of the tree for the Calculator classes. <b>DO NOT</b>

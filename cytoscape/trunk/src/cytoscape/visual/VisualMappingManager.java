@@ -19,9 +19,11 @@ import giny.view.NodeView;
 import giny.view.EdgeView;
 import giny.view.Label;
 
-import cytoscape.data.CyNetwork;
+import cytoscape.*;
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.view.NetworkView;
+import cytoscape.view.CyNodeView;
+import cytoscape.view.CyEdgeView;
 import cytoscape.visual.ui.VizMapUI;
 
 import javax.swing.event.ChangeListener;
@@ -74,6 +76,77 @@ public class VisualMappingManager extends SubjectBase {
             setVisualStyle(defStyle);
         }
     }
+
+  //------------------------------//
+  // Single Node/Edge Mapping Methods
+  //------------------------------//
+  
+  public void vizmapNode ( CyNodeView nodeView, CyNetwork network  ) {
+    CyNode node = ( CyNode )nodeView.getNode();
+    NodeAppearanceCalculator nodeAppearanceCalculator =
+      visualStyle.getNodeAppearanceCalculator();
+    nodeAppearanceCalculator.calculateNodeAppearance
+      (myNodeApp,node,network);
+    if (optimizer == false) {
+      nodeView.setUnselectedPaint(myNodeApp.getFillColor());
+      nodeView.setBorderPaint(myNodeApp.getBorderColor());
+      nodeView.setBorder(myNodeApp.getBorderLineType().getStroke());
+      nodeView.setHeight(myNodeApp.getHeight());
+      nodeView.setWidth(myNodeApp.getWidth());
+      nodeView.setShape( ShapeNodeRealizer.getGinyShape
+                         (myNodeApp.getShape()) );
+      nodeView.getLabel().setText( myNodeApp.getLabel() );
+      Label label = nodeView.getLabel();
+      label.setFont(myNodeApp.getFont());
+    } else {
+      Paint existingUnselectedColor = nodeView.getUnselectedPaint();
+      Paint newUnselectedColor = myNodeApp.getFillColor();
+      if (!newUnselectedColor.equals(existingUnselectedColor)) {
+        nodeView.setUnselectedPaint(newUnselectedColor);
+      }
+      Paint existingBorderPaint = nodeView.getBorderPaint();
+      Paint newBorderPaint = myNodeApp.getBorderColor();
+      if (!newBorderPaint.equals(existingBorderPaint)) {
+        nodeView.setBorderPaint(newBorderPaint);
+      }
+      Stroke existingBorderType = nodeView.getBorder();
+      Stroke newBorderType = myNodeApp.getBorderLineType()
+        .getStroke();
+      if (!newBorderType.equals(existingBorderType)) {
+        nodeView.setBorder(newBorderType);
+      }
+      double existingHeight = nodeView.getHeight();
+      double newHeight = myNodeApp.getHeight();
+      double difference = newHeight - existingHeight;
+      if (Math.abs(difference) > .1) {
+        nodeView.setHeight(newHeight);
+      }
+      double existingWidth = nodeView.getWidth();
+      double newWidth = myNodeApp.getWidth();
+      difference = newWidth - existingWidth;
+      if (Math.abs(difference) > .1) {
+        nodeView.setWidth(newWidth);
+      }
+      int existingShape = nodeView.getShape();
+      int newShape = ShapeNodeRealizer.getGinyShape
+        (myNodeApp.getShape());
+      if (existingShape != newShape) {
+        nodeView.setShape(newShape);
+      }
+      Label label = nodeView.getLabel();
+      String existingLabel = label.getText();
+      String newLabel = myNodeApp.getLabel();
+      if (!newLabel.equals(existingLabel)) {
+        label.setText(newLabel);
+      }
+      Font existingFont = label.getFont();
+      Font newFont = myNodeApp.getFont();
+      if (!newFont.equals(existingFont)) {
+        label.setFont(newFont);
+      }
+    }
+  }
+
 
 
     public NetworkView getNetworkView() {return networkView;}

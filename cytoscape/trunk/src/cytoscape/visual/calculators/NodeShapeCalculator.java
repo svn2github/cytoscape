@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 
 import giny.model.Node;
 
-import cytoscape.data.CyNetwork;
+import cytoscape.CyNetwork;
 //----------------------------------------------------------------------------
 public interface NodeShapeCalculator extends Calculator {
     

@@ -175,7 +175,7 @@
 
     <!--  Target to Run Cytoscape using giny-->
     <target name="run" depends="compile" description="Runs Cytoscape/Giny.">
-        <java classname="cytoscape.cytoscape" classpathref="classpath" fork="true">
+        <java classname="cytoscape.CyMain" classpathref="classpath" fork="true">
 		<arg value="-y giny"/>
 	</java>
     </target>

@@ -7,7 +7,7 @@ package cytoscape.visual.mappings;
 
 //----------------------------------------------------------------------------
 
-import cytoscape.data.CyNetwork;
+import cytoscape.CyNetwork;
 import cytoscape.visual.SubjectBase;
 import cytoscape.visual.mappings.discrete.DiscreteMappingWriter;
 import cytoscape.visual.mappings.discrete.DiscreteRangeCalculator;

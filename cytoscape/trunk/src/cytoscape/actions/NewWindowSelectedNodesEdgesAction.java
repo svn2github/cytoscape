@@ -14,7 +14,7 @@ import giny.model.GraphPerspective;
 import giny.view.GraphView;
 
 import cytoscape.data.GraphObjAttributes;
-import cytoscape.data.CyNetwork;
+import cytoscape.*;
 import cytoscape.view.CyWindow;
 //-------------------------------------------------------------------------
 public class NewWindowSelectedNodesEdgesAction extends AbstractAction {
@@ -32,19 +32,12 @@ public class NewWindowSelectedNodesEdgesAction extends AbstractAction {
         String callerID = "NewWindowSelectedNodesEdgesAction.actionPerformed";
         oldNetwork.beginActivity(callerID);
         GraphView view = cyWindow.getView();
-        int [] nodes = view.getSelectedNodeIndices();
+        int[] nodes = view.getSelectedNodeIndices();
         int[] edges = view.getSelectedEdgeIndices();
-      	GraphPerspective subGraph = view.getGraphPerspective().createGraphPerspective(nodes, edges);
-        GraphObjAttributes newNodeAttributes = oldNetwork.getNodeAttributes();
-        GraphObjAttributes newEdgeAttributes = oldNetwork.getEdgeAttributes();
 
-        CyNetwork newNetwork = new CyNetwork(subGraph, newNodeAttributes,
-                newEdgeAttributes, oldNetwork.getExpressionData() );
-        newNetwork.setNeedsLayout(true);
-
-        oldNetwork.endActivity(callerID);
-
-        String title =  " selection";
+        CyNetwork newNetwork = Cytoscape.createNetwork( nodes, edges );
+        newNetwork.setExpressionData( oldNetwork.getExpressionData() );
+        String title = " selection";
         try {
             //this call creates a WindowOpened event, which is caught by
             //cytoscape.java, enabling that class to manage the set of windows

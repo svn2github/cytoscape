@@ -10,7 +10,7 @@ import java.util.Properties;
 import java.util.ArrayList;
 import java.awt.Color;
 
-import cytoscape.data.CyNetwork;
+import cytoscape.CyNetwork;
 import cytoscape.visual.parsers.ColorParser;
 import cytoscape.visual.parsers.ObjectToString;
 

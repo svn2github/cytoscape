@@ -41,9 +41,11 @@ import cytoscape.util.GinyFactory;
 
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.Interaction;
-import cytoscape.data.*;
+import cytoscape.*;
 import cytoscape.data.servers.*;
 import cytoscape.data.readers.*;
+
+import cern.colt.list.IntArrayList;
 
 /**
  * Reader for graphs in the interactions file format. Given the filename,
@@ -60,11 +62,11 @@ public class InteractionsReader implements GraphReader {
    * A Vector that holds all of the Interactions
    */
   protected Vector allInteractions = new Vector ();
-  GraphObjAttributes edgeAttributes = new GraphObjAttributes ();
-  GraphObjAttributes nodeAttributes = new GraphObjAttributes ();
-  RootGraph rootGraph;
   BioDataServer dataServer;
   String species;
+
+  IntArrayList node_indices;
+  IntArrayList edges;
 
   //------------------------------
   /**
@@ -175,38 +177,45 @@ public class InteractionsReader implements GraphReader {
     Set nodeNameSet = new HashSet();
     int edgeCount = 0;
     for (int i=0; i<interactions.length; i++) {
-	Interaction interaction = interactions [i];
-      	String sourceName = interaction.getSource();
-	if(canonicalize) sourceName = canonicalizeName (sourceName);
-        nodeNameSet.add(sourceName); //does nothing if already there
+      Interaction interaction = interactions [i];
+      String sourceName = interaction.getSource();
+      if(canonicalize) sourceName = canonicalizeName (sourceName);
+      nodeNameSet.add(sourceName); //does nothing if already there
 
-        String [] targets = interaction.getTargets ();
-	for (int t=0; t < targets.length; t++) {
-	    String targetNodeName = targets[t];
-	    if(canonicalize) targetNodeName = canonicalizeName (targetNodeName);
-	    nodeNameSet.add(targetNodeName); //does nothing if already there
-            edgeCount++;
-        }
+      String [] targets = interaction.getTargets ();
+      for (int t=0; t < targets.length; t++) {
+        String targetNodeName = targets[t];
+        if(canonicalize) targetNodeName = canonicalizeName (targetNodeName);
+        nodeNameSet.add(targetNodeName); //does nothing if already there
+        edgeCount++;
+      }
     }
 
-    //now create the RootGraph, initialized with containers of appropriate size
-    rootGraph = GinyFactory.createRootGraph(nodeNameSet.size(), edgeCount);
+
+    Cytoscape.ensureCapacity( nodeNameSet.size(), edgeCount) ;
+    node_indices = new IntArrayList( nodeNameSet.size() );
+    edges = new IntArrayList( edgeCount );
+
     //now create all of the nodes, storing a hash from name to node
     Map nodes = new HashMap();
     for (Iterator si = nodeNameSet.iterator(); si.hasNext(); ) {
-        String nodeName = (String)si.next();
-        Node node = rootGraph.getNode(rootGraph.createNode());
+      String nodeName = (String)si.next();
+      
+      int node_i = Cytoscape.getRootGraph().createNode();
+      Node node = Cytoscape.getRootGraph().getNode( node_i);
+      node_indices.add( node_i );
+
 	    node.setIdentifier(nodeName);
-        nodes.put(nodeName, node);
-        nodeAttributes.addNameMapping(nodeName, node);
+      nodes.put(nodeName, node);
+      Cytoscape.getNodeNetworkData().addNameMapping(nodeName, node);
     }
 
     //---------------------------------------------------------------------------
     // now loop over the interactions again, this time creating edges between
     // all sources and each of their respective targets.
     // for each edge, save the source-target pair, and their interaction type,
-    // in edgeAttributes -- a hash of a hash of name-value pairs, like this:
-    //   edgeAttributes ["interaction"] = interactionHash
+    // in Cytoscape.getEdgeNetworkData() -- a hash of a hash of name-value pairs, like this:
+    //   Cytoscape.getEdgeNetworkData() ["interaction"] = interactionHash
     //   interactionHash [sourceNode::targetNode] = "pd"
     //---------------------------------------------------------------------------
 
@@ -220,42 +229,51 @@ public class InteractionsReader implements GraphReader {
       giny.model.Node sourceNode = (giny.model.Node) nodes.get (nodeName);
       String [] targets = interaction.getTargets ();
       for (int t=0; t < targets.length; t++) {
-	  if(canonicalize)
-	      targetNodeName = canonicalizeName (targets [t]);
-	  else
-	      targetNodeName = targets[t];
+        if(canonicalize)
+          targetNodeName = canonicalizeName (targets [t]);
+        else
+          targetNodeName = targets[t];
 
-	  Node targetNode = (Node) nodes.get (targetNodeName);
-	  Edge edge = rootGraph.getEdge(rootGraph.createEdge (sourceNode, targetNode));
-	  String edgeName = nodeName + " (" + interactionType + ") " + targetNodeName;
-	  int previousMatchingEntries = edgeAttributes.countIdentical(edgeName);
-	  if (previousMatchingEntries > 0)
-	      edgeName = edgeName + "_" + previousMatchingEntries;
-	  edgeAttributes.add ("interaction", edgeName, interactionType);
-	  edgeAttributes.addNameMapping (edgeName, edge);
+        Node targetNode = (Node) nodes.get (targetNodeName);
+        Edge edge = Cytoscape.getRootGraph().getEdge(Cytoscape.getRootGraph().createEdge (sourceNode, targetNode));
+        edges.add( edge.getRootGraphIndex() );
+        String edgeName = nodeName + " (" + interactionType + ") " + targetNodeName;
+        int previousMatchingEntries = Cytoscape.getEdgeNetworkData().countIdentical(edgeName);
+        if (previousMatchingEntries > 0)
+          edgeName = edgeName + "_" + previousMatchingEntries;
+        Cytoscape.getEdgeNetworkData().add ("interaction", edgeName, interactionType);
+        Cytoscape.getEdgeNetworkData().addNameMapping (edgeName, edge);
       } // for t
     } // for i
 
   } // createRootGraphFromInteractionData
-  //-------------------------------------------------------------------------------------------
-  public RootGraph getRootGraph ()
-  {
-    return rootGraph;
+ 
+  public RootGraph getRootGraph () {
+    return Cytoscape.getRootGraph();
 
   } // createGraph
-  //------------------------------------------------------------------------------------
-  public GraphObjAttributes getNodeAttributes ()
-  {
-    return nodeAttributes;
+ 
+  public GraphObjAttributes getNodeAttributes () {
+    return Cytoscape.getNodeNetworkData();
 
   } // getNodeAttributes
-  //------------------------------------------------------------------------------------
-  public GraphObjAttributes getEdgeAttributes ()
-  {
-    return edgeAttributes;
+
+  public GraphObjAttributes getEdgeAttributes () {
+    return Cytoscape.getEdgeNetworkData();
 
   } // getEdgeAttributes
-  //------------------------------------------------------------------------------------
+
+  public int[] getNodeIndicesArray () {
+    node_indices.trimToSize();
+    return node_indices.elements();
+  }
+  
+  public int[] getEdgeIndicesArray () {
+    edges.trimToSize();
+    return edges.elements();
+  }
+  
+
 } // InteractionsReader
 
 

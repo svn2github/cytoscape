@@ -12,7 +12,7 @@ import cytoscape.dialogs.MiscGB;
 import cytoscape.dialogs.GridBagGroup;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.mappings.MappingFactory;
-import cytoscape.data.CyNetwork;
+import cytoscape.CyNetwork;
 import cytoscape.visual.parsers.ValueParser;
 //------------------------------------------------------------------------------
 /**

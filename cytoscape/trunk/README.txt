@@ -1,6 +1,9 @@
 Welcome  to the New Cytoscape Build Process
 --------------------------------------------
 
+Alpha Tag:
+cytocvs tag Cytoscape2_alpha_2004_4_29
+
 I.  Doing a Clean Checkout
 ==========================
 

@@ -38,11 +38,11 @@ import java.util.*;
 
 import giny.model.*;
 import giny.view.*;
-import cytoscape.data.CyNetwork;
+import cytoscape.*;
 import cytoscape.util.GinyFactory;
 
 import cytoscape.data.GraphObjAttributes;
-
+import cern.colt.list.IntArrayList;
 // add text here
 
 //-------------------------------------------------------------------------------------
@@ -52,12 +52,11 @@ import cytoscape.data.GraphObjAttributes;
  */
 public class GMLReader implements GraphReader {
   private String filename;
-  GraphObjAttributes edgeAttributes;// = new GraphObjAttributes ();
-  GraphObjAttributes nodeAttributes;// = new GraphObjAttributes ();
-  //GraphObjAttributes gmlGraphicsAtt = new GraphObjAttributes ();
-
-  RootGraph rootGraph;
+ 
   GMLTree gmlTree;
+
+  IntArrayList nodes;
+  int[] edge_indices_array;
 
   /**
    * @param filename The GML file to be read in
@@ -82,11 +81,9 @@ public class GMLReader implements GraphReader {
   public void read () {
     //move this to later when we know how many nodes
     //edges we are going to add
-    //rootGraph = GinyFactory.createRootGraph();
+    //Cytoscape.getRootGraph() = GinyFactory.createRootGraph();
     // create and read the GML file
     gmlTree = new GMLTree(filename);
-    nodeAttributes = new GraphObjAttributes();
-    edgeAttributes = new GraphObjAttributes();
     //    gmlGraphicsAtt = new GraphObjAttributes();
     Vector nodeIds = gmlTree.getVector("graph|node|id","|",GMLTree.INTEGER);
     Vector nodeLabels = gmlTree.getVector("graph|node|label","|",GMLTree.STRING);
@@ -104,7 +101,9 @@ public class GMLReader implements GraphReader {
     //Use the number of ids to get the number of nodes in hte graph
     //Use the number of source ids to get the number of edges in hte graph
     //(since every edge must have some source node)
-    rootGraph = GinyFactory.createRootGraph(nodeIds.size(),edgeSources.size());
+    Cytoscape.ensureCapacity( nodeIds.size(), edgeSources.size() );
+    nodes = new IntArrayList( nodeIds.size() );
+   
     //---------------------------------------------------------------------------
     // set a default edge type if it's not defined in the GML file
     // need a better system for defining the default...
@@ -117,27 +116,31 @@ public class GMLReader implements GraphReader {
        
     //---------------------------------------------------------------------------
     // loop through all of the nodes (using a hash to avoid duplicates)
-    // adding nodes to the rootGraph. 
-    // Create the nodeName mapping in nodeAttributes
+    // adding nodes to the Cytoscape.getRootGraph(). 
+    // Create the nodeName mapping in Cytoscape.getNodeNetworkData()
     //---------------------------------------------------------------------------
     //Hashtable nodeHash = new Hashtable ();
     Hashtable gmlId2GINYId = new Hashtable();
     String nodeName, interactionType;
-    rootGraph.createNodes(nodeIds.size());
+    Cytoscape.getRootGraph().createNodes(nodeIds.size());
   
+    //System.out.println( "GML: "+nodeIds.size()+" nodes created"+ " RG: "+Cytoscape.getRootGraph().nodesList().size() );
+    
+
     //for(int i=0; i<nodeIds.size(); i++) {
-    for (Iterator nodeIt = rootGraph.nodesIterator(),idIt = nodeIds.iterator();nodeIt.hasNext();) {
+    for (Iterator nodeIt = Cytoscape.getRootGraph().nodesIterator(),idIt = nodeIds.iterator();nodeIt.hasNext();) {
       //nodeName = (String) nodeNameMap.get(nodeIds.get(i));
       Integer gmlId = (Integer)idIt.next();
       nodeName = (String)nodeNameMap.get(gmlId);
       //if(canonicalize) nodeName = canonicalizeName(nodeName);	      
       //if (!nodeHash.containsKey(nodeName)) {
-      //Node node = rootGraph.getNode(rootGraph.createNode());
+      //Node node = Cytoscape.getRootGraph().getNode(Cytoscape.getRootGraph().createNode());
       Node node = (Node)nodeIt.next();
+      nodes.add( node.getRootGraphIndex() );
       node.setIdentifier(nodeName);
       //nodeHash.put(nodeName, node);
       gmlId2GINYId.put(gmlId,new Integer(node.getRootGraphIndex()));
-      nodeAttributes.addNameMapping(nodeName, node);
+      Cytoscape.getNodeNetworkData().addNameMapping(nodeName, node);
 	//}
     }
 
@@ -161,8 +164,8 @@ public class GMLReader implements GraphReader {
     // loop over the interactions creating edges between all sources and their 
     // respective targets.
     // for each edge, save the source-target pair, and their interaction type,
-    // in edgeAttributes -- a hash of a hash of name-value pairs, like this:
-    // ???  edgeAttributes ["interaction"] = interactionHash
+    // in Cytoscape.getEdgeNetworkData() -- a hash of a hash of name-value pairs, like this:
+    // ???  Cytoscape.getEdgeNetworkData() ["interaction"] = interactionHash
     // ???  interactionHash [sourceNode::targetNode] = "pd"
     //---------------------------------------------------------------------------
     
@@ -176,8 +179,8 @@ public class GMLReader implements GraphReader {
       //Node targetNode = (Node) nodeHash.get(targetName);
       sources[i] = ((Integer)gmlId2GINYId.get(edgeSources.get(i))).intValue();
       targets[i] = ((Integer)gmlId2GINYId.get(edgeTargets.get(i))).intValue();
-      //Edge edge = rootGraph.getEdge(rootGraph.createEdge(sourceNode, targetNode));
-      //int edge = rootGraph.createEdge(sourceID,targetID);
+      //Edge edge = Cytoscape.getRootGraph().getEdge(Cytoscape.getRootGraph().createEdge(sourceNode, targetNode));
+      //int edge = Cytoscape.getRootGraph().createEdge(sourceID,targetID);
       
       //determine the name for the edge
       //sourceName = (String) nodeNameMap.get(edgeSources.get(i));
@@ -186,22 +189,22 @@ public class GMLReader implements GraphReader {
       //edgeName = sourceName + " (" + interactionType + ") " + targetName;
       
  
-      //int previousMatchingEntries = edgeAttributes.countIdentical(edgeName);
+      //int previousMatchingEntries = Cytoscape.getEdgeNetworkData().countIdentical(edgeName);
       //if (previousMatchingEntries > 0)
       //edgeName = edgeName + "_" + previousMatchingEntries;
-      //edgeAttributes.add("interaction", edgeName, interactionType);
-      //edgeAttributes.addNameMapping(edgeName, edge);
+      //Cytoscape.getEdgeNetworkData().add("interaction", edgeName, interactionType);
+      //Cytoscape.getEdgeNetworkData().addNameMapping(edgeName, edge);
     }
-    rootGraph.createEdges(sources,targets,false);
-    for ( Iterator edgeIt = rootGraph.edgesList().iterator(),sourceIt = edgeSources.iterator(),targetIt = edgeTargets.iterator(),labelIt = edgeLabels.iterator();edgeIt.hasNext();) {
+    edge_indices_array = Cytoscape.getRootGraph().createEdges(sources,targets,false);
+    for ( Iterator edgeIt = Cytoscape.getRootGraph().edgesList().iterator(),sourceIt = edgeSources.iterator(),targetIt = edgeTargets.iterator(),labelIt = edgeLabels.iterator();edgeIt.hasNext();) {
       interactionType = (String)labelIt.next();
       String edgeName = ""+nodeNameMap.get(sourceIt.next())+" ("+interactionType+") "+nodeNameMap.get(targetIt.next());
-      int previousMatchingEntries = edgeAttributes.countIdentical(edgeName);
+      int previousMatchingEntries = Cytoscape.getEdgeNetworkData().countIdentical(edgeName);
       if (previousMatchingEntries > 0){
 	edgeName = edgeName + "_" + previousMatchingEntries;
       }
-      edgeAttributes.add("interaction", edgeName, interactionType);
-      edgeAttributes.addNameMapping(edgeName, edgeIt.next());
+      Cytoscape.getEdgeNetworkData().add("interaction", edgeName, interactionType);
+      Cytoscape.getEdgeNetworkData().addNameMapping(edgeName, edgeIt.next());
     } // end of for ()
     
   } // read
@@ -210,21 +213,21 @@ public class GMLReader implements GraphReader {
    * @return null, there is no GML reader available outside of Y-Files right now
    */
   public RootGraph getRootGraph () {
-    return rootGraph;
+    return Cytoscape.getRootGraph();
   }
 
   /**
    * @return the node attributes that were read in from the GML file.
    */
   public GraphObjAttributes getNodeAttributes () {
-    return nodeAttributes;
+    return Cytoscape.getNodeNetworkData();
   }
 
   /**
    * @return the edge attributes that were read in from the GML file.
    */
   public GraphObjAttributes getEdgeAttributes () {
-    return edgeAttributes;
+    return Cytoscape.getEdgeNetworkData();
   }
   /**
    * @return the gmlGraphics attributes that were read in from the GML file.
@@ -257,12 +260,12 @@ public class GMLReader implements GraphReader {
 	    (nodeY.size() == myView.getRootGraph().getNodeCount()) ) {
 	      
 	  //Iterator it = nodeLabels.iterator();
-	  //GraphObjAttributes nodeAttributes = myNetwork.getNodeAttributes();
+	  //GraphObjAttributes Cytoscape.getNodeNetworkData() = myNetwork.getNodeAttributes();
 	  //for(int i=0;i<nodeLabels.size();i++){
 	  String ELLIPSE = "ellipse";
 	  String RECTANGLE = "rectangle";
 	  int i=0;
-	  for (Iterator nodeIt = rootGraph.nodesIterator();nodeIt.hasNext();i++) {
+	  for (Iterator nodeIt = Cytoscape.getRootGraph().nodesIterator();nodeIt.hasNext();i++) {
 	    Node current = (Node)nodeIt.next();
 	    String nodeName = (String)nodeLabels.get(i);
 	    if ( !current.getIdentifier().equals(nodeName)) {
@@ -271,7 +274,7 @@ public class GMLReader implements GraphReader {
 	    Number X = (Number) nodeX.get(i);
 	    Number Y = (Number) nodeY.get(i);
 	    //get the node associated with that node label
-	    //Node current = (Node)nodeAttributes.getGraphObject(nodeName);
+	    //Node current = (Node)Cytoscape.getNodeNetworkData().getGraphObject(nodeName);
 	    NodeView currentView = myView.getNodeView(current);
 	    currentView.setXPosition(X.doubleValue());
 	    currentView.setYPosition(Y.doubleValue());
@@ -288,6 +291,19 @@ public class GMLReader implements GraphReader {
 	}
       }
   }
+
+
+  public int[] getNodeIndicesArray() {
+    nodes.trimToSize();
+    //System.out.println( "GML: nodes array size: "+nodes.size() );
+    return nodes.elements();
+  }
+
+  public int[] getEdgeIndicesArray() {
+    //System.out.println( "GML: edges array size: "+edge_indices_array.length );
+    return edge_indices_array;
+  }
+
 }
 
 

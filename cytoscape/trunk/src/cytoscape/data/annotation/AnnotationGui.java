@@ -52,7 +52,7 @@ import cytoscape.data.annotation.*;
 import cytoscape.data.servers.*;
 import cytoscape.layout.*;
 import cytoscape.data.GraphObjAttributes;
-import cytoscape.data.CyNetwork;
+import cytoscape.CyNetwork;
 import cytoscape.data.Semantics;
 import cytoscape.view.CyWindow;
 //----------------------------------------------------------------------------------------

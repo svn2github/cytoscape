@@ -35,6 +35,7 @@ import java.util.*;
 
 import giny.model.Edge;
 
+import cytoscape.*;
 import cytoscape.CytoscapeObj;
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.servers.BioDataServer;
@@ -65,7 +66,7 @@ public class Semantics {
  * it may be desirable to check the configuration to see what to do, or put
  * up a UI to prompt the user for what services they would like.
  */
-public static void applyNamingServices(CyNetwork network, CytoscapeObj cytoscapeObj) {
+public static void applyNamingServices(  cytoscape.CyNetwork network, CytoscapeObj cytoscapeObj) {
     assignSpecies(network, cytoscapeObj);
     assignCommonNames(network, cytoscapeObj.getBioDataServer());
 }
@@ -82,15 +83,15 @@ public static void applyNamingServices(CyNetwork network, CytoscapeObj cytoscape
  
  * This method does nothing at all if either argument is null.
  */
-public static void assignSpecies(CyNetwork network, CytoscapeObj cytoscapeObj) {
+public static void assignSpecies( cytoscape.CyNetwork network, CytoscapeObj cytoscapeObj) {
     if (network == null || cytoscapeObj == null) {return;}
     
     String defaultSpecies = getDefaultSpecies(network, cytoscapeObj);
     if (defaultSpecies == null) {return;} //we have no value to set
     
     String callerID = "Semantics.assignSpecies";
-    network.beginActivity(callerID);
-    GraphObjAttributes nodeAttributes = network.getNodeAttributes();
+    //    network.beginActivity(callerID);
+    GraphObjAttributes nodeAttributes = Cytoscape.getNodeNetworkData();
     String[] canonicalNames = nodeAttributes.getObjectNames(CANONICAL_NAME);
     for (int i=0; i<canonicalNames.length; i++) {
         String canonicalName = canonicalNames[i];
@@ -99,7 +100,7 @@ public static void assignSpecies(CyNetwork network, CytoscapeObj cytoscapeObj) {
             nodeAttributes.set(SPECIES, canonicalName, defaultSpecies);
         }
     }
-    network.endActivity(callerID);
+    // network.endActivity(callerID);
 }
 //-------------------------------------------------------------------------
 /**
@@ -113,7 +114,7 @@ public static void assignSpecies(CyNetwork network, CytoscapeObj cytoscapeObj) {
  * The first non-null value found is returned; otherwise, null is returned
  * indicating that no value could be found.
  */
-public static String getDefaultSpecies(CyNetwork network, CytoscapeObj cytoscapeObj) {
+public static String getDefaultSpecies( cytoscape.CyNetwork network, CytoscapeObj cytoscapeObj) {
     String defaultSpecies = cytoscapeObj.getConfiguration().getDefaultSpeciesName();
     if (defaultSpecies == null) {
         defaultSpecies =
@@ -126,10 +127,10 @@ public static String getDefaultSpecies(CyNetwork network, CytoscapeObj cytoscape
  * species attribute in the node attributes of the supplied network and returns
  * a Set containing every unique value found.
  */
-public static Set getSpeciesInNetwork(CyNetwork network) {
+public static Set getSpeciesInNetwork( cytoscape.CyNetwork network) {
     Set returnSet = new HashSet();
     if (network == null) {return returnSet;}
-    GraphObjAttributes nodeAttributes = network.getNodeAttributes();
+    GraphObjAttributes nodeAttributes = Cytoscape.getNodeNetworkData();
     if (nodeAttributes == null) {return returnSet;}
     //in the following map, keys are objects names and values are the species
     Map speciesAttribute = nodeAttributes.getAttribute(SPECIES);
@@ -155,12 +156,12 @@ public static Set getSpeciesInNetwork(CyNetwork network) {
  * canonical name, this method does nothing if no synonyms for that name
  * can be provided by the bioDataServer.
  */
-public static void assignCommonNames(CyNetwork network, BioDataServer bioDataServer) {
+public static void assignCommonNames( cytoscape.CyNetwork network, BioDataServer bioDataServer) {
     if (network == null || bioDataServer == null) {return;}
     
     String callerID = "Semantics.assignCommonNames";
-    network.beginActivity(callerID);
-    GraphObjAttributes nodeAttributes = network.getNodeAttributes();
+    //network.beginActivity(callerID);
+    GraphObjAttributes nodeAttributes = Cytoscape.getNodeNetworkData();
     String[] canonicalNames = nodeAttributes.getObjectNames(CANONICAL_NAME);
     for (int i=0; i<canonicalNames.length; i++) {
         String canonicalName = canonicalNames[i];
@@ -173,7 +174,7 @@ public static void assignCommonNames(CyNetwork network, BioDataServer bioDataSer
             nodeAttributes.set(COMMON_NAME, canonicalName, synonyms[0]);
         }
     }
-    network.endActivity(callerID);
+    //network.endActivity(callerID);
 }
 //-------------------------------------------------------------------------
 /**
@@ -192,9 +193,9 @@ public static boolean getCanonicalize(CytoscapeObj cytoscapeObj) {
  *
  * If the argument is null, returns an array of length 0.
  */
-public static String[] getInteractionTypes(CyNetwork network) {
+public static String[] getInteractionTypes( cytoscape.CyNetwork network) {
     if (network == null) {return new String[0];}
-    return network.getEdgeAttributes().getUniqueStringValues(Semantics.INTERACTION);
+    return Cytoscape.getEdgeNetworkData().getUniqueStringValues(Semantics.INTERACTION);
 }
 //-------------------------------------------------------------------------
 /**
@@ -203,12 +204,12 @@ public static String[] getInteractionTypes(CyNetwork network) {
  *
  * If either argument is null, returns null.
  */
-public static String getInteractionType(CyNetwork network, Edge e) {
+public static String getInteractionType( cytoscape.CyNetwork network, Edge e) {
     if (network == null || e == null) {
         return null;
     }
-    String canonicalName = network.getEdgeAttributes().getCanonicalName(e);
-    return network.getEdgeAttributes().getStringValue(Semantics.INTERACTION, canonicalName);
+    String canonicalName = Cytoscape.getEdgeNetworkData().getCanonicalName(e);
+    return Cytoscape.getEdgeNetworkData().getStringValue(Semantics.INTERACTION, canonicalName);
 }
 //-------------------------------------------------------------------------
 /**
@@ -228,7 +229,7 @@ public static String getInteractionType(CyNetwork network, Edge e) {
  * tests that can be done to find synonyms.
  */
 public static boolean areSynonyms(String firstName, String secondName,
-                                  CyNetwork network, CytoscapeObj cytoscapeObj) {
+                                   cytoscape.CyNetwork network, CytoscapeObj cytoscapeObj) {
     if (firstName == null || secondName == null) {
         return (firstName == null && secondName == null);
     }
@@ -263,7 +264,7 @@ public static boolean areSynonyms(String firstName, String secondName,
  * If a species can be determined, then use the BioDataServer to add all the
  * synonyms that are registered for the name argument.
  */
-public static List getAllSynonyms(String name, CyNetwork network,
+public static List getAllSynonyms(String name,  cytoscape.CyNetwork network,
                                   CytoscapeObj cytoscapeObj) {
     List returnList = new ArrayList();
     if (name == null) {return returnList;}
@@ -271,11 +272,9 @@ public static List getAllSynonyms(String name, CyNetwork network,
     String species = null;
     if (network != null) {
         String callerID = "Semantics.getAllSynonyms";
-        network.beginActivity(callerID);
-        String commonName = network.getNodeAttributes().getStringValue(COMMON_NAME, name);
+        String commonName = Cytoscape.getNodeNetworkData().getStringValue(COMMON_NAME, name);
         if (commonName != null) {returnList.add(commonName);}
-        species = network.getNodeAttributes().getStringValue(SPECIES, name);
-        network.endActivity(callerID);
+        species = Cytoscape.getNodeNetworkData().getStringValue(SPECIES, name);
     }
     if (cytoscapeObj != null && cytoscapeObj.getBioDataServer() != null) {
         BioDataServer bioDataServer = cytoscapeObj.getBioDataServer();
