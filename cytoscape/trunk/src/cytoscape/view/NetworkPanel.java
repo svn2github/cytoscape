@@ -45,6 +45,7 @@ public class NetworkPanel
   JMenuItem createViewItem;
   JMenuItem destroyViewItem;
   JMenuItem destroyNetworkItem;
+  JSplitPane split;
 
   private CytoscapeDesktop cytoscapeDesktop;
 
@@ -79,7 +80,7 @@ public class NetworkPanel
     navigatorPanel.setPreferredSize( new Dimension( 180, 180 ) );
 
     JScrollPane scroll = new JScrollPane( treeTable );
-    JSplitPane split = new JSplitPane( JSplitPane.VERTICAL_SPLIT, scroll, navigatorPanel );
+    split = new JSplitPane( JSplitPane.VERTICAL_SPLIT, scroll, navigatorPanel );
     split.setResizeWeight(1);
     add( split );
 
@@ -104,6 +105,11 @@ public class NetworkPanel
     
     
 
+  }
+
+  public void setNavigator ( JComponent comp ) {
+    split.setRightComponent( comp );
+    split.validate();
   }
 
   public JPanel getNavigatorPanel () {

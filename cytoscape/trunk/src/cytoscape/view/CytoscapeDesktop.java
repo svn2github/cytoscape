@@ -309,27 +309,27 @@ public class CytoscapeDesktop
 
 
   /**
-   * @deprecated
-   * Returns a reference to the global Cytoscape object.
+   * Returns a reference to the global Cytoscape object. Now available statically using:
    * {@link cytoscape.Cytoscape#getCytoscapeObj} 
+   * @deprecated
    */
   public CytoscapeObj getCytoscapeObj () {
     return Cytoscape.getCytoscapeObj();
   }
-
+  
   /**
+   * This will return the network currently under focus. however use this:
+   * {@link cytoscape.Cytoscape#getCurrentNetwork}
    * @deprecated
-   * returns the network displayed in this window.
-   * { @link cytoscape.Cytoscape#getCurrentNetwork}
    */
   public CyNetwork getNetwork () {
     return Cytoscape.getCurrentNetwork();
   }
  
   /**
-   * @deprecated
    * Returns the UI component that renders the displayed graph.
    * {@link cytoscape.Cytoscape#getCurrentNetworkView}
+   * @deprecated
    */
   public GraphView getView () {
     return ( GraphView )Cytoscape.getCurrentNetworkView();
@@ -337,8 +337,9 @@ public class CytoscapeDesktop
 
  
   /**
+   * This will actually return an instance of <I>this</I> class..
+  * {@link cytoscape.Cytoscape#getDesktop}
    * @deprecated
-   * {@link cytoscape.Cytoscape#getDesktop}
    */
   public JFrame getMainFrame () {
     return ( JFrame )this;
@@ -363,6 +364,7 @@ public class CytoscapeDesktop
 
 
   /**
+   * This doesn't apply anymore as the title will never change.
    * @deprecated
    */
   public String getWindowTitle () {
@@ -370,35 +372,36 @@ public class CytoscapeDesktop
   }
 
   /**
+   * {@link CyNetworkView#setTitle( String )}
    * @deprecated
-   * { @link CyNetworkView#setTitle( String ) }
    */
   public void setWindowTitle ( String newTitle ) {
   }
 
   /**
+   * no longer used
    * @deprecated
    */
   public void setInteractivity ( boolean newState ) {}
 
 
   /**
-   * @deprecated
    * {@link CyNetworkView#redrawGraph( boolean, boolean ) }
    * Redraws the graph - equivalent to redrawGraph(false, true).
    * That is, no new layout will be performed, but the visual
    * appearances will be reapplied.
-   */
+   * @deprecated
+  */
   public void redrawGraph() {
     Cytoscape.getCurrentNetworkView().redrawGraph( false, true );
   }
 
   /**
-   * @deprecated
    * {@link CyNetworkView#redrawGraph( boolean, boolean ) }
    * Redraws the graph - equivalent to redrawGraph(doLayout, true).
    * That is, the visual appearances will be reapplied, and layout
    * will be done iff the argument is true.
+   * @deprecated
    */
   public void redrawGraph(boolean doLayout) {
     // apply appearances by default
@@ -406,29 +409,32 @@ public class CytoscapeDesktop
   }
 
   /**
-   * @deprecated
    * {@link CyNetworkView#redrawGraph( boolean, boolean ) }  
    * Redraws the graph. A new layout will be performed if the first
    * argument is true, and the visual appearances will be recalculated
    * and reapplied by the visual mapper if the second argument is true
    * and the visual mapper is not disabled.
+   * @deprecated
    */
   public void redrawGraph(boolean doLayout, boolean applyAppearances) {
     Cytoscape.getCurrentNetworkView().redrawGraph( doLayout, applyAppearances );
   }
 
   /**
+   * not used
    * @deprecated
    */
   public void showWindow ( int width, int height) {
   }
 
   /**
+   * not used
    * @deprecated
    */
   public void showWindow() {}
 
   /**
+   * not used
    * @deprecated
    */
   public void applyLayout ( GraphView lview ) {
@@ -436,6 +442,7 @@ public class CytoscapeDesktop
   }
 
   /**
+   * not used
    * @deprecated
    */
   public void applySelLayout() {
@@ -447,6 +454,7 @@ public class CytoscapeDesktop
   }
 
   /**
+   * not used
    * @deprecated
    */
   public void applyVizmapSettings() {
@@ -454,6 +462,7 @@ public class CytoscapeDesktop
   }
 
   /**
+   * not used
    * @deprecated
    */
   public void setVisualMapperEnabled(boolean newState) {
@@ -461,6 +470,7 @@ public class CytoscapeDesktop
   }
 
   /**
+   * not used
    * @deprecated
    */
   public void toggleVisualMapperEnabled() {
@@ -468,19 +478,21 @@ public class CytoscapeDesktop
   }
 
   /**
+   * not used
    * @deprecated
    */
   public void switchToReadOnlyMode () {
   }
  
   /**
+   * not used
    * @deprecated
    */
   public void switchToEditMode (){
   }
 
 
-   /**
+  /**
    * Load in the Plugins
    */
   public void setupPlugins () {

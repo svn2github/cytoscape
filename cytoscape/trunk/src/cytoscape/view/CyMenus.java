@@ -41,7 +41,6 @@ import javax.swing.event.MenuEvent;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeObj;
 import cytoscape.CyNetwork;
-import cytoscape.SplashScreen;
 import cytoscape.view.CyNetworkView;
 
 import cytoscape.plugin.AbstractPlugin;

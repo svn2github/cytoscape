@@ -6,6 +6,12 @@ import cytoscape.layout.*;
 import java.util.*;
 import cytoscape.visual.*;
 
+/**
+ * CyNetworkView is responsible for actually getting a graph to show up on the screen.<BR>
+ *<BR>
+ * Cytoscape does not currently define specific classes for NodeViews and EdgeViews, the deafults from the GINY graph library ( namely phoebe.PNodeView and phoebe.PEdgeView ) are most commonly used. Making custom nodes is easy and fun.  One must implement the giny.view.NodeView interface and inherit from edu.umd.cs.piccolo.PNode.  The Piccolo project is what all of the paiting is based on, and is very fast, flexable and powerful.  Becoming acquainted with Piccolo is essential for build custom nodes.<BR><BR>
+Fortunately, if you just want basic shapes and colors, it's all built into the UI already, and you really need never even use this class.  Just learn how to use the VizMapper to acclompish your data to view mappings. The manual is a good place to start.
+ */
 public interface CyNetworkView extends GraphView {
 
  

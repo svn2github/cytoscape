@@ -24,14 +24,11 @@ public class BirdsEyeViewAction
     PropertyChangeListener {
 
   BirdsEyeView bev;
-  
+  boolean on = false;
 
   public BirdsEyeViewAction () {
-    super("Overview");
+    super("Toggle Overview");
     setPreferredMenu( "Visualization" );
-    
-   
-
   }
 
   public void propertyChange ( PropertyChangeEvent e ) {
@@ -60,35 +57,25 @@ public class BirdsEyeViewAction
 
   public void actionPerformed (ActionEvent e) {
 
-
-    bev = new BirdsEyeView();
-    bev.connect(  ( ( PhoebeNetworkView )Cytoscape.getCurrentNetworkView() ).getCanvas(), new PLayer[] { ( ( PhoebeNetworkView )Cytoscape.getCurrentNetworkView() ).getCanvas().getLayer() } );
+    if ( !on ) {
+      bev = new BirdsEyeView();
+      bev.connect(  ( ( PhoebeNetworkView )Cytoscape.getCurrentNetworkView() ).getCanvas(), new PLayer[] { ( ( PhoebeNetworkView )Cytoscape.getCurrentNetworkView() ).getCanvas().getLayer() } );
       
-    //bev.setMinimumSize( new Dimension( 180, 180 ) );
-    //bev.setMaximumSize( new Dimension( 180, 180 ) );
-    //bev.setPreferredSize( new Dimension( 180, 180 ) );
-    bev.setSize( Cytoscape.getDesktop().getNetworkPanel().getNavigatorPanel().getSize( null ) );
-    Cytoscape.getDesktop().getNetworkPanel().getNavigatorPanel().add( bev );
-    //Cytoscape.getDesktop().getNetworkPanel().getNavigatorPanel().add( new JLabel( "Birds Eye View " ) ); 
-    Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener( this );
-    bev.updateFromViewed();
-	
-  //   JFrame dialog = new JFrame("Navigator");
-//     final PGraphView pview = (PGraphView)Cytoscape.getCurrentNetworkView();
-    
-//      dialog.getContentPane().add( pview.getBirdsEyeView() );
-    
-//      dialog.addWindowListener(new WindowAdapter() {
-//          public void windowClosing(WindowEvent we) {
-           
-//           ( (phoebe.event.BirdsEyeView)pview.getBirdsEyeView() ).disconnect();
-//          }
-//        });
-     
-//      dialog.pack();
-//      dialog.setSize(new Dimension ( 200, 200));
-//      dialog.setVisible( true );
-     
+      bev.setMinimumSize( new Dimension( 180, 180 ) );
+      bev.setSize( new Dimension( 180, 180 ) );
+      Cytoscape.getDesktop().getNetworkPanel().setNavigator( bev );
+      Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener( this );
+      bev.updateFromViewed();
+      on = true;
+    } else {
+      if ( bev != null ) {
+        bev.disconnect();
+        bev = null;
+      }
+      Cytoscape.getDesktop().getNetworkPanel().setNavigator(  Cytoscape.getDesktop().getNetworkPanel().getNavigatorPanel() );
+      Cytoscape.getDesktop().getSwingPropertyChangeSupport().removePropertyChangeListener( this );
+      on = false;
+    }
   }
 
 }

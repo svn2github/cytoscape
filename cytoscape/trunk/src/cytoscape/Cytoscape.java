@@ -189,6 +189,22 @@ public abstract class Cytoscape {
     edgeData = new GraphObjAttributes();
 
   }
+  
+  /**
+   * @return all CyNodes that are present in Cytoscape
+   */
+  public static List getCyNodesList () {
+    return getRootGraph().nodesList();
+  }
+
+  /**
+   * @return all CyEdges that are present in Cytoscape
+   */
+  public static List getCyEdgesList () {
+    return getRootGraph().edgesList();
+  }
+
+
 
   public static CyNode getCyNode ( String alias ) {
     return getCyNode( alias, false );

@@ -28,7 +28,7 @@ abstract public class AbstractLayout
   protected Set staticNodes;
   protected CyNetworkView networkView;
   protected GraphPerspective network;
-  protected Dimension currentSize;
+  protected Dimension currentSize = new Dimension( 20, 20 );
 
   // monitoring
   protected int lengthOfTask;
