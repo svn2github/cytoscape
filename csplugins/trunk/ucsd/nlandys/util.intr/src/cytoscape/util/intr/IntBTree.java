@@ -283,7 +283,7 @@ public final class IntBTree
 //    * @param xStart specifies the beginning of the range of integers to
 //    *   delete from this structure.
 //    * @param spanSize specifies the range width of integers to delete; all
-//    *   integers greater than or equal to xStart but less than xStart + spanSize
+//    *   integers greater than or equal to xStart but less thanxStart + spanSize
 //    *   will be deleted; spanSize cannot be negative
 //    *   (if spanSize is zero no action is taken).
 //    * @return the number of entries that were deleted from this structure.
@@ -332,30 +332,30 @@ public final class IntBTree
       return count; }
   }
 
-  /**
-   * Returns an enumeration of all entries in the range
-   * [xStart, xStart + spanSize) currently in this structure; the entries
-   * within the enumeration are returned in non-descending order.<p>
-   * IMPORTANT: The returned enumeration becomes invalid as soon as any
-   * structure-modifying operation (insert or delete) is performed on this
-   * tree.  Accessing an invalid enumeration's methods will result in
-   * unpredictable and ill-defined behavior in the enumeration, but will
-   * have no effect on the integrity of this tree structure.
-   * @param xStart specifies the beginning of the range of integers to
-   *   search.
-   * @param spanSize specifies the range width of integers to search;
-   *   all integers (duplicates included) greater than or equal to xStart
-   *   but less than xStart + spanSize will be returned; spanSize cannot be
-   *   negative (if spanSize is zero no action is taken).
-   * @return an enumeration of all entries matching this search query.
-   * @exception IllegalArgumentException if spanSize is negative.
-   */
-  public IntEnumerator searchRange(int xStart, int spanSize)
-  {
-    return null;
-  }
+//   /**
+//    * Returns an enumeration of all entries in the range
+//    * [xStart, xStart + spanSize) currently in this structure; the entries
+//    * within the enumeration are returned in non-descending order.<p>
+//    * IMPORTANT: The returned enumeration becomes invalid as soon as any
+//    * structure-modifying operation (insert or delete) is performed on this
+//    * tree.  Accessing an invalid enumeration's methods will result in
+//    * unpredictable and ill-defined behavior in the enumeration, but will
+//    * have no effect on the integrity of this tree structure.
+//    * @param xStart specifies the beginning of the range of integers to
+//    *   search.
+//    * @param spanSize specifies the range width of integers to search;
+//    *   all integers (duplicates included) greater than or equal to xStart
+//    *   but less than xStart + spanSize will be returned; spanSize cannot be
+//    *   negative (if spanSize is zero no action is taken).
+//    * @return an enumeration of all entries matching this search query.
+//    * @exception IllegalArgumentException if spanSize is negative.
+//    */
+//   public IntEnumerator searchRange(int xStart, int spanSize)
+//   {
+//     return null;
+//   }
 
-  public void debugPrint()
+  private  void debugPrint()
   {
     java.util.Vector v = new java.util.Vector();
     v.add(m_root);
