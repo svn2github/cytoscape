@@ -412,6 +412,20 @@
               todir="${release.dir}/plugins"/>
     </target>
 
+    <target name="release-extras" depends="release"
+            description="add extra plugins into release">
+        <echo>
+            ---------------------------------------
+            Copying over extra PlugIns.
+            ---------------------------------------
+        </echo>
+        <copy todir="${release.dir}/plugins">
+            <fileset dir="plugins/extras">
+                <include name="*.jar"/>
+            </fileset>
+        </copy>
+    </target>
+
     <!-- ======================================================= -->
     <!-- Create Cytoscape Distribution                           -->
     <!-- Final releases are made available in zip_release/ dir   -->
