@@ -17,25 +17,27 @@ its plugins, from source, at the ISB.
 
 <ol>
 
-  <li> <b> setup CVS</b><p>
+  <li> <b> setup CVS in one window</b><p>
      <ul>
-       <li> ssh isb@ideker2.wi.mit.edu -L 2401:localhost:2402  (see Paul for password)
-       <li> set the environment variable <b> CVSROOT</b> to this value: <p>
-           <code> :pserver:isb@localhost:/common/cvsdir2 <code><br>
+       <li> ssh isb@ideker2.wi.mit.edu -L 2401:localhost:2402  (see Paul for password)<br>
+           <i> (keep this window open &amp; stay logged in to ideker2 for the duration of your programming session)</i>
       </ul>    
-   <p><li> <b>do a CVS checkout </b><p>
+   <p><li> <b>do a CVS checkout -- in another window </b><p>
       <ul>
+       <li> set environment variable <b> CVSROOT</b> to this value: <p>
+           <code> :pserver:isb@localhost:/common/cvsdir2 </code><br>
        <li> <code> cd yourWorkingDirectoryOfChoice </code>
        <li> <code>  cvs login</code>  <i> (same password as above) </i>
        <li> <code> cvs co cytoscape</code>
        <li> <code> cvs co csplugins</code>
       </ul>
 
-  <p> <li> <b>Set up your environment.</b><p> At a minimum you will need:
+  <p> <li> <b>Set up your environment further.</b><p> At a minimum you will need:
 
      <ul>
-       <li> java 1.4 in your path
-       <br><li> a java CLASSPATH which includes
+       <li> to make sure that <b>CVSROOT</b> from the previous step is still valid
+       <li> <b>java 1.4</b> in your path
+       <br><li> a java <b>CLASSPATH</b> which includes
            <ol>
               <li> cytoscape/aux.jar
               <li> /net/compbio/src/distributions/yfiles1.4/yfiles/y.jar
@@ -43,7 +45,7 @@ its plugins, from source, at the ISB.
            </ol>
      </ul>
        <p> If you want to use the all-pairs-shortest-path calculations, in the <b>APSP</b> plugin,
-            add this your LD_LIBRARY_PATH:
+            add this your <b>LD_LIBRARY_PATH</b>:
            <ul>
              <li> /net/compbio/src/distributions/yfiles1.4/LEDAGraphAlgo-1.0.1/linux <br>
            </ul>
