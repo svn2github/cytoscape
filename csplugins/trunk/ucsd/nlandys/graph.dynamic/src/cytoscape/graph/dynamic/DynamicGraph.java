@@ -135,8 +135,8 @@ public interface DynamicGraph
    *   or null if specified node does not exist in this graph.
    * @exception IllegalArgumentException if node is not positive.
    */
-  public IntEnumerator _adjacentEdges(int node, boolean outgoing,
-                                      boolean incoming, boolean undirected);
+  public IntEnumerator adjacentEdges(int node, boolean outgoing,
+                                     boolean incoming, boolean undirected);
 
   /**
    * Determines the source node of an edge.
