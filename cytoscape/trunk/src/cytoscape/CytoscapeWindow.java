@@ -2918,6 +2918,8 @@ protected class LoadExpressionMatrixAction extends AbstractAction {
  *   {@link
  *   getWhetherToCopyExpToAttribs
  *   getWhetherToCopyExpToAttribs()}.
+ *
+ *   @see #getWhetherToCopyExpToAttribs
  */
 protected class ExpFileChooser extends JFileChooser {
     JCheckBox jcb;
