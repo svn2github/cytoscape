@@ -4,9 +4,7 @@
 
 package cytoscape.layout;
 
-import java.util.Iterator;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
 
 import cern.colt.matrix.DoubleMatrix1D;
 import cern.colt.matrix.impl.DenseDoubleMatrix1D;
@@ -17,7 +15,10 @@ import cytoscape.*;
 import cytoscape.view.*;
 import cytoscape.util.*;
 import giny.view.*;
+import giny.model.*;
+import giny.util.*;
 import javax.swing.JFrame;
+import java.awt.Dimension;
 
 public class ISOMLayout extends AbstractLayout {
 
@@ -50,21 +51,127 @@ public class ISOMLayout extends AbstractLayout {
 
   public ISOMLayout ( CyNetworkView view ) {
     super( view );
-    nodeIndexToDataMap = new OpenIntObjectHashMap( PrimeFinder.nextPrime( view.getNodeViewCount() ) );
+   
+  }
+
+   public  Object construct () {
+
+     CyNetwork parent = ( CyNetwork )network;
+     List partions = GraphPartition.partition( parent );
+     Iterator i = partions.iterator();
+
+    double last_x = 0;
+    double last_y = 0;
+    double sum_x = 0;
+    double sum_y = 0;
+
+    double _x = 0;
+    double _y = 0;
+    double incr = 20;
+    boolean ones = false;
+    
+    double small_x = Double.MAX_VALUE;
+
+    double node_count = ( double )parent.getNodeCount();
+    node_count = Math.sqrt( node_count );
+    // now we know how many nodes on a side
+    // give each node 100 room
+    node_count *= 100;
+    
+    lengthOfTask = partions.size();
+
+    double percent;
+    this.currentProgress++;
+    percent = (this.currentProgress * 100 )/this.lengthOfTask;
+    this.statMessage = "Completed " + percent + "%";
+    
+
+    while ( i.hasNext() ) {
+      
+
+
+
+      int[] nodes = ( int[] )i.next();
+      if ( nodes.length == 0 ) {
+        continue;
+      }
+      network = parent.createGraphPerspective( nodes, parent.getConnectingEdgeIndicesArray( nodes ) );
+      
+      if ( nodes.length != 1 ) {
+        prepare();
+        initialize();
+        do_it();
+        move( sum_x, sum_y );
+        sum_x += currentSize.getWidth();
+
+      } else {
+        if ( !ones ) {
+          ones = true;
+          incr = 20;
+          _x = 0;
+          _y = sum_y + incr;
+          if ( small_x == Double.MAX_VALUE )
+            small_x = 0;
+        }
+        if ( _x > node_count ) {
+          _y += incr;
+          _x = 0;;
+        } else {
+          _x += incr;
+        } 
+
+        move( _x, _y );
+
+      }
+
+      
+      this.currentProgress++;
+      percent = (this.currentProgress * 100 )/this.lengthOfTask;
+      this.statMessage = "Completed " + percent + "%";
+     
+
+      if ( currentSize.getHeight() > last_y ) {
+        //System.out.println( "new y is: "+currentSize.getHeight() );
+        last_y = currentSize.getHeight();
+
+      }
+     
+
+      if ( sum_x > node_count ) {
+        sum_x = 0;
+        sum_y+= last_y;
+        last_y = 0;
+      }
+
+      
+    }
+
+
+    Iterator nodes = networkView.getNodeViewsIterator();
+    while ( nodes.hasNext() ) {
+      ( ( NodeView )nodes.next() ).setNodePosition( true );
+    }
+    done = true;
+
+    return null;
+
+
+
+  }
+ 
+
+
+
+  public void prepare () {
+    nodeIndexToDataMap = new OpenIntObjectHashMap( PrimeFinder.nextPrime( network.getNodeCount() ) );
     queue = new Vector();
 		trace = false;
   }
 
-
-  public Object construct () {
+  public void do_it () {
     
-    System.out.println( "ISOM Being Constructed" );
-
-   
-    double percent;
-     this.currentProgress++;
-     percent = (this.currentProgress * 100 )/this.lengthOfTask;
-     this.statMessage = "Completed " + percent + "%";
+    
+    
 
      //System.out.println( statMessage );
 
@@ -72,19 +179,12 @@ public class ISOMLayout extends AbstractLayout {
       
       advancePositions();
       //System.out.println( getStatus() );
-      this.currentProgress++;
-      percent = (this.currentProgress * 100 )/this.lengthOfTask;
-      this.statMessage = "Completed " + percent + "%";
+    
       //System.out.println( statMessage );
 
     }
 
-    Iterator nodes = networkView.getNodeViewsIterator();
-    while ( nodes.hasNext() ) {
-      ( ( NodeView )nodes.next() ).setNodePosition( true );
-    }
-    done = true;
-    return null;
+   
   }
  
  //   public  void go ( boolean wait ) {
@@ -129,7 +229,7 @@ public class ISOMLayout extends AbstractLayout {
 		maxEpoch = 2000;
 		epoch = 1;
 
-    lengthOfTask = maxEpoch;
+    // lengthOfTask = maxEpoch;
 
 		radiusConstantTime = 100;
 		radius = 5;
@@ -145,10 +245,10 @@ public class ISOMLayout extends AbstractLayout {
 
   protected void initialize_local_node_view( NodeView v) {
 		ISOMVertexData vd = getISOMVertexData(v);
-		if (vd == null) {
+    if (vd == null) {
       vd = new ISOMVertexData();
-      nodeIndexToDataMap.put( v.getGraphPerspectiveIndex(), vd );
-		}
+      nodeIndexToDataMap.put( v.getRootGraphIndex(), vd );
+    }
 		vd.visited = false;
 	}
 
@@ -181,10 +281,10 @@ public class ISOMLayout extends AbstractLayout {
     //Get closest vertex to random position
     NodeView winner = getNodeView( globalX, globalY );
     
-		for (Iterator iter = networkView.getNodeViewsIterator();
+		for (Iterator iter = network.nodesIterator();
 			iter.hasNext();
 			) {
-			NodeView v = ( NodeView ) iter.next();
+			NodeView v = networkView.getNodeView( ( Node ) iter.next() );
 			ISOMVertexData ivd = getISOMVertexData(v);
 			ivd.distance = 0;
 			ivd.visited = false;
@@ -213,26 +313,37 @@ public class ISOMLayout extends AbstractLayout {
 			current = ( NodeView ) queue.remove(0);
 			ISOMVertexData currData = getISOMVertexData(current);
 			
-      int current_index = current.getGraphPerspectiveIndex();
+      int current_index = current.getRootGraphIndex();
+      
       double current_x = networkView.getNodeDoubleProperty( current_index, GraphView.NODE_X_POSITION );
       double current_y = networkView.getNodeDoubleProperty( current_index, GraphView.NODE_Y_POSITION );
       
 			double dx = globalX - current_x;
 			double dy = globalY - current_y;
+      
+      // possible mod
 			double factor = adaption / Math.pow(2, currData.distance);
 
       networkView.setNodeDoubleProperty( current_index, GraphView.NODE_X_POSITION, current_x + factor * dx );
       networkView.setNodeDoubleProperty( current_index, GraphView.NODE_Y_POSITION, current_y + factor * dy );
 
 			if (currData.distance < radius) {
-				int[] neighbors = networkView.getGraphPerspective().neighborsArray( current_index );
+				int[] neighbors = network.neighborsArray( current_index );
+       //  for ( int neighbor_index = 0; neighbor_index < neighbors.length; ++neighbor_index )
+//                 System.out.print( " "+neighbors[ neighbor_index ] );
+              
+
         for ( int neighbor_index = 0; neighbor_index < neighbors.length; ++neighbor_index ) {
-          NodeView child = networkView.getNodeView( neighbors[ neighbor_index ] );
+          
+          NodeView child = networkView.getNodeView( network.getRootGraphNodeIndex( neighbors[ neighbor_index ] ) );
+          
+          // System.out.println(   network.getRootGraphNodeIndex( neighbors[ neighbor_index ]) +"getting for: "+child.getRootGraphIndex() );
+          // System.out.println( "Network contains: "+network.getNode(  network.getRootGraphNodeIndex( neighbors[ neighbor_index ] ) ) );
           ISOMVertexData childData = getISOMVertexData(child);
 					if (!childData.visited) {
 						childData.visited = true;
 						childData.distance = currData.distance + 1;
-						queue.addElement(child);
+            queue.addElement(child);
 					}
 				}
 			}
@@ -240,7 +351,7 @@ public class ISOMLayout extends AbstractLayout {
 	}
 
 	public ISOMVertexData getISOMVertexData (  NodeView v ) {
-    return ( ISOMVertexData )nodeIndexToDataMap.get( v.getGraphPerspectiveIndex() );
+    return ( ISOMVertexData )nodeIndexToDataMap.get( v.getRootGraphIndex() );
   }
   
   public ISOMVertexData getISOMVertexData (  int v ) {

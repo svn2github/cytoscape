@@ -12,11 +12,10 @@ import cytoscape.view.CyNetworkView;
 import giny.view.GraphView;
 import giny.view.NodeView;
 import giny.view.EdgeView;
-
+import giny.model.*;
 import java.awt.Dimension;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
+
 
 /**
  * The AbstractLayout provides nice starting point for Layouts
@@ -28,7 +27,7 @@ abstract public class AbstractLayout
 
   protected Set staticNodes;
   protected CyNetworkView networkView;
-  protected CyNetwork network;
+  protected GraphPerspective network;
   protected Dimension currentSize;
 
   // monitoring
@@ -48,10 +47,7 @@ abstract public class AbstractLayout
   }
 
  
-
   public abstract Object construct ();
- 
-  
 
 
   //------------------------------//
@@ -132,7 +128,7 @@ abstract public class AbstractLayout
   }
         
   public void doLayout () {
-    initialize( );
+   
     
    
     currentProgress = 0;
@@ -173,7 +169,9 @@ abstract public class AbstractLayout
 	 */
   public void initialize () {
 
-    double node_count = ( double )networkView.getNodeViewCount();
+
+   
+    double node_count = ( double )network.getNodeCount();
     node_count = Math.sqrt( node_count );
     // now we know how many nodes on a side
     // give each node 100 room
@@ -211,9 +209,10 @@ abstract public class AbstractLayout
 	 * set by calling <tt>initializeLocation</tt>.
 	 */
   protected void initializeLocations() {
-    for (Iterator iter = networkView.getNodeViewsIterator(); iter.hasNext();) {
-      NodeView v = ( NodeView ) iter.next();
-      
+
+    
+    for (Iterator iter = network.nodesIterator(); iter.hasNext();) {
+      NodeView v = networkView.getNodeView( ( Node ) iter.next() );
       if ( !staticNodes.contains( v ) )
         initializeLocation( v, currentSize);
       initialize_local_node_view(v);
@@ -276,6 +275,18 @@ abstract public class AbstractLayout
     return currentSize;
   }
 
+
+  public void move ( double x, double y ) {
+
+    int[] nodes = network.getNodeIndicesArray();
+    for ( int i = 0; i < nodes.length; ++i ) {
+      networkView.setNodeDoubleProperty( nodes[i], GraphView.NODE_X_POSITION, x +  networkView.getNodeDoubleProperty( nodes[i], GraphView.NODE_X_POSITION ) );
+      networkView.setNodeDoubleProperty( nodes[i], GraphView.NODE_Y_POSITION, y +  networkView.getNodeDoubleProperty( nodes[i], GraphView.NODE_Y_POSITION ) );
+                                                                            
+    }
+
+  }
+
   /**
 	 * When a visualizetion is resized, it presumably
 	 * wants to fix the locations of the vertices
@@ -327,11 +338,11 @@ abstract public class AbstractLayout
   public NodeView getNodeView ( double x, double y ) {
     double minDistance = Double.MAX_VALUE;
     NodeView closest = null;
-    for ( Iterator iter = networkView.getNodeViewsIterator();
+    for ( Iterator iter = network.nodesIterator();
           iter.hasNext(); ) {
-      NodeView v = ( NodeView )iter.next();
-      double dx = networkView.getNodeDoubleProperty( v.getGraphPerspectiveIndex(), GraphView.NODE_X_POSITION ) - x;
-      double dy = networkView.getNodeDoubleProperty( v.getGraphPerspectiveIndex(), GraphView.NODE_Y_POSITION ) - y;
+      NodeView v = networkView.getNodeView( (Node)iter.next() );
+      double dx = networkView.getNodeDoubleProperty( v.getRootGraphIndex(), GraphView.NODE_X_POSITION ) - x;
+      double dy = networkView.getNodeDoubleProperty( v.getRootGraphIndex(), GraphView.NODE_Y_POSITION ) - y;
       double dist = dx * dx + dy * dy;
       if ( dist < minDistance ) {
         minDistance = dist;
