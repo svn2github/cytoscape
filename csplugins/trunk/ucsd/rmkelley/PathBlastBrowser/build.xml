@@ -78,7 +78,7 @@
         
 	<!--  Target to compile all Plug In Code -->
   	<target name="compile" depends="prepare, build_cytoscape" 
-		description="Compiles all PlugIn source code.">
+         description="Compiles all PlugIn source code.">
                 <javac listfiles="Yes" debug="Yes" srcdir="${src.dir}" destdir="${build.classes}">
 			<classpath refid="classpath"/>
 		</javac>
@@ -89,6 +89,7 @@
 	   <jar destfile="${build.dir}/${plugin.name}.jar">
 			<fileset dir="${build.classes}"/>
 		</jar>
+        <copy file="${build.dir}/${plugin.name}.jar" todir="../../../../cytoscape/plugins"/>
 		<echo message="${plugin.name}.jar is now complete.  It is located in build/ directory"/>
 	</target>
 

@@ -379,21 +379,22 @@ class ShowGMLThread extends Thread{
       if(cyNetwork == null){
 	GMLReader currentReader = (GMLReader)node2GMLReader.get(selectedNode);
 	cyNetwork = new CyNetwork(currentReader.getRootGraph(),currentReader.getNodeAttributes(),currentReader.getEdgeAttributes());
+	//copy over node attributes, but keep our name mapping	
+	//cyNetwork.getNodeAttributes().addClassMap(overlapWindow.getNetwork().getNodeAttributes().getClassMap());
+	//cyNetwork.getNodeAttributes().set(overlapWindow.getNetwork().getNodeAttributes());
 	node2CyNetwork.put(selectedNode,cyNetwork);
       }
+
+      Semantics.applyNamingServices(cyNetwork,overlapWindow.getCytoscapeObj());																	
       if(newWindow == null){
 	newWindow = new CyWindow(overlapWindow.getCytoscapeObj(),cyNetwork,"Split Graph");
 	newWindow.showWindow();
       }
       else{
-	newWindow.setNewNetwork(cyNetwork);
+	  newWindow.getNetwork().setNewGraphFrom(cyNetwork,false);
       }
       newWindow.getMainFrame().setVisible(false);
-      //copy over node attributes, but keep our name mapping	
-      cyNetwork.getNodeAttributes().addClassMap(overlapWindow.getNetwork().getNodeAttributes().getClassMap());
-      cyNetwork.getNodeAttributes().set(overlapWindow.getNetwork().getNodeAttributes());
       //cyNetwork.getEdgeAttributes().set(overlapWindow.getNetwork().getEdgeAttributes());
-      Semantics.applyNamingServices(cyNetwork,newWindow.getCytoscapeObj());																	
       layout(cyNetwork);	
       //make everythign fit in the view
       FitContentAction fitAction = new FitContentAction(newWindow);
