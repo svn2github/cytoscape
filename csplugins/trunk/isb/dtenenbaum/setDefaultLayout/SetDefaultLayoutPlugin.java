@@ -2,6 +2,7 @@ package csplugins.isb.dtenenbaum.setDefaultLayout;
 
 import cytoscape.*;
 import cytoscape.view.*;
+import cytoscape.actions.FitContentAction;
 import cytoscape.plugin.*;
 import java.beans.*;
 
@@ -22,7 +23,7 @@ public class SetDefaultLayoutPlugin
   extends 
     CytoscapePlugin 
   implements
-    PropertyChangeListener  {
+    PropertyChangeListener  { 
    
   YFilesLayoutPlugin plugin;
 
@@ -31,18 +32,30 @@ public class SetDefaultLayoutPlugin
     
   }
 
-  public void propertyChange ( PropertyChangeEvent e ) {
+  public void propertyChange ( PropertyChangeEvent e ) { 
 
     if ( e.getPropertyName() ==  CytoscapeDesktop.NETWORK_VIEW_CREATED ) {
       CyNetworkView view = ( CyNetworkView )e.getNewValue();
 
-      System.out.println("trying to change view...");
+      System.out.println("trying to change layout...");
       YFilesLayout layout = new YFilesLayout(view);
       layout.doLayout( YFilesLayout.ORGANIC, 0 );
       System.out.println("done");
-      System.out.println("trying to redraw graph...");
+      
+      //System.out.println("trying to redraw graph...");
+      //view.redrawGraph(true,true);
+      //System.out.println("done");
+      
+      //System.out.println("trying to fit content....");
+      // 2 ways to do it. way 1:
+      //PGraphView vue =(PGraphView) view;
+      //vue.getCanvas().getCamera().animateViewToCenterBounds( vue.getCanvas().getLayer().getFullBounds(), true, 50l );
+      // way 2:
+      //FitContentAction fca = new FitContentAction();
+      //fca.actionPerformed(null);
+      //System.out.println("done");
       view.redrawGraph(true,true);
-      System.out.println("done");
+      
     }
   }
 }
