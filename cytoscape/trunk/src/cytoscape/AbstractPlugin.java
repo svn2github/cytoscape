@@ -9,8 +9,8 @@ package cytoscape;
  * AbstractPlugin is the class that all plugins must subclass;
  * the interface is simple - the constructor must take a single
  * {@link cytoscape.CytoscapeWindow CytoscapeWindow} argument,
- * and there must be a {@link #describe} method returning a
- * String description of the plugin.
+ * and there must be a {@link #describe describe} method
+ * returning a String description of the plugin.
  */
 public abstract class AbstractPlugin {
     /**
