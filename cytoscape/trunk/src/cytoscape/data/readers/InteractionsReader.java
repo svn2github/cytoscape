@@ -283,7 +283,6 @@ public class InteractionsReader implements GraphReader {
     }
 
     String targetNodeName;
-    System.out.println("Number of Interactions:  " + interactions.length);
     for (int i=0; i < interactions.length; i++) {
 
       if (taskMonitor != null) {
