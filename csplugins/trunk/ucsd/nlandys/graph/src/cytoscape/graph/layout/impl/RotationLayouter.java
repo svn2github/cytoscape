@@ -4,6 +4,7 @@ import com.nerius.math.xform.AffineTransform3D;
 import com.nerius.math.xform.AxisRotation3D;
 import com.nerius.math.xform.Translation3D;
 import cytoscape.graph.layout.algorithm.MutablePolyEdgeGraphLayout;
+import cytoscape.util.intr.IntEnumerator;
 
 public final class RotationLayouter
 {
@@ -20,37 +21,38 @@ public final class RotationLayouter
    *   if the minimum bounding rectangle containing all movable nodes and
    *   respective edge anchor points
    *   is not fully free to rotate around its center while staying within
-   *   allowable area for specified
-   *   <code>MutableGraphLayout</code>.
+   *   allowable area for specified mutable graph..
    **/
   public RotationLayouter(MutablePolyEdgeGraphLayout graph)
   {
     m_graph = graph;
     double xMin = Double.MAX_VALUE; double xMax = Double.MIN_VALUE;
     double yMin = Double.MAX_VALUE; double yMax = Double.MIN_VALUE;
-    final int numEdges = m_graph.getNumEdges();
-    for (int i = 0; i < numEdges; i++)
+    IntEnumerator edges = m_graph.edges();
+    while (edges.numRemaining() > 0)
     {
-      if (!(m_graph.isMovableNode(m_graph.getEdgeNodeIndex(i, true)) &&
-            m_graph.isMovableNode(m_graph.getEdgeNodeIndex(i, false))))
+      int edge = edges.nextInt();
+      if (!(m_graph.isMovableNode(m_graph.edgeSource(edge)) &&
+            m_graph.isMovableNode(m_graph.edgeTarget(edge))))
         continue;
-      final int numAnchors = m_graph.getNumAnchors(i);
+      final int numAnchors = m_graph.getNumAnchors(edge);
       for (int j = 0; j < numAnchors; j++)
       {
-        double anchXPosition = m_graph.getAnchorPosition(i, j, true);
-        double anchYPosition = m_graph.getAnchorPosition(i, j, false);
+        double anchXPosition = m_graph.getAnchorPosition(edge, j, true);
+        double anchYPosition = m_graph.getAnchorPosition(edge, j, false);
         xMin = Math.min(xMin, anchXPosition);
         xMax = Math.max(xMax, anchXPosition);
         yMin = Math.min(yMin, anchYPosition);
         yMax = Math.max(yMax, anchYPosition);
       }
     }
-    final int numNodes = m_graph.getNumNodes();
-    for (int i = 0; i < numNodes; i++)
+    IntEnumerator nodes = m_graph.nodes();
+    while (nodes.numRemaining() > 0)
     {
-      if (!m_graph.isMovableNode(i)) continue;
-      double nodeXPosition = m_graph.getNodePosition(i, true);
-      double nodeYPosition = m_graph.getNodePosition(i, false);
+      int node = nodes.nextInt();
+      if (!m_graph.isMovableNode(node)) continue;
+      double nodeXPosition = m_graph.getNodePosition(node, true);
+      double nodeYPosition = m_graph.getNodePosition(node, false);
       xMin = Math.min(xMin, nodeXPosition);
       xMax = Math.max(xMax, nodeXPosition);
       yMin = Math.min(yMin, nodeYPosition);
@@ -91,30 +93,32 @@ public final class RotationLayouter
     final AffineTransform3D xform = m_translationToOrig.concatenatePost
       ((new AxisRotation3D(AxisRotation3D.Z_AXIS, radians)).concatenatePost
        (m_translationFromOrig));
-    final int numNodes = m_graph.getNumNodes();
-    for (int i = 0; i < numNodes; i++)
+    IntEnumerator nodes = m_graph.nodes();
+    while (nodes.numRemaining() > 0)
     {
-      if (!m_graph.isMovableNode(i)) continue;
-      m_pointBuff[0] = m_graph.getNodePosition(i, true);
-      m_pointBuff[1] = m_graph.getNodePosition(i, false);
+      int node = nodes.nextInt();
+      if (!m_graph.isMovableNode(node)) continue;
+      m_pointBuff[0] = m_graph.getNodePosition(node, true);
+      m_pointBuff[1] = m_graph.getNodePosition(node, false);
       m_pointBuff[2] = 0.0d;
       xform.transformArr(m_pointBuff);
-      m_graph.setNodePosition(i, m_pointBuff[0], m_pointBuff[1]);
+      m_graph.setNodePosition(node, m_pointBuff[0], m_pointBuff[1]);
     }
-    final int numEdges = m_graph.getNumEdges();
-    for (int i = 0; i < numEdges; i++)
+    IntEnumerator edges = m_graph.edges();
+    while (edges.numRemaining() > 0)
     {
-      if (!(m_graph.isMovableNode(m_graph.getEdgeNodeIndex(i, true)) &&
-            m_graph.isMovableNode(m_graph.getEdgeNodeIndex(i, false))))
+      int edge = edges.nextInt();
+      if (!(m_graph.isMovableNode(m_graph.edgeSource(edge)) &&
+            m_graph.isMovableNode(m_graph.edgeTarget(edge))))
         continue;
-      final int numAnchors = m_graph.getNumAnchors(i);
+      final int numAnchors = m_graph.getNumAnchors(edge);
       for (int j = 0; j < numAnchors; j++)
       {
-        m_pointBuff[0] = m_graph.getAnchorPosition(i, j, true);
-        m_pointBuff[1] = m_graph.getAnchorPosition(i, j, false);
+        m_pointBuff[0] = m_graph.getAnchorPosition(edge, j, true);
+        m_pointBuff[1] = m_graph.getAnchorPosition(edge, j, false);
         m_pointBuff[2] = 0.0d;
         xform.transformArr(m_pointBuff);
-        m_graph.setAnchorPosition(i, j, m_pointBuff[0], m_pointBuff[1]);
+        m_graph.setAnchorPosition(edge, j, m_pointBuff[0], m_pointBuff[1]);
       }
     }
   }
