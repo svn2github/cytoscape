@@ -101,7 +101,7 @@ public class CytoscapeConfigTest extends TestCase {
         assertTrue(config.getGeometryFilename().equals(geometryFilename));
         assertTrue(config.getInteractionsFilename().equals(interactionsFilename));
         assertTrue(config.getExpressionFilename().equals(expressionFilename));
-        assertTrue(config.getWhetherToCopyExpToAttribs() == false);
+        assertTrue(config.getWhetherToCopyExpToAttribs() == true);
 
         assertTrue(config.getNumberOfNodeAttributeFiles() == 3);
         String[] nafs = config.getNodeAttributeFilenames();
