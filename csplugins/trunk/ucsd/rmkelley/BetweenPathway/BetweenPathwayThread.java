@@ -55,7 +55,6 @@ class BetweenPathwayThread extends Thread{
       //if(progress == 100){
       //break;
       //}
-      System.err.println(progress);
       myMonitor.setProgress(progress++);
       Edge seedInteraction = (Edge)geneticIt.next();
       int cross_count_total = 0;
@@ -127,9 +126,7 @@ class BetweenPathwayThread extends Thread{
 	    }
 	    
 	    increase += calculateIncrease(physicalNetwork,physicalScores,members[idx],candidate);
-	    System.err.println(increase);
 	    increase += calculateIncrease(geneticNetwork,geneticScores,members[opposite],candidate);
-	    System.err.println(increase+"\n");
 	    //if necessary, update the information for the best candidate
 	    //found so far
 	    if(increase > best_increase){
