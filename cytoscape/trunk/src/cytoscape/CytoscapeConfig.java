@@ -153,7 +153,7 @@ public String [] getEdgeAttributeFilenames ()
 }
 //------------------------------------------------------------------------------------------
 /**
- * If the -c flag is set in the command line, or if "can = no" is in the project file, it returns
+ * If the -c flag is set in the command line, or if "canonicalizeNames = no" is in the project file, it returns
  * false. It returns true otherwise.
  * Added by Iliana Avila on May 29, 2003.
  */
@@ -510,7 +510,7 @@ protected void getConfigurationsFromProperties ()
  *   dataServer=rmi://hazel/yeast
  *   species=Saccharomyces cerevisiae
  *   props=/net/compbio/cytoscape/projects/galFiltered/cytoscape.props
- *   can=yes|no
+ *   canonicalizeNames=yes|no
  *  </code>
  *
  * further information:
@@ -569,7 +569,7 @@ protected void readProjectFile ()
   String [] defaultLayouts = parseProjectFileText (lines, "layout");
   String [] propsFiles = parseProjectFileText (lines, "props");
   String [] vizmapPropsFiles = parseProjectFileText (lines, "vprops");
-  String [] canonicalization = parseProjectFileText (lines, "can"); // whether or not canonicalization should be done
+  String [] canonicalization = parseProjectFileText (lines, "canonicalizeNames"); // whether or not canonicalization should be done
   String [] otherArgs = parseProjectFileText (lines, "arg");
 
   if (sifFiles.length >= 1) {
