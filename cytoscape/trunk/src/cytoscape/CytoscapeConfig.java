@@ -63,7 +63,9 @@ public class CytoscapeConfig {
   protected Vector nodeAttributeFilenames = new Vector ();
   protected Vector edgeAttributeFilenames = new Vector ();
   protected String defaultSpeciesName = null;
-  protected File projectPropsFile = null;
+  protected String projectPropsFileName = null;
+  protected File projectFileDirectoryAbsolute;
+  //protected File projectPropsFile = null;
 
   protected String [] layoutStrategies = {"organic", "hierarchical", "embedded", "circular"};
   protected String defaultLayoutStrategy = layoutStrategies [0];
@@ -264,8 +266,11 @@ protected Properties readProperties ()
   if (userSpecialPropsFile != null)
     userSpecialProps = readOnePropertyFile (userGeneralProps, userSpecialPropsFile);
 
-  if (projectPropsFile != null) 
-     projectProps = readOnePropertyFile (projectProps, projectPropsFile);
+  CytoscapeWindow.debugLog.append ("projectPropsFileName: " + projectPropsFileName);
+  if (projectPropsFileName != null) {
+    projectProps = readPropertyFileAsText (projectPropsFileName);
+    // projectProps = readOnePropertyFile (projectProps, projectPropsFile);
+    }
 
   /* we will return a valid Properties object; if any properties files
    * were found and read, we copy them in sequentially so that duplicate
@@ -280,15 +285,61 @@ protected Properties readProperties ()
   if (userGeneralProps != null) 
     fullProps.putAll (userGeneralProps);
 
-  if (userSpecialProps != null) 
+  if (userSpecialProps != null)
     fullProps.putAll (userSpecialProps);
 
-  if (projectProps != null) 
-    fullProps.putAll (projectProps);
+
+  if (projectProps != null) {
+     CytoscapeWindow.debugLog.append ("--- about to add " + projectProps.size ()  +
+                                       " project Cyproperties");    fullProps.putAll (projectProps);
+    }
 
   return fullProps;
 
 } // readProperties
+//------------------------------------------------------------------------------------------
+//private Properties readPropertyFileAsText (File projectPropsFile)
+private Properties readPropertyFileAsText (String filename)
+{
+  String rawText = "";
+  //String filename = projectPropsFile.getPath ();
+  CytoscapeWindow.debugLog.append ("CC.readPropertyFileAsText, path: " + filename + "\n");
+  try {
+    if (filename.trim().startsWith ("jar://")) {
+      CytoscapeWindow.debugLog.append ("CC.readPropertyFileAsText, starts with jar://\n");
+      TextJarReader reader = new TextJarReader (filename);
+      reader.read ();
+      rawText = reader.getText ();
+      CytoscapeWindow.debugLog.append ("from jar, rawText:\n" + rawText + "\n");
+      }
+    else {
+      CytoscapeWindow.debugLog.append ("CC.readPropertyFileAsText, does not start with jar://\n");
+      File projectPropsFile = new File (absolutizeFilename (projectFileDirectoryAbsolute, filename));
+      TextFileReader reader = new TextFileReader (projectPropsFile.getPath ());
+      reader.read ();
+      rawText = reader.getText ();
+      CytoscapeWindow.debugLog.append ("from file, rawText:\n" + rawText + "\n");
+      }
+    }
+  catch (Exception e0) {
+    System.err.println ("-- Exception while reading properties file " + filename);
+    System.err.println (e0.getMessage ());
+    }
+
+  String [] lines = rawText.split ("\n");
+  CytoscapeWindow.debugLog.append ("CC.readPropertyFileAsText, rawText --\n" + rawText + "\n");
+  Properties newProps = new Properties ();
+  for (int i=0; i < lines.length; i++) {
+    String line = lines [i].trim ();
+    if (line.startsWith ("#")) continue;
+    String [] tokens = line.split ("=");
+    if (tokens.length != 2) continue;
+    newProps.setProperty (tokens [0], tokens [1]);
+    }
+
+  return newProps;
+
+} // readPropertyFileAsText
 //------------------------------------------------------------------------------------------
 /**
  * return a File which is known to exist, and is readable.
@@ -438,14 +489,28 @@ protected void getConfigurationsFromProperties ()
 protected void readProjectFile ()
 {
   if (projectFilename == null) return;
-  File projectFile = new File (projectFilename);
-  if (!projectFile.canRead ()) 
-    throw new IllegalArgumentException ("cannot read project file: " + projectFilename);
+  boolean readingFromJar = false;
+  String rawText;
 
-  File directoryAbsolute = projectFile.getAbsoluteFile().getParentFile ();
-  TextFileReader reader = new TextFileReader (projectFile.getPath ());
-  reader.read ();
-  String rawText = reader.getText ();
+  try {
+    if (projectFilename.trim().startsWith ("jar://")) {
+      readingFromJar = true;
+      TextJarReader reader = new TextJarReader (projectFilename);
+      reader.read ();
+      rawText = reader.getText ();
+      }
+    else {
+      File projectFile = new File (projectFilename);
+      TextFileReader reader = new TextFileReader (projectFile.getPath ());
+      reader.read ();
+      rawText = reader.getText ();
+      projectFileDirectoryAbsolute = projectFile.getAbsoluteFile().getParentFile ();
+      }
+    }
+  catch (Exception e0) {
+    throw new IllegalArgumentException ("cannot read project file: " + projectFilename);
+    }
+
   String [] lines = rawText.split ("\n");
 
     // most entities name in a project file are singular:  species, sif or gml,
@@ -464,25 +529,37 @@ protected void readProjectFile ()
   String [] propsFiles = parseProjectFileText (lines, "props");
 
   if (sifFiles.length >= 1) {
-    interactionsFilename = absolutizeFilename (directoryAbsolute, sifFiles [0]);
+    if (readingFromJar)
+      interactionsFilename = sifFiles [0];
+    else
+      interactionsFilename = absolutizeFilename (projectFileDirectoryAbsolute, sifFiles [0]);
     }
 
   if (gmlFiles.length >= 1) {
-    geometryFilename = absolutizeFilename (directoryAbsolute, gmlFiles [0]);
+    if (readingFromJar)
+      geometryFilename = sifFiles [0];
+    else
+      geometryFilename = absolutizeFilename (projectFileDirectoryAbsolute, gmlFiles [0]);
     }
 
   for (int i=0; i < noaFiles.length; i++) {
-    nodeAttributeFilenames.add (absolutizeFilename (directoryAbsolute, noaFiles [i]));
+    if (readingFromJar)
+      nodeAttributeFilenames.add (noaFiles[i]);
+    else      
+      nodeAttributeFilenames.add (absolutizeFilename (projectFileDirectoryAbsolute, noaFiles [i]));
     }
     
   for (int i=0; i < edaFiles.length; i++) {
-    edgeAttributeFilenames.add (absolutizeFilename (directoryAbsolute, edaFiles [i]));
+    if (readingFromJar)
+      edgeAttributeFilenames.add (edaFiles[i]);
+    else      
+       edgeAttributeFilenames.add (absolutizeFilename (projectFileDirectoryAbsolute, edaFiles [i]));
     }
     
   if (dataServers.length >= 1) {
     String tmp = dataServers [0];
     if (!tmp.startsWith ("rmi://")) {
-      bioDataDirectory = absolutizeFilename (directoryAbsolute, tmp);
+      bioDataDirectory = absolutizeFilename (projectFileDirectoryAbsolute, tmp);
       }
     else
       bioDataDirectory = tmp;
@@ -497,8 +574,15 @@ protected void readProjectFile ()
     System.out.println ("readProject file, setting layout to: " + defaultLayoutStrategy);
     }
 
+  CytoscapeWindow.debugLog.append ("config.readProjectFile, propsFile count: " + propsFiles.length + "\n");
   if (propsFiles.length >= 1) {
-    projectPropsFile = new File (absolutizeFilename (directoryAbsolute, propsFiles [0]));
+    projectPropsFileName = propsFiles [0];
+    CytoscapeWindow.debugLog.append ("config.readProjectFile, propsPropsFileName: " + 
+         projectPropsFileName + "\n");
+    //if (readingFromJar)
+      projectPropsFileName = propsFiles [0];
+    //else
+    //  projectPropsFile = new File (absolutizeFilename (projectFileDirectoryAbsolute, propsFiles [0]));
     }
 
 

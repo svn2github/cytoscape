@@ -155,6 +155,8 @@ public class CytoscapeWindow extends JPanel implements FilterDialogClient, Graph
   protected CytoscapeConfig config;
 
   protected JMenuItem deleteSelectionMenuItem;
+  static public StringBuffer debugLog = new StringBuffer ();
+
 //------------------------------------------------------------------------------
 public CytoscapeWindow (cytoscape parentApp,
                         CytoscapeConfig config,
@@ -1055,6 +1057,7 @@ protected JMenuBar createMenuBar ()
   //  vizMenu.add (new PrintPropsAction ());
 
   opsMenu = new JMenu ("PlugIns"); // always create the plugins menu
+  fileMenu.add (new DisplayDebugLog ());
   menuBar.add (opsMenu);
 
   return menuBar;
@@ -2932,6 +2935,22 @@ protected class EdgeManipulationAction extends AbstractAction {
 
 } // inner class EdgeManipulationAction
 //---------------------------------------------------------------------------------------------------
+protected class DisplayDebugLog extends AbstractAction {
+
+  DisplayDebugLog () { super ("DisplayDebugLog"); }
+    
+  public void actionPerformed (ActionEvent e) {
+    Frame frame = getMainFrame ();
+    PopupTextArea dialog = new PopupTextArea (frame, "debug", debugLog.toString ());
+    dialog.pack ();
+    dialog.setLocationRelativeTo (frame);
+    dialog.setVisible (true);
+    }
+
+
+} // inner class DoEpistasis
+
+//----------------------------------------------------------------------------------------
 protected class EdgeTypeDialogAction extends AbstractAction  {
     EdgeTypeDialogAction () {
         super("Edges by Interaction Type"); 

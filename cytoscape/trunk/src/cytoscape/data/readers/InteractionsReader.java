@@ -65,15 +65,34 @@ public InteractionsReader (BioDataServer dataServer, String species, String file
 //-----------------------------------------------------------------------------------------
 public void read ()
 {
-  TextFileReader reader = new TextFileReader (filename);
-  reader.read ();
-  String rawText = reader.getText ();
+  String rawText;
+  try {
+    if (filename.trim().startsWith ("jar://")) {
+      TextJarReader reader = new TextJarReader (filename);
+      reader.read ();
+      rawText = reader.getText ();
+      }
+    else {
+      TextFileReader reader = new TextFileReader (filename);
+      reader.read ();
+      rawText = reader.getText ();
+      }
+    }
+  catch (Exception e0) {
+    System.err.println ("-- Exception while reading interaction file " + filename);
+    System.err.println (e0.getMessage ());
+    return;
+    }
+
+  String delimiter = " ";
+  if (rawText.indexOf ("\t") >= 0)
+    delimiter = "\t";
   StringTokenizer strtok = new StringTokenizer (rawText, "\n");
 
   Vector interactions = new Vector ();
   while (strtok.hasMoreElements ()) {
     String newLine = (String) strtok.nextElement ();
-    allInteractions.addElement (new Interaction (newLine));
+    allInteractions.addElement (new Interaction (newLine, delimiter));
     }
 
   //for (int i=0; i < interactions.size (); i++) {

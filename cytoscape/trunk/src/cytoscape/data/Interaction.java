@@ -54,7 +54,12 @@ public Interaction (String source, String target, String interactionType)
 //----------------------------------------------------------------------------------------
 public Interaction (String rawText)
 {
-  StringTokenizer strtok = new StringTokenizer (rawText);
+  this (rawText, " ");
+}
+//----------------------------------------------------------------------------------------
+public Interaction (String rawText, String delimiter)
+{
+  StringTokenizer strtok = new StringTokenizer (rawText, delimiter);
   int counter = 0;
   while (strtok.hasMoreTokens ()) {
     if (counter == 0) 

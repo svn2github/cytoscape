@@ -13,6 +13,7 @@ JI=java -DCYTOSCAPE_HOME=$(CYTOSCAPE_HOME)
 	$(JC) $<
 
 OBJS = TextFileReader.class \
+       TextJarReader.class \
        FileReadingAbstractions.class \
        GMLReader.class \
        GMLWriter.class \

@@ -50,7 +50,6 @@ import cytoscape.data.servers.BioDataServer;
 //-----------------------------------------------------------------------------------------
 public class InteractionsReaderTest extends TestCase {
 
-  private static String testDataDir;
   private BioDataServer nullServer = null;
   private String species = "unknown";
 //------------------------------------------------------------------------------
@@ -71,7 +70,7 @@ public void testReadFromTypicalFile () throws Exception
 // 'typical' means that all lines have the form "node1 pd node2 [node3 node4 ...]
 { 
   System.out.println ("testFromTypicalFile");
-  InteractionsReader reader = new InteractionsReader (nullServer, species, testDataDir + "/sample.intr");
+  InteractionsReader reader = new InteractionsReader (nullServer, species, "sample.sif");
   reader.read ();
   assertTrue (reader.getCount () == 25);
   Interaction [] interactions = reader.getAllInteractions ();
@@ -90,7 +89,7 @@ public void testReadFileWithNoInteractions () throws Exception
 // that is, with no interaction type and no target
 { 
   System.out.println ("testReadFileWithNoInteractions");
-  InteractionsReader reader = new InteractionsReader (nullServer, species, testDataDir + "/degenerate.intr");
+  InteractionsReader reader = new InteractionsReader (nullServer, species, "degenerate.sif");
   reader.read ();
   assertTrue (reader.getCount () == 9);
   Interaction [] interactions = reader.getAllInteractions ();
@@ -106,7 +105,7 @@ public void testReadFileWithNoInteractions () throws Exception
 public void testGetGraph () throws Exception
 { 
   System.out.println ("testGetGraph");
-  InteractionsReader reader = new InteractionsReader (nullServer, species, testDataDir + "/sample.intr");
+  InteractionsReader reader = new InteractionsReader (nullServer, species, "sample.sif");
   reader.read ();
   assertTrue (reader.getCount () == 25);
 
@@ -126,7 +125,7 @@ public void testGetGraphAndEdgeAttributes () throws Exception
 // look like "node1::node2", and that the values are simple strings
 { 
   System.out.println ("testGetGraphAndEdgeAttributes");
-  InteractionsReader reader = new InteractionsReader (nullServer, species, testDataDir + "/sample.intr");
+  InteractionsReader reader = new InteractionsReader (nullServer, species, "sample.sif");
   reader.read ();
   assertTrue (reader.getCount () == 25);
 
@@ -154,15 +153,42 @@ public void testGetGraphAndEdgeAttributes () throws Exception
 
 } // testGetGraphAndEdgeAttributes
 //-------------------------------------------------------------------------
+/**
+  * this file relies on tab delimiters to distinguish word breaks with protein
+  * names from "term breaks" between <obj1> <interactionName> <obj2>, as in
+  *
+  *    26S ubiquitin dependent proteasome	interactsWith	I-kappa-B-alpha
+ **/ 
+public void testReadMultiWordProteinsFile () throws Exception
+{ 
+  System.out.println ("testReadMultiWordProteinsFile");
+  String filename = "multiWordProteins.sif";
+  InteractionsReader reader = new InteractionsReader (nullServer, species, filename);
+  reader.read ();
+  assertTrue (reader.getCount () == 29);
+  Interaction [] interactions = reader.getAllInteractions ();
+
+  // interaction 16:
+  //  26S ubiquitin dependent proteasome
+  //     interactsWith
+  // I-kappa-B-alpha
+
+  assertTrue (interactions [16].getSource().equals ("26S ubiquitin dependent proteasome"));
+  assertTrue (interactions [16].getType().equals ("interactsWith"));
+  assertTrue (interactions [16].numberOfTargets()==1);
+  assertTrue (interactions [16].getTargets()[0].equals ("I-kappa-B-alpha"));
+ 
+  assertTrue (interactions [28].getSource().equals ("TRAF6"));
+  assertTrue (interactions [28].getType().equals ("interactsWith"));
+  assertTrue (interactions [28].numberOfTargets()==3);
+  assertTrue (interactions [28].getTargets()[0].equals ("RIP2"));
+  assertTrue (interactions [28].getTargets()[1].equals ("ABCDE oopah"));
+  assertTrue (interactions [28].getTargets()[2].equals ("HJKOL coltrane"));
+ 
+} // testReadMultiWordProteinsFile
+//-------------------------------------------------------------------------
 public static void main (String [] args) 
 {
-  if (args.length != 1) {
-    System.out.println ("Error!  must supply path to test data directory on command line");
-    System.exit (0);
-    }
-
-  testDataDir = args [0];
-
   junit.textui.TestRunner.run (new TestSuite (InteractionsReaderTest.class));
 }
 //------------------------------------------------------------------------------

@@ -1058,20 +1058,20 @@ public String processFileHeader (String text)
 public void readAttributesFromFile (String filename)
    throws FileNotFoundException, IllegalArgumentException, NumberFormatException
 {
-  readAttributesFromFile (null, "unknown",  new File (filename));
+  readAttributesFromFile (null, "unknown",  filename);
 }
 //--------------------------------------------------------------------------------
 public void readAttributesFromFile (File file)
    throws FileNotFoundException, IllegalArgumentException, NumberFormatException
 {
-  readAttributesFromFile (null, "unknown",  file);
+  readAttributesFromFile (null, "unknown",  file.getPath ());
 }
 //--------------------------------------------------------------------------------
-public void readAttributesFromFile (BioDataServer dataServer, String species, String filename)
-   throws FileNotFoundException, IllegalArgumentException, NumberFormatException
-{
-  readAttributesFromFile (dataServer, species, new File (filename));
-}
+//public void readAttributesFromFile (BioDataServer dataServer, String species, String filename)
+//   throws FileNotFoundException, IllegalArgumentException, NumberFormatException
+//{
+//  readAttributesFromFile (dataServer, species, new File (filename));
+//}
 //--------------------------------------------------------------------------------
 /**
  *  determine (heuristically) the most-specialized class instance which can be
@@ -1137,17 +1137,37 @@ static public Object createInstanceFromString (Class requestedClass, String ctor
  *  <p>
  *
  */
-public void readAttributesFromFile (BioDataServer dataServer, String species, File file)
+//public void readAttributesFromFile (BioDataServer dataServer, String species, File file)
+public void readAttributesFromFile (BioDataServer dataServer, String species, String filename)
    throws FileNotFoundException, IllegalArgumentException, NumberFormatException
 {
-  TextFileReader reader = new TextFileReader (file.getPath ());
-  reader.read ();
-  String rawText = reader.getText ();
+
+  //String filename = file.getPath ();
+
+  String rawText;
+  try {
+    if (filename.trim().startsWith ("jar://")) {
+      TextJarReader reader = new TextJarReader (filename);
+      reader.read ();
+      rawText = reader.getText ();
+      }
+    else {
+      TextFileReader reader = new TextFileReader (filename);
+      reader.read ();
+      rawText = reader.getText ();
+      }
+    }
+  catch (Exception e0) {
+    System.err.println ("-- Exception while reading attributes file " + filename);
+    System.err.println (e0.getMessage ());
+    return;
+    }
+
   StringTokenizer lineTokenizer = new StringTokenizer (rawText, "\n");
 
   int lineNumber = 0;
   if (lineTokenizer.countTokens () < 2) 
-    throw new IllegalArgumentException (file.getPath () + " must have at least 2 lines");
+    throw new IllegalArgumentException (filename + " must have at least 2 lines");
 
   String attributeName = processFileHeader (lineTokenizer.nextToken().trim ());
   boolean extractingFirstValue = true; 
