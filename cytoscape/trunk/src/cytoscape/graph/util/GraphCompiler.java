@@ -27,6 +27,9 @@ public final class GraphCompiler
   /**
    * Hints to the compiler that <code>getNeighboringNodeIndices()</code>
    * will be used so that node neighbors lists should be compiled.
+   * Compiling node neighbors information takes O(e) time where e is the
+   * number of edges in a graph.  Node neighbor information takes up
+   * O(e) memory in compiled form.
    **/
   public static final long COMPILE_NODE_NEIGHBORS =         0x0000000000000002;
 
@@ -144,8 +147,7 @@ public final class GraphCompiler
 
     if (honorDirectedEdges)
     {
-      Hashtable specificNeighbors =
-        (Hashtable) m_nodeNeighbors.get(new Integer(nodeIndex));
+      Hashtable specificNeighbors = m_nodeNeighbors[nodeIndex];
       if (specificNeighbors == null)
         specificNeighbors = m_dummyEmptyHashtable;
       final int[] returnThis = new int[specificNeighbors.size()];
@@ -156,10 +158,8 @@ public final class GraphCompiler
     }
     else
     {
-      Hashtable specificRealNeighbors =
-        (Hashtable) m_nodeNeighbors.get(new Integer(nodeIndex));
-      Hashtable specificFakeNeighbors =
-        (Hashtable) m_negNodeNeighbors.get(new Integer(nodeIndex));
+      Hashtable specificRealNeighbors = m_nodeNeighbors[nodeIndex];
+      Hashtable specificFakeNeighbors = m_fakeNodeNeighbors[nodeIndex];
       if (specificRealNeighbors == null)
         specificRealNeighbors = m_dummyEmptyHashtable;
       if (specificFakeNeighbors == null)
@@ -176,38 +176,42 @@ public final class GraphCompiler
     }
   }
 
-  private Hashtable m_nodeNeighbors;
-  private Hashtable m_negNodeNeighbors;
+  private Hashtable[] m_nodeNeighbors;
+  private Hashtable[] m_fakeNodeNeighbors;
   private final Hashtable m_dummyEmptyHashtable = new Hashtable();
   private boolean m_nodeNeighborsCompiled = false;
 
   private void compileNodeNeighbors()
   {
     if (m_nodeNeighborsCompiled) return;
-    m_nodeNeighbors = new Hashtable(graph.getNumNodes());
-    m_negNodeNeighbors = new Hashtable(graph.getNumNodes());
+
+    // Lol!  I had forgetten the following statement on my first revision;
+    // this defeats the purpose of compiling the graph!
+    m_nodeNeighborsCompiled = true;
+
+    m_nodeNeighbors = new Hashtable[graph.getNumNodes()];
+    m_fakeNodeNeighbors = new Hashtable[graph.getNumNodes()];
     for (int edgeIndex = 0; edgeIndex < graph.getNumEdges(); edgeIndex++)
     {
       Integer sourceNode =
         new Integer(graph.getEdgeNodeIndex(edgeIndex, true));
       Integer targetNode =
         new Integer(graph.getEdgeNodeIndex(edgeIndex, false));
-      Hashtable specificNeighbors =
-        (Hashtable) m_nodeNeighbors.get(sourceNode);
+      Hashtable specificNeighbors = m_nodeNeighbors[sourceNode.intValue()];
       boolean newTable = false;
       if (specificNeighbors == null) {
         specificNeighbors = new Hashtable(); newTable = true; }
       specificNeighbors.put(targetNode, targetNode);
-      if (newTable) m_nodeNeighbors.put(sourceNode, specificNeighbors);
-      Hashtable oppositePut;
-      if (graph.isDirectedEdge(edgeIndex)) oppositePut = m_negNodeNeighbors;
+      if (newTable) m_nodeNeighbors[sourceNode.intValue()] = specificNeighbors;
+      Hashtable[] oppositePut;
+      if (graph.isDirectedEdge(edgeIndex)) oppositePut = m_fakeNodeNeighbors;
       else oppositePut = m_nodeNeighbors;
       newTable = false;
-      specificNeighbors = (Hashtable) oppositePut.get(targetNode);
+      specificNeighbors = oppositePut[targetNode.intValue()];
       if (specificNeighbors == null) {
         specificNeighbors = new Hashtable(); newTable = true; }
       specificNeighbors.put(sourceNode, sourceNode);
-      if (newTable) oppositePut.put(targetNode, specificNeighbors);
+      if (newTable) oppositePut[targetNode.intValue()] = specificNeighbors;
     }
   }
 
