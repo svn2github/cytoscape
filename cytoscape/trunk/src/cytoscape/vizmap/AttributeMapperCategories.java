@@ -40,6 +40,16 @@ public interface AttributeMapperCategories {
      */
     Object parseRangeAttributeValue(Integer rangeAttribute,
 				    String value);
+
+    /**
+     * Given a range attribute value object, it returns its string representation.
+     * If the type of the value object does not match the type of the range attribute
+     * (for example, specifying EDGE_LINETYPE range attribute, and passing in 
+     * a Color value) then it returns the empty string, and prints a message to System.error.
+     */
+    String rangeAttributeValueToString(Integer rangeAttribute,
+				       Object rangeAttributeValue);
+    
     /**
      * Given the requested rangeAttribute, returns an Interpolator object
      * that knows how to interpolate objects of the type associated with
