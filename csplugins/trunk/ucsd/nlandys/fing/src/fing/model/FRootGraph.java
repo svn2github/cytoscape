@@ -461,11 +461,9 @@ class FRootGraph //implements RootGraph
       final int adjEdge = theAdj.nextInt();
       if ((m_graph.sourceNode(adjEdge) ^ m_graph.targetNode(adjEdge) ^
            adjPositiveNode) == neighPositiveNode)
-        edgeBucket.toss(adjEdge); }
-    final IntEnumerator edges = edgeBucket.elements();
-    final int[] returnThis = new int[edges.numRemaining()];
-    for (int i = 0; i < returnThis.length; i++)
-      returnThis[i] = ~(edges.nextInt());
+        edgeBucket.toss(~adjEdge); }
+    final int[] returnThis = new int[edgeBucket.size()];
+    edgeBucket.copyInto(returnThis, 0);
     return returnThis;
   }
 
