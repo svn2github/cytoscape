@@ -86,6 +86,8 @@ public class ImportPyLibs {
         String trailer = "!/" + item;
 
         URL url = ImportPyLibs.class.getResource("/" + item);
+        //URL url = cytoscape.plugin.jar.JarLoader.getLoader().getResource("/" + item);
+        //URL url = Thread.currentThread().getContextClassLoader().getResource("/" + item);
         // We should get something like
         // "jar:file:/C:/Documents and Settings/kejohnson/.javaws/cache/http/Dlocalhost/P80/DMdemo/DMlib/RMmyjython.jar!/__run__.py"
         if (url == null) {

@@ -14,7 +14,8 @@ import java.awt.event.KeyEvent;
 import javax.swing.Action;
 import javax.swing.JFrame;
 
-import csplugins.isb.dtenenbaum.sharedData.SharedDataSingleton;
+//import csplugins.isb.dtenenbaum.sharedData.SharedDataSingleton;
+import cytoscape.util.SharedDataSingleton;
 import csplugins.isb.pshannon.py.ConsoleMenubar;
 import csplugins.isb.pshannon.py.ExitAction;
 import cytoscape.Cytoscape;
@@ -135,7 +136,7 @@ public class PyConsolePlugin extends CytoscapePlugin {
 			consoleFrame.setSize(800, 400);
 			consoleFrame.setVisible(true);
 
-
+			ImportPyLibs ipl = new ImportPyLibs();
 			String[] jarNames = ImportPyLibs.importLibs();
 			pythonConsole.exec("import sys");
 
