@@ -7,9 +7,10 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 import cytoscape.AbstractPlugin;
-import cytoscape.GraphObjAttributes;
+import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.CyNetwork;
 import cytoscape.view.CyWindow;
+import cytoscape.view.GraphViewController;
 import giny.model.GraphPerspective;
 import giny.model.Node;
 import giny.model.Edge;
@@ -27,15 +28,43 @@ public class BMTest extends AbstractPlugin {
    */
   public BMTest (CyWindow cyWindow) {
     this.cyWindow = cyWindow;
-    cyWindow.getCyMenus().getOperationsMenu().add(new AddNodesAction());
-    cyWindow.getCyMenus().getOperationsMenu().add(new AddEdgesAction());
-    cyWindow.getCyMenus().getOperationsMenu().add(new HideSelectedNodesAction());
-    cyWindow.getCyMenus().getOperationsMenu().add(new HideSelectedNodesEdgesAction());
-    cyWindow.getCyMenus().getOperationsMenu().add(new RestoreHiddenNodesAction());
+    //cyWindow.getCyMenus().getOperationsMenu().add(new AddNodesAction());
+    //cyWindow.getCyMenus().getOperationsMenu().add(new AddEdgesAction());
+    //cyWindow.getCyMenus().getOperationsMenu().add(new HideSelectedNodesAction());
+    //cyWindow.getCyMenus().getOperationsMenu().add(new HideSelectedNodesEdgesAction());
+    //cyWindow.getCyMenus().getOperationsMenu().add(new RestoreHiddenNodesAction());
     //cyWindow.getCyMenus().getOperationsMenu().add(new CollapseSelectedNodes());
     //cyWindow.getCyMenus().getOperationsMenu().add(new UncollapseSelectedNodes());
     cyWindow.getCyMenus().getOperationsMenu().add(new CreateMetaNode());
+    cyWindow.getCyMenus().getOperationsMenu().add(new PrintNumEdgesBetweenNodes());
   }//BMTest
+
+  public void printNumEdgesBetweenNodes (){
+    GraphView graphView = cyWindow.getView();
+    if(graphView.getSelectedNodes().size() == 0){
+      System.out.println("No selected nodes");
+      return;
+    }
+    CyNetwork cyNetwork = cyWindow.getNetwork();
+    GraphPerspective mainGP = cyNetwork.getGraphPerspective();
+    java.util.List selectedNVlist = graphView.getSelectedNodes();
+    NodeView [] selectedNodeViews = 
+      (NodeView[])selectedNVlist.toArray(new NodeView[selectedNVlist.size()]);
+    for(int i = 0; i < selectedNodeViews.length; i++){
+      int nodeRIndex1 = selectedNodeViews[i].getNode().getRootGraphIndex();
+      for(int j = i+1; j < selectedNodeViews.length; j++){
+        int nodeRIndex2 = selectedNodeViews[j].getNode().getRootGraphIndex();
+        int numEdges = mainGP.getEdgeCount(nodeRIndex1, nodeRIndex2, true); 
+        System.out.println(nodeRIndex1 + " " + nodeRIndex2 + " = " + numEdges);
+        numEdges = mainGP.getEdgeCount(nodeRIndex2, nodeRIndex1, true);
+        System.out.println(nodeRIndex2 + " " + nodeRIndex1 + " = " + numEdges);
+      }//for j
+    }// for i
+        
+  }//printNumEdgesBetweenNodes
+
+
+
 
   public void createMetaNode (){
      
@@ -90,6 +119,16 @@ public class BMTest extends AbstractPlugin {
     }
        
   }// createMetaNode method
+
+  public class PrintNumEdgesBetweenNodes extends AbstractAction{
+    public PrintNumEdgesBetweenNodes () {
+      super("Print num edges between selected nodes");
+    }
+
+    public void actionPerformed (ActionEvent event){
+      BMTest.this.printNumEdgesBetweenNodes();
+    }//actionPerformed
+  }//class PrintNumEdgesBetweenNodes
   
   public class CreateMetaNode extends AbstractAction{
     public CreateMetaNode (){super("Create meta-node from selected nodes");}
@@ -265,6 +304,9 @@ public class BMTest extends AbstractPlugin {
       String callerID = "AddEdgesAction.actionPerformed";
       network.beginActivity(callerID);
       
+      GraphViewController gvController = cyWindow.getGraphViewController();
+      gvController.stopListening();
+      
       //this is the graph structure; it should never be null,
       GraphPerspective graphPerspective = network.getGraphPerspective();
       if (graphPerspective == null){
@@ -298,7 +340,8 @@ public class BMTest extends AbstractPlugin {
           System.out.println("Restored edge in graphPerspective, gp index = " + gpEdgeIndex);
         }//for j
       }//for i
-
+      
+      gvController.resumeListening();
       network.endActivity(callerID);
     }//actionEvent
   }//class AddEdgesAction
@@ -328,8 +371,13 @@ public class BMTest extends AbstractPlugin {
       System.out.println("-------------------------------------------------------");
       System.err.println("In AddNodesAction.actionPerformed()");
       
+      
       GraphView graphView = cyWindow.getView();
       CyNetwork network = cyWindow.getNetwork();
+      
+      GraphViewController gvController = cyWindow.getGraphViewController();
+      gvController.stopListening();
+      
       if(graphView == null || network == null){
         System.err.println("Oops! The graphView or the network is null");
         return;
@@ -381,9 +429,10 @@ public class BMTest extends AbstractPlugin {
       }//for i
       System.out.println("...done creating nodes.");
 
+      gvController.resumeListening();
       //and tell listeners that we're done
       network.endActivity(callerID);
-    }
+    }// actionPerformed
   }// AddNodesAction
 
   Node [] hiddenSelectedNodes;
@@ -430,6 +479,9 @@ public class BMTest extends AbstractPlugin {
       //inform listeners that we're doing an operation on the network
       String callerID = "HideSelectedNodesAction.actionPerformed";
       network.beginActivity(callerID);
+
+      GraphViewController gvController = cyWindow.getGraphViewController();
+      gvController.stopListening();
       
       //this is the graph structure; it should never be null,
       GraphPerspective graphPerspective = network.getGraphPerspective();
@@ -501,6 +553,7 @@ public class BMTest extends AbstractPlugin {
       hiddenSelectedNodes = (Node[])hiddenNodesSet.toArray(new Node[hiddenNodesSet.size()]);
       hiddenEdges = (Edge[])hiddenEdgesSet.toArray(new Edge[hiddenEdgesSet.size()]);
       //and tell listeners that we're done
+      gvController.resumeListening();
       network.endActivity(callerID);
     }
   }//HideSelectedNodesAction
@@ -547,6 +600,9 @@ public class BMTest extends AbstractPlugin {
       String callerID = "HideSelectedNodesEdgesAction.actionPerformed";
       network.beginActivity(callerID);
       
+      GraphViewController gvController = cyWindow.getGraphViewController();
+      gvController.stopListening();
+      
       //this is the graph structure; it should never be null,
       GraphPerspective graphPerspective = network.getGraphPerspective();
       if (graphPerspective == null){
@@ -588,6 +644,7 @@ public class BMTest extends AbstractPlugin {
       
       hiddenEdges = (Edge[])hiddenEdgesSet.toArray(new Edge[hiddenEdgesSet.size()]);
       //and tell listeners that we're done
+      gvController.resumeListening();
       network.endActivity(callerID);
     }
   }//HideSelectedNodesEdgesAction
@@ -620,6 +677,9 @@ public class BMTest extends AbstractPlugin {
       CyNetwork cyNetwork = cyWindow.getNetwork();
       String callerID = "RestoreHiddenNodesAction.actionPerformed";
       cyNetwork.beginActivity(callerID);
+      GraphViewController gvc = cyWindow.getGraphViewController();
+      gvc.stopListening();
+      
       for(int i = 0; hiddenSelectedNodes != null && i < hiddenSelectedNodes.length; i++){
         Node node = hiddenSelectedNodes[i];
         System.out.println("Restoring node " + node + "...");
@@ -637,6 +697,7 @@ public class BMTest extends AbstractPlugin {
         }
         System.out.println("...done");
       }//for i
+      gvc.resumeListening();
       cyNetwork.endActivity(callerID);
       hiddenSelectedNodes = null;
       hiddenEdges = null;
