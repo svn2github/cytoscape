@@ -89,9 +89,21 @@ public abstract class FileUtil {
     if ( osName.startsWith( "Mac" ) ) {
     
       // this is a Macintosh, use the AWT style file dialog
-      if ( load_save_custom == CUSTOM )
-        load_save_custom = LOAD;
-    
+      //if ( load_save_custom == CUSTOM ) {
+      //load_save_custom = LOAD;
+        //}
+
+        //if ( load_save_custom == LOAD ) {
+        // System.out.println( FileDialog.LOAD+"Load requested"+FileDialog.SAVE+": "+load_save_custom );
+        // }
+
+        //if ( load_save_custom == SAVE ) {
+        //System.out.println( FileDialog.SAVE+"save requested"+load_save_custom );
+        // }
+
+      
+        
+
 
       FileDialog chooser = new FileDialog( Cytoscape.getDesktop(),
                                            title,

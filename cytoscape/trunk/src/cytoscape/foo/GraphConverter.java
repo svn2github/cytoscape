@@ -416,8 +416,8 @@ public final class GraphConverter
     EdgeView[] edgeTranslation = myLayout.m_edgeTranslation;
 
     // Remove edge anchor points before moving nodes.
-    for (int e = 0; e < edgeTranslation.length; e++)
-      edgeTranslation[e].getBend().removeAllHandles();
+    //for (int e = 0; e < edgeTranslation.length; e++)
+    //  edgeTranslation[e].getBend().removeAllHandles();
 
     // Move nodes in underlying Giny.
     for (int n = 0; n < nodeTranslation.length; n++) {
@@ -427,14 +427,14 @@ public final class GraphConverter
         (layout.getNodePosition(n, false) + myLayout.m_yOff); }
 
     // Set edge anchor points in underlying Giny.
-    for (int e = 0; e < edgeTranslation.length; e++) {
-      Vector anchorList = new Vector();
-      for (int a = 0; a < layout.getNumAnchors(e); a++)
-        anchorList.add
-          (new Point2D.Double
-           (layout.getAnchorPosition(e, a, true) + myLayout.m_xOff,
-            layout.getAnchorPosition(e, a, false) + myLayout.m_yOff));
-      edgeTranslation[e].getBend().setHandles(anchorList); }
+    //for (int e = 0; e < edgeTranslation.length; e++) {
+    //  Vector anchorList = new Vector();
+    //  for (int a = 0; a < layout.getNumAnchors(e); a++)
+    //    anchorList.add
+    //      (new Point2D.Double
+    //       (layout.getAnchorPosition(e, a, true) + myLayout.m_xOff,
+    //        layout.getAnchorPosition(e, a, false) + myLayout.m_yOff));
+    //  edgeTranslation[e].getBend().setHandles(anchorList); }
   }
 
   /**
