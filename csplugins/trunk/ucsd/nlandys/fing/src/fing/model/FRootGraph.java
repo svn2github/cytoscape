@@ -26,7 +26,8 @@ class FRootGraph implements RootGraph
   // ATTENTION!  Before making this method public you need to change the
   // event implementations to return copied arrays in their methods instead
   // of always returning the same array reference.  Also you need to enable
-  // create node and create edge events.
+  // create node and create edge events - currently only remove node and
+  // remove edge events are fired.
   void addRootGraphChangeListener(RootGraphChangeListener listener)
   { // This method is not thread safe; synchronize on an object to make it so.
     m_lis = RootGraphChangeListenerChain.add(m_lis, listener);
@@ -37,7 +38,8 @@ class FRootGraph implements RootGraph
   // ATTENTION!  Before making this method public you need to change the
   // event implementations to return copied arrays in their methods instead
   // of always returning the same array reference.  Also you need to enable
-  // create node and create edge events.
+  // create node and create edge events - currently only remove node and
+  // remove edge events are fired.
   void removeRootGraphChangeListener(RootGraphChangeListener listener)
   { // This method is not thread safe; synchronize on an object to make it so.
     m_lis = RootGraphChangeListenerChain.remove(m_lis, listener);
@@ -243,10 +245,10 @@ class FRootGraph implements RootGraph
 
   public int createNode() {
     final int returnThis = _createNode();
-    final RootGraphChangeListener listener = m_lis;
-    if (listener != null)
-      listener.rootGraphChanged
-        (new RootGraphNodesCreatedEvent(this, new int[] { returnThis }));
+//     final RootGraphChangeListener listener = m_lis;
+//     if (listener != null)
+//       listener.rootGraphChanged
+//         (new RootGraphNodesCreatedEvent(this, new int[] { returnThis }));
     return returnThis; }
 
   private int _createNode()
@@ -276,12 +278,12 @@ class FRootGraph implements RootGraph
   public int[] createNodes(int numNewNodes) {
     final int[] returnThis = new int[numNewNodes];
     for (int i = 0; i < returnThis.length; i++) returnThis[i] = _createNode();
-    final RootGraphChangeListener listener = m_lis;
-    if (listener != null) {
-      final int[] copyReturnThis = new int[returnThis.length];
-      System.arraycopy(returnThis, 0, copyReturnThis, 0, returnThis.length);
-      listener.rootGraphChanged
-        (new RootGraphNodesCreatedEvent(this, copyReturnThis)); }
+//     final RootGraphChangeListener listener = m_lis;
+//     if (listener != null) {
+//       final int[] copyReturnThis = new int[returnThis.length];
+//       System.arraycopy(returnThis, 0, copyReturnThis, 0, returnThis.length);
+//       listener.rootGraphChanged
+//         (new RootGraphNodesCreatedEvent(this, copyReturnThis)); }
     return returnThis; }
 
   public Edge removeEdge(Edge edge) {
