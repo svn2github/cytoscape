@@ -353,11 +353,14 @@ public class NetworkPanel
       //check for the popup type
       if (e.isPopupTrigger()) {
 	//get the path where the mouse event originated
-	JTree tree = treeTable.getTree();
-	TreePath treePath= tree.getPathForLocation(e.getX(), e.getY());
-	if ( treePath != null ) {
-	  //get the network and network id corresponding to that path
+	//JTree tree = treeTable.getTree();
+	//TreePath treePath= tree.getPathForLocation(e.getX(), e.getY());
+	int row = treeTable.rowAtPoint(e.getPoint());
+	if ( row != -1 ) {
+	  JTree tree = treeTable.getTree();
+	  TreePath treePath = tree.getPathForRow(row);
 	  String networkID = (String)((NetworkTreeNode)treePath.getLastPathComponent()).getNetworkID();
+	  
 	  CyNetwork cyNetwork = Cytoscape.getNetwork(networkID);
 	  if ( cyNetwork != null) {
 	    //disable or enable specific options with respect to the actual network
