@@ -1,0 +1,8 @@
+species=Saccharomyces cerevisiae
+#set this to false to disable the undo features
+enableUndo=false
+
+# pick calculators from the vizmap.props file
+nodeAppearanceCalculator=Basic
+edgeAppearanceCalculator=Basic
+
