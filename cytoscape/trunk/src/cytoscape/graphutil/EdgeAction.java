@@ -5,6 +5,12 @@
 //-------------------------------------------------------------------------
 package cytoscape.graphutil;
 
+import cytoscape.view.NetworkView;
+import cytoscape.*;
+import cytoscape.view.*;
+import cytoscape.data.*;
+import cytoscape.browsers.*;
+import cytoscape.util.*;
 import java.util.*;
 import phoebe.*;
 import giny.view.*;
@@ -23,34 +29,88 @@ public class EdgeAction {
   public EdgeAction () {
   }
 
-  public static JMenuItem edgeLineType  (Object[] args, PNode node ) {
-    final PEdgeView ev = ( PEdgeView )node;
+  public static String getTitle ( Object[] args, PNode node ) {
+    //System.out.println( "Getting Title" );
+    final NetworkView nv = ( NetworkView )args[0];
+    //return nv.getNetwork().getNodeAttributes().getCanonicalName( node );
+   
+    if ( node instanceof PEdgeView ) {
+      return  nv.getNetwork().
+        getEdgeAttributes().
+        getCanonicalName(  nv.getNetwork().getGraphPerspective().
+                           getEdge( ( (PEdgeView)node).getGraphPerspectiveIndex() ) );
+    }
+    //      return nv.getNetwork().getGraphPerspective().
+    //    getEdge( ( (PEdgeView)node).getGraphPerspectiveIndex() ).
+    //    getIdentifier();
     
-    JMenu type_menu = new JMenu( "Edge Curve Type" );
-    type_menu.add( new JMenuItem( new AbstractAction( "Bezier" ) {
+    return "";
+  }
+
+  public static JMenuItem viewEdgeAttributeBrowser ( Object[] args, PNode node ) {
+    final NetworkView network = ( NetworkView )args[0];
+    final PEdgeView view = ( PEdgeView )node;
+    return new JMenuItem( new AbstractAction( "Attribute Browser" ) {
+          public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+
+                  List edges = network.getView().getSelectedEdges();
+                  Object[] objects;
+                  if ( !edges.isEmpty() ) {
+                    if ( !view.isSelected() ) {
+                      edges.add( view );
+                    }
+                    objects = new Object[ edges.size() ];
+                    for ( int i = 0; i < edges.size(); ++i ) {
+                      objects[i] = ( Object )( ( EdgeView )edges.get(i) ).getEdge();
+                    }
+
+                  } else {
+                    objects =  new Object[] { view.getEdge() };
+                  }
+                  TabbedBrowser nodeBrowser = new TabbedBrowser (objects, 
+                                                    network.getNetwork().getEdgeAttributes(),
+                                                    new Vector(),
+                                                    network.getCytoscapeObj().
+                                                    getConfiguration().getProperties().
+                                                    getProperty("webBrowserScript", 
+                                                                 "noScriptDefined") ,
+                                                    TabbedBrowser.BROWSING_NODES );
+     } } ); } } );
+  }
+
+
+  public static JMenuItem editEdge ( Object[] args, PNode node ) {
+    final NetworkView network = ( NetworkView )args[0];
+    final GraphView v = network.getView();
+    final PEdgeView ev = ( PEdgeView )node;
+
+    JMenu edit_menu = new JMenu( "Edit Edge" );
+
+    JMenu line_type_menu = new JMenu( "Curve Type" );
+    line_type_menu.add( new JMenuItem( new AbstractAction( "Bezier" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
                   ev.setLineType( PEdgeView.CURVED_LINES );
                 } } ); } } ) );
-    type_menu.add( new JMenuItem( new AbstractAction( "Polyline" ) {
+    line_type_menu.add( new JMenuItem( new AbstractAction( "Polyline" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
                   ev.setLineType( PEdgeView.STRAIGHT_LINES );
                 } } ); } } ) );
-    return type_menu;
-  }
+    edit_menu.add( line_type_menu );
 
-
-  public static JMenuItem edgeSourceEndType (Object[] args, PNode node ) {
-    final PEdgeView ev = ( PEdgeView )node;
-
-    JMenu type_menu = new JMenu( "Source Edge End Type" );
     
-     type_menu.add( new JMenuItem( new AbstractAction( "None" ) {
+    JMenu source_end = new JMenu( "Source Edge End" );
+ 
+    
+     source_end.add( new JMenuItem( new AbstractAction( "None" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -58,7 +118,7 @@ public class EdgeAction {
                   ev.setSourceEdgeEnd( PEdgeView.NO_END );
                 } } ); } } ) );
 
-     type_menu.add( new JMenuItem( new AbstractAction( "WHITE_DELTA" ) {
+     source_end.add( new JMenuItem( new AbstractAction( "WHITE_DELTA" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -66,7 +126,7 @@ public class EdgeAction {
                   ev.setSourceEdgeEnd( PEdgeView.WHITE_DELTA );
                 } } ); } } ) );
 
-     type_menu.add( new JMenuItem( new AbstractAction( "BLACK_DELTA" ) {
+     source_end.add( new JMenuItem( new AbstractAction( "BLACK_DELTA" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -74,7 +134,7 @@ public class EdgeAction {
                   ev.setSourceEdgeEnd( PEdgeView.BLACK_DELTA );
                 } } ); } } ) );
 
-     type_menu.add( new JMenuItem( new AbstractAction( "EDGE_COLOR_DELTA" ) {
+     source_end.add( new JMenuItem( new AbstractAction( "EDGE_COLOR_DELTA" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -82,7 +142,7 @@ public class EdgeAction {
                   ev.setSourceEdgeEnd( PEdgeView.EDGE_COLOR_DELTA );
                 } } ); } } ) );
 
-     type_menu.add( new JMenuItem( new AbstractAction( "WHITE_ARROW" ) {
+     source_end.add( new JMenuItem( new AbstractAction( "WHITE_ARROW" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -90,7 +150,7 @@ public class EdgeAction {
                   ev.setSourceEdgeEnd( PEdgeView.WHITE_ARROW );
                 } } ); } } ) );
 
-     type_menu.add( new JMenuItem( new AbstractAction( "BLACK_ARROW" ) {
+     source_end.add( new JMenuItem( new AbstractAction( "BLACK_ARROW" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -98,7 +158,7 @@ public class EdgeAction {
                   ev.setSourceEdgeEnd( PEdgeView.BLACK_ARROW );
                 } } ); } } ) );
 
-     type_menu.add( new JMenuItem( new AbstractAction( "EDGE_COLOR_ARROW" ) {
+     source_end.add( new JMenuItem( new AbstractAction( "EDGE_COLOR_ARROW" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -107,7 +167,7 @@ public class EdgeAction {
                 } } ); } } ) );
 
 
-      type_menu.add( new JMenuItem( new AbstractAction( "WHITE_DIAMOND" ) {
+      source_end.add( new JMenuItem( new AbstractAction( "WHITE_DIAMOND" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -115,7 +175,7 @@ public class EdgeAction {
                   ev.setSourceEdgeEnd( PEdgeView.WHITE_DIAMOND );
                 } } ); } } ) );
 
-     type_menu.add( new JMenuItem( new AbstractAction( "BLACK_DIAMOND" ) {
+     source_end.add( new JMenuItem( new AbstractAction( "BLACK_DIAMOND" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -123,7 +183,7 @@ public class EdgeAction {
                   ev.setSourceEdgeEnd( PEdgeView.BLACK_DIAMOND );
                 } } ); } } ) );
 
-     type_menu.add( new JMenuItem( new AbstractAction( "EDGE_COLOR_DIAMOND" ) {
+     source_end.add( new JMenuItem( new AbstractAction( "EDGE_COLOR_DIAMOND" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -133,7 +193,7 @@ public class EdgeAction {
 
      
 
-     type_menu.add( new JMenuItem( new AbstractAction( "WHITE_CIRCLE" ) {
+     source_end.add( new JMenuItem( new AbstractAction( "WHITE_CIRCLE" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -141,7 +201,7 @@ public class EdgeAction {
                   ev.setSourceEdgeEnd( PEdgeView.WHITE_CIRCLE );
                 } } ); } } ) );
 
-     type_menu.add( new JMenuItem( new AbstractAction( "BLACK_CIRCLE" ) {
+     source_end.add( new JMenuItem( new AbstractAction( "BLACK_CIRCLE" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -149,7 +209,7 @@ public class EdgeAction {
                   ev.setSourceEdgeEnd( PEdgeView.BLACK_CIRCLE );
                 } } ); } } ) );
 
-     type_menu.add( new JMenuItem( new AbstractAction( "EDGE_COLOR_CIRCLE" ) {
+     source_end.add( new JMenuItem( new AbstractAction( "EDGE_COLOR_CIRCLE" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -158,7 +218,7 @@ public class EdgeAction {
                 } } ); } } ) );
 
   
-     type_menu.add( new JMenuItem( new AbstractAction( "WHITE_T" ) {
+     source_end.add( new JMenuItem( new AbstractAction( "WHITE_T" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -166,7 +226,7 @@ public class EdgeAction {
                   ev.setSourceEdgeEnd( PEdgeView.WHITE_T );
                 } } ); } } ) );
 
-     type_menu.add( new JMenuItem( new AbstractAction( "BLACK_T" ) {
+     source_end.add( new JMenuItem( new AbstractAction( "BLACK_T" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -174,23 +234,18 @@ public class EdgeAction {
                   ev.setSourceEdgeEnd( PEdgeView.BLACK_T );
                 } } ); } } ) );
 
-     type_menu.add( new JMenuItem( new AbstractAction( "EDGE_COLOR_T" ) {
+     source_end.add( new JMenuItem( new AbstractAction( "EDGE_COLOR_T" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
                   ev.setSourceEdgeEnd( PEdgeView.EDGE_COLOR_T );
                 } } ); } } ) );
-
-    return type_menu;
-  }
-
-  public static JMenuItem edgeTargetEndType (Object[] args, PNode node ){
-    final PEdgeView ev = ( PEdgeView )node;
-
-    JMenu type_menu = new JMenu( "Target Edge End Type" );
+     edit_menu.add( source_end );
+  
+     JMenu target_end = new JMenu( "Target Edge End" );
     
-     type_menu.add( new JMenuItem( new AbstractAction( "None" ) {
+     target_end.add( new JMenuItem( new AbstractAction( "None" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -198,7 +253,7 @@ public class EdgeAction {
                   ev.setTargetEdgeEnd( PEdgeView.NO_END );
                 } } ); } } ) );
 
-     type_menu.add( new JMenuItem( new AbstractAction( "WHITE_DELTA" ) {
+     target_end.add( new JMenuItem( new AbstractAction( "WHITE_DELTA" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -206,7 +261,7 @@ public class EdgeAction {
                   ev.setTargetEdgeEnd( PEdgeView.WHITE_DELTA );
                 } } ); } } ) );
 
-     type_menu.add( new JMenuItem( new AbstractAction( "BLACK_DELTA" ) {
+     target_end.add( new JMenuItem( new AbstractAction( "BLACK_DELTA" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -214,7 +269,7 @@ public class EdgeAction {
                   ev.setTargetEdgeEnd( PEdgeView.BLACK_DELTA );
                 } } ); } } ) );
 
-     type_menu.add( new JMenuItem( new AbstractAction( "EDGE_COLOR_DELTA" ) {
+     target_end.add( new JMenuItem( new AbstractAction( "EDGE_COLOR_DELTA" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -222,7 +277,7 @@ public class EdgeAction {
                   ev.setTargetEdgeEnd( PEdgeView.EDGE_COLOR_DELTA );
                 } } ); } } ) );
 
-     type_menu.add( new JMenuItem( new AbstractAction( "WHITE_ARROW" ) {
+     target_end.add( new JMenuItem( new AbstractAction( "WHITE_ARROW" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -230,7 +285,7 @@ public class EdgeAction {
                   ev.setTargetEdgeEnd( PEdgeView.WHITE_ARROW );
                 } } ); } } ) );
 
-     type_menu.add( new JMenuItem( new AbstractAction( "BLACK_ARROW" ) {
+     target_end.add( new JMenuItem( new AbstractAction( "BLACK_ARROW" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -238,7 +293,7 @@ public class EdgeAction {
                   ev.setTargetEdgeEnd( PEdgeView.BLACK_ARROW );
                 } } ); } } ) );
 
-     type_menu.add( new JMenuItem( new AbstractAction( "EDGE_COLOR_ARROW" ) {
+     target_end.add( new JMenuItem( new AbstractAction( "EDGE_COLOR_ARROW" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -247,7 +302,7 @@ public class EdgeAction {
                 } } ); } } ) );
 
 
-      type_menu.add( new JMenuItem( new AbstractAction( "WHITE_DIAMOND" ) {
+      target_end.add( new JMenuItem( new AbstractAction( "WHITE_DIAMOND" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -255,7 +310,7 @@ public class EdgeAction {
                   ev.setTargetEdgeEnd( PEdgeView.WHITE_DIAMOND );
                 } } ); } } ) );
 
-     type_menu.add( new JMenuItem( new AbstractAction( "BLACK_DIAMOND" ) {
+     target_end.add( new JMenuItem( new AbstractAction( "BLACK_DIAMOND" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -263,7 +318,7 @@ public class EdgeAction {
                   ev.setTargetEdgeEnd( PEdgeView.BLACK_DIAMOND );
                 } } ); } } ) );
 
-     type_menu.add( new JMenuItem( new AbstractAction( "EDGE_COLOR_DIAMOND" ) {
+     target_end.add( new JMenuItem( new AbstractAction( "EDGE_COLOR_DIAMOND" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -273,7 +328,7 @@ public class EdgeAction {
 
      
 
-     type_menu.add( new JMenuItem( new AbstractAction( "WHITE_CIRCLE" ) {
+     target_end.add( new JMenuItem( new AbstractAction( "WHITE_CIRCLE" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -281,7 +336,7 @@ public class EdgeAction {
                   ev.setTargetEdgeEnd( PEdgeView.WHITE_CIRCLE );
                 } } ); } } ) );
 
-     type_menu.add( new JMenuItem( new AbstractAction( "BLACK_CIRCLE" ) {
+     target_end.add( new JMenuItem( new AbstractAction( "BLACK_CIRCLE" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -289,7 +344,7 @@ public class EdgeAction {
                   ev.setTargetEdgeEnd( PEdgeView.BLACK_CIRCLE );
                 } } ); } } ) );
 
-     type_menu.add( new JMenuItem( new AbstractAction( "EDGE_COLOR_CIRCLE" ) {
+     target_end.add( new JMenuItem( new AbstractAction( "EDGE_COLOR_CIRCLE" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -298,7 +353,7 @@ public class EdgeAction {
                 } } ); } } ) );
 
   
-     type_menu.add( new JMenuItem( new AbstractAction( "WHITE_T" ) {
+     target_end.add( new JMenuItem( new AbstractAction( "WHITE_T" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -306,7 +361,7 @@ public class EdgeAction {
                   ev.setTargetEdgeEnd( PEdgeView.WHITE_T );
                 } } ); } } ) );
 
-     type_menu.add( new JMenuItem( new AbstractAction( "BLACK_T" ) {
+     target_end.add( new JMenuItem( new AbstractAction( "BLACK_T" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -314,58 +369,17 @@ public class EdgeAction {
                   ev.setTargetEdgeEnd( PEdgeView.BLACK_T );
                 } } ); } } ) );
 
-     type_menu.add( new JMenuItem( new AbstractAction( "EDGE_COLOR_T" ) {
+     target_end.add( new JMenuItem( new AbstractAction( "EDGE_COLOR_T" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
                   ev.setTargetEdgeEnd( PEdgeView.EDGE_COLOR_T );
                 } } ); } } ) );
-
-    return type_menu;
-  } 
-
-
-
-  public static JMenuItem edgeEndBorderColor (Object[] args, PNode node ) {
-    final PGraphView v = ( PGraphView )args[0];
-    final PPath icon = ( PPath )node;
-
-    return new JMenuItem( new AbstractAction( "Choose Border Color" ) {
-         public void actionPerformed ( ActionEvent e ) {
-           // Do this in the GUI Event Dispatch thread...
-           SwingUtilities.invokeLater( new Runnable() {
-               public void run() {
-                 JColorChooser color = new JColorChooser();
-                 icon.setStrokePaint( color.showDialog( v.getComponent() , "Choose a Border Color", (java.awt.Color)icon.getPaint() ) );
-               } } ); } } );
   
-  }
-
-
-
-  public static JMenuItem edgeEndColor (Object[] args, PNode node ) {
-    final PPath icon = ( PPath )node;
-    final PGraphView v = ( PGraphView )args[0];
-
-    return new JMenuItem( new AbstractAction( "Custom" ) {
-         public void actionPerformed ( ActionEvent e ) {
-           // Do this in the GUI Event Dispatch thread...
-           SwingUtilities.invokeLater( new Runnable() {
-               public void run() {
-                 JColorChooser color = new JColorChooser();
-                 icon.setPaint( color.showDialog( v.getComponent() , "Choose a Border Color", (java.awt.Color)icon.getPaint() ) );
-               } } ); } } );
-  }
-
-  
-
-  public static JMenuItem edgeWidth (Object[] args, PNode node ) {
-
-    final PEdgeView ev = ( PEdgeView )node;
-    final PGraphView v = ( PGraphView )args[0];
-    
-    JMenu width_menu = new JMenu( "Choose Edge Width" );
+     edit_menu.add( target_end );
+      
+     JMenu width_menu = new JMenu( "Width (pts)" );
     width_menu.add( new JMenuItem( new AbstractAction( "1/2" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
@@ -430,84 +444,10 @@ public class EdgeAction {
                   ev.setStrokeWidth( 64f );
                 } } ); } } ) );
 
-    return width_menu;
-  }
+      edit_menu.add( width_menu );
+   
 
-
-  
-   public static JMenuItem colorEdge (Object[] args, PNode node ) {
-
-    final PEdgeView ev = ( PEdgeView )node;
-    final PGraphView v = ( PGraphView )args[0];
-
-    JMenu color_menu = new JMenu( "Choose node Color" );
-    color_menu.add( new JMenuItem( new AbstractAction( "Black" ) {
-          public void actionPerformed ( ActionEvent e ) {
-            // Do this in the GUI Event Dispatch thread...
-            SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
-                  ev.setUnselectedPaint( java.awt.Color.black );
-                } } ); } } ) );
-
-
-    color_menu.add( new JMenuItem( new AbstractAction( "White" ) {
-          public void actionPerformed ( ActionEvent e ) {
-            // Do this in the GUI Event Dispatch thread...
-            SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
-                  ev.setUnselectedPaint( java.awt.Color.white );
-                } } ); } } ) );
-
-  
-    color_menu.add( new JMenuItem( new AbstractAction( "Red" ) {
-          public void actionPerformed ( ActionEvent e ) {
-            // Do this in the GUI Event Dispatch thread...
-            SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
-                  ev.setUnselectedPaint( java.awt.Color.red );
-                } } ); } } ) );
-
-    color_menu.add( new JMenuItem( new AbstractAction( "Orange" ) {
-          public void actionPerformed ( ActionEvent e ) {
-            // Do this in the GUI Event Dispatch thread...
-            SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
-                  ev.setUnselectedPaint( java.awt.Color.orange );
-                } } ); } } ) );
-
-     color_menu.add( new JMenuItem( new AbstractAction( "Green" ) {
-          public void actionPerformed ( ActionEvent e ) {
-            // Do this in the GUI Event Dispatch thread...
-            SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
-                  ev.setUnselectedPaint( java.awt.Color.green );
-                } } ); } } ) );
-     
-     color_menu.add( new JMenuItem( new AbstractAction( "Blue" ) {
-         public void actionPerformed ( ActionEvent e ) {
-           // Do this in the GUI Event Dispatch thread...
-           SwingUtilities.invokeLater( new Runnable() {
-               public void run() {
-                 ev.setUnselectedPaint( java.awt.Color.blue );
-               } } ); } } ) );
-     
-     color_menu.add( new JMenuItem( new AbstractAction( "Magenta" ) {
-         public void actionPerformed ( ActionEvent e ) {
-           // Do this in the GUI Event Dispatch thread...
-           SwingUtilities.invokeLater( new Runnable() {
-               public void run() {
-                 ev.setUnselectedPaint( java.awt.Color.magenta );
-               } } ); } } ) );
-
-     color_menu.add( new JMenuItem( new AbstractAction( "Cyan" ) {
-         public void actionPerformed ( ActionEvent e ) {
-           // Do this in the GUI Event Dispatch thread...
-           SwingUtilities.invokeLater( new Runnable() {
-               public void run() {
-                 ev.setUnselectedPaint( java.awt.Color.cyan );
-               } } ); } } ) );
-
-     color_menu.add( new JMenuItem( new AbstractAction( "Custom" ) {
+     edit_menu.add( new JMenuItem( new AbstractAction( "<html>Color <small><i>(short-term)</i></small></html>" ) {
          public void actionPerformed ( ActionEvent e ) {
            // Do this in the GUI Event Dispatch thread...
            SwingUtilities.invokeLater( new Runnable() {
@@ -516,92 +456,349 @@ public class EdgeAction {
                  ev.setUnselectedPaint( color.showDialog( v.getComponent() , "Choose a Node Color", (java.awt.Color)ev.getUnselectedPaint() ) );
                } } ); } } ) );
 
-     return color_menu;
+     return edit_menu;
+
+  }
+
+  /**
+   * This will open an web page that will give you more info.
+   */
+  public static JMenuItem openWebInfo ( Object[] args, PNode node ) {
+
+    final PNode nv = node;
+
+    JMenu web_menu = new JMenu( "Web Info" );
+
+    web_menu.add(  new JMenuItem( new AbstractAction( "<html>SGD <small><i>yeast only</i></small></html>" ) {
+        public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  String gene = null;
+                  if ( nv instanceof PEdgeView ) {
+                    gene = ( ( PEdgeView ) nv).getLabel().getText();
+                  } 
+                  //System.out.println( "Node: "+nv.getLabel() );
+                  //System.out.println( "GEne: "+gene );
+                  if ( gene == null ) {
+                    gene = ( String )nv.getClientProperty("tooltip");
+                    //System.out.println( "Gene: "+gene );
+                  }
+                  OpenBrowser.openURL( "http://db.yeastgenome.org/cgi-bin/SGD/locus.pl?locus="+gene );
+               
+                } } ); } } ) );
+
+    web_menu.add(  new JMenuItem( new AbstractAction( "Google" ) {
+            public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  String gene = null;
+                  if ( nv instanceof PEdgeView ) {
+                    gene = ( ( PEdgeView ) nv).getLabel().getText();
+                  } 
+                  //System.out.println( "Node: "+nv.getLabel() );
+                  //System.out.println( "GEne: "+gene );
+                  if ( gene == null ) {
+                    gene = ( String )nv.getClientProperty("tooltip");
+                    //System.out.println( "Gene: "+gene );
+                  }
+                  OpenBrowser.openURL( "http://www.google.com/search?q="+gene);
+               
+                } } ); } } ) );
+
+   
+    JMenu gn_menu = new JMenu( "GenomeNet" );
+    web_menu.add( gn_menu );
+    gn_menu.add(  new JMenuItem( new AbstractAction( "Pathway" ) {
+            public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  String gene = null;
+                  if ( nv instanceof PEdgeView ) {
+                    gene = ( ( PEdgeView ) nv).getLabel().getText();
+                  } 
+                  //System.out.println( "Node: "+nv.getLabel() );
+                  //System.out.println( "GEne: "+gene );
+                  if ( gene == null ) {
+                    gene = ( String )nv.getClientProperty("tooltip");
+                    //System.out.println( "Gene: "+gene );
+                  }
+                  OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=pathway&keywords="+gene );
+               
+                } } ); } } ));
+
+    gn_menu.add(  new JMenuItem( new AbstractAction( "KO" ){
+            public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  String gene = null;
+                  if ( nv instanceof PEdgeView ) {
+                    gene = ( ( PEdgeView ) nv).getLabel().getText();
+                  } 
+                  //System.out.println( "Node: "+nv.getLabel() );
+                  //System.out.println( "GEne: "+gene );
+                  if ( gene == null ) {
+                    gene = ( String )nv.getClientProperty("tooltip");
+                    //System.out.println( "Gene: "+gene );
+                  }
+                  OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=ko&keywords="+gene );
+               
+                } } ); } } ));
+
+    gn_menu.add(  new JMenuItem( new AbstractAction( "Genes" ){
+            public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  String gene = null;
+                  if ( nv instanceof PEdgeView ) {
+                    gene = ( ( PEdgeView ) nv).getLabel().getText();
+                  } 
+                  //System.out.println( "Node: "+nv.getLabel() );
+                  //System.out.println( "GEne: "+gene );
+                  if ( gene == null ) {
+                    gene = ( String )nv.getClientProperty("tooltip");
+                    //System.out.println( "Gene: "+gene );
+                  }
+                  OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=genes&keywords="+gene );
+               
+                } } ); } } ));
+
+    gn_menu.add(  new JMenuItem( new AbstractAction( "Genome" ){
+            public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  String gene = null;
+                  if ( nv instanceof PEdgeView ) {
+                    gene = ( ( PEdgeView ) nv).getLabel().getText();
+                  } 
+                  //System.out.println( "Node: "+nv.getLabel() );
+                  //System.out.println( "GEne: "+gene );
+                  if ( gene == null ) {
+                    gene = ( String )nv.getClientProperty("tooltip");
+                    //System.out.println( "Gene: "+gene );
+                  }
+                  OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=genome&keywords="+gene );
+               
+                } } ); } } ));
+
+    gn_menu.add(  new JMenuItem( new AbstractAction( "Ligand" ){
+            public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  String gene = null;
+                  if ( nv instanceof PEdgeView ) {
+                    gene = ( ( PEdgeView ) nv).getLabel().getText();
+                  } 
+                  //System.out.println( "Node: "+nv.getLabel() );
+                  //System.out.println( "GEne: "+gene );
+                  if ( gene == null ) {
+                    gene = ( String )nv.getClientProperty("tooltip");
+                    //System.out.println( "Gene: "+gene );
+                  }
+                  OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=ligand&keywords="+gene );
+               
+                } } ); } } ));
+
+    gn_menu.add(  new JMenuItem( new AbstractAction( "Compound" ){
+            public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  String gene = null;
+                  if ( nv instanceof PEdgeView ) {
+                    gene = ( ( PEdgeView ) nv).getLabel().getText();
+                  } 
+                  //System.out.println( "Node: "+nv.getLabel() );
+                  //System.out.println( "GEne: "+gene );
+                  if ( gene == null ) {
+                    gene = ( String )nv.getClientProperty("tooltip");
+                    //System.out.println( "Gene: "+gene );
+                  }
+                  OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=compound&keywords="+gene );
+               
+                } } ); } } ));
+
+    gn_menu.add(  new JMenuItem( new AbstractAction( "Glycan" ){
+            public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  String gene = null;
+                  if ( nv instanceof PEdgeView ) {
+                    gene = ( ( PEdgeView ) nv).getLabel().getText();
+                  } 
+                  //System.out.println( "Node: "+nv.getLabel() );
+                  //System.out.println( "GEne: "+gene );
+                  if ( gene == null ) {
+                    gene = ( String )nv.getClientProperty("tooltip");
+                      //System.out.println( "Gene: "+gene );
+                  }
+                  OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=glycan&keywords="+gene );
+               
+                } } ); } } ));
+
+    gn_menu.add(  new JMenuItem( new AbstractAction( "Reaction" ){
+            public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  String gene = null;
+                  if ( nv instanceof PEdgeView ) {
+                    gene = ( ( PEdgeView ) nv).getLabel().getText();
+                  } 
+                  //System.out.println( "Node: "+nv.getLabel() );
+                  //System.out.println( "GEne: "+gene );
+                  if ( gene == null ) {
+                    gene = ( String )nv.getClientProperty("tooltip");
+                    //System.out.println( "Gene: "+gene );
+                  }
+                  OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=reaction&keywords="+gene );
+               
+                } } ); } } ));
+
+    gn_menu.add(  new JMenuItem( new AbstractAction( "Enzyme" ){
+            public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  String gene = null;
+                  if ( nv instanceof PEdgeView ) {
+                    gene = ( ( PEdgeView ) nv).getLabel().getText();
+                  } 
+                  //System.out.println( "Node: "+nv.getLabel() );
+                  //System.out.println( "GEne: "+gene );
+                  if ( gene == null ) {
+                    gene = ( String )nv.getClientProperty("tooltip");
+                    //System.out.println( "Gene: "+gene );
+                  }
+                  OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=enzyme&keywords="+gene );
+               
+                } } ); } }) );
+
+           gn_menu.addSeparator();
+           
+           gn_menu.add(  new JMenuItem( new AbstractAction( "Swiss-Prot" ){
+            public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  String gene = null;
+                  if ( nv instanceof PEdgeView ) {
+                    gene = ( ( PEdgeView ) nv).getLabel().getText();
+                  } 
+                  //System.out.println( "Node: "+nv.getLabel() );
+                  //System.out.println( "GEne: "+gene );
+                  if ( gene == null ) {
+                    gene = ( String )nv.getClientProperty("tooltip");
+                    //System.out.println( "Gene: "+gene );
+                  }
+                  OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=swissprot&keywords="+gene );
+               
+                } } ); } }) );
+
+         
+
+           gn_menu.add(  new JMenuItem( new AbstractAction( "Ref-Seq" ){
+            public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  String gene = null;
+                  if ( nv instanceof PEdgeView ) {
+                    gene = ( ( PEdgeView ) nv).getLabel().getText();
+                  } 
+                  //System.out.println( "Node: "+nv.getLabel() );
+                  //System.out.println( "GEne: "+gene );
+                  if ( gene == null ) {
+                    gene = ( String )nv.getClientProperty("tooltip");
+                    //System.out.println( "Gene: "+gene );
+                  }
+                  OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=refseq&keywords="+gene );
+               
+                } } ); } } ));
+
+           gn_menu.add(  new JMenuItem( new AbstractAction( "GenBank" ){
+            public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  String gene = null;
+                  if ( nv instanceof PEdgeView ) {
+                    gene = ( ( PEdgeView ) nv).getLabel().getText();
+                  } 
+                  //System.out.println( "Node: "+nv.getLabel() );
+                  //System.out.println( "GEne: "+gene );
+                  if ( gene == null ) {
+                    gene = ( String )nv.getClientProperty("tooltip");
+                    //System.out.println( "Gene: "+gene );
+                  }
+                  OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=genbank&keywords="+gene );
+               
+                } } ); } } ));
+
+           gn_menu.add(  new JMenuItem( new AbstractAction( "Embl" ){
+            public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  String gene = null;
+                  if ( nv instanceof PEdgeView ) {
+                    gene = ( ( PEdgeView ) nv).getLabel().getText();
+                  } 
+                  //System.out.println( "Node: "+nv.getLabel() );
+                  //System.out.println( "GEne: "+gene );
+                  if ( gene == null ) {
+                    gene = ( String )nv.getClientProperty("tooltip");
+                    //System.out.println( "Gene: "+gene );
+                  }
+                  OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=embl&keywords="+gene );
+               
+                } } ); } } ));
+
+           return web_menu;
+
    }
 
-   public static JMenuItem colorSelectEdge (Object[] args, PNode node ) {
+  //----------------------------------------//
+  // Edge Ends
+  //----------------------------------------//
 
-    final PEdgeView ev = ( PEdgeView )node;
-   
+   public static JMenuItem edgeEndBorderColor (Object[] args, PNode node ) {
     final PGraphView v = ( PGraphView )args[0];
-    JMenu color_menu = new JMenu( "Choose Selected Color" );
-    color_menu.add( new JMenuItem( new AbstractAction( "Black" ) {
-          public void actionPerformed ( ActionEvent e ) {
-            // Do this in the GUI Event Dispatch thread...
-            SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
-                  ev.setSelectedPaint( java.awt.Color.black );
-                } } ); } } ) );
+    final PPath icon = ( PPath )node;
 
-
-    color_menu.add( new JMenuItem( new AbstractAction( "White" ) {
-          public void actionPerformed ( ActionEvent e ) {
-            // Do this in the GUI Event Dispatch thread...
-            SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
-                  ev.setSelectedPaint( java.awt.Color.white );
-                } } ); } } ) );
-
-  
-    color_menu.add( new JMenuItem( new AbstractAction( "Red" ) {
-          public void actionPerformed ( ActionEvent e ) {
-            // Do this in the GUI Event Dispatch thread...
-            SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
-                  ev.setSelectedPaint( java.awt.Color.red );
-                } } ); } } ) );
-
-    color_menu.add( new JMenuItem( new AbstractAction( "Orange" ) {
-          public void actionPerformed ( ActionEvent e ) {
-            // Do this in the GUI Event Dispatch thread...
-            SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
-                  ev.setSelectedPaint( java.awt.Color.orange );
-                } } ); } } ) );
-
-     color_menu.add( new JMenuItem( new AbstractAction( "Green" ) {
-          public void actionPerformed ( ActionEvent e ) {
-            // Do this in the GUI Event Dispatch thread...
-            SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
-                  ev.setSelectedPaint( java.awt.Color.green );
-                } } ); } } ) );
-     
-     color_menu.add( new JMenuItem( new AbstractAction( "Blue" ) {
-         public void actionPerformed ( ActionEvent e ) {
-           // Do this in the GUI Event Dispatch thread...
-           SwingUtilities.invokeLater( new Runnable() {
-               public void run() {
-                 ev.setSelectedPaint( java.awt.Color.blue );
-               } } ); } } ) );
-     
-     color_menu.add( new JMenuItem( new AbstractAction( "Magenta" ) {
-         public void actionPerformed ( ActionEvent e ) {
-           // Do this in the GUI Event Dispatch thread...
-           SwingUtilities.invokeLater( new Runnable() {
-               public void run() {
-                 ev.setSelectedPaint( java.awt.Color.magenta );
-               } } ); } } ) );
-
-     color_menu.add( new JMenuItem( new AbstractAction( "Cyan" ) {
-         public void actionPerformed ( ActionEvent e ) {
-           // Do this in the GUI Event Dispatch thread...
-           SwingUtilities.invokeLater( new Runnable() {
-               public void run() {
-                 ev.setSelectedPaint( java.awt.Color.cyan );
-               } } ); } } ) );
-
-     color_menu.add( new JMenuItem( new AbstractAction( "Custom" ) {
+    return new JMenuItem( new AbstractAction( "Choose Border Color" ) {
          public void actionPerformed ( ActionEvent e ) {
            // Do this in the GUI Event Dispatch thread...
            SwingUtilities.invokeLater( new Runnable() {
                public void run() {
                  JColorChooser color = new JColorChooser();
-                 ev.setSelectedPaint( color.showDialog( v.getComponent() , "Choose a Node Color", (java.awt.Color)ev.getSelectedPaint() ) );
-               } } ); } } ) );
+                 icon.setStrokePaint( color.showDialog( v.getComponent() , "Choose a Border Color", (java.awt.Color)icon.getPaint() ) );
+               } } ); } } );
+  
+  }
 
-     return color_menu;
-   }
+
+
+  public static JMenuItem edgeEndColor (Object[] args, PNode node ) {
+    final PPath icon = ( PPath )node;
+    final PGraphView v = ( PGraphView )args[0];
+
+    return new JMenuItem( new AbstractAction( "Color" ) {
+         public void actionPerformed ( ActionEvent e ) {
+           // Do this in the GUI Event Dispatch thread...
+           SwingUtilities.invokeLater( new Runnable() {
+               public void run() {
+                 JColorChooser color = new JColorChooser();
+                 icon.setPaint( color.showDialog( v.getComponent() , "Border Color", (java.awt.Color)icon.getPaint() ) );
+               } } ); } } );
+  }
 
 
 

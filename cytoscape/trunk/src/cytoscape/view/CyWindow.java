@@ -335,38 +335,31 @@ protected void addViewContextMenus() {
   // Add some Edge Context Menus
   view.addContextMethod( "class phoebe.PEdgeView",
                          "cytoscape.graphutil.EdgeAction",
-                         "colorEdge",
-                         new Object[] {view } );
+                         "getTitle",
+                         new Object[] { ( NetworkView )this } );
   view.addContextMethod( "class phoebe.PEdgeView",
                          "cytoscape.graphutil.EdgeAction",
-                         "colorSelectEdge",
-                         new Object[] {view } );
+                         "editEdge",
+                         new Object[] { ( NetworkView )this } );
   view.addContextMethod( "class phoebe.PEdgeView",
                          "cytoscape.graphutil.EdgeAction",
-                         "edgeWidth",
-                         new Object[] {view } );
-	    view.addContextMethod( "class phoebe.PEdgeView",
-                                  "cytoscape.graphutil.EdgeAction",
-                                  "edgeLineType",
-                                 new Object[] {view } );
-	    view.addContextMethod( "class phoebe.PEdgeView",
-                                  "cytoscape.graphutil.EdgeAction",
-                                  "edgeSourceEndType",
-                                 new Object[] {view } );
-	    view.addContextMethod( "class phoebe.PEdgeView",
-                                  "cytoscape.graphutil.EdgeAction",
-                                  "edgeTargetEndType",
-                                 new Object[] {view } );
+                         "viewEdgeAttributeBrowser",
+                         new Object[] { ( NetworkView )this } );
+   view.addContextMethod( "class phoebe.PEdgeView",
+                          "cytoscape.graphutil.EdgeAction",
+                          "openWebInfo",
+                          new Object[] { ( NetworkView )this } );
 
-	    // Add some Edge-end Context menus
-	    view.addContextMethod( "class phoebe.util.PEdgeEndIcon",
-                                  "cytoscape.graphutil.EdgeAction",
-                                  "edgeEndColor",
-                                 new Object[] {view } );
-	    view.addContextMethod( "class phoebe.util.PEdgeEndIcon",
-                                  "cytoscape.graphutil.EdgeAction",
-                                  "edgeEndBorderColor",
-                                 new Object[] {view } );
+
+  // Add some Edge-end Context menus
+  view.addContextMethod( "class phoebe.util.PEdgeEndIcon",
+                         "cytoscape.graphutil.EdgeAction",
+                         "edgeEndColor",
+                         new Object[] {view } );
+  view.addContextMethod( "class phoebe.util.PEdgeEndIcon",
+                         "cytoscape.graphutil.EdgeAction",
+                         "edgeEndBorderColor",
+                         new Object[] {view } );
 
 }
     

@@ -62,7 +62,21 @@ public class NodeAction {
             SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
 
-    TabbedBrowser nodeBrowser = new TabbedBrowser ( new Object[] { view.getNode() }, 
+                  List nodes = network.getView().getSelectedNodes();
+                  Object[] objects;
+                  if ( !nodes.isEmpty() ) {
+                    if ( !view.isSelected() ) {
+                      nodes.add( view );
+                    }
+                    objects = new Object[ nodes.size() ];
+                    for ( int i = 0; i < nodes.size(); ++i ) {
+                      objects[i] = ( Object )( ( NodeView )nodes.get(i) ).getNode();
+                    }
+                  } else {
+                    objects = new Object[] { view.getNode() };
+                  }
+
+    TabbedBrowser nodeBrowser = new TabbedBrowser ( objects, 
                                                     network.getNetwork().getNodeAttributes(),
                                                     new Vector(),
                                                     network.getCytoscapeObj().
