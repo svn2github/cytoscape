@@ -177,8 +177,8 @@ public class CalculatorCatalog {
      * is lazily created.
      *
      * Note that fireStateChanged is only triggered by calling
-     * {@link addCalculator}, {@link renameCalculator}, or
-     * {@link removeCalculator}.
+     * {@link #addCalculator}, {@link #renameCalculator}, or
+     * {@link #removeCalculator}.
      * Manipulating each type explicitly
      * does not trigger ChangeEvents to be fired. This is because the UI classes
      * only use the more general methods.

@@ -529,7 +529,7 @@ public class ValueDisplayer extends JButton {
      *	@param	type
      *		Type of input, one of {@link #COLOR}, {@link #LINETYPE},
      *		{@link #NODESHAPE}, {@link #ARROW}, {@link #STRING},
-     *		{@link #DOUBLE}, {@link #INT}, {@link FONT}
+     *		{@link #DOUBLE}, {@link #INT}, {@link #FONT}
      *
      *	@return	ValueDisplayer initialized for given input
      *	@throws ClassCastException if you didn't pass in a known type
@@ -562,7 +562,7 @@ public class ValueDisplayer extends JButton {
 
     /**
      *	Get a display/input pair initialized to a given type of input. If sending
-     *	fonts, must send fonts as gotten from {@link GraphicsEnvrionment#getAllFonts}
+     *	fonts, must send fonts as gotten from {@link java.awt.GraphicsEnvrionment#getAllFonts}
      *
      *	@param	parent
      *		The parent dialog for the returned ValueDisplayer

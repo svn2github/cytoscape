@@ -314,7 +314,7 @@ static public Vector getPropertyValues (Properties props, String propName)
  *                      for possible trailing whitespace
  * @param delimiter     the string (e.g., "::") which separates the substrings
  *
- * @returns             true or false
+ * @return             true or false
  *
  */
 static public boolean isList (String listString, String startToken, String endToken,
@@ -341,7 +341,7 @@ static public boolean isList (String listString, String startToken, String endTo
  *                      for possible trailing whitespace
  * @param delimiter     the string (e.g., "::") which separates the substrings
  *
- * @returns             an array made up of the substrings 
+ * @return             an array made up of the substrings 
  *
  */
 static public String [] parseList (String listString, String startToken, String endToken,
