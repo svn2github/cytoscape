@@ -53,6 +53,18 @@ public final class AllGraphPerspectiveMethodsTest
     int minEdgeInx = 0;
     for (int i = 0; i < edgeInx.length; i++)
       minEdgeInx = Math.min(minEdgeInx, edgeInx[i]);
+    RootGraph root2 = FingRootGraphFactory.instantiateRootGraph();
+    root2.createNode();
+    root2.createEdge
+      (((Node) root2.nodesIterator().next()).getRootGraphIndex(),
+       ((Node) root2.nodesIterator().next()).getRootGraphIndex());
+    final Node root2Node = (Node) root2.nodesIterator().next();
+    final Edge root2Edge = (Edge) root2.edgesIterator().next();
+    final Node nodeNotInPersp = root.getNode(root.createNode());
+    final Edge edge1NotInPersp = root.getEdge
+      (root.createEdge(nodeInx[1], nodeInx[0], true));
+    final Edge edge2NotInPersp = root.getEdge
+      (root.createEdge(nodeInx[2], nodeNotInPersp.getRootGraphIndex(), false));
 
     // Not testing GraphPerspectiveChangeListener methods.
 
@@ -178,6 +190,18 @@ public final class AllGraphPerspectiveMethodsTest
         persp.getEdgeIndicesArray(Integer.MIN_VALUE, Integer.MAX_VALUE,
                                  false, false) != null)
       throw new IllegalStateException("not null");
+
+    // hide/restore mothods are tested elsewhere.
+
+    // containsNode(Node).
+    if (!persp.containsNode(twoNodes[1]))
+      throw new IllegalStateException("GraphPersp does not contain node");
+    if (persp.containsNode(root2Node))
+      throw new IllegalStateException("GraphPersp contains node from other");
+    if (persp.containsNode(nodeNotInPersp) ||
+        !persp.getRootGraph().containsNode(nodeNotInPersp))
+      throw new IllegalStateException("GraphPerspective contains node");
+    
   }
 
 }
