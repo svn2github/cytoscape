@@ -213,7 +213,7 @@ public final class MinIntHeap
    * the return value, behavior of the iterator is undefined.<p>
    * This iterator has no effect on the set of element in this heap.  This
    * iterator has no effect on the ordered state of this heap.
-   * @see #orderedElements(boolean, boolean)
+   * @see #orderedElements(boolean)
    */
   public final IntIterator elements()
   {
