@@ -127,7 +127,7 @@ public void testForExpectedNullValues () throws Exception
   assertTrue (config.getInteractionsFilename() == null);
   assertTrue (config.getExpressionFilename() == null);
   assertTrue (config.getAllDataFileNames().length == 0);
-  assertTrue (config.getDefaultSpeciesName().equals ("n/a"));
+  assertTrue (config.getDefaultSpeciesName() == null);
   assertTrue (config.helpRequested());
   assertTrue (!config.inputsError ());
 
