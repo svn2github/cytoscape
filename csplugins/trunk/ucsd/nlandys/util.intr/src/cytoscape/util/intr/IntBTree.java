@@ -428,9 +428,10 @@ public final class IntBTree
         int currentMax = maxBound; int currentMin;
         for (int i = n.sliceCount - 2; i >= -1; i--) {
           currentMin = ((i < 0) ? minBound : n.data.splitVals[i]);
-          if (Math.max(currentMin, xMin) <= Math.min(currentMax, xMax))
+          if (currentMin <= xMax) {
             count += searchRange(n.data.children[i + 1], nodeStack, xMin, xMax,
                                  currentMin, currentMax);
+            if (currentMin < xMin) break; }
           currentMax = currentMin; } } }
     return count;
   }
