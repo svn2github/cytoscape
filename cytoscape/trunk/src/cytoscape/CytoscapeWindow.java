@@ -330,22 +330,22 @@ private void loadVizMapper() {
   String nacName = configProps.getProperty("nodeAppearanceCalculator");
   if (nacName != null) {nac = cc.getNodeAppearanceCalculator(nacName);}
   if (nac == null) {//none specified, or not found
-      if (OldStyleCalculatorIO.loaded) {//use these loaded calculators
-          nac = cc.getNodeAppearanceCalculator(OldStyleCalculatorIO.calcName);
-      }
-      if (nac == null) {//not loaded, or not found
+      //get the default nac from the catalog
+      nac = cc.getNodeAppearanceCalculator("default");
+      if (nac == null) {//catalog doesn't have a default
           nac = new NodeAppearanceCalculator();
+          cc.addNodeAppearanceCalculator("default", nac);//store as default
       }
   }
   EdgeAppearanceCalculator eac = null;
   String eacName = configProps.getProperty("edgeAppearanceCalculator");
   if (eacName != null) {eac = cc.getEdgeAppearanceCalculator(eacName);}
   if (eac == null) {//none specified, or not found
-      if (OldStyleCalculatorIO.loaded) {//use these loaded calculators
-          eac = cc.getEdgeAppearanceCalculator(OldStyleCalculatorIO.calcName);
-      }
-      if (eac == null) {//not loaded, or not found
+      //get the default eac from the catalog
+      eac = cc.getEdgeAppearanceCalculator("default");
+      if (eac == null) {//catalog doesn't have a default
           eac = new EdgeAppearanceCalculator();
+          cc.addEdgeAppearanceCalculator("default", eac);//store as default
       }
   }
   

@@ -39,8 +39,20 @@ public class OldStyleCalculatorIO {
     //helper variable used to halt execution until the UI is closed
     private static boolean isDone = false;
     
+    /**
+     * This method takes a properties object as an argument, expected to be the
+     * contents of a cytoscape.props file, and a CalculatorCatalog. It searches
+     * for property keys in the props that represent visual mappings in the old
+     * format, and if found brings up a UI to inform the user, prompt for a name
+     * for the calculators, and calls the loadCalculators method to convert and
+     * install these visual mappings.
+     *
+     * @param props  a properties object, should come from cytoscape.props
+     * @param catalog  the catalog in which to store any found visual mappings
+     */
     public static void checkForCalculators(Properties props, CalculatorCatalog catalog) {
         boolean found = false;
+        //check every key to see if it is part of the old format visual mappings
         for (Enumeration e = props.propertyNames(); e.hasMoreElements(); ) {
             String key = (String)e.nextElement();
             if (key.startsWith("node.fillColor.") ||
@@ -60,10 +72,11 @@ public class OldStyleCalculatorIO {
                     break;
             }
         }
-        if (!found) {return;}
+        if (!found) {return;}//not found, so there's nothing to do
         
         final JFrame frame = new JFrame();
         
+        //create some text to tell the user what is going on
         String lineSep = System.getProperty("line.separator");
         StringBuffer message = new StringBuffer();
         message.append("Your cytoscape.props file contains visual mappings specified");
@@ -84,7 +97,11 @@ public class OldStyleCalculatorIO {
         theText.setEditable(false);
         theText.setBorder(BorderFactory.createLineBorder(Color.WHITE, 10));
         
+        //prompt for a name for the new calculators
         JLabel nameLabel = new JLabel("enter a name for these mappings");
+        /* try to use the name defined by the variable 'calcName'
+         * if calculators with that name already exist, then we force the user
+         * to make up a name, then check for uniqueness */
         String checkedName = catalog.checkNodeAppearanceCalculatorName(calcName);
         String doubleCheckedName = catalog.checkEdgeAppearanceCalculatorName(checkedName);
         if (!calcName.equals(doubleCheckedName)) {//force user to pick a new name
@@ -97,12 +114,14 @@ public class OldStyleCalculatorIO {
             }
         });
         
+        //create an OK button to trigger converting and loading the visual mappings
         final Properties theProps = props;
         final CalculatorCatalog theCatalog = catalog;
         JButton okButton = new JButton("Convert old visual mapppings");
         okButton.setMargin(new Insets(0,0,0,0));
         okButton.addActionListener( new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
+                //only load if the provided name is acceptable
                 calcName = nameEntry.getText();
                 if (calcName == null || calcName.equals("")) {
                     String s = "You must specify a name for these mappings.";
@@ -118,6 +137,7 @@ public class OldStyleCalculatorIO {
                 }
             }
         });
+        //add a button to just ignore old-style visual mappings
         JButton ignoreButton = new JButton("Ignore old visual mappings");
         ignoreButton.setMargin(new Insets(0,0,0,0));
         ignoreButton.addActionListener( new ActionListener() {
@@ -127,6 +147,7 @@ public class OldStyleCalculatorIO {
             }
         });
         
+        //build up the whole UI
         JPanel namePanel = new JPanel();
         namePanel.setLayout(new FlowLayout());
         namePanel.add(nameLabel);
@@ -160,8 +181,17 @@ public class OldStyleCalculatorIO {
         }
     }
     
+    /**
+     * Helper method called from the UI listeners to set a boolean flag
+     * that breaks the while loop in the above method.
+     */
     private static void setDone() {isDone = true;}
     
+    /**
+     * Tests if a node or edge appearance calculator with the name specified
+     * by the variable 'calcName' already exists. Returns false if a match
+     * is found, true if the name is not currently used.
+     */
     private static boolean checkName(CalculatorCatalog catalog) {
         NodeAppearanceCalculator nac = catalog.getNodeAppearanceCalculator(calcName);
         if (nac != null) {return false;}
@@ -170,6 +200,13 @@ public class OldStyleCalculatorIO {
         return true;
     }
     
+    /**
+     * Given a properties object, which is expected to come from a
+     * cytoscape.props file, and a CalculatorCatalog, loads all visual mappings
+     * specified in the old format by first converting the properties into the
+     * new format and then running the converted properties through the
+     * machinery of the CalculatorIO class.
+     */
     public static void loadCalculators(Properties props, CalculatorCatalog catalog) {
         String colorInterpolator = "LinearNumberToColorInterpolator";
         String numberInterpolator = "LinearNumberToNumberInterpolator";
@@ -221,10 +258,17 @@ public class OldStyleCalculatorIO {
         loadCalculator(props, catalog, "edge.targetDecoration", edgeTargetName,
         edgeArrowClass, edgeArrowIntClass, flatInterpolator);
         
+        //after loading the individual attribute calculators, load the
+        //node and edge appearance calculators
         loadNodeAppearanceCalculator(props, catalog);
         loadEdgeAppearanceCalculator(props, catalog);
     }
     
+    /**
+     * Helper method called with the keys specific to one of the visual
+     * attributes. First converts those properties to the new format, then
+     * loads the calculators into the catalog.
+     */
     private static void loadCalculator(Properties props, CalculatorCatalog catalog,
                                        String oldBaseKey, String newBaseKey,
                                        String className, String intClassName,
@@ -237,17 +281,33 @@ public class OldStyleCalculatorIO {
         Calculator c = CalculatorFactory.newCalculator(name, newProps, newBaseKey,
                                                        intClassName);
         if (c != null) {
-            //CalculatorIO.removeDuplicate(c, catalog);
+            //make sure we remove any duplicate before trying to add this calculator
+            CalculatorIO.removeDuplicate(c, catalog);
             catalog.addCalculator(c);
         }
     }
     
+    /**
+     * Given a properties object with keys specifying visual mappings in the
+     * old format, returns a new properties object specifying the same mapping
+     * in the new format.
+     *
+     * @param props  the properties file
+     * @param oldBaseKey  the first part of the old format properties keys
+     * @param newBaseKey  the first part of the corresponding new property keys
+     * @param className  the name of the calculator class
+     * @param interpolator  the name of the interpolator class, used for continuous mappings
+     *
+     * @return  a Properties object in the new format
+     */
     private static Properties getNewProperties(Properties props, String oldBaseKey,
     String newBaseKey, String className, String interpolator) {
         Properties newProps = null;
+        //look for the key specifying the controlling attribute
         String controller = props.getProperty(oldBaseKey + ".controller");
         if (controller != null) {
             String header = oldBaseKey + "." + controller;
+            //should have a type for this visual mapping
             String type = props.getProperty(header + ".type");
             if (type == null) {
                 //handle missing type error
@@ -261,18 +321,32 @@ public class OldStyleCalculatorIO {
                 //handle unknown type error
                 return null;
             }
+            //set the class name of the calculator
             newProps.setProperty(newBaseKey + ".class", className);
+            //and the controlling attribute
             newProps.setProperty(newBaseKey + ".mapping.controller", controller);
         }
         return newProps;
     }
     
+    /**
+     * Called when the visual mapping is of type 'discrete'. Creates a key
+     * for the discrete type and a key for each of the map definitions.
+     *
+     * @param props  the properties object in the old format
+     * @param header  the header of the old format property keys
+     * @param newBaseKey  the header for the new format property keys
+     *
+     * @return  a properties object in the new format
+     */
     private static Properties translateDiscrete(Properties props, String header,
     String newBaseKey) {
         Properties newProps = new Properties();
+        //set the mapping type, i.e. discrete
         newProps.setProperty(newBaseKey + ".mapping.type", "DiscreteMapping");
         String mapKey = header + ".map.";
         Enumeration eProps = props.propertyNames();
+        //convert all of the keys defining data->visual mappings
         while(eProps.hasMoreElements()) {
             String key = (String)eProps.nextElement();
             if (key.startsWith(mapKey)) {
@@ -285,9 +359,20 @@ public class OldStyleCalculatorIO {
         return newProps;
     }
     
+    /**
+     * Called when the visual mapping is of type 'continuous'. Creates a key
+     * for the continuous type and keys for all the mapping-specific entries.
+     *
+     * @param props  the properties object in the old format
+     * @param header  the header of the old format property keys
+     * @param newBaseKey  the header for the new format property keys
+     *
+     * @return  a properties object in the new format
+     */
     private static Properties translateContinuous(Properties props, String header,
     String newBaseKey) {
         Properties newProps = new Properties();
+        //save the mapping type, i.e. continuous
         newProps.setProperty(newBaseKey + ".mapping.type", "ContinuousMapping");
         String bvNumKey = header + ".boundaryvalues";
         String bvNumString = props.getProperty(bvNumKey);
@@ -317,28 +402,45 @@ public class OldStyleCalculatorIO {
         
         return newProps;
     }
-        
+    
+    /**
+     * After loading all the individual attribute calculators, creates a node
+     * appearance calculator representing all the visual mappings specified in
+     * the old format in the props argument. Also installs any entries found
+     * in the "default" node appearance calculator, so that they will be
+     * automatically activated the next time the user runs Cytoscape.
+     */
     private static void loadNodeAppearanceCalculator(Properties props,
                                                      CalculatorCatalog catalog) {
         NodeAppearanceCalculator nac = new NodeAppearanceCalculator();
+        //we'll also store any entries in the default nac
+        NodeAppearanceCalculator defNAC = catalog.getNodeAppearanceCalculator("default");
+        if (defNAC == null) {
+            defNAC = new NodeAppearanceCalculator();
+            catalog.addNodeAppearanceCalculator("default", defNAC);
+        }
         
         String defaultNodeFillString = props.getProperty("node.fillColor.default");
         if (defaultNodeFillString != null) {
             nac.setDefaultNodeFillColor( Misc.parseRGBText(defaultNodeFillString) );
+            defNAC.setDefaultNodeFillColor( Misc.parseRGBText(defaultNodeFillString) );
         }
         String defaultBorderColorString = props.getProperty("node.borderColor.default");
         if (defaultBorderColorString != null) {
-            nac.setDefaultNodeBorderColor( Misc.parseRGBText(defaultBorderColorString) );
+            nac.setDefaultNodeBorderColor(Misc.parseRGBText(defaultBorderColorString));
+            defNAC.setDefaultNodeBorderColor(Misc.parseRGBText(defaultBorderColorString));
         }
         String defaultLineTypeString = props.getProperty("node.borderLinetype.default");
         if (defaultLineTypeString != null) {
             nac.setDefaultNodeLineType( Misc.parseLineTypeText(defaultLineTypeString) );
+            defNAC.setDefaultNodeLineType( Misc.parseLineTypeText(defaultLineTypeString) );
         }
         String defaultWidthString = props.getProperty("node.width.default");
         if (defaultWidthString != null) {
             try {
                 double d = Double.parseDouble(defaultWidthString);
                 nac.setDefaultNodeWidth(d);
+                defNAC.setDefaultNodeWidth(d);
             } catch (NumberFormatException e) {
             }
         }
@@ -347,50 +449,110 @@ public class OldStyleCalculatorIO {
             try {
                 double d = Double.parseDouble(defaultHeightString);
                 nac.setDefaultNodeHeight(d);
+                defNAC.setDefaultNodeHeight(d);
             } catch (NumberFormatException e) {
             }
         }
         String defaultShapeString = props.getProperty("node.shape.default");
         if (defaultShapeString != null) {
             nac.setDefaultNodeShape( Misc.parseNodeShapeText(defaultShapeString) );
+            defNAC.setDefaultNodeShape( Misc.parseNodeShapeText(defaultShapeString) );
         }
         
-        //note that null values from the catalog are acceptable
-        nac.setNodeFillColorCalculator( catalog.getNodeColorCalculator(calcName) );
-        nac.setNodeBorderColorCalculator( catalog.getNodeColorCalculator(calcName + "2"));
-        nac.setNodeLineTypeCalculator( catalog.getNodeLineTypeCalculator(calcName) );
-        nac.setNodeWidthCalculator( catalog.getNodeSizeCalculator(calcName) );
-        nac.setNodeHeightCalculator( catalog.getNodeSizeCalculator(calcName + "2") );
-        nac.setNodeShapeCalculator( catalog.getNodeShapeCalculator(calcName) );
+        //note that null values from the catalog are acceptable for the new nac,
+        //but we don't want to trample existing values in the default nac
+        NodeColorCalculator nfc = catalog.getNodeColorCalculator(calcName);
+        if (nfc != null) {
+            nac.setNodeFillColorCalculator(nfc);
+            defNAC.setNodeFillColorCalculator(nfc);
+        }
+        NodeColorCalculator nbc = catalog.getNodeColorCalculator(calcName + "2");
+        if (nbc != null) {
+            nac.setNodeBorderColorCalculator(nbc);
+            defNAC.setNodeBorderColorCalculator(nbc);
+        }
+        NodeLineTypeCalculator nlt = catalog.getNodeLineTypeCalculator(calcName);
+        if (nlt != null) {
+            nac.setNodeLineTypeCalculator(nlt);
+            defNAC.setNodeLineTypeCalculator(nlt);
+        }
+        NodeSizeCalculator nw = catalog.getNodeSizeCalculator(calcName);
+        if (nw != null) {
+            nac.setNodeWidthCalculator(nw);
+            defNAC.setNodeWidthCalculator(nw);
+        }
+        NodeSizeCalculator nh = catalog.getNodeSizeCalculator(calcName + "2");
+        if (nh != null) {
+            nac.setNodeHeightCalculator(nh);
+            defNAC.setNodeHeightCalculator(nh);
+        }
+        NodeShapeCalculator nsh = catalog.getNodeShapeCalculator(calcName);
+        if (nsh != null) {
+            nac.setNodeShapeCalculator(nsh);
+            defNAC.setNodeShapeCalculator(nsh);
+        }
         
         catalog.addNodeAppearanceCalculator(calcName, nac);
     }
     
+    /**
+     * After loading all the individual attribute calculators, creates an edge
+     * appearance calculator representing all the visual mappings specified in
+     * the old format in the props argument. Also installs any entries found
+     * in the "default" edge appearance calculator, so that they will be
+     * automatically activated the next time the user runs Cytoscape.
+     */
     private static void loadEdgeAppearanceCalculator(Properties props,
                                                      CalculatorCatalog catalog) {
         EdgeAppearanceCalculator eac = new EdgeAppearanceCalculator();
+        //we'll also store any entries in the default eac
+        EdgeAppearanceCalculator defEAC = catalog.getEdgeAppearanceCalculator("default");
+        if (defEAC == null) {
+            defEAC = new EdgeAppearanceCalculator();
+            catalog.addEdgeAppearanceCalculator("default", defEAC);
+        }
         
         String defaultColorString = props.getProperty("edge.color.default");
         if (defaultColorString != null) {
             eac.setDefaultEdgeColor( Misc.parseRGBText(defaultColorString) );
+            defEAC.setDefaultEdgeColor( Misc.parseRGBText(defaultColorString) );
         }
         String defaultLineTypeString = props.getProperty("edge.linetype.default");
         if (defaultLineTypeString != null) {
-            eac.setDefaultEdgeLineType( Misc.parseLineTypeText(defaultLineTypeString) );
+            eac.setDefaultEdgeLineType(Misc.parseLineTypeText(defaultLineTypeString));
+            defEAC.setDefaultEdgeLineType(Misc.parseLineTypeText(defaultLineTypeString));
         }
         String defaultSourceString = props.getProperty("edge.sourceDecoration.default");
         if (defaultSourceString != null) {
             eac.setDefaultEdgeSourceArrow( Misc.parseArrowText(defaultSourceString) );
+            defEAC.setDefaultEdgeSourceArrow( Misc.parseArrowText(defaultSourceString) );
         }
         String defaultTargetString = props.getProperty("edge.targetDecoration.default");
         if (defaultTargetString != null) {
             eac.setDefaultEdgeTargetArrow( Misc.parseArrowText(defaultTargetString) );
+            defEAC.setDefaultEdgeTargetArrow( Misc.parseArrowText(defaultTargetString) );
         }
         
-        eac.setEdgeColorCalculator( catalog.getEdgeColorCalculator(calcName) );
-        eac.setEdgeLineTypeCalculator( catalog.getEdgeLineTypeCalculator(calcName) );
-        eac.setEdgeSourceArrowCalculator( catalog.getEdgeArrowCalculator(calcName) );
-        eac.setEdgeTargetArrowCalculator(catalog.getEdgeArrowCalculator(calcName + "2"));
+        EdgeColorCalculator ecc = catalog.getEdgeColorCalculator(calcName);
+        if (ecc != null) {
+            eac.setEdgeColorCalculator(ecc);
+            defEAC.setEdgeColorCalculator(ecc);
+        }
+        EdgeLineTypeCalculator elt = catalog.getEdgeLineTypeCalculator(calcName);
+        if (elt != null) {
+            eac.setEdgeLineTypeCalculator(elt);
+            defEAC.setEdgeLineTypeCalculator(elt);
+        }
+        EdgeArrowCalculator esa = catalog.getEdgeArrowCalculator(calcName);
+        if (esa != null) {
+            eac.setEdgeSourceArrowCalculator(esa);
+            defEAC.setEdgeSourceArrowCalculator(esa);
+        }
+        EdgeArrowCalculator eta = catalog.getEdgeArrowCalculator(calcName + "2");
+        if (eta != null) {
+            eac.setEdgeTargetArrowCalculator(eta);
+            defEAC.setEdgeTargetArrowCalculator(eta);
+        }
         
         catalog.addEdgeAppearanceCalculator(calcName, eac);
     }
