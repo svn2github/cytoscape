@@ -21,9 +21,10 @@ import cytoscape.util.CytoscapeAction;
 
 public class PrintAction extends CytoscapeAction  {
     
+    public final static String MENU_LABEL = "Print...";
     
     public PrintAction () {
-        super ("Print...");
+        super (MENU_LABEL);
         setPreferredMenu( "File" );
         setAcceleratorCombo( java.awt.event.KeyEvent.VK_P, ActionEvent.CTRL_MASK );
     }

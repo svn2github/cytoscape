@@ -264,6 +264,26 @@ public class CyMenus  implements GraphViewChangeListener {
   private void createMenuBar() {
     menuBar = new CytoscapeMenuBar();
     fileMenu    = menuBar.getMenu( "File" );
+    final JMenu f_fileMenu = fileMenu;
+    fileMenu.addMouseListener(new MouseAdapter() {
+        public void mouseEntered(MouseEvent e)
+        {
+          CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
+          boolean inactive = false;
+          if (graphView == null || graphView.nodeCount() == 0) inactive = true;
+          MenuElement[] popup = f_fileMenu.getSubElements();
+          if (popup[0] instanceof JPopupMenu) {
+            MenuElement[] submenus =
+              ((JPopupMenu) popup[0]).getSubElements();
+            for (int i = 0; i < submenus.length; i++) {
+              if (submenus[i] instanceof JMenuItem) {
+                JMenuItem item = (JMenuItem) submenus[i];
+                if (item.getText().equals(ExportAction.MENU_LABEL) ||
+                    item.getText().equals(PrintAction.MENU_LABEL) ||
+                    item.getText().equals("Save")) { // Cough, cough, hack.
+                  if (inactive) item.setEnabled(false);
+                  else item.setEnabled(true); } } } }
+        } });
     loadSubMenu = menuBar.getMenu( "File.Load" );
     saveSubMenu = menuBar.getMenu( "File.Save" );
     editMenu    = menuBar.getMenu( "Edit" );

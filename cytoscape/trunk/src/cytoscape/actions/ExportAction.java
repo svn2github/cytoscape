@@ -21,9 +21,11 @@ import org.freehep.util.export.ExportDialog;
 
 //-------------------------------------------------------------------------
 public class ExportAction extends CytoscapeAction  {
+
+    public final static String MENU_LABEL = "Export As...";
         
     public ExportAction () {
-        super ("Export As...");
+        super (MENU_LABEL);
         setPreferredMenu( "File" );
         setAcceleratorCombo( java.awt.event.KeyEvent.VK_P, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK) ;
     }
