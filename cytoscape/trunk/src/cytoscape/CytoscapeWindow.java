@@ -27,7 +27,7 @@ import y.layout.Layouter;
 import y.layout.GraphLayout;
 
 import y.layout.circular.CircularLayouter;
-import y.layout.hierarchic.HierarchicLayouter;
+import y.layout.hierarchic.*;
 import y.layout.organic.OrganicLayouter;
 import y.layout.random.RandomLayouter;
 
@@ -575,6 +575,12 @@ protected JMenuBar createMenuBar ()
   layoutMenu.add (new LayoutAction ());
   layoutMenu.add (new LayoutSelectionAction ());
 
+  layoutMenu.addSeparator();
+  JMenu alignSubMenu = new JMenu ("Align Nodes");
+  layoutMenu.add(alignSubMenu);
+  alignSubMenu.add (new AlignHorizontalAction ());
+  alignSubMenu.add (new AlignVerticalAction   ());
+
   opsMenu = new JMenu ("Ops"); // always create the ops menu
   menuBar.add (opsMenu);
 
@@ -593,7 +599,8 @@ protected JMenuBar createMenuBar ()
   if (bioDataServer != null) selectiveDisplayMenu.add (new GoIDSelectAction ());
   selectiveDisplayMenu.add (new AlphabeticalSelectionAction ());
   selectiveDisplayMenu.add (new ListFromFileSelectionAction ());
-
+  selectiveDisplayMenu.add (new ReduceEquivalentNodesAction ());
+  
   mi = selectiveDisplayMenu.add (new SelectFirstNeighborsAction ());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_F, ActionEvent.CTRL_MASK));
 
@@ -1147,8 +1154,10 @@ protected class HierarchicalLayoutAction extends AbstractAction   {
     
   public void actionPerformed (ActionEvent e) {
     HierarchicLayouter hl = new HierarchicLayouter ();
-    hl.setMinimalLayerDistance (40);
-    hl.setMinimalNodeDistance (20);
+    hl.setMinimalLayerDistance (400);
+    hl.setMinimalNodeDistance (40);
+    hl.setRoutingStyle(HierarchicLayouter.ROUTE_ORTHOGONAL);
+    hl.setLayerer(new AsIsLayerer());
     layouter = hl;
     }
 }
@@ -1181,6 +1190,72 @@ protected class EmbeddedLayoutAction extends AbstractAction {
     }
 }
 
+//-----------------------------------------------------------------------------
+
+protected class AlignHorizontalAction extends AbstractAction {
+    AlignHorizontalAction () { super ("Horizontal"); }
+
+    public void actionPerformed (ActionEvent e) {
+
+	// compute average Y coordinate
+	double avgYcoord=0;
+	int numSelected=0;
+	for (NodeCursor nc = graph.nodes(); nc.ok(); nc.next()) {
+	    Node n = nc.node();
+	    if (graph.isSelected(n)) {
+		avgYcoord += graph.getY(n);
+		numSelected++;
+	    }
+	}
+	avgYcoord /= numSelected;
+	
+	// move all nodes to average Y coord
+	for (NodeCursor nc = graph.nodes(); nc.ok(); nc.next()) {
+	    Node n = nc.node();
+	    if (graph.isSelected(n))
+		graph.setLocation(n, graph.getX(n), avgYcoord);
+	}
+	redrawGraph();
+    }
+}
+
+protected class AlignVerticalAction extends AbstractAction {
+    AlignVerticalAction () { super ("Vertical"); }
+
+    public void actionPerformed (ActionEvent e) {
+
+	// compute average X coordinate
+	double avgXcoord=0;
+	int numSelected=0;
+	for (NodeCursor nc = graph.nodes(); nc.ok(); nc.next()) {
+	    Node n = nc.node();
+	    if (graph.isSelected(n)) {
+		avgXcoord += graph.getX(n);
+		numSelected++;
+	    }
+	}
+	avgXcoord /= numSelected;
+	
+	// move all nodes to average X coord
+	for (NodeCursor nc = graph.nodes(); nc.ok(); nc.next()) {
+	    Node n = nc.node();
+	    if (graph.isSelected(n))
+		graph.setLocation(n, avgXcoord, graph.getY(n));
+	}
+	redrawGraph();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+protected class ReduceEquivalentNodesAction extends AbstractAction  {
+    ReduceEquivalentNodesAction () {
+	super ("Reduce Equivalent Nodes"); 
+    } // ctor
+   public void actionPerformed (ActionEvent e) {
+       new ReduceEquivalentNodes(nodeAttributes, edgeAttributes, graph);
+   }
+}
 
 //-----------------------------------------------------------------------------
 protected class GoIDSelectAction extends AbstractAction   {
