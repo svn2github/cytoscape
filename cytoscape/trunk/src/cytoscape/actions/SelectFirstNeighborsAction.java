@@ -24,7 +24,7 @@ public class SelectFirstNeighborsAction extends AbstractAction {
     }
     public void actionPerformed (ActionEvent e) {
         GinyUtils.selectFirstNeighbors(networkView.getView());
-        networkView.redrawGraph(false, true);
+        networkView.redrawGraph(false, false);
     } // actionPerformed
 } // SelectFirstNeighborsAction
 
