@@ -366,7 +366,7 @@ public final class FingRootGraphFactory
    *     the meta-graph structure starting at the specified parent node;
    *     therefore, the time complexity of this recursive operation is
    *     O(M), where M is the size of set (including both nodes and edges)
-   *     "reachable" be following meta-paths from parent to child, starting
+   *     "reachable" by following meta-paths from parent to child, starting
    *     at specified parent node.</td>
    * </tr><tr>
    * <td>nodeMetaChildrenList(Node)</td>
