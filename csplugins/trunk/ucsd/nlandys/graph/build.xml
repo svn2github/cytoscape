@@ -70,4 +70,8 @@
     <ant antfile="${build.dir}/build.xml" target="littlejars"/>
   </target>
 
+  <target name="jar" depends="prepare">
+    <ant antfile="${build.dir}/build.xml"/>
+  </target>
+
 </project>
