@@ -106,12 +106,12 @@ public class ContinuousUI extends JPanel implements ActionListener {
         createPointUI(grid);
         add(grid.panel, BorderLayout.CENTER);
 
-        //  Create Add Button
-        JButton applyButton = new JButton("Apply to Graph");
-        applyButton.addActionListener(this);
-        JPanel panel = new JPanel();
-        panel.add(applyButton);
-        add(panel, BorderLayout.SOUTH);
+        //  Removed for now:  Create Add Button
+        //  JButton applyButton = new JButton("Apply to Graph");
+        //  applyButton.addActionListener(this);
+        //  JPanel panel = new JPanel();
+        //  panel.add(applyButton);
+        //  add(panel, BorderLayout.SOUTH);
     }
 
     private void createPointUI(GridBagGroup grid) {
