@@ -48,10 +48,11 @@ import gnu.getopt.LongOpt;
  */
 public class CytoscapeConfig {
 
-  protected String argSpecificationString = "n:j:g:b:i:he:vWs:l:p:x:;";
+  protected String argSpecificationString = "n:j:g:b:i:he:vWs:l:p:x:c;";
 
   protected String [] commandLineArguments;
   protected String[] argsCopy;
+  protected boolean canonicalize = true;
   protected boolean helpRequested = false;
   protected boolean inputsError = false;
   protected boolean displayVersion = false;
@@ -149,6 +150,16 @@ public String [] getNodeAttributeFilenames ()
 public String [] getEdgeAttributeFilenames ()
 {
   return (String []) edgeAttributeFilenames.toArray (new String [0]);
+}
+//------------------------------------------------------------------------------------------
+/**
+ * If the -c flag is set in the command line, or if "can = no" is in the project file, it returns
+ * false. It returns true otherwise.
+ * Added by Iliana Avila on May 29, 2003.
+ */
+public boolean getCanonicalize ()
+{
+  return canonicalize;
 }
 //------------------------------------------------------------------------------------------
 /**
@@ -284,6 +295,9 @@ protected Properties readProperties ()
     userSpecialProps = readOnePropertyFile (userGeneralProps, userSpecialPropsFile);
 
   CytoscapeWindow.debugLog.append ("projectPropsFileName: " + projectPropsFileName);
+  // TODO: Remove
+  System.out.println(projectPropsFileName);
+  //--
   if (projectPropsFileName != null) {
     projectProps = readPropertyFileAsText (projectPropsFileName);
     // projectProps = readOnePropertyFile (projectProps, projectPropsFile);
@@ -449,7 +463,11 @@ protected void parseArgs ()
      case 'v':
        displayVersion = true;
        break;
-     case '?': // Optopt==0 indicates an unrecognized long option, which is reserved for plugins 
+   case 'c':
+     // This is the "canonicalization" switch
+     canonicalize = false;
+     break;
+   case '?': // Optopt==0 indicates an unrecognized long option, which is reserved for plugins 
       int theOption = g.getOptopt();
       if (theOption != 0 )
         errorMessages.append ("The option '" + (char)theOption + "' is not valid\n");
@@ -492,6 +510,7 @@ protected void getConfigurationsFromProperties ()
  *   dataServer=rmi://hazel/yeast
  *   species=Saccharomyces cerevisiae
  *   props=/net/compbio/cytoscape/projects/galFiltered/cytoscape.props
+ *   can=yes|no
  *  </code>
  *
  * further information:
@@ -550,6 +569,7 @@ protected void readProjectFile ()
   String [] defaultLayouts = parseProjectFileText (lines, "layout");
   String [] propsFiles = parseProjectFileText (lines, "props");
   String [] vizmapPropsFiles = parseProjectFileText (lines, "vprops");
+  String [] canonicalization = parseProjectFileText (lines, "can"); // whether or not canonicalization should be done
   String [] otherArgs = parseProjectFileText (lines, "arg");
 
   if (sifFiles.length >= 1) {
@@ -617,6 +637,16 @@ protected void readProjectFile ()
       projectVizmapPropsFileName = vizmapPropsFiles [0];
       CytoscapeWindow.debugLog.append ("config.readProjectFile, vizmapPropsFileName: " + 
 				       projectVizmapPropsFileName + "\n");
+  }
+
+  // Whether or not names in input files should be canonicalized
+  if (canonicalization.length > 0){
+    String canValue = canonicalization[0];
+    if(canValue.equals("yes")){
+      canonicalize = true;
+    }else if(canValue.equals("no")){
+      canonicalize = false;
+    }
   }
 
   // this is how to pass info on to a plugin.
@@ -716,6 +746,7 @@ public String getUsage ()
    sb.append (" -n  <nodeAttributes filename>     (zero or more)\n");
    sb.append (" -j  <edgeAttributes filename>     (zero or more)\n");
    sb.append (" -l  <layout strategy>             (organic|hierarchical|embedded|circular)\n");
+   sb.append (" -c  (suppresses automatic canonicalization of node names in input graph files)\n");
    sb.append ("\n");
 
    sb.append (" -h  (display usage)\n");
