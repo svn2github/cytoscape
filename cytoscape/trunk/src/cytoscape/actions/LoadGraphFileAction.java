@@ -243,7 +243,7 @@ class LoadNetworkTask implements Task {
     /**
      * Creates a cytoscape.data.CyNetwork from a file.
      * The passed variable determines the
-     * type of file, i.e. GML, SIF, SBML, etc.<p>
+     * type of file, i.e. GML, SIF, etc.<p>
      * This operation may take a long time to complete.
      *
      * @param location      the location of the file
@@ -262,7 +262,7 @@ class LoadNetworkTask implements Task {
             reader = new InteractionsReader(biodataserver, species, location,
                     taskMonitor);
         } else if (file_type == Cytoscape.FILE_GML) {
-            reader = new GMLReader2(location);
+            reader = new GMLReader2(location, taskMonitor);
         } else {
             throw new IOException("File Type not Supported.");
         }
