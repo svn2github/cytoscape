@@ -15,6 +15,7 @@
 	
   	<!-- Temporary build directories -->
  	<property name="build.dir" value="build"/>
+	<property name="images.dir" value="images"/>
   	<property name="build.classes" value="${build.dir}/classes"/>
         <property name="doc.dir" value="doc"/>
 	
@@ -87,8 +88,9 @@
   	
 	<!--  Create PlugIn Jar File (Unobfuscated) -->
    	<target name="jar" depends="compile" description="Creates PlugIn Jar File.">
-	   <jar destfile="${build.dir}/${plugin.name}.jar">
+	   	<jar destfile="${build.dir}/${plugin.name}.jar">
 			<fileset dir="${build.classes}"/>
+			<fileset dir="${images.dir}" includes="**"/>
 		</jar>
 		<echo message="${plugin.name}.jar is now complete.  It is located in build/ directory"/>
 	</target>

@@ -4,6 +4,7 @@ import edu.umd.cs.piccolo.activities.*;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import giny.view.NodeView;
 import giny.view.EdgeView;
 import cytoscape.plugin.CytoscapePlugin;
@@ -20,6 +21,7 @@ import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.event.ActionListener;
@@ -27,6 +29,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.BoxLayout;
 import javax.swing.ListSelectionModel;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 
 /**
  * This is a sample Cytoscape plugin using Giny graph structures. For each
@@ -72,18 +75,23 @@ public class GraphMerge extends CytoscapePlugin{
 
 
 class MergeDialog extends JDialog{
-  JButton upButton,downButton,removeButton;
+  JButton upButton,downButton,leftButton,rightButton;
   JList networkList;
+  JList unselectedNetworkList;
   DefaultListModel networkData;
+  DefaultListModel unselectedNetworkData;
   boolean cancelled = true;
   public MergeDialog(){
     setModal(true);
-    
+    setTitle("Merge Networks");
     getContentPane().setLayout(new BorderLayout());
     JPanel centerPanel = new JPanel();
+    centerPanel.setLayout(new BoxLayout(centerPanel,BoxLayout.X_AXIS));
+    
     networkData = new DefaultListModel();
+    unselectedNetworkData = new DefaultListModel();
     for(Iterator networkIt = Cytoscape.getNetworkSet().iterator();networkIt.hasNext();){
-      networkData.addElement(new NetworkContainer((CyNetwork)networkIt.next()));
+      unselectedNetworkData.addElement(new NetworkContainer((CyNetwork)networkIt.next()));
     }
     networkList = new JList(networkData);
     networkList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -93,37 +101,50 @@ class MergeDialog extends JDialog{
 	  if(index == -1){
 	    upButton.setEnabled(false);
 	    downButton.setEnabled(false);
-	    removeButton.setEnabled(false);
+	    leftButton.setEnabled(false);
 	  }
 	  else if(networkData.size() < 2){
 	    upButton.setEnabled(false);
 	    downButton.setEnabled(false);
-	    removeButton.setEnabled(true);
+	    leftButton.setEnabled(true);
 	  }
 	  else if(index == 0){
 	    upButton.setEnabled(false);
 	    downButton.setEnabled(true);
-	    removeButton.setEnabled(true);
+	    leftButton.setEnabled(true);
 	  }
 	  else if(index == networkData.size()-1){
 	    upButton.setEnabled(true);
 	    downButton.setEnabled(false);
-	    removeButton.setEnabled(true);
+	    leftButton.setEnabled(true);
 	  }
 	  else{
 	    upButton.setEnabled(true);
 	    downButton.setEnabled(true);
-	    removeButton.setEnabled(true);
+	    leftButton.setEnabled(true);
 	  }
 	}});
-    centerPanel.add(networkList);
-    getContentPane().add(centerPanel,BorderLayout.CENTER);
+    unselectedNetworkList = new JList(unselectedNetworkData);
+    unselectedNetworkList.addListSelectionListener(new ListSelectionListener(){
+	public void valueChanged(ListSelectionEvent e){
+	  int index = unselectedNetworkList.getMinSelectionIndex();
+	  if(index == -1){
+	    rightButton.setEnabled(false);
+	  }
+	  else{
+	    rightButton.setEnabled(true);
+	  }
+	}});
     
-    JPanel eastPanel = new JPanel();
-    eastPanel.setLayout(new BoxLayout(eastPanel,BoxLayout.Y_AXIS));
-    upButton = new JButton("+");
-    downButton = new JButton("-");
-    removeButton = new JButton("x");
+
+    ImageIcon upIcon = new ImageIcon(getClass().getResource("/up16.gif"));
+    ImageIcon downIcon = new ImageIcon(getClass().getResource("/down16.gif"));
+    ImageIcon leftIcon = new ImageIcon(getClass().getResource("/left16.gif"));
+    ImageIcon rightIcon = new ImageIcon(getClass().getResource("/right16.gif"));
+    upButton = new JButton(upIcon);
+    downButton = new JButton(downIcon);
+    leftButton = new JButton(leftIcon);
+    rightButton = new JButton(rightIcon);
 
     upButton.addActionListener(new ActionListener(){
 	public void actionPerformed(ActionEvent ae){
@@ -139,22 +160,50 @@ class MergeDialog extends JDialog{
 	  networkData.add(currentIndex+1,removed);
 	  networkList.repaint();
 	}});
-    removeButton.addActionListener(new ActionListener(){
+    leftButton.addActionListener(new ActionListener(){
 	public void actionPerformed(ActionEvent ae){
 	  int currentIndex = networkList.getMinSelectionIndex();
-	  networkData.remove(currentIndex);
+	  Object removed = networkData.remove(currentIndex);
+	  unselectedNetworkData.addElement(removed);
 	  networkList.repaint();
-	  MergeDialog.this.pack();
+	  unselectedNetworkList.repaint();
 	}});
+    rightButton.addActionListener(new ActionListener(){
+	public void actionPerformed(ActionEvent ae){
+	  int currentIndex = unselectedNetworkList.getMinSelectionIndex();
+	  Object removed = unselectedNetworkData.remove(currentIndex);
+	  networkData.addElement(removed);
+	  networkList.repaint();
+	  unselectedNetworkList.repaint();
+	}});
+
     upButton.setEnabled(false);
     downButton.setEnabled(false);
-    removeButton.setEnabled(false);
+    leftButton.setEnabled(false);
+    rightButton.setEnabled(false);
+    
 
-    eastPanel.add(upButton);
-    eastPanel.add(downButton);
-    eastPanel.add(removeButton);
-
-    getContentPane().add(eastPanel,BorderLayout.EAST);
+    JScrollPane leftPane = new JScrollPane(unselectedNetworkList);
+    leftPane.setPreferredSize(new Dimension(100,50));
+    centerPanel.add(leftPane);
+    JPanel lrButtonPanel = new JPanel();
+    lrButtonPanel.setLayout(new BoxLayout(lrButtonPanel,BoxLayout.Y_AXIS));
+    lrButtonPanel.add(leftButton);
+    lrButtonPanel.add(rightButton);
+    centerPanel.add(lrButtonPanel);
+    JScrollPane rightPane = new JScrollPane(networkList);
+    rightPane.setPreferredSize(new Dimension(100,50));
+    centerPanel.add(rightPane);
+    JPanel udButtonPanel = new JPanel();
+    udButtonPanel.setLayout(new BoxLayout(udButtonPanel,BoxLayout.Y_AXIS));
+    udButtonPanel.add(upButton);
+    udButtonPanel.add(downButton);
+    centerPanel.add(udButtonPanel);
+    
+    getContentPane().add(centerPanel,BorderLayout.CENTER);
+    
+    
+    
 
     JPanel southPanel = new JPanel();
     JButton ok,cancel;
