@@ -1,7 +1,7 @@
 package cytoscape.graph.legacy.layout.impl;
 
-import cytoscape.graph.GraphTopology;
-import cytoscape.graph.IndexIterator;
+import cytoscape.graph.legacy.GraphTopology;
+import cytoscape.graph.legacy.IndexIterator;
 import cytoscape.graph.layout.algorithm.MutableGraphLayout;
 import cytoscape.graph.util.GraphCompiler;
 import cytoscape.task.Task;
