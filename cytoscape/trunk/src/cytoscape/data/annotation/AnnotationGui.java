@@ -46,13 +46,14 @@ import javax.swing.JOptionPane;
 import java.io.*;
 import java.util.*;
 
-import y.base.*;
-import y.view.*;
+import y.base.Node;
+import giny.view.NodeView;
 
 import cytoscape.data.annotation.*;
 import cytoscape.data.servers.*;
 import cytoscape.layout.*;
-import cytoscape.*;
+import cytoscape.GraphObjAttributes;
+import cytoscape.data.CyNetwork;
 import cytoscape.data.Semantics;
 import cytoscape.view.CyWindow;
 //----------------------------------------------------------------------------------------
@@ -60,10 +61,8 @@ import cytoscape.view.CyWindow;
  */
 public class AnnotationGui extends AbstractAction {
   protected CyWindow cyWindow;
-  protected GraphObjAttributes nodeAttributes, edgeAttributes;
   protected BioDataServer dataServer;
   protected String defaultSpecies;
-  protected Properties props;
   AnnotationDescription [] annotationDescriptions;
   JTree availableAnnotationsTree;
   JTree currentAnnotationsTree;
@@ -73,8 +72,8 @@ public class AnnotationGui extends AbstractAction {
   TreePath annotationPath;
   String currentAnnotationCategory;
   AttributeLayout attributeLayouter;
-  Graph2D graph;
 
+  JDialog mainDialog;
   JButton annotateNodesButton;
   JButton layoutByAnnotationButton;
   JButton addSharedAnnotationEdgesButton;
@@ -87,7 +86,7 @@ public AnnotationGui (CyWindow cyWindow)
   dataServer = cyWindow.getCytoscapeObj().getBioDataServer ();
   if (dataServer != null)
     annotationDescriptions = dataServer.getAnnotationDescriptions ();
-
+  
   defaultSpecies = Semantics.getDefaultSpecies(cyWindow.getNetwork(),
                                                cyWindow.getCytoscapeObj() );
 
@@ -100,17 +99,16 @@ public void actionPerformed (ActionEvent e)
                                    "Error!", JOptionPane.ERROR_MESSAGE);
     return;
     }
-    
-  cyWindow.setInteractivity (false);
-  this.graph = cyWindow.getNetwork().getGraph ();
-  this.nodeAttributes = cyWindow.getNetwork().getNodeAttributes ();
-  this.edgeAttributes = cyWindow.getNetwork().getEdgeAttributes ();
-  this.attributeLayouter = new AttributeLayout (cyWindow);
-  JDialog dialog = new Gui ("Annotation");
-  dialog.pack ();
-  dialog.setLocationRelativeTo (cyWindow.getMainFrame ());
-  dialog.setVisible (true);
-  cyWindow.setInteractivity (true);
+  
+  if (this.attributeLayouter == null) {
+      this.attributeLayouter = new AttributeLayout (cyWindow);
+  }
+  if (this.mainDialog == null) {
+      mainDialog = new Gui ("Annotation");
+      mainDialog.pack ();
+      mainDialog.setLocationRelativeTo (cyWindow.getMainFrame ());
+  }
+  mainDialog.setVisible (true);
 
 } // actionPerformed
 //----------------------------------------------------------------------------------------
@@ -121,6 +119,7 @@ Gui (String title)
   super (cyWindow.getMainFrame (), false);
   setTitle (title);
   setContentPane (createWidgets ());
+  setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 }
 //------------------------------------------------------------------------------
 private JPanel createWidgets ()
@@ -147,7 +146,7 @@ private JPanel createWidgets ()
   chooserPanel.add (annotateNodesButton, BorderLayout.SOUTH);
   chooserPanel.setBorder (BorderFactory.createCompoundBorder (
                           BorderFactory.createTitledBorder(
-                         "Avaliable"),
+                         "Available"),
                           BorderFactory.createEmptyBorder(10,10,10,10)));
 
   annotateNodesButton.addActionListener (new ApplyAnnotationAction ());
@@ -254,24 +253,61 @@ class SelectNodesTreeSelectionListener implements TreeSelectionListener {
     addSharedAnnotationEdgesButton.setEnabled (!node.isLeaf ());
     if (!node.isLeaf ()) return;
 
+    String callerID = "SelectNodesTreeSelectionListener.valueChanged";
+    CyNetwork network = cyWindow.getNetwork();
+    GraphObjAttributes nodeAttributes = network.getNodeAttributes();
+    network.beginActivity(callerID);
+    boolean isYFiles = cyWindow.getCytoscapeObj().getConfiguration().isYFiles();
+    //unselect every node in the graph
+    if (isYFiles) {
+        network.getGraph().unselectNodes();
+    } else {
+        for (Iterator nvi = cyWindow.getView().getNodeViewsIterator(); nvi.hasNext(); ) {
+            ((NodeView)nvi.next()).setSelected(false);
+        }
+    }
     TreePath [] selectedPaths = currentAnnotationsTree.getSelectionPaths();
     HashMap selectionHash = extractAnnotationsFromSelection (selectedPaths);
     String [] annotationNames = (String []) selectionHash.keySet().toArray (new String [0]);
     for (int i=0; i < annotationNames.length; i++) {
       String name = annotationNames [i];
-      Vector list = (Vector) selectionHash.get (name);
-      String [] categories = (String []) list.toArray (new String [0]);
-      Node [] nodesInCategory = getNodesByAttributeValues (name, categories);
-      if (i == 0) {graph.unselectNodes();}
-      if (nodesInCategory != null) {
-          for (int n=0; n<nodesInCategory.length; n++) {
-              graph.setSelected(nodesInCategory[n], true);
+      Vector categoryList = (Vector) selectionHash.get (name);
+      if (isYFiles) {
+          Node[] allNodes = network.getGraph().getNodeArray();
+          for (int n = 0; n<allNodes.length; n++) {
+              Node theNode = allNodes[n];
+              String canonicalName = nodeAttributes.getCanonicalName(theNode);
+              if (canonicalName == null) {continue;}
+              Object attributeValue = nodeAttributes.getValue(name, canonicalName);
+              if (attributeValue == null) {continue;}
+              String [] parsedCategories = 
+                  GraphObjAttributes.unpackPossiblyCompoundStringAttributeValue (attributeValue);
+              for (int pc=0; pc<parsedCategories.length; pc++) {
+                  if (categoryList.contains(parsedCategories[pc])) {
+                      network.getGraph().setSelected(theNode, true);
+                  }
+              }
           }
-      }
-      cyWindow.redrawGraph ();
-      }
+      } else {//Giny mode
+          for (Iterator nvi = cyWindow.getView().getNodeViewsIterator(); nvi.hasNext(); ) {
+              NodeView nv = (NodeView)nvi.next();
+              String canonicalName = nodeAttributes.getCanonicalName(nv.getNode());
+              if (canonicalName == null) {continue;}
+              Object attributeValue = nodeAttributes.getValue(name, canonicalName);
+              if (attributeValue == null) {continue;}
+              String [] parsedCategories = 
+                  GraphObjAttributes.unpackPossiblyCompoundStringAttributeValue (attributeValue);
+              for (int pc=0; pc<parsedCategories.length; pc++) {
+                  if (categoryList.contains(parsedCategories[pc])) {
+                      nv.setSelected(true);
+                  }
+              }
+          }
+      }//end if isYFiles
+    }//end for
+    cyWindow.redrawGraph(false, true);
 
-    } // valueChanged
+  } // valueChanged
 
 //-----------------------------------------------------------------------------
 /**
@@ -307,28 +343,6 @@ protected HashMap extractAnnotationsFromSelection (TreePath [] paths)
   return hash;
 
 } // extractAnnotationsFromSelection
-//-----------------------------------------------------------------------------
-protected Node [] getNodesByAttributeValues (String attributeName, String [] targetValues)
-{
-  Vector collector = new Vector ();
-  Node nodes [] = graph.getNodeArray ();
-  for (int i=0; i < nodes.length; i++) {
-    String canonicalName = nodeAttributes.getCanonicalName (nodes [i]);
-    if (canonicalName == null) continue;
-    Object attributeValue = (Object) nodeAttributes.getValue (attributeName, canonicalName);
-    if (attributeValue == null) continue;
-    String [] parsedCategories = 
-          GraphObjAttributes.unpackPossiblyCompoundStringAttributeValue (attributeValue);
-    for (int c=0; c < parsedCategories.length; c++) {
-      for (int t=0; t < targetValues.length; t++)
-        if (targetValues [t].equals (parsedCategories [c]))
-          collector.add (nodes [i]);
-      }  // for c
-    } // for i
-
-  return (Node []) collector.toArray (new Node [0]);
-
-} // getNodesByAttributeVAlues
 //----------------------------------------------------------------------------------------
 } // inner class SelectNodesTreeSelectionListener
 //-----------------------------------------------------------------------------------
@@ -340,13 +354,7 @@ protected void createTreeNodes (DefaultMutableTreeNode root,
 {
   if (descriptions == null || descriptions.length == 0) return;
 
-  Node[] allNodes = graph.getNodeArray();
-  ArrayList speciesInGraph = new ArrayList();
-  for (int i=0; i<allNodes.length; i++) {
-      String canonicalName = nodeAttributes.getCanonicalName(allNodes[i]);
-      String species = nodeAttributes.getStringValue(Semantics.SPECIES, canonicalName);
-      if (!speciesInGraph.contains(species)) {speciesInGraph.add(species);}
-  }
+  Set speciesInGraph = Semantics.getSpeciesInNetwork(cyWindow.getNetwork());
 
   DefaultMutableTreeNode branch = null;
   DefaultMutableTreeNode leaf = null;
@@ -379,7 +387,7 @@ public class DismissAction extends AbstractAction
   DismissAction () {super ("");}
 
   public void actionPerformed (ActionEvent e) {
-    Gui.this.dispose ();
+    Gui.this.setVisible(false);
     }
 
 } // DismissAction
@@ -408,6 +416,9 @@ public class DrawSharedEdgesAnnotationAction extends AbstractAction
 //-----------------------------------------------------------------------------------
 public String addAnnotationToNodes (AnnotationDescription aDesc, int level)
 {
+  String callerID = "AnnotationGui.addAnnotationToNodes";
+  cyWindow.getNetwork().beginActivity(callerID);
+  GraphObjAttributes nodeAttributes = cyWindow.getNetwork().getNodeAttributes();
      // something like "GO biological process" or "KEGG metabolic pathway"
   String baseAnnotationName = aDesc.getCurator () + " " + aDesc.getType ();
   String annotationNameAtLevel = baseAnnotationName  + " (level " + level + ")";
@@ -417,7 +428,6 @@ public String addAnnotationToNodes (AnnotationDescription aDesc, int level)
   nodeAttributes.deleteAttribute (annotationNameForLeafIDs);
 
 
-  cyWindow.setInteractivity (false);
   HashMap nodeNameMap = nodeAttributes.getNameMap ();
   String [] canonicalNodeNames = (String []) nodeNameMap.values().toArray(new String [0]);
 
@@ -442,8 +452,8 @@ public String addAnnotationToNodes (AnnotationDescription aDesc, int level)
     } // for i
 
   nodeAttributes.setCategory (annotationNameAtLevel, "annotation");
-  cyWindow.setInteractivity (true);
-
+  cyWindow.getNetwork().endActivity(callerID);
+  
   return annotationNameAtLevel;
 
 } // addAnnotationToNodes
@@ -505,16 +515,18 @@ class ApplyAnnotationAction extends AbstractAction {
     DefaultMutableTreeNode node2 = (DefaultMutableTreeNode) annotationPath.getPathComponent (2);
     int level = ((Integer) node2.getUserObject ()).intValue ();
     if (aDesc == null) return;
-    cyWindow.setInteractivity (false);
+    String callerID = "ApplyAnnotationAction.actionPerformed";
+    cyWindow.getNetwork().beginActivity(callerID);
     currentAnnotationCategory = addAnnotationToNodes (aDesc, level);
-    Object [] uniqueAnnotationValues = nodeAttributes.getUniqueValues (currentAnnotationCategory);
+    Object [] uniqueAnnotationValues =
+    cyWindow.getNetwork().getNodeAttributes().getUniqueValues (currentAnnotationCategory);
     if (uniqueAnnotationValues != null && 
         uniqueAnnotationValues.length > 0 && 
         uniqueAnnotationValues [0].getClass() == "string".getClass ()) {
       java.util.Arrays.sort (uniqueAnnotationValues, String.CASE_INSENSITIVE_ORDER);
       appendToSelectionTree (currentAnnotationCategory, uniqueAnnotationValues);
       }
-    cyWindow.setInteractivity (true);
+    cyWindow.getNetwork().endActivity(callerID);
     }
 
 //--------------------------------------------------------------------------------------

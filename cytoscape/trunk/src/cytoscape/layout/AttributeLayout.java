@@ -92,6 +92,14 @@ protected String [] getAnnotationAttributes (GraphObjAttributes nodeAttributes)
 //----------------------------------------------------------------------------------------
 public void doCallback (String attributeName, int functionToPerform)
 {
+  if ( !(cyWindow.getCytoscapeObj().getConfiguration().isYFiles()) ) {
+      //don't yet handle Giny graphs
+      String title = "Operation not supported";
+      String message = "This operation is not yet supported on Giny graphs.";
+      JOptionPane.showMessageDialog(cyWindow.getMainFrame(), message, title,
+                                    JOptionPane.ERROR_MESSAGE);
+      return;
+  }
  
   if (functionToPerform == DO_LAYOUT){
     // Added by iliana on 1.21.2003 (works with yFiles 2.01)
