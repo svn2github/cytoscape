@@ -313,30 +313,48 @@ public final class IntBTree
   }
 
   /**
+   * Returns an enumeration of all entries in the range [xMin, xMax] currently
+   * in this tree, duplicates included; the elements of the enumeration are
+   * returned in non-descending order.  This method takes O(log(N)) time to
+   * compute a return value, where N is the number of entries currently in
+   * this tree structure.  The returned enumeration reports the number of
+   * elements remaining in constant time.  The returned enumeration can
+   * be completely traversed in O(K) time, where K is the number of elements
+   * in the returned enumeration; this is always true, regardless of how
+   * small the set of returned enumerated elements is.  Note, however, that
+   * there is no guarantee that each successive element of the enumeration
+   * is returned in constant time; instead, the time complexity of getting
+   * each successive element is constant on average, and is O(log(K)).<p>
    * IMPORTANT: The returned enumeration becomes invalid as soon as any
    * structure-modifying operation (insert or delete) is performed on this
    * tree.  Accessing an invalid enumeration's methods will result in
    * unpredictable and ill-defined behavior in the enumeration, but will
-   * have no effect on the integrity of this tree structure.
-   * @return an enumeration of all entries matching this search query.
+   * have no effect on the integrity of underlying tree structure.<p>
+   * NOTE: If xMin > xMax, the results of this operation are undefined (chunks
+   * may be blown, in fact).<p>
+   * IMPLEMENTATION NOTE: To find out how many entries are in this tree,
+   * one should use the size() method.  Doing so using this method will
+   * cost O(log(N)) time, where the size() method returns in constant time.
+   * The reason why this method takes longer is because we pre-compute the
+   * first element of the enumeration in order to reduce the number of 'if'
+   * statements in the code.
+   * @param xMin the lower [inclusive] bound of the range to search.
+   * @param xMax the upper [inclusive] bound of the range to search.
+   * @return an non-descending enumeration of all entries matching this search
+   *   query, duplicated included.
    */
   public final IntEnumerator searchRange(final int xMin, final int xMax)
   {
     final NodeStack nodeStack = new NodeStack();
-    final int totalCount = searchRange(m_root, nodeStack,
-                                       xMin, xMax,
-                                       Integer.MIN_VALUE, Integer.MAX_VALUE);
+    final int totalCount = searchRange
+      (m_root, nodeStack, xMin, xMax, Integer.MIN_VALUE, Integer.MAX_VALUE);
     return new IntEnumerator() {
         private int count = totalCount;
         private Node currentLeafNode = null;
         private int wholeLeafNodes = 0; // Whole leaf nodes on stack.
         private int currentNodeInx;
-        public int numRemaining() { return count; }
-        public int nextInt() {
-          // This is guaranteed to barf if nextInt() is called when there
-          // are no elements remaining, albeit in an unpredictable way.  Also,
-          // terrible things will happen if the tree is mutated while we
-          // iterate.
+        public final int numRemaining() { return count; }
+        public final int nextInt() {
           int returnThis = 0x80000000; // To keep compiler from complaining.
           if (currentLeafNode == null) {
             while (true) {
