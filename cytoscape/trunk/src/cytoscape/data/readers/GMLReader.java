@@ -51,6 +51,14 @@ public GMLReader (String filename)
 {
   this.filename = filename;
 }
+//------------------------------------------------------------------------------------
+/**
+ * Calls read()
+ */
+public void read (boolean canonicalize)
+{
+  read();
+}
 //-------------------------------------------------------------------------------------
 public void read ()
 {
@@ -59,7 +67,7 @@ public void read ()
   try {
     ioh.read (graph, filename);
     }
-  catch (java.io.IOException e) {
+    catch (java.io.IOException e) {
     System.err.println ("error reading '" + filename + "' -- " + e.getMessage ());
     e.printStackTrace ();
     graph = null; //signals callers that something went wrong
@@ -80,7 +88,7 @@ public void read ()
       String edgeName =  sourceName + " (" + interactionType + ") " + targetName;
       int previousMatchingEntries = edgeAttributes.countIdentical(edgeName);
       if (previousMatchingEntries > 0)
-	  edgeName = edgeName + "_" + previousMatchingEntries;
+        edgeName = edgeName + "_" + previousMatchingEntries;
       edgeAttributes.add("interaction", edgeName, interactionType);
       edgeAttributes.addNameMapping(edgeName, edge);
       edgeAttributes.add("interaction", edgeName, interactionType);      
