@@ -608,7 +608,8 @@ protected JMenuBar createMenuBar ()
 
   JMenu viewNodeSubMenu = new JMenu("Node Selection");
   viewMenu.add(viewNodeSubMenu);
-  viewNodeSubMenu.add(new InvertSelectedNodesAction());
+  mi = viewNodeSubMenu.add(new InvertSelectedNodesAction());
+  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_V, ActionEvent.CTRL_MASK));
   mi = viewNodeSubMenu.add(new HideSelectedNodesAction());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_H, ActionEvent.CTRL_MASK));
 
@@ -661,7 +662,8 @@ protected JMenuBar createMenuBar ()
   layoutButton.addActionListener(new RandomLayoutAction ());
   
   layoutMenu.addSeparator();
-  layoutMenu.add (new LayoutAction ());
+  mi = layoutMenu.add (new LayoutAction ());
+  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_L, ActionEvent.CTRL_MASK));
   layoutMenu.add (new LayoutSelectionAction ());
 
   layoutMenu.addSeparator();
@@ -1464,7 +1466,7 @@ protected class ListFromFileSelectionAction extends AbstractAction   {
 		
 	case JFileChooser.APPROVE_OPTION:
 	    File file = fChooser.getSelectedFile();
-	    currentDirectory = chooser.getCurrentDirectory();
+	    currentDirectory = fChooser.getCurrentDirectory();
 	    String s;
 
 	    try {
