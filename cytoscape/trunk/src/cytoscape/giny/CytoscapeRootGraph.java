@@ -30,16 +30,19 @@ public class CytoscapeRootGraph extends ColtRootGraph {
    * ColtginyConstants.DEFAULT_EDGE_CAPACITY.
    */
   public CytoscapeRootGraph () {
-    this(
-         ColtginyConstants.DEFAULT_NODE_CAPACITY,
-         ColtginyConstants.DEFAULT_EDGE_CAPACITY
-         );
+    // this(
+    //     ColtginyConstants.DEFAULT_NODE_CAPACITY,
+    //     ColtginyConstants.DEFAULT_EDGE_CAPACITY
+           //     );
+    this( 10000, 100000 );
   } // <init>()
 
   /**
    * int, int constructor calls {@link #initializeColtRootGraph( int, int )}.
    */
   public CytoscapeRootGraph ( int node_capacity, int edge_capacity ) {
+    System.out.println( "Initializing Root Graph with: "+node_capacity+" and "+edge_capacity );
+
     // This is the only Luna Specific Code
     nodeIndexObjectMap = new OpenIntObjectHashMap( PrimeFinder.nextPrime( node_capacity ) );
     edgeIndexObjectMap = new OpenIntObjectHashMap( PrimeFinder.nextPrime( edge_capacity ) );

@@ -66,10 +66,6 @@ public abstract class Cytoscape {
   //TODO: remove, replace with NetworkData
   protected static ExpressionData expressionData;
 
- 
-
-  protected static GraphReader reader = null;
-
   protected static Object pcsO = new Object();
   protected static SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport( pcsO );
 
@@ -134,7 +130,7 @@ public abstract class Cytoscape {
    * the inefficiency of adding nodes one at a time.
    */
   public static void ensureCapacity ( int nodes, int edges ) {
-    getRootGraph().ensureCapacity( nodes, edges );
+    // getRootGraph().ensureCapacity( nodes, edges );
   }
      
   /**
@@ -162,7 +158,7 @@ public abstract class Cytoscape {
 
   /**
    * @param alias an alias of a node
-   * @return will <b>always</b> return a node
+   * @return will always return a node
    */
   public static CyNode getCyNode ( String alias, boolean create ) {
     alias = canonicalizeName( alias );
@@ -185,11 +181,13 @@ public abstract class Cytoscape {
 
   }
 
+
+
   /**
    * @param source_alias an alias of a node
    * @param edge_name the name of the node
    * @param target_alias an alias of a node
-   * @return will <b>always</b> return an edge
+   * @return will always return an edge
    */
   public static CyEdge getCyEdge ( String source_alias, 
                                    String edge_name, 
@@ -202,7 +200,7 @@ public abstract class Cytoscape {
       //System.out.print( "`" );
       return edge;
     } 
-
+    
     // edge does not exist, create one
     //System.out.print( "*" );
     CyNode source = getCyNode( source_alias );
@@ -427,6 +425,40 @@ public abstract class Cytoscape {
   /**
    * Creates a new, empty Network. 
    */
+  public static CyNetwork createNetwork ( String title ) {
+    CyNetwork network =  getRootGraph().createNetwork( new int[] {}, new int[] {} );
+    addNetwork( network, title );
+    return network;
+  }
+  
+  /**
+   * Creates a new Network 
+   * @param nodes the indeces of nodes
+   * @param edges the indeces of edges
+   */
+  public static CyNetwork createNetwork ( int[] nodes, int[] edges, String title ) {
+    CyNetwork network = getRootGraph().createNetwork( nodes, edges );
+    addNetwork( network, title );
+    return network;
+  }
+
+   
+  /**
+   * Creates a new Network 
+   * @param nodes the indeces of nodes
+   * @param edges the indeces of edges
+   */
+  public static CyNetwork createNetwork ( giny.model.Node[] nodes, 
+                                          giny.model.Edge[] edges,
+                                          String title ) {
+    CyNetwork network = getRootGraph().createNetwork( nodes, edges );
+    addNetwork( network, title  );
+    return network;
+  }
+
+  /**
+   * Creates a new, empty Network. 
+   */
   public static CyNetwork createNetwork () {
     CyNetwork network =  getRootGraph().createNetwork( new int[] {}, new int[] {} );
     addNetwork( network );
@@ -492,7 +524,7 @@ public abstract class Cytoscape {
    * </ul>
    * @param location the location of the file
    */
-  public static  CyNetwork createNetwork ( String location ) {
+  public static  CyNetwork createNetworkFromFile ( String location ) {
     return createNetwork( location, FILE_BY_SUFFIX, false, null, null );
   }
 
@@ -515,6 +547,8 @@ public abstract class Cytoscape {
     // return null for a null file
     if ( location == null )  
       return null;
+
+    GraphReader reader;
 
     //set the reader according to what file type was passed.
     if ( file_type == FILE_SIF 
@@ -557,16 +591,19 @@ public abstract class Cytoscape {
     String[] title = location.split( "/" );
 
     // Create a new cytoscape.data.CyNetwork from these nodes and edges
-    return createNetwork( nodes, edges, title[title.length - 1], null );
+    CyNetwork network = createNetwork( nodes, edges, title[title.length - 1] );
+    
+    if ( file_type == FILE_GML
+         || ( file_type == FILE_BY_SUFFIX && location.endsWith( "gml" ) ) ) {
+      
+      System.out.println( "GML file gettign reader: "+title[title.length - 1] );
+      network.putClientData( "GML", reader );
+    }
+    return network;
+
   }
 
-  /**
-   * @deprecated
-   */
-  public static GraphReader getLastGraphReaderForDoingLayout () {
-    return reader;
-  }
-
+ 
 
   //--------------------//
   // Network Data Methods
@@ -819,6 +856,8 @@ public abstract class Cytoscape {
 
     if ( network.getClientData( "GML" ) != null ) {
       ( ( GraphReader )network.getClientData( "GML" ) ).layout( view );
+      System.out.println( "GML data found for: "+network.getTitle()+" "+network.getClientData( "GML" ) );
+      //network.putClientData( "GML" , null );
     }
 
 

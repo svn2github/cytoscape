@@ -121,11 +121,11 @@ public class LoadGraphFileAction extends CytoscapeAction {
         //         networkView.setWindowTitle(name);//and set a new title
 
         //hack to apply layout information from a GML file
-        if( fileType == Cytoscape.FILE_GML ) {
-          //GMLReader reader = new GMLReader(name);
-          //Cytoscape.getLastGraphReaderForDoingLayout().layout( Cytoscape.getCurrentNetworkView() );
-          newNetwork.putClientData( "GML", Cytoscape.getLastGraphReaderForDoingLayout() );
-        }
+      //   if( fileType == Cytoscape.FILE_GML ) {
+//           //GMLReader reader = new GMLReader(name);
+//           //Cytoscape.getLastGraphReaderForDoingLayout().layout( Cytoscape.getCurrentNetworkView() );
+//           newNetwork.putClientData( "GML", Cytoscape.getLastGraphReaderForDoingLayout() );
+//         }
 
         int nn = Cytoscape.getRootGraph().getNodeCount()- root_nodes;
         int ne = Cytoscape.getRootGraph().getEdgeCount()- root_edges;

@@ -139,7 +139,6 @@ public class CyMain implements WindowListener {
                                                    false,
                                                    null,
                                                    null );
-      network.putClientData( "GML", Cytoscape.getLastGraphReaderForDoingLayout() );
     }
     while ( ii.hasNext() ) {
       Cytoscape.createNetwork( (String)ii.next(),

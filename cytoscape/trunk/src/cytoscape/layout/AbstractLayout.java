@@ -1,7 +1,7 @@
 package cytoscape.layout;
 
 import cytoscape.util.*;
-
+import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.CyEdge;
@@ -28,6 +28,7 @@ abstract public class AbstractLayout
 
   protected Set staticNodes;
   protected CyNetworkView networkView;
+  protected CyNetwork network;
   protected Dimension currentSize;
 
   // monitoring
@@ -43,6 +44,7 @@ abstract public class AbstractLayout
   public AbstractLayout ( CyNetworkView networkView ) {
     this.networkView = networkView;
     this.staticNodes = new HashSet();
+    this.network = networkView.getNetwork();
   }
 
  
@@ -51,53 +53,65 @@ abstract public class AbstractLayout
  
   
 
-  public abstract void doLayout ();
-
 
   //------------------------------//
   // Implements MonitoredTask
   //------------------------------//
 
-  /**
-   * Returns true if the task is done. Otherwise false.
-   * This can be done by either returning (currentProgress == lengthOfTask)
-   * or having a boolean "done" variable that is set to true in the code
-   * whenever the task is done, and returning it here.
-   */
-  public boolean done() {
-    return true;
-  }
+ 
     
-  /**
-   * Returns the currentProgress parameter.
-   */
-  public int getCurrent() {
-    return 0;
-  }
     
-  /**
-   * Returns the lenghtOfTask parameter.
-   */
-  public int getLengthOfTask() {
-    return 100;
+  public String getMessage(){
+    return this.statMessage;
+  }//getMessage
+
+  public String getTaskName (){
+    return this.taskName;
+  }//getTaskName
+
+
+  public  String getName () {
+    return "replace";
   }
 
-  /**
-   * Returns a String, possibly the message to be printed on a dialog.
-   * Example: "Completed 12%" 
+  // implements MonitorableSwingWorker
+  public boolean done () {
+    return done;
+  } // isFinished()
+
+   /**
+   * Gets called when the user clicks on the Cancel button of the progress monitor.
    */
-  public String getMessage() {
-    return "Null";
+  public void cancel (){
+    // Cancel the task, set data structures to null
+    this.canceled = true;
+  }//cancel
+
+  public boolean wasCanceled () {
+    return this.canceled;
   }
 
-  /**
-   * Returns a String, possibly the message that describes the task being performed.
-   * Example: "Calculating connecting paths." 
-   */
-  public String getTaskName () {
-    return "Null";
-  }
-    
+  public void stop(){
+    done = true;
+  }//stop()
+
+
+  public void incrementProgress(){
+    this.currentProgress++;
+    double percent = (this.currentProgress * 100)/this.lengthOfTask;
+    this.statMessage = "Completed " + percent + "%";
+  }//incrementProgress
+
+  // implements MonitorableSwingWorker
+  public int getCurrent () {
+    return currentProgress;
+  } // getCurrentProgressValue()
+
+		// implements MonitorableSwingWorker
+  public int getLengthOfTask () {
+    return lengthOfTask;
+  } // getTargetProgressValue()
+
   /**
    * Initializes currentProgress (generally to zero) and then spawns a SwingWorker
    * to start doing the work.
@@ -107,7 +121,7 @@ abstract public class AbstractLayout
   public void go ( boolean wait ) {
     final SwingWorker worker = new SwingWorker(){
         public Object construct(){
-          return this.construct();
+          return AbstractLayout.this.construct();
         }
       };
     worker.start();
@@ -117,27 +131,28 @@ abstract public class AbstractLayout
     }
   }
         
-  /**
-   * Increments the progress by one
-   */
-  public abstract void incrementProgress();
-  
-  /**
-   * Stops the task by simply setting currentProgress to lengthOfTask, 
-   * or if a boolean "done" variable is used, setting it to true.
-   */
-  public abstract void stop();
+  public void doLayout () {
+    initialize( );
+    
+   
+    currentProgress = 0;
+    done = false;
+    canceled = false;
+    statMessage = "Completed 0%";
+    //System.out.println( "In Abstract Layout -start" );
+    CytoscapeProgressMonitor monitor = new CytoscapeProgressMonitor( this, Cytoscape.getDesktop() );
+    monitor.startMonitor( true );
 
-  /**
-   * Gets called by the <code>CytoscapeProgressMonitor</code> when the user
-   * click on the Cancel button.
-   */
-  public abstract void cancel ();
+
+    done = true;
+
+    //System.out.println( "In Abstract Layout -ddone" );
+
   
-  /**
-   * @return whether the task was canceled while running or not.
-   */
-  public abstract boolean wasCanceled ();
+  }
+
+
+
 
   //------------------------------//
   // Implements Layout
@@ -178,7 +193,7 @@ abstract public class AbstractLayout
 	 * for example, to initialize local per-edge or
 	 * graph-wide data.
 	 */
-  protected abstract void initialize_local();
+  protected  void initialize_local() {}
 
 	/**
 	 * Initializes the local information on a single vertex.
@@ -187,7 +202,7 @@ abstract public class AbstractLayout
 	 * necessary: for example, to attach vertex-level
 	 * information to each vertex.
 	 */
-  protected abstract void initialize_local_node_view ( NodeView nv);
+  protected  void initialize_local_node_view ( NodeView nv) {}
 
   /**
 	 * This method calls <tt>initialize_local_vertex</tt> for
@@ -250,7 +265,7 @@ abstract public class AbstractLayout
 	 * </pre>
 	 * @see Layout#advancePositions()
 	 */
-  public abstract void advancePositions();
+  public  void advancePositions() {}
   
   /**
 	 * Returns the current size of the visualization

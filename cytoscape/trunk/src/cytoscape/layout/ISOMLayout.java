@@ -87,89 +87,35 @@ public class ISOMLayout extends AbstractLayout {
     return null;
   }
  
-   public  void go ( boolean wait ) {
-    final SwingWorker worker = new SwingWorker(){
-        public Object construct(){
-          return ISOMLayout.this.construct();
-        }
-      };
-    worker.start();
-    // wait for the task to be done
-    //System.out.println("SimilarityCalculator.go() : Thread " + Thread.currentThread() + " about to join");
-    //System.out.flush();
-    if(wait){
-      worker.get();
-    }
-  }//go()
+ //   public  void go ( boolean wait ) {
+//      final SwingWorker worker = new SwingWorker(){
+//         public Object construct(){
+//           return ISOMLayout.this.construct();
+//         }
+//       };
+//     worker.start();
+//     // wait for the task to be done
+//     //System.out.println("SimilarityCalculator.go() : Thread " + Thread.currentThread() + " about to join");
+//     //System.out.flush();
+//     if(wait){
+//       worker.get();
+//     }
+//   }//go()
 
-  public void stop(){
-    done = true;
-  }//stop()
+ 
 
+ 
 
-  public void incrementProgress(){
-    this.currentProgress++;
-    double percent = (this.currentProgress * 100)/this.lengthOfTask;
-    this.statMessage = "Completed " + percent + "%";
-  }//incrementProgress
-
-  // implements MonitorableSwingWorker
-  public int getCurrent () {
-    return currentProgress;
-  } // getCurrentProgressValue()
-
-		// implements MonitorableSwingWorker
-  public int getLengthOfTask () {
-    return lengthOfTask;
-  } // getTargetProgressValue()
-
-  public String getMessage(){
-    return this.statMessage;
-  }//getMessage
-
-  public String getTaskName (){
-    return this.taskName;
-  }//getTaskName
-
-  // implements MonitorableSwingWorker
+  //implements MonitorableSwingWorker
   public String getName () {
     return "ISOM Layout";
-  } // getName()
+  } //getName()
 
-		// implements MonitorableSwingWorker
-  public boolean done () {
-    return done;
-  } // isFinished()
+	
   
-  /**
-   * Gets called when the user clicks on the Cancel button of the progress monitor.
-   */
-  public void cancel (){
-    // Cancel the task, set data structures to null
-    this.canceled = true;
-  }//cancel
+ 
 
-  public boolean wasCanceled () {
-    return this.canceled;
-  }
-
-
-  public void doLayout () {
-    initialize( );
-    
-   
-    currentProgress = 0;
-    done = false;
-    canceled = false;
-    statMessage = "Completed 0%";
-
-    CytoscapeProgressMonitor monitor = new CytoscapeProgressMonitor( this, Cytoscape.getDesktop() );
-    monitor.startMonitor( true );
-
-    System.out.println( "Done with monitor in ISOM" );
-
-  }
-
+ 
   	/**
 	 * Returns the current number of epochs and execution status, as a string.
 	 */
