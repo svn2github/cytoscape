@@ -37,6 +37,8 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Date;
 
 /**
@@ -292,7 +294,18 @@ public class TaskMonitorUI extends JFrame implements ActionListener {
         createFooter(container);
 
         this.initTimer();
-        this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+
+        //  Conditionally Close Window only when Task is Done.
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        this.addWindowListener(new WindowAdapter (){
+            public void windowClosing(WindowEvent e) {
+                if (task.isDone()) {
+                    timer.stop();
+                    TaskMonitorUI.this.dispose();
+                }
+            }
+        });
+
         this.pack();
         this.setResizable(false);
 
@@ -305,6 +318,8 @@ public class TaskMonitorUI extends JFrame implements ActionListener {
             this.show();
         }
     }
+
+
 
     /**
      * Creates Footer with Close, Cancel Buttons.
