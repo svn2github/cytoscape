@@ -77,7 +77,7 @@ public class FactorGraph
     protected IntListMap _adjacencyMap;
 
     // dependency relationships between nodes
-    protected DependencyGraph _dependencyGraph;
+    //protected DependencyGraph _dependencyGraph;
 
     protected List _submodels;
     
@@ -100,7 +100,7 @@ public class FactorGraph
         _paths = pathResults;
         _g = _newRootGraph();
 
-        _dependencyGraph = new DependencyGraph(_g.getNodeCount());
+        //_dependencyGraph = new DependencyGraph(_g.getNodeCount());
 
         _submodels = new ArrayList();
         
@@ -653,12 +653,15 @@ public class FactorGraph
         _submodels.clear();
 
         _runMaxProduct();
-        fixUniqueVars();
+        Submodel invariant = fixUniqueVars();
+        invariant.setInvariant(true);
+        _submodels.add(invariant);
 
+        System.out.println("added invariant submodel with "
+                           + invariant.size() + " vars");
+        
         // annotate invariant edges in the interaction graph
-        List invariantModel = updateEdgeAnnotation();
-
-        _submodels.add(invariantModel);
+        updateEdgeAnnotation();
         
         //partitionFactorGraph();
         
@@ -675,14 +678,18 @@ public class FactorGraph
         
         System.out.println("Called max product method " + x + " times");
 
+        System.out.println("Generated " + _submodels.size()
+                           + " submodels");
+        
         // update the edge annotations now that all variables are fixed.
         updateEdgeAnnotation();
 
+        /*
         System.out.println("### Dependency Graph");
         System.out.println(CyUtil.toString(_dependencyGraph.getRootGraph(),
                                            _dependencyGraph.getDep2InteractionMap())
                            );
-
+        */
         // break dependecy graph into connected components
 
 
@@ -721,7 +728,10 @@ public class FactorGraph
             }
             
             _runMaxProduct();
-            fixUniqueVars(var);
+            Submodel model = fixUniqueVars(var);
+            _submodels.add(model);
+            System.out.println("added submodel with "
+                               + model.size() + " vars");
         }
         
         return x;
@@ -771,9 +781,45 @@ public class FactorGraph
     
     /**
      * Fix all variables that have a unique max
+     * @return a Submodel containing the variables that were fixed
      */
-    private void fixUniqueVars()
+    private Submodel fixUniqueVars()
     {
+        Submodel model = new Submodel();
+        
+        for(int x=0; x < _vars.size(); x++)
+        {
+            int v = _vars.get(x);
+            VariableNode vn = (VariableNode) _nodeMap.get(v);
+
+            ProbTable pt = vn.getProbs();
+
+            if(!vn.isFixed())
+            {
+                if(pt.hasUniqueMax())
+                {
+                    model.addVar(v);
+                    vn.fixState(pt.maxState());
+                }
+            }
+        }
+
+        System.out.println("fixed " + model.size()
+                           + " variables of " + _vars.size());
+
+        return model;
+    }
+
+    /**
+     * 1. Fix all variables that have a unique max.
+     *
+     * 2. Establish dependency relationship from fixedNode to
+     * the newly fixed nodes.
+     */
+    private Submodel fixUniqueVars(int fixedNode)
+    {
+        Submodel model = new Submodel();
+        model.setIndependentVar(fixedNode);
         int ct = 0;
         
         for(int x=0; x < _vars.size(); x++)
@@ -787,6 +833,14 @@ public class FactorGraph
             {
                 if(pt.hasUniqueMax())
                 {
+                    // v is a dependent node
+                    model.addVar(v);
+
+                    // add variables that influence the
+                    // potential functions that determine v.
+                    addInferredVars(model, fixedNode, v,
+                                    pt.maxState());
+
                     vn.fixState(pt.maxState());
                     ct++;
                 }
@@ -794,54 +848,34 @@ public class FactorGraph
         }
 
         System.out.println("fixed " + ct + " variables of " + _vars.size());
+
+        return model;
     }
 
     /**
-     * Fix all variables that have a unique max.
-     * Establish dependency relationship from fixedNode to
-     * the newly fixed nodes.
-     */
-    private void fixUniqueVars(int fixedNode)
-    {
-        int ct = 0;
-
-        for(int x=0; x < _vars.size(); x++)
-        {
-            int v = _vars.get(x);
-            VariableNode vn = (VariableNode) _nodeMap.get(v);
-
-            ProbTable pt = vn.getProbs();
-
-            if(!vn.isFixed())
-            {
-                if(pt.hasUniqueMax())
-                {
-                    setDependency(fixedNode, v, pt.maxState());
-                    vn.fixState(pt.maxState());
-                    ct++;
-                }
-            }
-        }
-
-        System.out.println("fixed " + ct + " variables of " + _vars.size());
-    }
-
-    /**
-     * Record a dependency established by fixing "fixedNode
+     * Record a dependency established by fixing "fixedNode"
+     * 1. find factor nodes that contain the fixedNode and the dependent node
+     * 2. keep factor node only if all of the vars connected to it are
+     *    either invariant, previously manually fixed, or newly determined.
+     * 3. update the dependency graph.  
+     *    The dependent node depends on each variable connected to the
+     *    factor node.
      *
      * @param fixedNode the degerate variable that was manually fixed
      * @param node a variable that was uniquely determined by the last
      *             run of the max product algorith,
      */
-    private void setDependency(int fixedNode, int node, State max)
+    private void addInferredVars(Submodel model,
+                                 int fixedNode, int node, State max)
     {
-        System.out.println("setDependency: " + fixedNode + ", " + node
+        System.out.println("addInferredVars: " + fixedNode
+                           + ", " + node
                            + " max=" + max);
 
-        updateDepGraph(fixedNode, node);
-        
         // identify variables that are connected to the factor nodes
         // that are connected to this variable
+        // criteria:
+        // 1. all child vars of the factor node must be fixed
 
         List messages = _adjacencyMap.get(node);
         for(int m=0, M=messages.size(); m < M; m++)
@@ -858,8 +892,12 @@ public class FactorGraph
                 
                 if(y != node && isVarFixed(y))
                 {
-                    //System.out.println("update dependency graph: " + y + ", " + node);
-                    updateDepGraph(y, node);
+                    // FIX THIS
+                    System.out.println("adding var: " + y
+                                       + " to model "
+                                       + model.getIndependentVar());
+                    model.addVar(y);
+                    //                    updateDepGraph(y, node);
                 }
             }
 
@@ -892,7 +930,7 @@ public class FactorGraph
      *
      * @param n2 the dependent node
      * @param n1 the node that n2 is dependent on
-     */
+     *
     private void updateDepGraph(int n1, int n2)
     {
         int edge1 = nodeIndex2InteractionIndex(n1);
@@ -906,7 +944,7 @@ public class FactorGraph
             _dependencyGraph.add(edge1, edge2);
         }
     }
-    
+    */
 
     /**
      *
@@ -1067,10 +1105,9 @@ public class FactorGraph
      * Set the max state, direction, and sign for each edge
      *
      */
-    protected List updateEdgeAnnotation()
+    protected void updateEdgeAnnotation()
     {
         ObjectArrayList aes = _edgeMap.values();
-        List invariant = new ArrayList();
         
         for(int x=0; x < aes.size(); x++)
         {
@@ -1086,11 +1123,8 @@ public class FactorGraph
             {
                 //                System.out.println("setting invariant to true for: " + ae.interactionIndex);
                 ae.invariant = true;
-                invariant.add(ae);
             }
         }
-
-        return invariant;
     }
 
     /**
