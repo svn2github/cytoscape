@@ -161,16 +161,12 @@ JTabbedPane createGui (GraphObjAttributes attributes)
 //------------------------------------------------------------------------------
 protected int detectClassOfBrowsedObjects (Object [] graphObjects)
 {
-  String graphObjectClassName = graphObjects [0].getClass().getName();
-
-  if (graphObjectClassName.indexOf ("y.view.a") >= 0)
-   return BROWSING_NODES;
-
-  else if (graphObjectClassName.indexOf ("y.view.f") >= 0)
-    return BROWSING_EDGES;
-
-  else 
-    return BROWSING_UNRECOGNIZED_OBJECTS;
+  if (graphObjects[0] instanceof y.base.Node)
+      return BROWSING_NODES;
+  else if (graphObjects[0] instanceof y.base.Edge)
+      return BROWSING_EDGES;
+  else
+      return BROWSING_UNRECOGNIZED_OBJECTS;
 
 } // detectClassOfBrowsedObjects
 //------------------------------------------------------------------------------
