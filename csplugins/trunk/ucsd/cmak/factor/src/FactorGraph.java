@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 
+import java.util.logging.Logger;
+
 /**
  * A bipartite graph of Variable and Factor nodes that represents
  * constraints on paths in a physical interaction network that
@@ -31,6 +33,9 @@ import java.io.PrintStream;
  */
 public class FactorGraph
 {
+    private static Logger logger = Logger.getLogger(FactorGraph.class.getName());
+
+    // filter submodels with fewer than 3 ko variables
     private boolean filter3 = true;
     
     // used to compute the a priori probabilities of
@@ -658,7 +663,7 @@ public class FactorGraph
         _runMaxProduct();
         updateEdgeAnnotation();
 
-        System.out.println(printAdj());
+        //System.out.println(printAdj());
     }
     
     private void _runMaxProduct()  throws AlgorithmException
@@ -683,6 +688,16 @@ public class FactorGraph
         }
 
         System.out.println(printAdj());
+
+        try
+        {
+            PrintStream pathFactorOut = new PrintStream(new FileOutputStream("pathFactor.msg"));
+            pathFactorOut.println(printAdjOfType(NodeType.PATH_FACTOR));
+        }
+        catch(IOException e)
+        {
+            logger.info(e.getMessage());
+        }
     }
 
     
@@ -762,7 +777,7 @@ public class FactorGraph
     }
 
     /**
-     *
+     * FIX THIS.  Currently incorrect 10/30/04
      *
      * @return the number of knockout effects explained in
      * a submodel
@@ -1487,106 +1502,126 @@ public class FactorGraph
      */
     public String printAdj()
     {
+        return printAdjOfType(null);
+    }
+
+    public String printAdjOfType(NodeType type)
+    {
         StringBuffer b = new StringBuffer();
         IntArrayList keys = _adjacencyMap.keys();
         for(int x=0; x < keys.size(); x++)
         {
             int node = keys.get(x);
-            boolean isVar = false;
+	    b.append(printNodeMessages(node, type));
+	}
+        return b.toString();
+    }
 
-            FGNode o = (FGNode) _nodeMap.get(node);
-            if(o instanceof VariableNode)
-            {
-                isVar = true;
-            }
+    
 
-            b.append(node);
-            b.append(" ");
-            b.append(o.type());
-            b.append(" ");
-            
-            if(isVar)
-            {
-                b.append(" Variable ");
-            }
-            else
-            {
-                b.append(" Factor ");
-            }
-            b.append(" { \n");
+    /**
+     * Print the most recently passed messages incoming and outgoing of a specific node.
+     *
+     * @param node the node to print
+     * @param filter only print nodes of type "filter", or null if no filtering.
+     * @return the messages in text format.
+     */
+    public String printNodeMessages(int node, NodeType filter)
+    {
+        boolean isVar = false;
+        StringBuffer b = new StringBuffer();
+        FGNode o = (FGNode) _nodeMap.get(node);
+        
+        // continue only if the node is the right type
+        if(filter != null && !o.isType(filter))
+        {
+            return b.toString();
+        }
 
-            
-            List l = _adjacencyMap.get(node);
-            if(isVar)
+        b.append(node);
+        b.append(" ");
+        b.append(o.type());
+        b.append(" ");
+        
+        if(! (o.isType(NodeType.OR_FACTOR) || o.isType(NodeType.PATH_FACTOR)))
+        {
+            isVar = true;
+        }
+
+        b.append(" { \n");
+        
+        
+        List l = _adjacencyMap.get(node);
+        if(isVar)
+        {
+            for(int m=0; m < l.size(); m++)
             {
-                for(int m=0; m < l.size(); m++)
+                EdgeMessage em = (EdgeMessage) l.get(m);
+                
+                if(m==0)
                 {
-                    EdgeMessage em = (EdgeMessage) l.get(m);
-                    
-                    if(m==0)
-                    {
-                        b.append("    v2f (");
-                        b.append(em.getVariableIndex());
-                        b.append(" ");
-                        b.append(em.getFactorIndex());
-                        b.append(") ");
-                        b.append(em.v2f());
-                        b.append("\n");
-                    }
-                    
-                    b.append("    f2v (");
-                    b.append(em.getFactorIndex());
-                    b.append(" ");
-                    b.append(em.getVariableIndex());
-                    b.append(") f=");
-                    b.append(_getNodeType(em.getFactorIndex()));
-                    b.append(" ");
-                    b.append(em.f2v());
-                    b.append("\n");
-                }}
-            else
-            {
-                for(int m=0; m < l.size(); m++)
-                {
-                    EdgeMessage em = (EdgeMessage) l.get(m);
-
-                    
-                    b.append("    f2v (");
-                    b.append(em.getFactorIndex());
-                    b.append(" ");
-                    b.append(em.getVariableIndex());
-                    b.append(") " + m + " t");
-                    b.append(type2String(_getNodeType(em.getVariableIndex())));
-                    b.append(" ");
-                    b.append(em.f2v());
-                    b.append("\n");
-                }
-                    
-                for(int m=0; m < l.size(); m++)
-                {
-                    EdgeMessage em = (EdgeMessage) l.get(m);
-
-                    NodeType t = _getNodeType(em.getVariableIndex());
-                    
                     b.append("    v2f (");
                     b.append(em.getVariableIndex());
                     b.append(" ");
                     b.append(em.getFactorIndex());
-                    b.append(") " + m + " ");
-                    b.append(type2String(t));
-                    b.append(" ");
+                    b.append(") ");
                     b.append(em.v2f());
-                    if(t == NodeType.DIR)
-                    {
-                        b.append(" ");
-                        b.append(em.getDir());
-                    }
                     b.append("\n");
                 }
+                
+                b.append("    f2v (");
+                b.append(em.getFactorIndex());
+                b.append(" ");
+                b.append(em.getVariableIndex());
+                b.append(") f=");
+                b.append(_getNodeType(em.getFactorIndex()));
+                b.append(" ");
+                b.append(em.f2v());
+                b.append("\n");
             }
-            b.append("  }\n");
+	    }
+        else
+        {
+            for(int m=0; m < l.size(); m++)
+            {
+                EdgeMessage em = (EdgeMessage) l.get(m);
+                
+                
+                b.append("    f2v (");
+                b.append(em.getFactorIndex());
+                b.append(" ");
+                b.append(em.getVariableIndex());
+                b.append(") " + m + " t");
+                b.append(type2String(_getNodeType(em.getVariableIndex())));
+                b.append(" ");
+                b.append(em.f2v());
+                b.append("\n");
+            }
+            
+            for(int m=0; m < l.size(); m++)
+            {
+                EdgeMessage em = (EdgeMessage) l.get(m);
+                
+                NodeType t = _getNodeType(em.getVariableIndex());
+                
+                b.append("    v2f (");
+                b.append(em.getVariableIndex());
+                b.append(" ");
+                b.append(em.getFactorIndex());
+                b.append(") " + m + " ");
+                b.append(type2String(t));
+                b.append(" ");
+                b.append(em.v2f());
+                if(t == NodeType.DIR)
+                {
+                    b.append(" ");
+                    b.append(em.getDir());
+                }
+                b.append("\n");
+            }
         }
-
+        b.append("  }\n");
+        
         return b.toString();
     }
 

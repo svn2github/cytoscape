@@ -16,7 +16,7 @@ public class ChiSquaredDistribution
 
     private int insertionPointBound;
 
-    private static String table = "/cellar/users/cmak/data/chi2cdf1table_rev.txt";
+    private static String table = "chi2cdf1table_rev.txt";
 
     private static ChiSquaredDistribution __singleton = null;
 

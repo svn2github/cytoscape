@@ -4,6 +4,9 @@ public class TestMessage
     private ProbTable prob;
     private NodeType type;
     private State dir;
+
+    private String from;
+    private String to;
     
     public TestMessage(int index, ProbTable prob, NodeType type)
     {
@@ -20,6 +23,11 @@ public class TestMessage
         this.dir = pm;
     }
 
+    public String getFrom() {return from;}
+    public String getTo() {return to;}
+    public void setFrom(String s) {from = s;}
+    public void setTo(String s) {to = s;}
+
     
     public int getIndex() {return index;}
     public ProbTable getProbTable() {return prob;}
@@ -29,8 +37,9 @@ public class TestMessage
     public String toString()
     {
         StringBuffer b = new StringBuffer();
+        b.append(" " + index + " ");
         b.append(type);
-        b.append(" [" + index + "] ");
+        b.append(" (" + from + " " + to + ") ");
         if(dir != null)
         {
             b.append(dir);
