@@ -3,7 +3,7 @@
 // $Date$
 // $Author$
 //----------------------------------------------------------------------------
-package cytoscape.parsers;
+package cytoscape.visual.parsers;
 //----------------------------------------------------------------------------
 import java.awt.Color;
 import java.awt.Font;
