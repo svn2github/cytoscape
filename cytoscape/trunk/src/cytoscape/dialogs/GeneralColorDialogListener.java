@@ -34,19 +34,32 @@ public class GeneralColorDialogListener implements ActionListener {
     private MutableColor returnColor;
     private String title;
     private Component component;
+    private JLabel label;
     public GeneralColorDialogListener(Component component, MutableColor writeToThisColor, String title) {
 	super ();
 	returnColor = writeToThisColor;
 	this.component = component;
 	this.title = title;
+	this.label = null;
+    }
+    public GeneralColorDialogListener(Component component, MutableColor writeToThisColor, JLabel label, String title) {
+	super ();
+	returnColor = writeToThisColor;
+	this.component = component;
+	this.title = title;
+	this.label = label;
     }
     
     public void actionPerformed(ActionEvent e) {
 	Color tempColor = JColorChooser.showDialog(component,
 						   title,
 						   returnColor.getColor());
-	if (tempColor != null)
+	if (tempColor != null) {
 	    returnColor.setColor(tempColor);
+	    if (label != null) {
+		label.setBackground(tempColor);
+	    }
+	}
     }
 }
 
