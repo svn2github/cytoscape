@@ -70,6 +70,8 @@ public interface Task extends Runnable, Haltable {
      * <code>TaskMonitor</code> methods can only be be called from the thread
      * that invokes <code>run()</code>.
      *
+     * @param monitor TaskMonitor Object.
+     *
      * @throws IllegalThreadStateException Indicates that the TaskMonitor has
      *                                     already been set.
      */
