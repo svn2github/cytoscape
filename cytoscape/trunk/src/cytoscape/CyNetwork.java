@@ -190,6 +190,8 @@ public interface CyNetwork extends GraphPerspective {
   public void addFlagEventListener (FlagEventListener listener);
   
   public void removeFlagEventListener (FlagEventListener listener);
+  
+  public FlagFilter getFlagger ();
 
 
   //--------------------//

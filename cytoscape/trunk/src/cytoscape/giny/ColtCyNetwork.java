@@ -340,7 +340,7 @@ public class ColtCyNetwork
   /**
     * Returns the default object for flagging graph objects.
     */
-  protected FlagFilter getFlagger() {return flagger;}
+  public FlagFilter getFlagger() {return flagger;}
 
   //--------------------//
   // Flagging 
