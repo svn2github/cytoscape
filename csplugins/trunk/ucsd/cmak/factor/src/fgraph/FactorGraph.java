@@ -1133,9 +1133,9 @@ public class FactorGraph
                 if(vn.isType(NodeType.PATH_ACTIVE))
                 {
                     vn.fixState(State.ZERO);
-                    if(INFO)
+                    if(FINE)
                     {
-                        logger.info("fixing path active for path "
+                        logger.fine("fixing path active for path "
                                     + vn.getId()
                                     + " to " + vn.fixedState());
                     }
@@ -1144,9 +1144,9 @@ public class FactorGraph
                 {
                     fixEdgeSignDir(vn, State.ZERO, var);
 
-                    if(INFO)
+                    if(FINE)
                     {
-                        logger.info("fixing edge value for "
+                        logger.fine("fixing edge value for "
                                            + _ig.edgeName(vn.getId())
                                            + " to " + vn.fixedState());
                     }
@@ -1155,9 +1155,9 @@ public class FactorGraph
                 {
                     fixEdgeSignDir(vn, State.PLUS, var);
 
-                    if(INFO)
+                    if(FINE)
                     {
-                        logger.info("fixing sign for "
+                        logger.fine("fixing sign for "
                                     + _ig.edgeName(vn.getId())
                                     + " to " + vn.fixedState());
                     }
@@ -1165,18 +1165,18 @@ public class FactorGraph
                 else if (vn.isType(NodeType.DIR))
                 {
                     fixEdgeSignDir(vn, State.PLUS, var);
-                    if(INFO)
+                    if(FINE)
                     {
-                        logger.info("fixing dir for "
+                        logger.fine("fixing dir for "
                                     + _ig.edgeName(vn.getId())
                                     + " to " + vn.fixedState());
                     }
                 }
                 else if(vn.isType(NodeType.KO))
                 {
-                    if(INFO)
+                    if(FINE)
                     {
-                        logger.info("fixing ko for "
+                        logger.fine("fixing ko for "
                                     + _ig.node2Name(vn.getId())
                                     + " - "
                                     + _ig.node2Name(vn.getId2()));

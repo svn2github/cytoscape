@@ -1,6 +1,7 @@
 package fgraph;
 
 import fgraph.util.ObjectIntMap;
+import fgraph.util.Target2PathMap;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Arrays;
 
 import java.util.logging.Logger;
 
@@ -29,6 +31,7 @@ import cern.colt.list.IntArrayList;
 import cern.colt.map.OpenIntIntHashMap;
 import cern.colt.map.OpenIntDoubleHashMap;
 import cern.colt.map.OpenIntObjectHashMap;
+import cern.colt.bitvector.BitMatrix;
 
 /**
  * A graph of protein-protein and protein-DNA interactions.
@@ -420,6 +423,71 @@ public class InteractionGraph
 
     }
 
+    int[] getKOIndices()
+    {
+        String[] conds = _expressionData.getConditionNames();
+        
+        IntArrayList ko = new IntArrayList(conds.length);
+        
+        for(int x=0; x < conds.length; x++)
+        {
+            if(containsNode(conds[x]))
+            {
+                int i = name2Node(conds[x]); 
+                ko.add(i);
+            }
+        }
+        ko.trimToSize();
+
+        return ko.elements();
+    }
+
+       
+    
+    private void augmentSubmodel(Submodel model)
+    {
+        int[] nodes = _graph.getNodeIndicesArray();
+        int[] kos = getKOIndices();
+        
+        // find diff exp genes
+        BitMatrix affected = new BitMatrix(nodes.length, nodes.length);
+        affected.clear();
+        Set uniqueAffected = new HashSet();
+
+
+        int[] koIndex = new int[kos.length];
+        for(int x=0; x < nodes.length; x++)
+        {
+            for(int y=0; y < kos.length; y++)
+            {
+                if(nodes[x] == kos[y])
+                {
+                    koIndex[y] = x;
+                    logger.info("KO: " + kos[y] + " " + y +
+                                "=" + x);
+                }
+            }
+        }
+        
+        int num=0;
+        for(int n = 0; n < nodes.length; n++)
+        {
+            int node = nodes[n];
+            for(int x=0; x < kos.length; x++)
+            {
+                if(expressionChanges(kos[x], node))
+                {
+                    num++;
+                    affected.put(koIndex[x], n, true);
+                    uniqueAffected.add(new Integer(node));
+                }
+            }
+        }
+
+        logger.info("Found " + num + " ko/gene pairs");
+        logger.info("Found " + uniqueAffected.size() + " unique genes");
+    }
+    
     /**
      * Print this interaction graph
      */
@@ -521,6 +589,9 @@ public class InteractionGraph
         for(int x=0; x < _submodels.size(); x++)
         {
             Submodel m = (Submodel) _submodels.get(x);
+
+            augmentSubmodel(m);
+            
             if(m.getNumExplainedKO() >= filter)
             {
                 edges.addAll(m.getEdges());
@@ -592,17 +663,6 @@ public class InteractionGraph
                 throw new IOException("Unexpected edge direction state: "
                                       + ae.maxDir);
             }
-            /*
-            int dirSrc = src;
-
-            if(ae.maxDir == State.MINUS)
-            {
-                dirSrc = target;
-            }
-            
-            if(_graph.getOutDegree(dirSrc) > neighborCutoff)
-            {
-            */
             
             String type = " x ";
             if(_edge2type.containsKey(e))
@@ -619,7 +679,7 @@ public class InteractionGraph
             
             out.println(b.toString());
         }
-        //}
+
     }
     
     public void writeGraph(String filename) throws IOException
@@ -828,8 +888,19 @@ public class InteractionGraph
 
         for(int n=0, N =nodes.size(); n < N; n++)
         {
-            out.println(node2Name(nodes.get(n)) + " = KO");
-        }       
+            int ko = nodes.get(n);
+            out.println(node2Name(ko) + " = KO");
+
+            IntArrayList tmap = _paths.getTarget2PathMap(ko).keys();
+
+            for(int t=0; t < tmap.size(); t++)
+            {
+                out.println(node2Name(tmap.get(t)) + " = Buffered");
+            }
+        }
+
+
+        
     }
 
 

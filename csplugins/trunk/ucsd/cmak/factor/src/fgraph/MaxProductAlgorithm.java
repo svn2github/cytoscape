@@ -190,7 +190,7 @@ public class MaxProductAlgorithm
         //int N = 20  * _paths.getMaxPathLength();
         //int N = 2;
         
-        logger.info("Running max product " + N + " iterations");
+        logger.fine("Running max product " + N + " iterations");
         
         for(int x=0; x < N; x++)
         {

@@ -12,6 +12,7 @@
   <property name="test.report"  location="test-report"/>
   <property name="grammar" location="grammar"/>
   <property name="gsrc" location="${build}/src/fgraph/test"/>
+  <property name="src.netan" location="${build}/src/netan"/>
 
    <path id="project.class.path">
        <fileset dir="${lib}">
@@ -62,7 +63,9 @@
 
   <target name="antlr" depends="init"
         description="generate source using ANTLR and compile" >
+
     <mkdir dir="${gsrc}"/>
+    <mkdir dir="${src.netan}"/>
 
    <antlr target="${grammar}/message.g"
            outputdirectory="${gsrc}"/>
@@ -75,10 +78,15 @@
            outputdirectory="${gsrc}"/>
 
 
+   <antlr target="${grammar}/nodeAttr.g"
+           outputdirectory="${src.netan}"/>
+
+
     <!-- Compile the java code from ${src} into ${build}
     <javac  destdir="${build}" deprecation="no">
          <src path="${src}"/> 
-        <src path="${gsrc}"/>
+         <src path="${gsrc}"/>
+         <src path="${src.netan}"/>
          <include name="ParseMain.java"/>
          <include name="T.java"/>
          <include name="L.java"/>
@@ -96,6 +104,7 @@
     <!-- Compile the java code from ${src} into ${build} -->
     <javac srcdir="${src}" destdir="${build}" deprecation="no">
          <src path="${gsrc}"/>
+         <src path="${src.netan}"/>
          <classpath refid="project.class.path"/>
     </javac>
 

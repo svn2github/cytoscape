@@ -22,3 +22,4 @@ cat $ddir/poster/network/type-0.1.noa \
     > poster-result/${data}_type2.noa
 
 sed -e '1 i\NodeType (class=java.lang.String)' poster-result/${data}_type2.noa > poster-result/${data}_type_aug.noa
+

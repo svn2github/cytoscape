@@ -17,6 +17,8 @@ public interface ExpressionDataIF
     public double getPvalue(String koNode, String targetNode);
     
     public String[] getConditionNames();
+
+    public String[] getGeneNames();
     
     /**
      * Set the threshold used by expressionChanges to determine whether

@@ -130,6 +130,14 @@ public class InteractionGraphFactory
                 String targetNodeName = targets[t];
                 if(canonicalize) targetNodeName = canonicalizeName (targetNodeName);
 
+                if(sourceName.equals("YLR182W") &&
+                   targetNodeName.equals("YDL101C"))
+                {
+                    logger.info("Processing SWI6 "
+                                + interaction.getType() +
+                                " DUN1");
+                }
+                
                 if((directed &&
                     !edgeTracker.containsMapping(sourceName, targetNodeName))
                    ||
@@ -141,6 +149,14 @@ public class InteractionGraphFactory
                     edgeTracker.put(sourceName, targetNodeName);
                     edgeCount++;
                     
+
+                    if(sourceName.equals("YLR182W") &&
+                       targetNodeName.equals("YDL101C"))
+                    {
+                        logger.info("   adding edge to tracker");
+                    }
+
+
                     // ypd and mms are directed edges from ChIP-CHIP experiments
                     if(sourceName.equals(targetNodeName))
                     {
@@ -171,6 +187,12 @@ public class InteractionGraphFactory
             {
                 it.remove();
 
+                if(sourceName.equals("YLR182W"))
+                {
+                    logger.info("   removing SWI6: " + interaction);
+                }
+
+                
                 for(int t=0; t < targets.length; t++)
                 {
                     if(!duplicates.contains(t))
@@ -266,6 +288,15 @@ public class InteractionGraphFactory
 
                 targetIndex = g.name2Node(targetNodeName);
 
+
+                if(sourceName.equals("YLR182W") &&
+                   targetNodeName.equals("YDL101C"))
+                {
+                    logger.info("Creating edge SWI6 "
+                                + interaction.getType() +
+                                " DUN1");
+                }
+                
                 String type = interaction.getType();
                 // record edge endpoints
                 if(sourceIndex == targetIndex)

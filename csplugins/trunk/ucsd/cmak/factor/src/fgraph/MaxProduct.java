@@ -165,16 +165,35 @@ public class MaxProduct
         start = System.currentTimeMillis();
 
         PathResult paths = findPaths();
-        log("Num KOs: " + paths.getKOs().size());
-        log("Num KO pairs: " + paths.getNumKOPairs());
-        log("Num KO with >0 targets: " + paths.countKOWithTargets());
-        log("Found paths: " + paths.getPathCount());
+        
+        computePathStats(paths);
         
         //log(paths.toString(_ig));
         
         return _run(paths, _ig, outputDir, outputFile, yeangDataFormat);
     }
 
+    private void computePathStats(PathResult paths)
+    {
+        IntArrayList kos = paths.getKOs();
+
+        for(int n=0, N=kos.size(); n < N; n++)
+        {
+            int ko = kos.get(n);
+
+            log(_ig.node2Name(ko) + " " +
+                paths.getTarget2PathMap(ko).size());
+        }
+
+
+        log("Num KOs: " + paths.getKOs().size());
+        log("Num KO pairs: " + paths.getNumKOPairs());
+        log("Num KO with >0 targets: " + paths.countKOWithTargets());
+        log("Found paths: " + paths.getPathCount());
+        
+
+    }
+    
     /**
      * Create a FactorGraph and run the max product algorithm
      *
@@ -243,29 +262,17 @@ public class MaxProduct
     {
         String[] conds = _expressionData.getConditionNames();
         log("conditions: " + Arrays.asList(conds));
+
+        int kos[] = _ig.getKOIndices();
         
-        IntArrayList ko = new IntArrayList(conds.length);
-        
-        for(int x=0; x < conds.length; x++)
-        {
-            if(_ig.containsNode(conds[x]))
-            {
-                int i = _ig.name2Node(conds[x]); 
-                ko.add(i);
-            }
-        }
-        ko.trimToSize();
-        
-        log("Interaction Graph contains " + ko.size() + " of " +
-            conds.length+ " knocked out genes: "
-            + ko);
+        log("Interaction Graph contains " + kos.length + " of " +
+            conds.length+ " knocked out genes: ");
 
         log("Finding paths on graph, MAX PATH LENGTH: " + MAX_PATH_LEN);
 
-        
         DFSPath d = new DFSPath(_ig);
 
-        PathResult paths = d.findPaths(ko.elements(), MAX_PATH_LEN);
+        PathResult paths = d.findPaths(kos, MAX_PATH_LEN);
 
         _ig.setPaths(paths);
         

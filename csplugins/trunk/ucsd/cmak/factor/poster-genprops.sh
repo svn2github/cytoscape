@@ -25,7 +25,7 @@ set EDGE=0.02
 set DECOMPOSE=false
 set YEANG_DATA_FORMAT=false
 
-set ALL=all-p0.02-07dec2004
+set ALL=all-p0.02-27Feb05
 set MMS=mms+pp-p0.02-07dec2004
 set NETWORK=${ALL}
 set NET_LABEL=all
@@ -42,9 +42,9 @@ echo "### mp.sh PD edge pvalue threshold = ${EDGE}"
 
 echo "max.path.length=${PATH}" >> ${OUT}
 echo "interaction.network=${DATA}/buffering/${NETWORK}.sif" >> ${OUT}
-echo "expression.file=${DATA}/poster/data/buffering_pvalues_fixed_orf_fgraph.2005.2.20.tab" >> ${OUT}
+echo "expression.file=${DATA}/poster/data/TF_KOs.logratios.pscores4.tab" >> ${OUT}
 echo "expression.threshold=${EXP}" >> ${OUT}
-echo "edge.attributes=${DATA}/buffering/${NETWORK}.ea" >> ${OUT}
+echo "edge.attributes=${DATA}/buffering/${NETWORK}.eda" >> ${OUT}
 echo "protein-DNA.threshold=${EDGE}" >> ${OUT}
 echo "output.dir=poster-result" >> ${OUT}
 echo "output.filename=${RUN_LABEL}" >> ${OUT}

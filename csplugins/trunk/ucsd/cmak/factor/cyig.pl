@@ -30,7 +30,7 @@ my $base = "$dir/$run";
 $cmd .= " -l embedded ";
 $cmd .= " -n $datadir/orf2name.noa ";
 $cmd .= " -n $datadir/isTF.noa ";
-$cmd .= " -n $datadir/buffering/wt-mms-response.noa ";
+$cmd .= " -n $datadir/buffering/wt-mms-response-fisher-0.0001.noa ";
 $cmd .= " -n ${base}_type.noa ";
 
 $cmd .= " -n $datadir/metabolic-map/metabolic-path.noa ";
@@ -42,8 +42,7 @@ $cmd .= " -j ${base}_dir.eda ";
 $cmd .= " -j ${base}_sign.eda ";
 $cmd .= " -j ${base}_model.eda ";
 $cmd .= " -j ${base}_path.eda ";
-#$cmd .= " -j $datadir/buffering/TFbuffering30nov2004.ea ";
-$cmd .= " -j $datadir/location/plusMinusMMS.ea ";
+$cmd .= " -j $datadir/location/plusMinusMMS-27Feb05-p0.02.cond.eda ";
 
 foreach $f (@files)
 {

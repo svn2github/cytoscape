@@ -54,6 +54,11 @@ public class CytoscapeExpressionData implements ExpressionDataIF
         return -1;
     }
 
+
+    public String[] getGeneNames()
+    {
+        return _data.getGeneNames();
+    }
     
     public String[] getConditionNames()
     {

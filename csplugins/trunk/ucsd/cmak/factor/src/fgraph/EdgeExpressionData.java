@@ -133,6 +133,11 @@ public class EdgeExpressionData implements ExpressionDataIF
         return (String[]) _sourceNodes.toArray(new String[1]);
     }
 
+    public String[] getGeneNames()
+    {
+        throw new RuntimeException("Not yet implemented");
+    }
+    
     
     /**
      * Set the threshold used by expressionChanges to determine whether
