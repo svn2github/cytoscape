@@ -46,15 +46,20 @@ public class GridBagGroup {
     public GridBagLayout gridbag;
     public GridBagConstraints constraints;
     public GridBagGroup() {
+	panel = new JPanel();
+	init();
+    }
+    public GridBagGroup(JPanel panel) {
+	this.panel = panel;
 	init();
     }
     private void init() {
-	panel = new JPanel();
 	gridbag = new GridBagLayout();
 	constraints = new GridBagConstraints();
 	panel.setLayout(gridbag);
     }
     public GridBagGroup(String title) {
+	panel = new JPanel();
 	init();
 	Border border = BorderFactory.createLineBorder (Color.black);
 	Border titledBorder = 
