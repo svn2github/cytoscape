@@ -320,6 +320,11 @@ class LoadNetworkTask implements Task {
       Cytoscape.getNetworkViewMap().put(cyNetwork.getIdentifier(), view);
       view.setTitle(cyNetwork.getTitle());
 
+      // if Squiggle function enabled, enable squiggling on the created view
+      if (Cytoscape.isSquiggleEnabled()) {
+        view.getSquiggleHandler().beginSquiggling();
+      }
+
       Cytoscape.firePropertyChange
               (cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED,null, view);
 
