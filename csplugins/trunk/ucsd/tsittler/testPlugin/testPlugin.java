@@ -11,9 +11,9 @@ public class testPlugin extends PluginUtil{
 	initialize("testPlugin","this plugin illustrates the use of GenericPlugin");
     }
 
-    public HashMap getActions(){
-	HashMap actions=new HashMap(1);
-	HashMap args=new HashMap(5);
+    public ArgVector getActions(){
+	ArgVector actions=new ArgVector(1);
+	ArgVector args=new ArgVector(5);
 	args.put("name","something");
 	args.put("intVal",new Integer(123));
 	args.put("fileVal",new File(""));
@@ -23,11 +23,10 @@ public class testPlugin extends PluginUtil{
 	return actions;
     }
 
-    public void run(String action,HashMap args){
+    public void run(String action,ArgVector args){
 	String outputStr="action: "+action;
-	Iterator it=args.keySet().iterator();
-	while (it.hasNext()){
-	    String nextOne=it.next().toString();
+	for (int i=0;i<args.size();i++){
+	    String nextOne=args.arg(i).toString();
 	    outputStr=outputStr+nextOne+"="+args.get((Object)nextOne).toString();
 	}
 	JFrame frame=new JFrame();
