@@ -245,4 +245,5 @@ public Class getColumnClass (int column)
 
 } // getColumnClass
 //--------------------------------------------------------------------------------------
+
 } // class NodebrowserTableModel

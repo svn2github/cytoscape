@@ -46,11 +46,16 @@ public void set (CytoscapeWindow cytoscapeWindow)
 //----------------------------------------------------------------------------------------
 public JPopupMenu getNodePopup (Node v) 
 {
-  return null;
+    graph = cytoscapeWindow.getGraph();
+    boolean selectedState = graph.isSelected(v);
+    graph.setSelected(v, true);
+    getSelectionPopup(graph.getCenterX(v), graph.getCenterY(v));
+    graph.setSelected(v, selectedState);
+    return null;
 }
 //----------------------------------------------------------------------------------------
 public JPopupMenu getPaperPopup (double x, double y) {
-  return null;
+    return null;
   }
     
 //----------------------------------------------------------------------------------------
