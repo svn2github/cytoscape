@@ -137,51 +137,31 @@ public VisualPropertiesDialog (Frame parentFrame,
   gblPanelInsert(mainPanel,arrowDefault.getLabel(),gridbag,c);
 
   //////////////////////////////////////////////
-  JPanel labelMapPanel = new JPanel();
-  GridBagLayout labelMapPanelGridbag = new GridBagLayout(); 
-  GridBagConstraints labelMapPanelConstraints = new GridBagConstraints();
-  labelMapPanel.setLayout (labelMapPanelGridbag);
-  
-  Border labelMapPanelBorder = BorderFactory.createLineBorder (Color.black);
-  Border labelMapPanelTitledBorder = 
-      BorderFactory.createTitledBorder (labelMapPanelBorder,
-					"Node Label Mapping", 
-					TitledBorder.CENTER, 
-					TitledBorder.DEFAULT_POSITION);
-  labelMapPanel.setBorder (labelMapPanelTitledBorder);
+  BorderedPanel labelBP = new BorderedPanel("Node Label Mapping");
+  JPanel labelPanel = labelBP.getPanel();
+  GridBagLayout labelLayout = labelBP.getLayout();
+  GridBagConstraints labelConstraints = labelBP.getConstraints();
 
   JPanel labelTextPanel
       = new LabelTextPanel(nodeAttribs,localNodeLabelKey);
-  gbcSet(labelMapPanelConstraints,0,0);
-  gblPanelInsert(labelMapPanel,labelTextPanel,labelMapPanelGridbag,labelMapPanelConstraints);
-
-  //////////////////////////////////////////////
+  gbcSet(labelConstraints,0,0);
+  gblPanelInsert(labelPanel,labelTextPanel,labelLayout,labelConstraints);
   gbcSet(c,0,8,2,1,GridBagConstraints.HORIZONTAL);
-  gblPanelInsert(mainPanel,labelMapPanel,gridbag,c);
+  gblPanelInsert(mainPanel,labelPanel,gridbag,c);
 
   //////////////////////////////////////////////
-  JPanel edgeMapPanel = new JPanel();
-  GridBagLayout edgeMapPanelGridbag = new GridBagLayout(); 
-  GridBagConstraints edgeMapPanelConstraints = new GridBagConstraints();
-  edgeMapPanel.setLayout (edgeMapPanelGridbag);
-
-  Border edgeMapPanelBorder = BorderFactory.createLineBorder (Color.black);
-  Border edgeMapPanelTitledBorder = 
-      BorderFactory.createTitledBorder (edgeMapPanelBorder,
-					"Edge Color Mapping", 
-					TitledBorder.CENTER, 
-					TitledBorder.DEFAULT_POSITION);
-  edgeMapPanel.setBorder (edgeMapPanelTitledBorder);
-
+  BorderedPanel edgeBP = new BorderedPanel("Edge Color Mapping");
+  JPanel edgePanel = edgeBP.getPanel();
+  GridBagLayout edgeLayout = edgeBP.getLayout();
+  GridBagConstraints edgeConstraints = edgeBP.getConstraints();
+  
   if(localEdgeKey==null) localEdgeKey = new MutableString("temp");
   edgeTextPanel
       = new EdgeTextPanel(edgeAttribs,aMapper,parentFrame,localEdgeKey);
-  gbcSet(edgeMapPanelConstraints,0,0);
-  gblPanelInsert(edgeMapPanel,edgeTextPanel,edgeMapPanelGridbag,edgeMapPanelConstraints);
-
-  //////////////////////////////////////////////
+  gbcSet(edgeConstraints,0,0);
+  gblPanelInsert(edgePanel,edgeTextPanel,edgeLayout,edgeConstraints);
   gbcSet(c,0,9,2,1,GridBagConstraints.HORIZONTAL);
-  gblPanelInsert(mainPanel,edgeMapPanel,gridbag,c);
+  gblPanelInsert(mainPanel,edgePanel,gridbag,c);
 
   JButton applyButton = new JButton ("Apply");
   applyButton.addActionListener (new ApplyAction ());
@@ -282,6 +262,28 @@ public class CancelAction extends AbstractAction {
   }
 } // CancelAction
 
+public class BorderedPanel {
+    JPanel panel;
+    GridBagLayout layout;
+    GridBagConstraints constraints;
+    BorderedPanel(String title) {
+	panel = new JPanel();
+	layout = new GridBagLayout(); 
+	constraints = new GridBagConstraints();
+	panel.setLayout (layout);
+  
+	Border border = BorderFactory.createLineBorder (Color.black);
+	Border titledBorder = 
+	    BorderFactory.createTitledBorder (border,
+					      title,
+					      TitledBorder.CENTER, 
+					      TitledBorder.DEFAULT_POSITION);
+	panel.setBorder (titledBorder);
+    }
+    public JPanel getPanel() { return panel; }
+    public GridBagLayout getLayout() { return layout; }
+    public GridBagConstraints getConstraints() { return constraints; }
+}
 
     private Color getBasicColor(Integer category) {
 	Color tempColor;
@@ -382,7 +384,8 @@ public class CancelAction extends AbstractAction {
 				 currentLineType,
 				 this);
     }
-    
+
+
 } // class VisualPropertiesDialog
 
 
