@@ -481,6 +481,7 @@
 
         <!-- Create a symbolic link to the Cytoscape JAR in the parent directory -->
         <!-- This way there is only one cytoscape.jar to update  -->
+	<mkdir dir="${mac_app.dir}/Contents/Resources/Java" />
         <exec executable="ln" dir="${mac_app.dir}/Contents/Resources/Java">
             <arg line="-s ../../../../cytoscape.jar cytoscape.jar"/>
         </exec>
