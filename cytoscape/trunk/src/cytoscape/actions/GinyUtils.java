@@ -17,17 +17,77 @@ public class GinyUtils {
     
     public static void hideSelectedNodes(PGraphView view) {
 	    
-	    java.util.List list = view.getSelectedNodes();
+	    //hides nodes and edges between them
+	    
+	   if (view != null) {
+			java.util.List list = view.getSelectedNodes();
 			Iterator i = list.iterator();
 			while (i.hasNext())
 			{
 				NodeView nview =(NodeView) i.next();
 				Node n = nview.getNode();
+				//ColtGraphPerspective gp = (ColtGraphPerspective)graphView.getGraphPerspective();
+				//gp.hideNode(n);
 				( ( PNode )nview ).setVisible( false );
+				//graphView.hideGraphObject( nview );
+				int[] na = view.getGraphPerspective().neighborsArray( nview.getGraphPerspectiveIndex() );
+				for ( int i2 = 0; i2 < na.length; ++i2 ) {
+					int[] edges = view.
+					getGraphPerspective().
+					getEdgeIndicesArray( nview.getGraphPerspectiveIndex(), na[i2], true, true );
+					//if( edges != null )
+					//System.out.println( "There are: "+edges.length+" edge between "+nview.getGraphPerspectiveIndex()+" and "+na[i2] );
+					for ( int j = 0; j < edges.length; ++j ) {
+						PEdgeView ev = ( PEdgeView )view.getEdgeView( edges[j] );
+						ev.setVisible( false );
+						//graphView.hideGraphObject( ev );
+					}
+				}
+		
+			
 			
 			}//while
+		}//if !null
        
     }
+    
+    
+    public static void unHideSelectedNodes(PGraphView view) {
+	    
+	    //hides nodes and edges between them
+	    
+	   if (view != null) {
+			java.util.List list = view.getSelectedNodes();
+			Iterator i = list.iterator();
+			while (i.hasNext())
+			{
+				NodeView nview =(NodeView) i.next();
+				Node n = nview.getNode();
+				//ColtGraphPerspective gp = (ColtGraphPerspective)graphView.getGraphPerspective();
+				//gp.hideNode(n);
+				( ( PNode )nview ).setVisible( true );
+				//graphView.hideGraphObject( nview );
+				int[] na = view.getGraphPerspective().neighborsArray( nview.getGraphPerspectiveIndex() );
+				for ( int i2 = 0; i2 < na.length; ++i2 ) {
+					int[] edges = view.
+					getGraphPerspective().
+					getEdgeIndicesArray( nview.getGraphPerspectiveIndex(), na[i2], true, true );
+					//if( edges != null )
+					//System.out.println( "There are: "+edges.length+" edge between "+nview.getGraphPerspectiveIndex()+" and "+na[i2] );
+					for ( int j = 0; j < edges.length; ++j ) {
+						PEdgeView ev = ( PEdgeView )view.getEdgeView( edges[j] );
+						ev.setVisible( true );
+						//graphView.hideGraphObject( ev );
+					}
+				}
+		
+			
+			
+			}//while
+		}//if !null
+       
+    }
+    
     
     public static void unHideAll(PGraphView view) {
 	    
@@ -87,12 +147,25 @@ public class GinyUtils {
 			}//while
     }
     
+    
+     public static void unHideSelectedEdges(PGraphView view) {
+	    java.util.List list = view.getSelectedEdges();
+			Iterator i = list.iterator();
+			while (i.hasNext())
+			{
+				PEdgeView eview =(PEdgeView) i.next();
+				//Edge e = eview.getEdge();
+				eview.setVisible( true );
+			
+			}//while
+    }
+    
     public static void invertSelectedNodes(PGraphView view) {
 	    java.util.List list = view.getNodeViewsList();
 			Iterator i = list.iterator();
 			while (i.hasNext())
 			{
-				PNodeView nview =(PNodeView) i.next();
+				NodeView nview =(NodeView) i.next();
 				nview.setSelected( !nview.isSelected() );
 			
 			}//while
@@ -117,9 +190,9 @@ public class GinyUtils {
 			Iterator i = list.iterator();
 			while (i.hasNext())
 			{
-				PNodeView nview =(PNodeView) i.next();
+				NodeView nview =(NodeView) i.next();
 				if (nview.isSelected() ) {
-					Node n = graphPerspective.getNode(nview.getIndex());
+					Node n = graphPerspective.getNode(nview.getGraphPerspectiveIndex());
 					List nlist = graphPerspective.neighborsList(n);
 					 Iterator ni = nlist.iterator();
 					 while (ni.hasNext())
@@ -144,8 +217,7 @@ public class GinyUtils {
 			
 			}//while
     }
-    
-    public static void deselectAllNodes(PGraphView view) {
+     public static void deselectAllNodes(PGraphView view) {
 	    
 	    java.util.List list = view.getNodeViewsList();
 			Iterator i = list.iterator();
@@ -156,5 +228,32 @@ public class GinyUtils {
 			
 			}//while
     }
+
+    
+    public static void selectAllEdges(PGraphView view) {
+	    java.util.List list = view.getEdgeViewsList();
+			Iterator i = list.iterator();
+			while (i.hasNext())
+			{
+				EdgeView eview =(EdgeView) i.next();
+				eview.setSelected( true );
+			
+			}//while
+    }
+    
+    public static void deselectAllEdges(PGraphView view) {
+	    java.util.List list = view.getEdgeViewsList();
+			Iterator i = list.iterator();
+			while (i.hasNext())
+			{
+				EdgeView eview =(EdgeView) i.next();
+				eview.setSelected( false );
+			
+			}//while
+    }
 }
+	    
+	    
+    
+   
 

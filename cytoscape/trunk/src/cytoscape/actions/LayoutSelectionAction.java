@@ -19,11 +19,16 @@ public class LayoutSelectionAction extends AbstractAction {
     }
 
   public void actionPerformed (ActionEvent e) {
-      String callerID = "LayoutSelectionAction.actionPerformed";
-      cyWindow.getNetwork().beginActivity(callerID);
-      cyWindow.applyLayoutSelection();
-      cyWindow.redrawGraph(false, false);
-      cyWindow.getNetwork().endActivity(callerID);
+      if ( cyWindow.getCytoscapeObj().getConfiguration().isYFiles() ) {  			  
+	      String callerID = "LayoutSelectionAction.actionPerformed";
+	      cyWindow.getNetwork().beginActivity(callerID);
+	      cyWindow.applyLayoutSelection();
+	      cyWindow.redrawGraph(false, false);
+	      cyWindow.getNetwork().endActivity(callerID);
+      }
+      else {
+	       cyWindow.applySelLayout();
+      }
     }
 }
 

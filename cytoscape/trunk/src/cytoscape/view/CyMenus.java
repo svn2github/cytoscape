@@ -262,6 +262,11 @@ public class CyMenus {
         selectMenu.add(selectEdgesSubMenu);
         JMenu displayNWSubMenu = new JMenu("To New Window");
         selectMenu.add(displayNWSubMenu);
+	
+	
+	// added by larissa 10/09/03
+	mi = selectMenu.add(new SelectAllAction(networkView));
+	mi = selectMenu.add(new DeselectAllAction(networkView));
         
         // mi = selectEdgesSubMenu.add(new EdgeTypeDialogAction());
         
@@ -269,11 +274,22 @@ public class CyMenus {
         mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK));
         mi = selectNodesSubMenu.add(new HideSelectedNodesAction(networkView));
         mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, ActionEvent.CTRL_MASK));
+	
+	// added by larissa 10/09/03
+	mi = selectNodesSubMenu.add(new UnHideSelectedNodesAction(networkView));
+	mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, ActionEvent.CTRL_MASK));
+	mi = selectNodesSubMenu.add(new SelectAllNodesAction(networkView));
+	mi = selectNodesSubMenu.add(new DeSelectAllNodesAction(networkView));
         
         //mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.CTRL_MASK));
         mi = selectEdgesSubMenu.add(new InvertSelectedEdgesAction(networkView));
         mi = selectEdgesSubMenu.add(new HideSelectedEdgesAction(networkView));
+	mi = selectEdgesSubMenu.add(new UnHideSelectedEdgesAction(networkView));
+	mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, ActionEvent.CTRL_MASK));
         mi = selectEdgesSubMenu.add(new EdgeManipulationAction(networkView));
+	mi = selectEdgesSubMenu.add(new SelectAllEdgesAction(networkView));
+	mi = selectEdgesSubMenu.add(new DeSelectAllEdgesAction(networkView));
+        
         
         mi = selectNodesSubMenu.add(new SelectFirstNeighborsAction(networkView));
         mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK));

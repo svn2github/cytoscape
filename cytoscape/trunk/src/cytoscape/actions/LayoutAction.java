@@ -19,8 +19,13 @@ public class LayoutAction extends AbstractAction   {
     }
     
     public void actionPerformed(ActionEvent e) {
-        /* this forces a layout, but doesn't reapply the appearances */
-        networkView.redrawGraph(true, false);
+	if ( networkView.getCytoscapeObj().getConfiguration().isYFiles() ) {    
+		/* this forces a layout, but doesn't reapply the appearances */
+		networkView.redrawGraph(true, false);
+	}
+	else { //for giny apply layout for the whole graph view
+		networkView.applyLayout(networkView.getView());
+	}
     }
 }
 

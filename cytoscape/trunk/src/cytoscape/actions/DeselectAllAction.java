@@ -14,7 +14,7 @@ public class DeselectAllAction extends AbstractAction {
     NetworkView networkView;
     
     public DeselectAllAction (NetworkView networkView) {
-        super("Deselect All");
+        super("Deselect All Nodes and Edges");
         this.networkView = networkView;
     }
 
@@ -34,6 +34,7 @@ public class DeselectAllAction extends AbstractAction {
       }
       else {
         GinyUtils.deselectAllNodes(networkView.getView());
+	GinyUtils.deselectAllEdges(networkView.getView());
       }
     }
 }

@@ -271,7 +271,7 @@ protected void initialize() {
 	GraphPerspective gp = network.getGraphPerspective();
 	if (gp != null) {
 		updateGraphView();
-		applyLayout();
+		//applyLayout(); do not layout by the default, too slow
 		fitGraphView();
 		
 	}
@@ -796,7 +796,7 @@ public void setNewNetwork( CyNetwork newNetwork ) {
 	    //using giny update the view
 	    this.network = newNetwork;
 	    updateGraphView();
-	    applyLayout();
+	    //applyLayout();
 	    fitGraphView();
 	    mainFrame.setContentPane(this);
 	    //showWindow();
@@ -970,15 +970,16 @@ public void applyLayout(boolean animated) {
  * Performs a layout operation on the giny graph displayed in this window,
  * using the default layouter for now
  */
-public void applyLayout() {
-	SpringEmbeddedLayouter lay = new SpringEmbeddedLayouter(view);
+public void applyLayout(PGraphView lview) {
+	SpringEmbeddedLayouter lay = new SpringEmbeddedLayouter(lview);
 	lay.doLayout();
 }
-//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------	
 // applyLayoutSelection
 //
 // apply layout, but only on currently selected nodes
 public void applyLayoutSelection() {
+    
     if (graphView.getGraph2D() == null) {return;}
     Graph2D theGraph = graphView.getGraph2D();
 
@@ -1032,7 +1033,6 @@ public void applyLayoutSelection() {
         theGraph.disposeNodeMap(s);
     }
 
-
     // other layouters
     else {
         getCytoscapeObj().getLogger().warning ("starting layout..."); 
@@ -1056,6 +1056,20 @@ public void applyLayoutSelection() {
         getCytoscapeObj().getLogger().info("  done");
     }
 }
+
+/**
+*
+*/
+  public void applySelLayout()
+ 
+  {
+	    if (view == null) return;
+	    
+	    int [] selNodes = view.getSelectedNodeIndices();
+	    int [] selEdges = view.getSelectedEdgeIndices();
+	    PGraphView selView = new PGraphView(view.getRootGraph().createGraphPerspective(selNodes, selEdges));
+	    applyLayout(selView);
+  }
 //------------------------------------------------------------------------------
 /**
  * Uses the visual mapper to calculate and set the visual appearance

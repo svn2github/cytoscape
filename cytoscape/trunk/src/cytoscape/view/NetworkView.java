@@ -103,5 +103,10 @@ public interface NetworkView {
      *                          the node and edge appearances
      */
     void redrawGraph(boolean doLayout, boolean applyAppearances);
+    
+    /**
+    * added for giny, applies the layout on the view
+    */
+    void applyLayout ( PGraphView view );
 }
 
