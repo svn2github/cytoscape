@@ -1,4 +1,4 @@
-package cytoscape.graph.layout.impl;
+package cytoscape.graph.legacy.layout.impl;
 
 import cytoscape.graph.GraphTopology;
 import cytoscape.graph.IndexIterator;
