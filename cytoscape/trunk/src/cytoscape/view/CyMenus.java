@@ -280,8 +280,8 @@ public class CyMenus {
       
       fileMenu.add(new PrintAction(networkView));
       
-      mi = fileMenu.add(new CloseWindowAction(cyWindow));
-      mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
+      //mi = fileMenu.add(new CloseWindowAction(cyWindow)); removed 2004-03-08
+      //mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
       if (cytoscapeObj.getParentApp() != null) {
           mi = fileMenu.add(new ExitAction(cyWindow));
           mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
