@@ -96,11 +96,12 @@ public void read (boolean canonicalize)
   
   while (strtok.hasMoreElements ()) {
     String newLine = (String) strtok.nextElement ();
-    allInteractions.addElement (new Interaction (newLine, delimiter));
-    }
-
+    Interaction newInteraction = new Interaction (newLine, delimiter);
+    allInteractions.addElement (newInteraction);
+  }
+  
   createGraphFromInteractionData (canonicalize);
-
+  
 }
 //-----------------------------------------------------------------------------------------
 /**
@@ -148,6 +149,7 @@ protected String canonicalizeName (String name)
 //-------------------------------------------------------------------------------------------
 protected void createGraphFromInteractionData (boolean canonicalize)
 {
+
   graph = new Graph2D ();
   Interaction [] interactions = getAllInteractions ();
 
@@ -169,8 +171,7 @@ protected void createGraphFromInteractionData (boolean canonicalize)
     }else{
       nodeName = interaction.getSource();
     }
-    //System.out.println ("---- canonicalized:[" + nodeName + "] ------");    
-    //System.out.flush();
+        
     if (!nodes.containsKey (nodeName)) {
       Node node = graph.createNode (0.0, 0.0, 70.0, 30.0, nodeName);
       nodes.put (nodeName, node);
@@ -206,8 +207,7 @@ protected void createGraphFromInteractionData (boolean canonicalize)
     }else{
       nodeName = interaction.getSource();
     }
-    //System.out.println("node "+ nodeName);
-    //System.out.flush();
+    
     String interactionType = interaction.getType ();
     Node sourceNode = (Node) nodes.get (nodeName);
     String [] targets = interaction.getTargets ();
@@ -217,21 +217,19 @@ protected void createGraphFromInteractionData (boolean canonicalize)
       }else{
         targetNodeName = targets[t];
       }
-      //System.out.println("target " + targetName);
-      //System.out.flush();
+    
+      
       Node targetNode = (Node) nodes.get (targetNodeName);
       Edge edge = graph.createEdge (sourceNode, targetNode);
       String edgeName = nodeName + " (" + interactionType + ") " + targetNodeName;
       int previousMatchingEntries = edgeAttributes.countIdentical(edgeName);
       if (previousMatchingEntries > 0)
         edgeName = edgeName + "_" + previousMatchingEntries;
-      //System.out.println(edgeName);
-      //System.out.flush();
       edgeAttributes.add ("interaction", edgeName, interactionType);
       edgeAttributes.addNameMapping (edgeName, edge);
       } // for t
    } // for i
-  
+
 } // createGraphFromInteractionData
 //-------------------------------------------------------------------------------------------
 public Graph2D getGraph ()

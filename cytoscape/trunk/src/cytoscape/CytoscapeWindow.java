@@ -603,7 +603,7 @@ public boolean loadGML(String filename) {
     FileReadingAbstractions.initAttribs (this.getBioDataServer(),
                                          this.getDefaultSpecies(),
                                          this.getConfiguration(),
-                                         this.getGraph(),
+                                         newGraph,
                                          this.getNodeAttributes(),
                                          this.getEdgeAttributes());
     //vizmapper now controls node labels
@@ -625,19 +625,22 @@ public void loadInteraction(String filename) {
                                                    filename,
                                                    this.getEdgeAttributes(), 
                                                    this.getConfiguration().getCanonicalize());
+  
+  
+  
   FileReadingAbstractions.initAttribs (this.getBioDataServer(),
                                        this.getDefaultSpecies(),
                                        this.getConfiguration(),
-                                       this.getGraph(),
+                                       newGraph, //this.getGraph() == null !
                                        this.getNodeAttributes(),
                                        this.getEdgeAttributes());
   //vizmapper now controls node labels
   //displayCommonNodeNames (); // fills in canonical name for blank common names
   geometryFilename = null;
   getCyWindow().setWindowTitle(filename);
+  getCyWindow().setNewGraph(newGraph, true);// set the new graph and do a layout
   //loadPlugins();  //don't reload plugins
   //displayNewGraph (true);
-  getCyWindow().setNewGraph(newGraph, true); //do a new layout
 } // loadInteraction
 //------------------------------------------------------------------------------
 /**

@@ -36,6 +36,7 @@ package cytoscape.data.readers;
 import java.io.*;
 import java.util.jar.*;
 import java.net.*;
+import java.lang.IllegalStateException;
 import y.view.Graph2D;
 import cytoscape.GraphObjAttributes;
 import cytoscape.CytoscapeConfig;
@@ -101,11 +102,13 @@ public static Graph2D loadIntrBasic (BioDataServer dataServer,
 {
   InteractionsReader reader = new InteractionsReader (dataServer, species, filename);
   return loadBasic (reader, edgeAttributes, canonicalize);
-
+  
 }
 //----------------------------------------------------------------------------
-public static Graph2D loadBasic (GraphReader reader, GraphObjAttributes edgeAttributes, boolean canonicalize) 
+public static Graph2D loadBasic (GraphReader reader, GraphObjAttributes edgeAttributes, 
+                                 boolean canonicalize) 
 {
+    
   reader.read (canonicalize);
   Graph2D graph = reader.getGraph();
   if (graph == null) {return null;} //reader couldn't read the file
@@ -114,6 +117,7 @@ public static Graph2D loadBasic (GraphReader reader, GraphObjAttributes edgeAttr
   edgeAttributes.add (newEdgeAttributes);
   edgeAttributes.addNameMap (newEdgeAttributes.getNameMap ());
   edgeAttributes.addClassMap (newEdgeAttributes.getClassMap ());
+  
   return graph;
 
 }
@@ -143,6 +147,7 @@ public static void initAttribs (BioDataServer dataServer,
                                 boolean canonicalize)
 
 {
+  
     readAttribs(dataServer, species, graph, nodeAttributes, edgeAttributes,
                 nodeAttributeFilenames, edgeAttributeFilenames, canonicalize);
     if (nodeAttributes != null)
@@ -150,7 +155,7 @@ public static void initAttribs (BioDataServer dataServer,
     
     // no need to add name mapping for edge attributes -- it has already been
     // done, at the time when the interactions file (or gml file) was read
-    
+  
 }
 //----------------------------------------------------------------------------
 public static void readAttribs (BioDataServer dataServer,
@@ -211,12 +216,16 @@ public static void readAttribs (BioDataServer dataServer,
 protected static void addNameMappingToAttributes (Object [] graphObjects,
                                                   GraphObjAttributes attributes)
 {
+  
   for (int i=0; i < graphObjects.length; i++) {
     Object graphObj = graphObjects [i];
     String canonicalName = graphObj.toString ();
+    if(canonicalName == null || canonicalName.length() == 0){
+      throw new IllegalStateException("The Node object " + graphObj + 
+                                      " has a null or empty canonical name");
+    }
     attributes.addNameMapping (canonicalName, graphObj);
    }
-
 } // addNameMappingToAttributes
 //----------------------------------------------------------------------------
 } // FileReadingAbstractions
