@@ -242,9 +242,9 @@ protected void updateGraphView() {
     for ( Iterator ie= edges.iterator(); ie.hasNext(); ) {
         EdgeView ev = (EdgeView)ie.next();
         ev.setUnselectedPaint(Color.blue);
-        ev.setTargetEdgeEnd(EdgeView.ARROW_END);
-        ev.setTargetEdgeEndPaint(Color.white);
-        ev.setSourceEdgeEndPaint(Color.white);
+        //ev.setTargetEdgeEnd(EdgeView.ARROW_END);
+        //ev.setTargetEdgeEndPaint(Color.white);
+        //ev.setSourceEdgeEndPaint(Color.white);
         //ev.setLineType(EdgeView.CURVED_LINES);
         ev.setStroke(new BasicStroke(5f));
     }

@@ -54,14 +54,14 @@ public class Arrow implements Serializable {
     
     public int getGinyArrow() {
         if (name.equals("DIAMOND") || name.equals("WHITE_DIAMOND")) {
-            return EdgeView.DIAMOND_END;
+          return EdgeView.BLACK_DIAMOND;
         } else if (name.equalsIgnoreCase("short")) {
-            return EdgeView.T_END;
+          return EdgeView.BLACK_ARROW;
         } else if (name.equalsIgnoreCase("none")) {
             //should be none, but Giny doesn't have a none yet
-            return EdgeView.T_END;
+          return EdgeView.NO_END;
         } else {
-            return EdgeView.ARROW_END;
+          return EdgeView.BLACK_DELTA;
         }
     }
     

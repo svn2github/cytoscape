@@ -54,7 +54,7 @@ public class EdgeAction {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
-                  ev.setSourceEdgeEnd( PEdgeView.ARROW_END );
+                  ev.setSourceEdgeEnd( PEdgeView.BLACK_ARROW );
                 } } ); } } ) );
   
     type_menu.add( new JMenuItem( new AbstractAction( "Circle" ) {
@@ -62,7 +62,7 @@ public class EdgeAction {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
-                  ev.setSourceEdgeEnd( PEdgeView.CIRCLE_END );
+                  ev.setSourceEdgeEnd( PEdgeView.BLACK_CIRCLE );
                 } } ); } } ) );
     
     type_menu.add( new JMenuItem( new AbstractAction( "Diamond" ) {
@@ -70,14 +70,14 @@ public class EdgeAction {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
-                  ev.setSourceEdgeEnd( PEdgeView.DIAMOND_END );
+                  ev.setSourceEdgeEnd( PEdgeView.BLACK_DIAMOND );
                 } } ); } } ) );
     type_menu.add( new JMenuItem( new AbstractAction( "T" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
-                  ev.setSourceEdgeEnd( PEdgeView.T_END );
+                  ev.setSourceEdgeEnd( PEdgeView.BLACK_T );
                 } } ); } } ) );
     return type_menu;
   }
@@ -91,7 +91,7 @@ public class EdgeAction {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
-                  ev.setTargetEdgeEnd( PEdgeView.ARROW_END );
+                  ev.setTargetEdgeEnd( PEdgeView.BLACK_ARROW );
                 } } ); } } ) );
   
     type_menu.add( new JMenuItem( new AbstractAction( "Circle" ) {
@@ -99,7 +99,7 @@ public class EdgeAction {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
-                  ev.setTargetEdgeEnd( PEdgeView.CIRCLE_END );
+                  ev.setTargetEdgeEnd( PEdgeView.BLACK_CIRCLE );
                 } } ); } } ) );
     
     type_menu.add( new JMenuItem( new AbstractAction( "Diamond" ) {
@@ -107,14 +107,14 @@ public class EdgeAction {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
-                  ev.setTargetEdgeEnd( PEdgeView.DIAMOND_END );
+                  ev.setTargetEdgeEnd( PEdgeView.BLACK_DIAMOND );
                 } } ); } } ) );
     type_menu.add( new JMenuItem( new AbstractAction( "T" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
-                  ev.setTargetEdgeEnd( PEdgeView.T_END );
+                  ev.setTargetEdgeEnd( PEdgeView.BLACK_T );
                 } } ); } } ) );
     return type_menu;
   }
