@@ -29,6 +29,7 @@ public class GlobalAppearanceCalculator extends SubjectBase
     Color defaultSloppySelectionColor = Color.GRAY;
     private ArrayList changeListeners = new ArrayList();
 
+
     /**
      * Make shallow copy of this object
      */
