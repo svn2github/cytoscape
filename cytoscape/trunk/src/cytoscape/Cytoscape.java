@@ -693,10 +693,6 @@ public abstract class Cytoscape {
     firePropertyChange( NETWORK_CREATED,
                         p_id,
                         network.getIdentifier() );
-
-
-    System.out.println( "GML data is: "+network.getClientData( "GML" ) );
-
     if ( network.getNodeCount() < CytoscapeInit.getViewThreshold()  ) {
        createNetworkView( network );
     }
@@ -1130,49 +1126,33 @@ public abstract class Cytoscape {
    * Ifnn's you want to use it @link {CytoscapeDesktop}
    * @param network the network to create a view of
    */
-  //TODO: title
-  public static CyNetworkView createNetworkView ( CyNetwork network, String title ) {
-     
-    if ( network == nullNetwork ) {
-      return nullNetworkView;
-    }
+  public static CyNetworkView createNetworkView(CyNetwork network, String title) {
 
-    System.out.println( "Creating View from: "+network.getIdentifier()+" : "+network.getIdentifier() );
-    if ( viewExists( network.getIdentifier() ) )
-      return getNetworkView( network.getIdentifier() );
-    
-    System.out.println( "Nodes: "+network.getNodeCount()+" | Edges: "+network.getEdgeCount() );   
+      if (network == nullNetwork) {
+          return nullNetworkView;
+      }
+      if (viewExists(network.getIdentifier())) {
+          return getNetworkView(network.getIdentifier());
+      }
+      CyNetworkView view = new PhoebeNetworkView(network, title);
+      view.setIdentifier(network.getIdentifier());
+      getNetworkViewMap().put(network.getIdentifier(), view);
+      view.setTitle(network.getTitle());
 
-    
+      if (network.getClientData("GML") != null) {
+          ((GraphReader) network.getClientData("GML")).layout(view);
+      }
 
-
-    CyNetworkView view = new PhoebeNetworkView ( network, title );
-    view.setIdentifier( network.getIdentifier() );
-    getNetworkViewMap().put( network.getIdentifier(), view );
-    view.setTitle( network.getTitle() );
-    // System.out.println( "Just Created a PhoebeNetworkView: "+network.getIdentifier()+
-    //                     " and it should be in the networkViewMap: "+
-    //                     getNetworkViewMap().get( network.getIdentifier() ) );
-
-
-    if ( network.getClientData( "GML" ) != null ) {
-      ( ( GraphReader )network.getClientData( "GML" ) ).layout( view );
-      System.out.println( "GML data found for: "+network.getTitle()+" "+network.getClientData( "GML" ) );
-      //network.putClientData( "GML" , null );
-    }
-    
-     firePropertyChange( cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED,
-                         null,
-                         view );
+      firePropertyChange(cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED,
+              null, view);
 
       //  Instead of calling fitContent(), access PGraphView directly.
-      //  This enables us to disable animation.
-      PGraphView view2 =(PGraphView) Cytoscape.getCurrentNetworkView();
+      //  This enables us to disable animation.  Modified by Ethan Cerami.
+      PGraphView view2 = (PGraphView) Cytoscape.getCurrentNetworkView();
       view2.getCanvas().getCamera().animateViewToCenterBounds
-              (view2.getCanvas().getLayer().getFullBounds(), true, 0 );
-
-     view.redrawGraph( false, false );
-     return view;
+              (view2.getCanvas().getLayer().getFullBounds(), true, 0);
+      view.redrawGraph(false, false);
+      return view;
   }
   
 
