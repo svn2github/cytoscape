@@ -1022,6 +1022,36 @@ public void testReadArrayAttributes () throws Exception
 
 } // testReadArrayAttributes
 //------------------------------------------------------------------------------
+/**
+ *  can we get a simple array of unique object values for the specified attribute?
+ */
+public void testGetUniqueValues () throws Exception
+{
+  System.out.println ("testGetUniqueValues");
+  String attributeName = "KEGG-2";
+  GraphObjAttributes a = new GraphObjAttributes ();
+
+    // using 'append' ensures that each attribute value is a list,
+    // which, for this test to work, must be unpacked
+  a.append ("KEGG", "GAL4", "xxx");
+  a.append ("KEGG", "GAL4", "yyy");
+  a.append ("KEGG", "GAL4", "zzz");
+
+  a.append ("KEGG", "GAL3", "xxx");
+  a.append ("KEGG", "GAL3", "yyy");
+  a.append ("KEGG", "GAL3", "QQQ");
+
+  Object [] uniqueValues = a.getUniqueValues ("KEGG");
+  //for (int i=0; i < uniqueValues.length; i++)
+  //  System.out.println ("  " + uniqueValues [i]);
+
+  assertTrue (uniqueValues.length == 4);
+
+  String [] uniqueStrings = a.getUniqueStringValues ("KEGG");
+  assertTrue (uniqueStrings.length == 4);
+
+} // testGetUniqueValues
+//--------------------------------------------------------------------------------------
 public static void main (String [] args) 
 {
   junit.textui.TestRunner.run (new TestSuite (GraphObjAttributesTest.class));
