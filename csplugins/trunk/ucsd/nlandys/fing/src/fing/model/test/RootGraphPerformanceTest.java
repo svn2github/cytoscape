@@ -202,7 +202,7 @@ public final class RootGraphPerformanceTest
   {
     for (int i = 0; i < 100; i++) {
       for (int j = 0; j < nodes.length; j++)
-        root.removeNode(nodes[i]);
+        root.removeNode(nodes[j]);
       if (root.getNodeCount() != 0 || root.getEdgeCount() != 0)
         throw new IllegalStateException("node/edge count not 0");
       for (int j = 0; j < nodes.length; j++)
