@@ -750,6 +750,22 @@ class FGraphPerspective implements GraphPerspective
       return 0;
     }
 
+    // Don't call this method from outside this inner class.
+    // Returns 0 if and only if hiding this edge was unsuccessful.
+    // Otherwise returns the input parameter, the root edge index.
+    private int _hideEdge(int rootGraphEdgeInx)
+    {
+      final int nativeEdgeIndex =
+        m_rootToNativeEdgeInxMap.get(~rootGraphEdgeInx);
+      try {
+        if (m_graph.removeEdge(nativeEdgeIndex)) {
+          m_rootToNativeEdgeInxMap.put(~rootGraphEdgeInx, Integer.MAX_VALUE);
+          m_nativeToRootEdgeInxMap.setIntAtIndex(0, nativeEdgeIndex);
+          return rootGraphEdgeInx; } }
+      catch (IllegalArgumentException e) { }
+      return 0;
+    }
+
     private final int[] hideEdges(Edge[] edges)
     {
       return null;
