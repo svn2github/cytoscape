@@ -28,7 +28,7 @@ echo "### mp.sh PD edge pvalue threshold = ${EDGE}"
 
 java  -Xmx512m MPMain \
 ${PATH} \
-all.sif \
+${DATA}/all.sif \
 ${DATA}/data_full_subset_orfs.pvals \
 ${EXP} \
 ${DATA}/all.edgeattr \

@@ -19,7 +19,7 @@ set EDGE=0.001
 
 set TS=`date +%F-%H.%M`
 
-set DATA=$HOME/data
+set DATA=$HOME/data/yeang-data
 
 echo "### mp.sh time = ${TS}"
 echo "### mp.sh MAX_PATH_LEN = ${PATH}"
