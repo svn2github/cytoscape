@@ -102,7 +102,7 @@ public final class SpringEmbeddedLayouter2 implements Task
     m_autoScaleGraph = new AutoScalingGraphLayout(m_graph);
   }
 
-  public String getTaskTitle()
+  public String getTitle()
   {
     return "Spring Embedded Graph Layout";
   }
@@ -119,6 +119,7 @@ public final class SpringEmbeddedLayouter2 implements Task
       ((taskMonitor != null) ? taskMonitor :
        new TaskMonitor() {
          public void setPercentCompleted(int percent) {}
+         public void setEstimatedTimeRemaining(long time) {}
          public void setException(Throwable t, String foo) {}
          public void setStatus(String message) {} } );
   }
