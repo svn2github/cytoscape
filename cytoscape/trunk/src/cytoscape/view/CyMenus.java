@@ -300,7 +300,7 @@ public class CyMenus  implements GraphViewChangeListener {
     //fill the Load submenu
     addAction( new LoadGraphFileAction( this ) );
     addAction( new LoadNodeAttributesAction() );
-    addAction( new LoadNodeAttributesAction() );
+    addAction( new LoadEdgeAttributesAction() );
     addAction( new LoadExpressionMatrixAction() );
     addAction( new LoadBioDataServerAction() );
 
