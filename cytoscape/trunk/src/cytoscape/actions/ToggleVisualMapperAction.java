@@ -21,6 +21,7 @@ public class ToggleVisualMapperAction extends CytoscapeAction {
     public ToggleVisualMapperAction () {
         super("Disable Visual Mapper");
         setPreferredMenu( "Visualization" );
+        setAcceleratorCombo( java.awt.event.KeyEvent.VK_M, ActionEvent.ALT_MASK) ;
     }
 
     public void actionPerformed(ActionEvent e) {

@@ -326,7 +326,10 @@ public class CytoscapeMenuBar
    * Factory method for instantiating objects of type JMenu
    */
   public JMenu createJMenu ( String title ) {
-    return new JMenu ( title );
+    JMenu menu = new JMenu ( title );
+    revalidate(); 
+    repaint();
+    return menu;
   }
 
   /**

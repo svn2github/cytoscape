@@ -16,6 +16,7 @@ public class SelectAllEdgesAction extends CytoscapeAction  {
   public SelectAllEdgesAction () {
         super ("Select all edges");
         setPreferredMenu( "Select.Edges" );
+        setAcceleratorCombo( java.awt.event.KeyEvent.VK_A, ActionEvent.ALT_MASK) ;
     }
 
     public void actionPerformed (ActionEvent e) {		

@@ -9,6 +9,7 @@ public class CreateNetworkViewAction extends CytoscapeAction {
   public CreateNetworkViewAction () {
     super( "Create View" );
     setPreferredMenu( "Edit" );
+    setAcceleratorCombo( java.awt.event.KeyEvent.VK_V, ActionEvent.ALT_MASK) ;
   }
                                
   public CreateNetworkViewAction ( boolean label ) {

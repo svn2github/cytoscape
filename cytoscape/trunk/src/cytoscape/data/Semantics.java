@@ -54,6 +54,12 @@ public class Semantics {
     public static final String COMMON_NAME = "commonName";
     public static final String SPECIES = "species";
     public static final String INTERACTION = "interaction";
+  public static final String MOLECULE_TYPE = "molecule_type";
+  public static final String PROTEIN = "protein";
+  public static final String DNA = "DNA";
+  public static final String RNA = "RNA";
+  
+
 //-------------------------------------------------------------------------
 /**
  * This method should be called in the process of creating a new network,

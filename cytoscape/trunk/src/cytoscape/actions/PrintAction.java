@@ -25,6 +25,7 @@ public class PrintAction extends CytoscapeAction  {
     public PrintAction () {
         super ("Print...");
         setPreferredMenu( "File" );
+        setAcceleratorCombo( java.awt.event.KeyEvent.VK_P, ActionEvent.CTRL_MASK );
     }
 
     public void actionPerformed(ActionEvent e) {

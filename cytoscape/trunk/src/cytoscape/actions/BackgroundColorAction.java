@@ -31,6 +31,7 @@ public class BackgroundColorAction extends CytoscapeAction {
     public BackgroundColorAction () {
         super("Change Background Color");
         setPreferredMenu( "Visualization" );
+        setAcceleratorCombo( java.awt.event.KeyEvent.VK_B, ActionEvent.ALT_MASK) ;
     }
 
     /**

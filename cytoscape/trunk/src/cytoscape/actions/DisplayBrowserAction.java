@@ -31,7 +31,7 @@ public class DisplayBrowserAction extends CytoscapeAction  {
   public DisplayBrowserAction() {
     super ("Display attribute browser");
     setPreferredMenu( "Data" );
-    setAcceleratorCombo( KeyEvent.VK_A, ActionEvent.CTRL_MASK );
+    setAcceleratorCombo( KeyEvent.VK_F5, 0 );
     Properties configProps = Cytoscape.getCytoscapeObj().getConfiguration().getProperties();
     webBrowserScript = configProps.getProperty("webBrowserScript", "noScriptDefined");
     attributeCategoriesToIgnore = Misc.getPropertyValues(configProps, invisibilityPropertyName);

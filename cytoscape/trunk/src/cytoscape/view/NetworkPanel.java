@@ -108,17 +108,19 @@ public class NetworkPanel
     NetworkTreeNode node = getNetworkNode( network_id );
     Enumeration children = node.children();
     NetworkTreeNode child = null;
+    ArrayList removed_children = new ArrayList();
     while ( children.hasMoreElements() ){
-      child = ( NetworkTreeNode )children.nextElement();
+      removed_children.add( children.nextElement() );
+    }
+
+    for ( Iterator i = removed_children.iterator(); i.hasNext(); ) {
+      child = ( NetworkTreeNode )i.next();
       child.removeFromParent();
       root.add( child );
     }
     node.removeFromParent();
     treeTable.getTree().collapsePath( new TreePath( new TreeNode[] {root} ) );
     treeTable.getTree().updateUI();
-    //TreePath path = new TreePath( child.getPath() );
-    //treeTable.getTree().expandPath( path );
-    //treeTable.getTree().scrollPathToVisible( path );
     treeTable.doLayout();
     
   }
@@ -127,7 +129,6 @@ public class NetworkPanel
   public void addNetwork ( String network_id, String parent_id ) {
     // first see if it exists
     if ( getNetworkNode( network_id ) == null ) {
-      System.out.println( "Adding new Network node: "+network_id );
       NetworkTreeNode dmtn = new NetworkTreeNode( Cytoscape.getNetwork( network_id ).getTitle(), network_id );
      
       if ( parent_id != null ) {
@@ -265,7 +266,7 @@ public class NetworkPanel
     protected String network_uid;
 
     public NetworkTreeNode ( Object userobj, String id ) {
-      super( userobj );
+      super( userobj.toString() );
       network_uid = id;
     }
 

@@ -16,6 +16,7 @@ public class InvertSelectedEdgesAction extends CytoscapeAction {
     public InvertSelectedEdgesAction () {
         super("Invert selection");
         setPreferredMenu( "Select.Edges" );
+        setAcceleratorCombo( java.awt.event.KeyEvent.VK_I, ActionEvent.ALT_MASK) ;
     }
 
     public void actionPerformed (ActionEvent e) {

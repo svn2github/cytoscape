@@ -18,6 +18,7 @@ public class SelectAllNodesAction extends CytoscapeAction  {
     public SelectAllNodesAction () {
         super ("Select all nodes");
         setPreferredMenu( "Select.Nodes" );
+        setAcceleratorCombo( java.awt.event.KeyEvent.VK_A, ActionEvent.CTRL_MASK) ;
     }
 
     public void actionPerformed (ActionEvent e) {		

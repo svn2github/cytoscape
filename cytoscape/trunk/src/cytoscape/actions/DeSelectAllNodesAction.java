@@ -16,6 +16,7 @@ public class DeSelectAllNodesAction extends CytoscapeAction  {
     public DeSelectAllNodesAction () {
         super ("Deselect all nodes");
         setPreferredMenu( "Select.Nodes" );
+        setAcceleratorCombo( java.awt.event.KeyEvent.VK_A, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK) ;
     }
 
     public void actionPerformed (ActionEvent e) {

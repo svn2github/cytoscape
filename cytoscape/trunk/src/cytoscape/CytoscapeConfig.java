@@ -355,9 +355,9 @@ public class CytoscapeConfig
 
     System.out.println( "Loading Properties..." );
 
-    Enumeration enum = props.propertyNames();
-    while ( enum.hasMoreElements() ) {
-      String property = ( String )enum.nextElement();
+    Enumeration enm = props.propertyNames();
+    while ( enm.hasMoreElements() ) {
+      String property = ( String )enm.nextElement();
       System.out.println( property +" :" +props.getProperty( property ) );
     }
 

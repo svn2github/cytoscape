@@ -17,6 +17,7 @@ public class HideSelectedEdgesAction extends CytoscapeAction {
     public HideSelectedEdgesAction() {
         super("Hide selection");
         setPreferredMenu( "Select.Edges" );
+        setAcceleratorCombo( java.awt.event.KeyEvent.VK_H, ActionEvent.ALT_MASK) ;
     }
 
     public void actionPerformed (ActionEvent e) {

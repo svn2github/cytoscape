@@ -32,6 +32,7 @@ public class SquiggleAction extends JMenu {
             enabled = !enabled;
 	  } } ); } } ) ;
     add(squiggleMode);
+    squiggleMode.setAccelerator( javax.swing.KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F12, 0 ) );
 
     clearSquiggle =  new JMenuItem( new AbstractAction( "Clear" ) {
       public void actionPerformed ( ActionEvent e ) {

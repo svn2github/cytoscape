@@ -1,5 +1,6 @@
 package cytoscape.actions;
 
+
 import java.awt.event.ActionEvent;
 import javax.swing.*;
 import giny.view.GraphView;
@@ -22,6 +23,7 @@ public class SelectionModeAction extends JMenu {
                 view.disableEdgeSelection();
                 view.enableNodeSelection();
               } } ); } } ) ;
+    nodes.setAccelerator( javax.swing.KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_N, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK ) );
 
     JCheckBoxMenuItem edges = new JCheckBoxMenuItem( new AbstractAction( "Edges" ) {
         public void actionPerformed ( ActionEvent e ) {
@@ -33,6 +35,7 @@ public class SelectionModeAction extends JMenu {
                 view.disableEdgeSelection();
                 view.enableEdgeSelection();
               } } ); } } ) ;
+    edges.setAccelerator( javax.swing.KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_E, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK ) );
 
     JCheckBoxMenuItem nodesAndEdges = new JCheckBoxMenuItem( new AbstractAction( "Nodes and Edges" ) {
         public void actionPerformed ( ActionEvent e ) {
@@ -45,6 +48,7 @@ public class SelectionModeAction extends JMenu {
                 view.enableNodeSelection();
                 view.enableEdgeSelection();
               } } ); } } ) ;
+    nodesAndEdges.setAccelerator( javax.swing.KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_N, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK|ActionEvent.ALT_MASK ) );
 
     modeGroup.add(nodes);
     modeGroup.add(edges);

@@ -25,6 +25,7 @@ public class ExportAction extends CytoscapeAction  {
     public ExportAction () {
         super ("Export As...");
         setPreferredMenu( "File" );
+        setAcceleratorCombo( java.awt.event.KeyEvent.VK_P, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK) ;
     }
 
     public void actionPerformed(ActionEvent e) {

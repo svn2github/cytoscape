@@ -16,7 +16,7 @@ public class InvertSelectedNodesAction extends CytoscapeAction {
     public InvertSelectedNodesAction () {
         super("Invert selection");
         setPreferredMenu( "Select.Nodes" );
-        setAcceleratorCombo( java.awt.event.KeyEvent.VK_V, ActionEvent.CTRL_MASK );
+        setAcceleratorCombo( java.awt.event.KeyEvent.VK_I, ActionEvent.CTRL_MASK );
     }
 
     public void actionPerformed (ActionEvent e) {

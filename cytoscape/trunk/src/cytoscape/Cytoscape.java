@@ -135,6 +135,7 @@ public abstract class Cytoscape {
    * <li>NETWORK_CREATED
    * <li>NETWORK_DESTROYED
    * <li>ATTRIBUTES_ADDED
+   * <li>CYTOSCAPE_EXIT
    * </ol>
    */
   public static SwingPropertyChangeSupport getSwingPropertyChangeSupport () {
@@ -214,12 +215,19 @@ public abstract class Cytoscape {
   public static CyEdge getCyEdge ( CyNode node_1, CyNode node_2, String attribute, Object attribute_value, boolean create ) {
     
     Set edges = new HashSet();
-    edges.addAll( Cytoscape.getRootGraph().edgesList( node_1, node_2 ) );
-    edges.addAll( Cytoscape.getRootGraph().edgesList( node_2, node_1 ) );
-    for ( Iterator i = edges.iterator(); i.hasNext(); ) {
-      CyEdge edge = ( CyEdge )i.next();
-      if ( getEdgeAttributeValue( edge, attribute ) == attribute_value ) 
-        return edge;
+    if ( Cytoscape.getRootGraph().getEdgeCount() != 0 ) {
+      List l1 =  Cytoscape.getRootGraph().edgesList( node_1, node_2 );
+      if ( l1 != null )
+        edges.addAll( l1 );
+      List l2 =  Cytoscape.getRootGraph().edgesList( node_2, node_1 );
+      if ( l2 != null )
+        edges.addAll( l2 );
+      
+      for ( Iterator i = edges.iterator(); i.hasNext(); ) {
+        CyEdge edge = ( CyEdge )i.next();
+        if ( getEdgeAttributeValue( edge, attribute ) == attribute_value ) 
+          return edge;
+      }
     }
       
     if ( !create )

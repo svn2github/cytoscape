@@ -21,7 +21,7 @@ public class SelectFirstNeighborsAction extends CytoscapeAction {
     public SelectFirstNeighborsAction () { 
         super ("First neighbors of selected nodes"); 
         setPreferredMenu( "Select.Nodes" );
-        setAcceleratorCombo( java.awt.event.KeyEvent.VK_F, ActionEvent.CTRL_MASK );
+        setAcceleratorCombo( java.awt.event.KeyEvent.VK_F6,0 );
     }
     public void actionPerformed (ActionEvent e) {
         GinyUtils.selectFirstNeighbors( Cytoscape.getCurrentNetworkView() );

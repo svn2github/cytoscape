@@ -41,6 +41,7 @@ import javax.swing.event.*;
 
 import java.util.*;
 import java.util.logging.*;
+import javax.swing.Timer;
 
 import cytoscape.data.*;
 import cytoscape.data.readers.GMLReader;
@@ -49,6 +50,8 @@ import cytoscape.data.readers.GraphReader;
 import cytoscape.data.servers.*;
 import cytoscape.view.CyWindow;
 import cytoscape.view.CytoscapeDesktop;
+import cytoscape.util.shadegrown.WindowUtilities;
+
 
 import com.jgoodies.plaf.FontSizeHints;
 import com.jgoodies.plaf.LookUtils;
@@ -71,9 +74,7 @@ public class CyMain implements WindowListener {
   protected CyWindow cyWindow;
   protected CytoscapeVersion version = new CytoscapeVersion();
   protected Logger logger;
-  protected SplashScreen splashScreen;
- 
-
+   
   /**
    * Primary Method for Starting Cytoscape. Use the passed
    * args to create a CytoscapeConfig object.
@@ -82,12 +83,13 @@ public class CyMain implements WindowListener {
     
 
     // setup the Splash Screen
-    splashScreen = new SplashScreen();
-    
+    ImageIcon image = new ImageIcon( getClass().getResource("/cytoscape/images/cytoSplash.jpg") );
+    WindowUtilities.showSplash( image, 8000 );
+
+
     //parse args and config files into config object
     CytoscapeConfig config = new CytoscapeConfig(args);
-    splashScreen.advance(10);
-
+   
     //handle special cases of arguments
     if ( config.helpRequested() )
       displayHelp( config );
@@ -99,8 +101,7 @@ public class CyMain implements WindowListener {
     //set up the logger
     setupLogger(config);
     logger.info(config.toString());
-    splashScreen.advance(20);
-      
+         
 
     //create the global CytoscapeObj object
     CytoscapeObj cytoscapeObj = new CytoscapeObj(this, config, logger, null);
@@ -128,9 +129,7 @@ public class CyMain implements WindowListener {
     //get some standard fields for doing name resolution
     boolean canonicalize = Semantics.getCanonicalize( cytoscapeObj );
     String defaultSpecies = Semantics.getDefaultSpecies( null, cytoscapeObj );
-    splashScreen.advance(25);
-
-
+  
 
     String cp =  System.getProperty("java.class.path",".");
     System.out.println( "User classpath: "+cp );
@@ -165,10 +164,7 @@ public class CyMain implements WindowListener {
         Cytoscape.createNetworkView( network );
     }
 
-    if ( splashScreen != null )
-      splashScreen.advance(80);
-
-  
+     
     //TODO: move to Cytoscape?
     //add the semantics we usually expect
     //Semantics.applyNamingServices(network, cytoscapeObj);
@@ -200,25 +196,8 @@ public class CyMain implements WindowListener {
        logger.info("  done");
     }
 
-    if (splashScreen!=null) {splashScreen.advance(90);}
-
-    //create the window
-    // cyWindow = new CyWindow(cytoscapeObj, network, title);
-   
-    //if ( reader != null ) 
-    //  reader.layout(cyWindow.getView());
-
-    // cyWindow.showWindow();
-
-
-    
-  
-
-    if (splashScreen!=null) {splashScreen.advance(100);}
   } // ctor
   
-
-
 
   protected void displayHelp ( CytoscapeConfig config ) {
     System.out.println(version);
@@ -264,11 +243,7 @@ public class CyMain implements WindowListener {
   }
  
   public void windowActivated   (WindowEvent e) {
-    if(splashScreen != null) {
-      splashScreen.advance(200);
-      splashScreen.dispose();
-      splashScreen = null;
-    }
+   
   }
   //------------------------------------------------------------------------------
   /**
@@ -281,11 +256,6 @@ public class CyMain implements WindowListener {
 
   //------------------------------------------------------------------------------
   public void windowOpened      (WindowEvent e) {
-    if(splashScreen != null) {
-      splashScreen.advance(200);
-      splashScreen.dispose();
-      splashScreen = null;
-    }
     windows.add (e.getWindow ());
   }
   //------------------------------------------------------------------------------

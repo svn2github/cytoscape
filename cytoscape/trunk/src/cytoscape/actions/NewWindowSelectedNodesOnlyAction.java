@@ -20,7 +20,7 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
     public NewWindowSelectedNodesOnlyAction () {
         super("Selected nodes, All edges");
         setPreferredMenu( "Select.To New Window" );
-        setAcceleratorCombo(java.awt.event. KeyEvent.VK_W, ActionEvent.SHIFT_MASK|ActionEvent.CTRL_MASK );
+        setAcceleratorCombo(java.awt.event. KeyEvent.VK_N, ActionEvent.CTRL_MASK );
     }
 
     public void actionPerformed(ActionEvent e) {

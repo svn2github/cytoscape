@@ -9,6 +9,7 @@ public class DestroyNetworkAction extends CytoscapeAction {
   public DestroyNetworkAction () {
     super( "Destroy Network" );
     setPreferredMenu( "Edit" );
+    setAcceleratorCombo( java.awt.event.KeyEvent.VK_W, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK) ;
   }
                                
   public DestroyNetworkAction ( boolean label ) {

@@ -246,7 +246,8 @@ public class NetworkViewManager
         }
       }  else if ( VIEW_TYPE == CytoscapeDesktop.EXTERNAL_VIEW ) {
         try {
-          ( ( JFrame )networkViewMap.get( network_id ) ).setVisible( true );
+          ( ( JFrame )networkViewMap.get( network_id ) ).requestFocus();
+          //( ( JFrame )networkViewMap.get( network_id ) ).setVisible( true );
         } catch ( Exception e ) {
           System.err.println( "Network View unable to be focused" );
         }

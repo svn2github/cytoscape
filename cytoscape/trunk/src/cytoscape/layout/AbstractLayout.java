@@ -139,7 +139,7 @@ abstract public class AbstractLayout
     CytoscapeProgressMonitor monitor = new CytoscapeProgressMonitor( this, Cytoscape.getDesktop() );
     monitor.startMonitor( true );
 
-
+    networkView.fitContent();
     done = true;
 
     //System.out.println( "In Abstract Layout -ddone" );

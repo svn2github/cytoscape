@@ -37,9 +37,24 @@ public class BirdsEyeViewAction
   public void propertyChange ( PropertyChangeEvent e ) {
     if ( e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED || e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS ) {
       bev.disconnect();
-      bev.connect(  ( ( PhoebeNetworkView )Cytoscape.getCurrentNetworkView() ).getCanvas(), new PLayer[] { ( ( PhoebeNetworkView )Cytoscape.getCurrentNetworkView() ).getCanvas().getLayer() } );
-      bev.updateFromViewed();
+      try {
+        bev.connect(  ( ( PhoebeNetworkView )Cytoscape.getCurrentNetworkView() ).getCanvas(), new PLayer[] { ( ( PhoebeNetworkView )Cytoscape.getCurrentNetworkView() ).getCanvas().getLayer() } );
+        bev.updateFromViewed();
+      } catch ( Exception ex ) {
+         // no newly focused network
+      }
     }
+
+    if ( e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_DESTROYED ) {
+       bev.disconnect();
+       try {
+         bev.connect(  ( ( PhoebeNetworkView )Cytoscape.getCurrentNetworkView() ).getCanvas(), new PLayer[] { ( ( PhoebeNetworkView )Cytoscape.getCurrentNetworkView() ).getCanvas().getLayer() } );
+         bev.updateFromViewed();
+       } catch ( Exception ex ) {
+         // no newly focused network
+       }
+    }
+
 
   }
 

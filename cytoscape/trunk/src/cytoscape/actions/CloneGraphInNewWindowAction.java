@@ -19,7 +19,6 @@ public class CloneGraphInNewWindowAction extends CytoscapeAction {
   public CloneGraphInNewWindowAction () {
     super("Whole graph");
     setPreferredMenu( "Select.To New Window" );
-    setAcceleratorCombo( java.awt.event.KeyEvent.VK_W, ActionEvent.CTRL_MASK );
   }
 
   public void actionPerformed(ActionEvent e) {

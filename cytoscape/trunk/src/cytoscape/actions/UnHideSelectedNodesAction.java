@@ -15,7 +15,7 @@ public class UnHideSelectedNodesAction extends CytoscapeAction  {
     public UnHideSelectedNodesAction () {
         super ("UnHide selection");
         setPreferredMenu( "Select.Nodes" );
-        setAcceleratorCombo( java.awt.event.KeyEvent.VK_U, ActionEvent.CTRL_MASK );
+        setAcceleratorCombo( java.awt.event.KeyEvent.VK_H, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK );
     }
 
     public void actionPerformed (ActionEvent e) {		

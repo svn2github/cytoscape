@@ -46,7 +46,7 @@ public class LoadGraphFileAction extends CytoscapeAction {
   public LoadGraphFileAction ( CyMenus windowMenu ) {
     super("Graph...");
     setPreferredMenu( "File.Load" );
-    setAcceleratorCombo( java.awt.event.KeyEvent.VK_G, ActionEvent.CTRL_MASK );
+    setAcceleratorCombo( java.awt.event.KeyEvent.VK_L, ActionEvent.CTRL_MASK );
     this.windowMenu = windowMenu;
   }
 

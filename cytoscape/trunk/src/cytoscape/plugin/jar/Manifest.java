@@ -53,9 +53,9 @@ public class Manifest {
     }
 
     public MessageHeader getEntry(String name) {
-	Enumeration enum = entries();
-	while(enum.hasMoreElements()) {
-	    MessageHeader mh = (MessageHeader)enum.nextElement();
+	Enumeration enm = entries();
+	while(enm.hasMoreElements()) {
+	    MessageHeader mh = (MessageHeader)enm.nextElement();
 	    String nameVal = mh.findValue("Name");
 	    if (nameVal != null && nameVal.equals(name)) {
 		return mh;

@@ -29,6 +29,7 @@ public class LoadPluginAction extends CytoscapeAction {
     public LoadPluginAction () {
       super ("Load Plugins from Jar File");
       setPreferredMenu( "Plugins" );
+      setAcceleratorCombo( java.awt.event.KeyEvent.VK_J, ActionEvent.CTRL_MASK) ;
     }
 
     /**
