@@ -28,12 +28,31 @@ class DynamicGraphRepresentation implements DynamicGraph
         public int nextInt() {
           final int returnThis = node.m_nodeId;
           node = node.m_nextNode;
+          numRemaining--;
           return returnThis; } };
   }
 
   public IntEnumerator edges()
   {
-    return null;
+    final int edgeCount = m_edgeCount;
+    final Node firstNode = m_firstNode;
+    return new IntEnumerator() {
+        private int numRemaining = edgeCount;
+        private Node node = firstNode;
+        private Edge edge = null;
+        public int numRemaining() { return numRemaining; }
+        public int nextInt() {
+          int returnThis;
+          try { returnThis = edge.m_edgeId; }
+          catch (NullPointerException e) {
+            for (edge = node.m_firstOutEdge;
+                 edge == null;
+                 node = node.m_nextNode, edge = node.m_firstOutEdge) { }
+            node = node.m_nextNode;
+            returnThis = edge.m_edgeId; }
+          edge = edge.m_nextAdjEdge;
+          numRemaining--;
+          return returnThis; } };
   }
 
   public boolean removeNode(int node)
