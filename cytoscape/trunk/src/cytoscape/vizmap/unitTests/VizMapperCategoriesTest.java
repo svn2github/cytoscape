@@ -32,10 +32,10 @@ public class VizMapperCategoriesTest extends TestCase {
 	VizMapperCategories vcat = new VizMapperCategories();
 	AttributeMapperCategories cat = vcat;
 	Map defaults = cat.getInitialDefaults();
-	assertTrue( defaults.size() == 9 );
+	assertTrue( defaults.size() == 10 );
 	assertTrue( defaults.get(vcat.NODE_FILL_COLOR) != null );
 	Map propMap = cat.getPropertyNamesMap();
-	assertTrue( propMap.size() == 9 );
+	assertTrue( propMap.size() == 10 );
 	assertTrue( propMap.get(vcat.NODE_FILL_COLOR) != null );
 	String cString = "255,0,0";
 	Object o = cat.parseRangeAttributeValue( vcat.NODE_FILL_COLOR,
