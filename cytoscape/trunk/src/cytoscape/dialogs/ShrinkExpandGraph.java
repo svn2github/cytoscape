@@ -77,6 +77,16 @@ public class ShrinkExpandGraph extends AbstractAction {
 	    nr.setCenterX(m*((nr.getCenterX())-cx) + cx);
 	    nr.setCenterY(m*((nr.getCenterY())-cy) + cy);
 	}
+	
+        // remove bends
+        EdgeCursor cursor = graph.edges();
+        cursor.toFirst ();
+        for (int i=0; i < cursor.size(); i++){
+            Edge target = cursor.edge();
+            EdgeRealizer er = graph.getRealizer(target);
+            er.clearBends();
+            cursor.cyclicNext();
+        }
 
         cytoscapeWindow.redrawGraph();
     }//Action Performed
