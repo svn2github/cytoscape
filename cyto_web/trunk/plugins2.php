@@ -49,6 +49,61 @@ Cytoscape LGPL.
 		<tbody>
 			<tr>
 				<td width="20%" valign="top">
+					<b>Agilent Literature Search</b><font size="-1">
+						<br>
+						Version: 1
+						<br>
+						Release Date: March 9, 2005</font>
+				</td>
+				<td width="40%" valign="top">
+					
+					<p><em>Agilent Literature Search</em> is a meta-search tool for automatically querying multiple text-based search engines in order to aid biologists faced with the daunting task of manually searching and extracting associations among genes/proteins of interest.  Computationally extracted associations are grouped into a network that is viewed and manipulated in Cytoscape.
+					<p>The meta-search engine peforms Information Retrieval (IR) and Knowledge Extraction (KE),
+					using PubMed, OMIM, and USPTO search engines
+					to identify symbols, extract interactions, and
+					generate putative networks from literature.
+					
+<p><em>Agilent Literature Search</em> provides an easy-to-use interface to its powerful querying capabilities. When a query is entered, it is submitted to multiple user-selected search engines, and the retrieved results (documents) are fetched from their respective sources. Each document is then parsed into sentences and analyzed for associations between biological constructs, such as protein-protein associations. 
+<!-- <p><em>Agilent Literature Search</em> uses a set of lexicons for defining biomolecule names (and aliases) and association terms (verbs) of interest. -->
+Associations extracted from these documents are then converted into interactions, which are further grouped into a network. 
+The sentences and source hyperlinks for each association are further stored as attributes of the corresponding nodes and links in the network.
+The networks can be viewed and manipulated in Cytoscape v2.1.
+
+
+					
+					
+					
+					<p>	Released by:  
+						<a href="http://www.labs.agilent.com/research/mtl/projects/sysbio.html">Systems Biology project</a>, 
+						<a href="http://www.labs.agilent.com/">Agilent Laboratories</a>,.
+						<a href="http://www.agilent.com/">Agilent Technologies</a>.  
+<!---                                        <p>     <a href="http://www.chem.agilent.com/scripts/PHome.asp">Agilent Technologies Life Science Products</a>  --->
+					</p>
+				</td>
+				<td width="20%" valign="top">
+				Verified to work in 2.1.
+				</td>					
+				<td width="20%" valign="top">
+					[<a href="http://www.labs.agilent.com/research/mtl/projects/sysbio/sysinformatics/litsearch.html">Agilent Literature Search Web Site</a>]
+					<br>
+					[<a href="http://www.labs.agilent.com/research/mtl/projects/sysbio/sysinformatics/download.html">Download page</a>]
+					<br>
+					<br>
+					<br>
+					<br><br>
+					<br>
+					<br>
+					<br>
+					[<a href="http://www.chem.agilent.com/scripts/PHome.asp">Agilent Technologies Life Science Products</a>]
+				</td>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<hr>
+				</td>
+			</tr>		
+			<tr>
+				<td width="20%" valign="top">
 					<b>cPath Plugin</b> <font size="-1">
 						<br>
 						Version: 2 Beta
