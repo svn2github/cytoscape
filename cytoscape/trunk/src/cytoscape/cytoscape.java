@@ -68,12 +68,17 @@ public class cytoscape implements WindowListener {
   protected CytoscapeVersion version = new CytoscapeVersion ();
   protected Logger logger;
   protected String defaultSpecies;
+  protected SplashScreen splashScreen;
+  int progress;
 //------------------------------------------------------------------------------
 public cytoscape (String [] args) throws Exception
 {
+  
+  splashScreen = new SplashScreen();
   CytoscapeConfig config = new CytoscapeConfig (args);
   setupLogger (config);
 
+  splashScreen.advance(10);
   if (config.helpRequested ()) {
     System.out.println (version);
     System.out.println (config.getUsage ());
@@ -91,6 +96,7 @@ public cytoscape (String [] args) throws Exception
     exit (0);
     }
 
+    splashScreen.advance(20);
     //------------------------- run the program
   logger.info (config.toString ());
   String geometryFilename = config.getGeometryFilename ();
@@ -104,15 +110,18 @@ public cytoscape (String [] args) throws Exception
   boolean requestFreshLayout = true;
   boolean copyExpToAttribs = config.getWhetherToCopyExpToAttribs();
 
+
   if (bioDataDirectory != null) {
     bioDataServer = new BioDataServer (bioDataDirectory);
     }
+    splashScreen.advance(25);
   if (geometryFilename != null) {
     logger.info ("reading " + geometryFilename + "...");
     graph = FileReadingAbstractions.loadGMLBasic (geometryFilename, edgeAttributes);
     logger.info ("  done");
     title = geometryFilename;
     requestFreshLayout = false;
+    splashScreen.advance(90);
     }
   else if (interactionsFilename != null) {
     logger.info ("reading " + interactionsFilename + "...");
@@ -120,25 +129,34 @@ public cytoscape (String [] args) throws Exception
                                                   edgeAttributes);
     logger.info ("  done");
     title = interactionsFilename;
+    splashScreen.advance(90);
     }
   if (expressionDataFilename != null) {
     logger.info ("reading " + expressionDataFilename + "...");
     expressionData = new ExpressionData (expressionDataFilename);
     logger.info ("  done");
+    splashScreen.advance(90);
     }
+    
 
-  if (graph == null)
+  if (graph == null) {
+    splashScreen.advance(90);			  
     graph = new Graph2D ();
+  }
+		
 
   FileReadingAbstractions.initAttribs (bioDataServer, defaultSpecies, config, graph, 
                                        nodeAttributes, edgeAttributes);
-
-
+  
   cytoscapeWindow = new CytoscapeWindow (this, config, logger,
                                          graph, expressionData, bioDataServer,
                                          nodeAttributes, edgeAttributes, 
                                          geometryFilename, expressionDataFilename,
                                          title, requestFreshLayout);
+					 
+  if (splashScreen!=null)
+	  splashScreen.advance(100);
+  					 
   if((expressionData !=null) && copyExpToAttribs) {
       expressionData.copyToAttribs(cytoscapeWindow);
   }
@@ -175,7 +193,13 @@ protected void setupLogger (CytoscapeConfig config)
 
 } // setupLogger
 //------------------------------------------------------------------------------
-public void windowActivated   (WindowEvent e) {}
+public void windowActivated   (WindowEvent e) {
+	if(splashScreen != null)
+	{	splashScreen.advance(200);
+		splashScreen.dispose();
+		//splashScreen = null;
+	}
+}
 /**
  * on linux (at least) a killed window generates a 'windowClosed' event; trap that here
  */

@@ -20,7 +20,8 @@ OBJS = CytoscapeConfig.class \
         SelectedSubGraphFactory.class \
         CytoscapeWindow.class \
 	AbstractPlugin.class \
-        cytoscape.class
+        cytoscape.class \
+	SplashScreen.class
 #        VizChooserClient.class \
 
 
