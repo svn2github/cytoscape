@@ -303,6 +303,7 @@ public class CyMenus {
       editMenu.add( new SquiggleAction( networkView ) ); 
       vizMenu.add( new BirdsEyeViewAction( networkView ) );
        vizMenu.add( new ShowExpressionDataAction( networkView ) );
+       vizMenu.add( new AnimatedLayoutAction( networkView ) );
     }
 
     selectNodesSubMenu.add(new AlphabeticalSelectionAction(networkView));

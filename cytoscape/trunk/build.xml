@@ -36,17 +36,28 @@
 	  <!-- Global "magic" property for <javac> -->
 	  <property name="build.compiler" value="modern"/>
 	
+        <!-- Location of GINY -->
+        <property name="giny.lib" value="..\giny\lib" />
+
   <!-- ======================================================= -->
   <!-- Cytoscape ClassPath definition                          -->
   <!-- ======================================================= -->
 
-	  <!-- Classpath with all lib JAR Files -->
+	  <!-- Classpathwith all lib JAR Files -->
 	  <path id="classpath">
 		  <pathelement path="${build.classes}"/>	
 		  <pathelement path="${basedir}"/>
 		  <fileset dir="${lib.dir}">
-			  <include name="**/*.jar"/>
+		    <include name="**/*.jar"/>
 		  </fileset>
+<pathelement location="${giny.lib}/giny.jar"/>
+                  <pathelement location="${giny.lib}/giny.jar"/>
+                  <pathelement location="${giny.lib}/phoebe.jar"/>
+                  <pathelement location="${giny.lib}/colt.jar"/>
+                  <pathelement location="${giny.lib}/coltginy.jar"/>
+                  <pathelement location="${giny.lib}/luna.jar"/>
+                  <pathelement location="${giny.lib}/piccolo.jar"/>
+                  <pathelement location="${giny.lib}/piccolox.jar"/>
 	  </path>
 
 	  <!-- Classpath for running Cytoscape with non-obfuscated Cytoscape Jar file -->
@@ -55,7 +66,15 @@
 			  <include name="**/*.jar"/>
 		  </fileset>
 		  <pathelement location="${build.dir}/cytoscape.jar"/>
-	  </path>
+                  <pathelement location="${giny.lib}/giny.jar"/>
+                  <pathelement location="${giny.lib}/giny.jar"/>
+                  <pathelement location="${giny.lib}/phoebe.jar"/>
+                  <pathelement location="${giny.lib}/colt.jar"/>
+                  <pathelement location="${giny.lib}/coltginy.jar"/>
+                  <pathelement location="${giny.lib}/luna.jar"/>
+                  <pathelement location="${giny.lib}/piccolo.jar"/>
+                  <pathelement location="${giny.lib}/piccolox.jar"/>
+          </path>
 
 	  <!-- Classpath for running Cytoscape with obfuscated Cytoscape Jar file -->
 	  <path id="classpath_obfuscated">
