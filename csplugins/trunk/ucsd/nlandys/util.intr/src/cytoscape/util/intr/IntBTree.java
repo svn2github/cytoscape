@@ -346,8 +346,6 @@ public final class IntBTree
    * tree.  Accessing an invalid enumeration's methods will result in
    * unpredictable and ill-defined behavior in that enumeration, but will
    * have no effect on the integrity of underlying tree structure.<p>
-   * NOTE: If xMin > xMax, the results of this operation are undefined (chunks
-   * may be blown, in fact).<p>
    * IMPLEMENTATION NOTE: To find out how many entries are in this tree,
    * one should use the size() method.  Doing so using this method will
    * cost O(log(N)) time, where the size() method returns in constant time.
@@ -358,9 +356,12 @@ public final class IntBTree
    * @param xMax the upper [inclusive] bound of the range to search.
    * @return an non-descending enumeration of all entries matching this search
    *   query, duplicates included.
+   * @exception IllegalArgumentException if xMin is greater than xMax.
    */
   public final IntEnumerator searchRange(final int xMin, final int xMax)
   {
+    if (xMin > xMax) throw new IllegalArgumentException
+                       ("xMin is greater than xMax");
     final NodeStack nodeStack = new NodeStack();
     final int totalCount = searchRange
       (m_root, nodeStack, xMin, xMax, Integer.MIN_VALUE, Integer.MAX_VALUE);
@@ -402,14 +403,14 @@ public final class IntBTree
    * regions of the tree which can be included, as whole, as part of the
    * range query.  Every node on the returned stack will have at least one
    * leaf entry counting towards the enumeration in the range query (this
-   * statement is important for leaf nodes).
+   * statement is important for leaf nodes).  [xMin, xMax] must intersect
+   * [minBound, maxBound] on each call to this method.
    */
-  private final int searchRange(final Node n, NodeStack nodeStack,
-                                int xMin, int xMax,
-                                int minBound, int maxBound)
+  private final int searchRange(final Node n, final NodeStack nodeStack,
+                                final int xMin, final int xMax,
+                                final int minBound, final int maxBound)
   {
     int count = 0;
-
     if (minBound >= xMin && maxBound <= xMax) { // Trivially include node.
       count += (isLeafNode(n) ? n.sliceCount : n.data.deepCount);
       nodeStack.push(n); }
@@ -427,35 +428,10 @@ public final class IntBTree
         Node nodeTemp;
         for (int i = n.sliceCount - 2; i >= -1; i--) {
           currentMin = ((i < 0) ? minBound : n.data.splitVals[i]);
-
-          // If [currentMin, currentMax] subset of [xMin, xMax]
-          //   then include n.data.children[i + 1] in its entirety by
-          //   adding its deep count to total and placing it on the stack.
-
-          if (currentMin >= xMin && currentMax <= xMax) { // Subset of.
-            nodeTemp = n.data.children[i + 1];
-            count += nodeTemp.data.deepCount;
-            nodeStack.push(nodeTemp); }
-
-          // Else if [currentMin, currentMax] intersects [xMin, xMax]
-          //   then recurse down child = n.data.children[i + 1] by calling
-          //   searchRange(child, nodeStack, xMin, xMax, currentMin,
-          //   currentMax), adding its output to our total count.
-
-          else if (Math.max(currentMin, xMin) <= Math.min(currentMax, xMax)) {
-            nodeTemp = n.data.children[i + 1];
-            count += searchRange(nodeTemp, nodeStack, xMin, xMax,
-                                 currentMin, currentMax); }
-
-          // Else
-          //   [currentMin, currentMax] does not intersect [xMin, xMax] so
-          //   do nothing.
-
-          else { }
-
-          currentMax = currentMin; }
-      }
-    }
+          if (Math.max(currentMin, xMin) <= Math.min(currentMax, xMax))
+            count += searchRange(n.data.children[i + 1], nodeStack, xMin, xMax,
+                                 currentMin, currentMax);
+          currentMax = currentMin; } } }
     return count;
   }
 
