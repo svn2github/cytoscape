@@ -425,7 +425,8 @@ public class CytoscapeInit
         URL url;
         try {
           if ( plugin.startsWith( "http" ) ) {
-            plugin = plugin.replaceAll( "http:/" ,"http://" );
+// MDA - don't want that extra '/' after http: -- causes URL exceptions later
+// MDA          plugin = plugin.replaceAll( "http:/" ,"http://" );
             plugin = "jar:"+plugin+"!/";
             url = new URL( plugin );
           } else {
