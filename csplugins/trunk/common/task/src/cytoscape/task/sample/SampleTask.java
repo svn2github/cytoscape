@@ -7,6 +7,7 @@ import java.io.IOException;
 
 /**
  * Sample Task, used to illustrate the Task Framework.
+ * This tasks counts from 0 to maxValue.
  */
 public class SampleTask implements Task {
     private static final int MIN_VALUE = 0;

@@ -9,7 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Common UI Element for Displaying Errors and Stack Traces.
+ * Common UI element for displaying errors and stack traces.
  */
 public class JErrorPanel extends JPanel {
     /**

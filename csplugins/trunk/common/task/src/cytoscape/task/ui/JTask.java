@@ -12,7 +12,7 @@ import java.awt.event.WindowEvent;
 import java.util.Date;
 
 /**
- * Common UI Element for Monitoring Long-Term Tasks.
+ * Common UI element for visually monitoring task progress.
  */
 public class JTask extends JDialog implements TaskMonitor, ActionListener {
 

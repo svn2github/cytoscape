@@ -3,7 +3,7 @@ package cytoscape.task.ui;
 import java.awt.*;
 
 /**
- * Used to Configure the JTask UI Component.
+ * Used to configure the JTask UI component.
  */
 public class JTaskConfig {
 
