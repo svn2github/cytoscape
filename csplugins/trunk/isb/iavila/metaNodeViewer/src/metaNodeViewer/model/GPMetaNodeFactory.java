@@ -26,12 +26,10 @@
  * @version %I%, %G%
  * @since 2.0
  */
-package metaNodeViewer;
+package metaNodeViewer.model;
 
 import metaNodeViewer.data.*;
-import java.util.*;
 import giny.model.*;
-import cytoscape.data.GraphObjAttributes;
 import cytoscape.*;
 import cern.colt.list.IntArrayList;
 
@@ -40,16 +38,9 @@ import cern.colt.list.IntArrayList;
  * to which GraphPerspectives (since all GraphPerspectives share the same RootGraph).
  */
 
-public class GPMetaNodeFactory implements MetaNodeFactory {
+public class GPMetaNodeFactory {
   
   protected static final boolean DEBUG = true;
-  
-  /**
-   * Key: GraphPerspective Value: IntArrayList
-   * The IntArrayList contains RootGraph indices of nodes that have been
-   * created by this factory for the GraphPerspective used as the key
-   */
-  protected Map gpToMetaNodes;
   
   /**
    * Specifies whether or not this class should assign a name to newly created meta-nodes
@@ -63,18 +54,18 @@ public class GPMetaNodeFactory implements MetaNodeFactory {
 
   /**
    * Constructor.
-   * Calls <code>this(new SimpleMetaNodeAttributesHandler(), true)</code>.
+   * Calls <code>this(MetaNodeModelerFactory.DEFAULT_MN_ATTRIBUTES_HANDLER, true)</code>.
    */
   public GPMetaNodeFactory (){
-    this(new SimpleMetaNodeAttributesHandler(),true);
+    this(MetaNodeModelerFactory.DEFAULT_MN_ATTRIBUTES_HANDLER, true);
   }//GPMetaNodeFactory
 
   /**
    * Constructor.
    *
    * @param attributes_handler the MetaNodeAttributesHandler that should be 
-   * used to name meta-nodes and add a name--Node mapping into GraphObjAttributes
-   * for nodes, calls GPMetaNodeFactory(attributes_handler,true)
+   * used to name meta-nodes and to add a [name-->Node] mapping as an attribute,
+   * calls GPMetaNodeFactory(attributes_handler,true)
    */
   public GPMetaNodeFactory (MetaNodeAttributesHandler attributes_handler){
     this(attributes_handler,true);
@@ -84,7 +75,7 @@ public class GPMetaNodeFactory implements MetaNodeFactory {
    * Constructor.
    *
    * @param attributes_handler the MetaNodeAttributesHandler that should be 
-   * used to name meta-nodes and add a name--Node mapping into GraphObjAttributes
+   * used to name meta-nodes and add a [name-->Node] mapping into GraphObjAttributes
    * for nodes
    * @param assign_names whether or not this class should assign new names
    * to newly created nodes and set this names in the node object attributes
@@ -93,7 +84,6 @@ public class GPMetaNodeFactory implements MetaNodeFactory {
                             boolean assign_names){
     this.assignDefaultName = assign_names;
     this.attributesHandler = attributes_handler;
-    this.gpToMetaNodes = new HashMap();
   }//GPMetaNodeFactory
   
   /**
@@ -110,15 +100,30 @@ public class GPMetaNodeFactory implements MetaNodeFactory {
     return this.assignDefaultName;
   }//getAssignDefaultNames
   
-
   /**
-   * Implements MetaNodeFactory.createMetaNode()
-   * Creates a MetaNode in the GraphPercpective that lives within CyNetwork.
-   * This means that a node in GraphPerspective's RootGraph needs to be created.
-   * TODO: Since many GraphPerspectives share the same RootGraph, we need to keep track of
-   * which meta-node in RootGraph belong to which GraphPerspective.
+   * Creates a meta-node within CyNetwork with the given children and a default name given by this.attributesHandler 
+   * (if getAssignDefaultNames() is true)
+   * 
+   * @param cy_net he CyNetwork for which a meta-node will be created
+   * @param children_node_indices the indices of the children nodes (RootGraph or GraphPerspective indices)
+   * @return the RootGraph index of the newly created meta-node, or zero if something went wrong 
    */
   public int createMetaNode (CyNetwork cy_net, int [] children_node_indices){
+  	return createMetaNode(cy_net, children_node_indices, this.attributesHandler);
+  }//createMetaNode
+  
+
+  /**
+   * Creates a meta-node within CyNetwork with the given children, this means that a node in CyNetwork's RootGraph needs to be created.
+   *
+   * @param cy_net the CyNetwork for which a meta-node will be created
+   * @param children_node_indices the indices of the children nodes (RootGraph or GraphPerspective indices)
+   * @param attributes_handler the MetaNodeAttributesHandler to be used to assign a name to the new node (if getAssignDefaultNames() is true)
+   * @return the RootGraph index of the newly created meta-node, or zero if something went wrong 
+   */
+  //TODO: Since many GraphPerspectives share the same RootGraph, we need to keep track of
+  // which meta-node in RootGraph belong to which GraphPerspective
+  public int createMetaNode (CyNetwork cy_net, int [] children_node_indices, MetaNodeAttributesHandler attributes_handler){
     
     if(children_node_indices == null || 
        cy_net == null || 
@@ -131,13 +136,11 @@ public class GPMetaNodeFactory implements MetaNodeFactory {
       return 0;
     }// check args
     
-    GraphPerspective mainGP = cy_net.getGraphPerspective();
-    
     // Make sure that the node indices are RootGraph indices
     for(int i = 0; i < children_node_indices.length; i++){
       if(children_node_indices[i] > 0){
         // This is a GP index
-        int rgIndex = mainGP.getRootGraphNodeIndex(children_node_indices[i]);
+        int rgIndex = cy_net.getRootGraphNodeIndex(children_node_indices[i]);
         if(rgIndex >= 0){
           // Something went wrong!
           if(DEBUG){
@@ -153,11 +156,11 @@ public class GPMetaNodeFactory implements MetaNodeFactory {
     }// for i
     
     // Get the RootGraph indices of the edges that connect to the selected nodes
-    RootGraph rootGraph = mainGP.getRootGraph();
-    int[] edgeIndices = mainGP.getConnectingEdgeIndicesArray(children_node_indices);
+    RootGraph rootGraph = cy_net.getRootGraph();
+    int[] edgeIndices = cy_net.getConnectingEdgeIndicesArray(children_node_indices);
     for(int i = 0; i < edgeIndices.length; i++){
       if(edgeIndices[i] > 0){
-        int rootEdgeIndex = mainGP.getRootGraphEdgeIndex(edgeIndices[i]);
+        int rootEdgeIndex = cy_net.getRootGraphEdgeIndex(edgeIndices[i]);
         if(rootEdgeIndex >= 0){
           // Something went wrong!
           if(DEBUG){
@@ -176,16 +179,16 @@ public class GPMetaNodeFactory implements MetaNodeFactory {
     int rgParentNodeIndex = rootGraph.createNode(children_node_indices, edgeIndices);
 
     // Remember that this RootGraph node belongs to the GraphPerspective in cyNetwork
-    IntArrayList rootNodes = (IntArrayList)this.gpToMetaNodes.get(mainGP);
+    IntArrayList rootNodes = (IntArrayList)cy_net.getClientData(MetaNodeFactory.METANODES_IN_NETWORK);
     if(rootNodes == null){
       rootNodes = new IntArrayList();
-      this.gpToMetaNodes.put(mainGP,rootNodes);
+      cy_net.putClientData(MetaNodeFactory.METANODES_IN_NETWORK, rootNodes);
     }
     rootNodes.add(rgParentNodeIndex);
     
     // Assign a default name if necessary
     if(getAssignDefaultNames()){
-      if(this.attributesHandler.assignName(cy_net, rgParentNodeIndex) == null){
+      if(attributes_handler.assignName(cy_net, rgParentNodeIndex) == null){
         // Failed to assign a default name, but the node has been created, so just
         // print a debug statement
         if(DEBUG){
@@ -204,48 +207,15 @@ public class GPMetaNodeFactory implements MetaNodeFactory {
    *
    * @return false if it failed to assign a name, or true if successful
    */
-  //TODO: Move somewhere else
   protected boolean assignDefaultName (CyNetwork cy_net, int root_node_index){
-    
-    GraphPerspective mainGP = cy_net.getGraphPerspective();
-    RootGraph rootGraph = mainGP.getRootGraph();
-    Node node = rootGraph.getNode(root_node_index);
-    
-    if(node == null){
-      if(DEBUG){
-        System.err.println("GPMetaNodeFactory.assignDefaultName: failed because there is no Node " +
-                           " in RootGraph with root index " + root_node_index);
-        
-      }
-      return false;
-    }// node == null
-    
-    String unique_name = "MetaNode_" + Integer.toString( (root_node_index*-1) );
-    GraphObjAttributes nodeAtts = cy_net.getNodeAttributes();
-    nodeAtts.addNameMapping(unique_name, node);
-    nodeAtts.set("canonicalName", unique_name, unique_name);
-
-    return true;
+    return (this.attributesHandler.assignName(cy_net, root_node_index) != null);
   }//assignDefaultName
 
   /**
-   * Clears the Factory.
+   * Clears the Factory, right now it does nothing...
    */
   public void clear (){
-    this.gpToMetaNodes.clear();
+  	// ?
   }//clear
-
-  /**
-   * @return the RootGraph indices of the nodes that are parent nodes of nodes
-   * in the given graph and that were created using this factory
-   */
-  public int [] getParentNodesInNet (GraphPerspective graphPerspective){
-    IntArrayList parents = (IntArrayList)this.gpToMetaNodes.get(graphPerspective);
-    if(parents == null){
-      return new int[0];
-    }
-    parents.trimToSize();
-    return parents.elements();
-  }//getParentNodesInNet
 
 }//GPMetaNodeFactory

@@ -29,49 +29,36 @@
 package metaNodeViewer.actions;
 import java.util.*;
 import metaNodeViewer.model.AbstractMetaNodeModeler;
-import metaNodeViewer.MetaNodeFactory;
-import metaNodeViewer.GPMetaNodeFactory;
+import metaNodeViewer.model.MetaNodeFactory;
 import javax.swing.JOptionPane;
 import javax.swing.AbstractAction;
 import java.awt.event.ActionEvent;
 import cern.colt.list.IntArrayList;
-import cytoscape.data.GraphObjAttributes;
 import cytoscape.*;
-import cytoscape.view.CyWindow;
 import giny.view.*;
 import giny.model.*;
-import cern.colt.list.IntArrayList;
 
 /**
  * Only accessible in metaNodeViewer.actions package.
  * Use action factory to get an instance of this class.
  */
-public class CollapseSelectedNodesAction 
-  extends AbstractAction {
+public class CollapseSelectedNodesAction extends AbstractAction {
   
-  protected CyWindow cyWindow;
   protected AbstractMetaNodeModeler abstractingModeler;
-  protected MetaNodeFactory mnFactory;
   protected boolean collapseExistentParents;
     
   /**
    * Use action factory instead
    *
-   * @param cy_window where the CyNetwork lives
    * @param abstracting_modeler the AbstractMetaNodeModeler used to collapse nodes
-   * @param mn_factory the MetaNodeFactory used to create meta nodes from selected nodes
    * @param collapse_existent_parents if the selected nodes already have meta-parents, and
    * if collapse_existent_parents is true, don't create new parent meta-nodes, simply collapse
    * the existent parents
    */
-  public CollapseSelectedNodesAction (CyWindow cy_window,
-                                      AbstractMetaNodeModeler abstracting_modeler,
-                                      MetaNodeFactory mn_factory,
-                                      boolean collapse_existent_parents,
-                                      String title){
+  protected CollapseSelectedNodesAction (AbstractMetaNodeModeler abstracting_modeler,
+                                         boolean collapse_existent_parents,
+                                         String title){
     super(title);
-    this.cyWindow = cy_window;
-    this.mnFactory = mn_factory;
     this.abstractingModeler = abstracting_modeler;
     this.collapseExistentParents = collapse_existent_parents;
   }//CollapseSelectedNodesAction
@@ -88,7 +75,7 @@ public class CollapseSelectedNodesAction
    * Sets whether or not default names should be assigned to newly created metanodes
    */
   public void setAssignDefaultNames (boolean assign){
-    this.mnFactory.assignDefaultNames(assign);
+    MetaNodeFactory.assignDefaultNames(assign);
   }//setAssignDefaultNames
 
 
@@ -96,37 +83,33 @@ public class CollapseSelectedNodesAction
    * Implements AbstractAction.actionPerformed by calling <code>collapseSelectedNodes</code>
    */
   public void actionPerformed (ActionEvent e){
-    collapseSelectedNodes(this.cyWindow, 
-                          this.abstractingModeler, 
-                          this.mnFactory,
+    collapseSelectedNodes(this.abstractingModeler, 
                           this.collapseExistentParents);
   }//actionPerformed
   
   
   /**
-   * Collapses into a single node a set of currently selected nodes.
+   * Collapses into a single node a set of selected nodes in the current CyNetwork.
    */
-  public static void collapseSelectedNodes (CyWindow cyWindow,
-                                            AbstractMetaNodeModeler abstractModeler,
-                                            MetaNodeFactory mnFactory,
+  public static void collapseSelectedNodes (AbstractMetaNodeModeler abstractModeler,
                                             boolean collapse_existent_parents){
-    GraphView graphView = cyWindow.getView();
+    
+  	GraphView graphView = Cytoscape.getCurrentNetworkView();
     // Pop-up a dialog if there are no selected nodes and return
     if(graphView.getSelectedNodes().size() == 0) {
-      JOptionPane.showMessageDialog(cyWindow.getMainFrame(),
+      JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
                                     "Please select one or more nodes.");
       return;
     }
     
     // Get the selected nodes' RootGraph indices
-    CyNetwork cyNetwork = cyWindow.getNetwork();
-    GraphPerspective mainGP = cyNetwork.getGraphPerspective();
+    CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
     java.util.List selectedNVlist = graphView.getSelectedNodes();
     Iterator it = selectedNVlist.iterator();
     IntArrayList selectedNodeIndices = new IntArrayList();
     while(it.hasNext()){
       NodeView nodeView = (NodeView)it.next();
-      int rgNodeIndex = mainGP.getRootGraphNodeIndex(nodeView.getGraphPerspectiveIndex());
+      int rgNodeIndex = cyNetwork.getRootGraphNodeIndex(nodeView.getGraphPerspectiveIndex());
       selectedNodeIndices.add(rgNodeIndex);
     }//while it
     selectedNodeIndices.trimToSize();
@@ -134,31 +117,35 @@ public class CollapseSelectedNodesAction
 
     // If collapse_existent_parents is true, then find parents for the selected nodes
     // and collapse them
-    // NOTE (TODO) : This is tricky if we have multiple GraphPerspectives, since
-    // they share the same RootGraph. The MetaNodeFactory (or some other class) needs
-    // to keep track of which meta-nodes in RootGraph belong to which GraphPerspectives
-    // For now do this:
+    // NOTE: This is tricky if we have multiple GraphPerspectives, since
+    // they share the same RootGraph. Use the fact that MetaNodeFactory stores for each network
+    // the meta-nodes that were created for it.
     if(collapse_existent_parents){
-      RootGraph rootGraph = mainGP.getRootGraph();
+      RootGraph rootGraph = cyNetwork.getRootGraph();
       IntArrayList parentRootGraphIndices = new IntArrayList();
-      for(int i = 0; i < nodeIndices.length; i++){
-        int [] parents = rootGraph.getNodeMetaParentIndicesArray(nodeIndices[i]);
-        // Iliana left here:
-        // Was about to check that the parent node belongs to the mainGP...
-        if(parents.length == 1){
-          parentRootGraphIndices.add(parents[0]);
-        }else if(parents.length > 1){
-          // TODO: Somehow handle the case when there is more than one parent
-          // for now, just add the first parent
-          parentRootGraphIndices.add(parents[0]);
-        }
-      }//for i
+      IntArrayList metaNodesForNetwork = (IntArrayList)cyNetwork.getClientData(MetaNodeFactory.METANODES_IN_NETWORK);
+      if(metaNodesForNetwork != null){
+      	for(int i = 0; i < nodeIndices.length; i++){
+      		int [] parents = rootGraph.getNodeMetaParentIndicesArray(nodeIndices[i]);
+      		if(parents.length == 1 && metaNodesForNetwork.contains(parents[0])){
+      			parentRootGraphIndices.add(parents[0]);
+      		}else if(parents.length > 1){
+      			// TODO: Think about this better. What to do when a node has more than one parent???
+      			// Maybe pop-up window asking which parent should be collapsed, give the option of collapsing the last one created...???
+      			for(int j = 0; j < parents.length; j++){
+      				if( metaNodesForNetwork.contains(parents[j]) ){
+      					parentRootGraphIndices.add(parents[j]);
+      				}
+      			}//for j
+      		}
+      	}//for i
+      }// metaNodesForNetwork != null
       
-      // Collapse each parent sequentially
+      // Collapse parents sequentially
       parentRootGraphIndices.trimToSize();
       if(parentRootGraphIndices.size() == 0){
         // Tell the user there are no parents and exit
-        JOptionPane.showMessageDialog(cyWindow.getMainFrame(),
+        JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
                                       "The selected nodes have no existent parent nodes.");
         return;
       }
@@ -167,13 +154,13 @@ public class CollapseSelectedNodesAction
         abstractModeler.applyModel(cyNetwork,parents[i]);
       }//for i
       return;
-    }
+    }// if collapse_existent_parents
 
     // Create a meta-node for the selected nodes
-    int rgParentNodeIndex = mnFactory.createMetaNode(cyNetwork, nodeIndices);
+    int rgParentNodeIndex = MetaNodeFactory.createMetaNode(cyNetwork, nodeIndices);
     if(rgParentNodeIndex == 0){
       // Something went wrong, alert user, and exit
-      JOptionPane.showMessageDialog(cyWindow.getMainFrame(),
+      JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
                                     "An internal error was encountered while collapsing.",
                                     "Internal Error",
                                     JOptionPane.ERROR_MESSAGE

@@ -22,16 +22,23 @@
  **  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  **/
 /**
- * @author Iliana Avila-Campillo iavila@systemsbiology.org
+ * @author Iliana Avila-Campillo iavila@systemsbiology.org, iliana.avila@gmail.com
  * @version %I%, %G%
  * @since 2.0
  */
-package metaNodeViewer;
+package metaNodeViewer.model;
 import cytoscape.CyNetwork;
 import giny.model.GraphPerspective;
+import metaNodeViewer.data.*;
 
-public interface MetaNodeFactory {
-  
+public class MetaNodeFactory {
+	/**
+	 * The key to obtain a cern.colt.list.IntArrayList that contains RootGraph indices of meta-nodes for a
+	 * given CyNetwork through <code>CyNetwork.getClientData(String key)</code>
+	 */
+	public static final String METANODES_IN_NETWORK = "metaNodeViewer.model.GPMetaNodeFactory.metaNodeRindices";
+	private static final GPMetaNodeFactory gpMetaNodeFactory = new GPMetaNodeFactory();
+	
   /**
    * Creates a MetaNode in the given CyNetwork with the given children
    *
@@ -41,29 +48,43 @@ public interface MetaNodeFactory {
    * @return the RootGraph index of the newly created meta-node, or zero if
    * none created.
    */
-  public int createMetaNode (CyNetwork cy_network,
-                              int [] children_node_indices);
+  public static int createMetaNode (CyNetwork cy_network, int [] children_node_indices){
+  	return MetaNodeFactory.gpMetaNodeFactory.createMetaNode(cy_network, children_node_indices);
+  }//createMetaNode
 
+  /**
+   * Creates a MetaNode in the given CyNetwork with the given children
+   *
+   * @param cy_network the CyNetwork in which MetaNodes will be created
+   * @param children_node_indices the indices of the nodes that will be
+   * the children of the created meta-node
+   * @param attributes_handler the MetaNodeAttributesHandler to be used to name the new node (if getAssignDefaultNames() is true)
+   * @return the RootGraph index of the newly created meta-node, or zero if
+   * none created.
+   */
+  public static int createMetaNode (CyNetwork cy_network, int [] children_node_indices, MetaNodeAttributesHandler attributes_handler){
+  	return MetaNodeFactory.gpMetaNodeFactory.createMetaNode(cy_network, children_node_indices, attributes_handler);
+  }//createMetaNode
   /**
    * Sets whether or not a default name for newly created meta-nodes should be given
    * and added to the node attributes.
    */
-  public void assignDefaultNames (boolean assign);
+  public static void assignDefaultNames (boolean assign){
+  	MetaNodeFactory.gpMetaNodeFactory.assignDefaultNames(assign);
+  }//assignDefaultNames
 
   /**
    * Whether or not default names are being assigned to newly created meta-nodes
    */
-  public boolean getAssignDefaultNames ();
+  public static boolean getAssignDefaultNames (){
+  	return MetaNodeFactory.gpMetaNodeFactory.getAssignDefaultNames();
+  }//getAssign
 
   /**
    * Clears this Factory.
    */
-  public void clear ();
-
-  /**
-   * @return the RootGraph indices of the nodes that are parent nodes of nodes
-   * in the given graph and that were created using this factory
-   */
-  public int [] getParentNodesInNet (GraphPerspective graphPerspective);
-    
+  public static void clear (){
+  	MetaNodeFactory.gpMetaNodeFactory.clear();
+  }//clear
+  
 }//MetaNodeFactory

@@ -32,7 +32,6 @@ import cytoscape.*;
 import cytoscape.data.*;
 import giny.model.*;
 import cern.colt.map.AbstractIntIntMap;
-import cern.colt.list.IntArrayList;
 import cern.colt.function.IntIntProcedure;
 import java.util.*;
 

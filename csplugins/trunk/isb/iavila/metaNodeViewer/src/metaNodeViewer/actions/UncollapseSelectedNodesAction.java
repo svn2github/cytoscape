@@ -33,9 +33,7 @@ import javax.swing.JOptionPane;
 import javax.swing.AbstractAction;
 import java.awt.event.ActionEvent;
 import cern.colt.list.IntArrayList;
-import cytoscape.data.GraphObjAttributes;
 import cytoscape.*;
-import cytoscape.view.CyWindow;
 import giny.view.*;
 import giny.model.*;
 
@@ -43,10 +41,8 @@ import giny.model.*;
  * Only accessible in metaNodeViewer.actions package.
  * Use action factory to get an instance of this class.
  */
-public class UncollapseSelectedNodesAction 
-  extends AbstractAction {
+public class UncollapseSelectedNodesAction extends AbstractAction {
   
-  protected CyWindow cyWindow;
   protected AbstractMetaNodeModeler abstractingModeler;
   protected boolean recursive;
   protected boolean temporaryUncollapse;
@@ -54,13 +50,11 @@ public class UncollapseSelectedNodesAction
   /**
    * Use action factory instead
    */
-  public UncollapseSelectedNodesAction (CyWindow cy_window,
-                                        AbstractMetaNodeModeler abstracting_modeler,
+  protected UncollapseSelectedNodesAction (AbstractMetaNodeModeler abstracting_modeler,
                                         boolean recursive_uncollapse,
                                         boolean temporary_uncollapse,
                                         String title){
     super(title);
-    this.cyWindow = cy_window;
     this.abstractingModeler = abstracting_modeler;
     this.recursive = recursive_uncollapse;
     this.temporaryUncollapse = temporary_uncollapse;
@@ -86,33 +80,30 @@ public class UncollapseSelectedNodesAction
    * Implements AbstractAction.actionPerformed by calling <code>uncollapseSelectedNodes</code>
    */
   public void actionPerformed (ActionEvent e){
-    uncollapseSelectedNodes(this.cyWindow, 
-                            this.abstractingModeler, 
+    uncollapseSelectedNodes(this.abstractingModeler, 
                             this.recursive, 
                             this.temporaryUncollapse);
   }//actionPerformed
   
-  public static void uncollapseSelectedNodes (CyWindow cyWindow,
-                                              AbstractMetaNodeModeler abstractModeler,
+  public static void uncollapseSelectedNodes (AbstractMetaNodeModeler abstractModeler,
                                               boolean recursive,
                                               boolean temporary){
-    GraphView graphView = cyWindow.getView();
+    GraphView graphView = Cytoscape.getCurrentNetworkView();
     // Pop-up a dialog if there are no selected nodes and return
     if(graphView.getSelectedNodes().size() == 0) {
-      JOptionPane.showMessageDialog(cyWindow.getMainFrame(),
+      JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
                                     "Please select one or more nodes.");
       return;
     }
     
     // Get the RootGraph indices of the selected nodes
-    CyNetwork cyNetwork = cyWindow.getNetwork();
-    GraphPerspective mainGP = cyNetwork.getGraphPerspective();
+    CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
     java.util.List selectedNVlist = graphView.getSelectedNodes();
     Iterator it = selectedNVlist.iterator();
     IntArrayList selectedNodeIndices = new IntArrayList();
     while(it.hasNext()){
       NodeView nodeView = (NodeView)it.next();
-      int rgNodeIndex = mainGP.getRootGraphNodeIndex(nodeView.getGraphPerspectiveIndex());
+      int rgNodeIndex = cyNetwork.getRootGraphNodeIndex(nodeView.getGraphPerspectiveIndex());
       selectedNodeIndices.add(rgNodeIndex);
     }//while it
     selectedNodeIndices.trimToSize();

@@ -22,20 +22,16 @@
  **  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  **/
 /**
- * @author Iliana Avila-Campillo iavila@systemsbiology.org
+ * @author Iliana Avila-Campillo iavila@systemsbiology.org, iliana.avila@gmail.com
  * @version %I%, %G%
  * @since 2.0
  */
 package metaNodeViewer.ui;
-import cytoscape.view.CyWindow;
 import metaNodeViewer.actions.*;
-import metaNodeViewer.data.*;
-import java.lang.*;
 import javax.swing.*;
-import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-
+import cytoscape.*;
 
 public class MNcollapserDialog extends JDialog {
 
@@ -51,9 +47,9 @@ public class MNcollapserDialog extends JDialog {
   /**
    * Constructor
    */
-  public MNcollapserDialog (CyWindow cy_window){
-    super( ( JFrame )null, title, false);
-    initialize(cy_window);
+  public MNcollapserDialog (){
+    super(Cytoscape.getDesktop(), title, false);
+    initialize();
   }//MNcollapserDialog
 
   /**
@@ -72,78 +68,69 @@ public class MNcollapserDialog extends JDialog {
   }//setOptions
 
   
-  protected void initialize (CyWindow cy_window){
-    
-      MetaNodeAttributesHandler attrHandler = new SimpleMetaNodeAttributesHandler();
-      ActionFactory.setMetaNodeAttributesHandler(attrHandler);
+  protected void initialize (){
 
       JButton collapseButton = new JButton("Collapse Selected Nodes");
       this.collapseAction = 
-	  (CollapseSelectedNodesAction)ActionFactory.createCollapseSelectedNodesAction(cy_window,false);
+	  (CollapseSelectedNodesAction)ActionFactory.createCollapseSelectedNodesAction(false);
       collapseButton.addActionListener(this.collapseAction);
     
       JButton expandButton = new JButton("Expand Selected Nodes");
       this.expandAction =
-	  (UncollapseSelectedNodesAction)ActionFactory.createUncollapseSelectedNodesAction(cy_window,
-											   false,
-											   false);
+	  (UncollapseSelectedNodesAction)ActionFactory.createUncollapseSelectedNodesAction(false,false);
       expandButton.addActionListener(this.expandAction);
     
       JButton resetButton = new JButton("Reset Graph");
       //TODO: Create an action for reset for now popup 'unimplemented' dialog
       resetButton.addActionListener(
-				    new AbstractAction(){
-					public void actionPerformed (ActionEvent e){
-					    JOptionPane.showMessageDialog(MNcollapserDialog.this,
-									  "Not implemented yet."
-									  );
-					}
-				    }
-				    );
+      		new AbstractAction(){
+      			public void actionPerformed (ActionEvent e){
+      				JOptionPane.showMessageDialog(MNcollapserDialog.this,"Not implemented yet.");
+      			}
+      		}
+      );
       
       this.rememberCheckBox = new JCheckBox("Remember parents after expanding");
       // isSelected == true means temporary
       // isSelected == false means not temporary
-      // TODO: If not remember, then we need to delete the meta-nodes from RootGraph that
+      // TODO: If !remember, then we need to remove/delete the meta-nodes from RootGraph that
       // have been expanded (don't do this here, maybe do it in UncollapseSelectedNodesAction).
       this.rememberCheckBox.addActionListener(
-					      new AbstractAction(){
-						  public void actionPerformed (ActionEvent e){
-						      MNcollapserDialog.this.expandAction.setTemporaryUncollapse(
-														 MNcollapserDialog.this.rememberCheckBox.isSelected());
-						  }
-					      });
+      		new AbstractAction(){
+      			public void actionPerformed (ActionEvent e){
+      				MNcollapserDialog.this.expandAction.setTemporaryUncollapse(MNcollapserDialog.this.rememberCheckBox.isSelected());
+      			}
+      		});
       this.recursiveCheckBox = new JCheckBox("Recursive Expand");
       this.recursiveCheckBox.addActionListener(
-					       new AbstractAction(){
-						   public void actionPerformed (ActionEvent e){
-						       MNcollapserDialog.this.expandAction.setRecursiveUncollapse(
-														  MNcollapserDialog.this.recursiveCheckBox.isSelected());
-						   }
-     });
+      		new AbstractAction(){
+      			public void actionPerformed (ActionEvent e){
+      				MNcollapserDialog.this.expandAction.setRecursiveUncollapse(MNcollapserDialog.this.recursiveCheckBox.isSelected());
+      			}
+      		});
     
     this.defaultNameCheckBox = new JCheckBox("Use default names for parents");
     this.defaultNameCheckBox.addActionListener(
-     new AbstractAction(){
-       public void actionPerformed (ActionEvent e){
-         boolean isSelected = MNcollapserDialog.this.defaultNameCheckBox.isSelected();
-         if(!isSelected){
-           JOptionPane.showMessageDialog(MNcollapserDialog.this,
-                                         "Warning: Meta-nodes will not have names!");
-         }
-         MNcollapserDialog.this.collapseAction.setAssignDefaultNames(isSelected);
-       }
-     });
+    		new AbstractAction(){
+    			public void actionPerformed (ActionEvent e){
+    				boolean isSelected = MNcollapserDialog.this.defaultNameCheckBox.isSelected();
+    				if(!isSelected){
+    					JOptionPane.showMessageDialog(MNcollapserDialog.this,
+    					"Warning: Meta-nodes will not have names!");
+    				}
+    				MNcollapserDialog.this.collapseAction.setAssignDefaultNames(isSelected);
+    			}
+    		});
     this.defaultNameCheckBox.setSelected(true); // default  
     
     this.collapseParentsCheckBox = new JCheckBox("Collapse existent parents");
     this.collapseParentsCheckBox.addActionListener(
-     new AbstractAction(){
-       public void actionPerformed (ActionEvent e){
-         MNcollapserDialog.this.collapseAction.setCollapseExistentParents(
-                               MNcollapserDialog.this.collapseParentsCheckBox.isSelected());
-       }
-     });
+    		new AbstractAction(){
+    			public void actionPerformed (ActionEvent e){
+    				MNcollapserDialog.this.collapseAction.setCollapseExistentParents(
+    						MNcollapserDialog.this.collapseParentsCheckBox.isSelected());
+    			}
+    		});
     
     JPanel borderedPanel = new JPanel();
     borderedPanel.setLayout(new GridLayout(5,2)); //rows, cols
