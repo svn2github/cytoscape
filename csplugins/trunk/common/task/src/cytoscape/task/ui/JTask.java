@@ -180,21 +180,14 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
         if (!haltRequested) {
             stopTimer();
 
-            //  Remove Progress Bar.
-            removeProgressBar();
+            //  Remove All UI Components
+            Container c = getContentPane();
+            c.removeAll();
 
             //  Create Error Panel
             JPanel errorPanel = new JErrorPanel
                     ((Window) this, t, userErrorMessage);
-
-            //  Add an Error Icon to the WEST
-            Icon icon = UIManager.getIcon("OptionPane.errorIcon");
-            JLabel l = new JLabel(icon);
-            Container c = getContentPane();
-            c.add(l, BorderLayout.WEST);
-
-            //  Add Error Panel to the SOUTH
-            c.add(errorPanel, BorderLayout.SOUTH);
+            c.add(errorPanel, BorderLayout.CENTER);
             config.setAutoDispose(false);
 
             //  Now make JFrame Resizable

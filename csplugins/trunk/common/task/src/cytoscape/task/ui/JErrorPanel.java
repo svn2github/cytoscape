@@ -97,6 +97,11 @@ public class JErrorPanel extends JPanel {
                     + "Please try again.");
         }
 
+        //  Add an Error Icon
+        Icon icon = UIManager.getIcon("OptionPane.errorIcon");
+        JLabel l = new JLabel(icon);
+        panel.add(l);
+
         //  Create Left Margin
         panel.add(Box.createHorizontalStrut(10));
 
@@ -111,6 +116,15 @@ public class JErrorPanel extends JPanel {
 
         //  Conditionally Add Details Button
         conditionallyAddDetailsButton(panel);
+
+        //  Create a Close Button
+        JButton closeButton = new JButton ("Close");
+        closeButton.addActionListener (new ActionListener() {
+            public void actionPerformed (ActionEvent e) {
+                owner.dispose();
+            }
+        });
+        panel.add(closeButton);
 
         return panel;
     }

@@ -38,7 +38,7 @@ public class RunSampleTask {
         //  For Case 2:  throw an exception when we get to XX.
         //  Used to illustrate exception handling / error display.
         } else {
-            task = new SampleTask(100, 100, 50);
+            task = new SampleTask(100, 100, 10);
         }
 
         //  Configure the JTask UI Component
