@@ -25,7 +25,7 @@ public class GinyFactory {
      * a LunaRootGraph.
      */
     public static RootGraph createRootGraph ( int nodes, int edges ) {
-        return new LunaRootGraph( nodes, edges );
+      return new LunaRootGraph( nodes, edges );
     }
 
     /**
