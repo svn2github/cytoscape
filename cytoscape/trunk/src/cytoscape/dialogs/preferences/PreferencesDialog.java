@@ -21,7 +21,7 @@ public class PreferencesDialog extends JDialog {
 	
     int [] selection = null;
 	
-    JScrollPane prefsTablePane   = new JScrollPane();
+    JScrollPane propsTablePane   = new JScrollPane();
     JScrollPane pluginsTablePane  = new JScrollPane();
     JTable      pluginsTable      = new JTable();
     JTable      prefsTable       = new JTable();
@@ -194,30 +194,30 @@ public class PreferencesDialog extends JDialog {
     private void prefPopupInit() throws Exception {
 
 	Box outerBox = Box.createVerticalBox();
-	outerBox.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+	outerBox.setBorder(BorderFactory.createEmptyBorder(10,10,8,10));
 
-	Box modTableBox = Box.createVerticalBox();
-	prefsTablePane.setBorder(BorderFactory.createEmptyBorder(2,9,4,9));
-        prefsTablePane.getViewport().add(prefsTable, null);
-	prefsTable.setPreferredScrollableViewportSize(new Dimension(500,150));
-	modTableBox.add(prefsTablePane);
-	modTableBox.add(Box.createVerticalStrut(10));
-        modTableBox.add(propBtnPane);
-	modTableBox.setBorder(BorderFactory.createTitledBorder(
+	Box propsTableBox = Box.createVerticalBox();
+	propsTablePane.setBorder(BorderFactory.createEmptyBorder(2,9,4,9));
+        propsTablePane.getViewport().add(prefsTable, null);
+	prefsTable.setPreferredScrollableViewportSize(new Dimension(400,80));
+	propsTableBox.add(propsTablePane);
+	propsTableBox.add(Box.createVerticalStrut(5));
+        propsTableBox.add(propBtnPane);
+	propsTableBox.setBorder(BorderFactory.createTitledBorder(
 					"Properties"));
-	outerBox.add(modTableBox);
+	outerBox.add(propsTableBox);
 	outerBox.add(Box.createVerticalStrut(10));
 
-	Box addTableBox = Box.createVerticalBox();
+	Box pluginsTableBox = Box.createVerticalBox();
 	pluginsTablePane.setBorder(BorderFactory.createEmptyBorder(2,9,4,9));
         pluginsTablePane.getViewport().add(pluginsTable, null);
-	pluginsTable.setPreferredScrollableViewportSize(new Dimension(500,100));
-        addTableBox.add(pluginsTablePane);
-	addTableBox.add(Box.createVerticalStrut(10));
-        addTableBox.add(pluginBtnPane);
-	addTableBox.setBorder(BorderFactory.createTitledBorder(
+	pluginsTable.setPreferredScrollableViewportSize(new Dimension(400,100));
+        pluginsTableBox.add(pluginsTablePane);
+	pluginsTableBox.add(Box.createVerticalStrut(5));
+        pluginsTableBox.add(pluginBtnPane);
+	pluginsTableBox.setBorder(BorderFactory.createTitledBorder(
 					"Plugins"));
-	outerBox.add(addTableBox);
+	outerBox.add(pluginsTableBox);
 
 	outerBox.add(Box.createVerticalStrut(10));
 	JTextArea textArea = new JTextArea(
@@ -230,7 +230,7 @@ public class PreferencesDialog extends JDialog {
 	textArea.setLineWrap(true);
 	textArea.setWrapStyleWord(true);
 	outerBox.add(textArea);
-	outerBox.add(Box.createVerticalStrut(10));
+	outerBox.add(Box.createVerticalStrut(8));
         outerBox.add(okButtonPane);
 
         this.getContentPane().add(outerBox, BorderLayout.CENTER);

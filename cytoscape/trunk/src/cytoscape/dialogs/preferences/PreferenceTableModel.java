@@ -9,7 +9,7 @@ import javax.swing.*;
 import java.util.*;
 
 public class PreferenceTableModel extends AbstractTableModel {
-    static int[] columnWidth = new int[] {100, 400};
+    static int[] columnWidth = new int[] {120, 280};
     static int[] alignment = new int[] {JLabel.LEFT, JLabel.LEFT};
 
     private Properties properties;
