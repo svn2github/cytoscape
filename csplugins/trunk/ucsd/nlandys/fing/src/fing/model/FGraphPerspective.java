@@ -166,7 +166,7 @@ class FGraphPerspective implements GraphPerspective
   public Node hideNode(Node node)
   {
     if (node.getRootGraph() == m_root &&
-        hideNode(node.getRootGraphIndex()) < 0) return node;
+        hideNode(node.getRootGraphIndex()) != 0) return node;
     else return null;
   }
 
@@ -191,7 +191,9 @@ class FGraphPerspective implements GraphPerspective
 
   public Node restoreNode(Node node)
   {
-    throw new IllegalStateException("not implemented yet");
+    if (node.getRootGraph() == m_root &&
+        restoreNode(node.getRootGraphIndex()) != 0) return node;
+    else return null;
   }
 
   public int restoreNode(int rootGraphNodeInx)
@@ -236,7 +238,7 @@ class FGraphPerspective implements GraphPerspective
   public Edge hideEdge(Edge edge)
   {
     if (edge.getRootGraph() == m_root &&
-        hideEdge(edge.getRootGraphIndex()) < 0) return edge;
+        hideEdge(edge.getRootGraphIndex()) != 0) return edge;
     else return null;
   }
 
