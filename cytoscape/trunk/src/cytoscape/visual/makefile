@@ -14,6 +14,7 @@ JC=javac
 OBJS = NodeAppearanceCalculator.class \
        EdgeAppearanceCalculator.class \
        GlobalAppearanceCalculator.class \
+       VisualStyle.class \
        CalculatorCatalog.class \
        VisualMappingManager.class \
        NodeAppearance.class \
