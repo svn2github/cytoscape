@@ -40,7 +40,7 @@ public class GinyUtils {
 						view.hideGraphObject( view.getEdgeView( edges[j] ) );
 					}
 				}
-      }//while
+			}//while
 		}//if !null
        
     }
