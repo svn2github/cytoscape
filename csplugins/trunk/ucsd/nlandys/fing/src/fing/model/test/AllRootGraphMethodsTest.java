@@ -1225,6 +1225,18 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("missing meta relationship");
 
     // isEdgeMetaChild(int, int).
+    if (root.isEdgeMetaChild(0, 0) ||
+        root.isEdgeMetaChild(Integer.MIN_VALUE, Integer.MAX_VALUE) ||
+        root.isEdgeMetaChild(minNodeInx - 1, minEdgeInx - 1) ||
+        root.isEdgeMetaChild(98, 99) ||
+        root.isEdgeMetaChild(nodeInx[3], edgeInx[4]) ||
+        root.isEdgeMetaChild(nodeInx[0], edgeInx[3]) ||
+        root.isEdgeMetaChild(nodeInx[2], edgeInx[1]))
+      throw new IllegalStateException("reported wrong meta relationship");
+    if (!(root.isEdgeMetaChild(nodeInx[4], edgeInx[2]) &&
+          root.isEdgeMetaChild(nodeInx[3], edgeInx[6]) &&
+          root.isEdgeMetaChild(nodeInx[3], edgeInx[0])))
+      throw new IllegalStateException("missing meta relationship");
 
     // edgeMetaChildrenList(Node).
 
