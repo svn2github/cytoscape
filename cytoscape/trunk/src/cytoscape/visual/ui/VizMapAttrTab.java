@@ -557,7 +557,8 @@ public class VizMapAttrTab extends VizMapTab {
 	}
 	else
 	    this.calcPanel = null;
-	//validate();
+	validate();
+	repaint();
     }
     
     /**
