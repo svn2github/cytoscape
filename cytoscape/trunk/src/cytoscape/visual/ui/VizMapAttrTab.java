@@ -108,20 +108,26 @@ public class VizMapAttrTab extends VizMapTab {
 	this.n = VMM.getNetwork();
 	this.type = type;
 
-	// get appearance calculator references
-	this.nodeCalc = VMM.getVisualStyle().getNodeAppearanceCalculator();
-	this.edgeCalc = VMM.getVisualStyle().getEdgeAppearanceCalculator();
-	
 	// register to listen for changes in the catalog
 	catalog.addChangeListener(new CatalogListener(), this.type);
 
-	// get current default (currently selected) calculator/color from VMM
+	visualStyleChanged();
+    }
+    
+    /**
+     *  Alert the VizMapAttrTab that the relevant visual style has changed.
+     */
+    public void visualStyleChanged() {
+	// get appearance calculator references
+	this.nodeCalc = VMM.getVisualStyle().getNodeAppearanceCalculator();
+	this.edgeCalc = VMM.getVisualStyle().getEdgeAppearanceCalculator();
+
+	// get current defaults
 	getDefaults(type);
 
-	// draw default portion of the tab
+	// redraw everything
+	this.removeAll();
 	drawDefault();
-
-	// draw calculator manipulation portion of the tab
 	drawCalc();
     }
 

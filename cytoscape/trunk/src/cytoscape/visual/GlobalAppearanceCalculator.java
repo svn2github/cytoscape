@@ -23,10 +23,19 @@ import cytoscape.visual.parsers.*;
  * color of the graph window. Currently dynamic calculators for these
  * values are not supported, only default values.
  */
-public class GlobalAppearanceCalculator {
+public class GlobalAppearanceCalculator implements Cloneable {
     
     Color defaultBackgroundColor = Color.WHITE;
     Color defaultSloppySelectionColor = Color.GRAY;
+
+    /**
+     * Make shallow copy of this object
+     */
+    public Object clone() throws CloneNotSupportedException {
+	Object copy = null;
+	copy = super.clone();
+	return copy;
+    }
 
     public GlobalAppearanceCalculator() {}
     /**

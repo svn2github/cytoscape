@@ -21,7 +21,7 @@ import cytoscape.visual.parsers.*;
  * This class calculates the appearance of an Edge. It holds a default value
  * and a (possibly null) calculator for each visual attribute.
  */
-public class EdgeAppearanceCalculator {
+public class EdgeAppearanceCalculator implements Cloneable {
 
     Color defaultEdgeColor = Color.BLACK;
     LineType defaultEdgeLineType = LineType.LINE_1;
@@ -39,6 +39,15 @@ public class EdgeAppearanceCalculator {
     EdgeToolTipCalculator edgeToolTipCalculator;
     EdgeFontFaceCalculator edgeFontFaceCalculator;
     EdgeFontSizeCalculator edgeFontSizeCalculator;
+
+    /**
+     * Make shallow copy of this object
+     */
+    public Object clone() throws CloneNotSupportedException {
+	Object copy = null;
+	copy = super.clone();
+	return copy;
+    }
 
     public EdgeAppearanceCalculator() {}
     

@@ -55,4 +55,12 @@ public abstract class VizMapTab extends JPanel {
      * (eg. NodeAttributes, EdgeAttributes) refresh the UI.
      */
     public abstract void refreshUI();
+
+    /**
+     * When the currently selected visual styles changed, a new set of calculators
+     * with their corresponding interfaces must be switched into the UI.
+     *
+     * This method effects that functionality.
+     */
+    public abstract void visualStyleChanged();
 }

@@ -67,6 +67,11 @@ public class VizMapFontTab extends VizMapTab {
 	this.sizeTab.refreshUI();
     }
 
+    public void visualStyleChanged() {
+	this.faceTab.visualStyleChanged();
+	this.sizeTab.visualStyleChanged();
+    }
+
     VizMapTab checkCalcSelected(Calculator c) {
 	// calculators not shared, just return null
 	return null;

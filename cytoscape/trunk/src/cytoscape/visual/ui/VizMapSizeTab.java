@@ -180,6 +180,12 @@ public class VizMapSizeTab extends VizMapTab {
 	this.size.refreshUI();
     }
 
+    public void visualStyleChanged() {
+	this.height.visualStyleChanged();
+	this.width.visualStyleChanged();
+	this.size.visualStyleChanged();
+    }
+
     VizMapTab checkCalcSelected(Calculator c) {
 	if (this.locked) { // pass on to size
 	    return size.checkCalcSelected(c);

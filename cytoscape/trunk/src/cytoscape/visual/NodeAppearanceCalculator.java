@@ -22,7 +22,7 @@ import cytoscape.visual.parsers.*;
  * This class calculates the appearance of a Node. It holds a default value
  * and a (possibly null) calculator for each visual attribute.
  */
-public class NodeAppearanceCalculator {
+public class NodeAppearanceCalculator implements Cloneable {
     
     Color defaultNodeFillColor = Color.WHITE;
     Color defaultNodeBorderColor = Color.BLACK;
@@ -48,6 +48,20 @@ public class NodeAppearanceCalculator {
     NodeFontFaceCalculator nodeFontFaceCalculator;
     NodeFontSizeCalculator nodeFontSizeCalculator;
 
+    /**
+     * Make shallow copy of this object
+     */
+    public Object clone() {
+	Object copy = null;
+	try {
+	    copy = super.clone();
+	}
+	catch (CloneNotSupportedException e) {
+	    System.err.println("Error cloning!");
+	}
+	return copy;
+    }
+	
     public NodeAppearanceCalculator() {}
     /**
      * Creates a new NodeAppearanceCalculator and immediately customizes it

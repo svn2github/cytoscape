@@ -128,20 +128,31 @@ public class PropertiesTester {
         System.out.println("edgeFontSizeCalcs.size() = " + edgeFontSizeCalcs.size());
         checkCalculator( catalog.getEdgeFontSizeCalculator("testDiscrete") );
         checkCalculator( catalog.getEdgeFontSizeCalculator("testContinuous") );
-        System.out.println();
+	System.out.println();
+
+	Iterator vizStyles = catalog.getVisualStyles().iterator();
+	while(vizStyles.hasNext()) {
+	    VisualStyle style = (VisualStyle) vizStyles.next();
+	    System.out.println(style.getName());
+	    System.out.println();
+	}
+	/*
+	Broken by new VisualStyle system
         
-        NodeAppearanceCalculator nac1 = catalog.getNodeAppearanceCalculator("testDiscrete");
+	NodeAppearanceCalculator nac1 = catalog.getNodeAppearanceCalculator("testDiscrete");
         System.out.println(nac1.getDescription());
         System.out.println();
         NodeAppearanceCalculator nac2 = catalog.getNodeAppearanceCalculator("testContinuous");
         System.out.println(nac2.getDescription());
         System.out.println();
+	
         EdgeAppearanceCalculator eac1 = catalog.getEdgeAppearanceCalculator("testDiscrete");
         System.out.println(eac1.getDescription());
         System.out.println();
         EdgeAppearanceCalculator eac2 = catalog.getEdgeAppearanceCalculator("testContinuous");
         System.out.println(eac2.getDescription());
         System.out.println();
+	*/
     }
     
     public void checkCalculator(Calculator c) {

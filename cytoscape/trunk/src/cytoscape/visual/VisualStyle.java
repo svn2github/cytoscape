@@ -11,13 +11,25 @@ package cytoscape.visual;
  * appearance calculators, one for nodes, one for edges, and one for global
  * visual attributes.
  */
-public class VisualStyle {
+public class VisualStyle implements Cloneable {
     
     String name = "default";
     NodeAppearanceCalculator nodeAC;
     EdgeAppearanceCalculator edgeAC;
     GlobalAppearanceCalculator globalAC;
     
+    /**
+     * Perform deep copy of this VisualStyle.
+     */
+    public Object clone() throws CloneNotSupportedException {
+	VisualStyle copy = null;
+	copy = (VisualStyle) super.clone();
+	copy.nodeAC = (NodeAppearanceCalculator) this.nodeAC.clone();
+	copy.edgeAC = (EdgeAppearanceCalculator) this.edgeAC.clone();
+	copy.globalAC = (GlobalAppearanceCalculator) this.globalAC.clone();
+	return copy;
+    }
+
     /**
      * Simple constructor, creates default node/edge/global appearance calculators.
      */
