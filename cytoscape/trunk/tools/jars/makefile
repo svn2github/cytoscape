@@ -26,12 +26,13 @@ default: help
 
 full:
 	(cd ../../..; jar cvmf cytoscape/tools/jars/jar.manifest $(JARFILE))
-	(cd ../../..; jar uvf $(JARFILE) `find cytoscape -name "*.class" -print`)
-	(cd ../../..; jar uvf $(JARFILE) `find csplugins -name "*.class" -print`)
-	(cd $(AUXJAR_UNPACKED_DIR); jar uvf $(JARFILE) `find gnu/ -name "*.class" -print`)
-	(cd $(AUXJAR_UNPACKED_DIR); jar uvf $(JARFILE) `find gnu/ -name "*.properties" -print`)
-	(cd $(YFILESDIR); jar uvf $(JARFILE) `find y -name "*.class"`)
-	(cd $(AUXJAR_UNPACKED_DIR); jar uvf $(JARFILE) `find org -name "*.class"`)
+	(cd ../../..; jar uvf $(JARFILE) `find cytoscape/* -name "*.class" -print`)
+	(cd ../../..; jar uvf $(JARFILE) `find cytoscape/* -name "*.jpg" -print`)
+	(cd ../../..; jar uvf $(JARFILE) `find csplugins/* -name "*.class" -print`)
+	(cd $(AUXJAR_UNPACKED_DIR); jar uvf $(JARFILE) `find gnu/* -name "*.class" -print`)
+	(cd $(AUXJAR_UNPACKED_DIR); jar uvf $(JARFILE) `find gnu/* -name "*.properties" -print`)
+	(cd $(YFILESDIR); jar uvf $(JARFILE) `find y/* -name "*.class"`)
+	(cd $(AUXJAR_UNPACKED_DIR); jar uvf $(JARFILE) `find org/* -name "*.class"`)
 
 
 #  
@@ -41,10 +42,10 @@ full:
 #  
 
 auxjar:
-	(cd ~/jars; jar cvf $(AUXJARFILE) `find gnu/ -name "*.class" -print`)
-	(cd ~/jars; jar uvf $(AUXJARFILE) `find gnu/ -name "*.properties" -print`)
-	(cd ~/jars/jdomUnpacked; jar uvf $(AUXJARFILE) `find org -name "*.class"`)
-	(cd ~/jars/xercesUnpacked; jar uvf $(AUXJARFILE) `find org -name "*.class"`)
+	(cd ~/jars; jar cvf $(AUXJARFILE) `find gnu/* -name "*.class" -print`)
+	(cd ~/jars; jar uvf $(AUXJARFILE) `find gnu/* -name "*.properties" -print`)
+	(cd ~/jars/jdomUnpacked; jar uvf $(AUXJARFILE) `find org/* -name "*.class"`)
+	(cd ~/jars/xercesUnpacked; jar uvf $(AUXJARFILE) `find org/* -name "*.class"`)
 
 
 help:
