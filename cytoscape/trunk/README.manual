@@ -53,15 +53,14 @@ Cytoscape provides the following key features:
 
 1) DATA INTEGRATION AND MANAGEMENT
 
-   Import molecular interactions from BIND XML format or from
-   flat files listing protein-protein, protein-DNA, or other
-   interaction type
+   Import molecular interactions from flat files listing 
+   protein-protein, protein-DNA, or other interaction type
 
    Load and save interaction networks and network layouts in GML
    format (Graph Markup Language) 
 
-   Import of mRNA / protein expression profiles from tab-delimited
-   text files
+   Import of mRNA / protein expression profiles from space- or 
+   tab-delimited text files
 
    Access to gene functional annotations from the Gene Ontology (GO)
    database
@@ -72,14 +71,13 @@ Cytoscape provides the following key features:
 
 2) VISUALIZATION
 
-   Graphical superposi number oftion of gene expression ratios and p-values on
-   the network.  Expression data are mapped to node color, label,
-   border thickness, or border color according to user-configurable
-   visualization schemas.  Expression sets are selected from a pulldown
-   menu
+   Graphical superposition of gene expression ratios and p-values on
+   the network.  Expression data are mapped to node color, border 
+   color, or label according to user-configurable visualization 
+   schemes.  Expression sets are selected from a pulldown menu.
 
-   Network layout in two and three dimensions.  A variety of algorithms 
-   are available, including Cyclic layout, Spring-Embedded layout, and 
+   Network layout in two dimensions.  A variety of algorithms are
+   available, including Cyclic layout, Spring-Embedded layout, and 
    layout based on Network Cluster Identification
 
    Miscellaneous: zoom in/out, pan, print, spawn new viewer on selected 
@@ -93,25 +91,30 @@ Cytoscape provides the following key features:
    levels change significantly in specified conditions, or a
    combination of these criteria.
 
-4) ACTIVE SUBSYSTEMS: Active subsystems are connected regions of the
-   network that show significant changes in gene or protein expression
-   over particular experimental conditions.  By screening the network
-   to show active subsystems only, it is possible to reduce the immense 
-   complexity of an entire interaction network or database by 
-   pinpointing just those network regions that are relevant to the 
-   conditions of interest.  Conversely, false positive interactions and 
-   interactions not involved in the expression response are removed 
-   from further analysis.  The remaining active subsystems contain 
-   interactions that are concrete hypotheses as to the underlying 
-   signaling and regulatory mechanisms in the cell. This approach is 
-   described in [ref].
+4) ACTIVE PATHWAYS AND SUBSYSTEMS: Active subsystems are connected 
+   regions of the network that show significant changes in gene or 
+   protein expression over particular experimental conditions.  By 
+   screening the network to show active subsystems only, it is 
+   possible to reduce the immense complexity of an entire interaction 
+   network or database by pinpointing just those network regions that 
+   are relevant to the conditions of interest.  Conversely, false 
+   positive interactions and interactions not involved in the 
+   expression response are removed from further analysis.  The 
+   remaining active subsystems contain interactions that are concrete 
+   hypotheses as to the underlying signaling and regulatory 
+   mechanisms in the cell. This approach is described in:
+
+   Ideker, Ozier, Schwikowski, and Siegel, Discovering Regulatory and 
+   Signaling Circuits in Molecular Interaction Networks, to appear at 
+   ISMB2002 and in Bioinformatics journal.
 
 ######################################################################
 INSTALLATION AND STARTUP #############################################
 ######################################################################
 
 Currently, Cytoscape runs under Java on either Linux or Windows
-platforms.  It has NOT been tested for any of the Macintosh operating
+platforms (Active Subsystems calculation available for Linux only).
+The software has NOT been tested for any of the Macintosh operating
 systems.  Also, although Cytoscape handles arbitrary types and sizes
 of interaction network, it is most powerful when used in conjunction
 with large interaction data sets such as are currently available for
@@ -125,10 +128,10 @@ cytoscape.jar .......... Main Cytoscape application (Java archive)
 cytoscape.props ........ User-configurable properties and preferences
 
 cytoscape.csh .......... Shell script used to run Cytoscape (Linux)
-cytoscape.exe .......... Shell script used to run Cytoscape (Windows)
+cytoscape.bat .......... Shell script used to run Cytoscape (Windows)
 
 activePaths.so ......... C++ library plug-in to search for and identify
-                         "active paths/subnetworks", i.e. network
+                         "active pathways/subsystems", i.e. network
                          regions that overlap significantly with
                          changes in gene expression (Linux only)
 sampleData/
@@ -155,9 +158,12 @@ found at:
 http://java.sun.com/j2se/1.4/download.html.
 
 (3) Launch the application by running "cytoscape.csh" from the command
-line (Linux) or launching "cytoscape.exe" (Windows).  Alternatively,
-you can pass the .jar file to Java directly using the command "java
--jar cytoscape".
+line (Linux) or double-clicking "cytoscape.bat" (Windows).
+Alternatively, you can pass the .jar file to Java directly using the
+command "java -jar cytoscape".  In Windows, it is also possible to
+directly double-click the .jar file to launch it.  However, this does
+not allow specification of command-line arguments (such as the
+location of the GO data directory, see below).
 
 Cytoscape recognizes a number of optional command line arguments,
 including run-time specification of network files and expression data:
@@ -183,31 +189,42 @@ BUILDING AND STORING INTERACTION NETWORKS ############################
 
 Cytoscape reads an interaction network in two ways: from a simple
 interaction file (SIF or .sif format) or from a universal format known
-as Graph Markup Language (GML or .gml format).  SIF specifies nodes
-and interactions only, while GML stores additional information about
-network layout and allows network data exchange with a wide variety of
-other network display programs.  Typically, SIF is used to import
-interactions when building a network for the first time.  Once the
-interactions have been loaded and layout has been performed, the
-network is saved to and loaded from GML format in future Cytoscape
-sessions.  Both SIF and GML are implemented as ASCII text files.
+as Graph Markup Language (GML or .gml format).  SIF specifies
+components and interactions only, while GML stores additional
+information about network layout and allows network data exchange with
+a variety of other network display programs.  Typically, SIF is used
+to import interactions when building a network for the first time.
+Once the interactions have been loaded and layout has been performed,
+the network may be saved to and subsequently reloaded from GML format
+in future Cytoscape sessions.  Both SIF and GML are implemented as
+ASCII text files.
 
-SIF FORMAT:
-Files in SIF are specified as follows:
+SIF FORMAT: 
+Lines in the SIF file specify a source node, an interaction type, and
+one or more target nodes:
 
 geneA <interaction type> geneB
-geneC <interaction type> geneD
+geneC <interaction type> geneA
+geneD <interaction type> geneE geneF geneB
+geneG
 ...
-geneD <interaction type> geneA
+geneY <interaction type> geneZ
+
+In the network specified by this file, genes are represented by nodes,
+and interactions are represented by edges between nodes.  For
+compactness, a gene also represents its corresponding protein.  Nodes
+may also be used to represent compounds and reactions instead of
+genes, but this is experimental.  Note that it is possible to specify
+an isolated node with no interactions, as in the line "geneG" above.
 
 Gene names must be unique.  If the network is to be integrated with
 Gene Ontology (GO) or gene expression data, the gene names must
-exactly match the systematic names specified in the other data files.
-In the network specified by this file, genes are represented by nodes
-and interactions are represented by edges between nodes.  For
-compactness, a gene also represents its corresponding protein.  It is
-also possible to specify nodes that represent compounds and reactions
-instead of genes, but this is experimental.
+exactly match the systematic ORF names specified in the other data
+files.  We strongly encourage naming genes and proteins by their
+systematic ORF name; common names may be displayed on the screen for
+ease of interpretation, so long as these are available to the program
+in the bioData directory (Cytoscape ships with all yeast ORF-to-common
+name mappings in a synonym table within the GO/ directory).
 
 The tag <interaction type> must be one of:
    pp .................. protein -- protein
@@ -219,12 +236,11 @@ Additional interaction types are also available but experimental:
    cr .................. compound -> reaction
    gl .................. genetic lethal relationship
 
-GML FORMAT: 
-In contrast to SIF, GML is a rich graph format language supported by
-many other graph visualization packages.  Its file format
+GML FORMAT: In contrast to SIF, GML is a rich graph format language
+supported by many other graph visualization packages.  Its file format
 specification is available at:
-http://www.infosun.fmi.uni-passau.de/Graphlet/GML/ It is generally not
-necessary to modify the content of a GML file directly.  Once a
+http://www.infosun.fmi.uni-passau.de/Graphlet/GML/.  It is generally
+not necessary to modify the content of a GML file directly.  Once a
 network is built in SIF format and then laid out, the layout is
 perserved by saving to and loading from GML.
 
@@ -243,7 +259,6 @@ GML. In the resulting file dialog box, select the file
 "sampleData/galFiltered.gml".
 
 EDITING THE NETWORK AFTER LOADING:
-
 It is possible to add and delete nodes and edges from within the
 visual interface.  Use the Edit menu to toggle between Read-only mode
 (the default) and Edit mode.  In Edit mode, nodes are created by
