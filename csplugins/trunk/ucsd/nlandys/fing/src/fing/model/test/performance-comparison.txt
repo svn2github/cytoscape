@@ -42,19 +42,19 @@ ADJACENT EDGES TEST:
 
     graph size                          |  Fing  |  Luna  |
   --------------------------------------+--------+--------+
-       7 nodes,      20 edges           |        |        |
-     100 nodes,     500 edges           |        |        |
-     100 nodes,   10000 edges           |        |        |
-    1000 nodes,   20000 edges           |        |        |
-    1000 nodes,   39998 edges           |        |        |
+       7 nodes,      20 edges           |      2 |      4 |
+     100 nodes,     500 edges           |      7 |     54 |
+     100 nodes,   10000 edges           |     12 |    106 |
+    1000 nodes,   20000 edges           |     35 |   1518 |
+    1000 nodes,   39998 edges           |     55 |   2134 |
     2000 nodes,   20000 edges           |     39 |   5072 |
     4000 nodes,   20000 edges           |     40 |  21382 |
     8000 nodes,   20000 edges           |     54 |  84766 |
    16000 nodes,   20000 edges           |    115 | 337343 |
    39999 nodes,   39999 edges           |    128 |2107868 |
-   16000 nodes,  100000 edges           |        |   fail |
-   50000 nodes,  400000 edges           |        |   fail |
-  100000 nodes, 1000000 edges           |        |   fail |
+   16000 nodes,  100000 edges           |    165 |   fail |
+   50000 nodes,  400000 edges           |    615 |   fail |
+  100000 nodes, 1000000 edges           |   1443 |   fail |
   --------------------------------------+--------+--------+
 
   Afterthoughts:
@@ -288,10 +288,10 @@ ADD REMOVE TEST:
 
     graph size                          |  Fing  |  Luna  |
   --------------------------------------+--------+--------+
-     200 nodes,    1000 edges           |        |   fail |
-    1000 nodes,   10000 edges           |        |   fail |
-    2000 nodes,   20000 edges           |        |   fail |
-   16000 nodes,  100000 edges           |        |   fail |
-   50000 nodes,  400000 edges           |        |   fail |
-  100000 nodes, 1000000 edges           |        |   fail |
+     200 nodes,    1000 edges           |     83 |   fail |
+    1000 nodes,   10000 edges           |    236 |   fail |
+    2000 nodes,   20000 edges           |    513 |   fail |
+   16000 nodes,  100000 edges           |   3650 |   fail |
+   50000 nodes,  400000 edges           |  15343 |   fail |
+  100000 nodes, 1000000 edges           |  42494 |   fail |
   --------------------------------------+--------+--------+
