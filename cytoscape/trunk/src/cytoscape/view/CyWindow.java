@@ -674,13 +674,15 @@ public void onCyNetworkEvent(CyNetworkEvent event) {
 /**
  *
  * Implementation of the GraphViewChangeListener interface. Triggers a change
- * in the status label, ignoring the current number of hidden nodes or edges
- * (seems like a bug?).
+ * in the status label, updating the number of hidden nodes/edges.
  */
 public void graphViewChanged ( GraphViewChangeEvent event) {
-	int [] nodes = event.getHiddenNodeIndices();
-	int[] edges = event.getHiddenEdgeIndices();	
-    updateStatusLabel(nodes.length, edges.length);
+    int [] nodes = event.getHiddenNodeIndices();
+    int[] edges = event.getHiddenEdgeIndices();
+    //these arrays apparently can be null; count these as 0 hidden -AM 2004-03-30
+    int nodeCount = (nodes == null) ? 0 : nodes.length;
+    int edgeCount = (edges == null) ? 0 : edges.length;
+    updateStatusLabel(nodeCount, edgeCount);
 }
 //------------------------------------------------------------------------------
 /**
