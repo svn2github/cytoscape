@@ -19,9 +19,9 @@
       <fileset dir="${src.dir}">
         <include name="cytoscape/graph/*.java"/>
         <include name="cytoscape/graph/layout/*.java"/>
-        <include name="cytoscape/graph/layout/algorithm/*.java"/>
-        <include name="cytoscape/graph/layout/algorithm/util/*.java"/>
-        <include name="cytoscape/graph/layout/impl/*.java"/>
+        <!--<include name="cytoscape/graph/layout/algorithm/*.java"/>-->
+        <!--<include name="cytoscape/graph/layout/algorithm/util/*.java"/>-->
+        <!--<include name="cytoscape/graph/layout/impl/*.java"/>-->
         <include name="cytoscape/graph/layout/util/*.java"/>
         <include name="cytoscape/graph/util/*.java"/>
       </fileset>
