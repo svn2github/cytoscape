@@ -7,6 +7,8 @@ package cytoscape.visual.mappings;
 //----------------------------------------------------------------------------
 import java.util.*;
 import javax.swing.*;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 import java.awt.GridLayout;
 import cytoscape.visual.Network;
 import cytoscape.visual.parsers.ValueParser;
@@ -70,7 +72,18 @@ public class PassThroughMapping implements ObjectMapping {
                                             boolean preserveMapping) {
         this.attrName = attrName;
     }
-    
+
+    /**
+     * Empty implementation because PassThroughMapping has no UI.
+     */
+    public void addChangeListener(ChangeListener l) {
+    }
+
+    /**
+     * Empty implementation because PassThroughMapping has no UI.
+     */
+    public void removeChangeListener(ChangeListener l) {
+    }
         
     public JPanel getUI(JDialog parent, Network network) {
         //construct a UI to view/edit this mapping; only needs to view/set

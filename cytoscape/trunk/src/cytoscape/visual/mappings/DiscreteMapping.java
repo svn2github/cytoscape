@@ -7,6 +7,8 @@ package cytoscape.visual.mappings;
 //----------------------------------------------------------------------------
 import java.util.*;
 import javax.swing.*;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 import java.awt.event.*;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
@@ -34,9 +36,14 @@ public class DiscreteMapping extends TreeMap implements ObjectMapping {
     protected HashSet mappedKeys;
     protected JScrollPane listScrollPane;
     protected JDialog parentDialog;
-    protected JPanel internalPanel; // panel with all the mapping buttons
-    private JPanel myUI = new JPanel(false); // the UI panel - memoize it
-    private boolean UICreated = false;
+
+    /** keep track of interested UI classes */
+    protected Vector changeListeners = new Vector(1,1);
+    /**
+     * Only one <code>ChangeEvent</code> is needed per mapping instance
+     * since the event's only state is the source property.
+     */
+    protected transient ChangeEvent changeEvent;
 
     public DiscreteMapping(Object defObj, byte mapType) throws IllegalArgumentException {
 	this(defObj, null, mapType);
@@ -51,8 +58,8 @@ public class DiscreteMapping extends TreeMap implements ObjectMapping {
 	this.mapType = mapType;
         if (attrName != null)
 	    setControllingAttributeName(attrName, null, false);
-	this.internalPanel = new JPanel();
-	this.internalPanel.setLayout(new BoxLayout(this.internalPanel, BoxLayout.Y_AXIS));
+	//this.internalPanel = new JPanel();
+	//this.internalPanel.setLayout(new BoxLayout(this.internalPanel, BoxLayout.Y_AXIS));
     }
 
 
@@ -78,16 +85,12 @@ public class DiscreteMapping extends TreeMap implements ObjectMapping {
      *
      * @param	attrName	The name of the new attribute to map to
      */
-    public void setControllingAttributeName(String attrName, Network network,
-                                            boolean preserveMapping) {
+    public void setControllingAttributeName(String attrName, Network n, boolean preserveMapping) {
         this.attrName = attrName;
 	if (!preserveMapping) {
             this.clear();
             this.mappedKeys = new HashSet();
         }
-	this.UICreated = false;
-	// refresh the UI
-        getUI(parentDialog, network);
     }
     
     /**
@@ -245,10 +248,37 @@ public class DiscreteMapping extends TreeMap implements ObjectMapping {
 	    miniMe.attrName = new String(attrName);
 	    miniMe.mappedKeys = (HashSet) mappedKeys.clone();
 	}
-	// flag the UI to be recreated, but wait until it's requested
-	miniMe.UICreated = false;
-	miniMe.myUI = new JPanel(false);
 	return miniMe;
+    }
+
+    public void addChangeListener(ChangeListener l) {
+        this.changeListeners.add(l);
+    }
+
+    public void removeChangeListener(ChangeListener l) {
+        this.changeListeners.remove(l);
+    }
+
+    /**
+     * Notifies all listeners that have registered interest for
+     * notification on this event type.  The event instance 
+     * is lazily created.
+     *
+     * UI classes should attach themselves with a listener to the mapping to be
+     * notified about changes in the underlying data structures that require the UI
+     * classes to fetch a new copy of the UI and display it.
+     *
+     */
+    protected void fireStateChanged() {
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for (int i = this.changeListeners.size() - 1; i>=0; i--) {
+	    ChangeListener listener = (ChangeListener) this.changeListeners.get(i);
+	    // Lazily create the event:
+	    if (this.changeEvent == null)
+		this.changeEvent = new ChangeEvent(this);
+	    listener.stateChanged(this.changeEvent);
+        }
     }
 
     public JPanel getUI(JDialog parent, Network n) {
@@ -256,79 +286,71 @@ public class DiscreteMapping extends TreeMap implements ObjectMapping {
 	//superclass TreeMap map - maps are from attribute bundles to Objects.
 	//The UI only contains a JScrollPane containing a bunch of JButtons and
 	//ValueDisplayers to display objects for
-	
 	parentDialog = parent;
 
         //get current data values as possible keys
         loadKeys(n);
 
-	if (!this.UICreated) {
-	    //GridBagGroup g = new GridBagGroup();
-	    //gbgInternal = new GridBagGroup();
-
-	    this.internalPanel.removeAll();
-	    this.myUI.removeAll();
-
-	    // check that there is a valid attribute set
-	    if (this.attrName == null || this.mappedKeys == null || this.mappedKeys.size() == 0) {
-		this.myUI.removeAll();
-		myUI.add(new JLabel("Unknown attribute set!"));
-		//this.UICreated remains false
-		return myUI;
-	    }
-	    
-	    Object[] keyArray = this.mappedKeys.toArray();
-	    //Iterator keyIter = this.mappedKeys.iterator();
-	    int numKeys = this.mappedKeys.size();
-
-	    // have to handle the case where number of keys*2 > GridBagLayout.MAXGRIDSIZE, which is 512
-	    // but has no accessor so 512 must be hard-coded.
-	    int numGridBags = (int) Math.ceil(((double) numKeys * 2) / 512);
-
-	    for (int gbgIndex = 0; gbgIndex < numGridBags; gbgIndex++) {
-		GridBagGroup gbgInternal = new GridBagGroup();
-		for (int arrIndex = gbgIndex * 256, yPos = 0; yPos < 256 && arrIndex < keyArray.length; yPos++, arrIndex++) {
-		    Object keyObject = keyArray[arrIndex];
-		    String keyString = keyObject.toString();
-		    // create button
-		    JButton mapButton = new JButton(keyString);
-		    // get current mapping
-		    Object currentMapping = get(keyObject);
-		    ValueDisplayer mapValue;
-		    if (currentMapping == null) {
-			// display default selection
-			mapValue = ValueDisplayer.getDisplayFor(parent, "Define Discrete Mapping", defaultObj);
-		    }
-		    else { // display current mapping
-			mapValue = ValueDisplayer.getDisplayFor(parent, "Define Discrete Mapping", get(keyObject));
-		    }
-	    
-		    mapValue.addItemListener(new ValueChangeListener(keyObject));
-		    mapButton.addActionListener(mapValue.getInputListener());
-		
-		    // set constraints to help with layout
-		    if (yPos == numKeys - 1) {
-			MiscGB.insert(gbgInternal, mapButton, 0, yPos, GridBagConstraints.RELATIVE, GridBagConstraints.REMAINDER, GridBagConstraints.BOTH);
-			MiscGB.insert(gbgInternal, mapValue, 1, yPos, GridBagConstraints.REMAINDER, GridBagConstraints.REMAINDER, GridBagConstraints.BOTH);
-		    }
-		    else {
-			// dump into the panel
-			MiscGB.insert(gbgInternal, mapButton, 0, yPos, GridBagConstraints.RELATIVE, 1, GridBagConstraints.BOTH);
-			MiscGB.insert(gbgInternal, mapValue, 1, yPos, GridBagConstraints.REMAINDER, 1, GridBagConstraints.BOTH);
-		    }
-		}
-		this.internalPanel.add(gbgInternal.panel);
-	    }
-	    resetScrollPane();
-	    this.UICreated = true;
+	JPanel myUI = new JPanel();
+	JPanel internalPanel = new JPanel();
+	internalPanel.setLayout(new BoxLayout(internalPanel, BoxLayout.Y_AXIS));
+	
+	// check that there is a valid attribute set
+	if (this.attrName == null || this.mappedKeys == null || this.mappedKeys.size() == 0) {
+	    myUI.add(new JLabel("Unknown attribute set!"));
+	    return myUI;
 	}
+	    
+	Object[] keyArray = this.mappedKeys.toArray();
+	//Iterator keyIter = this.mappedKeys.iterator();
+	int numKeys = this.mappedKeys.size();
+	
+	// have to handle the case where number of keys*2 > GridBagLayout.MAXGRIDSIZE, which is 512
+	// but has no accessor so 512 must be hard-coded.
+	int numGridBags = (int) Math.ceil(((double) numKeys * 2) / 512);
+	
+	for (int gbgIndex = 0; gbgIndex < numGridBags; gbgIndex++) {
+	    GridBagGroup gbgInternal = new GridBagGroup();
+	    for (int arrIndex = gbgIndex * 256, yPos = 0; yPos < 256 && arrIndex < keyArray.length; yPos++, arrIndex++) {
+		Object keyObject = keyArray[arrIndex];
+		String keyString = keyObject.toString();
+		// create button
+		JButton mapButton = new JButton(keyString);
+		// get current mapping
+		Object currentMapping = get(keyObject);
+		ValueDisplayer mapValue;
+		if (currentMapping == null) {
+		    // display default selection
+		    mapValue = ValueDisplayer.getDisplayFor(parent, "Define Discrete Mapping", defaultObj);
+		}
+		else { // display current mapping
+		    mapValue = ValueDisplayer.getDisplayFor(parent, "Define Discrete Mapping", get(keyObject));
+		}
+		
+		mapValue.addItemListener(new ValueChangeListener(keyObject));
+		mapButton.addActionListener(mapValue.getInputListener());
+		
+		// set constraints to help with layout
+		if (yPos == numKeys - 1) {
+		    MiscGB.insert(gbgInternal, mapButton, 0, yPos, GridBagConstraints.RELATIVE, GridBagConstraints.REMAINDER, GridBagConstraints.BOTH);
+		    MiscGB.insert(gbgInternal, mapValue, 1, yPos, GridBagConstraints.REMAINDER, GridBagConstraints.REMAINDER, GridBagConstraints.BOTH);
+		}
+		else {
+		    // dump into the panel
+		    MiscGB.insert(gbgInternal, mapButton, 0, yPos, GridBagConstraints.RELATIVE, 1, GridBagConstraints.BOTH);
+		    MiscGB.insert(gbgInternal, mapValue, 1, yPos, GridBagConstraints.REMAINDER, 1, GridBagConstraints.BOTH);
+		}
+	    }
+	    internalPanel.add(gbgInternal.panel);
+	}
+	resetScrollPane(myUI, internalPanel);
 	return myUI;
     }
 
-    private void resetScrollPane() {
+    private void resetScrollPane(JPanel myUI, JPanel internalPanel) {
 	// set up the scrollable pane
 	listScrollPane = new
-	    JScrollPane(this.internalPanel,
+	    JScrollPane(internalPanel,
 			ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 			ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 	myUI.add(listScrollPane);

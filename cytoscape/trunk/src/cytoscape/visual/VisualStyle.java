@@ -6,6 +6,7 @@
 package cytoscape.visual;
 
 import cytoscape.visual.calculators.*;
+import java.util.Vector;
 //----------------------------------------------------------------------------
 /**
  * This class encapsulates a full set of visual mapping specifications for
@@ -36,64 +37,70 @@ public class VisualStyle implements Cloneable {
      * Check if contained appearance calculators are using given calculator
      *
      * @param	c	calculator to check conflicts for
-     * @return	name of conflicting visual style, or null if no conflicts
+     * @return	vector with: name of conflicting visual style (index 0),
+     *		name of conflicting attributes. If size == 1, then no conflicts
      */
-    public String checkConflictingCalculator(Calculator c) {
-	boolean conflict = false;
+    public Vector checkConflictingCalculator(Calculator c) {
+	Vector conflicts = new Vector();
+	conflicts.add(name);
 	if (c instanceof NodeColorCalculator) {
-	    if (nodeAC.getNodeFillColorCalculator() == c ||
-		nodeAC.getNodeBorderColorCalculator() == c)
-		conflict = true;
+	    if (nodeAC.getNodeFillColorCalculator() == c)
+		conflicts.add("Node Fill Color");
+	    if (nodeAC.getNodeBorderColorCalculator() == c)
+		conflicts.add("Node Border Color");
         } else if (c instanceof NodeLineTypeCalculator) {
             if (nodeAC.getNodeLineTypeCalculator() == c)
-		conflict = true;
+		conflicts.add("Node Line Type");
         } else if (c instanceof NodeShapeCalculator) {
 	    if (nodeAC.getNodeShapeCalculator() == c)
-		conflict = true;
+		conflicts.add("Node Shape");
         } else if (c instanceof NodeSizeCalculator) {
-	    if (nodeAC.getNodeWidthCalculator() == c ||
-		nodeAC.getNodeHeightCalculator() == c)
-		conflict = true;
+	    if (nodeAC.getNodeWidthCalculator() == c)
+		conflicts.add("Node Width");
+	    if (nodeAC.getNodeHeightCalculator() == c) {
+		if (nodeAC.getNodeSizeLocked())
+		    conflicts.add("Node Size");
+		else
+		    conflicts.add("Node Height");
+	    }
         } else if (c instanceof NodeLabelCalculator) {
 	    if (nodeAC.getNodeLabelCalculator() == c)
-		conflict = true;
+		conflicts.add("Node Label");
         } else if (c instanceof NodeToolTipCalculator) {
 	    if (nodeAC.getNodeToolTipCalculator() == c)
-		conflict = true;
+		conflicts.add("Node Tooltip");
         } else if (c instanceof NodeFontFaceCalculator) {
 	    if (nodeAC.getNodeFontFaceCalculator() == c)
-		conflict = true;
+		conflicts.add("Node Font Face");
         } else if (c instanceof NodeFontSizeCalculator) {
 	    if (nodeAC.getNodeFontSizeCalculator() == c)
-		conflict = true;
+		conflicts.add("Node Font Size");
         } else if (c instanceof EdgeColorCalculator) {
 	    if (edgeAC.getEdgeColorCalculator() == c)
-		conflict = true;
+		conflicts.add("Edge Color");
         } else if (c instanceof EdgeLineTypeCalculator) {
 	    if (edgeAC.getEdgeLineTypeCalculator() == c)
-		conflict = true;
+		conflicts.add("Edge Line Type");
         } else if (c instanceof EdgeArrowCalculator) {
-	    if (edgeAC.getEdgeSourceArrowCalculator() == c ||
-		edgeAC.getEdgeTargetArrowCalculator() == c)
-		conflict = true;
+	    if (edgeAC.getEdgeSourceArrowCalculator() == c)
+		conflicts.add("Edge Source Arrow");
+	    if (edgeAC.getEdgeTargetArrowCalculator() == c)
+		conflicts.add("Edge Target Arrow");
         } else if (c instanceof EdgeLabelCalculator) {
 	    if (edgeAC.getEdgeLabelCalculator() == c)
-		conflict = true;
+		conflicts.add("Edge Label");
         } else if (c instanceof EdgeToolTipCalculator) {
 	    if (edgeAC.getEdgeToolTipCalculator() == c)
-		conflict = true;
+		conflicts.add("Edge Tooltip");
         } else if (c instanceof EdgeFontFaceCalculator) {
 	    if (edgeAC.getEdgeFontFaceCalculator() == c)
-		conflict = true;
+		conflicts.add("Edge Font Face");
         } else if (c instanceof EdgeFontSizeCalculator) {
 	    if (edgeAC.getEdgeFontSizeCalculator() == c)
-		conflict = true;
+		conflicts.add("Edge Font Size");
 	}
 
-	if (conflict)
-	    return name;
-	else
-	    return null;
+	return conflicts;
     }
 
     /**

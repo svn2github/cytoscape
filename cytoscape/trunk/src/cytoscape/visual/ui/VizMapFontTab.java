@@ -29,13 +29,15 @@ public class VizMapFontTab extends VizMapTab {
      *	calculator and default settings from the VMM.
      *
      *	@param	VMM	VisualMappingManager for the window
+     *  @param	tabContainer	The containing JTabbedPane
+     *  @param	tabIndex	index of this tab in tabContainer
      *	@param	n	Underlying network
      *	@param	type	Must be {@link VizMapUI#NODE_LABEL_FONT} or
      *                  {@link VizMapUI#EDGE_LABEL_FONT}
      *
      *  @throws IllegalArgumentException if type is not {@link VizMapUI#NODE_LABEL_FONT} or {@link VizMapUI#EDGE_LABEL_FONT}
      */
-    public VizMapFontTab (VizMapUI mainUI, VisualMappingManager VMM, byte type) throws IllegalArgumentException {
+    public VizMapFontTab (VizMapUI mainUI, JTabbedPane tabContainer, int tabIndex, VisualMappingManager VMM, byte type) throws IllegalArgumentException {
 	super(false);
 	this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
@@ -43,13 +45,13 @@ public class VizMapFontTab extends VizMapTab {
 	switch(type) {
 	case VizMapUI.NODE_LABEL_FONT:
 	    setName("Node Font");
-	    this.faceTab = new VizMapAttrTab(mainUI, VMM, VizMapUI.NODE_FONT_FACE);
-	    this.sizeTab = new VizMapAttrTab(mainUI, VMM, VizMapUI.NODE_FONT_SIZE);
+	    this.faceTab = new VizMapAttrTab(mainUI, tabContainer, tabIndex, VMM, VizMapUI.NODE_FONT_FACE);
+	    this.sizeTab = new VizMapAttrTab(mainUI, tabContainer, tabIndex, VMM, VizMapUI.NODE_FONT_SIZE);
 	    break;
 	case VizMapUI.EDGE_LABEL_FONT:
 	    setName("Edge Font");
-	    this.faceTab = new VizMapAttrTab(mainUI, VMM, VizMapUI.EDGE_FONT_FACE);
-	    this.sizeTab = new VizMapAttrTab(mainUI, VMM, VizMapUI.EDGE_FONT_SIZE);
+	    this.faceTab = new VizMapAttrTab(mainUI, tabContainer, tabIndex, VMM, VizMapUI.EDGE_FONT_FACE);
+	    this.sizeTab = new VizMapAttrTab(mainUI, tabContainer, tabIndex, VMM, VizMapUI.EDGE_FONT_SIZE);
 	    break;
 	default:
 	    throw new IllegalArgumentException("You can only create a VizMapFontTab for the Node/Edge Font attribute, called with " + type);

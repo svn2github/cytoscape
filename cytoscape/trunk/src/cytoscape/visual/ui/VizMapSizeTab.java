@@ -39,13 +39,15 @@ public class VizMapSizeTab extends VizMapTab {
      *  locked to the same calculator.
      *
      *	@param	VMM	VisualMappingManager for the window
+     *  @param	tabContainer	The containing JTabbedPane
+     *  @param	tabIndex	index of this tab in tabContainer
      *	@param	n	Underlying network
      *	@param	type	Must be {@link VizMapUI#NODE_SIZE}
      *
      *  @throws IllegalArgumentException if type is not {@link VizMapUI#NODE_SIZE}
      */
-    public VizMapSizeTab (VizMapUI mainUI, VisualMappingManager VMM, byte type) throws IllegalArgumentException {
-	this(mainUI, VMM, type, true);
+    public VizMapSizeTab (VizMapUI mainUI, JTabbedPane tabContainer, int tabIndex, VisualMappingManager VMM, byte type) throws IllegalArgumentException {
+	this(mainUI, tabContainer, tabIndex, VMM, type, true);
     }
 
     /**
@@ -53,6 +55,8 @@ public class VizMapSizeTab extends VizMapTab {
      *	calculator and default settings from the VMM.
      *
      *	@param	VMM	VisualMappingManager for the window
+     *  @param	tabContainer	The containing JTabbedPane
+     *  @param	tabIndex	index of this tab in tabContainer
      *	@param	n	Underlying network
      *	@param	type	Must be {@link VizMapUI#NODE_SIZE}
      *  @param	locked	true to lock node height/width to the same calculator,
@@ -61,7 +65,7 @@ public class VizMapSizeTab extends VizMapTab {
      *  @throws IllegalArgumentException if type is not {@link VizMapUI#NODE_SIZE}
      */
 
-    public VizMapSizeTab (VizMapUI mainUI, VisualMappingManager VMM, byte type, boolean locked) throws IllegalArgumentException {
+    public VizMapSizeTab (VizMapUI mainUI, JTabbedPane tabContainer, int tabIndex, VisualMappingManager VMM, byte type, boolean locked) throws IllegalArgumentException {
 	super(new BorderLayout(), false);
 
 	if (type != VizMapUI.NODE_SIZE)
@@ -84,12 +88,12 @@ public class VizMapSizeTab extends VizMapTab {
 	this.hwPanel.setLayout(new BoxLayout(hwPanel, BoxLayout.Y_AXIS));
 	this.lockPanel = new JPanel(false);
 	// generate panel for height and width
-	height = new VizMapAttrTab(mainUI, VMM, VizMapUI.NODE_HEIGHT);
-	width = new VizMapAttrTab(mainUI, VMM, VizMapUI.NODE_WIDTH);
+	height = new VizMapAttrTab(mainUI, tabContainer, tabIndex, VMM, VizMapUI.NODE_HEIGHT);
+	width = new VizMapAttrTab(mainUI, tabContainer, tabIndex, VMM, VizMapUI.NODE_WIDTH);
 
 	// Lock at the nodeAppearanceCalculator level, since can't have duplicate
 	// calculators. We have to be careful to keep size and height in sync.
-	size = new VizMapAttrTab(mainUI, VMM, VizMapUI.NODE_HEIGHT);
+	size = new VizMapAttrTab(mainUI, tabContainer, tabIndex, VMM, VizMapUI.NODE_HEIGHT);
 
 	width.setBorder(BorderFactory.createTitledBorder(width.getName()));
 	height.setBorder(BorderFactory.createTitledBorder(height.getName()));

@@ -7,6 +7,8 @@ package cytoscape.visual.mappings;
 //----------------------------------------------------------------------------
 import java.util.*;
 import javax.swing.*;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 import java.awt.Color;
 import java.awt.event.*;
 import java.awt.GridBagLayout;
@@ -31,7 +33,14 @@ public class ContinuousMapping extends TreeMap implements ObjectMapping {
     Interpolator fInt; //object used to interpolate between boundaries
     private ContinuousUI myUI; //contains the UI
     private byte mapType;
-    private boolean UICreated = false;
+
+    /** keep track of interested UI classes */
+    protected Vector changeListeners = new Vector(1,1);
+    /**
+     * Only one <code>ChangeEvent</code> is needed per mapping instance
+     * since the event's only state is the source property.
+     */
+    protected transient ChangeEvent changeEvent;
 
     //when the UI is changed, needsUpdate becomes true.
     //updateMapper() is the ui call which can make needsUpdate false again.
@@ -76,8 +85,6 @@ public class ContinuousMapping extends TreeMap implements ObjectMapping {
 	// rangeClass doesn't need to be cloned since the cloned
 	// calculator has the same type as the original
 	miniMe.attrName = new String(attrName);
-	// recreate the UI on next call
-	miniMe.UICreated = false;
 	return miniMe;
     }
     
@@ -90,19 +97,46 @@ public class ContinuousMapping extends TreeMap implements ObjectMapping {
     }
 
     public String getControllingAttributeName() {return attrName;}
-    public void setControllingAttributeName(String attrName, Network network,
-                                            boolean preserveMapping) {
+    public void setControllingAttributeName(String attrName, Network n, boolean preserveMapping) {
         this.attrName = attrName;
     }
     
     public Interpolator getInterpolator() {return fInt;}
     public void setInterpolator(Interpolator i) {fInt = i;}
     
+    public void addChangeListener(ChangeListener l) {
+        this.changeListeners.add(l);
+    }
+
+    public void removeChangeListener(ChangeListener l) {
+        this.changeListeners.remove(l);
+    }
+
+    /**
+     * Notifies all listeners that have registered interest for
+     * notification on this event type.  The event instance 
+     * is lazily created.
+     *
+     * UI classes should attach themselves with a listener to the mapping to be
+     * notified about changes in the underlying data structures that require the UI
+     * classes to fetch a new copy of the UI and display it.
+     *
+     */
+    protected void fireStateChanged() {
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for (int i = this.changeListeners.size() - 1; i>=0; i--) {
+	    ChangeListener listener = (ChangeListener) this.changeListeners.get(i);
+	    // Lazily create the event:
+	    if (this.changeEvent == null)
+		this.changeEvent = new ChangeEvent(this);
+	    listener.stateChanged(this.changeEvent);
+        }
+    }
+
     public JPanel getUI(JDialog parent, Network network) {
         //construct a UI to view/edit this mapping
-	if(!UICreated) {
-	    myUI = new ContinuousUI(parent, network);
-	}
+	myUI = new ContinuousUI(parent, network);
 	return myUI;
     }
     
@@ -702,7 +736,7 @@ public class ContinuousMapping extends TreeMap implements ObjectMapping {
 		    if(!isMin && d<minValue) d = defaultValue;
 		}
 		catch (NumberFormatException nfe) {
-		    System.out.println("Not actually a double: " + s);
+		    System.err.println("Not actually a double: " + s);
 		    d = defaultValue;
 		}
 		return new Double(d);

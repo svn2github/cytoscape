@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Properties;
 import javax.swing.JPanel;
 import javax.swing.JDialog;
+import javax.swing.event.ChangeListener;
 import cytoscape.visual.Network;
 import cytoscape.visual.parsers.ValueParser;
 //----------------------------------------------------------------------------
@@ -58,6 +59,28 @@ public interface ObjectMapping extends Cloneable {
      * Get the controlling attribute name
      */
     String getControllingAttributeName();
+
+    /**
+     * Add a ChangeListener to the mapping. When the state underlying the
+     * mapping changes, all ChangeListeners will be notified.
+     *
+     * This is used in the UI classes to ensure that the UI panes stay consistent
+     * with the data held in the mappings.
+     *
+     * @param	l	ChangeListener to add
+     */
+    public void addChangeListener(ChangeListener l);
+
+    /**
+     * Remove a ChangeListener from the mapping. When the state underlying the
+     * mapping changes, all ChangeListeners will be notified.
+     *
+     * This is used in the UI classes to ensure that the UI panes stay consistent
+     * with the data held in the mappings.
+     *
+     * @param	l	ChangeListener to add
+     */
+    public void removeChangeListener(ChangeListener l);
 
     Object calculateRangeValue(Map attrBundle);
 

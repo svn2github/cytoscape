@@ -62,6 +62,14 @@ public class VizMapAttrTab extends VizMapTab {
     private VizMapUI mainUIDialog;
 
     /**
+     *  the containing JTabbedPane
+     */
+    protected JTabbedPane tabbedContainer;
+
+    /**
+     *  the 
+
+    /**
      *	the type of this VizMapAttrTab
      */
     private byte type;
@@ -87,16 +95,21 @@ public class VizMapAttrTab extends VizMapTab {
     /** Icon for upper left corner of tab */
     private ImageIcon imageIcon;
 
+    /** Listener for calculator UI changes */
+    protected CalculatorUIListener calcListener = new CalculatorUIListener();
+
     /**
      *	create a new tab representing the underlying type. Retrieve current
      *	calculator and default settings from the VMM.
      *
      *	@param	VMM	VisualMappingManager for the window
+     *  @param	tabContainer	The containing JTabbedPane
+     *  @param	tabIndex	index of this tab in tabContainer
      *	@param	n	Underlying network
      *	@param	type	One of types defined in {@link VisualMappingManager}
      *	@param	c	
      */
-    public VizMapAttrTab (VizMapUI mainUI, VisualMappingManager VMM, byte type) {
+    public VizMapAttrTab (VizMapUI mainUI, JTabbedPane tabContainer, int tabIndex, VisualMappingManager VMM, byte type) {
 	super(new BorderLayout(), false);
 	
 	// set the name of this component appropriately
@@ -111,11 +124,10 @@ public class VizMapAttrTab extends VizMapTab {
 	// register to listen for changes in the catalog
 	catalog.addChangeListener(new CatalogListener(), this.type);
 
-	// visualStyleChanged();
-	// don't need in constructor since triggered by StyleSelector construction
-	// in VizMapUI
+	// register to listen for changes in the enclosing JTabbedPane
+	tabContainer.addChangeListener(new TabContainerListener(tabIndex));
     }
-    
+
     /**
      *  Alert the VizMapAttrTab that the relevant visual style has changed.
      */
@@ -148,6 +160,11 @@ public class VizMapAttrTab extends VizMapTab {
 	this.calcComboBox.setSelectedItem(null);
 	// attach listener
 	this.calcComboBox.addItemListener(new calcComboSelectionListener());
+
+	// check that the currently selected calculator exists
+	if (!calculators.contains(this.currentCalculator)) {
+	    this.currentCalculator = null;
+	}
 
 	// set the currently selected calculator
 	if (this.currentCalculator == null) {
@@ -186,13 +203,7 @@ public class VizMapAttrTab extends VizMapTab {
 	this.calcContainer = new JPanel(false);
 
 	resetCalculatorDisplay();
-	/*
-	// calculator select prompt
-	this.calcComboBox = setupCalcComboBox();
-	// set up selection listener for combo box
-	calcComboBox.addItemListener(new calcComboSelectionListener());
-	MiscGB.insert(mapPanelGBG, calcComboBox, 0, 0, 4, 1, 1, 0, GridBagConstraints.HORIZONTAL);
-	*/
+
 	// new calculator button
 	JButton newCalc = new JButton("New");
 	newCalc.addActionListener(new NewCalcListener());
@@ -213,29 +224,8 @@ public class VizMapAttrTab extends VizMapTab {
 	rmCalc.addActionListener(new RmCalcListener());
 	MiscGB.insert(mapPanelGBG, rmCalc, 3, 1, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
 
-	// set up the current calculator's variable panel if a calculator is
-	// selected
-	//switchCalculator(c);
-	/*
-	if (c != null) {
-	    this.calcPanel = c.getUI(mainUIDialog, n);
-	}
-	else {
-	    this.calcPanel = new JPanel();
-	}
-	calcContainer.add(calcPanel);
-	*/
 	// add to gridbag
 	MiscGB.insert(mapPanelGBG, calcContainer, 0, 2, 4, 1, 5, 5, GridBagConstraints.BOTH);
-	//MiscGB.insert(mapPanelGBG, Box.createVerticalStrut(3), 0, 2, GridBagConstraints.REMAINDER, GridBagConstraints.REMAINDER);
-	/*
-	  mapPanel.add(Box.createVerticalStrut(3));
-	  mapPanel.add(mapPanelGBG.panel);
-	  mapPanelGBG.panel.setMaximumSize(mapPanelGBG.panel.getPreferredSize());
-	  mapPanel.add(Box.createVerticalStrut(3));
-	  mapPanel.add(calcPanel);
-	  mapPanel.add(Box.createVerticalStrut(3));
-	*/
 	add(mapPanelGBG.panel, BorderLayout.CENTER);
 	//add(mapPanel);
     }
@@ -448,18 +438,28 @@ public class VizMapAttrTab extends VizMapTab {
 	    // check duplication
 	    Vector conflicts = mainUIDialog.checkCalculatorUsage(currentCalculator);
 	    if (conflicts.size() != 0) {
-		StringBuffer errmsg = new StringBuffer((String) conflicts.get(0));
-		for (int i = 1; i < conflicts.size(); i++) {
-		    if (i == conflicts.size() - 1)
-			errmsg.append(" and ");
-		    else
-			errmsg.append(", ");
-		    errmsg.append((String) conflicts.get(i));
+		StringBuffer errMsg = new StringBuffer("Calculator ");
+		errMsg.append(currentCalculator.toString());
+		errMsg.append(" currently in use by:<br><ul>");
+		for (int i = 0; i < conflicts.size(); i++) {
+		    Vector subSelect = (Vector) conflicts.get(i);
+		    errMsg.append("<li>");
+		    errMsg.append(subSelect.get(0));
+		    errMsg.append("<ul>");
+		    for (int j = 1; j < subSelect.size(); j++) {
+			errMsg.append("<li>");
+			errMsg.append(subSelect.get(j));
+		    }
+		    errMsg.append("</ul>");
 		}
-		errmsg.append(". Do you still want to remove this calculator?");
-				    
+		errMsg.append("</ul><br>Do you still want to remove this calculator?");
+
+		JEditorPane errPane = new JEditorPane("text/html", errMsg.toString());
+		errPane.setEditable(false);
+		//errPane.setBackground(new Color(205,206,205));
+		errPane.setBackground(null);
 		int conf = JOptionPane.showConfirmDialog(mainUIDialog,
-							 "Calculator " + currentCalculator.toString() + " currently in use by " + errmsg.toString(),
+							 errPane,
 							 "Calculator In Use",
 							 JOptionPane.YES_NO_OPTION,
 							 JOptionPane.WARNING_MESSAGE);
@@ -469,11 +469,6 @@ public class VizMapAttrTab extends VizMapTab {
 	    Calculator temp = currentCalculator;
 	    currentCalculator = null;
 	    catalog.removeCalculator(temp); // triggers events that switch the calculator
-	    /* switchCalculator(null);
-	       switchCalculator must be called explicitly in this method because we use
-	       setSelectedIndex(0) to set the current calculator to null in setupCalcComboBox,
-	       which does not trigger an event.
-	    */
 	}    
     }
 
@@ -496,6 +491,34 @@ public class VizMapAttrTab extends VizMapTab {
 		    switchCalculator((Calculator) selected);
 		}
 	    }
+	}
+    }
+
+    /**
+     * CalculatorUIListener ensures that the UI for the calculator and the
+     * calculator's state remain in sync.
+     */
+    protected class CalculatorUIListener implements ChangeListener {
+	public void stateChanged(ChangeEvent e) {
+	    refreshUI();
+	}
+    }
+
+    /**
+     * TabContainerListener refreshes the tab's UI when the tab becomes visible.
+     * This ensures that the UI stays synchronized for attributes that reuse the
+     * same calculator.
+     */
+    protected class TabContainerListener implements ChangeListener {
+	protected int tabIndex;
+
+	public TabContainerListener(int tabIndex) {
+	    this.tabIndex = tabIndex;
+	}
+	public void stateChanged(ChangeEvent e) {
+	    JTabbedPane source = (JTabbedPane) e.getSource();
+	    if (source.isEnabledAt(tabIndex)) 		
+		refreshUI();
 	}
     }
 
@@ -534,6 +557,7 @@ public class VizMapAttrTab extends VizMapTab {
 	}
 	else
 	    this.calcPanel = null;
+	validate();
     }
     
     /**
@@ -554,49 +578,18 @@ public class VizMapAttrTab extends VizMapTab {
 		c = null;
 		setComboBox(null);
 	    }
-	    
-	    // check that nobody else is using the selected calculator
-	    VizMapTab calcSelectedTab = mainUIDialog.checkCalcSelected(c);
-	    if (calcSelectedTab != null && calcSelectedTab != this) {
-		// offer to duplicate
-		int alt = JOptionPane.showConfirmDialog(mainUIDialog,
-							"Calculator " + c.toString() + " already used, create a duplicate?",
-							"Calculator already used",
-							JOptionPane.YES_NO_OPTION,
-							JOptionPane.WARNING_MESSAGE,
-							null);
-		if (alt == JOptionPane.YES_OPTION) {
-		    // duplicate and continue
-		    Calculator clone = duplicateCalculator(c);
-		    // die if user cancelled
-		    if (clone == null)
-			return;
-		    this.currentCalculator = clone;
-		    catalog.addCalculator(clone);
-		    // addCalculator throws an event that will call
-		    // switchCalculator, so just exit this call.
-		    return;
-		}
-		else {
-		    // reset the combobox back
-		    setComboBox(this.currentCalculator);
-		    return;
-		}
-	    }
+	}
+	// switch listeners
+	if (this.currentCalculator != null) {
+	    this.currentCalculator.removeChangeListener(this.calcListener);
+	    this.currentCalculator.getMapping().removeChangeListener(this.calcListener);
 	}
 	this.currentCalculator = c;
 
-	/*
-	Dimension d = this.calcPanel.getMaximumSize();
-	if (d != null)
-	    d.setSize(d.getWidth(), 150);
-	else
-	    this.calcPanel.setMaximumSize(new Dimension(0, 150));
-	*/
-	//mapPanel.add(calcPanel);
-	//mapPanel.add(Box.createVerticalStrut(3));
-	//calcContainer.add(calcPanel);
-	//MiscGB.insert(mapPanelGBG, calcPanel, 0, 1, GridBagConstraints.REMAINDER, GridBagConstraints.REMAINDER, 5, 5, GridBagConstraints.BOTH);
+	if (this.currentCalculator != null) {
+	    this.currentCalculator.addChangeListener(this.calcListener);
+	    this.currentCalculator.getMapping().addChangeListener(this.calcListener);
+	}
 
 	// tell the respective appearance calculators
 	switch(this.type) {

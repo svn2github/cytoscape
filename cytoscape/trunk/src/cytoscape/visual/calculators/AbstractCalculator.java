@@ -6,10 +6,12 @@
 package cytoscape.visual.calculators;
 //------------------------------------------------------------------------------
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.Vector;
-import java.util.Properties;
+import java.awt.GridBagConstraints;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
+import java.util.*;
 import cytoscape.GraphObjAttributes;
 import cytoscape.dialogs.GridBagGroup;
 import cytoscape.dialogs.MiscGB;
@@ -42,6 +44,15 @@ public abstract class AbstractCalculator implements Calculator {
     
     /** keep track of how many times I've been duplicated */
     private int dupeCount = 0; 
+
+    /** keep track of interested UI classes. */
+    protected List changeListeners = new Vector(1,1);
+
+    /**
+     * Only one <code>ChangeEvent</code> is needed per calculator instance
+     * since the event's only state is the source property.
+     */
+    protected transient ChangeEvent changeEvent;
 
     /**
      * Create a calculator with the specified object mapping and name. The
@@ -226,7 +237,7 @@ public abstract class AbstractCalculator implements Calculator {
     throws ArrayIndexOutOfBoundsException {
 	ObjectMapping m = (ObjectMapping) this.mappings.get(mIndex);
 	m.setControllingAttributeName(attrName, network, false);
-	// refresh the mapping UI
+	fireStateChanged();
     }
 
     /**
@@ -296,12 +307,61 @@ public abstract class AbstractCalculator implements Calculator {
     }
 
     /**
+     * Add a ChangeListener to the calcaultor. When the state underlying the
+     * calculator changes, all ChangeListeners will be notified.
+     *
+     * This is used in the UI classes to ensure that the UI panes stay consistent
+     * with the data held in the mappings.
+     *
+     * @param	l	ChangeListener to add
+     */
+    public void addChangeListener(ChangeListener l) {
+        this.changeListeners.add(l);
+    }
+
+    /**
+     * Remove a ChangeListener from the calcaultor. When the state underlying the
+     * calculator changes, all ChangeListeners will be notified.
+     *
+     * This is used in the UI classes to ensure that the UI panes stay consistent
+     * with the data held in the mappings.
+     *
+     * @param	l	ChangeListener to add
+     */
+    public void removeChangeListener(ChangeListener l) {
+        this.changeListeners.remove(l);
+    }
+
+    /**
+     * Notifies all listeners that have registered interest for
+     * notification on this event type.  The event instance 
+     * is lazily created.
+     *
+     * UI classes should attach themselves with a listener to the calculator to be
+     * notified about changes in the underlying data structures that require the UI
+     * classes to fetch a new copy of the UI and display it.
+     *
+     */
+    protected void fireStateChanged() {
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for (int i = this.changeListeners.size() - 1; i>=0; i--) {
+	    ChangeListener listener = (ChangeListener) this.changeListeners.get(i);
+	    // Lazily create the event:
+	    if (this.changeEvent == null)
+		this.changeEvent = new ChangeEvent(this);
+	    listener.stateChanged(this.changeEvent);
+        }
+    }
+
+    /**
      * Refresh the UI. Call when something in the underlying structures have
      * changed and the UI needs to be refreshed.
      */
-    public void refreshUI(JDialog parent, Network network) {
+    /* public void refreshUI(JDialog parent, Network network) {
 	getUI(parent, network);
     }
+    */
 
     /**
      * AttributeSelectorListener listens for events on the JComboBoxes that

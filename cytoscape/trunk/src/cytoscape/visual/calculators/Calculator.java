@@ -6,8 +6,11 @@
 package cytoscape.visual.calculators;
 //------------------------------------------------------------------------------
 import java.util.Properties;
+import java.util.Vector;
 import javax.swing.JPanel;
 import javax.swing.JDialog;
+import javax.swing.event.ChangeListener;
+import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.Network;
 //------------------------------------------------------------------------------
 /**
@@ -47,4 +50,30 @@ public interface Calculator extends Cloneable {
      * Get a description of this calculator as a Properties object.
      */
     public Properties getProperties(String baseKey);
+
+    /**
+     * Add a ChangeListener to the calcaultor. When the state underlying the
+     * calculator changes, all ChangeListeners will be notified.
+     *
+     * This is used in the UI classes to ensure that the UI panes stay consistent
+     * with the data held in the mappings.
+     *
+     * @param	l	ChangeListener to add
+     */
+    public void addChangeListener(ChangeListener l);
+
+    /**
+     * Remove a ChangeListener from the calcaultor. When the state underlying the
+     * calculator changes, all ChangeListeners will be notified.
+     *
+     * This is used in the UI classes to ensure that the UI panes stay consistent
+     * with the data held in the mappings.
+     *
+     * @param	l	ChangeListener to add
+     */
+    public void removeChangeListener(ChangeListener l);
+
+    public ObjectMapping getMapping();
+    public Vector getMappings();
+    public ObjectMapping getMapping(int i);
 }

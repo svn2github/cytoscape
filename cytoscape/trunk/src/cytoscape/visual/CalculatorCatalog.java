@@ -309,9 +309,9 @@ public class CalculatorCatalog {
         Map theMap = getCalculatorMap(calcType);
         String newName = checkName(name, theMap);
         if (newName.equals(name)) {//given name is unique
-            removeCalculator(c);
-            c.setName(name);
-            addCalculator(c, theMap);
+	    theMap.remove(c.toString());
+	    c.setName(name);
+            theMap.put(name, c);
             fireStateChanged(calcType);
         } else {
             throw new DuplicateCalculatorNameException(newName);
