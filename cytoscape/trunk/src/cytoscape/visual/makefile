@@ -21,6 +21,7 @@ OBJS = TestNewMappingsUI.class \
        NodeAppearance.class \
        EdgeAppearance.class \
        CalculatorIO.class \
+       OldStyleCalculatorIO.class \
        PropertiesTester.class
 
 default: calculatorDir mappingDir uiDir parserDir objs
