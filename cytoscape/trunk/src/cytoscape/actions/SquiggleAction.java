@@ -15,23 +15,29 @@ public class SquiggleAction extends JMenu {
     final NetworkView networkView = networkview;
     //final PGraphView view = (PGraphView)networkView.getView();
 
-    add( new JMenuItem( new AbstractAction( "Squiggle ON" ) {
-          public void actionPerformed ( ActionEvent e ) {
-            // Do this in the GUI Event Dispatch thread...
-            SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
+    ButtonGroup squiggleGroup = new ButtonGroup();
+    JCheckBoxMenuItem squiggleOn = new JCheckBoxMenuItem( new AbstractAction( "Squiggle ON" ) {
+	public void actionPerformed ( ActionEvent e ) {
+	  // Do this in the GUI Event Dispatch thread...
+	  SwingUtilities.invokeLater( new Runnable() {
+	      public void run() {
 		PGraphView view = (PGraphView)networkView.getView();
-                  view.getSquiggleHandler().beginSquiggling();
-                } } ); } } ) );
-
-    add( new JMenuItem( new AbstractAction( "Squiggle OFF" ) {
-          public void actionPerformed ( ActionEvent e ) {
-            // Do this in the GUI Event Dispatch thread...
-            SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
+		view.getSquiggleHandler().beginSquiggling();
+	      } } ); } } ) ;
+    JCheckBoxMenuItem squiggleOff = new JCheckBoxMenuItem( new AbstractAction( "Squiggle OFF" ) {
+	public void actionPerformed ( ActionEvent e ) {
+	  // Do this in the GUI Event Dispatch thread...
+	  SwingUtilities.invokeLater( new Runnable() {
+	      public void run() {
 		PGraphView view = (PGraphView)networkView.getView();
-                  view.getSquiggleHandler().stopSquiggling();
-                } } ); } } ) );
+		view.getSquiggleHandler().stopSquiggling();
+	      } } ); } } ) ;
+    squiggleGroup.add(squiggleOn);
+    squiggleGroup.add(squiggleOff);
+    
+    add(squiggleOn);
+    add(squiggleOff);
+    squiggleOff.setSelected(true);
 
     add( new JMenuItem( new AbstractAction( "Clear Squiggle" ) {
           public void actionPerformed ( ActionEvent e ) {

@@ -339,7 +339,7 @@ public class CyMenus {
     // RHC Added Menu Items
     //selectNodesSubMenu.add(new GraphObjectSelectionAction(networkView));
     menuBar.addAction( new GraphObjectSelectionAction( networkView ) );
-    editMenu.add( new SquiggleAction( networkView ) ); 
+    //editMenu.add( new SquiggleAction( networkView ) ); 
     vizMenu.add( new BirdsEyeViewAction( networkView ) );
     
     menuBar.addAction( new AnimatedLayoutAction( networkView ) );
