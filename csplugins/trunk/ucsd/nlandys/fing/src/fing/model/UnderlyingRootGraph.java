@@ -7,14 +7,17 @@ interface UnderlyingRootGraph
 {
   IntEnumerator nodes();
   IntEnumerator edges();
-  boolean removeNode(int nodeIndex);
+  boolean removeNode(int node);
   int createNode();
-  boolean removeEdge(int edgeIndex);
+  boolean removeEdge(int edge);
   // Returns -1 if node indices specified are invalid.
-  int createEdge(int sourceIndex, int targetIndex, boolean directed);
-  boolean containsNode(int nodeIndex);
-  boolean containsEdge(int edgeIndex);
+  int createEdge(int sourceNode, int targetNode, boolean directed);
+  boolean containsNode(int node);
+  boolean containsEdge(int edge);
   // Throws IllegalArgumentException
-  IntEnumerator adjacentEdges(int nodeIndex, boolean undirected,
+  IntEnumerator adjacentEdges(int node, boolean undirected,
                               boolean incoming, boolean outgoing);
+  int sourceNode(int edge);
+  int targetNode(int edge);
+  boolean isDirectedEdge(int edge);
 }
