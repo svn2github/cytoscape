@@ -56,7 +56,7 @@ public final class IntBTree
       if (n.sliceCount < n.values.length) { // There's room for a value.
         boolean found = false;
         for (int i = 0; i < n.sliceCount; i++) {
-          if (x < n.values[i]) {
+          if (x <= n.values[i]) {
             for (int j = n.sliceCount; j > i; j--) {
               n.values[j] = n.values[j - 1]; }
             n.values[i] = x;
@@ -66,25 +66,22 @@ public final class IntBTree
         n.sliceCount++;
         return null; }
       else { // No room for another value in this leaf node; perform split.
-        // Perform poor man's correct end inefficient algorithm using m_buff.
-        System.arraycopy(n.values, 0, m_buff, 0, n.sliceCount);
+        // Perform poor man's correct but inefficient algorithm using m_buff.
         boolean found = false;
         for (int i = 0; i < n.sliceCount; i++) {
-          if (x < m_buff[i]) {
-            for (int j = n.sliceCount; j > i; j--) {
-              m_buff[j] = m_buff[j - 1]; }
+          if (x <= n.values[i]) {
+            for (int j = n.sliceCount; j > i; j--) m_buff[j] = n.values[j - 1];
             m_buff[i] = x;
             found = true;
-            break; } }
-        if (!found) {
-          m_buff[n.sliceCount] = x; }
+            break; }
+          else { m_buff[i] = n.values[i]; } }
+        if (!found) m_buff[n.sliceCount] = x;
         Node newNode = new Node(MAX_BRANCHES, true);
         int combinedCount = n.sliceCount + 1;
-        int middleInx = combinedCount / 2;
-        n.sliceCount = middleInx;
-        System.arraycopy(m_buff, 0, n.values, 0, middleInx);
-        newNode.sliceCount = combinedCount - middleInx;
-        System.arraycopy(m_buff, middleInx,
+        n.sliceCount = combinedCount >> 1; // Divide by two.
+        System.arraycopy(m_buff, 0, n.values, 0, n.sliceCount);
+        newNode.sliceCount = combinedCount - n.sliceCount;
+        System.arraycopy(m_buff, n.sliceCount,
                          newNode.values, 0, newNode.sliceCount);
         return newNode;
       }
