@@ -301,13 +301,13 @@
         <!-- Copy over Txt/PDF files -->
         <echo>
             ---------------------------------------
-            Copying over user documentation.
+            Copying over user documentation and Cytoscape License
             ---------------------------------------
         </echo>
 
         <copy file="user_docs/INSTALL.txt" todir="${release.dir}"/>
         <copy file="user_docs/LICENSE.txt" todir="${release.dir}"/>
-	<copy file="user_docs/Cytoscape2_0Manual.pdf" todir="${release.dir}"/>
+	    <copy file="user_docs/Cytoscape2_0Manual.pdf" todir="${release.dir}"/>
 
         <!-- Copy over Sample Data Files -->
         <echo>
@@ -330,6 +330,20 @@
                 <include name="cellularComponent.xml"/>
                 <include name="go.xml"/>
                 <include name="synonyms"/>
+            </fileset>
+        </copy>
+
+        <!-- Copy over Third Party Licenses -->
+        <echo>
+            ---------------------------------------
+            Copying over third party licenses
+            ---------------------------------------
+        </echo>
+        <mkdir dir="${release.dir}/licenses"/>
+        <copy todir="${release.dir}/licenses">
+            <fileset dir="licenses">
+                <include name="*.txt"/>
+                <include name="*.htm*"/>
             </fileset>
         </copy>
 
