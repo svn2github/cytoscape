@@ -68,6 +68,9 @@ public abstract class Cytoscape {
   private static BioDataServer bioDataServer;
   private static String species;
 
+  // global flag to indicate if Squiggle is turned on
+  private static boolean squiggleEnabled = false;
+
   /**
    * The shared RootGraph between all Networks
    */
@@ -1151,7 +1154,11 @@ public abstract class Cytoscape {
           public void run() {
             view.getCanvas().getCamera().animateViewToCenterBounds
                     (view.getCanvas().getLayer().getFullBounds(), true, 0);
+            // if Squiggle function enabled, enable it on the view
+            if (squiggleEnabled) {
+              view.getSquiggleHandler().beginSquiggling();
             }
+          }
        });
       view.redrawGraph(false, false);
       return view;
@@ -1167,6 +1174,55 @@ public abstract class Cytoscape {
     // System.out.println( "Cytoscape FIRING : "+property_type );
 
     getSwingPropertyChangeSupport().firePropertyChange( e );
+  }
+
+  private static void setSquiggleState(boolean isEnabled) {
+
+    // enable Squiggle on all network views
+    PGraphView view;
+    String network_id;
+    Map networkViewMap = getNetworkViewMap();
+    for (Iterator iter = networkViewMap.keySet().iterator(); iter.hasNext(); )
+    {
+      network_id = (String) iter.next();
+      view = (PGraphView) networkViewMap.get(network_id);
+      if (isEnabled) {
+        view.getSquiggleHandler().beginSquiggling();
+      } else {
+        view.getSquiggleHandler().stopSquiggling();
+      }
+    }
+
+  }
+
+  /**
+   * Utility method to enable Squiggle function.
+   */
+  public static void enableSquiggle() {
+
+    // set the global flag to indicate that Squiggle is enabled
+    squiggleEnabled = true;
+    setSquiggleState(true);
+
+  }
+
+  /**
+   * Utility method to disable Squiggle function.
+   */
+  public static void disableSquiggle() {
+
+    // set the global flag to indicate that Squiggle is disabled
+    squiggleEnabled = false;
+    setSquiggleState(false);
+
+  }
+
+  /**
+   * Returns the value of the global flag to indicate whether the
+   * Squiggle function is enabled.
+   */
+  public static boolean isSquiggleEnabled() {
+    return squiggleEnabled;
   }
 
 }
