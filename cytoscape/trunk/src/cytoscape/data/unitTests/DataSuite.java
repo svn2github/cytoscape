@@ -56,7 +56,6 @@ public class DataSuite extends TestCase {
         suite.addTestSuite(mRNAMeasurementTest.class);
         suite.addTestSuite(CyNetworkEventTest.class);
         suite.addTestSuite(CyNetworkTest.class);
-        suite.addTestSuite(CyNetworkFactoryTest.class);
         suite.addTestSuite(FlagEventTest.class);
         suite.addTestSuite(FlagFilterTest.class);
         suite.addTestSuite(NetworkDataTest.class);
