@@ -236,8 +236,9 @@ public class GMLTree{
      */
     public String toString(){
 	//this function basically just calls toString on the root
+        String lineSep = System.getProperty("line.separator");
 	String result =  root.toString();
-	return result.substring(3,result.length()-2)+"\n";
+	return result.substring(3,result.length()-2) + lineSep;
     }
 
     /**

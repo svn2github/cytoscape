@@ -75,6 +75,7 @@ public class GMLNode implements Comparator{
 	 * @param indent The indent to use when printing out this node
 	 */
 	private String toString(String indent){
+                String lineSep = System.getProperty("line.separator");
 		String result = "";
 		if(terminal){
 			if(!quotes){
@@ -84,7 +85,7 @@ public class GMLNode implements Comparator{
 			}
 		}
 		else{
-			result += "\n"+indent+"[\n";
+			result += lineSep+indent+"["+lineSep;
 			//Iterator it = key2GMLNodeVec.keySet().iterator();
 			Vector sortedKeys = new Vector(key2GMLNodeVec.keySet());
 			Collections.sort(sortedKeys,this);
@@ -94,7 +95,7 @@ public class GMLNode implements Comparator{
 				Iterator mapIt = ((Vector)key2GMLNodeVec.get(key)).iterator();
 				while(mapIt.hasNext()){
 					GMLNode next = (GMLNode)mapIt.next();
-					result += (indent+key+next.toString(indent+TAB)+"\n");	
+					result += (indent+key+next.toString(indent+TAB)+lineSep);	
 				}
 			}
 			result += (indent+"]");
