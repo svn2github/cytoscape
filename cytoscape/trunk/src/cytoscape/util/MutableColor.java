@@ -1,3 +1,9 @@
+// MutableColor.java:  mutable color for listeners
+//--------------------------------------------------------------------------------------
+// $Revision$
+// $Date$
+// $Author$
+//--------------------------------------------------------------------------------------
 
 package cytoscape.util;
 import java.awt.Color;
