@@ -192,6 +192,19 @@ public Graph2D getGraph ()
   return graph;
 }
 //------------------------------------------------------------------------------
+public GraphProps getProps () 
+{
+    return new GraphProps(graph, nodeAttributes, edgeAttributes);
+}
+//------------------------------------------------------------------------------
+public File getCurrentDirectory() {
+    return currentDirectory;
+}
+//------------------------------------------------------------------------------
+public void setCurrentDirectory(File dir) {
+    currentDirectory = dir;
+}
+//------------------------------------------------------------------------------
 public void setGraph (Graph2D graph) {
     this.graph = graph;
     setLayouterAndGraphView();
@@ -1923,7 +1936,7 @@ protected class SaveAsGMLAction extends AbstractAction
       currentDirectory = chooser.getCurrentDirectory();
       String name = chooser.getSelectedFile ().toString ();
       if (!name.endsWith (".gml")) name = name + ".gml";
-      GraphProps props = new GraphProps(graph, nodeAttributes, edgeAttributes);
+      GraphProps props = getProps();
       GMLWriter writer = new GMLWriter(props);
       writer.write(name);
     } // if

@@ -82,7 +82,7 @@ sub checkJavaHome
   my $diagnosticJavaFile = $javaHome . "/include/jni.h";
   my $fileIsReadable = -r $diagnosticJavaFile;
   if (!$fileIsReadable) {
-    printError ("cannot read a representative Java file fro JAVA_HOME:\n\t " .
+    printError ("cannot read a representative Java file from JAVA_HOME:\n\t " .
                        $diagnosticJavaFile . 
                        "\ncheck value of JAVA_HOME, currently: " . 
                        $javaHome);
