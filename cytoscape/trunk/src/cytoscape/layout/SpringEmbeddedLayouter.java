@@ -1,5 +1,6 @@
 package cytoscape.layout;
 
+import giny.util.NodeDistances;
 import giny.util.*;
 import giny.model.*;
 import giny.view.*;
