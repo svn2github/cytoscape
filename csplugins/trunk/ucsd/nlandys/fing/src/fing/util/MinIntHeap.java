@@ -202,8 +202,7 @@ public final class MinIntHeap
   {
     // parentIndex is at most m_currentSize / 2.
     for (int childIndex = parentIndex * 2;
-         childIndex > 0 // Check for overflow.
-           && childIndex <= size;
+         childIndex <= size && childIndex > 0 // Check for overflow.
          parentIndex = childIndex, childIndex = childIndex * 2) {
       // childIndex is a multiple of 2, so childIndex + 1 will not overflow.
       if (childIndex + 1 <= size &&
