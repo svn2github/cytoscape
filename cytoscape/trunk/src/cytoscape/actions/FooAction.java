@@ -18,7 +18,7 @@ import javax.swing.event.ChangeListener;
 public class FooAction extends CytoscapeAction
 {
 
-  public FooAction() { super("Foo Graph"); setPreferredMenu("Layout"); }
+  public FooAction() { super("Foo Bug"); setPreferredMenu("Layout"); }
 
   public void actionPerformed(ActionEvent e) {
     CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
