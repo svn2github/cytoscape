@@ -696,7 +696,7 @@ class PrintAction extends AbstractAction
   OptionHandler printOptions;
     
   PrintAction () {
-    super ("Print");
+    super ("Print...");
     printOptions = new OptionHandler ("Print Options");
     printOptions.addInt ("Poster Rows",1);
     printOptions.addInt ("Poster Columns",1);
