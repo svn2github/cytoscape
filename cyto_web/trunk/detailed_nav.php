@@ -71,11 +71,7 @@
 						Cytoscape Javadoc API
 					</a>
 				</p>
-				<p>
-					<a href="http://cytoscape.systemsbiology.net/Cytoscape2.0/plugin/index.html">
-					Cytoscape 2.0 PlugIn Writer Documentation</A>
-				</p>
-				<p>
+        <p>
 					<a href="http://csbi.sourceforge.net/">
 						Graph INterface librarY (GINY)
 					</a>

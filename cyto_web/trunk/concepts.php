@@ -26,6 +26,7 @@
     </table>
     <? include "nav.php"; ?>
     <div id="indent">
+
 <P>
 Cytoscape Developer Documentation
 <P>
@@ -46,6 +47,8 @@ its data and connections associated with it.
 	The following diagram shows the classes and their relationships that will be used 
 most.
  <P>
+<img src="images/image001.gif">
+<p>
 <hr>
 <big><b>Concept 2: Creating and Modifying and Destroying Networks</big></b>
 <P>
