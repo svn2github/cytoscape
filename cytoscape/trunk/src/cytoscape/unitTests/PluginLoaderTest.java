@@ -37,7 +37,7 @@ package cytoscape.unitTests;
 //--------------------------------------------------------------------------------------
 import junit.framework.*;
 import java.util.*;
-import cytoscape.PluginLoader;
+import cytoscape.plugin.PluginLoader;
 import cytoscape.CytoscapeConfig;
 //------------------------------------------------------------------------------
 public class PluginLoaderTest extends TestCase {
