@@ -12,7 +12,7 @@ import giny.view.GraphView;
 import giny.view.NodeView;
 import giny.model.RootGraphChangeListener;
 import giny.model.RootGraphChangeEvent;
-
+import phoebe.PGraphView;
 
 import cytoscape.CyNode;
 import cytoscape.CyEdge;
@@ -75,8 +75,9 @@ public class DualLayoutTask extends Thread{
     //and GraphObjAttributes to put the attributes associated
     //with the nodes
     CyNetwork gmlNetwork = Cytoscape.createNetwork("GML Network");
+    Cytoscape.destroyNetworkView(gmlNetwork);
     gmlNetwork.setTitle(title);
-
+       
     //These are maps from the name of a node to the node itself
     //don't use graphObjAttributes here because
     //I want to keep the left nodes separated from the right
@@ -116,7 +117,7 @@ public class DualLayoutTask extends Thread{
 	  node2Species.put(idxNode,new Integer(idx));
 	} // end of if ()
 	nodes.add(idxNode);
-	
+	gmlNetwork.addNode(idxNode);
       } // end of for (int  = 0;  < ; ++)
       
       for (int idx = 0;idx<k ;idx++) {
@@ -173,9 +174,18 @@ public class DualLayoutTask extends Thread{
     }
     //now that the root graph has been created, put it into a window
     //CyWindow newWindow = new CyWindow(cyWindow.getCytoscapeObj(), new CyNetwork(newRoot,newNodeAttributes,newEdgeAttributes), DualLayout.NEW_TITLE);
-    CyNetworkView newView = Cytoscape.createNetworkView(gmlNetwork);
+    
+    //Cytoscape.destroyNetworkView(gmlNetwork);
+    CyNetworkView newView = Cytoscape.getNetworkView(gmlNetwork.getIdentifier());
+    if ( newView == null ) {
+      System.err.println("Creating separate node view, original is null");
+      newView = Cytoscape.createNetworkView(gmlNetwork);
+    }
+    ((PGraphView)newView).getCanvas().paintImmediately();
     SpringEmbeddedLayouter layouter = new SpringEmbeddedLayouter(newView,node2Species,homologyPairSet);
     layouter.doLayout();
+    ((PGraphView)newView).getCanvas().paintImmediately();
+				
 
         
     //this array holds the min x position for each species
@@ -223,12 +233,14 @@ public class DualLayoutTask extends Thread{
       HashMap outerMap = homologyPairSet.getOuterMap();
       for(Iterator outerSetIt = outerMap.keySet().iterator();outerSetIt.hasNext();){
 	CyNode outerNode = (CyNode)outerSetIt.next();
-	String outerNodeName = (String)gmlNetwork.getNodeAttributeValue(outerNode,Semantics.CANONICAL_NAME);
+	//String outerNodeName = (String)gmlNetwork.getNodeAttributeValue(outerNode,Semantics.CANONICAL_NAME);
 	for(Iterator innerSetIt = ((Set)outerMap.get(outerNode)).iterator();innerSetIt.hasNext();){
-	  String innerNodeName = (String)gmlNetwork.getNodeAttributeValue((CyNode)innerSetIt.next(),Semantics.CANONICAL_NAME);
+	  CyNode innerNode = (CyNode)innerSetIt.next();
+	  gmlNetwork.addEdge(Cytoscape.getCyEdge(outerNode,innerNode,Semantics.INTERACTION,"hm",true));
+	  //String innerNodeName = (String)gmlNetwork.getNodeAttributeValue((CyNode)innerSetIt.next(),Semantics.CANONICAL_NAME);
 	  //want to add a homology edge to the from the left node to the rightnode
-	  String homologyName = ""+outerNodeName+" (hm) "+innerNodeName;
-	  gmlNetwork.addEdge(Cytoscape.getCyEdge(outerNodeName,homologyName,innerNodeName,"hm"));
+	  //String homologyName = ""+outerNodeName+" (hm) "+innerNodeName;
+	  //gmlNetwork.addEdge(Cytoscape.getCyEdge(outerNodeName,homologyName,innerNodeName,"hm"));
 	}
       }
     }
@@ -254,7 +266,7 @@ public class DualLayoutTask extends Thread{
     if(parser.exit()){
       System.exit(0);
     }
-    
+    ((PGraphView)newView).getCanvas().paintImmediately();
     //sifNetwork.endActivity(callerID);
   }
 

@@ -74,7 +74,7 @@ class LoadPathBlastGMLAction extends AbstractAction {
    * The constructor sets the text that should appear on the menu item.
    */
   public LoadPathBlastGMLAction(){
-    super("Create overlap graph from SIF files");
+    super("PathBlastBrowser: Create overlap graph from SIF files");
   }
 
 
@@ -175,7 +175,7 @@ class LoadPathBlastGMLTask extends Thread{
    */
   public CyNetwork createOverlapGraph(HashMap cyNetwork2Name, HashMap cyNetwork2NameSet){
     CyNetwork overlapNetwork = Cytoscape.createNetwork("Overlap Graph");
-    
+    Cytoscape.destroyNetworkView(overlapNetwork);
     //create the nodes for this graph, also create a mapping from GMLTree objects to nodes in the graph
     HashMap cyNetwork2Node = new HashMap();	
     node2CyNetwork = new HashMap();
@@ -217,10 +217,11 @@ class LoadPathBlastGMLTask extends Thread{
 	  //create an edge between the two correpsonding nodes
 	  CyNode sourceNode = (CyNode)cyNetwork2Node.get(cyNetworkVec.get(idx));
 	  CyNode targetNode = (CyNode)cyNetwork2Node.get(cyNetworkVec.get(idy));
-	  String sourceName = (String)overlapNetwork.getNodeAttributeValue(sourceNode,Semantics.CANONICAL_NAME);
-	  String targetName = (String)overlapNetwork.getNodeAttributeValue(targetNode,Semantics.CANONICAL_NAME);
-	  String name = sourceName+ " ("+OVERLAP_INTERACTION+") "+targetName;
-	  CyEdge newEdge = overlapNetwork.addEdge(Cytoscape.getCyEdge(sourceName,name,targetName,OVERLAP_INTERACTION));
+	  //String sourceName = (String)overlapNetwork.getNodeAttributeValue(sourceNode,Semantics.CANONICAL_NAME);
+	  //String targetName = (String)overlapNetwork.getNodeAttributeValue(targetNode,Semantics.CANONICAL_NAME);
+	  //String name = sourceName+ " ("+OVERLAP_INTERACTION+") "+targetName;
+	  //CyEdge newEdge = overlapNetwork.addEdge(Cytoscape.getCyEdge(sourceName,name,targetName,OVERLAP_INTERACTION));
+	  CyEdge newEdge = overlapNetwork.addEdge(Cytoscape.getCyEdge(sourceNode,targetNode,Semantics.INTERACTION,OVERLAP_INTERACTION,true));
 	  overlapNetwork.setEdgeAttributeValue(newEdge,COUNT_ATTRIBUTE,new Double(percent));
 	}
       }
