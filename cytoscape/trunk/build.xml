@@ -561,7 +561,7 @@
     <!-- ********************************* -->
     <!-- NEW WORLD ORDER FROM HERE ON DOWN -->
     <!--   Non-nwo build code shall not    -->
-    <!--   depend on nwo-build code.       -->
+    <!--   depend on nwo build code.       -->
     <!-- ********************************* -->
 
     <property name="nwo.dir" value="${build.dir}/nwo"/>
@@ -619,6 +619,9 @@
         <delete dir="${nwo.classes.dir}/buildgen"/>
     </target>
 
+    <!-- To add your package to the nwo build system, add a DEPENDENCIES -->
+    <!-- file to your package directory listing all dependent packages,  -->
+    <!-- one per line                                                    -->
     <target name="nwo-compile" depends="nwo-prepare">
         <ant antfile="${nwo.dir}/build.xml" target="littlejars"/>
     </target>
