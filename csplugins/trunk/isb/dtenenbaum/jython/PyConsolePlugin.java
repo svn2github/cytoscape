@@ -52,6 +52,29 @@ public class PyConsolePlugin extends CytoscapePlugin {
 		}
 	}
 
+
+	public static boolean putInJythonNamespace (String name, Object value)  {
+		boolean retVal = false;
+		ThreadGroup currentGroup = Thread.currentThread().getThreadGroup();
+		int numThreads = currentGroup.activeCount();
+		Thread[] listOfThreads = new Thread[numThreads];
+		SharedDataSingleton singleton = SharedDataSingleton.getInstance();
+
+		currentGroup.enumerate(listOfThreads);
+		for (int i = 0; i < numThreads; i++) {
+			if (null != listOfThreads[i]) { // in case the list has changed since we created it
+				if ("jythonConsoleThread".equals(listOfThreads[i].getName())) {
+					if (null != singleton.get("PyConsole")) {
+						SPyConsoleThread spc = (SPyConsoleThread)singleton.get("PyConsole");
+						spc.set(name, value);
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 	protected class StartConsole extends CytoscapeAction {
 
 		StartConsole() {
@@ -59,6 +82,7 @@ public class PyConsolePlugin extends CytoscapePlugin {
 		}
 
 		public void actionPerformed(ActionEvent e) {
+			SharedDataSingleton singleton = SharedDataSingleton.getInstance();
 			StringBuffer strb = new StringBuffer("For help and example scripts, please see\n");
 			strb.append("http://db.systemsbiology.net/cytoscape/jython");
 
@@ -70,17 +94,15 @@ public class PyConsolePlugin extends CytoscapePlugin {
 			for (int i = 0; i < numThreads; i++) {
 				if (null != listOfThreads[i]) { // in case the list has changed since we created it
 					if ("jythonConsoleThread".equals(listOfThreads[i].getName())) {
+						JFrame cFrame = (JFrame)singleton.get("ConsoleFrame");
+						cFrame.requestFocus();
 						// TODO - get the console frame and give it the focus
-						System.out.println("There is already a console running, no action taken.");
 						return;
 					}
 				}
 			}
 			
 			System.out.println("starting jython console...");
-			
-			
-			SharedDataSingleton singleton = SharedDataSingleton.getInstance();
 			
 			pythonConsole = new SPyConsoleThread(strb.toString());
 			singleton.put("PyConsole", pythonConsole);
@@ -89,6 +111,7 @@ public class PyConsolePlugin extends CytoscapePlugin {
 			consoleThread = new Thread(pythonConsole, "jythonConsoleThread");
 			consoleThread.start();
 			consoleFrame = new JFrame("Jython Console");
+			singleton.put("ConsoleFrame",consoleFrame);
 			consoleFrame.getContentPane().add(
 				pythonConsole.getConsolePanel(),
 				BorderLayout.CENTER);

@@ -36,6 +36,8 @@ public class SPyConsole extends InteractiveConsole {
 
    JFrame appFrame = null;
    
+   JFrame realAppFrame = null;
+   
 	Styles _styles = new Styles();
 	StyledEditorKit.ForegroundAction _inputAction;
 	DefaultStyledDocument _document;
@@ -78,7 +80,6 @@ public class SPyConsole extends InteractiveConsole {
         "args     : arguments passed to program in sys.argv[1:]";
 
 	public SPyConsole() {
-
 		addStyles();
 
 		_inputAction = new StyledEditorKit.ForegroundAction("start input", Color.black);
