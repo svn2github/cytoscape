@@ -154,7 +154,7 @@ public void testGetGraphAndEdgeAttributes () throws Exception
 } // testGetGraphAndEdgeAttributes
 //-------------------------------------------------------------------------
 /**
-  * this file relies on tab delimiters to distinguish word breaks with protein
+  * this file relies on tab delimiters to distinguish word breaks within protein
   * names from "term breaks" between <obj1> <interactionName> <obj2>, as in
   *
   *    26S ubiquitin dependent proteasome	interactsWith	I-kappa-B-alpha
@@ -186,6 +186,41 @@ public void testReadMultiWordProteinsFile () throws Exception
   assertTrue (interactions [28].getTargets()[2].equals ("HJKOL coltrane"));
  
 } // testReadMultiWordProteinsFile
+//-------------------------------------------------------------------------
+/**
+  *  like the preceeding test, but with some trailing spaces at the end of
+  *  the 3 terms -- a condition which caused trouble at v1.10 of
+  *  cytoscape.data.readers.InteractionsReader
+  * 
+  *    26S ubiquitin dependent proteasome	interactsWith	I-kappa-B-alpha $
+ **/ 
+public void testReadMultiWordProteinsFileWithErrantSpaces () throws Exception
+{ 
+  System.out.println ("testReadMultiWordProteinsFileWithErrantSpaces");
+  String filename = "multiWordProteinsFileTrailingSpaces.sif";
+  InteractionsReader reader = new InteractionsReader (nullServer, species, filename);
+  reader.read ();
+  assertTrue (reader.getCount () == 29);
+  Interaction [] interactions = reader.getAllInteractions ();
+
+  // interaction 16:
+  //  26S ubiquitin dependent proteasome
+  //     interactsWith
+  // I-kappa-B-alpha
+
+  assertTrue (interactions [16].getSource().equals ("26S ubiquitin dependent proteasome"));
+  assertTrue (interactions [16].getType().equals ("interactsWith"));
+  assertTrue (interactions [16].numberOfTargets()==1);
+  assertTrue (interactions [16].getTargets()[0].equals ("I-kappa-B-alpha"));
+ 
+  assertTrue (interactions [28].getSource().equals ("TRAF6"));
+  assertTrue (interactions [28].getType().equals ("interactsWith"));
+  assertTrue (interactions [28].numberOfTargets()==3);
+  assertTrue (interactions [28].getTargets()[0].equals ("RIP2"));
+  assertTrue (interactions [28].getTargets()[1].equals ("ABCDE oopah"));
+  assertTrue (interactions [28].getTargets()[2].equals ("HJKOL coltrane"));
+ 
+} // testReadMultiWordProteinsFileWithErrantSpaces
 //-------------------------------------------------------------------------
 public static void main (String [] args) 
 {
