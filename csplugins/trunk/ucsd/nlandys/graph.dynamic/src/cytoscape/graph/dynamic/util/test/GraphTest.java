@@ -3,6 +3,7 @@ package cytoscape.graph.dynamic.util.test;
 import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.graph.dynamic.util.DynamicGraphRepresentation;
 import cytoscape.util.intr.IntEnumerator;
+import cytoscape.util.intr.IntIterator;
 
 public class GraphTest
 {
@@ -114,7 +115,20 @@ public class GraphTest
         final int edge = adjEdges.nextInt();
         System.out.print(edge + " "); }
       System.out.println(); }
-    System.out.println();    
+    System.out.println();
+    nodesEnum = graph.nodes();
+    while (nodesEnum.numRemaining() > 0) {
+      final int node0 = nodesEnum.nextInt();
+      IntEnumerator nodesEnum2 = graph.nodes();
+      while (nodesEnum2.numRemaining() > 0) {
+        final int node1 = nodesEnum2.nextInt();
+        IntIterator connectingEdges =
+          graph.connectingEdges(node0, node1, true, true, true);
+        System.out.print("All edges connecting node " + node0 +
+                         " with node " + node1 + ": ");
+        while (connectingEdges.hasNext())
+          System.out.print(connectingEdges.nextInt() + " ");
+        System.out.println(); } }
   }
 
 }
