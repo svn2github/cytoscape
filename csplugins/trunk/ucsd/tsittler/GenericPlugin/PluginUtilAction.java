@@ -38,7 +38,7 @@ class PluginUtilAction extends AbstractAction {
     
     public void actionPerformed(ActionEvent ae) {
 	//inform listeners that we're doing an operation on the network??
-	if (plugin.getUIArgs(args)){
+	if (plugin.getUIArgs(name,args)){
 	    Thread t = new PluginUtilThread(name,args,plugin); 
 	    t.start();
 	}

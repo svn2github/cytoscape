@@ -12,6 +12,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -97,9 +98,7 @@ public abstract class PluginUtil  extends CytoscapePlugin implements GenericPlug
      */
 
     public String describe() {
-	StringBuffer sb = new StringBuffer();
-	sb.append(description);
-	return sb.toString();
+	return description;
     }
     
     public boolean cmdDoNotAddActions(){
@@ -238,13 +237,14 @@ public abstract class PluginUtil  extends CytoscapePlugin implements GenericPlug
 	return false;
     }
 
-    public boolean getUIArgs(final HashMap args){
+    public boolean getUIArgs(String actionName,final HashMap args){
 	//put all internal args into this HashMap so they can be accessed from actions (nested classes)
 	final HashMap internalArgs=new HashMap(1);
 	internalArgs.put("processed",new Boolean(false));
-	JDialog uiDialog=new JDialog();
+	JFrame frame=new JFrame();
+	//setup the dialog in the frame, with the actionName as the title, as a modal dialog (true)
+	JDialog uiDialog=new JDialog(frame,actionName,true);
 	//required in order to stop this process until the dialog is finished
-	uiDialog.setModal(true);
 	internalArgs.put("uiDialog",uiDialog);
 	Container contentPane = uiDialog.getContentPane();
 	contentPane.setLayout(new BorderLayout());    
