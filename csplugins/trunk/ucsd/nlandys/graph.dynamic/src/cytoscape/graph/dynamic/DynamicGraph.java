@@ -1,5 +1,6 @@
 package cytoscape.graph.dynamic;
 
+import cytoscape.graph.fixed.FixedGraph;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntIterator;
 
@@ -8,7 +9,7 @@ import cytoscape.util.intr.IntIterator;
  * Edges and nodes are non-negative integers; a given node and a given edge
  * in a single graph can be the same integer.
  */
-public interface DynamicGraph
+public interface DynamicGraph extends FixedGraph
 {
 
   /**
