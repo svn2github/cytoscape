@@ -75,12 +75,7 @@ public cytoscape (String [] args) throws Exception
   if (geometryFilename != null) {
     System.out.print ("reading " + geometryFilename + "...");
     System.out.flush ();
-    GMLReader reader = new GMLReader(geometryFilename);
-    reader.read();
-    graph = reader.getGraph();
-    GraphObjAttributes gmlEdgeAttributes = reader.getEdgeAttributes ();
-    edgeAttributes.add (gmlEdgeAttributes);
-    edgeAttributes.addNameMap(gmlEdgeAttributes.getNameMap ());
+    graph = FileReadingAbstractions.loadGMLBasic(geometryFilename,edgeAttributes);
     System.out.println ("  done");
     title = geometryFilename;
     requestFreshLayout = false;
@@ -88,12 +83,7 @@ public cytoscape (String [] args) throws Exception
   else if (interactionsFilename != null) {
     System.out.print ("reading " + interactionsFilename + "...");
     System.out.flush ();
-    InteractionsReader reader = new InteractionsReader (interactionsFilename);
-    reader.read ();
-    graph = reader.getGraph ();
-    GraphObjAttributes interactionEdgeAttributes = reader.getEdgeAttributes ();
-    edgeAttributes.add (interactionEdgeAttributes);
-    edgeAttributes.addNameMap (interactionEdgeAttributes.getNameMap ());
+    graph=FileReadingAbstractions.loadInteractionBasic(interactionsFilename,edgeAttributes);
     System.out.println ("  done");
     title = interactionsFilename;
     }
@@ -107,23 +97,10 @@ public cytoscape (String [] args) throws Exception
     bioDataServer = BioDataServerFactory.create (bioDataDirectory);
     }
 
-  String [] nodeAttributeFilenames = config.getNodeAttributeFilenames ();
-
-  if (nodeAttributeFilenames != null)
-    for (int i=0; i < nodeAttributeFilenames.length; i++)
-      nodeAttributes.readAttributesFromFile (nodeAttributeFilenames [i]);
-
-  String [] edgeAttributeFilenames = config.getEdgeAttributeFilenames ();
-
-  if (edgeAttributeFilenames != null)
-    for (int i=0; i < edgeAttributeFilenames.length; i++)
-      edgeAttributes.readAttributesFromFile (edgeAttributeFilenames [i]);
-
   if (graph == null)
     graph = new Graph2D ();
 
-  if (nodeAttributes != null)
-    addNameMappingToAttributes (graph.getNodeArray (), nodeAttributes);
+  FileReadingAbstractions.initAttribs(config,graph,nodeAttributes,edgeAttributes);
 
   cytoscapeWindow = new CytoscapeWindow (this, config,
                                          graph, expressionData, bioDataServer,
@@ -132,30 +109,6 @@ public cytoscape (String [] args) throws Exception
                                          title, requestFreshLayout);
 
 } // ctor
-//------------------------------------------------------------------------------
-/**
- * add node-to-canonical name mapping (and the same for edges), so that node 
- * attributes can be retrieved by simply knowing the y.base.node, which is the basic view
- * of data in this program.  for example:
- *
- *  NodeCursor nc = graph.selectedNodes (); 
- *  for (nc.toFirst (); nc.ok (); nc.next ()) {
- *    Node node = nc.node ();
- *    String canonicalName = nodeAttributes.getCanonicalName (node);
- *    HashMap nodeAttributeBundle = nodeAttributes.getAllAttributes (canonicalName);
- *    }
- * 
- * 
- */
-protected void addNameMappingToAttributes (Object [] graphObjects, GraphObjAttributes attributes)
-{
-  for (int i=0; i < graphObjects.length; i++) {
-    Object graphObj = graphObjects [i];
-    String canonicalName = graphObj.toString ();
-    attributes.addNameMapping (canonicalName, graphObj);
-    }
-
-} // addNameMappingToAttributes
 //------------------------------------------------------------------------------
 public void windowActivated   (WindowEvent e) {}
 /**

@@ -21,6 +21,7 @@ OBJS =  BindingPairXmlReader.class \
         GoTermXmlReader.class \
         InteractionsReader.class \
         TextFileReader.class \
+        FileReadingAbstractions.class \
 
 default: objs 
 

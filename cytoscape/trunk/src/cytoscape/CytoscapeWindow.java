@@ -1612,25 +1612,16 @@ protected class ShowConditionAction extends AbstractAction   {
 //------------------------------------------------------------------------------
 protected void loadGML (String filename)
 {
-    GMLReader reader = new GMLReader(geometryFilename);
-    reader.read();
-    graph = reader.getGraph();
-    GraphObjAttributes gmlEdgeAttributes = reader.getEdgeAttributes ();
-    edgeAttributes.add(gmlEdgeAttributes);
-    edgeAttributes.addNameMap(gmlEdgeAttributes.getNameMap ());
+    graph=FileReadingAbstractions.loadGMLBasic(filename,edgeAttributes);
+    FileReadingAbstractions.initAttribs(config,graph,nodeAttributes,edgeAttributes);
     displayNewGraph (false);
 } // loadGML
 //------------------------------------------------------------------------------
 protected void loadInteraction (String filename)
 {
-  InteractionsReader reader = new InteractionsReader (filename);
-  reader.read ();
-  graph = reader.getGraph ();
-  GraphObjAttributes interactionEdgeAttributes = reader.getEdgeAttributes ();
-  edgeAttributes.add (interactionEdgeAttributes);
-  edgeAttributes.addNameMap (interactionEdgeAttributes.getNameMap ());
-  displayNewGraph (true);
-
+    graph = FileReadingAbstractions.loadInteractionBasic(filename,edgeAttributes);
+    FileReadingAbstractions.initAttribs(config,graph,nodeAttributes,edgeAttributes);
+    displayNewGraph (true);
 } // loadInteraction
 //------------------------------------------------------------------------------
 protected class ExitAction extends AbstractAction  {
