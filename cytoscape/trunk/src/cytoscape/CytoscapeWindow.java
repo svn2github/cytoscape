@@ -87,7 +87,6 @@ import cytoscape.visual.ui.VizMapUI;
 import cytoscape.visual.mappings.*;
 import cytoscape.visual.calculators.*;
 import cytoscape.visual.parsers.*;
-import cytoscape.vizmap.*;
 import cytoscape.view.*;
 import cytoscape.undo.*;
 import cytoscape.util.MutableString;
