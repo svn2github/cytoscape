@@ -1,0 +1,11 @@
+max.path.length=5
+interaction.network=/cellar/users/cmak/data/yeang-JCB-paper/yeang-data-ORF.sif
+expression.file=/cellar/users/cmak/data/yeang-data/yeang-hughes.pvals
+expression.threshold=0.02
+edge.attributes=/cellar/users/cmak/data/yeang-JCB-paper/yeang-data-ORF.eda
+protein-DNA.threshold=1
+output.dir=testOut
+output.filename=yeang_ste12_true_5_0.02_1
+min.ko.per.model=3
+decomposeModel=true
+selected.genes=/cellar/users/cmak/data/yeang-JCB-paper/STE12candidategenes.txt

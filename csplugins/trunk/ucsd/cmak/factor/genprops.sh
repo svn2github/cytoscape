@@ -16,20 +16,18 @@
 #
 #set OUT=$1
 
+set TS=`date +%F-%H.%M`
+set DATA=$HOME/data
+
 set PATH=2
 set EXP=0.99
 set EDGE=0.02
+set DECOMPOSE=false
 
-set TS=`date +%F-%H.%M`
-
-set DATA=$HOME/data
-
-set ALL=all-p0.02-06dec2004
-set MMS=mms+pp-p0.02-01dec2004
+set ALL=all-p0.02-07dec2004
+set MMS=mms+pp-p0.02-07dec2004
 set NETWORK=${MMS}
 set NET_LABEL=mms
-
-set DECOMPOSE=false
 
 set RUN_LABEL=buffer_${NET_LABEL}_${DECOMPOSE}_${PATH}_${EXP}_${EDGE}
 set OUT=prop-files/${RUN_LABEL}.props
@@ -51,6 +49,7 @@ echo "output.dir=result" >> ${OUT}
 echo "output.filename=${RUN_LABEL}" >> ${OUT}
 echo "min.ko.per.model=1" >> ${OUT}
 echo "decomposeModel=${DECOMPOSE}" >> ${OUT}
+#echo "candidate.genes=${DATA}/STE12candidategenes.txt" >> ${OUT}
 
 echo ">>> Generated file: ${OUT}"
 
