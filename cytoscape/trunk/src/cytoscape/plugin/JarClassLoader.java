@@ -31,8 +31,9 @@ public class JarClassLoader extends URLClassLoader {
      */
     public JarClassLoader(String urlString, CytoscapeObj cyObj)
             throws MalformedURLException {
-        super(new URL[] { new URL(urlString) });
-        this.cyObj = cyObj;
+      super(new URL[] { new URL(urlString) },
+            JarClassLoader.class.getClassLoader()); 
+      this.cyObj = cyObj;
         this.url = new URL("jar", "", urlString + "!/");
     }
 
