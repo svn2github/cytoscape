@@ -81,7 +81,6 @@ public class DefaultPanel extends JPanel implements ChangeListener {
 		Color newBG = (Color) backColor.getValue();
                 VisualStyle vs = vmm.getVisualStyle();
                 vs.getGlobalAppearanceCalculator().setDefaultBackgroundColor(newBG);
-                vmm.applyGlobalAppearances();
 	    }
 	}
     }
