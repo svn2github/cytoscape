@@ -49,14 +49,19 @@
 					<td width="440" valign="bottom" align="right">
 						<div id="article">
 							<h2>
-								<a href="download.php?file=cyto2">
-									Download Cytoscape 2.0!
+								<a href="download.php?file=cyto2_1">
+									Download Cytoscape 2.1!
 								</a>
 							</h2>
 							<p>
-								New!&nbsp; Cytoscape 2.0 is now available.
+								New!&nbsp; Cytoscape 2.1 is now available.
 								<br>
-								<a href="download.php?file=cyto2">
+								<br>
+									<a href="cyto_2_1_features.php">
+									2.1 Release Notes &raquo;
+									</a>
+								<br>
+									<a href="download.php?file=cyto2_1">
 									Download &raquo;
 								</a>
 								<br>
@@ -83,47 +88,28 @@
 									<big>
 										<b>
 											<i>
-												New!</i>&nbsp;&nbsp;Announcing Cytoscape 2.0
+												New!</i>&nbsp;&nbsp;Announcing Cytoscape 2.1
 										</b>
 									</big>
 									<table width="100%">
 										<tr valign="top">
 											<td width="47%" valign="top">
-												The Cytoscape Team is pleased to release Cytoscape 2.0.
-												<br>
-												<br>
-												New Features include:
-												<ul>
-													<li>
-														100% Open Source Implementation.
-													</li>
-													<li>
-														Bird's Eye View for Viewing Large Networks.
-													</li>
-													<li>
-														Improved Performance for Viewing Large Networks.
-													</li>
-													<li>
-														Improved PlugIn Framework and PlugIn API.
-													</li>
-													<li>
-														Numerous Bug Fixes.
-													</li>
-												</ul>
-												Try out Cytoscape 2.0, and let us know what you think.
-												<ul>
-													<li>
-														<a href="download.php?file=cyto2">
-															Download Cytoscape 2.0</a>.
-													</li>
-												</ul>
-												If you find a bug, please log it to the
-												<a href="http://www.cbio.mskcc.org/cytoscape/bugs/main_page.php">
-													Cytoscape Bug Tracker.
-												</a>
+												<br>New Features include:
+<br>					
+<ul>
+  <li>Major performance improvements.</li>
+  <li>Complete on-line help system.</li>
+  <li>cPath plugin for downloading protein-protein interactions. (<A HREF="http://www.cbio.mskcc.org/cpath/cytoscape.do">View details</A>)</li>
+  <li>Better network filtering, including large network support.</li>
+  <li>Layout and rotate selected nodes.</li>
+  <li>Progress bars on long tasks.</li>
+  <li>Support for very large networks (&gt;100K nodes, edges).</li>
+  <li>Numerous Bug Fixes</li>
+</ul>
+<A HREF="cyto_2_1_features.php">Cytoscape 2.1 Release Notes</A>
 											</td>
 											<td valign="top">
-												<img src="images/screen_thumb1.gif" align="left" alt="Cytoscape Screenshot" />
+												<A HREF="images/cyto_2_1.png"><img src="images/cyto_2_1_thumb.png" border="0" align="left" alt="Cytoscape 2.1 Screenshot" /></A>
 											</td>
 										</tr>
 									</table>
@@ -135,6 +121,7 @@
 											Genome Research article on Cytoscape
 										</b>
 									</big>
+									<br>
 									<br>
 									<p>
 										Genome Research has published a journal article on Cytoscape
@@ -159,8 +146,15 @@
 									</big>
 									&nbsp;&nbsp; [<a href="pubs.php">View All Publications</a>]
 									<p>
+
 									<br>
+									<p><b>Proc Natl Acad Sci U S A. Feb 8, 2005</b><BR>
+    Sharan R, Suthram S, Kelley RM, Kuhn T, McCuine S, Uetz P, Sittler T, Karp RM, Ideker T.<br>Conserved patterns of protein interaction in multiple species.
+<br>
+Proc Natl Acad Sci U S A. 2005 Feb 8;102(6):1974-9. Epub 2005 Feb 01. 
 									<br>
+									[<A HREF="http://www.pnas.org/cgi/content/abstract/102/6/1974?maxtoshow=&HITS=10&hits=10&RESULTFORMAT=&fulltext=ideker&searchid=1109093476283_4753&stored_search=&FIRSTINDEX=0&journalcode=pnas">Abstract</a>] [<A HREF="http://www.pnas.org/cgi/content/full/102/6/1974?maxtoshow=&HITS=10&hits=10&RESULTFORMAT=&fulltext=ideker&searchid=1109093562510_4765&stored_search=&FIRSTINDEX=0&journalcode=pnas">Full Text</A>] [<A HREF="http://www.pnas.org/cgi/reprint/102/6/1974?maxtoshow=&HITS=10&hits=10&RESULTFORMAT=&fulltext=ideker&searchid=1109093578097_4770&stored_search=&FIRSTINDEX=0&journalcode=pnas">PDF</A>]<br>
+								<br>
 									<p>
                                         <b>Genome Research, November 2004 (cover article)</b>
                                         <br>
