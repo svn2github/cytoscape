@@ -13,7 +13,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 // Package visible class.  Use factory to get instance.
-class FRootGraph //implements RootGraph
+class FRootGraph implements RootGraph
 {
 
   public GraphPerspective createGraphPerspective(Node[] nodes, Edge[] edges)
