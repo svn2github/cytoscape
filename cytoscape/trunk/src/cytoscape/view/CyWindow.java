@@ -266,13 +266,16 @@ protected void initialize() {
 	   // setLayout( new BorderLayout() );  
 	    //this.view = new PGraphView();
     	   // add(graphView, BorderLayout.CENTER);
+	   this.setBackground(Color.WHITE);
+	   
 		
 	}	
 	
 	///*setLayout( new BorderLayout() );
 	this.infoLabel = new JLabel();
+	this.infoLabel.setBackground(Color.BLUE);
     add(infoLabel, BorderLayout.SOUTH);
-    updateStatusLabel(null);
+    updateStatusLabel(0, 0);
     this.mainFrame = new JFrame(windowTitle);
     
     mainFrame.setContentPane(this);
@@ -303,7 +306,9 @@ protected void updateGraphView() {
 	view = new PGraphView(network.getGraphPerspective());
 	display = view.getComponent();
 	add( display, BorderLayout.CENTER);
-	view.setBackgroundPaint(Color.BLACK);
+
+	view.setBackgroundPaint(Color.WHITE);
+>>>>>>> 1.17
 	
 	java.util.List nodes = view.getNodeViewsList();
 	    for ( Iterator i= nodes.iterator(); i.hasNext();)
@@ -313,8 +318,9 @@ protected void updateGraphView() {
 		    //System.out.println("Setting label " + label);
 		    nv.setLabel(label);
 		    nv.setShape(NodeView.ELLIPSE);
-		    nv.setUnselectedPaint(DEFAULT_PAINT);
+		    nv.setUnselectedPaint(Color.pink);
 		    nv.setSelectedPaint(((Color)nv.getUnselectedPaint()).darker());
+		    nv.setBorderPaint(Color.black);
 	    }
 	    
 	    //edges
@@ -789,6 +795,7 @@ public void setNewNetwork( CyNetwork newNetwork ) {
 	    attachGraphViewListener();
 	    //applyLayout();
 	    fitGraphView();
+	    updateStatusLabel(0, 0);
 	    add(cyMenus.getToolBar(), BorderLayout.NORTH);
 	    
 	    showWindow();
@@ -1108,9 +1115,21 @@ public void onGraph2DSelectionEvent(y.view.Graph2DSelectionEvent e) {
 public void graphViewChanged ( GraphViewChangeEvent event)
 
 {
+<<<<<<< CyWindow.java
+	/*System.out.println( " graphViewChanged() called in CyWindow");
+	if (event == null) {
+		updateStatusLabel(0, 0);
+		return;
+	}
+	int type = event.getType();
+	int hiddenNodes = event.getHiddenNodes().length;
+	int hiddenEdges = event.getHiddenEdges().length; */
+	updateStatusLabel(0, 0);
+=======
 	System.out.println( " graphViewChanged(Event) called in CyWindow");
         System.out.println( "Type was: "+event.getType() );
         updateStatusLabel(event);
+>>>>>>> 1.17
 }
 
 //--------------------------------------------------------------------------------
@@ -1155,8 +1174,15 @@ public void updateStatusText(int nodeAdjust, int edgeAdjust) {
  *
 
  */
-public void updateStatusLabel(GraphViewChangeEvent event) {
+public void updateStatusLabel(int hiddenNodes, int hiddenEdges) {
 	
+<<<<<<< CyWindow.java
+	if (getView() == null ) 
+	{ 
+		infoLabel.setText("No graph specified for the display  ");
+		return; }
+		
+=======
  
 
   if ( view == null ) {
@@ -1193,9 +1219,15 @@ public void updateStatusLabel(GraphViewChangeEvent event) {
 	
 	int type = event.getType();
         System.out.println( "1 Type: "+event.getType() );
+>>>>>>> 1.17
 	int nodeCount = view.nodeCount();
          System.out.println( "2 nodeCount: "+nodeCount );
 	int edgeCount = view.edgeCount();
+<<<<<<< CyWindow.java
+	int selectedNodes = view.getSelectedNodes().size();
+	int selectedEdges = view.getSelectedEdges().size();
+   		
+=======
          System.out.println( "3 Edgecount: "+edgeCount );
          if ( event.getSelectedNodeIndices() != null )
             selectedNodes = event.getSelectedNodeIndices().length;
@@ -1234,6 +1266,7 @@ public void updateStatusLabel(GraphViewChangeEvent event) {
 		      + " (" +hiddenEdges+ " hidden)");
 		      
 		      
+>>>>>>> 1.17
 	infoLabel.setText("  Nodes: " + nodeCount
                       + " ("+selectedNodes+" selected)"
 		      + " ("+hiddenNodes + " hidden)"  

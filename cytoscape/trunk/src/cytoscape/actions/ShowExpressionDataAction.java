@@ -36,10 +36,10 @@ public class ShowExpressionDataAction extends AbstractAction  {
         this.networkView = networkView;
 	colorInterpolatorPositive = new ColorInterpolator( 55, Color.green,
                                                        0, Color.white,
-                                                       100, Color.green.darker() );
+                                                       100, Color.green.darker().darker() );
         colorInterpolatorNegative = new ColorInterpolator( 55, Color.red,
-                                                       0, Color.black,
-                                                       100, Color.red.darker() );
+                                                       0, Color.white,
+                                                       100, Color.red.darker().darker() );
 	
     }
     
