@@ -1344,15 +1344,18 @@ protected class CircularLayoutAction extends AbstractAction   {
 }
 //------------------------------------------------------------------------------
 protected class HierarchicalLayoutAction extends AbstractAction   {
-  HierarchicalLayoutAction () { super ("Hierarchical"); }
+    HierarchicalLayoutDialog hDialog;
     
-  public void actionPerformed (ActionEvent e) {
-    HierarchicLayouter hl = new HierarchicLayouter ();
-    hl.setMinimalLayerDistance (400);
-    hl.setMinimalNodeDistance (40);
-    hl.setRoutingStyle(HierarchicLayouter.ROUTE_ORTHOGONAL);
-    hl.setLayerer(new AsIsLayerer());
-    layouter = hl;
+    HierarchicalLayoutAction () { super ("Hierarchical"); }
+    
+    public void actionPerformed (ActionEvent e) {
+	
+	if (hDialog == null)
+	    hDialog = new HierarchicalLayoutDialog (mainFrame);
+	hDialog.pack ();
+	hDialog.setLocationRelativeTo (mainFrame);
+	hDialog.setVisible (true);
+	layouter = hDialog.getLayouter();
     }
 }
 //------------------------------------------------------------------------------
