@@ -212,20 +212,6 @@ public class ColorToDiscreteDialog extends JDialog {
 	    // this is so that we don't have to create mappings where none existed.
 	    return;
 
-	    /*
-	    boolean needToCreate = true;
-	    if(theMapKey != null) {
-		if(theMapKey.equals(edgeKey.getString())) {
-		    System.out.println("Not in controller, but already created");
-		    needToCreate = false;
-		}
-	    }
-	    if(needToCreate) {
-		System.out.println("Not in controller, creating");
-		theMap = new HashMap();
-		theMapKey = edgeKey.getString();
-	    }
-	    */
 	}
 
 	//valueMapColor.remove(key);
@@ -247,33 +233,6 @@ public class ColorToDiscreteDialog extends JDialog {
 	MiscGB.set(c,0,0,2,1);
 	MiscGB.insert(popupPanel,extScrollPanel,gridbag,c);
 
-	/*
-	JButton editButton = new JButton ("Edit");
-	editButton.addActionListener (new EditAction ());
-
-	c.gridx=1;
-	c.gridy=0;
-	//c.gridheight=1;
-	gridbag.setConstraints(editButton,c);
-	popupPanel.add(editButton);
-
-	JButton newButton = new JButton ("New");
-	newButton.addActionListener (new NewAction ());
-	
-	c.gridx=1;
-	c.gridy=1;
-	gridbag.setConstraints(newButton,c);
-	popupPanel.add(newButton);
-
-	JButton removeButton = new JButton ("Remove");
-	removeButton.addActionListener (new RemoveAction ());
-
-	c.gridx=1;
-	c.gridy=2;
-	gridbag.setConstraints(removeButton,c);
-	popupPanel.add(removeButton);
-	*/
-
 	JButton cancelButton = new JButton ("Cancel");
 	cancelButton.addActionListener (new CancelAction ());
 	MiscGB.set(c,0,3);
@@ -289,27 +248,6 @@ public class ColorToDiscreteDialog extends JDialog {
 	setLocationRelativeTo (EdgeTextPanel.this);
 	setVisible (true);
 
-	/*	
-	DiscreteMapper dmSourceDec =
-	    (DiscreteMapper)
-	    aMapper.getValueMapper(VizMapperCategories.EDGE_SOURCE_DECORATION);
-	if(dmSourceDec!=null) {
-	    Map valueMapSourceDec = dmSourceDec.getValueMap();
-	    Arrow sourceArrow =	(Arrow)valueMapSourceDec.get(key);
-	    if(sourceArrow!=null) {
-		String sourceArrowName = sourceArrow.getCustomName();
-		if(sourceArrowName!=null) {
-		    //System.out.println("fixing source arrow");
-		    Shape sourceShape = sourceArrow.getShape();
-		    Arrow sourceArrowNew =
-			Arrow.addCustomArrow(sourceArrowName,sourceShape,c);
-		    valueMapSourceDec.remove(key);
-		    valueMapSourceDec.put(key,sourceArrowNew);
-		}
-	    }
-	}
-	*/
-	
     }
     public class EditAction extends AbstractAction {
 	EditAction () { super (""); }
@@ -330,36 +268,6 @@ public class ColorToDiscreteDialog extends JDialog {
 	}
     } // EditAction
 
-    // note: this class never quite worked. 
-    // it would have had to redraw the internal panel.
-    public class NewAction extends AbstractAction {
-	NewAction () { super (""); }
-	public void actionPerformed (ActionEvent e) {
-	    NewStringPopupDialog nspd =
-		new NewStringPopupDialog(parentFrame,"Mapping to be added");
-	    String newString = nspd.getString();
-	    if(newString!=null) {
-		if(newString.length()>0) {
-		    //System.out.println(newString);
-		    JButton tempButton = new JButton(newString);
-		    JLabel tempLabel = new JLabel("     ");
-		    tempLabel.setOpaque(true);
-		    tempLabel.setBackground(Color.WHITE);
-		    theMap.put(newString,Color.WHITE);
-		    String tempTitle = edgeKey.getString() + " / " + newString;
-		    tempButton.addActionListener(new
-			MapStringListener(ColorToDiscreteDialog.this,
-					  theMap,
-					  newString,
-					  tempLabel,
-					  tempTitle));
-		    intScrollPanel.add(tempButton);
-		    intScrollPanel.add(tempLabel);
-		}
-	    }
-	    //ColorToDiscreteDialog.this.dispose ();
-	}
-    } // NewAction
 
     // note: this class never quite worked;
     // it would have had to have access to the buttons and labels,
