@@ -42,8 +42,8 @@ Once you have completed this tutorial, the next tutorial will present some advan
 <p>
 Begin by clicking here: &nbsp;
 <font size=+1>
-<a href="tut/yeastSmall/yeastSmall.jnlp">WEB START</a> (download size: 7 MB).
-</font>&nbsp; This starts Cytoscape on your own computer, after downloading the 
+<a href="tut/yeastSmall/yeastSmall.jnlp">WEB START</a>
+</font>&nbsp; (download size: 7 MB) This starts Cytoscape on your own computer, after downloading the 
 program and annotation from our website. (On subsequent runs, the program or 
 annotation will not be downloaded again unless we have new versions or new 
 annotation for you to use.) If Cytoscape does not start, please look at the

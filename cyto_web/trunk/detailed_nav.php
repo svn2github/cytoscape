@@ -12,6 +12,11 @@
 					</a>
 				</p>
 				<p>
+					<a href="download.php?file=cyto1">
+						Download Version 1.1.1 
+					</a>
+				</p>
+				<p>
 					Requires 
 					<a href="http://java.sun.com/j2se/1.4.2/index.jsp">
 						Java 1.4.2 
