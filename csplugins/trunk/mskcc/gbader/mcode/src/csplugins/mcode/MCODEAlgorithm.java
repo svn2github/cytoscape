@@ -226,8 +226,10 @@ public class MCODEAlgorithm {
 			if (nodeSeenArray[currentNode] == false) {
 				ArrayList complex = getComplexCore(currentNode, nodeSeenArray);
 				if (complex.size() > 0) {
-					//make sure spawning node is part of complex
-					complex.add(new Integer(currentNode));
+					//make sure spawning node is part of complex, if not already in there
+                    if(!complex.contains(new Integer(currentNode))) {
+					    complex.add(new Integer(currentNode));
+                    }
                     //create an input graph for the filter and haircut methods
                     //comvert Integer array to int array
                     int[] complexArray = new int[complex.size()];
@@ -368,7 +370,9 @@ public class MCODEAlgorithm {
 			if ((nodeSeenArray[currentNeighbor] == false) &&
 			        (((NodeInfo) nodeInfoHashMap.get(new Integer(currentNeighbor))).score >= (startNodeScore - startNodeScore * nodeScoreCutOff))) {
 				//add current neighbor
-				complex.add(new Integer(currentNeighbor));
+                if (!complex.contains(new Integer(currentNeighbor))) {
+				    complex.add(new Integer(currentNeighbor));
+                }
 				//try to extend complex at this node
 				getComplexCoreInternal(currentNeighbor, nodeSeenArray, startNodeScore, currentDepth + 1, complex);
 			}
