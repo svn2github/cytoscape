@@ -68,13 +68,10 @@ public VisualPropertiesDialog (Frame parentFrame,
   this.applied = applied;
 
   GridBagGroup gbg = new GridBagGroup();
-  
   JPanel mainPanel = gbg.panel;
   MiscGB.pad(gbg.constraints,5,5);
-
   GridBagGroup defGBG = new GridBagGroup("Defaults");
   MiscGB.pad(defGBG.constraints,5,5);
-
   int yPos=0;
   int yDef=0;
 
@@ -96,6 +93,13 @@ public VisualPropertiesDialog (Frame parentFrame,
 						    "Background Color");
   MiscGB.insert(defGBG,bgColorLabel,1,yDef);
   MiscGB.insert(defGBG,bgColorButton,0,yDef,1,1,GridBagConstraints.HORIZONTAL);
+  yDef++;
+
+  JLabel eColorLabel = MiscGB.createColorLabel(eColor.getColor());
+  JButton eColorButton = MiscGB.buttonAndColor(this,eColor,eColorLabel,
+						    "Edge Color");
+  MiscGB.insert(defGBG,eColorLabel,1,yDef);
+  MiscGB.insert(defGBG,eColorButton,0,yDef,1,1,GridBagConstraints.HORIZONTAL);
   yDef++;
 
   sizeDefault = 
@@ -159,7 +163,7 @@ public class ApplyAction extends AbstractAction {
       super ("");
   }
 
-    public void actionPerformed (ActionEvent e) {
+    public void actionPerformed (ActionEvent event) {
 	
 	Object o;
 	
@@ -169,6 +173,9 @@ public class ApplyAction extends AbstractAction {
 	Color bg = bgColor.getColor();
 	if(bg != null)
 	    o = aMapper.setDefaultValue(VizMapperCategories.BG_COLOR, bg);
+	Color ec = eColor.getColor();
+	if(ec != null)
+	    o = aMapper.setDefaultValue(VizMapperCategories.EDGE_COLOR, ec);
 	Byte shape = (Byte)shapeDefault.getIconObject();
 	if(shape != null)
 	    o = aMapper.setDefaultValue(VizMapperCategories.NODE_SHAPE, shape);
