@@ -103,7 +103,7 @@
 
 	<!--  Target to compile all code -->
   	<target name="compile" depends="prepare" description="Compiles all source code.">
-    	<javac srcdir="${src.dir}" destdir="${build.classes}" nowarn="on" source="1.4" includeAntRuntime="false">
+    	<javac srcdir="${src.dir}" destdir="${build.classes}" nowarn="off" debug = "on" source="1.4" includeAntRuntime="false">
 		<include name="cytoscape/**"/>
 		
 		<!-- Deferred classes are never compiled -->
@@ -136,6 +136,8 @@
                 <exclude name="cytoscape/dialogs/GoDataServerPopupTable.java"/>
                 <exclude name="cytoscape/dialogs/GoIDAttributesPopupTable.java"/>
                 <exclude name="cytoscape/dialogs/NodeAttributesPopupTable.java"/>
+                <!-- Exclude obsolete visual package testing class -->
+                <exclude name ="cytoscape/visual/tests/TestNewMappingsUI.java"/>
 
     		<classpath refid="classpath"/>
     	</javac>
