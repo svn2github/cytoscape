@@ -63,11 +63,11 @@ public Interaction (String rawText, String delimiter)
   int counter = 0;
   while (strtok.hasMoreTokens ()) {
     if (counter == 0) 
-      source = (String) strtok.nextToken ();
+      source = ((String) strtok.nextToken ()).trim ();
     else if (counter == 1)
-      interactionType = (String) strtok.nextToken ();
+      interactionType = ((String) strtok.nextToken ()).trim ();
     else {
-      String newTarget = (String) strtok.nextToken ();
+      String newTarget = ((String) strtok.nextToken ()).trim ();
       targets.addElement (newTarget);
       }
     counter++;
