@@ -14,7 +14,7 @@ public interface GraphTopology
 
   /**
    * Returns the number of nodes in this graph.  In other methods of this
-   * interface, nodes are referenced by their index.  Indexes of nodes start
+   * interface a node is referenced by its index.  Indexes of nodes start
    * at <code>0</code> and end at <nobr><code>getNumNodes() - 1</code></nobr>,
    * inclusive.
    * @return number of nodes in this graph.
@@ -23,7 +23,7 @@ public interface GraphTopology
 
   /**
    * Returns the number of edges in this graph.  In other methods of this
-   * interface, edges are referenced by their index.  Indexes of edges start
+   * interface an edge is referenced by its index.  Indexes of edges start
    * at <code>0</code> and end at <nobr><code>getNumEdges() - 1</code></nobr>,
    * inclusive.
    * @return number of edges in this graph.

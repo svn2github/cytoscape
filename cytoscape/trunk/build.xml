@@ -242,13 +242,19 @@
 
     <!-- Target to Run JavaDoc -->
     <target name="doc" description="Runs JavaDoc.">
+        <!-- Um, hello-o!  Good programming practices allow us
+             to define abstract stub classes that are meant to be
+             implemented by external programmers;
+             these abstract classes may have
+             protected variables.  Therefore, we should show
+             protected access in javadoc. -->
         <javadoc destdir="${javadoc.public.dir}"
                  source="1.4"
                  Windowtitle="Cytoscape2.0 API"
                  header="Cytoscape2.0 (c)2004 ISB, MSKCC, UCSD"
                  footer="www.cytoscape.org"
                  classpathref="classpath"
-                 access="public"
+                 access="protected"
                  overview="${src.dir}/org/mskcc/dataservices/overview.html">
 
 
@@ -271,6 +277,8 @@
                 <include name="cytoscape/process/*.java"/>
                 <include name="cytoscape/process/ui/*.java"/>
                 <include name="cytoscape/graph/*.java"/>
+                <include name="cytoscape/graph/layout/*.java"/>
+                <include name="cytoscape/graph/layout/algorithm/*.java"/>
             </fileset>
 
          <link href="http://java.sun.com/j2se/1.4.2/docs/api/" />
