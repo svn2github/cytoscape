@@ -585,13 +585,10 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
   public boolean isNeighbor(final int nodeInxA, final int nodeInxB)
   {
     if (!(nodeInxA < 0 && nodeInxB < 0)) return false;
-    final int nativeNodeA = m_rootToNativeNodeInxMap.get(nodeInxA);
-    final int nativeNodeB = m_rootToNativeNodeInxMap.get(nodeInxB);
-    final IntIterator nativeConnEdgeIter;
-    try {
-      nativeConnEdgeIter = m_graph.edgesConnecting
-        (nativeNodeA, nativeNodeB, true, true, true); }
-    catch (IllegalArgumentException e) { return false; }
+    final int nativeNodeA = m_rootToNativeNodeInxMap.get(~nodeInxA);
+    final int nativeNodeB = m_rootToNativeNodeInxMap.get(~nodeInxB);
+    final IntIterator nativeConnEdgeIter = m_graph.edgesConnecting
+      (nativeNodeA, nativeNodeB, true, true, true);
     if (nativeConnEdgeIter == null) return false;
     return nativeConnEdgeIter.hasNext();
   }
