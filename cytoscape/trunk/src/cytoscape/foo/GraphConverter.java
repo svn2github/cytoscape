@@ -93,18 +93,19 @@ public final class GraphConverter
     private MyRMutableGraphLayout(NodeView[] nodeTranslation,
                                   Edge[] edgeTranslation,
                                   Hashtable nodeIndexTranslation,
-                                  double minX, double maxX,
-                                  double minY, double maxY,
-                                  double percentBorder,
+                                  double width,
+                                  double height,
+                                  double xOff,
+                                  double yOff,
                                   boolean allMovable)
     {
       m_nodeTranslation = nodeTranslation;
       m_edgeTranslation = edgeTranslation;
       m_nodeIndexTranslation = nodeIndexTranslation;
-      m_xOff = minX - ((maxX - minX) * percentBorder * 0.5d);
-      m_yOff = minY - ((maxY - minY) * percentBorder * 0.5d);
-      m_width = (maxX - minX) * (percentBorder + 1.0d);
-      m_height = (maxY - minY) * (percentBorder + 1.0d);
+      m_xOff = xOff;
+      m_yOff = yOff;
+      m_width = width;
+      m_height = height;
       m_allMovable = allMovable;
     }
 
@@ -136,7 +137,10 @@ public final class GraphConverter
         throw new IllegalArgumentException("xPos is out of bounds");
       if (yPos < 0.0d || yPos > getMaxHeight())
         throw new IllegalArgumentException("yPos is out of bounds");
-      node.setOffset(xPos + m_xOff, yPos + m_xOff); }
+      if (!isMovableNode(nodeIndex))
+        throw new UnsupportedOperationException
+          ("node at index " + nodeIndex + " is not movable");
+      node.setOffset(xPos + m_xOff, yPos + m_yOff); }
   }
 
   /**
@@ -359,11 +363,18 @@ public final class GraphConverter
     }
     if (edgeIndex != numEdgesInTopology)
       throw new IllegalStateException("someone [did] cut the cheese here");
+    final double border =
+      Math.max(maxX - minX, maxY - minY) * percentBorder * 0.5d;
+    final double xOff = minX - border;
+    final double yOff = minY - border;
     return new MyRMutableGraphLayout(nodeTranslation,
                                      edgeTranslation,
                                      nodeIndexTranslation,
-                                     minX, maxX, minY, maxY,
-                                     percentBorder, noNodesSelected);
+                                     maxX - minX + border + border,
+                                     maxY - minY + border + border,
+                                     xOff,
+                                     yOff,
+                                     noNodesSelected);
   }
 
 }
