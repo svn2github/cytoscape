@@ -308,6 +308,7 @@ public void addNameMapping (String canonicalName, Object graphObject)
 {
     nameFinder.put (graphObject, canonicalName);
     canonicalToGraphObject.put(canonicalName, graphObject);
+    set("canonicalName",canonicalName,canonicalName);
 }
 //--------------------------------------------------------------------------------
 /**
