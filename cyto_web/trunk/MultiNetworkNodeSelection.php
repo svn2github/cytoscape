@@ -64,9 +64,7 @@ they exist in both views.
 <a href="pluginTutorial/java/MultiNetworkNodeSelection.jar">MultiNetworkNodeSelection.jar</a>
 </p>
 
-<p>
-This page last modified August 25, 2004.
-</p>
+<!-- <p>This page last modified August 25, 2004.</p> -->
 
     </div>
     <? include "footer.php"; ?>

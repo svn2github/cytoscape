@@ -31,12 +31,11 @@
 </center>
 
 <p>
-Here's a more interesting plugin that uses Cytoscape's network and attributes 
-data structures to perform a very 
-simple operation. When the user selects one or more nodes in the graph and
+This example plugin uses the Cytoscape network and attributes 
+data structures to perform a simple node selection operation. 
+When the user selects one or more nodes in the graph and
 then activates the plugin, it will iterate over each selected node and
-additionally select all neighbors of that node whose name ends with the same
-letter. 
+additionally select all neighbors of that node.
 </p>
 <p>
 To run the plugin, save the jar file below to your local
@@ -50,7 +49,9 @@ plugin via the <code>Plugins-&gt;SamplePlugin</code> menu option.</p><p>
 <a href="pluginTutorial/java/NeighborNodeSelection.java">NeighborNodeSelection.java</a><br>
 <a href="pluginTutorial/java/NeighborNodeSelection.jar">NeighborNodeSelection.jar</a></p><p>
 
-</p><h4>Looking at the Plugin:</h4>
+</p>
+
+<h3>Looking at the Plugin</h3>
 
 <pre><code>
     public NeighborNodeSelection() {
@@ -76,9 +77,9 @@ for more information).
 <p>
 The plugin works with several core objects. The CyNetwork object is a
 graph and also contains the associated data. The plugin uses the
-network to find the neighbors of the currently selected nodes and to
-get the names of the nodes for comparison. The CyNetworkView contains
-information on what node views are currently selected.
+network to find the neighbors of the currently selected nodes.
+The CyNetworkView contains information on what node views are 
+currently selected.
 </p>
 
 <p>
@@ -88,9 +89,7 @@ redraw the graph (for example, to update the appearance of newly selected
 nodes).
 </p>
 
-<p>
-This page last modified August 25, 2004.
-</p>
+<!-- <p> This page last modified August 25, 2004. </p> -->
 
 
     </div>

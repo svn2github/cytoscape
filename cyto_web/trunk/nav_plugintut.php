@@ -3,15 +3,19 @@
 		<tr>
 			<td colspan="6" id="first">
 				<h1>
+					<a href="pluginTutorial.php">
+						Tutorial Introduction
+					</a>
+					|
 					<a href="HelloWorld.php">
 						Hello World Plugin
 					</a>
 					|
-					<a href="NeighborNodeSelector.php">
+					<a href="NeighborNodeSelection.php">
 						Neighbor Node Selection Plugin
 					</a>
 					| 
-					<a href="MultiNetworkNodeSelector.php">
+					<a href="MultiNetworkNodeSelection.php">
 						Multi-Network Node Selection Plugin
 					</a>
 				</h1>
