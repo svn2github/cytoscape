@@ -1,11 +1,11 @@
 package cytoscape.foo;
 
 import cytoscape.Cytoscape;
-import cytoscape.graph.layout.algorithm.MutableGraphLayout;
 import cytoscape.graph.layout.algorithm.MutablePolyEdgeGraphLayout;
-import cytoscape.graph.layout.algorithm.util.MutableGraphLayoutRepresentation;
+import cytoscape.graph.layout.algorithm.util.MutablePolyEdgeGraphLayoutRepresentation;
 import cytoscape.view.CyNetworkView;
 import giny.model.Edge;
+import giny.view.Bend;
 import giny.view.EdgeView;
 import giny.view.NodeView;
 import java.awt.geom.Point2D;
@@ -25,12 +25,17 @@ public final class GraphConverter
   private GraphConverter() {}
 
   private static final class MyCMutableGraphLayout
-    extends MutableGraphLayoutRepresentation
+    extends MutablePolyEdgeGraphLayoutRepresentation
   {
     // Definiition of m_nodeTranslation:
     // m_nodeTranslation[i] defines, for node at index i in our
     // GraphTopology object, the corresponding NodeView in Giny.
     final NodeView[] m_nodeTranslation;
+
+    // Definition of m_edgeTranslation:
+    // m_edgeTranslation[i] defines, for edge at index i in our
+    // GraphTopology object, the corresponding EdgeView in Giny.
+    final EdgeView[] m_edgeTranslation;
 
     final double m_xOff;
     final double m_yOff;
@@ -45,7 +50,10 @@ public final class GraphConverter
                                   double[] nodeXPositions,
                                   double[] nodeYPositions,
                                   boolean[] isMovableNode,
+                                  double[][] edgeAnchorXPositions,
+                                  double[][] edgeAnchorYPositions,
                                   NodeView[] nodeTranslation,
+                                  EdgeView[] edgeTranslation,
                                   double xOff,
                                   double yOff)
     {
@@ -58,8 +66,11 @@ public final class GraphConverter
             height,
             nodeXPositions,
             nodeYPositions,
-            isMovableNode);
+            isMovableNode,
+            edgeAnchorXPositions,
+            edgeAnchorYPositions);
       m_nodeTranslation = nodeTranslation;
+      m_edgeTranslation = edgeTranslation;
       m_xOff = xOff;
       m_yOff = yOff;
     }
@@ -202,27 +213,35 @@ public final class GraphConverter
 
   /**
    * Returns a representation of Cytoscape's current network view.
-   * Returns a <code>MutableGraphLayout</code> which, when mutated, has no
+   * Returns a <code>MutablePolyEdgeGraphLayout</code>
+   * which, when mutated, has no
    * effect on the underlying Cytoscape network view.  Use the return value
    * of this method when moving positions of nodes in a thread that is
    * not the AWT dispatch thread.  Use <code>updateCytoscapeLayout()</code>,
    * passing as an argument the return value of <code>getGraphCopy()</code>,
-   * to move nodes in the underlying Cytoscape network view.
+   * to move nodes (and edge anchor points)
+   * in the underlying Cytoscape network view.
    * <code>getMaxWidth()</code> of the return object is ...
    * All distances are preserved from to Cytoscape graph to the return object.
    **/
-  public static MutableGraphLayout getGraphCopy(double percentBorder)
+  public static MutablePolyEdgeGraphLayout getGraphCopy(double percentBorder)
   {
     if (percentBorder < 0.0d)
       throw new IllegalArgumentException("percentBorder < 0.0");
 
     CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
     final int numNodesInTopology = graphView.getNodeViewCount();
+    final int numEdgesInTopology = graphView.getEdgeViewCount();
 
     // Definiition of nodeTranslation:
     // nodeTranslation[i] defines, for node at index i in our
     // GraphTopology object, the corresponding NodeView in Giny.
     final NodeView[] nodeTranslation = new NodeView[numNodesInTopology];
+
+    // Definition of edgeTranslation:
+    // edgeTranslation[i] defines, for edge at index i in our
+    // GraphTopology object, the corresponding EdgeView in Giny.
+    final EdgeView[] edgeTranslation = new EdgeView[numEdgesInTopology];
 
     // Definiton of nodeIndexTranslation:
     // Both keys and values of this hashtable are java.lang.Integer objects.
@@ -276,25 +295,33 @@ public final class GraphConverter
          (new Integer(ginyTargetNodeIndex))).intValue();
       Vector chosenEdgeVector = undirectedEdgeVector;
       if (currentEdge.isDirected()) chosenEdgeVector = directedEdgeVector;
-      chosenEdgeVector.add(new int[] { nativeSourceNodeIndex,
-                                       nativeTargetNodeIndex });
+      chosenEdgeVector.add
+        (new Object[] { new int[] { nativeSourceNodeIndex,
+                                    nativeTargetNodeIndex },
+                        currentEdge });
     }
     final int[] directedEdgeSourceNodeIndices =
       new int[directedEdgeVector.size()];
     final int[] directedEdgeTargetNodeIndices =
       new int[directedEdgeVector.size()];
     for (int i = 0; i < directedEdgeVector.size(); i++) {
-      int[] edge = (int[]) directedEdgeVector.get(i);
+      int[] edge = (int[]) (((Object[]) (directedEdgeVector.get(i)))[0]);
+      EdgeView edgeV =
+        (EdgeView) (((Object[]) (directedEdgeVector.get(i)))[1]);
       directedEdgeSourceNodeIndices[i] = edge[0];
-      directedEdgeTargetNodeIndices[i] = edge[1]; }
+      directedEdgeTargetNodeIndices[i] = edge[1];
+      edgeTranslation[i] = edgeV; }
     final int[] undirectedEdgeSourceNodeIndices =
       new int[undirectedEdgeVector.size()];
     final int[] undirectedEdgeTargetNodeIndices =
       new int[undirectedEdgeVector.size()];
     for (int i = 0; i < undirectedEdgeVector.size(); i++) {
-      int[] edge = (int[]) undirectedEdgeVector.get(i);
+      int[] edge = (int[]) (((Object[]) (undirectedEdgeVector.get(i)))[0]);
+      EdgeView edgeV =
+        (EdgeView) (((Object[]) (undirectedEdgeVector.get(i)))[1]);
       undirectedEdgeSourceNodeIndices[i] = edge[0];
-      undirectedEdgeTargetNodeIndices[i] = edge[1]; }
+      undirectedEdgeTargetNodeIndices[i] = edge[1];
+      edgeTranslation[i + directedEdgeSourceNodeIndices.length] = edgeV; }
     final double[] nodeXPositions = new double[numNodesInTopology];
     final double[] nodeYPositions = new double[numNodesInTopology];
     final double border =
@@ -304,6 +331,15 @@ public final class GraphConverter
     for (int i = 0; i < numNodesInTopology; i++) {
       nodeXPositions[i] = nodeTranslation[i].getXPosition() - xOff;
       nodeYPositions[i] = nodeTranslation[i].getYPosition() - yOff; }
+    final double[][] edgeAnchorXPositions = new double[numEdgesInTopology][];
+    final double[][] edgeAnchorYPositions = new double[numEdgesInTopology][];
+    for (int e = 0; e < edgeTranslation.length; e++) {
+      Point2D[] anchors = edgeTranslation[e].getBend().getDrawPoints();
+      edgeAnchorXPositions[e] = new double[anchors.length];
+      edgeAnchorYPositions[e] = new double[anchors.length];
+      for (int a = 0; a < anchors.length; a++) {
+        edgeAnchorXPositions[e][a] = anchors[a].getX() - xOff;
+        edgeAnchorYPositions[e][a] = anchors[a].getY() - yOff; } }
     return new MyCMutableGraphLayout(numNodesInTopology,
                                      directedEdgeSourceNodeIndices,
                                      directedEdgeTargetNodeIndices,
@@ -314,7 +350,10 @@ public final class GraphConverter
                                      nodeXPositions,
                                      nodeYPositions,
                                      mobility,
+                                     edgeAnchorXPositions,
+                                     edgeAnchorYPositions,
                                      nodeTranslation,
+                                     edgeTranslation,
                                      xOff,
                                      yOff);
   }
@@ -330,7 +369,7 @@ public final class GraphConverter
    * @exception IllegalArgumentException if <code>layout</code> is not
    *   a value that was previously returned by <code>getGraphCopy()</code>.
    **/
-  public static void updateCytoscapeLayout(MutableGraphLayout layout)
+  public static void updateCytoscapeLayout(MutablePolyEdgeGraphLayout layout)
   {
     MyCMutableGraphLayout myLayout;
     try { myLayout = (MyCMutableGraphLayout) layout; }
@@ -338,10 +377,27 @@ public final class GraphConverter
       throw new IllegalArgumentException
         ("layout is not a previous return value of getGraphCopy()"); }
     NodeView[] nodeTranslation = myLayout.m_nodeTranslation;
-    for (int i = 0; i < nodeTranslation.length; i++)
-      nodeTranslation[i].setOffset
-        (layout.getNodePosition(i, true) + myLayout.m_xOff,
-         layout.getNodePosition(i, false) + myLayout.m_yOff);
+    EdgeView[] edgeTranslation = myLayout.m_edgeTranslation;
+
+    // Remove edge anchor points before moving nodes.
+    for (int e = 0; e < edgeTranslation.length; e++)
+      edgeTranslation[e].getBend().removeAllHandles();
+
+    // Move nodes in underlying Giny.
+    for (int n = 0; n < nodeTranslation.length; n++)
+      nodeTranslation[n].setOffset
+        (layout.getNodePosition(n, true) + myLayout.m_xOff,
+         layout.getNodePosition(n, false) + myLayout.m_yOff);
+
+    // Set edge anchor points in underlying Giny.
+    for (int e = 0; e < edgeTranslation.length; e++) {
+      Vector anchorList = new Vector();
+      for (int a = 0; a < layout.getNumAnchors(e); a++)
+        anchorList.add
+          (new Point2D.Double
+           (layout.getAnchorPosition(e, a, true) + myLayout.m_xOff,
+            layout.getAnchorPosition(e, a, false) + myLayout.m_yOff));
+      edgeTranslation[e].getBend().setHandles(anchorList); }
   }
 
   /**
@@ -417,6 +473,12 @@ public final class GraphConverter
     {
       EdgeView currentEdge = (EdgeView) edgeIterator.next();
       edgeTranslation[edgeIndex] = currentEdge;
+      Point2D[] handles = currentEdge.getBend().getDrawPoints();
+      for (int h = 0; h < handles.length; h++) {
+        minX = Math.min(minX, handles[h].getX());
+        maxX = Math.max(maxX, handles[h].getX());
+        minY = Math.min(minY, handles[h].getY());
+        maxY = Math.max(maxY, handles[h].getY()); }
       edgeIndex++;
     }
     if (edgeIndex != numEdgesInTopology)

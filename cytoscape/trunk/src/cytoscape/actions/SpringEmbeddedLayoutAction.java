@@ -2,7 +2,7 @@ package cytoscape.actions;
 
 import cytoscape.Cytoscape;
 import cytoscape.foo.GraphConverter;
-import cytoscape.graph.layout.algorithm.MutableGraphLayout;
+import cytoscape.graph.layout.algorithm.MutablePolyEdgeGraphLayout;
 import cytoscape.graph.layout.impl.SpringEmbeddedLayouter2;
 import cytoscape.task.RunStoppable;
 import cytoscape.task.Stoppable;
@@ -24,7 +24,8 @@ public class SpringEmbeddedLayoutAction extends CytoscapeAction
 
   public void actionPerformed(ActionEvent e)
   {
-    final MutableGraphLayout nativeGraph = GraphConverter.getGraphCopy(0.0d);
+    final MutablePolyEdgeGraphLayout nativeGraph =
+      GraphConverter.getGraphCopy(0.0d);
     SpringEmbeddedLayouter2 layoutAlg =
       new SpringEmbeddedLayouter2(nativeGraph);
 
