@@ -1,0 +1,213 @@
+<project name="layout" default="layout" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init-layout">
+    <tstamp/>
+    <property name="layout.Name" value="layout"/>
+    <property name="layout.name" value="layout"/>
+    <property name="layout.version" value="0.1"/>
+    <property name="layout.year" value="200"/>
+
+    <echo message="Building ${layout.name} version ${layout.version}."/>
+
+    <!-- Inheritable properties -->
+    <property name="debug" value="on"/>
+    <property name="optimize" value="off"/>
+    <property name="deprecation" value="on"/>
+    <property name="nowarn" value="true"/>
+    <property name="fork" value="false"/>
+    <property name="layout.root.dir" value="."/>
+    <property name="layout.lib.dir" value="${layout.root.dir}/lib"/>
+    <property name="cytoscape.lib.dir" value="${layout.root.dir}/../../../../cytoscape/lib"/>
+    <property name="cytoscape.plugin.dir" value="${layout.root.dir}/../../../../cytoscape/plugins"/>
+    <path id="project.class.path">
+      <pathelement path="${java.class.path}/"/>
+    </path>
+
+    <!-- Define the directories -->
+    <property name="layout.root.dir" value="./"/>
+    <property name="layout.src.dir" value="${layout.root.dir}/src"/>
+    <property name="layout.classes.dir" value="${layout.root.dir}/classes"/>
+    <property name="layout.javadoc.dir" value="${javadoc.dir}/layout"/>
+    <property name="layout.resources.dir" value="${layout.root.dir}/resources"/>
+    <property name="layout.manifest.dir" value="${layout.root.dir}/manifest"/>
+    <property name="layout.packages" value="layout.*"/>
+    <!-- Subdirectory for test reports -->
+    <property name="layout.tests.reports.dir" value="${layout.root.dir}/reports/tests" />
+    <property name="cytoscape.lib" value="../../cytoscape/lib" />
+
+    <!-- Define the condition for compilation -->
+    <property name="cytoscape.jar" value="${layout.lib.dir}/cytoscape.jar"/>
+    <property name="colt.jar" value="${layout.lib.dir}/colt.jar"/>
+    
+
+    <condition property="cytoscape.present">
+      <and> 
+	  		<available file="${cytoscape.jar}"/> 
+				<available file="${colt.jar}"/> 
+		  </and>
+    </condition>
+
+    <!-- Define excludes for layout compile and javadoc -->
+    <property name="layout.excludes" value="**/notyet/*"/>
+    <property name="layout.tests.excludes" value="**/notyet/*"/>
+    <property name="layout.packages.excludes" value="**.test.*,**.notyet.*"/>
+
+    <path id="layout.project.class.path">
+      <pathelement location="${layout.classes.dir}"/>
+      <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/y.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/piccolo.jar"/>
+      <pathelement path="${project.class.path}/"/>
+    </path>
+
+   
+
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the layout project                                           -->
+  <!-- =================================================================== -->
+  <target name="compile-layout" depends="init-layout"  >
+
+   <echo message=" COMPILE layout "/>
+
+    <mkdir dir="${layout.classes.dir}"/>
+    <javac srcdir="${layout.src.dir}"
+           excludes="${layout.excludes}"
+           classpathref="layout.project.class.path"
+           destdir="${layout.classes.dir}"
+           debug="${debug}"
+           nowarn="${nowarn}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the layout.jar file                                           -->
+  <!-- =================================================================== -->
+  <target name="layout" depends="compile-layout"  >
+    <jar destfile="layout.jar" manifest="${layout.manifest.dir}/layout.manifest">
+      <fileset
+        dir="${layout.classes.dir}"
+        includes="**"/>
+      <fileset
+        dir="${layout.root.dir}/lib"
+        includes="resources/**"/>
+      <fileset 
+        dir="${layout.root.dir}/images"/>
+    </jar>
+    <copy todir="${layout.lib.dir}" file="layout.jar"/>
+    <copy todir="${cytoscape.plugin.dir}" file="layout.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the layout tests                                             -->
+  <!-- =================================================================== -->
+  <target name="compile-tests" depends="layout"  >
+    <mkdir dir="${layout.classes.dir}"/>
+    <javac srcdir="${layout.src.dir}"
+           includes="**/test/*"
+           excludes="${layout.tests.excludes}"
+           classpathref="layout.project.class.path"
+           destdir="${layout.classes.dir}"
+           debug="${debug}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the layout-tests.jar file                                     -->
+  <!-- =================================================================== -->
+  <target name="tests" depends="compile-tests"  >
+    <jar jarfile="layout-tests.jar"
+         basedir="${layout.classes.dir}"
+         includes="**/test/*"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Build all jars                                                      -->
+  <!-- =================================================================== -->
+  <target name="all" depends="layout"/>
+
+   <!-- =================================================================== -->
+  <!-- Run the Plugin                                                      -->
+  <!-- =================================================================== -->
+  <target name="run" depends="layout" >
+     
+     <java classname="cytoscape.cytoscape" 
+           classpathref="layout.project.class.path"
+           fork="true"/>
+           <arg line = "-y giny"/>
+           <arg line = "--JLD"/>
+           <arg line = "${layout.lib.dir}/layout.jar"/>
+           
+
+  </target>
+
+
+
+  <!-- =================================================================== -->
+  <!-- Runs the tests in layout-tests.jar                                    -->
+  <!-- =================================================================== -->
+  <target name="runtests" depends="tests"  >
+    <mkdir dir="${layout.tests.reports.dir}"/>
+    <junit
+       printsummary="yes"
+       haltonfailure="no"
+       dir="${layout.classes.dir}"
+       maxmemory="1G"
+    >
+      <formatter type="plain" usefile="true" />
+      <classpath refid="layout.project.class.path"/>
+      <!-- The junit task doesn't support 'if' so we test for JUnit here -->
+      <batchtest fork="yes" todir="${layout.tests.reports.dir}" if="junit.present">
+        <fileset
+           dir="${layout.classes.dir}"
+           includes="**/test/*"
+           excludes="${layout.tests.excludes}"
+        />
+      </batchtest>
+    </junit>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the API documentation                                       -->
+  <!-- =================================================================== -->
+  <target name="docs" depends="init-layout" >
+    <mkdir dir="${layout.javadoc.dir}"/>
+    <javadoc packagenames="${layout.packages}"
+             excludepackagenames="${layout.packages.excludes}"
+             sourcepath="${layout.src.dir}"
+             destdir="${layout.javadoc.dir}"
+             classpathref="layout.project.class.path"
+             author="true"
+             version="true"
+             use="true"
+             splitindex="true"
+             noindex="false"
+             windowtitle="${layout.Name} API"
+             doctitle="${layout.Name}"
+    />
+  </target>
+ 
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init-layout">
+    <delete dir="${layout.classes.dir}"/>
+    <delete file="layout.jar"/>
+    <delete file="layout-tests.jar"/>
+  </target>
+
+</project>
+
+<!-- End of file -->

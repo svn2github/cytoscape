@@ -1,0 +1,213 @@
+<project name="diff" default="diff" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init-diff">
+    <tstamp/>
+    <property name="diff.Name" value="diff"/>
+    <property name="diff.name" value="diff"/>
+    <property name="diff.version" value="0.1"/>
+    <property name="diff.year" value="200"/>
+
+    <echo message="Building ${diff.name} version ${diff.version}."/>
+
+    <!-- Inheritable properties -->
+    <property name="debug" value="on"/>
+    <property name="optimize" value="off"/>
+    <property name="deprecation" value="on"/>
+    <property name="nowarn" value="true"/>
+    <property name="fork" value="false"/>
+    <property name="diff.root.dir" value="."/>
+    <property name="diff.lib.dir" value="${diff.root.dir}/lib"/>
+    <property name="cytoscape.lib.dir" value="${diff.root.dir}/../../../../cytoscape/lib"/>
+    <property name="cytoscape.plugin.dir" value="${diff.root.dir}/../../../../cytoscape/plugins"/>
+    <path id="project.class.path">
+      <pathelement path="${java.class.path}/"/>
+    </path>
+
+    <!-- Define the directories -->
+    <property name="diff.root.dir" value="./"/>
+    <property name="diff.src.dir" value="${diff.root.dir}/src"/>
+    <property name="diff.classes.dir" value="${diff.root.dir}/classes"/>
+    <property name="diff.javadoc.dir" value="${javadoc.dir}/diff"/>
+    <property name="diff.resources.dir" value="${diff.root.dir}/resources"/>
+    <property name="diff.manifest.dir" value="${diff.root.dir}/manifest"/>
+    <property name="diff.packages" value="diff.*"/>
+    <!-- Subdirectory for test reports -->
+    <property name="diff.tests.reports.dir" value="${diff.root.dir}/reports/tests" />
+    <property name="cytoscape.lib" value="../../cytoscape/lib" />
+
+    <!-- Define the condition for compilation -->
+    <property name="cytoscape.jar" value="${diff.lib.dir}/cytoscape.jar"/>
+    <property name="colt.jar" value="${diff.lib.dir}/colt.jar"/>
+    
+
+    <condition property="cytoscape.present">
+      <and> 
+	  		<available file="${cytoscape.jar}"/> 
+				<available file="${colt.jar}"/> 
+		  </and>
+    </condition>
+
+    <!-- Define excludes for diff compile and javadoc -->
+    <property name="diff.excludes" value="**/notyet/*"/>
+    <property name="diff.tests.excludes" value="**/notyet/*"/>
+    <property name="diff.packages.excludes" value="**.test.*,**.notyet.*"/>
+
+    <path id="diff.project.class.path">
+      <pathelement location="${diff.classes.dir}"/>
+      <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/y.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/piccolo.jar"/>
+      <pathelement location="${cytoscape.plugin.dir}/filter.jar"/>
+      <pathelement path="${project.class.path}/"/>
+    </path>
+
+  
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the diff project                                           -->
+  <!-- =================================================================== -->
+  <target name="compile-diff" depends="init-diff"  >
+
+   <echo message=" COMPILE diff "/>
+
+    <mkdir dir="${diff.classes.dir}"/>
+    <javac srcdir="${diff.src.dir}"
+           excludes="${diff.excludes}"
+           classpathref="diff.project.class.path"
+           destdir="${diff.classes.dir}"
+           debug="${debug}"
+           nowarn="${nowarn}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the diff.jar file                                           -->
+  <!-- =================================================================== -->
+  <target name="diff" depends="compile-diff"  >
+    <jar destfile="diff.jar" manifest="${diff.manifest.dir}/diff.manifest">
+      <fileset
+        dir="${diff.classes.dir}"
+        includes="**"/>
+      <fileset
+        dir="${diff.root.dir}/lib"
+        includes="resources/**"/>
+      <fileset 
+        dir="${diff.root.dir}/images"/>
+    </jar>
+    <copy todir="${diff.lib.dir}" file="diff.jar"/>
+    <copy todir="${cytoscape.plugin.dir}" file="diff.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the diff tests                                             -->
+  <!-- =================================================================== -->
+  <target name="compile-tests" depends="diff"  >
+    <mkdir dir="${diff.classes.dir}"/>
+    <javac srcdir="${diff.src.dir}"
+           includes="**/test/*"
+           excludes="${diff.tests.excludes}"
+           classpathref="diff.project.class.path"
+           destdir="${diff.classes.dir}"
+           debug="${debug}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the diff-tests.jar file                                     -->
+  <!-- =================================================================== -->
+  <target name="tests" depends="compile-tests"  >
+    <jar jarfile="diff-tests.jar"
+         basedir="${diff.classes.dir}"
+         includes="**/test/*"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Build all jars                                                      -->
+  <!-- =================================================================== -->
+  <target name="all" depends="diff"/>
+
+   <!-- =================================================================== -->
+  <!-- Run the Plugin                                                      -->
+  <!-- =================================================================== -->
+  <target name="run" depends="diff" >
+     
+     <java classname="cytoscape.cytoscape" 
+           classpathref="diff.project.class.path"
+           fork="true"/>
+           <arg line = "-y giny"/>
+           <arg line = "--JLD"/>
+           <arg line = "${diff.lib.dir}/diff.jar"/>
+           
+
+  </target>
+
+
+
+  <!-- =================================================================== -->
+  <!-- Runs the tests in diff-tests.jar                                    -->
+  <!-- =================================================================== -->
+  <target name="runtests" depends="tests"  >
+    <mkdir dir="${diff.tests.reports.dir}"/>
+    <junit
+       printsummary="yes"
+       haltonfailure="no"
+       dir="${diff.classes.dir}"
+       maxmemory="1G"
+    >
+      <formatter type="plain" usefile="true" />
+      <classpath refid="diff.project.class.path"/>
+      <!-- The junit task doesn't support 'if' so we test for JUnit here -->
+      <batchtest fork="yes" todir="${diff.tests.reports.dir}" if="junit.present">
+        <fileset
+           dir="${diff.classes.dir}"
+           includes="**/test/*"
+           excludes="${diff.tests.excludes}"
+        />
+      </batchtest>
+    </junit>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the API documentation                                       -->
+  <!-- =================================================================== -->
+  <target name="docs" depends="init-diff" >
+    <mkdir dir="${diff.javadoc.dir}"/>
+    <javadoc packagenames="${diff.packages}"
+             excludepackagenames="${diff.packages.excludes}"
+             sourcepath="${diff.src.dir}"
+             destdir="${diff.javadoc.dir}"
+             classpathref="diff.project.class.path"
+             author="true"
+             version="true"
+             use="true"
+             splitindex="true"
+             noindex="false"
+             windowtitle="${diff.Name} API"
+             doctitle="${diff.Name}"
+    />
+  </target>
+ 
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init-diff">
+    <delete dir="${diff.classes.dir}"/>
+    <delete file="diff.jar"/>
+    <delete file="diff-tests.jar"/>
+  </target>
+
+</project>
+
+<!-- End of file -->

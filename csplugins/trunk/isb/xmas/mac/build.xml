@@ -1,0 +1,212 @@
+<project name="mac" default="mac" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init-mac">
+    <tstamp/>
+    <property name="mac.Name" value="mac"/>
+    <property name="mac.name" value="mac"/>
+    <property name="mac.version" value="0.1"/>
+    <property name="mac.year" value="200"/>
+
+    <echo message="Building ${mac.name} version ${mac.version}."/>
+
+    <!-- Inheritable properties -->
+    <property name="debug" value="on"/>
+    <property name="optimize" value="off"/>
+    <property name="deprecation" value="on"/>
+    <property name="nowarn" value="true"/>
+    <property name="fork" value="false"/>
+    <property name="mac.root.dir" value="."/>
+    <property name="mac.lib.dir" value="${mac.root.dir}/lib"/>
+    <property name="cytoscape.lib.dir" value="${mac.root.dir}/../../../../cytoscape/lib"/>
+    <property name="cytoscape.plugin.dir" value="${mac.root.dir}/../../../../cytoscape/plugins"/>
+    <path id="project.class.path">
+      <pathelement path="${java.class.path}/"/>
+    </path>
+
+    <!-- Define the directories -->
+    <property name="mac.root.dir" value="./"/>
+    <property name="mac.src.dir" value="${mac.root.dir}/src"/>
+    <property name="mac.classes.dir" value="${mac.root.dir}/classes"/>
+    <property name="mac.javadoc.dir" value="${javadoc.dir}/mac"/>
+    <property name="mac.resources.dir" value="${mac.root.dir}/resources"/>
+    <property name="mac.manifest.dir" value="${mac.root.dir}/manifest"/>
+    <property name="mac.packages" value="mac.*"/>
+    <!-- Subdirectory for test reports -->
+    <property name="mac.tests.reports.dir" value="${mac.root.dir}/reports/tests" />
+    <property name="cytoscape.lib" value="../../cytoscape/lib" />
+
+    <!-- Define the condition for compilation -->
+    <property name="cytoscape.jar" value="${mac.lib.dir}/cytoscape.jar"/>
+    <property name="colt.jar" value="${mac.lib.dir}/colt.jar"/>
+    
+
+    <condition property="cytoscape.present">
+      <and> 
+	  		<available file="${cytoscape.jar}"/> 
+				<available file="${colt.jar}"/> 
+		  </and>
+    </condition>
+
+    <!-- Define excludes for mac compile and javadoc -->
+    <property name="mac.excludes" value="**/notyet/*"/>
+    <property name="mac.tests.excludes" value="**/notyet/*"/>
+    <property name="mac.packages.excludes" value="**.test.*,**.notyet.*"/>
+
+    <path id="mac.project.class.path">
+      <pathelement location="${mac.classes.dir}"/>
+      <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/y.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/piccolo.jar"/>
+      <pathelement path="${project.class.path}/"/>
+    </path>
+
+  
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the mac project                                           -->
+  <!-- =================================================================== -->
+  <target name="compile-mac" depends="init-mac"  >
+
+   <echo message=" COMPILE mac "/>
+
+    <mkdir dir="${mac.classes.dir}"/>
+    <javac srcdir="${mac.src.dir}"
+           excludes="${mac.excludes}"
+           classpathref="mac.project.class.path"
+           destdir="${mac.classes.dir}"
+           debug="${debug}"
+           nowarn="${nowarn}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the mac.jar file                                           -->
+  <!-- =================================================================== -->
+  <target name="mac" depends="compile-mac"  >
+    <jar destfile="mac.jar" manifest="${mac.manifest.dir}/mac.manifest">
+      <fileset
+        dir="${mac.classes.dir}"
+        includes="**"/>
+      <fileset
+        dir="${mac.root.dir}/lib"
+        includes="resources/**"/>
+      <fileset 
+        dir="${mac.root.dir}/images"/>
+    </jar>
+    <copy todir="${mac.lib.dir}" file="mac.jar"/>
+    <copy todir="${cytoscape.plugin.dir}" file="mac.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the mac tests                                             -->
+  <!-- =================================================================== -->
+  <target name="compile-tests" depends="mac"  >
+    <mkdir dir="${mac.classes.dir}"/>
+    <javac srcdir="${mac.src.dir}"
+           includes="**/test/*"
+           excludes="${mac.tests.excludes}"
+           classpathref="mac.project.class.path"
+           destdir="${mac.classes.dir}"
+           debug="${debug}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the mac-tests.jar file                                     -->
+  <!-- =================================================================== -->
+  <target name="tests" depends="compile-tests"  >
+    <jar jarfile="mac-tests.jar"
+         basedir="${mac.classes.dir}"
+         includes="**/test/*"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Build all jars                                                      -->
+  <!-- =================================================================== -->
+  <target name="all" depends="mac"/>
+
+   <!-- =================================================================== -->
+  <!-- Run the Plugin                                                      -->
+  <!-- =================================================================== -->
+  <target name="run" depends="mac" >
+     
+     <java classname="cytoscape.cytoscape" 
+           classpathref="mac.project.class.path"
+           fork="true"/>
+           <arg line = "-y giny"/>
+           <arg line = "--JLD"/>
+           <arg line = "${mac.lib.dir}/mac.jar"/>
+           
+
+  </target>
+
+
+
+  <!-- =================================================================== -->
+  <!-- Runs the tests in mac-tests.jar                                    -->
+  <!-- =================================================================== -->
+  <target name="runtests" depends="tests"  >
+    <mkdir dir="${mac.tests.reports.dir}"/>
+    <junit
+       printsummary="yes"
+       haltonfailure="no"
+       dir="${mac.classes.dir}"
+       maxmemory="1G"
+    >
+      <formatter type="plain" usefile="true" />
+      <classpath refid="mac.project.class.path"/>
+      <!-- The junit task doesn't support 'if' so we test for JUnit here -->
+      <batchtest fork="yes" todir="${mac.tests.reports.dir}" if="junit.present">
+        <fileset
+           dir="${mac.classes.dir}"
+           includes="**/test/*"
+           excludes="${mac.tests.excludes}"
+        />
+      </batchtest>
+    </junit>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the API documentation                                       -->
+  <!-- =================================================================== -->
+  <target name="docs" depends="init-mac" >
+    <mkdir dir="${mac.javadoc.dir}"/>
+    <javadoc packagenames="${mac.packages}"
+             excludepackagenames="${mac.packages.excludes}"
+             sourcepath="${mac.src.dir}"
+             destdir="${mac.javadoc.dir}"
+             classpathref="mac.project.class.path"
+             author="true"
+             version="true"
+             use="true"
+             splitindex="true"
+             noindex="false"
+             windowtitle="${mac.Name} API"
+             doctitle="${mac.Name}"
+    />
+  </target>
+ 
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init-mac">
+    <delete dir="${mac.classes.dir}"/>
+    <delete file="mac.jar"/>
+    <delete file="mac-tests.jar"/>
+  </target>
+
+</project>
+
+<!-- End of file -->

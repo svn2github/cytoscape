@@ -243,8 +243,7 @@ public class NetworkManagement
     } else {
       // create
       String network_title = newNetworkField.getText();
-      CyNetwork network = Cytoscape.createNetwork();
-      network.setTitle( network_title );
+      CyNetwork network = Cytoscape.createNetwork( network_title );
       network.restoreNodes( nodes, restore_incident_edges );
     }
     
