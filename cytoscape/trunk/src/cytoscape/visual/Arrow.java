@@ -55,6 +55,8 @@ public class Arrow implements Serializable {
     public int getGinyArrow() {
         if (name.equals("DIAMOND") || name.equals("WHITE_DIAMOND")) {
             return EdgeView.DIAMOND_END;
+        } else if (name.equalsIgnoreCase("short")) {
+            return EdgeView.T_END;
         } else {
             return EdgeView.ARROW_END;
         }
