@@ -1,89 +1,81 @@
 package cytoscape.graph.layout.impl;
 
-import com.nerius.math.geom.Point3D;
 import com.nerius.math.xform.AffineTransform3D;
 import com.nerius.math.xform.AxisRotation3D;
-import com.nerius.math.xform.Scale3D;
 import com.nerius.math.xform.Translation3D;
 import cytoscape.graph.layout.algorithm.MutableGraphLayout;
 
 public final class RotationLayouter
 {
 
-  // No constructor.
-  private RotationLayouter() {}
+  private final MutableGraphLayout m_graph;
+  private final Translation3D m_translationToOrig;
+  private final Translation3D m_translationFromOrig;
 
-  public static void rotateGraph(MutableGraphLayout graph,
-                                 double radians)
+  /**
+   * @exception IllegalStateException
+   *   if the minimum bounding rectangle containing all movable nodes
+   *   is not fully free to rotate around its center while staying within
+   *   allowable node positions for specified
+   *   <code>MutableGraphLayout</code>.
+   **/
+  public RotationLayouter(MutableGraphLayout graph)
   {
+    m_graph = graph;
     double xMin = Double.MAX_VALUE; double xMax = Double.MIN_VALUE;
     double yMin = Double.MAX_VALUE; double yMax = Double.MIN_VALUE;
-    for (int i = 0; i < graph.getNumNodes(); i++)
+    for (int i = 0; i < m_graph.getNumNodes(); i++)
     {
-      if (!graph.isMovableNode(i)) continue;
-      double nodeXPosition = graph.getNodePosition(i, true);
-      double nodeYPosition = graph.getNodePosition(i, false);
+      if (!m_graph.isMovableNode(i)) continue;
+      double nodeXPosition = m_graph.getNodePosition(i, true);
+      double nodeYPosition = m_graph.getNodePosition(i, false);
       xMin = Math.min(xMin, nodeXPosition);
       xMax = Math.max(xMax, nodeXPosition);
       yMin = Math.min(yMin, nodeYPosition);
       yMax = Math.max(yMax, nodeYPosition);
     }
-    if (xMax < 0) return; // No nodes are movable.
-    final double xRectCenter = (xMin + xMax) / 2.0d;
-    final double yRectCenter = (yMin + yMax) / 2.0d;
-    final Translation3D toOrig =
-      new Translation3D(-xRectCenter, -yRectCenter, 0.0d);
-    final AxisRotation3D rotation =
-      new AxisRotation3D(AxisRotation3D.Z_AXIS, radians);
-    final Translation3D fromOrig =
-      new Translation3D(xRectCenter, yRectCenter, 0.0d);
-    AffineTransform3D tentativeTransform =
-      toOrig.concatenatePost(rotation.concatenatePost(fromOrig));
-    Point3D[] boundaryPoints = new Point3D[] {
-      new Point3D(xMin, yMin, 0.0d),
-      new Point3D(xMin, yMax, 0.0d),
-      new Point3D(xMax, yMax, 0.0d),
-      new Point3D(xMax, yMin, 0.0d) };
-    xMin = Double.MAX_VALUE; xMax = Double.MIN_VALUE;
-    yMin = Double.MAX_VALUE; yMax = Double.MIN_VALUE;
-    for (int i = 0; i < boundaryPoints.length; i++) {
-      Point3D p = tentativeTransform.transform(boundaryPoints[i]);
-      xMin = Math.min(xMin, p.x); xMax = Math.max(xMax, p.x);
-      yMin = Math.min(yMin, p.y); yMax = Math.max(yMax, p.y); }
-    double scaleFactor = 1.0d;
-    if (xMin < 0.0d)
-      scaleFactor = (xRectCenter - 0.0d) / (xRectCenter - xMin);
-    if (xMax > graph.getMaxWidth())
-      scaleFactor = Math.min(scaleFactor,
-                             (xRectCenter - graph.getMaxWidth()) /
-                             (xRectCenter - xMax));
-    if (yMin < 0.0d)
-      scaleFactor = Math.min(scaleFactor,
-                             (yRectCenter - 0.0d) / (yRectCenter - yMin));
-    if (yMax > graph.getMaxHeight())
-      scaleFactor = Math.min(scaleFactor,
-                             (yRectCenter - graph.getMaxHeight()) /
-                             (yRectCenter - yMax));
-    final Scale3D scale = new Scale3D(scaleFactor, scaleFactor, 1.0d);
-
-    // Finally, we've found the transform we're going to use to move
-    // nodes.  Everything up to now was just a calculation to arrive at
-    // a suitable realTransform.
-    final AffineTransform3D realTransform =
-      toOrig.concatenatePost(rotation.concatenatePost(scale.concatenatePost
-                                                      (fromOrig)));
-
-    final double[] pointBuff = new double[3];
-    for (int i = 0; i < graph.getNumNodes(); i++)
+    if (xMax < 0) // No nodes are movable.
     {
-      if (!graph.isMovableNode(i)) continue;
-      pointBuff[0] = graph.getNodePosition(i, true);
-      pointBuff[1] = graph.getNodePosition(i, false);
-      realTransform.transformArr(pointBuff);
-      // If we later find that, because of floating-point rounding errors,
-      // some moved points fall outside of boundary, then we should adjust
-      // our scale transform to make it shrink the graph by epsilon more.
-      graph.setNodePosition(i, pointBuff[0], pointBuff[1]);
+      m_translationToOrig = null;
+      m_translationFromOrig = null;
+    }
+    else
+    {
+      final double xRectCenter = (xMin + xMax) / 2.0d;
+      final double yRectCenter = (yMin + yMax) / 2.0d;
+      double rectWidth = xMax - xMin;
+      double rectHeight = yMax - yMin;
+      double hypotenuse =
+        0.5d * Math.sqrt(rectWidth * rectWidth + rectHeight * rectHeight);
+      if (xRectCenter - hypotenuse < 0.0d ||
+          xRectCenter + hypotenuse > m_graph.getMaxWidth() ||
+          yRectCenter - hypotenuse < 0.0d ||
+          yRectCenter + hypotenuse > m_graph.getMaxHeight())
+        throw new IllegalStateException
+          ("minimum bounding rectangle of movable nodes not free to rotate " +
+           "within MutableGraphLayout boundaries");
+      m_translationToOrig =
+        new Translation3D(-xRectCenter, -yRectCenter, 0.0d);
+      m_translationFromOrig =
+        new Translation3D(xRectCenter, yRectCenter, 0.0d);
+    }
+  }
+
+  private final double[] m_pointBuff = new double[3];
+
+  public void rotateGraph(double radians)
+  {
+    if (m_translationToOrig == null) return;
+    final AffineTransform3D xform = m_translationToOrig.concatenatePost
+      ((new AxisRotation3D(AxisRotation3D.Z_AXIS, radians)).concatenatePost
+       (m_translationFromOrig));
+    for (int i = 0; i < m_graph.getNumNodes(); i++)
+    {
+      if (!m_graph.isMovableNode(i)) continue;
+      m_pointBuff[0] = m_graph.getNodePosition(i, true);
+      m_pointBuff[1] = m_graph.getNodePosition(i, false);
+      xform.transformArr(m_pointBuff);
+      m_graph.setNodePosition(i, m_pointBuff[0], m_pointBuff[1]);
     }
   }
 
