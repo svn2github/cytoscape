@@ -22,16 +22,13 @@ import cytoscape.data.Semantics;
 import cytoscape.view.CyWindow;
 import cytoscape.view.GraphViewController;
 /**
- * This is a sample Cytoscape plugin using Giny graph structures. For each
- * currently selected node in the graph view, the action method of this plugin
- * additionally selects the neighbors of that node if their canonical name ends
- * with the same letter. (For yeast genes, whose names are of the form 'YOR167C',
- * this selects genes that are on the same DNA strand). This operation was
- * chosen to be illustrative, not necessarily useful.
- *
- * Note that selection is a property of the view of the graph, while neighbors
- * are a property of the graph itself. Thus this plugin must access both the
- * graph and its view.
+ * This is a plugin to separate a compatability graph into two
+ * separate graphs, one for each species. It tries to lay the graphs
+ * out such that homologous nodes are in a similar position in each graph.
+ * In order to achieve this, it uses a force-directed layout, where the relevant
+ * forces are repulsion between nodes, attraction between nodes connected by edge
+ * and psuedo-attraction between homologous nodes (node will actuall be attracted to
+ * that is "offset" away from the real node.
  */
 public class DualLayout extends AbstractPlugin{
     
