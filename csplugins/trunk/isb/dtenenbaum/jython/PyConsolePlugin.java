@@ -7,18 +7,19 @@
 package csplugins.isb.dtenenbaum.jython;
 //----------------------------------------------------------------------------------------
 
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
-import javax.swing.*;
+import javax.swing.Action;
+import javax.swing.JFrame;
 
-import java.awt.*;
-
-import cytoscape.*;
-import cytoscape.plugin.*;
-import cytoscape.util.*;
-
-// we're now depending on the sharedData plugin
-import csplugins.isb.dtenenbaum.sharedData.*;
+import csplugins.isb.dtenenbaum.sharedData.SharedDataSingleton;
+import csplugins.isb.pshannon.py.ConsoleMenubar;
+import csplugins.isb.pshannon.py.ExitAction;
+import cytoscape.Cytoscape;
+import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.util.CytoscapeAction;
 
 
 //bla bla freaking bla y mas
@@ -98,10 +99,15 @@ public class PyConsolePlugin extends CytoscapePlugin {
 			currentGroup.enumerate(listOfThreads);
 			for (int i = 0; i < numThreads; i++) {
 				if (null != listOfThreads[i]) { // in case the list has changed since we created it
+					System.out.println("thread name = " + listOfThreads[i].getName()+", alive? " +
+							listOfThreads[i].isAlive());
 					if ("jythonConsoleThread".equals(listOfThreads[i].getName())) {
-						JFrame cFrame = (JFrame)singleton.get("ConsoleFrame");
-						cFrame.requestFocus();
-						return;
+						if (listOfThreads[i].isAlive()) {
+							System.out.println("found a live console thread");
+							JFrame cFrame = (JFrame)singleton.get("ConsoleFrame");
+							cFrame.requestFocus();
+							return;
+						}
 					}
 				}
 			}
@@ -115,7 +121,18 @@ public class PyConsolePlugin extends CytoscapePlugin {
 			consoleThread = new Thread(pythonConsole, "jythonConsoleThread");
 			consoleThread.start();
 			consoleFrame = new JFrame("Jython Console");
+			consoleFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+			    public void windowClosing(java.awt.event.WindowEvent e) {
+			    	System.out.println("You clicked on the close box.");
+			    	ExitAction ea = new ExitAction(consoleFrame);
+			    	ea.actionPerformed(null);
+			    	
+			    }
+			});
+
+
 			singleton.put("ConsoleFrame",consoleFrame);
+			consoleFrame.setJMenuBar(new ConsoleMenubar(pythonConsole,consoleFrame));
 			consoleFrame.getContentPane().add(
 				pythonConsole.getConsolePanel(),
 				BorderLayout.CENTER);

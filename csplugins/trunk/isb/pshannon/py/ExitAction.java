@@ -11,11 +11,26 @@ import javax.swing.*;
 
 public class ExitAction extends AbstractAction {
 
-   public ExitAction() {
+   private JFrame parent;
+   
+   public ExitAction(JFrame parent) {
       super("Exit");
+   	  this.parent = parent;
    }
 
    public void actionPerformed(ActionEvent parm1) {
-      System.exit(0);
+
+    ThreadGroup currentGroup = Thread.currentThread().getThreadGroup();
+	int numThreads = currentGroup.activeCount();
+	Thread[] listOfThreads = new Thread[numThreads];
+	currentGroup.enumerate(listOfThreads);
+    for (int i = 0; i < listOfThreads.length; i++) {
+		if (null != listOfThreads[i]) {
+			if ("jythonConsoleThread".equals(listOfThreads[i].getName())) {
+				listOfThreads[i].stop(); // yes, i know.
+			}
+		}
+	}
+   	if (null != parent)parent.dispose();
    }
 }

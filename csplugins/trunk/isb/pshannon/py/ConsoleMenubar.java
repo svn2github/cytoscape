@@ -15,20 +15,27 @@ public class ConsoleMenubar extends JMenuBar {
    JMenu mnuEdit = new JMenu("Edit");
    JMenu mnuHelp = new JMenu("Help");
    SPyConsole _console = null;
-
+   JFrame parent = null;
+   
    public ConsoleMenubar(SPyConsole con) {
+   	   this(con, null);
+   }
+   
+   public ConsoleMenubar(SPyConsole con, JFrame parent) {
       _console = con;
+      this.parent = parent;
 	  JMenuItem        menuItem;
+	  
 	  
       mnuFile.addSeparator();
 
       // Add the menu items for the File menu
       mnuFile.add(new LoadScriptAction(_console));
-      mnuFile.add(new SaveScriptAction(_console,false));
+      //mnuFile.add(new SaveScriptAction(_console,false));
       mnuFile.add(new SaveScriptAction(_console,true));
       
       mnuFile.addSeparator();
-      mnuFile.add(new ExitAction());
+      mnuFile.add(new ExitAction(parent));
       this.add(mnuFile);
 
 	  menuItem = mnuEdit.add(new JMenuItem("Cut"));

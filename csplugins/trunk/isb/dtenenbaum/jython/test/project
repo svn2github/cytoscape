@@ -1,4 +1,4 @@
 props=props
 vprops=vizmap.props
-sif=network.sif
-noe=carrier.noa
+#sif=network.sif
+#noa=carrier.noa
