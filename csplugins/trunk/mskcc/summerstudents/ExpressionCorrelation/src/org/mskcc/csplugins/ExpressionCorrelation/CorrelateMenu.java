@@ -48,9 +48,9 @@ public class CorrelateMenu extends CytoscapePlugin {
         //set-up menu options in plugins menu
         JMenu menu = Cytoscape.getDesktop().getCyMenus().getOperationsMenu();
         JMenuItem item;
-        //MCODE submenu
-        JMenu submenu = new JMenu("Expression Correlation");
-        item = new JMenuItem("Construct Similarity Network");
+        //submenu
+        JMenu submenu = new JMenu("Expression Correlation Network");
+        item = new JMenuItem("Construct Correlation Network");
         item.addActionListener(new CorrelateMenuListener());
         submenu.add(item);
         JMenu subsubmenu = new JMenu("Advanced Options");
@@ -65,10 +65,13 @@ public class CorrelateMenu extends CytoscapePlugin {
         item.addActionListener(new CorrelateMenuListener());
         subsubmenu.add(item);
         submenu.add(subsubmenu);
-        //About box
         item = new JMenuItem("Gene Network: Using Defaults");
         item.addActionListener(new CorrelateMenuListener());
         subsubmenu.add(item);
+        //About box
+        item = new JMenuItem("About");
+        item.addActionListener(new ExpressionCorrelationAboutAction());
+        submenu.add(item);
         menu.add(submenu);
     }
 
