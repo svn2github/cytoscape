@@ -1025,7 +1025,7 @@ class FGraphPerspective implements GraphPerspective
     // Don't call this method from outside this inner class.
     // Returns 0 if and only if hiding this node was unsuccessful.
     // Otherwise returns the input parameter, the root node index.
-    private int _hideNode(Object source, int rootGraphNodeInx)
+    private int _hideNode(Object source, final int rootGraphNodeInx)
     {
       if (!(rootGraphNodeInx < 0)) return 0;
       final int nativeNodeIndex =
@@ -1034,18 +1034,20 @@ class FGraphPerspective implements GraphPerspective
       final IntEnumerator nativeEdgeInxEnum =
         m_graph.adjacentEdges(nativeNodeIndex, true, true, true);
       if (nativeEdgeInxEnum == null) return 0;
-      final Edge[] edgeRemoveArr = new Edge[nativeEdgeInxEnum.numRemaining()];
-      for (int i = 0; i < edgeRemoveArr.length; i++) {
-        final int rootGraphEdgeInx =
-          m_nativeToRootEdgeInxMap.getIntAtIndex(nativeEdgeInxEnum.nextInt());
-        // The edge returned by the RootGraph won't be null even if this
-        // hideNode operation is triggered by a node being removed from
-        // the underlying RootGraph - this is because when a node is removed
-        // from an underlying RootGraph, all touching edges to that node are
-        // removed first from that RootGraph, and corresponding edge removal
-        // events are fired before the node removal event is fired.
-        edgeRemoveArr[i] = m_root.getEdge(rootGraphEdgeInx); }
-      hideEdges(source, edgeRemoveArr);
+      if (nativeEdgeInxEnum.numRemaining() > 0) {
+        final Edge[] edgeRemoveArr =
+          new Edge[nativeEdgeInxEnum.numRemaining()];
+        for (int i = 0; i < edgeRemoveArr.length; i++) {
+          final int rootGraphEdgeInx = m_nativeToRootEdgeInxMap.getIntAtIndex
+            (nativeEdgeInxEnum.nextInt());
+          // The edge returned by the RootGraph won't be null even if this
+          // hideNode operation is triggered by a node being removed from
+          // the underlying RootGraph - this is because when a node is removed
+          // from an underlying RootGraph, all touching edges to that node are
+          // removed first from that RootGraph, and corresponding edge removal
+          // events are fired before the node removal event is fired.
+          edgeRemoveArr[i] = m_root.getEdge(rootGraphEdgeInx); }
+        hideEdges(source, edgeRemoveArr); }
       // nativeNodeIndex tested for validity with adjacentEdges() above.
       if (m_graph.removeNode(nativeNodeIndex)) {
         m_rootToNativeNodeInxMap.put(~rootGraphNodeInx, Integer.MAX_VALUE);
