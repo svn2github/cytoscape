@@ -9,7 +9,7 @@
 
    <path id = "classpath_compile">
       <pathelement path = "${build}"/>
-      <pathelement path = "../../../../cytoscape/build/classes"/>
+      <pathelement path = "../../../../cytoscape/build/cytoscape.jar"/>
       <fileset dir = "${lib}">
           <include name = "**/*.jar"/>
        </fileset>
@@ -17,7 +17,7 @@
 
    <path id = "classpath_run">
       <pathelement path = "${build}"/>
-      <pathelement path = "../../../../cytoscape/dist/cytoscape.jar"/>
+      <pathelement path = "../../../../cytoscape/build/cytoscape.jar"/>
       <fileset dir = "${lib}">
           <include name = "**/*.jar"/>
        </fileset>
