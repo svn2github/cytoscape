@@ -400,7 +400,7 @@ public class VizMapUI extends JDialog {
 			currentStyle = newStyle;
 			VMM.setVisualStyle(currentStyle);
                         //this call will apply the new visual style
-			VMM.getNetworkView().redrawGraph();
+			VMM.getNetworkView().redrawGraph(false, true);
 			if (styleDefUI.isShowing())
 			    visualStyleChanged();
 			else
@@ -497,7 +497,7 @@ public class VizMapUI extends JDialog {
     // apply button action listener
     private class ApplyAction extends AbstractAction {
 	public void actionPerformed(ActionEvent e) {
-	    VMM.getNetworkView().redrawGraph();
+	    VMM.getNetworkView().redrawGraph(false, true);
 	}
     }
 

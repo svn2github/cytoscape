@@ -516,7 +516,7 @@ public class VizMapAttrTab extends VizMapTab {
      */
     protected class CalculatorUIListener implements ChangeListener {
 	public void stateChanged(ChangeEvent e) {
-	    VMM.getNetworkView().redrawGraph();
+	    VMM.getNetworkView().redrawGraph(false, true);
 	}
     }
 
@@ -670,7 +670,7 @@ public class VizMapAttrTab extends VizMapTab {
 	refreshUI();
 	//mainUIDialog.pack();
 	//mainUIDialog.repaint();
-	VMM.getNetworkView().redrawGraph();
+	VMM.getNetworkView().redrawGraph(false, true);
     }
 
     /**
@@ -759,7 +759,7 @@ public class VizMapAttrTab extends VizMapTab {
 	    nodeCalc.setDefaultNodeFontSize(((Double) c).floatValue());
 	    break;
 	}
-	VMM.getNetworkView().redrawGraph();
+	VMM.getNetworkView().redrawGraph(false, true);
     }	
 
     /**
