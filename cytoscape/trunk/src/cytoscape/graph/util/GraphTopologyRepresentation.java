@@ -23,8 +23,11 @@ public class GraphTopologyRepresentation implements GraphTopology
    * an instance of this class.  Furthermore, an instance of this class
    * never modifies any of the arrays passed into the constructor.<p>
    * The methods on this class are <code>final</code> and this class does
-   * not expose any mutable functionality; therefore, it is guaranteed
-   * that an instance of a subclass represents a non-mutable graph topology.
+   * not expose any mutable functionality; member variables are
+   * declared <code>private</code>.  Therefore, it is guaranteed
+   * that an instance of a subclass of
+   * <code>GraphTopologyRepresentation</code>
+   * represents a non-mutable graph topology.
    *
    * @param numNodes
    *   <blockquote>the number of nodes in this graph, as defined by
