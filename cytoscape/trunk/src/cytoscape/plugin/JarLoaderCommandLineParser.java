@@ -10,14 +10,18 @@ import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
 import cytoscape.CytoscapeObj;
 import cytoscape.actions.LoadPluginDirectoryAction;
-
+import cytoscape.actions.LoadPluginListAction;
+//----------------------------------------------------------------------------
 /**
  * This class searches the command-line arguments for arguments specifying
  * directories to search for plugins. The option "--JLD <string>" is used
- * to specify a plugin directory, while the option "--JLH" prints a usage
- * statement for these two options.
+ * to specify a plugin directory. The option "--JLD <URL> is used to specify
+ * the URL of a plugin jar, while the option "--JLL <URL>" is used to specify
+ * a list of plugin jar URLs. Finally, the option "--JLH" prints a usage
+ * statement for these options.
  *
- * If a directory is found, it is passed to an instance of JarPLuginDirectoryAction.
+ * If a directory is found, it is passed to an instance of LoadPLuginDirectoryAction.
+ * If a plugin list is found, it is passed to an instance of LoadPluginListAction.
  */
 public class JarLoaderCommandLineParser {
     protected CytoscapeObj cyObj;
@@ -37,7 +41,9 @@ public class JarLoaderCommandLineParser {
      */
     public void usage() {
         System.err.println("jarLoader command line arguments:");
-        System.err.println("    --JLD  <string>   directory for .jar files");
+        System.err.println("    --JLD  <string>   local directory containing .jar files");
+        System.err.println("    --JLW  <URL>      URL of a .jar file to load");
+        System.err.println("    --JLL  <URL>      URL of a list of .jar files to load");
         System.err.println("    --JLH             prints this help");
     }
 
@@ -49,9 +55,11 @@ public class JarLoaderCommandLineParser {
     public void parseArgs(String[] args) {
         if (args == null || args.length == 0) {return;}
 
-        LongOpt [] longOpts = new LongOpt [2];
+        LongOpt [] longOpts = new LongOpt [4];
         longOpts[0] = new LongOpt ("JLD",  LongOpt.REQUIRED_ARGUMENT, null, 0);
-        longOpts[1] = new LongOpt ("JLH",  LongOpt.NO_ARGUMENT, null, 1);
+        longOpts[1] = new LongOpt ("JLW",  LongOpt.REQUIRED_ARGUMENT, null, 1);
+        longOpts[2] = new LongOpt ("JLL",  LongOpt.REQUIRED_ARGUMENT, null, 2);        
+        longOpts[3] = new LongOpt ("JLH",  LongOpt.NO_ARGUMENT, null, 3);
 
         Getopt g = new Getopt ("jarLoader", args, "", longOpts);
         g.setOpterr (false); // We'll do our own error handling
@@ -70,6 +78,21 @@ public class JarLoaderCommandLineParser {
                     lpda.tryDirectory();
                     break;
                 case 1:
+                    tmp = g.getOptarg();
+                    JarClassLoader jcl;
+                    try {
+                        jcl = new JarClassLoader(tmp, cyObj);
+                        jcl.loadRelevantClasses();
+                    } catch (Exception e) {
+                        System.err.println("Error loading jar: " + e.getMessage());
+                    }
+                    break;
+                case 2:
+                    tmp = g.getOptarg();
+                    LoadPluginListAction lpla = new LoadPluginListAction(cyObj);
+                    lpla.parsePluginList(tmp);
+                    break;
+                case 3:
                     tmp = g.getOptarg();
                     helpRequested = true;
                     break;
