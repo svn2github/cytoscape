@@ -40,10 +40,9 @@
 
 package csplugins.hierarchicallayout;
 
-import cytoscape.data.CyNetwork;
-import cytoscape.view.CyWindow;
-import giny.model.GraphPerspective;
-import giny.view.GraphView;
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.view.CyNetworkView;
 import giny.view.NodeView;
 import giny.view.EdgeView;
 import java.awt.event.ActionEvent;
@@ -109,18 +108,6 @@ class HierarchyFlowLayoutOrderNode implements Comparable {
  * {@link csplugins.hierarchicallayout.Graph}
 */
 public class HierarchicalLayoutListener implements ActionListener {
-	/**
-	 * Cytoscape Window.
-	 */
-	private CyWindow cyWindow;
-
-	/**
-	 * Initializes listener with reference to Cytoscape Window
-         * @param cyWindow The main Cytoscape window.
-	 */
-	public HierarchicalLayoutListener(CyWindow cyWindow) {
-		this.cyWindow = cyWindow;
-	}
 
 	/**
 	 * Lays out the graph. See this class' description for an outline
@@ -143,40 +130,32 @@ public class HierarchicalLayoutListener implements ActionListener {
 	 */
 	public void actionPerformed(ActionEvent event) {
 		//get the graph view object from the window.
-		GraphView graphView = cyWindow.getView();
+		CyNetworkView networkView = Cytoscape.getCurrentNetworkView();
 		//get the network object; this contains the graph
-		CyNetwork network = cyWindow.getNetwork();
+		CyNetwork network = Cytoscape.getCurrentNetwork();
 		//can't continue if either of these is null
-		if (graphView == null || network == null) {
+		if (networkView == null || network == null) {
 			return;
 		}
 		//inform listeners that we're doing an operation on the network
 		final String callerID = "HierarchicalLayoutListener.actionPerformed";
 		network.beginActivity(callerID);
-		//this is the graph structure; it should never be null,
-		GraphPerspective graphPerspective = network.getGraphPerspective();
-		if (graphPerspective == null) {
-			System.err.println("In " + callerID + ":");
-			System.err.println("Unexpected null graphPerspective in network.");
-			network.endActivity(callerID);
-			return;
-		}
 		//and the view should be a view on this structure
-		if (graphView.getGraphPerspective() != graphPerspective) {
+		if (networkView.getNetwork() != network) {
 			System.err.println("In " + callerID + ":");
-			System.err.println("Graph view is not a view on network's graph perspective.");
+			System.err.println("Current CyNetworkView is not a view on the current CyNetwork.");
 			network.endActivity(callerID);
 			return;
 		}
 		//Select all nodes as the default action if none are selected
-		if(graphPerspective.getNodeCount() <= 0) {
+		if(network.getNodeCount() <= 0) {
 			network.endActivity(callerID);
 			return;
 		}
 		/* construct node list with selected nodes first */
-		List selectedNodes = graphView.getSelectedNodes();
+		List selectedNodes = networkView.getSelectedNodes();
 		final int numSelectedNodes = selectedNodes.size();
-		final int numNodes = graphView.getNodeViewCount();
+		final int numNodes = networkView.getNodeViewCount();
 		final int numLayoutNodes = (numSelectedNodes <= 1) ? numNodes : numSelectedNodes;
 		NodeView nodeView[] = new NodeView[numNodes];
 		int nextNode = 0;
@@ -189,7 +168,7 @@ public class HierarchicalLayoutListener implements ActionListener {
 				nextNode++;
 			}
 		}
-		Iterator iter = graphView.getNodeViewsIterator() ; /* all nodes */
+		Iterator iter = networkView.getNodeViewsIterator() ; /* all nodes */
 		while (iter.hasNext()) {
 			NodeView nv = (NodeView)(iter.next());
 			Integer nodeIndexKey = new Integer(nv.getNode().getRootGraphIndex());
@@ -201,7 +180,7 @@ public class HierarchicalLayoutListener implements ActionListener {
 		}
 		/* create edge list from edges between selected nodes */
 		LinkedList edges = new LinkedList();
-		iter = graphView.getEdgeViewsIterator();
+		iter = networkView.getEdgeViewsIterator();
 		while (iter.hasNext()) {
 			EdgeView ev = (EdgeView)(iter.next());
 			Integer edgeFrom = (Integer)ginyIndex2Index.get(new Integer(ev.getEdge().getSource().getRootGraphIndex()));
@@ -397,7 +376,7 @@ public class HierarchicalLayoutListener implements ActionListener {
 				nodeView[x].setYPosition(nodeView[x].getYPosition() + shiftY,true);
 			}
 		}
-		//graphView.updateView();
+		//networkView.updateView();
 		network.endActivity(callerID);
 	}
 }
