@@ -362,7 +362,7 @@ class FRootGraph //implements RootGraph
       bAdj = m_graph.adjacentEdges(positiveNodeInxB, true, true, true); }
     catch (IllegalArgumentException e) { return false; }
     final IntEnumerator theAdj =
-      ((aAdj.numRemaining{} < bAdj.numRemaining()) ? aAdj : bAdj);
+      ((aAdj.numRemaining() < bAdj.numRemaining()) ? aAdj : bAdj);
     final int adjPositiveNode =
       ((theAdj == aAdj) ? positiveNodeInxA : positiveNodeInxB);
     final int neighPositiveNode =
