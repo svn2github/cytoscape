@@ -24,7 +24,8 @@ OBJS = CytoscapeConfig.class \
 
 
 default: checkkEnv objs dataDirectories \
-         vizmapDirectory dialogsDirectory layoutDirectory
+         vizmapDirectory dialogsDirectory \
+         layoutDirectory utilDirectory
 
 objs: $(OBJS)
 
@@ -51,6 +52,9 @@ dialogsDirectory:
 
 layoutDirectory:
 	(cd layout; make)
+
+utilDirectory:
+	(cd util; make)
 
 test: objs
 	(cd unitTests; make)
