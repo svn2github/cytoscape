@@ -50,7 +50,7 @@ public class RotationScaleLayoutAction extends CytoscapeAction
     JPanel rotPanel = new JPanel(new BorderLayout());
     JLabel rotLabel = new JLabel("Degrees of Rotation:");
     rotLabel.setBorder(new EmptyBorder(5, 5, 5, 5));
-    rotPanel.add(rotLabel, BorderLayout.CENTER);
+    rotPanel.add(rotLabel, BorderLayout.NORTH);
     final JSlider rotSlider = new JSlider(0, 360, 0);
     rotSlider.setBorder(new EmptyBorder(5, 5, 5, 5));
     rotSlider.setMajorTickSpacing(90);
@@ -65,7 +65,7 @@ public class RotationScaleLayoutAction extends CytoscapeAction
           rotation[0].rotateGraph(radians);
           GraphConverter.updateCytoscapeLayout(nativeGraph[0]);
           prevValue = rotSlider.getValue(); } });
-    rotPanel.add(rotSlider, BorderLayout.SOUTH);
+    rotPanel.add(rotSlider, BorderLayout.CENTER);
 
     // Define the panel containing the scale widget.
     JPanel sclPanel = new JPanel(new BorderLayout());
@@ -107,7 +107,7 @@ public class RotationScaleLayoutAction extends CytoscapeAction
     JPanel westPanel = new JPanel(new BorderLayout());
     if (!noNodesSelected) {
       final JCheckBox chx = new JCheckBox("Selected Nodes Only");
-      chx.setBorder(new EmptyBorder(25, 25, 25, 25));
+      chx.setBorder(new EmptyBorder(5, 5, 5, 5));
       chx.addChangeListener(new ChangeListener() {
           public void stateChanged(ChangeEvent e) {
             nativeGraph[0] = GraphConverter.getGraphCopy
@@ -124,9 +124,9 @@ public class RotationScaleLayoutAction extends CytoscapeAction
 
     dialog.getContentPane().add(mainPanel, BorderLayout.CENTER);
     dialog.pack();
-    dialog.move((cyFrame.size().width - dialog.size().width) / 2 +
+    dialog.move((cyFrame.size().width - dialog.size().width) / 3 +
                 cyFrame.location().x,
-                (cyFrame.size().height - dialog.size().height) / 5 +
+                (cyFrame.size().height - dialog.size().height) / 8 +
                 cyFrame.location().y);
     dialog.show(); // This blocks until dialog is disposed of.
   }
