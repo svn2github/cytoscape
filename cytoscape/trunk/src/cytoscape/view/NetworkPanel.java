@@ -14,6 +14,8 @@ import cytoscape.actions.CreateNetworkViewAction;
 import cytoscape.actions.DestroyNetworkViewAction;
 import cytoscape.actions.DestroyNetworkAction;
 
+
+import cytoscape.data.*;
 import cytoscape.giny.*;
 
 import cytoscape.util.swing.*;
@@ -33,7 +35,8 @@ public class NetworkPanel
     JPanel
   implements
     PropertyChangeListener,
-    TreeSelectionListener {
+    TreeSelectionListener,
+    FlagEventListener{
 
   protected SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport( this );
 
@@ -135,6 +138,7 @@ public class NetworkPanel
       child.removeFromParent();
       root.add( child );
     }
+    Cytoscape.getNetwork(network_id).removeFlagEventListener(this);
     node.removeFromParent();
     treeTable.getTree().collapsePath( new TreePath( new TreeNode[] {root} ) );
     treeTable.getTree().updateUI();
@@ -142,12 +146,15 @@ public class NetworkPanel
     
   }
 
+  public void onFlagEvent(FlagEvent event){
+    treeTable.getTree().updateUI();
+  }
 
   public void addNetwork ( String network_id, String parent_id ) {
     // first see if it exists
     if ( getNetworkNode( network_id ) == null ) {
       NetworkTreeNode dmtn = new NetworkTreeNode( Cytoscape.getNetwork( network_id ).getTitle(), network_id );
-     
+      Cytoscape.getNetwork(network_id).addFlagEventListener(this);
       if ( parent_id != null ) {
         NetworkTreeNode parent = getNetworkNode( parent_id );
         parent.add( dmtn );
@@ -223,7 +230,7 @@ public class NetworkPanel
   class NetworkTreeTableModel extends AbstractTreeTableModel {
     
     String[] columns = { "Network", "Nodes", "Edges" };
-    Class[] columns_class = { TreeTableModel.class, Integer.class, Integer.class };
+    Class[] columns_class = { TreeTableModel.class, String.class, String.class };
 
     public NetworkTreeTableModel ( Object root ) {
       super( root );
@@ -267,12 +274,16 @@ public class NetworkPanel
     public Object getValueAt(Object node, int column) {
       if ( column == 0 ) 
         return ( ( DefaultMutableTreeNode )node).getUserObject();
-      else if ( column == 1 ) 
-        return  new Integer( Cytoscape.getNetwork( ( ( NetworkTreeNode )node).getNetworkID() ).getNodeCount() );
-      else if ( column == 2 )
-        return  new Integer( Cytoscape.getNetwork( ( ( NetworkTreeNode )node).getNetworkID() ).getEdgeCount() );
-
-      return new Integer(0);
+      else if ( column == 1 ){
+        //return  new Integer( Cytoscape.getNetwork( ( ( NetworkTreeNode )node).getNetworkID() ).getNodeCount() );
+	CyNetwork cyNetwork = Cytoscape.getNetwork(((NetworkTreeNode)node).getNetworkID());
+	return ""+cyNetwork.getNodeCount()+"("+cyNetwork.getFlaggedNodes().size()+")";
+      }
+      else if ( column == 2 ){
+        CyNetwork cyNetwork = Cytoscape.getNetwork(((NetworkTreeNode)node).getNetworkID());
+	return ""+cyNetwork.getEdgeCount()+"("+cyNetwork.getFlaggedEdges().size()+")";
+      }
+      return "";
 
     }
 
