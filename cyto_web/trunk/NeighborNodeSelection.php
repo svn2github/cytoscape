@@ -41,8 +41,8 @@ additionally select all neighbors of that node.
 To run the plugin, save the jar file below to your local
 disk in the Cytoscape plugins directory. Then run Cytoscape and load in a sample yeast network (for
 example, <code>galFiltered.sif</code>
-in the testData directory of the public Cytoscape distribution). Select one or more nodes, then activate the
-plugin via the <code>Plugins-&gt;SamplePlugin</code> menu option.</p><p>
+in the sampleData directory of the public Cytoscape distribution). Select one or more nodes, then activate the
+plugin via the <code>Plugins-&gt;NeighborNodeSelection</code> menu option.</p><p>
 
 
 <a href="pluginTutorial/java/NeighborNodeSelection.java">NeighborNodeSelection.java</a><br>

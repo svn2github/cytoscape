@@ -53,8 +53,8 @@ state of all the other networks.
 To see the plugin in action, run Cytoscape with the plugin and a
 network loaded. Create a subnetwork of the first network by selecting some
 nodes and using the <code>Select-&gt;To New Window-&gt;Selected Nodes,
-All Edges</code> menu option, then create a view on this new network with
-the <code>Edit-&gt;Create View</code> menu option. You should see that
+All Edges</code> menu option. You might need to create a view on this new network with
+the <code>Edit-&gt;Create View</code> menu option if the network is large. You should see that
 objects selected in one view are also selected in the other view if
 they exist in both views.
 </p>
