@@ -6,6 +6,8 @@ import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntHash;
 import cytoscape.util.intr.IntIntHash;
+import cytoscape.view.CyNetworkView;
+import giny.view.NodeView;
 
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
@@ -46,6 +48,7 @@ public class SouravPlugin extends CytoscapePlugin
               hash.put(souravsAttrInt, numUniqueAttrs++); }
           }
           IntHash[] nodeAttrMap = new IntHash[numUniqueAttrs];
+          int[] fooMap = new int[numUniqueAttrs];
           for (int i = 0; i < nodeAttrMap.length; i++) {
             nodeAttrMap[i] = new IntHash(); }
           for (int i = 0; i < edgeInxs.length; i++)
@@ -55,6 +58,7 @@ public class SouravPlugin extends CytoscapePlugin
             if (souravsAttrObj == null) continue;
             int souravsAttrInt = (int) (souravsAttrObj.doubleValue());
             int index = hash.get(souravsAttrInt);
+            fooMap[index] = souravsAttrInt;
             nodeAttrMap[index].put(~edgeInxs[i]);
           }
           for (int i = 0; i < nodeAttrMap.length; i++)
@@ -76,8 +80,23 @@ public class SouravPlugin extends CytoscapePlugin
             copyInto(nodeAttrMap[i], allNodes, 0);
             copyInto(neighbors, allNodes, size(nodeAttrMap[i]));
             int[] allEdges = cyNet.getConnectingEdgeIndicesArray(allNodes);
-            Cytoscape.createNetwork(allNodes, allEdges,
-                                    "" + System.currentTimeMillis(), cyNet);
+            CyNetwork newNetwork = Cytoscape.createNetwork
+              (allNodes, allEdges, "" + fooMap[i], cyNet);
+            CyNetworkView newView = Cytoscape.createNetworkView(newNetwork);
+            IntEnumerator theNodes = nodeAttrMap[i].elements();
+            int index = 0;
+            while (theNodes.numRemaining() > 0) {
+              int theNode = ~theNodes.nextInt();
+              NodeView theNodeView = newView.getNodeView(theNode);
+              theNodeView.setXPosition(100 * index++);
+              theNodeView.setYPosition(0); }
+            theNodes = neighbors.elements();
+            index = 0;
+            while (theNodes.numRemaining() > 0) {
+              int theNode = ~theNodes.nextInt();
+              NodeView theNodeView = newView.getNodeView(theNode);
+              theNodeView.setXPosition(100 * index++);
+              theNodeView.setYPosition(200); }
           }
         }
       });
