@@ -461,6 +461,7 @@
             <tarfileset dir=".">
                 <exclude name="${build.dir}/**"/>
                 <exclude name="CVS/**"/>
+                <exclude name="*.log"/>
             </tarfileset>
         </tar>
         <gzip src="${zip_release.dir}/cytoscapeSource-v${version}.tar"
