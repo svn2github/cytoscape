@@ -6,7 +6,7 @@
 #
 # RetroGuard Bytecode Obfuscator, v1.1, a product of Retrologic Systems - www.retrologic.com
 #
-# Logfile created on Mon May 12 19:20:27 EDT 2003
+# Logfile created on Fri May 16 10:41:30 EDT 2003
 #
 # Jar file to be obfuscated:           cytoscape.jar
 # Target Jar file for obfuscated code: cytoscape-obf.jar
@@ -26,13 +26,13 @@
 #      Your class cytoscape/dialogs/ExpressionDataPopupTable calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
 #      Your class cytoscape/filters/AttributeFilter calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
 #      Your class cytoscape/GraphObjAttributes calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
-#      Your class cytoscape/jarLoader/JarLoaderAction$JarClassLoader calls the java/lang/ClassLoader method loadClass(Ljava/lang/String;)Ljava/lang/Class;
-#      Your class cytoscape/jarLoader/JarLoaderAction$JarClassLoader calls the java/lang/Class method getMethod(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;
 #      Your class cytoscape/jarLoader/JarClassLoader calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
 #      Your class cytoscape/jarLoader/JarClassLoader calls the java/lang/ClassLoader method loadClass(Ljava/lang/String;)Ljava/lang/Class;
 #      Your class cytoscape/jarLoader/JarClassLoader calls the java/lang/Class method getMethod(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;
 #      Your class cytoscape/jarLoader/JarClassLoader calls the java/lang/ClassLoader method loadClass(Ljava/lang/String;)Ljava/lang/Class;
 #      Your class cytoscape/jarLoader/JarClassLoader calls the java/lang/ClassLoader method loadClass(Ljava/lang/String;)Ljava/lang/Class;
+#      Your class cytoscape/jarLoader/JarLoaderAction$JarClassLoader calls the java/lang/ClassLoader method loadClass(Ljava/lang/String;)Ljava/lang/Class;
+#      Your class cytoscape/jarLoader/JarLoaderAction$JarClassLoader calls the java/lang/Class method getMethod(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;
 #      Your class cytoscape/layout/HierarchicalLayoutDialog calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
 #      Your class cytoscape/PluginLoader calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
 #      Your class cytoscape/SelectedSubGraphFactory calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
@@ -88,8 +88,8 @@
 #      Your class org/xml/sax/helpers/ParserFactory calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
 #      Your class org/xml/sax/helpers/XMLReaderFactory calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
 #
-# Memory in use after class data structure built: 8169696 bytes
-# Total memory available                        : 14733312 bytes
+# Memory in use after class data structure built: 8142656 bytes
+# Total memory available                        : 14688256 bytes
 #
 #
 # Obfuscated name overloading frequency:
@@ -536,21 +536,30 @@
 .field cytoscape/visual/NodeAppearanceCalculator/nodeLineTypeCalculator Lcytoscape/visual/calculators/NodeLineTypeCalculator;
 .field cytoscape/visual/NodeAppearanceCalculator/nodeFontSizeCalculator Lcytoscape/visual/calculators/NodeFontSizeCalculator;
 .field cytoscape/visual/NodeAppearanceCalculator/defaultNodeShape B
+.field cytoscape/visual/NodeAppearanceCalculator/nodeHeightBypass Ljava/lang/String;
 .field cytoscape/visual/NodeAppearanceCalculator/nodeToolTipCalculator Lcytoscape/visual/calculators/NodeToolTipCalculator;
 .field cytoscape/visual/NodeAppearanceCalculator/nodeBorderColorCalculator Lcytoscape/visual/calculators/NodeColorCalculator;
+.field cytoscape/visual/NodeAppearanceCalculator/nodeBorderColorBypass Ljava/lang/String;
+.field cytoscape/visual/NodeAppearanceCalculator/nodeLabelBypass Ljava/lang/String;
 .field cytoscape/visual/NodeAppearanceCalculator/defaultNodeBorderColor Ljava/awt/Color;
+.field cytoscape/visual/NodeAppearanceCalculator/nodeWidthBypass Ljava/lang/String;
 .field cytoscape/visual/NodeAppearanceCalculator/defaultNodeLabel Ljava/lang/String;
 .field cytoscape/visual/NodeAppearanceCalculator/nodeHeightCalculator Lcytoscape/visual/calculators/NodeSizeCalculator;
 .field cytoscape/visual/NodeAppearanceCalculator/nodeLabelCalculator Lcytoscape/visual/calculators/NodeLabelCalculator;
+.field cytoscape/visual/NodeAppearanceCalculator/nodeShapeBypass Ljava/lang/String;
+.field cytoscape/visual/NodeAppearanceCalculator/nodeFontBypass Ljava/lang/String;
+.field cytoscape/visual/NodeAppearanceCalculator/nodeFillColorBypass Ljava/lang/String;
 .field cytoscape/visual/NodeAppearanceCalculator/nodeFontFaceCalculator Lcytoscape/visual/calculators/NodeFontFaceCalculator;
 .field cytoscape/visual/NodeAppearanceCalculator/defaultNodeLineType Ly/view/LineType;
-.field cytoscape/visual/NodeAppearanceCalculator/defaultNodeWidth D
 .field cytoscape/visual/NodeAppearanceCalculator/nodeFillColorCalculator Lcytoscape/visual/calculators/NodeColorCalculator;
+.field cytoscape/visual/NodeAppearanceCalculator/defaultNodeWidth D
 .field cytoscape/visual/NodeAppearanceCalculator/defaultNodeFont Ljava/awt/Font;
 .field cytoscape/visual/NodeAppearanceCalculator/defaultNodeHeight D
-.field cytoscape/visual/NodeAppearanceCalculator/defaultNodeToolTip Ljava/lang/String;
 .field cytoscape/visual/NodeAppearanceCalculator/nodeWidthCalculator Lcytoscape/visual/calculators/NodeSizeCalculator;
+.field cytoscape/visual/NodeAppearanceCalculator/defaultNodeToolTip Ljava/lang/String;
 .field cytoscape/visual/NodeAppearanceCalculator/nodeShapeCalculator Lcytoscape/visual/calculators/NodeShapeCalculator;
+.field cytoscape/visual/NodeAppearanceCalculator/nodeToolTipBypass Ljava/lang/String;
+.field cytoscape/visual/NodeAppearanceCalculator/nodeLineTypeBypass Ljava/lang/String;
 .method cytoscape/visual/NodeAppearanceCalculator/getNodeLineTypeCalculator ()Lcytoscape/visual/calculators/NodeLineTypeCalculator;
 .method cytoscape/visual/NodeAppearanceCalculator/setDefaultNodeFont (Ljava/awt/Font;)V
 .method cytoscape/visual/NodeAppearanceCalculator/getNodeFillColorCalculator ()Lcytoscape/visual/calculators/NodeColorCalculator;
@@ -996,13 +1005,13 @@
 .class cytoscape/dialogs/ColorScaleTable
 .field cytoscape/dialogs/ColorScaleTable/class$java$awt$Color Ljava/lang/Class;
 .method cytoscape/dialogs/ColorScaleTable/class$ (Ljava/lang/String;)Ljava/lang/Class;
-.class cytoscape/dialogs/GeneralColorDialogListener
-.method cytoscape/dialogs/GeneralColorDialogListener/popup ()V
-.method cytoscape/dialogs/GeneralColorDialogListener/actionPerformed (Ljava/awt/event/ActionEvent;)V
 .class cytoscape/dialogs/GridBagGroup
 .field cytoscape/dialogs/GridBagGroup/panel Ljavax/swing/JPanel;
 .field cytoscape/dialogs/GridBagGroup/constraints Ljava/awt/GridBagConstraints;
 .field cytoscape/dialogs/GridBagGroup/gridbag Ljava/awt/GridBagLayout;
+.class cytoscape/dialogs/GeneralColorDialogListener
+.method cytoscape/dialogs/GeneralColorDialogListener/popup ()V
+.method cytoscape/dialogs/GeneralColorDialogListener/actionPerformed (Ljava/awt/event/ActionEvent;)V
 .class cytoscape/dialogs/RotateSelectionDialog
 .field cytoscape/dialogs/RotateSelectionDialog/thisDialog Ljavax/swing/JDialog;
 .class cytoscape/dialogs/EdgeTextPanel
@@ -1093,17 +1102,6 @@
 .method cytoscape/dialogs/IconPopupButton/setIconObject (Ljava/lang/Object;)V
 .method cytoscape/dialogs/IconPopupButton/getLabel ()Ljavax/swing/JLabel;
 .method cytoscape/dialogs/IconPopupButton/getIconObject ()Ljava/lang/Object;
-.class cytoscape/dialogs/IntegerEntryField
-.field cytoscape/dialogs/IntegerEntryField/mainFrame Ljavax/swing/JFrame;
-.field cytoscape/dialogs/IntegerEntryField/sizeLabel Ljavax/swing/JLabel;
-.field cytoscape/dialogs/IntegerEntryField/mainPanel Ljavax/swing/JPanel;
-.field cytoscape/dialogs/IntegerEntryField/sizeField Ljavax/swing/JTextField;
-.method cytoscape/dialogs/IntegerEntryField/getInt ()I
-.method cytoscape/dialogs/IntegerEntryField/getLabel ()Ljavax/swing/JLabel;
-.method cytoscape/dialogs/IntegerEntryField/getField ()Ljavax/swing/JTextField;
-.method cytoscape/dialogs/IntegerEntryField/setInteger (Ljava/lang/Integer;)V
-.method cytoscape/dialogs/IntegerEntryField/getInteger ()Ljava/lang/Integer;
-.method cytoscape/dialogs/IntegerEntryField/setInt (I)V
 .class cytoscape/dialogs/MiscGB
 .method cytoscape/dialogs/MiscGB/insert (Lcytoscape/dialogs/GridBagGroup;Ljava/awt/Component;IIIIIII)V
 .method cytoscape/dialogs/MiscGB/inset (Ljava/awt/GridBagConstraints;I)V
@@ -1118,6 +1116,17 @@
 .method cytoscape/dialogs/MiscGB/set (Ljava/awt/GridBagConstraints;IIII)V
 .method cytoscape/dialogs/MiscGB/insert (Lcytoscape/dialogs/GridBagGroup;Ljava/awt/Component;IIIII)V
 .method cytoscape/dialogs/MiscGB/inset (Ljava/awt/GridBagConstraints;IIII)V
+.class cytoscape/dialogs/IntegerEntryField
+.field cytoscape/dialogs/IntegerEntryField/mainFrame Ljavax/swing/JFrame;
+.field cytoscape/dialogs/IntegerEntryField/sizeLabel Ljavax/swing/JLabel;
+.field cytoscape/dialogs/IntegerEntryField/mainPanel Ljavax/swing/JPanel;
+.field cytoscape/dialogs/IntegerEntryField/sizeField Ljavax/swing/JTextField;
+.method cytoscape/dialogs/IntegerEntryField/getInt ()I
+.method cytoscape/dialogs/IntegerEntryField/getLabel ()Ljavax/swing/JLabel;
+.method cytoscape/dialogs/IntegerEntryField/getField ()Ljavax/swing/JTextField;
+.method cytoscape/dialogs/IntegerEntryField/setInteger (Ljava/lang/Integer;)V
+.method cytoscape/dialogs/IntegerEntryField/getInteger ()Ljava/lang/Integer;
+.method cytoscape/dialogs/IntegerEntryField/setInt (I)V
 .class cytoscape/dialogs/MiscDialog
 .method cytoscape/dialogs/MiscDialog/getShapeByteToStringHashMap ()Ljava/util/HashMap;
 .method cytoscape/dialogs/MiscDialog/getStringToArrowHashMap (I)Ljava/util/HashMap;
@@ -2020,6 +2029,15 @@
 .class cytoscape/util/MutableBool
 .method cytoscape/util/MutableBool/setBool (Z)V
 .method cytoscape/util/MutableBool/getBool ()Z
+.class cytoscape/layout/GroupWiseNodeGrouper
+.field cytoscape/layout/GroupWiseNodeGrouper/iCNHash Ljava/util/HashMap;
+.field cytoscape/layout/GroupWiseNodeGrouper/CSM_VERSION Ljava/lang/String;
+.field cytoscape/layout/GroupWiseNodeGrouper/iConnected [[I
+.field cytoscape/layout/GroupWiseNodeGrouper/iClusterMap [[I
+.field cytoscape/layout/GroupWiseNodeGrouper/iPNHash Ljava/util/HashMap;
+.method cytoscape/layout/GroupWiseNodeGrouper/useGraph (Ly/layout/LayoutGraph;)V
+.method cytoscape/layout/GroupWiseNodeGrouper/getClusterByNode (Ly/base/Node;Lcytoscape/layout/Subgraph;)Lcytoscape/layout/Subgraph;
+.method cytoscape/layout/GroupWiseNodeGrouper/getNodeGrouping (I)Lcytoscape/layout/Subgraph;
 .class cytoscape/layout/AttributeLayout
 .field cytoscape/layout/AttributeLayout/edgeAttributes Lcytoscape/GraphObjAttributes;
 .field cytoscape/layout/AttributeLayout/cytoscapeWindow Lcytoscape/CytoscapeWindow;
@@ -2042,15 +2060,6 @@
 .method cytoscape/layout/AttributeLayout/createCategoryNodes ([Ljava/lang/String;)V
 .method cytoscape/layout/AttributeLayout/addCategoryEdgesBetweenNodes (Ljava/lang/String;)V
 .method cytoscape/layout/AttributeLayout/addCategoryEdges (Ljava/lang/String;[Ljava/lang/String;)V
-.class cytoscape/layout/GroupWiseNodeGrouper
-.field cytoscape/layout/GroupWiseNodeGrouper/iCNHash Ljava/util/HashMap;
-.field cytoscape/layout/GroupWiseNodeGrouper/CSM_VERSION Ljava/lang/String;
-.field cytoscape/layout/GroupWiseNodeGrouper/iConnected [[I
-.field cytoscape/layout/GroupWiseNodeGrouper/iClusterMap [[I
-.field cytoscape/layout/GroupWiseNodeGrouper/iPNHash Ljava/util/HashMap;
-.method cytoscape/layout/GroupWiseNodeGrouper/useGraph (Ly/layout/LayoutGraph;)V
-.method cytoscape/layout/GroupWiseNodeGrouper/getClusterByNode (Ly/base/Node;Lcytoscape/layout/Subgraph;)Lcytoscape/layout/Subgraph;
-.method cytoscape/layout/GroupWiseNodeGrouper/getNodeGrouping (I)Lcytoscape/layout/Subgraph;
 .class cytoscape/layout/GroupingAlgorithm
 .field cytoscape/layout/GroupingAlgorithm/CONNECTED_BI I
 .field cytoscape/layout/GroupingAlgorithm/NOT_CONNECTED I
@@ -9510,11 +9519,11 @@
 .method_map cytoscape/dialogs/ColorScaleTable$MyTableModel/getColumnCount ()I getColumnCount
 .method_map cytoscape/dialogs/ColorScaleTable$MyTableModel/getValueAt (II)Ljava/lang/Object; getValueAt
 .method_map cytoscape/dialogs/ColorScaleTable/setUpColorRenderer (Ljavax/swing/JTable;)V a
+.method_map cytoscape/dialogs/GridBagGroup/init ()V a
 .field_map cytoscape/dialogs/GeneralColorDialogListener/returnColor a
 .field_map cytoscape/dialogs/GeneralColorDialogListener/label if
 .field_map cytoscape/dialogs/GeneralColorDialogListener/component do
 .field_map cytoscape/dialogs/GeneralColorDialogListener/title for
-.method_map cytoscape/dialogs/GridBagGroup/init ()V a
 .class_map cytoscape/dialogs/RotateSelectionDialog$DismissAction a
 .field_map cytoscape/dialogs/RotateSelectionDialog$DismissAction/this$0 this$0
 .method_map cytoscape/dialogs/RotateSelectionDialog$DismissAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
