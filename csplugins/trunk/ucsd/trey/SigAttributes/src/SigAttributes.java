@@ -176,7 +176,7 @@ public class SigAttributes extends AbstractPlugin {
 
 		// compute significances of enrichment for each function
 		Vector sigFunctions = getSignificance(thisFunctionCount, allFunctionCount, 
-						      pvalueCutoff, maxNum, null);
+						      pvalueCutoff, maxNum);
 		
 		// iterate over all nodes, all names per node, and all sig. functions per name
 		for (int j=0; j<consideredNodeIDs.length; j++) {
@@ -376,8 +376,10 @@ public class SigAttributes extends AbstractPlugin {
 	    return (String []) geneNames.toArray(new String [0]);
 	} // end convertIDtoName
 
+	// Returns a vector of significant functional IDs.
+	// Version to work with attributes, not annotations
 	private Vector getSignificance (HashMap thisFunctionCount, HashMap allFunctionCount,
-					double pvalueCutoff, int maxNumber, Annotation annotation){
+					double pvalueCutoff, int maxNumber){
 	    
 	    double n = (double) sumFunctionCounts(thisFunctionCount);
 	    double t = (double) sumFunctionCounts(allFunctionCount);
@@ -397,15 +399,67 @@ public class SigAttributes extends AbstractPlugin {
 	    int sigCount = 0;
 	    for (Iterator it = funAndPvals.iterator(); it.hasNext(); ) {
 		FunAndPval funAndPval = (FunAndPval) it.next();
-		System.err.print(funAndPval);
-		if (annotation != null) {
-		    OntologyTerm term = 
-		      annotation.getOntology().getTerm(Integer.parseInt(funAndPval.getFunction()));
-		    System.err.print(" " + term.getName());
-		}
-		System.err.println();
+		System.err.println(funAndPval);
 		if (funAndPval.getPvalue() < pvalueCutoff && sigCount++ < maxNumber) 
 		    sigFunctions.add(funAndPval.getFunction());
+	    }		
+	    return sigFunctions;
+	}
+
+	// Returns a vector of significant functional IDs.
+	// Version to work with annotations, not attributes-- uses conditional ordering of ontology
+	// thisFunctionCount = # of selected genes with a particular function (x), hashed for each function
+	// allFunctionCount  = # of total    genes with a particular function (n), hashed for each function
+	private Vector getSignificance (HashMap thisFunctionCount, HashMap allFunctionCount,
+					double pvalueCutoff, int maxNumber, Annotation annotation){
+	    
+	    Ontology ontology = annotation.getOntology();
+	    Vector funAndPvals = new Vector();
+	    
+	    // iterate over each functional ID in ontology
+	    for (Iterator it = thisFunctionCount.keySet().iterator(); it.hasNext();) {
+
+		// compute statistics for this function
+		String function   = (String) it.next();
+		double x = ((Integer) thisFunctionCount.get(function)).doubleValue();
+		double n = ((Integer) allFunctionCount.get(function)).doubleValue();
+		//System.err.println(function + " " + x + " " + n);
+		
+		// compute cumulative statistics for the parent function(s)
+		OntologyTerm term = ontology.getTerm(Integer.parseInt(function));
+		int [] parentTerms = term.getParents();
+		//int [] parentTerms = term.getParentsAndContainers();
+		double NR = 0.0; double t = 0.0; String parentFn = "";
+		if (parentTerms.length == 0) { NR = x; t = n; continue; }
+	        try {
+		    for (int i=0; i<parentTerms.length; i++) {
+			parentFn = Integer.toString(ontology.getTerm(parentTerms[i]).getId());
+			NR += ((Integer) thisFunctionCount.get(parentFn)).doubleValue();
+			t  += ((Integer)  allFunctionCount.get(parentFn)).doubleValue();
+			//System.err.println("   " + parentFn + " " + NR + " " + t);
+		    }
+		} catch (NullPointerException exp) { 
+		    System.err.println("Parent not in functionCount");
+		    System.err.println("  Function = " + function + ", Parent = " + parentFn);
+		}
+		
+		// compute hypergeometric pvalue
+		double pvalue = 1 - hypergeometric.cumulative(x-1, NR, t-NR, n);
+		if (x <= 1) pvalue = 1;  // hack to correct for small sample sizes
+		funAndPvals.add(new FunAndPval (function, pvalue, x, NR, t-NR, n));
+	    }
+	    Collections.sort(funAndPvals);
+	    
+	    // select significant functions only
+	    Vector sigFunctions = new Vector();
+	    int sigCount = 0;
+	    for (Iterator it = funAndPvals.iterator(); it.hasNext(); ) {
+		FunAndPval funAndPval = (FunAndPval) it.next();
+		OntologyTerm term = ontology.getTerm(Integer.parseInt(funAndPval.getFunction()));
+		if (funAndPval.getPvalue() < pvalueCutoff && sigCount++ < maxNumber) 
+		    sigFunctions.add(funAndPval.getFunction());
+		else break; // can stop because list is reverse sorted
+		System.err.println(funAndPval + "  " + term.getName());
 	    }		
 	    return sigFunctions;
 	}

@@ -26,9 +26,13 @@ public class FunAndPval implements Comparable {
     public double getPvalue() { return pvalue; }
     
     public String toString() {
-	DecimalFormat form = new DecimalFormat("0.###E0");
-	return new String ("p < " + form.format(pvalue) + " "
-			   + function + " ("+x+", "+NR+", "+NB+", "+n+ ")");
+	DecimalFormat form  = new DecimalFormat("0.000E000");
+	DecimalFormat form2 = new DecimalFormat(" ##,###,###");  
+	String output = new String ("ID: " + function + "\n");
+	output += "  p < " + form.format(pvalue) + "\n";
+	output += "  x = " + form2.format(x) + ";  n = " + form2.format(n) + "\n";
+	output += "  nr= " + form2.format(NR)+ ";  t = " + form2.format(NB+NR) + "\n";
+	return output;
     }
     
     public int compareTo(Object o) {
