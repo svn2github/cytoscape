@@ -130,8 +130,19 @@ class FRootGraph implements RootGraph
 
   public int removeNode(int nodeInx)
   {
+    final int returnThis = _removeNode(nodeInx);
+    if (returnThis != 0) {
+      final RootGraphChangeListener listener = m_lis;
+      if (listener != null)
+        listener.rootGraphChanged
+          (new RootGraphNodesRemovedEvent(this, new int[] { returnThis })); }
+    return returnThis;
+  }
+
+  private int _removeNode(int nodeInx)
+  {
     final int positiveNodeIndex = ~nodeInx;
-    IntEnumerator edgeInxEnum;
+    final IntEnumerator edgeInxEnum;
     try { edgeInxEnum = m_graph.adjacentEdges
             (positiveNodeIndex, true, true, true); }
     catch (IllegalArgumentException e) { return 0; }
@@ -141,11 +152,11 @@ class FRootGraph implements RootGraph
     while (edgeInxEnum.numRemaining() > 0)
       // Toss edges to be removed onto the heap; assume that the edge iteration
       // becomes invalid if we remove edges while iterating through.
-      edgeBucket.toss(edgeInxEnum.nextInt());
-    edgeInxEnum = edgeBucket.elements();
+      edgeBucket.toss(~(edgeInxEnum.nextInt()));
+    final int[] edgeRemoveArr = new int[edgeBucket.size()];
+    edgeBucket.copyInto(edgeRemoveArr, 0);
     // Remove adjacent edges using method defined on this instance.
-    while (edgeInxEnum.numRemaining() > 0)
-      removeEdge(~(edgeInxEnum.nextInt()));
+    removeEdges(edgeRemoveArr);
     // Remove node from underlying graph.  positiveNodeIndex has already
     // been tested for validity by calling adjacentEdges().
     if (m_graph.removeNode(positiveNodeIndex)) {
@@ -166,9 +177,19 @@ class FRootGraph implements RootGraph
     return returnThis; }
 
   public int[] removeNodes(int[] nodeIndices) {
+    // Can't use m_heap because it's being used at each _removeNode(int).
+    final MinIntHeap successes = new MinIntHeap();
     final int[] returnThis = new int[nodeIndices.length];
-    for (int i = 0; i < nodeIndices.length; i++)
-      returnThis[i] = removeNode(nodeIndices[i]);
+    for (int i = 0; i < nodeIndices.length; i++) {
+      returnThis[i] = _removeNode(nodeIndices[i]);
+      if (returnThis[i] != 0) successes.toss(returnThis[i]); }
+    if (successes.size() > 0) {
+      final RootGraphChangeListener listener = m_lis;
+      if (listener != null) {
+        final int[] successArr = new int[successes.size()];
+        successes.copyInto(successArr, 0);
+        listener.rootGraphChanged
+          (new RootGraphNodesRemovedEvent(this, successArr)); } }
     return returnThis; }
 
   public int createNode() {
