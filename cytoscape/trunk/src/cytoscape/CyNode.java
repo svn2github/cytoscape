@@ -1,91 +1,63 @@
 package cytoscape;
 
 import giny.model.*;
-import cytoscape.giny.Node;
-import cytoscape.giny.CytoscapeRootGraph;
 
-public class CyNode extends Node {
 
-  
-  /**
-   * Creates a new CytoscapeNode
-   * @param root_graph_index the index of this node in the RootGraph
-   * @param root_graph the RootGraph that this node is in
-   */
-  public CyNode ( int root_graph_index, RootGraph root_graph ) {
-    this( root_graph_index, root_graph, null ); 
+  // Package visible class.
+public class CyNode implements Node
+{
+
+  // Variables specific to public get/set methods.
+  RootGraph m_rootGraph = null;
+  int m_rootGraphIndex = 0;
+  String m_identifier = null;
+
+  public CyNode(RootGraph root,
+         int rootGraphIndex) { 
+    this.m_rootGraph = root;
+    this.m_rootGraphIndex = rootGraphIndex;
+    this.m_identifier = new Integer(m_rootGraphIndex).toString();
   }
 
-  /**
-   * Creates a new CytoscapeNode
-   * @param root_graph_index the index of this node in the RootGraph
-   * @param root_graph the RootGraph that this node is in
-   */
-  public CyNode ( int root_graph_index, 
-                         RootGraph root_graph, 
-                         CyNetwork network ) {
-    this.rootGraphIndex = root_graph_index;
-    this.rootGraph = ( CytoscapeRootGraph )root_graph;    
-    this.network = network;
+
+  public GraphPerspective getGraphPerspective()
+  {
+    return m_rootGraph.createGraphPerspective
+      (m_rootGraph.getNodeMetaChildIndicesArray(m_rootGraphIndex),
+       m_rootGraph.getEdgeMetaChildIndicesArray(m_rootGraphIndex));
   }
 
-  //========================================//
-  // CytoscapeNode methods
-  //========================================//
-
-   /**
-   * Gets the Identifier for this Node, this is often used 
-   * for getting the Visible Label
-   */
-  public String getIdentifier () {
-    if ( identifier == null ) {
-      return ( new Integer( rootGraphIndex )).toString();
-    } 
-    return identifier;
-  }
-  
-  /**
-   * Sets the Identifier for this Node, this is often used 
-   * for getting the Visible Label
-   */
-  public boolean setIdentifier ( String new_id ) {
-    identifier = new_id;
+  public boolean setGraphPerspective(GraphPerspective gp)
+  {
+    if (gp.getRootGraph() != m_rootGraph) return false;
+    final int[] nodeInx = gp.getNodeIndicesArray();
+    final int[] edgeInx = gp.getEdgeIndicesArray();
+    for (int i = 0; i < nodeInx.length; i++)
+      m_rootGraph.addNodeMetaChild(m_rootGraphIndex, nodeInx[i]);
+    for (int i = 0; i < edgeInx.length; i++)
+      m_rootGraph.addEdgeMetaChild(m_rootGraphIndex, edgeInx[i]);
     return true;
   }
-  
-  /**
-   * Gets the Identifier for this Node, this is often used 
-   * for getting the Visible Label
-   */
-  public String toString () {
-    return getIdentifier();
+
+  public RootGraph getRootGraph()
+  {
+    return m_rootGraph;
   }
 
-  /**
-   * Returns the Network that consists of all of this nodes meta children
-   */
-  public CyNetwork getNetwork () {
-    return ( CyNetwork )getGraphPerspective();
-  }
- 
-  /**
-   * The UID for this node. Use it to get info from NetworkData via
-   * the NetworkData.getNodeData( int, string ) methods
-   */
-  public int getUniqueIdentifier () {
-    return rootGraphIndex;
+  public int getRootGraphIndex()
+  {
+    return m_rootGraphIndex;
   }
 
-  /**
-   * Makes the nodes and edges in the given network meta-children
-   * of this node <B>in addition</B> to the meta-children it 
-   * already has.
-   */
-  public boolean setNetwork ( CyNetwork new_network ) {
-    return setGraphPerspective( new_network );
+  public String getIdentifier()
+  {
+    return m_identifier;
   }
-   
-   
-       
-  
+
+  public boolean setIdentifier(String new_id)
+  {
+    m_identifier = new_id;
+    return true;
+  }
+
 } 

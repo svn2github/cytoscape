@@ -28,6 +28,8 @@ import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.InteractionsReader;
 import cytoscape.data.servers.BioDataServer;
 import cytoscape.giny.CytoscapeRootGraph;
+import cytoscape.giny.CytoscapeFingRootGraph;
+
 import cytoscape.giny.PhoebeNetworkView;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.view.CyNetworkView;
@@ -60,7 +62,6 @@ public abstract class Cytoscape {
   public static int FILE_GML = 1;
   public static int FILE_SIF = 2;
   public static int FILE_SBML = 3;
-
 
   private static BioDataServer bioDataServer;
   private static String species;
@@ -148,8 +149,7 @@ public abstract class Cytoscape {
    */
   public static CytoscapeRootGraph getRootGraph () {
     if ( cytoscapeRootGraph == null ) 
-      cytoscapeRootGraph = new CytoscapeRootGraph();
-    
+      cytoscapeRootGraph = new CytoscapeFingRootGraph();
     return cytoscapeRootGraph;
   }
    
@@ -226,7 +226,7 @@ public abstract class Cytoscape {
     //System.out.print( "|" );
     node = ( CyNode )Cytoscape.getRootGraph().getNode( Cytoscape.getRootGraph().createNode() );
     node.setIdentifier( alias );
-    //System.out.println( "Node: "+node+" alias :"+alias+" old_name: "+old_name );
+    //System.out.println( node.getRootGraphIndex()+" = Node: "+node+" alias :"+alias+" old_name: "+old_name );
     //if ( old_name != alias )
     //  setNodeAttributeValue( node, "alias", old_name );
     Cytoscape.getNodeNetworkData().addNameMapping( alias, node );
@@ -246,6 +246,9 @@ public abstract class Cytoscape {
    */
   public static CyEdge getCyEdge ( Node node_1, Node node_2, String attribute, Object attribute_value, boolean create ) {
     
+    
+    //System.out.println( "node_1: "+node_1.getRootGraphIndex()+" node_2: "+node_2.getRootGraphIndex()+" attribute: "+attribute+" attribute_value: "+attribute_value+" create: "+create );
+
     Set edges = new HashSet();
     if ( Cytoscape.getRootGraph().getEdgeCount() != 0 ) {
       List l1 =  Cytoscape.getRootGraph().edgesList( node_1, node_2 );
@@ -267,8 +270,13 @@ public abstract class Cytoscape {
 
 
     if ( attribute == Semantics.INTERACTION ) {
+      //System.out.println( "Creating edge!!!!" );
+      
     // create the edge
       CyEdge edge =  ( CyEdge )Cytoscape.getRootGraph().getEdge( Cytoscape.getRootGraph().createEdge (node_1, node_2));
+
+      //System.out.println( "Edge Created: "+edge );
+
       String edge_name = node_1.getIdentifier()+" ("+attribute_value+") "+node_2.getIdentifier();
       Cytoscape.getEdgeNetworkData().add ("interaction", edge_name, attribute_value);
       Cytoscape.getEdgeNetworkData().addNameMapping (edge_name, edge);

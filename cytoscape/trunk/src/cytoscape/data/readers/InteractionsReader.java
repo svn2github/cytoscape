@@ -266,10 +266,11 @@ public class InteractionsReader implements GraphReader {
         //Node targetNode = (Node) nodes.get (targetNodeName);
         String edgeName = nodeName + " (" + interactionType + ") " + targetNodeName;
         Edge edge = ( Edge )Cytoscape.getCyEdge( nodeName, edgeName, targetNodeName, interactionType );
+        //System.out.println( "edge: "+edge.getRootGraphIndex() );
         edges.put( edge.getRootGraphIndex(), 0 );
        
 
-        //System.out.println( "edge: "+edge.getRootGraphIndex() );
+        
 
         //int previousMatchingEntries = Cytoscape.getEdgeNetworkData().countIdentical(edgeName);
         //        Edge edge = Cytoscape.getRootGraph().getEdge(Cytoscape.getRootGraph().createEdge (sourceNode, targetNode));

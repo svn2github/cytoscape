@@ -1,48 +1,60 @@
 package cytoscape;
 
 import giny.model.*;
-import cytoscape.giny.Edge;
-import cytoscape.giny.CytoscapeRootGraph;
 
-public class CyEdge extends Edge {
+public class CyEdge implements Edge {
 
-  public CyEdge ( int root_graph_index, RootGraph root_graph ) {
-    this.rootGraphIndex = root_graph_index;
-    this.rootGraph = ( CytoscapeRootGraph )root_graph;    
+
+  // Variables specific to public get/set methods.
+  RootGraph m_rootGraph = null;
+  int m_rootGraphIndex = 0;
+  String m_identifier = null;
+
+  public CyEdge (RootGraph root,
+          int rootGraphIndex ) {
+    this.m_rootGraph = root;
+    this.m_rootGraphIndex = rootGraphIndex;
+    this.m_identifier = new Integer(m_rootGraphIndex).toString();
   }
 
-  public String getIdentifier () {
-    if ( identifier == null ) {
-      return ( new Integer( rootGraphIndex )).toString();
-    } 
-    return identifier;
+  public Node getSource()
+  {
+    return m_rootGraph.getNode
+      (m_rootGraph.getEdgeSourceIndex(m_rootGraphIndex));
   }
 
-  public boolean setIdentifier ( String new_id ) {
-    identifier = new_id;
+  public Node getTarget()
+  {
+    return m_rootGraph.getNode
+      (m_rootGraph.getEdgeTargetIndex(m_rootGraphIndex));
+  }
+
+  public boolean isDirected()
+  {
+    return m_rootGraph.isEdgeDirected(m_rootGraphIndex);
+  }
+
+  public RootGraph getRootGraph()
+  {
+    return m_rootGraph;
+  }
+
+  public int getRootGraphIndex()
+  {
+    return m_rootGraphIndex;
+  }
+
+  public String getIdentifier()
+  {
+    return m_identifier;
+  }
+
+  public boolean setIdentifier(String new_id)
+  {
+    m_identifier = new_id;
     return true;
   }
-  
-  public String toString () {
-    return getIdentifier();
-  }
 
-  public int getUniqueIdentifier () {
-    return rootGraphIndex;
-  }
-
-  public boolean isDirected () {
-    return rootGraph.isEdgeDirected( rootGraphIndex );
-  }
-
-  public CyNode getSourceNode () {
-    return ( CyNode )rootGraph.getNode( rootGraph.getEdgeSourceIndex( rootGraphIndex ) );
-  }
-           
-  public CyNode getTargetNode () {
-    return ( CyNode )rootGraph.getNode( rootGraph.getEdgeTargetIndex( rootGraphIndex ) );
-  }
-  
  
 
 }
