@@ -19,11 +19,34 @@ public class VisualStyle implements Cloneable {
     GlobalAppearanceCalculator globalAC;
     
     /**
+     * Keep track of number of times this style has been cloned.
+     */
+    protected int dupeCount = 0;
+
+    /**
+     * Get how many times this style has been cloned.
+     */
+    public int getDupeCount() {
+	return dupeCount;
+    }
+
+    /**
      * Perform deep copy of this VisualStyle.
      */
     public Object clone() throws CloneNotSupportedException {
-	VisualStyle copy = null;
-	copy = (VisualStyle) super.clone();
+	VisualStyle copy = (VisualStyle) super.clone();
+	String dupeFreeName;
+	if (dupeCount != 0) {
+	    int dupeCountIndex = name.lastIndexOf(new Integer(dupeCount).toString());
+	    if (dupeCountIndex == -1)
+		dupeFreeName = new String(name);
+	    else
+		dupeFreeName = name.substring(0, dupeCountIndex);
+	}
+	else
+	    dupeFreeName = new String(name);
+	copy.name = dupeFreeName;
+	copy.dupeCount++;
 	copy.nodeAC = (NodeAppearanceCalculator) this.nodeAC.clone();
 	copy.edgeAC = (EdgeAppearanceCalculator) this.edgeAC.clone();
 	copy.globalAC = (GlobalAppearanceCalculator) this.globalAC.clone();
