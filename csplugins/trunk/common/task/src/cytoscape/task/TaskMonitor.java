@@ -43,7 +43,8 @@ public interface TaskMonitor {
      *                                     <code>[-1, 100]</code></nobr>.
      *                                     </blockquote>
      */
-    public void setPercentCompleted(int percent);
+    public void setPercentCompleted(int percent)
+            throws IllegalThreadStateException, IllegalArgumentException;
 
     /**
      * This is a hook for a child process to report to its parent application
@@ -63,7 +64,8 @@ public interface TaskMonitor {
      *                                     be be called from the thread that
      *                                     invokes the task <code>run()</code>.
      */
-    public void setEstimatedTimeRemaining(long time);
+    public void setEstimatedTimeRemaining(long time)
+            throws IllegalThreadStateException;
 
     /**
      * Indicates to a parent application that a task has encountered an error
@@ -85,7 +87,8 @@ public interface TaskMonitor {
      *                                     be be called from the thread that
      *                                     invokes the task <code>run()</code>.
      */
-    public void setException(Throwable t, String userErrorMessage);
+    public void setException(Throwable t, String userErrorMessage)
+            throws IllegalThreadStateException;
 
     /**
      * This is a hook for a child process to report to its parent application
@@ -109,5 +112,6 @@ public interface TaskMonitor {
      *                                     be be called from the thread that
      *                                     invokes the task <code>run()</code>.
      */
-    public void setStatus(String message);
+    public void setStatus(String message)
+            throws IllegalThreadStateException, NullPointerException;
 }
