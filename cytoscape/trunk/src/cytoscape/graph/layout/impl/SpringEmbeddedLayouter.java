@@ -219,18 +219,73 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
     return distances;
   }
 
-  private static PartialDerivatives calculatePartials
+  private PartialDerivatives calculatePartials
     (PartialDerivatives partials,
      List partialsList,
      double[] potentialEnergy,
      boolean reversed,
-     MutableGraphLayout graph)
+     final MutableGraphLayout graph)
   {
     partials.reset();
     int node = partials.nodeIndex;
-    double nodeViewRadius = 0.0;
+    double nodeRadius = 0.0;
     double nodeX = graph.getNodePosition(node).getX();
     double nodeY = graph.getNodePosition(node).getY();
+    PartialDerivatives otherPartials = null;
+    int otherNode;
+    double otherNodeRadius;
+    PartialDerivatives furthestPartials = null;
+    Iterator iterator;
+    if (partialsList == null)
+      iterator = new Iterator() {
+          private int ix = 0;
+          public void remove() { throw new UnsupportedOperationException(); }
+          public boolean hasNext() {
+            return ix >= graph.getNumNodes(); }
+          public Object next() {
+            return new Integer(ix++); } };
+    else
+      iterator = partialsList.iterator();
+    double deltaX;
+    double deltaY;
+    double euclideanDistance;
+    double euclideanDistanceCubed;
+    double distanceFromRest;
+    double distanceFromTouching;
+    double incrementalChange;
+    while (iterator.hasNext()) {
+      if (partialsList == null) {
+        otherNode = ((Integer) iterator.next()).intValue(); }
+      else {
+        otherPartials = (PartialDerivatives) iterator.next();
+        otherNode = otherPartials.nodeIndex; }
+      if (node == otherNode) continue;
+      otherNodeRadius = 0.0;
+      deltaX = nodeX - graph.getNodePosition(otherNode).getX();
+      deltaY = nodeY - graph.getNodePosition(otherNode).getY();
+      euclideanDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+      euclideanDistanceCubed = Math.pow(euclideanDistance, 3);
+      distanceFromTouching =
+        euclideanDistance - (nodeRadius + otherNodeRadius);
+      incrementalChange =
+        (m_nodeDistanceSpringScalars[m_layoutPass] *
+         (m_nodeDistanceSpringStrengths[node][otherNode] *
+          (deltaX -
+           (
+            (m_nodeDistanceSpringRestLengths[node][otherNode] *
+             deltaX) /
+            euclideanDistance
+            )
+           )
+          )
+         );
+      if (!reversed) partials.x += incrementalChange;
+      if (otherPartials != null)
+      {
+      }
+    }
+
+
     return null;
   }
 
