@@ -35,8 +35,7 @@ package cytoscape.data.annotation.readers;
 import java.io.*; 
 import java.util.Vector;
 
-import cytoscape.data.readers.TextFileReader;
-import cytoscape.data.readers.TextJarReader;
+import cytoscape.data.readers.*;
 import cytoscape.data.annotation.OntologyTerm;
 import cytoscape.data.annotation.Ontology;
 //-------------------------------------------------------------------------
@@ -59,6 +58,11 @@ public OntologyFlatFileReader (String filename) throws Exception
   try {
     if (filename.trim().startsWith ("jar://")) {
       TextJarReader reader = new TextJarReader (filename);
+      reader.read ();
+      fullText = reader.getText ();
+      }
+    else if (filename.trim().startsWith ("http://")) {
+      TextHttpReader reader = new TextHttpReader (filename);      
       reader.read ();
       fullText = reader.getText ();
       }
@@ -148,6 +152,8 @@ private void parse () throws Exception
       } // if
      ontology.add (term);
     } // for i
+
+  // System.out.println ("OntologyFlatFileReader.read, ontology:\n" + ontology);
 
 } // read
 //-------------------------------------------------------------------------
