@@ -541,7 +541,7 @@ protected JToolBar createToolBar ()
   bar.add (new ZoomSelectedAction ());
   bar.add (new FitContentAction ());
   bar.add (new ShowAllAction ());
-  bar.add (new RenderAction ());
+  // bar.add (new RenderAction ());
 
   bar.addSeparator ();
   // bar.add (new AppearanceControllerLauncherAction (nodeAttributes, edgeAttributes));
@@ -1240,15 +1240,16 @@ protected class DisplayAttributesOfSelectedNodesAction extends AbstractAction {
   public void actionPerformed (ActionEvent e) {
     Graph2D g = graphView.getGraph2D ();
     NodeCursor nc = g.selectedNodes (); 
+    System.out.println ("debug, selected node count: " + nc.size ());
     for (nc.toFirst (); nc.ok (); nc.next ()) { // get the canonical name of the old node
       String canonicalName = nodeAttributes.getCanonicalName (nc.node ());
-      // System.out.println (canonicalName + ": " + nodeAttributes.getAttributes (canonicalName));
+      System.out.println (canonicalName + ": " + nodeAttributes.getAttributes (canonicalName));
       } // for
     EdgeCursor ec = g.selectedEdges (); 
-    //System.out.println ("number of selected edges: " + ec.size ());
+    System.out.println ("debug, selected edge count: " + ec.size ());
     for (ec.toFirst (); ec.ok (); ec.next ()) { // get the canonical name of the old node
       String edgeName = edgeAttributes.getCanonicalName (ec.edge ());
-      //System.out.println (edgeName + ": " + edgeAttributes.getAttributes (edgeName));
+      System.out.println (edgeName + ": " + edgeAttributes.getAttributes (edgeName));
       } // for
     }
 }
