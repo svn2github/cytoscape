@@ -105,11 +105,14 @@ public static Graph2D loadIntrBasic (BioDataServer dataServer,
 public static Graph2D loadBasic (GraphReader reader, GraphObjAttributes edgeAttributes) 
 {
   reader.read ();
+  Graph2D graph = reader.getGraph();
+  if (graph == null) {return null;} //reader couldn't read the file
+  
   GraphObjAttributes newEdgeAttributes = reader.getEdgeAttributes ();
   edgeAttributes.add (newEdgeAttributes);
   edgeAttributes.addNameMap (newEdgeAttributes.getNameMap ());
   edgeAttributes.addClassMap (newEdgeAttributes.getClassMap ());
-  return reader.getGraph();
+  return graph;
 
 }
 //----------------------------------------------------------------------------

@@ -62,6 +62,7 @@ public void read ()
   catch (java.io.IOException e) {
     System.err.println ("error reading '" + filename + "' -- " + e.getMessage ());
     e.printStackTrace ();
+    graph = null; //signals callers that something went wrong
     return;
     }
 
