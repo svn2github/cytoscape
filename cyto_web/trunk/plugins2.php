@@ -103,11 +103,6 @@ The networks can be viewed and manipulated in Cytoscape v2.1.
 				</td>
 			</tr>
 			<tr>
-				<td colspan="4">
-					<hr>
-				</td>
-			</tr>		
-			<tr>
 				<td width="20%" valign="top">
 					<b>cPath Plugin</b> <font size="-1">
 						<br>
@@ -406,6 +401,35 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 			<br>
 		</td>
 	</tr>		
+			<tr>
+				<td colspan="4">
+					<hr>
+				</td>
+			</tr>	
+	<tr>
+		<td width="20%" valign="top">
+			<b>Network Filter Plugin</b>
+			<br>
+			<font size="-1">Version: 1.0
+				<br>
+				Release Date: March 24, 2005</font>
+		</td>
+		<td width="40%" valign="top">
+			This plugin supports features found in Cytoscape 2.0 for editing
+Networks using Filters.  Available on the "Filters" Menu, "Network
+±" will allow you to create new Networks, and modify existing
+Networks by using Filters that you have created.
+			<P>Released by: Rowan Christmas, <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>.
+		</td>
+		<td width="20%" valign="top">
+				 Verified to work in 2.1.
+				</td>			
+		<td width="20%" valign="top">
+			[<a href="plugins/NetworkFilter/rowan.jar">Download Plugin .jar</a>]
+			<br>
+		</td>
+	</tr>			
+	
 			<tr>
 				<td colspan="4">
 					<hr>
