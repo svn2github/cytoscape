@@ -9,9 +9,8 @@ package cytoscape.jarLoader;
 import cytoscape.*;
 
 //--------------------------------------------------------------------------
-public class JarLoaderUI extends AbstractPlugin {
+public class JarLoaderUI {
     protected CytoscapeWindow cytoscapeWindow;
-
     public JarLoaderUI (CytoscapeWindow cytoscapeWindow)
     {
 	super(cytoscapeWindow);
@@ -25,10 +24,6 @@ public class JarLoaderUI extends AbstractPlugin {
 	String[] args = cytoscapeWindow.getConfiguration().getArgs();
 	JarLoaderCommandLineParser parser =
 	    new JarLoaderCommandLineParser(args,cytoscapeWindow);
-    }
-    public String describe() {
-	return new String("Basic plugin for loading other plugins " +
-			  "from .jar files.");
     }
 } // class JarLoaderUI
 
