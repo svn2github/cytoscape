@@ -39,6 +39,7 @@ public class VizMapperCategories implements AttributeMapperCategories {
     public static final Integer EDGE_SOURCE_DECORATION = new Integer(12);
     public static final Integer EDGE_TARGET_DECORATION = new Integer(13);
 
+    public static final Integer BG_COLOR = new Integer(14);
 
     public VizMapperCategories() {}
     //------------------------------------------------------------------
@@ -81,6 +82,10 @@ public class VizMapperCategories implements AttributeMapperCategories {
 
     public Color getEdgeColor(Map attrBundle, AttributeMapper mapper) {
 	return (Color)mapper.getRangeValue(attrBundle,EDGE_COLOR);
+    }
+
+    public Color getBGColor(AttributeMapper mapper) {
+	return (Color)mapper.getDefaultValue(BG_COLOR);
     }
 
     public LineType getEdgeLineType(Map attrBundle, AttributeMapper mapper) {
