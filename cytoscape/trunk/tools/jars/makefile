@@ -10,8 +10,21 @@ YFILESDIR=/common/yfiles1.4-unpacked
 
 default: help
 
-#  
+
+#
 #  --- full
+#  make cytoscape, make csplugins, make jar, make obf
+#
+
+full:
+	(cd ../../../cytoscape; make)
+	(cd ../../../csplugins; make)
+	make jar
+	make obf
+
+
+#  
+#  --- jar
 #  make a jar file which has everything needed to be executable
 #  via the command "java -jar cytoscape.jar"
 #
@@ -24,7 +37,7 @@ default: help
 #     jar xvf someDirectory/aux.jar
 #  
 
-full:
+jar:
 	(cd ../../..; jar cvmf cytoscape/tools/jars/jar.manifest $(JARFILE))
 	(cd ../../..; jar uvf $(JARFILE) `find cytoscape/* -name "*.class" -print`)
 	(cd ../../..; jar uvf $(JARFILE) `find cytoscape/* -name "*.jpg" -print`)
