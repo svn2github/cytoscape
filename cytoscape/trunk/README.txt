@@ -6,7 +6,7 @@ I.  Doing a Clean Checkout
 
 If this is the first time reading this, make sure that you have done a clean checkout.  To
 do this, create a backup of your local installation of cytoscape.  Then, set your CVSROOT environment
-variable to point to:  /common/cvsdir4.
+variable to point to:  /common/cvsdir5.
 
 Then, do a clean check-out:
 
@@ -53,13 +53,11 @@ To build cytoscape:
 1.  Download and install Jakarta Ant.  Download from:  http://ant.apache.org/.  Installation instructions
 are available at:  http://ant.apache.org/manual/install.html.
 
-2.  Copy your YFiles JAR file (y.jar) to the lib/ directory.
-
-3.  To compile cytoscape, type:
+2.  To compile cytoscape, type:
 
 ant
 
-4.  To run cytoscape, type:
+3.  To run cytoscape, type:
 
 ant run
 
@@ -84,24 +82,3 @@ define your java CLASSPATH to include at least
 then, cd to csplugins, and type:
 
   make
-
-V.  Obfuscating Cytoscape 
-=========================
-
-YFiles requires that we obfuscate the Cytoscape JAR file.  This is now fully automated via Ant.  You only
-need to obfuscate Cytoscape if you are making an official Cytoscape release, that you intend to release
-to others. 
-
-To create an obfuscated cytocape JAR file, type:
-
-ant obfuscate
-
-This will create a cytoscape-obfuscated.jar file within the dist/ directory.
-
-To run cytoscape with the obfuscated JAR file, type:
-
-ant run_obfuscated
-
-This runs an official copy of Cytoscape with cytocape-obfuscated.jar.
-
-
