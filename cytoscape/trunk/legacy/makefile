@@ -54,16 +54,13 @@ activePathsDirectory:
 nativelib: activePathsNew
 	make -f libActivePaths.make
 
-#deprecated when code moved from activePaths to activePathsNew
-#
-#nativelibTest: nativelib
-#	(cd activePaths/unitTests; make)
+nativelibTest: nativelib
+	(cd activePathsNew/unitTests; make)
 
 layoutDirectory:
 	(cd layout; make)
 
-#test: dataTest currentDirTest nativelibTest 
-test: dataTest currentDirTest
+test: dataTest currentDirTest nativelibTest
 
 clean:
 	- rm *.class libActivePaths.so core *.o
