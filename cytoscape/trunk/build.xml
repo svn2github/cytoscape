@@ -315,10 +315,12 @@
             ---------------------------------------
         </echo>
 
+        <copy file="testData/sampleDataContents" todir="${release.dir}/sampleData"/>
         <copy file="testData/BINDyeast.sif" todir="${release.dir}/sampleData"/>
         <copy file="testData/galExpData.pvals" todir="${release.dir}/sampleData"/>
         <copy file="testData/galFiltered.gml" todir="${release.dir}/sampleData"/>
         <copy file="testData/galFiltered.sif" todir="${release.dir}/sampleData"/>
+        <copy file="testData/yeastHighQuality.sif" todir="${release.dir}/sampleData"/>
 
         <!-- Copy over GO Data Files -->
         <copy todir="${release.dir}/GO">
