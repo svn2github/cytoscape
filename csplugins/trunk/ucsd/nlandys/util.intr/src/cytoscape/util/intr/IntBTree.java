@@ -94,7 +94,7 @@ public final class IntBTree
         if (x >= n.data.splitVals[i]) {
           foundPath = i + 1;
           break; } }
-      Node oldChild = n.data.children[foundPath];
+      Node oldChild = n.data.children[foundPath]; // Remove reference later.
       Node newChild = insert(oldChild, x);
       if (newChild == null) {
         n.data.deepCount++;
@@ -114,38 +114,70 @@ public final class IntBTree
           n.data.splitVals[foundPath] = newSplit;
           return null; }
         else { // No room in this internal node; perform split.
-          // Being poor but correct, we're going to use poor man's m_buff.
-          System.arraycopy(n.data.splitVals, 0, m_buff, 0, foundPath);
-          m_buff[foundPath] = newSplit;
-          System.arraycopy(n.data.splitVals, foundPath, m_buff, foundPath + 1,
-                           n.sliceCount - (foundPath + 1));
-          Node[] nodeBuff = new Node[n.sliceCount + 1];
-          System.arraycopy(n.data.children, 0, nodeBuff, 0, foundPath + 1);
-          nodeBuff[foundPath + 1] = newChild;
-          System.arraycopy(n.data.children, foundPath + 1,
-                           nodeBuff, foundPath + 2,
-                           n.sliceCount - (foundPath + 1));
-          int combinedSplitCount = n.sliceCount;
-          int middleInx = combinedSplitCount >> 1; // Divide by two.
-          Node returnThis = new Node(MAX_BRANCHES, false);
-          System.arraycopy(m_buff, 0,
-                           n.data.splitVals, 0, middleInx); // Superfluous?
-          System.arraycopy(nodeBuff, 0, n.data.children, 0,
-                           middleInx + 1); // Superfluous?
-          n.sliceCount = middleInx + 1;
-          System.arraycopy(m_buff, middleInx + 1,
-                           returnThis.data.splitVals, 0,
-                           combinedSplitCount - (middleInx + 1));
-          // Todo: Remove dangling pointers so garbage collect.
-          // Todo: Put more data into right (new) sibling.
+          Node newNode = new Node(MAX_BRANCHES, false);
+          int combinedCount = MAX_BRANCHES + 1;
+          n.sliceCount = combinedCount >> 1; // Divide by two.
+          newNode.sliceCount = combinedCount - n.sliceCount;
+          Node currentNode = newNode;
+          int currentInx = currentNode.sliceCount;
+          boolean found = false;
+          for (int i = MAX_BRANCHES - 1; i >= 0; i--) {
+            if ((!found) && (i == foundPath)) {
+              currentNode.data.children[--currentInx] = newChild;
+              if (currentInx > 0) {
+                currentNode.data.splitVals[currentInx - 1] = newSplit;
+              newNode.data.splitVals[newNode.sliceCount - 1] =
+                n.data.splitVals[i - 2];
+              found = true;
+              if (currentNode == n) break;
+              i++; }
+            else {
+              currentNode.data.children[--currentInx] = n.data.children[i];
+              if (currentInx > 0) {
+                currentNode.data.splitVals[currentInx - 1] =
+                  n.data.splitVals[i - 1]; } }
+            if (currentInx == 0) {
+              if (found) break;
+              currentNode = n;
+              currentInx = currentNode.sliceCount; } }
+          for (int i = n.splitCount; i < MAX_BRANCHES; i++)
+            n.data.children[i] = null; // Remove pointers for garbage collect.
           // Todo: Update deep counts.
-          System.arraycopy(nodeBuff, middleInx + 1,
-                           returnThis.data.children, 0,
-                           combinedSplitCount - middleInx);
-          returnThis.sliceCount = combinedSplitCount - middleInx;
-          returnThis.data.splitVals[combinedSplitCount - (middleInx + 1)] =
-            m_buff[middleInx];
-          return returnThis; }
+          return newNode; }
+
+
+//           // Being poor but correct, we're going to use poor man's m_buff.
+//           System.arraycopy(n.data.splitVals, 0, m_buff, 0, foundPath);
+//           m_buff[foundPath] = newSplit;
+//           System.arraycopy(n.data.splitVals, foundPath, m_buff, foundPath + 1,
+//                            n.sliceCount - (foundPath + 1));
+//           Node[] nodeBuff = new Node[n.sliceCount + 1];
+//           System.arraycopy(n.data.children, 0, nodeBuff, 0, foundPath + 1);
+//           nodeBuff[foundPath + 1] = newChild;
+//           System.arraycopy(n.data.children, foundPath + 1,
+//                            nodeBuff, foundPath + 2,
+//                            n.sliceCount - (foundPath + 1));
+//           int combinedSplitCount = n.sliceCount;
+//           int middleInx = combinedSplitCount >> 1; // Divide by two.
+//           Node returnThis = new Node(MAX_BRANCHES, false);
+//           System.arraycopy(m_buff, 0,
+//                            n.data.splitVals, 0, middleInx); // Superfluous?
+//           System.arraycopy(nodeBuff, 0, n.data.children, 0,
+//                            middleInx + 1); // Superfluous?
+//           n.sliceCount = middleInx + 1;
+//           System.arraycopy(m_buff, middleInx + 1,
+//                            returnThis.data.splitVals, 0,
+//                            combinedSplitCount - (middleInx + 1));
+//           // Todo: Remove dangling pointers so garbage collect.
+//           // Todo: Put more data into right (new) sibling.
+//           // Todo: Update deep counts.
+//           System.arraycopy(nodeBuff, middleInx + 1,
+//                            returnThis.data.children, 0,
+//                            combinedSplitCount - middleInx);
+//           returnThis.sliceCount = combinedSplitCount - middleInx;
+//           returnThis.data.splitVals[combinedSplitCount - (middleInx + 1)] =
+//             m_buff[middleInx];
+//           return returnThis; }
       }
     }
   }
