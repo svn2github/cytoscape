@@ -50,6 +50,18 @@ public class AnimatedLayoutAction extends AbstractAction {
                 }
               } ); } } ) );
 
+    main.add(  new JButton (new AbstractAction( "FR" ) {
+          public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  PGraphView gv = ( PGraphView )networkView.getView();
+                  FRLayout fr = new FRLayout( gv );
+                  fr.doLayout();
+                }
+              } ); } } ) );
+
+
      main.add(  new JButton (new AbstractAction( "Tree Select" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
@@ -83,6 +95,8 @@ public class AnimatedLayoutAction extends AbstractAction {
               }
             } ); } } ) );
     
+
+    main.add( new JLabel( "  ") );
 
 
     main.add(  new JButton (new AbstractAction( "Update" ) {
