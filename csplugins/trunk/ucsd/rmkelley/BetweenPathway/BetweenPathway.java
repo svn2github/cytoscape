@@ -104,8 +104,13 @@ class BetweenPathwayThread extends Thread{
       //initialize the sets that represent the neighbors in the physical network
       Set [] neighbors = new Set[2];
       for(int idx = 0;idx<neighbors.length;idx++){
-	System.err.println(physicalNetwork.neighborsList((Node)members[idx].iterator().next()));
-	neighbors[idx] = new HashSet(physicalNetwork.neighborsList((Node)members[idx].iterator().next()));
+	Node member = (Node)members[idx].iterator().next();
+	if(physicalNetwork.containsNode(member)){
+	  neighbors[idx] = new HashSet(physicalNetwork.neighborsList(member));
+	}
+	else{
+	  neighbors[idx] = new HashSet();
+	}
       }
       if(neighbors[1].contains(members[0].iterator().next())){
 	cross_count_total++;
