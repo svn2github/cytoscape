@@ -415,10 +415,26 @@ class FGraphPerspective implements GraphPerspective
     throw new IllegalStateException("not implemented yet");
   }
 
-  public GraphPerspective createGraphPerspective(Filter filter)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  public GraphPerspective createGraphPerspective(final Filter filter) {
+    m_heap.empty();
+    final MinIntHeap nodeInxBucket = m_heap;
+    final Iterator nodesIter = nodesIterator();
+    while (nodesIter.hasNext()) {
+      final Node nodeCandidate = (Node) (nodesIter.next());
+      if (filter.passesFilter(nodeCandidate))
+        nodeInxBucket.toss(nodeCandidate.getRootGraphIndex()); }
+    final int[] nodeInxArr = new int[nodeInxBucket.size()];
+    nodeInxBucket.copyInto(nodeInxArr, 0);
+    m_heap.empty();
+    final MinIntHeap edgeInxBucket = m_heap;
+    final Iterator edgesIter = edgesIterator();
+    while (edgesIter.hasNext()) {
+      final Edge edgeCandidate = (Edge) (edgesIter.next());
+      if (filter.passesFilter(edgeCandidate))
+        edgeInxBucket.toss(edgeCandidate.getRootGraphIndex()); }
+    final int[] edgeInxArr = new int[edgeInxBucket.size()];
+    edgeInxBucket.copyInto(edgeInxArr, 0);
+    return m_root.createGraphPerspective(nodeInxArr, edgeInxArr); }
 
   public java.util.List neighborsList(Node node)
   {
