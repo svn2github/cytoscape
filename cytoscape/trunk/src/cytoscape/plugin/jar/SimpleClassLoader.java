@@ -267,7 +267,6 @@ public class SimpleClassLoader extends ClassLoader {
   }
 
   void putLocalResource(String name, byte[] data, String type) {
-    System.err.println( "SimpleClassLoader put: "+name+" type: "+type );
     resourceHash.put(name, data);
     mimeHash.put(name, type);
   }

@@ -66,6 +66,8 @@ public class CytoscapeToolBar
       return false;
     }
     button = createJButton( action );
+    button.setBorderPainted(false);
+    button.setRolloverEnabled(true);
     // TODO: Do something with the preferred button group.
     //add( button );
     

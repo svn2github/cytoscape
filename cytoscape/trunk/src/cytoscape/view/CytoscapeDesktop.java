@@ -265,10 +265,16 @@ public class CytoscapeDesktop
       cyMenus.getToolBar().setOrientation( JToolBar.VERTICAL );
       main_panel.add(cyMenus.getToolBar(), BorderLayout.EAST);
       
-      JFrame menuFrame = new JFrame("Cytoscape Menus");
-      menuFrame.setJMenuBar(cyMenus.getMenuBar());
-      menuFrame.setSize( 400, 60 );
-      menuFrame.setVisible( true );
+
+      if ( !System.getProperty("os.name").startsWith( "Mac" ) ) {
+        JFrame menuFrame = new JFrame("Cytoscape Menus");
+        menuFrame.setJMenuBar(cyMenus.getMenuBar());
+        menuFrame.setSize( 400, 60 );
+        menuFrame.setVisible( true );
+      } else {
+        setJMenuBar(cyMenus.getMenuBar());
+      }
+      
     }
 
     Cytoscape.getCytoscapeObj().getPluginRegistry().addPluginListener( this );
