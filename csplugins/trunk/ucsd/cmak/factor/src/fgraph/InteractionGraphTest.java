@@ -1,5 +1,6 @@
 package fgraph;
 
+import java.io.File;
 import junit.framework.*;
 import java.util.*;
 
@@ -7,7 +8,8 @@ import giny.model.*;
 
 public class InteractionGraphTest extends TestCase
 {
-    private String _sif = "test2.sif";
+    private String _testDir = "test-data" + File.separator;
+    private String _sif = _testDir + "test2.sif";
     private String _all = "all.sif";
 
     protected void setUp()
@@ -30,8 +32,8 @@ public class InteractionGraphTest extends TestCase
 
     public void testLoadExpressionData() throws Exception
     {
-        String sif = "fgtest.sif";
-        String pv = "fg.pvals";
+        String sif = _testDir + "fgtest.sif";
+        String pv = _testDir + "fg.pvals";
         System.out.println("Loading: " + sif +", " + pv);
 
         InteractionGraph ig = InteractionGraphFactory.createFromSif(sif);
@@ -53,8 +55,8 @@ public class InteractionGraphTest extends TestCase
     
     public void testPDThreshold() throws Exception
     {
-        String sif = "fgtest.sif";
-        String ed = "fgtest.eda";
+        String sif = _testDir +"fgtest.sif";
+        String ed = _testDir + "fgtest.eda";
         System.out.println("Loading: " + sif +", " + ed);
         
         InteractionGraph ig = InteractionGraphFactory.createFromSif(sif);

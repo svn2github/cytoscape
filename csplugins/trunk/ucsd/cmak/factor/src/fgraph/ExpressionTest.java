@@ -9,7 +9,7 @@ import cytoscape.data.mRNAMeasurement;
 
 public class ExpressionTest extends TestCase
 {
-    private String file = "/home/cmak/data/data_expts1-300_geneerr.pvals";
+    private String file = "/cellar/users/cmak/data/data_expts1-300_geneerr.pvals";
     
     protected void setUp()
     {
