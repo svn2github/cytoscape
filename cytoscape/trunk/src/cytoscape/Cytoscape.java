@@ -825,6 +825,8 @@ public abstract class Cytoscape {
     try {
       reader.read();
     } catch ( Exception e ) {
+      
+      //JOptionPane.showMessageDialog(Cytoscape.getDesktop(),e.getMessage(),"Error reading graph file",JOptionPane.ERROR_MESSAGE);
       System.err.println( "Cytoscape: Error Reading Graph File: "+location+"\n--------------------\n" );
       e.printStackTrace();
       return null;

@@ -8,7 +8,9 @@ import java.util.regex.Matcher;
 import java.util.Vector;
 import java.util.List;
 import java.util.Iterator;
-import java.io.FileWriter;
+import java.io.Writer;
+import java.text.ParseException;
+
 
 /**
  * The purpose of hte class is to translate gml into an object tree, and print out an object treee
@@ -92,14 +94,14 @@ public class GMLParser{
    * Public method to print out a given object tree(list)
    * using the supplied filewriter
    */
-  public static void printList(List list,FileWriter writer) throws IOException{
+  public static void printList(List list,Writer writer) throws IOException{
     printList(list,"",writer);
   }
 
   /**
    * Protected recurive helper method to print out an object tree
    */
-  protected static void printList(List list,String indent,FileWriter writer) throws IOException{
+  protected static void printList(List list,String indent,Writer writer) throws IOException{
     for(Iterator it = list.iterator();it.hasNext();){
       KeyValue keyVal = (KeyValue)it.next();
       if(keyVal.value instanceof List){
@@ -141,18 +143,19 @@ public class GMLParser{
   /**
    * A list consists of zero or more paris of keys and values
    */
-  public Vector parseList() throws IOException{
+  public Vector parseList() throws IOException,ParseException{
     Vector result = new Vector();	
     while(isKey()){
       String key = parseKey();
+      if(key == null){
+	throw new ParseException("Bad key",tokenizer.lineno());
+      }
       tokenizer.nextToken();
       Object value = parseValue();
-      if(value != null){
-	result.add(new KeyValue(key,value));
+      if(value == null){
+	throw new ParseException("Bad value associated with key "+key,tokenizer.lineno());
       }
-      else{
-	System.err.println("Ignoring bad value for key "+key+" on line "+tokenizer.lineno());
-      }
+      result.add(new KeyValue(key,value));
       tokenizer.nextToken();
 
     }
@@ -212,22 +215,23 @@ public class GMLParser{
     return tokenizer.sval.equals(LIST_OPEN);
   }
   
-  
-
-
   /**
-   * Just return the current string value from the tokenizer
-   * we assume it has already been verified with isKey()
+   * Verify that the current value is a key,
+   * and then return the key that is found
    */
   private String parseKey(){
-    return tokenizer.sval;
+    if(isKey()){
+      return tokenizer.sval;
+    }else{
+      return null;
+    }
   }
 
   /**
    * Parse out a value, it can be a integer,real,string, or a list. Assume is has already been found
    * to not be the end of file
    */
-  private Object parseValue() throws IOException{
+  private Object parseValue() throws IOException, ParseException{
     Object result = null;
     if(tokenizer.ttype == StreamTokenizer.TT_EOL){
       return result;
@@ -245,13 +249,11 @@ public class GMLParser{
       tokenizer.nextToken();
       List list =  parseList();
       if(!tokenizer.sval.equals(LIST_CLOSE)){
-	throw new RuntimeException("Parse Error: Unterminated list");
+	throw new ParseException("Unterminated list", tokenizer.lineno());
       }
       return list;
     }
     return result;
   }
-    
-	
-
+  
 }

@@ -13,8 +13,9 @@ import java.awt.Color;
 import cytoscape.data.GraphObjAttributes;
 import cern.colt.list.IntArrayList;
 import cern.colt.map.OpenIntIntHashMap;
-
+import java.io.StringWriter;
 import java.io.IOException;
+import java.text.ParseException;
 
 /**
  * This class is responsible for converting a gml object tree into cytoscape objects
@@ -58,6 +59,7 @@ public class GMLReader2 implements GraphReader {
   protected static String TARGET_ARROW = "target_arrow";
   protected static String OUTLINE = "outline";
   protected static String OUTLINE_WIDTH = "outline_width";
+  protected static String DEFAULT_EDGE_INTERACTION = "pp";
 
   String filename;
   List keyVals;
@@ -79,6 +81,8 @@ public class GMLReader2 implements GraphReader {
       keyVals = (new GMLParser(filename)).parseList();
     }catch(IOException io){
       throw new RuntimeException(io.getMessage());
+    }catch(ParseException p){
+      throw new RuntimeException(p.getMessage());
     }
     initializeStructures();
     readGML(keyVals);
@@ -138,8 +142,8 @@ public class GMLReader2 implements GraphReader {
 	((KeyValue)node_root_index_pairs.get(idx)).value = (new Integer(node.getRootGraphIndex()));
       }
       else{
-	System.err.println("GML id "+nodes.get(idx)+" has a duplicated label, skipping");
-	((KeyValue)node_root_index_pairs.get(idx)).value = null;
+	throw new GMLException("GML id "+nodes.get(idx)+" has a duplicated label: "+label);
+	//((KeyValue)node_root_index_pairs.get(idx)).value = null;
       }
     }
     nodeNameSet = null;
@@ -171,13 +175,13 @@ public class GMLReader2 implements GraphReader {
 	  ((KeyValue)edge_root_index_pairs.get(idx)).value = (new Integer(edge.getRootGraphIndex()));
 	}
 	else{
-	  System.err.println("Edges between nodes must have unique types: duplicate is "+edgeName+", skipping");
-	  ((KeyValue)edge_root_index_pairs.get(idx)).value = null;
+	  throw new GMLException("Edges between the same nodes must have unique types: duplicate is between "+sourceName+" and "+targetName);
+	  //((KeyValue)edge_root_index_pairs.get(idx)).value = null;
 	}
       }
       else{
-	System.err.println("Node was not created for edge with gml (source,target):"+sources.get(idx)+","+targets.get(idx)+"; skipping");
-	((KeyValue)edge_root_index_pairs.get(idx)).value = null;
+	throw new GMLException("Non-existant source/target node for edge with gml (source,target): "+sources.get(idx)+","+targets.get(idx));
+	//((KeyValue)edge_root_index_pairs.get(idx)).value = null;
       }
     }
     edgeNameSet = null;
@@ -244,8 +248,14 @@ public class GMLReader2 implements GraphReader {
       list.add(root_index_pair);
     }
     if(!contains_id){
-      System.err.println("Node is missing an id field, skipping");
-      root_index_pair.value = null;
+      StringWriter stringWriter = new StringWriter();
+      try{
+	GMLParser.printList(list,stringWriter);
+      }
+      catch(Exception e){
+	throw new RuntimeException(e.getMessage());
+      }
+      throw new GMLException("The node-associated list\n"+stringWriter+"is missing an id field");
     }
     else{
       node_root_index_pairs.add(root_index_pair);
@@ -261,7 +271,7 @@ public class GMLReader2 implements GraphReader {
    * to an "edge" key.
    */
   protected void readEdge(List list){
-    String label = "pp";
+    String label = DEFAULT_EDGE_INTERACTION;
     boolean contains_source = false, contains_target = false;
     int source = 0,target = 0;
     KeyValue root_index_pair = null;
@@ -288,9 +298,13 @@ public class GMLReader2 implements GraphReader {
       list.add(root_index_pair);
     }
     if(!contains_source || !contains_target){
-      System.err.println("An edge declaration is missing source or target, skipping");
-      root_index_pair.value = null;
-      return;
+      StringWriter stringWriter = new StringWriter();
+      try{
+	GMLParser.printList(list,stringWriter);
+      }catch(Exception e){
+	throw new RuntimeException(e.getMessage());
+      }
+      throw new GMLException("The edge-associated list\n"+stringWriter+" is missing a source or target key");
     }
     else{
       sources.add(source);
