@@ -33,6 +33,9 @@ public class PasteAction extends AbstractAction {
          Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();
          Transferable trans = clip.getContents(this);
          String data = (String)trans.getTransferData(DataFlavor.stringFlavor);
+         if (data.charAt(data.length()-1)==0) {
+         	data = data.substring(0,data.length()-1);
+         }
          console.executeCommandSet(data);
       } catch (IOException ex) {
          ex.printStackTrace();
