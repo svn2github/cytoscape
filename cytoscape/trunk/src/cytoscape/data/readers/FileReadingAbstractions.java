@@ -92,7 +92,15 @@ public static Graph2D loadGMLBasic (String filename,
                                     GraphObjAttributes edgeAttributes,
                                     boolean canonicalize) 
 {
-  GMLReader reader = new GMLReader (filename);
+    return loadGMLBasic(filename, edgeAttributes, canonicalize);
+}
+//----------------------------------------------------------------------------
+public static Graph2D loadGMLBasic (String filename, 
+                                    GraphObjAttributes edgeAttributes,
+                                    boolean canonicalize,
+				    boolean isYFiles) 
+{
+  GMLReader reader = new GMLReader (filename, isYFiles);
   return loadBasic (reader, edgeAttributes, canonicalize);
 }
 //----------------------------------------------------------------------------
@@ -100,7 +108,8 @@ public static Graph2D loadIntrBasic (BioDataServer dataServer,
                                      String species,
                                      String filename, 
                                      GraphObjAttributes edgeAttributes,
-                                     boolean canonicalize, boolean isYFiles) 
+                                     boolean canonicalize, 
+				     boolean isYFiles) 
 {
   InteractionsReader reader = new InteractionsReader (dataServer, species, filename, isYFiles);
   return loadBasic (reader, edgeAttributes, canonicalize);
