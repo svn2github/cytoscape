@@ -17,12 +17,21 @@ class FNode implements Node
 
   public GraphPerspective getGraphPerspective()
   {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
+    return m_rootGraph.createGraphPerspective
+      (m_rootGraph.getNodeMetaChildIndicesArray(m_rootGraphIndex),
+       m_rootGraph.getEdgeMetaChildIndicesArray(m_rootGraphIndex));
   }
 
   public boolean setGraphPerspective(GraphPerspective gp)
   {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
+    if (gp.getRootGraph() != m_rootGraph) return false;
+    final int[] nodeInx = gp.getNodeIndicesArray();
+    final int[] edgeInx = gp.getEdgeIndicesArray();
+    for (int i = 0; i < nodeInx.length; i++)
+      m_rootGraph.addNodeMetaChild(m_rootGraphIndex, nodeInx[i]);
+    for (int i = 0; i < edgeInx.length; i++)
+      m_rootGraph.addEdgeMetaChild(m_rootGraphIndex, edgeInx[i]);
+    return true;
   }
 
   public RootGraph getRootGraph()
