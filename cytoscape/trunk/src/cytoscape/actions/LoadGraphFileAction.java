@@ -11,8 +11,10 @@ import javax.swing.JFileChooser;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.WindowConstants;
+import javax.swing.border.EmptyBorder;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Frame;
@@ -115,12 +117,14 @@ public class LoadGraphFileAction extends CytoscapeAction {
       final JDialog busyDialog = new JDialog(f, "Loading...", true);
       busyDialog.setResizable(false);
       busyDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-      busyDialog.getContentPane().setLayout(new BorderLayout());
-      busyDialog.getContentPane().add(new JLabel("Loading graph; please wait..."),
-                                      BorderLayout.CENTER);
+      JPanel panel = new JPanel(new BorderLayout());
+      panel.setBorder(new EmptyBorder(20, 20, 20, 20));
+      panel.add(new JLabel("Loading graph; please wait..."),
+                BorderLayout.CENTER);
       JProgressBar progress = new JProgressBar();
       progress.setIndeterminate(true);
-      busyDialog.getContentPane().add(progress, BorderLayout.SOUTH);
+      panel.add(progress, BorderLayout.SOUTH);
+      busyDialog.getContentPane().add(panel);
       busyDialog.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
       busyDialog.pack();
       busyDialog.move((f.size().width - busyDialog.size().width) / 2 + f.location().x,
