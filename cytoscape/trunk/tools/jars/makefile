@@ -103,6 +103,11 @@ activeModules:
 	(cd ../../..; find csplugins/activeModules -name "*.class" -print > cytoscape/tools/jars/activeModsExtract.txt)
 	java -cp retroguard.jar RGpatch cytoscape-extra-obf.jar activeModulesPlugin.jar cytoscape-obf-1_1-extra.log activeModsExtract.txt
 
+activeModulesUnobf:
+#	make jar
+	(cd ../../..; jar cvf $(EXTRAJARFILE) `find csplugins/activeModules -name "*.class" -print`)
+	mv $(EXTRAJARFILE) activeModulesPluginUnobf.jar
+
 owenResearch:
 #	make jar
 	cp $(JARFILE) $(EXTRAJARFILE) 
@@ -111,6 +116,11 @@ owenResearch:
 	java -cp retroguard.jar RetroGuard $(EXTRAJARFILE) cytoscape-extra-obf.jar usable_obf_table-1_1.log cytoscape-obf-1_1-extra.log
 	(cd ../../..; find csplugins/owenResearch -name "*.class" -print > cytoscape/tools/jars/owenResearchExtract.txt)
 	java -cp retroguard.jar RGpatch cytoscape-extra-obf.jar owenResearchPlugin.jar cytoscape-obf-1_1-extra.log owenResearchExtract.txt
+
+owenResearchUnobf:
+#	make jar
+	(cd ../../..; jar cvf $(EXTRAJARFILE) `find csplugins/owenResearch -name "*.class" -print`)
+	mv $(EXTRAJARFILE) owenResearchPluginUnobf.jar
 
 
 # example from the RetroGuard website http://www.retrologic.com/retroguard-docs.html#patchutil
