@@ -46,6 +46,10 @@ import cytoscape.data.GraphObjAttributes;
 // add text here
 
 //-------------------------------------------------------------------------------------
+/**
+ * Reader for graph in GML format. Given the filename provides the graph and
+ * attributes objects constructed from the file.
+ */
 public class GMLReader implements GraphReader {
     private String filename;
     GraphObjAttributes edgeAttributes;// = new GraphObjAttributes ();
