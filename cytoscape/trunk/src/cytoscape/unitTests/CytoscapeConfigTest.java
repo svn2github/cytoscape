@@ -47,6 +47,7 @@ public void testAllArgs () throws Exception
   String edgeAttributeFile2 = "xxx.edgeB";
 
   String defaultSpeciesName = "Halobacterium sp.";
+  String defaultLayoutStrategy = "hierarchical";
 
   String [] args = {"-b", bioDataDirectory, 
                     "-g", geometryFilename, 
@@ -58,6 +59,7 @@ public void testAllArgs () throws Exception
                     "-j", edgeAttributeFile1,
                     "-j", edgeAttributeFile2,
                     "-s", defaultSpeciesName,
+                    "-l", defaultLayoutStrategy,
                     "-h",
                     "-v",
                     };
@@ -109,6 +111,7 @@ public void testAllArgs () throws Exception
     }
 
   assertTrue (config.getDefaultSpeciesName().equals (defaultSpeciesName));
+  assertTrue (config.getDefaultLayoutStrategy().equals (defaultLayoutStrategy));
 
   assertTrue (foundFooB);
   assertTrue (foundIntr);
@@ -167,9 +170,22 @@ public void testReadProperties () throws Exception
   CytoscapeConfig config = new CytoscapeConfig (args);
   Properties props = config.getProperties ();
   assertTrue (props.size () > 10);
-  System.out.println (props.getProperty ("edge.color.controller"));
+  //System.out.println ("edge.color.controller: " + props.getProperty ("edge.color.controller"));
+  //System.out.println ("defaultLayoutStrategy: " + props.getProperty ("defaultLayoutStrategy"));
+  assertTrue (config.getDefaultLayoutStrategy().equals ("hierarchical"));
   assertTrue (props.getProperty ("edge.color.controller").equals ("interaction"));
   assertTrue (props.getProperty ("edge.color.map.interaction.pd").equals ("255,0,0"));
+
+} // testReadProperties
+//-------------------------------------------------------------------------
+public void testConfigDirectFromProperties () throws Exception
+{ 
+  System.out.println ("testConfigDirectFromProperties");
+
+  String [] args = new String [0];
+
+  CytoscapeConfig config = new CytoscapeConfig (args);
+  assertTrue (config.getDefaultLayoutStrategy().equals ("hierarchical"));
 
 } // testReadProperties
 //-------------------------------------------------------------------------

@@ -45,3 +45,5 @@ plugin.foo.className=cytoscape.plugins.demo.Foo
 plugin.foo.fileExtension=mrna
 plugin.foo.attributeName=foo
 plugin.bar.load=cytoscape.plugins.demo.Bar
+
+defaultLayoutStrategy=hierarchical

@@ -40,7 +40,7 @@ public class cytoscape implements WindowListener {
   protected static  BioDataServer bioDataServer;
   protected CytoscapeVersion version = new CytoscapeVersion ();
   protected Logger logger;
-
+  protected String defaultSpecies;
 //------------------------------------------------------------------------------
 public cytoscape (String [] args) throws Exception
 {
@@ -70,21 +70,26 @@ public cytoscape (String [] args) throws Exception
   String bioDataDirectory = config.getBioDataDirectory ();
   String interactionsFilename = config.getInteractionsFilename ();
   String expressionDataFilename = config.getExpressionFilename ();
+  defaultSpecies = config.getDefaultSpeciesName ();
   Graph2D graph = null; 
   CytoscapeWindow cytoscapeWindow = null;
   String title = null;
   boolean requestFreshLayout = true;
 
+  if (bioDataDirectory != null) {
+    bioDataServer = new BioDataServer (bioDataDirectory);
+    }
   if (geometryFilename != null) {
     logger.info ("reading " + geometryFilename + "...");
-    graph = FileReadingAbstractions.loadGMLBasic(geometryFilename,edgeAttributes);
+    graph = FileReadingAbstractions.loadGMLBasic (geometryFilename, edgeAttributes);
     logger.info ("  done");
     title = geometryFilename;
     requestFreshLayout = false;
     }
   else if (interactionsFilename != null) {
     logger.info ("reading " + interactionsFilename + "...");
-    graph=FileReadingAbstractions.loadIntrBasic(interactionsFilename,edgeAttributes);
+    graph = FileReadingAbstractions.loadIntrBasic (bioDataServer, defaultSpecies, interactionsFilename,
+                                                  edgeAttributes);
     logger.info ("  done");
     title = interactionsFilename;
     }
@@ -93,14 +98,12 @@ public cytoscape (String [] args) throws Exception
     expressionData = new ExpressionData (expressionDataFilename);
     logger.info ("  done");
     }
-  if (bioDataDirectory != null) {
-    bioDataServer = BioDataServerFactory.create (bioDataDirectory);
-    }
 
   if (graph == null)
     graph = new Graph2D ();
 
-  FileReadingAbstractions.initAttribs(config,graph,nodeAttributes,edgeAttributes);
+  FileReadingAbstractions.initAttribs (bioDataServer, defaultSpecies, config, graph, 
+                                       nodeAttributes, edgeAttributes);
 
   cytoscapeWindow = new CytoscapeWindow (this, config, logger,
                                          graph, expressionData, bioDataServer,

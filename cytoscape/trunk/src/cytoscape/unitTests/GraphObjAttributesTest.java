@@ -230,13 +230,13 @@ public void testAddGraphObjAttributes () throws Exception
   assertTrue (original.getDoubleValue ("foo", "GAL4").equals (new Double (321.23)));
   assertTrue (original.getStringValue ("bar", "GAL4").equals ("The Columbia City Ale House"));
 
-  assertTrue (original.getClass ("homology") == (new Double (0.0)).getClass ());
-  assertTrue (original.getClass ("count") == (new Integer (0)).getClass ());
-  assertTrue (original.getClass ("magic") == "string".getClass ());
+  assertTrue (additional.getClass ("homology") == (new Double (0.0)).getClass ());
+  assertTrue (additional.getClass ("count") == (new Integer (0)).getClass ());
+  assertTrue (additional.getClass ("magic") == "string".getClass ());
 
-  assertTrue (original.getDoubleValue ("homology", nodeName).equals (homology));
-  assertTrue (original.getIntegerValue ("count", nodeName).equals (count));
-  assertTrue (original.getStringValue ("magic", nodeName).equals (magic));
+  assertTrue (additional.getDoubleValue ("homology", nodeName).equals (homology));
+  assertTrue (additional.getIntegerValue ("count", nodeName).equals (count));
+  assertTrue (additional.getStringValue ("magic", nodeName).equals (magic));
 
 
 

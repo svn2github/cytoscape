@@ -60,7 +60,7 @@ sub checkLeda
 #-------------------------------------------------------------------------
 sub checkJavaVersion
 {
-  my $requiredVersionString = "1.4.0";
+  my $requiredVersionString = "1.4";
   my $versionString = `java -version 2>&1 | grep $requiredVersionString`;
   my $lengthOfMessage = length $versionString;
   if ($lengthOfMessage > 0) {

@@ -20,6 +20,7 @@ import java.lang.reflect.*;
 
 import cytoscape.data.*;
 import cytoscape.data.readers.*;
+import cytoscape.data.servers.*;
 import cytoscape.util.Misc;
 //--------------------------------------------------------------------------------
 /**
@@ -184,24 +185,27 @@ import cytoscape.util.Misc;
  * </ol>
  *
  */
-public class GraphObjAttributes implements Cloneable, Serializable {
+public class GraphObjAttributes implements Cloneable,Serializable {
     // the main data object, a hash of hashes: (attributeName, hash (objName, objValue)).
-  HashMap map;
+    HashMap map;
     // map from a graphObject (a node or an edge) to its canonical name
-  HashMap nameFinder;  
-  HashMap countIdMap;
+    transient HashMap nameFinder;
+    // map from a canonical name to a graphObject (node or edge) --iliana
+    transient HashMap canonicalToGraphObject;
+    transient HashMap countIdMap;
     // what kind of attribute is this?  staticWebPage, annotation, numerical, categorizer, ...
     // these types are -not- from a controlled vocabulary:  they are up to the whim
     // of the user (though standard usages may evolve)
-  HashMap categoryMap;   
+    HashMap categoryMap;   
     // keep track of the java class of each of these attributes
-  HashMap classMap;
-  public final static String DEFAULT_CATEGORY = "unknown";
+    HashMap classMap;
+    public final static String DEFAULT_CATEGORY = "unknown";
 //--------------------------------------------------------------------------------
 public GraphObjAttributes ()
 {
   map = new HashMap ();
   nameFinder = new HashMap ();
+  canonicalToGraphObject = new HashMap();
   countIdMap = new HashMap ();
   categoryMap = new HashMap ();
   classMap = new HashMap ();
@@ -246,6 +250,7 @@ public Object clone ()
         } // for j
       } // for i
     attributesClone.nameFinder  = (HashMap) nameFinder.clone ();
+    attributesClone.canonicalToGraphObject = (HashMap) canonicalToGraphObject.clone();
     attributesClone.countIdMap  = (HashMap) countIdMap.clone ();
     attributesClone.categoryMap = (HashMap) categoryMap.clone ();
     }
@@ -272,8 +277,36 @@ public Object clone ()
  */
 public void addNameMapping (String canonicalName, Object graphObject)
 {
-  nameFinder.put (graphObject, canonicalName);
+    nameFinder.put (graphObject, canonicalName);
+    canonicalToGraphObject.put(canonicalName, graphObject);
 }
+//--------------------------------------------------------------------------------
+/**
+ * removes a mapping between a java object (a graph node or edge) and
+ * its canonical (standard) name
+ */
+public void removeNameMapping (String canonicalName)
+{
+    Object graphObject = canonicalToGraphObject.remove (canonicalName);
+    nameFinder.remove (graphObject);
+    // update the counter as well
+    if(countIdMap != null){
+	Integer numIdentical = (Integer)countIdMap.get(canonicalName);
+	if(numIdentical != null && numIdentical.intValue() > 0){
+	    countIdMap.put (canonicalName, new Integer (numIdentical.intValue() - 1));
+	}
+    }
+}
+//--------------------------------------------------------------------------------
+/**
+ * removes a mapping between a canonical name and its graph object
+ */
+public void removeObjectMapping(Object graphObj)
+{
+    String canonical = (String)nameFinder.remove (graphObj);
+    canonicalToGraphObject.remove (canonical);
+}
+
 //--------------------------------------------------------------------------------
 /**
  *  remove all entries from the nameMap
@@ -281,11 +314,25 @@ public void addNameMapping (String canonicalName, Object graphObject)
 public void clearNameMap ()
 {
   nameFinder = new HashMap ();
+  clearObjectMap();
+}
+//--------------------------------------------------------------------------------
+/**
+ * remove all entries in the canonicalToGraphObject map
+ */
+public void clearObjectMap()
+{
+    canonicalToGraphObject = new HashMap();
 }
 //--------------------------------------------------------------------------------
 public HashMap getNameMap ()
 {
   return nameFinder;
+}
+//--------------------------------------------------------------------------------
+public HashMap getObjectMap()
+{
+    return canonicalToGraphObject;
 }
 //--------------------------------------------------------------------------------
 /**
@@ -294,8 +341,29 @@ public HashMap getNameMap ()
  */
 public void addNameMap (HashMap nameMapping)
 {
-  nameFinder.putAll (nameMapping);  
+  nameFinder.putAll (nameMapping);
+  
+  Set keySet = nameMapping.keySet();
+  Iterator it = keySet.iterator();
+  HashMap objectMap = new HashMap();
+  while(it.hasNext()){
+      Object graphObj = it.next();
+      String canonical = (String)nameFinder.get(graphObj);
+      objectMap.put(canonical,graphObj);
+  }
+  addObjectMap(objectMap);
+  
 }
+//--------------------------------------------------------------------------------
+/**
+ * add all entries in the given HashMap (entry: <canonicalName> -> <graphObject>)
+ * to the canonicalToGraphObject HashMap.
+ */
+public void addObjectMap(HashMap objectMapping)
+{
+    canonicalToGraphObject.putAll(objectMapping);
+}
+
 //--------------------------------------------------------------------------------
 /**
  *  return the canonical name associated with this graphObject (a node or edge,
@@ -308,20 +376,30 @@ public String getCanonicalName (Object graphObject)
 }
 //--------------------------------------------------------------------------------
 /**
+ * return the graph object (node or edge) associated with this canonical name,
+ * previously stored with a call to addNameMapping. if no mapping exists, null
+ * is returned.
+ */
+public Object getGraphObject(String canonicalName)
+{
+    return canonicalToGraphObject.get(canonicalName);
+}
+
+//--------------------------------------------------------------------------------
+/**
  *  copy all attributes in the supplied GraphObjAttributes object into this
  *  GraphObjAttributes.  any pre-existing attributes survive intact as long
- *  as they do not have the same attribute name as the attributes passed in
+ *  as they do not have the same attribute name as the attributes passed
+ *  in
  */
-public void set (GraphObjAttributes newAttributes)
+public void set (GraphObjAttributes attributes)
 {
-  String [] newAttributeNames = newAttributes.getAttributeNames ();
+  String [] newAttributeNames = attributes.getAttributeNames ();
 
   for (int i=0; i < newAttributeNames.length; i++) {
     String name =  newAttributeNames [i];
-    HashMap hash = newAttributes.getAttribute (newAttributeNames [i]);
+    HashMap hash = attributes.getAttribute (newAttributeNames [i]);
     map.put (name, hash);
-    Class classOfNewAttributes = newAttributes.getClass (name);
-    setClass (name, classOfNewAttributes);
     }
 
 } // add
@@ -344,15 +422,26 @@ protected void initializeAttributeAsRequired (String attributeName,
                                               String graphObjectName, 
                                               Object obj)
 {
+  //System.out.println ("---------- attributeName:   " + attributeName);
+  //System.out.println ("---------- graphObjectName: " + graphObjectName);
+  //System.out.println ("---------- obj:             " + obj);
+
   if (!map.containsKey (attributeName)) {
+    // System.out.println (" --- map does not contain key " + attributeName);
     map.put (attributeName, new HashMap ());
     if (getClass (attributeName) == null) {
       Class deducedClass = obj.getClass ();
+      //System.out.println ("\nObject: " + obj + " attribute: " +attributeName +
+      //                    " deduced class: " + deducedClass);
+      //System.out.flush();
       if (obj.getClass().isArray())
         deducedClass = ((Object []) obj)[0].getClass ();
       setClass (attributeName, deducedClass);
       } // if no class assigned yet
     } // if new attribute
+  else {
+    ; // System.out.println (" +++ map does contain key " + attributeName);
+    }
 
   Class expectedClass = getClass (attributeName);
   Class actualClass = obj.getClass ();
@@ -401,12 +490,16 @@ public boolean set (String attributeName, String graphObjectName, Object obj)
   //     possiblity that it may be an array of objects, in which case we check the
   //     class of the first object in the array
 
-  if (obj == null) return false;
-  initializeAttributeAsRequired (attributeName, graphObjectName, obj);
-  HashMap attributeMap = (HashMap) map.get (attributeName);
-  attributeMap.put (graphObjectName, obj);
-
-  return true;
+    if (obj == null) return false;
+    if(!implementsSerializable(obj.getClass())){
+	throw new IllegalArgumentException("The class " + obj.getClass().getName()+ " of the object that represents the value for the attribute \"" 
+					   + attributeName + "\" must implement java.io.Serializable.");
+    }
+    initializeAttributeAsRequired (attributeName, graphObjectName, obj);
+    HashMap attributeMap = (HashMap) map.get (attributeName);
+    attributeMap.put (graphObjectName, obj);
+    
+    return true;
 
 } // set
 //--------------------------------------------------------------------------------
@@ -422,7 +515,12 @@ public boolean append (String attributeName, String graphObjectName, Object obj)
   //     possiblity that it may be an array of objects, in which case we check the
   //     class of the first object in the array
 
-  if (obj == null) return false;
+    if (obj == null) return false;
+
+    if(!implementsSerializable(obj.getClass())){
+	throw new IllegalArgumentException("The class " + obj.getClass().getName()+ " of the object that represents the value for the attribute \"" 
+					   + attributeName + "\" must implement java.io.Serializable.");
+    }
   initializeAttributeAsRequired (attributeName, graphObjectName, obj);
   HashMap attributeMap = (HashMap) map.get (attributeName);
 
@@ -466,14 +564,16 @@ public boolean set (String attributeName, String graphObjectName, double value)
 public boolean set (String graphObjectName, HashMap bundle)
 {
   String [] keys = (String []) bundle.keySet().toArray (new String [0]);
-  
+  boolean success = true;
   for (int i=0; i < keys.length; i++) {
     String attributeName = keys [i];
     Object value = bundle.get (attributeName);
-    set (attributeName, graphObjectName, value);
+    if(!set (attributeName, graphObjectName, value)){
+	success = false;
     }
+  }
 
-  return true;
+  return success;
 
 } // set
 //--------------------------------------------------------------------------------
@@ -493,7 +593,8 @@ public void add (GraphObjAttributes attributes)
 //--------------------------------------------------------------------------------
 public boolean add (String attributeName, String graphObjectName, Object obj)
 { 
-  return set (attributeName, graphObjectName, obj); 
+    return set (attributeName, graphObjectName, obj);
+    	
 }
 //--------------------------------------------------------------------------------
  /**
@@ -684,10 +785,15 @@ public void deleteAttribute (String attributeName)
  *  specify the class of this attribute.  all subsequently added attribute
  *  values must be of the exactly this class
  */
-public void setClass (String attributeName, Class attributeClass)
+public boolean setClass (String attributeName, Class attributeClass)
 {
-  //System.out.println ("setting class for '" + attributeName + "' -> " + attributeClass);
-  classMap.put (attributeName, attributeClass);
+    if(implementsSerializable(attributeClass) || attributeClass == null){
+	classMap.put(attributeName,attributeClass);
+	return true;
+    }else{
+	throw new IllegalArgumentException("Attribute class " + attributeClass.toString() + " must implement java.io.Serializable");
+    }
+	
 }
 //--------------------------------------------------------------------------------
 /**
@@ -696,8 +802,6 @@ public void setClass (String attributeName, Class attributeClass)
  */
 public Class getClass (String attributeName)
 {
-  //System.out.print ("getting class for '" + attributeName + "' -> ");
-  //System.out.println (classMap.get (attributeName));
   return (Class) classMap.get (attributeName);
 
 } // getClass
@@ -837,10 +941,10 @@ public Integer getIntegerValue (String attributeName, String graphObjectName)
  */
 public String getStringValue (String attributeName, String graphObjectName)
 {
-  Object object = getValue (attributeName, graphObjectName); 
-  if (object == null)
-    return null;
-
+  Object object = getValue (attributeName, graphObjectName);
+  // added by iliana - it is useful to know that this attribute has not been assigned a value
+  // plus if object is null this crashes
+  if(object == null){return null;}
   try {
     if (object.getClass() == Class.forName ("java.util.Vector")) {
       Vector tmp = (Vector) object;
@@ -906,7 +1010,7 @@ public String processFileHeader (String text)
     } // else: at least one (x=y) found
 
   setCategory (attributeName, attributeCategory);
-  setClass (attributeName, attributeClass);
+  setClass (attributeName, attributeClass); // ******* Could fail *********
 
   return attributeName;
 
@@ -915,7 +1019,19 @@ public String processFileHeader (String text)
 public void readAttributesFromFile (String filename)
    throws FileNotFoundException, IllegalArgumentException, NumberFormatException
 {
-  readAttributesFromFile (new File (filename));
+  readAttributesFromFile (null, "unknown",  new File (filename));
+}
+//--------------------------------------------------------------------------------
+public void readAttributesFromFile (File file)
+   throws FileNotFoundException, IllegalArgumentException, NumberFormatException
+{
+  readAttributesFromFile (null, "unknown",  file);
+}
+//--------------------------------------------------------------------------------
+public void readAttributesFromFile (BioDataServer dataServer, String species, String filename)
+   throws FileNotFoundException, IllegalArgumentException, NumberFormatException
+{
+  readAttributesFromFile (dataServer, species, new File (filename));
 }
 //--------------------------------------------------------------------------------
 /**
@@ -925,7 +1041,7 @@ public void readAttributesFromFile (String filename)
 static public Class deduceClass (String string)
 {
   String [] classNames = {"java.net.URL",
-                       // "java.lang.Integer",    // using this breaks the vizmapper, see below
+                          "java.lang.Integer",    // using this breaks the vizmapper, see below
                           "java.lang.Double",
                           "java.lang.String"};
 
@@ -982,7 +1098,7 @@ static public Object createInstanceFromString (Class requestedClass, String ctor
  *  <p>
  *
  */
-public void readAttributesFromFile (File file)
+public void readAttributesFromFile (BioDataServer dataServer, String species, File file)
    throws FileNotFoundException, IllegalArgumentException, NumberFormatException
 {
   TextFileReader reader = new TextFileReader (file.getPath ());
@@ -1007,6 +1123,10 @@ public void readAttributesFromFile (File file)
       throw new IllegalArgumentException ("cannot parse line number " + lineNumber +
                                           ":\n\t" + newLine);
     String graphObjectName = strtok2.nextToken().trim();
+    if (dataServer != null)
+      graphObjectName = dataServer.getCanonicalName (species, graphObjectName);
+
+    // System.out.println ("--- reading attribute for graphObjectName: " + graphObjectName);
     String rawString = newLine.substring (newLine.indexOf ("=") + 1).trim();
     String [] rawList;
     boolean isList = false;
@@ -1021,7 +1141,7 @@ public void readAttributesFromFile (File file)
     if (extractingFirstValue && getClass (attributeName) == null) {
       extractingFirstValue = false;  // henceforth
       Class deducedClass = deduceClass (rawList [0]);
-      setClass (attributeName, deducedClass);
+      setClass (attributeName, deducedClass); // ***** Could fail ******* //
       }
     Object [] objs = new Object [rawList.length];
     for (int i=0; i < rawList.length; i++) {
@@ -1109,13 +1229,16 @@ public HashMap getAttributes (String canonicalName)
  */
 public int countIdentical (String graphObjectName)  
 {
-  Integer count = (Integer) countIdMap.get (graphObjectName);
-  if (count == null) 
-    count = new Integer(0);
-
+    if(countIdMap == null){
+	countIdMap = new HashMap();
+    }
+    Integer count = (Integer) countIdMap.get (graphObjectName);
+    if (count == null) 
+	count = new Integer(0);
+    
     // update the counter as well
-  countIdMap.put (graphObjectName, new Integer (count.intValue() + 1));
-  return count.intValue();
+    countIdMap.put (graphObjectName, new Integer (count.intValue() + 1));
+    return count.intValue();
 } 
 //--------------------------------------------------------------------------------
 /**
@@ -1139,7 +1262,7 @@ public String toString ()
     sb.append ("attribute " + i + ": " + names [i] + "  ");
     Class attributeClass = getClass (names [i]);
     String category = getCategory (names [i]);
-    sb.append ("(" + attributeClass + ") ");
+    sb.append ("(class:" + attributeClass + ") ");
     sb.append ("(category: " + category + ")");
     sb.append ("\n");
     String [] keys = getObjectNames (names [i]);
@@ -1159,6 +1282,42 @@ public String toString ()
   return sb.toString ();
 
 } // toString
+
+
+/**
+ * Whether or not the given class implements java.io.Serializable
+ */
+protected boolean implementsSerializable(Class objClass){
+    
+    if(objClass == null){
+	return false;
+    }
+    
+    Class [] interfaces = objClass.getInterfaces();
+    Class serializable = null;
+    try{
+	serializable = Class.forName("java.io.Serializable");
+    }catch(ClassNotFoundException e){;}
+	
+    for(int i = 0; i < interfaces.length; i++){
+	if(serializable.isAssignableFrom(interfaces[i])){
+	    return true;
+	}
+    }// for
+
+    // if we got here, that means that this class does not implement Serializable, but maybe its parent does
+    return implementsSerializable(objClass.getSuperclass());
+	
+}//implementsSerializable
+//--------------------------------------------------------------------------------
+private void writeObject(ObjectOutputStream out) throws Exception{
+    // super.writeObject gets called automatically
+    System.out.println("Writing GraphObjAttributes...");
+    System.out.flush();
+    out.defaultWriteObject();
+    System.out.println("Wrote GraphObjAttributes");
+    System.out.flush();
+}//writeObject
 //--------------------------------------------------------------------------------
 } // class GraphObjAttributes
 

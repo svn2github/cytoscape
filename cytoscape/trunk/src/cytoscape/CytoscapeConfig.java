@@ -18,7 +18,7 @@ import gnu.getopt.LongOpt;
  */
 public class CytoscapeConfig {
 
-  protected String argSpecificationString = "n:j:g:b:i:he:vWs:;";
+  protected String argSpecificationString = "n:j:g:b:i:he:vWs:l:;";
 
   protected String [] commandLineArguments;
   protected String[] argsCopy;
@@ -33,6 +33,9 @@ public class CytoscapeConfig {
   protected Vector edgeAttributeFilenames = new Vector ();
   protected String defaultSpeciesName = null;
 
+  protected String [] layoutStrategies = {"organic", "hierarchical", "embedded", "circular"};
+  protected String defaultLayoutStrategy = layoutStrategies [0];
+
   protected StringBuffer errorMessages = new StringBuffer ();
     // system and user property files use the same name
   protected Properties props;
@@ -41,20 +44,22 @@ public class CytoscapeConfig {
 public CytoscapeConfig (String [] args)
 {
   props = readProperties ();
+  getConfigurationsFromProperties ();
     // make a copy of the args to parse here (getopt can mangle the array it parses)
   commandLineArguments = new String[args.length];
-  System.arraycopy(args, 0, commandLineArguments, 0, args.length);
+  System.arraycopy (args, 0, commandLineArguments, 0, args.length);
     // make a copy of the arguments for later use
   argsCopy = new String[args.length];
-  System.arraycopy(args, 0, argsCopy, 0, args.length);
+  System.arraycopy (args, 0, argsCopy, 0, args.length);
   parseArgs ();
 
 }
 //------------------------------------------------------------------------------------------
-public String[] getArgs() {
-    String[] returnVal = new String[argsCopy.length];
-    System.arraycopy(argsCopy, 0, returnVal, 0, argsCopy.length);
-    return returnVal;
+public String [] getArgs () 
+{
+  String [] returnVal = new String[argsCopy.length];
+  System.arraycopy(argsCopy, 0, returnVal, 0, argsCopy.length);
+  return returnVal;
 }
 //------------------------------------------------------------------------------------------
 public String getGeometryFilename ()
@@ -168,6 +173,11 @@ public String [] getAllDataFileExtensions ()
 public String getDefaultSpeciesName ()
 {
   return defaultSpeciesName;
+}
+//------------------------------------------------------------------------------------------
+public String getDefaultLayoutStrategy ()
+{
+  return defaultLayoutStrategy;
 }
 //------------------------------------------------------------------------------------------
 public boolean helpRequested ()
@@ -297,6 +307,9 @@ protected void parseArgs ()
      case 'i':
        interactionsFilename = g.getOptarg ();
        break;
+     case 'l':
+       defaultLayoutStrategy = g.getOptarg ();
+       break;
      case 'e':
        expressionFilename = g.getOptarg ();
        break;
@@ -326,6 +339,16 @@ protected void parseArgs ()
 
 } // parseArgs
 //---------------------------------------------------------------------------------
+/**
+ *  any values read from properties may be overridden at the command line; be sure
+ *  that 'parseArgs' is called later than this method
+ */
+protected void getConfigurationsFromProperties ()
+{
+  defaultLayoutStrategy = props.getProperty ("defaultLayoutStrategy", defaultLayoutStrategy);
+
+}
+//---------------------------------------------------------------------------------
 protected boolean legalArguments ()
 {
   boolean legal = true;
@@ -335,6 +358,16 @@ protected boolean legalArguments ()
     errorMessages.append (" -  geometry & interactions both specify a graph: use only one\n");
     legal = false;
     }
+
+  boolean illegalLayoutSelected = true;
+  for (int i=0; i < layoutStrategies.length; i++) {
+    if (defaultLayoutStrategy.equals (layoutStrategies [i])) {
+      illegalLayoutSelected = false;
+      break;
+      }
+    } // for i
+  
+  legal = legal && (!illegalLayoutSelected);  
 
   return legal;
 
@@ -364,6 +397,7 @@ public String getUsage ()
    sb.append (" -s  <default species name>        (\"Saccharomyces cerevisiae\")\n");
    sb.append (" -n  <nodeAttributes filename>     (zero or more)\n");
    sb.append (" -j  <edgeAttributes filename>     (zero or more)\n");
+   sb.append (" -l  <layout strategy>             (organic|hierarchical|embedded|circular)\n");
    sb.append ("\n");
 
    sb.append (" -h  (display usage)\n");
@@ -382,6 +416,7 @@ public String toString ()
    sb.append ("          expression file: " + expressionFilename + "\n");
    sb.append ("         bioDataDirectory: " + bioDataDirectory + "\n");
    sb.append ("       defaultSpeciesName: " + defaultSpeciesName + "\n");
+   sb.append ("    defaultLayoutStrategy: " + defaultLayoutStrategy + "\n");
  
    for (int i=0; i < nodeAttributeFilenames.size (); i++)
      sb.append ("        nodeAttributeFile: " + (String) nodeAttributeFilenames.get(i) + "\n");
