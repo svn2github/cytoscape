@@ -179,28 +179,28 @@ private void createAnnealContentPanel() {
     ///////////////////////////////////////////
 
     c.gridx=0;
-    c.gridy=0;
+    c.gridy=2;
     createIterationsController();
     gridbag.setConstraints(iterPanel,c);
     annealContentPanel.add (iterPanel);
     
-    c.gridx=1;
-    c.gridy=0;
-    createPathsController();
-    gridbag.setConstraints(pathPanel,c);
-    annealContentPanel.add (pathPanel);
+    //c.gridx=1;
+    //c.gridy=0;
+    //createPathsController();
+    //gridbag.setConstraints(pathPanel,c);
+    //annealContentPanel.add (pathPanel);
 
     /////////////////////////////////////////////
 
     TempController tc = new TempController();
 
     c.gridx=0;
-    c.gridy=2;
+    c.gridy=0;
     gridbag.setConstraints(tStartPanel,c);
     annealContentPanel.add (tStartPanel);
     
     c.gridx=1;
-    c.gridy=2;
+    c.gridy=0;
     gridbag.setConstraints(tEndPanel,c);
     annealContentPanel.add (tEndPanel);
 
@@ -306,8 +306,8 @@ private void createExtsController ()
   annealExtPanel.add (hfcPanel); //, BorderLayout.CENTER);
 
   createRegionalScoringController();
-  //createPathsController();
-  //generalExtPanel.add (pathPanel);
+  createPathsController();
+  generalExtPanel.add (pathPanel);
   generalExtPanel.add(mcBox);
   //generalExtPanel.add (hAdjPanel);
   generalExtPanel.add (regionalBox);

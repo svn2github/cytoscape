@@ -267,7 +267,8 @@ public abstract class SearchThread extends Thread{
 		    else{
 			neighbor = e.getSource();
 		    }
-		    if(graph.containsNode(neighbor,false)){
+		    //make sure to include a check for self edges here
+		    if(!neighbor.equals(toggle) && graph.containsNode(neighbor,false)){
 			//get the component that this node belongs to
 			Component nComponent = (Component)node2component.get(neighbor);
 			if(nComponent.getScore() < min_score){

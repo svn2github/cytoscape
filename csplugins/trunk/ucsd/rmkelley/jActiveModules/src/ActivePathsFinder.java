@@ -58,7 +58,9 @@ public class ActivePathsFinder{
   //HashSet bestNeighborhood;
   ExpressionData expressionData;
   JFrame parentFrame;
- 
+  protected static int DISPLAY_STEP = 50;
+  protected static double MIN_SIG = 0.0000000000001;
+  protected static double MAX_SIG = 1-MIN_SIG;
   /**
    * This is the only constructor for ActivePathsFinder. In order to find the paths, we need certain information.
    * @param attrNames The names of hte attributes which correspond to significance
@@ -154,8 +156,17 @@ public class ActivePathsFinder{
 	  tempArray[j] = Component.zStats.oneMinusNormalCDFInverse(.5);
 	}
 	else{
+	  double sigValue = tempmRNA.getSignificance();
+	  if (sigValue < MIN_SIG) {
+	    sigValue = MIN_SIG;
+	    System.out.println("Warning: value for "+nodeAttributes.getCanonicalName(nodes[i])+" adjusted to "+MIN_SIG); 
+	  } // end of if ()
+	  if (sigValue > MAX_SIG) {
+	    sigValue = MAX_SIG;
+	    System.out.println("Warning: value for "+nodeAttributes.getCanonicalName(nodes[i])+" adjusted to "+MAX_SIG); 
+	  } // end of if ()
 	  //transform the p-value into a z-value and store it in the array of z scores for this particular node
-	  tempArray[j] = Component.zStats.oneMinusNormalCDFInverse(tempmRNA.getSignificance());
+	  tempArray[j] = Component.zStats.oneMinusNormalCDFInverse(sigValue);
 	  //tempArray[j] = Component.zStats.oneMinusNormalCDFInverse(significance.doubleValue());
 	  //if(tempArray[j] > max_zvalue){
 	  //  max_zvalue = tempArray[j];
@@ -243,7 +254,7 @@ public class ActivePathsFinder{
 	for(int j=0;j<e_array.length;j++){
 	  Edge e = e_array[j];
 	  if(graph.containsNode(e.getSource(),false) && graph.containsNode(e.getTarget(),false)){
-		    graph.restoreEdge(e);
+	    graph.restoreEdge(e);
 	  }
 	}
       }
@@ -278,7 +289,7 @@ public class ActivePathsFinder{
       Vector resultPaths = new Vector();
       MyProgressMonitor progress = null;
       if (parentFrame != null) {
-	progress = new MyProgressMonitor(parentFrame,"Running Simulated Annealing","",0,1000);
+	progress = new MyProgressMonitor(parentFrame,"Running Simulated Annealing","",0,(int)Math.ceil(apfParams.getTotalIterations()/(double)DISPLAY_STEP));
       } // end of if ()
       Thread thread = new SimulatedAnnealingSearchThread(cyNetwork.getGraphPerspective(),resultPaths,node2edges,nodes,apfParams,progress);
       thread.start();

@@ -40,7 +40,6 @@ public ConditionsVsPathwaysTable (Frame parentFrame, CyWindow cw,
   this.activePaths = activePaths;
   this.conditionNames = conditionNames;
   init (parentFrame, pathViewer);
-
 } // ConditionsVsPathwaysTable ctor
 
 private void init (Frame parentFrame, ActivePathViewer pathViewer) {

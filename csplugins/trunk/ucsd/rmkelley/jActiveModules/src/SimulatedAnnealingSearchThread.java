@@ -76,8 +76,8 @@ public class SimulatedAnnealingSearchThread extends SearchThread{
 	//step is set so that we will get to the final temperature
 	//after the total number of iterations.
 	
-	//int display_step = apfParams.getTotalIterations()/1000;
-	int display_step = apfParams.getTotalIterations()/1000;
+	//int display_step = Math.max(1,apfParams.getTotalIterations()/ActivePathsFinder.UPDATE_COUNT);
+	int display_step = ActivePathsFinder.DISPLAY_STEP;
 	while(timeout < apfParams.getTotalIterations()){
 	    timeout++;
 	    if(progress != null && timeout%display_step == 0){
@@ -121,7 +121,9 @@ public class SimulatedAnnealingSearchThread extends SearchThread{
 		//compare the top scoring old and new paths against each other in order. If we find a 
 		//better scoring component, we automatically except the move. Otherwise, use the temperature
 		//to reject the move with a certain probability.
-		while(!decision && i < apfParams.getNumberOfPaths()){
+		//Note that newIt may be larger, but can not be smaller than oldIt, here we will just compare the
+		//scores of oldIt versus the matching elements of the new paths
+		while(!decision && (newIt.hasNext() && oldIt.hasNext())){
 		    double delta = ((Component)newIt.next()).getScore()-((Component)oldIt.next()).getScore();
 		    if(delta > .001){
 			keep = true;

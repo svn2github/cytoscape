@@ -74,7 +74,7 @@ public class QuenchingSearchThread extends SearchThread{
 		int i = 0;
 		Iterator oldIt = oldPaths.iterator();
 		Iterator newIt = newPaths.iterator();
-		while(!decision && i < apfParams.getNumberOfPaths()){
+		while(!decision && (newIt.hasNext() && oldIt.hasNext())){
 		    double delta = ((Component)newIt.next()).getScore()-((Component)oldIt.next()).getScore();
 		    if(delta > .001){
 			keep = true;

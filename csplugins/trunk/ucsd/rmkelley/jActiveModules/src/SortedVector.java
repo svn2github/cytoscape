@@ -30,4 +30,8 @@ public class SortedVector extends Vector{
 	}
     }
 
+  public int size(){
+    return super.size();
+  }
+
 }
