@@ -311,13 +311,13 @@ public final class MinIntHeap
    * output array must be large enough to hold all the elements in this
    * heap.<p>
    * NOTE: This method has been deprecated ever since it was added to this
-   * class.  This method will be taken out of this class definition at
-   * liberty.
+   * class.  A decision is being made as to whether or not to keep this
+   * method.
    * @param output the array into which the elements of this heap get copied.
    * @param beginIndex an index in the output array which is the beginning
    *   of where elements are copied to.
    * @exception IndexOutOfBoundsException if copying would cause access of
-   *   data outside array bounds.
+   *   data outside output array bounds.
    * @deprecated Use elements() instead.
    * @see #elements()
    */
@@ -340,13 +340,13 @@ public final class MinIntHeap
    * leaves this heap in an unordered state.  No elements are added or
    * removed from this heap as a result of using this operation.<p>
    * NOTE: This method has been deprecated ever since it was added to this
-   * class.  This method will be taken out of this class definition at
-   * liberty.
+   * class.  A decision is being made as to whether or not to keep this
+   * method.
    * @param output the array into which the elements of this heap get copied.
    * @param beginIndex an index in the output array which is the beginning
    *   of where elements are copied to.
    * @exception IndexOutOfBoundsException if copying would cause access of
-   *   data outside array bounds.
+   *   data outside output array bounds.
    * @deprecated Use orderedElements(boolean) or deleteMin() instead.
    * @see #orderedElements(boolean)
    * @see #deleteMin()
