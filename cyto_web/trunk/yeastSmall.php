@@ -185,7 +185,7 @@ of any node or nodes by
 <br>
 
 Several large projects, including the <a href="http://www.geneontology.org">Gene
-Ontology Consortium</a> (GO) and the <a href="http://www.genome.ac.jp">Kyoto
+Ontology Consortium</a> (GO) and the <a href="http://www.genome.jp/kegg/">Kyoto
 Encyclopedia of Genes and Genomes</a> (KEGG), provide annotation information
 for genes and proteins for many different species using a controlled
 vocabulary. Cytoscape is able to integrate this information with the

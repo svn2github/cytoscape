@@ -51,7 +51,7 @@
 							<a href="http://psidev.sourceforge.net/">Proteomics Standards Initiative Molecular Interaction (PSI-MI) XML Format.</a> 
 						</li>
 						<li>
-							<a href="http://www.ncbi.nlm.nih.gov/geo/info/soft.html">NCBI GEO Simple Omnibus Format in Text (SOFT). </a> 
+							<a href="http://www.ncbi.nlm.nih.gov/projects/geo/info/soft2.html">NCBI GEO Simple Omnibus Format in Text (SOFT). </a> 
 						</li>
 					</ul>
 					<p>
@@ -142,7 +142,7 @@
 						Release Date: October 3, 2003 </font> 
 				</td>
 				<td width="60%" valign="top">
-					This plugin allows you to load a level 1 <a href="http://www.sbw-sbml.org/sbml/docs/index.html"> SBML</a> file from Cytoscape's File menu, and to display the model as a Cytoscape network. You can also <a href="http://db.systemsbiology.net:8080/cytoscape/projects/static/sbmlReader/v1/cy.jnlp">run</a> Cytoscape with this plugin using Java Web Start, &nbsp; or view a <a href="http://db.systemsbiology.net:8080/cytoscape/plugins/sbmlReader/repressilator.jpg" target="aaa">snapshot</a> of a sample SBML model of the Repressilotor System (<a href="http://www.sbw-sbml.org/ModelsWebPages/Models-published/Genetic-2000Elo/Genetic-2000Elo.htm" target="aaa">Elowitz &amp; Leibler, 2000)</a>. 
+					This plugin allows you to load a level 1 <a href="http://sbml.org/"> SBML</a> file from Cytoscape's File menu, and to display the model as a Cytoscape network. You can also <a href="http://db.systemsbiology.net:8080/cytoscape/projects/static/sbmlReader/v1/cy.jnlp">run</a> Cytoscape with this plugin using Java Web Start, &nbsp; or view a <a href="http://db.systemsbiology.net:8080/cytoscape/plugins/sbmlReader/repressilator.jpg" target="aaa">snapshot</a> of a sample SBML model of the Repressilotor System (<a href="http://sbml.org/models/Models-published/Genetic-2000Elo/Genetic-2000Elo.html" target="aaa">Elowitz &amp; Leibler, 2000)</a>. 
 					<p>
 						Released by: <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a> 
 					</p>
