@@ -309,4 +309,13 @@ public final class IntBTree
 
   }
 
+  public static void main(String[] args)
+  {
+    IntBTree tree = new IntBTree();
+    for (int i = 0; i < args.length; i++) {
+      int entry = Integer.parseInt(args[i]);
+      tree.insert(entry); }
+    tree.debugPrint();
+  }
+
 }
