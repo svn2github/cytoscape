@@ -89,7 +89,7 @@ public class LoadGraphFileAction extends CytoscapeAction {
         // Get the file name
         File  file = FileUtil.getFile("Load Network File",
             FileUtil.LOAD, new CyFileFilter[]
-            {graphFilter, intFilter, gmlFilter});
+            {intFilter, gmlFilter, graphFilter});
 
         // if the name is not null, then load
         if (file != null) {
