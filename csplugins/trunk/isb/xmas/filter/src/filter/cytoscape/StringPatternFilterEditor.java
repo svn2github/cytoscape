@@ -76,14 +76,16 @@ public class StringPatternFilterEditor
     add( namePanel,BorderLayout.NORTH );
 
 				JPanel all_panel = new JPanel();
-				all_panel.setLayout(new GridLayout(3,3,20,20));
-				all_panel.add(new JLabel("Select Object Type"));
-				all_panel.add(new JLabel("Select Attribute"));
-				all_panel.add(new JLabel("String Pattern"));
+				//all_panel.setLayout(new GridLayout(3,3,20,20));
+				//all_panel.add(new JLabel("Select Object Type"));
+				//all_panel.add(new JLabel("Select Attribute"));
+				//all_panel.add(new JLabel("String Pattern"));
 				
 				
 				//JPanel class_panel = new JPanel();
 				//class_panel.setLayout(new BoxLayout(class_panel,BoxLayout.Y_AXIS));
+				all_panel.add(new JLabel("Select graph objects of type "));
+				
 				Vector classes = new Vector();
 				try{
 								STRING_CLASS = Class.forName("java.lang.String");
@@ -102,7 +104,8 @@ public class StringPatternFilterEditor
 				//class_panel.add(new JLabel( "Select Object Type"));
 				//class_panel.add(classBox);
 				//all_panel.add( class_panel);
-
+				
+				all_panel.add(new JLabel(" with a value for text attribute "));
 				//JPanel attribute_panel = new JPanel();
 				//attribute_panel.setLayout(new BorderLayout());
     attributeBox = new JComboBox();
@@ -113,6 +116,7 @@ public class StringPatternFilterEditor
 				//attribute_panel.add( attributeBox,BorderLayout.SOUTH );
     //all_panel.add( attribute_panel );
 
+				all_panel.add(new JLabel(" that matches the pattern "));
     //JPanel search_panel = new JPanel();
     //search_panel.setLayout(new BorderLayout());
 				searchField = new JTextField(10);
@@ -126,7 +130,7 @@ public class StringPatternFilterEditor
 
 				updateAttributeBox(NODE_CLASS);
     all_panel.add(new JLabel(""));
-				all_panel.add( new JButton (new AbstractAction( "Update Attributes" ) {
+				add( new JButton (new AbstractAction( "Update List of Attributes" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -141,8 +145,8 @@ public class StringPatternFilterEditor
                 */  classBox.setSelectedItem(NODE_CLASS);
 																				updateAttributeBox(NODE_CLASS);
 																		}
-              } ); } } ) );
-				add(all_panel,BorderLayout.SOUTH);
+              } ); } } ),BorderLayout.SOUTH );
+				add(all_panel,BorderLayout.CENTER);
     setDefaults();
   }
 

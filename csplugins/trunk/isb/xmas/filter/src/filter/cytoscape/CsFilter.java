@@ -44,7 +44,8 @@ public class CsFilter extends AbstractPlugin {
 				FilterManager.defaultManager().addEditor( new NumericAttributeFilterEditor( window.getNetwork() ) );
 				FilterManager.defaultManager().addEditor( new StringPatternFilterEditor (window.getNetwork())); 
 				FilterManager.defaultManager().addEditor( new BooleanMetaFilterEditor (FilterManager.defaultManager().getFilters(false)));
-  }
+				FilterManager.defaultManager().addEditor( new NodeTopologyFilterEditor(window.getView().getGraphPerspective(),FilterManager.defaultManager().getFilters(false))); 
+		}
 
   public String describe () {
     return "New Filters";

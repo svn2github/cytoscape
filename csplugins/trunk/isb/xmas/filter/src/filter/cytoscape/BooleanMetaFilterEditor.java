@@ -58,7 +58,7 @@ public class BooleanMetaFilterEditor
     super();
 				this.filters = filters;
     identifier = "Boolean Filter";
-    setBorder( new TitledBorder( "Boolean Meta-Filter - Select nodes based on a combination of other filters" ) );
+    setBorder( new TitledBorder( "Boolean Meta-Filter - Select nodes or edges based on a combination of other filters" ) );
 				setLayout(new BorderLayout());
     JPanel namePanel = new JPanel();
     nameField = new JTextField(15);
@@ -92,7 +92,7 @@ public class BooleanMetaFilterEditor
 				//comparison_panel.add(comparisonBox);
 				//add( comparison_panel);
 
-				all_panel.add( new JButton (new AbstractAction( "Update Filters" ) {
+				all_panel.add( new JButton (new AbstractAction( "Update List of Filters" ) {
 								public void actionPerformed ( ActionEvent e ) {
 												// Do this in the GUI Event Dispatch thread...
 												SwingUtilities.invokeLater( new Runnable() {

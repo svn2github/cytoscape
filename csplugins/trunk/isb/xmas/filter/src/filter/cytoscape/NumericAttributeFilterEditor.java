@@ -80,13 +80,14 @@ public class NumericAttributeFilterEditor
     add( namePanel,BorderLayout.NORTH );
 
 				JPanel all_panel = new JPanel();
-				all_panel.setLayout(new GridLayout(3,4,20,20));
-				all_panel.add(new JLabel("Select Object Type"));
-				all_panel.add(new JLabel("Select Attribute"));
-				all_panel.add(new JLabel("Select Comparison"));
-				all_panel.add(new JLabel("Comparison Value"));
+				//all_panel.setLayout(new GridLayout(3,4,20,20));
+				//all_panel.add(new JLabel("Select Object Type"));
+				//all_panel.add(new JLabel("Select Attribute"));
+				//all_panel.add(new JLabel("Select Comparison"));
+				//all_panel.add(new JLabel("Comparison Value"));
 				//JPanel class_panel = new JPanel();
 				//class_panel.setLayout(new BorderLayout());
+				all_panel.add(new JLabel("Select graph objects of type "));
 				Vector classes = new Vector();
 				try{
 								NUMBER_CLASS = Class.forName("java.lang.Number");
@@ -108,7 +109,9 @@ public class NumericAttributeFilterEditor
 
 				//JPanel attribute_panel = new JPanel();
 				//attribute_panel.setLayout(new BorderLayout());
-    attributeBox = new JComboBox();
+    all_panel.add(new JLabel(" with a value for numeric attribute "));
+				
+				attributeBox = new JComboBox();
 				attributeBox.setEditable(false);
 				attributeBox.addActionListener(this);
 				all_panel.add(attributeBox);
@@ -116,6 +119,7 @@ public class NumericAttributeFilterEditor
 				//attribute_panel.add( new JLabel( "Attribute Selection"),BorderLayout.NORTH);
     //add( attribute_panel );
 
+				all_panel.add(new JLabel(" that is "));
 				//JPanel comparison_panel = new JPanel();
 				//comparison_panel.setLayout(new BorderLayout());
 				comparisonBox = new JComboBox();
@@ -142,7 +146,7 @@ public class NumericAttributeFilterEditor
 
 				updateAttributeBox(NODE_CLASS);
 				all_panel.add(new JLabel(""));
-    all_panel.add( new JButton (new AbstractAction( "Update Attributes" ) {
+    add( new JButton (new AbstractAction( "Update List of Attributes" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
@@ -160,7 +164,7 @@ public class NumericAttributeFilterEditor
               } ); } } ),BorderLayout.SOUTH );
 
     setDefaults();
-				add(all_panel,BorderLayout.SOUTH);
+				add(all_panel,BorderLayout.CENTER);
   }
 
 
