@@ -11,14 +11,13 @@ import cytoscape.plugin.*;
 
 import javax.swing.*;
 
-public class MacPlugin extends AbstractPlugin implements ApplicationListener {
+public class MacPlugin extends CytoscapePlugin implements ApplicationListener {
 
-  CyWindow window;
+
   Application app;
   
-  public MacPlugin ( CyWindow window ) {
+  public MacPlugin () {
 
-    this.window = window;
     this.app = Application.getApplication();
     app.addApplicationListener( this );
 
@@ -26,10 +25,10 @@ public class MacPlugin extends AbstractPlugin implements ApplicationListener {
 
 
   public void handleAbout ( ApplicationEvent event ) {
-    JFrame frame = new JFrame( "About Cytoscape" );
-    frame.getContentPane().add( new JLabel( "<HTML><BIG>Cytoscape 2.0</big><br><br>Macing done by Rowan</HTML>" ) );
-    frame.pack();
-    frame.setVisible( true );
+   //  JFrame frame = new JFrame( "About Cytoscape" );
+//     frame.getContentPane().add( new JLabel( "<HTML><BIG>Cytoscape 2.0</big><br><br>Macing done by Rowan</HTML>" ) );
+//     frame.pack();
+//     frame.setVisible( true );
   }
 
   public void handleOpenApplication ( ApplicationEvent event ) {
@@ -38,16 +37,15 @@ public class MacPlugin extends AbstractPlugin implements ApplicationListener {
 
   public void handleOpenFile ( ApplicationEvent event ) {
     String file = event.getFilename();
-    CyNetwork new_network = null;
-    if ( file.endsWith( "gml" ) ) {
-      new_network = CyNetworkFactory.createNetworkFromGMLFile( file );
-    } else if ( file.endsWith( "sif" ) ) {
-      new_network = CyNetworkFactory.createNetworkFromInteractionsFile( file );
-    }
-    if ( new_network != null ) {
-      window.setNewNetwork( new_network );
-    }
+   
+    CyNetwork newNetwork = Cytoscape.createNetworkFromFile( file );
     
+  
+    
+    if ( newNetwork.getNodeCount() < 500 ) {
+      Cytoscape.createNetworkView( newNetwork );
+    }
+        
   } 
  
 
@@ -59,7 +57,7 @@ public class MacPlugin extends AbstractPlugin implements ApplicationListener {
   }
  
   public void handleQuit ( ApplicationEvent event ) {
-    window.getCytoscapeObj().getParentApp().exit(0);
+    Cytoscape.getCytoscapeObj().getParentApp().exit(0);
   }
 
   public void handleReOpenApplication ( ApplicationEvent event ){
