@@ -173,10 +173,8 @@ class ComplexFinderResultDialog extends RyanDialog implements ListSelectionListe
 		node2BestPathway.put(node,pathway);
 	      }
 	    }
-	  }
 	}
-      });
-
+      }});
 
     southPanel.add(viewButton);
     southPanel.add(saveButton);
