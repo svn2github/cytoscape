@@ -44,10 +44,10 @@ import cytoscape.util.GinyFactory;
 import cytoscape.GraphObjAttributes;
 //-------------------------------------------------------------------------------------
 public class GMLReader implements GraphReader {
-  private String filename;
-  GraphObjAttributes edgeAttributes = new GraphObjAttributes ();
-  GraphObjAttributes nodeAttributes = new GraphObjAttributes ();
-  RootGraph rootGraph;
+    private String filename;
+    GraphObjAttributes edgeAttributes = new GraphObjAttributes ();
+    GraphObjAttributes nodeAttributes = new GraphObjAttributes ();
+    RootGraph rootGraph;
     GMLTree gmlTree;
 
   /**
@@ -76,8 +76,6 @@ public class GMLReader implements GraphReader {
        // create and read the GML file
        gmlTree = new GMLTree(filename);
        
-       //Vector nodeIds     = gmlNodes.getVector("node", "id");
-       //Vector nodeLabels  = gmlNodes.getVector("node", "label");
        Vector nodeIds = gmlTree.getVector("graph|node|id","|",GMLTree.INTEGER);
        Vector nodeLabels = gmlTree.getVector("graph|node|label","|",GMLTree.STRING);
       	
@@ -87,9 +85,6 @@ public class GMLReader implements GraphReader {
         	nodeNameMap.put(nodeIds.get(i), nodeLabels.get(i));
        }
        
-       //Vector edgeSources = gmlEdges.getVector("edge", "source");
-       //Vector edgeLabels  = gmlEdges.getVector("edge", "label");
-       //Vector edgeTargets = gmlEdges.getVector("edge", "target");
        Vector edgeSources = gmlTree.getVector("graph|edge|source","|",GMLTree.INTEGER);
        Vector edgeTargets = gmlTree.getVector("graph|edge|target","|",GMLTree.INTEGER);
        Vector edgeLabels = gmlTree.getVector("graph|edge|label|","|",GMLTree.STRING);

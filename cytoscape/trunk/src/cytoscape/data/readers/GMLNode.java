@@ -106,10 +106,9 @@ public class GMLNode implements Comparator{
 		//get the integer orderings for these two objects
 		Integer int1 = (Integer)key2Order.get(o1);
 		Integer int2 = (Integer)key2Order.get(o2);
-		if(int1 == null || int2 == null){
-			//shit
-			throw new RuntimeException("Forgot to add an order mapping for one of the keys");
-		}
+		if(int1 == null || int2 == null)
+		    throw new RuntimeException("Forgot to add an order mapping for one of the keys");
+		
 		return int1.compareTo(int2);
 	}
 

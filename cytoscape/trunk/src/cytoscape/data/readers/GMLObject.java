@@ -65,6 +65,60 @@ public class GMLObject {
 	LineNumber = 0;
 	scope = 0;
     }
+
+    //-----------------------------------------------------------------
+    public void addPair(String k, double v){ 
+	GMLToken kt = new GMLToken(k, "key", 0);
+	GMLPair  kp = new GMLPair(kt, scope);
+
+	GMLToken vt = new GMLToken(v, "double", 0);
+	GMLPair  vp = new GMLPair(vt, scope+1);
+
+	kp.values.add(vp);
+	rootPair.values.add(kp);
+    } 
+    //-----------------------------------------------------------------
+    public void addPair(String k, int v){ 
+	GMLToken kt = new GMLToken(k, "key", 0);
+	GMLPair  kp = new GMLPair(kt, scope);
+
+	GMLToken vt = new GMLToken(v, "integer", 0);
+	GMLPair  vp = new GMLPair(vt, scope+1);
+
+	kp.values.add(vp);
+	rootPair.values.add(kp);
+    } 
+    //-----------------------------------------------------------------
+    public void addPair(String k, String v){ 
+	GMLToken kt = new GMLToken(k, "key", 0);
+	GMLPair  kp = new GMLPair(kt, scope);
+
+	GMLToken vt = new GMLToken(v, "string", 0);
+	GMLPair  vp = new GMLPair(vt, scope+1);
+
+	kp.values.add(vp);
+	rootPair.values.add(kp);
+    } 
+    //-----------------------------------------------------------------
+    public void addPair(String k, GMLObject tree){ 
+	GMLToken Lb = new GMLToken("[", "GML_L_BRACKET", 0);
+	GMLToken kt = new GMLToken(k, "key", 0);
+	GMLToken Rb = new GMLToken("]", "GML_R_BRACKET", 0);
+
+	GMLPair  Lbp = new GMLPair(Lb, scope+1);
+	GMLPair  np  = new GMLPair(kt, scope+1);
+	GMLPair  Rbp = new GMLPair(Rb, scope+1);
+
+	//np.values.add(Lbp);
+	rootPair.values.add(Lbp);
+
+	np.values.add(tree.rootPair.values);
+	np.values.add(Rbp);
+
+	rootPair.values.add(np);
+    } 
+
+
     //-----------------------------------------------------------------
     /**
      * Get the string representation of the GMLObject.
