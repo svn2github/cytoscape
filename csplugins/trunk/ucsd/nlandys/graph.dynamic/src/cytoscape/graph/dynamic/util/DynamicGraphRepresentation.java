@@ -30,6 +30,7 @@ package cytoscape.graph.dynamic.util;
 
 import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.util.intr.IntEnumerator;
+import cytoscape.util.intr.IntQueue;
 import cytoscape.util.intr.IntIterator;
 import cytoscape.util.intr.IntStack;
 
@@ -43,8 +44,8 @@ final class DynamicGraphRepresentation implements DynamicGraph
   private int m_maxEdge;
   private final NodeArray m_nodes;
   private final EdgeArray m_edges;
-  private final IntStack m_freeNodes;
-  private final IntStack m_freeEdges;
+  private final IntQueue m_freeNodes;
+  private final IntQueue m_freeEdges;
   private final EdgeDepot m_edgeDepot;
   private final NodeDepot m_nodeDepot;
 
@@ -61,8 +62,8 @@ final class DynamicGraphRepresentation implements DynamicGraph
     m_maxEdge = -1;
     m_nodes = new NodeArray();
     m_edges = new EdgeArray();
-    m_freeNodes = new IntStack();
-    m_freeEdges = new IntStack();
+    m_freeNodes = new IntQueue();
+    m_freeEdges = new IntQueue();
     m_edgeDepot = new EdgeDepot();
     m_nodeDepot = new NodeDepot();
     m_stack = new IntStack();
@@ -110,7 +111,7 @@ final class DynamicGraphRepresentation implements DynamicGraph
   {
     final Node n = m_nodeDepot.getNode();
     final int returnThis;
-    if (m_freeNodes.size() > 0) returnThis = m_freeNodes.pop();
+    if (m_freeNodes.size() > 0) returnThis = m_freeNodes.dequeue();
     else returnThis = ++m_maxNode;
     m_nodes.setNodeAtIndex(n, returnThis);
     m_nodeCount++;
@@ -134,7 +135,7 @@ final class DynamicGraphRepresentation implements DynamicGraph
     else m_firstNode = n.nextNode;
     if (n.nextNode != null) n.nextNode.prevNode = n.prevNode;
     m_nodes.setNodeAtIndex(null, node);
-    m_freeNodes.push(node);
+    m_freeNodes.enqueue(node);
     n.prevNode = null; n.firstOutEdge = null; n.firstInEdge = null;
     m_nodeDepot.recycleNode(n);
     m_nodeCount--;
@@ -150,7 +151,7 @@ final class DynamicGraphRepresentation implements DynamicGraph
     if (source == null || target == null) return -1;
     final Edge e = m_edgeDepot.getEdge();
     final int returnThis;
-    if (m_freeEdges.size() > 0) returnThis = m_freeEdges.pop();
+    if (m_freeEdges.size() > 0) returnThis = m_freeEdges.dequeue();
     else returnThis = ++m_maxEdge;
     m_edges.setEdgeAtIndex(e, returnThis);
     m_edgeCount++;
@@ -191,7 +192,7 @@ final class DynamicGraphRepresentation implements DynamicGraph
       if (e.directed) source.selfEdges--;
       else source.undDegree++; }
     m_edges.setEdgeAtIndex(null, edge);
-    m_freeEdges.push(edge);
+    m_freeEdges.enqueue(edge);
     e.prevOutEdge = null; e.nextInEdge = null; e.prevInEdge = null;
     m_edgeDepot.recycleEdge(e);
     m_edgeCount--;
