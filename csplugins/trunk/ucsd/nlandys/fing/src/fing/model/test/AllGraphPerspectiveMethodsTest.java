@@ -636,12 +636,39 @@ public final class AllGraphPerspectiveMethodsTest
       throw new IllegalStateException("not null");
 
     // getIndex(Edge).
+    if (persp.getIndex(persp.getEdge(edgeInx[0])) != edgeInx[0] ||
+        persp.getIndex(persp.getEdge(edgeInx[2])) != edgeInx[2])
+      throw new IllegalStateException("wrong getIndex(Edge)");
+    if (persp.getIndex(root2Edge) != 0 ||
+        persp.getIndex(edge1NotInPersp) != 0)
+      throw new IllegalStateException("getIndex(Edge) should have been 0");
 
     // getEdgeIndex(int).
+    if (persp.getEdgeIndex(edgeInx[3]) != edgeInx[3] ||
+        persp.getEdgeIndex(edge1NotInPersp.getRootGraphIndex()) != 0 ||
+        persp.getEdgeIndex(minEdgeInx - 1) != 0 ||
+        persp.getEdgeIndex(Integer.MIN_VALUE) != 0 ||
+        persp.getEdgeIndex(1) != 0)
+      throw new IllegalStateException("bad getEdgeIndex(int)");
 
     // getRootGraphEdgeIndex(int).
+    if (persp.getRootGraphEdgeIndex(edgeInx[4]) != edgeInx[4] ||
+        persp.getRootGraphEdgeIndex
+        (edge2NotInPersp.getRootGraphIndex()) != 0 ||
+        persp.getRootGraphEdgeIndex(minEdgeInx - 1) != 0 ||
+        persp.getRootGraphEdgeIndex(Integer.MAX_VALUE) != 0 ||
+        persp.getRootGraphEdgeIndex(1) != 0)
+      throw new IllegalStateException("bad getRootGraphEdgeIndex(int)");
 
     // getEdge(int).
+    if (persp.getEdge(minEdgeInx - 1) != null ||
+        persp.getEdge(0) != null ||
+        persp.getEdge(23) != null ||
+        persp.getEdge(edge1NotInPersp.getRootGraphIndex()) != null)
+      throw new IllegalStateException("not null in getEdge(int)");
+    if (persp.getEdge(Integer.MAX_VALUE) != null ||
+        persp.getEdge(Integer.MIN_VALUE) != null)
+      throw new IllegalStateException("not null is getEdge(int)");
 
     // getEdgeSourceIndex(int).
 
