@@ -146,6 +146,15 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("GraphPerspective is not null");
     if (root.createGraphPerspective(new int[] { 1 }, null) != null)
       throw new IllegalStateException("GraphPerspective is not null");
+    if (root.createGraphPerspective
+        (new int[] { Integer.MAX_VALUE }, null) != null ||
+        root.createGraphPerspective
+        (new int[] { Integer.MIN_VALUE }, null) != null ||
+        root.createGraphPerspective
+        (null, new int[] { Integer.MAX_VALUE }) != null ||
+        root.createGraphPerspective
+        (null, new int[] { Integer.MIN_VALUE }) != null)
+      throw new IllegalStateException("GraphPerspective is not null");
 
     // getNodeCount() and getEdgeCount().
     if (root.getNodeCount() != 5 || root.getEdgeCount() != 7)
@@ -250,6 +259,9 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("nodes are not neighbors");
     if (!root.isNeighbor(nodeInx[1], nodeInx[2]))
       throw new IllegalStateException("nodes are not neighbors");
+    if (root.isNeighbor(Integer.MAX_VALUE, Integer.MIN_VALUE) ||
+        root.isNeighbor(Integer.MIN_VALUE, Integer.MAX_VALUE))
+      throw new IllegalStateException("MIN_VALUE and MAX_VALUE neighbors");
 
     // edgeExists(Node, Node).
     if (root.edgeExists(root.getNode(nodeInx[3]), root.getNode(nodeInx[1])))
@@ -279,6 +291,9 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("edge does not exist");
     if (!root.edgeExists(nodeInx[1], nodeInx[0]))
       throw new IllegalStateException("edge does not exist");
+    if (root.edgeExists(Integer.MAX_VALUE, Integer.MIN_VALUE) ||
+        root.edgeExists(Integer.MIN_VALUE, Integer.MAX_VALUE))
+      throw new IllegalStateException("MIN_VALUE and MAX_VALUE edge exists");
 
     // getEdgeCount(Node, Node, boolean).
     if (root.getEdgeCount(root.getNode(nodeInx[0]), root.getNode(nodeInx[1]),
@@ -300,6 +315,9 @@ public final class AllRootGraphMethodsTest
     if (root.getEdgeCount(nodeInx[1], nodeInx[1], true) != 1)
       throw new IllegalStateException("edge count not 1 for und. self edge");
     if (root.getEdgeCount(99, 98, true) != -1)
+      throw new IllegalStateException("edge count not -1");
+    if (root.getEdgeCount(Integer.MAX_VALUE, Integer.MIN_VALUE, false) != -1 ||
+        root.getEdgeCount(Integer.MIN_VALUE, Integer.MAX_VALUE, true) != -1)
       throw new IllegalStateException("edge count not -1");
 
     // getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean).
@@ -340,6 +358,11 @@ public final class AllRootGraphMethodsTest
     if (adjEdges != null) throw new IllegalStateException("not null");
     adjEdges = root.getAdjacentEdgeIndicesArray(0, true, true, true);
     if (adjEdges != null) throw new IllegalStateException("not null");
+    if (root.getAdjacentEdgeIndicesArray
+        (Integer.MAX_VALUE, true, true, false) != null ||
+        root.getAdjacentEdgeIndicesArray
+        (Integer.MIN_VALUE, false, true, true) != null)
+      throw new IllegalStateException("not null");
 
     // getConnectingEdgeIndicesArray(int[]).
     int[] connEdges = root.getConnectingEdgeIndicesArray(nodeInx);
@@ -389,6 +412,11 @@ public final class AllRootGraphMethodsTest
     someNodes = new int[] { nodeInx[4], 0 };
     connEdges = root.getConnectingEdgeIndicesArray(someNodes);
     if (connEdges != null) throw new IllegalStateException("not null");
+    if (root.getConnectingEdgeIndicesArray
+        (new int[] { Integer.MAX_VALUE, Integer.MIN_VALUE }) != null ||
+        root.getConnectingEdgeIndicesArray
+        (new int[] { Integer.MIN_VALUE, Integer.MAX_VALUE }) != null)
+      throw new IllegalStateException("not null");
 
     // getConnectingNodeIndicesArray(int[]).
     int[] connNodes = root.getConnectingNodeIndicesArray(edgeInx);
@@ -433,6 +461,11 @@ public final class AllRootGraphMethodsTest
     someEdges = new int[] { edgeInx[0], 0, edgeInx[1] };
     connNodes = root.getConnectingNodeIndicesArray(someEdges);
     if (connNodes != null) throw new IllegalStateException("not null");
+    if (root.getConnectingNodeIndicesArray
+        (new int[] { Integer.MAX_VALUE, Integer.MIN_VALUE }) != null ||
+        root.getConnectingNodeIndicesArray
+        (new int[] { Integer.MIN_VALUE, Integer.MAX_VALUE }) != null)
+      throw new IllegalStateException("not null");
 
     // getEdgeIndicesArray(int, int, boolean, boolean).
     connEdges = root.getEdgeIndicesArray(nodeInx[1], nodeInx[0], false, true);
@@ -473,6 +506,11 @@ public final class AllRootGraphMethodsTest
     connEdges = root.getEdgeIndicesArray(nodeInx[0], minNodeInx - 1,
                                          true, false);
     if (connEdges != null) throw new IllegalStateException("not null");
+    if (root.getEdgeIndicesArray(Integer.MAX_VALUE, Integer.MIN_VALUE,
+                                 true, false) != null ||
+        root.getEdgeIndicesArray(Integer.MIN_VALUE, Integer.MAX_VALUE,
+                                 false, false) != null)
+      throw new IllegalStateException("not null");
 
     // edgesList(Node, Node).
     edgesList = root.edgesList
@@ -515,6 +553,9 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("edges List not of size 0");
     edgesList = root.edgesList(99, minNodeInx - 1, true);
     if (edgesList != null) throw new IllegalStateException("not null");
+    if (root.edgesList(Integer.MAX_VALUE, Integer.MIN_VALUE, true) != null ||
+        root.edgesList(Integer.MIN_VALUE, Integer.MAX_VALUE, false) != null)
+      throw new IllegalStateException("not null");
 
     // getEdgeIndicesArray(int, int, boolean).
     connEdges = root.getEdgeIndicesArray(nodeInx[1], nodeInx[1], false);
@@ -532,6 +573,11 @@ public final class AllRootGraphMethodsTest
     if (connEdges != null) throw new IllegalStateException("not null");
     connEdges = root.getEdgeIndicesArray(nodeInx[1], 99, true);
     if (connEdges != null) throw new IllegalStateException("not null");
+    if (root.getEdgeIndicesArray(Integer.MAX_VALUE,
+                                 Integer.MIN_VALUE, true) != null ||
+        root.getEdgeIndicesArray(Integer.MIN_VALUE,
+                                 Integer.MAX_VALUE, false) != null)
+      throw new IllegalStateException("not null");
 
     // getInDegree(Node).
     if (root.getInDegree(root2Node) != -1)
@@ -556,6 +602,8 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("not in degree 3");
     if (root.getInDegree(nodeInx[0]) != 2)
       throw new IllegalStateException("not in degree 2");
+    if (root.getInDegree(Integer.MAX_VALUE) != -1)
+      throw new IllegalStateException("not in degree -1");
 
     // getInDegree(Node, boolean).
     if (root.getInDegree(root2Node, true) != -1)
@@ -580,6 +628,8 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("not in degree 0");
     if (root.getInDegree(nodeInx[1], false) != 1)
       throw new IllegalStateException("not in degree 1");
+    if (root.getInDegree(Integer.MIN_VALUE, true) != -1)
+      throw new IllegalStateException("not in degree -1");
 
     // getOutDegree(Node).
     if (root.getOutDegree(root2Node) != -1)
@@ -597,9 +647,11 @@ public final class AllRootGraphMethodsTest
         root.getOutDegree(101) != -1)
       throw new IllegalStateException("not out degree -1");
     if (root.getOutDegree(nodeInx[3]) != 1)
-      throw new IllegalArgumentException("not out degree 1");
+      throw new IllegalStateException("not out degree 1");
     if (root.getOutDegree(nodeInx[0]) != 1)
-      throw new IllegalArgumentException("not out degree 1");
+      throw new IllegalStateException("not out degree 1");
+    if (root.getOutDegree(Integer.MIN_VALUE) != -1)
+      throw new IllegalStateException("not out degree -1");
 
     // getOutDegree(Node, boolean).
     if (root.getOutDegree(root2Node, false) != -1)
@@ -626,6 +678,8 @@ public final class AllRootGraphMethodsTest
     if (root.getOutDegree(nodeInx[4], true) != 0 ||
         root.getOutDegree(nodeInx[4], false) != 0)
       throw new IllegalStateException("not out degree 0");
+    if (root.getOutDegree(Integer.MAX_VALUE, false) != -1)
+      throw new IllegalStateException("not out degree -1");
 
     // getDegree(Node).
     if (root.getDegree(root2Node) != -1)
@@ -646,6 +700,9 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("not degree 1");
     if (root.getDegree(nodeInx[4]) != 0)
       throw new IllegalStateException("not degree 0");
+    if (root.getDegree(Integer.MAX_VALUE) != -1 ||
+        root.getDegree(Integer.MIN_VALUE) != -1)
+      throw new IllegalStateException("not degree -1");
 
     // getIndex(Node).
     if (root.getIndex(root2Node) != 0)
@@ -657,6 +714,9 @@ public final class AllRootGraphMethodsTest
     if (root.getNode(minNodeInx - 1) != null ||
         root.getNode(0) != null ||
         root.getNode(23) != null)
+      throw new IllegalStateException("not null");
+    if (root.getNode(Integer.MAX_VALUE) != null ||
+        root.getNode(Integer.MIN_VALUE) != null)
       throw new IllegalStateException("not null");
 
     // getIndex(Edge).
@@ -670,6 +730,9 @@ public final class AllRootGraphMethodsTest
         root.getEdge(0) != null ||
         root.getEdge(37) != null)
       throw new IllegalStateException("not null");
+    if (root.getEdge(Integer.MIN_VALUE) != null ||
+        root.getEdge(Integer.MAX_VALUE) != null)
+      throw new IllegalStateException("not null");
 
     // getEdgeSourceIndex(int).
     if (root.getEdgeSourceIndex(minEdgeInx - 1) != 0 ||
@@ -681,6 +744,9 @@ public final class AllRootGraphMethodsTest
         root.getEdgeSourceIndex(edgeInx[1]) != nodeInx[1] ||
         root.getEdgeSourceIndex(edgeInx[4]) != nodeInx[1])
       throw new IllegalStateException("wrong edge source node");
+    if (root.getEdgeSourceIndex(Integer.MAX_VALUE) != 0 ||
+        root.getEdgeSourceIndex(Integer.MIN_VALUE) != 0)
+      throw new IllegalStateException("edge source not 0");
 
     // getEdgeTargetIndex(int).
     if (root.getEdgeTargetIndex(minEdgeInx - 1) != 0 ||
@@ -691,6 +757,9 @@ public final class AllRootGraphMethodsTest
         root.getEdgeTargetIndex(edgeInx[0]) != nodeInx[1] ||
         root.getEdgeTargetIndex(edgeInx[5]) != nodeInx[0])
       throw new IllegalStateException("wrong edge target node");
+    if (root.getEdgeTargetIndex(Integer.MAX_VALUE) != 0 ||
+        root.getEdgeTargetIndex(Integer.MIN_VALUE) != 0)
+      throw new IllegalStateException("edge target not 0");
 
     // isEdgeDirected(int).
     if ((!root.isEdgeDirected(edgeInx[0])) ||
