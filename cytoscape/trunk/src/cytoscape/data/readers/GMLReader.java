@@ -73,7 +73,9 @@ public class GMLReader implements GraphReader {
    */
 
    public void read () {
-       rootGraph = GinyFactory.createRootGraph();
+       //move this to later when we know how many nodes
+							//edges we are going to add
+							//rootGraph = GinyFactory.createRootGraph();
       
        // create and read the GML file
        gmlTree = new GMLTree(filename);
@@ -90,7 +92,11 @@ public class GMLReader implements GraphReader {
        Vector edgeSources = gmlTree.getVector("graph|edge|source","|",GMLTree.INTEGER);
        Vector edgeTargets = gmlTree.getVector("graph|edge|target","|",GMLTree.INTEGER);
        Vector edgeLabels  = gmlTree.getVector("graph|edge|label|","|",GMLTree.STRING);
-              
+       
+							//Use the number of ids to get the number of nodes in hte graph
+							//Use the number of source ids to get the number of edges in hte graph
+							//(since every edge must have some source node)
+							rootGraph = GinyFactory.createRootGraph(nodeIds.size(),edgeSources.size());
        //---------------------------------------------------------------------------
        // set a default edge type if it's not defined in the GML file
        // need a better system for defining the default...
