@@ -155,6 +155,46 @@ public class CyNetwork {
     }//cr
     
     
+    /**
+     * Constructor that ensures that a valid graph and attributes objects
+     * exist. The ExpressionData argument may be null.
+     *
+     * WARNING: many methods expect that the node attributes hold a canonical
+     * name and common name attribute for every node in the graph, and the
+     * edge attributes hold an interaction attribute for every edge. This
+     * constructor does not guarantee these fields are present. Most users
+     * should instead use a factory method to construct their network.
+     */
+    public CyNetwork(GraphPerspective graphPerspective,
+                     GraphObjAttributes nodeAttributes,
+                     GraphObjAttributes edgeAttributes,
+                     ExpressionData expressionData, boolean isYFiles) {
+	this.isYFiles	 = isYFiles;	     
+        //not completely sure how to handle null arguments
+        if (graphPerspective != null) {
+            this.graphPerspective = graphPerspective;
+	    //graphPerspective = rootGraph.createGraphPerspective( rootGraph.getNodeIndicesArray(), rootGraph.getEdgeIndicesArray() ); 
+	    this.rootGraph = graphPerspective.getRootGraph();
+	} else {
+            this.rootGraph = new LunaRootGraph();
+        }
+        if (nodeAttributes != null) {
+            this.nodeAttributes = nodeAttributes;
+        } else {
+            this.nodeAttributes = new GraphObjAttributes();
+        }
+        if (edgeAttributes != null) {
+            this.edgeAttributes = edgeAttributes;
+        } else {
+            this.edgeAttributes = new GraphObjAttributes();
+        }
+        //null expression data is OK
+        this.expressionData = expressionData;
+	 
+	
+    }//cr
+    
+    
     //methods to get each member
     /**
      * Returns the graph object for this network.

@@ -12,6 +12,12 @@ import javax.swing.AbstractAction;
 import y.base.*;
 import y.view.Graph2D;
 
+import giny.model.RootGraph;
+import giny.model.GraphPerspective;
+import giny.view.*;
+import luna.LunaRootGraph; //For instantiating new RootGraph
+import phoebe.PGraphView;  //for instanciating new Graph View
+
 import cytoscape.GraphObjAttributes;
 import cytoscape.SelectedSubGraphFactory;
 import cytoscape.data.CyNetwork;
@@ -26,6 +32,15 @@ public class NewWindowSelectedNodesEdgesAction extends AbstractAction {
     }
 
     public void actionPerformed(ActionEvent e) {
+	 if (cyWindow.getCytoscapeObj().getConfiguration().isYFiles()) {  
+		 performInYFilesMode();
+	 }
+	 else{
+		 performInGinyMode();
+	 }
+    }//acionPerformed
+    
+    void performInYFilesMode(){
         //save the vizmapper catalog
         cyWindow.getCytoscapeObj().saveCalculatorCatalog();
         CyNetwork oldNetwork = cyWindow.getNetwork();
@@ -72,6 +87,45 @@ public class NewWindowSelectedNodesEdgesAction extends AbstractAction {
             System.err.println("exception when creating new window");
             e00.printStackTrace();
         }
-    } // actionPerformed
+    }
+    
+    void performInGinyMode() {
+	    
+	     //save the vizmapper catalog
+        cyWindow.getCytoscapeObj().saveCalculatorCatalog();
+        CyNetwork oldNetwork = cyWindow.getNetwork();
+        String callerID = "NewWindowSelectedNodesEdgesAction.actionPerformed";
+        //oldNetwork.beginActivity(callerID);
+        GraphView view = cyWindow.getView();
+        // hide unselected edges
+        //needed since the factory ignores selection state of edges
+       int [] nodes = view.getSelectedNodeIndices();
+      int[] edges = view.getSelectedEdgeIndices();
+      	GraphPerspective subGraph = view.getGraphPerspective().createGraphPerspective(nodes, edges);
+	PGraphView subView = new PGraphView(subGraph);
+	//LunaRootGraph rootGraph = new LunaRootGraph (subGraph);
+        GraphObjAttributes newNodeAttributes = oldNetwork.getNodeAttributes();
+        GraphObjAttributes newEdgeAttributes = oldNetwork.getEdgeAttributes();
+	
+        CyNetwork newNetwork = new CyNetwork(subGraph, newNodeAttributes,
+                newEdgeAttributes, oldNetwork.getExpressionData(), true );
+        newNetwork.setNeedsLayout(true);
+      
+        //oldNetwork.endActivity(callerID);
+        
+        String title =  " selection";
+        try {
+            //this call creates a WindowOpened event, which is caught by
+            //cytoscape.java, enabling that class to manage the set of windows
+            //and quit when the last window is closed
+            CyWindow newWindow = new CyWindow(cyWindow.getCytoscapeObj(),
+                                              newNetwork, title);
+            newWindow.showWindow();
+        } catch (Exception e00) {
+            System.err.println("exception when creating new window");
+            e00.printStackTrace();
+        }
+    }//end performinginyMode()
+    
 }
 

@@ -49,10 +49,13 @@ public class LoadInteractionFileAction extends AbstractAction {
                 //apply the semantics we usualy expect
                 Semantics.applyNamingServices(newNetwork, cytoscapeObj);
                 //set the new graph, don't erase old attributes
-		if ( networkView.getCytoscapeObj().getConfiguration().isYFiles())
+		if ( networkView.getCytoscapeObj().getConfiguration().isYFiles()) {
 			networkView.getNetwork().setNewGraphFrom(newNetwork, false);
+			networkView.setWindowTitle(name);
+		}
 		else {
 			networkView.setNewNetwork(newNetwork);
+			networkView.setWindowTitle(name);
 		}
             } else {//give the user an error dialog
                 String lineSep = System.getProperty("line.separator");

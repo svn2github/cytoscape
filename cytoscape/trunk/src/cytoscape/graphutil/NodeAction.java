@@ -332,9 +332,7 @@ public class NodeAction {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
-			//set nv to the new Star Node view
-		//	int n = rootGraph.createNode();
-                //  graphPerspective.restoreNode( n );
+		
                  PNode node = (PNode)v.addNodeView( "cytoscape.graphutil.StarNode",nv.getIndex());
                   
                 } } ); } } ) );
@@ -411,7 +409,7 @@ public class NodeAction {
 	 } } ); } } ) );
 	 
 	 
-	 firstn_menu.add( new JMenuItem( new AbstractAction( "To star plots" ) {
+	/* firstn_menu.add( new JMenuItem( new AbstractAction( "To star plots" ) {
          public void actionPerformed ( ActionEvent e ) {
            // Do this in the GUI Event Dispatch thread...
            SwingUtilities.invokeLater( new Runnable() {
@@ -489,6 +487,8 @@ public class NodeAction {
 		}
                   
                } } ); } } ) );
+	       
+	       **/
 	 firstn_menu.add( new JMenuItem( new AbstractAction( "To parallelogram" ) {
          public void actionPerformed ( ActionEvent e ) {
            // Do this in the GUI Event Dispatch thread...

@@ -58,10 +58,15 @@ public interface NetworkView {
      * Returns the network displayed by this object.
      */
     CyNetwork getNetwork();
-    /*
+    /**
     *
     */
     void setNewNetwork(CyNetwork newNetwork);
+    
+    /**
+    *
+    */
+    void setWindowTitle(String title);
     /**
      * Returns the utility object for hiding graph objects for the above network.
      */

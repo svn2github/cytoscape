@@ -405,10 +405,10 @@ public void addViewContextMenues() {
                                   "Color This Node White" );
 					
       //data menues
-      view.addContextMethod( "class phoebe.PNodeView",
-                                  "cytoscape.graphutil.NodeAction",
-                                  "showData",
-                                  "Show Data for this node" );
+     // view.addContextMethod( "class phoebe.PNodeView",
+                                  //"cytoscape.graphutil.NodeAction",
+                                 // "showData",
+                                  //"Show Data for this node" );
       view.addContextMethod( "class phoebe.PNodeView",
                                   "cytoscape.graphutil.NodeAction",
                                   "changeFirstNeighbors",
