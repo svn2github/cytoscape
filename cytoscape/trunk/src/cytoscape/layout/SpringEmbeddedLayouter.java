@@ -4,7 +4,6 @@ import cytoscape.graph.layout.algorithm.util.MutableGraphLayoutRepresentation;
 import cytoscape.graph.layout.impl.SpringEmbeddedLayouter2;
 import cytoscape.view.CyNetworkView;
 import giny.model.Edge;
-import giny.model.Node;
 import giny.view.EdgeView;
 import giny.view.GraphView;
 import giny.view.NodeView;
@@ -154,7 +153,7 @@ public class SpringEmbeddedLayouter extends AbstractLayout  {
                                            nodeXPositions,
                                            nodeYPositions,
                                            null);
-    (new SpringEmbeddedLayouter2(nativeGraph, null)).run();
+    (new SpringEmbeddedLayouter2(nativeGraph)).run();
     for (int i = 0; i < nodeTranslation.length; i++) {
       nodeTranslation[i].setOffset(nativeGraph.getNodePosition(i).getX(),
                                    nativeGraph.getNodePosition(i).getY()); }

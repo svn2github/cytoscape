@@ -65,7 +65,7 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
   private int m_layoutPass;
 
   private boolean m_halt = false;
-  private final PercentCompletedCallback m_percentComplete;
+  private PercentCompletedCallback m_percentComplete;
 
   private final AutoScalingGraphLayout m_autoScaleGraph;
 
@@ -74,35 +74,19 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
    * on a graph.  An instance of this class will perform a layout at most
    * once.  The constructor returns quickly; <code>run()</code> does the
    * computations to perform the layout.<p>
-   * A word about the <code>PercentCompletedCallback</code> parameter that
-   * is passed to this constructor.  <code>percentComplete</code> may be
-   * <code>null</code>, in which case this layout algorithm will not report
-   * percent completed to the parent application.  If
-   * <code>percentComplete</code> is not <code>null</code> then this object
-   * will call <code>percentComplete.setPercentCompleted()</code> <i>ONLY</i>
-   * from the thread that calls <code>run()</code>, as frequently as this
-   * object sees fit.
    *
    * @param graph the graph layout object that this layout algorithm
    *   operates on.
-   * @param percentComplete a hook that a parent application may pass in
-   *   in order to get information regarding what percentage of the layout
-   *   has been completed.
    * @exception UnsupportedOperationException
    *   if <code>graph.areAllNodesMovable()</code> returns <code>false</code>.
    **/
-  public SpringEmbeddedLayouter2(MutableGraphLayout graph,
-                                 PercentCompletedCallback percentComplete)
+  public SpringEmbeddedLayouter2(MutableGraphLayout graph)
   {
     super(graph);
     if (!m_graph.areAllNodesMovable())
       throw new UnsupportedOperationException
         ("this algirithm only works with graphs whose nodes are all " +
          "movable");
-    m_percentComplete =
-      ((percentComplete != null) ? percentComplete :
-       new PercentCompletedCallback() {
-         public void setPercentCompleted(int percent) {} });
     m_numLayoutPasses = DEFAULT_NUM_LAYOUT_PASSES;
     m_averageIterationsPerNode = DEFAULT_AVERAGE_ITERATIONS_PER_NODE;
     m_nodeDistanceSpringScalars = DEFAULT_NODE_DISTANCE_SPRING_SCALARS;
@@ -118,6 +102,35 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
     m_nodeCount = m_graph.getNumNodes();
     m_edgeCount = m_graph.getNumEdges();
     m_autoScaleGraph = new AutoScalingGraphLayout(m_graph);
+  }
+
+  /**
+   * The programmer who created this class originally had
+   * a <code>PercentCompletedCallback</code> set in the constructor of this
+   * class; this caused a &quot;which-came-first-chicken-or-egg&quot; problem
+   * because in many practical cases, to get a valid instance of
+   * <code>PercentCompletedCallback</code> we had to first define an
+   * instance of this class.<p>
+   * <code>percentComplete</code> may be
+   * <code>null</code>, in which case this layout algorithm will not report
+   * percent completed to the parent application.  If
+   * <code>percentComplete</code> is not <code>null</code> then this object
+   * will call <code>percentComplete.setPercentCompleted()</code> <i>ONLY</i>
+   * from the thread that calls <code>run()</code>, as frequently as this
+   * object sees fit.
+   *
+   * @param percentComplete a hook that a parent application may pass in
+   *   to get information regarding what percentage of the layout
+   *   has been completed, or <code>null</code> to stop this layout
+   *   algorithm from reporting how much progress it has made.
+   **/
+  public void setPercentCompletedCallback
+    (PercentCompletedCallback percentComplete)
+  {
+    m_percentComplete =
+      ((percentComplete != null) ? percentComplete :
+       new PercentCompletedCallback() {
+         public void setPercentCompleted(int percent) {} });
   }
 
   private static class AutoScalingGraphLayout
