@@ -317,8 +317,7 @@ public final class IntBTree
           if (x <= n.values[i]) {
             if (x == n.values[i]) count++; else break; } }
       else { // Internal node.
-        int currentMax = maxBound;
-        int currentMin;
+        int currentMax = maxBound; int currentMin;
         for (int i = n.sliceCount - 2; i >= -1; i--) {
           currentMin = ((i < 0) ? minBound : n.data.splitVals[i]);
           if (currentMin <= x) {
@@ -423,9 +422,7 @@ public final class IntBTree
           else break; }
         if (count > 0) nodeStack.push(n); }
       else { // Internal node.
-        int currentMax = maxBound;
-        int currentMin;
-        Node nodeTemp;
+        int currentMax = maxBound; int currentMin;
         for (int i = n.sliceCount - 2; i >= -1; i--) {
           currentMin = ((i < 0) ? minBound : n.data.splitVals[i]);
           if (Math.max(currentMin, xMin) <= Math.min(currentMax, xMax))
