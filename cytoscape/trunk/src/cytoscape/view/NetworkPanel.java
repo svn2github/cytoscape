@@ -444,7 +444,7 @@ class PopupActionListener implements ActionListener{
       Cytoscape.destroyNetworkView(cyNetwork);
     } // end of if ()
     else if ( label == CREATE_VIEW ) {
-      Cytoscape.createNetworkView(cyNetwork);
+      CreateNetworkViewAction.createViewFromCurrentNetwork(cyNetwork);
     } // end of if ()
     else if ( label == DESTROY_NETWORK) {
       Cytoscape.destroyNetwork(cyNetwork);
