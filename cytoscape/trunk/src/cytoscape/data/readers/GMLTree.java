@@ -6,6 +6,8 @@ import java.awt.Color;
 import java.text.DecimalFormat;
 import giny.view.*;
 import giny.model.*;
+import cytoscape.GraphObjAttributes;
+import cytoscape.view.NetworkView;
 /**
  * This class wraps around GMLNode and provides various methods for
  * constructing a tree structure given other data.
@@ -55,9 +57,10 @@ public class GMLTree{
      * this only concerns itself with x,y position information.
      * @param myView the GraphView used to create the GMLTree
      */
-    public GMLTree(GraphView myView){
+    public GMLTree(NetworkView networkView){
 	//DecimalFormat cf = new DecimalFormat("00");
 	DecimalFormat df = new DecimalFormat("####0.0#");
+	GraphView myView = networkView.getView();
 	//create a new root
 	root = new GMLNode();
 	//add the base level mappings
@@ -93,14 +96,21 @@ public class GMLTree{
 	    graph.addMapping("node",currentGML);
 	}
 	viewIt = myView.getEdgeViewsIterator();
+	GraphObjAttributes edgeAttributes = networkView.getNetwork().getEdgeAttributes();
 	while(viewIt.hasNext()){
 	    EdgeView currentView = (EdgeView)viewIt.next();
 	    Edge currentEdge = currentView.getEdge();
 	    //crate a new GMLNode to hold information about currentEdge
 	    GMLNode currentGML = new GMLNode();
-	    //add the information about currentNode
+	    //add the information about currentEdge
 	    currentGML.addMapping("source",new GMLNode(""+(-currentEdge.getSource().getRootGraphIndex())));
 	    currentGML.addMapping("target",new GMLNode(""+(-currentEdge.getTarget().getRootGraphIndex())));
+	    
+	    //label is a little bit different because I need to look it up from edgeattributes
+	    String interaction = (String)edgeAttributes.get("interaction",edgeAttributes.getCanonicalName(currentEdge)); 
+	    if(interaction != null){
+	    	currentGML.addMapping("label",new GMLNode("\""+interaction+"\""));
+	    }
 	    GMLNode graphics = new GMLNode();
 	    graphics.addMapping("width",new GMLNode(""+df.format(currentView.getStrokeWidth())));
 	    graphics.addMapping("type",new GMLNode("\"line\""));
