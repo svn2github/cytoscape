@@ -585,12 +585,12 @@ protected JMenuBar createMenuBar ()
   layoutButton = new JRadioButtonMenuItem("Organic");
   layoutGroup.add(layoutButton);
   layoutMenu.add(layoutButton);
+  layoutButton.setSelected(true);
   layoutButton.addActionListener(new OrganicLayoutAction ());
   
   layoutButton = new JRadioButtonMenuItem("Embedded");
   layoutGroup.add(layoutButton);
   layoutMenu.add(layoutButton);
-  layoutButton.setSelected(true);
   layoutButton.addActionListener(new EmbeddedLayoutAction ());
 
   layoutButton = new JRadioButtonMenuItem("Random");
