@@ -9,13 +9,12 @@ package cytoscape;
 import java.io.*;
 import java.util.*;
 
-// import cytoscape.plugins.activePaths.data.ActivePathFinderParameters;
-
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
 //------------------------------------------------------------------------------------------
 /**
- * handles the parsing of, and access to, command line arguments for cytoscape
+ * handles the parsing of, and access to, command line arguments for cytoscape, and
+ * the control of various features and attributes via 'cytoscape.props' files
  */
 public class CytoscapeConfig {
 
@@ -33,8 +32,6 @@ public class CytoscapeConfig {
   protected Vector nodeAttributeFilenames = new Vector ();
   protected Vector edgeAttributeFilenames = new Vector ();
 
-  protected boolean activePathParametersPresent = false;
-  // protected ActivePathFinderParameters activePathParameters;
   protected StringBuffer errorMessages = new StringBuffer ();
     // system and user property files use the same name
   protected Properties props;
@@ -42,15 +39,14 @@ public class CytoscapeConfig {
 //------------------------------------------------------------------------------------------
 public CytoscapeConfig (String [] args)
 {
+  props = readProperties ();
   //make a copy of the args to parse here (getopt can mangle the array it parses)
   commandLineArguments = new String[args.length];
   System.arraycopy(args, 0, commandLineArguments, 0, args.length);
   //make a copy of the arguments for later use
   argsCopy = new String[args.length];
   System.arraycopy(args, 0, argsCopy, 0, args.length);
-  // activePathParameters = new ActivePathFinderParameters ();
   parseArgs ();
-  props = readProperties ();
 
 }
 //------------------------------------------------------------------------------------------
@@ -159,16 +155,6 @@ public boolean displayVersion ()
   return displayVersion;
 }
 //------------------------------------------------------------------------------------------
-public boolean activePathParametersPresent ()
-{
-  return activePathParametersPresent;
-}
-//------------------------------------------------------------------------------------------
-//public ActivePathFinderParameters getActivePathParameters ()
-//{
-//  return activePathParameters;
-//}
-//------------------------------------------------------------------------------------------
 public Properties getProperties ()
 {
   return props;
@@ -260,7 +246,6 @@ protected void parseArgs ()
     return;
 
   LongOpt[] longopts = new LongOpt[0];
-  //  Getopt g = new Getopt ("cytoscape", commandLineArguments, argSpecificationString, longOpts);
   Getopt g = new Getopt ("cytoscape", commandLineArguments, argSpecificationString, longopts);
   g.setOpterr (false); // We'll do our own error handling
 
@@ -291,17 +276,13 @@ protected void parseArgs ()
      case 'v':
        displayVersion = true;
        break;
-     case '?':
-       /* Optopt==0 indicates an unrecognized long option, which is
-        * reserved for plugins */
+     case '?': // Optopt==0 indicates an unrecognized long option, which is reserved for plugins 
       int theOption = g.getOptopt();
-       if ( theOption != 0 ) {
-          System.out.println ("The option '" + (char)theOption + 
-                           "' is not valid");
-       }
-          break;
+      if (theOption != 0 )
+        errorMessages.append ("The option '" + (char)theOption + "' is not valid\n");
+       break;
      default:
-       System.err.println ("unexpected argument: " + c);
+       errorMessages.append ("unexpected argument: " + c + "\n");
        inputsError = true;
        break;
      } // switch on c
@@ -322,23 +303,6 @@ protected boolean legalArguments ()
     legal = false;
     }
 
-    // if the command line indicates that active paths are to be calculated, then
-    // a few other prerequisites must be satisfied:
-    //    - there has to be expression data
-    //    - there has to be a graph
-
-  if (activePathParametersPresent) {
-     if (expressionFilename == null) {
-       errorMessages.append (" - you must provide expression data in order to find active paths\n");
-       legal = false;
-       }
-     if (geometryFilename == null && interactionsFilename == null) {
-       errorMessages.append (" - you must provide a geometry or an interactions file in\n");
-       errorMessages.append ("   in order to find active paths\n");
-       legal = false;
-       }
-     } // if activePathParametersPresent
- 
   return legal;
 
 } // legalArguments
@@ -390,11 +354,6 @@ public String toString ()
   for (int i=0; i < edgeAttributeFilenames.size (); i++)
      sb.append ("        edgeAttributeFile: " + (String) edgeAttributeFilenames.get(i) + "\n");
    
-  //if (activePathParametersPresent) {
-  // sb.append ("     ----- active paths\n");
-   // sb.append (activePathParameters);
-  // }
-
   return sb.toString ();
 
 } // toString 

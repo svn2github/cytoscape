@@ -14,6 +14,7 @@ import javax.swing.event.*;
 
 import java.io.File;
 import java.util.*;
+import java.util.logging.*;
 
 import y.base.Node;
 import y.base.Edge;
@@ -29,40 +30,42 @@ import cytoscape.data.readers.*;
 import cytoscape.data.servers.*;
 //------------------------------------------------------------------------------
 public class cytoscape implements WindowListener {
-  Vector windows = new Vector ();
-  private String logicFilename;
-  private String geometryFilename;
-  private GraphObjAttributes edgeAttributes = new GraphObjAttributes ();
-  private GraphObjAttributes nodeAttributes = new GraphObjAttributes ();
-  private ExpressionData expressionData = null;
-  private String bioDataServerName;
-  private static  BioDataServer bioDataServer;
-  private CytoscapeVersion version = new CytoscapeVersion ();
+  protected Vector windows = new Vector ();
+  protected String logicFilename;
+  protected String geometryFilename;
+  protected GraphObjAttributes edgeAttributes = new GraphObjAttributes ();
+  protected GraphObjAttributes nodeAttributes = new GraphObjAttributes ();
+  protected ExpressionData expressionData = null;
+  protected String bioDataServerName;
+  protected static  BioDataServer bioDataServer;
+  protected CytoscapeVersion version = new CytoscapeVersion ();
+  protected Logger logger;
 
 //------------------------------------------------------------------------------
 public cytoscape (String [] args) throws Exception
 {
   CytoscapeConfig config = new CytoscapeConfig (args);
+  setupLogger (config);
 
   if (config.helpRequested ()) {
     System.out.println (version);
     System.out.println (config.getUsage ());
-    exit ();
+    exit (0);
     }    
   else if (config.inputsError ()) {
     System.out.println (version);
     System.out.println ("------------- Inputs Error");
     System.out.println (config.getUsage ());
     System.out.println (config);
-    System.exit (1);
+    exit (1);
     }
   else if (config.displayVersion ()) {
     System.out.println (version);
-    exit ();
+    exit (0);
     }
 
     //------------------------- run the program
-  System.out.println (config);
+  logger.config (config.toString ());
   String geometryFilename = config.getGeometryFilename ();
   String bioDataDirectory = config.getBioDataDirectory ();
   String interactionsFilename = config.getInteractionsFilename ();
@@ -73,25 +76,22 @@ public cytoscape (String [] args) throws Exception
   boolean requestFreshLayout = true;
 
   if (geometryFilename != null) {
-    System.out.print ("reading " + geometryFilename + "...");
-    System.out.flush ();
+    logger.info ("reading " + geometryFilename + "...");
     graph = FileReadingAbstractions.loadGMLBasic(geometryFilename,edgeAttributes);
-    System.out.println ("  done");
+    logger.info ("  done");
     title = geometryFilename;
     requestFreshLayout = false;
     }
   else if (interactionsFilename != null) {
-    System.out.print ("reading " + interactionsFilename + "...");
-    System.out.flush ();
+    logger.info ("reading " + interactionsFilename + "...");
     graph=FileReadingAbstractions.loadIntrBasic(interactionsFilename,edgeAttributes);
-    System.out.println ("  done");
+    logger.info ("  done");
     title = interactionsFilename;
     }
   if (expressionDataFilename != null) {
-    System.out.print ("reading " + expressionDataFilename + "...");
-    System.out.flush ();
+    logger.info ("reading " + expressionDataFilename + "...");
     expressionData = new ExpressionData (expressionDataFilename);
-    System.out.println ("  done");
+    logger.info ("  done");
     }
   if (bioDataDirectory != null) {
     bioDataServer = BioDataServerFactory.create (bioDataDirectory);
@@ -102,13 +102,43 @@ public cytoscape (String [] args) throws Exception
 
   FileReadingAbstractions.initAttribs(config,graph,nodeAttributes,edgeAttributes);
 
-  cytoscapeWindow = new CytoscapeWindow (this, config,
+  cytoscapeWindow = new CytoscapeWindow (this, config, logger,
                                          graph, expressionData, bioDataServer,
                                          nodeAttributes, edgeAttributes, 
                                          geometryFilename, expressionDataFilename,
                                          title, requestFreshLayout);
 
 } // ctor
+//------------------------------------------------------------------------------
+/**
+ * configure logging:  cytoscape.props specifies what level of logging
+ * messages are written to the console; by default, only SEVERE messages
+ * are written.  in time, more control of logging (i.e., optional logging
+ * to a file, disabling console logging, per-window or per-plugin logging) 
+ * can be provided
+ */
+protected void setupLogger (CytoscapeConfig config)
+{
+  logger = Logger.getLogger ("global"); 
+  Properties properties = config.getProperties ();
+  String level = properties.getProperty ("logging", "SEVERE");
+
+  if (level.equalsIgnoreCase ("severe"))
+    logger.setLevel (Level.SEVERE);
+  else if (level.equalsIgnoreCase ("warning"))
+    logger.setLevel (Level.WARNING);
+  else if (level.equalsIgnoreCase ("info"))
+    logger.setLevel (Level.INFO);
+  else if (level.equalsIgnoreCase ("config"))
+    logger.setLevel (Level.CONFIG);
+  else if (level.equalsIgnoreCase ("all"))
+    logger.setLevel (Level.ALL);
+  else if (level.equalsIgnoreCase ("none"))
+    logger.setLevel (Level.OFF);
+  else if (level.equalsIgnoreCase ("off"))
+    logger.setLevel (Level.OFF);
+
+} // setupLogger
 //------------------------------------------------------------------------------
 public void windowActivated   (WindowEvent e) {}
 /**
@@ -131,26 +161,26 @@ public void windowClosed (WindowEvent e)
     windows.remove (window);
 
   if (windows.size () == 0) {
-    System.out.println ("all windows closed, exiting...");
-    exit ();
+    logger.info ("all windows closed, exiting...");
+    exit (0);
     }
 
 } // windowListener.windowClosed	
 //------------------------------------------------------------------------------
-public void exit ()
+public void exit (int exitCode)
 {
   for (int i=0; i < windows.size (); i++) {
     Window w = (Window) windows.elementAt (i);
     w.dispose ();
     }
 
-  System.exit (0);
+  System.exit (exitCode);
 
 } // exit
 //------------------------------------------------------------------------------
 public static void main (String args []) throws Exception
 {
-   cytoscape app = new cytoscape (args);
+  cytoscape app = new cytoscape (args);
 
 } // main
 //------------------------------------------------------------------------------

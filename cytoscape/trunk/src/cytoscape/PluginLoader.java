@@ -46,13 +46,13 @@ public PluginLoader (CytoscapeWindow cytoscapeWindow, CytoscapeConfig config,
   this.edgeAttributes = edgeAttributes;
 
   String [] pluginProps = extractPluginProperties (props);
-  //for (int i=0; i < pluginProps.length; i++)
-  //  System.out.println ("  " + pluginProps [i]);
+  for (int i=0; i < pluginProps.length; i++)
+    cytoscapeWindow.getLogger().info ("  " + pluginProps [i]);
 
   findUnconditionallyLoadedClasses (pluginProps);
   findConditionallyLoadedClasses (pluginProps);
 
-  System.out.println (this);
+  cytoscapeWindow.getLogger().info (this.toString ());
 
 } // ctor
 //-----------------------------------------------------------------------------------
@@ -80,7 +80,7 @@ protected void findUnconditionallyLoadedClasses (String [] pluginProps)
     String propName = pluginProps [i];
     if (propName.endsWith (".load")) {
       String className = props.getProperty (propName);
-      System.out.println (" PluginLoader, unconditional: " + className);
+      cytoscapeWindow.getLogger().info (" PluginLoader, unconditional: " + className);
       addClassForLoading (className);
       } // if endswith 
     } // for
@@ -99,7 +99,7 @@ protected void findConditionallyLoadedClasses (String [] pluginProps)
         int end = propName.indexOf (".", start + 1); 
         String pluginName = propName.substring (start, end);
         String category = propName.substring (end + 1);
-        System.out.println (" PluginLoader, conditional: " + pluginName + " category: " + category);
+        cytoscapeWindow.getLogger().info (" PluginLoader, conditional: " + pluginName + " category: " + category);
         PluginInfo info = (PluginInfo) pluginHash.get (pluginName);
         if (info == null) {
           info = new PluginInfo ();
@@ -131,7 +131,7 @@ protected void findConditionallyLoadedClasses (String [] pluginProps)
   
   for (int i=0; i < pluginNameKeys.length; i++) {
     PluginInfo pluginInfo = (PluginInfo) pluginHash.get (pluginNameKeys [i]);
-    // System.out.println (pluginInfo); 
+    // cytoscapeWindow.getLogger().info (pluginInfo); 
     if (extensions.contains (pluginInfo.getFileExtension ()))
       addClassForLoading (pluginInfo.getClassName ());
     } // for i
@@ -151,7 +151,7 @@ protected void findConditionallyLoadedClasses (String [] pluginProps)
   
   for (int i=0; i < pluginNameKeys.length; i++) {
     PluginInfo pluginInfo = (PluginInfo) pluginHash.get (pluginNameKeys [i]);
-    // System.out.println (pluginInfo); 
+    // cytoscapeWindow.getLogger().info (pluginInfo); 
     if (attributes.contains (pluginInfo.getFileExtension ()))
       addClassForLoading (pluginInfo.getClassName ());
     } // for i
@@ -164,7 +164,7 @@ protected void addClassForLoading (String className)
 {
   if (className != null && className.length () > 0 && !classesToLoad.contains (className)) {
     classesToLoad.add (className);
-    System.out.println (" PluginLoader, by file extension: " + className);
+    cytoscapeWindow.getLogger().info (" PluginLoader, by file extension: " + className);
     } // if 
  
 } // addClassForLoading
@@ -192,7 +192,7 @@ protected void loadPlugin (String className, CytoscapeWindow cytoscapeWindow)
     args [0] = cytoscapeWindow;
     Constructor [] ctors = pluginClass.getConstructors ();
     Constructor ctor = pluginClass.getConstructor (argClasses);
-    System.out.println ("  now loading plugin:  " + ctor);
+    cytoscapeWindow.getLogger().info ("  now loading plugin:  " + ctor);
     Object plugin = ctor.newInstance (args);
     }
   catch (Exception e) {
