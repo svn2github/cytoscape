@@ -140,8 +140,9 @@ public class MCODEParameterChangeDialog extends JDialog {
         };
         nodeScoreCutOffFormattedTextField.setColumns(3);
         nodeScoreCutOffFormattedTextField.addPropertyChangeListener("value", new MCODEParameterChangeDialog.formattedTextFieldAction());
-        String tipText3 = "Sets the node score cutoff for expanding a cluster. This is most important\n" +
-                "parameter to control the size of MCODE clusters, with smaller values creating smaller clusters.";
+        String tipText3 = "Sets the node score cutoff for expanding a cluster as a percentage from the seed node score.\n" +
+                "This is the most important parameter to control the size of MCODE clusters,\n" +
+                "with smaller values creating smaller clusters.";
         nodeScoreCutOffFormattedTextField.setToolTipText(tipText3);
         nodeScoreCutOffFormattedTextField.setText((new Double(nodeScoreCutOff).toString()));
         JLabel nodeScoreCutOffLabel = new JLabel("Node Score Cutoff");
@@ -199,7 +200,7 @@ public class MCODEParameterChangeDialog extends JDialog {
         fluffCheckBox.addItemListener(new MCODEParameterChangeDialog.fluffCheckBoxAction());
         fluffCheckBox.setToolTipText("If checked, MCODE will fluff clusters\n" +
                 "(expand core cluster one neighbour shell outwards according to fluff\n" +
-                "density threshold). This is done after the optional haircut step.");
+                "density cutoff). This is done after the optional haircut step.");
         fluffCheckBox.setSelected(fluff);
         fluffOptionsPanel.add(fluffCheckBox);
 
