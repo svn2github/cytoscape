@@ -186,13 +186,25 @@ public class GMLTree{
    */
   public GMLTree(String filename){
     LinkedList tokenList = new LinkedList();
-    TextFileReader reader = new TextFileReader(filename);
-    reader.read();
+    StringTokenizer quotes = null;
+    if (filename.startsWith("jar://")) {//in a startup jar file
+        try {
+            TextJarReader reader = new TextJarReader(filename);
+            reader.read();
+            quotes = new StringTokenizer(reader.getText(),"\"",true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+    } else {
+        TextFileReader reader = new TextFileReader(filename);
+        reader.read();
+        quotes = new StringTokenizer(reader.getText(),"\"",true);
+    }
+    //note: no handling of error cases here
 
     // handle the quotes -> build GMLToken list
     //find the quoted strings first so we can preserve their white space
-    StringTokenizer quotes = new StringTokenizer(reader.getText(),"\"",true);
-
     while (quotes.hasMoreTokens()) {
       StringTokenizer tokens = new StringTokenizer(quotes.nextToken());
       while (tokens.hasMoreTokens()){
