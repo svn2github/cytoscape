@@ -31,11 +31,14 @@ public class VisualPropertiesDialog extends JDialog {
 
     JTextField readout;
     AttributeMapper aMapper;
+    Color nColor;
 //--------------------------------------------------------------------------------------
 public VisualPropertiesDialog (Frame parentFrame, String title, AttributeMapper mapper)
 {
   super (parentFrame, true);
   setTitle (title);
+
+  nColor = getNodeColor();
 
   aMapper = mapper;
   JPanel mainPanel = new JPanel ();
@@ -55,11 +58,20 @@ public VisualPropertiesDialog (Frame parentFrame, String title, AttributeMapper 
   c.gridy=1;
   gridbag.setConstraints(applyButton,c);
   mainPanel.add (applyButton);
+  
+  JButton colorButton
+      = new JButton("Choose Node Color");
+  colorButton.addActionListener(new SpawnNodeColorDialogListener());
+  c.gridx=0;
+  c.gridy=2;
+  gridbag.setConstraints(colorButton,c);
+  mainPanel.add(colorButton);
 
-  JDialog ccdd = new ColorChooserDemoDialog(this);
-  ccdd.pack ();
-  ccdd.setLocationRelativeTo (this);
-  ccdd.setVisible (true);
+
+  //JDialog ccdd = new ColorChooserDialog(this,"node color");
+  //ccdd.pack ();
+  //ccdd.setLocationRelativeTo (this);
+  //ccdd.setVisible (true);
 
   ///////////////////////////////////////////
 
@@ -73,8 +85,8 @@ public class ApplyAction extends AbstractAction {
   }
 
   public void actionPerformed (ActionEvent e) {
-      Color c = new Color(0,0,0);
-      Object o2 = aMapper.setDefaultValue(VizMapperCategories.NODE_FILL_COLOR, c);
+      //Color c = new Color(0,0,0);
+      Object o2 = aMapper.setDefaultValue(VizMapperCategories.NODE_FILL_COLOR, nColor);
 
 	  /*
 	    setAttributeMapEntry(VizMapperCategories.NODE_FILL_COLOR,
@@ -90,12 +102,12 @@ public class ApplyAction extends AbstractAction {
 
 
 
-public class ColorChooserDemoDialog extends JDialog {
-    public ColorChooserDemoDialog(JDialog parentDialog) {
-        super(parentDialog, "ColorChooserDemoDialog");
+public class ColorChooserDialog extends JDialog {
+    public ColorChooserDialog(JDialog parentDialog, String whatFor) {
+        super(parentDialog, "Choose Color for " + whatFor);
 
         //Set up the banner at the top of the window
-        final JLabel banner = new JLabel("Welcome to the Tutorial Zone!",
+        final JLabel banner = new JLabel("Choose Color for " + whatFor,
                                          JLabel.CENTER);
         banner.setForeground(Color.yellow);
         banner.setBackground(Color.blue);
@@ -113,7 +125,7 @@ public class ColorChooserDemoDialog extends JDialog {
             new ChangeListener() {
                 public void stateChanged(ChangeEvent e) {
                     Color newColor = tcc.getColor();
-		    System.out.println("hello!");
+		    //System.out.println("hello!");
                     banner.setForeground(newColor);
                 }
             }
@@ -126,9 +138,41 @@ public class ColorChooserDemoDialog extends JDialog {
         contentPane.add(bannerPanel, BorderLayout.CENTER);
         contentPane.add(tcc, BorderLayout.SOUTH);
     }
-
+    
 }
+    
 
+
+    
+    
+class SpawnNodeColorDialogListener implements ActionListener {
+    
+    public void actionPerformed(ActionEvent e) {
+	// Args are parent component, title, initial color
+	nColor = JColorChooser.showDialog(VisualPropertiesDialog.this,
+					  "Choose Color",
+					  getNodeColor());
+	if (nColor != null)
+	    aMapper.setDefaultValue(VizMapperCategories.NODE_FILL_COLOR,nColor);
+    }
+}
+    
+    private Color getNodeColor() {
+	Color tempColor;
+	try {
+	    System.out.println("found real color");
+	    tempColor = 
+		(Color)aMapper.getDefaultValue(VizMapperCategories.NODE_FILL_COLOR);
+	} catch (NullPointerException ex) {
+	    System.out.println("made up color");
+	    tempColor = new Color(255,255,255);
+	}
+	//if(tempColor != null)
+	return tempColor;
+	//else {
+	//return
+	//}
+    }
 
 } // class VisualPropertiesDialog
 
