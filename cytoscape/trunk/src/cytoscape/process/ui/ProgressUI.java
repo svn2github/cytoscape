@@ -73,8 +73,8 @@ public final class ProgressUI
    * @exception IllegalStateException if this is called while another
    *   progress dialog is currently open.
    * @exception IllegalThreadStateException if this is called from a thread
-   *   that is not the AWT event handling thread (
-   *   <nobr><code>java.awt.EventQueue.isDispatchThread()</code></nobr).
+   *   that is not the AWT event handling thread
+   *   (<nobr><code>java.awt.EventQueue.isDispatchThread()</code></nobr>).
    **/
   public static ProgressUIControl startProgress(String title,
                                                 String message,
