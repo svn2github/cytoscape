@@ -68,6 +68,7 @@ public class RGAlgorithmGui extends JDialog {
   protected PlotListener numBiomodulesPlotListener;
   protected PlotListener distancesPlotListener;
   protected JRadioButton abstractRbutton;
+  protected JRadioButton viewDataRadioButton;
   protected DataTable apspTable;
   protected DataTable mdTable;
 
@@ -78,7 +79,7 @@ public class RGAlgorithmGui extends JDialog {
    */
   public RGAlgorithmGui (CyNetwork network){
     super();
-    setTitle("R&G Biomodules Calculator");
+    setTitle("Biomodules: " + network.getTitle());
     this.algorithmData = RGAlgorithm.getClientData(network);
     create();
   }//RGAlgorithmGui
@@ -309,8 +310,8 @@ public class RGAlgorithmGui extends JDialog {
   	JPanel dataPanel = new JPanel();
   	dataPanel.setLayout(new BoxLayout(dataPanel, BoxLayout.Y_AXIS));
   	
-  	JRadioButton viewDataRadioButton = new JRadioButton("View data after it is calculated", this.algorithmData.getSaveIntermediaryData());
-  	dataPanel.add(viewDataRadioButton);
+  	this.viewDataRadioButton = new JRadioButton("View data after it is calculated", this.algorithmData.getSaveIntermediaryData());
+  	dataPanel.add(this.viewDataRadioButton);
   	
   	JButton apspButton = new JButton("Display All-Pairs-Shortest-Paths");
   	apspButton.addActionListener(new DisplayTableAction(APSP_TABLE));
@@ -319,6 +320,7 @@ public class RGAlgorithmGui extends JDialog {
   	distButton.addActionListener(new DisplayTableAction(MD_TABLE));
   	
   	JButton biomodsButton = new JButton("Display Biomodules Table");
+  	biomodsButton.addActionListener(new DisplayBiomodulesAction());
   	
   	dataPanel.add(apspButton);
   	dataPanel.add(distButton);
@@ -375,6 +377,8 @@ public class RGAlgorithmGui extends JDialog {
     
     HierarchicalClustering hClustering = this.algorithmData.getHierarchicalClustering();
     CyNode [][] biomodules = null;
+    // From the GUI, see if apsp and manhattan-distances need to be kept in memory
+    this.algorithmData.setSaveIntermediaryData(this.viewDataRadioButton.isSelected());
     if(hClustering == null){
       biomodules = RGAlgorithm.calculateBiomodules(this.algorithmData.getNetwork());
       updatePlots();
@@ -699,13 +703,49 @@ public class RGAlgorithmGui extends JDialog {
   					nodeNames[i] = (String)Cytoscape.getNodeAttributeValue(node, Semantics.CANONICAL_NAME);
   				}
   				int [][] apsp = RGAlgorithmGui.this.algorithmData.getAPSP();
-  				RGAlgorithmGui.this.apspTable = new DataTable(nodeNames,nodeNames,apsp);
+  				RGAlgorithmGui.this.apspTable = 
+  					new DataTable(nodeNames,
+  								  nodeNames,
+								  apsp,
+						          ("APSP: " + RGAlgorithmGui.this.algorithmData.getNetwork().getTitle()));
   			}//if apspTable = null
   			RGAlgorithmGui.this.apspTable.pack();
+  			RGAlgorithmGui.this.apspTable.setLocationRelativeTo(RGAlgorithmGui.this);
   			RGAlgorithmGui.this.apspTable.setVisible(true);
   		}//apsp table
+  		else if(this.type == MD_TABLE){
+  			if(RGAlgorithmGui.this.mdTable == null){
+  				ArrayList orderedNodes = RGAlgorithmGui.this.algorithmData.getOrderedNodes();
+  				String [] nodeNames = new String[orderedNodes.size()];
+  				for(int i = 0; i < nodeNames.length; i++){
+  					CyNode node = (CyNode)orderedNodes.get(i);
+  					nodeNames[i] = (String)Cytoscape.getNodeAttributeValue(node, Semantics.CANONICAL_NAME);
+  				}
+  				double [][] distances = RGAlgorithmGui.this.algorithmData.getManhattanDistances();
+  				RGAlgorithmGui.this.mdTable = 
+  					new DataTable(nodeNames,
+  								   nodeNames,
+								   distances,
+								   ("Manhattan Distances: " + 
+								    RGAlgorithmGui.this.algorithmData.getNetwork().getTitle()));
+  			}
+  			RGAlgorithmGui.this.mdTable.pack();
+  			RGAlgorithmGui.this.mdTable.setLocationRelativeTo(RGAlgorithmGui.this);
+  			RGAlgorithmGui.this.mdTable.setVisible(true);
+  		}//manhattan  distances table
+  		
   	}//actionPerformed
   
   }//DisplayTableAction
   
+  protected class DisplayBiomodulesAction extends AbstractAction {
+  	DisplayBiomodulesAction (){
+  		super("");
+  	}//constructor
+  	
+  	public void actionPerformed (ActionEvent event){
+  		//left here
+  	}//actionPerformed
+  
+  }//DisplayBiomodulesAction
 }//class RGAlgorithmGui

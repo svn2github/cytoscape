@@ -40,6 +40,12 @@ import cytoscape.*;
 import common.algorithms.hierarchicalClustering.*;
 import biomodules.algorithm.rgalgorithm.gui.*;
 
+/**
+ * @author iliana
+ *
+ * TODO To change the template for this generated type comment go to
+ * Window - Preferences - Java - Code Style - Code Templates
+ */
 public class RGAlgorithmData {
   
   /**
@@ -119,7 +125,15 @@ public class RGAlgorithmData {
     setNetwork(network);
     this.saveInterData = false;
   }//RGAlgorithmData
-
+  
+  /**
+   * Sets <code>this.apsp</code> and <code>this.manhattanDistances</code> to empty 2D arrays.
+   */
+  public void clearIntermediaryData (){
+  	this.apsp = new int[0][0];
+  	this.manhattanDistances = new double[0][0];
+  }//clearIntermediaryData
+  
   /**
    * Sets the <code>CyNetwork</code> for which this <code>RGAlgorithmData</code> bundles
    * data.

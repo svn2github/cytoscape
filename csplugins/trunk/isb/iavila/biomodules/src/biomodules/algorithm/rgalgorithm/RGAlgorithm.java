@@ -109,8 +109,12 @@ public class RGAlgorithm implements BiomodulesAlgorithm{
     // data is not lost:
     RGAlgorithmData data = getClientData(network);
     data.setOrderedNodes(nodeList);
-    data.setAPSP(apsp);
-    data.setManhattanDistances(distances);
+    if(data.getSaveIntermediaryData()){
+    	data.setAPSP(apsp);
+    	data.setManhattanDistances(distances);
+    }else{
+    	data.clearIntermediaryData();
+    }
     data.setHierarchicalClustering(clustering);
     int cutJoin = clustering.getJoinNumberWithMaxNumClusters();
     data.setCutJoinNumber(cutJoin);
@@ -161,7 +165,7 @@ public class RGAlgorithm implements BiomodulesAlgorithm{
                                                      null,
                                                      network);
     
-        //TODO: Monitor NodeDistances. Right now I can't, because NodeDistances is
+    //TODO: Monitor NodeDistances. Right now I can't, because NodeDistances is
     // a MonitorableTask, but CytoscapeProgressMonitor takes a MonitoredTask.
     
     //CytoscapeProgressMonitor pm = 
