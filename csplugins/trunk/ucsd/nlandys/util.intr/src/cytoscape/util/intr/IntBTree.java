@@ -87,12 +87,12 @@ public final class IntBTree
         n.values[i] = x; n.sliceCount++;
         return null; }
       else { // No room for another value in this leaf node; perform split.
-        final Node newNode = new Node(MAX_BRANCHES, true);
+        final Node newLeafSibling = new Node(MAX_BRANCHES, true);
         final int combinedCount = MAX_BRANCHES + 1;
         n.sliceCount = combinedCount >> 1; // Divide by two.
-        newNode.sliceCount = combinedCount - n.sliceCount;
-        split(x, n.values, newNode.values, newNode.sliceCount);
-        return newNode; } }
+        newLeafSibling.sliceCount = combinedCount - n.sliceCount;
+        split(x, n.values, newLeafSibling.values, newLeafSibling.sliceCount);
+        return newLeafSibling; } }
     else { // Not a leaf node.
       int foundPath = 0;
       for (int i = n.sliceCount - 2; i >= 0; i--) {
@@ -110,33 +110,34 @@ public final class IntBTree
           for (int j = n.sliceCount - 1; j > foundPath;) {
             n.data.children[j + 1] = n.data.children[j];
             n.data.splitVals[j] = n.data.splitVals[--j]; }
-          n.sliceCount++;
-          n.data.deepCount++;
+          n.sliceCount++; n.data.deepCount++;
           n.data.children[foundPath + 1] = newChild;
           n.data.splitVals[foundPath] = newSplit;
           return null; }
         else { // No room in this internal node; perform split.
-          Node newNode = new Node(MAX_BRANCHES, false);
-          int combinedCount = MAX_BRANCHES + 1;
+          final Node newInternalSibling = new Node(MAX_BRANCHES, false);
+          final int combinedCount = MAX_BRANCHES + 1;
           n.sliceCount = combinedCount >> 1; // Divide by two.
-          newNode.sliceCount = combinedCount - n.sliceCount;
+          newInternalSibling.sliceCount = combinedCount - n.sliceCount;
           split(newChild, foundPath, n.data.children,
-                newNode.data.children, newNode.sliceCount);
-          split(newSplit, n.data.splitVals,
-                newNode.data.splitVals, newNode.sliceCount - 1);
+                newInternalSibling.data.children,
+                newInternalSibling.sliceCount);
+          split(newSplit, n.data.splitVals, newInternalSibling.data.splitVals,
+                newInternalSibling.sliceCount - 1);
           n.data.deepCount = 0; // Update the deep count in both nodes.
           if (isLeafNode(newChild)) {
             for (int i = 0; i < n.sliceCount; i++)
               n.data.deepCount += n.data.children[i].sliceCount;
-            for (int i = 0; i < newNode.sliceCount; i++)
-              newNode.data.deepCount += newNode.data.children[i].sliceCount; }
+            for (int i = 0; i < newInternalSibling.sliceCount; i++)
+              newInternalSibling.data.deepCount +=
+                newInternalSibling.data.children[i].sliceCount; }
           else {
             for (int i = 0; i < n.sliceCount; i++)
               n.data.deepCount += n.data.children[i].data.deepCount;
-            for (int i = 0; i < newNode.sliceCount; i++)
-              newNode.data.deepCount +=
-                newNode.data.children[i].data.deepCount; }
-          return newNode; } } }
+            for (int i = 0; i < newInternalSibling.sliceCount; i++)
+              newInternalSibling.data.deepCount +=
+                newInternalSibling.data.children[i].data.deepCount; }
+          return newInternalSibling; } } }
   }
 
   /*
