@@ -58,6 +58,9 @@ public class SPyConsole extends InteractiveConsole {
 	Position _startInput;
 	Keymap _keymap;
 	Hashtable _actionTable = new Hashtable();
+	
+	private String info = null;
+	
 
     private static String _usage =
         "usage: jython [options] [-jar jar | -c cmd | file | -] [args]\n"+
@@ -576,6 +579,12 @@ public class SPyConsole extends InteractiveConsole {
 		return new JScrollPane( getTextPane() );
 	}
 
+	
+	public void runShell(String info) {
+		this.info = info;
+		runShell();
+	}
+	
 	public void runShell() {
 		String banner = "SME Python Shell (SPyConsole)\n" +
 		"Jython " + systemState.version + " on platform " + systemState.platform;
@@ -627,6 +636,10 @@ public class SPyConsole extends InteractiveConsole {
 			}
         }
 
+        if (null != info) {
+        	banner += "\n\n" + info + "\n";
+        }
+        
 		interact(banner);
 	}
 

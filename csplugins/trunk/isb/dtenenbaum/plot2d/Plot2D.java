@@ -292,22 +292,18 @@ private void initUI() {
 	dataset = new DefaultCategoryDataset();
 	legPanel = new JPanel();
 	chart = createChart(dataset);
+	
 		
 	chartPanel = new ChartPanel(chart);
-	chartPanel.setMouseZoomable(true,true);
 
-	
 	chartPanel.setHorizontalZoom(true); // this doesn't seem to work....
 	chartPanel.setVerticalZoom(true); 
+	
+	chartPanel.setMouseZoomable(true,true);
 	
 	Border b = new LineBorder(Color.BLACK,5);
 	chartPanel.setBorder(b);
 	chartPanel.addChartMouseListener(new ML());
-  
-	
-	//chartPanel.setHorizontalAxisTrace(true);
-	//chartPanel.setVerticalAxisTrace(true);
-	
 	
 	chartPanel.setSize(200,200); 
 	chartPanel.setPreferredSize(new Dimension(200, 200)); 
@@ -820,6 +816,8 @@ private JFreeChart createChart(CategoryDataset dataset) {
 	//plot = chart.getXYPlot();
 	plot = (CategoryPlot)chart.getPlot();
 	
+	plot.setDomainGridlinesVisible(true);
+	
 	NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
 
 	//plot.getDomainAxis().setVerticalCategoryLabels(true);
@@ -1087,6 +1085,13 @@ class ML implements ChartMouseListener {
 		for (int i = 0; i < dm.getSelectedRowCount(); i++) {
 			double[] d = dm.getFromSelected(i);
 			for (int j = 0; j < d.length; j++) {
+				// TODO - do not plot NaNs -- use a broken line
+				if (d[j] == Double.NaN) {
+					System.out.println(d[j] + " is not a number!");
+				} else {
+					System.out.println(d[j] + " is indeed a number!");
+					
+				}
 				dataset.setValue(d[j],dm.getSelectedRowTitles()[i],allColTitles[j]);
 			}
 			//addData(dm.getSelectedRowTitles()[i], d);

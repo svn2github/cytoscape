@@ -6,7 +6,11 @@ package csplugins.isb.dtenenbaum.jython;
 // $Date$
 // $Author$
 //----------------------------------------------------------------------------------------
-import spyconsole.SPyConsole;
+
+//import spyconsole.SPyConsole;
+
+import csplugins.isb.pshannon.py.*;
+
 /**
  * A subclass of SPyConsole that implements the Runnable interace so that it can be used as a thread.
  * SPyconsole was released by Thomas Maxwell (http://www.uvm.edu/giee/SME3/ftp/JConsole/).
@@ -15,6 +19,7 @@ import spyconsole.SPyConsole;
  */
 public class SPyConsoleThread extends SPyConsole implements Runnable {
 
+	private String info = null;
 
     /**
      * Default constructor. 
@@ -24,6 +29,13 @@ public class SPyConsoleThread extends SPyConsole implements Runnable {
 	super();
     }
 
+    public SPyConsoleThread(String info) {
+		super();
+		this.info = info;
+	}
+    
+    
+    
     /**
      * Required by the Runnable interface.
      * Calls the processArgs() and runShell() methods.
@@ -31,7 +43,7 @@ public class SPyConsoleThread extends SPyConsole implements Runnable {
     public void run() {
 	String[] args = new String[] {};
 	processArgs(args);
-	runShell();
+	runShell(info);
     }
 
 }

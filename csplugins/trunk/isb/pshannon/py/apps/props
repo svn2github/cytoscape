@@ -1,0 +1,7 @@
+viewType=tabbed
+bioDataDirectory=http\://db.systemsbiology.net/cytoscape/annotation/yeast/manifest
+defaultSpeciesName=Saccharomyces cerevisiae
+visualStyle=halo sim
+defaultVisualStyle=halo sim
+viewThreshold=500
+plugin.0.load=csplugins.isb.pshannon.py.PyConsolePlugin

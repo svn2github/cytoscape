@@ -17,6 +17,8 @@ import cytoscape.*;
 import cytoscape.plugin.*;
 import cytoscape.util.*;
 
+
+
 //bla bla freaking bla y mas
 
 
@@ -56,7 +58,9 @@ public class PyConsolePlugin extends CytoscapePlugin {
 
 		public void actionPerformed(ActionEvent e) {
 			System.out.println("starting jython console...");
-			pythonConsole = new SPyConsoleThread();
+			StringBuffer strb = new StringBuffer("For help and example scripts, please see\n");
+			strb.append("http://db.systemsbiology.net/cytoscape/jython");
+			pythonConsole = new SPyConsoleThread(strb.toString());
 			consoleThread = new Thread(pythonConsole, "jythonConsoleThread");
 			consoleThread.start();
 			consoleFrame = new JFrame("Jython Console");
