@@ -2,9 +2,7 @@
 	Cytoscape.org Ant Script.
 	Author:  Ethan Cerami
 -->
-<project name="cyto_web" default="deploy" basedir=".">
-
-	<property file="cw.properties"/>
+<project name="cyto_web" basedir=".">
 
 	<target name="config_prod" description="Configures for production set-up at cytoscape.org">
 	<replace file="config.php" summary="yes">
@@ -20,28 +18,12 @@
 	</replace>
 	</target>
 
-	<target name="deploy" description="Deploys Web Site to cytoscape.org"
-		depends="env, config_prod">
-		<ftp server="cytoscape.org" 
-			remotedir="/html" 
-			verbose="yes"
-			userid="${cyto.user}"
-			password="${password}"
-			depends="yes"
-			binary="yes">
-			<fileset dir=".">
-				<exclude name="build.xml"/>
-				<exclude name="README.txt"/>
-				<exclude name="cw.properties"/>
-				<exclude name="CVS*"/>
-			</fileset>
-		</ftp>
-	</target>
-
-	<target name="env">
-		<echo>cyto.user:  ${cyto.user}</echo>
-		<echo>cyto.password:  ${password}</echo>
-		<echo>If password is empty, you must set it via a command line</echo>
-		<echo>argument, e.g. ant deploy -Dpassword=value</echo>
+	<target name="deploy" description="Deprecated:  Deploys Web Site to cytoscape.org"
+		depends="config_prod">
+		<echo>
+		This target is now deprecated.  Use the deploy.sh script instead.
+		deploy.sh uses rsync, providing a much more efficient than way to
+		update remote sites.
+		</echo>
 	</target>
 </project>
