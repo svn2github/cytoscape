@@ -8,12 +8,35 @@ package cytoscape.util;
 //--------------------------------------------------------------------------------------
 import java.io.*;
 import java.awt.Color;
+import java.awt.Polygon;
 import java.util.*;
 
 import y.view.Arrow;
 import y.view.LineType;
 //------------------------------------------------------------------------------
 public class Misc {
+
+    static Polygon p;
+
+    public static void init() {
+	p = new Polygon();
+	p.addPoint(0,0);
+	p.addPoint(-40,20);
+	p.addPoint(-30,0);
+	p.addPoint(-40,-20);
+	Arrow.addCustomArrow("BigDelta",p,new Color(255,128,0));
+    }
+
+    private static Arrow scalableArrow(String sizeText) {
+	p = new Polygon();
+	int size = Integer.parseInt(sizeText);
+	p.addPoint(0,0);
+	p.addPoint(-size,size/2);
+	p.addPoint(-(size*3)/4,0);
+	p.addPoint(-size,-size/2);
+	System.out.println("scalable arrow " + sizeText);
+	return Arrow.addCustomArrow("scalableArrow" + sizeText,p,new Color(255,255,255));
+    }
 //------------------------------------------------------------------------------
 public static Color parseRGBText (String text)
 {
@@ -69,8 +92,13 @@ public static Arrow parseArrowText (String text)
       return Arrow.WHITE_DIAMOND;
   else if(arrowtext.equalsIgnoreCase("whitediamond"))
       return Arrow.WHITE_DIAMOND;
+  else if(arrowtext.equalsIgnoreCase("bigdelta"))
+      return Arrow.getCustomArrow("BigDelta");
   else if(arrowtext.equalsIgnoreCase("none"))
       return Arrow.NONE;
+  else if(arrowtext.startsWith("scalableArrow")) {
+      return scalableArrow(arrowtext.replaceFirst("scalableArrow",""));
+  }
   else
       return Arrow.NONE;
 } // parseArrowText

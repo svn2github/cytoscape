@@ -17,6 +17,7 @@ OBJS =  AttributeMapper.class \
 	BoundaryRangeValues.class \
 	ContinuousMapper.class \
 	DiscreteMapper.class \
+	EdgeArrowColor.class \
 	Interpolator.class \
 	LinearNumberInterpolator.class \
 	LinearNumberToColorInterpolator.class \
