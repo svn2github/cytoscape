@@ -37,21 +37,10 @@ public class VAlignTop extends CytoscapeAction {
       return;
     }
 
-    node_view = ( NodeView )sel_nodes.next();
-    w = node_view.getWidth();
-    h = node_view.getHeight();
-    min = node_view.getYPosition() - .5 * h;
-    max = min; 
-
+				min = Double.POSITIVE_INFINITY; 
     while ( sel_nodes.hasNext() ) {
       node_view = ( NodeView )sel_nodes.next();
-      w = node_view.getWidth();
-      h = node_view.getHeight();
-      value = node_view.getYPosition() - .5 * h;
-      
-      if ( value > max )
-        max = value;
-
+      value = node_view.getYPosition();
       if ( value < min ) 
         min = value;
     }

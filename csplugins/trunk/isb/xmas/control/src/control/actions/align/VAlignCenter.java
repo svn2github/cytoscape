@@ -37,30 +37,22 @@ public class VAlignCenter extends CytoscapeAction {
       return;
     }
 
-    node_view = ( NodeView )sel_nodes.next();
-    w = node_view.getWidth();
-    h = node_view.getHeight();
-    min = node_view.getYPosition() - .5 * h;
-    max = min; 
-
+				double sum = 0.0;
+				int count = 0;
     while ( sel_nodes.hasNext() ) {
       node_view = ( NodeView )sel_nodes.next();
-      w = node_view.getWidth();
       h = node_view.getHeight();
-      value = node_view.getYPosition() - .5 * h;
-      
-      if ( value > max )
-        max = value;
-
-      if ( value < min ) 
-        min = value;
+      value = node_view.getYPosition()+ 0.5*h;
+						sum += value;
+						count++;
     }
-    min = ( min + (max - min) / 2 );
+    double average = sum/count;
     sel_nodes = view.getSelectedNodes().iterator();
     while ( sel_nodes.hasNext() ) {
-      ( ( NodeView )sel_nodes.next() ).setYPosition( min );
+								node_view = ( NodeView )sel_nodes.next();
+								h = node_view.getHeight();
+								node_view.setYPosition(average - 0.5*h);
     }                       
-  
   
   }
 
