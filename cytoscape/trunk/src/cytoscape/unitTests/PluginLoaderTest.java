@@ -64,7 +64,7 @@ public void tearDown () throws Exception
 //------------------------------------------------------------------------------
 public void testCtor () throws Exception
 { 
-  System.out.println ("testCtor");
+  // System.out.println ("testCtor");
   String bioDataDirectory = "../data/GO";
   String geometryFilename = "../data/galFiltered.gml";
   String interactionsFilename = "../data/tideker0/yeastSmall.intr";

@@ -68,7 +68,7 @@ public void tearDown () throws Exception
  */
 public void testCtor () throws Exception
 { 
-  System.out.println ("testCtor");
+  // System.out.println ("testCtor");
   Graph2D graph = new Graph2D ();
   GraphObjAttributes nodeAttributes = new GraphObjAttributes ();
   GraphObjAttributes edgeAttributes = new GraphObjAttributes ();
@@ -124,7 +124,7 @@ private void  createEdgeAndAttribute (String nodeName1, String nodeName2,
  */
 public void testSubGraphOperation () throws Exception
 { 
-  System.out.println ("testSubGraphOperation");
+  // System.out.println ("testSubGraphOperation");
 
   String [] canonicalNames = {"g0", 
                               "g1",
@@ -283,7 +283,7 @@ public void testSubGraphOperation () throws Exception
  */
 public void testForSurplusEdges () throws Exception
 { 
-  System.out.println ("testNoSurplusEdges");
+  // System.out.println ("testNoSurplusEdges");
 
   Graph2D graph = new Graph2D ();
 
@@ -327,7 +327,7 @@ public void testForSurplusEdges () throws Exception
  */
 public void testGraphWithoutLabels () throws Exception
 {
-  System.out.println ("testGraphWithoutLabels");
+  //  System.out.println ("testGraphWithoutLabels");
 
   Graph2D graph = new Graph2D ();
   

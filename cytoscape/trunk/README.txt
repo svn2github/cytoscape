@@ -85,4 +85,23 @@ then, cd to csplugins, and type:
 
   make
 
+V.  Obfuscating Cytocape 
+========================
+
+YFiles requires that we obfuscate the Cytoscape JAR file.  This is now fully automated via Ant.  You only
+need to obfuscate Cytoscape if you are making an official Cytoscape release, that you intend to release
+to others. 
+
+To create an obfuscated cytocape JAR file, type:
+
+ant obfuscate
+
+This will create a cytoscape-obfuscated.jar file within the dist/ directory.
+
+To run cytoscape with the obfuscated JAR file, type:
+
+ant run_obfuscated
+
+This runs an official copy of Cytoscape with cytocape-obfuscated.jar.
+
 

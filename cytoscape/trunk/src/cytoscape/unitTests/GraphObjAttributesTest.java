@@ -60,7 +60,7 @@ public void tearDown () throws Exception
 //------------------------------------------------------------------------------
 public void testCtor () throws Exception
 { 
-  System.out.println ("testCtor");
+  //System.out.println ("testCtor");
   GraphObjAttributes attributes = new GraphObjAttributes ();
   assertTrue (attributes.numberOfAttributes () == 0);
 
@@ -68,7 +68,7 @@ public void testCtor () throws Exception
 //-------------------------------------------------------------------------
 public void testSet () throws Exception
 { 
-  System.out.println ("testSet");
+  // System.out.println ("testSet");
   GraphObjAttributes attributes = new GraphObjAttributes ();
   assertTrue (attributes.numberOfAttributes () == 0);
 
@@ -84,7 +84,7 @@ public void testSet () throws Exception
 //-------------------------------------------------------------------------
 public void testGetSingleStringValueFromVector () throws Exception
 { 
-  System.out.println ("testGetSingleStringValueFromVector");
+  // System.out.println ("testGetSingleStringValueFromVector");
   GraphObjAttributes attributes = new GraphObjAttributes ();
   assertTrue (attributes.numberOfAttributes () == 0);
 
@@ -102,7 +102,7 @@ public void testGetSingleStringValueFromVector () throws Exception
 //-------------------------------------------------------------------------
 public void testGetSingleDoubleValueFromVector () throws Exception
 { 
-  System.out.println ("testGetSingleDoubleValueFromVector");
+  // System.out.println ("testGetSingleDoubleValueFromVector");
   GraphObjAttributes attributes = new GraphObjAttributes ();
   assertTrue (attributes.numberOfAttributes () == 0);
 
@@ -133,7 +133,7 @@ public void testGetSingleDoubleValueFromVector () throws Exception
  */ 
 public void testAdd () throws Exception
 { 
-  System.out.println ("testAdd");
+  // System.out.println ("testAdd");
 
     //-----------------------------------------------------------------------
     // test the basic form:  add (attributeName, nodeName, value)
@@ -204,7 +204,7 @@ public void testAdd () throws Exception
  */
 public void testAddGraphObjAttributes () throws Exception
 {
-  System.out.println ("testAddGraphObjAttributes");
+  // System.out.println ("testAddGraphObjAttributes");
   GraphObjAttributes original = new GraphObjAttributes ();
   original.set ("expressionLevel", "GAL4", 1.8);
   original.set ("expressionLevel", "GAL80", 0.01);
@@ -272,7 +272,7 @@ public void testAddGraphObjAttributes () throws Exception
 //-------------------------------------------------------------------------
 public void testHasAttribute () throws Exception
 {
-  System.out.println ("testHasAttribute");
+  // System.out.println ("testHasAttribute");
   GraphObjAttributes attributes = new GraphObjAttributes ();
   attributes.set ("expressionLevel", "GAL4", 1.8);
   attributes.set ("expressionLevel", "GAL80", 0.01);
@@ -297,7 +297,7 @@ public void testHasAttribute () throws Exception
 //-------------------------------------------------------------------------
 public void testGetAttributeNames () throws Exception
 {
-  System.out.println ("testGetAttributeNames");
+  // System.out.println ("testGetAttributeNames");
   GraphObjAttributes attributes = new GraphObjAttributes ();
   attributes.set ("expressionLevel", "GAL4", 1.8);
   attributes.set ("expressionLevel", "GAL80", 0.01);
@@ -311,7 +311,7 @@ public void testGetAttributeNames () throws Exception
 //-------------------------------------------------------------------------
 public void testGetAttributeByName () throws Exception
 {
-  System.out.println ("testGetAttributeByName");
+  // System.out.println ("testGetAttributeByName");
   GraphObjAttributes attributes = new GraphObjAttributes ();
   attributes.set ("expressionLevel", "GAL4", 1.8);
   attributes.set ("expressionLevel", "GAL80", 0.01);
@@ -339,7 +339,7 @@ public void testGetAttributeByName () throws Exception
 //-------------------------------------------------------------------------
 public void testGetOneGeneAttribute () throws Exception
 {
-  System.out.println ("testGetOneGeneAttribute");
+  // System.out.println ("testGetOneGeneAttribute");
   GraphObjAttributes attributes = new GraphObjAttributes ();
 
   double gal4_exp = 1.8;
@@ -372,11 +372,11 @@ public void testGetOneGeneAttribute () throws Exception
 //-------------------------------------------------------------------------
 public void testTextFileReaderOnNodeAttributeData () throws Exception
 {
-  System.out.println ("testTextFileReaderOnNodeAttributeData");
+  // System.out.println ("testTextFileReaderOnNodeAttributeData");
   GraphObjAttributes attributes = new GraphObjAttributes ();
   assertTrue (attributes.numberOfAttributes () == 0);
   String attributeName = "fooB";
-  attributes.readAttributesFromFile (new File ("../testData/noLabels.fooB"));
+  attributes.readAttributesFromFile (new File ("testData/noLabels.fooB"));
   assertTrue (attributes.numberOfAttributes () == 1);
   HashMap fooB = attributes.getAttribute ("fooB");
   assertTrue (fooB.size () == 333);
@@ -385,10 +385,10 @@ public void testTextFileReaderOnNodeAttributeData () throws Exception
 //-------------------------------------------------------------------------
 public void testTextFileReaderOnEdgeAttributeData () throws Exception
 {
-  System.out.println ("testTextFileReaderOnEdgeAttributeData");
+  // System.out.println ("testTextFileReaderOnEdgeAttributeData");
   GraphObjAttributes attributes = new GraphObjAttributes ();
   assertTrue (attributes.numberOfAttributes () == 0);
-  File file = new File ("../testData/yeastSmall.edgeAttr.0");
+  File file = new File ("testData/yeastSmall.edgeAttr.0");
   attributes.readAttributesFromFile (file);
   assertTrue (attributes.numberOfAttributes () == 1);
 
@@ -404,19 +404,19 @@ public void testAddAttributeHash () throws Exception
 // can we combine two GraphObjAttributes, by simply adding the second
 // to the first?
 {
-  System.out.println ("testAddAttributeHash");
+  // System.out.println ("testAddAttributeHash");
 
     // first: read in and add fooB
   GraphObjAttributes firstSet = new GraphObjAttributes ();
   assertTrue (firstSet.numberOfAttributes () == 0);
   String attributeName = "fooB";
-  firstSet.readAttributesFromFile (new File ("../testData/noLabels.fooB"));
+  firstSet.readAttributesFromFile (new File ("testData/noLabels.fooB"));
   assertTrue (firstSet.numberOfAttributes () == 1);
   HashMap fooB = firstSet.getAttribute ("fooB");
   assertTrue (fooB.size () == 333);
 
      // second: read in and add edge attributes 0
-  File file = new File ("../testData/yeastSmall.edgeAttr.0");
+  File file = new File ("testData/yeastSmall.edgeAttr.0");
   GraphObjAttributes secondSet = new GraphObjAttributes ();
   secondSet.readAttributesFromFile (file);
   assertTrue (secondSet.numberOfAttributes () == 1);
@@ -442,13 +442,13 @@ public void testNodeToNameMapping () throws Exception
 // convenient way to map from the program's objects (nodes and edges)
 // to the canonical name.  test that here.
 {
-  System.out.println ("testNodeToNameMapping");
+  // System.out.println ("testNodeToNameMapping");
 
     // set up a single attribute 'fooB', with 333 node-value pairs
   GraphObjAttributes nodeAttributes = new GraphObjAttributes ();
   assertTrue (nodeAttributes.numberOfAttributes () == 0);
   String attributeName = "fooB";
-  nodeAttributes.readAttributesFromFile (new File ("../testData/noLabels.fooB"));
+  nodeAttributes.readAttributesFromFile (new File ("testData/noLabels.fooB"));
   assertTrue (nodeAttributes.numberOfAttributes () == 1);
   HashMap fooB = nodeAttributes.getAttribute (attributeName);
   assertTrue (fooB.size () == 333);
@@ -491,7 +491,7 @@ public void testNodeToNameMapping () throws Exception
  */
 public void testGetAttributesBundle () throws Exception
 {
-  System.out.println ("testGetAttributesBundle");
+  // System.out.println ("testGetAttributesBundle");
 
   GraphObjAttributes attributes = new GraphObjAttributes ();
 
@@ -526,7 +526,7 @@ public void testGetAttributesBundle () throws Exception
  */
 public void testAddAttributesBundle () throws Exception
 {
-  System.out.println ("testAddAttributesBundle");
+  // System.out.println ("testAddAttributesBundle");
 
   GraphObjAttributes attributes = new GraphObjAttributes ();
 
@@ -577,7 +577,7 @@ public void testAddAttributesBundle () throws Exception
  */
 public void testCountDuplicateNamesForAttribute () throws Exception
 {
-  System.out.println ("testCountDuplicateNamesForAttribute");
+  // System.out.println ("testCountDuplicateNamesForAttribute");
 
   GraphObjAttributes attributes = new GraphObjAttributes ();
   //attributes.initCountMap();
@@ -607,12 +607,12 @@ public void testCountDuplicateNamesForAttribute () throws Exception
  */
 public void testGetAndAddNameMapping () throws Exception
 {
-  System.out.println ("testGetAndAddNameMapping");
+  // System.out.println ("testGetAndAddNameMapping");
     // set up a single attribute 'fooB', with 333 node-value pairs
   GraphObjAttributes nodeAttributes = new GraphObjAttributes ();
   assertTrue (nodeAttributes.numberOfAttributes () == 0);
   String attributeName = "fooB";
-  nodeAttributes.readAttributesFromFile (new File ("../testData/noLabels.fooB"));
+  nodeAttributes.readAttributesFromFile (new File ("testData/noLabels.fooB"));
   assertTrue (nodeAttributes.numberOfAttributes () == 1);
   HashMap fooB = nodeAttributes.getAttribute (attributeName);
   assertTrue (fooB.size () == 333);
@@ -683,7 +683,7 @@ public void testGetAndAddNameMapping () throws Exception
  */
 public void testGetAttributeClass () throws Exception
 {
-  System.out.println ("testGetAttributeClass");
+  // System.out.println ("testGetAttributeClass");
 
   GraphObjAttributes attributes = new GraphObjAttributes ();
 
@@ -716,7 +716,7 @@ public void testGetAttributeClass () throws Exception
  */
 public void testCloning () throws Exception
 {
-  System.out.println ("testCloning");
+  // System.out.println ("testCloning");
 
   GraphObjAttributes original = new GraphObjAttributes ();
 
@@ -761,7 +761,7 @@ public void testCloning () throws Exception
  */
 public void testDeleteAttribute () throws Exception
 {
-  System.out.println ("testDeleteAttribute");
+  // System.out.println ("testDeleteAttribute");
 
   GraphObjAttributes attributes = new GraphObjAttributes ();
 
@@ -798,7 +798,7 @@ public void testDeleteAttribute () throws Exception
  */
 public void testDeleteAttributeForOneGraphObject () throws Exception
 {
-  System.out.println ("testDeleteAttributeForOneGraphObject");
+  // System.out.println ("testDeleteAttributeForOneGraphObject");
 
   GraphObjAttributes attributes = new GraphObjAttributes ();
 
@@ -837,7 +837,7 @@ public void testDeleteAttributeForOneGraphObject () throws Exception
  */
 public void testDeleteAttributeValueForOneGraphObject () throws Exception
 {
-  System.out.println ("testDeleteAttributeValueForOneGraphObject");
+  // System.out.println ("testDeleteAttributeValueForOneGraphObject");
 
   GraphObjAttributes attributes = new GraphObjAttributes ();
 
@@ -885,7 +885,7 @@ public void testDeleteAttributeValueForOneGraphObject () throws Exception
  */
 public void testAttributeCategories () throws Exception
 {
-  System.out.println ("testAttributeCategories");
+  // System.out.println ("testAttributeCategories");
 
   GraphObjAttributes attributes = new GraphObjAttributes ();
 
@@ -926,7 +926,7 @@ public void testAttributeCategories () throws Exception
  */
 public void testProcessFileHeader () throws Exception
 {
-  System.out.println ("testProcessFileHeader");
+  // System.out.println ("testProcessFileHeader");
   String s0 = "SNP Count";
   String s1 = "SNP Count (category=data)";
   String s2 = "SNP Count (class=java.lang.Integer)";
@@ -950,7 +950,7 @@ public void testProcessFileHeader () throws Exception
  */
 public void testClassDeduction () throws Exception
 {
-  System.out.println ("testClassDeduction");
+  // System.out.println ("testClassDeduction");
 
   String integerString = "32";
   String doubleString = "32.23";
@@ -987,7 +987,7 @@ public void testClassDeduction () throws Exception
  */
 public void testObjectCreation () throws Exception
 {
-  System.out.println ("testObjectCreation");
+  // System.out.println ("testObjectCreation");
   Class integerClass = Class.forName ("java.lang.Integer");
   Class stringClass = Class.forName ("java.lang.String");
   Class doubleClass = Class.forName ("java.lang.Double");
@@ -1044,30 +1044,30 @@ public void testObjectCreation () throws Exception
  */
 public void testAttributeCategoryAndClassDetection () throws Exception
 {
-  System.out.println ("testAttributeCategoryAndClassDetection");
+  // System.out.println ("testAttributeCategoryAndClassDetection");
 
   GraphObjAttributes a = new GraphObjAttributes ();
-  a.readAttributesFromFile (new File ("../testData/implicitStringNoCategory.attribute"));
+  a.readAttributesFromFile (new File ("testData/implicitStringNoCategory.attribute"));
   assertTrue (a.getClass ("sample zero") == "string".getClass ());
   assertTrue (a.getCategory ("sample zero").equals (GraphObjAttributes.DEFAULT_CATEGORY));
 
   a = new GraphObjAttributes ();
-  a.readAttributesFromFile (new File ("../testData/explicitStringNoCategory.attribute"));
+  a.readAttributesFromFile (new File ("testData/explicitStringNoCategory.attribute"));
   assertTrue (a.getClass ("sample zero") == "string".getClass ());
   assertTrue (a.getCategory ("sample zero").equals (GraphObjAttributes.DEFAULT_CATEGORY));
 
   a = new GraphObjAttributes ();
-  a.readAttributesFromFile (new File ("../testData/implicitStringWithCategory.attribute"));
+  a.readAttributesFromFile (new File ("testData/implicitStringWithCategory.attribute"));
   assertTrue (a.getClass ("sample zero") == "string".getClass ());
   assertTrue (a.getCategory ("sample zero").equals ("annotation"));
 
   a = new GraphObjAttributes ();
-  a.readAttributesFromFile (new File ("../testData/explicitStringWithCategory.attribute"));
+  a.readAttributesFromFile (new File ("testData/explicitStringWithCategory.attribute"));
   assertTrue (a.getClass ("sample zero") == "string".getClass ());
   assertTrue (a.getCategory ("sample zero").equals ("annotation"));
 
   a = new GraphObjAttributes ();
-  a.readAttributesFromFile (new File ("../testData/explicitUrlWithCategory.attribute"));
+  a.readAttributesFromFile (new File ("testData/explicitUrlWithCategory.attribute"));
   assertTrue (a.getClass ("locusLink") == Class.forName ("java.net.URL"));
   assertTrue (a.getCategory ("locusLink").equals ("annotation"));
 
@@ -1075,17 +1075,17 @@ public void testAttributeCategoryAndClassDetection () throws Exception
   // so disable this test for now
   //----------------------------------------
   //a = new GraphObjAttributes ();
-  //a.readAttributesFromFile (new File ("../testData/implicitInteger.attribute"));
+  //a.readAttributesFromFile (new File ("testData/implicitInteger.attribute"));
   //assertTrue (a.getClass ("SNP Count") == Class.forName ("java.lang.Integer"));
   //assertTrue (a.getCategory ("SNP Count").equals (GraphObjAttributes.DEFAULT_CATEGORY));
 
   a = new GraphObjAttributes ();
-  a.readAttributesFromFile (new File ("../testData/implicitDouble.attribute"));
+  a.readAttributesFromFile (new File ("testData/implicitDouble.attribute"));
   assertTrue (a.getClass ("Score") == Class.forName ("java.lang.Double"));
   assertTrue (a.getCategory ("Score").equals (GraphObjAttributes.DEFAULT_CATEGORY));
 
   a = new GraphObjAttributes ();
-  a.readAttributesFromFile (new File ("../testData/implicitUrl.attribute"));
+  a.readAttributesFromFile (new File ("testData/implicitUrl.attribute"));
   assertTrue (a.getClass ("Locus Link") == Class.forName ("java.net.URL"));
   assertTrue (a.getCategory ("Locus Link").equals (GraphObjAttributes.DEFAULT_CATEGORY));
 
@@ -1100,10 +1100,10 @@ public void testAttributeCategoryAndClassDetection () throws Exception
  */
 public void testReadArrayAttributes () throws Exception
 {
-  System.out.println ("testReadArrayAttributes");
+  // System.out.println ("testReadArrayAttributes");
   String name = "GO molecular function, level 4";
   GraphObjAttributes a = new GraphObjAttributes ();
-  a.readAttributesFromFile (new File ("../testData/implicitStringArray.attribute"));
+  a.readAttributesFromFile (new File ("testData/implicitStringArray.attribute"));
 
   String geneName = "HSD17B2";
   String [] geneFunctions = a.getStringArrayValues (name, geneName);
@@ -1142,7 +1142,7 @@ public void testReadArrayAttributes () throws Exception
  */
 public void testGetUniqueValues () throws Exception
 {
-  System.out.println ("testGetUniqueValues");
+  // System.out.println ("testGetUniqueValues");
   String attributeName = "KEGG-2";
   GraphObjAttributes a = new GraphObjAttributes ();
 
