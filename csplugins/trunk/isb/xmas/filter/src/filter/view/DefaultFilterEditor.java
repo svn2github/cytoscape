@@ -47,7 +47,7 @@ public class DefaultFilterEditor extends FilterEditor
   protected String DEFAULT_SEARCH_STRING = "";
   protected String RESET_SEARCH_STRING;
 
-  protected String DEFAULT_FILTER_NAME = "Default";
+  protected String DEFAULT_FILTER_NAME = "toString Match: ";
   protected String RESET_FITLER_NAME;
 
  
@@ -72,6 +72,8 @@ public class DefaultFilterEditor extends FilterEditor
     searchField = new JTextField(30);
     add( new JLabel( "Search Field" ) );
     add( searchField );
+
+    setDefaults();
 
   }
 

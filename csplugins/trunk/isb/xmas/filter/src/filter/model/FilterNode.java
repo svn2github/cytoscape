@@ -174,6 +174,18 @@ public class FilterNode extends DefaultMutableTreeNode implements Filter {
     }
     return false;
   }
+  
+  //----------------------------------------//
+  // IO
+  //----------------------------------------//
+
+  public String output () {
+    return null;
+  }
+  
+  public Filter input ( String desc ) {
+    return null;
+  }
 
 
 }

@@ -195,5 +195,17 @@ public class FilterTree extends JTree implements Filter {
 
   public void propertyChange ( PropertyChangeEvent e ) {}
 
+  //----------------------------------------//
+  // IO
+  //----------------------------------------//
+
+  public String output () {
+    return null;
+  }
+  
+  public Filter input ( String desc ) {
+    return null;
+  }
+
 
 }

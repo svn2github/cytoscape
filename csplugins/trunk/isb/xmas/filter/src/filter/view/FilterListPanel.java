@@ -183,6 +183,52 @@ public class FilterListPanel
     }
   }
 
+
+  public Filter[] getSelectedFilters () {
+    
+    if ( type == SHOW_SEPARATE ) {
+      Object[] selected_filters = filterList.getSelectedValues();
+      Object[] selected_filtertrees = filterTreeList.getSelectedValues();
+      Filter[] filters = new Filter[ selected_filters.length + selected_filtertrees.length ];
+      int i = 0;
+      for ( i = 0; i < selected_filters.length; ++i ) {
+        filters[i] =  FilterManager.defaultManager().getFilter( ( String )selected_filters[i] );
+      }
+      for ( int j = 0; j < selected_filtertrees.length; ++j ) {
+        filters[i] =  FilterManager.defaultManager().getFilter( ( String )selected_filtertrees[i] );
+        i++;
+      }
+      return filters;
+    } else if ( type == SHOW_TOGETHER ) {
+      Object[] selected_filters = compoundList.getSelectedValues();
+      Filter[] filters = new Filter[ selected_filters.length ];
+      int i = 0;
+      for ( i = 0; i < selected_filters.length; ++i ) {
+        filters[i] =  FilterManager.defaultManager().getFilter( ( String )selected_filters[i] );
+      }
+      return filters;
+
+    } else  if ( type == SHOW_TREES ) {
+      Object[] selected_filters = filterTreeList.getSelectedValues();
+      Filter[] filters = new Filter[ selected_filters.length ];
+      int i = 0;
+      for ( i = 0; i < selected_filters.length; ++i ) {
+        filters[i] =  FilterManager.defaultManager().getFilter( ( String )selected_filters[i] );
+      }
+      return filters;
+    } else {
+      Object[] selected_filters = filterList.getSelectedValues();
+      Filter[] filters = new Filter[ selected_filters.length ];
+      int i = 0;
+      for ( i = 0; i < selected_filters.length; ++i ) {
+        filters[i] =  FilterManager.defaultManager().getFilter( ( String )selected_filters[i] );
+      }
+      return filters;
+    }
+
+  }
+
+
   protected void searchFilters () {
 
     ArrayList filters_pass = new ArrayList();

@@ -16,8 +16,10 @@ public class  FilterTreeEditor extends FilterEditor {
 
   public FilterTreeEditor () {
     super();
+    setBorder( new TitledBorder( "Filter Tree Editor" ) );
     add( new JLabel( "Filter Trees are Edited using the Filter Tree Viewer." ) );
   }
+
 
   /**
    * Return the Description of this Editor that will 

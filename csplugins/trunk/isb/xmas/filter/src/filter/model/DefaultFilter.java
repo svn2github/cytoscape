@@ -115,6 +115,18 @@ public class DefaultFilter
     pcs.firePropertyChange( Filter.FILTER_MODIFIED, null, searchString );
   }
 
+  //----------------------------------------//
+  // IO
+  //----------------------------------------//
+
+  public String output () {
+    return null;
+  }
+  
+  public Filter input ( String desc ) {
+    return null;
+  }
+
 }
 
 

@@ -32,8 +32,8 @@ public class FilterView extends JPanel {
     add( pane0 );
 
     filterListPanel.getSwingPropertyChangeSupport().addPropertyChangeListener( filterEditorPanel );
-    FilterManager.defaultManager().addEditor( new DefaultFilterEditor() );
-    FilterManager.defaultManager().addEditor( new FilterTreeEditor() );
+    //FilterManager.defaultManager().addEditor( new DefaultFilterEditor() );
+    //FilterManager.defaultManager().addEditor( new FilterTreeEditor() );
   }
 
  //  /**

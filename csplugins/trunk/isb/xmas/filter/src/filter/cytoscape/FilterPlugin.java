@@ -11,8 +11,10 @@ public class FilterPlugin extends CytoscapeAction {
 
   protected FilterUsePanel filterUsePanel;
   protected JFrame frame;
+  protected CyNetwork network;
+  protected CyWindow window;
 
-  public FilterPlugin () {
+  public FilterPlugin ( CyNetwork network, CyWindow window ) {
     super( "Use Filters" );
     setPreferredMenu( "Filters" );
     setAcceleratorCombo( java.awt.event.KeyEvent.VK_A, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK );
@@ -20,7 +22,7 @@ public class FilterPlugin extends CytoscapeAction {
 
   public void actionPerformed (ActionEvent e) {
     if ( filterUsePanel == null ) {
-      filterUsePanel = new FilterUsePanel();
+      filterUsePanel = new FilterUsePanel( network, window );
     }
     if ( frame == null ) {
       frame = new JFrame( "Use Filters" );

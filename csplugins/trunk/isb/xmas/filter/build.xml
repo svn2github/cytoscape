@@ -20,6 +20,7 @@
     <property name="fork" value="false"/>
     <property name="filter.root.dir" value="."/>
     <property name="filter.lib.dir" value="${filter.root.dir}/lib"/>
+    <property name="cytoscape.lib.dir" value="${filter.root.dir}/../../../../cytoscape/lib"/>
     <path id="project.class.path">
       <pathelement path="${java.class.path}/"/>
     </path>
@@ -37,7 +38,7 @@
     <property name="cytoscape.lib" value="../../cytoscape/lib" />
 
     <!-- Define the condition for compilation -->
-    <property name="piccolox.jar" value="${filter.lib.dir}/cytoscape.jar"/>
+    <property name="cytoscape.jar" value="${filter.lib.dir}/cytoscape.jar"/>
     <property name="colt.jar" value="${filter.lib.dir}/colt.jar"/>
     
 
@@ -55,9 +56,10 @@
 
     <path id="filter.project.class.path">
       <pathelement location="${filter.classes.dir}"/>
-      <pathelement location="${filter.lib.dir}/colt.jar"/>
-      <pathelement location="${filter.lib.dir}/cytoscape.jar"/>
-      <pathelement location="${filter.lib.dir}/y.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/y.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
       <pathelement path="${project.class.path}/"/>
     </path>
 
@@ -99,6 +101,7 @@
         includes="resources/**"/>
     </jar>
     <copy todir="${filter.lib.dir}" file="filter.jar"/>
+    <copy todir="${cytoscape.lib.dir}" file="filter.jar"/>
   </target>
 
   <!-- =================================================================== -->
@@ -130,6 +133,23 @@
   <!-- Build all jars                                                      -->
   <!-- =================================================================== -->
   <target name="all" depends="filter"/>
+
+   <!-- =================================================================== -->
+  <!-- Run the Plugin                                                      -->
+  <!-- =================================================================== -->
+  <target name="run" depends="filter" >
+     
+     <java classname="cytoscape.cytoscape" 
+           classpathref="filter.project.class.path"
+           fork="true"/>
+           <arg line = "-y giny"/>
+           <arg line = "--JLD"/>
+           <arg line = "${filter.lib.dir}/filter.jar"/>
+           
+
+  </target>
+
+
 
   <!-- =================================================================== -->
   <!-- Runs the tests in filter-tests.jar                                    -->

@@ -106,8 +106,13 @@ public class FilterManager {
     fireEditorEvent();
   }
 
-  public Set getEditors () {
-    return editorMap.keySet();
+  public Iterator getEditors () {
+    ArrayList editor_list = new ArrayList();
+    Set keys = editorMap.keySet();
+    for ( Iterator i = keys.iterator(); i.hasNext(); ) {
+      editor_list.add( editorMap.get( i.next() ) );
+    }
+    return editor_list.iterator();
   }
 
   //----------------------------------------//

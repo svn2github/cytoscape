@@ -67,11 +67,20 @@ public class FilterEditorPanel
     add( editorTabs );
     add( controlPanel );
 
+
+    //make sure that we add all the editors that have already been added
+    for ( Iterator i = FilterManager.defaultManager().getEditors(); i.hasNext(); ) {
+      FilterEditor fe = ( FilterEditor )i.next();
+      addEditor( fe );
+    }
+
     FilterManager.defaultManager().getSwingPropertyChangeSupport().addPropertyChangeListener( this );
+
 
   }
   
   public void addEditor ( FilterEditor new_editor ) {
+    System.out.println( "New Editor Added: "+new_editor+" "+editorCount );
     editorIndexMap.put( new_editor.toString() , new Integer( editorCount ) );
     editorTabs.insertTab( new_editor.toString(), null, new_editor, new_editor.toString(), editorCount );
     editorCount++;

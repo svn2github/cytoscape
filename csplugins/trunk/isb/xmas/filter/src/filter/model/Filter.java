@@ -30,6 +30,21 @@ public interface Filter extends PropertyChangeListener {
 
   public String getEditorName();
 
+  /**
+   * Every filter needs to know how to output itself in such a way that 
+   * it knows how to re-create itself from a flat file.<BR>
+   * The required format is: <BR>
+   * Filter <I>class name</I> <B><small>whatever a filter wants</small></B>
+   */
+  public String output ();
+  
+  /**
+   * By passing a String that was ouput by this Filter it will create and return
+   * a new Filter that is equivalent to the instance that was output. Note that
+   * the output is modifiable, so that one could change how a Filter behaves if
+   * they wanted to.
+   */
+  public Filter input ( String desc );
 
   /**
    * All filters should override the Object equals(..) method to return true
