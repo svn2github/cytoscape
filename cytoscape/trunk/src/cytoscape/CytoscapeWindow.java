@@ -1408,6 +1408,8 @@ protected void updateEdgeVisibilityFromNodeVisibility ()
 //------------------------------------------------------------------------------
 public void applyLayout (boolean animated)
 {
+  if (graph.getNodeArray().length == 0) return;
+
   logger.warning ("starting layout...");
   setInteractivity (false);
   layouter.doLayout (graphView.getGraph2D ());
@@ -1765,14 +1767,14 @@ protected class HierarchicalLayoutAction extends AbstractAction   {
     
     public void actionPerformed (ActionEvent e) {
         
-      /********************
+      /********************/
         if (hDialog == null)
             hDialog = new HierarchicalLayoutDialog (mainFrame);
         hDialog.pack ();
         hDialog.setLocationRelativeTo (mainFrame);
         hDialog.setVisible (true);
         layouter = hDialog.getLayouter();
-      ********************/
+      /********************/
       layouter = new HierarchicLayouter ();
     }
 }
