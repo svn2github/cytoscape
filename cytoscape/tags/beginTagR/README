@@ -1,0 +1,37 @@
+README for cytoscape:  how to build, test and run
+#-------------------------------------------------------------------------
+# $Revision$
+# $Date$
+# $Author$
+#-------------------------------------------------------------------------
+
+
+PREREQUISITES
+--------------
+junit 3.7   (or later)
+LEDA 4.1
+cppunit 1.5.5 (or later)
+
+DEFINE
+------
+
+  environment variable   sample value
+  --------------------   ----------------
+   LEDA_HOME:            /local/LEDA-4.1
+   CPPUNIT_HOME:         /local/cppunit
+   LD_LIBRARY_PATH       /usr/lib:/local/LEDA-4.1:/local/cppunit
+
+TO BUILD
+--------
+define your java CLASSPATH to include at least
+
+    <full-path-to-current-directory>/cytoscape.aux.jar
+    <full-path-to-immediate-parent-directory>
+    <full-path-to-junit.jar>
+
+
+in the current directory (<someDirectory>/cytoscape)
+
+  make
+  make test
+  make run0
