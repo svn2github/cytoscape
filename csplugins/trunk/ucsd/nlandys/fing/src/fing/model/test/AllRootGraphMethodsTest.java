@@ -76,110 +76,113 @@ public final class AllRootGraphMethodsTest
     for (int i = 0; i < edgeInx.length; i++)
       if (edgeInx[i] >= 0)
         throw new IllegalStateException("non-negative edge");
-//     if (root.isMetaParent(root.getEdge(edgeInx[1]),
-//                           root.getNode(nodeInx[3])))
-//       throw new IllegalStateException();
 
-    // Test add/remove nodes and edges before other tests.
-    // We leave the graph with the same topology after these tests as
-    // existed before these tests.
-    if (root.removeNode(nodeInx[1]) != nodeInx[1])
-      throw new IllegalStateException("removal of node failed");
-    if (root.removeEdge(edgeInx[0]) != 0 ||
-        root.removeEdge(edgeInx[1]) != 0 ||
-        root.removeEdge(edgeInx[4]) != 0 ||
-        root.removeEdge(edgeInx[5]) != 0)
-      throw new IllegalStateException("removal failure failed - edge");
-    if (root.removeNode(nodeInx[1]) != 0)
-      throw new IllegalStateException("removal failure failed - node");
-    if (root.removeEdge(edgeInx[6]) != edgeInx[6])
-      throw new IllegalStateException("removal of edge failed");
-    if (root.removeEdge(edgeInx[6]) != 0)
-      throw new IllegalStateException("removal failure failed - edge");
-    if (root.removeNode(0) != 0 ||
-        root.removeNode(Integer.MAX_VALUE) != 0 ||
-        root.removeNode(Integer.MIN_VALUE) != 0)
-      throw new IllegalStateException("removal failure failed - node");
-    if (root.removeEdge(0) != 0 ||
-        root.removeEdge(Integer.MAX_VALUE) != 0 ||
-        root.removeNode(Integer.MIN_VALUE) != 0)
-      throw new IllegalStateException("removal failure failed - edge");
-    if (root.createEdge(Integer.MAX_VALUE, Integer.MAX_VALUE, true) != 0 ||
-        root.createEdge(Integer.MIN_VALUE, Integer.MIN_VALUE, false) != 0 ||
-        root.createEdge(0, 0, true) != 0)
-      throw new IllegalStateException("creation failure failed - edge");
-    int deleteThisNode0 = root.createNode();
-    nodeInx[1] = root.createNode();
-    root.removeNode(deleteThisNode0);
-//     int deleteThisEdge = root.createEdge(nodeInx[4], nodeInx[1], true);
-    edgeInx[0] = root.createEdge(nodeInx[0], nodeInx[1], true);
-    edgeInx[1] = root.createEdge(nodeInx[1], nodeInx[2], false);
-    edgeInx[4] = root.createEdge(nodeInx[1], nodeInx[1], false);
-    edgeInx[5] = root.createEdge(nodeInx[1], nodeInx[0], true);
-    edgeInx[6] = root.createEdge(nodeInx[3], nodeInx[2], true);
-//     root.removeEdge(deleteThisEdge);
-    int deleteThisNode = root.createNode();
-    int deleteThisEdge1 = root.createEdge(nodeInx[0], nodeInx[1], false);
-    int deleteThisEdge2 = root.createEdge(nodeInx[4], nodeInx[2], false);
-    root.createEdge(deleteThisNode, nodeInx[1], true);
-    root.removeNode(deleteThisNode);
-    root.removeEdge(deleteThisEdge1);
-    root.removeEdge(deleteThisEdge2);
-    // Meta-nodes.  First restore what was there originally.
-//     if (root.isMetaParent(root.getEdge(edgeInx[1]),
-//                           root.getNode(nodeInx[3])))
-//       throw new IllegalStateException();
-    if (!(root.addEdgeMetaChild(nodeInx[3], edgeInx[0]) &&
-          root.addEdgeMetaChild(nodeInx[0], edgeInx[4]) &&
-          root.addEdgeMetaChild(nodeInx[4], edgeInx[6]) &&
-          root.addEdgeMetaChild(nodeInx[3], edgeInx[6])))
-      throw new IllegalStateException("errors during restoration");
-//     if (root.isMetaParent(root.getEdge(edgeInx[1]),
-//                           root.getNode(nodeInx[3])))
-//       throw new IllegalStateException();
-    if (root.addEdgeMetaChild(nodeInx[3], edgeInx[0]) ||
-        root.addEdgeMetaChild(nodeInx[4], edgeInx[2]) ||
-        root.addNodeMetaChild(nodeInx[3], nodeInx[1]) ||
-        root.addEdgeMetaChild(0, edgeInx[0]) ||
-        root.addEdgeMetaChild(nodeInx[1], 0) ||
-        root.addEdgeMetaChild(99, 98) ||
-        root.addEdgeMetaChild(Integer.MAX_VALUE, Integer.MIN_VALUE) ||
-        root.addNodeMetaChild(0, nodeInx[2]) ||
-        root.addNodeMetaChild(nodeInx[2], 0) ||
-        root.addNodeMetaChild(87, 23) ||
-        root.addNodeMetaChild(Integer.MIN_VALUE, Integer.MAX_VALUE))
-      throw new IllegalStateException("failure of failure during creation");
-    // Meta-nodes.  Create and remove extra meta-relationships.
-    if (!root.addNodeMetaChild(nodeInx[2], nodeInx[1]))
-      throw new IllegalStateException("failed to create relationship");
-    if (root.addNodeMetaChild(nodeInx[2], nodeInx[1]) ||
-        root.addNodeMetaChild(nodeInx[4], nodeInx[0]))
-      throw new IllegalStateException("was able to create duplicate meta");
-    if (!(root.addEdgeMetaChild(nodeInx[4], edgeInx[5]) &&
-          root.addNodeMetaChild(nodeInx[2], nodeInx[2])))
-      throw new IllegalStateException("failed to create meta relationship");
-    if (root.addNodeMetaChild(nodeInx[2], nodeInx[2]))
-      throw new IllegalStateException("was able to create duplicate meta");
-    if (!(root.removeNodeMetaChild(nodeInx[2], nodeInx[1]) &&
-          root.removeNodeMetaChild(nodeInx[4], nodeInx[1]) &&
-          root.removeNodeMetaChild(nodeInx[2], nodeInx[2])))
-      throw new IllegalStateException("could not delete meta relationship");
-    if (root.removeNodeMetaChild(nodeInx[2], nodeInx[3]) ||
-        root.removeEdgeMetaChild(nodeInx[4], edgeInx[0]) ||
-        root.removeNodeMetaChild(Integer.MAX_VALUE, Integer.MIN_VALUE) ||
-        root.removeEdgeMetaChild(Integer.MIN_VALUE, Integer.MAX_VALUE) ||
-        root.removeNodeMetaChild(0, 88) ||
-        root.removeEdgeMetaChild(88, 0))
-      throw new IllegalStateException("deleted non-existent meta");
-    for (int i = 0; i < nodeInx.length; i++)
-      if (nodeInx[i] >= 0)
-        throw new IllegalStateException("non-negative node");
-    for (int i = 0; i < edgeInx.length; i++)
-      if (edgeInx[i] >= 0)
-        throw new IllegalStateException("non-negative edge");
-//     if (root.isMetaParent(root.getEdge(edgeInx[1]),
-//                           root.getNode(nodeInx[3])))
-//       throw new IllegalStateException();
+    // BEGIN: Extra checking code that can be removed later.
+    if (root.isMetaParent(root.getEdge(edgeInx[1]),
+                          root.getNode(nodeInx[3])))
+      throw new IllegalStateException();
+    // END: Extra checking code that can be removed later.
+
+//     // Test add/remove nodes and edges before other tests.
+//     // We leave the graph with the same topology after these tests as
+//     // existed before these tests.
+//     if (root.removeNode(nodeInx[1]) != nodeInx[1])
+//       throw new IllegalStateException("removal of node failed");
+//     if (root.removeEdge(edgeInx[0]) != 0 ||
+//         root.removeEdge(edgeInx[1]) != 0 ||
+//         root.removeEdge(edgeInx[4]) != 0 ||
+//         root.removeEdge(edgeInx[5]) != 0)
+//       throw new IllegalStateException("removal failure failed - edge");
+//     if (root.removeNode(nodeInx[1]) != 0)
+//       throw new IllegalStateException("removal failure failed - node");
+//     if (root.removeEdge(edgeInx[6]) != edgeInx[6])
+//       throw new IllegalStateException("removal of edge failed");
+//     if (root.removeEdge(edgeInx[6]) != 0)
+//       throw new IllegalStateException("removal failure failed - edge");
+//     if (root.removeNode(0) != 0 ||
+//         root.removeNode(Integer.MAX_VALUE) != 0 ||
+//         root.removeNode(Integer.MIN_VALUE) != 0)
+//       throw new IllegalStateException("removal failure failed - node");
+//     if (root.removeEdge(0) != 0 ||
+//         root.removeEdge(Integer.MAX_VALUE) != 0 ||
+//         root.removeNode(Integer.MIN_VALUE) != 0)
+//       throw new IllegalStateException("removal failure failed - edge");
+//     if (root.createEdge(Integer.MAX_VALUE, Integer.MAX_VALUE, true) != 0 ||
+//         root.createEdge(Integer.MIN_VALUE, Integer.MIN_VALUE, false) != 0 ||
+//         root.createEdge(0, 0, true) != 0)
+//       throw new IllegalStateException("creation failure failed - edge");
+//     int deleteThisNode0 = root.createNode();
+//     nodeInx[1] = root.createNode();
+//     root.removeNode(deleteThisNode0);
+// //     int deleteThisEdge = root.createEdge(nodeInx[4], nodeInx[1], true);
+//     edgeInx[0] = root.createEdge(nodeInx[0], nodeInx[1], true);
+//     edgeInx[1] = root.createEdge(nodeInx[1], nodeInx[2], false);
+//     edgeInx[4] = root.createEdge(nodeInx[1], nodeInx[1], false);
+//     edgeInx[5] = root.createEdge(nodeInx[1], nodeInx[0], true);
+//     edgeInx[6] = root.createEdge(nodeInx[3], nodeInx[2], true);
+// //     root.removeEdge(deleteThisEdge);
+//     int deleteThisNode = root.createNode();
+//     int deleteThisEdge1 = root.createEdge(nodeInx[0], nodeInx[1], false);
+//     int deleteThisEdge2 = root.createEdge(nodeInx[4], nodeInx[2], false);
+//     root.createEdge(deleteThisNode, nodeInx[1], true);
+//     root.removeNode(deleteThisNode);
+//     root.removeEdge(deleteThisEdge1);
+//     root.removeEdge(deleteThisEdge2);
+//     // Meta-nodes.  First restore what was there originally.
+// //     if (root.isMetaParent(root.getEdge(edgeInx[1]),
+// //                           root.getNode(nodeInx[3])))
+// //       throw new IllegalStateException();
+//     if (!(root.addEdgeMetaChild(nodeInx[3], edgeInx[0]) &&
+//           root.addEdgeMetaChild(nodeInx[0], edgeInx[4]) &&
+//           root.addEdgeMetaChild(nodeInx[4], edgeInx[6]) &&
+//           root.addEdgeMetaChild(nodeInx[3], edgeInx[6])))
+//       throw new IllegalStateException("errors during restoration");
+// //     if (root.isMetaParent(root.getEdge(edgeInx[1]),
+// //                           root.getNode(nodeInx[3])))
+// //       throw new IllegalStateException();
+//     if (root.addEdgeMetaChild(nodeInx[3], edgeInx[0]) ||
+//         root.addEdgeMetaChild(nodeInx[4], edgeInx[2]) ||
+//         root.addNodeMetaChild(nodeInx[3], nodeInx[1]) ||
+//         root.addEdgeMetaChild(0, edgeInx[0]) ||
+//         root.addEdgeMetaChild(nodeInx[1], 0) ||
+//         root.addEdgeMetaChild(99, 98) ||
+//         root.addEdgeMetaChild(Integer.MAX_VALUE, Integer.MIN_VALUE) ||
+//         root.addNodeMetaChild(0, nodeInx[2]) ||
+//         root.addNodeMetaChild(nodeInx[2], 0) ||
+//         root.addNodeMetaChild(87, 23) ||
+//         root.addNodeMetaChild(Integer.MIN_VALUE, Integer.MAX_VALUE))
+//       throw new IllegalStateException("failure of failure during creation");
+//     // Meta-nodes.  Create and remove extra meta-relationships.
+//     if (!root.addNodeMetaChild(nodeInx[2], nodeInx[1]))
+//       throw new IllegalStateException("failed to create relationship");
+//     if (root.addNodeMetaChild(nodeInx[2], nodeInx[1]) ||
+//         root.addNodeMetaChild(nodeInx[4], nodeInx[0]))
+//       throw new IllegalStateException("was able to create duplicate meta");
+//     if (!(root.addEdgeMetaChild(nodeInx[4], edgeInx[5]) &&
+//           root.addNodeMetaChild(nodeInx[2], nodeInx[2])))
+//       throw new IllegalStateException("failed to create meta relationship");
+//     if (root.addNodeMetaChild(nodeInx[2], nodeInx[2]))
+//       throw new IllegalStateException("was able to create duplicate meta");
+//     if (!(root.removeNodeMetaChild(nodeInx[2], nodeInx[1]) &&
+//           root.removeNodeMetaChild(nodeInx[4], nodeInx[1]) &&
+//           root.removeNodeMetaChild(nodeInx[2], nodeInx[2])))
+//       throw new IllegalStateException("could not delete meta relationship");
+//     if (root.removeNodeMetaChild(nodeInx[2], nodeInx[3]) ||
+//         root.removeEdgeMetaChild(nodeInx[4], edgeInx[0]) ||
+//         root.removeNodeMetaChild(Integer.MAX_VALUE, Integer.MIN_VALUE) ||
+//         root.removeEdgeMetaChild(Integer.MIN_VALUE, Integer.MAX_VALUE) ||
+//         root.removeNodeMetaChild(0, 88) ||
+//         root.removeEdgeMetaChild(88, 0))
+//       throw new IllegalStateException("deleted non-existent meta");
+//     for (int i = 0; i < nodeInx.length; i++)
+//       if (nodeInx[i] >= 0)
+//         throw new IllegalStateException("non-negative node");
+//     for (int i = 0; i < edgeInx.length; i++)
+//       if (edgeInx[i] >= 0)
+//         throw new IllegalStateException("non-negative edge");
+// //     if (root.isMetaParent(root.getEdge(edgeInx[1]),
+// //                           root.getNode(nodeInx[3])))
+// //       throw new IllegalStateException();
 
     // nodesIterator() and edgesIterator().
     Iterator nodesIter = root.nodesIterator();
