@@ -4,6 +4,10 @@ import cytoscape.graph.IndexIterator;
 import java.util.NoSuchElementException;
 
 /**
+ * <b>This class is in a very unfinished state; development effort on this
+ * class has been suspended until further notice; don't use this class
+ * unless you're the author.
+ * </b><p>
  * Creates an <code>IndexIterator</code> object out of an array of integers.
  **/
 public class ArrayIterator implements IndexIterator

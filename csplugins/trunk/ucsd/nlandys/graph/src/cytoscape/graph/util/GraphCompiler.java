@@ -7,6 +7,10 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 
 /**
+ * <b>This class is in a very unfinished state; development effort on this
+ * class has been suspended until further notice; don't use this class
+ * unless you're the author.
+ * </b><p>
  * An instance of this class &quot;compiles&quot; a <code>GraphTopology</code>
  * and provides several bits of useful information about the graph.<p>
  * An instance of this class is meant to be used by a single thread only.<p>

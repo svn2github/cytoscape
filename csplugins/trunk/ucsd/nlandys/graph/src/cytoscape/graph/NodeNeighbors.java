@@ -1,6 +1,10 @@
 package cytoscape.graph;
 
 /**
+ * <b>This class is in a very unfinished state; development effort on this
+ * class has been suspended until further notice; don't use this class
+ * unless you're the author.
+ * </b><p>
  * This interface represents neighboring node information for a given
  * graph.<p>
  * Assuming that a binary relation on the set of nodes in a graph defining

@@ -1,6 +1,10 @@
 package cytoscape.graph.util;
 
 /**
+ * <b>This class is in a very unfinished state; development effort on this
+ * class has been suspended until further notice; don't use this class
+ * unless you're the author.
+ * </b><p>
  * This is a hook to narrow the definition of <i>node neighbor</i> as
  * originally defined in <code>GraphCompiler</code>.
  * The original definition can only be narrowed by this hook - that is, if
