@@ -82,6 +82,13 @@
 		<arg line="2"/>
        	</java>
     </target>
+    <target name="sample3" depends="compile"
+        description="Runs Sample2:  Customized TaskMonitorUI with 2 second popup delay">
+		<java classname="csplugins.test.task.TestUI"
+    		classpathref="classpath" fork="true" maxmemory="512m">
+		<arg line="3"/>
+       	</java>
+    </target>
 
 	<!--  Target to Run CheckStyle on all Source Code -->
 	<!--  Uses the Sun Coding Conventions Configuration -->
