@@ -233,13 +233,15 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
      * @param message status message.
      */
     public void setStatus(final String message) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                statusValue.setText (message);
-                pack();
-                validate();
-            }
-        });
+        if (!haltRequested) {
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    statusValue.setText (message);
+                    pack();
+                    validate();
+                }
+            });
+        }
     }
 
     /**
@@ -531,5 +533,6 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
     private void removeProgressBar() {
         progressPanel.remove(pBar);
         progressPanel.remove(progressValue);
+        progressPanel.validate();
     }
 }
