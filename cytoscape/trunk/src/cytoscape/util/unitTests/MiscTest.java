@@ -8,6 +8,7 @@ package cytoscape.util.unitTests;
 //--------------------------------------------------------------------------------------
 import junit.framework.*;
 import java.io.*;
+import java.util.*;
 
 import cytoscape.util.Misc;
 import java.awt.Color;
@@ -36,23 +37,139 @@ public void testParseRGBTest () throws Exception
   assertTrue (result.equals (Color.black));
 
   result = Misc.parseRGBText ("27,39,121");
-  System.out.println ("result: " + result);
   assertTrue (result.getRed () == 27);
   assertTrue (result.getGreen () == 39);
   assertTrue (result.getBlue () == 121);
 
   result = Misc.parseRGBText (" 27 , 39 , 121 ");
-  System.out.println ("result: " + result);
   assertTrue (result.getRed () == 27);
   assertTrue (result.getGreen () == 39);
   assertTrue (result.getBlue () == 121);
 
   result = Misc.parseRGBText ("255,255,255");
-  System.out.println ("result: " + result);
   assertTrue (result.equals (Color.white));
 
 } // testParseRGBTest
 //-------------------------------------------------------------------------
+public void testParseList () throws Exception
+{ 
+  System.out.println ("testParseList");
+
+  String delimiter = "::";
+  String startToken = "(";
+  String endToken = ")";
+    // --------------------------------------------------------------------
+    // 1) four tokens, separated by ::, surrounded with parens and whitespace
+    // --------------------------------------------------------------------
+  
+  String a = "abcd";
+  String b = "efgh";
+  String c = "dog";
+  String d = "cat";
+
+  StringBuffer sb = new StringBuffer ();
+  sb.append ("  ");
+  sb.append (startToken);
+  sb.append (a + delimiter);
+  sb.append (b + delimiter);
+  sb.append (c + delimiter);
+  sb.append (d);
+  sb.append (endToken);
+  sb.append ("   ");
+
+  String [] tokens = Misc.parseList (sb.toString (), startToken, endToken, delimiter);
+  assertTrue (tokens.length == 4);
+  assertTrue (tokens [0].equals (a));
+  assertTrue (tokens [1].equals (b));
+  assertTrue (tokens [2].equals (c));
+  assertTrue (tokens [3].equals (d));
+
+    // --------------------------------------------------------------------------
+    // 2) add some embedded parens to the tokens.  they should survive the parsing
+    // --------------------------------------------------------------------------
+  a = "((abcd))";
+  b = "ef()gh";
+  c = "do))((g";
+  d = "c*())*at";
+
+  sb = new StringBuffer ();
+  sb.append ("  ");
+  sb.append (startToken);
+  sb.append (a + delimiter);
+  sb.append (b + delimiter);
+  sb.append (c + delimiter);
+  sb.append (d);
+  sb.append (endToken);
+  sb.append ("  ");
+
+  tokens = Misc.parseList (sb.toString (), startToken, endToken, delimiter);
+  assertTrue (tokens.length == 4);
+  assertTrue (tokens [0].equals (a));
+  assertTrue (tokens [1].equals (b));
+  assertTrue (tokens [2].equals (c));
+  assertTrue (tokens [3].equals (d));
+
+    // --------------------------------------------------------------------------
+    // 3) leave off the startToken.  
+    // --------------------------------------------------------------------------
+  a = "abcd))";
+  b = "ef()gh";
+  c = "do))((g";
+  d = "c*())*at";
+
+  sb = new StringBuffer ();
+  sb.append (a + delimiter);
+  sb.append (b + delimiter);
+  sb.append (c + delimiter);
+  sb.append (d);
+  sb.append (endToken);
+  sb.append ("   ");
+
+  tokens = Misc.parseList (sb.toString (), startToken, endToken, delimiter);
+  assertTrue (tokens.length == 1);
+
+    // --------------------------------------------------------------------------
+    // 4) leave off the endToken.  
+    // --------------------------------------------------------------------------
+  a = "abcd))";
+  b = "ef()gh";
+  c = "do))((g";
+  d = "c*())*at";
+
+  sb = new StringBuffer ();
+  sb.append (startToken);
+  sb.append (a + delimiter);
+  sb.append (b + delimiter);
+  sb.append (c + delimiter);
+  sb.append (d);
+  sb.append ("   ");
+
+  tokens = Misc.parseList (sb.toString (), startToken, endToken, delimiter);
+  assertTrue (tokens.length == 1);
+
+
+} // testParseList
+//------------------------------------------------------------------------------
+public void testGetPropertyValues () throws Exception
+{ 
+  System.out.println ("testGetPropertyValues");
+  Properties props = new Properties ();
+  props.put ("dog", "dozer");
+  props.put ("cat", "(ernie::louie)");
+
+  Vector dogs = Misc.getPropertyValues (props, "dog");
+  assertTrue (dogs.size () == 1);
+
+  Vector cats = Misc.getPropertyValues (props, "cat");
+  assertTrue (cats.size () == 2);
+
+  String [] catNames = (String []) cats.toArray (new String [0]);
+  assertTrue (catNames.length == 2);
+  assertTrue (catNames [0].equals ("ernie"));
+  assertTrue (catNames [1].equals ("louie"));
+
+} // testGetPropertyValues
+//------------------------------------------------------------------------------
 public static void main (String[] args) 
 {
   junit.textui.TestRunner.run (new TestSuite (MiscTest.class));
