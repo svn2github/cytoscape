@@ -185,6 +185,7 @@ public class MainFilterDialog extends JDialog {
 	}
     }
 
+    /** initializes counters */
     private void initCounters() {
 	int size = types.length;
 	counters = new int[size];
