@@ -13,18 +13,21 @@ import cytoscape.dialogs.MiscGB;
 import y.view.Graph2D;
 import y.view.Graph2DView;
 import y.view.DefaultBackgroundRenderer;
+import cytoscape.visual.VisualMappingManager;
 //----------------------------------------------------------------------------
 /**
  * Defines a class to provide the interface for specifying global defaults such as background color.
  */
 public class DefaultPanel extends JPanel {
-    private DefaultBackgroundRenderer bgRender;
+    //private DefaultBackgroundRenderer bgRender;
+    private VisualMappingManager vmm;
     private ValueDisplayer backColor;
-    public DefaultPanel(VizMapUI parentDialog, Graph2D graph) {
+    public DefaultPanel(VizMapUI parentDialog, VisualMappingManager vmm) {
 	super(false);
+        this.vmm = vmm;
 
 	// this is evil
-	this.bgRender = (DefaultBackgroundRenderer) ((Graph2DView) graph.getCurrentView()).getBackgroundRenderer();
+	//this.bgRender = (DefaultBackgroundRenderer) ((Graph2DView) graph.getCurrentView()).getBackgroundRenderer();
 
 	// this is really really evil
 	GridBagGroup def = new GridBagGroup();
@@ -34,7 +37,11 @@ public class DefaultPanel extends JPanel {
 	MiscGB.inset(def.constraints, 3);
 	
 	// background color
-	Color initColor = bgRender.getColor();
+        Graph2DView view = vmm.getCytoscapeWindow().getGraphView();
+        DefaultBackgroundRenderer bgRender =
+            (DefaultBackgroundRenderer)view.getBackgroundRenderer();
+        //now we can finally get at the color
+        Color initColor = bgRender.getColor();
 	this.backColor = ValueDisplayer.getDisplayFor(parentDialog, "Background Color", initColor);
 	backColor.addItemListener(new BackColorListener());
 	JButton backColorBut = new JButton("Background Color");
@@ -47,6 +54,10 @@ public class DefaultPanel extends JPanel {
 	public void itemStateChanged(ItemEvent e) {
 	    if (e.getStateChange() == ItemEvent.SELECTED) {
 		Color newBG = (Color) backColor.getValue();
+                //must grab the current background renderer from the current graphView
+                Graph2DView view = vmm.getCytoscapeWindow().getGraphView();
+                DefaultBackgroundRenderer bgRender =
+                    (DefaultBackgroundRenderer)view.getBackgroundRenderer();
 		bgRender.setColor(newBG);
 	    }
 	}

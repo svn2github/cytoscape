@@ -20,7 +20,8 @@ OBJS = 	VizMapTab.class \
 	FontRenderer.class \
 	MiscDialog.class \
 	ValueDisplayer.class \
-	PopupIconChooser.class
+	PopupIconChooser.class \
+	DefaultPanel.class
 
 default: objs 
 

@@ -104,7 +104,7 @@ public class VizMapUI extends JDialog {
 	}
 	
 	// global default pane
-	JPanel defaultPane = new DefaultPanel(this, VMM.getNetwork().getGraph());
+	JPanel defaultPane = new DefaultPanel(this, VMM);
 	
 	// node/edge/default selector
 	ButtonGroup grp = new ButtonGroup();
