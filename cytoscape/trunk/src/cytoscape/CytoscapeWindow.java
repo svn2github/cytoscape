@@ -111,6 +111,7 @@ public class CytoscapeWindow extends JPanel { // implements VizChooserClient {
   protected CytoscapeConfig config;
 
   protected JMenuItem deleteSelectionMenuItem;
+
 //------------------------------------------------------------------------------
 public CytoscapeWindow (cytoscape parentApp,
                         CytoscapeConfig config,
@@ -450,16 +451,41 @@ protected JMenuBar createMenuBar ()
   mi = selectiveDisplayMenu.add (new SelectFirstNeighborsAction ());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_F, ActionEvent.CTRL_MASK));
   
+  ButtonGroup layoutGroup = new ButtonGroup ();
   JMenu layoutMenu = new JMenu ("Layout");
   layoutMenu.setToolTipText ("Apply new layout algorithm to graph");
   menuBar.add (layoutMenu);
-  layoutMenu.add (new CircularLayoutAction ());
-  layoutMenu.add (new HierarchicalLayoutAction ());
-  layoutMenu.add (new OrganicLayoutAction ());
-  layoutMenu.add (new RandomLayoutAction ());
-  layoutMenu.add (new EmbeddedLayoutAction ());
-  // layoutMenu.add (new GroupWiseLayoutAction ());
+
+  JRadioButtonMenuItem layoutButton;
+  layoutButton = new JRadioButtonMenuItem("Circular");
+  layoutGroup.add(layoutButton);
+  layoutMenu.add(layoutButton);
+  layoutButton.addActionListener(new CircularLayoutAction ());
+  
+  layoutButton = new JRadioButtonMenuItem("Hierarchicial");
+  layoutGroup.add(layoutButton);
+  layoutMenu.add(layoutButton);
+  layoutButton.addActionListener(new HierarchicalLayoutAction ());
+  
+  layoutButton = new JRadioButtonMenuItem("Organic");
+  layoutGroup.add(layoutButton);
+  layoutMenu.add(layoutButton);
+  layoutButton.addActionListener(new OrganicLayoutAction ());
+  
+  layoutButton = new JRadioButtonMenuItem("Embedded");
+  layoutGroup.add(layoutButton);
+  layoutMenu.add(layoutButton);
+  layoutButton.setSelected(true);
+  layoutButton.addActionListener(new EmbeddedLayoutAction ());
+
+  layoutButton = new JRadioButtonMenuItem("Random");
+  layoutGroup.add(layoutButton);
+  layoutMenu.add(layoutButton);
+  layoutButton.addActionListener(new RandomLayoutAction ());
+  
+  layoutMenu.addSeparator();
   layoutMenu.add (new LayoutAction ());
+  layoutMenu.add (new LayoutSelectionAction ());
 
   opsMenu = new JMenu ("Ops"); // always create the ops menu
   menuBar.add (opsMenu);
@@ -689,6 +715,37 @@ public void applyLayout (boolean animated)
   System.out.println (" done");
 
 } // applyLayout
+
+
+
+// applyLayoutSelection
+//
+// apply layout, but only on currently selected nodes
+protected void applyLayoutSelection() {
+    System.out.print ("starting layout...");  System.out.flush ();
+    setInteractivity (false);
+
+    Graph2D g = graphView.getGraph2D();
+    Subgraph subgraph = new Subgraph(g, g.selectedNodes());
+    layouter.doLayout (subgraph);
+    subgraph.reInsert();
+
+    // remove bends
+    EdgeCursor cursor = graphView.getGraph2D().edges();
+    cursor.toFirst ();
+    for (int i=0; i < cursor.size(); i++){
+	Edge target = cursor.edge();
+	EdgeRealizer e = graphView.getGraph2D().getRealizer(target);
+	e.clearBends();
+	cursor.cyclicNext();
+    }
+    
+    setInteractivity (true);
+    System.out.println("  done");
+}
+
+
+
 //------------------------------------------------------------------------------
 class PrintAction extends AbstractAction 
 {
@@ -774,21 +831,33 @@ protected class DeleteSelectedAction extends AbstractAction   {
 } // inner class DeleteSelectedAction
 //------------------------------------------------------------------------------
 protected class LayoutAction extends AbstractAction   {
-  LayoutAction () { super ("Refresh"); }
+  LayoutAction () { super ("Whole graph"); }
     
   public void actionPerformed (ActionEvent e) {
     applyLayout (false);
     redrawGraph ();
     }
 }
+
+// lay out selected nodes only - dramage
+protected class LayoutSelectionAction extends AbstractAction {
+    LayoutSelectionAction () { super ("Current selection"); }
+
+  public void actionPerformed (ActionEvent e) {
+      applyLayoutSelection ();
+      redrawGraph ();
+    }
+}
+
+
+
+
 //------------------------------------------------------------------------------
 protected class CircularLayoutAction extends AbstractAction   {
   CircularLayoutAction () { super ("Circular"); }
     
   public void actionPerformed (ActionEvent e) {
     layouter = new CircularLayouter ();
-    applyLayout (false);
-    redrawGraph ();
     }
 }
 //------------------------------------------------------------------------------
@@ -800,8 +869,6 @@ protected class HierarchicalLayoutAction extends AbstractAction   {
     hl.setMinimalLayerDistance (40);
     hl.setMinimalNodeDistance (20);
     layouter = hl;
-    applyLayout (false);
-    redrawGraph ();
     }
 }
 //------------------------------------------------------------------------------
@@ -813,8 +880,6 @@ protected class OrganicLayoutAction extends AbstractAction   {
     ol.setActivateDeterministicMode (true);
     ol.setPreferredEdgeLength(80);
     layouter = ol;
-    applyLayout (false);
-    redrawGraph ();
     }
 }
 //------------------------------------------------------------------------------
@@ -823,8 +888,6 @@ protected class RandomLayoutAction extends AbstractAction   {
     
   public void actionPerformed (ActionEvent e) {
     layouter = new RandomLayouter ();
-    applyLayout (false);
-    redrawGraph ();
     }
 }
 
@@ -834,8 +897,6 @@ protected class EmbeddedLayoutAction extends AbstractAction {
 
     public void actionPerformed (ActionEvent e) {
 	layouter = new EmbeddedLayouter();
-	applyLayout (false);
-	redrawGraph ();
     }
 }
 
