@@ -346,15 +346,18 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
         otherNode = otherPartials.nodeIndex; }
       if (node == otherNode) continue;
       otherNodeRadius = 0.01;
-      deltaX = nodeX - graph.getNodePosition(otherNode).getX();
-      deltaY = nodeY - graph.getNodePosition(otherNode).getY();
-      euclideanDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-      if (((float) euclideanDistance) == 0.0)
-        throw new RuntimeException("euclideanDistance too close to 0: " +
-                                   euclideanDistance);
+      while (true) {
+        deltaX = nodeX - graph.getNodePosition(otherNode).getX();
+        deltaY = nodeY - graph.getNodePosition(otherNode).getY();
+        euclideanDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        if (((float) euclideanDistance) > 0.0001) break;
+        graph.setNodePosition
+          (otherNode,
+           graph.getNodePosition(otherNode).getX() +
+           (0.001d * (new java.util.Random()).nextDouble()),
+           graph.getNodePosition(otherNode).getY() +
+           (0.001d * (new java.util.Random()).nextDouble())); }
       euclideanDistanceCubed = Math.pow(euclideanDistance, 3);
-      if (((float) euclideanDistanceCubed) == 0.0)
-        throw new RuntimeException("euclideanDistanceCubed too close to 0");
       distanceFromTouching =
         euclideanDistance - (nodeRadius + otherNodeRadius);
       incrementalChange =
