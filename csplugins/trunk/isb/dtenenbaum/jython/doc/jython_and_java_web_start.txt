@@ -1,3 +1,10 @@
+todo:
+	update this
+	make cy1 version point here
+	deprecate csplugins.isb.pshannon.spy
+	move spyconsole code into this package?
+
+
 Developing Cytoscape Plugins Using Jython and Java Web Start
 
 Author: Dan Tenenbaum
