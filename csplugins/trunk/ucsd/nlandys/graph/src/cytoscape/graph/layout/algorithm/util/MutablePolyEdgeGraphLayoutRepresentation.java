@@ -2,6 +2,13 @@ package cytoscape.graph.layout.algorithm.util;
 
 import cytoscape.graph.layout.algorithm.MutablePolyEdgeGraphLayout;
 
+/**
+ * This class provides an implementation of
+ * <code>MutablePolyEdgeGraphLayout</code> whose only purpose is to represent
+ * a mutable poly edge graph layout based on structure defined in arrays of
+ * integers and floating-point numbers.  Methods on an instance of this class
+ * have no hooks into outside code.
+ **/
 public class MutablePolyEdgeGraphLayoutRepresentation
   extends MutableGraphLayoutRepresentation
   implements MutablePolyEdgeGraphLayout
@@ -29,8 +36,8 @@ public class MutablePolyEdgeGraphLayoutRepresentation
    *      isMovableNode);</pre></blockquote>
    * - for the sake of preventing the same documentation from existing in two
    * different source code files, please refer to
-   * <code>GraphLayoutRepresentation</code> for a definition of these first
-   * ten input parameters.
+   * <code>MutableGraphLayoutRepresentation</code> for a definition of these
+   * first ten input parameters.
    *
    * @param edgeAnchorXPositions
    *   <blockquote>an array of length equal to the number of edges in
