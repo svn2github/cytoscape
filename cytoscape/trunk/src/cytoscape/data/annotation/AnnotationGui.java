@@ -311,36 +311,17 @@ protected Node [] getNodesByAttributeValues (String attributeName, String [] tar
     if (canonicalName == null) continue;
     Object attributeValue = (Object) nodeAttributes.getValue (attributeName, canonicalName);
     if (attributeValue == null) continue;
-    String [] parsedCategories = unpackPossiblyCompoundStringAttributeValue (attributeValue);
-    for (int c=0; c < parsedCategories.length; c++) 
+    String [] parsedCategories = GraphObjAttributes.unpackPossiblyCompoundStringAttributeValue (attributeValue);
+    for (int c=0; c < parsedCategories.length; c++) {
       for (int t=0; t < targetValues.length; t++)
         if (targetValues [t].equals (parsedCategories [c]))
           collector.add (nodes [i]);
+      }  // for c
     } // for i
 
   return (Node []) collector.toArray (new Node [0]);
 
 } // getNodesByAttributeVAlues
-//----------------------------------------------------------------------------------------
-public String [] unpackPossiblyCompoundStringAttributeValue (Object value)
-{
-  String [] result = new String [0];
-  try {
-    if (value.getClass () == Class.forName ("java.lang.String")) {
-      result = new String [1];
-      result [0] = (String) value;
-      }    
-    else if (value.getClass () == Class.forName ("[Ljava.lang.String;")) {
-      result = (String []) value; 
-      }
-    } // try
-  catch (ClassNotFoundException ignore) {
-    ignore.printStackTrace ();
-    }
-
-  return result;
-
-} // unpackPossiblyCompoundAttributeValue
 //----------------------------------------------------------------------------------------
 } // inner class SelectNodesTreeSelectionListener
 //-----------------------------------------------------------------------------------

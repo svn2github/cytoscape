@@ -122,7 +122,6 @@ protected String [] getAnnotationAttributes (GraphObjAttributes nodeAttributes)
 //----------------------------------------------------------------------------------------
 public void doCallback (String attributeName, int functionToPerform)
 {
-
  
   if (functionToPerform == DO_LAYOUT){
     // Added by iliana on 1.21.2003 (works with yFiles 2.01)
@@ -287,7 +286,7 @@ String [] getCurrentAttributeValues (String attributeName)
     if (canonicalName == null) continue;
     Object value = cytoscapeWindow.getNodeAttributes().getValue (attributeName, canonicalName);
     if (value == null) continue;
-    String [] allValuesThisNode = unpackPossiblyCompoundStringAttributeValue (value);
+    String [] allValuesThisNode = GraphObjAttributes.unpackPossiblyCompoundStringAttributeValue (value);
     for (int c=0; c < allValuesThisNode.length; c++) {
       if (!categoriesFound.contains (allValuesThisNode [c]))
         categoriesFound.add (allValuesThisNode [c]);
@@ -298,26 +297,6 @@ String [] getCurrentAttributeValues (String attributeName)
 
 } // getCurrentAttributeValues
 //----------------------------------------------------------------------------------------
-public String [] unpackPossiblyCompoundStringAttributeValue (Object value)
-{
-  String [] result = new String [0];
-  try {
-    if (value.getClass () == Class.forName ("java.lang.String")) {
-      result = new String [1];
-      result [0] = (String) value;
-      }    
-    else if (value.getClass () == Class.forName ("[Ljava.lang.String;")) {
-      result = (String []) value; 
-      }
-    } // try
-  catch (ClassNotFoundException ignore) {
-    ignore.printStackTrace ();
-    }
-
-  return result;
-
-} // unpackPossiblyCompoundAttributeValue
-//----------------------------------------------------------------------------------------
 protected void addCategoryEdges (String attributeName, String [] categories)
 {
   Node nodes [] = graph.getNodeArray ();
@@ -327,7 +306,7 @@ protected void addCategoryEdges (String attributeName, String [] categories)
     if (canonicalName == null) continue;
     Object attributeValue = nodeAttributes.getValue (attributeName, canonicalName);
     if (attributeValue == null) continue;
-    String [] parsedCategories = unpackPossiblyCompoundStringAttributeValue (attributeValue);
+    String [] parsedCategories = GraphObjAttributes.unpackPossiblyCompoundStringAttributeValue (attributeValue);
     for (int c=0; c < parsedCategories.length; c++) {
       String parsedCategory = parsedCategories [c];
       Node groupingNode = (Node) categoryNodes.get (parsedCategory);
@@ -354,7 +333,8 @@ protected void addCategoryEdgesBetweenNodes (String attributeName)
   String [] nodeKeys = (String []) attributeHash.keySet().toArray (new String [0]);
   Vector nonredundantList = new Vector ();
   for (int i=0; i < nodeKeys.length; i++) {
-    String [] nodeValues = (String []) attributeHash.get (nodeKeys [i]);
+    Object obj = attributeHash.get (nodeKeys [i]);
+    String [] nodeValues = (String []) ((Vector) obj).toArray (new String [0]);
     for (int j=0; j < nodeValues.length; j++)
       if (!nonredundantList.contains (nodeValues [j]))
         nonredundantList.add (nodeValues [j]);
@@ -370,7 +350,7 @@ protected void addCategoryEdgesBetweenNodes (String attributeName)
     if (canonicalName == null) continue;
     Object attributeValue = nodeAttributes.getValue (attributeName, canonicalName);
     if (attributeValue == null) continue;
-    String [] parsedCategories = unpackPossiblyCompoundStringAttributeValue (attributeValue);
+    String [] parsedCategories = GraphObjAttributes.unpackPossiblyCompoundStringAttributeValue (attributeValue);
     for (int c=0; c < parsedCategories.length; c++) {
       String parsedCategory = parsedCategories [c];
       if (!nodeGroups.containsKey (parsedCategory))

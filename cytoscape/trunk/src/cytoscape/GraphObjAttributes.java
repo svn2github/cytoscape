@@ -1370,6 +1370,35 @@ protected boolean implementsSerializable(Class objClass){
 	
 }//implementsSerializable
 //--------------------------------------------------------------------------------
+public static String [] unpackPossiblyCompoundStringAttributeValue (Object value)
+{
+  String [] result = new String [0];
+  try {
+    if (value.getClass () == Class.forName ("java.lang.String")) {
+      result = new String [1];
+      result [0] = (String) value;
+      }    
+    else if (value.getClass () == Class.forName ("[Ljava.lang.String;")) {
+      result = (String []) value; 
+      }
+    else if (value.getClass () == Class.forName ("java.util.Vector")) {
+      Vector tmp = (Vector) value;
+      result = (String []) tmp.toArray (new String [0]);
+      }
+    else {
+      String msg = "AnnotationGui.unpackPossiblyCompoundAttributeValue, unrecognized class: " + 
+                   value.getClass ();
+      System.err.println (msg);
+      }
+    } // try
+  catch (ClassNotFoundException ignore) {
+    ignore.printStackTrace ();
+    }
+
+  return result;
+
+} // unpackPossiblyCompoundAttributeValue
+//----------------------------------------------------------------------------------------
 private void writeObject(ObjectOutputStream out) throws Exception{
     // super.writeObject gets called automatically
     System.out.println("Writing GraphObjAttributes...");
