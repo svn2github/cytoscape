@@ -46,7 +46,7 @@ public class ActivePathsFinder{
    *map is then used to recover edges when reinserting nodes into a graph
    *it is initialized in setupScoring() and used in toggleNode()
    */
-  HashMap node2edges;
+  //HashMap node2edges;
   //Global Variables for the Greedy Search
   /**
    * Maps from a node to the best component found for that node
@@ -114,13 +114,14 @@ public class ActivePathsFinder{
     //Edge [] e_array;
     //This has is used to store all the edges that were connected
     //to a particular node
-    node2edges = new HashMap();	
-    for(int i = 0;i<nodes.length;i++){
-      Edge [] temp = new Edge[0];
-      node2edges.put(nodes[i],perspective.getAdjacentEdgesList(nodes[i],true,true,true).toArray(temp));
-    }
+    //node2edges = new HashMap();	
+    //for(int i = 0;i<nodes.length;i++){
+    //  Edge [] temp = new Edge[0];
+    //  node2edges.put(nodes[i],perspective.getAdjacentEdgesList(nodes[i],true,true,true).toArray(temp));
+    //}
 
-    Component.node2edges = node2edges;
+    //Component.node2edges = node2edges;
+    Component.graph = perspective;
     //Component needs the condition names to return which conditions
     //yield significant scores
     Component.attrNames = attrNames;
@@ -191,23 +192,23 @@ public class ActivePathsFinder{
    *seems like the y files component finder goes wonky if the nodes
    *are only hidden
    */
-  private void restoreNodes(){
-    //for each node not present in the graph, go through and toggle
-    //its state back
-    GraphPerspective graph = cyNetwork.getGraphPerspective();
-    for(int i=0;i<nodes.length;i++){
-      if(!graph.containsNode(nodes[i],false)){
-	graph.restoreNode(nodes[i]);
-	Edge [] e_array = (Edge[])node2edges.get(nodes[i]);
-	for(int j=0;j<e_array.length;j++){
-	  Edge e = e_array[j];
-	  if(graph.containsNode(e.getSource(),false) && graph.containsNode(e.getTarget(),false)){
-	    graph.restoreEdge(e);
-	  }
-	}
-      }
-    }
+  /*private void restoreNodes(){
+  //for each node not present in the graph, go through and toggle
+  //its state back
+  GraphPerspective graph = cyNetwork.getGraphPerspective();
+  for(int i=0;i<nodes.length;i++){
+  if(!graph.containsNode(nodes[i],false)){
+  graph.restoreNode(nodes[i]);
+  Edge [] e_array = (Edge[])node2edges.get(nodes[i]);
+  for(int j=0;j<e_array.length;j++){
+  Edge e = e_array[j];
+  if(graph.containsNode(e.getSource(),false) && graph.containsNode(e.getTarget(),false)){
+  graph.restoreEdge(e);
   }
+  }
+  }
+  }
+  }*/
       
   /**
    *This is hte method called to determine the activePaths. Its operation depends
@@ -239,7 +240,7 @@ public class ActivePathsFinder{
       if (parentFrame != null) {
 	progress = new MyProgressMonitor(parentFrame,"Running Simulated Annealing","",0,(int)Math.ceil(apfParams.getTotalIterations()/(double)DISPLAY_STEP));
       } // end of if ()
-      Thread thread = new SimulatedAnnealingSearchThread(cyNetwork.getGraphPerspective(),resultPaths,node2edges,nodes,apfParams,progress);
+      Thread thread = new SimulatedAnnealingSearchThread(cyNetwork.getGraphPerspective(),resultPaths,nodes,apfParams,progress);
       thread.start();
       try{
 	thread.join();
@@ -255,7 +256,7 @@ public class ActivePathsFinder{
 	System.out.println("Starting quenching run");
 	SortedVector oldPaths = new SortedVector(resultPaths);
 	resultPaths = new Vector();
-	thread = new QuenchingSearchThread(cyNetwork.getGraphPerspective(),resultPaths,node2edges,nodes,apfParams,oldPaths);
+	thread = new QuenchingSearchThread(cyNetwork.getGraphPerspective(),resultPaths,nodes,apfParams,oldPaths);
 	thread.start();
 	try{
 	  thread.join();
@@ -267,7 +268,7 @@ public class ActivePathsFinder{
 	
       }
       comps = new Vector(resultPaths);
-      restoreNodes();
+      //restoreNodes();
     }
 
 	

@@ -7,18 +7,20 @@ import javax.swing.JOptionPane;
 import java.util.*;
 import java.io.*;
 
-import cytoscape.view.CyWindow;
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
 import cytoscape.data.ExpressionData;
 
 public class ScoreDistributionThread extends Thread{
-  CyWindow cytoscapeWindow;
+  
+  CyNetwork cyNetwork;
   ActivePaths activePaths;
   ActivePathFinderParameters apfParams;
   Random randomGenerator;
-  public ScoreDistributionThread(CyWindow cytoscapeWindow,
+  public ScoreDistributionThread(CyNetwork cyNetwork,
 				 ActivePaths activePaths,
 				 ActivePathFinderParameters apfParams){
-    this.cytoscapeWindow = cytoscapeWindow;
+    this.cyNetwork = cyNetwork;
     this.activePaths = activePaths;
     this.apfParams = apfParams;
     randomGenerator = new Random();
@@ -31,7 +33,7 @@ public class ScoreDistributionThread extends Thread{
    */
   public void run() {
     int i, f;
-    JFrame mainFrame = cytoscapeWindow.getMainFrame();
+    JFrame mainFrame = Cytoscape.getDesktop().getMainFrame();
     String inputValue = JOptionPane.showInputDialog(mainFrame, "Number of runs");
     int numberOfRuns = Integer.parseInt(inputValue);
     PrintStream p = null;	
@@ -87,7 +89,7 @@ public class ScoreDistributionThread extends Thread{
   private void randomizeGeneNames() {
     Vector newNames = new Vector();
     Vector newDescripts = new Vector();
-    ExpressionData expressionData = cytoscapeWindow.getNetwork().getExpressionData();
+    ExpressionData expressionData = cyNetwork.getExpressionData();
     Vector geneNames = expressionData.getGeneNamesVector();
     Vector geneDescripts = expressionData.getGeneDescriptorsVector();
     int s = geneNames.size();

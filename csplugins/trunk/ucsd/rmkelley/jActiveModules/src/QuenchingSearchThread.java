@@ -17,9 +17,16 @@ import cytoscape.*;
 import javax.swing.*;
 
 public class QuenchingSearchThread extends SearchThread{
-    public QuenchingSearchThread(GraphPerspective graph, Vector resultPaths, HashMap node2edges, Node [] nodes, ActivePathFinderParameters apfParams, SortedVector oldPaths){
-	super(graph,resultPaths,node2edges,nodes,apfParams);
+    public QuenchingSearchThread(GraphPerspective graph, Vector resultPaths, Node [] nodes, ActivePathFinderParameters apfParams, SortedVector oldPaths){
+	super(graph,resultPaths,nodes,apfParams);
 	super.oldPaths = oldPaths;
+	HashSet temp = new HashSet();
+	for(Iterator pathIt = resultPaths.iterator();pathIt.hasNext();){
+	  for(Iterator nodeIt = ((Component)pathIt.next()).getNodes().iterator();nodeIt.hasNext();){
+	    temp.add(nodeIt.next());
+	  }
+	}
+	super.nodeSet = temp;
     }
     
     /**

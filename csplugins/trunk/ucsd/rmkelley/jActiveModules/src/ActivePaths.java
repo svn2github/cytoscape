@@ -73,8 +73,8 @@ public class ActivePaths implements ActivePathViewer, Runnable {
   public void run()
   {
     System.gc();
-    GraphViewController gvc = Cytoscape.getDesktop().getGraphViewController();
-    gvc.stopListening();
+    //GraphViewController gvc = Cytoscape.getDesktop().getGraphViewController();
+    //gvc.stopListening();
     long start = System.currentTimeMillis ();
     HashMap expressionMap = generateExpressionMap();
     //run the path finding algorithm
@@ -85,7 +85,7 @@ public class ActivePaths implements ActivePathViewer, Runnable {
     int numberOfPathsFound = activePaths.length;
     System.out.println ("-------------- back from finderBridge: "+numberOfPathsFound+" paths, "+duration+" msecs");
     tableDialog = null;
-    gvc.resumeListening();
+    //gvc.resumeListening();
     if(apfParams.getExit()){
       System.exit(0);
     }

@@ -35,6 +35,9 @@ public class ActiveModulesUI extends CytoscapePlugin {
     /* Add function calls to Cytoscape menus */
     Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add ( new SetParametersAction() );
     Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add ( new FindActivePathsAction () );
+    Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add ( new ScoreSubComponentAction () );
+    Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add ( new RandomizeAndRunAction () );
+
     //cytoscapeWindow.getCyMenus().getOperationsMenu().add ( new ScoreSubComponentAction () );
     //cytoscapeWindow.getCyMenus().getOperationsMenu().add ( new RandomizeAndRunAction () );
 
@@ -96,24 +99,25 @@ public class ActiveModulesUI extends CytoscapePlugin {
    * This action will generate a score for the currently selected
    * nodes in the view
    */
-  // protected class ScoreSubComponentAction extends AbstractAction {
+  protected class ScoreSubComponentAction extends AbstractAction {
 	
-//     ScoreSubComponentAction () { super ("Active Modules: Score Selected Nodes"); }
-//     public void actionPerformed (ActionEvent e) {
-//       activePaths = new ActivePaths(cytoscapeWindow,apfParams);  
-//       activePaths.scoreActivePath ();
-//     } 
-//   }
+     ScoreSubComponentAction () { super ("Active Modules: Score Selected Nodes"); }
+     public void actionPerformed (ActionEvent e) {
+       activePaths = new ActivePaths(Cytoscape.getCurrentNetwork(),apfParams);  
+       activePaths.scoreActivePath ();
+     } 
+   }
 
 
-//   protected class RandomizeAndRunAction extends AbstractAction{  
+   protected class RandomizeAndRunAction extends AbstractAction{  
 
-//     public RandomizeAndRunAction () { super ("Active Modules: Score Distribution"); }
-
-//     public void actionPerformed (ActionEvent e) {
-//       JFrame mainFrame = cytoscapeWindow.getMainFrame ();
-//       Thread t = new ScoreDistributionThread(cytoscapeWindow,activePaths,apfParams);
-//       t.start();	
-//     }
-//   }
+     public RandomizeAndRunAction () { super ("Active Modules: Score Distribution"); }
+     
+     public void actionPerformed (ActionEvent e) {
+       JFrame mainFrame = Cytoscape.getDesktop().getMainFrame ();
+       activePaths = new ActivePaths(Cytoscape.getCurrentNetwork(),apfParams);
+       Thread t = new ScoreDistributionThread(Cytoscape.getCurrentNetwork(),activePaths,apfParams);
+       t.start();	
+     }
+   }
 }

@@ -19,9 +19,10 @@ import javax.swing.*;
 
 public class SimulatedAnnealingSearchThread extends SearchThread{
     MyProgressMonitor progress;
-    public SimulatedAnnealingSearchThread(GraphPerspective graph, Vector resultPaths,HashMap node2edges, Node [] nodes, ActivePathFinderParameters apfParams, MyProgressMonitor progress){
-	super(graph,resultPaths,node2edges,nodes,apfParams);
+    public SimulatedAnnealingSearchThread(GraphPerspective graph, Vector resultPaths, Node [] nodes, ActivePathFinderParameters apfParams, MyProgressMonitor progress){
+	super(graph,resultPaths,nodes,apfParams);
 	this.progress = progress;
+	super.nodeSet = new HashSet(graph.nodesList());
     }
 
     /**
@@ -48,10 +49,12 @@ public class SimulatedAnnealingSearchThread extends SearchThread{
 	
 
 	//NodeList [] components = GraphConnectivity.connectedComponents(graph);
-	ComponentFinder cf = new ComponentFinder(graph);
+	ComponentFinder cf = new ComponentFinder(graph,nodeSet);
 	//Vector components = cf.getComponents(new Vector(graph.nodesList()));
 
-	Iterator compIt = cf.getComponents(new Vector(graph.nodesList())).iterator();
+	//why is a new vector being creater here?
+	//Iterator compIt = cf.getComponents(new Vector(graph.nodesList())).iterator();
+	Iterator compIt = cf.getComponents(graph.nodesList()).iterator();
 	while(compIt.hasNext()){
 	    //Component tempComponent = new Component((Vector)compIt.next());
 	    oldPaths.sortedAdd((Component)compIt.next());
