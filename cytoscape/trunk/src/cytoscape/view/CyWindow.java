@@ -83,8 +83,7 @@ import cytoscape.layout.Subgraph;
  * This class represents a visible window displaying a network. It includes
  * all of the UI components and the the graph view.
  */
-public class CyWindow extends JPanel implements Graph2DSelectionListener, GraphViewChangeListener,
-CyNetworkListener, NetworkView {
+public class CyWindow extends JPanel implements Graph2DSelectionListener, GraphViewChangeListener,CyNetworkListener, NetworkView {
         
     protected static final int DEFAULT_WIDTH = 700;
     protected static final int DEFAULT_HEIGHT = 700;
@@ -106,6 +105,11 @@ CyNetworkListener, NetworkView {
     protected Graph2DView graphView;
     protected GraphView  view;
     protected Component display;
+  /**
+   * An object that keeps the <code>RootGraph</code>'s <code>GraphPerspective</code>
+   * synchronized with its <code>GraphView</code>.
+   */
+  protected GraphViewController graphViewController;
     
     protected ViewMode editGraphMode;
     protected ViewMode readOnlyGraphMode;
@@ -342,10 +346,54 @@ protected void updateGraphView() {
 	    // add context menues
 	    addViewContextMenues();
 	    view.fitContent();
-            redrawGraph(false, true);
-	    if (oldDisplay != null)
+      redrawGraph(false, true);
+	    if (oldDisplay != null){
 		    this.remove(oldDisplay);
+      }
+      
+      // Add the GraphViewController as a listener to the graphPerspective
+      // so that it keeps is synchronized to graphView
+      if(this.graphViewController == null){
+        this.graphViewController = new GraphViewController();
+        boolean added = this.graphViewController.addGraphView(this.view);
+        if(!added){
+          // This should never happen, but just in case
+          System.err.println("1. In CyWindow.updateGraphView(): Could not add this.view to "
+                             + " this.graphViewController.");
+        }
+        //TODO: Remove
+        System.out.println("1. In CyWindow.updateGraphView(). Added this.view to "
+                           + " this.graphViewController");
+      }else{
+        // The graphViewController had been instatiated before.
+        // Since right now we only have one view, clear the controller, and add the
+        // possibly new view. When we have more than one view, this will change.
+        this.graphViewController.removeAllGraphViews();
+        boolean added = this.graphViewController.addGraphView(this.view);
+        if(!added){
+          // Again, this should never happen, but just in case
+          System.err.println("2. In CyWindow.updateGraphView(): Could not add this.view to "
+                             + " this.graphViewController.");
+        }
+        //TODO: Remove
+        System.out.println("2. In CyWindow.updateGraphView(). Added this.view to "
+                           + " this.graphViewController");
+      }// end of GraphViewController stuff
 }
+
+  /**
+   * Returns the <code>cytoscape.view.GraphViewController</code> that keeps
+   * the <code>giny.model.GraphPerspective</code> contained in <code>CyNetwork</code>
+   * synchronized to the <code>giny.view.GraphView</code> in this <code>CyWindow</code>.
+   *
+   * @return a <code>cytoscape.view.GraphViewController</code> or null if yFiles is being
+   * used or if GINY is used and a call to <code>CyWindow.updateGraphView</code> has not 
+   * been made
+   * @see #updateGraphView() updateGraphView
+   */
+  public GraphViewController getGraphViewController (){
+    return this.graphViewController;
+  }//getGraphViewController
 
 /**
 *
