@@ -86,8 +86,7 @@ public AnnotationGui (CyWindow cyWindow)
   if (dataServer != null)
     annotationDescriptions = dataServer.getAnnotationDescriptions ();
   
-  defaultSpecies = Semantics.getDefaultSpecies(cyWindow.getNetwork(),
-                                               cyWindow.getCytoscapeObj() );
+  //defaultSpecies = Semantics.getDefaultSpecies(cyWindow.getNetwork(),cyWindow.getCytoscapeObj() );
 
 } // ctor
 //----------------------------------------------------------------------------------------
@@ -102,11 +101,13 @@ public void actionPerformed (ActionEvent e)
   //if (this.attributeLayouter == null) {
   //    this.attributeLayouter = new AttributeLayout (cyWindow);
   //}
-  if (this.mainDialog == null) {
-      mainDialog = new Gui ("Annotation");
-      mainDialog.pack ();
-      mainDialog.setLocationRelativeTo (cyWindow.getMainFrame ());
-  }
+  
+  defaultSpecies = Semantics.getDefaultSpecies(cyWindow.getNetwork(),cyWindow.getCytoscapeObj() );
+  //if (this.mainDialog == null) {
+  mainDialog = new Gui ("Annotation");
+  mainDialog.pack ();
+  mainDialog.setLocationRelativeTo (cyWindow.getMainFrame ());
+      //}
   mainDialog.setVisible (true);
 
 } // actionPerformed
