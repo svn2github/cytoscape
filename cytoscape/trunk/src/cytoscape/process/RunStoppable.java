@@ -1,22 +1,22 @@
 package cytoscape.process;
 
 /**
- * Creates a <code>Stoppable</code> out of a <code>Destroyable</code>.
+ * Creates a <code>Stoppable</code> out of a <code>Haltable</code>.
  **/
 public final class RunStoppable implements Runnable, Stoppable
 {
 
-  private final Destroyable m_destroyable;
+  private final Haltable m_halt;
   private final Object m_lock = new Object();
   private boolean m_ran = false;
   private boolean m_running = false;
   private boolean m_stop = false;
 
-  public RunStoppable(Destroyable destroyable)
+  public RunStoppable(Haltable haltable)
   {
-    if (destroyable == null)
-      throw new NullPointerException("destroyable is null");
-    m_destroyable = destroyable;
+    if (haltable == null)
+      throw new NullPointerException("haltable is null");
+    m_halt = haltable;
   }
 
   /**
@@ -34,7 +34,7 @@ public final class RunStoppable implements Runnable, Stoppable
     synchronized (m_lock) {
       if (m_stop) return;
       m_running = true; }
-    try { m_destroyable.run(); }
+    try { m_halt.run(); }
     finally
     {
       synchronized (m_lock) {
@@ -50,7 +50,7 @@ public final class RunStoppable implements Runnable, Stoppable
       m_stop = true;
       if (!m_running) return;
     }
-    m_destroyable.destroy();
+    m_halt.halt();
     synchronized (m_lock)
     {
       while (m_running) {
