@@ -33,7 +33,7 @@ public class DiscreteMapping extends TreeMap implements ObjectMapping {
     Class rangeClass; // the valid range class for this mapping
     String attrName;  //the name of the controlling data attribute
     protected byte mapType; //node or edge; specifies which attributes to use
-    protected HashSet mappedKeys;
+    protected TreeSet mappedKeys;
     protected JScrollPane listScrollPane;
     protected JDialog parentDialog;
 
@@ -89,7 +89,7 @@ public class DiscreteMapping extends TreeMap implements ObjectMapping {
         this.attrName = attrName;
 	if (!preserveMapping) {
             this.clear();
-            this.mappedKeys = new HashSet();
+            this.mappedKeys = new TreeSet();
         }
     }
     
@@ -113,6 +113,11 @@ public class DiscreteMapping extends TreeMap implements ObjectMapping {
 	if (mapAttrs == null) { // no attribute found <sob>
 	    return;
 	}
+        List acceptedClasses = Arrays.asList(getAcceptedDataClasses());
+        Class mapAttrClass = attrs.getClass(attrName);
+        if (mapAttrClass == null || !(acceptedClasses.contains(mapAttrClass)) ) {
+            return;
+        }
 
 	Collection keys = mapAttrs.values();
 	// get the set of keys being mapped from
@@ -246,7 +251,7 @@ public class DiscreteMapping extends TreeMap implements ObjectMapping {
 	// only clone if mapping initialized
 	if (attrName != null) {
 	    miniMe.attrName = new String(attrName);
-	    miniMe.mappedKeys = (HashSet) mappedKeys.clone();
+	    miniMe.mappedKeys = (TreeSet) mappedKeys.clone();
 	}
 	return miniMe;
     }
@@ -321,7 +326,7 @@ public class DiscreteMapping extends TreeMap implements ObjectMapping {
 		ValueDisplayer mapValue;
 		if (currentMapping == null) {
 		    // display default selection
-		    mapValue = ValueDisplayer.getDisplayFor(parent, "Define Discrete Mapping", defaultObj);
+		    mapValue = ValueDisplayer.getBlankDisplayFor(parent, "Define Discrete Mapping", defaultObj);
 		}
 		else { // display current mapping
 		    mapValue = ValueDisplayer.getDisplayFor(parent, "Define Discrete Mapping", get(keyObject));
