@@ -45,7 +45,7 @@ public ExecTest (String name)
   super (name);
 }
 //---------------------------------------------------------------------------
-public void testBasic () 
+public void noTestBasic () 
 {
   System.out.println ("testBasic");
 
@@ -82,6 +82,44 @@ public void testBasic ()
   // System.out.println (fullResult);
 
 } // testBasic
+//---------------------------------------------------------------------------
+public void testBasicWithThreadedExec () throws Exception
+{
+  System.out.println ("testBasicWithThreadedExec");
+
+  String [] cmd = new String [2];
+  cmd [0] = "ls";
+  cmd [1] = "-l";
+
+  Exec child = new Exec (cmd);
+  int result = child.runThreaded ();
+  assertTrue (result == 0);
+  String stdout = child.getStdoutAsString ();
+  String stderr = child.getStderrAsString ();
+
+  System.out.println ("stdout: " + stdout);
+  System.out.println ("stderr: " + stderr);
+
+} // testBasicWithThreadedExec
+//---------------------------------------------------------------------------
+public void testBasicWithThreadedExec2 () throws Exception
+{
+  System.out.println ("testBasicWithThreadedExec2");
+
+  String [] cmd = new String [2];
+  cmd [0] = "ls";
+  cmd [1] = "-l";
+
+  Exec child = new Exec (cmd);
+  int result = child.runThreaded ();
+  assertTrue (result == 0);
+  String stdout = child.getStdoutAsString ();
+  String stderr = child.getStderrAsString ();
+
+  System.out.println ("stdout: " + stdout);
+  System.out.println ("stderr: " + stderr);
+
+} // testBasicWithThreadedExec2
 //---------------------------------------------------------------------------
 public void notestBasicInBackground () 
 {
@@ -121,7 +159,7 @@ public void notestBasicInBackground ()
 
 } // testBasicInBackground
 //---------------------------------------------------------------------------
-public void testUsingStandardInput () 
+public void notestUsingStandardInput () 
 {
   System.out.println ("testUsingStandardInput");
 

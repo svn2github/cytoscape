@@ -50,6 +50,7 @@ public class Exec {
   Vector stderrResults;
   String stringToSendToStandardInput;
   boolean runInBackground = false;
+  String stdout, stderr;
 //---------------------------------------------------------------------------
 public Exec  ()
 {
@@ -156,6 +157,65 @@ public int run ()
 
 } // run
 //---------------------------------------------------------------------------
+public int runThreaded () throws Exception
+{
+  int execExitValue = -1;  // be pessimistic
+
+  StringBuffer cmdSB = new StringBuffer ();
+  for (int i=0; i < cmd.length; i++) {
+    cmdSB.append (cmd [i]);
+    cmdSB.append (" ");
+    }
+
+  Runtime runtime =  Runtime.getRuntime ();
+  Process process = runtime.exec (cmdSB.toString ());
+
+  final BufferedReader stdoutReader = new BufferedReader (new InputStreamReader (process.getInputStream()));
+  final BufferedReader stderrReader = new BufferedReader (new InputStreamReader (process.getErrorStream()));
+  final StringBuffer stdoutSB = new StringBuffer ();
+  final StringBuffer stderrSB = new StringBuffer ();
+
+  Thread stdoutReadingThread = new Thread () {
+    public void run () {
+      String s;
+      try { 
+         while ((s = stdoutReader.readLine()) != null) {
+           stdoutSB.append (s + "\n");
+           } // while
+         } // trey
+       catch (Exception exc0) {
+         System.out.println ("--- error: " + exc0.getMessage ());
+         exc0.printStackTrace ();
+         } // catch
+      }; // run
+     }; // thread
+
+  Thread stderrReadingThread = new Thread () {
+    public void run () {
+      String s;
+      try { 
+         while ((s = stderrReader.readLine()) != null) {
+           stderrSB.append (s + "\n");
+           } // while
+         } // try
+       catch (Exception exc1) {
+         System.out.println ("--- error: " + exc1.getMessage ());
+         exc1.printStackTrace ();
+         } // catch
+      }; // run
+     }; // thread
+
+  stdoutReadingThread.start ();
+  stderrReadingThread.start ();
+  execExitValue = process.waitFor ();
+
+  stdout = stdoutSB.toString ();
+  stderr = stderrSB.toString ();
+
+  return execExitValue;
+
+} // runThreaded
+//---------------------------------------------------------------------------
 public Vector getStdout ()
 {
   return stdoutResults;
@@ -164,6 +224,16 @@ public Vector getStdout ()
 public Vector getStderr ()
 {
   return stderrResults;
+}
+//---------------------------------------------------------------------------
+public String getStdoutAsString () 
+{
+  return stdout;
+}
+//---------------------------------------------------------------------------
+public String getStderrAsString () 
+{
+  return stderr;
 }
 //---------------------------------------------------------------------------
 } // Exec.java
