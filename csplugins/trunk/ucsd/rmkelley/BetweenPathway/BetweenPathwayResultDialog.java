@@ -161,51 +161,6 @@ class BetweenPathwayResultDialog extends RyanDialog implements ListSelectionList
 	  prediction.makePredictions(pathways,new File("physical-predictions.txt"));
 	}});
 
-    JButton enrichButton = new JButton("Enriched Complexes");
-    enrichButton.addActionListener(new ActionListener(){
-	public void actionPerformed(ActionEvent ae){
-	  HashMap node2BestPathway = new HashMap();
-	  GOprediction prediction = new GOprediction(new File("GOID2orfs.txt"),new File("GOID2parents.txt"));
-	  for(Iterator resultIt = results.iterator();resultIt.hasNext();){
-	    NetworkModel model = (NetworkModel)resultIt.next();
-	    Pathway one = new Pathway();
-	    Pathway two = new Pathway();
-	    one.score = model.score;
-	    two.score = model.score;
-	    one.nodes = model.one;
-	    two.nodes = model.two;
-	    assignBestPathway(one,node2BestPathway);
-	    assignBestPathway(two,node2BestPathway);
-	  }
-	  try{
-	    FileWriter writer = new FileWriter("enrichment.txt",false);
-	    for(Iterator nodeIt = node2BestPathway.keySet().iterator();nodeIt.hasNext();){
-	      Node node = (Node)nodeIt.next();
-	      Pathway pathway = (Pathway)node2BestPathway.get(node);
-	      List categories = prediction.findCategories(pathway,null);
-	      writer.write(""+node+"\t"+!categories.isEmpty()+"\t"+categories+"\n");
-	    }
-	    writer.close();
-	  }catch(Exception e){
-	    e.printStackTrace();
-	    System.exit(-1);
-	  }
-	}
-	protected void assignBestPathway(Pathway pathway, HashMap node2BestPathway){
-	  for(Iterator nodeIt = pathway.nodes.iterator();nodeIt.hasNext();){
-	    Node node = (Node)nodeIt.next();
-	    if(!node2BestPathway.containsKey(node)){
-	      node2BestPathway.put(node, pathway);
-	    }
-	    else{
-	      Pathway oldPathway = (Pathway)node2BestPathway.get(node);
-	      if(pathway.score > oldPathway.score){
-		node2BestPathway.put(node,pathway);
-	      }
-	    }
-	  }
-	}});
-
     JButton cvButton = new JButton("CrossValidate GO");
     cvButton.addActionListener(new ActionListener(){
 	public void actionPerformed(ActionEvent ae){
@@ -272,20 +227,87 @@ class BetweenPathwayResultDialog extends RyanDialog implements ListSelectionList
 	  }
 	  try{
 	    FileWriter writer = new FileWriter("assessBetween.txt",false);
-	    FileWriter allWriter = new FileWriter("assessAll.txt",false);
+	    int trials = 100;
+	    int [] random1_results = new int[trials];
+	    int [] random2_results = new int[trials];
+	    int true1_result = 0;
+	    int true2_result = 0;
 	    for(Iterator nodeIt = node2BestPathway.keySet().iterator();nodeIt.hasNext();){
 	      Node node = (Node)nodeIt.next();
-	      Pathway pathway = (Pathway)node2BestPathway.get(node);
-	      writer.write(""+node+"\t"+prediction.getAverageDistance(node,physicalNetwork.neighborsList(node),pathway.nodes)+"\n");
-	      allWriter.write(""+node+"\t"+prediction.getAverageDistance(node,physicalNetwork.neighborsList(node))+"\n");
+	      Pathway pathway = (Pathway)node2BestPathway.get(node);	    
+	      writer.write(node.toString());
+	      List all1Neighbors = null;
+	      HashSet pathway1Neighbors = new HashSet();
+	      {
+		HashSet all1NeighborsSet = new HashSet(physicalNetwork.neighborsList(node));
+		all1NeighborsSet.remove(node);
+		all1Neighbors = new Vector(all1NeighborsSet);
+		for(Iterator neighborIt = all1Neighbors.iterator();neighborIt.hasNext();){
+		  Object o = neighborIt.next();
+		  if(pathway.nodes.contains(o)){
+		    pathway1Neighbors.add(o);
+		  }
+		}
+	      }
+	      List all2Neighbors = null;
+	      HashSet pathway2Neighbors = new HashSet();
+	      {
+		HashSet all2NeighborsSet = new HashSet(all1Neighbors);
+		for(Iterator neighborIt = all1Neighbors.iterator();neighborIt.hasNext();){
+		  all2NeighborsSet.addAll(physicalNetwork.neighborsList((Node)neighborIt.next()));
+		}
+		all2NeighborsSet.remove(node);
+		all2Neighbors = new Vector(all2NeighborsSet);
+		for(Iterator neighborIt = all2Neighbors.iterator();neighborIt.hasNext();){
+		  Object o = neighborIt.next();
+		  if(pathway.nodes.contains(o)){
+		    pathway2Neighbors.add(o);
+		  }
+		}
+	      }
+		
+	      double distance = prediction.getAverageDistance(node,all1Neighbors,pathway1Neighbors);
+	      double full_distance = prediction.getAverageDistance(node,all1Neighbors);
+	      if ( distance < full_distance ){
+		true1_result += 1;
+	      }
+	      for(int trial = 0 ; trial < trials ; trial++){
+		Set randomSubset = getRandomSubset(all1Neighbors,pathway1Neighbors.size());
+		double random_distance = prediction.getAverageDistance(node,all1Neighbors,randomSubset);
+		if(random_distance < full_distance){
+		  random1_results[trial] += 1;
+		}
+	      }
+	      distance = prediction.getAverageDistance(node,all2Neighbors,pathway2Neighbors);
+	      full_distance = prediction.getAverageDistance(node,all2Neighbors);
+	      if ( distance < full_distance ){
+		true2_result += 1;
+	      }
+	      for(int trial = 0 ; trial < trials ; trial++){
+		Set randomSubset = getRandomSubset(all2Neighbors,pathway2Neighbors.size());
+		double random_distance = prediction.getAverageDistance(node,all2Neighbors,randomSubset);
+		if(random_distance < full_distance){
+		  random2_results[trial] += 1;
+		}
+	      }
+	    }
+	    writer.write(""+trials+"\n");
+	    writer.write("true\t"+true1_result+"\t"+true2_result);
+	    for(int idx=0;idx<trials;idx++){
+	      writer.write("random"+idx+"\t"+random1_results[idx]+"\t"+random2_results[idx]+"\n");
 	    }
 	    writer.close();
-	    allWriter.close();
 	  }catch(Exception e){
 	    e.printStackTrace();
 	    System.exit(-1);
 	  }
 	}
+
+	protected Set getRandomSubset(List list,int size){
+	  Collections.shuffle(list);
+	  return new HashSet(list.subList(0,size));
+	}
+
 	protected void assignBestPathway(Pathway pathway, HashMap node2BestPathway){
 	  for(Iterator nodeIt = pathway.nodes.iterator();nodeIt.hasNext();){
 	    Node node = (Node)nodeIt.next();
@@ -308,7 +330,6 @@ class BetweenPathwayResultDialog extends RyanDialog implements ListSelectionList
     southPanel.add(cvButton);
     southPanel.add(pictureButton);
     southPanel.add(assessButton);
-    southPanel.add(enrichButton);
     getContentPane().add(southPanel,BorderLayout.SOUTH);
     pack();
   }

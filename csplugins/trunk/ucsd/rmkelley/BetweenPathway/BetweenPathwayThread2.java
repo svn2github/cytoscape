@@ -307,9 +307,9 @@ class BetweenPathwayThread2 extends Thread{
 	  //double source_FDR = score2SuccessRate(this_physical_source_score);
 	  //double target_FDR = score2SuccessRate(this_physical_target_score);
 	  double this_genetic_score = genetic_score + calculateGeneticIncrease(newSources,newTargets,sourceMembers,targetMembers);
-	  if(this_genetic_score < 0){
-	    continue;
-	  }
+	  //if(this_genetic_score < 0){
+	  //  continue;
+	  //}
 	  //double this_score = this_genetic_score*source_FDR*target_FDR;
 	  //double this_score = this_genetic_score*(temp1/sourceMax)*(temp2/targetMax);
 	  double this_score = this_genetic_score + this_physical_source_score + this_physical_target_score;
