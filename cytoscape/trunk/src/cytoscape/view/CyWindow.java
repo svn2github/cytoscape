@@ -57,6 +57,8 @@ import giny.util.SpringEmbeddedLayouter;
 import giny.view.GraphView;
 import giny.view.EdgeView;
 import giny.view.NodeView;
+import giny.view.GraphViewChangeListener;
+import giny.view.GraphViewChangeEvent;
 
 import phoebe.*;
 //import phoebe.util.*;
@@ -81,7 +83,7 @@ import cytoscape.layout.Subgraph;
  * This class represents a visible window displaying a network. It includes
  * all of the UI components and the the graph view.
  */
-public class CyWindow extends JPanel implements Graph2DSelectionListener,
+public class CyWindow extends JPanel implements Graph2DSelectionListener, GraphViewChangeListener,
 CyNetworkListener, NetworkView {
         
     protected static final int DEFAULT_WIDTH = 700;
@@ -184,12 +186,6 @@ protected void doInit(CytoscapeObj globalInstance, CyNetwork network, String tit
     else {
 	    // using giny graph library
 	    //@@@@@@ what to do with graph modes in giny?
-	    //editGraphMode = new EditGraphMode(this);
-	    //readOnlyGraphMode = new ReadOnlyGraphMode(this);
-	    //currentGraphMode = readOnlyGraphMode;
-	   // Properties configProps = globalInstance.getConfiguration().getProperties();
-	    //nodeAttributesPopupMode = new NodeBrowsingMode(configProps, this);
-	    //currentPopupMode = nodeAttributesPopupMode;
 	    System.out.println ( "Using giny library, initializing" ) ;
 	    initialize();
 	    //setInitialLayouter(); //@@@@@@@ to add for giny
@@ -266,6 +262,7 @@ protected void initialize() {
 	else
 	{
 	    //no graph specified yet what to do with giny graph view?
+	    //left null for now
 	   // setLayout( new BorderLayout() );  
 	    //this.view = new PGraphView();
     	   // add(graphView, BorderLayout.CENTER);
@@ -330,16 +327,13 @@ protected void updateGraphView() {
 	    view.setBackgroundPaint(Color.YELLOW);
 	    view.fitContent();
 	    view.updateView();
-	    if ( display != null)
-		    this.remove(display);	
-	    display = view.getComponent();
-	    //comp.setBackground(Color.YELLOW);
-	    //comp.setSize(new Dimension (DEFAULT_WIDTH, DEFAULT_HEIGHT));
-	    setLayout( new BorderLayout() );  
-	    //add(display);
-	    add( display, BorderLayout.CENTER);
-	    
-	    
+	    if (display != null)
+		    remove(display);
+	     
+	     display = view.getComponent();
+	     setLayout( new BorderLayout() );  
+	     add( display, BorderLayout.CENTER);
+	 
 }
 
 /**
@@ -580,23 +574,15 @@ protected void fitGraphView() {
  */
 public void showWindow() {
 
-//     //draw the graph for the first time
-//     displayNewGraph(doFreshLayout);
-//     mainFrame.setContentPane(this);
-//     mainFrame.pack();
-//     mainFrame.setSize (new Dimension (DEFAULT_WIDTH, DEFAULT_HEIGHT));
-//     //this.setVisible(true);
-//     mainFrame.setVisible(true);
-//     //setInteractivity(true);
 
-    
         //draw the graph for the first time
         displayNewGraph( network.getNeedsLayout() );
 	mainFrame.setContentPane(this);
         mainFrame.pack();
 	mainFrame.setSize (new Dimension (DEFAULT_WIDTH, DEFAULT_HEIGHT));
-        //this.setVisible(true);
+        this.setVisible(true);
         mainFrame.setVisible(true);
+	//mainFrame.pack();
         //setInteractivity(true);
         windowDisplayed = true;
 }
@@ -786,12 +772,9 @@ public void setNewNetwork( CyNetwork newNetwork ) {
 	    updateGraphView();
 	    //applyLayout();
 	    fitGraphView();
-	    mainFrame.setContentPane(this);
-	    //showWindow();
-	    getCyMenus().updateUndoRedoMenuItemStatus();
-	    //@@@@ for some reason the tool bar does not get painted correctly, look in to it later
-	   //System.out.println("Node Attributes: " + network.getNodeAttributes().toString());
-	   //System.out.println("Edge Attributes: " + network.getEdgeAttributes().toString()); 
+	    add(cyMenus.getToolBar(), BorderLayout.NORTH);
+	    showWindow();
+	   
     }
 }
 //------------------------------------------------------------------------------
@@ -1097,6 +1080,16 @@ public void onGraph2DSelectionEvent(y.view.Graph2DSelectionEvent e) {
 }
 
 //------------------------------------------------------------------------------
+
+/**
+*
+* Implementation of the GraphViewChangeListener interface
+* @param event
+*/
+public void graphViewChanged ( GraphViewChangeEvent event)
+{
+}
+//--------------------------------------------------------------------------------
 /**
  * Equivalent to updateStatusText(0,0).
  */
