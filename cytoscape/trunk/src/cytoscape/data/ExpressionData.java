@@ -141,7 +141,10 @@ public class ExpressionData {
 
 	String headerLine = this.readOneLine(input);
 	if (isHeaderLineNull(headerLine,input,filename)) {return false;}
-
+	// added by iliana (iavila@systemsbiology.org) on 11.25.2002
+	if (isHeaderLineMTXHeader(headerLine)){ 
+	    headerLine = this.readOneLine(input);
+	}
 	boolean expectPvals = doesHeaderLineHaveDuplicates(headerLine);
 	StringTokenizer headerTok = new StringTokenizer(headerLine);
 	int numTokens = headerTok.countTokens();
@@ -286,6 +289,23 @@ public class ExpressionData {
 	else { return false; }
     }
 
+    // added by iliana on 11.25.2002
+    // it is convenient for users to load their MTX files as they are
+    // the current code requires them to remove the first line
+    private boolean isHeaderLineMTXHeader(String hline){
+	boolean b = false;
+	String pattern = "\t+RATIOS\t+LAMBDAS";
+	
+	try{
+	    b = hline.matches(pattern);
+	}catch (Exception e){
+	    System.out.println("EXCEPTION in isHeaderLineMTXHeader: " + e);
+	    System.out.flush();
+	}
+	
+	return b;
+    }
+
     private String readOneLine(BufferedReader f) {
 	String s = null;
 	try {
@@ -403,10 +423,13 @@ public class ExpressionData {
 
     public mRNAMeasurement getMeasurement (String gene, String condition) {
 	Integer condIndex = (Integer)condNameToIndex.get(condition);
-	if (condIndex == null) {return null;}
+	if (condIndex == null) {
+	    return null;}
 
 	Vector measurements = this.getMeasurements(gene);
-	if (measurements == null) {return null;}
+	if (measurements == null) {
+	    return null;
+	}
 
 	mRNAMeasurement returnVal =
 	    (mRNAMeasurement) measurements.get( condIndex.intValue() );
