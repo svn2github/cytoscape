@@ -2,7 +2,7 @@ package fing.model;
 
 import fing.util.IntEnumerator;
 
-// Indices of edges and nodes are non-negative.
+// Edges and nodes are non-negative.
 interface UnderlyingRootGraph
 {
   IntEnumerator nodes();
@@ -10,14 +10,16 @@ interface UnderlyingRootGraph
   boolean removeNode(int node);
   int createNode();
   boolean removeEdge(int edge);
-  // Returns -1 if node indices specified are invalid.
+  // Returns -1 if nodes specified are invalid.
   int createEdge(int sourceNode, int targetNode, boolean directed);
   boolean containsNode(int node);
   boolean containsEdge(int edge);
-  // Throws IllegalArgumentException
+  // Throws IllegalArgumentException.
   IntEnumerator adjacentEdges(int node, boolean undirected,
                               boolean incoming, boolean outgoing);
+  // Returns -1 if edge specified is invalid.
   int sourceNode(int edge);
   int targetNode(int edge);
+  // Throws IllegalArgumentException.
   boolean isDirectedEdge(int edge);
 }
