@@ -61,4 +61,12 @@ public class TestTaskUtil extends TestCase {
         timeStr = TaskUtil.getTimeString(3601000);
         assertEquals("01:00:01", timeStr);
     }
+
+    /**
+     * Tests the PadString static method.
+     */
+    public void testPadString() {
+        String str = TaskUtil.padString("Testing");
+        assertEquals (TaskUtil.STR_LENGTH, str.length());
+    }
 }

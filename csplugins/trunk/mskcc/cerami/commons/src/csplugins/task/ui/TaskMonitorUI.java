@@ -108,6 +108,11 @@ public class TaskMonitorUI extends JFrame implements ActionListener {
     private JLabel statusValue;
 
     /**
+     * Title value label.
+     */
+    private JLabel titleValue;
+
+    /**
      * Time remaining label.
      */
     private JLabel timeRemainingValue;
@@ -252,7 +257,7 @@ public class TaskMonitorUI extends JFrame implements ActionListener {
         this.startTime = new Date();
 
         //  Init User Interface
-        this.setTitle(task.getTaskDescription());
+        this.setTitle(task.getTaskTitle());
         Container container = this.getContentPane();
         container.setLayout(new BorderLayout());
         JPanel progressPanel = new JPanel(new GridBagLayout());
@@ -261,13 +266,13 @@ public class TaskMonitorUI extends JFrame implements ActionListener {
 
         addLabel("Description:  ", progressPanel, 0, y,
                 GridBagConstraints.EAST, true);
-        addLabel(task.getTaskDescription(), progressPanel, 1, y,
-                GridBagConstraints.WEST, true);
+        titleValue = addLabel(TaskUtil.padString(task.getTaskTitle()),
+                progressPanel, 1, y, GridBagConstraints.WEST, true);
 
         addLabel("Status:  ", progressPanel, 0, ++y,
                 GridBagConstraints.EAST, true);
-        statusValue = addLabel("Starting...", progressPanel, 1, y,
-                GridBagConstraints.WEST, true);
+        statusValue = addLabel(TaskUtil.padString ("Starting..."),
+                progressPanel, 1, y, GridBagConstraints.WEST, true);
 
         addLabel("Time Left:  ", progressPanel, 0, ++y,
                 GridBagConstraints.EAST, showTimeFields);
@@ -287,7 +292,7 @@ public class TaskMonitorUI extends JFrame implements ActionListener {
         createFooter(container);
 
         this.initTimer();
-        this.setUndecorated(true);
+        this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         this.pack();
         this.setResizable(false);
 
@@ -394,6 +399,8 @@ public class TaskMonitorUI extends JFrame implements ActionListener {
      * While Task is Running (not yet done), update the UI
      */
     private void updateProgress() {
+        setTitle(TaskUtil.padString(task.getTaskTitle()));
+        titleValue.setText(TaskUtil.padString(task.getTaskTitle()));
         if (!task.isDone()) {
             if (task.isIndeterminate()) {
                 pBar.setIndeterminate(true);
@@ -409,13 +416,12 @@ public class TaskMonitorUI extends JFrame implements ActionListener {
                         (TaskUtil.getTimeString
                         (task.getEstimatedTimeRemaining()));
             }
-            statusValue.setText(task.getProgressMessage());
+            statusValue.setText(TaskUtil.padString(task.getProgressMessage()));
         } else {
             taskIsFinished();
         }
         timeElapsedValue.setText
                 (TaskUtil.getTimeString(task.getTimeElapsed()));
-        this.pack();
     }
 
     /**
@@ -443,9 +449,9 @@ public class TaskMonitorUI extends JFrame implements ActionListener {
         pBar.setIndeterminate(false);
         pBar.setValue(Integer.MAX_VALUE);
         if (task.isInterrupted()) {
-            statusValue.setText("Task Canceled by User.");
+            statusValue.setText("Task Canceled by User");
         } else {
-            statusValue.setText("Done.");
+            statusValue.setText("Done");
         }
         timeRemainingValue.setText(TaskUtil.getTimeString(0L));
         closeButton.setEnabled(true);

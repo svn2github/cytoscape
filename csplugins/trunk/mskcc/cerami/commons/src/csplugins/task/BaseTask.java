@@ -98,7 +98,7 @@ public abstract class BaseTask extends Thread implements Task {
     /**
      * Human Readable Task Description.
      */
-    private String taskDescription;
+    private String taskTitle;
 
     /**
      * Time Task Started.
@@ -113,21 +113,21 @@ public abstract class BaseTask extends Thread implements Task {
     /**
      * Constructor.
      *
-     * @param taskDescription Human Readable Description of Task.
+     * @param taskTitle Human Readable Title of Task.
      */
-    public BaseTask(String taskDescription) {
-        this.taskDescription = taskDescription;
+    public BaseTask(String taskTitle) {
+        this.taskTitle = taskTitle;
         this.startTime = new Date();
     }
 
     /**
-     * Gets Human Readable Description of Task.
+     * Gets Human Readable Title of Task.
      * Used by UI Components.
      *
-     * @return Human Readable Description of Task.
+     * @return Human Readable Title of Task.
      */
-    public String getTaskDescription() {
-        return this.taskDescription;
+    public String getTaskTitle() {
+        return this.taskTitle;
     }
 
     /**
@@ -318,6 +318,15 @@ public abstract class BaseTask extends Thread implements Task {
      */
     protected void setProgressMessage(String progressMessage) {
         this.progressMessage = progressMessage;
+    }
+
+    /**
+     * Sets the Title of the Task.
+     *
+     * @param taskTitle Human Readable Task Title.
+     */
+    protected void setTaskTitle (String taskTitle) {
+        this.taskTitle = taskTitle;
     }
 
     /**

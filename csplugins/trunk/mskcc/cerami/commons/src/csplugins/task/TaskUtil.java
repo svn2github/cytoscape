@@ -45,6 +45,11 @@ public class TaskUtil {
     public static final String NOT_AVAILABLE_STR = "N/A";
 
     /**
+     * String Length.
+     */
+    public static final int STR_LENGTH = 75;
+
+    /**
      * Given a time value in milliseconds, this method returns a human
      * readable representation.
      * Here are a few examples:
@@ -79,6 +84,30 @@ public class TaskUtil {
             }
             dateFormat.setCalendar(calendar);
             return dateFormat.format(calendar.getTime());
+        }
+    }
+
+    /**
+     * Pad String with Extra Spaces.
+     *
+     * @param str Original String.
+     * @return Padded String.
+     */
+    public static String padString(String str) {
+        StringBuffer temp;
+        if (str == null) {
+            temp = new StringBuffer();
+        } else {
+            temp = new StringBuffer(str);
+        }
+        int diff = STR_LENGTH - temp.length();
+        if (diff > 0) {
+            for (int i = 0; i < diff; i++) {
+                temp.append(" ");
+            }
+            return temp.toString();
+        } else {
+            return new String (temp.substring(0, STR_LENGTH) + "...");
         }
     }
 }

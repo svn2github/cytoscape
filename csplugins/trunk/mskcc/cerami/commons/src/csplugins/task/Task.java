@@ -49,7 +49,7 @@ public interface Task extends Runnable {
      *
      * @return Human Readable Description of Task.
      */
-    String getTaskDescription();
+    String getTaskTitle();
 
     /**
      * Gets current value of progress.
