@@ -79,7 +79,7 @@ public class MainFilterDialog extends JDialog {
 
     /**
      * One counter per type.
-     * Initliazed through {@link #initCounters()}
+     * Initialized through private method initCounters().
      */
     int[] counters;
 
