@@ -3,7 +3,7 @@ package cytoscape.graph.layout.impl;
 import cytoscape.graph.GraphTopology;
 import cytoscape.graph.layout.algorithm.LayoutAlgorithm;
 import cytoscape.graph.layout.algorithm.MutableGraphLayout;
-import cytoscape.graph.util.GraphUtils;
+import cytoscape.graph.util.GraphCompiler;
 import cytoscape.process.PercentCompletedCallback;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -235,7 +235,7 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
    */
   private static int[][] calculateNodeDistances(GraphTopology graph)
   {
-    final GraphUtils graphUtils = new GraphUtils(graph);
+    final GraphCompiler graphUtils = new GraphCompiler(graph);
     int[][] distances = new int[graph.getNumNodes()][];
     Object[] nodes = new Object[graph.getNumNodes()];
     for (int i = 0; i < nodes.length; i++)
@@ -313,7 +313,7 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
   {
     partials.reset();
     int node = partials.nodeIndex;
-    double nodeRadius = 0.01;
+    double nodeRadius = 0.0;
     double nodeX = graph.getNodePosition(node).getX();
     double nodeY = graph.getNodePosition(node).getY();
     PartialDerivatives otherPartials = null;
@@ -345,7 +345,7 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
         otherPartials = (PartialDerivatives) iterator.next();
         otherNode = otherPartials.nodeIndex; }
       if (node == otherNode) continue;
-      otherNodeRadius = 0.01;
+      otherNodeRadius = 0.0;
       while (true) {
         deltaX = nodeX - graph.getNodePosition(otherNode).getX();
         deltaY = nodeY - graph.getNodePosition(otherNode).getY();

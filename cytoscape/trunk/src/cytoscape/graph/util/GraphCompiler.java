@@ -10,7 +10,7 @@ import java.util.Hashtable;
  * An instance of this class is meant to be used by a single thread only.<p>
  * This class is very tentative at this point - it may go away soon.
  **/
-public final class GraphUtils
+public final class GraphCompiler
 {
 
   /**
@@ -44,11 +44,12 @@ public final class GraphUtils
   /**
    * <font color="#ff0000">IMPORTANT:</font> The <code>GraphTopology</code>
    * object passed to this constructor must have a non-mutable topology.  The
-   * implementation of <code>GraphUtils</code> may do incremental compilation
+   * implementation of <code>GraphCompiler</code> may do incremental
+   * compilation
    * of the graph; if graph topology changes over time, bad things could
    * happen.
    **/
-  public GraphUtils(GraphTopology graph)
+  public GraphCompiler(GraphTopology graph)
   {
     if (graph == null) throw new NullPointerException("graph is null");
     this.graph = graph;
