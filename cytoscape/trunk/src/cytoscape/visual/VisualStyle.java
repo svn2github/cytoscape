@@ -4,6 +4,8 @@
 // $Author$
 //----------------------------------------------------------------------------
 package cytoscape.visual;
+
+import cytoscape.visual.calculators.*;
 //----------------------------------------------------------------------------
 /**
  * This class encapsulates a full set of visual mapping specifications for
@@ -28,6 +30,70 @@ public class VisualStyle implements Cloneable {
      */
     public int getDupeCount() {
 	return dupeCount;
+    }
+
+    /**
+     * Check if contained appearance calculators are using given calculator
+     *
+     * @param	c	calculator to check conflicts for
+     * @return	name of conflicting visual style, or null if no conflicts
+     */
+    public String checkConflictingCalculator(Calculator c) {
+	boolean conflict = false;
+	if (c instanceof NodeColorCalculator) {
+	    if (nodeAC.getNodeFillColorCalculator() == c ||
+		nodeAC.getNodeBorderColorCalculator() == c)
+		conflict = true;
+        } else if (c instanceof NodeLineTypeCalculator) {
+            if (nodeAC.getNodeLineTypeCalculator() == c)
+		conflict = true;
+        } else if (c instanceof NodeShapeCalculator) {
+	    if (nodeAC.getNodeShapeCalculator() == c)
+		conflict = true;
+        } else if (c instanceof NodeSizeCalculator) {
+	    if (nodeAC.getNodeWidthCalculator() == c ||
+		nodeAC.getNodeHeightCalculator() == c)
+		conflict = true;
+        } else if (c instanceof NodeLabelCalculator) {
+	    if (nodeAC.getNodeLabelCalculator() == c)
+		conflict = true;
+        } else if (c instanceof NodeToolTipCalculator) {
+	    if (nodeAC.getNodeToolTipCalculator() == c)
+		conflict = true;
+        } else if (c instanceof NodeFontFaceCalculator) {
+	    if (nodeAC.getNodeFontFaceCalculator() == c)
+		conflict = true;
+        } else if (c instanceof NodeFontSizeCalculator) {
+	    if (nodeAC.getNodeFontSizeCalculator() == c)
+		conflict = true;
+        } else if (c instanceof EdgeColorCalculator) {
+	    if (edgeAC.getEdgeColorCalculator() == c)
+		conflict = true;
+        } else if (c instanceof EdgeLineTypeCalculator) {
+	    if (edgeAC.getEdgeLineTypeCalculator() == c)
+		conflict = true;
+        } else if (c instanceof EdgeArrowCalculator) {
+	    if (edgeAC.getEdgeSourceArrowCalculator() == c ||
+		edgeAC.getEdgeTargetArrowCalculator() == c)
+		conflict = true;
+        } else if (c instanceof EdgeLabelCalculator) {
+	    if (edgeAC.getEdgeLabelCalculator() == c)
+		conflict = true;
+        } else if (c instanceof EdgeToolTipCalculator) {
+	    if (edgeAC.getEdgeToolTipCalculator() == c)
+		conflict = true;
+        } else if (c instanceof EdgeFontFaceCalculator) {
+	    if (edgeAC.getEdgeFontFaceCalculator() == c)
+		conflict = true;
+        } else if (c instanceof EdgeFontSizeCalculator) {
+	    if (edgeAC.getEdgeFontSizeCalculator() == c)
+		conflict = true;
+	}
+
+	if (conflict)
+	    return name;
+	else
+	    return null;
     }
 
     /**

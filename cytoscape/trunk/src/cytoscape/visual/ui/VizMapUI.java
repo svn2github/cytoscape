@@ -402,6 +402,8 @@ public class VizMapUI extends JDialog {
 	for (int i = 0; i < tabs.length; i++) {
 	    tabs[i].visualStyleChanged();
 	}
+	validate();
+	repaint();
     }
 
     /**
@@ -423,5 +425,23 @@ public class VizMapUI extends JDialog {
 	    selected = t.checkCalcSelected(selectedCalc);
 	}
 	return selected;
+    }
+
+    /**
+     * Ensure that the calculator to be removed isn't used in other visual styles.
+     * If it is, return the names of visual styles that are currently using it.
+     * 
+     * @param	c	calculator to check usage for
+     * @return	names of visual styles using the calculator
+     */
+    public Vector checkCalculatorUsage(Calculator c) {
+	Vector conflicts = new Vector();
+	for (Iterator iter = styles.iterator(); iter.hasNext();) {
+	    VisualStyle vs = (VisualStyle) iter.next();
+	    String styleName = vs.checkConflictingCalculator(c);
+	    if (styleName != null)
+		conflicts.add(styleName);
+	}
+	return conflicts;
     }
 }

@@ -445,6 +445,27 @@ public class VizMapAttrTab extends VizMapTab {
 	    if (currentCalculator == null) {
 		return;
 	    }
+	    // check duplication
+	    Vector conflicts = mainUIDialog.checkCalculatorUsage(currentCalculator);
+	    if (conflicts.size() != 0) {
+		StringBuffer errmsg = new StringBuffer((String) conflicts.get(0));
+		for (int i = 1; i < conflicts.size(); i++) {
+		    if (i == conflicts.size() - 1)
+			errmsg.append(" and ");
+		    else
+			errmsg.append(", ");
+		    errmsg.append((String) conflicts.get(i));
+		}
+		errmsg.append(". Do you still want to remove this calculator?");
+				    
+		int conf = JOptionPane.showConfirmDialog(mainUIDialog,
+							 "Calculator " + currentCalculator.toString() + " currently in use by " + errmsg.toString(),
+							 "Calculator In Use",
+							 JOptionPane.YES_NO_OPTION,
+							 JOptionPane.WARNING_MESSAGE);
+		if (conf == JOptionPane.NO_OPTION)
+		    return;
+	    }	 
 	    Calculator temp = currentCalculator;
 	    currentCalculator = null;
 	    catalog.removeCalculator(temp); // triggers events that switch the calculator
