@@ -6,7 +6,7 @@ import java.util.*;
  * GML terminal, or contain a mapping from string keys to other
  * GMLNodes
  **/
-public class GMLNode{
+public class GMLNode implements Comparator{
 	/**
 	 * True if this node is a terminal. (A terminal node is one 
 	 * that just contains a piece of data (string,double,int) and
@@ -34,7 +34,8 @@ public class GMLNode{
 	 * of GMLNodes
 	 */
 	private HashMap key2GMLNodeVec;
-
+	private HashMap key2Order;
+	private int order;
 	/**
 	 * This constructor create a terminal GMLNode.
 	 * @param string_value The terminal value of the GMLNode
@@ -55,6 +56,8 @@ public class GMLNode{
 	 */
 	public GMLNode(){
 		terminal = false;
+		order = 1;
+		key2Order = new HashMap();
 		key2GMLNodeVec = new HashMap();
 	}
 
@@ -82,7 +85,10 @@ public class GMLNode{
 		}
 		else{
 			result += "\n"+indent+"[\n";
-			Iterator it = key2GMLNodeVec.keySet().iterator();
+			//Iterator it = key2GMLNodeVec.keySet().iterator();
+			Vector sortedKeys = new Vector(key2GMLNodeVec.keySet());
+			Collections.sort(sortedKeys,this);
+			Iterator it = sortedKeys.iterator();
 			while(it.hasNext()){
 				String key = (String)it.next();
 				Iterator mapIt = ((Vector)key2GMLNodeVec.get(key)).iterator();
@@ -95,7 +101,18 @@ public class GMLNode{
 		}
 		return result;
 	}
-	
+
+	public int compare(Object o1, Object o2){
+		//get the integer orderings for these two objects
+		Integer int1 = (Integer)key2Order.get(o1);
+		Integer int2 = (Integer)key2Order.get(o2);
+		if(int1 == null || int2 == null){
+			//shit
+			throw new RuntimeException("Forgot to add an order mapping for one of the keys");
+		}
+		return int1.compareTo(int2);
+	}
+
 	/**
 	 * Get the value of this node as a Double
 	 * @return The value of this node as a double
@@ -133,6 +150,7 @@ public class GMLNode{
 		if(values == null){
 			values = new Vector();
 			key2GMLNodeVec.put(key,values);
+			key2Order.put(key,new Integer(order++));
 		}
 		values.add(node);
 	}
