@@ -60,6 +60,7 @@
 		</javac>
                 <copy todir="${build.classes}/csplugins/isb/dreiss">
                     <fileset dir="${basedir}/../resources">
+                        <include name="getInteractions.properties"/>
                         <include name="httpdata.properties"/>
                         <include name="cytoTalk.properties"/>
                     </fileset>
