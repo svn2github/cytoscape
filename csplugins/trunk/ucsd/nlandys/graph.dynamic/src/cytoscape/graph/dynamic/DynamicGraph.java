@@ -3,6 +3,7 @@ package cytoscape.graph.dynamic;
 import cytoscape.util.intr.IntEnumerator;
 
 /**
+ * A graph whose topology can be modified.
  * Edges and nodes are non-negative.
  */
 public interface DynamicGraph
@@ -112,12 +113,12 @@ public interface DynamicGraph
   public boolean containsEdge(int edge);
 
   /**
-   * Returns an enumeration of edges adjacent to a node.
+   * Returns a non-repeating enumeration of edges adjacent to a node.
    * The three boolean input parameters define what is meant by "adjacent
    * edge".  Notice that the three boolean input parameters define three
    * disjoint sets of edges.  Notice also that if all three boolean input
-   * parameters are false, then an "adjacent edge" cannot possibly be in
-   * the returned enumeration.
+   * parameters are false, then the returned enumeration will have zero
+   * elements.
    * @param node the node in this graph whose adjacent edges we're seeking.
    * @param outgoing all directed edges whose source is the node specified
    *   are included in the returned enumeration if ths value is true;
