@@ -148,6 +148,13 @@ public class CytoscapeWindow extends JPanel implements FilterDialogClient, Graph
     /** stores the attributes of edges */
     protected GraphObjAttributes edgeAttributes = new GraphObjAttributes ();
 
+    
+    /**
+     * Static catalog of visual mappings. This allows all instances of
+     * CytoscapeWindow to share the same catalog, but use different settings.
+     */
+    static protected CalculatorCatalog calculatorCatalog;
+    
     /** user interface to the 
      *  {@link cytoscape.visual.VisualMappingManager VisualMappingManager}
      *  {@link #vizMapper vizMapper}.
@@ -273,11 +280,57 @@ public CytoscapeWindow (cytoscape parentApp,
 } // ctor
     
 private void loadVizMapper() {
-  CalculatorCatalog cc = new CalculatorCatalog();
+  if (calculatorCatalog == null) {loadCalculatorCatalog();}
+
+  //try to get visual style from properties
+  Properties configProps = config.getProperties();
+  VisualStyle vs = null;
+  String vsName = configProps.getProperty("visualStyle");
+  if (vsName != null) {vs = calculatorCatalog.getVisualStyle(vsName);}
+  if (vs == null) {//none specified, or not found; use the default
+      vs = calculatorCatalog.getVisualStyle("default");
+  }
+  
+  //for testing purposes
+  /*
+  addNodeShapeMapping(nac);
+  addNodeLineTypeMapping(nac);
+  addNodeBorderColorMapping(nac);
+  addNodeFillColorMapping(nac);
+  addNodeHeightMapping(nac);
+  addNodeWidthMapping(nac);
+  addDiscreteNodeLabelMapping(nac);
+  
+  addEdgeColorMapping(eac);
+  addEdgeLineTypeMapping(eac);
+  addEdgeSourceArrowMapping(eac);
+  addEdgeTargetArrowMapping(eac);
+  addDiscreteEdgeLabelMapping(eac);
+  */
+  
+  //create the vizMapping objects
+  this.vizMapper = new VisualMappingManager(this, calculatorCatalog, vs);
+  this.network = new Network(this);
+  this.vizMapUI = new VizMapUI(this.vizMapper);
+
+  // add vizmapper to tooltoolbar
+  toolbar.addSeparator ();
+  JButton b = toolbar.add (new SetVisualPropertiesAction(false));
+  b.setIcon (new ImageIcon (getClass().getResource("images/ColorVisual.gif")));
+  b.setToolTipText ("Set Visual Properties");
+  b.setBorderPainted (false);
+
+  // easy-access visual styles changer
+  toolbar.add(vizMapUI.getStyleSelector().getToolbarComboBox());
+  toolbar.addSeparator ();
+}
+
+private void loadCalculatorCatalog() {
+  calculatorCatalog = new CalculatorCatalog();
   // register mappings
-  cc.addMapping("Discrete Mapper", DiscreteMapping.class);
-  cc.addMapping("Continuous Mapper", ContinuousMapping.class);
-  cc.addMapping("Passthrough Mapper", PassThroughMapping.class);
+ calculatorCatalog.addMapping("Discrete Mapper", DiscreteMapping.class);
+ calculatorCatalog.addMapping("Continuous Mapper", ContinuousMapping.class);
+ calculatorCatalog.addMapping("Passthrough Mapper", PassThroughMapping.class);
 
   //load in calculators from file
   //we look for, in order, a file in CYTOSCAPE_HOME, one in the current directory,
@@ -327,69 +380,28 @@ private void loadVizMapper() {
   }
 
   //now load using the constructed Properties object
-  CalculatorIO.loadCalculators(calcProps, cc);
+  CalculatorIO.loadCalculators(calcProps,calculatorCatalog);
   
   //make sure a default visual style exists, creating as needed
   //this must be done before loading the old-style visual mappings,
   //since that class works with the default visual style
-  VisualStyle defaultVS = cc.getVisualStyle("default");
+  VisualStyle defaultVS =calculatorCatalog.getVisualStyle("default");
   if (defaultVS == null) {
       defaultVS = new VisualStyle("default");
       //setup the default to at least put canonical names on the nodes
       String cName = "canonical names as node labels";
-      NodeLabelCalculator nlc = cc.getNodeLabelCalculator(cName);
+      NodeLabelCalculator nlc =calculatorCatalog.getNodeLabelCalculator(cName);
       if (nlc == null) {
           ObjectMapping m = new PassThroughMapping(new String(), "canonicalName");
           nlc = new GenericNodeLabelCalculator(cName, m);
       }
       defaultVS.getNodeAppearanceCalculator().setNodeLabelCalculator(nlc);
-      cc.addVisualStyle(defaultVS);
+     calculatorCatalog.addVisualStyle(defaultVS);
   }
   
   //now load in old style vizmappings
   Properties configProps = config.getProperties();
-  OldStyleCalculatorIO.checkForCalculators(configProps, cc);
-  
-  //try to get visual style from properties
-  VisualStyle vs = null;
-  String vsName = configProps.getProperty("visualStyle");
-  if (vsName != null) {vs = cc.getVisualStyle(vsName);}
-  if (vs == null) {//none specified, or not found; use the default
-      vs = defaultVS;
-  }
-  
-  //for testing purposes
-  /*
-  addNodeShapeMapping(nac);
-  addNodeLineTypeMapping(nac);
-  addNodeBorderColorMapping(nac);
-  addNodeFillColorMapping(nac);
-  addNodeHeightMapping(nac);
-  addNodeWidthMapping(nac);
-  addDiscreteNodeLabelMapping(nac);
-  
-  addEdgeColorMapping(eac);
-  addEdgeLineTypeMapping(eac);
-  addEdgeSourceArrowMapping(eac);
-  addEdgeTargetArrowMapping(eac);
-  addDiscreteEdgeLabelMapping(eac);
-  */
-  
-  //create the vizMapping objects
-  this.vizMapper = new VisualMappingManager(this, cc, vs);
-  this.network = new Network(this);
-  this.vizMapUI = new VizMapUI(this.vizMapper);
-
-  // add vizmapper to tooltoolbar
-  toolbar.addSeparator ();
-  JButton b = toolbar.add (new SetVisualPropertiesAction(false));
-  b.setIcon (new ImageIcon (getClass().getResource("images/ColorVisual.gif")));
-  b.setToolTipText ("Set Visual Properties");
-  b.setBorderPainted (false);
-
-  // easy-access visual styles changer
-  toolbar.add(vizMapUI.getStyleSelector().getToolbarComboBox());
-  toolbar.addSeparator ();
+  OldStyleCalculatorIO.checkForCalculators(configProps,calculatorCatalog);
 }
 
 /**
@@ -398,7 +410,7 @@ private void loadVizMapper() {
  */
 public void saveCalculatorCatalog() {
   File userHomePropsFile = new File(System.getProperty ("user.home"), "vizmap.props");
-  CalculatorIO.storeCatalog(vizMapper.getCalculatorCatalog(), userHomePropsFile);
+  CalculatorIO.storeCatalog(calculatorCatalog, userHomePropsFile);
 }
 
     // various default definitions
