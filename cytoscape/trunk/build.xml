@@ -198,7 +198,7 @@
                 <exclude name="cytoscape/data/servers/unitTests/"/>
                 <exclude name="cytoscape/unitTests/deferred/"/>
                 <exclude name="**test/**"/>
-                <exclude name="**.unitTests/**"/>
+                <exclude name="**/unitTests/**"/>
             </packageset>
         </javadoc>
     </target>
