@@ -332,7 +332,24 @@ public class CyMenus {
     mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, ActionEvent.CTRL_MASK));
     mi = selectEdgesSubMenu.add(new SelectAllEdgesAction(networkView));
     mi = selectEdgesSubMenu.add(new DeSelectAllEdgesAction(networkView));
+
+    mi = selectNodesSubMenu.add(new SelectFirstNeighborsAction(networkView));
+    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK));
+
+    // RHC Added Menu Items
+    //selectNodesSubMenu.add(new GraphObjectSelectionAction(networkView));
+    menuBar.addAction( new GraphObjectSelectionAction( networkView ) );
+    editMenu.add( new SquiggleAction( networkView ) ); 
+    vizMenu.add( new BirdsEyeViewAction( networkView ) );
     
+    menuBar.addAction( new AnimatedLayoutAction( networkView ) );
+    
+    vizMenu.add ( new BackgroundColorAction (networkView) );
+
+
+    selectNodesSubMenu.add(new AlphabeticalSelectionAction(networkView));
+    selectNodesSubMenu.add(new ListFromFileSelectionAction(networkView));
+
     mi = displayNWSubMenu.add(new NewWindowSelectedNodesOnlyAction(cyWindow));
     mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
     mi = displayNWSubMenu.add(new NewWindowSelectedNodesEdgesAction(cyWindow));

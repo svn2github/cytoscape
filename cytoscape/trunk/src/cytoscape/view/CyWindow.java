@@ -48,6 +48,7 @@ import giny.view.EdgeView;
 import giny.view.NodeView;
 import giny.view.GraphViewChangeListener;
 import giny.view.GraphViewChangeEvent;
+import giny.view.Label;
 import cytoscape.util.GinyFactory;  //for creating Giny objects
 
 import cytoscape.*;
@@ -229,9 +230,7 @@ protected void updateGraphView() {
     Iterator i = view.getNodeViewsIterator();
     while ( i.hasNext()) {
         NodeView nv = (NodeView)i.next();
-        String label = nv.getNode().getIdentifier();
-        //System.out.println("Setting label " + label);
-        nv.setLabel(label);
+        nv.getLabel().setText( nv.getNode().getIdentifier() );
         nv.setShape( NodeView.ELLIPSE );
         nv.setUnselectedPaint( Color.lightGray );
         nv.setSelectedPaint( ((Color)nv.getUnselectedPaint()).darker() );
@@ -244,8 +243,8 @@ protected void updateGraphView() {
         EdgeView ev = (EdgeView)ie.next();
         ev.setUnselectedPaint(Color.blue);
         ev.setTargetEdgeEnd(EdgeView.ARROW_END);
-        ev.setTargetEdgeEndPaint(Color.CYAN);
-        ev.setSourceEdgeEndPaint(Color.CYAN);
+        ev.setTargetEdgeEndPaint(Color.white);
+        ev.setSourceEdgeEndPaint(Color.white);
         //ev.setLineType(EdgeView.CURVED_LINES);
         ev.setStroke(new BasicStroke(5f));
     }

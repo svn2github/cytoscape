@@ -102,7 +102,7 @@ public class NodeAction {
                 public void run() {
                   String gene = null;
                   if ( nv instanceof PNodeView ) {
-                     gene = ( ( PNodeView ) nv).getLabel();
+                    gene = ( ( PNodeView ) nv).getLabel().getText();
                   } 
                   //System.out.println( "Node: "+nv.getLabel() );
                   //System.out.println( "GEne: "+gene );
