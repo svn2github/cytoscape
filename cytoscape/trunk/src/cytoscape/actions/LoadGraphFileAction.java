@@ -25,6 +25,8 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
+import java.text.NumberFormat;
+import java.text.DecimalFormat;
 
 /**
  * User has requested loading of an Expression Matrix File.
@@ -170,6 +172,7 @@ class LoadNetworkTask implements Task {
      */
     private void informUserOfGraphStats(int root_nodes, int root_edges,
             CyNetwork newNetwork) {
+        NumberFormat formatter = new DecimalFormat("#,###,###");
         int nn = Cytoscape.getRootGraph().getNodeCount() - root_nodes;
         int ne = Cytoscape.getRootGraph().getEdgeCount() - root_edges;
 
@@ -179,18 +182,30 @@ class LoadNetworkTask implements Task {
 
         //  Give the user some confirmation
         sb.append("Succesfully loaded graph from:  " + file.getName());
-        sb.append("\n\nGraph contains " + newNetwork.getNodeCount());
-        sb.append(" nodes and " + newNetwork.getEdgeCount());
-        sb.append(" edges.");
-        sb.append("\nThere were " + nn + " unique nodes, and "
-                + ne + " unique edges.\n\n");
+        sb.append("\n\nGraph contains " + formatter.format
+                (newNetwork.getNodeCount()));
+        sb.append(" nodes and " + formatter.format(newNetwork.getEdgeCount()));
+        sb.append(" edges.\n\n");
+
+        //  This code was supposed to display unique nodes, but I think
+        //  it's a bit muddled, as it really shows # of nodes that are new
+        //  to the root graph perspective, and I am not sure why a user
+        //  would care to know it.  Commented out for now.
+        //        if (newNetwork.getNodeCount() !=  nn
+        //            || newNetwork.getEdgeCount() != ne) {
+        //            sb.append("\nThere were " + formatter.format(nn)
+        //                    + " unique nodes, and "
+        //                    + formatter.format(ne) + " unique edges.\n\n");
+        //        } else {
+        //            sb.append ("\n\n");
+        //        }
 
         if (newNetwork.getNodeCount() < CytoscapeInit.getViewThreshold()) {
-            sb.append("Your graph is under "
+            sb.append("Graph is under "
                     + CytoscapeInit.getViewThreshold()
                     + " nodes.  A view was automatically created.");
         } else {
-            sb.append("Your graph is over "
+            sb.append("Graph is over "
                     + CytoscapeInit.getViewThreshold()
                     + " nodes.  A view will be not be created."
                     + "  If you wish to view this graph, use "
