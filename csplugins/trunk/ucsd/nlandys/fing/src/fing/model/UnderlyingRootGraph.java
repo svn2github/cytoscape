@@ -7,8 +7,10 @@ interface UnderlyingRootGraph
 {
   int nodeCount();
   int edgeCount();
-  IntEnumerator nodeIndices();
-  IntEnumerator edgeIndices();
+  // Note: Rename to nodes().
+  // This iterator remains valid even while doing add/removes?
+  IntIterator nodeIndices();
+  IntIterator edgeIndices();
   boolean removeNode(int nodeIndex);
   int createNode();
   boolean removeEdge(int edgeIndex);
@@ -16,8 +18,7 @@ interface UnderlyingRootGraph
   int createEdge(int sourceIndex, int targetIndex, boolean directed);
   boolean containsNode(int nodeIndex);
   boolean containsEdge(int edgeIndex);
-  IntEnumerator adjacentEdgeIndices(int nodeIndex, boolean undirected,
-                                    boolean incoming, boolean outgoing);
-
-  Node _suckyGetNodeObject(int nodeIndex);
+  // Throws IllegalArgumentException
+  IntIterator adjacentEdgeIndices(int nodeIndex, boolean undirected,
+                                  boolean incoming, boolean outgoing);
 }

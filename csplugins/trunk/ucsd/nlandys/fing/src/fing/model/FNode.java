@@ -13,11 +13,7 @@ class FNode implements Node
   int m_rootGraphIndex = 0;
   String m_identifier = null;
 
-  // Variables for internal data stucture.
-  FEdge m_firstInEdge = null;
-  FEdge m_firstOutEdge = null;
-
-  FNode() {}
+  FNode() { }
 
   public GraphPerspective getGraphPerspective()
   {
