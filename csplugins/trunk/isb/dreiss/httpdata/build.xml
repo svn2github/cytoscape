@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<!-- build.xml - Build file for Sample Cytoscape Plugin 
+     David Reiss (dreiss@systemsbiology.org) -->
+
+<project name="httpdata" default="jar" basedir=".">
+	
+	<!-- Global "magic" property for <javac> -->
+	<property name="build.compiler" value="modern"/>
+	<!--<property name="build.compiler" value="jikes"/>-->
+	
+        <property name="build.dir" value="${basedir}/build"/>
+        <property name="classes.dir" value="${build.dir}/classes"/>
+        <property name="lib.dir" value="${basedir}/../lib"/>
+	<property name="cs.dir" value="../../../../cytoscape"/>
+        <property name="jarname" value="httpdata"/>
+
+        <!-- Classpath with all lib JAR Files and all classes -->
+        <path id="classpath">   
+                <fileset dir="${lib.dir}">
+                        <include name="**/*.jar"/>
+                </fileset>
+		<fileset dir="${cs.dir}/lib"><include name="**/*.jar"/></fileset>
+		<pathelement location="${classes.dir}"/>	
+	</path>
+
+  	<!-- Get environment variables as ${env.ENV_VAR} -->
+        <property environment="env"/>
+
+  	<target name="compile" depends="build" description="Compiles all source code."/>
+
+	<!-- Target to compile all code -->
+  	<target name="build" description="Compiles all source code.">
+                <mkdir dir="${build.dir}"/>
+                <mkdir dir="${classes.dir}"/>
+    		<javac srcdir="${basedir}/src:${basedir}/../util/src" destdir="${classes.dir}" nowarn="on" 
+		       source="1.4" listfiles="yes" debug="true" includes="**/*.java"
+                       excludes="**/tspace/*.java">
+	           <classpath refid="classpath"/>
+		</javac>
+                <copy todir="${classes.dir}/csplugins/isb/dreiss">
+                    <fileset dir="${basedir}/../resources">
+                        <include name="httpdata.properties"/>
+                        <include name="cytoTalk.properties"/>
+                    </fileset>
+                </copy>   
+		<echo message="DONE COMPILING"/>
+	</target>
+
+        <target name="jar" depends="build" description="Creates httpdata.jar using GenJar task">
+           <taskdef resource="genjar.properties" classpath="${lib.dir}/GenJar.jar"/>
+           <genjar jarfile="${build.dir}/${jarname}.jar">
+	      <classpath refid="classpath"/>
+              <class>
+                <fileset dir="${classes.dir}">
+                   <include name="**/*.class"/>
+                   <exclude name="**/tspace/*.class"/>
+                   <exclude name="**/lights/**/*.class"/>
+                   <exclude name="csplugins/isb/dreiss/httpdata/xmlrpc/*.class"/>
+                   <include name="csplugins/isb/dreiss/httpdata/xmlrpc/MyXmlRpcServer.class"/>
+                   <include name="csplugins/isb/dreiss/httpdata/xmlrpc/XmlRpcUtils*.class"/>
+                </fileset>
+              </class>
+              <resource><fileset dir="${classes.dir}">
+                 <include name="**/*.properties"/>
+              </fileset></resource>
+	      <class name="csplugins.isb.dreiss.httpdata.xmlrpc.MyXmlRpcServer"/>
+	      <class name="org.apache.xmlrpc.XmlRpcClientLite"/>
+	      <class name="uk.co.wilson.xml.MinML"/>
+	      <!--<class name="org.hsqldb.jdbcDriver"/>-->
+              <class name="com.mysql.jdbc.Driver"/>
+              <class name="com.mysql.jdbc.StandardSocketFactory"/>
+              <classfilter>
+                <exclude name="cytoscape."/>
+                <exclude name="y."/>
+                <exclude name="ptolemy."/>
+                <exclude name="Acme."/>
+                <exclude name="org.xml.sax."/>
+                <exclude name="giny."/>
+              </classfilter>
+           </genjar>                    
+        </target>
+
+        <!-- Run a class MYCLASS (from the ${build} directory) with the
+                                       command line 'MY ARGS' via:
+             ant run -Dclass=${class} -Dargs='MY ARGS' -->
+        <target name="run" depends="compile">
+                <echo message="${class} ${args}"/>
+                <java classname="${class}" fork="no" failonerror="no">
+                        <classpath refid="classpath"/>
+                        <arg line="${args}"/>
+                </java>
+        </target>
+</project>

@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<!-- build.xml - Build file for Sample Cytoscape Plugin -->
+<project name="Cytoscape" default="jar" basedir=".">
+
+        <!-- Ant build file for homology plugin.
+             By David Reiss, dreiss@systemsbiology.org -->
+	
+	<!-- Name of Plug In -->
+	<property name="plugin.name" value="sequence"/>
+
+  	<property name="src.dir" value="src"/>
+	<property name="cs.dir" value="${basedir}/../../../../cytoscape"/>
+        <property name="lib.dir" value="${basedir}/../lib"/>
+	<property name="httpdata.dir" value="${basedir}/../httpdata"/>
+	<property name="cytotalk.dir" value="${basedir}/../cytoTalk"/>
+
+  	<!-- Temporary build directories -->
+ 	<property name="build.dir" value="build"/>
+  	<property name="build.classes" value="${build.dir}/classes"/>
+	
+	<!-- Global "magic" property for <javac> -->
+	<property name="build.compiler" value="modern"/>
+	<!--<property name="build.compiler" value="jikes"/> -->
+	
+	<!-- Classpath with all lib JAR Files and all Cytoscape Core classes -->
+	<path id="classpath">	
+		<fileset dir="${cs.dir}/lib"><include name="**/*.jar"/></fileset>
+		<pathelement location="${build.classes}"/>	
+		<pathelement location="${cs.dir}/build/classes"/>
+		<fileset dir="${lib.dir}"><include name="**/*.jar"/></fileset>
+		<fileset dir="${httpdata.dir}"><include name="**/*.jar"/></fileset>
+		<fileset dir="${cytotalk.dir}"><include name="**/*.jar"/></fileset>
+	</path>
+
+	<!-- Target to compile httpdata class files  -->
+	<target name="build_httpdata">
+		<ant antfile="${httpdata.dir}/build.xml" inheritAll="false" target="jar"/>
+		<ant antfile="${cytotalk.dir}/build.xml" inheritAll="false" target="jar"/>
+	</target>
+
+	<!--  Target to compile all Plug In Code -->
+  	<target name="build" depends="build_httpdata">
+    		<mkdir dir="${build.dir}"/>
+    		<mkdir dir="${build.classes}"/>
+    		<javac srcdir="${src.dir}:${basedir}/../util/src" destdir="${build.classes}" nowarn="on" 
+		                           source="1.4" listfiles="yes" debug="yes">
+			<include name="csplugins/**"/>
+			<classpath refid="classpath"/>
+		</javac>
+                <copy todir="${build.classes}/csplugins/isb/dreiss">
+                    <fileset dir="${basedir}/../resources">
+                        <include name="httpdata.properties"/>
+                        <include name="cytoTalk.properties"/>
+                    </fileset>
+                </copy>
+	</target>
+
+        <target name="jar" depends="build" description="Creates sequence.jar using GenJar task">
+           <taskdef resource="genjar.properties" classpath="${lib.dir}/GenJar.jar"/>
+           <!--<delete file="${build.dir}/${plugin.name}.jar"/>-->
+           <genjar jarfile="${build.dir}/${plugin.name}.jar">
+	      <classpath refid="classpath"/>
+              <class><fileset dir="${build.classes}">
+                 <include name="**/*.class"/>
+              </fileset></class>
+              <resource><fileset dir="${build.classes}">
+                 <include name="**/*.properties"/>
+              </fileset></resource>
+	      <class name="org.apache.xmlrpc.XmlRpcClientLite"/>
+	      <class name="uk.co.wilson.xml.MinML"/>
+	      <!--<class name="org.hsqldb.jdbcDriver"/>-->
+              <classfilter>
+                 <exclude name="cytoscape."/>
+                 <exclude name="y."/>
+                 <exclude name="ptolemy."/>
+                 <exclude name="Acme."/>
+                 <exclude name="org.hsqldb."/>
+                 <exclude name="org.xml.sax."/>
+                 <exclude name="giny."/>
+              </classfilter>
+           </genjar>                    
+        </target>
+
+  	<!--  Target to Run Cytoscape with non-obfuscated jar file and this plugin -->
+  	<target name="run" depends="jar" description="Runs Cytoscape.">
+        <echo message="PATH: ${basedir}"/>
+	<!-- Classpath for running Cytoscape with non-obfuscated Cytoscape Jar file -->
+		<java classname="cytoscape.CyMain" fork="true" failonerror="false">
+			<classpath refid="classpath"/>
+			<!--<arg value="-p cytoscape.project"/>-->
+			<arg value="--JLD ${basedir}/../../../../cytoscape/plugins"/>
+			<arg value="--JLW ${basedir}/build/sequence.jar"/>
+			<arg value="-i /local/dreiss/cytoscape/cvsdir5/csplugins/isb/dreiss/data/z.sif"/>
+			<arg value="-s 'Homo sapiens'"/>
+		</java>
+	</target>
+</project>

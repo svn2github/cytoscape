@@ -1,0 +1,7 @@
+# ----------------------------- motif finder plugin 
+plugin.motifFinder.class = djr.motif.sampler.MultiSampler
+plugin.motifFinder.args.dna = -W 9 -i1 50 -min 0 -max 3 -quiet -thread -N 2 -bgo 3
+plugin.motifFinder.args.protein = -W 9 -i1 50 -min 0 -max 3 -quiet -thread -N 2 -fg dirichlet -dirich dirichlet/hydro-cons.3comp
+
+#----------------------------------- vizmapper
+visualStyle=NIDA

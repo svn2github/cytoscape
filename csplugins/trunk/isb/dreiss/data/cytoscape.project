@@ -1,0 +1,12 @@
+#sif=sh3_y2h.sif
+sif=z.sif
+#noa=isSH3Protein.noa
+#noa=doubleTest.noa
+#noa=intTest.noa
+#expr=fake.mrna
+#matrix=fake.mrna
+#species=Saccharomyces cerevisiae
+species=Homo sapiens
+props=cytoscape.props
+vprops=vizmap.props
+

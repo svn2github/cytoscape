@@ -1,0 +1,128 @@
+<?xml version="1.0"?>
+<!-- build.xml - Build file for Sample Cytoscape Plugin -->
+<project name="Cytoscape" default="jar" basedir=".">
+
+        <!-- Ant build file for homology plugin.
+             By David Reiss, dreiss@systemsbiology.org -->
+	
+	<!-- Name of Plug In -->
+	<property name="plugin.name" value="cytoTalk"/>
+
+  	<property name="src.dir" value="${basedir}/src"/>
+	<property name="cs.dir" value="${basedir}/../../../../cytoscape"/>
+	<property name="csplugins.dir" value="${basedir}/../../../../csplugins"/>
+        <property name="lib.dir" value="${basedir}/../lib"/>
+ 	<property name="build.dir" value="${basedir}/build"/>
+        <property name="classes.dir" value="${build.dir}/classes"/>
+	<property name="httpdata.dir" value="${basedir}/../httpdata"/>
+	<!--<property name="datacube.dir" value="${csplugins.dir}/trial/pshannon/dataCube"/>-->
+
+	<!-- Global "magic" property for <javac> -->
+	<property name="build.compiler" value="modern"/>
+	<!--<property name="build.compiler" value="jikes"/> -->
+	
+	<!-- Classpath with all lib JAR Files and all Cytoscape Core classes -->
+	<path id="classpath">	
+		<fileset dir="${cs.dir}/lib"><include name="**/*.jar"/></fileset>
+		<pathelement location="${classes.dir}"/>	
+		<pathelement location="${cs.dir}/build/classes"/>
+		<pathelement location="${httpdata.dir}/build/classes"/>
+		<fileset dir="${lib.dir}"><include name="**/*.jar"/></fileset>
+	</path>
+
+	<!-- Target to compile httpdata class files -->
+	<target name="build_httpdata">
+		<ant antfile="${httpdata.dir}/build.xml" inheritAll="false" target="jar"/>
+	</target>
+
+	<!--  Target to compile all Plug In Code -->
+  	<target name="build" depends="build_httpdata" description="Compiles all PlugIn source code.">
+    		<mkdir dir="${build.dir}"/>
+    		<mkdir dir="${classes.dir}"/>
+                <delete file="${src.dir}/csplugins/isb/dreiss/cytoTalk/CytoTalkClient.java"/>
+    		<javac srcdir="${src.dir}" destdir="${classes.dir}" nowarn="on" 
+		                           source="1.4" listfiles="yes" debug="yes">
+			<include name="csplugins/**"/>
+			<!--<include name="DataMatrix*.java"/>-->
+			<classpath refid="classpath"/>
+		</javac>
+		<java classname="csplugins.isb.dreiss.httpdata.xmlrpc.WriteXmlRpcClient" 
+                                         fork="false" failonerror="true">
+			<classpath refid="classpath"/>
+			<arg line="csplugins.isb.dreiss.cytoTalk.CytoTalkHandler cy 
+                           ${src.dir}/csplugins/isb/dreiss/cytoTalk/CytoTalkClient.java"/>
+		</java>
+		<java classname="csplugins.isb.dreiss.httpdata.xmlrpc.WriteXmlRpcPerlClient" 
+                                         fork="false" failonerror="true">
+			<classpath refid="classpath"/>
+			<arg line="csplugins.isb.dreiss.cytoTalk.CytoTalkHandler cy 
+                           ${build.dir}/CytoTalkClient.pm"/>
+		</java>
+		<java classname="csplugins.isb.dreiss.httpdata.xmlrpc.WriteXmlRpcRClient" 
+                                         fork="false" failonerror="true">
+			<classpath refid="classpath"/>
+			<arg line="csplugins.isb.dreiss.cytoTalk.CytoTalkHandler cy 
+                           ${build.dir}/CytoTalkClient.R"/>
+		</java>
+    		<javac srcdir="${src.dir}" destdir="${classes.dir}" nowarn="on" 
+		                           source="1.4" listfiles="yes" debug="yes">
+		     <include name="csplugins/isb/dreiss/cytoTalk/CytoTalkClient.java"/>
+	             <classpath refid="classpath"/>
+		</javac>
+                <copy todir="${classes.dir}/csplugins/isb/dreiss">
+                    <fileset dir="${basedir}/../resources">
+                       <include name="cytoTalk.properties"/>
+                    </fileset>
+                </copy>   
+		<echo message="DONE COMPILING"/>
+	</target>
+
+        <target name="javadocrequired">
+           <uptodate property="javadoc.notRequired" targetfile="${build.dir}/CytoTalkHandler.html"
+                srcfile="${basedir}/src/csplugins/isb/dreiss/cytoTalk/CytoTalkHandler.java"/>
+        </target>
+
+        <target name="javadoc" depends="javadocrequired" unless="javadoc.notRequired">
+                <javadoc sourcefiles="${basedir}/src/csplugins/isb/dreiss/cytoTalk/CytoTalkHandler.java" 
+                            destdir="${build.dir}/doc" access="public" notree="yes" noindex="yes"
+                            nohelp="yes" nonavbar="yes"/>
+                <move file="${build.dir}/doc/csplugins/isb/dreiss/cytoTalk/CytoTalkHandler.html" 
+                            tofile="${build.dir}/CytoTalkHandler.html"/>
+                <delete dir="${build.dir}/doc"/>
+        </target>
+
+        <target name="jar" depends="build" description="Creates sequence.jar using GenJar task">
+           <taskdef resource="genjar.properties" classpath="${lib.dir}/GenJar.jar"/>
+           <!--<delete file="${build.dir}/${plugin.name}.jar"/>-->
+           <genjar jarfile="${build.dir}/${plugin.name}.jar">
+	      <classpath refid="classpath"/>
+              <class><fileset dir="${classes.dir}">
+                 <include name="**/*.class"/>
+              </fileset></class>
+              <resource><fileset dir="${classes.dir}">
+                 <include name="**/*.properties"/>
+              </fileset></resource>
+	      <class name="org.apache.xmlrpc.XmlRpcClientLite"/>
+	      <class name="uk.co.wilson.xml.MinML"/>
+	      <!--<class name="org.hsqldb.jdbcDriver"/>-->
+              <classfilter>
+                 <exclude name="cytoscape."/>
+                 <exclude name="y."/>
+                 <exclude name="ptolemy."/>
+                 <exclude name="Acme."/>
+                 <exclude name="org.hsqldb."/>
+                 <!--<exclude name="org.xml.sax."/>-->
+                 <exclude name="giny."/>
+              </classfilter>
+           </genjar>                    
+        </target>
+
+  	<!--  Target to Run Cytoscape with non-obfuscated jar file and this plugin -->
+  	<target name="run" depends="jar" description="Runs Cytoscape.">
+	<!-- Classpath for running Cytoscape with non-obfuscated Cytoscape Jar file -->
+		<java classname="cytoscape.cytoscape" fork="true" failonerror="false">
+			<classpath refid="classpath"/>
+			<arg line="-p ${basedir}/../data/project -x --matrix ${basedir}/../data/fake.mrna"/>
+		</java>
+	</target>
+</project>

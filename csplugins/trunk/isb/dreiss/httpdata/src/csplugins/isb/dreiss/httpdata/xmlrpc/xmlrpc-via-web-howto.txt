@@ -1,0 +1,163 @@
+1. in webapps (of tomcat), add webapp "dreiss" with this directory structure:
+
+   dreiss/ -+
+	    |
+	WEB-INF/ -+
+		  |
+	       web.xml
+	          |
+	       classes/  (may be empty for now)
+	          |
+	         lib/ -+
+		       |
+		     xmlrpc-1.2-b1.jar
+
+2. Add these lines to the web.xml file. This turns on debugging output and
+   redirects the xmlrpc communication to talk to a org.apache.xmlrpc.WebServer
+   running on host "localhost" listening to port 8081:
+
+  <servlet>
+    <servlet-name>xmlrpc</servlet-name>
+    <description>xmlrpc proxy servlet</description>
+    <servlet-class>org.apache.xmlrpc.XmlRpcProxyServlet</servlet-class>
+    <init-param>
+       <param-name>debug</param-name>
+       <param-value>true</param-value>
+    </init-param>
+    <init-param>
+       <param-name>url</param-name>
+       <param-value>http://localhost:8081</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>xmlrpc</servlet-name>
+    <url-pattern>/xmlrpc</url-pattern>
+  </servlet-mapping>
+
+3. Restart the web server (tomcat). May not be required.
+
+4. Start the xmlrpc server on the same machine as the web server,
+   listening to port 8081 (this must be the same as the port specified
+   in the servlet "url" parameter in the web.xml file):
+
+> java -cp xmlrpc-1.2-b1.jar org.apache.xmlrpc.WebServer 8081
+
+5. Try running a client command or two from the same machine
+   (assuming tomcat is running on localhost on port 8080):
+
+> java -cp xmlrpc-1.2-b1.jar org.apache.xmlrpc.XmlRpcClientLite \
+       http://localhost:8080/dreiss/xmlrpc test mystring 123
+> java -cp xmlrpc-1.2-b1.jar org.apache.xmlrpc.XmlRpcClientLite \
+       http://localhost:8080/dreiss/xmlrpc math.abs -30
+
+6. Try running a client command or two from a different machine
+   (assuming tomcat is running on machine "myhost" on port 8080):
+
+> java -cp xmlrpc-1.2-b1.jar org.apache.xmlrpc.XmlRpcClientLite \
+       http://myhost:8080/dreiss/xmlrpc test mystring 123
+> java -cp xmlrpc-1.2-b1.jar org.apache.xmlrpc.XmlRpcClientLite \
+       http://myhost:8080/dreiss/xmlrpc math.abs -30
+
+7. Start the test server:
+
+> ant jar
+> java -cp xmlrpc-1.2-b1.jar:xmlrpcserver.jar csplugins.isb.dreiss.httpdata.xmlrpc.TestServer 8081
+
+8. Try running the hashmap client (must run the web server first, via
+   steps 1-3, and the test server via step 7):
+
+> java -cp xmlrpc-1.2-b1.jar:xmlrpcserver.jar csplugins.isb.dreiss.httpdata.xmlrpc.MapClient \
+       http://localhost:8080/dreiss/xmlrpc
+# can also talk directly to the xmlrpc server (rather than going through tomcat):
+> java -cp xmlrpc-1.2-b1.jar:xmlrpcserver.jar csplugins.isb.dreiss.httpdata.xmlrpc.MapClient \
+       http://localhost:8081
+
+# note these will also work (because MapHandler only handles strings):
+> java -cp xmlrpc-1.2-b1.jar org.apache.xmlrpc.XmlRpcClientLite \
+  http://localhost:8080/dreiss/xmlrpc map.put key1 val1
+> java -cp xmlrpc-1.2-b1.jar org.apache.xmlrpc.XmlRpcClientLite \
+  http://localhost:8080/dreiss/xmlrpc map.put key2 val2
+> java -cp xmlrpc-1.2-b1.jar org.apache.xmlrpc.XmlRpcClientLite \
+  http://localhost:8080/dreiss/xmlrpc map.get key1
+> java -cp xmlrpc-1.2-b1.jar org.apache.xmlrpc.XmlRpcClientLite \
+  http://localhost:8080/dreiss/xmlrpc map.get
+> java -cp xmlrpc-1.2-b1.jar org.apache.xmlrpc.XmlRpcClientLite \
+  http://localhost:8080/dreiss/xmlrpc map.keys
+> java -cp xmlrpc-1.2-b1.jar org.apache.xmlrpc.XmlRpcClientLite \
+  http://localhost:8080/dreiss/xmlrpc map.exit
+
+7. Try running the hashmap "mapofmaps" client (must run the web server 
+   first, via steps 1-3 and the test server via step 7):):
+
+> java -cp xmlrpc-1.2-b1.jar:xmlrpcserver.jar csplugins.isb.dreiss.httpdata.xmlrpc.MapOfMapsClient \
+  http://localhost:8080/dreiss/xmlrpc
+# can also talk directly to the xmlrpc server (rather than going through tomcat):
+> java -cp xmlrpc-1.2-b1.jar:xmlrpcserver.jar csplugins.isb.dreiss.httpdata.xmlrpc.MapOfMapsClient \
+       http://localhost:8081
+
+# note these will also work (because MapOfMapsHandler only handles strings):
+> java -cp xmlrpc-1.2-b1.jar org.apache.xmlrpc.XmlRpcClientLite \
+  http://localhost:8080/dreiss/xmlrpc map.put map1 key1 val1
+> java -cp xmlrpc-1.2-b1.jar org.apache.xmlrpc.XmlRpcClientLite \
+  http://localhost:8080/dreiss/xmlrpc map.put map1 key2 val2
+> java -cp xmlrpc-1.2-b1.jar org.apache.xmlrpc.XmlRpcClientLite \
+  http://localhost:8080/dreiss/xmlrpc map.get map1 key1
+> java -cp xmlrpc-1.2-b1.jar org.apache.xmlrpc.XmlRpcClientLite \
+  http://localhost:8080/dreiss/xmlrpc map.get map1
+> java -cp xmlrpc-1.2-b1.jar org.apache.xmlrpc.XmlRpcClientLite \
+  http://localhost:8080/dreiss/xmlrpc map.get
+> java -cp xmlrpc-1.2-b1.jar org.apache.xmlrpc.XmlRpcClientLite \
+  http://localhost:8080/dreiss/xmlrpc map.keys map1
+> java -cp xmlrpc-1.2-b1.jar org.apache.xmlrpc.XmlRpcClientLite \
+  http://localhost:8080/dreiss/xmlrpc map.maps
+> java -cp xmlrpc-1.2-b1.jar org.apache.xmlrpc.XmlRpcClientLite \
+  http://localhost:8080/dreiss/xmlrpc map.exit
+
+7. Try running the client that allows you to send arbitrary
+   objects (must again run steps 1-3 and 7):
+
+> java -cp xmlrpc-1.2-b1.jar:xmlrpcserver.jar csplugins.isb.dreiss.httpdata.xmlrpc.ObjectClient \
+       http://localhost:8080/dreiss/xmlrpc
+# and of course this will also work:
+> java -cp xmlrpc-1.2-b1.jar:xmlrpcserver.jar csplugins.isb.dreiss.httpdata.xmlrpc.ObjectClient \
+       http://localhost:8081
+
+8. Using the features of MyXmlRpcServer (to add and remove handlers, 
+   get handler status and info, and control the server):
+
+> java -cp xmlrpc-1.2-b1.jar org.apache.xmlrpc.XmlRpcClientLite \
+       http://localhost:8080/dreiss/xmlrpc server.hasService mom
+> java -cp xmlrpc-1.2-b1.jar org.apache.xmlrpc.XmlRpcClientLite \
+       http://localhost:8080/dreiss/xmlrpc server.listServiceCommands mom
+> java -cp xmlrpc-1.2-b1.jar org.apache.xmlrpc.XmlRpcClientLite \
+       http://localhost:8080/dreiss/xmlrpc server.getServices
+> java -cp xmlrpc-1.2-b1.jar org.apache.xmlrpc.XmlRpcClientLite \
+       http://localhost:8080/dreiss/xmlrpc server.removeService mom
+> java -cp xmlrpc-1.2-b1.jar org.apache.xmlrpc.XmlRpcClientLite \
+       http://localhost:8080/dreiss/xmlrpc server.addService mom MapOfMapsHandler
+> java -cp xmlrpc-1.2-b1.jar org.apache.xmlrpc.XmlRpcClientLite \
+       http://localhost:8080/dreiss/xmlrpc mom.put map1 key1 val1
+> java -cp xmlrpc-1.2-b1.jar org.apache.xmlrpc.XmlRpcClientLite \
+       http://localhost:8080/dreiss/xmlrpc mom.get map1 key1
+> java -cp xmlrpc-1.2-b1.jar org.apache.xmlrpc.XmlRpcClientLite \
+       http://localhost:8080/dreiss/xmlrpc server.exit
+
+9. Additional very useful class: csplugins.isb.dreiss.httpdata.xmlrpc.WriteXmlRpcClient
+
+# Create code for a class csplugins.isb.dreiss.httpdata.xmlrpc.MapHandlerClient that has methods that
+# wrap all of the MapHandler class's methods for client code (and specifies that
+# the MapHandler will be registered as a service called "map"):
+
+> java -cp xmlrpc-1.2-b1.jar:xmlrpcserver.jar csplugins.isb.dreiss.httpdata.xmlrpc.WriteXmlRpcClient \
+       csplugins.isb.dreiss.httpdata.xmlrpc.MapHandler map
+
+# Note that MapHanderClient, MapOfMapsHandlerClient, and ObjectHandlerClient were
+# all written by this class, and the "main" method was then modified for each.
+
+10. You can speed up multiple small calls by using system.multicall(). See
+http://www.xmlrpc.com/discuss/msgReader$1208?mode=topic ...
+
+> java -cp xmlrpc-1.2-b1.jar org.apache.xmlrpc.XmlRpcClientLite \
+	http://localhost:8080/dreiss/xmlrpc server.addService \
+	system org.apache.xmlrpc.MultiCall

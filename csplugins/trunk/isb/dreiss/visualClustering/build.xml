@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<!-- build.xml - Build file for Sample Cytoscape Plugin -->
+<project name="Cytoscape" default="jar" basedir=".">
+
+        <!-- Ant build file for visualClustering plugin.
+             By David Reiss, dreiss@systemsbiology.org -->
+	
+	<!-- Name of Plug In -->
+	<!-- The name is used to create the plugin JAR file -->
+	<property name="plugin.name" value="visualClustering"/>
+
+  	<property name="src.dir" value="src"/>
+	<property name="cs.dir" value="../../../../cytoscape"/>
+        <property name="lib.dir" value="${basedir}/../lib"/>
+	<property name="cytotalk.dir" value="../cytoTalk"/>
+
+  	<!-- Temporary build directories -->
+ 	<property name="build.dir" value="${basedir}/build"/>
+  	<property name="build.classes" value="${build.dir}/classes"/>
+	
+	<!-- Global "magic" property for <javac> -->
+	<property name="build.compiler" value="modern"/>
+	<!--<property name="build.compiler" value="jikes"/> -->
+	
+	<!-- Classpath with all lib JAR Files and all Cytoscape Core classes -->
+	<path id="classpath">	
+		<fileset dir="${cs.dir}/lib"><include name="**/*.jar"/></fileset>
+		<pathelement location="${build.classes}"/>	
+		<pathelement location="${cs.dir}/build/classes"/>
+		<fileset dir="${lib.dir}"><include name="**/*.jar"/></fileset>
+		<fileset dir="${cytotalk.dir}"><include name="**/*.jar"/></fileset>
+	</path>
+
+	<!-- Target to compile cytotalk plugin class files  -->
+	<target name="build_cytotalk">
+		<ant antfile="${cytotalk.dir}/build.xml" inheritAll="false" target="jar"/>
+	</target>
+
+	<!--  Target to compile all Plug In Code -->
+  	<target name="build" depends="build_cytotalk">
+    		<mkdir dir="${build.dir}"/>
+    		<mkdir dir="${build.classes}"/>
+    		<javac srcdir="${src.dir}" destdir="${build.classes}" nowarn="on" 
+		                           source="1.4" listfiles="yes" debug="yes">
+			<include name="csplugins/**"/>
+			<classpath refid="classpath"/>
+		</javac>
+	</target>
+  	
+	<!--  Create PlugIn Jar File (Unobfuscated) -->
+   	<target name="jar" depends="build" description="Creates PlugIn Jar File.">
+  	        <jar destfile="${build.dir}/${plugin.name}.jar">
+			<fileset dir="${build.classes}"/> 
+		</jar>
+	</target>
+
+  	<!--  Target to Run Cytoscape with non-obfuscated jar file and this plugin -->
+  	<target name="run" depends="jar" description="Runs Cytoscape.">
+	<!-- Classpath for running Cytoscape with non-obfuscated Cytoscape Jar file -->
+		<java classname="cytoscape.cytoscape" fork="true" failonerror="false"
+                                classpathref="classpath">
+			<arg value="-p ${basedir}/../data/project"/>
+		</java>
+	</target>
+</project>
