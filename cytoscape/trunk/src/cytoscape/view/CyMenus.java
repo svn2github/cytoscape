@@ -265,9 +265,11 @@ public class CyMenus {
 	
 	
     // added by larissa 10/09/03
-    mi = selectMenu.add(new SelectAllAction(networkView));
-    mi = selectMenu.add(new DeselectAllAction(networkView));
-    mi = selectMenu.add(new DisplayBrowserAction(networkView));
+    if ( !networkView.getCytoscapeObj().getConfiguration().isYFiles() ) {
+	    mi = selectMenu.add(new SelectAllAction(networkView));
+	    mi = selectMenu.add(new DeselectAllAction(networkView));
+	    mi = selectMenu.add(new DisplayBrowserAction(networkView));
+    }
         
     // mi = selectEdgesSubMenu.add(new EdgeTypeDialogAction());
         
@@ -300,6 +302,7 @@ public class CyMenus {
     if ( !networkView.getCytoscapeObj().getConfiguration().isYFiles() ) {
       editMenu.add( new SquiggleAction( networkView ) ); 
       vizMenu.add( new BirdsEyeViewAction( networkView ) );
+       vizMenu.add( new ShowExpressionDataAction( networkView ) );
     }
 
     selectNodesSubMenu.add(new AlphabeticalSelectionAction(networkView));
