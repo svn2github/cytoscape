@@ -18,7 +18,8 @@ OBJS = BioDataServerInterface.class \
        loadAnnotation.class \
        loadThesaurus.class \
        status.class \
-       clear.class
+       clear.class \
+       getCommonName.class
 
 default: objs rmic
 
@@ -109,16 +110,12 @@ killproduction:
 clean:
 	- rm *.class */*.class
 
-#------ load
-#  load all appropriate data into the server
-# 
+#------ common
+#  is the rmi server running, and does it return expected results? call 'getCommonName'
+#  
 
-load: loadAnnotation
-
-loadAnnotation:  $(OBJS)
-	java $(PKG).loadAnnotation rmi://localhost/data ../kegg/haloMetabolicPathway.xml
-	java $(PKG).loadAnnotation rmi://localhost/data ../go/d16s3098.xml
-	java $(PKG).loadAnnotation rmi://localhost/data ../go/prostasomes39.xml
+common:  $(OBJS)
+	java $(PKG).getCommonName localhost yeast "Saccharomyces cerevisiae" YPL248C
 
 help:
 	egrep "^#" makefile | sed "s/^#//"
