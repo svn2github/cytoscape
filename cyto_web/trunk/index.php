@@ -162,27 +162,30 @@
 									<br>
 									<br>
 									<p>
-		                                    <b>Genome Research, November 2004 (cover article)</b>
-                                    		<br>
-                                    		Baliga NS, Bonneau R, Facciotti MT, Pan M, Glusman G, Deutsch EW, Shannon P, Chiu Y, Weng RS, Gan RR, Hung P, Date SV, Marcotte E, Hood L, Ng WV
-                                    		<br>
-                                            Genome sequence of Haloarcula marismortui: a halophilic archaeon from the Dead Sea
-                                    		<br>
-                                    		Genome Res. 2004 Nov;14(11):2221-34
-                                    		<br>
-                                    		[<a href="http://www.genome.org/cgi/content/abstract/14/11/2221">Abstract</a>] [<a href="http://www.genome.org/cgi/reprint/14/11/2221">PDF</a>]
-
-                                    	<p>
-                                    		<b>Bioinformatics August 2004</b>
-                                    		<br>
-                                    		Reiss David, Schwikowski Benno
-                                    		<br>
-                                    		Predicting protein–peptide interactions via a network-based motif sampler
-                                    		<br>
-                                    		Bioinformatics. 2004 Aug 4;20 Suppl 1:I274-I282
-                                    		<br>
-                                    		[<a href="http://bioinformatics.oupjournals.org/cgi/content/abstract/20/suppl_1/i274">Abstract</a>] [<a href="http://bioinformatics.oupjournals.org/cgi/reprint/20/suppl_1/i274">PDF</a>]
-									
+                                        <b>Genome Research, November 2004 (cover article)</b>
+                                        <br>
+                                        Baliga NS, Bonneau R, Facciotti MT, Pan M, Glusman G, Deutsch EW, Shannon P, Chiu Y, Weng RS, Gan RR, Hung P, Date SV, Marcotte E, Hood L, Ng WV
+                                        <br>
+                                        Genome sequence of Haloarcula marismortui: a halophilic archaeon from the Dead Sea
+                                        <br>
+                                        Genome Res. 2004 Nov;14(11):2221-34
+                                        <br>
+                                        [<a href="http://www.genome.org/cgi/content/abstract/14/11/2221">Abstract</a>] [<a href="http://www.genome.org/cgi/reprint/14/11/2221">PDF</a>]
+                                        <br>
+                                        &nbsp;
+                                   	<p>
+                                   		<b>Bioinformatics August 2004</b>
+                                   		<br>
+                                   		Reiss David, Schwikowski Benno
+                                   		<br>
+                                   		Predicting protein–peptide interactions via a network-based motif sampler
+                                   		<br>
+                                   		Bioinformatics. 2004 Aug 4;20 Suppl 1:I274-I282
+                                   		<br>
+                                   		[<a href="http://bioinformatics.oupjournals.org/cgi/content/abstract/20/suppl_1/i274">Abstract</a>] [<a href="http://bioinformatics.oupjournals.org/cgi/reprint/20/suppl_1/i274">PDF</a>]
+								        <br>
+                                        &nbsp;
+									<p>
 										<b>
 											Genome Biology, July 2004
 										</b>

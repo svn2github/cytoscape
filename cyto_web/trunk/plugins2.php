@@ -165,6 +165,11 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 				</td>
 			</tr>
 			<tr>
+				<td colspan="3">
+					<hr>
+				</td>
+			</tr>
+			<tr>
 				<td width="20%" valign="top">
 					<b>Oracle Spatial Network Data Model Plugin</b><font size="-1">
 						<br>
@@ -425,7 +430,7 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 	</tr>
 </tbody>
 </table>
-
+<p>
 <a name="policy">
 Cytoscape Plugin License Policy:  Although the Cytoscape core
 application is distributed under a Library GNU Public License (LGPL),
