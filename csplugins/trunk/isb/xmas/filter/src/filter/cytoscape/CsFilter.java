@@ -5,6 +5,7 @@ import cytoscape.data.*;
 import cytoscape.view.*;
 import cytoscape.util.*;
 import cytoscape.plugin.*;
+import cytoscape.plugin.AbstractPlugin;
 import filter.model.*;
 import filter.view.*;
 
