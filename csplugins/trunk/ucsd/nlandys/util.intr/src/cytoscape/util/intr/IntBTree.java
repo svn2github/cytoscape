@@ -26,22 +26,22 @@ public final class IntBTree
    */
   public void insert(int x)
   {
-    Node newNode = insert(m_root, x);
-    if (newNode != null) { // The root has been split into two.
+    Node newSibling = insert(m_root, x);
+    if (newSibling != null) { // The root has been split into two.
       int newSplitVal;
       int newDeepCount;
-      if (isLeafNode(newNode)) {
-        newSplitVal = newNode.values[0];
-        newDeepCount = m_root.sliceCount + newNode.sliceCount; }
+      if (isLeafNode(newSibling)) {
+        newSplitVal = newSibling.values[0];
+        newDeepCount = m_root.sliceCount + newSibling.sliceCount; }
       else {
-        newSplitVal = newNode.data.splitVals[newNode.sliceCount - 1];
-        newDeepCount = m_root.data.deepCount + newNode.data.deepCount; }
+        newSplitVal = newSibling.data.splitVals[newSibling.sliceCount - 1];
+        newDeepCount = m_root.data.deepCount + newSibling.data.deepCount; }
       Node newRoot = new Node(MAX_BRANCHES, false);
       newRoot.sliceCount = 2;
       newRoot.data.deepCount = newDeepCount;
       newRoot.data.splitVals[0] = newSplitVal;
       newRoot.data.children[0] = m_root;
-      newRoot.data.children[1] = newNode;
+      newRoot.data.children[1] = newSibling;
       m_root = newRoot; }
   }
 
@@ -54,36 +54,35 @@ public final class IntBTree
   {
     if (isLeafNode(n))
     {
-      if (n.sliceCount < n.values.length) { // There's room for a value.
+      if (n.sliceCount < MAX_BRANCHES) { // There's room for a value.
         boolean found = false;
         for (int i = 0; i < n.sliceCount; i++) {
           if (x <= n.values[i]) {
-            for (int j = n.sliceCount; j > i; j--) {
-              n.values[j] = n.values[j - 1]; }
-            n.values[i] = x;
-            found = true;
-            break; } }
+            for (int j = n.sliceCount; j > i;) n.values[j] = n.values[--j];
+            n.values[i] = x; found = true; break; } }
         if (!found) n.values[n.sliceCount] = x;
         n.sliceCount++;
         return null; }
       else { // No room for another value in this leaf node; perform split.
-        // Perform poor man's correct but inefficient algorithm using m_buff.
-        boolean found = false;
-        for (int i = 0; i < n.sliceCount; i++) {
-          if (x <= n.values[i]) {
-            for (int j = n.sliceCount; j > i; j--) m_buff[j] = n.values[j - 1];
-            m_buff[i] = x;
-            found = true;
-            break; }
-          else { m_buff[i] = n.values[i]; } }
-        if (!found) m_buff[n.sliceCount] = x;
         Node newNode = new Node(MAX_BRANCHES, true);
-        int combinedCount = n.sliceCount + 1;
+        int combinedCount = MAX_BRANCHES + 1;
         n.sliceCount = combinedCount >> 1; // Divide by two.
-        System.arraycopy(m_buff, 0, n.values, 0, n.sliceCount);
         newNode.sliceCount = combinedCount - n.sliceCount;
-        System.arraycopy(m_buff, n.sliceCount,
-                         newNode.values, 0, newNode.sliceCount);
+        Node currentNode = newNode;
+        int currentInx = currentNode.sliceCount;
+        boolean found = false;
+        for (int i = MAX_BRANCHES - 1; i >= 0; i--) {
+          if ((!found) && (x >= n.values[i])) {
+            currentNode.values[--currentInx] = x;
+            found = true;
+            if (currentNode == n) break;
+            i++; }
+          else { currentNode.values[--currentInx] = n.values[i]; }
+          if (currentInx == 0) {
+            if (found) break;
+            currentNode = n;
+            currentInx = currentNode.sliceCount; } }
+        if (!found) currentNode.values[0] = x;
         return newNode; }
     }
     else
