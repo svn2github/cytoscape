@@ -11,15 +11,15 @@ import java.util.Vector;
 public class RandomRenderableSubgraphLogic
 {
 
-  public static void justDoIt()
+  public static void justDoIt(CyNetwork foo)
   {
     final int threshold = CytoscapeInit.getViewThreshold();
-    final CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
+    final CyNetwork currentNetwork = foo;
     final int currentNodeCount = currentNetwork.getNodeCount();
-    if (currentNodeCount < threshold)
-      throw new IllegalStateException
-        ("misusage of this class - only use it if the number of nodes " +
-         "in the current network is equal to or exceeds the threshold");
+//     if (currentNodeCount < threshold)
+//       throw new IllegalStateException
+//         ("misusage of this class - only use it if the number of nodes " +
+//          "in the current network is equal to or exceeds the threshold");
     Vector inx = new Vector();
     for (int i = 0; i < currentNodeCount; i++)
       inx.addElement(new Integer(i));
