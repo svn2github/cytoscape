@@ -1390,7 +1390,6 @@ protected JMenuBar createMenuBar ()
   vizMenu = new JMenu ("Visualization"); // always create the viz menu
   menuBar.add (vizMenu);
   vizMenu.add (new SetVisualPropertiesAction ());
-  vizMenu.add( new ColorNodesFromFile());
   //  vizMenu.add (new PrintPropsAction ());
 
   opsMenu = new JMenu ("PlugIns"); // always create the plugins menu
@@ -1976,26 +1975,6 @@ protected class PrintPropsAction extends AbstractAction   {
 }
 */
 
-
-//------------------------------------------------------------------------------
-// added by iliana 10/28/2002
-// Pops up a dialog that allows the user to enter a file with ORfs, and choose
-// a color. Nodes in the graph with the given ORFs will be colored.
-protected class ColorNodesFromFile extends AbstractAction{
-    ColorNodesFromFile(){
-	super("Color Nodes From File");
-    }
-
-    public void actionPerformed(ActionEvent e){
-      JDialog dialog = new ColorNodesFromFileDialog(CytoscapeWindow.this);
-      dialog.pack ();
-      dialog.setLocationRelativeTo (mainFrame);
-      dialog.setVisible (true);
-
-    }
-
-}//ColorNodesFromFile
-//------------------------------------------------------------------------------
 protected class SetVisualPropertiesAction extends AbstractAction   {
     /** The constructor that takes no arguments shows the
      *  label "Set Visual Properties" - this makes it appropriate
