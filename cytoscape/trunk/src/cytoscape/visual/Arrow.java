@@ -57,6 +57,9 @@ public class Arrow implements Serializable {
             return EdgeView.DIAMOND_END;
         } else if (name.equalsIgnoreCase("short")) {
             return EdgeView.T_END;
+        } else if (name.equalsIgnoreCase("none")) {
+            //should be none, but Giny doesn't have a none yet
+            return EdgeView.T_END;
         } else {
             return EdgeView.ARROW_END;
         }
