@@ -38,6 +38,7 @@ public class ShapePopupButton extends JPanel implements ActionListener {
 	alreadyConstructed = false;
 	this.parentDialog = parentDialog;
 	setupShapeMap();
+	if(rootPath==null) return;
 	this.title = title;
 	this.setShape(startShape);
 	setupWindow();
@@ -46,6 +47,7 @@ public class ShapePopupButton extends JPanel implements ActionListener {
 	alreadyConstructed = false;
 	this.parentDialog = parentDialog;
 	setupShapeMap();
+	if(rootPath==null) return;
 	this.title = title;
 	this.setShapeByte(new Byte(startShapeByte));
 	setupWindow();
@@ -91,6 +93,11 @@ public class ShapePopupButton extends JPanel implements ActionListener {
 	byte2shape.put(new Byte (ShapeNodeRealizer.TRIANGLE), "TRIANGLE");
 	
 	rootPath = System.getProperty ("CYTOSCAPE_HOME"); // get class directory root
+	if(rootPath == null) {
+	    JLabel errorLabel = new JLabel("ERROR: No CYTOSCAPE_HOME specified on java command line.");
+	    add(errorLabel);
+	    return;
+	}
 	if (rootPath.endsWith("/")) rootPath = rootPath.substring(0,rootPath.length()-1);
 	rootPath = rootPath + "/cytoscape/dialogs/images/";
 	rootPath = rootPath.substring(rootPath.lastIndexOf(":")+1);

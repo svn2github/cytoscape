@@ -38,6 +38,7 @@ public class LineTypePopupButton extends JPanel implements ActionListener {
 	alreadyConstructed = false;
 	this.parentDialog = parentDialog;
 	setupLineTypeMap();
+	if(rootPath==null) return;
 	this.title = title;
 	this.setLineTypeName(startLineType);
 	setupWindow();
@@ -46,6 +47,7 @@ public class LineTypePopupButton extends JPanel implements ActionListener {
 	alreadyConstructed = false;
 	this.parentDialog = parentDialog;
 	setupLineTypeMap();
+	if(rootPath==null) return;
 	this.title = title;
 	this.setLineType(startLineType);
 	setupWindow();
@@ -103,6 +105,11 @@ public class LineTypePopupButton extends JPanel implements ActionListener {
 	byte2shape.put(LineType.LINE_7, "LINE_7");
 
 	rootPath = System.getProperty ("CYTOSCAPE_HOME");
+	if(rootPath == null) {
+	    JLabel errorLabel = new JLabel("ERROR: No CYTOSCAPE_HOME specified on java command line.");
+	    add(errorLabel);
+	    return;
+	}
 	if (rootPath.endsWith("/")) rootPath = rootPath.substring(0,rootPath.length()-1);
 	rootPath = rootPath + "/cytoscape/dialogs/images/";
 	//rootPath = rootPath.substring(rootPath.lastIndexOf(":")+1);
