@@ -1,4 +1,4 @@
-# makefile for csplugins.setVisualProperties
+# makefile for cytoscape.visual
 #-------------------------------------------------------------------------
 # $Revision$
 # $Date$
@@ -13,10 +13,12 @@ JC=javac
 
 OBJS = NodeAppearanceCalculator.class \
        EdgeAppearanceCalculator.class \
+       GlobalAppearanceCalculator.class \
        CalculatorCatalog.class \
        VisualMappingManager.class \
        NodeAppearance.class \
        EdgeAppearance.class \
+       GlobalAppearance.class \
        CalculatorIO.class \
        OldStyleCalculatorIO.class \
        PropertiesTester.class
