@@ -47,7 +47,6 @@ testDir:
 
 clean:
 	- rm *.class
-	- (cd dialogs; make clean)
 	- (cd calculators; make clean)
 	- (cd mappings; make clean)
 	- (cd ui; make clean)
