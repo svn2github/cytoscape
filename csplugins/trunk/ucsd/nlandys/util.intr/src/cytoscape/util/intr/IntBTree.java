@@ -28,7 +28,7 @@ public final class IntBTree
     // Exactly one of { values, data } is null, depending on whether or not
     // this is a leaf node.
     private final int[] values;
-    private final InnerNodeData data;
+    private final InternalNodeData data;
 
     private Node(int maxBranches, boolean leafNode)
     {
@@ -38,19 +38,19 @@ public final class IntBTree
         data = null; }
       else {
         values = null;
-        data = new InnerNodeData(maxBranches); }
+        data = new InternalNodeData(maxBranches); }
     }
 
   }
 
-  private final static class InnerNodeData
+  private final static class InternalNodeData
   {
 
     private int deepCount;
     private final int[] splitVals;
     private final Node[] children;
 
-    private InnerNodeData(int maxBranches)
+    private InternalNodeData(int maxBranches)
     {
       deepCount = 0;
       splitVals = new int[maxBranches - 1];
