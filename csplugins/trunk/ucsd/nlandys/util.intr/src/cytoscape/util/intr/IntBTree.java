@@ -49,10 +49,11 @@ public final class IntBTree
   // the node returned is the right sibling of node n.  If the returned node
   // is a leaf node then the first value of the node is to be the new split
   // index; if return value is internal node, then the split index to be used
-  // is returnValue.data.splitVals[returnValue.sliceCount].
+  // is returnValue.data.splitVals[returnValue.sliceCount - 1].
   private Node insert(Node n, int x)
   {
-    if (isLeafNode(n)) {
+    if (isLeafNode(n))
+    {
       if (n.sliceCount < n.values.length) { // There's room for a value.
         boolean found = false;
         for (int i = 0; i < n.sliceCount; i++) {
@@ -83,60 +84,71 @@ public final class IntBTree
         newNode.sliceCount = combinedCount - n.sliceCount;
         System.arraycopy(m_buff, n.sliceCount,
                          newNode.values, 0, newNode.sliceCount);
-        return newNode;
-      }
+        return newNode; }
     }
-    else { // Not a leaf node.
-      // Poor man's algorithm using m_buff; optimize later.
-      m_buff[0] = Integer.MIN_VALUE;
-      System.arraycopy(n.data.splitVals, 0, m_buff, 1, n.sliceCount - 1);
-      m_buff[n.sliceCount] = Integer.MAX_VALUE;
-      for (int i = 0; i < n.sliceCount; i++)
-      {
-        if (x >= m_buff[i] && x <= m_buff[i + 1]) { // Found path.
-          Node newNode = insert(n.data.children[i], x);
-          if (newNode != null) { // A split was performed at one deeper level.
-            int newSplit;
-            if (isLeafNode(newNode)) newSplit = newNode.values[0];
-            else newSplit = newNode.data.splitVals[newNode.sliceCount];
-            if (n.sliceCount < n.data.children.length) { // There's room here.
-              for (int j = n.sliceCount; j > i + 1; j--) {
-                n.data.children[j] = n.data.children[j - 1];
-                n.data.splitVals[j - 1] = n.data.splitVals[j - 2]; }
-              n.sliceCount++;
-              n.data.children[i + 1] = newNode;
-              n.data.splitVals[i] = newSplit; }
-            else { // No room in this internal node; perform split.
-              // Being poor but correct, we're going to use poor man's m_buff.
-              System.arraycopy(n.data.splitVals, 0, m_buff, 0, i);
-              m_buff[i] = newSplit;
-              System.arraycopy(n.data.splitVals, i, m_buff, i + 1,
-                               n.sliceCount - (i + 1));
-              Node[] nodeBuff = new Node[n.sliceCount + 1];
-              System.arraycopy(n.data.children, 0, nodeBuff, 0, i + 1);
-              nodeBuff[i + 1] = newNode;
-              System.arraycopy(n.data.children, i + 1,
-                               nodeBuff, i + 2, n.sliceCount - (i + 2));
-              int combinedSplitCount = n.sliceCount;
-              int middleInx = combinedSplitCount / 2;
-              Node returnThis = new Node(MAX_BRANCHES, false);
-              System.arraycopy(m_buff, 0, n.data.splitVals, 0, middleInx);
-              System.arraycopy(nodeBuff, 0, n.data.children, 0, middleInx + 1);
-              n.sliceCount = middleInx + 1;
-              System.arraycopy(m_buff, middleInx + 1,
-                               returnThis.data.splitVals, 0,
-                               combinedSplitCount - (middleInx + 1));
-              System.arraycopy(nodeBuff, middleInx + 1,
-                               returnThis.data.children, 0,
-                               combinedSplitCount - middleInx);
-              returnThis.sliceCount = combinedSplitCount - middleInx;
-              returnThis.data.splitVals[combinedSplitCount - (middleInx + 1)] =
-                m_buff[middleInx];
-              return returnThis; }
-          }
-          break; }
+    else
+    { // Not a leaf node.
+      boolean foundPath = -1;
+      for (int i = 0; i < n.sliceCount - 1; i++) {
+        if (x <= n.data.splitVals[i]) {
+          foundPath = i;
+          break; } }
+      if (foundPath < 0) foundPath = n.sliceCount - 1;
+      Node oldChild = n.data.children[foundPath];
+      Node newChild = insert(oldChild, x);
+      if (newChild == null) {
+        n.data.deepCount++;
+        return null; }
+      else
+      { // A split was performed at one level deeper.
+        int newSplit;
+        if (isLeafNode(newChild)) {
+          newSplit = newChild.values[0]; }
+        else { // New child is internal node.
+          newSplit = newChild.data.splitVals[newChild.sliceCount - 1]; }
+        if (n.sliceCount < n.data.children.length) { // There's room here.
+          for (int j = n.sliceCount; j > foundPath + 1; j--) {
+            n.data.children[j] = n.data.children[j - 1];
+            n.data.splitVals[j - 1] = n.data.splitVals[j - 2]; }
+          n.sliceCount++;
+          n.data.deepCount++;
+          n.data.children[foundPath + 1] = newNode;
+          n.data.splitVals[foundPath] = newSplit;
+          return null; }
+        else { // No room in this internal node; perform split.
+          // Being poor but correct, we're going to use poor man's m_buff.
+          System.arraycopy(n.data.splitVals, 0, m_buff, 0, foundPath);
+          m_buff[foundPath] = newSplit;
+          System.arraycopy(n.data.splitVals, foundPath, m_buff, foundPath + 1,
+                           n.sliceCount - (foundPath + 1));
+          Node[] nodeBuff = new Node[n.sliceCount + 1];
+          System.arraycopy(n.data.children, 0, nodeBuff, 0, foundPath + 1);
+          nodeBuff[foundPath + 1] = newChild;
+          System.arraycopy(n.data.children, foundPath + 1,
+                           nodeBuff, foundPath + 2,
+                           n.sliceCount - (foundPath + 1));
+          int combinedSplitCount = n.sliceCount;
+          int middleInx = combinedSplitCount >> 1; // Divide by two.
+          Node returnThis = new Node(MAX_BRANCHES, false);
+          System.arraycopy(m_buff, 0,
+                           n.data.splitVals, 0, middleInx); // Superfluous?
+          System.arraycopy(nodeBuff, 0, n.data.children, 0,
+                           middleInx + 1); // Superfluous?
+          n.sliceCount = middleInx + 1;
+          System.arraycopy(m_buff, middleInx + 1,
+                           returnThis.data.splitVals, 0,
+                           combinedSplitCount - (middleInx + 1));
+          // Todo: Remove dangling pointers so garbage collect.
+          // Todo: Put more data into right (new) sibling.
+          // Todo: Update deep counts.
+          System.arraycopy(nodeBuff, middleInx + 1,
+                           returnThis.data.children, 0,
+                           combinedSplitCount - middleInx);
+          returnThis.sliceCount = combinedSplitCount - middleInx;
+          returnThis.data.splitVals[combinedSplitCount - (middleInx + 1)] =
+            m_buff[middleInx];
+          return returnThis; }
       }
-      return null;
     }
   }
 
