@@ -67,6 +67,8 @@ public class CytoscapeWindow extends JPanel implements FilterDialogClient, Graph
   protected static final int DEFAULT_WIDTH = 700;
   protected static final int DEFAULT_HEIGHT = 700;
 
+  protected CytoscapeWindow thisWindow;
+
   protected cytoscape parentApp;
   protected Graph2D graph;
   protected String geometryFilename;
@@ -136,6 +138,9 @@ public CytoscapeWindow (cytoscape parentApp,
                         boolean doFreshLayout)
    throws Exception
 {
+    // save the window pointer so it is accessible to nested subclasses
+    thisWindow = this;
+
   this.parentApp = parentApp;
   this.logger = logger;
   // do not set graph yet - set it using setGraph() function below
@@ -794,6 +799,7 @@ protected JMenuBar createMenuBar ()
   layoutMenu.add(alignSubMenu);
   alignSubMenu.add (new AlignHorizontalAction ());
   alignSubMenu.add (new AlignVerticalAction   ());
+  layoutMenu.add(new RotateSelectedNodesAction());
   layoutMenu.add(new ReduceEquivalentNodesAction());
 
   vizMenu = new JMenu ("Visualization"); // always create the viz menu
@@ -1536,6 +1542,21 @@ protected class AlignVerticalAction extends AbstractAction {
 		graph.setLocation(n, avgXcoord, graph.getY(n));
 	}
 	redrawGraph();
+    }
+}
+
+/**
+ * Rotates the given selection by the specified amount.
+ *
+ * added by dramage 2002-08-20
+ */
+protected class RotateSelectedNodesAction extends AbstractAction {
+    RotateSelectedNodesAction () { super ("Rotate Selected Nodes"); }
+
+    public void actionPerformed (ActionEvent e) {
+	RotateSelectionDialog d = new RotateSelectionDialog(mainFrame,
+							    thisWindow,
+							    graph);
     }
 }
 
