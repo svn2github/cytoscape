@@ -1,6 +1,7 @@
 package cytoscape.data.gob;
 
 import cytoscape.util.intr.IntEnumerator;
+import java.util.NoSuchElementException;
 
 public class GOBRegistry
 {
@@ -23,23 +24,23 @@ public class GOBRegistry
   }
 
   /**
-   * @param attrID an identifier of an existing attribute definition.
+   * @param defID an identifier of an existing attribute definition.
    * @return one of the ATTR_TYPE_* constants specifiying which kind of
-   *   attribute the specified attribute definition (attrID) is.
+   *   attribute the specified attribute definition (defID) is.
    * @exception IllegalArgumentException if no attribute definition with
-   *   specified ID (attrID) exists.
+   *   specified ID (defID) exists.
    */
-  public int attributeType(int attrID)
+  public int attributeType(int defID)
   {
     throw new IllegalArgumentException();
   }
 
   /**
-   * @param attrID a potential attribute definition ID.
-   * @return true if and only if the specified attribute definition (attrID)
+   * @param defID a potential attribute definition ID.
+   * @return true if and only if the specified attribute definition (defID)
    *   is defined in this registry.
    */
-  public boolean attributeDefined(int attrID)
+  public boolean attributeDefined(int defID)
   {
     return false;
   }
@@ -56,11 +57,14 @@ public class GOBRegistry
   }
 
   /**
-   * @param attrID the ID of the attribute definition to remove.
+   * Removes an attribute definition from this registry; all objects that
+   * have been assigned an attribute value in this attribute domain will
+   * lose the corresponding attribute value.
+   * @param defID the ID of the attribute definition to remove.
    * @exception IllegalArgumentException if no attribute definition with
-   *   specified ID (attrID) exists.
+   *   specified ID (defID) exists.
    */
-  public void removeAttribute(int attrID)
+  public void removeAttribute(int defID)
   {
     throw new IllegalArgumentException();
   }
@@ -70,7 +74,7 @@ public class GOBRegistry
    * assignXXXAttribute() methods that take a specific type of value as input.
    * @param objID an object identifier; assigned attribute values belong
    *   to objects, and objects are abstracted as integers by this API.
-   * @param attrID an identifier of an attribute definition that was created
+   * @param defID an identifier of an attribute definition that was created
    *   using defineAttribute().
    * @param attrValue the attribute value that is to be assigned to the
    *   specified object, in the specified attribute definition domain; the
@@ -78,15 +82,15 @@ public class GOBRegistry
    *   java.lang.Double for ATTR_TYPE_DOUBLE, java.lang.Long for
    *   ATTR_TYPE_LONG, and java.lang.String for ATTR_TYPE_STRING.
    * @exception ClassCastException if the specified attribute definition
-   *   (attrID) exists but the specified attribute value (attrValue) is
+   *   (defID) exists but the specified attribute value (attrValue) is
    *   not of the class implied by the type (ATTR_TYPE_*) of specified
    *   attribute definition.
    * @exception IllegalArgumentException if no attribute definition with
-   *   specified ID (attrID) exists.
+   *   specified ID (defID) exists.
    * @exception NullPointerException if the specified attribute value
    *   (attrValue) is null.
    */
-  public void assignAttribute(int objID, int attrID, Object attrValue)
+  public void assignAttribute(int objID, int defID, Object attrValue)
   {
     throw new IllegalArgumentException();
   }
@@ -94,16 +98,16 @@ public class GOBRegistry
   /**
    * @param objID an object identifier; assigned attribute values belong
    *   to objects, and objects are abstracted as integers by this API.
-   * @param attrID an identifier of an attribute definition that was created
+   * @param defID an identifier of an attribute definition that was created
    *   using defineAttribute().
    * @param attrValue the attribute value that is to be assigned to the
    *   specified object, in the specified attribute definition domain.
    * @exception ClassCastException if the specified attribute definition
-   *   (attrID) exists but is not of type ATTR_TYPE_BOOLEAN.
+   *   (defID) exists but is not of type ATTR_TYPE_BOOLEAN.
    * @exception IllegalArgumentException if no attribute definition with
-   *   specified ID (attrID) exists.
+   *   specified ID (defID) exists.
    */
-  public void assignBooleanAttribute(int objID, int attrID, boolean attrValue)
+  public void assignBooleanAttribute(int objID, int defID, boolean attrValue)
   {
     throw new IllegalArgumentException();
   }
@@ -111,16 +115,16 @@ public class GOBRegistry
   /**
    * @param objID an object identifier; assigned attribute values belong
    *   to objects, and objects are abstracted as integers by this API.
-   * @param attrID an identifier of an attribute definition that was created
+   * @param defID an identifier of an attribute definition that was created
    *   using defineAttribute().
    * @param attrValue the attribute value that is to be assigned to the
    *   specified object, in the specified attribute definition domain.
    * @exception ClassCastException if the specified attribute definition
-   *   (attrID) exists but is not of type ATTR_TYPE_DOUBLE.
+   *   (defID) exists but is not of type ATTR_TYPE_DOUBLE.
    * @exception IllegalArgumentException if no attribute definition with
-   *   specified ID (attrID) exists.
+   *   specified ID (defID) exists.
    */
-  public void assignDoubleAttribute(int objID, int attrID, double attrValue)
+  public void assignDoubleAttribute(int objID, int defID, double attrValue)
   {
     throw new IllegalArgumentException();
   }
@@ -128,16 +132,16 @@ public class GOBRegistry
   /**
    * @param objID an object identifier; assigned attribute values belong
    *   to objects, and objects are abstracted as integers by this API.
-   * @param attrID an identifier of an attribute definition that was created
+   * @param defID an identifier of an attribute definition that was created
    *   using defineAttribute().
    * @param attrValue the attribute value that is to be assigned to the
    *   specified object, in the specified attribute definition domain.
    * @exception ClassCastException if the specified attribute definition
-   *   (attrID) exists but is not of type ATTR_TYPE_LONG.
+   *   (defID) exists but is not of type ATTR_TYPE_LONG.
    * @exception IllegalArgumentException if no attribute definition with
-   *   specified ID (attrID) exists.
+   *   specified ID (defID) exists.
    */
-  public void assignLongAttribute(int objID, int attrID, long attrValue)
+  public void assignLongAttribute(int objID, int defID, long attrValue)
   {
     throw new IllegalArgumentException();
   }
@@ -145,35 +149,36 @@ public class GOBRegistry
   /**
    * @param objID an object identifier; assigned attribute values belong
    *   to objects, and objects are abstracted as integers by this API.
-   * @param attrID an identifier of an attribute definition that was created
+   * @param defID an identifier of an attribute definition that was created
    *   using defineAttribute().
    * @param attrValue the attribute value that is to be assigned to the
    *   specified object, in the specified attribute definition domain; null
    *   values are not allowed, but empty strings are allowed.
    * @exception ClassCastException if the specified attribute definition
-   *   (attrID) exists but is not of type ATTR_TYPE_STRING.
+   *   (defID) exists but is not of type ATTR_TYPE_STRING.
    * @exception IllegalArgumentException if no attribute definition with
-   *   specified ID (attrID) exists.
+   *   specified ID (defID) exists.
    * @exception NullPointerException if the specified attribute value
    *   (attrValue) is null.
    */
-  public void assignStringAttribute(int objID, int attrID, String attrValue)
+  public void assignStringAttribute(int objID, int defID, String attrValue)
   {
     throw new IllegalArgumentException();
   }
 
   /**
    * @param objID an object identifier.
-   * @param attrID an identifier of an attribute definition that was
+   * @param defID an identifier of an attribute definition that was
    *   created using defineAttribute().
    * @return true if and only if the specified object (objID) has an attribute
-   *   value from the specified attribute definition domain (attrID) assigned
+   *   value from the specified attribute definition domain (defID) assigned
    *   to it; note that if the specified object is not recognized by this
-   *   registry, false is returned (as opposed to throwing an exception).
+   *   registry, false is returned (as opposed to raising some sort of error
+   *   condition).
    * @exception IllegalArgumentException if no attribute definition with
-   *   specified ID (attrID) exists.
+   *   specified ID (defID) exists.
    */
-  public boolean hasAttribute(int objID, int attrID)
+  public boolean hasAttribute(int objID, int defID)
   {
     throw new IllegalArgumentException();
   }
@@ -183,8 +188,8 @@ public class GOBRegistry
    * XXXAttributeValue() methods that return a specific type.
    * @param objID an object identifier that was previously used in
    *   assigning an attribute value in the specified attribute definition
-   *   domain (attrID).
-   * @param attrID an identifier of an attribute definition that was
+   *   domain (defID).
+   * @param defID an identifier of an attribute definition that was
    *   created using defineAttribute().
    * @return the value that was previously assigned to specified object
    *   in specified attribute definition domain; if this attribute definition
@@ -196,13 +201,13 @@ public class GOBRegistry
    *   type ATTR_TYPE_STRING, the returned object is of type java.lang.String;
    *   null is never returned by this method.
    * @exception NoSuchElementException if the specified attribute
-   *   definition (attrID) exists but there is no corresponding attribute
+   *   definition (defID) exists but there is no corresponding attribute
    *   value assigned to specified object; note that Java try/catch blocks
    *   are a huge performance bottleneck when exceptions are thrown.
    * @exception IllegalArgumentException if no attribute definition with
-   *   specified ID (attrID) exists.
+   *   specified ID (defID) exists.
    */
-  public Object attributeValue(int objID, int attrID)
+  public Object attributeValue(int objID, int defID)
   {
     throw new IllegalArgumentException();
   }
@@ -210,23 +215,23 @@ public class GOBRegistry
   /**
    * @param objID an object identifier that was previously used in
    *   assigning an attribute value in the specified attribute definition
-   *   domain (attrID).
-   * @param attrID an identifier of an attribute definition that was
+   *   domain (defID).
+   * @param defID an identifier of an attribute definition that was
    *   created using defineAttribute().
    * @return the value that was previously assigned to specified object
    *   in specified attribute definition domain.
    * @exception ClassCastException if the specified attribute definition
-   *   (attrID) exists but is not of type ATTR_TYPE_BOOLEAN, regardless of
+   *   (defID) exists but is not of type ATTR_TYPE_BOOLEAN, regardless of
    *   whether or not the specified object (objID) is recognized by this
    *   registry.
    * @exception NoSuchElementException if the specified attribute definition
-   *   (attrID) exists but there is no corresponding attribute value assinged
+   *   (defID) exists but there is no corresponding attribute value assinged
    *   to specified object; note that Java try/catch blocks are a huge
    *   performance bottleneck when exceptions are thrown.
    * @exception IllegalArgumentException if no attribute definition with
-   *   specified ID (attrID) exists.
+   *   specified ID (defID) exists.
    */
-  public boolean booleanAttributeValue(int objID, int attrID)
+  public boolean booleanAttributeValue(int objID, int defID)
   {
     throw new IllegalArgumentException();
   }
@@ -234,23 +239,23 @@ public class GOBRegistry
   /**
    * @param objID an object identifier that was previously used in
    *   assigning an attribute value in the specified attribute definition
-   *   domain (attrID).
-   * @param attrID an identifier of an attribute definition that was created
+   *   domain (defID).
+   * @param defID an identifier of an attribute definition that was created
    *   using defineAttribute().
    * @return the value that was previously assigned to specified object
    *   in specified attribute definition domain.
    * @exception ClassCastException if the specified attribute definition
-   *   (attrID) exists but is not of type ATTR_TYPE_DOUBLE, regardless of
+   *   (defID) exists but is not of type ATTR_TYPE_DOUBLE, regardless of
    *   whether or not the specified object (objID) is recongnized by this
    *   registry.
    * @exception NoSuchElementException if the specified attribute definition
-   *   (attrID) exists but there is no corresponding attribute value assigned
+   *   (defID) exists but there is no corresponding attribute value assigned
    *   to specified object; note that Java try/catch blocks are a huge
    *   performance bottleneck when exceptions are thrown.
    * @exception IllegalArgumentException if no attribute definition with
-   *   specified ID (attrID) exists.
+   *   specified ID (defID) exists.
    */
-  public double doubleAttributeValue(int objID, int attrID)
+  public double doubleAttributeValue(int objID, int defID)
   {
     throw new IllegalArgumentException();
   }
@@ -258,23 +263,23 @@ public class GOBRegistry
   /**
    * @param objID an object identifier that was previously used in
    *   assigning an attribute value in the specified attribute definition
-   *   domain (attrID).
-   * @param attrID an identifier of an attribute definition that was
+   *   domain (defID).
+   * @param defID an identifier of an attribute definition that was
    *   created using defineAttribute().
    * @return the value that was previously assigned to specified object
    *   in specified attribute definition domain.
    * @exception ClassCastException if the specified attribute definition
-   *   (attrID) exists but is not of type ATTR_TYPE_LONG, regardless of
+   *   (defID) exists but is not of type ATTR_TYPE_LONG, regardless of
    *   whether or not the specified object (objID) is recognized by this
    *   registry.
    * @exception NoSuchElementException if the specified attribute definition
-   *   (attrID) exists but there is no corresponding attribute value assinged
+   *   (defID) exists but there is no corresponding attribute value assinged
    *   to specified object; note that Java try/catch blocks are a huge
    *   performance bottleneck when exceptions are thrown.
    * @exception IllegalArgumentException if no attribute definition with
-   *   specified ID (attrID) exists.
+   *   specified ID (defID) exists.
    */
-  public long longAttributeValue(int objID, int attrID)
+  public long longAttributeValue(int objID, int defID)
   {
     throw new IllegalArgumentException();
   }
@@ -282,24 +287,24 @@ public class GOBRegistry
   /**
    * @param objID an object identifier that was previously used in
    *   assigning an attribute value in the specified attribute definition
-   *   domain (attrID).
-   * @param attrID an identifier of an attribute definition that was
+   *   domain (defID).
+   * @param defID an identifier of an attribute definition that was
    *   created using defineAttribute().
    * @return the value that was previously assigned to specified object
    *   in specified attribute definition domain; null is never returned, but
    *   the empty string may be returned.
    * @exception ClassCastException if the specified attribute definition
-   *   (attrID) exists but is not of type ATTR_TYPE_STRING, regardless of
+   *   (defID) exists but is not of type ATTR_TYPE_STRING, regardless of
    *   whether or not the specified object (objID) is recognized by this
    *   registry.
    * @exception NoSuchElementException if the specified attribute definition
-   *   (attrID) exists but there is no corresponding attribute value assinged
+   *   (defID) exists but there is no corresponding attribute value assinged
    *   to specified object; note that Java try/catch blocks are a huge
    *   performance bottleneck when exceptions are thrown.
    * @exception IllegalArgumentException if no attribute definition with
-   *   specified ID (attrID) exists.
+   *   specified ID (defID) exists.
    */
-  public String stringAttributeValue(int objID, int attrID)
+  public String stringAttributeValue(int objID, int defID)
   {
     throw new IllegalArgumentException();
   }
@@ -332,12 +337,12 @@ public class GOBRegistry
 
   /**
    * @return an enumeration of unique objects (object identifiers) that have
-   *   an attribute value in the specified attribute definition domain (attrID)
+   *   an attribute value in the specified attribute definition domain (defID)
    *   assigned; this method never returns null.
    * @exception IllegalArgumentException if no attribute definition with
-   *   specified ID (attrID) exists.
+   *   specified ID (defID) exists.
    */
-  public IntEnumerator objectsWithAttribute(int attrID)
+  public IntEnumerator objectsWithAttribute(int defID)
   {
     throw new IllegalArgumentException();
   }
@@ -355,18 +360,19 @@ public class GOBRegistry
   }
 
   /**
-   * Forgets that any value for the specified attribute was ever assigned to
-   * the specified object.  Note that an object will cease to exist in this
-   * registry if it has no attributes assigned to it.  Also note that
+   * Forgets that any value for the specified attribute definition (defID)
+   * was ever assigned to the specified object (objID).
+   * Note that an object will cease to exist in this
+   * registry if it has no attributes assigned to it.  Note also that
    * if no attribute value from the specified attribute definition domain
-   * (attrID) is assigned to the specified object (objID) at the time this
+   * is assigned to the specified object at the time this
    * method is called, nothing is changed, and no error condition is raised.
    * @return true if and only if a value for the specified attribute is
    *   assigned to the specified object at the time this method is called.
    * @exception IllegalArgumentException if no attribute definition with
-   *   specified ID (attrID) exists.
+   *   specified ID (defID) exists.
    */
-  public void forgetAssignedAttribute(int objID, int attrID)
+  public void forgetAssignedAttribute(int objID, int defID)
   {
     throw new IllegalArgumentException();
   }
