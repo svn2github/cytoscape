@@ -417,9 +417,10 @@ class FRootGraph implements RootGraph
     final IntHash nodeBucket = m_hash2;
     for (int i = 0; i < nodeInx.length; i++) {
       final int positiveNodeIndex = ~nodeInx[i];
-      if (positiveNodeIndex < 0) continue;
+      if (positiveNodeIndex < 0) return null;
       if (m_graph.containsNode(positiveNodeIndex))
-        nodeBucket.put(positiveNodeIndex); }
+        nodeBucket.put(positiveNodeIndex);
+      else return null; }
     m_hash.empty();
     final IntHash edgeBucket = m_hash;
     final IntEnumerator nodeIter = nodeBucket.elements();
