@@ -61,7 +61,7 @@ public class CalculatorIO {
      * Properties, so that the properties descriptions of the calculators are
      * reasonably human-readable.
      */
-    public static void storeCatalog(CalculatorCatalog catalog, String filename) {
+    public static void storeCatalog(CalculatorCatalog catalog, File outFile) {
         try {
             //construct the header comment for the file
             String lineSep = System.getProperty("line.separator");
@@ -77,7 +77,7 @@ public class CalculatorIO {
             
             //writer that writes final version to file;
             //created now so that we crash early if the file is unwritable
-            BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(outFile));
             
             //get a Properties description of the catalog
             Properties props = getProperties(catalog);

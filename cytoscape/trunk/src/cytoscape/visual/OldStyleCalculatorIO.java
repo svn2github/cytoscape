@@ -5,6 +5,10 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual;
 //----------------------------------------------------------------------------
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.event.*;
 import java.util.Properties;
 import java.util.Enumeration;
 
@@ -31,7 +35,140 @@ public class OldStyleCalculatorIO {
     
     public static String packageHeader = "cytoscape.visual.calculators.";
     public static String calcName = "oldFormat";
-
+    public static boolean loaded = false;
+    //helper variable used to halt execution until the UI is closed
+    private static boolean isDone = false;
+    
+    public static void checkForCalculators(Properties props, CalculatorCatalog catalog) {
+        boolean found = false;
+        for (Enumeration e = props.propertyNames(); e.hasMoreElements(); ) {
+            String key = (String)e.nextElement();
+            if (key.startsWith("node.fillColor.") ||
+                key.startsWith("node.borderColor.") ||
+                key.startsWith("node.selectedColor.") ||
+                key.startsWith("node.borderLinetype.") ||
+                key.startsWith("node.width.") ||
+                key.startsWith("node.height.") ||
+                key.startsWith("node.shape.") ||
+                key.startsWith("edge.color.") ||
+                key.startsWith("background.color.") ||
+                key.startsWith("edge.linetype.") ||
+                key.startsWith("edge.sourceDecoration.") ||
+                key.startsWith("edge.targetDecoration.") ) {
+                    //we found at least one matching line
+                    found = true;
+                    break;
+            }
+        }
+        if (!found) {return;}
+        
+        final JFrame frame = new JFrame();
+        
+        String lineSep = System.getProperty("line.separator");
+        StringBuffer message = new StringBuffer();
+        message.append("Your cytoscape.props file contains visual mappings specified");
+        message.append(" in an old format.").append(lineSep);
+        message.append("Cytoscape can automatically convert these mappings into the");
+        message.append(" new format.").append(lineSep);
+        message.append("Simply specify a name for this group of visual mappings,");
+        message.append(" and Cytoscape").append(lineSep);
+        message.append("will save them to your visual mappings");
+        message.append(" properties file").append(lineSep);
+        message.append("(default: vizmap.props in your home directory).");
+        message.append(lineSep).append(lineSep);
+        message.append("To avoid seeing this message again, please remove all visual");
+        message.append(" mapping").append(lineSep);
+        message.append("specifications from your cytoscape.props file.");
+        message.append(lineSep);
+        JTextArea theText = new JTextArea( message.toString() );
+        theText.setEditable(false);
+        theText.setBorder(BorderFactory.createLineBorder(Color.WHITE, 10));
+        
+        JLabel nameLabel = new JLabel("enter a name for these mappings");
+        String checkedName = catalog.checkNodeAppearanceCalculatorName(calcName);
+        String doubleCheckedName = catalog.checkEdgeAppearanceCalculatorName(checkedName);
+        if (!calcName.equals(doubleCheckedName)) {//force user to pick a new name
+            calcName = "";
+        }
+        final JTextField nameEntry = new JTextField(calcName, 20);
+        nameEntry.addActionListener( new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                calcName = nameEntry.getText();
+            }
+        });
+        
+        final Properties theProps = props;
+        final CalculatorCatalog theCatalog = catalog;
+        JButton okButton = new JButton("Convert old visual mapppings");
+        okButton.setMargin(new Insets(0,0,0,0));
+        okButton.addActionListener( new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                calcName = nameEntry.getText();
+                if (calcName == null || calcName.equals("")) {
+                    String s = "You must specify a name for these mappings.";
+                    JOptionPane.showMessageDialog(frame, s, "Bad name", JOptionPane.ERROR_MESSAGE);
+                } else if (checkName(theCatalog)) {
+                    loadCalculators(theProps, theCatalog);
+                    loaded = true;
+                    frame.dispose();
+                    setDone();
+                } else {
+                    String s = "The name you entered is already in use. Please choose another.";
+                    JOptionPane.showMessageDialog(frame, s, "Bad name", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+        JButton ignoreButton = new JButton("Ignore old visual mappings");
+        ignoreButton.setMargin(new Insets(0,0,0,0));
+        ignoreButton.addActionListener( new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                frame.dispose();
+                setDone();
+            }
+        });
+        
+        JPanel namePanel = new JPanel();
+        namePanel.setLayout(new FlowLayout());
+        namePanel.add(nameLabel);
+        namePanel.add(nameEntry);
+        
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout( new FlowLayout() );
+        buttonPanel.add(okButton);
+        buttonPanel.add(ignoreButton);
+        
+        Container contentPane = frame.getContentPane();
+        contentPane.setLayout( new BoxLayout(contentPane, BoxLayout.Y_AXIS) );
+        contentPane.add(theText);
+        contentPane.add(namePanel);
+        contentPane.add(buttonPanel);
+        //set ok to be the default
+        frame.getRootPane().setDefaultButton(okButton);
+        
+        //add a window listener to allow execution to continue when the window closes
+        frame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+                setDone();
+            }
+        });
+        frame.pack();
+        frame.show();
+        
+        //halt until the UI closes
+        while (!isDone) {
+            //wait(100);
+        }
+    }
+    
+    private static void setDone() {isDone = true;}
+    
+    private static boolean checkName(CalculatorCatalog catalog) {
+        NodeAppearanceCalculator nac = catalog.getNodeAppearanceCalculator(calcName);
+        if (nac != null) {return false;}
+        EdgeAppearanceCalculator eac = catalog.getEdgeAppearanceCalculator(calcName);
+        if (eac != null) {return false;}
+        return true;
+    }
     
     public static void loadCalculators(Properties props, CalculatorCatalog catalog) {
         String colorInterpolator = "LinearNumberToColorInterpolator";

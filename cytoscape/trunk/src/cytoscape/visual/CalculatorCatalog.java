@@ -730,6 +730,15 @@ public class CalculatorCatalog {
     public NodeAppearanceCalculator getNodeAppearanceCalculator(String name) {
         return (NodeAppearanceCalculator)nodeAppearanceCalculators.get(name);
     }
+    public String checkNodeAppearanceCalculatorName(String name) {
+	String newName = name;
+	int nameApp = 2;
+	while (nodeAppearanceCalculators.keySet().contains(newName)) {
+	    newName = name + nameApp;
+	    nameApp++;
+	}
+	return newName;
+    }
     
     public Set getEdgeAppearanceCalculatorNames() {
         return edgeAppearanceCalculators.keySet();
@@ -777,6 +786,15 @@ public class CalculatorCatalog {
     }
     public EdgeAppearanceCalculator getEdgeAppearanceCalculator(String name) {
         return (EdgeAppearanceCalculator)edgeAppearanceCalculators.get(name);
+    }
+    public String checkEdgeAppearanceCalculatorName(String name) {
+	String newName = name;
+	int nameApp = 2;
+	while (edgeAppearanceCalculators.keySet().contains(newName)) {
+	    newName = name + nameApp;
+	    nameApp++;
+	}
+	return newName;
     }
     
     public Collection getNodeColorCalculators() {return nodeColorCalculators.values();}
