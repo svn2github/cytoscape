@@ -521,7 +521,7 @@ class FRootGraph //implements RootGraph
 
   public int[] getEdgeIndicesArray(int fromNodeInx,
                                    int toNodeInx,
-                                   boolean undirecteedEdges,
+                                   boolean undirectedEdges,
                                    boolean bothDirections)
   {
     final int positiveFromNodeInx = ~fromNodeInx;
@@ -533,7 +533,7 @@ class FRootGraph //implements RootGraph
                                       undirectedEdges, bothDirections, true);
       toAdj = m_graph.adjacentEdges(positiveToNodeInx,
                                     undirectedEdges, true, bothDirections); }
-    catch (IllegalArgumentException e) { return new int[]; }
+    catch (IllegalArgumentException e) { return new int[0]; }
     final IntEnumerator theAdj =
       ((fromAdj.numRemaining() < toAdj.numRemaining()) ? fromAdj : toAdj);
     final int adjPositiveNode =
@@ -547,7 +547,7 @@ class FRootGraph //implements RootGraph
       if ((m_graph.sourceNode(adjEdge) ^ m_graph.targetNode(adjEdge) ^
            adjPositiveNode) == neighPositiveNode)
         edgeBucket.put(adjEdge); }
-    final IntEnumeration edges = edgeBucket.elements();
+    final IntEnumerator edges = edgeBucket.elements();
     final int[] returnThis = new int[edges.numRemaining()];
     for (int i = 0; i < returnThis.length; i++)
       returnThis[i] = ~(edges.nextInt());
