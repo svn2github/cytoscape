@@ -12,7 +12,8 @@
 
 	<!--  The directory containing library jar files -->	
 	<property name="lib.dir" value="../../../../cytoscape/lib"/>
-	
+	<property name="local.lib.dir" value="lib"/>
+
   	<!-- Temporary build directories -->
  	<property name="build.dir" value="build"/>
   	<property name="build.classes" value="${build.dir}/classes"/>
@@ -26,6 +27,9 @@
 		<pathelement path="${build.classes}"/>	
 		<pathelement path="../../../../cytoscape/build/classes"/>
 		<fileset dir="${lib.dir}">
+			<include name="**/*.jar"/>
+		</fileset>
+		<fileset dir="${local.lib.dir}">
 			<include name="**/*.jar"/>
 		</fileset>
 	</path>
@@ -80,17 +84,22 @@
 	<!--  Target to compile all Plug In Code -->
   	<target name="compile" depends="prepare, build_cytoscape" 
 		description="Compiles all PlugIn source code.">
-                <javac debug="Yes" srcdir="${src.dir}" destdir="${build.classes}">
+		<javac debug="Yes" srcdir="${src.dir}" destdir="${build.classes}">
 			<classpath refid="classpath"/>
 		</javac>
 	</target>
   	
 	<!--  Create PlugIn Jar File (Unobfuscated) -->
    	<target name="jar" depends="compile" description="Creates PlugIn Jar File.">
+	   <unjar overwrite="Yes" dest="${build.classes}">
+	   	<fileset dir="${local.lib.dir}">
+			<include name="**/*.jar"/>
+		</fileset>
+	   </unjar>
 	   <jar destfile="${build.dir}/${plugin.name}.jar">
 			<fileset dir="${build.classes}"/>
-		</jar>
-		<echo message="${plugin.name}.jar is now complete.  It is located in build/ directory"/>
+	   </jar>
+	   <echo message="${plugin.name}.jar is now complete.  It is located in build/ directory"/>
 	</target>
 
 </project>

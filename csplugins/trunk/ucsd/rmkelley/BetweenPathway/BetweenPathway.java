@@ -34,10 +34,12 @@ import java.awt.Dimension;
  * graph and its view.
  */
 public class BetweenPathway extends CytoscapePlugin{
+  BetweenPathwayOptionsDialog dialog;  
   /**
    * This constructor saves the cyWindow argument (the window to which this
    * plugin is attached) and adds an item to the operations menu.
    */
+  
   public BetweenPathway(){
     Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add( new TestAction() );
   }
@@ -46,16 +48,38 @@ public class BetweenPathway extends CytoscapePlugin{
 
   public class TestAction extends AbstractAction{
     
-    public TestAction() {super("Test Action");}
+    public TestAction() {super("Find Between Pathway Models");}
     
     /**
      * This method is called when the user selects the menu item.
      */
     public void actionPerformed(ActionEvent ae) {
-      Thread t = new BetweenPathwayThread();
-      t.start();
+      dialog = new BetweenPathwayOptionsDialog();
+      dialog.show();
+         
+      new Thread(new Runnable(){
+	  public void run(){
+	    try{
+	      synchronized(dialog){
+		dialog.wait();
+	      }
+	    }catch(Exception e){
+	    }
+	    if(!dialog.isCancelled()){
+	      BetweenPathwayThread thread = new BetweenPathwayThread(dialog.getOptions());
+	      try{
+		thread.run();
+	      }
+	      catch(Exception e){
+		JOptionPane.showMessageDialog(Cytoscape.getDesktop(),e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);	    
+	      }
+	      catch(OutOfMemoryError e){
+		JOptionPane.showMessageDialog(Cytoscape.getDesktop(),"Out of memory","Error",JOptionPane.ERROR_MESSAGE);	    
+	      }
+	    }
+	  }}).start();
+   
     }
-
   }
 }
 

@@ -1,4 +1,4 @@
-package ucsd.rmkelley.BetweenPathway;
+package  ucsd.rmkelley.BetweenPathway;
 import java.io.*;
 import java.util.*;
 import edu.umd.cs.piccolo.activities.*;
@@ -26,35 +26,56 @@ class BetweenPathwayThread extends Thread{
   double absent_score = .00001;
   double logBeta = Math.log(0.9);
   double logOneMinusBeta = Math.log(0.1);
+  BetweenPathwayOptions options;
+
+  public BetweenPathwayThread(BetweenPathwayOptions options){
+    this.options = options;
+  }
+
   public void run(){
     System.err.println("Between Pathway Thread started");
     //number of physical interactions allowed between pathways
     int cross_count_limit = 1;
     //get the two networks which will be used for the search
-    BetweenPathwayOptionsDialog dialog = new BetweenPathwayOptionsDialog();
-    dialog.show();
-    CyNetwork physicalNetwork = dialog.getPhysicalNetwork();
-    CyNetwork geneticNetwork = dialog.getGeneticNetwork();
-	
+    CyNetwork physicalNetwork = options.physicalNetwork;
+    CyNetwork geneticNetwork = options.geneticNetwork;
+
+    //validate the user input
+    if(physicalNetwork == null){
+      throw new RuntimeException("No physical network");
+    }
+    if(geneticNetwork == null){
+      throw new RuntimeException("No genetic network");
+    }
+
+
     //set up the array of genetic scores
-    double [][] geneticScores = getScores(dialog.getGeneticScores(),geneticNetwork);
-    double [][] physicalScores = getScores(dialog.getPhysicalScores(),physicalNetwork);
-    
+    double [][] geneticScores = null,physicalScores = null;
+    try{
+      geneticScores = getScores(options.geneticScores,geneticNetwork);
+    }catch(IOException io){
+      throw new RuntimeException("Error loading genetic score file");
+    }
+    try{
+      physicalScores = getScores(options.physicalScores,physicalNetwork);
+    }catch(IOException io){
+      throw new RuntimeException("Error loading physical score file");
+    }
     Vector results = new Vector();
     //start a search from each individual genetic interactions
     ProgressMonitor myMonitor = new ProgressMonitor(Cytoscape.getDesktop(),null,"Searching for Network Models",0,geneticNetwork.getEdgeCount());
     int progress = 0;
     Iterator geneticIt = null;
-    if(dialog.getSearchFromSelected()){
+    if(options.selectedSearch){
       geneticIt = geneticNetwork.getFlaggedEdges().iterator();
     }
     else{
       geneticIt = geneticNetwork.edgesIterator();
     }
     while(geneticIt.hasNext()){
-      //if(progress == 100){
-      //break;
-      //}
+      if(myMonitor.isCanceled()){
+										throw new RuntimeException("Search cancelled");
+      }
       myMonitor.setProgress(progress++);
       Edge seedInteraction = (Edge)geneticIt.next();
       int cross_count_total = 0;
@@ -155,6 +176,14 @@ class BetweenPathwayThread extends Thread{
     betweenPathwayDialog.show();
   }
 
+
+  /**
+   * Check whether the thread results in an error condition
+   */
+  public boolean isError(){
+    return exception == null;
+  }
+
   public Vector prune(Vector old){
     Vector results = new Vector();
     ProgressMonitor myMonitor = new ProgressMonitor(Cytoscape.getDesktop(),"Pruning results",null,0,100);
@@ -244,45 +273,67 @@ class BetweenPathwayThread extends Thread{
 	
   }
 
-  public double [][] getScores(File scoreFile, CyNetwork cyNetwork){
+  public double [][] getScores(File scoreFile, CyNetwork cyNetwork) throws IOException{
     double [][] result = new double[cyNetwork.getNodeCount()][];
     String [] names = new String [cyNetwork.getNodeCount()];
     for(int idx=result.length-1;idx>-1;idx--){
       result[idx] = new double[idx];
     }
     
+    ProgressMonitor myMonitor = new ProgressMonitor(Cytoscape.getDesktop(),"Loading scores for "+cyNetwork.getTitle(),null,0,100);
+    myMonitor.setMillisToDecideToPopup(50);
+    int updateInterval = (int)Math.ceil(cyNetwork.getNodeCount()/100.0);
+    
+    BufferedReader reader = null;
     try{
-      ProgressMonitor myMonitor = new ProgressMonitor(Cytoscape.getDesktop(),"Loading scores for "+cyNetwork.getTitle(),null,0,100);
-      int updateInterval = (int)Math.ceil(cyNetwork.getNodeCount()/100.0);
-      BufferedReader reader = new BufferedReader(new FileReader(scoreFile));
-      int line_number = 0;
-      int progress = 0;
-      String iterationString = reader.readLine();
-      double iterations = (new Integer(iterationString)).doubleValue();
-      while(reader.ready()){
-	String line = reader.readLine();
-	String [] splat = line.split("\t");
-	if(line_number%updateInterval == 0){
-	  myMonitor.setProgress(progress++);
-	}
-	names[line_number++] = splat[0];
-	int one = cyNetwork.getIndex(Cytoscape.getCyNode(splat[0]));
-	for(int idx=1;idx<splat.length;idx++){
-	  int two = cyNetwork.getIndex(Cytoscape.getCyNode(names[idx-1]));
-	  if(one < two){
-	    result[two-1][one-1] = (new Integer(splat[idx])).intValue()/iterations;
-	  }
-	  else{
-	    result[one-1][two-1] = (new Integer(splat[idx])).intValue()/iterations;
-	  }
-
-	}
-      }
-      myMonitor.close();
+      reader = new BufferedReader(new FileReader(scoreFile));
     }catch(Exception e){
-      e.printStackTrace();
-      System.exit(-1);
+      throw new RuntimeException("Error loading score file for "+cyNetwork.getTitle());
     }
+    int line_number = 0;
+    int progress = 0;
+    String iterationString = reader.readLine();
+    double iterations = (new Integer(iterationString)).doubleValue();
+    while(reader.ready()){
+      String line = reader.readLine();
+      String [] splat = line.split("\t");
+      if(line_number%updateInterval == 0){
+	if(myMonitor.isCanceled()){
+	  throw new RuntimeException("Score loading cancelled");
+	}
+	myMonitor.setProgress(progress++);
+      }
+      names[line_number++] = splat[0];
+      if(splat.length != line_number){
+	throw new RuntimeException("Score file in incorrect format");
+      }
+      int one;
+      try{
+	one = cyNetwork.getIndex(Cytoscape.getCyNode(splat[0]));
+      }catch(Exception e){
+	throw new RuntimeException("Score file contains proteins not present in the network");
+      }
+      for(int idx=1;idx<splat.length;idx++){
+	int two;
+	try{
+	  two = cyNetwork.getIndex(Cytoscape.getCyNode(names[idx-1]));
+	}catch(Exception e){
+	  throw new RuntimeException("Score file contains proteins not present in the network");
+	}
+	if(one < two){
+	  result[two-1][one-1] = (new Integer(splat[idx])).intValue()/iterations;
+	}
+	else{
+	  result[one-1][two-1] = (new Integer(splat[idx])).intValue()/iterations;
+	}
+	
+      }
+    }
+    myMonitor.close();
+    if(line_number != cyNetwork.getNodeCount()){
+      throw new RuntimeException("The number of proteins in the network and score file do not match");
+    }
+    
     return result;
   }
 }
