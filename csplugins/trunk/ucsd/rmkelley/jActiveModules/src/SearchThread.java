@@ -1,0 +1,301 @@
+package csplugins.jActiveModules;
+//------------------------------------------------------------------------------
+
+import java.io.*;
+import java.util.*;
+import giny.model.*;
+import cytoscape.data.*;
+import cytoscape.data.servers.*;
+import cytoscape.data.readers.*;
+import cytoscape.undo.*;
+import csplugins.jActiveModules.data.*;
+import csplugins.jActiveModules.dialogs.*;
+//import cytoscape.vizmap.*;
+import cytoscape.layout.*;
+import cytoscape.*;
+import javax.swing.*;
+
+public abstract class SearchThread extends Thread{
+    protected GraphPerspective graph;
+    protected SortedVector oldPaths,newPaths;
+    protected Vector resultPaths;
+    protected Vector hiddenNodes;
+    protected HashMap node2edges;
+    protected Node [] nodes;
+    protected HashMap node2component;
+    protected ActivePathFinderParameters apfParams;
+    public SearchThread(GraphPerspective graph, Vector resultPaths,HashMap node2edges,Node [] nodes, ActivePathFinderParameters apfParams){
+	this.graph = graph;
+	this.resultPaths = resultPaths;
+	this.node2edges = node2edges;
+	this.nodes = nodes;
+	this.apfParams = apfParams;
+	hiddenNodes = new Vector();
+    }
+
+    public abstract void run();
+
+        /**
+     * This function will update the status of newPaths
+     * so that it will contain the components that would
+     * be present if we toggled the state of Node current
+     * @return A vector of new Components created by applying this change
+     */
+    protected Vector updatePaths(Node current){
+	//first make a (shallow) copy of oldPaths as our newPaths
+	//this copy will be update in upate_remove and update_add
+	newPaths = (SortedVector)((SortedVector)oldPaths).clone();
+	//depending on whether the node was removed or added, call
+	//update_remove or update_add. These methods contain specific
+	//optimizations to speed the update in their respective cases
+	//(mostly the optimization are in update_add()
+	if(!graph.containsNode(current,false)){
+	    return update_remove(current);
+	}
+	else{
+	    Vector result = update_add(current);
+	    if(!hiddenNodes.isEmpty()){
+		result.addAll(update_remove(hiddenNodes));
+	    }
+	    return result;
+	}
+    }
+	
+    /**
+     *returns a vector containing the new componet
+     *created by adding current to the graph. Also
+     *update the status of newPaths with this new
+     *component and removes invalid old paths from
+     *newPaths
+     * @param current The node which was just added
+     * @return A vector of newly generated components
+     */
+    protected Vector update_add(Node current){
+	//get a list of components
+	//for the neighboring nodes
+	//first get the list of neighboring nodes
+
+	//now doing this in updatePaths
+	//newPaths = (TreeSet)((TreeSet)oldPaths).clone();
+	
+	//Vector neighbors = new Vector();
+	List nodeList = graph.neighborsList(current);
+	//while(nc.ok()){
+	//    neighbors.add(nc.current());
+	//    if(!graph.contains(nc.current())){
+	//	System.out.println("not a neighbor");
+	//    }
+	//    nc.next();
+	//}
+	
+	//now build the list of neighbor components
+	Set nComponents = new HashSet();
+	Iterator it = nodeList.iterator();
+	while(it.hasNext()){
+	    //check for self loops
+	    Node myNode = (Node)it.next();
+	    if(current != myNode){
+		nComponents.add(node2component.get(myNode));
+	    }
+	}
+	
+	//Vector vnComponents = new Vector(nComponents);
+	it = nComponents.iterator();
+	//remove those components from newPaths
+	while(it.hasNext()){
+		newPaths.remove(it.next());
+	}
+	
+	
+	//combine all those paths into a new
+	//component and add all of their scores
+	//together
+	Component newComponent = new Component(nComponents,current);
+
+	//add this component to newPatbs
+	newPaths.sortedAdd(newComponent);
+	Vector result = new Vector();
+	result.add(newComponent);
+	
+	return result;
+
+	
+    }
+
+    /**
+     * A helper functin to call update_remove
+     * if we only have one node to remove at a
+     * time
+     * @param removed The node which was removed
+     * @return A vector of newly created components
+     */
+    protected Vector update_remove(Node removed){
+	Vector temp = new Vector();
+	temp.add(removed);
+	return update_remove(temp);
+    }
+    
+    /**
+     *this function updates the state of newPaths
+     *to reflect the removal of current, it returns
+     *the a vector of newComponents that have been
+     *created. It also removes the component that
+     *is no longer valid from newPaths.
+     * @param A vector of nodes that were just removed
+     * @return A vector of newly created components
+     */
+    protected Vector update_remove(Vector removed){
+	
+	//find the nodes neighboring this node
+	//the hash hasn't been update yet, so I can
+	//look up the nodes in the hash, and read
+	//of the list of nodes
+	
+	//now doing this in update paths
+	//newPaths = (TreeSet)((TreeSet)oldPaths).clone();
+	
+	HashSet oldComponents = new HashSet();
+	Iterator it = removed.iterator();
+	while(it.hasNext()){
+	    oldComponents.add(node2component.get(it.next()));
+	}
+
+	//remove those components from newPaths and get all the nodes
+	//in that vector
+	Vector oldNodes = new Vector();
+	it = oldComponents.iterator();
+	while(it.hasNext()){
+	    Component comp = (Component)it.next();
+	    newPaths.remove(comp);
+	    oldNodes.addAll(comp.getNodes());
+	}
+	
+	//remove all the nodes that are now hidden
+	it = removed.iterator();
+	while(it.hasNext()){
+	    oldNodes.remove(it.next());
+	}
+	
+	//now we have a vector of just the nodes that are
+ 	//in the graph now. We want to find the components
+ 	//in this set of nodes, keep in mind the special
+ 	//case that this could be empty
+	
+ 	ComponentFinder cf = new ComponentFinder(graph);
+	
+	Vector newComponents = cf.getComponents(oldNodes);
+	
+	
+ 	it =  newComponents.iterator();
+ 	int sum = 0;
+	while(it.hasNext()){
+ 	    newPaths.sortedAdd(it.next());
+	}
+	return newComponents;
+
+	
+    }
+
+    /**
+     *The following function will toggle the current state of a node
+     *This can either be removal or reinsertion, depending on the 
+     *current state of the node. If the node is to be reinserted,
+     *it will also reinsert any possible associated edges
+     * @param The node to be toggled.
+     */
+    protected void toggleNode(Node toggle){
+	//If the graph contains the node, remove it
+	//this will also automatically remove any
+	//associated edges
+	if(graph.containsNode(toggle,false)){
+	    graph.hideNode(toggle);	    
+	}
+	else{
+	    //If the graph does not contain the node, add it back in.
+	    //Note that the associated edges have to be reinserted manually
+	    //This where th node2edges hash comes in handy.
+	    graph.restoreNode(toggle);
+	    Edge [] e_array = (Edge[])node2edges.get(toggle);
+	    for(int j=0;j<e_array.length;j++){
+		Edge e = e_array[j];
+		if(graph.containsNode(e.getSource(),false) && graph.containsNode(e.getTarget(),false)){
+		    graph.restoreEdge(e);
+		}
+	    }
+	}
+    }
+    
+    /**
+     *The purpose of this function is to implement the hubfinding
+     *correction. If the toggled node being reinserted is of high degree,
+     *it will hide all adjacent nodes that belong to a low scoring component.
+     *It sets a global vector of nodes that were hidden
+     * @param toggle The node to be toggled
+     */
+    protected void toggleNodeWithHiding(Node toggle){
+	//If the graph contains the node, we dont' have to do
+	//anything special
+	if(graph.containsNode(toggle,false)){
+	    graph.hideNode(toggle);
+	}
+	else{
+	    graph.restoreNode(toggle);
+	    Edge [] e_array = (Edge[])node2edges.get(toggle);
+	    //check if it is a hub according ot the user's 
+	    //parameters
+	    if(e_array.length >= apfParams.getMinHubSize()){
+		//calculate the minimum score of the components
+		//being tracked, this is a pretty inefficient way
+		//to do it, but hubs are usually rare and the number
+		//of paths is small, so I don't think it really 
+		//matters.
+		Iterator it = oldPaths.iterator();
+		int i = 0;
+		while(i<apfParams.getNumberOfPaths()-1){
+		    i++;
+		    it.next();
+		}
+		//for each neighboring node get its component, if the components
+		//score is low, then that node gets that axe.
+		double min_score = ((Component)it.next()).getScore();
+		for(int j=0;j<e_array.length;j++){
+		    Edge e = e_array[j];
+		    Node neighbor;
+		    if(e.getSource().equals(toggle)){
+			neighbor = e.getTarget();
+		    }
+		    else{
+			neighbor = e.getSource();
+		    }
+		    if(graph.containsNode(neighbor,false)){
+			//get the component that this node belongs to
+			Component nComponent = (Component)node2component.get(neighbor);
+			if(nComponent.getScore() < min_score){
+			    hiddenNodes.add(neighbor);
+			    graph.hideNode(neighbor);
+			}
+			else{
+			    graph.restoreEdge(e);
+			}
+		    }
+		}
+		
+	    }
+	    else{
+		//not a hub, do the regular schtick
+		for(int j=0;j<e_array.length;j++){
+		    Edge e = e_array[j];
+		    if(graph.containsNode(e.getSource(),false) && graph.containsNode(e.getTarget(),false)){
+			graph.restoreEdge(e);
+		    }
+		}
+		//I'm a little paranoid about forgetting to clear the hidden nodes.
+		hiddenNodes.clear();
+	    }
+	    
+	}
+    }
+
+
+
+}
