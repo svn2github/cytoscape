@@ -911,6 +911,7 @@ protected JMenuBar createMenuBar ()
   saveSubMenu.add (new SaveAsGMLAction ());
   saveSubMenu.add (new SaveAsInteractionsAction ());
   saveSubMenu.add (new SaveVisibleNodesAction());
+  saveSubMenu.add (new SaveSelectedNodesAction());
 
   fileMenu.add (new PrintAction ());
 
@@ -2021,6 +2022,32 @@ public boolean saveVisibleNodeNames (String filename)
     }
           
 } // saveVisibleNodeNames
+public boolean saveSelectedNodeNames (String filename)
+{
+    Graph2D g = graphView.getGraph2D();
+    Node [] nodes = graphView.getGraph2D().getNodeArray();
+    File file = new File(filename);
+    try {
+	FileWriter fout = new FileWriter(file);
+	for (int i=0; i < nodes.length; i++) {
+	    Node node = nodes [i];
+	    NodeRealizer r = graphView.getGraph2D().getRealizer(node);
+	    if(graph.isSelected(node)) {
+		String defaultName = r.getLabelText ();
+		String canonicalName = nodeAttributes.getCanonicalName (node);
+		fout.write(canonicalName + "\n");
+	    }
+	} // for i
+	fout.close();
+	return true;
+    }  catch (IOException e) {
+	JOptionPane.showMessageDialog(null, e.toString(),
+				      "Error Writing to \"" + file.getName()+"\"",
+				      JOptionPane.ERROR_MESSAGE);
+	return false;
+    }
+	  
+} // saveSelectedNodeNames
 
 //------------------------------------------------------------------------------
 protected class SaveVisibleNodesAction extends AbstractAction   {
@@ -2042,6 +2069,27 @@ protected class SaveVisibleNodesAction extends AbstractAction   {
                                          null, options, options[0]);
             }
         }
+    }
+}
+protected class SaveSelectedNodesAction extends AbstractAction   {
+  SaveSelectedNodesAction () { super ("Selected Nodes"); }
+
+    public void actionPerformed (ActionEvent e) {
+	JFileChooser chooser = new JFileChooser (currentDirectory);
+	if (chooser.showSaveDialog (CytoscapeWindow.this) == chooser.APPROVE_OPTION) {
+	    String name = chooser.getSelectedFile ().toString ();
+	    currentDirectory = chooser.getCurrentDirectory();
+	    boolean itWorked = saveSelectedNodeNames (name);
+	    Object[] options = {"OK"};
+	    if(itWorked) {
+		JOptionPane.showOptionDialog(null,
+					 "Selected Nodes Saved.",
+					 "Selected Nodes Saved.",
+					 JOptionPane.DEFAULT_OPTION,
+					 JOptionPane.PLAIN_MESSAGE,
+					 null, options, options[0]);
+	    }
+	}
     }
 }
 //------------------------------------------------------------------------------
