@@ -7,6 +7,7 @@ package cytoscape.actions;
 //-------------------------------------------------------------------------
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CyNetworkView;
 import giny.model.Node;
@@ -36,7 +37,10 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
     int [] nodes = current_network.getFlaggedNodeIndicesArray();
     //int [] nodes = current_network_view.getSelectedNodeIndices();
 
-    CyNetwork new_network = Cytoscape.createNetwork( nodes, current_network.getConnectingEdgeIndicesArray( nodes ) , current_network.getTitle()+"->child", current_network );
+    CyNetwork new_network = Cytoscape.createNetwork
+      (nodes, current_network.getConnectingEdgeIndicesArray(nodes),
+       CyNetworkNaming.getSuggestedSubnetworkTitle(current_network),
+       current_network);
     new_network.setExpressionData( current_network.getExpressionData() );
 
     CyNetworkView new_view = Cytoscape.getNetworkView( new_network.getIdentifier() );

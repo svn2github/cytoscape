@@ -7,6 +7,7 @@ package cytoscape.actions;
 //-------------------------------------------------------------------------
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CyNetworkView;
 
@@ -34,7 +35,10 @@ public class NewWindowSelectedNodesEdgesAction extends CytoscapeAction {
       //int[] edges = current_network_view.getSelectedEdgeIndices();
 
       //CyNetwork new_network = Cytoscape.createNetwork( nodes, edges );
-      CyNetwork new_network = Cytoscape.createNetwork( nodes, edges , current_network.getTitle()+"->child", current_network );
+      CyNetwork new_network = Cytoscape.createNetwork
+        (nodes, edges,
+         CyNetworkNaming.getSuggestedSubnetworkTitle(current_network),
+         current_network);
       new_network.setExpressionData( current_network.getExpressionData() );
 
       String title = " selection";

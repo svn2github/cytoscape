@@ -30,6 +30,7 @@ import cytoscape.data.readers.InteractionsReader;
 import cytoscape.data.servers.BioDataServer;
 import cytoscape.giny.CytoscapeRootGraph;
 import cytoscape.giny.PhoebeNetworkView;
+import cytoscape.util.CyNetworkNaming;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 
@@ -859,7 +860,10 @@ public abstract class Cytoscape {
     }
 
     // Create a new cytoscape.data.CyNetwork from these nodes and edges
-    CyNetwork network = createNetwork( nodes, edges, title[title.length - 1] );
+    CyNetwork network = createNetwork
+      (nodes,
+       edges,
+       CyNetworkNaming.getSuggestedNetworkTitle(title[title.length - 1]));
 
     
     if ( file_type == FILE_GML
