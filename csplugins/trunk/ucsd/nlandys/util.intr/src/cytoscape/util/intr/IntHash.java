@@ -139,7 +139,6 @@ public final class IntHash
   {
     if (m_elements >= m_thresholdSize)
     {
-      // Calculation of newSize.
       final int newSize;
       try {
         int primesInx = 0;
@@ -148,16 +147,12 @@ public final class IntHash
       catch (ArrayIndexOutOfBoundsException e) {
         throw new IllegalStateException
           ("too many elements in this hashtable"); }
-
-
       if (m_arr.length < newSize) {
         final int[] newArr = new int[newSize];
         m_dump = m_arr;
         m_arr = newArr; }
       else {
         System.arraycopy(m_arr, 0, m_dump, 0, m_size); }
-
-
       for (int i = 0; i < newSize; i++) m_arr[i] = -1;
       m_size = newSize;
       m_thresholdSize = (int) (THRESHOLD_FACTOR * (double) m_size);
@@ -168,7 +163,7 @@ public final class IntHash
         while (m_dump[++oldIndex] < 0) { }
         incr = 0;
         for (newIndex = m_dump[oldIndex] % m_size;
-             m_arr[newIndex] >= 0 && m_arr[newIndex] != m_dump[oldIndex];
+             m_arr[newIndex] >= 0;
              newIndex = (newIndex + incr) % m_size) {
           // Caching increment, which is an expensive operation, at the expense
           // of having an if statement.  I don't want to compute the increment
