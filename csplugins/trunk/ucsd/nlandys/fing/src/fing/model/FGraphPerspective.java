@@ -665,7 +665,7 @@ class FGraphPerspective implements GraphPerspective
   public int getEdgeSourceIndex(int edgeInx)
   {
     if (!(edgeInx < 0)) return 0;
-    final int nativeEdgeInx = m_rootToNativeEdgeInxMap.get(edgeInx);
+    final int nativeEdgeInx = m_rootToNativeEdgeInxMap.get(~edgeInx);
     final int nativeSrcNodeInx;
     try { nativeSrcNodeInx = m_graph.sourceNode(nativeEdgeInx); }
     catch (IllegalArgumentException e) { return 0; }
@@ -676,7 +676,7 @@ class FGraphPerspective implements GraphPerspective
   public int getEdgeTargetIndex(int edgeInx)
   {
     if (!(edgeInx < 0)) return 0;
-    final int nativeEdgeInx = m_rootToNativeEdgeInxMap.get(edgeInx);
+    final int nativeEdgeInx = m_rootToNativeEdgeInxMap.get(~edgeInx);
     final int nativeTrgNodeInx;
     try { nativeTrgNodeInx = m_graph.targetNode(nativeEdgeInx); }
     catch (IllegalArgumentException e) { return 0; }
@@ -689,7 +689,7 @@ class FGraphPerspective implements GraphPerspective
   {
     if (!(edgeInx < 0))
       throw new IllegalArgumentException("edge index is not negative");
-    return m_graph.isDirectedEdge(m_rootToNativeEdgeInxMap.get(edgeInx)) == 1;
+    return m_graph.isDirectedEdge(m_rootToNativeEdgeInxMap.get(~edgeInx)) == 1;
   }
 
   public boolean isMetaParent(Node child, Node parent)
@@ -803,12 +803,22 @@ class FGraphPerspective implements GraphPerspective
     throw new IllegalStateException("not implemented yet");
   }
 
-  public int[] getAdjacentEdgeIndicesArray(int perspNodeInx,
+  public int[] getAdjacentEdgeIndicesArray(int nodeInx,
                                            boolean undirected,
-                                           boolean incoming,
-                                           boolean outgoing)
+                                           boolean incomingDirected,
+                                           boolean outgoingDirected)
   {
-    throw new IllegalStateException("not implemented yet");
+    if (!(nodeInx < 0)) return null;
+    final int nativeNodeInx = m_rootToNativeNodeInxMap.get(~nodeInx);
+    final IntEnumerator adj;
+    try { adj = m_graph.adjacentEdges(nativeNodeInx, outgoingDirected,
+                                      incomingDirected, undirected); }
+    catch (IllegalArgumentException e) { return null; }
+    if (adj == null) return null;
+    final int[] returnThis = new int[adj.numRemaining()];
+    for (int i = 0; i < returnThis.length; i++)
+      returnThis[i] = m_nativeToRootEdgeInxMap.getIntAtIndex(adj.nextInt());
+    return returnThis;
   }
 
   public java.util.List getConnectingEdges(java.util.List nodes)
