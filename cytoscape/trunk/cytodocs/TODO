@@ -7,31 +7,43 @@ $Author$
 
 Owen Ozier adds 8/29/02:
 
-* Undo features should be checked in.
-
 * unit testing for the new Graph Hider should be added.
 
 
 TASKS  Trey Ideker and Dan Ramage 6/24/02
 
-* Plugin loading should be contingent on currently loaded files.  Thus, everytime 
-a new gml, sif, or expression file is loaded, we should recheck and load plugins.
-
 * Decrease the amount of debug output to STDOUT.  We should probably have an
 official "verbose" or "debug" mode, that could even take a debug level, etc.
-
-* Allow loading of the bioDataServer directory interactively from the file menu.
-
-* The PlugIns menu should be inactive if no plugs loaded
 
 * Save Visible Nodes...
 
 * Implement status bar for long jobs (layout, activePaths) with ability to 
 interrupt/cancel the operation
 
-* Implement an undo feature for changes to the graph
-
 * Expand node/edge editing features
+
+
+DONE:
+
+* Undo features should be checked in. - Dan Ramage 2002.08.30
+
+* Allow loading of the bioDataServer directory interactively from the file menu. - Dan Ramage 2002.08
+
+* The PlugIns menu should be inactive if no plugs loaded - Dan Ramage 2002.08
+
+* Implement an undo feature for changes to the graph - Dan Ramage 2002.08
+
+* Shift-drag restricts node movement to horizontal or vertical line - Dan Ramage 2002.08
+
+* Rotate selected nodes (awesome! - Owen)  - Dan Ramage 2002.08
+
+* Update status bar with number of nodes and edges selected. - Dan Ramage 2002.08
+
+* Remove edge bends after embedded layout. - Dan Ramage 2002.08
+
+* Plugin loading should be contingent on currently loaded files.  Thus, everytime  - Dan Ramage 2002.08
+a new gml, sif, or expression file is loaded, we should recheck and load plugins. - Dan Ramage 2002.08
+
 
 
 *-----------------------------------------------------------------------------------------------------------------------------
