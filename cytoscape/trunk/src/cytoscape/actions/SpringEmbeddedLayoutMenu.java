@@ -10,11 +10,15 @@ import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.ProgressUI;
 import cytoscape.task.ui.ProgressUIControl;
+import cytoscape.view.CyNetworkView;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.event.MenuDragMouseEvent;
 
 public class SpringEmbeddedLayoutMenu extends JMenu
 {
@@ -29,6 +33,15 @@ public class SpringEmbeddedLayoutMenu extends JMenu
     add(m_wholeGraph);
     m_selectedNodesOnly = new JMenuItem(new SpringEmbeddedLayoutAction(true));
     add(m_selectedNodesOnly);
+    addMouseListener(new MouseAdapter() {
+        public void mouseEntered(MouseEvent e)
+        {
+          CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
+          if (graphView.getSelectedNodeIndices().length == 0)
+            m_selectedNodesOnly.setEnabled(false);
+          else
+            m_selectedNodesOnly.setEnabled(true);
+        } });
   }
 
   private static class SpringEmbeddedLayoutAction extends AbstractAction
