@@ -782,6 +782,23 @@ protected void additionallySelectNodesMatching (String key)
 
 } // selectDisplyToNodesStartingWith ...
 //------------------------------------------------------------------------------
+protected String findCanonicalName(String key) {
+    String canonicalName = key;
+    if (bioDataServer != null) {
+	try {
+	    String [] synonyms = bioDataServer.getSynonyms(key);
+	    for (int s = 0; s < synonyms.length; s++) {
+		String sname = synonyms[s];
+		if (sname.equalsIgnoreCase (key)) {
+		    canonicalName = sname;
+		    break;
+		}
+	    }
+	} catch (Exception ignoreForNow) {;}
+    }
+    return canonicalName;
+} // else if: checking synonyms
+
 protected void selectNodesSharingGoID (int goID)
 {
   setInteractivity (false);
@@ -1205,9 +1222,6 @@ protected class ListFromFileSelectionAction extends AbstractAction   {
     private boolean useSelectionFile() {
 	JFileChooser fChooser = new JFileChooser();	
 	fChooser.setDialogTitle("Load Gene Selection File");
-	Graph2D g = graphView.getGraph2D();
-	Node [] nodes = graphView.getGraph2D().getNodeArray();
-	
 	switch (fChooser.showOpenDialog(null)) {
 		
 	case JFileChooser.APPROVE_OPTION:
@@ -1217,19 +1231,36 @@ protected class ListFromFileSelectionAction extends AbstractAction   {
 	    try {
 		FileReader fin = new FileReader(file);
 		BufferedReader bin = new BufferedReader(fin);
-
-		for (int i=0; i < nodes.length; i++)
-		    graphView.getGraph2D().getRealizer(nodes [i]).setSelected (false);
-
+		
+		// create a hash of all the nodes in the file
+		Hashtable fileNodes = new Hashtable();
 		while ((s = bin.readLine()) != null) {
 		    StringTokenizer st = new StringTokenizer(s);
 		    String name = st.nextToken();
 		    String trimname = name.trim();
 		    if(trimname.length() > 0) {
-			additionallySelectNodesMatching (trimname);
+			String canonicalName = findCanonicalName(trimname);
+			fileNodes.put(canonicalName, Boolean.TRUE);
 		    }
 		}
 		fin.close();
+
+		// loop through all the node of the graph
+		// selecting those in the file
+		Graph2D g = graphView.getGraph2D();
+		Node [] nodes = graphView.getGraph2D().getNodeArray();
+		for (int i=0; i < nodes.length; i++) {
+		    Node node = nodes[i];
+		    String canonicalName = nodeAttributes.getCanonicalName(node);
+		    if (canonicalName == null) {
+			// use node label as canonical name
+			canonicalName = graph.getLabelText(node);
+		    }
+		    Boolean select = (Boolean) fileNodes.get(canonicalName);
+		    if (select != null) {
+			graphView.getGraph2D().getRealizer(node).setSelected(true);
+		    }
+		}
 		redrawGraph ();
 		  
 	    } catch (Exception e) {
