@@ -6,7 +6,7 @@
 #
 # RetroGuard Bytecode Obfuscator, v1.1, a product of Retrologic Systems - www.retrologic.com
 #
-# Logfile created on Fri May 09 14:16:48 EDT 2003
+# Logfile created on Fri May 09 17:56:45 EDT 2003
 #
 # Jar file to be obfuscated:           cytoscape.jar
 # Target Jar file for obfuscated code: cytoscape-obf.jar
@@ -88,8 +88,8 @@
 #      Your class org/xml/sax/helpers/ParserFactory calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
 #      Your class org/xml/sax/helpers/XMLReaderFactory calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
 #
-# Memory in use after class data structure built: 8132048 bytes
-# Total memory available                        : 14667776 bytes
+# Memory in use after class data structure built: 8169696 bytes
+# Total memory available                        : 14733312 bytes
 #
 #
 # Obfuscated name overloading frequency:
@@ -2461,10 +2461,12 @@
 .field cytoscape/CytoscapeWindow/bioDataServerName Ljava/lang/String;
 .field cytoscape/CytoscapeWindow/currentGraphMode Ly/view/ViewMode;
 .field cytoscape/CytoscapeWindow/currentDirectory Ljava/io/File;
+.field cytoscape/CytoscapeWindow/saveSubMenu Ljavax/swing/JMenu;
 .field cytoscape/CytoscapeWindow/busyCursor Ljava/awt/Cursor;
 .field cytoscape/CytoscapeWindow/defaultSpecies Ljava/lang/String;
 .field cytoscape/CytoscapeWindow/nodeAttributes Lcytoscape/GraphObjAttributes;
 .field cytoscape/CytoscapeWindow/undoManager Lcytoscape/undo/CytoscapeUndoManager;
+.field cytoscape/CytoscapeWindow/fileMenu Ljavax/swing/JMenu;
 .field cytoscape/CytoscapeWindow/expressionData Lcytoscape/data/ExpressionData;
 .field cytoscape/CytoscapeWindow/expressionDataFilename Ljava/lang/String;
 .field cytoscape/CytoscapeWindow/currentPopupMode Ly/view/ViewMode;
@@ -2480,6 +2482,7 @@
 .field cytoscape/CytoscapeWindow/goModeMenuLabel Ljava/lang/String;
 .field cytoscape/CytoscapeWindow/graphView Ly/view/Graph2DView;
 .field cytoscape/CytoscapeWindow/toolbar Ljavax/swing/JToolBar;
+.field cytoscape/CytoscapeWindow/editMenu Ljavax/swing/JMenu;
 .field cytoscape/CytoscapeWindow/opsMenu Ljavax/swing/JMenu;
 .field cytoscape/CytoscapeWindow/defaultCursor Ljava/awt/Cursor;
 .field cytoscape/CytoscapeWindow/DEFAULT_WIDTH I
@@ -2505,6 +2508,7 @@
 .field cytoscape/CytoscapeWindow/defaultWindowTitle Ljava/lang/String;
 .field cytoscape/CytoscapeWindow/calculatorCatalog Lcytoscape/visual/CalculatorCatalog;
 .field cytoscape/CytoscapeWindow/vizMenu Ljavax/swing/JMenu;
+.field cytoscape/CytoscapeWindow/loadSubMenu Ljavax/swing/JMenu;
 .field cytoscape/CytoscapeWindow/layoutMenu Ljavax/swing/JMenu;
 .field cytoscape/CytoscapeWindow/subwindows Ljava/util/Vector;
 .field cytoscape/CytoscapeWindow/readOnlyGraphMode Ly/view/ViewMode;
