@@ -37,12 +37,14 @@ public class BooleanMetaFilterEditor
   protected JTextField nameField;
   protected JList filterList;
   protected JComboBox comparisonBox;
+  protected JCheckBox negationBox;
   protected Set filters;
   protected Vector listModel;
   protected BooleanMetaFilter filter;	
   protected String DEFAULT_FILTER_NAME = "BooleanMeta: ";
   protected String DEFAULT_COMPARISON = BooleanMetaFilter.AND;
   protected int [] DEFAULT_FILTERS = new int[0];
+  protected boolean DEFAULT_NEGATION = false;
   protected Class filterClass;
  
   public BooleanMetaFilterEditor () {
@@ -88,6 +90,10 @@ public class BooleanMetaFilterEditor
 				
     all_panel.add(comparisonPanel,BorderLayout.NORTH);
     add(all_panel,BorderLayout.CENTER);
+    
+    negationBox = new JCheckBox("Negate?");
+    add(negationBox,BorderLayout.SOUTH);
+    
   }
 
   public String toString () {
@@ -118,11 +124,12 @@ public class BooleanMetaFilterEditor
       setFilters(this.filter.getFilters());
       setComparison(this.filter.getComparison());
       setFilterName(this.filter.toString());
+      setNegation(this.filter.getNegation());
     }
   }
 
   public Filter createDefaultFilter(){
-    return new BooleanMetaFilter(DEFAULT_FILTERS,DEFAULT_COMPARISON,DEFAULT_FILTER_NAME);
+    return new BooleanMetaFilter(DEFAULT_FILTERS,DEFAULT_COMPARISON,DEFAULT_FILTER_NAME,DEFAULT_NEGATION);
   }
 
   //----------------------------------------//
@@ -171,6 +178,18 @@ public class BooleanMetaFilterEditor
     
   }
 
+
+  public boolean getNegation(){
+    return negationBox.isSelected();
+  }
+
+  public void setNegation(boolean negation){
+    filter.setNegation(negation);
+    negationBox.removeItemListener(this);
+    negationBox.setSelected(negation);
+    negationBox.addItemListener(this);
+  }
+
   public String getComparison(){
     return filter.getComparison();
   }
@@ -209,6 +228,8 @@ public class BooleanMetaFilterEditor
       setFilters(selectedFilters);
     } else if( e.getSource() == comparisonBox){
       setComparison((String)comparisonBox.getSelectedItem());
+    } else if( e.getSource() == negationBox){
+      setNegation(negationBox.isSelected());
     }
   }
   

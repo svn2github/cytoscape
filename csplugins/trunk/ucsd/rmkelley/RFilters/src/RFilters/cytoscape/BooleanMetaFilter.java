@@ -29,6 +29,7 @@ public class BooleanMetaFilter
   //----------------------------------------//
   protected int [] filters;
   protected String comparison;
+  protected boolean negation;
   public static String AND = "ALL";
   public static String OR = "AT LEAST ONE";
   public static String XOR = "ONLY ONE";
@@ -39,6 +40,7 @@ public class BooleanMetaFilter
   public static String COMPARISON_EVENT = "COMPARISON_EVENT";
   public static String FILTER_EVENT = "FILTER_EVENT";	
   public static String FILTER_BOX_EVENT = "FILTER_BOX";	
+  public static String NEGATION_EVENT = "NEGATION_EVENT";
 
   //----------------------------------------//
   // Needed Variables
@@ -55,10 +57,11 @@ public class BooleanMetaFilter
    * Creates a new BooleanMetaFilter
    */  
   public BooleanMetaFilter (int [] filters, 
-                            String comparison, String identifier ) {
+                            String comparison, String identifier, boolean negation ) {
     this.filters = filters;
     this.comparison = comparison;
     this.identifier =identifier;
+    this.negation = negation;
   }
 
   public BooleanMetaFilter(String desc){
@@ -100,7 +103,7 @@ public class BooleanMetaFilter
    */
   public boolean passesFilter ( Object object ) {
     if(filters.length == 0){
-      return false;
+      return false ^ negation;
     }
     int count = 0;
     for(int idx=0;idx<filters.length;idx++){
@@ -112,30 +115,40 @@ public class BooleanMetaFilter
       } // end of if ()
       
       if(comparison == AND && !filterResult){
-	return false;
+	return false ^ negation;
       }
       if(comparison == OR && filterResult){
-	return true;
+	return true ^ negation;
       }
       if(comparison == XOR && filterResult){
 	if(++count>1){
-	  return false;
+	  return false ^ negation;
 	}
       }
     }
     if(comparison == XOR && count == 1){
-      return true;
+      return true ^ negation;
     }
     if(comparison == AND){
-      return true;
+      return true ^ negation;
     }
     else{
-      return false;
+      return false ^ negation;
     }
   }
 
   public Class[] getPassingTypes () {
-    return null;
+    Vector passingTypes = new Vector(2);
+    for(int idx=0;idx<filters.length;idx++){
+      Filter filter = FilterManager.defaultManager().getFilter(filters[idx]);
+      Class [] filterPassingTypes = filter.getPassingTypes();
+      for(int idy=0;idy<filterPassingTypes.length;idy++){
+	if(!passingTypes.contains(filterPassingTypes[idy])){
+	  passingTypes.add(filterPassingTypes[idy]);
+	}
+      }
+    }
+    return (Class[])passingTypes.toArray(new Class[]{});
   }
   
   public boolean equals ( Object other_object ) {
@@ -143,7 +156,7 @@ public class BooleanMetaFilter
   }
   
   public Object clone () {
-    return new BooleanMetaFilter ( filters, comparison,identifier+"_new" );
+    return new BooleanMetaFilter ( filters, comparison,identifier+"_new",negation );
   }
   
   public SwingPropertyChangeSupport getSwingPropertyChangeSupport() {
@@ -157,6 +170,15 @@ public class BooleanMetaFilter
 
   public String getComparison(){
     return comparison;
+  }
+  
+  public void setNegation(boolean negation){
+    this.negation = negation;
+    pcs.firePropertyChange(NEGATION_EVENT,null,null);
+  }
+
+  public boolean getNegation(){
+    return negation;
   }
 
   public void setFilters(int [] filters){
@@ -182,7 +204,8 @@ public class BooleanMetaFilter
       if ( i != filters.length - 1 ) 
         buffer.append(":");
     }
-    buffer.append( ","+getComparison()+"," );
+    buffer.append( ","+getComparison() );
+    buffer.append( ","+negation+",");
     buffer.append( toString() );
     return buffer.toString();
   }
@@ -190,7 +213,13 @@ public class BooleanMetaFilter
   public void input ( String desc ) {
     String [] array = desc.split(",");
     String [] filterStrings = array[0].split(":");
-    int [] selectedFilters = new int[filterStrings.length];
+    int [] selectedFilters = null;
+    if(filterStrings[0].equals("")){
+      selectedFilters = new int[0];
+    }
+    else{
+      selectedFilters = new int[filterStrings.length];
+    }
     for ( int idx = 0;idx < selectedFilters.length;idx++) {
       selectedFilters[idx] = (new Integer(filterStrings[idx])).intValue();
     } // end of for ()
@@ -207,7 +236,8 @@ public class BooleanMetaFilter
     else{
       throw new IllegalArgumentException(array[1]+" is not a valid type of comparison");
     }
-    setIdentifier(array[2]);
+    setIdentifier(array[3]);
+    setNegation((new Boolean(array[2])).booleanValue());
   }
 
 }

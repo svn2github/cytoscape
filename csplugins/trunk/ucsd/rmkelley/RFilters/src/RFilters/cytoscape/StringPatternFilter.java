@@ -71,8 +71,8 @@ public class StringPatternFilter
     this.cyWindow = cyWindow;
     //this.classType = classType;
     try{
-      NODE_CLASS = Class.forName("giny.model.Node");
-      EDGE_CLASS = Class.forName("giny.model.Edge");
+      NODE_CLASS = Node.class;
+      EDGE_CLASS = Edge.class;
     }catch(Exception e){
       e.printStackTrace();
     }
@@ -172,7 +172,7 @@ public class StringPatternFilter
   }
 
   public Class[] getPassingTypes () {
-    return null;
+    return new Class[]{classType};
   }
   
   public boolean equals ( Object other_object ) {

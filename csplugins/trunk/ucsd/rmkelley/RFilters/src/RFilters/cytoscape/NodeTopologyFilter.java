@@ -156,7 +156,7 @@ public class NodeTopologyFilter
     }
   }
   public Class[] getPassingTypes () {
-    return null;
+    return new Class[]{Node.class};
   }
 
   public boolean equals ( Object other_object ) {

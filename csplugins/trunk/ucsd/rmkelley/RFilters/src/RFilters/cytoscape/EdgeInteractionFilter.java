@@ -124,7 +124,7 @@ public class EdgeInteractionFilter
   }
   
   public Class[] getPassingTypes () {
-    return null;
+    return new Class[]{Edge.class};
   }
   
   public boolean equals ( Object other_object ) {

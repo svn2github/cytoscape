@@ -174,23 +174,28 @@ public class FilterUsePanel extends JPanel
     EdgeView edge_view;
     boolean passes;
     if(filter != null){
-      nodes = nodes_list.iterator();
-      while ( nodes.hasNext() ) {
-        node = ( Node )nodes.next();
-	try{
-	  passObject(node,filter.passesFilter(node));
-	}catch(StackOverflowError soe){
-	  return;
-	}
-      }
-      
-      edges = edges_list.iterator();
-      while ( edges.hasNext() ) {
-        edge = ( Edge )edges.next();
-	try{
-	  passObject(edge,filter.passesFilter(edge));
-	}catch(StackOverflowError soe){
-	  return;
+      Class [] passingTypes = filter.getPassingTypes();
+      for(int idx = 0;idx < passingTypes.length;idx++){
+	if(passingTypes[idx].equals(Node.class)){
+	  nodes = nodes_list.iterator();
+	  while ( nodes.hasNext() ) {
+	    node = ( Node )nodes.next();
+	    try{
+	      passObject(node,filter.passesFilter(node));
+	    }catch(StackOverflowError soe){
+	      return;
+	    }
+	  }
+	}else if(passingTypes[idx].equals(Edge.class)){
+	  edges = edges_list.iterator();
+	  while ( edges.hasNext() ) {
+	    edge = ( Edge )edges.next();
+	    try{
+	      passObject(edge,filter.passesFilter(edge));
+	    }catch(StackOverflowError soe){
+	      return;
+	    }
+	  }
 	}
       }
     }

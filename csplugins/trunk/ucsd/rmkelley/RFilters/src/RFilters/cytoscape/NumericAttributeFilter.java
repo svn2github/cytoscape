@@ -96,8 +96,8 @@ public class NumericAttributeFilter
   public NumericAttributeFilter ( String desc){
     this.cyWindow = Cytoscape.getDesktop();
     try{
-      NODE_CLASS = Class.forName("giny.model.Node");
-      EDGE_CLASS = Class.forName("giny.model.Edge");
+      NODE_CLASS = Node.class;
+      EDGE_CLASS = Edge.class;
     }catch(Exception e){
       e.printStackTrace();
     }
@@ -179,7 +179,7 @@ public class NumericAttributeFilter
   }
 
   public Class[] getPassingTypes () {
-    return null;
+    return new Class[]{classType};
   }
   
   public boolean equals ( Object other_object ) {
