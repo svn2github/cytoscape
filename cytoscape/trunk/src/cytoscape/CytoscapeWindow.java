@@ -91,6 +91,7 @@ import cytoscape.view.*;
 import cytoscape.undo.*;
 import cytoscape.util.MutableString;
 import cytoscape.util.MutableBool;
+import cytoscape.util.CyFileFilter;
 
 import cytoscape.filters.*;
 import cytoscape.filters.dialogs.*;
@@ -3054,6 +3055,11 @@ protected class LoadGMLFileAction extends AbstractAction {
     
   public void actionPerformed (ActionEvent e)  {
     JFileChooser chooser = new JFileChooser (currentDirectory);
+    CyFileFilter filter = new CyFileFilter();
+    filter.addExtension("gml");
+    filter.setDescription("GML files");
+    chooser.setFileFilter(filter);
+    chooser.addChoosableFileFilter(filter);
     if (chooser.showOpenDialog (CytoscapeWindow.this) == chooser.APPROVE_OPTION) {
       currentDirectory = chooser.getCurrentDirectory();
       String name = chooser.getSelectedFile ().toString ();
@@ -3079,6 +3085,11 @@ protected class LoadInteractionFileAction extends AbstractAction {
     
   public void actionPerformed (ActionEvent e)  {
    JFileChooser chooser = new JFileChooser (currentDirectory);
+   CyFileFilter filter = new CyFileFilter();
+    filter.addExtension("sif");
+    filter.setDescription("Interaction files");
+    chooser.setFileFilter(filter);
+    chooser.addChoosableFileFilter(filter);
    if (chooser.showOpenDialog (CytoscapeWindow.this) == chooser.APPROVE_OPTION) {
       currentDirectory = chooser.getCurrentDirectory();
       String name = chooser.getSelectedFile ().toString ();
@@ -3141,6 +3152,13 @@ protected class LoadExpressionMatrixAction extends AbstractAction {
     public void actionPerformed (ActionEvent e)  {
 
 	ExpFileChooser chooser = new ExpFileChooser (currentDirectory);
+	CyFileFilter filter = new CyFileFilter();
+	filter.addExtension("mrna");
+	filter.addExtension("mRNA");
+	filter.addExtension("pdls");
+	filter.setDescription("Expression Matrix files");
+	chooser.setFileFilter(filter);
+	chooser.addChoosableFileFilter(filter);
 	if (chooser.showOpenDialog (CytoscapeWindow.this) ==
 	    chooser.APPROVE_OPTION) {
 	    currentDirectory = chooser.getCurrentDirectory();
