@@ -261,7 +261,8 @@ class FRootGraph implements RootGraph, DynamicGraph
     final FingNode removedNode = m_nodes.getNodeAtIndex(nativeNodeInx);
     m_graph.nodeRemove(nativeNodeInx);
     m_nodes.setNodeAtIndex(null, nativeNodeInx);
-    m_nodeDepot.recycleNode(removedNode);
+    if (m_nodeDepot.isRecyclery())
+      m_nodeDepot.recycleNode(removedNode);
     if (removedEdgeArr.length > 0)
       m_lis.rootGraphChanged
         (new RootGraphEdgesRemovedEvent(this, removedEdgeArr));
