@@ -307,7 +307,13 @@ private void loadVizMapper() {
   this.vizMapUI = new VizMapUI(this.vizMapper);
 }
 
-    // various default definitions stolen from TestNewMappingsUI.java
+    // various default definitions
+    //
+    // many assume names of attributes that aren't likely
+    // to actually be present, such as "gal4RG.sigsig"
+    // and "GO Molecular Function (level 4)" - but they
+    // still work.
+
 
     // this creates a random color and adds it to a map,
     // associated with a string.
