@@ -114,19 +114,19 @@ public class JErrorPanel extends JPanel {
         errorLabel.setFont(new Font(font.getFamily(), Font.BOLD,
                 font.getSize()));
         errorLabel.setAlignmentY(Component.TOP_ALIGNMENT);
-        errorLabel.setBorder(new EmptyBorder (10,10,10,10));
+        errorLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
         panel.add(errorLabel);
 
         //  Conditionally Add Details Button
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout (2,1));
+        buttonPanel.setLayout(new GridLayout(2, 1));
         buttonPanel.setAlignmentY(Component.TOP_ALIGNMENT);
         conditionallyAddDetailsButton(buttonPanel);
 
         //  Create a Close Button
-        JButton closeButton = new JButton ("Close");
-        closeButton.addActionListener (new ActionListener() {
-            public void actionPerformed (ActionEvent e) {
+        JButton closeButton = new JButton("Close");
+        closeButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 owner.dispose();
             }
         });
