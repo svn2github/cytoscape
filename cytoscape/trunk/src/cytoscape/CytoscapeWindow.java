@@ -1057,7 +1057,7 @@ protected JMenuBar createMenuBar ()
   //  vizMenu.add (new PrintPropsAction ());
 
   opsMenu = new JMenu ("PlugIns"); // always create the plugins menu
-  fileMenu.add (new DisplayDebugLog ());
+  // fileMenu.add (new DisplayDebugLog ());
   menuBar.add (opsMenu);
 
   return menuBar;
