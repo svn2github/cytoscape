@@ -10,7 +10,11 @@ package cytoscape.data.attr;
  * file storage formats are outside of the scope of the capabilities this
  * package provides; "attribute file" reading and writing sits at an orthogonal
  * abstraction layer, and it is Cytoscape's job to glue the file reading and
- * writing modules with the modules in this package.
+ * writing modules with the modules in this package.<p>
+ * This interface is not meant as a standalone interface.  What I mean is that
+ * in practice any class that implements this interface will also implement
+ * one or more other closely related interfaces that will then make this
+ * interface more meaningful.
  */
 public interface CyMasterData
 {
@@ -59,5 +63,7 @@ public interface CyMasterData
   public void registerNode(int nodeInx, String nodeName);
 
   public void registerEdge(int edgeInx, String edgeName);
+
+  
 
 }
