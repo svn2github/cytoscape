@@ -19,14 +19,14 @@ public class BirdsEyeViewAction extends AbstractAction {
   public void actionPerformed (ActionEvent e) {
 	if (networkView.getView() == null) return;  
     JDialog dialog = new JDialog();
-    PGraphView pview = (PGraphView)networkView.getView();
+     PGraphView pview = (PGraphView)networkView.getView();
     
-    dialog.setTitle("Birds Eye View" );
+//     dialog.setTitle("Birds Eye View" );
+//     dialog.getContentPane().add( pview.getBirdsEyeView() );
     dialog.getContentPane().add( pview.getBirdsEyeView() );
     
-    
     dialog.pack();
-    dialog.setSize(new Dimension ( 200, 200));
+    //dialog.setSize(new Dimension ( 200, 200));
     dialog.setVisible( true );
   }
 
