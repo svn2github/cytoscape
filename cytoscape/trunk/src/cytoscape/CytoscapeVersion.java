@@ -36,7 +36,7 @@ package cytoscape;
 //-----------------------------------------------------------------------------------
 public class CytoscapeVersion {
   private String versionString = "0.9911";
-  private String dateString = "2002/02/18";
+  private String dateString = "2003/02/26";
 
   private String [] briefHistory = {
       "0.1   (2001/12/12) initial version",
