@@ -6,7 +6,7 @@
 #
 # RetroGuard Bytecode Obfuscator, v1.1, a product of Retrologic Systems - www.retrologic.com
 #
-# Logfile created on Tue Mar 18 17:46:52 EST 2003
+# Logfile created on Fri May 09 17:56:16 EDT 2003
 #
 # Jar file to be obfuscated:           cytoscape.jar
 # Target Jar file for obfuscated code: cytoscape-obf.jar
@@ -18,6 +18,7 @@
 #          to act on classes which are within the obfuscated Jar file.
 #      Your class cytoscape/browsers/TabbedBrowser$MyMouseListener calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
 #      Your class cytoscape/CytoscapeWindow calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
+#      Your class cytoscape/data/readers/FileReadingAbstractions calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
 #      Your class cytoscape/data/servers/BioDataServerRmi_Stub calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
 #      Your class cytoscape/data/servers/BioDataServerRmi_Stub calls the java/lang/Class method getMethod(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;
 #      Your class cytoscape/data/ExpressionData calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
@@ -25,6 +26,13 @@
 #      Your class cytoscape/dialogs/ExpressionDataPopupTable calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
 #      Your class cytoscape/filters/AttributeFilter calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
 #      Your class cytoscape/GraphObjAttributes calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
+#      Your class cytoscape/jarLoader/JarLoaderAction$JarClassLoader calls the java/lang/ClassLoader method loadClass(Ljava/lang/String;)Ljava/lang/Class;
+#      Your class cytoscape/jarLoader/JarLoaderAction$JarClassLoader calls the java/lang/Class method getMethod(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;
+#      Your class cytoscape/jarLoader/JarClassLoader calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
+#      Your class cytoscape/jarLoader/JarClassLoader calls the java/lang/ClassLoader method loadClass(Ljava/lang/String;)Ljava/lang/Class;
+#      Your class cytoscape/jarLoader/JarClassLoader calls the java/lang/Class method getMethod(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;
+#      Your class cytoscape/jarLoader/JarClassLoader calls the java/lang/ClassLoader method loadClass(Ljava/lang/String;)Ljava/lang/Class;
+#      Your class cytoscape/jarLoader/JarClassLoader calls the java/lang/ClassLoader method loadClass(Ljava/lang/String;)Ljava/lang/Class;
 #      Your class cytoscape/layout/HierarchicalLayoutDialog calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
 #      Your class cytoscape/PluginLoader calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
 #      Your class cytoscape/SelectedSubGraphFactory calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
@@ -40,14 +48,6 @@
 #      Your class cytoscape/visual/ui/VizMapAttrTab calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
 #      Your class cytoscape/visual/CalculatorCatalog calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
 #      Your class cytoscape/visual/OldStyleCalculatorIO calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
-#      Your class csplugins/jarLoader/JarLoaderAction$JarClassLoader calls the java/lang/ClassLoader method loadClass(Ljava/lang/String;)Ljava/lang/Class;
-#      Your class csplugins/jarLoader/JarLoaderAction$JarClassLoader calls the java/lang/Class method getMethod(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;
-#      Your class csplugins/jarLoader/JarClassLoader calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
-#      Your class csplugins/jarLoader/JarClassLoader calls the java/lang/ClassLoader method loadClass(Ljava/lang/String;)Ljava/lang/Class;
-#      Your class csplugins/jarLoader/JarClassLoader calls the java/lang/Class method getMethod(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;
-#      Your class csplugins/jarLoader/JarClassLoader calls the java/lang/ClassLoader method loadClass(Ljava/lang/String;)Ljava/lang/Class;
-#      Your class csplugins/jarLoader/JarClassLoader calls the java/lang/ClassLoader method loadClass(Ljava/lang/String;)Ljava/lang/Class;
-#      Your class csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
 #      Your class y/io/YGFIOHandler calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
 #      Your class y/layout/planar/GT calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
 #      Your class y/layout/planar/GT calls the java/lang/Class method getMethod(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;
@@ -88,377 +88,36 @@
 #      Your class org/xml/sax/helpers/ParserFactory calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
 #      Your class org/xml/sax/helpers/XMLReaderFactory calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
 #
-# Memory in use after class data structure built: 8317864 bytes
-# Total memory available                        : 14979072 bytes
+# Memory in use after class data structure built: 8169688 bytes
+# Total memory available                        : 14733312 bytes
 #
 #
 # Obfuscated name overloading frequency:
-#  'a'   	used 2395 times	(25%)
-#  'if'   	used 975 times	(10%)
-#  'do'   	used 589 times	(6%)
-#  'for'   	used 418 times	(4%)
+#  'a'   	used 2357 times	(25%)
+#  'if'   	used 964 times	(10%)
+#  'do'   	used 583 times	(6%)
+#  'for'   	used 415 times	(4%)
 #  'int'   	used 330 times	(3%)
-#  'new'   	used 269 times	(2%)
-#  'try'   	used 224 times	(2%)
-#  'byte'   	used 203 times	(2%)
-#  'b'   	used 201 times	(2%)
-#  'case'   	used 170 times	(1%)
-#  'c'   	used 154 times	(1%)
-#  'char'   	used 146 times	(1%)
-#  'd'   	used 134 times	(1%)
-#  'else'   	used 132 times	(1%)
-#  'goto'   	used 122 times	(1%)
-#  'e'   	used 115 times	(1%)
-#  'long'   	used 109 times	(1%)
+#  'new'   	used 268 times	(2%)
+#  'try'   	used 223 times	(2%)
+#  'byte'   	used 202 times	(2%)
+#  'b'   	used 194 times	(2%)
+#  'case'   	used 169 times	(1%)
+#  'c'   	used 148 times	(1%)
+#  'char'   	used 145 times	(1%)
+#  'else'   	used 131 times	(1%)
+#  'd'   	used 131 times	(1%)
+#  'goto'   	used 121 times	(1%)
+#  'e'   	used 114 times	(1%)
+#  'long'   	used 108 times	(1%)
 #  'f'   	used 104 times	(1%)
-#  'g'   	used 96 times	(1%)
+#  'g'   	used 95 times	(1%)
 #  'null'   	used 94 times	(1%)
-#  Other names (each used in <1% of mappings) used a total of 2286 times (33%)
+#  Other names (each used in <1% of mappings) used a total of 2277 times (33%)
 #
 #
 # Names reserved from obfuscation:
 #
-.class csplugins/jarLoader/JarPluginDirectoryAction
-.field csplugins/jarLoader/JarPluginDirectoryAction/file Ljava/io/File;
-.field csplugins/jarLoader/JarPluginDirectoryAction/ready Z
-.field csplugins/jarLoader/JarPluginDirectoryAction/cytoscapeWindow Lcytoscape/CytoscapeWindow;
-.method csplugins/jarLoader/JarPluginDirectoryAction/setDir (Ljava/lang/String;)V
-.method csplugins/jarLoader/JarPluginDirectoryAction/tryDirectory ()V
-.method csplugins/jarLoader/JarPluginDirectoryAction/actionPerformed (Ljava/awt/event/ActionEvent;)V
-.class csplugins/jarLoader/JarLoaderUI
-.field csplugins/jarLoader/JarLoaderUI/cytoscapeWindow Lcytoscape/CytoscapeWindow;
-.method csplugins/jarLoader/JarLoaderUI/describe ()Ljava/lang/String;
-.class csplugins/jarLoader/JarLoaderCommandLineParser
-.field csplugins/jarLoader/JarLoaderCommandLineParser/cw Lcytoscape/CytoscapeWindow;
-.field csplugins/jarLoader/JarLoaderCommandLineParser/jpda Lcsplugins/jarLoader/JarPluginDirectoryAction;
-.method csplugins/jarLoader/JarLoaderCommandLineParser/usage ()V
-.class csplugins/jarLoader/JarPluginLoaderAction
-.field csplugins/jarLoader/JarPluginLoaderAction/file Ljava/io/File;
-.field csplugins/jarLoader/JarPluginLoaderAction/cytoscapeWindow Lcytoscape/CytoscapeWindow;
-.method csplugins/jarLoader/JarPluginLoaderAction/actionPerformed (Ljava/awt/event/ActionEvent;)V
-.class csplugins/jarLoader/JarClassLoader
-.field csplugins/jarLoader/JarClassLoader/class$cytoscape$AbstractPlugin Ljava/lang/Class;
-.method csplugins/jarLoader/JarClassLoader/invokePlugin (Ljava/lang/String;)V
-.method csplugins/jarLoader/JarClassLoader/invokeClass (Ljava/lang/String;[Ljava/lang/String;)V
-.method csplugins/jarLoader/JarClassLoader/loadRelevantClasses ()V
-.method csplugins/jarLoader/JarClassLoader/getClass (Ljava/lang/String;)Ljava/lang/Class;
-.method csplugins/jarLoader/JarClassLoader/isClassPlugin (Ljava/lang/String;)Z
-.method csplugins/jarLoader/JarClassLoader/class$ (Ljava/lang/String;)Ljava/lang/Class;
-.class csplugins/jarLoader/JarLoaderAction
-.field csplugins/jarLoader/JarLoaderAction/file Ljava/io/File;
-.field csplugins/jarLoader/JarLoaderAction/cytoscapeWindow Lcytoscape/CytoscapeWindow;
-.method csplugins/jarLoader/JarLoaderAction/actionPerformed (Ljava/awt/event/ActionEvent;)V
-.class csplugins/activeModules/dialogs/ConditionsVsPathwaysTable
-.field csplugins/activeModules/dialogs/ConditionsVsPathwaysTable/conditionNames [Ljava/lang/String;
-.field csplugins/activeModules/dialogs/ConditionsVsPathwaysTable/self Lcsplugins/activeModules/dialogs/ConditionsVsPathwaysTable;
-.field csplugins/activeModules/dialogs/ConditionsVsPathwaysTable/cytoscapeWindow Lcytoscape/CytoscapeWindow;
-.field csplugins/activeModules/dialogs/ConditionsVsPathwaysTable/activePaths [Lcsplugins/activeModules/data/ActivePath;
-.field csplugins/activeModules/dialogs/ConditionsVsPathwaysTable/bottomTable Ljavax/swing/JPanel;
-.field csplugins/activeModules/dialogs/ConditionsVsPathwaysTable/topTable Ljavax/swing/JPanel;
-.method csplugins/activeModules/dialogs/ConditionsVsPathwaysTable/saveState (Ljava/lang/String;)V
-.method csplugins/activeModules/dialogs/ConditionsVsPathwaysTable/loadState ()[Lcsplugins/activeModules/data/ActivePath;
-.method csplugins/activeModules/dialogs/ConditionsVsPathwaysTable/getActivePaths ()[Lcsplugins/activeModules/data/ActivePath;
-.method csplugins/activeModules/dialogs/ConditionsVsPathwaysTable/saveState ()V
-.class csplugins/activeModules/dialogs/SubnetworkExpanderDialog
-.field csplugins/activeModules/dialogs/SubnetworkExpanderDialog/IS_DIRECTED_SEARCH Z
-.field csplugins/activeModules/dialogs/SubnetworkExpanderDialog/UPSTREAM_SEARCH Z
-.field csplugins/activeModules/dialogs/SubnetworkExpanderDialog/NODES_FILE Ljava/io/File;
-.field csplugins/activeModules/dialogs/SubnetworkExpanderDialog/MAX_SEARCH_DEPTH I
-.method csplugins/activeModules/dialogs/SubnetworkExpanderDialog/access$200 (Lcsplugins/activeModules/dialogs/SubnetworkExpanderDialog;)Ljavax/swing/JRadioButton;
-.method csplugins/activeModules/dialogs/SubnetworkExpanderDialog/access$300 (Lcsplugins/activeModules/dialogs/SubnetworkExpanderDialog;)Ljavax/swing/JTextField;
-.method csplugins/activeModules/dialogs/SubnetworkExpanderDialog/access$502 (Lcsplugins/activeModules/dialogs/SubnetworkExpanderDialog;Ljava/io/File;)Ljava/io/File;
-.method csplugins/activeModules/dialogs/SubnetworkExpanderDialog/access$000 (Lcsplugins/activeModules/dialogs/SubnetworkExpanderDialog;)Ljavax/swing/JTextField;
-.method csplugins/activeModules/dialogs/SubnetworkExpanderDialog/access$100 (Lcsplugins/activeModules/dialogs/SubnetworkExpanderDialog;)Ljavax/swing/JCheckBox;
-.method csplugins/activeModules/dialogs/SubnetworkExpanderDialog/access$500 (Lcsplugins/activeModules/dialogs/SubnetworkExpanderDialog;)Ljava/io/File;
-.method csplugins/activeModules/dialogs/SubnetworkExpanderDialog/access$402 (Lcsplugins/activeModules/dialogs/SubnetworkExpanderDialog;Z)Z
-.method csplugins/activeModules/dialogs/SubnetworkExpanderDialog/access$600 (Lcsplugins/activeModules/dialogs/SubnetworkExpanderDialog;)Ljavax/swing/JRadioButton;
-.method csplugins/activeModules/dialogs/SubnetworkExpanderDialog/isApplyAction ()Z
-.class csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable
-.field csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable/scrollPane Ljavax/swing/JScrollPane;
-.field csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable/activePaths [Lcsplugins/activeModules/data/ActivePath;
-.field csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable/conditionNames [Ljava/lang/String;
-.field csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable/table Ljavax/swing/JTable;
-.field csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable/self Ljavax/swing/JPanel;
-.field csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable/class$java$awt$Color Ljava/lang/Class;
-.method csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable/access$000 (Lcsplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable;)Lcsplugins/activeModules/ActivePathViewer;
-.method csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable/class$ (Ljava/lang/String;)Ljava/lang/Class;
-.class csplugins/activeModules/dialogs/ActivePathsParametersPopupDialogListener
-.method csplugins/activeModules/dialogs/ActivePathsParametersPopupDialogListener/cancelActivePathsFinding ()V
-.method csplugins/activeModules/dialogs/ActivePathsParametersPopupDialogListener/setActivePathsParameters (Lcsplugins/activeModules/data/ActivePathFinderParameters;)V
-.class csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/iterPanel Ljavax/swing/JPanel;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/searchContentPanel Ljavax/swing/JPanel;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/annealExtPanel Ljavax/swing/JPanel;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/tempLabelStart Ljavax/swing/JLabel;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/currentContentPanel Ljavax/swing/JPanel;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/annealContentPanel Ljavax/swing/JPanel;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/tStartPanel Ljavax/swing/JPanel;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/ANNEAL Ljava/lang/String;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/searchDepth Ljavax/swing/JTextField;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/pathPanel Ljavax/swing/JPanel;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/intervalPanel Ljavax/swing/JPanel;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/annealSearchControlPanel Ljavax/swing/JPanel;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/startNum Ljavax/swing/JTextField;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/hAdjPanel Ljavax/swing/JPanel;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/quenchCheck Ljavax/swing/JCheckBox;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/searchPanel Ljavax/swing/JPanel;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/searchFromNodesBox Ljavax/swing/JCheckBox;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/edgesCheck Ljavax/swing/JCheckBox;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/tempLabelEnd Ljavax/swing/JLabel;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/annealSearchContentPanel Ljavax/swing/JPanel;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/iterLabel Ljavax/swing/JLabel;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/SEARCH Ljava/lang/String;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/hubNum Ljavax/swing/JTextField;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/hfcPanel Ljavax/swing/JPanel;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/regionalBox Ljavax/swing/JCheckBox;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/searchButton Ljavax/swing/JRadioButton;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/hubAdjustmentNum Ljavax/swing/JTextField;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/maxDepth Ljavax/swing/JTextField;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/intervalNum Ljavax/swing/JTextField;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/readout Ljavax/swing/JTextField;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/NONRANDOM Ljava/lang/String;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/mcBox Ljavax/swing/JCheckBox;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/endNum Ljavax/swing/JTextField;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/hubBox Ljavax/swing/JCheckBox;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/generalExtPanel Ljavax/swing/JPanel;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/tEndPanel Ljavax/swing/JPanel;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/maxBox Ljavax/swing/JCheckBox;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/pathLabel Ljavax/swing/JLabel;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/hubAdjustmentBox Ljavax/swing/JCheckBox;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/annealButton Ljavax/swing/JRadioButton;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/intervalLabel Ljavax/swing/JLabel;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/apfParams Lcsplugins/activeModules/data/ActivePathFinderParameters;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/listener Lcsplugins/activeModules/dialogs/ActivePathsParametersPopupDialogListener;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/iterNum Ljavax/swing/JTextField;
-.field csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/pathNum Ljavax/swing/JTextField;
-.class csplugins/activeModules/dialogs/ConditionsVsPathwaysTopTable
-.field csplugins/activeModules/dialogs/ConditionsVsPathwaysTopTable/scrollPane Ljavax/swing/JScrollPane;
-.field csplugins/activeModules/dialogs/ConditionsVsPathwaysTopTable/activePaths [Lcsplugins/activeModules/data/ActivePath;
-.field csplugins/activeModules/dialogs/ConditionsVsPathwaysTopTable/table Ljavax/swing/JTable;
-.class csplugins/activeModules/data/ActivePath
-.field csplugins/activeModules/data/ActivePath/conditionNames Ljava/util/Vector;
-.field csplugins/activeModules/data/ActivePath/nodeNames Ljava/util/Vector;
-.field csplugins/activeModules/data/ActivePath/score D
-.method csplugins/activeModules/data/ActivePath/getConditions ()[Ljava/lang/String;
-.method csplugins/activeModules/data/ActivePath/numberOfNodes ()I
-.method csplugins/activeModules/data/ActivePath/numberOfConditions ()I
-.method csplugins/activeModules/data/ActivePath/getScore ()D
-.method csplugins/activeModules/data/ActivePath/getNodes ()[Ljava/lang/String;
-.method csplugins/activeModules/data/ActivePath/toString ()Ljava/lang/String;
-.class csplugins/activeModules/data/ActivePathFinderParameters
-.field csplugins/activeModules/data/ActivePathFinderParameters/regionalBoolean Z
-.field csplugins/activeModules/data/ActivePathFinderParameters/initialTemperature D
-.field csplugins/activeModules/data/ActivePathFinderParameters/minHubSize I
-.field csplugins/activeModules/data/ActivePathFinderParameters/randomSeed I
-.field csplugins/activeModules/data/ActivePathFinderParameters/toQuench Z
-.field csplugins/activeModules/data/ActivePathFinderParameters/maxDepth I
-.field csplugins/activeModules/data/ActivePathFinderParameters/mcFileName Ljava/lang/String;
-.field csplugins/activeModules/data/ActivePathFinderParameters/toUseMCFile Z
-.field csplugins/activeModules/data/ActivePathFinderParameters/displayInterval I
-.field csplugins/activeModules/data/ActivePathFinderParameters/hubAdjustment D
-.field csplugins/activeModules/data/ActivePathFinderParameters/finalTemperature D
-.field csplugins/activeModules/data/ActivePathFinderParameters/mcBoolean Z
-.field csplugins/activeModules/data/ActivePathFinderParameters/searchDepth I
-.field csplugins/activeModules/data/ActivePathFinderParameters/edgesNotNodes Z
-.field csplugins/activeModules/data/ActivePathFinderParameters/totalIterations I
-.field csplugins/activeModules/data/ActivePathFinderParameters/isDefault Z
-.field csplugins/activeModules/data/ActivePathFinderParameters/numberOfPaths I
-.field csplugins/activeModules/data/ActivePathFinderParameters/pseudoRandomSeed I
-.field csplugins/activeModules/data/ActivePathFinderParameters/searchFromNodes Z
-.method csplugins/activeModules/data/ActivePathFinderParameters/getSearchFromNodes ()Z
-.method csplugins/activeModules/data/ActivePathFinderParameters/setRandomSeed (I)V
-.method csplugins/activeModules/data/ActivePathFinderParameters/getMCboolean ()Z
-.method csplugins/activeModules/data/ActivePathFinderParameters/setNumberOfPaths (I)V
-.method csplugins/activeModules/data/ActivePathFinderParameters/getMinHubSize ()I
-.method csplugins/activeModules/data/ActivePathFinderParameters/setDisplayInterval (I)V
-.method csplugins/activeModules/data/ActivePathFinderParameters/getDisplayInterval ()I
-.method csplugins/activeModules/data/ActivePathFinderParameters/setEdgesNotNodes (Z)V
-.method csplugins/activeModules/data/ActivePathFinderParameters/getNumberOfPaths ()I
-.method csplugins/activeModules/data/ActivePathFinderParameters/setFinalTemperature (D)V
-.method csplugins/activeModules/data/ActivePathFinderParameters/setToQuench (Z)V
-.method csplugins/activeModules/data/ActivePathFinderParameters/setMcFileName (Ljava/lang/String;)V
-.method csplugins/activeModules/data/ActivePathFinderParameters/setInitialTemperature (D)V
-.method csplugins/activeModules/data/ActivePathFinderParameters/setMaxDepth (I)V
-.method csplugins/activeModules/data/ActivePathFinderParameters/getRegionalBoolean ()Z
-.method csplugins/activeModules/data/ActivePathFinderParameters/setSearchDepth (I)V
-.method csplugins/activeModules/data/ActivePathFinderParameters/getIsDefault ()Z
-.method csplugins/activeModules/data/ActivePathFinderParameters/setMCboolean (Z)V
-.method csplugins/activeModules/data/ActivePathFinderParameters/getToQuench ()Z
-.method csplugins/activeModules/data/ActivePathFinderParameters/setHubAdjustment (D)V
-.method csplugins/activeModules/data/ActivePathFinderParameters/toString ()Ljava/lang/String;
-.method csplugins/activeModules/data/ActivePathFinderParameters/setToUseMCFile (Z)V
-.method csplugins/activeModules/data/ActivePathFinderParameters/getInitialTemperature ()D
-.method csplugins/activeModules/data/ActivePathFinderParameters/getEdgesNotNodes ()Z
-.method csplugins/activeModules/data/ActivePathFinderParameters/getToUseMCFile ()Z
-.method csplugins/activeModules/data/ActivePathFinderParameters/setRegionalBoolean (Z)V
-.method csplugins/activeModules/data/ActivePathFinderParameters/getHubAdjustment ()D
-.method csplugins/activeModules/data/ActivePathFinderParameters/getRandomSeed ()I
-.method csplugins/activeModules/data/ActivePathFinderParameters/setTotalIterations (I)V
-.method csplugins/activeModules/data/ActivePathFinderParameters/setParams (Lcsplugins/activeModules/data/ActivePathFinderParameters;)V
-.method csplugins/activeModules/data/ActivePathFinderParameters/getFinalTemperature ()D
-.method csplugins/activeModules/data/ActivePathFinderParameters/setSearchFromNodes (Z)V
-.method csplugins/activeModules/data/ActivePathFinderParameters/getMaxDepth ()I
-.method csplugins/activeModules/data/ActivePathFinderParameters/setMinHubSize (I)V
-.method csplugins/activeModules/data/ActivePathFinderParameters/getTotalIterations ()I
-.method csplugins/activeModules/data/ActivePathFinderParameters/getMcFileName ()Ljava/lang/String;
-.method csplugins/activeModules/data/ActivePathFinderParameters/getSearchDepth ()I
-.class csplugins/activeModules/SubnetworkExpander
-.field csplugins/activeModules/SubnetworkExpander/graphHider Lcytoscape/undo/UndoableGraphHider;
-.field csplugins/activeModules/SubnetworkExpander/cytoscapeWindow Lcytoscape/CytoscapeWindow;
-.field csplugins/activeModules/SubnetworkExpander/graph Ly/view/Graph2D;
-.field csplugins/activeModules/SubnetworkExpander/edgeAttributes Lcytoscape/GraphObjAttributes;
-.field csplugins/activeModules/SubnetworkExpander/paramDialog Lcsplugins/activeModules/dialogs/SubnetworkExpanderDialog;
-.field csplugins/activeModules/SubnetworkExpander/nodeAttributes Lcytoscape/GraphObjAttributes;
-.method csplugins/activeModules/SubnetworkExpander/describe ()Ljava/lang/String;
-.class csplugins/activeModules/ActiveModulesUI
-.field csplugins/activeModules/ActiveModulesUI/apfParams Lcsplugins/activeModules/data/ActivePathFinderParameters;
-.field csplugins/activeModules/ActiveModulesUI/activePaths Lcsplugins/activeModules/ActivePaths;
-.field csplugins/activeModules/ActiveModulesUI/cytoscapeWindow Lcytoscape/CytoscapeWindow;
-.method csplugins/activeModules/ActiveModulesUI/describe ()Ljava/lang/String;
-.method csplugins/activeModules/ActiveModulesUI/mcLoad ()Z
-.method csplugins/activeModules/ActiveModulesUI/getMontecarloFile ()Z
-.class csplugins/activeModules/ActivePathsFinderBridge
-.field csplugins/activeModules/ActivePathsFinderBridge/dynamicLibraryName Ljava/lang/String;
-.field csplugins/activeModules/ActivePathsFinderBridge/expressionData Lcytoscape/data/ExpressionData;
-.field csplugins/activeModules/ActivePathsFinderBridge/cytoscapeWindow Lcytoscape/CytoscapeWindow;
-.field csplugins/activeModules/ActivePathsFinderBridge/activePaths Ljava/util/Vector;
-.field csplugins/activeModules/ActivePathsFinderBridge/nodeNames [Ljava/lang/String;
-.field csplugins/activeModules/ActivePathsFinderBridge/conditionNames [Ljava/lang/String;
-.field csplugins/activeModules/ActivePathsFinderBridge/edgePairs [[Ljava/lang/String;
-.field csplugins/activeModules/ActivePathsFinderBridge/geneNames [Ljava/lang/String;
-.field csplugins/activeModules/ActivePathsFinderBridge/graphFile Ljava/io/File;
-.field csplugins/activeModules/ActivePathsFinderBridge/activePathsPlugin Lcsplugins/activeModules/ActivePaths;
-.field csplugins/activeModules/ActivePathsFinderBridge/apfParams Lcsplugins/activeModules/data/ActivePathFinderParameters;
-.field csplugins/activeModules/ActivePathsFinderBridge/graph Ly/view/Graph2D;
-.field csplugins/activeModules/ActivePathsFinderBridge/expressionFile Ljava/io/File;
-.method csplugins/activeModules/ActivePathsFinderBridge/setParams (Lcsplugins/activeModules/data/ActivePathFinderParameters;)V
-.method csplugins/activeModules/ActivePathsFinderBridge/getCount ()I
-.method csplugins/activeModules/ActivePathsFinderBridge/progressReport (I)V
-.method csplugins/activeModules/ActivePathsFinderBridge/scoreSelected ()D
-.method csplugins/activeModules/ActivePathsFinderBridge/addPath (D[Ljava/lang/String;[Ljava/lang/String;)V
-.method csplugins/activeModules/ActivePathsFinderBridge/run ()Z
-.method csplugins/activeModules/ActivePathsFinderBridge/clearPaths ()V
-.method csplugins/activeModules/ActivePathsFinderBridge/getPaths ()[Lcsplugins/activeModules/data/ActivePath;
-.class csplugins/activeModules/ExpressionRandomizer
-.field csplugins/activeModules/ExpressionRandomizer/expressionData Lcytoscape/data/ExpressionData;
-.field csplugins/activeModules/ExpressionRandomizer/cytoscapeWindow Lcytoscape/CytoscapeWindow;
-.field csplugins/activeModules/ExpressionRandomizer/randomGenerator Ljava/util/Random;
-.field csplugins/activeModules/ExpressionRandomizer/activePaths Lcsplugins/activeModules/ActivePaths;
-.field csplugins/activeModules/ExpressionRandomizer/nMap Ly/base/NodeMap;
-.field csplugins/activeModules/ExpressionRandomizer/conditionNames [Ljava/lang/String;
-.field csplugins/activeModules/ExpressionRandomizer/apfParams Lcsplugins/activeModules/data/ActivePathFinderParameters;
-.field csplugins/activeModules/ExpressionRandomizer/graph Ly/view/Graph2D;
-.field csplugins/activeModules/ExpressionRandomizer/graphHider Lcytoscape/undo/UndoableGraphHider;
-.method csplugins/activeModules/ExpressionRandomizer/access$000 (Lcsplugins/activeModules/ExpressionRandomizer;)V
-.method csplugins/activeModules/ExpressionRandomizer/describe ()Ljava/lang/String;
-.method csplugins/activeModules/ExpressionRandomizer/access$200 (Lcsplugins/activeModules/ExpressionRandomizer;)V
-.method csplugins/activeModules/ExpressionRandomizer/access$100 (Lcsplugins/activeModules/ExpressionRandomizer;)V
-.method csplugins/activeModules/ExpressionRandomizer/mcLoad ()Z
-.method csplugins/activeModules/ExpressionRandomizer/getMontecarloFile ()Z
-.class csplugins/activeModules/ActivePathViewer
-.method csplugins/activeModules/ActivePathViewer/displayPath (Lcsplugins/activeModules/data/ActivePath;Ljava/lang/String;)V
-.class csplugins/activeModules/ActivePathsCommandLineParser
-.method csplugins/activeModules/ActivePathsCommandLineParser/getActivePathFinderParameters ()Lcsplugins/activeModules/data/ActivePathFinderParameters;
-.method csplugins/activeModules/ActivePathsCommandLineParser/shouldRunActivePaths ()Z
-.method csplugins/activeModules/ActivePathsCommandLineParser/usage ()V
-.method csplugins/activeModules/ActivePathsCommandLineParser/shouldSaveAndExit ()Z
-.method csplugins/activeModules/ActivePathsCommandLineParser/haveInputsError ()Z
-.method csplugins/activeModules/ActivePathsCommandLineParser/activePathParametersPresent ()Z
-.class csplugins/activeModules/ActivePaths
-.field csplugins/activeModules/ActivePaths/graph Ly/view/Graph2D;
-.field csplugins/activeModules/ActivePaths/expressionConditionsMenu Ljavax/swing/JMenu;
-.field csplugins/activeModules/ActivePaths/activePaths [Lcsplugins/activeModules/data/ActivePath;
-.field csplugins/activeModules/ActivePaths/tableDialog Lcsplugins/activeModules/dialogs/ConditionsVsPathwaysTable;
-.field csplugins/activeModules/ActivePaths/showTable Z
-.field csplugins/activeModules/ActivePaths/mainFrame Ljavax/swing/JFrame;
-.field csplugins/activeModules/ActivePaths/activePathsNativeLibraryLoaded Z
-.field csplugins/activeModules/ActivePaths/expressionData Lcytoscape/data/ExpressionData;
-.field csplugins/activeModules/ActivePaths/cytoscapeWindow Lcytoscape/CytoscapeWindow;
-.field csplugins/activeModules/ActivePaths/titleForCurrentSelection Ljava/lang/String;
-.field csplugins/activeModules/ActivePaths/activePathsFindingIsAvailable Z
-.field csplugins/activeModules/ActivePaths/graphHider Ly/util/GraphHider;
-.field csplugins/activeModules/ActivePaths/currentCondition Ljava/lang/String;
-.field csplugins/activeModules/ActivePaths/apfParams Lcsplugins/activeModules/data/ActivePathFinderParameters;
-.field csplugins/activeModules/ActivePaths/conditionNames [Ljava/lang/String;
-.field csplugins/activeModules/ActivePaths/activePathToolbarButton Ljavax/swing/JButton;
-.field csplugins/activeModules/ActivePaths/menubar Ljavax/swing/JMenuBar;
-.field csplugins/activeModules/ActivePaths/finderBridge Lcsplugins/activeModules/ActivePathsFinderBridge;
-.method csplugins/activeModules/ActivePaths/runActivePathsFinder ()V
-.method csplugins/activeModules/ActivePaths/runActivePathsFinder (Lcsplugins/activeModules/data/ActivePathFinderParameters;)V
-.method csplugins/activeModules/ActivePaths/scoreActivePath (Lcsplugins/activeModules/data/ActivePathFinderParameters;)V
-.method csplugins/activeModules/ActivePaths/combinePaths ([Lcsplugins/activeModules/data/ActivePath;)Ljava/util/Vector;
-.method csplugins/activeModules/ActivePaths/displayPath (Lcsplugins/activeModules/data/ActivePath;ZLjava/lang/String;)V
-.method csplugins/activeModules/ActivePaths/addActivePathToolbarButton ()V
-.method csplugins/activeModules/ActivePaths/loadActivePathsNativeLibrary ()Z
-.method csplugins/activeModules/ActivePaths/displayPath (Lcsplugins/activeModules/data/ActivePath;Ljava/lang/String;)V
-.method csplugins/activeModules/ActivePaths/setShowTable (Z)V
-.method csplugins/activeModules/ActivePaths/showConditionsVsPathwaysTable ()V
-.method csplugins/activeModules/ActivePaths/selectActivePathFinderProgressCallback (I)V
-.method csplugins/activeModules/ActivePaths/clearActivePaths ()V
-.method csplugins/activeModules/ActivePaths/getConditionsVsPathwaysTable ()Lcsplugins/activeModules/dialogs/ConditionsVsPathwaysTable;
-.method csplugins/activeModules/ActivePaths/activePathFinderProgressCallback (I)V
-.method csplugins/activeModules/ActivePaths/showNodesByName ([Ljava/lang/String;)V
-.class csplugins/vectormath/MathVectorFactory
-.method csplugins/vectormath/MathVectorFactory/makeVector ([D)Lcsplugins/vectormath/MathVector;
-.method csplugins/vectormath/MathVectorFactory/makeReadOnlyVector (Lcsplugins/vectormath/ReadOnlyVectorDataProvider;)Lcsplugins/vectormath/ReadOnlyMathVector;
-.method csplugins/vectormath/MathVectorFactory/makeVector (Lcsplugins/vectormath/VectorDataProvider;)Lcsplugins/vectormath/MathVector;
-.method csplugins/vectormath/MathVectorFactory/makeReadOnlyVector ([F)Lcsplugins/vectormath/ReadOnlyMathVector;
-.method csplugins/vectormath/MathVectorFactory/makeReadOnlyVector ([D)Lcsplugins/vectormath/ReadOnlyMathVector;
-.method csplugins/vectormath/MathVectorFactory/makeVector ([F)Lcsplugins/vectormath/MathVector;
-.class csplugins/vectormath/VectorDataProvider
-.method csplugins/vectormath/VectorDataProvider/size ()I
-.method csplugins/vectormath/VectorDataProvider/setQuick (ID)V
-.method csplugins/vectormath/VectorDataProvider/getQuick (I)D
-.class csplugins/vectormath/MathVector
-.field csplugins/vectormath/MathVector/p Lcsplugins/vectormath/VectorDataProvider;
-.method csplugins/vectormath/MathVector/pow (D)Lcsplugins/vectormath/MathVector;
-.method csplugins/vectormath/MathVector/times (D)Lcsplugins/vectormath/MathVector;
-.method csplugins/vectormath/MathVector/magDiffSquared (Lcsplugins/vectormath/ReadOnlyMathVector;Lcsplugins/vectormath/ReadOnlyMathVector;)D
-.method csplugins/vectormath/MathVector/add (D)Lcsplugins/vectormath/MathVector;
-.method csplugins/vectormath/MathVector/magSumSquared (Lcsplugins/vectormath/ReadOnlyMathVector;Lcsplugins/vectormath/ReadOnlyMathVector;)D
-.method csplugins/vectormath/MathVector/add (Lcsplugins/vectormath/ReadOnlyMathVector;)Lcsplugins/vectormath/MathVector;
-.method csplugins/vectormath/MathVector/normalize ()Lcsplugins/vectormath/MathVector;
-.method csplugins/vectormath/MathVector/magSum (Lcsplugins/vectormath/ReadOnlyMathVector;Lcsplugins/vectormath/ReadOnlyMathVector;)D
-.method csplugins/vectormath/MathVector/subtract (Lcsplugins/vectormath/ReadOnlyMathVector;)Lcsplugins/vectormath/MathVector;
-.method csplugins/vectormath/MathVector/subtract (D)Lcsplugins/vectormath/MathVector;
-.method csplugins/vectormath/MathVector/setQuick (ID)V
-.method csplugins/vectormath/MathVector/sum (Lcsplugins/vectormath/ReadOnlyMathVector;Lcsplugins/vectormath/ReadOnlyMathVector;)Lcsplugins/vectormath/MathVector;
-.method csplugins/vectormath/MathVector/difference (Lcsplugins/vectormath/ReadOnlyMathVector;Lcsplugins/vectormath/ReadOnlyMathVector;)Lcsplugins/vectormath/MathVector;
-.method csplugins/vectormath/MathVector/magDiff (Lcsplugins/vectormath/ReadOnlyMathVector;Lcsplugins/vectormath/ReadOnlyMathVector;)D
-.method csplugins/vectormath/MathVector/set (ID)V
-.class csplugins/vectormath/VectorDataAdapter
-.method csplugins/vectormath/VectorDataAdapter/setQuick (ID)V
-.class csplugins/vectormath/DoubleArrayDataProvider
-.method csplugins/vectormath/DoubleArrayDataProvider/size ()I
-.method csplugins/vectormath/DoubleArrayDataProvider/setQuick (ID)V
-.method csplugins/vectormath/DoubleArrayDataProvider/getQuick (I)D
-.class csplugins/vectormath/ReadOnlyVectorDataAdapter
-.method csplugins/vectormath/ReadOnlyVectorDataAdapter/size ()I
-.method csplugins/vectormath/ReadOnlyVectorDataAdapter/getQuick (I)D
-.class csplugins/vectormath/FloatArrayDataProvider
-.method csplugins/vectormath/FloatArrayDataProvider/size ()I
-.method csplugins/vectormath/FloatArrayDataProvider/setQuick (ID)V
-.method csplugins/vectormath/FloatArrayDataProvider/getQuick (I)D
-.class csplugins/vectormath/ReadOnlyVectorDataProvider
-.method csplugins/vectormath/ReadOnlyVectorDataProvider/size ()I
-.method csplugins/vectormath/ReadOnlyVectorDataProvider/getQuick (I)D
-.class csplugins/vectormath/ReadOnlyMathVector
-.field csplugins/vectormath/ReadOnlyMathVector/p Lcsplugins/vectormath/ReadOnlyVectorDataProvider;
-.method csplugins/vectormath/ReadOnlyMathVector/dot (Lcsplugins/vectormath/ReadOnlyMathVector;)D
-.method csplugins/vectormath/ReadOnlyMathVector/magSquared ()D
-.method csplugins/vectormath/ReadOnlyMathVector/readOnlyCopy ()Lcsplugins/vectormath/ReadOnlyMathVector;
-.method csplugins/vectormath/ReadOnlyMathVector/mean ()D
-.method csplugins/vectormath/ReadOnlyMathVector/dotNorm (Lcsplugins/vectormath/ReadOnlyMathVector;)D
-.method csplugins/vectormath/ReadOnlyMathVector/getNewDataArray ()[D
-.method csplugins/vectormath/ReadOnlyMathVector/mag ()D
-.method csplugins/vectormath/ReadOnlyMathVector/getQuick (I)D
-.method csplugins/vectormath/ReadOnlyMathVector/correlation (Lcsplugins/vectormath/ReadOnlyMathVector;)D
-.method csplugins/vectormath/ReadOnlyMathVector/size ()I
-.method csplugins/vectormath/ReadOnlyMathVector/toString ()Ljava/lang/String;
-.method csplugins/vectormath/ReadOnlyMathVector/verifySizeMatch (Lcsplugins/vectormath/ReadOnlyMathVector;Lcsplugins/vectormath/ReadOnlyMathVector;)I
-.method csplugins/vectormath/ReadOnlyMathVector/copy ()Lcsplugins/vectormath/MathVector;
-.method csplugins/vectormath/ReadOnlyMathVector/get (I)D
-.method csplugins/vectormath/ReadOnlyMathVector/equals (Lcsplugins/vectormath/ReadOnlyMathVector;D)Z
 .class cytoscape/visual/parsers/ColorParser
 .method cytoscape/visual/parsers/ColorParser/parseColor (Ljava/lang/String;)Ljava/awt/Color;
 .method cytoscape/visual/parsers/ColorParser/parseStringValue (Ljava/lang/String;)Ljava/lang/Object;
@@ -524,21 +183,25 @@
 .class cytoscape/visual/calculators/AbstractCalculator
 .field cytoscape/visual/calculators/AbstractCalculator/name Ljava/lang/String;
 .field cytoscape/visual/calculators/AbstractCalculator/acceptedDataClasses Ljava/util/Vector;
+.field cytoscape/visual/calculators/AbstractCalculator/changeEvent Ljavax/swing/event/ChangeEvent;
+.field cytoscape/visual/calculators/AbstractCalculator/changeListeners Ljava/util/List;
 .field cytoscape/visual/calculators/AbstractCalculator/mappings Ljava/util/Vector;
 .method cytoscape/visual/calculators/AbstractCalculator/getProperties (Ljava/lang/String;)Ljava/util/Properties;
 .method cytoscape/visual/calculators/AbstractCalculator/getUI (Lcytoscape/GraphObjAttributes;Ljavax/swing/JDialog;Lcytoscape/visual/Network;)Ljavax/swing/JPanel;
 .method cytoscape/visual/calculators/AbstractCalculator/setName (Ljava/lang/String;)V
-.method cytoscape/visual/calculators/AbstractCalculator/refreshUI (Ljavax/swing/JDialog;Lcytoscape/visual/Network;)V
 .method cytoscape/visual/calculators/AbstractCalculator/getUI (Ljavax/swing/JDialog;Lcytoscape/visual/Network;)Ljavax/swing/JPanel;
 .method cytoscape/visual/calculators/AbstractCalculator/updateAttribute (Ljava/lang/String;Lcytoscape/visual/Network;Lcytoscape/visual/mappings/ObjectMapping;)V
+.method cytoscape/visual/calculators/AbstractCalculator/fireStateChanged ()V
 .method cytoscape/visual/calculators/AbstractCalculator/updateAttribute (Ljava/lang/String;Lcytoscape/visual/Network;)V
 .method cytoscape/visual/calculators/AbstractCalculator/addMapping (Lcytoscape/visual/mappings/ObjectMapping;)V
 .method cytoscape/visual/calculators/AbstractCalculator/getMapping ()Lcytoscape/visual/mappings/ObjectMapping;
 .method cytoscape/visual/calculators/AbstractCalculator/clone ()Ljava/lang/Object;
 .method cytoscape/visual/calculators/AbstractCalculator/getDupeCount ()I
 .method cytoscape/visual/calculators/AbstractCalculator/toString ()Ljava/lang/String;
+.method cytoscape/visual/calculators/AbstractCalculator/removeChangeListener (Ljavax/swing/event/ChangeListener;)V
 .method cytoscape/visual/calculators/AbstractCalculator/updateAttribute (Ljava/lang/String;Lcytoscape/visual/Network;I)V
 .method cytoscape/visual/calculators/AbstractCalculator/getMappings ()Ljava/util/Vector;
+.method cytoscape/visual/calculators/AbstractCalculator/addChangeListener (Ljavax/swing/event/ChangeListener;)V
 .method cytoscape/visual/calculators/AbstractCalculator/getMapping (I)Lcytoscape/visual/mappings/ObjectMapping;
 .class cytoscape/visual/calculators/GenericEdgeLineTypeCalculator
 .method cytoscape/visual/calculators/GenericEdgeLineTypeCalculator/calculateEdgeLineType (Ly/base/Edge;Lcytoscape/visual/Network;)Ly/view/LineType;
@@ -546,10 +209,10 @@
 .field cytoscape/visual/calculators/GenericEdgeFontSizeCalculator/class$java$lang$Number Ljava/lang/Class;
 .method cytoscape/visual/calculators/GenericEdgeFontSizeCalculator/class$ (Ljava/lang/String;)Ljava/lang/Class;
 .method cytoscape/visual/calculators/GenericEdgeFontSizeCalculator/calculateEdgeFontSize (Ly/base/Edge;Lcytoscape/visual/Network;)F
-.class cytoscape/visual/calculators/GenericNodeLabelCalculator
-.method cytoscape/visual/calculators/GenericNodeLabelCalculator/calculateNodeLabel (Ly/base/Node;Lcytoscape/visual/Network;)Ljava/lang/String;
 .class cytoscape/visual/calculators/EdgeFontSizeCalculator
 .method cytoscape/visual/calculators/EdgeFontSizeCalculator/calculateEdgeFontSize (Ly/base/Edge;Lcytoscape/visual/Network;)F
+.class cytoscape/visual/calculators/GenericNodeLabelCalculator
+.method cytoscape/visual/calculators/GenericNodeLabelCalculator/calculateNodeLabel (Ly/base/Node;Lcytoscape/visual/Network;)Ljava/lang/String;
 .class cytoscape/visual/calculators/GenericNodeColorCalculator
 .method cytoscape/visual/calculators/GenericNodeColorCalculator/calculateNodeColor (Ly/base/Node;Lcytoscape/visual/Network;)Ljava/awt/Color;
 .class cytoscape/visual/calculators/NodeColorCalculator
@@ -585,6 +248,8 @@
 .class cytoscape/visual/calculators/Calculator
 .method cytoscape/visual/calculators/Calculator/getProperties (Ljava/lang/String;)Ljava/util/Properties;
 .method cytoscape/visual/calculators/Calculator/clone ()Ljava/lang/Object;
+.method cytoscape/visual/calculators/Calculator/addChangeListener (Ljavax/swing/event/ChangeListener;)V
+.method cytoscape/visual/calculators/Calculator/removeChangeListener (Ljavax/swing/event/ChangeListener;)V
 .method cytoscape/visual/calculators/Calculator/setName (Ljava/lang/String;)V
 .method cytoscape/visual/calculators/Calculator/toString ()Ljava/lang/String;
 .method cytoscape/visual/calculators/Calculator/getUI (Ljavax/swing/JDialog;Lcytoscape/visual/Network;)Ljavax/swing/JPanel;
@@ -619,7 +284,7 @@
 .method cytoscape/visual/calculators/NodeSizeCalculator/calculateNodeSize (Ly/base/Node;Lcytoscape/visual/Network;)D
 .class cytoscape/visual/ui/VizMapSizeTab
 .method cytoscape/visual/ui/VizMapSizeTab/access$700 (Lcytoscape/visual/ui/VizMapSizeTab;)Lcytoscape/visual/ui/VizMapAttrTab;
-.method cytoscape/visual/ui/VizMapSizeTab/access$900 (Lcytoscape/visual/ui/VizMapSizeTab;)Lcytoscape/visual/ui/VizMapUI;
+.method cytoscape/visual/ui/VizMapSizeTab/visualStyleChanged ()V
 .method cytoscape/visual/ui/VizMapSizeTab/access$200 (Lcytoscape/visual/ui/VizMapSizeTab;)Ljavax/swing/JPanel;
 .method cytoscape/visual/ui/VizMapSizeTab/access$800 (Lcytoscape/visual/ui/VizMapSizeTab;)Ljavax/swing/JPanel;
 .method cytoscape/visual/ui/VizMapSizeTab/checkCalcSelected (Lcytoscape/visual/calculators/Calculator;)Lcytoscape/visual/ui/VizMapTab;
@@ -631,6 +296,7 @@
 .method cytoscape/visual/ui/VizMapSizeTab/refreshUI ()V
 .class cytoscape/visual/ui/VizMapFontTab
 .method cytoscape/visual/ui/VizMapFontTab/checkCalcSelected (Lcytoscape/visual/calculators/Calculator;)Lcytoscape/visual/ui/VizMapTab;
+.method cytoscape/visual/ui/VizMapFontTab/visualStyleChanged ()V
 .method cytoscape/visual/ui/VizMapFontTab/refreshUI ()V
 .class cytoscape/visual/ui/ValueDisplayer
 .field cytoscape/visual/ui/ValueDisplayer/COLOR B
@@ -672,6 +338,7 @@
 .method cytoscape/visual/ui/FontChooser/getFaceComboBox ()Ljavax/swing/JComboBox;
 .method cytoscape/visual/ui/FontChooser/getSelectedFont ()Ljava/awt/Font;
 .class cytoscape/visual/ui/VizMapUI
+.field cytoscape/visual/ui/VizMapUI/VMM Lcytoscape/visual/VisualMappingManager;
 .field cytoscape/visual/ui/VizMapUI/NODE_SHAPE B
 .field cytoscape/visual/ui/VizMapUI/EDGE_FONT_FACE B
 .field cytoscape/visual/ui/VizMapUI/NODE_TOOLTIP B
@@ -680,6 +347,7 @@
 .field cytoscape/visual/ui/VizMapUI/EDGE_LINETYPE B
 .field cytoscape/visual/ui/VizMapUI/EDGE_COLOR B
 .field cytoscape/visual/ui/VizMapUI/EDGE_FONT_SIZE B
+.field cytoscape/visual/ui/VizMapUI/styles Ljava/util/Collection;
 .field cytoscape/visual/ui/VizMapUI/EDGE_TOOLTIP B
 .field cytoscape/visual/ui/VizMapUI/NODE_LABEL B
 .field cytoscape/visual/ui/VizMapUI/NODE_BORDER_COLOR B
@@ -692,18 +360,23 @@
 .field cytoscape/visual/ui/VizMapUI/EDGE_TGTARROW B
 .field cytoscape/visual/ui/VizMapUI/EDGE_SRCARROW B
 .field cytoscape/visual/ui/VizMapUI/NODE_SIZE B
+.field cytoscape/visual/ui/VizMapUI/styleSelector Lcytoscape/visual/ui/VizMapUI$StyleSelector;
 .field cytoscape/visual/ui/VizMapUI/EDGE_LABEL B
 .method cytoscape/visual/ui/VizMapUI/access$400 (Lcytoscape/visual/ui/VizMapUI;)Ljavax/swing/JPanel;
 .method cytoscape/visual/ui/VizMapUI/checkCalcSelected (Lcytoscape/visual/calculators/Calculator;)Lcytoscape/visual/ui/VizMapTab;
+.method cytoscape/visual/ui/VizMapUI/visualStyleChanged ()V
 .method cytoscape/visual/ui/VizMapUI/access$300 (Lcytoscape/visual/ui/VizMapUI;)Ljavax/swing/JPanel;
-.method cytoscape/visual/ui/VizMapUI/access$500 (Lcytoscape/visual/ui/VizMapUI;)Lcytoscape/visual/VisualMappingManager;
+.method cytoscape/visual/ui/VizMapUI/checkCalculatorUsage (Lcytoscape/visual/calculators/Calculator;)Ljava/util/Vector;
+.method cytoscape/visual/ui/VizMapUI/access$500 (Lcytoscape/visual/ui/VizMapUI;)Ljavax/swing/JPanel;
 .method cytoscape/visual/ui/VizMapUI/refreshUI ()V
+.method cytoscape/visual/ui/VizMapUI/getStyleSelector ()Lcytoscape/visual/ui/VizMapUI$StyleSelector;
 .class cytoscape/visual/ui/DefaultPanel
 .method cytoscape/visual/ui/DefaultPanel/access$100 (Lcytoscape/visual/ui/DefaultPanel;)Lcytoscape/visual/ui/ValueDisplayer;
 .method cytoscape/visual/ui/DefaultPanel/access$200 (Lcytoscape/visual/ui/DefaultPanel;)Lcytoscape/visual/VisualMappingManager;
 .class cytoscape/visual/ui/FontRenderer
 .method cytoscape/visual/ui/FontRenderer/getListCellRendererComponent (Ljavax/swing/JList;Ljava/lang/Object;IZZ)Ljava/awt/Component;
 .class cytoscape/visual/ui/VizMapTab
+.method cytoscape/visual/ui/VizMapTab/visualStyleChanged ()V
 .method cytoscape/visual/ui/VizMapTab/checkCalcSelected (Lcytoscape/visual/calculators/Calculator;)Lcytoscape/visual/ui/VizMapTab;
 .method cytoscape/visual/ui/VizMapTab/refreshUI ()V
 .class cytoscape/visual/ui/MiscDialog
@@ -718,10 +391,12 @@
 .method cytoscape/visual/ui/MiscDialog/getLineTypeToStringHashMap ()Ljava/util/HashMap;
 .class cytoscape/visual/ui/VizMapAttrTab
 .field cytoscape/visual/ui/VizMapAttrTab/class$java$lang$Object Ljava/lang/Class;
-.method cytoscape/visual/ui/VizMapAttrTab/access$1400 (Lcytoscape/visual/ui/VizMapAttrTab;)Lcytoscape/visual/ui/ValueDisplayer;
+.field cytoscape/visual/ui/VizMapAttrTab/calcListener Lcytoscape/visual/ui/VizMapAttrTab$CalculatorUIListener;
+.field cytoscape/visual/ui/VizMapAttrTab/tabbedContainer Ljavax/swing/JTabbedPane;
 .method cytoscape/visual/ui/VizMapAttrTab/access$800 (Lcytoscape/visual/ui/VizMapAttrTab;Lcytoscape/visual/calculators/Calculator;)Ljava/lang/String;
 .method cytoscape/visual/ui/VizMapAttrTab/access$1102 (Lcytoscape/visual/ui/VizMapAttrTab;Lcytoscape/visual/calculators/Calculator;)Lcytoscape/visual/calculators/Calculator;
 .method cytoscape/visual/ui/VizMapAttrTab/setDefault (Ljava/lang/Object;)V
+.method cytoscape/visual/ui/VizMapAttrTab/visualStyleChanged ()V
 .method cytoscape/visual/ui/VizMapAttrTab/drawCalc ()V
 .method cytoscape/visual/ui/VizMapAttrTab/access$900 (Lcytoscape/visual/ui/VizMapAttrTab;)B
 .method cytoscape/visual/ui/VizMapAttrTab/_setDefault (Ljava/lang/Object;)V
@@ -735,10 +410,12 @@
 .method cytoscape/visual/ui/VizMapAttrTab/resetCalculatorDisplay ()V
 .method cytoscape/visual/ui/VizMapAttrTab/drawDefault ()V
 .method cytoscape/visual/ui/VizMapAttrTab/class$ (Ljava/lang/String;)Ljava/lang/Class;
+.method cytoscape/visual/ui/VizMapAttrTab/access$1400 (Lcytoscape/visual/ui/VizMapAttrTab;)Lcytoscape/visual/VisualMappingManager;
 .method cytoscape/visual/ui/VizMapAttrTab/access$1300 (Lcytoscape/visual/ui/VizMapAttrTab;)Ljavax/swing/JComboBox;
 .method cytoscape/visual/ui/VizMapAttrTab/access$1000 (Lcytoscape/visual/ui/VizMapAttrTab;)Ljava/lang/Object;
 .method cytoscape/visual/ui/VizMapAttrTab/refreshCalculators ()V
 .method cytoscape/visual/ui/VizMapAttrTab/getTypeName (B)Ljava/lang/String;
+.method cytoscape/visual/ui/VizMapAttrTab/access$1500 (Lcytoscape/visual/ui/VizMapAttrTab;)Lcytoscape/visual/ui/ValueDisplayer;
 .method cytoscape/visual/ui/VizMapAttrTab/setImageIcon ()V
 .method cytoscape/visual/ui/VizMapAttrTab/access$1100 (Lcytoscape/visual/ui/VizMapAttrTab;)Lcytoscape/visual/calculators/Calculator;
 .method cytoscape/visual/ui/VizMapAttrTab/checkCalcSelected (Lcytoscape/visual/calculators/Calculator;)Lcytoscape/visual/ui/VizMapTab;
@@ -757,6 +434,8 @@
 .method cytoscape/visual/mappings/ObjectMapping/applyProperties (Ljava/util/Properties;Ljava/lang/String;Lcytoscape/visual/parsers/ValueParser;)V
 .method cytoscape/visual/mappings/ObjectMapping/clone ()Ljava/lang/Object;
 .method cytoscape/visual/mappings/ObjectMapping/getRangeClass ()Ljava/lang/Class;
+.method cytoscape/visual/mappings/ObjectMapping/removeChangeListener (Ljavax/swing/event/ChangeListener;)V
+.method cytoscape/visual/mappings/ObjectMapping/addChangeListener (Ljavax/swing/event/ChangeListener;)V
 .method cytoscape/visual/mappings/ObjectMapping/getAcceptedDataClasses ()[Ljava/lang/Class;
 .class cytoscape/visual/mappings/LinearNumberToColorInterpolator
 .method cytoscape/visual/mappings/LinearNumberToColorInterpolator/getRangeValue (DLjava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
@@ -780,6 +459,8 @@
 .method cytoscape/visual/mappings/PassThroughMapping/applyProperties (Ljava/util/Properties;Ljava/lang/String;Lcytoscape/visual/parsers/ValueParser;)V
 .method cytoscape/visual/mappings/PassThroughMapping/clone ()Ljava/lang/Object;
 .method cytoscape/visual/mappings/PassThroughMapping/getRangeClass ()Ljava/lang/Class;
+.method cytoscape/visual/mappings/PassThroughMapping/removeChangeListener (Ljavax/swing/event/ChangeListener;)V
+.method cytoscape/visual/mappings/PassThroughMapping/addChangeListener (Ljavax/swing/event/ChangeListener;)V
 .method cytoscape/visual/mappings/PassThroughMapping/getAcceptedDataClasses ()[Ljava/lang/Class;
 .class cytoscape/visual/mappings/Interpolator
 .method cytoscape/visual/mappings/Interpolator/getRangeValue (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
@@ -793,12 +474,16 @@
 .method cytoscape/visual/mappings/NumberInterpolator/getRangeValue (DLjava/lang/Object;DLjava/lang/Object;D)Ljava/lang/Object;
 .method cytoscape/visual/mappings/NumberInterpolator/getRangeValue (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 .class cytoscape/visual/mappings/ContinuousMapping
+.field cytoscape/visual/mappings/ContinuousMapping/changeListeners Ljava/util/Vector;
 .field cytoscape/visual/mappings/ContinuousMapping/rangeClass Ljava/lang/Class;
 .field cytoscape/visual/mappings/ContinuousMapping/class$java$lang$Number Ljava/lang/Class;
 .field cytoscape/visual/mappings/ContinuousMapping/attrName Ljava/lang/String;
+.field cytoscape/visual/mappings/ContinuousMapping/changeEvent Ljavax/swing/event/ChangeEvent;
 .field cytoscape/visual/mappings/ContinuousMapping/defaultObj Ljava/lang/Object;
 .field cytoscape/visual/mappings/ContinuousMapping/fInt Lcytoscape/visual/mappings/Interpolator;
 .field cytoscape/visual/mappings/ContinuousMapping/class$java$awt$Color Ljava/lang/Class;
+.method cytoscape/visual/mappings/ContinuousMapping/fireStateChanged ()V
+.method cytoscape/visual/mappings/ContinuousMapping/addChangeListener (Ljavax/swing/event/ChangeListener;)V
 .method cytoscape/visual/mappings/ContinuousMapping/applyProperties (Ljava/util/Properties;Ljava/lang/String;Lcytoscape/visual/parsers/ValueParser;)V
 .method cytoscape/visual/mappings/ContinuousMapping/clone ()Ljava/lang/Object;
 .method cytoscape/visual/mappings/ContinuousMapping/getUI (Ljavax/swing/JDialog;Lcytoscape/visual/Network;)Ljavax/swing/JPanel;
@@ -812,22 +497,24 @@
 .method cytoscape/visual/mappings/ContinuousMapping/setInterpolator (Lcytoscape/visual/mappings/Interpolator;)V
 .method cytoscape/visual/mappings/ContinuousMapping/access$002 (Lcytoscape/visual/mappings/ContinuousMapping;Z)Z
 .method cytoscape/visual/mappings/ContinuousMapping/getRangeClass ()Ljava/lang/Class;
+.method cytoscape/visual/mappings/ContinuousMapping/removeChangeListener (Ljavax/swing/event/ChangeListener;)V
 .method cytoscape/visual/mappings/ContinuousMapping/getProperties (Ljava/lang/String;)Ljava/util/Properties;
 .method cytoscape/visual/mappings/ContinuousMapping/putAll (Ljava/util/Map;)V
 .class cytoscape/visual/mappings/InterpolatorFactory
 .method cytoscape/visual/mappings/InterpolatorFactory/newInterpolator (Ljava/lang/String;)Lcytoscape/visual/mappings/Interpolator;
 .method cytoscape/visual/mappings/InterpolatorFactory/getName (Lcytoscape/visual/mappings/Interpolator;)Ljava/lang/String;
 .class cytoscape/visual/mappings/DiscreteMapping
+.field cytoscape/visual/mappings/DiscreteMapping/changeListeners Ljava/util/Vector;
 .field cytoscape/visual/mappings/DiscreteMapping/rangeClass Ljava/lang/Class;
 .field cytoscape/visual/mappings/DiscreteMapping/class$java$lang$Number Ljava/lang/Class;
 .field cytoscape/visual/mappings/DiscreteMapping/mapType B
 .field cytoscape/visual/mappings/DiscreteMapping/class$java$lang$String Ljava/lang/Class;
 .field cytoscape/visual/mappings/DiscreteMapping/parentDialog Ljavax/swing/JDialog;
 .field cytoscape/visual/mappings/DiscreteMapping/attrName Ljava/lang/String;
+.field cytoscape/visual/mappings/DiscreteMapping/changeEvent Ljavax/swing/event/ChangeEvent;
 .field cytoscape/visual/mappings/DiscreteMapping/defaultObj Ljava/lang/Object;
 .field cytoscape/visual/mappings/DiscreteMapping/mappedKeys Ljava/util/HashSet;
 .field cytoscape/visual/mappings/DiscreteMapping/listScrollPane Ljavax/swing/JScrollPane;
-.field cytoscape/visual/mappings/DiscreteMapping/gbgInternal Lcytoscape/dialogs/GridBagGroup;
 .method cytoscape/visual/mappings/DiscreteMapping/getProperties (Ljava/lang/String;)Ljava/util/Properties;
 .method cytoscape/visual/mappings/DiscreteMapping/setControllingAttributeName (Ljava/lang/String;Lcytoscape/visual/Network;Z)V
 .method cytoscape/visual/mappings/DiscreteMapping/calculateRangeValue (Ljava/util/Map;)Ljava/lang/Object;
@@ -836,10 +523,13 @@
 .method cytoscape/visual/mappings/DiscreteMapping/getUI (Ljavax/swing/JDialog;Lcytoscape/visual/Network;)Ljavax/swing/JPanel;
 .method cytoscape/visual/mappings/DiscreteMapping/getControllingAttributeName ()Ljava/lang/String;
 .method cytoscape/visual/mappings/DiscreteMapping/putAll (Ljava/util/Map;)V
+.method cytoscape/visual/mappings/DiscreteMapping/fireStateChanged ()V
 .method cytoscape/visual/mappings/DiscreteMapping/put (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 .method cytoscape/visual/mappings/DiscreteMapping/applyProperties (Ljava/util/Properties;Ljava/lang/String;Lcytoscape/visual/parsers/ValueParser;)V
 .method cytoscape/visual/mappings/DiscreteMapping/clone ()Ljava/lang/Object;
 .method cytoscape/visual/mappings/DiscreteMapping/getRangeClass ()Ljava/lang/Class;
+.method cytoscape/visual/mappings/DiscreteMapping/removeChangeListener (Ljavax/swing/event/ChangeListener;)V
+.method cytoscape/visual/mappings/DiscreteMapping/addChangeListener (Ljavax/swing/event/ChangeListener;)V
 .method cytoscape/visual/mappings/DiscreteMapping/getAcceptedDataClasses ()[Ljava/lang/Class;
 .class cytoscape/visual/NodeAppearanceCalculator
 .field cytoscape/visual/NodeAppearanceCalculator/defaultNodeFillColor Ljava/awt/Color;
@@ -919,7 +609,26 @@
 .method cytoscape/visual/NodeAppearanceCalculator/calculateNodeLineType (Ly/base/Node;Lcytoscape/visual/Network;)Ly/view/LineType;
 .method cytoscape/visual/NodeAppearanceCalculator/setNodeFontFaceCalculator (Lcytoscape/visual/calculators/NodeFontFaceCalculator;)V
 .method cytoscape/visual/NodeAppearanceCalculator/calculateNodeFillColor (Ly/base/Node;Lcytoscape/visual/Network;)Ljava/awt/Color;
+.method cytoscape/visual/NodeAppearanceCalculator/clone ()Ljava/lang/Object;
 .method cytoscape/visual/NodeAppearanceCalculator/setDefaultNodeFontFace (Ljava/awt/Font;)V
+.class cytoscape/visual/VisualStyle
+.field cytoscape/visual/VisualStyle/name Ljava/lang/String;
+.field cytoscape/visual/VisualStyle/edgeAC Lcytoscape/visual/EdgeAppearanceCalculator;
+.field cytoscape/visual/VisualStyle/nodeAC Lcytoscape/visual/NodeAppearanceCalculator;
+.field cytoscape/visual/VisualStyle/dupeCount I
+.field cytoscape/visual/VisualStyle/globalAC Lcytoscape/visual/GlobalAppearanceCalculator;
+.method cytoscape/visual/VisualStyle/setNodeAppearanceCalculator (Lcytoscape/visual/NodeAppearanceCalculator;)Lcytoscape/visual/NodeAppearanceCalculator;
+.method cytoscape/visual/VisualStyle/checkConflictingCalculator (Lcytoscape/visual/calculators/Calculator;)Ljava/util/Vector;
+.method cytoscape/visual/VisualStyle/getEdgeAppearanceCalculator ()Lcytoscape/visual/EdgeAppearanceCalculator;
+.method cytoscape/visual/VisualStyle/setName (Ljava/lang/String;)Ljava/lang/String;
+.method cytoscape/visual/VisualStyle/getGlobalAppearanceCalculator ()Lcytoscape/visual/GlobalAppearanceCalculator;
+.method cytoscape/visual/VisualStyle/setGlobalAppearanceCalculator (Lcytoscape/visual/GlobalAppearanceCalculator;)Lcytoscape/visual/GlobalAppearanceCalculator;
+.method cytoscape/visual/VisualStyle/getNodeAppearanceCalculator ()Lcytoscape/visual/NodeAppearanceCalculator;
+.method cytoscape/visual/VisualStyle/setEdgeAppearanceCalculator (Lcytoscape/visual/EdgeAppearanceCalculator;)Lcytoscape/visual/EdgeAppearanceCalculator;
+.method cytoscape/visual/VisualStyle/getName ()Ljava/lang/String;
+.method cytoscape/visual/VisualStyle/clone ()Ljava/lang/Object;
+.method cytoscape/visual/VisualStyle/getDupeCount ()I
+.method cytoscape/visual/VisualStyle/toString ()Ljava/lang/String;
 .class cytoscape/visual/EdgeAppearance
 .field cytoscape/visual/EdgeAppearance/font Ljava/awt/Font;
 .field cytoscape/visual/EdgeAppearance/color Ljava/awt/Color;
@@ -969,6 +678,7 @@
 .field cytoscape/visual/CalculatorIO/nodeToolTipBaseKey Ljava/lang/String;
 .field cytoscape/visual/CalculatorIO/nodeLabelBaseKey Ljava/lang/String;
 .field cytoscape/visual/CalculatorIO/edgeColorBaseKey Ljava/lang/String;
+.field cytoscape/visual/CalculatorIO/globalAppearanceBaseKey Ljava/lang/String;
 .field cytoscape/visual/CalculatorIO/edgeColorClassName Ljava/lang/String;
 .field cytoscape/visual/CalculatorIO/nodeFontSizeBaseKey Ljava/lang/String;
 .field cytoscape/visual/CalculatorIO/edgeLabelBaseKey Ljava/lang/String;
@@ -986,6 +696,13 @@
 .class cytoscape/visual/PropertiesTester
 .method cytoscape/visual/PropertiesTester/main ([Ljava/lang/String;)V
 .method cytoscape/visual/PropertiesTester/checkCalculator (Lcytoscape/visual/calculators/Calculator;)V
+.class cytoscape/visual/GlobalAppearance
+.field cytoscape/visual/GlobalAppearance/sloppySelectionColor Ljava/awt/Color;
+.field cytoscape/visual/GlobalAppearance/backgroundColor Ljava/awt/Color;
+.method cytoscape/visual/GlobalAppearance/getSloppySelectionColor ()Ljava/awt/Color;
+.method cytoscape/visual/GlobalAppearance/getBackgroundColor ()Ljava/awt/Color;
+.method cytoscape/visual/GlobalAppearance/setSloppySelectionColor (Ljava/awt/Color;)V
+.method cytoscape/visual/GlobalAppearance/setBackgroundColor (Ljava/awt/Color;)V
 .class cytoscape/visual/NodeAppearance
 .field cytoscape/visual/NodeAppearance/toolTip Ljava/lang/String;
 .field cytoscape/visual/NodeAppearance/fillColor Ljava/awt/Color;
@@ -1014,24 +731,38 @@
 .method cytoscape/visual/NodeAppearance/getShape ()B
 .method cytoscape/visual/NodeAppearance/getFont ()Ljava/awt/Font;
 .method cytoscape/visual/NodeAppearance/setFont (Ljava/awt/Font;)V
+.class cytoscape/visual/GlobalAppearanceCalculator
+.field cytoscape/visual/GlobalAppearanceCalculator/defaultSloppySelectionColor Ljava/awt/Color;
+.field cytoscape/visual/GlobalAppearanceCalculator/defaultBackgroundColor Ljava/awt/Color;
+.method cytoscape/visual/GlobalAppearanceCalculator/getProperties (Ljava/lang/String;)Ljava/util/Properties;
+.method cytoscape/visual/GlobalAppearanceCalculator/calculateBackgroundColor (Lcytoscape/visual/Network;)Ljava/awt/Color;
+.method cytoscape/visual/GlobalAppearanceCalculator/setDefaultSloppySelectionColor (Ljava/awt/Color;)V
+.method cytoscape/visual/GlobalAppearanceCalculator/calculateGlobalAppearance (Lcytoscape/visual/GlobalAppearance;Lcytoscape/visual/Network;)V
+.method cytoscape/visual/GlobalAppearanceCalculator/calculateGlobalAppearance (Lcytoscape/visual/Network;)Lcytoscape/visual/GlobalAppearance;
+.method cytoscape/visual/GlobalAppearanceCalculator/getDefaultSloppySelectionColor ()Ljava/awt/Color;
+.method cytoscape/visual/GlobalAppearanceCalculator/getDescription ()Ljava/lang/String;
+.method cytoscape/visual/GlobalAppearanceCalculator/clone ()Ljava/lang/Object;
+.method cytoscape/visual/GlobalAppearanceCalculator/getDefaultBackgroundColor ()Ljava/awt/Color;
+.method cytoscape/visual/GlobalAppearanceCalculator/calculateSloppySelectionColor (Lcytoscape/visual/Network;)Ljava/awt/Color;
+.method cytoscape/visual/GlobalAppearanceCalculator/setDefaultBackgroundColor (Ljava/awt/Color;)V
+.method cytoscape/visual/GlobalAppearanceCalculator/applyProperties (Ljava/lang/String;Ljava/util/Properties;Ljava/lang/String;Lcytoscape/visual/CalculatorCatalog;)V
 .class cytoscape/visual/VisualMappingManager
-.field cytoscape/visual/VisualMappingManager/nodeAppearanceCalculator Lcytoscape/visual/NodeAppearanceCalculator;
 .field cytoscape/visual/VisualMappingManager/catalog Lcytoscape/visual/CalculatorCatalog;
 .field cytoscape/visual/VisualMappingManager/cytoscapeWindow Lcytoscape/CytoscapeWindow;
 .field cytoscape/visual/VisualMappingManager/network Lcytoscape/visual/Network;
-.field cytoscape/visual/VisualMappingManager/edgeAppearanceCalculator Lcytoscape/visual/EdgeAppearanceCalculator;
-.method cytoscape/visual/VisualMappingManager/getCalculatorCatalog ()Lcytoscape/visual/CalculatorCatalog;
-.method cytoscape/visual/VisualMappingManager/getEdgeAppearanceCalculator ()Lcytoscape/visual/EdgeAppearanceCalculator;
-.method cytoscape/visual/VisualMappingManager/setNodeAppearanceCalculator (Lcytoscape/visual/NodeAppearanceCalculator;)V
-.method cytoscape/visual/VisualMappingManager/setEdgeAppearanceCalculator (Lcytoscape/visual/EdgeAppearanceCalculator;)V
-.method cytoscape/visual/VisualMappingManager/applyAppearances ()V
-.method cytoscape/visual/VisualMappingManager/getNetwork ()Lcytoscape/visual/Network;
-.method cytoscape/visual/VisualMappingManager/getNodeAppearanceCalculator ()Lcytoscape/visual/NodeAppearanceCalculator;
-.method cytoscape/visual/VisualMappingManager/setNodeAppearanceCalculator (Ljava/lang/String;)V
-.method cytoscape/visual/VisualMappingManager/setEdgeAppearanceCalculator (Ljava/lang/String;)V
+.field cytoscape/visual/VisualMappingManager/visualStyle Lcytoscape/visual/VisualStyle;
+.method cytoscape/visual/VisualMappingManager/setVisualStyle (Lcytoscape/visual/VisualStyle;)Lcytoscape/visual/VisualStyle;
 .method cytoscape/visual/VisualMappingManager/getCytoscapeWindow ()Lcytoscape/CytoscapeWindow;
+.method cytoscape/visual/VisualMappingManager/applyAppearances ()V
+.method cytoscape/visual/VisualMappingManager/setVisualStyle (Ljava/lang/String;)Lcytoscape/visual/VisualStyle;
+.method cytoscape/visual/VisualMappingManager/getCalculatorCatalog ()Lcytoscape/visual/CalculatorCatalog;
+.method cytoscape/visual/VisualMappingManager/getNetwork ()Lcytoscape/visual/Network;
+.method cytoscape/visual/VisualMappingManager/getVisualStyle ()Lcytoscape/visual/VisualStyle;
 .class cytoscape/visual/Network
 .field cytoscape/visual/Network/cytoscapeWindow Lcytoscape/CytoscapeWindow;
+.field cytoscape/visual/Network/graph Ly/view/Graph2D;
+.field cytoscape/visual/Network/edgeAttributes Lcytoscape/GraphObjAttributes;
+.field cytoscape/visual/Network/nodeAttributes Lcytoscape/GraphObjAttributes;
 .method cytoscape/visual/Network/getNodeAttributes ()Lcytoscape/GraphObjAttributes;
 .method cytoscape/visual/Network/getEdgeAttributes ()Lcytoscape/GraphObjAttributes;
 .method cytoscape/visual/Network/getGraph ()Ly/view/Graph2D;
@@ -1113,53 +844,50 @@
 .method cytoscape/visual/EdgeAppearanceCalculator/setEdgeFontFaceCalculator (Lcytoscape/visual/calculators/EdgeFontFaceCalculator;)V
 .method cytoscape/visual/EdgeAppearanceCalculator/setDefaultEdgeFontSize (F)V
 .method cytoscape/visual/EdgeAppearanceCalculator/calculateEdgeToolTip (Ly/base/Edge;Lcytoscape/visual/Network;)Ljava/lang/String;
+.method cytoscape/visual/EdgeAppearanceCalculator/clone ()Ljava/lang/Object;
 .class cytoscape/visual/CalculatorCatalog
-.field cytoscape/visual/CalculatorCatalog/nodeToolTipListeners Ljava/util/List;
-.field cytoscape/visual/CalculatorCatalog/nodeLineTypeListeners Ljava/util/List;
-.field cytoscape/visual/CalculatorCatalog/edgeLineTypeListeners Ljava/util/List;
-.field cytoscape/visual/CalculatorCatalog/nodeLineTypeCalculators Ljava/util/Map;
-.field cytoscape/visual/CalculatorCatalog/edgeLabelCalculators Ljava/util/Map;
-.field cytoscape/visual/CalculatorCatalog/nodeFontSizeListeners Ljava/util/List;
-.field cytoscape/visual/CalculatorCatalog/nodeLabelCalculators Ljava/util/Map;
-.field cytoscape/visual/CalculatorCatalog/edgeFontSizeListeners Ljava/util/List;
-.field cytoscape/visual/CalculatorCatalog/edgeFontSizeCalculators Ljava/util/Map;
-.field cytoscape/visual/CalculatorCatalog/nodeSizeCalculators Ljava/util/Map;
-.field cytoscape/visual/CalculatorCatalog/nodeShapeCalculators Ljava/util/Map;
-.field cytoscape/visual/CalculatorCatalog/edgeFontFaceCalculators Ljava/util/Map;
-.field cytoscape/visual/CalculatorCatalog/nodeShapeListeners Ljava/util/List;
-.field cytoscape/visual/CalculatorCatalog/nodeFontSizeCalculators Ljava/util/Map;
-.field cytoscape/visual/CalculatorCatalog/nodeSizeListeners Ljava/util/List;
-.field cytoscape/visual/CalculatorCatalog/nodeFontFaceCalculators Ljava/util/Map;
-.field cytoscape/visual/CalculatorCatalog/edgeArrowCalculators Ljava/util/Map;
-.field cytoscape/visual/CalculatorCatalog/nodeLabelListeners Ljava/util/List;
+.field cytoscape/visual/CalculatorCatalog/visualStyles Ljava/util/Map;
 .field cytoscape/visual/CalculatorCatalog/edgeColorCalculators Ljava/util/Map;
-.field cytoscape/visual/CalculatorCatalog/nodeColorCalculators Ljava/util/Map;
-.field cytoscape/visual/CalculatorCatalog/mappers Ljava/util/Map;
-.field cytoscape/visual/CalculatorCatalog/class$cytoscape$visual$mappings$ObjectMapping Ljava/lang/Class;
-.field cytoscape/visual/CalculatorCatalog/nodeFontFaceListeners Ljava/util/List;
+.field cytoscape/visual/CalculatorCatalog/edgeFontSizeCalculators Ljava/util/Map;
 .field cytoscape/visual/CalculatorCatalog/edgeFontFaceListeners Ljava/util/List;
-.field cytoscape/visual/CalculatorCatalog/edgeToolTipCalculators Ljava/util/Map;
-.field cytoscape/visual/CalculatorCatalog/nodeToolTipCalculators Ljava/util/Map;
-.field cytoscape/visual/CalculatorCatalog/nodeColorListeners Ljava/util/List;
-.field cytoscape/visual/CalculatorCatalog/edgeAppearanceListeners Ljava/util/List;
-.field cytoscape/visual/CalculatorCatalog/edgeLabelListeners Ljava/util/List;
-.field cytoscape/visual/CalculatorCatalog/nodeAppearanceListeners Ljava/util/List;
-.field cytoscape/visual/CalculatorCatalog/nodeAppearanceCalculators Ljava/util/Map;
-.field cytoscape/visual/CalculatorCatalog/edgeLineTypeCalculators Ljava/util/Map;
-.field cytoscape/visual/CalculatorCatalog/changeEvent Ljavax/swing/event/ChangeEvent;
-.field cytoscape/visual/CalculatorCatalog/edgeArrowListeners Ljava/util/List;
-.field cytoscape/visual/CalculatorCatalog/edgeAppearanceCalculators Ljava/util/Map;
-.field cytoscape/visual/CalculatorCatalog/edgeColorListeners Ljava/util/List;
 .field cytoscape/visual/CalculatorCatalog/edgeToolTipListeners Ljava/util/List;
+.field cytoscape/visual/CalculatorCatalog/nodeFontSizeCalculators Ljava/util/Map;
+.field cytoscape/visual/CalculatorCatalog/nodeShapeListeners Ljava/util/List;
+.field cytoscape/visual/CalculatorCatalog/edgeLabelCalculators Ljava/util/Map;
+.field cytoscape/visual/CalculatorCatalog/edgeColorListeners Ljava/util/List;
+.field cytoscape/visual/CalculatorCatalog/nodeToolTipCalculators Ljava/util/Map;
+.field cytoscape/visual/CalculatorCatalog/edgeLabelListeners Ljava/util/List;
+.field cytoscape/visual/CalculatorCatalog/nodeFontFaceListeners Ljava/util/List;
+.field cytoscape/visual/CalculatorCatalog/mappers Ljava/util/Map;
+.field cytoscape/visual/CalculatorCatalog/nodeFontFaceCalculators Ljava/util/Map;
+.field cytoscape/visual/CalculatorCatalog/nodeColorListeners Ljava/util/List;
+.field cytoscape/visual/CalculatorCatalog/class$cytoscape$visual$mappings$ObjectMapping Ljava/lang/Class;
+.field cytoscape/visual/CalculatorCatalog/nodeLabelListeners Ljava/util/List;
+.field cytoscape/visual/CalculatorCatalog/nodeToolTipListeners Ljava/util/List;
+.field cytoscape/visual/CalculatorCatalog/edgeFontSizeListeners Ljava/util/List;
+.field cytoscape/visual/CalculatorCatalog/nodeLabelCalculators Ljava/util/Map;
+.field cytoscape/visual/CalculatorCatalog/edgeToolTipCalculators Ljava/util/Map;
+.field cytoscape/visual/CalculatorCatalog/nodeFontSizeListeners Ljava/util/List;
+.field cytoscape/visual/CalculatorCatalog/edgeLineTypeCalculators Ljava/util/Map;
+.field cytoscape/visual/CalculatorCatalog/nodeLineTypeCalculators Ljava/util/Map;
+.field cytoscape/visual/CalculatorCatalog/edgeFontFaceCalculators Ljava/util/Map;
+.field cytoscape/visual/CalculatorCatalog/edgeArrowListeners Ljava/util/List;
+.field cytoscape/visual/CalculatorCatalog/nodeColorCalculators Ljava/util/Map;
+.field cytoscape/visual/CalculatorCatalog/nodeShapeCalculators Ljava/util/Map;
+.field cytoscape/visual/CalculatorCatalog/edgeLineTypeListeners Ljava/util/List;
+.field cytoscape/visual/CalculatorCatalog/nodeSizeCalculators Ljava/util/Map;
+.field cytoscape/visual/CalculatorCatalog/changeEvent Ljavax/swing/event/ChangeEvent;
+.field cytoscape/visual/CalculatorCatalog/edgeArrowCalculators Ljava/util/Map;
+.field cytoscape/visual/CalculatorCatalog/nodeSizeListeners Ljava/util/List;
+.field cytoscape/visual/CalculatorCatalog/nodeLineTypeListeners Ljava/util/List;
 .method cytoscape/visual/CalculatorCatalog/checkCalculatorName (Ljava/lang/String;B)Ljava/lang/String;
+.method cytoscape/visual/CalculatorCatalog/getVisualStyle (Ljava/lang/String;)Lcytoscape/visual/VisualStyle;
 .method cytoscape/visual/CalculatorCatalog/getNodeShapeCalculator (Ljava/lang/String;)Lcytoscape/visual/calculators/NodeShapeCalculator;
 .method cytoscape/visual/CalculatorCatalog/removeNodeLineTypeCalculator (Ljava/lang/String;)Lcytoscape/visual/calculators/NodeLineTypeCalculator;
 .method cytoscape/visual/CalculatorCatalog/getNodeLineTypeCalculator (Ljava/lang/String;)Lcytoscape/visual/calculators/NodeLineTypeCalculator;
 .method cytoscape/visual/CalculatorCatalog/removeNodeToolTipCalculator (Ljava/lang/String;)Lcytoscape/visual/calculators/NodeToolTipCalculator;
 .method cytoscape/visual/CalculatorCatalog/getNodeToolTipCalculators ()Ljava/util/Collection;
 .method cytoscape/visual/CalculatorCatalog/addEdgeLabelCalculator (Lcytoscape/visual/calculators/EdgeLabelCalculator;)V
-.method cytoscape/visual/CalculatorCatalog/getNodeAppearanceCalculator (Ljava/lang/String;)Lcytoscape/visual/NodeAppearanceCalculator;
-.method cytoscape/visual/CalculatorCatalog/getNodeAppearanceCalculatorNames ()Ljava/util/Set;
 .method cytoscape/visual/CalculatorCatalog/addEdgeFontFaceCalculator (Lcytoscape/visual/calculators/EdgeFontFaceCalculator;)V
 .method cytoscape/visual/CalculatorCatalog/getEdgeColorCalculators ()Ljava/util/Collection;
 .method cytoscape/visual/CalculatorCatalog/addEdgeColorCalculator (Lcytoscape/visual/calculators/EdgeColorCalculator;)V
@@ -1170,32 +898,29 @@
 .method cytoscape/visual/CalculatorCatalog/removeEdgeArrowCalculator (Ljava/lang/String;)Lcytoscape/visual/calculators/EdgeArrowCalculator;
 .method cytoscape/visual/CalculatorCatalog/checkEdgeLineTypeCalculatorName (Ljava/lang/String;)Ljava/lang/String;
 .method cytoscape/visual/CalculatorCatalog/addNodeToolTipCalculator (Lcytoscape/visual/calculators/NodeToolTipCalculator;)V
-.method cytoscape/visual/CalculatorCatalog/checkNodeAppearanceCalculatorName (Ljava/lang/String;)Ljava/lang/String;
 .method cytoscape/visual/CalculatorCatalog/addNodeShapeCalculator (Lcytoscape/visual/calculators/NodeShapeCalculator;)V
 .method cytoscape/visual/CalculatorCatalog/removeEdgeColorCalculator (Ljava/lang/String;)Lcytoscape/visual/calculators/EdgeColorCalculator;
 .method cytoscape/visual/CalculatorCatalog/removeNodeFontFaceCalculator (Ljava/lang/String;)Lcytoscape/visual/calculators/NodeFontFaceCalculator;
 .method cytoscape/visual/CalculatorCatalog/removeEdgeLabelCalculator (Ljava/lang/String;)Lcytoscape/visual/calculators/EdgeLabelCalculator;
 .method cytoscape/visual/CalculatorCatalog/removeNodeFontSizeCalculator (Ljava/lang/String;)Lcytoscape/visual/calculators/NodeFontSizeCalculator;
-.method cytoscape/visual/CalculatorCatalog/checkEdgeAppearanceCalculatorName (Ljava/lang/String;)Ljava/lang/String;
 .method cytoscape/visual/CalculatorCatalog/checkEdgeToolTipCalculatorName (Ljava/lang/String;)Ljava/lang/String;
 .method cytoscape/visual/CalculatorCatalog/getEdgeLineTypeCalculator (Ljava/lang/String;)Lcytoscape/visual/calculators/EdgeLineTypeCalculator;
 .method cytoscape/visual/CalculatorCatalog/removeEdgeLineTypeCalculator (Ljava/lang/String;)Lcytoscape/visual/calculators/EdgeLineTypeCalculator;
 .method cytoscape/visual/CalculatorCatalog/getEdgeLabelCalculators ()Ljava/util/Collection;
+.method cytoscape/visual/CalculatorCatalog/removeVisualStyle (Ljava/lang/String;)Lcytoscape/visual/VisualStyle;
 .method cytoscape/visual/CalculatorCatalog/removeNodeColorCalculator (Ljava/lang/String;)Lcytoscape/visual/calculators/NodeColorCalculator;
 .method cytoscape/visual/CalculatorCatalog/removeNodeLabelCalculator (Ljava/lang/String;)Lcytoscape/visual/calculators/NodeLabelCalculator;
 .method cytoscape/visual/CalculatorCatalog/checkEdgeColorCalculatorName (Ljava/lang/String;)Ljava/lang/String;
 .method cytoscape/visual/CalculatorCatalog/getNodeToolTipCalculator (Ljava/lang/String;)Lcytoscape/visual/calculators/NodeToolTipCalculator;
-.method cytoscape/visual/CalculatorCatalog/getEdgeColorCalculator (Ljava/lang/String;)Lcytoscape/visual/calculators/EdgeColorCalculator;
 .method cytoscape/visual/CalculatorCatalog/checkNodeLineTypeCalculatorName (Ljava/lang/String;)Ljava/lang/String;
+.method cytoscape/visual/CalculatorCatalog/getEdgeColorCalculator (Ljava/lang/String;)Lcytoscape/visual/calculators/EdgeColorCalculator;
 .method cytoscape/visual/CalculatorCatalog/getEdgeLabelCalculator (Ljava/lang/String;)Lcytoscape/visual/calculators/EdgeLabelCalculator;
 .method cytoscape/visual/CalculatorCatalog/getNodeFontFaceCalculator (Ljava/lang/String;)Lcytoscape/visual/calculators/NodeFontFaceCalculator;
 .method cytoscape/visual/CalculatorCatalog/getNodeSizeCalculators ()Ljava/util/Collection;
 .method cytoscape/visual/CalculatorCatalog/getNodeFontSizeCalculator (Ljava/lang/String;)Lcytoscape/visual/calculators/NodeFontSizeCalculator;
 .method cytoscape/visual/CalculatorCatalog/getNodeShapeCalculators ()Ljava/util/Collection;
-.method cytoscape/visual/CalculatorCatalog/getNodeAppearanceCalculators ()Ljava/util/Collection;
 .method cytoscape/visual/CalculatorCatalog/addEdgeLineTypeCalculator (Lcytoscape/visual/calculators/EdgeLineTypeCalculator;)V
 .method cytoscape/visual/CalculatorCatalog/removeEdgeToolTipCalculator (Ljava/lang/String;)Lcytoscape/visual/calculators/EdgeToolTipCalculator;
-.method cytoscape/visual/CalculatorCatalog/getEdgeAppearanceCalculator (Ljava/lang/String;)Lcytoscape/visual/EdgeAppearanceCalculator;
 .method cytoscape/visual/CalculatorCatalog/getMappingNames ()Ljava/util/Set;
 .method cytoscape/visual/CalculatorCatalog/getNodeColorCalculator (Ljava/lang/String;)Lcytoscape/visual/calculators/NodeColorCalculator;
 .method cytoscape/visual/CalculatorCatalog/checkEdgeLabelCalculatorName (Ljava/lang/String;)Ljava/lang/String;
@@ -1206,7 +931,6 @@
 .method cytoscape/visual/CalculatorCatalog/removeEdgeFontFaceCalculator (Ljava/lang/String;)Lcytoscape/visual/calculators/EdgeFontFaceCalculator;
 .method cytoscape/visual/CalculatorCatalog/removeEdgeFontSizeCalculator (Ljava/lang/String;)Lcytoscape/visual/calculators/EdgeFontSizeCalculator;
 .method cytoscape/visual/CalculatorCatalog/removeCalculator (Lcytoscape/visual/calculators/Calculator;)V
-.method cytoscape/visual/CalculatorCatalog/addEdgeAppearanceCalculator (Ljava/lang/String;Lcytoscape/visual/EdgeAppearanceCalculator;)V
 .method cytoscape/visual/CalculatorCatalog/getNodeSizeCalculator (Ljava/lang/String;)Lcytoscape/visual/calculators/NodeSizeCalculator;
 .method cytoscape/visual/CalculatorCatalog/getEdgeArrowCalculators ()Ljava/util/Collection;
 .method cytoscape/visual/CalculatorCatalog/checkNodeColorCalculatorName (Ljava/lang/String;)Ljava/lang/String;
@@ -1214,16 +938,17 @@
 .method cytoscape/visual/CalculatorCatalog/getMapping (Ljava/lang/String;)Ljava/lang/Class;
 .method cytoscape/visual/CalculatorCatalog/fireStateChanged (B)V
 .method cytoscape/visual/CalculatorCatalog/addCalculator (Lcytoscape/visual/calculators/Calculator;Ljava/util/Map;)V
-.method cytoscape/visual/CalculatorCatalog/removeNodeAppearanceCalculator (Ljava/lang/String;)Lcytoscape/visual/NodeAppearanceCalculator;
 .method cytoscape/visual/CalculatorCatalog/checkEdgeFontSizeCalculatorName (Ljava/lang/String;)Ljava/lang/String;
 .method cytoscape/visual/CalculatorCatalog/checkNodeToolTipCalculatorName (Ljava/lang/String;)Ljava/lang/String;
 .method cytoscape/visual/CalculatorCatalog/getEdgeToolTipCalculator (Ljava/lang/String;)Lcytoscape/visual/calculators/EdgeToolTipCalculator;
 .method cytoscape/visual/CalculatorCatalog/checkNodeLabelCalculatorName (Ljava/lang/String;)Ljava/lang/String;
+.method cytoscape/visual/CalculatorCatalog/addVisualStyle (Lcytoscape/visual/VisualStyle;)V
 .method cytoscape/visual/CalculatorCatalog/checkNodeShapeCalculatorName (Ljava/lang/String;)Ljava/lang/String;
 .method cytoscape/visual/CalculatorCatalog/getEdgeToolTipCalculators ()Ljava/util/Collection;
 .method cytoscape/visual/CalculatorCatalog/addNodeFontFaceCalculator (Lcytoscape/visual/calculators/NodeFontFaceCalculator;)V
 .method cytoscape/visual/CalculatorCatalog/class$ (Ljava/lang/String;)Ljava/lang/Class;
 .method cytoscape/visual/CalculatorCatalog/getNodeColorCalculators ()Ljava/util/Collection;
+.method cytoscape/visual/CalculatorCatalog/getVisualStyleNames ()Ljava/util/Set;
 .method cytoscape/visual/CalculatorCatalog/getEdgeFontFaceCalculators ()Ljava/util/Collection;
 .method cytoscape/visual/CalculatorCatalog/getNodeLineTypeCalculators ()Ljava/util/Collection;
 .method cytoscape/visual/CalculatorCatalog/getNodeFontFaceCalculators ()Ljava/util/Collection;
@@ -1233,19 +958,18 @@
 .method cytoscape/visual/CalculatorCatalog/addNodeLabelCalculator (Lcytoscape/visual/calculators/NodeLabelCalculator;)V
 .method cytoscape/visual/CalculatorCatalog/getListenerList (B)Ljava/util/List;
 .method cytoscape/visual/CalculatorCatalog/addNodeLineTypeCalculator (Lcytoscape/visual/calculators/NodeLineTypeCalculator;)V
-.method cytoscape/visual/CalculatorCatalog/getEdgeAppearanceCalculatorNames ()Ljava/util/Set;
 .method cytoscape/visual/CalculatorCatalog/checkEdgeArrowCalculatorName (Ljava/lang/String;)Ljava/lang/String;
 .method cytoscape/visual/CalculatorCatalog/renameCalculator (Lcytoscape/visual/calculators/Calculator;Ljava/lang/String;)V
 .method cytoscape/visual/CalculatorCatalog/addEdgeArrowCalculator (Lcytoscape/visual/calculators/EdgeArrowCalculator;)V
+.method cytoscape/visual/CalculatorCatalog/getVisualStyles ()Ljava/util/Collection;
 .method cytoscape/visual/CalculatorCatalog/getEdgeLineTypeCalculators ()Ljava/util/Collection;
 .method cytoscape/visual/CalculatorCatalog/checkNodeSizeCalculatorName (Ljava/lang/String;)Ljava/lang/String;
 .method cytoscape/visual/CalculatorCatalog/addCalculator (Lcytoscape/visual/calculators/Calculator;)V
 .method cytoscape/visual/CalculatorCatalog/checkMappingName (Ljava/lang/String;)Ljava/lang/String;
-.method cytoscape/visual/CalculatorCatalog/getEdgeAppearanceCalculators ()Ljava/util/Collection;
 .method cytoscape/visual/CalculatorCatalog/checkName (Ljava/lang/String;Ljava/util/Map;)Ljava/lang/String;
+.method cytoscape/visual/CalculatorCatalog/checkVisualStyleName (Ljava/lang/String;)Ljava/lang/String;
 .method cytoscape/visual/CalculatorCatalog/addEdgeToolTipCalculator (Lcytoscape/visual/calculators/EdgeToolTipCalculator;)V
 .method cytoscape/visual/CalculatorCatalog/addMapping (Ljava/lang/String;Ljava/lang/Class;)V
-.method cytoscape/visual/CalculatorCatalog/addNodeAppearanceCalculator (Ljava/lang/String;Lcytoscape/visual/NodeAppearanceCalculator;)V
 .method cytoscape/visual/CalculatorCatalog/getCalculatorMap (B)Ljava/util/Map;
 .method cytoscape/visual/CalculatorCatalog/removeNodeShapeCalculator (Ljava/lang/String;)Lcytoscape/visual/calculators/NodeShapeCalculator;
 .method cytoscape/visual/CalculatorCatalog/addEdgeFontSizeCalculator (Lcytoscape/visual/calculators/EdgeFontSizeCalculator;)V
@@ -1253,7 +977,6 @@
 .method cytoscape/visual/CalculatorCatalog/getNodeLabelCalculators ()Ljava/util/Collection;
 .method cytoscape/visual/CalculatorCatalog/checkEdgeFontFaceCalculatorName (Ljava/lang/String;)Ljava/lang/String;
 .method cytoscape/visual/CalculatorCatalog/removeNodeSizeCalculator (Ljava/lang/String;)Lcytoscape/visual/calculators/NodeSizeCalculator;
-.method cytoscape/visual/CalculatorCatalog/removeEdgeAppearanceCalculator (Ljava/lang/String;)Lcytoscape/visual/EdgeAppearanceCalculator;
 .method cytoscape/visual/CalculatorCatalog/checkNodeFontFaceCalculatorName (Ljava/lang/String;)Ljava/lang/String;
 .class cytoscape/dialogs/ShrinkExpandGraph
 .field cytoscape/dialogs/ShrinkExpandGraph/m D
@@ -1273,13 +996,15 @@
 .class cytoscape/dialogs/ColorScaleTable
 .field cytoscape/dialogs/ColorScaleTable/class$java$awt$Color Ljava/lang/Class;
 .method cytoscape/dialogs/ColorScaleTable/class$ (Ljava/lang/String;)Ljava/lang/Class;
+.class cytoscape/dialogs/GeneralColorDialogListener
+.method cytoscape/dialogs/GeneralColorDialogListener/popup ()V
+.method cytoscape/dialogs/GeneralColorDialogListener/actionPerformed (Ljava/awt/event/ActionEvent;)V
 .class cytoscape/dialogs/GridBagGroup
 .field cytoscape/dialogs/GridBagGroup/panel Ljavax/swing/JPanel;
 .field cytoscape/dialogs/GridBagGroup/constraints Ljava/awt/GridBagConstraints;
 .field cytoscape/dialogs/GridBagGroup/gridbag Ljava/awt/GridBagLayout;
-.class cytoscape/dialogs/GeneralColorDialogListener
-.method cytoscape/dialogs/GeneralColorDialogListener/popup ()V
-.method cytoscape/dialogs/GeneralColorDialogListener/actionPerformed (Ljava/awt/event/ActionEvent;)V
+.class cytoscape/dialogs/RotateSelectionDialog
+.field cytoscape/dialogs/RotateSelectionDialog/thisDialog Ljavax/swing/JDialog;
 .class cytoscape/dialogs/EdgeTextPanel
 .field cytoscape/dialogs/EdgeTextPanel/useThisMap Z
 .field cytoscape/dialogs/EdgeTextPanel/theMapKey Ljava/lang/String;
@@ -1301,8 +1026,6 @@
 .method cytoscape/dialogs/EdgeTextPanel/useMappingGenerally ()Z
 .method cytoscape/dialogs/EdgeTextPanel/updateMapperScalableArrows ()V
 .method cytoscape/dialogs/EdgeTextPanel/whetherMenuIsEnabled ()V
-.class cytoscape/dialogs/RotateSelectionDialog
-.field cytoscape/dialogs/RotateSelectionDialog/thisDialog Ljavax/swing/JDialog;
 .class cytoscape/dialogs/PopupTextArea
 .field cytoscape/dialogs/PopupTextArea/location Ljava/awt/Point;
 .field cytoscape/dialogs/PopupTextArea/popupTextArea Lcytoscape/dialogs/PopupTextArea;
@@ -1405,24 +1128,6 @@
 .method cytoscape/dialogs/MiscDialog/getStringToShapeByteHashMap ()Ljava/util/HashMap;
 .method cytoscape/dialogs/MiscDialog/getShapeIcons ()[Ljavax/swing/ImageIcon;
 .method cytoscape/dialogs/MiscDialog/getLineTypeToStringHashMap ()Ljava/util/HashMap;
-.class cytoscape/dialogs/ColorNodesFromFileDialog
-.field cytoscape/dialogs/ColorNodesFromFileDialog/mainPanel Ljavax/swing/JPanel;
-.field cytoscape/dialogs/ColorNodesFromFileDialog/cytoscapeWindow Lcytoscape/CytoscapeWindow;
-.field cytoscape/dialogs/ColorNodesFromFileDialog/fColorLabel Ljavax/swing/JLabel;
-.field cytoscape/dialogs/ColorNodesFromFileDialog/colorPanel Ljavax/swing/JPanel;
-.field cytoscape/dialogs/ColorNodesFromFileDialog/currentDirectory Ljava/io/File;
-.field cytoscape/dialogs/ColorNodesFromFileDialog/fileNameLabel Ljavax/swing/JLabel;
-.field cytoscape/dialogs/ColorNodesFromFileDialog/fileNameField Ljavax/swing/JTextField;
-.field cytoscape/dialogs/ColorNodesFromFileDialog/fColor Lcytoscape/util/MutableColor;
-.field cytoscape/dialogs/ColorNodesFromFileDialog/dismissButton Ljavax/swing/JButton;
-.field cytoscape/dialogs/ColorNodesFromFileDialog/buttonPanel Ljavax/swing/JPanel;
-.field cytoscape/dialogs/ColorNodesFromFileDialog/FIELD_WIDTH I
-.field cytoscape/dialogs/ColorNodesFromFileDialog/fColorButton Ljavax/swing/JButton;
-.field cytoscape/dialogs/ColorNodesFromFileDialog/filePanel Ljavax/swing/JPanel;
-.field cytoscape/dialogs/ColorNodesFromFileDialog/applyButton Ljavax/swing/JButton;
-.field cytoscape/dialogs/ColorNodesFromFileDialog/browseButton Ljavax/swing/JButton;
-.field cytoscape/dialogs/ColorNodesFromFileDialog/paneEdge Ljavax/swing/border/Border;
-.method cytoscape/dialogs/ColorNodesFromFileDialog/createUI ()V
 .class cytoscape/dialogs/JointIntegerEntry
 .field cytoscape/dialogs/JointIntegerEntry/mainPanel Ljavax/swing/JPanel;
 .field cytoscape/dialogs/JointIntegerEntry/mainFrame Ljavax/swing/JFrame;
@@ -1728,6 +1433,35 @@
 .method cytoscape/filters/StableFilter/get (Ly/base/NodeList;)Ly/base/NodeList;
 .class cytoscape/filters/TrueFilter
 .method cytoscape/filters/TrueFilter/get (Ly/base/NodeList;)Ly/base/NodeList;
+.class cytoscape/jarLoader/JarPluginDirectoryAction
+.field cytoscape/jarLoader/JarPluginDirectoryAction/file Ljava/io/File;
+.field cytoscape/jarLoader/JarPluginDirectoryAction/ready Z
+.field cytoscape/jarLoader/JarPluginDirectoryAction/cytoscapeWindow Lcytoscape/CytoscapeWindow;
+.method cytoscape/jarLoader/JarPluginDirectoryAction/setDir (Ljava/lang/String;)V
+.method cytoscape/jarLoader/JarPluginDirectoryAction/tryDirectory ()V
+.method cytoscape/jarLoader/JarPluginDirectoryAction/actionPerformed (Ljava/awt/event/ActionEvent;)V
+.class cytoscape/jarLoader/JarLoaderUI
+.field cytoscape/jarLoader/JarLoaderUI/cytoscapeWindow Lcytoscape/CytoscapeWindow;
+.class cytoscape/jarLoader/JarLoaderCommandLineParser
+.field cytoscape/jarLoader/JarLoaderCommandLineParser/cw Lcytoscape/CytoscapeWindow;
+.field cytoscape/jarLoader/JarLoaderCommandLineParser/jpda Lcytoscape/jarLoader/JarPluginDirectoryAction;
+.method cytoscape/jarLoader/JarLoaderCommandLineParser/usage ()V
+.class cytoscape/jarLoader/JarPluginLoaderAction
+.field cytoscape/jarLoader/JarPluginLoaderAction/file Ljava/io/File;
+.field cytoscape/jarLoader/JarPluginLoaderAction/cytoscapeWindow Lcytoscape/CytoscapeWindow;
+.method cytoscape/jarLoader/JarPluginLoaderAction/actionPerformed (Ljava/awt/event/ActionEvent;)V
+.class cytoscape/jarLoader/JarClassLoader
+.field cytoscape/jarLoader/JarClassLoader/class$cytoscape$AbstractPlugin Ljava/lang/Class;
+.method cytoscape/jarLoader/JarClassLoader/invokePlugin (Ljava/lang/String;)V
+.method cytoscape/jarLoader/JarClassLoader/invokeClass (Ljava/lang/String;[Ljava/lang/String;)V
+.method cytoscape/jarLoader/JarClassLoader/loadRelevantClasses ()V
+.method cytoscape/jarLoader/JarClassLoader/getClass (Ljava/lang/String;)Ljava/lang/Class;
+.method cytoscape/jarLoader/JarClassLoader/isClassPlugin (Ljava/lang/String;)Z
+.method cytoscape/jarLoader/JarClassLoader/class$ (Ljava/lang/String;)Ljava/lang/Class;
+.class cytoscape/jarLoader/JarLoaderAction
+.field cytoscape/jarLoader/JarLoaderAction/file Ljava/io/File;
+.field cytoscape/jarLoader/JarLoaderAction/cytoscapeWindow Lcytoscape/CytoscapeWindow;
+.method cytoscape/jarLoader/JarLoaderAction/actionPerformed (Ljava/awt/event/ActionEvent;)V
 .class cytoscape/vizmap/EdgeArrowColor
 .field cytoscape/vizmap/EdgeArrowColor/p Ljava/awt/Polygon;
 .method cytoscape/vizmap/EdgeArrowColor/removeThenAddEdgeColor (Lcytoscape/vizmap/AttributeMapper;Ljava/lang/String;Ljava/awt/Color;)V
@@ -2069,11 +1803,16 @@
 .method cytoscape/data/readers/GraphReader/getGraph ()Ly/view/Graph2D;
 .method cytoscape/data/readers/GraphReader/read ()V
 .class cytoscape/data/readers/FileReadingAbstractions
-.method cytoscape/data/readers/FileReadingAbstractions/initAttribs (Lcytoscape/data/servers/BioDataServer;Ljava/lang/String;Lcytoscape/CytoscapeConfig;Ly/view/Graph2D;Lcytoscape/GraphObjAttributes;Lcytoscape/GraphObjAttributes;)V
-.method cytoscape/data/readers/FileReadingAbstractions/loadIntrBasic (Lcytoscape/data/servers/BioDataServer;Ljava/lang/String;Ljava/lang/String;Lcytoscape/GraphObjAttributes;)Ly/view/Graph2D;
-.method cytoscape/data/readers/FileReadingAbstractions/addNameMappingToAttributes ([Ljava/lang/Object;Lcytoscape/GraphObjAttributes;)V
-.method cytoscape/data/readers/FileReadingAbstractions/loadBasic (Lcytoscape/data/readers/GraphReader;Lcytoscape/GraphObjAttributes;)Ly/view/Graph2D;
+.field cytoscape/data/readers/FileReadingAbstractions/class$cytoscape$data$readers$FileReadingAbstractions Ljava/lang/Class;
+.method cytoscape/data/readers/FileReadingAbstractions/getInputStream (Ljava/lang/String;)Ljava/io/InputStream;
+.method cytoscape/data/readers/FileReadingAbstractions/class$ (Ljava/lang/String;)Ljava/lang/Class;
 .method cytoscape/data/readers/FileReadingAbstractions/loadGMLBasic (Ljava/lang/String;Lcytoscape/GraphObjAttributes;)Ly/view/Graph2D;
+.method cytoscape/data/readers/FileReadingAbstractions/loadIntrBasic (Lcytoscape/data/servers/BioDataServer;Ljava/lang/String;Ljava/lang/String;Lcytoscape/GraphObjAttributes;)Ly/view/Graph2D;
+.method cytoscape/data/readers/FileReadingAbstractions/loadBasic (Lcytoscape/data/readers/GraphReader;Lcytoscape/GraphObjAttributes;)Ly/view/Graph2D;
+.method cytoscape/data/readers/FileReadingAbstractions/addNameMappingToAttributes ([Ljava/lang/Object;Lcytoscape/GraphObjAttributes;)V
+.method cytoscape/data/readers/FileReadingAbstractions/initAttribs (Lcytoscape/data/servers/BioDataServer;Ljava/lang/String;Lcytoscape/CytoscapeConfig;Ly/view/Graph2D;Lcytoscape/GraphObjAttributes;Lcytoscape/GraphObjAttributes;)V
+.method cytoscape/data/readers/FileReadingAbstractions/readAttribs (Lcytoscape/data/servers/BioDataServer;Ljava/lang/String;Ly/view/Graph2D;Lcytoscape/GraphObjAttributes;Lcytoscape/GraphObjAttributes;[Ljava/lang/String;[Ljava/lang/String;)V
+.method cytoscape/data/readers/FileReadingAbstractions/initAttribs (Lcytoscape/data/servers/BioDataServer;Ljava/lang/String;Ly/view/Graph2D;Lcytoscape/GraphObjAttributes;Lcytoscape/GraphObjAttributes;[Ljava/lang/String;[Ljava/lang/String;)V
 .class cytoscape/data/servers/loadAnnotationFromFlatFiles
 .method cytoscape/data/servers/loadAnnotationFromFlatFiles/main ([Ljava/lang/String;)V
 .class cytoscape/data/servers/BioDataServer
@@ -2197,6 +1936,7 @@
 .field cytoscape/data/ExpressionData/maxExp D
 .field cytoscape/data/ExpressionData/allMeasurements Ljava/util/Vector;
 .field cytoscape/data/ExpressionData/class$java$lang$Double Ljava/lang/Class;
+.field cytoscape/data/ExpressionData/haveSigValues Z
 .field cytoscape/data/ExpressionData/MAX_LINE_SIZE I
 .field cytoscape/data/ExpressionData/geneDescripts Ljava/util/Vector;
 .field cytoscape/data/ExpressionData/numGenes I
@@ -2207,24 +1947,27 @@
 .field cytoscape/data/ExpressionData/maxSig D
 .field cytoscape/data/ExpressionData/minExp D
 .field cytoscape/data/ExpressionData/condNameToIndex Ljava/util/Hashtable;
-.method cytoscape/data/ExpressionData/getGeneDescriptors ()[Ljava/lang/String;
+.method cytoscape/data/ExpressionData/hasSignificanceValues ()Z
 .method cytoscape/data/ExpressionData/getGeneDescriptorsVector ()Ljava/util/Vector;
+.method cytoscape/data/ExpressionData/getGeneDescriptors ()[Ljava/lang/String;
 .method cytoscape/data/ExpressionData/getNumberOfConditions ()I
 .method cytoscape/data/ExpressionData/getGeneNamesVector ()Ljava/util/Vector;
 .method cytoscape/data/ExpressionData/getGeneNames ()[Ljava/lang/String;
 .method cytoscape/data/ExpressionData/getMeasurements (Ljava/lang/String;)Ljava/util/Vector;
 .method cytoscape/data/ExpressionData/oldLoadData (Ljava/lang/String;)Z
+.method cytoscape/data/ExpressionData/copyToAttribs (Lcytoscape/GraphObjAttributes;)V
 .method cytoscape/data/ExpressionData/getMeasurement (Ljava/lang/String;Ljava/lang/String;)Lcytoscape/data/mRNAMeasurement;
 .method cytoscape/data/ExpressionData/loadData (Ljava/lang/String;)Z
 .method cytoscape/data/ExpressionData/setGeneDescriptors (Ljava/util/Vector;)V
 .method cytoscape/data/ExpressionData/getConditionNames ()[Ljava/lang/String;
 .method cytoscape/data/ExpressionData/class$ (Ljava/lang/String;)Ljava/lang/Class;
-.method cytoscape/data/ExpressionData/copyToAttribs (Lcytoscape/CytoscapeWindow;)V
 .method cytoscape/data/ExpressionData/getGeneDescriptor (Ljava/lang/String;)Ljava/lang/String;
 .method cytoscape/data/ExpressionData/getNumberOfGenes ()I
+.method cytoscape/data/ExpressionData/getFileName ()Ljava/lang/String;
 .method cytoscape/data/ExpressionData/getAllMeasurements ()Ljava/util/Vector;
 .method cytoscape/data/ExpressionData/getExtremeValues ()[[D
 .method cytoscape/data/ExpressionData/setGeneNames (Ljava/util/Vector;)V
+.method cytoscape/data/ExpressionData/getDescription ()Ljava/lang/String;
 .class cytoscape/util/MutableColor
 .method cytoscape/util/MutableColor/setColor (Ljava/awt/Color;)V
 .method cytoscape/util/MutableColor/getColor ()Ljava/awt/Color;
@@ -2266,18 +2009,17 @@
 .class cytoscape/util/MutableInt
 .method cytoscape/util/MutableInt/getInt ()I
 .method cytoscape/util/MutableInt/setInt (I)V
+.class cytoscape/util/CyFileFilter
+.method cytoscape/util/CyFileFilter/isExtensionListInDescription ()Z
+.method cytoscape/util/CyFileFilter/addExtension (Ljava/lang/String;)V
+.method cytoscape/util/CyFileFilter/accept (Ljava/io/File;)Z
+.method cytoscape/util/CyFileFilter/setDescription (Ljava/lang/String;)V
+.method cytoscape/util/CyFileFilter/getDescription ()Ljava/lang/String;
+.method cytoscape/util/CyFileFilter/setExtensionListInDescription (Z)V
+.method cytoscape/util/CyFileFilter/getExtension (Ljava/io/File;)Ljava/lang/String;
 .class cytoscape/util/MutableBool
 .method cytoscape/util/MutableBool/setBool (Z)V
 .method cytoscape/util/MutableBool/getBool ()Z
-.class cytoscape/layout/GroupWiseNodeGrouper
-.field cytoscape/layout/GroupWiseNodeGrouper/iCNHash Ljava/util/HashMap;
-.field cytoscape/layout/GroupWiseNodeGrouper/CSM_VERSION Ljava/lang/String;
-.field cytoscape/layout/GroupWiseNodeGrouper/iConnected [[I
-.field cytoscape/layout/GroupWiseNodeGrouper/iClusterMap [[I
-.field cytoscape/layout/GroupWiseNodeGrouper/iPNHash Ljava/util/HashMap;
-.method cytoscape/layout/GroupWiseNodeGrouper/useGraph (Ly/layout/LayoutGraph;)V
-.method cytoscape/layout/GroupWiseNodeGrouper/getClusterByNode (Ly/base/Node;Lcytoscape/layout/Subgraph;)Lcytoscape/layout/Subgraph;
-.method cytoscape/layout/GroupWiseNodeGrouper/getNodeGrouping (I)Lcytoscape/layout/Subgraph;
 .class cytoscape/layout/AttributeLayout
 .field cytoscape/layout/AttributeLayout/edgeAttributes Lcytoscape/GraphObjAttributes;
 .field cytoscape/layout/AttributeLayout/cytoscapeWindow Lcytoscape/CytoscapeWindow;
@@ -2300,6 +2042,15 @@
 .method cytoscape/layout/AttributeLayout/createCategoryNodes ([Ljava/lang/String;)V
 .method cytoscape/layout/AttributeLayout/addCategoryEdgesBetweenNodes (Ljava/lang/String;)V
 .method cytoscape/layout/AttributeLayout/addCategoryEdges (Ljava/lang/String;[Ljava/lang/String;)V
+.class cytoscape/layout/GroupWiseNodeGrouper
+.field cytoscape/layout/GroupWiseNodeGrouper/iCNHash Ljava/util/HashMap;
+.field cytoscape/layout/GroupWiseNodeGrouper/CSM_VERSION Ljava/lang/String;
+.field cytoscape/layout/GroupWiseNodeGrouper/iConnected [[I
+.field cytoscape/layout/GroupWiseNodeGrouper/iClusterMap [[I
+.field cytoscape/layout/GroupWiseNodeGrouper/iPNHash Ljava/util/HashMap;
+.method cytoscape/layout/GroupWiseNodeGrouper/useGraph (Ly/layout/LayoutGraph;)V
+.method cytoscape/layout/GroupWiseNodeGrouper/getClusterByNode (Ly/base/Node;Lcytoscape/layout/Subgraph;)Lcytoscape/layout/Subgraph;
+.method cytoscape/layout/GroupWiseNodeGrouper/getNodeGrouping (I)Lcytoscape/layout/Subgraph;
 .class cytoscape/layout/GroupingAlgorithm
 .field cytoscape/layout/GroupingAlgorithm/CONNECTED_BI I
 .field cytoscape/layout/GroupingAlgorithm/NOT_CONNECTED I
@@ -2505,6 +2256,7 @@
 .method cytoscape/undo/RealizerUndoItem/undo ()Z
 .method cytoscape/undo/RealizerUndoItem/redo ()Z
 .class cytoscape/cytoscape
+.field cytoscape/cytoscape/progress I
 .field cytoscape/cytoscape/defaultSpecies Ljava/lang/String;
 .field cytoscape/cytoscape/edgeAttributes Lcytoscape/GraphObjAttributes;
 .field cytoscape/cytoscape/expressionData Lcytoscape/data/ExpressionData;
@@ -2512,6 +2264,7 @@
 .field cytoscape/cytoscape/bioDataServer Lcytoscape/data/servers/BioDataServer;
 .field cytoscape/cytoscape/version Lcytoscape/CytoscapeVersion;
 .field cytoscape/cytoscape/nodeAttributes Lcytoscape/GraphObjAttributes;
+.field cytoscape/cytoscape/splashScreen Lcytoscape/SplashScreen;
 .field cytoscape/cytoscape/bioDataServerName Ljava/lang/String;
 .field cytoscape/cytoscape/windows Ljava/util/Vector;
 .field cytoscape/cytoscape/logger Ljava/util/logging/Logger;
@@ -2539,12 +2292,25 @@
 .method cytoscape/SelectedSubGraphFactory/getNodeAttributes ()Lcytoscape/GraphObjAttributes;
 .method cytoscape/SelectedSubGraphFactory/createSubgraph ()V
 .method cytoscape/SelectedSubGraphFactory/createEdgesWithAttributes ()V
-.method cytoscape/SelectedSubGraphFactory/recreateNodeAttributes ()V
 .method cytoscape/SelectedSubGraphFactory/getSubGraph ()Ly/view/Graph2D;
 .method cytoscape/SelectedSubGraphFactory/class$ (Ljava/lang/String;)Ljava/lang/Class;
 .method cytoscape/SelectedSubGraphFactory/getEdgeAttributes ()Lcytoscape/GraphObjAttributes;
 .class cytoscape/AbstractPlugin
 .method cytoscape/AbstractPlugin/describe ()Ljava/lang/String;
+.class cytoscape/SplashScreen
+.field cytoscape/SplashScreen/progress I
+.field cytoscape/SplashScreen/t Ljava/lang/Thread;
+.field cytoscape/SplashScreen/noGraph Z
+.field cytoscape/SplashScreen/offscreenGfx Ljava/awt/Graphics;
+.field cytoscape/SplashScreen/progressBar Ljavax/swing/JProgressBar;
+.field cytoscape/SplashScreen/offscreenImg Ljava/awt/Image;
+.field cytoscape/SplashScreen/image Ljava/awt/Image;
+.field cytoscape/SplashScreen/win Ljava/awt/Frame;
+.method cytoscape/SplashScreen/update (Ljava/awt/Graphics;)V
+.method cytoscape/SplashScreen/dispose ()V
+.method cytoscape/SplashScreen/paint (Ljava/awt/Graphics;)V
+.method cytoscape/SplashScreen/advance (I)V
+.method cytoscape/SplashScreen/run ()V
 .class cytoscape/CytoscapeConfig
 .field cytoscape/CytoscapeConfig/argsCopy [Ljava/lang/String;
 .field cytoscape/CytoscapeConfig/displayVersion Z
@@ -2595,6 +2361,7 @@
 .method cytoscape/CytoscapeConfig/displayVersion ()Z
 .method cytoscape/CytoscapeConfig/getProjectVizmapPropsFileName ()Ljava/lang/String;
 .method cytoscape/CytoscapeConfig/legalArguments ()Z
+.method cytoscape/CytoscapeConfig/readPropertyFileAsText (Ljava/lang/String;)Ljava/util/Properties;
 .method cytoscape/CytoscapeConfig/getGeometryFilename ()Ljava/lang/String;
 .method cytoscape/CytoscapeConfig/getErrorMessages ()Ljava/lang/String;
 .method cytoscape/CytoscapeConfig/readProjectFile ()V
@@ -2683,6 +2450,7 @@
 .method cytoscape/GraphObjAttributes/removeObjectMapping (Ljava/lang/Object;)V
 .method cytoscape/GraphObjAttributes/clone ()Ljava/lang/Object;
 .class cytoscape/CytoscapeVersion
+.field cytoscape/CytoscapeVersion/version Ljava/lang/String;
 .method cytoscape/CytoscapeVersion/main ([Ljava/lang/String;)V
 .method cytoscape/CytoscapeVersion/getVersion ()Ljava/lang/String;
 .method cytoscape/CytoscapeVersion/getBriefHistory ()Ljava/lang/String;
@@ -2693,10 +2461,12 @@
 .field cytoscape/CytoscapeWindow/bioDataServerName Ljava/lang/String;
 .field cytoscape/CytoscapeWindow/currentGraphMode Ly/view/ViewMode;
 .field cytoscape/CytoscapeWindow/currentDirectory Ljava/io/File;
+.field cytoscape/CytoscapeWindow/saveSubMenu Ljavax/swing/JMenu;
 .field cytoscape/CytoscapeWindow/busyCursor Ljava/awt/Cursor;
 .field cytoscape/CytoscapeWindow/defaultSpecies Ljava/lang/String;
 .field cytoscape/CytoscapeWindow/nodeAttributes Lcytoscape/GraphObjAttributes;
 .field cytoscape/CytoscapeWindow/undoManager Lcytoscape/undo/CytoscapeUndoManager;
+.field cytoscape/CytoscapeWindow/fileMenu Ljavax/swing/JMenu;
 .field cytoscape/CytoscapeWindow/expressionData Lcytoscape/data/ExpressionData;
 .field cytoscape/CytoscapeWindow/expressionDataFilename Ljava/lang/String;
 .field cytoscape/CytoscapeWindow/currentPopupMode Ly/view/ViewMode;
@@ -2712,6 +2482,7 @@
 .field cytoscape/CytoscapeWindow/goModeMenuLabel Ljava/lang/String;
 .field cytoscape/CytoscapeWindow/graphView Ly/view/Graph2DView;
 .field cytoscape/CytoscapeWindow/toolbar Ljavax/swing/JToolBar;
+.field cytoscape/CytoscapeWindow/editMenu Ljavax/swing/JMenu;
 .field cytoscape/CytoscapeWindow/opsMenu Ljavax/swing/JMenu;
 .field cytoscape/CytoscapeWindow/defaultCursor Ljava/awt/Cursor;
 .field cytoscape/CytoscapeWindow/DEFAULT_WIDTH I
@@ -2729,11 +2500,15 @@
 .field cytoscape/CytoscapeWindow/vizMapUI Lcytoscape/visual/ui/VizMapUI;
 .field cytoscape/CytoscapeWindow/graph Ly/view/Graph2D;
 .field cytoscape/CytoscapeWindow/selectMenu Ljavax/swing/JMenu;
+.field cytoscape/CytoscapeWindow/NO_PLUGINS Ljava/lang/String;
 .field cytoscape/CytoscapeWindow/debugLog Ljava/lang/StringBuffer;
 .field cytoscape/CytoscapeWindow/mainFrame Ljavax/swing/JFrame;
 .field cytoscape/CytoscapeWindow/menuBar Ljavax/swing/JMenuBar;
 .field cytoscape/CytoscapeWindow/vizMapper Lcytoscape/visual/VisualMappingManager;
+.field cytoscape/CytoscapeWindow/defaultWindowTitle Ljava/lang/String;
+.field cytoscape/CytoscapeWindow/calculatorCatalog Lcytoscape/visual/CalculatorCatalog;
 .field cytoscape/CytoscapeWindow/vizMenu Ljavax/swing/JMenu;
+.field cytoscape/CytoscapeWindow/loadSubMenu Ljavax/swing/JMenu;
 .field cytoscape/CytoscapeWindow/layoutMenu Ljavax/swing/JMenu;
 .field cytoscape/CytoscapeWindow/subwindows Ljava/util/Vector;
 .field cytoscape/CytoscapeWindow/readOnlyGraphMode Ly/view/ViewMode;
@@ -2746,12 +2521,12 @@
 .method cytoscape/CytoscapeWindow/getCurrentDirectory ()Ljava/io/File;
 .method cytoscape/CytoscapeWindow/cloneWindow ()V
 .method cytoscape/CytoscapeWindow/getUndoManager ()Lcytoscape/undo/CytoscapeUndoManager;
-.method cytoscape/CytoscapeWindow/selectNodesByName ([Ljava/lang/String;Z)V
 .method cytoscape/CytoscapeWindow/getSpecies (Ly/base/Node;)Ljava/lang/String;
 .method cytoscape/CytoscapeWindow/getOperationsMenu ()Ljavax/swing/JMenu;
 .method cytoscape/CytoscapeWindow/getInteractionTypes ()[Ljava/lang/String;
 .method cytoscape/CytoscapeWindow/getGraph ()Ly/view/Graph2D;
 .method cytoscape/CytoscapeWindow/getVizMapManager ()Lcytoscape/visual/VisualMappingManager;
+.method cytoscape/CytoscapeWindow/selectNodesByName ([Ljava/lang/String;Z)[Ljava/lang/String;
 .method cytoscape/CytoscapeWindow/displayCommonNodeNames ()V
 .method cytoscape/CytoscapeWindow/showNodesByName (Ljava/util/Vector;)V
 .method cytoscape/CytoscapeWindow/getNode (Ljava/lang/String;)Ly/base/Node;
@@ -2786,17 +2561,19 @@
 .method cytoscape/CytoscapeWindow/selectEdges ([Ly/base/Edge;Z)V
 .method cytoscape/CytoscapeWindow/updateEdgeVisibilityFromNodeVisibility ()V
 .method cytoscape/CytoscapeWindow/setLayouterAndGraphView ()V
-.method cytoscape/CytoscapeWindow/selectNodesByName ([Ljava/lang/String;)V
 .method cytoscape/CytoscapeWindow/hideSelectedEdges ()V
+.method cytoscape/CytoscapeWindow/selectNodesByName ([Ljava/lang/String;)[Ljava/lang/String;
 .method cytoscape/CytoscapeWindow/saveVisibleNodeNames ()Z
 .method cytoscape/CytoscapeWindow/selectNodes ([Ly/base/Node;Z)V
 .method cytoscape/CytoscapeWindow/class$ (Ljava/lang/String;)Ljava/lang/Class;
+.method cytoscape/CytoscapeWindow/redrawGraph (ZZ)V
 .method cytoscape/CytoscapeWindow/getWindowTitle ()Ljava/lang/String;
 .method cytoscape/CytoscapeWindow/updateUndoRedoMenuItemStatus ()V
 .method cytoscape/CytoscapeWindow/redrawGraph ()V
 .method cytoscape/CytoscapeWindow/applyVizmapSettings ()V
-.method cytoscape/CytoscapeWindow/loadGML (Ljava/lang/String;)V
+.method cytoscape/CytoscapeWindow/loadGML (Ljava/lang/String;)Z
 .method cytoscape/CytoscapeWindow/setMenuBar (Ljavax/swing/JMenuBar;)V
+.method cytoscape/CytoscapeWindow/getExpressionDataFileName ()Ljava/lang/String;
 .method cytoscape/CytoscapeWindow/getVizMenu ()Ljavax/swing/JMenu;
 .method cytoscape/CytoscapeWindow/setNodeAttributes (Lcytoscape/GraphObjAttributes;)V
 .method cytoscape/CytoscapeWindow/showNodesByName ([Ljava/lang/String;)V
@@ -2808,11 +2585,12 @@
 .method cytoscape/CytoscapeWindow/createMenuBar ()Ljavax/swing/JMenuBar;
 .method cytoscape/CytoscapeWindow/onGraph2DSelectionEvent (Ly/view/Graph2DSelectionEvent;)V
 .method cytoscape/CytoscapeWindow/loadPlugins ()V
+.method cytoscape/CytoscapeWindow/loadExpressionData (Ljava/lang/String;)Z
 .method cytoscape/CytoscapeWindow/getGraphHider ()Lcytoscape/undo/UndoableGraphHider;
 .method cytoscape/CytoscapeWindow/setDefaultSpecies (Ljava/lang/String;)V
 .method cytoscape/CytoscapeWindow/setInteractivity (Z)V
 .method cytoscape/CytoscapeWindow/setEdgeAttributes (Lcytoscape/GraphObjAttributes;)V
-.method cytoscape/CytoscapeWindow/loadExpressionData (Ljava/lang/String;)V
+.method cytoscape/CytoscapeWindow/setExpressionData (Lcytoscape/data/ExpressionData;)V
 .method cytoscape/CytoscapeWindow/findCanonicalName (Ljava/lang/String;)Ljava/lang/String;
 .method cytoscape/CytoscapeWindow/setupLogging ()V
 .method cytoscape/CytoscapeWindow/saveSelectedNodeNames (Ljava/lang/String;)Z
@@ -9167,263 +8945,6 @@
 #
 # Obfuscated name mappings (some of these may be unchanged due to polymorphism constraints):
 #
-.method_map csplugins/jarLoader/JarPluginDirectoryAction/getDir ()Z a
-.field_map csplugins/jarLoader/JarLoaderCommandLineParser/activePathParametersPresent a
-.method_map csplugins/jarLoader/JarLoaderCommandLineParser/parseArgs ([Ljava/lang/String;)V a
-.method_map csplugins/jarLoader/JarPluginLoaderAction/getFile ()Z a
-.field_map csplugins/jarLoader/JarClassLoader/url a
-.field_map csplugins/jarLoader/JarClassLoader/cytoscapeWindow if
-.field_map csplugins/jarLoader/JarClassLoader/urlString do
-.class_map csplugins/jarLoader/JarLoaderAction$JarClassLoader a
-.field_map csplugins/jarLoader/JarLoaderAction$JarClassLoader/this$0 this$0
-.field_map csplugins/jarLoader/JarLoaderAction$JarClassLoader/urlString a
-.method_map csplugins/jarLoader/JarLoaderAction$JarClassLoader/invokeClass (Ljava/lang/String;[Ljava/lang/String;)V a
-.method_map csplugins/jarLoader/JarLoaderAction$JarClassLoader/getClass (Ljava/lang/String;)Ljava/lang/Class; a
-.method_map csplugins/jarLoader/JarLoaderAction$JarClassLoader/getMainClassName ()Ljava/lang/String; a
-.method_map csplugins/jarLoader/JarLoaderAction/getFile ()Z a
-.class_map csplugins/activeModules/dialogs/ConditionsVsPathwaysTable$DismissAction a
-.field_map csplugins/activeModules/dialogs/ConditionsVsPathwaysTable$DismissAction/this$0 this$0
-.method_map csplugins/activeModules/dialogs/ConditionsVsPathwaysTable$DismissAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map csplugins/activeModules/dialogs/ConditionsVsPathwaysTable$SaveAction b
-.field_map csplugins/activeModules/dialogs/ConditionsVsPathwaysTable$SaveAction/this$0 this$0
-.method_map csplugins/activeModules/dialogs/ConditionsVsPathwaysTable$SaveAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.method_map csplugins/activeModules/dialogs/ConditionsVsPathwaysTable/init (Ljava/awt/Frame;Lcsplugins/activeModules/ActivePathViewer;)V a
-.class_map csplugins/activeModules/dialogs/SubnetworkExpanderDialog$DismissAction a
-.field_map csplugins/activeModules/dialogs/SubnetworkExpanderDialog$DismissAction/this$0 this$0
-.method_map csplugins/activeModules/dialogs/SubnetworkExpanderDialog$DismissAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map csplugins/activeModules/dialogs/SubnetworkExpanderDialog$BrowseAction b
-.field_map csplugins/activeModules/dialogs/SubnetworkExpanderDialog$BrowseAction/this$0 this$0
-.method_map csplugins/activeModules/dialogs/SubnetworkExpanderDialog$BrowseAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map csplugins/activeModules/dialogs/SubnetworkExpanderDialog$ApplyAction c
-.field_map csplugins/activeModules/dialogs/SubnetworkExpanderDialog$ApplyAction/this$0 this$0
-.method_map csplugins/activeModules/dialogs/SubnetworkExpanderDialog$ApplyAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map csplugins/activeModules/dialogs/SubnetworkExpanderDialog$CheckBoxAction d
-.field_map csplugins/activeModules/dialogs/SubnetworkExpanderDialog$CheckBoxAction/this$0 this$0
-.method_map csplugins/activeModules/dialogs/SubnetworkExpanderDialog$CheckBoxAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.field_map csplugins/activeModules/dialogs/SubnetworkExpanderDialog/upstreamButton a
-.field_map csplugins/activeModules/dialogs/SubnetworkExpanderDialog/currentDirectory if
-.field_map csplugins/activeModules/dialogs/SubnetworkExpanderDialog/downstreamButton do
-.field_map csplugins/activeModules/dialogs/SubnetworkExpanderDialog/nodesFileField for
-.field_map csplugins/activeModules/dialogs/SubnetworkExpanderDialog/isApplyAction int
-.field_map csplugins/activeModules/dialogs/SubnetworkExpanderDialog/maxSearchDepthField new
-.field_map csplugins/activeModules/dialogs/SubnetworkExpanderDialog/directedSearchCheckBox try
-.class_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable$ColorRenderer a
-.field_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable$ColorRenderer/this$0 this$0
-.field_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable$ColorRenderer/selectedBorder a
-.field_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable$ColorRenderer/isBordered if
-.field_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable$ColorRenderer/unselectedBorder do
-.method_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable$ColorRenderer/getTableCellRendererComponent (Ljavax/swing/JTable;Ljava/lang/Object;ZZII)Ljava/awt/Component; getTableCellRendererComponent
-.class_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable$1 1
-.field_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable$1/this$0 this$0
-.method_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable$1/valueChanged (Ljavax/swing/event/ListSelectionEvent;)V valueChanged
-.class_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable$RowHeaderRenderer b
-.field_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable$RowHeaderRenderer/this$0 this$0
-.method_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable$RowHeaderRenderer/getListCellRendererComponent (Ljavax/swing/JList;Ljava/lang/Object;IZZ)Ljava/awt/Component; getListCellRendererComponent
-.class_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable$ConditionNamesListModel c
-.field_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable$ConditionNamesListModel/this$0 this$0
-.field_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable$ConditionNamesListModel/names a
-.method_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable$ConditionNamesListModel/getElementAt (I)Ljava/lang/Object; getElementAt
-.method_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable$ConditionNamesListModel/getSize ()I getSize
-.class_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable$Model d
-.field_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable$Model/this$0 this$0
-.field_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable$Model/pathCount a
-.field_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable$Model/data if
-.field_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable$Model/columnNames do
-.method_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable$Model/isCellEditable (II)Z isCellEditable
-.method_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable$Model/getColumnClass (I)Ljava/lang/Class; getColumnClass
-.method_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable$Model/getColumnName (I)Ljava/lang/String; getColumnName
-.method_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable$Model/getRowCount ()I getRowCount
-.method_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable$Model/getColumnCount ()I getColumnCount
-.method_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable$Model/getValueAt (II)Ljava/lang/Object; getValueAt
-.field_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable/rowTitleWidth a
-.field_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable/columnWidth if
-.field_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable/pathViewer do
-.method_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable/allConditionNames ([Lcsplugins/activeModules/data/ActivePath;)[Ljava/lang/String; a
-.method_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable/setupColorRenderer ()V a
-.method_map csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable/setupMouseClickDisplayOfActivePaths ()V if
-.class_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$RandomSeedTextListener a
-.field_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$RandomSeedTextListener/this$0 this$0
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$RandomSeedTextListener/validate ()V a
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$RandomSeedTextListener/focusGained (Ljava/awt/event/FocusEvent;)V focusGained
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$RandomSeedTextListener/focusLost (Ljava/awt/event/FocusEvent;)V focusLost
-.class_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$QuenchCheckListener b
-.field_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$QuenchCheckListener/this$0 this$0
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$QuenchCheckListener/itemStateChanged (Ljava/awt/event/ItemEvent;)V itemStateChanged
-.class_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$SaveAction c
-.field_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$SaveAction/this$0 this$0
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$SaveAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$RandomSeedListener d
-.field_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$RandomSeedListener/this$0 this$0
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$RandomSeedListener/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$IntervalListener e
-.field_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$IntervalListener/this$0 this$0
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$IntervalListener/validate ()V a
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$IntervalListener/focusGained (Ljava/awt/event/FocusEvent;)V focusGained
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$IntervalListener/focusLost (Ljava/awt/event/FocusEvent;)V focusLost
-.class_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$TempController f
-.field_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$TempController/this$0 this$0
-.class_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$MListener g
-.field_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$MListener/this$0 this$0
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$MListener/validate ()V a
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$MListener/itemStateChanged (Ljava/awt/event/ItemEvent;)V itemStateChanged
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$MListener/focusGained (Ljava/awt/event/FocusEvent;)V focusGained
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$MListener/focusLost (Ljava/awt/event/FocusEvent;)V focusLost
-.class_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$PathListener h
-.field_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$PathListener/this$0 this$0
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$PathListener/validate ()V a
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$PathListener/focusGained (Ljava/awt/event/FocusEvent;)V focusGained
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$PathListener/focusLost (Ljava/awt/event/FocusEvent;)V focusLost
-.class_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$AnnealSearchSwitchListener i
-.field_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$AnnealSearchSwitchListener/this$0 this$0
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$AnnealSearchSwitchListener/validate ()V a
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$AnnealSearchSwitchListener/switchToSearch ()V if
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$AnnealSearchSwitchListener/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$AnnealSearchSwitchListener/switchToAnneal ()V do
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$AnnealSearchSwitchListener/focusGained (Ljava/awt/event/FocusEvent;)V focusGained
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$AnnealSearchSwitchListener/focusLost (Ljava/awt/event/FocusEvent;)V focusLost
-.class_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$DismissAction j
-.field_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$DismissAction/this$0 this$0
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$DismissAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$SFNListener k
-.field_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$SFNListener/this$0 this$0
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$SFNListener/itemStateChanged (Ljava/awt/event/ItemEvent;)V itemStateChanged
-.class_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$RSListener l
-.field_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$RSListener/this$0 this$0
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$RSListener/itemStateChanged (Ljava/awt/event/ItemEvent;)V itemStateChanged
-.class_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$TempListener m
-.field_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$TempListener/this$0 this$0
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$TempListener/validate ()V a
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$TempListener/focusGained (Ljava/awt/event/FocusEvent;)V focusGained
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$TempListener/focusLost (Ljava/awt/event/FocusEvent;)V focusLost
-.class_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$EdgesCheckListener n
-.field_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$EdgesCheckListener/this$0 this$0
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$EdgesCheckListener/itemStateChanged (Ljava/awt/event/ItemEvent;)V itemStateChanged
-.class_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$IterListener o
-.field_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$IterListener/this$0 this$0
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$IterListener/validate ()V a
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$IterListener/focusGained (Ljava/awt/event/FocusEvent;)V focusGained
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$IterListener/focusLost (Ljava/awt/event/FocusEvent;)V focusLost
-.class_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$HFListener p
-.field_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$HFListener/this$0 this$0
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$HFListener/validate ()V a
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$HFListener/itemStateChanged (Ljava/awt/event/ItemEvent;)V itemStateChanged
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$HFListener/focusGained (Ljava/awt/event/FocusEvent;)V focusGained
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$HFListener/focusLost (Ljava/awt/event/FocusEvent;)V focusLost
-.class_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$ApplyAction q
-.field_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$ApplyAction/this$0 this$0
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$ApplyAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$MCListener r
-.field_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$MCListener/this$0 this$0
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$MCListener/itemStateChanged (Ljava/awt/event/ItemEvent;)V itemStateChanged
-.class_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$HAListener s
-.field_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$HAListener/this$0 this$0
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$HAListener/validate ()V a
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$HAListener/itemStateChanged (Ljava/awt/event/ItemEvent;)V itemStateChanged
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$HAListener/focusGained (Ljava/awt/event/FocusEvent;)V focusGained
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog$HAListener/focusLost (Ljava/awt/event/FocusEvent;)V focusLost
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/createExtsController ()V a
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/createRegionalScoringController ()V if
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/createIterationsController ()V do
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/createHubfindingController ()V for
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/createRandomSeedController ()Ljavax/swing/JPanel; int
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/createPathsController ()V new
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/createHubAdjustmentController ()V try
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/createSearchController ()V byte
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/createIntervalController ()V case
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/createMontecarloController ()V char
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/createAnnealSearchController ()V else
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/createSearchContentPanel ()V goto
-.method_map csplugins/activeModules/dialogs/ActivePathsParametersPopupDialog/createAnnealContentPanel ()V long
-.class_map csplugins/activeModules/dialogs/ConditionsVsPathwaysTopTable$RowTitlesRenderer a
-.field_map csplugins/activeModules/dialogs/ConditionsVsPathwaysTopTable$RowTitlesRenderer/this$0 this$0
-.method_map csplugins/activeModules/dialogs/ConditionsVsPathwaysTopTable$RowTitlesRenderer/getListCellRendererComponent (Ljavax/swing/JList;Ljava/lang/Object;IZZ)Ljava/awt/Component; getListCellRendererComponent
-.class_map csplugins/activeModules/dialogs/ConditionsVsPathwaysTopTable$Model b
-.field_map csplugins/activeModules/dialogs/ConditionsVsPathwaysTopTable$Model/this$0 this$0
-.field_map csplugins/activeModules/dialogs/ConditionsVsPathwaysTopTable$Model/numberOfColumns a
-.field_map csplugins/activeModules/dialogs/ConditionsVsPathwaysTopTable$Model/numberOfRows if
-.field_map csplugins/activeModules/dialogs/ConditionsVsPathwaysTopTable$Model/data do
-.field_map csplugins/activeModules/dialogs/ConditionsVsPathwaysTopTable$Model/columnNames for
-.method_map csplugins/activeModules/dialogs/ConditionsVsPathwaysTopTable$Model/isCellEditable (II)Z isCellEditable
-.method_map csplugins/activeModules/dialogs/ConditionsVsPathwaysTopTable$Model/getColumnName (I)Ljava/lang/String; getColumnName
-.method_map csplugins/activeModules/dialogs/ConditionsVsPathwaysTopTable$Model/getRowCount ()I getRowCount
-.method_map csplugins/activeModules/dialogs/ConditionsVsPathwaysTopTable$Model/getColumnCount ()I getColumnCount
-.method_map csplugins/activeModules/dialogs/ConditionsVsPathwaysTopTable$Model/getValueAt (II)Ljava/lang/Object; getValueAt
-.class_map csplugins/activeModules/dialogs/ConditionsVsPathwaysTopTable$RowTitlesModel c
-.field_map csplugins/activeModules/dialogs/ConditionsVsPathwaysTopTable$RowTitlesModel/this$0 this$0
-.field_map csplugins/activeModules/dialogs/ConditionsVsPathwaysTopTable$RowTitlesModel/names a
-.method_map csplugins/activeModules/dialogs/ConditionsVsPathwaysTopTable$RowTitlesModel/getElementAt (I)Ljava/lang/Object; getElementAt
-.method_map csplugins/activeModules/dialogs/ConditionsVsPathwaysTopTable$RowTitlesModel/getSize ()I getSize
-.field_map csplugins/activeModules/dialogs/ConditionsVsPathwaysTopTable/columnWidth a
-.field_map csplugins/activeModules/dialogs/ConditionsVsPathwaysTopTable/rowTitleWidth if
-.class_map csplugins/activeModules/SubnetworkExpander$DoExpandSubnetwork a
-.field_map csplugins/activeModules/SubnetworkExpander$DoExpandSubnetwork/this$0 this$0
-.field_map csplugins/activeModules/SubnetworkExpander$DoExpandSubnetwork/old2new a
-.field_map csplugins/activeModules/SubnetworkExpander$DoExpandSubnetwork/upstreamNodes if
-.field_map csplugins/activeModules/SubnetworkExpander$DoExpandSubnetwork/allNodes do
-.field_map csplugins/activeModules/SubnetworkExpander$DoExpandSubnetwork/new2old for
-.method_map csplugins/activeModules/SubnetworkExpander$DoExpandSubnetwork/deleteNodeAndTransferEdges (Ly/base/Graph;Ly/base/Node;Ly/base/Node;)V a
-.method_map csplugins/activeModules/SubnetworkExpander$DoExpandSubnetwork/loadNodeList (Ljava/util/Hashtable;Ljava/io/File;)Z a
-.method_map csplugins/activeModules/SubnetworkExpander$DoExpandSubnetwork/findShortestPaths (Ly/base/Graph;Ly/base/Node;Ljava/util/Hashtable;)Ly/base/NodeList; a
-.method_map csplugins/activeModules/SubnetworkExpander$DoExpandSubnetwork/isPPedge (Ly/base/Edge;)Z a
-.method_map csplugins/activeModules/SubnetworkExpander$DoExpandSubnetwork/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.method_map csplugins/activeModules/SubnetworkExpander$DoExpandSubnetwork/copyGraph (Ly/base/Graph;Ly/base/Graph;Ljava/util/Hashtable;Ljava/util/Hashtable;)V a
-.method_map csplugins/activeModules/SubnetworkExpander$DoExpandSubnetwork/getPath (Ly/base/Node;Ly/base/NodeMap;Ly/base/NodeMap;)V a
-.class_map csplugins/activeModules/ActiveModulesUI$ScoreSubComponentAction a
-.field_map csplugins/activeModules/ActiveModulesUI$ScoreSubComponentAction/this$0 this$0
-.method_map csplugins/activeModules/ActiveModulesUI$ScoreSubComponentAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map csplugins/activeModules/ActiveModulesUI$LoadStateAction b
-.field_map csplugins/activeModules/ActiveModulesUI$LoadStateAction/this$0 this$0
-.method_map csplugins/activeModules/ActiveModulesUI$LoadStateAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map csplugins/activeModules/ActiveModulesUI$FindActivePathsAction c
-.field_map csplugins/activeModules/ActiveModulesUI$FindActivePathsAction/this$0 this$0
-.field_map csplugins/activeModules/ActiveModulesUI$FindActivePathsAction/cancelActivePathsFinding a
-.method_map csplugins/activeModules/ActiveModulesUI$FindActivePathsAction/cancelActivePathsFinding ()V cancelActivePathsFinding
-.method_map csplugins/activeModules/ActiveModulesUI$FindActivePathsAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.method_map csplugins/activeModules/ActiveModulesUI$FindActivePathsAction/setActivePathsParameters (Lcsplugins/activeModules/data/ActivePathFinderParameters;)V setActivePathsParameters
-.field_map csplugins/activeModules/ActivePathsFinderBridge/signifs a
-.field_map csplugins/activeModules/ActivePathsFinderBridge/ratios if
-.method_map csplugins/activeModules/ActivePathsFinderBridge/runNativeWithArraysOnSelected ([Ljava/lang/String;[Ljava/lang/String;[[Ljava/lang/String;[Ljava/lang/String;[Ljava/lang/String;[[F[[FLjava/lang/String;ZDDDIIIIIIIZZZZ)D runNativeWithArraysOnSelected
-.method_map csplugins/activeModules/ActivePathsFinderBridge/extractRatiosAndSignificances ()V a
-.method_map csplugins/activeModules/ActivePathsFinderBridge/extractEdgePairs (Ly/base/EdgeCursor;)[[Ljava/lang/String; a
-.method_map csplugins/activeModules/ActivePathsFinderBridge/runNativeWithArrays ([Ljava/lang/String;[[Ljava/lang/String;[Ljava/lang/String;[Ljava/lang/String;[[F[[FLjava/lang/String;ZDDDIIIIIIIZZZZ)V runNativeWithArrays
-.method_map csplugins/activeModules/ActivePathsFinderBridge/runNativeTest ()D runNativeTest
-.class_map csplugins/activeModules/ExpressionRandomizer$DoRandomizeAndRun a
-.field_map csplugins/activeModules/ExpressionRandomizer$DoRandomizeAndRun/this$0 this$0
-.field_map csplugins/activeModules/ExpressionRandomizer$DoRandomizeAndRun/cancelActivePathsFinding if
-.method_map csplugins/activeModules/ExpressionRandomizer$DoRandomizeAndRun/cancelActivePathsFinding ()V cancelActivePathsFinding
-.method_map csplugins/activeModules/ExpressionRandomizer$DoRandomizeAndRun/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.method_map csplugins/activeModules/ExpressionRandomizer$DoRandomizeAndRun/setActivePathsParameters (Lcsplugins/activeModules/data/ActivePathFinderParameters;)V setActivePathsParameters
-.class_map csplugins/activeModules/ExpressionRandomizer$DoRandomSubgraph b
-.field_map csplugins/activeModules/ExpressionRandomizer$DoRandomSubgraph/this$0 this$0
-.method_map csplugins/activeModules/ExpressionRandomizer$DoRandomSubgraph/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map csplugins/activeModules/ExpressionRandomizer$DoRandomizeGeneNames c
-.field_map csplugins/activeModules/ExpressionRandomizer$DoRandomizeGeneNames/this$0 this$0
-.method_map csplugins/activeModules/ExpressionRandomizer$DoRandomizeGeneNames/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map csplugins/activeModules/ExpressionRandomizer$nMapSorter d
-.field_map csplugins/activeModules/ExpressionRandomizer$nMapSorter/this$0 this$0
-.method_map csplugins/activeModules/ExpressionRandomizer$nMapSorter/compare (Ljava/lang/Object;Ljava/lang/Object;)I compare
-.class_map csplugins/activeModules/ExpressionRandomizer$DoRandomizeAndRunAndTabulate e
-.field_map csplugins/activeModules/ExpressionRandomizer$DoRandomizeAndRunAndTabulate/this$0 this$0
-.field_map csplugins/activeModules/ExpressionRandomizer$DoRandomizeAndRunAndTabulate/cancelActivePathsFinding do
-.method_map csplugins/activeModules/ExpressionRandomizer$DoRandomizeAndRunAndTabulate/cancelActivePathsFinding ()V cancelActivePathsFinding
-.method_map csplugins/activeModules/ExpressionRandomizer$DoRandomizeAndRunAndTabulate/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.method_map csplugins/activeModules/ExpressionRandomizer$DoRandomizeAndRunAndTabulate/setActivePathsParameters (Lcsplugins/activeModules/data/ActivePathFinderParameters;)V setActivePathsParameters
-.method_map csplugins/activeModules/ExpressionRandomizer/randomizeGeneNames ()V a
-.method_map csplugins/activeModules/ExpressionRandomizer/randomizeAndRunAndTabulate ()V if
-.method_map csplugins/activeModules/ExpressionRandomizer/randomizeAndRun ()V do
-.field_map csplugins/activeModules/ActivePathsCommandLineParser/activePathParameters a
-.field_map csplugins/activeModules/ActivePathsCommandLineParser/activePathParametersPresent if
-.field_map csplugins/activeModules/ActivePathsCommandLineParser/inputsError do
-.field_map csplugins/activeModules/ActivePathsCommandLineParser/saveAndExit for
-.method_map csplugins/activeModules/ActivePathsCommandLineParser/parseArgs ([Ljava/lang/String;)V a
-.class_map csplugins/activeModules/ActivePaths$ExpressionMenuListener a
-.field_map csplugins/activeModules/ActivePaths$ExpressionMenuListener/this$0 this$0
-.method_map csplugins/activeModules/ActivePaths$ExpressionMenuListener/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map csplugins/activeModules/ActivePaths$ActivePathControllerLauncherAction b
-.field_map csplugins/activeModules/ActivePaths$ActivePathControllerLauncherAction/this$0 this$0
-.method_map csplugins/activeModules/ActivePaths$ActivePathControllerLauncherAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.field_map csplugins/vectormath/DoubleArrayDataProvider/data a
-.field_map csplugins/vectormath/FloatArrayDataProvider/data if
 .package_map javax a
 .package_map javax/jnlp a
 .class_map javax/jnlp/PersistenceService a
@@ -9601,11 +9122,21 @@
 .method_map cytoscape/visual/tests/TestNewMappingsUI/addNodeWidthMapping (Lcytoscape/visual/NodeAppearanceCalculator;)V byte
 .method_map cytoscape/visual/tests/TestNewMappingsUI/addDiscreteEdgeLabelMapping (Lcytoscape/visual/EdgeAppearanceCalculator;)V new
 .method_map cytoscape/visual/tests/TestNewMappingsUI/addCanonicalNodeShapeMapping (Lcytoscape/visual/NodeAppearanceCalculator;)V case
-.class_map cytoscape/visual/calculators/AbstractCalculator$AttributeSelectorListener a
-.field_map cytoscape/visual/calculators/AbstractCalculator$AttributeSelectorListener/this$0 this$0
-.field_map cytoscape/visual/calculators/AbstractCalculator$AttributeSelectorListener/mapIndex a
-.field_map cytoscape/visual/calculators/AbstractCalculator$AttributeSelectorListener/network if
-.method_map cytoscape/visual/calculators/AbstractCalculator$AttributeSelectorListener/itemStateChanged (Ljava/awt/event/ItemEvent;)V itemStateChanged
+.class_map cytoscape/visual/calculators/AbstractCalculator$MappingListener a
+.field_map cytoscape/visual/calculators/AbstractCalculator$MappingListener/this$0 this$0
+.method_map cytoscape/visual/calculators/AbstractCalculator$MappingListener/stateChanged (Ljavax/swing/event/ChangeEvent;)V stateChanged
+.class_map cytoscape/visual/calculators/AbstractCalculator$CalculatorUI$AttributeSelectorListener a
+.field_map cytoscape/visual/calculators/AbstractCalculator$CalculatorUI$AttributeSelectorListener/mapperUI a
+.field_map cytoscape/visual/calculators/AbstractCalculator$CalculatorUI$AttributeSelectorListener/mapIndex if
+.field_map cytoscape/visual/calculators/AbstractCalculator$CalculatorUI$AttributeSelectorListener/parent do
+.field_map cytoscape/visual/calculators/AbstractCalculator$CalculatorUI$AttributeSelectorListener/yPos for
+.field_map cytoscape/visual/calculators/AbstractCalculator$CalculatorUI$AttributeSelectorListener/network int
+.field_map cytoscape/visual/calculators/AbstractCalculator$CalculatorUI$AttributeSelectorListener/this$1 this$1
+.method_map cytoscape/visual/calculators/AbstractCalculator$CalculatorUI$AttributeSelectorListener/itemStateChanged (Ljava/awt/event/ItemEvent;)V itemStateChanged
+.class_map cytoscape/visual/calculators/AbstractCalculator$CalculatorUI b
+.field_map cytoscape/visual/calculators/AbstractCalculator$CalculatorUI/this$0 this$0
+.field_map cytoscape/visual/calculators/AbstractCalculator$CalculatorUI/myGBG a
+.method_map cytoscape/visual/calculators/AbstractCalculator$CalculatorUI/access$000 (Lcytoscape/visual/calculators/AbstractCalculator$CalculatorUI;)Lcytoscape/visual/calculators/AbstractCalculator; access$000
 .field_map cytoscape/visual/calculators/AbstractCalculator/dupeCount a
 .class_map cytoscape/visual/ui/VizMapSizeTab$1 1
 .class_map cytoscape/visual/ui/VizMapSizeTab$LockCalcListener a
@@ -9699,21 +9230,55 @@
 .field_map cytoscape/visual/ui/VizMapUI$AttrSelector/bgColor if
 .method_map cytoscape/visual/ui/VizMapUI$AttrSelector/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
 .class_map cytoscape/visual/ui/VizMapUI$1 1
-.class_map cytoscape/visual/ui/VizMapUI$ApplyAction b
+.field_map cytoscape/visual/ui/VizMapUI$1/this$1 this$1
+.method_map cytoscape/visual/ui/VizMapUI$1/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
+.class_map cytoscape/visual/ui/VizMapUI$StyleSelector$DupeStyleListener a
+.field_map cytoscape/visual/ui/VizMapUI$StyleSelector$DupeStyleListener/this$1 this$1
+.method_map cytoscape/visual/ui/VizMapUI$StyleSelector$DupeStyleListener/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
+.class_map cytoscape/visual/ui/VizMapUI$StyleSelector$RenStyleListener b
+.field_map cytoscape/visual/ui/VizMapUI$StyleSelector$RenStyleListener/this$1 this$1
+.method_map cytoscape/visual/ui/VizMapUI$StyleSelector$RenStyleListener/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
+.class_map cytoscape/visual/ui/VizMapUI$StyleSelector$DefStyleListener c
+.field_map cytoscape/visual/ui/VizMapUI$StyleSelector$DefStyleListener/this$1 this$1
+.method_map cytoscape/visual/ui/VizMapUI$StyleSelector$DefStyleListener/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
+.class_map cytoscape/visual/ui/VizMapUI$StyleSelector$NewStyleListener d
+.field_map cytoscape/visual/ui/VizMapUI$StyleSelector$NewStyleListener/this$1 this$1
+.method_map cytoscape/visual/ui/VizMapUI$StyleSelector$NewStyleListener/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
+.class_map cytoscape/visual/ui/VizMapUI$StyleSelector$StyleSelectionListener e
+.field_map cytoscape/visual/ui/VizMapUI$StyleSelector$StyleSelectionListener/this$1 this$1
+.method_map cytoscape/visual/ui/VizMapUI$StyleSelector$StyleSelectionListener/itemStateChanged (Ljava/awt/event/ItemEvent;)V itemStateChanged
+.class_map cytoscape/visual/ui/VizMapUI$StyleSelector$RmStyleListener f
+.field_map cytoscape/visual/ui/VizMapUI$StyleSelector$RmStyleListener/this$1 this$1
+.method_map cytoscape/visual/ui/VizMapUI$StyleSelector$RmStyleListener/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
+.class_map cytoscape/visual/ui/VizMapUI$StyleSelector b
+.field_map cytoscape/visual/ui/VizMapUI$StyleSelector/styleDefNeedsUpdate a
+.field_map cytoscape/visual/ui/VizMapUI$StyleSelector/currentStyle if
+.field_map cytoscape/visual/ui/VizMapUI$StyleSelector/this$0 this$0
+.field_map cytoscape/visual/ui/VizMapUI$StyleSelector/catalog do
+.field_map cytoscape/visual/ui/VizMapUI$StyleSelector/styleComboBox for
+.field_map cytoscape/visual/ui/VizMapUI$StyleSelector/styleDefUI int
+.field_map cytoscape/visual/ui/VizMapUI$StyleSelector/styleComboModel new
+.field_map cytoscape/visual/ui/VizMapUI$StyleSelector/myself try
+.field_map cytoscape/visual/ui/VizMapUI$StyleSelector/styleGBG byte
+.field_map cytoscape/visual/ui/VizMapUI$StyleSelector/styleComboBoxDupe case
+.method_map cytoscape/visual/ui/VizMapUI$StyleSelector/resetStyles ()V a
+.method_map cytoscape/visual/ui/VizMapUI$StyleSelector/refreshStyleComboBox ()V if
+.method_map cytoscape/visual/ui/VizMapUI$StyleSelector/getToolbarComboBox ()Ljavax/swing/JComboBox; do
+.method_map cytoscape/visual/ui/VizMapUI$StyleSelector/access$200 (Lcytoscape/visual/ui/VizMapUI$StyleSelector;)Lcytoscape/visual/ui/VizMapUI; access$200
+.method_map cytoscape/visual/ui/VizMapUI$StyleSelector/getStyleName (Lcytoscape/visual/VisualStyle;)Ljava/lang/String; a
+.class_map cytoscape/visual/ui/VizMapUI$ApplyAction c
 .field_map cytoscape/visual/ui/VizMapUI$ApplyAction/this$0 this$0
 .method_map cytoscape/visual/ui/VizMapUI$ApplyAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/visual/ui/VizMapUI$CloseAction c
+.class_map cytoscape/visual/ui/VizMapUI$CloseAction d
 .field_map cytoscape/visual/ui/VizMapUI$CloseAction/this$0 this$0
 .method_map cytoscape/visual/ui/VizMapUI$CloseAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
 .field_map cytoscape/visual/ui/VizMapUI/attrSelectorPanel a
-.field_map cytoscape/visual/ui/VizMapUI/nodeCalc if
-.field_map cytoscape/visual/ui/VizMapUI/VMM do
-.field_map cytoscape/visual/ui/VizMapUI/initialized for
-.field_map cytoscape/visual/ui/VizMapUI/edgeCalc int
-.field_map cytoscape/visual/ui/VizMapUI/actionButtonsPanel new
-.field_map cytoscape/visual/ui/VizMapUI/mainPane try
-.field_map cytoscape/visual/ui/VizMapUI/tabPaneContainer byte
-.field_map cytoscape/visual/ui/VizMapUI/tabs case
+.field_map cytoscape/visual/ui/VizMapUI/initialized if
+.field_map cytoscape/visual/ui/VizMapUI/actionButtonsPanel do
+.field_map cytoscape/visual/ui/VizMapUI/mainPane for
+.field_map cytoscape/visual/ui/VizMapUI/tabPaneContainer int
+.field_map cytoscape/visual/ui/VizMapUI/mainGBG new
+.field_map cytoscape/visual/ui/VizMapUI/tabs try
 .class_map cytoscape/visual/ui/DefaultPanel$1 1
 .class_map cytoscape/visual/ui/DefaultPanel$BackColorListener a
 .field_map cytoscape/visual/ui/DefaultPanel$BackColorListener/this$0 this$0
@@ -9721,44 +9286,51 @@
 .field_map cytoscape/visual/ui/DefaultPanel/backColor a
 .field_map cytoscape/visual/ui/DefaultPanel/vmm if
 .method_map cytoscape/visual/ui/MiscDialog/locateImage (Ljava/lang/String;)Ljava/net/URL; a
-.class_map cytoscape/visual/ui/VizMapAttrTab$NewCalcListener a
-.field_map cytoscape/visual/ui/VizMapAttrTab$NewCalcListener/this$0 this$0
-.method_map cytoscape/visual/ui/VizMapAttrTab$NewCalcListener/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/visual/ui/VizMapAttrTab$RenCalcListener b
+.class_map cytoscape/visual/ui/VizMapAttrTab$RenCalcListener a
 .field_map cytoscape/visual/ui/VizMapAttrTab$RenCalcListener/this$0 this$0
 .method_map cytoscape/visual/ui/VizMapAttrTab$RenCalcListener/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/visual/ui/VizMapAttrTab$RmCalcListener c
-.field_map cytoscape/visual/ui/VizMapAttrTab$RmCalcListener/this$0 this$0
-.method_map cytoscape/visual/ui/VizMapAttrTab$RmCalcListener/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/visual/ui/VizMapAttrTab$calcComboSelectionListener d
+.class_map cytoscape/visual/ui/VizMapAttrTab$calcComboSelectionListener b
 .field_map cytoscape/visual/ui/VizMapAttrTab$calcComboSelectionListener/this$0 this$0
 .method_map cytoscape/visual/ui/VizMapAttrTab$calcComboSelectionListener/itemStateChanged (Ljava/awt/event/ItemEvent;)V itemStateChanged
-.class_map cytoscape/visual/ui/VizMapAttrTab$CatalogListener e
-.field_map cytoscape/visual/ui/VizMapAttrTab$CatalogListener/this$0 this$0
-.method_map cytoscape/visual/ui/VizMapAttrTab$CatalogListener/stateChanged (Ljavax/swing/event/ChangeEvent;)V stateChanged
-.class_map cytoscape/visual/ui/VizMapAttrTab$1 1
-.class_map cytoscape/visual/ui/VizMapAttrTab$DupeCalcListener f
+.class_map cytoscape/visual/ui/VizMapAttrTab$DupeCalcListener c
 .field_map cytoscape/visual/ui/VizMapAttrTab$DupeCalcListener/this$0 this$0
 .method_map cytoscape/visual/ui/VizMapAttrTab$DupeCalcListener/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/visual/ui/VizMapAttrTab$DefaultItemChangedListener g
+.class_map cytoscape/visual/ui/VizMapAttrTab$DefaultItemChangedListener d
 .field_map cytoscape/visual/ui/VizMapAttrTab$DefaultItemChangedListener/this$0 this$0
 .method_map cytoscape/visual/ui/VizMapAttrTab$DefaultItemChangedListener/itemStateChanged (Ljava/awt/event/ItemEvent;)V itemStateChanged
+.class_map cytoscape/visual/ui/VizMapAttrTab$CalculatorUIListener e
+.field_map cytoscape/visual/ui/VizMapAttrTab$CalculatorUIListener/this$0 this$0
+.method_map cytoscape/visual/ui/VizMapAttrTab$CalculatorUIListener/stateChanged (Ljavax/swing/event/ChangeEvent;)V stateChanged
+.class_map cytoscape/visual/ui/VizMapAttrTab$RmCalcListener f
+.field_map cytoscape/visual/ui/VizMapAttrTab$RmCalcListener/this$0 this$0
+.method_map cytoscape/visual/ui/VizMapAttrTab$RmCalcListener/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
+.class_map cytoscape/visual/ui/VizMapAttrTab$NewCalcListener g
+.field_map cytoscape/visual/ui/VizMapAttrTab$NewCalcListener/this$0 this$0
+.method_map cytoscape/visual/ui/VizMapAttrTab$NewCalcListener/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
+.class_map cytoscape/visual/ui/VizMapAttrTab$TabContainerListener h
+.field_map cytoscape/visual/ui/VizMapAttrTab$TabContainerListener/this$0 this$0
+.field_map cytoscape/visual/ui/VizMapAttrTab$TabContainerListener/tabIndex a
+.method_map cytoscape/visual/ui/VizMapAttrTab$TabContainerListener/stateChanged (Ljavax/swing/event/ChangeEvent;)V stateChanged
+.class_map cytoscape/visual/ui/VizMapAttrTab$1 1
+.class_map cytoscape/visual/ui/VizMapAttrTab$CatalogListener i
+.field_map cytoscape/visual/ui/VizMapAttrTab$CatalogListener/this$0 this$0
+.method_map cytoscape/visual/ui/VizMapAttrTab$CatalogListener/stateChanged (Ljavax/swing/event/ChangeEvent;)V stateChanged
 .field_map cytoscape/visual/ui/VizMapAttrTab/nodeCalc do
-.field_map cytoscape/visual/ui/VizMapAttrTab/calcComboBox for
-.field_map cytoscape/visual/ui/VizMapAttrTab/currentCalculator int
-.field_map cytoscape/visual/ui/VizMapAttrTab/n new
-.field_map cytoscape/visual/ui/VizMapAttrTab/calcPanel try
-.field_map cytoscape/visual/ui/VizMapAttrTab/calculators byte
-.field_map cytoscape/visual/ui/VizMapAttrTab/mapPanelGBG case
-.field_map cytoscape/visual/ui/VizMapAttrTab/imageIcon char
-.field_map cytoscape/visual/ui/VizMapAttrTab/calcContainer else
-.field_map cytoscape/visual/ui/VizMapAttrTab/catalog goto
-.field_map cytoscape/visual/ui/VizMapAttrTab/defaultValueDisplayer long
-.field_map cytoscape/visual/ui/VizMapAttrTab/VMM null
-.field_map cytoscape/visual/ui/VizMapAttrTab/edgeCalc void
-.field_map cytoscape/visual/ui/VizMapAttrTab/type b
-.field_map cytoscape/visual/ui/VizMapAttrTab/defaultObj c
-.field_map cytoscape/visual/ui/VizMapAttrTab/mainUIDialog d
+.field_map cytoscape/visual/ui/VizMapAttrTab/calcContainer for
+.field_map cytoscape/visual/ui/VizMapAttrTab/VMM int
+.field_map cytoscape/visual/ui/VizMapAttrTab/type new
+.field_map cytoscape/visual/ui/VizMapAttrTab/edgeCalc try
+.field_map cytoscape/visual/ui/VizMapAttrTab/mainUIDialog byte
+.field_map cytoscape/visual/ui/VizMapAttrTab/defaultObj case
+.field_map cytoscape/visual/ui/VizMapAttrTab/mapPanelGBG char
+.field_map cytoscape/visual/ui/VizMapAttrTab/catalog else
+.field_map cytoscape/visual/ui/VizMapAttrTab/n goto
+.field_map cytoscape/visual/ui/VizMapAttrTab/imageIcon long
+.field_map cytoscape/visual/ui/VizMapAttrTab/calculators null
+.field_map cytoscape/visual/ui/VizMapAttrTab/currentCalculator void
+.field_map cytoscape/visual/ui/VizMapAttrTab/calcPanel b
+.field_map cytoscape/visual/ui/VizMapAttrTab/calcComboBox c
+.field_map cytoscape/visual/ui/VizMapAttrTab/defaultValueDisplayer d
 .method_map cytoscape/visual/ui/VizMapAttrTab/getCalculatorName (Lcytoscape/visual/calculators/Calculator;)Ljava/lang/String; a
 .method_map cytoscape/visual/ui/VizMapAttrTab/setupCalcComboBox ()V a
 .method_map cytoscape/visual/ui/VizMapAttrTab/getCalculators (B)Ljava/util/Collection; a
@@ -9835,7 +9407,6 @@
 .field_map cytoscape/visual/mappings/ContinuousMapping/myUI a
 .field_map cytoscape/visual/mappings/ContinuousMapping/mapType if
 .field_map cytoscape/visual/mappings/ContinuousMapping/needsUpdate do
-.field_map cytoscape/visual/mappings/ContinuousMapping/UICreated for
 .method_map cytoscape/visual/mappings/ContinuousMapping/getRangeValue (Ljava/lang/Number;)Ljava/lang/Object; a
 .method_map cytoscape/visual/mappings/ContinuousMapping/compareValues (Ljava/lang/Number;Ljava/lang/Number;)I a
 .method_map cytoscape/visual/mappings/ContinuousMapping/testClass (Ljava/lang/Object;Ljava/lang/String;)V a
@@ -9843,9 +9414,7 @@
 .field_map cytoscape/visual/mappings/DiscreteMapping$ValueChangeListener/this$0 this$0
 .field_map cytoscape/visual/mappings/DiscreteMapping$ValueChangeListener/key a
 .method_map cytoscape/visual/mappings/DiscreteMapping$ValueChangeListener/itemStateChanged (Ljava/awt/event/ItemEvent;)V itemStateChanged
-.field_map cytoscape/visual/mappings/DiscreteMapping/myUI int
-.field_map cytoscape/visual/mappings/DiscreteMapping/UICreated new
-.method_map cytoscape/visual/mappings/DiscreteMapping/resetScrollPane ()V a
+.method_map cytoscape/visual/mappings/DiscreteMapping/resetScrollPane (Ljavax/swing/JPanel;Ljavax/swing/JPanel;)V a
 .field_map cytoscape/visual/NodeAppearanceCalculator/nodeSizeLocked a
 .method_map cytoscape/visual/CalculatorIO/addProperties (Ljava/util/Properties;Ljava/util/Collection;Ljava/lang/String;)V a
 .method_map cytoscape/visual/CalculatorIO/handleCalculators (Ljava/util/Map;Lcytoscape/visual/CalculatorCatalog;ZLjava/lang/String;Ljava/lang/String;)V a
@@ -9866,14 +9435,17 @@
 .field_map cytoscape/visual/OldStyleCalculatorIO$1/val$nameEntry val$nameEntry
 .method_map cytoscape/visual/OldStyleCalculatorIO$1/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
 .field_map cytoscape/visual/OldStyleCalculatorIO/isDone a
+.method_map cytoscape/visual/OldStyleCalculatorIO/loadNodeAppearanceCalculator (Ljava/util/Properties;Lcytoscape/visual/CalculatorCatalog;Lcytoscape/visual/VisualStyle;Lcytoscape/visual/VisualStyle;)V a
 .method_map cytoscape/visual/OldStyleCalculatorIO/translateDiscrete (Ljava/util/Properties;Ljava/lang/String;Ljava/lang/String;)Ljava/util/Properties; a
 .method_map cytoscape/visual/OldStyleCalculatorIO/loadCalculator (Ljava/util/Properties;Lcytoscape/visual/CalculatorCatalog;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V a
+.method_map cytoscape/visual/OldStyleCalculatorIO/loadEdgeAppearanceCalculator (Ljava/util/Properties;Lcytoscape/visual/CalculatorCatalog;Lcytoscape/visual/VisualStyle;Lcytoscape/visual/VisualStyle;)V if
 .method_map cytoscape/visual/OldStyleCalculatorIO/checkName (Lcytoscape/visual/CalculatorCatalog;)Z a
 .method_map cytoscape/visual/OldStyleCalculatorIO/getNewProperties (Ljava/util/Properties;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/util/Properties; a
-.method_map cytoscape/visual/OldStyleCalculatorIO/loadEdgeAppearanceCalculator (Ljava/util/Properties;Lcytoscape/visual/CalculatorCatalog;)V a
-.method_map cytoscape/visual/OldStyleCalculatorIO/loadNodeAppearanceCalculator (Ljava/util/Properties;Lcytoscape/visual/CalculatorCatalog;)V if
+.method_map cytoscape/visual/OldStyleCalculatorIO/loadGlobalAppearanceCalculator (Ljava/util/Properties;Lcytoscape/visual/CalculatorCatalog;Lcytoscape/visual/VisualStyle;Lcytoscape/visual/VisualStyle;)V do
 .method_map cytoscape/visual/OldStyleCalculatorIO/translateContinuous (Ljava/util/Properties;Ljava/lang/String;Ljava/lang/String;)Ljava/util/Properties; if
 .method_map cytoscape/visual/OldStyleCalculatorIO/setDone ()V a
+.method_map cytoscape/visual/CalculatorCatalog/addNodeAppearanceCalculator (Lcytoscape/visual/NodeAppearanceCalculator;)V a
+.method_map cytoscape/visual/CalculatorCatalog/addEdgeAppearanceCalculator (Lcytoscape/visual/EdgeAppearanceCalculator;)V a
 .class_map cytoscape/dialogs/ExpressionDataPopupTable$MultipleConditionsTableModel a
 .field_map cytoscape/dialogs/ExpressionDataPopupTable$MultipleConditionsTableModel/this$0 this$0
 .field_map cytoscape/dialogs/ExpressionDataPopupTable$MultipleConditionsTableModel/data a
@@ -9938,11 +9510,20 @@
 .method_map cytoscape/dialogs/ColorScaleTable$MyTableModel/getColumnCount ()I getColumnCount
 .method_map cytoscape/dialogs/ColorScaleTable$MyTableModel/getValueAt (II)Ljava/lang/Object; getValueAt
 .method_map cytoscape/dialogs/ColorScaleTable/setUpColorRenderer (Ljavax/swing/JTable;)V a
-.method_map cytoscape/dialogs/GridBagGroup/init ()V a
 .field_map cytoscape/dialogs/GeneralColorDialogListener/returnColor a
 .field_map cytoscape/dialogs/GeneralColorDialogListener/label if
 .field_map cytoscape/dialogs/GeneralColorDialogListener/component do
 .field_map cytoscape/dialogs/GeneralColorDialogListener/title for
+.method_map cytoscape/dialogs/GridBagGroup/init ()V a
+.class_map cytoscape/dialogs/RotateSelectionDialog$DismissAction a
+.field_map cytoscape/dialogs/RotateSelectionDialog$DismissAction/this$0 this$0
+.method_map cytoscape/dialogs/RotateSelectionDialog$DismissAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
+.class_map cytoscape/dialogs/RotateSelectionDialog$RotateSelectionAngleListener b
+.field_map cytoscape/dialogs/RotateSelectionDialog$RotateSelectionAngleListener/this$0 this$0
+.field_map cytoscape/dialogs/RotateSelectionDialog$RotateSelectionAngleListener/last a
+.field_map cytoscape/dialogs/RotateSelectionDialog$RotateSelectionAngleListener/window if
+.field_map cytoscape/dialogs/RotateSelectionDialog$RotateSelectionAngleListener/graph do
+.method_map cytoscape/dialogs/RotateSelectionDialog$RotateSelectionAngleListener/stateChanged (Ljavax/swing/event/ChangeEvent;)V stateChanged
 .class_map cytoscape/dialogs/EdgeTextPanel$BoxAction a
 .field_map cytoscape/dialogs/EdgeTextPanel$BoxAction/this$0 this$0
 .field_map cytoscape/dialogs/EdgeTextPanel$BoxAction/ms a
@@ -9978,15 +9559,6 @@
 .method_map cytoscape/dialogs/EdgeTextPanel$UseMappingListener/itemStateChanged (Ljava/awt/event/ItemEvent;)V itemStateChanged
 .method_map cytoscape/dialogs/EdgeTextPanel/setupTheMap (Ljava/util/Map;Ljava/lang/String;)Z a
 .method_map cytoscape/dialogs/EdgeTextPanel/prepTheBox (Ljavax/swing/DefaultComboBoxModel;Ljava/util/Map;Ljava/lang/String;)Z a
-.class_map cytoscape/dialogs/RotateSelectionDialog$DismissAction a
-.field_map cytoscape/dialogs/RotateSelectionDialog$DismissAction/this$0 this$0
-.method_map cytoscape/dialogs/RotateSelectionDialog$DismissAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/dialogs/RotateSelectionDialog$RotateSelectionAngleListener b
-.field_map cytoscape/dialogs/RotateSelectionDialog$RotateSelectionAngleListener/this$0 this$0
-.field_map cytoscape/dialogs/RotateSelectionDialog$RotateSelectionAngleListener/last a
-.field_map cytoscape/dialogs/RotateSelectionDialog$RotateSelectionAngleListener/window if
-.field_map cytoscape/dialogs/RotateSelectionDialog$RotateSelectionAngleListener/graph do
-.method_map cytoscape/dialogs/RotateSelectionDialog$RotateSelectionAngleListener/stateChanged (Ljavax/swing/event/ChangeEvent;)V stateChanged
 .class_map cytoscape/dialogs/PopupTextArea$DismissAction a
 .field_map cytoscape/dialogs/PopupTextArea$DismissAction/this$0 this$0
 .method_map cytoscape/dialogs/PopupTextArea$DismissAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
@@ -10065,19 +9637,6 @@
 .method_map cytoscape/dialogs/IntegerEntryField$PositiveIntegerListener/focusGained (Ljava/awt/event/FocusEvent;)V focusGained
 .method_map cytoscape/dialogs/IntegerEntryField$PositiveIntegerListener/focusLost (Ljava/awt/event/FocusEvent;)V focusLost
 .method_map cytoscape/dialogs/MiscDialog/locateImage (Ljava/lang/String;)Ljava/net/URL; a
-.class_map cytoscape/dialogs/ColorNodesFromFileDialog$DismissAction a
-.field_map cytoscape/dialogs/ColorNodesFromFileDialog$DismissAction/this$0 this$0
-.method_map cytoscape/dialogs/ColorNodesFromFileDialog$DismissAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/dialogs/ColorNodesFromFileDialog$UpdateFillColorListener b
-.field_map cytoscape/dialogs/ColorNodesFromFileDialog$UpdateFillColorListener/this$0 this$0
-.method_map cytoscape/dialogs/ColorNodesFromFileDialog$UpdateFillColorListener/propertyChange (Ljava/beans/PropertyChangeEvent;)V propertyChange
-.class_map cytoscape/dialogs/ColorNodesFromFileDialog$ApplyAction c
-.field_map cytoscape/dialogs/ColorNodesFromFileDialog$ApplyAction/this$0 this$0
-.method_map cytoscape/dialogs/ColorNodesFromFileDialog$ApplyAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/dialogs/ColorNodesFromFileDialog$BrowseButtonAction d
-.field_map cytoscape/dialogs/ColorNodesFromFileDialog$BrowseButtonAction/this$0 this$0
-.field_map cytoscape/dialogs/ColorNodesFromFileDialog$BrowseButtonAction/field a
-.method_map cytoscape/dialogs/ColorNodesFromFileDialog$BrowseButtonAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
 .class_map cytoscape/dialogs/JointIntegerEntry$LockedItemListener a
 .field_map cytoscape/dialogs/JointIntegerEntry$LockedItemListener/this$0 this$0
 .method_map cytoscape/dialogs/JointIntegerEntry$LockedItemListener/itemStateChanged (Ljava/awt/event/ItemEvent;)V itemStateChanged
@@ -10166,6 +9725,20 @@
 .field_map cytoscape/filters/Filter/flaggableF a
 .method_map cytoscape/filters/AttributeFilter/prepClassHandling ()V a
 .field_map cytoscape/filters/StableFilter/f if
+.method_map cytoscape/jarLoader/JarPluginDirectoryAction/getDir ()Z a
+.field_map cytoscape/jarLoader/JarLoaderCommandLineParser/activePathParametersPresent a
+.method_map cytoscape/jarLoader/JarLoaderCommandLineParser/parseArgs ([Ljava/lang/String;)V a
+.method_map cytoscape/jarLoader/JarPluginLoaderAction/getFile ()Z a
+.field_map cytoscape/jarLoader/JarClassLoader/url a
+.field_map cytoscape/jarLoader/JarClassLoader/cytoscapeWindow if
+.field_map cytoscape/jarLoader/JarClassLoader/urlString do
+.class_map cytoscape/jarLoader/JarLoaderAction$JarClassLoader a
+.field_map cytoscape/jarLoader/JarLoaderAction$JarClassLoader/this$0 this$0
+.field_map cytoscape/jarLoader/JarLoaderAction$JarClassLoader/urlString a
+.method_map cytoscape/jarLoader/JarLoaderAction$JarClassLoader/invokeClass (Ljava/lang/String;[Ljava/lang/String;)V a
+.method_map cytoscape/jarLoader/JarLoaderAction$JarClassLoader/getClass (Ljava/lang/String;)Ljava/lang/Class; a
+.method_map cytoscape/jarLoader/JarLoaderAction$JarClassLoader/getMainClassName ()Ljava/lang/String; a
+.method_map cytoscape/jarLoader/JarLoaderAction/getFile ()Z a
 .field_map cytoscape/vizmap/FlatInterpolator/useLower a
 .field_map cytoscape/vizmap/DiscreteMapper/valueMap a
 .field_map cytoscape/vizmap/AttributeMapperPropertiesAdapter/categories a
@@ -10301,6 +9874,12 @@
 .field_map cytoscape/util/Exec$1/val$stdoutSB val$stdoutSB
 .method_map cytoscape/util/Exec$1/run ()V run
 .field_map cytoscape/util/MutableInt/i a
+.field_map cytoscape/util/CyFileFilter/HIDDEN_FILE a
+.field_map cytoscape/util/CyFileFilter/TYPE_UNKNOWN if
+.field_map cytoscape/util/CyFileFilter/description do
+.field_map cytoscape/util/CyFileFilter/filters for
+.field_map cytoscape/util/CyFileFilter/useExtensionsInDescription int
+.field_map cytoscape/util/CyFileFilter/fullDescription new
 .field_map cytoscape/util/MutableBool/b a
 .method_map cytoscape/layout/GroupWiseNodeGrouper/getFastDistanceMatrix ()[[F a
 .method_map cytoscape/layout/GroupWiseNodeGrouper/condenseDistanceMatrix ([[F)V a
@@ -10338,62 +9917,64 @@
 .method_map cytoscape/layout/HierarchicalLayoutDialog/addDoubleField (Ljavax/swing/JPanel;Ljava/lang/String;D)Ljavax/swing/JFormattedTextField; a
 .method_map cytoscape/CytoscapeConfig/createFile (Ljava/lang/String;Ljava/lang/String;)Ljava/io/File; a
 .method_map cytoscape/CytoscapeConfig/readOnePropertyFile (Ljava/util/Properties;Ljava/io/File;)Ljava/util/Properties; a
-.method_map cytoscape/CytoscapeConfig/readPropertyFileAsText (Ljava/lang/String;)Ljava/util/Properties; a
 .method_map cytoscape/GraphObjAttributes/writeObject (Ljava/io/ObjectOutputStream;)V a
 .field_map cytoscape/CytoscapeVersion/versionString a
 .field_map cytoscape/CytoscapeVersion/dateString if
 .field_map cytoscape/CytoscapeVersion/briefHistory do
-.class_map cytoscape/CytoscapeWindow$EdgeManipulationAction a
+.class_map cytoscape/CytoscapeWindow$LoadEdgeAttributesAction a
+.field_map cytoscape/CytoscapeWindow$LoadEdgeAttributesAction/this$0 this$0
+.method_map cytoscape/CytoscapeWindow$LoadEdgeAttributesAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
+.class_map cytoscape/CytoscapeWindow$EdgeManipulationAction b
 .field_map cytoscape/CytoscapeWindow$EdgeManipulationAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$EdgeManipulationAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$MainFilterDialogAction b
+.class_map cytoscape/CytoscapeWindow$LoadNodeAttributesAction c
+.field_map cytoscape/CytoscapeWindow$LoadNodeAttributesAction/this$0 this$0
+.method_map cytoscape/CytoscapeWindow$LoadNodeAttributesAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
+.class_map cytoscape/CytoscapeWindow$MainFilterDialogAction d
 .field_map cytoscape/CytoscapeWindow$MainFilterDialogAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$MainFilterDialogAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$DeselectAllAction c
+.class_map cytoscape/CytoscapeWindow$DeselectAllAction e
 .field_map cytoscape/CytoscapeWindow$DeselectAllAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$DeselectAllAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$InvertSelectedNodesAction d
+.class_map cytoscape/CytoscapeWindow$InvertSelectedNodesAction f
 .field_map cytoscape/CytoscapeWindow$InvertSelectedNodesAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$InvertSelectedNodesAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$RotateSelectedNodesAction e
+.class_map cytoscape/CytoscapeWindow$RotateSelectedNodesAction g
 .field_map cytoscape/CytoscapeWindow$RotateSelectedNodesAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$RotateSelectedNodesAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$EdgeTypeDialogAction f
+.class_map cytoscape/CytoscapeWindow$EdgeTypeDialogAction h
 .field_map cytoscape/CytoscapeWindow$EdgeTypeDialogAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$EdgeTypeDialogAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$DisplayAttributesOfSelectedNodesAction g
+.class_map cytoscape/CytoscapeWindow$DisplayAttributesOfSelectedNodesAction i
 .field_map cytoscape/CytoscapeWindow$DisplayAttributesOfSelectedNodesAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$DisplayAttributesOfSelectedNodesAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$SaveVisibleNodesAction h
+.class_map cytoscape/CytoscapeWindow$SaveVisibleNodesAction j
 .field_map cytoscape/CytoscapeWindow$SaveVisibleNodesAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$SaveVisibleNodesAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$UndoAction i
+.class_map cytoscape/CytoscapeWindow$UndoAction k
 .field_map cytoscape/CytoscapeWindow$UndoAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$UndoAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$MenuFilterAction j
+.class_map cytoscape/CytoscapeWindow$MenuFilterAction l
 .field_map cytoscape/CytoscapeWindow$MenuFilterAction/this$0 this$0
-.class_map cytoscape/CytoscapeWindow$InvertSelectedEdgesAction k
+.class_map cytoscape/CytoscapeWindow$InvertSelectedEdgesAction m
 .field_map cytoscape/CytoscapeWindow$InvertSelectedEdgesAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$InvertSelectedEdgesAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$DeleteSelectedAction l
+.class_map cytoscape/CytoscapeWindow$DeleteSelectedAction n
 .field_map cytoscape/CytoscapeWindow$DeleteSelectedAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$DeleteSelectedAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$SetVisualPropertiesAction m
+.class_map cytoscape/CytoscapeWindow$SetVisualPropertiesAction o
 .field_map cytoscape/CytoscapeWindow$SetVisualPropertiesAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$SetVisualPropertiesAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$NewWindowSelectedNodesEdgesAction n
+.class_map cytoscape/CytoscapeWindow$NewWindowSelectedNodesEdgesAction p
 .field_map cytoscape/CytoscapeWindow$NewWindowSelectedNodesEdgesAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$NewWindowSelectedNodesEdgesAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$SaveSelectedNodesAction o
+.class_map cytoscape/CytoscapeWindow$SaveSelectedNodesAction q
 .field_map cytoscape/CytoscapeWindow$SaveSelectedNodesAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$SaveSelectedNodesAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$LayoutSelectionAction p
+.class_map cytoscape/CytoscapeWindow$LayoutSelectionAction r
 .field_map cytoscape/CytoscapeWindow$LayoutSelectionAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$LayoutSelectionAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$ColorNodesFromFile q
-.field_map cytoscape/CytoscapeWindow$ColorNodesFromFile/this$0 this$0
-.method_map cytoscape/CytoscapeWindow$ColorNodesFromFile/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$SelectedSubGraphMaker r
+.class_map cytoscape/CytoscapeWindow$SelectedSubGraphMaker s
 .field_map cytoscape/CytoscapeWindow$SelectedSubGraphMaker/this$0 this$0
 .field_map cytoscape/CytoscapeWindow$SelectedSubGraphMaker/parentNodeAttributes a
 .field_map cytoscape/CytoscapeWindow$SelectedSubGraphMaker/newEdgeAttributes if
@@ -10405,152 +9986,153 @@
 .method_map cytoscape/CytoscapeWindow$SelectedSubGraphMaker/getNodeAttributes ()Lcytoscape/GraphObjAttributes; a
 .method_map cytoscape/CytoscapeWindow$SelectedSubGraphMaker/getSubGraph ()Ly/view/Graph2D; if
 .method_map cytoscape/CytoscapeWindow$SelectedSubGraphMaker/getEdgeAttributes ()Lcytoscape/GraphObjAttributes; do
-.class_map cytoscape/CytoscapeWindow$RandomLayoutAction s
+.class_map cytoscape/CytoscapeWindow$RandomLayoutAction t
 .field_map cytoscape/CytoscapeWindow$RandomLayoutAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$RandomLayoutAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$DisplayDebugLog t
+.class_map cytoscape/CytoscapeWindow$DisplayDebugLog u
 .field_map cytoscape/CytoscapeWindow$DisplayDebugLog/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$DisplayDebugLog/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$ShowAllAction u
+.class_map cytoscape/CytoscapeWindow$ShowAllAction v
 .field_map cytoscape/CytoscapeWindow$ShowAllAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$ShowAllAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$DeleteSelectionAction v
+.class_map cytoscape/CytoscapeWindow$DeleteSelectionAction w
 .field_map cytoscape/CytoscapeWindow$DeleteSelectionAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$DeleteSelectionAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$LoadInteractionFileAction w
+.class_map cytoscape/CytoscapeWindow$LoadInteractionFileAction x
 .field_map cytoscape/CytoscapeWindow$LoadInteractionFileAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$LoadInteractionFileAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$LoadBioDataServerAction x
+.class_map cytoscape/CytoscapeWindow$LoadBioDataServerAction y
 .field_map cytoscape/CytoscapeWindow$LoadBioDataServerAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$LoadBioDataServerAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$LoadExpressionMatrixAction y
+.class_map cytoscape/CytoscapeWindow$LoadExpressionMatrixAction z
 .field_map cytoscape/CytoscapeWindow$LoadExpressionMatrixAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$LoadExpressionMatrixAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$ShowConditionAction z
+.class_map cytoscape/CytoscapeWindow$ShowConditionAction aa
 .field_map cytoscape/CytoscapeWindow$ShowConditionAction/this$0 this$0
 .field_map cytoscape/CytoscapeWindow$ShowConditionAction/conditionName a
 .method_map cytoscape/CytoscapeWindow$ShowConditionAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$HierarchicalLayoutAction aa
+.class_map cytoscape/CytoscapeWindow$HierarchicalLayoutAction ab
 .field_map cytoscape/CytoscapeWindow$HierarchicalLayoutAction/this$0 this$0
 .field_map cytoscape/CytoscapeWindow$HierarchicalLayoutAction/hDialog a
 .method_map cytoscape/CytoscapeWindow$HierarchicalLayoutAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$FitContentAction ab
+.class_map cytoscape/CytoscapeWindow$FitContentAction ac
 .field_map cytoscape/CytoscapeWindow$FitContentAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$FitContentAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$ZoomAction ac
+.class_map cytoscape/CytoscapeWindow$ZoomAction ad
 .field_map cytoscape/CytoscapeWindow$ZoomAction/this$0 this$0
 .field_map cytoscape/CytoscapeWindow$ZoomAction/factor a
 .method_map cytoscape/CytoscapeWindow$ZoomAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$CloneGraphInNewWindowAction ad
+.class_map cytoscape/CytoscapeWindow$CloneGraphInNewWindowAction ae
 .field_map cytoscape/CytoscapeWindow$CloneGraphInNewWindowAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$CloneGraphInNewWindowAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$EmbeddedLayoutAction ae
+.class_map cytoscape/CytoscapeWindow$EmbeddedLayoutAction af
 .field_map cytoscape/CytoscapeWindow$EmbeddedLayoutAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$EmbeddedLayoutAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
 .class_map cytoscape/CytoscapeWindow$1 1
 .field_map cytoscape/CytoscapeWindow$1/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$1/windowClosing (Ljava/awt/event/WindowEvent;)V windowClosing
-.class_map cytoscape/CytoscapeWindow$ExitAction af
+.class_map cytoscape/CytoscapeWindow$ExitAction ag
 .field_map cytoscape/CytoscapeWindow$ExitAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$ExitAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$HideSelectedAction ag
+.class_map cytoscape/CytoscapeWindow$HideSelectedAction ah
 .field_map cytoscape/CytoscapeWindow$HideSelectedAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$HideSelectedAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$EditModeAction ah
+.class_map cytoscape/CytoscapeWindow$EditModeAction ai
 .field_map cytoscape/CytoscapeWindow$EditModeAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$EditModeAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$ZoomSelectedAction ai
+.class_map cytoscape/CytoscapeWindow$ZoomSelectedAction aj
 .field_map cytoscape/CytoscapeWindow$ZoomSelectedAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$ZoomSelectedAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$ReadOnlyModeAction aj
+.class_map cytoscape/CytoscapeWindow$ReadOnlyModeAction ak
 .field_map cytoscape/CytoscapeWindow$ReadOnlyModeAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$ReadOnlyModeAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$SelectFirstNeighborsAction ak
+.class_map cytoscape/CytoscapeWindow$SelectFirstNeighborsAction al
 .field_map cytoscape/CytoscapeWindow$SelectFirstNeighborsAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$SelectFirstNeighborsAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
 .class_map cytoscape/CytoscapeWindow$ExpFileChooser$CopyExpListener a
 .field_map cytoscape/CytoscapeWindow$ExpFileChooser$CopyExpListener/this$1 this$1
 .method_map cytoscape/CytoscapeWindow$ExpFileChooser$CopyExpListener/itemStateChanged (Ljava/awt/event/ItemEvent;)V itemStateChanged
-.class_map cytoscape/CytoscapeWindow$ExpFileChooser al
+.class_map cytoscape/CytoscapeWindow$ExpFileChooser am
 .field_map cytoscape/CytoscapeWindow$ExpFileChooser/this$0 this$0
 .field_map cytoscape/CytoscapeWindow$ExpFileChooser/jcb a
 .field_map cytoscape/CytoscapeWindow$ExpFileChooser/copyToAttribs if
 .method_map cytoscape/CytoscapeWindow$ExpFileChooser/createDialog (Ljava/awt/Component;)Ljavax/swing/JDialog; createDialog
 .method_map cytoscape/CytoscapeWindow$ExpFileChooser/getWhetherToCopyExpToAttribs ()Z a
-.class_map cytoscape/CytoscapeWindow$RedoAction am
+.class_map cytoscape/CytoscapeWindow$RedoAction an
 .field_map cytoscape/CytoscapeWindow$RedoAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$RedoAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$ReadOnlyGraphMode an
+.class_map cytoscape/CytoscapeWindow$ReadOnlyGraphMode ao
 .field_map cytoscape/CytoscapeWindow$ReadOnlyGraphMode/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$ReadOnlyGraphMode/getEdgeTip (Ly/base/Edge;)Ljava/lang/String; if
 .method_map cytoscape/CytoscapeWindow$ReadOnlyGraphMode/getNodeTip (Ly/base/Node;)Ljava/lang/String; if
-.class_map cytoscape/CytoscapeWindow$LayoutAction ao
+.class_map cytoscape/CytoscapeWindow$LayoutAction ap
 .field_map cytoscape/CytoscapeWindow$LayoutAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$LayoutAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$CursorTesterAction ap
+.class_map cytoscape/CytoscapeWindow$CursorTesterAction aq
 .field_map cytoscape/CytoscapeWindow$CursorTesterAction/this$0 this$0
 .field_map cytoscape/CytoscapeWindow$CursorTesterAction/busy a
 .method_map cytoscape/CytoscapeWindow$CursorTesterAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$SaveAsInteractionsAction aq
+.class_map cytoscape/CytoscapeWindow$SaveAsInteractionsAction ar
 .field_map cytoscape/CytoscapeWindow$SaveAsInteractionsAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$SaveAsInteractionsAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$HideSelectedNodesAction ar
+.class_map cytoscape/CytoscapeWindow$HideSelectedNodesAction as
 .field_map cytoscape/CytoscapeWindow$HideSelectedNodesAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$HideSelectedNodesAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$PrintAction as
+.class_map cytoscape/CytoscapeWindow$PrintAction at
 .field_map cytoscape/CytoscapeWindow$PrintAction/this$0 this$0
 .field_map cytoscape/CytoscapeWindow$PrintAction/pageFormat a
 .field_map cytoscape/CytoscapeWindow$PrintAction/printOptions if
 .method_map cytoscape/CytoscapeWindow$PrintAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$LoadGMLFileAction at
+.class_map cytoscape/CytoscapeWindow$LoadGMLFileAction au
 .field_map cytoscape/CytoscapeWindow$LoadGMLFileAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$LoadGMLFileAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$ListFromFileSelectionAction au
+.class_map cytoscape/CytoscapeWindow$ListFromFileSelectionAction av
 .field_map cytoscape/CytoscapeWindow$ListFromFileSelectionAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$ListFromFileSelectionAction/useSelectionFile ()Z a
 .method_map cytoscape/CytoscapeWindow$ListFromFileSelectionAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$AlignVerticalAction av
+.class_map cytoscape/CytoscapeWindow$AlignVerticalAction aw
 .field_map cytoscape/CytoscapeWindow$AlignVerticalAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$AlignVerticalAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$HideSelectedEdgesAction aw
+.class_map cytoscape/CytoscapeWindow$HideSelectedEdgesAction ax
 .field_map cytoscape/CytoscapeWindow$HideSelectedEdgesAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$HideSelectedEdgesAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$CloseWindowAction ax
+.class_map cytoscape/CytoscapeWindow$CloseWindowAction ay
 .field_map cytoscape/CytoscapeWindow$CloseWindowAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$CloseWindowAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$NewWindowSelectedNodesOnlyAction ay
+.class_map cytoscape/CytoscapeWindow$NewWindowSelectedNodesOnlyAction az
 .field_map cytoscape/CytoscapeWindow$NewWindowSelectedNodesOnlyAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$NewWindowSelectedNodesOnlyAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$AlignHorizontalAction az
+.class_map cytoscape/CytoscapeWindow$AlignHorizontalAction a0
 .field_map cytoscape/CytoscapeWindow$AlignHorizontalAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$AlignHorizontalAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$OrganicLayoutAction a0
+.class_map cytoscape/CytoscapeWindow$OrganicLayoutAction a1
 .field_map cytoscape/CytoscapeWindow$OrganicLayoutAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$OrganicLayoutAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$CreateEdgeMode a1
+.class_map cytoscape/CytoscapeWindow$CreateEdgeMode a2
 .field_map cytoscape/CytoscapeWindow$CreateEdgeMode/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$CreateEdgeMode/edgeCreated (Ly/base/Edge;)V a
-.class_map cytoscape/CytoscapeWindow$SaveAsGMLAction a2
+.class_map cytoscape/CytoscapeWindow$SaveAsGMLAction a3
 .field_map cytoscape/CytoscapeWindow$SaveAsGMLAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$SaveAsGMLAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$AlphabeticalSelectionAction a3
+.class_map cytoscape/CytoscapeWindow$AlphabeticalSelectionAction a4
 .field_map cytoscape/CytoscapeWindow$AlphabeticalSelectionAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$AlphabeticalSelectionAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$ReduceEquivalentNodesAction a4
+.class_map cytoscape/CytoscapeWindow$ReduceEquivalentNodesAction a5
 .field_map cytoscape/CytoscapeWindow$ReduceEquivalentNodesAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$ReduceEquivalentNodesAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$CircularLayoutAction a5
+.class_map cytoscape/CytoscapeWindow$CircularLayoutAction a6
 .field_map cytoscape/CytoscapeWindow$CircularLayoutAction/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$CircularLayoutAction/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
-.class_map cytoscape/CytoscapeWindow$EditGraphMode a6
+.class_map cytoscape/CytoscapeWindow$EditGraphMode a7
 .field_map cytoscape/CytoscapeWindow$EditGraphMode/this$0 this$0
 .method_map cytoscape/CytoscapeWindow$EditGraphMode/getEdgeTip (Ly/base/Edge;)Ljava/lang/String; if
 .method_map cytoscape/CytoscapeWindow$EditGraphMode/edgeCreated (Ly/base/Edge;)V do
 .method_map cytoscape/CytoscapeWindow$EditGraphMode/nodeCreated (Ly/base/Node;)V do
 .method_map cytoscape/CytoscapeWindow$EditGraphMode/getNodeTip (Ly/base/Node;)Ljava/lang/String; if
 .method_map cytoscape/CytoscapeWindow/addRandomDouble (Lcytoscape/visual/mappings/DiscreteMapping;Ljava/lang/String;)V a
+.method_map cytoscape/CytoscapeWindow/loadCalculatorCatalog ()V a
 .method_map cytoscape/CytoscapeWindow/addRandomColor (Lcytoscape/visual/mappings/DiscreteMapping;Ljava/lang/String;)V if
-.method_map cytoscape/CytoscapeWindow/loadVizMapper ()V a
+.method_map cytoscape/CytoscapeWindow/loadVizMapper ()V if
 .field_map gnu/getopt/Getopt/_messages a
 .field_map gnu/getopt/Getopt/endparse if
 .field_map gnu/getopt/LongOpt/_messages a
@@ -21007,6 +20589,7 @@
 # WARNING: cytoscape.visual.mappings.DiscreteMapping shouldn't be obfuscated: it is referenced as cytoscape.visual.mappings.DiscreteMapping.class from cytoscape/CytoscapeWindow
 # WARNING: cytoscape.visual.mappings.ContinuousMapping shouldn't be obfuscated: it is referenced as cytoscape.visual.mappings.ContinuousMapping.class from cytoscape/CytoscapeWindow
 # WARNING: cytoscape.visual.mappings.PassThroughMapping shouldn't be obfuscated: it is referenced as cytoscape.visual.mappings.PassThroughMapping.class from cytoscape/CytoscapeWindow
+# WARNING: cytoscape.data.readers.FileReadingAbstractions shouldn't be obfuscated: it is referenced as cytoscape.data.readers.FileReadingAbstractions.class from cytoscape/data/readers/FileReadingAbstractions
 # WARNING: cytoscape.data.annotation.Annotation shouldn't be obfuscated: it is referenced as cytoscape.data.annotation.Annotation.class from cytoscape/data/servers/BioDataServerRmi_Stub
 # WARNING: cytoscape.data.annotation.AnnotationDescription shouldn't be obfuscated: it is referenced as cytoscape.data.annotation.AnnotationDescription.class from cytoscape/data/servers/BioDataServerRmi_Stub
 # WARNING: cytoscape.data.servers.BioDataServerInterface shouldn't be obfuscated: it is referenced as cytoscape.data.servers.BioDataServerInterface.class from cytoscape/data/servers/BioDataServerRmi_Stub
@@ -21020,6 +20603,7 @@
 # WARNING: javax.swing.JButton shouldn't be obfuscated: it is referenced as javax.swing.JButton.class from cytoscape/dialogs/ExpressionDataPopupTable
 # WARNING: java.lang.Double shouldn't be obfuscated: it is referenced as java.lang.Double.class from cytoscape/filters/AttributeFilter
 # WARNING: java.lang.Integer shouldn't be obfuscated: it is referenced as java.lang.Integer.class from cytoscape/filters/AttributeFilter
+# WARNING: cytoscape.AbstractPlugin shouldn't be obfuscated: it is referenced as cytoscape.AbstractPlugin.class from cytoscape/jarLoader/JarClassLoader
 # WARNING: java.lang.Double shouldn't be obfuscated: it is referenced as java.lang.Double.class from cytoscape/layout/HierarchicalLayoutDialog
 # WARNING: cytoscape.SelectedSubGraphFactory shouldn't be obfuscated: it is referenced as cytoscape.SelectedSubGraphFactory.class from cytoscape/SelectedSubGraphFactory
 # WARNING: cytoscape.visual.calculators.Calculator shouldn't be obfuscated: it is referenced as cytoscape.visual.calculators.Calculator.class from cytoscape/visual/calculators/CalculatorFactory
@@ -21047,8 +20631,6 @@
 # WARNING: cytoscape.visual.calculators.EdgeColorCalculator shouldn't be obfuscated: it is referenced as cytoscape.visual.calculators.EdgeColorCalculator.class from cytoscape/visual/OldStyleCalculatorIO
 # WARNING: cytoscape.visual.calculators.EdgeLineTypeCalculator shouldn't be obfuscated: it is referenced as cytoscape.visual.calculators.EdgeLineTypeCalculator.class from cytoscape/visual/OldStyleCalculatorIO
 # WARNING: cytoscape.visual.calculators.EdgeArrowCalculator shouldn't be obfuscated: it is referenced as cytoscape.visual.calculators.EdgeArrowCalculator.class from cytoscape/visual/OldStyleCalculatorIO
-# WARNING: cytoscape.AbstractPlugin shouldn't be obfuscated: it is referenced as cytoscape.AbstractPlugin.class from csplugins/jarLoader/JarClassLoader
-# WARNING: java.awt.Color shouldn't be obfuscated: it is referenced as java.awt.Color.class from csplugins/activeModules/dialogs/ConditionsVsPathwaysBottomTable
 # WARNING: javax.swing.JInternalFrame shouldn't be obfuscated: it is referenced as javax.swing.JInternalFrame.class from y/util/DetailedMessagePanel
 # WARNING: java.lang.String shouldn't be obfuscated: it is referenced as java.lang.String.class from org/apache/html/dom/HTMLDocumentImpl
 # WARNING: org.apache.html.dom.HTMLDocumentImpl shouldn't be obfuscated: it is referenced as org.apache.html.dom.HTMLDocumentImpl.class from org/apache/html/dom/HTMLDocumentImpl
