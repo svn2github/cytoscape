@@ -109,8 +109,8 @@ public class VizMapperCategories implements AttributeMapperCategories {
 
 	returnVal.put( NODE_FILL_COLOR, new Color(255,255,255) );
 	returnVal.put( NODE_BORDER_COLOR, new Color(0,0,0) );
-	returnVal.put( NODE_HEIGHT, new Integer(30) );
-	returnVal.put( NODE_WIDTH, new Integer(70) );
+	returnVal.put( NODE_HEIGHT, new Double(30) );
+	returnVal.put( NODE_WIDTH, new Double(70) );
 	returnVal.put( NODE_SHAPE, new Byte(ShapeNodeRealizer.RECT) );
 	returnVal.put( EDGE_COLOR, new Color(0,0,0) );
 	returnVal.put( BG_COLOR, new Color(255,255,255) );
