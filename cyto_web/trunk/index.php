@@ -1,4 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<? include "config.php"; ?>
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<title> Cytoscape: Analyzing and Visualizing Biological Network Data </title>
@@ -166,8 +167,7 @@
 <td>
 <P>
 <?php
-	$option = $_REQUEST["option"];
-	if ($option == "2") {
+	if ($news_option == "rss") {
 		include "feed.php";
 	} else {
 		include "news.php";
