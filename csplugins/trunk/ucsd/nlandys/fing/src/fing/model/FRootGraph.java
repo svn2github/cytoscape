@@ -3,6 +3,7 @@ package fing.model;
 import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.graph.dynamic.util.DynamicGraphFactory;
 import cytoscape.util.intr.IntEnumerator;
+import cytoscape.util.intr.IntIterator;
 import cytoscape.util.intr.IntHash;
 import cytoscape.util.intr.IntIterator;
 import cytoscape.util.intr.MinIntHeap;
@@ -95,11 +96,11 @@ class FRootGraph implements RootGraph
     final IntEnumerator edgesEnum = edgeBucket.elements();
     return new FGraphPerspective
       (this,
-       new IntEnumerator() {
-         public int numRemaining() { return nodesEnum.numRemaining(); }
+       new IntIterator() {
+         public boolean hasNext() { return nodesEnum.numRemaining() > 0; }
          public int nextInt() { return ~(nodesEnum.nextInt()); } },
-       new IntEnumerator() {
-         public int numRemaining() { return edgesEnum.numRemaining(); }
+       new IntIterator() {
+         public boolean hasNext() { return edgesEnum.numRemaining() > 0; }
          public int nextInt() { return ~(edgesEnum.nextInt()); } }); }
 
   public void ensureCapacity(int nodes, int edges)

@@ -4,6 +4,7 @@ import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.graph.dynamic.util.DynamicGraphFactory;
 import cytoscape.util.intr.IntArray;
 import cytoscape.util.intr.IntEnumerator;
+import cytoscape.util.intr.IntIterator;
 import cytoscape.util.intr.IntHash;
 import cytoscape.util.intr.IntIterator;
 import cytoscape.util.intr.IntIntHash;
@@ -40,14 +41,14 @@ class FGraphPerspective implements GraphPerspective
   public Object clone()
   {
     final IntEnumerator nativeNodes = m_graph.nodes();
-    final IntEnumerator rootGraphNodeInx = new IntEnumerator() {
-        public int numRemaining() { return nativeNodes.numRemaining(); }
+    final IntIterator rootGraphNodeInx = new IntIterator() {
+        public boolean hasNext() { return nativeNodes.numRemaining() > 0; }
         public int nextInt() {
           return m_nativeToRootNodeInxMap.getIntAtIndex
             (nativeNodes.nextInt()); } };
     final IntEnumerator nativeEdges = m_graph.edges();
-    final IntEnumerator rootGraphEdgeInx = new IntEnumerator() {
-        public int numRemaining() { return nativeEdges.numRemaining(); }
+    final IntIterator rootGraphEdgeInx = new IntIterator() {
+        public boolean hasNext() { return nativeEdges.numRemaining() > 0; }
         public int nextInt() {
           return m_nativeToRootEdgeInxMap.getIntAtIndex
             (nativeEdges.nextInt()); } };
@@ -374,11 +375,10 @@ class FGraphPerspective implements GraphPerspective
     if (otherPersp.m_root != thisPersp.m_root) return this;
     final IntEnumerator thisNativeNodes = thisPersp.m_graph.nodes();
     final IntEnumerator otherNativeNodes = otherPersp.m_graph.nodes();
-    final IntEnumerator rootGraphNodeInx =
-      new IntEnumerator() {
-        public int numRemaining() {
-          return thisNativeNodes.numRemaining() +
-            otherNativeNodes.numRemaining(); }
+    final IntIterator rootGraphNodeInx = new IntIterator() {
+        public boolean hasNext() {
+          return thisNativeNodes.numRemaining() > 0 ||
+            otherNativeNodes.numRemaining() > 0; }
         public int nextInt() {
           if (thisNativeNodes.numRemaining() > 0)
             return thisPersp.m_nativeToRootNodeInxMap.getIntAtIndex
@@ -388,11 +388,10 @@ class FGraphPerspective implements GraphPerspective
               (otherNativeNodes.nextInt()); } };
     final IntEnumerator thisNativeEdges = thisPersp.m_graph.edges();
     final IntEnumerator otherNativeEdges = otherPersp.m_graph.edges();
-    final IntEnumerator rootGraphEdgeInx =
-      new IntEnumerator() {
-        public int numRemaining() {
-          return thisNativeEdges.numRemaining() +
-            otherNativeEdges.numRemaining(); }
+    final IntIterator rootGraphEdgeInx = new IntIterator() {
+        public boolean hasNext() {
+          return thisNativeEdges.numRemaining() > 0 ||
+            otherNativeEdges.numRemaining() > 0; }
         public int nextInt() {
           if (thisNativeEdges.numRemaining() > 0)
             return thisPersp.m_nativeToRootEdgeInxMap.getIntAtIndex
@@ -899,8 +898,8 @@ class FGraphPerspective implements GraphPerspective
   // rootGraphEdgeInx.  All indices must correspond to existing nodes
   // and edges.  The indices lists must be non-repeating.
   FGraphPerspective(FRootGraph root,
-                    IntEnumerator rootGraphNodeInx,
-                    IntEnumerator rootGraphEdgeInx)
+                    IntIterator rootGraphNodeInx,
+                    IntIterator rootGraphEdgeInx)
   {
     m_graph = DynamicGraphFactory.instantiateDynamicGraph();
     m_root = root;
@@ -917,12 +916,12 @@ class FGraphPerspective implements GraphPerspective
                                m_rootToNativeNodeInxMap,
                                m_rootToNativeEdgeInxMap, m_lis, m_heap);
     m_changeSniffer = new RootGraphChangeSniffer(m_weeder);
-    while (rootGraphNodeInx.numRemaining() > 0) {
+    while (rootGraphNodeInx.hasNext()) {
       final int rootNodeInx = rootGraphNodeInx.nextInt();
       final int nativeNodeInx = m_graph.createNode();
       m_nativeToRootNodeInxMap.setIntAtIndex(rootNodeInx, nativeNodeInx);
       m_rootToNativeNodeInxMap.put(~rootNodeInx, nativeNodeInx); }
-    while (rootGraphEdgeInx.numRemaining() > 0) {
+    while (rootGraphEdgeInx.hasNext()) {
       final int rootEdgeInx = rootGraphEdgeInx.nextInt();
       final int rootEdgeSourceInx = m_root.getEdgeSourceIndex(rootEdgeInx);
       final int rootEdgeTargetInx = m_root.getEdgeTargetIndex(rootEdgeInx);
