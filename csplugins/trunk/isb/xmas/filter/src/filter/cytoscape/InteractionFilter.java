@@ -13,7 +13,7 @@ import javax.swing.event.SwingPropertyChangeSupport;
 
 import cytoscape.*;
 import cytoscape.data.*;
-
+import cytoscape.view.CyWindow;
 import giny.model.*;
 
 import ViolinStrings.Strings;
@@ -40,7 +40,7 @@ public class InteractionFilter
   //----------------------------------------//
   // Cytoscape specific Variables
   //----------------------------------------//
-  protected GraphPerspective myPerspective;
+  protected CyWindow cyWindow;
 
 
   //----------------------------------------//
@@ -57,11 +57,11 @@ public class InteractionFilter
   /**
    * Creates a new InteractionFilter
    */  
-  public InteractionFilter ( GraphPerspective myPerspective,  
+  public InteractionFilter ( CyWindow cyWindow,  
                                    Filter filter, 
                                    String target,
                                    String identifier ) {
-    this.myPerspective = myPerspective;
+    this.cyWindow = cyWindow;
     this.filter = filter;
     this.target = target;  
     this.identifier =identifier;
@@ -105,6 +105,7 @@ public class InteractionFilter
 						Node node = (Node)object;
 						//get the list of all relevant edges
 						List adjacentEdges;
+						GraphPerspective myPerspective = cyWindow.getView().getGraphPerspective();
 						if(target == SOURCE){
 									adjacentEdges = myPerspective.getAdjacentEdgesList(node, true, false, true);	
 						}
@@ -130,7 +131,7 @@ public class InteractionFilter
 		}
   
   public Object clone () {
-    return new InteractionFilter ( myPerspective,filter,target,identifier+"_new" );
+    return new InteractionFilter ( cyWindow,filter,target,identifier+"_new" );
   }
   
   public SwingPropertyChangeSupport getSwingPropertyChangeSupport() {

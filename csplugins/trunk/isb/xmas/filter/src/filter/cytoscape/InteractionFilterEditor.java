@@ -13,6 +13,7 @@ import javax.swing.event.SwingPropertyChangeSupport;
 import cytoscape.*;
 import cytoscape.data.*;
 import giny.model.GraphPerspective;
+import cytoscape.view.CyWindow;
 import filter.view.*;
 import filter.model.*;
 
@@ -40,7 +41,7 @@ implements ActionListener {
 				protected InteractionFilter filter;
 
 				protected Set filters;
-				protected GraphPerspective myPerspective;
+				protected CyWindow cyWindow;
 
 				protected String DEFAULT_FILTER_NAME = "NodeInteraction: ";
 				protected String RESET_FITLER_NAME;
@@ -51,10 +52,10 @@ implements ActionListener {
 				protected String DEFAULT_TARGET = InteractionFilter.SOURCE;
 				protected String RESET_TARGET;
 
-				public InteractionFilterEditor ( GraphPerspective myPerspective,Set filters ) {
+				public InteractionFilterEditor ( CyWindow cyWindow,Set filters ) {
 								super();
 								this.filters = filters;
-								this.myPerspective = myPerspective;
+								this.cyWindow = cyWindow;
 								identifier = "Node Interactions";
 								setBorder( new TitledBorder( "Select nodes based on adjacent edges" ) );
 								setLayout( new BorderLayout() );
@@ -77,12 +78,14 @@ implements ActionListener {
 
 								JPanel all_panel = new JPanel();
 							
+								all_panel.add(new JLabel("Select nodes which are the "));
 								targetBox = new JComboBox();
 								targetBox.addItem(InteractionFilter.SOURCE);
 								targetBox.addItem(InteractionFilter.TARGET);
 								targetBox.addActionListener(this);
 								all_panel.add( targetBox );
 								
+								all_panel.add(new JLabel(" of at least one edge which passes the filter "));	
 								
 								filterBox = new JComboBox();
 								filterBox.addActionListener(this);
@@ -136,7 +139,7 @@ implements ActionListener {
 								if ( target == null || currentFilter == null || nameField.getText() == null ) {
 												return null;
 								}else{
-												return new InteractionFilter( myPerspective,currentFilter, target, nameField.getText() );
+												return new InteractionFilter( cyWindow,currentFilter, target, nameField.getText() );
 								}
 				}
 

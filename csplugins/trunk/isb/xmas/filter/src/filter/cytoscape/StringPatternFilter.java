@@ -11,7 +11,8 @@ import java.beans.*;
 import javax.swing.event.SwingPropertyChangeSupport;
 
 import cytoscape.*;
-import cytoscape.data.*;
+import cytoscape.data.GraphObjAttributes;
+import cytoscape.view.CyWindow;
 
 import giny.model.*;
 
@@ -33,6 +34,8 @@ public class StringPatternFilter
 		protected Class NODE_CLASS;
 		protected Class EDGE_CLASS;
 		
+		public static String NODE="Node";
+		public static String EDGE="Edge";
   public static String SEARCH_STRING_EVENT = "SEARCH_STRING_EVENT";
   public static String SELECTED_ATTRIBUTE_EVENT = "SELECTED_ATTRIBUTE_EVENT";
   public static String FILTER_NAME_EVENT = "FILTER_NAME_EVENT";
@@ -42,9 +45,7 @@ public class StringPatternFilter
   //----------------------------------------//
   // Cytoscape specific Variables
   //----------------------------------------//
-  protected CyNetwork network;
-  protected GraphObjAttributes objectAttributes;
-
+		protected CyWindow cyWindow;
 
   //----------------------------------------//
   // Needed Variables
@@ -60,29 +61,24 @@ public class StringPatternFilter
   /**
    * Creates a new StringPatternFilter
    */  
-  public StringPatternFilter ( CyNetwork network,
-										Class classType,
+  public StringPatternFilter ( CyWindow cyWindow,
+										String classString,
                             String selectedAttribute, 
                             String searchString,
                             String identifier ) {
-    this.network = network;
-				this.classType = classType;
+    this.cyWindow = cyWindow;
+				//this.classType = classType;
 				try{
 								NODE_CLASS = Class.forName("giny.model.Node");
 								EDGE_CLASS = Class.forName("giny.model.Edge");
 				}catch(Exception e){
 								e.printStackTrace();
 				}
-				if(classType.equals(NODE_CLASS)){
-								this.objectAttributes = network.getNodeAttributes();
-				}
-				else{
-								this.objectAttributes = network.getEdgeAttributes();
-				}
-    this.selectedAttribute = selectedAttribute;  
+				this.selectedAttribute = selectedAttribute;  
     this.searchString = searchString;
     this.identifier =identifier;
-  }
+				setClassType(classString); 
+		}
   
   //----------------------------------------//
   // Implements Filter
@@ -116,11 +112,25 @@ public class StringPatternFilter
    */
   public boolean passesFilter ( Object object ) {
     String value = "";
-				if ( classType.isInstance(object)) {
-      value = (String)objectAttributes.getValue( selectedAttribute,objectAttributes.getCanonicalName(object) );
+				if (!classType.isInstance(object)) {
+								return false;
 				}
-
-
+				GraphObjAttributes objectAttributes = null;
+				if(classType.equals(NODE_CLASS)){
+								objectAttributes = cyWindow.getNetwork().getNodeAttributes();
+				}
+				else{
+								objectAttributes = cyWindow.getNetwork().getEdgeAttributes();
+				}
+			
+				String name = objectAttributes.getCanonicalName(object);
+				if(name == null){
+								return false;
+				}
+				value = (String)objectAttributes.getValue( selectedAttribute,name );
+				if(value == null){
+								return false;
+				}
 
 				String[] pattern = searchString.split("\\s");
 				for ( int p = 0; p < pattern.length; ++p ) {
@@ -146,7 +156,7 @@ public class StringPatternFilter
   }
   
   public Object clone () {
-    return new StringPatternFilter ( network, classType,selectedAttribute, searchString, identifier+"_new" );
+    return new StringPatternFilter ( cyWindow, getClassType(),selectedAttribute, searchString, identifier+"_new" );
   }
   
   public SwingPropertyChangeSupport getSwingPropertyChangeSupport() {
@@ -166,7 +176,7 @@ public class StringPatternFilter
     } else if ( e.getPropertyName() == SELECTED_ATTRIBUTE_EVENT ) {
       setSelectedAttribute( ( String )e.getNewValue() );
     } else if (e.getPropertyName() == CLASS_TYPE_EVENT)  {
-						setClassType((Class)e.getNewValue());
+						setClassType((String)e.getNewValue());
 				}
   }
   
@@ -197,16 +207,26 @@ public class StringPatternFilter
   }
 
   public void fireSelectedAttributeModified () {
-    pcs.firePropertyChange( SELECTED_ATTRIBUTE_EVENT, null, selectedAttribute );
-  }
-
-		public void setClassType(Class newType){
-						this.classType = newType;
-						pcs.firePropertyChange(CLASS_TYPE_EVENT,null,newType);
+						pcs.firePropertyChange( SELECTED_ATTRIBUTE_EVENT, null, selectedAttribute );
 		}
 
-		public Class getClassType(){
-						return classType;
+		public void setClassType(String classString){
+						if(classString == NODE){
+										classType = NODE_CLASS;
+						}
+						else{
+										classType = EDGE_CLASS;
+						}
+						pcs.firePropertyChange(CLASS_TYPE_EVENT,null,classType);
+		}
+
+		public String getClassType(){
+						if(classType == NODE_CLASS){
+										return NODE;
+						}
+						else{
+										return EDGE;
+						}
 		}
 		
   

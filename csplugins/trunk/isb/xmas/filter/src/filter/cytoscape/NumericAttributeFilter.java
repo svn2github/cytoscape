@@ -12,7 +12,8 @@ import javax.swing.event.SwingPropertyChangeSupport;
 
 import cytoscape.*;
 import cytoscape.data.*;
-
+import cytoscape.view.CyWindow;
+import cytoscape.data.GraphObjAttributes;
 import giny.model.*;
 
 import ViolinStrings.Strings;
@@ -36,6 +37,8 @@ public class NumericAttributeFilter
 		public static String EQUAL = "=";
 		public static String LESS = "<";
 		public static String GREATER = ">";
+		public static String NODE = "Node";
+		public static String EDGE = "Edge";
 		
   public static String SEARCH_NUMBER_EVENT = "SEARCH_STRING_EVENT";
   public static String SELECTED_ATTRIBUTE_EVENT = "SELECTED_ATTRIBUTE_EVENT";
@@ -47,8 +50,7 @@ public class NumericAttributeFilter
   //----------------------------------------//
   // Cytoscape specific Variables
   //----------------------------------------//
-  protected CyNetwork network;
-  protected GraphObjAttributes objectAttributes;
+  protected CyWindow cyWindow;
 
 
   //----------------------------------------//
@@ -65,30 +67,24 @@ public class NumericAttributeFilter
   /**
    * Creates a new NumericAttributeFilter
    */  
-  public NumericAttributeFilter ( CyNetwork network,
+  public NumericAttributeFilter ( CyWindow cyWindow,
 										String comparison,
-										Class classType,
+										String classString,
                             String selectedAttribute, 
                             Number searchNumber,
                             String identifier ) {
-    this.network = network;
+    this.cyWindow = cyWindow;
 				this.comparison = comparison;
-				this.classType = classType;
 				try{
 								NODE_CLASS = Class.forName("giny.model.Node");
 								EDGE_CLASS = Class.forName("giny.model.Edge");
 				}catch(Exception e){
 								e.printStackTrace();
 				}
-				if(classType.equals(NODE_CLASS)){
-								this.objectAttributes = network.getNodeAttributes();
-				}
-				else{
-								this.objectAttributes = network.getEdgeAttributes();
-				}
     this.selectedAttribute = selectedAttribute;  
     this.searchNumber = searchNumber;
     this.identifier =identifier;
+				setClassType(classString);
   }
   
   //----------------------------------------//
@@ -125,7 +121,18 @@ public class NumericAttributeFilter
 				if ( !classType.isInstance(object)) {
       return false;
 				}
-				Number value = (Number)objectAttributes.getValue( selectedAttribute,objectAttributes.getCanonicalName(object) );
+				GraphObjAttributes objectAttributes = null;
+				if(classType.equals(NODE_CLASS)){
+								objectAttributes = cyWindow.getNetwork().getNodeAttributes();
+				}
+				else{
+								objectAttributes = cyWindow.getNetwork().getEdgeAttributes();
+				}
+				String name = objectAttributes.getCanonicalName(object);
+				if(name == null){
+								return false;
+				}
+				Number value = (Number)objectAttributes.getValue( selectedAttribute,name );
 				if( value == null){
 								return false;
 				}
@@ -151,16 +158,17 @@ public class NumericAttributeFilter
   }
   
   public boolean equals ( Object other_object ) {
-    if ( other_object instanceof NumericAttributeFilter ) {
+    /*if ( other_object instanceof NumericAttributeFilter ) {
       if ( ( ( NumericAttributeFilter )other_object).getSearchNumber().equals( getSearchNumber() ) ) {
         return true;
       }
     }
-    return false;
+    return false;*/
+						return super.equals(other_object);
   }
   
   public Object clone () {
-    return new NumericAttributeFilter ( network, comparison,classType,selectedAttribute, searchNumber, identifier+"_new" );
+    return new NumericAttributeFilter ( cyWindow, comparison,getClassType(),selectedAttribute, searchNumber, identifier+"_new" );
   }
   
   public SwingPropertyChangeSupport getSwingPropertyChangeSupport() {
@@ -179,7 +187,7 @@ public class NumericAttributeFilter
     } else if ( e.getPropertyName() == SELECTED_ATTRIBUTE_EVENT ) {
       setSelectedAttribute( ( String )e.getNewValue() );
     } else if (e.getPropertyName() == CLASS_TYPE_EVENT)  {
-						setClassType((Class)e.getNewValue());
+						setClassType((String)e.getNewValue());
 				} else if (e.getPropertyName() == COMPARISON_EVENT){
 								setComparison((String)e.getNewValue());
 				}
@@ -215,13 +223,22 @@ public class NumericAttributeFilter
     pcs.firePropertyChange( SELECTED_ATTRIBUTE_EVENT, null, selectedAttribute );
   }
 
-		public void setClassType(Class newType){
-						this.classType = newType;
-						pcs.firePropertyChange(CLASS_TYPE_EVENT,null,newType);
+		public void setClassType(String classString){
+						if(classString == NODE){
+										this.classType = NODE_CLASS;
+						}else{
+										this.classType = EDGE_CLASS;
+						}
+						
+						pcs.firePropertyChange(CLASS_TYPE_EVENT,null,classString);
 		}
 
-		public Class getClassType(){
-						return classType;
+		public String getClassType(){
+						if(classType == NODE_CLASS){
+										return NODE;
+						}else{
+										return EDGE;
+						}
 		}
 
 		public void setComparison(String comparison){

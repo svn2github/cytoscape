@@ -12,6 +12,7 @@ import javax.swing.event.SwingPropertyChangeSupport;
 
 import cytoscape.*;
 import cytoscape.data.*;
+import cytoscape.view.CyWindow;
 
 import giny.model.GraphPerspective;
 
@@ -40,7 +41,7 @@ implements ActionListener {
 	protected JTextField distanceField;
 	protected JTextField countField;
 	protected Set filters;
-	protected GraphPerspective myPerspective;
+	protected CyWindow cyWindow;
 	protected NodeTopologyFilter filter;	
 	protected String DEFAULT_FILTER_NAME = "NodeTopology: ";
 	protected String RESET_FITLER_NAME;
@@ -61,10 +62,10 @@ implements ActionListener {
 	protected Class NUMBER_CLASS;
 	protected Class DEFAULT_CLASS; 
 
-	public NodeTopologyFilterEditor ( GraphPerspective myPerspective,Set filters ) {
+	public NodeTopologyFilterEditor ( CyWindow cyWindow,Set filters ) {
 		super();
 		this.filters = filters;
-		this.myPerspective = myPerspective; 
+		this.cyWindow = cyWindow; 
 		identifier = "Topology Filter";
 		setBorder( new TitledBorder( "Node Topology Filter - Select nodes based on network topology" ) );
 		setLayout(new BorderLayout());
@@ -147,7 +148,7 @@ implements ActionListener {
 		if ( currentFilter == null || nameField.getText() == null ) {
 			return null;
 		}
-		return new NodeTopologyFilter( myPerspective, currentCount, currentDistance,currentFilter, nameField.getText() );
+		return new NodeTopologyFilter( cyWindow, currentCount, currentDistance,currentFilter, nameField.getText() );
 	}
 
 	/**

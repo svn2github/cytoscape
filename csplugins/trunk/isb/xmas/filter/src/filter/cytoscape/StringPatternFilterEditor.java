@@ -11,8 +11,8 @@ import java.beans.*;
 import javax.swing.event.SwingPropertyChangeSupport;
 
 import cytoscape.*;
-import cytoscape.data.*;
-
+import cytoscape.data.GraphObjAttributes;
+import cytoscape.view.CyWindow;
 import filter.view.*;
 import filter.model.*;
 
@@ -43,28 +43,34 @@ public class StringPatternFilterEditor
 
   protected StringPatternFilter filter;
 
-  protected CyNetwork network;
-  protected GraphObjAttributes objectAttributes;
-
+		protected CyWindow cyWindow;
   protected String DEFAULT_SEARCH_STRING = "";
   protected String RESET_SEARCH_STRING;
 
-  protected String DEFAULT_FILTER_NAME = "StringPatter: ";
+  protected String DEFAULT_FILTER_NAME = "StringPattern: ";
   protected String RESET_FITLER_NAME;
 
   protected String DEFAULT_SELECTED_ATTRIBUTE = "";
   protected String RESET_SELECTED_ATTRIBUTE;
 
-		protected Class RESET_CLASS;
+		protected String RESET_CLASS;
 		protected Class NODE_CLASS;
 		protected Class EDGE_CLASS;
 		protected Class STRING_CLASS;
-  protected Class DEFAULT_CLASS; 
+  protected String DEFAULT_CLASS = StringPatternFilter.NODE; 
 
-  public StringPatternFilterEditor ( CyNetwork network ) {
+  public StringPatternFilterEditor ( CyWindow cyWindow ) {
     super();
-    this.network = network;
-    this.objectAttributes = network.getNodeAttributes();
+    this.cyWindow = cyWindow;
+				try{
+								STRING_CLASS = Class.forName("java.lang.String");
+								NODE_CLASS = Class.forName("giny.model.Node");
+								EDGE_CLASS = Class.forName("giny.model.Edge");
+				}catch(Exception e){
+								e.printStackTrace();
+				}
+				
+				
 				setLayout(new BorderLayout());
     identifier = "String Pattern";
     setBorder( new TitledBorder( "String Pattern Filter - Select nodes or edges based on pattern match to text attribute" ) );
@@ -76,59 +82,29 @@ public class StringPatternFilterEditor
     add( namePanel,BorderLayout.NORTH );
 
 				JPanel all_panel = new JPanel();
-				//all_panel.setLayout(new GridLayout(3,3,20,20));
-				//all_panel.add(new JLabel("Select Object Type"));
-				//all_panel.add(new JLabel("Select Attribute"));
-				//all_panel.add(new JLabel("String Pattern"));
 				
-				
-				//JPanel class_panel = new JPanel();
-				//class_panel.setLayout(new BoxLayout(class_panel,BoxLayout.Y_AXIS));
 				all_panel.add(new JLabel("Select graph objects of type "));
-				
-				Vector classes = new Vector();
-				try{
-								STRING_CLASS = Class.forName("java.lang.String");
-								NODE_CLASS = Class.forName("giny.model.Node");
-								EDGE_CLASS = Class.forName("giny.model.Edge");
-								DEFAULT_CLASS = NODE_CLASS;
-								classes.add(NODE_CLASS);
-								classes.add(EDGE_CLASS);
-				}catch(Exception e){
-								e.printStackTrace();
-				}
-				classBox = new JComboBox(classes);
+				classBox = new JComboBox();
+				classBox.addItem(StringPatternFilter.NODE);
+				classBox.addItem(StringPatternFilter.EDGE);
 				classBox.setEditable( false );
 				classBox.addActionListener(this);
 				all_panel.add(classBox);
-				//class_panel.add(new JLabel( "Select Object Type"));
-				//class_panel.add(classBox);
-				//all_panel.add( class_panel);
 				
 				all_panel.add(new JLabel(" with a value for text attribute "));
-				//JPanel attribute_panel = new JPanel();
-				//attribute_panel.setLayout(new BorderLayout());
-    attributeBox = new JComboBox();
+    
+				attributeBox = new JComboBox();
 				attributeBox.setEditable(false);
 				attributeBox.addActionListener(this);
 				all_panel.add(attributeBox);
-				//attribute_panel.add(new JLabel("Select Attribute"),BorderLayout.NORTH);
-				//attribute_panel.add( attributeBox,BorderLayout.SOUTH );
-    //all_panel.add( attribute_panel );
 
 				all_panel.add(new JLabel(" that matches the pattern "));
-    //JPanel search_panel = new JPanel();
-    //search_panel.setLayout(new BorderLayout());
+				
 				searchField = new JTextField(10);
     searchField.setEditable( true );
     searchField.addActionListener( this );
     all_panel.add(searchField);
-				//search_panel.add(new JLabel("Pattern String"), BorderLayout.NORTH);
-				//search_panel.add(searchField,BorderLayout.SOUTH );
-    //all_panel.add( search_panel );
 
-
-				updateAttributeBox(NODE_CLASS);
     all_panel.add(new JLabel(""));
 				add( new JButton (new AbstractAction( "Update List of Attributes" ) {
           public void actionPerformed ( ActionEvent e ) {
@@ -142,8 +118,8 @@ public class StringPatternFilterEditor
                   }
                   attributeBox.setModel( new DefaultComboBoxModel( objectAttributes.getAttributeNames() ) );
                   //( ( DefaultComboBoxModel )attributeBox.getModel() ).addElement( "canonicalName" );
-                */  classBox.setSelectedItem(NODE_CLASS);
-																				updateAttributeBox(NODE_CLASS);
+                */ 
+																				updateAttributeBox();
 																		}
               } ); } } ),BorderLayout.SOUTH );
 				add(all_panel,BorderLayout.CENTER);
@@ -168,13 +144,13 @@ public class StringPatternFilterEditor
    */
   public Filter getFilter() {
 
-    String search_item = searchField.getText();
-    String attr_item = ( String )attributeBox.getSelectedItem();
-				Class currentClass = (Class)classBox.getSelectedItem(); 
+    String search_item = getSearchString();
+    String attr_item = getSelectedAttribute();
+				String currentClass = getSelectedClass(); 
     if ( currentClass == null || search_item == null || attr_item == null || nameField.getText() == null ) {
       return null;
     }
-    return new StringPatternFilter( network, currentClass, attr_item, search_item, nameField.getText() );
+    return new StringPatternFilter( cyWindow, currentClass, attr_item, search_item, nameField.getText() );
   }
 
   /**
@@ -246,18 +222,22 @@ public class StringPatternFilterEditor
   // Selected Attribute ////////////////////////////////
   
   public String getSelectedAttribute () {
-    return ( String )attributeBox.getSelectedItem();
+						if(attributeBox.getItemCount() ==0){
+										return null;
+						}
+						return ( String )attributeBox.getSelectedItem();
   }
 
   public void setSelectedAttribute ( String new_attr ) {
-    attributeBox.setSelectedItem( new_attr );
+						updateAttributeBox();
+						attributeBox.setSelectedItem( new_attr );
   }
 
-		public Class getSelectedClass(){
-						return (Class)classBox.getSelectedItem();
+		public String getSelectedClass(){
+						return (String)classBox.getSelectedItem();
 		}
 
-		public void setSelectedClass(Class newClass){
+		public void setSelectedClass(String newClass){
 						classBox.setSelectedItem(newClass);
 		}
 
@@ -282,9 +262,8 @@ public class StringPatternFilterEditor
   }
  
 		public void fireClassChanged(){
-						Class type = (Class)classBox.getSelectedItem();
-						updateAttributeBox(type);
-						pcs.firePropertyChange( StringPatternFilter.CLASS_TYPE_EVENT,null, classBox.getSelectedItem());
+						updateAttributeBox();
+						pcs.firePropertyChange( StringPatternFilter.CLASS_TYPE_EVENT,null, getSelectedClass());
 		
 		}
   public void fireAttributeChanged () {
@@ -295,12 +274,14 @@ public class StringPatternFilterEditor
 				pcs.firePropertyChange( StringPatternFilter.SELECTED_ATTRIBUTE_EVENT, null, getSelectedAttribute() );
   }
 
-		public void updateAttributeBox(Class type){
-						if(type.equals(NODE_CLASS)){
-										objectAttributes = network.getNodeAttributes();
+		public void updateAttributeBox(){
+						GraphObjAttributes objectAttributes = null;
+						String type = getSelectedClass();
+						if(type.equals(StringPatternFilter.NODE)){
+										objectAttributes = cyWindow.getNetwork().getNodeAttributes();
 						}
 						else{
-										objectAttributes = network.getEdgeAttributes();
+										objectAttributes = cyWindow.getNetwork().getEdgeAttributes();
 						}
 						String [] attributeNames = objectAttributes.getAttributeNames();
 						Vector stringAttributes = new Vector();
@@ -321,25 +302,25 @@ public class StringPatternFilterEditor
 	
 		}
   public void setDefaults () {
-    setSelectedAttribute( DEFAULT_SELECTED_ATTRIBUTE );
     setSearchString( DEFAULT_SEARCH_STRING );
     setFilterName( DEFAULT_FILTER_NAME );
 				setSelectedClass(DEFAULT_CLASS); 
+    setSelectedAttribute( DEFAULT_SELECTED_ATTRIBUTE );
 		}
 
   public void readInFilter () {
     RESET_SEARCH_STRING = filter.getSearchString();
     RESET_FITLER_NAME = filter.toString();
     RESET_SELECTED_ATTRIBUTE = filter.getSelectedAttribute();
-    RESET_CLASS = NODE_CLASS;
+    RESET_CLASS = filter.getClassType();
 				resetFilter();
   }
 
   public void resetFilter () {
-    setSelectedAttribute( RESET_SELECTED_ATTRIBUTE );
     setSearchString( RESET_SEARCH_STRING );
     setFilterName( RESET_FITLER_NAME );
 				setSelectedClass(RESET_CLASS);
-    fireFilterNameChanged();
+    setSelectedAttribute( RESET_SELECTED_ATTRIBUTE );
+				fireFilterNameChanged();
   }
 }

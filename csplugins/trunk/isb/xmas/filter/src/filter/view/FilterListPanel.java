@@ -110,22 +110,23 @@ public class FilterListPanel
       updateLists();
       //listPanel.setBorder( new TitledBorder( "Filters and FilterTrees" ) );
       JScrollPane scroll = new JScrollPane( compoundList );
-      listPanel.add( scroll, BorderLayout.SOUTH );
-    } else if ( type == SHOW_TREES ) {
+      listPanel.add( scroll, BorderLayout.CENTER);
+				} else if ( type == SHOW_TREES ) {
       filterTreeList = new JList();
       filterTreeList.addListSelectionListener( this );
       updateLists();
       //listPanel.setBorder( new TitledBorder( "FilterTrees" ) );
       JScrollPane scroll = new JScrollPane( filterTreeList );
-      listPanel.add( scroll, BorderLayout.SOUTH );
+      listPanel.add( scroll, BorderLayout.CENTER );
     } else {
       filterList = new JList();
       filterList.addListSelectionListener( this );
       updateLists();
       //listPanel.setBorder( new TitledBorder( "Filters" ) );
       JScrollPane scroll = new JScrollPane( filterList );
-      listPanel.add( scroll, BorderLayout.SOUTH );
-    }
+      listPanel.add( scroll, BorderLayout.CENTER );
+						//add(scroll,BorderLayout.CENTER); 
+				}
 
     setLayout( new BorderLayout() );
     add( searchPanel, BorderLayout.NORTH );

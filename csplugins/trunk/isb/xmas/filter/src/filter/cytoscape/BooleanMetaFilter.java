@@ -29,9 +29,9 @@ public class BooleanMetaFilter
   //----------------------------------------//
 		protected Object [] filters;
 		protected String comparison;
-		public static String AND = "AND";
-		public static String OR = "OR";
-		public static String XOR = "XOR";
+		public static String AND = "ALL";
+		public static String OR = "AT LEAST ONE";
+		public static String XOR = "ONLY ONE";
 		
   public static String FILTER_NAME_EVENT = "FILTER_NAME_EVENT";
   public static String FILTER_ID = "BooleanMetaFilter";

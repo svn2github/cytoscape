@@ -12,7 +12,8 @@ import javax.swing.event.SwingPropertyChangeSupport;
 
 import cytoscape.*;
 import cytoscape.data.*;
-
+import cytoscape.view.CyWindow;
+import cytoscape.data.GraphObjAttributes;
 import filter.view.*;
 import filter.model.*;
 
@@ -44,8 +45,8 @@ public class NumericAttributeFilterEditor
 
   protected NumericAttributeFilter filter;
 
-  protected CyNetwork network;
-  protected GraphObjAttributes objectAttributes;
+  protected CyWindow cyWindow;
+  //protected GraphObjAttributes objectAttributes;
 
   protected Number DEFAULT_SEARCH_NUMBER = new Double(0);
   protected Number RESET_SEARCH_NUMBER;
@@ -59,16 +60,24 @@ public class NumericAttributeFilterEditor
 		protected String DEFAULT_COMPARISON = NumericAttributeFilter.EQUAL;
 		protected String RESET_COMPARISON = "";
 
-		protected Class RESET_CLASS;
+		protected String RESET_CLASS;
 		protected Class NODE_CLASS;
 		protected Class EDGE_CLASS;
 		protected Class NUMBER_CLASS;
-  protected Class DEFAULT_CLASS; 
+  protected String DEFAULT_CLASS = NumericAttributeFilter.NODE; 
 
-  public NumericAttributeFilterEditor ( CyNetwork network ) {
+  public NumericAttributeFilterEditor ( CyWindow cyWindow ) {
     super();
-    this.network = network;
-    this.objectAttributes = network.getNodeAttributes();
+    this.cyWindow = cyWindow;
+				try{
+								NUMBER_CLASS = Class.forName("java.lang.Number");
+								NODE_CLASS = Class.forName("giny.model.Node");
+								EDGE_CLASS = Class.forName("giny.model.Edge");
+				}catch(Exception e){
+								e.printStackTrace();
+				}
+
+    //this.objectAttributes = network.getNodeAttributes();
 				setLayout(new BorderLayout());
     identifier = "Numeric Comparison";
     setBorder( new TitledBorder( "Numeric Comparison Filter - Select nodes or edges based on the value of numeric attributes" ) );
@@ -80,48 +89,25 @@ public class NumericAttributeFilterEditor
     add( namePanel,BorderLayout.NORTH );
 
 				JPanel all_panel = new JPanel();
-				//all_panel.setLayout(new GridLayout(3,4,20,20));
-				//all_panel.add(new JLabel("Select Object Type"));
-				//all_panel.add(new JLabel("Select Attribute"));
-				//all_panel.add(new JLabel("Select Comparison"));
-				//all_panel.add(new JLabel("Comparison Value"));
-				//JPanel class_panel = new JPanel();
-				//class_panel.setLayout(new BorderLayout());
+				
 				all_panel.add(new JLabel("Select graph objects of type "));
-				Vector classes = new Vector();
-				try{
-								NUMBER_CLASS = Class.forName("java.lang.Number");
-								NODE_CLASS = Class.forName("giny.model.Node");
-								EDGE_CLASS = Class.forName("giny.model.Edge");
-								DEFAULT_CLASS = NODE_CLASS;
-								classes.add(NODE_CLASS);
-								classes.add(EDGE_CLASS);
-				}catch(Exception e){
-								e.printStackTrace();
-				}
-				classBox = new JComboBox(classes);
+			
+				classBox = new JComboBox();
+				classBox.addItem(NumericAttributeFilter.NODE);
+				classBox.addItem(NumericAttributeFilter.EDGE);
 				classBox.setEditable( false );
 				classBox.addActionListener(this);
 				all_panel.add(classBox);
-				//class_panel.add(new JLabel( "Select Object Type"),BorderLayout.NORTH);
-				//class_panel.add(classBox,BorderLayout.CENTER);
-				//add( class_panel);
-
-				//JPanel attribute_panel = new JPanel();
-				//attribute_panel.setLayout(new BorderLayout());
-    all_panel.add(new JLabel(" with a value for numeric attribute "));
+    
+				all_panel.add(new JLabel(" with a value for numeric attribute "));
 				
 				attributeBox = new JComboBox();
 				attributeBox.setEditable(false);
 				attributeBox.addActionListener(this);
 				all_panel.add(attributeBox);
-				//attribute_panel.add( attributeBox ,BorderLayout.CENTER);
-				//attribute_panel.add( new JLabel( "Attribute Selection"),BorderLayout.NORTH);
-    //add( attribute_panel );
 
 				all_panel.add(new JLabel(" that is "));
-				//JPanel comparison_panel = new JPanel();
-				//comparison_panel.setLayout(new BorderLayout());
+				
 				comparisonBox = new JComboBox();
 				comparisonBox.addItem(NumericAttributeFilter.LESS);
 				comparisonBox.addItem(NumericAttributeFilter.EQUAL);
@@ -130,22 +116,13 @@ public class NumericAttributeFilterEditor
 				comparisonBox.setEditable(false);
 				comparisonBox.addActionListener(this);
 				all_panel.add(comparisonBox);
-				//comparison_panel.add(comparisonBox,BorderLayout.CENTER);
-				//comparison_panel.add(new JLabel("Comparison Type"),BorderLayout.NORTH);
-				//add( comparison_panel);
-
-    //JPanel search_panel = new JPanel();
-				//search_panel.setLayout(new BorderLayout());
-    searchField = new JTextField(10);
+    
+				searchField = new JTextField(10);
     searchField.setEditable( true );
     searchField.addActionListener( this );
     all_panel.add(searchField);
-				//search_panel.add( searchField, BorderLayout.CENTER);
-				//search_panel.add( new JLabel("Comparison Value"),BorderLayout.NORTH);
-    //add( search_panel );
 
-				updateAttributeBox(NODE_CLASS);
-				all_panel.add(new JLabel(""));
+				//updateAttributeBox(NODE_CLASS);
     add( new JButton (new AbstractAction( "Update List of Attributes" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
@@ -158,8 +135,8 @@ public class NumericAttributeFilterEditor
                   }
                   attributeBox.setModel( new DefaultComboBoxModel( objectAttributes.getAttributeNames() ) );
                   //( ( DefaultComboBoxModel )attributeBox.getModel() ).addElement( "canonicalName" );
-                */  classBox.setSelectedItem(NODE_CLASS);
-																				updateAttributeBox(NODE_CLASS);
+																		*/
+																		updateAttributeBox();
 																		}
               } ); } } ),BorderLayout.SOUTH );
 
@@ -186,13 +163,13 @@ public class NumericAttributeFilterEditor
   public Filter getFilter() {
 
     Number search_item = getSearchNumber(); 
-    String attr_item = ( String )attributeBox.getSelectedItem();
-				Class currentClass = (Class)classBox.getSelectedItem(); 
-    String currentComparison = (String)comparisonBox.getSelectedItem();
+    String attr_item = getSelectedAttribute();
+				String currentClass = getSelectedClass(); 
+    String currentComparison = getSelectedComparison();
 				if ( currentClass == null || currentComparison == null ||search_item == null || attr_item == null || nameField.getText() == null ) {
       return null;
     }
-    return new NumericAttributeFilter( network, currentComparison, currentClass, attr_item, search_item, nameField.getText() );
+    return new NumericAttributeFilter( cyWindow, currentComparison, currentClass, attr_item, search_item, nameField.getText() );
   }
 
   /**
@@ -258,7 +235,7 @@ public class NumericAttributeFilterEditor
 						try{
 										searchNumber = new Double(numberString);
 						}catch(Exception e){
-										searchNumber = new Double(0);
+										searchNumber = DEFAULT_SEARCH_NUMBER;
 										searchField.setText(searchNumber.toString());
 						}
 						return searchNumber;
@@ -272,26 +249,30 @@ public class NumericAttributeFilterEditor
   // Selected Attribute ////////////////////////////////
   
   public String getSelectedAttribute () {
-    return ( String )attributeBox.getSelectedItem();
+						if(attributeBox.getItemCount()==0){
+										return null;
+						}
+						return ( String )attributeBox.getSelectedItem();
   }
 
   public void setSelectedAttribute ( String new_attr ) {
-    attributeBox.setSelectedItem( new_attr );
+    updateAttributeBox();
+				attributeBox.setSelectedItem( new_attr );
   }
 
-		public Class getSelectedClass(){
-						return (Class)classBox.getSelectedItem();
+		public String getSelectedClass(){
+						return (String)classBox.getSelectedItem();
 		}
 
-		public void setSelectedClass(Class newClass){
+		public void setSelectedClass(String newClass){
 						classBox.setSelectedItem(newClass);
 		}
 
-		public String getComparison(){
+		public String getSelectedComparison(){
 						return (String)comparisonBox.getSelectedItem();
 		}
 
-		public void setComparison(String comparison){
+		public void setSelectedComparison(String comparison){
 						comparisonBox.setSelectedItem(comparison);
 		}
 
@@ -319,12 +300,11 @@ public class NumericAttributeFilterEditor
   }
 
 		public void fireComparisonChanged(){
-						pcs.firePropertyChange(NumericAttributeFilter.COMPARISON_EVENT, null, comparisonBox.getSelectedItem() );
+						pcs.firePropertyChange(NumericAttributeFilter.COMPARISON_EVENT, null, getSelectedComparison() );
 		}
 		public void fireClassChanged(){
-						Class type = (Class)classBox.getSelectedItem();
-						updateAttributeBox(type);
-						pcs.firePropertyChange( NumericAttributeFilter.CLASS_TYPE_EVENT,null, classBox.getSelectedItem());
+						updateAttributeBox();
+						pcs.firePropertyChange( NumericAttributeFilter.CLASS_TYPE_EVENT,null, getSelectedClass());
 		
 		}
   public void fireAttributeChanged () {
@@ -333,12 +313,14 @@ public class NumericAttributeFilterEditor
     pcs.firePropertyChange( NumericAttributeFilter.SELECTED_ATTRIBUTE_EVENT, null, getSelectedAttribute() );
   }
 
-		public void updateAttributeBox(Class type){
-						if(type.equals(NODE_CLASS)){
-										objectAttributes = network.getNodeAttributes();
+		public void updateAttributeBox(){
+						GraphObjAttributes objectAttributes = null;
+						String type = getSelectedClass();
+						if(type.equals(NumericAttributeFilter.NODE)){
+										objectAttributes = cyWindow.getNetwork().getNodeAttributes();
 						}
 						else{
-										objectAttributes = network.getEdgeAttributes();
+										objectAttributes = cyWindow.getNetwork().getEdgeAttributes();
 						}
 						String [] attributeNames = objectAttributes.getAttributeNames();
 						Vector stringAttributes = new Vector();
@@ -359,28 +341,27 @@ public class NumericAttributeFilterEditor
 	
 		}
   public void setDefaults () {
-    setSelectedAttribute( DEFAULT_SELECTED_ATTRIBUTE );
     setSearchNumber( DEFAULT_SEARCH_NUMBER );
     setFilterName( DEFAULT_FILTER_NAME );
 				setSelectedClass(DEFAULT_CLASS); 
-				setComparison(DEFAULT_COMPARISON);	
+    setSelectedAttribute( DEFAULT_SELECTED_ATTRIBUTE );
+				setSelectedComparison(DEFAULT_COMPARISON);	
 		}
 
   public void readInFilter () {
     RESET_SEARCH_NUMBER = filter.getSearchNumber();
     RESET_FITLER_NAME = filter.toString();
     RESET_SELECTED_ATTRIBUTE = filter.getSelectedAttribute();
-    RESET_CLASS = NODE_CLASS;
+    RESET_CLASS = filter.getClassType();
 				RESET_COMPARISON = filter.getComparison();
 				resetFilter();
   }
 
   public void resetFilter () {
-    setSelectedAttribute( RESET_SELECTED_ATTRIBUTE );
     setSearchNumber( RESET_SEARCH_NUMBER );
     setFilterName( RESET_FITLER_NAME );
 				setSelectedClass(RESET_CLASS);
-				setComparison(RESET_COMPARISON);
+				setSelectedComparison(RESET_COMPARISON);
     setSelectedAttribute(RESET_SELECTED_ATTRIBUTE);
 				fireFilterNameChanged();
   }

@@ -59,7 +59,7 @@ public class FilterUsePanel extends JPanel
     //--------------------//
     // Use Panel
     JPanel use_panel = new JPanel();
-    use_panel.setBorder( new TitledBorder( "Take Action and Combine" ) );
+    use_panel.setBorder( new TitledBorder( "Take Action" ) );
     use_panel.add( createActionPanel(), BorderLayout.SOUTH );
     ButtonGroup logic_group = new ButtonGroup();
     and = new JRadioButton( "AND", true );
@@ -73,7 +73,7 @@ public class FilterUsePanel extends JPanel
     logic_group.add( and );
     logic_group.add( or );
     logic_group.add( xor );
-    use_panel.add( logic_panel, BorderLayout.NORTH );
+    //use_panel.add( logic_panel, BorderLayout.NORTH );
 
 
     JSplitPane pane0 = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, selected_filter_panel, use_panel );

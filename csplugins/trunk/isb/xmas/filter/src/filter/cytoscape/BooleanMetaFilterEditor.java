@@ -70,18 +70,16 @@ public class BooleanMetaFilterEditor
 
 				JPanel all_panel = new JPanel();
 				all_panel.setLayout(new BorderLayout());
-				all_panel.add(new JLabel("Select filters"),BorderLayout.NORTH);
-				//JPanel filter_panel = new JPanel();
-    filterList = new JList();
+    
+				
+				filterList = new JList();
 				updateFilterList();
-				//filterList.setEditable(false);
 				filterList.addListSelectionListener(this);
 				JScrollPane scrollPane = new JScrollPane(filterList);
 				all_panel.add(scrollPane,BorderLayout.CENTER);
-				//filter_panel.add( scrollPane );
-    //add( filter_panel );
 				
-				//JPanel comparison_panel = new JPanel();
+				JPanel comparisonPanel = new JPanel();
+				comparisonPanel.add(new JLabel("Select objects that pass "));
 				comparisonBox = new JComboBox();
 				comparisonBox.addItem(BooleanMetaFilter.AND);
 				comparisonBox.addItem(BooleanMetaFilter.OR);
@@ -89,9 +87,11 @@ public class BooleanMetaFilterEditor
 				comparisonBox.setSelectedIndex(0);
 				comparisonBox.setEditable(false);
 				comparisonBox.addActionListener(this);
-				all_panel.add(comparisonBox,BorderLayout.EAST);
-				//comparison_panel.add(comparisonBox);
-				//add( comparison_panel);
+				comparisonPanel.add(comparisonBox);
+				comparisonPanel.add(new JLabel(" selected filters"));
+				
+				all_panel.add(comparisonPanel,BorderLayout.NORTH);
+
 
 				all_panel.add( new JButton (new AbstractAction( "Update List of Filters" ) {
 								public void actionPerformed ( ActionEvent e ) {
@@ -256,8 +256,8 @@ public class BooleanMetaFilterEditor
 						pcs.firePropertyChange(BooleanMetaFilter.COMPARISON_EVENT, null, comparisonBox.getSelectedItem() );
 		}
 
-  public void setDefaults () {
-				setFilters(DEFAULT_FILTERS);
+		public void setDefaults () {
+						setFilters(DEFAULT_FILTERS);
 						setComparison(DEFAULT_COMPARISON);	
 		}
 

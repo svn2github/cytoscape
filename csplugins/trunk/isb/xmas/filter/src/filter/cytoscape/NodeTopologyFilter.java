@@ -12,6 +12,7 @@ import javax.swing.event.SwingPropertyChangeSupport;
 
 import cytoscape.*;
 import cytoscape.data.*;
+import cytoscape.view.CyWindow;
 
 import giny.model.*;
 
@@ -31,8 +32,8 @@ implements Filter  {
 	protected Integer count;
 	protected Integer distance;
 	protected HashSet seenNodes;
+	protected CyWindow cyWindow;
 	protected GraphPerspective myPerspective;
-
 	public static String FILTER_NAME_EVENT = "FILTER_NAME_EVENT";
 	public static String FILTER_ID = "NodeTopologyFilter";
 	public static String FILTER_EVENT = "FILTER_EVENT";	
@@ -53,12 +54,12 @@ implements Filter  {
 	/**
 	 * Creates a new NodeTopologyFilter
 	 */  
-	public NodeTopologyFilter (GraphPerspective myPerspective, 
+	public NodeTopologyFilter (CyWindow cyWindow, 
 			Integer count,
 			Integer distance,
 			Filter filter,
 			String identifier) {
-		this.myPerspective = myPerspective;
+		this.cyWindow = cyWindow;
 		this.count = count;
 		this.distance = distance;
 		this.filter = filter;
@@ -98,6 +99,7 @@ implements Filter  {
 	public boolean passesFilter ( Object object ) {
 		if(object instanceof Node){
 			seenNodes = new HashSet();
+			myPerspective = cyWindow.getView().getGraphPerspective();
 			int totalSum = countNeighbors((Node)object,0);
 			return totalSum >= count.intValue();
 		}else{
@@ -146,7 +148,7 @@ implements Filter  {
 	}
 
 	public Object clone () {
-		return new NodeTopologyFilter ( myPerspective,count,distance,filter,identifier+"_new" );
+		return new NodeTopologyFilter ( cyWindow,count,distance,filter,identifier+"_new" );
 	}
 
 	public SwingPropertyChangeSupport getSwingPropertyChangeSupport() {
