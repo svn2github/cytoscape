@@ -20,10 +20,20 @@ public final class RootGraphPerformanceTest
     final RootGraph root = getRootGraph(args);
     final int[] nodes =
       createNodes(root, Integer.parseInt(args[0]));
-    final int[] directedEdges =
-      createEdges(root, Integer.parseInt(args[1]), System.in, nodes, true);
-    final int[] undirectedEdges =
-      createEdges(root, Integer.parseInt(args[2]), System.in, nodes, false);
+    final int numDirectedEdges = Integer.parseInt(args[1]);
+    final int numUndirectedEdges = Integer.parseInt(args[2]);
+    final int[] sourceInxCreatedEdges =
+      new int[numDirectedEdges + numUndirectedEdges];
+    final int[] targetInxCreatedEdges =
+      new int[numDirectedEdges + numUndirectedEdges];
+    final boolean[] directednessCreatedEdges =
+      new boolean[numDirectedEdges + numUndirectedEdges];
+    createEdges(root, numDirectedEdges, System.in, nodes, true, 0,
+                sourceInxCreatedEdges, targetInxCreatedEdges,
+                directednessCreatedEdges);
+    createEdges(root, numUndirectedEdges, System.in, nodes, false,
+                numDirectedEdges, sourceInxCreatedEdges, targetInxCreatedEdges,
+                directednessCreatedEdges);
     long millisBegin = System.currentTimeMillis();
     testAdjacentEdges(root, nodes);
     long millisEnd = System.currentTimeMillis();
@@ -44,6 +54,12 @@ public final class RootGraphPerformanceTest
     long millisEnd4 = System.currentTimeMillis();
     System.out.println("connecting web test took " +
                        (millisEnd4 - millisBegin4) + " milliseconds");
+    long millisBegin5 = System.currentTimeMillis();
+    testAddRemove(root, nodes, sourceInxCreatedEdges, targetInxCreatedEdges,
+                  directednessCreatedEdges);
+    long millisEnd5 = System.currentTimeMillis();
+    System.out.println("add/remove test took " +
+                       (millisEnd5 - millisBegin5) + " milliseconds");
   }
 
   private static final RootGraph getRootGraph(String[] mainArgs)
@@ -61,9 +77,17 @@ public final class RootGraphPerformanceTest
     return returnThis;
   }
 
-  private static final int[] createEdges(RootGraph root, int numEdges,
-                                         InputStream in, int[] nodes,
-                                         boolean directed)
+  // sourceInxCreatedEdges, targetInxCreatedEdges, and directedCreatedEdges
+  // are written to, not read from.
+  private static final int[] createEdges(RootGraph root,
+                                         int numEdges,
+                                         InputStream in,
+                                         int[] nodes,
+                                         boolean directed,
+                                         int offsetCreatedEdges,
+                                         int[] sourceInxCreatedEdges,
+                                         int[] targetInxCreatedEdges,
+                                         boolean[] directedCreatedEdges)
     throws IOException
   {
     final int[] returnThis = new int[numEdges];
@@ -81,6 +105,9 @@ public final class RootGraphPerformanceTest
       int randomInt2 = (int) (randomLong & 0x00000000ffffffff);
       int node1 = Math.abs(randomInt1) % nodes.length;
       int node2 = Math.abs(randomInt2) % nodes.length;
+      sourceInxCreatedEdges[inx + offsetCreatedEdges] = node1;
+      targetInxCreatedEdges[inx + offsetCreatedEdges] = node2;
+      directedCreatedEdges[inx + offsetCreatedEdges] = directed;
       returnThis[inx++] =
         root.createEdge(nodes[node1], nodes[node2],
                         directed && (node1 != node2)); }
@@ -167,6 +194,25 @@ public final class RootGraphPerformanceTest
     for (int i = 0; i < numIters; i++) {
       root.getConnectingEdgeIndicesArray(nodesWeb);
       nodesWeb[i] = nodes[nodesWeb.length + i]; }
+  }
+
+  public static final void testAddRemove(RootGraph root, int[] nodes,
+                                         int[] edgeSources, int[] edgeTargets,
+                                         boolean[] edgeDirectedness)
+  {
+    for (int i = 0; i < 100; i++) {
+      for (int j = 0; j < nodes.length; j++)
+        root.removeNode(nodes[i]);
+      if (root.getNodeCount() != 0 || root.getEdgeCount() != 0)
+        throw new IllegalStateException("node/edge count not 0");
+      for (int j = 0; j < nodes.length; j++)
+        nodes[j] = root.createNode();
+      for (int j = 0; j < edgeSources.length; j++)
+        root.createEdge(nodes[edgeSources[j]], nodes[edgeTargets[i]],
+                        edgeDirectedness[j]);
+      if (root.getNodeCount() != nodes.length ||
+          root.getEdgeCount() != edgeSources.length)
+        throw new IllegalStateException("node/edge count not what expected"); }
   }
 
 }
