@@ -34,6 +34,7 @@ import cytoscape.giny.PhoebeNetworkView;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
+import phoebe.PGraphView;
 
 /**
  * This class, Cytoscape is <i>the</i> primary class in the API.
@@ -699,7 +700,6 @@ public abstract class Cytoscape {
     if ( network.getNodeCount() < CytoscapeInit.getViewThreshold()  ) {
        createNetworkView( network );
     }
-      
 
     // createNetworkView( network );
   }
@@ -1164,7 +1164,13 @@ public abstract class Cytoscape {
      firePropertyChange( cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED,
                          null,
                          view );
-     view.fitContent();
+
+      //  Instead of calling fitContent(), access PGraphView directly.
+      //  This enables us to disable animation.
+      PGraphView view2 =(PGraphView) Cytoscape.getCurrentNetworkView();
+      view2.getCanvas().getCamera().animateViewToCenterBounds
+              (view2.getCanvas().getLayer().getFullBounds(), true, 0 );
+
      view.redrawGraph( false, false );
      return view;
   }
