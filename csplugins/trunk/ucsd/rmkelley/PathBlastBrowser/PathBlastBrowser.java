@@ -72,7 +72,7 @@ class LoadPathBlastGMLAction extends AbstractAction {
    * The constructor sets the text that should appear on the menu item.
    */
   public LoadPathBlastGMLAction(CyWindow cyWindow){
-    super("Load SIF Files");
+    super("Create overlap graph from SIF files");
     this.cyWindow = cyWindow;
   }
 
@@ -105,13 +105,13 @@ class LoadPathBlastGMLTask extends Thread{
    * This was is used to specify the overlap required
    * for adding an edge ot the graph
    */
-  private static int REQUIRED_OVERLAP = 1;
+  private static double REQUIRED_OVERLAP = 0;
   /**
    * Teh attribute with which to associate data
    * that contains information about the number of 
    * overlapping nodes associated with this edge
    */
-  private static String COUNT_ATTRIBUTE = "count";
+  private static String COUNT_ATTRIBUTE = "intersection";
   private static String SPECIES_NODES_ATTRIBUTE = "speciesNodes";
   private static String INTERACTION_ATTRIBUTE = "interaction";
   /**
@@ -212,13 +212,16 @@ class LoadPathBlastGMLTask extends Thread{
 	Set xSet = (Set)cyNetwork2NameSet.get(cyNetworkVec.get(idx));
 	Set ySet = (Set)cyNetwork2NameSet.get(cyNetworkVec.get(idy));
 	Iterator xIt = xSet.iterator();
-	int count = 0;
+	int intersection = 0;
 	while(xIt.hasNext()){
 	  if(ySet.contains(xIt.next())){
-	    count++;
+	    intersection++;
 	  }
 	}
-	if(count >= REQUIRED_OVERLAP){
+	int union = xSet.size()+ySet.size()-intersection;
+	double percent = intersection/(double)union;
+	
+	if(percent > REQUIRED_OVERLAP){
 	  //create an edge between the two correpsonding nodes
 	  Node sourceNode = (Node)cyNetwork2Node.get(cyNetworkVec.get(idx));
 	  Node targetNode = (Node)cyNetwork2Node.get(cyNetworkVec.get(idy));
@@ -226,7 +229,7 @@ class LoadPathBlastGMLTask extends Thread{
 	  String name = nodeAttributes.getCanonicalName(sourceNode)+" ("+OVERLAP_INTERACTION+") "+nodeAttributes.getCanonicalName(targetNode);
 	  newEdge.setIdentifier(name);
 	  edgeAttributes.addNameMapping(name,newEdge);
-	  edgeAttributes.set(COUNT_ATTRIBUTE,name,new Integer(count));
+	  edgeAttributes.set(COUNT_ATTRIBUTE,name,new Double(percent));
 	  edgeAttributes.set(INTERACTION_ATTRIBUTE,name,OVERLAP_INTERACTION);	
 	}
       }

@@ -15,6 +15,7 @@ import giny.view.NodeView;
 import giny.model.RootGraphChangeListener;
 import giny.model.RootGraphChangeEvent;
 
+
 import cytoscape.plugin.AbstractPlugin;
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.CyNetwork;
