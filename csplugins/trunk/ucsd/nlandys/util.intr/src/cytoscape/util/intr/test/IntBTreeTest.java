@@ -8,16 +8,18 @@ public class IntBTreeTest
 
   public static void main(String[] args)
   {
-    IntBTree tree = new IntBTree();
+    IntBTree tree = new IntBTree(3);
     System.out.println
       ("Instantiated new IntBTree.");
-    final int[] arr = new int[] { 5, 8, 1, 3, 8, 3, 0, 9, 1, 2, 7, 3 };
+    final int[] arr = new int[]
+      { 5, 8, 1, 3, 8, 3, 0, 9, 1, 2, 7, 3, 3, 0, 4, 3, 1, 3, 3 };
     System.out.print
-      ("Defined my int[] to be: { ");
+      ("My int[] is: { ");
     for (int i = 0; i < arr.length - 1; i++)
       System.out.print(arr[i] + ", ");
     System.out.println(arr[arr.length - 1] + " }.");
     for (int i = 0; i < arr.length; i++) tree.insert(arr[i]);
+    tree.debugPrint();
     System.out.println
       ("Inserted all elements of array into tree.");
     IntEnumerator iter = tree.searchRange(Integer.MIN_VALUE,
