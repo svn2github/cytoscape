@@ -65,7 +65,7 @@
     <option name="PUT_FOCUS_INTO_COMMENT" value="true" />
     <option name="SHOW_CHECKIN_OPTIONS" value="true" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="true" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update csplugin build instructions" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed div tags" />
     <option name="SAVE_LAST_COMMIT_MESSAGE" value="false" />
     <option name="CHECKIN_DIALOG_SPLITTER_PROPORTION" value="0.8" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
@@ -283,105 +283,79 @@
     <option name="HIDE_WARNINGS" value="false" />
   </component>
   <component name="FileEditorManager" split-orientation="horizontal" split-proportion="0.43310657">
-    <first-group selected-file="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/visual/CalculatorIO.java">
-      <entry file="file://$PROJECT_DIR$/src/csplugins/mcode/MCODEUtil.java" pinned="false">
+    <first-group selected-file="file://$PROJECT_DIR$/src/csplugins/mcode/MCODEResultsDialog.java">
+      <entry file="file://$PROJECT_DIR$/src/csplugins/mcode/MCODEAboutDialog.java" pinned="false">
         <provider selected="true" editor-type-id="text-editor">
-          <state line="186" column="44" selection-start="7903" selection-end="7903" vertical-scroll-proportion="0.96568626">
-            <folding>
-              <element signature="imports" expanded="true" />
-            </folding>
-          </state>
-        </provider>
-      </entry>
-      <entry file="file://$PROJECT_DIR$/src/csplugins/mcode/MCODEScoreAndFindAction.java" pinned="false">
-        <provider selected="true" editor-type-id="text-editor">
-          <state line="98" column="16" selection-start="3951" selection-end="3951" vertical-scroll-proportion="0.34191176">
-            <folding>
-              <element signature="imports" expanded="true" />
-            </folding>
-          </state>
-        </provider>
-      </entry>
-      <entry file="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/visual/NodeAppearanceCalculator.java" pinned="false">
-        <provider selected="true" editor-type-id="text-editor">
-          <state line="465" column="27" selection-start="21978" selection-end="21978" vertical-scroll-proportion="2.795427">
+          <state line="42" column="0" selection-start="1744" selection-end="1784" vertical-scroll-proportion="0.8071895">
             <folding />
           </state>
         </provider>
       </entry>
-      <entry file="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/actions/SetVisualPropertiesAction.java" pinned="false">
+      <entry file="file://$PROJECT_DIR$/src/csplugins/mcode/MCODEResultsDialog.java" pinned="false">
         <provider selected="true" editor-type-id="text-editor">
-          <state line="33" column="33" selection-start="1229" selection-end="1229" vertical-scroll-proportion="0.49097472">
+          <state line="370" column="99" selection-start="14826" selection-end="14826" vertical-scroll-proportion="0.31699347">
             <folding />
           </state>
         </provider>
       </entry>
-      <entry file="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/visual/ui/VizMapUI.java" pinned="false">
+      <entry file="file://$PROJECT_DIR$/src/csplugins/mcode/MCODEAboutAction.java" pinned="false">
         <provider selected="true" editor-type-id="text-editor">
-          <state line="417" column="16" selection-start="15993" selection-end="15993" vertical-scroll-proportion="0.24632353">
+          <state line="43" column="0" selection-start="1771" selection-end="2194" vertical-scroll-proportion="1.0845295">
             <folding />
           </state>
         </provider>
       </entry>
-      <entry file="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/visual/CalculatorIO.java" pinned="false">
+      <entry file="file://$PROJECT_DIR$/src/csplugins/mcode/MCODEAlgorithm.java" pinned="false">
         <provider selected="true" editor-type-id="text-editor">
-          <state line="232" column="125" selection-start="12756" selection-end="12756" vertical-scroll-proportion="0.6066176">
+          <state line="46" column="29" selection-start="1831" selection-end="1831" vertical-scroll-proportion="-0.44117647">
             <folding />
           </state>
         </provider>
       </entry>
-    </first-group>
-    <second-group selected-file="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/CytoscapeConfig.java">
-      <entry file="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/CyProject.java" pinned="false">
+      <entry file="file://D:/Gbader/Code/cyto/cvsdir5/giny/giny/src/giny/util/NodeDistances.java" pinned="false">
         <provider selected="true" editor-type-id="text-editor">
-          <state line="70" column="4" selection-start="3372" selection-end="3372" vertical-scroll-proportion="0.02045728">
+          <state line="15" column="44" selection-start="328" selection-end="328" vertical-scroll-proportion="-8.323764">
+            <folding />
+          </state>
+        </provider>
+      </entry>
+      <entry file="file://D:/Gbader/Code/cyto/cvsdir5/website/cyto_web/people.php" pinned="false">
+        <provider selected="true" editor-type-id="text-editor">
+          <state line="23" column="0" selection-start="597" selection-end="621" vertical-scroll-proportion="0.6236045">
+            <folding />
+          </state>
+        </provider>
+      </entry>
+      <entry file="file://D:/Gbader/Code/cyto/cvsdir5/website/cyto_web/developer.php" pinned="false">
+        <provider selected="true" editor-type-id="text-editor">
+          <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-0.40669855">
+            <folding />
+          </state>
+        </provider>
+      </entry>
+      <entry file="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/view/CyMenus.java" pinned="false">
+        <provider selected="true" editor-type-id="text-editor">
+          <state line="344" column="19" selection-start="12419" selection-end="12419" vertical-scroll-proportion="0.4640523">
             <folding />
           </state>
         </provider>
       </entry>
       <entry file="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/CyMain.java" pinned="false">
         <provider selected="true" editor-type-id="text-editor">
-          <state line="142" column="30" selection-start="5538" selection-end="5538" vertical-scroll-proportion="0.02045728">
-            <folding />
-          </state>
-        </provider>
-      </entry>
-      <entry file="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/view/CytoscapeDesktop.java" pinned="false">
-        <provider selected="true" editor-type-id="text-editor">
-          <state line="568" column="34" selection-start="16194" selection-end="16194" vertical-scroll-proportion="0.41034898">
-            <folding />
-          </state>
-        </provider>
-      </entry>
-      <entry file="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/visual/VisualMappingManager.java" pinned="false">
-        <provider selected="true" editor-type-id="text-editor">
-          <state line="33" column="16" selection-start="1109" selection-end="1109" vertical-scroll-proportion="0.08182912">
-            <folding />
-          </state>
-        </provider>
-      </entry>
-      <entry file="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/visual/CalculatorCatalog.java" pinned="false">
-        <provider selected="true" editor-type-id="text-editor">
-          <state line="382" column="25" selection-start="14565" selection-end="14565" vertical-scroll-proportion="0.2322503">
+          <state line="163" column="55" selection-start="6537" selection-end="6537" vertical-scroll-proportion="0.8851675">
             <folding />
           </state>
         </provider>
       </entry>
       <entry file="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/CytoscapeObj.java" pinned="false">
         <provider selected="true" editor-type-id="text-editor">
-          <state line="56" column="30" selection-start="2310" selection-end="2310" vertical-scroll-proportion="0.20697954">
+          <state line="145" column="13" selection-start="5205" selection-end="5205" vertical-scroll-proportion="0.45295057">
             <folding />
           </state>
         </provider>
       </entry>
-      <entry file="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/CytoscapeConfig.java" pinned="false">
-        <provider selected="true" editor-type-id="text-editor">
-          <state line="331" column="20" selection-start="9331" selection-end="9331" vertical-scroll-proportion="0.33333334">
-            <folding />
-          </state>
-        </provider>
-      </entry>
-    </second-group>
+    </first-group>
+    <second-group />
   </component>
   <component name="HierarchyBrowserManager">
     <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
@@ -411,7 +385,6 @@
   </component>
   <component name="ProjectPane">
     <expanded_node url="" module="MCODE" type="module" />
-    <expanded_node url="file://$PROJECT_DIR$" module="MCODE" type="directory" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" splitterProportion="0.5">
@@ -450,8 +423,8 @@
     <property name="vcs_file_view_flatWidth2" value="135" />
     <property name="vcs_file_view_flatWidth5" value="134" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="MemberChooser.showClasses" value="true" />
     <property name="vcs_file_view_flatOrder3" value="3" />
+    <property name="MemberChooser.showClasses" value="true" />
     <property name="vcs_file_view_treeWidth0" value="164" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="vcs_file_view_treeOrder0" value="0" />
@@ -550,7 +523,11 @@
       <option name="VM_PARAMETERS" value="" />
       <option name="PARAMETERS" value="" />
       <option name="WORKING_DIRECTORY" value="D:\Gbader\Code\cyto\cvsdir5\csplugins\mskcc\gbader\mcode" />
-      <option name="ADDITIONAL_CLASS_PATH" />
+      <option name="ADDITIONAL_CLASS_PATH">
+        <value>
+          <Item type="Marker" value="" />
+        </value>
+      </option>
     </configuration>
   </component>
   <component name="SelectInManager">
@@ -607,12 +584,12 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="2553" height="1024" extended-state="0" />
+    <frame x="0" y="0" width="1255" height="1024" extended-state="0" />
     <editor active="false" />
     <layout>
-      <window_info id="CVS" active="false" anchor="bottom" auto_hide="false" internal_type="docked" type="docked" visible="false" weight="0.19419643" order="8" />
+      <window_info id="CVS" active="false" anchor="bottom" auto_hide="false" internal_type="docked" type="docked" visible="true" weight="0.19419643" order="8" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="docked" type="docked" visible="false" weight="0.22879465" order="7" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="docked" type="docked" visible="true" weight="0.11835266" order="0" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="docked" type="docked" visible="true" weight="0.27597672" order="0" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="docked" type="docked" visible="false" weight="0.22991072" order="1" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="docked" type="floating" visible="false" weight="0.25" order="1" x="1379" y="7" width="442" height="956" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="true" internal_type="sliding" type="sliding" visible="false" weight="0.24665178" order="8" />
@@ -705,111 +682,107 @@
     </buildFile>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/plugin/JarLoaderCommandLineParser.java">
+    <entry file="file://D:/Gbader/Code/cyto/cvsdir5/website/cyto_web/index.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="48" column="34" selection-start="1890" selection-end="1890" vertical-scroll-proportion="0.33009708">
+        <state line="58" column="52" selection-start="2045" selection-end="2045" vertical-scroll-proportion="0.4224924">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/csplugins/mcode/MCODEUtil.java">
+    <entry file="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/Cytoscape.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="186" column="44" selection-start="7903" selection-end="7903" vertical-scroll-proportion="0.96568626">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state line="781" column="26" selection-start="24666" selection-end="24666" vertical-scroll-proportion="-1.5772231">
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/CyProject.java">
+    <entry file="file://$PROJECT_DIR$/src/csplugins/mcode/MCODEPlugin.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="70" column="4" selection-start="3372" selection-end="3372" vertical-scroll-proportion="0.02045728">
+        <state line="62" column="16" selection-start="0" selection-end="3302" vertical-scroll-proportion="0.6276923">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/csplugins/mcode/MCODEAboutDialog.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="42" column="0" selection-start="1744" selection-end="1784" vertical-scroll-proportion="0.8071895">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/csplugins/mcode/MCODEAboutAction.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="43" column="0" selection-start="1771" selection-end="2194" vertical-scroll-proportion="1.0845295">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/actions/LoadGraphFileAction.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="142" column="41" selection-start="5849" selection-end="5895" vertical-scroll-proportion="0.4519685">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/view/CyMenus.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="344" column="19" selection-start="12419" selection-end="12419" vertical-scroll-proportion="0.4640523">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/CyMain.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="142" column="30" selection-start="5538" selection-end="5538" vertical-scroll-proportion="0.02045728">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/csplugins/mcode/MCODEScoreAndFindAction.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="98" column="16" selection-start="3951" selection-end="3951" vertical-scroll-proportion="0.34191176">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/visual/NodeAppearanceCalculator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="465" column="27" selection-start="21978" selection-end="21978" vertical-scroll-proportion="2.795427">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/actions/SetVisualPropertiesAction.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="33" column="33" selection-start="1229" selection-end="1229" vertical-scroll-proportion="0.49097472">
+        <state line="163" column="55" selection-start="6537" selection-end="6537" vertical-scroll-proportion="0.8851675">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/CytoscapeObj.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="56" column="30" selection-start="2310" selection-end="2310" vertical-scroll-proportion="0.20697954">
+        <state line="145" column="13" selection-start="5205" selection-end="5205" vertical-scroll-proportion="0.45295057">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/CytoscapeConfig.java">
+    <entry file="file://D:/Gbader/Code/cyto/cvsdir5/website/cyto_web/detailed_nav.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="331" column="20" selection-start="9331" selection-end="9331" vertical-scroll-proportion="0.33333334">
+        <state line="62" column="26" selection-start="1311" selection-end="1311" vertical-scroll-proportion="0.38628158">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/visual/CalculatorCatalog.java">
+    <entry file="file://D:/Gbader/Code/cyto/cvsdir5/giny/giny/src/giny/util/NodeDistances.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="382" column="25" selection-start="14565" selection-end="14565" vertical-scroll-proportion="0.2322503">
+        <state line="15" column="44" selection-start="328" selection-end="328" vertical-scroll-proportion="-8.323764">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/visual/CalculatorIO.java">
+    <entry file="file://D:/Gbader/Code/cyto/cvsdir5/website/cyto_web/people.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="232" column="125" selection-start="12756" selection-end="12756" vertical-scroll-proportion="0.6066176">
+        <state line="23" column="0" selection-start="597" selection-end="621" vertical-scroll-proportion="0.6236045">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/visual/ui/VizMapUI.java">
+    <entry file="file://D:/Gbader/Code/cyto/cvsdir5/website/cyto_web/developer.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="417" column="16" selection-start="15993" selection-end="15993" vertical-scroll-proportion="0.24632353">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-0.40669855">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/visual/VisualMappingManager.java">
+    <entry file="file://$PROJECT_DIR$/src/csplugins/mcode/MCODEAlgorithm.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="33" column="16" selection-start="1109" selection-end="1109" vertical-scroll-proportion="0.08182912">
+        <state line="46" column="29" selection-start="1831" selection-end="1831" vertical-scroll-proportion="-0.44117647">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://D:/Gbader/Code/cyto/cvsdir5/cytoscape/src/cytoscape/view/CytoscapeDesktop.java">
+    <entry file="file://$PROJECT_DIR$/src/csplugins/mcode/MCODEResultsDialog.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="568" column="34" selection-start="16194" selection-end="16194" vertical-scroll-proportion="0.41034898">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MCODE.iws">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+        <state line="370" column="99" selection-start="14826" selection-end="14826" vertical-scroll-proportion="0.31699347">
           <folding />
         </state>
       </provider>
