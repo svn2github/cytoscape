@@ -30,7 +30,7 @@ public class SetUsernamePassword extends AbstractAction {
       centerPanel = new JPanel();
       centerPanel.setLayout( new FlowLayout() );
       centerPanel.add( new JLabel( "Password: " ) );
-      final JTextField passField = new JTextField( 25 );
+      final JPasswordField passField = new JPasswordField( 25 );
       if ( DataClientFactory.PASSWORD != null ) passField.setText( DataClientFactory.PASSWORD );
       else passField.setText( "PASS" );
       passField.selectAll();
