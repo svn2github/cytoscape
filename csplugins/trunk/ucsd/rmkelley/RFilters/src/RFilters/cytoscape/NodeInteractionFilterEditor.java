@@ -24,7 +24,7 @@ import ViolinStrings.Strings;
  * they have.
  */
 
-public class InteractionFilterEditor 
+public class NodeInteractionFilterEditor 
   extends FilterEditor
   implements ActionListener,FocusListener,ItemListener {
 
@@ -47,7 +47,7 @@ public class InteractionFilterEditor
   protected int DEFAULT_FILTER = -1;
   protected String DEFAULT_TARGET = InteractionFilter.SOURCE;
 
-  public InteractionFilterEditor ( ) {
+  public NodeInteractionFilterEditor ( ) {
     super();
     try{
       filterClass = Class.forName("filter.cytoscape.InteractionFilter");

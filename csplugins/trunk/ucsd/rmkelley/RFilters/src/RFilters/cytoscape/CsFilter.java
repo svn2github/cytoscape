@@ -100,7 +100,7 @@ public class CsFilter
     FilterEditorManager.defaultManager().addEditor( new StringPatternFilterEditor (window)); 
     FilterEditorManager.defaultManager().addEditor( new NodeTopologyFilterEditor ());
     FilterEditorManager.defaultManager().addEditor( new BooleanMetaFilterEditor ());
-    FilterEditorManager.defaultManager().addEditor( new InteractionFilterEditor());
+    FilterEditorManager.defaultManager().addEditor( new NodeInteractionFilterEditor());
   }
 
   public String describe () {

@@ -16,13 +16,13 @@ import cytoscape.data.*;
 import cytoscape.view.CyWindow;
 import giny.model.*;
 import cytoscape.CyNetwork;
-import ViolinStrings.Strings;
+
 
 /**
  * This filter will pass nodes based on the edges that 
  * they have.
  */
-public class InteractionFilter 
+public class NodeInteractionFilter 
   implements Filter {
 
   //----------------------------------------//
@@ -56,7 +56,7 @@ public class InteractionFilter
   /**
    * Creates a new InteractionFilter
    */  
-  public InteractionFilter ( int filter, 
+  public NodeInteractionFilter ( int filter, 
 			     String target,
 			     String identifier ) {
     this.filter = filter;
@@ -64,7 +64,7 @@ public class InteractionFilter
     this.identifier =identifier;
   }
   
-  public InteractionFilter(String desc){
+  public NodeInteractionFilter(String desc){
     input(desc);
   }
 
