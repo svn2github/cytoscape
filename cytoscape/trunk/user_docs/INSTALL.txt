@@ -1,6 +1,6 @@
 ################################################
 # CYTOSCAPE INSTALLATION INSTRUCTIONS          #
-# Cytoscape v. 1.0; March, 2003                #
+# Cytoscape v. 1.1, (Release 2); October, 2003 #
 # http://www.cytoscape.org                     #
 #                                              # 
 # (c) Paul Shannon, Owen Ozier,                #
@@ -34,10 +34,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 INSTALLATION AND STARTUP #############################################
 ######################################################################
 
-Currently, Cytoscape runs under Java on either Linux or Windows
-platforms (Active Subsystems calculation available for Linux only).
-The software has NOT been tested for any of the Macintosh operating
-systems.  Also, although Cytoscape handles arbitrary types and sizes
+Currently, Cytoscape runs under Java on Linux, Windows, and MacOSX
+platforms.  Although Cytoscape handles arbitrary types and sizes
 of interaction network, it is most powerful when used in conjunction
 with large interaction data sets such as are currently available for
 species such as the yeast S. cerevisiae.
@@ -46,7 +44,7 @@ species such as the yeast S. cerevisiae.
 a compressed archive containing the following files and directories:
 
 INSTALL.txt ............ Quick-start installation instructions (this file)
-MANUAL.txt ............. Overview and details of Cytoscape functionality
+Cytoscape1_1Manual.pdf.. Overview and details of Cytoscape functionality
 LICENSE.txt ............ The license agreement
 
 cytoscape.jar .......... Main Cytoscape application (Java archive)
@@ -56,10 +54,6 @@ vizmap.props ........... User-configurable visualization preferences
 cytoscape.sh ........... Shell script used to run Cytoscape (Linux)
 cytoscape.bat .......... Shell script used to run Cytoscape (Windows)
 
-libActivePathsNew.so ... C++ library plug-in to search for and identify
-                         "active pathways/subsystems", i.e. network
-                         regions that overlap significantly with
-                         changes in gene expression (Linux only)
 sampleData/
    galFiltered.gml ..... Sample molecular interaction network file *
    galFiltered.sif ..... Identical network in Simple Interaction Format *
@@ -94,6 +88,5 @@ location of the GO data directory, see MANUAL.txt for details).
 !!!!IMPORTANT NOTE!!!!  For the application to work properly, ALL
 FILES MUST BE LEFT IN THE DIRECTORY IN WHICH THEY ARE UNPACKED.  [The
 core Cytoscape application assumes this directory structure when
-looking for certain files, such as cytoscape.props,
-libActivePathsNew.so, and the GO/ database].
+looking for certain files, such as cytoscape.props, and the GO/ database].
 

@@ -1,6 +1,6 @@
 ################################################
 # CYTOSCAPE LICENSE AGREEMENT : GNU LGPL       #
-# Cytoscape v. 0.97; January 2003              #
+# Cytoscape v. 1.1 (Release 2); October 2003   #
 # http://www.cytoscape.org                     #
 #                                              # 
 # (c) Paul Shannon, Owen Ozier,                #
