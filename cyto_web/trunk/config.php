@@ -17,7 +17,7 @@ $version = "v2.00";
 #  If set to false, we assume a local test server set-up
 
 #################################################
-$in_production = false;
+$in_production = true;
 
 
 #################################################
@@ -48,7 +48,7 @@ $cyto1_source_east= $cbio_base . $cyto1_src;
 # Cytoscape 2.0 Release File Names
 # Note:  these probably don't need to ever be updated.
 #################################################
-$cyto2_gz = "cytoscape-" . $version  . "tar.gz";
+$cyto2_gz = "cytoscape-" . $version  . ".tar.gz";
 $cyto2_zip = "cytoscape-" . $version  . ".zip";
 $cyto2_src = "cytoscapeSource-" . $version . ".tar.gz";
 $cyto2_mac = "cytoscape.dmg.zip";
