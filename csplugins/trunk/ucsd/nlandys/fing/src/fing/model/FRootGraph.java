@@ -888,14 +888,9 @@ class FRootGraph implements RootGraph, DynamicGraph
     return returnThis;
   }
 
-  public int[] getNodeMetaChildIndicesArray(int parentNodeInx,
-                                            boolean recursive)
+  // Package visible method for FGraphPerspective.  This method is recursive.
+  int[] getNodeMetaChildIndicesArray(int[] parentIndices)
   {
-    if (!recursive) return getNodeMetaChildIndicesArray(parentNodeInx);
-    final int nativeParent = ~parentNodeInx;
-    if (!m_graph.nodeExists(nativeParent)) return null;
-    final int metaParent = m_nativeToMetaNodeInxMap.get(nativeParent);
-    if (metaParent < 0 || metaParent == Integer.MAX_VALUE) return new int[0];
     // Depth first search.
     m_hash.empty();
     final IntHash metaVisited = m_hash;
@@ -903,8 +898,12 @@ class FRootGraph implements RootGraph, DynamicGraph
     final IntStack metaPending = m_stack;
     m_hash2.empty();
     final IntHash nativeChildNodeBucket = m_hash2;
-    metaVisited.put(metaParent);
-    metaPending.push(metaParent);
+    for (int i = 0; i < parentIndices.length; i++) {
+      final int nativeParent = ~parentIndices[i];
+      if (!m_graph.nodeExists(nativeParent)) return null;
+      final int metaParent = m_nativeToMetaNodeInxMap.get(nativeParent);
+      if (metaParent < 0 || metaParent == Integer.MAX_VALUE) continue;
+      if (metaVisited.put(metaParent) < 0) metaPending.push(metaParent); }
     while (metaPending.size() > 0) {
       final int currMeta = metaPending.pop();
       final IntEnumerator relationships = m_metaGraph.edgesAdjacent
@@ -920,6 +919,13 @@ class FRootGraph implements RootGraph, DynamicGraph
     for (int i = 0; i < returnThis.length; i++)
       returnThis[i] = ~returnElements.nextInt();
     return returnThis;
+  }
+
+  public int[] getNodeMetaChildIndicesArray(int parentNodeInx,
+                                            boolean recursive)
+  {
+    if (!recursive) return getNodeMetaChildIndicesArray(parentNodeInx);
+    return getNodeMetaChildIndicesArray(new int[] { parentNodeInx });
   }
 
   public int[] getChildlessMetaDescendants(int nodeInx)
