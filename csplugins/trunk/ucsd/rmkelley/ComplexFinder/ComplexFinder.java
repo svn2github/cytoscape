@@ -142,9 +142,6 @@ public class ComplexFinder extends CytoscapePlugin{
 	    }).start();
 	}
       });
-
-     
-
   }
 }
 

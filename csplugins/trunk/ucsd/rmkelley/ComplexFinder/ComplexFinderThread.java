@@ -151,7 +151,6 @@ class ComplexFinderThread extends Thread{
        * Here we calculate the number of potential
        * edges for each type of edges (physical vs genetic
        */
-      System.err.println("Found model with score: "+score);
       results.add(new NetworkModel(progress,
 				   members,
 				   score));

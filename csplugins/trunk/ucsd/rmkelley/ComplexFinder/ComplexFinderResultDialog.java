@@ -133,14 +133,34 @@ class ComplexFinderResultDialog extends RyanDialog implements ListSelectionListe
 
     JButton validateButton = new JButton("Make predictions");
     validateButton.addActionListener(new ActionListener(){
-	    public void actionPerformed(ActionEvent ae){
-	      GOprediction prediction = new GOprediction(new File("GOID2orfs.txt"),new File("GOID2parents.txt"));
-	      prediction.makePredictions(results,(List)null);
-	    }
+	public void actionPerformed(ActionEvent ae){
+	  GOprediction prediction = new GOprediction(new File("GOID2orfs.txt"),new File("GOID2parents.txt"));
+	  prediction.makePredictions(results,(List)null);
+	}
       });
+    
+    JButton assessButton = new JButton("Assess");
+    assessButton.addActionListener(new ActionListener(){
+	public void actionPerformed = new GOprediction(new File("GOID2orfs.txt"),new File("GOID2parents.txt"));
+	HashMap result = prediction.complexAssessment(results);
+	try{
+	  FileWriter writer = new FileWriter("assessment.txt",false);
+	  for(Iterator it = result.keySet().iterator();it.hasNext();){
+	    Node node = (Node)it.next();
+	    writer.write(node+"\t"+result.get(node)+"\n");
+	  }
+	  writer.close();
+	}catch(Exception e){
+	  e.printStackTrace();
+	  System.exit(-1);
+	}
+      });
+
+
     southPanel.add(viewButton);
     southPanel.add(saveButton);
     southPanel.add(validateButton);
+    southPanel.add(assessButton = new JButton("Assess");
     getContentPane().add(southPanel,BorderLayout.SOUTH);
     pack();
   }
