@@ -1063,7 +1063,9 @@ protected class SetVisualPropertiesAction extends AbstractAction   {
     public void actionPerformed (ActionEvent e) {
 	
 	JDialog vizDialog = new VisualPropertiesDialog
-	    (mainFrame, "Set Visual Properties", vizMapper, nodeAttributes, labelKey);
+	    (mainFrame, "Set Visual Properties",
+	     vizMapper, nodeAttributes,
+	     edgeAttributes, labelKey);
 	vizDialog.pack ();
 	vizDialog.setLocationRelativeTo (mainFrame);
 	vizDialog.setVisible (true);
