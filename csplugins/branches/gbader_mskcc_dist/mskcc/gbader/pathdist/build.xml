@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<!-- build.xml - Build file for Sample Cytoscape Plugin -->
+<project name="Cytoscape" default="jar" basedir=".">
+
+	<!-- Name of Plug In -->
+	<!-- Change this to the name of your Plug In -->
+	<!-- The name is used to create the plugin JAR file -->
+	<property name="plugin.name" value="PathDist"/>
+
+  	<!-- The directory containing source code -->
+  	<property name="src.dir" value="src"/>
+
+	<!--  The directory containing library jar files -->
+	<property name="lib.dir" value="../../../cytoscape/lib"/>
+
+  	<!-- Temporary build directories -->
+ 	<property name="build.dir" value="build"/>
+  	<property name="build.classes" value="${build.dir}/classes"/>
+	<property name="dist.dir" value="dist"/>
+
+	<!-- Global "magic" property for <javac> -->
+	<property name="build.compiler" value="modern"/>
+
+	<!-- Classpath with all lib JAR Files and all Cytoscape Core classes -->
+	<path id="classpath">
+		<pathelement path="${build.classes}"/>
+		<pathelement path="../../../cytoscape/build/classes"/>
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar"/>
+		</fileset>
+	</path>
+
+  	<!-- Target to create the build directories prior to compilation -->
+  	<target name="prepare">
+    		<mkdir dir="${build.dir}"/>
+    		<mkdir dir="${build.classes}"/>
+		<mkdir dir="${dist.dir}"/>
+  	</target>
+
+	<!--  Target to clean out all directories -->
+  	<target name="clean" description="Removes all generated files.">
+    		<delete dir="${build.dir}"/>
+		<delete dir="${dist.dir}"/>
+  	</target>
+
+	<!-- Target to create Cytoscape Jar File  -->
+	<target name="build_cytoscape">
+		<ant antfile="../../../cytoscape/build.xml" inheritAll="false" target="jar"/>
+	</target>
+
+	<!--  Target to compile all Plug In Code -->
+  	<target name="compile" depends="prepare, build_cytoscape"
+		description="Compiles all PlugIn source code.">
+    		<javac srcdir="${src.dir}" destdir="${build.classes}" nowarn="on" source="1.4">
+			<include name="csplugins/**"/>
+			<classpath refid="classpath"/>
+		</javac>
+	</target>
+
+	<!--  Create PlugIn Jar File (Unobfuscated) -->
+   	<target name="jar" depends="compile" description="Creates PlugIn Jar File.">
+	   <jar destfile="${build.dir}/${plugin.name}.jar">
+			<fileset dir="${build.classes}"/>
+		</jar>
+		<echo message="${plugin.name}.jar is now complete.  It is located in build/ directory"/>
+	</target>
+
+	<!-- Obfuscate the Plug In Jar File -->
+	<target name="obfuscate" depends="jar" description="Obfuscates PlugIn Jar File.">
+		<!-- Obfuscate Cytoscape Core -->
+		<ant antfile="../../cytoscape/build.xml" inheritAll="false" target="obfuscate"/>
+
+		<!-- Copy cytoscape.jar (with yfiles) to distribution directory -->
+		<copy file="../../cytoscape/dist/cytoscape.jar" todir="${dist.dir}"/>
+
+		<!-- Add PlugIn classes to cytoscape.jar -->
+                <jar destfile="${dist.dir}/cytoscape.jar" update="true">
+			<fileset dir="${build.classes}"/>
+		</jar>
+
+		<!-- Copy Obfuscation Table to distribution directory -->
+		<copy file="../../cytoscape/tools/jars/obfuscation_table.log" todir="${dist.dir}"/>
+
+		<!-- Obfuscate Cytoscape Jar File with RetroGuard -->
+		<java classname="RetroGuard"
+				classpathref="classpath" fork="true" dir="${dist.dir}">
+					<arg line="cytoscape.jar cytoscape-obfuscated.jar obfuscation_table.log retro.log"/>
+		</java>
+
+		<!-- Extract csplugin classes to new jar file -->
+		<mkdir dir="${dist.dir}/temp"/>
+		<unjar src="${dist.dir}/cytoscape-obfuscated.jar" dest="${dist.dir}/temp"/>
+                <jar destfile="${dist.dir}/${plugin.name}-obfuscated.jar">
+                	<fileset dir="${dist.dir}/temp/">
+                        	<include name="csplugins/**"/>
+                	</fileset>
+		</jar>
+
+		<delete file="${dist.dir}/cytoscape.jar"/>
+		<delete file="${dist.dir}/cytoscape-obfuscated.jar"/>
+		<delete file="${dist.dir}/obfuscation_table.log"/>
+		<delete dir="${dist.dir}/temp"/>
+                <echo message="${plugin.name}-obfuscated.jar is now complete.  It is located in dist/ directory"/>
+	</target>
+</project>
