@@ -1,9 +1,9 @@
 //
 // EmbeddedLayouter.java
 //
-// embedded spring layouter
-//
-// dramage : 2002.1.22
+// $Revision$
+// $Date$
+// $Author$
 //
 
 
@@ -20,50 +20,88 @@ import y.layout.circular.CircularLayouter;
 
 import java.awt.Rectangle;
 
+/**
+ * A Layouter based on LEDA's Embedded Spring
+ * Layouter.
+ *
+ * This layouter is similar to yFiles'
+ * <code>OrganicLayouter</code>
+ * in that they both use spring forces to arrive at
+ * a near-equilibrium graph. However,
+ * <code>EmbeddedLayouter</code> adds a second pass
+ * to the layouting, in which nodes only feel forces
+ * locally.  This serves to allow the layout to look
+ * natural, while better filling available space.
+ *
+ * Also, layouts produced by
+ * <code>EmbeddedLayouter</code> can be constrained
+ * to given dimensions.
+ */
 public class EmbeddedLayouter implements Layouter {
-    // target width and height
-    float iTWidth;
-    float iTHeight;
+    /**
+     * Target width of final layout
+     */
+    private float iTWidth;
 
-    // log of 2 (for taking log base 2 of things)
-    static final double LOG2 = Math.log(2);
+    /**
+     * Target height of final layout
+     */
+    private float iTHeight;
 
-    // connectedness table for any 2 nodes
-    boolean[][] connected;
+    /**
+     * log of 2 (for taking log base 2 of things)
+     */
+    private static final double LOG2 = Math.log(2);
 
-    // number of connections on node by index
-    int[] degree;
+    /**
+     * Connectedness table for any 2 nodes, by index
+     * into the graph's node array
+     */
+    private boolean[][] connected;
+
+    /**
+     * Number of connections on a node by its index
+     */
+    private int[] degree;
 
 
 
 
-    // default constructor
-    //
-    // assumes current dimensions
+    /**
+     * Default constructor.  Assumes target dimensions
+     * are current dimensions.
+     */
     public EmbeddedLayouter() {
 	iTWidth = Float.NEGATIVE_INFINITY;
 	iTHeight = Float.NEGATIVE_INFINITY;
     }
-    
-    // constructor
-    //
-    // takes in target width, target height
+
+    /**
+     * Initialize target width and height to suplied values
+     */
     public EmbeddedLayouter(float width, float height) {
 	iTWidth = width;
 	iTHeight = height;
     }
 
 
-    // canLayout
-    //
-    // can we layout the graph?
+    /**
+     * Can we layout the graph?
+     *
+     * @return <code>true</code>, always.
+     */
     public boolean canLayout(LayoutGraph graph) {
 	return true;
     }
 
-    // doLayout
-    //
-    // do the layout, obeying node size and edge weights
+    /**
+     * Layout the graph in two stages.
+     *
+     * The first stage is a simple spring force model.
+     * The second phase adds the complexity of
+     * "binning," during which nodes only feel forces
+     * locally.
+     */
     public void doLayout(LayoutGraph graph) {
 	// first initialize useful variables
 	Node[] nodeList = graph.getNodeArray();
@@ -185,10 +223,18 @@ public class EmbeddedLayouter implements Layouter {
 
 
 
-    // doSpringLayoutFull
-    //
-    // do a spring layout with plenty of repulsion
-    // to go around
+    /**
+     * Layout the graph based on a (relatively) pure
+     * embedded spring force model.
+     *
+     * @param graph The graph to lay out
+     * @param iterations The number of iterations of
+     *    the force model to do
+     * @param width The target width of the graph
+     *    post-layout
+     * @param height The target height of the graph
+     *    post-layout
+     */
     private void doSpringLayoutFull(LayoutGraph graph, int iterations,
 				    double width, double height) {
 	// first initialize useful variables
@@ -361,10 +407,18 @@ public class EmbeddedLayouter implements Layouter {
 
 
 
-    // doSpringLayoutBinned
-    //
-    // layout graph as above but only considering
-    // repulsion from neighboring nodes
+    /**
+     * Layout the graph, but only consider repulsive
+     * forces from close neighbors.
+     *
+     * @param graph The graph to lay out
+     * @param iterations The number of iterations of
+     *    the force model to do
+     * @param width The target width of the graph
+     *    post-layout
+     * @param height The target height of the graph
+     *    post-layout
+     */
     private void doSpringLayoutBinned(LayoutGraph graph, int iterations,
 				      double width, double height) {
 	// first initialize useful variables
@@ -631,6 +685,15 @@ public class EmbeddedLayouter implements Layouter {
 
 
 
+    /**
+     * Return the smallest rectangle containing all
+     * nodes in the graph.
+     *
+     * @return The bounding rectangle
+     * @param graph The graph to consider
+     * @param ignoreSizes Set to <code>true</code> to
+     *     only look at node centers, ignoring their radii.
+     */
     private YRectangle getSize(LayoutGraph graph, boolean ignoreSizes) {
 	Node[] nodeList = graph.getNodeArray();
 	int nC = graph.nodeCount();
