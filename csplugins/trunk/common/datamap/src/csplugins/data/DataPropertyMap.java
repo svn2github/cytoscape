@@ -29,7 +29,8 @@ import csplugins.data.*;
  * It is best to access the DataPropertyMap by using 
  * the default map: DataPropertyMap.defaultMap()
  */
-public interface DataPropertyMap 
-  extends DataMatrixLens, DataMatrix {
+public abstract class DataPropertyMap 
+  implements DataMatrixLens, DataMatrix {
 
  
+}
