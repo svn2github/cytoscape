@@ -106,6 +106,7 @@ public final class IntBTree
               for (int j = n.sliceCount; j > i + 1; j--) {
                 n.data.children[j] = n.data.children[j - 1];
                 n.data.splitVals[j - 1] = n.data.splitVals[j - 2]; }
+              n.sliceCount++;
               n.data.children[i + 1] = newNode;
               n.data.splitVals[i] = newSplit; }
             else { // No room in this internal node; perform split.
