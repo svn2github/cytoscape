@@ -50,8 +50,6 @@ public TextJarReader (String URI) throws Exception
   filename = URI.substring (6);
   ClassLoader cl = this.getClass().getClassLoader();
   URL url = cl.getResource (filename);
-  System.out.println ("TextJarReader, url: " + url);
-  System.out.println ("class of url: " + url.getClass ());
   JarURLConnection juc = (JarURLConnection) url.openConnection ();
   JarFile jarFile = juc.getJarFile();
   InputStream is = jarFile.getInputStream (jarFile.getJarEntry (filename));
@@ -61,6 +59,7 @@ public TextJarReader (String URI) throws Exception
 //-----------------------------------------------------------------------------------
 public int read () throws IOException
 {
+  System.out.println ("-- reading " + filename);
   char [] cBuffer = new char [1024];
   int bytesRead;
   while ((bytesRead = reader.read (cBuffer, 0, 1024)) != -1)
