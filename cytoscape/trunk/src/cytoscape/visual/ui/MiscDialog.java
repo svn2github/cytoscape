@@ -20,7 +20,6 @@ import y.view.LineType;
 import y.view.ShapeNodeRealizer;
 
 import cytoscape.util.Misc;
-import cytoscape.vizmap.*;
 
 //------------------------------------------------------------------------------
 public class MiscDialog {
@@ -239,24 +238,6 @@ public class MiscDialog {
 	return md.getClass().getResource("images/"+imageFilename);
 	//return this.getClass().getClassLoader().getResource(
 	//    "cytoscape/dialogs/images/"+imageFilename);
-    }
-
-    /**
-     *  The main dialog and its tabs use this to sort through
-     *  the vectors of backup mappers.
-     */
-    public static Integer findCorrectMapperIndex(Vector v, Class c) {
-	Integer correctIndex = null;
-	for (int tempIndex=0;tempIndex<v.size();tempIndex++) {
-	    MapperAndAttribute maa = (MapperAndAttribute)v.get(tempIndex);
-	    if(maa!=null) {
-		ValueMapper vm = (ValueMapper)maa.mapper;
-		if(vm!=null)
-		    if(vm.getClass().equals(c))
-			correctIndex = new Integer(tempIndex);
-	    }
-	}
-	return correctIndex;
     }
 
 }

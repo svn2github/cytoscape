@@ -26,11 +26,6 @@ import cytoscape.visual.calculators.*;
 import cytoscape.visual.ui.*;
 import cytoscape.visual.*;
 
-import cytoscape.vizmap.Interpolator;
-import cytoscape.vizmap.LinearNumberToColorInterpolator;
-import cytoscape.vizmap.LinearNumberToNumberInterpolator;
-import cytoscape.vizmap.BoundaryRangeValues;
-
 /**  Contains methods and classes for exercising the calculators,
  *   mappings, and UI's in the cytoscape.visual package.
  */

@@ -20,7 +20,6 @@ import y.view.LineType;
 import y.view.ShapeNodeRealizer;
 
 import cytoscape.util.Misc;
-import cytoscape.vizmap.*;
 import cytoscape.util.MutableString;
 
 //------------------------------------------------------------------------
