@@ -217,10 +217,13 @@ public class CyMenus {
 
     //first fill the File menu
     //fill the Load submenu
-    JMenuItem mi = loadSubMenu.add(new LoadGMLFileAction(networkView));
-    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.CTRL_MASK));
-    mi = loadSubMenu.add(new LoadInteractionFileAction(networkView));
+    
+    JMenuItem mi = loadSubMenu.add(new LoadInteractionFileAction(networkView));
     mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.CTRL_MASK));
+    if ( networkView.getCytoscapeObj().getConfiguration().isYFiles() ) {
+	    mi = loadSubMenu.add(new LoadGMLFileAction(networkView));
+	    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.CTRL_MASK));
+    }
     mi = loadSubMenu.add(new LoadExpressionMatrixAction(networkView));
     mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.CTRL_MASK));
     mi = loadSubMenu.add(new LoadBioDataServerAction(networkView));
@@ -230,7 +233,8 @@ public class CyMenus {
     mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_J, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK));
         
     //fill the Save submenu
-    saveSubMenu.add(new SaveAsGMLAction(networkView));
+    if ( networkView.getCytoscapeObj().getConfiguration().isYFiles() )
+	    saveSubMenu.add(new SaveAsGMLAction(networkView));
     saveSubMenu.add(new SaveAsInteractionsAction(networkView));
     saveSubMenu.add(new SaveVisibleNodesAction(networkView));
     saveSubMenu.add(new SaveSelectedNodesAction(networkView));
@@ -253,21 +257,22 @@ public class CyMenus {
       redoMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, ActionEvent.CTRL_MASK));
       editMenu.addSeparator();
     }
+    if ( networkView.getCytoscapeObj().getConfiguration().isYFiles() ) {    
+	    ButtonGroup modeGroup = new ButtonGroup();
+	    JRadioButtonMenuItem readOnlyModeButton = new JRadioButtonMenuItem("Read-only mode");
+	    JRadioButtonMenuItem editModeButton = new JRadioButtonMenuItem("Edit mode for nodes and edges");
+	    modeGroup.add(readOnlyModeButton);
+	    modeGroup.add(editModeButton);
+	    editMenu.add(readOnlyModeButton);
+	    editMenu.add(editModeButton);
+	    readOnlyModeButton.setSelected(true);
+	    readOnlyModeButton.addActionListener(new ReadOnlyModeAction(cyWindow));
+	    editModeButton.addActionListener(new EditModeAction(cyWindow));
+	    editMenu.addSeparator();
         
-    ButtonGroup modeGroup = new ButtonGroup();
-    JRadioButtonMenuItem readOnlyModeButton = new JRadioButtonMenuItem("Read-only mode");
-    JRadioButtonMenuItem editModeButton = new JRadioButtonMenuItem("Edit mode for nodes and edges");
-    modeGroup.add(readOnlyModeButton);
-    modeGroup.add(editModeButton);
-    editMenu.add(readOnlyModeButton);
-    editMenu.add(editModeButton);
-    readOnlyModeButton.setSelected(true);
-    readOnlyModeButton.addActionListener(new ReadOnlyModeAction(cyWindow));
-    editModeButton.addActionListener(new EditModeAction(cyWindow));
-    editMenu.addSeparator();
-        
-    deleteSelectionMenuItem = editMenu.add(new DeleteSelectedAction(networkView));
-    deleteSelectionMenuItem.setEnabled(false);
+	deleteSelectionMenuItem = editMenu.add(new DeleteSelectedAction(networkView));
+	deleteSelectionMenuItem.setEnabled(false);
+    }
 
     //fill the Select menu
     JMenu selectNodesSubMenu = new JMenu("Nodes");
