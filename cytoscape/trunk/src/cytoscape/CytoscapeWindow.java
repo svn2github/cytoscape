@@ -484,7 +484,8 @@ protected JMenuBar createMenuBar ()
   JMenu viewMenu = new JMenu ("View");
   viewMenu.add (new HideEdgesAction ());
   viewMenu.add (new ShowEdgesAction ());
-  viewMenu.add (new HideSelectedNodesAction ());
+  mi = viewMenu.add (new HideSelectedNodesAction ());
+  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_H, ActionEvent.CTRL_MASK));
 
   mi = viewMenu.add (new DisplaySelectedInNewWindowAction ());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_N, ActionEvent.CTRL_MASK));
