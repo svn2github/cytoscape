@@ -337,6 +337,7 @@ public class CyMenus  implements GraphViewChangeListener {
     addAction( new CreateNetworkViewAction() );
     addAction( new DestroyNetworkViewAction() );
     addAction( new DestroyNetworkAction() );
+    addAction( new DestroySelectedAction() );
 
     //fill the Data menu
     addAction( new DisplayBrowserAction() );
