@@ -84,7 +84,7 @@ edgeAppearanceCalculator.BasicContinuous.edgeFontSizeCalculator=BasicContinuous
 # a node passthrough calculator
 nodeLabelCalculator.BasicPassThrough.class=cytoscape.visual.calculators.GenericNodeLabelCalculator
 nodeLabelCalculator.BasicPassThrough.mapping.type=PassThroughMapping
-nodeLabelCalculator.BasicPassThrough.mapping.controller=canonicalName
+nodeLabelCalculator.BasicPassThrough.mapping.controller=commonName
 
 #discrete node calculators
 nodeColorCalculator.BasicDiscrete.class=cytoscape.visual.calculators.GenericNodeColorCalculator
