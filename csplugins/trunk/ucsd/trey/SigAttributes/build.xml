@@ -30,6 +30,9 @@
 		<fileset dir="${lib.dir}">
 			<include name="**/*.jar"/>
 		</fileset>
+		<fileset dir="${pluginlib.dir}">
+			<include name="**/*.jar"/>
+		</fileset>
 	</path>
 
   	<!-- Target to create the build directories prior to compilation -->
