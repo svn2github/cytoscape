@@ -113,7 +113,11 @@ public abstract class Cytoscape {
     } catch ( Exception e ) {
       System.out.println( "Errors on close, closed anyways." );
     }
-    getCytoscapeObj().getParentApp().exit(0);
+    if (getCytoscapeObj().getParentApp() != null) {
+        getCytoscapeObj().getParentApp().exit(0);
+    } else {
+        System.exit(0);
+    }
   }
 
   //--------------------//
