@@ -106,10 +106,10 @@ public class CyMain implements WindowListener {
     //create the global CytoscapeObj object
     CytoscapeObj cytoscapeObj = new CytoscapeObj(this, config, logger, null);
     Cytoscape.setCytoscapeObj( cytoscapeObj );
-
+    BioDataServer bioDataServer = Cytoscape.getCytoscapeObj().getBioDataServer();
     //try to create a bioDataServer
-    String bioDataDirectory = config.getBioDataDirectory();
-    BioDataServer bioDataServer = Cytoscape.loadBioDataServer( bioDataDirectory );// null;
+    //String bioDataDirectory = config.getBioDataDirectory();
+    //BioDataServer bioDataServer = Cytoscape.loadBioDataServer( bioDataDirectory );// null;
 //     if ( bioDataDirectory != null ) {
 //       try {
 //         bioDataServer = new BioDataServer( bioDataDirectory );

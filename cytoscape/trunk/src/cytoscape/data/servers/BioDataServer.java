@@ -212,7 +212,8 @@ public void loadThesaurusFiles (String [] thesaurusFilenames) throws Exception
 {
   for (int i=0; i < thesaurusFilenames.length; i++) {
     String filename = thesaurusFilenames [i];
-    System.out.println( "Load Thesaurus: "+filename );
+    Thread.currentThread().dumpStack();
+    //System.out.println( "Load Thesaurus: "+filename );
     ThesaurusFlatFileReader reader = new ThesaurusFlatFileReader (filename);
     Thesaurus thesaurus = reader.getThesaurus (); 
     server.addThesaurus (thesaurus.getSpecies (), thesaurus);
