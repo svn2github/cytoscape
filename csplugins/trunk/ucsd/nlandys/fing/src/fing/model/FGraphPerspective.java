@@ -858,11 +858,8 @@ class FGraphPerspective implements GraphPerspective
     return createGraphPerspective
       (nodeInx, getConnectingEdgeIndicesArray(nodeInx)); }
 
-  public void finalize()
-  {
-    System.out.println("now in FGraphPerspective.finalize()");
-    m_root.removeRootGraphChangeListener(m_changeSniffer);
-  }
+  public void finalize() {
+    m_root.removeRootGraphChangeListener(m_changeSniffer); }
 
   // Nodes and edges in this graph are called "native indices" throughout
   // this class.
