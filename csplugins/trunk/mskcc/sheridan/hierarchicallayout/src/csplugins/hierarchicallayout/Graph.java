@@ -492,7 +492,7 @@ public class Graph {
 		LinkedList bucket[] = new LinkedList[2*nodecount-3];
 		LinkedList Sr = new LinkedList();
 		LinkedList Sl = new LinkedList();
-		final int bucketOffset = nodecount/2;
+		final int bucketOffset = nodecount - 2;
 		int x;
 		for (x=0; x<bucket.length; x++) {
 			bucket[x] = new LinkedList();
