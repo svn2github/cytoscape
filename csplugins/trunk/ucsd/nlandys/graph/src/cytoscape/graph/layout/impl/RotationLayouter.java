@@ -6,7 +6,6 @@ import com.nerius.math.xform.AxisRotation3D;
 import com.nerius.math.xform.Scale3D;
 import com.nerius.math.xform.Translation3D;
 import cytoscape.graph.layout.algorithm.MutableGraphLayout;
-import java.awt.geom.Point2D;
 
 public final class RotationLayouter
 {
