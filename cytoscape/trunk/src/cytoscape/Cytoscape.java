@@ -1089,8 +1089,6 @@ public abstract class Cytoscape {
    * or from a URL.
    */
   public static BioDataServer loadBioDataServer ( String location ) {
-    System.out.println( "laod BDS: "+location );
-
      try {
        bioDataServer = new BioDataServer ( location );
      } catch ( Exception e ) {
