@@ -27,7 +27,6 @@
     <? include "nav.php"; ?>
     <? include "nav_tut.php"; ?>
     <div id="indent">
-
 <center>
 <h2>Cytoscape Tutorial Introduction</h2>
 </center>
@@ -38,7 +37,7 @@ biological networks. Many useful capabilities are built into the platform's
 core, and plug-ins can be developed by those who know the Java programming 
 language to add new features.<p>
 
-This set of web pages contains a set of tutorials for Cytoscape. You may want to glance at the <a href="manual/Cytoscape2_0Manual.pdf">Cytoscape manual</a> while running these tutorials.
+This set of web pages contains a set of tutorials for Cytoscape. You may want to glance at the <a href="manual/Cytoscape2_1Manual.pdf">Cytoscape manual</a> while running these tutorials.
 
 <p>
 
