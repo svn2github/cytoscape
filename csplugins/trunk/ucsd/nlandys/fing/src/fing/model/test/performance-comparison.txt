@@ -46,6 +46,7 @@ ADJACENT EDGES TEST:
     4000 nodes,   20000 edges           |     32 |  16300 |
     8000 nodes,   20000 edges           |     42 |  64800 |
    16000 nodes,   20000 edges           |     94 | 258300 |
+   39999 nodes,   39999 edges           |     93 |1743190 |
    16000 nodes,  100000 edges           |    127 |   fail |
    50000 nodes,  400000 edges           |    440 |   fail |
   100000 nodes, 1000000 edges           |   1050 |   fail |
@@ -99,6 +100,7 @@ CONNECTING EDGES TEST:
     4000 nodes,   20000 edges           |     57 |     16 |
     8000 nodes,   20000 edges           |     70 |     20 |
    16000 nodes,   20000 edges           |    130 |     27 |
+   39999 nodes,   39999 edges           |        |        |
    16000 nodes,  100000 edges           |    215 |   fail |
    50000 nodes,  400000 edges           |    800 |   fail |
   100000 nodes, 1000000 edges           |   2000 |   fail |
@@ -106,7 +108,7 @@ CONNECTING EDGES TEST:
 
   Afterthoughts:
     This method was deprecated for a good reason -- it's not used
-    by algorithms and it's not worth optimizing it.  In the Fing
+    by algorithms and it's not worth optimizing.  In the Fing
     implementation, this method iterates over all edges touching one
     of the nodes, choosing those edges which also touch the other node.
     Therefore, the time complexity of this method is linear with respect
@@ -116,3 +118,50 @@ CONNECTING EDGES TEST:
     discussed, and then it was decided to use plain old linked lists
     of adjacent edges in favor of trees, for the sake of simplicity of
     implementation.
+
+
+=======================================================================
+NODE NEIGHBORS TEST:
+
+  Testing: A deprecated method:
+    RootGraph.neighborsList(Node)
+
+  Importance:
+    This method has been deprecated -- it is suggested to use
+    getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean) instead.
+    This method (or the one that returns adjacent edges) is typically
+    used in graph depth-first and breadth-first search algorithms; a
+    complete search of a graph would essentially call neighborsList()
+    on every node exactly once by the time the search algorithm
+    finished.
+
+  Description of test:
+    This test creates N nodes and E edges (an even mix of directed and
+    undirected) in a RootGraph.  The topology of RootGraph created is
+    defined by [random] bytes read from standard input.  For every node
+    in the RootGraph, neighborsList() is called on that node.
+
+  Test circumstances:
+    Tests were performed on a 2.4GHz P4, with 512M RAM, and 256M memory
+    was allocated to the JVM.
+
+  Test results:
+
+             Milliseconds taken to perform test case:
+
+    graph size                          |  Fing  |  Luna  |
+  --------------------------------------+--------+--------+
+       7 nodes,      20 edges           |      3 |      2 |
+     100 nodes,     500 edges           |     12 |     19 |
+     100 nodes,   10000 edges           |     25 |     14 |
+    1000 nodes,   20000 edges           |     52 |    285 |
+    1000 nodes,   39998 edges           |     83 |    300 |
+    2000 nodes,   20000 edges           |     61 |   1040 |
+    4000 nodes,   20000 edges           |     57 |   5000 |
+    8000 nodes,   20000 edges           |     68 |  21000 |
+   16000 nodes,   20000 edges           |    116 |  84000 |
+   39999 nodes,   39999 edges           |    170 | 563274 |
+   16000 nodes,  100000 edges           |    215 |   fail |
+   50000 nodes,  400000 edges           |    800 |   fail |
+  100000 nodes, 1000000 edges           |   2000 |   fail |
+  --------------------------------------+--------+--------+
