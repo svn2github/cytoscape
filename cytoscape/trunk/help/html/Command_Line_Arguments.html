@@ -8,112 +8,197 @@
 <body>
 <h1 class="western" style="page-break-before: always;">Command Line
 Arguments</h1>
-Cytoscape recognizes a number of
-optional command line arguments, including run-time specification of
-network files and expression data:
+Cytoscape recognizes a number of optional command
+line
+arguments, including run-time specification of network files and
+expression
+data:<br>
+<br>
+<span style="font-weight: bold;">&nbsp;&nbsp;
+-g | -graph</span> &lt;GML network
+filename&gt;&nbsp; (e.g., xxx.gml)&nbsp; <br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp; Loads
+a network file in GML format (see 5.
+Building and <br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Storing Interaction Networks)<br>
+&nbsp;
+<span style="font-weight: bold;"><br>
+&nbsp;&nbsp; -i&nbsp;
+|
+-interaction</span> &lt;SIF interactions filename&gt;
+&nbsp;(e.g., yyy.sif) <br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp; Loads
+a network file in SIF format (see 5.
+Building and <br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Storing Interaction Networks)<br>
+&nbsp;<br>
+&nbsp;&nbsp;
+<span style="font-weight: bold;">-b | -BDS</span> &lt;bioData
+directory&gt; (e.g.,
+annotation/manifest) <br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp; Specifies
+which directory to use for the BioDataServer annotations&nbsp;
 <br>
 <br>
-<div style="margin-left: 40px;"><code><span style="font-weight: bold;">
-<b>-g &lt;GML network
-filename&gt;</b></span> (xxx.gml)</code>
-<code> Loads a
-network
-file in GML format (see <i>5.
-Building and Storing Interaction Networks</i>)</code>
+&nbsp;&nbsp;
+<span style="font-weight: bold;">-e
+| -expression</span>&nbsp;
+&lt;expression filename&gt;&nbsp; (e.g., zzz.pvals) <br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp; Loads
+an expression data file (see 6. Loading
+Gene Expression Data&nbsp;
 <br>
-<code></code><br>
-<code></code>
-<code><span style="font-weight: bold;"><b> -i &lt;SIF
-interactions filename&gt;</b></span> (yyy.sif)</code>
-<code> Loads a
-network
-file in SIF format (see <i>5.
-Building and Storing Interaction Networks</i>)</code>
 <br>
-<code></code><br>
-<code></code>
-<code><span style="font-weight: bold;"><b> -b &lt;bioData
-directory&gt;</b></span> (e.g. annotation/manifest) </code>
-<code> Specifies
-which
-directory to use for the BioDataServer annotations</code>
+&nbsp;&nbsp;
+<span style="font-weight: bold;"> -n
+| -nodeAttributes&nbsp;</span>
+&lt;nodeAttributes filename&gt;&nbsp;
+(one or more) <br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp; Loads
+node attributes files (see 7. Node
+and Edge Attributes&nbsp;
 <br>
-<code></code><br>
-<code></code>
-<code><span style="font-weight: bold;"><b> -e &lt;expression
-filename&gt; </b></span>(zzz.pvals)</code>
-<code> Loads an
-expression data file (see <i>6.
-Loading Gene Expression Data</i>)</code>
 <br>
-<code></code><br>
-<code></code>
-<code><span style="font-weight: bold;"><b> -x</b></span> Prevents
-expression file from also loading into Cytoscape graph
-attributes (See <i>7. Node
-and Edge Attributes</i>)</code>
+&nbsp;&nbsp;
+<span style="font-weight: bold;"> -j
+| -edgeAttributes&nbsp;</span>
+&lt;edgeAttributes
+filename&gt;&nbsp; (one or more) <br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp; Loads
+edge attributes files (see
+7.
+Node and Edge Attributes&nbsp;
 <br>
-<code></code><br>
-<code></code>
-<code><span style="font-weight: bold;"><b> -n
-&lt;nodeAttributes filename&gt;</b></span> ... (one or more)</code>
-<code> Loads node
-attributes files (see <i>7. Node
-and Edge Attributes</i>)</code>
 <br>
-<code></code><br>
-<code></code>
-<code><span style="font-weight: bold;"><b> -j
-&lt;edgeAttributes filename&gt;</b></span> ... (one or more)</code>
-<code> Loads edge
-attributes files (see <i>7. Node
-and Edge Attributes</i>)</code>
+&nbsp;&nbsp; <span style="font-weight: bold;">-s
+| -species</span>&nbsp;
+&nbsp;&nbsp; Set
+the default species name&nbsp;
 <br>
-<code></code><br>
-<code></code>
-<code><span style="font-weight: bold;"><b>-s</b><</span> Set the default
-species name</code>
 <br>
-<code></code><br>
-<code></code>
-<code><span style="font-weight: bold;"><b>-c</b></span> Turn off
-default node name canonicalization</code>
+<span style="font-weight: bold;">&nbsp;&nbsp; -c
+| -noCanonicalization</span>&nbsp;
 <br>
-<code></code><br>
-<code></code>
-<code><span style="font-weight: bold;"><b>-t</b></span> View mode for
-Cytoscape main window. Can be &#8220;tabbed&#8221;
-(default), &#8220;internal&#8221; or &#8220;external&#8221;</code>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Turn off
+default node name
+canonicalization&nbsp;
 <br>
-<code></code><br>
-<code></code>
-<code><span style="font-weight: bold;"><b> -h</b></span> help: display
-these command line arguments</code>
 <br>
-<code></code><br>
-<code></code>
-<code><span style="font-weight: bold;"><b> -v</b></span> display version</code>
+&nbsp;&nbsp; <span style="font-weight: bold;">-h
+| -help | -help | --help</span> <br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; Help:
+display these
+command line arguments&nbsp;
 <br>
-<code></code><br>
-<code></code>
-<code><span style="font-weight: bold;"><b> --JLD &lt;directory&gt;</b></span>
-specifies a
-directory in which PlugIn .jar&#8217;s reside</code>
 <br>
-<code></code><br>
-<code></code>
-<code><span style="font-weight: bold;"><b> --JLW &lt;url&gt;&nbsp;</b></span>
-specifies a
-URL that points to a PlugIn .jar</code>
+&nbsp; &nbsp;<span style="font-weight: bold;"> -p
+| -plugin | --JLD | --JLW | --JLL</span> &lt;one or more files,
+directories or URLs...&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp; Specify a list of plugins (jar
+files),
+directories containing plugins, <br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp; URLs (http://) to jar files, or
+URLs to
+manifest files listing jar files&nbsp;
 <br>
-<code></code><br>
-<code></code>
-<code><span style="font-weight: bold;"><b> --JLL &lt;url&gt; ...</b></span>
-specifies a
-list of URLs pointing to PlugIn .jars</code>
 <br>
-</div>
+<span style="font-weight: bold;">&nbsp;&nbsp; -props
+&lt;properties file&gt;</span>&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Specify
+and load a
+properties file&nbsp;
 <br>
+<br>
+<span style="font-weight: bold;">&nbsp;&nbsp; -headless
+| -noView</span>&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Run in headless
+mode; do not create and
+display the GUI
+<br>
+<br>
+&nbsp;&nbsp; <span style="font-weight: bold;">-noDialog
+| -suppressView</span> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Do not popup
+informational dialog when express file is loaded
+<br>
+<br>
+<span style="font-weight: bold;">&nbsp;&nbsp; -vt
+| --VT</span> &lt;view threshold&gt; <br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Specify
+the threshold # of nodes at which views will not automatically<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; be
+created
+<br>
+<br>
+&nbsp;&nbsp; <span style="font-weight: bold;">-project</span>
+&lt;project file&gt;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Specify
+the location of the project file
+<br>
+<br>
+&nbsp;&nbsp; <span style="font-weight: bold;">-script
+| --script</span> &lt;script text&#8230;&gt; <span style="font-weight: bold;">-end
+</span><br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Specify
+script text<br>
+<br style="font-family: serif;">
+<span style="font-weight: bold;">&nbsp;&nbsp;
+-rp
+| -resourcePlugin</span> &lt;resource
+plugins&#8230;&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp; Specify
+the list of resource plugins
+<h2 style="font-family: monospace;"><span style="font-family: serif;">Java
+System
+properties</span><o:p></o:p></h2>
+<span style="font-weight: bold; font-family: serif;">&nbsp;&nbsp;
+-Djava.awt.headless=</span><span style="font-family: serif;">[
+true | false ]&nbsp;&nbsp;&nbsp; </span><br style="font-family: serif;">
+<span style="font-family: serif;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp; Similar to command
+line argument &#8211;headless | -noView;
+run in headless mode, </span><br style="font-family: serif;">
+<span style="font-family: serif;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp; do not create and
+display the GUI</span><br>
+<br style="font-family: monospace;">
 Most data sets may also be loaded
 after Cytoscape is running. See the sections on <i>6. Loading Gene
 Expression Data
@@ -123,6 +208,7 @@ Expression Data
 Additional command line arguments
 that are not recognized by the Cytoscape core are passed to the
 PlugIn modules. Please refer to the documentation for each specific
-PlugIn for more details.
+PlugIn for more details.<br>
+<br style="font-family: monospace;">
 </body>
 </html>
