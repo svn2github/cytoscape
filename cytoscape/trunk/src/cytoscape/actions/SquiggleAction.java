@@ -22,10 +22,10 @@ public class SquiggleAction extends JMenu {
 	      public void run() {
 		    PGraphView view = (PGraphView)Cytoscape.getCurrentNetworkView();
 		    if (enabled) {
-              view.getSquiggleHandler().beginSquiggling();
+              Cytoscape.enableSquiggle();
               squiggleMode.setText("Disable");
             } else {
-              view.getSquiggleHandler().stopSquiggling();
+              Cytoscape.disableSquiggle();
               squiggleMode.setText("Enable");
             }
             clearSquiggle.setEnabled(enabled);
