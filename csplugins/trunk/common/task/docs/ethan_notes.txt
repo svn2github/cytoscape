@@ -1,0 +1,21 @@
+Task Interface:
+---------------
+
+Update Build file to use junit.jar
+Update Build file to run samples.
+Update Build file to run JUnit Tests
+Run Ant Checkstyle
+Create Package HTML Javadocs
+
+[DONE] Ensure that JTask adheres to all the right policies
+[DONE] Ensure that SampleTask adheres to all the right policies
+[DONE] Add TimeStringUtil Test Class
+[DONE] Wrapper for starting tasks and popping open a UI component.
+[DONE] no setDone(), at least not yet.
+[DONE] JTask:  Handle Exceptions
+[DONE] Added getTaskTitle() back to Task interface.
+[DONE] JTaskConfig for configuring JTask.
+[DONE] task/sample contains SampleTask.java and RunSampleTask.java
+[DONE] Task:  Set policy for setTaskMonitor()
+[DONE] TaskMonitor:  add back EstimatedTimeRemaining();
+[DONE] TaskMonitor:  add details re:  setException();
