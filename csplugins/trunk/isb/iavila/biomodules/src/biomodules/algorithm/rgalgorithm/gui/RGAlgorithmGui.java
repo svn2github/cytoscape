@@ -177,16 +177,28 @@ public class RGAlgorithmGui extends JDialog {
     // --------- Filters -------- //
     JPanel filtersPanel = new JPanel();
     filtersPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-    JButton filtersButton = new JButton("Filters...");
+    //JButton filtersButton = new JButton("Filters...");
+    JButton filtersButton = new JButton("Print all threads");
     filtersButton.addActionListener(
-    		new AbstractAction (){
-    			public void actionPerformed (ActionEvent e){
-    			if(filtersDialog == null){
-    				filtersDialog = new CsFilter(Cytoscape.getDesktop());
-    			}
-    			filtersDialog.show();
-    			}
-    		}
+    		new AbstractAction() {
+			public void actionPerformed(ActionEvent e) {
+				//if(filtersDialog == null){
+				//filtersDialog = new CsFilter(Cytoscape.getDesktop());
+				//}
+				//filtersDialog.show();
+				//}
+				// TEST: Print All Threads !
+				int numThreads = Thread.activeCount();
+				System.out.println("num threads = " + numThreads);
+				Thread[] threads = new Thread[numThreads];
+				int returnedThreads = Thread.enumerate(threads);
+				for (int i = 0; i < threads.length; i++) {
+					if(threads[i] != null){
+						System.out.println(threads[i] + " is alive = " + threads[i].isAlive());
+					}
+				}//for i
+			}
+		}
     );
     filtersPanel.add(filtersButton);
     paramsPanel.add(filtersPanel);
@@ -547,23 +559,23 @@ public class RGAlgorithmGui extends JDialog {
    * Updates the plots.
    */
   protected void updatePlots (){
-    HCPlot newBiomodsPlot = createNumBiomodulesPlot();
-    HCPlot newDistancesPlot = createDistancesPlot();
-    String currentPlotID = getCurrentPlot();
     
-    this.plotPanel.removeAll();
+  	String currentPlotID = getCurrentPlot();
+  	
+  	this.numBiomodulesPlot.removeJoinBarListener(this.numBiomodulesPlotListener);
+    this.distancesPlot.removeJoinBarListener(this.distancesPlotListener);
+  	this.plotPanel.removeAll();
+  
+    this.numBiomodulesPlot = createNumBiomodulesPlot();
+    this.distancesPlot = createDistancesPlot();
     
-    if(currentPlotID.equals(BIOMODS_PLOT)){
-      this.plotPanel.add(newBiomodsPlot.getContentPane());
+    if(currentPlotID == null || currentPlotID.equals(BIOMODS_PLOT)){
+      this.plotPanel.add(this.numBiomodulesPlot.getContentPane());
     }else if(currentPlotID.equals(DISTANCES_PLOT)){
-      this.plotPanel.add(newDistancesPlot.getContentPane());
+      this.plotPanel.add(this.distancesPlot.getContentPane());
     }
     
-    this.numBiomodulesPlot.removeJoinBarListener(this.numBiomodulesPlotListener);
-    this.distancesPlot.removeJoinBarListener(this.distancesPlotListener);
-    this.numBiomodulesPlot = newBiomodsPlot;
     this.numBiomodulesPlot.addJoinBarListener(this.numBiomodulesPlotListener);
-    this.distancesPlot = newDistancesPlot;
     this.distancesPlot.addJoinBarListener(this.distancesPlotListener);
     this.plotPanel.validate();
     updatePlotLabels();
@@ -576,7 +588,7 @@ public class RGAlgorithmGui extends JDialog {
     
     String currentPlotID = getCurrentPlot();
     
-    if(currentPlotID.equals(BIOMODS_PLOT)){
+    if(currentPlotID == null || currentPlotID.equals(BIOMODS_PLOT)){
       this.yLabel.setText("Num biomodules:");
     }else if(currentPlotID.equals(DISTANCES_PLOT)){
       this.yLabel.setText("Join distance:");
@@ -589,7 +601,7 @@ public class RGAlgorithmGui extends JDialog {
     
     int joinNumber = this.algorithmData.getCutJoinNumber();
     
-    if(currentPlotID.equals(BIOMODS_PLOT)){
+    if(currentPlotID == null || currentPlotID.equals(BIOMODS_PLOT)){
     
       int [] numClustersPerJoin = hClustering.getNumClustersAtIterations();
       if(numClustersPerJoin == null || numClustersPerJoin.length == 0){

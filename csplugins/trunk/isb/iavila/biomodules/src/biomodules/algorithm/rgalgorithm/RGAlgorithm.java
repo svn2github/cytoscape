@@ -91,6 +91,10 @@ public class RGAlgorithm implements BiomodulesAlgorithm{
    * a biomodule, and each cell in that row contains a node in the biomodule
    */
   public static CyNode[][] calculateBiomodules (CyNetwork network){
+  	
+  	// TODO: Remove
+  	System.out.println("In RGAlgorithm.calculateBiomodules: " + Thread.currentThread());
+  	
     ArrayList nodeList = new ArrayList();
   
     // Calculate the All-Pairs-Shortest-Path matrix:

@@ -141,18 +141,66 @@ public class GraphExpanderDialog extends JDialog {
 	 */
 	protected JPanel createInputOutputPanel() {
 
+		// Top level panel
 		JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-
-		JPanel sourcePanel = new JPanel(new GridLayout(4, 2));
-
+		
+		// Panel divided into 3 panels:
+		JPanel sourcePanel = new JPanel(); // default layout manager is FlowLayout
+		
+		// The leftmost panel
+		JPanel leftPanel = new JPanel();
+		leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+		
 		JLabel sourceLabel = new JLabel("Expand using interactions in:");
+		leftPanel.add(sourceLabel);
+		leftPanel.add(Box.createRigidArea(new Dimension(0,5)));
+		
+		JLabel targetLabel = new JLabel("Graph to expand:");
+		leftPanel.add(targetLabel);
+		leftPanel.add(Box.createRigidArea(new Dimension(0,5)));
+		
+		JCheckBox toFileOption = new JCheckBox("Save result to file:");
+		leftPanel.add(toFileOption);
+		
+		sourcePanel.add(leftPanel);
+		
+		// The middle panel
+		JPanel midPanel = new JPanel();
+		midPanel.setLayout(new BoxLayout(midPanel,BoxLayout.Y_AXIS));
+	
 		Set nets = Cytoscape.getNetworkSet();
 		CyNetwork[] allLoadedNets = (CyNetwork[]) nets
 				.toArray(new CyNetwork[nets.size()]);
+		
 		this.sourceGraphs = new JComboBox(allLoadedNets);
-		this.sourceGraphs.setEditable(true); // user can enter his own graph
-		// that is not in Cytoscape
+		this.sourceGraphs.setEditable(true);
+		Dimension dim = this.sourceGraphs.getPreferredSize();
+		dim.width = dim.width * 2;
+		this.sourceGraphs.setMaximumSize(dim);
+		this.sourceGraphs.setPreferredSize(dim);
+		midPanel.add(this.sourceGraphs);
+		midPanel.add(Box.createRigidArea(new Dimension(0,5)));
+		
+		this.targetGraphs = new JComboBox(allLoadedNets);
+		this.targetGraphs.setEditable(true); // user can enter his own graph
+		this.targetGraphs.setMaximumSize(dim);
+		this.targetGraphs.setPreferredSize(dim);
+		midPanel.add(this.targetGraphs);
+		midPanel.add(Box.createRigidArea(new Dimension(0,5)));
+		
+		this.saveToFiles = new JComboBox();
+		this.saveToFiles.setEditable(true);
+		this.saveToFiles.setMaximumSize(dim);
+		this.saveToFiles.setPreferredSize(dim);
+		midPanel.add(this.saveToFiles);
+		
+		sourcePanel.add(midPanel);
+		
+		// The rightmost panel
+		JPanel rightPanel = new JPanel();
+		rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+		
 		JButton browseButton1 = new JButton("Browse");
 		browseButton1.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent event) {
@@ -161,25 +209,23 @@ public class GraphExpanderDialog extends JDialog {
 				int returnVal = fileChooser
 						.showOpenDialog(GraphExpanderDialog.this);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					File selectedFile = fileChooser.getSelectedFile();
-					sourceGraphs.addItem(selectedFile);
+					File selectedFile = new File(fileChooser.getSelectedFile().getAbsolutePath()){
+						public String toString (){
+							return this.getName();
+						}
+					};
+					sourceGraphs.addItem(selectedFile); 
 					sourceGraphs.setSelectedItem(selectedFile);
 					GraphExpanderDialog.this.sourceCurrentDirectory = fileChooser
 							.getSelectedFile().getParentFile();
 				}
 			}
 		});
-
-		JPanel sourceGraphsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		sourceGraphsPanel.add(this.sourceGraphs);
-		sourceGraphsPanel.add(browseButton1);
-		sourcePanel.add(sourceLabel);
-		sourcePanel.add(sourceGraphsPanel);
-
-		JLabel targetLabel = new JLabel("Graph to expand:");
-		this.targetGraphs = new JComboBox(allLoadedNets);
-		this.targetGraphs.setEditable(true); // user can enter his own graph
-		// that is not in Cytoscape
+		Dimension bbDimension = new Dimension(browseButton1.getPreferredSize().width, dim.height);
+		browseButton1.setPreferredSize(bbDimension);
+		rightPanel.add(browseButton1);
+		rightPanel.add(Box.createRigidArea(new Dimension(0,5)));
+		
 		JButton browseButton2 = new JButton("Browse");
 		browseButton2.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent event) {
@@ -188,28 +234,23 @@ public class GraphExpanderDialog extends JDialog {
 				int returnVal = fileChooser
 						.showOpenDialog(GraphExpanderDialog.this);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					File selectedFile = fileChooser.getSelectedFile();
+					File selectedFile = new File(fileChooser.getSelectedFile().getAbsolutePath()){
+						public String toString (){
+							return this.getName();
+						}
+					};
 					targetGraphs.addItem(selectedFile);
-					targetGraphs.setSelectedItem(selectedFile); // this makes
-																// the combo-box
-																// resize...FIX
+					targetGraphs.setSelectedItem(selectedFile); 
 					GraphExpanderDialog.this.toExpandCurrentDirectory = fileChooser
 							.getSelectedFile().getParentFile();
 				}
 			}
 		});
-		JPanel sourceGraphsPanel2 = new JPanel(
-				new FlowLayout(FlowLayout.CENTER));
-		sourceGraphsPanel2.add(this.targetGraphs);
-		sourceGraphsPanel2.add(browseButton2);
-		sourcePanel.add(targetLabel);
-		sourcePanel.add(sourceGraphsPanel2);
-
-		JCheckBox toFileOption = new JCheckBox("Save result to file:");
-		JPanel filePathInputPanel = new JPanel(
-				new FlowLayout(FlowLayout.CENTER));
-		this.saveToFiles = new JComboBox();
-		this.saveToFiles.setEditable(true);
+		
+		browseButton2.setPreferredSize(bbDimension);
+		rightPanel.add(browseButton2);
+		rightPanel.add(Box.createRigidArea(new Dimension(0,5)));
+		
 		JButton browseButton3 = new JButton("Browse");
 		browseButton3.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent event) {
@@ -218,7 +259,11 @@ public class GraphExpanderDialog extends JDialog {
 				int returnVal = fileChooser
 						.showOpenDialog(GraphExpanderDialog.this);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					File selectedFile = fileChooser.getSelectedFile();
+					File selectedFile = new File(fileChooser.getSelectedFile().getAbsolutePath()){
+						public String toString (){
+							return this.getName();
+						}
+					};
 					saveToFiles.addItem(selectedFile);
 					saveToFiles.setSelectedItem(selectedFile);
 					GraphExpanderDialog.this.saveToDirectory = fileChooser
@@ -226,17 +271,19 @@ public class GraphExpanderDialog extends JDialog {
 				}
 			}
 		});
-		filePathInputPanel.add(this.saveToFiles);
-		filePathInputPanel.add(browseButton3);
-		sourcePanel.add(toFileOption);
-		sourcePanel.add(filePathInputPanel);
-
+		
+		browseButton3.setPreferredSize(bbDimension);
+		rightPanel.add(browseButton3);
+		sourcePanel.add(rightPanel);
+		
+		// Whether a new CyNetwork should be created from the resulting expanded graph
+		JPanel bottomPanel = new JPanel();
 		JCheckBox newGraphOption = new JCheckBox("Create new graph from result");
-		sourcePanel.add(newGraphOption);
-		sourcePanel.add(Box.createHorizontalGlue());
-
+		bottomPanel.add(newGraphOption);
+		
 		mainPanel.add(sourcePanel);
-
+		mainPanel.add(bottomPanel);
+		
 		return mainPanel;
 	}//createInputOutputPanel
 
@@ -261,15 +308,15 @@ public class GraphExpanderDialog extends JDialog {
 		this.existingNodesOption.setSelected(true);
 		buttonGroup.add(this.existingNodesOption);
 		existingNodesPanel.add(this.existingNodesOption);
-		JPanel disconnectedNodesPanel = new JPanel(new FlowLayout(
-				FlowLayout.LEFT));
-		this.disconnectedNodesOption = new JRadioButton(
-				"Add interactions to connect disconnected nodes.");
-		buttonGroup.add(this.disconnectedNodesOption);
-		disconnectedNodesPanel.add(this.disconnectedNodesOption);
+		//JPanel disconnectedNodesPanel = new JPanel(new FlowLayout(
+		//	FlowLayout.LEFT));
+		//this.disconnectedNodesOption = new JRadioButton(
+		//	"Add interactions to connect disconnected subgraphs.");
+		//buttonGroup.add(this.disconnectedNodesOption);
+		//disconnectedNodesPanel.add(this.disconnectedNodesOption);
 
 		optionsPanel.add(existingNodesPanel);
-		optionsPanel.add(disconnectedNodesPanel);
+		//optionsPanel.add(disconnectedNodesPanel);
 
 		JPanel shortestPathsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		this.shortestPathsOption = new JRadioButton(
@@ -457,9 +504,9 @@ public class GraphExpanderDialog extends JDialog {
 			return EXISTING_NODES;
 		}
 		
-		if(this.disconnectedNodesOption.isSelected()){
-			return DISCONNECTED_NODES;
-		}
+		//if(this.disconnectedNodesOption.isSelected()){
+		//return DISCONNECTED_NODES;
+		//}
 		
 		if(this.shortestPathsOption.isSelected()){
 			return SHORTEST_PATHS;
@@ -519,10 +566,11 @@ public class GraphExpanderDialog extends JDialog {
 					source_net, target_net);
 		}
 		
-		if(this.disconnectedNodesOption.isSelected()){
-			return GraphExpander.addInteractionsToConnectGraph(
-					source_net,target_net);
-		}
+		//if(this.disconnectedNodesOption.isSelected()){
+		//JOptionPane.showMessageDialog(GraphExpanderDialog.this,"Sorry, not implemented yet!");
+		//return GraphExpander.addInteractionsToConnectGraph(
+		//	source_net,target_net);
+		//}
 		
 		if(this.shortestPathsOption.isSelected()){
 			int maxPathLength = getMaxPathLenght();
@@ -558,7 +606,7 @@ public class GraphExpanderDialog extends JDialog {
 			Object targetObject = getSelectedTarget();
 			if (sourceObject == null || targetObject == null) {
 				JOptionPane.showMessageDialog(GraphExpanderDialog.this,
-						"Please select a source and a target graph.");
+						"Please select source and target graphs.");
 				return;
 			}
 			CyNetwork sourceNetwork = null;
@@ -581,7 +629,6 @@ public class GraphExpanderDialog extends JDialog {
 			}
 			if (targetObject instanceof File) {
 				targetNetwork = createCyNetwork((File) targetObject);
-				System.out.println("targetNetwork contains " + targetNetwork.getNodeCount() + " nodes.");
 				replaceTargetObject(targetObject, targetNetwork);
 				GraphExpanderDialog.this.targetGraphs
 						.setSelectedItem(targetNetwork);
@@ -592,7 +639,6 @@ public class GraphExpanderDialog extends JDialog {
 			}
 			
 			int [] numNewNodesEdges = applySelectedExpandingMethod(sourceNetwork, targetNetwork);
-			System.out.println("new nodes = " + numNewNodesEdges[0] + " new edges = " + numNewNodesEdges[1]);
 			
 		}//actionPerformed
 

@@ -52,6 +52,8 @@
           fork = "true" maxmemory = "1g">
       	  <arg line = "--JLD"/>
       	  <arg line = "${cytoscape.plugin.dir}"/>
+      	  <arg line = "-vt"/>
+      	  <arg line = "5000"/>
       </java>
     </target>
 

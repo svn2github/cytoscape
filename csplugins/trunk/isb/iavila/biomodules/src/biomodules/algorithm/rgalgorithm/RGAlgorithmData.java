@@ -129,6 +129,7 @@ public class RGAlgorithmData {
   public void clearIntermediaryData (){
   	this.apsp = new int[0][0];
   	this.manhattanDistances = new double[0][0];
+  	System.gc(); // run garbage collector!
   }//clearIntermediaryData
   
   /**

@@ -40,6 +40,7 @@ import cytoscape.*;
 import java.util.*;
 import graphConnectivity.ShortestConnectingPaths;
 import giny.model.RootGraph;
+import cern.colt.list.IntArrayList;
 
 public class GraphExpander {
 
@@ -67,18 +68,28 @@ public class GraphExpander {
 		
 		int[] numAddedGraphObjects = { 0, 0 };
 		
-		List tnodes = target_net.nodesList();
-		if(tnodes.size() == 0){
+		Iterator nodesIterator = target_net.nodesIterator();
+		IntArrayList tnodesRootGraphIndices = new IntArrayList();
+		while(nodesIterator.hasNext()){
+			tnodesRootGraphIndices.add(((CyNode)nodesIterator.next()).getRootGraphIndex());
+		}
+		
+		if(tnodesRootGraphIndices.size() == 0){
 			return numAddedGraphObjects;
 		}
 		
-		List targetNodesInSource = source_net.nodesList();
-		targetNodesInSource.retainAll(tnodes);
+		IntArrayList targetNodesInSource = new IntArrayList();
+		nodesIterator = source_net.nodesIterator();
+		while(nodesIterator.hasNext()){
+			targetNodesInSource.add(((CyNode)nodesIterator.next()).getRootGraphIndex());
+		}
+		targetNodesInSource.retainAll(tnodesRootGraphIndices);
+		targetNodesInSource.trimToSize();
 
-		List connectingEdges = source_net.getConnectingEdges(targetNodesInSource);
-		List restoredEdges = target_net.restoreEdges(connectingEdges);
+		int [] connectingEdges = source_net.getConnectingEdgeIndicesArray(targetNodesInSource.elements());
+		int[] restoredEdges = target_net.restoreEdges(connectingEdges);
 		if(restoredEdges != null){
-			numAddedGraphObjects[NUM_ADDED_EDGES_INDEX] = restoredEdges.size();
+			numAddedGraphObjects[NUM_ADDED_EDGES_INDEX] = restoredEdges.length;
 		}
 		return numAddedGraphObjects;
 	}//addIntearctionsBetweenExistingNodes
@@ -133,39 +144,69 @@ public class GraphExpander {
 		
 		int[] numAddedGraphObjects = { 0, 0 };
 
-		List tnodes = target_net.nodesList();
-		List targetNodesInSource = source_net.nodesList();
-		targetNodesInSource.retainAll(tnodes);
-
-		if (tnodes.size() == 0 || targetNodesInSource.size() == 0) {
-			return numAddedGraphObjects;
+		Iterator nodesIterator = target_net.nodesIterator();
+		List tnodes = new ArrayList();
+		while(nodesIterator.hasNext()){
+			tnodes.add(nodesIterator.next());
 		}
 
+		List targetNodesInSource = new ArrayList();
+		nodesIterator = source_net.nodesIterator();
+		while(nodesIterator.hasNext()){
+			targetNodesInSource.add(nodesIterator.next());
+		}
+		targetNodesInSource.retainAll(tnodes);
+
+		long startTime = System.currentTimeMillis();
+		
 		Set connectingNodesSet = ShortestConnectingPaths
 				.findShortestConnectingPaths(source_net, maxPathLength,
 						targetNodesInSource);
+		System.out.println("Found shortest connecting paths, time = " + ((System.currentTimeMillis() - startTime)/1000) );
 
 		if (connectingNodesSet == null || connectingNodesSet.size() == 0) {
 			return numAddedGraphObjects;
 		}
 
-		List restoredNodes = target_net.restoreNodes(new ArrayList(
-				connectingNodesSet));
-		if(restoredNodes != null){
-			numAddedGraphObjects[NUM_ADDED_NODES_INDEX] = restoredNodes.size();
+		startTime = System.currentTimeMillis();
+		nodesIterator = connectingNodesSet.iterator();
+		IntArrayList restoredNodesRootIndices = new IntArrayList();
+		while(nodesIterator.hasNext()){
+			CyNode restoredNode = (CyNode)target_net.restoreNode((CyNode)nodesIterator.next());
+			if( restoredNode != null){
+				restoredNodesRootIndices.add(restoredNode.getRootGraphIndex());
+			}
 		}
-		List edges = new ArrayList();
-		if(restoredNodes.size() == 0 && connectingNodesSet.size() > 0){
+		System.out.println("Done restoring nodes in shortest paths, time = " + ((System.currentTimeMillis() -  startTime)/1000) );
+		
+		restoredNodesRootIndices.trimToSize();
+		
+		numAddedGraphObjects[NUM_ADDED_NODES_INDEX] = restoredNodesRootIndices.size();
+		
+		startTime = System.currentTimeMillis();
+		int [] edges = null;
+		if(restoredNodesRootIndices.size() == 0 && connectingNodesSet.size() > 0){
 			// This means that all of the nodes in the connecting paths are in
 			// the target network, so just add the edges
-			edges = source_net.getConnectingEdges(new ArrayList(connectingNodesSet));
-		}else if(restoredNodes.size() > 0){
-			edges = source_net.getConnectingEdges(restoredNodes);
+			IntArrayList connectingNodesRootIndices = new IntArrayList();
+			Iterator it = connectingNodesSet.iterator();
+			while(it.hasNext()){
+				connectingNodesRootIndices.add(  ((CyNode)it.next()).getRootGraphIndex()  );
+			}
+			connectingNodesRootIndices.trimToSize();
+			edges = source_net.getConnectingEdgeIndicesArray(connectingNodesRootIndices.elements());
+		}else if(restoredNodesRootIndices.size() > 0){
+			edges = source_net.getConnectingEdgeIndicesArray(restoredNodesRootIndices.elements());
 		}
-		List restoredEdges = target_net.restoreEdges(edges);
+		System.out.println("Done getting edges in shortest paths, time = " + ( (System.currentTimeMillis() - startTime)/1000) );
+		
+		startTime = System.currentTimeMillis();
+		int[] restoredEdges = target_net.restoreEdges(edges);
+		System.out.println("Done restoring edges in shortest paths, time = " + ( (System.currentTimeMillis() - startTime)/1000) );
 		if(restoredEdges != null){
-			numAddedGraphObjects[NUM_ADDED_EDGES_INDEX] = restoredEdges.size();
+			numAddedGraphObjects[NUM_ADDED_EDGES_INDEX] = restoredEdges.length;
 		}
+		
 		return numAddedGraphObjects;
 	}//addShortestPaths
 
@@ -193,35 +234,43 @@ public class GraphExpander {
 			throw new IllegalStateException("target_net's RootGraph is not the same as source_net's RootGraph");
 		}
 		
-		
 		int[] numAddedGraphObjects = { 0, 0 };
 
-		List targetNodes = target_net.nodesList();
-		List probableNeighbors = source_net.nodesList();
-		probableNeighbors.removeAll(targetNodes);
-
-		if (targetNodes.size() == 0 || probableNeighbors.size() == 0) {
+		IntArrayList tnodesRootGraphIndices = new IntArrayList();
+		Iterator nodesIterator = target_net.nodesIterator();
+		while(nodesIterator.hasNext()){
+			tnodesRootGraphIndices.add(  ((CyNode)nodesIterator.next()).getRootGraphIndex()  );
+		}
+		tnodesRootGraphIndices.trimToSize();
+		
+		IntArrayList probableNeighborsRootGraphIndices = new IntArrayList();
+		nodesIterator = source_net.nodesIterator();
+		while(nodesIterator.hasNext()){
+			probableNeighborsRootGraphIndices.add( ((CyNode)nodesIterator.next()).getRootGraphIndex() );
+		}
+		probableNeighborsRootGraphIndices.removeAll(tnodesRootGraphIndices);
+		probableNeighborsRootGraphIndices.trimToSize();
+		
+		if (tnodesRootGraphIndices.size() == 0 || probableNeighborsRootGraphIndices.size() == 0) {
 			return numAddedGraphObjects;
 		}
 
-		CyNode[] pneighbors = (CyNode[]) probableNeighbors
-				.toArray(new CyNode[probableNeighbors.size()]);
+		int[] pneighborsRootGraphIndices = probableNeighborsRootGraphIndices.elements();
 		RootGraph rootGraph = source_net.getRootGraph();
-		int[] targetNodeIndices = target_net.getNodeIndicesArray();
-		for (int i = 0; i < targetNodeIndices.length; i++) {
-			targetNodeIndices[i] = target_net
-					.getRootGraphNodeIndex(targetNodeIndices[i]);
-		}//for i
+		
+		//int[] targetNodeIndices = target_net.getNodeIndicesArray();
+		//for (int i = 0; i < targetNodeIndices.length; i++) {
+			//targetNodeIndices[i] = target_net
+				//	.getRootGraphNodeIndex(targetNodeIndices[i]);
+		//}//for i
 
-		ArrayList nodesToRestore = new ArrayList();
-		for (int i = 0; i < pneighbors.length; i++) {
-			int[] nodeIndices = new int[targetNodeIndices.length + 1];
-			System.arraycopy(targetNodeIndices, 0, nodeIndices, 0,
-					targetNodeIndices.length);
-			nodeIndices[targetNodeIndices.length] = pneighbors[i]
-					.getRootGraphIndex();
-			int[] connectingEdgesIndices = rootGraph
-					.getConnectingEdgeIndicesArray(nodeIndices);
+		IntArrayList nodesToRestore = new IntArrayList();
+		for (int i = 0; i < pneighborsRootGraphIndices.length; i++) {
+			int[] nodeIndices = new int[tnodesRootGraphIndices.size() + 1];
+			System.arraycopy(tnodesRootGraphIndices.elements(), 0, nodeIndices, 0,
+					tnodesRootGraphIndices.size());
+			nodeIndices[tnodesRootGraphIndices.size()] = pneighborsRootGraphIndices[i];
+			int[] connectingEdgesIndices = rootGraph.getConnectingEdgeIndicesArray(nodeIndices);
 			// the connecting edges may contain edges that are NOT in source graph
 			int numNeighbors = connectingEdgesIndices.length;
 			//for(int j = 0; j < connectingEdgesIndices.length; j++){
@@ -234,12 +283,13 @@ public class GraphExpander {
 				// skip
 				continue;
 			}
-			nodesToRestore.add(pneighbors[i]);
+			nodesToRestore.add(pneighborsRootGraphIndices[i]);
 		}//for i
 		
-		List restoredNodes = target_net.restoreNodes(nodesToRestore);
+		nodesToRestore.trimToSize();
+		int[] restoredNodes = target_net.restoreNodes(nodesToRestore.elements());
 		if(restoredNodes != null){
-			numAddedGraphObjects[NUM_ADDED_NODES_INDEX] = restoredNodes.size();
+			numAddedGraphObjects[NUM_ADDED_NODES_INDEX] = restoredNodes.length;
 		}
 		int [] nago = GraphExpander.addInteractionsBetweenExistingNodes(source_net,target_net);
 		numAddedGraphObjects[NUM_ADDED_EDGES_INDEX] = nago[NUM_ADDED_EDGES_INDEX];
