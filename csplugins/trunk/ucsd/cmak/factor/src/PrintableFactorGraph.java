@@ -83,9 +83,9 @@ public class PrintableFactorGraph extends FactorGraph
         return node;
     }
     
-    protected int createPathFactor(int pathNumber)
+    protected int createPathFactor(int pathNumber, int sigmaNode)
     {
-        int node = super.createPathFactor(pathNumber);
+        int node = super.createPathFactor(pathNumber, sigmaNode);
         _nodeLabel.put(node, String.valueOf(pathNumber));
 
         return node;

@@ -700,7 +700,8 @@ public class FactorGraph
 
         initVar2Factor(v);
         
-        int N = 2  * _paths.getMaxPathLength();
+        //int N = 2  * _paths.getMaxPathLength();
+        int N = 20  * _paths.getMaxPathLength();
         //int N = 1;
         
         System.out.println("Running max product " + N + " iterations");
