@@ -41,6 +41,25 @@ public class SBWProvider {
   }
 
 
+  public void connect ( String host_module ) {
+    try{
+      SBW.getModuleInstance( host_module );
+    } catch ( SBWException e ) {
+      System.out.println( "Connection Failed\n"+e.getDetailedMessage() );
+     
+    }
+  }
+
+  public void link ( String host_module ) {
+    try{
+      SBW.link( host_module );
+    } catch ( SBWException e ) {
+      System.out.println( "Link Connection Failed\n"+e.getDetailedMessage() );
+     
+    }
+  }
+  
+
   public String displayString ( String s ) {
     System.out.println( s );
     return s+"OK!!!???";

@@ -3,7 +3,7 @@ package csplugins.sbw;
 import cytoscape.*;
 import cytoscape.view.*;
 import cytoscape.util.*;
-
+import cytoscape.plugin.*;
 import javax.swing.*;
 
 import edu.caltech.sbw.*;
@@ -77,6 +77,26 @@ public class SBWPlugin extends AbstractPlugin {
                              "Cytoscape",
                              "Network Analysis", 
                              new SBWProvider( window ),
+                             "Provides a General API to Cytoscape netowork and data." );
+
+
+      moduleImpl.addService( "Network",
+                             "Network",
+                             "Network Analysis", 
+                             window.getNetwork(),
+                             "Provides a General API to Cytoscape netowork and data." );
+
+      moduleImpl.addService( "Window",
+                             "Window",
+                             "Network Analysis", 
+                             window,
+                             "Provides a General API to Cytoscape netowork and data." );
+
+
+      moduleImpl.addService( "GraphView",
+                             "GraphView",
+                             "Network Analysis", 
+                             window.getView(),
                              "Provides a General API to Cytoscape netowork and data." );
 
       String[] args = new String[1];
