@@ -2,40 +2,40 @@
 
   RESULTS OF RUNNING TESTS ON A COMPUTER.  THESE PERFORMANCE TESTS
   MEASURE THE PERFORMANCE OF COMPUTING UNIQUE SETS OF INTEGERS FROM
-  SETS OF INTEGERS CONTAINING POTENTIAL DUPLICATES, USING 3 DIFFERENT
+  SETS OF INTEGERS CONTAINING POTENTIAL DUPLICATES, USING 4 DIFFERENT
   ALGORITHMIC STRATEGIES.  THE PROBLEM IS: GIVEN A SET OF N INTEGERS
   IN THE RANGE [0,N-1], RETURN A SUBSET WITH DUPLICATES REMOVED.
 
   Giving the JVM half a gig of memory, against the same random
   bytes file, under "same conditions".  Note: the set of unique
-  integers returned by the heap test is ordered as a result of the
-  nature of the algorithm.
+  integers returned by the heap and tree test is ordered as a result
+  of the nature of the algorithm.
 
            Milliseconds taken to perform test case:
 
-    N         |  MinIntHeap   |  IntHash      |  BitSet       |
-  ------------+-------+-------+-------+-------+-------+-------+
-              |initial| repeat|initial| repeat|initial| repeat|
-              +-------+-------+-------+-------+-------+-------+
-           1  |      0       0|      0       0|      0       0|
-         100  |      0       1|      0       0|      0       1|
-        1000  |      3       3|      5       1|      2       2|
-       10000  |     13       6|     11       5|     12       3|
-       50000  |     36      26|     31      18|     25       9|
-      100000  |     61      53|     48      47|     33      16|
-      200000  |    134     117|    111      90|     57      26|
-      500000  |    410     375|    300     230|    133      57|
-     1000000  |    950     920|    600     500|    227     113|
-     2000000  |   2210    2190|   1200    1030|    450     220|
-     5000000  |   6700    6550|   3200    2800|   1180     718|
-    10000000  |  15000   15000|   6400    5775|   2740    1920|
-    15000000  |  24000        |   8925    8220|   4500        |
-    20000000  |  34500        |  12875        |   6000        |
-    30000000  |  55000        |      X        |   9620        |
-    40000000  |  81000        |               |  12150        |
-    50000000  |      X        |               |      X        |
-              |  (out of      |               |               |
-              |  memory)      |               |               |
+    N         |  MinIntHeap   |  IntHash      |  BitSet       |  IntBTree     |
+  ------------+-------+-------+-------+-------+-------+-------+-------+-------+
+              |initial| repeat|initial| repeat|initial| repeat|initial| repeat|
+              +-------+-------+-------+-------+-------+-------+-------+-------+
+           1  |      0       0|      0       0|      0       0|               |
+         100  |      0       1|      0       0|      0       1|               |
+        1000  |      3       3|      5       1|      2       2|               |
+       10000  |     13       6|     11       5|     12       3|               |
+       50000  |     36      26|     31      18|     25       9|               |
+      100000  |     61      53|     48      47|     33      16|               |
+      200000  |    134     117|    111      90|     57      26|               |
+      500000  |    410     375|    300     230|    133      57|               |
+     1000000  |    950     920|    600     500|    227     113|               |
+     2000000  |   2210    2190|   1200    1030|    450     220|               |
+     5000000  |   6700    6550|   3200    2800|   1180     718|               |
+    10000000  |  15000   15000|   6400    5775|   2740    1920|               |
+    15000000  |  24000        |   8925    8220|   4500        |               |
+    20000000  |  34500        |  12875        |   6000        |               |
+    30000000  |  55000        |      X        |   9620        |               |
+    40000000  |  81000        |               |  12150        |               |
+    50000000  |      X        |               |      X        |               |
+              |  (out of      |               |               |               |
+              |  memory)      |               |               |               |
 
 */
 
