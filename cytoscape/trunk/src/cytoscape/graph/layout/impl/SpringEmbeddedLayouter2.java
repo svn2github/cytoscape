@@ -166,10 +166,10 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
         maxY = Math.max(maxY, nodePos.getY()); }
       // Compute scaling factors.
       double xScaleFactor;
-      if (maxX - minX == 0) xScaleFactor = 1;
+      if (((float) (maxX - minX)) == 0.0) xScaleFactor = 1.0d;
       else xScaleFactor = graph.getMaxWidth() / (maxX - minX);
       double yScaleFactor;
-      if (maxY - minY == 0) yScaleFactor = 1;
+      if (((float) (maxY - minY)) == 0.0) yScaleFactor = 1.0d;
       else yScaleFactor = graph.getMaxHeight() / (maxY - minY);
       // We now know min and max; iterate again to move all nodes.
       for (int nodeIx = 0; nodeIx < graph.getNumNodes(); nodeIx++) {
@@ -350,7 +350,8 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
       deltaY = nodeY - graph.getNodePosition(otherNode).getY();
       euclideanDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
       if (((float) euclideanDistance) == 0.0)
-        throw new RuntimeException("euclideanDistance too close to 0");
+        throw new RuntimeException("euclideanDistance too close to 0: " +
+                                   euclideanDistance);
       euclideanDistanceCubed = Math.pow(euclideanDistance, 3);
       if (((float) euclideanDistanceCubed) == 0.0)
         throw new RuntimeException("euclideanDistanceCubed too close to 0");
