@@ -1206,111 +1206,119 @@ public void readAttributesFromFile(BioDataServer dataServer, String species,
         String filename, boolean canonicalize) throws IOException,
         IllegalArgumentException, NumberFormatException {
 
-    if (taskMonitor != null) {
-        taskMonitor.setStatus("Importing Attributes...");
-    }
+   if (taskMonitor != null) {
+      taskMonitor.setStatus("Importing Attributes...");
+   }
 
-    String rawText;
-    if (filename.trim().startsWith("jar://")) {
-        TextJarReader reader = new TextJarReader(filename);
-        reader.read();
-        rawText = reader.getText();
-    } else {
-        TextFileReader reader = new TextFileReader(filename);
-        reader.read();
-        rawText = reader.getText();
-    }
+   String rawText;
+   if (filename.trim().startsWith("jar://")) {
+      TextJarReader reader = new TextJarReader(filename);
+      reader.read();
+      rawText = reader.getText();
+   } else if ( filename.trim().startsWith("http://") || filename.trim().startsWith( "file://") ) {
+      try {
+	 TextHttpReader reader = new TextHttpReader( filename );
+	 rawText = reader.getText();
+      } catch ( Exception e ) {
+	 throw new IOException( e.getMessage() );
+      } // end of try-catch
+       
+   } else {
+      TextFileReader reader = new TextFileReader(filename);
+      reader.read();
+      rawText = reader.getText();
+   }
 
-    StringTokenizer lineTokenizer = new StringTokenizer(rawText, "\n");
+   StringTokenizer lineTokenizer = new StringTokenizer(rawText, "\n");
 
-    int lineNumber = 0;
-    if (lineTokenizer.countTokens() < 2) {
-        throw new IllegalArgumentException
-                (filename + " must have at least 2 lines");
-    }
+   int lineNumber = 0;
+   if (lineTokenizer.countTokens() < 2) {
+      throw new IllegalArgumentException
+	 (filename + " must have at least 2 lines");
+   }
 
-    String attributeName = processFileHeader
-            (lineTokenizer.nextToken().trim());
-    boolean extractingFirstValue = true;
+   String attributeName = processFileHeader
+      (lineTokenizer.nextToken().trim());
+   boolean extractingFirstValue = true;
 
-    int numTokens = lineTokenizer.countTokens();
+   int numTokens = lineTokenizer.countTokens();
 
-    while (lineTokenizer.hasMoreElements()) {
-        String newLine = (String) lineTokenizer.nextElement();
+   while (lineTokenizer.hasMoreElements()) {
+      String newLine = (String) lineTokenizer.nextElement();
 
-        //  Track Progress
-        if (taskMonitor != null) {
-            double percent = ((double) lineNumber / numTokens) * 100.0;
-            taskMonitor.setPercentCompleted((int) percent);
-        }
+      //  Track Progress
+      if (taskMonitor != null) {
+	 double percent = ((double) lineNumber / numTokens) * 100.0;
+	 taskMonitor.setPercentCompleted((int) percent);
+      }
 
-        if (newLine.trim().startsWith("#")) continue;
-        lineNumber++;
-        StringTokenizer strtok2 = new StringTokenizer(newLine, "=");
-        if (strtok2.countTokens() < 2) {
-            throw new IOException
-                    ("Cannot parse line number " + lineNumber
-                    + ":\n\t" + newLine + ".  This may not be a valid "
-                    + "attributes file.");
-        }
-        String graphObjectName = strtok2.nextToken().trim();
-        if (canonicalize && dataServer != null) {
-            graphObjectName = dataServer.getCanonicalName
-                    (species, graphObjectName);
-        }
+      if (newLine.trim().startsWith("#")) continue;
+      lineNumber++;
+      StringTokenizer strtok2 = new StringTokenizer(newLine, "=");
+      if (strtok2.countTokens() < 2) {
+	 throw new IOException
+	    ("Cannot parse line number " + lineNumber
+	     + ":\n\t" + newLine + ".  This may not be a valid "
+	     + "attributes file.");
+      }
+      String graphObjectName = strtok2.nextToken().trim();
+      if (canonicalize && dataServer != null) {
+	 graphObjectName = dataServer.getCanonicalName
+	    (species, graphObjectName);
+      }
 
-        String rawString = newLine.substring(newLine.indexOf("=") + 1).trim();
-        String[] rawList;
-        boolean isList = false;
-        if (Misc.isList(rawString, "(", ")", "::")) {
-            rawList = Misc.parseList(rawString, "(", ")", "::");
-            isList = true;
-        } else {
-            rawList = new String[1];
-            rawList[0] = rawString;
-        }
-        if (extractingFirstValue && getClass(attributeName) == null) {
-            extractingFirstValue = false;  // henceforth
-            Class deducedClass = deduceClass(rawList[0]);
-            setClass(attributeName, deducedClass); // ***** Could fail ******* //
-        }
-        Object[] objs = new Object[rawList.length];
-        Class stringClass = (new String()).getClass();
+      String rawString = newLine.substring(newLine.indexOf("=") + 1).trim();
+      String[] rawList;
+      boolean isList = false;
+      if (Misc.isList(rawString, "(", ")", "::")) {
+	 rawList = Misc.parseList(rawString, "(", ")", "::");
+	 isList = true;
+      } else {
+	 rawList = new String[1];
+	 rawList[0] = rawString;
+      }
+      if (extractingFirstValue && getClass(attributeName) == null) {
+	 extractingFirstValue = false;  // henceforth
+	 Class deducedClass = deduceClass(rawList[0]);
+	 setClass(attributeName, deducedClass); // ***** Could fail ******* //
+      }
+      Object[] objs = new Object[rawList.length];
+      Class stringClass = (new String()).getClass();
 
-        if (getClass(attributeName).equals(stringClass)) {
-            for (int i = 0; i < rawList.length; i++) {
-                rawList[i] = rawList[i].replaceAll("\\\\n", "\n");
-            }
-        }
+      if (getClass(attributeName).equals(stringClass)) {
+	 for (int i = 0; i < rawList.length; i++) {
+	    rawList[i] = rawList[i].replaceAll("\\\\n", "\n");
+	 }
+      }
 
-        for (int i = 0; i < rawList.length; i++) {
-            try {
-                objs[i] = createInstanceFromString
-                        (getClass(attributeName), rawList[i]);
-                if (isList) {
-                    append(attributeName, graphObjectName, objs[i]);
-                } else {
-                    set(attributeName, graphObjectName, objs[i]);
-                }
-            } catch (Exception e) {
-                throw new IllegalArgumentException
-                        ("Could not create an instance of " +
-                        getClass(attributeName) + " from " + rawList[i]);
-            }
-        }
-    }
+      for (int i = 0; i < rawList.length; i++) {
+	 try {
+	    objs[i] = createInstanceFromString
+	       (getClass(attributeName), rawList[i]);
+	    if (isList) {
+	       append(attributeName, graphObjectName, objs[i]);
+	    } else {
+	       set(attributeName, graphObjectName, objs[i]);
+	    }
+	 } catch (Exception e) {
+	    throw new IllegalArgumentException
+	       ("Could not create an instance of " +
+		getClass(attributeName) + " from " + rawList[i]);
+	 }
+      }
+   }
 
-    //  Inform User of What Just Happened.
-    if (taskMonitor != null) {
-        File  file = new File (filename);
-        taskMonitor.setPercentCompleted (100);
-        StringBuffer sb = new StringBuffer();
-        sb.append("Succesfully loaded attributes from:  "
+   //  Inform User of What Just Happened.
+   if (taskMonitor != null) {
+      File  file = new File (filename);
+      taskMonitor.setPercentCompleted (100);
+      StringBuffer sb = new StringBuffer();
+      sb.append("Succesfully loaded attributes from:  "
                 + file.getName());
-        sb.append("\n\nAttribute Name:  " + attributeName);
-        sb.append("\n\nNumber of Attributes:  " + lineNumber);
-        taskMonitor.setStatus(sb.toString());
-    }
+      sb.append("\n\nAttribute Name:  " + attributeName);
+      sb.append("\n\nNumber of Attributes:  " + lineNumber);
+      taskMonitor.setStatus(sb.toString());
+   }
 }
 
 //--------------------------------------------------------------------------------

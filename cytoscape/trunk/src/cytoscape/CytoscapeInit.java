@@ -154,6 +154,7 @@ public class CytoscapeInit
     // hence it is now safe to store those values
     storeVariablesInProperties();
 
+    vizmapPropertiesLocation = cli.getVizPropsFile();
 
     // see if we are in headless mode
     // show splash screen, if appropriate
@@ -379,7 +380,7 @@ public class CytoscapeInit
 
   // View Only Variables
   public static String getVizmapPropertiesLocation () {
-    return vizmapPropertiesLocation;
+     return vizmapPropertiesLocation;
   }
 
   public static String getDefaultVisualStyle () {

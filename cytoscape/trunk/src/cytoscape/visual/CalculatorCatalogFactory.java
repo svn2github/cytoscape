@@ -50,110 +50,120 @@ import cytoscape.visual.mappings.*;
  */
 public abstract class CalculatorCatalogFactory {
     
-  static File propertiesFile;
-  static Properties vizmapProps;
+   static File propertiesFile;
+   static Properties vizmapProps;
   
-  /**
-   * Loads a CalculatorCatalog object from the various properties files
-   * specified by the options in the supplied CytoscapeConfig object.
-   * The catalog will be properly initialized with known mapping types
-   * and a default visual style (named "default").
-   */
-  public static CalculatorCatalog loadCalculatorCatalog () {
+   /**
+    * Loads a CalculatorCatalog object from the various properties files
+    * specified by the options in the supplied CytoscapeConfig object.
+    * The catalog will be properly initialized with known mapping types
+    * and a default visual style (named "default").
+    */
+   public static CalculatorCatalog loadCalculatorCatalog () {
         
-    final CalculatorCatalog calculatorCatalog = new CalculatorCatalog();
-    // register mappings
-    calculatorCatalog.addMapping("Discrete Mapper", DiscreteMapping.class);
-    calculatorCatalog.addMapping("Continuous Mapper", ContinuousMapping.class);
-    calculatorCatalog.addMapping("Passthrough Mapper", PassThroughMapping.class);
+      final CalculatorCatalog calculatorCatalog = new CalculatorCatalog();
+      // register mappings
+      calculatorCatalog.addMapping("Discrete Mapper", DiscreteMapping.class);
+      calculatorCatalog.addMapping("Continuous Mapper", ContinuousMapping.class);
+      calculatorCatalog.addMapping("Passthrough Mapper", PassThroughMapping.class);
         
-    //load in calculators from file
-    //we look for, in order, a file in CYTOSCAPE_HOME, one in the current directory,
-    //then one in the user's home directory. Note that this is a different order than
-    //for cytoscape.props, because we always write vizmaps to the home directory
+      //load in calculators from file
+      //we look for, in order, a file in CYTOSCAPE_HOME, one in the current directory,
+      //then one in the user's home directory. Note that this is a different order than
+      //for cytoscape.props, because we always write vizmaps to the home directory
     
-    boolean propsFound = false;
-    vizmapProps = new Properties();
-
-    //2. Try the current working directory
-    if ( !propsFound ) {
-      try {
-        File file = new File( System.getProperty ("user.dir"), "vizmap.props" );
-        vizmapProps.load( new FileInputStream( file ) );
-        propertiesFile = file;
-        System.out.println( "vizmaps found at: "+propertiesFile );
-        propsFound = true;
-      } catch ( Exception e ) {
-        propsFound = false;
-      }
-    }
-     
-    //3. Try VIZMAP_HOME
-    if ( !propsFound ) {
-      try {
-        File file = new File( System.getProperty ("CYTOSCAPE_HOME"), "vizmap.props" );
-        vizmapProps.load( new FileInputStream( file ) );
-        propertiesFile = file;
-        System.out.println( "vizmaps found at: "+propertiesFile );
-        propsFound = true;
-      } catch ( Exception e ) {
-        // error
-        propsFound = false;
-      }
-    }
-
-    //4. Try ~/.vizmap
-    if ( !propsFound ) {
-      try {
-        File file = CytoscapeInit.getConfigFile( "vizmap.props" );
-        vizmapProps.load( new FileInputStream( file ) );
-        propertiesFile = file;
-        System.out.println( "vizmaps found at: "+propertiesFile );
-        propsFound = true;
-      } catch ( Exception e ) {
-        // error
-        propsFound = false;
-      }
-    }
-
-    if ( vizmapProps == null ) {
-      System.out.println( "vizmaps not found" );
+      boolean propsFound = false;
       vizmapProps = new Properties();
-    }
-        
-    //now load using the constructed Properties object
-    CalculatorIO.loadCalculators( vizmapProps, calculatorCatalog);
-        
-    //make sure a default visual style exists, creating as needed
-    //this must be done before loading the old-style visual mappings,
-    //since that class works with the default visual style
-    VisualStyle defaultVS = calculatorCatalog.getVisualStyle("default");
-    if (defaultVS == null) {
-      defaultVS = new VisualStyle("default");
-      //setup the default to at least put canonical names on the nodes
-      String cName = "Common Names";
-      NodeLabelCalculator nlc = calculatorCatalog.getNodeLabelCalculator(cName);
-      if (nlc == null) {
-        PassThroughMapping m =
-          new PassThroughMapping(new String(), cytoscape.data.Semantics.COMMON_NAME);
-        nlc = new GenericNodeLabelCalculator(cName, m);
+
+      // 1. try the value given in the command line args
+      try {
+	 String url = CytoscapeInit.getVizmapPropertiesLocation();
+	 if ( url != null ) {
+	    vizmapProps.load( new BufferedInputStream( new StringBufferInputStream( new cytoscape.data.readers.TextHttpReader( url ).getText() ) ) );
+	    //propertiesFile = url;
+	    System.out.println( "vizmaps found at: "+url );
+	    propsFound = true;
+	 }
+      } catch ( Exception e ) {
+	 e.printStackTrace();
+	 propsFound = false;
       }
-      defaultVS.getNodeAppearanceCalculator().setNodeLabelCalculator(nlc);
-      calculatorCatalog.addVisualStyle(defaultVS);
-    }
+
+      //2. Try the current working directory
+      try {
+	 File file = new File( System.getProperty ("user.dir"), "vizmap.props" );
+	 if ( ! propsFound ) vizmapProps.load( new FileInputStream( file ) );
+	 propertiesFile = file;
+	 System.out.println( "vizmaps found at: "+propertiesFile );
+	 propsFound = true;
+      } catch ( Exception e ) {
+	 e.printStackTrace();
+	 propsFound = false;
+      }
+     
+      //3. Try VIZMAP_HOME
+      try {
+	 File file = new File( System.getProperty ("CYTOSCAPE_HOME"), "vizmap.props" );
+	 if ( !propsFound ) vizmapProps.load( new FileInputStream( file ) );
+	 propertiesFile = file;
+	 System.out.println( "vizmaps found at: "+propertiesFile );
+	 propsFound = true;
+      } catch ( Exception e ) {
+	 // error
+	 propsFound = false;
+      }
+
+      //4. Try ~/.vizmap
+      try {
+	 File file = CytoscapeInit.getConfigFile( "vizmap.props" );
+	 if ( !propsFound ) vizmapProps.load( new FileInputStream( file ) );
+	 propertiesFile = file;
+	 System.out.println( "vizmaps found at: "+propertiesFile );
+	 propsFound = true;
+      } catch ( Exception e ) {
+	 // error
+	 e.printStackTrace();
+	 propsFound = false;
+      }
+
+      if ( vizmapProps == null ) {
+	 System.out.println( "vizmaps not found" );
+	 vizmapProps = new Properties();
+      }
+        
+      //now load using the constructed Properties object
+      CalculatorIO.loadCalculators( vizmapProps, calculatorCatalog);
+        
+      //make sure a default visual style exists, creating as needed
+      //this must be done before loading the old-style visual mappings,
+      //since that class works with the default visual style
+      VisualStyle defaultVS = calculatorCatalog.getVisualStyle("default");
+      if (defaultVS == null) {
+	 defaultVS = new VisualStyle("default");
+	 //setup the default to at least put canonical names on the nodes
+	 String cName = "Common Names";
+	 NodeLabelCalculator nlc = calculatorCatalog.getNodeLabelCalculator(cName);
+	 if (nlc == null) {
+	    PassThroughMapping m =
+	       new PassThroughMapping(new String(), cytoscape.data.Semantics.COMMON_NAME);
+	    nlc = new GenericNodeLabelCalculator(cName, m);
+	 }
+	 defaultVS.getNodeAppearanceCalculator().setNodeLabelCalculator(nlc);
+	 calculatorCatalog.addVisualStyle(defaultVS);
+      }
         
 
-    Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener ( new PropertyChangeListener () {
-        public void propertyChange ( PropertyChangeEvent e ) {
-          if ( e.getPropertyName() == Cytoscape.CYTOSCAPE_EXIT ) {
-            System.out.println( "Save Vizmaps back to: "+propertiesFile );
-            CalculatorIO.storeCatalog( calculatorCatalog, propertiesFile );
-          }
-        }
-      } );
+      Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener ( new PropertyChangeListener () {
+	    public void propertyChange ( PropertyChangeEvent e ) {
+	       if ( e.getPropertyName() == Cytoscape.CYTOSCAPE_EXIT ) {
+		  System.out.println( "Save Vizmaps back to: "+propertiesFile );
+		  CalculatorIO.storeCatalog( calculatorCatalog, propertiesFile );
+	       }
+	    }
+	 } );
 
-    return calculatorCatalog;
-  }
+      return calculatorCatalog;
+   }
 
   
   

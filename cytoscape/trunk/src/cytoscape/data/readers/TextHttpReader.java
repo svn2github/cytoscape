@@ -57,9 +57,10 @@ public int read () throws Exception
 
 } // read
 //---------------------------------------------------------------------------
-public String getText ()
+public String getText () throws Exception
 {
-  return sb.toString ();
+   if ( sb.length() <= 0 ) read();
+   return sb.toString ();
 
 } // read
 //---------------------------------------------------------------------------
