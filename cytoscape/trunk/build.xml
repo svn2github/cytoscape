@@ -56,7 +56,7 @@
     <!-- Classpath with all lib JAR Files -->
     <path id="classpath">
         <pathelement path="${build.classes}"/>
-        <pathelement path="${basedir}"/>
+        <!-- <pathelement path="${basedir}"/> -->
         <fileset dir="${lib.dir}">
             <include name="**/*.jar"/>
         </fileset>
@@ -327,9 +327,9 @@
             Copying over all property files.
             ---------------------------------------
         </echo>
-        <copy file="config/cytoscape_release.props"
+        <copy file="${basedir}/cytoscape.props"
               tofile="${release.dir}/cytoscape.props"/>
-        <copy file="config/vizmap_release.props"
+        <copy file="${basedir}/vizmap.props"
               tofile="${release.dir}/vizmap.props"/>
 
         <!-- Copy over Txt/PDF files -->
