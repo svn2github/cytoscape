@@ -225,17 +225,27 @@ public class MCODEAlgorithm {
 			currentNode = ((Integer) iterator.next()).intValue();
 			if (nodeSeenArray[currentNode] == false) {
 				ArrayList complex = getComplexCore(currentNode, nodeSeenArray);
-				if (fluff) {
-					fluffComplexBoundary(complex, nodeSeenArray);
-				}
 				if (complex.size() > 0) {
 					//make sure spawning node is part of complex
 					complex.add(new Integer(currentNode));
-					//filterComplex
-					if (!shaveAndAHaircut(gpInputGraph, complex)) {
-						//store detected complex for later
+                    //create an input graph for the filter and haircut methods
+                    //comvert Integer array to int array
+                    int[] complexArray = new int[complex.size()];
+                    for (int i = 0; i < complex.size(); i++) {
+                        int nodeIndex = ((Integer) complex.get(i)).intValue();
+                        complexArray[i] = nodeIndex;
+                    }
+                    GraphPerspective gpComplexGraph = gpInputGraph.createGraphPerspective(complexArray);
+					if (!filterComplex(gpComplexGraph)) {
+                        if (haircut) {
+                            haircutComplex(gpComplexGraph, complex, gpInputGraph);
+                        }
+                        if (fluff) {
+                            fluffComplexBoundary(complex, nodeSeenArray);
+                        }
+                        //store detected complex for later
 						alComplexes.add(complex);
-					}
+                    }
 				}
 			}
 		}
@@ -399,38 +409,36 @@ public class MCODEAlgorithm {
 		return (true);
 	}
 
-	/*Checks if the complex needs to be filtered according to heuristics in this method
-	Optionally gives the complex a haircut (returns the 2-core as 'complex')*/
-	private boolean shaveAndAHaircut(GraphPerspective gpInputGraph, ArrayList complex) {
-		if (complex == null) {
+	/*Checks if the complex needs to be filtered according to heuristics in this method*/
+	private boolean filterComplex(GraphPerspective gpComplexGraph) {
+		if (gpComplexGraph == null) {
 			return (true);
 		}
 
-		//create an input graph for the core function
-		int[] complexArray = new int[complex.size()];
-		for (int i = 0; i < complex.size(); i++) {
-			int nodeIndex = ((Integer) complex.get(i)).intValue();
-			complexArray[i] = nodeIndex;
-		}
-		GraphPerspective gpComplexGraph = gpInputGraph.createGraphPerspective(complexArray);
 		//filter if not a 2-core
 		GraphPerspective gpCore = getKCore(gpComplexGraph, 2);
 		if (gpCore == null) {
 			return (true);
 		}
 
-		if (haircut) {
-			//clear the complex and add all 2-core nodes back into it
-			complex.clear();
-			//must add back the nodes in a way that preserves gpInputGraph node indices
-			int[] rootGraphIndices = gpComplexGraph.getNodeIndicesArray();
-			for (int i = 0; i < rootGraphIndices.length; i++) {
-				complex.add(new Integer(gpInputGraph.getNodeIndex(rootGraphIndices[i])));
-			}
-		}
-
 		return (false);
 	}
+
+    /*Checks if the complex needs to be filtered according to heuristics in this method*/
+    private boolean haircutComplex(GraphPerspective gpComplexGraph, ArrayList complex, GraphPerspective gpInputGraph) {
+        //get 2-core
+        GraphPerspective gpCore = getKCore(gpComplexGraph, 2);
+        if (gpCore != null) {
+            //clear the complex and add all 2-core nodes back into it
+            complex.clear();
+            //must add back the nodes in a way that preserves gpInputGraph node indices
+            int[] rootGraphIndices = gpCore.getNodeIndicesArray();
+            for (int i = 0; i < rootGraphIndices.length; i++) {
+                complex.add(new Integer(gpInputGraph.getNodeIndex(rootGraphIndices[i])));
+            }
+        }
+        return (true);
+    }
 
 	//TODO: move the following methods into GINY, since they are general for graphs
 	public double calcDensity(GraphPerspective gpInputGraph, boolean includeLoops) {
