@@ -85,6 +85,27 @@ public class AnimatedLayoutAction extends AbstractAction {
               } ); } } ) );
 
 
+    main.add(  new JButton (new AbstractAction( "Sugiyama" ) {
+        public void actionPerformed ( ActionEvent e ) {
+          // Do this in the GUI Event Dispatch thread...
+          SwingUtilities.invokeLater( new Runnable() {
+              public void run() {
+                PGraphView gv = ( PGraphView )networkView.getView();
+                String file = null;
+                  JFileChooser chooser = new JFileChooser( "/users/xmas/CSBI/cytoscape/testData");
+                chooser.setDialogTitle( "Load Tier Data" );
+                if( chooser.showOpenDialog( gv.getComponent() ) == chooser.APPROVE_OPTION ) {
+                  file = chooser.getSelectedFile().toString();
+    }
+                TieredInputReader reader = new TieredInputReader( gv );
+                List fTierList = reader.readGraphFromInteractionsFile(file);
+                Sugiyama sugiyama = new Sugiyama( gv );
+                sugiyama.layout( fTierList, true );
+
+              }
+            } ); } } ) );
+  
+
      main.add(  new JButton (new AbstractAction( "Tree Select" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
