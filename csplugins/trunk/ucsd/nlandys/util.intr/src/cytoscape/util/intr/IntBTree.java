@@ -44,7 +44,7 @@ public final class IntBTree
    * @param xStart specifies the beginning of the range of integers to
    *   delete from this structure.
    * @param spanSize specifies the range width of integers to delete; all
-   *   integers greater than or equal to xStart and less than xStart + spanSize
+   *   integers greater than or equal to xStart but less than xStart + spanSize
    *   will be deleted; spanSize cannot be negative
    *   (if spanSize is zero no action is taken).
    * @return the number of entries that were deleted from this structure.
@@ -56,12 +56,35 @@ public final class IntBTree
   }
 
   /**
+   * Returns the number of entries of the integer x in this tree.
+   * This method is superfluous because we can use searchRange(x, 1) to
+   * get the same information; I'm implementing this method as a warm-up
+   * to the more difficult methods.
    * @param x the integer whose count to query.
    * @return the number of entries x currently in this structure.
    */
   public int count(int x)
   {
-    return 0;
+    return count(m_root, x);
+  }
+
+  private int count(Node n, int x)
+  {
+    if (isLeafNode(n)) {
+      int count = 0;
+      for (int i = 0; i < n.sliceCount; i++) { // For the sake of simple
+        if (n.values[i] == x) count++; }       // code, don't abort on over.
+      return count; }
+    else {
+      int prevSplit = Integer.MIN_VALUE;
+      int count = 0;
+      for (int i = 0; i < n.sliceCount - 1; i++) {
+        if (x <= n.data.splitVals[i]) {
+          if (prevSplit == n.data.splitVals[i]) count += n.data.deepCount;
+          else count += count(n.data.children[i], x); }
+      }
+      return -1;
+    }
   }
 
   /**
@@ -77,7 +100,7 @@ public final class IntBTree
    *   search.
    * @param spanSize specifies the range width of integers to search;
    *   all integers (duplicates included) greater than or equal to xStart
-   *   and less than xStart + spanSize will be returned; spanSize cannot be
+   *   but less than xStart + spanSize will be returned; spanSize cannot be
    *   negative (if spanSize is zero no action is taken).
    * @return an enumeration of all entries matching this search query.
    * @exception IllegalArgumentException if spanSize is negative.
@@ -85,6 +108,11 @@ public final class IntBTree
   public IntEnumerator searchRange(int xStart, int spanSize)
   {
     return null;
+  }
+
+  private boolean isLeafNode(Node n)
+  {
+    return n.data == null;
   }
 
   private final static class Node
