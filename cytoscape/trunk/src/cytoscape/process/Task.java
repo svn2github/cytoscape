@@ -4,7 +4,7 @@ package cytoscape.process;
  * Represents a task that can be terminated prematurely by the same
  * entity that started the task.
  **/
-public interface Task extends Runnable
+public interface Task extends Runnable, Haltable
 {
 
   /**
@@ -16,7 +16,7 @@ public interface Task extends Runnable
    * <code>run()</code> is executing, <code>run()</code> should make an effort
    * to abort its operations and exit as soon as it is safe to do so.
    */
-  public abstract void run();
+  public void run();
 
   /**
    * <code>halt()</code> is called by an external entity.
@@ -35,6 +35,6 @@ public interface Task extends Runnable
    * There is no guarantee that <code>halt()</code> will be called on
    * and instance of this class.
    */
-  public abstract void halt();
+  public void halt();
 
 }
