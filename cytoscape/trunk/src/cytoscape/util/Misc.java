@@ -9,6 +9,8 @@ package cytoscape.util;
 import java.io.*;
 import java.awt.Color;
 import java.util.*;
+
+import y.view.Arrow;
 //------------------------------------------------------------------------------
 public class Misc {
 //------------------------------------------------------------------------------
@@ -36,4 +38,28 @@ public static Color parseRGBText (String text)
 
 } // parseRGBText
 //--------------------------------------------------------------------------------------
+
+
+public static Arrow parseArrowText (String text)
+{
+  StringTokenizer strtok = new StringTokenizer (text, ",");
+  if (strtok.countTokens () != 1) {
+      System.err.println ("illegal Arrow string in EdgeViz.parseArrowText: " + text);
+      return Arrow.NONE;
+    }
+
+  String arrowtext = strtok.nextToken().trim();
+  
+  if(arrowtext.equalsIgnoreCase("delta"))
+      return Arrow.DELTA;
+  else if(arrowtext.equalsIgnoreCase("standard"))
+      return Arrow.STANDARD;
+  else if(arrowtext.equalsIgnoreCase("arrow"))
+      return Arrow.STANDARD;
+  else if(arrowtext.equalsIgnoreCase("none"))
+      return Arrow.NONE;
+  else
+      return Arrow.NONE;
+} // parseArrowText
+
 }
