@@ -1,5 +1,7 @@
 package cytoscape.data.gob;
 
+import cytoscape.util.intr.IntEnumerator;
+
 public class GOBRegistry2 extends GOBRegistry
 {
 
