@@ -1057,12 +1057,18 @@ class FGraphPerspective implements GraphPerspective
              ("internal error - node didn't exist, its adjacent edges did");
     }
 
+    // This heap is to be used directly only by
+    // hideNodes(GraphPerspective, int[]) and by hideNodes(Object, Node[]).
+    private final MinIntHeap m_heap_hideNodes = new MinIntHeap();
+
     // RootGraphChangeSniffer is not to call this method.  We rely on
     // the specified nodes still existing in the RootGraph in this method.
     private final int[] hideNodes(GraphPerspective source, int[] rootNodeInx)
     {
-      // We can't use m_heap here because it's use by every _hideNode().
-      final MinIntHeap successes = new MinIntHeap();
+      // We can't use m_heap here because it's potentially used by every
+      // _hideNode() during hiding of edges.
+      m_heap_hideNodes.empty();
+      final MinIntHeap successes = m_heap_hideNodes;
       final int[] returnThis = new int[rootNodeInx.length];
       for (int i = 0; i < rootNodeInx.length; i++) {
         returnThis[i] = _hideNode(this, rootNodeInx[i]);
@@ -1081,11 +1087,15 @@ class FGraphPerspective implements GraphPerspective
     }
 
     // Entries in the nodes array may not be null.
-    // This method is to be called by RootGraphChangeSniffer.
+    // This method is to be called by RootGraphChangeSniffer.  It may also
+    // be called by others - therefore don't assume that the nodes to be
+    // hidden here don't have any adjacent edges.
     private final void hideNodes(Object source, Node[] nodes)
     {
-      // We can't use m_heap here because it's used by every _hideNode().
-      final MinIntHeap successes = new MinIntHeap();
+      // We can't use m_heap here because it's potentially used by every
+      // _hideNode() during hiding of edges.
+      m_heap_hideNodes.empty();
+      final MinIntHeap successes = m_heap_hideNodes;
       for (int i = 0; i < nodes.length; i++) {
         if (_hideNode(source, nodes[i].getRootGraphIndex()) != 0)
           successes.toss(i); }
