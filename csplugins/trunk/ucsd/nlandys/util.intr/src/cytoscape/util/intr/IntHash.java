@@ -10,7 +10,7 @@ package cytoscape.util.intr;
  * to elements being added (the underlying size of the hashtable is invisible
  * to the programmer).  In the underlying implementation, this hashtable never
  * decreases in size.  As a hashtable increases in size,
- * it takes at most 2.66 times as much memory as it would take
+ * it takes at most 4 times as much memory as it would take
  * to store the hashtable's elements in a perfectly-sized array.
  * Underlying size expansions are implemented such that the operation of
  * expanding in size is amortized over the contstant time complexity needed to
@@ -133,10 +133,13 @@ public final class IntHash
           return array[index]; } };
   }
 
+  private int[] m_dump = null;
+
   private final void checkSize()
   {
     if (m_elements >= m_thresholdSize)
     {
+      // Calculation of newSize.
       final int newSize;
       try {
         int primesInx = 0;
@@ -145,30 +148,33 @@ public final class IntHash
       catch (ArrayIndexOutOfBoundsException e) {
         throw new IllegalStateException
           ("too many elements in this hashtable"); }
-      int[] dump = new int[m_elements];
-      int index = -1;
-      for (int i = 0; i < dump.length; i++) {
-        while (m_arr[++index] < 0) { }
-        dump[i] = m_arr[index];
-        m_arr[index] = -1; }
+
+
       if (m_arr.length < newSize) {
         final int[] newArr = new int[newSize];
-        System.arraycopy(m_arr, 0, newArr, 0, m_arr.length);
+        m_dump = m_arr;
         m_arr = newArr; }
-      for (int i = m_size; i < newSize; i++) m_arr[i] = -1;
+      else {
+        System.arraycopy(m_arr, 0, m_dump, 0, m_size); }
+
+
+      for (int i = 0; i < newSize; i++) m_arr[i] = -1;
       m_size = newSize;
       m_thresholdSize = (int) (THRESHOLD_FACTOR * (double) m_size);
       int incr;
-      for (int i = 0; i < dump.length; i++) {
+      int newIndex;
+      int oldIndex = -1;
+      for (int i = 0; i < m_elements; i++) {
+        while (m_dump[++oldIndex] < 0) { }
         incr = 0;
-        for (index = dump[i] % m_size;
-             m_arr[index] >= 0 && m_arr[index] != dump[i];
-             index = (index + incr) % m_size) {
+        for (newIndex = m_dump[oldIndex] % m_size;
+             m_arr[newIndex] >= 0 && m_arr[newIndex] != m_dump[oldIndex];
+             newIndex = (newIndex + incr) % m_size) {
           // Caching increment, which is an expensive operation, at the expense
           // of having an if statement.  I don't want to compute the increment
           // before this 'for' loop in case we get an immediate hit.
-          if (incr == 0) { incr = 1 + (dump[i] % (m_size - 1)); } }
-        m_arr[index] = dump[i]; }
+          if (incr == 0) { incr = 1 + (m_dump[oldIndex] % (m_size - 1)); } }
+        m_arr[newIndex] = m_dump[oldIndex]; }
     }
   }
 
