@@ -88,7 +88,7 @@ public final class IntBTree
     }
     else
     { // Not a leaf node.
-      boolean foundPath = -1;
+      int foundPath = -1;
       for (int i = 0; i < n.sliceCount - 1; i++) {
         if (x <= n.data.splitVals[i]) {
           foundPath = i;
@@ -112,7 +112,7 @@ public final class IntBTree
             n.data.splitVals[j - 1] = n.data.splitVals[j - 2]; }
           n.sliceCount++;
           n.data.deepCount++;
-          n.data.children[foundPath + 1] = newNode;
+          n.data.children[foundPath + 1] = newChild;
           n.data.splitVals[foundPath] = newSplit;
           return null; }
         else { // No room in this internal node; perform split.
