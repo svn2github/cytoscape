@@ -29,6 +29,7 @@
 package metaNodeViewer.ui;
 import cytoscape.view.CyWindow;
 import metaNodeViewer.actions.*;
+import metaNodeViewer.data.*;
 import java.lang.*;
 import javax.swing.*;
 import javax.swing.border.*;
@@ -73,49 +74,52 @@ public class MNcollapserDialog extends JDialog {
   
   protected void initialize (CyWindow cy_window){
     
-    JButton collapseButton = new JButton("Collapse Selected Nodes");
-    this.collapseAction = 
-      (CollapseSelectedNodesAction)ActionFactory.createCollapseSelectedNodesAction(cy_window, false);
-    collapseButton.addActionListener(this.collapseAction);
+      MetaNodeAttributesHandler attrHandler = new SimpleMetaNodeAttributesHandler();
+      ActionFactory.setMetaNodeAttributesHandler(attrHandler);
+
+      JButton collapseButton = new JButton("Collapse Selected Nodes");
+      this.collapseAction = 
+	  (CollapseSelectedNodesAction)ActionFactory.createCollapseSelectedNodesAction(cy_window,false);
+      collapseButton.addActionListener(this.collapseAction);
     
-    JButton expandButton = new JButton("Expand Selected Nodes");
-    this.expandAction =
-      (UncollapseSelectedNodesAction)ActionFactory.createUncollapseSelectedNodesAction(cy_window, 
-                                                                                  false,
-                                                                                  false);
-    expandButton.addActionListener(this.expandAction);
+      JButton expandButton = new JButton("Expand Selected Nodes");
+      this.expandAction =
+	  (UncollapseSelectedNodesAction)ActionFactory.createUncollapseSelectedNodesAction(cy_window,
+											   false,
+											   false);
+      expandButton.addActionListener(this.expandAction);
     
-    JButton resetButton = new JButton("Reset Graph");
-    //TODO: Create an action for reset for now popup 'unimplemented' dialog
-    resetButton.addActionListener(
-                                  new AbstractAction(){
-                                    public void actionPerformed (ActionEvent e){
-                                      JOptionPane.showMessageDialog(MNcollapserDialog.this,
-                                                                    "Not implemented yet."
-                                                                    );
-                                    }
-                                  }
-                                  );
-    
-    this.rememberCheckBox = new JCheckBox("Remember parents after expanding");
-    // isSelected == true means temporary
-    // isSelected == false means not temporary
-    // TODO: If not remember, then we need to delete the meta-nodes from RootGraph that
-    // have been expanded (don't do this here, maybe do it in UncollapseSelectedNodesAction).
-    this.rememberCheckBox.addActionListener(
-      new AbstractAction(){
-        public void actionPerformed (ActionEvent e){
-          MNcollapserDialog.this.expandAction.setTemporaryUncollapse(
-                                     MNcollapserDialog.this.rememberCheckBox.isSelected());
-        }
-      });
-    this.recursiveCheckBox = new JCheckBox("Recursive Expand");
-    this.recursiveCheckBox.addActionListener(
-     new AbstractAction(){
-       public void actionPerformed (ActionEvent e){
-         MNcollapserDialog.this.expandAction.setRecursiveUncollapse(
-                               MNcollapserDialog.this.recursiveCheckBox.isSelected());
-       }
+      JButton resetButton = new JButton("Reset Graph");
+      //TODO: Create an action for reset for now popup 'unimplemented' dialog
+      resetButton.addActionListener(
+				    new AbstractAction(){
+					public void actionPerformed (ActionEvent e){
+					    JOptionPane.showMessageDialog(MNcollapserDialog.this,
+									  "Not implemented yet."
+									  );
+					}
+				    }
+				    );
+      
+      this.rememberCheckBox = new JCheckBox("Remember parents after expanding");
+      // isSelected == true means temporary
+      // isSelected == false means not temporary
+      // TODO: If not remember, then we need to delete the meta-nodes from RootGraph that
+      // have been expanded (don't do this here, maybe do it in UncollapseSelectedNodesAction).
+      this.rememberCheckBox.addActionListener(
+					      new AbstractAction(){
+						  public void actionPerformed (ActionEvent e){
+						      MNcollapserDialog.this.expandAction.setTemporaryUncollapse(
+														 MNcollapserDialog.this.rememberCheckBox.isSelected());
+						  }
+					      });
+      this.recursiveCheckBox = new JCheckBox("Recursive Expand");
+      this.recursiveCheckBox.addActionListener(
+					       new AbstractAction(){
+						   public void actionPerformed (ActionEvent e){
+						       MNcollapserDialog.this.expandAction.setRecursiveUncollapse(
+														  MNcollapserDialog.this.recursiveCheckBox.isSelected());
+						   }
      });
     
     this.defaultNameCheckBox = new JCheckBox("Use default names for parents");
