@@ -16,36 +16,29 @@ import giny.model.RootGraphChangeEvent;
 import cytoscape.CytoscapeObj;
 import cytoscape.plugin.*;
 import cytoscape.data.GraphObjAttributes;
-import cytoscape.data.CyNetwork;
+import cytoscape.CyNetwork;
 import cytoscape.view.CyWindow;
 import cytoscape.data.annotation.*;
 import cytoscape.data.servers.*;
+import cytoscape.Cytoscape;
 import DistLib.*;
 
 /**
  **
  */
-public class SigAttributes extends AbstractPlugin {
+public class SigAttributes extends CytoscapePlugin {
     
-    CyWindow cyWindow;
     GraphView graphView;
     CyNetwork network;
-    GraphPerspective graphPerspective;
     CytoscapeObj cyObj;
 
     /**
      * This constructor saves the cyWindow argument (the window to which this
      * plugin is attached) and adds an item to the operations menu.
      */
-    public SigAttributes(CyWindow cyWindow) {
-        this.cyWindow = cyWindow;
-	this.cyObj = cyWindow.getCytoscapeObj();
-
-	this.graphView = cyWindow.getView();
-	this.graphPerspective = graphView.getGraphPerspective();
-        this.network = cyWindow.getNetwork();
-
-	cyWindow.getCyMenus().getOperationsMenu().add( new MainPluginAction() );
+    public SigAttributes() {
+	this.cyObj = Cytoscape.getCytoscapeObj();
+	Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add( new MainPluginAction() );
     }
     
     /**
@@ -75,35 +68,16 @@ public class SigAttributes extends AbstractPlugin {
         public void actionPerformed(ActionEvent ae) {
 
 	    System.err.println("Starting Attribute Chooser");
-	    
+
 	    // update globals to ensure they are current
-	    graphView = cyWindow.getView();
-	    graphPerspective = graphView.getGraphPerspective();
-	    network = cyWindow.getNetwork();
+	    graphView = Cytoscape.getCurrentNetworkView();
+	    network = Cytoscape.getCurrentNetwork();
 
             //can't continue if either of these is null
             if (graphView == null || network == null) {return;}
             
-	    //inform listeners that we're doing an operation on the network
-            String callerID = "MainPluginAction.actionPerformed";
-            network.beginActivity(callerID);
-            //this is the graph structure; it should never be null,
-            if (graphPerspective == null) {
-                System.err.println("In " + callerID + ":");
-                System.err.println("Unexpected null graph perspective in network");
-                network.endActivity(callerID);
-                return;
-            }
-            //and the view should be a view on this structure
-            if (graphView.getGraphPerspective() != graphPerspective) {
-                System.err.println("In " + callerID + ":");
-                System.err.println("graph view is not a view on network's graph perspective");
-                network.endActivity(callerID);
-                return;
-            }
 	    Thread t = new SigAttributesThread();
 	    t.start();
-	    network.endActivity(callerID);
 	}
     }
 
@@ -121,7 +95,7 @@ public class SigAttributes extends AbstractPlugin {
 	    } catch (NullPointerException ex) { annots = new String [0]; }
 
 	    // choose Attribute or Annotation storing functional info of interest
-	    AttributeChooser chooser = new AttributeChooser(attrs, annots, cyWindow);
+	    AttributeChooser chooser = new AttributeChooser(attrs, annots, Cytoscape.getDesktop());
 	    chooser.showDialog();
 	    String chosenAttr     = chooser.getAttribute();
 	    String [] chosenNames = chooser.getNameAttribute();
@@ -348,7 +322,7 @@ public class SigAttributes extends AbstractPlugin {
 	    String [] nodeIDs = new String [nodeIndices.length];
 	    for (int i=0; i<nodeIndices.length; i++) {
 		int nodeIndex = nodeIndices[i];
-		Node node = graphPerspective.getNode(nodeIndex);
+		Node node = network.getNode(nodeIndex);
 		nodeIDs[i] = node.getIdentifier();
 	    }
 	    return nodeIDs;
@@ -361,7 +335,7 @@ public class SigAttributes extends AbstractPlugin {
 	    HashSet geneNames = new HashSet();  // ensures gene namess only occur once
 	    for (int i=0; i<nodeIndices.length; i++) {
 		int nodeIndex = nodeIndices[i];
-		Node node = graphPerspective.getNode(nodeIndex);
+		Node node = network.getNode(nodeIndex);
 		for (int j=0; j<nameAttrs.length; j++) 
 		    geneNames.addAll(nodeAttr.getList(nameAttrs[j], node.getIdentifier()));
 	    }

@@ -82,6 +82,8 @@
 			<fileset dir="${build.classes}"/>
 		</jar>
 		<echo message="${plugin.name}.jar is now complete.  It is located in build/ directory"/>
+
+<copy file="${build.dir}/${plugin.name}.jar" todir="../../../../cytoscape/plugins"/>
 	</target>
 
 </project>

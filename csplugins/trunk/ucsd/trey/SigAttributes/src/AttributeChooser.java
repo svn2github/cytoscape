@@ -23,7 +23,7 @@ public class AttributeChooser extends JDialog implements ActionListener{
     double DEFAULT_PVALUE = 0.001;
     int    DEFAULT_MAX    = 3;
 
-    public AttributeChooser(String [] attributes, String [] annotations, Component parent){
+    public AttributeChooser(String [] attributes, String [] annotations, Component parent) {
 	setTitle ("Significant Functions");
 	this.parent = parent;
 	this.attributes = attributes;
