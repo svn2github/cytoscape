@@ -30,7 +30,7 @@ public class IntBTreeTest
       ("  ");
     while (iter.numRemaining() > 0)
       System.out.print(iter.nextInt() + " ");
-    System.out.println();
+    System.out.println(".");
     final int[] countThese =
       new int[] { Integer.MIN_VALUE, -1, 0, 3, 4, 6, 7, 8, 9, 10,
                   99, Integer.MAX_VALUE };
@@ -38,6 +38,14 @@ public class IntBTreeTest
       System.out.println
         ("The count of integer " + countThese[i] + " is " +
          tree.count(countThese[i]) + ".");
+    final int[] xMins = new int[] { Integer.MIN_VALUE, -23, 1 };
+    final int[] xMaxs = new int[] { 3, 99, 2 };
+    for (int i = 0; i < xMins.length; i++) {
+      System.out.print("In range [" + xMins[i] + ", " + xMaxs[i] + "]: ");
+      iter = tree.searchRange(xMins[i], xMaxs[i]);
+      while (iter.numRemaining() > 0)
+        System.out.print(iter.nextInt() + " ");
+      System.out.println("."); }
   }
 
 }
