@@ -11,6 +11,7 @@ import cytoscape.visual.mappings.continuous.*;
 import cytoscape.visual.parsers.ValueParser;
 
 import javax.swing.*;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Map;
@@ -71,6 +72,10 @@ public class ContinuousMapping extends SubjectBase implements ObjectMapping {
      */
     public Object clone() {
         ContinuousMapping clone = new ContinuousMapping(defaultObj, mapType);
+        //  Copy over all listeners...
+        for (int i=0; i<observers.size(); i++) {
+            clone.addChangeListener((ChangeListener) observers.get(i));
+        }
         for (int i = 0; i < points.size(); i++) {
             ContinuousMappingPoint cmp = (ContinuousMappingPoint) points.get(i);
             ContinuousMappingPoint cmpClone = (ContinuousMappingPoint)
