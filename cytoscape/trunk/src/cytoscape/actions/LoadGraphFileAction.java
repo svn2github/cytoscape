@@ -52,6 +52,9 @@ public class LoadGraphFileAction extends CytoscapeAction {
         setAcceleratorCombo(java.awt.event.KeyEvent.VK_L,
                 ActionEvent.CTRL_MASK);
         this.windowMenu = windowMenu;
+        
+        setName( "load" );
+        
     }
 
     /**
@@ -64,6 +67,44 @@ public class LoadGraphFileAction extends CytoscapeAction {
         super();
         this.windowMenu = windowMenu;
     }
+
+  public void takeArgs ( String[] args ) {
+    
+    System.out.println( "Taking args: "+args.length );
+
+    if ( args.length == 0 )
+      return;
+
+    String name = args[0];
+
+    System.out.println( "Loading: "+name );
+
+    int fileType = Cytoscape.FILE_SIF;
+    
+    //  long enough to have a "gml" extension
+    if ( name.length() > 4) {
+      
+      String extension = name.substring(name.length() - 3);
+      if (extension.equalsIgnoreCase("gml"))
+        fileType = Cytoscape.FILE_GML;
+    }
+
+
+    //  Create LoadNetwork Task
+    LoadNetworkTask task = new LoadNetworkTask(new File(name), fileType);
+    
+    //  Configure JTask Dialog Pop-Up Box
+    JTaskConfig jTaskConfig = new JTaskConfig();
+    jTaskConfig.setOwner(Cytoscape.getDesktop());
+    jTaskConfig.displayCloseButton(true);
+    jTaskConfig.displayStatus(true);
+    jTaskConfig.setAutoDispose(false);
+    
+    //  Execute Task in New Thread;  pops open JTask Dialog Box.
+    TaskManager.executeTask(task, jTaskConfig);
+
+  }
+
 
     /**
      * User Initiated Request.

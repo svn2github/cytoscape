@@ -659,7 +659,8 @@ public class CytoscapeInit
     try {
       c = classLoader.loadClass( name );
     } catch ( Exception e ) {
-      e.printStackTrace();
+      //e.printStackTrace();
+      return false;
     }
     Class p = AbstractPlugin.class;
     Class cp = CytoscapePlugin.class;

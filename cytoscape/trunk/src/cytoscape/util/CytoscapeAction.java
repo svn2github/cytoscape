@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
+import java.util.LinkedList;
 import java.util.Vector;
 
 import java.beans.PropertyChangeListener;
@@ -30,6 +31,10 @@ public abstract class CytoscapeAction
   protected boolean acceleratorSet = false;
   protected int keyModifiers;
   protected int keyCode;
+  protected String consoleName;
+
+  private static List actionList = new LinkedList();
+
 
   /**
    * @beaninfo (rwb)
@@ -43,13 +48,46 @@ public abstract class CytoscapeAction
 
   public CytoscapeAction ( String name ) {
     super( name );
+    this.consoleName = name;
+    consoleName = consoleName.replaceAll( ":. \'", "" );
+    actionList.add( this );
     initialize();
   }
 
   public CytoscapeAction ( String name, javax.swing.Icon icon ) {
     super( name, icon );
+    this.consoleName = name;
+    consoleName = consoleName.replaceAll( " ", "" );
+    actionList.add( this );
     initialize();
   }
+
+  
+
+
+  public static List getActionList () {
+    return actionList;
+  }
+  
+  public void setName ( String name ) {
+    this.consoleName = name;
+  }
+  
+  public String getName () {
+    return consoleName;
+  }
+
+  public String actionHelp () {
+    return "";
+  }
+
+  public String[] completions () {
+    return new String[] {};
+  }
+
+  public void takeArgs ( String[] argv ) {
+  }
+
 
   // implements AbstractAction
   public abstract void actionPerformed ( ActionEvent e );

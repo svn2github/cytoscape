@@ -99,10 +99,8 @@ public class GMLReader2 implements GraphReader {
   public void read(){
     try{
       keyVals = (new GMLParser(filename)).parseList();
-    }catch(IOException io){
+    }catch(Exception io){
       throw new RuntimeException(io.getMessage());
-    }catch(ParseException p){
-      throw new RuntimeException(p.getMessage());
     }
     initializeStructures();
     readGML(keyVals);

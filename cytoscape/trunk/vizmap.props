@@ -2,7 +2,7 @@
 # WARNING: any changes you make to this file while Cytoscape is running may be overwritten.
 # Any changes may make these visual mappings unreadable.
 # Please make sure you know what you are doing before modifying this file by hand.
-#Wed Feb 23 13:10:02 PST 2005
+#Wed Apr 06 12:21:46 PDT 2005
 
 edgeAppearanceCalculator.Sample1.defaultEdgeColor=0,0,0
 edgeAppearanceCalculator.Sample1.defaultEdgeFont=Default,plain,10
@@ -34,12 +34,12 @@ edgeAppearanceCalculator.Sample2.edgeLineTypeCalculator=null
 edgeAppearanceCalculator.Sample2.edgeSourceArrowCalculator=null
 edgeAppearanceCalculator.Sample2.edgeTargetArrowCalculator=null
 edgeAppearanceCalculator.Sample2.edgeToolTipCalculator=null
-edgeAppearanceCalculator.default.defaultEdgeColor=0,0,255
+edgeAppearanceCalculator.default.defaultEdgeColor=153,244,51
 edgeAppearanceCalculator.default.defaultEdgeFont=Default,plain,10
 edgeAppearanceCalculator.default.defaultEdgeLabel=
-edgeAppearanceCalculator.default.defaultEdgeLineType=LINE_1
-edgeAppearanceCalculator.default.defaultEdgeSourceArrow=NONE
-edgeAppearanceCalculator.default.defaultEdgeTargetArrow=NONE
+edgeAppearanceCalculator.default.defaultEdgeLineType=LINE_4
+edgeAppearanceCalculator.default.defaultEdgeSourceArrow=COLOR_ARROW
+edgeAppearanceCalculator.default.defaultEdgeTargetArrow=WHITE_DIAMOND
 edgeAppearanceCalculator.default.defaultEdgeToolTip=
 edgeAppearanceCalculator.default.edgeColorCalculator=null
 edgeAppearanceCalculator.default.edgeFontFaceCalculator=null
