@@ -12,14 +12,14 @@ import cytoscape.data.BindingPair;
 import cytoscape.data.GeneProduct;
 import cytoscape.data.GeneSynonym;
 import cytoscape.data.GoTerm;
-import cytoscape.data.KeggPathways;
 import java.io.*;
-import java.util.*;
+import java.util.Vector;
+import java.util.Hashtable;
+import java.util.Enumeration;
+import java.util.StringTokenizer;
 //------------------------------------------------------------------------------
 public class BioDataServerImpl extends UnicastRemoteObject 
                                implements RMIBioDataServer {
-    // KEGG
-    KeggPathways keggPathways = new KeggPathways();
 
   Vector bindingPairs = new Vector ();
   Vector geneProducts = new Vector ();
@@ -58,16 +58,7 @@ public class BioDataServerImpl extends UnicastRemoteObject
 
   Vector goPathTerminators = new Vector ();
 
-    // some status & usage tracking variables
-
-  Date startTime = new Date ();
-  long loadOperations = 0;
-  long requests = 0;
 //------------------------------------------------------------------------------
-// KEGG
-public KeggPathways getKeggPathways() {
-    return keggPathways;
-}
 public BioDataServerImpl () throws RemoteException 
 {
   super ();
@@ -89,8 +80,6 @@ public void addBindingPairs (Vector newBindingPairs)
     bindingPairs.addElement (newBindingPairs.elementAt (i));
     }
 
-  loadOperations++;
-
 } // addBindingPairs
 //------------------------------------------------------------------------------
 public void addGeneProducts (Vector newGeneProducts)
@@ -102,35 +91,39 @@ public void addGeneProducts (Vector newGeneProducts)
     geneProducts.addElement (newGeneProducts.elementAt (i));
     }
 
-  loadOperations++;
-
 } // addGeneProducts
+//------------------------------------------------------------------------------
+//public void oldAddGeneSynonyms (Vector newSynonyms)
+//{
+//  System.out.println ("BioDataServerImpl.addSynonyms (" +
+//                      newSynonyms.size () + ")");
+//
+//  for (int i=0; i < newSynonyms.size (); i++) {
+//    GeneSynonym gs = (GeneSynonym) newSynonyms.elementAt (i);
+//    synonyms.put (gs.getName().toUpperCase(), gs.getValue ());
+//    }
+//
+//} // addGeneSynonyms
 //------------------------------------------------------------------------------
 public void addGeneSynonyms (Vector newSynonyms)
 // fill both synonym data structures at the same time
-// todo (pshannon, 2002/02/12):  synonyms should be stored separately by species
 {
-  System.out.println ("IPBioDataServer.addSynonyms (" + newSynonyms.size () + ")");
+  System.out.println ("IPBioDataServer.addSynonyms (" +
+                      newSynonyms.size () + ")");
 
   for (int i=0; i < newSynonyms.size (); i++) {
     GeneSynonym gs = (GeneSynonym) newSynonyms.elementAt (i);
     String variant = gs.getName ();
     String canonicalName = gs.getValue ();
-    if (synonymsByVariant.containsKey (variant.toUpperCase ()))
-      System.out.println ("----- common name already in server: " + variant);
-    else {
-      synonymsByVariant.put (variant.toUpperCase (), canonicalName);
-      Vector syns;
-      if (synonymsByCanonicalName.containsKey (canonicalName))
-        syns = (Vector) synonymsByCanonicalName.get (canonicalName);
-      else
-       syns = new Vector ();
-      syns.addElement (variant);
-      synonymsByCanonicalName.put (canonicalName.toUpperCase(), syns);
-      } // else:  variant (common name) previously unknown
-    } // for i
-
-  loadOperations++;
+    synonymsByVariant.put (variant.toUpperCase (), canonicalName);
+    Vector syns;
+    if (synonymsByCanonicalName.containsKey (canonicalName))
+      syns = (Vector) synonymsByCanonicalName.get (canonicalName);
+    else
+      syns = new Vector ();
+    syns.addElement (variant);
+    synonymsByCanonicalName.put (canonicalName.toUpperCase(), syns);
+    }
 
 } // addGeneSynonyms
 //------------------------------------------------------------------------------
@@ -148,8 +141,6 @@ public void addGoTerms (Vector goTerms)
     GoTerm term = (GoTerm) goTerms.elementAt (i);
     goTermHash.put (new Integer (term.getId ()), term);
     }
-
-  loadOperations++;
 
 } // addGoTerms
 //------------------------------------------------------------------------------
@@ -176,8 +167,6 @@ public void addBiologicalProcesses (Hashtable newHash)
     bioProcessIdMap.put (newKey, list);
     } // while
 
-  loadOperations++;
-
 } // addBiologicalProcesses
 //------------------------------------------------------------------------------
 /* 
@@ -202,8 +191,6 @@ public void addMolecularFunctions (Hashtable newHash)
     Vector list = (Vector) newHash.get (geneName);
     molecularFunctionIdMap.put (newKey, list);
     } // while
-
-  loadOperations++;
 
 } // addMolecularFunctions
 //------------------------------------------------------------------------------
@@ -230,8 +217,6 @@ public void addCellularComponents (Hashtable newHash)
     cellularComponentIdMap.put (newKey, list);
     } // while
 
-  loadOperations++;
-
 } // addMolecularFunctions
 //------------------------------------------------------------------------------
 public void clearGoPathTerminators ()
@@ -244,8 +229,6 @@ public void addGoPathTerminators (Vector newTerminators)
 {
   for (int i=0; i < newTerminators.size (); i++)
     goPathTerminators.addElement (newTerminators.elementAt (i));
-
-  loadOperations++;
  
 } // addGoPathTerminators
 //------------------------------------------------------------------------------
@@ -358,8 +341,6 @@ public String getBioProcessTestGene (int numberOfBioProcessesSought,
 //------------------------------------------------------------------------------
 public String getCanonicalName (String geneName)
 {
-  requests++;
-
   String upperCaseGeneName = geneName.toUpperCase ();
   if (synonymsByVariant.containsKey (upperCaseGeneName))
     return (String) synonymsByVariant.get (upperCaseGeneName);
@@ -370,8 +351,6 @@ public String getCanonicalName (String geneName)
 //------------------------------------------------------------------------------
 public String [] getSynonyms (String geneName)
 {
-  requests++;
-
   Vector tmp = new Vector ();
   String canonicalName = getCanonicalName (geneName);
   String [] result;
@@ -424,8 +403,6 @@ public String [] getSynonyms (String geneName)
 //------------------------------------------------------------------------------
 public String getGeneInfo (String geneName)
 {
-  requests++;
-
   StringBuffer sb = new StringBuffer ();
   for (int i=0; i < geneProducts.size (); i++) {
     GeneProduct gp = (GeneProduct) geneProducts.elementAt (i);
@@ -452,8 +429,6 @@ public String getBindingPairs (String geneName)
 // just as 'addBindingPairs' does not yet use canonical gene names,
 // this method does not either.
 {
-  requests++;
-
   StringBuffer sb = new StringBuffer ();
   for (int i=0; i < bindingPairs.size (); i++) {
     BindingPair bp = (BindingPair) bindingPairs.elementAt (i);
@@ -499,8 +474,6 @@ public Vector getAllCellularComponentPaths (int cellularComponentID)
 //------------------------------------------------------------------------------
 public Vector getAllGoHierarchyPaths (int goTermID)
 {
-  requests++;
-
   Vector nestedLists = recursiveGetGoPath (goTermID, new Vector ());
   if (nestedLists.size () == 0)
     return nestedLists;
@@ -569,8 +542,6 @@ public String [] getAllGenes ()
 //------------------------------------------------------------------------------
 public String getGoTermName (int id)
 {
-  requests++;
-
   GoTerm term = (GoTerm) goTermHash.get (new Integer (id));
   return term.getName ();
 
@@ -742,8 +713,6 @@ public String [] eliminateDuplicatePaths (Vector paths)
 //------------------------------------------------------------------------------
 public int [] getBioProcessIDs (String geneName)
 {
-  requests++;
-
   int [] result = new int [0];
 
   String canonicalName = getCanonicalName (geneName);
@@ -764,8 +733,6 @@ public int [] getBioProcessIDs (String geneName)
 //------------------------------------------------------------------------------
 public int [] getMolecularFunctionIDs (String geneName)
 {
-  requests++;
-
   int [] result = new int [0];
 
   String canonicalName = getCanonicalName (geneName);
@@ -786,8 +753,6 @@ public int [] getMolecularFunctionIDs (String geneName)
 //------------------------------------------------------------------------------
 public int [] getCellularComponentIDs (String geneName)
 {
-  requests++;
-
   int [] result = new int [0];
 
   String canonicalName = getCanonicalName (geneName);
@@ -871,35 +836,21 @@ public String describe ()
   sb.append (cellularComponentIdMap.size ());
   sb.append ("\n");
 
-  sb.append ("              GO path terminators: ");
+  sb.append ("GO path terminators: ");
   sb.append (goPathTerminators.size ());
-  sb.append ("\n");
-
-  sb.append ("                server start time: ");
-  sb.append (startTime);
-  sb.append ("\n");
-
-  sb.append ("                  load operations: ");
-  sb.append (loadOperations);
-  sb.append ("\n");
-
-  sb.append ("                         requests: ");
-  sb.append (requests);
   sb.append ("\n");
 
   return sb.toString ();
 
 } // describe
 //------------------------------------------------------------------------------
-public static void main (String [] args) 
+public static void main (String[] args) 
 {
   //if (System.getSecurityManager() == null) {
   //  System.setSecurityManager(new RMISecurityManager());
   //  }
 
  String name = "biodata";
- if (args.length > 0) 
-   name = args [0];
 
   try {
     RMIBioDataServer server = new BioDataServerImpl ();

@@ -19,8 +19,6 @@ import cytoscape.data.readers.*;
  *  the "in-process" BioDataServer, providing data &amp; metadata on biological entities
  */
 public class IPBioDataServer implements BioDataServer {
-    // KEGG
-    KeggPathways keggPathways = new KeggPathways();
 
   String dataDirectory;
   Vector bindingPairs = new Vector ();
@@ -86,9 +84,6 @@ private void load ()
   File humanMolFuncsFile = new File (dataDirectory, "humanMolecularFunctionIDs.txt");
   File humanCellularComponentsFile = new File (dataDirectory, "humanCellularComponentIDs.txt");
 
-  // KEGG
-  File yeastKeggPathwaysFile = new File (dataDirectory, "yeastKeggPathways.txt");
-
   boolean allFilesAreReadable = true;
 
   if (!synonymsFile.canRead ()) {
@@ -113,12 +108,6 @@ private void load ()
     loadSynonyms (synonymsFile);
     loadGoTerms (goTermsFile);
     loadGoPathTerminators (goPathTerminatorsFile);
-
-    // KEGG
-    if (yeastKeggPathwaysFile.canRead()) {
-	KeggPathwaysReader kReader = new KeggPathwaysReader(yeastKeggPathwaysFile);
-	keggPathways = kReader.read();
-    }
 
     if (yeastBioProcessesFile.canRead ())
       loadBioProcesses (yeastBioProcessesFile);
@@ -229,12 +218,6 @@ private void loadGoPathTerminators (File file) throws Exception
   addGoPathTerminators (result);
 
 } // loadGoPathTerminators
-
-// KEGG
-public KeggPathways getKeggPathways() {
-    return keggPathways;
-}
-
 //------------------------------------------------------------------------------
 public void addBindingPairs (Vector newBindingPairs)
 // note!  the data structure here is the triple (a, b, species)

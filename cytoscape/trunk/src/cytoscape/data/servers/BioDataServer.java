@@ -11,7 +11,6 @@ import java.rmi.RemoteException;
 import java.util.Vector;
 import java.util.Hashtable;
 import cytoscape.data.GoTerm;
-import cytoscape.data.KeggPathways;
 //------------------------------------------------------------------------------
 public interface BioDataServer {
 
@@ -87,7 +86,5 @@ public interface BioDataServer {
   String [] eliminateDuplicatePaths (String [] allMappedPaths) 
             throws Exception;
 
-    // KEGG
-    KeggPathways getKeggPathways() throws Exception;
 //------------------------------------------------------------------------------
 }  
