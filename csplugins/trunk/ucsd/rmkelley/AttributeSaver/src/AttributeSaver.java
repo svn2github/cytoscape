@@ -167,13 +167,14 @@ class AttributeSaverDialog extends JDialog{
     contentPane.add(centerPanel,BorderLayout.CENTER);
     contentPane.add(southPanel,BorderLayout.SOUTH);
     contentPane.add(westPanel,BorderLayout.WEST);
-    setSize(640,380);
+    pack();
   }
 
 }
 
 
 class AttributeSaverState{
+  public static String newline = System.getProperty("line.separator");
   /**
    * The default string to append for an attribute filename
    */
@@ -293,7 +294,7 @@ class AttributeSaverState{
 	String attribute = (String)attributes[idx];
 	File attributeFile = new File(saveDirectory,(String)attribute2File.get(attribute));
 	FileWriter fileWriter = new FileWriter(attributeFile);
-	fileWriter.write(attribute+"\n");
+	fileWriter.write(attribute+newline);
 	HashMap attributeMap = graphObjAttributes.getAttribute(attribute);
 	if ( attributeMap != null) {
 	  for ( Iterator canonicalIt = canonicalNames.iterator();canonicalIt.hasNext();) {
@@ -310,16 +311,16 @@ class AttributeSaverState{
 		    while ( objIt.hasNext()) {
 		      result += "::"+objIt.next();
 		    } 
-		    result += ")\n";
+		    result += ")"+newline;
 		  } 
 		  else {
-		    result += collection.iterator().next()+"\n";
+		    result += collection.iterator().next()+newline;
 		  }
 		  fileWriter.write(result);
 		}
 	      } 
 	      else {
-		fileWriter.write(name+" = "+value+"\n");
+		fileWriter.write(name+" = "+value+newline);
 	      } 
 	    } 
 	    else {
