@@ -685,7 +685,7 @@ class FGraphPerspective implements GraphPerspective
   {
     if (!(edgeInx < 0))
       throw new IllegalArgumentException("edge index is not negative");
-    return m_graph.isDirectedEdge(m_rootToNativeEdgeInxMap.get(~edgeInx)) == 1;
+    return m_graph.edgeType(m_rootToNativeEdgeInxMap.get(~edgeInx)) == 1;
   }
 
   public boolean isMetaParent(Node child, Node parent) {

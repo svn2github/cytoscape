@@ -550,7 +550,7 @@ class FRootGraph implements RootGraph
     for (int i = 0; i < edgeInx.length; i++)
     {
       final int positiveEdge = ~edgeInx[i];
-      if (m_graph.containsEdge(positiveEdge))
+      if (m_graph.edgeType(positiveEdge) >= 0)
       {
         nodeBucket.put(m_graph.sourceNode(positiveEdge));
         nodeBucket.put(m_graph.targetNode(positiveEdge));
@@ -707,7 +707,7 @@ class FRootGraph implements RootGraph
   // Throws IllegalArgumentException.
   public boolean isEdgeDirected(int edgeInx)
   {
-    return m_graph.isDirectedEdge(~edgeInx) == 1;
+    return m_graph.edgeType(~edgeInx) == 1;
   }
 
   public boolean addMetaChild(Node parent, Node child) {
