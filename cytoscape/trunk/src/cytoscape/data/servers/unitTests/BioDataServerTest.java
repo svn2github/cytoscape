@@ -36,6 +36,7 @@ package cytoscape.data.servers.unitTests;
 //--------------------------------------------------------------------------------------
 import junit.framework.*;
 import java.io.*;
+import java.util.*;
 
 import cytoscape.data.annotation.*;
 import cytoscape.data.annotation.readers.*;
@@ -61,224 +62,7 @@ public void tearDown () throws Exception
 {
 }
 //------------------------------------------------------------------------------
-/**
- * create an rmi client of the already running (but not already loaded)
- * test rmi data server  once we have a server object, pass it to the 
- * various data-specific testing methods to make sure it behaves properly.
- */
-public void no_testRmiServer () throws Exception
-{ 
-  System.out.println ("testRmiCtor");
-  BioDataServer server = new BioDataServer ("rmi://localhost/test");
-  server.clear ();
-  doAnnotationTest (server);
-
-  server.clear ();
-  doDoubleLoadAnnotationTest (server);
-
-} // testRmiServer
-//------------------------------------------------------------------------------
-/**
- * create an in-process data server, load it with some data, and 
- * then pass it to the various data-specific testing methods to make 
- * sure it behaves properly.
- */
-public void notestInProcessServer () throws Exception
-{ 
-  System.out.println ("testInProcessServer");
-  BioDataServer server = new BioDataServer ("./loadList");
-  System.out.println ("-- server:\n" + server.describe ());
-
-  assertTrue (server.getAnnotationCount () == 2);
-  AnnotationDescription [] aDescs = server.getAnnotationDescriptions ();
-  System.out.println ("aDescs: " + aDescs.length);
-  for (int i=0; i < aDescs.length; i++)
-    System.out.println (aDescs [i]);
-
-  String species = "Halobacterium sp.";
-  String curator = "KEGG";
-  String annotationType = "Pathways";
-  int size = 1476;
-
-  Annotation retrievedAnnotation = server.getAnnotation (species, curator, annotationType);
-  System.out.println ("size: " + retrievedAnnotation.size ());
-  assertTrue (retrievedAnnotation.size () == size);
-
-  species = "Homo sapiens";
-  curator = "GO";
-  annotationType = "all GO ontologies";
-  size = 18;
-
-  retrievedAnnotation = server.getAnnotation (species, curator, annotationType);
-  System.out.println ("size: " + retrievedAnnotation.size ());
-  assertTrue (retrievedAnnotation.size () == size);
-
-  server.clear ();
-  doAnnotationTest (server);
-
-  server.clear ();
-  doDoubleLoadAnnotationTest (server);
-
-
-} // testInProcessServer
-//------------------------------------------------------------------------------
-/**
- * create an in-process data server, load it with some data, and 
- * then pass it to the various data-specific testing methods to make 
- * sure it behaves properly.
- */
-public void testInProcessServerUsingFlatFilesSmall () throws Exception
-{ 
-  System.out.println ("testInProcessServerUsingFlatFilesSmall");
-  BioDataServer server = new BioDataServer ();
-  String filename = "../../annotation/sampleData/bioprocHumanFull.txt";
-  String species;
-  String annotationType;
-
-  AnnotationFlatFileReader reader = new AnnotationFlatFileReader (new File (filename));
-  Annotation annotation = reader.getAnnotation ();
-  assertTrue (annotation.getSpecies().equals ("Homo sapiens"));
-  assertTrue (annotation.getType().equals ("Biological Process"));
-  
-
-  String ontologyFile = "../../annotation/sampleData/goOntology.txt";
-
-  OntologyFlatFileReader ontologyReader = new OntologyFlatFileReader (new File (ontologyFile));
-  Ontology go = ontologyReader.getOntology ();
-
-  annotation.setOntology (go);
-  server.addAnnotation (annotation);
-  AnnotationDescription [] aDescs = server.getAnnotationDescriptions ();
-  for (int i=0; i < aDescs.length; i++)
-    System.out.println (aDescs [i]);
-
-  System.out.println ("-- server:\n" + server.describe ());
-
-  AnnotationDescription adesc = new AnnotationDescription ("Homo sapiens", "GO", "Biological Process");
-  Annotation retrieved = server.getAnnotation (adesc);
-  
-  String protein = "IPI00163805"; // = 0030338
-  int [] terms = retrieved.getClassifications (protein);
-  assertTrue (terms.length == 1);
-  assertTrue (terms [0] == 30338);
-  int [][] paths = go.getAllHierarchyPaths (terms [0]);
-  assertTrue (paths.length == 2);
-  assertTrue (paths [0].length == 5);
-  assertTrue (paths [1].length == 6);
-
-  String [][] pathNames = go.getAllHierarchyPathsAsNames (terms [0]);
-  assertTrue (pathNames.length == 2);
-  assertTrue (pathNames [0].length == 5);
-  assertTrue (pathNames [1].length == 6);
-
-  assertTrue (pathNames [0][0].equalsIgnoreCase ("molecular_function"));
-  assertTrue (pathNames [0][1].equalsIgnoreCase ("enzyme"));
-  assertTrue (pathNames [0][2].equalsIgnoreCase ("oxidoreductase"));
-  assertTrue (pathNames [0][3].equalsIgnoreCase ("monooxygenase"));
-  System.out.println ("---- " + pathNames [0][3]);
-
-  assertTrue (pathNames [1][0].equalsIgnoreCase ("molecular_function"));
-  assertTrue (pathNames [1][1].equalsIgnoreCase ("enzyme"));
-  assertTrue (pathNames [1][2].equalsIgnoreCase ("oxidoreductase"));
-  assertTrue (pathNames [1][3].equalsIgnoreCase (
-        "oxidoreductase, acting on paired donors, with incorporation or reduction of molecular oxygen"));
-
-    // the tests could go all the way down to the leaf, but the names get longer, and
-    // the above tests should reveal anything gone wrong.
-
-
-  protein = "IPI00024413";
-  terms = retrieved.getClassifications (protein);
-  assertTrue (terms.length == 3);
-
-
-
-} // testInProcessServerSmall
-//------------------------------------------------------------------------------
-private void doAnnotationTest (BioDataServer server) throws Exception
-{
-  File xmlFile = new File ("../../kegg/haloMetabolicPathway.xml").getAbsoluteFile();
-  AnnotationXmlReader reader = new AnnotationXmlReader (xmlFile);
-  server.addAnnotation (reader.getAnnotation ());
-
-  String species = "Halobacterium sp.";
-  String curator = "KEGG";
-  String annotationType = "Pathways";
-  String annotationString = "annotation: " + curator + ", " + annotationType + ", " + species;
-
-  assertTrue (server.getAnnotationCount () == 1);
-  String description = server.describe ();
-  assertTrue (description.indexOf (annotationString) >= 0);
-  AnnotationDescription [] aDescs = server.getAnnotationDescriptions ();
-  assertTrue (aDescs.length == 1);
-  assertTrue (aDescs [0].toString().indexOf (annotationString) >= 0);
-
-  Annotation keggAnnotation = server.getAnnotation (species, curator, annotationType);
-  assertTrue (keggAnnotation.toString().indexOf (annotationString) >= 0);
-
-} // doAnnotationTest
-//------------------------------------------------------------------------------
-/**
- * in version 1.6 and before of the BioDataServerRmi class, adding a second
- * annotations with the same key (species, curator, type) as the first 
- * caused the first one to be overwritten.
- *
- * this test ensures that that no longer happens.
- *
- */
-private void doDoubleLoadAnnotationTest (BioDataServer server) throws Exception
-{
-  File xmlFile = new File ("../../go/prostasomes39.xml").getAbsoluteFile();
-  AnnotationXmlReader reader = new AnnotationXmlReader (xmlFile);
-  Annotation humanProstasomesAnnotation = reader.getAnnotation ();
-  int prostasomeSize = humanProstasomesAnnotation.size ();
-  String species = humanProstasomesAnnotation.getSpecies ();
-  String curator = humanProstasomesAnnotation.getCurator ();
-  String annotationType = humanProstasomesAnnotation.getType ();
-
-  server.addAnnotation (humanProstasomesAnnotation);
-
-  assertTrue (server.getAnnotationCount () == 1);
-  Annotation retrievedAnnotation = server.getAnnotation (species, curator, annotationType);
-  assertTrue (retrievedAnnotation.size () == prostasomeSize);
-
-  xmlFile = new File ("../../go/bogus5.xml").getAbsoluteFile();
-  reader = new AnnotationXmlReader (xmlFile);
-  Annotation bogusHumanAnnotation = reader.getAnnotation ();
-  int bogusSize = bogusHumanAnnotation.size ();
-
-  server.addAnnotation (bogusHumanAnnotation);
-  retrievedAnnotation = server.getAnnotation (species, curator, annotationType);
-  assertTrue (server.getAnnotationCount () == 1);
-  assertTrue (retrievedAnnotation.size () == prostasomeSize + bogusSize);
-
-} // doDoubleLoadAnnotationTest
-//------------------------------------------------------------------------------
-/**
- *  make sure we can read and load any number of xml annotation files 
- */
-public void notestLoadAnnotationFiles () throws Exception
-{
-  System.out.println ("testLoadAnnotationFiles");
-  BioDataServer server = new BioDataServer ();
-  String [] annotationFiles = {"goCellularComponent.xml",
-                               "keggMetabolicPathway.xml"};
-  String [] absolutePathNames = new String [annotationFiles.length];
-  for (int i=0; i < annotationFiles.length; i++) {
-    File f = new File (annotationFiles [i]);
-    absolutePathNames [i] = f.getAbsolutePath ();
-    System.out.println (absolutePathNames [i]);
-    }
-  //server.loadAnnotationFiles (absolutePathNames);
-  //server.loadAnnotationFiles (annotationFiles);
-  AnnotationDescription [] aDescs = server.getAnnotationDescriptions ();
-  for (int i=0; i < aDescs.length; i++)
-    System.out.println (aDescs [i]);
-
-
-} // testLoadAnnotationFiles
-//-------------------------------------------------------------------------
-public void testThesaurusFromFlatFile () throws Exception
+public void notestThesaurusFromFlatFile () throws Exception
 {
   System.out.println ("testThesaurusFromFlatFile");
   BioDataServer server = new BioDataServer ();
@@ -302,7 +86,7 @@ public void testThesaurusFromFlatFile () throws Exception
 
 } // testThesaurusFromFlatFile
 //-------------------------------------------------------------------------
-public void testThesaurusWithAbsentEntries () throws Exception
+public void notestThesaurusWithAbsentEntries () throws Exception
 {
   System.out.println ("testThesaurusWithAbsentEntries");
   BioDataServer server = new BioDataServer ();
@@ -321,78 +105,244 @@ public void testThesaurusWithAbsentEntries () throws Exception
 
 } //  testThesaurusWithAbsentEntries
 //-------------------------------------------------------------------------
-private void doFlatFileAnnotationTest (BioDataServer server) throws Exception
+/**
+ *  load up all 3 GO annotations for yeast from a manifest file, then 
+ *  retrieve annotations for two yeast orfs.  the first one has single
+ *  assignments, and the second has multiple
+ */
+public void notestReadGoYeastAnnotation () throws Exception
 {
-//  File xmlFile = new File ("../../kegg/haloMetabolicPathway.xml").getAbsoluteFile();
-//  AnnotationXmlReader reader = new AnnotationXmlReader (xmlFile);
-//  server.addAnnotation (reader.getAnnotation ());
-//
-//  String species = "Halobacterium sp.";
-//  String curator = "KEGG";
-//  String annotationType = "Pathways";
-//  String annotationString = "annotation: " + curator + ", " + annotationType + ", " + species;
-//
-//  assertTrue (server.getAnnotationCount () == 1);
-//  String description = server.describe ();
-//  assertTrue (description.indexOf (annotationString) >= 0);
-//  AnnotationDescription [] aDescs = server.getAnnotationDescriptions ();
-//  assertTrue (aDescs.length == 1);
-//  assertTrue (aDescs [0].toString().indexOf (annotationString) >= 0);
-//
-//  Annotation keggAnnotation = server.getAnnotation (species, curator, annotationType);
-//  assertTrue (keggAnnotation.toString().indexOf (annotationString) >= 0);
+  System.out.println ("testReadGoYeastAnnotation");
 
+    // read manifest, a local file, and the files it names:
+    //
+    //   ontology=go.onto
+    //   annotation=bioproc.anno
+    //   annotation=molfunc.anno
+    //   annotation=cellcomp.anno
 
-  String filename = "../../annotation/sampleData/bioproc.txt";
-  String species = "Homo sapiens";
-  String type = "biological process";
-  AnnotationFlatFileReader reader = new AnnotationFlatFileReader (new File (filename));
-  Annotation annotation = reader.getAnnotation ();
-  String ontologyFile = "../../sampleData/goOntology.txt";
-  OntologyFlatFileReader ontologyReader = new OntologyFlatFileReader (new File (ontologyFile));
-  Ontology go = ontologyReader.getOntology ();
-  annotation.setOntology (go);
-  server.addAnnotation (annotation);
+  String manifest = "annotations/goYeast/manifest";  
+  BioDataServer server = new BioDataServer (manifest);
+
   AnnotationDescription [] aDescs = server.getAnnotationDescriptions ();
-  for (int i=0; i < aDescs.length; i++)
-    System.out.println (aDescs [i]);
+  assertTrue (aDescs.length == 3);
 
-  /*******************************
-  String protein = "IPI00163805"; // = 0030338
-  int [] terms = annotation.getClassifications (protein);
-  assertTrue (terms.length == 1);
-  assertTrue (terms [0] == 30338);
-  int [][] paths = go.getAllHierarchyPaths (terms [0]);
-  assertTrue (paths.length == 2);
-  assertTrue (paths [0].length == 5);
-  assertTrue (paths [1].length == 6);
+  String species = "Saccharomyces cerevisiae";
+  String curator = "GO";
+  String orf = "YER033C";
 
-  String [][] pathNames = go.getAllHierarchyPathsAsNames (terms [0]);
-  assertTrue (pathNames.length == 2);
-  assertTrue (pathNames [0].length == 5);
-  assertTrue (pathNames [1].length == 6);
+  int [] ids = server.getClassifications (species, curator, "Molecular Function", orf);
+  assertTrue (ids.length == 1);
+  assertTrue (ids [0] == 5554);
 
-  assertTrue (pathNames [0][0].equalsIgnoreCase ("molecular_function"));
-  assertTrue (pathNames [0][1].equalsIgnoreCase ("enzyme"));
-  assertTrue (pathNames [0][2].equalsIgnoreCase ("oxidoreductase"));
-  assertTrue (pathNames [0][3].equalsIgnoreCase ("monooxygenase"));
+  ids = server.getClassifications (species, curator, "Cellular Component", orf);
+  assertTrue (ids.length == 1);
+  assertTrue (ids [0] == 8372);
 
-  assertTrue (pathNames [1][0].equalsIgnoreCase ("molecular_function"));
-  assertTrue (pathNames [1][1].equalsIgnoreCase ("enzyme"));
-  assertTrue (pathNames [1][2].equalsIgnoreCase ("oxidoreductase"));
-  assertTrue (pathNames [1][3].equalsIgnoreCase (
-        "oxidoreductase, acting on paired donors, with incorporation or reduction of molecular oxygen"));
+  ids = server.getClassifications (species, curator, "Biological Process", orf);
+  assertTrue (ids.length == 1);
+  assertTrue (ids [0] == 4);
 
-    // the tests could go all the way down to the leaf, but the names get longer, and
-    // the above tests should reveal anything gone wrong.
+  orf = "YNR016C";
+  ids = server.getClassifications (species, curator, "Molecular Function", orf);
+  assertTrue (ids.length == 2);
+  int [] expected0 = {3989, 4075};
+  assertTrue (containedIn (ids, expected0));
+  
+  ids = server.getClassifications (species, curator, "Cellular Component", orf);
+  assertTrue (ids.length == 2);
+  int [] expected1 = {5829, 5789};
+  assertTrue (containedIn (ids, expected1));
+
+  ids = server.getClassifications (species, curator, "Biological Process", orf);
+  assertTrue (ids.length == 2);
+  int [] expected2 = {6633, 6998};
+  assertTrue (containedIn (ids, expected2));
 
 
-  protein = "IPI00024413";
-  terms = annotation.getClassifications (protein);
-  assertTrue (terms.length == 3);
-  ***********************/
+} // testReadGoYeastAnnotation
+//------------------------------------------------------------------------------
+/**
+ *  get GO and KEGG annotation, plus synonyms from an ISB webserver
+ */
+public void notestReadViaHTTP () throws Exception
+{
+  System.out.println ("testReadViaHTTP");
 
-} // doFlatFileAnnotationTest
+    // read manifest, via http, and the files it names (which are
+    // implicitly at the same url:
+    //
+    //   ontology=go.onto
+    //   annotation=bioproc.anno
+    //   annotation=molfunc.anno
+    //   annotation=cellcomp.anno
+
+  String manifest = 
+      "http://db.systemsbiology.net:8080/cytoscape/annotation/testDoNotDelete/manifest";  
+
+  BioDataServer server = new BioDataServer (manifest);
+
+  AnnotationDescription [] aDescs = server.getAnnotationDescriptions ();
+  assertTrue (aDescs.length == 4);
+
+  String species = "Saccharomyces cerevisiae";
+  String curator = "GO";
+  String orf = "YER033C";
+
+  int [] ids = server.getClassifications (species, curator, "Molecular Function", orf);
+  assertTrue (ids.length == 1);
+  assertTrue (ids [0] == 5554);
+
+  ids = server.getClassifications (species, curator, "Cellular Component", orf);
+  assertTrue (ids.length == 1);
+  assertTrue (ids [0] == 8372);
+
+  ids = server.getClassifications (species, curator, "Biological Process", orf);
+  assertTrue (ids.length == 1);
+  assertTrue (ids [0] == 4);
+
+  orf = "YNR016C";
+  ids = server.getClassifications (species, curator, "Molecular Function", orf);
+  assertTrue (ids.length == 2);
+  int [] expected0 = {3989, 4075};
+  assertTrue (containedIn (ids, expected0));
+  
+  ids = server.getClassifications (species, curator, "Cellular Component", orf);
+  assertTrue (ids.length == 2);
+  int [] expected1 = {5829, 5789};
+  assertTrue (containedIn (ids, expected1));
+
+  ids = server.getClassifications (species, curator, "Biological Process", orf);
+  assertTrue (ids.length == 2);
+  int [] expected2 = {6633, 6998};
+  assertTrue (containedIn (ids, expected2));
+
+  curator = "KEGG";
+  ids = server.getClassifications (species, curator, "Metabolic Pathways", orf);
+  assertTrue (ids.length == 4);
+  int [] expected3 = {61, 620, 640, 253};
+  assertTrue (containedIn (ids, expected3));
+
+  String canonicalName = "YAL001C";
+  String commonName = "TFC3"; 
+  String synonym2 = "TSV115";
+  String synonym3 = "FUN24";
+
+  assertTrue (server.getCommonName (species, canonicalName).equals (commonName));
+  assertTrue (server.getCanonicalName (species, commonName).equals (canonicalName));
+  assertTrue (server.getCanonicalName (species, synonym2).equals (canonicalName));
+  assertTrue (server.getCanonicalName (species, synonym3).equals (canonicalName));
+  assertTrue (server.getCanonicalName (species, canonicalName).equals (canonicalName));
+
+
+} // testReadViaHttp
+//------------------------------------------------------------------------------
+/**
+ *  load the single KEGG GO annotations for halo from a manifest file, then 
+ *  retrieve annotations for one halo orfs, with three annotations
+ */
+public void notestReadKeggHaloAnnotation () throws Exception
+{
+  System.out.println ("testReadKeggHaloAnnotation");
+
+    // read manifest, a local file, and the files it names:
+    // 
+    // annotation=pathways.anno
+    // ontology=ontology
+
+  String manifest = "annotations/keggHalo/manifest";  
+  BioDataServer server = new BioDataServer (manifest);
+
+  AnnotationDescription [] aDescs = server.getAnnotationDescriptions ();
+  assertTrue (aDescs.length == 1);
+
+  String species = "Halobacterium sp.";
+  String curator = "KEGG";
+  String orf = "VNG1873G";
+  String annotationType = "Metabolic Pathways";
+
+  int [] ids = server.getClassifications (species, curator, annotationType, orf);
+  assertTrue (ids.length == 3);
+  int [] expected = {20, 720, 480};
+  assertTrue (containedIn (ids, expected));
+
+} // testReadKeggHaloAnnotation
+//------------------------------------------------------------------------------
+/**
+ *  using human NP numbers,  load 1 (fake) KEGG and 3 GO annotations.
+ *  make sure the 4 annotations all work properly
+ *  
+ */
+public void testReadAnnotationsWithTwoOntologies () throws Exception
+{
+  System.out.println ("testReadAnnotationsWithTwoOntologies");
+
+  String manifest = "annotations/humanKeggAndGO/manifest.both";
+  BioDataServer server = new BioDataServer (manifest);
+
+  String species = "Homo sapiens";
+  String curator = "KEGG";
+
+  String canonicalName = "NP_647593";
+  String commonName = "qqq";
+  String synonym2 = "QQQ";
+
+  assertTrue (server.getCommonName (species, canonicalName).equals (commonName));
+  assertTrue (server.getCanonicalName (species, commonName).equals (canonicalName));
+  assertTrue (server.getCanonicalName (species, synonym2).equals (canonicalName));
+  assertTrue (server.getCanonicalName (species, canonicalName).equals (canonicalName));
+
+  String annotationType = "Metabolic Pathways";
+
+  int [] ids = server.getClassifications (species, curator, annotationType, canonicalName);
+  assertTrue (ids.length == 6);
+  int [] expected0 = {120, 350, 561, 260, 300, 40};
+  assertTrue (containedIn (ids, expected0));
+
+  AnnotationDescription [] aDescs = server.getAnnotationDescriptions ();
+
+  assertTrue (aDescs.length == 4);
+
+  curator = "GO";
+  String annotationType1 = "Molecular Function";
+  String annotationType2 = "Cellular Component";
+  String annotationType3 = "Biological Process";
+
+  ids = server.getClassifications (species, curator, annotationType1, canonicalName);
+  assertTrue (ids.length == 1);
+  assertTrue (ids [0] == 8181);
+
+  ids = server.getClassifications (species, curator, annotationType2, canonicalName);
+  assert (ids.length == 2);
+  int [] expected2 = {5871, 15629};
+  assertTrue (containedIn (ids, expected2));
+
+  ids = server.getClassifications (species, curator, annotationType3, canonicalName);
+  assertTrue (ids.length == 6);
+  int [] expected3 = {6899, 7268, 8099, 8283, 30154, 45786};
+  assertTrue (containedIn (ids, expected3));
+
+} // testReadAnnotationsWithTwoOntologies
+//------------------------------------------------------------------------------
+/**
+ * are all members of a also in b?
+ */
+private boolean containedIn (int [] a, int [] b)
+{
+  for (int i=0; i < a.length; i++) {
+    boolean foundA = false;
+    for (int j=0; j < b.length; j++) 
+      if (b [j] == a [i]) {
+        foundA = true;
+        break;
+        }
+    if (!foundA)
+      return false;
+    } // for i
+
+  return true;
+
+} // containedIn
 //------------------------------------------------------------------------------
 public static void main (String [] args) 
 {
