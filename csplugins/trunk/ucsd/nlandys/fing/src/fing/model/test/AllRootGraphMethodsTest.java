@@ -194,7 +194,7 @@ public final class AllRootGraphMethodsTest
     if (root.isNeighbor(root2Node, root.getNode(nodeInx[2])))
       throw new IllegalStateException("nodes from another graph is neighbor");
 
-    // isNeighbor(int, int)
+    // isNeighbor(int, int).
     if (!root.isNeighbor(nodeInx[1], nodeInx[1]))
       throw new IllegalStateException("node with self edge not neigbhor");
     if (root.isNeighbor(nodeInx[0], nodeInx[0]))
@@ -203,6 +203,33 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("nodes are not neighbors");
     if (!root.isNeighbor(nodeInx[1], nodeInx[2]))
       throw new IllegalStateException("nodes are not neighbors");
+
+    // edgeExists(Node, Node).
+    if (root.edgeExists(root.getNode(nodeInx[3]), root.getNode(nodeInx[1])))
+      throw new IllegalStateException("edge exists");
+    if (root.edgeExists(root.getNode(nodeInx[0]), root2Node))
+      throw new IllegalStateException("edge exists with node of other graph");
+    if (!root.edgeExists(root.getNode(nodeInx[0]), root.getNode(nodeInx[1])))
+      throw new IllegalStateException("edge does not exist");
+    if (!root.edgeExists(root.getNode(nodeInx[1]), root.getNode(nodeInx[2])))
+      throw new IllegalStateException("edge does not exist");
+
+    // edgeExists(int, int)
+    if (root.edgeExists(0, 0)) throw new IllegalStateException("0 -> 0");
+    if (root.edgeExists(nodeInx[2], nodeInx[3]))
+      throw new IllegalStateException("edge exists in opposite direction");
+    if (root.edgeExists(nodeInx[4], nodeInx[2]))
+      throw new IllegalStateException("edge exists on node with no edge");
+    if (root.edgeExists(nodeInx[0], nodeInx[0]))
+      throw new IllegalStateException("self-edge exists");
+    if (!root.edgeExists(nodeInx[1], nodeInx[1]))
+      throw new IllegalStateException("self-edge does not exist [undirected]");
+    if (!root.edgeExists(nodeInx[2], nodeInx[2]))
+      throw new IllegalStateException("self-edge does not exist [directed]");
+    if (!root.edgeExists(nodeInx[3], nodeInx[2]))
+      throw new IllegalStateException("edge does not exist");
+    if (!root.edgeExists(nodeInx[1], nodeInx[0]))
+      throw new IllegalStateException("edge does not exist");
   }
 
 }
