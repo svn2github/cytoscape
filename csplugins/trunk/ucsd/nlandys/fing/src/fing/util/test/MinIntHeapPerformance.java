@@ -11,7 +11,7 @@
   integers returned by the heap test is ordered as a result of the
   nature of the algorithm.
 
-                    Milliseconds taken to perform test:
+           Milliseconds taken to perform test case:
 
     N         |  MinIntHeap  |  Hashtable   |  BitArray    |
   ------------+--------------+--------------+--------------+
