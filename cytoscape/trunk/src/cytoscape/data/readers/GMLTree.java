@@ -124,16 +124,46 @@ public class GMLTree{
 		TextFileReader reader = new TextFileReader(filename);
 		reader.read();
 
-		// handle the lines -> build GMLToken list
-		StringTokenizer lines = new StringTokenizer(reader.getText(), "\n");
+		// handle the quotes -> build GMLToken list
+		//find the quoted strings first so we can preserve their white space
+		StringTokenizer quotes = new StringTokenizer(reader.getText(),"\"",true);
 
-		while (lines.hasMoreTokens()) {
-	    		StringTokenizer tokens = new StringTokenizer(lines.nextToken());
+		while (quotes.hasMoreTokens()) {
+	    		StringTokenizer tokens = new StringTokenizer(quotes.nextToken());
 	    		while (tokens.hasMoreTokens()){
 				tokenList.add(tokens.nextToken());
 			}
+			if(quotes.hasMoreTokens()){
+				//clear the quote, this token must be "\""
+				String nextToken = quotes.nextToken();
+				//check to see if it is the empty string
+				if(quotes.hasMoreTokens()){
+					nextToken = quotes.nextToken();
+					//check for empty string
+					if(!nextToken.equals("\"")){
+						//this was the quoted empty string
+						tokenList.add("\""+nextToken+"\"");
+						//now look for and clear the close quote
+						if(quotes.hasMoreTokens()){
+							//since the last token was not a quote character
+							//this next token has to be the quote character,
+							//and we can clear it
+							quotes.nextToken();
+						}
+						else{
+							throw new RuntimeException("Open quote with no end quote");
+						}
+					}
+					else{
+						//add a token for the quoted empty string
+						tokenList.add("\"\"");
+					}
+				}
+				else{
+					throw new RuntimeException("GMLFile ended with open quote");
+				}
+			}
     		}
-
 		root = initializeTree(tokenList);
 		
 	}
