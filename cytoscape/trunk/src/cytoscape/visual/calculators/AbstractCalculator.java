@@ -89,7 +89,7 @@ public abstract class AbstractCalculator implements Calculator {
      * @return ObjectMapping at index i
      */
     public ObjectMapping getMapping(int i) {
-	return (ObjectMapping) mappings.get(i);
+	return (ObjectMapping) this.mappings.get(i);
     }
 
     /**
@@ -130,13 +130,17 @@ public abstract class AbstractCalculator implements Calculator {
 	    dupeFreeName = new String(name);
 	}
 	clonedCalc.name = dupeFreeName;
+	clonedCalc.mappings = new Vector(this.mappings.size(),2);
+	// Not needed since data classes don't change and are not configurable
+	// clonedCalc.acceptedDataClasses = this.acceptedDataClasses.clone();
 	// clone mapping data
 	// clonedCalc.m = (ObjectMapping) m.clone();
-	for (int i = 0; i < mappings.size(); i++) {
-	    ObjectMapping m = getMapping(i);
-	    Class[] mClass = (Class[]) acceptedDataClasses.get(i);
+	for (int i = 0; i < this.mappings.size(); i++) {
+	    ObjectMapping m = this.getMapping(i);
+	    // Not needed since data classes don't change and are not configurable
+	    //Class[] mClass = (Class[]) this.acceptedDataClasses.get(i);
+	    //clonedCalc.acceptedDataClasses.add(mClass.clone());
 	    clonedCalc.mappings.add(m.clone());
-	    clonedCalc.acceptedDataClasses.add(mClass.clone());
 	}
 
 	clonedCalc.dupeCount++;
