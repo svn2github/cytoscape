@@ -80,6 +80,11 @@ import cytoscape.data.servers.*;
 import cytoscape.dialogs.*;
 import cytoscape.browsers.*;
 import cytoscape.layout.*;
+import cytoscape.visual.*;
+import cytoscape.visual.ui.VizMapUI;
+import cytoscape.visual.mappings.*;
+import cytoscape.visual.calculators.*;
+import cytoscape.visual.parsers.*;
 import cytoscape.vizmap.*;
 import cytoscape.view.*;
 import cytoscape.undo.*;
@@ -133,8 +138,9 @@ public class CytoscapeWindow extends JPanel implements FilterDialogClient, Graph
   protected GraphObjAttributes nodeAttributes = new GraphObjAttributes ();
   protected GraphObjAttributes edgeAttributes = new GraphObjAttributes ();
 
-  protected AttributeMapper vizMapper;
-  protected VizMapperCategories vizMapperCategories;
+  protected VizMapUI vizMapUI;
+    protected VisualMappingManager vizMapper;
+  protected Network network;
 
   protected ExpressionData expressionData = null;
 
@@ -196,11 +202,6 @@ public CytoscapeWindow (cytoscape parentApp,
 
   this.currentDirectory = new File (System.getProperty ("user.dir"));
 
-  vizMapperCategories = new VizMapperCategories();
-  vizMapper = new AttributeMapper( vizMapperCategories.getInitialDefaults() );
-  AttributeMapperPropertiesAdapter adapter =
-      new AttributeMapperPropertiesAdapter(vizMapper, vizMapperCategories);
-  adapter.applyAllRangeProperties( config.getProperties() );
 
   if (title == null)
     this.windowTitle = "";
@@ -212,6 +213,51 @@ public CytoscapeWindow (cytoscape parentApp,
   JButton annotationButton = toolbar.add (new AnnotationGui (CytoscapeWindow.this));
 
   setGraph (graph);
+
+  // load vizmapper after graph is available
+  NodeAppearanceCalculator nac = new NodeAppearanceCalculator();
+  /*addNodeShapeMapping(nac);
+  addNodeLineTypeMapping(nac);
+  addNodeBorderColorMapping(nac);
+  addNodeFillColorMapping(nac);
+  addNodeHeightMapping(nac);
+  addNodeWidthMapping(nac);
+  addDiscreteNodeLabelMapping(nac);
+  */
+  // node tool tip
+  EdgeAppearanceCalculator eac = new EdgeAppearanceCalculator();
+  /*addEdgeColorMapping(eac);
+  addEdgeLineTypeMapping(eac);
+  addEdgeSourceArrowMapping(eac);
+  addEdgeTargetArrowMapping(eac);
+  addDiscreteEdgeLabelMapping(eac);
+  */
+  // edge tool tip
+
+  this.vizMapper = new VisualMappingManager(this, nac, eac);
+  this.network = new Network(this);
+  this.vizMapUI = new VizMapUI(this.vizMapper);
+  CalculatorCatalog cc = this.vizMapper.getCalculatorCatalog();
+  cc.addNodeLabelCalculator(getPassThroughNLC());
+  cc.addNodeColorCalculator(getContinuousNFCC());
+  cc.addNodeColorCalculator(getMultipointContinuousNFCC());
+  cc.addEdgeLabelCalculator(getPassThroughELC());
+  cc.addNodeSizeCalculator(getMultipointContinuousNSC());
+  //load in calculators from file
+  Properties props = new Properties();
+  try {
+      InputStream is = new FileInputStream("vizmap.props");
+      props.load(is);
+      is.close();
+  } catch (Exception ioe) {
+      ioe.printStackTrace();
+  }
+  CalculatorIO.loadCalculators(props, cc);
+  // register mappings
+  cc.addMapping("Discrete Mapper", DiscreteMapping.class);
+  cc.addMapping("Continuous Mapper", ContinuousMapping.class);
+  cc.addMapping("Passthrough Mapper", PassThroughMapping.class);
+
   annotationButton.setIcon (new ImageIcon (getClass().getResource("images/AnnotationGui.gif")));
   annotationButton.setToolTipText ("add annotation to nodes");
   annotationButton.setBorderPainted (false);
@@ -223,7 +269,6 @@ public CytoscapeWindow (cytoscape parentApp,
   mainFrame.addWindowListener (parentApp);
   mainFrame.setVisible (true);
 
-
   // load plugins last, after the main window is setup, since they
   // will often need access to all of the parts of a fully
   // instantiated CytoscapeWindow
@@ -234,6 +279,162 @@ public CytoscapeWindow (cytoscape parentApp,
   
 
 } // ctor
+    
+    // various default definitions stolen from TestNewMappingsUI.java
+
+    // this creates a random color and adds it to a map,
+    // associated with a string.
+    private void addRandomColor(DiscreteMapping m, String s) {
+	m.put(s,new Color((int)Math.floor(Math.random()*255),
+			  (int)Math.floor(Math.random()*255),
+			  (int)Math.floor(Math.random()*255)));
+    }
+
+    // this creates a random Double and adds it to a map,
+    // associated with a string.
+    private void addRandomDouble(DiscreteMapping m, String s) {
+	m.put(s,new Double(20+Math.random()*40));
+    }
+
+    private GenericNodeColorCalculator getContinuousNFCC() {
+	Interpolator fInt = new LinearNumberToColorInterpolator();
+	ContinuousMapping m =
+	    new ContinuousMapping(new Color(200,200,255),"gal4RG.sigsig",
+				  fInt,ObjectMapping.NODE_MAPPING);
+	return new GenericNodeColorCalculator("Sample Continuous Color",m);
+    }
+    private GenericNodeColorCalculator getMultipointContinuousNFCC() {
+	Interpolator fInt = new LinearNumberToColorInterpolator();
+	ContinuousMapping m =
+	    new ContinuousMapping(new Color(255,255,255),"gal4RG.sigsig",
+				  fInt,ObjectMapping.NODE_MAPPING);
+	BoundaryRangeValues brv;
+	brv = new BoundaryRangeValues();
+	brv.lesserValue = new Color(255,255,0);
+	brv.equalValue = new Color(255,160,64);
+	brv.greaterValue = new Color(255,160,32);
+	m.put(new Double(0.001),brv);
+
+	brv = new BoundaryRangeValues();
+	brv.lesserValue = new Color(255,0,0);
+	brv.equalValue = new Color(255,0,0);
+	brv.greaterValue = new Color(255,0,0);
+	m.put(new Double(0.02),brv);
+
+	brv = new BoundaryRangeValues();
+	brv.lesserValue = new Color(191,0,191);
+	brv.equalValue = new Color(191,0,191);
+	brv.greaterValue = new Color(0,0,191);
+	m.put(new Double(0.4),brv);
+
+	return new GenericNodeColorCalculator("Example Continuous Color",m);
+    }
+
+    private GenericNodeSizeCalculator getMultipointContinuousNSC() {
+	Interpolator fInt = new LinearNumberToNumberInterpolator();
+	ContinuousMapping m =
+	    new ContinuousMapping(new Double(1.0),"gal4RG.sigsig",
+				  fInt,ObjectMapping.NODE_MAPPING);
+	BoundaryRangeValues brv;
+	brv = new BoundaryRangeValues();
+	brv.lesserValue = new Double(50);
+	brv.equalValue = new Double(50);
+	brv.greaterValue = new Double(50);
+	m.put(new Double(0.001),brv);
+
+	brv = new BoundaryRangeValues();
+	brv.lesserValue = new Double(30);
+	brv.equalValue = new Double(30);
+	brv.greaterValue = new Double(30);
+	m.put(new Double(0.02),brv);
+
+	brv = new BoundaryRangeValues();
+	brv.lesserValue = new Double(20);
+	brv.equalValue = new Double(20);
+	brv.greaterValue = new Double(20);
+	m.put(new Double(0.4),brv);
+
+	return new GenericNodeSizeCalculator("Example Continuous Size",m);
+    }
+
+    private void addPassThroughNodeLabelMapping(NodeAppearanceCalculator nac) {
+	GenericNodeLabelCalculator nlc = getPassThroughNLC();
+	nac.setNodeLabelCalculator(nlc);
+    }
+    private GenericNodeLabelCalculator getPassThroughNLC() {
+	PassThroughMapping m =
+	    new PassThroughMapping(new String(""),
+				   "GO Molecular Function (level 4)");
+	return new GenericNodeLabelCalculator("Example Label PassThru",m);
+    }
+
+    private void addEdgeColorMapping(EdgeAppearanceCalculator eac) {
+	DiscreteMapping m =
+	    new DiscreteMapping(new Color(0,0,0), ObjectMapping.EDGE_MAPPING);
+	m.setControllingAttributeName("interaction", network, false);
+	addRandomColor(m,"pp");
+	addRandomColor(m,"pd");
+	GenericEdgeColorCalculator ecc =
+	    new GenericEdgeColorCalculator("Example Edge Color Map",m);
+	eac.setEdgeColorCalculator(ecc);
+    }
+
+    private void addEdgeLineTypeMapping(EdgeAppearanceCalculator eac) {
+	DiscreteMapping m =
+	    new DiscreteMapping(LineType.DASHED_3, ObjectMapping.EDGE_MAPPING);
+	m.setControllingAttributeName("interaction", network, false);
+	m.put("pp",LineType.DASHED_4);
+	m.put("pd",LineType.LINE_6);
+	GenericEdgeLineTypeCalculator eltc =
+	    new GenericEdgeLineTypeCalculator("Example Edge Line Type Map",m);
+	eac.setEdgeLineTypeCalculator(eltc);
+    }
+
+    private void addEdgeSourceArrowMapping(EdgeAppearanceCalculator eac) {
+	DiscreteMapping m =
+	    new DiscreteMapping(Arrow.DIAMOND, ObjectMapping.EDGE_MAPPING);
+	m.setControllingAttributeName("interaction", network, false);
+	m.put("pp",Arrow.WHITE_DIAMOND);
+	m.put("pd",Arrow.WHITE_DELTA);
+	GenericEdgeArrowCalculator earrowc =
+	    new GenericEdgeArrowCalculator("Example Edge Source Arrow Map",m);
+	eac.setEdgeSourceArrowCalculator(earrowc);
+    }
+
+    private void addEdgeTargetArrowMapping(EdgeAppearanceCalculator eac) {
+	DiscreteMapping m =
+	    new DiscreteMapping(Arrow.DIAMOND, ObjectMapping.EDGE_MAPPING);
+	m.setControllingAttributeName("interaction", network, false);
+	m.put("pp",Arrow.NONE);
+	m.put("pd",Arrow.DELTA);
+	GenericEdgeArrowCalculator earrowc =
+	    new GenericEdgeArrowCalculator("Example Edge Target Arrow Map",m);
+	eac.setEdgeTargetArrowCalculator(earrowc);
+    }
+
+    private void addDiscreteEdgeLabelMapping(EdgeAppearanceCalculator eac) {
+	DiscreteMapping m =
+	    new DiscreteMapping(new String(""), ObjectMapping.EDGE_MAPPING);
+	m.setControllingAttributeName("interaction", network, false);
+	m.put("pp","Protein-Protein");
+	m.put("pd","Transcriptional");
+	GenericEdgeLabelCalculator elc =
+	    new GenericEdgeLabelCalculator("Example Edge Label Map",m);
+	eac.setEdgeLabelCalculator(elc);
+    }
+
+    private void addPassThroughEdgeLabelMapping(EdgeAppearanceCalculator eac) {
+	GenericEdgeLabelCalculator elc = getPassThroughELC();
+	eac.setEdgeLabelCalculator(elc);
+    }
+    private GenericEdgeLabelCalculator getPassThroughELC() {
+	PassThroughMapping m =
+	    new PassThroughMapping(new String(""),"interaction");
+	return new GenericEdgeLabelCalculator("Exaple Edge Label PassThru",m);
+}
+
+    // end vizmapper defaults
+
 //------------------------------------------------------------------------------
 /**
  * configure logging:  cytoscape.props specifies what level of logging
@@ -507,15 +708,17 @@ public void setExpressionData(ExpressionData expData, String expressionDataFilen
     this.expressionDataFilename = expressionDataFilename;
 }
 //------------------------------------------------------------------------------
-public AttributeMapper getVizMapper ()
+public VisualMappingManager getVizMapManager ()
 {
-  return vizMapper;
+  return this.vizMapper;
 }
 //------------------------------------------------------------------------------
+/*
 public VizMapperCategories getVizMapperCategories ()
 {
   return vizMapperCategories;
 }
+*/
 //------------------------------------------------------------------------------
 protected void initializeWidgets ()
 {
@@ -657,96 +860,7 @@ protected void setLayouterAndGraphView ()
 //------------------------------------------------------------------------------
 protected void applyVizmapSettings ()
 {
-  Node [] nodes = graphView.getGraph2D().getNodeArray();
-
-  Color bgColor =
-      vizMapperCategories.getBGColor(vizMapper);
-  if(bgColor != null) {
-      //graphView.setBackground(bgColor);
-      DefaultBackgroundRenderer bgr = (DefaultBackgroundRenderer)graphView.getBackgroundRenderer();
-      bgr.setColor(bgColor);
-      //CytoscapeWindow.this.setBackground(bgColor);
-  }
-
-  Color nodeSelectedColor = vizMapperCategories.getNodeSelectedColor(vizMapper);
-  if(nodeSelectedColor != null){
-    NodeRealizer.setSloppySelectionColor(nodeSelectedColor);
-  }
- 
-  boolean setTh = false;
-  for (int i=0; i < nodes.length; i++) {
-    Node node = nodes [i];
-    String canonicalName = nodeAttributes.getCanonicalName (node);
-    HashMap bundle = nodeAttributes.getAttributes (canonicalName);
-    Color nodeColor =
-        vizMapperCategories.getNodeFillColor(bundle, vizMapper);
-    Color nodeBorderColor =
-        vizMapperCategories.getNodeBorderColor(bundle, vizMapper);
-    LineType nodeBorderLinetype = 
-        vizMapperCategories.getNodeBorderLineType(bundle,vizMapper);
-    double nodeHeight =
-        vizMapperCategories.getNodeHeight(bundle, vizMapper);
-    double nodeWidth =
-        vizMapperCategories.getNodeWidth(bundle, vizMapper);
-    byte nodeShape =
-        vizMapperCategories.getNodeShape(bundle, vizMapper);
-    
-    NodeRealizer nr = graphView.getGraph2D().getRealizer(node);
-    nr.setFillColor (nodeColor);
-    nr.setLineColor(nodeBorderColor);
-    nr.setLineType(nodeBorderLinetype);
-    nr.setHeight(nodeHeight);
-    nr.setWidth(nodeWidth);
-    if (nr instanceof ShapeNodeRealizer) {
-        ShapeNodeRealizer snr = (ShapeNodeRealizer)nr;
-        snr.setShapeType(nodeShape);
-    }
-
-    if((nodeColor.getRed()<128)&&
-       (nodeColor.getGreen()<128)&&
-       (nodeColor.getBlue()<128)) {
-	NodeLabel nodeLabel = nr.getLabel ();
-	nodeLabel.setTextColor(new Color(255,255,255));
-	/*
-	int newR = 255 - nodeColor.getRed();
-	int newG = 255 - nodeColor.getGreen();
-	int newB = 255 - nodeColor.getBlue();
-	nodeLabel.setTextColor(new Color(newR,newG,newB));
-	*/
-	nr.setLabel(nodeLabel);  // is this line important?
-    }
-    else {
-	NodeLabel nodeLabel = nr.getLabel ();
-	nodeLabel.setTextColor(new Color(0,0,0));
-	nr.setLabel(nodeLabel);  // is this line important?
-    }
-
-    // System.out.println(canonicalName + " " + nodeColor + " " + nodeBorderColor + " " + nodeBorderLinetype + " " + nodeHeight + " " 
-    //	       + nodeShape);
-    //System.out.flush();
-  } // for i
-
-  EdgeCursor cursor = graphView.getGraph2D().edges();
-  cursor.toFirst ();
-
-  for (int i=0; i < cursor.size (); i++) {
-    Edge edge = cursor.edge ();
-    String canonicalName = edgeAttributes.getCanonicalName (edge);
-    HashMap bundle = edgeAttributes.getAttributes (canonicalName);
-    Color color = vizMapperCategories.getEdgeColor(bundle, vizMapper);
-    LineType line = vizMapperCategories.getEdgeLineType(bundle, vizMapper);
-    Arrow sourceArrow =
-      vizMapperCategories.getEdgeSourceDecoration(bundle, vizMapper);
-    Arrow targetArrow =
-      vizMapperCategories.getEdgeTargetDecoration(bundle, vizMapper);
-    EdgeRealizer er = graphView.getGraph2D().getRealizer(edge);
-    er.setLineColor (color);
-    er.setLineType(line);
-    er.setSourceArrow(sourceArrow);
-    er.setTargetArrow(targetArrow);
-    cursor.cyclicNext ();
-  } // for i
-
+    this.getVizMapManager().applyAppearances();
 } // applyVizmapSettings
 //------------------------------------------------------------------------------
 public Node getNode (String canonicalNodeName)
@@ -1707,7 +1821,10 @@ protected class SetVisualPropertiesAction extends AbstractAction   {
     }
     
     public void actionPerformed (ActionEvent e) {
-        JDialog vizDialog = new VisualPropertiesDialog
+	vizMapUI.refreshUI();
+	vizMapUI.show();
+
+	/*JDialog vizDialog = new VisualPropertiesDialog
             (mainFrame, "Set Visual Properties",
              vizMapper, nodeAttributes,
              edgeAttributes, labelKey,
@@ -1720,6 +1837,7 @@ protected class SetVisualPropertiesAction extends AbstractAction   {
             displayNodeLabels(labelKey.getString());
 
         redrawGraph();
+	*/
     }
 
 }

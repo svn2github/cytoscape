@@ -28,7 +28,8 @@ default: checkkEnv objs subdirectories
 subdirectories: dataDirectories browserDirectory \
          vizmapDirectory dialogsDirectory \
          layoutDirectory utilDirectory \
-	 viewDirectory undoDirectory filtersDirectory
+	 viewDirectory undoDirectory filtersDirectory \
+	 visualDirectory
 
 objs: $(OBJS)
 
@@ -49,6 +50,9 @@ dataDirectories:
 
 dataTest: data
 	(cd data/unitTests; make)
+
+visualDirectory:
+	(cd visual; make)
 
 vizmapDirectory: 
 	(cd vizmap; make)
