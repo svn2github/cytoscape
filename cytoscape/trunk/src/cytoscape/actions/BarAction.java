@@ -23,7 +23,8 @@ public class BarAction extends CytoscapeAction
 
   public BarAction() { super("Bar Bug"); setPreferredMenu("Layout"); }
 
-  public void actionPerformed(ActionEvent e) {
+  public void actionPerformed(ActionEvent e)
+  {
     CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
     final NodeView[] nodes = new NodeView[graphView.getNodeViewCount()];
     final EdgeView[] edges = new EdgeView[graphView.getEdgeViewCount()];
