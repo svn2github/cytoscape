@@ -1321,6 +1321,13 @@ protected JToolBar createToolBar ()
 
 
   bar.addSeparator ();
+  b = bar.add (new SetVisualPropertiesAction(false));
+  b.setIcon (new ImageIcon (getClass().getResource("images/ColorVisual.gif")));
+  b.setToolTipText ("Set Visual Properties");
+  b.setBorderPainted (false);
+
+
+  bar.addSeparator ();
 
     
   return bar;
@@ -1836,32 +1843,22 @@ protected class ColorNodesFromFile extends AbstractAction{
 }//ColorNodesFromFile
 //------------------------------------------------------------------------------
 protected class SetVisualPropertiesAction extends AbstractAction   {
-    MutableString labelKey;
-    MutableBool shouldUpdateNodeLabels;
+    /** The constructor that takes no arguments shows the
+     *  label "Set Visual Properties" - this makes it appropriate
+     *  for the pulldown menu system, and inappropriate for an icon. */
     SetVisualPropertiesAction () {
         super ("Set Visual Properties");
-        labelKey = new MutableString("canonicalName");
-        shouldUpdateNodeLabels = new MutableBool(false);
     }
-    
+    /** The constructor that takes a boolean shows no label,
+     *  no matter what the value of the boolean actually is.
+     *  This makes is appropriate for an icon, but inappropriate
+     *  for the pulldown menu system. */
+    SetVisualPropertiesAction(boolean showLabel) {
+	super();
+    }
     public void actionPerformed (ActionEvent e) {
 	vizMapUI.refreshUI();
 	vizMapUI.show();
-
-	/*JDialog vizDialog = new VisualPropertiesDialog
-            (mainFrame, "Set Visual Properties",
-             vizMapper, nodeAttributes,
-             edgeAttributes, labelKey,
-             shouldUpdateNodeLabels);
-        vizDialog.pack ();
-        vizDialog.setLocationRelativeTo (mainFrame);
-        vizDialog.setVisible (true);
-
-        if(shouldUpdateNodeLabels.getBool())
-            displayNodeLabels(labelKey.getString());
-
-        redrawGraph();
-	*/
     }
 
 }
