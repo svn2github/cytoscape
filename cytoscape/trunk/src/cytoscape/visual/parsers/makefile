@@ -18,7 +18,8 @@ OBJS = ArrowParser.class \
        LineTypeParser.class \
        NodeShapeParser.class \
        StringParser.class \
-       ValueParser.class
+       ValueParser.class \
+       ObjectToString.class
 
 default: objs 
 
