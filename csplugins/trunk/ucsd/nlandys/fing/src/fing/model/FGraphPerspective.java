@@ -575,12 +575,60 @@ class FGraphPerspective implements GraphPerspective
       m_rootToPerspEdgeInxMap.put(rootGraphInx, i); }
   }
 
-  private static class RootGraphChangeSniffer
+  // Cannot have any recursize reference to a FGraphPerspective in this
+  // object instance - we want to allow garbage collection of unused
+  // GraphPerspective objects.
+  private final static class RootGraphChangeSniffer
     implements RootGraphChangeListener
   {
 
-    public void rootGraphChanged(RootGraphChangeEvent evt)
+    public final void rootGraphChanged(RootGraphChangeEvent evt)
     {
+    }
+
+  }
+
+  // An instance of this class cannot have any recursive reference to a
+  // FGraphPerspective object.  The idea behind this class is to allow
+  // garbage collection of unused GraphPerspective objects.  This class
+  // is used by the RootGraphChangeSniffer to remove nodes/edges from
+  // a GraphPerspective; this class is also used by this GraphPerspective
+  // implementation itself.
+  private final static class GraphWeeder
+  {
+
+    private final DynamicGraph m_graph;
+
+    // This is an array of length 0 - we need an array as an extra reference
+    // to a reference because the surrounding GraphPerspective will be
+    // modifying the entry at index 0 in this array.
+    private final GraphPerspectiveChangeListener[] m_lis;
+
+    private GraphWeeder(DynamicGraph graph,
+                        GraphPerspectiveChangeListener[] listener)
+    {
+      m_graph = graph;
+      m_lis = listener;
+    }
+
+    private final int hideNode(int rootGraphNodeInx)
+    {
+      return 0;
+    }
+
+    private final int[] hideNodes(int[] rootGraphNodeInx)
+    {
+      return null;
+    }
+
+    private final int hideEdge(int rootGraphNodeInx)
+    {
+      return 0;
+    }
+
+    private final int[] hideEdges(int[] rootGraphNodeInx)
+    {
+      return null;
     }
 
   }
