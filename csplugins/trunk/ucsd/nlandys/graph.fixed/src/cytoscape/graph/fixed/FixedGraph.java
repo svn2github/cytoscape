@@ -66,7 +66,7 @@ public interface FixedGraph
    * it could be removed without losing any functionality), because
    * edgesAdjacent(int, boolean, boolean, boolean) can be used to test
    * the presence of a node.  However, because nodeExists(int) does not
-   * return a complicated object, its performance may be much better
+   * return a complicated object, its performance may be better
    * than that of edgesAdjacent().
    *
    * @param node the [potentially existing] node in this graph whose existence
