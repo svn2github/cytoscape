@@ -82,14 +82,22 @@ class FGraphPerspective implements GraphPerspective
             (m_nativeToRootNodeInxMap.getIntAtIndex(nodes.nextInt())); } };
   }
 
-  public java.util.List nodesList()
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  // This method has been marked deprecated in the Giny API.
+  public java.util.List nodesList() {
+    final int nodeCount = getNodeCount();
+    final java.util.ArrayList returnThis = new java.util.ArrayList(nodeCount);
+    Iterator iter = nodesIterator();
+    for (int i = 0; i < nodeCount; i++) returnThis.add(iter.next());
+    return returnThis; }
 
+  // This method has been marked deprecated in the Giny API.
   public int[] getNodeIndicesArray()
   {
-    throw new IllegalStateException("not implemented yet");
+    IntEnumerator nodes = m_graph.nodes();
+    final int[] returnThis = new int[nodes.numRemaining()];
+    for (int i = 0; i < returnThis.length; i++)
+      returnThis[i] = m_nativeToRootNodeInxMap.getIntAtIndex(nodes.nextInt());
+    return returnThis;
   }
 
   public Iterator edgesIterator()
