@@ -5,9 +5,7 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 //-------------------------------------------------------------------------
-import phoebe.*;
 
-//import phoebe.util.*;
 import giny.model.*;
 import giny.view.*;
 import java.util.*;
@@ -15,7 +13,7 @@ import java.util.*;
 //-------------------------------------------------------------------------
 public class GinyUtils {
     
-    public static void hideSelectedNodes(PGraphView view) {
+    public static void hideSelectedNodes(GraphView view) {
 	    
 	    //hides nodes and edges between them
 	    
@@ -46,7 +44,7 @@ public class GinyUtils {
     }
     
     
-    public static void unHideSelectedNodes(PGraphView view) {
+    public static void unHideSelectedNodes(GraphView view) {
 	    
 	    //hides nodes and edges between them
 	    
@@ -81,10 +79,9 @@ public class GinyUtils {
     }
     
     
-    public static void unHideAll(PGraphView view) {
+    public static void unHideAll(GraphView view) {
 	    
-	    java.util.List list = view.getNodeViewsList();
-			Iterator i = list.iterator();
+	    Iterator i = view.getNodeViewsIterator();
 			while (i.hasNext())
 			{
 				NodeView nview =(NodeView) i.next();
@@ -104,9 +101,8 @@ public class GinyUtils {
        
     }
     
-    public static void unHideNodesAndInterconnectingEdges(PGraphView view) {
-	    java.util.List list = view.getNodeViewsList();
-            Iterator i = list.iterator();
+    public static void unHideNodesAndInterconnectingEdges(GraphView view) {
+	    Iterator i = view.getNodeViewsIterator();
             while (i.hasNext())
               {
                 NodeView nview =(NodeView) i.next();
@@ -131,34 +127,36 @@ public class GinyUtils {
 	      
     }
 
-    public static void hideSelectedEdges(PGraphView view) {
+    public static void hideSelectedEdges(GraphView view) {
 	    java.util.List list = view.getSelectedEdges();
 			Iterator i = list.iterator();
 			while (i.hasNext())
 			{
-				PEdgeView eview =(PEdgeView) i.next();
+				EdgeView eview =(EdgeView) i.next();
 				//Edge e = eview.getEdge();
-				eview.setVisible( false );
+				//eview.setVisible( false );
+				view.hideGraphObject( eview );
 			
 			}//while
     }
     
     
-     public static void unHideSelectedEdges(PGraphView view) {
+     public static void unHideSelectedEdges(GraphView view) {
 	    java.util.List list = view.getSelectedEdges();
 			Iterator i = list.iterator();
 			while (i.hasNext())
 			{
-				PEdgeView eview =(PEdgeView) i.next();
+				EdgeView eview =(EdgeView) i.next();
 				//Edge e = eview.getEdge();
-				eview.setVisible( true );
+				//eview.setVisible( true );
+				view.showGraphObject( eview );
 			
 			}//while
     }
     
-    public static void invertSelectedNodes(PGraphView view) {
-	    java.util.List list = view.getNodeViewsList();
-			Iterator i = list.iterator();
+    public static void invertSelectedNodes(GraphView view) {
+	    
+			Iterator i = view.getNodeViewsIterator();
 			while (i.hasNext())
 			{
 				NodeView nview =(NodeView) i.next();
@@ -168,22 +166,21 @@ public class GinyUtils {
         
     }
     
-    public static void invertSelectedEdges(PGraphView view) {
+    public static void invertSelectedEdges(GraphView view) {
 	    java.util.List list = view.getEdgeViewsList();
 			Iterator i = list.iterator();
 			while (i.hasNext())
 			{
-				PEdgeView eview =(PEdgeView) i.next();
+				EdgeView eview =(EdgeView) i.next();
 				//Edge e = eview.getEdge();
 				eview.setSelected( !eview.isSelected() );
 			
 			}//while
     }
     
-    public static void selectFirstNeighbors(PGraphView view) {
+    public static void selectFirstNeighbors(GraphView view) {
 	    GraphPerspective graphPerspective = view.getGraphPerspective();
-	    java.util.List list = view.getNodeViewsList();
-			Iterator i = list.iterator();
+	    Iterator i = view.getNodeViewsIterator();
 			while (i.hasNext())
 			{
 				NodeView nview =(NodeView) i.next();
@@ -202,31 +199,29 @@ public class GinyUtils {
 			}
     }
     
-    public static void selectAllNodes(PGraphView view) {
+    public static void selectAllNodes(GraphView view) {
 	    
-	    java.util.List list = view.getNodeViewsList();
-			Iterator i = list.iterator();
+	    Iterator i = view.getNodeViewsIterator();
 			while (i.hasNext())
 			{
-				PNodeView nview =(PNodeView) i.next();
+				NodeView nview =(NodeView) i.next();
 				nview.setSelected( true );
 			
 			}//while
     }
-     public static void deselectAllNodes(PGraphView view) {
+     public static void deselectAllNodes(GraphView view) {
 	    
-	    java.util.List list = view.getNodeViewsList();
-			Iterator i = list.iterator();
+	    Iterator i = view.getNodeViewsIterator();
 			while (i.hasNext())
 			{
-				PNodeView nview =(PNodeView) i.next();
+				NodeView nview =(NodeView) i.next();
 				nview.setSelected( false );
 			
 			}//while
     }
 
     
-    public static void selectAllEdges(PGraphView view) {
+    public static void selectAllEdges(GraphView view) {
 	    java.util.List list = view.getEdgeViewsList();
 			Iterator i = list.iterator();
 			while (i.hasNext())
@@ -237,13 +232,34 @@ public class GinyUtils {
 			}//while
     }
     
-    public static void deselectAllEdges(PGraphView view) {
+    public static void deselectAllEdges(GraphView view) {
 	    java.util.List list = view.getEdgeViewsList();
 			Iterator i = list.iterator();
 			while (i.hasNext())
 			{
 				EdgeView eview =(EdgeView) i.next();
 				eview.setSelected( false );
+			
+			}//while
+    }
+    public static void hideAllEdges(GraphView view) {
+	    java.util.List list = view.getEdgeViewsList();
+			Iterator i = list.iterator();
+			while (i.hasNext())
+			{
+				EdgeView eview =(EdgeView) i.next();
+				view.hideGraphObject( eview );
+			
+			}//while
+    }
+    
+    public static void unHideAllEdges(GraphView view) {
+	    java.util.List list = view.getEdgeViewsList();
+			Iterator i = list.iterator();
+			while (i.hasNext())
+			{
+				EdgeView eview =(EdgeView) i.next();
+				view.showGraphObject( eview );
 			
 			}//while
     }

@@ -18,7 +18,6 @@ import y.view.Graph2D;
 
 import giny.model.RootGraph;
 import giny.view.*;
-import phoebe.*;
 
 import cytoscape.view.NetworkView;
 import cytoscape.CytoscapeObj;
@@ -156,7 +155,7 @@ public class ListFromFileSelectionAction extends AbstractAction {
                         }
                     }
                     if (select) {
-		    	PGraphView view = networkView.getView();
+		    	GraphView view = networkView.getView();
 		    	NodeView nv = view.getNodeView(node.getRootGraphIndex());
 			nv.setSelected(true);
 		    }

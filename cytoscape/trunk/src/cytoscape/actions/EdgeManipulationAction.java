@@ -14,6 +14,7 @@ import java.util.HashMap;
 import cytoscape.view.NetworkView;
 import cytoscape.GraphObjAttributes;
 import cytoscape.dialogs.EdgeControlDialog;
+import cytoscape.dialogs.GinyEdgeControlDialog;
 //-------------------------------------------------------------------------
 public class EdgeManipulationAction extends AbstractAction {
     NetworkView networkView;
@@ -35,11 +36,21 @@ public class EdgeManipulationAction extends AbstractAction {
             } // if a string attribute
         } // for i
         if (attributesTree.size() > 0) {
-            JDialog dialog = new EdgeControlDialog(networkView,
-                                                   attributesTree, "Control Edges");
-            dialog.pack();
-            dialog.setLocationRelativeTo(networkView.getMainFrame());
-            dialog.setVisible(true);
+		if ( networkView.getCytoscapeObj().getConfiguration().isYFiles()) {
+		    JDialog dialog = new EdgeControlDialog(networkView,
+							   attributesTree, "Control Edges");
+		    dialog.pack();
+		    dialog.setLocationRelativeTo(networkView.getMainFrame());
+		    dialog.setVisible(true);
+		}
+		else { // and for giny:
+			
+			JDialog dialog = new GinyEdgeControlDialog(networkView,
+							   attributesTree, "Control Edges");
+		    dialog.pack();
+		    dialog.setLocationRelativeTo(networkView.getMainFrame());
+		    dialog.setVisible(true);
+		}
         }
         else {
             JOptionPane.showMessageDialog(null, 

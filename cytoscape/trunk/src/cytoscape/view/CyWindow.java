@@ -266,7 +266,7 @@ protected void initialize() {
 	   // setLayout( new BorderLayout() );  
 	    //this.view = new PGraphView();
     	   // add(graphView, BorderLayout.CENTER);
-	   this.setBackground(Color.BLACK);
+	   this.setBackground(Color.WHITE);
 	   
 		
 	}	
@@ -317,7 +317,7 @@ protected void updateGraphView() {
 		    //System.out.println("Setting label " + label);
 		    nv.setLabel(label);
 		    nv.setShape( NodeView.ELLIPSE );
-		    nv.setUnselectedPaint( DEFAULT_PAINT );
+		    nv.setUnselectedPaint( Color.lightGray );
 		    nv.setSelectedPaint( ((Color)nv.getUnselectedPaint()).darker() );
 		    nv.setBorderPaint(Color.black);
 	    }

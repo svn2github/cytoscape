@@ -7,9 +7,7 @@ package cytoscape.actions;
 //-------------------------------------------------------------------------
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
-
-import phoebe.*;
-
+import phoebe.PGraphView;
 import cytoscape.view.NetworkView;
 //-------------------------------------------------------------------------
 public class FitContentAction extends AbstractAction {
