@@ -24,8 +24,8 @@ public interface MutableGraphLayout extends GraphLayout
    * <code>isMovableNode(nodeIx)</code> returns <code>true</code> for every
    * <code>nodeIx</code> in the interval
    * <nobr><code>[0, getNumNodes() - 1]</code></nobr>.
-   **/
   public boolean areAllNodesMovable();
+  **/
 
   /**
    * Sets the X,Y position of a node at index <code>nodeIndex</code>.
