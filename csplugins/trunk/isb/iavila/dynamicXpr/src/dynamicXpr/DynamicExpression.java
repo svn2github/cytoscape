@@ -51,6 +51,9 @@ import cytoscape.visual.calculators.*;
 import cytoscape.data.*;
 
 import dynamicXpr.dialogs.*;
+import metaNodeViewer.model.MetaNodeFactory;
+import cern.colt.list.*;
+import giny.model.*;
 
 public class DynamicExpression extends AbstractAction {
   
@@ -60,6 +63,12 @@ public class DynamicExpression extends AbstractAction {
    */
   public static final String EXPRESSION_ATTR = "expression";
 
+  /**
+   * The node attribute name that is used to assign an expression value/profile
+   * to each meta-node in the network.
+   */
+  public static final String METANODE_EXPRESSION_ATTR = "meta_node_expression";
+  
   /**
    * The name of the node color calculator used to color nodes
    * according to expression
@@ -146,12 +155,101 @@ public class DynamicExpression extends AbstractAction {
     if(check == null){
       manager.getCalculatorCatalog().addNodeColorCalculator(this.dynamicXprCalculator);
     }
+    prepareMetaNodes();
   }//prepareBeforePlay
+  
+  /**
+   * Assigns expression profiles to the meta-nodes in the current network.
+   */
+  protected void prepareMetaNodes (){
+  	
+  	System.out.println("Preparing  meta-nodes for dynamic expression...");
+  	
+  	IntArrayList metaNodes = (IntArrayList)Cytoscape.getCurrentNetwork().getClientData(MetaNodeFactory.METANODES_IN_NETWORK);
+  	
+  	if(metaNodes == null || metaNodes.size() == 0){
+  		// No recorded meta-nodes for the current network
+  		return;
+  	}
+  	
+  	assignAverageExpressionToMetaNodes(metaNodes);
+  	
+  	System.out.println("...done preparing meta-nodes for dynamic expression.");
+  
+  }//prepareMetaNodes
+  
+  /**
+   * Calculates the average expression for each condition of meta-node's members to create
+   * an average profile of expression for each meta-node. It stores the resulting Double [] of
+   * average expressions as a meta-node attribute called DynamicExpression.METANODE_EXPRESSION_ATTR.
+   */
+  protected void assignAverageExpressionToMetaNodes (IntArrayList meta_node_list){
+  	
+  	meta_node_list.trimToSize();
+  	CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
+  	RootGraph rootGraph = currentNetwork.getRootGraph();
+  	ExpressionData expData = Cytoscape.getExpressionData();
+  	
+  	if(currentNetwork == null || expData == null){
+  		return;
+  	}
+  	String [] conditions = expData.getConditionNames();
+  	
+  	// Get the children of each meta-node and average their expression ratio for each condition
+  	for(int i = 0; i < meta_node_list.size(); i++){
+  		CyNode metaNode = (CyNode)rootGraph.getNode(meta_node_list.get(i));
+  		if(metaNode == null){
+  			System.err.println("Meta-node with index [" + meta_node_list.get(i) +"] is null.");
+  			continue;
+  		}
+  		int [] children = rootGraph.getNodeMetaChildIndicesArray(meta_node_list.get(i));
+  		if(children == null){
+  				System.err.println("Meta-node with index [" + meta_node_list.get(i) + "] has no children!");
+  			continue;
+  		}
+  		// Needs to be a Double array, GOA does not take double[]...arghhh!!!!!
+  		Double [] averagedExpression = new Double[conditions.length];
+  	  	Arrays.fill(averagedExpression, new Double(0));
+  	  	int numChildrenWithRatios = 0;
+  	  	
+  		for(int j = 0; j < children.length; j++){
+  			CyNode node = (CyNode)rootGraph.getNode(children[j]);
+  			if(node == null){
+  				System.err.println("Meta-node child with index [" + children[j] + "] does not have a CyNode.");
+  			}
+  			String uid = (String)currentNetwork.getNodeAttributeValue(node, Semantics.CANONICAL_NAME);
+  			if(uid == null){
+  				System.err.println("DynamicExpression.displayCondition, no canonical name for node " + node);
+  				continue;
+  			}
+  			Vector measurements = expData.getMeasurements(uid);
+  			if( measurements == null || measurements.size() == 0){
+  				continue;
+  			}
+  			numChildrenWithRatios++;
+  			for(int c = 0; c < conditions.length; c++){
+  				mRNAMeasurement measurement = expData.getMeasurement(uid,conditions[c]);
+  				if(measurement == null){continue;}
+  				double ratio = measurement.getRatio();
+  				averagedExpression[c] = new Double(averagedExpression[c].doubleValue() + ratio);
+  			}//for c
+  		}//for j
+  		if(numChildrenWithRatios > 1){
+  			for(int k = 0; k < averagedExpression.length; k++){
+  				averagedExpression[k] = new Double(averagedExpression[k].doubleValue()/numChildrenWithRatios);
+  			}//for k
+  		}// if numChildrenWithRatios > 0
+  		// Set the profile in the meta-node's attributes
+  		Cytoscape.setNodeAttributeValue(metaNode, DynamicExpression.METANODE_EXPRESSION_ATTR, averagedExpression);
+  	}//for i
+  }//assignAverageExpressionToMetaNodes
   
   /**
    * Called when a new <code>ExpressionData</code> object is loaded.
    */
-  public void adjustForNewExpressionData (){}
+  public void adjustForNewExpressionData (){
+  	prepareBeforePlay();  
+  }//adjustForNewExpressionData
   
   /**
    * Returns true if the node attributes has an attribute called 
@@ -180,6 +278,8 @@ public class DynamicExpression extends AbstractAction {
    * Creates the <code>NodeColorCalculator</code> that will be used to calculate the fill color
    * of nodes.
    */
+  // TODO: This hard-codes the boundary values for the calculator. Maybe make a more inteligent calculator for this
+  // that looks at the input ratios.
   protected NodeColorCalculator createCalculator (){
 
     ContinuousMapping contMapping = 
@@ -249,8 +349,7 @@ public class DynamicExpression extends AbstractAction {
                                         value);
       }//for i
     }
-    Cytoscape.getCurrentNetworkView().redrawGraph(false,true);
-    //Cytoscape.getDesktop().redrawGraph(false,true);// don't do layout, do apply vizmaps
+    Cytoscape.getCurrentNetworkView().redrawGraph(false,true); // don't do layout, do apply vizmaps
   }//restoreOldNodeColorCalculator
   
   /**
@@ -261,8 +360,8 @@ public class DynamicExpression extends AbstractAction {
    *               (each frame being one condition)
    */
   public void play (int delay) {
-    //prepareBeforePlay();
-    ExpressionData expressionData = Cytoscape.getCurrentNetwork().getExpressionData();
+    prepareBeforePlay();
+    ExpressionData expressionData = Cytoscape.getExpressionData();
     if(expressionData == null){ return;}
     if(this.action == null){
 	    this.action = new DisplayFramesAction(expressionData.getConditionNames());
@@ -286,10 +385,13 @@ public class DynamicExpression extends AbstractAction {
   
   /**
    * Displays the given condition in the current CyNetwork
+   * 
+   * @param conditionName the name of the condition to display
+   * @param conditionIndex the index of the condition to display (used for meta-nodes)
    */
-  static public void displayCondition (String conditionName){
+  static public void displayCondition (String conditionName, int conditionIndex){
     CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
-    ExpressionData expressionData = cyNetwork.getExpressionData();
+    ExpressionData expressionData = Cytoscape.getExpressionData();
     java.util.List nList = cyNetwork.nodesList();
     CyNode [] nodes = (CyNode[])nList.toArray( new CyNode[nList.size()]);
         
@@ -301,14 +403,23 @@ public class DynamicExpression extends AbstractAction {
         continue;
       }
       mRNAMeasurement measurement = expressionData.getMeasurement(uid,conditionName);
-      if(measurement == null){continue;}
-	    double ratio = measurement.getRatio();
+      double ratio;
+      if(measurement == null){
+      	Double [] metaNodeProfile = 
+      		(Double[])cyNetwork.getNodeAttributeValue(nodes[i],DynamicExpression.METANODE_EXPRESSION_ATTR);
+      	if(metaNodeProfile == null){
+      		continue;
+      	}
+      	ratio = metaNodeProfile[conditionIndex].doubleValue();
+      }else{
+      	ratio = measurement.getRatio();
+      }
       cyNetwork.setNodeAttributeValue(nodes[i],EXPRESSION_ATTR,new Double(ratio)); 
     }//for c
     VisualMappingManager vmManager = Cytoscape.getDesktop().getVizMapManager();
-    vmManager.applyNodeAppearances();
+    //vmManager.applyNodeAppearances();
+    vmManager.applyNodeFillColor(); // just apply color calculator instead of all node apps!
     Cytoscape.getCurrentNetworkView().redrawGraph(false,false);
-    //Cytoscape.getDesktop().redrawGraph(false,false); // does not do layout
   }//displayCondition
   
   /**
@@ -330,7 +441,6 @@ public class DynamicExpression extends AbstractAction {
       this.pause = 0;
     }else if(this.pause == 0){
       // we were not in pause, so user wants to pause play
-      
       this.timer.stop();
       this.pause = 1;
     }
@@ -361,28 +471,13 @@ public class DynamicExpression extends AbstractAction {
       
       if(currCond < conditions.length){
         dialog.updateConditionsSlider(currCond,conditions[currCond]);
-        DynamicExpression.displayCondition(conditions[currCond]);
+        DynamicExpression.displayCondition(conditions[currCond],currCond);
         currCond++;
       }else{
         DynamicExpression.this.stop();
         dialog.conditionsSliderEnabled(true);
       }
-      //SwingWorker worker = new SwingWorker () {
-      
-      //    public Object construct () {
-      //    if(currCond < conditions.length){
-      //      DynamicExpression.this.displayCondition(conditions[currCond]);
-      //      dialog.updateConditionsSlider(currCond,conditions[currCond]);
-      //      currCond++;
-      //    }else{
-      //      DynamicExpression.this.stop();
-      //      dialog.conditionsSliderEnabled(true);
-      //    }
-      //    return null;
-      //  }
-      //};
-      //worker.start();
-    }
+    }//actionPerformed
 
     public void reset () {
 	    currCond = 0;

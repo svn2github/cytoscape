@@ -43,7 +43,6 @@ import javax.swing.event.*;
 import java.io.File;
 
 import cytoscape.Cytoscape;
-import cytoscape.view.CyWindow;
 import dynamicXpr.DynamicExpression;
 import cytoscape.data.ExpressionData;
 
@@ -92,7 +91,7 @@ public class DynamicExpressionDialog extends JDialog {
    * @param title the title for the dialog to use
    */
   public DynamicExpressionDialog (DynamicExpression listener, String title) {
-    super(Cytoscape.getDesktop().getMainFrame(),false);
+    super(Cytoscape.getDesktop(),false);
     this.listener = listener;
     setTitle(title);
     createUI();
@@ -124,7 +123,7 @@ public class DynamicExpressionDialog extends JDialog {
     filePanel.setBorder(BorderFactory.createTitledBorder("Expression File"));
     fileLabel = new JLabel("File:");
     filePanel.add(fileLabel);
-    ExpressionData expData = Cytoscape.getCurrentNetwork().getExpressionData();
+    ExpressionData expData = Cytoscape.getExpressionData();
     String fileName = null;
     if(expData != null){
       fileName = expData.getFileName();
@@ -251,7 +250,7 @@ public class DynamicExpressionDialog extends JDialog {
    */
   public void update (){
     String [] conditions = null;
-    ExpressionData expData = Cytoscape.getCurrentNetwork().getExpressionData();
+    ExpressionData expData = Cytoscape.getExpressionData();
     if(expData != null){
       conditions = expData.getConditionNames();
       conditionsLabel.setText(conditions[0]);
@@ -313,7 +312,7 @@ public class DynamicExpressionDialog extends JDialog {
 
     public void actionPerformed (ActionEvent e){
       JFileChooser chooser = new JFileChooser(currentDirectory);
-      if(chooser.showOpenDialog(DynamicExpressionDialog.this) == chooser.APPROVE_OPTION){
+      if(chooser.showOpenDialog(DynamicExpressionDialog.this) == JFileChooser.APPROVE_OPTION){
         currentDirectory = chooser.getCurrentDirectory();
         String fileName = chooser.getSelectedFile().toString();
         if(!Cytoscape.loadExpressionData(fileName,false)){ //try true
@@ -439,8 +438,8 @@ public class DynamicExpressionDialog extends JDialog {
       if(jslider.getValueIsAdjusting()){return;}
 	    int i = jslider.getValue(); // this is a value between 0-100
 	    String [] conditions = 
-        Cytoscape.getCurrentNetwork().getExpressionData().getConditionNames();
-	    listener.displayCondition(conditions[i]);
+        Cytoscape.getExpressionData().getConditionNames();
+	    DynamicExpression.displayCondition(conditions[i],i);
 	    conditionsLabel.setText(conditions[i]);
     }//stateChanged
 

@@ -5,7 +5,9 @@
    <property name = "build" location = "build"/>
    <property name = "build.compiler" value = "modern"/>
    <property name = "lib" location = "../../../../cytoscape/lib"/>
+   <property name = "local.lib" location = "lib"/>
    <property name = "jar"  location = "jar"/>
+   <property name = "dist" location = "dist"/>
 
    <property name="cytoscape.plugin.dir" value="../../../../cytoscape/plugins"/>
 
@@ -13,12 +15,18 @@
        <fileset dir = "${lib}">
           <include name = "**/*.jar"/>
        </fileset>
+   	   <fileset dir = "${local.lib}">
+   	      <include name = "**/*.jar"/>
+   	   </fileset>
    </path>
 
    <path id = "classpath_run">
        <fileset dir = "${lib}">
           <include name = "**/*.jar"/>
        </fileset>
+   	   <fileset dir = "${local.lib}">
+   	   	  <include name = "**/*.jar"/>
+   	   </fileset>
    </path>
 
    <target name="prepare" depends="clean">
@@ -45,13 +53,28 @@
       <delete dir="${jar}"/>
    </target>
 
-   <target name="jar" depends="compile" description="makes a jar">
+   <target name="jar" depends="compile" description="makes a jar that only contains the dynamic expression classes">
    <mkdir dir = "${jar}"/>
-   <jar jarfile="${jar}/dynxpr.jar">
+   <jar jarfile="${jar}/just-dynxpr.jar">
       <fileset dir="${build}"/>
    </jar>
-    <copy todir="${cytoscape.plugin.dir}" file="jar/dynxpr.jar"/>
    </target>
+	
+	<target name = "dist" depends="compile" description="makes stand-alone jar of the plug-in for distribution">
+	 <mkdir dir = "${dist}"/>
+	 <!-- unjar all of the jars that are in the local library -->
+	 <unjar dest="${local.lib}/temp">
+       <fileset dir="${local.lib}">
+	     <include name="**/*.jar"/>
+		</fileset>
+     </unjar>
+	 <jar jarfile="${dist}/dynxpr.jar">
+		<fileset dir="${local.lib}/temp"/>
+		<fileset dir="${build}"/>
+	 </jar>
+	 <copy todir="${cytoscape.plugin.dir}" file="dist/dynxpr.jar"/>
+	 <delete dir = "${local.lib}/temp"/>
+	</target>
 
    <target name = "run" depends="jar" description = "Run">
       <java classname = "cytoscape.CyMain" classpathref = "classpath_run"
