@@ -178,14 +178,13 @@ public final class MinIntHeap
           percolateDown(m_heap, i, m_currentSize);
       else m_orderOK = false;
       final int[] heap = m_heap;
-      final int size = m_currentSize;
+      final int[] size = new int[] { m_currentSize };
       return new IntIterator() {
-          int index = 0;
-          public int numRemaining() { return size - index; }
-          public int nextInt()
-          {
-            return -1;
-          } };
+          public int numRemaining() { return size[0]; }
+          public int nextInt() {
+            swap(heap, 1, size[0]--);
+            percolateDown(heap, 1, size[0]);
+            return heap[size[0] + 1]; } };
     }
   }
 
