@@ -1,5 +1,3 @@
-cytoscape.graph
 cytoscape.graph.layout.algorithm
-cytoscape.graph.util
 lib:cytoscape-task.jar
 lib:com-nerius-math-xform.jar

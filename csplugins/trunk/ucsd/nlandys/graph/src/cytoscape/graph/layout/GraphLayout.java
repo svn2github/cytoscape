@@ -1,18 +1,18 @@
 package cytoscape.graph.layout;
 
-import cytoscape.graph.GraphTopology;
+import cytoscape.graph.fixed.FixedGraph;
 
 /**
  * This class represents not just a graph's topology but also a layout of its
- * nodes in 2D space (a &quot;straight-line graph drawing&quot;).
+ * nodes in 2D space (a "straight-line graph drawing").
  **/
-public interface GraphLayout extends GraphTopology
+public interface GraphLayout extends FixedGraph
 {
 
   /**
    * Returns the maximum allowable value of X positions of nodes.
    * All X positions of nodes in this graph will lie in the interval
-   * <nobr><code>[0.0, getMaxWidth()]</code></nobr>.
+   * [0.0, getMaxWidth()].
    *
    * @see #getNodePosition(int, boolean)
    **/
@@ -21,7 +21,7 @@ public interface GraphLayout extends GraphTopology
   /**
    * Returns the maximum allowable value of Y positions of nodes.
    * All Y positions of nodes in this graph will lie in the interval
-   * <nobr><code>[0.0, getMaxHeight()]</code></nobr>.
+   * [0.0, getMaxHeight()].
    *
    * @see #getNodePosition(int, boolean)
    **/
@@ -30,13 +30,12 @@ public interface GraphLayout extends GraphTopology
   /**
    * Returns the X or Y position of a node.
    *
-   * @param nodeIndex the index of node whose position we're seeking.
-   * @param xPosition if <code>true</code>, return X position; if
-   *   <code>false</code>, return Y position.
-   * @return the X or Y position of node at index <code>nodeIndex</code>.
-   * @exception IndexOutOfBoundsException if <code>nodeIndex</code> is not
-   *   in the interval <nobr><code>[0, getNumNodes() - 1]</code></nobr>.
+   * @param node the node whose position we're seeking.
+   * @param xPosition if true, return X position; if false, return Y position.
+   * @return the X or Y position of node.
+   * @exception IllegalArgumentException if specified node is not
+   *   a node in this graph.
    **/
-  public double getNodePosition(int nodeIndex, boolean xPosition);
+  public double getNodePosition(int node, boolean xPosition);
 
 }

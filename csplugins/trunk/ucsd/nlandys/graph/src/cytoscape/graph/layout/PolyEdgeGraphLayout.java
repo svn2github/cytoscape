@@ -1,7 +1,5 @@
 package cytoscape.graph.layout;
 
-import cytoscape.graph.IndexIterator;
-
 /**
  * This class extends <code>GraphLayout</code> to offer the possibility
  * of defining poly-line edges (as opposed to just straight-line edges).<p>
@@ -21,43 +19,40 @@ public interface PolyEdgeGraphLayout extends GraphLayout
 {
 
   /**
-   * Returns the number of anchor points belonging to edge at index
-   * <code>edgeIndex</code>.  In other methods of this
-   * interface an anchor point is referenced by the index of the edge to which
+   * Returns the number of anchor points belonging to an edge.
+   * In other methods of this
+   * interface an anchor point is referenced by the edge to which
    * the anchor point belongs along with the anchor point's index within that
-   * edge.  Indices of anchor points within an edge at index
-   * <code>edgeIndex</code> start at <code>0</code> and end at
-   * <nobr><code>getNumAnchors(edgeIndex) - 1</code></nobr>, inclusive.
+   * edge.  Indices of anchor points within an edge E
+   * start at 0 and end at getNumAnchors(E) - 1, inclusive.
    *
-   * @return the number of edge anchor points belonging to edge at index
-   *   <code>edgeIndex</code>.
-   * @exception IndexOutOfBoundsException if <code>edgeIndex</code> is not
-   *   in the interval <nobr><code>[0, getNumEdges() - 1]</code></nobr>.
+   * @return the number of edge anchor points belonging to specified ege.
+   * @exception IllegalArgumentException if specified edge is not
+   *   an edge in this graph.
    **/
-  public int getNumAnchors(int edgeIndex);
+  public int getNumAnchors(int edge);
 
   /**
    * Returns the X or Y position of an edge anchor point.
    *
-   * @param edgeIndex the index of the edge to which the anchor point whose
+   * @param edge the edge to which the anchor point whose
    *   position we're seeking belongs.
-   * @param anchorIndex if edge E has index <code>edgeIndex</code>,
-   *   the index of anchor point, within E, whose position we're seeking.
-   * @param xPosition if <code>true</code>, return X position of anchor point;
-   *   if <code>false</code>, return Y position of anchor point.
+   * @param anchorIndex the index of anchor point, within specified edge,
+   *   whose position we're seeking.
+   * @param xPosition if true, return X position of anchor point;
+   *   if false, return Y position of anchor point.
    * @return the X or Y position of anchor point with index
-   *   <code>anchorIndex</code> within edge at index <code>edgeIndex</code>;
+   *   anchorIndex within specified edge;
    *   X return values are within the interval
-   *   <nobr><code>[0.0, getMaxWidth()]</code></nobr> and Y return values
-   *   are within the interval <nobr><code>[0.0, getMaxHeight()]</code></nobr>.
+   *   [0.0, getMaxWidth()] and Y return values
+   *   are within the interval [0.0, getMaxHeight()].
    *
-   * @exception IndexOutOfBoundsException if <code>edgeIndex</code> is not in
-   *   the interval <nobr><code>[0, getNumEdges() - 1]</code></nobr>.
-   * @exception IndexOutOfBoundsException if <code>anchorIndex</code> is not
-   *   in the interval
-   *   <nobr><code>[0, getNumAnchors(edgeIndex) - 1]</code></nobr>.
+   * @exception IllegalArgumentException if specified edge is not an
+   *   edge in this graph.
+   * @exception IndexOutOfBoundsException if anchorIndex is not
+   *   in the interval [0, getNumAnchors(edge) - 1].
    **/
-  public double getAnchorPosition(int edgeIndex,
+  public double getAnchorPosition(int edge,
                                   int anchorIndex,
                                   boolean xPosition);
 
