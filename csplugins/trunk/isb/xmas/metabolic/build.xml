@@ -1,0 +1,213 @@
+<project name="metabolic" default="metabolic" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init-metabolic">
+    <tstamp/>
+    <property name="metabolic.Name" value="metabolic"/>
+    <property name="metabolic.name" value="metabolic"/>
+    <property name="metabolic.version" value="0.1"/>
+    <property name="metabolic.year" value="200"/>
+
+    <echo message="Building ${metabolic.name} version ${metabolic.version}."/>
+
+    <!-- Inheritable properties -->
+    <property name="debug" value="on"/>
+    <property name="optimize" value="off"/>
+    <property name="deprecation" value="on"/>
+    <property name="nowarn" value="true"/>
+    <property name="fork" value="false"/>
+    <property name="metabolic.root.dir" value="."/>
+    <property name="metabolic.lib.dir" value="${metabolic.root.dir}/lib"/>
+    <property name="cytoscape.lib.dir" value="${metabolic.root.dir}/../../../../cytoscape/lib"/>
+    <property name="cytoscape.plugin.dir" value="${metabolic.root.dir}/../../../../cytoscape/plugins"/>
+    <path id="project.class.path">
+      <pathelement path="${java.class.path}/"/>
+    </path>
+
+    <!-- Define the directories -->
+    <property name="metabolic.root.dir" value="./"/>
+    <property name="metabolic.src.dir" value="${metabolic.root.dir}/src"/>
+    <property name="metabolic.classes.dir" value="${metabolic.root.dir}/classes"/>
+    <property name="metabolic.javadoc.dir" value="${javadoc.dir}/metabolic"/>
+    <property name="metabolic.resources.dir" value="${metabolic.root.dir}/resources"/>
+    <property name="metabolic.manifest.dir" value="${metabolic.root.dir}/manifest"/>
+    <property name="metabolic.packages" value="metabolic.*"/>
+    <!-- Subdirectory for test reports -->
+    <property name="metabolic.tests.reports.dir" value="${metabolic.root.dir}/reports/tests" />
+    <property name="cytoscape.lib" value="../../cytoscape/lib" />
+
+    <!-- Define the condition for compilation -->
+    <property name="cytoscape.jar" value="${metabolic.lib.dir}/cytoscape.jar"/>
+    <property name="colt.jar" value="${metabolic.lib.dir}/colt.jar"/>
+    
+
+    <condition property="cytoscape.present">
+      <and> 
+	  		<available file="${cytoscape.jar}"/> 
+				<available file="${colt.jar}"/> 
+		  </and>
+    </condition>
+
+    <!-- Define excludes for metabolic compile and javadoc -->
+    <property name="metabolic.excludes" value="**/notyet/*"/>
+    <property name="metabolic.tests.excludes" value="**/notyet/*"/>
+    <property name="metabolic.packages.excludes" value="**.test.*,**.notyet.*"/>
+
+    <path id="metabolic.project.class.path">
+      <pathelement location="${metabolic.classes.dir}"/>
+      <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/y.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/piccolo.jar"/>
+      <pathelement path="${project.class.path}/"/>
+    </path>
+
+   
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the metabolic project                                           -->
+  <!-- =================================================================== -->
+  <target name="compile-metabolic" depends="init-metabolic"  >
+
+   <echo message=" COMPILE metabolic "/>
+
+    <mkdir dir="${metabolic.classes.dir}"/>
+    <javac compiler="jikes"
+           srcdir="${metabolic.src.dir}"
+           excludes="${metabolic.excludes}"
+           classpathref="metabolic.project.class.path"
+           destdir="${metabolic.classes.dir}"
+           debug="${debug}"
+           nowarn="${nowarn}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the metabolic.jar file                                           -->
+  <!-- =================================================================== -->
+  <target name="metabolic" depends="compile-metabolic"  >
+    <jar destfile="metabolic.jar" manifest="${metabolic.manifest.dir}/metabolic.manifest">
+      <fileset
+        dir="${metabolic.classes.dir}"
+        includes="**"/>
+      <fileset
+        dir="${metabolic.root.dir}/lib"
+        includes="resources/**"/>
+      <fileset 
+        dir="${metabolic.root.dir}/images"/>
+    </jar>
+    <copy todir="${metabolic.lib.dir}" file="metabolic.jar"/>
+    <copy todir="${cytoscape.plugin.dir}" file="metabolic.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the metabolic tests                                             -->
+  <!-- =================================================================== -->
+  <target name="compile-tests" depends="metabolic"  >
+    <mkdir dir="${metabolic.classes.dir}"/>
+    <javac srcdir="${metabolic.src.dir}"
+           includes="**/test/*"
+           excludes="${metabolic.tests.excludes}"
+           classpathref="metabolic.project.class.path"
+           destdir="${metabolic.classes.dir}"
+           debug="${debug}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the metabolic-tests.jar file                                     -->
+  <!-- =================================================================== -->
+  <target name="tests" depends="compile-tests"  >
+    <jar jarfile="metabolic-tests.jar"
+         basedir="${metabolic.classes.dir}"
+         includes="**/test/*"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Build all jars                                                      -->
+  <!-- =================================================================== -->
+  <target name="all" depends="metabolic"/>
+
+   <!-- =================================================================== -->
+  <!-- Run the Plugin                                                      -->
+  <!-- =================================================================== -->
+  <target name="run" depends="metabolic" >
+     
+     <java classname="cytoscape.cytoscape" 
+           classpathref="metabolic.project.class.path"
+           fork="true"/>
+           <arg line = "-y giny"/>
+           <arg line = "--JLD"/>
+           <arg line = "${metabolic.lib.dir}/metabolic.jar"/>
+           
+
+  </target>
+
+
+
+  <!-- =================================================================== -->
+  <!-- Runs the tests in metabolic-tests.jar                                    -->
+  <!-- =================================================================== -->
+  <target name="runtests" depends="tests"  >
+    <mkdir dir="${metabolic.tests.reports.dir}"/>
+    <junit
+       printsummary="yes"
+       haltonfailure="no"
+       dir="${metabolic.classes.dir}"
+       maxmemory="1G"
+    >
+      <formatter type="plain" usefile="true" />
+      <classpath refid="metabolic.project.class.path"/>
+      <!-- The junit task doesn't support 'if' so we test for JUnit here -->
+      <batchtest fork="yes" todir="${metabolic.tests.reports.dir}" if="junit.present">
+        <fileset
+           dir="${metabolic.classes.dir}"
+           includes="**/test/*"
+           excludes="${metabolic.tests.excludes}"
+        />
+      </batchtest>
+    </junit>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the API documentation                                       -->
+  <!-- =================================================================== -->
+  <target name="docs" depends="init-metabolic" >
+    <mkdir dir="${metabolic.javadoc.dir}"/>
+    <javadoc packagenames="${metabolic.packages}"
+             excludepackagenames="${metabolic.packages.excludes}"
+             sourcepath="${metabolic.src.dir}"
+             destdir="${metabolic.javadoc.dir}"
+             classpathref="metabolic.project.class.path"
+             author="true"
+             version="true"
+             use="true"
+             splitindex="true"
+             noindex="false"
+             windowtitle="${metabolic.Name} API"
+             doctitle="${metabolic.Name}"
+    />
+  </target>
+ 
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init-metabolic">
+    <delete dir="${metabolic.classes.dir}"/>
+    <delete file="metabolic.jar"/>
+    <delete file="metabolic-tests.jar"/>
+  </target>
+
+</project>
+
+<!-- End of file -->

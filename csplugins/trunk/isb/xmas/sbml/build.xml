@@ -1,0 +1,213 @@
+<project name="sbml" default="sbml" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init-sbml">
+    <tstamp/>
+    <property name="sbml.Name" value="sbml"/>
+    <property name="sbml.name" value="sbml"/>
+    <property name="sbml.version" value="0.1"/>
+    <property name="sbml.year" value="200"/>
+
+    <echo message="Building ${sbml.name} version ${sbml.version}."/>
+
+    <!-- Inheritable properties -->
+    <property name="debug" value="on"/>
+    <property name="optimize" value="off"/>
+    <property name="deprecation" value="on"/>
+    <property name="nowarn" value="true"/>
+    <property name="fork" value="false"/>
+    <property name="sbml.root.dir" value="."/>
+    <property name="sbml.lib.dir" value="${sbml.root.dir}/lib"/>
+    <property name="cytoscape.lib.dir" value="${sbml.root.dir}/../../../../cytoscape/lib"/>
+    <property name="cytoscape.plugin.dir" value="${sbml.root.dir}/../../../../cytoscape/plugins"/>
+    <path id="project.class.path">
+      <pathelement path="${java.class.path}/"/>
+    </path>
+
+    <!-- Define the directories -->
+    <property name="sbml.root.dir" value="./"/>
+    <property name="sbml.src.dir" value="${sbml.root.dir}/src"/>
+    <property name="sbml.classes.dir" value="${sbml.root.dir}/classes"/>
+    <property name="sbml.javadoc.dir" value="${javadoc.dir}/sbml"/>
+    <property name="sbml.resources.dir" value="${sbml.root.dir}/resources"/>
+    <property name="sbml.manifest.dir" value="${sbml.root.dir}/manifest"/>
+    <property name="sbml.packages" value="sbml.*"/>
+    <!-- Subdirectory for test reports -->
+    <property name="sbml.tests.reports.dir" value="${sbml.root.dir}/reports/tests" />
+    <property name="cytoscape.lib" value="../../cytoscape/lib" />
+
+    <!-- Define the condition for compilation -->
+    <property name="cytoscape.jar" value="${sbml.lib.dir}/cytoscape.jar"/>
+    <property name="colt.jar" value="${sbml.lib.dir}/colt.jar"/>
+    
+
+    <condition property="cytoscape.present">
+      <and> 
+	  		<available file="${cytoscape.jar}"/> 
+				<available file="${colt.jar}"/> 
+		  </and>
+    </condition>
+
+    <!-- Define excludes for sbml compile and javadoc -->
+    <property name="sbml.excludes" value="**/notyet/*"/>
+    <property name="sbml.tests.excludes" value="**/notyet/*"/>
+    <property name="sbml.packages.excludes" value="**.test.*,**.notyet.*"/>
+
+    <path id="sbml.project.class.path">
+      <pathelement location="${sbml.classes.dir}"/>
+      <pathelement location="${sbml.lib.dir}/libsbmlj.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/piccolo.jar"/>
+      <pathelement location="${cytoscape.plugin.dir}/metabolic.jar"/>
+      <pathelement path="${project.class.path}/"/>
+    </path>
+
+  
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the sbml project                                           -->
+  <!-- =================================================================== -->
+  <target name="compile-sbml" depends="init-sbml"  >
+
+   <echo message=" COMPILE sbml "/>
+
+    <mkdir dir="${sbml.classes.dir}"/>
+    <javac srcdir="${sbml.src.dir}"
+           excludes="${sbml.excludes}"
+           classpathref="sbml.project.class.path"
+           destdir="${sbml.classes.dir}"
+           debug="${debug}"
+           nowarn="${nowarn}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the sbml.jar file                                           -->
+  <!-- =================================================================== -->
+  <target name="sbml" depends="compile-sbml"  >
+    <jar destfile="sbml.jar" manifest="${sbml.manifest.dir}/sbml.manifest">
+      <fileset
+        dir="${sbml.classes.dir}"
+        includes="**"/>
+      <fileset
+        dir="${sbml.root.dir}/lib"
+        includes="resources/**"/>
+      <fileset 
+        dir="${sbml.root.dir}/images"/>
+    </jar>
+    <copy todir="${sbml.lib.dir}" file="sbml.jar"/>
+    <copy todir="${cytoscape.plugin.dir}" file="sbml.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the sbml tests                                             -->
+  <!-- =================================================================== -->
+  <target name="compile-tests" depends="sbml"  >
+    <mkdir dir="${sbml.classes.dir}"/>
+    <javac srcdir="${sbml.src.dir}"
+           includes="**/test/*"
+           excludes="${sbml.tests.excludes}"
+           classpathref="sbml.project.class.path"
+           destdir="${sbml.classes.dir}"
+           debug="${debug}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the sbml-tests.jar file                                     -->
+  <!-- =================================================================== -->
+  <target name="tests" depends="compile-tests"  >
+    <jar jarfile="sbml-tests.jar"
+         basedir="${sbml.classes.dir}"
+         includes="**/test/*"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Build all jars                                                      -->
+  <!-- =================================================================== -->
+  <target name="all" depends="sbml"/>
+
+   <!-- =================================================================== -->
+  <!-- Run the Plugin                                                      -->
+  <!-- =================================================================== -->
+  <target name="run" depends="sbml" >
+     
+     <java classname="cytoscape.cytoscape" 
+           classpathref="sbml.project.class.path"
+           fork="true"/>
+           <arg line = "-y giny"/>
+           <arg line = "--JLD"/>
+           <arg line = "${sbml.lib.dir}/sbml.jar"/>
+           
+
+  </target>
+
+
+
+  <!-- =================================================================== -->
+  <!-- Runs the tests in sbml-tests.jar                                    -->
+  <!-- =================================================================== -->
+  <target name="runtests" depends="tests"  >
+    <mkdir dir="${sbml.tests.reports.dir}"/>
+    <junit
+       printsummary="yes"
+       haltonfailure="no"
+       dir="${sbml.classes.dir}"
+       maxmemory="1G"
+    >
+      <formatter type="plain" usefile="true" />
+      <classpath refid="sbml.project.class.path"/>
+      <!-- The junit task doesn't support 'if' so we test for JUnit here -->
+      <batchtest fork="yes" todir="${sbml.tests.reports.dir}" if="junit.present">
+        <fileset
+           dir="${sbml.classes.dir}"
+           includes="**/test/*"
+           excludes="${sbml.tests.excludes}"
+        />
+      </batchtest>
+    </junit>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the API documentation                                       -->
+  <!-- =================================================================== -->
+  <target name="docs" depends="init-sbml" >
+    <mkdir dir="${sbml.javadoc.dir}"/>
+    <javadoc packagenames="${sbml.packages}"
+             excludepackagenames="${sbml.packages.excludes}"
+             sourcepath="${sbml.src.dir}"
+             destdir="${sbml.javadoc.dir}"
+             classpathref="sbml.project.class.path"
+             author="true"
+             version="true"
+             use="true"
+             splitindex="true"
+             noindex="false"
+             windowtitle="${sbml.Name} API"
+             doctitle="${sbml.Name}"
+    />
+  </target>
+ 
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init-sbml">
+    <delete dir="${sbml.classes.dir}"/>
+    <delete file="sbml.jar"/>
+    <delete file="sbml-tests.jar"/>
+  </target>
+
+</project>
+
+<!-- End of file -->

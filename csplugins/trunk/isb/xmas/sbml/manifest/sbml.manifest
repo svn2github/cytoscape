@@ -1,0 +1,2 @@
+Class-Path: .  libsbmlj.jar  cytoscape.jar
+Main-Class: csplugins.sbml.SBML
