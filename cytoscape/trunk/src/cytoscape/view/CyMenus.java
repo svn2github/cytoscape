@@ -380,11 +380,7 @@ public class CyMenus {
     //fill the Visualization menu
     vizMenu.add( new BirdsEyeViewAction( networkView ) );
     JMenu showExpressionData = new JMenu ("Show Expression Data" );
-    vizMenu.add(showExpressionData);
-    mi = showExpressionData.add( new ShowExpressionDataAction( networkView, ShowExpressionDataAction.STAR_PLOT, "... as Star Plots" ) );
-    mi = showExpressionData.add( new ShowExpressionDataAction( networkView, ShowExpressionDataAction.GRID_NODE, "... as Grid Nodes" ) );
-    mi = showExpressionData.add( new ShowExpressionDataAction( networkView, ShowExpressionDataAction.PETAL_NODE, "... as Petal Nodes" ) );
-    mi = showExpressionData.add( new ShowExpressionDataAction( networkView, ShowExpressionDataAction.RADAR_NODE, "... as Radar Nodes" ) );
+  
     
     vizMenu.add ( new BackgroundColorAction (networkView) );
     this.vizMenuItem = vizMenu.add(new SetVisualPropertiesAction(cyWindow));
