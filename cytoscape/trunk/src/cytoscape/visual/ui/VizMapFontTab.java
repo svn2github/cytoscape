@@ -52,7 +52,7 @@ public class VizMapFontTab extends VizMapTab {
 	    this.sizeTab = new VizMapAttrTab(mainUI, VMM, VizMapUI.EDGE_FONT_SIZE);
 	    break;
 	default:
-	    throw new IllegalArgumentException("You can only create a VizMapFontTab for the Node/Edge Font attribute");
+	    throw new IllegalArgumentException("You can only create a VizMapFontTab for the Node/Edge Font attribute, called with " + type);
 	}
 
 	this.faceTab.setBorder(BorderFactory.createTitledBorder("Font Face"));

@@ -25,14 +25,14 @@ public class VizMapUI extends JDialog {
     public static final byte NODE_SIZE = 4;
     public static final byte NODE_LABEL = 5;
     public static final byte NODE_LABEL_FONT = 6;
-    //public static final byte NODE_TOOLTIP = 7;
     public static final byte EDGE_COLOR = 7;
     public static final byte EDGE_LINETYPE = 8;
     public static final byte EDGE_SRCARROW = 9;
     public static final byte EDGE_TGTARROW = 10;
     public static final byte EDGE_LABEL = 11;
     public static final byte EDGE_LABEL_FONT = 12;
-    //public static final byte EDGE_TOOLTIP = 14;
+    public static final byte NODE_TOOLTIP = 13;
+    public static final byte EDGE_TOOLTIP = 14;
     
     // for creating VizMapTabs with font face/size on one page
     public static final byte NODE_FONT_FACE = 122;
