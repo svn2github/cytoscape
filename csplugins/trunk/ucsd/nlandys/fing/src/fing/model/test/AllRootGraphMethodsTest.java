@@ -97,20 +97,20 @@ public final class AllRootGraphMethodsTest
 //       throw new IllegalStateException("removal failure failed - node");
     if (root.removeEdge(edgeInx[6]) != edgeInx[6])
       throw new IllegalStateException("removal of edge failed");
-//     if (root.removeEdge(edgeInx[6]) != 0)
-//       throw new IllegalStateException("removal failure failed - edge");
-//     if (root.removeNode(0) != 0 ||
-//         root.removeNode(Integer.MAX_VALUE) != 0 ||
-//         root.removeNode(Integer.MIN_VALUE) != 0)
-//       throw new IllegalStateException("removal failure failed - node");
-//     if (root.removeEdge(0) != 0 ||
-//         root.removeEdge(Integer.MAX_VALUE) != 0 ||
-//         root.removeNode(Integer.MIN_VALUE) != 0)
-//       throw new IllegalStateException("removal failure failed - edge");
-//     if (root.createEdge(Integer.MAX_VALUE, Integer.MAX_VALUE, true) != 0 ||
-//         root.createEdge(Integer.MIN_VALUE, Integer.MIN_VALUE, false) != 0 ||
-//         root.createEdge(0, 0, true) != 0)
-//       throw new IllegalStateException("creation failure failed - edge");
+    if (root.removeEdge(edgeInx[6]) != 0)
+      throw new IllegalStateException("removal failure failed - edge");
+    if (root.removeNode(0) != 0 ||
+        root.removeNode(Integer.MAX_VALUE) != 0 ||
+        root.removeNode(Integer.MIN_VALUE) != 0)
+      throw new IllegalStateException("removal failure failed - node");
+    if (root.removeEdge(0) != 0 ||
+        root.removeEdge(Integer.MAX_VALUE) != 0 ||
+        root.removeNode(Integer.MIN_VALUE) != 0)
+      throw new IllegalStateException("removal failure failed - edge");
+    if (root.createEdge(Integer.MAX_VALUE, Integer.MAX_VALUE, true) != 0 ||
+        root.createEdge(Integer.MIN_VALUE, Integer.MIN_VALUE, false) != 0 ||
+        root.createEdge(0, 0, true) != 0)
+      throw new IllegalStateException("creation failure failed - edge");
     int deleteThisNode0 = root.createNode();
 //     nodeInx[1] = root.createNode();
     root.removeNode(deleteThisNode0);
