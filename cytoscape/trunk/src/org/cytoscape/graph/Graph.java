@@ -44,7 +44,7 @@ public interface Graph
 
   /**
    * @param edgeIndex the index of the edge whose end nodes we are seeking.
-   * @param sourcenode if <code>true</code>, returns the source node of this
+   * @param sourceNode if <code>true</code>, returns the source node of this
    *   edge; if <code>false</code>, returns the target node of this edge -
    *   for undirected edges &quot;source node&quot; should be interpreted
    *   as &quot;node 0&quot; and &quot;target node&quot; should be
