@@ -23,7 +23,8 @@ public final class AllRootGraphMethodsTest
     // Don't change this!  Any change here implies re-reading all the test
     // code below and making appropriate changes there.
     int[] nodeInx = new int[5];
-    for (int i = 0; i < nodeInx.length; i++) nodeInx[i] = root.createNode();
+    for (int i = 0; i < nodeInx.length - 1; i++)
+      nodeInx[i] = root.createNode();
     int[] edgeInx = new int[7];
     edgeInx[0] = root.createEdge(nodeInx[0], nodeInx[1], true);
     edgeInx[1] = root.createEdge(nodeInx[1], nodeInx[2], false);
@@ -32,6 +33,10 @@ public final class AllRootGraphMethodsTest
     edgeInx[4] = root.createEdge(nodeInx[1], nodeInx[1], false);
     edgeInx[5] = root.createEdge(nodeInx[1], nodeInx[0], true);
     edgeInx[6] = root.createEdge(nodeInx[3], nodeInx[2], true);
+    // Meta-node definitions.
+    nodeInx[nodeInx.length - 1] = root.createNode
+      (null, new int[] { edgeInx[6], edgeInx[2] }); // Should have nodes
+      // nodeInx[0], nodeInx[2], and nodeInx[3].
 
     // Test add/remove nodes and edges before other tests.
     // We leave the graph with the same topology after these tests as
