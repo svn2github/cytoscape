@@ -201,17 +201,36 @@ class DynamicGraphRepresentation implements DynamicGraph
 
   public int sourceNode(int edge)
   {
-    return -1;
+    final Edge e;
+    try { e = m_edges.getEdgeAtIndex(edge); }
+    catch (ArrayIndexOutOfBoundsException exc) {
+      // edge is negative or Integer.MAX_VALUE.
+      throw new IllegalArgumentException("edge is negative"); }
+    try { return e.sourceNode; }
+    catch (NullPointerException exc) { return -1; }
   }
 
   public int targetNode(int edge)
   {
-    return -1;
+    final Edge e;
+    try { e = m_edges.getEdgeAtIndex(edge); }
+    catch (ArrayIndexOutOfBoundsException exc) {
+      // edge is negative or Integer.MAX_VALUE.
+      throw new IllegalArgumentException("edge is negative"); }
+    try { return e.targetNode; }
+    catch (NullPointerException exc) { return -1; }
   }
 
   public byte isDirectedEdge(int edge)
   {
-    return (byte) -1;
+    final Edge e;
+    try { e = m_edges.getEdgeAtIndex(edge); }
+    catch (ArrayIndexOutOfBoundsException exc) {
+      // edge is negative or Integer.MAX_VALUE.
+      throw new IllegalArgumentException("edge is negative"); }
+    if (e == null) return -1;
+    else if (e.directed) return 1;
+    else return 0;
   }
 
 }
