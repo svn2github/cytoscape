@@ -138,36 +138,37 @@ of Cytoscape is rather involved.  Some of the tasks are automated and some are m
 
 	B.  Creating the Mac OS X Release
 	---------------------------------------
-	We now have a Mac OS X specific release.
+	To create the Mac OS X Specific Release:
 	
-	****************
-	NOTE:  This no longer works in Cytoscape 2.1.  That's primarily because
-	2.0 included just one jar:  cytoscape.jar.  In 2.1, we now have multiple jars.
-	Needs to be fixed.
-	****************
-
-	To create the Mac OS X Specific Release
 		1.  run ant task:  ant mac
-		2.  create a Mac OS X Disk Image File (.dmg)
+		
+		Doing so will create a directory called Cytoscape.app.
+		It will be located in build/cytoscape-vX.Y.
+		
+		2.  Create a Mac OS X Disk Image File (.dmg)
 			--  this is done manually via the Mac Disk Utility program.
 			--  in Disk Utility, click "New Image", specify the name 
-			"cytoscape", and select 40 MB.
-			--  once the image is created on your desktop, drag 
-			build/cytoscape-vx.x/ to the image.
-		3.  modify the default image for the Cytoscape folder to use the Cytoscape 
+				"cytoscape-vX.Y", and select 40 MB.
+			--  once the image is created on your desktop, copy 
+				the complete contents of build/cytoscape-vX.Y to the image.
+		3.  Modify the default image for the Cytoscape folder to use the Cytoscape 
 			Icon
-			--  to do so, to go to cytoscape-vx.x/cytoscape.app, click "Get Info",
-				and expand the tab labeled, "Preview".
+			--  to do so, go to the disk image:  cytoscape-vX.Y/cytoscape.app, 
+			click "Get Info", and expand the tab labeled, "General".
 			--  select the icon, and hit Apple-C (Copy)
-			--  go to Cytoscape 2.0, click "Get Info", and expand the tab labeled,
-				"Preview".
+			--  go to the disk image:  cytoscape-vX.Y, click "Get Info", 
+			and expand the tab labeled,	"General".
 			--  select the icon, and hit Apple-V (Paste)
-		4.  create cytoscape.dmg.zip
-			--  to do so, right click on cytoscape.dmg, and select "Create Archive"
+		4.  create the dmg.zip file
+			--  to do so, right click on cytoscape-vX.Y.dmg, and 
+			select "Create Archive".  (Note:  When you created the disk image via
+			Disk Utility, it creates two items:  1)  the actual .dmg file;  and
+			2) the opened dmg file, displayed as a disk icon.  To create the
+			archive, right click on the actual .dmg file, not the disk icon.)
 
 	Deploy the new release file
-		As in the section above, we are currently hosting the release files on cbio.mskcc.org only.
-		Release files are located in /var/www/cytoscape/release.
+		As in the section above, we are currently hosting the release files on
+		cbio.mskcc.org only.  Release files are located in /var/www/cytoscape/release.
 
 	C.  Creating the InstallAnywhere Release
 	-------------------------------------------------
