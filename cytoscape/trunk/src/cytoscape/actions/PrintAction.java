@@ -33,6 +33,9 @@ public class PrintAction extends AbstractAction  {
 // 	if ( System.getProperty("os.name").startsWith( "Windows" ) ) {
 // 	    // cytoscape.util.PrintUtilities.printComponent( ( (PGraphView)networkView.getView() ).getCanvas() );
 // 	} else {
+      
+      //  ( (PGraphView)networkView.getView() ).getCanvas().getCamera().addClientProperty( PrintingFixTextNode.PRINTING_CLIENT_PROPERTY_KEY, null);
+      
 	    PGraphView ginyView = (PGraphView)networkView.getView();
 	    ginyView.getCanvas().getLayer().print();
       //	}
