@@ -27,7 +27,7 @@ public void setUp() throws Exception {}
 public void tearDown() throws Exception {}
 //------------------------------------------------------------------------------
 public void testCreateNetworkFromProject() throws Exception {
-    Project project = new Project("networkProject.pro");
+    Project project = new Project("testData/networkProject.pro");
     CyNetwork network = NetworkFactory.createNetworkFromProject(project, null);
     
     assertTrue( network.getGraph() != null );

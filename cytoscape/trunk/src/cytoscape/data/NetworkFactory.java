@@ -72,17 +72,24 @@ public class NetworkFactory {
             reader.read( project.getCanonicalize() );
             graph = reader.getGraph();
             edgeAttributes = reader.getEdgeAttributes();
+            if (graph == null) {
+                System.err.println("Warning: unable to read graph from " +
+                                   project.getInteractionsFilename() );
+            }
         } else if (project.getGeometryFilename() != null) {
             //read a GML file
             GMLReader reader = new GMLReader( project.getGeometryFilename() );
             reader.read( project.getCanonicalize() );
             graph = reader.getGraph();
             edgeAttributes = reader.getEdgeAttributes();
-        } else {
-            //create default objects
-            graph = new Graph2D();
-            edgeAttributes = new GraphObjAttributes();
+            if (graph == null) {
+                System.err.println("Warning: unable to read graph from " +
+                                   project.getGeometryFilename() );
+            }
         }
+        //create default objects as needed
+        if (graph == null) {graph = new Graph2D();}
+        if (edgeAttributes == null) {edgeAttributes = new GraphObjAttributes();}
         
         //add name mapping for nodes in the graph
         Node[] allNodes = graph.getNodeArray();
