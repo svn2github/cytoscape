@@ -31,7 +31,8 @@ public class MiscGB {
 			   int x, int y, int w, int h) {
 	set(c,x,y,w,h,GridBagConstraints.NONE);
     }
-    public static void set(GridBagConstraints c, int x, int y) {
+    public static void set(GridBagConstraints c,
+			   int x, int y) {
 	set(c,x,y,1,1,GridBagConstraints.NONE);
     }
 
