@@ -31,6 +31,12 @@ public final class GraphConverter
     // GraphTopology object, the corresponding NodeView in Giny.
     final NodeView[] m_nodeTranslation;
 
+    final double m_minX;
+    final double m_maxX;
+    final double m_minY;
+    final double m_maxY;
+    final double m_percentBorder;
+
     private MyMutableGraphLayout(int numNodes,
                                  int[] directedEdgeSourceNodeIndices,
                                  int[] directedEdgeTargetNodeIndices,
@@ -41,13 +47,23 @@ public final class GraphConverter
                                  double[] nodeXPositions,
                                  double[] nodeYPositions,
                                  boolean[] isMovableNode,
-                                 NodeView[] nodeTranslation)
+                                 NodeView[] nodeTranslation,
+                                 double minX,
+                                 double maxX,
+                                 double minY,
+                                 double maxY,
+                                 double percentBorder)
     {
       super(numNodes, directedEdgeSourceNodeIndices,
             directedEdgeTargetNodeIndices, undirectedEdgeNode0Indices,
             undirectedEdgeNode1Indices, maxWidth, maxHeight,
             nodeXPositions, nodeYPositions, isMovableNode);
       m_nodeTranslation = nodeTranslation;
+      m_minX = minX;
+      m_maxX = maxX;
+      m_minY = minY;
+      m_maxY = maxY;
+      m_percentBorder = percentBorder;
     }
   }
 
@@ -174,7 +190,8 @@ public final class GraphConverter
                                     nodeXPositions,
                                     nodeYPositions,
                                     mobility,
-                                    nodeTranslation);
+                                    nodeTranslation,
+                                    minX, maxX, minY, maxY, percentBorder);
   }
 
   /**
@@ -195,6 +212,14 @@ public final class GraphConverter
     catch (RuntimeException e) {
       throw new IllegalArgumentException
         ("layout is not a previous return value of getGraphCopy()"); }
+    NodeView[] nodeTranslation = myLayout.m_nodeTranslation;
+    final double xOff = myLayout.m_minX -
+      ((myLayout.m_maxX - myLayout.m_minX) * myLayout.m_percentBorder * 0.5d);
+    final double yOff = myLayout.m_minY -
+      ((myLayout.m_maxY - myLayout.m_minY) * myLayout.m_percentBorder * 0.5d);
+    for (int i = 0; i < nodeTranslation.length; i++)
+      nodeTranslation[i].setOffset(layout.getNodePosition(i, true) + xOff,
+                                   layout.getNodePosition(i, false) + yOff);
   }
 
   public static MutableGraphLayout getGraphReference()
