@@ -519,7 +519,7 @@ protected JMenuBar createMenuBar ()
   menuBar.add (opsMenu);
 
   vizMenu = new JMenu ("Visualization"); // always create the viz menu
-  menuBar.add (vizMenu);
+  //menuBar.add (vizMenu);
   //vizMenu.add (new SetVisualPropertiesAction ());
   
   return menuBar;
@@ -980,6 +980,18 @@ protected class GoIDSelectAction extends AbstractAction   {
 //------------------------------------------------------------------------------
 protected class AlphabeticalSelectionAction extends AbstractAction   {
   AlphabeticalSelectionAction () { super ("By Name"); }
+
+  public void actionPerformed (ActionEvent e) {
+    String answer = 
+      (String) JOptionPane.showInputDialog (mainFrame, 
+              "Select nodes whose name (or synonym) starts with");
+    if (answer != null && answer.length () > 0)
+      selectNodesStartingWith (answer.trim ());
+    }
+}
+//------------------------------------------------------------------------------
+protected class ListFromFileSelectionAction extends AbstractAction   {
+  ListFromFileSelectionAction () { super ("From File"); }
 
   public void actionPerformed (ActionEvent e) {
     String answer = 
