@@ -65,6 +65,9 @@ public class TestPlotterWithMatrix {
 		
 		String fileName = url.getFile().replaceAll("^\\/","");
 		
+		fileName = "/" + fileName;
+		
+		System.out.println("fileName = " + fileName);
 		
 		reader = new DataMatrixFileReader  ("file://", fileName);
 		try {

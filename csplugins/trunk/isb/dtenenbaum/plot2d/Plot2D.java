@@ -209,6 +209,7 @@ public Plot2D (String title, String xAxisLabel, String yAxisLabel) {
 
 private void initUI() {
   
+
 	setSize(300,400);  
 	GridBagLayout gbl = new GridBagLayout();
 	getContentPane().setLayout(gbl);
@@ -251,7 +252,7 @@ private void initUI() {
 	c = new GridBagConstraints();
 	c.gridx = 0;
 	c.gridy = 7;
-	getContentPane().add(butClr, c);
+	getContentPane().add(butClr, c);;
 	
 	
 	
@@ -766,7 +767,8 @@ private JFreeChart createChart(XYDataset dataset) {
 	plot = chart.getXYPlot();
 	
 	plot.getDomainAxis().setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-
+	
+	plot.getDomainAxis().setVerticalTickLabels(true);
 	plot.setRenderer(new CyclicXYItemRenderer(
 	  StandardXYItemRenderer.SHAPES_AND_LINES));
 	
