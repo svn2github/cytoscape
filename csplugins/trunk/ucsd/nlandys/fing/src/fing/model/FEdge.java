@@ -4,10 +4,8 @@ import giny.model.Edge;
 import giny.model.Node;
 import giny.model.RootGraph;
 
-import cytoscape.*;
-
 // Package visible class.
-class FEdge implements Edge, CyEdge
+class FEdge implements Edge
 {
 
   // Variables specific to public get/set methods.
@@ -17,12 +15,6 @@ class FEdge implements Edge, CyEdge
 
   // Package visible constructor.
   FEdge() { }
-
-  
-
-  public String toString () {
-    return getIdentifier();
-  }
 
   public Node getSource()
   {
@@ -34,14 +26,6 @@ class FEdge implements Edge, CyEdge
   {
     return m_rootGraph.getNode
       (m_rootGraph.getEdgeTargetIndex(m_rootGraphIndex));
-  }
-
-  public CyNode getSourceNode () {
-    return (CyNode)getSource();
-  }
-           
-  public CyNode getTargetNode () {
-    return (CyNode)getTarget();
   }
 
   public boolean isDirected()
