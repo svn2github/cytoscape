@@ -10,9 +10,6 @@
 
   checkJavaVersion ();
   checkJavaHome ();
-  checkLeda ();
-  checkCppUnit ();
-  checkLdLibraryPath ();
   checkClassPath ();
 
 # end of implicit main
