@@ -93,14 +93,14 @@ In the displayed network,
 With the full network in view, it's difficult to see the details of any
 particular node or edge (this is particularly true when viewing larger
 networks). To zoom in, click this icon
-<IMG src="zoom_in36.gif" align="absbottom"> in the toolbar; to zoom out again,
+<IMG src="tut/zoom_in36.gif" align="absbottom"> in the toolbar; to zoom out again,
 click this icon
-<IMG src="zoom_out36.gif" align="absbottom">. When part of the network is off
+<IMG src="tut/zoom_out36.gif" align="absbottom">. When part of the network is off
 the visible screen, scrollbars appear allowing you to scroll the display. You
 can also pan and zoom using the mouse in the graph display window. Use middle-click and drag to pan the
 view, right-click and drag right to zoom in, and right-click and drag left to
 zoom out. To fit the entire graph to the screen, click this icon
-<IMG src="fit36.gif" align="absbottom"> in the toolbar.<P>
+<IMG src="tut/fit36.gif" align="absbottom"> in the toolbar.<P>
 
 The labels for nodes only appear at a sufficiently high
 zoom level. In this tutorial, Cytoscape is configured to display the common
@@ -131,7 +131,7 @@ select nodes in the graph:
     <li> The default behavior is to select only the nodes that are included in the
 selection box; you can change this via the <strong>Select</strong> menu to
 select only edges, or both nodes and edges. To zoom to the current selection,
-click this icon <IMG src="crop36.gif" align="absbottom"> in the toolbar.
+click this icon <IMG src="tut/crop36.gif" align="absbottom"> in the toolbar.
  </ul>
 
 Try this: &nbsp;
@@ -197,7 +197,7 @@ GO annotation to the proteins in our network. Follow the steps below:
               <img src="tut/ontology36.gif" align="absbottom" width="34" height="36">
    <p><li> After a moment, the Annotation dialog comes up, containing two panes.
            In the left pane, click on the icon
-             <img src="jtreeWhirlygig.jpg" align="absbottom" width="20" height="20">
+             <img src="jtut/treeWhirlygig.jpg" align="absbottom" width="20" height="20">
            immediately to the left of the label 
            <center><p>
            <i><b> GO, Molecular Function, Saccharomyces cerevisiae</b></i> <br>
@@ -211,7 +211,7 @@ GO annotation to the proteins in our network. Follow the steps below:
            click on the wide button labeled <b> Apply Annotation to All Nodes </b>
    <p><li> Now you will see, in the right pane, <b>Go Molecular Function (level 3)</b>
    <p><li> Click on 
-             <img src="jtreeWhirlygig.jpg" align="absbottom" width="20" height="20">
+             <img src="jtut/treeWhirlygig.jpg" align="absbottom" width="20" height="20">
             and examine the approximately 15
            varieties of molecular function present on our 29 genes.
    <p><li> Click on any one or more of these categories, and watch the corresponding
