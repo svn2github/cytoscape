@@ -8,6 +8,10 @@
   <property name="classes.dir" value="${build.dir}/classes"/>
   <property name="little.jars.dir" value="${build.dir}/littlejars"/>
 
+  <target name="clean">
+    <delete dir="${build.dir}"/>
+  </target>
+
   <target name="doc">
     <javadoc destdir="${javadoc.dir}"
              source="1.4"
