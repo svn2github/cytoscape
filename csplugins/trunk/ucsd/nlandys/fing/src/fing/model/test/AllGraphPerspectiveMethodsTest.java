@@ -450,6 +450,27 @@ public final class AllGraphPerspectiveMethodsTest
         persp.edgesList(Integer.MIN_VALUE, Integer.MAX_VALUE, false) != null)
       throw new IllegalStateException("not null");
 
+    // getEdgeIndicesArray(int, int, boolean).
+    connEdges = persp.getEdgeIndicesArray(nodeInx[1], nodeInx[1], false);
+    if (connEdges.length != 0)
+      throw new IllegalStateException("not 0 connecting edges");
+    connEdges = persp.getEdgeIndicesArray(nodeInx[1], nodeInx[1], true);
+    if (connEdges.length != 1)
+      throw new IllegalStateException("not 1 connecting edge");
+    for (int i = 0;; i++) if (connEdges[i] == edgeInx[4]) break;
+    connEdges = persp.getEdgeIndicesArray(nodeInx[1], nodeInx[0], true);
+    if (connEdges.length != 1)
+      throw new IllegalStateException("not 1 connecting edge");
+    for (int i = 0;; i++) if (connEdges[i] == edgeInx[5]) break;
+    connEdges = persp.getEdgeIndicesArray(minNodeInx - 1, nodeInx[2], true);
+    if (connEdges != null) throw new IllegalStateException("not null");
+    connEdges = persp.getEdgeIndicesArray(nodeInx[1], 99, true);
+    if (connEdges != null) throw new IllegalStateException("not null");
+    if (persp.getEdgeIndicesArray(Integer.MAX_VALUE,
+                                  Integer.MIN_VALUE, true) != null ||
+        persp.getEdgeIndicesArray(Integer.MIN_VALUE,
+                                  Integer.MAX_VALUE, false) != null)
+      throw new IllegalStateException("not null");
   }
 
 }
