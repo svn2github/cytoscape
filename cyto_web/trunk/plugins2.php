@@ -92,10 +92,23 @@
 						[<a href="http://www.cbio.mskcc.org/~bader/software/mcode/mcode_v1.zip">Download .zip</a>]
 					</td>
 				</tr>
+			</tbody>
+		</table>
+  <br>
 
-    	<tr><td colspan=3><HR></TD></TR>
-				<tr>
-					<td width="20%" valign="top">
+	</p>
+		<big><b>Experimental Cytoscape 2.0 PlugIns:</b></big>
+		<br>
+	</p>
+	<table style="margin-left: 30;  margin-right:30;border: dotted gray 1px;padding-left: 10px;font-size:small"
+		cellpadding=5 cellspacing=5 width=100% bgcolor="ebebff" >
+			<tbody >
+        
+                                                                                                  
+
+
+				<tr >
+					<td width="20%" valign="top" >
 						<b>Extras PlugIn</B><font size="-1">
 							<br>
 							Version: .1 BETA
@@ -107,7 +120,8 @@
 <ul><li>"destroy" -- tests removal of a netwwork and all nodes and edges not referenced by any other networks.</li>
                                                                                           <li>"Group" -- creates a box around a group of nodes that will always contain those nodes.  Operates on the selected nodes</li>
                                                                                           <li>"First Neighbors" -- Opens a dialog that allows you to add nodes and edges to a network from the pool of all nodes, or only from a selected network, filters are optional.</li>
-						<p>
+                                                                                          </ul>
+                                                                                          <p>
 							Released by: Rowan Christmas, Aitchison Group, <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>.
 						</p>
 					</td>
@@ -115,8 +129,8 @@
 					 [<a href="ftp://baker.systemsbiology.net/pub/xmas/plugins/rowan.jar">Download PlugIn .jar</a>]
 					</td>
 				</tr>                                                                                      
-
     	<tr><td colspan=3><HR></TD></TR>
+
 				<tr>
 					<td width="20%" valign="top">
 						<b>Save PlugIn</B><font size="-1">
@@ -136,12 +150,14 @@ Also included is a spreadsheet importer.
 					 [<a href="ftp://baker.systemsbiology.net/pub/xmas/plugins/loader.jar">Download PlugIn .jar</a>]<br>
            [<a href="ftp://baker.systemsbiology.net/pub/xmas/plugins/course.cytoproj.zip">Download Test Project</a>]
 					</td>
-				</tr>                                                                                                      
-
-
-
-			</tbody>
+				</tr>        
+      </tbody>
 		</table>
+
+  <br>
+	<p>                                                                      
+
+
 	</div>
 </div>
 <? include "footer.php"; ?>
