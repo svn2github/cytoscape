@@ -150,47 +150,59 @@ public class GOprediction{
    * node to the average GO agreement with all nodes
    * in that complex
    */
-  public HashMap pathwayAssessment(Collection pathways){
-     /*
-      * First figure out what is the best scoring pathway for each node
-     */
-    HashMap result = new HashMap();
-    HashMap node2BestPathway = new HashMap();
-    for(Iterator pathwayIt = pathways.iterator();pathwayIt.hasNext();){
-      Pathway pathway = (Pathway)pathwayIt.next();
-      for(Iterator nodeIt = pathway.nodes.iterator();nodeIt.hasNext();){
-	Node node = (Node)nodeIt.next();
-	if(!node2BestPathway.containsKey(node)){
-	  node2BestPathway.put(node, pathway);
-	}
-	else{
-	  Pathway oldPathway = (Pathway)node2BestPathway.get(node);
-	  if(pathway.score > oldPathway.score){
-	    node2BestPathway.put(node,pathway);
-	  }
-	}
-      }
-    }
+ //  public HashMap pathwayAssessment(Collection pathways){
+//      /*
+//       * First figure out what is the best scoring pathway for each node
+//      */
+//     HashMap result = new HashMap();
+//     HashMap node2BestPathway = new HashMap();
+//     for(Iterator pathwayIt = pathways.iterator();pathwayIt.hasNext();){
+//       Pathway pathway = (Pathway)pathwayIt.next();
+//       for(Iterator nodeIt = pathway.nodes.iterator();nodeIt.hasNext();){
+// 	Node node = (Node)nodeIt.next();
+// 	if(!node2BestPathway.containsKey(node)){
+// 	  node2BestPathway.put(node, pathway);
+// 	}
+// 	else{
+// 	  Pathway oldPathway = (Pathway)node2BestPathway.get(node);
+// 	  if(pathway.score > oldPathway.score){
+// 	    node2BestPathway.put(node,pathway);
+// 	  }
+// 	}
+//       }
+//     }
     
-    for(Iterator nodeIt = node2BestPathway.keySet().iterator();nodeIt.hasNext();){
-      Object node = nodeIt.next();
-      Pathway pathway = (Pathway)node2BestPathway.get(node);
-      result.put(node,getAverageDistance((Node)node,pathway));
-    }
-    return result;
+//     for(Iterator nodeIt = node2BestPathway.keySet().iterator();nodeIt.hasNext();){
+//       Object node = nodeIt.next();
+//       Pathway pathway = (Pathway)node2BestPathway.get(node);
+//       result.put(node,getAverageDistance((Node)node,pathway));
+//     }
+//     return result;
     
+//   }
+
+  public double getAverageDistance(Node node, Collection neighbors){
+    return getAverageDistance(node, neighbors, new HashSet(neighbors));
   }
 
-  protected Double getAverageDistance(Node node,Pathway pathway){
+  public double getAverageDistance(Node node, Collection neighbors, Collection restriction){
     int sum = 0;
+    int count = 0;
     Set GOIDs = (Set)ORF2GOIDs.get(node);
-    for(Iterator nodeIt = pathway.nodes.iterator();nodeIt.hasNext();){
+    if(GOIDs == null){
+      System.err.println("node not found");
+      return 12345568.0;
+    }
+    for(Iterator nodeIt = neighbors.iterator();nodeIt.hasNext();){
       Node otherNode = (Node)nodeIt.next();
-      if(otherNode == node){
+      if(otherNode == node || !restriction.contains(otherNode)){
 	continue;
       }
       int minimum = Integer.MAX_VALUE;
       Set otherGOIDs = (Set)ORF2GOIDs.get(otherNode);
+      if(otherGOIDs == null){
+	continue;
+      }
       for(Iterator IDIt = otherGOIDs.iterator();IDIt.hasNext();){
 	String ID = (String)IDIt.next();
 	if(GOIDs.contains(ID)){
@@ -202,8 +214,9 @@ public class GOprediction{
 	throw new RuntimeException("Didn't share top-level category, something wrong");
       }
       sum += minimum;
+      count += 1;
     }
-    return new Double(sum/(double)(pathway.nodes.size()-1));
+    return sum/(double)count;
   }
 
   public void crossValidate(Collection complexes){
