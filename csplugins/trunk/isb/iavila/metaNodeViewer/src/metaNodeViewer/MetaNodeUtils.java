@@ -164,10 +164,10 @@ public class MetaNodeUtils {
 	        System.err.println("Could not remove meta-node " + rindex);
 	      }else{
 	      	// Also, remove the meta-node from the RootGraph
-	      	//RootGraph rootGraph = network.getRootGraph();
+	      	RootGraph rootGraph = network.getRootGraph();
 	      	// TODO: This throws an exception!!!!!!
 	      	// Talked to Rowan, he says he knows what it is.
-	      	//rootGraph.removeNode(rindex);
+	      	rootGraph.removeNode(rindex);
 	      	numRemoved++;
 	      }
 	    }//for i
