@@ -3,6 +3,7 @@ package cytoscape.util;
 import java.awt.FileDialog;
 import javax.swing.JFileChooser;
 import java.io.File;
+import java.util.Iterator;
 
 
 import cytoscape.*;
@@ -89,30 +90,23 @@ public abstract class FileUtil {
     if ( osName.startsWith( "Mac" ) ) {
     
       // this is a Macintosh, use the AWT style file dialog
-      //if ( load_save_custom == CUSTOM ) {
-      //load_save_custom = LOAD;
-        //}
-
-        //if ( load_save_custom == LOAD ) {
-        // System.out.println( FileDialog.LOAD+"Load requested"+FileDialog.SAVE+": "+load_save_custom );
-        // }
-
-        //if ( load_save_custom == SAVE ) {
-        //System.out.println( FileDialog.SAVE+"save requested"+load_save_custom );
-        // }
-
-      
-        
-
 
       FileDialog chooser = new FileDialog( Cytoscape.getDesktop(),
                                            title,
                                            load_save_custom );
-      // we can only set the one filter
-      if ( filters.length != 0 )
-        chooser.setFilenameFilter( filters[0] );
 
-      //chooser.setDirectory( start.toString() );
+      // we can only set the one filter; therefore, create a special
+      // version of CyFileFilter that contains all extensions
+      CyFileFilter fileFilter = new CyFileFilter();
+      for (int i = 0; i < filters.length; i++) {
+        Iterator iter;
+        for (iter = filters[i].getExtensionSet().iterator(); iter.hasNext(); ) {
+          fileFilter.addExtension((String) iter.next());
+        }
+      }
+      fileFilter.setDescription("All network files");
+      chooser.setFilenameFilter( fileFilter );
+
       chooser.show();
       
       if ( chooser.getFile() != null ) {
