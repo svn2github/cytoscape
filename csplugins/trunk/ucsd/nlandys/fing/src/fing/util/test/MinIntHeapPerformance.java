@@ -19,7 +19,8 @@ public class MinIntHeapPerformance
    * defined from the input by taking groups of 4 consecutive bytes from input,
    * each group defining a single integer by interpreting the first byte in
    * a group to be the most significant bits of the integer etc.  The
-   * range [0, N-1] of each integer is satisifed by dividing each assembled
+   * range [0, N-1] of each integer is satisifed by dividing the absolute
+   * value of each assembled
    * four-byte integer by N, and taking the remainder as the element to be
    * tossed onto the heap.<p>
    * Output to standard out is the ordered set of input integers with
@@ -52,16 +53,23 @@ public class MinIntHeapPerformance
       off += read;
       if (off < buff.length) continue;
       else off = 0;
-      elements[inx++] = assembleInt(buff) % N; }
+      elements[inx++] = Math.abs(assembleInt(buff)) % N; }
     if (inx < N) throw new IOException("premature end of input");
     // Lose reference to as much as we can.
     in = null;
     buff = null;
     // Sleep, collect garbage, have a snack, etc.
+    Thread.sleep(1000);
+    // Warm up.
+    for (int i = 0; i < 100; i++) { int foo = i * 4 / 8; }
     // Start timer.
+    long millisBegin = System.currentTimeMillis();
+    // Run the test.  Quick, stopwatch is ticking!
     int[] orderedElements = _THE_TEST_CASE_(elements);
     // Stop timer.
-    // Print the time taken to standard out.
+    long millisEnd = System.currentTimeMillis();
+    // Print the time taken to standard error.
+    System.err.println(millisEnd - millisBegin);
     // Print sorted array to standard out.
     for (int i = 0; i < orderedElements.length; i++)
       System.out.println(orderedElements[i]);
