@@ -62,7 +62,7 @@ import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 //-----------------------------------------------------------------------------------
-public class CytoscapeWindow extends JPanel implements FilterDialogClient { // implements VizChooserClient {
+public class CytoscapeWindow extends JPanel implements FilterDialogClient, Graph2DSelectionListener { // implements VizChooserClient {
 
   protected static final int DEFAULT_WIDTH = 700;
   protected static final int DEFAULT_HEIGHT = 700;
@@ -138,7 +138,9 @@ public CytoscapeWindow (cytoscape parentApp,
 {
   this.parentApp = parentApp;
   this.logger = logger;
-  this.graph = graph;
+  // do not set graph yet - set it using setGraph() function below
+  // dramage 2002-08-16
+  // this.graph = graph;
   this.geometryFilename = geometryFilename;
   this.expressionDataFilename = expressionDataFilename;
   this.bioDataServer = bioDataServer;
@@ -168,6 +170,7 @@ public CytoscapeWindow (cytoscape parentApp,
 
   initializeWidgets ();
 
+  setGraph(graph);
   displayCommonNodeNames ();
   displayNewGraph (doFreshLayout);
 
@@ -239,7 +242,14 @@ public void setCurrentDirectory(File dir) {
 }
 //------------------------------------------------------------------------------
 public void setGraph (Graph2D graph) {
+    // remove old selection listener - dramage 2002.08.16
+    if (graph != null)
+	graph.removeGraph2DSelectionListener(this);
+
     this.graph = graph;
+
+    // register the window as a selection listener - dramage 2002.08.16
+    graph.addGraph2DSelectionListener(this);
     setLayouterAndGraphView();
 }
 //-----------------------------------------------------------------------------
@@ -265,11 +275,57 @@ public void redrawGraph (boolean doLayout)
   graphView.updateView(); //forces the view to update it's contents
   /* paintImmediately() is needed because sometimes updates can be buffered */
   graphView.paintImmediately(0,0,graphView.getWidth(),graphView.getHeight());
-  int nodeCount = graphView.getGraph2D().nodeCount();
-  int edgeCount = graphView.getGraph2D().edgeCount();
-  infoLabel.setText ("  Nodes: " + nodeCount + " Edges: " + edgeCount);
+  updateStatusText();
 
 } // redrawGraph
+
+
+public void updateStatusText () {
+    updateStatusText(0,0);
+}
+
+/**
+ * Resets the info label status bar text with the current number of
+ * nodes, edges, selected nodes, and selected edges.
+ *
+ * The Adjust fields is an ugly hack that is necessary because of a
+ * yFiles API quirk.  See selectionStateChanged() for details.
+ *
+ * added by dramage 2002-08-16
+ */
+public void updateStatusText (int nodeAdjust, int edgeAdjust) {
+    int nodeCount = graph.nodeCount();
+    int selectedNodes = graph.selectedNodes().size() + nodeAdjust;
+    
+    int edgeCount = graph.edgeCount();
+    int selectedEdges = graph.selectedEdges().size() + edgeAdjust;
+    infoLabel.setText ("  Nodes: " + nodeCount
+		       + " ("+selectedNodes+" selected)"
+		       + " Edges: " + edgeCount
+		       + " ("+selectedEdges+" selected)");
+}
+
+/**
+ * This function is called as part of the Graph2DSelectionListener
+ * interface.  When the selection status of the graph changes, this
+ * function calls updateStatusText to reflect the change.
+ *
+ * There is a quirk with yFiles that causes this function to be called
+ * *just before* the selection/deselection actually occurs.  That
+ * means we must adjust the status text appropriately to reflect the
+ * coming change.
+ */
+public void selectionStateChanged(Graph2DSelectionEvent e) {
+    if (e.isEdgeSelection()) {
+	updateStatusText(0,
+			 (graph.isSelected((Edge)e.getSubject()) ? -1 : +1));
+    } else if (e.isNodeSelection()) {
+	updateStatusText((graph.isSelected((Node)e.getSubject()) ? -1 : +1),
+			 0);
+    }
+}
+
+
 //------------------------------------------------------------------------------
 public JFrame getMainFrame ()
 {
@@ -372,7 +428,8 @@ public String getSpecies (Node node)
 //------------------------------------------------------------------------------
 protected void displayNewGraph (boolean doLayout)
 {
-  if (graph == null) graph = new Graph2D ();
+  if (graph == null)
+      setGraph(new Graph2D ());
 
   OrganicLayouter ol = new OrganicLayouter ();
   ol.setActivateDeterministicMode (true);
@@ -391,7 +448,7 @@ protected void displayNewGraph (boolean doLayout)
 protected void setLayouterAndGraphView(){
     
     if(graph == null){
-	graph = new Graph2D ();
+	setGraph (new Graph2D ());
     }
 	
     
@@ -1939,7 +1996,7 @@ protected class ShowConditionAction extends AbstractAction   {
 //------------------------------------------------------------------------------
 protected void loadGML (String filename)
 {
-    graph=FileReadingAbstractions.loadGMLBasic(filename,edgeAttributes);
+    setGraph( FileReadingAbstractions.loadGMLBasic(filename,edgeAttributes));
     FileReadingAbstractions.initAttribs(config,graph,nodeAttributes,edgeAttributes);
     displayCommonNodeNames (); // fills in canonical name for blank common names
     geometryFilename = filename;
@@ -1949,7 +2006,7 @@ protected void loadGML (String filename)
 //------------------------------------------------------------------------------
 protected void loadInteraction (String filename)
 {
-    graph = FileReadingAbstractions.loadIntrBasic(filename,edgeAttributes);
+    setGraph (FileReadingAbstractions.loadIntrBasic(filename,edgeAttributes));
     FileReadingAbstractions.initAttribs(config,graph,nodeAttributes,edgeAttributes);
     displayCommonNodeNames (); // fills in canonical name for blank common names
     geometryFilename = null;
@@ -2178,6 +2235,9 @@ class EditGraphMode extends EditMode {
    allowBendCreation (true);
    showNodeTips (true);
    showEdgeTips (true);
+
+   // added by dramage 2002-08-16
+   setMoveSelectionMode(new StraightLineMoveMode());
    }
   protected String getNodeTip (Node node) {
     String geneName = graphView.getGraph2D().getRealizer(node).getLabelText();
