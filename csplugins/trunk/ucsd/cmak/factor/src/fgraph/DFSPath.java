@@ -2,6 +2,8 @@ package fgraph;
 
 import fgraph.util.Target2PathMap;
 
+import java.io.*;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
@@ -48,7 +50,8 @@ public class DFSPath
 
     // map root graph node indices to an integer label in the set [0,numNodes]
     private OpenIntIntHashMap _nodeLabelMap;
-
+    private int[] _label2node;
+    
     // map root graph edge indices to an integer label in the set [0, numEdges]
     private OpenIntIntHashMap _edgeLabelMap;
 
@@ -87,6 +90,10 @@ public class DFSPath
 
     // number of paths not counted
     private int notCounted;
+
+    // Stream where paths are printed as they are discovered.
+    // For debugging purposes
+    private PrintStream _out;
     
     /**
      * Create a new search object that will find paths on "graph"
@@ -104,7 +111,8 @@ public class DFSPath
 
         // map graph indices to a label in the set [0,numNodes]
         _nodeLabelMap = new OpenIntIntHashMap(numNodes);
-
+        _label2node = new int[numNodes];
+        
         color = new int[numNodes];
 
         //infinity = numEdges + 1;
@@ -112,10 +120,19 @@ public class DFSPath
         //dt = new int[numNodes]; // discovery time
         //ft = new int[numNodes]; // finish time
 
-        //adjMap = new OpenIntObjectHashMap(numNodes);
         _adjacentEdges = new ObjectArrayList(numNodes);
         _affected = new BitMatrix(0,0);
         _isKO = new BitVector(numNodes);
+
+        // stuff for printing paths
+        try{
+            _out = new PrintStream(new FileOutputStream("dfspath.out"));
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+
+        }
     }
     
     /**
@@ -154,12 +171,18 @@ public class DFSPath
         _nodeLabelMap.clear();
         _adjacentEdges.clear();
         _isKO.clear();
-        
+
+        // 1. color each node WHITE
+        // 2. Store the edge adjacency array for each node.
+        //    This improves performance.
+        // 3. Build the isKO matrix for fast lookup of whether a
+        //    node is one of the sources.
         for(int n = 0; n < numNodes; n++)
         {
             int node = nodes[n];
             _nodeLabelMap.put(node, n);
-
+            _label2node[n] = node;
+            
             color[n] = WHITE;
 
             int[] adj = g.getAdjacentEdgeIndicesArray(node, true, false, true);
@@ -183,11 +206,11 @@ public class DFSPath
         notCounted = 0;
 
         // array that will record the labels of all nodes along the current
-        // path.  Used to check that intermediate genes that are
+        // path.  This is used to check that intermediate genes that are
         // deleted along the path also affect the last node.
         int[] curPath = new int[maxDepth + 1];
 
-        // Do a DFS starting at each source node.
+        // Iterateively do a DFS starting at each source node.
         // The paths that start at each source are stored in a
         // Target2PathMap object in the PathResults.
         for(int s=0; s < sources.length; s++)
@@ -200,21 +223,23 @@ public class DFSPath
                 break;
             }
 
+            // this map will store all of the paths from the sourceNode
+            // to all each target node.
             target2pathMap = result.addKO(sourceNode);
             
-            int l = _nodeLabelMap.get(sourceNode);
-            color[l] = GREY; // the source node is part of every path
+            int sourceLabel = _nodeLabelMap.get(sourceNode);
+            color[sourceLabel] = GREY; // the source node is part of every path
             
             int depth = 0;
-            int[] adj = _getAdjacentEdges(l);
-            curPath[0] = l;
+            int[] adj = _getAdjacentEdges(sourceLabel);
+            curPath[0] = sourceLabel;
             
             for(int e=0; e < adj.length; e++)
             {
                 int edgeLabel = _edgeLabelMap.get(adj[e]);
                 dfsVisit(adj[e], edgeLabel, sourceNode, depth, maxDepth, curPath);
             }
-            color[l] = WHITE; // unmark the source.
+            color[sourceLabel] = WHITE; // unmark the source.
 
             System.out.println("DFSPath finished: " + sourceNode
                                + " total paths = " + pathCount
@@ -248,7 +273,7 @@ public class DFSPath
 
         // duplicate code from _getRelativeTarget
         // can this be fixed?
-        // how to return direction and target
+        // how to cleanly return direction and target from _getRelativeTarget?
         int s = _edges[edgeLabel][SOURCE];
         int t = _edges[edgeLabel][TARGET];
 
@@ -287,18 +312,20 @@ public class DFSPath
          * isProteinDNA: enforce constraint that the last edge in a path
          *               is a protein-DNA edge
          *
-         * checkIntermediateKOs: enforce constraint if intermediate nodes
+         * checkIntermediateKOs: enforce constraint: if intermediate nodes
          *                       on the path are knocked out, they must
          *                       affected the last node in the path.
          *               
-         * If constraints satisfied, then "pathCount" identifies a path from
-         * the knockout to "target".
+         * If all constraints satisfied, then "pathCount" identifies a
+         * path from the knockout to "target".
          */
         if(isAffected(curPath[0], tLabel) &&
            isProteinDNA(edge) &&
            checkIntermediateKOs(curPath, depth))
         { 
             target2pathMap.addPath(target, pathCount);
+
+            printPath(pathCount, curPath, depth);
             pathCount++;
         }
         else
@@ -339,6 +366,21 @@ public class DFSPath
         }
     }
 
+    private void printPath(int pathCount, int[] curPath, int depth)
+    {
+        StringBuffer b = new StringBuffer();
+        b.append(pathCount);
+        b.append(": ");
+        
+        for(int x=0; x <= depth; x++)
+        {
+            b.append(" ");
+            b.append(ig.node2Name(_label2node[curPath[x]]));
+        }
+
+        _out.println(b.toString());
+    }
+    
     /**
      *
      *
@@ -495,19 +537,20 @@ public class DFSPath
         /* better performance, Nerius suggestion
          * (Note: ^ == bitwise XOR)
          *
-         * Assumption: s = source node ot edge, t = target node of edge,
-         *             "source" is equal to either s or t.
+         * Claim: Given a set of integers S = { a, b } and an integer
+         *        c which is an element of S, then S \ { c } == (c ^ a) ^ b.
+         *
          * Proof:
          * 
-         * Suppose source == s, then (s ^ s) = 0 and (0 ^ t) = t
-         *     and we return t. OK.
+         * Suppose c == a, then (a ^ a) = 0 and (0 ^ b) = b
+         *     and we return b. OK.
          *     
-         * Suppose source == t, consider the four cases that can occur
-         * when comparing bits in s and t.
-         *  case 1 (s=0, t=0): t ^ s = 0, 0 ^ t = 0 = s.  OK
-         *  case 2 (s=1, t=1): t ^ s = 0, 0 ^ t = 1 = s.  OK
-         *  case 3 (s=1, t=0): t^s = 1, 1 ^ t = 1 = s.  OK
-         *  case 4 (s=0, t=1): t^s = 1, 1 ^ t = 0 = s.  OK
+         * Suppose c == b, consider the four cases that can occur
+         * when comparing bits in a and b.
+         *  case 1 (a=0, b=0): b^a = 0, 0 ^ b = 0 = a.  OK
+         *  case 2 (a=1, b=1): b^a = 0, 0 ^ b = 1 = a.  OK
+         *  case 3 (a=1, b=0): b^a = 1, 1 ^ b = 1 = a.  OK
+         *  case 4 (a=0, b=1): b^a = 1, 1 ^ b = 0 = a.  OK
          *     
          */
         return ((source ^ _edges[edgeLabel][SOURCE]) ^ _edges[edgeLabel][TARGET]);
