@@ -1,4 +1,4 @@
-MCODE PlugIn v1.0
+MCODE PlugIn v1.1
 -----------------
 
 I.  Introduction
@@ -14,7 +14,7 @@ II.  Installation Instructions
 ==============================
 
 To use the MCODE PlugIn, you must first obtain a copy of Cytoscape,
-Version 2.0.  You can download a copy from:  http://www.cytsoscape.org.
+Version 2.1.  You can download a copy from:  http://www.cytsoscape.org.
 Once you have downloaded Cytoscape and verified that it works, proceed with
 the next steps.
 
