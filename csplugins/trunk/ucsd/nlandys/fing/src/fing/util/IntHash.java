@@ -17,7 +17,14 @@ package fing.util;
 public final class IntHash
 {
 
-  private static final int INITIAL_SIZE = 11;
+  private static final int[] PRIMES = { 11, 23, 47, 97, 197, 397, 797, 1597,
+                                        3203, 6421, 12853, 25717, 51437,
+                                        102877, 205759, 411527, 823117,
+                                        1646237, 3292489, 6584983, 13169977,
+                                        26339969, 52679969, 105359939,
+                                        210719881, 421439783, 842879579,
+                                        1685759167, Integer.MAX_VALUE };
+  private static final int INITIAL_SIZE = PRIMES[0];
   private static final double THRESHOLD_FACTOR = 0.666;
 
   private int[] m_arr;
@@ -43,6 +50,8 @@ public final class IntHash
    */
   public final int put(int val)
   {
+    checkSize();
+    return -1;
   }
 
   /**
@@ -74,30 +83,41 @@ public final class IntHash
     final int numElements = m_elements;
     return new IntEnumerator() {
         int elements = numElements;
-        int index = 0;
+        int index = -1;
         public int numRemaining() { return elements; }
         public int nextInt() {
-          int returnVal;
-          for (returnVal = array[index++]; returnVal < 0; index++)
-            returnVal = array[index];
+          while (array[++index] < 0) { }
           elements--;
-          return returnVal; } };
+          return array[index]; } };
   }
 
   private final void checkSize()
   {
-    if (m_elements >= m_thresholdSize) {
-      final int newSize = (int)
-        Math.min((long) Integer.MAX_VALUE,
-                 ((long) m_size) * 2l + 1l);
-      if (newSize <= m_size)
+    if (m_elements >= m_thresholdSize)
+    {
+      final int newSize;
+      try {
+        int primesInx;
+        for (primesInx = 0; m_arr.length != PRIMES[primesInx]; primesInx++) { }
+        newSize = PRIMES[primesInx + 1]; }
+      catch (ArrayIndexOutOfBoundsException e) {
         throw new IllegalStateException
-          ("too many elements in this hashtable");
+          ("too many elements in this hashtable"); }
+      int[] dump = new int[m_elements];
+      int index = -1;
+      for (int i = 0; i < dump.length; i++) {
+        while (m_arr[++index] < 0) { }
+        dump[i] = m_arr[index];
+        m_arr[index] = -1; }
       if (m_arr.length < newSize) {
         final int[] newArr = new int[newSize];
-        System.arraycopy(m_arr, 0, newArr, 0, m_size);
         m_arr = newArr; }
-      
-  }
+      for (int i = m_size; i < newSize; i++) m_arr[i] = -1;
+      m_elements = 0;
+      m_size = newSize;
+      m_thresholdSize = (int) (THRESHOLD_FACTOR * (double) m_size);
+      for (int i = 0; i < dump.length; i++) put(dump[i]);
+    }
+  } 
 
 }
