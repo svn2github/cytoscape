@@ -1,5 +1,8 @@
 package fing.model;
 
+import giny.model.Edge;
+import giny.model.RootGraph;
+
 /**
  * Please try to restrain from using this class, or even looking at it.
  * This class was created so that certain legacy applications would have an
@@ -11,9 +14,10 @@ public interface FingEdgeDepot
 {
 
   /**
-   * This either instantiates a new edge or gets one from the recyclery.
+   * This either instantiates a new edge or gets one from the recyclery,
+   * initializing it with the parameters specified.
    **/
-  public FingEdge getEdge();
+  public Edge getEdge(RootGraph root, int index, String id);
 
   /**
    * Recycles an edge.  Implementations may choose to do nothing in this
@@ -21,6 +25,6 @@ public interface FingEdgeDepot
    * is simply a hook for Fing to tell the depository "I'm done using this edge
    * object -- it's no longer part of a RootGraph".
    **/
-  public void recycleEdge(FingEdge node);
+  public void recycleEdge(Edge node);
 
 }

@@ -255,10 +255,10 @@ class FRootGraph implements RootGraph, DynamicGraph
     for (int i = 0; i < removedEdgeArr.length; i++) {
       final int nativeEdgeInx = ~(removedEdgeArr[i].getRootGraphIndex());
       m_graph.edgeRemove(nativeEdgeInx);
-      final FingEdge removedEdge = m_edges.getEdgeAtIndex(nativeEdgeInx);
+      final Edge removedEdge = m_edges.getEdgeAtIndex(nativeEdgeInx);
       m_edges.setEdgeAtIndex(null, nativeEdgeInx);
       m_edgeDepot.recycleEdge(removedEdge); }
-    final FingNode removedNode = m_nodes.getNodeAtIndex(nativeNodeInx);
+    final Node removedNode = m_nodes.getNodeAtIndex(nativeNodeInx);
     m_graph.nodeRemove(nativeNodeInx);
     m_nodes.setNodeAtIndex(null, nativeNodeInx);
     m_nodeDepot.recycleNode(removedNode);
@@ -287,10 +287,7 @@ class FRootGraph implements RootGraph, DynamicGraph
   {
     final int nativeNodeInx = m_graph.nodeCreate();
     final int returnThis = ~nativeNodeInx;
-    FingNode newNode = m_nodeDepot.getNode();
-    newNode._setRootGraph(this);
-    newNode._setRootGraphIndex(returnThis);
-    newNode._setIdentifier(null);
+    Node newNode = m_nodeDepot.getNode(this, returnThis, null);
     m_nodes.setNodeAtIndex(newNode, nativeNodeInx);
     return returnThis;
   }
@@ -384,7 +381,7 @@ class FRootGraph implements RootGraph, DynamicGraph
       m_metaGraph.nodeRemove(metaEdge); }
     // END: Remove edge from meta structure.
     m_graph.edgeRemove(nativeEdgeInx);
-    final FingEdge removedEdge = m_edges.getEdgeAtIndex(nativeEdgeInx);
+    final Edge removedEdge = m_edges.getEdgeAtIndex(nativeEdgeInx);
     m_edges.setEdgeAtIndex(null, nativeEdgeInx);
     m_edgeDepot.recycleEdge(removedEdge);
     m_lis.rootGraphChanged
@@ -427,10 +424,7 @@ class FRootGraph implements RootGraph, DynamicGraph
       m_graph.edgeCreate(~sourceNodeIndex, ~targetNodeIndex, directed);
     if (nativeEdgeInx < 0) return 0;
     final int returnThis = ~nativeEdgeInx;
-    FingEdge newEdge = m_edgeDepot.getEdge();
-    newEdge._setRootGraph(this);
-    newEdge._setRootGraphIndex(returnThis);
-    newEdge._setIdentifier(null);
+    Edge newEdge = m_edgeDepot.getEdge(this, returnThis, null);
     m_edges.setEdgeAtIndex(newEdge, nativeEdgeInx);
     return returnThis;
   }

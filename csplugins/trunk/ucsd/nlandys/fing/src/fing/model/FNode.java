@@ -1,16 +1,17 @@
 package fing.model;
 
 import giny.model.GraphPerspective;
+import giny.model.Node;
 import giny.model.RootGraph;
 
 // Package visible class.
-class FNode implements FingNode
+class FNode implements Node
 {
 
   // Variables specific to public get/set methods.
-  private RootGraph m_rootGraph = null;
-  private int m_rootGraphIndex = 0;
-  private String m_identifier = null;
+  RootGraph m_rootGraph = null;
+  int m_rootGraphIndex = 0;
+  String m_identifier = null;
 
   // Package visible constructor.
   FNode() { }
@@ -53,21 +54,6 @@ class FNode implements FingNode
   {
     m_identifier = new_id;
     return true;
-  }
-
-  public void _setRootGraph(RootGraph root)
-  {
-    m_rootGraph = root;
-  }
-
-  public void _setRootGraphIndex(int index)
-  {
-    m_rootGraphIndex = index;
-  }
-
-  public void _setIdentifier(String id)
-  {
-    m_identifier = id;
   }
 
 }
