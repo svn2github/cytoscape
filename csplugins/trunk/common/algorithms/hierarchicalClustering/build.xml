@@ -1,0 +1,47 @@
+<?xml version = "1.0"?>
+<project name = "hierarchical_clustering" default = "compile" basedir = ".">
+    <description>
+    This build.xml file compiles the hierarchical clustering classes
+    </description>
+
+    <!-- Set the global properties for this build -->
+    <property name = "src" location = "src"/>
+    <property name = "build" location = "build"/>
+    <property name = "build.compiler" value = "modern"/>
+    <property name = "lib" value="../../../../cytoscape/lib"/>
+
+    <!-- classpath for compiling -->
+    <path id = "classpath_compile">
+       <pathelement path = "${build}/common"/>
+        <fileset dir = "${lib}">
+          <include name = "**/*.jar"/>
+       </fileset>
+    </path>
+
+    <!-- prepare target, creates necessary directories for building -->
+    <target name = "prepare">
+       <!-- Create a time stamp -->
+       <tstamp/>
+       <!-- Create the build directory used by compile -->
+       <mkdir dir = "${build}"/>
+    </target>
+
+    <target name="compile" depends="prepare" description="Compiles hierarchical clustering.">
+       <javac srcdir="${src}"
+              destdir="${build}"
+              nowarn="off"
+              debug="true"
+              debuglevel="source"
+              source="1.4"
+              optimize="on"
+              includeAntRuntime="false">
+              <classpath refid="classpath_compile"/>
+       </javac>
+    </target>
+    
+    <target name="clean">
+       <delete dir="${build}"/>
+    </target>
+</project>
+              
+
