@@ -40,7 +40,6 @@ public abstract class CreditScreen  {
     canvas.addMouseListener( 
                             new MouseListener () {
                               public  void 	mouseClicked(MouseEvent e) {
-                                //System.out.println( "Clicked" );
                                 creditsWindow.dispose();
                               }
                               
@@ -66,7 +65,7 @@ public abstract class CreditScreen  {
     //                               (int)image_node.getFullBounds().getHeight() ) );
     canvas.setMinimumSize(  new Dimension( 354, 426 ) );
 
-    System.out.println( "Image: "+image_node.getBounds() );
+//    System.out.println( "Image: "+image_node.getBounds() );
 
 
     PClip credit_clip = new PClip();
@@ -101,8 +100,8 @@ public abstract class CreditScreen  {
                    
 
 
-    System.out.println( "cliP :"+clip_bounds );
-    System.out.println( "credit: "+credit_bounds );
+//    System.out.println( "cliP :"+clip_bounds );
+//    System.out.println( "credit: "+credit_bounds );
 
     credits.offset( clip_bounds.getX() + 5, clip_bounds.getY() + clip_bounds.getHeight() - 10);
     
@@ -141,7 +140,7 @@ public abstract class CreditScreen  {
 
     
 
-    System.out.println( "Credits being shown" );
+//    System.out.println( "Credits being shown" );
 
   } // static showCredits( JComponent, int, boolean );
 
