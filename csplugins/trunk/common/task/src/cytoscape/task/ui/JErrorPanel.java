@@ -42,8 +42,8 @@ public class JErrorPanel extends JPanel {
      */
     private Window owner;
 
-    private final static String SHOW_TEXT = "Show Error Details";
-    private final static String HIDE_TEXT = "Hide Error Details";
+    private static final String SHOW_TEXT = "Show Error Details";
+    private static final String HIDE_TEXT = "Hide Error Details";
 
     /**
      * Private Constructor.

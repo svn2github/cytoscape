@@ -83,7 +83,8 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
 
     /**
      * Constructor.
-     *
+     * 
+     * @param title  Task Title.
      * @param config JTaskConfig Object.
      */
     public JTask(String title, JTaskConfig config) {
@@ -160,7 +161,6 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
 
         //  Now make JFrame Resizable
         setResizable(true);
-
         pack();
         validate();
         this.setTitle("An Error Has Occurred");
@@ -258,6 +258,9 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
 
         this.pack();
         this.setResizable(false);
+
+        //  Define Modality
+        this.setModal(config.getModal());
 
         //  Center component relative to parent component
         //  or relative to user's screen.
