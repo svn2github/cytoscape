@@ -66,6 +66,7 @@ public class CytoscapeWindow extends JPanel { // implements VizChooserClient {
   protected JFrame mainFrame;
   protected JMenuBar menuBar;
   protected JMenu opsMenu;
+  protected JMenu vizMenu;
   protected JToolBar toolbar;
   protected JLabel infoLabel;
 
@@ -475,7 +476,9 @@ protected JMenuBar createMenuBar ()
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_D, ActionEvent.CTRL_MASK));
   mi = selectiveDisplayMenu.add (new SelectFirstNeighborsAction ());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_F, ActionEvent.CTRL_MASK));
-  
+  mi = selectiveDisplayMenu.add (new InvertSelectionAction ());
+  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_N, ActionEvent.CTRL_MASK));
+
   ButtonGroup layoutGroup = new ButtonGroup ();
   JMenu layoutMenu = new JMenu ("Layout");
   layoutMenu.setToolTipText ("Apply new layout algorithm to graph");
@@ -515,6 +518,10 @@ protected JMenuBar createMenuBar ()
   opsMenu = new JMenu ("Ops"); // always create the ops menu
   menuBar.add (opsMenu);
 
+  vizMenu = new JMenu ("Visualization"); // always create the viz menu
+  menuBar.add (vizMenu);
+  //vizMenu.add (new SetVisualPropertiesAction ());
+  
   return menuBar;
 
 } // createMenuBar
@@ -615,6 +622,18 @@ public void deselectAllNodes ()
   redrawGraph ();
 
 } // deselectAllNodes
+protected void invertSelection () {
+  Graph2D g = graphView.getGraph2D();
+  Node [] nodes = graphView.getGraph2D().getNodeArray();
+
+  for (int i=0; i < nodes.length; i++) {
+    NodeRealizer nodeRealizer = graphView.getGraph2D().getRealizer(nodes [i]);
+    nodeRealizer.setSelected (!nodeRealizer.isSelected());
+    } // for i
+
+  redrawGraph ();
+}
+
 //------------------------------------------------------------------------------
 protected void selectNodesStartingWith (String key)
 {
@@ -806,6 +825,21 @@ class PrintAction extends AbstractAction
 
 } // inner class PrintAction
 //------------------------------------------------------------------------------
+protected class SetVisualPropertiesAction extends AbstractAction   {
+  SetVisualPropertiesAction () { super ("Set Visual Properties"); }
+
+  public void actionPerformed (ActionEvent e) {
+    JDialog vizDialog = new VisualPropertiesDialog 
+	(mainFrame, "Set Visual Properties", vizMapper);
+    vizDialog.pack ();
+    vizDialog.setLocationRelativeTo (mainFrame);
+    vizDialog.setVisible (true);
+
+    renderNodesAndEdges();//implicitly calls redrawGraph()
+  }
+
+}
+//------------------------------------------------------------------------------
 protected class RenderAction extends AbstractAction  
 {
    RenderAction () {super ("Render"); } 
@@ -963,6 +997,17 @@ protected class DeselectAllAction extends AbstractAction   {
     deselectAllNodes ();
     }
 }
+protected InvertSelectionAction createInvertSelectionAction () {
+    return new InvertSelectionAction();
+}
+protected class InvertSelectionAction extends AbstractAction {
+    InvertSelectionAction () { super ("Invert Selection"); }
+
+    public void actionPerformed (ActionEvent e) {
+	invertSelection ();
+    }
+}
+
 //------------------------------------------------------------------------------
 protected class ReadOnlyModeAction extends AbstractAction   {
   ReadOnlyModeAction () { super ("Read only Mode"); }
@@ -1073,6 +1118,7 @@ protected class DisplaySelectedInNewWindowAction extends AbstractAction   {
 
 } // inner class DisplaySelectedInNewWindowAction
 //------------------------------------------------------------------------------
+
 class SelectedSubGraphMaker {
 
   Graph2D parentGraph;
