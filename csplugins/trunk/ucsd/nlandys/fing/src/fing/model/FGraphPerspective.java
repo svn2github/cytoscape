@@ -194,9 +194,21 @@ class FGraphPerspective implements GraphPerspective
     throw new IllegalStateException("not implemented yet");
   }
 
-  public int restoreNode(int perspNodeInx)
+  public int restoreNode(int rootGraphNodeInx)
   {
-    throw new IllegalStateException("not implemented yet");
+    final int returnThis = _restoreNode(rootGraphNodeInx);
+    if (returnThis != 0) {
+      final GraphPerspectiveChangeListener listener = m_lis[0];
+      if (listener != null) {
+        listener.graphPerspectiveChanged
+          (new GraphPerspectiveNodesRestoredEvent
+           (this, new int[] { rootGraphNodeInx })); } }
+    return returnThis;
+  }
+
+  private int _restoreNode(int rootGraphNodeInx)
+  {
+    return -1;
   }
 
   public java.util.List restoreNodes(java.util.List nodes)
