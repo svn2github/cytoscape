@@ -1,0 +1,213 @@
+<project name="sbw" default="sbw" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init-sbw">
+    <tstamp/>
+    <property name="sbw.Name" value="sbw"/>
+    <property name="sbw.name" value="sbw"/>
+    <property name="sbw.version" value="0.1"/>
+    <property name="sbw.year" value="200"/>
+
+    <echo message="Building ${sbw.name} version ${sbw.version}."/>
+
+    <!-- Inheritable properties -->
+    <property name="debug" value="on"/>
+    <property name="optimize" value="off"/>
+    <property name="deprecation" value="on"/>
+    <property name="nowarn" value="true"/>
+    <property name="fork" value="false"/>
+    <property name="sbw.root.dir" value="."/>
+    <property name="sbw.lib.dir" value="${sbw.root.dir}/lib"/>
+    <property name="cytoscape.lib.dir" value="${sbw.root.dir}/../../../../cytoscape/lib"/>
+    <property name="cytoscape.plugin.dir" value="${sbw.root.dir}/../../../../cytoscape/plugins"/>
+    <path id="project.class.path">
+      <pathelement path="${java.class.path}/"/>
+    </path>
+
+    <!-- Define the directories -->
+    <property name="sbw.root.dir" value="./"/>
+    <property name="sbw.src.dir" value="${sbw.root.dir}/src"/>
+    <property name="sbw.classes.dir" value="${sbw.root.dir}/classes"/>
+    <property name="sbw.javadoc.dir" value="${javadoc.dir}/sbw"/>
+    <property name="sbw.resources.dir" value="${sbw.root.dir}/resources"/>
+    <property name="sbw.manifest.dir" value="${sbw.root.dir}/manifest"/>
+    <property name="sbw.packages" value="sbw.*"/>
+    <!-- Subdirectory for test reports -->
+    <property name="sbw.tests.reports.dir" value="${sbw.root.dir}/reports/tests" />
+    <property name="cytoscape.lib" value="../../cytoscape/lib" />
+
+    <!-- Define the condition for compilation -->
+    <property name="cytoscape.jar" value="${sbw.lib.dir}/cytoscape.jar"/>
+    <property name="colt.jar" value="${sbw.lib.dir}/colt.jar"/>
+    
+
+    <condition property="cytoscape.present">
+      <and> 
+	  		<available file="${cytoscape.jar}"/> 
+				<available file="${colt.jar}"/> 
+		  </and>
+    </condition>
+
+    <!-- Define excludes for sbw compile and javadoc -->
+    <property name="sbw.excludes" value="**/notyet/*"/>
+    <property name="sbw.tests.excludes" value="**/notyet/*"/>
+    <property name="sbw.packages.excludes" value="**.test.*,**.notyet.*"/>
+
+    <path id="sbw.project.class.path">
+      <pathelement location="${sbw.classes.dir}"/>
+      <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/SBWCore.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/piccolo.jar"/>
+      <pathelement path="${project.class.path}/"/>
+    </path>
+
+   
+
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the sbw project                                           -->
+  <!-- =================================================================== -->
+  <target name="compile-sbw" depends="init-sbw"  >
+
+   <echo message=" COMPILE sbw "/>
+
+    <mkdir dir="${sbw.classes.dir}"/>
+    <javac srcdir="${sbw.src.dir}"
+           excludes="${sbw.excludes}"
+           classpathref="sbw.project.class.path"
+           destdir="${sbw.classes.dir}"
+           debug="${debug}"
+           nowarn="${nowarn}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the sbw.jar file                                           -->
+  <!-- =================================================================== -->
+  <target name="sbw" depends="compile-sbw"  >
+    <jar destfile="sbw.jar" manifest="${sbw.manifest.dir}/sbw.manifest">
+      <fileset
+        dir="${sbw.classes.dir}"
+        includes="**"/>
+      <fileset
+        dir="${sbw.root.dir}/lib"
+        includes="resources/**"/>
+      <fileset 
+        dir="${sbw.root.dir}/images"/>
+    </jar>
+    <copy todir="${sbw.lib.dir}" file="sbw.jar"/>
+    <copy todir="${cytoscape.plugin.dir}" file="sbw.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the sbw tests                                             -->
+  <!-- =================================================================== -->
+  <target name="compile-tests" depends="sbw"  >
+    <mkdir dir="${sbw.classes.dir}"/>
+    <javac srcdir="${sbw.src.dir}"
+           includes="**/test/*"
+           excludes="${sbw.tests.excludes}"
+           classpathref="sbw.project.class.path"
+           destdir="${sbw.classes.dir}"
+           debug="${debug}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the sbw-tests.jar file                                     -->
+  <!-- =================================================================== -->
+  <target name="tests" depends="compile-tests"  >
+    <jar jarfile="sbw-tests.jar"
+         basedir="${sbw.classes.dir}"
+         includes="**/test/*"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Build all jars                                                      -->
+  <!-- =================================================================== -->
+  <target name="all" depends="sbw"/>
+
+   <!-- =================================================================== -->
+  <!-- Run the Plugin                                                      -->
+  <!-- =================================================================== -->
+  <target name="run" depends="sbw" >
+     
+     <java classname="cytoscape.cytoscape" 
+           classpathref="sbw.project.class.path"
+           fork="true"/>
+           <arg line = "-y giny"/>
+           <arg line = "--JLD"/>
+           <arg line = "${sbw.lib.dir}/sbw.jar"/>
+           
+
+  </target>
+
+
+
+  <!-- =================================================================== -->
+  <!-- Runs the tests in sbw-tests.jar                                    -->
+  <!-- =================================================================== -->
+  <target name="runtests" depends="tests"  >
+    <mkdir dir="${sbw.tests.reports.dir}"/>
+    <junit
+       printsummary="yes"
+       haltonfailure="no"
+       dir="${sbw.classes.dir}"
+       maxmemory="1G"
+    >
+      <formatter type="plain" usefile="true" />
+      <classpath refid="sbw.project.class.path"/>
+      <!-- The junit task doesn't support 'if' so we test for JUnit here -->
+      <batchtest fork="yes" todir="${sbw.tests.reports.dir}" if="junit.present">
+        <fileset
+           dir="${sbw.classes.dir}"
+           includes="**/test/*"
+           excludes="${sbw.tests.excludes}"
+        />
+      </batchtest>
+    </junit>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the API documentation                                       -->
+  <!-- =================================================================== -->
+  <target name="docs" depends="init-sbw" >
+    <mkdir dir="${sbw.javadoc.dir}"/>
+    <javadoc packagenames="${sbw.packages}"
+             excludepackagenames="${sbw.packages.excludes}"
+             sourcepath="${sbw.src.dir}"
+             destdir="${sbw.javadoc.dir}"
+             classpathref="sbw.project.class.path"
+             author="true"
+             version="true"
+             use="true"
+             splitindex="true"
+             noindex="false"
+             windowtitle="${sbw.Name} API"
+             doctitle="${sbw.Name}"
+    />
+  </target>
+ 
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init-sbw">
+    <delete dir="${sbw.classes.dir}"/>
+    <delete file="sbw.jar"/>
+    <delete file="sbw-tests.jar"/>
+  </target>
+
+</project>
+
+<!-- End of file -->
