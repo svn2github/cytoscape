@@ -6,6 +6,7 @@ package fing.util;
 public final class MinIntHeap
 {
 
+  // This must be a non-negative integer.
   private static final int DEFAULT_CAPACITY = 11;
 
   private int[] m_heap;
@@ -219,6 +220,76 @@ public final class MinIntHeap
             swap(heap, 1, m_size);
             percolateDown(heap, 1, m_size - 1);
             return heap[m_size--]; } };
+    }
+  }
+
+  /**
+   * This method has the exact same behavior as orderedElements(boolean),
+   * only that it returns an array instead of an iterator.  The returned
+   * array can be safely modified without having an effect on the
+   * underlying heap (that is, the returned array is not an internal
+   * data structure of this heap; a new array is instantiated every time this
+   * method is called).
+   * @see #orderedElements(boolean)
+   * @deprecated This method is here to test the performance of this heap
+   *   with all methods inlined; this method has been deprecated ever since
+   *   it was first written, and it will be taken out of this class definition
+   *   at liberty.
+   */
+  public final int[] _orderedElements(boolean pruneDuplicates)
+  {
+    final int[] heap = m_heap;
+    int size = m_currentSize;
+    int parentIndex;
+    int childIndex;
+    int temp;
+    if (!m_orderOK) // Fix heap.
+      for (int i = size / 2; i > 0; i--) { // Percolate down.
+        parentIndex = i;
+        for (childIndex = parentIndex * 2; childIndex <= size;
+             parentIndex = childIndex, childIndex *= 2) {
+          if (childIndex + 1 <= size &&
+              heap[childIndex + 1] < heap[childIndex])
+            childIndex++;
+          if (heap[childIndex] < heap[parentIndex]) { // Swap.
+            temp = heap[parentIndex];
+            heap[parentIndex] = heap[childIndex];
+            heap[childIndex] = temp; }
+          else break; } }
+    m_orderOK = false; // That's right - the heap becomes unordered.
+    if (pruneDuplicates)
+    {
+      int dups = 0;
+      while (size > 1) { // Needs to be 1, not 0, for duplicates.
+        temp = heap[1];
+        heap[1] = heap[size];
+        heap[size] = temp;
+        parentIndex = 1;
+        for (childIndex = parentIndex * 2; childIndex <= size - 1;
+             parentIndex = childIndex, childIndex = childIndex * 2) {
+          if (childIndex + 1 <= size &&
+              heap[childIndex + 1] < heap[childIndex])
+            childIndex++;
+          if (heap[childIndex] < heap[parentIndex]) {
+            temp = heap[parentIndex];
+            heap[parentIndex] = heap[childIndex];
+            heap[childIndex] = temp; }
+          else break; }
+        if (heap[1] == heap[size]) dups++;
+        size--; }
+      final int[] returnThis = new int[m_currentSize - dups];
+      final int length = returnThis.length;
+      int index = m_currentSize;
+      int prevValue = heap[index] + 1;
+      for (int i = 0; i < length; i++) {
+        while (heap[index] == prevValue) index--;
+        prevValue = heap[index--];
+        returnThis[i] = prevValue; }
+      return returnThis;
+    }
+    else
+    {
+      return null;
     }
   }
 
