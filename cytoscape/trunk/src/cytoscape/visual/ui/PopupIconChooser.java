@@ -3,7 +3,7 @@
 // $Date$
 // $Author$
 //----------------------------------------------------------------------------
-package cytoscape.visual;
+package cytoscape.visual.ui;
 
 import java.awt.*;
 import java.awt.event.*;

@@ -3,7 +3,7 @@
 // $Date$
 // $Author$
 //----------------------------------------------------------------------------
-package cytoscape.visual;
+package cytoscape.visual.ui;
 //----------------------------------------------------------------------------
 import javax.swing.JButton;
 
@@ -14,8 +14,6 @@ import java.text.*;
 import javax.swing.event.*;
 import java.util.HashMap;
 import y.view.*;
-
-import cytoscape.visual.ui.*;
 //----------------------------------------------------------------------------
 /**
  * Given an Object, figures out the class of the object and creates a JButton

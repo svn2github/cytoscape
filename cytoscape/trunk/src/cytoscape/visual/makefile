@@ -12,8 +12,6 @@ JC=javac
 	$(JC) $<
 
 OBJS = NodeAppearanceCalculator.class \
-       ValueDisplayer.class \
-       PopupIconChooser.class \
        EdgeAppearanceCalculator.class \
        CalculatorCatalog.class \
        VisualMappingManager.class \

@@ -10,10 +10,10 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
-import cytoscape.visual.ValueDisplayer;
 import cytoscape.dialogs.MiscGB;
 import cytoscape.dialogs.GridBagGroup;
 import cytoscape.visual.Network;
+import cytoscape.visual.ui.ValueDisplayer;
 import cytoscape.visual.parsers.ValueParser;
 import cytoscape.visual.parsers.ObjectToString;
 //----------------------------------------------------------------------------

@@ -1,14 +1,19 @@
+//----------------------------------------------------------------------------
+// $Revision$
+// $Date$
+// $Author$
+//----------------------------------------------------------------------------
 package cytoscape.visual.ui;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import cytoscape.visual.ValueDisplayer;
 import cytoscape.dialogs.GridBagGroup;
 import cytoscape.dialogs.MiscGB;
 import y.view.Graph2D;
 import y.view.Graph2DView;
 import y.view.DefaultBackgroundRenderer;
+//----------------------------------------------------------------------------
 /**
  * Defines a class to provide the interface for specifying global defaults such as background color.
  */
