@@ -12,7 +12,7 @@ if($model eq "")
     
     opendir DIR, $dir || die "cannot open $dir\n";
     
-    @files = grep { /$run-.*\.sif$/ && -f "$dir/$_" } readdir(DIR);
+    @files = grep { /$run.*\.sif$/ && -f "$dir/$_" } readdir(DIR);
     
     closedir DIR;
 }
@@ -27,11 +27,11 @@ my $datadir = "/cellar/users/cmak/data";
 
 my $base = "$dir/$run";
 
-$cmd .= " -l embedded ";
-$cmd .= " -n $datadir/orf2name.noa ";
-$cmd .= " -n $datadir/isTF.noa ";
-$cmd .= " -n $datadir/buffering/wt-mms-response.noa ";
-$cmd .= " -n ${base}_type.noa ";
+#$cmd .= " -l embedded ";
+$cmd .= " -n $datadir/all_orfs_go.noa ";
+#$cmd .= " -n $datadir/isTF.noa ";
+$cmd .= " -n $datadir/buffering/wt-mms-response-0.05.noa ";
+$cmd .= " -n ${base}_type_aug.noa ";
 
 $cmd .= " -n $datadir/metabolic-map/metabolic-path.noa ";
 $cmd .= " -n $datadir/cell-cycle/cell-cycle-Jelinsky-Spellman.noa ";
