@@ -660,19 +660,22 @@ public void displayNodeLabels (String key)
 	String canonicalName = getCanonicalNodeName(node);
 	String newName = "";
 	if(!(key.equals("canonicalName"))) {
-	    HashMap attribmap = nodeAttributes.getAttributes(canonicalName);
-	    Object newObjectWithName  = (Object)attribmap.get(key);
-	    if(newObjectWithName != null)
-		newName = newObjectWithName.toString();
-	}
+            if (nodeAttributes.getClass (key) == "string".getClass ())
+               newName = nodeAttributes.getStringValue (key, canonicalName);
+            else {
+              HashMap attribmap = nodeAttributes.getAttributes(canonicalName);
+              Object newObjectWithName  = (Object)attribmap.get(key);
+              if(newObjectWithName != null)
+                newName = newObjectWithName.toString();
+              }
+	} // if key is not canonicalName
 	else
 	    newName = canonicalName;
 	NodeRealizer r = graphView.getGraph2D().getRealizer(node);
 	r.setLabelText (newName);
-    }
+    } // for i
     
 } // displayNodeLabels
-
 //------------------------------------------------------------------------------
 public JMenu getOperationsMenu ()
 {
