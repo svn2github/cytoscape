@@ -157,27 +157,10 @@ public class EdgeTextPanel extends JPanel {
 	    setTitle("Colors for " + edgeKey.getString() + " types");
 	    
 	    intScrollPanel = new JPanel(new GridLayout(0,2));
-	    String controllingAttribName =
-		aMapper.getControllingDomainAttributeName(VizMapperCategories.EDGE_COLOR);
-	    
-	    //System.out.println(">" + edgeKey.getString() + "<  vs  >"
-	    //		   + controllingAttribName + "<");
-	    if(controllingAttribName.equals(edgeKey.getString())) {
-		DiscreteMapper dmColor =
-		    (DiscreteMapper)
-		    aMapper.getValueMapper(VizMapperCategories.EDGE_COLOR);
-		
-		//Map valueMapColor = dmColor.getValueMap();
-		// make a copy.
-		//Map valueMapColor = new HashMap(dmColor.getValueMap());
-		if(theMap==null || !theMapKey.equals(controllingAttribName)) {
-		    System.out.println("In controller, creating");
-		    theMap = new HashMap(dmColor.getValueMap());
-		    theMapKey = controllingAttribName;
-		}
+	    /** setupTheMap does some heavy lifting. */
+	    if(EdgeTextPanel.this.setupTheMap()) {
 		Set allKeys = theMap.keySet();
 		Iterator keyIter = allKeys.iterator();
-		
 		for(;keyIter.hasNext();) {
 		    Object keyObject = keyIter.next();
 		    String keyString = (String)keyObject;
@@ -200,17 +183,23 @@ public class EdgeTextPanel extends JPanel {
 	    else {
 		// this is so that we don't have to create mappings where none existed.
 		return;
-		
 	    }
+	    /** arrangeInterface does some heavy lifting. */
+	    arrangeInterface(intScrollPanel, extScrollPanel);
+	    setLocationRelativeTo (EdgeTextPanel.this);
+	    setVisible (true);
+	    
+	}
+	private void arrangeInterface(JPanel internalScroll, JPanel externalScroll) {
 	    GridBagGroup popupGBG = new GridBagGroup();
 	    JScrollPane listScrollPane =
-		new JScrollPane(intScrollPanel,
+		new JScrollPane(internalScroll,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 	    listScrollPane.setPreferredSize(new Dimension(150,150));
-	    extScrollPanel = new JPanel(new GridLayout(1,1));
-	    extScrollPanel.add(listScrollPane);
-	    MiscGB.insert(popupGBG,extScrollPanel,0,0,2,1);
+	    externalScroll = new JPanel(new GridLayout(1,1));
+	    externalScroll.add(listScrollPane);
+	    MiscGB.insert(popupGBG,externalScroll,0,0,2,1);
 	    
 	    JButton cancelButton = new JButton ("Cancel");
 	    cancelButton.addActionListener (new CancelAction ());
@@ -218,12 +207,9 @@ public class EdgeTextPanel extends JPanel {
 	    JButton applyButton = new JButton ("Apply");
 	    applyButton.addActionListener (new ApplyAction ());
 	    MiscGB.insert(popupGBG,applyButton,1,3);
-	    
+
 	    setContentPane(popupGBG.panel);
 	    pack ();
-	    setLocationRelativeTo (EdgeTextPanel.this);
-	    setVisible (true);
-	    
 	}
 	public class EditAction extends AbstractAction {
 	    EditAction () { super (""); }
@@ -240,7 +226,6 @@ public class EdgeTextPanel extends JPanel {
 		gcdListener.popup();
 		theMap.remove(attribKey.getString());
 		theMap.put(attribKey.getString(),mc.getColor());
-		//ColorToDiscreteDialog.this.dispose ();
 	    }
 	} // EditAction
 	
@@ -260,5 +245,24 @@ public class EdgeTextPanel extends JPanel {
 	} // CancelAction
 	
     } // class ColorToDiscreteDialog
-    
+
+    private boolean setupTheMap() {
+	boolean retval = false;
+	String controllingAttribName =
+	    aMapper.getControllingDomainAttributeName(VizMapperCategories.EDGE_COLOR);
+	//System.out.println(">" + edgeKey.getString() + "<  vs  >"
+	//		   + controllingAttribName + "<");
+	if(controllingAttribName.equals(edgeKey.getString())) {
+	    retval = true;
+	    DiscreteMapper dmColor =
+		(DiscreteMapper)
+		aMapper.getValueMapper(VizMapperCategories.EDGE_COLOR);
+	    if(theMap==null || !theMapKey.equals(controllingAttribName)) {
+		System.out.println("In setupTheMap, creating");
+		theMap = new HashMap(dmColor.getValueMap());
+		theMapKey = controllingAttribName;
+	    }
+	}
+	return retval;
+    }
 } // class EdgeTextPanel
