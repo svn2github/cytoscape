@@ -9,10 +9,10 @@ public class AddRemoveTest
   public static void main(String[] args)
   {
     final DynamicGraph graph = DynamicGraphFactory.instantiateDynamicGraph();
-    final int[][] nodesArr = new int[][] { new int[10000],
-                                           new int[9998],
-                                           new int[10001] };
-    final int[] edges = new int[100000];
+    final int[][] nodesArr = new int[][] { new int[100000],
+                                           new int[99980],
+                                           new int[100010] };
+    final int[] edges = new int[1000000];
     final int iterations = 10000;
     for (int foo = 0; foo < iterations; foo++)
     {
