@@ -35,14 +35,14 @@
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
     <td><a href="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab/">Trey Ideker</a></td>
     <td><a href="http://www.cbio.mskcc.org/">Chris Sander</a></td>
-    <td><a href="http://www.systemsbiology.org/Default.aspx?pagename=hamidbolouri">Hamid Bolouri</a></td>
+    <td><a href="http://www.systemsbiology.org/Default.aspx?pagename=leroyhood">Leroy Hood</a></td>
     <td><a href="http://www.gmd.de/People/Benno.Schwikowski/">Benno<br />Schwikowski<a/></td>
   </tr>
   <tr>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
     <td><img src="people_photos/trey.jpg"></img></td>
     <td><img src="people_photos/chris_s.jpg"></img></td>
-    <td><img src="people_photos/hamid.jpg"></img></td>
+    <td><img src="people_photos/hood.jpg"></img></td>
     <td><img src="people_photos/benno.jpg"></img></td>
   </tr>
 </table>
