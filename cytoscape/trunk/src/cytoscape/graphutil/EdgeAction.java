@@ -49,36 +49,139 @@ public class EdgeAction {
     final PEdgeView ev = ( PEdgeView )node;
 
     JMenu type_menu = new JMenu( "Source End Type" );
-    type_menu.add( new JMenuItem( new AbstractAction( "Arrow" ) {
+    
+     type_menu.add( new JMenuItem( new AbstractAction( "None" ) {
+          public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  ev.setSourceEdgeEnd( PEdgeView.NO_END );
+                } } ); } } ) );
+
+     type_menu.add( new JMenuItem( new AbstractAction( "WHITE_DELTA" ) {
+          public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  ev.setSourceEdgeEnd( PEdgeView.WHITE_DELTA );
+                } } ); } } ) );
+
+     type_menu.add( new JMenuItem( new AbstractAction( "BLACK_DELTA" ) {
+          public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  ev.setSourceEdgeEnd( PEdgeView.BLACK_DELTA );
+                } } ); } } ) );
+
+     type_menu.add( new JMenuItem( new AbstractAction( "EDGE_COLOR_DELTA" ) {
+          public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  ev.setSourceEdgeEnd( PEdgeView.EDGE_COLOR_DELTA );
+                } } ); } } ) );
+
+     type_menu.add( new JMenuItem( new AbstractAction( "WHITE_ARROW" ) {
+          public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  ev.setSourceEdgeEnd( PEdgeView.WHITE_ARROW );
+                } } ); } } ) );
+
+     type_menu.add( new JMenuItem( new AbstractAction( "BLACK_ARROW" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
                   ev.setSourceEdgeEnd( PEdgeView.BLACK_ARROW );
                 } } ); } } ) );
-  
-    type_menu.add( new JMenuItem( new AbstractAction( "Circle" ) {
+
+     type_menu.add( new JMenuItem( new AbstractAction( "EDGE_COLOR_ARROW" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
-                  ev.setSourceEdgeEnd( PEdgeView.BLACK_CIRCLE );
+                  ev.setSourceEdgeEnd( PEdgeView.EDGE_COLOR_ARROW );
                 } } ); } } ) );
-    
-    type_menu.add( new JMenuItem( new AbstractAction( "Diamond" ) {
+
+
+      type_menu.add( new JMenuItem( new AbstractAction( "WHITE_DIAMOND" ) {
+          public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  ev.setSourceEdgeEnd( PEdgeView.WHITE_DIAMOND );
+                } } ); } } ) );
+
+     type_menu.add( new JMenuItem( new AbstractAction( "BLACK_DIAMOND" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
                   ev.setSourceEdgeEnd( PEdgeView.BLACK_DIAMOND );
                 } } ); } } ) );
-    type_menu.add( new JMenuItem( new AbstractAction( "T" ) {
+
+     type_menu.add( new JMenuItem( new AbstractAction( "EDGE_COLOR_DIAMOND" ) {
+          public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  ev.setSourceEdgeEnd( PEdgeView.EDGE_COLOR_DIAMOND );
+                } } ); } } ) );
+
+     
+
+     type_menu.add( new JMenuItem( new AbstractAction( "WHITE_CIRCLE" ) {
+          public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  ev.setSourceEdgeEnd( PEdgeView.WHITE_CIRCLE );
+                } } ); } } ) );
+
+     type_menu.add( new JMenuItem( new AbstractAction( "BLACK_CIRCLE" ) {
+          public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  ev.setSourceEdgeEnd( PEdgeView.BLACK_CIRCLE );
+                } } ); } } ) );
+
+     type_menu.add( new JMenuItem( new AbstractAction( "EDGE_COLOR_CIRCLE" ) {
+          public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  ev.setSourceEdgeEnd( PEdgeView.EDGE_COLOR_CIRCLE );
+                } } ); } } ) );
+
+  
+     type_menu.add( new JMenuItem( new AbstractAction( "WHITE_T" ) {
+          public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  ev.setSourceEdgeEnd( PEdgeView.WHITE_T );
+                } } ); } } ) );
+
+     type_menu.add( new JMenuItem( new AbstractAction( "BLACK_T" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
                   ev.setSourceEdgeEnd( PEdgeView.BLACK_T );
                 } } ); } } ) );
+
+     type_menu.add( new JMenuItem( new AbstractAction( "EDGE_COLOR_T" ) {
+          public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  ev.setSourceEdgeEnd( PEdgeView.EDGE_COLOR_T );
+                } } ); } } ) );
+
     return type_menu;
   }
 
