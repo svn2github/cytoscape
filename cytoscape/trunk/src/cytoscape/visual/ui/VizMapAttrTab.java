@@ -224,7 +224,7 @@ public class VizMapAttrTab extends VizMapTab {
 	MiscGB.insert(mapPanelGBG, renCalc, 2, 1, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
 
 	// remove calculator button
-	JButton rmCalc = new JButton("Remove");
+	JButton rmCalc = new JButton("Delete");
 	rmCalc.addActionListener(new RmCalcListener());
 	MiscGB.insert(mapPanelGBG, rmCalc, 3, 1, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
 
@@ -457,7 +457,7 @@ public class VizMapAttrTab extends VizMapTab {
 		    }
 		    errMsg.append("</ul>");
 		}
-		errMsg.append("</ul><br>Do you still want to remove this calculator?");
+		errMsg.append("</ul><br>Do you still want to delete this calculator?");
 
 		JEditorPane errPane = new JEditorPane("text/html", errMsg.toString());
 		errPane.setEditable(false);
@@ -470,7 +470,15 @@ public class VizMapAttrTab extends VizMapTab {
 							 JOptionPane.WARNING_MESSAGE);
 		if (conf == JOptionPane.NO_OPTION)
 		    return;
-	    }	 
+	    } else {
+                //let's still make sure the user really wanted to do this
+                String s = "Are you sure you want to permanently delete this calculator?";
+                int conf = JOptionPane.showConfirmDialog(mainUIDialog, s,
+                                                         "Confirm Remove Calculator",
+                                                         JOptionPane.YES_NO_OPTION);
+                if (conf == JOptionPane.NO_OPTION) {return;}
+            }
+            
 	    Calculator temp = currentCalculator;
 	    currentCalculator = null;
 	    catalog.removeCalculator(temp); // triggers events that switch the calculator
