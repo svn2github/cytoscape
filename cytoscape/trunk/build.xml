@@ -14,6 +14,16 @@
 <project name="Cytoscape" default="compile" basedir=".">
 
     <!-- ======================================================= -->
+    <!--  Declare All Cytoscape Specific Ant Extensions -->
+    <!-- ======================================================= -->
+    <target name="declare_extensions" depends="compile">
+    <taskdef name="manifest_creator"
+        classname="cytoscape.util.ManifestCreator">
+        <classpath refid="classpath"/>
+        </taskdef>
+    </target>
+
+    <!-- ======================================================= -->
     <!-- Define Directories and other environment variables      -->
     <!-- ======================================================= -->
 
@@ -32,9 +42,6 @@
 
     <!-- Temporary Distribution directory -->
     <property name="dist.dir" value="${build.dir}/dist"/>
-
-    <!-- Manifest Dir -->
-    <property name="manifest.dir" value="manifest"/>
 
     <!-- Global "magic" property for <javac> -->
     <property name="build.compiler" value="modern"/>
@@ -66,6 +73,12 @@
         <fileset dir="${lib.dir}">
             <include name="**/*.jar"/>
         </fileset>
+    </path>
+
+    <!-- Classpath with Cytoscape.jar  -->
+    <!-- Note that Cytoscape.jar Manifest references JARS in /lib directory  -->
+    <path id="classpath_jar">
+        <pathelement location="./cytoscape.jar"/>
     </path>
 
     <!-- ======================================================= -->
@@ -169,14 +182,22 @@
     </target>
 
     <!-- ======================================================= -->
-    <!-- Run Cytoscape with GINY                                 -->
+    <!-- Run Cytoscape                                           -->
     <!-- ======================================================= -->
 
-    <!--  Target to Run Cytoscape using giny-->
-    <target name="run" depends="compile" description="Runs Cytoscape/Giny.">
-        <java classname="cytoscape.CyMain" classpathref="classpath"
+    <!--  Target to Run Cytoscape -->
+    <target name="run" depends="jar" description="Runs Cytoscape.">
+        <java classname="cytoscape.CyMain" classpathref="classpath_jar"
               fork="true">
-            <arg value="-y giny"/>
+        </java>
+    </target>
+
+    <!--  Target to Run Cytoscape, without regenerating Manifest  -->
+    <!--  File and JAR File -->
+    <target name="run_quick"
+        description="Runs Cytoscape without Regeneration of all files.">
+        <java classname="cytoscape.CyMain" classpathref="classpath_jar"
+              fork="true">
         </java>
     </target>
 
@@ -244,14 +265,12 @@
          </javadoc>
     </target>
 
-
-
     <!-- ======================================================= -->
     <!-- Create the Cytoscape Jar file                           -->
     <!-- ======================================================= -->
 
     <!--  Target to Create Cytoscape Jar File  -->
-    <target name="jar" depends="compile"
+    <target name="jar" depends="compile, manifest"
             description="Creates Cytoscape Jar File.">
 
         <echo>
@@ -260,8 +279,8 @@
             ***********************************************
         </echo>
 
-        <jar destfile="${build.dir}/just-cytoscape.jar"
-             manifest="${manifest.dir}/just-cytoscape.manifest">
+        <jar destfile="cytoscape.jar"
+             manifest="${build.dir}/cytoscape.manifest">
             <fileset dir="${build.classes}"/>
         </jar>
 
@@ -300,7 +319,7 @@
 
         <echo>
             ---------------------------------------
-            Copying over all necessary JAR files
+            Copying over all necessary JAR files.
             ---------------------------------------
         </echo>
 
@@ -328,7 +347,7 @@
         <!-- Copy over start scripts -->
         <echo>
             ---------------------------------------
-            Copying over all OS-specific scripts
+            Copying over all OS-specific scripts.
             ---------------------------------------
         </echo>
         <copy file="bin/cytoscape.bat" todir="${release.dir}"/>
@@ -350,7 +369,7 @@
         <!-- Copy over Txt/PDF files -->
         <echo>
             ---------------------------------------
-            Copying over user documentation and Cytoscape License
+            Copying over user documentation and Cytoscape License.
             ---------------------------------------
         </echo>
 
@@ -396,7 +415,7 @@
         <!-- Copy over Third Party Licenses -->
         <echo>
             ---------------------------------------
-            Copying over third party licenses
+            Copying over third party licenses.
             ---------------------------------------
         </echo>
         <mkdir dir="${release.dir}/licenses"/>
@@ -410,7 +429,7 @@
         <!-- Copy over Release PlugIns -->
         <echo>
             ---------------------------------------
-            Copying over PlugIns
+            Copying over PlugIns.
             ---------------------------------------
         </echo>
         <copy todir="${release.dir}/plugins">
@@ -508,4 +527,19 @@
         <echo message="The release directory should be renamed to Cytoscape2.0, placed in a"/>
         <echo message="disk image (.dmg, created by Disk Utility) and zipped up for release."/>
     </target>
+
+    <!-- ======================================================= -->
+    <!-- Manfiest Target                                         -->
+    <!-- Automatically creates Cytoscape Manifest File, based on -->
+    <!-- JAR Files located in cytoscape.lib                      -->
+    <!-- ======================================================= -->
+    <target name="manifest" depends="declare_extensions">
+        <echo>
+            ***********************************************
+            Creating Cytoscape Manifest File
+            ***********************************************
+        </echo>
+        <manifest_creator/>
+    </target>
+
 </project>
