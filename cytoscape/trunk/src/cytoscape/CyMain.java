@@ -129,6 +129,13 @@ public class CyMain implements WindowListener {
     String defaultSpecies = Semantics.getDefaultSpecies( null, cytoscapeObj );
     splashScreen.advance(25);
 
+
+
+    String cp =  System.getProperty("java.class.path",".");
+    System.out.println( "User classpath: "+cp );
+    
+
+
     //TODO: make CytoscapeDesktop find out about everything loaded when it starts up.
     //CytoscapeDesktop cd = new CytoscapeDesktop();
     Cytoscape.getDesktop();

@@ -548,6 +548,8 @@ public abstract class Cytoscape {
       p_id = parent.getIdentifier();
     }
 
+    
+    System.out.println( "applying naming servies to: "+network.getIdentifier() );
     Semantics.applyNamingServices( network, getCytoscapeObj() );
 
     firePropertyChange( NETWORK_CREATED,

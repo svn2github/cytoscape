@@ -227,7 +227,15 @@ public interface CyNetwork extends GraphPerspective {
    */
   public boolean setEdgeAttributeValue ( int edge, String attribute, Object value );
  
- 
+  /**
+   * Deletes the attribute with the given name from node attributes
+   */
+  public void deleteNodeAttribute (String attribute);
+
+  /**
+   * Deleted the attribute with the given name from edge attributes
+   */
+  public void deleteEdgeAttribute (String attribute);
 
   //--------------------//
   // Network Client Data

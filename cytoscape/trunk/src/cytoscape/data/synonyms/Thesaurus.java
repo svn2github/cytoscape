@@ -79,14 +79,16 @@ public int canonicalNameCount ()
 //-----------------------------------------------------------------------------
 public void add (String canonicalName, String commonName)
 {
-  if (canonicalToCommon.containsKey (canonicalName))
-    throw new IllegalArgumentException ("duplicate canonicalName: " + canonicalName);
+  if (canonicalToCommon.containsKey (canonicalName) ) {
+    addAlternateCommonName( canonicalName, commonName );
+  }
+  // throw new IllegalArgumentException ("duplicate canonicalName: " + canonicalName);
 
-  if (commonToCanonical.containsKey (commonName))
-    System.out.println ("commonName " + commonName + " already has canonicalName " +
-                        commonToCanonical.get (commonName) + " skipping new map: " +
-                        commonName + " -> " + canonicalName);
-  else
+  if (commonToCanonical.containsKey (commonName)) {
+    //System.out.println ("commonName " + commonName + " already has canonicalName " +
+    //                    commonToCanonical.get (commonName) + " skipping new map: " +
+    //                    commonName + " -> " + canonicalName);
+  } else
     canonicalToCommon.put (canonicalName, commonName);
 
   commonToCanonical.put (commonName, canonicalName);
@@ -138,6 +140,11 @@ public String getCanonicalName (String commonName)
 //-----------------------------------------------------------------------------
 public String [] getAllCommonNames (String canonicalName)
 {
+
+  //  for ( Iterator i = canonicalToAll.keySet().iterator(); i.hasNext(); ) {
+  //  System.out.println( "Key: "+i.next().toString() );
+  // }
+
   if (canonicalToAll.containsKey (canonicalName)) {
     Vector vector = (Vector) canonicalToAll.get (canonicalName);
     return (String []) vector.toArray (new String [0]);

@@ -109,7 +109,7 @@
         <delete dir="${release.dir}"/>
         <delete dir="${zip_release.dir}"/>
         <delete file="lib/cytoscape.jar"/>
-        <delete dir="${mac_app.dir}"/>
+        <!-- delete dir="${mac_app.dir}"/ -->
         <delete>
             <fileset dir="." includes="*.log"/>
         </delete>

@@ -467,6 +467,19 @@ public class ColtCyNetwork
 
   }
  
+  /**
+   * Deletes the attribute with the given name from node attributes
+   */
+  public void deleteNodeAttribute (String attribute){
+    Cytoscape.getNodeNetworkData().deleteAttribute(attribute);
+  }
+  
+  /**
+   * Deletes the attribute with the given name from edge attributes
+   */
+  public void deleteEdgeAttribute (String attribute){
+    Cytoscape.getEdgeNetworkData().deleteAttribute(attribute);
+  }
 
 
 

@@ -51,7 +51,7 @@ public class CytoscapeConfig
   // system and user property files use the same name
   protected Properties props;
   protected Integer viewThreshold;
-  
+  protected boolean loadUserClasspath = false;
 
   static public StringBuffer debugLog = new StringBuffer ();
 
@@ -86,6 +86,10 @@ public class CytoscapeConfig
     return returnVal;
   }
  
+  public boolean getLoadUserClasspath () {
+    return loadUserClasspath;
+  }
+
   public int getViewThreshold () {
     if ( viewThreshold == null )
       return 500;
@@ -576,7 +580,8 @@ public class CytoscapeConfig
       return;
 
     LongOpt[] longopts = new LongOpt[] {
-      new LongOpt ("VT",  LongOpt.REQUIRED_ARGUMENT, null, 0) 
+      new LongOpt ("VT",  LongOpt.REQUIRED_ARGUMENT, null, 0) ,
+      new LongOpt ("classpath",  LongOpt.REQUIRED_ARGUMENT, null, 1) 
     };
     Getopt g = new Getopt ("cytoscape", commandLineArguments, argSpecificationString, longopts);
     g.setOpterr(false); // We'll do our own error handling
@@ -586,6 +591,10 @@ public class CytoscapeConfig
       switch (c) {
       case 0:
         viewThreshold = new Integer(g.getOptarg());
+        break;
+      case 1:
+        loadUserClasspath = true;
+        break;
       case 't':
         viewType = g.getOptarg();
         break;

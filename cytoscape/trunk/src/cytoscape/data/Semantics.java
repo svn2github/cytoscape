@@ -159,22 +159,69 @@ public static Set getSpeciesInNetwork( cytoscape.CyNetwork network) {
 public static void assignCommonNames( cytoscape.CyNetwork network, BioDataServer bioDataServer) {
     if (network == null || bioDataServer == null) {return;}
     
-    String callerID = "Semantics.assignCommonNames";
-    //network.beginActivity(callerID);
+    System.out.println( "Assign Common Names" );
     GraphObjAttributes nodeAttributes = Cytoscape.getNodeNetworkData();
-    String[] canonicalNames = nodeAttributes.getObjectNames(CANONICAL_NAME);
-    for (int i=0; i<canonicalNames.length; i++) {
-        String canonicalName = canonicalNames[i];
-        String species = nodeAttributes.getStringValue(SPECIES, canonicalName);
-        if (species == null) {continue;}
-        String[] synonyms = bioDataServer.getAllCommonNames(species, canonicalName);
-        if (synonyms == null || synonyms.length == 0) {
-            nodeAttributes.set(COMMON_NAME, canonicalName, canonicalName);
-        } else {
-            nodeAttributes.set(COMMON_NAME, canonicalName, synonyms[0]);
-            //System.out.println( canonicalName +" :: "+synonyms[0] );
-        }
+    String species = Semantics.getDefaultSpecies( network, Cytoscape.getCytoscapeObj() );
+    List nodes = network.nodesList();
+    for ( Iterator i = nodes.iterator(); i.hasNext(); ) {
+
+      CyNode node = ( CyNode )i.next();
+      //System.out.println( "Node: "+node.getIdentifier() );
+      String name = node.getIdentifier().toUpperCase();
+      String cname = bioDataServer.getCanonicalName( species, name );
+     
+      // name was not canonical name
+      if ( name != cname )
+        node.setIdentifier( cname );
+
+      Cytoscape.setNodeAttributeValue( node, CANONICAL_NAME, cname );
+      
+
+      String[] synonyms = bioDataServer.getAllCommonNames(species, cname);
+      StringBuffer concat = new StringBuffer();
+      String common_name = null;
+      for ( int j = 0; j < synonyms.length; ++j ) {
+        // System.out.println( "\t"+cname +" syn: "+synonyms[j] );
+        Cytoscape.setNodeAttributeValue( node, "ALIAS "+j, synonyms[j] );
+        concat.append( synonyms[j]+" " );
+        if ( common_name == null )
+          common_name = synonyms[j];
+      }
+      if ( common_name == null )
+        common_name = cname;
+      Cytoscape.setNodeAttributeValue( node, "ALIAS", concat.toString() );
+      Cytoscape.setNodeAttributeValue( node, "NAME", common_name );
     }
+
+
+
+
+   //  //network.beginActivity(callerID);
+//     //GraphObjAttributes nodeAttributes = Cytoscape.getNodeNetworkData();
+//     String[] canonicalNames = nodeAttributes.getObjectNames(CANONICAL_NAME);
+//     for (int i=0; i<canonicalNames.length; i++) {
+//         String canonicalName = canonicalNames[i];
+//         //String species = nodeAttributes.getStringValue(SPECIES, canonicalName);
+//         if (species == null) {continue;}
+
+//         System.out.println( "Getting synonymns for: "+canonicalName.toUpperCase() );
+
+
+//         String[] synonyms = bioDataServer.getAllCommonNames(species, canonicalName.toUpperCase());
+
+//         for ( int j = 0; j < synonyms.length; ++j ) {
+          
+//           System.out.println( canonicalName +" syn: "+synonyms[j] );
+
+//         }
+
+//         if (synonyms == null || synonyms.length == 0) {
+//             nodeAttributes.set(COMMON_NAME, canonicalName, canonicalName);
+//         } else {
+//             nodeAttributes.set(COMMON_NAME, canonicalName, synonyms[0]);
+//             System.out.println( canonicalName +" :: "+synonyms[0] );
+//         }
+//     }
     //network.endActivity(callerID);
 }
 //-------------------------------------------------------------------------
