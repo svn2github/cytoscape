@@ -55,6 +55,9 @@ public class ExpressionDataDialog extends JDialog {
     Color pt2ColorGT;
 
     JLabel maxGTColor, maxColor, midColor, minColor, minLTColor;
+    JButton minLTColorButton, minColorButton;
+    JButton midColorButton;
+    JButton maxColorButton, maxGTColorButton;
     JTextField minPtText, midPtText, maxPtText;
     double minPtNum, midPtNum, maxPtNum;
 
@@ -119,9 +122,9 @@ public ExpressionDataDialog (Frame parentFrame,
 
     private void initializeColors() {
 	pt0ColorLT = getMinLTColor();
-	pt0Color = getMinGTColor();
+	pt0Color = getMinColor();
 	pt1Color = getMidColor();
-	pt2Color = getMaxLTColor();
+	pt2Color = getMaxColor();
 	pt2ColorGT = getMaxGTColor();
     }
 
@@ -244,7 +247,7 @@ class SpawnMinLTColorDialogListener implements ActionListener {
     }
 }
 
-class SpawnMinGTColorDialogListener implements ActionListener {
+class SpawnMinColorDialogListener implements ActionListener {
     
     public void actionPerformed(ActionEvent e) {
 	// Args are parent component, title, initial color
@@ -272,7 +275,7 @@ class SpawnMidColorDialogListener implements ActionListener {
     }
 }
 
-class SpawnMaxLTColorDialogListener implements ActionListener {
+class SpawnMaxColorDialogListener implements ActionListener {
     
     public void actionPerformed(ActionEvent e) {
 	// Args are parent component, title, initial color
@@ -365,86 +368,79 @@ private JPanel createRSNPanel() {
 
 private JPanel createColorPanel() {
   JPanel colorPanel = new JPanel ();
-  GridBagLayout colorGridbag = new GridBagLayout();
-  GridBagConstraints colorConstraints = new GridBagConstraints();
-  colorPanel.setLayout (colorGridbag);
+  GridBagLayout gridbag = new GridBagLayout();
+  GridBagConstraints constraints = new GridBagConstraints();
+  colorPanel.setLayout (gridbag);
 
-  JButton minLTColorButton = new JButton ("min LT Color");
-  minLTColorButton.addActionListener (new SpawnMinLTColorDialogListener ());
-  colorConstraints.gridx=0;
-  colorConstraints.gridy=0;
-  colorGridbag.setConstraints(minLTColorButton,colorConstraints);
-  colorPanel.add (minLTColorButton);
-  // the label
-  minLTColor = new JLabel("    ");
-  minLTColor.setOpaque(true);
-  minLTColor.setBackground(pt0ColorLT);
-  colorConstraints.gridx=1;
-  colorConstraints.gridy=0;
-  colorGridbag.setConstraints(minLTColor,colorConstraints);
-  colorPanel.add (minLTColor);
+  initColorButtonsAndColors();
 
-  JButton minGTColorButton = new JButton ("min GT Color");
-  minGTColorButton.addActionListener (new SpawnMinGTColorDialogListener ());
-  colorConstraints.gridx=0;
-  colorConstraints.gridy=1;
-  colorGridbag.setConstraints(minGTColorButton,colorConstraints);
-  colorPanel.add (minGTColorButton);
-  // the label
-  minColor = new JLabel("    ");
-  minColor.setOpaque(true);
-  minColor.setBackground(pt0Color);
-  colorConstraints.gridx=1;
-  colorConstraints.gridy=1;
-  colorGridbag.setConstraints(minColor,colorConstraints);
-  colorPanel.add (minColor);
-
-  JButton midColorButton = new JButton ("mid Color");
-  midColorButton.addActionListener (new SpawnMidColorDialogListener ());
-  colorConstraints.gridx=0;
-  colorConstraints.gridy=2;
-  colorGridbag.setConstraints(midColorButton,colorConstraints);
-  colorPanel.add (midColorButton);
-  // the label
-  midColor = new JLabel("    ");
-  midColor.setOpaque(true);
-  midColor.setBackground(pt1Color);
-  colorConstraints.gridx=1;
-  colorConstraints.gridy=2;
-  colorGridbag.setConstraints(midColor,colorConstraints);
-  colorPanel.add (midColor);
-
-  JButton maxLTColorButton = new JButton ("max LT Color");
-  maxLTColorButton.addActionListener (new SpawnMaxLTColorDialogListener ());
-  colorConstraints.gridx=0;
-  colorConstraints.gridy=3;
-  colorGridbag.setConstraints(maxLTColorButton,colorConstraints);
-  colorPanel.add (maxLTColorButton);
-  // the label
-  maxColor = new JLabel("    ");
-  maxColor.setOpaque(true);
-  maxColor.setBackground(pt2Color);
-  colorConstraints.gridx=1;
-  colorConstraints.gridy=3;
-  colorGridbag.setConstraints(maxColor,colorConstraints);
-  colorPanel.add (maxColor);
-
-  JButton maxGTColorButton = new JButton ("max GT Color");
-  maxGTColorButton.addActionListener (new SpawnMaxGTColorDialogListener ());
-  colorConstraints.gridx=0;
-  colorConstraints.gridy=4;
-  colorGridbag.setConstraints(maxGTColorButton,colorConstraints);
-  colorPanel.add (maxGTColorButton);
-  // the label
-  maxGTColor = new JLabel("    ");
-  maxGTColor.setOpaque(true);
-  maxGTColor.setBackground(pt2ColorGT);
-  colorConstraints.gridx=1;
-  colorConstraints.gridy=4;
-  colorGridbag.setConstraints(maxGTColor,colorConstraints);
-  colorPanel.add (maxGTColor);
-
+  int yPos=0;
+  insertColorItem(yPos, gridbag, constraints,
+		  colorPanel, minLTColor, minLTColorButton);
+  yPos++;
+  insertColorItem(yPos, gridbag, constraints,
+		  colorPanel, minColor, minColorButton);
+  yPos++;
+  insertColorItem(yPos, gridbag, constraints,
+		  colorPanel, midColor, midColorButton);
+  yPos++;
+  insertColorItem(yPos, gridbag, constraints,
+		  colorPanel, maxColor, maxColorButton);
+  yPos++;
+  insertColorItem(yPos, gridbag, constraints,
+		  colorPanel, maxGTColor, maxGTColorButton);
+  
   return colorPanel;
+}
+
+private void insertColorItem(int yPos,
+			     GridBagLayout gridbag,
+			     GridBagConstraints constraints,
+			     JPanel colorPanel,
+			     JLabel colorLabel,
+			     JButton colorButton) {
+  constraints.gridx=0;
+  constraints.gridy=yPos;
+  gridbag.setConstraints(colorButton,constraints);
+  colorPanel.add (colorButton);
+  // the label
+  constraints.gridx=1;
+  constraints.gridy=yPos;
+  gridbag.setConstraints(colorLabel,constraints);
+  colorPanel.add (colorLabel);
+    
+}
+private void initColorButtonsAndColors() {
+
+    minLTColorButton = new JButton ("min LT Color");
+    minLTColorButton.addActionListener (new SpawnMinLTColorDialogListener ());
+    minLTColor = new JLabel("    ");
+    minLTColor.setOpaque(true);
+    minLTColor.setBackground(pt0ColorLT);
+  
+    minColorButton = new JButton ("min GT Color");
+    minColorButton.addActionListener (new SpawnMinColorDialogListener ());
+    minColor = new JLabel("    ");
+    minColor.setOpaque(true);
+    minColor.setBackground(pt0Color);
+
+    midColorButton = new JButton ("mid Color");
+    midColorButton.addActionListener (new SpawnMidColorDialogListener ());
+    midColor = new JLabel("    ");
+    midColor.setOpaque(true);
+    midColor.setBackground(pt1Color);
+
+    maxColorButton = new JButton ("max LT Color");
+    maxColorButton.addActionListener (new SpawnMaxColorDialogListener ());
+    maxColor = new JLabel("    ");
+    maxColor.setOpaque(true);
+    maxColor.setBackground(pt2Color);
+
+    maxGTColorButton = new JButton ("max GT Color");
+    maxGTColorButton.addActionListener (new SpawnMaxGTColorDialogListener ());
+    maxGTColor = new JLabel("    ");
+    maxGTColor.setOpaque(true);
+    maxGTColor.setBackground(pt2ColorGT);
 }
 
 private JPanel createADPanel() {
@@ -505,7 +501,7 @@ private JPanel createADPanel() {
 	}
     }
 
-    private Color getMinGTColor() {
+    private Color getMinColor() {
 	Color tempColor;
 
 	ContinuousMapper cm =
@@ -569,7 +565,7 @@ private JPanel createADPanel() {
 	}
     }
 
-    private Color getMaxLTColor() {
+    private Color getMaxColor() {
 	Color tempColor;
 
 	ContinuousMapper cm =
