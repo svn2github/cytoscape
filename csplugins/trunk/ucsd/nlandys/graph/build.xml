@@ -19,6 +19,7 @@
       <fileset dir="${src.dir}">
         <include name="cytoscape/graph/layout/*.java"/>
         <include name="cytoscape/graph/layout/algorithm/*.java"/>
+        <include name="cytoscape/graph/layout/impl/*.java"/>
       </fileset>
       <classpath>
         <fileset dir="${lib.dir}">
