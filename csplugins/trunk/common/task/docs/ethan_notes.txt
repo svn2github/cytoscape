@@ -1,10 +1,8 @@
 Task Interface:
 ---------------
-Discuss Stoppable/Haltable, etc.
-Create Package HTML Javadocs
-Get Screenshots
-Update IntelliJ to run JUnit Tests
-
+[DONE] Discuss Stoppable/Haltable, etc.
+[DONE] Create Package HTML Javadocs
+[DONE] Get Screenshots
 [DONE] Run Ant Checkstyle
 [DONE] Update Build file to run samples.
 [DONE] Update Build file to use junit.jar
