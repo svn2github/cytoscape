@@ -71,6 +71,14 @@ public final class AllGraphPerspectiveMethodsTest
     int minEdgeInx = 0;
     for (int i = 0; i < rootEdgeInx.length; i++)
       minEdgeInx = Math.min(minEdgeInx, rootEdgeInx[i]);
+    // Restore and hide nodes and edges.
+    Node node2NotInPersp = root.getNode(root.createNode());
+    Edge edge3NotInPersp = root.getEdge
+      (root.createEdge(nodeInx[1], nodeInx[2], true));
+    persp.restoreNode(node2NotInPersp);
+    persp.restoreEdge(edge3NotInPersp);
+    persp.hideNode(node2NotInPersp);
+    persp.hideEdge(edge3NotInPersp);
 
     // Not testing GraphPerspectiveChangeListener methods.
 
