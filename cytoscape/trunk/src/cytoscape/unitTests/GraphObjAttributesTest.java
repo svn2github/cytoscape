@@ -815,10 +815,17 @@ public void testDeleteAttributeForOneGraphObject () throws Exception
 
   attributes.set (nodeName, bundle);
   assertTrue (attributes.numberOfAttributes () == 3);
+  attributes.append ("homology", "GAL80", new Double (888.88));
 
+  assertTrue (attributes.hasAttribute ("homology", "GAL80"));
   assertTrue (attributes.hasAttribute ("homology", "GAL4"));
+  assertTrue (attributes.hasAttribute ("count", "GAL4"));
+
   attributes.deleteAttribute ("homology", "GAL4");
+
   assertTrue (!attributes.hasAttribute ("homology", "GAL4"));
+  assertTrue (attributes.hasAttribute ("homology", "GAL80"));
+  assertTrue (attributes.hasAttribute ("count", "GAL4"));
 
 } // testDeleteAttributeForOneGraphObject
 //-------------------------------------------------------------------------
