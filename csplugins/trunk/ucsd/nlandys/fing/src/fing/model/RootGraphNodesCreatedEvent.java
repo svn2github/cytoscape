@@ -9,7 +9,7 @@ final class RootGraphNodesCreatedEvent extends RootGraphChangeEventAdapter
   private final RootGraph m_rootGraph;
   private final int[] m_createdNodeInx;
 
-  // Note that no copy of the array createdNodeIndices is made - the exact
+  // Note that no copy of the array createdNodeInx is made - the exact
   // array reference is kept.  However, copies are made in the return values
   // of methods of this class.
   RootGraphNodesCreatedEvent(RootGraph rootGraph, int[] createdNodeInx)
