@@ -27,6 +27,7 @@ import cytoscape.data.*;
 import cytoscape.vizmap.*;
 import cytoscape.dialogs.NewSlider;
 import cytoscape.util.MutableColor;
+import cytoscape.dialogs.GeneralColorDialogListener;
 //import csplugins.activePathsNew.data.ActivePathFinderParameters;
 //--------------------------------------------------------------------------------------
 public class VisualPropertiesDialog extends JDialog {
@@ -66,21 +67,21 @@ public VisualPropertiesDialog (Frame parentFrame,
   mainPanel.add (applyButton);
 
   JButton edgePPButton = new JButton ("Edge Coloring: PP");
-  edgePPButton.addActionListener (new SpawnGeneralColorDialogListener(ppColor,"Choose a P-P Edge Color"));
+  edgePPButton.addActionListener (new GeneralColorDialogListener(this,ppColor,"Choose a P-P Edge Color"));
   c.gridx=0;
   c.gridy=1;
   gridbag.setConstraints(edgePPButton,c);
   mainPanel.add (edgePPButton);
 
   JButton edgePDButton = new JButton ("Edge Coloring: PD");
-  edgePDButton.addActionListener (new SpawnGeneralColorDialogListener(pdColor,"Choose a P-D Edge Color"));
+  edgePDButton.addActionListener (new GeneralColorDialogListener(this,pdColor,"Choose a P-D Edge Color"));
   c.gridx=1;
   c.gridy=1;
   gridbag.setConstraints(edgePDButton,c);
   mainPanel.add (edgePDButton);
   
   JButton colorButton = new JButton("Choose Node Color");
-  colorButton.addActionListener(new SpawnGeneralColorDialogListener(nColor,"Choose a Node Color"));
+  colorButton.addActionListener(new GeneralColorDialogListener(this,nColor,"Choose a Node Color"));
   c.gridx=0;
   c.gridy=2;
   gridbag.setConstraints(colorButton,c);
@@ -88,7 +89,7 @@ public VisualPropertiesDialog (Frame parentFrame,
 
   JButton bgColorButton
       = new JButton("Choose Background Color");
-  bgColorButton.addActionListener(new SpawnGeneralColorDialogListener(bgColor,"Choose a Background Color"));
+  bgColorButton.addActionListener(new GeneralColorDialogListener(this,bgColor,"Choose a Background Color"));
   c.gridx=0;
   c.gridy=3;
   gridbag.setConstraints(bgColorButton,c);
@@ -116,27 +117,6 @@ public class ApplyAction extends AbstractAction {
 
 } // QuitAction
 
-
-class SpawnGeneralColorDialogListener implements ActionListener {
-    private MutableColor returnColor;
-    private String title;
-    public SpawnGeneralColorDialogListener(MutableColor writeToThisColor, String title) {
-	super ();
-	//System.out.println("writecolor:" + writeToThisColor);
-	returnColor = writeToThisColor;
-	this.title = title;
-    }
-    
-    public void actionPerformed(ActionEvent e) {
-	// Args are parent component, title, initial color
-	Color tempColor = JColorChooser.showDialog(VisualPropertiesDialog.this,
-						   title,
-						   returnColor.getColor());
-	if (tempColor != null)
-	    returnColor.setColor(tempColor);
-	//System.out.println("after: returncolor:" + returnColor);
-    }
-}
 
     private Color getBasicColor(Integer category) {
 	Color tempColor;
