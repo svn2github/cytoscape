@@ -6,8 +6,8 @@ package cytoscape.util.intr;
 public final class IntBTree
 {
 
-  // This quantity must be at least 4.
-  private final static int MAX_BRANCHES = 4;
+  // This quantity must be at least 5.
+  private final static int MAX_BRANCHES = 5;
 
   private Node m_root;
 
