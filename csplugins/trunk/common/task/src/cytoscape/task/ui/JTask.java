@@ -103,9 +103,14 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
     private JPanel progressPanel;
 
     /**
-     * User has requested that task halt.
+     * Flag to Indicate that user has requested that task halt.
      */
     private boolean haltRequested = false;
+
+    /**
+     * Flag to Indicate that error has occurred within task.
+     */
+    private boolean errorOccurred = false;
 
     /**
      * Estimated Time Remaining.
@@ -196,6 +201,7 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
     public void setException(final Throwable t, final String userErrorMessage) {
         //  Ignore events if user has requested to halt task.
         if (!haltRequested) {
+            this.errorOccurred = true;
             stopTimer();
 
             //  Update the UI
@@ -208,7 +214,7 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
                     progressPanel.setVisible(false);
 
                     //  Create Error Panel
-                    JPanel errorPanel = new JErrorPanel (JTask.this, t,
+                    JPanel errorPanel = new JErrorPanel(JTask.this, t,
                             userErrorMessage);
                     c.add(errorPanel, BorderLayout.CENTER);
                     config.setAutoDispose(false);
@@ -256,11 +262,29 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
             //  Update the UI
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
-                    statusValue.setText (message);
+                    statusValue.setText(message);
                     pack();
                 }
             });
         }
+    }
+
+    /**
+     * Returns true if Task Has Encountered An Error.
+     *
+     * @return boolean value.
+     */
+    public boolean errorOccurred() {
+        return errorOccurred;
+    }
+
+    /**
+     * Returns true if User Has Requested to Halt the Task.
+     *
+     * @return boolean value.
+     */
+    public boolean haltRequested() {
+        return haltRequested;
     }
 
     /**
@@ -332,7 +356,7 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
         //  Conditionally Show / AutoPopUp the Component.
         //  Call to show must be done on the event-dispatch thread
         //  Otherwise, a modal window will block.
-        autoPopUp();
+        //  autoPopUp();
 
         //  Initialize timer only if we want to display the time elapsed field.
         if (config.getTimeElapsedFlag()) {
@@ -428,10 +452,8 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
         textArea.setWrapStyleWord(true);
         textArea.setBorder(new EmptyBorder(5, 5, 5, 5));
 
-        textArea.setBackground(
-            (Color)UIManager.get("Label.background"));
-        textArea.setForeground(
-            (Color)UIManager.get("Label.foreground"));
+        textArea.setBackground((Color) UIManager.get("Label.background"));
+        textArea.setForeground((Color) UIManager.get("Label.foreground"));
         textArea.setFont(new Font(null, Font.PLAIN, 13));
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = gridx;
@@ -492,32 +514,6 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
             }
         });
         timer.start();
-    }
-
-    /**
-     * AutoPopUp after XXX milliseconds.
-     */
-    private void autoPopUp() {
-
-        //  Create PopUpTimer to go off after XXX milliseconds
-        final Timer popUpTimer = new Timer(config.getMillisToDecideToPopup(),
-                new ActionListener() {
-
-                    /**
-                     * Shows the UI Component.
-                     *
-                     * @param e ActionEvent.
-                     */
-                    public void actionPerformed(ActionEvent e) {
-                        show();
-                    }
-                });
-
-        //  Only Fire Once
-        popUpTimer.setRepeats(false);
-
-        //  Start PopUp Timer
-        popUpTimer.start();
     }
 
     /**
