@@ -1,7 +1,12 @@
 package cytoscape.util.intr;
 
 /**
- * A B<sup>+</sup>-tree that stores integers.
+ * A B<sup>+</sup>-tree that stores integers.<p>
+ * The motivation behind the implementation of this tree is not
+ * modularity or performance.  The motivation is to get to know the
+ * algorithms associated with this tree structure, so that implementing
+ * variants of this structure would become simpler (a variant of this
+ * structure is the R-tree).
  */
 public final class IntBTree
 {
@@ -328,20 +333,42 @@ public final class IntBTree
         n.sliceCount = rightSib.values[rightSib.sliceCount];
         return 0x01 | 0x80 | 0x04; }
       else { // We must perform a merge.
-      }
-    }
+        // Not implemented yet.
+        return -1; } }
     else { // Internal node.
       int foundPath = 0;
       for (int i = n.sliceCount - 2; i >= 0; i--)
         if (x >= n.data.splitVals[i]) { foundPath = i + 1; break; }
-      final Node foo = n.data.children[foundPath];
-      final int lowerDelete = delete // The recursive step.
-        (foo,
-         foundPath > 0 ? n.data.children[foundPath - 1] : null,
-         foundPath < n.sliceCount - 1 ? n.data.children[foundPath + 1] : null,
-         x);
+      final Node child = n.data.children[foundPath];
+      final Node childLeft =
+        foundPath > 0 ? n.data.children[foundPath - 1] : null;
+      final Node childRight =
+        foundPath < n.sliceCount - 1 ? n.data.children[foundPath + 1] : null;
+      final int lowerDelete = delete(child, childLeft, childRight, x);
+      if (lowerDelete == 0x00) { // Nothing was deleted (not found).
+        return 0x00; }
+      else if (lowerDelete == 0x01) { // Simple deletion.
+        n.data.deepCount--;
+        return 0x01; }
+      else if ((lowerDelete & 0x80) != 0x00) { // Shift was performed.
+        final Node nodeWithNewInx;
+        final int affectedPath;
+        if ((lowerDelete & 0x02) != 0) {
+          nodeWithNewInx = child; affectedPath = foundPath - 1; }
+        else { // Could explicitly check bit 0x04.
+          nodeWithNewInx = childRight; affectedPath = foundPath; }
+        if (isLeafNode(child)) {
+          n.data.splitVals[affectedPath] = nodeWithNewInx.values[0];
+          n.data.deepCount--;
+          return 0x01; }
+        else { // Children are internal nodes.
+          return -1;
+        }
+      }
+      else { // Check for merge?
+        return -1;
+      }
     }
-    return 0x00;
   }
 
   /*
