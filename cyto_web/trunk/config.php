@@ -49,7 +49,7 @@ $cyto2_mac_east= $cbio_base . "cytoscape-v2.00.dmg.zip";
 $cyto2_1_gz_east= $cbio_base . "cytoscape-v2.1.tar.gz";
 $cyto2_1_zip_east= $cbio_base . "cytoscape-v2.1.zip";
 $cyto2_1_source_east= $cbio_base . "cytoscapeSource-v2.1.tar.gz";
-$cyto2_1_mac_east= $cbio_base . "cytoscape-2.1.dmg.zip";
+$cyto2_1_mac_east= $cbio_base . "cytoscape-v2.1.dmg.zip";
 
 #################################################
 # URL for Cytoscape Install Anywhere
