@@ -1,5 +1,7 @@
 package org.cytoscape.graph.layout;
 
+import 
+
 /**
  * This class encapsulates the logic needed to perform a layout on a graph.
  * One of the goals of this class is to limit the set
@@ -15,7 +17,7 @@ public abstract class LayoutAlgorithm implements Runnable
    * By agreement, methods on <code>graph</code> will be called only from
    * the thread that invokes <code>run()</code>.
    **/
-  protected final LayoutGraph graph;
+  protected final GraphLayout graph;
 
   protected LayoutAlgorithm(LayoutGraph graph)
   {
@@ -28,7 +30,7 @@ public abstract class LayoutAlgorithm implements Runnable
    * Subclasses must implement this method - layout logic should be
    * executed in this method, by the same thread that calls this method.
    * The layout logic should act on
-   * the <code>LayoutGraph</code> stored in <code>this.graph</code>.
+   * the <code>GraphLayout</code> stored in <code>this.graph</code>.
    * <code>run()</code> shall only be called once for a given instance.
    * If an asynchronous call to <code>destroy()</code> is made while
    * <code>run()</code> is executing, <code>run()</code> should make an effort

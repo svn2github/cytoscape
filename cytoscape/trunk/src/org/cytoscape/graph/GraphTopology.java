@@ -6,10 +6,10 @@ package org.cytoscape.graph;
  * is a &quot;feature&quot; that people want.)
  * The methods on this interface do not expose any mutable behavior; this does
  * not mean, however, that instances of this interface are not mutable.  A
- * sub-interface extending <code>Graph</code> could be defined which exposes
- * mutable functionality.
+ * sub-interface extending <code>GraphTopology</code> could be defined which
+ * exposes mutable functionality.
  */
-public interface Graph
+public interface GraphTopology
 {
 
   /**

@@ -1,12 +1,12 @@
 package org.cytoscape.graph.layout;
 
 import java.awt.geom.Point2D;
-import org.cytoscape.graph.Graph;
+import org.cytoscape.graph.GraphTopology;
 
 /**
  * This class offers a hook for layout algorithms to operate on.
  */
-public interface LayoutGraph extends Graph
+public interface GraphLayout extends GraphTopology
 {
 
   /**
