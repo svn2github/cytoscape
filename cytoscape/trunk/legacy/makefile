@@ -117,6 +117,13 @@ run1:
           -e $(CYTOSCAPE_DATA)/gal.5936x20.mrna \
           -b $(CYTOSCAPE_DATA)/GO
 
+
+run1o:
+	$(JAVA) cytoscape.cytoscape \
+          -g $(CYTOSCAPE_DATA)/galFiltered.gml \
+          -e /common/data/exp/gal/data_gal1-20.pvals \
+          -b $(CYTOSCAPE_DATA)/GO
+
 #
 # --- run1a
 # like run1, but no GO data and no gene common names
