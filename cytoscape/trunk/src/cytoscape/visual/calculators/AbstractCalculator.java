@@ -112,21 +112,17 @@ public abstract class AbstractCalculator implements Calculator {
      * @throws CloneNotSupportedException if something is seriously borked.
      */
     public Object clone() throws CloneNotSupportedException {
-	AbstractCalculator clonedCalc = null;
-	try {
-	    clonedCalc = (AbstractCalculator) super.clone();
-	}
-	catch (CloneNotSupportedException e) {
-	    System.err.println("Error cloning AbstractCalculator and associated mapping");
-	    throw e;
-	}
+	AbstractCalculator clonedCalc = (AbstractCalculator) super.clone();
 	// remove the duplication count appended to the name. This makes
 	// maintaining the duplicate naming scheme much easier by starting the
 	// valid name search at the first object every time
 	String dupeFreeName;
 	if (dupeCount != 0) {
 	    int dupeCountIndex = name.lastIndexOf(new Integer(dupeCount).toString());
-	    dupeFreeName = name.substring(0, dupeCountIndex);
+	    if (dupeCountIndex == -1)
+		dupeFreeName = new String(name);
+	    else
+		dupeFreeName = name.substring(0, dupeCountIndex);
 	}
 	else {
 	    dupeFreeName = new String(name);
