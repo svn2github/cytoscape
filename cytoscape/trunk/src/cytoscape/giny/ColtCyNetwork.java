@@ -355,11 +355,11 @@ public class ColtCyNetwork
   }
   
   public void unFlagAllNodes () {
-    flagger.flagAllNodes();
+    flagger.unflagAllNodes();
   }
 
   public void unFlagAllEdges () {
-    flagger.flagAllEdges();
+    flagger.unflagAllEdges();
   }
 
   /**
