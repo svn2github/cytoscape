@@ -9,63 +9,52 @@ public interface MutableGraphLayout extends GraphLayout
 {
 
   /**
-   * Tells us whether or not the node at index <code>nodeIndex</code>
-   * can be moved by <code>setNodePosition()</code>.
+   * Tells us whether or not the specified node
+   * can be moved by setNodePosition().
    *
-   * @param nodeIndex index of node whose mobility we are querying.
-   * @exception IndexOutOfBoundsException if <code>nodeIndex</code> is not
-   *   in the interval <nobr><code>[0, getNumNodes() - 1]</code></nobr>.
+   * @param node node whose mobility we are querying.
+   * @exception IllegalArgumentException if specified node is not a node
+   *   in this graph.
    * @see #setNodePosition(int, double, double)
    */
   public boolean isMovableNode(int nodeIndex);
 
-  /*
-   * Returns <code>true</code> if and only if
-   * <code>isMovableNode(nodeIx)</code> returns <code>true</code> for every
-   * <code>nodeIx</code> in the interval
-   * <nobr><code>[0, getNumNodes() - 1]</code></nobr>.
-  public boolean areAllNodesMovable();
-   */
-
   /**
-   * Sets the X,Y position of a node at index <code>nodeIndex</code>.
+   * Sets the X,Y position of a node.
    * This is a hook for layout algorithms to actually set locations of
    * nodes.  Layout algorithms should call this method.<p>
    * X, Y values set by this method shall be reflected in the return values
-   * of <code>getNodePosition()</code> - that is, if we call
-   * <blockquote><code>setNodePosition(nodeIndex, x, y)</code></blockquote>
+   * of getNodePosition() -- that is, if we call
+   * <blockquote><code>setNodePosition(node, x, y)</code></blockquote>
    * then the subsequent expressions
    * <blockquote>
-   * <nobr><code>x == getNodePosition(nodeIndex, true)</code></nobr><br />
-   * <nobr><code>y == getNodePosition(nodeIndex, false)</code></nobr>
+   * <nobr><code>x == getNodePosition(node, true)</code></nobr><br />
+   * <nobr><code>y == getNodePosition(node, false)</code></nobr>
    * </blockquote>
-   * both evaluate to <code>true</code> (assuming that <code>nodeIndex</code>,
-   * <code>x</code>, and <code>y</code> are allowable parameters).<p>
+   * both evaluate to true.<p>
    * Layout algorithms are encouraged to set node positions such that
    * their X and Y values use the full range of allowable values, including
-   * the boundary values <code>0</code>, <code>getMaxWidth()</code>, and
-   * <code>getMaxHeight()</code>.  Any notion of node thickness, graph
+   * the boundary values 0, getMaxWidth(), and
+   * getMaxHeight().  Any notion of node thickness, graph
    * border on perimeter, etc. should be predetermined by the application
-   * using a layout algorithm; <code>getMaxWidth()</code> and
-   * <code>getMaxHeight()</code> should be defined accordingly by the
+   * using a layout algorithm; getMaxWidth() and
+   * getMaxHeight() should be defined accordingly by the
    * application using a layout algorithm.
    *
-   * @exception IllegalArgumentException if
+   * @exception IllegalArgumentException if xPos or yPos are out of
+   *   allowable range [0.0, getMaxWidth()] and [0.0, getMaxHeight()].
+   *   respectively.
    *   <nobr><code>xPos < 0.0</code></nobr>, if
-   *   <nobr><code>xPos > getMaxWidth()</code></nobr>, if
-   *   <nobr><code>yPos < 0.0</code></nobr>, or if
-   *   <nobr><code>yPos > getMaxHeight()</code></nobr>.
-   * @exception IndexOutOfBoundsException if <code>nodeIndex</code> is not
-   *   in the interval <nobr><code>[0, getNumNodes() - 1]</code></nobr>.
+   * @exception IllegalArgumentException if specified node is not
+   *   a node in this graph.
    * @exception UnsupportedOperationException if
-   *   <nobr><code>isMovableNode(nodeIndex)</code></nobr> returns
-   *   <code>false</code>.
+   *   isMovableNode(node) returns false.
    *
    * @see #getMaxWidth()
    * @see #getMaxHeight()
    * @see #getNodePosition(int, boolean)
    * @see #isMovableNode(int)
    */
-  public void setNodePosition(int nodeIndex, double xPos, double yPos);
+  public void setNodePosition(int node, double xPos, double yPos);
 
 }
