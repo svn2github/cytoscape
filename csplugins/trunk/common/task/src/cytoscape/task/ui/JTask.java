@@ -1,5 +1,6 @@
 package cytoscape.task.ui;
 
+import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 
 import javax.swing.*;
@@ -27,6 +28,11 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
     private static final int TIME_INTERVAL = 500;
 
     /**
+     * Description value label.
+     */
+    private JLabel descriptionValue;
+
+    /**
      * Status value label.
      */
     private JLabel statusValue;
@@ -40,6 +46,11 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
      * Time elapsed label.
      */
     private JLabel timeElapsedValue;
+
+    /**
+     * Progress Value.
+     */
+    private JLabel progressValue;
 
     /**
      * Internal Timer.
@@ -82,13 +93,29 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
     private JTaskConfig config;
 
     /**
+     * Task we are monitoring.
+     */
+    private Task task;
+
+    /**
+     * Contains all the Progress Fields.
+     */
+    private JPanel progressPanel;
+
+    /**
+     * User has requested that task halt.
+     */
+    private boolean haltRequested = false;
+
+    /**
      * Constructor.
-     * 
-     * @param title  Task Title.
+     *
+     * @param task   Task we are monitoring, and may need to cancel.
      * @param config JTaskConfig Object.
      */
-    public JTask(String title, JTaskConfig config) {
-        this.taskTitle = title;
+    public JTask(Task task, JTaskConfig config) {
+        this.task = task;
+        this.taskTitle = task.getTitle();
         this.config = config;
         init();
     }
@@ -101,22 +128,26 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
      * @param percent Percentage Complete.
      */
     public void setPercentCompleted(final int percent) {
-        if (percent < -1 || percent > 100) {
-            throw new IllegalArgumentException
-                    ("percent is outside range:  [-1, 100]");
-        }
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                if (percent == -1) {
-                    pBar.setIndeterminate(true);
-                    pBar.setStringPainted(false);
-                } else {
-                    pBar.setIndeterminate(false);
-                    pBar.setStringPainted(true);
-                    pBar.setValue(percent);
-                }
+        //  Ignore events if user has requested to halt task.
+        if (!haltRequested) {
+            if (percent < -1 || percent > 100) {
+                throw new IllegalArgumentException
+                        ("percent is outside range:  [-1, 100]");
             }
-        });
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    if (percent == -1) {
+                        pBar.setIndeterminate(true);
+                        pBar.setStringPainted(false);
+                    } else {
+                        pBar.setIndeterminate(false);
+                        pBar.setStringPainted(true);
+                        pBar.setValue(percent);
+                        pBar.setString(Integer.toString(percent) + "%");
+                    }
+                }
+            });
+        }
     }
 
     /**
@@ -127,12 +158,15 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
      * @param time Time Remaining, in milliseconds.
      */
     public void setEstimatedTimeRemaining(final long time) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                timeRemainingValue.setText
-                        (StringUtils.getTimeString(time));
-            }
-        });
+        //  Ignore events if user has requested to halt task.
+        if (!haltRequested) {
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    timeRemainingValue.setText
+                            (StringUtils.getTimeString(time));
+                }
+            });
+        }
     }
 
     /**
@@ -142,28 +176,33 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
      * @param userErrorMessage Human Readable Error Message.
      */
     public void setException(Throwable t, String userErrorMessage) {
-        stopTimer();
+        //  Ignore events if user has requested to halt task.
+        if (!haltRequested) {
+            stopTimer();
 
-        //  Create Error Panel
-        JPanel errorPanel = new JErrorPanel
-                ((Window) this, t, userErrorMessage);
+            //  Remove Progress Bar.
+            removeProgressBar();
 
+            //  Create Error Panel
+            JPanel errorPanel = new JErrorPanel
+                    ((Window) this, t, userErrorMessage);
 
-        //  Add an Error Icon to the WEST
-        Icon icon = UIManager.getIcon("OptionPane.errorIcon");
-        JLabel l = new JLabel(icon);
-        Container c = getContentPane();
-        c.add(l, BorderLayout.WEST);
+            //  Add an Error Icon to the WEST
+            Icon icon = UIManager.getIcon("OptionPane.errorIcon");
+            JLabel l = new JLabel(icon);
+            Container c = getContentPane();
+            c.add(l, BorderLayout.WEST);
 
-        //  Add Error Panel to the SOUTH
-        c.add(errorPanel, BorderLayout.SOUTH);
-        config.setAutoDispose(false);
+            //  Add Error Panel to the SOUTH
+            c.add(errorPanel, BorderLayout.SOUTH);
+            config.setAutoDispose(false);
 
-        //  Now make JFrame Resizable
-        setResizable(true);
-        pack();
-        validate();
-        this.setTitle("An Error Has Occurred");
+            //  Now make JFrame Resizable
+            setResizable(true);
+            pack();
+            validate();
+            this.setTitle("An Error Has Occurred");
+        }
     }
 
     /**
@@ -179,6 +218,13 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
                     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                     cancelButton.setEnabled(false);
                     closeButton.setEnabled(true);
+
+                    // If we are done because user hit the cancel button,
+                    // say so explicitly.
+                    if (haltRequested) {
+                        setCancelStatusMsg("Canceled by User");
+                        removeProgressBar();
+                    }
                 }
             }
         });
@@ -210,14 +256,14 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
         //  Init User Interface
         Container container = this.getContentPane();
         container.setLayout(new BorderLayout());
-        JPanel progressPanel = new JPanel(new GridBagLayout());
+        progressPanel = new JPanel(new GridBagLayout());
         progressPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         //  Create Description, Status, Time Left and Time Elapsed Fields
         int y = 0;
         addLabel("Description:  ", progressPanel, 0, y,
                 GridBagConstraints.EAST, true);
-        addLabel(StringUtils.truncateOrPadString(taskTitle),
+        descriptionValue = addLabel(StringUtils.truncateOrPadString(taskTitle),
                 progressPanel, 1, y,
                 GridBagConstraints.WEST, true);
 
@@ -239,7 +285,7 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
                 progressPanel, 1, y, GridBagConstraints.WEST,
                 config.getTimeElapsedFlag());
 
-        addLabel("Progress:  ", progressPanel, 0, ++y,
+        progressValue = addLabel("Progress:  ", progressPanel, 0, ++y,
                 GridBagConstraints.EAST, true);
 
         initProgressBar(progressPanel, y);
@@ -357,7 +403,14 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand() != null) {
             if (e.getActionCommand().equals(ACTION_CANCEL)) {
+                this.haltRequested = true;
                 cancelButton.setEnabled(false);
+
+                //  Immediately inform the user that we are canceling the task
+                this.setCancelStatusMsg("Canceling...");
+
+                //  Request that Task Halt
+                task.halt();
             } else if (e.getActionCommand().equals(ACTION_CLOSE)) {
                 dispose();
             }
@@ -424,5 +477,31 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
         if (timer != null && timer.isRunning()) {
             timer.stop();
         }
+    }
+
+    /**
+     * Sets a Cancel Status Message.
+     * <p/>
+     * If we are displaying the status field, put the message there.
+     * Otherwise, put the message in the description field.
+     *
+     * @param msg cancel message.
+     */
+    private void setCancelStatusMsg(String msg) {
+        if (config.getStatusFlag()) {
+            statusValue.setText(msg);
+        } else {
+            descriptionValue.setText(msg);
+        }
+    }
+
+    /**
+     * Removes ProgressBar from the UI.
+     */
+    private void removeProgressBar() {
+        progressPanel.remove(pBar);
+        progressPanel.remove(progressValue);
+        pack();
+        validate();
     }
 }
