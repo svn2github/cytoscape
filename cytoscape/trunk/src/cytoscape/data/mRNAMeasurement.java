@@ -34,7 +34,7 @@
 //-----------------------------------------------------------------------------------
 package cytoscape.data;
 //-------------------------------------------------------------------------------------------
-public class mRNAMeasurement {
+public class mRNAMeasurement implements java.io.Serializable {
   private double expressionRatio;
   private double significance;
 //-------------------------------------------------------------------------------------------
