@@ -28,17 +28,31 @@ class BetweenPathwayThread extends Thread{
   double logOneMinusBeta = Math.log(0.1);
   BetweenPathwayOptions options;
   Vector results;
+  CyNetwork physicalNetwork;
+  CyNetwork geneticNetwork;
 
   public BetweenPathwayThread(BetweenPathwayOptions options){
     this.options = options;
   }
 
+  public void setPhysicalNetwork(CyNetwork physicalNetwork){
+    this.physicalNetwork = physicalNetwork;
+  }
+
+  public void setGeneticNetwork(CyNetwork geneticNetwork){
+    this.geneticNetwork = geneticNetwork;
+  }
+  
+  public void loadPhysicalScores(File physicalFile){}
+
+  public void loadGeneticScores(File geneticFile){}
+
   public void run(){
     //number of physical interactions allowed between pathways
     int cross_count_limit = 1;
     //get the two networks which will be used for the search
-    CyNetwork physicalNetwork = options.physicalNetwork;
-    CyNetwork geneticNetwork = options.geneticNetwork;
+    //CyNetwork physicalNetwork = options.physicalNetwork;
+    //CyNetwork geneticNetwork = options.geneticNetwork;
 
     //validate the user input
     if(physicalNetwork == null){

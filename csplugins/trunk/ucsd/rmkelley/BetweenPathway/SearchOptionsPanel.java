@@ -24,6 +24,7 @@ public class SearchOptionsPanel extends JPanel{
     //create the display objects
     selectedSearch = new JCheckBox("Search from selected interactions",false);
     newScore = new JCheckBox("Use new scoring model?",true);
+    newScore.setEnabled(false);
     generateCutoff = new JCheckBox("Generate score thresh-hold?",false);
     cutoffField = new JTextField("0.0",10);
 

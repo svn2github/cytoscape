@@ -42,110 +42,118 @@ public class BetweenPathway extends CytoscapePlugin{
    * plugin is attached) and adds an item to the operations menu.
    */
   
-    public BetweenPathway(){
-	Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add( new AbstractAction("Find Between Pathway Models"){
-		public void actionPerformed(ActionEvent ae) {
-		    if(dialog == null){
-			dialog = new BetweenPathwayOptionsDialog();
+  public BetweenPathway(){
+    Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add( new AbstractAction("Find Between Pathway Models"){
+	public void actionPerformed(ActionEvent ae) {
+	  if(dialog == null){
+	    dialog = new BetweenPathwayOptionsDialog();
+	  }
+	  new Thread(new Runnable(){
+	      public void run(){
+		dialog.show();
+		if(!dialog.isCancelled()){
+		  BetweenPathwayOptions options = dialog.getOptions();
+		  RandomizationDialog randomDialog = new RandomizationDialog(options.geneticNetwork,options);
+		  randomDialog.show();
+		  if(randomDialog.isCancelled()){
+		    throw new RuntimeException("Thresh-hold generation cancelled");
+		  }
+		  BetweenPathwayThread2 thread = new BetweenPathwayThread2(options);
+		  //BetweenPathwayThread thread = new BetweenPathwayThread(options);
+		  try{
+		    thread.setPhysicalNetwork(options.physicalNetwork);
+		    Vector directedTypes = new Vector();
+		    directedTypes.add("pd");
+		    //options.geneticNetwork = (new EdgeRandomizer(options.geneticNetwork,directedTypes)).randomizeNetwork();
+		    thread.setGeneticNetwork(options.geneticNetwork);
+		    thread.loadGeneticScores(options.geneticScores);
+		    thread.loadPhysicalScores(options.physicalScores);
+				      
+				      
+		    if(options.generateCutoff){
+		      //use a randomization process to determine an appropriate
+		      //significant score cutoff.
+		      options.cutoff = 0.0;
+		      CyNetwork geneticNetwork = options.geneticNetwork;
+		      double [] scores = new double[options.iterations];
+		      EdgeRandomizer randomizer = new EdgeRandomizer(geneticNetwork,options.directedTypes);
+		      ProgressMonitor myMonitor = new ProgressMonitor(Cytoscape.getDesktop(),"Thresh-hold determination","Iteration 1 of "+options.iterations,1,options.iterations);
+		      for(int idx=0 ; idx<options.iterations ; idx++){
+			if(myMonitor.isCanceled()){
+			  throw new RuntimeException("Thresh-hold generation cancelled");
+			}
+			myMonitor.setProgress(idx+1);
+			myMonitor.setNote("Iteration "+(idx+1)+" of "+options.iterations);
+			CyNetwork randomNetwork = randomizer.randomizeNetwork();
+			thread.setGeneticNetwork(randomNetwork);	
+			thread.run();
+			Vector results = thread.getResults(); 
+			if(results.size() > 0){
+			  scores[idx] = ((NetworkModel)results.firstElement()).score;
+			  System.err.println(scores[idx]);
+			}
+			else{
+			  scores[idx] = 0.0;
+			}
+			int [] old_edges = randomNetwork.getEdgeIndicesArray();
+			Cytoscape.destroyNetwork(randomNetwork);
+			Cytoscape.getRootGraph().removeEdges(old_edges);
+		      }
+		      myMonitor.close();
+		      /*
+		       *now that we have an array of random scores, 
+		       *we want to figure out what score is in the alpha percentile
+		       */
+		      /*
+		       * First put the array of random scores in ascending order
+		       */
+		      Arrays.sort(scores);
+		      /**
+		       * Now figure out which array index represents the appropriate scoring
+		       * percentile. Since must be between 0 and 1 (exclusive), the index
+		       * calculated here must be in the range of the array
+		       */
+		      options.cutoff = scores[(int)Math.floor((1-options.alpha)*options.iterations)];
+		      JOptionPane.showMessageDialog(Cytoscape.getDesktop(),"Calculated cutoff is: "+options.cutoff);
+		      options.generateCutoff = false;
+		      thread.setGeneticNetwork(options.geneticNetwork);
 		    }
-		    new Thread(new Runnable(){
-			    public void run(){
-				dialog.show();
-				if(!dialog.isCancelled()){
-				    BetweenPathwayOptions options = dialog.getOptions();
-				    RandomizationDialog randomDialog = new RandomizationDialog(options.geneticNetwork,options);
-				    randomDialog.show();
-				    if(randomDialog.isCancelled()){
-				      throw new RuntimeException("Thresh-hold generation cancelled");
-				    }
-				    BetweenPathwayThread2 thread = new BetweenPathwayThread2(options);
-				    try{
-				      thread.setPhysicalNetwork(options.physicalNetwork);
-				      Vector directedTypes = new Vector();
-				      directedTypes.add("pd");
-				      //options.geneticNetwork = (new EdgeRandomizer(options.geneticNetwork,directedTypes)).randomizeNetwork();
-				      thread.setGeneticNetwork(options.geneticNetwork);
-				      thread.loadGeneticScores(options.geneticScores);
-				      thread.loadPhysicalScores(options.physicalScores);
-				      
-				      
-				      if(options.generateCutoff){
-					//use a randomization process to determine an appropriate
-					//significant score cutoff.
-					options.cutoff = 0.0;
-					CyNetwork geneticNetwork = options.geneticNetwork;
-					double [] scores = new double[options.iterations];
-					EdgeRandomizer randomizer = new EdgeRandomizer(geneticNetwork,options.directedTypes);
-					for(int idx=0 ; idx<options.iterations ; idx++){
-					  CyNetwork randomNetwork = randomizer.randomizeNetwork();
-					  thread.setGeneticNetwork(randomNetwork);	
-					  thread.run();
-					  Vector results = thread.getResults(); 
-					  if(results.size() > 0){
-					    scores[idx] = ((NetworkModel)results.firstElement()).score;
-					    System.err.println(scores[idx]);
-					  }
-					  else{
-					    scores[idx] = 0.0;
-					  }
-					  int [] old_edges = randomNetwork.getEdgeIndicesArray();
-					  Cytoscape.destroyNetwork(randomNetwork);
-					  Cytoscape.getRootGraph().removeEdges(old_edges);
-					}
-					/*
-					 *now that we have an array of random scores, 
-					 *we want to figure out what score is in the alpha percentile
-					 */
-					/*
-					 * First put the array of random scores in ascending order
-					 */
-					Arrays.sort(scores);
-					/**
-					 * Now figure out which array index represents the appropriate scoring
-					 * percentile. Since must be between 0 and 1 (exclusive), the index
-					 * calculated here must be in the range of the array
-					 */
-					options.cutoff = scores[(int)Math.floor((1-options.alpha)*options.iterations)];
-					JOptionPane.showMessageDialog(Cytoscape.getDesktop(),"Calculated cutoff is: "+options.cutoff);
-					options.generateCutoff = false;
-					thread.setGeneticNetwork(options.geneticNetwork);
-				      }
-				      thread.run();
-				      JDialog betweenPathwayDialog = new BetweenPathwayResultDialog(options.geneticNetwork, options.physicalNetwork, thread.getResults());
-				      betweenPathwayDialog.show();
-				    }
-				    catch(Exception e){
-				      e.printStackTrace();
-					JOptionPane.showMessageDialog(Cytoscape.getDesktop(),e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);	    
-				    }
-				    catch(OutOfMemoryError e){
-					JOptionPane.showMessageDialog(Cytoscape.getDesktop(),"Out of memory","Error",JOptionPane.ERROR_MESSAGE);	    
-				    }
-				}
-			    }}).start();
-	  
-		} 
-	    });
-
-	Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add( new AbstractAction("Load previous results"){
-		public void actionPerformed(ActionEvent ae){
-		    new Thread(new Runnable(){
-			    public void run(){
-				JFileChooser chooser = new JFileChooser();
-				int returnVal = chooser.showOpenDialog(Cytoscape.getDesktop());
-				if(returnVal == JFileChooser.APPROVE_OPTION) {
-				    try{
-					BetweenPathwayResultDialog results = new BetweenPathwayResultDialog(chooser.getSelectedFile());
-					results.show();
-				    }catch(Exception e){
-					JOptionPane.showMessageDialog(Cytoscape.getDesktop(),e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);	    
-				    }
-				}
-			    }
-			}).start();
+		    thread.run();
+		    JDialog betweenPathwayDialog = new BetweenPathwayResultDialog(options.geneticNetwork, options.physicalNetwork, thread.getResults());
+		    betweenPathwayDialog.show();
+		  }
+		  catch(Exception e){
+		    e.printStackTrace();
+		    JOptionPane.showMessageDialog(Cytoscape.getDesktop(),e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);	    
+		  }
+		  catch(OutOfMemoryError e){
+		    JOptionPane.showMessageDialog(Cytoscape.getDesktop(),"Out of memory","Error",JOptionPane.ERROR_MESSAGE);	    
+		  }
 		}
-	    });
-    }
+	      }}).start();
+	  
+	} 
+      });
+
+    Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add( new AbstractAction("Load previous results"){
+	public void actionPerformed(ActionEvent ae){
+	  new Thread(new Runnable(){
+	      public void run(){
+		JFileChooser chooser = new JFileChooser();
+		int returnVal = chooser.showOpenDialog(Cytoscape.getDesktop());
+		if(returnVal == JFileChooser.APPROVE_OPTION) {
+		  try{
+		    BetweenPathwayResultDialog results = new BetweenPathwayResultDialog(chooser.getSelectedFile());
+		    results.show();
+		  }catch(Exception e){
+		    JOptionPane.showMessageDialog(Cytoscape.getDesktop(),e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);	    
+		  }
+		}
+	      }
+	    }).start();
+	}
+      });
+  }
 
 }
 

@@ -140,7 +140,7 @@ class BetweenPathwayThread2 extends Thread{
       myMonitor.setProgress(progress++);
       Edge seedInteraction = (Edge)geneticIt.next();
       int cross_count_total = 0;
-      int score = 0;
+      double score = 0;
       //performs a sanity check, shouldn't have a genetic interaction between a gene and itself
       if(seedInteraction.getSource().getRootGraphIndex() == seedInteraction.getTarget().getRootGraphIndex()){
 	continue;
