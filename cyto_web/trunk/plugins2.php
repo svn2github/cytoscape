@@ -37,7 +37,7 @@ plugins are separate works which use Cytoscape as a Java code library.
 Plugins are therefore governed by independent software licenses
 distributed with and specific to each plugin.  The Cytoscape project
 has no intent to capture plugins under the license terms of the core
-Cytoscape LGPL.	
+Cytoscape LGPL.
 	<p>
 		<big><b>Current Cytoscape 2.x Plugins:</b></big>
 		<br>
@@ -56,33 +56,33 @@ Cytoscape LGPL.
 						Release Date: March 9, 2005</font>
 				</td>
 				<td width="40%" valign="top">
-					
+
 					<p><em>Agilent Literature Search</em> is a meta-search tool for automatically querying multiple text-based search engines in order to aid biologists faced with the daunting task of manually searching and extracting associations among genes/proteins of interest.  Computationally extracted associations are grouped into a network that is viewed and manipulated in Cytoscape.
 					<p>The meta-search engine peforms Information Retrieval (IR) and Knowledge Extraction (KE),
 					using PubMed, OMIM, and USPTO search engines
 					to identify symbols, extract interactions, and
 					generate putative networks from literature.
-					
-<p><em>Agilent Literature Search</em> provides an easy-to-use interface to its powerful querying capabilities. When a query is entered, it is submitted to multiple user-selected search engines, and the retrieved results (documents) are fetched from their respective sources. Each document is then parsed into sentences and analyzed for associations between biological constructs, such as protein-protein associations. 
+
+<p><em>Agilent Literature Search</em> provides an easy-to-use interface to its powerful querying capabilities. When a query is entered, it is submitted to multiple user-selected search engines, and the retrieved results (documents) are fetched from their respective sources. Each document is then parsed into sentences and analyzed for associations between biological constructs, such as protein-protein associations.
 <!-- <p><em>Agilent Literature Search</em> uses a set of lexicons for defining biomolecule names (and aliases) and association terms (verbs) of interest. -->
-Associations extracted from these documents are then converted into interactions, which are further grouped into a network. 
+Associations extracted from these documents are then converted into interactions, which are further grouped into a network.
 The sentences and source hyperlinks for each association are further stored as attributes of the corresponding nodes and links in the network.
 The networks can be viewed and manipulated in Cytoscape v2.1.
 
 
-					
-					
-					
-					<p>	Released by:  
-						<a href="http://www.labs.agilent.com/research/mtl/projects/sysbio.html">Systems Biology project</a>, 
+
+
+
+					<p>	Released by:
+						<a href="http://www.labs.agilent.com/research/mtl/projects/sysbio.html">Systems Biology project</a>,
 						<a href="http://www.labs.agilent.com/">Agilent Laboratories</a>,.
-						<a href="http://www.agilent.com/">Agilent Technologies</a>.  
+						<a href="http://www.agilent.com/">Agilent Technologies</a>.
 <!---                                        <p>     <a href="http://www.chem.agilent.com/scripts/PHome.asp">Agilent Technologies Life Science Products</a>  --->
 					</p>
 				</td>
 				<td width="20%" valign="top">
 				Verified to work in 2.1.
-				</td>					
+				</td>
 				<td width="20%" valign="top">
 					[<a href="http://www.labs.agilent.com/research/mtl/projects/sysbio/sysinformatics/litsearch.html">Agilent Literature Search Web Site</a>]
 					<br>
@@ -136,7 +136,7 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 				<td colspan="4">
 					<hr>
 				</td>
-			</tr>			
+			</tr>
 			<tr>
 				<td width="20%" valign="top">
 					<b>CytoTalk Plugin</b>
@@ -162,12 +162,12 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 		</td>
 		<td width="20%" valign="top">
 				 Verified to work in 2.0, 2.1.
-				</td>			
+				</td>
 		<td width="20%" valign="top">
 			[<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/cytoTalk/cytoTalk.jar">Download Plugin .jar</a>]
 			<br>
 		</td>
-	</tr>			
+	</tr>
 			<tr>
 				<td colspan="4">
 					<hr>
@@ -199,7 +199,7 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 				</td>
 				<td width="20%" valign="top">
 				 Verified to work in 2.0. <A HREF="#more_info"><BR>Not tested in Cytoscape 2.1*</A>
-				</td>	
+				</td>
 				<td width="20%" valign="top">
 					[<a href="http://db.systemsbiology.net/cytoscape/ftp/DataMatrixPlugin.jar">Download Plugin .jar</a>]
 					<br>
@@ -209,7 +209,7 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 				<td colspan="4">
 					<hr>
 				</td>
-			</tr>			
+			</tr>
 			<tr>
 				<td width="20%" valign="top">
 					<b>Expression Correlation Network Plugin</b><font size="-1">
@@ -227,17 +227,17 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 				</td>
 				<td width="20%" valign="top">
 				Verified to work in 2.0, 2.1.
-				</td>					
+				</td>
 				<td width="20%" valign="top">
 					[<a href="http://www.cbio.mskcc.org/cytoscape/plugins/ExpressionCorrelationReadme.txt">Release Notes</a>]
 					[<a href="http://www.cbio.mskcc.org/cytoscape/plugins/ExpressionCorrelation.zip">Download</a>]
 				</td>
-			</tr>	
+			</tr>
 			<tr>
 				<td colspan="4">
 					<hr>
 				</td>
-			</tr>			
+			</tr>
 			<tr>
 				<td width="20%" valign="top">
 					<b>Graph Merge Plugin</b><font size="-1">
@@ -255,17 +255,17 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 				</td>
 				<td width="20%" valign="top">
 				Verified to work in 2.1.
-				</td>					
+				</td>
 				<td width="20%" valign="top">
 					[<a href="/plugins/GraphMerge/README.txt">Release Notes</a>]
 					[<a href="/plugins/GraphMerge/GraphMerge.jar">Download</a>]
 				</td>
-			</tr>	
+			</tr>
 			<tr>
 				<td colspan="4">
 					<hr>
 				</td>
-			</tr>			
+			</tr>
 			<tr>
 				<td width="20%" valign="top">
 					<b>HTTP Data and
@@ -304,17 +304,17 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 				</td>
 				<td width="20%" valign="top">
 				 Verified to work in 2.0, 2.1.
-				</td>					
+				</td>
 				<td width="20%" valign="top">
 					[<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/httpdata_all.jar">Download Plugin .jar</a>]
 					<br>
 				</td>
-			</tr>			
+			</tr>
 			<tr>
 				<td colspan="4">
 					<hr>
 				</td>
-			</tr>			
+			</tr>
 	<tr>
 		<td width="20%" valign="top">
 			<b>jActiveModules</b>
@@ -331,7 +331,7 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 		</td>
  		<td width="20%" valign="top">
 				 Verified to work in 2.0, 2.1.
-				</td>	
+				</td>
 		<td width="20%" valign="top">
 			[<a href="/plugins/jActiveModules/README.txt">Release Notes</a>]
 			<br>
@@ -345,12 +345,12 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 				<td colspan="4">
 					<hr>
 				</td>
-			</tr>	
+			</tr>
 			<tr>
 				<td width="20%" valign="top">
 					<b>MCODE Plugin</b><font size="-1">
 						<br>
-						Version: 1
+						Version: 1.1
 						<br>
 						Release Date: July 15, 2004</font>
 				</td>
@@ -362,11 +362,9 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 				</td>
 				<td width="20%" valign="top">
 				Verified to work in 2.0, 2.1.
-				</td>					
+				</td>
 				<td width="20%" valign="top">
 					[<a href="http://www.cbio.mskcc.org/~bader/software/mcode/index.html">MCODE Plugin Web Site</a>]
-					<br>
-					[<a href="http://www.cbio.mskcc.org/~bader/software/mcode/mcode_v1.zip">Download .zip</a>]
 				</td>
 			</tr>
 			<tr>
@@ -395,17 +393,17 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 		</td>
 		<td width="20%" valign="top">
 				 Verified to work in 2.0, 2.1.
-				</td>			
+				</td>
 		<td width="20%" valign="top">
 			[<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/motifFinder/motifFinder.jar">Download Plugin .jar</a>]
 			<br>
 		</td>
-	</tr>		
+	</tr>
 			<tr>
 				<td colspan="4">
 					<hr>
 				</td>
-			</tr>	
+			</tr>
 	<tr>
 		<td width="20%" valign="top">
 			<b>Network Filter Plugin</b>
@@ -423,18 +421,18 @@ Networks by using Filters that you have created.
 		</td>
 		<td width="20%" valign="top">
 				 Verified to work in 2.1.
-				</td>			
+				</td>
 		<td width="20%" valign="top">
 			[<a href="plugins/NetworkFilter/rowan.jar">Download Plugin .jar</a>]
 			<br>
 		</td>
-	</tr>			
-	
+	</tr>
+
 			<tr>
 				<td colspan="4">
 					<hr>
 				</td>
-			</tr>	
+			</tr>
 			<tr>
 				<td width="20%" valign="top">
 					<b>Oracle Spatial Network Data Model Plugin</b><font size="-1">
@@ -455,7 +453,7 @@ Networks by using Filters that you have created.
 				</td>
 				<td width="20%" valign="top">
 				 Verified to work in 2.0, 2.1.</A>
-				</td>					
+				</td>
 				<td width="20%" valign="top">
 					[<a href="http://www.oracle.com/technology/industries/life_sciences/ls_sample_code.html">Download</a>]
 				</td>
@@ -464,7 +462,7 @@ Networks by using Filters that you have created.
 				<td colspan="4">
 					<hr>
 				</td>
-			</tr>				
+			</tr>
 			<tr>
 				<td width="20%" valign="top">
 					<b>PeSca (Path Extraction by Smallest Cost Algorithm) Project</b><font size="-1">
@@ -485,16 +483,16 @@ Scardoni.
 				</td>
 				<td width="20%" valign="top">
 				Verified to work in 2.1.
-				</td>				
+				</td>
 				<td width="20%" valign="top">
 					[<a href="http://www.petterlini.it/pesca/">PeSca Web Site and Download</a>]
 				</td>
-			</tr>			
+			</tr>
 			<tr>
 				<td colspan="4">
 					<hr>
 				</td>
-			</tr>				
+			</tr>
 			<tr>
 				<td width="20%" valign="top">
 					<b>PSI-MI Import/Export Plugin</b><font size="-1">
@@ -520,7 +518,7 @@ Scardoni.
 				</td>
 				<td width="20%" valign="top">
 				Verified to work in 2.0, 2.1.
-				</td>				
+				</td>
 				<td width="20%" valign="top">
 					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/psi/version2/README.txt">Release Notes</a>]
 					<br>
@@ -552,17 +550,17 @@ Scardoni.
 				</td>
 				<td width="20%" valign="top">
 				Verified to work in 2.0, 2.1.
-				</td>					
+				</td>
 				<td width="20%" valign="top">
 					[<a href="/plugins/SigAttributes/README.txt">Release Notes</a>]
 					[<a href="/plugins/SigAttributes/SigAttributes.jar">Download</a>]
 				</td>
-			</tr>	
+			</tr>
 			<tr>
 				<td colspan="4">
 					<hr>
 				</td>
-			</tr>			
+			</tr>
 			<tr>
 				<td width="20%" valign="top">
 					<b>SOFT Import Plugin</b><font size="-1">
@@ -586,7 +584,7 @@ Scardoni.
 				</td>
 				<td width="20%" valign="top">
 				Verified to work in 2.0, 2.1.
-				</td>				
+				</td>
 				<td width="20%" valign="top">
 					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/soft/version2/README.txt">Release Notes</a>]
 					<br>
@@ -602,7 +600,7 @@ Scardoni.
 	<div id="indent">
 	<P>
 			<A NAME="more_info">
-			* If you have verified that the specified plugin works in 2.1, please send an email to <A HREF="http://groups-beta.google.com/group/cytoscape-discuss">cytoscape-discuss</A>, and we will update the web page.	
+			* If you have verified that the specified plugin works in 2.1, please send an email to <A HREF="http://groups-beta.google.com/group/cytoscape-discuss">cytoscape-discuss</A>, and we will update the web page.
 	</div>
 </tbody>
 </table>
