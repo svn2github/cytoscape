@@ -75,6 +75,17 @@ public abstract class AbstractCalculator implements Calculator {
     public void addMapping(ObjectMapping m) {
 	this.mappings.add(m);
 	this.acceptedDataClasses.add(m.getAcceptedDataClasses());
+	m.addChangeListener(new MappingListener());
+    }
+
+    /**
+     * Listens to changes in the mapping and forwards them on to whatever listeners
+     * are attached to the calculator.
+     */
+    protected class MappingListener implements ChangeListener {
+	public void stateChanged(ChangeEvent e) {
+	    fireStateChanged();
+	}
     }
 
     /**
@@ -197,7 +208,7 @@ public abstract class AbstractCalculator implements Calculator {
      *		{@link #updateAttribute(String, Newtork, int)) instead.
      */
     void updateAttribute(String attrName, Network network) {
-	this.getMapping().setControllingAttributeName(attrName, network, false);
+	this.updateAttribute(attrName, network, 0);
     }
 
     /**
@@ -258,54 +269,109 @@ public abstract class AbstractCalculator implements Calculator {
      * @return	UI with controlling attribute selection facilities
      */
     protected JPanel getUI(GraphObjAttributes attr, JDialog parent, Network network) {
-	GridBagGroup g = new GridBagGroup();
-	String[] attrNames = attr.getAttributeNames();
-	int i, yPos;
-	for (i = yPos = 0; i < this.mappings.size(); i++, yPos++) {
-	    MiscGB.insert(g, new JLabel("Map Attribute:", SwingConstants.RIGHT),
-			  0, yPos);
-	    MiscGB.insert(g, Box.createHorizontalStrut(5), 1, yPos);
-	    ObjectMapping m = (ObjectMapping) this.mappings.get(i);
-
-	    // filter list of interactions
-	    String[] validAttr;
-	    Class [] okClass = (Class[]) this.acceptedDataClasses.get(i);
-	    if (okClass != null) {
-		Vector validAttrV = new Vector(attrNames.length);
-		for (int j = 0; j < attrNames.length; j++) {
-		    Class attrClass = attr.getClass(attrNames[j]);
-		    for (int k = 0; k < okClass.length; k++) {
-			if (okClass[k].isAssignableFrom(attrClass)) {
-			    validAttrV.add(attrNames[j]);
-			    break;
-			}
-		    }
-		}
-		validAttr = (String[]) validAttrV.toArray(new String[0]);
-	    }
-	    else {
-		validAttr = attrNames;
-	    }
-
-	    // create the JComboBox
-	    JComboBox attrBox = new JComboBox(validAttr);
-	    // set the attrBox to the currently selected attribute
-	    String selectedAttr = m.getControllingAttributeName();
-	    // make no selection first, in case the selectedAttr doesn't exist
-	    attrBox.setSelectedIndex(-1);
-	    attrBox.setSelectedItem(selectedAttr);
-	    
-	    attrBox.addItemListener(new AttributeSelectorListener(network, i));
-	    
-	    MiscGB.insert(g, attrBox, 2, yPos, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
-
-	    // underlying mapping's UI
-	    JPanel mapperUI = m.getUI(parent, network);
-	    MiscGB.insert(g, mapperUI, 0, ++yPos, 3, 1, 2, 2, GridBagConstraints.BOTH);
-	}
-	return g.panel;
+	return new CalculatorUI(attr, parent, network);
     }
 
+    /**
+     * UI class for the calculator.
+     */
+    protected class CalculatorUI extends JPanel {
+	/**
+	 * Remember the grid bag group in case the mapper UI needs to be updated.
+	 */
+	protected GridBagGroup myGBG;
+	
+	public CalculatorUI(GraphObjAttributes attr, JDialog parent, Network network) {
+	    this.myGBG = new GridBagGroup(this);
+	    String[] attrNames = attr.getAttributeNames();
+	    int i, yPos;
+	    for (i = yPos = 0; i < mappings.size(); i++, yPos++) {
+		MiscGB.insert(this.myGBG, new JLabel("Map Attribute:", SwingConstants.RIGHT),
+			      0, yPos);
+		MiscGB.insert(this.myGBG, Box.createHorizontalStrut(5), 1, yPos);
+		ObjectMapping m = (ObjectMapping) mappings.get(i);
+
+		// filter list of interactions
+		String[] validAttr;
+		Class [] okClass = (Class[]) acceptedDataClasses.get(i);
+		if (okClass != null) {
+		    Vector validAttrV = new Vector(attrNames.length);
+		    for (int j = 0; j < attrNames.length; j++) {
+			Class attrClass = attr.getClass(attrNames[j]);
+			for (int k = 0; k < okClass.length; k++) {
+			    if (okClass[k].isAssignableFrom(attrClass)) {
+				validAttrV.add(attrNames[j]);
+				break;
+			    }
+			}
+		    }
+		    validAttr = (String[]) validAttrV.toArray(new String[0]);
+		}
+		else {
+		    validAttr = attrNames;
+		}
+
+		// create the JComboBox
+		JComboBox attrBox = new JComboBox(validAttr);
+		// set the attrBox to the currently selected attribute
+		String selectedAttr = m.getControllingAttributeName();
+		// make no selection first, in case the selectedAttr doesn't exist
+		attrBox.setSelectedIndex(-1);
+		attrBox.setSelectedItem(selectedAttr);
+	    
+		MiscGB.insert(this.myGBG, attrBox, 2, yPos, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
+		// underlying mapping's UI
+		JPanel mapperUI = m.getUI(parent, network);
+		attrBox.addItemListener(new AttributeSelectorListener(parent, network, i, ++yPos, mapperUI));
+		MiscGB.insert(this.myGBG, mapperUI, 0, yPos, 3, 1, 2, 2, GridBagConstraints.BOTH);
+	    }
+	}
+
+	/**
+	 * AttributeSelectorListener listens for events on the JComboBoxes that
+	 * select the controlling attribute for mappers contained in each calculator.
+	 */
+	protected class AttributeSelectorListener implements ItemListener {
+	    private Network network;
+	    private int mapIndex;
+	    private int yPos;
+	    private JPanel mapperUI;
+	    private JDialog parent;
+	    /**
+	     * Constructs an AttributeSelectorListener for the ObjectMapping at
+	     * index mapIndex.
+	     * @param parent   parent JDialog
+	     * @param network  passed to the mapping to get data values for the
+	     *                 new attribute
+	     * @param mapIndex Index of the mapping in the {@link #mappings} Vector
+	     *                 to report changes in the selected
+	     *                 attribute to.
+	     * @param yPos     Position to add the mapping UI into master GBG when
+	     *		       updating mapping UI.
+	     * @param mapperUI Current mapper UI panel
+	     */
+	    protected AttributeSelectorListener(JDialog parent, Network network, int mapIndex, int yPos, JPanel mapperUI) {
+		this.parent = parent;
+		this.network = network;
+		this.mapIndex = mapIndex;
+		this.yPos = yPos;
+		this.mapperUI = mapperUI;
+	    }
+	    
+	    public void itemStateChanged(ItemEvent e) {
+		if (e.getStateChange() == ItemEvent.SELECTED) {
+		    JComboBox c = (JComboBox) e.getItemSelectable();
+		    String attrName = (String) c.getSelectedItem();
+		    updateAttribute(attrName, network, this.mapIndex);
+		    // change the panel referenced to get a new panel from the mapping
+		    // to reflect the new mapped attribute.
+		    remove(this.mapperUI);
+		    this.mapperUI = ((ObjectMapping) mappings.get(mapIndex)).getUI(this.parent, network);
+		    MiscGB.insert(myGBG, this.mapperUI, 0, this.yPos, 3, 1, 2, 2, GridBagConstraints.BOTH);
+		}
+	    }
+	}
+    }
     /**
      * Add a ChangeListener to the calcaultor. When the state underlying the
      * calculator changes, all ChangeListeners will be notified.
@@ -352,44 +418,5 @@ public abstract class AbstractCalculator implements Calculator {
 		this.changeEvent = new ChangeEvent(this);
 	    listener.stateChanged(this.changeEvent);
         }
-    }
-
-    /**
-     * Refresh the UI. Call when something in the underlying structures have
-     * changed and the UI needs to be refreshed.
-     */
-    /* public void refreshUI(JDialog parent, Network network) {
-	getUI(parent, network);
-    }
-    */
-
-    /**
-     * AttributeSelectorListener listens for events on the JComboBoxes that
-     * select the controlling attribute for mappers contained in each calculator.
-     */
-    protected class AttributeSelectorListener implements ItemListener {
-        private Network network;
-	private int mapIndex;
-	/**
-	 * Constructs an AttributeSelectorListener for the ObjectMapping at
-	 * index mapIndex.
-         * @param network  passed to the mapping to get data values for the
-         *                 new attribute
-	 * @param mapIndex Index of the mapping in the {@link #mappings} Vector
-	 *                 to report changes in the selected
-	 *                 attribute to.
-	 */
-	protected AttributeSelectorListener(Network network, int mapIndex) {
-            this.network = network;
-	    this.mapIndex = mapIndex;
-	}
-	    
-	public void itemStateChanged(ItemEvent e) {
-	    if (e.getStateChange() == ItemEvent.SELECTED) {
-		JComboBox c = (JComboBox) e.getItemSelectable();
-		String attrName = (String) c.getSelectedItem();
-		updateAttribute(attrName, network, this.mapIndex);
-	    }
-	}
     }
 }

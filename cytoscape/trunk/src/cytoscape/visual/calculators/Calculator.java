@@ -72,8 +72,4 @@ public interface Calculator extends Cloneable {
      * @param	l	ChangeListener to add
      */
     public void removeChangeListener(ChangeListener l);
-
-    public ObjectMapping getMapping();
-    public Vector getMappings();
-    public ObjectMapping getMapping(int i);
 }
