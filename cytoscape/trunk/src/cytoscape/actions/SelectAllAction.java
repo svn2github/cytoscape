@@ -20,8 +20,10 @@ public class SelectAllAction extends CytoscapeAction  {
     }
 
     public void actionPerformed (ActionEvent e) {		
-        GinyUtils.selectAllNodes( Cytoscape.getCurrentNetworkView() );
-        GinyUtils.selectAllEdges( Cytoscape.getCurrentNetworkView() );
+        //GinyUtils.selectAllNodes( Cytoscape.getCurrentNetworkView() );
+        //GinyUtils.selectAllEdges( Cytoscape.getCurrentNetworkView() );
+      Cytoscape.getCurrentNetwork().flagAllNodes();
+      Cytoscape.getCurrentNetwork().flagAllEdges();
     }//action performed
 }
 

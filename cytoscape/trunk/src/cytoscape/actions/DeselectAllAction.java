@@ -20,8 +20,10 @@ public class DeselectAllAction extends CytoscapeAction {
     }
 
     public void actionPerformed(ActionEvent e) {
-      GinyUtils.deselectAllNodes( Cytoscape.getCurrentNetworkView() );
-      GinyUtils.deselectAllEdges( Cytoscape.getCurrentNetworkView() );
+      //GinyUtils.deselectAllNodes( Cytoscape.getCurrentNetworkView() );
+      //GinyUtils.deselectAllEdges( Cytoscape.getCurrentNetworkView() );
+      Cytoscape.getCurrentNetwork().unFlagAllEdges();
+      Cytoscape.getCurrentNetwork().unFlagAllNodes();
     }
 }
 
