@@ -1,0 +1,15 @@
+[Following text copied and pasted from an email originating from the author
+of this plugin.]
+
+How to use the plugin:
+(For best results, run the layout after smoothing the
+graph using an algorithm such as the Spring Embedded
+Layout.)
+To initialize the layout, just run HypFocus from the
+Layout menu, making sure that no nodes are selected.
+This will allow the plugin to know that you intend to
+initialize.
+To refocus the layout, run HypFocus after selecting
+the node you would like to refocus, too. Then when
+JOptionPane pops up, enter the index of the selected
+node.
