@@ -192,7 +192,7 @@ class LoadPathBlastGMLTask extends Thread{
       Iterator nameIt = nameSet.iterator();
       while(nameIt.hasNext()){
 	String compatName = (String)nameIt.next();
-	String [] speciesNames = split(compatName,"|");
+	String [] speciesNames = compatName.split("\\|");
 	nodeAttributes.append(SPECIES1NODES_ATTRIBUTE,name,speciesNames[0]);
 	nodeAttributes.append(SPECIES2NODES_ATTRIBUTE,name,speciesNames[1]);
       }
@@ -225,17 +225,18 @@ class LoadPathBlastGMLTask extends Thread{
     }
     return new CyNetwork(rootGraph,nodeAttributes,edgeAttributes);
   }
+  
   /**
    * split the name of a node in the compatability graph into the names of
    * the component nodes
    */
-  private String [] split(String s,String split){
-    String [] result = new String [2];
-    int index = s.indexOf(split);
-    result[0] = s.substring(0,index);
-    result[1] = s.substring(index + 1,s.length());
-    return result;
-  }
+  //private String [] split(String s,String split){
+  //  String [] result = new String [2];
+  //  int index = s.indexOf(split);
+  //  result[0] = s.substring(0,index);
+  //  result[1] = s.substring(index + 1,s.length());
+  //  return result;
+  //}
 
   /**
    * Take in a list of GMLTrees and creates a hashmap which maps from a GMLTree
