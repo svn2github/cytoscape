@@ -148,7 +148,7 @@ public class CyNetworkFactory {
      * The reader argument is assumed to be non-null. Returns null if no
      * graph can be parsed by the reader.
      */
-    protected static CyNetwork createNetworkFromGraphReader( GraphReader reader,
+    public static CyNetwork createNetworkFromGraphReader( GraphReader reader,
 							     boolean canonicalize ) {
 	try {
 	    reader.read();

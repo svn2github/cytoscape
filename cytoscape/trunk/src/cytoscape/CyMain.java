@@ -44,6 +44,8 @@ import java.util.logging.*;
 
 import cytoscape.data.*;
 import cytoscape.data.readers.GMLReader;
+import cytoscape.data.readers.InteractionsReader;
+import cytoscape.data.readers.GraphReader;
 import cytoscape.data.servers.*;
 import cytoscape.view.CyWindow;
 
@@ -132,22 +134,27 @@ public CyMain (String [] args) throws Exception {
         sb.append("; using GML file");
         logger.severe(sb.toString());
     }
+    GraphReader reader = null;
     if (geometryFilename != null) {
 	logger.info("reading " + geometryFilename + "...");
-	network = CyNetworkFactory.createNetworkFromGMLFile(geometryFilename);
+	//network = CyNetworkFactory.createNetworkFromGMLFile(geometryFilename);
+	reader = new GMLReader(geometryFilename);
 	logger.info("  done");
 	title = geometryFilename;
     }
     else if (interactionsFilename != null) {
-        logger.info("reading " + interactionsFilename + "...");
-        network =
-            CyNetworkFactory.createNetworkFromInteractionsFile( interactionsFilename,
-                                                                canonicalize,
-                                                                bioDataServer,
-                                                                defaultSpecies );
-	logger.info("  done");
-        title = interactionsFilename;
+      logger.info("reading " + interactionsFilename + "...");
+      //network =
+      //CyNetworkFactory.createNetworkFromInteractionsFile( interactionsFilename,
+      //canonicalize,
+      //						    bioDataServer,
+      //                                                        defaultSpecies );
+      reader = new InteractionsReader(bioDataServer,defaultSpecies,interactionsFilename);
+      logger.info("  done");
+      title = interactionsFilename;
     }
+    network = CyNetworkFactory.createNetworkFromGraphReader(reader,canonicalize);
+
     if (network == null) {//none specified, or failed to read
         logger.info("no graph read, creating empty network");
         network = CyNetworkFactory.createEmptyNetwork();
@@ -187,10 +194,11 @@ public CyMain (String [] args) throws Exception {
     //create the window
     cyWindow = new CyWindow(cytoscapeObj, network, title);
 
-    if (geometryFilename != null) {
-	GMLReader reader = new GMLReader(geometryFilename);
-	reader.layoutByGML(cyWindow.getView(), cyWindow.getNetwork());
-    }
+    //if (geometryFilename != null) {
+    //GMLReader reader = new GMLReader(geometryFilename);
+    //reader.layoutByGML(cyWindow.getView(), cyWindow.getNetwork());
+    //}
+    reader.layout(cyWindow.getView());
 
     cyWindow.showWindow();
 

@@ -36,13 +36,15 @@ package cytoscape.data.readers;
 //-----------------------------------------------------------------------------
 import cytoscape.data.GraphObjAttributes;
 import giny.model.RootGraph;
+import giny.view.GraphView;
 //-----------------------------------------------------------------------------
 public interface GraphReader {
-    public void read();
-    public void read(boolean canonicalizeNodeNames);
-    public RootGraph getRootGraph();
-    public GraphObjAttributes getNodeAttributes ();
-    public GraphObjAttributes getEdgeAttributes ();
+  public void read();
+  public void read(boolean canonicalizeNodeNames);
+  public RootGraph getRootGraph();
+  public GraphObjAttributes getNodeAttributes ();
+  public GraphObjAttributes getEdgeAttributes ();
+  public void layout(GraphView myView);
 }
 
 

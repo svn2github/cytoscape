@@ -35,7 +35,7 @@
 package cytoscape.data.readers;
 //------------------------------
 import java.util.*;
-
+import giny.view.GraphView;
 import giny.model.*;
 import cytoscape.util.GinyFactory;
 
@@ -84,7 +84,7 @@ public class InteractionsReader implements GraphReader {
     this.species = species;
   }
 
-
+  public void layout(GraphView view){}
   //----------------------------------------------------------------------------------------
   public void read ( boolean canonicalize ) {
 

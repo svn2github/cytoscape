@@ -522,13 +522,17 @@ protected void switchGraph() {
     setInteractivity(false);
     createGraphView();
     installGraphView();
+
     //applyLayout();
     redrawGraph(false, true);
+
     view.fitContent();
     view.setZoom(view.getZoom()*0.9);
     updateStatusLabel(0, 0);
 
+
     //this call forces the window to revalidate itself
+
     showWindow();
     setInteractivity(true);
 }

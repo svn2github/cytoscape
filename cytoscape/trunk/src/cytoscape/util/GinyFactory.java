@@ -50,7 +50,7 @@ public class GinyFactory {
      * Creates a GraphView instance on the supplied graph.
      */
     public static GraphView createGraphView(GraphPerspective perspective) {
-        return new PGraphView(perspective);
+      return new PGraphView(perspective);
     }
 }
 
