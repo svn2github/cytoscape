@@ -97,6 +97,7 @@ public final class RotationLayouter
       if (!m_graph.isMovableNode(i)) continue;
       m_pointBuff[0] = m_graph.getNodePosition(i, true);
       m_pointBuff[1] = m_graph.getNodePosition(i, false);
+      m_pointBuff[2] = 0.0d;
       xform.transformArr(m_pointBuff);
       m_graph.setNodePosition(i, m_pointBuff[0], m_pointBuff[1]);
     }
@@ -111,6 +112,7 @@ public final class RotationLayouter
       {
         m_pointBuff[0] = m_graph.getAnchorPosition(i, j, true);
         m_pointBuff[1] = m_graph.getAnchorPosition(i, j, false);
+        m_pointBuff[2] = 0.0d;
         xform.transformArr(m_pointBuff);
         m_graph.setAnchorPosition(i, j, m_pointBuff[0], m_pointBuff[1]);
       }
