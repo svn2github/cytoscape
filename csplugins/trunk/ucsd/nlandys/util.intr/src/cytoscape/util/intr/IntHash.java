@@ -56,6 +56,14 @@ public final class IntHash
   }
 
   /**
+   * Returns the number of elements currently in this hashtable.
+   */
+  public final int size()
+  {
+    return m_elements;
+  }
+
+  /**
    * Puts a new value into this hashtable if that value is not already in
    * this hashtable; otherwise does nothing.  Returns the input value if this
    * value was already in this hashtable; returns -1 if the input value was
