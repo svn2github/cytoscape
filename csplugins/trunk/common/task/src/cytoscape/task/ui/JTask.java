@@ -35,7 +35,7 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
     /**
      * Status value label.
      */
-    private JLabel statusValue;
+    private JTextArea statusValue;
 
     /**
      * Time remaining label.
@@ -205,6 +205,7 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 stopTimer();
+                removeProgressBar();
                 if (config.getAutoDispose()) {
                     dispose();
                 } else {
@@ -216,7 +217,6 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
                     // say so explicitly.
                     if (haltRequested) {
                         setCancelStatusMsg("Canceled by User");
-                        removeProgressBar();
                     }
                 }
             }
@@ -233,8 +233,9 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
     public void setStatus(final String message) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                statusValue.setText
-                        (StringUtils.truncateOrPadString(message));
+                statusValue.setText (message);
+                pack();
+                validate();
             }
         });
     }
@@ -258,22 +259,22 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
                 GridBagConstraints.EAST, true);
         descriptionValue = addLabel(StringUtils.truncateOrPadString(taskTitle),
                 progressPanel, 1, y,
-                GridBagConstraints.WEST, true);
+                GridBagConstraints.NORTHEAST, true);
 
         addLabel("Status:  ", progressPanel, 0, ++y,
-                GridBagConstraints.EAST, config.getStatusFlag());
-        statusValue = addLabel
+                GridBagConstraints.NORTHEAST, config.getStatusFlag());
+        statusValue = addTextArea
                 (StringUtils.truncateOrPadString("Starting..."),
                         progressPanel, 1, y, GridBagConstraints.WEST,
                         config.getStatusFlag());
 
         addLabel("Time Left:  ", progressPanel, 0, ++y,
-                GridBagConstraints.EAST, config.getTimeRemainingFlag());
+                GridBagConstraints.NORTHEAST, config.getTimeRemainingFlag());
         timeRemainingValue = addLabel("", progressPanel, 1, y,
                 GridBagConstraints.WEST, config.getTimeRemainingFlag());
 
         addLabel("Time Elapsed:  ", progressPanel, 0, ++y,
-                GridBagConstraints.EAST, config.getTimeElapsedFlag());
+                GridBagConstraints.NORTHEAST, config.getTimeElapsedFlag());
         timeElapsedValue = addLabel(StringUtils.getTimeString(0),
                 progressPanel, 1, y, GridBagConstraints.WEST,
                 config.getTimeElapsedFlag());
@@ -296,10 +297,10 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
         });
 
         //  Define Modality
-        setModal(true);
+        setModal(config.getModal());
 
         this.pack();
-        this.setResizable(config.getModal());
+        this.setResizable(false);
 
         //  Center component relative to parent component
         //  or relative to user's screen.
@@ -333,9 +334,11 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
         cancelButton.setActionCommand(ACTION_CANCEL);
         cancelButton.addActionListener(this);
 
-        if (config.getUserButtonFlag()) {
-            footer.add(Box.createHorizontalGlue());
+        if (config.getCloseButtonFlag()) {
             footer.add(closeButton);
+            footer.add(Box.createHorizontalGlue());
+        }
+        if (config.getCancelButtonFlag()) {
             footer.add(cancelButton);
         }
         container.add(footer, BorderLayout.EAST);
@@ -384,6 +387,38 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
             panel.add(label, c);
         }
         return label;
+    }
+
+    /**
+     * Add New TextArea to Specified JPanel.
+     *
+     * @param text  Label Text.
+     * @param panel Container Panel.
+     * @param gridx X Location.
+     * @param gridy Y Location.
+     * @return JLabel Object.
+     */
+    private JTextArea addTextArea(String text, JPanel panel,
+            int gridx, int gridy, int alignment, boolean addToPanel) {
+        JTextArea textArea = new JTextArea(text, 1, 25);
+        textArea.setEditable(false);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        textArea.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+        textArea.setBackground(
+            (Color)UIManager.get("Label.background"));
+        textArea.setForeground(
+            (Color)UIManager.get("Label.foreground"));
+        textArea.setFont(new Font(null, Font.PLAIN, 13));
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = gridx;
+        c.gridy = gridy;
+        c.anchor = alignment;
+        if (addToPanel) {
+            panel.add(textArea, c);
+        }
+        return textArea;
     }
 
     /**
