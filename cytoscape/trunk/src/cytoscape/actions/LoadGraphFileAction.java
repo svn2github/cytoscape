@@ -107,7 +107,8 @@ public class LoadGraphFileAction extends CytoscapeAction {
 
       final int fileTypeF = fileType;
       final ProgressUIControl contrl =
-        ProgressUI.startProgress("Loading...",
+        ProgressUI.startProgress(Cytoscape.getDesktop(),
+                                 "Loading...",
                                  "Loading graph; please wait...",
                                  null);
       final CyNetwork[] newNetwork = new CyNetwork[1];

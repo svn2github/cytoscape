@@ -1,6 +1,6 @@
 package cytoscape.process.ui;
 
-import cytoscape.Cytoscape;
+// Notice the dependency list here - no deps on legacy cytoscape.* code.
 import cytoscape.process.Stoppable;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
@@ -63,6 +63,10 @@ public final class ProgressUI
    * if previous progress UI has not been disposed of at the time this method
    * is called.
    *
+   * @param parent the parent frame that will show this modal dialog; in most
+   *   cases this will be <code>Cytoscape.getDesktop()</code>; this class uses
+   *   an input parameter instead of using <code>cytoscape.Cytoscape</code>
+   *   to avoid dependencies - this keeps code more modular.
    * @param title desired title of the dialog window; may not be
    *   <code>null</code>.
    * @param message brief message that will appear to the user;
@@ -76,17 +80,18 @@ public final class ProgressUI
    *   that is not the AWT event handling thread
    *   (<nobr><code>java.awt.EventQueue.isDispatchThread()</code></nobr>).
    **/
-  public static ProgressUIControl startProgress(String title,
+  public static ProgressUIControl startProgress(Frame parent,
+                                                String title,
                                                 String message,
                                                 final Stoppable stop)
   {
     if (!EventQueue.isDispatchThread())
       throw new IllegalThreadStateException
         ("startProgress() required to be called from AWT dispatch thread");
+    if (parent == null) throw new NullPointerException("parent is null");
     if (title == null) throw new NullPointerException("title is null");
     if (message == null) throw new NullPointerException("message is null");
-    Frame frame = Cytoscape.getDesktop();
-    JDialog busyDialog = new JDialog(frame, title, true);
+    JDialog busyDialog = new JDialog(parent, title, true);
     busyDialog.setResizable(false);
     busyDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     JPanel panel = new JPanel(new BorderLayout());
@@ -106,7 +111,7 @@ public final class ProgressUI
                   progress.setIndeterminate(false);
                   progress.setString(null);
                   progress.setValue(percent); } } ); } },
-       frame);
+       parent);
     if (stop != null)
     {
       JButton button = new JButton("Stop");
