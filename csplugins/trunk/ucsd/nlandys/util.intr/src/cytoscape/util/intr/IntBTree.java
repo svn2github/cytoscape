@@ -104,10 +104,10 @@ public final class IntBTree
         int newSplit;
         if (isLeafNode(newChild)) newSplit = newChild.values[0];
         else newSplit = newChild.data.splitVals[newChild.sliceCount - 1];
-        if (n.sliceCount < n.data.children.length) { // There's room here.
-          for (int j = n.sliceCount; j > foundPath + 1; j--) {
-            n.data.children[j] = n.data.children[j - 1];
-            n.data.splitVals[j - 1] = n.data.splitVals[j - 2]; }
+        if (n.sliceCount < MAX_BRANCHES) { // There's room here.
+          for (int j = n.sliceCount - 1; j > foundPath;) {
+            n.data.children[j + 1] = n.data.children[j];
+            n.data.splitVals[j] = n.data.splitVals[--j]; }
           n.sliceCount++;
           n.data.deepCount++;
           n.data.children[foundPath + 1] = newChild;
