@@ -59,7 +59,8 @@ import y.layout.random.RandomLayouter;
 import y.io.YGFIOHandler;
 import y.io.GMLIOHandler;
 
-import y.util.GraphHider;
+import y.util.GraphHider; // yFiles 2.01
+//import y.algo.GraphHider; // yFiles 1.4
 
  // printing
 import java.awt.print.PageFormat;
@@ -106,7 +107,7 @@ public class CytoscapeWindow extends JPanel implements FilterDialogClient, Graph
 
   protected JFrame mainFrame;
   protected JMenuBar menuBar;
-  protected JMenu opsMenu, vizMenu, selectSubmenu, layoutMenu;
+  protected JMenu opsMenu, vizMenu, selectMenu, layoutMenu;
   protected JToolBar toolbar;
   protected JLabel infoLabel;
 
@@ -173,6 +174,8 @@ public CytoscapeWindow (cytoscape parentApp,
    throws Exception
 {
   // System.out.println ("--- constructing CytoscapeWindow in cstest0");
+  System.out.println("CytoscapeWindow.constructor " + Thread.currentThread());
+  System.out.flush();
   this.parentApp = parentApp;
   this.logger = logger;
   this.geometryFilename = geometryFilename;
@@ -368,6 +371,7 @@ public void redrawGraph() {
 //------------------------------------------------------------------------------
 public void redrawGraph (boolean doLayout)
 {
+  
   applyVizmapSettings();
   if (doLayout) {
     applyLayout(false);
@@ -376,7 +380,6 @@ public void redrawGraph (boolean doLayout)
   /* paintImmediately() is needed because sometimes updates can be buffered */
   graphView.paintImmediately(0,0,graphView.getWidth(),graphView.getHeight());
   updateStatusText();
-
 } // redrawGraph
 
 
@@ -849,7 +852,7 @@ public JMenu getVizMenu ()
 //------------------------------------------------------------------------------
 public JMenu getSelectMenu ()
 {
-  return selectSubmenu;
+  return selectMenu;
 }
 //------------------------------------------------------------------------------
 public JMenu getLayoutMenu ()
@@ -971,7 +974,7 @@ protected JMenuBar createMenuBar ()
   deleteSelectionMenuItem = editMenu.add (new DeleteSelectedAction ());
   deleteSelectionMenuItem.setEnabled (false);
 
-  JMenu selectMenu = new JMenu ("Select");             menuBar.add    (selectMenu);
+  this.selectMenu = new JMenu ("Select");               menuBar.add    (selectMenu);
   JMenu selectNodesSubMenu = new JMenu("Nodes");       selectMenu.add (selectNodesSubMenu);
   JMenu selectEdgesSubMenu = new JMenu("Edges");       selectMenu.add (selectEdgesSubMenu);
   JMenu displayNWSubMenu = new JMenu("To New Window"); selectMenu.add (displayNWSubMenu);
@@ -1053,7 +1056,7 @@ protected JMenuBar createMenuBar ()
   vizMenu = new JMenu ("Visualization"); // always create the viz menu
   menuBar.add (vizMenu);
   vizMenu.add (new SetVisualPropertiesAction ());
-  // vizMenu.add( new ColorNodesFromFile());
+  vizMenu.add( new ColorNodesFromFile());
   //  vizMenu.add (new PrintPropsAction ());
 
   opsMenu = new JMenu ("PlugIns"); // always create the plugins menu
@@ -1205,7 +1208,7 @@ public void selectNodesByName (String [] nodeNames, boolean clearAllSelectionsFi
         graphNodeName.toLowerCase();
         Boolean select = (Boolean) namedNodes.get(graphNodeName);
         if(select!=null) {
-            nodeRealizer.setSelected (true);
+          nodeRealizer.setSelected (true);
         }
         else if (clearAllSelectionsFirst) {
             nodeRealizer.setSelected (false);
@@ -1435,16 +1438,37 @@ protected void updateEdgeVisibilityFromNodeVisibility ()
 public void applyLayout (boolean animated)
 {
   if (graph.getNodeArray().length == 0) return;
-
+  
+  // added by iliana on 1.6.2003 (works with yFiles 2.01)
+  // Remove graph listeners: (including undoManager)
+  Iterator it = graph.getGraphListeners();
+  ArrayList gls = new ArrayList();
+  GraphListener gl;
+  while(it.hasNext()){
+    gl = (GraphListener)it.next();
+    gls.add(gl);
+  }
+  for(int i = 0; i < gls.size(); i++){
+    graph.removeGraphListener((GraphListener)gls.get(i));
+  }
+  
   logger.warning ("starting layout...");
   setInteractivity (false);
+  System.out.println("CytoscapeWindow: doLayout");
+  System.out.flush();
   layouter.doLayout (graphView.getGraph2D ());
-
+  System.out.println("done doLayout");
+  System.out.flush();
   graphView.fitContent ();
   graphView.setZoom (graphView.getZoom ()*0.9);
 
   setInteractivity (true);
   logger.info (" done");
+  
+  // Add back graph listeners:
+  for(int i = 0; i < gls.size(); i++){
+    graph.addGraphListener((GraphListener)gls.get(i));
+  }
 
 } // applyLayout
 
@@ -1722,15 +1746,35 @@ protected class DeleteSelectedAction extends AbstractAction   {
   DeleteSelectedAction () { super ("Delete Selected Nodes and Edges"); }
 
   public void actionPerformed (ActionEvent e) {
+   
     Graph2D g = graphView.getGraph2D ();
-
+    
+    // ------ iliana testing
+    // Removing listeners makes this incredibly fast
+    //Iterator it = g.getGraphListeners();
+    //ArrayList gls = new ArrayList();
+    //GraphListener gl;
+    //while(it.hasNext()){
+    //gl = (GraphListener)it.next();
+    //gls.add(gl);
+    //}
+    
+    //for(int i = 0; i < gls.size(); i++){
+    //g.removeGraphListener((GraphListener)gls.get(i));
+    //}
+    //-------- iliana testing ends
+    
     // added by dramage 2002-08-23
     g.firePreEvent();
     
+    int nodeNum = 0;
     NodeCursor nc = g.selectedNodes (); 
     while (nc.ok ()) {
       Node node = nc.node ();
       g.removeNode (node);
+      nodeNum++;
+      System.out.println("Removed node " + nodeNum);
+      System.out.flush();
       nc.next ();
       } // while
     EdgeCursor ec = g.selectedEdges ();
@@ -1744,7 +1788,7 @@ protected class DeleteSelectedAction extends AbstractAction   {
 
     
     redrawGraph ();
-    } // actionPerformed
+  } // actionPerformed
   
 
 } // inner class DeleteSelectedAction
