@@ -52,7 +52,7 @@ public class AnnotationGui extends AbstractAction {
 //----------------------------------------------------------------------------------------
 public AnnotationGui (CytoscapeWindow cytoscapeWindow)
 {
-  super ("Annotation...");
+  super ();
   dataServer = cytoscapeWindow.getBioDataServer ();
   if (dataServer != null)
     annotationDescriptions = dataServer.getAnnotationDescriptions ();
