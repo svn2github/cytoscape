@@ -65,9 +65,9 @@ final class DynamicGraphRepresentation implements DynamicGraph
         private Edge edge = null;
         public int numRemaining() { return numRemaining; }
         public int nextInt() {
-          int returnThis;
-          try { returnThis = edge.edgeId; }
-          catch (NullPointerException exc) {
+          final int returnThis;
+          if (edge != null) returnThis = edge.edgeId;
+          else {
             for (edge = node.firstOutEdge;
                  edge == null;
                  node = node.nextNode, edge = node.firstOutEdge) { }
@@ -89,7 +89,7 @@ final class DynamicGraphRepresentation implements DynamicGraph
     n.nextNode = m_firstNode;
     // This is one of the few cases where a try/catch block might benefit
     // the implementation - unless, of course, we have a graph with no nodes
-    // and keep adding one node and deleting one node repeatedly.
+    // and keep adding a node and deleting that node repeatedly.
     try { m_firstNode.prevNode = n; } catch (NullPointerException exc) { }
     m_firstNode = n;
     n.nodeId = returnThis;
@@ -105,15 +105,9 @@ final class DynamicGraphRepresentation implements DynamicGraph
     while (edges.numRemaining() > 0) m_stack.push(edges.nextInt());
     while (m_stack.size() > 0) removeEdge(m_stack.pop());
     final Node n = m_nodes.getNodeAtIndex(node);
-    // These try/catch statements will throw exceptions on each removeNode()
-    // if nodes are removed in order or reverse order.  This will impact
-    // performance in a big way.
-    try { n.prevNode.nextNode = n.nextNode; }
-    catch (NullPointerException exc) { // n.prevNode is null.
-      m_firstNode = n.nextNode; }
-    try { n.nextNode.prevNode = n.prevNode; }
-    catch (NullPointerException exc) { // n.nextNode is null.
-      ; }
+    if (n.prevNode != null) n.prevNode.nextNode = n.nextNode;
+    else m_firstNode = n.nextNode;
+    if (n.nextNode != null) n.nextNode.prevNode = n.prevNode;
     m_nodes.setNodeAtIndex(null, node);
     m_freeNodes.push(node);
     n.prevNode = null; n.firstOutEdge = null; n.firstInEdge = null;
@@ -149,17 +143,10 @@ final class DynamicGraphRepresentation implements DynamicGraph
       if (directed) source.selfEdges++;
       else source.undDegree--; }
     e.nextOutEdge = source.firstOutEdge;
-    // This try/catch statement will kill performance if there are relatively
-    // few edges per node in our graph.
-    try { source.firstOutEdge.prevOutEdge = e; }
-    catch (NullPointerException exc) { // source.firstOutEdge is null.
-      ; }
+    if (source.firstOutEdge != null) source.firstOutEdge.prevOutEdge = e;
     source.firstOutEdge = e;
     e.nextInEdge = target.firstInEdge;
-    // Again, try/catch block will kill performance.
-    try { target.firstInEdge.prevInEdge = e; }
-    catch (NullPointerException exc) { // target.firstInEdge is null.
-      ; }
+    if (target.firstInEdge != null) target.firstInEdge.prevInEdge = e;
     target.firstInEdge = e;
     e.edgeId = returnThis;
     e.directed = directed;
@@ -219,10 +206,8 @@ final class DynamicGraphRepresentation implements DynamicGraph
       // edge is negative or Integer.MAX_VALUE.
       if (edge == Integer.MAX_VALUE) return -1;
       throw new IllegalArgumentException("edge is negative"); }
-    // Get rid of this try/catch - it will kill performance if people are
-    // using this method to test the existence of an edge.
-    try { return e.sourceNode; }
-    catch (NullPointerException exc) { return -1; }
+    if (e != null) return e.sourceNode;
+    else return -1;
   }
 
   public int targetNode(int edge)
@@ -233,10 +218,8 @@ final class DynamicGraphRepresentation implements DynamicGraph
       // edge is negative or Integer.MAX_VALUE.
       if (edge == Integer.MAX_VALUE) return -1;
       throw new IllegalArgumentException("edge is negative"); }
-    // Get rid of this try/catch - it will kill performance if people are
-    // using this method to test the existence of an edge.
-    try { return e.targetNode; }
-    catch (NullPointerException exc) { return -1; }
+    if (e != null) return e.targetNode;
+    else return -1;
   }
 
   public IntEnumerator adjacentEdges(int node,
