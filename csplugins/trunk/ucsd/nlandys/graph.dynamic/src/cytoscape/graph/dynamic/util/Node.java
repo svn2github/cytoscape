@@ -4,6 +4,7 @@ package cytoscape.graph.dynamic.util;
 class Node
 {
 
+  int m_nodeId;
   Node m_nextNode;
   Node m_prevNode;
   Edge m_firstOutEdge;

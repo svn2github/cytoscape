@@ -10,11 +10,25 @@ class DynamicGraphRepresentation implements DynamicGraph
   private Node m_firstNode;
   private int m_edgeCount;
 
-  DynamicGraphRepresentation() { }
+  DynamicGraphRepresentation()
+  {
+    m_nodeCount = 0;
+    m_firstNode = null;
+    m_edgeCount = 0;
+  }
 
   public IntEnumerator nodes()
   {
-    return null;
+    final int nodeCount = m_nodeCount;
+    final Node firstNode = m_firstNode;
+    return new IntEnumerator() {
+        private int numRemaining = nodeCount;
+        private Node node = firstNode;
+        public int numRemaining() { return numRemaining; }
+        public int nextInt() {
+          final int returnThis = node.m_nodeId;
+          node = node.m_nextNode;
+          return returnThis; } };
   }
 
   public IntEnumerator edges()
