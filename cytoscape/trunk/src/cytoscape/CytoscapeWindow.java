@@ -810,46 +810,49 @@ public void setEdgeAttributes(GraphObjAttributes edgeAttributes){
 }
 //------------------------------------------------------------------------------
 /**
- * 
+ *  loop over all nodes, to assign and display common node name's (rather
+ *  than the less human-friendly 'canonicalName').
+ *  this assignment is made, in order of preference, from
+ *  <ol>
+ *    <li> the 'commonName' attribute of the node, if it has already been assigned
+ *    <li> the annotation server, if it is non-null, and has a commonName value for this
+ *         canonical node name, for this species
+ *    <li> if all else fails, the commonName is assigned from the canonicalName
+ *  </ol>
+ *
+ *  after the best commonName has been found, it is displayed as the label of the
+ *  node, and is written (perhaps redundantly, if it was already there) into the
+ *  commonNode attribute of the node.
  */
-public void displayCommonNodeNames()
+public void displayCommonNodeNames ()
 {
-    // common names may have been already loaded using
-    // an attributes file
-    // if bioDataServer is null, shouldn't we make sure common names do not
-    // exist before returning?
-    // -iliana 10/21/2002
-    
-    
-    if (bioDataServer == null){ 
-	//System.out.println("\nCytoscapeWindow: the bioDataServer is down");
-	//System.out.flush();
-	return;
-    }
-
   Node [] nodes = graph.getNodeArray ();
+  String source = "";
 
   for (int i=0; i < nodes.length; i++) {
     Node node = nodes [i];
     NodeRealizer r = graphView.getGraph2D().getRealizer(node);
-    String newName = r.getLabelText ();  // we hope to replace this 
+    String commonName = r.getLabelText (); 
     String canonicalName = getCanonicalNodeName (node);
-    try {
-      String [] synonyms = bioDataServer.getAllCommonNames (getDefaultSpecies (), canonicalName);
-      if (synonyms.length > 0) {
-	  newName = synonyms [0];
+    String [] commonNamesFromAttributes = nodeAttributes.getStringArrayValues ("commonName", canonicalName);
+    if (commonNamesFromAttributes != null && commonNamesFromAttributes.length > 0) {
+      commonName = commonNamesFromAttributes [0];
+      source = "from pre-existing node attribute";
       }
-      // added by iliana 11.5.2002
-      // the label of the node may have no text
-      if(newName == null || newName.length() == 0){
-	  newName = canonicalName;
+    else try {
+      String [] synonyms = bioDataServer.getAllCommonNames (getSpecies (node), canonicalName);
+      if (synonyms != null && synonyms.length > 0)
+          commonName = synonyms [0];
+      if (commonName == null || commonName.length() == 0)
+        commonName = canonicalName;
+      source = " from annotation server";
+      } // else try
+    catch (Exception exc) {
+      commonName = canonicalName;
+      source = "from canonicalName";
       }
-      
-      nodeAttributes.set ("commonName", canonicalName, newName);
-      // System.out.println ("setting node attribute commonName for " + canonicalName + " to " + newName);
-      r.setLabelText (newName);
-      }
-    catch (Exception ignoreForNow) {;}
+    nodeAttributes.set ("commonName", canonicalName, commonName);
+    r.setLabelText (commonName);
     } // for i
 
 } // displayCommonNodeNames
