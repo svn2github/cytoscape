@@ -693,8 +693,34 @@ public void selectNodesByName (String [] nodeNames, boolean clearAllSelectionsFi
     NodeRealizer nodeRealizer = graphView.getGraph2D().getRealizer(nodes [i]);
     boolean matched = false;
     for (int n=0; n < nodeNames.length; n++) {
-      // String canonicalName = biodataSever.getCanonicalName (nodes [i]);
       if (nodeNames [n].equalsIgnoreCase (graphNodeName)) {
+        matched = true;
+        break;
+        } // if matched
+      } // for n
+    if (clearAllSelectionsFirst && !matched)
+      nodeRealizer.setSelected (false);
+    else if (matched)
+      nodeRealizer.setSelected (true);
+    } // for i
+
+  redrawGraph ();
+
+} // selectNodesByName
+//------------------------------------------------------------------------------
+/**
+ *  quadratic (in)efficiency:  make this smarter (pshannon, 24 may 2002)
+ */
+public void selectNodes (Node [] nodesToSelect, boolean clearAllSelectionsFirst)
+{
+  Graph2D g = graphView.getGraph2D();
+  Node [] nodes = graphView.getGraph2D().getNodeArray();
+
+  for (int i=0; i < nodes.length; i++) {
+    NodeRealizer nodeRealizer = graphView.getGraph2D().getRealizer(nodes [i]);
+    boolean matched = false;
+    for (int n=0; n < nodesToSelect.length; n++) {
+      if (nodes [i] == nodesToSelect [n]) {
         matched = true;
         break;
         } // if matched
