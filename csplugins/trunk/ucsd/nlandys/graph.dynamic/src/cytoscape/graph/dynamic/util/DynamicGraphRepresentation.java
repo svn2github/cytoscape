@@ -94,10 +94,10 @@ final class DynamicGraphRepresentation implements DynamicGraph
     return returnThis;
   }
 
-  public int removeNode(final int node)
+  public boolean removeNode(int node)
   {
     final IntEnumerator edges = adjacentEdges(node, true, true, true);
-    if (edges == null) return -1;
+    if (edges == null) return false;
     m_stack.empty();
     while (edges.numRemaining() > 0) m_stack.push(edges.nextInt());
     while (m_stack.size() > 0) removeEdge(m_stack.pop());
@@ -110,7 +110,7 @@ final class DynamicGraphRepresentation implements DynamicGraph
     n.prevNode = null; n.firstOutEdge = null; n.firstInEdge = null;
     m_nodeDepot.recycleNode(n);
     m_nodeCount--;
-    return node;
+    return true;
   }
 
   public int createEdge(int sourceNode, int targetNode, boolean directed)
@@ -144,11 +144,11 @@ final class DynamicGraphRepresentation implements DynamicGraph
     return returnThis;
   }
 
-  public int removeEdge(final int edge)
+  public boolean removeEdge(int edge)
   {
-    if (edge < 0 || edge == Integer.MAX_VALUE) return -1;
+    if (edge < 0 || edge == Integer.MAX_VALUE) return false;
     final Edge e = m_edges.getEdgeAtIndex(edge);
-    if (e == null) return -1;
+    if (e == null) return false;
     final Node source = m_nodes.getNodeAtIndex(e.sourceNode);
     final Node target = m_nodes.getNodeAtIndex(e.targetNode);
     if (e.prevOutEdge != null) e.prevOutEdge.nextOutEdge = e.nextOutEdge;
@@ -167,7 +167,7 @@ final class DynamicGraphRepresentation implements DynamicGraph
     e.prevOutEdge = null; e.nextInEdge = null; e.prevInEdge = null;
     m_edgeDepot.recycleEdge(e);
     m_edgeCount--;
-    return edge;
+    return true;
   }
 
   public boolean containsNode(int node)
