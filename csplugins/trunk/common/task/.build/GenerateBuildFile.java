@@ -366,10 +366,11 @@ public class GenerateBuildFile
         allLibDepsList.addElement(libs[i]); }
     for (int j = 0; j < allPackageDeps.length; j++) {
       libs = (String[]) libDeps.get(allPackageDeps[j]);
-      for (int i = 0; i < libs.length; i++)
-        if (allLibDeps.get(libs[i]) == null) {
-          allLibDeps.put(libs[i], libs[i]);
-          allLibDepsList.addElement(libs[i]); } }
+      if (libs != null)
+        for (int i = 0; i < libs.length; i++)
+          if (allLibDeps.get(libs[i]) == null) {
+            allLibDeps.put(libs[i], libs[i]);
+            allLibDepsList.addElement(libs[i]); } }
     String[] returnThis = new String[allLibDepsList.size()];
     allLibDepsList.copyInto(returnThis);
     return returnThis;
