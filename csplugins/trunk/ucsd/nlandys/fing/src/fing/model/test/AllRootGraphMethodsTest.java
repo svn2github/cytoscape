@@ -907,6 +907,39 @@ public final class AllRootGraphMethodsTest
     nodesList = root.nodeMetaParentsList(nodeInx[4]);
     if (nodesList.size() != 2)
       throw new IllegalStateException("wrong number of parent nodes");
+
+    // getNodeMetaParentIndicesArray(int).
+    if (root.getNodeMetaParentIndicesArray(0) != null ||
+        root.getNodeMetaParentIndicesArray(Integer.MAX_VALUE) != null ||
+        root.getNodeMetaParentIndicesArray(Integer.MIN_VALUE) != null ||
+        root.getNodeMetaParentIndicesArray(99) != null ||
+        root.getNodeMetaParentIndicesArray(minNodeInx - 1) != null)
+      throw new IllegalStateException("expected null for meta parents");
+    int[] parentInx = root.getNodeMetaParentIndicesArray(nodeInx[0]);
+    if (parentInx.length != 2)
+      throw new IllegalStateException("wrong number of parent nodes");
+    for (int i = 0;; i++) if (parentInx[i] == nodeInx[3]) break;
+    for (int i = 0;; i++) if (parentInx[i] == nodeInx[4]) break;
+    parentInx = root.getNodeMetaParentIndicesArray(nodeInx[1]);
+    if (parentInx.length != 2)
+      throw new IllegalStateException("wrong number of parent nodes");
+    for (int i = 0;; i++) if (parentInx[i] == nodeInx[0]) break;
+    for (int i = 0;; i++) if (parentInx[i] == nodeInx[3]) break;
+    parentInx = root.getNodeMetaParentIndicesArray(nodeInx[2]);
+    if (parentInx.length != 2)
+      throw new IllegalStateException("wrong number of parent nodes");
+    for (int i = 0;; i++) if (parentInx[i] == nodeInx[3]) break;
+    for (int i = 0;; i++) if (parentInx[i] == nodeInx[4]) break;
+    parentInx = root.getNodeMetaParentIndicesArray(nodeInx[3]);
+    if (parentInx.length != 2)
+      throw new IllegalStateException("wrong number of parent nodes");
+    for (int i = 0;; i++) if (parentInx[i] == nodeInx[3]) break;
+    for (int i = 0;; i++) if (parentInx[i] == nodeInx[4]) break;
+    parentInx = root.getNodeMetaParentIndicesArray(nodeInx[4]);
+    if (parentInx.length != 2)
+      throw new IllegalStateException("wrong number of parent nodes");
+    for (int i = 0;; i++) if (parentInx[i] == nodeInx[0]) break;
+    for (int i = 0;; i++) if (parentInx[i] == nodeInx[4]) break;
   }
 
 }
