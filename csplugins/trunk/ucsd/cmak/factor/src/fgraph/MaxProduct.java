@@ -145,19 +145,19 @@ public class MaxProduct
     }
 
 
-    public void run()
+    public SubmodelOutputFiles run()
         throws IOException, AlgorithmException
     {
-        run(null, null, false);
+        return run(null, null, false);
     }
 
-    public void run(String outputDir, String outputFile)
+    public SubmodelOutputFiles run(String outputDir, String outputFile)
         throws IOException, AlgorithmException
     {
-        run(outputDir, outputFile, false);
+        return run(outputDir, outputFile, false);
     }
     
-    public void run(String outputDir, String outputFile,
+    public SubmodelOutputFiles run(String outputDir, String outputFile,
                     boolean yeangDataFormat)
         throws IOException, AlgorithmException
     {
@@ -172,13 +172,35 @@ public class MaxProduct
         
         //log(paths.toString(_ig));
         
-        _run(paths, _ig, outputDir, outputFile, yeangDataFormat);
+        return _run(paths, _ig, outputDir, outputFile, yeangDataFormat);
     }
 
-
-    protected void _run(PathResult paths, InteractionGraph ig,
-                        String outputDir, String outputFile,
-                        boolean yeangDataFormat)
+    /**
+     * Create a FactorGraph and run the max product algorithm
+     *
+     * @param paths Candidate explanatory paths
+     * @param ig the interaction graph
+     * @param outputDir the directory where output files will be written
+     * @param outputFile the base file name that will be pre-pended to all
+     *        output files
+     * @param yeangDataFormat if true, expect data files that were
+     *        created/adapted from output of the Chen-Hsiang's
+     *        c-implementation.  This is used for debugging purposes
+     *        because I cannot decipher Chen-Hsiang's code to figure
+     *        out how he is processing the raw data files.
+     *
+     * @return null if outputDir or outputFile are null.  Otherwise, return
+     *         a data structure that contains the location and names
+     *         of all of the output files.
+     *
+     * @throws IOException if there is an error writing the output
+     *
+     * @throws AlgorithmException if there is an error running the
+     *         max product algorithm
+     */
+    protected SubmodelOutputFiles _run(PathResult paths, InteractionGraph ig,
+                                       String outputDir, String outputFile,
+                                       boolean yeangDataFormat)
         throws IOException, AlgorithmException
     {
         log("Creating factor graph");
@@ -201,6 +223,7 @@ public class MaxProduct
         log("Updating interaction graph");
         fg.updateInteractionGraph();
 
+        SubmodelOutputFiles output = null;
         if(outputDir != null && outputFile != null)
         {
             String fname = outputDir + File.separator + outputFile;
@@ -208,10 +231,12 @@ public class MaxProduct
             log("Writing interaction graph sif file: " + fname);
             log("Filtering submodels that explain fewer than: " + KO_EXPLAIN_CUTOFF
                 + " KO experiments");
-            ig.writeGraphAsSubmodels(fname, KO_EXPLAIN_CUTOFF);
+            output = ig.writeGraphAsSubmodels(fname, KO_EXPLAIN_CUTOFF);
         }
         
         log("Done. ");
+
+        return output;
     }
 
     protected PathResult findPaths()

@@ -154,7 +154,7 @@ public class InteractionGraphFactory
                     {
                         numUndirected++;
                     }
-                }b
+                }
                 else
                 {
                     duplicates.add(t);

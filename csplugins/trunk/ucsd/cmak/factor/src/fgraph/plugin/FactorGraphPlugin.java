@@ -25,7 +25,7 @@ public class FactorGraphPlugin extends CytoscapePlugin
 
         //Main submenu
         JMenu submenu = new JMenu("Explain knockout data");
-        item = new JMenuItem("Run Factor Graph algorithm");
+        item = new JMenuItem("Run algorithm");
         item.addActionListener(new RunAction());
         submenu.add(item);
 

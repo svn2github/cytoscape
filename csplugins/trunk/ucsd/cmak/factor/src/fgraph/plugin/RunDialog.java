@@ -34,6 +34,8 @@ import giny.view.NodeView;
 public class RunDialog extends JDialog implements ActionListener
 {
     private static final int VIEW_THRESHOLD = 500;
+
+    private static final int TOP = 0;
     
     private JFormattedTextField minKOField;
     private JFormattedTextField pathLenField;
@@ -48,6 +50,14 @@ public class RunDialog extends JDialog implements ActionListener
     private JButton run;
     private JButton cancel;
     private JButton help;
+
+    private JButton exprBrowse;
+    private JButton sifBrowse;
+    private JButton edgeBrowse;
+    private JButton outFileBrowse;
+    private JButton outDirBrowse;
+
+    private JFileChooser chooser;
     
     public RunDialog(Frame parentFrame)
     {
@@ -62,6 +72,8 @@ public class RunDialog extends JDialog implements ActionListener
 
         System.out.println("logging formatter: "
                            + LogManager.getLogManager().getProperty("java.util.logging.ConsoleHandler.formatter"));
+
+
         
         Component components = createComponents();
 
@@ -73,29 +85,34 @@ public class RunDialog extends JDialog implements ActionListener
     private JComponent createComponents()
     {
         JPanel topPane = new JPanel(new GridBagLayout());
-        JPanel networkPane = createBorderedPanel("Physical network files");
-        JPanel exprPane = createBorderedPanel("Expression data file");
-        JPanel outputPane = createBorderedPanel("Output");
-        JPanel paramPane = createBorderedPanel("Run parameters");
 
-        JPanel advancedPane = createBorderedPanel(new GridLayout(0, 1),
-                                                  "Advanced Options");
-        
-        JPanel buttonPane = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        Box exprPane = createBorderedPanel("Expression data file");
+        Box outputPane = createBorderedPanel("Output location");
 
+        Box advancedPane = createBorderedPanel("Advanced Options", BoxLayout.Y_AXIS);
+        Box networkPane = createBorderedPanel("Physical interaction network files");
+        Box paramPane = createBorderedPanel("Algorithm parameters");
         advancedPane.add(networkPane);
         advancedPane.add(paramPane);
 
         
+        Box buttonPane = createBorderedPanel("", BoxLayout.X_AXIS);
+
+        Color titleColor = getTitleColor();
+
+        chooser = new JFileChooser();
+        
+        // set up the overall main panel
         GridBagConstraints c = new GridBagConstraints();
         GridBagConstraints lc = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
+        lc.anchor = GridBagConstraints.NORTH;
 
         lc.gridx = 0;
         lc.gridy = 0;
         lc.ipadx = 8;
         lc.ipady = 0;
-        topPane.add(createStepLabel("Step 1"), lc);
+        topPane.add(createStepLabel("Step 1", titleColor), lc);
         
         c.gridx = 1;
         c.gridy = 0;
@@ -103,7 +120,7 @@ public class RunDialog extends JDialog implements ActionListener
 
         lc.gridx = 0;
         lc.gridy = 1;
-        topPane.add(createStepLabel("Step 2"), lc);
+        topPane.add(createStepLabel("Step 2", titleColor), lc);
 
         c.gridx = 1;
         c.gridy = 1;
@@ -111,7 +128,7 @@ public class RunDialog extends JDialog implements ActionListener
 
         lc.gridx = 0;
         lc.gridy = 2;
-        topPane.add(createStepLabel(""), lc);
+        topPane.add(createOptionalLabel("<optional>", titleColor), lc);
 
         c.gridx = 1;
         c.gridy = 2;
@@ -119,25 +136,103 @@ public class RunDialog extends JDialog implements ActionListener
 
         lc.gridx = 0;
         lc.gridy = 3;
-        topPane.add(createStepLabel("Step 3"), lc);
+        topPane.add(createStepLabel("Step 3", titleColor), lc);
 
         c.gridx = 1;
         c.gridy = 3;
         topPane.add(buttonPane, c);
-
+        
+        /* test values
         pathLenField = createIntField(paramPane, "Max path length", 10, 5);
         minKOField = createIntField(paramPane, "Min knockout's per model",
-                                    10, 2);
-        sifField = createField(networkPane, "Physical network SIF file", 10, "fgtest.sif");
-        exprField = createField(exprPane, "Expression data file", 10, "fg2.pvals");
+                                    10, 3);
+        sifField = createField(networkPane, "Physical network SIF file", 10, "test-data/fgtest.sif");
+        exprField = createField(exprPane, "Expression data file", 10, "test-data/fg2.pvals");
         exprThreshField = createPvalField(exprPane, "Expression p-value cutoff",
                                           10, 0.01);
-        edgeField = createField(networkPane, "Interaction probabilties file", 10, "fgtest.eda");
+        edgeField = createField(networkPane, "Interaction probabilties file", 10, "test-data/fgtest.eda");
+        
         edgeThreshField = createPvalField(networkPane, "Protein-DNA edge p-value cutoff",
                                           10, 0.05);
         outDirField = createField(outputPane, "Output directory", 10, "/tmp");
         outFileField = createField(outputPane, "Output file name", 10, "plugin_out");
+        */
 
+
+        JPanel p;
+        
+        // expression panel
+        p = createGrid();
+
+        exprField = createField(10, "yeang2004-expression.eda");
+        exprThreshField = createPvalField(10, 0.02);
+        exprBrowse = createButton("Browse...");
+        
+        p.add(exprField);
+        p.add(horizontalBox(createLabel("Expression data file"),
+                            exprBrowse));
+        
+        p.add(exprThreshField);
+        p.add(createLabel("Expression p-value cutoff"));
+
+        exprPane.add(p);
+        
+        // output panel
+        p = createGrid();
+        
+        outDirField = createField(10, "/tmp");
+        outFileField = createField(10, "yeang2004_out");
+
+        outDirBrowse = createButton("Browse...");
+        outFileBrowse = createButton("Browse...");
+        
+        p.add(outDirField);
+        p.add(horizontalBox(createLabel("Output directory"),
+                            outDirBrowse));
+
+        p.add(outFileField);
+        p.add(horizontalBox(createLabel("Output file name"),
+                            outFileBrowse));
+        
+        outputPane.add(p);
+                
+        // network panel
+        p = createGrid();
+
+        sifField = createField(10, "yeang2004-network.sif");
+        edgeField = createField(10, "yeang2004-network.eda");
+        sifBrowse = createButton("Browse...");
+        edgeBrowse = createButton("Browse...");
+        edgeThreshField = createPvalField(10, 0);
+        
+        p.add(sifField);
+        p.add(horizontalBox(createLabel("Physical network SIF file"),
+                            sifBrowse));
+                
+        p.add(edgeField);
+        p.add(horizontalBox(createLabel("Interaction probabilties file"),
+                            edgeBrowse));
+        
+        p.add(edgeThreshField);
+        p.add(createLabel("Protein-DNA edge p-value cutoff"));
+
+        networkPane.add(p);
+        
+        // param panel
+        p = createGrid();
+
+        pathLenField = createIntField(10, 3);
+        p.add(pathLenField);
+        p.add(createLabel("Max path length"));
+
+        minKOField = createIntField(10, 3);
+        p.add(minKOField);
+        p.add(createLabel("Min knockout's per model"));
+
+        paramPane.add(p);
+
+
+        // run/cancel pane
         run = new JButton("Run");
         run.setMnemonic(KeyEvent.VK_R); 
         run.addActionListener(this);
@@ -154,33 +249,37 @@ public class RunDialog extends JDialog implements ActionListener
         buttonPane.add(run);
         buttonPane.add(cancel);
         buttonPane.add(help);
-
+        
         topPane.setBorder(BorderFactory.createEmptyBorder(10, //top
                                                           10, //left
                                                           10, //bottom
                                                           10 //right 
                                                           )
-                       );
+                          );
         return topPane;
+        }
+
+
+    private Box horizontalBox(JComponent c1, JComponent c2)
+    {
+        Box b = Box.createHorizontalBox();
+        b.add(c1);
+        b.add(Box.createHorizontalStrut(5));
+        b.add(Box.createHorizontalGlue());
+        b.add(c2);
+        
+        return b;
     }
 
-
-    private JPanel createBorderedPanel(String title)
+    private Box createBorderedPanel(String title)
     {
-        return createBorderedPanel(null, title);
+        return createBorderedPanel(title, BoxLayout.X_AXIS);
     }
     
-    private JPanel createBorderedPanel(LayoutManager layout, String title)
+    private Box createBorderedPanel(String title, int axis)
     {
-        JPanel pane;
-        if(layout == null)
-        {
-            pane = new JPanel(new GridLayout(0, 2));
-        }
-        else
-        {
-            pane = new JPanel(layout);
-        }
+
+        Box pane = new Box(axis);
 
         Border etched = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
         Border empty = BorderFactory.createEmptyBorder(10, //top
@@ -197,58 +296,84 @@ public class RunDialog extends JDialog implements ActionListener
         return pane;
     }
 
-    private JLabel createStepLabel(String label)
+    private JPanel createGrid()
+    {
+        JPanel p = new JPanel(new GridLayout(0, 2));
+        p.setAlignmentY(TOP);
+        
+        return p;
+    }
+    
+    private Color getTitleColor()
+    {
+        return BorderFactory.createTitledBorder("").getTitleColor();
+    }
+    
+    private JLabel createStepLabel(String label, Color color)
     {
         JLabel l = new JLabel(label);
-        Font big = l.getFont().deriveFont(Font.BOLD, 36.0f);
-        l.setForeground(new Color(0x666666));
+        Font big = l.getFont().deriveFont(Font.BOLD, 24.0f);
+        l.setForeground(color);
 
         l.setFont(big);
 
         return l;
     }
-    
-    private JTextField createField(JComponent container, String label,
-                                   int cols)
+
+
+    private JLabel createOptionalLabel(String label, Color color)
     {
-        return createField(container, label, cols, null);
+        JLabel l = new JLabel(label);
+        Font big = l.getFont().deriveFont(Font.BOLD, 14.0f);
+        l.setForeground(color);
+
+        l.setFont(big);
+
+        return l;
     }
-    
-    private JTextField createField(JComponent container, String label,
-                                   int cols, String defval)
+
+    private JButton createButton(String label)
     {
-        JTextField f = (JTextField) container.add(new JTextField(cols));
+        JButton b = new JButton(label);
+        b.addActionListener(this);
+
+        return b;
+    }
+
+    
+    private JLabel createLabel(String label)
+    {
+        return new JLabel(label, SwingConstants.LEFT);
+    }
+
+    private JTextField createField(int cols, String defval)
+    {
+        JTextField f = new JTextField(cols);
         f.setText(defval);
         f.setHorizontalAlignment(JTextField.TRAILING);
-        container.add(new JLabel(label, SwingConstants.LEFT));
+
         return f;
     }
 
-    private JFormattedTextField createIntField(JComponent container,
-                                               String label,
-                                               int cols, int defval)
+
+    
+    private JFormattedTextField createIntField(int cols, int defval)
     {
         JFormattedTextField f = new JFormattedTextField();
         f.setValue(new Integer(defval));
         f.setColumns(cols);
         f.setHorizontalAlignment(JTextField.TRAILING);
         
-        container.add(f);
-        container.add(new JLabel(label, SwingConstants.LEFT));
         return f;
     }
 
-    private JFormattedTextField createPvalField(JComponent container,
-                                                String label,
-                                                int cols, double defval)
+
+    private JFormattedTextField createPvalField(int cols, double defval)
     {
         JFormattedTextField f = new JFormattedTextField();
         f.setValue(new Double(defval));
         f.setColumns(cols);
         f.setHorizontalAlignment(JTextField.TRAILING);
-        
-        container.add(f);
-        container.add(new JLabel(label, SwingConstants.LEFT));
 
         return f;
     }
@@ -274,6 +399,59 @@ public class RunDialog extends JDialog implements ActionListener
                                           "Help",
                                           JOptionPane.INFORMATION_MESSAGE);
             
+        }
+        else if (source == exprBrowse)
+        {
+            int returnVal = chooser.showDialog(this, "Select");
+
+            if (returnVal == JFileChooser.APPROVE_OPTION)
+            {
+                File file = chooser.getSelectedFile();
+                exprField.setText(file.getAbsolutePath());
+            }
+        }
+        else if (source == sifBrowse)
+        {
+            int returnVal = chooser.showDialog(this, "Select");
+
+            if (returnVal == JFileChooser.APPROVE_OPTION)
+            {
+                File file = chooser.getSelectedFile();
+                sifField.setText(file.getAbsolutePath());
+            }
+        }
+        else if (source == edgeBrowse)
+        {
+            int returnVal = chooser.showDialog(this, "Select");
+
+            if (returnVal == JFileChooser.APPROVE_OPTION)
+            {
+                File file = chooser.getSelectedFile();
+                edgeField.setText(file.getAbsolutePath());
+            }
+        }
+        else if (source == outDirBrowse)
+        {
+            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int returnVal = chooser.showDialog(this, "Select");
+
+            if (returnVal == JFileChooser.APPROVE_OPTION)
+            {
+                File file = chooser.getSelectedFile();
+                outDirField.setText(file.getAbsolutePath());
+            }
+
+            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        }
+        else if (source == outFileBrowse)
+        {
+            int returnVal = chooser.showDialog(this, "Select");
+
+            if (returnVal == JFileChooser.APPROVE_OPTION)
+            {
+                File file = chooser.getSelectedFile();
+                outFileField.setText(file.getAbsolutePath());
+            }
         }
         else if(source == run)
         {
@@ -328,18 +506,10 @@ public class RunDialog extends JDialog implements ActionListener
         mp.setKOExplainCutoff(minKO);
         mp.setExpressionFile(expr, exprThresh);
         mp.setEdgeFile(edge, edgeThresh);
-        mp.run();
-        
-        InteractionGraph ig = mp.getInteractionGraph();
 
-        String fname = outDir + File.separator + outFile;
-        
-        System.out.println("Writing interaction graph sif file: " + fname);
-        System.out.println("Filtering submodels that explain fewer than: "
-                           + minKO
-                           + " KO experiments");
-        
-        SubmodelOutputFiles output = ig.writeGraphAsSubmodels(fname, minKO);
+        // run max product using YeangDataFormat == true
+        // affects the expected data format of the
+        SubmodelOutputFiles output = mp.run(outDir, outFile, true);
         
         return output;
     }

@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
 public class AboutAction implements ActionListener
 {
     private static final String ABOUT =
-        "<html><body>Factor graph about</body></html>";
+        "<html><body>This plugin implements the model inference algorithm described in <br>Yeang, et. al. <i>\"Automated pathway discovery and refinement on a scaffold of molecular interactions\"</i> 2005</body></html>";
     
     /**
      * Invoked when the about action occurs.

@@ -19,6 +19,8 @@ import java.util.logging.Logger;
 import cytoscape.data.mRNAMeasurement;
 import cytoscape.util.GinyFactory;
 
+//import fing.model.FingRootGraphFactory;
+
 import giny.model.RootGraph;
 import giny.model.Node;
 import giny.model.Edge;
@@ -75,7 +77,8 @@ public class InteractionGraph
         _edgeCount = edgeCount;
         
         _graph = GinyFactory.createRootGraph(nodeCount, edgeCount);
-
+        //_graph = FingRootGraphFactory.instantiateRootGraph();
+        
         // calling ensureCapacity results in better performance
         _graph.ensureCapacity(nodeCount, edgeCount);
         

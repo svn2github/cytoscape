@@ -7,6 +7,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -40,8 +42,16 @@ public class ChiSquaredDistribution
     private ChiSquaredDistribution(String table) 
         throws FileNotFoundException, IOException
     {
-        BufferedReader in = new BufferedReader(new FileReader(table));
 
+        //BufferedReader in = new BufferedReader(new FileReader(table));
+
+        InputStream chiData = this.getClass().getClassLoader().getResourceAsStream(table);
+        if(chiData == null)
+        {
+            throw new FileNotFoundException("Table of Chi-Squared values not found: " + table);
+        }
+        
+        BufferedReader in = new BufferedReader(new InputStreamReader(chiData));
         String line;
 
         ArrayList lines = new ArrayList();

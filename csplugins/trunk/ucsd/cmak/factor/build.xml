@@ -99,6 +99,8 @@
          <classpath refid="project.class.path"/>
     </javac>
 
+    <copy file="chi2cdf1table_rev.txt" toDir="${build}"/>
+
   </target>
 
    <!-- does not work for some reason -->
@@ -132,11 +134,11 @@
     <delete file="${dist}/fgraph.jar"/>
     <jar jarfile="${dist}/fgraph.jar" 
          basedir="${build}"
-         includes="fgraph/**"
+         includes="fgraph/**,chi2cdf1table_rev.txt"
          excludes="fgraph/test/**,**/*Test.class"
     />
 
-    <copy file="${dist}/fgraph.jar" toDir="${user.home}/cytoscape/plugins"/>
+    <copy file="${dist}/fgraph.jar" toDir="${user.home}/cytoscape-plugins"/>
   </target>
 
   <target name="dist" depends="compile"

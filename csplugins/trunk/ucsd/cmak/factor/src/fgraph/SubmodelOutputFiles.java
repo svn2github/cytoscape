@@ -5,6 +5,12 @@ import java.io.File;
 import java.util.List;
 import java.util.ArrayList;
 
+/**
+ * Running the max product algorithm generates a set
+ * of output files.  This data structure keeps track
+ * of all of the files for a single run of the algorithm
+ *
+ */
 public class SubmodelOutputFiles
 {
     List models;

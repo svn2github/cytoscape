@@ -453,19 +453,21 @@ public class FactorGraph
             prob[ss.getIndex(State.ZERO)] = 1;
             prob[ss.getIndex(State.ONE)] = val;
         }
-        
-        // for Ideker lab data
-        // protein-DNA edges are reported as pvalues
-        if(_ig.isProteinDNA(interactionEdgeIndex))
-        {
-            prob[ss.getIndex(State.ZERO)] = 1;
-            prob[ss.getIndex(State.ONE)] = likelihoodRatio(val);
-        }
-        // protein-protein edges are probabilities
         else
         {
-            prob[ss.getIndex(State.ZERO)] = 1 - val;
-            prob[ss.getIndex(State.ONE)] = val;
+            // for Ideker lab data
+            // protein-DNA edges are reported as pvalues
+            if(_ig.isProteinDNA(interactionEdgeIndex))
+            {
+                prob[ss.getIndex(State.ZERO)] = 1;
+                prob[ss.getIndex(State.ONE)] = likelihoodRatio(val);
+            }
+            // protein-protein edges are probabilities
+            else
+            {
+                prob[ss.getIndex(State.ZERO)] = 1 - val;
+                prob[ss.getIndex(State.ONE)] = val;
+            }
         }
         
         

@@ -20,7 +20,7 @@ public class RunAction implements ActionListener
             dialog.pack();
         }
         
-        //dialog.setVisible(true);        
-        dialog.show();
+        dialog.setVisible(true);        
+        //dialog.show();
     }
 }
