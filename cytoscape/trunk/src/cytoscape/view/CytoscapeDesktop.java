@@ -731,6 +731,7 @@ public class CytoscapeDesktop
 
    
       if ( e.getPropertyName() == NETWORK_VIEW_CREATED ) {
+        
         // add the new view to the GraphViewController
         getGraphViewController().addGraphView( ( CyNetworkView )e.getNewValue() );
         // pass on the event 

@@ -60,7 +60,7 @@ public class VisualMappingManager extends SubjectBase {
   GlobalAppearance myGlobalApp = new GlobalAppearance();
 
   // Optimizer Flag
-  private boolean optimizer = false;
+  private boolean optimizer = true;
 
   public VisualMappingManager( CyNetworkView networkView,
                                CalculatorCatalog catalog,
@@ -153,6 +153,10 @@ public class VisualMappingManager extends SubjectBase {
     NodeAppearanceCalculator nodeAppearanceCalculator =
       visualStyle.getNodeAppearanceCalculator();
     for (Iterator i = network_view.getNodeViewsIterator(); i.hasNext(); ) {
+
+      ( ( phoebe.PGraphView )network_view ).updateEdges = false;
+      
+      
       NodeView nodeView = (NodeView)i.next();
       Node node = nodeView.getNode();
 
@@ -169,58 +173,77 @@ public class VisualMappingManager extends SubjectBase {
         nodeView.getLabel().setText( myNodeApp.getLabel() );
         Label label = nodeView.getLabel();
         label.setFont(myNodeApp.getFont());
+
+        ( ( phoebe.PGraphView )network_view ).updateEdges = true;
+
         label.setTextPaint(myNodeApp.getLabelColor());
       } else {
+        boolean change_made = false;
         Paint existingUnselectedColor = nodeView.getUnselectedPaint();
         Paint newUnselectedColor = myNodeApp.getFillColor();
         if (!newUnselectedColor.equals(existingUnselectedColor)) {
+          change_made = true;
           nodeView.setUnselectedPaint(newUnselectedColor);
         }
         Paint existingBorderPaint = nodeView.getBorderPaint();
         Paint newBorderPaint = myNodeApp.getBorderColor();
         if (!newBorderPaint.equals(existingBorderPaint)) {
+          change_made = true;
           nodeView.setBorderPaint(newBorderPaint);
         }
         Stroke existingBorderType = nodeView.getBorder();
         Stroke newBorderType = myNodeApp.getBorderLineType()
           .getStroke();
         if (!newBorderType.equals(existingBorderType)) {
+          change_made = true;
           nodeView.setBorder(newBorderType);
         }
         double existingHeight = nodeView.getHeight();
         double newHeight = myNodeApp.getHeight();
         double difference = newHeight - existingHeight;
         if (Math.abs(difference) > .1) {
+          change_made = true;
           nodeView.setHeight(newHeight);
         }
         double existingWidth = nodeView.getWidth();
         double newWidth = myNodeApp.getWidth();
         difference = newWidth - existingWidth;
         if (Math.abs(difference) > .1) {
+          change_made = true;
           nodeView.setWidth(newWidth);
         }
         int existingShape = nodeView.getShape();
         int newShape = ShapeNodeRealizer.getGinyShape
           (myNodeApp.getShape());
         if (existingShape != newShape) {
+          change_made = true;
           nodeView.setShape(newShape);
         }
         Label label = nodeView.getLabel();
         String existingLabel = label.getText();
         String newLabel = myNodeApp.getLabel();
         if (!newLabel.equals(existingLabel)) {
+          change_made = true;
           label.setText(newLabel);
         }
         Font existingFont = label.getFont();
         Font newFont = myNodeApp.getFont();
         if (!newFont.equals(existingFont)) {
+          change_made = true;
           label.setFont(newFont);
         }
         Paint existingTextColor = label.getTextPaint();
         Paint newTextColor = myNodeApp.getLabelColor();
         if (!newTextColor.equals(existingTextColor)) {
+          change_made = true;
           label.setTextPaint(newTextColor);
         }
+        
+        ( ( phoebe.PGraphView )network_view ).updateEdges = true;
+        if ( change_made ) {
+          nodeView.setNodePosition( false );
+        }
+
       }
     }
   }

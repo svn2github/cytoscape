@@ -42,12 +42,6 @@ public class PhoebeNetworkView
    * in a CyNetworkView and how many are selected/hidden
    */
   protected JLabel statusLabel;
-
-  /**
-   * The GraphViewController keeps the CyNetworkView nsync with
-   * the CyNetwork it is a View on.
-   */
-  protected GraphViewController graphViewController;
   
   /**
    * The FlagAndSelectionHandler keeps the selection state of view objects
@@ -85,7 +79,6 @@ public class PhoebeNetworkView
     disableEdgeSelection();
     
     GraphView[] graphViews = {this};
-    graphViewController = new GraphViewController(graphViews);
     flagAndSelectionHandler =
     new FlagAndSelectionHandler( ( ( ColtCyNetwork )getNetwork()).getFlagger(), this);
     //TODO:
