@@ -49,10 +49,9 @@ public class EditPlugin extends CytoscapePlugin {
     Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "Edit" ).add( undoItem );
     Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "Edit" ).add( redoItem );
 
-    ImageIcon cuticon = new ImageIcon( JarLoader.getLoader().getObjectIfYouWantIt( "editcut.png" ) );
-    ImageIcon copyicon = new ImageIcon( JarLoader.getLoader().getObjectIfYouWantIt( "editcopy.png" ) );
-    ImageIcon pasteicon = new ImageIcon( JarLoader.getLoader().getObjectIfYouWantIt( "editpaste.png" ) );
-
+    ImageIcon cuticon = new ImageIcon( getClass().getResource( "/editcut.png" ) );
+    ImageIcon copyicon = new ImageIcon( getClass().getResource( "/editcopy.png" ) );
+    ImageIcon pasteicon = new ImageIcon( getClass().getResource( "/editpaste.png" ) );
  
     cut = new Cut(cuticon);
     Cytoscape.getDesktop().getCyMenus().addAction( cut );

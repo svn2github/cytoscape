@@ -15,12 +15,12 @@ public class DistPanel extends JPanel {
 
     this.window = window;
 
-    ImageIcon hari =  new ImageIcon( JarLoader.getLoader().getObjectIfYouWantIt("H_DIST_RIGHT.gif") );
-    ImageIcon haci =  new ImageIcon( JarLoader.getLoader().getObjectIfYouWantIt("H_DIST_CENTER.gif") );
-    ImageIcon hali =  new ImageIcon( JarLoader.getLoader().getObjectIfYouWantIt("H_DIST_LEFT.gif") );
-    ImageIcon vati =  new ImageIcon( JarLoader.getLoader().getObjectIfYouWantIt("V_DIST_TOP.gif") );
-    ImageIcon vaci =  new ImageIcon( JarLoader.getLoader().getObjectIfYouWantIt("V_DIST_CENTER.gif") );
-    ImageIcon vabi =  new ImageIcon( JarLoader.getLoader().getObjectIfYouWantIt("V_DIST_BOTTOM.gif") );
+    ImageIcon hari =  new ImageIcon( getClass().getResource("/H_DIST_RIGHT.gif") );
+    ImageIcon haci =  new ImageIcon( getClass().getResource("/H_DIST_CENTER.gif") );
+    ImageIcon hali =  new ImageIcon( getClass().getResource("/H_DIST_LEFT.gif") );
+    ImageIcon vati =  new ImageIcon( getClass().getResource("/V_DIST_TOP.gif") );
+    ImageIcon vaci =  new ImageIcon( getClass().getResource("/V_DIST_CENTER.gif") );
+    ImageIcon vabi =  new ImageIcon( getClass().getResource("/V_DIST_BOTTOM.gif") );
 
     HDistRight har = new HDistRight( window, hari );
     HDistCenter hac = new HDistCenter( window, haci );

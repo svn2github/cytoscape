@@ -62,7 +62,7 @@ public class MDNodePlugin extends CytoscapePlugin {
   
     Cytoscape.getDesktop().getCyMenus().getMenuBar().
       getMenu("Visualization.Multi-Dimenional Nodes").
-      add( new JMenuItem ( new AbstractAction( "Star Plots", new ImageIcon( JarLoader.getLoader().getObjectIfYouWantIt("star.gif")) ) {
+      add( new JMenuItem ( new AbstractAction( "Star Plots", new ImageIcon( getClass().getResource("/star.gif")) ) {
         public void actionPerformed ( java.awt.event.ActionEvent e ) {
           // Do this in the GUI Event Dispatch thread...
           SwingUtilities.invokeLater( new Runnable() {
@@ -73,7 +73,7 @@ public class MDNodePlugin extends CytoscapePlugin {
     
     Cytoscape.getDesktop().getCyMenus().getMenuBar().
       getMenu("Visualization.Multi-Dimenional Nodes").
-      add( new JMenuItem ( new AbstractAction( "Grid Nodes", new ImageIcon( JarLoader.getLoader().getObjectIfYouWantIt("grid.gif")) ) {
+      add( new JMenuItem ( new AbstractAction( "Grid Nodes", new ImageIcon( getClass().getResource("/grid.gif")) ) {
         public void actionPerformed ( java.awt.event.ActionEvent e ) {
           // Do this in the GUI Event Dispatch thread...
           SwingUtilities.invokeLater( new Runnable() {
@@ -84,7 +84,7 @@ public class MDNodePlugin extends CytoscapePlugin {
 
     Cytoscape.getDesktop().getCyMenus().getMenuBar().
       getMenu("Visualization.Multi-Dimenional Nodes").
-      add( new JMenuItem ( new AbstractAction( "Petal Nodes", new ImageIcon( JarLoader.getLoader().getObjectIfYouWantIt("petal.gif")) ) {
+      add( new JMenuItem ( new AbstractAction( "Petal Nodes", new ImageIcon( getClass().getResource("/petal.gif")) ) {
         public void actionPerformed ( java.awt.event.ActionEvent e ) {
           // Do this in the GUI Event Dispatch thread...
           SwingUtilities.invokeLater( new Runnable() {
@@ -95,7 +95,7 @@ public class MDNodePlugin extends CytoscapePlugin {
 
     Cytoscape.getDesktop().getCyMenus().getMenuBar().
       getMenu("Visualization.Multi-Dimenional Nodes").
-      add( new JMenuItem ( new AbstractAction( "Radar Nodes", new ImageIcon( JarLoader.getLoader().getObjectIfYouWantIt("radar.gif")) ) {
+      add( new JMenuItem ( new AbstractAction( "Radar Nodes", new ImageIcon( getClass().getResource("/radar.gif")) ) {
         public void actionPerformed ( java.awt.event.ActionEvent e ) {
           // Do this in the GUI Event Dispatch thread...
           SwingUtilities.invokeLater( new Runnable() {
