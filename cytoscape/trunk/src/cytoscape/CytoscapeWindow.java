@@ -235,6 +235,7 @@ public CytoscapeWindow (cytoscape parentApp,
 
 
   initializeWidgets ();
+
   JButton annotationButton = toolbar.add (new AnnotationGui (CytoscapeWindow.this));
 
   setGraph (graph);
@@ -1209,12 +1210,25 @@ public void setInteractivity (boolean newState)
       }
     graphView.setViewCursor (busyCursor);
     setCursor (busyCursor);
-
+    
+  
+    
     // deny new undo entries - added by dramage 2002-08-23
-    if (undoManager != null)
-        undoManager.pause();
+    if (undoManager != null){
+      undoManager.pause();
     }
+  }
 
+  // disable/enable UI components - added by iliana 2003-03-03
+  MenuElement [] menuBarEls = menuBar.getSubElements();
+  Component comp;
+  for(int i = 0; i < menuBarEls.length; i++){
+    comp = menuBarEls[i].getComponent();
+    comp.setEnabled(newState);
+  }
+ 
+  toolbar.setEnabled(newState);
+  
 } // setInteractivity
 //------------------------------------------------------------------------------
 protected JMenuBar createMenuBar ()
@@ -1447,9 +1461,12 @@ protected JToolBar createToolBar ()
 
 } // createToolBar
 //------------------------------------------------------------------------------
-public void selectNodesByName (String [] nodeNames){
+/**
+ * Returns an array of node names in nodeNames that were not selected.
+ */
+public String [] selectNodesByName (String [] nodeNames){
     boolean clearAllSelectionsFirst = true;
-    selectNodesByName (nodeNames, clearAllSelectionsFirst);
+    return selectNodesByName (nodeNames, clearAllSelectionsFirst);
 }
 //------------------------------------------------------------------------------
 /**
@@ -1512,18 +1529,24 @@ public void showNodesByName (Vector uniqueNodeNames)
 
 } // showNodesByName (Vector)
 //------------------------------------------------------------------------------
-public void selectNodesByName (String [] nodeNames, boolean clearAllSelectionsFirst)
+/**
+ * Returns an array of node names that were not selected.
+ */
+public String [] selectNodesByName (String [] nodeNames, boolean clearAllSelectionsFirst)
 {
     // not sure if this is any faster. - owo 2002 10 03
-
+  
     Graph2D g = graphView.getGraph2D ();
     Node [] nodes = graphView.getGraph2D().getNodeArray();
-    
+    int numSelectedNodes = 0;
+    Hashtable selectedNodes = new Hashtable();
+   
     // construct a hash of the nodeNames
     Hashtable namedNodes = new Hashtable();
     for (int n=0; n < nodeNames.length; n++) {
         nodeNames[n].toLowerCase();
         namedNodes.put(nodeNames[n],Boolean.TRUE);
+        selectedNodes.put(nodeNames[n],Boolean.FALSE);
     }
 
     // if a node in the graph is in the hash, select it;
@@ -1533,15 +1556,32 @@ public void selectNodesByName (String [] nodeNames, boolean clearAllSelectionsFi
         NodeRealizer nodeRealizer = graphView.getGraph2D().getRealizer(nodes [i]);
         graphNodeName.toLowerCase();
         Boolean select = (Boolean) namedNodes.get(graphNodeName);
-        if(select!=null) {
+        if(select != null) {
+          numSelectedNodes++;
           nodeRealizer.setSelected (true);
-        }
-        else if (clearAllSelectionsFirst) {
+          selectedNodes.put(graphNodeName,Boolean.TRUE);
+        }else{
+          if (clearAllSelectionsFirst) {
             nodeRealizer.setSelected (false);
+          }
         }
     }
+    
+    // Find out which nodes were not selected.
+    ArrayList notSelectedNodes = new ArrayList();
+    if(numSelectedNodes < nodeNames.length){
+      // Not all nodes in the given node list were found.
+      Set keys = selectedNodes.keySet();
+      Iterator it = keys.iterator();
+      while(it.hasNext()){
+        String nodeName = (String)it.next();
+        if((Boolean)selectedNodes.get(nodeName) == Boolean.FALSE){
+          notSelectedNodes.add(nodeName);
+        }
+      }
+    }
     redrawGraph ();
-
+    return (String[])notSelectedNodes.toArray(new String[notSelectedNodes.size()]);
   // old code follows
   //
   //Graph2D g = graphView.getGraph2D();
@@ -1946,10 +1986,10 @@ protected class ColorNodesFromFile extends AbstractAction{
     }
 
     public void actionPerformed(ActionEvent e){
-	JDialog dialog = new ColorNodesFromFileDialog(CytoscapeWindow.this);
-	dialog.pack ();
-	dialog.setLocationRelativeTo (mainFrame);
-	dialog.setVisible (true);
+      JDialog dialog = new ColorNodesFromFileDialog(CytoscapeWindow.this);
+      dialog.pack ();
+      dialog.setLocationRelativeTo (mainFrame);
+      dialog.setVisible (true);
 
     }
 
