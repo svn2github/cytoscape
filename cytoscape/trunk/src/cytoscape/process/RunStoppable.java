@@ -22,7 +22,7 @@ public final class RunStoppable implements Runnable, Stoppable
   /**
    * This method is guaranteed to only run once - that is, it will call
    * the underlying <code>Runnable</code>'s <code>run()</code> only once.
-   * If this is invoked a second time, it will throw a
+   * If this is invoked a second time, it will throw an
    * <code>IllegalStateException</code>.
    **/
   public void run()
@@ -43,14 +43,32 @@ public final class RunStoppable implements Runnable, Stoppable
     }
   }
 
+  /**
+   * Blocks until <code>run()</code> has finished.
+   * This method actually supports multiple threads; all calling threads
+   * will block until <code>run()</code> returns.
+   **/
   public void stop()
   {
+    boolean mustCallHalt = true;
     synchronized (m_lock)
     {
-      m_stop = true;
-      if (!m_running) return;
+      if (m_stop) // Someone has called stop() before us; we therefore
+                  // have already or will eventually call halt() somewhere
+                  // else, maybe in another thread.
+        mustCallHalt = false;
+      else
+        m_stop = true;
+      if (!m_running) return; // We don't even bother calling halt().
+                              // this.run() is guaranteed not to run() the
+                              // underlying Runnable.
     }
-    m_halt.halt();
+    // By this line of code, regardless of thread, the run() method
+    // will have been called.  It may or may not still be executing by this
+    // time.
+    if (mustCallHalt) m_halt.halt(); // This isn't necessary, but we do it
+                                     // anyways: limit calling halt() at most
+                                     // once.
     synchronized (m_lock)
     {
       while (m_running) {
