@@ -2,6 +2,9 @@ package cytoscape.data.gob;
 
 import cytoscape.util.intr.IntEnumerator;
 
+/**
+ * <font color="red">API in early alpha stage</font>.
+ */
 public class GOBRegistry2 extends GOBRegistry
 {
 
@@ -59,8 +62,8 @@ public class GOBRegistry2 extends GOBRegistry
    * definition domain defID1 is of two dimensions, ATTR_TYPE_LONG cross
    * ATTR_TYPE_LONG, then a given object objID1 cannot be assigned two
    * attributes attrID1 and attrID2 in space defID1 such that attrID1's value
-   * is (1,2) and attrID2's value is (1,2) - it is possible for attrID1's
-   * value to be (1,2) and for attrID2's value to be (1,3), for example.
+   * is (1,2) and attrID2's value is (1,2) - it is, however, possible for
+   * attrID1's value to be (1,2) and for attrID2's value to be (1,3).
    * @param objID
    * @param defID
    * @param attrValue
