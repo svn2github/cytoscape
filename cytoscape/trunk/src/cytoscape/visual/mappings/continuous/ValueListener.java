@@ -1,3 +1,8 @@
+//----------------------------------------------------------------------------
+// $Revision$
+// $Date$
+// $Author$
+//----------------------------------------------------------------------------
 package cytoscape.visual.mappings.continuous;
 
 import cytoscape.visual.mappings.BoundaryRangeValues;
