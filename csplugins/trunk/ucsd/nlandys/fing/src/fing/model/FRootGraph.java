@@ -457,7 +457,13 @@ class FRootGraph //implements RootGraph
                                            boolean b,
                                            boolean c)
   {
-    return null;
+    final int positiveNodeInx = ~nodeInx;
+    final IntEnumerator adj;
+    try { adj = m_graph.adjacentEdges(positiveNodeInx, a, b, c); }
+    catch (IllegalArgumentException e) { return new int[0]; }
+    final int[] returnThis = new int[adj.numRemaining()];
+    for (int i = 0; i < returnThis.length; i++) returnThis[i] = ~adj.nextInt();
+    return returnThis;
   }
 
   public Node getNode(int nodeInx)
