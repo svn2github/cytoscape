@@ -5,6 +5,7 @@
 
   <path id="sourav.plugin.classpath">
     <pathelement location="${cytoscape.lib.dir}/../cytoscape.jar"/>
+    <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
   </path>
 
   <target name="sourav-plugin.jar">
