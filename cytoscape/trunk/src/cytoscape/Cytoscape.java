@@ -798,7 +798,9 @@ public abstract class Cytoscape {
 
   /**
    * Creates a cytoscape.data.CyNetwork from a file.  The passed variable determines the
-   * type of file, i.e. GML, SIF, SBML, etc.
+   * type of file, i.e. GML, SIF, SBML, etc.<p>
+   * This operation may take a long time to complete.  It is a good idea NOT to call this
+   * method from the AWT event handling thread.
    *
    * @param location the location of the file
    * @param file_type the type of file GML, SIF, SBML, etc.

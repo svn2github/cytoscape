@@ -9,6 +9,11 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.WindowConstants;
+import java.awt.Cursor;
+import java.awt.Frame;
 import java.io.File;
 import java.util.Date;
 
@@ -67,8 +72,6 @@ public class LoadGraphFileAction extends CytoscapeAction {
     CyFileFilter gmlFilter   = new CyFileFilter();
     CyFileFilter graphFilter = new CyFileFilter();
     
-    CyNetwork newNetwork;
-
     // Add accepted File Extensions
     gmlFilter.addExtension("gml");
     gmlFilter.setDescription("GML files");
@@ -87,7 +90,7 @@ public class LoadGraphFileAction extends CytoscapeAction {
       //appendFlag = chooser.getCheckBoxState();
       //if(appendFlag) System.out.println("appending graph");
 
-      String  name = chooser.getSelectedFile().toString();
+      final String  name = chooser.getSelectedFile().toString();
       int fileType = Cytoscape.FILE_SIF;
       if (name.length() > 4) {//long enough to have a "gml" extension
         String extension = name.substring( name.length()-3 );
@@ -95,18 +98,31 @@ public class LoadGraphFileAction extends CytoscapeAction {
           fileType = Cytoscape.FILE_GML;
       }
 
-      boolean canonicalize = Semantics.getCanonicalize(Cytoscape.getCytoscapeObj());
+      final boolean canonicalize = Semantics.getCanonicalize(Cytoscape.getCytoscapeObj());
 
       //TODO: get species info on a per network basis
-      String species = Semantics.getDefaultSpecies( Cytoscape.getCurrentNetwork(),Cytoscape.getCytoscapeObj() );
+      final String species = Semantics.getDefaultSpecies( Cytoscape.getCurrentNetwork(),Cytoscape.getCytoscapeObj() );
       Cytoscape.setSpecies();
       //GraphReader reader = null;
 
-      int root_nodes = Cytoscape.getRootGraph().getNodeCount();
-      int root_edges = Cytoscape.getRootGraph().getEdgeCount();
+      final int root_nodes = Cytoscape.getRootGraph().getNodeCount();
+      final int root_edges = Cytoscape.getRootGraph().getEdgeCount();
 
-      newNetwork = Cytoscape.createNetwork( name,
-                                            fileType,
+      final int fileTypeF = fileType;
+      Frame f = Cytoscape.getDesktop();
+      final JDialog busyDialog = new JDialog(f, "Loading...", true);
+      busyDialog.setResizable(false);
+      busyDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+      busyDialog.getContentPane().add(new JLabel("Loading graph; please wait..."));
+      busyDialog.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+      busyDialog.pack();
+      busyDialog.move((f.size().width - busyDialog.size().width) / 2 + f.location().x,
+                      (f.size().height - busyDialog.size().height) / 2 + f.location().y);
+      Runnable loadGraph = new Runnable() {
+        public void run()
+    {
+      CyNetwork newNetwork = Cytoscape.createNetwork( name,
+                                            fileTypeF,
                                             canonicalize,
                                             Cytoscape.getCytoscapeObj().getBioDataServer(),
                                             species );
@@ -120,7 +136,7 @@ public class LoadGraphFileAction extends CytoscapeAction {
         //         networkView.setWindowTitle(name);//and set a new title
 
         //hack to apply layout information from a GML file
-	//   if( fileType == Cytoscape.FILE_GML ) {
+	//   if( fileTypeF == Cytoscape.FILE_GML ) {
 	//           //GMLReader reader = new GMLReader(name);
 	//           //Cytoscape.getLastGraphReaderForDoingLayout().layout( Cytoscape.getCurrentNetworkView() );
 	//           newNetwork.putClientData( "GML", Cytoscape.getLastGraphReaderForDoingLayout() );
@@ -129,6 +145,7 @@ public class LoadGraphFileAction extends CytoscapeAction {
         int nn = Cytoscape.getRootGraph().getNodeCount()- root_nodes;
         int ne = Cytoscape.getRootGraph().getEdgeCount()- root_edges;
         
+        busyDialog.dispose();
 
         StringBuffer sb = new StringBuffer();
         String lineSep = System.getProperty("line.separator");
@@ -148,10 +165,7 @@ public class LoadGraphFileAction extends CytoscapeAction {
                                       sb.toString(),
                                       "Load graph successful",
                                       JOptionPane.INFORMATION_MESSAGE);
-
-       
-
-
+        windowMenu.setNodesRequiredItemsEnabled();
       } else {//give the user an error dialog
         String lineSep = System.getProperty("line.separator");
         StringBuffer sb = new StringBuffer();
@@ -162,9 +176,12 @@ public class LoadGraphFileAction extends CytoscapeAction {
                                       "Error loading graph",
                                       JOptionPane.ERROR_MESSAGE);
       }
+    } // run()
+    }; // new Runnable()
+      (new Thread(loadGraph)).start();
+      busyDialog.show();
     } // if
     //networkView.getView().addGraphViewChangeListener(windowMenu);
-    windowMenu.setNodesRequiredItemsEnabled();
   } // actionPerformed
 }
 
