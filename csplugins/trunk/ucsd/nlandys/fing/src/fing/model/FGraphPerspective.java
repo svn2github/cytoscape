@@ -827,10 +827,22 @@ class FGraphPerspective implements GraphPerspective
     return returnThis;
   }
 
-  public java.util.List getConnectingEdges(java.util.List nodes)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  public java.util.List getConnectingEdges(java.util.List nodes) {
+    m_heap.empty();
+    final MinIntHeap nodeInxBucket = m_heap;
+    for (int i = 0; i < nodes.size(); i++) {
+      Node node = (Node) (nodes.get(i));
+      if (node.getRootGraph() == m_root)
+        nodeInxBucket.toss(node.getRootGraphIndex()); }
+    final int[] nodeInxArr = new int[nodeInxBucket.size()];
+    nodeInxBucket.copyInto(nodeInxArr, 0);
+    final int[] connEdgeInxArr =
+      getConnectingEdgeIndicesArray(nodeInxArr);
+    final java.util.ArrayList returnThis =
+      new java.util.ArrayList(connEdgeInxArr.length);
+    for (int i = 0; i < connEdgeInxArr.length; i++)
+      returnThis.add(getEdge(connEdgeInxArr[i]));
+    return returnThis; }
 
   public int[] getConnectingEdgeIndicesArray(int[] nodeInx)
   {
