@@ -11,6 +11,9 @@ import y.base.Graph;
 import y.view.Graph2D;
 //----------------------------------------------------------------------------
 /**
+ * @deprecated This class has been replaced by cytoscape.data.CyNetwork,
+ * and the visual package has been rewritten to use that class instead.
+ *
  * This class encapsulates the graph and attribute data structures held by
  * a CytoscapeWindow object. This object should be given to methods that
  * require access to the data structures but not to any of the other
