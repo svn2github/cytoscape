@@ -31,6 +31,7 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
     protected byte mapType;     //  node or edge; specifies which attributes
                                 //  to use.
     private TreeMap treeMap;    //  contains the actual map elements (sorted)
+    private Object lastKey;
 
     /**
      * Constructor.
@@ -63,7 +64,6 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
             setControllingAttributeName(attrName, null, false);
     }
 
-
     /**
      * Clones the Object.
      * @return DiscreteMapping Object.
@@ -94,7 +94,17 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
      * @param value Value Object.
      */
     public void putMapValue (Object key, Object value) {
+        lastKey = key;
         treeMap.put(key, value);
+        fireStateChanged();
+    }
+
+    /**
+     * Gets the Last Modified Key.
+     * @return Key Object.
+     */
+    public Object getLastKeyModified () {
+        return lastKey;
     }
 
     /**
