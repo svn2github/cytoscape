@@ -6,7 +6,7 @@
 #
 # RetroGuard Bytecode Obfuscator, v1.1, a product of Retrologic Systems - www.retrologic.com
 #
-# Logfile created on Fri May 09 17:56:45 EDT 2003
+# Logfile created on Fri May 09 18:21:53 EDT 2003
 #
 # Jar file to be obfuscated:           cytoscape.jar
 # Target Jar file for obfuscated code: cytoscape-obf.jar
