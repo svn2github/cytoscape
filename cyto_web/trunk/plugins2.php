@@ -241,7 +241,7 @@ Additional notes:
 <li> Some data sources are currently not allowed for "public use" (such as HPRD which is free for 
 non-profit use only) and will require a password to allow access. Please email me for a password 
 and do not share it with anyone.
-<li> A (somewhat outdated) tutorial for many of the features of this plugin are available at 
+<li> A (somewhat outdated) tutorial for many of the features of this plugin are available 
 <a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/getInteractions">
 here</a>. Note that the web start (and screenshots) on this tutorial page still use Cytoscape v1.1.1.
 <li>The structure of the plugins were written to allow easy expansion of the type of information that 
