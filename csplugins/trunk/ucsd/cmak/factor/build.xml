@@ -8,6 +8,8 @@
   <property name="dist"  location="dist"/>
   <property name="lib"  location="lib"/>
   <property name="doc"  location="doc"/>
+  <property name="test.out"  location="testOut"/>
+  <property name="test.report"  location="test-report"/>
 
 
    <path id="project.class.path">
@@ -18,6 +20,22 @@
     </path>
 
 
+  <target name="cron" depends="clean,compile,test" >
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the build directory structure used by compile -->
+    <echo message="cron ant task: ${DSTAMP}"/>
+
+  </target>
+
+
+  <target name="test2">
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the build directory structure used by compile -->
+    <echo message="${DSTAMP}"/>
+
+  </target>
 
   <target name="init">
     <!-- Create the time stamp -->
@@ -51,18 +69,27 @@
 
    <!-- does not work for some reason -->
   <target name="test">
-         <junit printsummary="on" showoutput="false">
+         <delete dir="${test.report}"/>
+         <mkdir dir="${test.out}"/>
+         <mkdir dir="${test.report}"/>
+         <mkdir dir="${test.report}/html"/>
+         <junit printsummary="on" showoutput="false" maxmemory="512m">
+	   <formatter type="xml"/>
            <classpath refid="project.class.path"/>
-	   <test name="ExpressionTest"/>
-	   <test name="MaxProductTest"/>
-	   <test name="DFSPathTest"/>
-	   <test name="PathTest"/>
-	   <test name="ProbTableTest"/>
-	   <test name="VariableNodeTest"/>
-	   <test name="FactorNodeTest"/>
-	   <test name="FGTest"/>
-	   <test name="ChiTest"/>
+	   <batchtest fork="yes" todir="${test.report}">
+	       <fileset dir="${src}">
+	       <includesfile name="tests"/>
+	       </fileset>
+	   </batchtest>
 	 </junit>
+
+	 <junitreport todir="${test.report}">
+	    <fileset dir="${test.report}">
+	    <include name="TEST-*.xml"/>
+	    </fileset>
+	    <report format="frames" todir="${test.report}/html"/>
+	 </junitreport>
+
   </target>
 
   <target name="dist" depends="compile"
