@@ -57,7 +57,7 @@ public class MCODEFindAction implements ActionListener {
      */
     public void actionPerformed(ActionEvent event) {
         String callerID = "MCODEScoreAction.actionPerformed";
-//get the network object; this contains the graph
+        //get the network object; this contains the graph
         CyNetwork network = Cytoscape.getCurrentNetwork();
         if (network == null) {
             System.err.println("In " + callerID + ":");
@@ -72,7 +72,7 @@ public class MCODEFindAction implements ActionListener {
         }
 
         //run MCODE complex finding algorithm after the nodes have been scored
-//the score action saves the resulting alg as network client data for retrieval
+        //the score action saves the resulting alg as network client data for retrieval
         MCODEAlgorithm alg = (MCODEAlgorithm) network.getClientData("MCODE_alg");
         if (alg == null) {
             JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
@@ -80,7 +80,7 @@ public class MCODEFindAction implements ActionListener {
             return;
         } else {
             ArrayList complexes = alg.findComplexes(network);
-//display complexes in a new non modal dialog box
+            //display complexes in a new non modal dialog box
             resultDialog = new MCODEResultsDialog(Cytoscape.getDesktop(), complexes, network, null);
             resultDialog.pack();
             resultDialog.setVisible(true);

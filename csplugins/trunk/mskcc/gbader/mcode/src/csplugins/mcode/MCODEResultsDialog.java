@@ -336,11 +336,11 @@ public class MCODEResultsDialog extends JDialog {
             if (!lsm.isSelectionEmpty()) {
                 final int selectedRow = lsm.getMinSelectionIndex();
                 gpComplex = gpComplexArray[selectedRow];
-//only do this if a view has been created on this network
+                //only do this if a view has been created on this network
                 if (originalInputNetworkView != null) {
-//start with no selected nodes
+                    //start with no selected nodes
                     GinyUtils.deselectAllNodes(originalInputNetworkView);
-//go through graph and select nodes in the complex
+                    //go through graph and select nodes in the complex
                     List nodeList = gpComplex.nodesList();
                     for (int i = 0; i < nodeList.size(); i++) {
                         Node n = (Node) nodeList.get(i);
@@ -350,11 +350,11 @@ public class MCODEResultsDialog extends JDialog {
                         }
                     }
                     if (!openAsNewChild) {
-//switch focus to the original network if not going to create a new network
+                        //switch focus to the original network if not going to create a new network
                         Cytoscape.getDesktop().setFocus(originalInputNetworkView.getIdentifier());
                     }
                 } else if (!openAsNewChild) {
-//Warn user that nothing will happen in this case because there is no view to select nodes with
+                    //Warn user that nothing will happen in this case because there is no view to select nodes with
                     JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
                             "You must have a network view created to select nodes.");
                 }
@@ -363,28 +363,28 @@ public class MCODEResultsDialog extends JDialog {
                     nf.setMaximumFractionDigits(3);
                     final String title = "Complex " + (selectedRow + 1) + " Score: " +
                             nf.format(alg.scoreComplex(gpComplex));
-//check if a network has already been created
+                    //check if a network has already been created
                     String id = (String) hmNetworkNames.get(new Integer(selectedRow + 1));
                     if (id != null) {
-//just switch focus to the already created network
+                        //just switch focus to the already created network
                         Cytoscape.getDesktop().setFocus(id);
                     } else {
-//create the child network and view
+                        //create the child network and view
                         final SwingWorker worker = new SwingWorker() {
                             public Object construct() {
                                 CyNetwork newNetwork = Cytoscape.createNetwork(gpComplex.getNodeIndicesArray(),
                                         gpComplex.getEdgeIndicesArray(), title, originalInputNetwork);
                                 hmNetworkNames.put(new Integer(selectedRow + 1), newNetwork.getIdentifier());
                                 PGraphView view = (PGraphView) Cytoscape.createNetworkView(newNetwork);
-//layout new complex and fit it to window
-//randomize node positions before layout so that they don't all layout in a line
-//(so they don't fall into a local minimum for the SpringEmbedder)
-//If the SpringEmbedder implementation changes, this code may need to be removed
+                                //layout new complex and fit it to window
+                                //randomize node positions before layout so that they don't all layout in a line
+                                //(so they don't fall into a local minimum for the SpringEmbedder)
+                                //If the SpringEmbedder implementation changes, this code may need to be removed
                                 NodeView nv;
                                 for (Iterator in = view.getNodeViewsIterator(); in.hasNext();) {
                                     nv = (NodeView) in.next();
                                     nv.setXPosition(view.getCanvas().getLayer().getGlobalFullBounds().getWidth() * Math.random());
-//height is small for many default drawn graphs, thus +100
+                                    //height is small for many default drawn graphs, thus +100
                                     nv.setYPosition((view.getCanvas().getLayer().getGlobalFullBounds().getHeight() + 100) * Math.random());
                                 }
                                 SpringEmbeddedLayouter lay = new SpringEmbeddedLayouter(view);

@@ -56,7 +56,7 @@ public class MCODEPlugin extends CytoscapePlugin {
         //set-up menu options in plugins menu
         JMenu menu = Cytoscape.getDesktop().getCyMenus().getOperationsMenu();
         JMenuItem item;
-//MCODE submenu
+        //MCODE submenu
         JMenu submenu = new JMenu("MCODE");
         item = new JMenuItem("Run MCODE on current network");
         item.addActionListener(new MCODEScoreAndFindAction());
@@ -65,7 +65,7 @@ public class MCODEPlugin extends CytoscapePlugin {
         item.addActionListener(new MCODEParameterChangeAction());
         submenu.add(item);
         menu.add(submenu);
-//Advanced sub-sub menu
+        //Advanced sub-sub menu
         JMenu subsubmenu = new JMenu("Advanced");
         item = new JMenuItem("Step 1: Score Network");
         item.addActionListener(new MCODEScoreAction());
@@ -74,7 +74,7 @@ public class MCODEPlugin extends CytoscapePlugin {
         item.addActionListener(new MCODEFindAction());
         subsubmenu.add(item);
         submenu.add(subsubmenu);
-//About box
+        //About box
         item = new JMenuItem("About MCODE");
         item.addActionListener(new MCODEAboutAction());
         submenu.add(item);

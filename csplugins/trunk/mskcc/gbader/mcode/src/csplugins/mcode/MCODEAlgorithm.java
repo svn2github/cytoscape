@@ -169,9 +169,9 @@ public class MCODEAlgorithm {
             //record score as a nodeAttribute
             inputNetwork.setNodeAttributeValue(n, "MCODE_SCORE", new Double(nodeScore));
             //save score for later use in TreeMap
-//add a list of nodes to each score in case nodes have the same score
+            //add a list of nodes to each score in case nodes have the same score
             if (nodeScoreSortedMap.containsKey(new Double(nodeScore))) {
-//already have a node with this score, add it to the list
+                //already have a node with this score, add it to the list
                 al = (ArrayList) nodeScoreSortedMap.get(new Double(nodeScore));
                 al.add(new Integer(n.getRootGraphIndex()));
             } else {
@@ -218,19 +218,19 @@ public class MCODEAlgorithm {
         //iterate over node indices sorted descending by their score
         ArrayList alNodesWithSameScore;
         for (Iterator iterator = values.iterator(); iterator.hasNext();) {
-//each score may be associated with multiple nodes, iterate over these lists
+            //each score may be associated with multiple nodes, iterate over these lists
             alNodesWithSameScore = (ArrayList) iterator.next();
             for (int j = 0; j < alNodesWithSameScore.size(); j++) {
                 currentNode = (Integer) alNodesWithSameScore.get(j);
                 if (!nodeSeenHashMap.containsKey(currentNode)) {
                     ArrayList complex = getComplexCore(currentNode, nodeSeenHashMap);
                     if (complex.size() > 0) {
-//make sure spawning node is part of complex, if not already in there
+                        //make sure spawning node is part of complex, if not already in there
                         if (!complex.contains(currentNode)) {
                             complex.add(currentNode);
                         }
-//create an input graph for the filter and haircut methods
-//comvert Integer array to int array
+                        //create an input graph for the filter and haircut methods
+                        //comvert Integer array to int array
                         int[] complexArray = new int[complex.size()];
                         for (int i = 0; i < complex.size(); i++) {
                             int nodeIndex = ((Integer) complex.get(i)).intValue();
@@ -244,7 +244,7 @@ public class MCODEAlgorithm {
                             if (params.isFluff()) {
                                 fluffComplexBoundary(complex, nodeSeenHashMap);
                             }
-//store detected complex for later
+                            //store detected complex for later
                             alComplexes.add(complex);
                         }
                     }

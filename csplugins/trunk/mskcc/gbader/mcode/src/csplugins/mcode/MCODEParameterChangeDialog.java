@@ -53,7 +53,7 @@ public class MCODEParameterChangeDialog extends JDialog {
     MCODEParameterSet currentParamsCopy;    //stores current parameters - populates dialog box fields
 
     //resetable UI elements
-//scoring
+    //scoring
     JCheckBox includeLoopsCheckBox;
     JFormattedTextField degreeCutOffFormattedTextField;
     //cluster finding

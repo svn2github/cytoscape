@@ -50,7 +50,7 @@ public class MCODEScoreAction implements ActionListener {
      */
     public void actionPerformed(ActionEvent event) {
         String callerID = "MCODEScoreAction.actionPerformed";
-//get the network object; this contains the graph
+        //get the network object; this contains the graph
         CyNetwork network = Cytoscape.getCurrentNetwork();
         if (network == null) {
             System.err.println("In " + callerID + ":");
