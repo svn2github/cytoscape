@@ -92,6 +92,54 @@
 						[<a href="http://www.cbio.mskcc.org/~bader/software/mcode/mcode_v1.zip">Download .zip</a>]
 					</td>
 				</tr>
+
+    	<tr><td colspan=3><HR></TD></TR>
+				<tr>
+					<td width="20%" valign="top">
+						<b>Extras PlugIn</B><font size="-1">
+							<br>
+							Version: .1 BETA
+							<br>
+							Release Date: August 2, 2004</font>
+					</td>
+					<td width="60%" valign="top">
+                                                                                          This PlugIn is a testing ground for what will likely later become seperate plugins.  Any code should be considered highly experimental and full of bugs. However, bugs that are reported will likely be fixed, though perhaps not in a timely fashion.  Currently this plugin provides the following:<br>
+<ul><li>"destroy" -- tests removal of a netwwork and all nodes and edges not referenced by any other networks.</li>
+                                                                                          <li>"Group" -- creates a box around a group of nodes that will always contain those nodes.  Operates on the selected nodes</li>
+                                                                                          <li>"First Neighbors" -- Opens a dialog that allows you to add nodes and edges to a network from the pool of all nodes, or only from a selected network, filters are optional.</li>
+						<p>
+							Released by: Rowan Christmas, Aitchison Group, <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>.
+						</p>
+					</td>
+					<td width="20%" valign="top">
+					 [<a href="ftp://baker.systemsbiology.net/pub/xmas/plugins/rowan.jar">Download PlugIn .jar</a>]
+					</td>
+				</tr>                                                                                      
+
+    	<tr><td colspan=3><HR></TD></TR>
+				<tr>
+					<td width="20%" valign="top">
+						<b>Save PlugIn</B><font size="-1">
+							<br>
+							Version: .1 BETA
+							<br>
+							Release Date: August 3, 2004</font>
+					</td>
+					<td width="60%" valign="top">
+                                                                                          This plugin implements the saving of Cytoscape session. Specifically it saves all of the networks that you have open, and the layout of all the networks that have views.  It also saves all of the data for all the nodes and edges in your networks, even those nodes and edges that are not in any network.  It saves files as a zip file, and the contents are easily inspected after unzipping.  The files "nodes.txt" and "edges.txt" contain all of the data for nodes and edges. <br><br>
+Also included is a spreadsheet importer.
+						<p>
+							Released by: Rowan Christmas, Aitchison Group, <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>.
+						</p>
+					</td>
+					<td width="20%" valign="top">
+					 [<a href="ftp://baker.systemsbiology.net/pub/xmas/plugins/loader.jar">Download PlugIn .jar</a>]<br>
+           [<a href="ftp://baker.systemsbiology.net/pub/xmas/plugins/course.cytoproj.zip">Download Test Project</a>]
+					</td>
+				</tr>                                                                                                      
+
+
+
 			</tbody>
 		</table>
 	</div>
