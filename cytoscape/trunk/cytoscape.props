@@ -43,8 +43,8 @@ edge.linetype.interaction.map.pp=dashed2
 #--------------------------------------------------------------------
 # window and graph defaults:
 
-background.color.default=225,225,225
-node.fillColor.default=200,200,200
+background.color.default=255,255,255
+node.fillColor.default=225,225,225
 node.borderColor.default=25,25,25
 node.height.default=20
 node.width.default=20
