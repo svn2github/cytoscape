@@ -88,7 +88,7 @@ CyNetworkListener, NetworkView {
         
     protected static final int DEFAULT_WIDTH = 700;
     protected static final int DEFAULT_HEIGHT = 700;
-    Paint DEFAULT_PAINT = Color.lightGray;
+    Paint DEFAULT_PAINT = Color.yellow;
     
 
     protected CytoscapeObj globalInstance;
@@ -303,7 +303,7 @@ protected void updateGraphView() {
 	view = new PGraphView(network.getGraphPerspective());
 	display = view.getComponent();
 	add( display, BorderLayout.CENTER);
-	view.setBackgroundPaint(Color.YELLOW);
+	view.setBackgroundPaint(Color.BLACK);
 	
 	java.util.List nodes = view.getNodeViewsList();
 	    for ( Iterator i= nodes.iterator(); i.hasNext();)
@@ -1109,7 +1109,8 @@ public void graphViewChanged ( GraphViewChangeEvent event)
 
 {
 	System.out.println( " graphViewChanged(Event) called in CyWindow");
-	updateStatusLabel(event);
+        System.out.println( "Type was: "+event.getType() );
+        updateStatusLabel(event);
 }
 
 //--------------------------------------------------------------------------------
@@ -1156,39 +1157,74 @@ public void updateStatusText(int nodeAdjust, int edgeAdjust) {
  */
 public void updateStatusLabel(GraphViewChangeEvent event) {
 	
-	if (view == null || event == null) { infoLabel.setText("  Nodes: " + 0
+ 
+
+  if ( view == null ) {
+    System.out.println( "View was null" );
+    infoLabel.setText("  Nodes: " + 0
                       + " ("+0+" selected)"
-		      + " ("+0 + " hidden)"  
+ 		      + " ("+0 + " hidden)"  
                       + " Edges: " + 0
                       + " ("+0+" selected)"
-		      + " (" +0+ " hidden)");
-		return; }
-		
-	int type = event.getType();
-	int nodeCount = view.nodeCount();
-	int edgeCount = view.edgeCount();
-	int selectedNodes = event.getSelectedNodes().length;
-	int selectedEdges = event.getSelectedEdges().length;
+ 		      + " (" +0+ " hidden)"
+                      );
+    return;
+  }
+
+  if ( event == null ) {
+    System.out.println( "EVENT IS NULL!!!!" );
+    return;
+  }
+  
+
+// 	if (view == null || event == null) { infoLabel.setText("  Nodes: " + 0
+//                       + " ("+0+" selected)"
+// 		      + " ("+0 + " hidden)"  
+//                       + " Edges: " + 0
+//                       + " ("+0+" selected)"
+// 		      + " (" +0+ " hidden)");
+// 		return; }
+
+      System.out.println( "Status Label has an event of type: "+event.getType() );
 	
-	int hiddenNodes = event.getHiddenNodes().length;
-	int hiddenEdges = event.getHiddenEdges().length;
-   		
-    switch (type) {
-	case GraphViewChangeEvent.EDGES_SELECTED_TYPE :
-	case GraphViewChangeEvent.EDGES_UNSELECTED_TYPE :
-	case GraphViewChangeEvent.NODES_SELECTED_TYPE :
-	case GraphViewChangeEvent.NODES_UNSELECTED_TYPE :
+      int selectedNodes, selectedEdges;
+      int hiddenNodes = 0;
+      int hiddenEdges = 0;
+	
+	int type = event.getType();
+        System.out.println( "1 Type: "+event.getType() );
+	int nodeCount = view.nodeCount();
+         System.out.println( "2 nodeCount: "+nodeCount );
+	int edgeCount = view.edgeCount();
+         System.out.println( "3 Edgecount: "+edgeCount );
+         if ( event.getSelectedNodeIndices() != null )
+            selectedNodes = event.getSelectedNodeIndices().length;
+         else
+           selectedNodes = 0;
+
+         System.out.println( "4 Selectednodes: "+selectedNodes );
+         if ( event.getSelectedEdgeIndices() != null )
+           selectedEdges = event.getSelectedEdgeIndices().length;
+         else	
+           selectedEdges = 0;
+         System.out.println( "5 SelectedEdges: "+selectedEdges);
+	
+//     switch (type) {
+// 	case GraphViewChangeEvent.EDGES_SELECTED_TYPE :
+// 	case GraphViewChangeEvent.EDGES_UNSELECTED_TYPE :
+// 	case GraphViewChangeEvent.NODES_SELECTED_TYPE :
+// 	case GraphViewChangeEvent.NODES_UNSELECTED_TYPE :
 		
-		break;
-	case GraphViewChangeEvent.NODES_RESTORED_TYPE :
-	case GraphViewChangeEvent.EDGES_RESTORED_TYPE :
-	case GraphViewChangeEvent.EDGES_HIDDEN_TYPE :
-	case GraphViewChangeEvent.NODES_HIDDEN_TYPE :
+// 		break;
+// 	case GraphViewChangeEvent.NODES_RESTORED_TYPE :
+// 	case GraphViewChangeEvent.EDGES_RESTORED_TYPE :
+// 	case GraphViewChangeEvent.EDGES_HIDDEN_TYPE :
+// 	case GraphViewChangeEvent.NODES_HIDDEN_TYPE :
 		
-		break;
-	default:
-		break;
-	}
+// 		break;
+// 	default:
+// 		break;
+// 	}
 
     	System.out.println ( " Updating statusBar " + "  Nodes: " + nodeCount
                       + " ("+selectedNodes+" selected)"
