@@ -25,11 +25,28 @@ public class AlphabeticalSelectionAction extends AbstractAction {
             (String) JOptionPane.showInputDialog(networkView.getMainFrame(), 
             "Select nodes whose name (or synonym) starts with");
         if (answer != null && answer.length() > 0) {
-            CyNetworkUtilities.selectNodesStartingWith(networkView.getNetwork(),
+           if ( CyNetworkUtilities.selectNodesStartingWith(networkView.getNetwork(),
                                                        answer.trim(),
-                                                       networkView.getCytoscapeObj(), networkView );
-            networkView.redrawGraph(false, true);
-        }
+                                                       networkView.getCytoscapeObj(), networkView ) ){
+						       
+		networkView.redrawGraph(false, true);
+		}
+						       
+        
+		else
+		{
+		StringBuffer sb = new StringBuffer();
+                sb.append("Node by name: ");
+		sb.append(answer);
+		sb.append(" or starting with: ");
+		sb.append(answer);
+		sb.append(" not found.");
+		JOptionPane.showMessageDialog(networkView.getMainFrame(),
+                                              sb.toString(),
+                                              "Node by name not found",
+                                              JOptionPane.INFORMATION_MESSAGE);
+	}
+	}
     }
 }
 

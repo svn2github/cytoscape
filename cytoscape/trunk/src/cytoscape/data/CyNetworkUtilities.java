@@ -120,11 +120,11 @@ public static boolean saveVisibleNodeNames(CyNetwork network, String filename) {
  * This method does not change the selection state of any node that doesn't
  * match the given key, allowing multiple selection queries to be concatenated.
  */
-public static void selectNodesStartingWith(CyNetwork network, String key,
+public static boolean selectNodesStartingWith(CyNetwork network, String key,
                                            CytoscapeObj cytoscapeObj, NetworkView networkView) {
-    if (network == null || key == null || networkView == null) {return;}
+    if (network == null || key == null || networkView == null) {return false;}
     key = key.toLowerCase();
-    
+    boolean found = false;
     String callerID = "CyNetworkUtilities.selectNodesStartingWith";
     network.beginActivity(callerID);
 
@@ -137,6 +137,7 @@ public static void selectNodesStartingWith(CyNetwork network, String key,
         boolean matched = false;
         if (nodeLabel != null && nodeLabel.toLowerCase().startsWith(key)) {
             matched = true;
+	    found = true;
         } else {
             //this list always includes the canonical name itself
             List synonyms = Semantics.getAllSynonyms(canonicalName, network, cytoscapeObj);
@@ -144,6 +145,7 @@ public static void selectNodesStartingWith(CyNetwork network, String key,
                 String synonym = (String)synI.next();
                 if ( synonym.toLowerCase().startsWith(key) ) {
                     matched = true;
+		    found = true;
                     break;
                 }
             }
@@ -154,6 +156,7 @@ public static void selectNodesStartingWith(CyNetwork network, String key,
     }
     
     network.endActivity(callerID);
+    return found;
 }
 //-------------------------------------------------------------------------
 }
