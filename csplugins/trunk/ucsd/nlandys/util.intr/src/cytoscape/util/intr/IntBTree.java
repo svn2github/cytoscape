@@ -27,9 +27,22 @@ public final class IntBTree
   public void insert(int x)
   {
     Node newNode = insert(m_root, x);
-    if (newNode != null) {
-      
-    }
+    if (newNode != null) { // The root has been split into two.
+      int newSplitVal;
+      int newDeepCount;
+      if (isLeafNode(newNode)) {
+        newSplitVal = newNode.values[0];
+        newDeepCount = m_root.sliceCount + newNode.sliceCount; }
+      else {
+        newSplitVal = newNode.data.splitVals[newNode.sliceCount - 1]; // Fix.
+        newDeepCount = m_root.data.deepCount + newNode.data.deepCount; }
+      Node newRoot = new Node(MAX_BRANCHES, false);
+      newRoot.sliceCount = 2;
+      newRoot.data.deepCount = newDeepCount;
+      newRoot.data.splitVals[0] = newSplitVal;
+      newRoot.data.children[0] = m_root;
+      newRoot.data.children[1] = newNode;
+      m_root = newRoot; }
   }
 
   // Return a Node being the newly created node if a split was performed.
@@ -111,14 +124,14 @@ public final class IntBTree
               Node returnThis = new Node(MAX_BRANCHES, false);
               System.arraycopy(m_buff, 0, n.data.splitVals, 0, middleInx);
               System.arraycopy(nodeBuff, 0, n.data.children, 0, middleInx + 1);
-              n.data.sliceCount = middleInx + 1;
+              n.sliceCount = middleInx + 1;
               System.arraycopy(m_buff, middleInx + 1,
                                returnThis.data.splitVals, 0,
                                combinedSplitCount - (middleInx + 1));
               System.arraycopy(nodeBuff, middleInx + 1,
                                returnThis.data.children, 0,
                                combinedSplitCount - middleInx);
-              returnThis.data.sliceCount = combinedSplitCount - middleInx;
+              returnThis.sliceCount = combinedSplitCount - middleInx;
               returnThis.data.splitVals[combinedSplitCount - (middleInx + 1)] =
                 m_buff[middleInx];
               return returnThis; }
@@ -234,7 +247,6 @@ public final class IntBTree
 
     private Node(int maxBranches, boolean leafNode)
     {
-      sliceCount = 0;
       if (leafNode) {
         values = new int[maxBranches];
         data = null; }
