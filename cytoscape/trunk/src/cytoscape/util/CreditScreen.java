@@ -71,7 +71,8 @@ public abstract class CreditScreen  {
 
     PClip credit_clip = new PClip();
     credit_clip.setStrokePaint( null );
-    credit_clip.setPathToRectangle( 80, 60, 230, 300 );
+    credit_clip.setPaint( new java.awt.Color( 0, 0, 0, .1f ) );
+    credit_clip.setPathToRectangle( 80, 60, 230, 280 );
     layer.addChild( credit_clip );
 
     final PNode credits = new PText( lines );
@@ -82,6 +83,7 @@ public abstract class CreditScreen  {
 //       System.out.println( "Add credit :" +lines[i] );
 //     }
     credit_clip.addChild( credits );
+    
     //layer.addChild( credits );
 
     PBounds clip_bounds = credit_clip.getBounds();
