@@ -134,6 +134,9 @@ body {
 #content .item {
  margin-bottom: 0px;
  font-size: 12px;
+ border: dotted gray 1px;
+ padding-left: 10px;
+ padding-bottom: 10px;
 }
 #content .item h2 {
  margin-bottom: 0px;
@@ -202,3 +205,38 @@ body {
  color: #aaaaaa;
 }
 
+.roundbox {
+	font-family: trebuchet MS, trebuchet, verdana, arial, sans-serif;
+	font-size: 11px;
+	padding: 5px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;	
+}
+
+.roundbox h3 {
+	text-transform: uppercase;
+	margin: 2px;
+}
+
+.roundbox ul {
+	padding: 0px;
+	margin: 0.5em;
+	padding-left: 0.5em;
+	list-style: none;
+}
+	
+.roundbox li:before {
+	content: "\00BB \0020";
+}
+
+.blue {
+	background-color: #F0F8FF;
+	border: 1px solid #CCE6FF;
+}	
+.roundbox a {
+	text-decoration: none;
+}
+.blue_outline {
+	background-color: #FFFFFF;
+	border: 1px solid #CCE6FF;
+}
