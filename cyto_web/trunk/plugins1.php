@@ -30,14 +30,13 @@
 	<p>
 		<big><b>Current Cytoscape 1.1 PlugIns:</b></big> 
 		<br>
-		<br>
 	</p>
-	<div id="content">
-		<table id="indent" cellspacing="5" cellpading="5">
+		<table style="margin-left: 30;  margin-right:30;border: dotted gray 1px;padding-left: 10px;font-size:small" width=95%
+		cellpadding=5 cellspacing=5>
 			<tbody>
-				<tr bgcolor="#dddddd">
+				<tr >
 					<td width="20%" valign="top">
-						Data Services Plug-In <font size="-1"> 
+						<B>Data Services Plug-In</B> <font size="-1"> 
 							<br>
 							Version: 0.04 
 							<br>
@@ -71,15 +70,10 @@
 						[<a href="http://www.cbio.mskcc.org/cytoscape/ds/ds_plugin_04.zip">Download .zip</a>] 
 					</td>
 				</tr>
-			</tbody>
-		</table>
-	</div>
-	<div id="content">
-		<table id="indent" cellspacing="5" cellpading="5">
-			<tbody>
-				<tr bgcolor="#dddddd">
+				<tr><td colspan=3><HR></TD></TR>
+				<tr >
 					<td width="20%" valign="top">
-						jActiveModules <font size="-1"> 
+						<b>jActiveModules</b> <font size="-1"> 
 							<br>
 							Version: 1.0 
 							<br>
@@ -102,15 +96,10 @@
 						[<a href="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab/plugins/jActiveModules/jActiveModules.tgz">Source</a>] 
 					</td>
 				</tr>
-			</tbody>
-		</table>
-	</div>
-	<div id="content">
-		<table id="indent" cellspacing="5" cellpading="5">
-			<tbody>
-				<tr bgcolor="#dddddd">
+				<tr><td colspan=3><HR></TD></TR>
+				<tr >
 					<td width="20%" valign="top">
-						pathBLAST <font size="-1"> 
+						<b>pathBLAST</b> <font size="-1"> 
 							<br>
 							Version: 1.0 
 							<br>
@@ -132,15 +121,10 @@
 						[<a href="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab/plugins/pathBlast/tutorialFiles.tar">Tutorial Files</a>] 
 					</td>
 				</tr>
-			</tbody>
-		</table>
-	</div>
-	<div id="content">
-		<table id="indent" cellspacing="5" cellpading="5">
-			<tbody>
-				<tr bgcolor="#dddddd">
+				<tr><td colspan=3><HR></TD></TR>
+				<tr >
 					<td width="20%" valign="top">
-						SBML Reader <font size="-1"> 
+						<b>SBML Reader</b> <font size="-1"> 
 							<br>
 							Version: 1.0 
 							<br>
@@ -158,15 +142,10 @@
 						[<a href="http://db.systemsbiology.net:8080/cytoscape/plugins/sbmlReader/SBMLReader.jar">Download</a>] 
 					</td>
 				</tr>
-			</tbody>
-		</table>
-	</div>
-	<div id="content">
-		<table id="indent" cellspacing="5" cellpading="5">
-			<tbody>
-				<tr bgcolor="#dddddd">
+				<tr><td colspan=3><HR></TD></TR>
+				<tr >
 					<td width="20%" valign="top">
-						Expression Data Viewers <font size="-1"> 
+						<B>Expression Data Viewers</b> <font size="-1"> 
 							<br>
 							Version: 1.0 
 							<br>
@@ -189,15 +168,10 @@
 						[<a href="http://db.systemsbiology.net:8080/cytoscape/plugins/expDataViewers/ExpDataViewers.jar">Download</a>] 
 					</td>
 				</tr>
-			</tbody>
-		</table>
-	</div>
-	<div id="content">
-		<table id="indent" cellspacing="5" cellpading="5">
-			<tbody>
-				<tr bgcolor="#dddddd">
+				<tr><td colspan=3><HR></TD></TR>
+				<tr >
 					<td width="20%" valign="top">
-						Biomodules <font size="-1"> 
+						<b>Biomodules</B> <font size="-1"> 
 							<br>
 							Version: 1.0 
 							<br>

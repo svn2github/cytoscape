@@ -39,11 +39,12 @@
 		<big><b>Current Cytoscape 2.0 PlugIns:</b></big>
 		<br>
 	</p>
-	<table id="indent" cellspacing="5" cellpading="5">
+	<table style="margin-left: 30;  margin-right:30;border: dotted gray 1px;padding-left: 10px;font-size:small" 
+		cellpadding=5 cellspacing=5 width=100%>
 			<tbody>
-				<tr bgcolor="#dddddd">
+				<tr>
 					<td width="20%" valign="top">
-						cPath PlugIn <font size="-1"> 
+						<B>cPath PlugIn</B> <font size="-1"> 
 							<br>
 							Version: 1 Beta
 							<br>
@@ -67,9 +68,10 @@
 						[<a href="http://www.cbio.mskcc.org/cytoscape/cpath/cpath.zip">Download .zip</a>] 
 					</td>
 				</tr>
-				<tr bgcolor="#dddddd">
+				<tr><td colspan=3><HR></TD></TR>
+				<tr>
 					<td width="20%" valign="top">
-						MCODE PlugIn <font size="-1"> 
+						<b>MCODE PlugIn</B><font size="-1"> 
 							<br>
 							Version: 1
 							<br>
