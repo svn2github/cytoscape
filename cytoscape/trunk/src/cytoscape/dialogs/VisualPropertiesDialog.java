@@ -74,7 +74,6 @@ public VisualPropertiesDialog (Frame parentFrame,
   colorButton.addActionListener(new
       GeneralColorDialogListener(this,nColor,colorLabel,
 				 "Choose a Node Color"));
-  colorButton.setSize(new Dimension(400,100));
   c.gridx=1;
   c.gridy=1;
   c.fill=GridBagConstraints.NONE;
@@ -173,9 +172,7 @@ public VisualPropertiesDialog (Frame parentFrame,
   c.gridx=0;
   c.gridy=8;
   c.fill=GridBagConstraints.HORIZONTAL;
-  gridbag.setConstraints(labelMappingSubPanel,c);
-  mainPanel.add(labelMappingSubPanel);
-
+  gblPanelInsert(mainPanel,labelMappingSubPanel,gridbag,c);
 
   //////////////////////////////////////////////
   JPanel edgeMappingSubPanel = new JPanel();
