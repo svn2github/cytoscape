@@ -35,13 +35,13 @@ public class SouravPlugin extends CytoscapePlugin
         public void actionPerformed(ActionEvent e)
         {
           CyNetwork cyNet = Cytoscape.getCurrentNetwork();
-          int[] edgeInxs = cyNet.getEdgeIndicesArray();
+          int[] nodeInxs = cyNet.getNodeIndicesArray();
           IntIntHash hash = new IntIntHash();
           int numUniqueAttrs = 0;
-          for (int i = 0; i < edgeInxs.length; i++)
+          for (int i = 0; i < nodeInxs.length; i++)
           {
             Double souravsAttrObj = (Double)
-              cyNet.getNodeAttributeValue(edgeInxs[i], "cluster");
+              cyNet.getNodeAttributeValue(nodeInxs[i], "cluster");
             if (souravsAttrObj == null) continue;
             int souravsAttrInt = (int) (souravsAttrObj.doubleValue());
             if (hash.get(souravsAttrInt) < 0) { // Not in hash yet.
@@ -51,15 +51,15 @@ public class SouravPlugin extends CytoscapePlugin
           int[] fooMap = new int[numUniqueAttrs];
           for (int i = 0; i < nodeAttrMap.length; i++) {
             nodeAttrMap[i] = new IntHash(); }
-          for (int i = 0; i < edgeInxs.length; i++)
+          for (int i = 0; i < nodeInxs.length; i++)
           {
             Double souravsAttrObj = (Double)
-              cyNet.getNodeAttributeValue(edgeInxs[i], "cluster");
+              cyNet.getNodeAttributeValue(nodeInxs[i], "cluster");
             if (souravsAttrObj == null) continue;
             int souravsAttrInt = (int) (souravsAttrObj.doubleValue());
             int index = hash.get(souravsAttrInt);
             fooMap[index] = souravsAttrInt;
-            nodeAttrMap[index].put(~edgeInxs[i]);
+            nodeAttrMap[index].put(~nodeInxs[i]);
           }
           for (int i = 0; i < nodeAttrMap.length; i++)
           {
