@@ -411,13 +411,13 @@ class FRootGraph //implements RootGraph
     return false;
   }
 
-  public int getEdgeCount(Node from, Node to, boolean countDirectedEdges)
+  public int getEdgeCount(Node from, Node to, boolean countUndirectedEdges)
   {
     if (from.getRootGraph() == this && to.getRootGraph() == this)
     {
       return getEdgeCount(from.getRootGraphIndex(),
                           to.getRootGraphIndex(),
-                          countDirectedEdges);
+                          countUndirectedEdges);
     }
     else
     {
@@ -585,30 +585,66 @@ class FRootGraph //implements RootGraph
 
   // This method has been marked deprecated in the Giny API.
   public int[] getEdgeIndicesArray(int fromNodeInx, int toNodeInx,
-                                   boolean includeUndirectedEdges)
-  {
+                                   boolean includeUndirectedEdges) {
     return getEdgeIndicesArray(fromNodeInx, toNodeInx,
-                               includeUndirectedEdges, false);
-  }
+                               includeUndirectedEdges, false); }
 
-  public int getInDegree(Node node)
-  {
+  public int getInDegree(Node node) {
     if (node.getRootGraph() == this)
-    {
       return getInDegree(node.getRootGraphIndex());
-    }
-    else
-    {
-      return -1;
-    }
-  }
+    else return -1; }
 
-  public int getInDegree(int nodeInx)
+  public int getInDegree(int nodeInx) {
+    return getInDegree(nodeInx, true); }
+
+  public int getInDegree(Node node, boolean countUndirectedEdges) {
+    if (node.getRootGraph() == this)
+      return getInDegree(node.getRootGraphIndex(), countUndirectedEdges);
+    else return -1; }
+
+  public int getInDegree(int nodeInx, boolean countUndirectedEdges)
   {
     final int positiveNodeInx = ~nodeInx;
     final IntEnumerator adj;
-    try {
-      adj = m_graph.adjacentEdges(positiveNodeInx, true, true, false); }
+    try { adj = m_graph.adjacentEdges
+            (positiveNodeInx, countUndirectedEdges, true, false); }
+    catch (IllegalArgumentException e) { return -1; }
+    return adj.numRemaining();
+  }
+
+  public int getOutDegree(Node node) {
+    if (node.getRootGraph() == this)
+      return getOutDegree(node.getRootGraphIndex());
+    else return -1; }
+
+  public int getOutDegree(int nodeInx) {
+    return getOutDegree(nodeInx, true); }
+
+  public int getOutDegree(Node node, boolean countUndirectedEdges) {
+    if (node.getRootGraph() == this)
+      return getOutDegree(node.getRootGraphIndex(), countUndirectedEdges);
+    else return -1; }
+
+  public int getOutDegree(int nodeInx, boolean countUndirectedEdges)
+  {
+    final int positiveNodeInx = ~nodeInx;
+    final IntEnumerator adj;
+    try { adj = m_graph.adjacentEdges
+            (positiveNodeInx, countUndirectedEdges, false, true); }
+    catch (IllegalArgumentException e) { return -1; }
+    return adj.numRemaining();
+  }
+
+  public int getDegree(Node node) {
+    if (node.getRootGraph() == this)
+      return getDegree(node.getRootGraphIndex());
+    else return -1; }
+
+  public int getDegree(int nodeInx)
+  {
+    final int positiveNodeInx = ~nodeInx;
+    final IntEnumerator adj;
+    try { adj = m_graph.adjacentEdges(positiveNodeInx, true, true, true); }
     catch (IllegalArgumentException e) { return -1; }
     return adj.numRemaining();
   }
