@@ -832,9 +832,40 @@ class FGraphPerspective implements GraphPerspective
     throw new IllegalStateException("not implemented yet");
   }
 
-  public int[] getConnectingEdgeIndicesArray(int[] perspNodeInx)
+  public int[] getConnectingEdgeIndicesArray(int[] nodeInx)
   {
-    throw new IllegalStateException("not implemented yet");
+    final IntHash nativeNodeBucket = new IntHash();
+    for (int i = 0; i < nodeInx.length; i++) {
+      if (!(nodeInx[i] < 0)) continue;
+      final int nativeNodeInx = m_rootToNativeNodeInxMap.get(~nodeInx[i]);
+      try {
+        if (m_graph.containsNode(nativeNodeInx))
+          nativeNodeBucket.put(nativeNodeInx); }
+      catch (IllegalArgumentException e) { } }
+    m_hash.empty();
+    final IntHash nativeEdgeBucket = m_hash;
+    final IntEnumerator nativeNodeEnum = nativeNodeBucket.elements();
+    while (nativeNodeEnum.numRemaining() > 0)
+    {
+      final int nativeNodeIndex = nativeNodeEnum.nextInt();
+      final IntEnumerator nativeAdjEdgeEnum =
+        m_graph.adjacentEdges(nativeNodeIndex, true, false, true);
+      while (nativeAdjEdgeEnum.numRemaining() > 0)
+      {
+        final int nativeCandidateEdge = nativeAdjEdgeEnum.nextInt();
+        final int nativeOtherEdgeNode =
+          (nativeNodeIndex ^ m_graph.sourceNode(nativeCandidateEdge) ^
+           m_graph.targetNode(nativeCandidateEdge));
+        if (nativeOtherEdgeNode == nativeNodeBucket.get(nativeOtherEdgeNode))
+          nativeEdgeBucket.put(nativeCandidateEdge);
+      }
+    }
+    final IntEnumerator nativeReturnEdges = nativeEdgeBucket.elements();
+    final int[] returnThis = new int[nativeReturnEdges.numRemaining()];
+    for (int i = 0; i < returnThis.length; i++)
+      returnThis[i] = m_nativeToRootEdgeInxMap.getIntAtIndex
+        (nativeReturnEdges.nextInt());
+    return returnThis;
   }
 
   public int[] getConnectingNodeIndicesArray(int[] perspEdgeInx)
