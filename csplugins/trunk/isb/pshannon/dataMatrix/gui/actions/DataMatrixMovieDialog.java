@@ -20,7 +20,7 @@ import csplugins.isb.pshannon.dataMatrix.*;
  * Facilitates the display of condition data as a slideshow or animation
  * (movie). 
  * 
- * @author Iliana Avilla
+ * @author Iliana Avila
  * @author Paul Shannon
  * @author Dan Tenenbaum
  */
@@ -185,19 +185,19 @@ protected void createUI ()
         
   buttonPanel = new JPanel ();
   buttonPanel.setLayout (new FlowLayout (FlowLayout.CENTER));
-  ImageIcon playIcon = createImageIcon ("images/play.jpg");
+  ImageIcon playIcon = createImageIcon ("../images/play.jpg");
   playButton = new JButton (playIcon);
   playButton.addActionListener (new PlayActionListener ());
   playButton.setToolTipText("Play");
   buttonPanel.add (playButton);
   buttonPanel.add (Box.createRigidArea  (new Dimension (16,0)));
-  ImageIcon pauseIcon = createImageIcon ("images/pause.jpg");
+  ImageIcon pauseIcon = createImageIcon ("../images/pause.jpg");
   pauseButton = new JButton (pauseIcon);
   pauseButton.addActionListener (new PauseActionListener ());
   pauseButton.setToolTipText("Pause");
   buttonPanel.add (pauseButton);
   buttonPanel.add (Box.createRigidArea  (new Dimension (16,0)));
-  ImageIcon stopIcon = createImageIcon ("images/stop.jpg");
+  ImageIcon stopIcon = createImageIcon ("../images/stop.jpg");
   stopButton = new JButton (stopIcon);
   stopButton.setVerticalTextPosition (AbstractButton.CENTER);
   stopButton.setHorizontalTextPosition (AbstractButton.LEADING); 
