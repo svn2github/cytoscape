@@ -3,6 +3,12 @@ ADJACENT EDGES TEST:
   Testing:
     RootGraph.getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean)
 
+  Importance:
+    Getting touching edges lists for a node is very similar to getting
+    node neighbors.  Both operations are the foundation of depth first
+    and breadth first graph searching.  Therefore, good performance
+    of this method is extremely important.
+
   Description of test:
     This test creates N nodes and E edges (an even mix of directed and
     undirected) in a RootGraph.  The topology of RootGraph created is
@@ -20,3 +26,33 @@ ADJACENT EDGES TEST:
       iteration 2: getAdjacentEdgeIndicesArray(int, true, false, true)
       iteration 3: getAdjacentEdgeIndicesArray(int, false, false, false)
       iteration 4: getAdjacentEdgeIndicesArray(int, false, false, false)
+
+  Test circumstances:
+    Tests were performed on a 2.4GHz P4, with 512M RAM, and 256M memory
+    was allocated to the JVM.
+
+  Test results:
+
+             Milliseconds taken to perform test case:
+
+    graph size                          |  Fing  |  Luna  |
+  --------------------------------------+--------+--------+
+       7 nodes,      20 edges           |      2 |      3 |
+     100 nodes,     500 edges           |      6 |     42 |
+     100 nodes,   10000 edges           |      8 |     84 |
+    1000 nodes,   20000 edges           |     25 |   1185 |
+    1000 nodes,   39998 edges           |     45 |   1700 |
+    2000 nodes,   20000 edges           |     30 |   3900 |
+    4000 nodes,   20000 edges           |     32 |  16300 |
+    8000 nodes,   20000 edges           |     42 |  64800 |
+   16000 nodes,   20000 edges           |     94 | 258300 |
+   16000 nodes,  100000 edges           |    127 |   fail |
+   50000 nodes,  400000 edges           |    440 |   fail |
+  100000 nodes, 1000000 edges           |   1050 |   fail |
+  --------------------------------------+--------+--------+
+
+  Afterthoughts:
+    The implementation could be really sped up if the interface
+    changes; instead of returning an array of integers, return
+    an iteration over integers.  This would prevent a lot of
+    unnecessary array allocation.
