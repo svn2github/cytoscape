@@ -18,7 +18,7 @@ public abstract class SubjectBase {
     /**
      * An Array List of All Observers who want to be notified of changes.
      */
-    private ArrayList observers = new ArrayList();
+    protected ArrayList observers = new ArrayList();
 
     /**
      * Add a ChangeListener. When the state underlying the
