@@ -261,26 +261,26 @@ protected void updateGraphView() {
         boolean added = this.graphViewController.addGraphView(this.view);
         if(!added){
             // This should never happen, but just in case
-            System.err.println("1. In CyWindow.updateGraphView(): Could not add this.view to "
-                               + " this.graphViewController.");
+          System.err.println("1. In CyWindow.updateGraphView(): Could not add this.view to "
+                             + " this.graphViewController.");
         }
         //TODO: Remove
-        System.out.println("1. In CyWindow.updateGraphView(). Added this.view to "
-                           + " this.graphViewController");
+        //System.out.println("1. In CyWindow.updateGraphView(). Added this.view to "
+        //                 + " this.graphViewController");
     } else {
-        // The graphViewController had been instatiated before.
-        // Since right now we only have one view, clear the controller, and add the
-        // possibly new view. When we have more than one view, this will change.
-        this.graphViewController.removeAllGraphViews();
-        boolean added = this.graphViewController.addGraphView(this.view);
-        if(!added){
-            // Again, this should never happen, but just in case
-            System.err.println("2. In CyWindow.updateGraphView(): Could not add this.view to "
-                               + " this.graphViewController.");
-        }
-        //TODO: Remove
-        System.out.println("2. In CyWindow.updateGraphView(). Added this.view to "
-                           + " this.graphViewController");
+      // The graphViewController had been instatiated before.
+      // Since right now we only have one view, clear the controller, and add the
+      // possibly new view. When we have more than one view, this will change.
+      this.graphViewController.removeAllGraphViews();
+      boolean added = this.graphViewController.addGraphView(this.view);
+      if(!added){
+        // Again, this should never happen, but just in case
+        System.err.println("2. In CyWindow.updateGraphView(): Could not add this.view to "
+                           + " this.graphViewController.");
+      }
+      //TODO: Remove
+      //System.out.println("2. In CyWindow.updateGraphView(). Added this.view to "
+      //                 + " this.graphViewController");
     }// end of GraphViewController stuff
 }
 //------------------------------------------------------------------------------
