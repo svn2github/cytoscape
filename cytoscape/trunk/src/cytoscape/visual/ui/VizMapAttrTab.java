@@ -39,7 +39,7 @@ public class VizMapAttrTab extends VizMapTab {
     /**
      *	the calculator whose UI is being displayed by this tab
      */
-    private Calculator c;
+    private Calculator currentCalculator;
 
     /**
      *	default object to display
@@ -142,10 +142,14 @@ public class VizMapAttrTab extends VizMapTab {
 	this.calcComboBox.addItemListener(new calcComboSelectionListener());
 
 	// set the currently selected calculator
-	if (this.c == null) 
+	if (this.currentCalculator == null) {
+	    /* Index 0 is always the "None" string. However, setSelectedIndex(0) does not call
+	       event handlers. Thus, in RmCalcListener, switchCalculator() is called explicitly.
+	    */
 	    this.calcComboBox.setSelectedIndex(0);
+	}
 	else
-	    this.calcComboBox.setSelectedItem(this.c);
+	    this.calcComboBox.setSelectedItem(this.currentCalculator);
     }
 
     /**
@@ -348,7 +352,7 @@ public class VizMapAttrTab extends VizMapTab {
 		calc = new GenericNodeFontSizeCalculator(calcName, mapper);
 	    }
 	    // set current calculator to the new calculator
-	    c = calc;
+	    currentCalculator = calc;
 	    // notify the catalog - this triggers events that refresh the UI
 	    catalog.addCalculator(calc);
 	}
@@ -357,11 +361,11 @@ public class VizMapAttrTab extends VizMapTab {
     // duplicate calculator button pressed
     private class DupeCalcListener extends AbstractAction {
 	public void actionPerformed(ActionEvent e) {
-	    Calculator clone = duplicateCalculator(c);
+	    Calculator clone = duplicateCalculator(currentCalculator);
 	    // die if user cancelled in the middle of duplication
 	    if (clone == null)
 		return;
-	    c = clone;
+	    currentCalculator = clone;
 	    catalog.addCalculator(clone);
 	}
     }
@@ -388,7 +392,7 @@ public class VizMapAttrTab extends VizMapTab {
     private String getCalculatorName(Calculator c) {
 	// default to the next available name for c
 	String suggestedName = null;
-	if (c != null)
+	if (currentCalculator != null)
 	    suggestedName = catalog.checkCalculatorName(c.toString(), this.type);
 	
 	// keep prompting for input until user cancels or we get a valid name
@@ -420,17 +424,22 @@ public class VizMapAttrTab extends VizMapTab {
     private class RenCalcListener extends AbstractAction {
 	public void actionPerformed(ActionEvent e) {
 	    // get the new name, keep prompting for input until a valid input is received
-	    String calcName = getCalculatorName(c);
+	    String calcName = getCalculatorName(currentCalculator);
 	    if (calcName == null)
 		return;
-	    catalog.renameCalculator(c, calcName);
+	    catalog.renameCalculator(currentCalculator, calcName);
 	}
     }
 
     // remove calculator button pressed
     private class RmCalcListener extends AbstractAction {
 	public void actionPerformed(ActionEvent e) {
-	    catalog.removeCalculator(c);
+	    catalog.removeCalculator(currentCalculator);
+	    switchCalculator(null);
+	    /* switchCalculator must be called explicitly in this method because we use
+	       setSelectedIndex(0) to set the current calculator to null in setupCalcComboBox,
+	       which does not trigger an event.
+	    */
 	}    
     }
 
@@ -464,7 +473,7 @@ public class VizMapAttrTab extends VizMapTab {
      * @param	c	newly selected calculator
      */
     VizMapTab checkCalcSelected(Calculator c) {
-	if (this.c == c)
+	if (this.currentCalculator == c)
 	    return this;
 	return null;
     }
@@ -486,8 +495,8 @@ public class VizMapAttrTab extends VizMapTab {
     public void refreshUI() {
 	if (this.calcPanel != null)
 	    this.calcContainer.remove(this.calcPanel);
-	if (this.c != null) {
-	    this.calcPanel = this.c.getUI(this.mainUIDialog, this.n);
+	if (this.currentCalculator != null) {
+	    this.calcPanel = this.currentCalculator.getUI(this.mainUIDialog, this.n);
 	    this.calcContainer.add(this.calcPanel);
 	}
 	else
@@ -529,7 +538,7 @@ public class VizMapAttrTab extends VizMapTab {
 		    // die if user cancelled
 		    if (clone == null)
 			return;
-		    this.c = clone;
+		    this.currentCalculator = clone;
 		    catalog.addCalculator(clone);
 		    // addCalculator throws an event that will call
 		    // switchCalculator, so just exit this call.
@@ -537,12 +546,12 @@ public class VizMapAttrTab extends VizMapTab {
 		}
 		else {
 		    // reset the combobox back
-		    setComboBox(this.c);
+		    setComboBox(this.currentCalculator);
 		    return;
 		}
 	    }
 	}
-	this.c = c;
+	this.currentCalculator = c;
 	refreshUI();
 
 	/*
@@ -793,91 +802,91 @@ public class VizMapAttrTab extends VizMapTab {
      * the set of avaiable calculators has changed.
      */
     protected void getDefaults(byte type) {
-	// this.calculators = getCalculators(type);
+	// this.currentCalculatoralculators = getCalculators(type);
 	switch (type) {
 	case VizMapUI.NODE_COLOR:
 	    this.defaultObj = nodeCalc.getDefaultNodeFillColor();
-	    this.c = nodeCalc.getNodeFillColorCalculator();
+	    this.currentCalculator = nodeCalc.getNodeFillColorCalculator();
 	    break;
 	case VizMapUI.NODE_BORDER_COLOR:
 	    this.defaultObj = nodeCalc.getDefaultNodeBorderColor();
-	    this.c = nodeCalc.getNodeBorderColorCalculator();
+	    this.currentCalculator = nodeCalc.getNodeBorderColorCalculator();
 	    break;
 	case VizMapUI.NODE_LINETYPE:
 	    this.defaultObj = nodeCalc.getDefaultNodeLineType();
-	    this.c = nodeCalc.getNodeLineTypeCalculator();
+	    this.currentCalculator = nodeCalc.getNodeLineTypeCalculator();
 	    break;
 	case VizMapUI.NODE_SHAPE:
 	    this.defaultObj = new Byte(nodeCalc.getDefaultNodeShape());
-	    this.c = nodeCalc.getNodeShapeCalculator();
+	    this.currentCalculator = nodeCalc.getNodeShapeCalculator();
 	    break;
 	case VizMapUI.NODE_HEIGHT:
 	    this.defaultObj = new Double(nodeCalc.getDefaultNodeHeight());
-	    this.c = nodeCalc.getNodeHeightCalculator();
+	    this.currentCalculator = nodeCalc.getNodeHeightCalculator();
 	    break;
 	case VizMapUI.NODE_WIDTH:
 	    this.defaultObj = new Double(nodeCalc.getDefaultNodeWidth());
-	    this.c = nodeCalc.getNodeWidthCalculator();
+	    this.currentCalculator = nodeCalc.getNodeWidthCalculator();
 	    break;
 	case VizMapUI.NODE_SIZE:
 	    this.defaultObj = new Double(nodeCalc.getDefaultNodeHeight());
-	    this.c = nodeCalc.getNodeHeightCalculator();
+	    this.currentCalculator = nodeCalc.getNodeHeightCalculator();
 	    break;
 	case VizMapUI.NODE_LABEL:
 	    this.defaultObj = nodeCalc.getDefaultNodeLabel();
-	    this.c = nodeCalc.getNodeLabelCalculator();
+	    this.currentCalculator = nodeCalc.getNodeLabelCalculator();
 	    break;
 	case VizMapUI.NODE_TOOLTIP:
 	    this.defaultObj = nodeCalc.getDefaultNodeToolTip();
-	    this.c = nodeCalc.getNodeToolTipCalculator();
+	    this.currentCalculator = nodeCalc.getNodeToolTipCalculator();
 	    break;
 	case VizMapUI.EDGE_COLOR:
 	    this.defaultObj = edgeCalc.getDefaultEdgeColor();
-	    this.c = edgeCalc.getEdgeColorCalculator();
+	    this.currentCalculator = edgeCalc.getEdgeColorCalculator();
 	    break;
 	case VizMapUI.EDGE_LINETYPE:
 	    this.defaultObj = edgeCalc.getDefaultEdgeLineType();
-	    this.c = edgeCalc.getEdgeLineTypeCalculator();
+	    this.currentCalculator = edgeCalc.getEdgeLineTypeCalculator();
 	    break;
 	case VizMapUI.EDGE_SRCARROW:
 	    this.defaultObj = edgeCalc.getDefaultEdgeSourceArrow();
-	    this.c = edgeCalc.getEdgeSourceArrowCalculator();
+	    this.currentCalculator = edgeCalc.getEdgeSourceArrowCalculator();
 	    break;
 	case VizMapUI.EDGE_TGTARROW:
 	    this.defaultObj = edgeCalc.getDefaultEdgeTargetArrow();
-	    this.c = edgeCalc.getEdgeTargetArrowCalculator();
+	    this.currentCalculator = edgeCalc.getEdgeTargetArrowCalculator();
 	    break;
 	case VizMapUI.EDGE_LABEL:
 	    this.defaultObj = edgeCalc.getDefaultEdgeLabel();
-	    this.c = edgeCalc.getEdgeLabelCalculator();
+	    this.currentCalculator = edgeCalc.getEdgeLabelCalculator();
 	    break;
 	case VizMapUI.EDGE_TOOLTIP:
 	    this.defaultObj = edgeCalc.getDefaultEdgeToolTip();
-	    this.c = edgeCalc.getEdgeToolTipCalculator();
+	    this.currentCalculator = edgeCalc.getEdgeToolTipCalculator();
 	    break;
 	case VizMapUI.NODE_FONT_FACE:
 	    this.defaultObj = n.getGraph().getDefaultNodeRealizer().getLabel().getFont();
 	    // set the font in the appearance calculator, since they might not match at this point
 	    _setDefault(defaultObj);
-	    this.c = nodeCalc.getNodeFontFaceCalculator();
+	    this.currentCalculator = nodeCalc.getNodeFontFaceCalculator();
 	    break;
 	case VizMapUI.EDGE_FONT_FACE:
 	    this.defaultObj = n.getGraph().getDefaultEdgeRealizer().getLabel().getFont();
 	    // set the font in the appearance calculator, since they might not match at this point
 	    _setDefault(defaultObj);
-	    this.c = edgeCalc.getEdgeFontFaceCalculator();
+	    this.currentCalculator = edgeCalc.getEdgeFontFaceCalculator();
 	    break;	  
 	case VizMapUI.NODE_FONT_SIZE:
 	    this.defaultObj = new Double(n.getGraph().getDefaultNodeRealizer().getLabel().getFont().getSize2D());
 	    // set the font in the appearance calculator, since they might not match at this point
 	    _setDefault(defaultObj);
-	    this.c = nodeCalc.getNodeFontSizeCalculator();
+	    this.currentCalculator = nodeCalc.getNodeFontSizeCalculator();
 	    break;
 	case VizMapUI.EDGE_FONT_SIZE:
 	    this.defaultObj = new Double(n.getGraph().getDefaultEdgeRealizer().getLabel().getFont().getSize2D());
 	    // set the font in the appearance calculator, since they might not match at this point
 	    _setDefault(defaultObj);
-	    this.c = edgeCalc.getEdgeFontSizeCalculator();
+	    this.currentCalculator = edgeCalc.getEdgeFontSizeCalculator();
 	    break;
 	}
     }
