@@ -18,6 +18,7 @@ import java.util.Hashtable;
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.Enumeration;
+import java.util.StringTokenizer;
 
 import y.base.*;
 import y.view.*;
@@ -476,6 +477,9 @@ protected JMenuBar createMenuBar ()
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_D, ActionEvent.CTRL_MASK));
   mi = selectiveDisplayMenu.add (new SelectFirstNeighborsAction ());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_F, ActionEvent.CTRL_MASK));
+
+  selectiveDisplayMenu.add (new ListFromFileSelectionAction ());
+
   mi = selectiveDisplayMenu.add (new InvertSelectionAction ());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_N, ActionEvent.CTRL_MASK));
 
@@ -661,6 +665,40 @@ protected void selectNodesStartingWith (String key)
       catch (Exception ignoreForNow) {;}
       } // else if: checking synonyms
     setNodeSelected (nodes [i], matched);
+    } // for i
+
+  setInteractivity (true);
+  redrawGraph ();
+
+} // selectDisplyToNodesStartingWith ...
+//------------------------------------------------------------------------------
+protected void additionallySelectNodesMatching (String key)
+{
+  setInteractivity (false);
+  key = key.toLowerCase ();
+  Graph2D g = graphView.getGraph2D();
+  redrawGraph ();
+
+  Node [] nodes = graphView.getGraph2D().getNodeArray();
+
+  for (int i=0; i < nodes.length; i++) {
+    String nodeName = graphView.getGraph2D().getLabelText (nodes [i]);
+    boolean matched = false;
+    if (nodeName.toLowerCase().equalsIgnoreCase (key))
+      matched = true;
+    else if (bioDataServer != null) {
+      try {
+        String [] synonyms = bioDataServer.getSynonyms (nodeName);
+        for (int s=0; s < synonyms.length; s++)
+          if (synonyms [s].equalsIgnoreCase (key)) {
+            matched = true;
+            break;
+         } // for s
+       }
+      catch (Exception ignoreForNow) {;}
+      } // else if: checking synonyms
+    if(matched)
+	setNodeSelected (nodes [i], true);
     } // for i
 
   setInteractivity (true);
@@ -993,13 +1031,55 @@ protected class AlphabeticalSelectionAction extends AbstractAction   {
 protected class ListFromFileSelectionAction extends AbstractAction   {
   ListFromFileSelectionAction () { super ("From File"); }
 
-  public void actionPerformed (ActionEvent e) {
-    String answer = 
-      (String) JOptionPane.showInputDialog (mainFrame, 
-              "Select nodes whose name (or synonym) starts with");
-    if (answer != null && answer.length () > 0)
-      selectNodesStartingWith (answer.trim ());
+    public void actionPerformed (ActionEvent e) {
+	boolean cancelSelectionAction = !useSelectionFile();
     }
+
+    private boolean useSelectionFile() {
+	JFileChooser fChooser = new JFileChooser();	
+	fChooser.setDialogTitle("Load Gene Selection File");
+	Graph2D g = graphView.getGraph2D();
+	Node [] nodes = graphView.getGraph2D().getNodeArray();
+	
+	switch (fChooser.showOpenDialog(null)) {
+		
+	case JFileChooser.APPROVE_OPTION:
+	    File file = fChooser.getSelectedFile();
+	    String s;
+
+	    try {
+		FileReader fin = new FileReader(file);
+		BufferedReader bin = new BufferedReader(fin);
+
+		for (int i=0; i < nodes.length; i++)
+		    graphView.getGraph2D().getRealizer(nodes [i]).setSelected (false);
+
+		while ((s = bin.readLine()) != null) {
+		    StringTokenizer st = new StringTokenizer(s);
+		    String name = st.nextToken();
+		    String trimname = name.trim();
+		    if(trimname.length() > 0) {
+			additionallySelectNodesMatching (trimname);
+		    }
+		}
+		fin.close();
+		redrawGraph ();
+		  
+	    } catch (Exception e) {
+		JOptionPane.showMessageDialog(null, e.toString(),
+			         "Error Reading \"" + file.getName()+"\"",
+					       JOptionPane.ERROR_MESSAGE);
+		return false;
+	    }
+
+	    return true;
+
+	default:
+	    // cancel or error
+	    return false;
+	}
+    }
+    
 }
 //------------------------------------------------------------------------------
 protected class DeselectAllAction extends AbstractAction   {
