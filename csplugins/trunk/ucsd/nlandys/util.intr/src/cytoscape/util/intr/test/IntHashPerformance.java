@@ -12,10 +12,11 @@ public class IntHashPerformance
 {
 
   /**
-   * This test is analagous to fing.util.test.MinIntHeapPerformance, only
+   * This test is analagous to
+   * cytoscape.util.intr.test.MinIntHeapPerformance, only
    * it uses a hashtable instead of a heap.  So the purpose of this test
    * is to compare the performance between a heap and a hashtable when using
-   * these object solely for the purpose of pruning duplicate integers from a
+   * these objects solely for the purpose of pruning duplicate integers from a
    * set of integers.
    */
   public static void main(String[] args) throws Exception
