@@ -11,13 +11,18 @@ JC=javac
 .java.class: 
 	$(JC) $<
 
+default: objs  subDirectories
+
+subDirectories:
+	(cd annotation; make);
+	(cd synonyms; make);
+	(cd readers; make);
+	(cd servers; make);
+
 OBJS =  ExpressionData.class \
         Interaction.class \
         mRNAMeasurement.class \
-        BindingPair.class \
-        GeneProduct.class \
-        GeneSynonym.class \
-        GoTerm.class 
+        GraphProps.class \
 
 default: objs 
 

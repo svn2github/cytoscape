@@ -14,7 +14,10 @@ JI=java
 OBJS =  Thesaurus.class
 
 
-default: objs 
+default: objs subDirectories
+
+subDirectories:
+	(cd readers; make)
 
 objs: $(OBJS)
 
