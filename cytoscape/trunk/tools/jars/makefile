@@ -6,10 +6,10 @@
 # $Author$
 #-------------------------------------------------------------------------
 
-#AUXJAR_UNPACKED_DIR=$(PWD)/aux
+#AUXJAR_UNPACKED_DIR=$(PWD)/cyto-aux
 AUXJAR_UNPACKED_DIR=/common/aux20030130
 JARFILE=$(PWD)/cytoscape.jar
-AUXJARFILE=$(PWD)/aux.jar
+AUXJARFILE=$(PWD)/cyto-aux.jar
 YFILESDIR=/common/yfiles2.0.1-unpacked
 VISADDIR=/common/visad-unpacked
 
@@ -33,13 +33,13 @@ full:
 #  make a jar file which has everything needed to be executable
 #  via the command "java -jar cytoscape.jar"
 #
-#  for this to work, you must have unjar your aux.jar so that all of
-#  its contents are found in $(PWD)/aux.  
-#  in seattle, we have all of these auxiliary files; in boston, it may
-#  be simpler to just use the aux.jar file we made for you:  
-#     mkdir aux
-#     cd aux    (you are now in cytoscape/util/aux)
-#     jar xvf someDirectory/aux.jar
+#  for this to work, you must have unjar your cyto-aux.jar so that all of
+#  its contents are found in $(PWD)/cyto-aux.  
+#  in seattle, we have all of these cyto-auxiliary files; in boston, it may
+#  be simpler to just use the cyto-aux.jar file we made for you:  
+#     mkdir cyto-aux
+#     cd cyto-aux    (you are now in cytoscape/util/cyto-aux)
+#     jar xvf someDirectory/cyto-aux.jar
 #  
 
 jar:
@@ -63,12 +63,12 @@ jar:
 
 
 #  
-#  --- auxjar
+#  --- cyto-auxjar
 #  make a jar file which has everything auxillary needed to build and
 #  run cytoscape, but not including yfiles or our own source code
 #  
 
-auxjar:
+cyto-auxjar:
 	(cd ~/jars; jar cvf $(AUXJARFILE) `find gnu/* -name "*.class" -print`)
 	(cd ~/jars; jar uvf $(AUXJARFILE) `find gnu/* -name "*.properties" -print`)
 	(cd ~/jars/jdomUnpacked; jar uvf $(AUXJARFILE) `find org/* -name "*.class"`)
