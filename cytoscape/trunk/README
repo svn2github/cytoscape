@@ -25,7 +25,7 @@ TO BUILD
 --------
 define your java CLASSPATH to include at least
 
-    <full-path-to-current-directory>/cytoscape.aux.jar
+    <full-path-to-current-directory>/cyto-aux.jar
     <full-path-to-immediate-parent-directory>
     <full-path-to-junit.jar>
 
