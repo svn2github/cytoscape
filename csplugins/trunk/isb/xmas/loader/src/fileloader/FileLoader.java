@@ -16,7 +16,7 @@ public class FileLoader {
                                             String delimiter ) {
     
     Vector titles = null;
-    
+    int max_col = 0;
 
     try {
       File file = new File( file_name );
@@ -24,7 +24,7 @@ public class FileLoader {
         = new BufferedReader(new FileReader( file ) );
       String oneLine = in.readLine();
       int count = 0;
-      while (oneLine != null && count++ < 20 ) {
+      while (oneLine != null  ) {
          
         if (oneLine.startsWith("#")) {
           // comment
@@ -65,13 +65,13 @@ public class FileLoader {
         if ( node != null )
           break;
       }
-    
-      System.out.println( "NOde exists: "+node.getIdentifier() );
+      if ( node != null )
+        System.out.println( "NOde exists: "+node.getIdentifier() );
       // if no node is found, create one with the first column name
       if ( node == null )
         node = Cytoscape.getCyNode( row[0], true );
 
-      System.out.println( "Loading data for: "+node.getIdentifier() );
+      //System.out.println( "Loading data for: "+node.getIdentifier() );
 
 
       
@@ -84,8 +84,16 @@ public class FileLoader {
           // not a number, leave as string
           attribute = row[i];
         }
-        Cytoscape.setNodeAttributeValue( node, (String)titles.get( i ), attribute );
-      }
+        try {
+          Cytoscape.setNodeAttributeValue( node, (String)titles.get( i ), attribute );
+        } catch ( Exception ex ) {
+          ex.printStackTrace();
+          System.out.print( "Error Loading node: "+node.getIdentifier() );
+          System.out.print( " attribute: "+(String)titles.get( i ) );
+          System.out.println( " attribute value: "+attribute );
+
+        }
+        }
       return true;
     } else {
       CyNode source = Cytoscape.getCyNode( row[0], true );

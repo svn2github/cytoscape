@@ -228,7 +228,7 @@ public class FileLoaderUI
         = new BufferedReader(new FileReader( file ) );
       String oneLine = in.readLine();
       int count = 0;
-      while (oneLine != null && count++ < 20 ) {
+      while (oneLine != null ) {//&& count++ < 20 ) {
          
         if (oneLine.startsWith("#")) {
           // comment
