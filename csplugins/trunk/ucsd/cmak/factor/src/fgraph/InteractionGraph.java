@@ -39,7 +39,7 @@ public class InteractionGraph
 {
     private static Logger logger = Logger.getLogger(FactorGraph.class.getName());
 
-    private double PVAL_THRESH = 0.8;
+    private double PVAL_THRESH = 1;
 
     private int _edgeCount;
     private int _nodeCount;
@@ -336,13 +336,33 @@ public class InteractionGraph
                                                                node2Name(koNode));
             if(m != null)
             {
-                return m.getSignificance() < PVAL_THRESH;
+                return m.getSignificance() <= PVAL_THRESH;
             }
         }
         
         return false;
     }
 
+    /**
+     * @return true if knocking out "koNode" causes the expression of
+     * "targetNode" to change.  Use PVAL_THRESH as a cutoff.
+     */
+    public double getExprPval(int koNode, int targetNode)
+    {
+        if(_expressionData != null)
+        {
+            mRNAMeasurement m = _expressionData.getMeasurement(node2Name(targetNode), 
+                                                               node2Name(koNode));
+            if(m != null)
+            {
+                return m.getSignificance();
+            }
+        }
+        
+        return -1;
+    }
+
+    
     public String[] getConditionNames()
     {
         return _expressionData.getConditionNames();

@@ -4,6 +4,8 @@ import fgraph.util.Target2PathMap;
 
 import java.io.*;
 
+import java.text.DecimalFormat;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
@@ -369,13 +371,16 @@ public class DFSPath
     private void printPath(int pathCount, int[] curPath, int depth)
     {
         StringBuffer b = new StringBuffer();
-        b.append(pathCount);
-        b.append(": ");
+        //b.append(pathCount);
+        //b.append(": ");
         
         for(int x=0; x <= depth; x++)
         {
-            b.append(" ");
             b.append(ig.node2Name(_label2node[curPath[x]]));
+            if(x < depth)
+            {
+                b.append(" ");
+            }
         }
 
         _out.println(b.toString());
@@ -457,22 +462,45 @@ public class DFSPath
         {
             koLabel[x] = _nodeLabelMap.get(kos[x]);
         }
-        
-        for(int n = 0; n < numNodes; n++)
-        {
-            // not really needed since nodes are mapped to their
-            // index in nodes[], but better to be safe.
-            // e.g. int node = n;
-            int node = nodes[n];
-            int nodeLabel = _nodeLabelMap.get(node);
 
-            for(int x=0; x < kos.length; x++)
+        DecimalFormat format = new DecimalFormat("0.000000");
+        
+        try
+        {
+            PrintStream out = new PrintStream(new FileOutputStream("dfs.kos"));
+        
+            for(int n = 0; n < numNodes; n++)
             {
-                if(ig.expressionChanges(kos[x], node))
+                // not really needed since nodes are mapped to their
+                // index in nodes[], but better to be safe.
+                // e.g. int node = n;
+                int node = nodes[n];
+                int nodeLabel = _nodeLabelMap.get(node);
+                
+                for(int x=0; x < kos.length; x++)
                 {
-                    _affected.put(koLabel[x], nodeLabel, true);
+                    if(ig.expressionChanges(kos[x], node))
+                    {
+                        StringBuffer b = new StringBuffer();
+                        b.append(ig.node2Name(kos[x]));
+                        b.append(" ");
+                        b.append(ig.node2Name(node));
+                        b.append(" ");
+                        b.append(format.format(ig.getExprPval(kos[x], node)));
+                        
+                        out.println(b.toString());
+                        
+                        _affected.put(koLabel[x], nodeLabel, true);
+                    }
                 }
             }
+            
+            out.close();
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 
