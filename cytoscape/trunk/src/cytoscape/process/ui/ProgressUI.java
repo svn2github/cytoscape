@@ -97,14 +97,19 @@ public final class ProgressUI
           public void setPercentCompleted(final int percent) {
             EventQueue.invokeLater(new Runnable() {
                 public void run() {
-                  progress.setValue(percent); } } ); } } );
+                  progress.setValue(percent); } } ); } },
+       frame);
     if (stop != null)
     {
-      JButton button = new JButton("Cancel process");
+      JButton button = new JButton("Cancel");
       button.addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             try { stop.stop(); }
             finally { returnThis.dispose(); } } } );
+      JPanel panel2 = new JPanel(new BorderLayout());
+      panel2.setBorder(new EmptyBorder(0, 20, 20, 20));
+      panel2.add(button, BorderLayout.CENTER);
+      busyDialog.getContentPane().add(panel2, BorderLayout.SOUTH);
     }
     else
     {

@@ -1,6 +1,7 @@
 package cytoscape.process.ui;
 
 import java.awt.EventQueue;
+import java.awt.Frame;
 import javax.swing.JDialog;
 
 public final class ProgressUIControl
@@ -9,14 +10,17 @@ public final class ProgressUIControl
   private final Object[] m_monitor;
   private final JDialog m_dialog;
   private final PercentCompletedHook m_percentHook;
+  private final Frame m_parent;
 
   ProgressUIControl(Object[] monitor,
                     JDialog dialog,
-                    PercentCompletedHook percentHook)
+                    PercentCompletedHook percentHook,
+                    Frame parent)
   {
     m_monitor = monitor;
     m_dialog = dialog;
     m_percentHook = percentHook;
+    m_parent = parent;
   }
 
   /**
@@ -52,6 +56,11 @@ public final class ProgressUIControl
     if (!EventQueue.isDispatchThread())
       throw new IllegalThreadStateException
         ("show() required to be called from the AWT event dispatch thread");
+    m_dialog.pack();
+    m_dialog.move((m_parent.size().width - m_dialog.size().width) / 2 +
+                  m_parent.location().x,
+                  (m_parent.size().height - m_dialog.size().height) / 2 +
+                  m_parent.location().y);
     m_dialog.show(); // This blocks until m_dialog.dispose() is called; see
                      // the JDK API spec.
   }
@@ -64,10 +73,13 @@ public final class ProgressUIControl
   {
     // We want to be extra correct with calling all Swing code from the AWT
     // event dispatching thread.
-    EventQueue.invokeLater(new Runnable() {
+    Runnable dispose = new Runnable() {
         public void run() {
           m_monitor[0] = null;
-          m_dialog.dispose(); } } );
+          m_dialog.dispose(); } };
+    if (!EventQueue.isDispatchThread())
+      EventQueue.invokeLater(dispose);
+    else dispose.run();
   }
 
 }
