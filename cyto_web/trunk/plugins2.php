@@ -185,6 +185,34 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 			</tr>			
 			<tr>
 				<td width="20%" valign="top">
+					<b>Graph Merge Plugin</b><font size="-1">
+						<br>
+						Version: 1
+						<br>
+						Release Date: February 25, 2005</font>
+				</td>
+				<td width="40%" valign="top">
+					<p>
+					This plugin enables Cytoscape to merge two or more networks into one.
+					<p>
+						Released by: <a href="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab/">The Ideker Lab</a>, Department of Bioengineering, UCSD
+					</p>
+				</td>
+				<td width="20%" valign="top">
+				Verified to work in 2.1.
+				</td>					
+				<td width="20%" valign="top">
+					[<a href="/plugins/GraphMerge/README.txt">Release Notes</a>]
+					[<a href="/plugins/GraphMerge/GraphMerge.jar">Download</a>]
+				</td>
+			</tr>	
+			<tr>
+				<td colspan="4">
+					<hr>
+				</td>
+			</tr>			
+			<tr>
+				<td width="20%" valign="top">
 					<b>HTTP Data and
 						<br>
 						Interaction Fetcher
@@ -250,11 +278,11 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 				 Verified to work in 2.0, 2.1.
 				</td>	
 		<td width="20%" valign="top">
-			[<a href="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab/plugins/jActiveModules2/README.txt">Release Notes</a>]
+			[<a href="/plugins/jActiveModules/README.txt">Release Notes</a>]
 			<br>
-			[<a href="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab/plugins/jActiveModules2/jActiveModules.jar">Download Jar</a>]
+			[<a href="/plugins/jActiveModules/jActiveModules.jar">Download Jar</a>]
 			<br>
-			[<a href="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab/plugins/jActiveModules2/jActiveModules.tgz">Download Source</a>]
+			[<a href="/plugins/jActiveModules/jActiveModules.tgz">Download Source</a>]
 			<br>
 		</td>
 	</tr>
