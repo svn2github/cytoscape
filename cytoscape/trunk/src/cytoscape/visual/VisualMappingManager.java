@@ -42,6 +42,7 @@ import javax.swing.event.ChangeEvent;
  * methods in the graph view API.
  */
 public class VisualMappingManager extends SubjectBase {
+
     NetworkView networkView;      //the object displaying the network
     CalculatorCatalog catalog;    //catalog of visual styles and calculators
     VisualStyle visualStyle;      //the currently active visual style
