@@ -1434,7 +1434,9 @@ protected void loadInteraction (String filename)
   InteractionsReader reader = new InteractionsReader (filename);
   reader.read ();
   graph = reader.getGraph ();
-  edgeAttributes.add (reader.getEdgeAttributes ());
+  GraphObjAttributes interactionEdgeAttributes = reader.getEdgeAttributes ();
+  edgeAttributes.add (interactionEdgeAttributes);
+  edgeAttributes.addNameMap (interactionEdgeAttributes.getNameMap ());
   displayGraph (true);
 
 } // loadInteraction
