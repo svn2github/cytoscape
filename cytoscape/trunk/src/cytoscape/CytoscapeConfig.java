@@ -1,6 +1,6 @@
-// CytoscapeConfig.java:  a class to handle run-time configuration of luca
+// CytoscapeConfig.java:  a class to handle run-time configuration
 
-/** Copyright (c) 2002 Institute for Sytems Biology and the Whitehead Institute
+/** Copyright (c) 2002 Institute for Systems Biology and the Whitehead Institute
  **
  ** This library is free software; you can redistribute it and/or modify it
  ** under the terms of the GNU Lesser General Public License as published
@@ -11,15 +11,15 @@
  ** WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
  ** MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
  ** documentation provided hereunder is on an "as is" basis, and the
- ** California Institute of Technology and Japan Science and Technology
- ** Corporation have no obligations to provide maintenance, support,
+ ** Institute of Systems Biology and the Whitehead Institute 
+ ** have no obligations to provide maintenance, support,
  ** updates, enhancements or modifications.  In no event shall the
- ** California Institute of Technology or the Japan Science and Technology
- ** Corporation be liable to any party for direct, indirect, special,
+ ** Institute of Systems Biology and the Whitehead Institute 
+ ** be liable to any party for direct, indirect, special,
  ** incidental or consequential damages, including lost profits, arising
  ** out of the use of this software and its documentation, even if the
- ** California Institute of Technology and/or Japan Science and Technology
- ** Corporation have been advised of the possibility of such damage.  See
+ ** Institute of Systems Biology and the Whitehead Institute 
+ ** have been advised of the possibility of such damage.  See
  ** the GNU Lesser General Public License for more details.
  ** 
  ** You should have received a copy of the GNU Lesser General Public License
@@ -37,6 +37,8 @@ package cytoscape;
 import java.io.*;
 import java.util.*;
 
+import cytoscape.data.readers.*;
+
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
 //------------------------------------------------------------------------------------------
@@ -46,7 +48,7 @@ import gnu.getopt.LongOpt;
  */
 public class CytoscapeConfig {
 
-  protected String argSpecificationString = "n:j:g:b:i:he:vWs:l:;";
+  protected String argSpecificationString = "n:j:g:b:i:he:vWs:l:p:;";
 
   protected String [] commandLineArguments;
   protected String[] argsCopy;
@@ -56,10 +58,12 @@ public class CytoscapeConfig {
   protected String geometryFilename = null;
   protected String bioDataDirectory = null;
   protected String expressionFilename = null;
+  protected String projectFilename = null;
   protected String interactionsFilename = null;
   protected Vector nodeAttributeFilenames = new Vector ();
   protected Vector edgeAttributeFilenames = new Vector ();
   protected String defaultSpeciesName = null;
+  protected File projectPropsFile = null;
 
   protected String [] layoutStrategies = {"organic", "hierarchical", "embedded", "circular"};
   protected String defaultLayoutStrategy = layoutStrategies [0];
@@ -71,22 +75,24 @@ public class CytoscapeConfig {
 //------------------------------------------------------------------------------------------
 public CytoscapeConfig (String [] args)
 {
-  props = readProperties ();
-  getConfigurationsFromProperties ();
     // make a copy of the args to parse here (getopt can mangle the array it parses)
-  commandLineArguments = new String[args.length];
+  commandLineArguments = new String [args.length];
   System.arraycopy (args, 0, commandLineArguments, 0, args.length);
     // make a copy of the arguments for later use
-  argsCopy = new String[args.length];
+  argsCopy = new String [args.length];
   System.arraycopy (args, 0, argsCopy, 0, args.length);
-  parseArgs ();
 
-}
+  parseArgs ();
+  readProjectFile ();
+  props = readProperties ();
+  getConfigurationsFromProperties ();
+
+} // ctor
 //------------------------------------------------------------------------------------------
 public String [] getArgs () 
 {
-  String [] returnVal = new String[argsCopy.length];
-  System.arraycopy(argsCopy, 0, returnVal, 0, argsCopy.length);
+  String [] returnVal = new String [argsCopy.length];
+  System.arraycopy (argsCopy, 0, returnVal, 0, argsCopy.length);
   return returnVal;
 }
 //------------------------------------------------------------------------------------------
@@ -98,6 +104,11 @@ public String getGeometryFilename ()
 public String getExpressionFilename ()
 {
   return expressionFilename;
+}
+//------------------------------------------------------------------------------------------
+public String getProjectFilename ()
+{
+  return projectFilename;
 }
 //------------------------------------------------------------------------------------------
 public String getBioDataDirectory ()
@@ -117,6 +128,7 @@ public int getNumberOfNodeAttributeFiles ()
 //------------------------------------------------------------------------------------------
 public int getNumberOfEdgeAttributeFiles ()
 {
+  System.out.println ("number of edge attributes: " + edgeAttributeFilenames.size ());
   return edgeAttributeFilenames.size ();
 }
 //------------------------------------------------------------------------------------------
@@ -129,9 +141,7 @@ public String [] getEdgeAttributeFilenames ()
 {
   return (String []) edgeAttributeFilenames.toArray (new String [0]);
 }
-
-
-
+//------------------------------------------------------------------------------------------
 /**
  * Add the given node attributes filename (as per opened in gui).
  *
@@ -141,7 +151,7 @@ public void addNodeAttributeFilename (String filename) {
     if (!nodeAttributeFilenames.contains(filename))
 	nodeAttributeFilenames.add(filename);
 }
-
+//------------------------------------------------------------------------------------------
 /**
  * Add the given edge attributes filename (as per opened in gui).
  *
@@ -151,8 +161,6 @@ public void addEdgeAttributeFilename (String filename) {
     if (!edgeAttributeFilenames.contains(filename))
 	edgeAttributeFilenames.add(filename);
 }
-
-
 //------------------------------------------------------------------------------------------
 public String [] getAllDataFileNames ()
 {
@@ -240,6 +248,8 @@ protected Properties readProperties ()
   Properties systemProps = null;
   Properties userGeneralProps = null;
   Properties userSpecialProps = null;
+  Properties projectProps = null;
+
   String propsFileName = "cytoscape.props"; // there may be 3 copies of this
 
   File propsFile = createFile (System.getProperty ("CYTOSCAPE_HOME"), propsFileName);
@@ -254,14 +264,29 @@ protected Properties readProperties ()
   if (userSpecialPropsFile != null)
     userSpecialProps = readOnePropertyFile (userGeneralProps, userSpecialPropsFile);
 
+  if (projectPropsFile != null) 
+     projectProps = readOnePropertyFile (projectProps, projectPropsFile);
+
   /* we will return a valid Properties object; if any properties files
    * were found and read, we copy them in sequentially so that duplicate
-   * keys in the users file overwrite the sytems defaults */
-  Properties returnVal = new Properties();
-  if (systemProps != null) {returnVal.putAll(systemProps);}
-  if (userGeneralProps != null) {returnVal.putAll(userGeneralProps);}
-  if (userSpecialProps != null) {returnVal.putAll(userSpecialProps);}
-  return returnVal;
+   * keys in the users file overwrite the sytems defaults 
+   */
+
+  Properties fullProps = new Properties ();
+
+  if (systemProps != null) 
+     fullProps.putAll (systemProps);
+
+  if (userGeneralProps != null) 
+    fullProps.putAll (userGeneralProps);
+
+  if (userSpecialProps != null) 
+    fullProps.putAll (userSpecialProps);
+
+  if (projectProps != null) 
+    fullProps.putAll (projectProps);
+
+  return fullProps;
 
 } // readProperties
 //------------------------------------------------------------------------------------------
@@ -344,6 +369,9 @@ protected void parseArgs ()
      case 'h':
        helpRequested = true;
        break;
+     case 'p':
+       projectFilename = g.getOptarg ();
+       break;
      case 's':
        defaultSpeciesName = g.getOptarg ();
        break;
@@ -377,6 +405,129 @@ protected void getConfigurationsFromProperties ()
 
 }
 //---------------------------------------------------------------------------------
+/**
+ *  a project file contains one or more lines, each of which is a key/value pair.
+ *  by example (using every possible key): 
+ * 
+ *  <code>
+ *   sif=galFiltered.sif
+ *   gml=galFiltered.gml
+ *   noa=nodeAttributes1.noa
+ *   noa=nodeAttributes2.noa
+ *   eda=edgeAttributes1.eda
+ *   eda=edgeAttributes2.eda
+ *   layout=hierarchical
+ *   dataServer=rmi://hazel/yeast
+ *   species=Saccharomyces cerevisiae
+ *   props=/net/compbio/cytoscape/projects/galFiltered/cytoscape.props
+ *  </code>
+ *
+ * further information:
+ *  <ul>
+ *   <li> Most of the possible entries are filenames.  If a filename is not absolute,
+ *        then it is assumed to be relative to the parent path of the project file itself
+ *   <li> Any entries on the command line, or in the various props files, override any
+ *        found in the project file.  This most obviously applies to the species value.
+ *   <li> It makes no sense to specify <em> both </em> a sif and a gml file, but 
+ *        there is nothing here (yet) which catches that error.
+ *   <li> Values set by properties files will override any values set here.  In some 
+ *        cases this may not be desirable.
+ *  </ul>
+ *
+ */
+protected void readProjectFile ()
+{
+  if (projectFilename == null) return;
+  File projectFile = new File (projectFilename);
+  if (!projectFile.canRead ()) 
+    throw new IllegalArgumentException ("cannot read project file: " + projectFilename);
+
+  File directoryAbsolute = projectFile.getAbsoluteFile().getParentFile ();
+  TextFileReader reader = new TextFileReader (projectFile.getPath ());
+  reader.read ();
+  String rawText = reader.getText ();
+  String [] lines = rawText.split ("\n");
+
+    // most entities name in a project file are singular:  species, sif or gml,
+    // props, dataServer.  edge & node attribute files, however, are frequently
+    // plural.  to support them, the helper method 'parseProjectFileText' returns
+    // an array of Strings; only the first element in that array is used for
+    // most entitites below
+
+  String [] sifFiles = parseProjectFileText (lines, "sif");
+  String [] gmlFiles = parseProjectFileText (lines, "gml");
+  String [] noaFiles = parseProjectFileText (lines, "noa");
+  String [] edaFiles = parseProjectFileText (lines, "eda");
+  String [] dataServers = parseProjectFileText (lines, "dataServer");
+  String [] speciesEntries = parseProjectFileText (lines, "species");
+  String [] defaultLayouts = parseProjectFileText (lines, "layout");
+  String [] propsFiles = parseProjectFileText (lines, "props");
+
+  if (sifFiles.length >= 1) {
+    interactionsFilename = absolutizeFilename (directoryAbsolute, sifFiles [0]);
+    }
+
+  if (gmlFiles.length >= 1) {
+    geometryFilename = absolutizeFilename (directoryAbsolute, gmlFiles [0]);
+    }
+
+  for (int i=0; i < noaFiles.length; i++) {
+    nodeAttributeFilenames.add (absolutizeFilename (directoryAbsolute, noaFiles [i]));
+    }
+    
+  for (int i=0; i < edaFiles.length; i++) {
+    edgeAttributeFilenames.add (absolutizeFilename (directoryAbsolute, edaFiles [i]));
+    }
+    
+  if (dataServers.length >= 1) {
+    String tmp = dataServers [0];
+    if (!tmp.startsWith ("rmi://")) {
+      bioDataDirectory = absolutizeFilename (directoryAbsolute, tmp);
+      }
+    else
+      bioDataDirectory = tmp;
+    } // if dataServers.length > 0
+
+  if (speciesEntries.length > 0) {
+    defaultSpeciesName = speciesEntries [0];
+    }
+
+  if (defaultLayouts.length > 0) {
+    defaultLayoutStrategy = defaultLayouts [0];
+    System.out.println ("readProject file, setting layout to: " + defaultLayoutStrategy);
+    }
+
+  if (propsFiles.length >= 1) {
+    projectPropsFile = new File (absolutizeFilename (directoryAbsolute, propsFiles [0]));
+    }
+
+
+} // readProjectFile
+//---------------------------------------------------------------------------------
+protected String absolutizeFilename (File parentDirectory, String filename)
+{
+  if (filename.trim().startsWith ("/"))
+    return filename;
+  else 
+    return (new File (parentDirectory, filename)).getPath ();
+
+}
+//---------------------------------------------------------------------------------
+protected String [] parseProjectFileText (String [] lines, String key)
+{
+  Vector list = new Vector ();
+  for (int i=0; i < lines.length; i++) {
+    String line = lines [i].trim ();
+    if (line.startsWith (key)) {
+      String fileToRead = line.substring (line.indexOf ("=") + 1);
+      list.add (fileToRead.trim());
+      } // if 
+    } // for i
+
+  return (String []) list.toArray (new String [0]);
+  
+} // parseProjectFileText
+//----------------------------------------------------------------------------------------
 protected boolean legalArguments ()
 {
   boolean legal = true;
@@ -457,4 +608,5 @@ public String toString ()
 } // toString 
 //---------------------------------------------------------------------------------
 } // class CytoscapeConfig
+
 
