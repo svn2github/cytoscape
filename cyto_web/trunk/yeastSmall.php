@@ -197,7 +197,7 @@ GO annotation to the proteins in our network. Follow the steps below:
               <img src="tut/ontology36.gif" align="absbottom" width="34" height="36">
    <p><li> After a moment, the Annotation dialog comes up, containing two panes.
            In the left pane, click on the icon
-             <img src="tut/treeWhirlygig.jpg" align="absbottom" width="20" height="20">
+             <img src="tut/jtreeWhirlygig.jpg" align="absbottom" width="20" height="20">
            immediately to the left of the label
            <center><p>
            <i><b> GO, Molecular Function, Saccharomyces cerevisiae</b></i> <br>
@@ -211,7 +211,7 @@ GO annotation to the proteins in our network. Follow the steps below:
            click on the wide button labeled <b> Apply Annotation to All Nodes </b>
    <p><li> Now you will see, in the right pane, <b>Go Molecular Function (level 3)</b>
    <p><li> Click on
-             <img src="tut/treeWhirlygig.jpg" align="absbottom" width="20" height="20">
+             <img src="tut/jtreeWhirlygig.jpg" align="absbottom" width="20" height="20">
             and examine the approximately 15
            varieties of molecular function present on our 29 genes.
    <p><li> Click on any one or more of these categories, and watch the corresponding
