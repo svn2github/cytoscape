@@ -239,7 +239,7 @@ public final class MinIntHeap
   public final int[] _orderedElements(boolean pruneDuplicates)
   {
     final int[] heap = m_heap;
-    int size = m_currentSize;
+    final int size = m_currentSize;
     int parentIndex;
     int childIndex;
     int temp;
@@ -247,7 +247,7 @@ public final class MinIntHeap
       for (int i = size / 2; i > 0; i--) { // Percolate down.
         parentIndex = i;
         for (childIndex = parentIndex * 2; childIndex <= size;
-             parentIndex = childIndex, childIndex *= 2) {
+             parentIndex = childIndex, childIndex = childIndex * 2) {
           if (childIndex + 1 <= size &&
               heap[childIndex + 1] < heap[childIndex])
             childIndex++;
@@ -260,14 +260,15 @@ public final class MinIntHeap
     if (pruneDuplicates)
     {
       int dups = 0;
-      while (size > 1) { // Needs to be 1, not 0, for duplicates.
+      int sizeIter = size;
+      while (sizeIter > 1) { // Needs to be 1, not 0, for duplicates.
         temp = heap[1];
-        heap[1] = heap[size];
-        heap[size] = temp;
+        heap[1] = heap[sizeIter];
+        heap[sizeIter] = temp;
         parentIndex = 1;
-        for (childIndex = parentIndex * 2; childIndex <= size - 1;
+        for (childIndex = parentIndex * 2; childIndex <= sizeIter - 1;
              parentIndex = childIndex, childIndex = childIndex * 2) {
-          if (childIndex + 1 <= size &&
+          if (childIndex + 1 <= sizeIter - 1 &&
               heap[childIndex + 1] < heap[childIndex])
             childIndex++;
           if (heap[childIndex] < heap[parentIndex]) {
@@ -275,11 +276,11 @@ public final class MinIntHeap
             heap[parentIndex] = heap[childIndex];
             heap[childIndex] = temp; }
           else break; }
-        if (heap[1] == heap[size]) dups++;
-        size--; }
-      final int[] returnThis = new int[m_currentSize - dups];
+        if (heap[1] == heap[sizeIter]) dups++;
+        sizeIter--; }
+      final int[] returnThis = new int[size - dups];
       final int length = returnThis.length;
-      int index = m_currentSize;
+      int index = size;
       int prevValue = heap[index] + 1;
       for (int i = 0; i < length; i++) {
         while (heap[index] == prevValue) index--;
