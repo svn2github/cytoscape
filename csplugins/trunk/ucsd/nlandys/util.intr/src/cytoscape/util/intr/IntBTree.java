@@ -267,7 +267,7 @@ public final class IntBTree
 
 //   /**
 //    * Deletes at most one entry of the integer x.  To delete all
-//    * entries of the integer x, use deleteRange(x, 1).
+//    * entries of the integer x, use ____.
 //    * @param x the integer to try to delete (just one entry).
 //    * @return true if and only if an entry was deleted (at most one entry is
 //    *   deleted by this method).
@@ -275,23 +275,6 @@ public final class IntBTree
 //   public boolean delete(int x)
 //   {
 //     return false;
-//   }
-
-//   /**
-//    * Deletes all entries in the range [xStart, xStart + spanSize)
-//    * from this structure.
-//    * @param xStart specifies the beginning of the range of integers to
-//    *   delete from this structure.
-//    * @param spanSize specifies the range width of integers to delete; all
-//    *   integers greater than or equal to xStart but less thanxStart + spanSize
-//    *   will be deleted; spanSize cannot be negative
-//    *   (if spanSize is zero no action is taken).
-//    * @return the number of entries that were deleted from this structure.
-//    * @exception IllegalArgumentException if spanSize is negative.
-//    */
-//   public int deleteRange(int xStart, int spanSize)
-//   {
-//     return 0;
 //   }
 
   /**
@@ -329,53 +312,14 @@ public final class IntBTree
     return count;
   }
 
-  
-
-  /*
-   * Recursively enumerates all values under this node.  Enumerate in
-   * non-descending order.
+  /**
+   * IMPORTANT: The returned enumeration becomes invalid as soon as any
+   * structure-modifying operation (insert or delete) is performed on this
+   * tree.  Accessing an invalid enumeration's methods will result in
+   * unpredictable and ill-defined behavior in the enumeration, but will
+   * have no effect on the integrity of this tree structure.
+   * @return an enumeration of all entries matching this search query.
    */
-  private final IntEnumerator enumerateAll(Node n)
-  {
-    // In the algorithm that follows, each node (counting internal and leaf
-    // nodes) is placed on the stack exactly once.  The number of nodes
-    // (internal and external) is strictly less than twice the number of leaf
-    // nodes.  Therefore, enumerating all elements under a node takes no more
-    // than O(p) time where p is the number of leaf nodes under the node.
-
-    // Add node n to stack.
-    // While the stack is not empty do the following:
-    //   Pop the next element off of the stack.
-    //   If this new element is a leaf node
-    //     then 
-    //   otherwise this node is an internal node, so push all of its
-    //     children onto the stack
-    return null;
-  }
-
-//   /**
-//    * Returns an enumeration of all entries in the range
-//    * [xStart, xStart + spanSize) currently in this structure; the entries
-//    * within the enumeration are returned in non-descending order.<p>
-//    * IMPORTANT: The returned enumeration becomes invalid as soon as any
-//    * structure-modifying operation (insert or delete) is performed on this
-//    * tree.  Accessing an invalid enumeration's methods will result in
-//    * unpredictable and ill-defined behavior in the enumeration, but will
-//    * have no effect on the integrity of this tree structure.
-//    * @param xStart specifies the beginning of the range of integers to
-//    *   search.
-//    * @param spanSize specifies the range width of integers to search;
-//    *   all integers (duplicates included) greater than or equal to xStart
-//    *   but less than xStart + spanSize will be returned; spanSize cannot be
-//    *   negative (if spanSize is zero no action is taken).
-//    * @return an enumeration of all entries matching this search query.
-//    * @exception IllegalArgumentException if spanSize is negative.
-//    */
-//   public IntEnumerator searchRange(int xStart, int spanSize)
-//   {
-//     return null;
-//   }
-
   public final IntEnumerator searchRange(final int xMin, final int xMax)
   {
     final NodeStack nodeStack = new NodeStack();
