@@ -391,7 +391,11 @@ protected void loadVizMapper() {
 
     // easy-access visual styles changer
     JToolBar toolBar = getCyMenus().getToolBar();
-    toolBar.add(vizMapUI.getStyleSelector().getToolbarComboBox());
+    JComboBox styleBox = vizMapUI.getStyleSelector().getToolbarComboBox();
+    Dimension newSize = new Dimension(150, (int)styleBox.getPreferredSize().getHeight());
+    styleBox.setMaximumSize(newSize);
+    styleBox.setPreferredSize(newSize);
+    toolBar.add(styleBox);
     toolBar.addSeparator();
 }
 //------------------------------------------------------------------------------
