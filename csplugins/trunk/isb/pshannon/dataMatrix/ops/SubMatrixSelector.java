@@ -4,7 +4,7 @@
 // $Date$
 // $Author$
 //------------------------------------------------------------------------------
-package csplugins.trial.pshannon.newDataCube.ops;
+package csplugins.isb.pshannon.dataMatrix.ops;
 //------------------------------------------------------------------------------
 import java.util.*;
 import java.io.*;
@@ -13,7 +13,7 @@ import y.base.*;
 import y.view.*;
 
 import cytoscape.GraphObjAttributes;
-import csplugins.trial.pshannon.newDataCube.*;
+import csplugins.isb.pshannon.dataMatrix.*;
 //------------------------------------------------------------------------------
 /**
  */

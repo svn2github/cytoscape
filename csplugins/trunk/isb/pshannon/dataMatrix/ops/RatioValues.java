@@ -4,7 +4,7 @@
 // $Date$
 // $Author$
 //------------------------------------------------------------------------------
-package csplugins.trial.pshannon.dataMatrix.ops;
+package csplugins.isb.pshannon.dataMatrix.ops;
 //------------------------------------------------------------------------------
 import java.util.Vector;
 import cytoscape.GraphObjAttributes;
@@ -12,7 +12,7 @@ import cytoscape.data.mRNAMeasurement;
 import csplugins.vectormath.ReadOnlyVectorDataProvider;
 import csplugins.graphAlgo.MetaNode;
 
-import csplugins.trial.pshannon.newDataCube.*;
+import csplugins.isb.pshannon.dataMatrix.*;
 //------------------------------------------------------------------------------
 /**
  * This class provides access to the expression ratios for all the conditions
@@ -57,7 +57,7 @@ public int size ()
    return (measurements == null) ? 0 : measurements.size();
    }
 
-} / /size
+} //size
 //------------------------------------------------------------------------------
 public double getQuick (int index) 
 {
