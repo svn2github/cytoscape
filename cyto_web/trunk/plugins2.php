@@ -352,7 +352,7 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 						<br>
 						Version: 1.1
 						<br>
-						Release Date: July 15, 2004</font>
+						Release Date: February 15, 2005</font>
 				</td>
 				<td width="40%" valign="top">
 					The MCODE Cytoscape Plugin finds clusters (highly interconnected regions) in any network loaded into Cytoscape. Depending on the type of network, clusters may mean different things. For instance, clusters in a protein-protein interaction network have been shown to be protein complexes and parts of pathways. Clusters in a protein similarity network represent protein families.
