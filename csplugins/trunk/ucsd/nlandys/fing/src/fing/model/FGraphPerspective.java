@@ -4,6 +4,7 @@ import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.graph.dynamic.util.DynamicGraphFactory;
 import cytoscape.util.intr.IntArray;
 import cytoscape.util.intr.IntEnumerator;
+import cytoscape.util.intr.IntHash;
 import cytoscape.util.intr.IntIterator;
 import cytoscape.util.intr.IntIntHash;
 import cytoscape.util.intr.MinIntHeap;
@@ -450,10 +451,25 @@ class FGraphPerspective implements GraphPerspective
     edgeInxBucket.copyInto(edgeInxArr, 0);
     return m_root.createGraphPerspective(nodeInxArr, edgeInxArr); }
 
-  public java.util.List neighborsList(Node node)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  public java.util.List neighborsList(Node node) {
+    if (node.getRootGraph() == m_root) {
+      final int nodeIndex = node.getRootGraphIndex();
+      int[] adjacentEdgeIndices =
+        getAdjacentEdgeIndicesArray(nodeIndex, true, true, true);
+      if (adjacentEdgeIndices == null) return null;
+      m_hash.empty();
+      final IntHash neighbors = m_hash;
+      for (int i = 0; i < adjacentEdgeIndices.length; i++) {
+        int neighborIndex = (nodeIndex ^
+                             getEdgeSourceIndex(adjacentEdgeIndices[i]) ^
+                             getEdgeTargetIndex(adjacentEdgeIndices[i]));
+        neighbors.put(~neighborIndex); }
+      IntEnumerator enum = neighbors.elements();
+      java.util.ArrayList list = new java.util.ArrayList(enum.numRemaining());
+      while (enum.numRemaining() > 0)
+        list.add(getNode(~(enum.nextInt())));
+      return list; }
+    else { return null; } }
 
   public int[] neighborsArray(int perspNodeInx)
   {
@@ -785,6 +801,10 @@ class FGraphPerspective implements GraphPerspective
   // Don't forget to empty() it before using it.
   private final MinIntHeap m_heap;
 
+  // This is a utilitarian hash that is used as a collision detecting
+  // bucket of ints.  Don't forget to empty() it before using it.
+  private final IntHash m_hash;
+
   private final GraphWeeder m_weeder;
 
   // We need to remove this listener from the RootGraph during finalize().
@@ -806,6 +826,7 @@ class FGraphPerspective implements GraphPerspective
     m_rootToNativeNodeInxMap = new IntIntHash();
     m_rootToNativeEdgeInxMap = new IntIntHash();
     m_heap = new MinIntHeap();
+    m_hash = new IntHash();
     m_weeder = new GraphWeeder(m_root, m_graph,
                                m_nativeToRootNodeInxMap,
                                m_nativeToRootEdgeInxMap,
