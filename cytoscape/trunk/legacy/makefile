@@ -62,6 +62,7 @@ test: objs
 	(cd unitTests; make)
 	(cd vizmap/unitTests; make)
 	(cd data/unitTests; make)
+	(cd util/unitTests; make)
 
 clean:
 	- rm *.class core
@@ -74,6 +75,8 @@ clean:
 	- (cd data/servers/unitTests; make clean)
 	- (cd dialogs; make clean)
 	- (cd layout; make clean)
+	- (cd util; make clean)
+	- (cd util/unitTests; make clean)
 	- (cd vizmap; make clean)
 	- (cd vizmap/unitTests; make clean)
 
@@ -82,18 +85,23 @@ version:
 
 
 doc:
-	javadoc -source 1.4 -d ./htdocs \
+	javadoc \
+                -source 1.4 \
+                -d ./htdocs\
                 -private \
                 -overview ./overview.html \
                 -sourcepath .. \
-                cytoscape   \
                 cytoscape.data \
+                cytoscape   \
                 cytoscape.data.unitTests \
                 cytoscape.data.readers \
                 cytoscape.data.readers.unitTests \
                 cytoscape.dialogs \
                 cytoscape.unitTests \
                 cytoscape.layout \
+                cytoscape.vizmap \
+                cytoscape.vizmap.unitTests \
+                -link http://java.sun.com/j2se/1.4/docs/api \
             -windowtitle cytoscape \
     -doctitle "cytoscape"
 
