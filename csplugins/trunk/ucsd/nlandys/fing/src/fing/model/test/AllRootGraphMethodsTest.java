@@ -19,12 +19,16 @@ public final class AllRootGraphMethodsTest
   {
     final RootGraph root = getRootGraph(args);
     addNodesAndEdges(root);
+
+    // nodesIterator() and edgesIterator().
     Iterator nodesIter = root.nodesIterator();
     Iterator edgesIter = root.edgesIterator();
     Node[] twoNodes = new Node[] { (Node) nodesIter.next(),
                                    (Node) nodesIter.next() };
     Edge[] twoEdges = new Edge[] { (Edge) edgesIter.next(),
                                    (Edge) edgesIter.next() };
+
+    // createGraphPerspective(Node[], Edge[].
     if (root.createGraphPerspective(twoNodes, null).getNodeCount() != 2)
       throw new IllegalStateException
         ("GraphPerspective does not have two nodes");
@@ -35,6 +39,24 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException
         ("GraphPerspective has less than two nodes");
     if (root.createGraphPerspective(twoNodes, twoEdges).getEdgeCount() < 2)
+      throw new IllegalStateException
+        ("GraphPerspective has less than two edges");
+
+    // createGraphPerspective(int[], int[]).
+    int[] twoNodeInx = new int[] { twoNodes[0].getRootGraphIndex(),
+                                   twoNodes[1].getRootGraphIndex() };
+    int[] twoEdgeInx = new int[] { twoEdges[0].getRootGraphIndex(),
+                                   twoEdges[1].getRootGraphIndex() };
+    if (root.createGraphPerspective(twoNodeInx, null).getNodeCount() != 2)
+      throw new IllegalStateException
+        ("GraphPerspective does not have two nodes");
+    if (root.createGraphPerspective(null, twoEdgeInx).getEdgeCount() != 2)
+      throw new IllegalStateException
+        ("GraphPerspective does not have two edges");
+    if (root.createGraphPerspective(twoNodeInx, twoEdgeInx).getNodeCount() < 2)
+      throw new IllegalStateException
+        ("GraphPerspective has less than two nodes");
+    if (root.createGraphPerspective(twoNodeInx, twoEdgeInx).getEdgeCount() < 2)
       throw new IllegalStateException
         ("GraphPerspective has less than two edges");
   }
