@@ -23,6 +23,10 @@ class FRootGraph implements RootGraph
 
   // Not specified by giny.model.RootGraph.  GraphPerspective implementation
   // in this package relies on this method.
+  // ATTENTION!  Before making this method public you need to change the
+  // event implementations to return copied arrays in their methods instead
+  // of always returning the same array reference.  Also you need to enable
+  // create node and create edge events.
   void addRootGraphChangeListener(RootGraphChangeListener listener)
   { // This method is not thread safe; synchronize on an object to make it so.
     m_lis = RootGraphChangeListenerChain.add(m_lis, listener);
@@ -30,6 +34,10 @@ class FRootGraph implements RootGraph
 
   // Not specified by giny.model.RootGraph.  GraphPerspective implementation
   // in this package relies on this method.
+  // ATTENTION!  Before making this method public you need to change the
+  // event implementations to return copied arrays in their methods instead
+  // of always returning the same array reference.  Also you need to enable
+  // create node and create edge events.
   void removeRootGraphChangeListener(RootGraphChangeListener listener)
   { // This method is not thread safe; synchronize on an object to make it so.
     m_lis = RootGraphChangeListenerChain.remove(m_lis, listener);
