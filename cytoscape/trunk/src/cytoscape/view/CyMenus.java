@@ -227,7 +227,7 @@ public class CyMenus {
       
       //fill the Save submenu
       //saveAsGML not supported yet
-      //saveSubMenu.add(new SaveAsGMLAction(networkView));
+      saveSubMenu.add(new SaveAsGMLAction(networkView));
       saveSubMenu.add(new SaveAsInteractionsAction(networkView));
       saveSubMenu.add(new SaveVisibleNodesAction(networkView));
       saveSubMenu.add(new SaveSelectedNodesAction(networkView));
