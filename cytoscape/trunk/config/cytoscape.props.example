@@ -89,8 +89,8 @@ plugin.bar.fileExtension=bar
 plugin.bar.attributeName=bar
 
 # optional load, based on the presence of an "xxx.pvals" file
-plugin.activePathsNew.className=csplugins.activePathsNew.ActivePathsUI
-plugin.activePathsNew.fileExtension=pvals
+plugin.activeModules.className=csplugins.activeModules.ActiveModulesUI
+plugin.activeModules.fileExtension=pvals
 
 #plugin.expressionChooser.classname=csplugins.expressionData.ExpressionDataUI
 #plugin.expressionChooser.fileExtension=mrna
