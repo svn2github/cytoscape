@@ -195,11 +195,39 @@ class FRootGraph implements RootGraph
 
   public int createEdge(Node source, Node target, boolean directed)
   {
+    if (source.getRootGraph() == this && target.getRootGraph() == this)
+      return createEdge(source.getRootGraphIndex(),
+                        target.getRootGraphIndex(),
+                        directed);
+    else return 0;
+  }
+
+  public int createEdge(int sourceNodeIndex, int targetNodeIndex)
+  {
+    return createEdge(sourceNodeIndex, targetNodeIndex,
+                      sourceNodeIndex != targetNodeIndex);
+  }
+
+  public int createEdge(int sourceNodeIndex, int targetNodeIndex,
+                        boolean directed)
+  {
     return 0;
   }
 
-  public createEdge(int sourceNodeIndex, int targetNodeIndex)
+  public int[] createEdges(int[] sourceNodeIndices, int[] targetNodeIndices,
+                           boolean directed)
   {
+    // Instead of doing individual creations for every edge, there may be a
+    // way to optimize by creating a block of edges.  Once this implementation
+    // matures more, come back here and see if it's possible to optimize.
+    targetNodeIndices[sourceNodeIndices.length - 1];
+    sourceNodeIndices[targetNodeIndices.length - 1];
+    final int[] returnThis = new int[sourceNodeIndices.length];
+    for (int i = 0; i < returnThis.length; i++)
+      returnThis[i] = createEdge(sourceNodeIndices[i],
+                                 targetNodeIndices[i],
+                                 directed);
+    return returnThis;
   }
 
   static class NodesIterator implements Iterator
