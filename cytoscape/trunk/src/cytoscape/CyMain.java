@@ -131,8 +131,8 @@ public class CyMain implements WindowListener {
     String defaultSpecies = Semantics.getDefaultSpecies( null, cytoscapeObj );
   
 
-    String cp =  System.getProperty("java.class.path",".");
-    System.out.println( "User classpath: "+cp );
+    //String cp =  System.getProperty("java.class.path",".");
+    //System.out.println( "User classpath: "+cp );
     
 
 

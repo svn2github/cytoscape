@@ -58,9 +58,6 @@ public class CytoscapeConfig
 
   public CytoscapeConfig ( String [] args ) {
 
-    System.out.println( "Initialize CytoscapeConfig!" );
-
-
     // make a copy of the args to parse here (getopt can mangle the array it parses)
     commandLineArguments = new String [args.length];
     System.arraycopy (args, 0, commandLineArguments, 0, args.length);
@@ -353,13 +350,13 @@ public class CytoscapeConfig
 
   protected void loadProperties () {
 
-    System.out.println( "Loading Properties..." );
+    //System.out.println( "Loading Properties..." );
 
-    Enumeration enm = props.propertyNames();
-    while ( enm.hasMoreElements() ) {
-      String property = ( String )enm.nextElement();
-      System.out.println( property +" :" +props.getProperty( property ) );
-    }
+   //  Enumeration enm = props.propertyNames();
+//     while ( enm.hasMoreElements() ) {
+//       String property = ( String )enm.nextElement();
+//       System.out.println( property +" :" +props.getProperty( property ) );
+//     }
 
 
     viewThreshold = new Integer(props.getProperty( "viewThreshold", "500" ) );
@@ -367,10 +364,10 @@ public class CytoscapeConfig
     defaultSpeciesName = props.getProperty("defaultSpeciesName", "unknown" );
     bioDataDirectory = props.getProperty( "bioDataDirectory", "testData/annotation/manifest");
 
-    System.out.println( "vt: "+viewThreshold );
-    System.out.println( "view type: "+viewType );
-    System.out.println( "dsn: "+defaultSpeciesName );
-    System.out.println( "bdd: "+bioDataDirectory );
+    //System.out.println( "vt: "+viewThreshold );
+    // System.out.println( "view type: "+viewType );
+    //System.out.println( "dsn: "+defaultSpeciesName );
+    //System.out.println( "bdd: "+bioDataDirectory );
   }
 
 

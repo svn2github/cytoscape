@@ -212,7 +212,7 @@ public void loadThesaurusFiles (String [] thesaurusFilenames) throws Exception
 {
   for (int i=0; i < thesaurusFilenames.length; i++) {
     String filename = thesaurusFilenames [i];
-    Thread.currentThread().dumpStack();
+    ///Thread.currentThread().dumpStack();
     //System.out.println( "Load Thesaurus: "+filename );
     ThesaurusFlatFileReader reader = new ThesaurusFlatFileReader (filename);
     Thesaurus thesaurus = reader.getThesaurus (); 
