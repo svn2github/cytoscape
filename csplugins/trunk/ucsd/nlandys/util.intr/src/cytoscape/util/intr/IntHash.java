@@ -1,8 +1,8 @@
 package cytoscape.util.intr;
 
 /**
- * An insert-only hashtable that has non-negative 32 bit integer elements;
- * no "satellite data" is stored in this hashtable.  An instance of this class
+ * An insert-only hashtable that has non-negative 32 bit integer keys;
+ * no "payload" is stored in this hashtable.  An instance of this class
  * is well-suited for efficiently detecting collisions between integers,
  * removing duplicates from a list of integers, or determining the presence of
  * an integer in a list of integers.<p>
@@ -70,7 +70,7 @@ public final class IntHash
     checkSize();
     int incr = 0;
     int index;
-    for (index = value % m_size;
+    for (index = value % (((~value) >>> 31) * m_size);
          m_arr[index] >= 0 && m_arr[index] != value;
          index = (index + incr) % m_size) {
       // Caching increment, which is an expensive operation, at the expense
@@ -97,7 +97,7 @@ public final class IntHash
   {
     int incr = 0;
     int index;
-    for (index = value % m_size;
+    for (index = value % (((~value) >>> 31) * m_size);
          m_arr[index] >= 0 && m_arr[index] != value;
          index = (index + incr) % m_size) {
       // Caching increment, which is an expensive operation, at the expense
