@@ -999,8 +999,33 @@ public final class AllGraphPerspectiveMethodsTest
       throw new IllegalStateException("totally wrong edge meta parents");
 
     // isMetaChild(Node, Edge).
+    if (!(persp.isMetaChild(persp.getNode(nodeInx[4]),
+                            persp.getEdge(edgeInx[6])) ||
+          persp.isMetaChild(persp.getNode(nodeInx[0]),
+                            persp.getEdge(edgeInx[4]))))
+      throw new IllegalStateException("missing edge meta-relationship");
+    if (persp.isMetaChild(persp.getNode(nodeInx[2]),
+                          persp.getEdge(edgeInx[6])) ||
+        persp.isMetaChild(persp.getNode(nodeInx[4]),
+                          persp.getEdge(edgeInx[0])))
+      throw new IllegalStateException("wrong edge meta-relationship");
+    if (persp.isMetaChild(root2Node, root2Edge) ||
+        persp.isMetaChild(persp.getNode(nodeInx[3]), edge1NotInPersp))
+      throw new IllegalStateException("totally wrong edge meta-relationship");
 
     // isEdgeMetaChild(int, int).
+    if (!(persp.isEdgeMetaChild(nodeInx[4], edgeInx[2]) &&
+          persp.isEdgeMetaChild(nodeInx[3], edgeInx[0])))
+      throw new IllegalStateException("missing edge meta-relationship");
+    if (persp.isEdgeMetaChild(nodeInx[3], edgeInx[2]) ||
+        persp.isEdgeMetaChild(nodeInx[0], edgeInx[2]) ||
+        persp.isEdgeMetaChild(nodeInx[0], edgeInx[5]))
+      throw new IllegalStateException("wrong edge meta-relationship");
+    if (persp.isEdgeMetaChild(0, 0) ||
+        persp.isEdgeMetaChild(Integer.MAX_VALUE, Integer.MIN_VALUE) ||
+        persp.isEdgeMetaChild(minNodeInx - 1, minEdgeInx - 1) ||
+        persp.isEdgeMetaChild(nodeNotInPersp.getRootGraphIndex(), edgeInx[1]))
+      throw new IllegalStateException("totally wrong edge meta-relationship");
 
     // edgeMetaChildrenList(Node).
 
