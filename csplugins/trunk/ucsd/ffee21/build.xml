@@ -5,7 +5,7 @@
 	<!-- Name of Plug In -->
 	<!-- Change this to the name of your Plug In -->
 	<!-- The name is used to create the plugin JAR file -->
-	<property name="plugin.name" value="JungISOMLayouter"/>
+	<property name="plugin.name" value="LayoutPlugins"/>
 
   	<!-- The directory containing source code -->
   	<property name="src.dir" value="."/>
