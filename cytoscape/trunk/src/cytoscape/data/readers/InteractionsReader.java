@@ -34,13 +34,9 @@
 //------------------------------
 package cytoscape.data.readers;
 //------------------------------
-import java.util.StringTokenizer;
-import java.util.Vector;
-import java.util.Hashtable;
-import java.util.Iterator;
+import java.util.*;
 
-import giny.model.RootGraph;
-import giny.model.GraphPerspective;
+import giny.model.*;
 import cytoscape.util.GinyFactory;
 
 import cytoscape.data.GraphObjAttributes;
@@ -175,44 +171,36 @@ public class InteractionsReader implements GraphReader {
   //-------------------------------------------------------------------------------------------
   protected void createRootGraphFromInteractionData (boolean canonicalize)
   {
-    rootGraph = GinyFactory.createRootGraph();
     Interaction [] interactions = getAllInteractions ();
-
-    Hashtable nodes = new Hashtable ();
-
-    //---------------------------------------------------------------------------
-    // loop through all of the interactions -- which are triples of the form:
-    //           source; target0, target1...; interaction type
-    // using a hash to avoid duplicate node creation, add a node to the graph
-    // for each source and target
-    // in addition,
-    //---------------------------------------------------------------------------
-    String nodeName, targetNodeName;
-    for (int i=0; i < interactions.length; i++) {
+    //figure out how many nodes and edges we need before we create the graph;
+    //this improves performance for large graphs
+    Set nodeNameSet = new HashSet();
+    int edgeCount = 0;
+    for (int i=0; i<interactions.length; i++) {
 	Interaction interaction = interactions [i];
-	//System.out.println ("source: " + interaction.getSource ());
-	nodeName = interaction.getSource();
-	if(canonicalize) nodeName = canonicalizeName (interaction.getSource ());
-	
-	if (!nodes.containsKey (nodeName)) {
-	    giny.model.Node node = rootGraph.getNode(rootGraph.createNode ());
-	    node.setIdentifier(nodeName);
-	    nodes.put (nodeName, node);
-	    nodeAttributes.addNameMapping(nodeName, node);
-	}
-	String [] targets = interaction.getTargets ();
+      	String sourceName = interaction.getSource();
+	if(canonicalize) sourceName = canonicalizeName (sourceName);
+        nodeNameSet.add(sourceName); //does nothing if already there
+        
+        String [] targets = interaction.getTargets ();
 	for (int t=0; t < targets.length; t++) {
-	    targetNodeName = targets[t];
-	    if(canonicalize) targetNodeName = canonicalizeName (targets [t]);
-	    
-	    if (!nodes.containsKey (targetNodeName)) {
-		giny.model.Node node = rootGraph.getNode(rootGraph.createNode ());
-		node.setIdentifier(targetNodeName);
-		nodes.put (targetNodeName, node);
-		nodeAttributes.addNameMapping(targetNodeName, node);
-	    } // if target node is previously unknown
-	} // for t
-    } // i
+	    String targetNodeName = targets[t];
+	    if(canonicalize) targetNodeName = canonicalizeName (targetNodeName);
+	    nodeNameSet.add(targetNodeName); //does nothing if already there
+            edgeCount++;
+        }
+    }
+    
+    //now create the RootGraph, initialized with containers of appropriate size
+    rootGraph = GinyFactory.createRootGraph(nodeNameSet.size(), edgeCount);
+    //now create all of the nodes, storing a hash from name to node
+    Map nodes = new HashMap();
+    for (Iterator si = nodeNameSet.iterator(); si.hasNext(); ) {
+        String nodeName = (String)si.next();
+        Node node = rootGraph.getNode(rootGraph.createNode());
+        nodes.put(nodeName, node);
+        nodeAttributes.addNameMapping(nodeName, node);
+    }
 
     //---------------------------------------------------------------------------
     // now loop over the interactions again, this time creating edges between
@@ -223,9 +211,10 @@ public class InteractionsReader implements GraphReader {
     //   interactionHash [sourceNode::targetNode] = "pd"
     //---------------------------------------------------------------------------
 
+    String targetNodeName;
     for (int i=0; i < interactions.length; i++) {
       Interaction interaction = interactions [i];
-      nodeName = interaction.getSource();
+      String nodeName = interaction.getSource();
       if(canonicalize) nodeName = canonicalizeName (interaction.getSource ());
     
       String interactionType = interaction.getType ();
@@ -237,8 +226,8 @@ public class InteractionsReader implements GraphReader {
 	  else
 	      targetNodeName = targets[t];
       
-	  giny.model.Node targetNode = (giny.model.Node) nodes.get (targetNodeName);
-	  giny.model.Edge edge = rootGraph.getEdge(rootGraph.createEdge (sourceNode, targetNode));
+	  Node targetNode = (Node) nodes.get (targetNodeName);
+	  Edge edge = rootGraph.getEdge(rootGraph.createEdge (sourceNode, targetNode));
 	  String edgeName = nodeName + " (" + interactionType + ") " + targetNodeName;
 	  int previousMatchingEntries = edgeAttributes.countIdentical(edgeName);
 	  if (previousMatchingEntries > 0)
