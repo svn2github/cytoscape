@@ -161,7 +161,7 @@ class LoadPathBlastGMLTask extends Thread{
     //create a new menu item and actionlistener for that window
     cyWindow.getCyMenus().getOperationsMenu().add(new ShowGMLAction(cyWindow,node2CyNetwork));	 	
     //newWindow.showWindow();
-    
+    cyWindow.getCyMenus().setNodesRequiredItemsEnabled();
   }
 
   
@@ -370,7 +370,8 @@ class ShowGMLThread extends Thread{
       newWindow.getMainFrame().setVisible(false);
       FitContentAction fitAction = new FitContentAction(newWindow);									
       fitAction.actionPerformed(new ActionEvent(this,0,""));										
-      newWindow.getMainFrame().setVisible(true);											
+      newWindow.getMainFrame().setVisible(true);
+      newWindow.getCyMenus().setNodesRequiredItemsEnabled();
     }																	
   }																	
  																	
