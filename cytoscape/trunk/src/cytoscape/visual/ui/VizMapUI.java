@@ -465,7 +465,7 @@ public class VizMapUI extends JDialog {
 	 *  @param vs New visual style to set UI to
 	 *  @return true if set successfully, false if error
 	 */
-	boolean setVisualStyle(VisualStyle vs) {
+	public boolean setVisualStyle(VisualStyle vs) {
 	    if (styleComboModel.getIndexOf(vs) != -1) {
 		this.currentStyle = vs;
 		this.styleComboModel.setSelectedItem(vs);
