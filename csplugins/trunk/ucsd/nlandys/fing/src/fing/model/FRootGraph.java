@@ -116,6 +116,7 @@ class FRootGraph implements RootGraph
     try { edgeInxEnum = m_graph.adjacentEdges
             (positiveNodeIndex, true, true, true); }
     catch (IllegalArgumentException e) { return 0; }
+    if (edgeInxEnum == null) return 0;
     m_heap.empty();
     final MinIntHeap edgeBucket = m_heap;
     while (edgeInxEnum.numRemaining() > 0)
@@ -126,7 +127,8 @@ class FRootGraph implements RootGraph
     // Remove adjacent edges using method defined on this instance.
     while (edgeInxEnum.numRemaining() > 0)
       removeEdge(~(edgeInxEnum.nextInt()));
-    // Remove node from underlying graph.
+    // Remove node from underlying graph.  positiveNodeIndex has already
+    // been tested for validity by calling adjacentEdges().
     if (m_graph.removeNode(positiveNodeIndex)) {
       // Remove node from our node array.
       FNode garbage = m_nodes.getNodeAtIndex(positiveNodeIndex);
@@ -187,12 +189,14 @@ class FRootGraph implements RootGraph
   public int removeEdge(int edgeInx)
   {
     final int positiveEdgeIndex = ~edgeInx;
-    if (m_graph.removeEdge(positiveEdgeIndex)) {
-      FEdge garbage = m_edges.getEdgeAtIndex(positiveEdgeIndex);
-      m_edges.setEdgeAtIndex(null, positiveEdgeIndex);
-      m_edgeDepot.recycleEdge(garbage);
-      return edgeInx; }
-    else { return 0; }
+    try {
+      if (m_graph.removeEdge(positiveEdgeIndex)) {
+        FEdge garbage = m_edges.getEdgeAtIndex(positiveEdgeIndex);
+        m_edges.setEdgeAtIndex(null, positiveEdgeIndex);
+        m_edgeDepot.recycleEdge(garbage);
+        return edgeInx; } }
+    catch (IllegalArgumentException e) { }
+    return 0;
   }
 
   // This method has been marked deprecated in the Giny API.
@@ -229,8 +233,10 @@ class FRootGraph implements RootGraph
   {
     final int positiveSourceNodeIndex = ~sourceNodeIndex;
     final int positiveTargetNodeIndex = ~targetNodeIndex;
-    final int positiveEdgeIndex = m_graph.createEdge
-      (positiveSourceNodeIndex, positiveTargetNodeIndex, directed);
+    final int positiveEdgeIndex;
+    try { positiveEdgeIndex = m_graph.createEdge
+            (positiveSourceNodeIndex, positiveTargetNodeIndex, directed); }
+    catch (IllegalArgumentException e) { return 0; }
     final int returnThis;
     if (positiveEdgeIndex < 0) return 0;
     else returnThis = ~positiveEdgeIndex;
@@ -270,19 +276,20 @@ class FRootGraph implements RootGraph
       final int nodeIndex = node.getRootGraphIndex();
       int[] adjacentEdgeIndices =
         getAdjacentEdgeIndicesArray(nodeIndex, true, true, true);
+      if (adjacentEdgeIndices == null) return null;
       m_hash.empty();
       final IntHash neighbors = m_hash;
       for (int i = 0; i < adjacentEdgeIndices.length; i++) {
-        int neighborIndex = nodeIndex ^
-          getEdgeSourceIndex(adjacentEdgeIndices[i]) ^
-          getEdgeTargetIndex(adjacentEdgeIndices[i]);
+        int neighborIndex = (nodeIndex ^
+                             getEdgeSourceIndex(adjacentEdgeIndices[i]) ^
+                             getEdgeTargetIndex(adjacentEdgeIndices[i]));
         neighbors.put(~neighborIndex); }
       IntEnumerator enum = neighbors.elements();
       java.util.ArrayList list = new java.util.ArrayList(enum.numRemaining());
       while (enum.numRemaining() > 0)
         list.add(getNode(~(enum.nextInt())));
       return list; }
-    else { return new java.util.ArrayList(); } }
+    else { return null; } }
 
   // This method has been marked deprecated in the Giny API.
   public boolean isNeighbor(Node a, Node b) {
@@ -369,7 +376,8 @@ class FRootGraph implements RootGraph
     final IntEnumerator adj;
     try { adj = m_graph.adjacentEdges(positiveNodeInx, outgoingDirected,
                                        incomingDirected, undirected); }
-    catch (IllegalArgumentException e) { return new int[0]; }
+    catch (IllegalArgumentException e) { return null; }
+    if (adj == null) return null;
     final int[] returnThis = new int[adj.numRemaining()];
     for (int i = 0; i < returnThis.length; i++) returnThis[i] = ~adj.nextInt();
     return returnThis;
