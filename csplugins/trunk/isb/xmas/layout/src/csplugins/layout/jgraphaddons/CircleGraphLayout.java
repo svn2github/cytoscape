@@ -59,6 +59,7 @@ public class CircleGraphLayout extends AbstractLayout {
 	 */
 	public Object construct () {
 
+    initialize();
     int[] nodes = networkView.getNetwork().getNodeIndicesArray();
 
 		int r = (int)currentSize.getHeight();

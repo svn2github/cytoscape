@@ -29,30 +29,6 @@ public class LayoutPlugin extends CytoscapePlugin {
                  final SwingWorker worker = new SwingWorker(){
                      public Object construct(){
 
-
-                       CyNetwork network = Cytoscape.getCurrentNetwork();
-                       CyNetworkView network_view = Cytoscape.getCurrentNetworkView();
-                       
-                       List partions = GraphPartition.partition( network );
-                       Iterator i = partions.iterator();
-                       float r, g, b;
-                       while ( i.hasNext() ) {
-                         int[] array = ( int[] )i.next();
-                         r = ( float )Math.random();
-                         g = ( float )Math.random();
-                         b = ( float )Math.random();
-                         for ( int j = 0; j < array.length; ++j ) {
-                           //network_view.getNodeView( network.getEdgeTargetIndex( array[j] ) ).select();
-                           //network_view.getNodeView( network.getEdgeSourceIndex( array[j] ) ).select();
-                           
-                           // network_view.getNodeView( array[j] ).select();
-                           
-                           network_view.getNodeView( array[j] ).setUnselectedPaint( new java.awt.Color( r, g, b ) );
-                           network_view.getNodeView( array[j] ).setUnselectedPaint( new java.awt.Color( r, g, b ) );
-                         }
-                       }
-        
-
                        LayoutAlgorithm layout = new RadialTreeLayoutAlgorithm( Cytoscape.getCurrentNetworkView() );
                        Cytoscape.getCurrentNetworkView().applyLayout( layout );
                        return null;
@@ -77,6 +53,22 @@ public class LayoutPlugin extends CytoscapePlugin {
                  worker.start();
                } } ); } } );
 
+    JMenuItem isom = new JMenuItem( new AbstractAction( "ISOM" ) {
+         public void actionPerformed ( ActionEvent e ) {
+           // Do this in the GUI Event Dispatch thread...
+           SwingUtilities.invokeLater( new Runnable() {
+               public void run() {
+                 final SwingWorker worker = new SwingWorker(){
+                     public Object construct(){
+                       LayoutAlgorithm layout = new ISOMLayout( Cytoscape.getCurrentNetworkView() );
+                       Cytoscape.getCurrentNetworkView().applyLayout( layout );
+                       return null;
+                     }
+                   };
+                 worker.start();
+               } } ); } } );
+
+
 
      JMenuItem spring = new JMenuItem( new AbstractAction( "Spring" ) {
          public void actionPerformed ( ActionEvent e ) {
@@ -92,11 +84,11 @@ public class LayoutPlugin extends CytoscapePlugin {
                    };
                  worker.start();
                } } ); } } );
-    
-
-    Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "Layout" ).add( radial );
-    Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "Layout" ).add( circle );
-    Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "Layout" ).add( spring );
+     
+     Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "Layout" ).add( isom );
+     Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "Layout" ).add( radial );
+     Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "Layout" ).add( circle );
+     Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "Layout" ).add( spring );
   }
 
 

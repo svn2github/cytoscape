@@ -81,6 +81,7 @@ public class SpringEmbeddedLayoutAlgorithm extends AbstractLayout {
 	 */
 	public Object construct () {
 
+    initialize();
     int[] nodes = network.getNodeIndicesArray();
     int[] edges = network.getEdgeIndicesArray();
 
