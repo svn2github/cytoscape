@@ -8,12 +8,12 @@ import giny.model.RootGraph;
 abstract class RootGraphChangeEventAdapter extends RootGraphChangeEvent
 {
 
-  public RootGraphChangeEventAdapter(RootGraph rootGraph)
+  RootGraphChangeEventAdapter(RootGraph rootGraph)
   {
     super(rootGraph);
   }
 
-  // Ths is the only abstract method on this class; whatever the type of
+  // This is the only abstract method on this class; whatever the type of
   // event, make sure to override the appropriate getXXX() methods - those
   // methods all return null in this implementation.
   public abstract int getType ();
