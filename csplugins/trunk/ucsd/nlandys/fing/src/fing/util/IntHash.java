@@ -1,9 +1,10 @@
 package fing.util;
 
 /**
- * An insert-only hashtable that has non-negative 32 bit integers as keys;
- * no values are stored in this hashtable.  An instance of this class is good
- * at detecting collisions between integers.<p>
+ * An insert-only hashtable that has non-negative 32 bit integer elements;
+ * no "satellite data" is stored in this hashtable.  An instance of this class
+ * is well-suited for detecting collisions between integers or determining
+ * the presence of an integer in a set of integers.<p>
  * In the underlying implementation, this hashtable increases in size to adapt
  * to elements being added (the underlying size of the hashtable is invisible
  * to the programmer).  In the underlying implementation, this hashtable never
