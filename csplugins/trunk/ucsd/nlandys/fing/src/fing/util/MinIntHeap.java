@@ -121,8 +121,11 @@ public final class MinIntHeap
    */
   public final void insert(int x)
   {
-    checkSize(1);
-    m_heap[++m_currentSize] = x;
+    try { m_heap[++m_currentSize] = x; }
+    catch (ArrayIndexOutOfBoundsException e) {
+      m_currentSize--;
+      checkSize(1);
+      m_heap[++m_currentSize] = x; }
     if (m_orderOK) percolateUp(m_heap, m_currentSize);
   }
 
