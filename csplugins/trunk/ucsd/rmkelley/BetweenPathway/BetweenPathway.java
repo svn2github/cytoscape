@@ -50,11 +50,12 @@ public class BetweenPathway extends CytoscapePlugin{
 	      public void run(){
 		dialog.show();
 		if(!dialog.isCancelled()){
-		  BetweenPathwayThread thread = new BetweenPathwayThread(dialog.getOptions());
+		  BetweenPathwayThread2 thread = new BetweenPathwayThread2(dialog.getOptions());
 		  try{
 		    thread.run();
 		  }
 	      catch(Exception e){
+		e.printStackTrace();
 		JOptionPane.showMessageDialog(Cytoscape.getDesktop(),e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);	    
 	      }
 	      catch(OutOfMemoryError e){
