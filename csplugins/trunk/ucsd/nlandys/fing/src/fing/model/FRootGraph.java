@@ -377,10 +377,10 @@ class FRootGraph //implements RootGraph
 
   public boolean edgeExists(Node from, Node to)
   {
-    if (source.getRootGraph() == this && target.getRootGraph() == this)
+    if (from.getRootGraph() == this && to.getRootGraph() == this)
     {
-      return edgeExists(source.getRootGraphIndex(),
-                        target.getRootGraphIndex());
+      return edgeExists(from.getRootGraphIndex(),
+                        to.getRootGraphIndex());
     }
     else
     {
@@ -394,11 +394,9 @@ class FRootGraph //implements RootGraph
     final int positiveToNodeInx = ~toNodeInx;
     final IntEnumerator fromAdj;
     final IntEnumerator toAdj;
-    try
-    {
+    try {
       fromAdj = m_graph.adjacentEdges(positiveFromNodeInx, true, false, true);
-      toAdj = m_graph.adjacentEdges(positiveToNodeInx, true, true, false);
-    }
+      toAdj = m_graph.adjacentEdges(positiveToNodeInx, true, true, false); }
     catch (IllegalArgumentException e) { return false; }
     final IntEnumerator theAdj =
       ((fromAdj.numRemaining() < toAdj.numRemaining()) ? fromAdj : toAdj);
@@ -411,6 +409,47 @@ class FRootGraph //implements RootGraph
       if ((m_graph.sourceNode(adjEdge) ^ m_graph.targetNode(adjEdge) ^
            adjPositiveNode) == neighPositiveNode) return true; }
     return false;
+  }
+
+  public int getEdgeCount(Node from, Node to, boolean countDirectedEdges)
+  {
+    if (from.getRootGraph() == this && to.getRootGraph() == this)
+    {
+      return getEdgeCount(from.getRootGraphIndex(),
+                          to.getRootGraphIndex(),
+                          countDirectedEdges);
+    }
+    else
+    {
+      return -1;
+    }
+  }
+
+  public int getEdgeCount(int fromNodeInx, int toNodeInx,
+                          boolean countUndirectedEdges)
+  {
+    final int positiveFromNodeInx = ~fromNodeInx;
+    final int positiveToNodeInx = ~toNodeInx;
+    final IntEnumerator fromAdj;
+    final IntEnumerator toAdj;
+    try {
+      fromAdj = m_graph.adjacentEdges(positiveFromNodeInx,
+                                      countUndirectedEdges, false, true);
+      toAdj = m_graph.adjacentEdges(positiveToNodeInx,
+                                    countUndirectedEdges, true, false); }
+    catch (IllegalArgumentException e) { return -1; }
+    final IntEnumerator theAdj =
+      ((fromAdj.numRemaining() < toAdj.numRemaining()) ? fromAdj : toAdj);
+    final int adjPositiveNode =
+      ((theAdj == fromAdj) ? positiveFromNodeInx : positiveToNodeInx);
+    final int neighPositiveNode =
+      ((theAdj == fromAdj) ? positiveToNodeInx : positiveFromNodeInx);
+    int edgeCount = 0;
+    while (theAdj.numRemaining() > 0) {
+      final int adjEdge = theAdj.nextInt();
+      if ((m_graph.sourceNode(adjEdge) ^ m_graph.targetNode(adjEdge) ^
+           adjPositiveNode) == neighPositiveNode) edgeCount++; }
+    return edgeCount;
   }
 
   public int[] getAdjacentEdgeIndicesArray(int nodeInx,
