@@ -6,6 +6,20 @@ $Author$
 *-----------------------------------------------------------------------------
 
 
+TASKS  Trey Ideker and Dan Ramage 6/24/02
+
+* Plugin loading should be contingent on currently loaded files.  Thus, everytime 
+a new gml, sif, or expression file is loaded, we should recheck and load plugins.
+
+* Decrease the amount of debug output to STDOUT.  We should probably have an
+official "verbose" or "debug" mode, that could even take a debug level, etc.
+
+* Allow loading of the bioDataServer directory interactively from the file menu.
+
+* The PlugIns menu should be inactive if no plugs loaded
+
+* Save Visible Nodes...
+
 
 *-----------------------------------------------------------------------------------------------------------------------------
                                                                                                     DUE DATE           
