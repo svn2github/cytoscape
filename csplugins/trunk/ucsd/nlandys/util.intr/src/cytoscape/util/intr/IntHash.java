@@ -65,7 +65,7 @@ public final class IntHash
    * Insertions into the hashtable are performed in [amortized] time
    * complexity O(1).
    */
-  public final int put(int value)
+  public final int put(final int value)
   {
     checkSize();
     int incr = 0;
