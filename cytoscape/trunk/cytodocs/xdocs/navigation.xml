@@ -9,7 +9,7 @@
         	<item href="/build_cs_plugin.html" name="How to Build Cytoscape
         	plug ins"/>
         </menu>
-	<menu name="Graph Library">
+	<menu name="Graph Library Tech Docs">
 		<item href="graph.html" name="Graph Library Doc"/>
 	</menu>
         <menu name="Data Services Tech Docs">
