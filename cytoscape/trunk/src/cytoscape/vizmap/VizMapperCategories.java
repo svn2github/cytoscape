@@ -30,9 +30,10 @@ public class VizMapperCategories implements AttributeMapperCategories {
 
     public static final Integer NODE_FILL_COLOR = new Integer(0);
     public static final Integer NODE_BORDER_COLOR = new Integer(1);
-    public static final Integer NODE_HEIGHT = new Integer(2);
-    public static final Integer NODE_WIDTH = new Integer(3);
-    public static final Integer NODE_SHAPE = new Integer(4);
+    public static final Integer NODE_BORDER_LINETYPE = new Integer(2);
+    public static final Integer NODE_HEIGHT = new Integer(3);
+    public static final Integer NODE_WIDTH = new Integer(4);
+    public static final Integer NODE_SHAPE = new Integer(5);
 
     public static final Integer EDGE_COLOR = new Integer(10);
     public static final Integer EDGE_LINETYPE = new Integer(11);
@@ -50,6 +51,10 @@ public class VizMapperCategories implements AttributeMapperCategories {
 
     public Color getNodeBorderColor(Map attrBundle, AttributeMapper mapper) {
 	return (Color)mapper.getRangeValue(attrBundle,NODE_BORDER_COLOR);
+    }
+    
+    public LineType getNodeBorderLineType(Map attrBundle, AttributeMapper mapper) {
+        return (LineType)mapper.getRangeValue(attrBundle,NODE_BORDER_LINETYPE);
     }
 
     public double getNodeHeight(Map attrBundle, AttributeMapper mapper) {
@@ -109,6 +114,7 @@ public class VizMapperCategories implements AttributeMapperCategories {
 
 	returnVal.put( NODE_FILL_COLOR, new Color(255,255,255) );
 	returnVal.put( NODE_BORDER_COLOR, new Color(0,0,0) );
+        returnVal.put( NODE_BORDER_LINETYPE, LineType.LINE_1 );
 	returnVal.put( NODE_HEIGHT, new Double(30) );
 	returnVal.put( NODE_WIDTH, new Double(70) );
 	returnVal.put( NODE_SHAPE, new Byte(ShapeNodeRealizer.RECT) );
@@ -126,6 +132,7 @@ public class VizMapperCategories implements AttributeMapperCategories {
 
 	returnVal.put( NODE_FILL_COLOR, "node.fillColor" );
 	returnVal.put( NODE_BORDER_COLOR, "node.borderColor" );
+        returnVal.put( NODE_BORDER_LINETYPE, "node.borderLinetype" );
 	returnVal.put( NODE_HEIGHT, "node.height" );
 	returnVal.put( NODE_WIDTH, "node.width" );
 	returnVal.put( NODE_SHAPE, "node.shape" );
@@ -153,7 +160,8 @@ public class VizMapperCategories implements AttributeMapperCategories {
 	    returnVal = new Double(value);
 	} else if( vizAttribute.equals(NODE_SHAPE) ) {
 	    returnVal = Misc.parseNodeShapeTextIntoByte(value);
-	} else if ( vizAttribute.equals(EDGE_LINETYPE) ) {
+	} else if ( vizAttribute.equals(NODE_BORDER_LINETYPE) ||
+                    vizAttribute.equals(EDGE_LINETYPE) ) {
 	    returnVal = Misc.parseLineTypeText(value);
 	} else if ( vizAttribute.equals(EDGE_SOURCE_DECORATION) ||
 		    vizAttribute.equals(EDGE_TARGET_DECORATION) ) {
@@ -183,7 +191,8 @@ public class VizMapperCategories implements AttributeMapperCategories {
 	} else if( vizAttribute.equals(NODE_SHAPE) ) {
 	    //fInt = new ShapeInterpolator();
             fInt = new FlatInterpolator();
-	} else if ( vizAttribute.equals(EDGE_LINETYPE) ) {
+	} else if ( vizAttribute.equals(NODE_BORDER_LINETYPE) ||
+                    vizAttribute.equals(EDGE_LINETYPE) ) {
 	    //fInt = new LineTypeInterpolator();
             fInt = new FlatInterpolator();
 	} else if ( vizAttribute.equals(EDGE_SOURCE_DECORATION) ||
