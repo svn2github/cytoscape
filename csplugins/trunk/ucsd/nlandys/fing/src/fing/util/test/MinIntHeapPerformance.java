@@ -164,7 +164,8 @@ public class MinIntHeapPerformance
 
   private static final int[] _THE_TEST_CASE_(final int[] elements)
   {
-    _THE_HEAP_ = new MinIntHeap(elements, 0, elements.length);
+    _THE_HEAP_ = new MinIntHeap();
+    _THE_HEAP_.toss(elements, 0, elements.length);
     final IntEnumerator iter = _THE_HEAP_.orderedElements(true);
     final int[] returnThis = new int[iter.numRemaining()];
     final int numElements = returnThis.length;
