@@ -44,8 +44,8 @@ public class ActiveModulesUI extends AbstractPlugin {
     String[] args = cytoscapeWindow.getCytoscapeObj().getConfiguration().getArgs();
     ActivePathsCommandLineParser parser = new ActivePathsCommandLineParser(args);
     apfParams = parser.getActivePathFinderParameters();
-    activePaths = new ActivePaths(cytoscapeWindow,apfParams);
     if (parser.shouldRunActivePaths()) {
+      activePaths = new ActivePaths(cytoscapeWindow,apfParams);
       Thread t = new Thread(activePaths);
       t.start();
     }
@@ -88,8 +88,9 @@ public class ActiveModulesUI extends AbstractPlugin {
     FindActivePathsAction () { super ("Active Modules: Find Modules"); }
 	
     public void actionPerformed (ActionEvent e) {
-  	  Thread t = new Thread(activePaths);
-	  t.start();
+      activePaths = new ActivePaths(cytoscapeWindow,apfParams);  
+      Thread t = new Thread(activePaths);
+      t.start();
     } 
   } 
     
@@ -101,7 +102,8 @@ public class ActiveModulesUI extends AbstractPlugin {
 	
     ScoreSubComponentAction () { super ("Active Modules: Score Selected Nodes"); }
     public void actionPerformed (ActionEvent e) {
-  	activePaths.scoreActivePath ();
+      activePaths = new ActivePaths(cytoscapeWindow,apfParams);  
+      activePaths.scoreActivePath ();
     } 
   }
 
