@@ -164,19 +164,19 @@ class FRootGraph implements RootGraph
   {
     final int nativeNodeInx = ~nodeInx;
     final IntEnumerator nativeEdgeEnum =
-      m_graph.adjacentEdges(nativeNodeInx, true, true, true);
+      m_graph.edgesAdjacent(nativeNodeInx, true, true, true);
     if (nativeEdgeEnum == null) return 0;
     final Edge[] removedEdgeArr = new Edge[nativeEdgeEnum.numRemaining()];
     for (int i = 0; i < removedEdgeArr.length; i++)
       removedEdgeArr[i] = m_edges.getEdgeAtIndex(nativeEdgeEnum.nextInt());
     for (int i = 0; i < removedEdgeArr.length; i++) {
       final int nativeEdgeInx = ~(removedEdgeArr[i].getRootGraphIndex());
-      m_graph.removeEdge(nativeEdgeInx);
+      m_graph.edgeRemove(nativeEdgeInx);
       final FEdge removedEdge = m_edges.getEdgeAtIndex(nativeEdgeInx);
       m_edges.setEdgeAtIndex(null, nativeEdgeInx);
       m_edgeDepot.recycleEdge(removedEdge); }
     final FNode removedNode = m_nodes.getNodeAtIndex(nativeNodeInx);
-    m_graph.removeNode(nativeNodeInx);
+    m_graph.nodeRemove(nativeNodeInx);
     m_nodes.setNodeAtIndex(null, nativeNodeInx);
     m_nodeDepot.recycleNode(removedNode);
     if (removedEdgeArr.length > 0)
@@ -202,7 +202,7 @@ class FRootGraph implements RootGraph
 
   public int createNode()
   {
-    final int nativeNodeInx = m_graph.createNode();
+    final int nativeNodeInx = m_graph.nodeCreate();
     final int returnThis = ~nativeNodeInx;
     FNode newNode = m_nodeDepot.getNode();
     newNode.m_rootGraph = this;
@@ -243,7 +243,7 @@ class FRootGraph implements RootGraph
   public int removeEdge(int edgeInx)
   {
     final int nativeEdgeInx = ~edgeInx;
-    if (!(m_graph.removeEdge(nativeEdgeInx))) return 0;
+    if (!(m_graph.edgeRemove(nativeEdgeInx))) return 0;
     final FEdge removedEdge = m_edges.getEdgeAtIndex(nativeEdgeInx);
     m_edges.setEdgeAtIndex(null, nativeEdgeInx);
     m_edgeDepot.recycleEdge(removedEdge);
@@ -284,7 +284,7 @@ class FRootGraph implements RootGraph
                         boolean directed)
   {
     final int nativeEdgeInx =
-      m_graph.createEdge(~sourceNodeIndex, ~targetNodeIndex, directed);
+      m_graph.edgeCreate(~sourceNodeIndex, ~targetNodeIndex, directed);
     if (nativeEdgeInx < 0) return 0;
     final int returnThis = ~nativeEdgeInx;
     FEdge newEdge = m_edgeDepot.getEdge();
@@ -340,7 +340,7 @@ class FRootGraph implements RootGraph
 
   public boolean isNeighbor(int nodeInxA, int nodeInxB)
   {
-    final IntIterator connectingEdges = m_graph.connectingEdges
+    final IntIterator connectingEdges = m_graph.edgesConnecting
       (~nodeInxA, ~nodeInxB, true, true, true);
     if (connectingEdges == null) return false;
     return connectingEdges.hasNext();
@@ -355,7 +355,7 @@ class FRootGraph implements RootGraph
   public boolean edgeExists(int fromNodeInx, int toNodeInx)
   {
     final IntIterator connectingEdges =
-      m_graph.connectingEdges(~fromNodeInx, ~toNodeInx, true, false, true);
+      m_graph.edgesConnecting(~fromNodeInx, ~toNodeInx, true, false, true);
     if (connectingEdges == null) return false;
     return connectingEdges.hasNext();
   }
@@ -379,7 +379,7 @@ class FRootGraph implements RootGraph
                                            boolean incomingDirected,
                                            boolean outgoingDirected)
   {
-    final IntEnumerator adj = m_graph.adjacentEdges
+    final IntEnumerator adj = m_graph.edgesAdjacent
       (~nodeInx, outgoingDirected, incomingDirected, undirected);
     if (adj == null) return null;
     final int[] returnThis = new int[adj.numRemaining()];
@@ -395,7 +395,7 @@ class FRootGraph implements RootGraph
     final IntHash nodeBucket = m_hash2;
     for (int i = 0; i < nodeInx.length; i++) {
       final int positiveNodeIndex = ~nodeInx[i];
-      if (m_graph.containsNode(positiveNodeIndex))
+      if (m_graph.nodeExists(positiveNodeIndex))
         nodeBucket.put(positiveNodeIndex);
       else return null; }
     m_hash.empty();
@@ -404,12 +404,12 @@ class FRootGraph implements RootGraph
     while (nodeIter.numRemaining() > 0) {
       final int thePositiveNode = nodeIter.nextInt();
       final IntEnumerator edgeIter =
-        m_graph.adjacentEdges(thePositiveNode, true, false, true);
+        m_graph.edgesAdjacent(thePositiveNode, true, false, true);
       while (edgeIter.numRemaining() > 0) {
         final int candidateEdge = edgeIter.nextInt();
         final int otherEdgeNode = (thePositiveNode ^
-                                   m_graph.sourceNode(candidateEdge) ^
-                                   m_graph.targetNode(candidateEdge));
+                                   m_graph.edgeSource(candidateEdge) ^
+                                   m_graph.edgeTarget(candidateEdge));
         if (otherEdgeNode == nodeBucket.get(otherEdgeNode))
           edgeBucket.put(candidateEdge); } }
     final IntEnumerator returnEdges = edgeBucket.elements();
@@ -426,8 +426,8 @@ class FRootGraph implements RootGraph
     for (int i = 0; i < edgeInx.length; i++) {
       final int positiveEdge = ~edgeInx[i];
       if (m_graph.edgeType(positiveEdge) >= 0) {
-        nodeBucket.put(m_graph.sourceNode(positiveEdge));
-        nodeBucket.put(m_graph.targetNode(positiveEdge)); }
+        nodeBucket.put(m_graph.edgeSource(positiveEdge));
+        nodeBucket.put(m_graph.edgeTarget(positiveEdge)); }
       else { return null; } }
     final IntEnumerator nodes = nodeBucket.elements();
     final int[] returnThis = new int[nodes.numRemaining()];
@@ -441,7 +441,7 @@ class FRootGraph implements RootGraph
                                    boolean undirectedEdges,
                                    boolean bothDirections)
   {
-    final IntIterator connectingEdges = m_graph.connectingEdges
+    final IntIterator connectingEdges = m_graph.edgesConnecting
       (~fromNodeInx, ~toNodeInx, true, bothDirections, undirectedEdges);
     if (connectingEdges == null) return null;
     m_heap.empty();
@@ -490,7 +490,7 @@ class FRootGraph implements RootGraph
   public int getInDegree(int nodeInx, boolean countUndirectedEdges)
   {
     final IntEnumerator adj =
-      m_graph.adjacentEdges(~nodeInx, false, true, countUndirectedEdges);
+      m_graph.edgesAdjacent(~nodeInx, false, true, countUndirectedEdges);
     if (adj == null) return -1;
     return adj.numRemaining();
   }
@@ -511,7 +511,7 @@ class FRootGraph implements RootGraph
   public int getOutDegree(int nodeInx, boolean countUndirectedEdges)
   {
     final IntEnumerator adj =
-      m_graph.adjacentEdges(~nodeInx, true, false, countUndirectedEdges);
+      m_graph.edgesAdjacent(~nodeInx, true, false, countUndirectedEdges);
     if (adj == null) return -1;
     return adj.numRemaining();
   }
@@ -524,7 +524,7 @@ class FRootGraph implements RootGraph
   public int getDegree(int nodeInx)
   {
     final IntEnumerator adj =
-      m_graph.adjacentEdges(~nodeInx, true, true, true);
+      m_graph.edgesAdjacent(~nodeInx, true, true, true);
     if (adj == null) return -1;
     return adj.numRemaining();
   }
@@ -549,12 +549,12 @@ class FRootGraph implements RootGraph
 
   public int getEdgeSourceIndex(int edgeInx)
   {
-    return ~(m_graph.sourceNode(~edgeInx));
+    return ~(m_graph.edgeSource(~edgeInx));
   }
 
   public int getEdgeTargetIndex(int edgeInx)
   {
-    return ~(m_graph.targetNode(~edgeInx));
+    return ~(m_graph.edgeTarget(~edgeInx));
   }
 
   public boolean isEdgeDirected(int edgeInx)

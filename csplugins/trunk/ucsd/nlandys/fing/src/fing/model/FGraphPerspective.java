@@ -147,7 +147,7 @@ class FGraphPerspective implements GraphPerspective
       m_rootToNativeNodeInxMap.get(~rootGraphToNodeInx);
     final IntIterator connectingEdges;
     try {
-      connectingEdges = m_graph.connectingEdges
+      connectingEdges = m_graph.edgesConnecting
         (nativeFromNodeInx, nativeToNodeInx, true, bothDirections,
          undirectedEdges); }
     catch (IllegalArgumentException e) { return null; }
@@ -205,7 +205,7 @@ class FGraphPerspective implements GraphPerspective
     int nativeNodeInx = m_rootToNativeNodeInxMap.get(~rootGraphNodeInx);
     if (m_root.getNode(rootGraphNodeInx) == null ||
         !(nativeNodeInx < 0 || nativeNodeInx == Integer.MAX_VALUE)) return 0;
-    nativeNodeInx = m_graph.createNode();
+    nativeNodeInx = m_graph.nodeCreate();
     m_rootToNativeNodeInxMap.put(~rootGraphNodeInx, nativeNodeInx);
     m_nativeToRootNodeInxMap.setIntAtIndex(rootGraphNodeInx, nativeNodeInx);
     return ~nativeNodeInx;
@@ -322,7 +322,7 @@ class FGraphPerspective implements GraphPerspective
         restoredNodeRootInx.copyInto(restoredNodesArr, 0);
         listener.graphPerspectiveChanged
           (new GraphPerspectiveNodesRestoredEvent(this, restoredNodesArr)); } }
-    nativeEdgeInx = m_graph.createEdge
+    nativeEdgeInx = m_graph.edgeCreate
       (nativeSourceNodeInx, nativeTargetNodeInx,
        m_root.isEdgeDirected(rootGraphEdgeInx));
     m_rootToNativeEdgeInxMap.put(~rootGraphEdgeInx, nativeEdgeInx);
@@ -492,7 +492,7 @@ class FGraphPerspective implements GraphPerspective
     final int nativeNodeB = m_rootToNativeNodeInxMap.get(nodeInxB);
     final IntIterator nativeConnEdgeIter;
     try {
-      nativeConnEdgeIter = m_graph.connectingEdges
+      nativeConnEdgeIter = m_graph.edgesConnecting
         (nativeNodeA, nativeNodeB, true, true, true); }
     catch (IllegalArgumentException e) { return false; }
     if (nativeConnEdgeIter == null) return false;
@@ -512,7 +512,7 @@ class FGraphPerspective implements GraphPerspective
     final int nativeToNode = m_rootToNativeNodeInxMap.get(toNodeInx);
     final IntIterator nativeConnEdgeIter;
     try {
-      nativeConnEdgeIter = m_graph.connectingEdges
+      nativeConnEdgeIter = m_graph.edgesConnecting
         (nativeFromNode, nativeToNode, true, false, true); }
     catch (IllegalArgumentException e) { return false; }
     if (nativeConnEdgeIter == null) return false;
@@ -573,7 +573,7 @@ class FGraphPerspective implements GraphPerspective
     if (!(nodeInx < 0)) return -1;
     final int nativeNodeInx = m_rootToNativeNodeInxMap.get(~nodeInx);
     final IntEnumerator adj;
-    try { adj = m_graph.adjacentEdges
+    try { adj = m_graph.edgesAdjacent
             (nativeNodeInx, false, true, countUndirectedEdges); }
     catch (IllegalArgumentException e) { return -1; }
     if (adj == null) return -1;
@@ -598,7 +598,7 @@ class FGraphPerspective implements GraphPerspective
     if (!(nodeInx < 0)) return -1;
     final int nativeNodeInx = m_rootToNativeNodeInxMap.get(~nodeInx);
     final IntEnumerator adj;
-    try { adj = m_graph.adjacentEdges
+    try { adj = m_graph.edgesAdjacent
             (nativeNodeInx, true, false, countUndirectedEdges); }
     catch (IllegalArgumentException e) { return -1; }
     if (adj == null) return -1;
@@ -615,7 +615,7 @@ class FGraphPerspective implements GraphPerspective
     if (!(nodeInx < 0)) return -1;
     final int nativeNodeInx = m_rootToNativeNodeInxMap.get(~nodeInx);
     final IntEnumerator adj;
-    try { adj = m_graph.adjacentEdges(nativeNodeInx, true, true, true); }
+    try { adj = m_graph.edgesAdjacent(nativeNodeInx, true, true, true); }
     catch (IllegalArgumentException e) { return -1; }
     if (adj == null) return -1;
     return adj.numRemaining();
@@ -668,7 +668,7 @@ class FGraphPerspective implements GraphPerspective
     if (!(edgeInx < 0)) return 0;
     final int nativeEdgeInx = m_rootToNativeEdgeInxMap.get(~edgeInx);
     final int nativeSrcNodeInx;
-    try { nativeSrcNodeInx = m_graph.sourceNode(nativeEdgeInx); }
+    try { nativeSrcNodeInx = m_graph.edgeSource(nativeEdgeInx); }
     catch (IllegalArgumentException e) { return 0; }
     try { return m_nativeToRootNodeInxMap.getIntAtIndex(nativeSrcNodeInx); }
     catch (ArrayIndexOutOfBoundsException e) { return 0; }
@@ -679,7 +679,7 @@ class FGraphPerspective implements GraphPerspective
     if (!(edgeInx < 0)) return 0;
     final int nativeEdgeInx = m_rootToNativeEdgeInxMap.get(~edgeInx);
     final int nativeTrgNodeInx;
-    try { nativeTrgNodeInx = m_graph.targetNode(nativeEdgeInx); }
+    try { nativeTrgNodeInx = m_graph.edgeTarget(nativeEdgeInx); }
     catch (IllegalArgumentException e) { return 0; }
     try { return m_nativeToRootNodeInxMap.getIntAtIndex(nativeTrgNodeInx); }
     catch (ArrayIndexOutOfBoundsException e) { return 0; }
@@ -778,7 +778,7 @@ class FGraphPerspective implements GraphPerspective
     if (!(nodeInx < 0)) return null;
     final int nativeNodeInx = m_rootToNativeNodeInxMap.get(~nodeInx);
     final IntEnumerator adj;
-    try { adj = m_graph.adjacentEdges(nativeNodeInx, outgoingDirected,
+    try { adj = m_graph.edgesAdjacent(nativeNodeInx, outgoingDirected,
                                       incomingDirected, undirected); }
     catch (IllegalArgumentException e) { return null; }
     if (adj == null) return null;
@@ -812,7 +812,7 @@ class FGraphPerspective implements GraphPerspective
       if (!(nodeInx[i] < 0)) continue;
       final int nativeNodeInx = m_rootToNativeNodeInxMap.get(~nodeInx[i]);
       try {
-        if (m_graph.containsNode(nativeNodeInx))
+        if (m_graph.nodeExists(nativeNodeInx))
           nativeNodeBucket.put(nativeNodeInx); }
       catch (IllegalArgumentException e) { } }
     m_hash.empty();
@@ -822,13 +822,13 @@ class FGraphPerspective implements GraphPerspective
     {
       final int nativeNodeIndex = nativeNodeEnum.nextInt();
       final IntEnumerator nativeAdjEdgeEnum =
-        m_graph.adjacentEdges(nativeNodeIndex, true, false, true);
+        m_graph.edgesAdjacent(nativeNodeIndex, true, false, true);
       while (nativeAdjEdgeEnum.numRemaining() > 0)
       {
         final int nativeCandidateEdge = nativeAdjEdgeEnum.nextInt();
         final int nativeOtherEdgeNode =
-          (nativeNodeIndex ^ m_graph.sourceNode(nativeCandidateEdge) ^
-           m_graph.targetNode(nativeCandidateEdge));
+          (nativeNodeIndex ^ m_graph.edgeSource(nativeCandidateEdge) ^
+           m_graph.edgeTarget(nativeCandidateEdge));
         if (nativeOtherEdgeNode == nativeNodeBucket.get(nativeOtherEdgeNode))
           nativeEdgeBucket.put(nativeCandidateEdge);
       }
@@ -848,8 +848,8 @@ class FGraphPerspective implements GraphPerspective
     for (int i = 0; i < edgeInx.length; i++) {
       try {
         final int nativeEdgeIndex = m_rootToNativeEdgeInxMap.get(~edgeInx[i]);
-        nativeNodeBucket.put(m_graph.sourceNode(nativeEdgeIndex));
-        nativeNodeBucket.put(m_graph.targetNode(nativeEdgeIndex)); }
+        nativeNodeBucket.put(m_graph.edgeSource(nativeEdgeIndex));
+        nativeNodeBucket.put(m_graph.edgeTarget(nativeEdgeIndex)); }
       catch (IllegalArgumentException e) { } }
     final IntEnumerator nativeNodeEnum = nativeNodeBucket.elements();
     final int[] returnThis = new int[nativeNodeEnum.numRemaining()];
@@ -930,7 +930,7 @@ class FGraphPerspective implements GraphPerspective
       final int rootNodeInx = rootGraphNodeInx.nextInt();
       if (m_root.getNode(rootNodeInx) != null) {
         if (m_rootToNativeNodeInxMap.get(~rootNodeInx) >= 0) continue;
-        final int nativeNodeInx = m_graph.createNode();
+        final int nativeNodeInx = m_graph.nodeCreate();
         m_rootToNativeNodeInxMap.put(~rootNodeInx, nativeNodeInx);
         m_nativeToRootNodeInxMap.setIntAtIndex(rootNodeInx, nativeNodeInx); }
       else throw new IllegalArgumentException
@@ -944,16 +944,16 @@ class FGraphPerspective implements GraphPerspective
         final boolean edgeDirected = m_root.isEdgeDirected(rootEdgeInx);
         int nativeSrcInx = m_rootToNativeNodeInxMap.get(~rootSrcInx);
         if (nativeSrcInx < 0) {
-          nativeSrcInx = m_graph.createNode();
+          nativeSrcInx = m_graph.nodeCreate();
           m_rootToNativeNodeInxMap.put(~rootSrcInx, nativeSrcInx);
           m_nativeToRootNodeInxMap.setIntAtIndex(rootSrcInx, nativeSrcInx); }
         int nativeTrgInx = m_rootToNativeNodeInxMap.get(~rootTrgInx);
         if (nativeTrgInx < 0) {
-          nativeTrgInx = m_graph.createNode();
+          nativeTrgInx = m_graph.nodeCreate();
           m_rootToNativeNodeInxMap.put(~rootTrgInx, nativeTrgInx);
           m_nativeToRootNodeInxMap.setIntAtIndex(rootTrgInx, nativeTrgInx); }
         final int nativeEdgeInx =
-          m_graph.createEdge(nativeSrcInx, nativeTrgInx, edgeDirected);
+          m_graph.edgeCreate(nativeSrcInx, nativeTrgInx, edgeDirected);
         m_rootToNativeEdgeInxMap.put(~rootEdgeInx, nativeEdgeInx);
         m_nativeToRootEdgeInxMap.setIntAtIndex(rootEdgeInx, nativeEdgeInx); }
       else throw new IllegalArgumentException
@@ -1054,7 +1054,7 @@ class FGraphPerspective implements GraphPerspective
         m_rootToNativeNodeInxMap.get(~rootGraphNodeInx);
       if (nativeNodeIndex < 0) return 0;
       final IntEnumerator nativeEdgeInxEnum =
-        m_graph.adjacentEdges(nativeNodeIndex, true, true, true);
+        m_graph.edgesAdjacent(nativeNodeIndex, true, true, true);
       if (nativeEdgeInxEnum == null) return 0;
       if (nativeEdgeInxEnum.numRemaining() > 0) {
         final Edge[] edgeRemoveArr =
@@ -1071,7 +1071,7 @@ class FGraphPerspective implements GraphPerspective
           edgeRemoveArr[i] = m_root.getEdge(rootGraphEdgeInx); }
         hideEdges(source, edgeRemoveArr); }
       // nativeNodeIndex tested for validity with adjacentEdges() above.
-      if (m_graph.removeNode(nativeNodeIndex)) {
+      if (m_graph.nodeRemove(nativeNodeIndex)) {
         m_rootToNativeNodeInxMap.put(~rootGraphNodeInx, Integer.MAX_VALUE);
         m_nativeToRootNodeInxMap.setIntAtIndex(0, nativeNodeIndex);
         return rootGraphNodeInx; }
@@ -1157,7 +1157,7 @@ class FGraphPerspective implements GraphPerspective
       final int nativeEdgeIndex =
         m_rootToNativeEdgeInxMap.get(~rootGraphEdgeInx);
       if (nativeEdgeIndex < 0) return 0;
-      if (m_graph.removeEdge(nativeEdgeIndex)) {
+      if (m_graph.edgeRemove(nativeEdgeIndex)) {
         m_rootToNativeEdgeInxMap.put(~rootGraphEdgeInx, Integer.MAX_VALUE);
         m_nativeToRootEdgeInxMap.setIntAtIndex(0, nativeEdgeIndex);
         return rootGraphEdgeInx; }
