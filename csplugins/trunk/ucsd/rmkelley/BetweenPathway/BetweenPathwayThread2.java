@@ -23,9 +23,10 @@ import cytoscape.layout.*;
 import java.awt.Dimension;
 
 class BetweenPathwayThread2 extends Thread{
+    //double DENSITY_FACTOR = 5.62519903;
   double absent_score = .00001;
   double physical_beta = 0.5;
-  double genetic_beta = 0.9;
+  double genetic_beta = 0.5;
   double physical_logBeta = Math.log(physical_beta);
   double physical_logOneMinusBeta = Math.log(1-physical_beta);
   double genetic_logBeta = Math.log(genetic_beta);
@@ -384,7 +385,11 @@ class BetweenPathwayThread2 extends Thread{
 	  int total_size = this_genetic_size + this_physical_source_size + this_physical_target_size;
 	  //double this_score = (this_genetic_size*this_physical_source_score/this_physical_source_size)+(this_genetic_size*this_physical_target_score/this_physical_target_size)+this_genetic_score;
 	  //double this_score = ( this_genetic_score/this_genetic_size + this_physical_source_score/this_physical_source_size + this_physical_target_score/this_physical_target_size ) *Math.log(total_size);
-	  double this_score = ((this_genetic_score/this_genetic_size)+(this_physical_source_score+this_physical_target_score)/(this_physical_source_size+this_physical_target_size))*total_size;
+	  //double this_score = ((this_genetic_score/this_genetic_size)*((this_physical_source_score+this_physical_target_score)/(this_physical_source_size+this_physical_target_size)))*total_size;
+	  double this_score = ((this_genetic_score/this_genetic_size)*(this_physical_source_score/this_physical_source_size)*(this_physical_target_score/this_physical_target_size))*total_size;
+	  if((this_genetic_score < 0 || this_physical_source_score<0 || this_physical_target_score < 0) && this_score > 0){
+	    this_score = -this_score;
+	  }
 
 	  if(this_score > best_score){
 	    bestCandidate = candidate;
@@ -416,7 +421,22 @@ class BetweenPathwayThread2 extends Thread{
 	  }
 	}
       }
-      results.add(new NetworkModel(progress,sourceMembers,targetMembers,score));
+      int source_size = sourceMembers.size();
+      int target_size = targetMembers.size();
+      /*
+       * Here we calculate the number of potential
+       * edges for each type of edges (physical vs genetic
+       */
+      int this_genetic_size = (source_size*target_size);
+      int this_physical_source_size = Math.max(1,(source_size*(source_size-1)/2));
+      int this_physical_target_size = Math.max(1,(target_size*(target_size-1)/2));
+      int total_size = this_genetic_size + this_physical_source_size + this_physical_target_size;
+      results.add(new NetworkModel(progress,
+				   sourceMembers,
+				   targetMembers,
+				   score,
+				   ((physical_source_score+physical_target_score)/(this_physical_source_size+this_physical_target_size))*total_size,
+				   (genetic_score/this_genetic_size)*total_size));
       if(myMonitor.isCanceled()){
 	//throw new RuntimeException("Search cancelled");
 	break;
@@ -839,7 +859,9 @@ class BetweenPathwayThread2 extends Thread{
     int progress = 0;
     String iterationString = reader.readLine();
     double iterations = (new Integer(iterationString)).doubleValue();
-    
+    //if(cyNetwork == physicalNetwork){
+    //  iterations /= DENSITY_FACTOR;
+    //}
     while(reader.ready()){
       String line = reader.readLine();
       String [] splat = line.split("\t");
@@ -866,13 +888,7 @@ class BetweenPathwayThread2 extends Thread{
 	}catch(Exception e){
 	  throw new RuntimeException("Score file contains proteins ("+names[idx-1]+") not present in the network");
 	}
-	//double probability = 0;
-	//if(cyNetwork == physicalNetwork){
-	//  probability = Math.pow(Integer.parseInt(splat[idx])/iterations,PHYSICAL_FACTOR);
-	//}
-	//else{
 	double probability = Integer.parseInt(splat[idx])/iterations;
-	  //}
 	if(one < two){
 	  result[two-1][one-1] = probability; 
 	}

@@ -188,7 +188,7 @@ class BetweenPathwayThread extends Thread{
 	  }
 	}  
       }
-      results.add(new NetworkModel(progress,members[0],members[1],score));
+      results.add(new NetworkModel(progress,members[0],members[1],score,score,score));
     }
     myMonitor.close();
     Collections.sort(results);
