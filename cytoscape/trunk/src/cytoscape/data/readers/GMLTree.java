@@ -216,6 +216,7 @@ public class GMLTree{
 
     // handle the quotes -> build GMLToken list
     //find the quoted strings first so we can preserve their white space
+    // @bug If the file starts with a quote this logic will fail.
     while (quotes.hasMoreTokens()) {
       StringTokenizer tokens = new StringTokenizer(quotes.nextToken());
       while (tokens.hasMoreTokens()){
