@@ -112,7 +112,8 @@ public final class IntHash
    * arbitrarily.<p>
    * The returned enumeration becomes "invalid" as soon as any other method
    * on this hashtable instance is called; calling methods on an invalid
-   * enumeration will cause undefined behavior in the enumerator.
+   * enumeration will cause undefined behavior in the enumerator.  Actually,
+   * one method will not invalidate this enumeration: the get(int) method.
    * The returned enumerator has absolutely no effect on the underlying
    * hashtable.<p>
    * This method returns a value in constant time.  The returned enumerator
