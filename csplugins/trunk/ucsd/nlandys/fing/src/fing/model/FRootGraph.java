@@ -207,6 +207,11 @@ class FRootGraph implements RootGraph, DynamicGraph
     m_graph.nodeRemove(nativeNodeInx);
     m_nodes.setNodeAtIndex(null, nativeNodeInx);
     m_nodeDepot.recycleNode(removedNode);
+    final int metaNodeInx = m_nativeToMetaNodeInxMap.get(nativeNodeInx);
+    if (!(metaNodeInx < 0 || metaNodeInx == Integer.MAX_VALUE)) {
+      m_nativeToMetaNodeInxMap.put(nativeNodeInx, Integer.MAX_VALUE);
+      m_metaToNativeInxMap.setIntAtIndex(0, metaNodeInx);
+      m_metaGraph.nodeRemove(metaNodeInx); }    
     if (removedEdgeArr.length > 0)
       m_lis.rootGraphChanged
         (new RootGraphEdgesRemovedEvent(this, removedEdgeArr));
@@ -307,6 +312,11 @@ class FRootGraph implements RootGraph, DynamicGraph
     final FEdge removedEdge = m_edges.getEdgeAtIndex(nativeEdgeInx);
     m_edges.setEdgeAtIndex(null, nativeEdgeInx);
     m_edgeDepot.recycleEdge(removedEdge);
+    final int metaEdgeInx = m_nativeToMetaEdgeInxMap.get(nativeEdgeInx);
+    if (!(metaEdgeInx < 0 || metaEdgeInx == Integer.MAX_VALUE)) {
+      m_nativeToMetaEdgeInxMap.put(nativeEdgeInx, Integer.MAX_VALUE);
+      m_metaToNativeInxMap.setIntAtIndex(0, metaEdgeInx);
+      m_metaGraph.nodeRemove(metaEdgeInx); }
     m_lis.rootGraphChanged
       (new RootGraphEdgesRemovedEvent(this, new Edge[] { removedEdge }));
     return edgeInx;
