@@ -1274,23 +1274,22 @@ public abstract class Cytoscape {
    */
   public static void setSelectionMode(int selectionMode, GraphView view) {
 
+    // first, disable node and edge selection on the view
+    view.disableNodeSelection();
+    view.disableEdgeSelection();
+
+    // then, based on selection mode, enable node and/or edge selection
     switch(selectionMode) {
 
       case SELECT_NODES_ONLY:
-        view.disableNodeSelection();
-        view.disableEdgeSelection();
         view.enableNodeSelection();
         break;
 
       case SELECT_EDGES_ONLY:
-        view.disableNodeSelection();
-        view.disableEdgeSelection();
         view.enableEdgeSelection();
         break;
 
       case SELECT_NODES_AND_EDGES:
-        view.disableNodeSelection();
-        view.disableEdgeSelection();
         view.enableNodeSelection();
         view.enableEdgeSelection();
         break;
