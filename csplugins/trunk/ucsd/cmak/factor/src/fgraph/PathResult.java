@@ -64,6 +64,42 @@ public class PathResult
         return _maxPathLength;
     }
 
+    int getNumKOPairs()
+    {
+        int cnt = 0;
+        
+        IntArrayList kos = getKOs();
+        for(int x=0, N = kos.size(); x < N; x++)
+        {
+            int knockedOut =  kos.get(x);
+            Target2PathMap target2path = getTarget2PathMap(knockedOut);
+
+            cnt += target2path.size();
+        }
+
+        return cnt;
+    }
+    
+    int countKOWithTargets()
+    {
+        int cnt = 0;
+        
+        IntArrayList kos = getKOs();
+        for(int x=0, N = kos.size(); x < N; x++)
+        {
+            int knockedOut =  kos.get(x);
+            Target2PathMap target2path = getTarget2PathMap(knockedOut);
+
+            if(target2path.size() > 0)
+            {
+                cnt++;
+            }
+        }
+
+        return cnt;
+    }
+    
+
     
     /**
      * @return a map of edge indices to DFSPath.Interval objects.

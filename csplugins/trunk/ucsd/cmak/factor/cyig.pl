@@ -9,20 +9,24 @@ my @files = grep { /$run-.*\.sif$/ && -f "$dir/$_" } readdir(DIR);
 
 my $cmd = "cytoscape.sh ";
 
+my $datadir = "/cellar/users/cmak/data";
+
 my $base = "$dir/$run";
 
 $cmd .= " -l embedded ";
-$cmd .= " -n /cellar/users/cmak/data/orf2name.noa ";
-$cmd .= " -n /cellar/users/cmak/data/isTF.noa ";
-$cmd .= " -n /cellar/users/cmak/data/buffering/wt-mms-response.noa ";
+$cmd .= " -n $datadir/orf2name.noa ";
+$cmd .= " -n $datadir/isTF.noa ";
+$cmd .= " -n $datadir/buffering/wt-mms-response.noa ";
 $cmd .= " -n ${base}_type.noa ";
+$cmd .= " -n $datadir/cell-cycle/cell-cycle.noa ";
+$cmd .= " -n $datadir/metabolic-map/metabolic-path.noa ";
 #$cmd .= " -n ${base}_ncount.noa ";
 $cmd .= " -j ${base}_dir.eda ";
 $cmd .= " -j ${base}_sign.eda ";
 $cmd .= " -j ${base}_model.eda ";
 $cmd .= " -j ${base}_path.eda ";
-$cmd .= " -j /cellar/users/cmak/data/buffering/TFbuffering30nov2004.ea ";
-$cmd .= " -j /cellar/users/cmak/data/location/plusMinusMMS.ea ";
+$cmd .= " -j $datadir/buffering/TFbuffering30nov2004.ea ";
+$cmd .= " -j $datadir/location/plusMinusMMS.ea ";
 
 foreach $f (@files)
 {

@@ -67,6 +67,11 @@
    <antlr target="${grammar}/message.g"
            outputdirectory="${gsrc}"/>
 
+
+   <antlr target="${grammar}/submodel.g"
+           outputdirectory="${gsrc}"/>
+
+
     <!-- Compile the java code from ${src} into ${build}
     <javac  destdir="${build}" deprecation="no">
          <src path="${src}"/> 

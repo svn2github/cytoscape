@@ -17,6 +17,11 @@ public class Submodel
     private int _explainedKO;
     private int _depVars;
     private int[] _activePaths; // paths that are active when this model is created
+
+    public static void resetId()
+    {
+        ID = 0;
+    }
     
     public Submodel()
     {

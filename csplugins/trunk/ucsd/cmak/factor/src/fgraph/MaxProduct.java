@@ -149,8 +149,11 @@ public class MaxProduct
         start = System.currentTimeMillis();
 
         PathResult paths = findPaths();
+        log("Num KOs: " + paths.getKOs().size());
+        log("Num KO pairs: " + paths.getNumKOPairs());
+        log("Num KO with >0 targets: " + paths.countKOWithTargets());
         log("Found paths: " + paths.getPathCount());
-
+        
         //log(paths.toString(_ig));
         
         _run(paths, _ig, outputDir, outputFile);

@@ -1,5 +1,6 @@
 package fgraph;
 
+import fgraph.util.DataPrinter;
 import fgraph.util.IntListMap;
 import fgraph.util.IntIntListMap;
 
@@ -63,7 +64,7 @@ public class MaxProductAlgorithm
         Submodel invariant = recursiveMaxProduct();
         
         _submodels.add(0, invariant);
-        _submodels = mergeAllSubmodels(_submodels);
+        _submodels = SubmodelAlgorithms.mergeAllSubmodels(_submodels);
         
         // annotate edges of submodel
         _fg.annotateSubmodelEdges(_submodels);
@@ -84,12 +85,12 @@ public class MaxProductAlgorithm
         Submodel invariant = recursiveMaxProduct();
         
         logger.info("submodels before merge");
-        printSubmodels(_submodels);
+        DataPrinter.printSubmodels("submodels.dat", _submodels);
         
         // merge submodels
-        _submodels = mergeSubmodels(_submodels);
+        _submodels = SubmodelAlgorithms.mergeSubmodelsByIndepVar(_submodels);
 
-        printSubmodels(_submodels);
+        DataPrinter.printSubmodels("merged-models.dat", _submodels);
         
         // filter submodels that do not explain any knockout effects
         if(filter)
@@ -99,7 +100,7 @@ public class MaxProductAlgorithm
                 Submodel m = (Submodel) it.next(); 
                 int numKO = countKO(m);
                 m.setNumExplainedKO(numKO);
-                if( numKO < 1 )
+                if( numKO < 3 )
                 {
                     logger.info("Submodel " + m.getId() + " explains no KO's");
                                 
@@ -221,27 +222,6 @@ public class MaxProductAlgorithm
 
 
     
-    private void printSubmodels(List submodels)
-    {
-        for(int x=0; x < submodels.size(); x++)
-        {
-            Submodel s = (Submodel) submodels.get(x);
-
-            IntArrayList vars = s.getVars();
-            StringBuffer b = new StringBuffer("model ");
-            b.append(s.getId());
-            b.append(" [");
-            for(int v=0; v < vars.size(); v++)
-            {
-                b.append(vars.get(v) + " ");
-            }
-            b.append("]");
-
-            logger.info(b.toString());
-        }
-
-    }
-    
     /**
      * FIX THIS.  Currently incorrect 10/30/04
      * It returns the number of knocked-out transcription factors
@@ -265,67 +245,6 @@ public class MaxProductAlgorithm
         }
 
         return cnt;
-    }
-
-
-    /**
-     * Merge submodels that share one or more edges.
-     *
-     * @param models a list of Submodel objects
-     * @return a list of merged models
-     */
-    public List mergeSubmodels(List models)
-    {
-        List merged = new ArrayList();
-        
-        for(int x=0; x < models.size(); x++)
-        {
-            boolean isDistinct = true;
-            Submodel mX = (Submodel) models.get(x);
-
-            for(int y=0; y < merged.size(); y++)
-            {
-                Submodel mY = (Submodel) merged.get(y);
-
-                if(mY.overlaps(mX))
-                {
-                    logger.info("overlap found: m=" + x
-                                + ", merged=" + y);
-                    mY.merge(mX);
-                    isDistinct = false;
-                    break;
-                }
-            }
-
-            if(isDistinct)
-            {
-                logger.info(mX + " is distinct submodel");
-                merged.add(mX);
-            }
-        }
-
-        return merged;
-    }
-
-
-    /**
-     * Merge all submodels into one model
-     *
-     * @param models a list of Submodel objects
-     * @return a list containing the merged model
-     */
-    public List mergeAllSubmodels(List models)
-    {
-        List merged = new ArrayList();
-
-        Submodel m0 = (Submodel) models.get(0);
-        for(int x=1; x < models.size(); x++)
-        {
-            m0.merge((Submodel) models.get(x));
-        }
-
-        merged.add(m0);
-        return merged;
     }
 
     
