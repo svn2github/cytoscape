@@ -6,7 +6,6 @@ import giny.model.RootGraph;
 final class RootGraphNodesRemovedEvent extends RootGraphChangeEventAdapter
 {
 
-  private final RootGraph m_rootGraph;
   private final Node[] m_removedNodes;
   private final int[] m_removedNodeInx;
 
@@ -19,7 +18,6 @@ final class RootGraphNodesRemovedEvent extends RootGraphChangeEventAdapter
   RootGraphNodesRemovedEvent(RootGraph rootGraph, Node[] removedNodes)
   {
     super(rootGraph);
-    m_rootGraph = rootGraph;
     m_removedNodes = removedNodes;
     m_removedNodeInx = new int[m_removedNodes.length];
     for (int i = 0; i < m_removedNodeInx.length; i++)

@@ -6,7 +6,6 @@ import giny.model.RootGraph;
 final class RootGraphEdgesRemovedEvent extends RootGraphChangeEventAdapter
 {
 
-  private final RootGraph m_rootGraph;
   private final Edge[] m_removedEdges;
   private final int[] m_removedEdgeInx;
 
@@ -19,7 +18,6 @@ final class RootGraphEdgesRemovedEvent extends RootGraphChangeEventAdapter
   RootGraphEdgesRemovedEvent(RootGraph rootGraph, Edge[] removedEdges)
   {
     super(rootGraph);
-    m_rootGraph = rootGraph;
     m_removedEdges = removedEdges;
     m_removedEdgeInx = new int[m_removedEdges.length];
     for (int i = 0; i < m_removedEdgeInx.length; i++)
