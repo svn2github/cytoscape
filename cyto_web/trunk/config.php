@@ -63,7 +63,7 @@ $cyto2_mac_east= $cbio_base . $cyto2_mac;
 # URL for Cytoscape Install Anywhere
 #################################################
 $cyto1_install_anywhere = $isb_base . "installer/installer1.1.1/install.htm";
-$cyto2_install_anywhere = "ftp://baker.systemsbiology.net/pub/xmas/cytoscape2/cytoscape2_Build_Output/Web_Installers/install.htm";
+$cyto2_install_anywhere = "ftp://baker.systemsbiology.net/pub/xmas/cytoscape2.0/cytoscape2.0_Build_Output/Web_Installers/install.htm";
 
 #  Production Settings
 #  Do not Modify
