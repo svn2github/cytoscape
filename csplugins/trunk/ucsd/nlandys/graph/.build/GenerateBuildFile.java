@@ -189,7 +189,8 @@ public class GenerateBuildFile
                           "}/" + pkgUnderscores + "\"");
       printStream.println("           srcdir=\"${" + TEMP_SRC_DIR +
                           "}/" + pkgUnderscores + "\"");
-      printStream.println("           debug=\"true\"");
+      printStream.println("           optimize=\"on\"");
+      printStream.println("           debug=\"on\"");
       printStream.println("           includeAntRuntime=\"no\">");
       String[] allDeps = getAllPackageDependencies(packageDirs[i], deps);
       String[] allLibDeps = getAllLibDependencies(packageDirs[i],
