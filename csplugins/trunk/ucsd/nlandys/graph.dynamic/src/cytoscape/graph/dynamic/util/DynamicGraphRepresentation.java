@@ -193,10 +193,57 @@ class DynamicGraphRepresentation implements DynamicGraph
       throw new IllegalArgumentException("edge is negative"); }
   }
 
-  public IntEnumerator adjacentEdges(int node, boolean outgoing,
-                                     boolean incoming, boolean undirected)
+  public IntEnumerator adjacentEdges(int node,
+                                     final boolean outgoing,
+                                     final boolean incoming,
+                                     final boolean undirected)
   {
-    return null;
+    final Node n;
+    try { n = m_nodes.getNodeAtIndex(node); }
+    catch (ArrayIndexOutOfBoundsException exc) {
+      // node is negative or Integer.MAX_VALUE.
+      throw new IllegalArgumentException("node is negative"); }
+    if (n == null) return null;
+    final Edge[] edgeLists;
+    if (undirected || (outgoing && incoming)) {
+      edgeLists = new Edge[] { n.firstOutEdge, n.firstInEdge }; }
+    else if (outgoing) { // Cannot also be incoming.
+      edgeLists = new Edge[] { n.firstOutEdge, null }; }
+    else if (incoming) { // Cannot also be outgoing.
+      edgeLists = new Edge[] { null, n.firstInEdge }; }
+    else { // All boolean input parameters are false.
+      edgeLists = new Edge[] { null, null }; }
+    int tentativeEdgeCount = 0;
+    if (outgoing) tentativeEdgeCount += n.outDegree;
+    if (incoming) tentativeEdgeCount += n.inDegree;
+    if (undirected) tentativeEdgeCount += n.undDegree;
+    final int edgeCount = tentativeEdgeCount;
+    return new IntEnumerator() {
+        private int numRemaining = edgeCount;
+        private int edgeListIndex = -1;
+        private Edge edge = null;
+        public int numRemaining() { return numRemaining; }
+        public int nextInt() {
+          while (edge == null) edge = edgeLists[++edgeListIndex];
+          int returnThis = -1;
+          if (edgeListIndex == 0) {
+            while (!((outgoing && edge.directed) ||
+                     (undirected && !edge.directed))) {
+              if (edge == null) {
+                edge = edgeLists[++edgeListIndex];
+                break; }
+              edge = edge.nextOutEdge; }
+            // This may not be what we're returning.
+            returnThis = edge.edgeId;
+            edge = edge.nextOutEdge; }
+          if (edgeListIndex == 1) {
+            while (!((incoming && edge.directed) ||
+                     (undirected && !edge.directed))) {
+              edge = edge.nextInEdge; }
+            returnThis = edge.edgeId;
+            edge = edge.nextInEdge; }
+          numRemaining--;
+          return returnThis; } };   
   }
 
   public int sourceNode(int edge)
