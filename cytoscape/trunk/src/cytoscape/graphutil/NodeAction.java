@@ -47,20 +47,14 @@ public class NodeAction {
   }
 
   /**
-   * get the Title for PNodeView which is just the "getIdentifier()" method
-   * from Node
+   * get the Title (label) for a PNodeView
    */
-  public static String getTitle ( Object[] args, PNode node ) {
-    //System.out.println( "Getting Title" );
-    final NetworkView nv = ( NetworkView )args[0];
-    //return nv.getNetwork().getNodeAttributes().getCanonicalName( node );
-
-    if ( node instanceof PNodeView ) {
-      return nv.getNetwork().getGraphPerspective().
-        getNode( ( (PNodeView)node).getGraphPerspectiveIndex() ).
-        getIdentifier();
-    }
-    return "";
+  public static String getTitle (Object unused[], PNode node ) {
+      if (node instanceof PNodeView) {
+          return ((PNodeView)node).getLabel().getText();
+      } else {
+          return "";
+      }
   }
 
   /**
