@@ -1,0 +1,42 @@
+Now
+- add unit tests:
+	Empty graph, one node graph,  two node graph
+	Selection ? how do you test what the user has selected?
+	Partition: numbers 0,1,2..., no gaps, a few test cases for partitioning
+	Cycle elimination test cases (including one with no cycles), no lost edge
+	Transitive reduction test cases
+	Layer assignment: no empty layers, all edges downward, test cases
+	Horizontal assignment: no gaps, start at 1
+	Full pass test
+- testing and bug fixing
+- make list of parameters which will appear in parameter dialog box, design user
+	interaction (when will dialog box appear?)
+
+Later
+- memory use during transitive reduction can be excessive.
+	This happens when the longest path is very long (>2000).
+	If this is a problem, the list of descendants approach can be scrapped.
+- edge crossing reduction needs to be examined.
+	The current approach is ad hoc. Some rigorous approach should
+	be implemented from Sugiyama chapter.
+- horizontal positioning needs to be implemented
+	The current approach is ad hoc. Some rigorous approach should
+	be implemented from Sugiyama chapter.
+- selection -> layout in place v. layout and make room
+	Currently, any unselected nodes are moved out of the way
+	to make room. Some approach to layout selected nodes while
+	respecting the position of surrounding nodes will be wanted.
+	Maybe multiple approaches to this.
+- parameter dialog box
+	Give the user the ability to set maximum layer width, for example.
+- multi-edge depiction
+	Synonymous edges currently are drawn on top of each other.
+- dummy verticies and indirect routing of edges
+	All edges do not have to be straight lines, perhaps. Also, the
+	Sugiyama edge crossing reduction requires "proper" layers
+	without edges that do not skip a layer. This needs to be handled
+	somehow.
+- consider moving some graph analysis functions into giny.
+	Evaluate using giny graph data structure in the core hierarchical
+	layout (general graph layout mechanisms can be available for
+	all giny users)
