@@ -101,8 +101,7 @@ public void testReadSmallAnnotationAddFullGoOntology () throws Exception
   assertTrue (annotation.getType().equals ("Biological Process"));
 
   String ontologyFile = "../../sampleData/goOntology.txt";
-  OntologyFlatFileReader ontologyReader = 
-         new OntologyFlatFileReader (new File (ontologyFile), "GO", "all");
+  OntologyFlatFileReader ontologyReader = new OntologyFlatFileReader (new File (ontologyFile));
 
   Ontology go = ontologyReader.getOntology ();
   assertTrue (go.size () > 13000);

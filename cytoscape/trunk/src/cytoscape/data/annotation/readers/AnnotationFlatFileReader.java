@@ -39,29 +39,51 @@ import cytoscape.data.annotation.*;
 import cytoscape.data.readers.*;
 //-------------------------------------------------------------------------
 public class AnnotationFlatFileReader { 
-  File file;
   Annotation annotation;
   String annotationType;
   String species;
   String curator;
+  String filename;
   File directoryAbsolute;
   String fullText;
   String [] lines;
 //-------------------------------------------------------------------------
 public AnnotationFlatFileReader (File file) throws Exception
 {
-
-  if (!file.canRead ()) {
-    throw new IllegalArgumentException ("cannot read input: " + file);
+  this (file.getPath ());
+}
+//-------------------------------------------------------------------------
+public AnnotationFlatFileReader (String filename) throws Exception
+{
+  System.out.println ("AFFR, filename: " + filename);
+  this.filename = filename;
+  try {
+    if (filename.trim().startsWith ("jar://")) {
+      TextJarReader reader = new TextJarReader (filename);
+      reader.read ();
+      fullText = reader.getText ();
+      }
+    else {
+      TextFileReader reader = new TextFileReader (filename);
+      reader.read ();
+      fullText = reader.getText ();
+      }
+    }
+  catch (Exception e0) {
+    System.err.println ("-- Exception while reading ontology flat file " + filename);
+    System.err.println (e0.getMessage ());
+    return;
     }
 
-  this.file = file;
+  /****************
   this.species = species;
   this.annotationType = annotationType;
   directoryAbsolute = file.getAbsoluteFile().getParentFile ();
   TextFileReader reader = new TextFileReader (file.getPath ());
   reader.read ();
   fullText = reader.getText ();
+  *************************/
+
   lines = fullText.split ("\n");
   parseHeader ();
   parse ();
@@ -84,7 +106,7 @@ private void parseHeader () throws Exception
   String [] tokens = firstLine.split ("\\)");
 
   String errorMsg = "error in AnnotationFlatFileReader.parseHeader ().\n";
-  errorMsg += "First line of " + file.getPath () + " must have form:\n";
+  errorMsg += "First line of " + filename + " must have form:\n";
   errorMsg += "   (species=Homo sapiens) (type=Biological Process) (curator=GO)\n";
   errorMsg += "instead found:\n";
   errorMsg += "   " + firstLine + "\n";

@@ -36,24 +36,43 @@ import java.io.*;
 import java.util.Vector;
 
 import cytoscape.data.readers.TextFileReader;
+import cytoscape.data.readers.TextJarReader;
 import cytoscape.data.annotation.OntologyTerm;
 import cytoscape.data.annotation.Ontology;
 //-------------------------------------------------------------------------
 public class OntologyFlatFileReader { 
-  File file;
   Ontology ontology;
   String curator = "unknown";
   String ontologyType = "unknown";
+  String filename;
   String fullText;
   String [] lines;
 //-------------------------------------------------------------------------
 public OntologyFlatFileReader (File file) throws Exception
 {
-  this.file = file;
+   this (file.getPath ());
+}
+//-------------------------------------------------------------------------
+public OntologyFlatFileReader (String filename) throws Exception
+{
+  try {
+    if (filename.trim().startsWith ("jar://")) {
+      TextJarReader reader = new TextJarReader (filename);
+      reader.read ();
+      fullText = reader.getText ();
+      }
+    else {
+      TextFileReader reader = new TextFileReader (filename);
+      reader.read ();
+      fullText = reader.getText ();
+      }
+    }
+  catch (Exception e0) {
+    System.err.println ("-- Exception while reading ontology flat file " + filename);
+    System.err.println (e0.getMessage ());
+    return;
+    }
 
-  TextFileReader reader = new TextFileReader (file.getPath ());
-  reader.read ();
-  fullText = reader.getText ();
   lines = fullText.split ("\n");
   parseHeader ();
   parse ();
@@ -76,7 +95,7 @@ private void parseHeader () throws Exception
   String [] tokens = firstLine.split ("\\)");
 
   String errorMsg = "error in OntologyFlatFileReader.parseHeader ().\n";
-  errorMsg += "First line of " + file.getPath () + " must have form:\n";
+  errorMsg += "First line of " + filename + " must have form:\n";
   errorMsg += "   (curator=GO) (type=all) \n";
   errorMsg += "instead found:\n";
   errorMsg += "   " + firstLine + "\n";
