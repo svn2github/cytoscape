@@ -432,12 +432,14 @@ protected JMenuBar createMenuBar ()
 
   fileMenu.add (new SaveAsGMLAction ());
   fileMenu.add (new SaveAsInteractionsAction ());
+  fileMenu.add (new SaveVisibleNodesAction());
   fileMenu.add (new PrintAction ());
 
   mi = fileMenu.add (new CloseWindowAction ());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_W, ActionEvent.CTRL_MASK));
   mi = fileMenu.add (new ExitAction ());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
+
 
   menuBar.add (fileMenu);
 
@@ -1096,6 +1098,52 @@ protected class ListFromFileSelectionAction extends AbstractAction   {
 	}
     }
     
+}
+
+//------------------------------------------------------------------------------
+protected boolean saveVisibleNodeNames ()
+{
+    Graph2D g = graphView.getGraph2D();
+    Node [] nodes = graphView.getGraph2D().getNodeArray();
+    
+    File file = new File("visibleNodes.txt");
+    try {
+	FileWriter fout = new FileWriter(file);
+	for (int i=0; i < nodes.length; i++) {
+	    Node node = nodes [i];
+	    NodeRealizer r = graphView.getGraph2D().getRealizer(node);
+	    String defaultName = r.getLabelText ();
+	    fout.write(r.getLabelText() + "\n");
+	} // for i
+	fout.close();
+	return true;
+    }  catch (IOException e) {
+	JOptionPane.showMessageDialog(null, e.toString(),
+				      "Error Writing to \"" + file.getName()+"\"",
+				      JOptionPane.ERROR_MESSAGE);
+	return false;
+    }
+	  
+} // saveVisibleNodeNames
+
+
+
+//------------------------------------------------------------------------------
+protected class SaveVisibleNodesAction extends AbstractAction   {
+  SaveVisibleNodesAction () { super ("Save Visible Nodes"); }
+
+    public void actionPerformed (ActionEvent e) {
+	boolean itWorked = saveVisibleNodeNames ();
+	Object[] options = {"OK"};
+	if(itWorked) {
+	    JOptionPane.showOptionDialog(null,
+					 "Visible Nodes Saved.",
+					 "Visible Nodes Saved.",
+					 JOptionPane.DEFAULT_OPTION,
+					 JOptionPane.PLAIN_MESSAGE,
+					 null, options, options[0]);
+	}
+    }
 }
 //------------------------------------------------------------------------------
 protected class DeselectAllAction extends AbstractAction   {
