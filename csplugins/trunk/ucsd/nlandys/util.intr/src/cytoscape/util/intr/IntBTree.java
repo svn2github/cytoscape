@@ -374,7 +374,7 @@ public final class IntBTree
         public final int numRemaining() { return count; }
         public final int nextInt() {
           int returnThis = 0; // To keep compiler from complaining.
-          if (wholeLeafNodes != 0)
+          if (wholeLeafNodes != 0) // Faster than 'wholeLeafNodes > 0' ? 
             returnThis = currentLeafNode.values[currentNodeInx];
           else
             for (; currentNodeInx < currentLeafNode.sliceCount;
