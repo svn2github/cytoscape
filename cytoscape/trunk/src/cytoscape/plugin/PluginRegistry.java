@@ -31,9 +31,7 @@
 //-------------------------------------------------------------------------
 package cytoscape.plugin;
 //-------------------------------------------------------------------------
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Iterator;
+import java.util.*;
 //-------------------------------------------------------------------------
 /**
  * User: sheridan
@@ -53,40 +51,35 @@ public class PluginRegistry {
         public Class plugin;
         public long loadTime;
     }
-    protected ArrayList registry;
-    protected long lastChangeTime;
-
+    protected List registry;
+    protected List listeners;
     /**
      * Initialize registry as empty.
      */
     public PluginRegistry() {
-        registry = new ArrayList();
-        markPluginRegistryChangeTime();
-    }
-
-    /**
-     * Update the last time of change to the registry.
-     */
-    public void markPluginRegistryChangeTime() {
-        lastChangeTime = System.currentTimeMillis();
+        registry = Collections.synchronizedList(new ArrayList());
+        listeners = Collections.synchronizedList(new ArrayList());
     }
 
     /**
      * Returns all plugins loaded since a time (in milliseconds).
      */
-    public Class[] getPluginsLoadedSince(long time) {
-        if (time >= lastChangeTime) return new Class[0];
+    public PluginUpdateList getPluginsLoadedSince(long time) {
         LinkedList newPlugins = new LinkedList();
-        Iterator iter;
-        for (iter = registry.iterator(); iter.hasNext();) {
-            PluginRegistryNode node = (PluginRegistryNode)iter.next();
-            if (node.loadTime >= time) {
-                newPlugins.add(node.plugin);
+        long timestamp;
+        synchronized (registry) {
+            timestamp = System.currentTimeMillis();
+            Iterator iter = registry.iterator();
+            while (iter.hasNext()) {
+                PluginRegistryNode node = (PluginRegistryNode)iter.next();
+                if (node.loadTime >= time) {
+                    newPlugins.add(node.plugin);
+                }
             }
         }
         Class newPlugin[] = new Class[newPlugins.size()];
         newPlugins.toArray(newPlugin);
-        return newPlugin;
+        return new PluginUpdateList(timestamp,newPlugin);
     }
 
     /**
@@ -106,20 +99,47 @@ public class PluginRegistry {
         newNode.plugin = plugin;
         long now = System.currentTimeMillis();
         newNode.loadTime = now;
-        registry.add(newNode);
-        lastChangeTime = now;
+        synchronized (registry) {
+            registry.add(newNode);
+        }
+        synchronized (listeners) {
+            long timestamp = System.currentTimeMillis();
+            Iterator iter = listeners.iterator();
+            while(iter.hasNext()) {
+                ((PluginListener)(iter.next())).pluginRegistryChanged(new PluginEvent(timestamp,"Plugin Added"));
+            }
+        }
     }
 
     /**
      * Tests if plugin is in registry.
      */
     public boolean pluginRegistryContains(String pluginName) {
-        Iterator iter;
-        for (iter = registry.iterator(); iter.hasNext();) {
-            PluginRegistryNode node = (PluginRegistryNode)iter.next();
-            if (node.plugin.getName().equals(pluginName)) return true;
+        synchronized (registry) {
+            Iterator iter;
+            for (iter = registry.iterator(); iter.hasNext();) {
+                PluginRegistryNode node = (PluginRegistryNode)iter.next();
+                if (node.plugin.getName().equals(pluginName)) return true;
+            }
         }
         return false;
     }
-}
 
+    /**
+     * Adds the specified PluginListener to receive PluginEvents from this PluginRegistry.
+     */
+    public void addPluginListener(PluginListener l) {
+        synchronized (registry) {
+            listeners.add(l);
+        }
+    }
+
+    /**
+     *  Removes the specified PluginListener so it no longer receives PluginEvents from this PluginRegistry
+     */
+    public void removePluginListener(PluginListener l) {
+        synchronized (registry) {
+            listeners.remove(l);
+        }
+    }
+}

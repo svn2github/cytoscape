@@ -35,6 +35,8 @@ import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.event.MenuListener;
+import javax.swing.event.MenuEvent;
 
 //imports for giny graph library support
 import giny.util.SpringEmbeddedLayouter;
@@ -46,6 +48,10 @@ import giny.view.GraphViewChangeEvent;
 import cytoscape.util.GinyFactory;  //for creating Giny objects
 
 import cytoscape.*;
+import cytoscape.plugin.PluginListener;
+import cytoscape.plugin.PluginEvent;
+import cytoscape.plugin.AbstractPlugin;
+import cytoscape.plugin.PluginUpdateList;
 import cytoscape.data.*;
 //import cytoscape.view.*;
 import cytoscape.visual.*;
@@ -55,7 +61,11 @@ import cytoscape.visual.ui.VizMapUI;
  * This class represents a visible window displaying a network. It includes
  * all of the UI components and the the graph view.
  */
-public class CyWindow extends JPanel implements GraphViewChangeListener,CyNetworkListener, NetworkView {
+public class CyWindow extends JPanel implements
+        GraphViewChangeListener,
+        CyNetworkListener,
+        PluginListener,
+        NetworkView {
 
     protected static final int DEFAULT_WIDTH = 700;
     protected static final int DEFAULT_HEIGHT = 700;
@@ -98,6 +108,8 @@ public class CyWindow extends JPanel implements GraphViewChangeListener,CyNetwor
     //save constructor variable here to draw graph later
     protected boolean windowDisplayed = false;
 
+    // timestamp of last received event (with currentTimeMills())
+    protected long lastPluginRegistryUpdate;
 //------------------------------------------------------------------------------
 /**
  * Main constructor.
@@ -150,16 +162,28 @@ public CyWindow(CytoscapeObj globalInstance, CyNetwork network, String title) {
     //this should eventually be replaced by a method in Cytoscape.java itself
     //to save the catalog just before exiting the program
     final CytoscapeObj theCytoscapeObj = globalInstance;
+    final CyWindow thisWindow = this;
     mainFrame.addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent we) {
             theCytoscapeObj.saveCalculatorCatalog();
+        }
+        public void windowClosed() {
+            theCytoscapeObj.getPluginRegistry().removePluginListener(thisWindow);
         }
     });
     //add the parent app as a listener, to manage the session when this window closes
     //is this strictly necessary, since cytoscape.java listens for
     //WindowOpened events? -AM 2003/06/24
     mainFrame.addWindowListener( globalInstance.getParentApp() );
-
+    //poll Plugin Registry for immediate plugin load set
+    PluginUpdateList pul = globalInstance.getPluginRegistry().getPluginsLoadedSince(0);
+    Class neededPlugin[] = pul.getPluginArray();
+    for (int i = 0; i < neededPlugin.length; i++) {
+        AbstractPlugin.loadPlugin(neededPlugin[i], globalInstance, this);
+    }
+    lastPluginRegistryUpdate = pul.getTimestamp();
+    //add self as listener to the PluginRegistry from the shared CytoscapeObj
+    globalInstance.getPluginRegistry().addPluginListener(this);
 }
 
 //------------------------------------------------------------------------------
@@ -485,7 +509,7 @@ public void setNewNetwork( CyNetwork newNetwork ) {
     this.network.removeCyNetworkListener(this);
     this.network = newNetwork;
     newNetwork.addCyNetworkListener(this);
-    
+
     switchGraph();
 }
 //------------------------------------------------------------------------------
@@ -654,9 +678,7 @@ public void onCyNetworkEvent(CyNetworkEvent event) {
     }
 }
 //------------------------------------------------------------------------------
-
 /**
- *
  * Implementation of the GraphViewChangeListener interface. Triggers a change
  * in the status label, updating the number of hidden nodes/edges.
  */
@@ -667,6 +689,20 @@ public void graphViewChanged ( GraphViewChangeEvent event) {
     int nodeCount = (nodes == null) ? 0 : nodes.length;
     int edgeCount = (edges == null) ? 0 : edges.length;
     updateStatusLabel(nodeCount, edgeCount);
+}
+//------------------------------------------------------------------------------
+/**
+ * Implemenation of the PluginListener interface. Triggers update of
+ * currently loaded plugins.
+ */
+public void pluginRegistryChanged(PluginEvent event) {
+    //poll Plugin Registry for new plugins since last update
+    PluginUpdateList pul = globalInstance.getPluginRegistry().getPluginsLoadedSince(lastPluginRegistryUpdate);
+    Class neededPlugin[] = pul.getPluginArray();
+    for (int i = 0; i < neededPlugin.length; i++) {
+        AbstractPlugin.loadPlugin(neededPlugin[i], globalInstance, this);
+    }
+    lastPluginRegistryUpdate = pul.getTimestamp();
 }
 //------------------------------------------------------------------------------
 /**

@@ -70,7 +70,6 @@ public class CyMenus  implements GraphViewChangeListener {
   JButton saveButton;
   JButton vizButton;
   JMenu opsMenu;
-  long lastOpsMenuRefresh;
   CytoscapeToolBar toolBar;
   boolean nodesRequiredItemsEnabled;
 
@@ -281,20 +280,6 @@ newState = true; //TODO: remove this once the GraphViewChangeListener system is 
           menuPrintAction.setEnabled(false);
           displayNWSubMenu.setEnabled(false);
           setNodesRequiredItemsEnabled();
-          opsMenu.addMenuListener(new MenuListener() {
-              public void menuCanceled(MenuEvent e) {}
-              public void menuDeselected(MenuEvent e) {}
-              public void menuSelected(MenuEvent e) {
-                  Class neededPlugin[] =
-                          cyWindow.getCytoscapeObj().getPluginRegistry().getPluginsLoadedSince(lastOpsMenuRefresh);
-                  for (int i = 0; i < neededPlugin.length; i++) {
-                          AbstractPlugin.loadPlugin(neededPlugin[i], cyWindow.getCytoscapeObj(),
-                                                  cyWindow );
-                  }
-                  lastOpsMenuRefresh = System.currentTimeMillis();
-              }
-          });
-          lastOpsMenuRefresh = 0; // Force immediate refresh
           cyWindow.getView().addGraphViewChangeListener(this);
       }
   }
@@ -452,7 +437,7 @@ newState = true; //TODO: remove this once the GraphViewChangeListener system is 
     toolBar.addSeparator();
 
 
-   
+
     final ZoomAction zoom_in = new ZoomAction(networkView, 1.1);
     final JButton zoomInButton = new JButton();
     zoomInButton.setIcon(new ImageIcon(getClass().getResource("images/new/zoom_in36.gif")));
@@ -463,21 +448,21 @@ newState = true; //TODO: remove this once the GraphViewChangeListener system is 
         public void 	mouseClicked(MouseEvent e) {
           zoom_in.zoom();
         }
-        
+
          public void 	mouseEntered(MouseEvent e) {}
-        
+
          public void 	mouseExited(MouseEvent e) {}
-        
+
          public void 	mousePressed(MouseEvent e) {
            zoomInButton.setSelected( true );
         }
-        
+
          public void 	mouseReleased(MouseEvent e) {
            zoomInButton.setSelected( false );
         }
       } );
 
-   
+
     final ZoomAction zoom_out = new ZoomAction(networkView, 0.9);
     final JButton zoomOutButton = new JButton();
     zoomOutButton.setIcon(new ImageIcon(getClass().getResource("images/new/zoom_out36.gif")));
@@ -488,15 +473,15 @@ newState = true; //TODO: remove this once the GraphViewChangeListener system is 
          public void 	mouseClicked(MouseEvent e) {
           zoom_out.zoom();
         }
-        
+
          public void 	mouseEntered(MouseEvent e) {}
-        
+
          public void 	mouseExited(MouseEvent e) {}
-        
+
          public void 	mousePressed(MouseEvent e) {
            zoomOutButton.setSelected( true );
         }
-        
+
          public void 	mouseReleased(MouseEvent e) {
            zoomOutButton.setSelected( false );
         }
@@ -511,7 +496,7 @@ newState = true; //TODO: remove this once the GraphViewChangeListener system is 
             zoom_out.zoom();
           }
 
-        } 
+        }
       }
                                    );
 
@@ -528,7 +513,7 @@ newState = true; //TODO: remove this once the GraphViewChangeListener system is 
 
     toolBar.add( zoomOutButton );
     toolBar.add( zoomInButton );
- 
+
     b = toolBar.add(new ZoomSelectedAction(networkView));
     b.setIcon(new ImageIcon(getClass().getResource("images/new/crop36.gif")));
     b.setToolTipText("Zoom Selected Region");
