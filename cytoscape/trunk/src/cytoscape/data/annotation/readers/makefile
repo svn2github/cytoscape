@@ -13,7 +13,9 @@ JI=java -DCYTOSCAPE_HOME=$(CYTOSCAPE_HOME)
 	$(JC) $<
 
 OBJS = AnnotationXmlReader.class \
-       OntologyXmlReader.class
+       OntologyXmlReader.class \
+       OntologyFlatFileReader.class \
+       AnnotationFlatFileReader.class
 
 default: objs 
 

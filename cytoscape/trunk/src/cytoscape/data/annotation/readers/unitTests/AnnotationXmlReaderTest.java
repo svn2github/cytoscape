@@ -70,14 +70,14 @@ public void testReadKeggAnnotation () throws Exception
 { 
   System.out.println ("testReadKeggHaloMetabolicPathway");
 
-  String filename = "sampleData/kegg/haloMetabolicPathway.xml";
+  String filename = "../../sampleData/keggHalo.xml";
   AnnotationXmlReader reader = new AnnotationXmlReader (new File (filename));
   Annotation annotation = reader.getAnnotation ();
 
   assertTrue (annotation.getSpecies().equals ("Halobacterium sp."));
   assertTrue (annotation.getCurator().equals ("KEGG"));
-  assertTrue (annotation.getOntologyType().equals ("Metabolic Pathway"));
-  assertTrue (annotation.size () == 10);
+  assertTrue (annotation.getOntologyType().equals ("Pathways"));
+  assertTrue (annotation.size () == 1476);
   
 } // testReadKeggAnnotation
 //-------------------------------------------------------------------------

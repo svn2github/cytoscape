@@ -1,4 +1,4 @@
-// OntologyXmlReaderTest
+// OntologyFlatFileReaderTest
 
 /** Copyright (c) 2002 Institute for Systems Biology and the Whitehead Institute
  **
@@ -34,26 +34,21 @@
 package cytoscape.data.annotation.readers.unitTests;
 //------------------------------------------------------------------------------
 import java.io.*; 
-import org.jdom.*; 
-import org.jdom.input.*; 
-import org.jdom.output.*; 
 import java.util.*;
 import junit.framework.*;
 
-import cytoscape.data.annotation.OntologyTerm;
-import cytoscape.data.annotation.Ontology;
-import cytoscape.data.annotation.readers.OntologyXmlReader;
+import cytoscape.data.annotation.*;
 import cytoscape.data.annotation.readers.*;
 //------------------------------------------------------------------------------
 /**
- * test the OntologyXmlReader class
+ * test the OntologyFlatFileReader class
  */
-public class OntologyXmlReaderTest extends TestCase {
+public class OntologyFlatFileReaderTest extends TestCase {
 
   static String filename = "sampleData/keggOntology.xml";
 
 //------------------------------------------------------------------------------
-public OntologyXmlReaderTest (String name) 
+public OntologyFlatFileReaderTest (String name) 
 {
   super (name);
 }
@@ -67,28 +62,59 @@ public void tearDown () throws Exception
 }
 //------------------------------------------------------------------------------
 /**
- * make sure that the ctor properly initializes all relevant data structures
- * as seen through the standard getter methods
+ * make sure that we can read a very small subset of the full go ontology,
+ * and get back selected values
  */
-public void testReadKeggOntology () throws Exception
+public void testReadGoOntologySmall () throws Exception
 { 
-  System.out.println ("testReadKeggOntology");
-  String filename = "../../sampleData/keggOntology.xml";
-  OntologyXmlReader reader = new OntologyXmlReader (new File (filename));
+  System.out.println ("testReadGoOntologySmall");
+  String filename = "../../sampleData/goSmall.txt";
+  String curator = "GO";
+  String ontologyType = "all";
+  OntologyFlatFileReader reader = new OntologyFlatFileReader (new File (filename));
   Ontology ontology = reader.getOntology ();
 
-  assertTrue (ontology.getCurator().equals ("KEGG"));
-  assertTrue (ontology.getType().equals ("Pathways"));
-  assertTrue (ontology.size () == 194);
+  assertTrue (ontology.getCurator().equals ("GO"));
+  assertTrue (ontology.getType().equals ("all"));
+  assertTrue (ontology.size () == 22);
   
+  assertTrue (ontology.containsTerm (8607));
+  OntologyTerm term8607 = ontology.getTerm (8607);
+  assertTrue (term8607.getName().equalsIgnoreCase ("phosphorylase kinase, regulator"));
+  int [] parents = term8607.getParents ();
+  assertTrue (parents.length == 1);
+  assertTrue (parents [0] == 19887);
+  int [] containers = term8607.getContainers ();
+  assertTrue (containers.length == 1);
+  assertTrue (containers [0] == 4689);
+
+  assertTrue (ontology.containsTerm (16505));
+  OntologyTerm term16505 = ontology.getTerm (16505);
+  assertTrue (term16505.getName().equalsIgnoreCase ("apoptotic protease activator"));
+  parents = term16505.getParents ();
+  assertTrue (parents.length == 2);
+  assertTrue (parents [0] == 16504);
+  assertTrue (parents [1] == 16506);
+  containers = term16505.getContainers ();
+  assertTrue (containers.length == 2);
+  assertTrue (containers [0] == 4889);
+  assertTrue (containers [1] == 16304);
+
+
+//name: apoptotic protease activator
+//id: 16505
+//parents: 16504 16506 
+//containers: 4889 16304 
+
+
 } // testRead
 //-------------------------------------------------------------------------
 public static void main (String [] args) 
 {
-  junit.textui.TestRunner.run (new TestSuite (OntologyXmlReaderTest.class));
+  junit.textui.TestRunner.run (new TestSuite (OntologyFlatFileReaderTest.class));
 
 } // main
 //------------------------------------------------------------------------------
-} // class OntologyXmlReaderTest
+} // class OntologyFlatFileReaderTest
 
 

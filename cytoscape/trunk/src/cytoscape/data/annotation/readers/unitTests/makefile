@@ -1,4 +1,4 @@
-# makefile for csplugins.data.readers.unitTests
+# makefile for cytoscape.data.annotation.readers.unitTests
 #-------------------------------------------------------------------------
 # $Revision$
 # $Date$
@@ -6,15 +6,17 @@
 #-------------------------------------------------------------------------
 
 JC=javac -source 1.4
-JI=java #-DCYTOSCAPE_HOME=$(CYTOSCAPE_HOME)
-PKG=csplugins.data.annotation.readers.unitTests
+JI=java -Xmx1G
+PKG=cytoscape.data.annotation.readers.unitTests
 
 .SUFFIXES: .java .class
 .java.class: 
 	$(JC) $<
 
 OBJS = OntologyXmlReaderTest.class \
-       AnnotationXmlReaderTest.class
+       AnnotationXmlReaderTest.class \
+       OntologyFlatFileReaderTest.class \
+       AnnotationFlatFileReaderTest.class
 
 default: objs run
 
@@ -28,7 +30,7 @@ objs: $(OBJS)
 #  run all the unitTests
 # 
 
-run: objs 1 2
+run: objs 1 2 3 4
 	
 
 #------ clean
@@ -37,14 +39,6 @@ run: objs 1 2
 
 clean:
 	- rm *.class 
-
-
-#------ 0
-#  run just the AnnotationReaderTest
-# 
-
-0: AnnotationReaderTest.class
-	$(JI) $(PKG).AnnotationReaderTest
 
 #------ 1
 #  run just the OntologyXmlReaderTest
@@ -59,6 +53,21 @@ clean:
 
 2: AnnotationXmlReaderTest.class
 	$(JI) $(PKG).AnnotationXmlReaderTest
+
+
+#------ 3
+#  run OntologyFlatFileTest
+# 
+
+3: OntologyFlatFileReaderTest.class
+	$(JI) $(PKG).OntologyFlatFileReaderTest
+
+#------ 4
+#  run AnnotationFlatFileReaderTest
+# 
+
+4: AnnotationFlatFileReaderTest.class
+	$(JI) $(PKG).AnnotationFlatFileReaderTest
 
 
 

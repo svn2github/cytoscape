@@ -68,6 +68,7 @@ import java.io.*;
  */
 public class Annotation implements Serializable {
   protected Ontology ontology;
+  protected String curator;
   protected String species;
   protected String type;
   protected HashMap hash;   // (name, Vector) pairs, the Vector contains Integers
@@ -81,9 +82,23 @@ public Annotation (String species, String type, Ontology ontology)
 
 } // ctor
 //------------------------------------------------------------------------------
+public Annotation (String species, String type, String curator)
+{
+  this.curator = curator;
+  this.species = species;
+  this.type = type;
+  hash = new HashMap ();
+
+} // ctor
+//------------------------------------------------------------------------------
 public HashMap getMap ()
 {
   return hash;
+}
+//------------------------------------------------------------------------------
+public void setOntology (Ontology newValue)
+{
+   ontology = newValue;
 }
 //------------------------------------------------------------------------------
 public Ontology getOntology ()
@@ -93,7 +108,7 @@ public Ontology getOntology ()
 //------------------------------------------------------------------------------
 public String getCurator ()
 {
-  return ontology.getCurator ();
+  return curator;
 }
 //------------------------------------------------------------------------------
 public String getType ()
@@ -103,7 +118,10 @@ public String getType ()
 //------------------------------------------------------------------------------
 public String getOntologyType ()
 {
-  return ontology.getType ();
+  if (ontology != null)
+    return ontology.getType ();
+
+  return "unknown";
 }
 //------------------------------------------------------------------------------
 public String getSpecies ()
@@ -198,6 +216,9 @@ public Vector getClassificationsVector (String name)
 //------------------------------------------------------------------------------
 public String [][] getAllHierarchyPathsAsNames (String name)
 {
+  if (ontology == null)
+    return new String [0][0];
+
   int [] leafClassifications = getClassifications (name);
   String [][] result;
   if (leafClassifications.length == 0) {
@@ -253,6 +274,9 @@ public int size ()
  */
 public int maxDepth ()
 {
+  if (ontology == null)
+    return 0;
+
   int [] classifications = getClassifications ();
   int max = 0;
 
@@ -271,7 +295,7 @@ public String toString ()
 {
   StringBuffer sb = new StringBuffer ();
   sb.append ("annotation: ");
-  sb.append (ontology.getCurator ());
+  sb.append (getCurator ());
   sb.append (", ");
   sb.append (type);
   sb.append (", ");

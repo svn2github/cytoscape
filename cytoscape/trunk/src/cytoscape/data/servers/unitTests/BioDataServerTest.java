@@ -83,9 +83,9 @@ public void no_testRmiServer () throws Exception
  * then pass it to the various data-specific testing methods to make 
  * sure it behaves properly.
  */
-public void testInProcessServer () throws Exception
+public void notestInProcessServer () throws Exception
 { 
-  System.out.println ("testInProcessCtor");
+  System.out.println ("testInProcessServer");
   BioDataServer server = new BioDataServer ("./loadList");
   System.out.println ("-- server:\n" + server.describe ());
 
@@ -119,7 +119,81 @@ public void testInProcessServer () throws Exception
   server.clear ();
   doDoubleLoadAnnotationTest (server);
 
+
 } // testInProcessServer
+//------------------------------------------------------------------------------
+/**
+ * create an in-process data server, load it with some data, and 
+ * then pass it to the various data-specific testing methods to make 
+ * sure it behaves properly.
+ */
+public void testInProcessServerUsingFlatFilesSmall () throws Exception
+{ 
+  System.out.println ("testInProcessServerUsingFlatFilesSmall");
+  BioDataServer server = new BioDataServer ();
+  String filename = "../../annotation/sampleData/bioprocHumanFull.txt";
+  String species;
+  String annotationType;
+
+  AnnotationFlatFileReader reader = new AnnotationFlatFileReader (new File (filename));
+  Annotation annotation = reader.getAnnotation ();
+  assertTrue (annotation.getSpecies().equals ("Homo sapiens"));
+  assertTrue (annotation.getType().equals ("Biological Process"));
+  
+
+  String ontologyFile = "../../annotation/sampleData/goOntology.txt";
+
+  OntologyFlatFileReader ontologyReader = new OntologyFlatFileReader (new File (ontologyFile));
+  Ontology go = ontologyReader.getOntology ();
+
+  annotation.setOntology (go);
+  server.addAnnotation (annotation);
+  AnnotationDescription [] aDescs = server.getAnnotationDescriptions ();
+  for (int i=0; i < aDescs.length; i++)
+    System.out.println (aDescs [i]);
+
+  System.out.println ("-- server:\n" + server.describe ());
+
+  AnnotationDescription adesc = new AnnotationDescription ("Homo sapiens", "GO", "Biological Process");
+  Annotation retrieved = server.getAnnotation (adesc);
+  
+  String protein = "IPI00163805"; // = 0030338
+  int [] terms = retrieved.getClassifications (protein);
+  assertTrue (terms.length == 1);
+  assertTrue (terms [0] == 30338);
+  int [][] paths = go.getAllHierarchyPaths (terms [0]);
+  assertTrue (paths.length == 2);
+  assertTrue (paths [0].length == 5);
+  assertTrue (paths [1].length == 6);
+
+  String [][] pathNames = go.getAllHierarchyPathsAsNames (terms [0]);
+  assertTrue (pathNames.length == 2);
+  assertTrue (pathNames [0].length == 5);
+  assertTrue (pathNames [1].length == 6);
+
+  assertTrue (pathNames [0][0].equalsIgnoreCase ("molecular_function"));
+  assertTrue (pathNames [0][1].equalsIgnoreCase ("enzyme"));
+  assertTrue (pathNames [0][2].equalsIgnoreCase ("oxidoreductase"));
+  assertTrue (pathNames [0][3].equalsIgnoreCase ("monooxygenase"));
+  System.out.println ("---- " + pathNames [0][3]);
+
+  assertTrue (pathNames [1][0].equalsIgnoreCase ("molecular_function"));
+  assertTrue (pathNames [1][1].equalsIgnoreCase ("enzyme"));
+  assertTrue (pathNames [1][2].equalsIgnoreCase ("oxidoreductase"));
+  assertTrue (pathNames [1][3].equalsIgnoreCase (
+        "oxidoreductase, acting on paired donors, with incorporation or reduction of molecular oxygen"));
+
+    // the tests could go all the way down to the leaf, but the names get longer, and
+    // the above tests should reveal anything gone wrong.
+
+
+  protein = "IPI00024413";
+  terms = retrieved.getClassifications (protein);
+  assertTrue (terms.length == 3);
+
+
+
+} // testInProcessServerSmall
 //------------------------------------------------------------------------------
 private void doAnnotationTest (BioDataServer server) throws Exception
 {
@@ -178,12 +252,12 @@ private void doDoubleLoadAnnotationTest (BioDataServer server) throws Exception
   assertTrue (server.getAnnotationCount () == 1);
   assertTrue (retrievedAnnotation.size () == prostasomeSize + bogusSize);
 
-} // doAnnotationTest
+} // doDoubleLoadAnnotationTest
 //------------------------------------------------------------------------------
 /**
  *  make sure we can read and load any number of xml annotation files 
  */
-public void testLoadAnnotationFiles () throws Exception
+public void notestLoadAnnotationFiles () throws Exception
 {
   System.out.println ("testLoadAnnotationFiles");
   BioDataServer server = new BioDataServer ();
@@ -247,6 +321,79 @@ public void testThesaurusWithAbsentEntries () throws Exception
 
 } //  testThesaurusWithAbsentEntries
 //-------------------------------------------------------------------------
+private void doFlatFileAnnotationTest (BioDataServer server) throws Exception
+{
+//  File xmlFile = new File ("../../kegg/haloMetabolicPathway.xml").getAbsoluteFile();
+//  AnnotationXmlReader reader = new AnnotationXmlReader (xmlFile);
+//  server.addAnnotation (reader.getAnnotation ());
+//
+//  String species = "Halobacterium sp.";
+//  String curator = "KEGG";
+//  String annotationType = "Pathways";
+//  String annotationString = "annotation: " + curator + ", " + annotationType + ", " + species;
+//
+//  assertTrue (server.getAnnotationCount () == 1);
+//  String description = server.describe ();
+//  assertTrue (description.indexOf (annotationString) >= 0);
+//  AnnotationDescription [] aDescs = server.getAnnotationDescriptions ();
+//  assertTrue (aDescs.length == 1);
+//  assertTrue (aDescs [0].toString().indexOf (annotationString) >= 0);
+//
+//  Annotation keggAnnotation = server.getAnnotation (species, curator, annotationType);
+//  assertTrue (keggAnnotation.toString().indexOf (annotationString) >= 0);
+
+
+  String filename = "../../annotation/sampleData/bioproc.txt";
+  String species = "Homo sapiens";
+  String type = "biological process";
+  AnnotationFlatFileReader reader = new AnnotationFlatFileReader (new File (filename));
+  Annotation annotation = reader.getAnnotation ();
+  String ontologyFile = "../../sampleData/goOntology.txt";
+  OntologyFlatFileReader ontologyReader = new OntologyFlatFileReader (new File (ontologyFile));
+  Ontology go = ontologyReader.getOntology ();
+  annotation.setOntology (go);
+  server.addAnnotation (annotation);
+  AnnotationDescription [] aDescs = server.getAnnotationDescriptions ();
+  for (int i=0; i < aDescs.length; i++)
+    System.out.println (aDescs [i]);
+
+  /*******************************
+  String protein = "IPI00163805"; // = 0030338
+  int [] terms = annotation.getClassifications (protein);
+  assertTrue (terms.length == 1);
+  assertTrue (terms [0] == 30338);
+  int [][] paths = go.getAllHierarchyPaths (terms [0]);
+  assertTrue (paths.length == 2);
+  assertTrue (paths [0].length == 5);
+  assertTrue (paths [1].length == 6);
+
+  String [][] pathNames = go.getAllHierarchyPathsAsNames (terms [0]);
+  assertTrue (pathNames.length == 2);
+  assertTrue (pathNames [0].length == 5);
+  assertTrue (pathNames [1].length == 6);
+
+  assertTrue (pathNames [0][0].equalsIgnoreCase ("molecular_function"));
+  assertTrue (pathNames [0][1].equalsIgnoreCase ("enzyme"));
+  assertTrue (pathNames [0][2].equalsIgnoreCase ("oxidoreductase"));
+  assertTrue (pathNames [0][3].equalsIgnoreCase ("monooxygenase"));
+
+  assertTrue (pathNames [1][0].equalsIgnoreCase ("molecular_function"));
+  assertTrue (pathNames [1][1].equalsIgnoreCase ("enzyme"));
+  assertTrue (pathNames [1][2].equalsIgnoreCase ("oxidoreductase"));
+  assertTrue (pathNames [1][3].equalsIgnoreCase (
+        "oxidoreductase, acting on paired donors, with incorporation or reduction of molecular oxygen"));
+
+    // the tests could go all the way down to the leaf, but the names get longer, and
+    // the above tests should reveal anything gone wrong.
+
+
+  protein = "IPI00024413";
+  terms = annotation.getClassifications (protein);
+  assertTrue (terms.length == 3);
+  ***********************/
+
+} // doFlatFileAnnotationTest
+//------------------------------------------------------------------------------
 public static void main (String [] args) 
 {
   junit.textui.TestRunner.run (new TestSuite (BioDataServerTest.class));

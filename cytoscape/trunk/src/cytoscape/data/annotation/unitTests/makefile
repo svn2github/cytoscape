@@ -5,7 +5,7 @@
 # $Author$
 #--------------------------------------------------------------------------------------
 JC=javac -source 1.4
-JI=java
+JI=java -Xmx1G
 PKG=cytoscape.data.annotation.unitTests
 
 .SUFFIXES: .java .class
@@ -21,7 +21,7 @@ OBJS = Utils.class \
 
 default: $(OBJS) run
 
-run: 0 1 2 3
+run: 0 1 2 3 4 5
 
 clean:
 	- rm *.class
@@ -32,21 +32,21 @@ clean:
 # 
 
 0: AnnotationDescriptionTest.class
-	java $(PKG).AnnotationDescriptionTest
+	$(JI) $(PKG).AnnotationDescriptionTest
 
 #------ 1
 #  run the AnnotationTest
 # 
 
 1: AnnotationTest.class
-	java $(PKG).AnnotationTest
+	$(JI) $(PKG).AnnotationTest
 
 #------ 2
 #  run the OntologyTermTest
 # 
 
 2: OntologyTermTest.class
-	java $(PKG).OntologyTermTest
+	$(JI) $(PKG).OntologyTermTest
 
 
 #------ 3
@@ -54,14 +54,25 @@ clean:
 # 
 
 3: OntologyTest.class Utils.class
-	java $(PKG).OntologyTest
+	$(JI) $(PKG).OntologyTest
 
 #------ 4
 #  run a full test of a large annotation:  kegg pathways for halobacterium
 # 
 
 4: AnnotationAndOntologyFullTest.class 
-	java $(PKG).AnnotationAndOntologyFullTest
+	$(JI) $(PKG).AnnotationAndOntologyFullTest
+
+
+#------ 5
+#  test separate loading of ontology and annotations which depend on it
+#  also use flat file for annotation.
+#  both of these use attempts to solve the speed & memory problems vividly
+#  experienced when I tried (pshannon: 19 jan 2003) to load GO biological
+#  process annotation for 80,000 human proteins
+
+5: SeparateAnnotationAndOntologyTest.class 
+	$(JI) $(PKG).SeparateAnnotationAndOntologyTest
 
 
 

@@ -119,7 +119,7 @@ public int hashCode ()
 public String toString ()
 {
   StringBuffer sb = new StringBuffer ();
-  sb.append ("annotation: " + curator + ", " + annotationType + ", " + species);
+  sb.append (curator + ", " + annotationType + ", " + species);
 
   return sb.toString ();
 

@@ -28,6 +28,9 @@
  **/
 
 //------------------------------------------------------------------------------
+// todo (pshannon, 19 jan 2003): test the new ctor (with receives no Ontology)
+//                               both with and without an separately assigned ontology
+//------------------------------------------------------------------------------
 // $Revision$
 // $Date$
 // $Author$

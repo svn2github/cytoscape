@@ -16,6 +16,7 @@ OBJS = BioDataServerInterface.class \
        BioDataServerRmi.class \
        BioDataServer.class \
        loadAnnotation.class \
+       loadAnnotationFromFlatFiles.class \
        loadThesaurus.class \
        status.class \
        clear.class \

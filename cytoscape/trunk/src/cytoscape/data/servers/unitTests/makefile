@@ -5,7 +5,7 @@
 # $Author$
 #--------------------------------------------------------------------------------------
 JC=javac -source 1.4
-JI=java
+JI=java -Xmx1G
 PKG=cytoscape.data.servers.unitTests
 
 .SUFFIXES: .java .class
@@ -36,7 +36,7 @@ clean:
 
 0: BioDataServerTest.class
 	
-	java $(PKG).BioDataServerTest rmi://localhost/test
+	$(JI) $(PKG).BioDataServerTest rmi://localhost/test
 
 #------ reg
 #  try to start a rmi registry.  this will fail if one is already running
@@ -58,9 +58,9 @@ killtest:
 # 
 
 starttest: 
-	java csplugins.data.servers.BioDataServerRmi test &
+	$(JI) csplugins.data.servers.BioDataServerRmi test &
 	#sleep 10
-	# java csplugins.data.servers.loadAnnotation rmi://localhost/test ../../kegg/haloMetabolicPathway.xml
+	# $(JI) csplugins.data.servers.loadAnnotation rmi://localhost/test ../../kegg/haloMetabolicPathway.xml
 	
 
 help:

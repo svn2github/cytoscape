@@ -188,6 +188,39 @@ protected Vector recursiveGetPath (int termID, Vector path)
   if (termHash != null && termHash.containsKey (ID)) {
     OntologyTerm term = (OntologyTerm) termHash.get (ID);
     int parentCount = term.numberOfParentsAndContainers ();
+    path.addElement (ID);
+    if (parentCount == 0)
+      return path;
+    else if (parentCount == 1) {
+      int parentID = term.getParentsAndContainers () [0];
+      return (recursiveGetPath (parentID, path));
+      }        
+    else { // assume for now:  (parentCount == 2) 
+      Vector newPath = new Vector ();
+      for (int p=0; p < parentCount; p++) {
+        Vector subPath = (Vector) path.clone ();
+        int parent = term.getParentsAndContainers () [p];
+        newPath.addElement (recursiveGetPath (parent, subPath));
+        } // for p
+      return newPath;
+      } // else: 2 or more parents
+   } // if ID is in termHas
+
+  return path;
+
+} // recursiveGetPath
+//------------------------------------------------------------------------------
+/**
+ *  traverse the ontology hierachy from leaf to root, adding a new vector
+ *  with each recursive step.
+ */
+protected Vector oldRecursiveGetPath (int termID, Vector path)
+{
+  Integer ID = new Integer (termID);
+
+  if (termHash != null && termHash.containsKey (ID)) {
+    OntologyTerm term = (OntologyTerm) termHash.get (ID);
+    int parentCount = term.numberOfParentsAndContainers ();
     if (parentCount == 0) {
       path.addElement (ID);
       return path;
@@ -197,7 +230,7 @@ protected Vector recursiveGetPath (int termID, Vector path)
       int parentID = term.getParentsAndContainers () [0];
       return (recursiveGetPath (parentID, path));
       }        
-    else { // assume for now:  (parentCunt == 2) 
+    else { // assume for now:  (parentCount == 2) 
       path.addElement (ID);
       Vector newPath = new Vector ();
       Vector path1 = (Vector) path.clone ();
@@ -211,7 +244,7 @@ protected Vector recursiveGetPath (int termID, Vector path)
    }
   return path;
 
-} // recursiveGetPath
+} // oldRecursiveGetPath
 //------------------------------------------------------------------------------
 public OntologyDescription getDescription ()
 {
