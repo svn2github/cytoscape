@@ -44,12 +44,15 @@ public class LoadInteractionFileAction extends AbstractAction {
                                                          cytoscapeObj );
             CyNetwork newNetwork =
                 CyNetworkFactory.createNetworkFromInteractionsFile(name, canonicalize,
-                            cytoscapeObj.getBioDataServer(), species);
+                            cytoscapeObj.getBioDataServer(), species, networkView.getCytoscapeObj().getConfiguration().isYFiles());
             if (newNetwork != null) {//valid read
                 //apply the semantics we usualy expect
                 Semantics.applyNamingServices(newNetwork, cytoscapeObj);
                 //set the new graph, don't erase old attributes
-                networkView.getNetwork().setNewGraphFrom(newNetwork, false);
+		if ( networkView.getCytoscapeObj().getConfiguration().isYFiles())
+			networkView.getNetwork().setNewGraphFrom(newNetwork, false);
+		else
+			networkView.setNewNetwork(newNetwork);
             } else {//give the user an error dialog
                 String lineSep = System.getProperty("line.separator");
                 StringBuffer sb = new StringBuffer();

@@ -27,33 +27,39 @@ public class SelectFirstNeighborsAction extends AbstractAction {
         this.networkView = networkView;
     }
     public void actionPerformed (ActionEvent e) {
-        Graph2D graph = networkView.getNetwork().getGraph ();
-        NodeCursor nc = graph.selectedNodes (); 
-        Vector newNodes = new Vector ();
-        
-        // for all selected nodes
-        for (nc.toFirst (); nc.ok (); nc.next ()) {
-            Node node = nc.node ();
-            EdgeCursor ec = node.edges ();
-            
-            for (ec.toFirst (); ec.ok (); ec.next ()) {
-                Edge edge = ec.edge ();
-                Node source = edge.source ();
-                if (!newNodes.contains (source))
-                    newNodes.add (source);
+	if (networkView.getCytoscapeObj().getConfiguration().isYFiles()) {      
+	    Graph2D graph = networkView.getNetwork().getGraph ();
+	    NodeCursor nc = graph.selectedNodes (); 
+	    Vector newNodes = new Vector ();
+	    
+	    // for all selected nodes
+	    for (nc.toFirst (); nc.ok (); nc.next ()) {
+		Node node = nc.node ();
+		EdgeCursor ec = node.edges ();
+		
+		for (ec.toFirst (); ec.ok (); ec.next ()) {
+		    Edge edge = ec.edge ();
+		    Node source = edge.source ();
+		    if (!newNodes.contains (source))
+			newNodes.add (source);
                     Node target = edge.target ();
                     if (!newNodes.contains (target))
                         newNodes.add (target);
-            } // for edges
-        } // for selected nodes
-        
-        for (int i=0; i < newNodes.size (); i++) {
+		} // for edges
+	    } // for selected nodes
+	    
+	    for (int i=0; i < newNodes.size (); i++) {
             Node node = (Node) newNodes.elementAt (i);
             NodeRealizer realizer = graph.getRealizer (node);
             realizer.setSelected (true);
-        }
-        
-        networkView.redrawGraph (false, false);
+	    }
+	    
+	    networkView.redrawGraph (false, false);
+	}
+	else { //giny
+	    GinyUtils.selectFirstNeighbors(networkView.getView());
+	}
+
     } // actionPerformed
     
 } // SelectFirstNeighborsAction

@@ -57,6 +57,7 @@ public class SplashScreen extends Canvas implements Runnable
 		}
 
 		win = new Frame("Cytoscape is loading...");
+		
 
 		Dimension screen = getToolkit().getScreenSize();
 		//Dimension size = new Dimension(image.getWidth(this) + 2,
@@ -76,6 +77,11 @@ public class SplashScreen extends Canvas implements Runnable
 			(screen.height - size.height) / 2);
 		win.validate();
 		win.show();
+		 win.addWindowListener(new WindowAdapter() {
+			 public void windowClosing(WindowEvent e) {
+				 System.exit(0);
+			 }
+      });
 
 		
 		while (progress < 100)

@@ -36,6 +36,8 @@ import javax.swing.JFrame;
 import y.view.Graph2DView;
 import y.layout.Layouter;
 
+import phoebe.PGraphView;
+
 import cytoscape.CytoscapeObj;
 import cytoscape.data.CyNetwork;
 import cytoscape.undo.UndoableGraphHider;
@@ -56,6 +58,10 @@ public interface NetworkView {
      * Returns the network displayed by this object.
      */
     CyNetwork getNetwork();
+    /*
+    *
+    */
+    void setNewNetwork(CyNetwork newNetwork);
     /**
      * Returns the utility object for hiding graph objects for the above network.
      */
@@ -64,6 +70,12 @@ public interface NetworkView {
      * Returns the view object for the graph display.
      */
     Graph2DView getGraphView();
+    
+    /**
+     * @return A GINY GraphVIew
+     */
+    PGraphView getView();
+
     /**
      * Return the frame in which the graph is displayed. Useful for constructing
      * dialogs dependent on this frame.

@@ -38,6 +38,7 @@ import java.util.jar.*;
 import java.net.*;
 import java.lang.IllegalStateException;
 import y.view.Graph2D;
+import giny.model.RootGraph;
 import cytoscape.GraphObjAttributes;
 import cytoscape.CytoscapeConfig;
 import cytoscape.data.*;
@@ -98,11 +99,33 @@ public static Graph2D loadIntrBasic (BioDataServer dataServer,
                                      String species,
                                      String filename, 
                                      GraphObjAttributes edgeAttributes,
-                                     boolean canonicalize) 
+                                     boolean canonicalize, boolean isYFiles) 
 {
-  InteractionsReader reader = new InteractionsReader (dataServer, species, filename);
+  InteractionsReader reader = new InteractionsReader (dataServer, species, filename, isYFiles);
   return loadBasic (reader, edgeAttributes, canonicalize);
   
+}
+
+//----------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------
+public static RootGraph loadInteractionsBasic (BioDataServer dataServer,
+                                     String species,
+                                     String filename, 
+                                     GraphObjAttributes edgeAttributes,
+                                     boolean canonicalize, boolean isYFiles) 
+{
+  InteractionsReader reader = new InteractionsReader (dataServer, species, filename, isYFiles);
+  reader.read(canonicalize);
+  RootGraph rootGraph = reader.getRootGraph();
+  if (rootGraph == null) {System.out.println ( " Interaction reader returned null root graph"); return null;} //reader couldn't read the file
+  
+  GraphObjAttributes newEdgeAttributes = reader.getEdgeAttributes ();
+  edgeAttributes.add (newEdgeAttributes);
+  edgeAttributes.addNameMap (newEdgeAttributes.getNameMap ());
+  edgeAttributes.addClassMap (newEdgeAttributes.getClassMap ());
+  
+  return rootGraph;
 }
 //----------------------------------------------------------------------------
 public static Graph2D loadBasic (GraphReader reader, GraphObjAttributes edgeAttributes, 
@@ -135,6 +158,55 @@ public static void initAttribs (BioDataServer dataServer,
   initAttribs (dataServer, species, graph, nodeAttributes, edgeAttributes,
                nodeAttributeFilenames, edgeAttributeFilenames, canonicalize);
 
+}
+
+//----------------------------------------------------------------------------
+public static void initAttributes (BioDataServer dataServer,
+                                String species,
+                                CytoscapeConfig config,
+                                RootGraph graph,
+                                GraphObjAttributes nodeAttributes,
+                                GraphObjAttributes edgeAttributes)
+{
+  String [] edgeAttributeFilenames = config.getEdgeAttributeFilenames ();
+  String [] nodeAttributeFilenames = config.getNodeAttributeFilenames ();
+  boolean canonicalize = config.getCanonicalize();
+  
+  if (nodeAttributeFilenames != null)
+    for (int i=0; i < nodeAttributeFilenames.length; i++) {
+       try {
+         nodeAttributes.readAttributesFromFile (dataServer, species, nodeAttributeFilenames[i], canonicalize);
+         } 
+       catch (NumberFormatException nfe) {
+         System.err.println (nfe.getMessage ());
+          nfe.printStackTrace ();
+         } 
+      catch (IllegalArgumentException iae) {
+        System.err.println (iae.getMessage ());
+        iae.printStackTrace ();
+        }
+       catch (FileNotFoundException fnfe) {
+         System.err.println (fnfe.getMessage ());
+         fnfe.printStackTrace ();
+         }
+       }
+
+   if (edgeAttributeFilenames != null)
+     for (int i=0; i < edgeAttributeFilenames.length; i++) {
+       try {
+         edgeAttributes.readAttributesFromFile (edgeAttributeFilenames [i]);
+         } 
+       catch (Exception excp) {
+         System.err.println (excp.getMessage ());
+         excp.printStackTrace ();
+         } 
+        } // for i
+  //@@@@@@ add mapping for giny:
+   //if (nodeAttributes != null)
+      //addNameMappingToAttributes (graph.getNodeArray (), nodeAttributes);
+    
+    // no need to add name mapping for edge attributes -- it has already been
+    // done, at the time when the interactions file (or gml file) was read
 }
 //----------------------------------------------------------------------------
 public static void initAttribs (BioDataServer dataServer,

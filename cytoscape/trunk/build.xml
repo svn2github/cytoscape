@@ -155,6 +155,12 @@
 		<java classname="cytoscape.cytoscape" classpathref="classpath_run" fork="true"/>
 	</target>
 	
+	<!--  Target to Run Cytoscape with non-obfuscated jar file using giny-->
+  	<target name="giny" depends="jar" description="Runs Cytoscape/Giny.">
+		<java classname="cytoscape.cytoscape"  args= "-y giny" classpathref="classpath_run" fork="true"/>
+
+	</target>
+	
 	<!-- Target to Run JavaDoc -->
 	<target name="doc" description="Runs JavaDoc.">
 		<javadoc destdir="${build.dir}/docs" source="1.4" classpathref="classpath"

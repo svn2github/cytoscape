@@ -19,16 +19,21 @@ public class ShowAllAction extends AbstractAction {
     }
     
     public void actionPerformed(ActionEvent e) {
-        String callerID = "ShowAllAction.actionPerformed";
-        networkView.getNetwork().beginActivity(callerID);
-        networkView.getGraphHider().unhideAll();
-        
-        networkView.getGraphView().fitContent();
-        double zoom = 0.9*networkView.getGraphView().getZoom();
-        networkView.getGraphView().setZoom(zoom);
-        // the apps may have changed dynamically
-        networkView.redrawGraph(false, true);
-        networkView.getNetwork().endActivity(callerID);
+	if (networkView.getCytoscapeObj().getConfiguration().isYFiles()) {    
+	    String callerID = "ShowAllAction.actionPerformed";
+	    networkView.getNetwork().beginActivity(callerID);
+	    networkView.getGraphHider().unhideAll();
+	    
+	    networkView.getGraphView().fitContent();
+	    double zoom = 0.9*networkView.getGraphView().getZoom();
+	    networkView.getGraphView().setZoom(zoom);
+	    // the apps may have changed dynamically
+	    networkView.redrawGraph(false, true);
+	    networkView.getNetwork().endActivity(callerID);
+	}
+	else { //giny
+		GinyUtils.unHideAll(networkView.getView());
+	}
     }
 }
 

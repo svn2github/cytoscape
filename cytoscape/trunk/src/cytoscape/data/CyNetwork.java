@@ -35,6 +35,10 @@ import java.util.*;
 
 import y.view.Graph2D;
 
+import giny.model.RootGraph;
+import giny.model.GraphPerspective;
+import luna.*; 
+
 import cytoscape.GraphObjAttributes;
 //-------------------------------------------------------------------------
 /**
@@ -48,6 +52,8 @@ import cytoscape.GraphObjAttributes;
 public class CyNetwork {
     
     Graph2D graph;                         //the graph
+    RootGraph rootGraph;                   //giny root graph
+    GraphPerspective graphPerspective; 
     boolean needsLayout = false;           //is layout required before displaying graph
     GraphObjAttributes nodeAttributes;     //attributes for nodes
     GraphObjAttributes edgeAttributes;     //attributes for edges
@@ -60,7 +66,7 @@ public class CyNetwork {
      * Default constructor. Equivalent to
      * CyNetwork(null, null, null, null).
      */
-    public CyNetwork() {this(null, null, null, null);}
+     public CyNetwork() {this(null, null, null, null);}
     
     /**
      * Constructor specifying no expression data. Equivalent to
@@ -108,11 +114,58 @@ public class CyNetwork {
         this.expressionData = expressionData;
     }
     
+    
+     /**
+     * Constructor that ensures that a valid graph and attributes objects
+     * exist. The ExpressionData argument may be null.
+     *
+     * WARNING: many methods expect that the node attributes hold a canonical
+     * name and common name attribute for every node in the graph, and the
+     * edge attributes hold an interaction attribute for every edge. This
+     * constructor does not guarantee these fields are present. Most users
+     * should instead use a factory method to construct their network.
+     */
+    public CyNetwork(RootGraph rootGraph,
+                     GraphObjAttributes nodeAttributes,
+                     GraphObjAttributes edgeAttributes,
+                     ExpressionData expressionData, boolean isYFiles) {
+        //not completely sure how to handle null arguments
+        if (rootGraph != null) {
+            this.rootGraph = rootGraph;
+	    graphPerspective = rootGraph.createGraphPerspective( rootGraph.getNodeIndicesArray(), rootGraph.getEdgeIndicesArray() ); 
+        } else {
+            this.rootGraph = new LunaRootGraph();
+        }
+        if (nodeAttributes != null) {
+            this.nodeAttributes = nodeAttributes;
+        } else {
+            this.nodeAttributes = new GraphObjAttributes();
+        }
+        if (edgeAttributes != null) {
+            this.edgeAttributes = edgeAttributes;
+        } else {
+            this.edgeAttributes = new GraphObjAttributes();
+        }
+        //null expression data is OK
+        this.expressionData = expressionData;
+	 
+	
+    }//cr
+    
+    
     //methods to get each member
     /**
      * Returns the graph object for this network.
      */
     public Graph2D getGraph() {return graph;}
+    /**
+    * Returns a Root Graph of this network
+    */
+    public RootGraph getRootGraph() {return rootGraph;}
+    /**
+    * returns graphPerspective of this networks root graph
+    */
+    public GraphPerspective getGraphPerspective() {return graphPerspective;}
     /**
      * Sets the graph for this network.
      *

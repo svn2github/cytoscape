@@ -63,6 +63,9 @@ import y.io.GMLIOHandler;
 import y.util.GraphHider; // yFiles 2.01
 //import y.algo.GraphHider; // yFiles 1.4
 
+
+import giny.model.RootGraph;
+
  // printing
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterException;
@@ -185,6 +188,43 @@ public CytoscapeWindow (cytoscape parentApp,
   assignSpeciesAttributeToAllNodes();
   displayCommonNodeNames();
 
+  //now show the window
+  cyWindow.showWindow();
+  
+  //plugins need to be loaded here, as many different callers
+  //of the constructor expect this behavior
+  loadPlugins();
+} // ctor
+
+//------------------------------------------------------------------------------
+/**
+ * This is the  CytoscapeWindow constructor, which is called by
+ * cytoscape.java  when the giny library is used instead of y-files It now uses the arguments
+ * to construct instances of the new objects that replace CytoscapeWindow.
+ */
+public CytoscapeWindow (cytoscape parentApp,
+                        CytoscapeConfig config,
+                        Logger logger,
+                        RootGraph rootGraph, 
+                        ExpressionData expressionData,
+                        BioDataServer bioDataServer,
+                        GraphObjAttributes nodeAttributes,
+                        GraphObjAttributes edgeAttributes,
+                        String geometryFilename,
+                        String expressionDataFilename,
+                        String title,
+                        boolean doFreshLayout)
+   throws Exception {
+  this.geometryFilename = geometryFilename;
+  this.expressionDataFilename = expressionDataFilename;
+
+  CytoscapeObj globalInstance = new CytoscapeObj(parentApp, config, logger, bioDataServer);
+  
+  CyNetwork network = new CyNetwork(rootGraph, nodeAttributes,
+                               edgeAttributes, expressionData, false);
+
+  this.cyWindow = new CyWindow(globalInstance, network, title, this);
+  
   //now show the window
   cyWindow.showWindow();
   
@@ -621,29 +661,51 @@ public boolean loadGML(String filename) {
 } // loadGML
 //------------------------------------------------------------------------------
 public void loadInteraction(String filename) {
-  System.out.println("Calling FileReadingAbstractions.loadIntrBasic...");
-  Graph2D newGraph =
-            FileReadingAbstractions.loadIntrBasic (this.getBioDataServer(), 
-                                                   this.getDefaultSpecies(), 
-                                                   filename,
-                                                   this.getEdgeAttributes(), 
-                                                   this.getConfiguration().getCanonicalize());
   
-  
-  
-  FileReadingAbstractions.initAttribs (this.getBioDataServer(),
-                                       this.getDefaultSpecies(),
-                                       this.getConfiguration(),
-                                       newGraph, //this.getGraph() == null !
-                                       this.getNodeAttributes(),
-                                       this.getEdgeAttributes());
-  //vizmapper now controls node labels
-  //displayCommonNodeNames (); // fills in canonical name for blank common names
-  geometryFilename = null;
-  getCyWindow().setWindowTitle(filename);
-  getCyWindow().setNewGraph(newGraph, true);// set the new graph and do a layout
-  //loadPlugins();  //don't reload plugins
-  //displayNewGraph (true);
+  if (this.getConfiguration().isYFiles()) {
+	  System.out.println("Calling FileReadingAbstractions.loadIntrBasic...");
+	  Graph2D newGraph =
+		    FileReadingAbstractions.loadIntrBasic (this.getBioDataServer(), 
+							   this.getDefaultSpecies(), 
+							   filename,
+							   this.getEdgeAttributes(), 
+							   this.getConfiguration().getCanonicalize(), this.getConfiguration().isYFiles());
+	  
+	  
+	  
+	  FileReadingAbstractions.initAttribs (this.getBioDataServer(),
+					       this.getDefaultSpecies(),
+					       this.getConfiguration(),
+					       newGraph, //this.getGraph() == null !
+					       this.getNodeAttributes(),
+					       this.getEdgeAttributes());
+	  //vizmapper now controls node labels
+	  //displayCommonNodeNames (); // fills in canonical name for blank common names
+	  geometryFilename = null;
+	  getCyWindow().setWindowTitle(filename);
+	  getCyWindow().setNewGraph(newGraph, true);// set the new graph and do a layout
+	  //loadPlugins();  //don't reload plugins
+	  //displayNewGraph (true);
+  }
+  else {
+	  System.out.println("Calling FileReadingAbstractions.loadInteractionsBasic...");
+	  RootGraph newRootGraph = FileReadingAbstractions.loadInteractionsBasic(this.getBioDataServer(), 
+							   this.getDefaultSpecies(), 
+							   filename,
+							   this.getEdgeAttributes(), 
+							   this.getConfiguration().getCanonicalize(), this.getConfiguration().isYFiles());
+	 					   
+	  FileReadingAbstractions.initAttributes(this.getBioDataServer(),
+					       this.getDefaultSpecies(),
+					       this.getConfiguration(),
+					       newRootGraph, //this.getGraph() == null !
+					       this.getNodeAttributes(),
+					       this.getEdgeAttributes());
+	  geometryFilename = null;
+	  getCyWindow().setWindowTitle(filename);
+	  CyNetwork newNetwork = new CyNetwork(newRootGraph, this.getNodeAttributes(), this.getEdgeAttributes(), null, false);//@@@@@@@@ how to get ExpressionData?);
+	  getCyWindow().setNewNetwork(newNetwork);
+  }
 } // loadInteraction
 //------------------------------------------------------------------------------
 /**

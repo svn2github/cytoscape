@@ -48,7 +48,7 @@ import gnu.getopt.LongOpt;
  */
 public class CytoscapeConfig {
 
-  protected String argSpecificationString = "n:j:g:b:i:he:vWs:l:p:xc;";
+  protected String argSpecificationString = "n:j:g:b:i:y:he:vWs:l:p:xc;";
 
   protected String [] commandLineArguments;
   protected String[] argsCopy;
@@ -69,6 +69,8 @@ public class CytoscapeConfig {
   protected File projectFileDirectoryAbsolute;
   protected boolean enableUndo = false;
   protected boolean copyExpToAttribs = true;
+  protected boolean yfiles = true;
+  protected String graphLibrary = null;
   //protected File projectPropsFile = null;
 
   protected String [] layoutStrategies = {"organic", "hierarchical", "embedded", "circular"};
@@ -162,6 +164,16 @@ public String [] getEdgeAttributeFilenames ()
 public boolean getCanonicalize ()
 {
   return canonicalize;
+}
+
+/**
+ * If the -y option specified and it is not "y-files"
+ * then it returns false; otherwise true;
+ * Added by Larissa Kamenkovich on September 26, 2003.
+ */
+public boolean isYFiles ()
+{
+  return yfiles;
 }
 //------------------------------------------------------------------------------------------
 /**
@@ -462,6 +474,12 @@ protected void parseArgs ()
      case 'v':
        displayVersion = true;
        break;
+     case 'y':
+     	//y-files or giny switch
+	graphLibrary = g.getOptarg ();
+	if (graphLibrary != "y-files")
+		yfiles = false;
+	break;
    case 'c':
      // This is the "canonicalization" switch
      canonicalize = false;
@@ -750,6 +768,8 @@ public String getUsage ()
 
    sb.append (" -h  (display usage)\n");
    sb.append (" -v  (display version)\n");
+   sb.append (" -y  <graph library>                (default: \"y-files\")\n");
+
 
    return sb.toString ();
 
@@ -765,6 +785,7 @@ public String toString ()
    sb.append ("         bioDataDirectory: " + bioDataDirectory + "\n");
    sb.append ("       defaultSpeciesName: " + defaultSpeciesName + "\n");
    sb.append ("    defaultLayoutStrategy: " + defaultLayoutStrategy + "\n");
+   sb.append (" graphLibrary: " + graphLibrary +"\n");
  
    for (int i=0; i < nodeAttributeFilenames.size (); i++)
      sb.append ("        nodeAttributeFile: " + (String) nodeAttributeFilenames.get(i) + "\n");

@@ -35,6 +35,8 @@ import y.base.Node;
 import y.base.Edge;
 import y.view.Graph2D;
 
+import giny.model.RootGraph;
+
 import cytoscape.CyProject;
 import cytoscape.GraphObjAttributes;
 import cytoscape.data.readers.*;
@@ -59,8 +61,8 @@ public class CyNetworkFactory {
  *
  * Returns null if the argument is null or cannot be parsed into a graph.
  */
-public static CyNetwork createNetworkFromInteractionsFile(String location) {
-    return createNetworkFromInteractionsFile(location, false, null, null);
+public static CyNetwork createNetworkFromInteractionsFile(String location, boolean isYFiles) {
+    return createNetworkFromInteractionsFile(location, false, null, null, isYFiles);
 }
 //-------------------------------------------------------------------------
 /**
@@ -87,10 +89,10 @@ public static CyNetwork createNetworkFromInteractionsFile(String location) {
  * converted to canonical names using the bioDataServer.
  */
 public static CyNetwork createNetworkFromInteractionsFile(String location,
-        boolean canonicalize, BioDataServer bioDataServer, String species) {
+        boolean canonicalize, BioDataServer bioDataServer, String species, boolean isYFiles) {
     if (location == null) {return null;}
-    InteractionsReader reader = new InteractionsReader(bioDataServer, species, location);
-    CyNetwork network = createNetworkFromGraphReader(reader, canonicalize);
+    InteractionsReader reader = new InteractionsReader(bioDataServer, species, location, isYFiles);
+    CyNetwork network = createNetworkFromGraphReader(reader, canonicalize, isYFiles);
     if (network != null) {network.setNeedsLayout(true);}
     return network;
 }
@@ -108,7 +110,7 @@ public static CyNetwork createNetworkFromGMLFile(String location) {
     if (location == null) {return null;}
     GMLReader reader = new GMLReader(location);
     //the GMlReader ignores the canonicalize argument
-    CyNetwork network = createNetworkFromGraphReader(reader, false);
+    CyNetwork network = createNetworkFromGraphReader(reader, false, true);
     if (network != null) {network.setNeedsLayout(false);}
     return network;
 }
@@ -132,7 +134,7 @@ public static CyNetwork createNetworkFromGMLFile(String location) {
  * graph can be parsed by the reader.
  */
 protected static CyNetwork createNetworkFromGraphReader(GraphReader reader,
-                                                        boolean canonicalize) {
+                                                        boolean canonicalize, boolean isYFiles) {
     try {
         reader.read();
     } catch (Exception e) {
@@ -140,22 +142,44 @@ protected static CyNetwork createNetworkFromGraphReader(GraphReader reader,
         e.printStackTrace();
         return null;
     }
-    Graph2D graph = reader.getGraph();
-    if (graph == null) {return null;} //unable to parse into a graph
-    GraphObjAttributes nodeAttributes = new GraphObjAttributes();
-    GraphObjAttributes edgeAttributes = reader.getEdgeAttributes();
-    //the graph reader fills the edge attributes with the interaction
-    //type (if the source is an interactions file), and provides the
-    //mapping from edges to edge canonical names. It does not provide
-    //the mapping of nodes to names, so we do that here
-    if (graph != null) {
-        Node[] allNodes = graph.getNodeArray();
-        for (int i=0; i<allNodes.length; i++) {
-            String canonicalName = allNodes[i].toString();
-            nodeAttributes.addNameMapping(canonicalName, allNodes[i]);
-        }
+    if ( isYFiles ) {
+	    Graph2D graph = reader.getGraph();
+	    if (graph == null) {return null;} //unable to parse into a graph
+	    GraphObjAttributes nodeAttributes = new GraphObjAttributes();
+	    GraphObjAttributes edgeAttributes = reader.getEdgeAttributes();
+	    //the graph reader fills the edge attributes with the interaction
+	    //type (if the source is an interactions file), and provides the
+	    //mapping from edges to edge canonical names. It does not provide
+	    //the mapping of nodes to names, so we do that here
+	    if (graph != null) {
+		Node[] allNodes = graph.getNodeArray();
+		for (int i=0; i<allNodes.length; i++) {
+		    String canonicalName = allNodes[i].toString();
+		    nodeAttributes.addNameMapping(canonicalName, allNodes[i]);
+		}
+	    }
+	    return new CyNetwork(graph, nodeAttributes, edgeAttributes);
     }
-    return new CyNetwork(graph, nodeAttributes, edgeAttributes);
+    else { //using giny
+	    RootGraph rootGraph = reader.getRootGraph();
+	    if (rootGraph == null) {return null;} //unable to parse into a graph
+	    GraphObjAttributes nodeAttributes = new GraphObjAttributes();
+	    GraphObjAttributes edgeAttributes = reader.getEdgeAttributes();
+	    //the graph reader fills the edge attributes with the interaction
+	    //type (if the source is an interactions file), and provides the
+	    //mapping from edges to edge canonical names. It does not provide
+	    //the mapping of nodes to names, so we do that here
+	    
+	    ////@@@@@ add for giny
+	   /* if (rootGraph != null) {
+		Node[] allNodes = graph.getNodeArray();
+		for (int i=0; i<allNodes.length; i++) {
+		    String canonicalName = allNodes[i].toString();
+		    nodeAttributes.addNameMapping(canonicalName, allNodes[i]);
+		} 
+	    }*/
+	    return new CyNetwork(rootGraph, nodeAttributes, edgeAttributes, null, false);
+    }
 }
 //-------------------------------------------------------------------------
 /**
@@ -241,7 +265,7 @@ public static CyNetwork createNetworkFromProject(CyProject project,
         //read graph from interaction data
         String filename = project.getInteractionsFilename();
         network = createNetworkFromInteractionsFile(filename, canonicalize,
-                                                    bioDataServer, species);
+                                                    bioDataServer, species, true); /// @@@@@@ add giny support!!!! 
     } else if (project.getGeometryFilename() != null) {
         //read a GML file
         String filename = project.getGeometryFilename();

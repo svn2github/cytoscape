@@ -43,6 +43,10 @@ import y.base.Node;
 import y.base.Edge;
 import y.view.Graph2D;
 
+import giny.model.RootGraph;
+import giny.model.GraphPerspective;
+import luna.*;
+
 import cytoscape.GraphObjAttributes;
 import cytoscape.data.Interaction;
 import cytoscape.data.*;
@@ -54,15 +58,19 @@ public class InteractionsReader implements GraphReader {
   Vector allInteractions = new Vector ();
   GraphObjAttributes edgeAttributes = new GraphObjAttributes ();
   Graph2D graph;
+  RootGraph rootGraph;
   BioDataServer dataServer;
   String species;
+  boolean isYFiles;
 //-----------------------------------------------------------------------------------------
-public InteractionsReader (BioDataServer dataServer, String species, String filename)
+public InteractionsReader (BioDataServer dataServer, String species, String filename, boolean isYFiles)
 {
   this.filename = filename;
   this.dataServer = dataServer;
   this.species = species;
+  this.isYFiles = isYFiles;
 }
+
 //----------------------------------------------------------------------------------------
 public void read (boolean canonicalize)
 {
@@ -99,8 +107,10 @@ public void read (boolean canonicalize)
     Interaction newInteraction = new Interaction (newLine, delimiter);
     allInteractions.addElement (newInteraction);
   }
-  
-  createGraphFromInteractionData (canonicalize);
+  if (isYFiles)
+	  createYGraphFromInteractionData (canonicalize);
+  else
+	  createRootGraphFromInteractionData (canonicalize);
   
 }
 //-----------------------------------------------------------------------------------------
@@ -147,7 +157,7 @@ protected String canonicalizeName (String name)
 
 } // canonicalizeName
 //-------------------------------------------------------------------------------------------
-protected void createGraphFromInteractionData (boolean canonicalize)
+protected void createYGraphFromInteractionData (boolean canonicalize)
 {
 
   graph = new Graph2D ();
@@ -230,11 +240,107 @@ protected void createGraphFromInteractionData (boolean canonicalize)
       } // for t
    } // for i
 
-} // createGraphFromInteractionData
+} // createYGraphFromInteractionData
+
+
+//-------------------------------------------------------------------------------------------
+protected void createRootGraphFromInteractionData (boolean canonicalize)
+{
+
+  rootGraph = new LunaRootGraph ();
+  Interaction [] interactions = getAllInteractions ();
+
+  Hashtable nodes = new Hashtable ();
+
+    //---------------------------------------------------------------------------
+    // loop through all of the interactions -- which are triples of the form:
+    //           source; target0, target1...; interaction type
+    // using a hash to avoid duplicate node creation, add a node to the graph
+    // for each source and target
+    // in addition,
+    //---------------------------------------------------------------------------
+  String nodeName, targetNodeName;
+  for (int i=0; i < interactions.length; i++) {
+    Interaction interaction = interactions [i];
+    //System.out.println ("source: " + interaction.getSource ());
+    if(canonicalize){
+      nodeName = canonicalizeName (interaction.getSource ());
+    }else{
+      nodeName = interaction.getSource();
+    }
+        
+    if (!nodes.containsKey (nodeName)) {
+      giny.model.Node node = rootGraph.getNode(rootGraph.createNode ());
+      node.setIdentifier(nodeName);
+      nodes.put (nodeName, node);
+    }
+    String [] targets = interaction.getTargets ();
+    for (int t=0; t < targets.length; t++) {
+      if(canonicalize){
+        targetNodeName = canonicalizeName (targets [t]);
+      }else{
+        targetNodeName = targets[t];
+      }
+      if (!nodes.containsKey (targetNodeName)) {
+        giny.model.Node node = rootGraph.getNode(rootGraph.createNode ());
+	node.setIdentifier(targetNodeName);
+	nodes.put (targetNodeName, node);
+      } // if target node is previously unknown
+    } // for t
+  } // i
+
+
+    //---------------------------------------------------------------------------
+    // now loop over the interactions again, this time creating edges between
+    // all sources and each of their respective targets.
+    // for each edge, save the source-target pair, and their interaction type,
+    // in edgeAttributes -- a hash of a hash of name-value pairs, like this:
+    //   edgeAttributes ["interaction"] = interactionHash
+    //   interactionHash [sourceNode::targetNode] = "pd"
+    //---------------------------------------------------------------------------
+
+  for (int i=0; i < interactions.length; i++) {
+    Interaction interaction = interactions [i];
+    if(canonicalize){
+      nodeName = canonicalizeName (interaction.getSource ());
+    }else{
+      nodeName = interaction.getSource();
+    }
+    
+    String interactionType = interaction.getType ();
+    giny.model.Node sourceNode = (giny.model.Node) nodes.get (nodeName);
+    String [] targets = interaction.getTargets ();
+    for (int t=0; t < targets.length; t++) {
+      if(canonicalize){
+        targetNodeName = canonicalizeName (targets [t]);
+      }else{
+        targetNodeName = targets[t];
+      }
+    
+      
+      giny.model.Node targetNode = (giny.model.Node) nodes.get (targetNodeName);
+      giny.model.Edge edge = rootGraph.getEdge(rootGraph.createEdge (sourceNode, targetNode));
+      String edgeName = nodeName + " (" + interactionType + ") " + targetNodeName;
+      int previousMatchingEntries = edgeAttributes.countIdentical(edgeName);
+      if (previousMatchingEntries > 0)
+        edgeName = edgeName + "_" + previousMatchingEntries;
+      edgeAttributes.add ("interaction", edgeName, interactionType);
+      edgeAttributes.addNameMapping (edgeName, edge);
+      } // for t
+   } // for i
+
+} // createRootGraphFromInteractionData
 //-------------------------------------------------------------------------------------------
 public Graph2D getGraph ()
 {
   return graph;
+
+} // createGraph
+
+//-------------------------------------------------------------------------------------------
+public RootGraph getRootGraph ()
+{
+  return rootGraph;
 
 } // createGraph
 //------------------------------------------------------------------------------------

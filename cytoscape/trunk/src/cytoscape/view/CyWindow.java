@@ -49,7 +49,32 @@ import y.layout.hierarchic.*;
 import y.layout.organic.OrganicLayouter;
 import y.layout.random.RandomLayouter;
 
+
+//imports for giny graph library support
+import giny.model.RootGraph;
+import giny.model.GraphPerspective;
+import giny.util.SpringEmbeddedLayouter;
+import giny.view.GraphView;
+import giny.view.EdgeView;
+import giny.view.NodeView;
+
+import phoebe.*;
+import phoebe.util.*;
+import phoebe.event.*;
+import coltginy.*;
+import luna.*;
+import edu.umd.cs.piccolo.*;
+import edu.umd.cs.piccolox.*;
+import edu.umd.cs.piccolox.util.*;
+import edu.umd.cs.piccolox.handles.*;
+import edu.umd.cs.piccolo.event.*;
+import edu.umd.cs.piccolo.activities.*;
+import edu.umd.cs.piccolo.nodes.*;
+import edu.umd.cs.piccolo.util.*;
+
+
 import cytoscape.*;
+import cytoscape.graphutil.*;
 import cytoscape.data.*;
 //import cytoscape.view.*;
 import cytoscape.visual.*;
@@ -72,6 +97,8 @@ CyNetworkListener, NetworkView {
         
     protected static final int DEFAULT_WIDTH = 700;
     protected static final int DEFAULT_HEIGHT = 700;
+    Paint DEFAULT_PAINT = Color.lightGray;
+    
 
     protected CytoscapeObj globalInstance;
     protected CyNetwork network;
@@ -85,6 +112,8 @@ CyNetworkListener, NetworkView {
     
     protected Layouter layouter;
     protected Graph2DView graphView;
+    protected PGraphView  view;
+    protected Component display;
     
     protected ViewMode editGraphMode;
     protected ViewMode readOnlyGraphMode;
@@ -93,6 +122,7 @@ CyNetworkListener, NetworkView {
     protected PopupMode currentPopupMode;
     protected boolean viewModesInstalled = false;
     protected boolean currentInteractivityState = false;
+    protected boolean isYFiles = true;
     
     /** contains mappings from network properties and attributes to visual
      *  properties such as the sizes and colors of nodes and edges.
@@ -141,25 +171,43 @@ public CyWindow(CytoscapeObj globalInstance, CyNetwork network, String title,
 protected void doInit(CytoscapeObj globalInstance, CyNetwork network, String title) {
     this.globalInstance = globalInstance;
     this.network = network;
+    this.isYFiles = globalInstance.getConfiguration().isYFiles();
+
     
     if (title == null) {
         this.windowTitle = defaultWindowTitle;
     } else {
         this.windowTitle = defaultWindowTitle + title;
     }
+    if (isYFiles) {
+	    editGraphMode = new EditGraphMode(this);
+	    readOnlyGraphMode = new ReadOnlyGraphMode(this);
+	    currentGraphMode = readOnlyGraphMode;
+	    Properties configProps = globalInstance.getConfiguration().getProperties();
+	    nodeAttributesPopupMode = new NodeBrowsingMode(configProps, this);
+	    currentPopupMode = nodeAttributesPopupMode;
+	    
+	    initializeWidgets(); //initializes the basic window objects
+	    setInitialLayouter(); //defines an initial layout algorithm
+	    connectGraphAndView(); //links the graph object with it's view
+	    attachGraphListeners(); //attaches various graph listeners
+    }
     
-    editGraphMode = new EditGraphMode(this);
-    readOnlyGraphMode = new ReadOnlyGraphMode(this);
-    currentGraphMode = readOnlyGraphMode;
-    Properties configProps = globalInstance.getConfiguration().getProperties();
-    nodeAttributesPopupMode = new NodeBrowsingMode(configProps, this);
-    currentPopupMode = nodeAttributesPopupMode;
-    
-    initializeWidgets(); //initializes the basic window objects
-    setInitialLayouter(); //defines an initial layout algorithm
-    connectGraphAndView(); //links the graph object with it's view
-    attachGraphListeners(); //attaches various graph listeners
-
+    else {
+	    // using giny graph library
+	    //@@@@@@ what to do with graph modes in giny?
+	    //editGraphMode = new EditGraphMode(this);
+	    //readOnlyGraphMode = new ReadOnlyGraphMode(this);
+	    //currentGraphMode = readOnlyGraphMode;
+	   // Properties configProps = globalInstance.getConfiguration().getProperties();
+	    //nodeAttributesPopupMode = new NodeBrowsingMode(configProps, this);
+	    //currentPopupMode = nodeAttributesPopupMode;
+	    System.out.println ( "Using giny library, initializing" ) ;
+	    initialize();
+	    //setInitialLayouter(); //@@@@@@@ to add for giny
+	    //attachGraphListeners(); //@@@@@@@ to add for giny?
+    }
+	   
     //add a listener to save the visual mapping catalog on exit
     //this should eventually be replaced by a method in Cytoscape.java itself
     //to save the catalog just before exiting the program
@@ -168,7 +216,7 @@ protected void doInit(CytoscapeObj globalInstance, CyNetwork network, String tit
         public void windowClosing(WindowEvent we) {
             theCytoscapeObj.saveCalculatorCatalog();
         }
-    });
+    }); 
     //add the parent app as a listener, to manage the session when this window closes
     //is this strictly necessary, since cytoscape.java listens for
     //WindowOpened events? -AM 2003/06/24
@@ -213,6 +261,175 @@ protected void initializeWidgets() {
     loadVizMapper();
 } // initializeWidgets
 
+
+//------------------------------------------------------------------------------
+/** 
+* Creates the basic window objects such as the main frame and
+* the graph view object and initializes graph and graph view using giny
+*/
+protected void initialize() {
+	GraphPerspective gp = network.getGraphPerspective();
+	if (gp != null) {
+		updateGraphView();
+		applyLayout();
+		fitGraphView();
+		
+	}
+	else
+	{
+	    //no graph specified yet what to do with giny graph view?
+	   // setLayout( new BorderLayout() );  
+	    //this.view = new PGraphView();
+    	   // add(graphView, BorderLayout.CENTER);
+		
+	}	
+	
+	///*setLayout( new BorderLayout() );
+	this.infoLabel = new JLabel();
+    add(infoLabel, BorderLayout.SOUTH);
+    
+    this.mainFrame = new JFrame(windowTitle);
+    
+    mainFrame.setContentPane(this);
+    //create the menu objects
+    this.cyMenus = new CyMenus(this);
+    cyMenus.initializeMenus();
+    add(cyMenus.getToolBar(), BorderLayout.NORTH);
+    mainFrame.setJMenuBar(cyMenus.getMenuBar());
+    //this does nothing if undo is disabled
+    cyMenus.updateUndoRedoMenuItemStatus();
+    // load vizmapper after menus are done and graph is available
+    //loadVizMapper();
+
+	
+}
+//------------------------------------------------------------------------------
+/**
+* initialize the Graph View 
+*/
+protected void updateGraphView() {
+	
+	
+	GraphPerspective gp = network.getGraphPerspective();
+	
+	view = new PGraphView(network.getGraphPerspective());
+	java.util.List nodes = view.getNodeViewsList();
+	    for ( Iterator i= nodes.iterator(); i.hasNext();)
+	    {
+		    PNodeView nv = (PNodeView)i.next();
+		    String label = nv.getNode().getIdentifier();
+		    //System.out.println("Setting label " + label);
+		    nv.setLabel(label);
+		    nv.setShape(NodeView.ELLIPSE);
+		    nv.setUnselectedPaint(DEFAULT_PAINT);
+		    nv.setSelectedPaint(((Color)nv.getUnselectedPaint()).darker());
+	    }
+	    
+	    //edges
+	    java.util.List edges = view.getEdgeViewsList();
+	    for ( Iterator i= edges.iterator(); i.hasNext();)
+	    {
+		    PEdgeView ev = (PEdgeView)i.next();
+		    ev.setUnselectedPaint(Color.blue);
+		    ev.setTargetEdgeEnd(EdgeView.ARROW_END);
+		    ev.setTargetEdgeEndPaint(Color.CYAN);
+		    ev.setSourceEdgeEndPaint(Color.CYAN);
+		    //ev.setLineType(EdgeView.CURVED_LINES);
+		    ev.setStroke(new BasicStroke(0.9f));
+	    }
+	    // add context menues
+	    addViewContextMenues();
+	    view.setBackgroundPaint(Color.YELLOW);
+	    view.fitContent();
+	    view.updateView();
+	    if ( display != null)
+		    this.remove(display);	
+	    display = view.getComponent();
+	    //comp.setBackground(Color.YELLOW);
+	    //comp.setSize(new Dimension (DEFAULT_WIDTH, DEFAULT_HEIGHT));
+	    setLayout( new BorderLayout() );  
+	    //add(display);
+	    add( display, BorderLayout.CENTER);
+	    
+	    
+}
+
+/**
+*
+*/
+public void addViewContextMenues() {
+	// Add some Node Context Menu Items
+      view.addContextMethod( "class edu.umd.cs.piccolo.PNode",
+                                  "cytoscape.graphutil.NodeAction",
+                                  "openSGD",
+                                  "Color This Node White" );
+
+
+	    view.addContextMethod( "class phoebe.PNodeView",
+                                  "cytoscape.graphutil.NodeAction",
+                                  "colorNode",
+                                  "Color This Node White" );
+	
+	    view.addContextMethod( "class phoebe.PNodeView",
+                                  "cytoscape.graphutil.NodeAction",
+                                  "colorSelectNode",
+                                  "Color This Node White" );
+	
+	    view.addContextMethod( "class phoebe.PNodeView",
+                                  "cytoscape.graphutil.NodeAction",
+                                  "shapeNode",
+                                  "Color This Node White" );
+	   
+	    // Add some Edge Context Menus
+	    view.addContextMethod( "class phoebe.PEdgeView",
+                                  "cytoscape.graphutil.EdgeAction",
+                                  "colorEdge",
+                                  "Color This Node White" );
+	    view.addContextMethod( "class phoebe.PEdgeView",
+                                  "cytoscape.graphutil.EdgeAction",
+                                  "colorSelectEdge",
+                                  "Color This Node White" );
+	    view.addContextMethod( "class phoebe.PEdgeView",
+                                  "cytoscape.graphutil.EdgeAction",
+                                  "edgeWidth",
+                                  "Color This Node White" );
+	    view.addContextMethod( "class phoebe.PEdgeView",
+                                  "cytoscape.graphutil.EdgeAction",
+                                  "edgeLineType",
+                                  "Color This Node White" );
+	    view.addContextMethod( "class phoebe.PEdgeView",
+                                  "cytoscape.graphutil.EdgeAction",
+                                  "edgeSourceEndType",
+                                  "Color This Node White" );
+	    view.addContextMethod( "class phoebe.PEdgeView",
+                                  "cytoscape.graphutil.EdgeAction",
+                                  "edgeTargetEndType",
+                                  "Color This Node White" );
+	    
+	    // Add some Edge-end Context menus
+	    view.addContextMethod( "class phoebe.util.PEdgeEndIcon",
+                                  "cytoscape.graphutil.EdgeAction",
+                                  "edgeEndColor",
+                                  "Color This Node White" );
+	    view.addContextMethod( "class phoebe.util.PEdgeEndIcon",
+                                  "cytoscape.graphutil.EdgeAction",
+                                  "edgeEndBorderColor",
+                                  "Color This Node White" );
+					
+      //data menues
+      view.addContextMethod( "class phoebe.PNodeView",
+                                  "cytoscape.graphutil.NodeAction",
+                                  "showData",
+                                  "Show Data for this node" );
+      view.addContextMethod( "class phoebe.PNodeView",
+                                  "cytoscape.graphutil.NodeAction",
+                                  "changeFirstNeighbors",
+                                  "Paint First Neighbors of this node" );	
+      view.addContextMethod( "edu.umd.cs.piccolo.PNode",
+                                  "cytoscape.graphutil.NodeAction",
+                                  "zoomToNode",
+                                  "Zoom to this node" );	
+}
 //------------------------------------------------------------------------------
 /**
  * Attempts to set an initial layouter using the information from the
@@ -347,10 +564,24 @@ protected void loadVizMapper() {
  */
 protected void displayNewGraph(boolean doLayout) {
     // Apply appearances since we are displaying the graph for the first time
-    redrawGraph(doLayout,true);
-    getGraphView().fitContent();
-    getGraphView().setZoom(getGraphView().getZoom()*0.9);
+    if ( isYFiles) {
+	    redrawGraph(doLayout,true);
+	    getGraphView().fitContent();
+	    getGraphView().setZoom(getGraphView().getZoom()*0.9);
+    }
+    else {
+	    //view.fitContent();
+	    //view.setZoom(view.getZoom()*0.9);
+    }
 }
+/**
+*
+*/
+protected void fitGraphView() {
+	//@@@@@ does not work for some reason, zooms out to infinity...
+	//view.getCanvas().getCamera().animateViewToCenterBounds( view.getCanvas().getLayer().getGlobalFullBounds(), true, 5001 );
+}
+
 //------------------------------------------------------------------------------
 /**
  * Actually displays the window. Nothing will appear on the screen until
@@ -360,15 +591,26 @@ protected void displayNewGraph(boolean doLayout) {
  * This method does nothing on any call after the first.
  */
 public void showWindow() {
-    if (!windowDisplayed) {
+
+//     //draw the graph for the first time
+//     displayNewGraph(doFreshLayout);
+//     mainFrame.setContentPane(this);
+//     mainFrame.pack();
+//     mainFrame.setSize (new Dimension (DEFAULT_WIDTH, DEFAULT_HEIGHT));
+//     //this.setVisible(true);
+//     mainFrame.setVisible(true);
+//     //setInteractivity(true);
+
+    
         //draw the graph for the first time
         displayNewGraph( network.getNeedsLayout() );
+	mainFrame.setContentPane(this);
         mainFrame.pack();
-        this.setVisible(true);
+	mainFrame.setSize (new Dimension (DEFAULT_WIDTH, DEFAULT_HEIGHT));
+        //this.setVisible(true);
         mainFrame.setVisible(true);
-        setInteractivity(true);
+        //setInteractivity(true);
         windowDisplayed = true;
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -390,6 +632,12 @@ public CyNetwork getNetwork() {return network;}
  * Returns the UI component that renders the displayed graph.
  */
 public Graph2DView getGraphView() {return graphView;}
+//------------------------------------------------------------------------------
+
+/**
+ * Returns the UI component that renders the displayed graph.
+ */
+public PGraphView getView() {return view;}
 //------------------------------------------------------------------------------
 /**
  * Returns the current layouter. Guaranteed to be non-null.
@@ -530,17 +778,32 @@ public void setNewGraph(Graph2D newGraph, boolean doLayout) {
  * as the current network.
  * 
  * @param newNetwork  the new network to display
+ * @param doLayout  if true, does a layout before displaying the graph
  */
-public void setNewNetwork(CyNetwork newNetwork) {
-    if (newNetwork == null || newNetwork == this.getNetwork() ) {return;}
-    setInteractivity(false);
-    detachGraphListeners();
-    this.network = newNetwork;
-    connectGraphAndView();
-    attachGraphListeners();
-    displayNewGraph( network.getNeedsLayout() );
-    getCyMenus().updateUndoRedoMenuItemStatus();
-    setInteractivity(true);
+public void setNewNetwork( CyNetwork newNetwork ) {
+    if (newNetwork == null) {return;}
+    if ( isYFiles ) {
+	    setInteractivity(false);
+	    detachGraphListeners();
+	    this.network = newNetwork;
+	    connectGraphAndView();
+	    attachGraphListeners();
+	    displayNewGraph( network.getNeedsLayout() );
+	    getCyMenus().updateUndoRedoMenuItemStatus();
+	    setInteractivity(true);
+    }
+    else {
+	    //using giny update the view
+	    this.network = newNetwork;
+	    updateGraphView();
+	    applyLayout();
+	    fitGraphView();
+	    mainFrame.setContentPane(this);
+	    //showWindow();
+	    getCyMenus().updateUndoRedoMenuItemStatus();
+	    //@@@@ for some reason the tool bar does not get painted correctly, look in to it later
+	    //dispalyNewGraph();
+    }
 }
 //------------------------------------------------------------------------------
 /**
@@ -614,6 +877,10 @@ public void redrawGraph() {
     // Do not do a layout and apply appearances
     redrawGraph(false,true);
 }
+
+
+// ------------------------------------------------------------------------------
+
 //------------------------------------------------------------------------------
 /**
  * Redraws the graph - equivalent to redrawGraph(doLayout, true).
@@ -637,6 +904,7 @@ public void redrawGraph(boolean doLayout) {
  * to the applyLayout method.
  */
 public void redrawGraph(boolean doLayout, boolean applyAppearances) {
+    if (!isYFiles) {return;}
     if (graphView.getGraph2D() == null) {return;}
     // added by iliana on 1.6.2003 (works with yFiles 2.01)
     // Remove graph listeners: (including undoManager)
@@ -696,6 +964,16 @@ public void applyLayout(boolean animated) {
     getUndoManager().resume();
     setInteractivity(true);
 } // applyLayout
+
+//------------------------------------------------------------------------------
+/**
+ * Performs a layout operation on the giny graph displayed in this window,
+ * using the default layouter for now
+ */
+public void applyLayout() {
+	SpringEmbeddedLayouter lay = new SpringEmbeddedLayouter(view);
+	lay.doLayout();
+}
 //------------------------------------------------------------------------------
 // applyLayoutSelection
 //

@@ -43,8 +43,7 @@ import java.io.File;
 import java.util.*;
 import java.util.logging.*;
 
-import y.base.Node;
-import y.base.Edge;
+import giny.model.*;
 import y.view.Graph2D;
 import y.io.YGFIOHandler;
 import y.io.GMLIOHandler;
@@ -104,7 +103,8 @@ public cytoscape (String [] args) throws Exception
   String interactionsFilename = config.getInteractionsFilename ();
   String expressionDataFilename = config.getExpressionFilename ();
   defaultSpecies = config.getDefaultSpeciesName ();
-  Graph2D graph = null; 
+  Graph2D graph = null;
+  RootGraph rootGraph = null;
   CytoscapeWindow cytoscapeWindow = null;
   String title = null;
   boolean requestFreshLayout = true;
@@ -116,23 +116,44 @@ public cytoscape (String [] args) throws Exception
     }
     splashScreen.advance(25);
   if (geometryFilename != null) {
-    logger.info ("reading " + geometryFilename + "...");
-    graph = FileReadingAbstractions.loadGMLBasic (geometryFilename, edgeAttributes,config.getCanonicalize());
-    logger.info ("  done");
-    title = geometryFilename;
-    requestFreshLayout = false;
-    splashScreen.advance(90);
+	  
+    if (config.isYFiles()) {
+	    logger.info ("reading " + geometryFilename + "...");
+	    graph = FileReadingAbstractions.loadGMLBasic (geometryFilename, edgeAttributes,config.getCanonicalize());
+	    logger.info ("  done");
+	    title = geometryFilename;
+	    requestFreshLayout = false;
+	    splashScreen.advance(90);
+    	}
+    else
+	    System.out.println("Giny graph library does not support GML yet, unable to load GML file: " + geometryFilename);	    
     }
   else if (interactionsFilename != null) {
-    logger.info ("reading " + interactionsFilename + "...");
-    graph = FileReadingAbstractions.loadIntrBasic (bioDataServer, 
-                                                   defaultSpecies, 
-                                                   interactionsFilename,
-                                                   edgeAttributes,
-                                                   config.getCanonicalize());
-    logger.info ("  done");
-    title = interactionsFilename;
-    splashScreen.advance(90);
+	  
+	  if ( config.isYFiles()){
+    
+		    logger.info ("reading " + interactionsFilename + "...");
+		    graph = FileReadingAbstractions.loadIntrBasic (bioDataServer, 
+								   defaultSpecies, 
+								   interactionsFilename,
+								   edgeAttributes,
+								   config.getCanonicalize(), config.isYFiles());
+		    logger.info ("  done");
+		    title = interactionsFilename;
+		    splashScreen.advance(90);
+	  }
+	  else  {   //using giny 
+		  
+		  logger.info ("reading " + interactionsFilename + "...");
+		    rootGraph = FileReadingAbstractions.loadInteractionsBasic (bioDataServer, 
+								   defaultSpecies, 
+								   interactionsFilename,
+								   edgeAttributes,
+								   config.getCanonicalize(), config.isYFiles());
+		    logger.info ("  done");
+		    title = interactionsFilename;
+		    splashScreen.advance(90);
+	  }
     }
   if (expressionDataFilename != null) {
     logger.info ("reading " + expressionDataFilename + "...");
@@ -142,23 +163,48 @@ public cytoscape (String [] args) throws Exception
     }
     
 
-  if (graph == null) {
+  if (graph == null && config.isYFiles()) {
     splashScreen.advance(90);
     splashScreen.noGraph = true;				  
     graph = new Graph2D ();
   }
+	
+  if (rootGraph == null && !(config.isYFiles())) { //no graph, using giny
+	  splashScreen.advance(90);
+	  splashScreen.noGraph = true;
+	  System.out.println( "No graph specified, using giny graph Libray");					  
+	  //rootGraph = 
+  }
+	  
 		
-
-  FileReadingAbstractions.initAttribs (bioDataServer, defaultSpecies, config, graph, 
+ //System.out.print(config.toString());
+ 
+//create cytoscape window
+if (config.isYFiles()) {
+   FileReadingAbstractions.initAttribs (bioDataServer, defaultSpecies, config, graph, 
                                        nodeAttributes, edgeAttributes);
   if((expressionData !=null) && copyExpToAttribs)
       expressionData.copyToAttribs(nodeAttributes);
-
+	
   cytoscapeWindow = new CytoscapeWindow (this, config, logger,
                                          graph, expressionData, bioDataServer,
                                          nodeAttributes, edgeAttributes, 
                                          geometryFilename, expressionDataFilename,
                                          title, requestFreshLayout);
+}
+else { // using giny
+	 FileReadingAbstractions.initAttributes (bioDataServer, defaultSpecies, config, rootGraph, 
+                                       nodeAttributes, edgeAttributes);
+         if((expressionData !=null) && copyExpToAttribs)
+	       expressionData.copyToAttribs(nodeAttributes);
+
+	 cytoscapeWindow = new CytoscapeWindow (this, config, logger,
+                                         rootGraph, expressionData, bioDataServer,
+                                         nodeAttributes, edgeAttributes, 
+                                         geometryFilename, expressionDataFilename,
+                                         title, requestFreshLayout);
+}
+	
 					 
   if (splashScreen!=null)
 	  splashScreen.advance(100);
