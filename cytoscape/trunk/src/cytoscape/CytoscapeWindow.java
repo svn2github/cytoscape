@@ -361,9 +361,13 @@ public void setGraph (Graph2D graph)
 
   this.graph = graph;
   graph.addGraph2DSelectionListener(this);
-  undoManager = new CytoscapeUndoManager(this, graph);
-  graph.addGraphListener(undoManager);
-  updateUndoRedoMenuItemStatus();
+  if (getConfiguration().enableUndo()) {
+    undoManager = new CytoscapeUndoManager(this, graph);
+    graph.addGraphListener(undoManager);
+    updateUndoRedoMenuItemStatus();
+  } else {
+    undoManager = new EmptyUndoManager(this, graph);
+  }
   graphHider = new UndoableGraphHider (graph, undoManager);
     
   setLayouterAndGraphView();
@@ -996,11 +1000,13 @@ protected JMenuBar createMenuBar ()
   JMenu editMenu = new JMenu ("Edit");
   menuBar.add (editMenu);
   // added by dramage 2002-08-21
-  undoMenuItem = editMenu.add (new UndoAction ());
-  undoMenuItem.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_Z, ActionEvent.CTRL_MASK));
-  redoMenuItem = editMenu.add (new RedoAction ());
-  redoMenuItem.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_Y, ActionEvent.CTRL_MASK));
-  editMenu.addSeparator();
+  if (getConfiguration().enableUndo()) {
+    undoMenuItem = editMenu.add (new UndoAction ());
+    undoMenuItem.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_Z, ActionEvent.CTRL_MASK));
+    redoMenuItem = editMenu.add (new RedoAction ());
+    redoMenuItem.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_Y, ActionEvent.CTRL_MASK));
+    editMenu.addSeparator();
+  }
 
   ButtonGroup modeGroup = new ButtonGroup ();
   JRadioButtonMenuItem readOnlyModeButton = new JRadioButtonMenuItem ("Read-only mode");
@@ -2230,8 +2236,12 @@ protected class DeselectAllAction extends AbstractAction   {
  * added by dramage 2002-08-21
  */
 public void updateUndoRedoMenuItemStatus () {
-    undoMenuItem.setEnabled(undoManager.undoLength() > 0 ? true : false);
-    redoMenuItem.setEnabled(undoManager.redoLength() > 0 ? true : false);
+    if (undoMenuItem != null) {
+        undoMenuItem.setEnabled(undoManager.undoLength() > 0 ? true : false);
+    }
+    if (redoMenuItem != null) {
+        redoMenuItem.setEnabled(undoManager.redoLength() > 0 ? true : false);
+    }
 }
 
 /**

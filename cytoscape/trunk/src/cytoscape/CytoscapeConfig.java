@@ -65,6 +65,7 @@ public class CytoscapeConfig {
   protected String defaultSpeciesName = null;
   protected String projectPropsFileName = null;
   protected File projectFileDirectoryAbsolute;
+  protected boolean enableUndo = false;
   //protected File projectPropsFile = null;
 
   protected String [] layoutStrategies = {"organic", "hierarchical", "embedded", "circular"};
@@ -231,6 +232,11 @@ public boolean inputsError ()
 public boolean displayVersion ()
 {
   return displayVersion;
+}
+//------------------------------------------------------------------------------------------
+public boolean enableUndo ()
+{
+  return enableUndo;
 }
 //------------------------------------------------------------------------------------------
 public Properties getProperties ()
@@ -453,7 +459,8 @@ protected void parseArgs ()
 protected void getConfigurationsFromProperties ()
 {
   defaultLayoutStrategy = props.getProperty ("defaultLayoutStrategy", defaultLayoutStrategy);
-
+  String undoString = props.getProperty("enableUndo");
+  if (undoString != null) {enableUndo=Boolean.valueOf(undoString).booleanValue();}
 }
 //---------------------------------------------------------------------------------
 /**

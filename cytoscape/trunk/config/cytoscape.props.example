@@ -1,4 +1,6 @@
 species=Saccharomyces cerevisiae
+#set this to false to disable the undo features
+enableUndo=true
 #------------------------------------------------------------------------------------
 # interaction will determine the edge color.  this is the middle term in
 # an intr file, where the form is (by example)
