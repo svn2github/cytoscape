@@ -71,6 +71,20 @@ public class TabbedBrowser extends JFrame implements ClipboardOwner {
   protected Vector customAttributesList;
   protected JTextField customTabNameTextField;
   protected File currentDirectory;
+  /**
+   * Need a global reference here so we can disable the button
+   * if the customize tab is selected
+   */
+  protected JButton saveButton;
+  /**
+   * Made this a global reference for consistency's sake
+   */
+  protected JButton dismissButton;
+  /**
+   * Need a global reference to this so we can check
+   * if the tabbed pane has been switched to this tab
+   */
+  protected JPanel customizeTab;
 
   static HashMap customNodeAttributes = new HashMap ();
   static HashMap customEdgeAttributes = new HashMap ();
@@ -108,10 +122,13 @@ public TabbedBrowser (Object [] graphObjects, GraphObjAttributes attributes,
     }
 
   String [] attributeNames = attributes.getAttributeNames ();
+  
 
   getContentPane().setLayout (new BorderLayout ());
-  getContentPane().add (createGui (attributes), BorderLayout.CENTER);
-  getContentPane().add (createButtons (), BorderLayout.SOUTH);
+  
+  getContentPane().add (createButtons (), BorderLayout.SOUTH);  
+  getContentPane().add (createGui(attributes), BorderLayout.CENTER);
+  
   pack ();
   placeInCenter ();
   setVisible (true);
@@ -120,9 +137,11 @@ public TabbedBrowser (Object [] graphObjects, GraphObjAttributes attributes,
 JTabbedPane createGui (GraphObjAttributes attributes)
 {
   tabbedPane = new JTabbedPane ();
+  tabbedPane.addChangeListener(new TabbedPaneListener());
   String [] attributeNames = attributes.getAttributeNames ();
   
-  tabbedPane.add ("Customize", createCustomizerTab (attributeNames));  
+  customizeTab = createCustomizerTab(attributeNames);
+  tabbedPane.add ("Customize", customizeTab);  
 
   for (int i=0; i < attributeNames.length; i++) {
     String attributeName = attributeNames [i];
@@ -211,7 +230,37 @@ protected JPanel createCustomizerTab (String [] attributeNames)
 
   return panel;
 
-} // createCustomizerTab
+}
+
+/**
+ * The purpose of this class is to listen to the tabbedPane and determine when the user
+ * has selected the Customize tab. If this is the case, the "Save Table" button should
+ * be disabled, because it is non-functional
+ */
+class TabbedPaneListener implements ChangeListener{
+  /**
+   * Create a tabbed pane listener, check to see if
+   * the customize tab has been selected, and if so
+   * greys out the save button because it is non-functional
+   *
+   */
+  public TabbedPaneListener(){
+  }
+  
+  /**
+   * Called when a different tab is selected
+   */
+  public void stateChanged(ChangeEvent e){
+    if(customizeTab.equals(tabbedPane.getSelectedComponent())){
+      saveButton.setEnabled(false);
+    }
+    else{
+      saveButton.setEnabled(true);
+    }
+  }
+}
+
+ // createCustomizerTab
 //-----------------------------------------------------------------------------------
 class CheckBoxListener implements ItemListener {
   String attributeName;
@@ -235,8 +284,9 @@ class CheckBoxListener implements ItemListener {
 JPanel createButtons ()
 {
   JPanel panel = new JPanel ();
-  JButton saveButton = new JButton("Save Table");
-  JButton dismissButton = new JButton ("Dismiss");
+  saveButton = new JButton("Save Table");
+  saveButton.setEnabled(false);
+  dismissButton = new JButton ("Dismiss");
   saveButton.addActionListener (new SaveTableAction (this));
   dismissButton.addActionListener (new DismissAction (this));
   panel.add (saveButton, BorderLayout.CENTER);
