@@ -19,6 +19,7 @@ public interface DynamicGraph
    * methods on an invalid enumeration will result in undefined behavior
    * of that enumeration.  Enumerating through a graph's nodes will
    * never have any effect on the graph.
+   *
    * @return an enumeration over all nodes currently in this graph; null
    *   is never returned.
    */
@@ -33,6 +34,7 @@ public interface DynamicGraph
    * methods on an invalid enumeration will result in undefined behavior
    * of that enumeration.  Enumerating through a graph's edges will
    * never have any effect on the graph.
+   *
    * @return an enumeration over all edges currently in this graph; null
    *   is never returned.
    */
@@ -45,6 +47,7 @@ public interface DynamicGraph
    * been successfully removed from this graph.<p>
    * Note that removal of a node necessitates the removal of any edge
    * touching that node.
+   *
    * @param node the node that is to be removed from this graph.
    * @return true if and only if the specified node existed in this graph
    *   at the time this operation was started.
@@ -58,6 +61,7 @@ public interface DynamicGraph
    * Implementations should try to prevent new nodes from taking
    * ever-increasing values when nodes are continually being removed and
    * created.
+   *
    * @return the newly created node.
    */
   public int createNode();
@@ -67,6 +71,7 @@ public interface DynamicGraph
    * if the specified edge was in this graph at the time this method was
    * called.  A return value of true implies that the specified edge has
    * been successfully removed from this graph.
+   *
    * @param edge the edge that is to be removed from this graph.
    * @return true if and only if the specified edge existed in this graph
    *   at the time this operation was started.
@@ -82,6 +87,7 @@ public interface DynamicGraph
    * Implementation should try to prevent new edges from taking
    * ever-increasing values when edges are continually being removed and
    * created.
+   *
    * @param sourceNode the source node that the new edge is to have.
    * @param targetNode the target node that the new edge is to have.
    * @param directed the new edge will be directed if and only if this value
@@ -96,6 +102,7 @@ public interface DynamicGraph
   /**
    * Determines whether or not a node exists in this graph.
    * Returns true if and only if the node specified exists.
+   *
    * @param node the [potentially existing] node in this graph whose existence
    *   we're querying.
    * @return the existence of specified node in this graph.
@@ -106,6 +113,7 @@ public interface DynamicGraph
   /**
    * Determines whether or not an edge exists in this graph.
    * Returns true if and only if the edge specified exists.
+   *
    * @param edge the [potentially existing] edge in this graph whose existence
    *   we're querying.
    * @return the existence of specified edge in this graph.
@@ -122,6 +130,7 @@ public interface DynamicGraph
    * graph-topology-modifying method on this graph is called.  Calling
    * methods on an invalid enumeration will result in undefined behavior
    * of that enumeration.
+   *
    * @param node the node in this graph whose adjacent edges we're seeking.
    * @param outgoing all directed edges whose source is the node specified
    *   are included in the returned enumeration if this value is true;
@@ -161,6 +170,7 @@ public interface DynamicGraph
    * This method returns an IntIterator as opposed to an IntEnumerator
    * so that non-optimized implementations would not be required to
    * pre-compute the number of edges being returned.
+   *
    * @param node0 one of the nodes in this graph whose connecting edges
    *   we're seeking.
    * @param node1 one of the nodes in this graph whose connecting edges
@@ -194,6 +204,7 @@ public interface DynamicGraph
    * Determines the source node of an edge.
    * Returns the source node of specified edge or -1 if specified edge does
    * not exist in this graph.
+   *
    * @param edge the edge in this graph whose source node we're seeking.
    * @return the source node of specified edge or -1 if specified edge does
    *   not exist in this graph.
@@ -205,6 +216,7 @@ public interface DynamicGraph
    * Determines the target node of an edge.
    * Returns the target node of specified edge or -1 if specified edge does
    * not exist in this graph.
+   *
    * @param edge the edge in this graph whose target node we're seeking.
    * @return the target node of specified edge or -1 if specified edge does
    *   not exist in this graph.
@@ -217,6 +229,7 @@ public interface DynamicGraph
    * Returns 1 if specified edge is directed, returns 0 if specified edge
    * is undirected, and returns -1 if specified edge does not exist in this
    * graph.
+   *
    * @param edge the edge in this graph whose directedness we're seeking.
    * @return 1 if specified edge is directed, 0 if specified edge is
    *   undirected, and -1 if specified edge does not exist in this graph.
