@@ -141,9 +141,9 @@ public class LineType implements Serializable {
     }
     
     private Stroke makeDashedStroke(float width) {
-        float[] dash = {3.0f, 1.0f};
-        return new BasicStroke(width, BasicStroke.CAP_SQUARE,
-                               BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
+        float[] dash = {5.0f, 3.0f};
+        return new BasicStroke(width, BasicStroke.CAP_BUTT,
+                               BasicStroke.JOIN_MITER, 1.0f, dash, 0.0f);
     }
 }
 

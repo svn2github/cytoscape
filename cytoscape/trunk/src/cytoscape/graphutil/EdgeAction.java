@@ -413,7 +413,10 @@ public class EdgeAction {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
-                  ev.setStrokeWidth( 4f );
+                   ev.setStrokeWidth( 4f );
+                //    float[] dash = {3.0f, 1.0f};
+//                   ev.setStroke ( new java.awt.BasicStroke( 4f, java.awt.BasicStroke.CAP_SQUARE,
+//                                                            java.awt.BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f) );
                 } } ); } } ) );
     width_menu.add( new JMenuItem( new AbstractAction( "8" ) {
           public void actionPerformed ( ActionEvent e ) {
