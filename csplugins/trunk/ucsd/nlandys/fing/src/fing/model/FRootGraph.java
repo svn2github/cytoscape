@@ -192,9 +192,63 @@ class FRootGraph implements RootGraph, DynamicGraph
   public int removeNode(final int nodeInx)
   {
     final int nativeNodeInx = ~nodeInx;
+    if (!m_graph.nodeExists(nativeNodeInx)) return 0;
+    // BEGIN: Remove node from meta structure.
+    final int metaElement = m_nativeToMetaNodeInxMap.get(nativeNodeInx);
+    if (m_metaGraph.nodeExists(metaElement)) {
+      final MinIntHeap bucket = new MinIntHeap();
+      IntEnumerator nativeEdgeEnum = // Remove meta on touching native edges.
+        m_graph.edgesAdjacent(nativeNodeInx, true, true, true);
+      while (nativeEdgeEnum.numRemaining() > 0) {
+        final int nativeEdgeInx = nativeEdgeEnum.nextInt(); // To be deleted.
+        final int metaEdge = m_nativeToMetaEdgeInxMap.get(nativeEdgeInx);
+        IntEnumerator metaRelationships = // Must be wiped out.
+          m_metaGraph.edgesAdjacent(metaEdge, false, true, false);
+        if (metaRelationships != null) { // Edge element exists in meta.
+          bucket.empty();
+          while (metaRelationships.numRemaining() > 0)
+            bucket.toss(metaRelationships.nextInt());
+          metaRelationships = bucket.elements();
+          while (metaRelationships.numRemaining() > 0) {
+            final int metaRelationship = metaRelationships.nextInt();
+            final int metaParent = m_metaGraph.edgeSource(metaRelationship);
+            m_metaGraph.edgeRemove(metaRelationship);
+            if (m_metaGraph.edgesAdjacent(metaParent, true, true, false).
+                numRemaining() == 0) { // Remove disconnected meta-parent.
+              final int nativeNodeParent =
+                m_metaToNativeInxMap.getIntAtIndex(metaParent) - 1;
+              m_nativeToMetaNodeInxMap.put(nativeNodeParent,
+                                           Integer.MAX_VALUE);
+              m_metaToNativeInxMap.setIntAtIndex(0, metaParent);
+              m_metaGraph.nodeRemove(metaParent); } }
+          m_nativeToMetaEdgeInxMap.put(nativeEdgeInx, Integer.MAX_VALUE);
+          m_metaToNativeInxMap.setIntAtIndex(0, metaEdge);
+          m_metaGraph.nodeRemove(metaEdge); } }
+      IntEnumerator metaRelationships = m_metaGraph.edgesAdjacent
+        (metaElement, true, true, false);
+      bucket.empty();
+      while (metaRelationships.numRemaining() > 0)
+        bucket.toss(metaRelationships.nextInt());
+      metaRelationships = bucket.elements();
+      while (metaRelationships.numRemaining() > 0) {
+        final int metaRelationship = metaRelationships.nextInt();
+        final int otherMetaElement =
+          (metaElement ^ m_metaGraph.edgeTarget(metaRelationship) ^
+           m_metaGraph.edgeSource(metaRelationship));
+        m_metaGraph.edgeRemove(metaRelationship);
+        if (m_metaGraph.edgesAdjacent(otherMetaElement, true, true, false).
+            numRemaining() == 0) { // Remove disconnected meta-element.
+          final int f = m_metaToNativeInxMap.getIntAtIndex(otherMetaElement);
+          if (f > 0) m_nativeToMetaNodeInxMap.put(f - 1, Integer.MAX_VALUE);
+          else m_nativeToMetaEdgeInxMap.put(~f, Integer.MAX_VALUE);
+          m_metaToNativeInxMap.setIntAtIndex(0, otherMetaElement);
+          m_metaGraph.nodeRemove(otherMetaElement); } }
+      m_nativeToMetaNodeInxMap.put(nativeNodeInx, Integer.MAX_VALUE);
+      m_metaToNativeInxMap.setIntAtIndex(0, metaElement);
+      m_metaGraph.nodeRemove(metaElement); }
+    // END: Remove node from meta structure.
     final IntEnumerator nativeEdgeEnum =
       m_graph.edgesAdjacent(nativeNodeInx, true, true, true);
-    if (nativeEdgeEnum == null) return 0;
     final Edge[] removedEdgeArr = new Edge[nativeEdgeEnum.numRemaining()];
     for (int i = 0; i < removedEdgeArr.length; i++)
       removedEdgeArr[i] = m_edges.getEdgeAtIndex(nativeEdgeEnum.nextInt());
@@ -208,11 +262,6 @@ class FRootGraph implements RootGraph, DynamicGraph
     m_graph.nodeRemove(nativeNodeInx);
     m_nodes.setNodeAtIndex(null, nativeNodeInx);
     m_nodeDepot.recycleNode(removedNode);
-    final int metaNodeInx = m_nativeToMetaNodeInxMap.get(nativeNodeInx);
-    if (!(metaNodeInx < 0 || metaNodeInx == Integer.MAX_VALUE)) {
-      m_nativeToMetaNodeInxMap.put(nativeNodeInx, Integer.MAX_VALUE);
-      m_metaToNativeInxMap.setIntAtIndex(0, metaNodeInx);
-      m_metaGraph.nodeRemove(metaNodeInx); }    
     if (removedEdgeArr.length > 0)
       m_lis.rootGraphChanged
         (new RootGraphEdgesRemovedEvent(this, removedEdgeArr));
