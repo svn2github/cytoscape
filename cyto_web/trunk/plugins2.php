@@ -30,7 +30,7 @@
 		core. PlugIns also provide a convenient place for testing out new Cytoscape features. As more PlugIns become
 		available, they will be listed on this page. Check back often!
 	</p
-	<p><b>Note that PlugIns on this page will only work with Cytoscape 2.0</b>.  We also maintain a list of 
+	<p><b>Note that PlugIns on this page will only work with Cytoscape 2.0</b>.  We also maintain a list of
 	<A HREF="plugins1.php">Cytoscape 1.1 PlugIns</A>.
 	<P>If you are interested in building your own Cytoscape 2.0 PlugIn, check out the
 		<a href="http://cytoscape.systemsbiology.net/Cytoscape2.0/plugin/pluginTutorial/pluginTutorial.html">Cytoscape 2.0 PlugIn Tutorial</A>
@@ -83,7 +83,7 @@
 						interaction network have been shown to be protein complexes and parts of pathways. Clusters in a protein similarity
 						network represent protein families.
 						<p>
-							Released by: Gary Bader, <a href="http://www.cbio.mskcc.org/">Computational Biology Center</a>, Memorial Sloan Kettering Cancer Center.
+							Released by: Gary Bader, Sander Group, <a href="http://www.cbio.mskcc.org/">Computational Biology Center</a>, Memorial Sloan Kettering Cancer Center.
 						</p>
 					</td>
 					<td width="20%" valign="top">

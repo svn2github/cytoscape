@@ -144,7 +144,7 @@
 	<br>
 		[<a href="http://www.genome.org/cgi/content/abstract/14/3/380" class="Textlink">Abstract</a>][<a href="http://www.genome.org/cgi/reprint/14/3/380.pdf" class="Textlink">PDF</a>] [<a href="http://www.genome.org/cgi/content/full/14/3/380/DC1" class="Textlink">Supplemental Research Data</a>]
 </p>
-<p.
+<p>
 <br>
 <p>
 <b>Science, Feb 2004</b>

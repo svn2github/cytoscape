@@ -28,7 +28,7 @@
 	<h3>Input</h3>
 	<ul type="square">
 		<li>
-			Input and construct molecular interaction networks from raw interaction files (SIF format) containing lists of protein-protein and/or protein-DNA interaction pairs. &nbsp;For yeast and other model organisms, large sources of pairwise interactions are available through the <a href="http://www.bind.ca"> BIND</a> and <a href="http://transfac.gbf.de/TRANSFAC">TRANSFAC</a> databases. User-defined interaction types are also supported.
+			Input and construct molecular interaction networks from raw interaction files (SIF format) containing lists of protein-protein and/or protein-DNA interaction pairs. &nbsp;For yeast and other model organisms, large sources of pairwise interactions are available through the <a href="http://www.bind.ca"> BIND</a> and <a href="http://www.gene-regulation.com/">TRANSFAC</a> databases. User-defined interaction types are also supported.
 		</li>
 		<li>
 			Load and save previously-constructed interaction networks in <a href="http://infosun.fmi.uni-passau.de/Graphlet/GML/">GML</a> format (Graph Markup Language).

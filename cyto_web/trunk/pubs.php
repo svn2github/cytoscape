@@ -82,21 +82,7 @@
 		Proc Natl Acad Sci U S A. 2003 Sep 30;100(20):11394-9.
 		<br>
 		[<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&amp;db=pubmed&amp;dopt=Abstract&amp;list_uids=14504397">Pub Med Entry</a>] [<a href="http://www.pubmedcentral.nih.gov/articlerender.fcgi?tool=pubmed&amp;pubmedid=14504397">Full Text</a>]
-		<br>
-		&nbsp;
-		<br>
-		<b>Genome Research, June 2004 (cover article)</b><br>
-Baliga, NS, Bjork, SJ, Bonneau, R, Pan, M, Iloanusi, C, Kottemann, MCH, Hood, L, and DiRuggiero, J. Systems level instights into the stress ersponds to UV radiation in the halophilic archaeon Halobacterium NRC-1. Genome Res. 2004 14: 1025-35.<br>
-[<a href="http://www.genome.org/cgi/content/abstract/14/6/1025" class="Textlink" target="_blank">Abstract</a>][<a href=http://www.genome.org/cgi/reprint/14/6/1025.pdf class="Textlink" target="_blank">PDF</a>][<a href="http://www.genome.org/cgi/content/full/1993504/DC1" class="Textlink" target="_blank">Supplemental Research Data</a>]<p><br>
-<p>
-<b>Genome Research, March 2004</b><br>
-Prinz S, Avila-Campillo I, Aldridge C, Srinivasan A, Dimitrov K, Siegel AF,
-and Galitski T. Control of Yeast Filamentous-Form Growth by Modules in an
-Integrated Molecular Network. Genome Res. 2004 14: 380-390.<br>
-[<a href="http://www.genome.org/cgi/content/abstract/14/3/380" class="Textlink" target="_blank">Abstract</a>][<a href="http://www.genome.org/cgi/reprint/14/3/380.pdf" class="Textlink" target="_blank">PDF</a>]
-[<a href="http://www.genome.org/cgi/content/full/14/3/380/DC1" class="Textlink" target="_blank" >Supplemental Research Data</a>]
-
-<br>
+		
 <p><b>RECOMB 2003</b><br>
           Yeang C-H, Jaakkola T. Physical network models and multi-source data
           integration. <i> The Seventh Annual International Conference on Research
