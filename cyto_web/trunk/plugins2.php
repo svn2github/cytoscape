@@ -479,7 +479,8 @@ Networks by using Filters that you have created.
 					path between two proteins in a Cytoscape's network. It is tested under
 					Cytoscape 2.1.
 					<p>
-						Released by: Michele Petterlini
+						Released by: Michele Petterlini, Giovanni
+Scardoni.
 					</p>
 				</td>
 				<td width="20%" valign="top">
