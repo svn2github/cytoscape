@@ -176,6 +176,69 @@ public class VizMapperCategories implements AttributeMapperCategories {
     }
 
     //------------------------------------------------------------------
+    public String rangeAttributeValueToString(Integer vizAttribute, Object rangeAttributeValue){
+	
+	boolean objectTypeError = false;
+	boolean unknownAttribute = false;
+	String className = (rangeAttributeValue.getClass()).getName();
+	
+	if ( vizAttribute.equals(NODE_FILL_COLOR) ||
+	     vizAttribute.equals(NODE_BORDER_COLOR) ||
+	     vizAttribute.equals(EDGE_COLOR) ||
+	     vizAttribute.equals(BG_COLOR)){
+	    if(className.equals("Color")){
+		return Misc.getRGBText((Color)rangeAttributeValue);
+	    }else{
+		objectTypeError = true;
+	    }
+	}else if ( vizAttribute.equals(NODE_HEIGHT) ||
+		   vizAttribute.equals(NODE_WIDTH) ){
+	    if(className.equals("Double")){ 
+		return rangeAttributeValue.toString();
+	    }else{
+		objectTypeError = true;
+	    }
+	}else if( vizAttribute.equals(NODE_SHAPE) ) {
+	    if(className.equals("Byte")){
+		return Misc.getNodeShapeText(((Byte)(rangeAttributeValue)).byteValue());
+	    }else{
+		objectTypeError = true;
+	    }
+	}else if ( vizAttribute.equals(NODE_BORDER_LINETYPE) ||
+		   vizAttribute.equals(EDGE_LINETYPE) ) {
+	    if(className.equals("LineType")){
+		return Misc.getLineTypeText((LineType)rangeAttributeValue);
+	    }else{
+		objectTypeError = true;	
+	    }
+	}else if ( vizAttribute.equals(EDGE_SOURCE_DECORATION) ||
+		   vizAttribute.equals(EDGE_TARGET_DECORATION) ) {
+	    if(className.equals("Arrow")){
+		return Misc.getArrowText((Arrow)rangeAttributeValue);
+	    }else{
+		objectTypeError = true;		
+	    }
+	}else{
+	    unknownAttribute = true;
+	}
+	
+	if(objectTypeError){
+	    System.err.println("Error converting attribute value to string:");
+	    System.err.println("Incorrect attribute value object type: "
+			       + rangeAttributeValue.getClass());
+	}
+
+	if(unknownAttribute){
+	    //unknown attribute
+	    System.err.println("Error converting attribute value to string:");
+	    System.err.println("    unknown vizAttribute: "
+			       + vizAttribute.toString() ); 
+	}
+	
+	return "";
+    }//rangeAttributeValueToString
+
+    //------------------------------------------------------------------
 
     public Interpolator getInterpolator(Integer vizAttribute) {
 	Interpolator fInt = null;
