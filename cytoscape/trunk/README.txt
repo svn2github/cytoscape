@@ -151,15 +151,7 @@ of Cytoscape is rather involved.  Some of the tasks are automated and some are m
 				"cytoscape-vX.Y", and select 40 MB.
 			--  once the image is created on your desktop, copy 
 				the complete contents of build/cytoscape-vX.Y to the image.
-		3.  Modify the default image for the Cytoscape folder to use the Cytoscape 
-			Icon
-			--  to do so, go to the disk image:  cytoscape-vX.Y/cytoscape.app, 
-			click "Get Info", and expand the tab labeled, "General".
-			--  select the icon, and hit Apple-C (Copy)
-			--  go to the disk image:  cytoscape-vX.Y, click "Get Info", 
-			and expand the tab labeled,	"General".
-			--  select the icon, and hit Apple-V (Paste)
-		4.  create the dmg.zip file
+		3.  create the dmg.zip file
 			--  to do so, right click on cytoscape-vX.Y.dmg, and 
 			select "Create Archive".  (Note:  When you created the disk image via
 			Disk Utility, it creates two items:  1)  the actual .dmg file;  and
