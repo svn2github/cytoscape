@@ -17,6 +17,8 @@ import cytoscape.data.CyNetworkFactory;
 import cytoscape.data.Semantics;
 import cytoscape.view.NetworkView;
 import cytoscape.util.CyFileFilter;
+import cytoscape.actions.CheckBoxFileChooser;
+
 //-------------------------------------------------------------------------
 public class LoadGraphFileAction extends AbstractAction {
     NetworkView networkView;
@@ -29,22 +31,33 @@ public class LoadGraphFileAction extends AbstractAction {
     public void actionPerformed(ActionEvent e)  {
         CytoscapeObj cytoscapeObj = networkView.getCytoscapeObj();
         File currentDirectory = networkView.getCytoscapeObj().getCurrentDirectory();
-        JFileChooser chooser = new JFileChooser(currentDirectory);
-        CyFileFilter intFilter = new CyFileFilter();
-        CyFileFilter gmlFilter = new CyFileFilter();
+        //JFileChooser chooser = new JFileChooser(currentDirectory);
+        JFileChooser chooser = new CheckBoxFileChooser(currentDirectory, "append graph? (not implemented yet)");
+	boolean appendFlag = false;
+        //chooser.setApproveButtonText("TEST TEXT");
+        CyFileFilter intFilter   = new CyFileFilter();
+        CyFileFilter gmlFilter   = new CyFileFilter();
+        CyFileFilter graphFilter = new CyFileFilter();
 	CyNetwork newNetwork;
         gmlFilter.addExtension("gml");
         gmlFilter.setDescription("GML files");
         intFilter.addExtension("sif");
         intFilter.setDescription("Interaction files");
+        graphFilter.addExtension("sif");
+        graphFilter.addExtension("gml");
+        graphFilter.setDescription("All graph files");
+        chooser.addChoosableFileFilter(graphFilter);
         chooser.addChoosableFileFilter(intFilter);
         chooser.addChoosableFileFilter(gmlFilter);
-        chooser.setFileFilter(intFilter);
+        chooser.setFileFilter(graphFilter);
         if (chooser.showOpenDialog(networkView.getMainFrame()) == chooser.APPROVE_OPTION) {
             currentDirectory = chooser.getCurrentDirectory();
+	    
 	    //String fileType = chooser.getDescription(chooser.getSelectedFile());
 	    //System.out.println("FILETYPE: " + fileType);
             networkView.getCytoscapeObj().setCurrentDirectory(currentDirectory);
+	    //appendFlag = chooser.getCheckBoxState();
+	    //if(appendFlag) System.out.println("appending graph");
 
             String  name = chooser.getSelectedFile().toString();
             boolean canonicalize = Semantics.getCanonicalize(cytoscapeObj);
