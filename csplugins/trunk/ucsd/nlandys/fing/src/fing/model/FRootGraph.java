@@ -364,11 +364,11 @@ class FRootGraph implements RootGraph
   {
     final int returnThis =
       _createEdge(sourceNodeIndex, targetNodeIndex, directed);
-    if (returnThis != 0) {
-      final RootGraphChangeListener listener = m_lis;
-      if (listener != null)
-        listener.rootGraphChanged
-          (new RootGraphEdgesCreatedEvent(this, new int[] { returnThis })); }
+//     if (returnThis != 0) {
+//       final RootGraphChangeListener listener = m_lis;
+//       if (listener != null)
+//         listener.rootGraphChanged(new RootGraphEdgesCreatedEvent
+//                                   (this, new int[] { returnThis })); }
     return returnThis;
   }
 
@@ -400,20 +400,22 @@ class FRootGraph implements RootGraph
     int foo = targetNodeIndices[sourceNodeIndices.length - 1];
     foo = sourceNodeIndices[targetNodeIndices.length - 1];
     foo = 0;
-    m_heap.empty();
-    final MinIntHeap successes = m_heap;
+//     m_heap.empty();
+//     final MinIntHeap successes = m_heap;
     final int[] returnThis = new int[sourceNodeIndices.length];
-    for (int i = 0; i < returnThis.length; i++) {
+    for (int i = 0; i < returnThis.length; i++)
+    {
       returnThis[i] = createEdge(sourceNodeIndices[i],
                                  targetNodeIndices[i], directed);
-      if (returnThis[i] != 0) successes.toss(returnThis[i]); }
-    if (successes.size() > 0) {
-      final RootGraphChangeListener listener = m_lis;
-      if (listener != null) {
-        final int[] successArr = new int[successes.size()];
-        successes.copyInto(successArr, 0);
-        listener.rootGraphChanged
-          (new RootGraphEdgesCreatedEvent(this, successArr)); } }
+//       if (returnThis[i] != 0) successes.toss(returnThis[i]);
+    }
+//     if (successes.size() > 0) {
+//       final RootGraphChangeListener listener = m_lis;
+//       if (listener != null) {
+//         final int[] successArr = new int[successes.size()];
+//         successes.copyInto(successArr, 0);
+//         listener.rootGraphChanged
+//           (new RootGraphEdgesCreatedEvent(this, successArr)); } }
     return returnThis; }
 
   public boolean containsNode(Node node) {
