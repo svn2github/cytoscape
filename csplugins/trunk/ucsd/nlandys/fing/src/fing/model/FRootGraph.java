@@ -47,25 +47,29 @@ class FRootGraph implements RootGraph
   }
 
   public GraphPerspective createGraphPerspective(Node[] nodes, Edge[] edges) {
-    if (nodes == null) nodes = new Node[0];
-    if (edges == null) edges = new Edge[0];
-    m_heap.empty();
-    final MinIntHeap nodeInxBucket = m_heap;
-    for (int i = 0; i < nodes.length; i++) {
-      if (nodes[i] != null && nodes[i].getRootGraph() == this)
-        nodeInxBucket.toss(nodes[i].getRootGraphIndex());
-      else return null; }
-    final int[] nodeInxArr = new int[nodeInxBucket.size()];
-    nodeInxBucket.copyInto(nodeInxArr, 0);
-    m_heap.empty();
-    final MinIntHeap edgeInxBucket = m_heap;
-    for (int i = 0; i < edges.length; i++) {
-      if (edges[i] != null && edges[i].getRootGraph() == this)
-        edgeInxBucket.toss(edges[i].getRootGraphIndex());
-      else return null; }
-    final int[] edgeInxArr = new int[edgeInxBucket.size()];
-    edgeInxBucket.copyInto(edgeInxArr, 0);
-    return createGraphPerspective(nodeInxArr, edgeInxArr); }
+    final Node[] nodeArr = ((nodes != null) ? nodes : new Node[0]);
+    final Edge[] edgeArr = ((edges != null) ? edges : new Edge[0]);
+    final RootGraph root = this;
+    try {
+      return new FGraphPerspective
+        (this,
+         new IntIterator() {
+           private int index = 0;
+           public boolean hasNext() { return index < nodeArr.length; }
+           public int nextInt() {
+             if (nodeArr[index] == null ||
+                 nodeArr[index].getRootGraph() != root)
+               throw new IllegalArgumentException();
+             return nodeArr[index++].getRootGraphIndex(); } },
+         new IntIterator() {
+           private int index = 0;
+           public boolean hasNext() { return index < edgeArr.length; }
+           public int nextInt() {
+             if (edgeArr[index] == null ||
+                 edgeArr[index].getRootGraph() != root)
+               throw new IllegalArgumentException();
+             return edgeArr[index++].getRootGraphIndex(); } }); }
+    catch (IllegalArgumentException exc) { return null; } }
 
   // This hashtable is to be used only by createGraphPerspective(int[], int[])
   // and by getConnectingEdgeIndicesArray(int[]).
