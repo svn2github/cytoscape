@@ -30,7 +30,7 @@ package cytoscape.util.intr;
 
 /**
  * An insert-only hashtable that has non-negative 32 bit integer keys;
- * no "payload" is stored in this hashtable.  An instance of this class
+ * no satellite data is stored in this hashtable.  An instance of this class
  * is well-suited for efficiently detecting collisions between integers,
  * removing duplicates from a list of integers, or determining the presence of
  * an integer in a list of integers.<p>
