@@ -14,6 +14,8 @@ TestDataDir=../../testData
 	$(JC) $<
 
 OBJS =  MiscTest.class \
+        MinMaxTest.class \
+        ExecTest.class
 
 default: objs run
 
@@ -25,9 +27,17 @@ clean:
 
 run: $(OBJS)
 	java $(PKG).MiscTest
+	java $(PKG).MinMaxTest
+	java $(PKG).ExecTest
 
 
 0: MiscTest.class
 	java $(PKG).MiscTest
+
+1: MinMaxTest.class
+	java $(PKG).MinMaxTest
+
+2: ExecTest.class
+	java $(PKG).ExecTest
 
 
