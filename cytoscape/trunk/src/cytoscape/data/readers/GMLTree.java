@@ -2,6 +2,7 @@ package cytoscape.data.readers;
 import java.util.*;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.awt.Color;
 import giny.view.*;
 import giny.model.*;
 /**
@@ -75,6 +76,20 @@ public class GMLTree{
 			GMLNode graphics = new GMLNode();
 			graphics.addMapping("x",new GMLNode(""+currentView.getXPosition()));
 			graphics.addMapping("y",new GMLNode(""+currentView.getYPosition()));
+			graphics.addMapping("h",new GMLNode(""+currentView.getHeight()));
+			graphics.addMapping("w",new GMLNode(""+currentView.getWidth()));
+			Color nodeColor = (Color) currentView.getSelectedPaint();
+			//System.out.println(nodeColor.toString());
+			GMLNode nC = new GMLNode("\"#"+Integer.toHexString(nodeColor.getRed())
+						 +Integer.toHexString(nodeColor.getGreen())
+						 +Integer.toHexString(nodeColor.getBlue())+"\"");
+			graphics.addMapping("fill", nC);
+			switch(currentView.getShape()) {
+			case NodeView.RECTANGLE:
+			    graphics.addMapping("type",new GMLNode("\"rectangle\"")); break;
+			case NodeView.ELLIPSE:
+			    graphics.addMapping("type",new GMLNode("\"oval\"")); break;
+			}
 			currentGML.addMapping("graphics",graphics);
 			graph.addMapping("node",currentGML);
 		}
