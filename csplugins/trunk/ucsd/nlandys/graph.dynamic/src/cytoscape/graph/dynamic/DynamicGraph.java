@@ -3,7 +3,7 @@ package cytoscape.graph.dynamic;
 import cytoscape.util.intr.IntEnumerator;
 
 // Edges and nodes are non-negative.
-interface CyGraph
+interface DynamicGraph
 {
   IntEnumerator nodes();
   IntEnumerator edges();
