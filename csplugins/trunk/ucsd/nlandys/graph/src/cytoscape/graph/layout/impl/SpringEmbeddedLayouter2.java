@@ -165,7 +165,9 @@ public final class SpringEmbeddedLayouter2 implements Task
         throw new IndexOutOfBoundsException
           ("nodeIndex out of bounds: " + nodeIndex);
       Object o = movedNodes.get(new Integer(nodeIndex));
-      if (o == null) return graph.getNodePosition(nodeIndex);
+      if (o == null) return new Point2D.Double
+                       (graph.getNodePosition(nodeIndex, true),
+                        graph.getNodePosition(nodeIndex, false));
       else return (Point2D) o; }
     void moveUnderlyingNodes() {
       if (alreadyMoved) throw new IllegalStateException
@@ -179,7 +181,8 @@ public final class SpringEmbeddedLayouter2 implements Task
       for (int nodeIx = 0; nodeIx < graph.getNumNodes(); nodeIx++) {
         Point2D nodePos;
         if ((nodePos = (Point2D) movedNodes.get(new Integer(nodeIx))) == null)
-          nodePos = graph.getNodePosition(nodeIx);
+          nodePos = new Point2D.Double(graph.getNodePosition(nodeIx, true),
+                                       graph.getNodePosition(nodeIx, false));
         minX = Math.min(minX, nodePos.getX());
         maxX = Math.max(maxX, nodePos.getX());
         minY = Math.min(minY, nodePos.getY());
