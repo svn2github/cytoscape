@@ -45,6 +45,10 @@ import cytoscape.Cytoscape;
 import cytoscape.view.CyNetworkView;
 import giny.view.NodeView;
 import giny.view.EdgeView;
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
@@ -107,11 +111,13 @@ class HierarchyFlowLayoutOrderNode implements Comparable {
  * Steps 2 through 6 are performed by calls to methods in the class
  * {@link csplugins.hierarchicallayout.Graph}
 */
-public class HierarchicalLayoutListener implements ActionListener {
+public class HierarchicalLayoutListener implements ActionListener, Task {
+	private TaskMonitor taskMonitor = null;
+	private boolean interrupted = false;
 
 	/**
 	 * Lays out the graph. See this class' description for an outline
-         * of the method used. <br>
+	 * of the method used. <br>
 	 * For the last step, assembly of the layed out components, the method
 	 * implemented is similar to the FlowLayout layout manager from the AWT.
 	 * Space is allocated in horizontal bands, with a new band begun beneath
@@ -129,6 +135,23 @@ public class HierarchicalLayoutListener implements ActionListener {
 	 * @param event Menu Selection Event.
 	 */
 	public void actionPerformed(ActionEvent event) {
+		JTaskConfig config = new JTaskConfig();
+		config.setOwner(Cytoscape.getDesktop());
+		config.displayCancelButton(true);
+		config.displayStatus(true);
+		config.displayTimeElapsed(true);
+		TaskManager.executeTask(new HierarchicalLayoutListener(), config);
+	}
+
+	public void run() {
+		if (taskMonitor == null) {
+			throw new IllegalStateException("Task Monitor is not set.");
+		}
+	try {
+		taskMonitor.setPercentCompleted(0);
+		taskMonitor.setStatus("capturing snapshot of network and selected nodes");
+		Thread.yield();
+		if (interrupted) return;
 		//get the graph view object from the window.
 		CyNetworkView networkView = Cytoscape.getCurrentNetworkView();
 		//get the network object; this contains the graph
@@ -139,7 +162,7 @@ public class HierarchicalLayoutListener implements ActionListener {
 		}
 		//and the view should be a view on this structure
 		if (networkView.getNetwork() != network) {
-			System.err.println("In HierarchicalLayoutListener.actionPerformed: ");
+			System.err.println("In HierarchicalLayoutListenr.run: ");
 			System.err.println("Current CyNetworkView is not a view on the current CyNetwork.");
 			return;
 		}
@@ -181,7 +204,7 @@ public class HierarchicalLayoutListener implements ActionListener {
 			Integer edgeFrom = (Integer)ginyIndex2Index.get(new Integer(ev.getEdge().getSource().getRootGraphIndex()));
 			Integer edgeTo = (Integer)ginyIndex2Index.get(new Integer(ev.getEdge().getTarget().getRootGraphIndex()));
 			if (edgeFrom == null || edgeTo == null) {
-			System.err.println("In HierarchicalLayoutListener.actionPerformed: ");
+			System.err.println("In HierarchicalLayoutListener.run: ");
 				System.err.println("Error in internal edge representation.");
 				return;
 			}
@@ -211,6 +234,10 @@ public class HierarchicalLayoutListener implements ActionListener {
 		}
 		System.out.println("Partitioning into components:\n");
 		*/
+		taskMonitor.setPercentCompleted(10);
+		taskMonitor.setStatus("finding connected components");
+		Thread.yield();
+		if (interrupted) return;
 		int renumber[] = new int[cI.length];
 		Graph component[] = graph.partition(cI,renumber);
 		final int numComponents = component.length;
@@ -231,7 +258,15 @@ public class HierarchicalLayoutListener implements ActionListener {
 			System.out.println(component[x].getReducedGraph());
 			System.out.println("layer assignment:\n");
 			*/
+			taskMonitor.setPercentCompleted(20 + 60 * (x * 3) / numComponents / 3);
+			taskMonitor.setStatus("making acyclic transitive reduction");
+			Thread.yield();
+			if (interrupted) return;
 			Graph reduced = component[x].getReducedGraph();
+			taskMonitor.setPercentCompleted(20 + 60 * (x * 3 + 1) / numComponents / 3);
+			taskMonitor.setStatus("layering nodes vertically");
+			Thread.yield();
+			if (interrupted) return;
 			layer[x] = reduced.getVertexLayers();
 			/*
 			int y;
@@ -240,6 +275,10 @@ public class HierarchicalLayoutListener implements ActionListener {
 			}
 			System.out.println("horizontal position:\n");
 			*/
+			taskMonitor.setPercentCompleted(20 + 60 * (x * 3 + 2) / numComponents / 3);
+			taskMonitor.setStatus("positioning nodes within layer");
+			Thread.yield();
+			if (interrupted) return;
 			horizontalPosition[x] = reduced.getHorizontalPosition(layer[x]);
 			/*
 			for (y=0;y<horizontalPosition[x].length;y++) {
@@ -247,6 +286,10 @@ public class HierarchicalLayoutListener implements ActionListener {
 			}
 			*/
 		}
+		taskMonitor.setPercentCompleted(80);
+		taskMonitor.setStatus("repositioning nodes in view");
+		Thread.yield();
+		if (interrupted) return;
 		/* order nodeviews by layout order */
 		HierarchyFlowLayoutOrderNode flowLayoutOrder[] = new HierarchyFlowLayoutOrderNode[numLayoutNodes];
 		for (x=0; x<numLayoutNodes; x++) {
@@ -377,5 +420,38 @@ public class HierarchicalLayoutListener implements ActionListener {
 				nodeView[x].setYPosition(nodeView[x].getYPosition() + shiftY,true);
 			}
 		}
+		taskMonitor.setPercentCompleted(100);
+		taskMonitor.setStatus("hierarchical layout complete");
+	} catch (Throwable e) {
+		taskMonitor.setException(e, "Layout aborted due to unexpected condition");
+	}
+	}
+
+	/**
+	* Non-blocking call to interrupt the task.
+	*/
+	public void halt() {
+		interrupted = true;
+	}
+
+	/**
+	* Sets the Task Monitor.
+	*
+	* @param taskMonitor TaskMonitor Object.
+	*/
+	public void setTaskMonitor(TaskMonitor tm) {
+		if (taskMonitor != null) {
+			throw new IllegalStateException("Task Monitor is already set.");
+		}
+		taskMonitor = tm;
+	}
+
+	/**
+	* Gets the Task Title.
+	*
+	* @return human readable task title.
+	*/
+	public String getTitle() {
+		return new String("Hierarchical Layout");
 	}
 }
