@@ -40,8 +40,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 import cytoscape.data.synonyms.*;
-import cytoscape.data.readers.TextFileReader;
-import cytoscape.data.readers.TextJarReader;
+import cytoscape.data.readers.*;
 //-------------------------------------------------------------------------
 public class ThesaurusFlatFileReader { 
   Thesaurus thesaurus;
@@ -52,6 +51,11 @@ public ThesaurusFlatFileReader (String filename) throws Exception
   try {
     if (filename.trim().startsWith ("jar://")) {
       TextJarReader reader = new TextJarReader (filename);
+      reader.read ();
+      fullText = reader.getText ();
+      }
+    else if (filename.trim().startsWith ("http://")) {
+      TextHttpReader reader = new TextHttpReader (filename);
       reader.read ();
       fullText = reader.getText ();
       }
