@@ -4,22 +4,22 @@
  ** under the terms of the GNU Lesser General Public License as published
  ** by the Free Software Foundation; either version 2.1 of the License, or
  ** any later version.
- ** 
+ **
  ** This library is distributed in the hope that it will be useful, but
  ** WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
  ** MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
  ** documentation provided hereunder is on an "as is" basis, and the
- ** Institute for Systems Biology and the Whitehead Institute 
+ ** Institute for Systems Biology and the Whitehead Institute
  ** have no obligations to provide maintenance, support,
  ** updates, enhancements or modifications.  In no event shall the
- ** Institute for Systems Biology and the Whitehead Institute 
+ ** Institute for Systems Biology and the Whitehead Institute
  ** be liable to any party for direct, indirect, special,
  ** incidental or consequential damages, including lost profits, arising
  ** out of the use of this software and its documentation, even if the
- ** Institute for Systems Biology and the Whitehead Institute 
+ ** Institute for Systems Biology and the Whitehead Institute
  ** have been advised of the possibility of such damage.  See
  ** the GNU Lesser General Public License for more details.
- ** 
+ **
  ** You should have received a copy of the GNU Lesser General Public License
  ** along with this library; if not, write to the Free Software Foundation,
  ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
@@ -32,9 +32,11 @@
 //------------------------------------------------------------------------------
 package cytoscape.view;
 //------------------------------------------------------------------------------
-import java.awt.*;
 import java.awt.event.*;
+import java.awt.*;
 import javax.swing.*;
+import javax.swing.event.MenuListener;
+import javax.swing.event.MenuEvent;
 
 import cytoscape.CytoscapeObj;
 import cytoscape.actions.*;
@@ -58,14 +60,16 @@ public class CyMenus {
   JMenuItem deleteSelectionMenuItem;
   JMenu dataMenu;
   JMenu selectMenu;
+  JMenu displayNWSubMenu;
   JMenu layoutMenu;
   JMenu vizMenu;
   JMenuItem vizMenuItem, disableVizMapperItem, enableVizMapperItem;
+  AbstractAction menuPrintAction;
   JButton vizButton;
   JMenu opsMenu;
   JMenuItem NO_OPERATIONS;
   CytoscapeToolBar toolBar;
-    
+
 
   public CyMenus(CyWindow cyWindow) {
     this.cyWindow = cyWindow;
@@ -77,12 +81,12 @@ public class CyMenus {
     NO_OPERATIONS = new JMenuItem("No operations available");
     NO_OPERATIONS.setEnabled(false);
   }
-    
+
   /**
    * Returns the main menu bar constructed by this object.
    */
   public CytoscapeMenuBar getMenuBar() {return menuBar;}
-  
+
   /**
    * Returns the menu with items related to file operations.
    */
@@ -145,15 +149,15 @@ public class CyMenus {
       }
       */
   }
-    
+
   /**
    * Returns the toolbar object constructed by this class.
    */
   public CytoscapeToolBar getToolBar() {return toolBar;}
-    
+
 
   /**
-   * Takes a CytoscapeAction and will add it to the MenuBar or the 
+   * Takes a CytoscapeAction and will add it to the MenuBar or the
    * Toolbar as is appropriate.
    */
   public void addCytoscapeAction ( CytoscapeAction action ) {
@@ -181,7 +185,7 @@ public class CyMenus {
    */
   public void updateUndoRedoMenuItemStatus() {
   }
-    
+
   /**
    * Called when the window switches to edit mode, enabling
    * the menu option for deleting selected objects.
@@ -194,7 +198,7 @@ public class CyMenus {
           deleteSelectionMenuItem.setEnabled(true);
       }
   }
-    
+
   /**
    * Called when the window switches to read-only mode, disabling
    * the menu option for deleting selected objects.
@@ -207,7 +211,7 @@ public class CyMenus {
           deleteSelectionMenuItem.setEnabled(false);
       }
   }
-  
+
   /**
    * Enables the menu items related to the visual mapper if the argument
    * is true, else disables them. This method should only be called from
@@ -236,7 +240,7 @@ public class CyMenus {
     vizMenu     = menuBar.getMenu( "Visualization" );
     opsMenu     = menuBar.getMenu( "Plugins" );
   }
-    
+
   /**
    * This method should be called by the creator of this object after
    * the constructor has finished. It fills the previously created
@@ -282,22 +286,32 @@ public class CyMenus {
       saveSubMenu.add(new SaveAsInteractionsAction(networkView));
       saveSubMenu.add(new SaveVisibleNodesAction(networkView));
       saveSubMenu.add(new SaveSelectedNodesAction(networkView));
-      
-      fileMenu.add(new PrintAction(networkView));
-      
+      menuPrintAction = new PrintAction(networkView);
+      fileMenu.add(menuPrintAction);
+      fileMenu.addMenuListener(new MenuListener() {
+          public void menuCanceled(MenuEvent e) {}
+          public void menuDeselected(MenuEvent e) {}
+          public void menuSelected(MenuEvent e) {
+              if (saveSubMenu != null)
+              saveSubMenu.setEnabled(cyWindow.getView().getGraphPerspective().getNodeCount() >= 1);
+              if (menuPrintAction != null)
+              menuPrintAction.setEnabled(cyWindow.getView().getGraphPerspective().getNodeCount() >= 1);
+          }
+      });
+
       //mi = fileMenu.add(new CloseWindowAction(cyWindow)); removed 2004-03-08
       //mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
       if (cytoscapeObj.getParentApp() != null) {
           mi = fileMenu.add(new ExitAction(cyWindow));
           mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
       }
-        
+
     //fill the Edit menu
     //editing the graph not fully supported in Giny mode
     //deleteSelectionMenuItem = editMenu.add(new DeleteSelectedAction(networkView));
     //deleteSelectionMenuItem.setEnabled(false);
-    editMenu.add( new SquiggleAction( networkView ) ); 
-    
+    editMenu.add( new SquiggleAction( networkView ) );
+
     //fill the Data menu
     mi = dataMenu.add(new DisplayBrowserAction(networkView));
     mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
@@ -310,17 +324,17 @@ public class CyMenus {
     selectMenu.add(selectNodesSubMenu);
     JMenu selectEdgesSubMenu = new JMenu("Edges");
     selectMenu.add(selectEdgesSubMenu);
-    JMenu displayNWSubMenu = new JMenu("To New Window");
+    displayNWSubMenu = new JMenu("To New Window");
     selectMenu.add(displayNWSubMenu);
-    
-      
+
+
     // mi = selectEdgesSubMenu.add(new EdgeTypeDialogAction());
-        
+
     mi = selectNodesSubMenu.add(new InvertSelectedNodesAction(networkView));
     mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK));
     mi = selectNodesSubMenu.add(new HideSelectedNodesAction(networkView));
     mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, ActionEvent.CTRL_MASK));
-	
+
     // added by larissa 10/09/03
     mi = selectNodesSubMenu.add(new UnHideSelectedNodesAction(networkView));
     mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, ActionEvent.CTRL_MASK));
@@ -330,7 +344,7 @@ public class CyMenus {
     mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK));
     selectNodesSubMenu.add(new AlphabeticalSelectionAction(networkView));
     selectNodesSubMenu.add(new ListFromFileSelectionAction(networkView));
-    
+
     //mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.CTRL_MASK));
     mi = selectEdgesSubMenu.add(new InvertSelectedEdgesAction(networkView));
     mi = selectEdgesSubMenu.add(new HideSelectedEdgesAction(networkView));
@@ -341,24 +355,33 @@ public class CyMenus {
 
     // RHC Added Menu Items
     //selectNodesSubMenu.add(new GraphObjectSelectionAction(networkView));
-    //editMenu.add( new SquiggleAction( networkView ) ); 
+    //editMenu.add( new SquiggleAction( networkView ) );
 
     mi = displayNWSubMenu.add(new NewWindowSelectedNodesOnlyAction(cyWindow));
     mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.SHIFT_MASK|ActionEvent.CTRL_MASK));
     mi = displayNWSubMenu.add(new NewWindowSelectedNodesEdgesAction(cyWindow));
     mi = displayNWSubMenu.add(new CloneGraphInNewWindowAction(cyWindow));
     mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
-    
+
     mi = selectMenu.add(new SelectAllAction(networkView));
     mi = selectMenu.add(new DeselectAllAction(networkView));
+
+    selectMenu.addMenuListener(new MenuListener() {
+        public void menuCanceled(MenuEvent e) {}
+        public void menuDeselected(MenuEvent e) {}
+        public void menuSelected(MenuEvent e) {
+            if (displayNWSubMenu != null)
+            displayNWSubMenu.setEnabled(cyWindow.getView().getGraphPerspective().getNodeCount() >= 1);
+        }
+    });
     //fill the Layout menu
     //need to add Giny layout operations
-        
+
     //layoutMenu.addSeparator();
     //mi = layoutMenu.add(new LayoutAction(networkView));
     //mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.CTRL_MASK));
     layoutMenu.add(new SpringEmbeddedLayoutAction(networkView));
-        
+
     layoutMenu.addSeparator();
     JMenu alignSubMenu = new JMenu("Align Selected Nodes");
     layoutMenu.add(alignSubMenu);
@@ -366,36 +389,36 @@ public class CyMenus {
     alignSubMenu.add(new AlignVerticalAction(networkView));
     layoutMenu.add(new RotateSelectedNodesAction(networkView));
     //layoutMenu.add(new ReduceEquivalentNodesAction(networkView));
-        
+
     ShrinkExpandGraphUI shrinkExpand =
-      new ShrinkExpandGraphUI(cyWindow, layoutMenu);  
+      new ShrinkExpandGraphUI(cyWindow, layoutMenu);
 
     //fill the Visualization menu
     vizMenu.add( new BirdsEyeViewAction( networkView ) );
     //JMenu showExpressionData = new JMenu ("Show Expression Data" );
-  
+
     vizMenu.add ( new BackgroundColorAction (networkView) );
     this.vizMenuItem = vizMenu.add(new SetVisualPropertiesAction(cyWindow));
     this.disableVizMapperItem = vizMenu.add(new ToggleVisualMapperAction(cyWindow, false));
     this.enableVizMapperItem = vizMenu.add(new ToggleVisualMapperAction(cyWindow, true));
     this.enableVizMapperItem.setEnabled(false);
-    
+
     menuBar.addAction( new AnimatedLayoutAction( networkView ) );
   }
-    
+
   /**
    * Fills the toolbar for easy access to commonly used actions.
    */
   private void fillToolBar() {
     NetworkView networkView = cyWindow; //restricted interface
     JButton b;
-    
+
     b = toolBar.add( new LoadGraphFileAction( networkView, null ) );
     b.setIcon( new ImageIcon(getClass().getResource("images/new/load36.gif") ) );
     b.setToolTipText("Load Graph");
     b.setBorderPainted(false);
     b.setRolloverEnabled(true);
-    
+
     b = toolBar.add( new SaveAsGMLAction( networkView, null ) );
     b.setIcon( new ImageIcon(getClass().getResource("images/new/save36.gif") ) );
     b.setToolTipText("Save Graph as GML");
@@ -403,50 +426,50 @@ public class CyMenus {
     b.setRolloverEnabled(true);
 
     toolBar.addSeparator();
-    
+
     b = toolBar.add(new ZoomAction(networkView, 0.9));
     b.setIcon(new ImageIcon(getClass().getResource("images/new/zoom_out36.gif")));
     b.setToolTipText("Zoom Out");
     b.setBorderPainted(false);
     b.setRolloverEnabled(true);
-        
+
     b = toolBar.add(new ZoomAction(networkView, 1.1));
     b.setIcon(new ImageIcon(getClass().getResource("images/new/zoom_in36.gif")));
     b.setToolTipText("Zoom In");
     b.setBorderPainted(false);
-        
+
     b = toolBar.add(new ZoomSelectedAction(networkView));
     b.setIcon(new ImageIcon(getClass().getResource("images/new/crop36.gif")));
     b.setToolTipText("Zoom Selected Region");
     b.setBorderPainted(false);
-        
+
     b = toolBar.add(new FitContentAction(networkView));
     b.setIcon(new ImageIcon(getClass().getResource("images/new/fit36.gif")));
     b.setToolTipText("Zoom out to display all of current Graph");
     b.setBorderPainted(false);
-        
+
     // toolBar.addSeparator();
-        
+
     b = toolBar.add(new ShowAllAction(networkView));
     b.setIcon(new ImageIcon(getClass().getResource("images/new/add36.gif")));
     b.setToolTipText("Show all Nodes and Edges (unhiding as necessary)");
     b.setBorderPainted(false);
-        
-        
+
+
     b = toolBar.add(new HideSelectedAction(networkView));
     b.setIcon(new ImageIcon(getClass().getResource("images/new/delete36.gif")));
     b.setToolTipText("Hide Selected Region");
     b.setBorderPainted(false);
-        
+
     toolBar.addSeparator();
-        
+
     b = toolBar.add(new AnnotationGui(cyWindow));
     b.setIcon(new ImageIcon(getClass().getResource("images/new/ontology36.gif")));
     b.setToolTipText("Add Annotation Ontology to Nodes");
     b.setBorderPainted(false);
-    
+
     toolBar.addSeparator();
-    
+
     this.vizButton = toolBar.add(new SetVisualPropertiesAction(cyWindow, false));
     vizButton.setIcon(new ImageIcon(getClass().getResource("images/new/color_wheel36.gif")));
     vizButton.setToolTipText("Set Visual Properties");
