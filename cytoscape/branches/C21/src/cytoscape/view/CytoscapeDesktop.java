@@ -266,6 +266,7 @@ public class CytoscapeDesktop
       
       JFrame menuFrame = new JFrame("Cytoscape Menus");
       menuFrame.setJMenuBar(cyMenus.getMenuBar());
+      menuFrame.setSize( 400, 60 );
       menuFrame.setVisible( true );
     }
 

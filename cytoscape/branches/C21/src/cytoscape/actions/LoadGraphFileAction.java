@@ -103,6 +103,9 @@ public class LoadGraphFileAction extends CytoscapeAction {
       Cytoscape.setSpecies();
       //GraphReader reader = null;
 
+      int root_nodes = Cytoscape.getRootGraph().getNodeCount();
+      int root_edges = Cytoscape.getRootGraph().getEdgeCount();
+
       newNetwork = Cytoscape.createNetwork( name,
                                             fileType,
                                             canonicalize,
@@ -123,6 +126,10 @@ public class LoadGraphFileAction extends CytoscapeAction {
           //Cytoscape.getLastGraphReaderForDoingLayout().layout( Cytoscape.getCurrentNetworkView() );
           newNetwork.putClientData( "GML", Cytoscape.getLastGraphReaderForDoingLayout() );
         }
+
+        System.out.println( "New Nodes: "+ (Cytoscape.getRootGraph().getNodeCount()- root_nodes ) );
+        System.out.println( "New Edges: "+ (Cytoscape.getRootGraph().getEdgeCount()- root_edges ) );
+        
 
         //give the user some confirmation
         String lineSep = System.getProperty("line.separator");

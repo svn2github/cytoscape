@@ -14,7 +14,7 @@ import gnu.getopt.LongOpt;
  */
 public class CytoscapeConfig {
 
-  protected String argSpecificationString = "n:j:g:b:i:y:he:vWs:l:p:xc;";
+  protected String argSpecificationString = "n:j:g:b:i:y:he:vWs:l:p:xc:t:;";
 
   protected String [] commandLineArguments;
   protected String[] argsCopy;

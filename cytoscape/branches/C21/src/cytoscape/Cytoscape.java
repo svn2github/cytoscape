@@ -13,6 +13,7 @@ import giny.util.AbstractLayout;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
@@ -143,19 +144,28 @@ public abstract class Cytoscape {
     getRootGraph().removeNodes( getRootGraph().getNodeIndicesArray() );
   }
 
+  public static CyNode getCyNode ( String alias ) {
+    return getCyNode( alias, true );
+  }
+
   /**
    * @param alias an alias of a node
    * @return will <b>always</b> return a node
    */
-  public static CyNode getCyNode ( String alias ) {
+  public static CyNode getCyNode ( String alias, boolean create ) {
+    alias = canonicalizeName( alias );
     CyNode node = ( CyNode )getNodeNetworkData().getGraphObject( alias );
     if ( node != null ) {
-      System.out.print(".");
+      //System.out.print(".");
       return node;
     }
     // node does not exist, create one
-    alias = canonicalizeName( alias );
-    System.out.print( "|" );
+   
+    if ( !create ) {
+      return null;
+    }
+
+    ///System.out.print( "|" );
     node = ( CyNode )Cytoscape.getRootGraph().getNode( Cytoscape.getRootGraph().createNode() );
     node.setIdentifier( alias );
     Cytoscape.getNodeNetworkData().addNameMapping( alias, node );
@@ -177,12 +187,12 @@ public abstract class Cytoscape {
     edge_name = canonicalizeName( edge_name );
     CyEdge edge = ( CyEdge )getEdgeNetworkData().getGraphObject( edge_name );
     if ( edge != null ) {
-      System.out.print( "`" );
+      //System.out.print( "`" );
       return edge;
     } 
 
     // edge does not exist, create one
-    System.out.print( "*" );
+    //System.out.print( "*" );
     CyNode source = getCyNode( source_alias );
     CyNode target = getCyNode( target_alias );
     edge =  ( CyEdge )Cytoscape.getRootGraph().getEdge( Cytoscape.getRootGraph().createEdge (source, target));
@@ -233,8 +243,8 @@ public abstract class Cytoscape {
   /**
    * Return a List of all available CyNetworks
    */
-  public static List getNetworkList () {
-    return new ArrayList( getNetworkMap().keySet() );
+  public static Set getNetworkSet () {
+    return  getNetworkMap().keySet();
   }
 
   /**
@@ -351,6 +361,7 @@ public abstract class Cytoscape {
     // createNetworkView( network );
   }
 
+ 
   /**
    * Creates a new, empty Network. 
    */
@@ -370,7 +381,8 @@ public abstract class Cytoscape {
     addNetwork( network );
     return network;
   }
- 
+
+   
   /**
    * Creates a new Network 
    * @param nodes the indeces of nodes
