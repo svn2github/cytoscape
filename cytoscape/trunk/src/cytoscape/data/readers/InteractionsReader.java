@@ -16,17 +16,23 @@ import y.view.Graph2D;
 
 import cytoscape.GraphObjAttributes;
 import cytoscape.data.Interaction;
+import cytoscape.data.*;
+import cytoscape.data.servers.*;
+import cytoscape.data.readers.*;
 //-----------------------------------------------------------------------------------------
 public class InteractionsReader implements GraphReader {
   String filename;
   Vector allInteractions = new Vector ();
   GraphObjAttributes edgeAttributes = new GraphObjAttributes ();
   Graph2D graph;
-
+  BioDataServer dataServer;
+  String species;
 //-----------------------------------------------------------------------------------------
-public InteractionsReader (String filename)
+public InteractionsReader (BioDataServer dataServer, String species, String filename)
 {
   this.filename = filename;
+  this.dataServer = dataServer;
+  this.species = species;
 }
 //-----------------------------------------------------------------------------------------
 public void read ()
@@ -42,10 +48,10 @@ public void read ()
     allInteractions.addElement (new Interaction (newLine));
     }
 
-  for (int i=0; i < interactions.size (); i++) {
-    Interaction inter = (Interaction) allInteractions.elementAt (i);
-    System.out.println (inter);
-    }
+  //for (int i=0; i < interactions.size (); i++) {
+  //  Interaction inter = (Interaction) allInteractions.elementAt (i);
+  //  System.out.println (inter);
+  //  }
 
   createGraphFromInteractionData ();
 
@@ -69,6 +75,19 @@ public Interaction [] getAllInteractions ()
 
 }
 //-------------------------------------------------------------------------------------------
+protected String canonicalizeName (String name)
+{
+  String canonicalName = name;
+  // System.out.println ("canonicalize, dataServer = " + dataServer);
+  if (dataServer != null) {
+    canonicalName = dataServer.getCanonicalName (species, name);
+    //System.out.println (" -- canonicalizeName from server: " + canonicalName);
+    }
+
+  return canonicalName;
+
+} // canonicalizeName
+//-------------------------------------------------------------------------------------------
 protected void createGraphFromInteractionData ()
 {
   graph = new Graph2D ();
@@ -86,14 +105,16 @@ protected void createGraphFromInteractionData ()
 
   for (int i=0; i < interactions.length; i++) {
     Interaction interaction = interactions [i];
-    String nodeName = interaction.getSource ();
+    //System.out.println ("source: " + interaction.getSource ());
+    String nodeName = canonicalizeName (interaction.getSource ());
+    //System.out.println ("canonicalized: " + nodeName);    
     if (!nodes.containsKey (nodeName)) {
       Node node = graph.createNode (0.0, 0.0, 70.0, 30.0, nodeName);
       nodes.put (nodeName, node);
       }
     String [] targets = interaction.getTargets ();
     for (int t=0; t < targets.length; t++) {
-      String targetNodeName = targets [t];
+      String targetNodeName = canonicalizeName (targets [t]);
       if (!nodes.containsKey (targetNodeName)) {
         Node targetNode = graph.createNode (0.0, 0.0, 70.0, 30.0, targetNodeName);
         nodes.put (targetNodeName, targetNode);
@@ -113,15 +134,15 @@ protected void createGraphFromInteractionData ()
 
   for (int i=0; i < interactions.length; i++) {
     Interaction interaction = interactions [i];
-    String nodeName = interaction.getSource ();
+    String nodeName = canonicalizeName (interaction.getSource ());
     String interactionType = interaction.getType ();
     Node sourceNode = (Node) nodes.get (nodeName);
     String [] targets = interaction.getTargets ();
     for (int t=0; t < targets.length; t++) {
-      Node targetNode = (Node) nodes.get (targets [t]);
+      String targetName = canonicalizeName (targets [t]);
+      Node targetNode = (Node) nodes.get (targetName);
       Edge edge = graph.createEdge (sourceNode, targetNode);
-      //String edgeName = nodeName + " -> " + targets [t];
-      String edgeName = nodeName + " (" + interactionType + ") " + targets [t];
+      String edgeName = nodeName + " (" + interactionType + ") " + targetName;
       int previousMatchingEntries = edgeAttributes.countIdentical(edgeName);
       if (previousMatchingEntries > 0)
         edgeName = edgeName + "_" + previousMatchingEntries;
