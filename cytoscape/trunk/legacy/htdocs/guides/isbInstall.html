@@ -11,7 +11,7 @@
 
 <center>
 <h2>Cytoscape:  Linux Source Install and Build at the ISB </h2>
-<i>last modified: 2002/05/30 </i><p>
+<i>last modified: 2002/12/07 </i><p>
 </center>
 There are 5 steps you must follow in order to install and build cytoscape and
 its plugins, from source, at the ISB.
@@ -42,26 +42,10 @@ its plugins, from source, at the ISB.
            <ol>
               <li> the parent directory of the cytoscape &amp; csplugins directories
               <li> cytoscape/aux.jar
-              <li> /net/compbio/src/distributions/yfiles1.4/yfiles/y.jar
+              <li> /net/compbio/src/distributions/yfiles/y.jar
               <li> /net/compbio/jars/junit.jar
            </ol>
      </ul>
-       <p> If you want to use the all-pairs-shortest-path calculations, in the <b>APSP</b> plugin,
-            add this your <b>LD_LIBRARY_PATH</b>:
-           <ul>
-             <li> /net/compbio/src/distributions/yfiles1.4/LEDAGraphAlgo-1.0.1/linux <br>
-           </ul>
-        <p>and this to your <b> CLASSPATH </b>:
-           <ul>
-             <li> /net/compbio/src/distributions/yfiles1.4/LEDAGraphAlgo-1.0.1/linux/yext-leda.jar
-           </ul>
-        <p>and this to the <b><i>FRONT</i></b> of your <b> CLASSPATH </b>:
-           <ul>
-             <li> /net/compbio/src/distributions/yfiles1.4/yfiles/experimental
-           </ul>
-
-      </ul>       
-    
      <p> If you wish to build C++ plugins that use LEDA, you will also need
      <ul>
       <li> LEDA_HOME=/net/compbio/src/distributions/LEDA-4.1
