@@ -102,10 +102,8 @@ public final class IntBTree
       else
       { // A split was performed at one level deeper.
         int newSplit;
-        if (isLeafNode(newChild)) {
-          newSplit = newChild.values[0]; }
-        else { // New child is internal node.
-          newSplit = newChild.data.splitVals[newChild.sliceCount - 1]; }
+        if (isLeafNode(newChild)) newSplit = newChild.values[0];
+        else newSplit = newChild.data.splitVals[newChild.sliceCount - 1];
         if (n.sliceCount < n.data.children.length) { // There's room here.
           for (int j = n.sliceCount; j > foundPath + 1; j--) {
             n.data.children[j] = n.data.children[j - 1];
