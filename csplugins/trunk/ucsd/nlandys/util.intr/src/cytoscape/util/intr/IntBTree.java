@@ -34,7 +34,7 @@ public final class IntBTree
         newSplitVal = newNode.values[0];
         newDeepCount = m_root.sliceCount + newNode.sliceCount; }
       else {
-        newSplitVal = newNode.data.splitVals[newNode.sliceCount - 1]; // Fix.
+        newSplitVal = newNode.data.splitVals[newNode.sliceCount - 1];
         newDeepCount = m_root.data.deepCount + newNode.data.deepCount; }
       Node newRoot = new Node(MAX_BRANCHES, false);
       newRoot.sliceCount = 2;
@@ -45,10 +45,11 @@ public final class IntBTree
       m_root = newRoot; }
   }
 
-  // Return a Node being the newly created node if a split was performed.
-  // The first value of the Node is to be the new split index if return value
-  // is leaf node.  If return value is internal node, then the split index
-  // to be used is returnValue.data.splitVals[returnValue.data.sliceCount].
+  // Returns a node being the newly created node if a split was performed;
+  // the node returned is the right sibling of node n.  If the returned node
+  // is a leaf node then the first value of the node is to be the new split
+  // index; if return value is internal node, then the split index to be used
+  // is returnValue.data.splitVals[returnValue.sliceCount].
   private Node insert(Node n, int x)
   {
     if (isLeafNode(n)) {
@@ -61,12 +62,11 @@ public final class IntBTree
             n.values[i] = x;
             found = true;
             break; } }
-        if (!found) {
-          n.values[n.sliceCount] = x; }
+        if (!found) n.values[n.sliceCount] = x;
         n.sliceCount++;
         return null; }
       else { // No room for another value in this leaf node; perform split.
-        // Perform poor man's correct end inefficient algorithm.
+        // Perform poor man's correct end inefficient algorithm using m_buff.
         System.arraycopy(n.values, 0, m_buff, 0, n.sliceCount);
         boolean found = false;
         for (int i = 0; i < n.sliceCount; i++) {
@@ -81,16 +81,16 @@ public final class IntBTree
         Node newNode = new Node(MAX_BRANCHES, true);
         int combinedCount = n.sliceCount + 1;
         int middleInx = combinedCount / 2;
-        System.arraycopy(m_buff, 0, n.values, 0, middleInx);
         n.sliceCount = middleInx;
-        System.arraycopy(m_buff, middleInx, newNode.values, 0,
-                         combinedCount - middleInx);
+        System.arraycopy(m_buff, 0, n.values, 0, middleInx);
         newNode.sliceCount = combinedCount - middleInx;
+        System.arraycopy(m_buff, middleInx,
+                         newNode.values, 0, newNode.sliceCount);
         return newNode;
       }
     }
     else { // Not a leaf node.
-      // Poor man's algorithm; optimize later.
+      // Poor man's algorithm using m_buff; optimize later.
       m_buff[0] = Integer.MIN_VALUE;
       System.arraycopy(n.data.splitVals, 0, m_buff, 1, n.sliceCount - 1);
       m_buff[n.sliceCount] = Integer.MAX_VALUE;
@@ -261,9 +261,10 @@ public final class IntBTree
   private void debugPrint_node(Node n)
   {
     if (isLeafNode(n)) {
-      System.out.print(" [.");
-      for (int i = 0; i < n.sliceCount; i++) {
-        System.out.print(n.values[i] + "."); }
+      System.out.print(" [");
+      for (int i = 0; i < n.sliceCount - 1; i++) {
+        System.out.print(n.values[i] + " "); }
+      if (n.sliceCount > 0) System.out.print(n.values[n.sliceCount - 1]);
       System.out.print("]"); }
     else {
       System.out.print(" <.");
