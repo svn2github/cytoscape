@@ -66,12 +66,17 @@ class FRootGraph implements RootGraph
     edgeInxBucket.copyInto(edgeInxArr, 0);
     return createGraphPerspective(nodeInxArr, edgeInxArr); }
 
+  // This hashtable is to be used only by createGraphPerspective(int[], int[])
+  // and by getConnectingEdgeIndicesArray(int[]).
+  private final IntHash m_hash2 = new IntHash();
+
   public GraphPerspective createGraphPerspective(int[] nodeInx,
                                                  int[] edgeInx) {
     if (nodeInx == null) nodeInx = new int[0];
     if (edgeInx == null) edgeInx = new int[0];
     // There are more edges than nodes so we'll use m_hash for the edges.
-    final IntHash nodeBucket = new IntHash();
+    m_hash2.empty();
+    final IntHash nodeBucket = m_hash2;
     m_hash.empty();
     final IntHash edgeBucket = m_hash;
     for (int i = 0; i < nodeInx.length; i++) {
@@ -532,7 +537,8 @@ class FRootGraph implements RootGraph
   public int[] getConnectingEdgeIndicesArray(int[] nodeInx)
   {
     // There are more edges than nodes so we'll use m_hash for the edges.
-    final IntHash nodeBucket = new IntHash();
+    m_hash2.empty();
+    final IntHash nodeBucket = m_hash2;
     for (int i = 0; i < nodeInx.length; i++) {
       final int positiveNodeIndex = ~nodeInx[i];
       if (positiveNodeIndex < 0) continue;
