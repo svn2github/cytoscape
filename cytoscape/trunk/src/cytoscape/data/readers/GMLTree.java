@@ -81,12 +81,12 @@ public class GMLTree{
 			graphics.addMapping("y",new GMLNode(""+df.format(currentView.getYPosition())));
 			graphics.addMapping("h",new GMLNode(""+df.format(currentView.getHeight())));
 			graphics.addMapping("w",new GMLNode(""+df.format(currentView.getWidth())));
- 			Color nodeColor = (Color) currentView.getSelectedPaint();
-			
-// 			//System.out.println(nodeColor.toString());
- 			GMLNode nC = new GMLNode("\"#"+Integer.toHexString(256+nodeColor.getRed()).substring(1)
+ 			Color nodeColor = (Color) currentView.getUnselectedPaint();
+ 			GMLNode nC = new GMLNode("\"#"
+						 +Integer.toHexString(256+nodeColor.getRed()).substring(1)
  						 +Integer.toHexString(256+nodeColor.getGreen()).substring(1)
- 						 +Integer.toHexString(256+nodeColor.getBlue()).substring(1)+"\"");
+ 						 +Integer.toHexString(256+nodeColor.getBlue()).substring(1)
+						 +"\"");
  			graphics.addMapping("fill", nC);
 			switch(currentView.getShape()) {
 			case NodeView.RECTANGLE:
