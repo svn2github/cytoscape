@@ -39,7 +39,6 @@ import java.util.*;
 import giny.model.*;
 import giny.view.*;
 
-import cytoscape.util.GinyFactory;
 import cytoscape.data.FlagFilter;
 import cytoscape.view.FlagAndSelectionHandler;
 import cytoscape.unitTests.AllTests;
@@ -66,7 +65,7 @@ public FlagAndSelectionHandlerTest (String name)
 //------------------------------------------------------------------------------
 public void setUp () throws Exception
 {
-    RootGraph rootGraph = GinyFactory.createRootGraph();
+    RootGraph rootGraph = new cytoscape.giny.CytoscapeRootGraph();
     node1 = rootGraph.getNode(rootGraph.createNode());
     node2 = rootGraph.getNode(rootGraph.createNode());
     edge1 = rootGraph.getEdge(rootGraph.createEdge(node1, node2));
@@ -75,7 +74,7 @@ public void setUp () throws Exception
     Edge[] edgeArray = {edge1, edge2};
     gp = rootGraph.createGraphPerspective(nodeArray, edgeArray);
     filter = new FlagFilter(gp);
-    view = GinyFactory.createGraphView(gp);
+    view = new phoebe.PGraphView(gp);
     nodeView1 = view.getNodeView(node1);
     nodeView2 = view.getNodeView(node2);
     edgeView1 = view.getEdgeView(edge1);
