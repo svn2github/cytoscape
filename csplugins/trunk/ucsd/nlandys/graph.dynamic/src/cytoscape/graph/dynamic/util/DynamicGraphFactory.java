@@ -52,16 +52,16 @@ import cytoscape.graph.dynamic.DynamicGraph;
  *     the size of this data structure is necessary at certain points.</td>
  * </tr><tr>
  * <td>nodeExists(int)</td>
- * <td></td>
+ * <td>The existence of a node is determined in constant time.</td>
  * </tr><tr>
  * <td>edgeType(int)</td>
- * <td></td>
+ * <td>The existence/type of an edge is determined in constant time.</td>
  * </tr><tr>
  * <td>edgeSource(int)</td>
- * <td></td>
+ * <td>The source node of an edge is determined in constant time.</td>
  * </tr><tr>
  * <td>edgeTarget(int)</td>
- * <td></td>
+ * <td>The target node of an edge is determined in constant time.</td>
  * </tr><tr>
  * <td>edgesAdjacent(int, boolean, boolean, boolean)</td>
  * <td></td>
