@@ -377,7 +377,7 @@ public final class IntBTree
 //     return null;
 //   }
 
-  public final IntEnumerator searchRange(int xMin, int xMax)
+  public final IntEnumerator searchRange(final int xMin, final int xMax)
   {
     final NodeStack nodeStack = new NodeStack();
     final int totalCount = searchRange(m_root, nodeStack,
@@ -386,23 +386,29 @@ public final class IntBTree
     return new IntEnumerator() {
         private int count = totalCount;
         private Node currentLeafNode = null;
-        private int currentNodeInx;
         private int wholeLeafNodes = 0; // Whole leaf nodes on stack.
+        private int currentNodeInx;
         public int numRemaining() { return count; }
         public int nextInt() {
+          // This is guaranteed to bard if nextInt() is called when there
+          // are no element remaining, albeit in an unpredictable way.  Also,
+          // terrible things will happen if the tree is mutated while we
+          // iterate.
           int returnThis;
           if (currentLeafNode == null) {
             while (true) {
               currentLeafNode = nodeStack.pop();
               if (isLeafNode(currentLeafNode)) { currentNodeInx = 0; break; }
-              for (int i = currentLeafNode.sliceCount; i > 0; wholeLeafNodes++)
-                nodeStack.push(currentLeafNode.data.children[--i]); } }
+              for (int i = currentLeafNode.sliceCount; i > 0;)
+                nodeStack.push(currentLeafNode.data.children[--i]);
+              if (isLeafNode(currentLeafNode.data.children[0]))
+                wholeLeafNodes += currentLeafNode.sliceCount; } }
           if (wholeLeafNodes > 0) {
             returnThis = currentLeafNode.values[currentNodeInx++]; }
           else {
-            returnThis = -1;
-            // Something goes here.
-          }
+            for (int i = currentNodeInx; i < currentLeafNode.sliceCount; i++)
+              if (currentLeafNode.values[i] >= xMin) // Don't check max.
+                returnThis = currentLeafNode.values[i]; }
           if (currentNodeInx == currentLeafNode.sliceCount) {
             currentLeafNode = null;
             if (wholeLeafNodes > 0) wholeLeafNodes--; }
