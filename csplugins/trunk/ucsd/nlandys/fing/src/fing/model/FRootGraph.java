@@ -1,5 +1,8 @@
 package fing.model;
 
+import fing.util.IntEnumerator;
+import fing.util.MinIntHeap;
+
 import giny.model.Edge;
 import giny.model.GraphPerspective;
 import giny.model.Node;
@@ -11,9 +14,6 @@ import java.util.NoSuchElementException;
 // Package visible class.  Use factory to get instance.
 class FRootGraph //implements RootGraph
 {
-
-  // Package visible constructor.
-  FRootGraph() {}
 
   public GraphPerspective createGraphPerspective(Node[] nodes, Edge[] edges)
   {
@@ -29,17 +29,23 @@ class FRootGraph //implements RootGraph
 
   public int getNodeCount()
   {
-    return -1;
+    return m_graph.nodeCount();
   }
 
   public int getEdgeCount()
   {
-    return -1;
+    return m_graph.edgeCount();
   }
 
   public Iterator nodesIterator()
   {
-    return new NodesIterator();
+    final IntEnumerator nodes = m_graph.nodeIndices();
+    return new Iterator() {
+        public boolean hasNext() {
+          return nodes.numRemaining() > 0; }
+        public Object next() {
+          if (!hasNext()) throw new NoSuchElementException();
+          return 
   }
 
   // This method has been marked deprecated in the Giny API.
@@ -234,22 +240,49 @@ class FRootGraph //implements RootGraph
 
   public boolean containsNode(Node node)
   {
-    //return getNode(node.getRootGraphIndex()) != null;
-    return false;
+    return node.getRootGraph() == this &&
+      getNode(node.getRootGraphIndex()) != null;
   }
 
   public boolean containsEdge(Edge edge)
   {
-    //return getEdge(edge.getRootGraphIndex()) != null;
-    return false;
+    return edge.getRootGraph() == this
+      && getEdge(edge.getRootGraphIndex()) != null;
   }
 
   // This method has been marked deprecated in the Giny API.
   public java.util.List neighborsList(Node node)
   {
-    return null;
+    if (node.getRootGraph() == this)
+    {
+      final int nodeIndex = node.getRootGraphIndex();
+      int[] adjacentEdgeIndices =
+        getAdjacentEdgeIndicesArray(nodeIndex, true, true, true);
+      m_heap.empty();
+      for (int i = 0; i < adjacentEdgeIndices.length; i++) {
+        Edge e = getEdge(adjacentEdgeIndices[i]);
+        int neighborIndex = (nodeIndex ^ e.getSource().getRootGraphIndex()) ^
+          e.getTarget().getRootGraphIndex();
+        m_heap.toss(neighborIndex); }
+      IntEnumerator enum = m_heap.orderedElements(true);
+      java.util.ArrayList list = new java.util.ArrayList(enum.numRemaining());
+      while (enum.numRemaining() > 0)
+        list.add(new Integer(enum.nextInt()));
+      return list;
+    }
+    else
+    {
+      return new java.util.ArrayList();
+    }
   }
 
+  final UnderlyingRootGraph m_graph;
+  final MinIntHeap m_heap = new MinIntHeap();
+
+  // Package visible constructor.
+  FRootGraph(UnderlyingRootGraph graph) { m_graph = graph; }
+
+  /*
   static class NodesIterator implements Iterator
   {
     public boolean hasNext() {
@@ -273,5 +306,6 @@ class FRootGraph //implements RootGraph
     public void remove() {
       throw new UnsupportedOperationException(); }
   }
+  */
 
 }
