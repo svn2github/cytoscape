@@ -2,7 +2,11 @@
 <TR><TD>
 <div class="roundbox blue">
 <B>Cytoscape News:</B>
-
+<P>Cytoscape Retreat / Hackathon
+<UL>
+<LI>Planning is now underway for the <A HREF="retreat">Cytoscape 2004 Retreat<A>,
+to be held September 8-9, 2004 at MSKCC in New York City.  Tentative schedule is now posted.
+</UL>
 <P>
 MCODE PlugIn Released (July 15, 2004)
 <UL>
