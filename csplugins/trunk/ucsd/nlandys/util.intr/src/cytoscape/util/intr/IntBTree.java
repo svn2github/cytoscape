@@ -376,7 +376,7 @@ public final class IntBTree
           return -1;
         }
       }
-      else { // Merge was performed (0x40); don't check bit.
+      else { // Merge was performed; don't check bit (0x40).
         if (isLeafNode(child)) {
           if ((lowerDelete & 0x02) != 0) { // Left child.
             if (n.sliceCount > m_minBranches) { // Simple delete.
