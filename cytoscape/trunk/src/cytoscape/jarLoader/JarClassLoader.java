@@ -6,7 +6,7 @@
 //--------------------------------------------------------------------------
 package cytoscape.jarLoader;
 //--------------------------------------------------------------------------
-//import cytoscape.*;
+import cytoscape.*;
 import java.net.*;
 import java.lang.reflect.*;
 import java.util.jar.*;

@@ -8,7 +8,7 @@ package cytoscape.jarLoader;
 //--------------------------------------------------------------------------
 import java.awt.event.*;
 import javax.swing.*;
-//import cytoscape.*;
+import cytoscape.*;
 import java.net.*;
 import java.lang.reflect.*;
 import java.util.jar.*;

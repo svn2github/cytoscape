@@ -8,7 +8,7 @@ package cytoscape.jarLoader;
 //--------------------------------------------------------------------------
 import java.awt.event.*;
 import javax.swing.*;
-//import cytoscape.*;
+import cytoscape.*;
 import java.io.*;
 
 public class JarPluginDirectoryAction extends AbstractAction {

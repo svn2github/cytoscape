@@ -7,7 +7,7 @@
 package cytoscape.jarLoader;
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
-//import cytoscape.*;
+import cytoscape.*;
 
 public class JarLoaderCommandLineParser {
     
