@@ -25,8 +25,8 @@ import java.awt.Dimension;
 class BetweenPathwayThread2 extends Thread{
     //double DENSITY_FACTOR = 5.62519903;
   double absent_score = .00001;
-  double physical_beta = 0.5;
-  double genetic_beta = 0.5;
+  double physical_beta = 0.9;
+  double genetic_beta = 0.9;
   double physical_logBeta = Math.log(physical_beta);
   double physical_logOneMinusBeta = Math.log(1-physical_beta);
   double genetic_logBeta = Math.log(genetic_beta);
@@ -236,7 +236,7 @@ class BetweenPathwayThread2 extends Thread{
     }
     myMonitor.setMillisToPopup(0);
     while(geneticIt.hasNext()){
-     
+      System.err.println(""+progress);
       Edge seedInteraction = (Edge)geneticIt.next();
       int cross_count_total = 0;
       double physical_source_score = 0;
@@ -373,23 +373,10 @@ class BetweenPathwayThread2 extends Thread{
 	  double this_genetic_score = genetic_score + calculateGeneticIncrease(newSources,newTargets,sourceMembers,targetMembers);
 	  double this_physical_source_score = physical_source_score + calculatePhysicalIncrease(newSources,sourceMembers);
 	  double this_physical_target_score = physical_target_score + calculatePhysicalIncrease(newTargets,targetMembers);
-	  //int source_size = sourceMembers.size()+newSources.size();
-	  //int target_size = targetMembers.size()+newTargets.size();
-	  /*
-	   * Here we calculate the number of potential
-	   * edges for each type of edges (physical vs genetic
-	   */
-	  //int this_genetic_size = (source_size*target_size);
-	  //int this_physical_source_size = Math.max(1,(source_size*(source_size-1)/2));
-	  //int this_physical_target_size = Math.max(1,(target_size*(target_size-1)/2));
-	  //int total_size = this_genetic_size + this_physical_source_size + this_physical_target_size;
-	  //double this_score = (this_genetic_size*this_physical_source_score/this_physical_source_size)+(this_genetic_size*this_physical_target_score/this_physical_target_size)+this_genetic_score;
-	  //double this_score = ( this_genetic_score/this_genetic_size + this_physical_source_score/this_physical_source_size + this_physical_target_score/this_physical_target_size ) *Math.log(total_size);
-	  //double this_score = ((this_genetic_score/this_genetic_size)*((this_physical_source_score+this_physical_target_score)/(this_physical_source_size+this_physical_target_size)))*total_size;
-
-	  if(((this_physical_source_score+this_physical_target_score)>=(physical_source_score_physical_target_score)) && this_score > best_score){
+	  
+	  if(((this_physical_source_score+this_physical_target_score)>=(physical_source_score+physical_target_score)) && 
+	     this_genetic_score > best_genetic_score){
 	    bestCandidate = candidate;
-	    best_score = this_score;
 	    best_physical_source_score = this_physical_source_score;
 	    best_physical_target_score = this_physical_target_score;
 	    best_genetic_score = this_genetic_score;
@@ -400,7 +387,6 @@ class BetweenPathwayThread2 extends Thread{
 	}
 	if(improved){
 	  cross_count_total += best_cross_count;
-	  score = best_score;
 	  genetic_score = best_genetic_score;
 	  physical_source_score = best_physical_source_score;
 	  physical_target_score = best_physical_target_score;
@@ -417,22 +403,17 @@ class BetweenPathwayThread2 extends Thread{
 	  }
 	}
       }
-      int source_size = sourceMembers.size();
-      int target_size = targetMembers.size();
+      
       /*
        * Here we calculate the number of potential
        * edges for each type of edges (physical vs genetic
        */
-      int this_genetic_size = (source_size*target_size);
-      int this_physical_source_size = Math.max(1,(source_size*(source_size-1)/2));
-      int this_physical_target_size = Math.max(1,(target_size*(target_size-1)/2));
-      int total_size = this_genetic_size + this_physical_source_size + this_physical_target_size;
       results.add(new NetworkModel(progress,
 				   sourceMembers,
 				   targetMembers,
-				   score,
-				   ((physical_source_score+physical_target_score)/(this_physical_source_size+this_physical_target_size))*total_size,
-				   (genetic_score/this_genetic_size)*total_size));
+				   genetic_score,
+				   physical_source_score+physical_target_score,
+				   genetic_score));
       if(myMonitor.isCanceled()){
 	//throw new RuntimeException("Search cancelled");
 	break;
