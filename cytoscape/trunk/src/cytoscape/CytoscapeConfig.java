@@ -72,6 +72,8 @@ public class CytoscapeConfig
    
     loadProperties();
     getConfigurationsFromProperties ();
+    System.out.println("config properties:");
+    System.out.println(props);
 
     Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(Cytoscape.CYTOSCAPE_EXIT, this );
 
@@ -785,17 +787,18 @@ public class CytoscapeConfig
     
     if (dataServers.length >= 1) {
       String tmp = dataServers [0];
+      String bioDir = tmp;
       if ((!tmp.startsWith ("rmi://")) && 
           (!tmp.startsWith ("jar://")) &&
           (!tmp.startsWith ("http://"))) {
-        bioDataDirectory = absolutizeFilename (projectFileDirectoryAbsolute, tmp);
+        bioDir = absolutizeFilename (projectFileDirectoryAbsolute, tmp);
       }
-      else
-        bioDataDirectory = tmp;
+      props.put("bioDataDirectory", bioDir);
     } // if dataServers.length > 0
 
     if (speciesEntries.length > 0) {
-      defaultSpeciesName = speciesEntries [0];
+        props.put("defaultSpeciesName", speciesEntries[0]);
+      //defaultSpeciesName = speciesEntries [0];
     }
 
     if (defaultLayouts.length > 0) {
