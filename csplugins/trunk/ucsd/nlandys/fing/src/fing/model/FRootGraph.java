@@ -1,7 +1,7 @@
 package fing.model;
 
 import fing.util.IntEnumerator;
-import fing.util.MinIntHeap;
+import fing.util.IntHash;
 
 import giny.model.Edge;
 import giny.model.GraphPerspective;
@@ -119,12 +119,12 @@ class FRootGraph //implements RootGraph
     try { edgeInxEnum = m_graph.adjacentEdges
             (positiveNodeIndex, true, true, true); }
     catch (IllegalArgumentException e) { return 0; }
-    m_heap.empty();
+    m_hash.empty();
     while (edgeInxEnum.numRemaining() > 0)
-      // Toss edges to be removed onto the heap; assume that the edge iteration
+      // Toss edges to be removed onto the hash; assume that the edge iteration
       // becomes invalid if we remove edges while iterating through.
-      m_heap.toss(edgeInxEnum.nextInt());
-    edgeInxEnum = m_heap.elements();
+      m_hash.put(edgeInxEnum.nextInt());
+    edgeInxEnum = m_hash.elements();
     // Remove adjacent edges using method defined on this instance.
     while (edgeInxEnum.numRemaining() > 0)
       removeEdge(~(edgeInxEnum.nextInt()));
@@ -320,13 +320,13 @@ class FRootGraph //implements RootGraph
       final int nodeIndex = node.getRootGraphIndex();
       int[] adjacentEdgeIndices =
         getAdjacentEdgeIndicesArray(nodeIndex, true, true, true);
-      m_heap.empty();
+      m_hash.empty();
       for (int i = 0; i < adjacentEdgeIndices.length; i++) {
         Edge e = getEdge(adjacentEdgeIndices[i]);
         int neighborIndex = (nodeIndex ^ e.getSource().getRootGraphIndex()) ^
           e.getTarget().getRootGraphIndex();
-        m_heap.toss(neighborIndex); }
-      IntEnumerator enum = m_heap.orderedElements(true);
+        m_hash.put(neighborIndex); }
+      IntEnumerator enum = m_hash.elements();
       java.util.ArrayList list = new java.util.ArrayList(enum.numRemaining());
       while (enum.numRemaining() > 0)
         list.add(new Integer(enum.nextInt()));
@@ -488,10 +488,10 @@ class FRootGraph //implements RootGraph
   // rootGraphIndex == ~(underlyingRootGraphIndex)
   final UnderlyingRootGraph m_graph;
 
-  // This heap is re-used by many methods.  Make sure to empty() it before
-  // using it.  You can use it as a bag of integers, to sort integers, or
-  // to filter integer duplicates.  You don't need to empty() it after usage.
-  final MinIntHeap m_heap = new MinIntHeap();
+  // This hash is re-used by many methods.  Make sure to empty() it before
+  // using it.  You can use it as a bag of integers or to filter integer
+  // duplicates.  You don't need to empty() it after usage.
+  final IntHash m_hash = new IntHash();
 
   // This is our "node factory" and "node recyclery".
   final NodeDepository m_nodeDepot = new NodeDepository();
