@@ -96,7 +96,7 @@ public class CyWindow extends JPanel implements GraphViewChangeListener,CyNetwor
     protected VisualMappingManager vizMapper;
 
     /** user interface to the
-     *  {@link cytoscape.visual.VisualMappingManager VisualMappingManager}
+     *  {@link VisualMappingManager VisualMappingManager}
      *  {@link #vizMapper vizMapper}.
      */
     protected VizMapUI vizMapUI;
@@ -114,16 +114,10 @@ public class CyWindow extends JPanel implements GraphViewChangeListener,CyNetwor
  * @param globalInstance  contains globally unique objects such as
  *                        the CytoscapeConfig and bioDataServer
  * @param network  the network to be displayed in this window
- * @param windowTitle  the frame title; a default value is used
+ * @param title  the frame title; a default value is used
  *                     if this is null
  */
 public CyWindow(CytoscapeObj globalInstance, CyNetwork network, String title) {
-    doInit(globalInstance, network, title);
-    loadPlugins();
-}
-
-//------------------------------------------------------------------------------
-protected void doInit(CytoscapeObj globalInstance, CyNetwork network, String title) {
     this.globalInstance = globalInstance;
     this.network = network;
     network.addCyNetworkListener(this);
@@ -159,7 +153,6 @@ protected void doInit(CytoscapeObj globalInstance, CyNetwork network, String tit
     redrawGraph(false, true);
     //view.fitContent();
     //view.setZoom(view.getZoom()*0.9);
-    
     setInteractivity(true);
 
     //add a listener to save the visual mapping catalog on exit
@@ -177,32 +170,6 @@ protected void doInit(CytoscapeObj globalInstance, CyNetwork network, String tit
     mainFrame.addWindowListener( globalInstance.getParentApp() );
 
 }
-//------------------------------------------------------------------------------
-/**
- * Loads plugins by via the plugin loading helper classes.
- *
- * @see AbstractPlugin
- * @see PluginLoader
- * @see JarLoaderUI
- */
-protected void loadPlugins() {
-    //create the JarLoader first so its menu items appear first in the plugin menu
-    JarLoaderUI jlu = new JarLoaderUI(this,
-                                      this.getCyMenus().getOperationsMenu() );
-
-    PluginLoader pluginLoader
-        = new PluginLoader (this,
-                            this.getCytoscapeObj().getConfiguration(),
-                            this.getNetwork().getNodeAttributes(),
-                            this.getNetwork().getEdgeAttributes());
-
-    pluginLoader.load();
-    this.getCytoscapeObj().getLogger().info(pluginLoader.getMessages());
-
-    // add default unselectable "no plugins loaded" if none loaded
-    //getCyMenus().refreshOperationsMenu();
-
-}
 
 //------------------------------------------------------------------------------
 //---------INITIALIZATION METHODS-----------------------------------------------
@@ -215,7 +182,7 @@ protected void createGraphView() {
     GraphView newView = GinyFactory.createGraphView(network.getGraphPerspective());
     //not sure why we have to disable the selections before enabling them -AM 2004-04-05
     newView.disableNodeSelection();
-    newView.disableEdgeSelection();    
+    newView.disableEdgeSelection();
     if (this.view != null) {
         this.view.removeGraphViewChangeListener(this);
         if (this.view.nodeSelectionEnabled()) {newView.enableNodeSelection();}
@@ -224,7 +191,7 @@ protected void createGraphView() {
     }
     //now we can switch to the new view
     this.view = newView;
-    
+
     newView.addGraphViewChangeListener(this);
     // Add the GraphViewController as a listener to the graphPerspective
     // so that it keeps is synchronized to graphView
@@ -239,9 +206,9 @@ protected void createGraphView() {
         System.err.println("1. In CyWindow.updateGraphView(): Could not add this.view to "
                            + " this.graphViewController.");
     }
-    
+
     addViewContextMenus();
-    
+
     /*
      * These are initial values for the view parameters, which are mostly
      * redundant since the vizmapper controls these. The might be useful if
@@ -280,7 +247,7 @@ protected void installGraphView() {
     if (display != null) {
         oldDisplay = display;
     }
-    
+
     display = view.getComponent();
     add( display, BorderLayout.CENTER);
     //the tool bar is usually already in the window; the following is a trick
@@ -418,6 +385,11 @@ public void showWindow(int width, int height) {
 	mainFrame.setVisible(true);
 }
 
+/**
+ * Show window with default width and height if not currently sized.
+ * If size is currently set, this function will use the current size
+ * repack and zoom the window to the current size.
+ */
 public void showWindow() {
     if (mainFrame.isShowing()) {
         this.showWindow(mainFrame.getWidth(), mainFrame.getHeight());
@@ -455,9 +427,7 @@ public GraphView getView() {return view;}
  * the <code>giny.model.GraphPerspective</code> contained in <code>CyNetwork</code>
  * synchronized to the <code>giny.view.GraphView</code> in this <code>CyWindow</code>.
  *
- * @return a <code>cytoscape.view.GraphViewController</code> or null if a call to
- * <code>CyWindow.updateGraphView</code> has not been made
- * @see #updateGraphView() updateGraphView
+ * @return a <code>cytoscape.view.GraphViewController</code>
  */
 public GraphViewController getGraphViewController (){
     return this.graphViewController;
@@ -693,14 +663,12 @@ public void onCyNetworkEvent(CyNetworkEvent event) {
  * in the status label, updating the number of hidden nodes/edges.
  */
 public void graphViewChanged ( GraphViewChangeEvent event) {
-
     int [] nodes = event.getHiddenNodeIndices();
     int[] edges = event.getHiddenEdgeIndices();
     //these arrays apparently can be null; count these as 0 hidden -AM 2004-03-30
     int nodeCount = (nodes == null) ? 0 : nodes.length;
     int edgeCount = (edges == null) ? 0 : edges.length;
     updateStatusLabel(nodeCount, edgeCount);
-
 }
 //------------------------------------------------------------------------------
 /**

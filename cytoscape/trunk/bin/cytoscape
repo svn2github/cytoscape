@@ -26,8 +26,8 @@ export LD_LIBRARY_PATH=$CYTOSCAPE_HOME/lib
 LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib
 LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/X11R6/lib
 
-
 java -Xmx1024MB -Djava.library.path=$CYTOSCAPE_HOME \
-                -jar $CYTOSCAPE_HOME/cytoscape.jar  \
+		-classpath cytoscape.jar:.:$CLASSPATH \
+		cytoscape.CyMain \
                 -b $CYTOSCAPE_DATA/GO $*
 

@@ -27,222 +27,100 @@
  ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  **/
 
-//
-/**
- * a plugin is loaded based upon information in the java.util.Properties 'props',
- * which is a data member of this class. there are three mechanisms, all of which
- * operate via those properties:
- * <ol>
- *    <li> a data file with a recognized file extension (via properties) is loaded
- *    <li> node or edge attributes include an attribute whose name (via properties)
- *         is known to require a plugin
- *    <li> the plugin is explicitly listed in the properties
- * </ol>
- *
- * Here are some examples from a properties file: <p>
- *
- * <code>
- *
- * </code>
- */
 //------------------------------------------------------------------------------
 // $Revision$
 // $Date$
 // $Author$
 //-----------------------------------------------------------------------------------
 package cytoscape;
-//-----------------------------------------------------------------------------------
+
 import java.util.*;
-import cytoscape.data.GraphObjAttributes;
-import cytoscape.view.CyWindow;
-//-----------------------------------------------------------------------------------
+
+/**
+ * a plugin is loaded if a line of the form:<BR>
+ * <CODE>
+ * plugin.&lt;some name for plugin&gt;.load=&lt;plugin class name&gt;<BR>
+ * </CODE>
+ * appears somewhere in the property file "cytoscape.props", and the class referred to
+ * is findable in the java CLASSPATH.
+ */
 public class PluginLoader {
-  protected CyWindow cyWindow;
-  protected CytoscapeConfig config;
-  protected Vector classesToLoad = new Vector ();
-  protected Properties props;
-  protected GraphObjAttributes nodeAttributes;
-  protected GraphObjAttributes edgeAttributes;
-  StringBuffer messageBuffer = new StringBuffer ();
+    protected CytoscapeObj cyObject;
+    protected StringBuffer messageBuffer;
 
-//-----------------------------------------------------------------------------------
-public PluginLoader (CyWindow cyWindow, CytoscapeConfig config,
-                     GraphObjAttributes nodeAttributes, GraphObjAttributes edgeAttributes)
-{
-  this.cyWindow = cyWindow;
-  this.config = config;
-  this.props = config.getProperties ();
-  this.nodeAttributes = nodeAttributes;
-  this.edgeAttributes = edgeAttributes;
-
-  String [] pluginProps = extractPluginProperties (props);
-  for (int i=0; i < pluginProps.length; i++)
-    messageBuffer.append ("  " + pluginProps [i] + "\n");
-
-  findUnconditionallyLoadedClasses (pluginProps);
-  findConditionallyLoadedClasses (pluginProps);
-
-   messageBuffer.append (this.toString () + "\n");
-
-} // ctor
-//-----------------------------------------------------------------------------------
-String [] extractPluginProperties (Properties props)
-{
-  Vector relevantProps = new Vector ();
-  Enumeration propNames = props.propertyNames ();
-  while (propNames.hasMoreElements ()) {
-    String propName = (String) propNames.nextElement ();
-    if (propName.startsWith ("plugin"))
-      relevantProps.add (propName);
-    } // while
-
-  String [] result = new String [relevantProps.size ()];
-  for (int i=0; i < relevantProps.size (); i++)
-    result [i] = (String) relevantProps.elementAt (i);
-
-  return result;
-
-} // extractPluginProperties
-//-----------------------------------------------------------------------------------
-protected void findUnconditionallyLoadedClasses (String [] pluginProps)
-{
-  for (int i=0; i < pluginProps.length; i++) {
-    String propName = pluginProps [i];
-    if (propName.endsWith (".load")) {
-      String className = props.getProperty (propName);
-      messageBuffer.append (" PluginLoader, unconditional: " + className + "\n");
-      addClassForLoading (className);
-      } // if endswith
-    } // for
-
-} // findUnconditionallyLoadedClasses
-//-----------------------------------------------------------------------------------
-protected void findConditionallyLoadedClasses (String [] pluginProps)
-{
-  HashMap pluginHash = new HashMap ();  //  a hash of (pluginName, PluginInfo)
-
-  for (int i=0; i < pluginProps.length; i++) {
-    String propName = pluginProps [i];
-    if (!propName.endsWith (".load")) {
-      try {
-        int start = "plugin.".length ();
-        int end = propName.indexOf (".", start + 1);
-        String pluginName = propName.substring (start, end);
-        String category = propName.substring (end + 1);
-        messageBuffer.append (" PluginLoader, conditional: " + pluginName + " category: " + category + "\n");
-        PluginInfo info = (PluginInfo) pluginHash.get (pluginName);
-        if (info == null) {
-          info = new PluginInfo ();
-          pluginHash.put (pluginName, info);
-          }
-        String value = props.getProperty (propName);
-        if (category.equals ("fileExtension"))
-          info.setFileExtension (value);
-        else if (category.equals ("attributeName"))
-          info.setAttributeName (value);
-        else if (category.equals ("className"))
-          info.setClassName (value);
-        }
-      catch (Exception e) {
-       System.err.println ("-- PluginLoader error parsing: " + propName);
-       }
-      } // if
-    } // for i
-
-
-  String [] pluginNameKeys = (String []) pluginHash.keySet().toArray (new String [0]);
-  String [] allDataFileExtensions = config.getAllDataFileExtensions ();
-
-    // convert extensions to a vectors, for easier 'contains' comparisons
-  Vector extensions = new Vector ();
-  for (int i=0; i < allDataFileExtensions.length; i++) {
-    extensions.add (allDataFileExtensions [i]);
+    /**
+     * Construct an instance with a link to the shared Plugin Registry.
+     * @param cyObject
+     */
+    public PluginLoader (CytoscapeObj cyObject)
+    {
+        this.cyObject = cyObject;
+        this.messageBuffer = new StringBuffer();
     }
 
-  for (int i=0; i < pluginNameKeys.length; i++) {
-    PluginInfo pluginInfo = (PluginInfo) pluginHash.get (pluginNameKeys [i]);
-    if (extensions.contains (pluginInfo.getFileExtension ()))
-      addClassForLoading (pluginInfo.getClassName ());
-    } // for i
+    /** Returns a list of class names to load from the property file.
+     *
+     * @param props Properties from the .props file
+     * @return classes to be loaded
+     */
+    public Vector getClassesToLoad (Properties props)
+    {
 
+        Vector classesToLoad = new Vector();
+        Enumeration enu = props.propertyNames();
+        while (enu.hasMoreElements()) {
+            String propName = (String)enu.nextElement();
+            if (propName.startsWith("plugin.") && propName.endsWith(".load")) {
+                String className = props.getProperty(propName);
+                if (className == null || className.length() <= 0) {
+                    messageBuffer.append("PluginLoader ignoring empty plugin.*.load property\n");
+                    continue;
+                }
+                messageBuffer.append("PluginLoader loading class: " + className + "\n");
+                classesToLoad.add(new String(className));
+            }
+        }
+        return classesToLoad;
+    }
 
-  String [] nodeAttributeNames = nodeAttributes.getAttributeNames ();
-  String [] edgeAttributeNames = edgeAttributes.getAttributeNames ();
+    /**
+     * gets the classes to be loaded from the supplied properies file and
+     * loads each one.
+     * @param props Properties from the .props file
+     */
+    public void load(Properties props)
+    {
+        Vector classNames = getClassesToLoad(props);
+        Collections.sort(classNames);
+        for (Iterator li = classNames.iterator(); li.hasNext(); ) {
+            String className = (String)li.next();
+            loadPlugin(className);
+        }
 
-    // convert node & edge attribute names vectors, for easier 'contains' comparisons
+    }
 
-  Vector attributes = new Vector ();
-  for (int i=0; i < nodeAttributeNames.length; i++)
-    attributes.add (nodeAttributeNames [i]);
+    /**
+     * loads the named class as a plugin.
+     * @param className
+     */
+    protected void loadPlugin (String className)
+    {
+        try {
+            Class pluginClass = Class.forName (className);
+            cyObject.addPluginToRegistry(pluginClass);
+        } catch (Exception e) {
+            e.printStackTrace ();
+            System.err.println (e.getMessage ());
+        }
 
-  for (int i=0; i < edgeAttributeNames.length; i++)
-    attributes.add (edgeAttributeNames [i]);
+    }
 
-  for (int i=0; i < pluginNameKeys.length; i++) {
-    PluginInfo pluginInfo = (PluginInfo) pluginHash.get (pluginNameKeys [i]);
-    if (attributes.contains (pluginInfo.getFileExtension ()))
-      addClassForLoading (pluginInfo.getClassName ());
-    } // for i
-
-
-
-} // findClassesByFileExtension
-//-----------------------------------------------------------------------------------
-protected void addClassForLoading (String className)
-{
-  if (className != null && className.length () > 0 && !classesToLoad.contains (className)) {
-    classesToLoad.add (className);
-    messageBuffer.append (" PluginLoader, by file extension: " + className + "\n");
-    } // if
-
-} // addClassForLoading
-//-----------------------------------------------------------------------------------
-public String [] getClassesToLoad ()
-{
-  return (String []) classesToLoad.toArray (new String [0]);
+    /**
+     * returns the contents of the message log
+     * @return
+     */
+    public String getMessages ()
+    {
+        return messageBuffer.toString ();
+    }
 }
-//-----------------------------------------------------------------------------------
-public void load ()
-{
-  String [] classNames = getClassesToLoad ();
-  List classList = new ArrayList( Arrays.asList(classNames) );
-  Collections.sort(classList);
-  for (Iterator li = classList.iterator(); li.hasNext(); ) {
-      String className = (String)li.next();
-      loadPlugin(className, cyWindow);
-  }
-
-} // load
-//-----------------------------------------------------------------------------------
-protected void loadPlugin (String className, CyWindow cyWindow)
-{
- try {
-    Class pluginClass = Class.forName (className);
-    cyWindow.getCytoscapeObj().addPluginToRegistry(pluginClass);
- } catch (Exception e) {
-    e.printStackTrace ();
-    System.err.println (e.getMessage ());
- }
-
-} // loadPlugin
-//------------------------------------------------------------------------------
-public String toString ()
-{
-  StringBuffer sb = new StringBuffer ();
-
-  sb.append ("-- PluginLoader, classes to load:\n   ");
-  sb.append (classesToLoad);
-  sb.append ("\n");
-
-  return sb.toString ();
-
-} // toString
-//------------------------------------------------------------------------------
-public String getMessages ()
-{
-  return messageBuffer.toString ();
-}
-//------------------------------------------------------------------------------
-} // class PluginLoader
-
-

@@ -41,6 +41,7 @@ import cytoscape.data.servers.BioDataServer;
 import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.CalculatorCatalogFactory;
 import cytoscape.visual.CalculatorIO;
+import cytoscape.jarLoader.JarLoaderCommandLineParser;
 //-------------------------------------------------------------------------
 /**
  * An object representing a single instance of Cytoscape. This class holds
@@ -53,6 +54,16 @@ public class CytoscapeObj {
     protected CytoscapeConfig config;
     protected Logger logger;
     protected BioDataServer bioDataServer;
+    public class NotAPluginException extends Exception {
+        public NotAPluginException(String msg) {
+            super(msg);
+        }
+    }
+    public class PluginAlreadyRegisteredException extends Exception {
+        public PluginAlreadyRegisteredException(String msg) {
+            super(msg);
+        }
+    }
     protected class PluginRegistryNode {
         public Class plugin;
         public long loadTime;
@@ -85,6 +96,7 @@ public class CytoscapeObj {
                 e.printStackTrace();
             }
         }
+        registerCommandLinePlugins();
         //eventually should wait until a window requests the catalog
         loadCalculatorCatalog();
         this.currentDirectory = new File(System.getProperty("user.dir"));
@@ -111,11 +123,29 @@ public class CytoscapeObj {
         this.bioDataServer = bioDataServer;
         this.pluginRegistry = new ArrayList();
         markPluginRegistryChangeTime();
+        registerCommandLinePlugins();
         //eventually should wait until a window requests the catalog
         loadCalculatorCatalog();
         this.currentDirectory = new File(System.getProperty("user.dir"));
     }
 
+
+//------------------------------------------------------------------------------
+/**
+ * Loads plugins by via the plugin loading helper classes.
+ *
+ * @see AbstractPlugin
+ * @see PluginLoader
+ */
+public void registerCommandLinePlugins() {
+    JarLoaderCommandLineParser parser = new JarLoaderCommandLineParser(this);
+    parser.parseArgs(config.getArgs());
+    logger.info(parser.getMessages());
+    PluginLoader pluginLoader = new PluginLoader(this);
+    pluginLoader.load(config.getProperties());
+    logger.info(pluginLoader.getMessages());
+
+}
 //------------------------------------------------------------------------------
 /**
  * If this CytoscapeObj object was constructed from cytoscape.java,
@@ -162,7 +192,16 @@ public void markPluginRegistryChangeTime() {
  /**
  * Adds a plugin class to the plugin registry.
  */
-public void addPluginToRegistry(Class plugin) {
+public void addPluginToRegistry(Class plugin) throws
+         NotAPluginException, PluginAlreadyRegisteredException {
+    if (!AbstractPlugin.class.isAssignableFrom(plugin)) {
+        throw new NotAPluginException("class: " + plugin.getName()
+                + "is not a plugin");
+    }
+    if (pluginRegistryContains(plugin.getName())) {
+        throw new PluginAlreadyRegisteredException("plugin already loaded: "
+                + plugin.getName());
+    }
     PluginRegistryNode newNode = new PluginRegistryNode();
     newNode.plugin = plugin;
     long now = System.currentTimeMillis();

@@ -39,6 +39,8 @@ import javax.swing.event.MenuEvent;
 
 import cytoscape.CytoscapeObj;
 import cytoscape.AbstractPlugin;
+import cytoscape.jarLoader.JarPluginLoaderAction;
+import cytoscape.jarLoader.JarPluginDirectoryAction;
 import cytoscape.actions.*;
 import cytoscape.dialogs.ShrinkExpandGraphUI;
 import cytoscape.data.annotation.AnnotationGui;
@@ -227,6 +229,14 @@ newState = true; //TODO: remove this once the GraphViewChangeListener system is 
       displayNWSubMenu.setEnabled(newState);
       nodesRequiredItemsEnabled = newState;
   }
+
+  /**
+   * Update the UI menus and buttons. When the graph view is changed,
+   * this method is the listener which
+   * will update the UI items, enabling or disabling items which are
+   * only available when the graph view is non-empty.
+   * @param e
+   */
   public void graphViewChanged(GraphViewChangeEvent e) {
       // Do this in the GUI Event Dispatch thread...
       SwingUtilities.invokeLater( new Runnable() {
@@ -234,6 +244,7 @@ newState = true; //TODO: remove this once the GraphViewChangeListener system is 
           setNodesRequiredItemsEnabled();
       } } );
   }
+
   /**
    * Creates the menu bar and the various menus and submenus, but
    * defers filling those menus with items until later.
@@ -402,8 +413,7 @@ newState = true; //TODO: remove this once the GraphViewChangeListener system is 
     layoutMenu.add(new RotateSelectedNodesAction(networkView));
     //layoutMenu.add(new ReduceEquivalentNodesAction(networkView));
 
-    ShrinkExpandGraphUI shrinkExpand =
-      new ShrinkExpandGraphUI(cyWindow, layoutMenu);
+    ShrinkExpandGraphUI.makeShrinkExpandGraphUI(cyWindow, layoutMenu);
 
     //fill the Visualization menu
     vizMenu.add( new BirdsEyeViewAction( networkView ) );
@@ -414,6 +424,10 @@ newState = true; //TODO: remove this once the GraphViewChangeListener system is 
     vizMapperItem = vizMenu.add(new ToggleVisualMapperAction(cyWindow));
 
     menuBar.addAction( new AnimatedLayoutAction( networkView ) );
+    opsMenu.add(new JarPluginLoaderAction (cyWindow.getCytoscapeObj()));
+    opsMenu.add(new JarPluginDirectoryAction (cyWindow.getCytoscapeObj()));
+    opsMenu.addSeparator();
+
   }
 
   /**

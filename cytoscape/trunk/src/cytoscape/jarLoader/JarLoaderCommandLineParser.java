@@ -8,8 +8,7 @@ package cytoscape.jarLoader;
 
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
-
-import cytoscape.view.CyWindow;
+import cytoscape.CytoscapeObj;
 
 /**
  * This class searches the command-line arguments for arguments specifying
@@ -20,26 +19,35 @@ import cytoscape.view.CyWindow;
  * If a directory is found, it is passed to an instance of JarPLuginDirectoryAction.
  */
 public class JarLoaderCommandLineParser {
-    
-    private boolean activePathParametersPresent = false;
-    JarPluginDirectoryAction jpda;
-    CyWindow cyWindow;
-    
-    public JarLoaderCommandLineParser(String[] args, CyWindow cyWindow) {
-	this.cyWindow=cyWindow;
-	jpda = new JarPluginDirectoryAction(cyWindow);
-        this.parseArgs(args);
+    protected CytoscapeObj cyObj;
+    protected StringBuffer messageBuffer;
+
+    /**
+     * creates an instance and links it to the shared plugin registry.
+     * @param cyObj
+     */
+    public JarLoaderCommandLineParser(CytoscapeObj cyObj) {
+        this.cyObj = cyObj;
+        this.messageBuffer = new StringBuffer();
     }
-    
+
+    /**
+     * prints a usage message.
+     */
     public void usage() {
         System.err.println("jarLoader command line arguments:");
         System.err.println("    --JLD  <string>   directory for .jar files");
         System.err.println("    --JLH             prints this help");
     }
 
-    private void parseArgs(String[] args) {
+    /**
+     * examines the arguments for --JLD or --JLH. If found, they are
+     * processed immediately.
+     * @param args
+     */
+    public void parseArgs(String[] args) {
         if (args == null || args.length == 0) {return;}
-                
+
         LongOpt [] longOpts = new LongOpt [2];
         longOpts[0] = new LongOpt ("JLD",  LongOpt.REQUIRED_ARGUMENT, null, 0);
         longOpts[1] = new LongOpt ("JLH",  LongOpt.NO_ARGUMENT, null, 1);
@@ -48,16 +56,17 @@ public class JarLoaderCommandLineParser {
         g.setOpterr (false); // We'll do our own error handling
         String tmp;
         boolean helpRequested = false;
-        
+
         int c;
         while ((c = g.getopt ()) != -1) {
             switch (c) {
                 case 0:
                     tmp = g.getOptarg();
-		    // try to load the jars.
-		    System.out.println("Command line to load jars from "+tmp);
-		    jpda.setDir(tmp);
-		    jpda.tryDirectory();
+                    // try to load the jars.
+                    messageBuffer.append("Command line to load jars from directory: "+tmp);
+                    JarPluginDirectoryAction jpda = new JarPluginDirectoryAction(cyObj);;
+                    jpda.setDir(tmp);
+                    jpda.tryDirectory();
                     break;
                 case 1:
                     tmp = g.getOptarg();
@@ -67,8 +76,16 @@ public class JarLoaderCommandLineParser {
                     break;
             }
         }
-        
+
         if (helpRequested) {usage();}
     }
-}
 
+    /**
+     * returns the message log.
+     * @return
+     */
+    public String getMessages ()
+    {
+        return messageBuffer.toString ();
+    }
+}
