@@ -6,20 +6,36 @@ package fing.util;
 public final class MinIntHeap
 {
 
+  private static final int DEFAULT_CAPACITY = 11;
+
   private int[] m_heap;
   private int m_currentSize;
   private boolean m_orderOK;
-  private static final int DEFAULT_CAPACITY = 11;
 
   /**
    * A new heap is ordered.
    */
   public MinIntHeap()
   {
-    m_heap = new int[DEFAULT_CAPACITY];
+    m_heap = new int[DEFAULT_CAPACITY + 1];
     m_heap[0] = Integer.MIN_VALUE;
     m_currentSize = 0;
     m_orderOK = true;
+  }
+
+  /**
+   * This constructor tosses length elements from the array arr, beginning
+   * at index beginIndex, onto a new heap.  The new heap will not be
+   * ordered.<p>
+   * A copy of the input array is made.  The input array is never modified.
+   */
+  public MinIntHeap(int[] arr, int beginIndex, int length)
+  {
+    m_heap = new int[length + DEFAULT_CAPACITY + 1];
+    System.arraycopy(arr, 0, m_heap, 1, length);
+    m_heap[0] = Integer.MIN_VALUE;
+    m_currentSize = length;
+    m_orderOK = false;
   }
 
   /**
