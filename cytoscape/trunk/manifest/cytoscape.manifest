@@ -1,0 +1,2 @@
+Class-Path: . colt.jar coltginy.jar luna.jar junit.jar giny.jar piccolo.jar piccolox.jar glf.jar cyto-aux.jar y.jar phoebe.jar
+Main-Class: cytoscape.cytoscape
