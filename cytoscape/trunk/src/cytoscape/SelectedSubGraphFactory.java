@@ -58,65 +58,48 @@ public SelectedSubGraphFactory (Graph2D parentGraph, GraphObjAttributes nodeAttr
   this.parentGraph = parentGraph;
   this.parentNodeAttributes = nodeAttributes;
   this.parentEdgeAttributes = edgeAttributes;
-
+  
   createSubgraph ();
-  recreateNodeAttributes ();
-  createEdgesWithAttributes ();
-
 } // ctor
 //------------------------------------------------------------------------------
+// Method added by iliana 3.17.2003
+/**
+ * This method creates the subgraph by copying one by one the selected nodes
+ * in the parentGraph. The sungraph's node attributes are cloned from the 
+ * parentGraph's node attributes, making sure that the map of Node->canonicalName
+ * entries has Node objects that are in the sungraph, not the parentGraph.
+ * This method calls createEdgesWithAttributes().
+ */
 protected void createSubgraph ()
 {
   NodeCursor nc = parentGraph.selectedNodes (); 
-  subgraph = new Graph2D (parentGraph, nc);  // creates a copy
-}
-//------------------------------------------------------------------------------
-/**
- *  clone the full nodeAttributes of the parent graph and replace the 
- *  nameMap (which maps from Node to canonicalName). <p>
- *  the main problem faced here is our need, within the nodeAttributes
- *  of the new subgraph, to map from a Node to the node's canonical
- *  name, since  all attributes for nodes are stored by the node's
- *  canonical name.  The Node's in the new subgraph are distinct from
- *  the corresponding (selected) nodes in the parent graph, but they
- *  do have the same node labels. so the strategy is:
- *  <ol>
- *     <li> from the parent graph, create a temporary map from
- *          <currentNodeLabel> to <nodeCanonicalName>. 
- *     <li> traverse the nodes in the new subgraph, extracting each
- *          label, looking up the canonical name in the temporary map,
- *          and adding the new pair (<canonicalName>, <subgraphNode)>
- *          to the subgraph's node attributes name map.
- *  </ol>
- */
-protected void recreateNodeAttributes ()
-{
-  NodeCursor nc = parentGraph.selectedNodes (); 
-  HashMap parentGraphNameMap = new HashMap ();
-
-    // there must be a canonicalName -> node entry for every node in the graph
+  
+  // There must be a canonicalName -> node entry for every node in the graph
   assert (parentNodeAttributes.getNameMap().size() == parentGraph.nodeCount ());
-
-  for (nc.toFirst (); nc.ok (); nc.next ()) { 
-    Node node = nc.node ();
-    String canonicalName = parentNodeAttributes.getCanonicalName (nc.node ());
-    String nodeLabel = parentGraph.getLabelText (node);
-    parentGraphNameMap.put (nodeLabel, canonicalName);
-    } // for nc
-
-  Node [] newNodes = subgraph.getNodeArray ();
-  newNodeAttributes = (GraphObjAttributes) parentNodeAttributes.clone ();
-  newNodeAttributes.clearNameMap ();
-
-  for (int i=0; i < newNodes.length; i++) {
-    Node newNode = newNodes [i];
-    String nodeLabel = subgraph.getLabelText (newNode);
-    String canonicalName = (String) parentGraphNameMap.get (nodeLabel);
-    newNodeAttributes.addNameMapping (canonicalName, newNode);
+  
+  subgraph = new Graph2D();
+  
+  // Clone the parent's node attributes
+  newNodeAttributes = (GraphObjAttributes)parentNodeAttributes.clone();
+  newNodeAttributes.clearNameMap();
+  
+  // Copy one by one each selected node
+  Node parentNode;
+  Node newNode;
+  String canonicalName;
+  for( nc.toFirst(); nc.ok(); nc.next() ){
+    parentNode = nc.node();
+    newNode = parentNode.createCopy(subgraph);
+    canonicalName = parentNodeAttributes.getCanonicalName(parentNode);
+    // Set node attributes Node->canonicalName mapping for the subgraph
+    newNodeAttributes.addNameMapping(canonicalName, newNode);
+    // Remember the mapping of canonicalName to newNode for creating edges
     subgraphNodeMap.put (canonicalName, newNode);
-    } // for i
-
-} // recreateNodeAttributes
+  }//for nc
+  
+  createEdgesWithAttributes ();
+    
+}//createSungraph
 //------------------------------------------------------------------------------
 /**
  *  create (de novo, ignoring edges which may have been created with the
@@ -144,7 +127,9 @@ protected void createEdgesWithAttributes ()
   EdgeCursor ec = parentGraph.edges ();
 
   for (ec.toFirst (); ec.ok (); ec.next ()) { 
+    
     Edge parentEdge = ec.edge ();
+    String parentEdgeName = parentEdgeAttributes.getCanonicalName(parentEdge);
     Node source = parentEdge.source ();
     Node target = parentEdge.target ();
     String sourceName = parentNodeAttributes.getCanonicalName (source);
@@ -157,7 +142,7 @@ protected void createEdgesWithAttributes ()
       Edge newEdge = subgraph.createEdge (subgraphSourceNode, subgraphTargetNode);
       String canonicalName = parentEdgeAttributes.getCanonicalName (parentEdge);
       HashMap attributeBundle = parentEdgeAttributes.getAttributes (canonicalName);
-      newEdgeAttributes.add (canonicalName, attributeBundle);
+      newEdgeAttributes.set (canonicalName, attributeBundle);
       newEdgeAttributes.addNameMapping (canonicalName, newEdge);
       } // if in subgraph
     } // for ec
