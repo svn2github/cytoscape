@@ -14,8 +14,6 @@ import cytoscape.view.CyEdgeView;
 import cytoscape.visual.*;
 import cytoscape.visual.ui.*;
 
-import cytoscape.plugin.*;
-
 import cytoscape.giny.*;
 
 import giny.view.GraphView;
@@ -40,7 +38,6 @@ public class CytoscapeDesktop
     JFrame 
   implements
     PropertyChangeListener,
-    PluginListener,
     CyWindow {
    
 
@@ -136,15 +133,6 @@ public class CytoscapeDesktop
   protected String currentNetworkID;
   protected String currentNetworkViewID;
 
-  //--------------------//
-  // Plugin Variables
-  
-  /**
-   * timestamp of last received event (with currentTimeMills())
-   */
-   protected long lastPluginRegistryUpdate;
-
-  protected boolean eventMessed = true;
 
   //----------------------------------------//
   // Constructors
@@ -277,15 +265,10 @@ public class CytoscapeDesktop
       
     }
 
-    Cytoscape.getCytoscapeObj().getPluginRegistry().addPluginListener( this );
-
     //------------------------------//
     // Set up the VizMapper
     setupVizMapper( main_panel );
     
-   //  System.out.println( "Cytoscape Desktop Setup Plugins Called..... " );
-//     setupPlugins();
-
     //------------------------------//
     // Window Closing, Program Shutdown
 
@@ -301,7 +284,7 @@ public class CytoscapeDesktop
             theCytoscapeObj.saveCalculatorCatalog();
         }
         public void windowClosed() {
-            theCytoscapeObj.getPluginRegistry().removePluginListener(thisWindow);
+          //theCytoscapeObj.getPluginRegistry().removePluginListener(thisWindow);
         }
     });
     
@@ -497,44 +480,8 @@ public class CytoscapeDesktop
   }
 
 
-  /**
-   * Load in the Plugins
-   */
-  public void setupPlugins () {
-    updatePlugins();
-  }
-
-  /**
-   * Implemenation of the PluginListener interface. Triggers update of
-   * currently loaded plugins.
-   */
-  public void pluginRegistryChanged(PluginEvent event) {
-    updatePlugins();
-  }
-  protected void updatePlugins () {
-
-    // System.out.println( "CD PluginRegistry Changed: "+event );
-
-    //poll Plugin Registry for new plugins since last update
-    PluginUpdateList pul = Cytoscape.getCytoscapeObj().getPluginRegistry().getPluginsLoadedSince(lastPluginRegistryUpdate);
-    Class neededPlugin[] = pul.getPluginArray();
-    for (int i = 0; i < neededPlugin.length; i++) {
-
-      if ( AbstractPlugin.class .isAssignableFrom( neededPlugin[i] ) ) {
-        // System.out.println( "AbstractPlugin Loaded" );
-        AbstractPlugin.loadPlugin( neededPlugin[i], 
-                                   Cytoscape.getCytoscapeObj(), 
-                                   ( CyWindow )this);
-      } 
-
-      else if ( CytoscapePlugin.class.isAssignableFrom( neededPlugin[i] ) ) {
-        // System.out.println( "CytoscapePlugin Loaded" );
-        CytoscapePlugin.loadPlugin( neededPlugin[i] );
-      }
-    }
-    lastPluginRegistryUpdate = pul.getTimestamp();
-  }
-
+ 
+ 
   /**
    * Returns the visual mapping manager that controls the appearance
    * of nodes and edges in this display.

@@ -334,7 +334,9 @@ public class ColtCyNetwork
 
   //--------------------//
   // Member Data
-   
+
+  // get
+  
   /**
    * Return the requested Attribute for the given Node
    * @param node the given CyNode
@@ -397,6 +399,62 @@ public class ColtCyNetwork
   public String[] getNodeAttributesList ( CyEdge[] edges ) {
     return Cytoscape.getEdgeNetworkData().getAttributeNames();
   }
+
+
+   /**
+   * Return the requested Attribute for the given Node
+   * @param node the given CyNode
+   * @param attribute the name of the requested attribute
+   * @param value the value to be set
+   * @return if it overwrites a previous value
+   */
+  public boolean setNodeAttributeValue ( CyNode node, String attribute, Object value ) {
+    return Cytoscape.getNodeNetworkData().set( attribute, 
+                                               Cytoscape.
+                                               getNodeNetworkData().
+                                               getCanonicalName( node ),
+                                               value );
+    
+
+  }
+
+  /**
+   * Return the requested Attribute for the given Node
+   */
+  public boolean setNodeAttributeValue ( int node, String attribute, Object value ) {
+    return Cytoscape.getNodeNetworkData().set( attribute, 
+                                               Cytoscape.
+                                               getNodeNetworkData().
+                                               getCanonicalName( getNode(node) ),
+                                               value );
+    
+
+  }
+
+  /**
+   * Return the requested Attribute for the given Edge
+   */
+  public boolean setEdgeAttributeValue ( CyEdge edge, String attribute, Object value ) {
+    return Cytoscape.getEdgeNetworkData().set( attribute, 
+                                               Cytoscape.
+                                               getEdgeNetworkData().
+                                               getCanonicalName( edge ),
+                                               value );
+  }
+
+  /**
+   * Return the requested Attribute for the given Edge
+   */
+  public boolean setEdgeAttributeValue ( int edge, String attribute, Object value ) {
+    return Cytoscape.getEdgeNetworkData().set( attribute, 
+                                               Cytoscape.
+                                               getEdgeNetworkData().
+                                               getCanonicalName( getEdge(edge) ),
+                                               value );
+    
+
+  }
+ 
 
 
 

@@ -133,6 +133,8 @@ public interface CyNetwork extends GraphPerspective {
   //--------------------//
   // Member Data
    
+  //get
+
   /**
    * Return the requested Attribute for the given Node
    * @param node the given CyNode
@@ -176,6 +178,33 @@ public interface CyNetwork extends GraphPerspective {
    */
   public String[] getNodeAttributesList ( CyEdge[] edges );
 
+  //set
+
+  /**
+   * Return the requested Attribute for the given Node
+   * @param node the given CyNode
+   * @param attribute the name of the requested attribute
+   * @param value the value to be set
+   * @return if it overwrites a previous value
+   */
+  public boolean setNodeAttributeValue ( CyNode node, String attribute, Object value );
+
+  /**
+   * Return the requested Attribute for the given Node
+   */
+  public boolean setNodeAttributeValue ( int node, String attribute, Object value );
+
+  /**
+   * Return the requested Attribute for the given Edge
+   */
+  public boolean setEdgeAttributeValue ( CyEdge edge, String attribute, Object value );
+
+  /**
+   * Return the requested Attribute for the given Edge
+   */
+  public boolean setEdgeAttributeValue ( int edge, String attribute, Object value );
+ 
+ 
 
   //--------------------//
   // Network Client Data

@@ -79,7 +79,7 @@ public abstract class AbstractPlugin {
         if (pluginClass == null) {return false;}
 
 
-        System.out.println( "AbstractPlugin loading: "+pluginClass );
+        //System.out.println( "AbstractPlugin loading: "+pluginClass );
 
         //look for constructor with CyWindow argument
         if (cyWindow != null) {

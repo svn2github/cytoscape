@@ -38,17 +38,16 @@ import cytoscape.data.servers.BioDataServer;
 import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.CalculatorCatalogFactory;
 import cytoscape.visual.CalculatorIO;
-import cytoscape.plugin.JarLoaderCommandLineParser;
-import cytoscape.plugin.PluginRegistry;
-import cytoscape.plugin.PluginLoader;
-import cytoscape.plugin.AbstractPlugin;
+import cytoscape.plugin.*;
 //-------------------------------------------------------------------------
 /**
  * An object representing a single instance of Cytoscape. This class holds
  * references to globally unique objects like the CytoscapeConfig and the
  * bioDataServer.
  */
-public class CytoscapeObj {
+public class CytoscapeObj 
+  implements
+    PluginListener {
 
     protected CyMain parentApp;
     protected CytoscapeConfig config;
@@ -59,6 +58,7 @@ public class CytoscapeObj {
     protected File currentDirectory;
     //List networks = new ArrayList();
     //List cyWindows = new ArrayList();
+   protected long lastPluginRegistryUpdate;
 
 /**
  * Constructor taking just a CytoscapeConfig object. The constructor
@@ -73,6 +73,7 @@ public CytoscapeObj(CytoscapeConfig config) {
     this.logger = Logger.getLogger("global");
     this.bioDataServer = null;
     this.pluginRegistry = new PluginRegistry();
+    this.pluginRegistry.addPluginListener( this );
     if (config.getBioDataDirectory() != null) {
         try {
             this.bioDataServer = new BioDataServer(config.getBioDataDirectory());
@@ -129,6 +130,46 @@ public void registerCommandLinePlugins() {
     logger.info(pluginLoader.getMessages());
 
 }
+
+
+  /**
+   * Load in the Plugins
+   */
+  public void setupPlugins () {
+    updatePlugins();
+  }
+  /**
+   * Implemenation of the PluginListener interface. Triggers update of
+   * currently loaded plugins.
+   */
+  public void pluginRegistryChanged(PluginEvent event) {
+    updatePlugins();
+  }
+  protected void updatePlugins () {
+
+    // System.out.println( "CD PluginRegistry Changed: "+event );
+
+    //poll Plugin Registry for new plugins since last update
+    PluginUpdateList pul = Cytoscape.getCytoscapeObj().getPluginRegistry().getPluginsLoadedSince(lastPluginRegistryUpdate);
+    Class neededPlugin[] = pul.getPluginArray();
+    for (int i = 0; i < neededPlugin.length; i++) {
+
+      if ( AbstractPlugin.class .isAssignableFrom( neededPlugin[i] ) ) {
+        // System.out.println( "AbstractPlugin Loaded" );
+        AbstractPlugin.loadPlugin( neededPlugin[i], 
+                                   Cytoscape.getCytoscapeObj(), 
+                                   ( cytoscape.view.CyWindow ) Cytoscape.getDesktop() );
+      } 
+
+      else if ( CytoscapePlugin.class.isAssignableFrom( neededPlugin[i] ) ) {
+        // System.out.println( "CytoscapePlugin Loaded" );
+        CytoscapePlugin.loadPlugin( neededPlugin[i] );
+      }
+    }
+    lastPluginRegistryUpdate = pul.getTimestamp();
+  }
+
+
 //------------------------------------------------------------------------------
 /**
  * If this CytoscapeObj object was constructed from cytoscape.java,

@@ -41,6 +41,7 @@ import cytoscape.CyNetwork;
 import cytoscape.visual.VisualMappingManager;
 //-------------------------------------------------------------------------
 /**
+ * @deprecated
  * This interface defines methods for displaying a graph without
  * specifying the details of the UI components surrounding the
  * graph display.

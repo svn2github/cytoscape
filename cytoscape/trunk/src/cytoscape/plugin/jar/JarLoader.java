@@ -216,15 +216,15 @@ public class JarLoader {
         totalClasses++;
         String className = entry_s;
         if(!(isClassPlugin(className))) continue;
-        System.out.println( entry_s+" was a plugin" );
+        //System.out.println( entry_s+" was a plugin" );
 
         totalPlugins++;
         invokePlugin(className);
       }
-      System.err.println(".jar summary: " +
-                         " entries=" + totalEntries +
-                         " classes=" + totalClasses +
-                         " plugins=" + totalPlugins);
+      //System.err.println(".jar summary: " +
+      //                   " entries=" + totalEntries +
+      //                   " classes=" + totalClasses +
+      //                    " plugins=" + totalPlugins);
     } catch ( Exception e ) {
       System.err.println( "Exception Loading jar." );
       e.printStackTrace();
@@ -241,12 +241,12 @@ public class JarLoader {
     protected void invokePlugin(String name)
     {
       
-      System.out.println( "new Invoking: "+name );
+      //System.out.println( "new Invoking: "+name );
 
         try {
           //Class pluginClass = loadClass(name);
           Cytoscape.getCytoscapeObj().getPluginRegistry().addPluginToRegistry( Class.forName( name, false, getLoader() ) );
-            System.out.println("Loaded plugin: " + name);
+          //System.out.println("Loaded plugin: " + name);
         }
         catch (ClassNotFoundException e) {
             System.err.println("Error: plugin class " + name + " was not found.\n");

@@ -48,13 +48,13 @@ public abstract class CytoscapePlugin {
    */
   public static boolean loadPlugin ( Class pluginClass ) {
        
-    System.out.print( " Loading plugin from class: "+pluginClass +" ...");
+    //System.out.print( " Loading plugin from class: "+pluginClass +" ...");
 
 
     if ( pluginClass == null ) {
       return false;
     }
-    System.out.println( " which wasn't null " );
+    //System.out.println( " which wasn't null " );
     
     Object object = null;
       try {
