@@ -4,22 +4,62 @@ import java.io.FileWriter;
 import java.io.IOException;
 import giny.view.*;
 import giny.model.*;
-
+/**
+ * This class wraps around GMLNode and provides various methods for
+ * constructing a tree structure given other data.
+ */
 public class GMLTree{
+	/**
+	 * The root node for this graph
+	 */
 	GMLNode root;
+	/**
+	 * The version of the GMLSpec parsed here
+	 */
+	private static String VERSION = "1.0";
+	/**
+	 * The string used to open a GMLNode declaration
+	 */
 	private static String NODE_OPEN = "[";
+	/**
+	 * The string used to close a GMLNode declaration
+	 */
 	private static String NODE_CLOSE = "]";
+	
+	/**
+	 * When getting a vector, used to specify the type
+	 * for the contained objects
+	 */
 	public static int STRING = 0;
+	/**
+	 * When getting a vector, used to specify the type
+	 * for the contained objects
+	 */
 	public static int DOUBLE = 1;
+	/**
+	 * When getting a vector, used to specify the type
+	 * for the contained objects
+	 */
 	public static int INTEGER = 2;
+	/**
+	 * Create an empty GMLTree
+	 */
 	public GMLTree(){
 		root = new GMLNode();
 	}
 	
+	/**
+	 * Create a GMLTree from the information contained in this GraphView. Currently
+	 * this only concerns itself with x,y position information.
+	 * @param myView the GraphView used to create the GMLTree
+	 */
 	public GMLTree(GraphView myView){
+		//create a new root
 		root = new GMLNode();
+		//add the base level mappings
 		root.addMapping("Creator",new GMLNode("\"Cytoscape\""));
-		root.addMapping("Version",new GMLNode("1.0"));
+		root.addMapping("Version",new GMLNode(VERSION));
+		//create hte subnode which will hold the grpah information
 		GMLNode graph = new GMLNode();
 		root.addMapping("graph",graph);
 		//for each node, add a mapping to the graph GMLNode
@@ -27,7 +67,9 @@ public class GMLTree{
 		while(viewIt.hasNext()){
 			NodeView currentView = (NodeView)viewIt.next();
 			Node currentNode = currentView.getNode();
+			//create a new GMLNode to hold information about currentNode
 			GMLNode currentGML = new GMLNode();
+			//add the information about currentNode
 			currentGML.addMapping("id",new GMLNode(""+(-currentNode.getRootGraphIndex())));
 			currentGML.addMapping("label",new GMLNode("\""+currentView.getLabel()+"\""));
 			GMLNode graphics = new GMLNode();
@@ -40,7 +82,9 @@ public class GMLTree{
 		while(viewIt.hasNext()){
 			EdgeView currentView = (EdgeView)viewIt.next();
 			Edge currentEdge = currentView.getEdge();
+			//crate a new GMLNode to hold information about currentEdge
 			GMLNode currentGML = new GMLNode();
+			//add the information about currentNode
 			currentGML.addMapping("source",new GMLNode(""+(-currentEdge.getSource().getRootGraphIndex())));
 			currentGML.addMapping("target",new GMLNode(""+(-currentEdge.getTarget().getRootGraphIndex())));
 			GMLNode graphics = new GMLNode();
@@ -51,6 +95,11 @@ public class GMLTree{
 			graph.addMapping("edge",currentGML);
 		}
 	}
+
+	/**
+	 * Create a GMLTree from data contained in a file
+	 * @param filename The name of the file used to create this GMLTree
+	 */
 	public GMLTree(String filename){
 		LinkedList tokenList = new LinkedList();
 		TextFileReader reader = new TextFileReader(filename);
@@ -70,6 +119,10 @@ public class GMLTree{
 		
 	}
 
+	/**
+	 * Static helper method to build a tree from a list of tokens. Maybe I should change
+	 * the GraphView constructor so that it can use this function.
+	 */
 	private static GMLNode initializeTree(List tokens){
 		GMLNode result = new GMLNode();
 		while(tokens.size()>0){
@@ -100,18 +153,35 @@ public class GMLTree{
 		return result;
 	}
 
-
+	/**
+	 * Get string representation
+	 * @return string representation
+	 */
 	public String toString(){
+		//this function basically just calls toString on the root
 		String result =  root.toString();
 		return result.substring(3,result.length()-2)+"\n";
 	}
 
+	/**
+	 * Return a vector of information stored in gmlNodes
+	 * @param keys A vector of strings representing a sequence of keys down the tree
+	 * @param type The type of vector to return. See public static values for specifying type
+	 * @return A vector. The type of this vector is determined by type
+	 */
 	private Vector getVector(Vector keys,int type){
 		Vector result = new Vector();
 		GMLTree.getVector(root,keys,0,type,result);
 		return result;
 	}
 
+	/**
+	 * Return a vector of information stored in gmlNodes
+	 * @param keys A string representing a delimited sequence of keys which are used to look up values in the tree.
+	 * @param delim A string representing the delimiter used in keys
+	 * @param type The type of vector to return. See public static values for specifying type
+	 * @return A vector. The type of this vector is determined by type
+	 */
 	public Vector getVector(String keys,String delim,int type){
 		Vector keyVector = new Vector();
 		StringTokenizer tokenizer = new StringTokenizer(keys, delim);
@@ -121,6 +191,14 @@ public class GMLTree{
 		return getVector(keyVector,type);
 	
 	}
+
+	/**
+	 * A recursive private static helper method to get a vector of values
+	 * @param root The current GMLFile for which we are getting values
+	 * @param keys A vector of strings representing a sequence of keys down the tree
+	 * @param index The current position in the key vector (to find hte current key we need to look up)
+	 * @param result The vector to which we add result data.
+	 */
 	private static void getVector(GMLNode root, Vector keys, int index, int type, Vector result){
 		Vector mapped = root.getMapping((String)keys.get(index));
 		if(mapped != null){
