@@ -347,6 +347,18 @@
             </fileset>
         </copy>
 
+        <!-- Copy over Release PlugIns -->
+        <echo>
+            ---------------------------------------
+            Copying over PlugIns
+            ---------------------------------------
+        </echo>
+        <copy todir="${release.dir}/plugins">
+            <fileset dir="plugins">
+                <include name="*.jar"/>
+            </fileset>
+        </copy>
+
         <!-- Create Windows Zip Distribution -->
         <echo>
             ---------------------------------------
