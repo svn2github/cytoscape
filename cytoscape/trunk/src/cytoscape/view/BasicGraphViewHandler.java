@@ -25,7 +25,7 @@
  ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  **/
 /**
- * @author Iliana Avila-Campillo
+ * @author Iliana Avila-Campillo <iavila@systemsbiology.org>
  * @version %I%, %G%
  * @since 2.0
  */
@@ -33,6 +33,7 @@
 package cytoscape.view;
 
 import java.util.*;
+import cern.colt.list.IntArrayList;
 import giny.model.GraphPerspective;
 import giny.model.GraphPerspectiveChangeEvent;
 import giny.model.Edge;
@@ -62,6 +63,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
    * be updated as necessary
    */
   public void handleGraphPerspectiveEvent (GraphPerspectiveChangeEvent event, GraphView graph_view){
+    
     //TODO: Remove
     //System.out.println("In BasicGraphViewHandler.handleGraphPerspectiveEvent().");
     
@@ -71,9 +73,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
     if(event.isNodesHiddenType()){
       //TODO: Remove
       //System.out.println("isNodesHiddenType == " + event.isNodesHiddenType());
-      // THIS CALL CRASHES:
-      //hideGraphViewNodes(graph_view, event.getHiddenNodes());
-      hideGraphViewNodes(graph_view, event.getHiddenNodeIndices());
+      removeGraphViewNodes(graph_view, event.getHiddenNodeIndices());
       numTypes++;
     }
 
@@ -100,7 +100,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
     if(event.isEdgesHiddenType()){
       //TODO: Remove
       //System.out.println("isEdgesHiddenType == " + event.isEdgesHiddenType());
-      hideGraphViewEdges(graph_view, event.getHiddenEdgeIndices());
+      removeGraphViewEdges(graph_view, event.getHiddenEdgeIndices());
       numTypes++;
     }
     
@@ -136,67 +136,61 @@ public class BasicGraphViewHandler implements GraphViewHandler {
   }//handleGraphPerspectiveEvent
 
   /**
-   * It hides the edges in the array in the given <code>giny.view.GraphView</code> object.
+   * It removes the views of the edges in the array from the given <code>giny.view.GraphView</code> 
+   * object.
    *
-   * @param graph_view the <code>giny.view.GraphView</code> object in which edges will be hidden
-   * @param edges the edges that will be hidden in <code>graph_view</code>
-   * @return an array of edges that were hidden
+   * @param graph_view the <code>giny.view.GraphView</code> object from which edges will be removed
+   * @param edges the edges whose views will be removed
+   * @return an array of edges that were removed
    */
-  //TESTED: Gets an exception because the edges array has references to null.
-  //USE INSTEAD: hideGraphViewEdges(GraphView, int [])
-  static public Edge []  hideGraphViewEdges (GraphView graph_view,
+  // TESTED: Gets an exception because the edges array has references to null.
+  // USE INSTEAD: removeGraphViewEdges(GraphView, int [])
+  static public Edge []  removeGraphViewEdges (GraphView graph_view,
                                              Edge [] edges){
     //TODO: Remove
-    //System.out.println("In BasicGraphViewHandler.hideGraphViewEdges()");
-    Set hiddenEdges = new HashSet();
+    //System.out.println("In BasicGraphViewHandler.removeGraphViewEdges()");
+    Set removedEdges = new HashSet();
     for(int i = 0; i < edges.length; i++){
-      // Gets an exception here:
-      //TODO: Remove
-      //System.out.println("About to call graph_view.getEdgeView("+edges[i]+"), i = " + i);
-      EdgeView edgeView = graph_view.getEdgeView(edges[i]);
-      //TODO: Remove
-      //System.out.println("Done calling graph_view.getEdgeView()");
-      if(edgeView != null && graph_view.hideGraphObject(edgeView)){
-        hiddenEdges.add(edges[i]);
+      EdgeView edgeView = graph_view.removeEdgeView(edges[i]);
+      if(edgeView != null){
+        removedEdges.add(edges[i]);
       }
     }//for i
     //TODO: Remove
-    //System.out.println("Leaving BasicGraphViewHandler.hideGraphViewEdges()," + "num hidden edges = " + hiddenEdges.size());
-    return (Edge[])hiddenEdges.toArray(new Edge[hiddenEdges.size()]);
-  }//hideGraphViewEdges
-
-   /**
-   * It hides the edges in the array in the given <code>giny.view.GraphView</code> object.
-   *
-   * @param graph_view the <code>giny.view.GraphView</code> object in which edges will be hidden
-   * @param edge_indices the indices of the edges that will be hidden in <code>graph_view</code>
-   * @return an array of edge indices that were hidden
-   */
-  // TESTED
-  // NOTE: USE THIS INSTEAD OF hideGraphViewEdges (GraphView,Edge[])
-  static public int []  hideGraphViewEdges (GraphView graph_view,
-                                            int [] edge_indices){
-    //TODO: Remove
-    //System.out.println("In BasicGraphViewHandler.hideGraphViewEdges()");
-    Set hiddenEdges = new HashSet();
-    for(int i = 0; i < edge_indices.length; i++){
-      EdgeView edgeView = graph_view.getEdgeView(edge_indices[i]);
-      if(edgeView != null && graph_view.hideGraphObject(edgeView)){
-        hiddenEdges.add(new Integer(edge_indices[i]));
-      }
-    }//for i
-    Integer [] IntArray = (Integer[])hiddenEdges.toArray(new Integer[hiddenEdges.size()]);
-    int [] indicesArray = new int [hiddenEdges.size()];
-    for(int i = 0; i < IntArray.length; i++){
-      indicesArray[i] = IntArray[i].intValue();
-    }
-    //TODO: Remove
-    //System.out.println("Leaving BasicGraphViewHandler.hideGraphViewEdges()," + "num hidden edges = " + indicesArray.length);
-    return indicesArray;
-  }//hideGraphViewEdges
+    //System.out.println("Leaving BasicGraphViewHandler.removeGraphViewEdges()," + "num removed edges = " + removedEdges.size());
+    return (Edge[])removedEdges.toArray(new Edge[removedEdges.size()]);
+  }//removeGraphViewEdges
   
   /**
-   * It restores the edges in the array in the given <code>giny.view.GraphView</code> object
+   * It removes the views of the edges in the array from the given <code>giny.view.GraphView</code> 
+   * object.
+   *
+   * @param graph_view the <code>giny.view.GraphView</code> object from which edges will be removed
+   * @param edge_indices the indices of the edges that will be removed
+   * @return an array of edge indices that were removed
+   */
+  // TESTED
+  // NOTE: USE THIS INSTEAD OF removeGraphViewEdges (GraphView,Edge[])
+  static public int []  removeGraphViewEdges (GraphView graph_view,
+                                              int [] edge_indices){
+    //TODO: Remove
+    //System.out.println("In BasicGraphViewHandler.removeGraphViewEdges()");
+    IntArrayList removedEdges = new IntArrayList(edge_indices.length);
+    for(int i = 0; i < edge_indices.length; i++){
+      EdgeView edgeView = graph_view.removeEdgeView(edge_indices[i]);
+      if(edgeView != null){
+        removedEdges.add(edge_indices[i]);
+      }
+    }//for i
+    removedEdges.trimToSize();
+    //TODO: Remove
+    //System.out.println("Leaving BasicGraphViewHandler.removeGraphViewEdges()," + "num removed edges = " + removedEdges.size());
+    return removedEdges.elements();
+  }//removeGraphViewEdges
+  
+  /**
+   * It restores the views of the edges in the array in the given <code>giny.view.GraphView</code> 
+   * object
    *
    * @param graph_view the <code>giny.view.GraphView</code> object in which edges will be restored
    * @param edges the edges that will be restored
@@ -233,19 +227,38 @@ public class BasicGraphViewHandler implements GraphViewHandler {
   }//restoreGraphViewEdges
 
   /**
-   * It restores the edges with the given indices in the given <code>giny.view.GraphView</code> object
+   * It restores the views of the edges with the given indices in the given 
+   * <code>giny.view.GraphView</code> object
    *
-   * @param graph_view the <code>giny.view.GraphView</code> object in which edges will be restored
+   * @param graph_view the <code>giny.view.GraphView</code> object in which edges' views 
+   * will be restored
    * @param edge_indices the indices of the edges that will be restored
    * @return an array of indices of edges that were restored
    */
   // TODO: What if a connected node is not in the graph view or graph perspective?
   static public int [] restoreGraphViewEdges (GraphView graph_view,
-                                               int [] edge_indices){
+                                              int [] edge_indices){
     //TODO: Remove
     //System.out.println("In BasicGraphViewHandler.restoreGraphViewEdges()");
-    List restoredEdgeIndices = new ArrayList();
+    IntArrayList restoredEdgeIndices = new IntArrayList(edge_indices.length);
     for(int i = 0; i < edge_indices.length; i++){
+      // TEST: See if the NodeViews of the connected Nodes are in graph_view
+      // TODO: What to do in this case? I would say throw exception.
+      //GraphPerspective graphPerspective = graph_view.getGraphPerspective();
+      //int sourceRootIndex = 
+      // graphPerspective.getRootGraphNodeIndex(graphPerspective.getEdgeSourceIndex(edge_indices[i]));
+      //int targetRootIndex =
+      //graphPerspective.getRootGraphNodeIndex(graphPerspective.getEdgeTargetIndex(edge_indices[i]));
+      //NodeView sourceNodeView = graph_view.getNodeView(sourceRootIndex);
+      //NodeView targetNodeView = graph_view.getNodeView(targetRootIndex);
+      //if(sourceNodeView == null){
+      //System.err.println("ERROR: Source NodeView for edge "+edge_indices[i]+" is null");
+      //}
+      //if(targetNodeView == null){
+      //System.err.println("ERROR: Target NodeView for edge "+edge_indices[i]+" is null");
+      //}
+
+      // The given index can be either RootGraph index or GraphPerspective index
       EdgeView edgeView = graph_view.getEdgeView(edge_indices[i]);
       boolean restored = false;
       if(edgeView == null){
@@ -261,20 +274,17 @@ public class BasicGraphViewHandler implements GraphViewHandler {
         restored = graph_view.showGraphObject(edgeView);
       }
       if(restored){
-        restoredEdgeIndices.add(new Integer(edge_indices[i]));
+        restoredEdgeIndices.add(edge_indices[i]);
       }
     }//for i
     
-    int [] restoredEdgeIndicesArray = new int[restoredEdgeIndices.size()];
-    for(int i = 0; i < restoredEdgeIndicesArray.length; i++){
-      restoredEdgeIndicesArray[i] = ((Integer)restoredEdgeIndices.get(i)).intValue();
-    }// for i
+    restoredEdgeIndices.trimToSize();
     
     //TODO: Remove
     //System.out.println("Leaving BasicGraphViewHandler.restoreGraphViewEdges(), "+"num restored edges = " + restoredEdgeIndices.size() );
-    return restoredEdgeIndicesArray;
+    return restoredEdgeIndices.elements();
   }//restoreGraphViewEdges
-
+  
   /**
    * It selects the edges in the array in the given <code>giny.view.GraphView</code> object.
    *
@@ -324,83 +334,76 @@ public class BasicGraphViewHandler implements GraphViewHandler {
   }//unselectGraphViewEdges
 
   /**
-   * It hides the nodes in the array in the given <code>giny.view.GraphView</code> object,
-   * it also hides the connected edges to these nodes (an edge without a connecting node makes
+   * It removes the nodes in the array from the given <code>giny.view.GraphView</code> object,
+   * it also removes the connected edges to these nodes (an edge without a connecting node makes
    * no mathematical sense).
    *
-   * @param graph_view the <code>giny.view.GraphView</code> object in which nodes will be hidden
-   * @param nodes the nodes that will be hidden in <code>graph_view</code>
-   * @return an array of nodes that were hidden
+   * @param graph_view the <code>giny.view.GraphView</code> object from which nodes will be removed
+   * @param nodes the nodes whose views will be removed from <code>graph_view</code>
+   * @return an array of nodes that were removed
    */
   // NOTE: GINY automatically hides the edges connected to the nodes in the GraphPerspective
-  // and this hiding fires a hideEdgesEvent, so hideGraphViewEdges will get called on those
+  // and this hiding fires a hideEdgesEvent, so removeGraphViewEdges will get called on those
   // edges and we don't need to hide them in this method
   // TESTED
-  static public Node[] hideGraphViewNodes (GraphView graph_view,
+  static public Node[] removeGraphViewNodes (GraphView graph_view,
                                            Node [] nodes){
     //TODO: Remove
-    //System.out.println("In BasicGraphViewHandler.hideGraphViewNodes()");
-    Set hiddenNodes = new HashSet();
+    //System.out.println("In BasicGraphViewHandler.removeGraphViewNodes()");
+    Set removedNodes = new HashSet();
     for(int i = 0; i < nodes.length; i++){
-      //TODO: Remove
-      //System.out.println("About to call graph_view.getNodeView("+nodes[i]+"), i = " + i);
-      // CRASHED HERE:
-      NodeView nodeView = graph_view.getNodeView(nodes[i]);
-      if(nodeView != null && graph_view.hideGraphObject(nodeView)){
-        hiddenNodes.add(nodes[i]);
+      NodeView nodeView = graph_view.removeNodeView(nodes[i]);
+      if(nodeView != null){ 
+        removedNodes.add(nodes[i]);
       }
     }//for i
     //TODO: Remove
-    //System.out.println("Leaving BasicGraphViewHandler.hideGraphViewNodes(), " +"num hidden nodes = " + hiddenNodes.size());
-    return (Node[])hiddenNodes.toArray(new Node[hiddenNodes.size()]);
-  }//hideGraphViewNodes
+    //System.out.println("Leaving BasicGraphViewHandler.removeGraphViewNodes(), " +"num removed nodes = " + removedNodes.size());
+    return (Node[])removedNodes.toArray(new Node[removedNodes.size()]);
+  }//removeGraphViewNodes
 
    /**
-   * It hides the nodes with the given indices that are contained in the given 
-   * <code>giny.view.GraphView</code> object, it also hides the connected edges to 
+   * It removes the views of the nodes with the given indices that are contained in the given 
+   * <code>giny.view.GraphView</code> object, it also removes the connected edges to 
    * these nodes (an edge without a connecting node makes no mathematical sense).
    *
-   * @param graph_view the <code>giny.view.GraphView</code> object in which nodes will be hidden
-   * @param node_indices the indices of the nodes that will be hidden in <code>graph_view</code>
-   * @return an array of indices of nodes that were hidden
+   * @param graph_view the <code>giny.view.GraphView</code> object from which nodes will be removed
+   * @param node_indices the indices of the nodes that will be removed
+   * @return an array of indices of nodes that were removed
    */
   // NOTE: GINY automatically hides the edges connected to the nodes in the GraphPerspective
-  // and this hiding fires a hideEdgesEvent, so hideGraphViewEdges will get called on those
-  // edges and we don't need to hide them in this method
-  static public int[] hideGraphViewNodes (GraphView graph_view,
+  // and this hiding fires a hideEdgesEvent, so removeGraphViewEdges will get called on those
+  // edges and we don't need to remove them in this method
+  static public int[] removeGraphViewNodes (GraphView graph_view,
                                           int [] node_indices){
     //TODO: Remove
-    //System.out.println("In BasicGraphViewHandler.hideGraphViewNodes()");
-    List hiddenNodesIndices = new ArrayList();
+    //System.out.println("In BasicGraphViewHandler.removeGraphViewNodes()");
+    IntArrayList removedNodesIndices = new IntArrayList(node_indices.length);
     for(int i = 0; i < node_indices.length; i++){
-      //TODO: Remove
-      //System.out.println("About to call graph_view.getNodeView("+node_indices[i]+"), i = " + i);
-      NodeView nodeView = graph_view.getNodeView(node_indices[i]);
-      if(nodeView != null && graph_view.hideGraphObject(nodeView)){
-        hiddenNodesIndices.add(new Integer(node_indices[i]));
+      NodeView nodeView = graph_view.removeNodeView(node_indices[i]);
+      if(nodeView != null){
+        removedNodesIndices.add(node_indices[i]);
       }
     }//for i
-    int [] hiddenNodesIndicesArray = new int [hiddenNodesIndices.size()];
-    for(int i = 0; i < hiddenNodesIndices.size(); i++){
-      hiddenNodesIndicesArray[i] = ((Integer)hiddenNodesIndices.get(i)).intValue();
-    }
+    removedNodesIndices.trimToSize();
     //TODO: Remove
-    //System.out.println("Leaving BasicGraphViewHandler.hideGraphViewNodes(), " +"num hidden nodes = " + hiddenNodesIndicesArray.length);
+    //System.out.println("Leaving BasicGraphViewHandler.removeGraphViewNodes(), " +"num removed nodes = " + removedNodesIndices.size());
 
-    return hiddenNodesIndicesArray;
-  }//hideGraphViewNodes
+    return removedNodesIndices.elements();
+  }//removeGraphViewNodes
   
   /**
-   * It restores the nodes in the array in the given <code>giny.view.GraphView</code> object
+   * It restores the views of the nodes in the array in the given 
+   * <code>giny.view.GraphView</code> object
    *
    * @param graph_view the <code>giny.view.GraphView</code> object in which nodes will be restored
-   * @param nodes the nodes that will be restored in <code>graph_view</code>
+   * @param nodes the nodes whose views will be restored in <code>graph_view</code>
    * @param restore_connected_edges whether or not the connected edges to the restored nodes
    * should also be restored or not (for now this argument is ignored)
    * @return an array of nodes that were restored
    */
-  //TODO: Depending on restore_connected_edges, restore connected edges or not.
-  //TESTED
+  // TODO: Depending on restore_connected_edges, restore connected edges or not.
+  // TESTED
   static public Node[] restoreGraphViewNodes (GraphView graph_view,
                                               Node [] nodes,
                                               boolean restore_connected_edges){
@@ -424,6 +427,8 @@ public class BasicGraphViewHandler implements GraphViewHandler {
         restored = graph_view.showGraphObject(nodeView);
       }
       if(restored){
+        //TODO: Remove
+        //System.err.println("Restored node w/index " + nodes[i].getRootGraphIndex());
         positionToBarycenter(nodeView);
         restoredNodes.add(nodeView.getNode());
       }
@@ -434,13 +439,14 @@ public class BasicGraphViewHandler implements GraphViewHandler {
   }//restoreGraphViewNodes
 
   /**
-   * It restores the nodes with the given indices in the given <code>giny.view.GraphView</code> object
+   * It restores the views of the nodes with the given indices in the given 
+   * <code>giny.view.GraphView</code> object
    *
-   * @param graph_view the <code>giny.view.GraphView</code> object in which nodes will be restored
-   * @param node_indices the incides of the nodes that will be restored in <code>graph_view</code>
+   * @param graph_view the <code>giny.view.GraphView</code> object in which node views will be restored
+   * @param node_indices the indices of the nodes whose views will be restored
    * @param restore_connected_edges whether or not the connected edges to the restored nodes
    * should also be restored or not (for now this argument is ignored)
-   * @return an array of indices of the nodes that were restored
+   * @return an array of indices of the nodes whose views were restored
    */
   //TODO: Depending on restore_connected_edges, restore connected edges or not.
   static public int[] restoreGraphViewNodes (GraphView graph_view,
@@ -448,7 +454,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
                                               boolean restore_connected_edges){
     //TODO: Remove
     //System.out.println("In BasicGraphViewHandler.restoreGraphViewNodes()");
-    List restoredNodeIndices = new ArrayList();
+    IntArrayList restoredNodeIndices = new IntArrayList(node_indices.length);
     for(int i = 0; i < node_indices.length; i++){
       
       NodeView nodeView = graph_view.getNodeView(node_indices[i]);
@@ -466,7 +472,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
         restored = graph_view.showGraphObject(nodeView);
       }
       if(restored){
-        restoredNodeIndices.add(new Integer(node_indices[i]));
+        restoredNodeIndices.add(node_indices[i]);
         positionToBarycenter(nodeView);
         //TODO: Remove
         //System.err.println("NodeView for node index " + node_indices[i] + " was added to graph_view");
@@ -475,17 +481,13 @@ public class BasicGraphViewHandler implements GraphViewHandler {
         //System.err.println("ERROR: NodeView for node index " + node_indices[i] +" was NOT added to graph_view");
       }
     }//for i
-    int [] restoredNodeIndicesArray = new int [restoredNodeIndices.size()];
-    for(int i = 0; i < restoredNodeIndicesArray.length; i++){
-      restoredNodeIndicesArray[i] = ((Integer)restoredNodeIndices.get(i)).intValue();
-    }//for i
-    
+    restoredNodeIndices.trimToSize();
     //TODO: Remove
-    //System.out.println("Leaving BasicGraphViewHandler.restoreGraphViewNodes()." +"Showed in graph_view/Restored in GP == " + restoredNodeIndicesArray.length +"/" + node_indices.length);
-    return restoredNodeIndicesArray;
+    //System.out.println("Leaving BasicGraphViewHandler.restoreGraphViewNodes()." +"Showed in graph_view/Restored in GP == " + restoredNodeIndices.size() +"/" + node_indices.length);
+    return restoredNodeIndices.elements();
   }//restoreGraphViewNodes
-
-
+  
+  
   /**
    * It selects the nodes in the array in the given <code>giny.view.GraphView</code> object.
    *
@@ -496,7 +498,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
   static public Node [] selectGraphViewNodes (GraphView graph_view,
                                               Node [] nodes){
     //TODO: Remove
-    //System.out.println("In BasicGraphViewHandler.selectGraphViewNodes()"); 
+    ////System.out.println("In BasicGraphViewHandler.selectGraphViewNodes()"); 
     Set selectedNodes = new HashSet();
     for(int i = 0; i < nodes.length; i++){
       NodeView nodeView = graph_view.getNodeView(nodes[i]);
@@ -578,5 +580,89 @@ public class BasicGraphViewHandler implements GraphViewHandler {
       node_view.setYPosition(y);
     }
   }//positionToBarycenter
+
+  /**
+   * Updates the given graph_view to contain node and edge visual representations
+   * of only nodes and edges that are in its <code>GraphPerspective</code>
+   * 
+   * @see GraphViewController#resumeListening()
+   * @see GraphViewController#resumeListening(GraphView)
+   */
+  public void updateGraphView (GraphView graph_view){
+    
+    GraphPerspective graphPerspective = graph_view.getGraphPerspective();
+    
+    IntArrayList gpNodeIndices = new IntArrayList(graphPerspective.getNodeIndicesArray());
+    IntArrayList gpEdgeIndices = new IntArrayList(graphPerspective.getEdgeIndicesArray());
+    
+    IntArrayList gvNodeIndices = new IntArrayList(graph_view.getNodeViewCount());
+    IntArrayList gvEdgeIndices = new IntArrayList(graph_view.getEdgeViewCount());
+    
+    // Obtain a list of nodes' root indices that are represented in graph_view
+    Iterator it = graph_view.getNodeViewsIterator();
+    while(it.hasNext()){
+      NodeView nodeView = (NodeView)it.next();
+      Node gvNode = nodeView.getNode();
+      if(gvNode == null){
+        System.err.println("Node for nodeView is null (nodeView  = " + nodeView + ")");
+        continue;
+      }
+      int nodeIndex = gvNode.getRootGraphIndex();
+      gvNodeIndices.add(nodeIndex);
+    }// while there are more graph view nodes
+    
+    // Obtain a list of edges that are represented in graph_view,
+    // and remove EdgeViews that are no longer in graph_perspective
+    it = graph_view.getEdgeViewsIterator();
+    while(it.hasNext()){
+      EdgeView edgeView = (EdgeView)it.next();
+      Edge gvEdge = edgeView.getEdge();
+      if(gvEdge == null){
+        System.err.println("Edge for edgeView is null (edgeView  = " + edgeView + ")");
+        continue;
+      }
+      int edgeIndex = gvEdge.getRootGraphIndex();
+      gvEdgeIndices.add(edgeIndex);
+    }// while there are more graph view edges
+    
+    // Make sure that graph_view represents all nodes that are
+    // currently in graphPerspective
+    for(int i = 0; i < gpNodeIndices.size(); i++){
+      int nodeIndex = gpNodeIndices.getQuick(i);
+      NodeView nodeView = graph_view.getNodeView(nodeIndex);
+      if(nodeView == null){
+        graph_view.addNodeView(nodeIndex);
+      }else{
+        graph_view.showGraphObject(nodeView);
+      }
+    }// for each graphPerspective node
+    
+    // Make sure that graph_view represents all edges that are
+    // currently in graphPerspective
+    for(int i = 0; i < gpEdgeIndices.size(); i++){
+      int edgeIndex = gpEdgeIndices.getQuick(i);
+      EdgeView edgeView = graph_view.getEdgeView(edgeIndex);
+      if(edgeView == null){
+        graph_view.addEdgeView(edgeIndex);
+      }else{
+        graph_view.showGraphObject(edgeView);
+      }
+    }// for each GraphPerspective edge
+
+    // Remove from graph_view all edge representations that are not in graphPerspective
+    gvEdgeIndices.removeAll(gpEdgeIndices);
+    gvEdgeIndices.trimToSize();
+    for( int i = 0;  i < gvEdgeIndices.size(); i++){
+      graph_view.removeEdgeView(gvEdgeIndices.getQuick(i));
+    }// for each edge that is in graph_view but that is not in graphPerspective
+    
+    // Remove from graph_view all node representations that are not in graphPerspective
+    gvNodeIndices.removeAll(gpNodeIndices);
+    gvNodeIndices.trimToSize();
+    for( int i = 0;  i < gvNodeIndices.size(); i++){
+      graph_view.removeNodeView(gvNodeIndices.getQuick(i));
+    }// for each node that is in graph_view but that is not in graphPerspective
+             
+  }//updateGraphview
 
 }//classs BasicGraphViewHandler
