@@ -19,7 +19,7 @@
 		</h2>
 		<p>
 		</p>
-		
+		<!--
 		<h4>
 		Option 2:  Mac OS X Release
 		</h4>
@@ -28,8 +28,9 @@
 			<li><a href='<?= $cyto2_1_mac_east ?>' >Mac OS X Release</A></li>
 		</ul>
 		</p>
+		-->
 		<p>
-		<h4>Option 3:  All Platforms:  Download a .tar.gz or .zip distribution file
+		<h4>Option 2:  All Platforms:  Download a .tar.gz or .zip distribution file
 		</H4>
 		</p>
 		<p>
@@ -58,10 +59,10 @@
   <P>
 <? if ($in_production == false)  {
   echo "<P>&nbsp;<P>Debug:  [will not appear in production environment]<P>";
-  echo "Link 1: $cyto2_1_install_anywhere <BR>";
-  echo "Link 2: $cyto2_1_mac_east    <BR>";
-  echo "Link 3: $cyto2_1_gz_east	 <BR";
-  echo "Link 4: $cyto2_1_zip_east    <BR>";
-  echo "Link 5: $cyto2_1_source_east <BR>";
+  echo "Install Anywhere Link: $cyto2_1_install_anywhere <BR>";
+  echo "Mac Link: $cyto2_1_mac_east    <BR>";
+  echo "Gzipped Link: $cyto2_1_gz_east	 <BR";
+  echo "Zipped Link: $cyto2_1_zip_east    <BR>";
+  echo "Source Link: $cyto2_1_source_east <BR>";
   }
 ?>
