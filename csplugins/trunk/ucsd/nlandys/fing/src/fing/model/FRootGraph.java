@@ -13,6 +13,7 @@ import giny.model.Edge;
 import giny.model.GraphPerspective;
 import giny.model.Node;
 import giny.model.RootGraph;
+import giny.model.RootGraphChangeEvent;
 import giny.model.RootGraphChangeListener;
 
 import java.util.Iterator;
@@ -165,37 +166,32 @@ class FRootGraph implements RootGraph
         removeNode(node.getRootGraphIndex()) != 0) return node;
     else return null; }
 
-  public int removeNode(int nodeInx) {
-    final Node removedNode = _removeNode(nodeInx);
-    if (removedNode != null) {
-      final RootGraphChangeListener listener = m_lis;
-      if (listener != null)
-        listener.rootGraphChanged
-          (new RootGraphNodesRemovedEvent(this, new Node[] { removedNode }));
-      return nodeInx; }
-    else { return 0; } }
-
-  // Returns the Node that was removed or null if unsuccessful.
-  private Node _removeNode(int nodeInx)
+  public int removeNode(final int nodeInx)
   {
-    final int positiveNodeIndex = ~nodeInx;
-    if (positiveNodeIndex < 0) return null;
-    final IntEnumerator edgeInxEnum =
-      m_graph.adjacentEdges(positiveNodeIndex, true, true, true);
-    if (edgeInxEnum == null) return null;
-    if (edgeInxEnum.numRemaining() > 0) {
-      final int[] edgeRemoveArr = new int[edgeInxEnum.numRemaining()];
-      for (int i = 0; i < edgeRemoveArr.length; i++)
-        edgeRemoveArr[i] = ~(edgeInxEnum.nextInt());
-      removeEdges(edgeRemoveArr); }
-    // positiveNodeIndex tested for validity with adjacentEdges() above.
-    if (m_graph.removeNode(positiveNodeIndex)) {
-      final FNode garbage = m_nodes.getNodeAtIndex(positiveNodeIndex);
-      m_nodes.setNodeAtIndex(null, positiveNodeIndex);
-      m_nodeDepot.recycleNode(garbage);
-      return garbage; }
-    else throw new IllegalStateException
-           ("internal error - node didn't exist, its adjacent edges did");
+    final int nativeNodeInx = ~nodeInx;
+    if (nativeNodeInx < 0) return 0;
+    final IntEnumerator nativeEdgeEnum =
+      m_graph.adjacentEdges(nativeNodeInx, true, true, true);
+    if (nativeEdgeEnum == null) return 0;
+    final Edge[] removedEdgeArr = new Edge[nativeEdgeEnum.numRemaining()];
+    for (int i = 0; i < removedEdgeArr.length; i++)
+      removedEdgeArr[i] = m_edges.getEdgeAtIndex(nativeEdgeEnum.nextInt());
+    for (int i = 0; i < removedEdgeArr.length; i++) {
+      final int nativeEdgeInx = ~(removedEdgeArr[i].getRootGraphIndex());
+      m_graph.removeEdge(nativeEdgeInx);
+      final FEdge removedEdge = m_edges.getEdgeAtIndex(nativeEdgeInx);
+      m_edges.setEdgeAtIndex(null, nativeEdgeInx);
+      m_edgeDepot.recycleEdge(removedEdge); }
+    final FNode removedNode = m_nodes.getNodeAtIndex(nativeNodeInx);
+    m_graph.removeNode(nativeNodeInx);
+    m_nodes.setNodeAtIndex(null, nativeNodeInx);
+    m_nodeDepot.recycleNode(removedNode);
+    if (removedEdgeArr.length > 0)
+      m_lis.rootGraphChanged
+        (new RootGraphEdgesRemovedEvent(this, removedEdgeArr));
+    m_lis.rootGraphChanged
+      (new RootGraphNodesRemovedEvent(this, new Node[] { removedNode }));
+    return nodeInx;
   }
 
   // This method has been marked deprecated in the Giny API.
@@ -206,58 +202,22 @@ class FRootGraph implements RootGraph
         returnThis.add(nodes.get(i));
     return returnThis; }
 
-  // This shall be used solely by removeNodes(int[]).
-  private final MinIntHeap m_heap_removeNodes = new MinIntHeap();
-
+  // This method has been marked deprecated in the Giny API.
   public int[] removeNodes(int[] nodeIndices) {
-    // Assume that m_lis is not null, because in practice, this will
-    // almost always be the case (GraphPerspective listening).
-    // Can't use m_heap because it's being used at each _removeNode(int)
-    // when edges are removed.
-    m_heap_removeNodes.empty();
-    final MinIntHeap successes = m_heap_removeNodes;
-    final Node[] removedNodes = new Node[nodeIndices.length];
     final int[] returnThis = new int[nodeIndices.length];
-    for (int i = 0; i < nodeIndices.length; i++) {
-      removedNodes[i] = _removeNode(nodeIndices[i]);
-      if (removedNodes[i] == null) { returnThis[i] = 0; }
-      else { returnThis[i] = nodeIndices[i]; successes.toss(i); } }
-    if (successes.size() > 0) {
-      final RootGraphChangeListener listener = m_lis;
-      if (listener != null) {
-        final Node[] successArr;
-        if (successes.size() == removedNodes.length) {
-          successArr = removedNodes; }
-        else {
-          successArr = new Node[successes.size()];
-          final IntEnumerator enum = successes.elements();
-          int index = -1;
-          while (enum.numRemaining() > 0)
-            successArr[++index] = removedNodes[enum.nextInt()]; }
-        listener.rootGraphChanged
-          (new RootGraphNodesRemovedEvent(this, successArr)); } }
+    for (int i = 0; i < returnThis.length; i++)
+      returnThis[i] = removeNode(nodeIndices[i]);
     return returnThis; }
 
-  public int createNode() {
-    final int returnThis = _createNode();
-//     final RootGraphChangeListener listener = m_lis;
-//     if (listener != null)
-//       listener.rootGraphChanged
-//         (new RootGraphNodesCreatedEvent(this, new int[] { returnThis }));
-    return returnThis; }
-
-  private int _createNode()
+  public int createNode()
   {
-    final int positiveNodeIndex = m_graph.createNode();
-    final int returnThis = ~positiveNodeIndex;
-    // Theoretically I could postpone the creation of this object
-    // and use a bit array to mark indices of nodes which aren't
-    // instantiated yet.  This would complicate the code somewhat.
+    final int nativeNodeInx = m_graph.createNode();
+    final int returnThis = ~nativeNodeInx;
     FNode newNode = m_nodeDepot.getNode();
     newNode.m_rootGraph = this;
     newNode.m_rootGraphIndex = returnThis;
     newNode.m_identifier = null;
-    m_nodes.setNodeAtIndex(newNode, positiveNodeIndex);
+    m_nodes.setNodeAtIndex(newNode, nativeNodeInx);
     return returnThis;
   }
 
@@ -272,13 +232,7 @@ class FRootGraph implements RootGraph
 
   public int[] createNodes(int numNewNodes) {
     final int[] returnThis = new int[numNewNodes];
-    for (int i = 0; i < returnThis.length; i++) returnThis[i] = _createNode();
-//     final RootGraphChangeListener listener = m_lis;
-//     if (listener != null) {
-//       final int[] copyReturnThis = new int[returnThis.length];
-//       System.arraycopy(returnThis, 0, copyReturnThis, 0, returnThis.length);
-//       listener.rootGraphChanged
-//         (new RootGraphNodesCreatedEvent(this, copyReturnThis)); }
+    for (int i = 0; i < returnThis.length; i++) returnThis[i] = createNode();
     return returnThis; }
 
   public Edge removeEdge(Edge edge) {
@@ -286,27 +240,17 @@ class FRootGraph implements RootGraph
         removeEdge(edge.getRootGraphIndex()) != 0) return edge;
     else return null; }
 
-  public int removeEdge(int edgeInx) {
-    final Edge removedEdge = _removeEdge(edgeInx);
-    if (removedEdge != null) {
-      final RootGraphChangeListener listener = m_lis;
-      if (listener != null)
-        listener.rootGraphChanged
-          (new RootGraphEdgesRemovedEvent(this, new Edge[] { removedEdge }));
-      return edgeInx; }
-    else { return 0; } }
-
-  // Returns the Edge that was removed or null if unsuccessful.
-  private Edge _removeEdge(int edgeInx)
+  public int removeEdge(int edgeInx)
   {
-    final int positiveEdgeIndex = ~edgeInx;
-    if (positiveEdgeIndex < 0) return null;
-    if (m_graph.removeEdge(positiveEdgeIndex)) {
-      final FEdge garbage = m_edges.getEdgeAtIndex(positiveEdgeIndex);
-      m_edges.setEdgeAtIndex(null, positiveEdgeIndex);
-      m_edgeDepot.recycleEdge(garbage);
-      return garbage; }
-    else return null;
+    final int nativeEdgeInx = ~edgeInx;
+    if (nativeEdgeInx < 0) return 0;
+    if (!(m_graph.removeEdge(nativeEdgeInx))) return 0;
+    final FEdge removedEdge = m_edges.getEdgeAtIndex(nativeEdgeInx);
+    m_edges.setEdgeAtIndex(null, nativeEdgeInx);
+    m_edgeDepot.recycleEdge(removedEdge);
+    m_lis.rootGraphChanged
+      (new RootGraphEdgesRemovedEvent(this, new Edge[] { removedEdge }));
+    return edgeInx;
   }
 
   // This method has been marked deprecated in the Giny API.
@@ -317,31 +261,11 @@ class FRootGraph implements RootGraph
         returnThis.add(edges.get(i));
     return returnThis; }
 
+  // This method has been marked deprecated in the Giny API.
   public int[] removeEdges(int[] edgeIndices) {
-    // Assume that m_lis is not null, because in practice, this will
-    // almost always be the case (GraphPerspective listening).
-    m_heap.empty();
-    final MinIntHeap successes = m_heap;
-    final Edge[] removedEdges = new Edge[edgeIndices.length];
     final int[] returnThis = new int[edgeIndices.length];
-    for (int i = 0; i < edgeIndices.length; i++) {
-      removedEdges[i] = _removeEdge(edgeIndices[i]);
-      if (removedEdges[i] == null) { returnThis[i] = 0; }
-      else { returnThis[i] = edgeIndices[i]; successes.toss(i); } }
-    if (successes.size() > 0) {
-      final RootGraphChangeListener listener = m_lis;
-      if (listener != null) {
-        final Edge[] successArr;
-        if (successes.size() == removedEdges.length) {
-          successArr = removedEdges; }
-        else {
-          successArr = new Edge[successes.size()];
-          final IntEnumerator enum = successes.elements();
-          int index = -1;
-          while (enum.numRemaining() > 0)
-            successArr[++index] = removedEdges[enum.nextInt()]; }
-        listener.rootGraphChanged
-          (new RootGraphEdgesRemovedEvent(this, successArr)); } }
+    for (int i = 0; i < returnThis.length; i++)
+      returnThis[i] = removeEdge(edgeIndices[i]);
     return returnThis; }
 
   public int createEdge(Node source, Node target) {
@@ -362,58 +286,29 @@ class FRootGraph implements RootGraph
   public int createEdge(int sourceNodeIndex, int targetNodeIndex,
                         boolean directed)
   {
-    final int returnThis =
-      _createEdge(sourceNodeIndex, targetNodeIndex, directed);
-//     if (returnThis != 0) {
-//       final RootGraphChangeListener listener = m_lis;
-//       if (listener != null)
-//         listener.rootGraphChanged(new RootGraphEdgesCreatedEvent
-//                                   (this, new int[] { returnThis })); }
-    return returnThis;
-  }
-
-  private int _createEdge(int sourceNodeIndex, int targetNodeIndex,
-                          boolean directed)
-  {
-    final int positiveSourceNodeIndex = ~sourceNodeIndex;
-    final int positiveTargetNodeIndex = ~targetNodeIndex;
-    if (positiveSourceNodeIndex < 0 || positiveTargetNodeIndex < 0) return 0;
-    final int positiveEdgeIndex = m_graph.createEdge
-      (positiveSourceNodeIndex, positiveTargetNodeIndex, directed);
-    if (positiveEdgeIndex < 0) return 0;
-    final int returnThis = ~positiveEdgeIndex;
-    // Theoretically I could postpone the creation of this object
-    // and use a bit array to mark indices of edges which aren't
-    // instantiated yet.  This would complicate the code somewhat.
+    final int nativeSrcInx = ~sourceNodeIndex;
+    final int nativeTrgInx = ~targetNodeIndex;
+    if (nativeSrcInx < 0 || nativeTrgInx < 0) return 0;
+    final int nativeEdgeInx =
+      m_graph.createEdge(nativeSrcInx, nativeTrgInx, directed);
+    if (nativeEdgeInx < 0) return 0;
+    final int returnThis = ~nativeEdgeInx;
     FEdge newEdge = m_edgeDepot.getEdge();
     newEdge.m_rootGraph = this;
     newEdge.m_rootGraphIndex = returnThis;
     newEdge.m_identifier = null;
-    m_edges.setEdgeAtIndex(newEdge, positiveEdgeIndex);
+    m_edges.setEdgeAtIndex(newEdge, nativeEdgeInx);
     return returnThis;
   }
 
   public int[] createEdges(int[] sourceNodeIndices, int[] targetNodeIndices,
                            boolean directed) {
-    int foo = targetNodeIndices[sourceNodeIndices.length - 1];
-    foo = sourceNodeIndices[targetNodeIndices.length - 1];
-    foo = 0;
-//     m_heap.empty();
-//     final MinIntHeap successes = m_heap;
+    if (sourceNodeIndices.length != targetNodeIndices.length)
+      throw new IllegalArgumentException("input arrays not same length");
     final int[] returnThis = new int[sourceNodeIndices.length];
     for (int i = 0; i < returnThis.length; i++)
-    {
       returnThis[i] = createEdge(sourceNodeIndices[i],
                                  targetNodeIndices[i], directed);
-//       if (returnThis[i] != 0) successes.toss(returnThis[i]);
-    }
-//     if (successes.size() > 0) {
-//       final RootGraphChangeListener listener = m_lis;
-//       if (listener != null) {
-//         final int[] successArr = new int[successes.size()];
-//         successes.copyInto(successArr, 0);
-//         listener.rootGraphChanged
-//           (new RootGraphEdgesCreatedEvent(this, successArr)); } }
     return returnThis; }
 
   public boolean containsNode(Node node) {
@@ -809,7 +704,11 @@ class FRootGraph implements RootGraph
   private final DynamicGraph m_graph =
     DynamicGraphFactory.instantiateDynamicGraph();
 
-  private RootGraphChangeListener m_lis = null;
+  // For the most part, there will always be a listener registered with this
+  // RootGraph (all GraphPerspectives will have registered listeners).  So,
+  // instead of checking for null, just keep a permanent listener.
+  private RootGraphChangeListener m_lis = new RootGraphChangeListener() {
+      public void rootGraphChanged(RootGraphChangeEvent event) {} };
 
   // This hash is re-used by many methods.  Make sure to empty() it before
   // using it.  You can use it as a bag of integers or to filter integer
