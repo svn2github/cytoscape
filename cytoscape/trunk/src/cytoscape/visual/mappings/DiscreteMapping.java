@@ -243,16 +243,16 @@ public class DiscreteMapping extends TreeMap implements ObjectMapping {
 	    gbgInternal = new GridBagGroup();
 	    this.myUI.removeAll();
 
-	    Iterator keyIter = this.mappedKeys.iterator();
-	    int numKeys = this.mappedKeys.size();
-
 	    // check that there is a valid attribute set
-	    if (this.attrName == null || numKeys == 0) {
+	    if (this.attrName == null || this.mappedKeys == null || this.mappedKeys.size() == 0) {
 		this.myUI.removeAll();
 		myUI.add(new JLabel("Unknown attribute set!"));
 		//this.UICreated remains false
 		return myUI;
 	    }
+
+	    Iterator keyIter = this.mappedKeys.iterator();
+	    int numKeys = this.mappedKeys.size();
 
 	    for (int yPos = 0; keyIter.hasNext(); yPos++) {
 		Object keyObject = keyIter.next();
