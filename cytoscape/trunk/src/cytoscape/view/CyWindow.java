@@ -481,12 +481,21 @@ public CyMenus getCyMenus() {return cyMenus;}
  */
 public void setNewNetwork( CyNetwork newNetwork ) {
     if (newNetwork == null) {return;}
-    setInteractivity(false);
 
     this.network.removeCyNetworkListener(this);
     this.network = newNetwork;
     newNetwork.addCyNetworkListener(this);
-
+    
+    switchGraph();
+}
+//------------------------------------------------------------------------------
+/**
+ * Called when a new network object has been installed, or the graph in the
+ * current network has been replaced. Creates a new view for that graph and
+ * installs it in the window.
+ */
+protected void switchGraph() {
+    setInteractivity(false);
     createGraphView();
     installGraphView();
     //applyLayout();
@@ -641,9 +650,7 @@ public void onCyNetworkEvent(CyNetworkEvent event) {
     } else if (event.getType() == CyNetworkEvent.END) {
         setInteractivity(true);
     } else if (event.getType() == CyNetworkEvent.GRAPH_REPLACED) {
-        //delegate to the following method which handles a new graph as if
-        //there was a new network object, although the reference stays the same
-        setNewNetwork(event.getNetwork());
+        switchGraph();
     }
 }
 //------------------------------------------------------------------------------
