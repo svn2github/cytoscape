@@ -109,7 +109,7 @@ public class DynamicGraphRepresentation implements DynamicGraph
     try { m_firstNode.prevNode = n; } catch (NullPointerException exc) { }
     m_firstNode = n;
     n.nodeId = returnThis;
-    n.outDegree = 0; n.inDegree = 0; n.undDegree = 0;
+    n.outDegree = 0; n.inDegree = 0; n.undDegree = 0; n.selfEdges = 0;
     return returnThis;
   }
 
@@ -133,6 +133,9 @@ public class DynamicGraphRepresentation implements DynamicGraph
     catch (NullPointerException exc) { }
     if (e.directed) { source.outDegree--; target.inDegree--; }
     else { source.undDegree--; target.undDegree--; }
+    if (source == target) { // Self-edge.
+      if (e.directed) source.selfEdges--;
+      else source.undDegree++; }
     m_edges.setEdgeAtIndex(null, edge);
     m_freeEdges.push(edge);
     e.prevOutEdge = null; e.nextInEdge = null; e.prevInEdge = null;
@@ -162,6 +165,9 @@ public class DynamicGraphRepresentation implements DynamicGraph
     m_edges.setEdgeAtIndex(e, returnThis);
     if (directed) { source.outDegree++; target.inDegree++; }
     else { source.undDegree++; target.undDegree++; }
+    if (source == target) { // Self-edge.
+      if (directed) source.selfEdges++;
+      else source.undDegree--; }
     e.nextOutEdge = source.firstOutEdge;
     try { source.firstOutEdge.prevOutEdge = e; }
     catch (NullPointerException exc) { }
@@ -217,6 +223,7 @@ public class DynamicGraphRepresentation implements DynamicGraph
     if (outgoing) tentativeEdgeCount += n.outDegree;
     if (incoming) tentativeEdgeCount += n.inDegree;
     if (undirected) tentativeEdgeCount += n.undDegree;
+    if (outgoing && incoming) tentativeEdgeCount -= n.selfEdges;
     final int edgeCount = tentativeEdgeCount;
     return new IntEnumerator() {
         private int numRemaining = edgeCount;
@@ -238,7 +245,9 @@ public class DynamicGraphRepresentation implements DynamicGraph
               returnThis = edge.edgeId;
               edge = edge.nextOutEdge; } }
           if (edgeListIndex == 1) {
-            while (!((incoming && edge.directed) ||
+            while (((outgoing || undirected) &&
+                    edge.sourceNode == edge.targetNode) ||
+                   !((incoming && edge.directed) ||
                      (undirected && !edge.directed))) {
               edge = edge.nextInEdge; }
             returnThis = edge.edgeId;

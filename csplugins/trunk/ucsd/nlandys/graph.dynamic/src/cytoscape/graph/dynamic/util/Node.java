@@ -19,6 +19,9 @@ class Node
   // The number of undirected edges which touch this node.
   int undDegree;
 
+  // The number of directed self-edges on this node.
+  int selfEdges;
+
   Node() { }
 
 }
