@@ -22,7 +22,7 @@
  **  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  **/
 /**
- * @author Iliana Avila-Campillo iavila@systemsbiology.org
+ * @author Iliana Avila-Campillo iavila@systemsbiology.org, iliana.avila@gmail.com
  * @version %I%, %G%
  * @since 2.0
  */
@@ -30,146 +30,146 @@ package metaNodeViewer.actions;
 import java.util.*;
 import metaNodeViewer.model.AbstractMetaNodeModeler;
 import metaNodeViewer.model.MetaNodeFactory;
+import metaNodeViewer.MetaNodeUtils;
 import javax.swing.JOptionPane;
 import javax.swing.AbstractAction;
 import java.awt.event.ActionEvent;
 import cern.colt.list.IntArrayList;
 import cytoscape.*;
 import giny.view.*;
-import giny.model.*;
 
 /**
- * Only accessible in metaNodeViewer.actions package.
- * Use action factory to get an instance of this class.
+ * Use metaNodeViewer.actions.ActionFactory to get an instance of this class.
  */
 public class CollapseSelectedNodesAction extends AbstractAction {
-  
-  protected AbstractMetaNodeModeler abstractingModeler;
-  protected boolean collapseExistentParents;
-    
-  /**
-   * Use action factory instead
-   *
-   * @param abstracting_modeler the AbstractMetaNodeModeler used to collapse nodes
-   * @param collapse_existent_parents if the selected nodes already have meta-parents, and
-   * if collapse_existent_parents is true, don't create new parent meta-nodes, simply collapse
-   * the existent parents
-   */
-  protected CollapseSelectedNodesAction (AbstractMetaNodeModeler abstracting_modeler,
-                                         boolean collapse_existent_parents,
-                                         String title){
-    super(title);
-    this.abstractingModeler = abstracting_modeler;
-    this.collapseExistentParents = collapse_existent_parents;
-  }//CollapseSelectedNodesAction
-
-  /**
-   * Sets whether or not the existent parents of the selected nodes should be collapsed instead
-   * of creating new meta-nodes for them
-   */
-  public void setCollapseExistentParents (boolean collapse_existent_parents){
-    this.collapseExistentParents = collapse_existent_parents;
-  }//setCollapseExistentParents
-
-  /**
-   * Sets whether or not default names should be assigned to newly created metanodes
-   */
-  public void setAssignDefaultNames (boolean assign){
-    MetaNodeFactory.assignDefaultNames(assign);
-  }//setAssignDefaultNames
-
-
-  /**
-   * Implements AbstractAction.actionPerformed by calling <code>collapseSelectedNodes</code>
-   */
-  public void actionPerformed (ActionEvent e){
-    collapseSelectedNodes(this.abstractingModeler, 
-                          this.collapseExistentParents);
-  }//actionPerformed
-  
-  
-  /**
-   * Collapses into a single node a set of selected nodes in the current CyNetwork.
-   */
-  public static void collapseSelectedNodes (AbstractMetaNodeModeler abstractModeler,
-                                            boolean collapse_existent_parents){
-    
-  	GraphView graphView = Cytoscape.getCurrentNetworkView();
-    // Pop-up a dialog if there are no selected nodes and return
-    if(graphView.getSelectedNodes().size() == 0) {
-      JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-                                    "Please select one or more nodes.");
-      return;
-    }
-    
-    // Get the selected nodes' RootGraph indices
-    CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
-    java.util.List selectedNVlist = graphView.getSelectedNodes();
-    Iterator it = selectedNVlist.iterator();
-    IntArrayList selectedNodeIndices = new IntArrayList();
-    while(it.hasNext()){
-      NodeView nodeView = (NodeView)it.next();
-      int rgNodeIndex = cyNetwork.getRootGraphNodeIndex(nodeView.getGraphPerspectiveIndex());
-      selectedNodeIndices.add(rgNodeIndex);
-    }//while it
-    selectedNodeIndices.trimToSize();
-    int [] nodeIndices = selectedNodeIndices.elements();
-
-    // If collapse_existent_parents is true, then find parents for the selected nodes
-    // and collapse them
-    // NOTE: This is tricky if we have multiple GraphPerspectives, since
-    // they share the same RootGraph. Use the fact that MetaNodeFactory stores for each network
-    // the meta-nodes that were created for it.
-    if(collapse_existent_parents){
-      RootGraph rootGraph = cyNetwork.getRootGraph();
-      IntArrayList parentRootGraphIndices = new IntArrayList();
-      IntArrayList metaNodesForNetwork = (IntArrayList)cyNetwork.getClientData(MetaNodeFactory.METANODES_IN_NETWORK);
-      if(metaNodesForNetwork != null){
-      	for(int i = 0; i < nodeIndices.length; i++){
-      		int [] parents = rootGraph.getNodeMetaParentIndicesArray(nodeIndices[i]);
-      		if(parents.length == 1 && metaNodesForNetwork.contains(parents[0])){
-      			parentRootGraphIndices.add(parents[0]);
-      		}else if(parents.length > 1){
-      			// TODO: Think about this better. What to do when a node has more than one parent???
-      			// Maybe pop-up window asking which parent should be collapsed, give the option of collapsing the last one created...???
-      			for(int j = 0; j < parents.length; j++){
-      				if( metaNodesForNetwork.contains(parents[j]) ){
-      					parentRootGraphIndices.add(parents[j]);
-      				}
-      			}//for j
-      		}
-      	}//for i
-      }// metaNodesForNetwork != null
-      
-      // Collapse parents sequentially
-      parentRootGraphIndices.trimToSize();
-      if(parentRootGraphIndices.size() == 0){
-        // Tell the user there are no parents and exit
-        JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-                                      "The selected nodes have no existent parent nodes.");
-        return;
-      }
-      int [] parents = parentRootGraphIndices.elements();      
-      for(int i = 0; i < parents.length; i++){
-        abstractModeler.applyModel(cyNetwork,parents[i]);
-      }//for i
-      return;
-    }// if collapse_existent_parents
-
-    // Create a meta-node for the selected nodes
-    int rgParentNodeIndex = MetaNodeFactory.createMetaNode(cyNetwork, nodeIndices);
-    if(rgParentNodeIndex == 0){
-      // Something went wrong, alert user, and exit
-      JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-                                    "An internal error was encountered while collapsing.",
-                                    "Internal Error",
-                                    JOptionPane.ERROR_MESSAGE
-                                    );
-      return;
-    }
-    // Finally, collapse it
-    abstractModeler.applyModel(cyNetwork,rgParentNodeIndex);
-  }//collapseSelectedNodes
-  
+	
+	protected AbstractMetaNodeModeler abstractingModeler;
+	protected boolean collapseExistentParents;
+	protected boolean collapseRecursively;
+	
+	/**
+	 * Use metaNodeViewer.actions.ActionFactory instead
+	 *
+	 * @param abstracting_modeler the AbstractMetaNodeModeler used to collapse nodes
+	 * @param collapse_existent_parents if the selected nodes already have meta-parents, and
+	 * if collapse_existent_parents is true, don't create new parent meta-nodes, simply collapse
+	 * the existent parents
+	 * @param collapse_recursively if collapse_existent_parents is true, whether or not to find
+	 * the top-level meta-node parents and collapse them instead of finding the immediate parents
+	 * and collapsing them
+	 * @param title the title of the AbstractAction (appears as a button's text)
+	 */
+	protected CollapseSelectedNodesAction (AbstractMetaNodeModeler abstracting_modeler,
+			boolean collapse_existent_parents,
+			boolean collapse_recursively,
+			String title){
+		super(title);
+		this.abstractingModeler = abstracting_modeler;
+		this.collapseExistentParents = collapse_existent_parents;
+		this.collapseRecursively = collapse_recursively;
+	}//CollapseSelectedNodesAction
+	
+	/**
+	 * Sets whether or not the existent meta-node parents of the selected nodes should be collapsed instead
+	 * of creating new meta-nodes for them
+	 */
+	public void setCollapseExistentParents (boolean collapse_existent_parents){
+		this.collapseExistentParents = collapse_existent_parents;
+	}//setCollapseExistentParents
+	
+	/**
+	 * @return whether or not the existent meta-node parents of the selected nodes should be collapsed instead
+	 * of creating new meta-nodes for them
+	 */
+	public boolean getCollapseExistentParents (){
+		return this.collapseExistentParents;
+	}//getCollapseExistentParents
+	
+	/**
+	 * Sets whether or not the top-level meta-node parents of the selected nodes should be found and collapsed.
+	 * 
+	 * @param collapse_recursively
+	 */
+	public void setCollapseRecursively (boolean collapse_recursively){
+		this.collapseRecursively = collapse_recursively;
+	}//setCollapseRecursively
+	
+	/**
+	 * 
+	 * @return whether or not the top-level meta-node parents of the selected nodes should be found and collapsed.
+	 */
+	public boolean getCollapseRecursively (){
+		return this.collapseRecursively;
+	}//getCollapseRecursively
+	
+	/**
+	 * Sets whether or not default names should be assigned to newly created metanodes
+	 */
+	public void setAssignDefaultNames (boolean assign){
+		MetaNodeFactory.assignDefaultNames(assign);
+	}//setAssignDefaultNames
+	
+	/**
+	 * Implements AbstractAction.actionPerformed by calling <code>CollapseSelectedNodesAction.collapseSelectedNodes</code>
+	 */
+	public void actionPerformed (ActionEvent e){
+		collapseSelectedNodes(this.abstractingModeler, 
+				this.collapseExistentParents,
+				this.collapseRecursively);
+	}//actionPerformed
+	
+	
+	/**
+	 * Collapses into a meta-node(s) a set of selected nodes in the current CyNetwork.
+	 * 
+	 * @param abstractModeler the AbstractMetaNodeModeler to use for collapsing the nodes
+	 * @param collapse_existent_parents whether or not the existent meta-node parents of the selected nodes should be collapsed instead
+	 * of creating new meta-nodes for them
+	 * @param collapse_recursively whether or not the top-level meta-node parents of the selected nodes should be found and collapsed, ignored if
+	 * collapse_existent_parents is false
+	 */
+	public static void collapseSelectedNodes (AbstractMetaNodeModeler abstractModeler,
+			boolean collapse_existent_parents,
+			boolean collapse_recursively){
+		
+		GraphView graphView = Cytoscape.getCurrentNetworkView();
+		// Pop-up a dialog if there are no selected nodes and return
+		if(graphView.getSelectedNodes().size() == 0) {
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+			"Please select one or more nodes.");
+			return;
+		}
+		
+		// Get the selected nodes' RootGraph indices
+		CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
+		java.util.List selectedNVlist = graphView.getSelectedNodes();
+		Iterator it = selectedNVlist.iterator();
+		IntArrayList selectedNodeIndices = new IntArrayList();
+		while(it.hasNext()){
+			NodeView nodeView = (NodeView)it.next();
+			int rgNodeIndex = cyNetwork.getRootGraphNodeIndex(nodeView.getGraphPerspectiveIndex());
+			selectedNodeIndices.add(rgNodeIndex);
+		}//while it
+		selectedNodeIndices.trimToSize();
+		int [] nodeIndices = selectedNodeIndices.elements();
+		
+		int numCollapsed = MetaNodeUtils.collapseNodes(cyNetwork,nodeIndices,collapse_existent_parents,collapse_recursively);
+		if(numCollapsed == 0){
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+			"The selected nodes do not have parent meta-nodes.");
+			return;
+		}else if(numCollapsed < 0){
+			//Something went wrong, alert user, and exit
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+					"An internal error was encountered while collapsing.",
+					"Internal Error",
+					JOptionPane.ERROR_MESSAGE
+			);
+			return;
+			
+		}      
+	}//collapseSelectedNodes
+	
+	
 }//class CollapseSelectedNodesAction
 

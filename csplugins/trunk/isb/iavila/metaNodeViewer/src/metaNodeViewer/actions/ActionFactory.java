@@ -34,7 +34,10 @@ import javax.swing.AbstractAction;
 import giny.model.*;
 
 /**
- * This class creates and returns actions for applying meta-node models to a graph
+ * This class creates and returns AbstractActions that can be added to GUI elements
+ * for applying meta-node models to a graph. Most of these actions have special requirements,
+ * so they can only be created using this factory to minimize users having to deal with these
+ * requirements.
  */
 
 public class ActionFactory {
@@ -67,12 +70,15 @@ public class ActionFactory {
 
   
   /**
-   * @param collapse_existent_parents  whether or not the existent parents of the selected nodes 
+   * Creates and returns an AbstractAction to collapse nodes that are selected in the current CyNetwork.
+   * 
+   * @param collapse_existent_parents  whether or not the existent parent meta-nodes of the selected nodes 
    * should be collapsed instead of creating new meta-nodes for them
-   * @return an AbstractAction that collapses into one single node selected nodes and edges
-   * in the GraphPerspective contained in the given CyWindow
+   * @param collapse_recursively if collapse_existent_parents is true, whether to find the top-level parents
+   * of the selected nodes and collapse them, or just find the immediate parents and collapse them
+   * @return an AbstractAction that collapses selected nodes and edges contained in the given CyWindow
    */
-  public static AbstractAction createCollapseSelectedNodesAction (boolean collapse_existent_parents){
+  public static AbstractAction createCollapseSelectedNodesAction (boolean collapse_existent_parents, boolean collapse_recursively){
     // Get the RootGraph and create or update abstractingModeler
     RootGraph rootGraph = Cytoscape.getRootGraph();
     if(ActionFactory.abstractingModeler == null || 
@@ -86,14 +92,17 @@ public class ActionFactory {
     // Create the action and return it
     return new CollapseSelectedNodesAction(ActionFactory.abstractingModeler,
                                            collapse_existent_parents,
+										   collapse_recursively,
                                            ActionFactory.COLLAPSE_SELECTED_TITLE);
     
   }//getCollapseSelectedNodesAction
   
   /**
-   * in which nodes will be selected for uncollapsing
-   * @param recursive whether or not the selected nodes with children should be uncollapse
-   * all the way down to their childless descendants or not
+   * Creates and returns an AbstractAction that uncollapses selected meta-nodes in the current CyNetwork.
+   * 
+   * @param recursive whether or not the selected meta-nodes should be uncollapsed
+   * all the way down to their leaves
+   * @param temporary if false, the meta-nodes will be permanently removed after they are uncollapsed
    * @return an AbstractAction that uncollapses selected nodes
    */
   public static AbstractAction createUncollapseSelectedNodesAction (boolean recursive, boolean temporary){

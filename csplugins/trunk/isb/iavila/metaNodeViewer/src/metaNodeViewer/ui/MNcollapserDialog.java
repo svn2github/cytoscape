@@ -22,10 +22,15 @@
  **  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  **/
 /**
+ * A simple dialog for creating/destroying/collapsing/expanding meta-nodes.
+ * 
  * @author Iliana Avila-Campillo iavila@systemsbiology.org, iliana.avila@gmail.com
  * @version %I%, %G%
  * @since 2.0
  */
+
+//TODO: Add a tab for meta-node attribute settings.
+
 package metaNodeViewer.ui;
 import metaNodeViewer.actions.*;
 import javax.swing.*;
@@ -35,14 +40,12 @@ import cytoscape.*;
 
 public class MNcollapserDialog extends JDialog {
 
-  public static final String title = "Node Collapser";
-  protected JCheckBox rememberCheckBox;
+  public static final String title = "Meta-Node Abstraction";
   protected JCheckBox recursiveCheckBox;
-  protected JCheckBox defaultNameCheckBox;
-  protected JCheckBox collapseParentsCheckBox;
+  protected CollapseSelectedNodesAction createMetaNodeAction;
   protected CollapseSelectedNodesAction collapseAction;
   protected UncollapseSelectedNodesAction expandAction;
-  protected AbstractAction resetAction;
+  protected UncollapseSelectedNodesAction destroyMetaNodeAction;
   
   /**
    * Constructor
@@ -50,114 +53,95 @@ public class MNcollapserDialog extends JDialog {
   public MNcollapserDialog (){
     super(Cytoscape.getDesktop(), title, false);
     initialize();
+    setRecursiveOperations(false);
   }//MNcollapserDialog
 
   /**
-   * Sets the selected state of the checkboxes that correspond
-   * to the given variables, they are all false (except for use_default_names) by default.
+   * Sets whether or not the operations (that apply) should be performed recursively or not, false by default.
    */
-  public void setOptions (boolean collapse_existent_parents,
-                          boolean use_default_names,
-                          boolean remember_hierarchy,
-                          boolean recursive_expand
-                          ){
-    this.collapseParentsCheckBox.setSelected(collapse_existent_parents);
-    this.defaultNameCheckBox.setSelected(use_default_names);
-    this.rememberCheckBox.setSelected(remember_hierarchy);
-    this.recursiveCheckBox.setSelected(recursive_expand);
-  }//setOptions
-
+  public void setRecursiveOperations (boolean recursive_operations){
+  	if(this.recursiveCheckBox == null){
+  		this.recursiveCheckBox = new JCheckBox("Apply operations recursively");
+  	}
+    this.recursiveCheckBox.setSelected(recursive_operations);
+  }//setRecursiveOperations
+  
+  /**
+   * @return whether or not the operations are to be performed recursively
+   */
+  public boolean areOperationsRecursive(){
+  	return this.recursiveCheckBox.isSelected();
+  }//areOperationsRecursive
   
   protected void initialize (){
 
-      JButton collapseButton = new JButton("Collapse Selected Nodes");
-      this.collapseAction = 
-	  (CollapseSelectedNodesAction)ActionFactory.createCollapseSelectedNodesAction(false);
+  	
+  	  JButton createMetaNodeButton = new JButton("Create Meta-Node");
+  	  createMetaNodeButton.setToolTipText("Creates a new meta-node with selected nodes as its children and collapses it.");
+  	  JButton destroyMetaNodeButton = new JButton("Destroy Meta-Node(s)");
+  	  destroyMetaNodeButton.setToolTipText("Permanently removes the selected meta-nodes and expands them.");
+      JButton collapseButton = new JButton("Collapse to Meta-Node(s)");
+      collapseButton.setToolTipText("Finds existing parent meta-nodes of selected nodes and collapses them.");
+      JButton expandButton = new JButton("Expand Children");
+      expandButton.setToolTipText("Displays the children of selected meta-nodes.");
+      if(this.recursiveCheckBox == null){
+      	this.recursiveCheckBox = new JCheckBox("Apply operations recursively");
+      }
+      this.recursiveCheckBox.setToolTipText("Meta-nodes can have meta-nodes as children.");
+      this.createMetaNodeAction = (CollapseSelectedNodesAction)ActionFactory.createCollapseSelectedNodesAction(false,areOperationsRecursive());
+      createMetaNodeButton.addActionListener(this.createMetaNodeAction);
+      
+      this.destroyMetaNodeAction = (UncollapseSelectedNodesAction)ActionFactory.createUncollapseSelectedNodesAction(areOperationsRecursive(),false);
+      destroyMetaNodeButton.addActionListener(this.destroyMetaNodeAction);
+      
+      this.collapseAction = (CollapseSelectedNodesAction)ActionFactory.createCollapseSelectedNodesAction(true,areOperationsRecursive());
       collapseButton.addActionListener(this.collapseAction);
     
-      JButton expandButton = new JButton("Expand Selected Nodes");
-      this.expandAction =
-	  (UncollapseSelectedNodesAction)ActionFactory.createUncollapseSelectedNodesAction(false,false);
+      this.expandAction = (UncollapseSelectedNodesAction)ActionFactory.createUncollapseSelectedNodesAction(areOperationsRecursive(),true);
       expandButton.addActionListener(this.expandAction);
-    
-      JButton resetButton = new JButton("Reset Graph");
-      //TODO: Create an action for reset for now popup 'unimplemented' dialog
-      resetButton.addActionListener(
-      		new AbstractAction(){
-      			public void actionPerformed (ActionEvent e){
-      				JOptionPane.showMessageDialog(MNcollapserDialog.this,"Not implemented yet.");
-      			}
-      		}
-      );
       
-      this.rememberCheckBox = new JCheckBox("Remember parents after expanding");
-      // isSelected == true means temporary
-      // isSelected == false means not temporary
-      // TODO: If !remember, then we need to remove/delete the meta-nodes from RootGraph that
-      // have been expanded (don't do this here, maybe do it in UncollapseSelectedNodesAction).
-      this.rememberCheckBox.addActionListener(
-      		new AbstractAction(){
-      			public void actionPerformed (ActionEvent e){
-      				MNcollapserDialog.this.expandAction.setTemporaryUncollapse(MNcollapserDialog.this.rememberCheckBox.isSelected());
-      			}
-      		});
-      this.recursiveCheckBox = new JCheckBox("Recursive Expand");
       this.recursiveCheckBox.addActionListener(
-      		new AbstractAction(){
-      			public void actionPerformed (ActionEvent e){
-      				MNcollapserDialog.this.expandAction.setRecursiveUncollapse(MNcollapserDialog.this.recursiveCheckBox.isSelected());
-      			}
-      		});
+      		new AbstractAction (){
+      			public void actionPerformed (ActionEvent event){
+      				boolean recursive = MNcollapserDialog.this.recursiveCheckBox.isSelected();
+      				MNcollapserDialog.this.destroyMetaNodeAction.setRecursiveUncollapse(recursive);
+      				MNcollapserDialog.this.expandAction.setRecursiveUncollapse(recursive);
+      				MNcollapserDialog.this.collapseAction.setCollapseRecursively(recursive);
+      			}//actionPerformed
+      		}//AbstractAction
+      
+      );
+    JPanel gridPanel = new JPanel();
+    gridPanel.setLayout(new GridLayout(2,2)); //rows, cols
+    gridPanel.add(createMetaNodeButton);
+    gridPanel.add(collapseButton);
+    gridPanel.add(destroyMetaNodeButton);
+    gridPanel.add(expandButton);
     
-    this.defaultNameCheckBox = new JCheckBox("Use default names for parents");
-    this.defaultNameCheckBox.addActionListener(
-    		new AbstractAction(){
-    			public void actionPerformed (ActionEvent e){
-    				boolean isSelected = MNcollapserDialog.this.defaultNameCheckBox.isSelected();
-    				if(!isSelected){
-    					JOptionPane.showMessageDialog(MNcollapserDialog.this,
-    					"Warning: Meta-nodes will not have names!");
-    				}
-    				MNcollapserDialog.this.collapseAction.setAssignDefaultNames(isSelected);
-    			}
-    		});
-    this.defaultNameCheckBox.setSelected(true); // default  
+    JPanel optionsPanel = new JPanel();
+    optionsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));//rows, cols
+    optionsPanel.add(this.recursiveCheckBox);
     
-    this.collapseParentsCheckBox = new JCheckBox("Collapse existent parents");
-    this.collapseParentsCheckBox.addActionListener(
-    		new AbstractAction(){
-    			public void actionPerformed (ActionEvent e){
-    				MNcollapserDialog.this.collapseAction.setCollapseExistentParents(
-    						MNcollapserDialog.this.collapseParentsCheckBox.isSelected());
-    			}
-    		});
+    JPanel operationsPanel = new JPanel();
+    operationsPanel.setLayout(new BoxLayout(operationsPanel, BoxLayout.Y_AXIS));
+    operationsPanel.setBorder(BorderFactory.createTitledBorder("Meta-Node Operations"));
+    operationsPanel.add(gridPanel);
+    operationsPanel.add(optionsPanel);
     
-    JPanel borderedPanel = new JPanel();
-    borderedPanel.setLayout(new GridLayout(5,2)); //rows, cols
-    borderedPanel.setBorder(BorderFactory.createEtchedBorder());
-    
-    borderedPanel.add(collapseButton);
-    borderedPanel.add(this.collapseParentsCheckBox);
-    borderedPanel.add(Box.createGlue());
-    borderedPanel.add(this.defaultNameCheckBox);
-    borderedPanel.add(expandButton);
-    borderedPanel.add(this.rememberCheckBox);
-    borderedPanel.add(Box.createGlue());
-    borderedPanel.add(this.recursiveCheckBox);
-    borderedPanel.add(resetButton);
-     
-    JPanel mainPanel = new JPanel();
-    mainPanel.setLayout(new BoxLayout(mainPanel,BoxLayout.Y_AXIS));
-    mainPanel.add(borderedPanel);
+    JPanel buttonsPanel = new JPanel();
+    buttonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
     JButton closeWinButton = new JButton("Close");
     closeWinButton.addActionListener(new AbstractAction(){
         public void actionPerformed (ActionEvent e){
           MNcollapserDialog.this.dispose();
         }
       });
-    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-    buttonPanel.add(closeWinButton);
-    mainPanel.add(buttonPanel);
+    buttonsPanel.add(closeWinButton);
+    
+    JPanel mainPanel = new JPanel();
+    mainPanel.setLayout(new BoxLayout(mainPanel,BoxLayout.Y_AXIS));
+    mainPanel.add(operationsPanel);
+    mainPanel.add(buttonsPanel);
     setContentPane(mainPanel);
     
   }//initialize

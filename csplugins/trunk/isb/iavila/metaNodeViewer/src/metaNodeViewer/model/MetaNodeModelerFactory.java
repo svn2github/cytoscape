@@ -25,6 +25,10 @@
  * @author Iliana Avila-Campillo iavila@systemsbiology.org, iliana.avila@gmail.com
  * @version %I%, %G%
  * @since 2.0
+ * 
+ * A class that contains all the meta-node modelers for Cytoscape. In most cases, a single modeler per/Cytoscape
+ * is needed, so most modeler's constructors are protected, and only this factory can create them. So far we only have
+ * one modeler (AbstractMetaNodeModeler) but more are to come.
  */
 package metaNodeViewer.model;
 

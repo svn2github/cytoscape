@@ -32,6 +32,9 @@
  * @version %I%, %G%
  * @since 2.0
  */
+//TODO: Implement removeFromAttributes()
+//TODO: Imeplemnt removeMetaEdgesFromAttributes()
+
 package metaNodeViewer.data;
 
 import java.util.*;
@@ -43,9 +46,8 @@ import cern.colt.map.*;
 import giny.model.*;
 import giny.view.*;
 
-//implements MetaNodeAttributesHandler {
 public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler {
-  public static final boolean DEBUG = true;
+  public static final boolean DEBUG = false;
   
   /**
    * Constructor.
@@ -116,103 +118,6 @@ public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler
     }
     return alias;
   }//createMetaNodeAlias
-  
-  /**
-   * For each child node of meta-node with index metanode_root_index it counts
-   * how many edges it has to other children of that metanode, and puts it in a
-   * map where the key is the child-node's <code>RootGraph</code> index, and the
-   * value is its intra-degree.
-   *
-   * @return a <code>cern.colt.map.OpenIntIntHashMap</code>, keys are <code>RootGraph</code>
-   * indices, and values are intra-degrees
-   */
-  protected OpenIntIntHashMap countIntraDegrees (CyNetwork network, int metanode_root_index){
-    if(DEBUG){
-      System.err.println("---------- countIntraDegrees(network,"
-                         +metanode_root_index+") ----------");
-    }
-
-    OpenIntIntHashMap nodeToDegree = new OpenIntIntHashMap();
-    RootGraph rootGraph = network.getRootGraph();
-    int[] children = rootGraph.getNodeMetaChildIndicesArray(metanode_root_index);
-    if(children == null || children.length == 0){
-      // No children
-      if(DEBUG){
-        System.err.println("AbstractMetaNodeAttsHandler.countIntraDegrees(): metanode " +
-                           metanode_root_index + " has no children.");
-      }
-      return nodeToDegree;
-    }
-    // We have two situations:
-    // 1. The children nodes are in network
-    // 2. The children nodes are not in the network, but they are in RootGraph
-    // We need to take two different approaches. If the children are in network, then
-    // count the edges between them that are in network. If the children are not in network
-    // then count the edges between them that are in RootGraph.
-    boolean childrenAreInNetwork = nodesAreInNetwork(network,children);
-    int[] connectingEdges = null; 
-    if(childrenAreInNetwork){
-      connectingEdges = network.getConnectingEdgeIndicesArray(children);
-    }else{
-      // TODO: Take care of this later, RootGraph does not have getConnectingEdgeIndicesArray
-      // method (talk to Rowan???)
-      throw new IllegalStateException ("The children of metanode " + 
-                                       metanode_root_index + 
-                                       " are not in network, not implemented solution.");
-    }
-    if(connectingEdges == null || connectingEdges.length == 0){
-      // No edges between the nodes
-      if(DEBUG){
-        System.err.println("The children of " + metanode_root_index + 
-                           " have no edges between them.");
-      }
-      return nodeToDegree;
-    }
-    
-    for(int i = 0; i < connectingEdges.length; i++){
-      int edgeIndex = connectingEdges[i];
-      boolean directed = network.isEdgeDirected(edgeIndex);
-      int sourceIndex = network.getEdgeSourceIndex(edgeIndex);
-      int targetIndex = network.getEdgeTargetIndex(edgeIndex);
-      sourceIndex = network.getRootGraphNodeIndex(sourceIndex);
-      targetIndex = network.getRootGraphNodeIndex(targetIndex);
-      //if(DEBUG){
-      //System.err.println("sourceIndex = " + sourceIndex + " targetIndex = " + targetIndex);
-      //}
-      int degree = nodeToDegree.get(sourceIndex);
-      nodeToDegree.put(sourceIndex,degree+1);
-      degree = nodeToDegree.get(targetIndex);
-      nodeToDegree.put(targetIndex,degree+1);
-    }//for i
-    //if(DEBUG){
-    //for(int i = 0; i < children.length; i++){
-    //  int rindex = network.getRootGraphNodeIndex(children[i]);
-    //  int degree = nodeToDegree.get(rindex);
-    //  System.err.println("rindex = " + rindex + " degree = " + degree);
-    //}
-    //}
-    return nodeToDegree;
-  }//countIntraDegrees
-
-  /**
-   * @returns true if *all* of the nodes in the array are contained in the network,
-   * false otherwise
-   */
-  protected boolean nodesAreInNetwork (CyNetwork network, int [] nodes){
-    for(int i = 0; i < nodes.length; i++){
-      if(nodes[i] < 0){
-        if(network.getNodeIndex(nodes[i]) == 0){
-          return false;
-        }
-      }else if(nodes[i] > network.getNodeCount()){
-        return false;
-      }else if (nodes[i] == 0){
-        return false;
-      }
-    }//for i
-    
-    return true;
-  }//nodesAreInNetwork
   
   /**
    * Sets the node and edge attributes of the meta-node with the given RootGraph index

@@ -23,12 +23,13 @@
  **/
 
 /**
- * A Comparator for CyNodes that compares the given nodes depending on their degrees.
+ * A Comparator for CyNodes that compares the given nodes depending on their intra-degrees.
  * 
  * @author Iliana Avila-Campillo iavila@systemsbiology.org, iliana.avila@gmail.com
  * @version %I%, %G%
  * @since 2.0
  */
+//TODO: RootGraph does not have getConnectingEdgeIndicesArray, need it in method countIntraDegrees()
 package metaNodeViewer.data;
 
 import giny.model.RootGraph;

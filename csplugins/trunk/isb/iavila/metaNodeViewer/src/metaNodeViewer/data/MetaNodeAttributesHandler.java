@@ -35,7 +35,7 @@ import cern.colt.map.AbstractIntIntMap;
  * An interface for classes that handle the node and edge attributes of meta-nodes.
  * Since there are many different ways of transfering node and edge attributes
  * from children nodes and edges to their parent nodes, we need an interface that then 
- * can be implemented by classes so that they can handle this operation.
+ * can be implemented by classes so that they can handle this operation as they desire.
  */
 
 public interface MetaNodeAttributesHandler {

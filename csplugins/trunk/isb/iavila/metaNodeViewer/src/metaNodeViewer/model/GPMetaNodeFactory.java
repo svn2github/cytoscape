@@ -34,8 +34,11 @@ import cytoscape.*;
 import cern.colt.list.IntArrayList;
 
 /**
- * Creates meta-nodes for a given GraphPerspective and keeps track of which meta-nodes belong
- * to which GraphPerspectives (since all GraphPerspectives share the same RootGraph).
+ * Creates meta-nodes for a given GraphPerspective (CyNetwork) and keeps track of which meta-nodes belong
+ * to which GraphPerspectives (since all GraphPerspectives share the same RootGraph). The newly created meta-nodes
+ * are only contained within the RootGraph, and not in the CyNetwork.
+ * Use metaNodeViewer.model.MetaNodeFactory instead, since it has easy to use static methods to create
+ * meta-nodes.
  */
 
 public class GPMetaNodeFactory {
@@ -101,11 +104,12 @@ public class GPMetaNodeFactory {
   }//getAssignDefaultNames
   
   /**
-   * Creates a meta-node within CyNetwork with the given children and a default name given by this.attributesHandler 
-   * (if getAssignDefaultNames() is true)
+   * Creates a meta-node within CyNetwork's RootGraph, a default name is given to the meta-node by this.attributesHandler 
+   * (if getAssignDefaultNames() is true). Note that the new meta-node is not contained in cy_net, but, after calling this method,
+   * it is recorded that the new meta-node belongs to cy_net.
    * 
    * @param cy_net he CyNetwork for which a meta-node will be created
-   * @param children_node_indices the indices of the children nodes (RootGraph or GraphPerspective indices)
+   * @param children_node_indices the indices of the meta-node's children nodes that should be in cy_net (RootGraph or GraphPerspective indices)
    * @return the RootGraph index of the newly created meta-node, or zero if something went wrong 
    */
   public int createMetaNode (CyNetwork cy_net, int [] children_node_indices){
@@ -114,15 +118,15 @@ public class GPMetaNodeFactory {
   
 
   /**
-   * Creates a meta-node within CyNetwork with the given children, this means that a node in CyNetwork's RootGraph needs to be created.
+   * Creates a meta-node within CyNetwork's RootGraph, a default name is given to the meta-node by the given MetaNodeAttributesHandler
+   * (if getAssignDefaultNames() is true). Note that the new meta-node is not contained in cy_net, but, after calling this method,
+   * it is recorded that the new meta-node belongs to cy_net.
    *
    * @param cy_net the CyNetwork for which a meta-node will be created
-   * @param children_node_indices the indices of the children nodes (RootGraph or GraphPerspective indices)
-   * @param attributes_handler the MetaNodeAttributesHandler to be used to assign a name to the new node (if getAssignDefaultNames() is true)
+   * @param children_node_indices the indices of the meta-node's children nodes that should be in cy_net (RootGraph or GraphPerspective indices)
+   * @param attributes_handler the MetaNodeAttributesHandler to be used to assign a name to the new meta-node (if getAssignDefaultNames() is true)
    * @return the RootGraph index of the newly created meta-node, or zero if something went wrong 
    */
-  //TODO: Since many GraphPerspectives share the same RootGraph, we need to keep track of
-  // which meta-node in RootGraph belong to which GraphPerspective
   public int createMetaNode (CyNetwork cy_net, int [] children_node_indices, MetaNodeAttributesHandler attributes_handler){
     
     if(children_node_indices == null || 

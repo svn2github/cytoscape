@@ -29,90 +29,104 @@
 package metaNodeViewer.actions;
 import java.util.*;
 import metaNodeViewer.model.AbstractMetaNodeModeler;
+import metaNodeViewer.MetaNodeUtils;
 import javax.swing.JOptionPane;
 import javax.swing.AbstractAction;
 import java.awt.event.ActionEvent;
 import cern.colt.list.IntArrayList;
 import cytoscape.*;
 import giny.view.*;
-import giny.model.*;
 
 /**
- * Only accessible in metaNodeViewer.actions package.
- * Use action factory to get an instance of this class.
+ * Use metaNodeViewer.actions.ActionFactory to get an instance of this class.
  */
 public class UncollapseSelectedNodesAction extends AbstractAction {
-  
-  protected AbstractMetaNodeModeler abstractingModeler;
-  protected boolean recursive;
-  protected boolean temporaryUncollapse;
-  
-  /**
-   * Use action factory instead
-   */
-  protected UncollapseSelectedNodesAction (AbstractMetaNodeModeler abstracting_modeler,
-                                        boolean recursive_uncollapse,
-                                        boolean temporary_uncollapse,
-                                        String title){
-    super(title);
-    this.abstractingModeler = abstracting_modeler;
-    this.recursive = recursive_uncollapse;
-    this.temporaryUncollapse = temporary_uncollapse;
-  }//UncollapseSelectedNodesAction
-
-  /**
-   * Sets whether or not this uncollapse should be recursive (uncollapse to the bottom level
-   * of the hierarchy).
-   */
-  public void setRecursiveUncollapse (boolean is_recursive){
-    this.recursive = is_recursive;
-  }//setRecursiveUncollapse
-  
-  /**
-   * Sets whether or not this uncollapse is temporary or not. If it is temporary, then the
-   * meta-node will be remembered for a subsequent collapse operation.
-   */
-  public void setTemporaryUncollapse (boolean is_temporary){
-    this.temporaryUncollapse = is_temporary;
-  }//setTemporaryUncollapse
-
-  /**
-   * Implements AbstractAction.actionPerformed by calling <code>uncollapseSelectedNodes</code>
-   */
-  public void actionPerformed (ActionEvent e){
-    uncollapseSelectedNodes(this.abstractingModeler, 
-                            this.recursive, 
-                            this.temporaryUncollapse);
-  }//actionPerformed
-  
-  public static void uncollapseSelectedNodes (AbstractMetaNodeModeler abstractModeler,
-                                              boolean recursive,
-                                              boolean temporary){
-    GraphView graphView = Cytoscape.getCurrentNetworkView();
-    // Pop-up a dialog if there are no selected nodes and return
-    if(graphView.getSelectedNodes().size() == 0) {
-      JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-                                    "Please select one or more nodes.");
-      return;
-    }
-    
-    // Get the RootGraph indices of the selected nodes
-    CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
-    java.util.List selectedNVlist = graphView.getSelectedNodes();
-    Iterator it = selectedNVlist.iterator();
-    IntArrayList selectedNodeIndices = new IntArrayList();
-    while(it.hasNext()){
-      NodeView nodeView = (NodeView)it.next();
-      int rgNodeIndex = cyNetwork.getRootGraphNodeIndex(nodeView.getGraphPerspectiveIndex());
-      selectedNodeIndices.add(rgNodeIndex);
-    }//while it
-    selectedNodeIndices.trimToSize();
-    int [] nodeIndices = selectedNodeIndices.elements();
-    
-    // Finally, uncollapse each node (if it is not a metanode, nothing happens)
-    for(int i = 0; i < nodeIndices.length; i++){
-      abstractModeler.undoModel(cyNetwork,nodeIndices[i],recursive,temporary);
-    }//for i
-  }//uncollapseSelectedNodes
-  
+	
+	protected AbstractMetaNodeModeler abstractingModeler;
+	protected boolean recursive;
+	protected boolean temporaryUncollapse;
+	
+	/**
+	 * Use metaNodeViewer.actions.ActionFactory instead.
+	 * 
+	 * @param abstracting_modeler the AbstractMetaNodeModeler to use to uncollapse the nodes
+	 * @param recursive_uncollapse whether to uncollapse all the way to the leaves
+	 * @param temporary_uncollapse if false, the meta-nodes are permanently removed after they
+	 * are uncollapsed
+	 * @param title the title for the action (appears as text on a button)
+	 */
+	protected UncollapseSelectedNodesAction (AbstractMetaNodeModeler abstracting_modeler,
+			boolean recursive_uncollapse,
+			boolean temporary_uncollapse,
+			String title){
+		super(title);
+		this.abstractingModeler = abstracting_modeler;
+		this.recursive = recursive_uncollapse;
+		this.temporaryUncollapse = temporary_uncollapse;
+	}//UncollapseSelectedNodesAction
+	
+	/**
+	 * Sets whether or not this uncollapse should be recursive (uncollapse to the bottom level
+	 * of the hierarchy).
+	 */
+	public void setRecursiveUncollapse (boolean is_recursive){
+		this.recursive = is_recursive;
+	}//setRecursiveUncollapse
+	
+	/**
+	 * Sets whether or not this uncollapse is temporary or not. If it is temporary, then the
+	 * meta-node will be remembered for a subsequent collapse operation.
+	 */
+	public void setTemporaryUncollapse (boolean is_temporary){
+		this.temporaryUncollapse = is_temporary;
+	}//setTemporaryUncollapse
+	
+	/**
+	 * Implements AbstractAction.actionPerformed by calling <code>uncollapseSelectedNodes</code>
+	 */
+	public void actionPerformed (ActionEvent e){
+		uncollapseSelectedNodes(this.abstractingModeler, 
+				this.recursive, 
+				this.temporaryUncollapse);
+	}//actionPerformed
+	
+	/**
+	 * Uncollapses the selected nodes in the current CyNetwork.
+	 *  
+	 * @param abstracting_modeler the AbstractMetaNodeModeler to use to uncollapse the nodes
+	 * @param recursive_uncollapse whether to uncollapse all the way to the leaves
+	 * @param temporary_uncollapse if false, the meta-nodes are permanently removed after they
+	 * are uncollapsed
+	 */
+	public static void uncollapseSelectedNodes (AbstractMetaNodeModeler abstractModeler,
+			boolean recursive,
+			boolean temporary){
+		GraphView graphView = Cytoscape.getCurrentNetworkView();
+		// Pop-up a dialog if there are no selected nodes and return
+		if(graphView.getSelectedNodes().size() == 0) {
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+			"Please select one or more nodes.");
+			return;
+		}
+		
+		// Get the RootGraph indices of the selected nodes
+		CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
+		java.util.List selectedNVlist = graphView.getSelectedNodes();
+		Iterator it = selectedNVlist.iterator();
+		IntArrayList selectedNodeIndices = new IntArrayList();
+		while(it.hasNext()){
+			NodeView nodeView = (NodeView)it.next();
+			int rgNodeIndex = cyNetwork.getRootGraphNodeIndex(nodeView.getGraphPerspectiveIndex());
+			selectedNodeIndices.add(rgNodeIndex);
+		}//while it
+		selectedNodeIndices.trimToSize();
+		int [] nodeIndices = selectedNodeIndices.elements();
+		
+		// Finally, uncollapse each node (if it is not a metanode, nothing happens)
+		int numUncollapsed = MetaNodeUtils.uncollapseNodes(cyNetwork, nodeIndices,recursive,temporary);
+		if(numUncollapsed == 0){
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "None of the selected nodes are meta-nodes.");
+		}
+	}//uncollapseSelectedNodes
+	
 }//class UncollapseSelectedNodesAction

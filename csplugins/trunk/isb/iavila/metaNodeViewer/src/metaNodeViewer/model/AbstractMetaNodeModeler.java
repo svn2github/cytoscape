@@ -25,6 +25,8 @@
  * @author Iliana Avila-Campillo iavila@systemsbiology.org, iliana.avila@gmail.com
  * @version %I%, %G%
  * @since 2.0
+ * 
+ * This is a class that knows how to collapse/expand meta-nodes recursively.
  */
 
 package metaNodeViewer.model;
@@ -40,15 +42,15 @@ import cern.colt.map.OpenIntIntHashMap;
 
 /**
  * TODO: Comment better (add class description)
- * TODO: Implements an interface and GraphPerspectiveChangeListener
- * TODO: Optimize
+ * TODO: Implements an interface and GraphPerspectiveChangeListener (?)
+ * TODO: Optimize more
  */
 public class AbstractMetaNodeModeler {
 
-  protected static final boolean DEBUG = false;
+  protected static final boolean DEBUG = true;
   /**
    * A Map from CyNetworks to MetaNodeAttributesHandlers that are used to
-   * assign names and values to the meta-nodes. 
+   * assign names and attribute values to meta-nodes. 
    * If a network has not been assigned a MetaNodeAttributesHandler, 
    * then defaultAttributesHandler will be used.
    */
@@ -77,12 +79,13 @@ public class AbstractMetaNodeModeler {
   private Map networkToNodes;
     
   /**
-   * Constructor.
-   *
+   * Since there should only be one AbstractMetaNodeModeler per/Cytoscape, the constructor
+   * is protected; use <code>MetaNodeModelerFactory.getCytoscapeAbstractMetaNodeModeler();</code>
+   * to get an instance.
+   * 
    * @param root_graph the <code>RootGraph</code> of the <code>CyNetworks</code>s
    * that will be modeled
    */
-  //TODO: To prevent instantiation of this class, make this constructor protected!!!
   protected AbstractMetaNodeModeler (RootGraph root_graph){
     this.rootGraph = root_graph;
     this.metaNodeToProcessedEdges = new OpenIntObjectHashMap();
@@ -134,6 +137,7 @@ public class AbstractMetaNodeModeler {
    * so that their meta-nodes can be collapsed and expanded.
    * Clears internal data-structures for the current RootGraph.
    */
+  // Should in theory not be needed, since Cytoscape only has ONE RootGraph throughout execution.
   public void setRootGraph (RootGraph new_root_graph){
     this.rootGraph = new_root_graph;
     this.metaNodeToProcessedEdges.clear();
@@ -155,7 +159,7 @@ public class AbstractMetaNodeModeler {
    * @return false if the model could not be applied, maybe because the model
    * had already been applied previously, true otherwise
    * TODO: IMPLEMENT!, also, why does this method not take a GP for an argument???
-  */
+   */
   public boolean applyModel (){
     return false;
   }//applyModel
@@ -178,7 +182,7 @@ public class AbstractMetaNodeModeler {
   /**
    * Applies the model to the <code>Node</code> with the given <code>RootGraph</code> or 
    * <code>GraphPerspective</code> index. 
-   * Calls <code>applyModel(cy_network,node_index,getDescendants(node_index))</code>
+   * Calls <code>applyModel (cy_network,node_index,getDescendants(node_index))</code>
    *
    * @param cy_network the <code>CyNetwork</code> that will be modified
    * @param node_index the index of the <code>Node</code>, if the node is not contained in
@@ -228,6 +232,9 @@ public class AbstractMetaNodeModeler {
    *
    * @return true if the node was successfuly abstracted, false otherwise (maybe the node 
    * is not a meta-node, or the node has already been abstracted)
+   * 
+   * NOTE: Descendant nodes are all the nodes that are contained in the tree rooted at node with index node_index
+   * (not only the leaves).
    */
   public boolean applyModel (
                              CyNetwork cy_network,
@@ -498,7 +505,7 @@ public class AbstractMetaNodeModeler {
 
   /**
    * Creates edges between the Node with index node_rindex and other nodes so that
-   * when the Node is collapsed or expanded the needed edges (between meta-nodes and
+   * when the Node is collapsed (applyModel) or expanded (undoModel) the needed edges (between meta-nodes and
    * non-meta-nodes, or meta-nodes and meta-nodes), will be there for hiding or unhiding
    * as necessary.
    *
@@ -709,8 +716,8 @@ public class AbstractMetaNodeModeler {
   /**
    * Removes the edges that were created by <code>prepareNodeForModel()</code> that are
    * connected to the <code>Node</code> with index <code>meta_node_index</code> and their
-   * attributes from in the given CyNetwork. It also remembers that the meta-node is no
-   * longer a meta-node for cy_net, and if recursive, it also remembers it for other meta-nodes
+   * attributes in the given CyNetwork. It also remembers that the meta-node is no
+   * longer a meta-node for cy_net, and if recursive, it also remembers this for other meta-nodes
    * in the path.
    *
    * @param cy_net the CyNetwork that contains the meta-node
@@ -743,6 +750,7 @@ public class AbstractMetaNodeModeler {
     IntArrayList metaNodesForNetwork = (IntArrayList)cy_net.getClientData(MetaNodeFactory.METANODES_IN_NETWORK);
     if(metaNodesForNetwork != null){
     	metaNodesForNetwork.delete(meta_node_index);
+    	metaNodesForNetwork.trimToSize();
     }
   
     // If recursive, get all the descendants of this meta-node, and remove their meta-edges
@@ -899,6 +907,13 @@ public class AbstractMetaNodeModeler {
   }//getNodeRindicesInGP
 
   /**
+   * Stores in the given IntArrayList the RootGraph indices of the nodes that are descendants of
+   * the node with the given RootGraphIndex, descendants are nodes that are direct children, or
+   * children of children, etc. of the given node.
+   * 
+   * @param node_root_index the RootGraph index of the node for which descendants are being returned
+   * @param descendatns an IntArrayList to which the RootGraph indices of the descendants will be added
+   * 
    * This is faster than RootGraph.getNodeMetaChildIndicesArray(index,true).
    * TODO: Replace implementation in giny?
    */

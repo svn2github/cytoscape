@@ -8,17 +8,19 @@ import cytoscape.plugin.CytoscapePlugin;
 
 public class MetaNodeViewerCytoPlugin extends CytoscapePlugin{
 	
+	protected static final String pluginTitle = "Meta-Node Abstraction";
+	
 	/**
 	 * Constructor.
 	 */
 	public MetaNodeViewerCytoPlugin (){
 		final MNcollapserDialog dialog = new MNcollapserDialog();
-		dialog.setOptions(false,true,false,false);
 		dialog.setResizable(false);
 		Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add(
-				new AbstractAction ("Meta Node Collapser..."){
+				new AbstractAction (pluginTitle + "..."){
 					public void actionPerformed (ActionEvent e){
 						dialog.pack();
+						dialog.setLocationRelativeTo(Cytoscape.getDesktop());
 						dialog.setVisible(true);
 					}//actionPerformed
 				}

@@ -24,6 +24,12 @@
  * @version %I%, %G%
  * @since 2.0
  */
+// TODO: method setNodeAttributes(CyNetwork cy_network,int metanode_root_index, int[] children_nodes_root_indices) has commented
+// code that is crashing due to GraphObjAttributes. Since we think we are going to refactor/rewrite GraphObjAttrbutes, leave it
+// as it is and fix later. iliana.
+// TODO: internal class CopyEdgeAttr needs to be looked at. See comments. iliana.
+// TODO: Implement removeFromAttributes() -iliana
+// TODO: Imeplemnt removeMetaEdgesFromAttributes() -iliana
 
 package metaNodeViewer.data;
 
@@ -138,9 +144,10 @@ public class SimpleMetaNodeAttributesHandler implements
 			//}
 			//nodeAttr.set(attrName, metaName, uniqueValues.toArray());
 			
-			// THIS IS CRASHING!!! GraphObjAttributes expects a String but it gets an Object
+			// THIS IS THROWING AN EXCEPTION - GraphObjAttributes expects a String but it gets an Object
 			// need to solve this in GraphObjAttributes, or add a method in CyNetwork to 'append' values
-			// to an attribute
+			// to an attribute:
+			
 			//cy_network.setNodeAttributeValue(metaNode, attrName, uniqueValues.toArray());
 			//System.err.println("DBG " +attrName+ " " +metaName+ " "
 			// +uniqueValues);
@@ -310,7 +317,7 @@ public class SimpleMetaNodeAttributesHandler implements
 					//             System.err.println(" Values " + uniqueValues);
 					//           }
 
-					// What do we need to do this ?
+					// Why do we need to do this ?
 					// remove the redundant metaEdge
 					rootGraph.removeEdge(metaEdgeIndex);
 				}

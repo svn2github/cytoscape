@@ -25,26 +25,35 @@
  * @author Iliana Avila-Campillo iavila@systemsbiology.org, iliana.avila@gmail.com
  * @version %I%, %G%
  * @since 2.0
+ * 
+ * A class with easy to use static methods for creating meta-nodes for CyNetworks. Its most
+ * important task is keeping track of which meta-nodes belong to which CyNetworks. If meta-nodes
+ * are created by not using this factory, and then attempts are made to collapse/expand them, unexpected
+ * errors/results may unsue.
  */
 package metaNodeViewer.model;
 import cytoscape.CyNetwork;
-import giny.model.GraphPerspective;
 import metaNodeViewer.data.*;
 
 public class MetaNodeFactory {
 	/**
 	 * The key to obtain a cern.colt.list.IntArrayList that contains RootGraph indices of meta-nodes for a
 	 * given CyNetwork through <code>CyNetwork.getClientData(String key)</code>
+	 * This is necessary because all CyNetworks belong to the same RootGraph which contains the meta-nodes, so
+	 * we need to know which meta-nodes belong to which CyNetworks.
 	 */
 	public static final String METANODES_IN_NETWORK = "metaNodeViewer.model.GPMetaNodeFactory.metaNodeRindices";
 	private static final GPMetaNodeFactory gpMetaNodeFactory = new GPMetaNodeFactory();
 	
   /**
-   * Creates a MetaNode in the given CyNetwork with the given children
+   * Creates a meta-node within the CyNetwork's RootGraph, a default name is given to the 
+   * meta-node if getAssignDefaultNames() is true. 
+   * Note that the new meta-node is not contained in cy_network, but, after calling this method,
+   * it is recorded that the new meta-node belongs to cy_network.
    *
-   * @param cy_network the CyNetwork in which MetaNodes will be created
+   * @param cy_network the CyNetwork for which the meta-node will be created
    * @param children_node_indices the indices of the nodes that will be
-   * the children of the created meta-node
+   * the children of the created meta-node and that should be in cy_network
    * @return the RootGraph index of the newly created meta-node, or zero if
    * none created.
    */
@@ -53,18 +62,21 @@ public class MetaNodeFactory {
   }//createMetaNode
 
   /**
-   * Creates a MetaNode in the given CyNetwork with the given children
+   * Creates a meta-node within the CyNetwork's RootGraph, a name is given to the 
+   * meta-node (if getAssignDefaultNames() is true) by invoking attributes_handler.assigName().
+   * Note that the new meta-node is not contained in cy_network, but, after calling this method,
+   * it is recorded that the new meta-node belongs to cy_network.
    *
-   * @param cy_network the CyNetwork in which MetaNodes will be created
+   * @param cy_network the CyNetwork for which a meta-node will be created
    * @param children_node_indices the indices of the nodes that will be
-   * the children of the created meta-node
+   * the children of the created meta-node and that should be in cy_network
    * @param attributes_handler the MetaNodeAttributesHandler to be used to name the new node (if getAssignDefaultNames() is true)
-   * @return the RootGraph index of the newly created meta-node, or zero if
-   * none created.
+   * @return the RootGraph index of the newly created meta-node, or zero if none created.
    */
   public static int createMetaNode (CyNetwork cy_network, int [] children_node_indices, MetaNodeAttributesHandler attributes_handler){
   	return MetaNodeFactory.gpMetaNodeFactory.createMetaNode(cy_network, children_node_indices, attributes_handler);
   }//createMetaNode
+  
   /**
    * Sets whether or not a default name for newly created meta-nodes should be given
    * and added to the node attributes.
@@ -81,7 +93,7 @@ public class MetaNodeFactory {
   }//getAssign
 
   /**
-   * Clears this Factory.
+   * Clears this Factory (useful if a new RootGraph is loaded, but this is not supposed to happen in Cytoscape, so don't use it for now).
    */
   public static void clear (){
   	MetaNodeFactory.gpMetaNodeFactory.clear();
