@@ -25,7 +25,7 @@ OBJS = CytoscapeConfig.class \
 
 default: checkkEnv objs subdirectories
 
-subdirectories: dataDirectories \
+subdirectories: dataDirectories browserDirectory \
          vizmapDirectory dialogsDirectory \
          layoutDirectory utilDirectory \
 	 viewDirectory undoDirectory filtersDirectory
@@ -37,6 +37,9 @@ checkkEnv:
 
 currentDirTest: objs
 	(cd unitTests; make)
+
+browserDirectory: 
+	(cd browsers; make)
 
 
 dataDirectories:
