@@ -61,6 +61,7 @@ public class CytoscapeInit
   private static boolean suppressView = false;
   private static String viewType = "tabbed";
   private static int viewThreshold;
+  private static int secondaryViewThreshold;
 
   // View Only Variables
   private static String vizmapPropertiesLocation;
@@ -336,6 +337,28 @@ public class CytoscapeInit
       viewThreshold = threshold;
   }
 
+  /**
+   * Gets the Secondary View Threshold.
+   * This value is a secondary check on rendering very large networks.
+   * It is primarily checked when a user wishes to create a view for a large
+   * network.
+   * @return threshold value, indicating number of nodes.
+   */
+  public static int getSecondaryViewThreshold() {
+      return secondaryViewThreshold;
+  }
+
+  /**
+   * Sets the Secondary View Threshold.
+   * This value is a secondary check on rendering very large networks.
+   * It is primarily checked when a user wishes to create a view for a large
+   * network.
+   * @param threshold value, indicating number of nodes.
+   */
+  public static void setSecondaryViewThreshold(int threshold) {
+      secondaryViewThreshold = threshold;
+  }
+
   // View Only Variables
   public static String getVizmapPropertiesLocation () {
     return vizmapPropertiesLocation;
@@ -446,6 +469,7 @@ public class CytoscapeInit
 
     // Configuration variables
     viewThreshold = (new Integer(properties.getProperty( "viewThreshold", "500" ) ) ).intValue();
+    secondaryViewThreshold = (new Integer(properties.getProperty( "secondaryViewThreshold", "2000" ) ) ).intValue();
     viewType = properties.getProperty( "viewType", "tabbed" );
 
 
