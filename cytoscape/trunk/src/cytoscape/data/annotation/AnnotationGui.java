@@ -485,10 +485,12 @@ class ApplyAnnotationAction extends AbstractAction {
     cytoscapeWindow.setInteractivity (false);
     currentAnnotationCategory = addAnnotationToNodes (aDesc, level);
     Object [] uniqueAnnotationValues = nodeAttributes.getUniqueValues (currentAnnotationCategory);
-    if (uniqueAnnotationValues.length > 0 && uniqueAnnotationValues [0].getClass() == "string".getClass ())
+    if (uniqueAnnotationValues != null && 
+        uniqueAnnotationValues.length > 0 && 
+        uniqueAnnotationValues [0].getClass() == "string".getClass ()) {
       java.util.Arrays.sort (uniqueAnnotationValues, String.CASE_INSENSITIVE_ORDER);
-    
-    appendToSelectionTree (currentAnnotationCategory, uniqueAnnotationValues);
+      appendToSelectionTree (currentAnnotationCategory, uniqueAnnotationValues);
+      }
     cytoscapeWindow.setInteractivity (true);
     }
 
