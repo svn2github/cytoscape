@@ -10,8 +10,6 @@ import cytoscape.data.GraphObjAttributes;
 
 public abstract class AttributeComboBoxModel implements ComboBoxModel, PropertyChangeListener{
 
-  protected static AttributeManager NODE_ATTRIBUTE_MANAGER;
-  protected static AttributeManager EDGE_ATTRIBUTE_MANAGER;
   protected Object selectedObject;
   protected Vector attributeList;
  
