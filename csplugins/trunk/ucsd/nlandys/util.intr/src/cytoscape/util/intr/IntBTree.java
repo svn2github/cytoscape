@@ -19,10 +19,35 @@ public final class IntBTree
   }
 
   /**
+   * Empties this structure of all elements.
+   */
+  public final void empty()
+  {
+    m_root = new Node(MAX_BRANCHES, true);
+  }
+
+  /**
+   * Returns the number of elements currently in this structure.  Duplicate
+   * entries are counted however many times they are present.
+   */
+  public final int size()
+  {
+    return isLeafNode(m_root) ? m_root.sliceCount : m_root.data.deepCount;
+  }
+
+  /*
+   * Perhaps this should be inlined later for performance.
+   */
+  private final boolean isLeafNode(Node n)
+  {
+    return n.data == null;
+  }
+
+  /**
    * Inserts a new entry into this structure.  Duplicate entries are allowed.
    * @param x the new entry to insert.
    */
-  public void insert(int x)
+  public final void insert(int x)
   {
     Node newSibling = insert(m_root, x);
     if (newSibling != null) { // The root has been split into two.
@@ -52,7 +77,7 @@ public final class IntBTree
    * method sets; it's this method saying "use this index in the higher
    * levels".)
    */
-  private Node insert(Node n, int x)
+  private final Node insert(Node n, int x)
   {
     if (isLeafNode(n))
     {
@@ -157,8 +182,8 @@ public final class IntBTree
    *   overflowBuff: | 6 | 6 | 8 | 9 | / | / | / |
    *                 +---+---+---+---+---+---+---+
    */
-  private void split(int newVal, int[] origBuff,
-                     int[] overflowBuff, int overflowCount)
+  private final void split(int newVal, int[] origBuff,
+                           int[] overflowBuff, int overflowCount)
   {
     int[] currentArr = overflowBuff;
     int currentInx = overflowCount;
@@ -219,8 +244,8 @@ public final class IntBTree
    *   every other node would entail specifying newInx as -1, which is not
    *   allowed.
    */
-  private void split(Node newNode, int newInx, Node[] origNodes,
-                     Node[] overflowNodes, int overflowCount)
+  private final void split(Node newNode, int newInx, Node[] origNodes,
+                           Node[] overflowNodes, int overflowCount)
   {
     Node[] currentNodes = overflowNodes;
     int currentInx = overflowCount;
@@ -240,70 +265,73 @@ public final class IntBTree
       origNodes[i] = null; // Remove dangling pointers for garbage collection.
   }
 
-  /**
-   * Deletes at most one entry of the integer x.  To delete all
-   * entries of the integer x, use deleteRange(x, 1).
-   * @param x the integer to try to delete (just one entry).
-   * @return true if and only if an entry was deleted (at most one entry is
-   *   deleted by this method).
-   */
-  public boolean delete(int x)
-  {
-    return false;
-  }
-
-  /**
-   * Deletes all entries in the range [xStart, xStart + spanSize)
-   * from this structure.
-   * @param xStart specifies the beginning of the range of integers to
-   *   delete from this structure.
-   * @param spanSize specifies the range width of integers to delete; all
-   *   integers greater than or equal to xStart but less than xStart + spanSize
-   *   will be deleted; spanSize cannot be negative
-   *   (if spanSize is zero no action is taken).
-   * @return the number of entries that were deleted from this structure.
-   * @exception IllegalArgumentException if spanSize is negative.
-   */
-  public int deleteRange(int xStart, int spanSize)
-  {
-    return 0;
-  }
+//   /**
+//    * Deletes at most one entry of the integer x.  To delete all
+//    * entries of the integer x, use deleteRange(x, 1).
+//    * @param x the integer to try to delete (just one entry).
+//    * @return true if and only if an entry was deleted (at most one entry is
+//    *   deleted by this method).
+//    */
+//   public boolean delete(int x)
+//   {
+//     return false;
+//   }
 
 //   /**
-//    * Returns the number of entries of the integer x in this tree.
-//    * This method is superfluous because we can use searchRange(x, 1) to
-//    * get the same information; I'm implementing this method as a warm-up
-//    * to the more difficult methods.
-//    * @param x the integer whose count to query.
-//    * @return the number of entries x currently in this structure.
+//    * Deletes all entries in the range [xStart, xStart + spanSize)
+//    * from this structure.
+//    * @param xStart specifies the beginning of the range of integers to
+//    *   delete from this structure.
+//    * @param spanSize specifies the range width of integers to delete; all
+//    *   integers greater than or equal to xStart but less than xStart + spanSize
+//    *   will be deleted; spanSize cannot be negative
+//    *   (if spanSize is zero no action is taken).
+//    * @return the number of entries that were deleted from this structure.
+//    * @exception IllegalArgumentException if spanSize is negative.
 //    */
-//   public int count(int x)
+//   public int deleteRange(int xStart, int spanSize)
 //   {
-//     return count(m_root, x);
+//     return 0;
 //   }
 
-//   private int count(Node n, int x)
-//   {
-//     if (isLeafNode(n)) {
-//       int count = 0;
-//       for (int i = 0; i < n.sliceCount; i++) { // For the sake of simple
-//         if (n.values[i] == x) count++; }       // code, don't abort on over.
-//       return count; }
-//     else {
-//       // Poor man's algorithm; optimize later.
-//       m_buff[0] = Integer.MIN_VALUE;
-//       System.arraycopy(n.data.splitVals, 0, m_buff, 1, n.sliceCount - 1);
-//       m_buff[n.sliceCount] = Integer.MAX_VALUE;
-//       int count = 0;
-//       for (int i = 0; i < n.sliceCount; i++)
-//       {
-//         if (x >= m_buff[i] && x <= m_buff[i + 1]) {
-//           if (m_buff[i] == m_buff[i + 1]) count += n.data.deepCount;
-//           else count += count(n.data.children[i], x); }
-//       }
-//       return count;
-//     }
-//   }
+  /**
+   * Returns the number of entries of the integer x in this tree.
+   * This method is superfluous because we can use searchRange() to
+   * get the same information.
+   * @param x the integer whose count to query.
+   * @return the number of entries x currently in this structure.
+   */
+  public final int count(int x)
+  {
+    return count(m_root, x, Integer.MIN_VALUE, Integer.MAX_VALUE);
+  }
+
+  private final int count(Node n, int x, int minBound, int maxBound)
+  {
+    int count = 0;
+    if (isLeafNode(n)) {
+      for (int i = -1; i < n.sliceCount;)
+        if (x >= n.values[++i]) {
+          if (x == n.values[i]) count++;
+          else break; }
+      return count; }
+    else { // Internal node.
+      boolean found = false;
+      int currentMax = maxBound;
+      for (int i = n.sliceCount - 2; i >= -1; i--) {
+        int currentMin;
+        if (i < 0) currentMin = minBound;
+        else currentMin = n.data.splitVals[i];
+        if ((x >= currentMin) && (x <= currentMax)) {
+          found = true;
+          if (currentMin == currentMax)
+            count += n.data.children[i + 1].deepCount;
+          else count += count(n.data.children[i + 1], x,
+                              currentMin, currentMax); }
+        else { if (found) break; }
+        currentMax = currentMin; }
+      return count; }
+  }
 
   /**
    * Returns an enumeration of all entries in the range
@@ -326,11 +354,6 @@ public final class IntBTree
   public IntEnumerator searchRange(int xStart, int spanSize)
   {
     return null;
-  }
-
-  private boolean isLeafNode(Node n)
-  {
-    return n.data == null;
   }
 
   public void debugPrint()
@@ -378,7 +401,7 @@ public final class IntBTree
   private final static class Node
   {
 
-    private int sliceCount;
+    private int sliceCount = 0;
 
     // Exactly one of { values, data } is null, depending on whether or not
     // this is a leaf node.
@@ -406,7 +429,6 @@ public final class IntBTree
 
     private InternalNodeData(int maxBranches)
     {
-      deepCount = 0;
       splitVals = new int[maxBranches - 1];
       children = new Node[maxBranches];
     }
