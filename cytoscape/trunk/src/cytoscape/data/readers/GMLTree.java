@@ -1,5 +1,6 @@
 package cytoscape.data.readers;
 import java.util.*;
+import java.awt.geom.Point2D;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.awt.Color;
@@ -46,10 +47,18 @@ public class GMLTree{
    */
   public static int INTEGER = 2;
   /**
+   * When getting a vector, used to specify the type
+   * for the contained objects
+   */
+  public static int GMLTREE = 3;
+  /**
    * Create an empty GMLTree
    */
   public GMLTree(){
     root = new GMLNode();
+  }
+  public GMLTree(GMLNode init){
+    root = init;
   }
 	
   /**
@@ -142,7 +151,28 @@ public class GMLTree{
       }
       GMLNode graphics = new GMLNode();
       graphics.addMapping("width",new GMLNode(""+df.format(currentView.getStrokeWidth())));
-      graphics.addMapping("type",new GMLNode("\"line\""));
+
+      switch(currentView.getLineType()) {
+      case EdgeView.STRAIGHT_LINES: {
+	  graphics.addMapping("type",new GMLNode("\"line\""));
+	  Point2D [] pointsArray = currentView.getBend().getDrawPoints();
+	  if(pointsArray.length > 2) {
+	     GMLNode Line = new GMLNode();
+             for(int i=0; i<pointsArray.length; i++) {
+		 GMLNode point = new GMLNode();
+		 point.addMapping("x", new GMLNode(""+df.format(pointsArray[i].getX())));
+		 point.addMapping("y", new GMLNode(""+df.format(pointsArray[i].getY())));
+		 Line.addMapping("point", point);
+	     }
+	     graphics.addMapping("Line", Line);	   
+	  }
+      } break;
+      //case EdgeView.CURVED_LINES: { // not implemented
+      //      graphics.addMapping("type",new GMLNode("\"polygon\"")); // type "polygon" for splines
+      //      GMLNode curvedLine = new GMLNode();
+      //} break;
+      }
+
       Color edgeColor = (Color) currentView.getUnselectedPaint();
       graphics.addMapping("fill",new GMLNode("\""+getColorHexString(edgeColor)+"\""));
       currentGML.addMapping("graphics",graphics);
@@ -287,7 +317,6 @@ public class GMLTree{
       keyVector.add(tokenizer.nextToken());
     }
     return getVector(keyVector,type);
-	
   }
 
   /**
@@ -301,10 +330,11 @@ public class GMLTree{
     Vector mapped = root.getMapping((String)keys.get(index));
     if(mapped != null){
       Iterator it = mapped.iterator();
+      //System.out.println("Level " + index + " " + (String)keys.get(index) + " has " + mapped.size());
       if(index >= keys.size()-1){
 	while(it.hasNext()){
 	  GMLNode current = (GMLNode)it.next();
-	  if(current.terminal){
+	  //if(current.terminal){
 	    if(type == STRING){
 	      result.add(current.stringValue());
 	    }
@@ -314,10 +344,14 @@ public class GMLTree{
 	    else if(type == DOUBLE){
 	      result.add(current.doubleValue());
 	    }
+	    else if(type == GMLTREE){
+		//System.out.println(current.toString());
+		result.add(new GMLTree(current));
+	    }
 	    else{
 	      throw new IllegalArgumentException("bad type");
 	    }
-	  }
+	  //}
 	}
       }
       else{
@@ -328,6 +362,11 @@ public class GMLTree{
 	  }
 	}
       }
-    }
+    } //may need to handle missing/empty values
+    //else {
+    //System.out.println("ADDING NULL AT LEVEL " + index + " " + (String)keys.get(index));
+    //result.add(null);
+    //}
   }
+
 }
