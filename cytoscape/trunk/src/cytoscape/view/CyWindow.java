@@ -308,8 +308,7 @@ protected void updateGraphView() {
 	add( display, BorderLayout.CENTER);
 
 	view.setBackgroundPaint(Color.WHITE);
->>>>>>> 1.17
-	
+
 	java.util.List nodes = view.getNodeViewsList();
 	    for ( Iterator i= nodes.iterator(); i.hasNext();)
 	    {
@@ -1115,21 +1114,7 @@ public void onGraph2DSelectionEvent(y.view.Graph2DSelectionEvent e) {
 public void graphViewChanged ( GraphViewChangeEvent event)
 
 {
-<<<<<<< CyWindow.java
-	/*System.out.println( " graphViewChanged() called in CyWindow");
-	if (event == null) {
-		updateStatusLabel(0, 0);
-		return;
-	}
-	int type = event.getType();
-	int hiddenNodes = event.getHiddenNodes().length;
-	int hiddenEdges = event.getHiddenEdges().length; */
 	updateStatusLabel(0, 0);
-=======
-	System.out.println( " graphViewChanged(Event) called in CyWindow");
-        System.out.println( "Type was: "+event.getType() );
-        updateStatusLabel(event);
->>>>>>> 1.17
 }
 
 //--------------------------------------------------------------------------------
@@ -1176,97 +1161,16 @@ public void updateStatusText(int nodeAdjust, int edgeAdjust) {
  */
 public void updateStatusLabel(int hiddenNodes, int hiddenEdges) {
 	
-<<<<<<< CyWindow.java
+
 	if (getView() == null ) 
 	{ 
 		infoLabel.setText("No graph specified for the display  ");
 		return; }
-		
-=======
- 
-
-  if ( view == null ) {
-    System.out.println( "View was null" );
-    infoLabel.setText("  Nodes: " + 0
-                      + " ("+0+" selected)"
- 		      + " ("+0 + " hidden)"  
-                      + " Edges: " + 0
-                      + " ("+0+" selected)"
- 		      + " (" +0+ " hidden)"
-                      );
-    return;
-  }
-
-  if ( event == null ) {
-    System.out.println( "EVENT IS NULL!!!!" );
-    return;
-  }
-  
-
-// 	if (view == null || event == null) { infoLabel.setText("  Nodes: " + 0
-//                       + " ("+0+" selected)"
-// 		      + " ("+0 + " hidden)"  
-//                       + " Edges: " + 0
-//                       + " ("+0+" selected)"
-// 		      + " (" +0+ " hidden)");
-// 		return; }
-
-      System.out.println( "Status Label has an event of type: "+event.getType() );
-	
-      int selectedNodes, selectedEdges;
-      int hiddenNodes = 0;
-      int hiddenEdges = 0;
-	
-	int type = event.getType();
-        System.out.println( "1 Type: "+event.getType() );
->>>>>>> 1.17
-	int nodeCount = view.nodeCount();
-         System.out.println( "2 nodeCount: "+nodeCount );
-	int edgeCount = view.edgeCount();
-<<<<<<< CyWindow.java
+	int nodeCount = view.getNodeViewCount();
+	int edgeCount = view.getEdgeViewCount();	
 	int selectedNodes = view.getSelectedNodes().size();
 	int selectedEdges = view.getSelectedEdges().size();
    		
-=======
-         System.out.println( "3 Edgecount: "+edgeCount );
-         if ( event.getSelectedNodeIndices() != null )
-            selectedNodes = event.getSelectedNodeIndices().length;
-         else
-           selectedNodes = 0;
-
-         System.out.println( "4 Selectednodes: "+selectedNodes );
-         if ( event.getSelectedEdgeIndices() != null )
-           selectedEdges = event.getSelectedEdgeIndices().length;
-         else	
-           selectedEdges = 0;
-         System.out.println( "5 SelectedEdges: "+selectedEdges);
-	
-//     switch (type) {
-// 	case GraphViewChangeEvent.EDGES_SELECTED_TYPE :
-// 	case GraphViewChangeEvent.EDGES_UNSELECTED_TYPE :
-// 	case GraphViewChangeEvent.NODES_SELECTED_TYPE :
-// 	case GraphViewChangeEvent.NODES_UNSELECTED_TYPE :
-		
-// 		break;
-// 	case GraphViewChangeEvent.NODES_RESTORED_TYPE :
-// 	case GraphViewChangeEvent.EDGES_RESTORED_TYPE :
-// 	case GraphViewChangeEvent.EDGES_HIDDEN_TYPE :
-// 	case GraphViewChangeEvent.NODES_HIDDEN_TYPE :
-		
-// 		break;
-// 	default:
-// 		break;
-// 	}
-
-    	System.out.println ( " Updating statusBar " + "  Nodes: " + nodeCount
-                      + " ("+selectedNodes+" selected)"
-		      + " ("+hiddenNodes + " hidden)"  
-                      + " Edges: " + edgeCount
-                      + " ("+selectedEdges+" selected)"
-		      + " (" +hiddenEdges+ " hidden)");
-		      
-		      
->>>>>>> 1.17
 	infoLabel.setText("  Nodes: " + nodeCount
                       + " ("+selectedNodes+" selected)"
 		      + " ("+hiddenNodes + " hidden)"  
