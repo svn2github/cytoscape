@@ -484,50 +484,39 @@ public abstract class NetworkData {
   ////////////////////
   // Node Double Attribute Useful Methods
 
-  
-  // /**
-//    * Returns all Attributes that one or more of the given nodes have values for.
-//    */
-//   public static String[] getNodeAttributes ( int[] node_indices ) {
+  /**
+   * Returns all Attributes that one or more of the given nodes have values for.
+   */
+  public static String[] getNodeAttributes ( int[] node_indices ) {
+    
+    IntArrayList att_keys = new IntArrayList();
+    getNodeAttributeIDToAttributeValuesMap().keys( att_keys );
+    HashSet attributes = new HashSet(); 
 
     
-
-
-//   }
-
- //  /**
-//    * Returns all Attributes that one or more of the given nodes have values for.
-//    */
-//   public static String[] getNodeAttributes ( int[] node_indices ) {
-    
-//     IntArrayList att_keys = new IntArrayList();
-//     getNodeAttributeIDToAttributeValuesMap().keys( att_keys );
-//     HashSet attributes = new HashSet(); 
-
-    
-//     for ( int k = 0; k < att_keys.size(); ++k ) {
-//       for ( int i = 0; i < node_indices.length; ++i ) {
-//         if ( getNodeAttributeType( att_keys.get(k) ) == DOUBLE_TYPE ) {
-//           OpenIntDoubleHashMap n2v = ( OpenIntDoubleHashMap )getNodeAttributeIDToAttributeValuesMap().get( att_keys.get(k) );
-//           if (  n2v.containsKey( node_indices[i] ) ) {
-//             attributes.add( getNodeAttIDToAttNameMap().get( att_keys.get(k) ) );
-//             // don't look at anymore nodes
-//             i = node_indices.length;
-//           }
-//         } else {
-//           OpenIntObjectHashMap n2v = ( OpenIntObjectHashMap )getNodeAttributeIDToAttributeValuesMap().get( att_keys.get(k) );
-//           if (  n2v.containsKey( node_indices[i] ) ) {
-//             attributes.add( getNodeAttIDToAttNameMap().get( att_keys.get(k) ) );
-//             // don't look at anymore nodes
-//             i = node_indices.length;
-//           }
+    for ( int k = 0; k < att_keys.size(); ++k ) {
+      for ( int i = 0; i < node_indices.length; ++i ) {
+        if (  att_keys.get(k) == DOUBLE_TYPE ) {
+          OpenIntDoubleHashMap n2v = ( OpenIntDoubleHashMap )getNodeAttributeIDToAttributeValuesMap().get( att_keys.get(k) );
+          if (  n2v.containsKey( node_indices[i] ) ) {
+            attributes.add( getNodeAttIDToAttNameMap().get( att_keys.get(k) ) );
+            // don't look at anymore nodes
+            i = node_indices.length;
+          }
+        } else {
+          OpenIntObjectHashMap n2v = ( OpenIntObjectHashMap )getNodeAttributeIDToAttributeValuesMap().get( att_keys.get(k) );
+          if (  n2v.containsKey( node_indices[i] ) ) {
+            attributes.add( getNodeAttIDToAttNameMap().get( att_keys.get(k) ) );
+            // don't look at anymore nodes
+            i = node_indices.length;
+          }
           
-//         }
-//       }
-//     }
+        }
+      }
+    }
 
-//     return ( String[]) attributes.toArray( new String[]{} );
-//   }
+    return ( String[]) attributes.toArray( new String[]{} );
+  }
 
  
 
