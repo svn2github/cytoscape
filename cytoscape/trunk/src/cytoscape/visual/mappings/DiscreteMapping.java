@@ -387,9 +387,15 @@ public class DiscreteMapping extends TreeMap implements ObjectMapping {
 	    this.key = key;
 	}
 	    
+	/**
+	 *  The ValueDisplayer being reflected by this listener was changed.
+	 *  Make the appropriate changes to the underlying data in the mapper
+	 *  and notify interested listeners that state has changed.
+	 */
 	public void itemStateChanged (ItemEvent e) {
 	    ValueDisplayer v = (ValueDisplayer) e.getItemSelectable();
 	    put(key, v.getValue());
+	    fireStateChanged();
 	}
     }
 }
