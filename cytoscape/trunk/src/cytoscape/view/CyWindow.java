@@ -75,10 +75,7 @@ CyNetworkListener, NetworkView {
 
     protected CytoscapeObj globalInstance;
     protected CyNetwork network;
-    //this reference is needed for now since many things expect
-    //a CytoscapeWindow reference. Eventually this will go away.
-    protected CytoscapeWindow cytoscapeWindow;
-    
+   
     protected JFrame mainFrame;
     protected CyMenus cyMenus;
     protected JLabel infoLabel;
@@ -109,7 +106,7 @@ CyNetworkListener, NetworkView {
     protected VizMapUI vizMapUI;
     
     //save constructor variable here to draw graph later
-    protected boolean doFreshLayout;
+    protected boolean windowDisplayed = false;
     
     // added by dramage 2002-08-21
     protected CytoscapeUndoManager undoManager;
@@ -124,18 +121,26 @@ CyNetworkListener, NetworkView {
  * @param network  the network to be displayed in this window
  * @param windowTitle  the frame title; a default value is used
  *                     if this is null
- * @param doFreshLayout  if true, will perfom a layout operation
- *                       on the graph before displaying it
- * @param cytoscapeWindow  reference to the encapsulating instance
- *                         of CYtoscapeWindow. Eventually will go away.
  */
-public CyWindow(CytoscapeObj globalInstance, CyNetwork network,
-                String title, boolean doFreshLayout,
+public CyWindow(CytoscapeObj globalInstance, CyNetwork network, String title) {
+    doInit(globalInstance, network, title);
+    //this triggers plugin loading
+    CytoscapeWindow cytoscapeWindow = new CytoscapeWindow(this);
+}
+//------------------------------------------------------------------------------
+/**
+ * Secondary constructor. This is only called from a CytoscapeWindow constructor,
+ * when that constructor is called first. In this case this object doesn't need
+ * to construct a new CytoscapeWindow.
+ */
+public CyWindow(CytoscapeObj globalInstance, CyNetwork network, String title,
                 CytoscapeWindow cytoscapeWindow) {
+    doInit(globalInstance, network, title);
+}
+//------------------------------------------------------------------------------
+protected void doInit(CytoscapeObj globalInstance, CyNetwork network, String title) {
     this.globalInstance = globalInstance;
     this.network = network;
-    this.cytoscapeWindow = cytoscapeWindow;
-    this.doFreshLayout = doFreshLayout;
     
     if (title == null) {
         this.windowTitle = defaultWindowTitle;
@@ -197,7 +202,15 @@ protected void initializeWidgets() {
     this.mainFrame = new JFrame(windowTitle);
     
     mainFrame.setContentPane(this);
-
+    //create the menu objects
+    this.cyMenus = new CyMenus(this);
+    cyMenus.initializeMenus();
+    add(cyMenus.getToolBar(), BorderLayout.NORTH);
+    mainFrame.setJMenuBar(cyMenus.getMenuBar());
+    //this does nothing if undo is disabled
+    cyMenus.updateUndoRedoMenuItemStatus();
+    // load vizmapper after menus are done and graph is available
+    loadVizMapper();
 } // initializeWidgets
 
 //------------------------------------------------------------------------------
@@ -232,7 +245,7 @@ protected void setInitialLayouter() {
  * and the graph considers this object's GraphView as its current view. This is
  * a yFiles specific thing.
  */
-private void connectGraphAndView() {
+protected void connectGraphAndView() {
     if (getNetwork() == null || getNetwork().getGraph() == null) {return;}
     getGraphView().setGraph2D( getNetwork().getGraph() );
     getNetwork().getGraph().setCurrentView( getGraphView() );
@@ -243,16 +256,16 @@ private void connectGraphAndView() {
  * undo manager and adds it as a listener to the graph, and creates an
  * UndoableGraphHider object for managing hiding graph objects.
  */
-private void attachGraphListeners() {
+protected void attachGraphListeners() {
     if (getNetwork() == null || getNetwork().getGraph() == null) {return;}
     getNetwork().addCyNetworkListener(this);
     Graph2D theGraph = getNetwork().getGraph();
     theGraph.addGraph2DSelectionListener(this);
     if (getCytoscapeObj().getConfiguration().enableUndo()) {
-        undoManager = new CytoscapeUndoManager(cytoscapeWindow, theGraph);
+        undoManager = new CytoscapeUndoManager(cyMenus, theGraph);
         theGraph.addGraphListener(undoManager);
     } else {
-        undoManager = new EmptyUndoManager(cytoscapeWindow, theGraph);
+        undoManager = new EmptyUndoManager(cyMenus, theGraph);
     }
     graphHider = new UndoableGraphHider(theGraph, undoManager);
 }
@@ -261,7 +274,7 @@ private void attachGraphListeners() {
  * Detaches the graph listeners that were attached (by attachGraphListeners)
  * when the old graph was installed.
  */
-private void detachGraphListeners() {
+protected void detachGraphListeners() {
     if (getNetwork() == null || getNetwork().getGraph() == null) {return;}
     getNetwork().removeCyNetworkListener(this); //no error if we're not a listener
     Graph2D currentGraph = getNetwork().getGraph();
@@ -291,32 +304,10 @@ private void detachGraphListeners() {
 }
 //------------------------------------------------------------------------------
 /**
- * This method exists because of circularity problems. The menu object
- * creates actions that then try to access this window through the
- * CYtsocapeWindow reference. This can create NullPointerExceptions
- * by trying to access the CyWindow object before it's constructor
- * is finished. Thus, we first create the CyWindow, then add the
- * menus later.
- *
- * This method should go away once the menu creation is rewritten
- * to avoid this circularity problem.
- */
-public void decorateWindow() {
-    this.cyMenus = new CyMenus(cytoscapeWindow);
-    cyMenus.createMenus();
-    add(cyMenus.getToolBar(), BorderLayout.NORTH);
-    mainFrame.setJMenuBar(cyMenus.getMenuBar());
-    //this does nothing if undo is disabled
-    cyMenus.updateUndoRedoMenuItemStatus();
-    // load vizmapper after graph is available
-    loadVizMapper();
-}
-//------------------------------------------------------------------------------
-/**
  * Creates the vizmapper and it's UI, making sure that a visual style
  * is selected, either from the config or a default value.
  */
-private void loadVizMapper() {
+protected void loadVizMapper() {
   
   // BUG: vizMapper.applyAppearances() gets called twice here
 
@@ -362,17 +353,22 @@ protected void displayNewGraph(boolean doLayout) {
 }
 //------------------------------------------------------------------------------
 /**
- * Actually displays the window. Should be called after all setup
- * work has been done (i.e., after decorateWindow). Nothing will
- * appear on the screen until this method gets called.
+ * Actually displays the window. Nothing will appear on the screen until
+ * this method gets called. This allows other objects to operate on this
+ * object after construction but before it gets displayed to the user.
+ *
+ * This method does nothing on any call after the first.
  */
 public void showWindow() {
-    //draw the graph for the first time
-    displayNewGraph(doFreshLayout);
-    mainFrame.pack();
-    this.setVisible(true);
-    mainFrame.setVisible(true);
-    setInteractivity(true);
+    if (!windowDisplayed) {
+        //draw the graph for the first time
+        displayNewGraph( network.getNeedsLayout() );
+        mainFrame.pack();
+        this.setVisible(true);
+        mainFrame.setVisible(true);
+        setInteractivity(true);
+        windowDisplayed = true;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -389,12 +385,6 @@ public CytoscapeObj getCytoscapeObj() {return globalInstance;}
  * returns the network displayed in this window.
  */
 public CyNetwork getNetwork() {return network;}
-//------------------------------------------------------------------------------
-/**
- * Returns a reference to the wrapping CytoscapeWindow instance.
- * This method should eventually go away once the refactoring is complete.
- */
-public CytoscapeWindow getCytoscapeWindow() {return cytoscapeWindow;}
 //------------------------------------------------------------------------------
 /**
  * Returns the UI component that renders the displayed graph.
@@ -507,16 +497,14 @@ public void setPopupMode (PopupMode newMode) {
 
 /**
  * @deprecated
+ * Instead of calling this method directly, users should change the graph
+ * in the network object referenced by this window, which will fire an event
+ * that triggers this object to respond appropriately. This method will
+ * eventually be undeprecated, but changed to protected access only.
+ *
  * This method changes the graph that is displayed in the window.
- * Note that this method changes the network object referenced by
- * this class by switching to the new graph; there is no guarantee
- * that the data attributes of that network object will be
- * consistent with the new graph.
- *
- * Does nothing if the newGraph argument is null.
- *
- * Users should generally call setNewNetwork instead with a
- * properly created network object.
+ * Does nothing if the newGraph argument is null. To change the network
+ * displayed by this window, use setNewNetwork.
  *
  * @param newGraph  the new graph to display
  * @param doLayout  if true, does a layout before displaying the graph
@@ -535,21 +523,22 @@ public void setNewGraph(Graph2D newGraph, boolean doLayout) {
 //------------------------------------------------------------------------------
 /**
  * Changes the network displayed in this window. This display will
- * be updated to show and reference this new network.
+ * be updated to show and reference this new network, and new listeners
+ * will be attached to the network and its graph.
  *
- * Does nothing if the newNetwork argument is null.
+ * Does nothing if the newNetwork argument is null, or is the same object
+ * as the current network.
  * 
  * @param newNetwork  the new network to display
- * @param doLayout  if true, does a layout ebfore displaying the graph
  */
-public void setNewNetwork(CyNetwork newNetwork, boolean doLayout) {
-    if (newNetwork == null) {return;}
+public void setNewNetwork(CyNetwork newNetwork) {
+    if (newNetwork == null || newNetwork == this.getNetwork() ) {return;}
     setInteractivity(false);
     detachGraphListeners();
     this.network = newNetwork;
     connectGraphAndView();
     attachGraphListeners();
-    displayNewGraph(doLayout);
+    displayNewGraph( network.getNeedsLayout() );
     getCyMenus().updateUndoRedoMenuItemStatus();
     setInteractivity(true);
 }
@@ -667,7 +656,8 @@ public void redrawGraph(boolean doLayout, boolean applyAppearances) {
         applyVizmapSettings();
     }
     if (doLayout) {
-        applyLayout(false);
+        applyLayout(false); //applies layout without animation
+        getNetwork().setNeedsLayout(false);
     }
     
     graphView.updateView(); //forces the view to update it's contents
@@ -812,6 +802,8 @@ public void onCyNetworkEvent(CyNetworkEvent event) {
         setInteractivity(false);
     } else if (event.getType() == CyNetworkEvent.END) {
         setInteractivity(true);
+    } else if (event.getType() == CyNetworkEvent.GRAPH_REPLACED) {
+        setNewGraph( getNetwork().getGraph(), getNetwork().getNeedsLayout() );
     }
 }
 //------------------------------------------------------------------------------

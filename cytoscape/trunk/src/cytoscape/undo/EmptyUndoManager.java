@@ -35,19 +35,19 @@
 //
 package cytoscape.undo;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.view.CyMenus;
 import y.view.Graph2D;
 import y.base.GraphEvent;
 /**
  * This class serves as a do-nothing replacement for CytoscapeUndoManager.
- * An instance of this class is installed in CytoscapeWindow when the
- * undo feature should be disabled as much as possible. 
+ * An instance of this class is installed when the undo feature should
+ * be disabled as much as possible. 
  */
 public class EmptyUndoManager extends CytoscapeUndoManager {
     
     /* CytoscapeUndoManager requires the following constructor */
-    public EmptyUndoManager(CytoscapeWindow cytoscapeWindow, Graph2D graph) {
-        super(cytoscapeWindow, graph);
+    public EmptyUndoManager(CyMenus cyMenus, Graph2D graph) {
+        super(cyMenus, graph);
     }
     
     /* methods defined in UndoManager */

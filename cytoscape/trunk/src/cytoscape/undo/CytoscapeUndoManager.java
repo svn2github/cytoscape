@@ -37,10 +37,11 @@
 
 package cytoscape.undo;
 
-import cytoscape.*;
 import java.util.*;
 import y.base.*;
 import y.view.*;
+
+import cytoscape.view.CyMenus;
 
 /**
  * This class provides Cytoscape specific extensions to UndoManager.
@@ -50,7 +51,7 @@ import y.view.*;
 public class CytoscapeUndoManager
     extends UndoManager implements GraphListener {
 
-    CytoscapeWindow window;
+    CyMenus cyMenus;
     Graph2D graph;
 
     /**
@@ -69,8 +70,8 @@ public class CytoscapeUndoManager
     /**
      * Registers this object as a GraphListener to the given graph.
      */
-    public CytoscapeUndoManager (CytoscapeWindow window, Graph2D graph) {
-	this.window = window;
+    public CytoscapeUndoManager (CyMenus cyMenus, Graph2D graph) {
+	this.cyMenus = cyMenus;
 	this.graph = graph;
 
 	ignoreEventDepth = 0;
@@ -211,7 +212,7 @@ public class CytoscapeUndoManager
 		break;
 	    }
 
-	    window.updateUndoRedoMenuItemStatus();
+	    cyMenus.updateUndoRedoMenuItemStatus();
 	}
     }
 
@@ -220,7 +221,7 @@ public class CytoscapeUndoManager
      */
     public void saveRealizerState() {
 	saveState(new RealizerUndoItem(graph));
-	window.updateUndoRedoMenuItemStatus();
+	cyMenus.updateUndoRedoMenuItemStatus();
     }
 
     /**

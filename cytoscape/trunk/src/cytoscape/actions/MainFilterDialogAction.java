@@ -8,31 +8,32 @@ package cytoscape.actions;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.data.Semantics;
+import cytoscape.view.NetworkView;
 import cytoscape.filters.dialogs.MainFilterDialog;
 //-------------------------------------------------------------------------
 public class MainFilterDialogAction extends AbstractAction {
-    CytoscapeWindow cytoscapeWindow;
+    NetworkView networkView;
     
-    public MainFilterDialogAction(CytoscapeWindow cytoscapeWindow) {
+    public MainFilterDialogAction(NetworkView networkView) {
         super();
-        this.cytoscapeWindow = cytoscapeWindow;
+        this.networkView = networkView;
     }
-    public MainFilterDialogAction(CytoscapeWindow cytoscapeWindow, String title) {
+    public MainFilterDialogAction(NetworkView networkView, String title) {
         super(title);
-        this.cytoscapeWindow = cytoscapeWindow;
+        this.networkView = networkView;
     }
 
    public void actionPerformed(ActionEvent e) {
-       String[] interactionTypes = cytoscapeWindow.getInteractionTypes();
-       new MainFilterDialog(cytoscapeWindow,
-                            cytoscapeWindow.getMainFrame(),
-                            cytoscapeWindow.getGraph(),
-                            cytoscapeWindow.getNodeAttributes(),
-                            cytoscapeWindow.getEdgeAttributes(),
-                            cytoscapeWindow.getExpressionData(),
-                            cytoscapeWindow.getGraphHider(),
-                            interactionTypes);
+       //should refactor the filters constructor, but will do this later
+       new MainFilterDialog(networkView,
+                            networkView.getMainFrame(),
+                            networkView.getNetwork().getGraph(),
+                            networkView.getNetwork().getNodeAttributes(),
+                            networkView.getNetwork().getEdgeAttributes(),
+                            networkView.getNetwork().getExpressionData(),
+                            networkView.getGraphHider(),
+                            Semantics.getInteractionTypes(networkView.getNetwork()) );
    }
 }
 

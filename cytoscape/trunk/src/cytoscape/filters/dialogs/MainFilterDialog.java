@@ -44,6 +44,7 @@ import cytoscape.data.*;
 import cytoscape.filters.*;
 import cytoscape.filters.dialogs.*;
 import cytoscape.*;
+import cytoscape.view.NetworkView;
 /**
  * Main interface to filters.
  * <p>
@@ -53,7 +54,7 @@ import cytoscape.*;
  * @version 2002-02-22
  */
 public class MainFilterDialog extends JDialog {
-    FilterDialogClient client;
+    NetworkView client;
     MainFilterDialog thisDialog;
     Frame parent;
     Graph2D graph;
@@ -86,7 +87,11 @@ public class MainFilterDialog extends JDialog {
 
     JTabbedPane tabbedPane;
 
-    public MainFilterDialog (FilterDialogClient client,
+    /**
+     * This constructor should be refactored, but I'll delay this until
+     * we rework the whole filters package. -AM 10-02-03
+     */
+    public MainFilterDialog (NetworkView client,
 			     Frame parent,
 			     Graph2D graph,
 			     GraphObjAttributes nodeAttributes,
@@ -166,7 +171,8 @@ public class MainFilterDialog extends JDialog {
 		    f.select();
 		}
 	    }
-	    client.redrawGraph();
+            //don't do new layout, but reapply appearances
+	    client.redrawGraph(false, true);
 	}
     }
 

@@ -11,20 +11,20 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import java.util.HashMap;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.view.NetworkView;
 import cytoscape.GraphObjAttributes;
 import cytoscape.dialogs.EdgeControlDialog;
 //-------------------------------------------------------------------------
 public class EdgeManipulationAction extends AbstractAction {
-    CytoscapeWindow cytoscapeWindow;
+    NetworkView networkView;
     
-    public EdgeManipulationAction(CytoscapeWindow cytoscapeWindow) {
+    public EdgeManipulationAction(NetworkView networkView) {
         super ("Select or hide by attributes...");
-        this.cytoscapeWindow = cytoscapeWindow;
+        this.networkView = networkView;
     }
     
     public void actionPerformed (ActionEvent e) {
-        GraphObjAttributes edgeAttributes = cytoscapeWindow.getEdgeAttributes();
+        GraphObjAttributes edgeAttributes = networkView.getNetwork().getEdgeAttributes();
         String[] edgeAttributeNames = edgeAttributes.getAttributeNames();
         HashMap attributesTree = new HashMap();
         for (int i=0; i < edgeAttributeNames.length; i++) {
@@ -35,10 +35,10 @@ public class EdgeManipulationAction extends AbstractAction {
             } // if a string attribute
         } // for i
         if (attributesTree.size() > 0) {
-            JDialog dialog = new EdgeControlDialog(cytoscapeWindow,
+            JDialog dialog = new EdgeControlDialog(networkView,
                                                    attributesTree, "Control Edges");
             dialog.pack();
-            dialog.setLocationRelativeTo(cytoscapeWindow.getMainFrame());
+            dialog.setLocationRelativeTo(networkView.getMainFrame());
             dialog.setVisible(true);
         }
         else {

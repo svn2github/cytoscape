@@ -299,10 +299,24 @@ public Object clone ()
 } // clone
 //--------------------------------------------------------------------------------
 /**
+ * This method copies all information from the argument to this object, overwriting
+ * any duplicated mappings but preserving any information that is not overwritten.
+ * This includes both the attributes and the mappings of names to objects.
+ * Does nothing if the argument is null.
+ */
+public void inputAll(GraphObjAttributes newAttributes) {
+    if (newAttributes == null) {return;}
+    addNameMap( newAttributes.getNameMap() );
+    addObjectMap( newAttributes.getObjectMap() );
+    addClassMap( newAttributes.getClassMap() );
+    set(newAttributes);
+}
+//--------------------------------------------------------------------------------
+/**
  *  establish mapping between a java object (a graph node or edge) and
  *  its canonical (standard) name.  
  *  <ul> 
- *    <li> clients of this class (CytoscapeWindow, or cytoscape plugins) usually
+ *    <li> clients of this class (CyWindow, or cytoscape plugins) usually
  *         deal with graph nodes and edges, and only secondarily with names; 
  *    <li> attributes are stored and retrieved by canonical name
  *    <li> the client must be able to translate from the node or edge object

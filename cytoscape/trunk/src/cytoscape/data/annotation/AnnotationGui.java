@@ -53,11 +53,13 @@ import cytoscape.data.annotation.*;
 import cytoscape.data.servers.*;
 import cytoscape.layout.*;
 import cytoscape.*;
+import cytoscape.data.Semantics;
+import cytoscape.view.CyWindow;
 //----------------------------------------------------------------------------------------
 /**
  */
 public class AnnotationGui extends AbstractAction {
-  protected CytoscapeWindow cytoscapeWindow;
+  protected CyWindow cyWindow;
   protected GraphObjAttributes nodeAttributes, edgeAttributes;
   protected BioDataServer dataServer;
   protected String defaultSpecies;
@@ -78,15 +80,16 @@ public class AnnotationGui extends AbstractAction {
   JButton addSharedAnnotationEdgesButton;
 
 //----------------------------------------------------------------------------------------
-public AnnotationGui (CytoscapeWindow cytoscapeWindow)
+public AnnotationGui (CyWindow cyWindow)
 {
   super ();
-  dataServer = cytoscapeWindow.getBioDataServer ();
+  this.cyWindow = cyWindow;
+  dataServer = cyWindow.getCytoscapeObj().getBioDataServer ();
   if (dataServer != null)
     annotationDescriptions = dataServer.getAnnotationDescriptions ();
 
-  this.cytoscapeWindow = cytoscapeWindow;
-  defaultSpecies = cytoscapeWindow.getDefaultSpecies ();
+  defaultSpecies = Semantics.getDefaultSpecies(cyWindow.getNetwork(),
+                                               cyWindow.getCytoscapeObj() );
 
 } // ctor
 //----------------------------------------------------------------------------------------
@@ -98,16 +101,16 @@ public void actionPerformed (ActionEvent e)
     return;
     }
     
-  cytoscapeWindow.setInteractivity (false);
-  this.graph = cytoscapeWindow.getGraph ();
-  this.nodeAttributes = cytoscapeWindow.getNodeAttributes ();
-  this.edgeAttributes = cytoscapeWindow.getEdgeAttributes ();
-  this.attributeLayouter = new AttributeLayout (cytoscapeWindow);
+  cyWindow.setInteractivity (false);
+  this.graph = cyWindow.getNetwork().getGraph ();
+  this.nodeAttributes = cyWindow.getNetwork().getNodeAttributes ();
+  this.edgeAttributes = cyWindow.getNetwork().getEdgeAttributes ();
+  this.attributeLayouter = new AttributeLayout (cyWindow);
   JDialog dialog = new Gui ("Annotation");
   dialog.pack ();
-  dialog.setLocationRelativeTo (cytoscapeWindow.getMainFrame ());
+  dialog.setLocationRelativeTo (cyWindow.getMainFrame ());
   dialog.setVisible (true);
-  cytoscapeWindow.setInteractivity (true);
+  cyWindow.setInteractivity (true);
 
 } // actionPerformed
 //----------------------------------------------------------------------------------------
@@ -115,7 +118,7 @@ protected class Gui extends JDialog {
 
 Gui (String title) 
 {
-  super (cytoscapeWindow.getMainFrame (), false);
+  super (cyWindow.getMainFrame (), false);
   setTitle (title);
   setContentPane (createWidgets ());
 }
@@ -259,10 +262,13 @@ class SelectNodesTreeSelectionListener implements TreeSelectionListener {
       Vector list = (Vector) selectionHash.get (name);
       String [] categories = (String []) list.toArray (new String [0]);
       Node [] nodesInCategory = getNodesByAttributeValues (name, categories);
-      boolean clearPreviousSelections = false;
-      if (i == 0) clearPreviousSelections = true;
-      cytoscapeWindow.selectNodes (nodesInCategory, clearPreviousSelections);
-      cytoscapeWindow.redrawGraph ();
+      if (i == 0) {graph.unselectNodes();}
+      if (nodesInCategory != null) {
+          for (int n=0; n<nodesInCategory.length; n++) {
+              graph.setSelected(nodesInCategory[n], true);
+          }
+      }
+      cyWindow.redrawGraph ();
       }
 
     } // valueChanged
@@ -307,7 +313,7 @@ protected Node [] getNodesByAttributeValues (String attributeName, String [] tar
   Vector collector = new Vector ();
   Node nodes [] = graph.getNodeArray ();
   for (int i=0; i < nodes.length; i++) {
-    String canonicalName = cytoscapeWindow.getCanonicalNodeName (nodes [i]);
+    String canonicalName = nodeAttributes.getCanonicalName (nodes [i]);
     if (canonicalName == null) continue;
     Object attributeValue = (Object) nodeAttributes.getValue (attributeName, canonicalName);
     if (attributeValue == null) continue;
@@ -334,7 +340,13 @@ protected void createTreeNodes (DefaultMutableTreeNode root,
 {
   if (descriptions == null || descriptions.length == 0) return;
 
-  ArrayList speciesInGraph =  new ArrayList (Arrays.asList (cytoscapeWindow.getAllSpecies ()));
+  Node[] allNodes = graph.getNodeArray();
+  ArrayList speciesInGraph = new ArrayList();
+  for (int i=0; i<allNodes.length; i++) {
+      String canonicalName = nodeAttributes.getCanonicalName(allNodes[i]);
+      String species = nodeAttributes.getStringValue(Semantics.SPECIES, canonicalName);
+      if (!speciesInGraph.contains(species)) {speciesInGraph.add(species);}
+  }
 
   DefaultMutableTreeNode branch = null;
   DefaultMutableTreeNode leaf = null;
@@ -405,7 +417,7 @@ public String addAnnotationToNodes (AnnotationDescription aDesc, int level)
   nodeAttributes.deleteAttribute (annotationNameForLeafIDs);
 
 
-  cytoscapeWindow.setInteractivity (false);
+  cyWindow.setInteractivity (false);
   HashMap nodeNameMap = nodeAttributes.getNameMap ();
   String [] canonicalNodeNames = (String []) nodeNameMap.values().toArray(new String [0]);
 
@@ -430,7 +442,7 @@ public String addAnnotationToNodes (AnnotationDescription aDesc, int level)
     } // for i
 
   nodeAttributes.setCategory (annotationNameAtLevel, "annotation");
-  cytoscapeWindow.setInteractivity (true);
+  cyWindow.setInteractivity (true);
 
   return annotationNameAtLevel;
 
@@ -493,7 +505,7 @@ class ApplyAnnotationAction extends AbstractAction {
     DefaultMutableTreeNode node2 = (DefaultMutableTreeNode) annotationPath.getPathComponent (2);
     int level = ((Integer) node2.getUserObject ()).intValue ();
     if (aDesc == null) return;
-    cytoscapeWindow.setInteractivity (false);
+    cyWindow.setInteractivity (false);
     currentAnnotationCategory = addAnnotationToNodes (aDesc, level);
     Object [] uniqueAnnotationValues = nodeAttributes.getUniqueValues (currentAnnotationCategory);
     if (uniqueAnnotationValues != null && 
@@ -502,7 +514,7 @@ class ApplyAnnotationAction extends AbstractAction {
       java.util.Arrays.sort (uniqueAnnotationValues, String.CASE_INSENSITIVE_ORDER);
       appendToSelectionTree (currentAnnotationCategory, uniqueAnnotationValues);
       }
-    cytoscapeWindow.setInteractivity (true);
+    cyWindow.setInteractivity (true);
     }
 
 //--------------------------------------------------------------------------------------

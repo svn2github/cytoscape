@@ -421,8 +421,8 @@ public class OldStyleCalculatorIO {
      * The old visual mappings defintion style did not have entries for node
      * labels. Assuming the user wants node labels, we grab the node label
      * calculator from the default visual style and set the visual style we
-     * create here to use that calculator.  This assumes that CytoscapeWindow,
-     * when loading the visual styles, has created a suitable default.
+     * create here to use that calculator.  This assumes that a suitable
+     * default was created when loading the visual styles.
      */
     private static void loadNodeAppearanceCalculator(Properties props,
                                                      CalculatorCatalog catalog,

@@ -36,7 +36,6 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-import cytoscape.CytoscapeWindow;
 import cytoscape.CytoscapeObj;
 import cytoscape.actions.*;
 import cytoscape.dialogs.ShrinkExpandGraphUI;
@@ -47,7 +46,8 @@ import cytoscape.data.annotation.AnnotationGui;
  * also provides access to individual menus and items.
  */
 public class CyMenus {
-    CytoscapeWindow cytoscapeWindow;
+    CyWindow cyWindow;
+    boolean menusInitialized = false;
     JMenuBar menuBar;
     JMenu fileMenu, loadSubMenu, saveSubMenu;
     JMenu editMenu;
@@ -58,18 +58,13 @@ public class CyMenus {
     JMenu opsMenu;
     JToolBar toolBar;
     
-    /**
-     * Currently the constructor takes a CytoscapeWindow argument,
-     * because all the actions take a CytoscapeWindow. Eventually,
-     * we'll convert all the actions to use the new classes instead,
-     * and then change this constructor as well.
-     */
-    public CyMenus(CytoscapeWindow cytoscapeWindow) {
-        this.cytoscapeWindow = cytoscapeWindow;//not technically needed
-        //the following methods can't go here, because the actions created
-        //try to access this object before the constructor is finished
-        //createMenuBar();
-        //createToolBar();
+
+    public CyMenus(CyWindow cyWindow) {
+        this.cyWindow = cyWindow;
+        //the following methods construct the basic bar objects, but
+        //don't fill them with menu items and associated action listeners
+        createMenuBar();
+        toolBar = new JToolBar();
     }
     
     /**
@@ -119,10 +114,10 @@ public class CyMenus {
      */
     public void updateUndoRedoMenuItemStatus() {
         if (undoMenuItem != null) {
-            undoMenuItem.setEnabled(cytoscapeWindow.getUndoManager().undoLength() > 0 ? true : false);
+            undoMenuItem.setEnabled(cyWindow.getUndoManager().undoLength() > 0 ? true : false);
         }
         if (redoMenuItem != null) {
-            redoMenuItem.setEnabled(cytoscapeWindow.getUndoManager().redoLength() > 0 ? true : false);
+            redoMenuItem.setEnabled(cyWindow.getUndoManager().redoLength() > 0 ? true : false);
         }
     }
     
@@ -149,37 +144,67 @@ public class CyMenus {
     }
 
     /**
-     * This method is called after the constructor to handle
-     * the circular reference problem (actions trying to access
-     * the menu object before it is fully created.
-     *
-     * Probably a better solution here is to create all of the
-     * submenus from the constructor, and then separately fill
-     * the menus with each of the actions. However, I'm going
-     * to first convert the actions to use the new classes and
-     * then worry about this problem.
+     * Creates the menu bar and the various menus and submenus, but
+     * defers filling those menus with items until later.
      */
-    public void createMenus() {
-        if (menuBar == null) {createMenuBar();}
-        if (toolBar == null) {createToolBar();}
+    private void createMenuBar() {
+        menuBar = new JMenuBar();
+        fileMenu = new JMenu("File");
+        {
+            loadSubMenu = new JMenu("Load");
+            fileMenu.add(loadSubMenu);
+            saveSubMenu = new JMenu("Save");
+            fileMenu.add(saveSubMenu);
+        }
+        menuBar.add(fileMenu);
+        
+        editMenu = new JMenu("Edit");
+        menuBar.add(editMenu);
+        
+        selectMenu = new JMenu("Select");
+        menuBar.add(selectMenu);
+        
+        layoutMenu = new JMenu("Layout");
+        layoutMenu.setToolTipText("Apply new layout algorithm to graph");
+        menuBar.add(layoutMenu);
+
+        vizMenu = new JMenu("Visualization"); // always create the viz menu
+        menuBar.add(vizMenu);
+        
+        opsMenu = new JMenu("PlugIns"); // always create the plugins menu
+        menuBar.add(opsMenu);
     }
     
     /**
-     * Creates the menu bar and fills it with a large number of
-     * menu items that trigger attached action listener objects.
+     * This method should be called by the creator of this object after
+     * the constructor has finished. It fills the previously created
+     * menu and tool bars with items and action listeners that respond
+     * when those items are activated. This needs to come after the
+     * constructor is done, because some of the listeners try to access
+     * this object in their constructors.
+     *
+     * Any calls to this method after the first will do nothing.
      */
-    private void createMenuBar() {
-        CyWindow cyWindow = cytoscapeWindow.getCyWindow();
+    public void initializeMenus() {
+        if (!menusInitialized) {
+            menusInitialized = true;
+            fillMenuBar();
+            fillToolBar();
+        }
+    }
+    /**
+     * Fills the previously created menu bar with a large number of
+     * items with attached action listener objects.
+     */
+    private void fillMenuBar() {
         NetworkView networkView = cyWindow;  //restricted interface
         CytoscapeObj cytoscapeObj = cyWindow.getCytoscapeObj();
-        menuBar = new JMenuBar();
-        fileMenu = new JMenu("File");
-        
-        loadSubMenu = new JMenu("Load");
-        fileMenu.add(loadSubMenu);
-        JMenuItem mi = loadSubMenu.add(new LoadGMLFileAction(cytoscapeWindow));
+
+        //first fill the File menu
+        //fill the Load submenu
+        JMenuItem mi = loadSubMenu.add(new LoadGMLFileAction(networkView));
         mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.CTRL_MASK));
-        mi = loadSubMenu.add(new LoadInteractionFileAction(cytoscapeWindow));
+        mi = loadSubMenu.add(new LoadInteractionFileAction(networkView));
         mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.CTRL_MASK));
         mi = loadSubMenu.add(new LoadExpressionMatrixAction(networkView));
         mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.CTRL_MASK));
@@ -189,8 +214,7 @@ public class CyMenus {
         mi = loadSubMenu.add(new LoadEdgeAttributesAction(networkView));
         mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_J, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK));
         
-        saveSubMenu = new JMenu("Save");
-        fileMenu.add(saveSubMenu);
+        //fill the Save submenu
         saveSubMenu.add(new SaveAsGMLAction(networkView));
         saveSubMenu.add(new SaveAsInteractionsAction(networkView));
         saveSubMenu.add(new SaveVisibleNodesAction(networkView));
@@ -200,16 +224,12 @@ public class CyMenus {
         
         mi = fileMenu.add(new CloseWindowAction(cyWindow));
         mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
-        if (cytoscapeWindow.getParentApp() != null) {
+        if (cytoscapeObj.getParentApp() != null) {
             mi = fileMenu.add(new ExitAction(cyWindow));
             mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
         }
         
-        
-        menuBar.add(fileMenu);
-        
-        editMenu = new JMenu("Edit");
-        menuBar.add(editMenu);
+        //fill the Edit menu
         // added by dramage 2002-08-21
         if (cytoscapeObj.getConfiguration().enableUndo()) {
             undoMenuItem = editMenu.add(new UndoAction(cyWindow));
@@ -233,9 +253,8 @@ public class CyMenus {
         
         deleteSelectionMenuItem = editMenu.add(new DeleteSelectedAction(networkView));
         deleteSelectionMenuItem.setEnabled(false);
-        
-        selectMenu = new JMenu("Select");
-        menuBar.add(selectMenu);
+
+        //fill the Select menu
         JMenu selectNodesSubMenu = new JMenu("Nodes");
         selectMenu.add(selectNodesSubMenu);
         JMenu selectEdgesSubMenu = new JMenu("Edges");
@@ -253,29 +272,25 @@ public class CyMenus {
         //mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.CTRL_MASK));
         mi = selectEdgesSubMenu.add(new InvertSelectedEdgesAction(networkView));
         mi = selectEdgesSubMenu.add(new HideSelectedEdgesAction(networkView));
-        mi = selectEdgesSubMenu.add(new EdgeManipulationAction(cytoscapeWindow));
+        mi = selectEdgesSubMenu.add(new EdgeManipulationAction(networkView));
         
         mi = selectNodesSubMenu.add(new SelectFirstNeighborsAction(networkView));
         mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK));
         
         selectNodesSubMenu.add(new AlphabeticalSelectionAction(networkView));
         selectNodesSubMenu.add(new ListFromFileSelectionAction(networkView));
-        selectNodesSubMenu.add(new MenuFilterAction(cytoscapeWindow));
+        selectNodesSubMenu.add(new MenuFilterAction(networkView));
         
-        mi = displayNWSubMenu.add(new NewWindowSelectedNodesOnlyAction(cytoscapeWindow));
+        mi = displayNWSubMenu.add(new NewWindowSelectedNodesOnlyAction(cyWindow));
         mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
-        mi = displayNWSubMenu.add(new NewWindowSelectedNodesEdgesAction(cytoscapeWindow));
-        mi = displayNWSubMenu.add(new CloneGraphInNewWindowAction(cytoscapeWindow));
+        mi = displayNWSubMenu.add(new NewWindowSelectedNodesEdgesAction(cyWindow));
+        mi = displayNWSubMenu.add(new CloneGraphInNewWindowAction(cyWindow));
         mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, ActionEvent.CTRL_MASK));
         
-        ButtonGroup layoutGroup = new ButtonGroup();
-        layoutMenu = new JMenu("Layout");
-        layoutMenu.setToolTipText("Apply new layout algorithm to graph");
-        menuBar.add(layoutMenu);
-        
+        //fill the Layout menu
         String defaultLayoutStrategy =
-                cytoscapeWindow.getConfiguration().getDefaultLayoutStrategy();
-        
+                cyWindow.getCytoscapeObj().getConfiguration().getDefaultLayoutStrategy();
+        ButtonGroup layoutGroup = new ButtonGroup();
         JRadioButtonMenuItem layoutButton;
         layoutButton = new JRadioButtonMenuItem("Circular");
         layoutGroup.add(layoutButton);
@@ -332,20 +347,16 @@ public class CyMenus {
         
         ShrinkExpandGraphUI shrinkExpand =
                 new ShrinkExpandGraphUI(cyWindow, layoutMenu);  
-        vizMenu = new JMenu("Visualization"); // always create the viz menu
-        menuBar.add(vizMenu);
+
+        //fill the Visualization menu
         vizMenu.add(new SetVisualPropertiesAction(cyWindow));
-        
-        opsMenu = new JMenu("PlugIns"); // always create the plugins menu
-        menuBar.add(opsMenu);
     }
     
     /**
-     * Creates the toolbar for easy access to commonly used actions.
+     * Fills the toolbar for easy access to commonly used actions.
      */
-    private void createToolBar() {
-        NetworkView networkView = cytoscapeWindow.getCyWindow();
-        toolBar = new JToolBar();
+    private void fillToolBar() {
+        NetworkView networkView = cyWindow; //restricted interface
         JButton b;
         
         b = toolBar.add(new ZoomAction(networkView, 0.9));
@@ -383,12 +394,12 @@ public class CyMenus {
         b.setBorderPainted(false);
         
         toolBar.addSeparator();
-        b = toolBar.add(new MainFilterDialogAction(cytoscapeWindow));
+        b = toolBar.add(new MainFilterDialogAction(networkView));
         b.setIcon(new ImageIcon(getClass().getResource("images/Grid24.gif")));
         b.setToolTipText("Apply Filters to Graph");
         b.setBorderPainted(false);
         
-        b = toolBar.add(new AnnotationGui(cytoscapeWindow));
+        b = toolBar.add(new AnnotationGui(cyWindow));
         b.setIcon(new ImageIcon(getClass().getResource("images/AnnotationGui.gif")));
         b.setToolTipText("add annotation to nodes");
         b.setBorderPainted(false);

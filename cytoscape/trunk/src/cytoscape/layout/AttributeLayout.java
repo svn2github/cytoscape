@@ -42,6 +42,7 @@ import javax.swing.JOptionPane;
 
 import cytoscape.*;
 import cytoscape.undo.*;
+import cytoscape.view.*;
 
 import y.base.*;
 import y.view.*;
@@ -54,7 +55,7 @@ import java.util.logging.*;
 
 //----------------------------------------------------------------------------------------
 public class AttributeLayout {
-  protected CytoscapeWindow cytoscapeWindow;
+  protected CyWindow cyWindow;
   protected GraphObjAttributes nodeAttributes; 
   protected GraphObjAttributes edgeAttributes; 
   protected Graph2D graph;
@@ -66,44 +67,13 @@ public class AttributeLayout {
   public static final int DO_LAYOUT = 0;
   public static final int CREATE_EDGES = 1;
 //----------------------------------------------------------------------------------------
-public AttributeLayout (CytoscapeWindow cytoscapeWindow)
-{
-  this.cytoscapeWindow = cytoscapeWindow;
-  this.nodeAttributes = cytoscapeWindow.getNodeAttributes ();
-  this.edgeAttributes = cytoscapeWindow.getEdgeAttributes ();
-  this.graph = cytoscapeWindow.getGraph ();
-  graphHider = cytoscapeWindow.getGraphHider ();
-
-  //cytoscapeWindow.getOperationsMenu().add (
-  //   new AttributeLayoutAction (cytoscapeWindow, DO_LAYOUT, "Do layout..."));
-  //cytoscapeWindow.getOperationsMenu().add (
-  //   new AttributeLayoutAction (cytoscapeWindow, CREATE_EDGES, "Create edges..."));
-
+public AttributeLayout(CyWindow cyWindow) {
+  this.cyWindow = cyWindow;
+  this.nodeAttributes = cyWindow.getNetwork().getNodeAttributes();
+  this.edgeAttributes = cyWindow.getNetwork().getEdgeAttributes();
+  this.graph = cyWindow.getNetwork().getGraph();
+  graphHider = cyWindow.getGraphHider();
 } // ctor
-//----------------------------------------------------------------------------------------
-/***************************
-class AttributeLayoutAction extends AbstractAction {
-  GraphObjAttributes nodeAttributes;
-  int functionToPerform;
-
-  AttributeLayoutAction (CytoscapeWindow cytoscapeWindow, int functionToPerform, String title) {
-    super (title);
-    this.functionToPerform = functionToPerform;
-    }
- 
-  public void actionPerformed (ActionEvent e) {
-    nodeAttributes = cytoscapeWindow.getNodeAttributes ();
-    String [] attributeNames = getAnnotationAttributes (nodeAttributes);
-    JDialog dialog = new AttributeChooser (AttributeLayout.this, cytoscapeWindow, 
-                                           attributeNames, functionToPerform);
-    dialog.pack ();
-    dialog.setLocationRelativeTo (cytoscapeWindow.getMainFrame ());
-    dialog.setVisible (true);
-    cytoscapeWindow.setInteractivity (true);
-    } // actionPerformed
-
-} // inner classAttributeLayoutAction
-*******************************/
 //----------------------------------------------------------------------------------------
 protected String [] getAnnotationAttributes (GraphObjAttributes nodeAttributes)
 {
@@ -158,34 +128,34 @@ public void createEdgesBetweenAllNodesWithSharedAttribute (String attributeName)
 {
   
   deleteCategoryNodes ();
-  cytoscapeWindow.redrawGraph ();
+  cyWindow.redrawGraph ();
 
   String [] categories = getCurrentAttributeValues (attributeName);
   addCategoryEdgesBetweenNodes (attributeName); // , categories);
-  cytoscapeWindow.redrawGraph ();
+  cyWindow.redrawGraph ();
 
 } // createEdgesBetweenAllNodesWithSharedAttribute
 //----------------------------------------------------------------------------------------
 public void performLayoutByAttribute (String attributeName)
 {
   deleteCategoryNodes ();
-  cytoscapeWindow.redrawGraph ();
+  cyWindow.redrawGraph ();
 
   String [] categories = getCurrentAttributeValues (attributeName);
   createCategoryNodes (categories);
   graphHider.hideEdges ();
   addCategoryEdges (attributeName, categories);
-  cytoscapeWindow.applyLayout (false);
+  cyWindow.applyLayout (false);
   removeCategoryEdges (categories);
   graphHider.unhideEdges ();
-  cytoscapeWindow.redrawGraph ();
+  cyWindow.redrawGraph ();
   //AttributeValuesSelector valuesSelector = 
-  //        new AttributeValuesSelector (this, cytoscapeWindow, attributeName,  
+  //        new AttributeValuesSelector (this, cyWindow, attributeName,  
   //                                     categoryNodes, "Select nodes by attribute value");
   //valuesSelector.pack ();
-  //valuesSelector.setLocationRelativeTo (cytoscapeWindow.getMainFrame ());
+  //valuesSelector.setLocationRelativeTo (cyWindow.getMainFrame ());
   //valuesSelector.setVisible (true);
-  //cytoscapeWindow.setInteractivity (true);
+  //cyWindow.setInteractivity (true);
 
 } // performLayoutByAttribute
 //----------------------------------------------------------------------------------------
@@ -213,7 +183,7 @@ protected void createCategoryNodes (String [] categories)
 
   nodeAttributes.setCategory ("layoutCategorizer", "categorizer");
 
-  cytoscapeWindow.redrawGraph ();
+  cyWindow.redrawGraph ();
 
 } // createCategoryNodes
 //----------------------------------------------------------------------------------------
@@ -279,12 +249,11 @@ String [] getCurrentAttributeValues (String attributeName)
 {
   Node nodes [] = graph.getNodeArray ();
   Vector categoriesFound = new Vector ();
-  GraphObjAttributes localNodeAttributes = cytoscapeWindow.getNodeAttributes();
 
   for (int i=0; i < nodes.length; i++) {
-    String canonicalName = cytoscapeWindow.getCanonicalNodeName (nodes [i]);
+    String canonicalName = nodeAttributes.getCanonicalName (nodes [i]);
     if (canonicalName == null) continue;
-    Object value = cytoscapeWindow.getNodeAttributes().getValue (attributeName, canonicalName);
+    Object value = nodeAttributes.getValue (attributeName, canonicalName);
     if (value == null) continue;
     String [] allValuesThisNode = GraphObjAttributes.unpackPossiblyCompoundStringAttributeValue (value);
     for (int c=0; c < allValuesThisNode.length; c++) {
@@ -300,9 +269,9 @@ String [] getCurrentAttributeValues (String attributeName)
 protected void addCategoryEdges (String attributeName, String [] categories)
 {
   Node nodes [] = graph.getNodeArray ();
-
+  
   for (int i=0; i < nodes.length; i++) {
-    String canonicalName = cytoscapeWindow.getCanonicalNodeName (nodes [i]);
+    String canonicalName = nodeAttributes.getCanonicalName (nodes [i]);
     if (canonicalName == null) continue;
     Object attributeValue = nodeAttributes.getValue (attributeName, canonicalName);
     if (attributeValue == null) continue;
@@ -346,7 +315,7 @@ protected void addCategoryEdgesBetweenNodes (String attributeName)
 
   HashMap nodeGroups = new HashMap ();
   for (int i=0; i < nodes.length; i++) {
-    String canonicalName = cytoscapeWindow.getCanonicalNodeName (nodes [i]);
+    String canonicalName = nodeAttributes.getCanonicalName (nodes [i]);
     if (canonicalName == null) continue;
     Object attributeValue = nodeAttributes.getValue (attributeName, canonicalName);
     if (attributeValue == null) continue;

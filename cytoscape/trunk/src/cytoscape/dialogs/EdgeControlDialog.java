@@ -46,8 +46,8 @@ import java.util.*;
 import y.base.*;
 import y.view.*;
 
-import cytoscape.CytoscapeWindow;
 import cytoscape.GraphObjAttributes;
+import cytoscape.view.NetworkView;
 
 import cytoscape.undo.UndoableGraphHider;
 //--------------------------------------------------------------------------------------
@@ -58,7 +58,7 @@ import cytoscape.undo.UndoableGraphHider;
  */
 public class EdgeControlDialog extends JDialog {
 
-  CytoscapeWindow cytoscapeWindow;
+  NetworkView networkView;
   Graph2D graph;
   String [] edgeNames;
   HashMap edgeNamesHash;
@@ -67,16 +67,16 @@ public class EdgeControlDialog extends JDialog {
   UndoableGraphHider graphHider;
   JTree tree;
 //--------------------------------------------------------------------------------------
-public EdgeControlDialog (CytoscapeWindow cytoscapeWindow, 
+public EdgeControlDialog (NetworkView networkView, 
                           HashMap edgeNamesHash, String title)
 
 {
-  super (cytoscapeWindow.getMainFrame (), false);
-  this.cytoscapeWindow = cytoscapeWindow;
+  super (networkView.getMainFrame (), false);
+  this.networkView = networkView;
   this.edgeNamesHash = edgeNamesHash;
-  this.graph = cytoscapeWindow.getGraph ();
-  this.graphHider = cytoscapeWindow.getGraphHider ();
-  this.edgeAttributes = cytoscapeWindow.getEdgeAttributes ();
+  this.graph = networkView.getNetwork().getGraph ();
+  this.graphHider = networkView.getGraphHider ();
+  this.edgeAttributes = networkView.getNetwork().getEdgeAttributes ();
   setTitle (title);
   setContentPane (createTreeViewGui ());
 
@@ -187,10 +187,10 @@ class SelectAction extends AbstractAction {
       EdgeControlDialog.this.getToolkit().beep ();
       return;
       }
-    cytoscapeWindow.getGraph().unselectEdges ();
+    networkView.getNetwork().getGraph().unselectEdges ();
     for (int i=0; i < selectedTreePaths.length; i++)
       selectEdgesByName (selectedTreePaths [i]);
-    cytoscapeWindow.redrawGraph ();
+    networkView.redrawGraph(false, true);
     } // actionPerformed
 
 } // SelectAction
@@ -206,7 +206,7 @@ class HideAction extends AbstractAction {
     String action = e.getActionCommand ();
     for (int i=0; i < selectedTreePaths.length; i++)
       hideEdgesByName (selectedTreePaths [i]);
-    cytoscapeWindow.redrawGraph ();
+    networkView.redrawGraph(false, true);
     } // actionPerformed
 
 } // HideButtonAction
@@ -296,7 +296,10 @@ protected void selectEdgesByName (TreePath treePath)
       list.add (edge);
     } // for ec
 
-   cytoscapeWindow.selectEdges ((Edge []) list.toArray (new Edge [0]), false);
+   for (Iterator i = list.iterator(); i.hasNext(); ) {
+       Edge edge = (Edge)i.next();
+       graph.setSelected(edge, true);
+   }
 
  
 } // selectEdgesByName
@@ -305,7 +308,7 @@ class SelectOthersAction extends AbstractAction {
   SelectOthersAction () {super ("");}
   public void actionPerformed (ActionEvent e) {
     selectOtherEdges ();
-    cytoscapeWindow.redrawGraph ();
+    networkView.redrawGraph(false, true);
     }
 
 } // SelectOthersAction
@@ -314,7 +317,7 @@ class DeselectAllAction extends AbstractAction {
   DeselectAllAction () {super ("");}
   public void actionPerformed (ActionEvent e) {
     deselectAllEdges ();
-    cytoscapeWindow.redrawGraph ();
+    networkView.redrawGraph(false, true);
     }
 
 } // DeselectAllAction
@@ -326,7 +329,7 @@ class HideOthersAction extends AbstractAction {
   public void actionPerformed (ActionEvent e) {
     graphHider.unhideEdges ();
     hideOtherEdges ();
-    cytoscapeWindow.redrawGraph ();
+    networkView.redrawGraph(false, true);
     }
 
 } // HideOthersAction
@@ -337,7 +340,7 @@ class HideAllAction extends AbstractAction {
 
   public void actionPerformed (ActionEvent e) {
     graphHider.hideEdges ();
-    cytoscapeWindow.redrawGraph ();
+    networkView.redrawGraph(false, true);
     }
 
 } // HideAllAction
@@ -348,7 +351,7 @@ class SelectAllAction extends AbstractAction {
 
   public void actionPerformed (ActionEvent e) {
     selectAllEdges ();
-    cytoscapeWindow.redrawGraph ();
+    networkView.redrawGraph(false, true);
     }
 
 } // HideAllAction
@@ -359,18 +362,17 @@ class ShowAllAction extends AbstractAction {
 
   public void actionPerformed (ActionEvent e) {
     graphHider.unhideEdges ();
-    cytoscapeWindow.redrawGraph ();
+    networkView.redrawGraph(false, true);
     }
 
 } // ShowAllAction
 //------------------------------------------------------------------------------
 protected void selectAllEdges ()
 {
-  Vector list = new Vector ();
   for (EdgeCursor ec = graph.edges (); ec.ok (); ec.next ())
-    list.add (ec.edge ());
+    graph.setSelected (ec.edge (), true);
 
-  cytoscapeWindow.selectEdges ((Edge []) list.toArray (new Edge [0]), false);
+  
 
 }
 //------------------------------------------------------------------------------

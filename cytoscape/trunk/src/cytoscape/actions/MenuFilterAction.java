@@ -8,12 +8,12 @@ package cytoscape.actions;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.view.NetworkView;
 //-------------------------------------------------------------------------
 public class MenuFilterAction extends MainFilterDialogAction {
-    CytoscapeWindow cytoscapeWindow;
+    NetworkView networkView;
     
-    public MenuFilterAction(CytoscapeWindow cytoscapeWindow) {
-        super(cytoscapeWindow, "Using filters..."); 
+    public MenuFilterAction(NetworkView networkView) {
+        super(networkView, "Using filters..."); 
     }
 }

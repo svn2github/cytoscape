@@ -119,11 +119,8 @@ public class CytoscapeWindow extends JPanel implements FilterDialogClient, Graph
 
     public static final String NO_PLUGINS = "No plugins loaded";
 
-    //this object holds data members
-    protected CyNetwork network;
-    //this object holds objects that are unique in a Cytoscape instance
-    protected CytoscapeObj globalInstance;
     //this object contains all the window and view stuff
+    //everything else is accessed through this reference
     protected CyWindow cyWindow;
 
     /** default species for all genes in the CytoscapeWindow */
@@ -135,19 +132,24 @@ public class CytoscapeWindow extends JPanel implements FilterDialogClient, Graph
 //------------------------------------------------------------------------------
 public CytoscapeWindow(CytoscapeObj globalInstance, CyNetwork network,
 String title) {
+    this.defaultSpecies = null;
     this.geometryFilename = null;
     this.expressionDataFilename = null;
-    this.globalInstance = globalInstance;
-    this.network = network;
-    boolean doFreshLayout;
-    if (globalInstance.getConfiguration().getInteractionsFilename() != null) {
-        doFreshLayout = true; //assume we have to layout a graph from interactions
-    } else {
-        doFreshLayout = false; //assume a GML file including layout
-    }
-    this.cyWindow = new CyWindow(globalInstance, network, title, doFreshLayout, this);
-    cyWindow.decorateWindow();
+    this.cyWindow = new CyWindow(globalInstance, network, title, this);
     cyWindow.showWindow();
+    loadPlugins();
+}
+//------------------------------------------------------------------------------
+/**
+ * This constructor should only be called from the CyWindow constructor. This
+ * provides a simple wrapper around that CyWindow and performs plugin loading.
+ */
+public CytoscapeWindow(CyWindow cyWindow) {
+    this.defaultSpecies = null;
+    this.geometryFilename = null;
+    this.expressionDataFilename = null;
+    this.cyWindow = cyWindow;
+    loadPlugins();
 }
 //------------------------------------------------------------------------------
 /**
@@ -171,13 +173,13 @@ public CytoscapeWindow (cytoscape parentApp,
   this.geometryFilename = geometryFilename;
   this.expressionDataFilename = expressionDataFilename;
 
-  this.globalInstance = new CytoscapeObj(parentApp, config, logger, bioDataServer);
+  CytoscapeObj globalInstance = new CytoscapeObj(parentApp, config, logger, bioDataServer);
   
-  this.network = new CyNetwork(graph, nodeAttributes,
+  CyNetwork network = new CyNetwork(graph, nodeAttributes,
                                edgeAttributes, expressionData);
 
-  this.cyWindow = new CyWindow(globalInstance, network, title, doFreshLayout, this);
-  cyWindow.decorateWindow();
+  network.setNeedsLayout(doFreshLayout);
+  this.cyWindow = new CyWindow(globalInstance, network, title, this);
 
   //these probably don't belong in the Cytoscape core
   assignSpeciesAttributeToAllNodes();
@@ -335,7 +337,7 @@ public void loadPlugins() {
 //----------BASIC SET/GET METHODS-----------------------------------------------
 //------------------------------------------------------------------------------
 
-public CyNetwork getNetwork() {return network;}
+public CyNetwork getNetwork() {return getCyWindow().getNetwork();}
 //------------------------------------------------------------------------------
 public Graph2D getGraph() {return this.getNetwork().getGraph();}
 //------------------------------------------------------------------------------
@@ -414,7 +416,7 @@ public void setExpressionData(ExpressionData expData, String expressionDataFilen
     this.expressionDataFilename = expressionDataFilename;
 }
 //------------------------------------------------------------------------------
-public CytoscapeObj getCytoscapeObj() {return globalInstance;}
+public CytoscapeObj getCytoscapeObj() {return getCyWindow().getCytoscapeObj();}
 //------------------------------------------------------------------------------
 public cytoscape getParentApp() {return getCytoscapeObj().getParentApp();}
 //------------------------------------------------------------------------------
@@ -1194,11 +1196,11 @@ public HashMap configureNewNode (Node node)
 } // configureNode
 //----------------------------------------------------------------------------------------
 /**
- * @deprecated Moved to CyNetworkUtilities.getInteractionTypes, with the
+ * @deprecated Moved to Semantics.getInteractionTypes, with the
  * network as an argument.
  */
 public String[] getInteractionTypes() {
-    return CyNetworkUtilities.getInteractionTypes(this.getNetwork());
+    return Semantics.getInteractionTypes(this.getNetwork());
 }
 //------------------------------------------------------------------------------
 } // CytoscapeWindow

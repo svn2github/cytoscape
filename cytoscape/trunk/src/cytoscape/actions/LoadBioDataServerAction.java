@@ -49,7 +49,8 @@ public class LoadBioDataServerAction extends AbstractAction {
             //now that we have a bioDataServer, we probably want to use it to
             //provide naming services for the objects in the network. We delegate
             //to a static method that can handle this
-            Semantics.applyNamingServices(networkView.getNetwork(), bioDataServer);
+            Semantics.applyNamingServices(networkView.getNetwork(),
+                                          networkView.getCytoscapeObj());
             //recalculating the appearances may be necessary if the above method
             //assigned new attributes 
             networkView.redrawGraph(false, true);
