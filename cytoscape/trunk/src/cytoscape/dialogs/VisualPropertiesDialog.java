@@ -27,10 +27,12 @@ import cytoscape.util.MutableColor;
 import cytoscape.util.MutableString;
 import cytoscape.util.MutableBool;
 import cytoscape.dialogs.MiscGB;
+import cytoscape.dialogs.EdgeTextPanel;
 //--------------------------------------------------------------------------------------
 public class VisualPropertiesDialog extends JDialog {
     static Map backupMap=null;
     static String backupKey=null;
+    static boolean useMapping=true;
     IconPopupButton shapeDefault;
     IconPopupButton lineTypeDefault;
     IconPopupButton arrowDefault;
@@ -143,7 +145,8 @@ public VisualPropertiesDialog (Frame parentFrame,
   GridBagGroup edgeGBG = new GridBagGroup("Edge Color Mapping");
   if(localEdgeKey==null) localEdgeKey = new MutableString("temp");
   edgeTextPanel
-      = new EdgeTextPanel(edgeAttribs,aMapper,parentFrame,localEdgeKey);
+      = new EdgeTextPanel(edgeAttribs,aMapper,parentFrame,localEdgeKey,
+			  backupMap, backupKey, useMapping);
   MiscGB.insert(edgeGBG,edgeTextPanel,0,0);
   MiscGB.insert(gbg,edgeGBG.panel,0,yPos,2,1,GridBagConstraints.HORIZONTAL);
   yPos++;
@@ -199,7 +202,9 @@ public class ApplyAction extends AbstractAction {
 	    backupKey = localEdgeKey.getString();
 	}
 	if(edgeTextPanel.didStateChange()) {
-	    if(edgeTextPanel.getWhetherToUseTheMap()) {
+	    useMapping = edgeTextPanel.useMappingGenerally();
+	    if(useMapping && edgeTextPanel.getWhetherToUseTheMap()) {
+		System.out.println("using new entry");
 		if(m != null) {
 		    aMapper.setAttributeMapEntry(VizMapperCategories.EDGE_COLOR,
 						 localEdgeKey.getString(),
@@ -207,12 +212,17 @@ public class ApplyAction extends AbstractAction {
 		}
 		edgeTextPanel.updateMapperScalableArrows();
 	    }
-	    else if(edgeTextPanel.useMappingGenerally()) {
+	    else if(useMapping) {
+		System.out.println("using old entry");
 		if(backupMap != null) {
 		    aMapper.setAttributeMapEntry(VizMapperCategories.EDGE_COLOR,
 						 backupKey,
 						 new DiscreteMapper(backupMap));
 		}
+	    }
+	    else {
+		System.out.println("removing entry");
+		aMapper.removeAttributeMapEntry(VizMapperCategories.EDGE_COLOR);
 	    }
 	}
 

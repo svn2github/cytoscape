@@ -29,6 +29,7 @@ public class EdgeTextPanel extends JPanel {
     MutableString edgeKey;
     MutableString attribKey;
     JComboBox theBox;
+    JButton theButton;
     AttributeMapper aMapper;
     Frame parentFrame;
     Map theMap;
@@ -36,11 +37,15 @@ public class EdgeTextPanel extends JPanel {
     boolean useThisMap;
     boolean stateChanged;
     boolean useMappingGenerally;
+    boolean mapSetup;
 
     public EdgeTextPanel (GraphObjAttributes edgeAttribs,
 			  AttributeMapper aMapper,
 			  Frame parentFrame,
-			  MutableString writeHere)
+			  MutableString writeHere,
+			  Map backupMap,
+			  String backupKey,
+			  boolean useMapping)
     {
 	super ();
 	this.aMapper = aMapper;
@@ -51,42 +56,52 @@ public class EdgeTextPanel extends JPanel {
 	theMap = null;
 	useThisMap=false;
 	stateChanged=false;
-	useMappingGenerally=true;
+	useMappingGenerally=useMapping;
 
-	this.setLayout (new GridLayout(1,2,10,10));
+	this.setLayout (new GridLayout(1,3,10,10));
+	JCheckBox useMappingCheck = new JCheckBox("Use Mapping?",useMappingGenerally);
+	useMappingCheck.addItemListener(new UseMappingListener());
+	this.add(useMappingCheck);
 	
 	DefaultComboBoxModel boxModel = new DefaultComboBoxModel();
 	for (int i=0; i < attributeNames.length; i++)
 	    boxModel.addElement(new String(attributeNames [i]));
 	theBox = new JComboBox(boxModel);
+	mapSetup = prepTheBox(boxModel,backupMap,backupKey);
+	this.add(theBox);
 	
+	theButton = new JButton ("Define Mapping");
+	theButton.addActionListener (new ColorToDiscreteListener());
+	this.add(theButton);
+
+	whetherMenuIsEnabled();	
+    }
+
+    /** sets up the combo box and map */
+    private boolean prepTheBox(DefaultComboBoxModel boxModel, Map backupMap, String backupKey) {
+	boolean retval = false;
 	theBox.addActionListener(new BoxAction(edgeKey));
 	if(boxModel.getSize()==1) {
 	    theBox.setSelectedIndex(0);
 	    edgeKey.setString((String)boxModel.getElementAt(0));
-	    setupTheMap();
+	    retval = setupTheMap(backupMap,backupKey);
 	}
 	else {
 	    if(edgeKey.getString()!=null) {
 		theBox.setSelectedItem(edgeKey.getString());
-		setupTheMap();
+		retval = setupTheMap(backupMap,backupKey);
 	    }
 	    else {
 		if(boxModel.getSize()>=1) {
 		    theBox.setSelectedIndex(0);
 		    edgeKey.setString((String)boxModel.getElementAt(0));
-		    setupTheMap();
+		    retval = setupTheMap(backupMap,backupKey);
 		}
 	    }
 	}
-	
-	this.add(theBox);
-	
-	JButton pickThisAttribute = new JButton ("Define Mapping");
-	pickThisAttribute.addActionListener (new ColorToDiscreteListener());
-	this.add(pickThisAttribute);
-	
+	return retval;
     }
+
     /** returns the map. */
     public Map getMap() {
 	return theMap;
@@ -146,7 +161,21 @@ public class EdgeTextPanel extends JPanel {
 		new ColorToDiscreteDialog();
 	}
     }
-    
+
+    public class UseMappingListener implements ItemListener {
+	public void itemStateChanged (ItemEvent e) {
+	    JCheckBox jcb = (JCheckBox)e.getItem();
+	    useMappingGenerally = jcb.isSelected();
+	    whetherMenuIsEnabled();
+	    stateChanged = true;
+	}
+    }
+
+    public void whetherMenuIsEnabled() {
+	theBox.setEnabled(useMappingGenerally);
+	theButton.setEnabled(useMappingGenerally);
+    }
+
     public class MapStringListener extends AbstractAction {
 	JLabel label;
 	Map theMap;
@@ -183,7 +212,8 @@ public class EdgeTextPanel extends JPanel {
 	    
 	    intScrollPanel = new JPanel(new GridLayout(0,2));
 	    /** setupTheMap does some heavy lifting. */
-	    if(EdgeTextPanel.this.setupTheMap()) {
+	    //if(EdgeTextPanel.this.setupTheMap()) {
+	    if(mapSetup) {
 		Set allKeys = theMap.keySet();
 		Iterator keyIter = allKeys.iterator();
 		for(;keyIter.hasNext();) {
@@ -272,13 +302,18 @@ public class EdgeTextPanel extends JPanel {
 	
     } // class ColorToDiscreteDialog
 
-    private boolean setupTheMap() {
+    private boolean setupTheMap(Map backupMap, String backupKey) {
 	boolean retval = false;
 	String controllingAttribName =
 	    aMapper.getControllingDomainAttributeName(VizMapperCategories.EDGE_COLOR);
 	//System.out.println(">" + edgeKey.getString() + "<  vs  >"
 	//		   + controllingAttribName + "<");
-	if(controllingAttribName.equals(edgeKey.getString())) {
+	if(controllingAttribName == null) {
+	    theMap = backupMap;
+	    theMapKey = backupKey;
+	    retval = true;
+	}
+	else if(controllingAttribName.equals(edgeKey.getString())) {
 	    retval = true;
 	    DiscreteMapper dmColor =
 		(DiscreteMapper)
