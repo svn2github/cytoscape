@@ -48,8 +48,6 @@ import cytoscape.plugin.AbstractPlugin;
 
 import cytoscape.actions.*;
 
-import cytoscape.dialogs.ShrinkExpandGraphUI;
-
 import cytoscape.data.annotation.AnnotationGui;
 
 import cytoscape.util.CytoscapeMenuBar;
@@ -376,9 +374,6 @@ public class CyMenus  implements GraphViewChangeListener {
     addAction( new RotationLayoutAction() );
     addAction( new ScaleLayoutAction() );
     layoutMenu.addSeparator();
-
-    // TODO: move the actions to the actions directory
-    ShrinkExpandGraphUI.makeShrinkExpandGraphUI( this );
 
     //fill the Visualization menu
     
