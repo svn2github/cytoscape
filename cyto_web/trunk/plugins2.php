@@ -153,6 +153,7 @@ Also included is a spreadsheet importer.
 				</tr>        
 					</td>
 				</tr>                                                                                      
+<!----------------------
     	<tr><td colspan=3><HR></TD></TR>
 
 				<tr>
@@ -212,6 +213,7 @@ adds to Cytoscape; an inventory of these, along with demonstrations and tutorial
 					 [<a href="http://db.systemsbiology.net/cytoscape/ftp/PythonConsolePlugin.jar">Download PlugIn .jar</a>]<br>
 					</td>
 				</tr>        
+---------------------->
       </tbody>
 		</table>
 
