@@ -34,6 +34,7 @@ public class JarLoaderUI {
 	    (new JarPluginLoaderAction (cyWindow));
 	theMenu.add
 	    (new JarPluginDirectoryAction (cyWindow));
+        theMenu.addSeparator();
 	String[] args = cyWindow.getCytoscapeObj().getConfiguration().getArgs();
 	JarLoaderCommandLineParser parser =
 	    new JarLoaderCommandLineParser(args,cyWindow);

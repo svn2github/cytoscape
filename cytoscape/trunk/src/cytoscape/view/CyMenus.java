@@ -124,6 +124,9 @@ public class CyMenus {
    */
   public JMenu getOperationsMenu() {return opsMenu;}
   /**
+   * @deprecated This method is no longer needed now that we don't
+   * use the NO_OPERATIONS menu placeholder.
+   *
    * Checks the operations menu for existing items. If there
    * are none, adds a default item indicating that no plugin
    * menu operations are available. If there is more than one
@@ -131,6 +134,7 @@ public class CyMenus {
    * it exists.
    */
   public void refreshOperationsMenu() {
+      /*
       if (opsMenu.getItemCount() == 0) {//no real items exist
           opsMenu.add(NO_OPERATIONS);   //so add the default item
       } else if (opsMenu.getItemCount() > 1) {//one real item exists
@@ -139,6 +143,7 @@ public class CyMenus {
               opsMenu.remove(0);  //remove the default item
           }
       }
+      */
   }
     
   /**

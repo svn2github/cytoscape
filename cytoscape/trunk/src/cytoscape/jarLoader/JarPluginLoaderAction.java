@@ -21,7 +21,7 @@ public class JarPluginLoaderAction extends AbstractAction {
     protected CyWindow cyWindow;
     protected File file;  //the jar file selected by the user
     JarPluginLoaderAction(CyWindow cyWindow) {
-	super ("Plugin Jar File");
+	super ("Load Plugins from Jar File");
 	this.cyWindow = cyWindow;
     }
     public void actionPerformed (ActionEvent e) {

@@ -24,7 +24,7 @@ public class JarPluginDirectoryAction extends AbstractAction {
     protected File file;
     protected boolean ready=false;
     JarPluginDirectoryAction(CyWindow cyWindow) {
-	super ("Plugin Jar Directory");
+	super ("Load Plugins from Jar Directory");
 	this.cyWindow = cyWindow;
     }
     public void actionPerformed (ActionEvent e) {

@@ -191,10 +191,10 @@ protected void loadPlugins() {
     this.getCytoscapeObj().getLogger().info(pluginLoader.getMessages());
 
     // add default unselectable "no plugins loaded" if none loaded
-    getCyMenus().refreshOperationsMenu();
+    //getCyMenus().refreshOperationsMenu();
 
     JarLoaderUI jlu = new JarLoaderUI(this,
-                                      this.getCyMenus().getLoadSubMenu() );
+                                      this.getCyMenus().getOperationsMenu() );
 }
 
 //------------------------------------------------------------------------------
@@ -224,7 +224,9 @@ protected void updateGraphView() {
     if (this.cyMenus != null) {
         add(cyMenus.getToolBar(), BorderLayout.NORTH);
     }
-
+    
+    /*
+     * the vizmapper makes most of these redundant
     view.setBackgroundPaint(Color.BLACK);
 
     Iterator i = view.getNodeViewsIterator();
@@ -248,6 +250,7 @@ protected void updateGraphView() {
         //ev.setLineType(EdgeView.CURVED_LINES);
         ev.setStroke(new BasicStroke(5f));
     }
+    */
     addViewContextMenus();
     view.fitContent();
     view.setZoom(view.getZoom()*0.9);
@@ -528,7 +531,9 @@ public void setNewNetwork( CyNetwork newNetwork ) {
     this.network = newNetwork;
     newNetwork.addCyNetworkListener(this);
 
+    System.out.println("Beginning updateGraphView..." + System.currentTimeMillis());
     updateGraphView();
+    System.out.println("Done updateGraphView..." + System.currentTimeMillis());
     //applyLayout();
     updateStatusLabel(0, 0);
 
