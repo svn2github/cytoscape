@@ -180,7 +180,7 @@ Read in tab-delimited text files, in which there is one row for each gene or pro
        significance to node size
   <li> for the skilled user:  use the python console, and write scripts to create custom operations on, or selections from, the data
 </ol>
-Full documentation is <a href="http://db.systemsbiology.org/cytoscape/tutorial/cy2/DataMatrixPlugin"> here</a>.
+Full documentation is <a href="http://db.systemsbiology.net/cytoscape/tutorial/cy2/DataMatrixPlugin"> here</a>.
 
 						<p>
 							Released by: Paul Shannon, Baliga Group, <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>.
