@@ -75,9 +75,9 @@ public class SaveAsInteractionsAction extends CytoscapeAction {
                   (String)(edgeAttributes.getValue("interaction", edgeName));
                 if (interactionName == null) {interactionName = "xx";}
                 sb.append(canonicalName);
-                sb.append(" ");
+                sb.append("\t");
                 sb.append(interactionName);
-                sb.append(" ");
+                sb.append("\t");
                 sb.append(canonicalTargetName);
                 sb.append(lineSep);
               }
