@@ -28,7 +28,8 @@ public class RotationLayoutAction extends CytoscapeAction
 
   public void actionPerformed(ActionEvent e)
   {
-    final MutableGraphLayout nativeGraph = GraphConverter.getGraphCopy(2.0d);
+    final MutableGraphLayout nativeGraph = GraphConverter.getGraphCopy(1.0d);
+    final RotationLayouter rotation = new RotationLayouter(nativeGraph);
     Frame cyFrame = Cytoscape.getDesktop();
     JDialog dialog = new JDialog(cyFrame, "Rotate", true);
     dialog.setResizable(false);
@@ -46,7 +47,7 @@ public class RotationLayoutAction extends CytoscapeAction
         public void stateChanged(ChangeEvent e) {
           double radians = ((double) (slider.getValue() - prevValue)) *
             2.0d * Math.PI / 360.0d;
-          RotationLayouter.rotateGraph(nativeGraph, radians);
+          rotation.rotateGraph(radians);
           GraphConverter.updateCytoscapeLayout(nativeGraph);
           prevValue = slider.getValue(); } });
     panel.add(slider, BorderLayout.SOUTH);
