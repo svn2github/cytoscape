@@ -50,7 +50,8 @@ import cytoscape.data.servers.BioDataServer;
  * to a network, given the objects that serve as the source for this information.
  */
 public class Semantics {
-    
+
+  public static final String IDENTIFIER = "identifier";
   public static final String CANONICAL_NAME = "canonicalName";
   public static final String COMMON_NAME = "commonName";
   public static final String SPECIES = "species";
@@ -193,6 +194,8 @@ public class Semantics {
 
     Cytoscape.setNodeAttributeValue( node, CANONICAL_NAME, cname );
       
+    System.out.println( "Name: "+name+" cname: "+cname +" species: "+species);
+
     String[] synonyms = bds.getAllCommonNames(species, cname);
     StringBuffer concat = new StringBuffer();
     String common_name = null;

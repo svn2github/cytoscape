@@ -108,6 +108,10 @@ public abstract class Cytoscape {
 
   protected static CytoscapeObj cytoscapeobj;
 
+  /**
+   * The CytoscapeObj contains useful references to things like the BioDataServer, 
+   * CytoscapeConfig ( for command line switches ), and the Plugin registry.
+   */
   public static CytoscapeObj getCytoscapeObj () {
     if ( cytoscapeobj == null )
       cytoscapeobj = new CytoscapeObj( new CytoscapeConfig( new String[]{} ) );
@@ -118,7 +122,9 @@ public abstract class Cytoscape {
     cytoscapeobj = obj;
   }
 
-
+  /**
+   * Shuts down Cytoscape, after giving plugins time to react.
+   */
   public static void exit () {
 
     System.out.println( "Cytoscape Exiting...." );
@@ -204,19 +210,24 @@ public abstract class Cytoscape {
     return getRootGraph().edgesList();
   }
 
-
-
+  /**
+   * @param alias an alias of a node
+   * @return will return a node, if one exists for the given alias
+   */
   public static CyNode getCyNode ( String alias ) {
     return getCyNode( alias, false );
   }
 
   /**
    * @param alias an alias of a node
-   * @return will always return a node
+   * @param create will create a node if one does not exist
+   * @return will always return a node, if <code>create</code> is true
    */
   public static CyNode getCyNode ( String alias, boolean create ) {
+
     String old_name =  alias;
     alias = canonicalizeName( alias );
+
     CyNode node = ( CyNode )getNodeNetworkData().getGraphObject( alias );
     if ( node != null ) {
       //System.out.print(".");
@@ -240,6 +251,15 @@ public abstract class Cytoscape {
 
   }
 
+  /**
+   * Gets the first CyEdge found.
+   * @param node_1 one end of the edge
+   * @param node_2 the other end of the edge
+   * @param attribute the attribute of the edge to be searched, a common one is {@link Semantics#INTERACTION }
+   * @param attribute_value a value for the attribute, like "pp"
+   * @param create will create an edge if one does not exist
+   * @return returns an existing CyEdge if present, or creates one if <code>create</code> is true, otherwise returns null.
+   */
   public static CyEdge getCyEdge ( Node node_1, Node node_2, String attribute, Object attribute_value, boolean create ) {
     
     Set edges = new HashSet();
@@ -389,12 +409,13 @@ public abstract class Cytoscape {
   private static String canonicalizeName ( String name ) {
     String canonicalName = name;
 
-    // System.out.println( "Biodataserver is: "+bioDataServer );
+    //System.out.println( "Biodataserver is: "+bioDataServer+" species is: "+species );
+     
 
     if ( bioDataServer != null) {
       canonicalName = bioDataServer.getCanonicalName (species, name);
       if(canonicalName == null){
-        // System.out.println( "canonicalName was null for "+name );
+        //   System.out.println( "canonicalName was null for "+name );
         canonicalName = name;
       }
       //System.out.println( name+" canonicalized to: "+canonicalName );
@@ -433,7 +454,7 @@ public abstract class Cytoscape {
   }
 
   /**
-   * Return the CyNetwork that has the given identifier
+   * @return the CyNetwork that has the given identifier
    * or null if there is no such network 
    */
   public static CyNetwork getNetwork ( String id ) {
@@ -442,6 +463,9 @@ public abstract class Cytoscape {
     return nullNetwork;
   }
 
+  /**
+   * @return a CyNetworkView for the given ID, if one exists, otherwise returns null
+   */
   public static CyNetworkView getNetworkView ( String network_id ) {
     if ( network_id == null ) 
       return nullNetworkView;
@@ -450,9 +474,10 @@ public abstract class Cytoscape {
     return nview;
   }
 
-  
-  
 
+  /**
+   * @return if a view exists for a given network id
+   */
   public static boolean viewExists ( String network_id ) {
     return getNetworkViewMap().containsKey( network_id );
   }
@@ -475,7 +500,9 @@ public abstract class Cytoscape {
 
   
     
-
+  /**
+   * @return the reference to the One CytoscapeDesktop
+   */
   public static CytoscapeDesktop getDesktop() {
     if ( defaultDesktop == null ) {
       //System.out.println( " Defaultdesktop created: "+defaultDesktop );
@@ -508,14 +535,18 @@ public abstract class Cytoscape {
   }
 
 
-  
+  /**
+   * This Map has keys that are Strings ( network_ids ) and values that are networks.
+   */
   protected static Map getNetworkMap () {
     if ( networkMap == null ) {
       networkMap = new HashMap();
     }
     return networkMap;
   }
-
+  /**
+   * This Map has keys that are Strings ( network_ids ) and values that are networkviews.
+   */
   protected static Map getNetworkViewMap () {
     if ( networkViewMap == null ) {
       networkViewMap = new HashMap();
@@ -523,22 +554,69 @@ public abstract class Cytoscape {
     return networkViewMap;
   }
 
+  /** 
+   * destroys the given network
+   */
   public static void destroyNetwork ( String network_id ) {
     destroyNetwork( ( CyNetwork )getNetworkMap().get( network_id ) );
   }
-  
+  /** 
+   * destroys the given network
+   */
   public static void destroyNetwork ( CyNetwork network ) {
-    getNetworkMap().remove( network.getIdentifier() );
-    if ( viewExists( network.getIdentifier() ) )
-      destroyNetworkView( network );
-    firePropertyChange( NETWORK_DESTROYED,
-                        null,
-                        network.getIdentifier() );
+    destroyNetwork( network, false );
+  }
+  /** 
+   * destroys the given network
+   * @param network the network tobe destroyed
+   * @param destroy_unique if this is true, then all Nodes and Edges that are in this network, but no other are also destroyed.
+   */
+  public static void destroyNetwork ( CyNetwork network, boolean destroy_unique ) {
+
+      getNetworkMap().remove( network.getIdentifier() );
+      if ( viewExists( network.getIdentifier() ) )
+        destroyNetworkView( network );
+      firePropertyChange( NETWORK_DESTROYED,
+                          null,
+                          network.getIdentifier() );
     
+      if ( destroy_unique ) {
+        ArrayList nodes = new ArrayList();
+        ArrayList edges = new ArrayList();
+
+        Set networks = networkMap.entrySet();
+        
+        Iterator nodes_i = network.nodesIterator();
+        Iterator edges_i = network.edgesIterator();
+        
+        while ( nodes_i.hasNext() ){
+          for ( Iterator n_i = networks.iterator(); n_i.hasNext(); ) {
+            Node node = ( Node )nodes_i.next();
+            if ( !( ( CyNetwork )n_i.next() ).containsNode( node ) )
+              nodes.add( node );
+          }
+        }
+        while ( edges_i.hasNext() ){
+          for ( Iterator n_i = networks.iterator(); n_i.hasNext(); ) {
+            Edge edge = ( Edge )edges_i.next();
+            if ( !( ( CyNetwork )n_i.next() ).containsEdge( edge ) )
+              edges.add( edge );
+          }
+        }
+        
+        getRootGraph().removeNodes( nodes );
+        getRootGraph().removeEdges( edges );
+
+      }
+
+
     // theoretically this should not be set to null till after the events firing is done
     network = null;
   }
 
+  /**
+   * destroys the networkview, including any layout information
+   */
   public static void destroyNetworkView ( CyNetworkView view ) {
 
     //  System.out.println( "destroying: "+view.getIdentifier()+" : "+getNetworkViewMap().get( view.getIdentifier() ) );
@@ -557,10 +635,16 @@ public abstract class Cytoscape {
     System.gc();
   }
 
+   /**
+   * destroys the networkview, including any layout information
+   */
   public static void destroyNetworkView ( String network_view_id ) {
     destroyNetworkView( ( CyNetworkView )getNetworkViewMap().get( network_view_id ) );
   }
 
+   /**
+   * destroys the networkview, including any layout information
+   */
   public static void destroyNetworkView ( CyNetwork network ) {
     destroyNetworkView( ( CyNetworkView )getNetworkViewMap().get( network.getIdentifier() ) );
   }
