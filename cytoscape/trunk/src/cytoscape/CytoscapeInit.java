@@ -316,8 +316,24 @@ public class CytoscapeInit
     }
   }
 
+  /**
+   * Gets the ViewThreshold.
+   * Networks with number of nodes below this threshold will automatically
+   * have network views created.
+   * @return view threshold.
+   */
   public static int getViewThreshold () {
     return viewThreshold;
+  }
+
+  /**
+   * Sets the ViewThreshold.
+   * Networks with number of nodes below this threshold will automatically
+   * have network views created.
+   * @param threshold view threshold.
+   */
+  public static void setViewThreshold (int threshold) {
+      viewThreshold = threshold;
   }
 
   // View Only Variables
