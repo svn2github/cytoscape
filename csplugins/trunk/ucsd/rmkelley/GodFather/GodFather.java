@@ -81,10 +81,10 @@ public class Temp extends AbstractPlugin{
 public class MyTask extends Thread{
   protected static String STATE_ATTRIBUTE = "expression";
   CyWindow cyWindow;
-    
+  Random rand;  
   public MyTask(CyWindow cyWindow){
     this.cyWindow = cyWindow;
-   
+    this.rand = new Random();
   }
   public void run(){
         
@@ -133,6 +133,21 @@ public class MyTask extends Thread{
    */
   protected void setAndBlurAttribute(CyNetwork network,Set module,String attribute){
     //for rmk    
+    //really also need signal to noise ratio here
+    double signalratio = 5.0;
+    HashMap expressionHash = new HashMap();
+    String condition = "condition";
+    
+    for (Iterator nodeIt = network.getGraphPerspective().nodesIterator();nodeIt.hasNext();) {
+      Node current = (Node)nodeIt.hasNext();
+      if (module.contains(current)) {
+	expressoinHash.put(current,new double[]{normalCDF(signalratio-rand.nextGaussian())};
+      } // end of if ()
+      else {
+	expressionHash.put(current,new double[]{rand.nextDouble()});
+      } // end of else
+    } // end of for ()
+    
   }
 
   /**
