@@ -49,7 +49,7 @@ public class VisualMappingManager extends SubjectBase {
     VisualStyle visualStyle;      //the currently active visual style
     Logger logger;                //for reporting errors
     VizMapUI vizMapUI;            //the UI, to report visual style changes
-    
+
     //reusable appearance objects
     NodeAppearance myNodeApp = new NodeAppearance();
     EdgeAppearance myEdgeApp = new EdgeAppearance();
@@ -178,7 +178,7 @@ public class VisualMappingManager extends SubjectBase {
 
             NodeAppearance na = new NodeAppearance();
             nodeAppearanceCalculator.calculateNodeAppearance(na,node,network);
-            
+
             nodeView.setUnselectedPaint(na.getFillColor());
             nodeView.setBorderPaint(na.getBorderColor());
             nodeView.setBorder(na.getBorderLineType().getStroke());
@@ -214,8 +214,9 @@ public class VisualMappingManager extends SubjectBase {
             edgeView.setStroke(myEdgeApp.getLineType().getStroke());
             edgeView.setSourceEdgeEnd(myEdgeApp.getSourceArrow().getGinyArrow());
             edgeView.setTargetEdgeEnd(myEdgeApp.getTargetArrow().getGinyArrow());
-            //edgeView.setLabel(myEdgeApp.getLabel());  //can't set edge label yet
-            //can't set font yet
+            Label label = edgeView.getLabel();
+            label.setText(myEdgeApp.getLabel());
+            label.setFont(myEdgeApp.getFont());
             //can't set tooltip yet
         }
     }
