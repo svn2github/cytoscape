@@ -1,31 +1,39 @@
 /*
 
-  RESULTS OF RUNNING TESTS ON A COMPUTER:
+  RESULTS OF RUNNING TESTS ON A COMPUTER.  THESE PERFORMANCE TESTS
+  MEASURE THE PERFORMANCE OF COMPUTING UNIQUE SETS OF INTEGERS FROM
+  SETS OF INTEGERS CONTAINING POTENTIAL DUPLICATES, USING 3 DIFFERENT
+  ALGORITHMIC STRATEGIES.  THE PROBLEM IS: GIVEN A SET OF N INTEGERS
+  IN THE RANGE [0,N-1], RETURN A SUBSET WITH DUPLICATES REMOVED.
 
   Giving the JVM half a gig of memory, against the same random
-  bytes file, under "same conditions".
+  bytes file, under "same conditions".  Note: the set of unique
+  integers returned by the heap test is ordered as a result of the
+  nature of the algorithm.
 
-                       Milliseconds taken to perform test:
+                    Milliseconds taken to perform test:
 
-    N         |  MinIntHeapPerformance  |  HashtablePerformance
-  ------------+-------------------------+------------------------
-           1  |      0                  |      0
-         100  |      1                  |      1
-        1000  |      4                  |      7
-       10000  |     14                  |     31
-       50000  |     36                  |    116
-      100000  |     61                  |    300
-      200000  |    138                  |    665
-      500000  |    410                  |   1810
-     1000000  |    950                  |   3600
-     2000000  |   2250                  |   7500
-     5000000  |   6700                  |  20000
-    10000000  |  15000                  |  35500
-    15000000  |  24000                  |  X (out of memory)
-    20000000  |  34500
-    30000000  |  55000
-    40000000  |  81000
-    50000000  |  X (out of memory)
+    N         |  MinIntHeap  |  Hashtable   |  BitArray    |
+  ------------+--------------+--------------+--------------+
+           1  |      0       |      0       |      0       |
+         100  |      1       |      1       |      0       |
+        1000  |      4       |      7       |      2       |
+       10000  |     14       |     31       |     12       |
+       50000  |     36       |    116       |     24       |
+      100000  |     61       |    300       |     31       |
+      200000  |    138       |    665       |     54       |
+      500000  |    410       |   1810       |    130       |
+     1000000  |    950       |   3600       |    215       |
+     2000000  |   2250       |   7500       |    400       |
+     5000000  |   6700       |  20000       |   1110       |
+    10000000  |  15000       |  35500       |   2800       |
+    15000000  |  24000       |      X       |   4400       |
+    20000000  |  34500       |  (out of     |   5650       |
+    30000000  |  55000       |  memory)     |   8600       |
+    40000000  |  81000       |              |  12000       |
+    50000000  |      X       |              |      X       |
+              |  (out of     |              |  (out of     |
+              |  memory)     |              |  memory)     |
 
 */
 
