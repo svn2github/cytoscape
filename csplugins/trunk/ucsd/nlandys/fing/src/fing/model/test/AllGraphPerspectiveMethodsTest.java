@@ -201,7 +201,17 @@ public final class AllGraphPerspectiveMethodsTest
     if (persp.containsNode(nodeNotInPersp) ||
         !persp.getRootGraph().containsNode(nodeNotInPersp))
       throw new IllegalStateException("GraphPerspective contains node");
-    
+
+    // containsEdge(Edge).
+    if (!persp.containsEdge(twoEdges[1]))
+      throw new IllegalStateException("GraphPersp does not contain edge");
+    if (persp.containsEdge(root2Edge))
+      throw new IllegalStateException("GraphPersp contains edge from other");
+    if (persp.containsEdge(edge1NotInPersp) ||
+        persp.containsEdge(edge2NotInPersp) ||
+        !(persp.getRootGraph().containsEdge(edge1NotInPersp) &&
+          persp.getRootGraph().containsEdge(edge2NotInPersp)))
+      throw new IllegalStateException("GraphPerspective contains edge");
   }
 
 }
