@@ -48,7 +48,7 @@ public final class IntHash
    * value was already in this hashtable; returns -1 if the input value was
    * not in this hashtable prior to this call.<p>
    * Only non-negative values can be passed to this method.
-   * Behavior is undefined If negative values are passed to put(int).<p>
+   * Behavior is undefined if negative values are passed to put(int).<p>
    * Insertions into the hashtable are performed in [amortized] constant time.
    */
   public final int put(int value)
@@ -70,7 +70,7 @@ public final class IntHash
 
   /**
    * Determines whether or not the value specified is in this hashtable.
-   * Returns the value specified if this value is in the hashtable; otherwise
+   * Returns the value specified if this value is in the hashtable, otherwise
    * returns -1.<p>
    * It is an error to pass negative values to this method.  Passing
    * negative values to this method will result in undefined behavior of
