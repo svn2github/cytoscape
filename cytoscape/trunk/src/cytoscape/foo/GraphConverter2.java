@@ -79,6 +79,8 @@ public final class GraphConverter2
       Math.max(maxX - minX, maxY - minY) * percentBorder * 0.5d;
     final double width = maxX - minX + border + border;
     final double height = maxY - minY + border + border;
+    final double xOff = minX - border;
+    final double yOff = minY - border;
 
     final FixedGraph fixedGraph = (FixedGraph) (graphView.getNetwork());
 
@@ -104,7 +106,11 @@ public final class GraphConverter2
         public double getMaxWidth() { return width; }
         public double getMaxHeight() { return height; }
         public double getNodePosition(int node, boolean xPosition) {
-          return 0.0; }
+          NodeView nodeView = graphView.getNodeView(node);
+          if (nodeView == null) throw new IllegalArgumentException
+                                  ("node " + node + " not in this graph");
+          if (xPosition) return nodeView.getXPosition() - xOff;
+          return nodeView.getYPosition() - yOff; }
 
         // MutableGraphLayout methods.
         public boolean isMovableNode(int node) { return true; }
