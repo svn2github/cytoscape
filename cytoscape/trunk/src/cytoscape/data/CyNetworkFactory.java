@@ -194,29 +194,12 @@ public class CyNetworkFactory {
 	else { //using giny
 	    RootGraph rootGraph = reader.getRootGraph();
 	    if (rootGraph == null) {return null;} //unable to parse into a graph
-	    GraphObjAttributes nodeAttributes = new GraphObjAttributes();
+	    // graphical attributes are loaded and 
+	    // nodeName and edgeName maps are created
+	    GraphObjAttributes nodeAttributes = reader.getNodeAttributes();
 	    GraphObjAttributes edgeAttributes = reader.getEdgeAttributes();
-	    //the graph reader fills the edge attributes with the interaction
-	    //type (if the source is an interactions file), and provides the
-	    //mapping from edges to edge canonical names. It does not provide
-	    //the mapping of nodes to names, so we do that here
-	    
-	   List nodes = rootGraph.nodesList();
-	   if (rootGraph != null) {
-		Iterator i = nodes.iterator();
-		while (i.hasNext()) {
-		    giny.model.Node node = (giny.model.Node) i.next();
-		    String canonicalName = node.getIdentifier();
-		    //System.out.println("LOADED:" + canonicalName);
-		    if(canonicalName == null || canonicalName.length() == 0){
-			throw new IllegalStateException("The Node object " + node + 
-							" has a null or empty canonical name");
-		    }
-		    
-		    nodeAttributes.addNameMapping (canonicalName, node);
-		}
-	   }
-	   return new CyNetwork(rootGraph, nodeAttributes, edgeAttributes, null, false);
+	   
+	    return new CyNetwork(rootGraph, nodeAttributes, edgeAttributes, null, false);
 	}
     }
     /**
