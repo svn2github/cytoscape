@@ -10,8 +10,8 @@ graph
 		label	"YKR026C"
 		graphics
 		[
-			x	1850.9851
-			y	3706.474
+			x	1916.0
+			y	4409.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -23,11 +23,11 @@ graph
 	node
 	[
 		id	1
-		label	"YLR153C"
+		label	"YGL122C"
 		graphics
 		[
-			x	1545.7133
-			y	2061.2297
+			x	2021.0
+			y	4333.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -42,8 +42,8 @@ graph
 		label	"YMR146C"
 		graphics
 		[
-			x	1689.6897
-			y	1791.5974
+			x	2511.0
+			y	160.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -58,8 +58,8 @@ graph
 		label	"YDR429C"
 		graphics
 		[
-			x	1800.0787
-			y	1889.4475
+			x	2456.0
+			y	322.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -71,11 +71,11 @@ graph
 	node
 	[
 		id	4
-		label	"YOL123W"
+		label	"YFL017C"
 		graphics
 		[
-			x	1800.2344
-			y	3497.0405
+			x	2582.0
+			y	546.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -87,11 +87,11 @@ graph
 	node
 	[
 		id	5
-		label	"YGL122C"
+		label	"YOL123W"
 		graphics
 		[
-			x	1917.0564
-			y	3592.7146
+			x	1967.0
+			y	4495.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -103,11 +103,11 @@ graph
 	node
 	[
 		id	6
-		label	"YBR112C"
+		label	"YGL044C"
 		graphics
 		[
-			x	3367.8328
-			y	1407.2142
+			x	1915.0
+			y	4620.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -119,11 +119,11 @@ graph
 	node
 	[
 		id	7
-		label	"YGR019W"
+		label	"YGR203W"
 		graphics
 		[
-			x	1538.0454
-			y	2852.811
+			x	648.0
+			y	2457.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -135,11 +135,11 @@ graph
 	node
 	[
 		id	8
-		label	"YGR203W"
+		label	"YIL061C"
 		graphics
 		[
-			x	1420.9312
-			y	2318.6099
+			x	735.0
+			y	2320.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -151,11 +151,11 @@ graph
 	node
 	[
 		id	9
-		label	"YPR062W"
+		label	"YCR084C"
 		graphics
 		[
-			x	3248.918
-			y	2082.2976
+			x	2809.0
+			y	2195.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -167,11 +167,11 @@ graph
 	node
 	[
 		id	10
-		label	"YOL086C"
+		label	"YBR112C"
 		graphics
 		[
-			x	2197.0525
-			y	2491.3086
+			x	2951.0
+			y	2276.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -183,11 +183,11 @@ graph
 	node
 	[
 		id	11
-		label	"YOR362C"
+		label	"YCL067C"
 		graphics
 		[
-			x	2076.3862
-			y	2042.8566
+			x	2645.0
+			y	2067.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -199,11 +199,11 @@ graph
 	node
 	[
 		id	12
-		label	"YGL044C"
+		label	"YER112W"
 		graphics
 		[
-			x	1721.9775
-			y	3437.0457
+			x	1561.0
+			y	3234.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -215,11 +215,11 @@ graph
 	node
 	[
 		id	13
-		label	"YCR084C"
+		label	"YOR167C"
 		graphics
 		[
-			x	3259.4019
-			y	1413.3704
+			x	1554.0
+			y	3095.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -231,11 +231,11 @@ graph
 	node
 	[
 		id	14
-		label	"YER112W"
+		label	"YJR022W"
 		graphics
 		[
-			x	761.1181
-			y	1153.7954
+			x	1583.0
+			y	2889.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -247,11 +247,11 @@ graph
 	node
 	[
 		id	15
-		label	"YJR022W"
+		label	"YNR050C"
 		graphics
 		[
-			x	949.7174
-			y	1491.8851
+			x	1453.0
+			y	3112.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -263,11 +263,11 @@ graph
 	node
 	[
 		id	16
-		label	"YER124C"
+		label	"YNL050C"
 		graphics
 		[
-			x	2728.6814
-			y	1148.7167
+			x	1492.0
+			y	2980.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -279,11 +279,11 @@ graph
 	node
 	[
 		id	17
-		label	"YER116C"
+		label	"YEL015W"
 		graphics
 		[
-			x	1279.8716
-			y	2122.0923
+			x	1821.0
+			y	2610.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -295,11 +295,11 @@ graph
 	node
 	[
 		id	18
-		label	"YNL307C"
+		label	"YLR264W"
 		graphics
 		[
-			x	1790.9702
-			y	2855.5312
+			x	1601.0
+			y	3101.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -311,11 +311,11 @@ graph
 	node
 	[
 		id	19
-		label	"YNL216W"
+		label	"YNR053C"
 		graphics
 		[
-			x	2246.0137
-			y	2662.2417
+			x	1280.0
+			y	2894.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -327,11 +327,11 @@ graph
 	node
 	[
 		id	20
-		label	"YAL030W"
+		label	"YER116C"
 		graphics
 		[
-			x	1666.9441
-			y	791.1768
+			x	718.0
+			y	2709.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -343,11 +343,11 @@ graph
 	node
 	[
 		id	21
-		label	"YBR155W"
+		label	"YDL013W"
 		graphics
 		[
-			x	2360.2356
-			y	1126.9119
+			x	838.0
+			y	2588.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -359,11 +359,11 @@ graph
 	node
 	[
 		id	22
-		label	"YOR327C"
+		label	"YNL307C"
 		graphics
 		[
-			x	1742.1007
-			y	651.93115
+			x	526.0
+			y	1449.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -375,11 +375,11 @@ graph
 	node
 	[
 		id	23
-		label	"YDR412W"
+		label	"YAL038W"
 		graphics
 		[
-			x	3125.1917
-			y	2703.3623
+			x	749.0
+			y	1459.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -391,11 +391,11 @@ graph
 	node
 	[
 		id	24
-		label	"YER179W"
+		label	"YNL216W"
 		graphics
 		[
-			x	2068.9138
-			y	2200.2422
+			x	997.0
+			y	1339.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -407,11 +407,11 @@ graph
 	node
 	[
 		id	25
-		label	"YOR361C"
+		label	"YCR012W"
 		graphics
 		[
-			x	1810.4434
-			y	2040.2573
+			x	768.0
+			y	1502.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -423,11 +423,11 @@ graph
 	node
 	[
 		id	26
-		label	"YMR186W"
+		label	"YGR254W"
 		graphics
 		[
-			x	2458.9521
-			y	1143.0383
+			x	881.0
+			y	1520.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -439,11 +439,11 @@ graph
 	node
 	[
 		id	27
-		label	"YDL236W"
+		label	"YHR174W"
 		graphics
 		[
-			x	3251.5283
-			y	2317.9153
+			x	872.0
+			y	1493.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -455,11 +455,11 @@ graph
 	node
 	[
 		id	28
-		label	"YKL028W"
+		label	"YIL133C"
 		graphics
 		[
-			x	2845.7097
-			y	2204.8733
+			x	745.0
+			y	1191.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -471,11 +471,11 @@ graph
 	node
 	[
 		id	29
-		label	"YEL009C"
+		label	"YLR044C"
 		graphics
 		[
-			x	2722.931
-			y	2451.9775
+			x	1391.0
+			y	1204.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -487,11 +487,11 @@ graph
 	node
 	[
 		id	30
-		label	"YOL059W"
+		label	"YOL120C"
 		graphics
 		[
-			x	1936.834
-			y	1811.703
+			x	1025.0
+			y	1200.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -503,11 +503,11 @@ graph
 	node
 	[
 		id	31
-		label	"YMR138W"
+		label	"YNL301C"
 		graphics
 		[
-			x	642.40594
-			y	1716.9286
+			x	880.0
+			y	1229.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -519,11 +519,11 @@ graph
 	node
 	[
 		id	32
-		label	"YER102W"
+		label	"YCL030C"
 		graphics
 		[
-			x	2317.5415
-			y	1794.3107
+			x	1279.0
+			y	1453.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -535,11 +535,11 @@ graph
 	node
 	[
 		id	33
-		label	"YCL032W"
+		label	"YDR171W"
 		graphics
 		[
-			x	2819.2712
-			y	911.84705
+			x	923.0
+			y	1196.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -551,11 +551,11 @@ graph
 	node
 	[
 		id	34
-		label	"YIL045W"
+		label	"YBR093C"
 		graphics
 		[
-			x	2521.228
-			y	3509.5044
+			x	861.0
+			y	1123.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -567,11 +567,11 @@ graph
 	node
 	[
 		id	35
-		label	"YDL075W"
+		label	"YER074W"
 		graphics
 		[
-			x	2334.9211
-			y	3371.8733
+			x	845.0
+			y	1333.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -583,11 +583,11 @@ graph
 	node
 	[
 		id	36
-		label	"YCR012W"
+		label	"YIL069C"
 		graphics
 		[
-			x	1948.4772
-			y	2850.8628
+			x	846.0
+			y	1277.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -599,11 +599,11 @@ graph
 	node
 	[
 		id	37
-		label	"YBR019C"
+		label	"YOL127W"
 		graphics
 		[
-			x	2312.4697
-			y	1677.5273
+			x	733.0
+			y	1218.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -615,11 +615,11 @@ graph
 	node
 	[
 		id	38
-		label	"YOL051W"
+		label	"YDR050C"
 		graphics
 		[
-			x	2208.2568
-			y	1651.6132
+			x	915.0
+			y	1523.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -631,11 +631,11 @@ graph
 	node
 	[
 		id	39
-		label	"YHR198C"
+		label	"YOL086C"
 		graphics
 		[
-			x	1187.1475
-			y	1029.156
+			x	841.0
+			y	1484.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -647,11 +647,11 @@ graph
 	node
 	[
 		id	40
-		label	"YOR178C"
+		label	"YAL030W"
 		graphics
 		[
-			x	2829.0525
-			y	3373.1628
+			x	2761.0
+			y	1226.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -663,11 +663,11 @@ graph
 	node
 	[
 		id	41
-		label	"YMR108W"
+		label	"YER143W"
 		graphics
 		[
-			x	2878.2012
-			y	2571.5288
+			x	2830.0
+			y	1108.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -679,11 +679,11 @@ graph
 	node
 	[
 		id	42
-		label	"YIR009W"
+		label	"YOR327C"
 		graphics
 		[
-			x	2458.907
-			y	2053.034
+			x	2810.0
+			y	1244.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -695,11 +695,11 @@ graph
 	node
 	[
 		id	43
-		label	"YNL236W"
+		label	"YDR412W"
 		graphics
 		[
-			x	2306.1333
-			y	1394.6697
+			x	2865.0
+			y	2653.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -711,11 +711,11 @@ graph
 	node
 	[
 		id	44
-		label	"YML032C"
+		label	"YCR086W"
 		graphics
 		[
-			x	3584.8276
-			y	2234.549
+			x	3117.0
+			y	2688.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -727,11 +727,11 @@ graph
 	node
 	[
 		id	45
-		label	"YLR116W"
+		label	"YGL013C"
 		graphics
 		[
-			x	2451.1958
-			y	1396.1482
+			x	2968.0
+			y	2875.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -743,11 +743,11 @@ graph
 	node
 	[
 		id	46
-		label	"YCR086W"
+		label	"YLR117C"
 		graphics
 		[
-			x	3270.577
-			y	2785.8926
+			x	3040.0
+			y	2637.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -759,11 +759,11 @@ graph
 	node
 	[
 		id	47
-		label	"YDR309C"
+		label	"YPR119W"
 		graphics
 		[
-			x	2896.5586
-			y	1313.829
+			x	2692.0
+			y	2255.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -775,11 +775,11 @@ graph
 	node
 	[
 		id	48
-		label	"YGR058W"
+		label	"YER179W"
 		graphics
 		[
-			x	3459.438
-			y	2908.0771
+			x	1464.0
+			y	905.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -791,11 +791,11 @@ graph
 	node
 	[
 		id	49
-		label	"YIL015W"
+		label	"YLR134W"
 		graphics
 		[
-			x	3112.4597
-			y	1805.0063
+			x	1346.0
+			y	785.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -807,11 +807,11 @@ graph
 	node
 	[
 		id	50
-		label	"YLR256W"
+		label	"YIL105C"
 		graphics
 		[
-			x	1770.6556
-			y	1459.5554
+			x	1626.0
+			y	658.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -823,11 +823,11 @@ graph
 	node
 	[
 		id	51
-		label	"YGL237C"
+		label	"YOR361C"
 		graphics
 		[
-			x	1924.8981
-			y	1529.2435
+			x	2246.0
+			y	235.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -839,11 +839,11 @@ graph
 	node
 	[
 		id	52
-		label	"YBL021C"
+		label	"YMR309C"
 		graphics
 		[
-			x	1821.5077
-			y	1671.9658
+			x	2030.0
+			y	288.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -855,11 +855,11 @@ graph
 	node
 	[
 		id	53
-		label	"YDR311W"
+		label	"YMR186W"
 		graphics
 		[
-			x	2735.8645
-			y	2197.987
+			x	3161.0
+			y	1182.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -871,11 +871,11 @@ graph
 	node
 	[
 		id	54
-		label	"YPL149W"
+		label	"YBR155W"
 		graphics
 		[
-			x	3522.5645
-			y	2703.3972
+			x	3248.0
+			y	1060.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -887,11 +887,11 @@ graph
 	node
 	[
 		id	55
-		label	"YKL109W"
+		label	"YEL009C"
 		graphics
 		[
-			x	2022.7849
-			y	1682.9504
+			x	1267.0
+			y	1710.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -903,11 +903,11 @@ graph
 	node
 	[
 		id	56
-		label	"YMR043W"
+		label	"YMR108W"
 		graphics
 		[
-			x	2994.5227
-			y	1791.3289
+			x	1146.0
+			y	1815.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -919,11 +919,11 @@ graph
 	node
 	[
 		id	57
-		label	"YHR171W"
+		label	"YOR202W"
 		graphics
 		[
-			x	3382.2185
-			y	2604.2717
+			x	1350.0
+			y	1564.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -935,11 +935,11 @@ graph
 	node
 	[
 		id	58
-		label	"YNR050C"
+		label	"YBR248C"
 		graphics
 		[
-			x	810.02295
-			y	1662.4502
+			x	1121.0
+			y	1760.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -951,11 +951,11 @@ graph
 	node
 	[
 		id	59
-		label	"YGR254W"
+		label	"YOL058W"
 		graphics
 		[
-			x	2060.9368
-			y	2462.728
+			x	1368.0
+			y	1928.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -967,11 +967,11 @@ graph
 	node
 	[
 		id	60
-		label	"YHR174W"
+		label	"YMR300C"
 		graphics
 		[
-			x	2055.8113
-			y	2722.8752
+			x	1130.0
+			y	1687.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -983,11 +983,11 @@ graph
 	node
 	[
 		id	61
-		label	"YJL203W"
+		label	"YMR138W"
 		graphics
 		[
-			x	968.26245
-			y	1878.1671
+			x	1347.0
+			y	3326.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -999,11 +999,11 @@ graph
 	node
 	[
 		id	62
-		label	"YLL021W"
+		label	"YHR141C"
 		graphics
 		[
-			x	2875.0747
-			y	1149.514
+			x	1313.0
+			y	3488.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1015,11 +1015,11 @@ graph
 	node
 	[
 		id	63
-		label	"YIL133C"
+		label	"YLR109W"
 		graphics
 		[
-			x	2453.3726
-			y	2977.7578
+			x	1247.0
+			y	3456.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1031,11 +1031,11 @@ graph
 	node
 	[
 		id	64
-		label	"YGL013C"
+		label	"YCL032W"
 		graphics
 		[
-			x	3127.6516
-			y	2888.7427
+			x	3337.0
+			y	1283.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1047,11 +1047,11 @@ graph
 	node
 	[
 		id	65
-		label	"YNL069C"
+		label	"YDR032C"
 		graphics
 		[
-			x	2201.6816
-			y	3116.248
+			x	3508.0
+			y	1258.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1063,11 +1063,11 @@ graph
 	node
 	[
 		id	66
-		label	"YKL101W"
+		label	"YLR362W"
 		graphics
 		[
-			x	2731.7295
-			y	1673.5422
+			x	3031.0
+			y	1324.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1079,11 +1079,11 @@ graph
 	node
 	[
 		id	67
-		label	"YCL067C"
+		label	"YDR103W"
 		graphics
 		[
-			x	3126.256
-			y	1579.7247
+			x	3218.0
+			y	1322.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1095,11 +1095,11 @@ graph
 	node
 	[
 		id	68
-		label	"YDL013W"
+		label	"YJR060W"
 		graphics
 		[
-			x	1360.8896
-			y	2064.844
+			x	552.0
+			y	1549.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1111,11 +1111,11 @@ graph
 	node
 	[
 		id	69
-		label	"YDR323C"
+		label	"YBR019C"
 		graphics
 		[
-			x	2342.3635
-			y	734.10315
+			x	1806.0
+			y	1080.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1127,11 +1127,11 @@ graph
 	node
 	[
 		id	70
-		label	"YKR099W"
+		label	"YOL051W"
 		graphics
 		[
-			x	2460.2456
-			y	2324.1472
+			x	1897.0
+			y	946.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1143,11 +1143,11 @@ graph
 	node
 	[
 		id	71
-		label	"YLR044C"
+		label	"YGL035C"
 		graphics
 		[
-			x	2195.769
-			y	2110.7488
+			x	1792.0
+			y	1252.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1159,11 +1159,11 @@ graph
 	node
 	[
 		id	72
-		label	"YLR134W"
+		label	"YBR020W"
 		graphics
 		[
-			x	1972.7153
-			y	2315.475
+			x	1879.0
+			y	1076.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1175,11 +1175,11 @@ graph
 	node
 	[
 		id	73
-		label	"YGL008C"
+		label	"YLR081W"
 		graphics
 		[
-			x	3300.8323
-			y	1826.6614
+			x	1877.0
+			y	840.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1191,11 +1191,11 @@ graph
 	node
 	[
 		id	74
-		label	"YPR035W"
+		label	"YPL248C"
 		graphics
 		[
-			x	1410.3197
-			y	2724.5925
+			x	1809.0
+			y	985.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1207,11 +1207,11 @@ graph
 	node
 	[
 		id	75
-		label	"YER040W"
+		label	"YBR018C"
 		graphics
 		[
-			x	1533.4594
-			y	2716.8093
+			x	1925.0
+			y	856.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1223,11 +1223,11 @@ graph
 	node
 	[
 		id	76
-		label	"YDR100W"
+		label	"YIR009W"
 		graphics
 		[
-			x	2142.3596
-			y	740.00604
+			x	1871.0
+			y	1474.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1239,11 +1239,11 @@ graph
 	node
 	[
 		id	77
-		label	"YNL098C"
+		label	"YKR099W"
 		graphics
 		[
-			x	3054.7869
-			y	3900.6936
+			x	1584.0
+			y	1402.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1255,11 +1255,11 @@ graph
 	node
 	[
 		id	78
-		label	"YDL194W"
+		label	"YIL143C"
 		graphics
 		[
-			x	634.8308
-			y	1522.8046
+			x	2003.0
+			y	1328.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1271,11 +1271,11 @@ graph
 	node
 	[
 		id	79
-		label	"YPL089C"
+		label	"YDR184C"
 		graphics
 		[
-			x	3244.4326
-			y	1197.9452
+			x	2258.0
+			y	1411.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1287,11 +1287,11 @@ graph
 	node
 	[
 		id	80
-		label	"YJL089W"
+		label	"YNL091W"
 		graphics
 		[
-			x	2750.9463
-			y	1926.7753
+			x	1561.0
+			y	1652.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1303,11 +1303,11 @@ graph
 	node
 	[
 		id	81
-		label	"YMR005W"
+		label	"YNL236W"
 		graphics
 		[
-			x	1140.5657
-			y	1932.5079
+			x	1333.0
+			y	552.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1319,11 +1319,11 @@ graph
 	node
 	[
 		id	82
-		label	"YDR335W"
+		label	"YKL012W"
 		graphics
 		[
-			x	1570.017
-			y	1003.6659
+			x	1471.0
+			y	722.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1335,11 +1335,11 @@ graph
 	node
 	[
 		id	83
-		label	"YLL028W"
+		label	"YML032C"
 		graphics
 		[
-			x	2586.0066
-			y	3895.587
+			x	1209.0
+			y	2572.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1351,11 +1351,11 @@ graph
 	node
 	[
 		id	84
-		label	"YIL143C"
+		label	"YNL312W"
 		graphics
 		[
-			x	2684.397
-			y	2070.3105
+			x	1258.0
+			y	2456.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1367,11 +1367,11 @@ graph
 	node
 	[
 		id	85
-		label	"YOL136C"
+		label	"YLR116W"
 		graphics
 		[
-			x	880.7811
-			y	1937.7789
+			x	1398.0
+			y	517.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1383,11 +1383,11 @@ graph
 	node
 	[
 		id	86
-		label	"YNL050C"
+		label	"YOR264W"
 		graphics
 		[
-			x	1139.7626
-			y	1527.2577
+			x	3351.0
+			y	2722.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1399,11 +1399,11 @@ graph
 	node
 	[
 		id	87
-		label	"YKL012W"
+		label	"YDR309C"
 		graphics
 		[
-			x	2404.3796
-			y	1521.4746
+			x	3148.0
+			y	1828.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1415,11 +1415,11 @@ graph
 	node
 	[
 		id	88
-		label	"YHR141C"
+		label	"YLR229C"
 		graphics
 		[
-			x	625.89777
-			y	1845.0458
+			x	2985.0
+			y	1771.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1431,11 +1431,11 @@ graph
 	node
 	[
 		id	89
-		label	"YER056CA"
+		label	"YGR058W"
 		graphics
 		[
-			x	2152.7766
-			y	3284.5696
+			x	3552.0
+			y	2763.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1447,11 +1447,11 @@ graph
 	node
 	[
 		id	90
-		label	"YEL015W"
+		label	"YLR256W"
 		graphics
 		[
-			x	1159.7616
-			y	1326.5146
+			x	1722.0
+			y	409.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1463,11 +1463,11 @@ graph
 	node
 	[
 		id	91
-		label	"YIL052C"
+		label	"YML054C"
 		graphics
 		[
-			x	2462.0933
-			y	3115.3752
+			x	1697.0
+			y	184.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1479,11 +1479,11 @@ graph
 	node
 	[
 		id	92
-		label	"YOL120C"
+		label	"YJR048W"
 		graphics
 		[
-			x	2103.027
-			y	2970.0005
+			x	1757.0
+			y	710.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1495,11 +1495,11 @@ graph
 	node
 	[
 		id	93
-		label	"YMR309C"
+		label	"YEL039C"
 		graphics
 		[
-			x	1730.7684
-			y	2170.2292
+			x	1750.0
+			y	243.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1511,11 +1511,11 @@ graph
 	node
 	[
 		id	94
-		label	"YNL301C"
+		label	"YGL237C"
 		graphics
 		[
-			x	2458.3958
-			y	2593.3274
+			x	1732.0
+			y	782.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1527,11 +1527,11 @@ graph
 	node
 	[
 		id	95
-		label	"YER143W"
+		label	"YBL021C"
 		graphics
 		[
-			x	1657.2632
-			y	675.6639
+			x	1677.0
+			y	791.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1543,11 +1543,11 @@ graph
 	node
 	[
 		id	96
-		label	"YJR066W"
+		label	"YDR311W"
 		graphics
 		[
-			x	2458.7285
-			y	1284.5223
+			x	2122.0
+			y	1184.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1559,11 +1559,11 @@ graph
 	node
 	[
 		id	97
-		label	"YPL111W"
+		label	"YKL028W"
 		graphics
 		[
-			x	3375.7817
-			y	2197.0425
+			x	2215.0
+			y	1056.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1575,11 +1575,11 @@ graph
 	node
 	[
 		id	98
-		label	"YER065C"
+		label	"YPL149W"
 		graphics
 		[
-			x	2964.429
-			y	2069.603
+			x	3250.0
+			y	2880.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1591,11 +1591,11 @@ graph
 	node
 	[
 		id	99
-		label	"YJL219W"
+		label	"YHR171W"
 		graphics
 		[
-			x	3048.9895
-			y	2982.798
+			x	3093.0
+			y	2771.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1607,11 +1607,11 @@ graph
 	node
 	[
 		id	100
-		label	"YPL075W"
+		label	"YBR217W"
 		graphics
 		[
-			x	1941.1942
-			y	2592.2683
+			x	3383.0
+			y	2917.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1623,11 +1623,11 @@ graph
 	node
 	[
 		id	101
-		label	"YNL199C"
+		label	"YKL109W"
 		graphics
 		[
-			x	1728.6814
-			y	2340.9797
+			x	1742.0
+			y	953.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1639,11 +1639,11 @@ graph
 	node
 	[
 		id	102
-		label	"YML054C"
+		label	"YMR043W"
 		graphics
 		[
-			x	1601.5188
-			y	1409.0103
+			x	2513.0
+			y	1849.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1655,11 +1655,11 @@ graph
 	node
 	[
 		id	103
-		label	"YLR321C"
+		label	"YIL015W"
 		graphics
 		[
-			x	2983.3508
-			y	2713.972
+			x	2621.0
+			y	1953.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1671,11 +1671,11 @@ graph
 	node
 	[
 		id	104
-		label	"YBR072W"
+		label	"YJL159W"
 		graphics
 		[
-			x	2996.0066
-			y	3508.4558
+			x	2695.0
+			y	1959.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1687,11 +1687,11 @@ graph
 	node
 	[
 		id	105
-		label	"YOR202W"
+		label	"YKR097W"
 		graphics
 		[
-			x	2590.697
-			y	2328.6274
+			x	2221.0
+			y	1822.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1703,11 +1703,11 @@ graph
 	node
 	[
 		id	106
-		label	"YCL030C"
+		label	"YGR108W"
 		graphics
 		[
-			x	2473.9717
-			y	2448.7212
+			x	2541.0
+			y	1514.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1719,11 +1719,11 @@ graph
 	node
 	[
 		id	107
-		label	"YBL069W"
+		label	"YDR461W"
 		graphics
 		[
-			x	3386.597
-			y	1941.5339
+			x	2530.0
+			y	2057.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1735,11 +1735,11 @@ graph
 	node
 	[
 		id	108
-		label	"YBR248C"
+		label	"YNL145W"
 		graphics
 		[
-			x	2809.7722
-			y	2330.2925
+			x	2535.0
+			y	1983.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1751,11 +1751,11 @@ graph
 	node
 	[
 		id	109
-		label	"YLR284C"
+		label	"YJL157C"
 		graphics
 		[
-			x	1151.3566
-			y	1135.847
+			x	2776.0
+			y	1726.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1767,11 +1767,11 @@ graph
 	node
 	[
 		id	110
-		label	"YNL189W"
+		label	"YFL026W"
 		graphics
 		[
-			x	3154.8894
-			y	2196.4128
+			x	2574.0
+			y	2021.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1783,11 +1783,11 @@ graph
 	node
 	[
 		id	111
-		label	"YDR184C"
+		label	"YNR007C"
 		graphics
 		[
-			x	2560.7466
-			y	1664.6709
+			x	3271.0
+			y	2834.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1799,11 +1799,11 @@ graph
 	node
 	[
 		id	112
-		label	"YOL058W"
+		label	"YJL203W"
 		graphics
 		[
-			x	2958.8064
-			y	2323.112
+			x	1151.0
+			y	3051.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1815,11 +1815,11 @@ graph
 	node
 	[
 		id	113
-		label	"YPR167C"
+		label	"YOL136C"
 		graphics
 		[
-			x	1927.1554
-			y	3103.4658
+			x	1048.0
+			y	3180.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1831,11 +1831,11 @@ graph
 	node
 	[
 		id	114
-		label	"YJR048W"
+		label	"YLL021W"
 		graphics
 		[
-			x	1885.19
-			y	1603.172
+			x	3125.0
+			y	1517.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1847,11 +1847,11 @@ graph
 	node
 	[
 		id	115
-		label	"YEL039C"
+		label	"YJL219W"
 		graphics
 		[
-			x	1806.9746
-			y	1292.8398
+			x	3100.0
+			y	3005.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1863,11 +1863,11 @@ graph
 	node
 	[
 		id	116
-		label	"YHR053C"
+		label	"YOL156W"
 		graphics
 		[
-			x	2713.3552
-			y	3645.8318
+			x	3059.0
+			y	3036.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1879,11 +1879,11 @@ graph
 	node
 	[
 		id	117
-		label	"YHR055C"
+		label	"YKL101W"
 		graphics
 		[
-			x	2813.075
-			y	3766.742
+			x	2706.0
+			y	1576.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1895,11 +1895,11 @@ graph
 	node
 	[
 		id	118
-		label	"YNL167C"
+		label	"YBR160W"
 		graphics
 		[
-			x	2567.3555
-			y	2213.7295
+			x	2584.0
+			y	1658.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1911,11 +1911,11 @@ graph
 	node
 	[
 		id	119
-		label	"YJL159W"
+		label	"YBL005W"
 		graphics
 		[
-			x	3275.289
-			y	1664.7917
+			x	3171.0
+			y	3121.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1927,11 +1927,11 @@ graph
 	node
 	[
 		id	120
-		label	"YGL161C"
+		label	"YDR323C"
 		graphics
 		[
-			x	2069.7385
-			y	756.6471
+			x	3272.0
+			y	764.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1943,11 +1943,11 @@ graph
 	node
 	[
 		id	121
-		label	"YMR183C"
+		label	"YOR036W"
 		graphics
 		[
-			x	1876.4635
-			y	759.5389
+			x	3109.0
+			y	930.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1959,11 +1959,11 @@ graph
 	node
 	[
 		id	122
-		label	"YAL040C"
+		label	"YGL008C"
 		graphics
 		[
-			x	2853.5964
-			y	1555.3431
+			x	2473.0
+			y	2054.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1975,11 +1975,11 @@ graph
 	node
 	[
 		id	123
-		label	"YDR171W"
+		label	"YER040W"
 		graphics
 		[
-			x	2199.9338
-			y	2715.4724
+			x	428.0
+			y	2197.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -1991,11 +1991,11 @@ graph
 	node
 	[
 		id	124
-		label	"YFR034C"
+		label	"YPR035W"
 		graphics
 		[
-			x	2645.8062
-			y	2872.9539
+			x	296.0
+			y	2303.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2007,11 +2007,11 @@ graph
 	node
 	[
 		id	125
-		label	"YBR093C"
+		label	"YGR019W"
 		graphics
 		[
-			x	2596.3433
-			y	2780.718
+			x	265.0
+			y	2243.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2023,11 +2023,11 @@ graph
 	node
 	[
 		id	126
-		label	"YER074W"
+		label	"YNL098C"
 		graphics
 		[
-			x	2457.236
-			y	2709.9175
+			x	3311.0
+			y	3992.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2039,11 +2039,11 @@ graph
 	node
 	[
 		id	127
-		label	"YIL069C"
+		label	"YLR310C"
 		graphics
 		[
-			x	2199.8105
-			y	2845.7483
+			x	3217.0
+			y	3881.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2055,11 +2055,11 @@ graph
 	node
 	[
 		id	128
-		label	"YMR300C"
+		label	"YPL089C"
 		graphics
 		[
-			x	2584.6072
-			y	2582.5178
+			x	3351.0
+			y	1717.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2071,11 +2071,11 @@ graph
 	node
 	[
 		id	129
-		label	"YDR032C"
+		label	"YHR030C"
 		graphics
 		[
-			x	2963.7344
-			y	877.38513
+			x	3129.0
+			y	1726.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2087,11 +2087,11 @@ graph
 	node
 	[
 		id	130
-		label	"YOR315W"
+		label	"YJL089W"
 		graphics
 		[
-			x	2988.1252
-			y	3236.2554
+			x	1935.0
+			y	1790.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2103,11 +2103,11 @@ graph
 	node
 	[
 		id	131
-		label	"YER133W"
+		label	"YER065C"
 		graphics
 		[
-			x	2943.521
-			y	3103.439
+			x	1719.0
+			y	1964.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2119,11 +2119,11 @@ graph
 	node
 	[
 		id	132
-		label	"YGL035C"
+		label	"YLR377C"
 		graphics
 		[
-			x	2336.99
-			y	1896.7388
+			x	1864.0
+			y	1525.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2135,11 +2135,11 @@ graph
 	node
 	[
 		id	133
-		label	"YMR311C"
+		label	"YDR335W"
 		graphics
 		[
-			x	3113.8425
-			y	3195.3254
+			x	2491.0
+			y	1698.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2151,11 +2151,11 @@ graph
 	node
 	[
 		id	134
-		label	"YFL038C"
+		label	"YDR174W"
 		graphics
 		[
-			x	2318.18
-			y	870.2151
+			x	2272.0
+			y	2002.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2167,11 +2167,11 @@ graph
 	node
 	[
 		id	135
-		label	"YOR355W"
+		label	"YLL028W"
 		graphics
 		[
-			x	2072.2246
-			y	2318.6711
+			x	2983.0
+			y	4052.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2183,11 +2183,11 @@ graph
 	node
 	[
 		id	136
-		label	"YML123C"
+		label	"YGL166W"
 		graphics
 		[
-			x	2707.1787
-			y	2958.9575
+			x	2948.0
+			y	3905.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2199,11 +2199,11 @@ graph
 	node
 	[
 		id	137
-		label	"YPL031C"
+		label	"YKL074C"
 		graphics
 		[
-			x	2232.9504
-			y	3856.9387
+			x	1623.0
+			y	984.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2215,11 +2215,11 @@ graph
 	node
 	[
 		id	138
-		label	"YAL038W"
+		label	"YML064C"
 		graphics
 		[
-			x	1857.4166
-			y	2713.5657
+			x	2054.0
+			y	2320.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2231,11 +2231,11 @@ graph
 	node
 	[
 		id	139
-		label	"YER103W"
+		label	"YNL047C"
 		graphics
 		[
-			x	2991.8318
-			y	3681.3096
+			x	1821.0
+			y	453.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2247,11 +2247,11 @@ graph
 	node
 	[
 		id	140
-		label	"YML051W"
+		label	"?"
 		graphics
 		[
-			x	2207.856
-			y	1931.1781
+			x	1684.0
+			y	1187.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2263,11 +2263,11 @@ graph
 	node
 	[
 		id	141
-		label	"YLL019C"
+		label	"YJR066W"
 		graphics
 		[
-			x	3121.3284
-			y	935.5372
+			x	1332.0
+			y	351.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2279,11 +2279,11 @@ graph
 	node
 	[
 		id	142
-		label	"YML024W"
+		label	"YPL075W"
 		graphics
 		[
-			x	2337.0618
-			y	2831.4697
+			x	799.0
+			y	1678.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2295,11 +2295,11 @@ graph
 	node
 	[
 		id	143
-		label	"YER111C"
+		label	"YNL199C"
 		graphics
 		[
-			x	3094.1628
-			y	1408.041
+			x	768.0
+			y	2002.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2311,11 +2311,11 @@ graph
 	node
 	[
 		id	144
-		label	"YIL105C"
+		label	"YPR048W"
 		graphics
 		[
-			x	1933.898
-			y	2200.02
+			x	932.0
+			y	1955.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2327,11 +2327,11 @@ graph
 	node
 	[
 		id	145
-		label	"YDR146C"
+		label	"YLR321C"
 		graphics
 		[
-			x	2602.5017
-			y	1940.121
+			x	2958.0
+			y	2784.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2343,11 +2343,11 @@ graph
 	node
 	[
 		id	146
-		label	"YDR354W"
+		label	"YBR072W"
 		graphics
 		[
-			x	2729.1538
-			y	2599.5393
+			x	3060.0
+			y	3654.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2359,11 +2359,11 @@ graph
 	node
 	[
 		id	147
-		label	"YKR097W"
+		label	"YGL073W"
 		graphics
 		[
-			x	2852.7527
-			y	1801.632
+			x	2947.0
+			y	3584.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2375,11 +2375,11 @@ graph
 	node
 	[
 		id	148
-		label	"YLR310C"
+		label	"YBL069W"
 		graphics
 		[
-			x	3021.429
-			y	3792.9592
+			x	2478.0
+			y	2220.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2391,11 +2391,11 @@ graph
 	node
 	[
 		id	149
-		label	"YNL047C"
+		label	"YNL189W"
 		graphics
 		[
-			x	1835.4451
-			y	2205.2979
+			x	1499.0
+			y	2118.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2407,11 +2407,11 @@ graph
 	node
 	[
 		id	150
-		label	"YBR160W"
+		label	"YDL236W"
 		graphics
 		[
-			x	2731.4844
-			y	1780.0153
+			x	1499.0
+			y	2258.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2423,11 +2423,11 @@ graph
 	node
 	[
 		id	151
-		label	"YDR174W"
+		label	"YPL111W"
 		graphics
 		[
-			x	1447.1033
-			y	1049.0796
+			x	1377.0
+			y	2333.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2439,11 +2439,11 @@ graph
 	node
 	[
 		id	152
-		label	"YIL113W"
+		label	"YPR062W"
 		graphics
 		[
-			x	3109.1555
-			y	1046.374
+			x	1406.0
+			y	2220.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2455,11 +2455,11 @@ graph
 	node
 	[
 		id	153
-		label	"YNR007C"
+		label	"YLR319C"
 		graphics
 		[
-			x	3487.649
-			y	2509.8777
+			x	2644.0
+			y	1358.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2471,11 +2471,11 @@ graph
 	node
 	[
 		id	154
-		label	"YLR117C"
+		label	"YNL167C"
 		graphics
 		[
-			x	3119.8
-			y	2558.568
+			x	1460.0
+			y	1427.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2487,11 +2487,11 @@ graph
 	node
 	[
 		id	155
-		label	"YFL017C"
+		label	"YGL161C"
 		graphics
 		[
-			x	2059.9138
-			y	1898.0251
+			x	3204.0
+			y	790.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2503,11 +2503,11 @@ graph
 	node
 	[
 		id	156
-		label	"YMR044W"
+		label	"YDR100W"
 		graphics
 		[
-			x	1547.8887
-			y	2316.3862
+			x	3153.0
+			y	764.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2519,11 +2519,11 @@ graph
 	node
 	[
 		id	157
-		label	"YOL149W"
+		label	"YMR183C"
 		graphics
 		[
-			x	905.808
-			y	1171.3557
+			x	2849.0
+			y	1335.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2535,11 +2535,11 @@ graph
 	node
 	[
 		id	158
-		label	"YOR036W"
+		label	"YGR009C"
 		graphics
 		[
-			x	2197.527
-			y	877.66754
+			x	2715.0
+			y	1404.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2551,11 +2551,11 @@ graph
 	node
 	[
 		id	159
-		label	"YBR135W"
+		label	"YAL040C"
 		graphics
 		[
-			x	2459.7688
-			y	1805.5391
+			x	2670.0
+			y	1793.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2567,11 +2567,11 @@ graph
 	node
 	[
 		id	160
-		label	"YHR071W"
+		label	"YFR034C"
 		graphics
 		[
-			x	2183.479
-			y	3927.9993
+			x	743.0
+			y	939.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2583,11 +2583,11 @@ graph
 	node
 	[
 		id	161
-		label	"YJR060W"
+		label	"YER133W"
 		graphics
 		[
-			x	1931.0432
-			y	2988.8308
+			x	2811.0
+			y	3021.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2599,11 +2599,11 @@ graph
 	node
 	[
 		id	162
-		label	"YOR089C"
+		label	"YOR178C"
 		graphics
 		[
-			x	2337.877
-			y	614.7336
+			x	2833.0
+			y	3331.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2615,11 +2615,11 @@ graph
 	node
 	[
 		id	163
-		label	"YNL117W"
+		label	"YOR315W"
 		graphics
 		[
-			x	2855.8928
-			y	1935.7473
+			x	2895.0
+			y	3145.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2631,11 +2631,11 @@ graph
 	node
 	[
 		id	164
-		label	"YLR175W"
+		label	"YMR311C"
 		graphics
 		[
-			x	1686.2329
-			y	2950.7568
+			x	2731.0
+			y	3133.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2647,11 +2647,11 @@ graph
 	node
 	[
 		id	165
-		label	"YDR167W"
+		label	"YBR050C"
 		graphics
 		[
-			x	1413.3358
-			y	2488.756
+			x	2820.0
+			y	3163.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2663,11 +2663,11 @@ graph
 	node
 	[
 		id	166
-		label	"YGR108W"
+		label	"YIL162W"
 		graphics
 		[
-			x	2590.7014
-			y	1804.1388
+			x	1612.0
+			y	1319.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2679,11 +2679,11 @@ graph
 	node
 	[
 		id	167
-		label	"YPR119W"
+		label	"YFL038C"
 		graphics
 		[
-			x	3089.8494
-			y	2321.1426
+			x	3260.0
+			y	843.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2695,11 +2695,11 @@ graph
 	node
 	[
 		id	168
-		label	"YBR020W"
+		label	"YOR355W"
 		graphics
 		[
-			x	2199.883
-			y	1792.0477
+			x	1248.0
+			y	1810.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2711,11 +2711,11 @@ graph
 	node
 	[
 		id	169
-		label	"YLR081W"
+		label	"YML123C"
 		graphics
 		[
-			x	2075.207
-			y	1529.0964
+			x	646.0
+			y	792.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2727,11 +2727,11 @@ graph
 	node
 	[
 		id	170
-		label	"YDR009W"
+		label	"YPL031C"
 		graphics
 		[
-			x	2317.3264
-			y	2028.6844
+			x	2481.0
+			y	4298.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2743,11 +2743,11 @@ graph
 	node
 	[
 		id	171
-		label	"YPL248C"
+		label	"YHR071W"
 		graphics
 		[
-			x	2123.483
-			y	1677.8373
+			x	2495.0
+			y	4437.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2759,11 +2759,11 @@ graph
 	node
 	[
 		id	172
-		label	"YLR109W"
+		label	"YML051W"
 		graphics
 		[
-			x	518.6294
-			y	1669.4614
+			x	1966.0
+			y	1001.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2775,11 +2775,11 @@ graph
 	node
 	[
 		id	173
-		label	"YAR007C"
+		label	"YDR009W"
 		graphics
 		[
-			x	3510.0562
-			y	2100.6848
+			x	1906.0
+			y	1136.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2791,11 +2791,11 @@ graph
 	node
 	[
 		id	174
-		label	"YKL161C"
+		label	"YLL019C"
 		graphics
 		[
-			x	3376.4958
-			y	1142.7947
+			x	3516.0
+			y	1829.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2807,11 +2807,11 @@ graph
 	node
 	[
 		id	175
-		label	"YBR018C"
+		label	"YIL113W"
 		graphics
 		[
-			x	2190.0308
-			y	1522.8314
+			x	3344.0
+			y	1785.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2823,11 +2823,11 @@ graph
 	node
 	[
 		id	176
-		label	"YNL312W"
+		label	"YML024W"
 		graphics
 		[
-			x	3460.0679
-			y	2293.7979
+			x	972.0
+			y	1174.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2839,11 +2839,11 @@ graph
 	node
 	[
 		id	177
-		label	"YLR075W"
+		label	"YER111C"
 		graphics
 		[
-			x	2595.3796
-			y	3238.1836
+			x	2829.0
+			y	1791.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2855,11 +2855,11 @@ graph
 	node
 	[
 		id	178
-		label	"YLR229C"
+		label	"YDR146C"
 		graphics
 		[
-			x	2858.4392
-			y	1402.3473
+			x	2153.0
+			y	1550.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2871,11 +2871,11 @@ graph
 	node
 	[
 		id	179
-		label	"YPL240C"
+		label	"YDR354W"
 		graphics
 		[
-			x	2372.687
-			y	1004.24243
+			x	1196.0
+			y	1859.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2887,11 +2887,11 @@ graph
 	node
 	[
 		id	180
-		label	"YOL156W"
+		label	"YER103W"
 		graphics
 		[
-			x	3223.6372
-			y	2977.3406
+			x	3094.0
+			y	3741.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2903,11 +2903,11 @@ graph
 	node
 	[
 		id	181
-		label	"YML064C"
+		label	"YBR190W"
 		graphics
 		[
-			x	1285.6069
-			y	1145.8044
+			x	3199.0
+			y	2625.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2919,11 +2919,11 @@ graph
 	node
 	[
 		id	182
-		label	"YER052C"
+		label	"YOL059W"
 		graphics
 		[
-			x	1409.6392
-			y	786.9061
+			x	2710.0
+			y	435.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2935,11 +2935,11 @@ graph
 	node
 	[
 		id	183
-		label	"YGL166W"
+		label	"YER102W"
 		graphics
 		[
-			x	2692.0796
-			y	3769.9395
+			x	2582.0
+			y	855.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2951,11 +2951,11 @@ graph
 	node
 	[
 		id	184
-		label	"YBR190W"
+		label	"YOR362C"
 		graphics
 		[
-			x	3203.1392
-			y	2498.9385
+			x	2613.0
+			y	383.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2967,11 +2967,11 @@ graph
 	node
 	[
 		id	185
-		label	"YGL134W"
+		label	"YMR044W"
 		graphics
 		[
-			x	2334.908
-			y	3733.0396
+			x	597.0
+			y	2424.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2983,11 +2983,11 @@ graph
 	node
 	[
 		id	186
-		label	"YJL194W"
+		label	"YOL149W"
 		graphics
 		[
-			x	3109.3152
-			y	1923.5074
+			x	1618.0
+			y	3224.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -2999,11 +2999,11 @@ graph
 	node
 	[
 		id	187
-		label	"YOR167C"
+		label	"YBR135W"
 		graphics
 		[
-			x	834.5828
-			y	1243.9272
+			x	2564.0
+			y	1179.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3015,11 +3015,11 @@ graph
 	node
 	[
 		id	188
-		label	"YLR264W"
+		label	"YPR167C"
 		graphics
 		[
-			x	899.7825
-			y	1296.2108
+			x	379.0
+			y	1585.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3031,11 +3031,11 @@ graph
 	node
 	[
 		id	189
-		label	"YBL050W"
+		label	"YOR089C"
 		graphics
 		[
-			x	2009.8488
-			y	924.6525
+			x	3398.0
+			y	636.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3047,11 +3047,11 @@ graph
 	node
 	[
 		id	190
-		label	"YDR461W"
+		label	"YNL117W"
 		graphics
 		[
-			x	3115.161
-			y	1674.4921
+			x	1894.0
+			y	1917.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3063,11 +3063,11 @@ graph
 	node
 	[
 		id	191
-		label	"YNL145W"
+		label	"YLR175W"
 		graphics
 		[
-			x	2991.5642
-			y	1534.0887
+			x	347.0
+			y	1448.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3079,11 +3079,11 @@ graph
 	node
 	[
 		id	192
-		label	"YBR274W"
+		label	"YDR167W"
 		graphics
 		[
-			x	2190.548
-			y	3550.8008
+			x	192.0
+			y	2139.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3095,11 +3095,11 @@ graph
 	node
 	[
 		id	193
-		label	"YLR452C"
+		label	"YLR432W"
 		graphics
 		[
-			x	2585.623
-			y	883.0312
+			x	400.0
+			y	2102.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3111,11 +3111,11 @@ graph
 	node
 	[
 		id	194
-		label	"YDR299W"
+		label	"YAR007C"
 		graphics
 		[
-			x	3216.2576
-			y	1931.161
+			x	1304.0
+			y	2488.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3127,11 +3127,11 @@ graph
 	node
 	[
 		id	195
-		label	"YLR319C"
+		label	"YKL161C"
 		graphics
 		[
-			x	2602.5662
-			y	1448.3064
+			x	3530.0
+			y	1714.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3143,11 +3143,11 @@ graph
 	node
 	[
 		id	196
-		label	"YGL073W"
+		label	"YLR075W"
 		graphics
 		[
-			x	2851.0554
-			y	3572.0205
+			x	182.0
+			y	934.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3159,11 +3159,11 @@ graph
 	node
 	[
 		id	197
-		label	"YOR120W"
+		label	"YPR102C"
 		graphics
 		[
-			x	2072.4963
-			y	1399.3163
+			x	303.0
+			y	1017.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3175,11 +3175,11 @@ graph
 	node
 	[
 		id	198
-		label	"YOL127W"
+		label	"YPL240C"
 		graphics
 		[
-			x	2313.818
-			y	2991.0244
+			x	3117.0
+			y	1104.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3191,11 +3191,11 @@ graph
 	node
 	[
 		id	199
-		label	"YPR041W"
+		label	"YHR198C"
 		graphics
 		[
-			x	1666.5226
-			y	2051.0417
+			x	2054.0
+			y	2469.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3207,11 +3207,11 @@ graph
 	node
 	[
 		id	200
-		label	"YNL135C"
+		label	"YLR284C"
 		graphics
 		[
-			x	1420.3038
-			y	922.0377
+			x	2136.0
+			y	2216.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3223,11 +3223,11 @@ graph
 	node
 	[
 		id	201
-		label	"YBR217W"
+		label	"YER052C"
 		graphics
 		[
-			x	3568.2654
-			y	2558.7554
+			x	2280.0
+			y	1770.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3239,11 +3239,11 @@ graph
 	node
 	[
 		id	202
-		label	"YMR255W"
+		label	"YNL135C"
 		graphics
 		[
-			x	2072.1082
-			y	3570.0796
+			x	2235.0
+			y	1905.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3255,11 +3255,11 @@ graph
 	node
 	[
 		id	203
-		label	"YLR258W"
+		label	"YHR053C"
 		graphics
 		[
-			x	2372.7283
-			y	3565.3909
+			x	2979.0
+			y	3763.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3271,11 +3271,11 @@ graph
 	node
 	[
 		id	204
-		label	"YDL215C"
+		label	"YHR055C"
 		graphics
 		[
-			x	1680.5946
-			y	2567.7087
+			x	2930.0
+			y	3763.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3287,11 +3287,11 @@ graph
 	node
 	[
 		id	205
-		label	"YLR432W"
+		label	"YGL134W"
 		graphics
 		[
-			x	1529.4468
-			y	2518.6787
+			x	2466.0
+			y	4128.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3303,11 +3303,11 @@ graph
 	node
 	[
 		id	206
-		label	"YDL030W"
+		label	"YLR258W"
 		graphics
 		[
-			x	1252.8208
-			y	1917.1334
+			x	2448.0
+			y	3935.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3319,11 +3319,11 @@ graph
 	node
 	[
 		id	207
-		label	"YLR362W"
+		label	"YJL194W"
 		graphics
 		[
-			x	2633.2727
-			y	1152.3607
+			x	2715.0
+			y	1891.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3335,11 +3335,11 @@ graph
 	node
 	[
 		id	208
-		label	"YHR084W"
+		label	"YBL026W"
 		graphics
 		[
-			x	2999.9597
-			y	1691.2572
+			x	1510.0
+			y	3212.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3351,11 +3351,11 @@ graph
 	node
 	[
 		id	209
-		label	"YNL164C"
+		label	"YBL050W"
 		graphics
 		[
-			x	2325.8274
-			y	2316.5837
+			x	2917.0
+			y	1159.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3367,11 +3367,11 @@ graph
 	node
 	[
 		id	210
-		label	"YPR102C"
+		label	"YHR084W"
 		graphics
 		[
-			x	2591.0767
-			y	3144.8098
+			x	2452.0
+			y	1990.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3383,11 +3383,11 @@ graph
 	node
 	[
 		id	211
-		label	"YGR085C"
+		label	"YBR274W"
 		graphics
 		[
-			x	2460.2495
-			y	3259.1384
+			x	2309.0
+			y	4090.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3399,11 +3399,11 @@ graph
 	node
 	[
 		id	212
-		label	"YKL074C"
+		label	"YMR255W"
 		graphics
 		[
-			x	2422.7747
-			y	1667.7631
+			x	2167.0
+			y	4227.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3415,11 +3415,11 @@ graph
 	node
 	[
 		id	213
-		label	"YPR010C"
+		label	"YLR452C"
 		graphics
 		[
-			x	2718.9473
-			y	651.85706
+			x	3396.0
+			y	1152.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3431,11 +3431,11 @@ graph
 	node
 	[
 		id	214
-		label	"YGR088W"
+		label	"YHR005C"
 		graphics
 		[
-			x	1662.6556
-			y	1576.6549
+			x	3235.0
+			y	1233.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3447,11 +3447,11 @@ graph
 	node
 	[
 		id	215
-		label	"YPR113W"
+		label	"YDR299W"
 		graphics
 		[
-			x	2981.5117
-			y	1933.7288
+			x	2882.0
+			y	1941.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3463,11 +3463,11 @@ graph
 	node
 	[
 		id	216
-		label	"YDR050C"
+		label	"YOR120W"
 		graphics
 		[
-			x	2071.5022
-			y	2585.213
+			x	1820.0
+			y	815.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3479,11 +3479,11 @@ graph
 	node
 	[
 		id	217
-		label	"YIL070C"
+		label	"YPR041W"
 		graphics
 		[
-			x	1531.9093
-			y	1324.561
+			x	2131.0
+			y	155.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3495,11 +3495,11 @@ graph
 	node
 	[
 		id	218
-		label	"YIL061C"
+		label	"YIL045W"
 		graphics
 		[
-			x	1536.8376
-			y	2197.7976
+			x	2568.0
+			y	3718.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3511,11 +3511,11 @@ graph
 	node
 	[
 		id	219
-		label	"YGR046W"
+		label	"YDL215C"
 		graphics
 		[
-			x	2191.9294
-			y	1287.0739
+			x	636.0
+			y	2072.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3527,11 +3527,11 @@ graph
 	node
 	[
 		id	220
-		label	"YNL091W"
+		label	"YDL030W"
 		graphics
 		[
-			x	2246.6755
-			y	2255.4463
+			x	1024.0
+			y	2788.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3543,11 +3543,11 @@ graph
 	node
 	[
 		id	221
-		label	"YHR030C"
+		label	"YMR005W"
 		graphics
 		[
-			x	3075.613
-			y	1208.7804
+			x	912.0
+			y	2910.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3559,11 +3559,11 @@ graph
 	node
 	[
 		id	222
-		label	"YPR048W"
+		label	"YER124C"
 		graphics
 		[
-			x	1844.7445
-			y	2427.5696
+			x	3165.0
+			y	1275.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3575,11 +3575,11 @@ graph
 	node
 	[
 		id	223
-		label	"YHR005C"
+		label	"YGR085C"
 		graphics
 		[
-			x	2586.619
-			y	1002.44275
+			x	322.0
+			y	973.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3591,11 +3591,11 @@ graph
 	node
 	[
 		id	224
-		label	"YDR070C"
+		label	"YDR395W"
 		graphics
 		[
-			x	1936.9863
-			y	1921.53
+			x	504.0
+			y	1085.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3607,11 +3607,11 @@ graph
 	node
 	[
 		id	225
-		label	"YLR377C"
+		label	"YGR088W"
 		graphics
 		[
-			x	2507.6628
-			y	1929.0067
+			x	1656.0
+			y	255.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3623,11 +3623,11 @@ graph
 	node
 	[
 		id	226
-		label	"YJL157C"
+		label	"YPR113W"
 		graphics
 		[
-			x	2753.927
-			y	1502.6085
+			x	2595.0
+			y	1782.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3639,11 +3639,11 @@ graph
 	node
 	[
 		id	227
-		label	"YNL036W"
+		label	"YIL070C"
 		graphics
 		[
-			x	2593.897
-			y	2059.5818
+			x	1678.0
+			y	10.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3655,11 +3655,11 @@ graph
 	node
 	[
 		id	228
-		label	"YML114C"
+		label	"YLR153C"
 		graphics
 		[
-			x	1270.5708
-			y	2466.374
+			x	578.0
+			y	2365.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3671,11 +3671,11 @@ graph
 	node
 	[
 		id	229
-		label	"YMR117C"
+		label	"YGR046W"
 		graphics
 		[
-			x	2828.9065
-			y	751.3438
+			x	1230.0
+			y	408.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3687,11 +3687,11 @@ graph
 	node
 	[
 		id	230
-		label	"YOR264W"
+		label	"YNL164C"
 		graphics
 		[
-			x	3374.7898
-			y	2841.464
+			x	1519.0
+			y	1768.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3703,11 +3703,11 @@ graph
 	node
 	[
 		id	231
-		label	"YGR009C"
+		label	"YDR070C"
 		graphics
 		[
-			x	1798.4047
-			y	870.54675
+			x	2669.0
+			y	392.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3719,11 +3719,11 @@ graph
 	node
 	[
 		id	232
-		label	"YIL162W"
+		label	"YOR212W"
 		graphics
 		[
-			x	2449.477
-			y	2126.0676
+			x	2926.0
+			y	1532.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3735,11 +3735,11 @@ graph
 	node
 	[
 		id	233
-		label	"YFL026W"
+		label	"YNL036W"
 		graphics
 		[
-			x	2984.8333
-			y	1627.2231
+			x	1773.0
+			y	1526.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3751,11 +3751,11 @@ graph
 	node
 	[
 		id	234
-		label	"YOR212W"
+		label	"YML114C"
 		graphics
 		[
-			x	2718.6465
-			y	1303.8708
+			x	28.0
+			y	2177.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3767,11 +3767,11 @@ graph
 	node
 	[
 		id	235
-		label	"YDR103W"
+		label	"YMR117C"
 		graphics
 		[
-			x	2722.7236
-			y	1003.7416
+			x	3593.0
+			y	1225.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3783,11 +3783,11 @@ graph
 	node
 	[
 		id	236
-		label	"YDL023C"
+		label	"YPR010C"
 		graphics
 		[
-			x	3387.2576
-			y	1669.5371
+			x	3768.0
+			y	1211.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3799,11 +3799,11 @@ graph
 	node
 	[
 		id	237
-		label	"YGR136W"
+		label	"YDL023C"
 		graphics
 		[
-			x	3495.0073
-			y	3037.3625
+			x	2845.0
+			y	2049.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3815,11 +3815,11 @@ graph
 	node
 	[
 		id	238
-		label	"YDR395W"
+		label	"YGR136W"
 		graphics
 		[
-			x	2323.5298
-			y	3145.4404
+			x	3712.0
+			y	2799.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3831,11 +3831,11 @@ graph
 	node
 	[
 		id	239
-		label	"YLR345W"
+		label	"YDL075W"
 		graphics
 		[
-			x	2853.1863
-			y	2769.4106
+			x	385.0
+			y	967.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3847,11 +3847,11 @@ graph
 	node
 	[
 		id	240
-		label	"YBR050C"
+		label	"YNL069C"
 		graphics
 		[
-			x	2861.9531
-			y	2989.7698
+			x	424.0
+			y	927.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3863,11 +3863,11 @@ graph
 	node
 	[
 		id	241
-		label	"YBR045C"
+		label	"YER056CA"
 		graphics
 		[
-			x	2671.8657
-			y	3395.4426
+			x	351.0
+			y	1050.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3879,11 +3879,11 @@ graph
 	node
 	[
 		id	242
-		label	"YER054C"
+		label	"YIL052C"
 		graphics
 		[
-			x	2743.8042
-			y	3242.285
+			x	332.0
+			y	1113.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3895,11 +3895,11 @@ graph
 	node
 	[
 		id	243
-		label	"YPR145W"
+		label	"YLR345W"
 		graphics
 		[
-			x	2928.389
-			y	640.5439
+			x	3059.0
+			y	2892.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3911,11 +3911,11 @@ graph
 	node
 	[
 		id	244
-		label	"YNR053C"
+		label	"YBR045C"
 		graphics
 		[
-			x	1088.7217
-			y	1751.0211
+			x	2681.0
+			y	3482.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3927,11 +3927,11 @@ graph
 	node
 	[
 		id	245
-		label	"YDR277C"
+		label	"YER054C"
 		graphics
 		[
-			x	758.17975
-			y	1545.7322
+			x	2743.0
+			y	3261.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3943,11 +3943,11 @@ graph
 	node
 	[
 		id	246
-		label	"YBL026W"
+		label	"YPR145W"
 		graphics
 		[
-			x	747.6986
-			y	1321.6212
+			x	3749.0
+			y	1146.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3959,11 +3959,11 @@ graph
 	node
 	[
 		id	247
-		label	"YOR204W"
+		label	"YDR277C"
 		graphics
 		[
-			x	-26.745457
-			y	3772.1982
+			x	1681.0
+			y	3044.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3975,11 +3975,11 @@ graph
 	node
 	[
 		id	248
-		label	"YGR218W"
+		label	"YDL194W"
 		graphics
 		[
-			x	228.80083
-			y	3767.8896
+			x	1749.0
+			y	3185.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -3991,11 +3991,11 @@ graph
 	node
 	[
 		id	249
-		label	"YGL097W"
+		label	"YGR218W"
 		graphics
 		[
-			x	80.87681
-			y	3720.9946
+			x	4729.0
+			y	159.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4007,11 +4007,11 @@ graph
 	node
 	[
 		id	250
-		label	"YLR293C"
+		label	"YGL097W"
 		graphics
 		[
-			x	73.85288
-			y	3565.6172
+			x	4681.0
+			y	64.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4023,11 +4023,11 @@ graph
 	node
 	[
 		id	251
-		label	"YLR249W"
+		label	"YOR204W"
 		graphics
 		[
-			x	410.23343
-			y	4151.4688
+			x	4767.0
+			y	10.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4039,11 +4039,11 @@ graph
 	node
 	[
 		id	252
-		label	"YPR080W"
+		label	"YLR293C"
 		graphics
 		[
-			x	402.55692
-			y	4301.378
+			x	4599.0
+			y	25.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4055,11 +4055,11 @@ graph
 	node
 	[
 		id	253
-		label	"YBR118W"
+		label	"YLR249W"
 		graphics
 		[
-			x	561.7638
-			y	4194.2256
+			x	72.0
+			y	4680.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4071,11 +4071,11 @@ graph
 	node
 	[
 		id	254
-		label	"YAL003W"
+		label	"YPR080W"
 		graphics
 		[
-			x	512.04175
-			y	4298.42
+			x	29.0
+			y	4686.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4087,11 +4087,11 @@ graph
 	node
 	[
 		id	255
-		label	"YGL229C"
+		label	"YBR118W"
 		graphics
 		[
-			x	103.05306
-			y	3999.251
+			x	156.0
+			y	4763.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4103,11 +4103,11 @@ graph
 	node
 	[
 		id	256
-		label	"YPL211W"
+		label	"YAL003W"
 		graphics
 		[
-			x	216.4974
-			y	4284.1035
+			x	68.0
+			y	4786.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4119,11 +4119,11 @@ graph
 	node
 	[
 		id	257
-		label	"YJL030W"
+		label	"YPL211W"
 		graphics
 		[
-			x	9.367654
-			y	4061.9634
+			x	5075.0
+			y	10.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4135,11 +4135,11 @@ graph
 	node
 	[
 		id	258
-		label	"YJL013C"
+		label	"YGR014W"
 		graphics
 		[
-			x	219.54521
-			y	4018.377
+			x	4985.0
+			y	63.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4151,11 +4151,11 @@ graph
 	node
 	[
 		id	259
-		label	"YGR014W"
+		label	"YJL030W"
 		graphics
 		[
-			x	159.64803
-			y	4161.3574
+			x	4872.0
+			y	85.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4167,11 +4167,11 @@ graph
 	node
 	[
 		id	260
-		label	"YDL078C"
+		label	"YGL229C"
 		graphics
 		[
-			x	615.1992
-			y	4544.5645
+			x	4864.0
+			y	194.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4183,11 +4183,11 @@ graph
 	node
 	[
 		id	261
-		label	"YLR191W"
+		label	"YJL013C"
 		graphics
 		[
-			x	886.6632
-			y	4410.0137
+			x	4960.0
+			y	157.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4199,11 +4199,11 @@ graph
 	node
 	[
 		id	262
-		label	"YGL153W"
+		label	"YER062C"
 		graphics
 		[
-			x	882.39264
-			y	4546.7837
+			x	2200.0
+			y	4720.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4215,11 +4215,11 @@ graph
 	node
 	[
 		id	263
-		label	"YNL214W"
+		label	"YPL201C"
 		graphics
 		[
-			x	801.0927
-			y	4622.454
+			x	2290.0
+			y	4680.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4231,11 +4231,11 @@ graph
 	node
 	[
 		id	264
-		label	"YDR244W"
+		label	"YDL014W"
 		graphics
 		[
-			x	763.51886
-			y	4462.7876
+			x	2385.0
+			y	4766.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4247,11 +4247,11 @@ graph
 	node
 	[
 		id	265
-		label	"YDR142C"
+		label	"YOR310C"
 		graphics
 		[
-			x	987.25214
-			y	4562.507
+			x	2470.0
+			y	4680.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4263,11 +4263,11 @@ graph
 	node
 	[
 		id	266
-		label	"YIL160C"
+		label	"YLR197W"
 		graphics
 		[
-			x	1014.54016
-			y	4679.722
+			x	2563.0
+			y	4772.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4279,11 +4279,11 @@ graph
 	node
 	[
 		id	267
-		label	"YDL113C"
+		label	"YOR326W"
 		graphics
 		[
-			x	3125.7444
-			y	4610.8237
+			x	4460.0
+			y	105.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4295,11 +4295,11 @@ graph
 	node
 	[
 		id	268
-		label	"YJL036W"
+		label	"YGL106W"
 		graphics
 		[
-			x	3138.1362
-			y	4695.805
+			x	4503.0
+			y	10.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4311,11 +4311,11 @@ graph
 	node
 	[
 		id	269
-		label	"YCL040W"
+		label	"YOL016C"
 		graphics
 		[
-			x	4913.6787
-			y	880.91943
+			x	4458.0
+			y	302.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4327,11 +4327,11 @@ graph
 	node
 	[
 		id	270
-		label	"YDL130W"
+		label	"YBR109C"
 		graphics
 		[
-			x	4941.2227
-			y	1265.0568
+			x	4418.0
+			y	213.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4343,11 +4343,11 @@ graph
 	node
 	[
 		id	271
-		label	"YDR382W"
+		label	"YFR014C"
 		graphics
 		[
-			x	4904.975
-			y	1133.9495
+			x	4311.0
+			y	224.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4359,11 +4359,11 @@ graph
 	node
 	[
 		id	272
-		label	"YFL039C"
+		label	"YJR109C"
 		graphics
 		[
-			x	4829.791
-			y	1016.16595
+			x	474.0
+			y	4680.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4375,11 +4375,11 @@ graph
 	node
 	[
 		id	273
-		label	"YHR179W"
+		label	"YOR303W"
 		graphics
 		[
-			x	4682.5054
-			y	1018.0438
+			x	418.0
+			y	4753.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4391,11 +4391,11 @@ graph
 	node
 	[
 		id	274
-		label	"YER062C"
+		label	"YOR039W"
 		graphics
 		[
-			x	3303.5198
-			y	4288.901
+			x	255.0
+			y	4817.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4407,11 +4407,11 @@ graph
 	node
 	[
 		id	275
-		label	"YPL201C"
+		label	"YGL115W"
 		graphics
 		[
-			x	3197.2126
-			y	4288.1265
+			x	2021.0
+			y	4743.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4423,11 +4423,11 @@ graph
 	node
 	[
 		id	276
-		label	"YDL014W"
+		label	"YGL208W"
 		graphics
 		[
-			x	3483.3286
-			y	4547.9033
+			x	2104.0
+			y	4680.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4439,11 +4439,11 @@ graph
 	node
 	[
 		id	277
-		label	"YOR310C"
+		label	"YMR291W"
 		graphics
 		[
-			x	3402.5886
-			y	4561.159
+			x	2024.0
+			y	4804.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4455,11 +4455,11 @@ graph
 	node
 	[
 		id	278
-		label	"YLR197W"
+		label	"YMR021C"
 		graphics
 		[
-			x	3428.183
-			y	4664.1343
+			x	1841.0
+			y	4743.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4471,11 +4471,11 @@ graph
 	node
 	[
 		id	279
-		label	"YPL222W"
+		label	"YLR214W"
 		graphics
 		[
-			x	1190.1202
-			y	4316.782
+			x	1924.0
+			y	4680.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4487,11 +4487,11 @@ graph
 	node
 	[
 		id	280
-		label	"YGR048W"
+		label	"YPR124W"
 		graphics
 		[
-			x	1242.4794
-			y	4418.723
+			x	1844.0
+			y	4804.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4503,11 +4503,11 @@ graph
 	node
 	[
 		id	281
-		label	"YBR170C"
+		label	"YDL081C"
 		graphics
 		[
-			x	1281.8113
-			y	4540.417
+			x	2658.0
+			y	4720.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4519,11 +4519,11 @@ graph
 	node
 	[
 		id	282
-		label	"YBR043C"
+		label	"YLR340W"
 		graphics
 		[
-			x	2852.659
-			y	4597.484
+			x	2748.0
+			y	4680.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4535,11 +4535,11 @@ graph
 	node
 	[
 		id	283
-		label	"YGL202W"
+		label	"YHR135C"
 		graphics
 		[
-			x	2866.2515
-			y	4359.4443
+			x	1723.0
+			y	4775.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4551,11 +4551,11 @@ graph
 	node
 	[
 		id	284
-		label	"YGR074W"
+		label	"YNL116W"
 		graphics
 		[
-			x	2859.7034
-			y	4493.74
+			x	1712.0
+			y	4680.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4567,11 +4567,11 @@ graph
 	node
 	[
 		id	285
-		label	"YOR326W"
+		label	"YNL154C"
 		graphics
 		[
-			x	4496.449
-			y	604.9675
+			x	1716.0
+			y	5002.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4583,11 +4583,11 @@ graph
 	node
 	[
 		id	286
-		label	"YFR014C"
+		label	"YKL204W"
 		graphics
 		[
-			x	4434.6343
-			y	805.2059
+			x	1744.0
+			y	5099.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4599,11 +4599,11 @@ graph
 	node
 	[
 		id	287
-		label	"YOL016C"
+		label	"YER079W"
 		graphics
 		[
-			x	4692.604
-			y	747.234
+			x	1730.0
+			y	4891.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4615,11 +4615,11 @@ graph
 	node
 	[
 		id	288
-		label	"YGL106W"
+		label	"YDR382W"
 		graphics
 		[
-			x	4458.9863
-			y	511.87317
+			x	663.0
+			y	4847.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4631,11 +4631,11 @@ graph
 	node
 	[
 		id	289
-		label	"YBR109C"
+		label	"YDL130W"
 		graphics
 		[
-			x	4558.4966
-			y	748.2504
+			x	569.0
+			y	4884.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4647,11 +4647,11 @@ graph
 	node
 	[
 		id	290
-		label	"YOR303W"
+		label	"YFL039C"
 		graphics
 		[
-			x	2602.5747
-			y	4679.173
+			x	759.0
+			y	4784.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4663,11 +4663,11 @@ graph
 	node
 	[
 		id	291
-		label	"YJR109C"
+		label	"YCL040W"
 		graphics
 		[
-			x	2600.2175
-			y	4562.567
+			x	778.0
+			y	4680.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4679,11 +4679,11 @@ graph
 	node
 	[
 		id	292
-		label	"YOR039W"
+		label	"YHR179W"
 		graphics
 		[
-			x	2596.5713
-			y	4800.8657
+			x	853.0
+			y	4832.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4695,11 +4695,11 @@ graph
 	node
 	[
 		id	293
-		label	"YLR214W"
+		label	"YNL311C"
 		graphics
 		[
-			x	1549.0795
-			y	4550.457
+			x	1583.0
+			y	4870.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4711,11 +4711,11 @@ graph
 	node
 	[
 		id	294
-		label	"YMR021C"
+		label	"YKL001C"
 		graphics
 		[
-			x	1545.772
-			y	4646.3774
+			x	1580.0
+			y	4957.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4727,11 +4727,11 @@ graph
 	node
 	[
 		id	295
-		label	"YPR124W"
+		label	"YIL074C"
 		graphics
 		[
-			x	1526.1901
-			y	4779.1284
+			x	1604.0
+			y	4749.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4743,11 +4743,11 @@ graph
 	node
 	[
 		id	296
-		label	"YOR290C"
+		label	"YER081W"
 		graphics
 		[
-			x	3757.3806
-			y	4475.1016
+			x	1614.0
+			y	4680.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4759,11 +4759,11 @@ graph
 	node
 	[
 		id	297
-		label	"YFR037C"
+		label	"YJL036W"
 		graphics
 		[
-			x	3734.603
-			y	4564.314
+			x	2842.0
+			y	4720.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4775,11 +4775,11 @@ graph
 	node
 	[
 		id	298
-		label	"YGL115W"
+		label	"YDL113C"
 		graphics
 		[
-			x	4058.9634
-			y	4281.407
+			x	2932.0
+			y	4680.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4791,11 +4791,11 @@ graph
 	node
 	[
 		id	299
-		label	"YGL208W"
+		label	"YEL041W"
 		graphics
 		[
-			x	4000.8586
-			y	4199.3584
+			x	1170.0
+			y	4680.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4807,11 +4807,11 @@ graph
 	node
 	[
 		id	300
-		label	"YMR291W"
+		label	"YHR115C"
 		graphics
 		[
-			x	4144.439
-			y	4401.7036
+			x	1114.0
+			y	4753.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4823,11 +4823,11 @@ graph
 	node
 	[
 		id	301
-		label	"YDL081C"
+		label	"YOR215C"
 		graphics
 		[
-			x	4276.962
-			y	4017.725
+			x	951.0
+			y	4817.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4839,11 +4839,11 @@ graph
 	node
 	[
 		id	302
-		label	"YLR340W"
+		label	"YDL063C"
 		graphics
 		[
-			x	4353.8965
-			y	4017.4924
+			x	3026.0
+			y	4720.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4855,11 +4855,11 @@ graph
 	node
 	[
 		id	303
-		label	"YOR215C"
+		label	"YPL131W"
 		graphics
 		[
-			x	2325.2673
-			y	4794.6772
+			x	3116.0
+			y	4680.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4871,11 +4871,11 @@ graph
 	node
 	[
 		id	304
-		label	"YEL041W"
+		label	"YGR048W"
 		graphics
 		[
-			x	2324.87
-			y	4557.829
+			x	3214.0
+			y	4743.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4887,11 +4887,11 @@ graph
 	node
 	[
 		id	305
-		label	"YHR115C"
+		label	"YPL222W"
 		graphics
 		[
-			x	2325.4995
-			y	4683.3086
+			x	3297.0
+			y	4680.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4903,11 +4903,11 @@ graph
 	node
 	[
 		id	306
-		label	"YHR135C"
+		label	"YBR170C"
 		graphics
 		[
-			x	1808.52
-			y	4689.8237
+			x	3217.0
+			y	4804.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4919,11 +4919,11 @@ graph
 	node
 	[
 		id	307
-		label	"YNL154C"
+		label	"YFR037C"
 		graphics
 		[
-			x	2055.1309
-			y	4679.2744
+			x	3392.0
+			y	4720.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4935,11 +4935,11 @@ graph
 	node
 	[
 		id	308
-		label	"YKL204W"
+		label	"YOR290C"
 		graphics
 		[
-			x	2072.959
-			y	4794.868
+			x	3482.0
+			y	4680.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4951,11 +4951,11 @@ graph
 	node
 	[
 		id	309
-		label	"YNL116W"
+		label	"YML074C"
 		graphics
 		[
-			x	1794.4996
-			y	4790.352
+			x	3578.0
+			y	4720.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4967,11 +4967,11 @@ graph
 	node
 	[
 		id	310
-		label	"YER079W"
+		label	"YJL190C"
 		graphics
 		[
-			x	1925.528
-			y	4578.335
+			x	3668.0
+			y	4680.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4983,11 +4983,11 @@ graph
 	node
 	[
 		id	311
-		label	"YER145C"
+		label	"YMR058W"
 		graphics
 		[
-			x	4317.915
-			y	4471.258
+			x	3763.0
+			y	4720.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -4999,11 +4999,11 @@ graph
 	node
 	[
 		id	312
-		label	"YMR058W"
+		label	"YER145C"
 		graphics
 		[
-			x	4315.975
-			y	4575.431
+			x	3853.0
+			y	4680.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -5015,11 +5015,11 @@ graph
 	node
 	[
 		id	313
-		label	"YJL190C"
+		label	"YKL211C"
 		graphics
 		[
-			x	4423.0947
-			y	4254.678
+			x	3947.0
+			y	4720.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -5031,11 +5031,11 @@ graph
 	node
 	[
 		id	314
-		label	"YML074C"
+		label	"YER090W"
 		graphics
 		[
-			x	4504.22
-			y	4215.21
+			x	4037.0
+			y	4680.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -5047,11 +5047,11 @@ graph
 	node
 	[
 		id	315
-		label	"YML007W"
+		label	"YNL113W"
 		graphics
 		[
-			x	4169.7456
-			y	668.8285
+			x	4135.0
+			y	4720.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -5063,11 +5063,11 @@ graph
 	node
 	[
 		id	316
-		label	"YER110C"
+		label	"YPR110C"
 		graphics
 		[
-			x	4193.5347
-			y	573.7325
+			x	4225.0
+			y	4680.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -5079,11 +5079,11 @@ graph
 	node
 	[
 		id	317
-		label	"YDL088C"
+		label	"YLR191W"
 		graphics
 		[
-			x	4208.0723
-			y	456.13113
+			x	4003.0
+			y	282.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -5095,11 +5095,11 @@ graph
 	node
 	[
 		id	318
-		label	"YBL079W"
+		label	"YGL153W"
 		graphics
 		[
-			x	4300.1816
-			y	344.84006
+			x	3995.0
+			y	203.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -5111,11 +5111,11 @@ graph
 	node
 	[
 		id	319
-		label	"YNL311C"
+		label	"YNL214W"
 		graphics
 		[
-			x	3923.859
-			y	514.1275
+			x	4070.0
+			y	293.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -5127,11 +5127,11 @@ graph
 	node
 	[
 		id	320
-		label	"YKL001C"
+		label	"YDR244W"
 		graphics
 		[
-			x	3884.6877
-			y	623.1524
+			x	4101.0
+			y	209.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -5143,11 +5143,11 @@ graph
 	node
 	[
 		id	321
-		label	"YIL074C"
+		label	"YDR142C"
 		graphics
 		[
-			x	3989.1838
-			y	374.34976
+			x	4046.0
+			y	112.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -5159,11 +5159,11 @@ graph
 	node
 	[
 		id	322
-		label	"YER081W"
+		label	"YDL078C"
 		graphics
 		[
-			x	4031.8462
-			y	264.41232
+			x	4217.0
+			y	233.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -5175,11 +5175,11 @@ graph
 	node
 	[
 		id	323
-		label	"YDL063C"
+		label	"YIL160C"
 		graphics
 		[
-			x	4636.3823
-			y	3907.5037
+			x	4002.0
+			y	10.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -5191,11 +5191,11 @@ graph
 	node
 	[
 		id	324
-		label	"YPL131W"
+		label	"YER110C"
 		graphics
 		[
-			x	4697.8887
-			y	3967.2559
+			x	3867.0
+			y	200.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -5207,11 +5207,11 @@ graph
 	node
 	[
 		id	325
-		label	"YER090W"
+		label	"YML007W"
 		graphics
 		[
-			x	4870.931
-			y	3660.7063
+			x	3864.0
+			y	287.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -5223,11 +5223,11 @@ graph
 	node
 	[
 		id	326
-		label	"YKL211C"
+		label	"YDL088C"
 		graphics
 		[
-			x	4886.998
-			y	3750.6472
+			x	3888.0
+			y	79.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -5239,11 +5239,11 @@ graph
 	node
 	[
 		id	327
-		label	"YNL113W"
+		label	"YBL079W"
 		graphics
 		[
-			x	4745.809
-			y	3466.84
+			x	3898.0
+			y	10.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -5255,11 +5255,43 @@ graph
 	node
 	[
 		id	328
-		label	"YPR110C"
+		label	"YGL202W"
 		graphics
 		[
-			x	4836.717
-			y	3488.3018
+			x	1484.0
+			y	4680.0
+			w	20.0
+			h	20.0
+			type	"ellipse"
+			width	1.00000
+			fill	"#E1E1E1"
+			outline	"#000000"
+		]
+	]
+	node
+	[
+		id	329
+		label	"YGR074W"
+		graphics
+		[
+			x	1428.0
+			y	4753.0
+			w	20.0
+			h	20.0
+			type	"ellipse"
+			width	1.00000
+			fill	"#E1E1E1"
+			outline	"#000000"
+		]
+	]
+	node
+	[
+		id	330
+		label	"YBR043C"
+		graphics
+		[
+			x	1265.0
+			y	4817.0
 			w	20.0
 			h	20.0
 			type	"ellipse"
@@ -5271,4292 +5303,4463 @@ graph
 	edge
 	[
 		source	0
-		target	5
-		label	""
+		target	1
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	2
 		target	3
-		label	""
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	3
-		target	155
-		label	""
+		target	4
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	4
-		target	12
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	5
-		target	4
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	8
-		target	218
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	13
 		target	6
-		label	""
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	13
-		target	67
-		label	""
+		source	1
+		target	5
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	7
+		target	8
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	9
+		target	10
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	9
+		target	11
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	12
+		target	13
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	14
-		target	187
-		label	""
+		target	15
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	15
-		target	58
-		label	""
+		source	14
+		target	16
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	15
-		target	86
-		label	""
+		source	14
+		target	17
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	15
-		target	90
-		label	""
+		source	14
+		target	13
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	15
-		target	187
-		label	""
+		source	14
+		target	18
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	15
-		target	188
-		label	""
+		source	14
+		target	19
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	15
-		target	244
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	17
-		target	68
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	18
-		target	138
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	19
-		target	36
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	19
-		target	59
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	19
-		target	60
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	19
-		target	63
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	19
-		target	71
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	19
-		target	92
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	19
-		target	94
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	19
-		target	106
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	19
-		target	123
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	19
-		target	125
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	19
-		target	126
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	19
-		target	127
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	19
-		target	138
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	19
-		target	198
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	19
-		target	216
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	19
-		target	10
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	20
-		target	95
-		label	""
+		target	21
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	22
-		target	95
-		label	""
+		target	23
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	23
-		target	46
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	23
-		target	64
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	23
-		target	154
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	23
-		target	167
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	24
-		target	71
-		label	""
+		target	25
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
 		source	24
-		target	72
-		label	""
+		target	26
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
 		source	24
-		target	144
-		label	""
+		target	27
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	25
-		target	93
-		label	""
+		source	24
+		target	28
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	25
-		target	3
-		label	""
+		source	24
+		target	29
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	26
-		target	21
-		label	""
+		source	24
+		target	30
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	29
-		target	41
-		label	""
+		source	24
+		target	31
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	29
-		target	105
-		label	""
+		source	24
+		target	32
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	29
-		target	106
-		label	""
+		source	24
+		target	33
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	29
-		target	108
-		label	""
+		source	24
+		target	34
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	29
-		target	112
-		label	""
+		source	24
+		target	35
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	29
-		target	128
-		label	""
+		source	24
+		target	36
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	31
-		target	88
-		label	""
+		source	24
+		target	23
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	31
-		target	172
-		label	""
+		source	24
+		target	37
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	33
-		target	129
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	33
-		target	207
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	33
-		target	235
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	36
-		target	161
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	37
+		source	24
 		target	38
-		label	""
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	37
-		target	132
-		label	""
+		source	24
+		target	39
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	38
-		target	168
-		label	""
+		source	40
+		target	41
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	38
-		target	169
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	38
-		target	171
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	38
-		target	175
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	42
-		target	70
-		label	""
+		target	41
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	42
-		target	84
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	42
-		target	111
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	42
-		target	220
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	43
-		target	87
-		label	""
+		target	44
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	44
-		target	176
-		label	""
+		source	43
+		target	45
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	45
-		target	87
-		label	""
+		source	43
+		target	46
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	46
-		target	230
-		label	""
+		source	43
+		target	47
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	47
-		target	178
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	48
-		target	230
-		label	""
+		target	29
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	50
-		target	102
-		label	""
+		source	48
+		target	49
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	50
-		target	114
-		label	""
+		source	48
+		target	50
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	50
-		target	115
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	51
-		target	114
-		label	""
+		target	52
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	52
-		target	114
-		label	""
+		source	51
+		target	3
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	53
-		target	28
-		label	""
+		target	54
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	54
+		source	55
+		target	56
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	55
 		target	57
-		label	""
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	54
-		target	201
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
 		source	55
-		target	51
-		label	""
+		target	32
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
 		source	55
-		target	52
-		label	""
+		target	58
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
 		source	55
-		target	114
-		label	""
+		target	59
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
 		source	55
-		target	132
-		label	""
+		target	60
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	56
-		target	49
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	56
-		target	119
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	56
-		target	147
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	56
-		target	166
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	56
-		target	190
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	56
-		target	191
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	56
-		target	226
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	56
-		target	233
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	57
-		target	23
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	57
-		target	153
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	58
-		target	31
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
 		source	61
-		target	85
-		label	""
+		target	62
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	62
-		target	207
-		label	""
+		source	61
+		target	63
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	64
-		target	99
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	64
-		target	180
-		label	""
+		target	65
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	66
-		target	150
-		label	""
+		source	64
+		target	66
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	67
-		target	49
-		label	""
+		source	64
+		target	67
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	67
-		target	56
-		label	""
+		source	25
+		target	68
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	67
-		target	190
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	67
-		target	233
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
 		source	69
-		target	158
-		label	""
+		target	70
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	73
-		target	56
-		label	""
+		source	69
+		target	71
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	75
+		source	70
+		target	72
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	70
+		target	73
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	70
 		target	74
-		label	""
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	75
-		target	7
-		label	""
+		source	70
+		target	75
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	77
-		target	148
-		label	""
+		source	76
+		target	77
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	79
-		target	221
-		label	""
+		source	76
+		target	78
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	80
-		target	98
-		label	""
+		source	76
+		target	79
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	80
-		target	147
-		label	""
+		source	76
+		target	80
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	80
-		target	225
-		label	""
+		source	81
+		target	82
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	82
-		target	151
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	83
-		target	183
-		label	""
+		target	84
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	84
-		target	53
-		label	""
+		source	85
+		target	82
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	44
+		target	86
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	87
-		target	212
-		label	""
+		target	88
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	89
+		target	86
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	90
-		target	181
-		label	""
+		target	91
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	93
-		target	149
-		label	""
+		source	90
+		target	92
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	90
+		target	93
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	94
+		target	92
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	95
+		target	92
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
 		source	96
-		target	45
-		label	""
+		target	97
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	100
-		target	36
-		label	""
+		source	98
+		target	99
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	100
-		target	59
-		label	""
+		source	98
+		target	100
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	100
-		target	60
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	100
-		target	101
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	100
-		target	216
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	100
-		target	10
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	101
-		target	222
-		label	""
+		target	94
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	103
-		target	23
-		label	""
+		source	101
+		target	95
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	104
-		target	196
-		label	""
+		source	101
+		target	92
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	106
-		target	70
-		label	""
+		source	101
+		target	71
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	107
-		target	73
-		label	""
+		source	102
+		target	103
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	110
-		target	27
-		label	""
+		source	102
+		target	104
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	110
-		target	97
-		label	""
+		source	102
+		target	105
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	110
-		target	98
-		label	""
+		source	102
+		target	106
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	110
-		target	9
-		label	""
+		source	102
+		target	107
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	111
-		target	195
-		label	""
+		source	102
+		target	108
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	102
+		target	109
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	102
+		target	110
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	99
+		target	43
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	99
+		target	111
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	15
+		target	61
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	112
-		target	110
-		label	""
+		target	113
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	118
-		target	105
-		label	""
+		source	114
+		target	66
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	45
+		target	115
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	45
+		target	116
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	117
+		target	118
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	11
+		target	103
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	11
+		target	102
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	11
+		target	107
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	11
+		target	110
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	119
+		target	115
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
 		source	120
-		target	76
-		label	""
+		target	121
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	121
-		target	231
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	122
-		target	56
-		label	""
+		target	102
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	124
+		source	123
+		target	124
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	123
 		target	125
-		label	""
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	131
-		target	23
-		label	""
+		source	126
+		target	127
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	131
-		target	40
-		label	""
+		source	128
+		target	129
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	131
-		target	130
-		label	""
+		source	130
+		target	131
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	131
-		target	133
-		label	""
+		source	130
+		target	105
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	131
-		target	240
-		label	""
+		source	130
+		target	132
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	132
-		target	71
-		label	""
+		source	133
+		target	134
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	132
-		target	225
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	132
-		target	232
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	134
-		target	158
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	135
-		target	220
-		label	""
+		target	136
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	136
-		target	124
-		label	""
+		source	78
+		target	96
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	137
-		target	160
-		label	""
+		source	82
+		target	137
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	138
-		target	100
-		label	""
+		source	17
+		target	138
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	52
+		target	139
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	140
-		target	168
-		label	""
+		target	77
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	140
-		target	170
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
 		source	141
-		target	152
-		label	""
+		target	85
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	142
-		target	19
-		label	""
+		target	25
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	142
+		target	26
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	142
+		target	27
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	142
+		target	143
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	142
+		target	38
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	142
+		target	39
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
 		source	143
-		target	56
-		label	""
+		target	144
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	140
+		target	71
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
 		source	145
-		target	56
-		label	""
+		target	43
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	145
-		target	132
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	146
-		target	29
-		label	""
+		target	147
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	32
+		target	77
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
 		source	148
-		target	139
-		label	""
+		target	122
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	149
-		target	144
-		label	""
+		target	150
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	150
-		target	56
-		label	""
+		source	149
+		target	151
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	150
-		target	166
-		label	""
+		source	149
+		target	131
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	152
-		target	221
-		label	""
+		source	149
+		target	152
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	79
+		target	153
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	59
+		target	149
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	154
-		target	184
-		label	""
+		target	57
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
 		source	155
-		target	30
-		label	""
+		target	156
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	155
-		target	32
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	155
-		target	11
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	156
-		target	218
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	157
-		target	187
-		label	""
+		target	158
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	158
-		target	76
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	158
-		target	120
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	159
-		target	32
-		label	""
+		target	102
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	160
+		target	34
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
 		source	161
-		target	113
-		label	""
+		target	43
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	162
-		target	69
-		label	""
+		source	161
+		target	162
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	163
-		target	80
-		label	""
+		source	161
+		target	163
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	164
-		target	18
-		label	""
+		source	161
+		target	164
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	165
-		target	205
-		label	""
+		source	161
+		target	165
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	166
-		target	159
-		label	""
+		source	71
+		target	29
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	71
+		target	132
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	71
+		target	166
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
 		source	167
-		target	56
-		label	""
+		target	121
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	168
-		target	132
-		label	""
+		target	80
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	169
+		target	160
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
 		source	170
-		target	132
-		label	""
+		target	171
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	171
-		target	37
-		label	""
+		source	23
+		target	142
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	171
-		target	114
-		label	""
+		source	172
+		target	72
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	171
-		target	132
-		label	""
+		source	172
+		target	173
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	171
-		target	140
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	171
-		target	140
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-		edgeAnchor
-		[
-			xSource	-0.90152305
-			ySource	-0.43273106
-			xTarget	-0.90152305
-			yTarget	-0.43273106
-		]
-	]
-	edge
-	[
-		source	171
-		target	168
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	171
-		target	169
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	171
-		target	175
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	173
-		target	44
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	173
-		target	97
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	174
-		target	79
-		label	""
+		target	175
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	176
-		target	97
-		label	""
+		target	24
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
 		source	177
-		target	210
-		label	""
+		target	102
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
 		source	178
-		target	226
-		label	""
+		target	102
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	178
+		target	71
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
 		source	179
-		target	21
-		label	""
+		target	55
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	179
-		target	158
-		label	""
+		source	127
+		target	180
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	181
-		target	39
-		label	""
+		source	139
+		target	50
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	181
-		target	109
-		label	""
+		source	118
+		target	102
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	181
-		target	151
-		label	""
+		source	118
+		target	106
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	182
-		target	200
-		label	""
+		source	175
+		target	129
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	183
-		target	116
-		label	""
+		source	46
+		target	181
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	183
-		target	117
-		label	""
+		source	4
+		target	182
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	4
+		target	183
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	4
+		target	184
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	185
-		target	137
-		label	""
+		target	8
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	185
-		target	203
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	186
-		target	56
-		label	""
+		target	13
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	188
-		target	14
-		label	""
+		source	121
+		target	156
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	188
-		target	157
-		label	""
+		source	121
+		target	155
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	188
-		target	246
-		label	""
+		source	187
+		target	183
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	68
+		target	188
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
 		source	189
-		target	158
-		label	""
+		target	120
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	190
+		target	130
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
 		source	191
-		target	67
-		label	""
+		target	22
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	191
-		target	208
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	192
-		target	202
-		label	""
+		target	193
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	193
-		target	223
-		label	""
+		source	106
+		target	187
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	47
+		target	102
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	72
+		target	71
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	173
+		target	71
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	74
+		target	69
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	74
+		target	140
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	74
+		target	92
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	74
+		target	71
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	74
+		target	172
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	74
+		target	172
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+		edgeAnchor
+		[
+			xSource	-0.1013857
+			ySource	0.9948472
+			xTarget	-0.1013857
+			yTarget	0.9948472
+		]
+	]
+	edge
+	[
+		source	74
+		target	72
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	74
+		target	73
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	74
+		target	75
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
 		source	194
-		target	186
-		label	""
+		target	83
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	194
+		target	151
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
 		source	195
-		target	207
-		label	""
+		target	128
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	196
-		target	40
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	196
-		target	116
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	196
-		target	117
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	196
-		target	139
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	197
-		target	171
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	199
-		target	25
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	199
-		target	93
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	200
+		source	84
 		target	151
-		label	""
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	196
+		target	197
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	88
+		target	109
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	198
+		target	54
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	198
+		target	121
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	116
+		target	119
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	138
+		target	199
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	138
+		target	200
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	138
+		target	134
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	201
-		target	153
-		label	""
+		target	202
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	202
-		target	5
-		label	""
+		source	136
+		target	203
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	203
-		target	34
-		label	""
+		source	136
+		target	204
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	203
-		target	192
-		label	""
+		source	205
+		target	170
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	204
-		target	75
-		label	""
+		source	205
+		target	206
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	204
-		target	205
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	206
-		target	68
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	206
-		target	81
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	207
-		target	16
-		label	""
+		target	102
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
-		source	207
-		target	26
-		label	""
+		source	18
+		target	12
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	207
-		target	179
-		label	""
+		source	18
+		target	186
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	208
-		target	56
-		label	""
+		source	18
+		target	208
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	208
-		target	190
-		label	""
+		source	209
+		target	121
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	208
-		target	233
-		label	""
+		source	108
+		target	11
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	108
+		target	210
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
 		source	211
-		target	177
-		label	""
+		target	212
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	211
-		target	238
-		label	""
+		source	213
+		target	214
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	212
-		target	132
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	214
-		target	50
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	215
-		target	56
-		label	""
+		target	207
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	153
+		target	66
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	147
+		target	162
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	147
+		target	203
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	147
+		target	204
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	147
+		target	180
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	216
+		target	74
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
 		source	217
-		target	102
-		label	""
+		target	51
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	218
-		target	68
-		label	""
+		source	217
+		target	52
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	218
-		target	101
-		label	""
+		source	202
+		target	134
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	218
+		source	100
+		target	111
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	212
 		target	1
-		label	""
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	206
+		target	218
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	206
+		target	211
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	219
-		target	43
-		label	""
+		target	123
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	219
+		target	193
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	220
-		target	209
-		label	""
+		target	21
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	221
-		target	62
-		label	""
+		source	220
+		target	221
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	221
-		target	143
-		label	""
+		source	66
+		target	222
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	222
-		target	135
-		label	""
+		source	66
+		target	53
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	222
-		target	204
-		label	""
+		source	66
+		target	198
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	210
+		target	102
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	210
+		target	107
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	210
+		target	110
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
 		source	223
-		target	207
-		label	""
+		target	196
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	224
-		target	155
-		label	""
+		source	223
+		target	224
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	137
+		target	71
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	225
+		target	90
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
 		source	226
-		target	122
-		label	""
+		target	102
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	226
-		target	234
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
 		source	227
-		target	42
-		label	""
+		target	91
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	228
-		target	165
-		label	""
+		source	8
+		target	21
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	8
+		target	143
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	8
+		target	228
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	229
-		target	33
-		label	""
+		target	81
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	229
-		target	213
-		label	""
+		source	80
+		target	230
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	129
+		target	114
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	129
+		target	177
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	144
+		target	168
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	144
+		target	219
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	214
+		target	66
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	231
-		target	20
-		label	""
+		target	4
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	231
-		target	22
-		label	""
+		source	109
+		target	159
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	231
-		target	82
-		label	""
+		source	109
+		target	232
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	231
-		target	189
-		label	""
+		source	233
+		target	76
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	232
-		target	118
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	234
-		target	207
-		label	""
+		target	192
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	235
-		target	207
-		label	""
+		target	64
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	236
-		target	119
-		label	""
+		source	235
+		target	236
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	158
+		target	40
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	158
+		target	42
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	158
+		target	133
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	158
+		target	209
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	166
+		target	154
+		label	"pd"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#FFFF00"
+			arrow	"last"
+		]
+	]
+	edge
+	[
+		source	232
+		target	66
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	67
+		target	66
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	237
-		target	48
-		label	""
+		target	104
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	238
-		target	35
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	238
-		target	63
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	238
-		target	65
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	238
 		target	89
-		label	""
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	238
-		target	91
-		label	""
+		source	224
+		target	239
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	238
-		target	198
-		label	""
+		source	224
+		target	28
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	238
-		target	210
-		label	""
+		source	224
+		target	240
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	239
-		target	103
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	241
-		target	34
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	241
-		target	40
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	242
-		target	131
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	242
+		source	224
 		target	241
-		label	""
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	224
+		target	242
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	224
+		target	37
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	224
+		target	197
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	243
-		target	229
-		label	""
+		target	145
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	244
-		target	61
-		label	""
+		target	218
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	244
-		target	206
-		label	""
+		target	162
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	245
-		target	15
-		label	""
+		target	161
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	245
-		target	78
-		label	""
+		target	244
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	246
-		target	187
-		label	""
+		target	235
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	248
-		target	249
-		label	""
+		source	19
+		target	112
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	19
+		target	220
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	247
+		target	14
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	247
+		target	248
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	208
+		target	13
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	249
-		target	247
-		label	""
+		target	250
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	250
-		target	249
-		label	""
+		target	251
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	251
-		target	252
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	251
-		target	253
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	252
-		target	254
-		label	""
+		target	250
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	253
 		target	254
-		label	""
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	256
-		target	259
-		label	""
+		source	253
+		target	255
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	254
+		target	256
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	255
+		target	256
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	257
-		target	255
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	258
-		target	255
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	259
-		target	257
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	259
 		target	258
-		label	""
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	259
+		target	260
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	261
-		target	262
-		label	""
+		target	260
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	263
-		target	262
-		label	""
+		source	258
+		target	259
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	264
+		source	258
 		target	261
-		label	""
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	264
-		target	262
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	264
+		source	262
 		target	263
-		label	""
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	264
 		target	265
-		label	""
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	264
-		target	260
-		label	""
+		source	266
+		target	264
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	265
-		target	262
-		label	""
+		source	266
+		target	265
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	265
-		target	266
-		label	""
+		source	267
+		target	268
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	268
-		target	267
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	271
+		source	269
 		target	270
-		label	""
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	271
-		target	272
-		label	""
+		source	270
+		target	267
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	272
-		target	269
-		label	""
+		source	270
+		target	271
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	272
 		target	273
-		label	""
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	274
-		target	275
-		label	""
+		target	273
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	276
-		target	277
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	278
+		source	275
 		target	276
-		label	""
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	277
+		target	275
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	278
-		target	277
-		label	""
+		target	279
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
 		source	280
-		target	279
-		label	""
+		target	278
+		label	"pd"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#FFFF00"
+			arrow	"last"
 		]
 	]
 	edge
 	[
 		source	281
-		target	280
-		label	""
+		target	282
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	283
 		target	284
-		label	""
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	284
-		target	282
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	285
-		target	288
-		label	""
+		target	286
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	287
-		target	289
-		label	""
+		target	283
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	289
+		source	287
 		target	285
-		label	""
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	289
-		target	286
-		label	""
+		source	288
+		target	289
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	291
+		source	288
 		target	290
-		label	""
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	292
-		target	290
-		label	""
+		source	290
+		target	291
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	294
-		target	293
-		label	""
+		source	290
+		target	292
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	293
+		target	294
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	295
-		target	294
-		label	""
+		target	293
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	296
+		target	295
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	297
-		target	296
-		label	""
+		target	298
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	298
-		target	299
-		label	""
+		source	299
+		target	300
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	300
-		target	298
-		label	""
+		target	301
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	301
-		target	302
-		label	""
+		source	302
+		target	303
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	304
 		target	305
-		label	""
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	305
-		target	303
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	306
-		target	309
-		label	""
+		target	304
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	307
 		target	308
-		label	""
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	310
-		target	306
-		label	""
+		source	309
+		target	310
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	310
-		target	307
-		label	""
+		source	311
+		target	312
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	312
-		target	311
-		label	""
+		source	313
+		target	314
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	314
-		target	313
-		label	""
+		source	315
+		target	316
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	316
-		target	315
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	317
-		target	316
-		label	""
+		target	318
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
-		]
-	]
-	edge
-	[
-		source	318
-		target	317
-		label	""
-		graphics
-		[
-			width	1
-			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	319
-		target	320
-		label	""
+		target	318
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	320
+		target	317
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	320
+		target	318
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	320
+		target	319
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	320
+		target	321
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	320
+		target	322
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	321
-		target	319
-		label	""
+		target	318
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	322
-		target	321
-		label	""
+		source	321
+		target	323
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
-		source	323
-		target	324
-		label	""
+		source	324
+		target	325
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	326
-		target	325
-		label	""
+		target	324
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
 		]
 	]
 	edge
 	[
 		source	327
-		target	328
-		label	""
+		target	326
+		label	"pp"
 		graphics
 		[
-			width	1
+			width	2
 			type	"line"
-			fill	"#000000"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	328
+		target	329
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
+		]
+	]
+	edge
+	[
+		source	329
+		target	330
+		label	"pp"
+		graphics
+		[
+			width	2
+			type	"line"
+			fill	"#0000E1"
 		]
 	]
 ]

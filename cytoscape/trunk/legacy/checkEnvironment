@@ -150,7 +150,6 @@ sub checkClassPath
   my $fullPath = $ENV {'CLASSPATH'};
   my @allPaths = split (/:/, $fullPath);
   my $parentDirectory = getParentDirectory ();
-
   my $foundParentDirectory = 0;
   my $foundYFiles= 0;
   my $foundJunit = 0;
