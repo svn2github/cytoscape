@@ -15,10 +15,10 @@
 
   <!-- Classpath with all lib JAR Files -->
   <path id="classpath">
-		<pathelement path="${build.dir}/cytoscape-task.jar"/>
-		<fileset dir="${lib.dir}">
-			<include name="**/*.jar"/>
-		</fileset>
+    <pathelement path="${build.dir}/cytoscape-task.jar"/>
+    <fileset dir="${lib.dir}">
+      <include name="*.jar"/>
+    </fileset>
   </path>
 
   <target name="doc">
@@ -87,24 +87,26 @@
 
   <!--  Target to Create Run Samples -->
   <target name="sample0" depends="jar"
-        description="Runs Sample0:  Illustrates BareBones JTask">
-		<java classname="cytoscape.task.sample.RunSampleTask"
-    		classpathref="classpath" fork="true" maxmemory="512m">
-       	</java>
+          description="Runs Sample0:  Illustrates BareBones JTask">
+    <java classname="cytoscape.task.sample.RunSampleTask"
+          classpathref="classpath" fork="true" maxmemory="512m">
+    </java>
   </target>
+
   <target name="sample1" depends="jar"
-        description="Runs Sample1:  Illustrates Customized JTask with popup delay">
-		<java classname="cytoscape.task.sample.RunSampleTask"
-    		classpathref="classpath" fork="true" maxmemory="512m">
-		<arg line="1"/>
-       	</java>
+    description="Runs Sample1:  Illustrates Customized JTask with popup delay">
+    <java classname="cytoscape.task.sample.RunSampleTask"
+          classpathref="classpath" fork="true" maxmemory="512m">
+      <arg line="1"/>
+    </java>
   </target>
+
   <target name="sample2" depends="jar"
-        description="Runs Sample2:  Illustrates Exception Handling">
-		<java classname="cytoscape.task.sample.RunSampleTask"
-    		classpathref="classpath" fork="true" maxmemory="512m">
-		<arg line="2"/>
-       	</java>
+          description="Runs Sample2:  Illustrates Exception Handling">
+    <java classname="cytoscape.task.sample.RunSampleTask"
+          classpathref="classpath" fork="true" maxmemory="512m">
+      <arg line="2"/>
+    </java>
   </target>
 
 </project>
