@@ -1,0 +1,19 @@
+<!--	
+	Cytoscape.org Ant Script.
+	Author:  Ethan Cerami
+-->
+<project name="cyto_web" default="deploy" basedir=".">
+	<target name="deploy" description="Deploys Web Site to cytoscape.org">
+		<ftp server="cytoscape.org" 
+			remotedir="/html/new" 
+			verbose="yes"
+			userid="treyideker"
+			password="------"
+			depends="yes"
+			binary="yes">
+			<fileset dir=".">
+			<include name="index.php"/>
+			</fileset>
+		</ftp>
+	</target>
+</project>
