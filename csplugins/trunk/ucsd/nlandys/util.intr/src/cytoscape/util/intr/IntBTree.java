@@ -9,7 +9,8 @@ public final class IntBTree
   // This quantity must be at least 3.
   // The author prefers that this quantity be odd because that way nodes
   // are split evenly when they get full.
-  private final static int MAX_BRANCHES = 29;
+  // 45 or so seems to be the optimal value.
+  private final static int MAX_BRANCHES = 45;
 
   private Node m_root;
 
@@ -350,32 +351,33 @@ public final class IntBTree
       (m_root, nodeStack, xMin, xMax, Integer.MIN_VALUE, Integer.MAX_VALUE);
     return new IntEnumerator() {
         private int count = totalCount;
-        private Node currentLeafNode = null;
         private int wholeLeafNodes = 0; // Whole leaf nodes on stack.
-        private int currentNodeInx;
+        private int currentNodeInx = 0;
+        private Node currentLeafNode = computeNextLeafNode();
         public final int numRemaining() { return count; }
         public final int nextInt() {
           int returnThis = 0x80000000; // To keep compiler from complaining.
-          if (currentLeafNode == null) {
-            while (true) {
-              currentLeafNode = nodeStack.pop();
-              if (isLeafNode(currentLeafNode)) { currentNodeInx = 0; break; }
-              for (int i = currentLeafNode.sliceCount; i > 0;)
-                nodeStack.push(currentLeafNode.data.children[--i]);
-              if (isLeafNode(currentLeafNode.data.children[0]))
-                wholeLeafNodes += currentLeafNode.sliceCount; } }
-          if (wholeLeafNodes > 0) {
-            returnThis = currentLeafNode.values[currentNodeInx]; }
+          if (wholeLeafNodes > 0)
+            returnThis = currentLeafNode.values[currentNodeInx];
           else
             for (int i = currentNodeInx; i < currentLeafNode.sliceCount; i++)
               if (currentLeafNode.values[i] >= xMin) { // Don't check max.
-                returnThis = currentLeafNode.values[i];
-                break; }
+                returnThis = currentLeafNode.values[i]; break; }
           if (++currentNodeInx == currentLeafNode.sliceCount) {
-            currentLeafNode = null;
-            if (wholeLeafNodes > 0) wholeLeafNodes--; }
+            if (wholeLeafNodes > 0) wholeLeafNodes--;
+            currentLeafNode = computeNextLeafNode(); currentNodeInx = 0; }
           count--;
-          return returnThis; } };
+          return returnThis; }
+        private final Node computeNextLeafNode() {
+          if (nodeStack.currentSize == 0) return null;
+          Node returnThis;
+          while (true) {
+            returnThis = nodeStack.pop();
+            if (isLeafNode(returnThis)) return returnThis;
+            for (int i = returnThis.sliceCount; i > 0;)
+              nodeStack.push(returnThis.data.children[--i]);
+            if (isLeafNode(returnThis.data.children[0]))
+              wholeLeafNodes += returnThis.sliceCount; } } };
   }
 
   /*
