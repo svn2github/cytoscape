@@ -23,6 +23,7 @@ import cytoscape.visual.LineType;
     String label;
     String toolTip;
     Font font;
+    Color fontColor;
     
     public NodeAppearance() {}
     
@@ -52,4 +53,7 @@ import cytoscape.visual.LineType;
 
     public Font getFont() {return font;}
     public void setFont(Font f) {font = f;}
+
+    public Color getLabelColor() {return fontColor;}
+    public void setLabelColor(Color c) {fontColor = c;}
 }

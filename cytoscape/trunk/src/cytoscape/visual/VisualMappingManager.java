@@ -169,6 +169,7 @@ public class VisualMappingManager extends SubjectBase {
         nodeView.getLabel().setText( myNodeApp.getLabel() );
         Label label = nodeView.getLabel();
         label.setFont(myNodeApp.getFont());
+        label.setTextPaint(myNodeApp.getLabelColor());
       } else {
         Paint existingUnselectedColor = nodeView.getUnselectedPaint();
         Paint newUnselectedColor = myNodeApp.getFillColor();
@@ -214,6 +215,11 @@ public class VisualMappingManager extends SubjectBase {
         Font newFont = myNodeApp.getFont();
         if (!newFont.equals(existingFont)) {
           label.setFont(newFont);
+        }
+        Paint existingTextColor = label.getTextPaint();
+        Paint newTextColor = myNodeApp.getLabelColor();
+        if (!newTextColor.equals(existingTextColor)) {
+          label.setTextPaint(newTextColor);
         }
       }
     }
@@ -361,6 +367,7 @@ public class VisualMappingManager extends SubjectBase {
       nodeView.getLabel().setText( myNodeApp.getLabel() );
       Label label = nodeView.getLabel();
       label.setFont(myNodeApp.getFont());
+      label.setTextPaint(myNodeApp.getLabelColor());
     } else {
       Paint existingUnselectedColor = nodeView.getUnselectedPaint();
       Paint newUnselectedColor = myNodeApp.getFillColor();
@@ -406,6 +413,11 @@ public class VisualMappingManager extends SubjectBase {
       Font newFont = myNodeApp.getFont();
       if (!newFont.equals(existingFont)) {
         label.setFont(newFont);
+      }
+      Paint existingTextColor = label.getTextPaint();
+      Paint newTextColor = myNodeApp.getLabelColor();
+      if (!newTextColor.equals(existingTextColor)) {
+        label.setTextPaint(newTextColor);
       }
     }
   }
