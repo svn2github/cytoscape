@@ -13,6 +13,7 @@ import java.util.*;
 
 import giny.model.*;
 import giny.view.*;
+import giny.util.*;
 
 public class AnimatedLayoutAction extends AbstractAction {
 
@@ -58,6 +59,28 @@ public class AnimatedLayoutAction extends AbstractAction {
                   PGraphView gv = ( PGraphView )networkView.getView();
                   FRLayout fr = new FRLayout( gv );
                   fr.doLayout();
+                }
+              } ); } } ) );
+
+    main.add(  new JButton (new AbstractAction( "ISOM" ) {
+          public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  PGraphView gv = ( PGraphView )networkView.getView();
+                  ISOMLayout isom = new ISOMLayout( gv );
+                  isom.doLayout();
+                }
+              } ); } } ) );
+
+    main.add(  new JButton (new AbstractAction( "JUNG" ) {
+          public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  PGraphView gv = ( PGraphView )networkView.getView();
+                  JUNGSpringLayout jung = new JUNGSpringLayout( gv );
+                  jung.doLayout();
                 }
               } ); } } ) );
 
