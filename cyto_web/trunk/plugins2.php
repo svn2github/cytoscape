@@ -171,7 +171,7 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 					</p>
 				</td>
 				<td width="20%" valign="top">
-				 Verified to work in 2.0. <A HREF="#more_info"><BR>Not tested in Cytoscape 2.1*</A>
+				Verified to work in 2.0, 2.1.
 				</td>					
 				<td width="20%" valign="top">
 					[<a href="http://www.cbio.mskcc.org/cytoscape/plugins/ExpressionCorrelationReadme.txt">Release Notes</a>]
