@@ -640,7 +640,40 @@ public final class IntBTree
    */
   private final void mergeWithLeftSibling(final int holeInx,
                                           final int[] thisArr,
-                                          final int[] rightArr)
+                                          final int[] leftArr)
+  {
+  }
+
+  /*
+   * I give an example:
+   *
+   *
+   *   INPUTS
+   *   ======
+   *
+   *   holeInx: 1
+   *
+   *            +---+---+---+---+---+---+---+
+   *   thisArr: | 7 |   | 9 | 4 |   |   |   |
+   *            +---+---+---+---+---+---+---+
+   *
+   *             +---+---+---+---+---+---+---+
+   *   rightArr: | 8 | 0 | 2 | 5 |   |   |   |
+   *             +---+---+---+---+---+---+---+
+   *
+   *   (The number of elements in both arrays is assumed to be m_minBranches.)
+   *
+   *
+   *   OUTPUTS
+   *   =======
+   *
+   *            +---+---+---+---+---+---+---+
+   *   thisArr: | 7 | 9 | 4 | 8 | 0 | 2 | 5 |
+   *            +---+---+---+---+---+---+---+
+   */
+  private final void mergeWithRightSibling(final int holeInx,
+                                           final int[] thisArr,
+                                           final int[] rightArr)
   {
   }
 
