@@ -324,6 +324,9 @@ public class CytoscapeConfig {
     if (userSpecialPropsFile != null)
       userSpecialProps = readOnePropertyFile (userGeneralProps, userSpecialPropsFile);
 
+    File cytoscape_directory = createFile ( System.getProperty ("user.dir"), ".cytoscape/"+propsFileName );
+
+
     this.debugLog.append ("projectPropsFileName: " + projectPropsFileName);
     if (projectPropsFileName != null) {
       projectProps = readPropertyFileAsText (projectPropsFileName);

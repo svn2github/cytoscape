@@ -41,12 +41,16 @@ import cytoscape.visual.CalculatorCatalogFactory;
 import cytoscape.visual.CalculatorIO;
 import cytoscape.plugin.*;
 
+import java.beans.*;
+
 /**
  * An object representing a single instance of Cytoscape. This class holds
  * references to globally unique objects like the CytoscapeConfig and the
  * bioDataServer.
  */
-public class CytoscapeObj {
+public class CytoscapeObj 
+  implements 
+    PropertyChangeListener{
  
 
   protected CyMain parentApp;
@@ -105,6 +109,7 @@ public class CytoscapeObj {
     this.pluginRegistry = new PluginRegistry();
     //this.pluginRegistry.addPluginListener( this );
     Cytoscape.setCytoscapeObj( this );
+    Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener( this );
     registerCommandLinePlugins();
     //TODO: eventually should wait until a window requests the catalog
     loadCalculatorCatalog();
@@ -128,7 +133,45 @@ public class CytoscapeObj {
   }
 
 
- 
+  public void propertyChange ( PropertyChangeEvent e ) {
+    if ( e.getPropertyName() == Cytoscape.CYTOSCAPE_EXIT ) {
+      // TODO: other state saving info
+      saveCalculatorCatalog();
+    }
+  }
+
+  /**
+   * @return the directory ".cytoscape" in the users home directory.
+   */
+  public File getConfigDirectoy () {
+    File dir = null;
+    try {
+      File parent_dir = new File(System.getProperty ("user.home"), ".cytoscape" );
+      if ( parent_dir.mkdir() ) 
+        System.err.println( "Parent_Dir: "+parent_dir+ " created." );
+
+      return parent_dir;
+    } catch ( Exception e ) {
+      System.err.println( "error getting config directory" );
+    }
+    return null;
+  }
+
+  public File getConfigFile ( String file_name ) {
+    try {
+      File parent_dir = getConfigDirectoy();
+      File file = new File( parent_dir, file_name );
+      if ( file.createNewFile() )
+          System.err.println( "Config file: "+file+ " created." );
+      return file;
+
+    } catch ( Exception e ) {
+      System.err.println( "error getting config file:"+file_name );
+    }
+    return null;
+  }
+
+
 
   //------------------------------------------------------------------------------
   /**

@@ -27,6 +27,7 @@ public abstract class Cytoscape {
   public static String NETWORK_CREATED = "NETWORK_CREATED";
   public static String ATTRIBUTES_ADDED = "ATTRIBUTES_ADDED";
   public static String NETWORK_DESTROYED = "NETWORK_DESTROYED";
+  public static String CYTOSCAPE_EXIT = "CYTOSCAPE_EXIT";
 
   /**
    * When creating a network, use one of the standard suffixes
@@ -97,6 +98,20 @@ public abstract class Cytoscape {
 
   protected static void setCytoscapeObj ( CytoscapeObj obj ) {
     cytoscapeobj = obj;
+  }
+
+
+  public static void exit () {
+
+    System.out.println( "Cytoscape Exiting...." );
+    try {
+      firePropertyChange( CYTOSCAPE_EXIT,
+                          null,
+                          "now" );
+    } catch ( Exception e ) {
+      System.out.println( "Errors on close, closed anyways." );
+    }
+    getCytoscapeObj().getParentApp().exit(0);
   }
 
   //--------------------//

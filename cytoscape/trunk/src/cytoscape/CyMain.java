@@ -310,11 +310,18 @@ public class CyMain implements WindowListener {
       } else {
         // this is for for *nix
         // I happen to like this color combo, there are others
+      
+        // GTK
+        //UIManager.setLookAndFeel( "com.sun.java.swing.plaf.gtk.GTKLookAndFeel" );
+
+
+        // jgoodies
         Plastic3DLookAndFeel laf = new Plastic3DLookAndFeel();
         laf.setTabStyle( Plastic3DLookAndFeel.TAB_STYLE_METAL_VALUE );
         laf.setHighContrastFocusColorsEnabled(true);
         laf.setMyCurrentTheme( new com.jgoodies.plaf.plastic.theme.ExperienceBlue() );
         UIManager.setLookAndFeel( laf );
+        
       }
     } catch (Exception e) {
       System.err.println("Can't set look & feel:" + e);

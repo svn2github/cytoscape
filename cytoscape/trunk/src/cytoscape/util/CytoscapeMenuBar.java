@@ -241,6 +241,8 @@ public class CytoscapeMenuBar
     if( menu_string == null ) {
       menu_string = getDefaultMenuSpecifier();
     }
+
+
     StringTokenizer st = new StringTokenizer( menu_string, "." );
     String menu_token;
     JMenu parent_menu = null;

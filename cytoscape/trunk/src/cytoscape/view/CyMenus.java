@@ -41,7 +41,7 @@ import javax.swing.event.MenuEvent;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeObj;
 import cytoscape.CyNetwork;
-
+import cytoscape.SplashScreen;
 import cytoscape.view.CyNetworkView;
 
 import cytoscape.plugin.AbstractPlugin;
@@ -296,6 +296,16 @@ public class CyMenus  implements GraphViewChangeListener {
    */
   private void fillMenuBar() {
      
+    //  JMenu help_menu = new JMenu();
+    //     JMenuItem about = new JMenuItem( new AbstractAction( "About Cytoscape" ) {
+    //         public void actionPerformed ( ActionEvent e ) {
+    //           // Do this in the GUI Event Dispatch thread...
+    //           SwingUtilities.invokeLater( new Runnable() {
+    //               public void run() {
+    //                 SplashScreen splash = new SplashScreen();
+    //               } } ); } } );
+    //     help_menu.add( about );
+    //     menuBar.setHelpMenu( help_menu );
 
     //fill the Load submenu
     addAction( new LoadGraphFileAction( this ) );

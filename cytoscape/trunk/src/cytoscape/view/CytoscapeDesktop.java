@@ -285,10 +285,10 @@ public class CytoscapeDesktop
     final CytoscapeDesktop thisWindow = this;
     addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent we) {
-            theCytoscapeObj.saveCalculatorCatalog();
+          Cytoscape.exit();
         }
         public void windowClosed() {
-          //theCytoscapeObj.getPluginRegistry().removePluginListener(thisWindow);
+          
         }
     });
     
