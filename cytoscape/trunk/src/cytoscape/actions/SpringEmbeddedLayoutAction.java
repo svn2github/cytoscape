@@ -9,7 +9,6 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
 
-import giny.util.GraphPartition;
 
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
