@@ -81,6 +81,9 @@
    <antlr target="${grammar}/nodeAttr.g"
            outputdirectory="${src.netan}"/>
 
+   <antlr target="${grammar}/sif.g"
+           outputdirectory="${src.netan}"/>
+
 
     <!-- Compile the java code from ${src} into ${build}
     <javac  destdir="${build}" deprecation="no">

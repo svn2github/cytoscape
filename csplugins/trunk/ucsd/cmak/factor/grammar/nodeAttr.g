@@ -1,5 +1,5 @@
 header {
-package netan;
+package netan.parse;
 }
 
 {

@@ -1,5 +1,8 @@
 package netan;
 
+import netan.parse.NodeAttrLexer;
+import netan.parse.NodeAttrParser;
+
 import fgraph.BadInputException;
 
 import java.io.FileInputStream;
