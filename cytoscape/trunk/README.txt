@@ -127,7 +127,7 @@ of Cytoscape is rather involved.  Some of the tasks are automated and some are m
 		This includes three files:
 			a.  a binary .tar.gz file (for Linux / Mac OS X)
 			b.  a binary .zip file (for Windows)
-			c.  a source .tar.gz file
+			c.  a source .tar.gz file (for Linux / Mac OS X)
 
 	Deploy the new release files.
 		Currently, we are hosting the release files on cbio.mskcc.org only.
@@ -138,20 +138,28 @@ of Cytoscape is rather involved.  Some of the tasks are automated and some are m
 	B.  Creating the Mac OS X Release
 	---------------------------------------
 	We now have a Mac OS X specific release.
+	
+	****************
+	NOTE:  This no longer works in Cytoscape 2.1.  That's primarily because
+	2.0 included just one jar:  cytoscape.jar.  In 2.1, we now have multiple jars.
+	Needs to be fixed.
+	****************
 
 	To create the Mac OS X Specific Release
 		1.  run ant task:  ant mac
-		2.  rename cytoscape/release to cytoscape/Cytoscape2.0
-		3.  create a Mac OS X Disk Image File (.dmg)
+		2.  create a Mac OS X Disk Image File (.dmg)
 			--  this is done manually via the Mac Disk Utility program.
-			--  in Disk Utility, click "New Image", specify the name "cytoscape", and select 20 MB.
-			--  once the image is created on your desktop, drag cytoscape/Cytoscape2.0 to
-				the image.
-		3.  modify the default image for the Cytoscape 2.0 folder to use the Cytoscape Icon
-			--  to do so, to go to Cytoscape2.0/cytoscape.app, click "Get Info",
+			--  in Disk Utility, click "New Image", specify the name 
+			"cytoscape", and select 40 MB.
+			--  once the image is created on your desktop, drag 
+			build/cytoscape-vx.x/ to the image.
+		3.  modify the default image for the Cytoscape folder to use the Cytoscape 
+			Icon
+			--  to do so, to go to cytoscape-vx.x/cytoscape.app, click "Get Info",
 				and expand the tab labeled, "Preview".
 			--  select the icon, and hit Apple-C (Copy)
-			--  go to Cytoscape 2.0, click "Get Info", and expand the tab labeled, "Preview".
+			--  go to Cytoscape 2.0, click "Get Info", and expand the tab labeled,
+				"Preview".
 			--  select the icon, and hit Apple-V (Paste)
 		4.  create cytoscape.dmg.zip
 			--  to do so, right click on cytoscape.dmg, and select "Create Archive"
@@ -180,15 +188,8 @@ of Cytoscape is rather involved.  Some of the tasks are automated and some are m
 	Update cyto_web/config.php
 
 		This file contains global configurations for cytoscape.org
-		The most important thing to check is:
-
-		#################################################
-		#  Specifies the Current Cytoscape Release Version
-		#  Update this version number after each release.
-		#################################################
-		$version = "v2.0ALPHA4";
-
-		Make sure that $version matches the version now specified in build.xml.
+		You will probably need to add variable links for the newly released 
+		version of Cytoscape.
 
 	Deploy Everything to cytoscape.org
 		To do so, update cyto_web/cyto.properties with a valid user/password.
@@ -200,7 +201,13 @@ of Cytoscape is rather involved.  Some of the tasks are automated and some are m
 		Latest Javadocs are currently hosted on cbio.mkscc.org, and are not part
 		of cytoscape.org.  That's mainly because cytoscape.org FTP connection is so slow.
 
-		First, run:  ant doc.
+		First, copy over the source code from the task framework.  We want the API for
+		this framework to be included in the global 2.1 Javadoc, and this is the easiest
+		way to do it.  The code is currently located in
+		csplugins/common/task/src/cytoscape/task.  In the future, we should probably
+		come up with an automated way of doing this.
+		
+		Second, run:  ant doc.
 
 		Then, tar/gzip everything in the API directory.
 
