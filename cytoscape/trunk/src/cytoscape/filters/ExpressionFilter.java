@@ -30,11 +30,13 @@ public class ExpressionFilter extends Filter {
     int nNeighbors;
     int maxDepth;
     Filter neighborF;
+    boolean useRatio;
 
     public ExpressionFilter(Graph2D graph,
 			    ExpressionData expressionData,
 			    GraphObjAttributes nodeAttributes,
 			    double cutoff, boolean cutoffSmallerThan, int nConds,
+			    boolean useRatio,
 			    int nNeighbors, int maxDepth,
 			    boolean hideSingletons) {
 	super(graph);
@@ -42,6 +44,7 @@ public class ExpressionFilter extends Filter {
 	this.cutoff = cutoff;
 	this.cutoffSmallerThan = cutoffSmallerThan;
 	this.nConds = nConds;
+	this.useRatio = useRatio;
 	this.expressionData = expressionData;
 	this.nodeAttributes = nodeAttributes;
 	this.hideSingletons = hideSingletons;
@@ -55,7 +58,8 @@ public class ExpressionFilter extends Filter {
 						 expressionData,
 						 nodeAttributes,
 						 cutoff, cutoffSmallerThan, 
-						 nConds);
+						 nConds,
+						 useRatio);
 	
 	Filter memoUnaffF = new ListFilter(graph,
 					   unaffF.get(hidden));

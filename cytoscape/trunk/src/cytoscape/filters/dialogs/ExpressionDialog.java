@@ -42,6 +42,7 @@ public class ExpressionDialog extends FilterDialog {
     // can be changed by reference.
     MutableBoolean cutoffLess = new MutableBoolean(false);
     MutableBoolean hideSingletons = new MutableBoolean(false);
+    MutableBoolean useRatio = new MutableBoolean(false);
 
     public ExpressionDialog(ExpressionData expressionData,
 			    GraphObjAttributes nodeAttributes) {
@@ -61,6 +62,12 @@ public class ExpressionDialog extends FilterDialog {
 	JPanel cutoffPanel = FilterDialog.createFieldPanel
 	    (cutoffField);
 
+	JPanel useRatioPanel = FilterDialog.createFieldPanel
+	    ("Compare Value With", 
+	     new BoolPanel
+		 (useRatio, 
+		  "Ratio", "Significance").getPanel());
+
 	nCondsField = new JTextField(4);
 	JPanel nCondsPanel = FilterDialog.createFieldPanel
 	    ("Minimum Number of Meeting Conditions",
@@ -70,7 +77,8 @@ public class ExpressionDialog extends FilterDialog {
 	    ("Definition of Affected Nodes", 
 	     new JPanel[] {
 		 cutoffLessPanel,
-		 cutoffPanel, 
+		 cutoffPanel,
+		 useRatioPanel,
 		 nCondsPanel
 	     });
 
@@ -92,6 +100,7 @@ public class ExpressionDialog extends FilterDialog {
 	     new BoolPanel
 		 (hideSingletons, 
 		  "Yes", "No").getPanel());
+
 
 	JPanel reqPanel = FilterDialog.createSubPanel
 	    ("Requirements for Unaffected Nodes", 
@@ -159,6 +168,7 @@ public class ExpressionDialog extends FilterDialog {
 	setValid();
 	f = new ExpressionFilter(g, expressionData, nodeAttributes,
 				 cutoff, cutoffLess.booleanValue(), nConds,
+				 useRatio.booleanValue(),
 				 nNeighbors, maxDepth,
 				 hideSingletons.booleanValue());
 	return f;

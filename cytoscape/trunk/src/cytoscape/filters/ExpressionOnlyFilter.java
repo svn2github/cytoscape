@@ -35,11 +35,16 @@ public class ExpressionOnlyFilter extends Filter {
     ExpressionData expressionData;
     GraphObjAttributes nodeAttributes;
 
+    /**
+     * Whether to use significance or ratio as the comparison value.
+     */
+    boolean useRatio;
     public ExpressionOnlyFilter(Graph2D graph,
 				ExpressionData expressionData,
 				GraphObjAttributes nodeAttributes,
 				double cutoff, boolean cutoffSmallerThan,
-				int nConds) {
+				int nConds,
+				boolean useRatio) {
 	super(graph);
 
 	this.expressionData = expressionData;
@@ -47,6 +52,7 @@ public class ExpressionOnlyFilter extends Filter {
 	this.cutoff = cutoff;
 	this.cutoffSmallerThan = cutoffSmallerThan;
 	this.nConds = nConds;
+	this.useRatio = useRatio;
     }
 
 
@@ -68,9 +74,16 @@ public class ExpressionOnlyFilter extends Filter {
 			String conditionName = conditionNames[i];
 			mRNAMeasurement measurement = expressionData.getMeasurement(geneName,conditionName);
 			
-			if ((!cutoffSmallerThan && measurement.getSignificance() >= cutoff)
+			double value;
+			if (useRatio) {
+			    value = measurement.getRatio();
+			} else {
+			    value = measurement.getSignificance();
+			}
+
+			if ((!cutoffSmallerThan && value >= cutoff)
 			    ||
-			    (cutoffSmallerThan && measurement.getSignificance() <= cutoff)) {
+			    (cutoffSmallerThan && value <= cutoff)) {
 			    countConds++;
 			    
 			    if (countConds >= nConds) {
@@ -79,7 +92,7 @@ public class ExpressionOnlyFilter extends Filter {
 			    }
 			}
 		    } catch (NullPointerException e) {
-			System.out.println("!!! ERROR !!! NullPointerException !!!");
+			// System.out.println("!!! ERROR !!! NullPointerException !!!");
 		    }
 		}
 
