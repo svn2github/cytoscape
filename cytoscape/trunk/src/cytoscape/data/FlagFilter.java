@@ -341,7 +341,7 @@ public class FlagFilter implements Filter, GraphPerspectiveChangeListener {
      * Creates a suitable event and passes it to all listeners.
      */
     protected void fireEvent(Object target, boolean selectOn) {
-        assert(target != null);//should never get called with null target
+        //assert(target != null);//should never get called with null target
         FlagEvent event = new FlagEvent(this, target, selectOn);
         for (Iterator i = this.listeners.iterator(); i.hasNext(); ) {
             FlagEventListener listener = (FlagEventListener)i.next();

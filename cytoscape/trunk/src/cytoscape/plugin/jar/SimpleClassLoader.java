@@ -511,11 +511,11 @@ public class SimpleClassLoader extends ClassLoader {
    */
   static {
     // Add this protocol type to the http properties
-    Properties newP = new Properties(System.getProperties());
-    newP.put(protocolPathProp,
-             newP.getProperty(protocolPathProp)+"|sun.beanbox");
-    System.setProperties(newP);
-    // *The* loader instance
+    // Properties newP = new Properties(System.getProperties());
+//     newP.put(protocolPathProp,
+//              newP.getProperty(protocolPathProp)+"|sun.beanbox");
+//     System.setProperties(newP);
+    // *The* loader instance 
     ourLoader = createLoader("BeanBox", null);
   }
 }

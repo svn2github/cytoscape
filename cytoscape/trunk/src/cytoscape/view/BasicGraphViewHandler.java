@@ -130,6 +130,11 @@ public class BasicGraphViewHandler implements GraphViewHandler {
     }
     
     graph_view.updateView();
+              
+    if ( graph_view instanceof cytoscape.giny.PhoebeNetworkView ) {
+      ( ( cytoscape.giny.PhoebeNetworkView )graph_view ).redrawGraph();
+    }
+
     //TODO: Remove
     //System.out.println("Leaving BasicGraphViewHandler.handleGraphPerspectiveEvent()." +
     //" numTypes caught = " + numTypes);
@@ -662,7 +667,8 @@ public class BasicGraphViewHandler implements GraphViewHandler {
     for( int i = 0;  i < gvNodeIndices.size(); i++){
       graph_view.removeNodeView(gvNodeIndices.getQuick(i));
     }// for each node that is in graph_view but that is not in graphPerspective
-             
+   
+
   }//updateGraphview
 
 }//classs BasicGraphViewHandler

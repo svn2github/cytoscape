@@ -248,7 +248,11 @@ public class PhoebeNetworkView
   
   //TODO: set up the proper focus
   public void redrawGraph( boolean layout, boolean vizmap ) { 
-    
+    redrawGraph();
+  }
+   
+  public void redrawGraph() {
+
     Cytoscape.getDesktop().getVizMapManager().applyAppearances();
     getCanvas().setInteracting( true );
     //getCanvas().paintImmediately();

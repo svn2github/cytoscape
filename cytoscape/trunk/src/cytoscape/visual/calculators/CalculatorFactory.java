@@ -40,7 +40,7 @@ public class CalculatorFactory {
             System.err.println(s);
             return null;
         }
-        assert(intClass != null);  //should be impossible
+        //assert(intClass != null);  //should be impossible
         if (!calcClass.isAssignableFrom(intClass)) {
             System.err.println(errString);
             String s = "    requested interface " + intClassName
@@ -68,7 +68,7 @@ public class CalculatorFactory {
             System.err.println(s);
             return null;
         }
-        assert(realClass != null);  //should be impossible
+        //assert(realClass != null);  //should be impossible
         if (!intClass.isAssignableFrom(realClass)) {
             System.err.println(errString);
             String s = "    requested class " + className
@@ -95,7 +95,7 @@ public class CalculatorFactory {
             System.err.println(s);
             return null;
         }
-        assert(constructor != null);  //should be impossible
+        //assert(constructor != null);  //should be impossible
         
         //try constructing a calculator by calling the found constructor
         Calculator calculator = null;
