@@ -12,7 +12,7 @@ public class GraphTest
   {
     final DynamicGraph graph = DynamicGraphFactory.instantiateDynamicGraph();
     System.out.println("Creating 10 nodes...");
-    for (int i = 0; i < 10; i++) graph.createNode();
+    for (int i = 0; i < 10; i++) graph.nodeCreate();
     IntEnumerator nodesEnum = graph.nodes();
     int index = -1;
     int[] nodes = new int[nodesEnum.numRemaining()];
@@ -32,7 +32,7 @@ public class GraphTest
         ("Creating " + (edgesDir[i] ? "directed" : "undirected") +
          " edge from node " + nodes[edgesDef[i][0]] + " to node " +
          nodes[edgesDef[i][1]] + "...");
-      graph.createEdge(nodes[edgesDef[i][0]],
+      graph.edgeCreate(nodes[edgesDef[i][0]],
                        nodes[edgesDef[i][1]], edgesDir[i]); }
     IntEnumerator edgesEnum = graph.edges();
     System.out.println();
@@ -41,14 +41,14 @@ public class GraphTest
       final int edge = edgesEnum.nextInt();
       System.out.println
         ((graph.edgeType(edge) == 1 ? "Directed" : "Undirected") +
-         " edge " + edge + " with source " + graph.sourceNode(edge) +
-         " and target " + graph.targetNode(edge) + "."); }
+         " edge " + edge + " with source " + graph.edgeSource(edge) +
+         " and target " + graph.edgeTarget(edge) + "."); }
     System.out.println();
     System.out.println("All adjacent edges...");
     nodesEnum = graph.nodes();
     while (nodesEnum.numRemaining() > 0) {
       final int node = nodesEnum.nextInt();
-      IntEnumerator adjEdges = graph.adjacentEdges(node, true, true, true);
+      IntEnumerator adjEdges = graph.edgesAdjacent(node, true, true, true);
       System.out.print("For node " + node + ": ");
       while (adjEdges.numRemaining() > 0) {
         final int edge = adjEdges.nextInt();
@@ -59,7 +59,7 @@ public class GraphTest
     nodesEnum = graph.nodes();
     while (nodesEnum.numRemaining() > 0) {
       final int node = nodesEnum.nextInt();
-      IntEnumerator adjEdges = graph.adjacentEdges(node, false, false, true);
+      IntEnumerator adjEdges = graph.edgesAdjacent(node, false, false, true);
       System.out.print("For node " + node + ": ");
       while (adjEdges.numRemaining() > 0) {
         final int edge = adjEdges.nextInt();
@@ -71,7 +71,7 @@ public class GraphTest
     nodesEnum = graph.nodes();
     while (nodesEnum.numRemaining() > 0) {
       final int node = nodesEnum.nextInt();
-      IntEnumerator adjEdges = graph.adjacentEdges(node, false, true, true);
+      IntEnumerator adjEdges = graph.edgesAdjacent(node, false, true, true);
       System.out.print("For node " + node + ": ");
       while (adjEdges.numRemaining() > 0) {
         final int edge = adjEdges.nextInt();
@@ -82,7 +82,7 @@ public class GraphTest
     nodesEnum = graph.nodes();
     while (nodesEnum.numRemaining() > 0) {
       final int node = nodesEnum.nextInt();
-      IntEnumerator adjEdges = graph.adjacentEdges(node, true, false, false);
+      IntEnumerator adjEdges = graph.edgesAdjacent(node, true, false, false);
       System.out.print("For node " + node + ": ");
       while (adjEdges.numRemaining() > 0) {
         final int edge = adjEdges.nextInt();
@@ -93,7 +93,7 @@ public class GraphTest
     nodesEnum = graph.nodes();
     while (nodesEnum.numRemaining() > 0) {
       final int node = nodesEnum.nextInt();
-      IntEnumerator adjEdges = graph.adjacentEdges(node, true, true, false);
+      IntEnumerator adjEdges = graph.edgesAdjacent(node, true, true, false);
       System.out.print("For node " + node + ": ");
       while (adjEdges.numRemaining() > 0) {
         final int edge = adjEdges.nextInt();
@@ -103,13 +103,13 @@ public class GraphTest
     for (int i = 0; i < nodes.length; i++)
       if (i % 3 == 0) {
         System.out.println("Removing node " + nodes[i] + "...");
-        graph.removeNode(nodes[i]); }
+        graph.nodeRemove(nodes[i]); }
     System.out.println();
     System.out.println("All adjacent edges...");
     nodesEnum = graph.nodes();
     while (nodesEnum.numRemaining() > 0) {
       final int node = nodesEnum.nextInt();
-      IntEnumerator adjEdges = graph.adjacentEdges(node, true, true, true);
+      IntEnumerator adjEdges = graph.edgesAdjacent(node, true, true, true);
       System.out.print("For node " + node + ": ");
       while (adjEdges.numRemaining() > 0) {
         final int edge = adjEdges.nextInt();
@@ -123,7 +123,7 @@ public class GraphTest
       while (nodesEnum2.numRemaining() > 0) {
         final int node1 = nodesEnum2.nextInt();
         IntIterator connectingEdges =
-          graph.connectingEdges(node0, node1, true, true, true);
+          graph.edgesConnecting(node0, node1, true, true, true);
         System.out.print("All edges connecting node " + node0 +
                          " with node " + node1 + ": ");
         while (connectingEdges.hasNext())

@@ -78,7 +78,7 @@ final class DynamicGraphRepresentation implements DynamicGraph
           return returnThis; } };
   }
 
-  public int createNode()
+  public int nodeCreate()
   {
     final Node n = m_nodeDepot.getNode();
     final int returnThis;
@@ -94,13 +94,13 @@ final class DynamicGraphRepresentation implements DynamicGraph
     return returnThis;
   }
 
-  public boolean removeNode(int node)
+  public boolean nodeRemove(int node)
   {
-    final IntEnumerator edges = adjacentEdges(node, true, true, true);
+    final IntEnumerator edges = edgesAdjacent(node, true, true, true);
     if (edges == null) return false;
     m_stack.empty();
     while (edges.numRemaining() > 0) m_stack.push(edges.nextInt());
-    while (m_stack.size() > 0) removeEdge(m_stack.pop());
+    while (m_stack.size() > 0) edgeRemove(m_stack.pop());
     final Node n = m_nodes.getNodeAtIndex(node);
     if (n.prevNode != null) n.prevNode.nextNode = n.nextNode;
     else m_firstNode = n.nextNode;
@@ -113,7 +113,7 @@ final class DynamicGraphRepresentation implements DynamicGraph
     return true;
   }
 
-  public int createEdge(int sourceNode, int targetNode, boolean directed)
+  public int edgeCreate(int sourceNode, int targetNode, boolean directed)
   {
     if (sourceNode < 0 || sourceNode == Integer.MAX_VALUE) return -1;
     final Node source = m_nodes.getNodeAtIndex(sourceNode);
@@ -144,7 +144,7 @@ final class DynamicGraphRepresentation implements DynamicGraph
     return returnThis;
   }
 
-  public boolean removeEdge(int edge)
+  public boolean edgeRemove(int edge)
   {
     if (edge < 0 || edge == Integer.MAX_VALUE) return false;
     final Edge e = m_edges.getEdgeAtIndex(edge);
@@ -170,7 +170,7 @@ final class DynamicGraphRepresentation implements DynamicGraph
     return true;
   }
 
-  public boolean containsNode(int node)
+  public boolean nodeExists(int node)
   {
     if (node < 0 || node == Integer.MAX_VALUE) return false;
     return m_nodes.getNodeAtIndex(node) != null;
@@ -184,7 +184,7 @@ final class DynamicGraphRepresentation implements DynamicGraph
     if (e.directed) return 1; return 0;
   }
 
-  public int sourceNode(int edge)
+  public int edgeSource(int edge)
   {
     if (edge < 0 || edge == Integer.MAX_VALUE) return -1;
     final Edge e = m_edges.getEdgeAtIndex(edge);
@@ -192,7 +192,7 @@ final class DynamicGraphRepresentation implements DynamicGraph
     return e.sourceNode;
   }
 
-  public int targetNode(int edge)
+  public int edgeTarget(int edge)
   {
     if (edge < 0 || edge == Integer.MAX_VALUE) return -1;
     final Edge e = m_edges.getEdgeAtIndex(edge);
@@ -200,7 +200,7 @@ final class DynamicGraphRepresentation implements DynamicGraph
     return e.targetNode;
   }
 
-  public IntEnumerator adjacentEdges(int node,
+  public IntEnumerator edgesAdjacent(int node,
                                      final boolean outgoing,
                                      final boolean incoming,
                                      final boolean undirected)
@@ -255,13 +255,13 @@ final class DynamicGraphRepresentation implements DynamicGraph
           return returnThis; } };   
   }
 
-  public IntIterator connectingEdges(int node0, int node1,
+  public IntIterator edgesConnecting(int node0, int node1,
                                      boolean outgoing, boolean incoming,
                                      boolean undirected)
   {
-    final IntEnumerator node0Adj = adjacentEdges(node0, outgoing, incoming,
+    final IntEnumerator node0Adj = edgesAdjacent(node0, outgoing, incoming,
                                                  undirected);
-    final IntEnumerator node1Adj = adjacentEdges(node1, incoming, outgoing,
+    final IntEnumerator node1Adj = edgesAdjacent(node1, incoming, outgoing,
                                                  undirected);
     if (node0Adj == null || node1Adj == null) return null;
     final DynamicGraph graph = this;
@@ -278,8 +278,8 @@ final class DynamicGraphRepresentation implements DynamicGraph
           if (nextEdge != -1) return;
           while (theAdj.numRemaining() > 0) {
             final int edge = theAdj.nextInt();
-            if (nodeOne == (nodeZero ^ graph.sourceNode(edge) ^
-                graph.targetNode(edge))) {
+            if (nodeOne == (nodeZero ^ graph.edgeSource(edge) ^
+                graph.edgeTarget(edge))) {
               nextEdge = edge; return; } }
           nextEdge = -2; }
         public boolean hasNext() {

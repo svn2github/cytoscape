@@ -22,10 +22,10 @@ public class AddRemoveTest
                                     " of " + iterations);
       if (print) System.out.println("creating nodes");
       final int[] nodes = nodesArr[foo % nodesArr.length];
-      for (int i = 0; i < nodes.length; i++) nodes[i] = graph.createNode();
+      for (int i = 0; i < nodes.length; i++) nodes[i] = graph.nodeCreate();
       if (print) System.out.println("creating edges");
       for (int i = 0; i < edges.length; i++)
-        edges[i] = graph.createEdge(nodes[i % nodes.length],
+        edges[i] = graph.edgeCreate(nodes[i % nodes.length],
                                     nodes[(i * 3) % nodes.length],
                                     true);
       if (print) System.out.println
@@ -33,9 +33,9 @@ public class AddRemoveTest
                     " nodes and " + graph.edges().numRemaining() + " edges");
       if (print) System.out.println();
       if (print) System.out.println("removing edges");
-      for (int i = 0; i < edges.length; i++) graph.removeEdge(edges[i]);
+      for (int i = 0; i < edges.length; i++) graph.edgeRemove(edges[i]);
       if (print) System.out.println("removing nodes");
-      for (int i = 0; i < nodes.length; i++) graph.removeNode(nodes[i]);
+      for (int i = 0; i < nodes.length; i++) graph.nodeRemove(nodes[i]);
       if (print) System.out.println
                    ("in graph: " + graph.nodes().numRemaining() +
                     " nodes and " + graph.edges().numRemaining() + " edges");

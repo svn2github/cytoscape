@@ -51,7 +51,7 @@ public interface DynamicGraph
    *
    * @return the newly created node.
    */
-  public int createNode();
+  public int nodeCreate();
 
   /**
    * Removes the specified node from this graph.  Returns true if and only
@@ -65,7 +65,7 @@ public interface DynamicGraph
    * @return true if and only if the specified node existed in this graph
    *   at the time this operation was started.
    */
-  public boolean removeNode(int node);
+  public boolean nodeRemove(int node);
 
   /**
    * Creates a new edge in this graph, having source node, target node,
@@ -84,7 +84,7 @@ public interface DynamicGraph
    * @return the newly created edge or -1 if either the source or target node
    *   specified does not exist in this graph.
    */
-  public int createEdge(int sourceNode, int targetNode, boolean directed);
+  public int edgeCreate(int sourceNode, int targetNode, boolean directed);
 
   /**
    * Removes the specified edge from this graph.  Returns true if and only
@@ -98,23 +98,23 @@ public interface DynamicGraph
    * @return true if and only if the specified edge existed in this graph
    *   at the time this operation was started.
    */
-  public boolean removeEdge(int edge);
+  public boolean edgeRemove(int edge);
 
   /**
    * Determines whether or not a node exists in this graph.
    * Returns true if and only if the node specified exists.<p>
    * Note that this method is superfluous in this interface (that is,
    * it could be removed without losing any functionality), because
-   * adjacentEdges(int, boolean, boolean, boolean) can be used to test
-   * the presence of a node.  However, because containsNode(int) does not
+   * edgesAdjacent(int, boolean, boolean, boolean) can be used to test
+   * the presence of a node.  However, because nodeExists(int) does not
    * return a complicated object, its performance may be much better
-   * than that of adjacentEdges().
+   * than that of edgesAdjacent().
    *
    * @param node the [potentially existing] node in this graph whose existence
    *   we're querying.
    * @return the existence of specified node in this graph.
    */
-  public boolean containsNode(int node);
+  public boolean nodeExists(int node);
 
   /**
    * Determines the existence and directedness of an edge.
@@ -138,7 +138,7 @@ public interface DynamicGraph
    * @return the source node of specified edge or -1 if specified edge does
    *   not exist in this graph.
    */
-  public int sourceNode(int edge);
+  public int edgeSource(int edge);
 
   /**
    * Determines the target node of an edge.
@@ -149,7 +149,7 @@ public interface DynamicGraph
    * @return the target node of specified edge or -1 if specified edge does
    *   not exist in this graph.
    */
-  public int targetNode(int edge);
+  public int edgeTarget(int edge);
 
   /**
    * Returns a non-repeating enumeration of edges adjacent to a node.
@@ -180,7 +180,7 @@ public interface DynamicGraph
    * @return an enumeration of edges adjacent to the node specified
    *   or null if specified node does not exist in this graph.
    */
-  public IntEnumerator adjacentEdges(int node, boolean outgoing,
+  public IntEnumerator edgesAdjacent(int node, boolean outgoing,
                                      boolean incoming, boolean undirected);
 
   /**
@@ -194,7 +194,7 @@ public interface DynamicGraph
    * of that iteration.<p>
    * I'd like to discuss the motivation behind this interface method.
    * I assume that most implementations of this interface will implement
-   * this method in terms of adjacentEdges().  Why, then, is this method
+   * this method in terms of edgesAdjacent().  Why, then, is this method
    * necessary?  Because some implementations may choose to optimize the
    * implementation of this method by using a binary search tree or a
    * hashtable, for example.  This method is a hook to provide such
@@ -223,11 +223,11 @@ public interface DynamicGraph
    *   specified by boolean input parameters or null if either of node0 or
    *   node1 does not exist in this graph.
    * @deprecated This method may go away at some point; please use
-   *   adjacentEdges(int, boolean, boolean, boolean) where it is reasonable
+   *   edgesAdjacent(int, boolean, boolean, boolean) where it is reasonable
    *   to do so.
-   * @see #adjacentEdges(int, boolean, boolean, boolean)
+   * @see #edgesAdjacent(int, boolean, boolean, boolean)
    */
-  public IntIterator connectingEdges(int node0, int node1,
+  public IntIterator edgesConnecting(int node0, int node1,
                                      boolean outgoing, boolean incoming,
                                      boolean undirected);
 
