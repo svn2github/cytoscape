@@ -17,7 +17,7 @@ public interface CyMasterData
 
   /**
    * Cytoscape needs to maintain a consistent state between nodes registered
-   * by data "registries" of this pacakge and other data structures that
+   * in data "registries" of this package and other data structures that
    * Cytoscape uses, such as a RootGraph.<p>
    * Let me state a scenario describing how I envision that Cytoscape is
    * implemented.  Cytoscape has the ability to load files which specify a
@@ -57,5 +57,7 @@ public interface CyMasterData
    *   attribute values.
    */
   public void registerNode(int nodeInx, String nodeName);
+
+  public void registerEdge(int edgeInx, String edgeName);
 
 }
