@@ -344,16 +344,16 @@ private Properties readPropertyFileAsText (String filename)
     System.err.println (e0.getMessage ());
     }
 
-  String [] lines = rawText.split ("\n");
-  CytoscapeWindow.debugLog.append ("CC.readPropertyFileAsText, rawText --\n" + rawText + "\n");
+  //the Properties class contains its own parser, so it makes the most sense
+  //to massage our text into a form suitable for that loader
+  byte[] byteText = rawText.getBytes();
+  InputStream is = new ByteArrayInputStream(byteText);
   Properties newProps = new Properties ();
-  for (int i=0; i < lines.length; i++) {
-    String line = lines [i].trim ();
-    if (line.startsWith ("#")) continue;
-    String [] tokens = line.split ("=");
-    if (tokens.length != 2) continue;
-    newProps.setProperty (tokens [0], tokens [1]);
-    }
+  try {
+      newProps.load(is);
+  } catch (IOException ioe) {//seems unlikely
+      ioe.printStackTrace();
+  }
 
   return newProps;
 

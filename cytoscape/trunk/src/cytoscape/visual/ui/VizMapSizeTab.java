@@ -70,7 +70,7 @@ public class VizMapSizeTab extends VizMapTab {
 	// set the name of this component appropriately
 	setName("Node Size");
 
-	this.nodeCalc = VMM.getNodeAppearanceCalculator();
+	this.nodeCalc = VMM.getVisualStyle().getNodeAppearanceCalculator();
 	this.mainUIDialog = mainUI;
 	this.locked = locked;
 

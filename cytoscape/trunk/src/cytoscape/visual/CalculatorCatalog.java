@@ -63,12 +63,8 @@ public class CalculatorCatalog {
 
     Map edgeFontSizeCalculators = new HashMap();
     List edgeFontSizeListeners = new Vector(1, 1);
-    
-    Map nodeAppearanceCalculators = new HashMap();
-    List nodeAppearanceListeners = new Vector(1, 1);
 
-    Map edgeAppearanceCalculators = new HashMap();
-    List edgeAppearanceListeners = new Vector(1, 1);
+    Map visualStyles = new HashMap();
 
     // mapping database
     Map mappers = new HashMap();
@@ -377,15 +373,37 @@ public class CalculatorCatalog {
 	}
 	return newName;
     }
-
-    public Set getNodeAppearanceCalculatorNames() {
-        return nodeAppearanceCalculators.keySet();
-    }   
-    public Collection getNodeAppearanceCalculators() {
-        return nodeAppearanceCalculators.values();
+    
+    public Set getVisualStyleNames() {
+        return visualStyles.keySet();
     }
-    public void addNodeAppearanceCalculator(String name, NodeAppearanceCalculator c) {
-        nodeAppearanceCalculators.put(name, c);
+    public Collection getVisualStyles() {
+        return visualStyles.values();
+    }
+    public void addVisualStyle(VisualStyle vs) {
+        if (vs == null) {return;}
+        String name = vs.toString();
+        //check for duplicate names
+        if (visualStyles.keySet().contains(name)) {
+            String s = "Duplicate visual style name " + name;
+            throw new DuplicateCalculatorNameException(s);
+        }
+        visualStyles.put(name, vs);
+        //store the individual attribute calculators via helper methods
+        addNodeAppearanceCalculator( vs.getNodeAppearanceCalculator() );
+        addEdgeAppearanceCalculator( vs.getEdgeAppearanceCalculator() );
+    }
+    public VisualStyle removeVisualStyle(String name) {
+        return (VisualStyle)visualStyles.remove(name);
+    }
+    public VisualStyle getVisualStyle(String name) {
+        return (VisualStyle)visualStyles.get(name);
+    }
+    public String checkVisualStyleName(String name) {
+        return checkName(name, visualStyles);
+    }
+
+    private void addNodeAppearanceCalculator(NodeAppearanceCalculator c) {
 	NodeColorCalculator ncc1 = c.getNodeFillColorCalculator();
 	if( ncc1!=null && !nodeColorCalculators.values().contains(ncc1) ) {
             addNodeColorCalculator(ncc1);
@@ -427,25 +445,8 @@ public class CalculatorCatalog {
             addNodeFontSizeCalculator(nfsc);
         }
     }
-    public NodeAppearanceCalculator removeNodeAppearanceCalculator(String name) {
-        return (NodeAppearanceCalculator)nodeAppearanceCalculators.remove(name);
-    }
 
-    public NodeAppearanceCalculator getNodeAppearanceCalculator(String name) {
-        return (NodeAppearanceCalculator)nodeAppearanceCalculators.get(name);
-    }
-    public String checkNodeAppearanceCalculatorName(String name) {
-	return checkName(name, nodeAppearanceCalculators);
-    }
-    
-    public Set getEdgeAppearanceCalculatorNames() {
-        return edgeAppearanceCalculators.keySet();
-    }
-    public Collection getEdgeAppearanceCalculators() {
-        return edgeAppearanceCalculators.values();
-    }
-    public void addEdgeAppearanceCalculator(String name, EdgeAppearanceCalculator c) {
-        edgeAppearanceCalculators.put(name, c);
+    private void addEdgeAppearanceCalculator(EdgeAppearanceCalculator c) {
 	EdgeColorCalculator ecc = c.getEdgeColorCalculator();
 	if(ecc!=null && !edgeColorCalculators.values().contains(ecc) ) {
             addEdgeColorCalculator(ecc);
@@ -478,15 +479,6 @@ public class CalculatorCatalog {
         if (efsc != null && !edgeFontSizeCalculators.values().contains(efsc) ) {
             addEdgeFontSizeCalculator(efsc);
         }
-    }
-    public EdgeAppearanceCalculator removeEdgeAppearanceCalculator(String name) {
-	return (EdgeAppearanceCalculator)edgeAppearanceCalculators.remove(name);
-    }
-    public EdgeAppearanceCalculator getEdgeAppearanceCalculator(String name) {
-        return (EdgeAppearanceCalculator)edgeAppearanceCalculators.get(name);
-    }
-    public String checkEdgeAppearanceCalculatorName(String name) {
-	return checkName(name, edgeAppearanceCalculators);
     }
     
     protected void addCalculator(Calculator c, Map m)

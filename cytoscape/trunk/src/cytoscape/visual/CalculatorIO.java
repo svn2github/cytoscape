@@ -52,6 +52,7 @@ public class CalculatorIO {
     
     public static final String nodeAppearanceBaseKey = "nodeAppearanceCalculator";
     public static final String edgeAppearanceBaseKey = "edgeAppearanceCalculator";
+    public static final String globalAppearanceBaseKey = "globalAppearanceCalculator";
     
     
     /**
@@ -149,31 +150,30 @@ public class CalculatorIO {
         addProperties(newProps, catalog.getEdgeFontFaceCalculators(), edgeFontFaceBaseKey);
         addProperties(newProps, catalog.getEdgeFontSizeCalculators(), edgeFontSizeBaseKey);
         
-        //node appearance calculators
-        Collection nacNames = catalog.getNodeAppearanceCalculatorNames();
-        for (Iterator i = nacNames.iterator(); i.hasNext(); ) {
+        //visual styles
+        Set visualStyleNames = catalog.getVisualStyleNames();
+        for (Iterator i = visualStyleNames.iterator(); i.hasNext(); ) {
             String name = (String)i.next();
+            VisualStyle vs = catalog.getVisualStyle(name);
             try {
-                NodeAppearanceCalculator nac = catalog.getNodeAppearanceCalculator(name);
-                String baseKey = nodeAppearanceBaseKey + "." + name;
-                Properties props = nac.getProperties(baseKey);
-                newProps.putAll(props);
+                Properties styleProps = new Properties();
+                NodeAppearanceCalculator nac = vs.getNodeAppearanceCalculator();
+                String nacBaseKey = nodeAppearanceBaseKey + "." + name;
+                Properties nacProps = nac.getProperties(nacBaseKey);
+                styleProps.putAll(nacProps);
+                EdgeAppearanceCalculator eac = vs.getEdgeAppearanceCalculator();
+                String eacBaseKey = edgeAppearanceBaseKey + "." + name;
+                Properties eacProps = eac.getProperties(eacBaseKey);
+                styleProps.putAll(eacProps);
+                GlobalAppearanceCalculator gac = vs.getGlobalAppearanceCalculator();
+                String gacBaseKey = globalAppearanceBaseKey + "." + name;
+                Properties gacProps = gac.getProperties(gacBaseKey);
+                styleProps.putAll(gacProps);
+                //now that we've constructed all the properties for this visual
+                //style without Exceptions, store in the global properties object
+                newProps.putAll(styleProps);
             } catch (Exception e) {
-                String s = "Exception while saving node appearance calculator " + name;
-                System.err.println(s);
-                System.err.println(e.getMessage());
-            }
-        }
-        Collection eacNames = catalog.getEdgeAppearanceCalculatorNames();
-        for (Iterator i = eacNames.iterator(); i.hasNext(); ) {
-            String name = (String)i.next();
-            try {
-                EdgeAppearanceCalculator eac = catalog.getEdgeAppearanceCalculator(name);
-                String baseKey = edgeAppearanceBaseKey + "." + name;
-                Properties props = eac.getProperties(baseKey);
-                newProps.putAll(props);
-            } catch (Exception e) {
-                String s = "Exception while saving edge appearance calculator " + name;
+                String s = "Exception while saving visual style " + name;
                 System.err.println(s);
                 System.err.println(e.getMessage());
             }
@@ -262,6 +262,7 @@ public class CalculatorIO {
         Map edgeFontSizeNames = new HashMap();
         Map nacNames = new HashMap();
         Map eacNames = new HashMap();
+        Map gacNames = new HashMap();
         //use the propertyNames() method instead of the generic Map iterator,
         //because the former method recognizes layered properties objects.
         //see the Properties javadoc for details
@@ -301,6 +302,8 @@ public class CalculatorIO {
                 storeKey(key, props, nacNames);
             } else if (key.startsWith(edgeAppearanceBaseKey + ".")) {
                 storeKey(key, props, eacNames);
+            } else if (key.startsWith(globalAppearanceBaseKey + ".")) {
+                storeKey(key, props, gacNames);
             }
         }
         
@@ -342,16 +345,23 @@ public class CalculatorIO {
         handleCalculators(edgeFontSizeNames, catalog, overWrite, edgeFontSizeBaseKey,
                           edgeFontSizeClassName);
 
+        //Map structure to hold visual styles that we build here
+        Map visualStyles = new HashMap();
         //now that all the individual calculators are loaded, load the
-        //Node and Edge appearance calculators
+        //Node/Edge/Global appearance calculators
         for (Iterator si = nacNames.keySet().iterator(); si.hasNext(); ) {
             String name = (String)si.next();
             Properties nacProps = (Properties)nacNames.get(name);
             String baseKey = nodeAppearanceBaseKey + "." + name;
             NodeAppearanceCalculator nac =
                 new NodeAppearanceCalculator(name, nacProps, baseKey, catalog);
-            catalog.removeNodeAppearanceCalculator(name);
-            catalog.addNodeAppearanceCalculator(name, nac);
+            //store in the matching visual style, creating as needed
+            VisualStyle vs = (VisualStyle)visualStyles.get(name);
+            if (vs == null) {
+                vs = new VisualStyle(name);
+                visualStyles.put(name, vs);
+            }
+            vs.setNodeAppearanceCalculator(nac);
         }
         for (Iterator si = eacNames.keySet().iterator(); si.hasNext(); ) {
             String name = (String)si.next();
@@ -359,8 +369,33 @@ public class CalculatorIO {
             String baseKey = edgeAppearanceBaseKey + "." + name;
             EdgeAppearanceCalculator eac =
                 new EdgeAppearanceCalculator(name, eacProps, baseKey, catalog);
-            catalog.removeEdgeAppearanceCalculator(name);
-            catalog.addEdgeAppearanceCalculator(name, eac);
+            //store in the matching visual style, creating as needed
+            VisualStyle vs = (VisualStyle)visualStyles.get(name);
+            if (vs == null) {
+                vs = new VisualStyle(name);
+                visualStyles.put(name, vs);
+            }
+            vs.setEdgeAppearanceCalculator(eac);
+        }
+        for (Iterator si = gacNames.keySet().iterator(); si.hasNext(); ) {
+            String name = (String)si.next();
+            Properties gacProps = (Properties)gacNames.get(name);
+            String baseKey = globalAppearanceBaseKey + "." + name;
+            GlobalAppearanceCalculator gac =
+                new GlobalAppearanceCalculator(name, gacProps, baseKey, catalog);
+            //store in the matching visual style, creating as needed
+            VisualStyle vs = (VisualStyle)visualStyles.get(name);
+            if (vs == null) {
+                vs = new VisualStyle(name);
+                visualStyles.put(name, vs);
+            }
+            vs.setGlobalAppearanceCalculator(gac);
+        }
+        
+        //now store the visual styles in the catalog
+        for (Iterator si = visualStyles.values().iterator(); si.hasNext(); ) {
+            VisualStyle vs = (VisualStyle)si.next();
+            catalog.addVisualStyle(vs);
         }
     }
 

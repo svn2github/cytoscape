@@ -97,14 +97,13 @@ public class OldStyleCalculatorIO {
         theText.setEditable(false);
         theText.setBorder(BorderFactory.createLineBorder(Color.WHITE, 10));
         
-        //prompt for a name for the new calculators
+        //prompt for a name for the new visual style
         JLabel nameLabel = new JLabel("enter a name for these mappings");
         /* try to use the name defined by the variable 'calcName'
-         * if calculators with that name already exist, then we force the user
+         * if a visual style with that name already exists, then we force the user
          * to make up a name, then check for uniqueness */
-        String checkedName = catalog.checkNodeAppearanceCalculatorName(calcName);
-        String doubleCheckedName = catalog.checkEdgeAppearanceCalculatorName(checkedName);
-        if (!calcName.equals(doubleCheckedName)) {//force user to pick a new name
+        String checkedName = catalog.checkVisualStyleName(calcName);
+        if (!calcName.equals(checkedName)) {//force user to pick a new name
             calcName = "";
         }
         final JTextField nameEntry = new JTextField(calcName, 20);
@@ -193,11 +192,8 @@ public class OldStyleCalculatorIO {
      * is found, true if the name is not currently used.
      */
     private static boolean checkName(CalculatorCatalog catalog) {
-        NodeAppearanceCalculator nac = catalog.getNodeAppearanceCalculator(calcName);
-        if (nac != null) {return false;}
-        EdgeAppearanceCalculator eac = catalog.getEdgeAppearanceCalculator(calcName);
-        if (eac != null) {return false;}
-        return true;
+        VisualStyle vs = catalog.getVisualStyle(calcName);
+        if (vs == null) {return true;} else {return false;}
     }
     
     /**
@@ -259,9 +255,21 @@ public class OldStyleCalculatorIO {
         edgeArrowClass, edgeArrowIntClass, flatInterpolator);
         
         //after loading the individual attribute calculators, load the
-        //node and edge appearance calculators
-        loadNodeAppearanceCalculator(props, catalog);
-        loadEdgeAppearanceCalculator(props, catalog);
+        //node and edge appearance calculators into the named visual style
+        //and the default visual style
+        VisualStyle vs = new VisualStyle(calcName);
+        VisualStyle defVS = catalog.getVisualStyle("default");
+        if (defVS == null) {
+            defVS = new VisualStyle("default");
+            catalog.addVisualStyle(defVS);
+        }
+        //these methods install the appearance calculators into the
+        //visual style objects
+        loadNodeAppearanceCalculator(props, catalog, vs, defVS);
+        loadEdgeAppearanceCalculator(props, catalog, vs, defVS);
+        loadGlobalAppearanceCalculator(props, catalog, vs, defVS);
+        //finally, install the newly created visual style
+        catalog.addVisualStyle(vs);
     }
     
     /**
@@ -411,14 +419,12 @@ public class OldStyleCalculatorIO {
      * automatically activated the next time the user runs Cytoscape.
      */
     private static void loadNodeAppearanceCalculator(Properties props,
-                                                     CalculatorCatalog catalog) {
-        NodeAppearanceCalculator nac = new NodeAppearanceCalculator();
+                                                     CalculatorCatalog catalog,
+                                                     VisualStyle vs,
+                                                     VisualStyle defVS) {
+        NodeAppearanceCalculator nac = vs.getNodeAppearanceCalculator();
         //we'll also store any entries in the default nac
-        NodeAppearanceCalculator defNAC = catalog.getNodeAppearanceCalculator("default");
-        if (defNAC == null) {
-            defNAC = new NodeAppearanceCalculator();
-            catalog.addNodeAppearanceCalculator("default", defNAC);
-        }
+        NodeAppearanceCalculator defNAC = defVS.getNodeAppearanceCalculator();
         
         String defaultNodeFillString = props.getProperty("node.fillColor.default");
         if (defaultNodeFillString != null) {
@@ -491,8 +497,6 @@ public class OldStyleCalculatorIO {
             nac.setNodeShapeCalculator(nsh);
             defNAC.setNodeShapeCalculator(nsh);
         }
-        
-        catalog.addNodeAppearanceCalculator(calcName, nac);
     }
     
     /**
@@ -503,14 +507,12 @@ public class OldStyleCalculatorIO {
      * automatically activated the next time the user runs Cytoscape.
      */
     private static void loadEdgeAppearanceCalculator(Properties props,
-                                                     CalculatorCatalog catalog) {
-        EdgeAppearanceCalculator eac = new EdgeAppearanceCalculator();
+                                                     CalculatorCatalog catalog,
+                                                     VisualStyle vs,
+                                                     VisualStyle defVS) {
+        EdgeAppearanceCalculator eac = vs.getEdgeAppearanceCalculator();
         //we'll also store any entries in the default eac
-        EdgeAppearanceCalculator defEAC = catalog.getEdgeAppearanceCalculator("default");
-        if (defEAC == null) {
-            defEAC = new EdgeAppearanceCalculator();
-            catalog.addEdgeAppearanceCalculator("default", defEAC);
-        }
+        EdgeAppearanceCalculator defEAC = defVS.getEdgeAppearanceCalculator();
         
         String defaultColorString = props.getProperty("edge.color.default");
         if (defaultColorString != null) {
@@ -553,8 +555,26 @@ public class OldStyleCalculatorIO {
             eac.setEdgeTargetArrowCalculator(eta);
             defEAC.setEdgeTargetArrowCalculator(eta);
         }
+    }
+    
+    private static void loadGlobalAppearanceCalculator(Properties props,
+                                                       CalculatorCatalog catalog,
+                                                       VisualStyle vs,
+                                                       VisualStyle defVS) {
+        GlobalAppearanceCalculator gac = vs.getGlobalAppearanceCalculator();
+        //we'll also store any entries in the default gac
+        GlobalAppearanceCalculator defGAC = defVS.getGlobalAppearanceCalculator();
         
-        catalog.addEdgeAppearanceCalculator(calcName, eac);
+        String backString = props.getProperty("background.color");
+        if (backString != null) {
+            gac.setDefaultBackgroundColor( Misc.parseRGBText(backString) );
+            defGAC.setDefaultBackgroundColor( Misc.parseRGBText(backString) );
+        }
+        String selString = props.getProperty("node.selectedColor");
+        if (selString != null) {
+            gac.setDefaultSloppySelectionColor( Misc.parseRGBText(selString) );
+            defGAC.setDefaultSloppySelectionColor( Misc.parseRGBText(selString) );
+        }
     }
 }
 

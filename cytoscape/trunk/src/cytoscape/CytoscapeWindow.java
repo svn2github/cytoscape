@@ -340,27 +340,16 @@ private void loadVizMapper() {
   Properties configProps = config.getProperties();
   OldStyleCalculatorIO.checkForCalculators(configProps, cc);
   
-  //try to get appearance calculator names from properties
-  NodeAppearanceCalculator nac = null;
-  String nacName = configProps.getProperty("nodeAppearanceCalculator");
-  if (nacName != null) {nac = cc.getNodeAppearanceCalculator(nacName);}
-  if (nac == null) {//none specified, or not found
-      //get the default nac from the catalog
-      nac = cc.getNodeAppearanceCalculator("default");
-      if (nac == null) {//catalog doesn't have a default
-          nac = new NodeAppearanceCalculator();
-          cc.addNodeAppearanceCalculator("default", nac);//store as default
-      }
-  }
-  EdgeAppearanceCalculator eac = null;
-  String eacName = configProps.getProperty("edgeAppearanceCalculator");
-  if (eacName != null) {eac = cc.getEdgeAppearanceCalculator(eacName);}
-  if (eac == null) {//none specified, or not found
-      //get the default eac from the catalog
-      eac = cc.getEdgeAppearanceCalculator("default");
-      if (eac == null) {//catalog doesn't have a default
-          eac = new EdgeAppearanceCalculator();
-          cc.addEdgeAppearanceCalculator("default", eac);//store as default
+  //try to get visual style from properties
+  VisualStyle vs = null;
+  String vsName = configProps.getProperty("visualStyle");
+  if (vsName != null) {vs = cc.getVisualStyle(vsName);}
+  if (vs == null) {//none specified, or not found
+      //get the default visual style from the catalog
+      vs = cc.getVisualStyle("default");
+      if (vs == null) {//catalog doesn't have a default
+          vs = new VisualStyle("default");
+          cc.addVisualStyle(vs);
       }
   }
   
@@ -382,7 +371,7 @@ private void loadVizMapper() {
   */
   
   //create the vizMapping objects
-  this.vizMapper = new VisualMappingManager(this, nac, eac, cc);
+  this.vizMapper = new VisualMappingManager(this, cc, vs);
   this.network = new Network(this);
   this.vizMapUI = new VizMapUI(this.vizMapper);
 }

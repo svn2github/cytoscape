@@ -95,9 +95,10 @@ public class TestNewMappingsUI {
 		addEdgeTargetArrowMapping(eac);
 		addDiscreteEdgeLabelMapping(eac);
 		// edge tool tip
-		this.vmm = new VisualMappingManager(cytoscapeWindow,
-						    nac, eac);
-		CalculatorCatalog cc = vmm.getCalculatorCatalog();
+                GlobalAppearanceCalculator gac = new GlobalAppearanceCalculator();
+                VisualStyle vs = new VisualStyle("mappingsTest", nac, eac, gac);
+                CalculatorCatalog cc = new CalculatorCatalog();
+		this.vmm = new VisualMappingManager(cytoscapeWindow, cc, vs);
 		cc.addNodeLabelCalculator(getPassThroughNLC());
 		cc.addNodeColorCalculator(getContinuousNFCC());
 		cc.addNodeColorCalculator(getMultipointContinuousNFCC());

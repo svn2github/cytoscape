@@ -109,8 +109,8 @@ public class VizMapAttrTab extends VizMapTab {
 	this.type = type;
 
 	// get appearance calculator references
-	this.nodeCalc = VMM.getNodeAppearanceCalculator();
-	this.edgeCalc = VMM.getEdgeAppearanceCalculator();
+	this.nodeCalc = VMM.getVisualStyle().getNodeAppearanceCalculator();
+	this.edgeCalc = VMM.getVisualStyle().getEdgeAppearanceCalculator();
 	
 	// register to listen for changes in the catalog
 	catalog.addChangeListener(new CatalogListener(), this.type);

@@ -52,7 +52,10 @@ public class VisualStyle {
         setGlobalAppearanceCalculator( toCopy.getGlobalAppearanceCalculator() );
     }
         
-    
+    /**
+     * Returns the name of this object, as returned by getName.
+     */
+    public String toString() {return getName();}
     /**
      * Returns the name of this object.
      */

@@ -15,19 +15,28 @@ import cytoscape.CytoscapeWindow;
 /**
  * Top-level class for controlling the visual appearance of nodes and edges
  * according to data attributes. This class holds a reference to a
- * CytoscapeWindow, a CalculatorCatalog object and the current calculators
- * for nodes and edges.
+ * CytoscapeWindow, a CalculatorCatalog, and a VisualStyle.
  *
- * Note that null objects for the node and edge calculators are not allowed;
- * this class always provides at least a default object.
+ * Note that a null VisualStyle is not allowed; this class always provides
+ * at least a default object.
  */
 public class VisualMappingManager {
 
     Network network;
     CytoscapeWindow cytoscapeWindow;
     CalculatorCatalog catalog;
-    NodeAppearanceCalculator nodeAppearanceCalculator;
-    EdgeAppearanceCalculator edgeAppearanceCalculator;
+    VisualStyle visualStyle;
+
+    
+    public VisualMappingManager(CytoscapeWindow cytoscapeWindow,
+                                CalculatorCatalog catalog,
+                                VisualStyle style) {
+        this.cytoscapeWindow = cytoscapeWindow;
+        this.network = new Network(cytoscapeWindow);
+        this.catalog = catalog;
+        setVisualStyle(style);
+    }
+
 
     public Network getNetwork() {
 	return network;
@@ -37,100 +46,39 @@ public class VisualMappingManager {
 	return cytoscapeWindow;
     }
     
-    public VisualMappingManager(CytoscapeWindow cytoscapeWindow,
-                                NodeAppearanceCalculator nodeCalc,
-				EdgeAppearanceCalculator edgeCalc,
-                                CalculatorCatalog catalog) {
-        this.cytoscapeWindow = cytoscapeWindow;
-        this.network = new Network(cytoscapeWindow);
-        this.catalog = catalog;
-        setNodeAppearanceCalculator(nodeCalc);
-        setEdgeAppearanceCalculator(edgeCalc);
-    }
-
-    public VisualMappingManager(CytoscapeWindow cytoscapeWindow,
-				NodeAppearanceCalculator nodeCalc,
-				EdgeAppearanceCalculator edgeCalc) {
-	this.cytoscapeWindow = cytoscapeWindow;
-	this.network = new Network(cytoscapeWindow);
-	catalog = new CalculatorCatalog();
-	catalog.addNodeAppearanceCalculator("defaultNAC", nodeCalc);
-	catalog.addEdgeAppearanceCalculator("defaultEAC", edgeCalc);
-	setNodeAppearanceCalculator("defaultNAC");
-	setEdgeAppearanceCalculator("defaultEAC");
-    }
-
-    public VisualMappingManager(CytoscapeWindow cytoscapeWindow, Properties props) {
-        this.cytoscapeWindow = cytoscapeWindow;
-        //catalog = cytoscapeWindow.getCalculatorCatalog();
-        catalog = new CalculatorCatalog(props);
-        String nodeCName = props.getProperty("nodeAppearanceCalculator");
-        if (nodeCName == null) {
-            setNodeAppearanceCalculator(new NodeAppearanceCalculator());
-        } else {
-            setNodeAppearanceCalculator(nodeCName);
-            if (nodeAppearanceCalculator == null) {//invalid name
-                nodeAppearanceCalculator = new NodeAppearanceCalculator();
-            }
-        }
-        String edgeCName = props.getProperty("edgeAppearanceCalculator");
-        if (edgeCName == null) {
-            setEdgeAppearanceCalculator(new EdgeAppearanceCalculator());
-        } else {
-            setEdgeAppearanceCalculator(edgeCName);
-            if (edgeAppearanceCalculator == null) {//invalid name
-                edgeAppearanceCalculator = new EdgeAppearanceCalculator();
-            }
-        }
-    }
-    
     public CalculatorCatalog getCalculatorCatalog() {return catalog;}
     
-    public NodeAppearanceCalculator getNodeAppearanceCalculator() {
-        return nodeAppearanceCalculator;
-    }
-    public void setNodeAppearanceCalculator(NodeAppearanceCalculator c) {
-        if (c != null) {
-            nodeAppearanceCalculator = c;
+    public VisualStyle getVisualStyle() {return visualStyle;}
+    public VisualStyle setVisualStyle(VisualStyle vs) {
+        if (vs != null) {
+            VisualStyle tmp = visualStyle;
+            visualStyle = vs;
+            return tmp;
         } else {
-            String s = "VisualMappingManager: Attempt to set null NodeAppearanceCalculator ignored";
+            String s = "VisualMappingManager: Attempt to set null VisualStyle";
             cytoscapeWindow.getLogger().severe(s);
+            return null;
         }
     }
-    public void setNodeAppearanceCalculator(String name) {
-        NodeAppearanceCalculator c = catalog.getNodeAppearanceCalculator(name);
-        if (c != null) {
-            nodeAppearanceCalculator = c;
+    public VisualStyle setVisualStyle(String name) {
+        VisualStyle vs = catalog.getVisualStyle(name);
+        if (vs != null) {
+            VisualStyle tmp = visualStyle;
+            visualStyle = vs;
+            return tmp;
         } else {
-            String s = "VisualMappingManager: unknown NodeAppearanceCalculator: " + name;
+            String s = "VisualMappingManager: unknown VisualStyle: " + name;
             cytoscapeWindow.getLogger().severe(s);
+            return null;
         }
     }
-    
-    public EdgeAppearanceCalculator getEdgeAppearanceCalculator() {
-        return edgeAppearanceCalculator;
-    }
-    public void setEdgeAppearanceCalculator(EdgeAppearanceCalculator c) {
-        if (c != null) {
-            edgeAppearanceCalculator = c;
-        } else {
-            String s = "VisualMappingManager: Attempt to set null EdgeAppearanceCalculator ignored";
-            cytoscapeWindow.getLogger().severe(s);
-        }
-    }
-    public void setEdgeAppearanceCalculator(String name) {
-        EdgeAppearanceCalculator c = catalog.getEdgeAppearanceCalculator(name);
-        if (c != null) {
-            edgeAppearanceCalculator = c;
-        } else {
-            String s = "VisualMappingManager: unknown EdgeAppearanceCalculator: " + name;
-            cytoscapeWindow.getLogger().severe(s);
-        }
-    }
+
     public void applyAppearances() {
 	Graph2DView graphView = cytoscapeWindow.getGraphView();
 
 	/** first apply the node appearance to all nodes */
+        NodeAppearanceCalculator nodeAppearanceCalculator =
+                visualStyle.getNodeAppearanceCalculator();
 	Node [] nodes = graphView.getGraph2D().getNodeArray();
 	for (int i=0; i < nodes.length; i++) {
 	    Node node = nodes [i];
@@ -153,10 +101,11 @@ public class VisualMappingManager {
 	}
 
 	/** then apply the edge appearance to all edges */
-	EdgeCursor cursor = graphView.getGraph2D().edges();
-	cursor.toFirst ();
-	for (int i=0; i < cursor.size (); i++) {
-	    Edge edge = cursor.edge ();
+        EdgeAppearanceCalculator edgeAppearanceCalculator =
+                visualStyle.getEdgeAppearanceCalculator();
+        Edge[] edges = graphView.getGraph2D().getEdgeArray();
+	for (int i=0; i < edges.length; i++) {
+	    Edge edge = edges[i];
 	    EdgeAppearance ea = new EdgeAppearance();
 	    edgeAppearanceCalculator.calculateEdgeAppearance(ea,edge,network);
 	    EdgeRealizer er = graphView.getGraph2D().getRealizer(edge);
@@ -171,8 +120,16 @@ public class VisualMappingManager {
 	    el.setFont(ea.getFont());
 	    er.addLabel(el);
 	    //er.setToolTip(ea.getToolTip()); // how do you do this?
-	    cursor.cyclicNext();
 	}
+        
+        /** now apply global appearances */
+        GlobalAppearanceCalculator globalAppearanceCalculator =
+        visualStyle.getGlobalAppearanceCalculator();
+        GlobalAppearance ga = globalAppearanceCalculator.calculateGlobalAppearance(network);
+        DefaultBackgroundRenderer bgRender =
+                (DefaultBackgroundRenderer)graphView.getBackgroundRenderer();
+        bgRender.setColor( ga.getBackgroundColor() );
+        NodeRealizer.setSloppySelectionColor( ga.getSloppySelectionColor() );
 
 	/** finally, have cytoscapeWindow update. */
 	graphView.updateView(); //forces the view to update it's contents

@@ -46,10 +46,6 @@ public class VizMapUI extends JDialog {
 
     // VisualMappingManager for the graph.
     private VisualMappingManager VMM;
-    /** Node apperance calculator reference */
-    private NodeAppearanceCalculator nodeCalc;
-    /** Edge appearance calculator reference */
-    private EdgeAppearanceCalculator edgeCalc;
     /** The content pane for the dialog */
     private Container mainPane;
     private JPanel actionButtonsPanel, attrSelectorPanel;
@@ -73,10 +69,6 @@ public class VizMapUI extends JDialog {
 	this.mainPane = new JPanel(new BorderLayout(), false);
 	this.tabs = new VizMapTab[EDGE_LABEL_FONT + 1];
 	this.tabPaneContainer = new JPanel(false);
-	
-	// get appearance calculator references
-	this.nodeCalc = VMM.getNodeAppearanceCalculator();
-	this.edgeCalc = VMM.getEdgeAppearanceCalculator();
 
 	JTabbedPane nodePane = new JTabbedPane();
 	JTabbedPane edgePane = new JTabbedPane();
