@@ -28,8 +28,12 @@ public final class RootGraphPerformanceTest
     testAdjacentEdges(root, nodes);
     long millisEnd = System.currentTimeMillis();
     System.out.println("adjacent edges test took " +
-                       (millisEnd - millisBegin) +
-                       " milliseconds");
+                       (millisEnd - millisBegin) + " milliseconds");
+    long millisBegin2 = System.currentTimeMillis();
+    testConnectingEdges(root, nodes);
+    long millisEnd2 = System.currentTimeMillis();
+    System.out.println("connecting edges test took " +
+                       (millisEnd2 - millisBegin2) + " milliseconds");
   }
 
   private static final RootGraph getRootGraph(String[] mainArgs)
@@ -119,6 +123,24 @@ public final class RootGraphPerformanceTest
       for (int j = 0; j < nodes.length; j++) {
         root.getAdjacentEdgeIndicesArray
           (nodes[j], undirected, incoming, outgoing); } }
+  }
+
+  public static final void testConnectingEdges(RootGraph root, int[] nodes)
+  {
+    for (int i = 0; i < 4; i++) {
+      boolean undirected;
+      boolean bothDirections;
+      if (i == 0) {
+        undirected = true; bothDirections = true; }
+      else if (i == 1) {
+        undirected = true; bothDirections = false; }
+      else if (i == 2) {
+        undirected = false; bothDirections = true; }
+      else {
+        undirected = false; bothDirections = false; }
+      for (int j = 1; j < nodes.length; j++) {
+        root.getEdgeIndicesArray
+          (nodes[j - 1], nodes[j], undirected, bothDirections); } }
   }
 
 }
