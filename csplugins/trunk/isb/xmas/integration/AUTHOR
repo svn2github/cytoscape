@@ -1,0 +1,30 @@
+----------------------------------------
+This Plugin Created by :
+
+Rowan Christmas
+
+xmas@systemsbiology.org
+( 206 ) 732-1328
+Seattle WA
+98115
+
+-----------------------------------------
+
+To build:
+
+1. Get Ant installed.
+2. Run "ant"
+
+----------------------------------------
+
+To run:
+
+java integration.view.IntegrationWindow
+
+make sure that your classpath has:
+
+integration.jar, piccolo.jar, piccolox.jar,colt.jar
+
+i.e.:
+
+java -cp integration.jar:lib/piccolo.jar:lib/piccolox.jar:lib/colt.jar  integration.view.IntegrationWindow

@@ -1,0 +1,195 @@
+<project name="integration" default="integration" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init-integration">
+    <tstamp/>
+    <property name="integration.Name" value="integration"/>
+    <property name="integration.name" value="integration"/>
+    <property name="integration.version" value="0.1"/>
+    <property name="integration.year" value="200"/>
+
+    <echo message="Building ${integration.name} version ${integration.version}."/>
+
+    <!-- Inheritable properties -->
+    <property name="debug" value="on"/>
+    <property name="optimize" value="off"/>
+    <property name="deprecation" value="on"/>
+    <property name="nowarn" value="true"/>
+    <property name="fork" value="false"/>
+    <property name="integration.root.dir" value="."/>
+    <property name="integration.lib.dir" value="${integration.root.dir}/lib"/>
+    <path id="project.class.path">
+      <pathelement path="${java.class.path}/"/>
+    </path>
+
+    <!-- Define the directories -->
+    <property name="integration.root.dir" value="./"/>
+    <property name="integration.src.dir" value="${integration.root.dir}/src"/>
+    <property name="integration.classes.dir" value="${integration.root.dir}/classes"/>
+    <property name="integration.javadoc.dir" value="${javadoc.dir}/integration"/>
+    <property name="integration.resources.dir" value="${integration.root.dir}/resources"/>
+    <property name="integration.manifest.dir" value="${integration.root.dir}/manifest"/>
+    <property name="integration.packages" value="integration.*"/>
+    <!-- Subdirectory for test reports -->
+    <property name="integration.tests.reports.dir" value="${integration.root.dir}/reports/tests" />
+    <property name="cytoscape.lib" value="../../cytoscape/lib" />
+
+    <!-- Define the condition for compilation -->
+    <property name="giny.jar" value="${integration.lib.dir}/giny.jar"/>
+    <property name="piccolo.jar" value="${integration.lib.dir}/piccolo.jar"/>
+    <property name="piccolox.jar" value="${integration.lib.dir}/piccolox.jar"/>
+    <property name="colt.jar" value="${integration.lib.dir}/colt.jar"/>
+    
+
+    <condition property="piccolo.present">
+      	<and> 
+	  		<available file="${piccolo.jar}"/> 
+			<available file="${piccolox.jar}"/> 
+			<available file="${colt.jar}"/> 
+		</and>
+    </condition>
+
+    <!-- Define excludes for integration compile and javadoc -->
+    <property name="integration.excludes" value="**/notyet/*"/>
+    <property name="integration.tests.excludes" value="**/notyet/*"/>
+    <property name="integration.packages.excludes" value="**.test.*,**.notyet.*"/>
+
+    <path id="integration.project.class.path">
+      <pathelement location="${integration.classes.dir}"/>
+      <pathelement location="${integration.lib.dir}/giny.jar"/>
+      <pathelement location="${integration.lib.dir}/piccolo.jar"/>
+      <pathelement location="${integration.lib.dir}/piccolox.jar"/>
+      <pathelement location="${integration.lib.dir}/colt.jar"/>
+      <pathelement location="${integration.lib.dir}/coltginy.jar"/>
+      <pathelement location="${integration.lib.dir}/luna.jar"/>
+      <pathelement location="${integration.lib.dir}/junit.jar"/>
+      <pathelement location="${cytoscape.lib}/cytoscape.jar"/>
+      <pathelement path="${project.class.path}/"/>
+    </path>
+
+    <filter token="year" value="${year}"/>
+    <filter token="version" value="${version}"/>
+    <filter token="date" value="${TODAY}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the integration project                                           -->
+  <!-- =================================================================== -->
+  <target name="compile-integration" depends="init-integration" if="piccolo.present" >
+
+ <echo message=" COMPILE integration "/>
+
+    <mkdir dir="${integration.classes.dir}"/>
+    <javac srcdir="${integration.src.dir}"
+           excludes="${integration.excludes}"
+           classpathref="integration.project.class.path"
+           destdir="${integration.classes.dir}"
+           debug="${debug}"
+           nowarn="${nowarn}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the integration.jar file                                           -->
+  <!-- =================================================================== -->
+  <target name="integration" depends="compile-integration" if="piccolo.present" >
+    <jar destfile="integration.jar" manifest="${integration.manifest.dir}/integration.manifest">
+      <fileset
+        dir="${integration.classes.dir}"
+        includes="**"/>
+      <fileset
+        dir="${integration.root.dir}/lib"
+        includes="resources/**"/>
+    </jar>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the integration tests                                             -->
+  <!-- =================================================================== -->
+  <target name="compile-tests" depends="integration" if="piccolo.present" >
+    <mkdir dir="${integration.classes.dir}"/>
+    <javac srcdir="${integration.src.dir}"
+           includes="**/test/*"
+           excludes="${integration.tests.excludes}"
+           classpathref="integration.project.class.path"
+           destdir="${integration.classes.dir}"
+           debug="${debug}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the integration-tests.jar file                                     -->
+  <!-- =================================================================== -->
+  <target name="tests" depends="compile-tests" if="piccolo.present" >
+    <jar jarfile="integration-tests.jar"
+         basedir="${integration.classes.dir}"
+         includes="**/test/*"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Build all jars                                                      -->
+  <!-- =================================================================== -->
+  <target name="all" depends="integration"/>
+
+  <!-- =================================================================== -->
+  <!-- Runs the tests in integration-tests.jar                                    -->
+  <!-- =================================================================== -->
+  <target name="runtests" depends="tests" if="piccolo.present" >
+    <mkdir dir="${integration.tests.reports.dir}"/>
+    <junit
+       printsummary="yes"
+       haltonfailure="no"
+       dir="${integration.classes.dir}"
+       maxmemory="1G"
+    >
+      <formatter type="plain" usefile="true" />
+      <classpath refid="integration.project.class.path"/>
+      <!-- The junit task doesn't support 'if' so we test for JUnit here -->
+      <batchtest fork="yes" todir="${integration.tests.reports.dir}" if="junit.present">
+        <fileset
+           dir="${integration.classes.dir}"
+           includes="**/test/*"
+           excludes="${integration.tests.excludes}"
+        />
+      </batchtest>
+    </junit>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the API documentation                                       -->
+  <!-- =================================================================== -->
+  <target name="docs" depends="init-integration" if="piccolo.present" >
+    <mkdir dir="${integration.javadoc.dir}"/>
+    <javadoc packagenames="${integration.packages}"
+             excludepackagenames="${integration.packages.excludes}"
+             sourcepath="${integration.src.dir}"
+             destdir="${integration.javadoc.dir}"
+             classpathref="integration.project.class.path"
+             author="true"
+             version="true"
+             use="true"
+             splitindex="true"
+             noindex="false"
+             windowtitle="${integration.Name} API"
+             doctitle="${integration.Name}"
+    />
+  </target>
+ 
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init-integration">
+    <delete dir="${integration.classes.dir}"/>
+    <delete file="integration.jar"/>
+    <delete file="integration-tests.jar"/>
+  </target>
+
+</project>
+
+<!-- End of file -->
