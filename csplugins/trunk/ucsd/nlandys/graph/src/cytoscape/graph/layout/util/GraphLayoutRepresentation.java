@@ -2,7 +2,6 @@ package cytoscape.graph.layout.util;
 
 import cytoscape.graph.layout.GraphLayout;
 import cytoscape.graph.util.GraphTopologyRepresentation;
-import java.awt.geom.Point2D;
 
 /**
  * This class provides an implementation of <code>GraphLayout</code>
@@ -132,11 +131,11 @@ public class GraphLayoutRepresentation
 
   public final double getMaxHeight() { return m_maxHeight; }
 
-  public final Point2D getNodePosition(int nodeIndex) {
+  public final double getNodePosition(int nodeIndex, boolean xPosition) {
     // This will automatically throw an ArrayIndexOutOfBoundsException,
     // which is a subclass of IndexOutOfBoundsException, if nodeIndex
     // is not a valid index.
-    return new Point2D.Double(m_nodeXPositions[nodeIndex],
-                              m_nodeYPositions[nodeIndex]); }
+    return (xPosition ? m_nodeXPositions[nodeIndex] :
+            m_nodeYPositions[nodeIndex]); }
 
 }
