@@ -34,15 +34,8 @@
 //--------------------------------------------------------------------
 package cytoscape.data;
 //--------------------------------------------------------------------
-import java.util.StringTokenizer;
-import java.util.Vector;
-import java.util.Hashtable;
-import java.util.HashMap;
-import java.io.Serializable;
-
-import java.io.FileReader;
-import java.io.BufferedReader;
-import java.io.IOException;
+import java.util.*;
+import java.io.*;
 
 import cytoscape.*;
 import y.base.*;
@@ -149,6 +142,11 @@ public class ExpressionData implements Serializable{
 
   public String getFileName(){
     return filename;
+  }
+
+  public File getFullPath (){
+    File file = new File (filename);
+    return file.getAbsoluteFile ();
   }
 
     private void initDataStructures() {
