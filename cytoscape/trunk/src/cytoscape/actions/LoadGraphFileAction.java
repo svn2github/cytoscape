@@ -97,6 +97,9 @@ public class LoadGraphFileAction extends AbstractAction {
             if (newNetwork != null) {//valid read
                 //apply the semantics we usually expect
                 Semantics.applyNamingServices(newNetwork, networkView.getCytoscapeObj());
+                //fow now, we just use the old setNewGraphFrom Method
+                networkView.getNetwork().setNewGraphFrom(newNetwork, false);
+                //all the following is for future consideration
                 //we want to preserve the old attributes or expression data. Expression
                 //data is read-only, so we can just reference the same object, but we
                 //need to make copies of the attributes objects so future changes only
@@ -106,6 +109,7 @@ public class LoadGraphFileAction extends AbstractAction {
                 //3. import the new attributes into the copy of the old, which overwrites
                 //   any duplicated attributes
                 //4. put this merged attributes object into the new network
+                /*
                 GraphObjAttributes newNodeAttributes = new GraphObjAttributes();
                 newNodeAttributes.inputAll( networkView.getNetwork().getNodeAttributes() );
                 newNodeAttributes.clearNameMap();
@@ -123,6 +127,7 @@ public class LoadGraphFileAction extends AbstractAction {
                 newNetwork.setExpressionData( networkView.getNetwork().getExpressionData() );
                 //now we switch the window to the new network
                 networkView.setNewNetwork(newNetwork);
+                */
                 networkView.setWindowTitle(name);//and set a new title
 
                 //hack to apply layout information from a GML file
