@@ -306,7 +306,7 @@ class FRootGraph implements RootGraph, DynamicGraph
         removeEdge(edge.getRootGraphIndex()) != 0) return edge;
     else return null; }
 
-  public int removeEdge(int edgeInx)
+  public int removeEdge(final int edgeInx)
   {
     final int nativeEdgeInx = ~edgeInx;
     if (!(m_graph.edgeRemove(nativeEdgeInx))) return 0;
@@ -677,7 +677,10 @@ class FRootGraph implements RootGraph, DynamicGraph
       (metaParent, metaChildNode, true, false, false);
     if (metaRelationships == null || !metaRelationships.hasNext())
       return false;
-    m_metaGraph.edgeRemove(metaRelationships.nextInt());
+    final int relationshipToRemove = metaRelationships.nextInt();
+    if (metaRelationships.hasNext())
+      throw new IllegalStateException("internal error - need to debug");
+    m_metaGraph.edgeRemove(relationshipToRemove);
     if (m_metaGraph.edgesAdjacent(metaParent, true, true, false).
         numRemaining() == 0) { // Remove disconnected meta-element.
       m_nativeToMetaNodeInxMap.put(nativeParent, Integer.MAX_VALUE);
@@ -742,9 +745,8 @@ class FRootGraph implements RootGraph, DynamicGraph
     final int metaChildNode = m_nativeToMetaNodeInxMap.get(nativeChildNode);
     final IntIterator metaRelationshipsIter = m_metaGraph.edgesConnecting
       (metaParent, metaChildNode, true, false, false);
-    if (metaRelationshipsIter == null || !metaRelationshipsIter.hasNext())
-      return false;
-    return true;
+    return !(metaRelationshipsIter == null ||
+             !metaRelationshipsIter.hasNext());
   }
 
   private final IntStack m_stack = new IntStack();
@@ -925,7 +927,10 @@ class FRootGraph implements RootGraph, DynamicGraph
       (metaParent, metaChildEdge, true, false, false);
     if (metaRelationships == null || !metaRelationships.hasNext())
       return false;
-    m_metaGraph.edgeRemove(metaRelationships.nextInt());
+    final int relationshipToRemove = metaRelationships.nextInt();
+    if (metaRelationships.hasNext())
+      throw new IllegalStateException("internal error - debug");
+    m_metaGraph.edgeRemove(relationshipToRemove);
     if (m_metaGraph.edgesAdjacent(metaParent, true, true, false).
         numRemaining() == 0) { // Remove disconnected meta-element.
       m_nativeToMetaNodeInxMap.put(nativeParent, Integer.MAX_VALUE);
@@ -989,9 +994,8 @@ class FRootGraph implements RootGraph, DynamicGraph
     final int metaChildEdge = m_nativeToMetaEdgeInxMap.get(nativeChildEdge);
     final IntIterator metaRelationshipsIter = m_metaGraph.edgesConnecting
       (metaParent, metaChildEdge, true, false, false);
-    if (metaRelationshipsIter == null || !metaRelationshipsIter.hasNext())
-      return false;
-    return true;
+    return !(metaRelationshipsIter == null ||
+             !metaRelationshipsIter.hasNext());
   }
 
   public java.util.List edgeMetaChildrenList(Node node) {
