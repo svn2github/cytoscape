@@ -880,9 +880,22 @@ class FGraphPerspective implements GraphPerspective
     return returnThis;
   }
 
-  public int[] getConnectingNodeIndicesArray(int[] perspEdgeInx)
+  public int[] getConnectingNodeIndicesArray(int[] edgeInx)
   {
-    throw new IllegalStateException("not implemented yet");
+    m_hash.empty();
+    final IntHash nativeNodeBucket = m_hash;
+    for (int i = 0; i < edgeInx.length; i++) {
+      try {
+        final int nativeEdgeIndex = m_rootToNativeEdgeInxMap.get(~edgeInx[i]);
+        nativeNodeBucket.put(m_graph.sourceNode(nativeEdgeIndex));
+        nativeNodeBucket.put(m_graph.targetNode(nativeEdgeIndex)); }
+      catch (IllegalArgumentException e) { } }
+    final IntEnumerator nativeNodeEnum = nativeNodeBucket.elements();
+    final int[] returnThis = new int[nativeNodeEnum.numRemaining()];
+    for (int i = 0; i < returnThis.length; i++)
+      returnThis[i] = m_nativeToRootNodeInxMap.getIntAtIndex
+        (nativeNodeEnum.nextInt());
+    return returnThis;
   }
 
   public GraphPerspective createGraphPerspective(int[] perspNodeInx)
