@@ -146,7 +146,7 @@ public class CytoscapeMenuBar
               menuEffectiveLastIndexMap.get( menu );
             if( effective_last_index == null ) {
               // Add a separator.
-              menu.insertSeparator( index );
+              //menu.insertSeparator( index );
               menuEffectiveLastIndexMap.put( menu, new Integer( index ) );
               index += 1;
             } else if( effective_last_index.intValue() >= index ) {
