@@ -51,14 +51,11 @@ public class BioDataServer {
 //----------------------------------------------------------------------------------------
 public BioDataServer (String serverName) throws Exception
 {
-  System.out.println ("starting BioDataServer with servername '" + serverName + "'");
   if (serverName.indexOf ("rmi://") >= 0)
     server = (BioDataServerInterface) Naming.lookup (serverName);
   else { // look for a readable file
     server = new BioDataServerRmi ();  // actually runs in process
     File fileTester = new File (serverName);
-    System.out.println (" serverName.startsWith (jar://)? " +
-        serverName.startsWith ("jar://"));
     if ((serverName.startsWith ("jar://")) ||
         (!fileTester.isDirectory () && fileTester.canRead ())) {
       String [] ontologyFiles = parseLoadFile (serverName, "ontology");
@@ -127,7 +124,6 @@ public Ontology readOntologyFlatFile (String [] ontologyFilenames) throws Except
 
   for (int i=0; i < ontologyFilenames.length; i++) {
     String filename = ontologyFilenames [i];
-    System.out.println ("BioDataServer, loading ontology flat file: " + filename);
     if (filename.endsWith (".txt")) {
       OntologyFlatFileReader reader = new OntologyFlatFileReader (filename);
       ontology = reader.getOntology ();
@@ -145,7 +141,6 @@ public void loadAnnotationFiles (String [] annotationFilenames, String [] ontolo
   for (int i=0; i < annotationFilenames.length; i++) {
     Annotation annotation;
     String filename = annotationFilenames [i];
-    System.out.println ("BioDataServer.LAS: " + filename);
     if (filename.endsWith (".txt")) {
       AnnotationFlatFileReader reader = new AnnotationFlatFileReader (filename);
       annotation = reader.getAnnotation ();
@@ -153,7 +148,6 @@ public void loadAnnotationFiles (String [] annotationFilenames, String [] ontolo
       }
     else {
       File xmlFile = new File (annotationFilenames [i]);
-      System.out.println ("--- loading annotation: " + xmlFile.getPath ());
       AnnotationXmlReader reader = new AnnotationXmlReader (xmlFile);
       annotation = reader.getAnnotation ();
       }
@@ -166,7 +160,6 @@ public void loadThesaurusFiles (String [] thesaurusFilenames) throws Exception
 {
   for (int i=0; i < thesaurusFilenames.length; i++) {
     String filename = thesaurusFilenames [i];
-    System.out.println ("--- loading synonyms: " + filename);
     ThesaurusFlatFileReader reader = new ThesaurusFlatFileReader (filename);
     Thesaurus thesaurus = reader.getThesaurus (); 
     server.addThesaurus (thesaurus.getSpecies (), thesaurus);
