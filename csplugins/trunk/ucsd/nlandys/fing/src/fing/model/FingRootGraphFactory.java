@@ -77,24 +77,34 @@ public final class FingRootGraphFactory
    *     number of edges in this RootGraph.</td>
    * </tr><tr>
    * <td>removeNode(Node)</td>
-   * <td>See removeNode(int).</td>
+   * <td>Essentially, the operation of removing a node takes O(E) time where
+   *     E is the number of edges touching the node being removed.  However,
+   *     this is no longer an absolute truth once many GraphPerspective
+   *     objects are created from this RootGraph, or many meta-node
+   *     relationships are created which involve the node being removed.</td>
    * </tr><tr>
    * <td>removeNode(int)</td>
    * <td>Essentially, the operation of removing a node takes O(E) time where
    *     E is the number of edges touching the node being removed.  However,
    *     this is no longer an absolute truth once many GraphPerspective
    *     objects are created from this RootGraph, or many meta-node
-   *     relationships are created which involve the node being removed.
-   *     It is very difficult to determine exact time complexity for this
-   *     operation taking all circumstances into account.</td>
+   *     relationships are created which involve the node being removed.</td>
    * </tr><tr>
    * <td>removeNodes(List)</td>
-   * <td>See removeNode(Node).  This method removes each node
-   *     successively.</td>
+   * <td>Essentially, the operation of removing a node takes O(E) time where
+   *     E is the number of edges touching the node being removed.  However,
+   *     this is no longer an absolute truth once many GraphPerspective
+   *     objects are created from this RootGraph, or many meta-node
+   *     relationships are created which involve the node being removed.
+   *     This method removes each node in succession.</td>
    * </tr><tr>
    * <td>removeNodes(int[])</td>
-   * <td>See removeNode(int).  This method removes each node
-   *     successively.</td>
+   * <td>Essentially, the operation of removing a node takes O(E) time where
+   *     E is the number of edges touching the node being removed.  However,
+   *     this is no longer an absolute truth once many GraphPerspective
+   *     objects are created from this RootGraph, or many meta-node
+   *     relationships are created which involve the node being removed.
+   *     This method removes each node in succession.</td>
    * </tr><tr>
    * <td>createNode()</td>
    * <td>A node is created in constant time.</td>
@@ -115,41 +125,52 @@ public final class FingRootGraphFactory
    *     second input int array.</td>
    * </tr><tr>
    * <td>createNodes(int)</td>
-   * <td>See createNode().  This creates the specified number of nodes
-   *     successively.</td>
+   * <td>A node is created in constant time.  This method creates the
+   *     specified number of nodes in succession.</td>
    * </tr><tr>
    * <td>removeEdge(Edge)</td>
-   * <td>See removeEdge(int).</td>
+   * <td>Essentially, the operation of removing an edge takes constant time.
+   *     However, this is no longer an absolute truth once many
+   *     GraphPerspective objects are created from this RootGraph, or many
+   *     meta-node relationships are created which involve the edge being
+   *     removed.</td>
    * </tr><tr>
    * <td>removeEdge(int)</td>
    * <td>Essentially, the operation of removing an edge takes constant time.
    *     However, this is no longer an absolute truth once many
    *     GraphPerspective objects are created from this RootGraph, or many
    *     meta-node relationships are created which involve the edge being
-   *     removed.  It is very difficult to determine exact time complexity
-   *     for this operation taking all circumstances into account.</td>
+   *     removed.</td>
    * </tr><tr>
    * <td>removeEdges(List)</td>
-   * <td>See removeEdge(Edge).  This removes each edge successively.</td>
+   * <td>Essentially, the operation of removing an edge takes constant time.
+   *     However, this is no longer an absolute truth once many
+   *     GraphPerspective objects are created from this RootGraph, or many
+   *     meta-node relationships are created which involve the edge being
+   *     removed.  This removes each edge successively.</td>
    * </tr><tr>
    * <td>removeEdges(int[])</td>
-   * <td>See removeEdge(int).  This removes each edge successively.</td>
+   * <td>Essentially, the operation of removing an edge takes constant time.
+   *     However, this is no longer an absolute truth once many
+   *     GraphPerspective objects are created from this RootGraph, or many
+   *     meta-node relationships are created which involve the edge being
+   *     removed.  This removes each edge successively.</td>
    * </tr><tr>
    * <td>createEdge(Node, Node)</td>
-   * <td>See createEdge(Node, Node, boolean).</td>
+   * <td>The operation of creating an edge is performed in constant time.</td>
    * </tr><tr>
    * <td>createEdge(Node, Node, boolean)</td>
-   * <td>See createEdge(int, int, boolean).</td>
+   * <td>The operation of creating an edge is performed in constant time.</td>
    * </tr><tr>
    * <td>createEdge(int, int)</td>
-   * <td>See createEdge(int, int, boolean).</td>
+   * <td>The operation of creating an edge is performed in constant time.</td>
    * </tr><tr>
    * <td>createEdge(int, int, boolean)</td>
    * <td>The operation of creating an edge is performed in constant time.</td>
    * </tr><tr>
    * <td>createEdges(int[], int[], boolean)</td>
-   * <td>See createEdge(int, int, boolean).  This creates each edge
-   *     in succession.</td>
+   * <td>The operation of creating an edge is performed in constant time.
+   *     This creates each edge in succession.</td>
    * </tr><tr>
    * <td>containsNode(Node)</td>
    * <td>Determining whether or not a node is in a RootGraph takes
@@ -160,34 +181,65 @@ public final class FingRootGraphFactory
    *     constant time.</td>
    * </tr><tr>
    * <td>neighborsList(Node)</td>
-   * <td></td>
+   * <td>Node neighbors are calculated on O(E) time, where E is the number of
+   *     edges touching the node whose neighbors we're calculating.</td>
    * </tr><tr>
    * <td>isNeighbor(Node, Node)</td>
-   * <td></td>
+   * <td>The operation of determining whether or not two nodes are
+   *     neighbors has time complexity O(min(E, F)), where E is the number of
+   *     edges touching one node and F is the number of edges touching the
+   *     other node (this is actually over-simplified and more pessimistic
+   *     than it could be).</td>
    * </tr><tr>
    * <td>isNeighbor(int, int)</td>
-   * <td></td>
+   * <td>The operation of determining whether or not two nodes are
+   *     neighbors has time complexity O(min(E, F)), where E is the number of
+   *     edges touching one node and F is the number of edges touching the
+   *     other node (this is actually over-simplified and more pessimistic
+   *     than it could be).</td>
    * </tr><tr>
    * <td>edgeExists(Node, Node)</td>
-   * <td></td>
+   * <td>The operation of determining whether or not an edge exists starting
+   *     at one [specified] node and ending at another [specified] node
+   *     has time complexity O(min(E, F)), where E is the number of
+   *     edges touching one node and F is the number of edges touching the
+   *     other node (this is actually over-simplified and more pessimistic
+   *     than it could be).</td>
    * </tr><tr>
    * <td>edgeExists(int, int)</td>
-   * <td></td>
+   * <td>The operation of determining whether or not an edge exists starting
+   *     at one [specified] node and ending at another [specified] node
+   *     has time complexity O(min(E, F)), where E is the number of
+   *     edges touching one node and F is the number of edges touching the
+   *     other node (this is actually over-simplified and more pessimistic
+   *     than it could be).</td>
    * </tr><tr>
    * <td>getEdgeCount(Node, Node, boolean)</td>
-   * <td></td>
+   * <td>The operation of determining the number of existig edges starting at
+   *     one [specified] node and ending at another [specified] node has
+   *     time complexity O(min(E, F)), where E is the number of edges touching
+   *     one node and F is the number of edges touching the other node.</td>
    * </tr><tr>
    * <td>getEdgeCount(int, int, boolean)</td>
-   * <td></td>
+   * <td>The operation of determining the number of existig edges starting at
+   *     one [specified] node and ending at another [specified] node has
+   *     time complexity O(min(E, F)), where E is the number of edges touching
+   *     one node and F is the number of edges touching the other node.</td>
    * </tr><tr>
    * <td>getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean)</td>
-   * <td></td>
+   * <td>The operation of getting edges adjacent to a node, fitting
+   *     defined characteristics (specified by three boolean values) has
+   *     time complexity O(E), where E is the total number of edges touching
+   *     the node in question.</td>
    * </tr><tr>
    * <td>getConnectingEdgeIndicesArray(int[])</td>
-   * <td></td>
+   * <td>Computing a "connecting web" of edges from a list of input nodes
+   *     has time complexity O(E), where E is the number of edges touching
+   *     at least one node in the input set of nodes.</td>
    * </tr><tr>
    * <td>getConnectingNodeIndicesArray(int[])</td>
-   * <td></td>
+   * <td>This method has time complexity O(E), where E is the length
+   *     of the input array.</td>
    * </tr><tr>
    * <td>getEdgeIndicesArray(int, int, boolean, boolean)</td>
    * <td></td>
