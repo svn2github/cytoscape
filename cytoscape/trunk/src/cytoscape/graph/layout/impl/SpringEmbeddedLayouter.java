@@ -219,6 +219,21 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
     return distances;
   }
 
+  private static PartialDerivatives calculatePartials
+    (PartialDerivatives partials,
+     List partialsList,
+     double potentialEnergy,
+     boolean reversed,
+     MutableGraphLayout graph)
+  {
+    partials.reset();
+    int node = partials.nodeIndex;
+    double nodeViewRadius = 0.0;
+    double nodeX = graph.getNodePosition(node).getX();
+    double nodeY = graph.getNodePosition(node).getY();
+    return null;
+  }
+
   /**
    * This starts the layout process.  This method is called by a parent
    * application using this layout algorithm.
@@ -235,12 +250,10 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
       (int) (m_averageIterationsPerNode * m_nodeCount / m_numLayoutPasses);
 
     List partialsList = new ArrayList();
-    final double[] potentialEnergy = new double[] { 0,0 };
+    double potentialEnergy;
 
     PartialDerivatives partials;
     PartialDerivatives furthestNodePartials = null;
-    double currentProgressTemp;
-    double setupProgress = 0.0;
 
     m_nodeDistanceSpringRestLengths = new double[m_nodeCount][m_nodeCount];
     m_nodeDistanceSpringStrengths = new double[m_nodeCount][m_nodeCount];
@@ -279,6 +292,16 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
 
     for (m_layoutPass = 0; m_layoutPass < m_numLayoutPasses; m_layoutPass++)
     {
+      // Initialize this layout pass.
+      potentialEnergy = 0.0;
+      partialsList.clear();
+
+      // Calculate all node distances.  Keep track of the furthest.
+      for (int nodeIndex = 0; nodeIndex < m_nodeCount; nodeIndex++)
+      {
+        partials = new PartialDerivatives(nodeIndex);
+        calculatePartials(partials, null, potentialEnergy, false, m_graph);
+      }
     }
   }
 
