@@ -257,12 +257,12 @@ public void readAttributesFromFile (File file)
   while (strtok.hasMoreElements ()) {
     String newLine = (String) strtok.nextElement ();
     lineNumber++;
-    StringTokenizer strtok2 = new StringTokenizer (newLine);
+    StringTokenizer strtok2 = new StringTokenizer (newLine, "=");
     if (strtok2.countTokens () != 2)
       throw new IllegalArgumentException ("cannot parse line number " + lineNumber +
                                           ":\n\t" + newLine);
-    String objectName = strtok2.nextToken ();
-    String valueString = strtok2.nextToken ();
+    String objectName = strtok2.nextToken().trim();
+    String valueString = strtok2.nextToken().trim();
     if (extractingFirstValue) {
       extractingFirstValue = false;  // henceforth
       try {
