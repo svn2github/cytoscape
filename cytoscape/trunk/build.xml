@@ -303,7 +303,7 @@
 
         <copy file="user_docs/INSTALL.txt" todir="${release.dir}"/>
         <copy file="user_docs/LICENSE.txt" todir="${release.dir}"/>
-        <copy file="user_docs/Cytoscape1_1Manual.pdf" todir="${release.dir}"/>
+	<copy file="user_docs/Cytoscape2_0Manual.pdf" todir="${release.dir}"/>
 
         <!-- Copy over Sample Data Files -->
         <echo>
