@@ -15,21 +15,48 @@ import y.view.Graph2D;
  * a CytoscapeWindow object. This object should be given to methods that
  * require access to the data structures but not to any of the other
  * features of CytoscapeWindow.
+ *
+ * An alternate constructor is provided that takes just the data objects
+ * without a reference to a CytoscapeWindow. This is mainly for testing
+ * purposes, allowing a Network to be created without a full CytoscapeWindow.
  */
 public class Network {
     
     CytoscapeWindow cytoscapeWindow;
+    Graph2D graph;
+    GraphObjAttributes nodeAttributes;
+    GraphObjAttributes edgeAttributes;
     
     public Network(CytoscapeWindow cytoscapeWindow) {
         this.cytoscapeWindow = cytoscapeWindow;
     }
+    public Network(Graph2D g, GraphObjAttributes nodeA, GraphObjAttributes edgeA) {
+        this.graph = g;
+        this.nodeAttributes = nodeA;
+        this.edgeAttributes = edgeA;
+    }
+        
 
-    public Graph2D getGraph() {return cytoscapeWindow.getGraph();}
+    public Graph2D getGraph() {
+        if (cytoscapeWindow != null) {
+            return cytoscapeWindow.getGraph();
+        } else {
+            return graph;
+        }
+    }
     public GraphObjAttributes getNodeAttributes() {
-        return cytoscapeWindow.getNodeAttributes();
+        if (cytoscapeWindow != null) {
+            return cytoscapeWindow.getNodeAttributes();
+        } else {
+            return nodeAttributes;
+        }
     }
     public GraphObjAttributes getEdgeAttributes() {
-        return cytoscapeWindow.getEdgeAttributes();
+        if (cytoscapeWindow != null) {
+            return cytoscapeWindow.getEdgeAttributes();
+        } else {
+            return edgeAttributes;
+        }
     }
 }
 
