@@ -41,9 +41,11 @@ public class SpringEmbeddedLayoutMenu extends JMenu
     add(m_wholeGraph);
     m_selectedNodesOnly = new JMenuItem(new SpringEmbeddedLayoutAction(true));
     add(m_selectedNodesOnly);
+    final JMenu myself = this;
     addMouseListener(new MouseAdapter() {
         public void mouseEntered(MouseEvent e)
         {
+          if (!myself.isEnabled()) return;
           CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
           if (graphView.getSelectedNodeIndices().length == 0)
             m_selectedNodesOnly.setEnabled(false);
