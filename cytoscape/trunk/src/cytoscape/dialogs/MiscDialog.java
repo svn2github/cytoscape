@@ -207,7 +207,8 @@ public class MiscDialog {
      * Get the image from the .jar file
      */
     private URL locateImage(String imageFilename) {
-	return this.getClass().getClassLoader().getResource(
-	    "cytoscape/dialogs/images/"+imageFilename);
+	return this.getClass().getResource("images/"+imageFilename);
+	//return this.getClass().getClassLoader().getResource(
+	//    "cytoscape/dialogs/images/"+imageFilename);
     }
 }
