@@ -14,7 +14,7 @@
   </target>
 
   <target name="classpath">
-    <echo message="${basedir}/lunalib/coltginy.jar:${basedir}/lunalib/colt.jar:${basedir}/lunalib/luna.jar:${basedir}/lib/cytoscape-graph-dynamic.jar:${basedir}/lib/cytoscape-util-intr.jar:${basedir}/lib/giny.jar:${build.dir}/fing.jar"/>
+    <echo message="${basedir}/lunalib/coltginy.jar:${basedir}/lunalib/colt.jar:${basedir}/lunalib/luna.jar:${basedir}/lib/cytoscape-graph-dynamic.jar:${basedir}/lib/cytoscape-graph-fixed.jar:${basedir}/lib/cytoscape-util-intr.jar:${basedir}/lib/giny.jar:${build.dir}/fing.jar"/>
   </target>
 
   <target name="doc">
