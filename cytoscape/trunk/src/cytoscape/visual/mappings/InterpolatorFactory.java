@@ -6,7 +6,6 @@
 package cytoscape.visual.mappings;
 //----------------------------------------------------------------------------
 import java.util.Properties;
-import cytoscape.vizmap.*;
 //----------------------------------------------------------------------------
 /**
  * Provides static factory methods for constructing known interpolators from

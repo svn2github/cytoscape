@@ -15,7 +15,15 @@ OBJS = DiscreteMapping.class \
        ContinuousMapping.class \
        PassThroughMapping.class \
        ObjectMapping.class \
-       MappingFactory.class
+       MappingFactory.class \
+       InterpolatorFactory.class \
+       Interpolator.class \
+       FlatInterpolator.class \
+       NumberInterpolator.class \
+       LinearNumberInterpolator.class \
+       LinearNumberToColorInterpolator.class \
+       LinearNumberToNumberInterpolator.class \
+       BoundaryRangeValues.class
 
 default: objs 
 

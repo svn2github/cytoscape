@@ -13,8 +13,6 @@ import java.awt.GridBagConstraints;
 import cytoscape.visual.ValueDisplayer;
 import cytoscape.dialogs.MiscGB;
 import cytoscape.dialogs.GridBagGroup;
-import cytoscape.vizmap.BoundaryRangeValues;
-import cytoscape.vizmap.Interpolator;
 import cytoscape.visual.Network;
 import cytoscape.visual.parsers.ValueParser;
 import cytoscape.visual.parsers.ObjectToString;
