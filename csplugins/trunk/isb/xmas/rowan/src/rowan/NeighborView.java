@@ -61,7 +61,7 @@ public class NeighborView
    top_panel.add( networkBoxTo );
 
    JPanel bottom_panel = new JPanel();
-   filterListPanel = new FilterListPanel(1);
+   filterListPanel = new FilterListPanel();
    bottom_panel.add( filterListPanel );
 
 

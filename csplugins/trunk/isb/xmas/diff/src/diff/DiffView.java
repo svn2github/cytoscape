@@ -74,8 +74,8 @@ public class DiffView
 
     JPanel filter_diff_panel = new JPanel();
     filter_diff_panel.setLayout( new BorderLayout() );
-    filterListPanel1 = new FilterListPanel(1);
-    filterListPanel2 = new FilterListPanel(1);
+    filterListPanel1 = new FilterListPanel();
+    filterListPanel2 = new FilterListPanel();
     JPanel f1 = new JPanel();
     f1.setLayout( new BorderLayout() );
     f1.add( new JLabel( "Filter 1:" ), BorderLayout.NORTH );

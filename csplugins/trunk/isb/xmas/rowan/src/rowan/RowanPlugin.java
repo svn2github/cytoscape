@@ -43,7 +43,10 @@ public class RowanPlugin extends CytoscapePlugin {
               } } ); } } );
     Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "Plugins" ).add( des );
     
-
+    CreateAddNetwork can = new CreateAddNetwork( null );
+    Cytoscape.getDesktop().getCyMenus().addCytoscapeAction( can );
+    FilterDataView fdv = new FilterDataView( null );
+    Cytoscape.getDesktop().getCyMenus().addCytoscapeAction( fdv );
 
 
     JMenuItem credits = new JMenuItem( new AbstractAction( "Credits" ) {
