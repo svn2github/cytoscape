@@ -112,8 +112,7 @@ class LoadPathBlastGMLTask extends Thread{
    * overlapping nodes associated with this edge
    */
   private static String COUNT_ATTRIBUTE = "count";
-  private static String SPECIES1NODES_ATTRIBUTE = "speciesOneNodes";
-  private static String SPECIES2NODES_ATTRIBUTE = "speciesTwoNodes";
+  private static String SPECIES_NODES_ATTRIBUTE = "speciesNodes";
   private static String INTERACTION_ATTRIBUTE = "interaction";
   /**
    * The interaction string for our overlap edges
@@ -200,8 +199,9 @@ class LoadPathBlastGMLTask extends Thread{
       while(nameIt.hasNext()){
 	String compatName = (String)nameIt.next();
 	String [] speciesNames = compatName.split(SPLIT_STRING);
-	nodeAttributes.append(SPECIES1NODES_ATTRIBUTE,name,speciesNames[0]);
-	nodeAttributes.append(SPECIES2NODES_ATTRIBUTE,name,speciesNames[1]);
+	for (int  idx = 0; idx < speciesNames.length; idx++) {
+	  nodeAttributes.append(SPECIES_NODES_ATTRIBUTE+idx,name,speciesNames[idx]);
+	} // end of for (int  = 0;  < ; ++)
       }
     }
 
@@ -225,7 +225,7 @@ class LoadPathBlastGMLTask extends Thread{
 	  String name = nodeAttributes.getCanonicalName(sourceNode)+" ("+OVERLAP_INTERACTION+") "+nodeAttributes.getCanonicalName(targetNode);
 	  newEdge.setIdentifier(name);
 	  edgeAttributes.addNameMapping(name,newEdge);
-	  edgeAttributes.set(COUNT_ATTRIBUTE,name,(double)count);
+	  edgeAttributes.set(COUNT_ATTRIBUTE,name,new Integer(count));
 	  edgeAttributes.set(INTERACTION_ATTRIBUTE,name,OVERLAP_INTERACTION);	
 	}
       }
