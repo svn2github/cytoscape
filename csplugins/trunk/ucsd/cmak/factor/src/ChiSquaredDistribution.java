@@ -87,6 +87,8 @@ public class ChiSquaredDistribution
      */
     private double _inverseCDFMinus1(double pval)
     {
+        //        System.out.println("invCDF for: " + pval);
+        
         if(pval <= 0)
         {
             return x[0];
@@ -97,13 +99,17 @@ public class ChiSquaredDistribution
         }
 
         int index = Arrays.binarySearch(cdf, pval);
+
+        //System.out.println("   index= " + index);
         
         if(index >= 0)
         {
+            // pvalue was found
             return x[index];
         }
         else if (index <= insertionPointBound)
         {
+            // pvalue is greater than all values
             return 0f;
         }
         else
@@ -113,11 +119,23 @@ public class ChiSquaredDistribution
              */
             int i = (index + 1) * -1; // insertionPoint
 
-            /**
-             * Interpolate to estimate x.
-             */
-            return x[i-1] + 
-                ((pval - cdf[i-1])*(x[i] - x[i-1])/(cdf[i] - cdf[i-1]));
+            //  System.out.println("   insertionPoint = " + i);
+
+            if(i == 0)
+            {
+                return x[0];
+            }
+            else
+            {
+                /**
+                 * Interpolate to estimate x.
+                 */
+                double y = x[i-1] + 
+                    ((x[i] - x[i-1])*(pval - cdf[i-1])/(cdf[i] - cdf[i-1]));
+
+                //  System.out.println("   estimated cdf: " + y);
+                return y;
+            }
         }
     }
 }

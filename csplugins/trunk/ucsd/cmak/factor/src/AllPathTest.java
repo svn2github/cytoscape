@@ -18,7 +18,7 @@ public class AllPathTest extends AbstractPathTest
     {
         
         System.out.println("Reading file: " + _all);
-        InteractionGraph ig = InteractionGraph.createFromSif(_all);
+        InteractionGraph ig = InteractionGraphFactory.createFromSif(_all);
 
         System.out.println("Reading pvals: " + _allPvals);
         ig.loadExpressionData(_allPvals);

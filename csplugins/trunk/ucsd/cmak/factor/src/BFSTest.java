@@ -17,7 +17,7 @@ public class BFSTest extends TestCase
     public void testReadSif() throws Exception
     {
         System.out.println("Reading file: " + _sif);
-        InteractionGraph ig = InteractionGraph.createFromSif(_sif);
+        InteractionGraph ig = InteractionGraphFactory.createFromSif(_sif);
         System.out.println(ig.toString());
 
         BFS b = runBFS(ig, ig.name2Node("C"));
@@ -34,7 +34,7 @@ public class BFSTest extends TestCase
     public void testReadBFSSif() throws Exception
     {
         System.out.println("Reading file: " + _bfs);
-        InteractionGraph ig = InteractionGraph.createFromSif(_bfs);
+        InteractionGraph ig = InteractionGraphFactory.createFromSif(_bfs);
         System.out.println(ig.toString());
         
         BFS b = runBFS(ig, ig.name2Node("s"));
@@ -51,7 +51,7 @@ public class BFSTest extends TestCase
    public void testReadAllSif() throws Exception
     {
         System.out.println("Reading file: " + _all);
-        InteractionGraph ig = InteractionGraph.createFromSif(_all);
+        InteractionGraph ig = InteractionGraphFactory.createFromSif(_all);
 
         runBFS(ig, ig.name2Node("YGL200C"));
     }

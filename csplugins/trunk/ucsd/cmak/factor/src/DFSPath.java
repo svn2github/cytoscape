@@ -35,9 +35,10 @@ public class DFSPath
 
     private int[] nodes;
 
-    // map graph indices to a label in the set [0,numNodes]
-    private OpenIntIntHashMap labelMap;
+    // map graph node indices to a label in the set [0,numNodes]
+    private OpenIntIntHashMap _nodeLabelMap;
 
+    // map graph edge indices to a label in the set [0, numEdges]
     private OpenIntIntHashMap _edgeLabelMap;
 
     private int[][] _edges;
@@ -78,7 +79,7 @@ public class DFSPath
         nodes = g.getNodeIndicesArray();
 
         // map graph indices to a label in the set [0,numNodes]
-        labelMap = new OpenIntIntHashMap(numNodes);
+        _nodeLabelMap = new OpenIntIntHashMap(numNodes);
 
         color = new int[numNodes];
         //pred = new int[numNodes]; // predecessor
@@ -115,12 +116,12 @@ public class DFSPath
         
         // initialize data structures
         result = new PathResult(maxDepth, numNodes, numEdges);
-        labelMap.clear();
+        _nodeLabelMap.clear();
         _adjacentEdges.clear();
 
         for(int n = 0; n < numNodes; n++)
         {
-            labelMap.put(nodes[n], n);
+            _nodeLabelMap.put(nodes[n], n);
 
             color[n] = WHITE;
 
@@ -143,7 +144,7 @@ public class DFSPath
 
             _initIsAffected(sourceNode);
 
-            if(!labelMap.containsKey(sourceNode))
+            if(!_nodeLabelMap.containsKey(sourceNode))
             {
                 System.err.println(sourceNode + " is not a node in the graph");
                 break;
@@ -151,7 +152,7 @@ public class DFSPath
 
             target2pathMap = result.addKO(sourceNode);
             
-            int l = labelMap.get(sourceNode);
+            int l = _nodeLabelMap.get(sourceNode);
             color[l] = GREY; // the source node is part of every path
             
             int depth = 0;
@@ -203,7 +204,7 @@ public class DFSPath
             return;
         }
         
-        int tLabel = labelMap.get(target);
+        int tLabel = _nodeLabelMap.get(target);
 
         color[tLabel] = GREY; // GREY == node is in the current path
         depth++;
@@ -237,7 +238,7 @@ public class DFSPath
             {
                 int adjLabel = _edgeLabelMap.get(adj[e]);
                 int neighbor = _getRelativeTarget(adjLabel, target);
-                int nLabel = labelMap.get(neighbor);
+                int nLabel = _nodeLabelMap.get(neighbor);
                 if(color[nLabel] != GREY)
                 {
                     dfsVisit(adj[e], adjLabel, target, depth, maxDepth);
@@ -275,7 +276,7 @@ public class DFSPath
 
     /**
      * Initialize the affected BitVector.
-     * The labelMap maps each node to an integer label, i (0<=i< numNodes)
+     * The _nodeLabelMap maps each node to an integer label, i (0<=i< numNodes)
      * The i-th bit in "affected" is set if the gene corresponding to
      * label, i, is affected by knocking out "knockoutNode".
      */
@@ -291,7 +292,7 @@ public class DFSPath
             
             if(ig.expressionChanges(_koNode, node))
             {
-                _affected.set(labelMap.get(node));
+                _affected.set(_nodeLabelMap.get(node));
             }
         }
     }
@@ -364,7 +365,7 @@ public class DFSPath
     {
         for(int i =0; i < expected.length; i++)
         {
-            int label = labelMap.get(expected[i][0]);
+            int label = _nodeLabelMap.get(expected[i][0]);
             if(data[label] != expected[i][1])
             {
                 return false;

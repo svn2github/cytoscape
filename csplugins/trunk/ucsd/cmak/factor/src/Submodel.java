@@ -1,19 +1,47 @@
 import cern.colt.list.IntArrayList;
 
+import java.util.List;
+import java.util.ArrayList;
+
 public class Submodel
 {
+    private static int ID = 0;
+
+    private int _id;
     private IntArrayList _vars;
     private boolean _isInvariant;
     private int _independentVar;
+    private List _edges;
     
     public Submodel()
     {
+        _edges = new ArrayList();
         _vars = new IntArrayList();
         _isInvariant = false;
         _independentVar = 0;
-
+        _id = Submodel.ID;
+        Submodel.ID++;
     }
 
+    public int getId() {return _id;}
+    
+    /**
+     * Should this check for uniqueness before
+     * adding a new edge?
+     * @param
+     * @return
+     * @throws
+     */
+    public void addEdge(AnnotatedEdge edge)
+    {
+        _edges.add(edge);
+    }
+
+    public List getEdges()
+    {
+        return _edges;
+    }
+    
     /**
      * Check if a node of a specific type should be added to this model.
      *
@@ -109,4 +137,56 @@ public class Submodel
         this.addVar(node);
     }
 
+    /**
+     * Running time O(|this.size()| * |m.size()|)
+     *
+     * @param m another submodel
+     * @return true if any of the variables in m are in this submodel,
+     *         false otherwise.
+     * @throws
+     */
+    public boolean overlaps(Submodel m)
+    {
+        IntArrayList mV = m.getVars();
+
+        for(int x=0; x < mV.size(); x++)
+        {
+            if(this.containsVar(mV.get(x)))
+            {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    
+    /**
+     * Merge the vars from another submodel into this one.
+     *
+     * @param m another submodel
+     * @return
+     * @throws
+     */
+    public void merge(Submodel m)
+    {
+        if(!m.isInvariant())
+        {
+            int iv = m.getIndependentVar();
+            if(!this.containsVar(iv))
+            {
+                addVar(iv);
+            }
+
+            IntArrayList mV = m.getVars();
+            for(int x=0; x < mV.size(); x++)
+            {
+                int v = mV.get(x);
+                if(!this.containsVar(v))
+                {
+                    addVar(v);
+                }
+            }
+        }
+    }
 }

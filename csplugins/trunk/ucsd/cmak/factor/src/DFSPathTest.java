@@ -17,7 +17,7 @@ public class DFSPathTest extends AbstractPathTest
     public void testReadSif() throws Exception
     {
         System.out.println("Reading file: " + _sif);
-        InteractionGraph ig = InteractionGraph.createFromSif(_sif);
+        InteractionGraph ig = InteractionGraphFactory.createFromSif(_sif);
         ig.loadExpressionData("test.pvals");
         ig.setExpressionPvalThreshold(1e-2);
         System.out.println(ig.toString());
@@ -30,7 +30,7 @@ public class DFSPathTest extends AbstractPathTest
     public void testReadPathSif() throws Exception
     {
         System.out.println("Reading file: " + _dfs);
-        InteractionGraph ig = InteractionGraph.createFromSif(_dfs);
+        InteractionGraph ig = InteractionGraphFactory.createFromSif(_dfs);
 
         ig.loadExpressionData("pathtest.pvals");
         ig.setExpressionPvalThreshold(1e-2);
@@ -44,7 +44,7 @@ public class DFSPathTest extends AbstractPathTest
     public void testReadFGSif() throws Exception
     {
         System.out.println("Reading file: " + _fg);
-        InteractionGraph ig = InteractionGraph.createFromSif(_fg);
+        InteractionGraph ig = InteractionGraphFactory.createFromSif(_fg);
         ig.loadExpressionData("fg.pvals");
         ig.setExpressionPvalThreshold(1e-2);
         System.out.println(ig.toString());

@@ -1,9 +1,13 @@
+import cern.colt.list.IntArrayList;
+
 class AnnotatedEdge
 {
     AnnotatedEdge(int interactionIndex)
     {
         this.interactionIndex = interactionIndex;
         invariant = false;
+        active = false;
+        submodels = new IntArrayList();
     }
     
     int interactionIndex;
@@ -18,6 +22,14 @@ class AnnotatedEdge
     State maxSign;
 
     boolean invariant;
+    boolean active;
+
+    IntArrayList submodels;
+
+    void addSubmodel(int m)
+    {
+        submodels.add(m);
+    }
     
     public String toString()
     {
@@ -37,6 +49,8 @@ class AnnotatedEdge
         b.append(maxDir);
         b.append(" maxSign=");
         b.append(maxSign);
+        b.append(" active=");
+        b.append(active);
 
         return b.toString();
     }

@@ -16,7 +16,7 @@ public class InteractionGraphTest extends TestCase
     public void testReadSif() throws Exception
     {
         System.out.println("Loading: " + _sif);
-        InteractionGraph ig = InteractionGraph.createFromSif(_sif);
+        InteractionGraph ig = InteractionGraphFactory.createFromSif(_sif);
 
         RootGraph g = ig.getRootGraph();
 
@@ -32,7 +32,7 @@ public class InteractionGraphTest extends TestCase
         String pv = "fg.pvals";
         System.out.println("Loading: " + sif +", " + pv);
 
-        InteractionGraph ig = InteractionGraph.createFromSif(sif);
+        InteractionGraph ig = InteractionGraphFactory.createFromSif(sif);
         ig.loadExpressionData(pv);
         ig.setExpressionPvalThreshold(1e-2);
 
@@ -55,13 +55,13 @@ public class InteractionGraphTest extends TestCase
         String ed = "fgtest.eda";
         System.out.println("Loading: " + sif +", " + ed);
         
-        InteractionGraph ig = InteractionGraph.createFromSif(sif);
+        InteractionGraph ig = InteractionGraphFactory.createFromSif(sif);
         RootGraph g = ig.getRootGraph();
         
         assertEquals("num nodes before threshold set", 7, g.getNodeCount());
         assertEquals("num edges before threshold set", 11, g.getEdgeCount());
         
-        ig.loadEdgeData(ed);
+        InteractionGraphFactory.loadEdgeData(ig, ed);
         ig.setProteinDNAThreshold(0.01);
         
         assertEquals("num nodes after threshold set", 7, g.getNodeCount());
@@ -84,7 +84,7 @@ public class InteractionGraphTest extends TestCase
         /*
     public void testReadAllSif() throws Exception
     {
-        InteractionGraph ig = InteractionGraph.createFromSif(_all);
+        InteractionGraph ig = InteractionGraphFactory.createFromSif(_all);
 
         RootGraph g = ig.getRootGraph();
 

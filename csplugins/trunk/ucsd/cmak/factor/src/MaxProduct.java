@@ -30,7 +30,7 @@ public class MaxProduct
         _interaction = interaction;
 
         System.out.println("Reading interaction file: " + _interaction);
-        _ig = InteractionGraph.createFromSif(_interaction);
+        _ig = InteractionGraphFactory.createFromSif(_interaction);
     }
 
     public void setInteractionFile(String interaction, String candidateGenes)
@@ -41,7 +41,7 @@ public class MaxProduct
 
         System.out.println("Reading interaction file: " + _interaction);
         System.out.println("Candidate gene file: " + _candidateGenes);
-        _ig = InteractionGraph.createFromSif(_interaction, _candidateGenes);
+        _ig = InteractionGraphFactory.createFromSif(_interaction, _candidateGenes);
     }
 
     
@@ -63,6 +63,7 @@ public class MaxProduct
         _expressionData = e;
         _thresh = pvalThreshold;
 
+        
         _ig.loadExpressionData(_expressionData);
         _ig.setExpressionPvalThreshold(_thresh);
     }
@@ -73,7 +74,7 @@ public class MaxProduct
     {
         _edgeData = e;
         
-        _ig.loadEdgeData(_edgeData);
+        InteractionGraphFactory.loadEdgeData(_ig, _edgeData);
 
         if(pval > 0)
         {
@@ -91,7 +92,7 @@ public class MaxProduct
         PathResult paths = findPaths();
         log("Found paths: " + paths.getPathCount());
 
-        log(paths.toString(_ig));
+        //log(paths.toString(_ig));
         
         _run(paths, _ig, outputDir, outputFile);
     }
@@ -114,7 +115,7 @@ public class MaxProduct
         fg.updateInteractionGraph();
 
         log("Writing interaction graph sif file: " + fname);
-        ig.writeGraph(fname);
+        ig.writeGraphAsSubmodels(fname);
 
         log("Done. ");
     }

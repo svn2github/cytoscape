@@ -17,7 +17,7 @@ public class PathTest extends TestCase
     public void testReadSif() throws Exception
     {
         System.out.println("Reading file: " + _sif);
-        InteractionGraph ig = InteractionGraph.createFromSif(_sif);
+        InteractionGraph ig = InteractionGraphFactory.createFromSif(_sif);
         //System.out.println(ig.toString());
 
         List paths = runPath(ig, ig.name2Node("B"), 5);
@@ -29,7 +29,7 @@ public class PathTest extends TestCase
     public void testReadPathSif() throws Exception
     {
         System.out.println("Reading file: " + _dfs);
-        InteractionGraph ig = InteractionGraph.createFromSif(_dfs);
+        InteractionGraph ig = InteractionGraphFactory.createFromSif(_dfs);
         //System.out.println(ig.toString());
 
         List paths = runPath(ig, ig.name2Node("a"), 10);
@@ -43,7 +43,7 @@ public class PathTest extends TestCase
     {
         
         System.out.println("Reading file: " + _all);
-        InteractionGraph ig = InteractionGraph.createFromSif(_all);
+        InteractionGraph ig = InteractionGraphFactory.createFromSif(_all);
         //System.out.println(ig.toString());
 
         runPath(ig, ig.name2Node("YGL200C"), 55746);

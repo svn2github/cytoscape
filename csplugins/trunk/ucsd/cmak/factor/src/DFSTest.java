@@ -17,7 +17,7 @@ public class DFSTest extends TestCase
     public void testReadSif() throws Exception
     {
         System.out.println("Reading .sif: " + _sif);
-        InteractionGraph ig = InteractionGraph.createFromSif(_sif);
+        InteractionGraph ig = InteractionGraphFactory.createFromSif(_sif);
         System.out.println(ig.toString());
 
         DFS d = runDFS(ig.getRootGraph());
@@ -36,7 +36,7 @@ public class DFSTest extends TestCase
     public void testReadDFSSif() throws Exception
     {
         System.out.println("Reading .sif: " + _dfs);
-        InteractionGraph ig = InteractionGraph.createFromSif(_dfs);
+        InteractionGraph ig = InteractionGraphFactory.createFromSif(_dfs);
         System.out.println(ig.toString());
 
         runDFS(ig.getRootGraph());
@@ -45,7 +45,7 @@ public class DFSTest extends TestCase
    public void testReadAllSif() throws Exception
     {
         System.out.println("Reading .sif: " + _all);
-        InteractionGraph ig = InteractionGraph.createFromSif(_all);
+        InteractionGraph ig = InteractionGraphFactory.createFromSif(_all);
 
         //runDFS(ig.getRootGraph());
     }

@@ -12,6 +12,8 @@ public class VariableNode extends FGNode
     protected boolean isFixed;
     protected State fixedState;
 
+    protected boolean isInSubmodel;
+    
     protected double[] defaultProbs;
     
     protected int interactionGraphId1;
@@ -64,12 +66,24 @@ public class VariableNode extends FGNode
         states = s;
         probTable = new ProbTable(s);
         isFixed = false;
+        isInSubmodel = false;
         fixedState = null;
         interactionGraphId1 = id1;
         interactionGraphId2 = id2;
         defaultProbs = null;
     }
 
+    public boolean isInSubmodel()
+    {
+        return isInSubmodel;
+    }
+
+    public void setInSubmodel(boolean b)
+    {
+        isInSubmodel = b;
+    }
+    
+    
     /**
      * @return edgeIndex if this is an edge, dir, or sign var; pathNum if this
      * is a pathActive var; koNodeIndex if this is a KO node
@@ -259,10 +273,19 @@ public class VariableNode extends FGNode
 
     public String toString()
     {
-        StringBuffer b = new StringBuffer();
+        StringBuffer b = new StringBuffer("{");
         b.append(super.type());
-        b.append("\n");
+        b.append(" ");
+        b.append(getId());
+        
+        if(isType(NodeType.KO))
+        {
+            b.append(".");
+            b.append(getId2());
+        }
+        b.append(" ");
         b.append(probTable.toString());
+        b.append("}");
         
         return b.toString();
     }

@@ -22,10 +22,10 @@ public class FGTest extends AbstractPathTest
     protected void setUp() throws Exception
     {
         System.out.println("Reading file: " + _fg);
-        ig = InteractionGraph.createFromSif(_fg);
+        ig = InteractionGraphFactory.createFromSif(_fg);
         ig.loadExpressionData(_fgpval);
         ig.setExpressionPvalThreshold(1e-2);
-        ig.loadEdgeData("fgtest.eda");
+        InteractionGraphFactory.loadEdgeData(ig, "fgtest.eda");
 
         System.out.println(ig.toString());
     }
@@ -65,7 +65,7 @@ public class FGTest extends AbstractPathTest
     {
         
         System.out.println("Reading file: " + _all);
-        InteractionGraph ig = InteractionGraph.createFromSif(_all);
+        InteractionGraph ig = InteractionGraphFactory.createFromSif(_all);
 
         System.out.println("Reading pvals: " + _allPvals);
         ig.loadExpressionData(_allPvals);
