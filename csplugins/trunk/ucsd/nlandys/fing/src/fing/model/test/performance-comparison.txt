@@ -250,3 +250,45 @@ ADD REMOVE TEST:
     RootGraph.removeNode(int)
     RootGraph.getNodeCount()
     RootGraph.getEdgeCount()
+
+  Importance:
+    In Cytoscape, RootGraph nodes are only created, never removed.  I
+    know this because in the Luna implementation, removal of nodes is
+    broken -- it doesn't do anything.  Edges may or may not be removed
+    from a RootGraph in Cytoscape (I'm not sure).  The speed at which
+    graphs are created is important because a user will have to wait
+    at least that long for a network to load in Cytoscape.  However,
+    because I'm unable to delete nodes from Luna's implementation of
+    RootGraph, a head-to-head performance test comparison between
+    Fing and Luna is impossible.
+
+  Description of test:
+    This test creates N nodes and E edges (an even mix of directed and
+    undirected) in a RootGraph.  The topology of RootGraph created is
+    defined by [random] bytes read from standard input.  The timer
+    starts here - after the RootGraph is created.  The timed test
+    consists of removing all nodes from the RootGraph (which, as a
+    documented and expected side-effect, removes all edges from the
+    RootGraph) and then reconstructing the RootGraph as it originally
+    was when the timed test began.  This deconstruction/reconstruction
+    is repeated 10 times.  The timer stops after the 10th
+    reconstruction.
+
+  Test circumstances:
+    Tests were performed on a 1.8GHz P4 (512K cache), with 512M RAM,
+    where 256M memory was allocated to the JVM.  Sun's 1.4.2_06 JVM
+    on Red Hat's 3ES Linux system.
+
+  Test results:
+
+             Milliseconds taken to perform test case:
+
+    graph size                          |  Fing  |  Luna  |
+  --------------------------------------+--------+--------+
+     200 nodes,    1000 edges           |        |   fail |
+    1000 nodes,   10000 edges           |        |   fail |
+    2000 nodes,   20000 edges           |        |   fail |
+   16000 nodes,  100000 edges           |        |   fail |
+   50000 nodes,  400000 edges           |        |   fail |
+  100000 nodes, 1000000 edges           |        |   fail |
+  --------------------------------------+--------+--------+
