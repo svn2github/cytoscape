@@ -29,9 +29,9 @@
  **/
 package csplugins.test.task;
 
-import csplugins.task.Task;
 import csplugins.task.SampleTask;
-import csplugins.task.TaskMonitorUI;
+import csplugins.task.Task;
+import csplugins.task.ui.TaskMonitorUI;
 
 /**
  * Tests the TaskMonitorUI from the Command Line.
@@ -52,7 +52,6 @@ public class TestUI {
             //  Uses Default TaskMonitorUI
             Task task = new SampleTask(100, 2000, 2000, 50);
             TaskMonitorUI monitor = new TaskMonitorUI(task);
-            monitor.show();
             task.start();
         } else if (arg1.equals("2")) {
             //  Customizes TaskMonitorUI
@@ -61,7 +60,16 @@ public class TestUI {
             //  Automatically Dispose when Task is Complete.
             Task task = new SampleTask(100, 2000, 2000, 50);
             TaskMonitorUI monitor = new TaskMonitorUI(task, false, false, true);
-            monitor.show();
+            task.start();
+        } else if (arg1.equals("3")) {
+            //  Customizes TaskMonitorUI
+            //  Show Time Fields
+            //  Show User Buttons
+            //  Do not Dispose when Task is Complete.
+            //  Wait 2 seconds before popup.
+            Task task = new SampleTask(100, 0, 0, 50);
+            TaskMonitorUI monitor = new TaskMonitorUI(task, true, true, false,
+                    2000, null);
             task.start();
         }
     }
