@@ -33,11 +33,11 @@ package biomodules.algorithm.rgalgorithm.gui;
 
 import biomodules.algorithm.rgalgorithm.*;
 import biomodules.view.ViewUtils;
+import biomodules.action.*;
 import common.algorithms.hierarchicalClustering.*;
 import cytoscape.*;
 import cytoscape.view.*;
 import cytoscape.data.*;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
@@ -45,7 +45,11 @@ import java.awt.event.ActionEvent;
 import java.text.NumberFormat;
 import utils.*;
 import giny.model.*;
+import metaNodeViewer.model.MetaNodeFactory;
 import metaNodeViewer.data.IntraDegreeComparator;
+import cern.colt.list.IntArrayList;
+import annotations.ui.*;
+import cytoscape.data.servers.*;
 
 public class RGAlgorithmGui extends JDialog {
   
@@ -75,6 +79,8 @@ public class RGAlgorithmGui extends JDialog {
   protected DataTable biomodulesTable;
   protected DisplayTableAction displayApspAction, displayMDAction;
   protected DisplayBiomodulesAction displayBiomodulesAction;
+  protected ModuleAnnotationsDialog moduleAnnotsDialog;
+  
   /**
    * Constructor, calls <code>create()</code>.
    *
@@ -317,10 +323,9 @@ public class RGAlgorithmGui extends JDialog {
   	dataPanel.add(this.viewDataRadioButton, BorderLayout.NORTH);
   	
   	JPanel buttonsPanel = new JPanel();
-  	GridLayout gl = new GridLayout(3,1);
-  	gl.setVgap(20);
+  	GridLayout gl = new GridLayout(4,1);
+  	gl.setVgap(5);
   	buttonsPanel.setLayout(gl);
-  	
   	
   	JButton apspButton = new JButton("Display All-Pairs-Shortest-Paths");
   	this.displayApspAction = new DisplayTableAction(APSP_TABLE);
@@ -334,9 +339,50 @@ public class RGAlgorithmGui extends JDialog {
   	this.displayBiomodulesAction = new DisplayBiomodulesAction();
   	biomodsButton.addActionListener(this.displayBiomodulesAction);
   	
+  	JButton annotsButton = new JButton("Find Overrepresented Annotations...");
+  	AbstractAction [] annotsEdgesAction = {new DrawAnnotationEdgesAction(this.algorithmData.getNetwork()), new SaveAnnotationsToAttribute()};
+  	this.moduleAnnotsDialog = new ModuleAnnotationsDialog();
+  	this.moduleAnnotsDialog.setActionsForTable(annotsEdgesAction,null,null);
+  	annotsButton.addActionListener(new AbstractAction(){
+  		
+  		public void actionPerformed (ActionEvent event){
+  			
+  			Map map = RGAlgorithmGui.this.algorithmData.getBiomodules(); 
+  			if(map == null || map.size() == 0){
+  				showErrorMessageDialog("There are no biomodules, please calculate them first.");
+  				return;
+  			}
+  			BioDataServer server = Cytoscape.getCytoscapeObj().getBioDataServer();
+  			if(server == null){
+  				showErrorMessageDialog("There is no annotations server available.");
+  				return;
+  			}
+  			Object [] keyIDs = map.keySet().toArray();
+  			String [][] moduleMembers = new String[keyIDs.length][];
+  			String [] moduleNames = new String[keyIDs.length];
+  			CyNode [] metaNodes = new CyNode[keyIDs.length];
+  			for(int i = 0; i < keyIDs.length; i++){
+  				CyNode [] moduleNodes = (CyNode[]) map.get(keyIDs[i]);
+  				moduleMembers[i] = new String[moduleNodes.length];
+  				metaNodes[i] = Cytoscape.getCyNode((String)keyIDs[i]);
+  				moduleNames[i] = (String)Cytoscape.getNodeAttributeValue(metaNodes[i],Semantics.COMMON_NAME);
+  				for(int j = 0; j < moduleNodes.length; j++){
+  					moduleMembers[i][j] = (String)Cytoscape.getNodeAttributeValue(moduleNodes[j],Semantics.CANONICAL_NAME);
+  				}//for j
+  			}//for i
+  			
+  			RGAlgorithmGui.this.moduleAnnotsDialog.setCalculatorParameters(metaNodes,moduleMembers,false);
+  			RGAlgorithmGui.this.moduleAnnotsDialog.pack();
+  			RGAlgorithmGui.this.moduleAnnotsDialog.setLocationRelativeTo(RGAlgorithmGui.this);
+  			RGAlgorithmGui.this.moduleAnnotsDialog.setVisible(true);
+  		}//actionPerformed
+  	
+  	});
+  	
   	buttonsPanel.add(apspButton);
   	buttonsPanel.add(distButton);
   	buttonsPanel.add(biomodsButton);
+  	buttonsPanel.add(annotsButton);
   	
   	dataPanel.add(buttonsPanel, BorderLayout.CENTER);
   	
@@ -409,16 +455,15 @@ public class RGAlgorithmGui extends JDialog {
     CyNetworkView netView = Cytoscape.getNetworkView(netID);
   
     if(this.abstractRbutton.isSelected() && netView != null){
-      // TODO: Remove existent meta-nodes:
-      // Call reset from the metaNodeViewer?
-      
-      //ViewUtils.removeMetaNodes(this.algorithmData.getNetwork(),oldMetaNodeRindices,false);
-      
-     // Create new meta-nodes
+      // Remove existent meta-nodes:
+      IntArrayList metaNodes = (IntArrayList)net.getClientData(MetaNodeFactory.METANODES_IN_NETWORK);
+      if(metaNodes != null){
+      	ViewUtils.removeMetaNodes(net,metaNodes.elements(),false);
+      }
+      // Create new meta-nodes
       int [] metaNodeRindices =  
         ViewUtils.abstractBiomodules(this.algorithmData.getNetwork(),biomodules);
       // Get the common names of the meta nodes
-      
       int numUnknowns = 0;
       for(int i = 0; i < metaNodeRindices.length; i++){
       	Node node = net.getNode(metaNodeRindices[i]);
@@ -856,4 +901,7 @@ public class RGAlgorithmGui extends JDialog {
   		this.update = update;	
   	}//setUpdateNeeded
   }//DisplayBiomodulesAction
+
+
 }//class RGAlgorithmGui
+

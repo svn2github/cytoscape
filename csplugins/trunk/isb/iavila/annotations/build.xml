@@ -1,7 +1,7 @@
 <?xml version = "1.0"?>
-<project name = "biomodules" default = "compile" basedir = ".">
+<project name = "annotations" default = "compile" basedir = ".">
     <description>
-    This build.xml file compiles the biomodules plug-in.
+    This build.xml file compiles the annotations library/plug-in.
     </description>
 
     <!-- Set the global properties for this build -->
@@ -9,15 +9,11 @@
     <property name = "build" location = "build"/>
     <property name = "build.compiler" value = "modern"/>
     <property name = "lib" value="../../../../cytoscape/lib"/>
-    <property name = "local.lib" value="lib"/>
     <property name = "jar"  location = "jar"/>
 
     <!-- classpath for compiling -->
     <path id = "classpath_compile">
        <fileset dir = "${lib}">
-          <include name = "**/*.jar"/>
-       </fileset>
-        <fileset dir = "${local.lib}">
           <include name = "**/*.jar"/>
        </fileset>
     </path>
@@ -31,7 +27,7 @@
     </target>
     
     <!-- compile target -->
-    <target name="compile" depends="prepare" description="Compiles biomodules.">
+    <target name="compile" depends="prepare" description="Compiles annotations.">
        <javac srcdir="${src}"
               destdir="${build}"
               nowarn="off"
@@ -52,27 +48,15 @@
     <!-- jar target -->
     <target name = "jar" depends = "compile" description = "Creates a jar">
      <mkdir dir = "${jar}"/>
-     <jar jarfile = "${jar}/biomodules.jar">
+     <jar jarfile = "${jar}/annotations.jar">
        <fileset dir="${build}"/>
      </jar>
+     <copy file = "${jar}/annotations.jar" todir = "../biomodules/lib"/>
     </target>
 
-    <!-- run target, loads yeast annotations database  -->
-    <target name = "run" depends="jar" description = "Runs cytoscape and loads biomodules">
-      <java classname = "cytoscape.CyMain" classpathref = "classpath_compile"
-          fork = "true" maxmemory = "1g">
-          <arg line = "--JLD"/>
-          <arg file = "${jar}/biomodules.jar"/>
-          <arg line = "--JLD"/>
-          <arg line = "../../../../cytoscape/plugins/"/>
-          <arg line = "-c"/>
-      	  <arg line = "-b http://db.systemsbiology.net:8080/cytoscape/annotation/yeast/manifest"/>
-      </java>
-    </target>
-
-     <!-- Target to Run JavaDoc -->
+    <!-- Target to Run JavaDoc -->
     <target name="doc" description="Runs JavaDoc.">
-        <javadoc packagenames="biomodules.*" sourcepath="src" source="1.4" destdir="doc"> 
+        <javadoc packagenames="annotations.*" sourcepath="src" source="1.4" destdir="doc"> 
         <link href = "http://java.sun.com/j2se/1.4.2/docs/api/"/>
         <link href = "http://csbi.sourceforge.net/API/"/>
         </javadoc>

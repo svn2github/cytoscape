@@ -33,124 +33,58 @@ package biomodules.view;
 import cytoscape.*;
 import cytoscape.view.*;
 import cytoscape.visual.*;
-import giny.model.*;
+import metaNodeViewer.MetaNodeUtils;
 import metaNodeViewer.model.*;
 import metaNodeViewer.data.*;
 import metaNodeViewer.view.VisualStyleFactory;
 
 public class ViewUtils {
-
-  public static final MetaNodeAttributesHandler attributesHandler = new AbstractMetaNodeAttsHandler();
-  public static final AbstractMetaNodeModeler abstractModeler = MetaNodeModelerFactory.getCytoscapeAbstractMetaNodeModeler();
-  
-  /**
-   * @return an array of RootGraph indices for the newly created meta-nodes, null
-   * if something went wrong (null arguments for example)
-   * The order of the indices in the array corresponds to the order of the biomodules in
-   * the given CyNode[][]. For example, meta node with index 'i' in the returned array
-   * is the parent of nodes biomodules[i].
-   */
-  public static int [] abstractBiomodules (CyNetwork network, 
-                                           CyNode [][] biomodules){
-    
-    long startTime = System.currentTimeMillis();
-    System.err.println("Abstracting biomodules...");
-    
-    if(biomodules == null){
-        //Nothing to visualize
-        return null;
-    }
-    
-    RootGraph rootGraph = network.getRootGraph();
-    if(ViewUtils.abstractModeler.getRootGraph() == null ||
-       ViewUtils.abstractModeler.getRootGraph() != rootGraph){
-       ViewUtils.abstractModeler.setRootGraph(rootGraph);
-    }
-    
-     // Set the attributes handler for this network, all other networks will have the default handler.
-    ViewUtils.abstractModeler.setNetworkAttributesHandler(network,ViewUtils.attributesHandler);
-    
-    int [] metaNodeIndices = new int[biomodules.length];
-    for(int i = 0; i < biomodules.length; i++){
-      int [] nodeIndices = new int[biomodules[i].length]; // the children of the meta-node
-      for(int j = 0; j < biomodules[i].length; j++){
-        CyNode node = biomodules[i][j];
-        int index = network.getIndex(node);
-        if(index == 0){
-          // TODO: The node is hidden, don't know what to do!
-          System.err.println("CyNode " + node + " is hidden.");
-          continue;
-        }
-        nodeIndices[j] = index;
-      }//for j
-      metaNodeIndices[i] = MetaNodeFactory.createMetaNode(network,nodeIndices);
-      ViewUtils.abstractModeler.applyModel(network,metaNodeIndices[i],nodeIndices);
-    }//for i
-    
-    long secs = (System.currentTimeMillis() - startTime)/1000;
-    System.err.println("Done creating meta-nodes for biomodules, time = " + secs + ".");
-   
-    // Apply vizmapper
-    CytoscapeDesktop cyDesktop = Cytoscape.getDesktop();
-    VisualMappingManager vizmapper = cyDesktop.getVizMapManager();
-    VisualStyle abstractMetaNodeVS = 
-      vizmapper.getCalculatorCatalog().getVisualStyle(VisualStyleFactory.ABSTRACT_METANODE_VS);
-    if(abstractMetaNodeVS == null){
-      abstractMetaNodeVS = VisualStyleFactory.createAbstractMetaNodeVisualStyle(network);
-    }
-    String netID = network.getIdentifier();
-    CyNetworkView netView = Cytoscape.getNetworkView(netID);
-    if(netView != null){
-      netView.applyVizmapper(abstractMetaNodeVS);
-    }
-    
-    return metaNodeIndices;
-  }//abstractBiomodules
-
-  /**
-   * Removes the given list of meta-nodes from the network and restores
-   * their children.
-   *
-   * @param network the <code>CyNetwork</code> from which meta-nodes will be removed
-   * @param meta_node_rindices the <code>RootGraph</code> indices of the meta-nodes
-   * to be removed
-   * @param recursive if there are > 1 levels of meta-node hierarchy, whether or not
-   * to remove all the levels (if it is known that there is only 1 level, setting this
-   * to false significantly improves performance)
-   */
-  public static void removeMetaNodes (CyNetwork network, 
-                                      int [] meta_node_rindices,
-                                      boolean recursive){
-    
-    long startTime = System.currentTimeMillis();
-    System.err.println("Removing meta-nodes...");
-    
-    if(network == null || meta_node_rindices == null || meta_node_rindices.length == 0){
-      System.err.println("...nothing to remove.");
-      return;
-    }
-    
-    for(int i = 0; i < meta_node_rindices.length; i++){
-      // Check that the index is a RootGraph index
-      int rindex = meta_node_rindices[i];
-      if(rindex > 0){
-        // Not a root-graph index
-        rindex = network.getRootGraphNodeIndex(rindex); 
-      }
-      if(rindex == 0){
-        // We are in trouble
-        System.err.println("Skipping, index == 0.");
-        continue;
-      }
-      boolean temporary = false; // == don't remember these meta-nodes
-      boolean ok = ViewUtils.abstractModeler.undoModel(network,rindex,recursive,temporary); 
-      if(!ok){
-        System.err.println("Could not remove meta-node " + rindex);
-      }
-    }//for i
-    
-    long secs = (System.currentTimeMillis() - startTime)/1000;
-    System.err.println("...done removing meta-nodes, time = " + secs);
-  }//removeMetaNodes
-
+	
+	public static final MetaNodeAttributesHandler attributesHandler = new AbstractMetaNodeAttsHandler();
+	public static final AbstractMetaNodeModeler abstractModeler = MetaNodeModelerFactory.getCytoscapeAbstractMetaNodeModeler();
+	
+	/**
+	 * @return an array of RootGraph indices for the newly created meta-nodes, null
+	 * if something went wrong (null arguments for example)
+	 * The order of the indices in the array corresponds to the order of the biomodules in
+	 * the given CyNode[][]. For example, meta node with index 'i' in the returned array
+	 * is the parent of nodes biomodules[i].
+	 */
+	public static int [] abstractBiomodules (CyNetwork network, 
+			CyNode [][] biomodules){
+		
+		int [] metaNodeIndices = MetaNodeUtils.abstractToMetaNodes(network,biomodules,ViewUtils.attributesHandler);
+		// Apply vizmapper
+		CytoscapeDesktop cyDesktop = Cytoscape.getDesktop();
+		VisualMappingManager vizmapper = cyDesktop.getVizMapManager();
+		VisualStyle abstractMetaNodeVS = 
+			vizmapper.getCalculatorCatalog().getVisualStyle(VisualStyleFactory.ABSTRACT_METANODE_VS);
+		if(abstractMetaNodeVS == null){
+			abstractMetaNodeVS = VisualStyleFactory.createAbstractMetaNodeVisualStyle(network);
+		}
+		String netID = network.getIdentifier();
+		CyNetworkView netView = Cytoscape.getNetworkView(netID);
+		if(netView != null){
+			netView.applyVizmapper(abstractMetaNodeVS);
+		}
+		return metaNodeIndices;
+	}//abstractBiomodules
+	
+	/**
+	 * Removes the given list of meta-nodes from the network and restores
+	 * their children.
+	 *
+	 * @param network the <code>CyNetwork</code> from which meta-nodes will be removed
+	 * @param meta_node_rindices the <code>RootGraph</code> indices of the meta-nodes
+	 * to be removed
+	 * @param recursive if there are > 1 levels of meta-node hierarchy, whether or not
+	 * to remove all the levels (if it is known that there is only 1 level, setting this
+	 * to false significantly improves performance)
+	 */
+	public static void removeMetaNodes (CyNetwork network, 
+			int [] meta_node_rindices,
+			boolean recursive){
+		MetaNodeUtils.removeAbstractedMetaNodes(network,meta_node_rindices,recursive);
+	}//removeMetaNodes
+	
 }//ViewUtils

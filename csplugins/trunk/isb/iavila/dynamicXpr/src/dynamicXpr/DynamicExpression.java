@@ -33,6 +33,8 @@
  * @since 1.1
  */
 
+//TODO: LEFT HERE Handle meta-nodes!!!!
+
 package dynamicXpr;
 
 import java.util.*;
@@ -46,10 +48,7 @@ import cytoscape.*;
 import cytoscape.visual.*;
 import cytoscape.visual.mappings.*;
 import cytoscape.visual.calculators.*;
-import cytoscape.view.CyWindow;
 import cytoscape.data.*;
-import cytoscape.data.GraphObjAttributes;
-import cytoscape.util.SwingWorker;
 
 import dynamicXpr.dialogs.*;
 
@@ -250,7 +249,8 @@ public class DynamicExpression extends AbstractAction {
                                         value);
       }//for i
     }
-    Cytoscape.getDesktop().redrawGraph(false,true);// don't do layout, do apply vizmaps
+    Cytoscape.getCurrentNetworkView().redrawGraph(false,true);
+    //Cytoscape.getDesktop().redrawGraph(false,true);// don't do layout, do apply vizmaps
   }//restoreOldNodeColorCalculator
   
   /**
@@ -307,7 +307,8 @@ public class DynamicExpression extends AbstractAction {
     }//for c
     VisualMappingManager vmManager = Cytoscape.getDesktop().getVizMapManager();
     vmManager.applyNodeAppearances();
-    Cytoscape.getDesktop().redrawGraph(false,false); // does not do layout
+    Cytoscape.getCurrentNetworkView().redrawGraph(false,false);
+    //Cytoscape.getDesktop().redrawGraph(false,false); // does not do layout
   }//displayCondition
   
   /**
@@ -360,7 +361,7 @@ public class DynamicExpression extends AbstractAction {
       
       if(currCond < conditions.length){
         dialog.updateConditionsSlider(currCond,conditions[currCond]);
-        DynamicExpression.this.displayCondition(conditions[currCond]);
+        DynamicExpression.displayCondition(conditions[currCond]);
         currCond++;
       }else{
         DynamicExpression.this.stop();
