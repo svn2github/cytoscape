@@ -59,6 +59,36 @@ public final class AllRootGraphMethodsTest
     if (root.createGraphPerspective(twoNodeInx, twoEdgeInx).getEdgeCount() < 2)
       throw new IllegalStateException
         ("GraphPerspective has less than two edges");
+
+    // getNodeCount() and getEdgeCount().
+    if (root.getNodeCount() < 2 || root.getEdgeCount() < 2)
+      throw new IllegalStateException("too few nodes or edges in RootGraph");
+
+    // nodesList().
+    java.util.List nodesList = root.nodesList();
+    if (nodesList.size() < 2)
+      throw new IllegalStateException("too few nodes in RootGraph");
+    for (int i = 0; i < nodesList.size(); i++) {
+      Node n = (Node) nodesList.get(i); }
+
+    // getNodeIndicesArray().
+    int[] nodeIndicesArray = root.getNodeIndicesArray();
+    if (nodeIndicesArray.length != nodesList.size())
+      throw new IllegalStateException
+        ("size of nodes List and length of node indices array don't match");
+
+    // edgesList().
+    java.util.List edgesList = root.edgesList();
+    if (edgesList.size() < 2)
+      throw new IllegalStateException("too few edges in RootGraph");
+    for (int i = 0; i < edgesList.size(); i++) {
+      Edge e = (Edge) edgesList.get(i); }
+
+    // getEdgeIndicesArray().
+    int[] edgeIndicesArray = root.getEdgeIndicesArray();
+    if (edgeIndicesArray.length != edgesList.size())
+      throw new IllegalStateException
+        ("size of edges List and length of edge indices array don't match");
   }
 
   private static final RootGraph getRootGraph(String[] mainArgs)
