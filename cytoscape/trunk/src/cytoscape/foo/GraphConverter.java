@@ -360,6 +360,17 @@ public final class GraphConverter
       edgeTranslation[i + directedEdgeSourceNodeIndices.length] = edgeV; }
     final double[] nodeXPositions = new double[numNodesInTopology];
     final double[] nodeYPositions = new double[numNodesInTopology];
+    { // Modify minX, maxY, minY and maxY so that the area is a square.
+      double extra =
+        Math.max(maxX - minX, maxY - minY) -
+        Math.min(maxX - minX, maxY - minY);
+      if (maxX - minX > maxY - minY) {
+        maxY += extra / 2.0d;
+        minY -= extra / 2.0d; }
+      else {
+        maxX += extra / 2.0d;
+        minY -= extra / 2.0d; }
+    }
     final double border =
       Math.max(maxX - minX, maxY - minY) * percentBorder * 0.5d;
     final double xOff = minX - border;
