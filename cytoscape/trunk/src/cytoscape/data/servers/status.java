@@ -1,4 +1,4 @@
-// status.java:  of BioDataServer
+// status
 //------------------------------------------------------------------------------
 // $Revision$   
 // $Date$ 
@@ -7,8 +7,6 @@
 package cytoscape.data.servers;
 //-----------------------------------------------------------------------------------
 import java.rmi.*;
-import cytoscape.data.BindingPair;
-import cytoscape.data.readers.BindingPairXmlReader;
 import java.io.*;
 import java.util.Vector;
 //------------------------------------------------------------------------------
@@ -16,12 +14,18 @@ public class status {
 //------------------------------------------------------------------------------
 public static void main (String [] args) throws Exception
 {
-  String serverShortName = "biodata";
-  if (args.length == 1)
-    serverShortName = args [0];
 
-  String serverName = "rmi://localhost/" + serverShortName;
-  BioDataServer server = (BioDataServer) Naming.lookup (serverName);
+  if (args.length != 2) {
+    System.err.println ("usage:  status <rmi host name> <rmi service name>");
+    System.exit (1);
+    }
+
+  String hostname = args [0];
+  String serviceName = args [1];
+ 
+  String serverName = "rmi://" + hostname + "/" + serviceName;
+  System.out.println ("--- checking status of " + serverName);
+  BioDataServer server = new BioDataServer (serverName);
   System.out.println (server.describe ());
 
 } // main
