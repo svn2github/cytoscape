@@ -549,30 +549,28 @@ class FGraphPerspective implements GraphPerspective
 
   // Nodes and edges in this graph are called "native indices" throughout
   // this class.
-  private final DynamicGraph m_graph =
-    DynamicGraphFactory.instantiateDynamicGraph();
+  private final DynamicGraph m_graph;
 
   private final FRootGraph m_root;
 
   // This is an array of length 1 - we need an array as an extra reference
   // to a reference because some other inner classes need to know what the
   // current listener is.
-  private final GraphPerspectiveChangeListener[] m_lis =
-    new GraphPerspectiveChangeListener[1];
+  private final GraphPerspectiveChangeListener[] m_lis;
+
+  // RootGraph indices are negative in these arrays.
+  private final IntArray m_nativeToRootNodeInxMap;
+  private final IntArray m_nativeToRootEdgeInxMap;
+
+  // RootGraph indices are ~ (complements) of the real RootGraph indices
+  // in these hashtables.
+  private final IntIntHash m_rootToNativeNodeInxMap;
+  private final IntIntHash m_rootToNativeEdgeInxMap;
 
   private final GraphWeeder m_weeder;
 
   // We need to remove this listener from the RootGraph during finalize().
   private final RootGraphChangeSniffer m_changeSniffer;
-
-  // RootGraph indices are negative in these arrays.
-  private final IntArray m_nativeToRootNodeInxMap = new IntArray();
-  private final IntArray m_nativeToRootEdgeInxMap = new IntArray();
-
-  // RootGraph indices are ~ (complements) of the real RootGraph indices
-  // in these hashtables.
-  private final IntIntHash m_rootToNativeNodeInxMap = new IntIntHash();
-  private final IntIntHash m_rootToNativeEdgeInxMap = new IntIntHash();
 
   // Package visible constructor.  rootGraphNodeInx
   // must contain all endpoint nodes corresponding to edges in
@@ -582,7 +580,13 @@ class FGraphPerspective implements GraphPerspective
                     IntEnumerator rootGraphNodeInx,
                     IntEnumerator rootGraphEdgeInx)
   {
+    m_graph = DynamicGraphFactory.instantiateDynamicGraph();
     m_root = root;
+    m_lis = new GraphPerspectiveChangeListener[1];
+    m_nativeToRootNodeInxMap = new IntArray();
+    m_nativeToRootEdgeInxMap = new IntArray();
+    m_rootToNativeNodeInxMap = new IntIntHash();
+    m_rootToNativeEdgeInxMap = new IntIntHash();
     m_weeder = new GraphWeeder(m_root, m_graph,
                                m_nativeToRootNodeInxMap,
                                m_nativeToRootEdgeInxMap,
