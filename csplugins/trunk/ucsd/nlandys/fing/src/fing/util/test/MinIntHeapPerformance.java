@@ -1,3 +1,34 @@
+/*
+
+  RESULTS OF RUNNING TESTS ON A COMPUTER:
+
+  Giving the JVM half a gig of memory, against the same random
+  bytes file, under "same conditions".
+
+                       Milliseconds taken to perform test:
+
+    N         |  MinIntHeapPerformance  |  HashtablePerformance
+  ------------+-------------------------+------------------------
+           1  |      0                  |      0
+         100  |      1                  |      1
+        1000  |      4                  |      7
+       10000  |     14                  |     31
+       50000  |     36                  |    116
+      100000  |     61                  |    300
+      200000  |    138                  |    665
+      500000  |    410                  |   1810
+     1000000  |    950                  |   3600
+     2000000  |   2250                  |   7500
+     5000000  |   6700                  |  20000
+    10000000  |  15000                  |  35500
+    15000000  |  24000                  |  X (out of memory)
+    20000000  |  34500
+    30000000  |  55000
+    40000000  |  81000
+    50000000  |  X (out of memory)
+
+*/
+
 package fing.util.test;
 
 import fing.util.IntIterator;
