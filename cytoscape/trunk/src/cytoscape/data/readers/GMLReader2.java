@@ -6,12 +6,15 @@ import java.awt.geom.Point2D;
 import giny.model.*;
 import giny.view.*;
 import cytoscape.*;
+import cytoscape.task.TaskMonitor;
 import cytoscape.data.Semantics;
 
 import java.awt.Color;
 import cytoscape.data.GraphObjAttributes;
 import cern.colt.list.IntArrayList;
 import cern.colt.map.OpenIntIntHashMap;
+
+import javax.swing.*;
 import java.io.StringWriter;
 import java.io.IOException;
 import java.text.ParseException;
@@ -66,9 +69,24 @@ public class GMLReader2 implements GraphReader {
   IntArrayList nodes,sources,targets;
   Vector node_labels,edge_labels,edge_root_index_pairs,node_root_index_pairs;
   IntArrayList giny_nodes,giny_edges;
-  
+  private TaskMonitor taskMonitor;
+
+  /**
+   * Constructor.
+   * @param filename File name.
+   */
   public GMLReader2 ( String filename ) {
     this.filename = filename;
+  }
+
+  /**
+   * Constructor.
+   * @param filename File name.
+   * @param taskMonitor TaskMonitor Object.
+   */
+  public GMLReader2 (String filename, TaskMonitor taskMonitor) {
+    this.filename = filename;
+    this.taskMonitor = taskMonitor;
   }
 
   public void read( boolean canonicalize ){
@@ -125,66 +143,98 @@ public class GMLReader2 implements GraphReader {
    * in the gml file. If an edge depends on a node that was skipped, then that edge
    * will be skipped as well.
    */
-  protected void createGraph(){
-    Cytoscape.ensureCapacity(nodes.size(),sources.size());
-    nodeIDMap = new OpenIntIntHashMap(nodes.size());
-    giny_nodes = new IntArrayList(nodes.size());
-    OpenIntIntHashMap gml_id2order = new OpenIntIntHashMap(nodes.size());
-    Set nodeNameSet = new HashSet(nodes.size());
-    for(int idx=0;idx<nodes.size();idx++){
-      String label = (String)node_labels.get(idx);
-      if(nodeNameSet.add(label)){
-	Node node = (Node)Cytoscape.getCyNode(label,true);
-	giny_nodes.add(node.getRootGraphIndex());
-	nodeIDMap.put(nodes.get(idx),node.getRootGraphIndex());
-	gml_id2order.put(nodes.get(idx),idx);
-	((KeyValue)node_root_index_pairs.get(idx)).value = (new Integer(node.getRootGraphIndex()));
-      }
-      else{
-	throw new GMLException("GML id "+nodes.get(idx)+" has a duplicated label: "+label);
-	//((KeyValue)node_root_index_pairs.get(idx)).value = null;
-      }
-    }
-    nodeNameSet = null;
+  protected void createGraph() {
+      Cytoscape.ensureCapacity(nodes.size(), sources.size());
+      nodeIDMap = new OpenIntIntHashMap(nodes.size());
+      giny_nodes = new IntArrayList(nodes.size());
+      OpenIntIntHashMap gml_id2order = new OpenIntIntHashMap(nodes.size());
+      Set nodeNameSet = new HashSet(nodes.size());
 
-    giny_edges = new IntArrayList(sources.size());
-    Set edgeNameSet = new HashSet(sources.size());
-    GraphObjAttributes edgeAttributes = Cytoscape.getEdgeNetworkData();
-    RootGraph rootGraph = Cytoscape.getRootGraph();
-    for(int idx=0;idx<sources.size();idx++){
-      if(gml_id2order.containsKey(sources.get(idx)) && gml_id2order.containsKey(targets.get(idx))){
-	String label = (String)edge_labels.get(idx);
-	String sourceName = (String)node_labels.get(gml_id2order.get(sources.get(idx)));
-	String targetName = (String)node_labels.get(gml_id2order.get(targets.get(idx)));
-	String edgeName = sourceName + " ("+label+") "+targetName;
-	if(edgeNameSet.add(edgeName)){
-	  Edge edge = (Edge)Cytoscape.getEdgeNetworkData().getGraphObject(edgeName);
-	  if(edge == null){
-	    Node node_1 = Cytoscape.getCyNode(sourceName);
-	    Node node_2 = Cytoscape.getCyNode(targetName);
-	    edge =  (Edge)rootGraph.getEdge( rootGraph.createEdge (node_1, node_2));
-	    edgeAttributes.add (Semantics.INTERACTION, edgeName, label);
-	    edgeAttributes.addNameMapping (edgeName, edge);
-	  }
-	  //Edge edge = (Edge)Cytoscape.getCyEdge(sourceName,
-	  //				edgeName,
-	  //				targetName,
-	  //				label);
-	  giny_edges.add(edge.getRootGraphIndex());
-	  ((KeyValue)edge_root_index_pairs.get(idx)).value = (new Integer(edge.getRootGraphIndex()));
-	}
-	else{
-	  throw new GMLException("Edges between the same nodes must have unique types: duplicate is between "+sourceName+" and "+targetName);
-	  //((KeyValue)edge_root_index_pairs.get(idx)).value = null;
-	}
+      //  Report Status Message
+      if (taskMonitor != null) {
+          taskMonitor.setStatus ("Adding Nodes to Network");
       }
-      else{
-	throw new GMLException("Non-existant source/target node for edge with gml (source,target): "+sources.get(idx)+","+targets.get(idx));
-	//((KeyValue)edge_root_index_pairs.get(idx)).value = null;
+
+      //  Add All Nodes to Network
+      for (int idx = 0; idx < nodes.size(); idx++) {
+
+          //  Report Status Value
+          if (taskMonitor != null) {
+              double percent = ((double) idx / nodes.size()) * 100.0;
+              taskMonitor.setPercentCompleted((int) percent);
+          }
+          String label = (String) node_labels.get(idx);
+          if (nodeNameSet.add(label)) {
+              Node node = (Node) Cytoscape.getCyNode(label, true);
+              giny_nodes.add(node.getRootGraphIndex());
+              nodeIDMap.put(nodes.get(idx), node.getRootGraphIndex());
+              gml_id2order.put(nodes.get(idx), idx);
+              ((KeyValue) node_root_index_pairs.get(idx)).value =
+                      (new Integer(node.getRootGraphIndex()));
+          } else {
+              throw new GMLException("GML id " + nodes.get(idx)
+                      + " has a duplicated label: " + label);
+              //((KeyValue)node_root_index_pairs.get(idx)).value = null;
+          }
       }
-    }
-    edgeNameSet = null;
-    
+      nodeNameSet = null;
+
+      //  Report Status Message
+      if (taskMonitor != null) {
+          taskMonitor.setStatus ("Adding Nodes to Network");
+      }
+
+      giny_edges = new IntArrayList(sources.size());
+      Set edgeNameSet = new HashSet(sources.size());
+      GraphObjAttributes edgeAttributes = Cytoscape.getEdgeNetworkData();
+      RootGraph rootGraph = Cytoscape.getRootGraph();
+
+      //  Add All Edges to Network
+      for (int idx = 0; idx < sources.size(); idx++) {
+
+          //  Report Status Value
+          if (taskMonitor != null) {
+              double percent = ((double) idx / sources.size()) * 100.0;
+              taskMonitor.setPercentCompleted((int) percent);
+          }
+
+          if (gml_id2order.containsKey(sources.get(idx))
+                  && gml_id2order.containsKey(targets.get(idx))) {
+              String label = (String) edge_labels.get(idx);
+              String sourceName = (String) node_labels.get(gml_id2order.get
+                      (sources.get(idx)));
+              String targetName = (String) node_labels.get
+                      (gml_id2order.get(targets.get(idx)));
+              String edgeName = sourceName + " (" + label + ") " + targetName;
+              if (edgeNameSet.add(edgeName)) {
+                  Edge edge = (Edge) Cytoscape.getEdgeNetworkData().
+                          getGraphObject(edgeName);
+                  if (edge == null) {
+                      Node node_1 = Cytoscape.getCyNode(sourceName);
+                      Node node_2 = Cytoscape.getCyNode(targetName);
+                      edge = (Edge) rootGraph.getEdge
+                              (rootGraph.createEdge(node_1, node_2));
+                      edgeAttributes.add(Semantics.INTERACTION, edgeName, label);
+                      edgeAttributes.addNameMapping(edgeName, edge);
+                  }
+                  //Edge edge = (Edge)Cytoscape.getCyEdge(sourceName,
+                  //				edgeName,
+                  //				targetName,
+                  //				label);
+                  giny_edges.add(edge.getRootGraphIndex());
+                  ((KeyValue) edge_root_index_pairs.get(idx)).value =
+                          (new Integer(edge.getRootGraphIndex()));
+              } else {
+                  throw new GMLException("Edges between the same nodes must have unique types: duplicate is between " + sourceName + " and " + targetName);
+                  //((KeyValue)edge_root_index_pairs.get(idx)).value = null;
+              }
+          } else {
+              throw new GMLException("Non-existant source/target node for edge with gml (source,target): " + sources.get(idx) + "," + targets.get(idx));
+              //((KeyValue)edge_root_index_pairs.get(idx)).value = null;
+          }
+      }
+      edgeNameSet = null;
+
   }
 
   /**
@@ -192,10 +242,23 @@ public class GMLReader2 implements GraphReader {
    * which defines a gml objec tree
    */
   protected void readGML(List list){
+    //  Report Progress Message
+    if (taskMonitor != null) {
+        taskMonitor.setStatus("Parsing GML Data...");
+    }
+    int counter = 0;
     for(Iterator it = list.iterator();it.hasNext();){
+
+      //  Report Progress Value
+      if (taskMonitor != null) {
+          double percent = ((double) counter / list.size()) * 100.0;
+          taskMonitor.setPercentCompleted((int) percent);
+          counter++;
+      }
+
       KeyValue keyVal = (KeyValue)it.next();
       if(keyVal.key.equals(GRAPH)){
-	readGraph((List)keyVal.value);
+        readGraph((List)keyVal.value);
       }
     }
   }
@@ -329,16 +392,19 @@ public class GMLReader2 implements GraphReader {
       
   }
 
-  protected void layoutGraph(GraphView myView, List list){
-    for(Iterator it = list.iterator();it.hasNext();){
-      KeyValue keyVal = (KeyValue)it.next();
-      if(keyVal.key.equals(NODE)){
-	layoutNode(myView, (List)keyVal.value);
-      }else if(keyVal.key.equals(EDGE)){
-	layoutEdge(myView,(List)keyVal.value);
-      }
+    /**
+     * Lays Out the Graph, based on GML.
+     */
+    protected void layoutGraph(final GraphView myView, List list) {
+        for (Iterator it = list.iterator(); it.hasNext();) {
+            final KeyValue keyVal = (KeyValue) it.next();
+            if (keyVal.key.equals(NODE)) {
+                layoutNode(myView, (List) keyVal.value);
+            } else if (keyVal.key.equals(EDGE)) {
+                layoutEdge(myView, (List) keyVal.value);
+            }
+        }
     }
-  }
 
   /**
    * Assign node properties based on the values in the list
