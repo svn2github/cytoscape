@@ -3,6 +3,7 @@ package cytoscape.graph.layout.impl;
 import cytoscape.graph.GraphTopology;
 import cytoscape.graph.layout.algorithm.LayoutAlgorithm;
 import cytoscape.graph.layout.algorithm.MutableGraphLayout;
+import cytoscape.graph.util.GraphUtils;
 import cytoscape.process.PercentCompletedCallback;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -149,13 +150,14 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
    */
   private static int[][] calculateNodeDistances(GraphTopology graph)
   {
+    final GraphUtils graphUtils = new GraphUtils(graph);
     int[][] distances = new int[graph.getNumNodes()][];
     Object[] nodes = new Object[graph.getNumNodes()];
     for (int i = 0; i < nodes.length; i++)
       nodes[i] = new Object();
     LinkedList queue = new LinkedList();
     boolean[] completedNodes = new boolean[graph.getNumNodes()];
-    Iterator neighbors;
+    int[] neighbors;
     int toNode;
     int neighbor;
     int toNodeDistance;
@@ -197,9 +199,24 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
           // the previous calculation.
           continue;
         } // End if toNode has already had all of its distances calculated.
+
+        neighbors = graphUtils.getNeighboringNodeIndices(toNode, false);
+        for (int i = 0; i < neighbors.length; i++)
+        {
+          neighbor = neighbors[i];
+          // We've already done everything we can here.
+          if (completedNodes[neighbor]) continue;
+          neighborDistance = distances[fromNode][neighbor];
+          if ((toNodeDistance != Integer.MAX_VALUE) &&
+              (neighborDistance > toNodeDistance + 1))
+          {
+            distances[fromNode][neighbor] = toNodeDistance + 1;
+            queue.addLast(new Integer(neighbor));
+          }
+        }
       }
     }
-    return null;
+    return distances;
   }
 
   /**
