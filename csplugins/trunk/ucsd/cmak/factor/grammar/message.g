@@ -2,6 +2,20 @@ header {
 package fgraph.test;
 }
 
+/**
+* This grammar builds a parser and lexer for output produced
+* by the Java implementation of the factor graph algorithm
+* and by Chen-Hsiang Yeang's C implementation.
+*
+* More specifically, this parser/lexer is used to validate the
+* output of the Java implementation of the potential function
+* (fgraph.PathFactorNode) against the output of the C implementation
+* (function maxsumproduct3 in func_utility4.c and6
+*  maxmarginal4 in func_utility5.c)
+*
+* see ParseTest.java and ParseYeang.java for usage.
+*/
+
 class T extends TreeParser;
 
 walk: (message)+;
@@ -13,8 +27,9 @@ message
     | #(TK ID PROB PROB PROB) {System.out.println("tk tree"); }
     ;
 
+
 {
-     import fgraph.State;
+    import fgraph.State;
     import fgraph.NodeFactory;
     import fgraph.NodeType;
     import fgraph.ProbTable;
@@ -88,15 +103,18 @@ parseMessages returns [List l]
 
 
 /**
-* @returns an array of 2 LinkedHashMaps.
-* The first map contains the variable2factor messages in the same order
-* that they appear in the input file.  The map key is the index of the 
-* message and the value of a TestMessage object.
+* @returns a MessageBlock object which contains 2 LinkedHashMaps
+* Each map associates an edge with a message sent along the edge.
+* Edges are identified by a String consisting of the "from" node
+* identifier contatenated with the "to" node identifier.
+* Node identifiers are parsed by the "nodes" rule.
+* 
+* Messages are parsed by the rules "v2fMessage" and "f2vMessage"
+* and are returned as TestMessage objects.
 *
-* The second map contains the factor2variable messages in the se same order
-* that they appear in the input file.  The map is a String of the "from"
-* node concatenated with the "to" node.  This allows you to look up the
-* factor2var TestMessage associated with a given var2factor TestMessage.
+* Each map contains either the variable2factor messages or the 
+* factor2variable messages in the same order that they appear 
+* in the input file.
 */
 messageBlock returns [MessageBlock messages]
 {
@@ -242,6 +260,7 @@ v2fMessage returns [ TestMessage tm]
 
     ;
 
+
 class L extends Lexer;
 options {
   k = 3;
@@ -275,7 +294,6 @@ PLUS: "+";
 
 MINUS: "-";
 
-T: 't';
 PSI: "psi";
 OR: "or";
 

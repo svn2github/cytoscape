@@ -38,6 +38,7 @@ public class MaxProduct
 
         logger.info("Reading interaction file: " + _interaction);
         _ig = InteractionGraphFactory.createFromSif(_interaction);
+
     }
 
     public void setInteractionFile(String interaction, String candidateGenes)
@@ -91,6 +92,8 @@ public class MaxProduct
         
         _ig.loadExpressionData(_expressionData);
         _ig.setExpressionPvalThreshold(_thresh);
+
+        logger.info("  " + _ig.toString());
     }
 
 

@@ -117,12 +117,27 @@
 
   </target>
 
+  <target name="plugin" depends="compile" 
+          description="generate the plugin jar">
+    <mkdir dir="${dist}"/>
+    <delete file="${dist}/fgraph.jar"/>
+    <jar jarfile="${dist}/fgraph.jar" 
+         basedir="${build}"
+         includes="fgraph/**"
+         excludes="fgraph/test/**,**/*Test.class"
+    />
+
+    <copy file="${dist}/fgraph.jar" toDir="${user.home}/cytoscape/plugins"/>
+  </target>
+
   <target name="dist" depends="compile"
         description="generate the distribution" >
     <!-- Create the distribution directory -->
 
     <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
-    <jar jarfile="${dist}/lib/mdi-${DSTAMP}.jar" basedir="${build}"/>
+    <jar jarfile="${dist}/lib/mdi-${DSTAMP}.jar" 
+         basedir="${build}"
+         excludes="fgraph/test/**,**/*Test.class"/>
   </target>
 
   <target name="clean"
