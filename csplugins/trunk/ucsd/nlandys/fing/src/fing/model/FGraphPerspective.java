@@ -603,14 +603,20 @@ class FGraphPerspective implements GraphPerspective
     return adj.numRemaining();
   }
 
-  public int getDegree(Node node)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  public int getDegree(Node node) {
+    if (node.getRootGraph() == m_root)
+      return getDegree(node.getRootGraphIndex());
+    else return -1; }
 
-  public int getDegree(int perspNodeInx)
+  public int getDegree(final int nodeInx)
   {
-    throw new IllegalStateException("not implemented yet");
+    if (!(nodeInx < 0)) return -1;
+    final int nativeNodeInx = m_rootToNativeNodeInxMap.get(~nodeInx);
+    final IntEnumerator adj;
+    try { adj = m_graph.adjacentEdges(nativeNodeInx, true, true, true); }
+    catch (IllegalArgumentException e) { return -1; }
+    if (adj == null) return -1;
+    return adj.numRemaining();
   }
 
   public int getIndex(Node node) {
