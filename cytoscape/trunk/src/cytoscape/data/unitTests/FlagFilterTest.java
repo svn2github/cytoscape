@@ -60,6 +60,10 @@ public class FlagFilterTest extends TestCase {
 public FlagFilterTest (String name) 
 {
     super (name);
+}
+//------------------------------------------------------------------------------
+public void setUp () throws Exception
+{
     RootGraph rootGraph = GinyFactory.createRootGraph();
     node1 = rootGraph.getNode(rootGraph.createNode());
     node2 = rootGraph.getNode(rootGraph.createNode());
@@ -74,10 +78,6 @@ public FlagFilterTest (String name)
     filter = new FlagFilter(gp);
     listener = new ListenerTest();
     filter.addFlagEventListener(listener);
-}
-//------------------------------------------------------------------------------
-public void setUp () throws Exception
-{
 }
 //------------------------------------------------------------------------------
 public void tearDown () throws Exception

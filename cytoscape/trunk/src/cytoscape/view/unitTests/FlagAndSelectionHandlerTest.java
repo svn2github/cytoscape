@@ -62,6 +62,10 @@ public class FlagAndSelectionHandlerTest extends TestCase {
 public FlagAndSelectionHandlerTest (String name) 
 {
     super (name);
+}
+//------------------------------------------------------------------------------
+public void setUp () throws Exception
+{
     RootGraph rootGraph = GinyFactory.createRootGraph();
     node1 = rootGraph.getNode(rootGraph.createNode());
     node2 = rootGraph.getNode(rootGraph.createNode());
@@ -77,10 +81,6 @@ public FlagAndSelectionHandlerTest (String name)
     edgeView1 = view.getEdgeView(edge1);
     edgeView2 = view.getEdgeView(edge2);
     handler = new FlagAndSelectionHandler(filter, view);
-}
-//------------------------------------------------------------------------------
-public void setUp () throws Exception
-{
 }
 //------------------------------------------------------------------------------
 public void tearDown () throws Exception

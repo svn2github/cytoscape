@@ -59,6 +59,10 @@ public class CytoscapeViewTests extends TestCase {
 public CytoscapeViewTests (String name) 
 {
     super (name);
+}
+//------------------------------------------------------------------------------
+public void setUp () throws Exception
+{
     String[] args = {};
     if (Cytoscape.getCytoscapeObj() == null) {
         CytoscapeConfig config = new CytoscapeConfig(args);
@@ -77,10 +81,6 @@ public CytoscapeViewTests (String name)
     nodeView2 = view.getNodeView(node2);
     edgeView1 = view.getEdgeView(edge1);
     edgeView2 = view.getEdgeView(edge2);
-}
-//------------------------------------------------------------------------------
-public void setUp () throws Exception
-{
 }
 //------------------------------------------------------------------------------
 public void tearDown () throws Exception
@@ -151,6 +151,7 @@ public void checkState(boolean n1, boolean n2, boolean e1, boolean e2) {
 public static void main (String[] args) 
 {
   junit.textui.TestRunner.run (new TestSuite (CytoscapeViewTests.class));
+  System.exit(0);
 }
 //------------------------------------------------------------------------------
 }
