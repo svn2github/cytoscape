@@ -45,8 +45,8 @@ import cytoscape.data.GraphObjAttributes;
 //-------------------------------------------------------------------------------------
 public class GMLReader implements GraphReader {
     private String filename;
-    GraphObjAttributes edgeAttributes = new GraphObjAttributes ();
-    GraphObjAttributes nodeAttributes = new GraphObjAttributes ();
+    GraphObjAttributes edgeAttributes;// = new GraphObjAttributes ();
+    GraphObjAttributes nodeAttributes;// = new GraphObjAttributes ();
     GraphObjAttributes gmlGraphicsAtt = new GraphObjAttributes ();
 
     RootGraph rootGraph;
@@ -79,7 +79,9 @@ public class GMLReader implements GraphReader {
       
        // create and read the GML file
        gmlTree = new GMLTree(filename);
-       
+							nodeAttributes = new GraphObjAttributes();
+							edgeAttributes = new GraphObjAttributes();
+							gmlGraphicsAtt = new GraphObjAttributes();
        Vector nodeIds = gmlTree.getVector("graph|node|id","|",GMLTree.INTEGER);
        Vector nodeLabels = gmlTree.getVector("graph|node|label","|",GMLTree.STRING);
 
@@ -91,7 +93,7 @@ public class GMLReader implements GraphReader {
 
        Vector edgeSources = gmlTree.getVector("graph|edge|source","|",GMLTree.INTEGER);
        Vector edgeTargets = gmlTree.getVector("graph|edge|target","|",GMLTree.INTEGER);
-       Vector edgeLabels  = gmlTree.getVector("graph|edge|label|","|",GMLTree.STRING);
+       Vector edgeLabels  = gmlTree.getVector("graph|edge|label","|",GMLTree.STRING);
        
 							//Use the number of ids to get the number of nodes in hte graph
 							//Use the number of source ids to get the number of edges in hte graph
@@ -132,6 +134,7 @@ public class GMLReader implements GraphReader {
 	   (nodeWidth.size()  == nodeIds.size()) &&
 	   (nodeType.size()   == nodeIds.size())
 	 ) {
+
 	   for(int i=0; i<nodeIds.size(); i++) {
 	       nodeName = (String) nodeNameMap.get(nodeIds.get(i));
 	       gmlGraphicsAtt.set("node.h", nodeName, (Double) nodeHeight.get(i));
@@ -148,7 +151,7 @@ public class GMLReader implements GraphReader {
        // ???  edgeAttributes ["interaction"] = interactionHash
        // ???  interactionHash [sourceNode::targetNode] = "pd"
        //---------------------------------------------------------------------------
-       String sourceName, targetName, edgeName;
+							String sourceName, targetName, edgeName;
        for (int i=0; i < edgeSources.size(); i++) {
            sourceName = (String) nodeNameMap.get(edgeSources.get(i));
            targetName = (String) nodeNameMap.get(edgeTargets.get(i));
@@ -158,7 +161,7 @@ public class GMLReader implements GraphReader {
            Node targetNode = (Node) nodeHash.get(targetName);
            Edge edge = rootGraph.getEdge(rootGraph.createEdge(sourceNode, targetNode));
            edgeName = sourceName + " (" + interactionType + ") " + targetName;
-           int previousMatchingEntries = edgeAttributes.countIdentical(edgeName);
+											int previousMatchingEntries = edgeAttributes.countIdentical(edgeName);
            if (previousMatchingEntries > 0)
                edgeName = edgeName + "_" + previousMatchingEntries;
                edgeAttributes.add("interaction", edgeName, interactionType);
