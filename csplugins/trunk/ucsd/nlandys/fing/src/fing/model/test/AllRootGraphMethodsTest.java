@@ -150,7 +150,7 @@ public final class AllRootGraphMethodsTest
     if (root.containsEdge(root2Edge))
       throw new IllegalStateException("RootGraph contains edge from other");
 
-    // neighborsList(Node)
+    // neighborsList(Node).
     java.util.List neighList = root.neighborsList(root.getNode(nodeInx[0]));
     if (neighList.size() != 2)
       throw new IllegalStateException("wrong number of neighbors");
@@ -160,6 +160,20 @@ public final class AllRootGraphMethodsTest
     neighList = root.neighborsList(root.getNode(nodeInx[2]));
     if (neighList.size() != 4)
       throw new IllegalStateException("wrong number of neighbors");
+    int[] neighInx = new int[neighList.size()];
+    for (int i = 0; i < neighList.size(); i++) {
+      Node node = (Node) neighList.get(i);
+      int nodeIndex = node.getRootGraphIndex();
+      if (root.getNode(nodeIndex) == null)
+        throw new IllegalStateException("bad node in neighbors");
+      if (nodeIndex == 0) throw new IllegalStateException("node index is 0");
+      int index = -1;
+      while (true) {
+        if (neighInx[++index] != 0) {
+          if (neighInx[index] == nodeIndex)
+            throw new IllegalStateException("duplicate neighbor");
+          else continue; }
+        else { neighInx[index] = nodeIndex; break; } } }
     neighList = root.neighborsList(root.getNode(nodeInx[3]));
     if (neighList.size() != 1)
       throw new IllegalStateException("wrong number of neighbors");
@@ -169,6 +183,12 @@ public final class AllRootGraphMethodsTest
     neighList = root.neighborsList(root2Node);
     if (neighList != null)
       throw new IllegalStateException("neighbors List isn't null");
+
+    // isNeighbor(Node, Node).
+    if (root.isNeighbor(root.getNode(nodeInx[4]), root.getNode(nodeInx[4])))
+      throw new IllegalStateException("node with no edges is its own neigh");
+    if (root.isNeighbor(root.getNode(nodeInx[3]), root.getNode(nodeInx[1])))
+      throw new IllegalStateException("nodes are neighbors");
   }
 
 }
