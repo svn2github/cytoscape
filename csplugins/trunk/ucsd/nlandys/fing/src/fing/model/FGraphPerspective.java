@@ -151,7 +151,6 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
             (m_nativeToRootNodeInxMap.getIntAtIndex(nodes.nextInt())); } };
   }
 
-  // This method has been marked deprecated in the Giny API.
   public java.util.List nodesList() {
     final int nodeCount = getNodeCount();
     final java.util.ArrayList returnThis = new java.util.ArrayList(nodeCount);
@@ -159,7 +158,6 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
     for (int i = 0; i < nodeCount; i++) returnThis.add(iter.next());
     return returnThis; }
 
-  // This method has been marked deprecated in the Giny API.
   public int[] getNodeIndicesArray()
   {
     IntEnumerator nodes = m_graph.nodes();
@@ -184,7 +182,6 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
             (m_nativeToRootEdgeInxMap.getIntAtIndex(edges.nextInt())); } };
   }
 
-  // This method has been marked deprecated in the Giny API.
   public java.util.List edgesList() {
     final int edgeCount = getEdgeCount();
     final java.util.ArrayList returnThis = new java.util.ArrayList(edgeCount);
@@ -192,7 +189,6 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
     for (int i = 0; i < edgeCount; i++) returnThis.add(iter.next());
     return returnThis; }
 
-  // This method has been marked deprecated in the Giny API.
   public int[] getEdgeIndicesArray()
   {
     IntEnumerator edges = m_graph.edges();
@@ -203,7 +199,6 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
     return returnThis;
   }
 
-  // This method has been marked deprecated in the Giny API.
   public int[] getEdgeIndicesArray(int rootGraphFromNodeInx,
                                    int rootGraphToNodeInx,
                                    boolean undirectedEdges,
@@ -331,7 +326,6 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
   public int hideEdge(int rootGraphEdgeInx) {
     return m_weeder.hideEdge(this, rootGraphEdgeInx); }
 
-  // This methods has been marked deprecated in the Giny API.
   public java.util.List hideEdges(java.util.List edges) {
     final java.util.ArrayList returnThis = new java.util.ArrayList();
     for (int i = 0; i < edges.size(); i++)
@@ -430,6 +424,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
       nativeInx != Integer.MAX_VALUE; }
 
   public boolean containsNode(Node node, boolean recurse) {
+    if (!recurse) return containsNode(node);
     throw new UnsupportedOperationException("meta nodes not yet supported"); }
 
   public boolean containsEdge(Edge edge) {
@@ -440,6 +435,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
       nativeInx != Integer.MAX_VALUE; }
 
   public boolean containsEdge(Edge edge, boolean recurse) {
+    if (!recurse) return containsEdge(edge);
     throw new UnsupportedOperationException("meta nodes not yet supported"); }
 
   public GraphPerspective join(GraphPerspective persp) {
