@@ -581,29 +581,47 @@ public abstract class Cytoscape {
                           network.getIdentifier() );
     
       if ( destroy_unique ) {
+
+       
+        
         ArrayList nodes = new ArrayList();
         ArrayList edges = new ArrayList();
 
-        Set networks = networkMap.entrySet();
+        Collection networks = networkMap.values();
         
         Iterator nodes_i = network.nodesIterator();
         Iterator edges_i = network.edgesIterator();
         
         while ( nodes_i.hasNext() ){
+          Node node = ( Node )nodes_i.next();
+          boolean add = true;
           for ( Iterator n_i = networks.iterator(); n_i.hasNext(); ) {
-            Node node = ( Node )nodes_i.next();
-            if ( !( ( CyNetwork )n_i.next() ).containsNode( node ) )
-              nodes.add( node );
+            CyNetwork net = ( CyNetwork )n_i.next();
+            if ( net.containsNode( node ) ) {
+              add = false;
+              continue;
+            }
+          }
+          if ( add ) {
+            nodes.add( node );
           }
         }
+      
         while ( edges_i.hasNext() ){
+          Edge edge = ( Edge )edges_i.next();
+          boolean add = true;
           for ( Iterator n_i = networks.iterator(); n_i.hasNext(); ) {
-            Edge edge = ( Edge )edges_i.next();
-            if ( !( ( CyNetwork )n_i.next() ).containsEdge( edge ) )
-              edges.add( edge );
+            CyNetwork net = ( CyNetwork )n_i.next();
+            if ( net.containsEdge( edge ) ) {
+              add = false;
+              continue;
+            }
+          }
+          if ( add ) {
+            edges.add( edge );
           }
         }
-        
+
         getRootGraph().removeNodes( nodes );
         getRootGraph().removeEdges( edges );
 
