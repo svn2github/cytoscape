@@ -765,8 +765,9 @@ public class FactorGraph
         initVar2Factor(v);
         
         int N = 2  * _paths.getMaxPathLength();
+        //int N =  _paths.getMaxPathLength();
         //int N = 20  * _paths.getMaxPathLength();
-        //int N = 1;
+        //int N = 2;
         
         logger.info("Running max product " + N + " iterations");
         
@@ -845,8 +846,13 @@ public class FactorGraph
         // update the edge annotations now that all variables are fixed.
         updateEdgeAnnotation();
 
+        logger.info("submodels before merge");
+        printSubmodels(_submodels);
+        
         // merge submodels
-        mergeSubmodels(_submodels);
+        _submodels = mergeSubmodels(_submodels);
+
+        printSubmodels(_submodels);
         
         // filter submodels that do not explain any knockout effects
         if(filter)
@@ -885,6 +891,27 @@ public class FactorGraph
         _ig.setSubmodels(_submodels);
     }
 
+    private void printSubmodels(List submodels)
+    {
+        for(int x=0; x < submodels.size(); x++)
+        {
+            Submodel s = (Submodel) submodels.get(x);
+
+            IntArrayList vars = s.getVars();
+            StringBuffer b = new StringBuffer("model ");
+            b.append(s.getId());
+            b.append(" [");
+            for(int v=0; v < vars.size(); v++)
+            {
+                b.append(vars.get(v) + " ");
+            }
+            b.append("]");
+
+            logger.info(b.toString());
+        }
+
+    }
+    
     /**
      * FIX THIS.  Currently incorrect 10/30/04
      *
