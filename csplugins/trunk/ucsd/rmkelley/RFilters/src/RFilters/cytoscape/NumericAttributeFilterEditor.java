@@ -110,7 +110,6 @@ public class NumericAttributeFilterEditor
     attributeBox = new JComboBox();
     attributeBox.setEditable(false);
     attributeBox.addActionListener(this);
-    attributeBox.setModel(AttributeManager.nodeAttributeManager());
     middlePanel.add(attributeBox);
 
     JPanel bottomPanel = new JPanel();	

@@ -221,11 +221,11 @@ public class StringPatternFilterEditor
   public void setSelectedClass(String newClass){
     selectedClass = newClass;
     if ( selectedClass == NumericAttributeFilter.NODE) {
-      attributeBox.setModel(AttributeManager.nodeAttributeManager());
+      attributeBox.setModel(nodeAttributeModel);
       attributeBox.setSelectedItem(selectedAttribute);    
     } // end of if ()
     else {
-      attributeBox.setModel(AttributeManager.edgeAttributeManager());
+      attributeBox.setModel(edgeAttributeModel);
       attributeBox.setSelectedItem(selectedAttribute);
     } // end of else    
     classBox.setSelectedItem(newClass);
