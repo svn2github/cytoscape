@@ -54,8 +54,12 @@ import cytoscape.dialogs.*;
 import cytoscape.layout.*;
 import cytoscape.vizmap.*;
 import cytoscape.util.MutableString;
+
+import cytoscape.filters.*;
+import cytoscape.filters.dialogs.*;
+
 //-----------------------------------------------------------------------------------
-public class CytoscapeWindow extends JPanel { // implements VizChooserClient {
+public class CytoscapeWindow extends JPanel implements FilterDialogClient { // implements VizChooserClient {
 
   protected static final int DEFAULT_WIDTH = 700;
   protected static final int DEFAULT_HEIGHT = 700;
@@ -111,7 +115,6 @@ public class CytoscapeWindow extends JPanel { // implements VizChooserClient {
   protected CytoscapeConfig config;
 
   protected JMenuItem deleteSelectionMenuItem;
-
 //------------------------------------------------------------------------------
 public CytoscapeWindow (cytoscape parentApp,
                         CytoscapeConfig config,
@@ -546,6 +549,7 @@ protected JMenuBar createMenuBar ()
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_F, ActionEvent.CTRL_MASK));
   selectMenu.add (new AlphabeticalSelectionAction ());
   selectMenu.add (new ListFromFileSelectionAction ());
+  selectMenu.add (new MenuFilterAction ());
   if (bioDataServer != null) selectMenu.add (new GoIDSelectAction ());
   mi = viewMenu.add (new CloneGraphInNewWindowAction ());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_K, ActionEvent.CTRL_MASK));
@@ -619,7 +623,7 @@ protected JToolBar createToolBar ()
   bar.add (new HideSelectedAction ());
   // bar.add (new RenderAction ());
   bar.addSeparator ();
-  // bar.add (new filterAction ());
+  bar.add (new MainFilterDialogAction());
 
   bar.addSeparator ();
   // bar.add (new AppearanceControllerLauncherAction (nodeAttributes, edgeAttributes));
@@ -2085,5 +2089,28 @@ protected HashMap configureNewNode (Node node)
   return result;
 
 } // configureNode
+
+protected class MainFilterDialogAction extends AbstractAction  {
+    MainFilterDialogAction () {
+	super("Filters"); 
+    }
+    MainFilterDialogAction (String title) {
+	super(title);
+    }
+
+   public void actionPerformed (ActionEvent e) {
+       new MainFilterDialog (CytoscapeWindow.this,
+			     mainFrame,
+			     graph, nodeAttributes, edgeAttributes,
+			     expressionData,
+			     graphHider);
+   }
+}
+
+protected class MenuFilterAction extends MainFilterDialogAction  {
+    MenuFilterAction () {
+	super("Custom..."); 
+    }
+}
 //---------------------------------------------------------------------------------------
 } // CytoscapeWindow
