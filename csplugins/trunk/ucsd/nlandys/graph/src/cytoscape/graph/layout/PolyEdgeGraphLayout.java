@@ -11,8 +11,9 @@ public interface PolyEdgeGraphLayout extends GraphLayout
 
   /**
    * Defines a &quot;poly-line&quot; for edge at index
-   * <code>edgeIndex</code>.  The poly-line is defined in the following manner:
-   * If we define a sequence of points {P[0], P[1], ... P[N+1]} where:<ul>
+   * <code>edgeIndex</code>.<p>
+   * The poly-line is defined in the following manner.
+   * If we define a sequence of points {P[0], P[1], ... P[N+1]} where<ul>
    * <li>P[0] is the source node of edge at index
    *     <code>edgeIndex</code>,</li>
    * <li>P[N+1] is the target node of edge at index
