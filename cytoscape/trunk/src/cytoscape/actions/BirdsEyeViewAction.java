@@ -2,6 +2,9 @@ package cytoscape.actions;
 
 import java.awt.event.ActionEvent;
 import javax.swing.*;
+import java.awt.event.*;
+import javax.swing.event.*;
+
 import java.awt.Dimension;
 import cytoscape.view.NetworkView;
 import phoebe.PGraphView;
@@ -19,16 +22,20 @@ public class BirdsEyeViewAction extends AbstractAction {
   public void actionPerformed (ActionEvent e) {
 	if (networkView.getView() == null) return;  
     JFrame dialog = new JFrame("Navigator");
-     PGraphView pview = (PGraphView)networkView.getView();
+     final PGraphView pview = (PGraphView)networkView.getView();
     
-//     dialog.setTitle("Birds Eye View" );
-//     dialog.getContentPane().add( pview.getBirdsEyeView() );
-    dialog.getContentPane().add( pview.getBirdsEyeView() );
+     dialog.getContentPane().add( pview.getBirdsEyeView() );
     
-    dialog.pack();
-    dialog.setSize(new Dimension ( 200, 200));
-    dialog.setVisible( true );
-    
+     dialog.addWindowListener(new WindowAdapter() {
+         public void windowClosing(WindowEvent we) {
+          ( (phoebe.event.BirdsEyeView)pview.getBirdsEyeView() ).disconnect();
+         }
+       });
+     
+     dialog.pack();
+     dialog.setSize(new Dimension ( 200, 200));
+     dialog.setVisible( true );
+     
   }
 
 }

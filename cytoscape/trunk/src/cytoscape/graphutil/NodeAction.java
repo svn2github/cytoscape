@@ -174,6 +174,29 @@ public class NodeAction {
                 } } ); } } ) );
 
 
+    JMenu go_menu = new JMenu( "<html>AmiGO <small><i>yeast only</i></small></html>" );
+    go_menu.add(  new JMenuItem( new AbstractAction( "<html>SGD <small><i>yeast only</i></small></html>" ) {
+        public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  String gene = null;
+                  if ( nv instanceof PNodeView ) {
+                    gene = ( ( PNodeView ) nv).getLabel().getText();
+                  }
+                  //System.out.println( "Node: "+nv.getLabel() );
+                  //System.out.println( "GEne: "+gene );
+                  if ( gene == null ) {
+                    gene = ( String )nv.getClientProperty("tooltip");
+                    //System.out.println( "Gene: "+gene );
+                  }
+                   
+                  OpenBrowser.openURL( "http://godatabase.org/cgi-bin/go.cgi?query="+gene+"&view=query&action=query&search_constraint=gp" );
+                } } ); } } ) );
+    web_menu.add( go_menu );
+
+    
+
     JMenu gn_menu = new JMenu( "GenomeNet" );
     web_menu.add( gn_menu );
     gn_menu.add(  new JMenuItem( new AbstractAction( "Pathway" ) {
