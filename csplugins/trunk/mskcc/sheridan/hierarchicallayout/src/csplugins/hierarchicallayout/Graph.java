@@ -912,13 +912,38 @@ public class Graph {
 
 	/**
 	 * Pick Horizontal coordinates within layers for a layered graph.
-	 * The current approach seeks to use a simple approach to reduce edge crossing.
-	 * Nodes are added to layers left to right, and are added in the order in which
-	 * they first occur during a left traversal of each tree beginning at a source
-	 * in the graph. The children of each node are ordered by the number of outgoing
-	 * eges from the child. However, once a node has been assigned a horizontal
-	 * position in its layer, it is marked and ignored from that point on.
-	 * @param vertexLayer a per node layer assignment.
+	 * The approach is to do two passes of edge crossing reduction. The
+     * first pass is a hybrid median/barycenter method, and the second
+     * is an adjacent (within layer) node exchange pass. These algorithms
+     * are described in Di Battista chapter 9 section 2.<br>
+     * One significant difference between the algorithms presented and
+     * this implementation is that when crossings are reduced, the graph
+     * is not first converted into a proper bipartite graph, nor are dummy
+     * verticies introduced. Instead, each node is assigned a property value
+     * representing its xCoordinate. For calculating barycenter and median
+     * values, these are based on the xCoordinate of all parents in the graph.
+     * (even those more than one layer away). During the adjacent exchange
+     * you are also not limited to nodes in adjacent layers.<br>
+     * The first pass is done from the second from the top layer, and
+     * moves downward, at each layer examining the parents of each node.
+     * All nodes are asigned an xCoordinate property. (the top layer gets
+     * arbitrary values). If more than one node had the same median value,
+     * they are evenly spaced between that value and the next higher value.<br>
+     * The second pass is also done from the second from the top layer downward.
+     * Crossing numbers are not globally computed (no array of crossing numbers
+     * is constructed). Instead a limited number of fine tuning passes occur
+     * (default = 5) where local exchanges are considered. For nodes which are
+     * adjacent in a layer, the parents of each node is put into a list sorted
+     * by xCoordinate. These parent lists are scaned to determine edge crossings
+     * in the current and the swapped orientations. Then child nodes are also
+     * examined, and edge crossings for current and swapped orientation are
+     * added to those from the parent lists. If total edge crossings are
+     * reduced, such a swap is done. During swap, the xCoordinate of the nodes
+     * are exchanged. For the bottom row, only parent nodes are considered.<br>
+     * In the case of a graph with a single layer, the algorithm is bypassed.<br>
+     * The return values are integers indicating the order of each layer based on
+     * xCoordinates of the elements (leftmost = 1). 
+   	 * @param vertexLayer a per node layer assignment.
 	 * @return an array of integers which indicate the horizontal position of each
 	 * node within its assigned layer.
 	 * @throws RuntimeException if this function is called on a graph which has
@@ -929,6 +954,10 @@ public class Graph {
 			throw new RuntimeException("attempt to compute horizontal position in a non-reduced graph");
 		}
 		int position[] = new int[nodecount]; /* integer index on layer */
+        if (nodecount == 1) {
+            position[0] = 1; /* single node iff single layer -- do not check for crossings */
+            return position;
+        }
         double xPosition[] = new double[nodecount]; /* x coordinate used for median and barycenter */
         double median[] = new double[nodecount];
         double baryCenter[] = new double[nodecount];
@@ -1027,6 +1056,13 @@ public class Graph {
             }
 		}
         /* fine tune with adjacent exchange - looking up/down for interior layers, up only for bottom layer */
+        /* first jitter the nodes to insure that no node is directly above another (from median) */
+        double jitterIncrement = Double.MIN_VALUE * 10;
+        double jitterSize = 0;
+        for (x = 0; x < nodecount; x++) {
+            xPosition[x] += jitterSize;
+            jitterSize += jitterIncrement;
+        }
         Object parent[] = new Object[nodecount];
         Object child[] = new Object[nodecount];
 		for (scanLayer=topLayer-1; scanLayer > 1; scanLayer--) {
@@ -1157,87 +1193,87 @@ public class Graph {
                 }
             }
         }
-//        /* adjacency exchange bottom layer */
-//        /* get the order for this layer */
-//        int nodeInPosition[] = new int[nodesOnLayer[1].size()];
-//        iter = nodesOnLayer[1].listIterator();
-//        while (iter.hasNext()) {
-//            int nodenum = ((Integer)iter.next()).intValue();
-//            nodeInPosition[position[nodenum]-1] = nodenum;
-//        }
-//        int sweepCounter = MAX_ADJACENT_EXCHANGE_PASSES;
-//        boolean done = false;
-//        /* do not compute crossing numbers -- precomputing all combinations would be
-//            O(L*P), L = # of nodes in layer, P = # of nodes in parent */
-//        while (!done && sweepCounter-- > 0) {
-//            done = true;
-//            int scanpos;
-//            for (scanpos = 1; scanpos < nodeInPosition.length; scanpos++) {
-//                int leftnode = nodeInPosition[scanpos -1];
-//                int rightnode = nodeInPosition[scanpos];
-//                int i;
-//                double arrayBuffer[];
-//                if (parent[leftnode] == null) {
-//                    /* sort list of parents by X pos */
-//                    arrayBuffer = new double[edgesTo[leftnode].size()];
-//                    Iterator parentIter = edgesTo[leftnode].listIterator();
-//                    i = 0;
-//                    while (parentIter.hasNext()) {
-//                        int parentId = ((Integer)parentIter.next()).intValue();
-//                        arrayBuffer[i++] = xPosition[parentId];
-//                    }
-//                    Arrays.sort(arrayBuffer);
-//                    parent[leftnode] = arrayBuffer;
-//                }
-//                if (parent[rightnode] == null) {
-//                    /* sort list of parents by X pos */
-//                    arrayBuffer = new double[edgesTo[rightnode].size()];
-//                    Iterator parentIter = edgesTo[rightnode].listIterator();
-//                    i = 0;
-//                    while (parentIter.hasNext()) {
-//                        int parentId = ((Integer)parentIter.next()).intValue();
-//                        arrayBuffer[i++] = xPosition[parentId];
-//                    }
-//                    Arrays.sort(arrayBuffer);
-//                    parent[rightnode] = arrayBuffer;
-//                }
-//                int nowCrossCount = 0;
-//                int revCrossCount = 0;
-//                double leftSet[] = (double [])parent[leftnode];
-//                double rightSet[] = (double [])parent[rightnode];
-//                int leftIndex = 0;
-//                int rightIndex = 0;
-//                while (leftIndex < leftSet.length && rightIndex < rightSet.length) {
-//                    if (rightSet[rightIndex] < leftSet[leftIndex]) {
-//                        nowCrossCount += leftSet.length - leftIndex;
-//                        rightIndex++;
-//                    } else {
-//                        leftIndex++;
-//                    }
-//                }
-//                leftIndex = 0;
-//                rightIndex = 0;
-//                while (leftIndex < leftSet.length && rightIndex < rightSet.length) {
-//                    if (rightSet[rightIndex] > leftSet[leftIndex]) {
-//                        revCrossCount += rightSet.length - rightIndex;
-//                        leftIndex++;
-//                    } else {
-//                        rightIndex++;
-//                    }
-//                }
-//                if (nowCrossCount > revCrossCount) {
-//                    int tmp = position[leftnode];
-//                    position[leftnode] = position[rightnode];
-//                    position[rightnode] = tmp;
-//                    nodeInPosition[scanpos] = leftnode;
-//                    nodeInPosition[scanpos - 1] = rightnode;
-//                    double dtmp = xPosition[leftnode];
-//                    xPosition[leftnode] = xPosition[rightnode];
-//                    xPosition[rightnode] = dtmp;
-//                    done = false;
-//                }
-//            }
-//        }
+        /* adjacency exchange bottom layer */
+        /* get the order for this layer */
+        int nodeInPosition[] = new int[nodesOnLayer[1].size()];
+        iter = nodesOnLayer[1].listIterator();
+        while (iter.hasNext()) {
+            int nodenum = ((Integer)iter.next()).intValue();
+            nodeInPosition[position[nodenum]-1] = nodenum;
+        }
+        int sweepCounter = MAX_ADJACENT_EXCHANGE_PASSES;
+        boolean done = false;
+        /* do not compute crossing numbers -- precomputing all combinations would be
+            O(L*P), L = # of nodes in layer, P = # of nodes in parent */
+        while (!done && sweepCounter-- > 0) {
+            done = true;
+            int scanpos;
+            for (scanpos = 1; scanpos < nodeInPosition.length; scanpos++) {
+                int leftnode = nodeInPosition[scanpos -1];
+                int rightnode = nodeInPosition[scanpos];
+                int i;
+                double arrayBuffer[];
+                if (parent[leftnode] == null) {
+                    /* sort list of parents by X pos */
+                    arrayBuffer = new double[edgesTo[leftnode].size()];
+                    Iterator parentIter = edgesTo[leftnode].listIterator();
+                    i = 0;
+                    while (parentIter.hasNext()) {
+                        int parentId = ((Integer)parentIter.next()).intValue();
+                        arrayBuffer[i++] = xPosition[parentId];
+                    }
+                    Arrays.sort(arrayBuffer);
+                    parent[leftnode] = arrayBuffer;
+                }
+                if (parent[rightnode] == null) {
+                    /* sort list of parents by X pos */
+                    arrayBuffer = new double[edgesTo[rightnode].size()];
+                    Iterator parentIter = edgesTo[rightnode].listIterator();
+                    i = 0;
+                    while (parentIter.hasNext()) {
+                        int parentId = ((Integer)parentIter.next()).intValue();
+                        arrayBuffer[i++] = xPosition[parentId];
+                    }
+                    Arrays.sort(arrayBuffer);
+                    parent[rightnode] = arrayBuffer;
+                }
+                int nowCrossCount = 0;
+                int revCrossCount = 0;
+                double leftSet[] = (double [])parent[leftnode];
+                double rightSet[] = (double [])parent[rightnode];
+                int leftIndex = 0;
+                int rightIndex = 0;
+                while (leftIndex < leftSet.length && rightIndex < rightSet.length) {
+                    if (rightSet[rightIndex] < leftSet[leftIndex]) {
+                        nowCrossCount += leftSet.length - leftIndex;
+                        rightIndex++;
+                    } else {
+                        leftIndex++;
+                    }
+                }
+                leftIndex = 0;
+                rightIndex = 0;
+                while (leftIndex < leftSet.length && rightIndex < rightSet.length) {
+                    if (rightSet[rightIndex] > leftSet[leftIndex]) {
+                        revCrossCount += rightSet.length - rightIndex;
+                        leftIndex++;
+                    } else {
+                        rightIndex++;
+                    }
+                }
+                if (nowCrossCount > revCrossCount) {
+                    int tmp = position[leftnode];
+                    position[leftnode] = position[rightnode];
+                    position[rightnode] = tmp;
+                    nodeInPosition[scanpos] = leftnode;
+                    nodeInPosition[scanpos - 1] = rightnode;
+                    double dtmp = xPosition[leftnode];
+                    xPosition[leftnode] = xPosition[rightnode];
+                    xPosition[rightnode] = dtmp;
+                    done = false;
+                }
+            }
+        }
 		return position;
 	}
 
