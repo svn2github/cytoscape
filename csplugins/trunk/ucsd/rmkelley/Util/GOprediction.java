@@ -6,6 +6,7 @@ import giny.model.Node;
 import DistLib.*;
 public class GOprediction{
   double P_VALUE_CUTOFF = .0000001;
+  double SIZE_CUTOFF = 1000;
   int CROSS_VALIDATION_SPLIT = 5;
   /*
    * GOID2Orfs maps from each GOID to each orf and child orf
@@ -52,7 +53,7 @@ public class GOprediction{
      * Use the GOID2Parents map to fill
      * the GOID2Ancestors map
      */
-    HashMap GOID2Ancestors = new HashMap();
+    GOID2Ancestors = new HashMap();
     for(Iterator GOIDIt = GOID2Parents.keySet().iterator();GOIDIt.hasNext();){
       String GOID = (String)GOIDIt.next();
       /////////
@@ -86,7 +87,6 @@ public class GOprediction{
      */
     GOID2Orfs = new HashMap();
     for(Iterator GOIDIt = GOID2Ancestors.keySet().iterator();GOIDIt.hasNext();){
-      
       String GOID = (String)GOIDIt.next();
       HashSet mySet = null;
       if(GOID2Orfs.containsKey(GOID)){
@@ -145,6 +145,66 @@ public class GOprediction{
     System.err.println("Finished reading GO information");
   }
 
+  /**
+   * This method will return a hashmap that maps from each
+   * node to the average GO agreement with all nodes
+   * in that complex
+   */
+  public HashMap pathwayAssessment(Collection pathways){
+     /*
+      * First figure out what is the best scoring pathway for each node
+     */
+    HashMap result = new HashMap();
+    HashMap node2BestPathway = new HashMap();
+    for(Iterator pathwayIt = pathways.iterator();pathwayIt.hasNext();){
+      Pathway pathway = (Pathway)pathwayIt.next();
+      for(Iterator nodeIt = pathway.nodes.iterator();nodeIt.hasNext();){
+	Node node = (Node)nodeIt.next();
+	if(!node2BestPathway.containsKey(node)){
+	  node2BestPathway.put(node, pathway);
+	}
+	else{
+	  Pathway oldPathway = (Pathway)node2BestPathway.get(node);
+	  if(pathway.score > oldPathway.score){
+	    node2BestPathway.put(node,pathway);
+	  }
+	}
+      }
+    }
+    
+    for(Iterator nodeIt = node2BestPathway.keySet().iterator();nodeIt.hasNext();){
+      Object node = nodeIt.next();
+      Pathway pathway = (Pathway)node2BestPathway.get(node);
+      result.put(node,getAverageDistance((Node)node,pathway));
+    }
+    return result;
+    
+  }
+
+  protected Double getAverageDistance(Node node,Pathway pathway){
+    int sum = 0;
+    Set GOIDs = (Set)ORF2GOIDs.get(node);
+    for(Iterator nodeIt = pathway.nodes.iterator();nodeIt.hasNext();){
+      Node otherNode = (Node)nodeIt.next();
+      if(otherNode == node){
+	continue;
+      }
+      int minimum = Integer.MAX_VALUE;
+      Set otherGOIDs = (Set)ORF2GOIDs.get(otherNode);
+      for(Iterator IDIt = otherGOIDs.iterator();IDIt.hasNext();){
+	String ID = (String)IDIt.next();
+	if(GOIDs.contains(ID)){
+	  int size = ((Set)GOID2Orfs.get(ID)).size();
+	  minimum = Math.min(size,minimum);
+	}
+      }
+      if(minimum > 100000){
+	throw new RuntimeException("Didn't share top-level category, something wrong");
+      }
+      sum += minimum;
+    }
+    return new Double(sum/(double)(pathway.nodes.size()-1));
+  }
 
   public void crossValidate(Collection complexes){
     HashMap ORF2Predictions = new HashMap();
@@ -293,6 +353,7 @@ public class GOprediction{
 	  }
 	}
       }
+      writer.close();
     }catch(Exception e){
       e.printStackTrace();
       throw new RuntimeException();
@@ -324,6 +385,12 @@ public class GOprediction{
 	  
       for(Iterator previousPredictionIt = previousPredictions.iterator();previousPredictionIt.hasNext();){
 	Prediction previousPrediction = (Prediction)previousPredictionIt.next();
+	/*
+	 * Check to see if this exact prediction already exists
+	 */
+	if(previousPrediction.GOID.equals(currentPrediction.GOID)){
+	  continue prediction_evaluation;
+	}
 	/*
 	 * Check to see if we are making an older prediction more specific
 	 * We can probably optimize this to exit on the first
@@ -388,6 +455,9 @@ public class GOprediction{
     for(Iterator GOIDIterator = GOID2Orfs.keySet().iterator();GOIDIterator.hasNext();){
       Object GOID = GOIDIterator.next();
       Set childOrfs = (Set)GOID2Orfs.get(GOID);
+      if(childOrfs.size() > SIZE_CUTOFF){
+	continue;
+      }
       Set parentOrfs = (Set)GOID2ParentOrfs.get(GOID);
       if(parentOrfs == null){
 	continue;
@@ -470,6 +540,6 @@ class Prediction{
     GOID = splat[2];
   }
   public String toString(){
-    return ORF.toString()+"\t"+flagged+GOID;
+    return ORF.toString()+"\t"+flagged+"\t"+GOID;
   }
 }
