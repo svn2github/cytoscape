@@ -90,6 +90,8 @@ public class MaxProductAlgorithm
         // merge submodels
         _submodels = SubmodelAlgorithms.mergeSubmodelsByIndepVar(_submodels);
 
+        //_submodels = SubmodelAlgorithms.mergeSubmodels(_submodels);
+
         DataPrinter.printSubmodels("merged-models.dat", _submodels);
         
         // filter submodels that do not explain any knockout effects

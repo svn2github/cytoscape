@@ -94,6 +94,8 @@ public class FactorGraph
     protected IntArrayList _orFactor;
     protected IntArrayList _pathFactor;
 
+
+    private boolean _yeangDataFormat = false;
     
     // map interaction edge index to AnnotatedEdge
     protected OpenIntObjectHashMap _edgeMap;
@@ -133,15 +135,26 @@ public class FactorGraph
         return _nextEdgeIndex--;
     }
 
+    protected FactorGraph(InteractionGraph ig, PathResult pathResults)
+    {
+        this(ig, pathResults, false);
+    }
+        
     /**
      * Protected constructor.  A FactorGraph should always be created using
      * the factory method.
      */
-    protected FactorGraph(InteractionGraph ig, PathResult pathResults)
+    protected FactorGraph(InteractionGraph ig, PathResult pathResults,
+                          boolean yeangDataFormat)
     {
         _ig = ig;
         _paths = pathResults;
 
+        _yeangDataFormat = yeangDataFormat;
+
+        logger.info("FactorGraph constructor yeangDataFormat="
+                    + yeangDataFormat);
+        
         _nextNodeIndex = -1;
         _nextEdgeIndex = -1;
 
@@ -230,9 +243,18 @@ public class FactorGraph
      * @param pathResults candidate paths that explain knockout effects
      * @return a FactorGraph
      */
-    public static FactorGraph create(InteractionGraph ig, PathResult pathResults)
+    public static FactorGraph create(InteractionGraph ig,
+                                     PathResult pathResults)
     {
-        FactorGraph fg = new FactorGraph(ig, pathResults);
+        return FactorGraph.create(ig, pathResults, false);
+    }
+
+    
+    public static FactorGraph create(InteractionGraph ig,
+                                     PathResult pathResults,
+                                     boolean yeangDataFormat)
+    {
+        FactorGraph fg = new FactorGraph(ig, pathResults, yeangDataFormat);
         fg.buildGraph(ig, pathResults);
         return fg;
     }
@@ -426,8 +448,11 @@ public class FactorGraph
 
         // for yeang data output from generate_subnetworks.c
         // all edge attributes are already likelihood ratios
-        //prob[ss.getIndex(State.ZERO)] = 1;
-        //prob[ss.getIndex(State.ONE)] = val;
+        if(_yeangDataFormat)
+        {
+            prob[ss.getIndex(State.ZERO)] = 1;
+            prob[ss.getIndex(State.ONE)] = val;
+        }
         
         // for Ideker lab data
         // protein-DNA edges are reported as pvalues

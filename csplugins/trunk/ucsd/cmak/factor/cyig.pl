@@ -2,10 +2,24 @@
 
 my $dir = shift @ARGV;
 my $run = shift @ARGV;
+my $model = shift @ARGV;
 
-opendir DIR, $dir || die "cannot open $dir\n";
 
-my @files = grep { /$run-.*\.sif$/ && -f "$dir/$_" } readdir(DIR);
+my @files;
+
+if($model eq "")
+{
+    
+    opendir DIR, $dir || die "cannot open $dir\n";
+    
+    @files = grep { /$run-.*\.sif$/ && -f "$dir/$_" } readdir(DIR);
+    
+    closedir DIR;
+}
+else
+{
+    @files = "${run}-${model}.sif";
+}
 
 my $cmd = "cytoscape.sh ";
 

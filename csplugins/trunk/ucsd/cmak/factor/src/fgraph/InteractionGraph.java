@@ -120,6 +120,17 @@ public class InteractionGraph
         return _graph;
     }
 
+    /**
+     *
+     * @param
+     * @return an array of the indices of edges that go from source
+     *         to target (includes both directed and undirected edges).
+     */
+    public int[] getEdgeIndicesArray(int source, int target)
+    {
+        return _graph.getEdgeIndicesArray(source, target, true);
+    }
+    
     public boolean containsNode(String name)
     {
         return _name2node.containsKey(name);

@@ -56,7 +56,7 @@ public class MaxProduct
     {
         _interaction = interaction;
 
-        logger.info("Reading interaction file: " + _interaction);
+       logger.info("Reading interaction file: " + _interaction);
         _ig = InteractionGraphFactory.createFromSif(_interaction);
 
     }
@@ -148,10 +148,17 @@ public class MaxProduct
     public void run()
         throws IOException, AlgorithmException
     {
-        run(null, null);
+        run(null, null, false);
+    }
+
+    public void run(String outputDir, String outputFile)
+        throws IOException, AlgorithmException
+    {
+        run(outputDir, outputFile, false);
     }
     
-    public void run(String outputDir, String outputFile)
+    public void run(String outputDir, String outputFile,
+                    boolean yeangDataFormat)
         throws IOException, AlgorithmException
     {
         //System.out.println(_ig.toString());
@@ -165,17 +172,18 @@ public class MaxProduct
         
         //log(paths.toString(_ig));
         
-        _run(paths, _ig, outputDir, outputFile);
+        _run(paths, _ig, outputDir, outputFile, yeangDataFormat);
     }
 
 
     protected void _run(PathResult paths, InteractionGraph ig,
-                        String outputDir, String outputFile)
+                        String outputDir, String outputFile,
+                        boolean yeangDataFormat)
         throws IOException, AlgorithmException
     {
         log("Creating factor graph");
         
-        FactorGraph fg =  FactorGraph.create(ig, paths); 
+        FactorGraph fg =  FactorGraph.create(ig, paths, yeangDataFormat); 
 
         MaxProductAlgorithm mpa = new MaxProductAlgorithm(fg);
 

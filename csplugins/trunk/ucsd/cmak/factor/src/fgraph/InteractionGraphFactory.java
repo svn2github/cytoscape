@@ -20,6 +20,8 @@ import java.util.ListIterator;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
+import java.util.logging.Logger;
+
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
@@ -30,6 +32,8 @@ import cern.colt.map.OpenIntIntHashMap;
 import cern.colt.map.OpenIntDoubleHashMap;
 import cern.colt.map.OpenIntObjectHashMap;
 
+import fgraph.util.SetMap;
+
 
 /**
  * Factory class for create an interaction graph.
@@ -37,8 +41,7 @@ import cern.colt.map.OpenIntObjectHashMap;
  */
 public class InteractionGraphFactory
 {
-
-    private static String _defaultBioDataDir = "/cellar/users/cmak/cytoscape/testData/annotation/manifest";
+    private static Logger logger = Logger.getLogger(InteractionGraphFactory.class.getName());
 
         // pattern for matching directed edges.
     private static Pattern directedPattern =
@@ -65,6 +68,9 @@ public class InteractionGraphFactory
 
         InteractionGraph g = createFromInteractions(interactions, false);
 
+        logger.info("Created InteractionGraph with: " + g.numEdges()
+                    + " edges and " + g.numNodes() + " nodes.");
+        
         return g;
         
     }
@@ -79,6 +85,12 @@ public class InteractionGraphFactory
     /**
      * Edges labelled "ypd" or "mms" are directed
      * Edges labeled "pp" are undirected
+     * 
+     * Restrictions:  Only allow one edge to exist between any given
+     * pair of nodes.  If more than one edge between a pair of nodes
+     * is input, then take the first edge that appears in the list.
+     * 
+     * 
      */
     private static InteractionGraph createFromInteractions(List interactions, 
                                                            boolean canonicalize)
@@ -86,56 +98,94 @@ public class InteractionGraphFactory
         //figure out how many nodes and edges we need before we create
         // the graph;
         //this improves performance for large graphs
+        Set nodeNameSet = getUniqueNodes(interactions, canonicalize);
+        
+        int nodeCount = nodeNameSet.size();
 
         int edgeCount = 0;
-
         int selfEdges = 0;
         int numDirected = 0;
         int numUndirected = 0;
         
-        Set nodeNameSet = new HashSet();
+        SetMap edgeTracker = new SetMap(nodeCount + 1, 1);
+                
+        // 3. count number of directed, undirected, and self edges
+        // 4. find all unique edges <<- do this NOW
+
+        List extraEdges = new ArrayList();
         
-        // find all unique node names
-        // count number of nodes
-        // count number of edges
-        for (int i=0; i<interactions.size(); i++) 
+        for (ListIterator it = interactions.listIterator(); it.hasNext();)
         {
-            Interaction interaction = (Interaction) interactions.get(i);
+            Interaction interaction = (Interaction) it.next();
             String sourceName = interaction.getSource();
             
             if(canonicalize) sourceName = canonicalizeName (sourceName);
             
-            nodeNameSet.add(sourceName); //does nothing if already there
-
+            boolean directed = isDirected(interaction.getType());
+            
             String [] targets = interaction.getTargets ();
+            IntArrayList duplicates = new IntArrayList();
             for (int t=0; t < targets.length; t++) 
             {
                 String targetNodeName = targets[t];
                 if(canonicalize) targetNodeName = canonicalizeName (targetNodeName);
-                nodeNameSet.add(targetNodeName); //does nothing if already there
-                edgeCount++;
 
-                String type = interaction.getType();
-                // ypd and mms are directed edges from ChIP-CHIP experiments
-                if(sourceName.equals(targetNodeName))
+                if((directed &&
+                    !edgeTracker.containsMapping(sourceName, targetNodeName))
+                   ||
+                   (!directed &&
+                    !edgeTracker.containsMapping(sourceName, targetNodeName) &&
+                    !edgeTracker.containsMapping(targetNodeName, sourceName))
+                   )
                 {
-                    selfEdges++;
-                }
-                else if( isDirected(type) )
-                {
-                    numDirected++;
-                }
+                    edgeTracker.put(sourceName, targetNodeName);
+                    edgeCount++;
+                    
+                    // ypd and mms are directed edges from ChIP-CHIP experiments
+                    if(sourceName.equals(targetNodeName))
+                    {
+                        selfEdges++;
+                    }
+                    else if( directed )
+                    {
+                        numDirected++;
+                    }
+                    else
+                    {
+                        numUndirected++;
+                    }
+                }b
                 else
                 {
-                    numUndirected++;
+                    duplicates.add(t);
                 }
+            }
 
+            // If we find duplicates, remove the original interaction
+            // but copy the non-duplicates.  This extra work must be done
+            // because, in theory, an interaction can have multiple targets.
+            // Although, I have yet to find a SIF file that makes use of
+            // this feature.
+            
+            if(duplicates.size() > 0)
+            {
+                it.remove();
 
+                for(int t=0; t < targets.length; t++)
+                {
+                    if(!duplicates.contains(t))
+                    {
+                        extraEdges.add(new Interaction(sourceName, 
+                                                       interaction.getType(),
+                                                       targets[t]));
+                    }
+                }
             }
         }
+
+        interactions.addAll(extraEdges);
         
         // Create the InteractionGraph
-        int nodeCount = nodeNameSet.size();
 
         InteractionGraph g = new InteractionGraph(nodeCount, edgeCount);
         
@@ -261,6 +311,43 @@ public class InteractionGraphFactory
     } // createRootGraphFromInteractionData
 
     
+    /**
+     * Given a list of interactions, return a set of unique nodes
+     * that are the endpoints of the interactions.
+     * 
+     * @param interactions
+     * @return a set of Strings
+     */
+    private static Set getUniqueNodes(List interactions, boolean canonicalize)
+    {
+        Set nodeNameSet = new HashSet();
+        
+        // things done in this loop
+        // 
+        // 1. find all unique node names
+        // 2. count number of nodes
+        for (ListIterator it = interactions.listIterator(); it.hasNext();)
+        {
+            Interaction interaction = (Interaction) it.next();
+            String sourceName = interaction.getSource();
+            
+            if(canonicalize) sourceName = canonicalizeName (sourceName);
+            
+            nodeNameSet.add(sourceName);
+
+            String [] targets = interaction.getTargets ();
+            for (int t=0; t < targets.length; t++) 
+            {
+                String targetNodeName = targets[t];
+                if(canonicalize) targetNodeName = canonicalizeName (targetNodeName);
+                nodeNameSet.add(targetNodeName);
+            }
+        }
+        
+        return nodeNameSet;
+    }
+
+    
     private static List loadInteractions(String filename)
     {
         String rawText = "";
@@ -314,6 +401,8 @@ public class InteractionGraphFactory
                                + candidateGenes);
             e.printStackTrace();
         }
+
+        //removeOverlaps(interactions);
         
         InteractionGraph g = createFromInteractions(interactions, false);
 
@@ -321,6 +410,16 @@ public class InteractionGraphFactory
 
     }
 
+    /**
+     * 1. remove duplicate interactions
+     * 2. remove protein-protein edges that overlap with a protein-DNA edge
+     *
+     * @param a list of interactions
+     */
+    private static void removeOverlaps(List interactions)
+    {
+    }
+    
     
     private static Set loadCandidateGenes(String filename)
         throws IOException

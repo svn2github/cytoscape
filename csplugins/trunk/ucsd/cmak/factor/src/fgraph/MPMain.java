@@ -25,6 +25,7 @@ public class MPMain
             Properties defaults = new Properties();            
             defaults.setProperty("type", "");
             defaults.setProperty("candidate.genes", "");
+            defaults.setProperty("yeang.data.format", "false");
 
             Properties props = new Properties(defaults);
             
@@ -55,6 +56,7 @@ public class MPMain
             String candidate = readString(props, "candidate.genes");
 
             boolean decompose = readBoolean(props, "decomposeModel");
+            boolean yeangDataFormat = readBoolean(props, "yeang.data.format");
 
             MaxProduct mp;
             
@@ -89,7 +91,7 @@ public class MPMain
             mp.setKOExplainCutoff(explainCutoff);
             mp.setExpressionFile(exp, expThresh);
             mp.setEdgeFile(edge, edgeThresh);
-            mp.run(outdir, outfile);
+            mp.run(outdir, outfile, yeangDataFormat);
         }
         catch(Exception e)
         {

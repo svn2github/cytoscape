@@ -10,6 +10,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Set;
+import java.util.HashSet;
+
+import java.util.logging.Logger;
 
 import cern.colt.bitvector.BitVector;
 import cern.colt.bitvector.BitMatrix;
@@ -31,6 +35,8 @@ import giny.model.RootGraph;
  */ 
 public class DFSPath
 {
+    private static Logger logger = Logger.getLogger(DFSPath.class.getName());
+    
     final static int WHITE = 0; // undiscovered
     final static int GREY = 1; // discovered
     final static int BLACK = 2; // finished
@@ -164,7 +170,7 @@ public class DFSPath
      */
     public PathResult findPaths(int[] sources, int maxDepth)
     {
-        System.out.println("DFSPath: numNodes=" + numNodes +
+        logger.info("DFSPath: numNodes=" + numNodes +
                            " numEdges=" + numEdges);
         
         // initialize data structures
@@ -221,7 +227,7 @@ public class DFSPath
 
             if(!_nodeLabelMap.containsKey(sourceNode))
             {
-                System.err.println(sourceNode + " is not a node in the graph");
+                logger.warning(sourceNode + " is not a node in the graph");
                 break;
             }
 
@@ -243,7 +249,7 @@ public class DFSPath
             }
             color[sourceLabel] = WHITE; // unmark the source.
 
-            System.out.println("DFSPath finished: " + sourceNode
+            logger.info("DFSPath finished: " + sourceNode
                                + " total paths = " + pathCount
                                + ". Paths not counted = " + notCounted);
         }
@@ -294,7 +300,7 @@ public class DFSPath
         }
         else
         {
-            System.err.println("dfsVisit ERROR edge=" + edge + " src=" + source);
+            logger.warning("dfsVisit ERROR edge=" + edge + " src=" + source);
             return;
         }
 
@@ -391,12 +397,13 @@ public class DFSPath
      *
      * @param curPath nodes along the current path
      *        curPath[0] is the starting knockout node
-     *        curPath[depth] is the target node
      *        curPath[1 through (depth-1)] are intermediate nodes.
+     *        curPath[depth] is the target node
+
      * @param depth the current depth
      * 
      * @return For each of the intermediate nodes in curPath
-     * that are knockouts, return true iff the knockout affects
+     * that are knockouts, return true iff the intermediate knockout affects
      * the target node.
      */
     protected boolean checkIntermediateKOs(int[] curPath, int depth)
@@ -464,11 +471,15 @@ public class DFSPath
         }
 
         DecimalFormat format = new DecimalFormat("0.000000");
+
+        Set uniqueAffected = new HashSet();
         
         try
         {
             PrintStream out = new PrintStream(new FileOutputStream("dfs.kos"));
-        
+
+            int changes = 0;
+            
             for(int n = 0; n < numNodes; n++)
             {
                 // not really needed since nodes are mapped to their
@@ -489,11 +500,17 @@ public class DFSPath
                         b.append(format.format(ig.getExprPval(kos[x], node)));
                         
                         out.println(b.toString());
-                        
+
+                        changes++;
                         _affected.put(koLabel[x], nodeLabel, true);
+                        uniqueAffected.add(new Integer(node));
                     }
                 }
             }
+            
+            logger.info("DFSPath init with " + changes + " expression changes");
+            logger.info("DFSPath " + kos.length + " sources, "
+                        + uniqueAffected.size() + " targets");
             
             out.close();
         }

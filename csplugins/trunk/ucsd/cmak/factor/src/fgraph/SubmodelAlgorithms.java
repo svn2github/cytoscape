@@ -75,20 +75,11 @@ public class SubmodelAlgorithms
                     Submodel sm = (Submodel) models.get(modelInClique);
                     int indepVar = sm.getIndependentVar();
 
-                    /*
-                    if(m.getId() == 82)
-                    {
-                        System.out.println("checking if " + indepVar
-                                           + " of model " + sm
-                                           + " in clique " + (1+y)
-                                           + " is in model " + m);
-                    }
-                    */
-                    
                     if(m.containsVar(indepVar))
                     {
                         logger.info("indep var " + indepVar
-                                    + " of model=" + ((Submodel) models.get(modelInClique))
+                                    + " of model="
+                                    + ((Submodel) models.get(modelInClique))
                                     + " in clique=" + (1+y)
                                     + " found in model " + m.getId()
                                     + ". Merging " + m.getId()
@@ -126,16 +117,26 @@ public class SubmodelAlgorithms
             
             IntArrayList clique = (IntArrayList) cliques.get(x);
 
+            StringBuffer old = new StringBuffer();
             for(int y=0; y < clique.size(); y++)
             {
                 Submodel oldModel = (Submodel) models.get(clique.get(y));
                 m.merge(oldModel);
 
+                old.append(clique.get(y));
+                if(y !=  (clique.size() -1))
+                {
+                    old.append(", ");
+                }
+                
                 if(y==0)
                 {
                     m.setIndependentVar(oldModel.getIndependentVar());
                 }
             }
+
+            logger.info("created new model " + m.getId()
+                        + " from old models " + old.toString());
         }
 
         logger.info("created " + mergedModels.size() + " merged models");

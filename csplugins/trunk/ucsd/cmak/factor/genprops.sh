@@ -23,6 +23,7 @@ set PATH=2
 set EXP=0.99
 set EDGE=0.02
 set DECOMPOSE=false
+set YEANG_DATA_FORMAT=false
 
 set ALL=all-p0.02-07dec2004
 set MMS=mms+pp-p0.02-07dec2004
@@ -49,6 +50,7 @@ echo "output.dir=result" >> ${OUT}
 echo "output.filename=${RUN_LABEL}" >> ${OUT}
 echo "min.ko.per.model=1" >> ${OUT}
 echo "decomposeModel=${DECOMPOSE}" >> ${OUT}
+echo "yeang.data.format=${YEANG_DATA_FORMAT}" >> ${OUT}
 #echo "candidate.genes=${DATA}/STE12candidategenes.txt" >> ${OUT}
 
 echo ">>> Generated file: ${OUT}"

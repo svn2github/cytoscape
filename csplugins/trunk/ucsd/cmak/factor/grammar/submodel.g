@@ -67,7 +67,7 @@ RCURLY: '}';
 
 MODEL_IDENTIFIER: "decomposedmodel";
 
-ID: ('0'..'9')+;    
+ID: ('-')? ('0'..'9')+;    
 
 
 WS  :   (   ' '
