@@ -7,7 +7,7 @@ package cytoscape.actions;
 //-------------------------------------------------------------------------
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
-
+import cytoscape.CyNetwork;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.Cytoscape;
 //-------------------------------------------------------------------------
@@ -20,7 +20,10 @@ public class InvertSelectedEdgesAction extends CytoscapeAction {
     }
 
     public void actionPerformed (ActionEvent e) {
-      GinyUtils.invertSelectedEdges( Cytoscape.getCurrentNetworkView() );
+	CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
+	int [] flaggedEdgeIndices = cyNetwork.getFlaggedEdgeIndicesArray();
+	cyNetwork.flagAllEdges();
+	cyNetwork.setFlaggedEdges(flaggedEdgeIndices,false);
     }
 }
 

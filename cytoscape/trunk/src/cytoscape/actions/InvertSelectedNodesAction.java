@@ -8,7 +8,7 @@ package cytoscape.actions;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import cytoscape.Cytoscape;
-import cytoscape.view.CyNetworkView;
+import cytoscape.CyNetwork;
 import cytoscape.util.CytoscapeAction;
 //-------------------------------------------------------------------------
 public class InvertSelectedNodesAction extends CytoscapeAction {
@@ -20,8 +20,10 @@ public class InvertSelectedNodesAction extends CytoscapeAction {
     }
 
     public void actionPerformed (ActionEvent e) {
-        String callerID = "InvertSelectedNodesAction.actionPerformed";
-        GinyUtils.invertSelectedNodes( Cytoscape.getCurrentNetworkView() );
+	CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
+	int [] flaggedNodeIndices = cyNetwork.getFlaggedNodeIndicesArray();
+	cyNetwork.flagAllNodes();
+	cyNetwork.setFlaggedNodes(flaggedNodeIndices,false);
     }
 }
 
