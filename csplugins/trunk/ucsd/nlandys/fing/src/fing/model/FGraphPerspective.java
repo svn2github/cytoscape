@@ -951,11 +951,13 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
     for (int i = 0; i < nodes.size(); i++) {
       Node node = (Node) (nodes.get(i));
       if (node.getRootGraph() == m_root)
-        nodeInxBucket.toss(node.getRootGraphIndex()); }
+        nodeInxBucket.toss(node.getRootGraphIndex());
+      else return null; }
     final int[] nodeInxArr = new int[nodeInxBucket.size()];
     nodeInxBucket.copyInto(nodeInxArr, 0);
     final int[] connEdgeInxArr =
       getConnectingEdgeIndicesArray(nodeInxArr);
+    if (connEdgeInxArr == null) return null;
     final java.util.ArrayList returnThis =
       new java.util.ArrayList(connEdgeInxArr.length);
     for (int i = 0; i < connEdgeInxArr.length; i++)
@@ -966,10 +968,11 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
   {
     final IntHash nativeNodeBucket = new IntHash();
     for (int i = 0; i < nodeInx.length; i++) {
-      if (!(nodeInx[i] < 0)) continue;
+      if (!(nodeInx[i] < 0)) return null;
       final int nativeNodeInx = m_rootToNativeNodeInxMap.get(~nodeInx[i]);
       if (m_graph.nodeExists(nativeNodeInx))
-        nativeNodeBucket.put(nativeNodeInx); }
+        nativeNodeBucket.put(nativeNodeInx);
+      else return null; }
     m_hash.empty();
     final IntHash nativeEdgeBucket = m_hash;
     final IntEnumerator nativeNodeEnum = nativeNodeBucket.elements();
