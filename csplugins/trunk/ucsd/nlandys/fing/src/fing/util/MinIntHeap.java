@@ -65,7 +65,7 @@ public final class MinIntHeap
   /**
    * Returns the number of elements currently in this heap.
    */
-  public final int numElements()
+  public final int size()
   {
     return m_currentSize;
   }
@@ -212,12 +212,15 @@ public final class MinIntHeap
    * the least element is first in the returned enumeration.  Pruning of
    * duplicate elements is enabled by setting pruneDuplicates to true.<p>
    * If pruneDuplicates is false, this method returns in constant
-   * time (unless this heap is unordered when this method is called, in
-   * which case this method returns in O(N) time), and the returned enumeration
-   * takes O(log(N)) time complexity to return each successive element.
+   * time, unless this heap is unordered when this method is called, in
+   * which case this method returns in O(N) time. The returned enumeration
+   * takes O(log(N)) time complexity to return each successive element.<p>
    * If pruneDuplicates is true, this method takes O(N*log(N)) time
-   * complexity to come up with the return value, and
-   * the retuned enumeration takes constant time to return each successive
+   * complexity to come up with the return value regardless of whether or
+   * not this heap is in an ordered state at the time this method is called.
+   * (Truth be told, this method will come up with a return value in less
+   * time if this heap is in an ordered state when this method is called.)
+   * The retuned enumeration takes constant time to return each successive
    * element.<p>
    * The returned enumeration becomes "invalid" as soon as any other method
    * on this heap instance is called; calling methods on an invalid enumeration
@@ -285,6 +288,66 @@ public final class MinIntHeap
         int index = 0;
         public int numRemaining() { return size - index; }
         public int nextInt() { return heap[++index]; } };
+  }
+
+  /**
+   * Copies the elements of this heap into the specified output array.
+   * The order in which element are copied is undefined.  Element are copied
+   * into the output array starting at beginIndex in the output array.  The
+   * output array must be big enough to hold all the elements in this heap.<p>
+   * NOTE: This method has been deprecated ever since it was added to this
+   * class.  This method will be taken out of this class definition at
+   * liberty.
+   * @param output the array into which the elements of this heap get copied.
+   * @param beginIndex an index in the output array which is the beginning
+   *   of where elements are copied to.
+   * @exception IndexOutOfBoundsException if the output array is not large
+   *   enough to store all elements in this heap.
+   * @deprecated Use elements() instead.
+   * @see #elements()
+   */
+  public final void copyInto(int[] output, int beginIndex)
+  {
+    System.arraycopy(m_heap, 1, output, beginIndex, m_currentSize);
+  }
+
+  /**
+   * Copies the elements of this heap into the specified output array in
+   * descending order.  The largest element (the largest integer, that is)
+   * in this heap is placed at index beginIndex in the output array.
+   * The smallest element in this heap is placed at index
+   * beginIndex+size()-1 in the output array.  The output array must be large
+   * enough to hold all the elements in this heap.<p>
+   * This operation takes O(N*log(N)) time complexity, regardless of whether
+   * or not this heap is in an ordered state at the time this method is
+   * called.  (Truth be told, this method will be faster if the heap is in an
+   * ordered state when this method is called.)  This operation also
+   * leaves this heap in an unordered state.  No elements are added or
+   * removed from this heap as a result of using this operation.<p>
+   * NOTE: This method has been deprecated ever since it was added to this
+   * class.  This method will be taken out of this class definition at
+   * liberty.
+   * @param output the array into which the elements of this heap get copied.
+   * @param beginIndex an index in the output array which is the beginning
+   *   of where elements are copied to.
+   * @exception IndexOutOfBoundsException if the output array is not large
+   *   enough to store all elements in this heap.
+   * @exception Use orderedElements(boolean) or deleteMin() instead.
+   * @see #orderedElements(boolean)
+   * @see #deleteMin()
+   */
+  public final void copyIntoReverseOrder(int[] output, int beginIndex)
+  {
+    final int[] heap = m_heap;
+    final int size = m_currentSize;
+    if (!m_orderOK) // Fix heap.
+      for (int i = size / 2; i > 0; i--) percolateDown(heap, i, size);
+    m_orderOK = false; // That's right - the heap becomes unordered.
+    int sizeIter = size;
+    while (sizeIter > 0) {
+      swap(m_heap, 1, sizeIter);
+      percolateDown(heap, 1, --sizeIter); }
+    System.arraycopy(heap, 1, output, beginIndex, size);
   }
 
 }
