@@ -478,15 +478,22 @@ class FGraphPerspective implements GraphPerspective
     while (enum.numRemaining() > 0) returnThis[++index] = ~(enum.nextInt());
     return returnThis; }
 
-  public boolean isNeighbor(Node aNodel, Node anotherNode)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  public boolean isNeighbor(Node a, Node b) {
+    if (a.getRootGraph() == m_root && b.getRootGraph() == m_root)
+      return isNeighbor(a.getRootGraphIndex(), b.getRootGraphIndex());
+    else return false; }
 
-  public boolean isNeighbor(int perspNodeInx, int perspAnotherNodeInx)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  public boolean isNeighbor(final int nodeInxA, final int nodeInxB) {
+    if (!(nodeInxA < 0 && nodeInxB < 0)) return false;
+    final int nativeNodeA = m_rootToNativeNodeInxMap.get(nodeInxA);
+    final int nativeNodeB = m_rootToNativeNodeInxMap.get(nodeInxB);
+    final IntIterator nativeConnEdgeIter;
+    try {
+      nativeConnEdgeIter = m_graph.connectingEdges
+        (nativeNodeA, nativeNodeB, true, true, true); }
+    catch (IllegalArgumentException e) { return false; }
+    if (nativeConnEdgeIter == null) return false;
+    return nativeConnEdgeIter.hasNext(); }
 
   public boolean edgeExists(Node from, Node to)
   {
