@@ -123,6 +123,11 @@ run1o:
           -g $(CYTOSCAPE_DATA)/galFiltered.gml \
           -e /common/data/exp/gal/data_gal1-20.pvals \
           -b $(CYTOSCAPE_DATA)/GO
+run1o2:
+	$(JAVA) cytoscape.cytoscape \
+          -i /common/data/intr/noLabelsORF.sif \
+          -e /common/data/exp/gal/data_gal1-20.pvals \
+          -b $(CYTOSCAPE_DATA)/GO
 
 #
 # --- run1a
