@@ -1,0 +1,73 @@
+package cytoscape.process.ui;
+
+import java.awt.EventQueue;
+import javax.swing.JDialog;
+
+public final class ProgressUIControl
+{
+
+  private final Object[] m_monitor;
+  private final JDialog m_dialog;
+  private final PercentCompletedHook m_percentHook;
+
+  ProgressUIControl(Object[] monitor,
+                    JDialog dialog,
+                    PercentCompletedHook percentHook)
+  {
+    m_monitor = monitor;
+    m_dialog = dialog;
+    m_percentHook = percentHook;
+  }
+
+  /**
+   * This is a hook to set the percent completed in a progress bar UI.
+   * This method can be called from any thread.  If this method is never
+   * called, the progress UI will have an animating generic progress bar
+   * with no percent completed marker.
+   *
+   * @param value represents percent completed of a task - must
+   *   be in the range <nobr><code>[0, 100]</code></nobr>.
+   * @exception IllegalArgumentException if <code>percent</code> is not in
+   *   the interval <nobr><code>[0, 100]</code></nobr>.
+   **/
+  public void setPercentCompleted(int percent)
+  {
+    if (percent < 0 || percent > 100)
+      throw new IllegalArgumentException
+        ("percent must be in the range [0, 100]");
+    m_percentHook.setPercentCompleted(percent);
+  }
+
+  /**
+   * Shows the UI.  Shows the dialog, that is.
+   * This method blocks until an asynchronous call to
+   * <code>dispose()</code> is made.  This method <i>MUST</i> be called
+   * from the AWT event dispatching thread.
+   *
+   * @exception IllegalThreadStateException if this method is not called from
+   *   the AWT event dispatching thread.
+   **/
+  public void show()
+  {
+    if (!EventQueue.isDispatchThread())
+      throw new IllegalThreadStateException
+        ("show() required to be called from the AWT event dispatch thread");
+    m_dialog.show(); // This blocks until m_dialog.dispose() is called; see
+                     // the JDK API spec.
+  }
+
+  /**
+   * This will close the UI, causing <code>show()</code> to return if it
+   * is currently blocked.  This method may be called from any thread.
+   **/
+  public void dispose()
+  {
+    // We want to be extra correct with calling all Swing code from the AWT
+    // event dispatching thread.
+    EventQueue.invokeLater(new Runnable() {
+        public void run() {
+          m_monitor[0] = null;
+          m_dialog.dispose(); } } );
+  }
+
+}

@@ -1,6 +1,21 @@
 package cytoscape.process.ui;
 
+import cytoscape.Cytoscape;
 import cytoscape.process.Stoppable;
+import java.awt.BorderLayout;
+import java.awt.Cursor;
+import java.awt.EventQueue;
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
+import javax.swing.border.EmptyBorder;
 
 /**
  * This class is a utility for providing popup dialogs which display progress
@@ -9,7 +24,7 @@ import cytoscape.process.Stoppable;
  * handling thread.  Such tasks take on the order of minutes sometimes; because
  * these tasks were computed by the AWT event handling thread, the Cytoscape
  * desktop would become unresponsive while these tasks were executing.
- * This class was designed as a framework to ease the transition of
+ * This here class was designed as a framework to ease the transition of
  * computing lengthy tasks in theads other than the AWT event handling
  * thread, as described in the next paragraph.<p>
  * Tasks which were initially forked as new threads to prevent the
@@ -21,12 +36,17 @@ import cytoscape.process.Stoppable;
  * could not be closed by the user, and which would block all user input
  * until the task in question had finished.
  **/
-public class ProgressUI
+public final class ProgressUI
 {
 
+  private static final Object[] s_contrl = new Object[1];
+
+  // No constructor for this class.
+  private ProgressUI() {}
+
   /**
-   * Brings up a modal progress dialog.  This dialog blocks user input
-   * and is not closeable by the user.  A progress dialog is global and
+   * Creates a modal progress dialog.  (But does not show it, yet.)
+   * A progress dialog is global and
    * there should only be one background process running at a time which
    * corresponds to this dialog - the reasoning behind this is that
    * we want to stay as close as possible to a single-threaded model.<p>
@@ -36,7 +56,8 @@ public class ProgressUI
    * can be made to appear by passing a non-<code>nulL</code>
    * <code>stop</code> parameter to this method) and a progress animation with
    * a percent completed (the percent completed animation is triggered by
-   * using the returned <code>CompletionUIControl</code> object).
+   * using the returned <code>ProgressUIControl</code> object).<p>
+   * This method <i>MUST</i> be called from the AWT queue handling thread.
    *
    * @param title desired title of the dialog window; may not be
    *   <code>null</code>.
@@ -44,23 +65,56 @@ public class ProgressUI
    *   may not be <code>null</code>.
    * @param stop hook to allow a stop button to stop a process; if
    *   <code>null</code>, no stop button will appear in the dialog.
-   * @return hook to set percent completed in dialog animation.
+   * @return hook for controlling this UI.
    * @exception IllegalStateException if this is called while another
    *   progress dialog is currently open.
-   * 
+   * @exception IllegalThreadStateException if this is called from a thread
+   *   that is not the AWT event handling thread (
+   *   <nobr><code>java.awt.EventQueue.isDispatchThread()</code></nobr).
    **/
-  public static CompletionUIControl startProgress(String title,
-                                                  String message,
-                                                  Stoppable stop)
+  public static ProgressUIControl startProgress(String title,
+                                                String message,
+                                                final Stoppable stop)
   {
-    return null;
-  }
-
-  /**
-   * Closes the global progress dialog if there is one open currently.
-   **/
-  public static void stopProgress()
-  {
+    if (!EventQueue.isDispatchThread())
+      throw new IllegalThreadStateException
+        ("startProgress() required to be called from AWT dispatch thread");
+    if (title == null) throw new NullPointerException("title is null");
+    if (message == null) throw new NullPointerException("message is null");
+    Frame frame = Cytoscape.getDesktop();
+    JDialog busyDialog = new JDialog(frame, title, true);
+    busyDialog.setResizable(false);
+    busyDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+    JPanel panel = new JPanel(new BorderLayout());
+    panel.setBorder(new EmptyBorder(20, 20, 20, 20));
+    panel.add(new JLabel(message), BorderLayout.CENTER);
+    final JProgressBar progress = new JProgressBar(0, 100);
+    progress.setIndeterminate(true);
+    panel.add(progress, BorderLayout.SOUTH);
+    busyDialog.getContentPane().add(panel, BorderLayout.CENTER);
+    final ProgressUIControl returnThis = new ProgressUIControl
+      (s_contrl, busyDialog, new PercentCompletedHook() {
+          public void setPercentCompleted(final int percent) {
+            EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                  progress.setValue(percent); } } ); } } );
+    if (stop != null)
+    {
+      JButton button = new JButton("Cancel process");
+      button.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            try { stop.stop(); }
+            finally { returnThis.dispose(); } } } );
+    }
+    else
+    {
+      busyDialog.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+    }
+    synchronized (s_contrl) {
+      if (s_contrl[0] == null) s_contrl[0] = new Object();
+      else throw new IllegalStateException
+             ("another progress dialog is currently being shown"); }
+    return returnThis;
   }
 
 }
