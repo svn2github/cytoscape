@@ -4,10 +4,10 @@ import cytoscape.Cytoscape;
 import cytoscape.foo.GraphConverter;
 import cytoscape.graph.layout.algorithm.MutableGraphLayout;
 import cytoscape.graph.layout.impl.SpringEmbeddedLayouter2;
-import cytoscape.task.PercentCompletedCallback;
 import cytoscape.task.RunStoppable;
 import cytoscape.task.Stoppable;
 import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.ProgressUI;
 import cytoscape.task.ui.ProgressUIControl;
 import cytoscape.util.CytoscapeAction;
@@ -36,13 +36,12 @@ public class SpringEmbeddedLayoutAction extends CytoscapeAction
     final boolean[] stoppd = new boolean[] { false }; // Monitor "Stop" button.
     final ProgressUIControl progCtrl = ProgressUI.startProgress
       (Cytoscape.getDesktop(),
-       "Graph Layout",
-       "Laying out graph; please wait...",
+       layoutAlg.getTaskTitle(),
        new Stoppable() {
          public void stop() {
            stoppd[0] = true; // Use this to detect a pushed "Stop" button.
            ((Stoppable) runStop).stop(); } });
-    layoutAlg.setPercentCompletedCallback((PercentCompletedCallback) progCtrl);
+    layoutAlg.setTaskMonitor((TaskMonitor) progCtrl);
     Runnable runAndDispose = new Runnable() {
         public void run() {
           runStop.run(); // It's important that we call run() on the
