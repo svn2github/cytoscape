@@ -6,6 +6,7 @@ import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntHash;
 import cytoscape.util.intr.IntIntHash;
+import cytoscape.util.intr.MinIntHeap;
 import cytoscape.view.CyNetworkView;
 import giny.view.NodeView;
 
@@ -13,6 +14,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JMenuItem;
 
+// This is a single-purpose plugin to specifically address something that
+// Sourav needed.
 public class SouravPlugin extends CytoscapePlugin
 {
 
@@ -37,6 +40,7 @@ public class SouravPlugin extends CytoscapePlugin
           CyNetwork cyNet = Cytoscape.getCurrentNetwork();
           int[] nodeInxs = cyNet.getNodeIndicesArray();
           IntIntHash hash = new IntIntHash();
+          MinIntHeap orderedAttrs = new MinIntHeap();
           int numUniqueAttrs = 0;
           for (int i = 0; i < nodeInxs.length; i++)
           {
@@ -45,10 +49,10 @@ public class SouravPlugin extends CytoscapePlugin
             if (souravsAttrObj == null) continue;
             int souravsAttrInt = (int) (souravsAttrObj.doubleValue());
             if (hash.get(souravsAttrInt) < 0) { // Not in hash yet.
-              hash.put(souravsAttrInt, numUniqueAttrs++); }
+              hash.put(souravsAttrInt, numUniqueAttrs++);
+              orderedAttrs.toss(souravsAttrInt); }
           }
           IntHash[] nodeAttrMap = new IntHash[numUniqueAttrs];
-          int[] fooMap = new int[numUniqueAttrs];
           for (int i = 0; i < nodeAttrMap.length; i++) {
             nodeAttrMap[i] = new IntHash(); }
           for (int i = 0; i < nodeInxs.length; i++)
@@ -58,11 +62,11 @@ public class SouravPlugin extends CytoscapePlugin
             if (souravsAttrObj == null) continue;
             int souravsAttrInt = (int) (souravsAttrObj.doubleValue());
             int index = hash.get(souravsAttrInt);
-            fooMap[index] = souravsAttrInt;
             nodeAttrMap[index].put(~nodeInxs[i]);
           }
-          for (int i = 0; i < nodeAttrMap.length; i++)
-          {
+          while (orderedAttrs.size() > 0) {
+            int nextAttr = orderedAttrs.deleteMin();
+            int i = hash.get(nextAttr);
             IntHash neighbors = new IntHash();
             IntEnumerator nodeEnum = nodeAttrMap[i].elements();
             while (nodeEnum.numRemaining() > 0)
@@ -81,7 +85,7 @@ public class SouravPlugin extends CytoscapePlugin
             copyInto(neighbors, allNodes, size(nodeAttrMap[i]));
             int[] allEdges = cyNet.getConnectingEdgeIndicesArray(allNodes);
             CyNetwork newNetwork = Cytoscape.createNetwork
-              (allNodes, allEdges, "" + fooMap[i], cyNet);
+              (allNodes, allEdges, "" + nextAttr, cyNet);
             CyNetworkView newView = Cytoscape.createNetworkView(newNetwork);
             IntEnumerator theNodes = nodeAttrMap[i].elements();
             int index = 0;
