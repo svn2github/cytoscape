@@ -39,6 +39,41 @@ public class GuiUtils {
 	
 	/**
 	 * Creates a JTable with the given column names. The row names are copied to the 1st column of the table,
+	 * the Objects in <code>rows</code> are converted to String via toString().
+	 * 
+	 * @param column_names the column names
+	 * @param row_names the row names
+	 * @param rows an Object 2D array that holds the table data (rows[i][j].toString() will be used as table elements)
+	 * @return a JTable
+	 */
+	public static JTable createTable (String [] column_names, String [] row_names, Object [][] rows){
+		
+		String [][] data = new String[row_names.length][column_names.length + 1];
+		
+		for(int i = 0; i < row_names.length; i++){
+			data[i][0] = row_names[i];
+		}//for i
+		
+		for(int i = 0; i < rows.length; i++){
+			for(int j = 0; j < rows[i].length; j++){
+				data[i][j+1] = rows[i][j].toString();
+			}//for j
+		}//for i
+		
+		String [] colNames = new String[column_names.length + 1];
+		System.arraycopy(column_names,0,colNames,1,column_names.length);
+		colNames[0] = " ";
+		
+		JTable table = new JTable(data,colNames);
+		
+		TableColumn column = table.getColumnModel().getColumn(0);
+		column.setPreferredWidth(100); //gene name column is bigger
+		
+		return table;
+	}//createTable
+	
+	/**
+	 * Creates a JTable with the given column names. The row names are copied to the 1st column of the table,
 	 * the double values in <code>rows</code> are converted to Strings.
 	 * 
 	 * @param column_names the column names
