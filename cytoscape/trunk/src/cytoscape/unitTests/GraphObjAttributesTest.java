@@ -3,13 +3,13 @@
 // $Revision$
 // $Date$
 // $Author$
-//--------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 package cytoscape.unitTests;
-//--------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 import junit.framework.*;
 import java.rmi.*;
 import java.io.*;
-import java.util.HashMap;
+import java.util.*;
 
 import cytoscape.GraphObjAttributes;
 //------------------------------------------------------------------------------
@@ -34,39 +34,159 @@ public void testCtor () throws Exception
 { 
   System.out.println ("testCtor");
   GraphObjAttributes attributes = new GraphObjAttributes ();
-  assertTrue (attributes.size () == 0);
+  assertTrue (attributes.numberOfAttributes () == 0);
 
 } // testAllArgs
 //-------------------------------------------------------------------------
+public void testSet () throws Exception
+{ 
+  System.out.println ("testSet");
+  GraphObjAttributes attributes = new GraphObjAttributes ();
+  assertTrue (attributes.numberOfAttributes () == 0);
+
+  attributes.set ("expressionLevel", "GAL4", 1.8);
+  assertTrue (attributes.numberOfAttributes () == 1);
+  attributes.set ("expressionLevel", "GAL80", 0.01);
+  assertTrue (attributes.numberOfAttributes () == 1);
+
+  attributes.set ("foo", "GAL4", 321.23);
+  assertTrue (attributes.numberOfAttributes () == 2);
+
+} // testSet
+//-------------------------------------------------------------------------
+public void testGetSingleStringValueFromVector () throws Exception
+{ 
+  System.out.println ("testGetSingleStringValueFromVector");
+  GraphObjAttributes attributes = new GraphObjAttributes ();
+  assertTrue (attributes.numberOfAttributes () == 0);
+
+  String firstSynonym = "synonym 1";
+  String secondSynonym = "synonym 2";
+
+  attributes.append ("synonym", "GAL4", firstSynonym);
+  attributes.append ("synonym", "GAL4", secondSynonym);
+  assertTrue (attributes.numberOfAttributes () == 1);
+
+  String synonym = attributes.getStringValue ("synonym", "GAL4");
+  assertTrue (synonym.equals (firstSynonym));;
+
+} // testGetSingleStringValueFromVector 
+//-------------------------------------------------------------------------
+public void testGetSingleDoubleValueFromVector () throws Exception
+{ 
+  System.out.println ("testGetSingleDoubleValueFromVector");
+  GraphObjAttributes attributes = new GraphObjAttributes ();
+  assertTrue (attributes.numberOfAttributes () == 0);
+
+  Double d0 = new Double (1.0);
+  Double d1 = new Double (2.0);
+
+  attributes.append ("score", "GAL4", d0);
+  attributes.append ("score", "GAL4", d1);
+  assertTrue (attributes.numberOfAttributes () == 1);
+
+  Double retrievedValue = attributes.getDoubleValue ("score", "GAL4");
+  assertTrue (retrievedValue.equals (d0));
+
+  Object [] objs = attributes.getArrayValues ("score", "GAL4");
+  assertTrue (objs.length == 2);
+
+  Double retrieved0 = (Double) objs [0];
+  Double retrieved1 = (Double) objs [1];
+  assertTrue (retrieved0.equals (d0));
+  assertTrue (retrieved1.equals (d1));
+
+
+} // testGetSingleDoubleValueFromVector 
+//-------------------------------------------------------------------------
+/**
+ *  four overloaded 'add' methods are now deprected, in favor of 'set'
+ *  methods
+ */ 
 public void testAdd () throws Exception
 { 
   System.out.println ("testAdd");
+
+    //-----------------------------------------------------------------------
+    // test the basic form:  add (attributeName, nodeName, value)
+    //-----------------------------------------------------------------------
+
   GraphObjAttributes attributes = new GraphObjAttributes ();
-  assertTrue (attributes.size () == 0);
+  assertTrue (attributes.numberOfAttributes () == 0);
 
   attributes.add ("expressionLevel", "GAL4", 1.8);
-  assertTrue (attributes.size () == 1);
+  assertTrue (attributes.numberOfAttributes () == 1);
   attributes.add ("expressionLevel", "GAL80", 0.01);
-  assertTrue (attributes.size () == 1);
+  assertTrue (attributes.numberOfAttributes () == 1);
 
   attributes.add ("foo", "GAL4", 321.23);
-  assertTrue (attributes.size () == 2);
+  assertTrue (attributes.numberOfAttributes () == 2);
 
-} // testAllArgs
+  GraphObjAttributes copy = (GraphObjAttributes) attributes.clone ();
+  assertTrue (copy.numberOfAttributes () == 2);
+
+  attributes.deleteAttribute ("expressionLevel");
+  attributes.deleteAttribute ("foo");
+  assertTrue (copy.numberOfAttributes () == 2);
+     
+    //-----------------------------------------------------------------------
+    // test attributes.add (<previously existing attributes>)
+    //-----------------------------------------------------------------------
+
+  GraphObjAttributes v2 = new GraphObjAttributes ();
+  assertTrue (v2.numberOfAttributes () == 0);
+  v2.add (copy);
+  assertTrue (v2.numberOfAttributes () == 2);
+
+    //-----------------------------------------------------------------------
+    // test attributes.add (HashMap bundle)
+    //-----------------------------------------------------------------------
+
+  HashMap bundle = v2.getAttributes ("GAL4");
+  assertTrue (bundle.size () == 2);
+
+  v2.deleteAttribute ("expressionLevel");
+  v2.deleteAttribute ("foo");
+  assertTrue (v2.numberOfAttributes () == 0);
+
+  v2.add ("GAL4", bundle);
+  assertTrue (v2.numberOfAttributes () == 2);
+  
+    //-----------------------------------------------------------------------
+    // test attributes.add (attributeName, graphObjectName, double value)
+    //-----------------------------------------------------------------------
+
+   v2.add ("whimsical", "GAL4", 101.101);
+   HashMap gal4Bundle = v2.getAttributes ("GAL4");
+   assertTrue (gal4Bundle.size () == 3);
+   Double whimsicalRetrieved = (Double) gal4Bundle.get ("whimsical");
+   assertTrue (whimsicalRetrieved.equals (new Double (101.101)));
+
+
+} // testAdd
 //-------------------------------------------------------------------------
 public void testHasAttribute () throws Exception
 {
   System.out.println ("testHasAttribute");
   GraphObjAttributes attributes = new GraphObjAttributes ();
-  attributes.add ("expressionLevel", "GAL4", 1.8);
-  attributes.add ("expressionLevel", "GAL80", 0.01);
-  attributes.add ("foo", "GAL4", 321.23);
+  attributes.set ("expressionLevel", "GAL4", 1.8);
+  attributes.set ("expressionLevel", "GAL80", 0.01);
+  attributes.set ("foo", "GAL4", 321.23);
   assertTrue (attributes.hasAttribute ("expressionLevel"));
   assertTrue (attributes.hasAttribute ("foo"));
   assertTrue (!attributes.hasAttribute ("bar"));
 
+  assertTrue (attributes.getObjectCount ("expressionLevel") == 2);
+  assertTrue (attributes.getObjectCount ("foo") == 1);
+  assertTrue (attributes.getObjectCount ("bar") == 0);
+
   String [] names = attributes.getAttributeNames ();
   assertTrue (names.length == 2);
+
+  assertTrue (attributes.hasAttribute ("expressionLevel", "GAL4"));
+  assertTrue (attributes.hasAttribute ("expressionLevel", "GAL80"));
+  assertTrue (attributes.hasAttribute ("foo", "GAL4"));
+  assertTrue (!attributes.hasAttribute ("foo", "GAL4bogus"));
   
 } // testHasAttribute
 //-------------------------------------------------------------------------
@@ -74,10 +194,10 @@ public void testGetAttributeNames () throws Exception
 {
   System.out.println ("testGetAttributeNames");
   GraphObjAttributes attributes = new GraphObjAttributes ();
-  attributes.add ("expressionLevel", "GAL4", 1.8);
-  attributes.add ("expressionLevel", "GAL80", 0.01);
-  attributes.add ("foo", "GAL4", 321.23);
-  assertTrue (attributes.size () == 2);
+  attributes.set ("expressionLevel", "GAL4", 1.8);
+  attributes.set ("expressionLevel", "GAL80", 0.01);
+  attributes.set ("foo", "GAL4", 321.23);
+  assertTrue (attributes.numberOfAttributes () == 2);
 
   String [] names = attributes.getAttributeNames ();
   assertTrue (names.length == 2);
@@ -88,10 +208,10 @@ public void testGetAttributeByName () throws Exception
 {
   System.out.println ("testGetAttributeByName");
   GraphObjAttributes attributes = new GraphObjAttributes ();
-  attributes.add ("expressionLevel", "GAL4", 1.8);
-  attributes.add ("expressionLevel", "GAL80", 0.01);
-  attributes.add ("foo", "GAL4", 321.23);
-  assertTrue (attributes.size () == 2);
+  attributes.set ("expressionLevel", "GAL4", 1.8);
+  attributes.set ("expressionLevel", "GAL80", 0.01);
+  attributes.set ("foo", "GAL4", 321.23);
+  assertTrue (attributes.numberOfAttributes () == 2);
 
   String [] names = attributes.getAttributeNames ();
   assertTrue (names.length == 2);
@@ -99,6 +219,9 @@ public void testGetAttributeByName () throws Exception
   HashMap expressionLevels = attributes.getAttribute ("expressionLevel");
   assertTrue (expressionLevels != null);
   assertTrue (expressionLevels.size () == 2);
+  assertTrue (attributes.getClass ("expressionLevel") == Class.forName ("java.lang.Double"));
+  Object obj = expressionLevels.get ("GAL4");
+  assertTrue (obj.getClass() == Class.forName ("java.lang.Double"));
   
   HashMap foo = attributes.getAttribute ("foo");
   assertTrue (foo != null);
@@ -117,13 +240,13 @@ public void testGetOneGeneAttribute () throws Exception
   double gal4_exp = 1.8;
   double gal80_exp = 0.01;
 
-  attributes.add ("expressionLevel", "GAL4", gal4_exp);
-  attributes.add ("expressionLevel", "GAL80", gal80_exp);
+  attributes.set ("expressionLevel", "GAL4", gal4_exp);
+  attributes.set ("expressionLevel", "GAL80", gal80_exp);
 
   Double gal4_foo = new Double (321.23);
-  attributes.add ("foo", "GAL4", gal4_foo);
+  attributes.set ("foo", "GAL4", gal4_foo);
 
-  assertTrue (attributes.size () == 2);
+  assertTrue (attributes.numberOfAttributes () == 2);
 
   Double actual = attributes.getDoubleValue ("expressionLevel", "GAL4");
   assertTrue (actual.compareTo (new Double (gal4_exp)) == 0);
@@ -146,10 +269,10 @@ public void testTextFileReaderOnNodeAttributeData () throws Exception
 {
   System.out.println ("testTextFileReaderOnNodeAttributeData");
   GraphObjAttributes attributes = new GraphObjAttributes ();
-  assertTrue (attributes.size () == 0);
+  assertTrue (attributes.numberOfAttributes () == 0);
   String attributeName = "fooB";
   attributes.readAttributesFromFile (new File ("../testData/noLabels.fooB"));
-  assertTrue (attributes.size () == 1);
+  assertTrue (attributes.numberOfAttributes () == 1);
   HashMap fooB = attributes.getAttribute ("fooB");
   assertTrue (fooB.size () == 333);
 
@@ -159,10 +282,10 @@ public void testTextFileReaderOnEdgeAttributeData () throws Exception
 {
   System.out.println ("testTextFileReaderOnEdgeAttributeData");
   GraphObjAttributes attributes = new GraphObjAttributes ();
-  assertTrue (attributes.size () == 0);
+  assertTrue (attributes.numberOfAttributes () == 0);
   File file = new File ("../testData/yeastSmall.edgeAttr.0");
   attributes.readAttributesFromFile (file);
-  assertTrue (attributes.size () == 1);
+  assertTrue (attributes.numberOfAttributes () == 1);
 
   String [] attributeNames = attributes.getAttributeNames ();
   assertTrue (attributeNames.length == 1);
@@ -180,10 +303,10 @@ public void testAddAttributeHash () throws Exception
 
     // first: read in and add fooB
   GraphObjAttributes firstSet = new GraphObjAttributes ();
-  assertTrue (firstSet.size () == 0);
+  assertTrue (firstSet.numberOfAttributes () == 0);
   String attributeName = "fooB";
   firstSet.readAttributesFromFile (new File ("../testData/noLabels.fooB"));
-  assertTrue (firstSet.size () == 1);
+  assertTrue (firstSet.numberOfAttributes () == 1);
   HashMap fooB = firstSet.getAttribute ("fooB");
   assertTrue (fooB.size () == 333);
 
@@ -191,13 +314,13 @@ public void testAddAttributeHash () throws Exception
   File file = new File ("../testData/yeastSmall.edgeAttr.0");
   GraphObjAttributes secondSet = new GraphObjAttributes ();
   secondSet.readAttributesFromFile (file);
-  assertTrue (secondSet.size () == 1);
+  assertTrue (secondSet.numberOfAttributes () == 1);
   String [] attributeNames = secondSet.getAttributeNames ();
   HashMap edgeAttribute = secondSet.getAttribute (attributeNames [0]);
 
-  firstSet.add (secondSet);
+  firstSet.set (secondSet);
 
-  assertTrue (firstSet.size () == 2);
+  assertTrue (firstSet.numberOfAttributes () == 2);
   attributeNames = firstSet.getAttributeNames ();
   assertTrue (attributeNames.length == 2);
   fooB = firstSet.getAttribute ("fooB");
@@ -218,10 +341,10 @@ public void testNodeToNameMapping () throws Exception
 
     // set up a single attribute 'fooB', with 333 node-value pairs
   GraphObjAttributes nodeAttributes = new GraphObjAttributes ();
-  assertTrue (nodeAttributes.size () == 0);
+  assertTrue (nodeAttributes.numberOfAttributes () == 0);
   String attributeName = "fooB";
   nodeAttributes.readAttributesFromFile (new File ("../testData/noLabels.fooB"));
-  assertTrue (nodeAttributes.size () == 1);
+  assertTrue (nodeAttributes.numberOfAttributes () == 1);
   HashMap fooB = nodeAttributes.getAttribute (attributeName);
   assertTrue (fooB.size () == 333);
 
@@ -258,8 +381,8 @@ public void testNodeToNameMapping () throws Exception
 //-------------------------------------------------------------------------
 /**
  * client programs may need a hashmap of attribute/attributeValue pairs
- * for each graphObj (each node or edge).  
- * test that here.
+ * for each graphObj (each node or edge).   test that here.
+ * 
  */
 public void testGetAttributesBundle () throws Exception
 {
@@ -273,28 +396,21 @@ public void testGetAttributesBundle () throws Exception
   
   String nodeName = "GAL4";
 
-  attributes.add ("homology", nodeName, homology);
-  attributes.add ("count", nodeName, count);
-  attributes.add ("magic", nodeName, magic);
+  attributes.set ("homology", nodeName, homology);
+  attributes.set ("count", nodeName, count);
+  attributes.set ("magic", nodeName, magic);
 
   HashMap bundle = attributes.getAttributes (nodeName);
-
   assertTrue (bundle.size () == 3);
 
-  Object homologyResult = bundle.get ("homology");
-  assertTrue (homologyResult.getClass() == (new Double (0)).getClass ());
-  Double h = (Double) homologyResult;
-  assertTrue (h.equals (homology));
+  Double homologyRetrieved = (Double) bundle.get ("homology");
+  assertTrue (homologyRetrieved.equals (homology));
 
-  Object countResult = bundle.get ("count");
-  assertTrue (countResult.getClass() == (new Integer (0)).getClass ());
-  Integer c = (Integer) countResult;
-  assertTrue (c.equals (count));
+  Integer countRetrieved = (Integer) bundle.get ("count");
+  assertTrue (countRetrieved.equals (count));
 
-  Object magicResult = bundle.get ("magic");
-  assertTrue (magicResult.getClass() == "".getClass ());
-  String s = (String) magicResult;
-  assertTrue (s.equals (magic));
+  String magicRetrieved = (String) bundle.get ("magic");
+  assertTrue (magicRetrieved.equals (magic));
 
 } // testGetAttributesBundle
 //-------------------------------------------------------------------------
@@ -320,26 +436,20 @@ public void testAddAttributesBundle () throws Exception
   bundle.put ("count",  count);
   bundle.put ("magic",  magic);
 
-  attributes.add (nodeName, bundle);
+  attributes.set (nodeName, bundle);
 
   HashMap bundleRetrieved = attributes.getAttributes (nodeName);
 
   assertTrue (bundleRetrieved.size () == 3);
 
-  Object homologyResult = bundleRetrieved.get ("homology");
-  assertTrue (homologyResult.getClass() == (new Double (0)).getClass ());
-  Double h = (Double) homologyResult;
-  assertTrue (h.equals (homology));
+  Double homologyRetrieved = (Double) bundleRetrieved.get ("homology");
+  assertTrue (homologyRetrieved.equals (homology));
 
-  Object countResult = bundleRetrieved.get ("count");
-  assertTrue (countResult.getClass() == (new Integer (0)).getClass ());
-  Integer c = (Integer) countResult;
-  assertTrue (c.equals (count));
+  Integer countRetrieved = (Integer) bundleRetrieved.get ("count");
+  assertTrue (countRetrieved.equals (count));
 
-  Object magicResult = bundleRetrieved.get ("magic");
-  assertTrue (magicResult.getClass() == "".getClass ());
-  String s = (String) magicResult;
-  assertTrue (s.equals (magic));
+  String magicRetrieved = (String) bundleRetrieved.get ("magic");
+  assertTrue (magicRetrieved.equals (magic));
 
 } // testAddAttributesBundle
 //-------------------------------------------------------------------------
@@ -375,10 +485,10 @@ public void testCountDuplicateNamesForAttribute () throws Exception
   /*
   assertTrue (attributes.countIdentical ("interaction", "VNG0382G -> VNG1230G") == 0);
 
-  attributes.add ("interaction", "VNG0382G -> VNG1230G", "phylogeneticPattern");
+  attributes.set ("interaction", "VNG0382G -> VNG1230G", "phylogeneticPattern");
   assertTrue (attributes.countIdentical ("interaction", "VNG0382G -> VNG1230G") == 1);
 
-  attributes.add ("interaction", "VNG0382G -> VNG1230G_1", "phylogeneticPattern");
+  attributes.set ("interaction", "VNG0382G -> VNG1230G_1", "phylogeneticPattern");
   assertTrue (attributes.countIdentical ("interaction", "VNG0382G -> VNG1230G") == 2);
   */
   // attributes.finalCountMap();
@@ -395,10 +505,10 @@ public void testGetAndAddNameMapping () throws Exception
   System.out.println ("testGetAndAddNameMapping");
     // set up a single attribute 'fooB', with 333 node-value pairs
   GraphObjAttributes nodeAttributes = new GraphObjAttributes ();
-  assertTrue (nodeAttributes.size () == 0);
+  assertTrue (nodeAttributes.numberOfAttributes () == 0);
   String attributeName = "fooB";
   nodeAttributes.readAttributesFromFile (new File ("../testData/noLabels.fooB"));
-  assertTrue (nodeAttributes.size () == 1);
+  assertTrue (nodeAttributes.numberOfAttributes () == 1);
   HashMap fooB = nodeAttributes.getAttribute (attributeName);
   assertTrue (fooB.size () == 333);
 
@@ -464,38 +574,6 @@ public void testGetAndAddNameMapping () throws Exception
 } // testGetAndAddNameMapping
 //-------------------------------------------------------------------------
 /**
- * client programs may need a list of all attributes: their name, their
- * type, and -- maybe someday -- their range.
- * test that here.
- */
-public void testGetAttributeSummary () throws Exception
-{
-  System.out.println ("testGetAttributeSummary");
-
-  GraphObjAttributes attributes = new GraphObjAttributes ();
-
-  Double homology = new Double (99.32);
-  Integer count = new Integer (33);
-  String magic = "abracadabra";
-  
-  String nodeName = "GAL4";
-
-  HashMap bundle = new HashMap ();
-  bundle.put ("homology", homology);
-  bundle.put ("count",  count);
-  bundle.put ("magic",  magic);
-
-  attributes.add (nodeName, bundle);
-  HashMap summary = attributes.getSummary ();
-
-  assertTrue (summary.size () == 3);
-  assertTrue (summary.get ("homology") == homology.getClass ());
-  assertTrue (summary.get ("count") == count.getClass ());
-  assertTrue (summary.get ("magic") == magic.getClass ());
-
-} // testGetAttributeSummary
-//-------------------------------------------------------------------------
-/**
  * can we get back exactly the java class of an attribute?
  */
 public void testGetAttributeClass () throws Exception
@@ -515,7 +593,10 @@ public void testGetAttributeClass () throws Exception
   bundle.put ("count",  count);
   bundle.put ("magic",  magic);
 
-  attributes.add (nodeName, bundle);
+  attributes.set (nodeName, bundle);
+  attributes.setClass ("homology", homology.getClass ());
+  attributes.setClass ("count", count.getClass ());
+  attributes.setClass ("magic", magic.getClass ());
 
   assertTrue (attributes.getClass ("homology") == (new Double (0.0)).getClass ());
   assertTrue (attributes.getClass ("count") == (new Integer (0)).getClass ());
@@ -536,39 +617,37 @@ public void testCloning () throws Exception
 
   Double homology = new Double (99.32);
   Integer count = new Integer (33);
-  String magicWord = "abracadabra";
+  String originalMagicWord = "abracadabra";
   
   String nodeName = "GAL4";
 
   HashMap bundle = new HashMap ();
   bundle.put ("homology", homology);
   bundle.put ("count",  count);
-  bundle.put ("magic",  magicWord);
+  bundle.put ("magic",  originalMagicWord);
 
-  original.add (nodeName, bundle);
+  original.set (nodeName, bundle);
 
   GraphObjAttributes clone = (GraphObjAttributes) original.clone ();
-  //System.out.println ("-- original: " + original);
-  //System.out.println ("-- clone: " + clone);
   assertTrue (original != clone);
 
   String magicWordRetrievedFromOriginal = (String) original.getValue ("magic", "GAL4");
   String magicWordRetrievedFromClone  = (String) clone.getValue ("magic", "GAL4");
 
-  assertTrue (magicWordRetrievedFromOriginal.equals (magicWord));
-  assertTrue (magicWordRetrievedFromClone.equals (magicWord));
+  assertTrue (magicWordRetrievedFromOriginal.equals (originalMagicWord));
+  assertTrue (magicWordRetrievedFromClone.equals (originalMagicWord));
 
    // now change magic word in the clone.  is the original affected?
 
   String newMagicWord = "shazam!";
 
-  clone.add ("magic", "GAL4", newMagicWord);
-  magicWordRetrievedFromClone  = (String) clone.getValue ("magic", "GAL4");
-  assertTrue (magicWordRetrievedFromClone.equals (newMagicWord));
+  clone.set ("magic", "GAL4", newMagicWord);
 
-  magicWordRetrievedFromOriginal = (String) original.getValue ("magic", "GAL4");
-  assertTrue (!magicWordRetrievedFromOriginal.equals (newMagicWord));
+  String magicWordFromClone = (String) clone.get ("magic", "GAL4");
+  assertTrue (magicWordFromClone.equals (newMagicWord));
 
+  String magicWordFromOriginal = (String) original.get ("magic", "GAL4");
+  assertTrue (magicWordFromOriginal.equals (originalMagicWord));
 
 } // testCloning
 //-------------------------------------------------------------------------
@@ -592,24 +671,280 @@ public void testDeleteAttribute () throws Exception
   bundle.put ("count",  count);
   bundle.put ("magic",  magicWord);
 
-  attributes.add (nodeName, bundle);
-  System.out.println ("size: " + attributes.size ());
-  assertTrue (attributes.size () == 3);
+  attributes.set (nodeName, bundle);
+  assertTrue (attributes.numberOfAttributes () == 3);
 
   attributes.deleteAttribute ("homology");
-  assertTrue (attributes.size () == 2);
+  assertTrue (attributes.numberOfAttributes () == 2);
   assertTrue (attributes.hasAttribute ("homology") == false);
 
   attributes.deleteAttribute ("count");
-  assertTrue (attributes.size () == 1);
+  assertTrue (attributes.numberOfAttributes () == 1);
   assertTrue (attributes.hasAttribute ("count") == false);
 
   attributes.deleteAttribute ("magic");
-  assertTrue (attributes.size () == 0);
+  assertTrue (attributes.numberOfAttributes () == 0);
   assertTrue (attributes.hasAttribute ("magic") == false);
 
 } // testDeleteAttribute
 //-------------------------------------------------------------------------
+/**
+ *  can we set and get attribute category?  numerical, annotation, categorizer, temporary, ...
+ */
+public void testAttributeCategories () throws Exception
+{
+  System.out.println ("testAttributeCategories");
+
+  GraphObjAttributes attributes = new GraphObjAttributes ();
+
+  Double homology = new Double (99.32);
+  String biologicalProcess = "amino acid synthesis";
+  String magicWord = "abracadabra";
+  
+  String nodeName = "GAL4";
+
+  HashMap bundle = new HashMap ();
+  bundle.put ("homology", homology);
+  bundle.put ("biological process",  biologicalProcess);
+  bundle.put ("magic",  magicWord);
+
+  attributes.set (nodeName, bundle);
+  assertTrue (attributes.numberOfAttributes () == 3);
+
+  attributes.setCategory ("homology", "numerical");
+  attributes.setCategory ("biological process", "annotation");
+
+  assertTrue (attributes.getCategory ("homology").equals ("numerical"));
+  assertTrue (attributes.getCategory ("magic") == null);
+  assertTrue (attributes.getCategory ("biological process").equals ("annotation"));
+
+  assertTrue (attributes.getCategory ("nonexistent") == null);
+
+
+} // testAttributeCategories
+//-------------------------------------------------------------------------
+/**
+ *  can we handle the several possible varieties of header lines?
+ *
+ *    SNP Count
+ *    SNP Count (category=data)
+ *    SNP Count (class=java.lang.Integer)
+ *    SNP Count (category=data) (class=java.lang.Integer)
+ *
+ */
+public void testProcessFileHeader () throws Exception
+{
+  System.out.println ("testProcessFileHeader");
+  String s0 = "SNP Count";
+  String s1 = "SNP Count (category=data)";
+  String s2 = "SNP Count (class=java.lang.Integer)";
+  String s3 = "SNP Count (category=data) (class=java.lang.Integer)";
+
+  GraphObjAttributes a = new GraphObjAttributes ();
+  a.processFileHeader (s0);
+  a.processFileHeader (s1);
+  a.processFileHeader (s2);
+  a.processFileHeader (s3);
+
+} // testProcessFileHeader
+//-------------------------------------------------------------------------
+/**
+ *  can we create objects of a requested type from an appropriate string argument?
+ *
+ *   java.lang.Integer, 32
+ *   java.lang.Double, 32.23
+ *   java.net.URL, http://www.ncbi.nlm.nih.gov/LocusLink/LocRpt.cgi?l=3291
+ *
+ */
+public void testClassDeduction () throws Exception
+{
+  System.out.println ("testClassDeduction");
+
+  String integerString = "32";
+  String doubleString = "32.23";
+  String urlString = "http://www.ncbi.nlm.nih.gov/LocusLink/LocRpt.cgi?l=3294";
+  String string = "a very fine day in Havanna";
+
+      // --  Integer attribute classes confuse cytoscape.vizmap.ContinuousMapper
+      /** vizmapper error:
+       * Exception in thread "main" java.lang.ClassCastException: java.lang.Double
+       *  at java.lang.Integer.compareTo(Integer.java:913)
+       * at cytoscape.vizmap.ContinuousMapper.getRangeValue(ContinuousMapper.java:78)
+       */
+  //Class deducedClass = GraphObjAttributes.deduceClass (integerString);
+  //assertTrue (deducedClass == Class.forName ("java.lang.Integer"));
+
+  Class deducedClass = GraphObjAttributes.deduceClass (doubleString);
+  assertTrue (deducedClass == Class.forName ("java.lang.Double"));
+
+  deducedClass = GraphObjAttributes.deduceClass (urlString);
+  assertTrue (deducedClass == Class.forName ("java.net.URL"));
+
+  deducedClass = GraphObjAttributes.deduceClass (string);
+  assertTrue (deducedClass == Class.forName ("java.lang.String"));
+
+} // testObjectCreation
+//-------------------------------------------------------------------------
+/**
+ *  can we create objects of a requested type from an appropriate string argument?
+ *
+ *   java.lang.Integer, 32
+ *   java.lang.Double, 32.23
+ *   java.net.URL, http://www.ncbi.nlm.nih.gov/LocusLink/LocRpt.cgi?l=3291
+ *
+ */
+public void testObjectCreation () throws Exception
+{
+  System.out.println ("testObjectCreation");
+  Class integerClass = Class.forName ("java.lang.Integer");
+  Class stringClass = Class.forName ("java.lang.String");
+  Class doubleClass = Class.forName ("java.lang.Double");
+  Class urlClass = Class.forName ("java.net.URL");
+
+  String integerString = "32";
+  String urlString = "http://www.ncbi.nlm.nih.gov/LocusLink/LocRpt.cgi?l=3294";
+
+    //----------------------------------------------------------------
+    // first, make sure we can create an Integer, Double, and URL
+    // successfully
+    //----------------------------------------------------------------
+
+  Object o = GraphObjAttributes.createInstanceFromString (integerClass, integerString);
+  assertTrue (o.getClass () == integerClass);
+
+  o = GraphObjAttributes.createInstanceFromString (stringClass, integerString);
+  assertTrue (o.getClass () == stringClass);
+
+  o = GraphObjAttributes.createInstanceFromString (doubleClass, integerString);
+  assertTrue (o.getClass () == doubleClass);
+
+  o = GraphObjAttributes.createInstanceFromString (urlClass, urlString);
+  assertTrue (o.getClass () == urlClass);
+
+    //-----------------------------------
+    // now do some that will fail
+    //-----------------------------------
+
+  try {
+    o = GraphObjAttributes.createInstanceFromString (urlClass, integerString);
+    assertTrue (o.getClass () == urlClass);
+    }
+  catch (Exception e) {;}
+
+  try {
+    o = GraphObjAttributes.createInstanceFromString (doubleClass, urlString);
+    assertTrue (o.getClass () == stringClass);
+    }
+  catch (Exception e) {;}
+
+
+} // testObjectCreation
+//-------------------------------------------------------------------------
+/**
+ *  can we read (and/or infer) attribute category and class from some
+ *  combination of the attribute file header, and the file contents?
+ *
+ *    SNP Count  
+ *    SNP Count (category=data)
+ *    SNP Count (class=java.lang.Integer)
+ *    SNP Count (category=data) (class=java.lang.Integer)
+ *
+ */
+public void testAttributeCategoryAndClassDetection () throws Exception
+{
+  System.out.println ("testAttributeCategoryAndClassDetection");
+
+  GraphObjAttributes a = new GraphObjAttributes ();
+  a.readAttributesFromFile (new File ("../testData/implicitStringNoCategory.attribute"));
+  assertTrue (a.getClass ("sample zero") == "string".getClass ());
+  assertTrue (a.getCategory ("sample zero").equals (GraphObjAttributes.DEFAULT_CATEGORY));
+
+  a = new GraphObjAttributes ();
+  a.readAttributesFromFile (new File ("../testData/explicitStringNoCategory.attribute"));
+  assertTrue (a.getClass ("sample zero") == "string".getClass ());
+  assertTrue (a.getCategory ("sample zero").equals (GraphObjAttributes.DEFAULT_CATEGORY));
+
+  a = new GraphObjAttributes ();
+  a.readAttributesFromFile (new File ("../testData/implicitStringWithCategory.attribute"));
+  assertTrue (a.getClass ("sample zero") == "string".getClass ());
+  assertTrue (a.getCategory ("sample zero").equals ("annotation"));
+
+  a = new GraphObjAttributes ();
+  a.readAttributesFromFile (new File ("../testData/explicitStringWithCategory.attribute"));
+  assertTrue (a.getClass ("sample zero") == "string".getClass ());
+  assertTrue (a.getCategory ("sample zero").equals ("annotation"));
+
+  a = new GraphObjAttributes ();
+  a.readAttributesFromFile (new File ("../testData/explicitUrlWithCategory.attribute"));
+  assertTrue (a.getClass ("locusLink") == Class.forName ("java.net.URL"));
+  assertTrue (a.getCategory ("locusLink").equals ("annotation"));
+
+  // Integer attribute classes confuse cytoscape.vizmap.ContinuousMapper
+  // so disable this test for now
+  //----------------------------------------
+  //a = new GraphObjAttributes ();
+  //a.readAttributesFromFile (new File ("../testData/implicitInteger.attribute"));
+  //assertTrue (a.getClass ("SNP Count") == Class.forName ("java.lang.Integer"));
+  //assertTrue (a.getCategory ("SNP Count").equals (GraphObjAttributes.DEFAULT_CATEGORY));
+
+  a = new GraphObjAttributes ();
+  a.readAttributesFromFile (new File ("../testData/implicitDouble.attribute"));
+  assertTrue (a.getClass ("Score") == Class.forName ("java.lang.Double"));
+  assertTrue (a.getCategory ("Score").equals (GraphObjAttributes.DEFAULT_CATEGORY));
+
+  a = new GraphObjAttributes ();
+  a.readAttributesFromFile (new File ("../testData/implicitUrl.attribute"));
+  assertTrue (a.getClass ("Locus Link") == Class.forName ("java.net.URL"));
+  assertTrue (a.getCategory ("Locus Link").equals (GraphObjAttributes.DEFAULT_CATEGORY));
+
+  
+} // testAttributeCategoryAndClassDetection
+//-------------------------------------------------------------------------
+/**
+ *  can we read array attributes?
+ *
+ *   GO molecular function
+ *   
+ */
+public void testReadArrayAttributes () throws Exception
+{
+  System.out.println ("testReadArrayAttributes");
+  String name = "GO molecular function, level 4";
+  GraphObjAttributes a = new GraphObjAttributes ();
+  a.readAttributesFromFile (new File ("../testData/implicitStringArray.attribute"));
+
+  String geneName = "HSD17B2";
+  String [] geneFunctions = a.getStringArrayValues (name, geneName);
+  assertTrue (geneFunctions.length == 2);
+  assertTrue (geneFunctions[0].equals ("membrane"));
+  assertTrue (geneFunctions[1].equals ("intracellular"));
+
+
+  geneName = "CDH3";
+  geneFunctions = a.getStringArrayValues (name, geneName);
+  assertTrue (geneFunctions.length == 1);
+  assertTrue (geneFunctions[0].equals ("cell adhesion molecule"));
+
+  geneName = "AP1G1";
+  geneFunctions = a.getStringArrayValues (name, geneName);
+  assertTrue (geneFunctions.length == 3);
+  assertTrue (geneFunctions[0].equals ("intracellular"));
+  assertTrue (geneFunctions[1].equals ("clathrin adaptor"));
+  assertTrue (geneFunctions[2].equals ("intracellular transporter"));
+
+  geneName = "E2F4";
+  geneFunctions = a.getStringArrayValues (name, geneName);
+  assertTrue (geneFunctions.length == 1);
+  assertTrue (geneFunctions[0].equals ("DNA binding"));
+
+  //geneName = "ABC";
+  //geneFunctions = a.getStringArrayValues (name, geneName);
+  //assertTrue (geneFunctions.length == 3);
+  //assertTrue (geneFunctions[0].equals ("DNA binding"));
+
+
+} // testReadArrayAttributes
+//------------------------------------------------------------------------------
 public static void main (String [] args) 
 {
   junit.textui.TestRunner.run (new TestSuite (GraphObjAttributesTest.class));
