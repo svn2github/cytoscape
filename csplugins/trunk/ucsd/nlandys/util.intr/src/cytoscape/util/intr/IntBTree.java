@@ -10,11 +10,14 @@ public final class IntBTree
   private final static int MAX_BRANCHES = 3;
 
   private final int m_min_capacity;
+  private final int[] m_buff; // Poor man's algorithm; optimize later.
   private Node m_root;
 
   public IntBTree()
   {
-    m_min_capacity = Math.max(2, (int) (MAX_BRANCHES / 2));
+    m_min_capacity = (int) Math.ceil(((double) MAX_BRANCHES) / 2.0d);
+    m_buff = new int[MAX_BRANCHES + 1];
+    m_buff[0] = Integer.MIN_VALUE; // This ought to never be changed.
     m_root = new Node(MAX_BRANCHES, true);
   }
 
@@ -76,14 +79,17 @@ public final class IntBTree
         if (n.values[i] == x) count++; }       // code, don't abort on over.
       return count; }
     else {
-      int prevSplit = Integer.MIN_VALUE;
+      // Poor man's algorithm; optimize later.
+      System.arraycopy(n.data.splitVals, 0, m_buff, 1, n.sliceCount - 1);
+      m_buff[n.sliceCount] = Integer.MAX_VALUE;
       int count = 0;
-      for (int i = 0; i < n.sliceCount - 1; i++) {
-        if (x <= n.data.splitVals[i]) {
-          if (prevSplit == n.data.splitVals[i]) count += n.data.deepCount;
+      for (int i = 0; i < n.sliceCount; i++)
+      {
+        if (x >= m_buff[i] & x <= m_buff[i + 1]) {
+          if (m_buff[i] == m_buff[i + 1]) count += n.data.deepCount;
           else count += count(n.data.children[i], x); }
       }
-      return -1;
+      return count;
     }
   }
 
