@@ -31,7 +31,7 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 
       int [] nodes = current_network_view.getSelectedNodeIndices();
       
-      CyNetwork new_network = Cytoscape.createNetwork( nodes, current_network.getConnectingEdgeIndicesArray( nodes ) );
+      CyNetwork new_network = Cytoscape.createNetwork( nodes, current_network.getConnectingEdgeIndicesArray( nodes ) , current_network.getTitle()+"->child", current_network );
       new_network.setExpressionData( current_network.getExpressionData() );
 
       //String title = " selection";

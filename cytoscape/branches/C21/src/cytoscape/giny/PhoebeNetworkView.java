@@ -64,7 +64,7 @@ public class PhoebeNetworkView
     this.statusLabel = new JLabel();
     ( ( JComponent )getComponent() ).add(statusLabel, BorderLayout.SOUTH);
     updateStatusLabel();
-    // addViewContextMenus();
+    addViewContextMenus();
     clientData = new HashMap();
 
     enableNodeSelection();
@@ -129,7 +129,7 @@ public class PhoebeNetworkView
    * Networks can support client data.
    * @param data_name the name of this client data
    */
-  public void setClientData ( String data_name, Object data ) {
+  public void putClientData ( String data_name, Object data ) {
     clientData.put( data_name, data );
   }
 

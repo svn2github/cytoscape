@@ -46,7 +46,7 @@ import cytoscape.data.servers.*;
 import cytoscape.data.readers.*;
 
 import cern.colt.list.IntArrayList;
-
+import cern.colt.map.OpenIntIntHashMap;
 /**
  * Reader for graphs in the interactions file format. Given the filename,
  * provides the graph and attributes objects constructed from the file.
@@ -66,7 +66,7 @@ public class InteractionsReader implements GraphReader {
   String species;
 
   IntArrayList node_indices;
-  IntArrayList edges;
+  OpenIntIntHashMap edges;
 
   //------------------------------
   /**
@@ -194,20 +194,26 @@ public class InteractionsReader implements GraphReader {
 
     Cytoscape.ensureCapacity( nodeNameSet.size(), edgeCount) ;
     node_indices = new IntArrayList( nodeNameSet.size() );
-    edges = new IntArrayList( edgeCount );
+    edges = new OpenIntIntHashMap( edgeCount );
 
     //now create all of the nodes, storing a hash from name to node
-    Map nodes = new HashMap();
+    // Map nodes = new HashMap();
     for (Iterator si = nodeNameSet.iterator(); si.hasNext(); ) {
       String nodeName = (String)si.next();
       
-      int node_i = Cytoscape.getRootGraph().createNode();
-      Node node = Cytoscape.getRootGraph().getNode( node_i);
-      node_indices.add( node_i );
 
-	    node.setIdentifier(nodeName);
-      nodes.put(nodeName, node);
-      Cytoscape.getNodeNetworkData().addNameMapping(nodeName, node);
+      // use the static method
+      Node node = ( Node )Cytoscape.getCyNode( nodeName );
+      node_indices.add( node.getRootGraphIndex() );
+      //nodes.put(nodeName, node);
+
+      //int node_i = Cytoscape.getRootGraph().createNode();
+      //Node node = Cytoscape.getRootGraph().getNode( node_i);
+      //node.setIdentifier(nodeName);
+      //Cytoscape.getNodeNetworkData().addNameMapping(nodeName, node);
+
+     
+      
     }
 
     //---------------------------------------------------------------------------
@@ -226,23 +232,36 @@ public class InteractionsReader implements GraphReader {
       if(canonicalize) nodeName = canonicalizeName (interaction.getSource ());
 
       String interactionType = interaction.getType ();
-      giny.model.Node sourceNode = (giny.model.Node) nodes.get (nodeName);
+      
+      //giny.model.Node sourceNode = (giny.model.Node) nodes.get (nodeName);
+     
       String [] targets = interaction.getTargets ();
       for (int t=0; t < targets.length; t++) {
+        
         if(canonicalize)
           targetNodeName = canonicalizeName (targets [t]);
         else
           targetNodeName = targets[t];
 
-        Node targetNode = (Node) nodes.get (targetNodeName);
-        Edge edge = Cytoscape.getRootGraph().getEdge(Cytoscape.getRootGraph().createEdge (sourceNode, targetNode));
-        edges.add( edge.getRootGraphIndex() );
+        
+
+        //Node targetNode = (Node) nodes.get (targetNodeName);
         String edgeName = nodeName + " (" + interactionType + ") " + targetNodeName;
-        int previousMatchingEntries = Cytoscape.getEdgeNetworkData().countIdentical(edgeName);
-        if (previousMatchingEntries > 0)
-          edgeName = edgeName + "_" + previousMatchingEntries;
-        Cytoscape.getEdgeNetworkData().add ("interaction", edgeName, interactionType);
-        Cytoscape.getEdgeNetworkData().addNameMapping (edgeName, edge);
+        Edge edge = ( Edge )Cytoscape.getCyEdge( nodeName, edgeName, targetNodeName, interactionType );
+        edges.put( edge.getRootGraphIndex(), 0 );
+       
+
+        //System.out.println( "edge: "+edge.getRootGraphIndex() );
+
+        //int previousMatchingEntries = Cytoscape.getEdgeNetworkData().countIdentical(edgeName);
+        //        Edge edge = Cytoscape.getRootGraph().getEdge(Cytoscape.getRootGraph().createEdge (sourceNode, targetNode));
+        //int previousMatchingEntries = Cytoscape.getEdgeNetworkData().countIdentical(edgeName);
+        //if ( previousMatchingEntries > 0 ) {
+        //  edgeName = edgeName + "_" + previousMatchingEntries;
+        //} else {
+        //  Cytoscape.getEdgeNetworkData().add ("interaction", edgeName, interactionType);
+        //  Cytoscape.getEdgeNetworkData().addNameMapping (edgeName, edge);
+        //}
       } // for t
     } // for i
 
@@ -269,8 +288,13 @@ public class InteractionsReader implements GraphReader {
   }
   
   public int[] getEdgeIndicesArray () {
-    edges.trimToSize();
-    return edges.elements();
+    //edges.trimToSize();
+    // return edges.elements();
+    IntArrayList edge_indices = new IntArrayList( edges.size() );
+    edges.keys( edge_indices );
+    edge_indices.trimToSize();
+    return edge_indices.elements();
+
   }
   
 

@@ -618,8 +618,11 @@ public class CytoscapeDesktop
 
 
 
-  protected void updateFocus ( String network_view_id ) {
+  protected void updateFocus ( String network_id ) {
       
+    // System.out.println( "CD: setting focus to: "+network_id );
+
+
     // deal with the old Network
     VisualStyle old_style = ( VisualStyle )vizMapUI.
       getStyleSelector().
@@ -627,12 +630,12 @@ public class CytoscapeDesktop
       getSelectedItem();
 
     CyNetworkView old_view = Cytoscape.getCurrentNetworkView();
-    old_view.setClientData( VISUAL_STYLE, old_style );
-    old_view.setClientData( VIZMAP_ENABLED, new Boolean( old_view.getVisualMapperEnabled() ) );
+    old_view.putClientData( VISUAL_STYLE, old_style );
+    old_view.putClientData( VIZMAP_ENABLED, new Boolean( old_view.getVisualMapperEnabled() ) );
 
     // set the current Network/View
-    Cytoscape.setCurrentNetworkView( network_view_id );
-    Cytoscape.setCurrentNetwork( network_view_id );
+    Cytoscape.setCurrentNetworkView( network_id );
+    Cytoscape.setCurrentNetwork( network_id );
     
     // deal with the new Network
      CyNetworkView new_view = Cytoscape.getCurrentNetworkView();

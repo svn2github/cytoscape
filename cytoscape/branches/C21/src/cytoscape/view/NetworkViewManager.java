@@ -260,7 +260,7 @@ public class NetworkViewManager
          
     if ( VIEW_TYPE == CytoscapeDesktop.TABBED_VIEW ) {
       // put the CyNetworkViews Component into the Tabbed Pane
-      ( ( JTabbedPane )container ).addTab( view.getNetwork().getIdentifier(), view.getComponent() );
+      ( ( JTabbedPane )container ).addTab( view.getNetwork().getTitle(), view.getComponent() );
       
       networkViewMap.put( view.getNetwork().getIdentifier(), view.getComponent() );
       componentMap.put( view.getComponent(), view.getNetwork().getIdentifier() );
@@ -268,7 +268,7 @@ public class NetworkViewManager
 
     else if ( VIEW_TYPE == CytoscapeDesktop.INTERNAL_VIEW ) {
       // create a new InternalFrame and put the CyNetworkViews Component into it
-      JInternalFrame iframe = new JInternalFrame( view.getIdentifier(), 
+      JInternalFrame iframe = new JInternalFrame( view.getTitle(), 
                                                   true, true, true, true );
       ( ( JDesktopPane )container ).add( iframe );
       iframe.getContentPane().add( view.getComponent() );
@@ -284,7 +284,7 @@ public class NetworkViewManager
     else if ( VIEW_TYPE == CytoscapeDesktop.EXTERNAL_VIEW ) {
       // create a new JFrame and put the CyNetworkViews Component into it
 
-      JFrame frame = new JFrame( view.getNetwork().getIdentifier() );
+      JFrame frame = new JFrame( view.getNetwork().getTitle() );
       frame.getContentPane().add( view.getComponent() );
       frame.pack();
       frame.setSize( 400, 400 );

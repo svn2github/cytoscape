@@ -33,7 +33,7 @@ public class ColtCyNetwork
   public static int uid_counter = 0;
 
   protected String identifier;
-
+  protected String title;
    
   /**
    * The Network Listeners Set 
@@ -87,6 +87,23 @@ public class ColtCyNetwork
     clientData = new HashMap();
   }
 
+  /**
+   * Can Change
+   */
+  public String getTitle () {
+    if ( title == null ) 
+      return identifier;
+    return title;
+  }
+
+  
+  /**
+   * Can Change
+   */
+  public void setTitle ( String new_id ) {
+    title = new_id;
+  }
+
   public String getIdentifier () {
     return identifier;
   }
@@ -105,7 +122,7 @@ public class ColtCyNetwork
    * Networks can support client data.
    * @param data_name the name of this client data
    */
-  public void setClientData ( String data_name, Object data ) {
+  public void putClientData ( String data_name, Object data ) {
     clientData.put( data_name, data );
   }
 

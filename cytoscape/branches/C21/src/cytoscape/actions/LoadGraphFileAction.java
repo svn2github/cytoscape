@@ -100,6 +100,7 @@ public class LoadGraphFileAction extends CytoscapeAction {
 
       //TODO: get species info on a per network basis
       String species = Semantics.getDefaultSpecies( Cytoscape.getCurrentNetwork(),Cytoscape.getCytoscapeObj() );
+      Cytoscape.setSpecies();
       //GraphReader reader = null;
 
       newNetwork = Cytoscape.createNetwork( name,
@@ -119,7 +120,8 @@ public class LoadGraphFileAction extends CytoscapeAction {
         //hack to apply layout information from a GML file
         if( fileType == Cytoscape.FILE_GML ) {
           //GMLReader reader = new GMLReader(name);
-          Cytoscape.getLastGraphReaderForDoingLayout().layout( Cytoscape.getCurrentNetworkView() );
+          //Cytoscape.getLastGraphReaderForDoingLayout().layout( Cytoscape.getCurrentNetworkView() );
+          newNetwork.putClientData( "GML", Cytoscape.getLastGraphReaderForDoingLayout() );
         }
 
         //give the user some confirmation

@@ -45,7 +45,7 @@ public interface CyNetworkView extends GraphView {
    * Networks can support client data.
    * @param data_name the name of this client data
    */
-  public void setClientData ( String data_name, Object data );
+  public void putClientData ( String data_name, Object data );
 
   /**
    * Get a list of all currently available ClientData objects

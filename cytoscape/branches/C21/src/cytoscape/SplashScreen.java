@@ -62,7 +62,7 @@ public class SplashScreen extends Canvas implements Runnable
 		Dimension screen = getToolkit().getScreenSize();
 		//Dimension size = new Dimension(image.getWidth(this) + 2,
 			//image.getHeight(this) + 2);
-		Dimension size = new Dimension(400, 330);		
+		Dimension size = new Dimension(410, 380);		
 		win.setSize(size);
 
 		win.setLayout(new BorderLayout());
@@ -145,15 +145,15 @@ public class SplashScreen extends Canvas implements Runnable
 
 		offscreenGfx.drawImage(image,1,1,this);
 
-		offscreenGfx.setColor(Color.white);
-		offscreenGfx.setFont(new Font("Arial",Font.BOLD, 22));
-		offscreenGfx.drawString("Welcome to Cytoscape!", 3,40);
+		//offscreenGfx.setColor(Color.white);
+		//offscreenGfx.setFont(new Font("Arial",Font.BOLD, 22));
+		//offscreenGfx.drawString("Welcome to Cytoscape!", 3,40);
 		
-		offscreenGfx.setFont(new Font("Arial", Font.BOLD, 14));
-		offscreenGfx.drawString ("A general-purpose modeling environment",3,210 );
-		offscreenGfx.drawString ("for integrating biomolecular interaction",3,230);
-		offscreenGfx.drawString ("networks, network states, and functional",3,250);
-		offscreenGfx.drawString ("ontologies.",3,270); 
+		//offscreenGfx.setFont(new Font("Arial", Font.BOLD, 14));
+		//offscreenGfx.drawString ("A general-purpose modeling environment",3,210 );
+		//offscreenGfx.drawString ("for integrating biomolecular interaction",3,230);
+		//offscreenGfx.drawString ("networks, network states, and functional",3,250);
+		//offscreenGfx.drawString ("ontologies.",3,270); 
 		g.drawImage(offscreenImg,0,0,this);
 		
 		notify();

@@ -101,21 +101,24 @@ public class CyMain implements WindowListener {
     logger.info(config.toString());
     splashScreen.advance(20);
       
-    //try to create a bioDataServer
-    String bioDataDirectory = config.getBioDataDirectory();
-    BioDataServer bioDataServer = null;
-    if ( bioDataDirectory != null ) {
-      try {
-        bioDataServer = new BioDataServer( bioDataDirectory );
-      } catch ( Exception e ) {
-        logger.severe( "Unable to load bioDataServer from '" + bioDataDirectory + "'" );
-        logger.severe( e.getMessage() );
-        e.printStackTrace();
-      }
-    }
 
     //create the global CytoscapeObj object
-    CytoscapeObj cytoscapeObj = new CytoscapeObj(this, config, logger, bioDataServer);
+    CytoscapeObj cytoscapeObj = new CytoscapeObj(this, config, logger, null);
+
+    //try to create a bioDataServer
+    String bioDataDirectory = config.getBioDataDirectory();
+    BioDataServer bioDataServer = Cytoscape.loadBioDataServer( bioDataDirectory );// null;
+//     if ( bioDataDirectory != null ) {
+//       try {
+//         bioDataServer = new BioDataServer( bioDataDirectory );
+//       } catch ( Exception e ) {
+//         logger.severe( "Unable to load bioDataServer from '" + bioDataDirectory + "'" );
+//         logger.severe( e.getMessage() );
+//         e.printStackTrace();
+//       }
+//     }
+
+  
     
 
     //get some standard fields for doing name resolution
@@ -133,12 +136,13 @@ public class CyMain implements WindowListener {
     
 
     if ( geometryFilename != null ) {
-      Cytoscape.createNetwork( geometryFilename,
+      CyNetwork network = Cytoscape.createNetwork( geometryFilename,
                                Cytoscape.FILE_GML,
                                false,
                                null,
                                null );
-      Cytoscape.getLastGraphReaderForDoingLayout().layout( Cytoscape.getCurrentNetworkView() );
+      //Cytoscape.getLastGraphReaderForDoingLayout().layout( Cytoscape.getCurrentNetworkView() );
+      network.putClientData( "GML", Cytoscape.getLastGraphReaderForDoingLayout() );
     }
 
     if ( interactionsFilename != null ) {

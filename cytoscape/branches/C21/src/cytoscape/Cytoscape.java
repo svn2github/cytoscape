@@ -41,6 +41,9 @@ public abstract class Cytoscape {
   public static int FILE_SBML = 3;
 
 
+  private static BioDataServer bioDataServer;
+  private static String species;
+
   /**
    * The shared RootGraph between all Networks
    */
@@ -132,7 +135,7 @@ public abstract class Cytoscape {
   
     int[] edges = getRootGraph().getEdgeIndicesArray();
     if ( edges == null ) {
-      System.out.println( "Null Edges in clear" );
+      // System.out.println( "Null Edges in clear" );
     } else {
       getRootGraph().removeEdges( getRootGraph().getEdgeIndicesArray() );
     }
@@ -140,6 +143,76 @@ public abstract class Cytoscape {
     getRootGraph().removeNodes( getRootGraph().getNodeIndicesArray() );
   }
 
+  /**
+   * @param alias an alias of a node
+   * @return will <b>always</b> return a node
+   */
+  public static CyNode getCyNode ( String alias ) {
+    CyNode node = ( CyNode )getNodeNetworkData().getGraphObject( alias );
+    if ( node != null ) {
+      System.out.print(".");
+      return node;
+    }
+    // node does not exist, create one
+    alias = canonicalizeName( alias );
+    System.out.print( "|" );
+    node = ( CyNode )Cytoscape.getRootGraph().getNode( Cytoscape.getRootGraph().createNode() );
+    node.setIdentifier( alias );
+    Cytoscape.getNodeNetworkData().addNameMapping( alias, node );
+    return node;
+
+  }
+
+  /**
+   * @param source_alias an alias of a node
+   * @param edge_name the name of the node
+   * @param target_alias an alias of a node
+   * @return will <b>always</b> return an edge
+   */
+  public static CyEdge getCyEdge ( String source_alias, 
+                                   String edge_name, 
+                                   String target_alias,
+                                   String interaction_type ) {
+    
+    edge_name = canonicalizeName( edge_name );
+    CyEdge edge = ( CyEdge )getEdgeNetworkData().getGraphObject( edge_name );
+    if ( edge != null ) {
+      System.out.print( "`" );
+      return edge;
+    } 
+
+    // edge does not exist, create one
+    System.out.print( "*" );
+    CyNode source = getCyNode( source_alias );
+    CyNode target = getCyNode( target_alias );
+    edge =  ( CyEdge )Cytoscape.getRootGraph().getEdge( Cytoscape.getRootGraph().createEdge (source, target));
+
+    Cytoscape.getEdgeNetworkData().add ("interaction", edge_name, interaction_type);
+    Cytoscape.getEdgeNetworkData().addNameMapping (edge_name, edge);
+    return edge;
+  }
+   
+
+ 
+
+  /**
+   * @deprecated argh!...
+   */
+  private static String canonicalizeName ( String name ) {
+    String canonicalName = name;
+    if ( bioDataServer != null) {
+      canonicalName = bioDataServer.getCanonicalName (species, name);
+      if(canonicalName == null){canonicalName = name;}
+    }
+    return canonicalName;
+  }
+
+  /**
+   * @deprecated argh!...
+   */
+  public static void setSpecies () {
+    species = cytoscape.data.Semantics.getDefaultSpecies( getCurrentNetwork(), getCytoscapeObj() );
+  }
 
   //--------------------//
   // Network Methods
@@ -174,6 +247,23 @@ public abstract class Cytoscape {
     return nullNetwork;
   }
 
+  public static CyNetworkView getCurrentNetworkView ( String network_id ) {
+    if ( network_id == null ) 
+      return nullNetworkView;
+
+    CyNetworkView nview =  ( CyNetworkView )getNetworkViewMap().get( network_id );
+    return nview;
+  }
+
+  
+  
+
+  public static boolean viewExists ( String network_id ) {
+    return getNetworkViewMap().containsKey( network_id );
+  }
+
+
+
   /**
    * Return the CyNetworkView that currently has the focus.
    * Can be different from getCurrentNetwork 
@@ -193,7 +283,7 @@ public abstract class Cytoscape {
 
   public static CytoscapeDesktop getDesktop() {
     if ( defaultDesktop == null ) {
-      System.out.println( " Defaultdesktop created: "+defaultDesktop );
+      //System.out.println( " Defaultdesktop created: "+defaultDesktop );
       defaultDesktop = new CytoscapeDesktop( getCytoscapeObj().getConfiguration().getViewType() );
     }
     return defaultDesktop;
@@ -203,15 +293,18 @@ public abstract class Cytoscape {
    * @deprecated
    */
   public static void setCurrentNetwork ( String id) {
-    if ( networkMap.containsKey( id ) )
+    if ( getNetworkMap().containsKey( id ) )
       currentNetworkID = id;
+
+    //System.out.println( "Currentnetworkid is: "+currentNetworkID+ " set from : "+id );
+
   }
 
   /**
    * @deprecated
    */
   public static void setCurrentNetworkView ( String id) {
-    if ( networkViewMap.containsKey( id ) )
+    if ( getNetworkViewMap().containsKey( id ) )
       currentNetworkViewID = id;
   }
 
@@ -231,22 +324,31 @@ public abstract class Cytoscape {
     return networkViewMap;
   }
 
-
- 
-
   protected static void addNetwork ( CyNetwork network ) {
+    addNetwork( network, null, null );
+  }
+
+  protected static void addNetwork ( CyNetwork network, String title ) {
+    addNetwork( network, title, null );
+  }
+
+  protected static void addNetwork ( CyNetwork network, String title, CyNetwork parent ) {
 
     // System.out.println( "CyNetwork Added: "+network.getIdentifier() );
 
     getNetworkMap().put( network.getIdentifier(), network );
-   
+    network.setTitle( title );
+    String p_id = null;
+    if ( parent != null ) {
+      p_id = parent.getIdentifier();
+    }
     
     firePropertyChange( NETWORK_CREATED,
-                        null,
+                        p_id,
                         network.getIdentifier() );
 
 
-    createNetworkView( network );
+    // createNetworkView( network );
   }
 
   /**
@@ -258,8 +360,6 @@ public abstract class Cytoscape {
     return network;
   }
   
- 
-
   /**
    * Creates a new Network 
    * @param nodes the indeces of nodes
@@ -288,9 +388,9 @@ public abstract class Cytoscape {
    * @param edges the indeces of edges
    * @param param the parent of the this Network
    */
-  public static CyNetwork createNetwork ( int[] nodes, int[] edges, CyNetwork parent ) {
+  public static CyNetwork createNetwork ( int[] nodes, int[] edges, String child_title, CyNetwork parent ) {
     CyNetwork network = getRootGraph().createNetwork( nodes, edges );
-    addNetwork( network );
+    addNetwork( network, child_title, parent );
     return network;
   }
  
@@ -300,9 +400,9 @@ public abstract class Cytoscape {
    * @param edges the indeces of edges
    * @param param the parent of the this Network
    */
-  public static  CyNetwork createNetwork ( giny.model.Node[] nodes, giny.model.Edge[] edges, CyNetwork parent ) {
+  public static  CyNetwork createNetwork ( giny.model.Node[] nodes, giny.model.Edge[] edges,  String child_title, CyNetwork parent ) {
     CyNetwork network = getRootGraph().createNetwork( nodes, edges );
-    addNetwork( network );
+    addNetwork( network, child_title, parent );
     return network;
   }
 
@@ -342,8 +442,6 @@ public abstract class Cytoscape {
     if ( location == null )  
       return null;
 
-    
-
     //set the reader according to what file type was passed.
     if ( file_type == FILE_SIF 
          || ( file_type == FILE_BY_SUFFIX && location.endsWith( "sif" ) ) ) {
@@ -382,8 +480,10 @@ public abstract class Cytoscape {
       System.err.println( "reader returned null edges" );
     }
 
+    String[] title = location.split( "/" );
+
     // Create a new cytoscape.data.CyNetwork from these nodes and edges
-    return createNetwork( nodes, edges );
+    return createNetwork( nodes, edges, title[title.length - 1], null );
   }
 
   /**
@@ -587,15 +687,16 @@ public abstract class Cytoscape {
    * A BioDataServer should be loadable from a file systems file 
    * or from a URL.
    */
-  public static void loadBioDataServer ( String location ) {
-   //  try {
-//       bioDataServer = new BioDataServer (bioDataDirectory);
-//       getCytoscapeObj().setBioDataServer(bioDataServer);
-//     } catch ( Exception e ) {
-//       String es = "cannot create new biodata server at " + bioDataDirectory;
-//       getCytoscapeObj().getLogger().warning(es);
-//       return;
-//     }
+  public static BioDataServer loadBioDataServer ( String location ) {
+     try {
+       bioDataServer = new BioDataServer ( location );
+       getCytoscapeObj().setBioDataServer(bioDataServer);
+     } catch ( Exception e ) {
+       String es = "cannot create new biodata server at " + location;
+       getCytoscapeObj().getLogger().warning(es);
+       return null;
+     }
+     return bioDataServer;
   }
 
   //------------------------------//
@@ -608,7 +709,7 @@ public abstract class Cytoscape {
    * @param network the network to create a view of
   */
   public static CyNetworkView createNetworkView ( CyNetwork network ) {
-     return createNetworkView( network, network.getIdentifier() );
+     return createNetworkView( network, network.getTitle() );
   }
   
   /**
@@ -619,12 +720,26 @@ public abstract class Cytoscape {
   //TODO: title
   public static CyNetworkView createNetworkView ( CyNetwork network, String title ) {
      
+    System.out.println( "Creating View from: "+network.getIdentifier()+" : "+network.getIdentifier() );
+    if ( viewExists( network.getIdentifier() ) )
+      return getNetworkView( network.getIdentifier() );
+    
+    System.out.println( "Nodes: "+network.getNodeCount()+" | Edges: "+network.getEdgeCount() );   
+
+    
+
+
     CyNetworkView view = new PhoebeNetworkView ( network, title );
     getNetworkViewMap().put( network.getIdentifier(), view );
-
+    view.setTitle( network.getTitle() );
     // System.out.println( "Just Created a PhoebeNetworkView: "+network.getIdentifier()+
     //                     " and it should be in the networkViewMap: "+
     //                     getNetworkViewMap().get( network.getIdentifier() ) );
+
+
+    if ( network.getClientData( "GML" ) != null ) {
+      ( ( GraphReader )network.getClientData( "GML" ) ).layout( view );
+    }
 
 
      firePropertyChange( cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED,
