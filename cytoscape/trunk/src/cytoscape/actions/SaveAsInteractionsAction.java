@@ -48,6 +48,7 @@ public class SaveAsInteractionsAction extends AbstractAction {
           GraphObjAttributes edgeAttributes = networkView.getNetwork().getEdgeAttributes();
           try {
               FileWriter fileWriter = new FileWriter(name);
+              String lineSep = System.getProperty("line.separator");
               List nodeList = networkView.getNetwork().getRootGraph().nodesList();
               giny.model.Node [] nodes = (giny.model.Node []) nodeList.toArray (new giny.model.Node [0]);
               for (int i=0; i < nodes.length; i++) {
@@ -59,7 +60,7 @@ public class SaveAsInteractionsAction extends AbstractAction {
                   List edges = gp.getAdjacentEdgesList(node, true, true, true); 
                   
                   if (edges.size() == 0) {
-                      sb.append(canonicalName + "\n");
+                      sb.append(canonicalName + lineSep);
                   } else {
                       Iterator it = edges.iterator();
                       while ( it.hasNext() ) {
@@ -76,7 +77,7 @@ public class SaveAsInteractionsAction extends AbstractAction {
                               sb.append(interactionName);
                               sb.append(" ");
                               sb.append(canonicalTargetName);
-                              sb.append("\n");
+                              sb.append(lineSep);
                           }
                       } // while
                   } // else: this node has edges, write out one line for every out edge (if any) */
