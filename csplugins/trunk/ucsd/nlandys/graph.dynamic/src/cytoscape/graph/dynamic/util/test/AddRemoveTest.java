@@ -13,11 +13,11 @@ public class AddRemoveTest
                                            new int[9998],
                                            new int[10001] };
     final int[] edges = new int[100000];
-    final int iterations = 100000;
+    final int iterations = 10000;
     for (int foo = 0; foo < iterations; foo++)
     {
       boolean print = false;
-      if (foo % 1 == 0) print = true;
+      if (foo % 10 == 0) print = true;
       if (print) System.out.println("at add/remove iteration " + (foo + 1) +
                                     " of " + iterations);
       if (print) System.out.println("creating nodes");
