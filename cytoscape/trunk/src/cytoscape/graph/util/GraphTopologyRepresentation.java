@@ -168,7 +168,8 @@ public class GraphTopologyRepresentation implements GraphTopology
               m_directedEdgeTargetNodeIndices)[edgeIndex]; }
     else {
       return (sourceNode ? m_undirectedEdgeNode0Indices :
-              m_undirectedEdgeNode1Indices)[edgeIndex]; } }
+              m_undirectedEdgeNode1Indices)
+        [edgeIndex - m_directedEdgeSourceNodeIndices.length]; } }
 
 
 }
