@@ -58,7 +58,6 @@ public abstract class AttributeComboBoxModel implements ComboBoxModel, PropertyC
 
 }
 
-<<<<<<< AttributeComboBoxModel.java
 class NodeAttributeComboBoxModel extends AttributeComboBoxModel{
   Class attributeClass;
   GraphObjAttributes nodeAttributes;
