@@ -477,10 +477,20 @@
               zipfile="${zip_release.dir}/cytoscape-v${version}.tar.gz"/>
         <delete file="${zip_release.dir}/cytoscape-v${version}.tar"/>
 
-        <!-- I got rid of the source tar because it didn't preserve -->
-        <!-- individual permissions of files.  To make a source tarball, -->
-        <!-- do it manually on a UNIX machine.  The hell with Java and -->
-        <!-- Windows. -->
+        <!--  Create tar.gz release of source code -->
+        <!--  Note that the source tar because does not preserve -->
+        <!--  individual permissions of files.  This is a bug in Ant/Java.  -->
+        <tar tarfile="${zip_release.dir}/cytoscapeSource-v${version}.tar">
+            <tarfileset dir=".">
+                <exclude name="${build.dir}/**"/>
+                <exclude name="CVS/**"/>
+                <exclude name="*.log"/>
+            </tarfileset>
+        </tar>
+        <gzip src="${zip_release.dir}/cytoscapeSource-v${version}.tar"
+              zipfile="${zip_release.dir}/cytoscapeSource-v${version}.tar.gz"/>
+        <delete file="${zip_release.dir}/cytoscapeSource-v${version}.tar"/>
+
 
     </target>
 
