@@ -78,8 +78,10 @@ public class BitArrayPerformance
       _REPEAT_TEST_CASE_(elements, uniqueElements);
       millisEnd = System.currentTimeMillis();
       System.err.println((millisEnd - millisBegin) + " (repeated test)");
-      for (int i = 0; i < uniqueElements.length; i++)
-        System.out.println(uniqueElements[i]);
+      _THE_HEAP_.empty();
+      _THE_HEAP_.toss(uniqueElements, 0, uniqueElements.length);
+      while (_THE_HEAP_.size() > 0)
+        System.out.println(_THE_HEAP_.deleteMin());
     }
   }
 
