@@ -53,6 +53,7 @@ public class CytoscapeConfig
   protected Properties props;
   protected Integer viewThreshold;
   protected boolean loadUserClasspath = false;
+  public  String currentDirectory;
 
   static public StringBuffer debugLog = new StringBuffer ();
 
@@ -344,7 +345,7 @@ public class CytoscapeConfig
       props.setProperty( "bioDataDirectory", bioDataDirectory );
     if ( defaultVisualStyle != null )
       props.setProperty( "defaultVisualStyle", Cytoscape.getDesktop().getVizMapManager().getVisualStyle().getName() );
-
+    props.setProperty( "currentDirectory", Cytoscape.getCytoscapeObj().getCurrentDirectory().getAbsolutePath() );
 
     try {
       File file = Cytoscape.getCytoscapeObj().getConfigFile( "cytoscape.props" );
@@ -375,7 +376,8 @@ public class CytoscapeConfig
     defaultSpeciesName = props.getProperty("defaultSpeciesName", "unknown" );
     bioDataDirectory = props.getProperty( "bioDataDirectory", "testData/annotation/manifest");
     defaultVisualStyle = props.getProperty( "defaultVisualStyle", "default" );
-    
+    if (  props.getProperty( "currentDirectory" ) != null ) 
+      currentDirectory = props.getProperty( "currentDirectory" );
 
     //System.out.println( "vs:: "+defaultVisualStyle );
     // System.out.println( "view type: "+viewType );

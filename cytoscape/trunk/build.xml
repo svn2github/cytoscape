@@ -260,10 +260,12 @@
             ***********************************************
         </echo>
 
-        <jar destfile="${build.dir}/just-cytoscape.jar"
+        <jar destfile="${build.dir}/cytoscape.jar"
              manifest="${manifest.dir}/cytoscape.manifest">
             <fileset dir="${build.classes}"/>
         </jar>
+
+        <copy todir="${lib.dir}" file="${build.dir}/cytoscape.jar"/>
 
     </target>
 

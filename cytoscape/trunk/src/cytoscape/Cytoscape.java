@@ -609,6 +609,7 @@ public abstract class Cytoscape {
             nodes.add( node );
             getNodeNetworkData().removeNameMapping( node.getIdentifier() );
             getNodeNetworkData().removeObjectMapping( node );
+            getRootGraph().deleteNode( node );
           }
         }
       
@@ -626,6 +627,7 @@ public abstract class Cytoscape {
             edges.add( edge );
             getEdgeNetworkData().removeNameMapping( edge.getIdentifier() );
             getEdgeNetworkData().removeObjectMapping( edge );
+            getRootGraph().deleteEdge( edge );
           }
         }
 

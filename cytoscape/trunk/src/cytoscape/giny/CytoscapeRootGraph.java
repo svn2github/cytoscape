@@ -51,6 +51,51 @@ public class CytoscapeRootGraph extends ColtRootGraph {
   } // <init>()
 
 
+  public void deleteNode ( giny.model.Node node ) {
+    nodeIndexObjectMap.removeKey( node.getRootGraphIndex() );
+  }
+  public void deleteEdge ( giny.model.Edge edge ) {
+    edgeIndexObjectMap.removeKey( edge.getRootGraphIndex() );
+  }
+
+
+  /**
+   * A Node can be replaced by another Node so long as the New node is_a CyNode
+   */
+  public CyNode replaceNode ( int index, CyNode new_node ) {
+     nodeIndexObjectMap.put( index, new_node );
+     CyNode node = ( CyNode )getNode( index );
+     if ( node.getRootGraphIndex() != index ){
+        throw new IllegalArgumentException( "Indices don't match for node replacement" );
+     }
+     int[] edges = getAdjacentEdgeIndicesArray( index, true, true, true );
+     for ( int i = 0; i < edges.length; ++i ) {
+       int source_index = getEdgeSourceIndex( index );
+       int target_index = getEdgeTargetIndex( index );
+       Node source_node =
+         ( Node )coltNodeData.get( 0, ( 0 - source_index ) );
+       if( source_node == ColtginyConstants.REMOVED_NODE ) {
+         throw new IllegalArgumentException( "The given source Node index, "+source_index+", does not correspond to any Node in this ColtRootGraph." );
+       }
+       Node target_node =
+         ( Node )coltNodeData.get( 0, ( 0 - target_index ) );
+       if( target_node == ColtginyConstants.REMOVED_NODE ) {
+         throw new IllegalArgumentException( "The given target Node index, "+target_index+", does not correspond to any Node in this ColtRootGraph." );
+       }
+
+       if ( source_node.getRootGraphIndex() == index ) 
+          coltNodeData.set( 0, ( 0 - source_index ), new_node );
+       else if ( target_node.getRootGraphIndex() == index ) 
+         coltNodeData.set( 0, ( 0 - target_index ), new_node );
+     }
+     coltNodeData.setQuick( 0, ( 0 - node.getRootGraphIndex() ), new_node );
+     Cytoscape.getNodeNetworkData().removeNameMapping( node.getIdentifier() );
+     Cytoscape.getNodeNetworkData().addNameMapping( node.getIdentifier(), new_node );
+     return new_node;
+       
+  }
+
+
   /**
    * This implementation of the giny model will defer creation of Node objects
    * as long as possible.  This method creates the object corresponding to the

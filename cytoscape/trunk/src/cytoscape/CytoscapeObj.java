@@ -116,7 +116,10 @@ public class CytoscapeObj
     registerCommandLinePlugins();
     //TODO: eventually should wait until a window requests the catalog
     loadCalculatorCatalog();
-    this.currentDirectory = new File(System.getProperty("user.dir"));
+    if ( config.currentDirectory == null )
+      this.currentDirectory = new File(System.getProperty("user.dir"));
+    else 
+      this.currentDirectory = new File( config.currentDirectory );
   }
 
   /**
