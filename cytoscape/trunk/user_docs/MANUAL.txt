@@ -117,6 +117,8 @@ specification of network files and expression data:
  -b  <bioData directory>           (e.g. GO/) 
  -i  <SIF interactions filename>   (yyy.sif)
  -e  <expression filename>         (zzz.pvals)
+ -n  <nodeAttributes filename>     (zero or more)
+ -j  <edgeAttributes filename>     (zero or more)
  -h  help: display these command line arguments
  -v  display version
 
@@ -254,6 +256,36 @@ Expression Matrix File. In the resulting file dialog box, select the
 file "sampleData/gal1-20.pvals".  As described in the following
 sections, Cytoscape is now ready to integrate these data with the
 underlying molecular interaction network.
+
+######################################################################
+NODE AND EDGE ATTRIBUTES #############################################
+######################################################################
+
+Node and edge attribute files are very simply formatted:
+A node attribute file begins with the name of the attribute on the
+first line, and on each following line, has the name of the node,
+followed by an equals sign, followed by the value of that attribute.
+For example:
+
+FunctionalCategory
+YAL001C = metabolism
+YAR002W = apoptosis
+YBL007C = ribosome
+
+An edge attribute file has much the same structure, except that the
+name of the edge is the source node name, followed by the interaction
+type in parentheses, followed by the target node name.  Directionality
+counts, so switching the source and target will refer to a different
+(or perhaps non-existent) edge.  Following is an example edge
+attributes file:
+
+InteractionStrength
+YAL001C (pp) YBR043W = 0.82
+YMR022W (pd) YDL112C = 0.441
+YDL112C (pd) YMR022W = 0.9013
+
+Note that the second and third edge attribute values refer to two
+different edges (source and target are different).
 
 ######################################################################
 VISUALIZATION ########################################################
