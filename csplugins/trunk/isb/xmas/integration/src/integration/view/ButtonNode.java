@@ -13,9 +13,6 @@ import edu.umd.cs.piccolox.nodes.*;
 import edu.umd.cs.piccolox.swing.*;
 import edu.umd.cs.piccolox.util.*;
 
-import integration.util.*;
-import integration.data.*;
-
 import javax.swing.*;
 import java.awt.*;
 

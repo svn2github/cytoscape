@@ -1,16 +1,16 @@
-<project name="datamap" default="datamap" basedir=".">
+<project name="metaviz" default="metaviz" basedir=".">
 
   <!-- =================================================================== -->
   <!-- Initialization target                                               -->
   <!-- =================================================================== -->
-  <target name="init-datamap">
+  <target name="init-metaviz">
     <tstamp/>
-    <property name="datamap.Name" value="datamap"/>
-    <property name="datamap.name" value="datamap"/>
-    <property name="datamap.version" value="0.1"/>
-    <property name="datamap.year" value="200"/>
+    <property name="metaviz.Name" value="metaviz"/>
+    <property name="metaviz.name" value="metaviz"/>
+    <property name="metaviz.version" value="0.1"/>
+    <property name="metaviz.year" value="200"/>
 
-    <echo message="Building ${datamap.name} version ${datamap.version}."/>
+    <echo message="Building ${metaviz.name} version ${metaviz.version}."/>
 
     <!-- Inheritable properties -->
     <property name="debug" value="on"/>
@@ -18,29 +18,29 @@
     <property name="deprecation" value="on"/>
     <property name="nowarn" value="true"/>
     <property name="fork" value="false"/>
-    <property name="datamap.root.dir" value="."/>
-    <property name="datamap.lib.dir" value="${datamap.root.dir}/lib"/>
-    <property name="cytoscape.lib.dir" value="${datamap.root.dir}/../../../../cytoscape/lib"/>
+    <property name="metaviz.root.dir" value="."/>
+    <property name="metaviz.lib.dir" value="${metaviz.root.dir}/lib"/>
+    <property name="cytoscape.lib.dir" value="${metaviz.root.dir}/../../../../cytoscape/lib"/>
     <property name="cytoscape.plugin.dir" value="${metaviz.root.dir}/../../../../cytoscape/plugins"/>
     <path id="project.class.path">
       <pathelement path="${java.class.path}/"/>
     </path>
 
     <!-- Define the directories -->
-    <property name="datamap.root.dir" value="./"/>
-    <property name="datamap.src.dir" value="${datamap.root.dir}/src"/>
-    <property name="datamap.classes.dir" value="${datamap.root.dir}/classes"/>
-    <property name="datamap.javadoc.dir" value="${javadoc.dir}/datamap"/>
-    <property name="datamap.resources.dir" value="${datamap.root.dir}/resources"/>
-    <property name="datamap.manifest.dir" value="${datamap.root.dir}/manifest"/>
-    <property name="datamap.packages" value="datamap.*"/>
+    <property name="metaviz.root.dir" value="./"/>
+    <property name="metaviz.src.dir" value="${metaviz.root.dir}/src"/>
+    <property name="metaviz.classes.dir" value="${metaviz.root.dir}/classes"/>
+    <property name="metaviz.javadoc.dir" value="${javadoc.dir}/metaviz"/>
+    <property name="metaviz.resources.dir" value="${metaviz.root.dir}/resources"/>
+    <property name="metaviz.manifest.dir" value="${metaviz.root.dir}/manifest"/>
+    <property name="metaviz.packages" value="metaviz.*"/>
     <!-- Subdirectory for test reports -->
-    <property name="datamap.tests.reports.dir" value="${datamap.root.dir}/reports/tests" />
+    <property name="metaviz.tests.reports.dir" value="${metaviz.root.dir}/reports/tests" />
     <property name="cytoscape.lib" value="../../cytoscape/lib" />
 
     <!-- Define the condition for compilation -->
-    <property name="cytoscape.jar" value="${datamap.lib.dir}/cytoscape.jar"/>
-    <property name="colt.jar" value="${datamap.lib.dir}/colt.jar"/>
+    <property name="cytoscape.jar" value="${metaviz.lib.dir}/cytoscape.jar"/>
+    <property name="colt.jar" value="${metaviz.lib.dir}/colt.jar"/>
     
 
     <condition property="cytoscape.present">
@@ -50,17 +50,19 @@
 		  </and>
     </condition>
 
-    <!-- Define excludes for datamap compile and javadoc -->
-    <property name="datamap.excludes" value="**/notyet/*"/>
-    <property name="datamap.tests.excludes" value="**/notyet/*"/>
-    <property name="datamap.packages.excludes" value="**.test.*,**.notyet.*"/>
+    <!-- Define excludes for metaviz compile and javadoc -->
+    <property name="metaviz.excludes" value="**/notyet/*"/>
+    <property name="metaviz.tests.excludes" value="**/notyet/*"/>
+    <property name="metaviz.packages.excludes" value="**.test.*,**.notyet.*"/>
 
-    <path id="datamap.project.class.path">
-      <pathelement location="${datamap.classes.dir}"/>
+    <path id="metaviz.project.class.path">
+      <pathelement location="${metaviz.classes.dir}"/>
       <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
       <pathelement location="${cytoscape.lib.dir}/cytoscape.jar"/>
       <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
       <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/piccolo.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/piccolox.jar"/>
       <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
       <pathelement location="${cytoscape.lib.dir}/tclib.jar"/>
       <pathelement path="${project.class.path}/"/>
@@ -70,17 +72,18 @@
   </target>
 
   <!-- =================================================================== -->
-  <!-- Compiles the datamap project                                           -->
+  <!-- Compiles the metaviz project                                           -->
   <!-- =================================================================== -->
-  <target name="compile-datamap" depends="init-datamap"  >
+  <target name="compile-metaviz" depends="init-metaviz"  >
 
-   <echo message=" COMPILE datamap "/>
+   <echo message=" COMPILE metaviz "/>
 
-    <mkdir dir="${datamap.classes.dir}"/>
-    <javac srcdir="${datamap.src.dir}"
-           excludes="${datamap.excludes}"
-           classpathref="datamap.project.class.path"
-           destdir="${datamap.classes.dir}"
+    <mkdir dir="${metaviz.classes.dir}"/>
+    <javac compiler="jikes"
+           srcdir="${metaviz.src.dir}"
+           excludes="${metaviz.excludes}"
+           classpathref="metaviz.project.class.path"
+           destdir="${metaviz.classes.dir}"
            debug="${debug}"
            nowarn="${nowarn}"
            deprecation="${deprecation}" 
@@ -89,31 +92,31 @@
   </target>
 
   <!-- =================================================================== -->
-  <!-- Creates the datamap.jar file                                           -->
+  <!-- Creates the metaviz.jar file                                           -->
   <!-- =================================================================== -->
-  <target name="datamap" depends="compile-datamap"  >
-    <jar destfile="datamap.jar" manifest="${datamap.manifest.dir}/datamap.manifest">
+  <target name="metaviz" depends="compile-metaviz"  >
+    <jar destfile="metaviz.jar" manifest="${metaviz.manifest.dir}/metaviz.manifest">
       <fileset
-        dir="${datamap.classes.dir}"
+        dir="${metaviz.classes.dir}"
         includes="**"/>
       <fileset
-        dir="${datamap.root.dir}/lib"
+        dir="${metaviz.root.dir}/lib"
         includes="resources/**"/>
     </jar>
-    <copy todir="${datamap.lib.dir}" file="datamap.jar"/>
-    <copy todir="${cytoscape.plugin.dir}" file="datamap.jar"/>
+    <copy todir="${metaviz.lib.dir}" file="metaviz.jar"/>
+    <copy todir="${cytoscape.plugin.dir}" file="metaviz.jar"/>
   </target>
 
   <!-- =================================================================== -->
-  <!-- Compiles the datamap tests                                             -->
+  <!-- Compiles the metaviz tests                                             -->
   <!-- =================================================================== -->
-  <target name="compile-tests" depends="datamap"  >
-    <mkdir dir="${datamap.classes.dir}"/>
-    <javac srcdir="${datamap.src.dir}"
+  <target name="compile-tests" depends="metaviz"  >
+    <mkdir dir="${metaviz.classes.dir}"/>
+    <javac srcdir="${metaviz.src.dir}"
            includes="**/test/*"
-           excludes="${datamap.tests.excludes}"
-           classpathref="datamap.project.class.path"
-           destdir="${datamap.classes.dir}"
+           excludes="${metaviz.tests.excludes}"
+           classpathref="metaviz.project.class.path"
+           destdir="${metaviz.classes.dir}"
            debug="${debug}"
            deprecation="${deprecation}" 
            optimize="${optimize}"
@@ -121,30 +124,30 @@
   </target>
 
   <!-- =================================================================== -->
-  <!-- Creates the datamap-tests.jar file                                     -->
+  <!-- Creates the metaviz-tests.jar file                                     -->
   <!-- =================================================================== -->
   <target name="tests" depends="compile-tests"  >
-    <jar jarfile="datamap-tests.jar"
-         basedir="${datamap.classes.dir}"
+    <jar jarfile="metaviz-tests.jar"
+         basedir="${metaviz.classes.dir}"
          includes="**/test/*"/>
   </target>
 
   <!-- =================================================================== -->
   <!-- Build all jars                                                      -->
   <!-- =================================================================== -->
-  <target name="all" depends="datamap"/>
+  <target name="all" depends="metaviz"/>
 
    <!-- =================================================================== -->
   <!-- Run the Plugin                                                      -->
   <!-- =================================================================== -->
-  <target name="run" depends="datamap" >
+  <target name="run" depends="metaviz" >
      
      <java classname="cytoscape.cytoscape" 
-           classpathref="datamap.project.class.path"
+           classpathref="metaviz.project.class.path"
            fork="true"/>
            <arg line = "-y giny"/>
            <arg line = "--JLD"/>
-           <arg line = "${datamap.lib.dir}/datamap.jar"/>
+           <arg line = "${metaviz.lib.dir}/metaviz.jar"/>
            
 
   </target>
@@ -152,24 +155,24 @@
 
 
   <!-- =================================================================== -->
-  <!-- Runs the tests in datamap-tests.jar                                    -->
+  <!-- Runs the tests in metaviz-tests.jar                                    -->
   <!-- =================================================================== -->
   <target name="runtests" depends="tests"  >
-    <mkdir dir="${datamap.tests.reports.dir}"/>
+    <mkdir dir="${metaviz.tests.reports.dir}"/>
     <junit
        printsummary="yes"
        haltonfailure="no"
-       dir="${datamap.classes.dir}"
+       dir="${metaviz.classes.dir}"
        maxmemory="1G"
     >
       <formatter type="plain" usefile="true" />
-      <classpath refid="datamap.project.class.path"/>
+      <classpath refid="metaviz.project.class.path"/>
       <!-- The junit task doesn't support 'if' so we test for JUnit here -->
-      <batchtest fork="yes" todir="${datamap.tests.reports.dir}" if="junit.present">
+      <batchtest fork="yes" todir="${metaviz.tests.reports.dir}" if="junit.present">
         <fileset
-           dir="${datamap.classes.dir}"
+           dir="${metaviz.classes.dir}"
            includes="**/test/*"
-           excludes="${datamap.tests.excludes}"
+           excludes="${metaviz.tests.excludes}"
         />
       </batchtest>
     </junit>
@@ -178,30 +181,30 @@
   <!-- =================================================================== -->
   <!-- Creates the API documentation                                       -->
   <!-- =================================================================== -->
-  <target name="docs" depends="init-datamap" >
-    <mkdir dir="${datamap.javadoc.dir}"/>
-    <javadoc packagenames="${datamap.packages}"
-             excludepackagenames="${datamap.packages.excludes}"
-             sourcepath="${datamap.src.dir}"
-             destdir="${datamap.javadoc.dir}"
-             classpathref="datamap.project.class.path"
+  <target name="docs" depends="init-metaviz" >
+    <mkdir dir="${metaviz.javadoc.dir}"/>
+    <javadoc packagenames="${metaviz.packages}"
+             excludepackagenames="${metaviz.packages.excludes}"
+             sourcepath="${metaviz.src.dir}"
+             destdir="${metaviz.javadoc.dir}"
+             classpathref="metaviz.project.class.path"
              author="true"
              version="true"
              use="true"
              splitindex="true"
              noindex="false"
-             windowtitle="${datamap.Name} API"
-             doctitle="${datamap.Name}"
+             windowtitle="${metaviz.Name} API"
+             doctitle="${metaviz.Name}"
     />
   </target>
  
   <!-- =================================================================== -->
   <!-- Clean up, get back to original state                                -->
   <!-- =================================================================== -->
-  <target name="clean" depends="init-datamap">
-    <delete dir="${datamap.classes.dir}"/>
-    <delete file="datamap.jar"/>
-    <delete file="datamap-tests.jar"/>
+  <target name="clean" depends="init-metaviz">
+    <delete dir="${metaviz.classes.dir}"/>
+    <delete file="metaviz.jar"/>
+    <delete file="metaviz-tests.jar"/>
   </target>
 
 </project>
