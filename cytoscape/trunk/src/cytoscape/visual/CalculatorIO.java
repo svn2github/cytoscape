@@ -153,18 +153,30 @@ public class CalculatorIO {
         Collection nacNames = catalog.getNodeAppearanceCalculatorNames();
         for (Iterator i = nacNames.iterator(); i.hasNext(); ) {
             String name = (String)i.next();
-            NodeAppearanceCalculator nac = catalog.getNodeAppearanceCalculator(name);
-            String baseKey = nodeAppearanceBaseKey + "." + name;
-            Properties props = nac.getProperties(baseKey);
-            newProps.putAll(props);
+            try {
+                NodeAppearanceCalculator nac = catalog.getNodeAppearanceCalculator(name);
+                String baseKey = nodeAppearanceBaseKey + "." + name;
+                Properties props = nac.getProperties(baseKey);
+                newProps.putAll(props);
+            } catch (Exception e) {
+                String s = "Exception while saving node appearance calculator " + name;
+                System.err.println(s);
+                System.err.println(e.getMessage());
+            }
         }
         Collection eacNames = catalog.getEdgeAppearanceCalculatorNames();
         for (Iterator i = eacNames.iterator(); i.hasNext(); ) {
             String name = (String)i.next();
-            EdgeAppearanceCalculator eac = catalog.getEdgeAppearanceCalculator(name);
-            String baseKey = edgeAppearanceBaseKey + "." + name;
-            Properties props = eac.getProperties(baseKey);
-            newProps.putAll(props);
+            try {
+                EdgeAppearanceCalculator eac = catalog.getEdgeAppearanceCalculator(name);
+                String baseKey = edgeAppearanceBaseKey + "." + name;
+                Properties props = eac.getProperties(baseKey);
+                newProps.putAll(props);
+            } catch (Exception e) {
+                String s = "Exception while saving edge appearance calculator " + name;
+                System.err.println(s);
+                System.err.println(e.getMessage());
+            }
         }
         
         return newProps;
@@ -177,9 +189,17 @@ public class CalculatorIO {
     private static void addProperties(Properties newProps, Collection calcs, String baseKey) {
         for (Iterator i = calcs.iterator(); i.hasNext(); ) {
             Calculator c = (Calculator)i.next();
+            if (c == null) {continue;}
             String calcBaseKey = baseKey + "." + c.toString();
-            Properties props = CalculatorFactory.getProperties(c, calcBaseKey);
-            newProps.putAll(props);
+            //wrap each calculator addition in a try/catch block, so that
+            //failure to convert one calculator doesn't affect all the others
+            try {
+                Properties props = CalculatorFactory.getProperties(c, calcBaseKey);
+                newProps.putAll(props);
+            } catch (Exception e) {
+                System.err.println("Exception while saving " + calcBaseKey);
+                System.err.println(e.getMessage());
+            }
         }
     }
     
