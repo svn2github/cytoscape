@@ -32,6 +32,10 @@ public interface GraphTopology
    * interface a node is referenced by its index.  Indexes of nodes start
    * at <code>0</code> and end at <nobr><code>getNumNodes() - 1</code></nobr>,
    * inclusive.
+   * Note: a graph which contains an edge must also contain at least one
+   * node; therefore, there are certain constraints on allowable return values.
+   * For example, if <code>getNumEdges()</code> returns <code>1</code>
+   * then <code>getNumNodes()</code> must return a value greater than zero.
    *
    * @return number of nodes in this graph.
    */
@@ -44,8 +48,8 @@ public interface GraphTopology
    * inclusive.<p>
    * Note: a graph which contains an edge must also contain at least one
    * node; therefore, there are certain constraints on allowable return values.
-   * For example, if <code>getNumEdges()</code> returns <code>1</code>,
-   * then <code>getNumEdges()</code> must return a value greater than zero.
+   * For example, if <code>getNumEdges()</code> returns <code>1</code>
+   * then <code>getNumNodes()</code> must return a value greater than zero.
    *
    * @return number of edges in this graph.
    */
