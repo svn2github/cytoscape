@@ -1,3 +1,10 @@
+//-------------------------------------------------------------------------
+// $Revision$
+// $Date$
+// $Author$
+//-------------------------------------------------------------------------
+
+
 package cytoscape.graphutil;
 
 import edu.umd.cs.piccolo.*;
@@ -111,10 +118,39 @@ public class GridNode extends PPath
    * position, i.e. after a layout
    */
   protected boolean notUpdated;
+    protected int size = 6;
+  double scale = 10; 		     
+  protected Vector data = new Vector ();
+  protected Vector lamda;
+  protected float[] values = new float[size];
+  protected String[] conditions;
+  float[] X = new float [size];
+  float[] Y = new float [size];
+  
+  protected ColorInterpolator colorInterpolatorPositive;
+  protected ColorInterpolator colorInterpolatorNegative;
+
+  protected Map wedgeMap;
 
   //----------------------------------------//
   // Constructors and Initialization
   //----------------------------------------//
+  
+  /**
+*/
+  public GridNode ( int node_index, PGraphView view, Vector data, Vector lamda, String[] conditions, ColorInterpolator interpolP, ColorInterpolator interpolN) {
+    this( node_index, view );
+    this.data = data;
+    this.lamda = lamda;
+    this.conditions = conditions;
+    this.colorInterpolatorPositive = interpolP;
+    this.colorInterpolatorNegative = interpolN;
+    colorInterpolatorNegative.addPropertyChangeListener( this );
+    colorInterpolatorPositive.addPropertyChangeListener( this );
+    wedgeMap = new HashMap();
+    // set up the node
+    drawNodeView();
+  }
 
   public GridNode ( int        node_index,
                      PGraphView view ) {
@@ -249,8 +285,106 @@ public class GridNode extends PPath
                                   label );
     }
 
-    initializeNodeView();
+    //initializeNodeView();
 
+  }
+  
+  
+  public void drawNodeView() {
+	  
+	   //label = new PLabel( "Grid Node Example", this );
+    RootGraph graph = view.getRootGraph();
+     Node nd = graph.getNode(getIndex());
+     String l = nd.getIdentifier();
+     label = new PLabel ( l, this);
+    label.updatePosition();
+    label.setPickable(false);
+    label.setLabelLocation( PLabel.NORTH );
+    
+
+    // set the Node Position
+    setOffset( view.getNodeDoubleProperty( rootGraphIndex, PGraphView.NODE_X_POSITION ),
+               view.getNodeDoubleProperty( rootGraphIndex, PGraphView.NODE_Y_POSITION ) );
+   
+    // set the Stroke
+    setStroke( (new BasicStroke( view.getNodeFloatProperty( rootGraphIndex, PGraphView.NODE_BORDER_WIDTH ) ) ) );
+    size = data.size();
+    
+    setBounds( 0, 0, 25, size*10 );
+   
+    PNode rect = new PNode();
+    rect.setBounds( -5, -5, 25 + 5, size*10 + 10 );
+    rect.setPaint( java.awt.Color.white );
+    addChild( rect );
+    values = new float[size];
+    
+    double expression;
+    int lamdaValue;
+
+   
+    
+    for (  int n = 0; n < size; n++  ) {
+      for ( int j = 0; j < 1; j ++ ) {//for one time cource for now
+        expression = ( ( Double )data.get( n ) ).doubleValue();
+        lamdaValue = ( ( Double )lamda.get( n ) ).intValue();
+        expression = expression * 100;
+        
+        PNode node = createGridPart( "Condition:  " +conditions[n] + '\n'+ "Timecource: " + j + '\n' +"value: " + ( expression/100 )+ '\n' +"lamda: " + lamdaValue , lamdaValue, expression );
+        addChild( node );
+        node.offset( 0, n*10 );
+      }
+    }
+
+    addChild( label );
+
+
+    
+    PLocator locator = new PLocator () {
+        
+        public double locateX () {
+          return ( getX() + getWidth() * .5 );
+        }
+
+        public double locateY () {
+          return ( getY() + getHeight() * .5 );
+        }
+
+        public Point2D locatePoint () {
+          return new Point2D.Double( locateX(), locateY() );
+        }
+      };
+
+
+
+    final PHandle h = new PHandle( locator ) {
+                                              
+        public void dragHandle(PDimension aLocalDimension, PInputEvent aEvent) {
+				localToParent(aLocalDimension);
+				getParent().translate(aLocalDimension.getWidth(), aLocalDimension.getHeight());
+				updateOffset();
+			}			
+		};
+		
+		h.addInputEventListener(new PBasicInputEventHandler() {
+			public void mousePressed(PInputEvent aEvent) {
+				h.setPaint(Color.YELLOW);
+			}
+			
+			public void mouseReleased(PInputEvent aEvent) {
+				h.setPaint(Color.WHITE);
+			}
+		});
+
+    this.addChild( h );
+    h.setParent( this );
+
+
+    // TODO: Remove?
+    this.visible = true;
+    this.selected = false;
+    this.notUpdated = false;
+    setPickable(true);
+    invalidatePaint();
   }
 
   protected void initializeNodeView () {
@@ -292,7 +426,7 @@ public class GridNode extends PPath
         //}
         value = (double)i + (double)j;
 
-        PNode node = createGridPart( "X: "+i+" Y: "+j, value );
+        PNode node = createGridPart( "X: "+i+" Y: "+j, value, value );
         addChild( node );
         node.offset( i, j );
       }
@@ -342,39 +476,6 @@ public class GridNode extends PPath
     h.setParent( this );
 
 
-
- //    final PhoebeText tooltipNode = new PhoebeText();
-//     final PCamera camera = view.getCanvas().getCamera();
-//     tooltipNode.setPickable(false);
-//     camera.addChild(tooltipNode);
-//     camera.addInputEventListener(new PBasicInputEventHandler() {	
-// 			public void mouseMoved(PInputEvent event) {
-// 				updateToolTip(event);
-// 			}
-
-// 			public void mouseDragged(PInputEvent event) {
-// 				updateToolTip(event);
-// 			}
-
-// 			public void updateToolTip(PInputEvent event) {
-
-
-//         PNode n = event.getInputManager().getMouseOver().getPickedNode();
-//         String tooltipString =  (String) n.getClientProperty("tooltip");
-//         Point2D p = event.getCanvasPosition();
-             
-//         event.getPath().canvasToLocal(p, camera);
-     
-//         tooltipNode.setText(tooltipString);
-//         tooltipNode.setOffset(p.getX() + 8, 
-//                               p.getY() - 8);
-//       }
-      
-// 		});
-
-
-
-
     // TODO: Remove?
     this.visible = true;
     this.selected = false;
@@ -384,53 +485,20 @@ public class GridNode extends PPath
 
   }
 
-  public PNode createGridPart ( String tooltip, double value ) {
+  public PNode createGridPart ( String tooltip, double value, double expression ) {
     PNode node = new PNode();
-    node.setBounds( 0, 0, 20, 20 );
-    //if ( value < 0 ) {
-    //  node.setPaint( java.awt.Color.pink );
-    //} else {
-    //  node.setPaint( java.awt.Color.blue );
-    //}
-    node.setPaint( phoebe.util.ColorInterpolator.colorFromValue( 0, java.awt.Color.red, 75, java.awt.Color.black, 150, java.awt.Color.blue, value ) );
+    node.setBounds( 0, 0, 20, 10 );
+    if ( expression >= 0 ) {
+      node.setPaint( colorInterpolatorPositive.colorFromValue(Math.abs(expression)));
+    } else {
+      node.setPaint( colorInterpolatorNegative.colorFromValue(Math.abs(expression)));
+    }
+    //node.setPaint( phoebe.util.ColorInterpolator.colorFromValue( 0, java.awt.Color.red, 75, java.awt.Color.black, 150, java.awt.Color.blue, value ) );
 
     node.addClientProperty( "tooltip", tooltip );
     return node;
   }
-           
-
-
-//   public class PhoebeText extends PNode {
-    
-//     PText text;
-
-//     public PhoebeText () {
-//       super();
-//       text = new PText();
-//       addChild( text );
-//       setPaint( java.awt.Color.yellow );
-//     }
-
-//     public void setText ( String new_text ) {
-//       text.setText( new_text );
-//       setBounds( text.getFullBounds() );
-//     }
-
-//     public void setBackground ( int color ) {
-//       switch ( color ) {
-//       case 1: setPaint( java.awt.Color.yellow );
-//         break;
-//       }
-//     }
-
-//     public void setForeground ( int color ) {
-//       switch ( color ) {
-//       case 1: setPaint( java.awt.Color.yellow );
-//         break;
-//       }
-//     }
-//   }
-                                            
+                                                   
   /**
    * @param stroke the new stroke for the border
    */
@@ -683,35 +751,7 @@ public void setLocation (double x, double y)
    * itself as selected.
    */
   public void propertyChange(PropertyChangeEvent evt) {
-    // if (evt.getPropertyName()
-//         .equals("identifier")) {
-//       if (label != null) {
-//         //pcs.firePropertyChange("identifier", null, evt.getNewValue() );
-//         //label.setText(getNode().getIdentifier());
-
-//         // PBounds lBounds = label.getBounds();
-//         //                 float lWidth = new Double(lBounds.getWidth()).floatValue();
-//         //                 float lHeight = new Double(lBounds.getHeight()).floatValue();
-//         //                 setPathToRectangle(0f, 0f, lWidth + 5f, lHeight + 5f);
-
-//         //                 //fitShapeToLabel();
-//         //                 moveToFront();
-//       }
-//     } else if (evt.getPropertyName()
-//                .equals("selected")) {
-//       //System.out.println("Selction being changed");
-//       Boolean bool = (Boolean) evt.getNewValue();
-
-//       if (bool.booleanValue()) {
-//         view.getSelectionHandler()
-//           .select(this);
-//       } else {
-//         view.getSelectionHandler()
-//           .unselect(this);
-//       }
-
-//       // set selection
-//     }
+  
   }
 
   

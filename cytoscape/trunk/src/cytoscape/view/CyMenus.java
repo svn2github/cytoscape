@@ -317,8 +317,17 @@ public class CyMenus {
     if ( !networkView.getCytoscapeObj().getConfiguration().isYFiles() ) {
       editMenu.add( new SquiggleAction( networkView ) ); 
       vizMenu.add( new BirdsEyeViewAction( networkView ) );
-       vizMenu.add( new ShowExpressionDataAction( networkView ) );
+      //added by larissa 10/03
+       JMenu showExpressionData = new JMenu ("Show Expression Data" );
+       vizMenu.add(showExpressionData);
+       mi = showExpressionData.add( new ShowExpressionDataAction( networkView, ShowExpressionDataAction.STAR_PLOT, "... as Star Plots" ) );
+       mi = showExpressionData.add( new ShowExpressionDataAction( networkView, ShowExpressionDataAction.GRID_NODE, "... as Grid Nodes" ) );
+       mi = showExpressionData.add( new ShowExpressionDataAction( networkView, ShowExpressionDataAction.PETAL_NODE, "... as Petal Nodes" ) );
+       mi = showExpressionData.add( new ShowExpressionDataAction( networkView, ShowExpressionDataAction.RADAR_NODE, "... as Radar Nodes" ) );
+
+       
        vizMenu.add( new AnimatedLayoutAction( networkView ) );
+       vizMenu.add ( new BackgroundColorAction (networkView) );
     }
 
     selectNodesSubMenu.add(new AlphabeticalSelectionAction(networkView));

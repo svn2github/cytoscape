@@ -1,3 +1,9 @@
+
+//-------------------------------------------------------------------------
+// $Revision$
+// $Date$
+// $Author$
+//-------------------------------------------------------------------------
 package cytoscape.graphutil;
 
 import edu.umd.cs.piccolo.*;
@@ -111,6 +117,21 @@ public class PetalNode extends PPath
    * position, i.e. after a layout
    */
   protected boolean notUpdated;
+  int size;
+  protected Map wedgeMap;
+   protected Vector data = new Vector ();
+  protected Vector lamda;
+  protected float[] values = new float[size];
+  protected String[] conditions;
+  float[] X = new float [size];
+  float[] Y = new float [size];
+   float[] X1 = new float [size];
+  float[] Y1 = new float [size];
+   float[] X2 = new float [size];
+  float[] Y2 = new float [size];
+  protected ColorInterpolator colorInterpolatorPositive;
+  protected ColorInterpolator colorInterpolatorNegative;
+
 
   //----------------------------------------//
   // Constructors and Initialization
@@ -131,7 +152,21 @@ public class PetalNode extends PPath
            Double.MAX_VALUE,
            ( String )null );
   }
-
+/**
+*/
+  public PetalNode ( int node_index, PGraphView view, Vector data, Vector lamda, String[] conditions, ColorInterpolator interpolP, ColorInterpolator interpolN) {
+    this( node_index, view );
+    this.data = data;
+    this.lamda = lamda;
+    this.conditions = conditions;
+    this.colorInterpolatorPositive = interpolP;
+    this.colorInterpolatorNegative = interpolN;
+    colorInterpolatorNegative.addPropertyChangeListener( this );
+    colorInterpolatorPositive.addPropertyChangeListener( this );
+    wedgeMap = new HashMap();
+    // set up the node
+    drawNodeView();
+  }
   /**
    * Create a new PetalNode with the given physical attributes.
    * @param node_index The RootGraph Index of this node 
@@ -249,7 +284,200 @@ public class PetalNode extends PPath
                                   label );
     }
 
-    initializeNodeView();
+   // initializeNodeView();
+
+  }
+  
+   public void addExpressionData ( Vector data, Vector lamda ) {
+    this.data = data;
+    this.lamda = lamda;
+    drawNodeView();
+  }
+
+
+  protected void updateWedges () {
+    Iterator wedges = wedgeMap.keySet().iterator();
+    while ( wedges.hasNext() ) {
+      PPath wedge = ( PPath )wedges.next();
+      double[] values = ( double[] )wedgeMap.get( wedge );
+      if ( values[0] < 0 ) {
+        wedge.setStrokePaint( colorInterpolatorNegative.colorFromValue( values[1] ) );
+      } else {
+        wedge.setStrokePaint( colorInterpolatorPositive.colorFromValue( values[1] ) );
+      }
+    }
+  }
+  
+  protected void drawNodeView() {
+	  RootGraph graph = view.getRootGraph();
+    Node node = graph.getNode(getIndex());
+    String l = node.getIdentifier();
+    label = new PLabel ( l, this);
+    label.updatePosition();
+    label.setPickable(false);
+    label.setLabelLocation( PLabel.NORTH );
+    
+
+    // set the Node Position
+    setOffset( view.getNodeDoubleProperty( rootGraphIndex, PGraphView.NODE_X_POSITION ),
+               view.getNodeDoubleProperty( rootGraphIndex, PGraphView.NODE_Y_POSITION ) );
+    
+    	       
+   
+    // set the Stroke
+    setStroke( new BasicStroke( .7f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1f )  );
+
+    setPaint( ( Paint )view.getNodeObjectProperty( rootGraphIndex,
+                                                   PGraphView.NODE_PAINT ) );
+    
+
+    
+
+
+    final float x = (float)getX();
+    final float y = (float)getY();
+
+    final float xstart = .5f * (float)getWidth()  + x;
+    final float ystart = .5f * (float)getHeight() + y;
+    
+     double theta;
+     double theta1;
+     double theta2;
+    size = data.size();
+    X = new float [size];
+    Y = new float [size];
+    X1 = new float [size];
+    Y1 = new float [size];
+    X2 = new float [size];
+    Y2 = new float [size];
+    values = new float[size];
+    
+    double expression;
+    int lamdaValue;
+
+    for (int n = 0; n < size; n++)
+      {
+        theta = (360*n)/size;
+	theta1 = theta + 360/size;
+	theta2 = ( theta1 - theta ) / 2 + theta;
+
+        expression = ( ( Double )data.get( n ) ).doubleValue();
+        lamdaValue = ( ( Double )lamda.get( n ) ).intValue();
+        expression = expression * 100;
+      
+
+        //System.out.println( "Value: "+expression+" lamda: "+lamdaValue+" for : "+getLabel() );
+	
+	X[n] = xstart + Math.abs( ( float )expression ) *
+          (float)Math.sin(Math.toRadians(theta));
+	   
+	    
+        Y[n] = ystart + Math.abs( ( float )expression ) *
+          (float)Math.cos(Math.toRadians(theta));
+	  
+	  
+     
+	X1[n] = xstart + Math.abs( ( float )expression ) *
+          (float)Math.sin(Math.toRadians(theta1));
+	   
+	    
+        Y1[n] = ystart + Math.abs( ( float )expression ) *
+          (float)Math.cos(Math.toRadians(theta1));   
+	  
+	X2[n] = xstart + Math.abs( ( float )expression ) *
+          (float)Math.sin(Math.toRadians(theta2));
+	   
+	    
+        Y2[n] = ystart + Math.abs( ( float )expression ) *
+          (float)Math.cos(Math.toRadians(theta2));  
+        PPath wedge = new PPath();
+        wedgeMap.put( wedge, new double[] { expression, lamdaValue } );
+        wedge.moveTo( xstart, ystart );
+	wedge.lineTo( X[n], Y[n] );
+	wedge.quadTo( X2[n],Y2[n],X1[n],Y1[n] );
+       
+        wedge.closePath();
+        //wedge.setStroke( new BasicStroke( 5 ) );
+
+
+        if ( expression < 0 ) {
+
+          wedge.setPaint( colorInterpolatorNegative.colorFromValue( lamdaValue ) );
+
+	  //GradientPaint( bpx, bpy, start, X[n], Y[n], end ) );
+          
+        
+        } else {
+          // POSITIVE
+          wedge.setPaint( colorInterpolatorPositive.colorFromValue( lamdaValue ) );
+
+
+        }
+       
+        if ( n == 0)
+          moveTo(X[n], Y[n]);
+        else
+          lineTo(X[n], Y[n]);
+        if (n == size - 1)
+          closePath();
+	   	
+        addChild(wedge);
+        wedge.addClientProperty("tooltip", getLabel()+'\n'+conditions[n] + '\n' +"value: " + ( expression/100 )+ '\n' +"lamda: "+lamdaValue);
+	   
+      }//end for
+      
+       PLocator locator = new PLocator () {
+        
+        public double locateX () {
+          //return ( getX() + getWidth() * .5 );
+          return (double)xstart;
+        }
+
+        public double locateY () {
+          //return ( getY() + getHeight() * .5 );
+          return (double)ystart;
+
+        }
+
+        public Point2D locatePoint () {
+          return new Point2D.Double( locateX(), locateY() );
+        }
+      };
+
+
+
+    final PHandle h = new PHandle( locator ) {
+                                              
+        public void dragHandle(PDimension aLocalDimension, PInputEvent aEvent) {
+          localToParent(aLocalDimension);
+          getParent().translate(aLocalDimension.getWidth(), aLocalDimension.getHeight());
+          updateOffset();
+        }			
+        
+        public String toString () {
+          return getLabel();
+        }
+
+      };
+		
+		h.addInputEventListener(new PBasicInputEventHandler() {
+        public void mousePressed(PInputEvent aEvent) {
+          h.setPaint(Color.YELLOW);
+        }
+			
+        public void mouseReleased(PInputEvent aEvent) {
+          h.setPaint(Color.WHITE);
+        }
+      });
+
+    this.addChild( h );
+    h.setParent( this );
+    h.addClientProperty("tooltip", getLabel() );
+    this.visible = true;
+    this.selected = false;
+    this.notUpdated = false;
+    setPickable(true);
+    invalidatePaint();
 
   }
 
@@ -442,39 +670,6 @@ public class PetalNode extends PPath
     h.setParent( this );
 
 
-
- //    final PhoebeText tooltipNode = new PhoebeText();
-//     final PCamera camera = view.getCanvas().getCamera();
-//     tooltipNode.setPickable(false);
-//     camera.addChild(tooltipNode);
-//     camera.addInputEventListener(new PBasicInputEventHandler() {	
-// 			public void mouseMoved(PInputEvent event) {
-// 				updateToolTip(event);
-// 			}
-
-// 			public void mouseDragged(PInputEvent event) {
-// 				updateToolTip(event);
-// 			}
-
-// 			public void updateToolTip(PInputEvent event) {
-
-
-//         PNode n = event.getInputManager().getMouseOver().getPickedNode();
-//         String tooltipString =  (String) n.getClientProperty("tooltip");
-//         Point2D p = event.getCanvasPosition();
-             
-//         event.getPath().canvasToLocal(p, camera);
-     
-//         tooltipNode.setText(tooltipString);
-//         tooltipNode.setOffset(p.getX() + 8, 
-//                               p.getY() - 8);
-//       }
-      
-// 		});
-
-
-
-
     // TODO: Remove?
     this.visible = true;
     this.selected = false;
@@ -483,37 +678,6 @@ public class PetalNode extends PPath
     invalidatePaint();
 
   }
-
-//   public class PhoebeText extends PNode {
-    
-//     PText text;
-
-//     public PhoebeText () {
-//       super();
-//       text = new PText();
-//       addChild( text );
-//       setPaint( java.awt.Color.yellow );
-//     }
-
-//     public void setText ( String new_text ) {
-//       text.setText( new_text );
-//       setBounds( text.getFullBounds() );
-//     }
-
-//     public void setBackground ( int color ) {
-//       switch ( color ) {
-//       case 1: setPaint( java.awt.Color.yellow );
-//         break;
-//       }
-//     }
-
-//     public void setForeground ( int color ) {
-//       switch ( color ) {
-//       case 1: setPaint( java.awt.Color.yellow );
-//         break;
-//       }
-//     }
-//   }
                                             
   /**
    * @param stroke the new stroke for the border
@@ -778,35 +942,7 @@ public void setLocation (double x, double y)
    * itself as selected.
    */
   public void propertyChange(PropertyChangeEvent evt) {
-    // if (evt.getPropertyName()
-//         .equals("identifier")) {
-//       if (label != null) {
-//         //pcs.firePropertyChange("identifier", null, evt.getNewValue() );
-//         //label.setText(getNode().getIdentifier());
-
-//         // PBounds lBounds = label.getBounds();
-//         //                 float lWidth = new Double(lBounds.getWidth()).floatValue();
-//         //                 float lHeight = new Double(lBounds.getHeight()).floatValue();
-//         //                 setPathToRectangle(0f, 0f, lWidth + 5f, lHeight + 5f);
-
-//         //                 //fitShapeToLabel();
-//         //                 moveToFront();
-//       }
-//     } else if (evt.getPropertyName()
-//                .equals("selected")) {
-//       //System.out.println("Selction being changed");
-//       Boolean bool = (Boolean) evt.getNewValue();
-
-//       if (bool.booleanValue()) {
-//         view.getSelectionHandler()
-//           .select(this);
-//       } else {
-//         view.getSelectionHandler()
-//           .unselect(this);
-//       }
-
-//       // set selection
-//     }
+ 
   }
   
   public void updateOffset()

@@ -1,3 +1,10 @@
+//-------------------------------------------------------------------------
+// $Revision$
+// $Date$
+// $Author$
+//-------------------------------------------------------------------------
+
+
 package cytoscape.graphutil;
 
 import edu.umd.cs.piccolo.*;
@@ -341,16 +348,6 @@ public class ClipRadarNode extends PClip
     final float ystart = .5f * (float)getHeight() + y;
     
     
-    //initialize data lists
-    
-    
-    // for (int i = 0; i < size; i++){
-	  //  values[i]=(float)i*(float)scale;
-	  //  conditions[i]="Condition" + (i+1);
-	  //  X[i] = (float)0.01;
-	  //  Y[i] = (float)0.01;
-    
-    //}
     
     //add circulars
     addCircularChildren(xstart, ystart);
@@ -386,11 +383,7 @@ public class ClipRadarNode extends PClip
         Y[n] = ystart + Math.abs( ( float )expression ) *
           (float)Math.cos(Math.toRadians(theta));
      
-        //X[n]=xstart + (float)values[n]*(float)Math.sin(Math.toRadians(theta));
-        //Y[n] = ystart + (float)values[n]*(float)Math.cos(Math.toRadians(theta));
-        //System.out.println("  n = " + n +"   Theta = " +theta + "   X[n] = " + X[n] +"  Y{n} = "+ Y[n] + "  value = " + values[n]);
-        // plot ( X[n], Y[n], values[n]);
-
+        
         PPath wedge = new PPath();
         wedgeMap.put( wedge, new double[] { expression, lamdaValue } );
         wedge.moveTo( xstart, ystart );
@@ -403,130 +396,19 @@ public class ClipRadarNode extends PClip
 
           wedge.setStrokePaint( colorInterpolatorNegative.colorFromValue( lamdaValue ) );
 
-          // NEGATIVE
-        //   double logLamda;
-//           if ( lamdaValue < 1 ) {
-//             logLamda = 0;
-//           } else {
-//             logLamda = Arithmetic.log10( lamdaValue );
-//           }
-//           if ( logLamda > 2 ) {
-//             logLamda = 2;
-//           }
-       
-
-//           Color start, end;
-
-//           if ( lamdaValue > 55 ) {
-//             start = Color.red.darker();
-//           } else {
-//             int sig =  200 * lamdaValue  / 55;
-//             if ( sig < 0 ) {
-//               sig = 0;
-//             } else if ( sig > 200 ) {
-//               sig = 200;
-//             }
-//             start = new Color( 255, sig, sig );
-//             start = start.darker();
-//           }
-//           //end  = Color.white;
-
+	  //GradientPaint( bpx, bpy, start, X[n], Y[n], end ) );
           
-
-//           double breakpoint = logLamda * .1 * expression;
-//           float bpx = xstart + Math.abs( ( float )breakpoint ) *
-//             (float)Math.sin(Math.toRadians(theta));
-//           float bpy= xstart + Math.abs( ( float )breakpoint ) *
-//             (float)Math.cos(Math.toRadians(theta));
-       
-          //    wedge.setStrokePaint( start );
-          // PPath grad = new PPath();
-          //        grad.moveTo( bpx, bpy );
-          //        grad.lineTo( X[n], Y[n] );
-          //        grad.closePath();
-          //        grad.setStroke(  new BasicStroke( 5 ) );
-          //        grad.setStrokePaint( new GradientPaint( bpx, bpy, start, X[n], Y[n], end ) );
-          //        wedge.addChild( grad );
-
         
         } else {
           // POSITIVE
           wedge.setStrokePaint( colorInterpolatorPositive.colorFromValue( lamdaValue ) );
-
-         //  double logLamda;
-//           if ( lamdaValue < 1 ) {
-//             logLamda = 0;
-//           } else {
-//             logLamda = Arithmetic.log10( lamdaValue );
-//           }
-//           if ( logLamda > 2 ) {
-//             logLamda = 2;
-//           }
-//           Color start, end;
-
-//           if ( lamdaValue > 55 ) {
-//             start = Color.green.darker();
-//           } else {
-//             int sig =  200 * lamdaValue  / 55;
-//             if ( sig < 0 ) {
-//               sig = 0;
-//             } else if ( sig > 200 ) {
-//               sig = 200;
-//             }
-//             start = new Color(  sig, 255, sig );
-//             start = start.darker();
-//           }
-//           end  = Color.white;
-
-//           double breakpoint = logLamda * .1 * expression;
-//           float bpx = xstart + Math.abs( ( float )breakpoint ) *
-//             (float)Math.sin(Math.toRadians(theta));
-//           float bpy= xstart + Math.abs( ( float )breakpoint ) *
-//             (float)Math.cos(Math.toRadians(theta));
-       
-//           wedge.setStrokePaint( start );
-          // PPath grad = new PPath();
-          //        grad.moveTo( bpx, bpy );
-          //        grad.lineTo( X[n], Y[n] );
-          //        grad.closePath();
-          //        grad.setStroke(  new BasicStroke( 5 ) );
-          //        grad.setStrokePaint( new GradientPaint( bpx, bpy, start, X[n], Y[n], end ) );
-          //        wedge.addChild( grad );
 
 
         }
 
 
 
-        // COlor the line
-        // if ( expression < 0 ) {
-
-        //        if ( lamdaValue > 55 ) {
-        //          wedge.setStrokePaint( new Color( 255, 0, 0 ) );
-        //        } else {
-        //          int sig =  200 * lamdaValue  / 55;
-        //          if ( sig < 0 ) {
-        //            sig = 0;
-        //          } else if ( sig > 200 ) {
-        //            sig = 200;
-        //          }
-        //          wedge.setStrokePaint( new Color( 255, sig, sig ) );
-        //        }
-        
-        // 	   } else {
-        // 		   if ( lamdaValue > 55 ) {
-        //          wedge.setStrokePaint( new Color( 0, 255, 0 ) );
-        //        } else {
-        //          int sig =  200 * lamdaValue  / 55;
-        //          if ( sig < 0 ) {
-        //            sig = 0;
-        //          } else if ( sig > 200 ) {
-        //            sig = 200;
-        //          }
-        //          wedge.setStrokePaint( new Color( sig, 255, sig ) );
-        //        }
-        //      }
-
+       
         if ( n == 0)
           moveTo(X[n], Y[n]);
         else
@@ -586,37 +468,6 @@ public class ClipRadarNode extends PClip
     this.addChild( h );
     h.setParent( this );
     h.addClientProperty("tooltip", getLabel() );
-
-    //  final PhoebeText tooltipNode = new PhoebeText();
-    //     final PCamera camera = view.getCanvas().getCamera();
-    //     tooltipNode.setPickable(false);
-    //     camera.addChild(tooltipNode);
-    //     camera.addInputEventListener(new PBasicInputEventHandler() {	
-    // 			public void mouseMoved(PInputEvent event) {
-    // 				updateToolTip(event);
-    // 			}
-
-    // 			public void mouseDragged(PInputEvent event) {
-    // 				updateToolTip(event);
-    // 			}
-
-    // 			public void updateToolTip(PInputEvent event) {
-
-
-    //         PNode n = event.getInputManager().getMouseOver().getPickedNode();
-    //         String tooltipString =  (String) n.getClientProperty("tooltip");
-    //         Point2D p = event.getCanvasPosition();
-             
-    //         event.getPath().canvasToLocal(p, camera);
-     
-    //         tooltipNode.setText(tooltipString);
-    //         tooltipNode.setOffset(p.getX() + size, 
-    //                               p.getY() - size);
-    //       }
-      
-    // 		});
-
-    // TODO: Remove?
     this.visible = true;
     this.selected = false;
     this.notUpdated = false;
@@ -680,39 +531,6 @@ public class ClipRadarNode extends PClip
     addChild( circluar80 );
     addChild( circluar90 );
   }
-
- 
-
-  //   public class PhoebeText extends PNode {
-    
-  //     PText text;
-
-  //     public PhoebeText () {
-  //       super();
-  //       text = new PText();
-  //       addChild( text );
-  //       setPaint( java.awt.Color.yellow );
-  //     }
-
-  //     public void setText ( String new_text ) {
-  //       text.setText( new_text );
-  //       setBounds( text.getFullBounds() );
-  //     }
-
-  //     public void setBackground ( int color ) {
-  //       switch ( color ) {
-  //       case 1: setPaint( java.awt.Color.yellow );
-  //         break;
-  //       }
-  //     }
-
-  //     public void setForeground ( int color ) {
-  //       switch ( color ) {
-  //       case 1: setPaint( java.awt.Color.yellow );
-  //         break;
-  //       }
-  //     }
-  //   }
 
 
   public int getIndex () {
@@ -981,35 +799,7 @@ public class ClipRadarNode extends PClip
     // System.out.println( "Property Changed: "+evt.getNewValue()+" "+evt.getPropertyName() );
     updateWedges();
     
-    // if (evt.getPropertyName()
-    //         .equals("identifier")) {
-    //       if (label != null) {
-    //         //pcs.firePropertyChange("identifier", null, evt.getNewValue() );
-    //         //label.setText(getNode().getIdentifier());
-
-    //         // PBounds lBounds = label.getBounds();
-    //         //                 float lWidth = new Double(lBounds.getWidth()).floatValue();
-    //         //                 float lHeight = new Double(lBounds.getHeight()).floatValue();
-    //         //                 setPathToRectangle(0f, 0f, lWidth + 5f, lHeight + 5f);
-
-    //         //                 //fitShapeToLabel();
-    //         //                 moveToFront();
-    //       }
-    //     } else if (evt.getPropertyName()
-    //                .equals("selected")) {
-    //       //System.out.println("Selction being changed");
-    //       Boolean bool = (Boolean) evt.getNewValue();
-
-    //       if (bool.booleanValue()) {
-    //         view.getSelectionHandler()
-    //           .select(this);
-    //       } else {
-    //         view.getSelectionHandler()
-    //           .unselect(this);
-    //       }
-
-    //       // set selection
-    //     }
+   
   }
   
   public void updateOffset () {

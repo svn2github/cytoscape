@@ -1,3 +1,8 @@
+//-------------------------------------------------------------------------
+// $Revision$
+// $Date$
+// $Author$
+//-------------------------------------------------------------------------
 package cytoscape.graphutil;
 
 import edu.umd.cs.piccolo.*;
@@ -111,6 +116,20 @@ public class RadarNode extends PPath
    * position, i.e. after a layout
    */
   protected boolean notUpdated;
+  
+   protected int size = 6;
+  double scale = 10; 		     
+  protected Vector data = new Vector ();
+  protected Vector lamda;
+  protected float[] values = new float[size];
+  protected String[] conditions;
+  float[] X = new float [size];
+  float[] Y = new float [size];
+  
+  protected ColorInterpolator colorInterpolatorPositive;
+  protected ColorInterpolator colorInterpolatorNegative;
+
+  protected Map wedgeMap;
 
   //----------------------------------------//
   // Constructors and Initialization
@@ -130,6 +149,22 @@ public class RadarNode extends PPath
            Double.MAX_VALUE,
            Double.MAX_VALUE,
            ( String )null );
+  }
+  
+  /**
+*/
+  public RadarNode ( int node_index, PGraphView view, Vector data, Vector lamda, String[] conditions, ColorInterpolator interpolP, ColorInterpolator interpolN) {
+    this( node_index, view );
+    this.data = data;
+    this.lamda = lamda;
+    this.conditions = conditions;
+    this.colorInterpolatorPositive = interpolP;
+    this.colorInterpolatorNegative = interpolN;
+    colorInterpolatorNegative.addPropertyChangeListener( this );
+    colorInterpolatorPositive.addPropertyChangeListener( this );
+    wedgeMap = new HashMap();
+    // set up the node
+    drawNodeView();
   }
 
   /**
@@ -249,9 +284,247 @@ public class RadarNode extends PPath
                                   label );
     }
 
-    initializeNodeView();
+    //initializeNodeView();
 
   }
+  
+   public void addExpressionData ( Vector data, Vector lamda ) {
+    this.data = data;
+    this.lamda = lamda;
+    drawNodeView();
+  }
+
+
+  protected void updateWedges () {
+    Iterator wedges = wedgeMap.keySet().iterator();
+    while ( wedges.hasNext() ) {
+      PPath wedge = ( PPath )wedges.next();
+      double[] values = ( double[] )wedgeMap.get( wedge );
+      if ( values[0] < 0 ) {
+        wedge.setStrokePaint( colorInterpolatorNegative.colorFromValue( values[1] ) );
+      } else {
+        wedge.setStrokePaint( colorInterpolatorPositive.colorFromValue( values[1] ) );
+      }
+    }
+  }
+  
+  
+   protected void drawNodeView()
+  {
+	  RootGraph graph = view.getRootGraph();
+    Node node = graph.getNode(getIndex());
+    String l = node.getIdentifier();
+    label = new PLabel ( l, this);
+    label.updatePosition();
+    label.setPickable(false);
+    label.setLabelLocation( PLabel.NORTH );
+    
+
+    // set the Node Position
+    setOffset( view.getNodeDoubleProperty( rootGraphIndex, PGraphView.NODE_X_POSITION ),
+               view.getNodeDoubleProperty( rootGraphIndex, PGraphView.NODE_Y_POSITION ) );
+    
+    	       
+   
+    // set the Stroke
+    setStroke( new BasicStroke( .7f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1f )  );
+
+    setPaint( ( Paint )view.getNodeObjectProperty( rootGraphIndex,
+                                                   PGraphView.NODE_PAINT ) );
+    
+
+    
+
+
+    final float x = (float)getX();
+    final float y = (float)getY();
+
+    final float xstart = .5f * (float)getWidth()  + x;
+    final float ystart = .5f * (float)getHeight() + y;
+    
+    
+    
+    //add circulars
+    addCircularChildren(xstart, ystart);
+	    
+    //add wedges
+    double theta;
+    
+    size = data.size();
+    X = new float [size];
+    Y = new float [size];
+    values = new float[size];
+    
+    double expression;
+    int lamdaValue;
+
+    for (int n = 0; n < size; n++)
+      {
+        theta = (360*n)/size;
+
+        expression = ( ( Double )data.get( n ) ).doubleValue();
+        lamdaValue = ( ( Double )lamda.get( n ) ).intValue();
+        expression = expression * 100;
+      
+
+        //System.out.println( "Value: "+expression+" lamda: "+lamdaValue+" for : "+getLabel() );
+
+
+
+        X[n] = xstart + Math.abs( ( float )expression ) *
+          (float)Math.sin(Math.toRadians(theta));
+	   
+	    
+        Y[n] = ystart + Math.abs( ( float )expression ) *
+          (float)Math.cos(Math.toRadians(theta));
+     
+        
+        PPath wedge = new PPath();
+        wedgeMap.put( wedge, new double[] { expression, lamdaValue } );
+        wedge.moveTo( xstart, ystart );
+        wedge.lineTo( X[n], Y[n] );
+        wedge.closePath();
+        wedge.setStroke( new BasicStroke( 5 ) );
+
+
+        if ( expression < 0 ) {
+
+          wedge.setStrokePaint( colorInterpolatorNegative.colorFromValue( lamdaValue ) );
+
+	  //GradientPaint( bpx, bpy, start, X[n], Y[n], end ) );
+          
+        
+        } else {
+          // POSITIVE
+          wedge.setStrokePaint( colorInterpolatorPositive.colorFromValue( lamdaValue ) );
+
+
+        }
+       
+       // if ( n == 0)
+         // moveTo(X[n], Y[n]);
+        //else
+          //lineTo(X[n], Y[n]);
+        //if (n == size - 1)
+          //closePath();
+	   	
+        addChild(wedge);
+        wedge.addClientProperty("tooltip", getLabel()+'\n'+conditions[n] + '\n' +"value: " + ( expression/100 )+ '\n' +"lamda: "+lamdaValue);
+	   
+      }//end for
+    
+    PLocator locator = new PLocator () {
+        
+        public double locateX () {
+          //return ( getX() + getWidth() * .5 );
+          return (double)xstart;
+        }
+
+        public double locateY () {
+          //return ( getY() + getHeight() * .5 );
+          return (double)ystart;
+
+        }
+
+        public Point2D locatePoint () {
+          return new Point2D.Double( locateX(), locateY() );
+        }
+      };
+
+
+
+    final PHandle h = new PHandle( locator ) {
+                                              
+        public void dragHandle(PDimension aLocalDimension, PInputEvent aEvent) {
+          localToParent(aLocalDimension);
+          getParent().translate(aLocalDimension.getWidth(), aLocalDimension.getHeight());
+          updateOffset();
+        }			
+        
+        public String toString () {
+          return getLabel();
+        }
+
+      };
+		
+		h.addInputEventListener(new PBasicInputEventHandler() {
+        public void mousePressed(PInputEvent aEvent) {
+          h.setPaint(Color.YELLOW);
+        }
+			
+        public void mouseReleased(PInputEvent aEvent) {
+          h.setPaint(Color.WHITE);
+        }
+      });
+
+    this.addChild( h );
+    h.setParent( this );
+    h.addClientProperty("tooltip", getLabel() );
+    this.visible = true;
+    this.selected = false;
+    this.notUpdated = false;
+    setPickable(true);
+    invalidatePaint();
+	    
+  }
+  
+  protected void addCircularChildren(float xstart, float ystart)
+  {
+	  PPath circluar10 = new PPath();
+    circluar10.setPathToEllipse( xstart - 10, ystart -10, 20, 20 );
+    circluar10.setPaint( null );
+    circluar10.setStrokePaint( java.awt.Color.black );
+    circluar10.setStroke( new BasicStroke (.7f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1f, new float[] { 1, 2}, 2f ) );
+    PPath circluar20 = new PPath();
+    circluar20.setPathToEllipse( xstart - 20, ystart -20, 40, 40 );
+    circluar20.setPaint( null ); 
+    circluar20.setStrokePaint( java.awt.Color.black );
+    PPath circluar30 = new PPath();
+    circluar30.setPathToEllipse( xstart - 30, ystart -30, 60, 60 );
+    circluar30.setPaint( null );
+    circluar30.setStrokePaint( java.awt.Color.black );
+    circluar30.setStroke( new BasicStroke (.7f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1f, new float[] { 1, 2}, 2f ) );
+    PPath circluar40 = new PPath();
+    circluar40.setPathToEllipse( xstart - 40, ystart -40, 80, 80 );
+    circluar40.setPaint( null );
+    circluar40.setStrokePaint( java.awt.Color.black );
+    PPath circluar50 = new PPath();
+    circluar50.setPathToEllipse( xstart - 50, ystart -50, 100, 100 );
+    circluar50.setPaint( null );
+    circluar50.setStrokePaint( java.awt.Color.black );
+    circluar50.setStroke( new BasicStroke (.7f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1f, new float[] { 1, 2}, 2f ) );
+    PPath circluar60 = new PPath();
+    circluar60.setPathToEllipse( xstart - 60, ystart -60, 120, 120 );
+    circluar60.setPaint( null );
+    circluar60.setStrokePaint( java.awt.Color.black );
+    PPath circluar70 = new PPath();
+    circluar70.setPathToEllipse( xstart - 70, ystart -70, 140, 140 );
+    circluar70.setPaint( null );
+    circluar70.setStrokePaint( java.awt.Color.black );
+    circluar70.setStroke( new BasicStroke (.7f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1f, new float[] { 1, 2}, 2f ) );
+    PPath circluar80 = new PPath();
+    circluar80.setPathToEllipse( xstart - 80, ystart -80, 160, 160 );
+    circluar80.setPaint( null );
+    circluar80.setStrokePaint( java.awt.Color.black );
+    PPath circluar90 = new PPath();
+    circluar90.setPathToEllipse( xstart - 90, ystart -90, 180, 180 );
+    circluar90.setPaint( null );
+    circluar90.setStrokePaint( java.awt.Color.black );
+    circluar90.setStroke( new BasicStroke (.7f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1f, new float[] { 1, 2}, 2f ) );
+
+
+    addChild( circluar10 );
+    addChild( circluar20 );
+    addChild( circluar30 );
+    addChild( circluar40 );
+    addChild( circluar50 );
+    addChild( circluar60 );
+    addChild( circluar70 );
+    addChild( circluar80 );
+    addChild( circluar90 );
+  }
+
+  
 
   protected void initializeNodeView () {
 
