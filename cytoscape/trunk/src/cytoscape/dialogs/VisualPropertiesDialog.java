@@ -186,17 +186,34 @@ public class ApplyAction extends AbstractAction {
       super ("");
   }
 
-  public void actionPerformed (ActionEvent e) {
-
-      Object o1 = aMapper.setDefaultValue(VizMapperCategories.NODE_FILL_COLOR, nColor.getColor());
-      Object o2 = aMapper.setDefaultValue(VizMapperCategories.BG_COLOR, bgColor.getColor());
-      Object o3 = aMapper.setDefaultValue(VizMapperCategories.NODE_SHAPE, (Byte)shapeDefault.getIconObject());
-      Object o4 = aMapper.setDefaultValue(VizMapperCategories.EDGE_LINETYPE, (LineType)lineTypeDefault.getIconObject());
-      Object o5 = aMapper.setDefaultValue(VizMapperCategories.NODE_HEIGHT, sizeDefault.getInteger());
-      Object o6 = aMapper.setDefaultValue(VizMapperCategories.NODE_WIDTH, sizeDefault.getInteger());
-      Object o7 = aMapper.setDefaultValue(VizMapperCategories.NODE_BORDER_COLOR, bColor.getColor());
-      Object o8 = aMapper.setDefaultValue(VizMapperCategories.EDGE_TARGET_DECORATION, (Arrow)arrowDefault.getIconObject());
-
+    public void actionPerformed (ActionEvent e) {
+	
+	Object o;
+	
+	Color node = nColor.getColor();
+	if(node != null)
+	    o = aMapper.setDefaultValue(VizMapperCategories.NODE_FILL_COLOR, node);
+	Color bg = bgColor.getColor();
+	if(bg != null)
+	    o = aMapper.setDefaultValue(VizMapperCategories.BG_COLOR, bg);
+	Byte shape = (Byte)shapeDefault.getIconObject();
+	if(shape != null)
+	    o = aMapper.setDefaultValue(VizMapperCategories.NODE_SHAPE, shape);
+	LineType line = (LineType)lineTypeDefault.getIconObject();
+	if(line != null)
+	    o = aMapper.setDefaultValue(VizMapperCategories.EDGE_LINETYPE, null);
+	Integer size = sizeDefault.getInteger();
+	if(size != null) {
+	    o = aMapper.setDefaultValue(VizMapperCategories.NODE_HEIGHT, size);
+	    o = aMapper.setDefaultValue(VizMapperCategories.NODE_WIDTH, size);
+	}
+	Color border = bColor.getColor();
+	if(border != null)
+	    o = aMapper.setDefaultValue(VizMapperCategories.NODE_BORDER_COLOR, border);
+	Arrow arrow = (Arrow)arrowDefault.getIconObject();
+	if(arrow != null)
+	    o = aMapper.setDefaultValue(VizMapperCategories.EDGE_TARGET_DECORATION, arrow);
+	
       /*
       EdgeArrowColor.removeThenAddEdgeColor(aMapper,"pp",ppColor.getColor());
       EdgeArrowColor.removeThenAddEdgeColor(aMapper,"pd",pdColor.getColor());
