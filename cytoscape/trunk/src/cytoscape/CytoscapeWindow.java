@@ -433,11 +433,12 @@ public void setBioDataServer(BioDataServer newBioDataServer) {
 }
 //------------------------------------------------------------------------------
 public String getDefaultSpecies() {
-  String species = getConfiguration().getDefaultSpeciesName();
-  if (species != null) {return species;}
-
-  species = getConfiguration().getProperties().getProperty("species", "unknown");
-  return species;
+    if (this.defaultSpecies != null) {return this.defaultSpecies;}
+    String species = getConfiguration().getDefaultSpeciesName();
+    if (species != null) {return species;}
+    
+    species = getConfiguration().getProperties().getProperty("species", "unknown");
+    return species;
 }
 //------------------------------------------------------------------------------
 public void setDefaultSpecies(String newValue) {defaultSpecies = newValue;}
@@ -1162,32 +1163,8 @@ public boolean saveVisibleNodeNames (String filename)
           
 } // saveVisibleNodeNames
 //------------------------------------------------------------------------------
-public boolean saveSelectedNodeNames (String filename)
-{
-    Graph2D theGraph = this.getGraph();
-    Node [] nodes = theGraph.getNodeArray();
-    GraphObjAttributes nodeAttributes = this.getNodeAttributes();
-    File file = new File(filename);
-    try {
-	FileWriter fout = new FileWriter(file);
-	for (int i=0; i < nodes.length; i++) {
-	    Node node = nodes [i];
-	    NodeRealizer r = theGraph.getRealizer(node);
-	    if(theGraph.isSelected(node)) {
-		String defaultName = r.getLabelText ();
-		String canonicalName = nodeAttributes.getCanonicalName (node);
-		fout.write(canonicalName + "\n");
-	    }
-	} // for i
-	fout.close();
-	return true;
-    }  catch (IOException e) {
-	JOptionPane.showMessageDialog(null, e.toString(),
-				      "Error Writing to \"" + file.getName()+"\"",
-				      JOptionPane.ERROR_MESSAGE);
-	return false;
-    }
-	  
+public boolean saveSelectedNodeNames(String filename) {
+    return CyNetworkUtilities.saveSelectedNodeNames(this.getNetwork(), filename);
 } // saveSelectedNodeNames
 //------------------------------------------------------------------------------
 public HashMap configureNewNode (Node node)
@@ -1236,6 +1213,9 @@ public HashMap configureNewNode (Node node)
 
 } // configureNode
 //----------------------------------------------------------------------------------------
+/**
+ * @deprecated Use CyNetworkUtilities.getInteractionTypes() instead.
+ */
 public String[] getInteractionTypes() {
 
     if (this.getEdgeAttributes() == null)
