@@ -59,7 +59,6 @@ import cytoscape.util.MutableBool;
 
 import cytoscape.filters.*;
 import cytoscape.filters.dialogs.*;
-import csplugins.graphAlgo.MetaNode;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -618,17 +617,6 @@ protected void applyVizmapSettings ()
     byte nodeShape =
         vizMapperCategories.getNodeShape(bundle, vizMapper);
     
-    if(!setTh &&  nodeShape != ShapeNodeRealizer.RECT){
-	// added by iliana on 10/04/2002
-	// yFiles contains a "feature" that consists on drawing non-rectangle shapes
-	// as rectangles at certain zoom levels
-	// the following gets rid of this feature
-	// (I assume that if some plug-in set the shape of a node to be non-rectangular
-	// there is an important reason why, at any zoom level)
-	graphView.setPaintDetailThreshold(0.0);
-	setTh = true;
-    }
-    
     NodeRealizer nr = graphView.getGraph2D().getRealizer(node);
     nr.setFillColor (nodeColor);
     nr.setLineColor(nodeBorderColor);
@@ -665,7 +653,7 @@ protected void applyVizmapSettings ()
     cursor.cyclicNext ();
   } // for i
 
-} // renderNodesAndEdges
+} // applyVizmapSettings
 //------------------------------------------------------------------------------
 public Node getNode (String canonicalNodeName)
 {
@@ -1283,17 +1271,6 @@ protected void selectNodesStartingWith (String key)
 		  } // for s
 	  }catch (Exception ignoreForNow) {;}
       }
-      // added by iliana 10/28/2002 (for metaNodes)
-      // if a gene is a member of a MetaNode, and the MetaNode is collapsed, 
-      // select the MetaNode
-      if(!matched && MetaNode.isMetaNode(nodes[i],nodeAttributes)){
-	  MetaNode mNode = MetaNode.getMetaNode(nodes[i],nodeAttributes);
-	  if(mNode.containsNode(key)){
-	      matched = true;
-	  }
-      } // else if: the node is member of a meta-node
-      
-      //} // else if: checking synonyms
       setNodeSelected (nodes [i], matched);
   } // for i
   
