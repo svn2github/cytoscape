@@ -137,7 +137,11 @@
                 <exclude name="cytoscape/dialogs/GoIDAttributesPopupTable.java"/>
                 <exclude name="cytoscape/dialogs/NodeAttributesPopupTable.java"/>
                 <!-- Exclude obsolete visual package testing class -->
-                <exclude name ="cytoscape/visual/tests/TestNewMappingsUI.java"/>
+                <exclude name="cytoscape/visual/tests/TestNewMappingsUI.java"/>
+
+                <!-- Exclude unused classes in archive directories -->
+                <exclude name="cytoscape/actions/archive/*"/>
+                <exclude name="cytoscape/filters/dialogs/archive/*"/>
 
     		<classpath refid="classpath"/>
     	</javac>
