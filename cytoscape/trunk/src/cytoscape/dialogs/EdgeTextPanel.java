@@ -71,11 +71,13 @@ public class EdgeTextPanel extends JPanel {
 	this.add(pickThisAttribute);
 	
     }
-    
+    /** returns the map. */
     public Map getMap() {
 	return theMap;
     }
+    /** updates the colors on scalable arrows using EdgeArrowColor. */
     public void updateMapperScalableArrows() {
+	/** first loop through the map, making a copy. */
 	TreeMap tempSM = new TreeMap();
 	Set allKeys = theMap.keySet();
 	Iterator keyIter = allKeys.iterator();
@@ -84,6 +86,7 @@ public class EdgeTextPanel extends JPanel {
 	    Color c = (Color)theMap.get(keyString);
 	    tempSM.put(keyString,c);
 	}
+	/** then loop through the copy, using the EdgeArrowColor method. */
 	allKeys = tempSM.keySet();
 	keyIter = allKeys.iterator();
 	for(;keyIter.hasNext();) {
@@ -98,19 +101,6 @@ public class EdgeTextPanel extends JPanel {
     public void setWhetherToUseTheMap(boolean b) {
 	useThisMap = b;
     }
-    
-    public class SharedListSelectionHandler implements ListSelectionListener {
-	MutableString ms;
-	public SharedListSelectionHandler(MutableString ms) {
-	    super();
-	    this.ms = ms;
-	}
-	public void valueChanged(ListSelectionEvent e) {
-	    JList jl = (JList)e.getSource();
-	    ms.setString(jl.getSelectedValue().toString());
-	}
-    }
-
     public class BoxAction extends AbstractAction {
 	MutableString ms;
 	public BoxAction(MutableString ms) {
