@@ -58,7 +58,7 @@ public class BetweenPathway extends CytoscapePlugin{
 		  if(randomDialog.isCancelled()){
 		    throw new RuntimeException("Thresh-hold generation cancelled");
 		  }
-		  BetweenPathwayThread2 thread = new BetweenPathwayThread2(options);
+		  BetweenPathwayThread thread = new BetweenPathwayThread(options);
 		  //BetweenPathwayThread thread = new BetweenPathwayThread(options);
 		  try{
 		    thread.setPhysicalNetwork(options.physicalNetwork);
