@@ -11,6 +11,7 @@ import y.base.*;
 import y.view.*;
 
 import cytoscape.CytoscapeWindow;
+import cytoscape.visual.ui.VizMapUI;
 //----------------------------------------------------------------------------
 /**
  * Top-level class for controlling the visual appearance of nodes and edges
@@ -39,7 +40,7 @@ public class VisualMappingManager {
 
 
     public Network getNetwork() {
-	return network;
+      return network;
     }
 
     public CytoscapeWindow getCytoscapeWindow() {
@@ -49,10 +50,17 @@ public class VisualMappingManager {
     public CalculatorCatalog getCalculatorCatalog() {return catalog;}
     
     public VisualStyle getVisualStyle() {return visualStyle;}
-    public VisualStyle setVisualStyle(VisualStyle vs) {
+    
+  public VisualStyle setVisualStyle(VisualStyle vs) {
         if (vs != null) {
             VisualStyle tmp = visualStyle;
             visualStyle = vs;
+            // Added by iliana
+            VizMapUI ui = cytoscapeWindow.getVizMapUI();
+            if (ui != null && ui.getStyleSelector() != null) {
+              ui.getStyleSelector().setVisualStyle(vs);
+            }
+            //---
             return tmp;
         } else {
             String s = "VisualMappingManager: Attempt to set null VisualStyle";
@@ -60,20 +68,23 @@ public class VisualMappingManager {
             return null;
         }
     }
-    public VisualStyle setVisualStyle(String name) {
-        VisualStyle vs = catalog.getVisualStyle(name);
-        if (vs != null) {
-            VisualStyle tmp = visualStyle;
-            visualStyle = vs;
-            return tmp;
-        } else {
-            String s = "VisualMappingManager: unknown VisualStyle: " + name;
-            cytoscapeWindow.getLogger().severe(s);
-            return null;
-        }
+  
+  public VisualStyle setVisualStyle(String name) {
+    VisualStyle vs = catalog.getVisualStyle(name);
+    if (vs != null) {
+      return setVisualStyle(vs);
+    } else {
+      String s = "VisualMappingManager: unknown VisualStyle: " + name;
+      cytoscapeWindow.getLogger().severe(s);
+      return null;
     }
+  }
 
     public void applyAppearances() {
+
+      // TODO: Remove
+      //System.out.println("VisualMappingManager.applyAppearances()");
+      
 	Graph2DView graphView = cytoscapeWindow.getGraphView();
 
 	/** first apply the node appearance to all nodes */
@@ -133,12 +144,13 @@ public class VisualMappingManager {
 
         //don't repaint here; instead, rely on caller to call redrawGraph()
         //in CytoscapeWindow, which will call this method
-	/** finally, have CytoscapeWindow update. */
-	//graphView.updateView(); // forces the view to update its contents
-	// paintImmediately() needed because sometimes updates can be buffered
-	//graphView.paintImmediately(0,0,graphView.getWidth(),
-	//			   graphView.getHeight());
-	//cytoscapeWindow.updateStatusText();
+ 
+        /** finally, have CytoscapeWindow update. */
+        //graphView.updateView(); // forces the view to update its contents
+        // paintImmediately() needed because sometimes updates can be buffered
+        //graphView.paintImmediately(0,0,graphView.getWidth(),
+        //			   graphView.getHeight());
+        //cytoscapeWindow.updateStatusText();
     }
 }
 
