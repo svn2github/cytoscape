@@ -154,7 +154,7 @@ public class VizMapperCategories implements AttributeMapperCategories {
 	    //parse LineType from value
 	} else if ( vizAttribute.equals(EDGE_SOURCE_DECORATION) ||
 		    vizAttribute.equals(EDGE_TARGET_DECORATION) ) {
-	    //parse Arrow from value
+	    returnVal = Misc.parseArrowText(value);
 	} else {//unknown attribute
 	    System.err.println("Error parsing range attribute value:");
 	    System.err.println("    unknown vizAttribute: "
