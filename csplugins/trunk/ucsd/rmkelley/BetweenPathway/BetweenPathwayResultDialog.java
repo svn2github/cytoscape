@@ -207,6 +207,54 @@ class BetweenPathwayResultDialog extends RyanDialog implements ListSelectionList
 	  }
 	}
       });
+
+    JButton assessButton = new JButton("Assess");
+    assessButton.addActionListener(new ActionListener(){
+	public void actionPerformed(ActionEvent ae){
+	  //find hte best scoring pathway for each node
+	  HashMap node2BestPathway = new HashMap();
+	  GOprediction prediction = new GOprediction(new File("GOID2orfs.txt"),new File("GOID2parents.txt"));
+	  for(Iterator resultIt = results.iterator();resultIt.hasNext();){
+	    NetworkModel model = (NetworkModel)resultIt.next();
+	    Pathway one = new Pathway();
+	    Pathway two = new Pathway();
+	    one.score = model.score;
+	    two.score = model.score;
+	    one.nodes = model.one;
+	    two.nodes = model.two;
+	    assignBestPathway(one,node2BestPathway);
+	    assignBestPathway(two,node2BestPathway);
+	  }
+	  try{
+	    FileWriter writer = new FileWriter("assessBetween.txt",false);
+	    FileWriter allWriter = new FileWriter("assessAll.txt",false);
+	    for(Iterator nodeIt = node2BestPathway.keySet().iterator();nodeIt.hasNext();){
+	      Node node = (Node)nodeIt.next();
+	      Pathway pathway = (Pathway)node2BestPathway.get(node);
+	      writer.write(""+node+"\t"+prediction.getAverageDistance(node,physicalNetwork.neighborsList(node),pathway.nodes)+"\n");
+	      allWriter.write(""+node+"\t"+prediction.getAverageDistance(node,physicalNetwork.neighborsList(node))+"\n");
+	    }
+	    writer.close();
+	    allWriter.close();
+	  }catch(Exception e){
+	    e.printStackTrace();
+	    System.exit(-1);
+	  }
+	}
+	protected void assignBestPathway(Pathway pathway, HashMap node2BestPathway){
+	  for(Iterator nodeIt = pathway.nodes.iterator();nodeIt.hasNext();){
+	    Node node = (Node)nodeIt.next();
+	    if(!node2BestPathway.containsKey(node)){
+	      node2BestPathway.put(node, pathway);
+	    }
+	    else{
+	      Pathway oldPathway = (Pathway)node2BestPathway.get(node);
+	      if(pathway.score > oldPathway.score){
+		node2BestPathway.put(node,pathway);
+	      }
+	    }
+	  }
+	}});
 				
 	
     southPanel.add(viewButton);
@@ -214,6 +262,7 @@ class BetweenPathwayResultDialog extends RyanDialog implements ListSelectionList
     southPanel.add(predictButton);
     southPanel.add(predictProteinButton);
     southPanel.add(pictureButton);
+    southPanel.add(assessButton);
     getContentPane().add(southPanel,BorderLayout.SOUTH);
     pack();
   }
