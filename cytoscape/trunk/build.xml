@@ -173,7 +173,6 @@
              destdir="${build.classes}" 
              nowarn="off" 
              debug="true" 
-	     debuglevel="source"
              source="1.4" 
              optimize="on"
              includeAntRuntime="false">
