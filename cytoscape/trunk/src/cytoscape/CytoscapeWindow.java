@@ -824,32 +824,81 @@ public void applyLayout (boolean animated)
 //
 // apply layout, but only on currently selected nodes
 protected void applyLayoutSelection() {
-    // special case for EmbeddedLayouter: layout whole graph fixing most nodes
-    if (layouter.getClass().getName().endsWith("EmbeddedLayouter")) {
-	
-    }
-
-        System.out.print ("starting layout...");  System.out.flush ();
-    setInteractivity (false);
-
-
     Graph2D g = graphView.getGraph2D();
-    Subgraph subgraph = new Subgraph(g, g.selectedNodes());
-    layouter.doLayout (subgraph);
-    subgraph.reInsert();
 
-    // remove bends
-    EdgeCursor cursor = graphView.getGraph2D().edges();
-    cursor.toFirst ();
-    for (int i=0; i < cursor.size(); i++){
-	Edge target = cursor.edge();
-	EdgeRealizer e = graphView.getGraph2D().getRealizer(target);
-	e.clearBends();
-	cursor.cyclicNext();
+    // special case for EmbeddedLayouter: layout whole graph,
+    // holding unselected nodes in place
+    // OPTIMIZE ME!
+    if (layouter.getClass().getName().endsWith("EmbeddedLayouter")) {
+	// data provider of sluggishness for each node
+	NodeMap slug = g.createNodeMap();
+	g.addDataProvider("Cytoscape:slug", slug);
+
+	for (NodeCursor nc = g.selectedNodes(); nc.ok(); nc.next())
+	    slug.setDouble(nc.node(), 0.5);
+
+	Node[] nodeList = g.getNodeArray();
+	int nC = g.nodeCount();
+	for (int i = 0; i < nC; i++)
+	    if (slug.getDouble(nodeList[i]) != 0.5)
+		slug.setDouble(nodeList[i], 0.0);
+
+	applyLayout(false);
+
+	g.removeDataProvider("Cytoscape:slug");
+	g.disposeNodeMap(slug);
     }
 
-    setInteractivity (true);
-    System.out.println("  done");
+    // special case for OrganicLayouter: layout whole graph, holding
+    // unselected nodes in place
+    else if (layouter.getClass().getName().endsWith("OrganicLayouter")) {
+	OrganicLayouter ogo = (OrganicLayouter)layouter;
+
+	// data provider of selectedness for each node
+	NodeMap s = g.createNodeMap();
+	g.addDataProvider(Layouter.SELECTED_NODES, s);
+
+	for (NodeCursor nc = g.selectedNodes(); nc.ok(); nc.next())
+	    s.setBool(nc.node(), true);
+
+	Node[] nodeList = g.getNodeArray();
+	int nC = g.nodeCount();
+	for (int i = 0; i < nC; i++)
+	    if (s.getBool(nodeList[i]) != true)
+		s.setBool(nodeList[i], false);
+	
+	byte oldSphere = ogo.getSphereOfAction();
+	ogo.setSphereOfAction(OrganicLayouter.ONLY_SELECTION);
+	applyLayout(false);
+	ogo.setSphereOfAction(oldSphere);
+
+	g.removeDataProvider(Layouter.SELECTED_NODES);
+	g.disposeNodeMap(s);
+    }
+
+
+    // other layouters
+    else {
+	System.out.print ("starting layout...");  System.out.flush ();
+	setInteractivity (false);
+
+	Subgraph subgraph = new Subgraph(g, g.selectedNodes());
+	layouter.doLayout (subgraph);
+	subgraph.reInsert();
+
+	// remove bends
+	EdgeCursor cursor = graphView.getGraph2D().edges();
+	cursor.toFirst ();
+	for (int i=0; i < cursor.size(); i++){
+	    Edge target = cursor.edge();
+	    EdgeRealizer e = graphView.getGraph2D().getRealizer(target);
+	    e.clearBends();
+	    cursor.cyclicNext();
+	}
+
+	setInteractivity (true);
+	System.out.println("  done");
+    }
 }
 
 
