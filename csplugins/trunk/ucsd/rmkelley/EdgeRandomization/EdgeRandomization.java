@@ -20,6 +20,7 @@ import javax.swing.event.*;
 import java.awt.BorderLayout;
 import java.awt.event.*;
 import cytoscape.layout.*;
+import cytoscape.data.GraphObjAttributes;
 
 /**
  * This is a sample Cytoscape plugin using Giny graph structures. For each
@@ -41,37 +42,99 @@ public class EdgeRandomization extends CytoscapePlugin{
    * plugin is attached) and adds an item to the operations menu.
    */
   public EdgeRandomization(){
-    Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add( new TestAction() );
-  }
+    JMenu topMenu = new JMenu("Edge Randomization");
+    Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add(topMenu);
+    topMenu.add(new AbstractAction("Edge Randomization"){ 
+	public void actionPerformed(ActionEvent ae) {
+	  new Thread(new Runnable(){
+	      public void run(){
+		try{
+		  dialog = new EdgeRandomizationDialog(Cytoscape.getCurrentNetwork());
+		  dialog.show();
+		  if(!dialog.isCancelled()){
+		    EdgeRandomizationThread thread = new EdgeRandomizationThread(dialog.getOptions());
+		thread.run();
+		  }
+		}catch(Exception e){
+		  JOptionPane.showMessageDialog(Cytoscape.getDesktop(),e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+		}}}).start();
+	}});
     
-  
+    topMenu.add(new AbstractAction("Save Random Graphs"){
+	public void actionPerformed(ActionEvent ae){
+	  new Thread(new Runnable(){
+	      public void run(){
+		CyNetwork network = Cytoscape.getCurrentNetwork();
+		int [] old_edges = network.getEdgeIndicesArray();
 
-  public class TestAction extends AbstractAction{
-    
-    public TestAction() {super("Calculate Edge Scores");}
-    
-    /**
-     * This method is called when the user selects the menu item.
-     */
-    public void actionPerformed(ActionEvent ae) {
-     
-      
-	new Thread(new Runnable(){
-	    public void run(){
-	      try{
-		dialog = new EdgeRandomizationDialog(Cytoscape.getCurrentNetwork());
+		EdgeRandomizationDialog dialog = new EdgeRandomizationDialog(network);
 		dialog.show();
-		if(!dialog.isCancelled()){
-		  EdgeRandomizationThread thread = new EdgeRandomizationThread(dialog.getOptions());
-		  thread.run();
+		if(dialog.isCancelled()){
+		  return;
 		}
-	      }catch(Exception e){
-		JOptionPane.showMessageDialog(Cytoscape.getDesktop(),e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-	      }}}).start();
-    }
+		EdgeRandomizationOptions options = dialog.getOptions();
+		EdgeRandomizer randomizer = new EdgeRandomizer(network,options.directedTypes);
+		for(int idx=0;idx<options.iterations;idx++){
+		  Cytoscape.destroyNetwork(network);
+		  Cytoscape.getRootGraph().removeEdges(old_edges);
+		  network = randomizer.randomizeNetwork();
+		  old_edges = network.getEdgeIndicesArray();
+		  //save network to file
+		  saveNetwork("random"+idx,network);
+		}
+	      }
+	      protected void saveNetwork(String name,CyNetwork network){
+		GraphObjAttributes nodeAttributes = Cytoscape.getNodeNetworkData();
+		GraphObjAttributes edgeAttributes = Cytoscape.getEdgeNetworkData();
+	      
+		try {
+		  FileWriter fileWriter = new FileWriter( name );
+		  String lineSep = System.getProperty("line.separator");
+		  List nodeList = network.nodesList();
+		  giny.model.Node[] nodes = ( giny.model.Node[] ) nodeList.toArray ( new giny.model.Node [0] );
+		  for (int i=0; i < nodes.length; i++) {
+		    StringBuffer sb = new StringBuffer ();
+		    giny.model.Node node = nodes[i];
+		    String canonicalName = nodeAttributes.getCanonicalName(node);
+		    List edges = network.getAdjacentEdgesList(node, true, true, true); 
+		      
+		    if (edges.size() == 0) {
+		      sb.append(canonicalName + lineSep);
+		    } else {
+		      Iterator it = edges.iterator();
+		      while ( it.hasNext() ) {
+			giny.model.Edge edge = (giny.model.Edge)it.next();
+			if (node == edge.getSource()){ //do only for outgoing edges
+			  giny.model.Node target = edge.getTarget();
+			  String canonicalTargetName = nodeAttributes.getCanonicalName(target);
+			  String edgeName = edgeAttributes.getCanonicalName(edge);
+			  String interactionName =
+			    (String)(edgeAttributes.getValue("interaction", edgeName));
+			  if (interactionName == null) {interactionName = "xx";}
+			  sb.append(canonicalName);
+			  sb.append("\t");
+			  sb.append(interactionName);
+			  sb.append("\t");
+			  sb.append(canonicalTargetName);
+			  sb.append(lineSep);
+			}
+		      } // while
+		    } // else: this node has edges, write out one line for every out edge (if any) */
+		    fileWriter.write(sb.toString());
+		    //System.out.println(" WRITE: "+ sb.toString() );
+		  }  // for i
+		  fileWriter.close();
+		} catch (IOException ioe) {
+		  System.err.println("Error while writing " + name);
+		  ioe.printStackTrace();
+		} // catch
+	      }}).start();
+	}});
+
   }
 }
 
 
   
 
+  

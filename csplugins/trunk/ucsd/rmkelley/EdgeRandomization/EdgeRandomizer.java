@@ -51,7 +51,7 @@ public class EdgeRandomizer{
   protected static final int EXPTECTED_EDGE_SWAPS = 2;
   public EdgeRandomizer(CyNetwork seedNetwork, List directedTypes){
     //this.seedNetwork = seedNetwork;
-    this.directedTypes = directedTypes;
+    this.directedTypes = new Vector(directedTypes);
     this.rand = new Random();
     perspective2root = new OpenIntIntHashMap(seedNetwork.getNodeCount());
     nodeIndices = seedNetwork.getNodeIndicesArray();
