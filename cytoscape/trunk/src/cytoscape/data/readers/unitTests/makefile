@@ -28,5 +28,7 @@ clean:
 run: $(OBJS)
 	java $(PKG).InteractionsReaderTest $(TestDataDir)
 	java $(PKG).GMLReaderTest  $(TestDataDir)
+	java $(PKG).KeggPathwaysReaderTest  $(TestDataDir)
 
-
+pathways: $(OBJS)
+	java $(PKG).KeggPathwaysReaderTest  $(TestDataDir)
