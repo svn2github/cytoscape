@@ -76,6 +76,7 @@ public ExpressionDataDialog (Frame parentFrame,
   eData = expressionData;
   nAttrib = nodeAttributes;
   initializeColors();
+  initializePoints();
 
   JPanel mainPanel = new JPanel ();
   GridBagLayout gridbag = new GridBagLayout();
@@ -128,6 +129,24 @@ public ExpressionDataDialog (Frame parentFrame,
 	pt2ColorGT = getMaxGTColor();
     }
 
+    private void initializePoints() {
+	ContinuousMapper cm =
+	    (ContinuousMapper)
+	    aMapper.getValueMapper(VizMapperCategories.NODE_FILL_COLOR);
+	
+	SortedMap valueMap = cm.getBoundaryRangeValuesMap();
+	Iterator i = valueMap.keySet().iterator();
+
+	Double doubleBVal = (Double)i.next();
+	minPtNum = doubleBVal.doubleValue();
+	doubleBVal = (Double)i.next();
+	midPtNum = doubleBVal.doubleValue();
+	doubleBVal = (Double)i.next();
+	maxPtNum = doubleBVal.doubleValue();
+	
+    }
+
+
 //--------------------------------------------------------------------------------------
 public class ApplyAction extends AbstractAction {
   ApplyAction () {
@@ -140,6 +159,7 @@ public class ApplyAction extends AbstractAction {
       /**
        * updating color mapper
        */
+
       ContinuousMapper cm =
 	  (ContinuousMapper)
 	  aMapper.getValueMapper(VizMapperCategories.NODE_FILL_COLOR);
@@ -147,29 +167,36 @@ public class ApplyAction extends AbstractAction {
       SortedMap valueMap = cm.getBoundaryRangeValuesMap();
       Iterator it = valueMap.keySet().iterator();
 
-      Double doubleBVal = (Double)it.next();
-      BoundaryRangeValues bvObj = (BoundaryRangeValues)valueMap.get(doubleBVal);
-	
-      bvObj.lesserValue = pt0ColorLT;
-      bvObj.equalValue = pt0Color;
-      bvObj.greaterValue = pt0Color;
-      valueMap.put(doubleBVal,bvObj);
+      Double doubleBVal0 = (Double)it.next();
+      BoundaryRangeValues bvObj0 = (BoundaryRangeValues)valueMap.get(doubleBVal0);
 
-      doubleBVal = (Double)it.next();
-      bvObj = (BoundaryRangeValues)valueMap.get(doubleBVal);
-	
-      bvObj.lesserValue = pt1Color;
-      bvObj.equalValue = pt1Color;
-      bvObj.greaterValue = pt1Color;
-      valueMap.put(doubleBVal,bvObj);
+      Double doubleBVal1 = (Double)it.next();
+      BoundaryRangeValues bvObj1 = (BoundaryRangeValues)valueMap.get(doubleBVal1);
 
-      doubleBVal = (Double)it.next();
-      bvObj = (BoundaryRangeValues)valueMap.get(doubleBVal);
-	
-      bvObj.lesserValue = pt2Color;
-      bvObj.equalValue = pt2Color;
-      bvObj.greaterValue = pt2ColorGT;
-      valueMap.put(doubleBVal,bvObj);
+      Double doubleBVal2 = (Double)it.next();
+      BoundaryRangeValues bvObj2 = (BoundaryRangeValues)valueMap.get(doubleBVal2);
+
+      Double newDoubleBVal0 = new Double(minPtNum);
+      bvObj0.lesserValue = pt0ColorLT;
+      bvObj0.equalValue = pt0Color;
+      bvObj0.greaterValue = pt0Color;
+
+      Double newDoubleBVal1 = new Double(midPtNum);	
+      bvObj1.lesserValue = pt1Color;
+      bvObj1.equalValue = pt1Color;
+      bvObj1.greaterValue = pt1Color;
+
+      Double newDoubleBVal2 = new Double(maxPtNum);
+      bvObj2.lesserValue = pt2Color;
+      bvObj2.equalValue = pt2Color;
+      bvObj2.greaterValue = pt2ColorGT;
+
+      valueMap.remove(doubleBVal0);
+      valueMap.remove(doubleBVal1);
+      valueMap.remove(doubleBVal2);
+      valueMap.put(newDoubleBVal0,bvObj0);
+      valueMap.put(newDoubleBVal1,bvObj1);
+      valueMap.put(newDoubleBVal2,bvObj2);
 
       /**
        * updating which condition is displayed on the nodes' "expression"
@@ -373,6 +400,7 @@ private JPanel createColorPanel() {
   colorPanel.setLayout (gridbag);
 
   initColorButtonsAndColors();
+  initPointText();
 
   int yPos=0;
   insertColorItem(yPos, gridbag, constraints,
@@ -389,7 +417,9 @@ private JPanel createColorPanel() {
   yPos++;
   insertColorItem(yPos, gridbag, constraints,
 		  colorPanel, maxGTColor, maxGTColorButton);
-  
+
+  insertAllTextItems(gridbag, constraints, colorPanel);
+
   return colorPanel;
 }
 
@@ -399,17 +429,52 @@ private void insertColorItem(int yPos,
 			     JPanel colorPanel,
 			     JLabel colorLabel,
 			     JButton colorButton) {
-  constraints.gridx=0;
+  constraints.gridx=1;
   constraints.gridy=yPos;
   gridbag.setConstraints(colorButton,constraints);
   colorPanel.add (colorButton);
   // the label
-  constraints.gridx=1;
+  constraints.gridx=2;
   constraints.gridy=yPos;
   gridbag.setConstraints(colorLabel,constraints);
   colorPanel.add (colorLabel);
     
 }
+
+private void insertAllTextItems(GridBagLayout gridbag,
+				GridBagConstraints constraints,
+				JPanel colorPanel) {
+  constraints.gridx=0;
+  constraints.gridy=0;
+  constraints.gridheight = 2;
+  gridbag.setConstraints(minPtText,constraints);
+  colorPanel.add (minPtText);
+
+  constraints.gridx=0;
+  constraints.gridy=2;
+  constraints.gridheight = 1;
+  gridbag.setConstraints(midPtText,constraints);
+  colorPanel.add (midPtText);
+
+  constraints.gridx=0;
+  constraints.gridy=3;
+  constraints.gridheight = 2;
+  gridbag.setConstraints(maxPtText,constraints);
+  colorPanel.add (maxPtText);
+
+}
+private void initPointText() {
+     minPtText = new JTextField(Double.toString(minPtNum),6);
+     midPtText = new JTextField(Double.toString(midPtNum),6);
+     maxPtText = new JTextField(Double.toString(maxPtNum),6);
+
+     PtListener listener = new PtListener ();
+
+     minPtText.addFocusListener (listener);
+     midPtText.addFocusListener (listener);
+     maxPtText.addFocusListener (listener);
+}
+
 private void initColorButtonsAndColors() {
 
     minLTColorButton = new JButton ("min LT Color");
@@ -630,6 +695,77 @@ private JPanel createADPanel() {
 	    return new Color(255,255,0);
 	}
     }
+
+
+
+class PtListener implements FocusListener { 
+  public void focusGained (FocusEvent e) {
+      validate();
+  }
+  public void focusLost (FocusEvent e) {
+      validate();
+  }
+  private void validate() {
+      String pt0t = minPtText.getText();
+      String pt1t = midPtText.getText();
+      String pt2t = maxPtText.getText();
+
+      String pt0t2 = pt0t.replaceAll("[^0-9+.-]",""); // ditch all non-numeric
+      String pt1t2 = pt1t.replaceAll("[^0-9+.-]",""); // ditch all non-numeric
+      String pt2t2 = pt2t.replaceAll("[^0-9+.-]",""); // ditch all non-numeric
+
+      if(pt0t2.length()==0) {
+	  pt0t2 = Double.toString(minPtNum);
+	  minPtText.setText(pt0t2);
+      }
+      if(pt1t2.length()==0) {
+	  pt1t2 = Double.toString(midPtNum);
+	  midPtText.setText(pt1t2);
+      }
+      if(pt2t2.length()==0) {
+	  pt2t2 = Double.toString(maxPtNum);
+	  maxPtText.setText(pt2t2);
+      }
+
+      try {
+	  double newPt0 = Double.parseDouble(pt0t2);
+	  if(newPt0>midPtNum) {
+	      minPtNum = midPtNum;
+	  }
+	  else {
+	      minPtNum = newPt0;
+	  }
+      }
+      catch (NumberFormatException nfe) {
+	  System.out.println("Not a double: " + pt0t2);
+      }
+      minPtText.setText(Double.toString(minPtNum));
+
+      try {
+	  double newPt1 = Double.parseDouble(pt1t2);
+	  if(newPt1>maxPtNum) {
+	      midPtNum = maxPtNum;
+	  }
+	  else {
+	      midPtNum = newPt1;
+	  }
+      }
+      catch (NumberFormatException nfe) {
+	  System.out.println("Not a double: " + pt1t2);
+      }
+      midPtText.setText(Double.toString(midPtNum));
+
+      try {
+	  double newPt2 = Double.parseDouble(pt2t2);
+	  maxPtNum = newPt2;
+      }
+      catch (NumberFormatException nfe) {
+	  System.out.println("Not a double: " + pt2t2);
+      }
+      maxPtText.setText(Double.toString(maxPtNum));
+  }
+
+} // PtListener
 
 
 
