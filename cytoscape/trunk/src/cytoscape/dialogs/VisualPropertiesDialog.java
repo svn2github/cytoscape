@@ -78,14 +78,12 @@ public VisualPropertiesDialog (Frame parentFrame,
   c.gridx=1;
   c.gridy=1;
   c.fill=GridBagConstraints.NONE;
-  gridbag.setConstraints(colorLabel,c);
-  mainPanel.add(colorLabel);
+  gblPanelInsert(mainPanel,colorLabel,gridbag,c);
 
   c.gridx=0;
   c.gridy=1;
   c.fill=GridBagConstraints.HORIZONTAL;
-  gridbag.setConstraints(colorButton,c);
-  mainPanel.add(colorButton);
+  gblPanelInsert(mainPanel,colorButton,gridbag,c);
 
   JButton borderColorButton = new JButton("Node Border Color");
   JLabel borderColorLabel = new JLabel("    ");
@@ -97,15 +95,12 @@ public VisualPropertiesDialog (Frame parentFrame,
   c.gridx=1;
   c.gridy=2;
   c.fill=GridBagConstraints.NONE;
-  gridbag.setConstraints(borderColorLabel,c);
-  mainPanel.add(borderColorLabel);
+  gblPanelInsert(mainPanel,borderColorLabel,gridbag,c);
 
   c.gridx=0;
   c.gridy=2;
   c.fill=GridBagConstraints.HORIZONTAL;
-  gridbag.setConstraints(borderColorButton,c);
-  mainPanel.add(borderColorButton);
-
+  gblPanelInsert(mainPanel,borderColorButton,gridbag,c);
 
   JButton bgColorButton
       = new JButton("Background Color");
@@ -118,15 +113,12 @@ public VisualPropertiesDialog (Frame parentFrame,
   c.gridx=1;
   c.gridy=3;
   c.fill=GridBagConstraints.NONE;
-  gridbag.setConstraints(bgColorLabel,c);
-  mainPanel.add(bgColorLabel);
-
+  gblPanelInsert(mainPanel,bgColorLabel,gridbag,c);
 
   c.gridx=0;
   c.gridy=3;
   c.fill=GridBagConstraints.HORIZONTAL;
-  gridbag.setConstraints(bgColorButton,c);
-  mainPanel.add(bgColorButton);
+  gblPanelInsert(mainPanel,bgColorButton,gridbag,c);
 
   c.gridheight=1;
   c.fill=GridBagConstraints.NONE;
@@ -139,27 +131,22 @@ public VisualPropertiesDialog (Frame parentFrame,
 	   500);
   c.gridx=0;
   c.gridy=4;
-  gridbag.setConstraints(sizeDefault,c);
-  mainPanel.add(sizeDefault);
+  gblPanelInsert(mainPanel,sizeDefault,gridbag,c);
 
   initializeShapeDefault();
   c.gridx=0;
   c.gridy=5;
-  gridbag.setConstraints(shapeDefault,c);
-  mainPanel.add(shapeDefault);
+  gblPanelInsert(mainPanel,shapeDefault,gridbag,c);
 
   initializeLineTypeDefault();
   c.gridx=0;
   c.gridy=6;
-  gridbag.setConstraints(lineTypeDefault,c);
-  mainPanel.add(lineTypeDefault);
+  gblPanelInsert(mainPanel,lineTypeDefault,gridbag,c);
 
   initializeArrowDefault();
   c.gridx=0;
   c.gridy=7;
-  gridbag.setConstraints(arrowDefault,c);
-  mainPanel.add(arrowDefault);
-
+  gblPanelInsert(mainPanel,arrowDefault,gridbag,c);
 
   //////////////////////////////////////////////
   JPanel labelMappingSubPanel = new JPanel();
@@ -177,17 +164,9 @@ public VisualPropertiesDialog (Frame parentFrame,
 
   JPanel labelTextPanel
       = new LabelTextPanel(nodeAttribs,localNodeLabelKey);
-  /*
-  c.gridx=0;
-  c.gridy=8;
-  gridbag.setConstraints(labelTextPanel,c);
-  mainPanel.add(labelTextPanel);
-  */
   labelMappingSubPanelConstraints.gridx=0;
   labelMappingSubPanelConstraints.gridy=0;
-  labelMappingSubPanelGridbag.setConstraints(labelTextPanel,labelMappingSubPanelConstraints);
-  labelMappingSubPanel.add(labelTextPanel);
-
+  gblPanelInsert(labelMappingSubPanel,labelTextPanel,labelMappingSubPanelGridbag,labelMappingSubPanelConstraints);
 
   //////////////////////////////////////////////
   c.gridwidth = 2;
@@ -212,30 +191,19 @@ public VisualPropertiesDialog (Frame parentFrame,
 					TitledBorder.DEFAULT_POSITION);
   edgeMappingSubPanel.setBorder (edgeMappingSubPanelTitledBorder);
 
-  //edgeMappingSubPanelConstraints.gridx=0;
-  //edgeMappingSubPanelConstraints.gridy=0;
-  //JLabel tempLabel = new JLabel("Define Mapping:");
-  //edgeMappingSubPanelGridbag.setConstraints(tempLabel,edgeMappingSubPanelConstraints);
-  //edgeMappingSubPanel.add(tempLabel);
-
   if(localEdgeKey==null) localEdgeKey = new MutableString("temp");
   edgeTextPanel
       = new EdgeTextPanel(edgeAttribs,aMapper,parentFrame,localEdgeKey);
   edgeMappingSubPanelConstraints.gridx=0;
   edgeMappingSubPanelConstraints.gridy=0;
-  edgeMappingSubPanelGridbag.setConstraints(edgeTextPanel,edgeMappingSubPanelConstraints);
-  edgeMappingSubPanel.add(edgeTextPanel);
-
-  
+  gblPanelInsert(edgeMappingSubPanel,edgeTextPanel,edgeMappingSubPanelGridbag,edgeMappingSubPanelConstraints);
 
   //////////////////////////////////////////////
   c.gridwidth = 2;
   c.gridx=0;
   c.gridy=9;
   c.fill=GridBagConstraints.HORIZONTAL;
-  gridbag.setConstraints(edgeMappingSubPanel,c);
-  mainPanel.add(edgeMappingSubPanel);
-
+  gblPanelInsert(mainPanel,edgeMappingSubPanel,gridbag,c);
 
   JButton applyButton = new JButton ("Apply");
   applyButton.addActionListener (new ApplyAction ());
@@ -243,20 +211,26 @@ public VisualPropertiesDialog (Frame parentFrame,
   c.gridx=0;
   c.gridy=10;
   c.fill=GridBagConstraints.NONE;
-  gridbag.setConstraints(applyButton,c);
-  mainPanel.add (applyButton);
+  gblPanelInsert(mainPanel,applyButton,gridbag,c);
 
   JButton cancelButton = new JButton ("Cancel");
   cancelButton.addActionListener (new CancelAction ());
   c.gridx=1;
   c.gridy=10;
-  gridbag.setConstraints(cancelButton,c);
-  mainPanel.add (cancelButton);
-
+  gblPanelInsert(mainPanel,cancelButton,gridbag,c);
 
   setContentPane (mainPanel);
 } // PopupDialog ctor
 
+
+    // inserts a component into a panel with a GridBagLayout.
+    private void gblPanelInsert (JPanel panel,
+				 Component comp,
+				 GridBagLayout bag,
+				 GridBagConstraints c) {
+	bag.setConstraints(comp,c);
+	panel.add(comp);
+    }
 
 public class ApplyAction extends AbstractAction {
   ApplyAction () {
