@@ -27,6 +27,7 @@ public class ToggleVisualMapperAction extends CytoscapeAction {
     public void actionPerformed(ActionEvent e) {
       //TODO: this is state information that should saved
         Cytoscape.getCurrentNetworkView().toggleVisualMapperEnabled();
+	Cytoscape.getDesktop().getCyMenus().setVisualMapperItemsEnabled(Cytoscape.getCurrentNetworkView().getVisualMapperEnabled());
     }
 }
 
