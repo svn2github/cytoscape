@@ -7,12 +7,9 @@ Later
 - memory use during transitive reduction can be excessive.
 	This happens when the longest path is very long (>2000).
 	If this is a problem, the list of descendants approach can be scrapped.
-- edge crossing reduction needs to be examined.
-	The current approach is ad hoc. Some rigorous approach should
-	be implemented from Sugiyama chapter.
 - horizontal positioning needs to be implemented
-	The current approach is ad hoc. Some rigorous approach should
-	be implemented from Sugiyama chapter.
+	The current approach (center over lower layer) is ad hoc.
+	Some rigorous approach should be implemented from Sugiyama chapter.
 - selection -> layout in place v. layout and make room
 	Currently, any unselected nodes are moved out of the way
 	to make room. Some approach to layout selected nodes while
