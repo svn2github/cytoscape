@@ -683,11 +683,12 @@ public class FactorGraph
         
         for(int x=0; x < N; x++)
         {
+            if(x != 0)
+            {
+                computeVar2Factor(v);
+            }
             computeFactor2Var(f);
-            computeVar2Factor(v);
         }
-
-        //System.out.println(printAdj());
 
         try
         {
@@ -718,6 +719,13 @@ public class FactorGraph
         Submodel invariant = fixUniqueVars();
         invariant.setInvariant(true);
 
+        IntArrayList vars = invariant.getVars();
+        for(int x=0; x < vars.size(); x++)
+        {
+            System.out.println("invariant: " + vars.get(x)
+                               + " " + getVarNode(vars.get(x)));
+        }
+        
         //_submodels.add(invariant);
 
         System.out.println("added invariant submodel with "
@@ -742,7 +750,7 @@ public class FactorGraph
         System.out.println("Called max product method " + x + " times");
 
         System.out.println("### Generated " + _submodels.size()
-                           + " submodels");
+                           + " submodels + 1 invariant model");
         
         // update the edge annotations now that all variables are fixed.
         updateEdgeAnnotation();
@@ -1023,10 +1031,6 @@ public class FactorGraph
     }
 
     /**
-     * FIXTHIS: we want to add kos to a model only iff all of the *edges*
-     * explaining the KO are only in the model.  Problem with dir -4.?
-     * How to fix? How does CHY get around it?
-     *
      * @param
      * @return
      * @throws
@@ -1347,7 +1351,7 @@ public class FactorGraph
                     vn.fixState(State.ZERO);
                     System.out.println("fixing path active for path "
                                        + vn.getId()
-                                       + " to " + State.ZERO);
+                                       + " to " + vn.fixedState());
                                         
                 }
                 else if (vn.isType(NodeType.EDGE))
@@ -1356,16 +1360,16 @@ public class FactorGraph
 
                     System.out.println("fixing edge value for "
                                        + _ig.edgeName(vn.getId())
-                                       + " to " + State.ZERO);
+                                       + " to " + vn.fixedState());
                 
                 }
                 else if (vn.isType(NodeType.SIGN))
                 {
-                    vn.fixState(State.MINUS);
+                    vn.fixState(State.PLUS);
                     
                     System.out.println("fixing sign for "
                                        + _ig.edgeName(vn.getId())
-                                       + " to " + State.MINUS);
+                                       + " to " + vn.fixedState());
                                     
                 }
                 else if (vn.isType(NodeType.DIR))
@@ -1374,7 +1378,7 @@ public class FactorGraph
 
                     System.out.println("fixing dir for "
                                        + _ig.edgeName(vn.getId())
-                                       + " to " + State.PLUS);
+                                       + " to " + vn.fixedState());
                         
                 }
                 else if(vn.isType(NodeType.KO))

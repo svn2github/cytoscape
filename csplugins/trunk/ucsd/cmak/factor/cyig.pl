@@ -5,7 +5,7 @@ my $run = shift @ARGV;
 
 opendir DIR, $dir || die "cannot open $dir\n";
 
-my @files = grep { /$run.*\.sif$/ && -f "$dir/$_" } readdir(DIR);
+my @files = grep { /$run-.*\.sif$/ && -f "$dir/$_" } readdir(DIR);
 
 my $cmd = "cytoscape.sh ";
 
