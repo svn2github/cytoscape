@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<!-- build.xml - Build file for Sample Cytoscape Plugin -->
-<project name="Cytoscape" default="jar" basedir=".">
+<!-- build.xml - Build file for MCODE plugin -->
+<project name="MCODE" default="jar" basedir=".">
 
 	<!-- Name of Plug In -->
 	<!-- Change this to the name of your Plug In -->
@@ -43,13 +43,8 @@
 		<delete dir="${dist.dir}"/>
   	</target>
 
-	<!-- Target to create Cytoscape Jar File  -->
-	<target name="build_cytoscape">
-		<ant antfile="../../../../cytoscape/build.xml" inheritAll="false" target="jar"/>
-	</target>
-
 	<!--  Target to compile all Plug In Code -->
-  	<target name="compile" depends="prepare, build_cytoscape"
+  	<target name="compile" depends="prepare"
 		description="Compiles all PlugIn source code.">
     		<javac srcdir="${src.dir}" destdir="${build.classes}" nowarn="on" source="1.4">
 			<include name="csplugins/**"/>
