@@ -11,10 +11,9 @@ JC=javac
 .java.class: 
 	$(JC) $<
 
-OBJS = TabbedNodeBrowser.class \
-       NodeBrowserTableModel.class \
+OBJS = TabbedBrowser.class \
+       BrowserTableModel.class \
        NodeBrowsingMode.class \
-    
 
 default: objs
 

@@ -32,7 +32,6 @@ public class NodeBrowsingMode extends PopupMode {
 public void set (CytoscapeWindow cytoscapeWindow)
 {
   this.cytoscapeWindow = cytoscapeWindow;
-  //graph = cytoscapeWindow.getGraph ();
   Properties props = cytoscapeWindow.getConfiguration().getProperties();
   webBrowserScript = 
       cytoscapeWindow.getConfiguration().getProperties().getProperty ("webBrowserScript", "noScriptDefined");
@@ -40,7 +39,6 @@ public void set (CytoscapeWindow cytoscapeWindow)
   attributeCategoriesToIgnore = Misc.getPropertyValues (props, invisibilityPropertyName);
   for (int i=0; i < attributeCategoriesToIgnore.size(); i++)
     System.out.println ("  ignore type " + attributeCategoriesToIgnore.get (i));
-
   
 } // ctor
 //----------------------------------------------------------------------------------------
@@ -54,10 +52,10 @@ public JPopupMenu getNodePopup (Node v)
     return null;
 }
 //----------------------------------------------------------------------------------------
-public JPopupMenu getPaperPopup (double x, double y) {
-    return null;
-  }
-    
+public JPopupMenu getPaperPopup (double x, double y) 
+{
+  return null;
+}
 //----------------------------------------------------------------------------------------
 public JPopupMenu getSelectionPopup (double x, double y) 
 {
@@ -80,8 +78,8 @@ public JPopupMenu getSelectionPopup (double x, double y)
 
   Edge [] selectedEdges = (Edge []) edgeList.toArray (new Edge [0]);
 
-  TabbedNodeBrowser nodeBrowser = null;
-  TabbedNodeBrowser edgeBrowser = null;
+  TabbedBrowser nodeBrowser = null;
+  TabbedBrowser edgeBrowser = null;
 
   if (selectedNodes.length == 0 && selectedEdges.length == 0) {
     JOptionPane.showMessageDialog (null, "No selected nodes or edges", "Error",
@@ -90,12 +88,12 @@ public JPopupMenu getSelectionPopup (double x, double y)
     }
     
   if (selectedNodes.length > 0)
-    nodeBrowser = new TabbedNodeBrowser (selectedNodes, cytoscapeWindow.getNodeAttributes (),
-                                         attributeCategoriesToIgnore, webBrowserScript);
+    nodeBrowser = new TabbedBrowser (selectedNodes, cytoscapeWindow.getNodeAttributes (),
+                                     attributeCategoriesToIgnore, webBrowserScript);
 
   if (selectedEdges.length > 0)
-    edgeBrowser = new TabbedNodeBrowser (selectedEdges, cytoscapeWindow.getEdgeAttributes (),
-                                         attributeCategoriesToIgnore, webBrowserScript);
+    edgeBrowser = new TabbedBrowser (selectedEdges, cytoscapeWindow.getEdgeAttributes (),
+                                     attributeCategoriesToIgnore, webBrowserScript);
 
    return null;
 
