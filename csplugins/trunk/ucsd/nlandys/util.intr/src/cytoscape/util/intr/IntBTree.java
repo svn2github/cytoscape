@@ -306,8 +306,8 @@ public final class IntBTree
   {
     int count = 0;
     if (isLeafNode(n)) {
-      for (int i = -1; i < n.sliceCount;)
-        if (x >= n.values[++i]) {
+      for (int i = 0; i < n.sliceCount; i++)
+        if (x <= n.values[i]) {
           if (x == n.values[i]) count++; else break; } }
     else { // Internal node.
       int currentMax = maxBound;
