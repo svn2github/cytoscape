@@ -6,27 +6,7 @@ import java.util.*;
 import cytoscape.data.ExpressionData;
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.FlagFilter;
-/*
-// save for linking 
-//javadoc -d API -link file:///users/xmas/CSBI/giny/API/ -private `find . -name "*.java" -print`
 
-//javadoc -d PUBLIC -public -link http://csbi.sourceforge.net/API/ -link http://java.sun.com/j2se/1.4.2/docs/api/ 
-src/cytoscape/*.java 
-src/cytoscape/plugin/*.java 
-src/cytoscape/plugin/jar/JarLoader.java 
-src/cytoscape/util/*.java 
-src/cytoscape/util/swing/*.java 
-src/cytoscape/data/ExpressionData.java 
-src/cytoscape/data/Semantics.java 
-src/cytoscape/view/CytoscapeDesktop.java 
-src/cytoscape/view/CyMenus.java 
-src/cytoscape/view/CyNetworkView.java 
-src/cytoscape/visual/VisualStyle.java 
-src/cytoscape/visual/VisualMappingManager.java 
-src/cytoscape/plugin/jar/SimpleClassLoader.java 
-src/cytoscape/layout/*.java 
-src/cytoscape/data/servers/BioDataServer*.java
-*/
 
 public interface CyNetwork extends GraphPerspective {
 
@@ -41,7 +21,7 @@ public interface CyNetwork extends GraphPerspective {
    */
   public void setTitle ( String new_id );
 
-   /**
+  /**
    * Can't Change
    */
   public String getIdentifier ();
@@ -59,7 +39,7 @@ public interface CyNetwork extends GraphPerspective {
   //----------------------------------------//
   
   /**
-   * Appends all of the nodes and edges in teh given Network to 
+   * Appends all of the nodes and edges in the given Network to 
    * this Network
    */
   public void appendNetwork ( CyNetwork network );
@@ -266,12 +246,6 @@ public interface CyNetwork extends GraphPerspective {
   // Nodes
 
   /**
-   * This method will create a new node.
-   * @return the Cytoscape index of the created node 
-   */
-  public int createNode ();
-
-  /**
    * Add a node to this Network that already exists in 
    * Cytoscape
    * @return the Network Index of this node
@@ -286,33 +260,21 @@ public interface CyNetwork extends GraphPerspective {
   public CyNode addNode ( CyNode cytoscape_node );
  
   /**
-   * Adds a node to this Network, by looking it up via the 
-   * given attribute and value
-   * @return the Network Index of this node
-   */
-  public int addNode ( String attribute, Object value );
-
-  /**
    * This will remove this node from the Network. However,
    * unless forced, it will remain in Cytoscape to be possibly
    * resused by another Network in the future.
-   * @param force force this node to be removed from all Networks
+   * @param set_remove true removes this node from all of Cytoscape, 
+   *                   false lets it be used by other CyNetworks
    * @return true if the node is still present in Cytoscape 
    *          ( i.e. in another Network )
    */
-  public boolean removeNode ( int node_index, boolean force );
+  public boolean removeNode ( int node_index, boolean set_remove );
+
+  
+
 
   //--------------------//
   // Edges
-
-  /**
-   * This method will create a new edge.
-   * @param source the source node
-   * @param target the target node
-   * @param directed weather the edge should be directed
-   * @return the Cytoscape index of the created edge 
-   */
-  public int createEdge ( int source, int target, boolean directed );
 
   /**
    * Add a edge to this Network that already exists in 
@@ -329,20 +291,14 @@ public interface CyNetwork extends GraphPerspective {
   public CyEdge addEdge ( CyEdge cytoscape_edge );
  
   /**
-   * Adds a edge to this Network, by looking it up via the 
-   * given attribute and value
-   * @return the Network Index of this edge
-   */
-  public int addEdge ( String attribute, Object value );
-
-  /**
    * This will remove this edge from the Network. However,
    * unless forced, it will remain in Cytoscape to be possibly
    * resused by another Network in the future.
-   * @param force force this edge to be removed from all Networks
+   * @param set_remove true removes this edge from all of Cytoscape, 
+   *                   false lets it be used by other CyNetworks
    * @return true if the edge is still present in Cytoscape 
    *          ( i.e. in another Network )
    */
-  public boolean removeEdge ( int edge_index, boolean force );
+  public boolean removeEdge ( int edge_index, boolean set_remove );
 
 }

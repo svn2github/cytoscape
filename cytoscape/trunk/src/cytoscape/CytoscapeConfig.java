@@ -57,6 +57,10 @@ public class CytoscapeConfig
 
 
   public CytoscapeConfig ( String [] args ) {
+
+    System.out.println( "Initialize CytoscapeConfig!" );
+
+
     // make a copy of the args to parse here (getopt can mangle the array it parses)
     commandLineArguments = new String [args.length];
     System.arraycopy (args, 0, commandLineArguments, 0, args.length);
@@ -325,14 +329,14 @@ public class CytoscapeConfig
 
   protected void saveProperties () {
     
-     if ( defaultSpeciesName != null )
-       props.setProperty("defaultSpeciesName", defaultSpeciesName );
-     if ( viewType != null )
-       props.setProperty("viewType", viewType );
-     if ( viewThreshold != null )
-       props.setProperty("viewThreshold", viewThreshold.toString() );
-     if ( bioDataDirectory != null )
-       props.setProperty( "bioDataDirectory", bioDataDirectory );
+    if ( defaultSpeciesName != null )
+        props.setProperty("defaultSpeciesName", defaultSpeciesName );
+    if ( viewType != null )
+      props.setProperty("viewType", viewType );
+    if ( viewThreshold != null )
+      props.setProperty("viewThreshold", viewThreshold.toString() );
+    if ( bioDataDirectory != null )
+      props.setProperty( "bioDataDirectory", bioDataDirectory );
 
     try {
       File file = Cytoscape.getCytoscapeObj().getConfigFile( "cytoscape.props" );
@@ -360,8 +364,13 @@ public class CytoscapeConfig
 
     viewThreshold = new Integer(props.getProperty( "viewThreshold", "500" ) );
     viewType = props.getProperty( "viewType", "tabbed" );
-    defaultSpeciesName = props.getProperty("defaultSpeciesName", "Saccharomyces cerevisiae" );
+    defaultSpeciesName = props.getProperty("defaultSpeciesName", "unknown" );
     bioDataDirectory = props.getProperty( "bioDataDirectory", "testData/annotation/manifest");
+
+    System.out.println( "vt: "+viewThreshold );
+    System.out.println( "view type: "+viewType );
+    System.out.println( "dsn: "+defaultSpeciesName );
+    System.out.println( "bdd: "+bioDataDirectory );
   }
 
 
@@ -373,10 +382,9 @@ public class CytoscapeConfig
    * will be used.
    */
   protected Properties readProperties ()   {
-   //  Properties systemProps = null;
-//     Properties userGeneralProps = null;
-//     Properties userSpecialProps = null;
-//     Properties projectProps = null;
+    Properties systemProps = null;
+    Properties userSpecialProps = null;
+    Properties projectProps = null;
     Properties defaultProps = null;
 
 
@@ -384,35 +392,26 @@ public class CytoscapeConfig
 
     // 1. ~.cytoscape/cytoscape.props
     // 2. CYTOSCAPE_HOME/cytoscape.props
-    // 3. ~/cytoscape.props
-    // 4. `pwd`/cytoscape.props
+    // 3. `pwd`/cytoscape.props
 
-    //    String propsFileName = "cytoscape.props"; // there may be 3 copies of this
+    String propsFileName = "cytoscape.props"; // there may be 3 copies of this
 
-    File defaultPropsFile = getConfigFile( "cytoscape.props" );//createFile ( System.getProperty ("user.dir"), ".cytoscape/"+propsFileName );
-    //    if ( defaultPropsFile != null )
-    //  defaultProps = readOnePropertyFile( null, defaultPropsFile );
-    
-      // System.out.println( "load properties from: "+defaultPropsFile );
+    File defaultPropsFile = getConfigFile( "cytoscape.props" );
 
     try {
       defaultProps = new Properties();
       defaultProps.load( new FileInputStream (defaultPropsFile) );
     } catch ( Exception e ) {}
-      return defaultProps;
+      
 
 
-   //  File propsFile = createFile (System.getProperty ("CYTOSCAPE_HOME"), propsFileName);
-//     if (propsFile != null)
-//       systemProps = readOnePropertyFile (defaultProps, propsFile);
+     File propsFile = createFile (System.getProperty ("CYTOSCAPE_HOME"), propsFileName);
+     if (propsFile != null)
+       systemProps = readOnePropertyFile (defaultProps, propsFile);
 
-//     File userGeneralPropsFile = createFile (System.getProperty ("user.home"), propsFileName);
-//     if (userGeneralPropsFile != null)
-//       userGeneralProps = readOnePropertyFile (systemProps, userGeneralPropsFile);
-
-//     File userSpecialPropsFile = createFile  (System.getProperty ("user.dir"), propsFileName);
-//     if (userSpecialPropsFile != null)
-//       userSpecialProps = readOnePropertyFile (userGeneralProps, userSpecialPropsFile);
+     File userSpecialPropsFile = createFile  (System.getProperty ("user.dir"), propsFileName);
+     if (userSpecialPropsFile != null)
+       userSpecialProps = readOnePropertyFile (systemProps, userSpecialPropsFile);
 
    
 
@@ -423,24 +422,24 @@ public class CytoscapeConfig
 //       // projectProps = readOnePropertyFile (projectProps, projectPropsFile);
 //     }
 
-//     /* we will return a valid Properties object; if any properties files
-//      * were found and read, we copy them in sequentially so that duplicate
-//      * keys in the users file overwrite the sytems defaults 
-//      */
+    /* we will return a valid Properties object; if any properties files
+     * were found and read, we copy them in sequentially so that duplicate
+     * keys in the users file overwrite the sytems defaults 
+     */
 
-//     Properties fullProps = new Properties ();
+     Properties fullProps = new Properties ();
 
-//     if ( defaultProps != null ) 
-//       fullProps.putAll( defaultProps );
+     if ( defaultProps != null ) 
+       fullProps.putAll( defaultProps );
 
-//     if (systemProps != null) 
-//       fullProps.putAll (systemProps);
+     if (systemProps != null) 
+       fullProps.putAll (systemProps);
 
 //     if (userGeneralProps != null) 
 //       fullProps.putAll (userGeneralProps);
 
-//     if (userSpecialProps != null)
-//       fullProps.putAll (userSpecialProps);
+     if (userSpecialProps != null)
+       fullProps.putAll (userSpecialProps);
 
 
 //     if (projectProps != null) {
@@ -448,7 +447,7 @@ public class CytoscapeConfig
 //                             " project Cyproperties");    fullProps.putAll (projectProps);
 //     }
 
-//     return fullProps;
+     return fullProps;
 
   } // readProperties
  

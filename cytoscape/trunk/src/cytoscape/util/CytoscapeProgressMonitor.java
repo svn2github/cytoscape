@@ -162,8 +162,8 @@ public class CytoscapeProgressMonitor extends JFrame
                                    new Object[] {message},
                                    null, 0, monitoredTask.getLengthOfTask());
    
-    //System.out.println( monitoredTask.getLengthOfTask() );
-    //System.out.println( "About to Popup" );
+    System.out.println( monitoredTask.getLengthOfTask() );
+    System.out.println( "About to Popup" );
     pMonitor.setProgress(0);
     pMonitor.setMillisToDecideToPopup(0);
     pMonitor.setMillisToPopup(0);

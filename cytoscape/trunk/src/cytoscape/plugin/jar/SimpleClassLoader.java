@@ -22,6 +22,8 @@ package cytoscape.plugin.jar;
  *  This code still needs a cleanup pass...
  */
 
+import cytoscape.Cytoscape;
+
 import java.io.*;
 import java.util.*;
 import java.util.zip.*;
@@ -63,6 +65,7 @@ public class SimpleClassLoader extends ClassLoader {
    * Create a SipleClassLoader.  It is identified by a cookie string
    */
   private SimpleClassLoader(String cookie, String dir) {
+    super( Cytoscape.class.getClassLoader() );
     this.cookie = cookie;
     this.localResourceDirectory = dir;
     loaders.put(cookie, this);

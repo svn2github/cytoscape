@@ -657,6 +657,11 @@ public class CytoscapeDesktop
     }
   }
 
+  public void setFocus ( String network_id ) {
+    pcs.firePropertyChange( new PropertyChangeEvent( this, NETWORK_VIEW_FOCUSED, null, network_id ) );
+    pcs.firePropertyChange( new PropertyChangeEvent( this, NETWORK_VIEW_FOCUS, null, network_id ) );
+  }
+
   /**
    * TO keep things clearer there is one GraphView Controller 
    * per CytoscapeDesktop
@@ -681,6 +686,9 @@ public class CytoscapeDesktop
         getGraphViewController().addGraphView( ( CyNetworkView )e.getNewValue() );
         // pass on the event 
         pcs.firePropertyChange( e );
+        
+        networkPanel.focusNetworkNode( ( ( CyNetworkView )e.getNewValue() ).getIdentifier() );
+        networkPanel.fireFocus( ( ( CyNetworkView )e.getNewValue() ).getIdentifier() );
       } 
   
       else if ( e.getPropertyName() == NETWORK_VIEW_FOCUSED ) {

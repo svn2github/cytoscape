@@ -104,6 +104,7 @@ public class CyMain implements WindowListener {
 
     //create the global CytoscapeObj object
     CytoscapeObj cytoscapeObj = new CytoscapeObj(this, config, logger, null);
+    Cytoscape.setCytoscapeObj( cytoscapeObj );
 
     //try to create a bioDataServer
     String bioDataDirectory = config.getBioDataDirectory();
@@ -139,7 +140,8 @@ public class CyMain implements WindowListener {
     //TODO: make CytoscapeDesktop find out about everything loaded when it starts up.
     //CytoscapeDesktop cd = new CytoscapeDesktop();
     Cytoscape.getDesktop();
- 
+    Cytoscape.getDesktop().setupPlugins();
+
     // Load all requested networks
     Iterator gi = config.getGeometryFilenames().iterator();
     Iterator ii = config.getInteractionsFilenames().iterator();
@@ -210,7 +212,7 @@ public class CyMain implements WindowListener {
 
 
     
-    Cytoscape.getDesktop().setupPlugins();
+  
 
     if (splashScreen!=null) {splashScreen.advance(100);}
   } // ctor

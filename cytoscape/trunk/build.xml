@@ -214,6 +214,7 @@
             header="Cytoscape2.0 (c)2004 ISB, MSKCC, UCSD"
             footer="www.cytoscape.org"
             classpathref="classpath"
+            access="public"
             overview="${src.dir}/org/mskcc/dataservices/overview.html">
            
 

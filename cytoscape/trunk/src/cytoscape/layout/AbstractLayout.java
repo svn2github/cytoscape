@@ -228,10 +228,10 @@ abstract public class AbstractLayout
    * @param d
    */
   protected void initializeLocation ( NodeView v, Dimension d ) {
-    double x = Math.random() * d.getWidth();
-    double y = Math.random() * d.getHeight();
-    v.setXPosition( x, false );
-    v.setYPosition( y, false );
+   //  double x = Math.random() * d.getWidth();
+//     double y = Math.random() * d.getHeight();
+//     v.setXPosition( x, false );
+//     v.setYPosition( y, false );
     }
   
   /**
@@ -286,6 +286,14 @@ abstract public class AbstractLayout
                                                                             
     }
 
+  }
+
+  public void setSingle ( double x, double y ) {
+    int[] nodes = network.getNodeIndicesArray();
+    for ( int i = 0; i < nodes.length; ++i ) {
+      networkView.setNodeDoubleProperty( nodes[i], GraphView.NODE_X_POSITION, x );
+      networkView.setNodeDoubleProperty( nodes[i], GraphView.NODE_Y_POSITION, y );
+    }
   }
 
   /**

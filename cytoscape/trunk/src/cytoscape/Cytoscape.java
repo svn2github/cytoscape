@@ -97,7 +97,7 @@ public abstract class Cytoscape {
   protected static CyNetworkView nullNetworkView =  new PhoebeNetworkView ( nullNetwork, "null" );
 
 
-  protected static CytoscapeObj cytoscapeobj = new CytoscapeObj(new CytoscapeConfig(new String[0]));
+  protected static CytoscapeObj cytoscapeobj;
 
   public static CytoscapeObj getCytoscapeObj () {
     return cytoscapeobj;

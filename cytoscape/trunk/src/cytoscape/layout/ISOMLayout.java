@@ -47,18 +47,22 @@ public class ISOMLayout extends AbstractLayout {
 
   private double globalX, globalY;
 
-
+  CyNetwork parent;
+  List partions;
+  Iterator i;
+  double percent;
 
   public ISOMLayout ( CyNetworkView view ) {
     super( view );
-   
+    maxEpoch = 2000;
+    System.out.println( "Initialize_Local" );
+    parent = ( CyNetwork )network;
+    partions = GraphPartition.partition( parent );
+    i = partions.iterator();
+    lengthOfTask = partions.size() * maxEpoch;
   }
 
    public  Object construct () {
-
-     CyNetwork parent = ( CyNetwork )network;
-     List partions = GraphPartition.partition( parent );
-     Iterator i = partions.iterator();
 
     double last_x = 0;
     double last_y = 0;
@@ -67,7 +71,7 @@ public class ISOMLayout extends AbstractLayout {
 
     double _x = 0;
     double _y = 0;
-    double incr = 20;
+    double incr = 100;
     boolean ones = false;
     
     double small_x = Double.MAX_VALUE;
@@ -78,9 +82,8 @@ public class ISOMLayout extends AbstractLayout {
     // give each node 100 room
     node_count *= 100;
     
-    lengthOfTask = partions.size();
-
-    double percent;
+   
+    
     this.currentProgress++;
     percent = (this.currentProgress * 100 )/this.lengthOfTask;
     this.statMessage = "Completed " + percent + "%";
@@ -106,10 +109,11 @@ public class ISOMLayout extends AbstractLayout {
 
       } else {
         if ( !ones ) {
+          System.out.println( "Got to singletons" );
           ones = true;
           incr = 20;
           _x = 0;
-          _y = sum_y + incr;
+          _y = sum_y + last_y;
           if ( small_x == Double.MAX_VALUE )
             small_x = 0;
         }
@@ -119,15 +123,16 @@ public class ISOMLayout extends AbstractLayout {
         } else {
           _x += incr;
         } 
+        
+        System.out.println( "Move to x: "+_x+" y: "+_y );
+        
 
-        move( _x, _y );
+        setSingle( _x, _y );
 
       }
 
       
-      this.currentProgress++;
-      percent = (this.currentProgress * 100 )/this.lengthOfTask;
-      this.statMessage = "Completed " + percent + "%";
+    
      
 
       if ( currentSize.getHeight() > last_y ) {
@@ -226,10 +231,10 @@ public class ISOMLayout extends AbstractLayout {
   protected void initialize_local() {
 		done = false;
 
-		maxEpoch = 2000;
+	
 		epoch = 1;
 
-    // lengthOfTask = maxEpoch;
+    
 
 		radiusConstantTime = 100;
 		radius = 5;
@@ -257,6 +262,9 @@ public class ISOMLayout extends AbstractLayout {
 	*/
 	public void advancePositions() {
 		status = "epoch: " + epoch + "; ";
+    this.currentProgress++;
+    percent = (this.currentProgress * 100 )/this.lengthOfTask;
+    this.statMessage = "Completed " + percent + "%";
 		if (epoch < maxEpoch) {
 			adjust();
 			updateParameters();
