@@ -98,8 +98,11 @@ public void actionPerformed (ActionEvent e)
     JOptionPane.showMessageDialog (null, "No annotations are available.",
                                    "Error!", JOptionPane.ERROR_MESSAGE);
     return;
-  }
-  else{
+  } else if (cyWindow.getNetwork().getGraphPerspective().getNodeCount() == 0) {
+    JOptionPane.showMessageDialog(null, "No nodes in graph to annotate.",
+                                  "Error!", JOptionPane.ERROR_MESSAGE);
+    return;
+  } else {
     annotationDescriptions = dataServer.getAnnotationDescriptions();
   }
   
@@ -269,26 +272,40 @@ class SelectNodesTreeSelectionListener implements TreeSelectionListener {
     }
     TreePath [] selectedPaths = currentAnnotationsTree.getSelectionPaths();
     HashMap selectionHash = extractAnnotationsFromSelection (selectedPaths);
-    String [] annotationNames = (String []) selectionHash.keySet().toArray (new String [0]);
-    for (int i=0; i < annotationNames.length; i++) {
-      String name = annotationNames [i];
-      Vector categoryList = (Vector) selectionHash.get (name);
-      for (Iterator nvi = cyWindow.getView().getNodeViewsIterator(); nvi.hasNext(); ) {
-          NodeView nv = (NodeView)nvi.next();
-          String canonicalName = nodeAttributes.getCanonicalName(nv.getNode());
-          if (canonicalName == null) {continue;}
-          Object attributeValue = nodeAttributes.getValue(name, canonicalName);
-          if (attributeValue == null) {continue;}
-          String [] parsedCategories = 
-          GraphObjAttributes.unpackPossiblyCompoundStringAttributeValue (attributeValue);
-          for (int pc=0; pc<parsedCategories.length; pc++) {
-              if (categoryList.contains(parsedCategories[pc])) {
-                  nv.setSelected(true);
-              }
-          }
-      }
-    }//end for
-    cyWindow.redrawGraph(false, true);
+    for (Iterator nvi = cyWindow.getView().getNodeViewsIterator(); nvi.hasNext(); ) {
+        //get the particular node view
+        NodeView nv = (NodeView)nvi.next();
+        String canonicalName = nodeAttributes.getCanonicalName(nv.getNode());
+        if (canonicalName == null) {continue;}
+        //iterate over all attributes in the selectionHash
+        for (Iterator mi = selectionHash.keySet().iterator(); mi.hasNext(); ) {
+            String name = (String)mi.next();
+            Object attributeValue = nodeAttributes.getValue(name, canonicalName);
+            if (attributeValue == null) {continue;}
+            Vector categoryList = (Vector)selectionHash.get(name);
+            //see if and entry in the attribute value for this node is contained
+            //in the list of categories to select for the attribute
+            //have to handle the cases of a String or a List of Strings
+            if ( (attributeValue instanceof String) && categoryList.contains(attributeValue)) {
+                nv.setSelected(true);
+                break; //no point in checking other attributes
+            } else if (attributeValue instanceof java.util.List) {
+                boolean hit = false;
+                java.util.List attributeList = (java.util.List)attributeValue;
+                for (Iterator ali = attributeList.iterator(); ali.hasNext(); ) {
+                    if ( categoryList.contains(ali.next()) ) {
+                        nv.setSelected(true);
+                        hit = true;
+                        break; //no point in checking the rest of the list
+                    }
+                }
+                if (hit) {break;} //no point in checking other attributes
+            }
+        }
+    }
+
+    cyWindow.redrawGraph(false, false);
+    network.endActivity(callerID);
 
   } // valueChanged
 
