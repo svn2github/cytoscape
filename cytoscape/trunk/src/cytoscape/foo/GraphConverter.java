@@ -262,7 +262,7 @@ public final class GraphConverter
     double minY = Double.MAX_VALUE;
     double maxY = Double.MIN_VALUE;
     boolean[] mobility = new boolean[numNodesInTopology];
-    final boolean noNodesSelected =
+    final boolean noNodesSelected = (!onlySelectedNodesMovable) ||
       (graphView.getSelectedNodeIndices().length == 0);
 
     while (nodeIterator.hasNext())
@@ -489,7 +489,7 @@ public final class GraphConverter
     double maxX = Double.MIN_VALUE;
     double minY = Double.MAX_VALUE;
     double maxY = Double.MIN_VALUE;
-    final boolean noNodesSelected =
+    final boolean noNodesSelected = (!onlySelectedNodesMovable) ||
       (graphView.getSelectedNodeIndices().length == 0);
 
     while (nodeIterator.hasNext())
