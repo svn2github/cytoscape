@@ -323,8 +323,8 @@ public class SimpleMetaNodeAttributesHandler implements
 				}
 			} else { // if meta edge not seen before, register name and lump
 					 // transfer attrs
-				System.out.println("adding name mapping : " + metaEdgeName
-						+ "-->" + metaEdge);
+				//System.out.println("adding name mapping : " + metaEdgeName
+					//	+ "-->" + metaEdge);
 				Cytoscape.getEdgeNetworkData().addNameMapping(metaEdgeName,
 						metaEdge);
 				// NOT SURE WHY I NEED THIS AS WELL:

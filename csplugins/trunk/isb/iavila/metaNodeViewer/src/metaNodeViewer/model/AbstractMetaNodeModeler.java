@@ -47,7 +47,7 @@ import cern.colt.map.OpenIntIntHashMap;
  */
 public class AbstractMetaNodeModeler {
 
-  protected static final boolean DEBUG = true;
+  protected static final boolean DEBUG = false;
   /**
    * A Map from CyNetworks to MetaNodeAttributesHandlers that are used to
    * assign names and attribute values to meta-nodes. 
