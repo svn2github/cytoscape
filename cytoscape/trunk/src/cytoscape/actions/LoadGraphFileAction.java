@@ -175,7 +175,7 @@ class LoadNetworkTask implements Task {
 
         //  Give the user some confirmation
         sb.append("Succesfully loaded network from:  " + file.getName());
-        sb.append("\n\nGraph contains " + formatter.format
+        sb.append("\n\nNetwork contains " + formatter.format
                 (newNetwork.getNodeCount()));
         sb.append(" nodes and " + formatter.format(newNetwork.getEdgeCount()));
         sb.append(" edges.\n\n");
