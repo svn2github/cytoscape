@@ -27,6 +27,7 @@ class BetweenPathwayThread extends Thread{
   double logBeta = Math.log(0.9);
   double logOneMinusBeta = Math.log(0.1);
   BetweenPathwayOptions options;
+  Vector results;
 
   public BetweenPathwayThread(BetweenPathwayOptions options){
     this.options = options;
@@ -60,7 +61,7 @@ class BetweenPathwayThread extends Thread{
     }catch(IOException io){
       throw new RuntimeException("Error loading physical score file");
     }
-    Vector results = new Vector();
+    results = new Vector();
     //start a search from each individual genetic interactions
     ProgressMonitor myMonitor = null;
     
@@ -182,8 +183,11 @@ class BetweenPathwayThread extends Thread{
     betweenPathwayDialog.show();
   }
 
+  public Vector getResults(){
+    return results;
+  }
 
-  public Vector prune(Vector old){
+  protected Vector prune(Vector old){
     Vector results = new Vector();
     ProgressMonitor myMonitor = new ProgressMonitor(Cytoscape.getDesktop(),"Pruning results",null,0,100);
     myMonitor.setMillisToPopup(50);
@@ -198,7 +202,7 @@ class BetweenPathwayThread extends Thread{
       }
       boolean overlap = false;
       NetworkModel current = (NetworkModel)modelIt.next();
-      if(current.one.size() < 2 || current.two.size() < 2){
+      if(current.one.size() < 2 || current.two.size() < 2 || current.score < options.cutoff){
 	overlap = true;
       }
       else{

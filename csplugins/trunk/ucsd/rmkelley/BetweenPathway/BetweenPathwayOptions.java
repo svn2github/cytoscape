@@ -23,7 +23,9 @@ import cytoscape.layout.*;
 import java.awt.Dimension;
 
 public class BetweenPathwayOptions{
-  public boolean selectedSearch;
+  public boolean selectedSearch,newScore,generateCutoff;
   public CyNetwork physicalNetwork,geneticNetwork;
   public File physicalScores,geneticScores;
+  public double alpha,cutoff;
+  public int iterations;
 }

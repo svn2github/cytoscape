@@ -26,6 +26,7 @@ import ucsd.rmkelley.Util.RyanDialog;
 
 public class BetweenPathwayOptionsDialog extends RyanDialog implements PropertyChangeListener{
   NetworkSelectionPanel geneticPanel,physicalPanel;
+  SearchOptionsPanel searchOptionsPanel;
   JCheckBox selectedSearch;
   boolean cancelled = true;
   File currentDirectory;
@@ -43,7 +44,7 @@ public class BetweenPathwayOptionsDialog extends RyanDialog implements PropertyC
     setTitle("Between-Pathway Search Options");
     geneticPanel = new NetworkSelectionPanel(this);
     physicalPanel = new NetworkSelectionPanel(this);
-    
+    searchOptionsPanel = new SearchOptionsPanel();
     /*
      * Register this dialog as a listener to its sub-panels
      */
@@ -54,6 +55,7 @@ public class BetweenPathwayOptionsDialog extends RyanDialog implements PropertyC
     JTabbedPane tabbedPane = new JTabbedPane();
     tabbedPane.add("Select Genetic Network",geneticPanel);
     tabbedPane.add("Select Physical Network",physicalPanel);
+    tabbedPane.add("Additional Search Options",searchOptionsPanel);
     getContentPane().setLayout(new BorderLayout());
     getContentPane().add(tabbedPane,BorderLayout.CENTER);
     
@@ -62,8 +64,6 @@ public class BetweenPathwayOptionsDialog extends RyanDialog implements PropertyC
     ok.setEnabled(false);
     setSearchToolTipText();
     JPanel southPanel = new JPanel();
-    selectedSearch = new JCheckBox("Search only from selected interactions?");
-    southPanel.add(selectedSearch);
     southPanel.add(ok);
     getContentPane().add(southPanel,BorderLayout.SOUTH);
     ok.addActionListener(new ActionListener(){
@@ -77,7 +77,12 @@ public class BetweenPathwayOptionsDialog extends RyanDialog implements PropertyC
 	   * Store the user's options
 	   */
 	  BetweenPathwayOptions options = new BetweenPathwayOptions();
-	  options.selectedSearch = selectedSearch.isSelected();
+	  options.selectedSearch = searchOptionsPanel.selectedSearch();
+	  options.newScore = searchOptionsPanel.newScore();
+	  options.generateCutoff = searchOptionsPanel.generateCutoff();
+	  options.cutoff = searchOptionsPanel.getCutoff();
+	  options.alpha = searchOptionsPanel.getAlpha();
+	  options.iterations = searchOptionsPanel.getIterations();
 	  options.geneticNetwork = geneticPanel.getSelectedNetwork();
 	  options.physicalNetwork = physicalPanel.getSelectedNetwork();
 	  options.geneticScores = geneticPanel.getScoreFile();

@@ -11,8 +11,12 @@
   	<property name="src.dir" value="."/>
 
 	<!--  The directory containing library jar files -->	
-	<property name="lib.dir" value="../../../../cytoscape/lib"/>
+
 	<property name="local.lib.dir" value="lib"/>
+    <property name="cyto.dir" value="../../../../cytoscape"/>
+	<property name="lib.dir" value="${cyto.dir}/lib"/>
+    <property name="EdgeRandomization.dir" value="../EdgeRandomization"/>
+    <property name="Util.dir" value="../Util"/>
 
   	<!-- Temporary build directories -->
  	<property name="build.dir" value="build"/>
@@ -25,8 +29,10 @@
 	<!-- Classpath with all lib JAR Files and all Cytoscape Core classes -->
 	<path id="classpath">
 		<pathelement path="${build.classes}"/>	
-		<pathelement path="../../../../cytoscape/build/classes"/>
-		<fileset dir="${lib.dir}">
+        <fileset dir="${cyto.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+        <fileset dir="${lib.dir}">
 			<include name="**/*.jar"/>
 		</fileset>
 		<fileset dir="${local.lib.dir}">
@@ -38,8 +44,9 @@
   	<target name="prepare">
     		<mkdir dir="${build.dir}"/>
     		<mkdir dir="${build.classes}"/>
-                <mkdir dir="${doc.dir}"/>
-  	</target>
+            <mkdir dir="${doc.dir}"/>
+  	        <mkdir dir="${local.lib.dir}"/>
+    </target>
 
 	<!--  Target to clean out all directories -->
   	<target name="clean" description="Removes all generated files.">
@@ -51,7 +58,7 @@
 		<fileset dir="${lib.dir}">
 			<include name="**/*.jar"/>
 		</fileset>
-		<pathelement location="${lib.dir}/../build/cytoscape.jar"/>
+		<pathelement location="${cyto.dir}/cytoscape.jar"/>
 	</path>
 
 
@@ -69,20 +76,28 @@
 	
 	<!-- Target to create Cytoscape Jar File  -->
 	<target name="build_cytoscape">
-		<ant antfile="../../../../cytoscape/build.xml" inheritAll="false" target="jar"/>
+		<ant antfile="${cyto.dir}/build.xml" inheritAll="false" target="jar"/>
 	</target>
+    <target name="build_EdgeRandomization">
+        <ant antfile="${EdgeRandomization.dir}/build.xml" inheritAll="false" target="jar"/>
+        <copy file="${EdgeRandomization.dir}/build/EdgeRandomization.jar" todir="${local.lib.dir}"/>
+    </target>
+    <target name="build_Util">
+        <ant antfile="${Util.dir}/build.xml" inheritAll="false" target="jar"/>
+        <copy file="${Util.dir}/build/Util.jar" todir="${local.lib.dir}"/>
+    </target>
 
-        <!-- Target to create the javadoc information -->
-        <target name="doc" depends="prepare">
-          <echo>${src.dir}</echo>
-          <javadoc destdir="${doc.dir}" Private="yes">
+    <!-- Target to create the javadoc information -->
+    <target name="doc" depends="prepare">
+        <echo>${src.dir}</echo>
+        <javadoc destdir="${doc.dir}" Private="yes">
             <fileset dir="${src.dir}" defaultexcludes="no"/>
-          </javadoc>
-       </target>
+        </javadoc>
+    </target>
 
         
 	<!--  Target to compile all Plug In Code -->
-  	<target name="compile" depends="prepare" 
+  	<target name="compile" depends="prepare,build_cytoscape,build_EdgeRandomization,build_Util" 
 		description="Compiles all PlugIn source code.">
 		<javac debug="Yes" srcdir="${src.dir}" destdir="${build.classes}">
 			<classpath refid="classpath"/>

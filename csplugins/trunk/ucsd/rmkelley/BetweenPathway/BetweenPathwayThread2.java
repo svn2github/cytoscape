@@ -31,17 +31,41 @@ class BetweenPathwayThread2 extends Thread{
   double [][] geneticScores;
   CyNetwork physicalNetwork;
   CyNetwork geneticNetwork;
+  Vector results;
 
   public BetweenPathwayThread2(BetweenPathwayOptions options){
     this.options = options;
+  }
+
+  public void setPhysicalNetwork(CyNetwork physicalNetwork){
+    this.physicalNetwork = physicalNetwork;
+  }
+
+  public void setGeneticNetwork(CyNetwork geneticNetwork){
+    this.geneticNetwork = geneticNetwork;
+  }
+
+  public void loadPhysicalScores(File physicalFile){
+    //set up the array of physical scores
+    try{
+      physicalScores = getScores(physicalFile,physicalNetwork);
+    }catch(IOException io){
+      throw new RuntimeException("Error loading physical score file");
+    }
+  }
+
+  public void loadGeneticScores(File geneticFile){
+    try{
+      geneticScores = getScores(geneticFile,geneticNetwork);
+    }catch(IOException io){
+      throw new RuntimeException("Error loading genetic score file");
+    }
   }
 
   public void run(){
     //number of physical interactions allowed between pathways
     int cross_count_limit = 1;
     //get the two networks which will be used for the search
-    physicalNetwork = options.physicalNetwork;
-    geneticNetwork = options.geneticNetwork;
 
     //validate the user input
     if(physicalNetwork == null){
@@ -50,20 +74,6 @@ class BetweenPathwayThread2 extends Thread{
     if(geneticNetwork == null){
       throw new RuntimeException("No genetic network");
     }
-
-    try{
-      geneticScores = getScores(options.geneticScores,geneticNetwork);
-    }catch(IOException io){
-      throw new RuntimeException("Error loading genetic score file");
-    }
-
-    //set up the array of physical scores
-    try{
-      physicalScores = getScores(options.physicalScores,physicalNetwork);
-    }catch(IOException io){
-      throw new RuntimeException("Error loading physical score file");
-    }
-
     
     /*
      * Create a map which will map from each edge 
@@ -108,7 +118,7 @@ class BetweenPathwayThread2 extends Thread{
       edgeNeighborMap.put(edge,neighbors);
     }
 
-    Vector results = new Vector();
+    results = new Vector();
     //start a search from each individual genetic interactions
     ProgressMonitor myMonitor = null;
     
@@ -220,12 +230,13 @@ class BetweenPathwayThread2 extends Thread{
     myMonitor.close();
     Collections.sort(results);
     results = prune(results);
-    JDialog betweenPathwayDialog = new BetweenPathwayResultDialog(geneticNetwork, physicalNetwork, results);
-    betweenPathwayDialog.show();
+  }
+  
+  public Vector getResults(){
+    return results;
   }
 
-
-  public Vector prune(Vector old){
+  protected Vector prune(Vector old){
     Vector results = new Vector();
     ProgressMonitor myMonitor = new ProgressMonitor(Cytoscape.getDesktop(),"Pruning results",null,0,100);
     myMonitor.setMillisToPopup(50);
@@ -240,7 +251,7 @@ class BetweenPathwayThread2 extends Thread{
       }
       boolean overlap = false;
       NetworkModel current = (NetworkModel)modelIt.next();
-      if(current.one.size() < 2 || current.two.size() < 2){
+      if(current.one.size() < 2 || current.two.size() < 2 || current.score < options.cutoff){
 	overlap = true;
       }
       else{
