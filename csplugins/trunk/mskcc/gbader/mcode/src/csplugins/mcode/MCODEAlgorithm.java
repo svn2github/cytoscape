@@ -2,6 +2,7 @@ package csplugins.mcode;
 
 import cytoscape.CyNetwork;
 import giny.model.GraphPerspective;
+import giny.model.Node;
 
 import java.util.*;
 
@@ -50,7 +51,7 @@ public class MCODEAlgorithm {
 	private class NodeInfo {
 		double density;         //neighborhood density
 		int numNodeNeighbors;   //number of node nieghbors
-		int[] nodeNeighbors;    //stores node indices
+		int[] nodeNeighbors;    //stores node indices of all neighbors
 		int coreLevel;          //e.g. 2 = a 2-core
 		double coreDensity;     //density of the core neighborhood
 		double score;           //node score
@@ -137,15 +138,18 @@ public class MCODEAlgorithm {
 		//iterate over all nodes and calculate MCODE score
 		NodeInfo nodeInfo = null;
 		double nodeScore;
-		for (int i = 1; i <= inputNetwork.getNodeCount(); i++) {
-			nodeInfo = calcNodeInfo(inputNetwork, i);
-			nodeInfoHashMap.put(new Integer(i), nodeInfo);
+        Iterator nodes = inputNetwork.nodesIterator();
+        while (nodes.hasNext()) {
+            Node n = (Node) nodes.next();
+			nodeInfo = calcNodeInfo(inputNetwork, n.getRootGraphIndex());
+			nodeInfoHashMap.put(new Integer(n.getRootGraphIndex()), nodeInfo);
 			//score node TODO: add support for other scoring functions (low priority)
 			nodeScore = scoreNode(nodeInfo);
 			//record score as a nodeAttribute
-            inputNetwork.setNodeAttributeValue(i, "MCODE_SCORE", new Double(nodeScore));
+            inputNetwork.setNodeAttributeValue(n, "MCODE_SCORE", new Double(nodeScore));
 			//save score for later use in TreeMap
-			nodeScoreSortedMap.put(new Double(nodeScore), new Integer(i));
+            //TODO: add a list of nodes to each score in case nodes have the same score
+			nodeScoreSortedMap.put(new Double(nodeScore), new Integer(n.getRootGraphIndex()));
 		}
         long msTimeAfter = System.currentTimeMillis();
         lastScoreTime = msTimeAfter - msTimeBefore;
@@ -171,21 +175,20 @@ public class MCODEAlgorithm {
 
 		//initialization
         long msTimeBefore = System.currentTimeMillis();
-		boolean[] nodeSeenArray = new boolean[inputNetwork.getNodeCount() + 1]; //+1 since node indices start at 1
-		Arrays.fill(nodeSeenArray, false);
-		int currentNode = 0;
+        HashMap nodeSeenHashMap = new HashMap(); //key is nodeIndex, value is true/false
+		Integer currentNode;
 		Collection values = nodeScoreSortedMap.values();
 		//stores the list of complexes as ArrayLists of node indices in the input Network
 		ArrayList alComplexes = new ArrayList();
 		//iterate over node indices sorted descending by their score
 		for (Iterator iterator = values.iterator(); iterator.hasNext();) {
-			currentNode = ((Integer) iterator.next()).intValue();
-			if (nodeSeenArray[currentNode] == false) {
-				ArrayList complex = getComplexCore(currentNode, nodeSeenArray);
+			currentNode = (Integer) iterator.next();
+			if (!nodeSeenHashMap.containsKey(currentNode)) {
+				ArrayList complex = getComplexCore(currentNode, nodeSeenHashMap);
 				if (complex.size() > 0) {
 					//make sure spawning node is part of complex, if not already in there
-                    if(!complex.contains(new Integer(currentNode))) {
-					    complex.add(new Integer(currentNode));
+                    if(!complex.contains(currentNode)) {
+					    complex.add(currentNode);
                     }
                     //create an input graph for the filter and haircut methods
                     //comvert Integer array to int array
@@ -200,7 +203,7 @@ public class MCODEAlgorithm {
                             haircutComplex(gpComplexGraph, complex, inputNetwork);
                         }
                         if (params.isFluff()) {
-                            fluffComplexBoundary(complex, nodeSeenArray);
+                            fluffComplexBoundary(complex, nodeSeenHashMap);
                         }
                         //store detected complex for later
 						alComplexes.add(complex);
@@ -323,27 +326,27 @@ public class MCODEAlgorithm {
      * Find the high-scoring central region of the complex.
      * This is a utility function for the algorithm.
      * @param startNode The node that is the seed of the complex
-     * @param nodeSeenArray The list of nodes seen already
+     * @param nodeSeenHashMap The list of nodes seen already
      * @return A list of node IDs representing the core of the complex
      */
-	private ArrayList getComplexCore(int startNode, boolean[] nodeSeenArray) {
+	private ArrayList getComplexCore(Integer startNode, HashMap nodeSeenHashMap) {
 		ArrayList complex = new ArrayList(); //stores Integer nodeIndices
-		getComplexCoreInternal(startNode, nodeSeenArray, ((NodeInfo) nodeInfoHashMap.get(new Integer(startNode))).score, 1, complex);
+		getComplexCoreInternal(startNode, nodeSeenHashMap, ((NodeInfo) nodeInfoHashMap.get(startNode)).score, 1, complex);
 		return (complex);
 	}
 
     /**
      * An internal function that does the real work of getComplexCore, implemented to enable recursion.
      * @param startNode The node that is the seed of the complex
-     * @param nodeSeenArray The list of nodes seen already
+     * @param nodeSeenHashMap The list of nodes seen already
      * @param startNodeScore The score of the seed node
      * @param currentDepth The depth away from the seed node that we are currently at
      * @param complex The complex to add to if we find a complex node in this method
      * @return true
      */
-	private boolean getComplexCoreInternal(int startNode, boolean[] nodeSeenArray, double startNodeScore, int currentDepth, ArrayList complex) {
+	private boolean getComplexCoreInternal(Integer startNode, HashMap nodeSeenHashMap, double startNodeScore, int currentDepth, ArrayList complex) {
 		//base cases for recursion
-		if (nodeSeenArray[startNode] == true) {
+		if (nodeSeenHashMap.containsKey(startNode)) {
 			return (true);  //don't recheck a node
 		}
 		if (currentDepth > params.getMaxDepthFromStart()) {
@@ -351,21 +354,22 @@ public class MCODEAlgorithm {
 		}
 
 		//Initialization
-		int currentNeighbor = 0, i = 0;
+        Integer currentNeighbor;
+        int i = 0;
 
-		nodeSeenArray[startNode] = true;
-		for (i = 0; i < (((NodeInfo) nodeInfoHashMap.get(new Integer(startNode))).numNodeNeighbors); i++) {
+        nodeSeenHashMap.put(startNode, new Boolean(true));
+		for (i = 0; i < (((NodeInfo) nodeInfoHashMap.get(startNode)).numNodeNeighbors); i++) {
 			//go through all currentNode neighbors to check their core density for complex inclusion
-			currentNeighbor = ((NodeInfo) nodeInfoHashMap.get(new Integer(startNode))).nodeNeighbors[i];
-			if ((nodeSeenArray[currentNeighbor] == false) &&
-			        (((NodeInfo) nodeInfoHashMap.get(new Integer(currentNeighbor))).score >=
+			currentNeighbor = new Integer(((NodeInfo) nodeInfoHashMap.get(startNode)).nodeNeighbors[i]);
+			if ((!nodeSeenHashMap.containsKey(currentNeighbor)) &&
+			        (((NodeInfo) nodeInfoHashMap.get(currentNeighbor)).score >=
                     (startNodeScore - startNodeScore * params.getNodeScoreCutOff()))) {
 				//add current neighbor
-                if (!complex.contains(new Integer(currentNeighbor))) {
-				    complex.add(new Integer(currentNeighbor));
+                if (!complex.contains(currentNeighbor)) {
+				    complex.add(currentNeighbor);
                 }
 				//try to extend complex at this node
-				getComplexCoreInternal(currentNeighbor, nodeSeenArray, startNodeScore, currentDepth + 1, complex);
+				getComplexCoreInternal(currentNeighbor, nodeSeenHashMap, startNodeScore, currentDepth + 1, complex);
 			}
 		}
 
@@ -376,28 +380,27 @@ public class MCODEAlgorithm {
      * Fluff up the complex at the boundary by adding lower scoring, non complex-core neighbors
      * This implements the complex fluff feature.
      * @param complex The complex to fluff
-     * @param nodeSeenArray The list of nodes seen already
+     * @param nodeSeenHashMap The list of nodes seen already
      * @return true
      */
-	private boolean fluffComplexBoundary(ArrayList complex, boolean[] nodeSeenArray) {
+	private boolean fluffComplexBoundary(ArrayList complex, HashMap nodeSeenHashMap) {
 		int currentNode = 0, nodeNeighbor = 0;
 		//create a temp list of nodes to add to avoid concurrently modifying 'complex'
 		ArrayList nodesToAdd = new ArrayList();
 
-		//Copy the nodeSeeArray because nodes seen during a fluffing should not be marked as permanently seen,
+		//Keep a separate internal nodeSeenHashMap because nodes seen during a fluffing should not be marked as permanently seen,
 		//they can be included in another complex's fluffing step.
-		boolean[] nodeSeenArrayInternal = new boolean[nodeSeenArray.length];
-		System.arraycopy(nodeSeenArray, 0, nodeSeenArrayInternal, 0, nodeSeenArray.length);
+        HashMap nodeSeenHashMapInternal = new HashMap();
 
 		//add all current neighbour's neighbours into complex (if they have high enough clustering coefficients) and mark them all as seen
 		for (int i = 0; i < complex.size(); i++) {
 			currentNode = ((Integer) complex.get(i)).intValue();
 			for (int j = 0; j < ((NodeInfo) nodeInfoHashMap.get(new Integer(currentNode))).numNodeNeighbors; j++) {
 				nodeNeighbor = ((NodeInfo) nodeInfoHashMap.get(new Integer(currentNode))).nodeNeighbors[j];
-				if ((nodeSeenArrayInternal[nodeNeighbor] == false) &&
+				if ((!nodeSeenHashMap.containsKey(new Integer(nodeNeighbor))) && (!nodeSeenHashMapInternal.containsKey(new Integer(nodeNeighbor))) &&
 				        ((((NodeInfo) nodeInfoHashMap.get(new Integer(nodeNeighbor))).density) > params.getFluffNodeDensityCutOff())) {
 					nodesToAdd.add(new Integer(nodeNeighbor));
-					nodeSeenArrayInternal[nodeNeighbor] = true;
+                    nodeSeenHashMapInternal.put(new Integer(nodeNeighbor), new Boolean(true));
 				}
 			}
 		}
@@ -445,7 +448,7 @@ public class MCODEAlgorithm {
             //must add back the nodes in a way that preserves gpInputGraph node indices
             int[] rootGraphIndices = gpCore.getNodeIndicesArray();
             for (int i = 0; i < rootGraphIndices.length; i++) {
-                complex.add(new Integer(gpInputGraph.getNodeIndex(rootGraphIndices[i])));
+                complex.add(new Integer(gpInputGraph.getRootGraphNodeIndex(rootGraphIndices[i])));
             }
         }
         return (true);
@@ -471,8 +474,10 @@ public class MCODEAlgorithm {
 
 		if (includeLoops) {
 			//count loops
-			for (int i = 1; i <= gpInputGraph.getNodeCount(); i++) {
-				if (gpInputGraph.isNeighbor(i, i)) {
+            Iterator nodes = gpInputGraph.nodesIterator();
+            while (nodes.hasNext()) {
+                Node n = (Node) nodes.next();
+				if (gpInputGraph.isNeighbor(n, n)) {
 					loopCount++;
 				}
 			}
@@ -507,9 +512,11 @@ public class MCODEAlgorithm {
 		while (true) {
 			numDeleted = 0;
 			ArrayList alCoreNodeIndices = new ArrayList(gpInputGraph.getNodeCount());
-			for (int i = 1; i <= gpInputGraph.getNodeCount(); i++) {
-				if (gpInputGraph.getDegree(i) >= k) {
-					alCoreNodeIndices.add(new Integer(i)); //contains all nodes with degree >= k
+            Iterator nodes = gpInputGraph.nodesIterator();
+            while (nodes.hasNext()) {
+                Node n = (Node) nodes.next();
+				if (gpInputGraph.getDegree(n) >= k) {
+					alCoreNodeIndices.add(new Integer(n.getRootGraphIndex())); //contains all nodes with degree >= k
 				} else {
 					numDeleted++;
 				}

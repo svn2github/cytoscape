@@ -2,6 +2,8 @@ package csplugins.mcode;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.util.FileUtil;
+import cytoscape.util.CyFileFilter;
 import cytoscape.actions.GinyUtils;
 import cytoscape.view.CyNetworkView;
 import giny.model.GraphPerspective;
@@ -294,12 +296,12 @@ public class MCODEResultsDialog extends JDialog {
 
         public void actionPerformed(ActionEvent e) {
             //call save method in MCODE
-            File currentDirectory = Cytoscape.getCytoscapeObj().getCurrentDirectory();
-            JFileChooser chooser = new JFileChooser(currentDirectory);
-            if (chooser.showSaveDialog(popup) == JFileChooser.APPROVE_OPTION) {
-                String fileName = chooser.getSelectedFile().toString();
-                currentDirectory = chooser.getCurrentDirectory();
-                Cytoscape.getCytoscapeObj().setCurrentDirectory(currentDirectory);
+            // get the file name
+            File file = FileUtil.getFile("Save Graph as Interactions",
+                    FileUtil.SAVE, new CyFileFilter[]{});
+
+            if (file != null) {
+                String fileName = file.getAbsolutePath();
                 MCODEUtil.saveMCODEResults(alg, complexes, network, fileName);
             }
         }

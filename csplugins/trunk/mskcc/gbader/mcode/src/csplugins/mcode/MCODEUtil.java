@@ -1,7 +1,7 @@
 package csplugins.mcode;
 
 import cytoscape.CyNetwork;
-import cytoscape.util.GinyFactory;
+import phoebe.*;
 import giny.model.GraphPerspective;
 import giny.model.Node;
 import giny.util.SpringEmbeddedLayouter;
@@ -69,7 +69,7 @@ public class MCODEUtil {
         PGraphView view;
         SpringEmbeddedLayouter lay;
         Image image;
-        view = (PGraphView) GinyFactory.createGraphView(gpInput);
+        view = new PGraphView(gpInput);
         //TODO optionally apply a visual style here instead of doing this manually - visual style calls init code that might not be called manually
         for (Iterator in = view.getNodeViewsIterator(); in.hasNext();) {
             NodeView nv = (NodeView) in.next();
