@@ -79,146 +79,13 @@ public class NodeAction {
    */
   public static JMenuItem editNode ( Object[] args, PNode node ) {
     final NetworkView network = ( NetworkView )args[0];
-    final PNodeView view = ( PNodeView )node;
-    return new JMenuItem( new AbstractAction( "Node Editing" ) {
-          public void actionPerformed ( ActionEvent e ) {
-            SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
-                  //( ( PGraphView )network.getView() ).openNodeEditing();
-                } } ); } } );
-  }
-
-
-  /**
-   * This will open an web page that will give you more info.
-   */
-  public static JMenuItem openWebInfo ( Object[] args, PNode node ) {
-
-    final PNode nv = node;
-    return new JMenuItem( new AbstractAction( "Web Info" ) {
-          public void actionPerformed ( ActionEvent e ) {
-            // Do this in the GUI Event Dispatch thread...
-            SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
-                  String gene = null;
-                  if ( nv instanceof PNodeView ) {
-                    gene = ( ( PNodeView ) nv).getLabel().getText();
-                  } 
-                  //System.out.println( "Node: "+nv.getLabel() );
-                  //System.out.println( "GEne: "+gene );
-                  if ( gene == null ) {
-                    gene = ( String )nv.getClientProperty("tooltip");
-                    //System.out.println( "Gene: "+gene );
-                  }
-                  OpenBrowser.openURL( "http://db.yeastgenome.org/cgi-bin/SGD/locus.pl?locus="+gene );
-               
-                } } ); } } );
-   }
-
- 
-   public static JMenuItem colorNodeWhite ( Object[] args, PNode node ) {
-
+    final GraphView v = network.getView();
     final PNodeView nv = ( PNodeView )node;
-    return new JMenuItem( new AbstractAction( "Color Node White" ) {
-          public void actionPerformed ( ActionEvent e ) {
-            // Do this in the GUI Event Dispatch thread...
-            SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
-                   
-                  nv.setUnselectedPaint( java.awt.Color.white );
-                  nv.setBorderPaint( java.awt.Color.black );
-               
-                } } ); } } );
-   }
-
-  public static JMenuItem colorNodeBlack ( Object[] args, PNode node ) {
-
-    final PNodeView nv = ( PNodeView )node;
-    return new JMenuItem( new AbstractAction( "Color Node Black" ) {
-          public void actionPerformed ( ActionEvent e ) {
-            // Do this in the GUI Event Dispatch thread...
-            SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
-                  
-                  nv.setUnselectedPaint( java.awt.Color.black );
-                  nv.setBorderPaint( java.awt.Color.white );
-               
-           } } ); } } );
-   }
-
-
-   public static JMenuItem colorNode ( Object[] args, PNode node ) {
-
-    final PNodeView nv = ( PNodeView )node;
-    final PGraphView v = ( PGraphView )args[0];
-    JMenu color_menu = new JMenu( "Choose node Color" );
-    color_menu.add( new JMenuItem( new AbstractAction( "Black" ) {
-          public void actionPerformed ( ActionEvent e ) {
-            // Do this in the GUI Event Dispatch thread...
-            SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
-                  nv.setUnselectedPaint( java.awt.Color.black );
-                } } ); } } ) );
-
-
-    color_menu.add( new JMenuItem( new AbstractAction( "White" ) {
-          public void actionPerformed ( ActionEvent e ) {
-            // Do this in the GUI Event Dispatch thread...
-            SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
-                  nv.setUnselectedPaint( java.awt.Color.white );
-                } } ); } } ) );
+    
+    JMenu edit_menu = new JMenu( "<html>Node Editing <I><small>(short-term)</I></small></html>");
 
   
-    color_menu.add( new JMenuItem( new AbstractAction( "Red" ) {
-          public void actionPerformed ( ActionEvent e ) {
-            // Do this in the GUI Event Dispatch thread...
-            SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
-                  nv.setUnselectedPaint( java.awt.Color.red );
-                } } ); } } ) );
-
-    color_menu.add( new JMenuItem( new AbstractAction( "Orange" ) {
-          public void actionPerformed ( ActionEvent e ) {
-            // Do this in the GUI Event Dispatch thread...
-            SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
-                  nv.setUnselectedPaint( java.awt.Color.orange );
-                } } ); } } ) );
-
-     color_menu.add( new JMenuItem( new AbstractAction( "Green" ) {
-          public void actionPerformed ( ActionEvent e ) {
-            // Do this in the GUI Event Dispatch thread...
-            SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
-                  nv.setUnselectedPaint( java.awt.Color.green );
-                } } ); } } ) );
-     
-     color_menu.add( new JMenuItem( new AbstractAction( "Blue" ) {
-         public void actionPerformed ( ActionEvent e ) {
-           // Do this in the GUI Event Dispatch thread...
-           SwingUtilities.invokeLater( new Runnable() {
-               public void run() {
-                 nv.setUnselectedPaint( java.awt.Color.blue );
-               } } ); } } ) );
-     
-     color_menu.add( new JMenuItem( new AbstractAction( "Magenta" ) {
-         public void actionPerformed ( ActionEvent e ) {
-           // Do this in the GUI Event Dispatch thread...
-           SwingUtilities.invokeLater( new Runnable() {
-               public void run() {
-                 nv.setUnselectedPaint( java.awt.Color.magenta );
-               } } ); } } ) );
-
-     color_menu.add( new JMenuItem( new AbstractAction( "Cyan" ) {
-         public void actionPerformed ( ActionEvent e ) {
-           // Do this in the GUI Event Dispatch thread...
-           SwingUtilities.invokeLater( new Runnable() {
-               public void run() {
-                 nv.setUnselectedPaint( java.awt.Color.cyan );
-               } } ); } } ) );
-
-     color_menu.add( new JMenuItem( new AbstractAction( "Custom" ) {
+    edit_menu.add( new JMenuItem( new AbstractAction( "Color" ) {
          public void actionPerformed ( ActionEvent e ) {
            // Do this in the GUI Event Dispatch thread...
            SwingUtilities.invokeLater( new Runnable() {
@@ -227,99 +94,8 @@ public class NodeAction {
                  nv.setUnselectedPaint( color.showDialog( v.getComponent() , "Choose a Node Color", (java.awt.Color)nv.getUnselectedPaint() ) );
                } } ); } } ) );
 
-     return color_menu;
-   }
 
-   public static JMenuItem colorSelectNode ( Object[] args, PNode node ) {
-
-    final PNodeView nv = ( PNodeView )node;
-    final PGraphView v = ( PGraphView )args[0];
-    JMenu color_menu = new JMenu( "Choose Selected Color" );
-    color_menu.add( new JMenuItem( new AbstractAction( "Black" ) {
-          public void actionPerformed ( ActionEvent e ) {
-            // Do this in the GUI Event Dispatch thread...
-            SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
-                  nv.setSelectedPaint( java.awt.Color.black );
-                } } ); } } ) );
-
-
-    color_menu.add( new JMenuItem( new AbstractAction( "White" ) {
-          public void actionPerformed ( ActionEvent e ) {
-            // Do this in the GUI Event Dispatch thread...
-            SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
-                  nv.setSelectedPaint( java.awt.Color.white );
-                } } ); } } ) );
-
-  
-    color_menu.add( new JMenuItem( new AbstractAction( "Red" ) {
-          public void actionPerformed ( ActionEvent e ) {
-            // Do this in the GUI Event Dispatch thread...
-            SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
-                  nv.setSelectedPaint( java.awt.Color.red );
-                } } ); } } ) );
-
-    color_menu.add( new JMenuItem( new AbstractAction( "Orange" ) {
-          public void actionPerformed ( ActionEvent e ) {
-            // Do this in the GUI Event Dispatch thread...
-            SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
-                  nv.setSelectedPaint( java.awt.Color.orange );
-                } } ); } } ) );
-
-     color_menu.add( new JMenuItem( new AbstractAction( "Green" ) {
-          public void actionPerformed ( ActionEvent e ) {
-            // Do this in the GUI Event Dispatch thread...
-            SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
-                  nv.setSelectedPaint( java.awt.Color.green );
-                } } ); } } ) );
-     
-     color_menu.add( new JMenuItem( new AbstractAction( "Blue" ) {
-         public void actionPerformed ( ActionEvent e ) {
-           // Do this in the GUI Event Dispatch thread...
-           SwingUtilities.invokeLater( new Runnable() {
-               public void run() {
-                 nv.setSelectedPaint( java.awt.Color.blue );
-               } } ); } } ) );
-     
-     color_menu.add( new JMenuItem( new AbstractAction( "Magenta" ) {
-         public void actionPerformed ( ActionEvent e ) {
-           // Do this in the GUI Event Dispatch thread...
-           SwingUtilities.invokeLater( new Runnable() {
-               public void run() {
-                 nv.setSelectedPaint( java.awt.Color.magenta );
-               } } ); } } ) );
-
-     color_menu.add( new JMenuItem( new AbstractAction( "Cyan" ) {
-         public void actionPerformed ( ActionEvent e ) {
-           // Do this in the GUI Event Dispatch thread...
-           SwingUtilities.invokeLater( new Runnable() {
-               public void run() {
-                 nv.setSelectedPaint( java.awt.Color.cyan );
-               } } ); } } ) );
-
-     color_menu.add( new JMenuItem( new AbstractAction( "Custom" ) {
-         public void actionPerformed ( ActionEvent e ) {
-           // Do this in the GUI Event Dispatch thread...
-           SwingUtilities.invokeLater( new Runnable() {
-               public void run() {
-                 JColorChooser color = new JColorChooser();
-                 nv.setSelectedPaint( color.showDialog( v.getComponent() , "Choose a Node Color", (java.awt.Color)nv.getSelectedPaint() ) );
-               } } ); } } ) );
-
-     return color_menu;
-   }
-
-  public static JMenuItem shapeNode ( Object[] args , PNode node ) {
-
-    final PNodeView nv = ( PNodeView )node;
-    final PGraphView v = ( PGraphView )args[0];
-    final GraphPerspective graphPerspective = v.getGraphPerspective();
-
-    JMenu shape_menu = new JMenu( "Choose Node Shape" );
+    JMenu shape_menu = new JMenu( "Shape" );
     shape_menu.add( new JMenuItem( new AbstractAction( "Diamond" ) {
          public void actionPerformed ( ActionEvent e ) {
            // Do this in the GUI Event Dispatch thread...
@@ -370,18 +146,319 @@ public class NodeAction {
                public void run() {
                  nv.setShape( PNodeView.RECTANGLE );
                } } ); } } ) );
-	       shape_menu.add( new JMenuItem( new AbstractAction( "Gene Simbol" ) {
-         public void actionPerformed ( ActionEvent e ) {
-           // Do this in the GUI Event Dispatch thread...
-           SwingUtilities.invokeLater( new Runnable() {
-               public void run() {
-                 //set to nv to the Errow Node
-		 //int n = nv.getIndex();
-		 //graphPerspective.restoreNode(n);
-                  PNode node = (PNode)v.addNodeView( "cytoscape.graphutil.ArrowNode",nv.getIndex());
-               } } ); } } ) );
-    return shape_menu;
-  }
+	     
+    edit_menu.add( shape_menu );
+    return edit_menu;
+}
+
+
+  /**
+   * This will open an web page that will give you more info.
+   */
+  public static JMenuItem openWebInfo ( Object[] args, PNode node ) {
+
+    final PNode nv = node;
+
+    JMenu web_menu = new JMenu( "Web Info" );
+
+    web_menu.add(  new JMenuItem( new AbstractAction( "<html>SGD <small><i>yeast only</i></small></html>" ) {
+        public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  String gene = null;
+                  if ( nv instanceof PNodeView ) {
+                    gene = ( ( PNodeView ) nv).getLabel().getText();
+                  } 
+                  //System.out.println( "Node: "+nv.getLabel() );
+                  //System.out.println( "GEne: "+gene );
+                  if ( gene == null ) {
+                    gene = ( String )nv.getClientProperty("tooltip");
+                    //System.out.println( "Gene: "+gene );
+                  }
+                  OpenBrowser.openURL( "http://db.yeastgenome.org/cgi-bin/SGD/locus.pl?locus="+gene );
+               
+                } } ); } } ) );
+
+    web_menu.add(  new JMenuItem( new AbstractAction( "Google" ) {
+            public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  String gene = null;
+                  if ( nv instanceof PNodeView ) {
+                    gene = ( ( PNodeView ) nv).getLabel().getText();
+                  } 
+                  //System.out.println( "Node: "+nv.getLabel() );
+                  //System.out.println( "GEne: "+gene );
+                  if ( gene == null ) {
+                    gene = ( String )nv.getClientProperty("tooltip");
+                    //System.out.println( "Gene: "+gene );
+                  }
+                  OpenBrowser.openURL( "http://www.google.com/search?q="+gene);
+               
+                } } ); } } ) );
+
+   
+    JMenu gn_menu = new JMenu( "GenomeNet" );
+    web_menu.add( gn_menu );
+    gn_menu.add(  new JMenuItem( new AbstractAction( "Pathway" ) {
+            public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  String gene = null;
+                  if ( nv instanceof PNodeView ) {
+                    gene = ( ( PNodeView ) nv).getLabel().getText();
+                  } 
+                  //System.out.println( "Node: "+nv.getLabel() );
+                  //System.out.println( "GEne: "+gene );
+                  if ( gene == null ) {
+                    gene = ( String )nv.getClientProperty("tooltip");
+                    //System.out.println( "Gene: "+gene );
+                  }
+                  OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=pathway&keywords="+gene );
+               
+                } } ); } } ));
+
+    gn_menu.add(  new JMenuItem( new AbstractAction( "KO" ){
+            public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  String gene = null;
+                  if ( nv instanceof PNodeView ) {
+                    gene = ( ( PNodeView ) nv).getLabel().getText();
+                  } 
+                  //System.out.println( "Node: "+nv.getLabel() );
+                  //System.out.println( "GEne: "+gene );
+                  if ( gene == null ) {
+                    gene = ( String )nv.getClientProperty("tooltip");
+                    //System.out.println( "Gene: "+gene );
+                  }
+                  OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=ko&keywords="+gene );
+               
+                } } ); } } ));
+
+    gn_menu.add(  new JMenuItem( new AbstractAction( "Genes" ){
+            public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  String gene = null;
+                  if ( nv instanceof PNodeView ) {
+                    gene = ( ( PNodeView ) nv).getLabel().getText();
+                  } 
+                  //System.out.println( "Node: "+nv.getLabel() );
+                  //System.out.println( "GEne: "+gene );
+                  if ( gene == null ) {
+                    gene = ( String )nv.getClientProperty("tooltip");
+                    //System.out.println( "Gene: "+gene );
+                  }
+                  OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=genes&keywords="+gene );
+               
+                } } ); } } ));
+
+    gn_menu.add(  new JMenuItem( new AbstractAction( "Genome" ){
+            public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  String gene = null;
+                  if ( nv instanceof PNodeView ) {
+                    gene = ( ( PNodeView ) nv).getLabel().getText();
+                  } 
+                  //System.out.println( "Node: "+nv.getLabel() );
+                  //System.out.println( "GEne: "+gene );
+                  if ( gene == null ) {
+                    gene = ( String )nv.getClientProperty("tooltip");
+                    //System.out.println( "Gene: "+gene );
+                  }
+                  OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=genome&keywords="+gene );
+               
+                } } ); } } ));
+
+    gn_menu.add(  new JMenuItem( new AbstractAction( "Ligand" ){
+            public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  String gene = null;
+                  if ( nv instanceof PNodeView ) {
+                    gene = ( ( PNodeView ) nv).getLabel().getText();
+                  } 
+                  //System.out.println( "Node: "+nv.getLabel() );
+                  //System.out.println( "GEne: "+gene );
+                  if ( gene == null ) {
+                    gene = ( String )nv.getClientProperty("tooltip");
+                    //System.out.println( "Gene: "+gene );
+                  }
+                  OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=ligand&keywords="+gene );
+               
+                } } ); } } ));
+
+    gn_menu.add(  new JMenuItem( new AbstractAction( "Compound" ){
+            public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  String gene = null;
+                  if ( nv instanceof PNodeView ) {
+                    gene = ( ( PNodeView ) nv).getLabel().getText();
+                  } 
+                  //System.out.println( "Node: "+nv.getLabel() );
+                  //System.out.println( "GEne: "+gene );
+                  if ( gene == null ) {
+                    gene = ( String )nv.getClientProperty("tooltip");
+                    //System.out.println( "Gene: "+gene );
+                  }
+                  OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=compound&keywords="+gene );
+               
+                } } ); } } ));
+
+    gn_menu.add(  new JMenuItem( new AbstractAction( "Glycan" ){
+            public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  String gene = null;
+                  if ( nv instanceof PNodeView ) {
+                    gene = ( ( PNodeView ) nv).getLabel().getText();
+                  } 
+                  //System.out.println( "Node: "+nv.getLabel() );
+                  //System.out.println( "GEne: "+gene );
+                  if ( gene == null ) {
+                    gene = ( String )nv.getClientProperty("tooltip");
+                      //System.out.println( "Gene: "+gene );
+                  }
+                  OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=glycan&keywords="+gene );
+               
+                } } ); } } ));
+
+    gn_menu.add(  new JMenuItem( new AbstractAction( "Reaction" ){
+            public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  String gene = null;
+                  if ( nv instanceof PNodeView ) {
+                    gene = ( ( PNodeView ) nv).getLabel().getText();
+                  } 
+                  //System.out.println( "Node: "+nv.getLabel() );
+                  //System.out.println( "GEne: "+gene );
+                  if ( gene == null ) {
+                    gene = ( String )nv.getClientProperty("tooltip");
+                    //System.out.println( "Gene: "+gene );
+                  }
+                  OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=reaction&keywords="+gene );
+               
+                } } ); } } ));
+
+    gn_menu.add(  new JMenuItem( new AbstractAction( "Enzyme" ){
+            public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  String gene = null;
+                  if ( nv instanceof PNodeView ) {
+                    gene = ( ( PNodeView ) nv).getLabel().getText();
+                  } 
+                  //System.out.println( "Node: "+nv.getLabel() );
+                  //System.out.println( "GEne: "+gene );
+                  if ( gene == null ) {
+                    gene = ( String )nv.getClientProperty("tooltip");
+                    //System.out.println( "Gene: "+gene );
+                  }
+                  OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=enzyme&keywords="+gene );
+               
+                } } ); } }) );
+
+           gn_menu.addSeparator();
+           
+           gn_menu.add(  new JMenuItem( new AbstractAction( "Swiss-Prot" ){
+            public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  String gene = null;
+                  if ( nv instanceof PNodeView ) {
+                    gene = ( ( PNodeView ) nv).getLabel().getText();
+                  } 
+                  //System.out.println( "Node: "+nv.getLabel() );
+                  //System.out.println( "GEne: "+gene );
+                  if ( gene == null ) {
+                    gene = ( String )nv.getClientProperty("tooltip");
+                    //System.out.println( "Gene: "+gene );
+                  }
+                  OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=swissprot&keywords="+gene );
+               
+                } } ); } }) );
+
+         
+
+           gn_menu.add(  new JMenuItem( new AbstractAction( "Ref-Seq" ){
+            public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  String gene = null;
+                  if ( nv instanceof PNodeView ) {
+                    gene = ( ( PNodeView ) nv).getLabel().getText();
+                  } 
+                  //System.out.println( "Node: "+nv.getLabel() );
+                  //System.out.println( "GEne: "+gene );
+                  if ( gene == null ) {
+                    gene = ( String )nv.getClientProperty("tooltip");
+                    //System.out.println( "Gene: "+gene );
+                  }
+                  OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=refseq&keywords="+gene );
+               
+                } } ); } } ));
+
+           gn_menu.add(  new JMenuItem( new AbstractAction( "GenBank" ){
+            public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  String gene = null;
+                  if ( nv instanceof PNodeView ) {
+                    gene = ( ( PNodeView ) nv).getLabel().getText();
+                  } 
+                  //System.out.println( "Node: "+nv.getLabel() );
+                  //System.out.println( "GEne: "+gene );
+                  if ( gene == null ) {
+                    gene = ( String )nv.getClientProperty("tooltip");
+                    //System.out.println( "Gene: "+gene );
+                  }
+                  OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=genbank&keywords="+gene );
+               
+                } } ); } } ));
+
+           gn_menu.add(  new JMenuItem( new AbstractAction( "Embl" ){
+            public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  String gene = null;
+                  if ( nv instanceof PNodeView ) {
+                    gene = ( ( PNodeView ) nv).getLabel().getText();
+                  } 
+                  //System.out.println( "Node: "+nv.getLabel() );
+                  //System.out.println( "GEne: "+gene );
+                  if ( gene == null ) {
+                    gene = ( String )nv.getClientProperty("tooltip");
+                    //System.out.println( "Gene: "+gene );
+                  }
+                  OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=embl&keywords="+gene );
+               
+                } } ); } } ));
+
+           return web_menu;
+
+   }
+
+  
+
   public static JMenuItem showData ( Object[] args, PNode node ) {
 
     final PNodeView nv = ( PNodeView )node;
@@ -449,9 +526,10 @@ public class NodeAction {
     final PGraphView v = ( PGraphView )args[0];
 	  final GraphPerspective graphPerspective = v.getGraphPerspective();
 
-    JMenu firstn_menu = new JMenu( "Change Fist Neighbors" );
+    JMenu firstn_menu = new JMenu( "<html>Set First Neighbors <I><small>(short-term)</I></small></html>");
+ 
 	 
-	 firstn_menu.add( new JMenuItem( new AbstractAction( "Color" ) {
+    firstn_menu.add( new JMenuItem( new AbstractAction( "Color" ) {
          public void actionPerformed ( ActionEvent e ) {
            // Do this in the GUI Event Dispatch thread...
            SwingUtilities.invokeLater( new Runnable() {
@@ -471,87 +549,9 @@ public class NodeAction {
 	 } } ); } } ) );
 	 
 	 
-	/* firstn_menu.add( new JMenuItem( new AbstractAction( "To star plots" ) {
-         public void actionPerformed ( ActionEvent e ) {
-           // Do this in the GUI Event Dispatch thread...
-           SwingUtilities.invokeLater( new Runnable() {
-               public void run() {
-		 Node n = graphPerspective.getNode(nv.getIndex());
-		 
-		 List list = graphPerspective.neighborsList(n);
-		 Iterator i = list.iterator();
-		 while (i.hasNext())
-		{
-			Node neib =(Node) i.next();
-			int index = neib.getRootGraphIndex();
-			NodeView neibview = (NodeView)v.getNodeView(index);
-			
-			PNode node = (PNode) v.addNodeView( "cytoscape.graphutil.ClipRadarNode", index);
-		}
-                  
-               } } ); } } ) );
-	       firstn_menu.add( new JMenuItem( new AbstractAction( "To radars nodes" ) {
-         public void actionPerformed ( ActionEvent e ) {
-           // Do this in the GUI Event Dispatch thread...
-           SwingUtilities.invokeLater( new Runnable() {
-               public void run() {
-		 Node n = graphPerspective.getNode(nv.getIndex());
-		 
-		 List list = graphPerspective.neighborsList(n);
-		 Iterator i = list.iterator();
-		 while (i.hasNext())
-		{
-			Node neib =(Node) i.next();
-			int index = neib.getRootGraphIndex();
-			NodeView neibview = (NodeView)v.getNodeView(index);
-			
-			PNode node = (PNode) v.addNodeView( "cytoscape.graphutil.RadarNode", index);
-		}
-                  
-               } } ); } } ) );
-	       
-	       firstn_menu.add( new JMenuItem( new AbstractAction( "To grid nodes" ) {
-         public void actionPerformed ( ActionEvent e ) {
-           // Do this in the GUI Event Dispatch thread...
-           SwingUtilities.invokeLater( new Runnable() {
-               public void run() {
-		 Node n = graphPerspective.getNode(nv.getIndex());
-		 
-		 List list = graphPerspective.neighborsList(n);
-		 Iterator i = list.iterator();
-		 while (i.hasNext())
-		{
-			Node neib =(Node) i.next();
-			int index = neib.getRootGraphIndex();
-			NodeView neibview = (NodeView)v.getNodeView(index);
-			
-			PNode node = (PNode) v.addNodeView( "cytoscape.graphutil.GridNode", index);
-		}
-                  
-               } } ); } } ) );
-	       
-	 firstn_menu.add( new JMenuItem( new AbstractAction( "To petal nodes" ) {
-         public void actionPerformed ( ActionEvent e ) {
-           // Do this in the GUI Event Dispatch thread...
-           SwingUtilities.invokeLater( new Runnable() {
-               public void run() {
-		 Node n = graphPerspective.getNode(nv.getIndex());
-		 
-		 List list = graphPerspective.neighborsList(n);
-		 Iterator i = list.iterator();
-		 while (i.hasNext())
-		{
-			Node neib =(Node) i.next();
-			int index = neib.getRootGraphIndex();
-			NodeView neibview = (NodeView)v.getNodeView(index);
-			
-			PNode node = (PNode) v.addNodeView( "cytoscape.graphutil.PetalNode", index);
-		}
-                  
-               } } ); } } ) );
-	       
-	       **/
-	 firstn_menu.add( new JMenuItem( new AbstractAction( "To parallelogram" ) {
+    JMenu shape_menu = new JMenu( "Shape" );
+    firstn_menu.add( shape_menu );
+	 shape_menu.add( new JMenuItem( new AbstractAction( "To parallelogram" ) {
          public void actionPerformed ( ActionEvent e ) {
            // Do this in the GUI Event Dispatch thread...
            SwingUtilities.invokeLater( new Runnable() {
@@ -569,7 +569,7 @@ public class NodeAction {
                   
                } } ); } } ) );
 	 
-	 firstn_menu.add( new JMenuItem( new AbstractAction( "To circles" ) {
+	 shape_menu.add( new JMenuItem( new AbstractAction( "To circles" ) {
          public void actionPerformed ( ActionEvent e ) {
            // Do this in the GUI Event Dispatch thread...
            SwingUtilities.invokeLater( new Runnable() {
@@ -587,7 +587,7 @@ public class NodeAction {
                   
                } } ); } } ) ); 
 	       
-	 firstn_menu.add( new JMenuItem( new AbstractAction( "To triangles" ) {
+	 shape_menu.add( new JMenuItem( new AbstractAction( "To triangles" ) {
          public void actionPerformed ( ActionEvent e ) {
            // Do this in the GUI Event Dispatch thread...
            SwingUtilities.invokeLater( new Runnable() {
@@ -605,7 +605,7 @@ public class NodeAction {
                   
                } } ); } } ) );
 	       
-	  firstn_menu.add( new JMenuItem( new AbstractAction( "To diamonds" ) {
+	  shape_menu.add( new JMenuItem( new AbstractAction( "To diamonds" ) {
          public void actionPerformed ( ActionEvent e ) {
            // Do this in the GUI Event Dispatch thread...
            SwingUtilities.invokeLater( new Runnable() {

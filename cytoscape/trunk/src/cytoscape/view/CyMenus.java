@@ -421,14 +421,14 @@ public class CyMenus {
         
     b = toolBar.add(new FitContentAction(networkView));
     b.setIcon(new ImageIcon(getClass().getResource("images/new/fit36.gif")));
-    b.setToolTipText("Zoom out to display all of current graph");
+    b.setToolTipText("Zoom out to display all of current Graph");
     b.setBorderPainted(false);
         
     // toolBar.addSeparator();
         
     b = toolBar.add(new ShowAllAction(networkView));
     b.setIcon(new ImageIcon(getClass().getResource("images/new/add36.gif")));
-    b.setToolTipText("Show all nodes and edges (unhiding as necessary)");
+    b.setToolTipText("Show all Nodes and Edges (unhiding as necessary)");
     b.setBorderPainted(false);
         
         
@@ -440,8 +440,8 @@ public class CyMenus {
     toolBar.addSeparator();
         
     b = toolBar.add(new AnnotationGui(cyWindow));
-    b.setIcon(new ImageIcon(getClass().getResource("images/AnnotationGui.gif")));
-    b.setToolTipText("add annotation to nodes");
+    b.setIcon(new ImageIcon(getClass().getResource("images/new/ontology36.gif")));
+    b.setToolTipText("Add Annotation Ontology to Nodes");
     b.setBorderPainted(false);
     
     toolBar.addSeparator();

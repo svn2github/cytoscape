@@ -319,29 +319,32 @@ protected void addViewContextMenus() {
                          "editNode",
                          new Object[] { ( NetworkView )this } );
 
-  view.addContextMethod( "class phoebe.PNodeView",
+   view.addContextMethod( "class phoebe.PNodeView",
                          "cytoscape.graphutil.NodeAction",
-                         "colorSelectNode",
-                         new Object[] {view });
-  
-  view.addContextMethod( "class phoebe.PNodeView",
+                         "changeFirstNeighbors",
+                         new Object[] {view } );
+      
+  view.addContextMethod( "edu.umd.cs.piccolo.PNodeView",
                          "cytoscape.graphutil.NodeAction",
-                         "shapeNode",
+                         "zoomToNode",
                          new Object[] {view } );
 
-	    // Add some Edge Context Menus
-	    view.addContextMethod( "class phoebe.PEdgeView",
-                                  "cytoscape.graphutil.EdgeAction",
-                                  "colorEdge",
-                                 new Object[] {view } );
-	    view.addContextMethod( "class phoebe.PEdgeView",
-                                  "cytoscape.graphutil.EdgeAction",
-                                  "colorSelectEdge",
-                                 new Object[] {view } );
-	    view.addContextMethod( "class phoebe.PEdgeView",
-                                  "cytoscape.graphutil.EdgeAction",
-                                  "edgeWidth",
-                                 new Object[] {view } );
+
+
+
+  // Add some Edge Context Menus
+  view.addContextMethod( "class phoebe.PEdgeView",
+                         "cytoscape.graphutil.EdgeAction",
+                         "colorEdge",
+                         new Object[] {view } );
+  view.addContextMethod( "class phoebe.PEdgeView",
+                         "cytoscape.graphutil.EdgeAction",
+                         "colorSelectEdge",
+                         new Object[] {view } );
+  view.addContextMethod( "class phoebe.PEdgeView",
+                         "cytoscape.graphutil.EdgeAction",
+                         "edgeWidth",
+                         new Object[] {view } );
 	    view.addContextMethod( "class phoebe.PEdgeView",
                                   "cytoscape.graphutil.EdgeAction",
                                   "edgeLineType",
@@ -365,20 +368,8 @@ protected void addViewContextMenus() {
                                   "edgeEndBorderColor",
                                  new Object[] {view } );
 
-      //data menues
-     // view.addContextMethod( "class phoebe.PNodeView",
-                                  //"cytoscape.graphutil.NodeAction",
-                                 // "showData",
-                                  //"Show Data for this node" );
-      view.addContextMethod( "class phoebe.PNodeView",
-                                  "cytoscape.graphutil.NodeAction",
-                                  "changeFirstNeighbors",
-                                  new Object[] {view } );
-      view.addContextMethod( "edu.umd.cs.piccolo.PNode",
-                                  "cytoscape.graphutil.NodeAction",
-                                  "zoomToNode",
-                                 new Object[] {view } );
 }
+    
 //------------------------------------------------------------------------------
 /**
  * Creates the vizmapper and it's UI, making sure that a visual style
