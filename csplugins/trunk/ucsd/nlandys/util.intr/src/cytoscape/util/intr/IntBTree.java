@@ -38,7 +38,7 @@ public final class IntBTree
   /*
    * Perhaps this should be inlined later for performance.
    */
-  private final boolean isLeafNode(Node n)
+  private static final boolean isLeafNode(Node n)
   {
     return n.data == null;
   }
@@ -380,25 +380,32 @@ public final class IntBTree
   public final IntEnumerator searchRange(int xMin, int xMax)
   {
     final NodeStack nodeStack = new NodeStack();
-    final int totalCount = searchRange(m_root, nodeStack
+    final int totalCount = searchRange(m_root, nodeStack,
                                        xMin, xMax,
                                        Integer.MIN_VALUE, Integer.MAX_VALUE);
     return new IntEnumerator() {
         private int count = totalCount;
         private Node currentLeafNode = null;
         private int currentNodeInx;
-        private boolean wholeLeafNode;
+        private int wholeLeafNodes = 0; // Whole leaf nodes on stack.
         public int numRemaining() { return count; }
         public int nextInt() {
           int returnThis;
           if (currentLeafNode == null) {
-          }
-          if (wholeLeafNode) {
+            while (true) {
+              currentLeafNode = nodeStack.pop();
+              if (isLeafNode(currentLeafNode)) { currentNodeInx = 0; break; }
+              for (int i = currentLeafNode.sliceCount; i > 0; wholeLeafNodes++)
+                nodeStack.push(currentLeafNode.data.children[--i]); } }
+          if (wholeLeafNodes > 0) {
             returnThis = currentLeafNode.values[currentNodeInx++]; }
           else {
+            returnThis = -1;
+            // Something goes here.
           }
-          if (currentNodeInx == currentLeafNode.sliceCount)
+          if (currentNodeInx == currentLeafNode.sliceCount) {
             currentLeafNode = null;
+            if (wholeLeafNodes > 0) wholeLeafNodes--; }
           count--;
           return returnThis; } };
   }
@@ -410,9 +417,10 @@ public final class IntBTree
    * regions of the tree which can be included, as whole, as part of the
    * range query.  Every node on the returned stack will have at least one
    * leaf entry counting towards the enumeration in the range query (this
-   * statement is important for leaf nodes).
+   * statement is important for leaf nodes).  There shall be at most two
+   * leaf nodes on this stack -- one at the beginning and one at the end.
    */
-  private final int searchRange(Node n, NodeStack nodeStack
+  private final int searchRange(Node n, NodeStack nodeStack,
                                 int xMin, int xMax,
                                 int minBound, int maxBound)
   {
