@@ -46,10 +46,8 @@ import cytoscape.data.servers.*;
 import cytoscape.data.readers.*;
 
 /**
- * This is an Interaction Reader, it will create a network from
- * a given file.
- *
- * The network can then be merged/added/replaced in Cytoscape
+ * Reader for graphs in the interactions file format. Given the filename,
+ * provides the graph and attributes objects constructed from the file.
  */
 public class InteractionsReader implements GraphReader {
 
