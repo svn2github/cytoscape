@@ -141,18 +141,39 @@ class ComplexFinderResultDialog extends RyanDialog implements ListSelectionListe
     
     JButton assessButton = new JButton("Assess");
     assessButton.addActionListener(new ActionListener(){
-	public void actionPerformed = new GOprediction(new File("GOID2orfs.txt"),new File("GOID2parents.txt"));
-	HashMap result = prediction.complexAssessment(results);
-	try{
-	  FileWriter writer = new FileWriter("assessment.txt",false);
-	  for(Iterator it = result.keySet().iterator();it.hasNext();){
-	    Node node = (Node)it.next();
-	    writer.write(node+"\t"+result.get(node)+"\n");
+	public void actionPerformed(ActionEvent ae){
+	  GOprediction prediction = new GOprediction(new File("GOID2orfs.txt"),new File("GOID2parents.txt"));
+	  HashMap node2BestPathway = new HashMap();
+	  for(Iterator pathwayIt = results.iterator();pathwayIt.hasNext();){
+	    Pathway pathway = (Pathway)pathwayIt.next();
+	    assignBestPathway(pathway,node2BestPathway);
 	  }
-	  writer.close();
-	}catch(Exception e){
-	  e.printStackTrace();
-	  System.exit(-1);
+	  try{
+	    FileWriter writer = new FileWriter("assessComplex.txt",false);
+	    for(Iterator it = node2BestPathway.keySet().iterator();it.hasNext();){
+	      Node node = (Node)it.next();
+	      Pathway pathway = (Pathway)node2BestPathway.get(node);
+	      writer.write(node+"\t"+prediction.getAverageDistance(node,physicalNetwork.neighborsList(node),pathway.nodes)+"\n");
+	    }
+	    writer.close();
+	  }catch(Exception e){
+	    e.printStackTrace();
+	    System.exit(-1);
+	  }
+	}
+	protected void assignBestPathway(Pathway pathway, HashMap node2BestPathway){
+	  for(Iterator nodeIt = pathway.nodes.iterator();nodeIt.hasNext();){
+	    Node node = (Node)nodeIt.next();
+	    if(!node2BestPathway.containsKey(node)){
+	      node2BestPathway.put(node, pathway);
+	    }
+	    else{
+	      Pathway oldPathway = (Pathway)node2BestPathway.get(node);
+	      if(pathway.score > oldPathway.score){
+		node2BestPathway.put(node,pathway);
+	      }
+	    }
+	  }
 	}
       });
 
@@ -160,7 +181,7 @@ class ComplexFinderResultDialog extends RyanDialog implements ListSelectionListe
     southPanel.add(viewButton);
     southPanel.add(saveButton);
     southPanel.add(validateButton);
-    southPanel.add(assessButton = new JButton("Assess");
+    southPanel.add(assessButton);
     getContentPane().add(southPanel,BorderLayout.SOUTH);
     pack();
   }
