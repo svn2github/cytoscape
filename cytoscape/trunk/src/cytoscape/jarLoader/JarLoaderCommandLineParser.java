@@ -5,19 +5,29 @@
 // $Author$
 //----------------------------------------------------------------------------
 package cytoscape.jarLoader;
+
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
-import cytoscape.*;
 
+import cytoscape.view.CyWindow;
+
+/**
+ * This class searches the command-line arguments for arguments specifying
+ * directories to search for plugins. The option "--JLD <string>" is used
+ * to specify a plugin directory, while the option "--JLH" prints a usage
+ * statement for these two options.
+ *
+ * If a directory is found, it is passed to an instance of JarPLuginDirectoryAction.
+ */
 public class JarLoaderCommandLineParser {
     
     private boolean activePathParametersPresent = false;
     JarPluginDirectoryAction jpda;
-    CytoscapeWindow cw;
+    CyWindow cyWindow;
     
-    public JarLoaderCommandLineParser(String[] args, CytoscapeWindow cw) {
-	this.cw=cw;
-	jpda = new JarPluginDirectoryAction(cw);
+    public JarLoaderCommandLineParser(String[] args, CyWindow cyWindow) {
+	this.cyWindow=cyWindow;
+	jpda = new JarPluginDirectoryAction(cyWindow);
         this.parseArgs(args);
     }
     

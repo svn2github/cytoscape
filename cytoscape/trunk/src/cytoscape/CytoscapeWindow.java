@@ -145,14 +145,15 @@ String title) {
 //------------------------------------------------------------------------------
 /**
  * This constructor should only be called from the CyWindow constructor. This
- * provides a simple wrapper around that CyWindow and performs plugin loading.
+ * provides a simple wrapper around that CyWindow. Plugin loading should be done
+ * by calling loadPlugins() after constructing this class.
  */
 public CytoscapeWindow(CyWindow cyWindow) {
     this.defaultSpecies = null;
     this.geometryFilename = null;
     this.expressionDataFilename = null;
     this.cyWindow = cyWindow;
-    loadPlugins();
+    //loadPlugins();
 }
 //------------------------------------------------------------------------------
 /**
@@ -354,7 +355,8 @@ protected void assignSpeciesAttributeToAllNodes ()
  */
 public void loadPlugins() {
     PluginLoader pluginLoader
-        = new PluginLoader (this, this.getConfiguration(),
+        = new PluginLoader (this.getCyWindow(),
+                            this.getConfiguration(),
                             this.getNodeAttributes(),
                             this.getEdgeAttributes());
 
@@ -362,12 +364,9 @@ public void loadPlugins() {
     getLogger().info(pluginLoader.getMessages());
 
     // add default unselectable "no plugins loaded" if none loaded
-    if (getOperationsMenu().getItemCount() == 0) {
-        JMenuItem none = new JMenuItem(NO_PLUGINS);
-        none.setEnabled(false);
-        getOperationsMenu().add(none);
-    }
-    JarLoaderUI jlu = new JarLoaderUI(this,
+    getCyWindow().getCyMenus().refreshOperationsMenu();
+
+    JarLoaderUI jlu = new JarLoaderUI(this.getCyWindow(),
                       this.getCyMenus().getLoadSubMenu() );
 
 }

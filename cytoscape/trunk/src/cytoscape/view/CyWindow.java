@@ -91,6 +91,7 @@ CyNetworkListener, NetworkView {
     Paint DEFAULT_PAINT = Color.yellow;
     
 
+    protected CytoscapeWindow cytoscapeWindow;
     protected CytoscapeObj globalInstance;
     protected CyNetwork network;
    
@@ -145,8 +146,10 @@ CyNetworkListener, NetworkView {
  */
 public CyWindow(CytoscapeObj globalInstance, CyNetwork network, String title) {
     doInit(globalInstance, network, title);
-    //this triggers plugin loading
-    CytoscapeWindow cytoscapeWindow = new CytoscapeWindow(this);
+    cytoscapeWindow = new CytoscapeWindow(this);
+    //load plugins after the cytoscapeWindow constructor finishes so that the
+    //plugin loader can get a valid cytoscapeWindow reference from this object
+    cytoscapeWindow.loadPlugins();
 }
 //------------------------------------------------------------------------------
 /**
@@ -156,6 +159,7 @@ public CyWindow(CytoscapeObj globalInstance, CyNetwork network, String title) {
  */
 public CyWindow(CytoscapeObj globalInstance, CyNetwork network, String title,
                 CytoscapeWindow cytoscapeWindow) {
+    this.cytoscapeWindow = cytoscapeWindow;
     doInit(globalInstance, network, title);
 }
 //------------------------------------------------------------------------------
@@ -609,6 +613,13 @@ public void showWindow() {
 //----------SET/GET METHODS-----------------------------------------------------
 //------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
+/**
+ * @deprecated This method allows access to the CytoscapeWindow wrapper around
+ * this class. This method will go away when support for the CytoscapeWindow
+ * class is dropped.
+ */
+public CytoscapeWindow getCytoscapeWindow() {return cytoscapeWindow;}
 //------------------------------------------------------------------------------
 /**
  * Returns a reference to the global Cytoscape object.

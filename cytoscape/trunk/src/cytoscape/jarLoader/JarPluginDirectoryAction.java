@@ -8,23 +8,33 @@ package cytoscape.jarLoader;
 //--------------------------------------------------------------------------
 import java.awt.event.*;
 import javax.swing.*;
-import cytoscape.*;
 import java.io.*;
 
+import cytoscape.view.CyWindow;
+
+/**
+ * This class provides an action for loading Cytoscape plugins from jar files
+ * found in a directory selected by the user. When triggered, it prompts the
+ * user to select a directory, gets every jar file within that directory, and
+ * passes each jar file to a new instance of JarClassLoader to search for
+ * plugins.
+ */
 public class JarPluginDirectoryAction extends AbstractAction {
-    protected CytoscapeWindow cytoscapeWindow;
+    protected CyWindow cyWindow;
     protected File file;
     protected boolean ready=false;
-    JarPluginDirectoryAction(CytoscapeWindow cytoscapeWindow) {
+    JarPluginDirectoryAction(CyWindow cyWindow) {
 	super ("Plugin Jar Directory");
-	this.cytoscapeWindow = cytoscapeWindow;
+	this.cyWindow = cyWindow;
     }
     public void actionPerformed (ActionEvent e) {
 	if(!getDir()) return;
 	ready=true;
 	tryDirectory();
     }
-    /** sets directory manually */
+    /**
+     * sets directory manually
+     */
     public void setDir(String newFile) {
 	try {
 	    file = new File(newFile);
@@ -41,7 +51,10 @@ public class JarPluginDirectoryAction extends AbstractAction {
 	    ready=false;
 	}
     }
-    /** tries directory manually */
+    /*
+     * tries the currently selected directory. Can be called manually or
+     * automatically from actionPerformed.
+     */
     public void tryDirectory() {
 	if(ready==false) return;
 	String[] fileList = file.list();
@@ -55,7 +68,7 @@ public class JarPluginDirectoryAction extends AbstractAction {
 	    try {
 		//System.out.println(jarString);
 		JarClassLoader jcl = new JarClassLoader("file:" + jarString,
-							cytoscapeWindow);
+							cyWindow);
 		jcl.loadRelevantClasses();
 	    }
 	    catch (Exception e1) {
@@ -68,18 +81,19 @@ public class JarPluginDirectoryAction extends AbstractAction {
     }
     
 
-    /** file browser
+    /**
+     * file browser
      */
     private boolean getDir() {
         JFileChooser fChooser =
-	    new JFileChooser(cytoscapeWindow.getCurrentDirectory());
+	    new JFileChooser(cyWindow.getCytoscapeObj().getCurrentDirectory());
         fChooser.setDialogTitle("Load Plugin from Jar Directory");
 	fChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         switch (fChooser.showOpenDialog(null)) {
 	    
         case JFileChooser.APPROVE_OPTION:
             file = fChooser.getSelectedFile();
-	    cytoscapeWindow.setCurrentDirectory(file);
+	    cyWindow.getCytoscapeObj().setCurrentDirectory(file);
             return true;
         default:
             // cancel or error

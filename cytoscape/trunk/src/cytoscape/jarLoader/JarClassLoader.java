@@ -6,12 +6,14 @@
 //--------------------------------------------------------------------------
 package cytoscape.jarLoader;
 //--------------------------------------------------------------------------
-import cytoscape.*;
 import java.net.*;
 import java.lang.reflect.*;
 import java.util.jar.*;
 import java.util.*;
 import javax.swing.*;
+
+import cytoscape.AbstractPlugin;
+import cytoscape.view.CyWindow;
 
 /**
  * A class loader for loading jar files, both local and remote.
@@ -21,27 +23,26 @@ import javax.swing.*;
 public class JarClassLoader extends URLClassLoader {
     private String urlString;
     private URL url;
-    private CytoscapeWindow cytoscapeWindow;
+    private CyWindow cyWindow;
     /**
      * Creates a new JarClassLoader for the specified url.
      *
      * @param urlString the url of the jar file
-     * @param cytoscapeWindow the parent
-     * {@link CytoscapeWindow CytoscapeWindow}
+     * @param cyWindow the parent
+     * {@link CyWindow CyWindow}
      */
-    public JarClassLoader(String urlString,
-			  CytoscapeWindow cytoscapeWindow)
+    public JarClassLoader(String urlString,CyWindow cyWindow)
 	throws MalformedURLException {
 	super(new URL[] { new URL(urlString) });
 	this.urlString = urlString;
-	this.cytoscapeWindow = cytoscapeWindow;
+	this.cyWindow = cyWindow;
 	this.url = new URL("jar", "", urlString + "!/");
     }
     
     /**
      * browses the jar file for any classes that extend AbstractPlugin;
      * upon finding such classes, constructs them with their single
-     * constructor argument, {@link #cytoscapeWindow}.
+     * constructor argument, {@link #cyWindow}.
      */
     public void loadRelevantClasses() {
 	JarURLConnection uc=null;
@@ -138,29 +139,9 @@ public class JarClassLoader extends URLClassLoader {
 	    if(!(isClassPlugin(name)))
 		throw(new Exception("not plugin: " + name));
 	    Class pluginClass = loadClass (name);
-	    Class [] argClasses = new Class [1];
-	    argClasses [0] =  cytoscapeWindow.getClass ();
-	    Object [] args = new Object [1];
-	    args [0] = cytoscapeWindow;
-	    Constructor [] ctors = pluginClass.getConstructors ();
-	    Constructor ctor = pluginClass.getConstructor (argClasses);
-	    Object plugin = ctor.newInstance (args);
+            AbstractPlugin.loadPlugin(pluginClass, cyWindow.getCytoscapeObj(),
+                                      cyWindow );
 	    System.out.println("Loaded plugin: " + name);
-
-	    /**
-	     * if the "No plugins loaded" message is currently
-	     * in the operations menu, and it is no longer valid
-	     * because there are other items in the operations menu,
-	     * then remove it.
-	     */
-	    JMenu ops = cytoscapeWindow.getOperationsMenu();
-	    if(ops.getItemCount()>0) {
-		String s = ops.getItem(0).getText();
-		if (s.equals(CytoscapeWindow.NO_PLUGINS)) {
-		    ops.remove(0);
-		    //System.out.println("REMOVED");
-		}
-	    }
 	}
 	catch (Exception e) {
 	    System.err.println ("Error instantiating plugin: "

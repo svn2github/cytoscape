@@ -6,12 +6,12 @@
 //--------------------------------------------------------------------------
 package cytoscape.jarLoader;
 //--------------------------------------------------------------------------
-import cytoscape.*;
 import javax.swing.*;
 
+import cytoscape.view.CyWindow;
 //--------------------------------------------------------------------------
 public class JarLoaderUI {
-    protected CytoscapeWindow cytoscapeWindow;
+    protected CyWindow cyWindow;
     /**
      * <p>The JarLoaderUI constructor adds two items to the
      * File Loading menu, or whatever menu gets passed
@@ -27,16 +27,16 @@ public class JarLoaderUI {
      * to instantiate any plugins that may have been
      * specified at the command line.</p>
      */
-    public JarLoaderUI (CytoscapeWindow cytoscapeWindow, JMenu theMenu)
+    public JarLoaderUI (CyWindow cyWindow, JMenu theMenu)
     {
-	this.cytoscapeWindow = cytoscapeWindow;
+	this.cyWindow = cyWindow;
 	theMenu.add
-	    (new JarPluginLoaderAction (cytoscapeWindow));
+	    (new JarPluginLoaderAction (cyWindow));
 	theMenu.add
-	    (new JarPluginDirectoryAction (cytoscapeWindow));
-	String[] args = cytoscapeWindow.getConfiguration().getArgs();
+	    (new JarPluginDirectoryAction (cyWindow));
+	String[] args = cyWindow.getCytoscapeObj().getConfiguration().getArgs();
 	JarLoaderCommandLineParser parser =
-	    new JarLoaderCommandLineParser(args,cytoscapeWindow);
+	    new JarLoaderCommandLineParser(args,cyWindow);
     }
 } // class JarLoaderUI
 

@@ -8,15 +8,21 @@ package cytoscape.jarLoader;
 //--------------------------------------------------------------------------
 import java.awt.event.*;
 import javax.swing.*;
-import cytoscape.*;
 import java.io.*;
 
+import cytoscape.view.CyWindow;
+
+/**
+ * This class provides an action for loading Cytoscape plugins from a jar file.
+ * When triggered, it prompts the user to select a jar file and passes this file
+ * to a new instance of JarClassLoader to search for plugins in that jar file.
+ */
 public class JarPluginLoaderAction extends AbstractAction {
-    protected CytoscapeWindow cytoscapeWindow;
-    protected File file;
-    JarPluginLoaderAction(CytoscapeWindow cytoscapeWindow) {
+    protected CyWindow cyWindow;
+    protected File file;  //the jar file selected by the user
+    JarPluginLoaderAction(CyWindow cyWindow) {
 	super ("Plugin Jar File");
-	this.cytoscapeWindow = cytoscapeWindow;
+	this.cyWindow = cyWindow;
     }
     public void actionPerformed (ActionEvent e) {
 	if(!getFile()) return;
@@ -24,7 +30,7 @@ public class JarPluginLoaderAction extends AbstractAction {
 	System.out.println("Chose: " + jarString);
 	try {
 	    JarClassLoader jcl = new JarClassLoader("file:" + jarString,
-						    cytoscapeWindow);
+						    cyWindow);
 	    jcl.loadRelevantClasses();
 	}
 	catch (Exception e1) {
@@ -33,11 +39,14 @@ public class JarPluginLoaderAction extends AbstractAction {
     }
     
 
-    /** file browser
+    /**
+     * file browser.
+     *
+     * @return true if a valid file was chosen, false otherwise
      */
     private boolean getFile() {
         JFileChooser fChooser =
-	    new JFileChooser(cytoscapeWindow.getCurrentDirectory());
+	    new JFileChooser(cyWindow.getCytoscapeObj().getCurrentDirectory());
         fChooser.setDialogTitle("Load Plugin from Jar");
         switch (fChooser.showOpenDialog(null)) {
 	    
@@ -56,7 +65,7 @@ public class JarPluginLoaderAction extends AbstractAction {
 					      JOptionPane.ERROR_MESSAGE);
                 return false;
             }
-	    cytoscapeWindow.setCurrentDirectory(file);
+	    cyWindow.getCytoscapeObj().setCurrentDirectory(file);
             return true;
         default:
             // cancel or error

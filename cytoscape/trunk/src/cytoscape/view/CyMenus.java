@@ -58,6 +58,7 @@ public class CyMenus {
   JMenu layoutMenu;
   JMenu vizMenu;
   JMenu opsMenu;
+  JMenuItem NO_OPERATIONS;
   JToolBar toolBar;
     
 
@@ -67,7 +68,9 @@ public class CyMenus {
     //don't fill them with menu items and associated action listeners
     createMenuBar();
     toolBar = new JToolBar();
-        
+    //default menu item used when the operations menu is empty
+    NO_OPERATIONS = new JMenuItem("No operations available");
+    NO_OPERATIONS.setEnabled(false);
   }
     
   /**
@@ -100,6 +103,23 @@ public class CyMenus {
    * menu option.
    */
   public JMenu getOperationsMenu() {return opsMenu;}
+  /**
+   * Checks the operations menu for existing items. If there
+   * are none, adds a default item indicating that no plugin
+   * menu operations are available. If there is more than one
+   * menu item, then this method removes the default item if
+   * it exists.
+   */
+  public void refreshOperationsMenu() {
+      if (opsMenu.getItemCount() == 0) {//no real items exist
+          opsMenu.add(NO_OPERATIONS);   //so add the default item
+      } else if (opsMenu.getItemCount() > 1) {//one real item exists
+          //the default item will always be first if it's there
+          if (opsMenu.getItem(0) == NO_OPERATIONS) {
+              opsMenu.remove(0);  //remove the default item
+          }
+      }
+  }
     
   /**
    * Returns the toolbar object constructed by this class.

@@ -54,9 +54,10 @@ package cytoscape;
 //-----------------------------------------------------------------------------------
 import java.util.*;
 import java.lang.reflect.*;
+import cytoscape.view.CyWindow;
 //-----------------------------------------------------------------------------------
 public class PluginLoader {
-  protected CytoscapeWindow cytoscapeWindow;
+  protected CyWindow cyWindow;
   protected CytoscapeConfig config;
   protected Vector classesToLoad = new Vector ();
   protected Properties props;
@@ -65,10 +66,10 @@ public class PluginLoader {
   StringBuffer messageBuffer = new StringBuffer ();
 
 //-----------------------------------------------------------------------------------
-public PluginLoader (CytoscapeWindow cytoscapeWindow, CytoscapeConfig config,
+public PluginLoader (CyWindow cyWindow, CytoscapeConfig config,
                      GraphObjAttributes nodeAttributes, GraphObjAttributes edgeAttributes)
 {
-  this.cytoscapeWindow = cytoscapeWindow;
+  this.cyWindow = cyWindow;
   this.config = config;
   this.props = config.getProperties ();
   this.nodeAttributes = nodeAttributes;
@@ -208,23 +209,16 @@ public void load ()
   Collections.sort(classList);
   for (Iterator li = classList.iterator(); li.hasNext(); ) {
       String className = (String)li.next();
-      loadPlugin(className, cytoscapeWindow);
+      loadPlugin(className, cyWindow);
   }
 
 } // load
 //-----------------------------------------------------------------------------------
-protected void loadPlugin (String className, CytoscapeWindow cytoscapeWindow)
+protected void loadPlugin (String className, CyWindow cyWindow)
 {
  try {
     Class pluginClass = Class.forName (className);
-    Class [] argClasses = new Class [1];
-    argClasses [0] =  cytoscapeWindow.getClass ();
-    Object [] args = new Object [1];
-    args [0] = cytoscapeWindow;
-    Constructor [] ctors = pluginClass.getConstructors ();
-    Constructor ctor = pluginClass.getConstructor (argClasses);
-    messageBuffer.append ("  now loading plugin:  " + ctor + "\n");
-    Object plugin = ctor.newInstance (args);
+    AbstractPlugin.loadPlugin(pluginClass, null, cyWindow);
     }
   catch (Exception e) {
     e.printStackTrace ();
