@@ -181,7 +181,6 @@ public class MiscDialog {
 	lineTypeIcons[9] = new ImageIcon(p+"dashed_3.jpg", "DASHED_3");
 	lineTypeIcons[10] = new ImageIcon(p+"dashed_4.jpg", "DASHED_4");
 	lineTypeIcons[11] = new ImageIcon(p+"dashed_5.jpg", "DASHED_5");
-
 	return lineTypeIcons;
     }
 

@@ -40,10 +40,11 @@ public class IconPopupButton extends JPanel implements ActionListener {
 			    ImageIcon [] icons,
 			    Object startIconObject,
 			    JDialog parentDialog){
-	if(startIconObject==null || icons.length==0) {
-	    setupErrorWindow();
-	    return;
-	}
+	if(startIconObject==null || icons.length==0)
+	    { setupErrorWindow();  return; }
+	if(icons[0]==null || icons[0].getIconWidth()<0)
+	    { setupErrorWindow();  return; }
+	    
 	alreadyConstructed = false;
 	this.objectName = objectName;
 	this.iconObjectToString = iconObjectToString;
