@@ -2,6 +2,7 @@ package fing.model;
 
 import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.graph.dynamic.util.DynamicGraphFactory;
+import cytoscape.graph.fixed.FixedGraph;
 import cytoscape.util.intr.IntArray;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntIterator;
@@ -23,8 +24,76 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 // Package visible class.
-class FGraphPerspective implements GraphPerspective
+class FGraphPerspective implements GraphPerspective, FixedGraph
 {
+
+  ///////////////////////////////////
+  // BEGIN: Impelements FixedGraph //
+  ///////////////////////////////////
+  public IntEnumerator nodes() {
+    final IntEnumerator nativeNodes = m_graph.nodes();
+    return new IntEnumerator() {
+        public int numRemaining() { return nativeNodes.numRemaining(); }
+        public int nextInt() {
+          return ~m_nativeToRootNodeInxMap.getIntAtIndex
+            (nativeNodes.nextInt()); } }; }
+  public IntEnumerator edges() {
+    final IntEnumerator nativeEdges = m_graph.edges();
+    return new IntEnumerator() {
+        public int numRemaining() { return nativeEdges.numRemaining(); }
+        public int nextInt() {
+          return ~m_nativeToRootEdgeInxMap.getIntAtIndex
+            (nativeEdges.nextInt()); } }; }
+  public boolean nodeExists(final int node) {
+    if (node < 0) return false;
+    final int nativeNodeInx = m_rootToNativeNodeInxMap.get(node);
+    return m_graph.nodeExists(nativeNodeInx); }
+  public byte edgeType(final int edge) {
+    if (edge < 0) return -1;
+    final int nativeEdgeInx = m_rootToNativeEdgeInxMap.get(edge);
+    return m_graph.edgeType(nativeEdgeInx); }
+  public int edgeSource(final int edge) {
+    if (edge < 0) return -1;
+    final int nativeEdgeInx = m_rootToNativeEdgeInxMap.get(edge);
+    final int nativeSource = m_graph.edgeSource(nativeEdgeInx);
+    if (nativeSource < 0) return -1;
+    return ~m_nativeToRootNodeInxMap.getIntAtIndex(nativeSource); }
+  public int edgeTarget(final int edge) {
+    if (edge < 0) return -1;
+    final int nativeEdgeInx = m_rootToNativeEdgeInxMap.get(edge);
+    final int nativeTarget = m_graph.edgeTarget(nativeEdgeInx);
+    if (nativeTarget < 0) return -1;
+    return ~m_nativeToRootNodeInxMap.getIntAtIndex(nativeTarget); }
+  public IntEnumerator edgesAdjacent(final int node, boolean outgoing,
+                                     boolean incoming, boolean undirected) {
+    if (node < 0) return null;
+    final int nativeNodeInx = m_rootToNativeNodeInxMap.get(node);
+    final IntEnumerator nativeEdges =
+      m_graph.edgesAdjacent(nativeNodeInx, outgoing, incoming, undirected);
+    if (nativeEdges == null) return null;
+    return new IntEnumerator() {
+        public int numRemaining() { return nativeEdges.numRemaining(); }
+        public int nextInt() {
+          return ~m_nativeToRootEdgeInxMap.getIntAtIndex
+            (nativeEdges.nextInt()); } }; }
+  public IntIterator edgesConnecting(final int node0, final int node1,
+                                     boolean outgoing, boolean incoming,
+                                     boolean undirected) {
+    if (node0 < 0 || node1 < 0) return null;
+    final int nativeNode0Inx = m_rootToNativeNodeInxMap.get(node0);
+    final int nativeNode1Inx = m_rootToNativeNodeInxMap.get(node1);
+    final IntIterator nativeEdges =
+      m_graph.edgesConnecting(nativeNode0Inx, nativeNode1Inx,
+                              outgoing, incoming, undirected);
+    if (nativeEdges == null) return null;
+    return new IntIterator() {
+        public boolean hasNext() { return nativeEdges.hasNext(); }
+        public int nextInt() {
+          return ~m_nativeToRootEdgeInxMap.getIntAtIndex
+            (nativeEdges.nextInt()); } }; }
+  /////////////////////////////////
+  // END: Impelements FixedGraph //
+  /////////////////////////////////
 
   public void addGraphPerspectiveChangeListener
     (GraphPerspectiveChangeListener listener) {
