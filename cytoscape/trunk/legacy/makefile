@@ -103,9 +103,9 @@ run0:
 
 run1o:
 	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
-          -g /common/src/merge0307/cytoscape/data/galFiltered.gml \
-          -e /common/data/exp/data_gal1-20.pvals \
-          -b /common/src/merge0307/cytoscape/data/GO
+          -g $(CYTOSCAPE_DATA)/galFiltered.gml \
+          -e /common/data/exp/gal/data_gal1-20.pvals \
+          -b $(CYTOSCAPE_DATA)/GO
 
 #
 # --- run1
