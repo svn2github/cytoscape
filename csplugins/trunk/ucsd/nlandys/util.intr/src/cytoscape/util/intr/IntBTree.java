@@ -48,7 +48,7 @@ public final class IntBTree
    * the node returned is the right sibling of node n.  If the returned node
    * is a leaf node then the first value of the node is to be the new split
    * index; if return value is internal node, then the split index to be used
-   * is n.data.splitVals[n.sliceCount - 1] (This is something that this
+   * is n.data.splitVals[n.sliceCount - 1].  (This is something that this
    * method sets; it's this method saying "use this index in the higher
    * levels".)
    */
@@ -224,20 +224,20 @@ public final class IntBTree
   {
     Node[] currentNodes = overflowNodes;
     int currentInx = overflowCount;
-    boolean found = false;
     for (int i = origNodes.length - 1; i >= 0; i--) {
-      if ((!found) && (i == newInx)) {
+      if ((newNode != null) && (i == newInx)) {
         currentNodes[--currentInx] = newNode;
-        found = true;
+        newNode = null;
         if (currentNodes == origNodes) break;
         i++; }
       else { currentNodes[--currentInx] = origNodes[i]; }
       if (currentInx == 0) {
-        if (found) break;
+        if (newNode == null) break;
         currentNodes = origNodes;
         currentInx = origNodes.length - overflowCount + 1; } }
-    for (int i = origNodes.length - overflowCount + 1; i < origNodes.length;
-         i++) origNodes[i] = null;
+    for (int i = origNodes.length - overflowCount + 1;
+         i < origNodes.length; i++)
+      origNodes[i] = null; // Remove dangling pointers for garbage collection.
   }
 
   /**
