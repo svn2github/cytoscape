@@ -185,6 +185,9 @@ public class EdgeInteractionFilter
     else if(array[1].equals(SOURCE)){
       setTarget(SOURCE);
     }
+    else if(array[1].equals(EITHER)){
+      setTarget(EITHER);
+    }
     else{
       throw new IllegalArgumentException(array[1]+" is not a valid interaction type");
     }
