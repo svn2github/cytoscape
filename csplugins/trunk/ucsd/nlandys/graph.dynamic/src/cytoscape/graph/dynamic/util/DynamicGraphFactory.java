@@ -35,6 +35,20 @@ import cytoscape.graph.dynamic.DynamicGraph;
  * This DynamicGraph implementation requires a bare minimum of roughly 64
  * metabytes for a graph with one million edges and one hundred thousand nodes.
  * That is, the memory requirements are roughly 64 bytes per node and edge.<p>
+ *
+ * Nodes and edges created by the returned DynamicGraph are strictly less
+ * than Integer.MAX_VALUE.  This implementation of DynamicGraph has been
+ * coded to assume that graphs containing Integer.MAX_VALUE number of nodes and
+ * Integer.MAX_VALUE number of edges will be created; however, due to lack of
+ * sufficient memory in available hardware, such large graphs have not [yet]
+ * been tested using this implementation.<p>
+ *
+ * This implementation of DynamicGraph creates nodes and edges
+ * will small integer values.  This implementation re-uses node and edge
+ * values as nodes and edges are removed and added.  Thus, nodes and edges
+ * will not take ever-increasing values if they are continually being
+ * removed and re-added.<p>
+ *
  * The returned DynamicGraph does not free up memory.  That is, if a
  * DynamicGraph contains one million edges and one hundred thousand nodes,
  * it consumes roughly 64 megabytes.  If all nodes and edges are then removed
@@ -44,6 +58,7 @@ import cytoscape.graph.dynamic.DynamicGraph;
  * memory.  If all nodes and edges are removed and then re-created, repeatedly
  * over an infinite number of iterations, the overall memory consumption
  * required by this DynamicGraph will remain constant.<p>
+ *
  * Below are time complexities of DynamicGraph methods:
  * <blockquote><table border=1 cellspacing=0 cellpadding=5>
  * <tr><th>DynamicGraph method</th><th>time complexity</th></tr>
@@ -114,8 +129,7 @@ public final class DynamicGraphFactory
   private DynamicGraphFactory() { }
 
   /**
-   * Nodes and edges created by the returned DynamicGraph are strictly less
-   * than Integer.MAX_VALUE.
+   * Returns a new instance of DynamicGraph with every invocation.
    */
   public static DynamicGraph instantiateDynamicGraph()
   {
