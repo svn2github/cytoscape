@@ -315,8 +315,8 @@ public abstract class AbstractCalculator implements Calculator {
         private Network network;
 	private int mapIndex;
 	/**
-	 * Constructs an AttributeSelectorListener for the ObjectMapping at index
-	 * mapIndex.
+	 * Constructs an AttributeSelectorListener for the ObjectMapping at
+	 * index mapIndex.
          * @param network  passed to the mapping to get data values for the
          *                 new attribute
 	 * @param mapIndex Index of the mapping in the {@link #mappings} Vector
