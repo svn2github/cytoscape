@@ -44,7 +44,6 @@ import java.util.logging.*;
 import javax.swing.Timer;
 
 import cytoscape.data.*;
-import cytoscape.data.readers.GMLReader;
 import cytoscape.data.readers.InteractionsReader;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.data.servers.*;

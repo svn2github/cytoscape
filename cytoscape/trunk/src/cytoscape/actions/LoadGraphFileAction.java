@@ -22,7 +22,6 @@ import cytoscape.view.CyMenus;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.actions.CheckBoxFileChooser;
-import cytoscape.data.readers.GMLReader;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.InteractionsReader;
 
