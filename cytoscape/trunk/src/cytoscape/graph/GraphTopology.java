@@ -88,6 +88,6 @@ public interface GraphTopology
    * @exception IndexOutOfBoundsException if <code>edgeIndex</code> is not
    *   in the interval <nobr><code>[0, getNumEdges() - 1]</code></nobr>.
    */
-  public int getEdgeNode(int edgeIndex, boolean sourceNode);
+  public int getEdgeNodeIndex(int edgeIndex, boolean sourceNode);
 
 }
