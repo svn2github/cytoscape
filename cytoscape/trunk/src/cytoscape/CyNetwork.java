@@ -14,7 +14,7 @@ import java.util.*;
 
 public class CyNetwork
   implements
-    CyNetworkInterface,
+    
     GraphPerspective {
 
   // this is the GP that we wrap 
