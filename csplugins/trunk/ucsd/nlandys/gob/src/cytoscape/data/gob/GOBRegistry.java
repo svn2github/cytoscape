@@ -14,7 +14,8 @@ public class GOBRegistry
   /**
    * @param type one of the ATTR_TYPE_* constants.
    * @return an identifier for this newly created attribute definition;
-   *   attribute definition IDs are always non-negative.
+   *   attribute definition IDs are non-negative and clustered close to
+   *   zero.
    * @exception IllegalArgumentException if the type specified is not one
    *   of the ATTR_TYPE_* constants.
    */
