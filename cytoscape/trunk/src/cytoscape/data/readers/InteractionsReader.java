@@ -143,8 +143,7 @@ public class InteractionsReader implements GraphReader {
     if (rawText.indexOf ("\t") >= 0)
       delimiter = "\t";
 
-    String lineSeperator = System.getProperty("line.separator");
-    String [] lines = rawText.split (lineSeperator);
+    String [] lines = rawText.split ("\n");
 
     if (taskMonitor != null) {
         taskMonitor.setStatus("Reading in Data...");
@@ -213,7 +212,7 @@ public class InteractionsReader implements GraphReader {
     int edgeCount = 0;
 
     if (taskMonitor != null) {
-        taskMonitor.setStatus("Creating Cytoscape Network");
+        taskMonitor.setStatus("Processing Interactions");
     }
 
     for (int i=0; i<interactions.length; i++) {
@@ -284,6 +283,7 @@ public class InteractionsReader implements GraphReader {
     }
 
     String targetNodeName;
+    System.out.println("Number of Interactions:  " + interactions.length);
     for (int i=0; i < interactions.length; i++) {
 
       if (taskMonitor != null) {
