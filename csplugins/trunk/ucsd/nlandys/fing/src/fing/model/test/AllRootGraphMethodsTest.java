@@ -538,6 +538,72 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("not in degree 0");
     if (root.getInDegree(nodeInx[1], false) != 1)
       throw new IllegalStateException("not in degree 1");
+
+    // getOutDegree(Node).
+    if (root.getOutDegree(root2Node) != -1)
+      throw new IllegalStateException("not out degree -1");
+    if (root.getOutDegree(root.getNode(nodeInx[2])) != 3)
+      throw new IllegalStateException("not out degree 3");
+    if (root.getOutDegree(root.getNode(nodeInx[1])) != 3)
+      throw new IllegalStateException("not out degree 3");
+    if (root.getOutDegree(root.getNode(nodeInx[4])) != 0)
+      throw new IllegalStateException("not out degree 0");
+
+    // getOutDegree(int).
+    if (root.getOutDegree(minNodeInx - 1) != -1 ||
+        root.getOutDegree(0) != -1 ||
+        root.getOutDegree(101) != -1)
+      throw new IllegalStateException("not out degree -1");
+    if (root.getOutDegree(nodeInx[3]) != 1)
+      throw new IllegalArgumentException("not out degree 1");
+    if (root.getOutDegree(nodeInx[0]) != 1)
+      throw new IllegalArgumentException("not out degree 1");
+
+    // getOutDegree(Node, boolean).
+    if (root.getOutDegree(root2Node, false) != -1)
+      throw new IllegalStateException("not out degree -1");
+    if (root.getOutDegree(root.getNode(nodeInx[1]), false) != 1)
+      throw new IllegalStateException("not out degree 1");
+    if (root.getOutDegree(root.getNode(nodeInx[1]), true) != 3)
+      throw new IllegalStateException("not out degree 1");
+    if (root.getOutDegree(root.getNode(nodeInx[0]), false) != 1 ||
+        root.getOutDegree(root.getNode(nodeInx[0]), true) != 1)
+      throw new IllegalStateException("not out degree 1");
+
+    // getOutDegree(int, boolean).
+    if (root.getOutDegree(minNodeInx - 3, false) != -1 ||
+        root.getOutDegree(0, true) != -1 ||
+        root.getOutDegree(2, false) != -1)
+      throw new IllegalStateException("not out degree -1");
+    if (root.getOutDegree(nodeInx[2], false) != 2 ||
+        root.getOutDegree(nodeInx[2], true) != 3)
+      throw new IllegalStateException("not correct out degree");
+    if (root.getOutDegree(nodeInx[3], false) != 1 ||
+        root.getOutDegree(nodeInx[3], true) != 1)
+      throw new IllegalStateException("not out degree 1");
+    if (root.getOutDegree(nodeInx[4], true) != 0 ||
+        root.getOutDegree(nodeInx[4], false) != 0)
+      throw new IllegalStateException("not out degree 0");
+
+    // getDegree(Node).
+    if (root.getDegree(root2Node) != -1)
+      throw new IllegalStateException("not degree -1 for other node");
+    if (root.getDegree(root.getNode(nodeInx[0])) != 3)
+      throw new IllegalStateException("not degree 3");
+    if (root.getDegree(root.getNode(nodeInx[1])) != 4)
+      throw new IllegalStateException("not degree 4");
+
+    // getDegree(int).
+    if (root.getDegree(minNodeInx - 2) != -1 ||
+        root.getDegree(0) != -1 ||
+        root.getDegree(13) != -1)
+      throw new IllegalStateException("not degree -1");
+    if (root.getDegree(nodeInx[2]) != 4)
+      throw new IllegalStateException("not degree 4");
+    if (root.getDegree(nodeInx[3]) != 1)
+      throw new IllegalStateException("not degree 1");
+    if (root.getDegree(nodeInx[4]) != 0)
+      throw new IllegalStateException("not degree 0");
   }
 
 }
