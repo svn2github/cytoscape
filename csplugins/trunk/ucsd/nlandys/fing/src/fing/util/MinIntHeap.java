@@ -1,5 +1,8 @@
 package fing.util;
 
+/**
+ * A heap can have two states: ordered and unordered.
+ */
 public final class MinIntHeap
 {
 
@@ -20,17 +23,6 @@ public final class MinIntHeap
   }
 
   /**
-   * Tosses a new element onto the heap.  The order of the heap will be
-   * ruined after this operation, but this operation only takes constant time.
-   */
-  public final void toss(int x)
-  {
-    checkSize();
-    m_heap[++m_currentSize] = x;
-    m_orderOK = false;
-  }
-
-  /**
    * Returns the number of elements currently in this heap.
    */
   public final int numElements()
@@ -38,12 +30,23 @@ public final class MinIntHeap
     return m_currentSize;
   }
 
-  private final void checkSize()
+  /**
+   * Returns true if and only if the heap is currently ordered.
+   */
+  public final boolean isOrdered()
   {
-    if (m_currentSize < m_heap.length - 1) return;
-    final int[] newHeap = new int[m_heap.length * 2 + 1];
-    System.arraycopy(m_heap, 0, newHeap, 0, m_heap.length);
-    m_heap = newHeap;
+    return m_orderOK;
+  }
+
+  /**
+   * Tosses a new element onto the heap.  The order of the heap will be
+   * ruined after this operation; this operation takes constant time.
+   */
+  public final void toss(int x)
+  {
+    checkSize();
+    m_heap[++m_currentSize] = x;
+    m_orderOK = false;
   }
 
   /**
@@ -61,14 +64,6 @@ public final class MinIntHeap
     if (m_orderOK) percolateUp(m_currentSize);
   }
 
-  private final void percolateUp(int childIndex)
-  {
-    for (int parentIndex = childIndex / 2;
-         m_heap[childIndex] < m_heap[parentIndex];
-         childIndex = parentIndex, parentIndex = parentIndex / 2)
-      swap(m_heap, parentIndex, childIndex);
-  }
-
   /**
    * Returns the minimum element in this heap.  This is a constant time
    * operation if the heap is ordered.  If the heap is not ordered, this
@@ -81,8 +76,10 @@ public final class MinIntHeap
    */
   public final int findMin()
   {
-    if (!m_orderOK) fixHeap();
-    return m_heap[((m_currentSize == 0) ? -1 : 1)];
+    if (!m_orderOK) { // Fix heap.
+      for (int i = m_currentSize / 2; i > 0; i--) percolateDown(i);
+      m_orderOK = true; }
+    return m_heap[1];
   }
 
   /**
@@ -99,10 +96,29 @@ public final class MinIntHeap
    */
   public final int deleteMin()
   {
-    final int returnThis = findMin();
+    if (!m_orderOK) { // Fix heap.
+      for (int i = m_currentSize / 2; i > 0; i--) percolateDown(i);
+      m_orderOK = true; }
+    final int returnThis = m_heap[1];
     m_heap[1] = m_heap[m_currentSize--];
     percolateDown(1);
     return returnThis;
+  }
+
+  private final void checkSize()
+  {
+    if (m_currentSize < m_heap.length - 1) return;
+    final int[] newHeap = new int[m_heap.length * 2 + 1];
+    System.arraycopy(m_heap, 0, newHeap, 0, m_heap.length);
+    m_heap = newHeap;
+  }
+
+  private final void percolateUp(int childIndex)
+  {
+    for (int parentIndex = childIndex / 2;
+         m_heap[childIndex] < m_heap[parentIndex];
+         childIndex = parentIndex, parentIndex = parentIndex / 2)
+      swap(m_heap, parentIndex, childIndex);
   }
 
   private final void percolateDown(int parentIndex)
@@ -117,12 +133,6 @@ public final class MinIntHeap
       else break; }
   }
 
-  private final void fixHeap()
-  {
-    for (int i = m_currentSize / 2; i > 0; i--) percolateDown(i);
-    m_orderOK = true;
-  }
-
   private static final void swap(int[] arr, int index1, int index2)
   {
     int temp = arr[index1];
@@ -131,13 +141,40 @@ public final class MinIntHeap
   }
 
   /**
-   * If other methods in this heap are called while iterating through
-   * the return value, behavior of the iterator is undefined.
+   * Returns an iterator of elements in this heap, ordered such that
+   * the least element is first in the returned iterator.
+   * If both pruneDuplicates and reverseOrder are false,
+   * this method returns in O(n) time (unless this heap is ordered when
+   * this method is called, in which case this method returns in
+   * constant time), and the returned iterator
+   * takes O(log(n)) time complexity to return each successive element.
+   * If either pruneDuplicates or reverseOrder is true, this method
+   * takes O(n*log(n)) time complexity to come up with the return value;
+   * the retuned iterator takes constant time to return each successive
+   * element.<p>
+   * The returned iterator becomes "invalid" as soon as any other method
+   * on this heap instance is called; calling methods on an invalid iterator
+   * will cause undefined behavior in both the iterator and in the underlying
+   * heap.<p>
+   * Calling this function automatically causes this heap to become
+   * unordered.
    */
   public final IntIterator orderedElements(boolean pruneDuplicates,
                                            boolean reverseOrder)
   {
-    return null;
+    if (pruneDuplicates || reverseOrder)
+    {
+      return null;
+    }
+    else // We can do lazy computations.
+    {
+      if (!m_orderOK) // Fix heap.
+        for (int i = m_currentSize / 2; i > 0; i--) percolateDown(i);
+      else m_orderOK = false;
+      return new IntIterator() {
+          public int numRemaining() { return -1; }
+          public int nextInt() { return 1; } };
+    }
   }
 
   /**
