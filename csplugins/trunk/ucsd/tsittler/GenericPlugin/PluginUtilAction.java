@@ -27,11 +27,11 @@ class PluginUtilAction extends AbstractAction {
     /**
      * The constructor sets the text that should appear on the menu item.
      */
-    public HashMap args;
+    public ArgVector args;
     public String name;
     PluginUtil plugin;
     
-    public PluginUtilAction(String initname,HashMap initargs,PluginUtil initplugin){
+    public PluginUtilAction(String initname,ArgVector initargs,PluginUtil initplugin){
 	super(initname);
 	name=initname;args=initargs;plugin=initplugin;
     }
@@ -42,7 +42,5 @@ class PluginUtilAction extends AbstractAction {
 	    Thread t = new PluginUtilThread(name,args,plugin); 
 	    t.start();
 	}
-	
     }
 }
-

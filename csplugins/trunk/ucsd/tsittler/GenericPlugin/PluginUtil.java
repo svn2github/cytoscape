@@ -52,6 +52,7 @@ public abstract class PluginUtil  extends CytoscapePlugin implements GenericPlug
     public String name="Generic Plugin";
     public String description="This Generic Plugin doesn't do anything";
     public String[] cmdArgs;
+    public ArgVector actions;
     public String file_split_string=";";
     public JDialog uiDialog; //allows for a reference to the current dialog, to allow changing behaviors on verification (see verify below)
 
@@ -64,12 +65,12 @@ public abstract class PluginUtil  extends CytoscapePlugin implements GenericPlug
      * possible classes for the values in the argument hashTable of each action are:
      String, File, FileList(Defined Here), Integer, Double
     */
-    abstract public HashMap getActions();
+    abstract public ArgVector getActions();
     
     /**
      * kicked off when any action in the plugin is fired.
      */
-    abstract public void run(String action,HashMap args);
+    abstract public void run(String action,ArgVector args);
 
     /**
      *  Start imlemented functions
@@ -77,14 +78,13 @@ public abstract class PluginUtil  extends CytoscapePlugin implements GenericPlug
 
     public void initialize(){
 	cmdArgs=Cytoscape.getCytoscapeObj().getConfiguration().getArgs();
-	HashMap actions=getActions();
+	this.actions=getActions();
 	runActionsFromCmdLine(actions);
 	if (cmdDoNotAddActions()){return;}
-	Iterator it=actions.keySet().iterator();
 	String actionName;
-	while (it.hasNext()){
-	    actionName=it.next().toString();
-            Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add( new PluginUtilAction(actionName,(HashMap)actions.get(actionName),this));
+	for (int i=0;i<actions.size();i++){
+	    actionName=actions.name(i).toString();
+            Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add( new PluginUtilAction(actionName,(ArgVector)actions.get(actionName),this));
 	}
     }
     
@@ -108,7 +108,7 @@ public abstract class PluginUtil  extends CytoscapePlugin implements GenericPlug
 	return false;
     }
     
-    public boolean runActionsFromCmdLine(HashMap actions){
+    public boolean runActionsFromCmdLine(ArgVector actions){
 	String actionName;
 	String[] curArg;
 	boolean actionsRun=false;
@@ -118,16 +118,16 @@ public abstract class PluginUtil  extends CytoscapePlugin implements GenericPlug
 		curArg=cmdArgs[i].split(",");
 		actionName=curArg[0].substring(2);
 		//is actionName an action?
-		if (actions.containsKey(actionName)){
+		if (actions.indexOf(actionName)>-1){
 		    //assign cmdLineVars in curArg
-		    HashMap actionArgs=(HashMap)actions.get((Object)actionName);
+		    ArgVector actionArgs=(ArgVector)actions.get((Object)actionName);
 		    for (int j=1;j<curArg.length;j++){
 			if (!setValue(actionArgs,curArg[j].split("=")[0],curArg[j].split("=")[1])){
 			    System.err.println("could not assign commandLine Argument "+curArg[j].split("=")[0]);
 			}
 		    }
 		    //Run the action
-		    Thread t = new PluginUtilThread(actionName,(HashMap)actions.get(actionName),this); 
+		    Thread t = new PluginUtilThread(actionName,(ArgVector)actions.get(actionName),this); 
 		    t.start();
 		    actionsRun=true;
 		    
@@ -141,15 +141,24 @@ public abstract class PluginUtil  extends CytoscapePlugin implements GenericPlug
 	return actionsRun;
     }
 
-    public String usage(String actionName,HashMap args) {
+    public String usage(String actionName,ArgVector args) {
 
         String usageStr;
 	usageStr="--"+actionName;
-	Iterator it=args.entrySet().iterator();
 	String nexti;
-	while (it.hasNext()){
-	    nexti=it.next().toString();
-	    usageStr=usageStr+",["+nexti+"="+args.get(nexti).toString()+"]";
+	for (int i=0;i<args.size();i++){
+	    nexti=args.name(i).toString();
+	    Object arg=args.get(nexti);
+	    String argVal="";
+	    if (arg.getClass().equals(File[].class)){
+		File[] inFiles=(File[])arg;
+		if (inFiles.length>0 && inFiles[0]!=null){argVal=inFiles[0].toString();}
+		for(int j=1;i<inFiles.length;j++){
+		    if (inFiles[j]!=null){argVal=argVal + file_split_string + inFiles[j].toString();}
+		}
+	    }
+	    else{argVal=arg.toString();}
+	    usageStr=usageStr+",["+nexti+"="+argVal+"]";
 	}
 	return usageStr;
     }
@@ -208,7 +217,7 @@ public abstract class PluginUtil  extends CytoscapePlugin implements GenericPlug
     }
 
 
-    public boolean setValue(HashMap args,String curArg,String newVal){
+    public boolean setValue(ArgVector args,String curArg,String newVal){
 
 	Object curVal=args.get(curArg);
 	if (curVal.getClass().equals(String.class)){
@@ -237,9 +246,9 @@ public abstract class PluginUtil  extends CytoscapePlugin implements GenericPlug
 	return false;
     }
 
-    public boolean getUIArgs(String actionName,final HashMap args){
+    public boolean getUIArgs(String actionName,final ArgVector args){
 	//put all internal args into this HashMap so they can be accessed from actions (nested classes)
-	final HashMap internalArgs=new HashMap(1);
+	final ArgVector internalArgs=new ArgVector();
 	internalArgs.put("processed",new Boolean(false));
 	JFrame frame=new JFrame();
 	//setup the dialog in the frame, with the actionName as the title, as a modal dialog (true)

@@ -48,6 +48,8 @@ class FileCellEditor extends AbstractCellEditor
 
         //Set up the dialog that the button brings up (FILES_ONLY file chooser).
         fileChooser= new JFileChooser();
+	fileChooser.setApproveButtonText("Select");
+	fileChooser.setDialogTitle("Select File(s)");
 	//dialog = JColorChooser.createDialog(button,"Select Files",true/*modal*/,fileChooser,this/*OK button handler*/,null/*no CANCEL button handler*/);
     }
 
@@ -60,6 +62,7 @@ class FileCellEditor extends AbstractCellEditor
 	//Handle open button action.
 	if (e.getSource() == button) {	    
 	    if (currentFiles.length>0){fileChooser.setSelectedFiles(currentFiles);}
+	    else{fileChooser.setSelectedFile(new File(""));}
 	    int returnVal = fileChooser.showOpenDialog(button);
 	    
 	    if (returnVal == JFileChooser.APPROVE_OPTION){ 
@@ -85,7 +88,12 @@ class FileCellEditor extends AbstractCellEditor
 	    return currentFiles;
 	}
 	else{
-	    return currentFiles[0];
+	    if (currentFiles==null || currentFiles.length==0){
+		return null;
+	    }
+	    else{
+		return currentFiles[0];
+	    }
 	}
 
     }
@@ -121,7 +129,7 @@ class FileCellEditor extends AbstractCellEditor
 	for (int i=0;i<currentFiles.length;i++){
 	    currentFiles[i]=(File)validFiles.elementAt(i);
 	}
-	
+
 	button.setText("Choose file(s)...");
 	button.repaint();
 	System.out.println("about to return button");
