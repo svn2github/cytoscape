@@ -6,7 +6,7 @@
 #-------------------------------------------------------------------------
 
 JC=javac -source 1.4
-JAVA=java
+JAVA=java -D"CYTOSCAPE_HOME=$(CYTOSCAPE_HOME)"
 
 .SUFFIXES: .java .class
 .java.class: 
