@@ -39,18 +39,18 @@ public class NodeInteractionFilterEditor
   protected JComboBox filterBox;
   protected JComboBox targetBox;
 
-  protected InteractionFilter filter;
+  protected NodeInteractionFilter filter;
 
   
 
   protected String DEFAULT_FILTER_NAME = "Node Interaction: ";
   protected int DEFAULT_FILTER = -1;
-  protected String DEFAULT_TARGET = InteractionFilter.SOURCE;
+  protected String DEFAULT_TARGET = NodeInteractionFilter.SOURCE;
 
   public NodeInteractionFilterEditor ( ) {
     super();
     try{
-      filterClass = Class.forName("filter.cytoscape.InteractionFilter");
+      filterClass = Class.forName("filter.cytoscape.NodeInteractionFilter");
     }catch(Exception e){
       e.printStackTrace();
     }
@@ -73,8 +73,8 @@ public class NodeInteractionFilterEditor
     JPanel topPanel = new JPanel();
     topPanel.add(new JLabel("Select nodes which are the "));
     targetBox = new JComboBox();
-    targetBox.addItem(InteractionFilter.SOURCE);
-    targetBox.addItem(InteractionFilter.TARGET);
+    targetBox.addItem(NodeInteractionFilter.SOURCE);
+    targetBox.addItem(NodeInteractionFilter.TARGET);
     targetBox.addItemListener(this);
     topPanel.add( targetBox );
 								
@@ -100,11 +100,11 @@ public class NodeInteractionFilterEditor
   }
 
   public String getFilterID () {
-    return InteractionFilter.FILTER_ID;
+    return NodeInteractionFilter.FILTER_ID;
   }
 
   public String getDescription(){
-    return InteractionFilter.FILTER_DESCRIPTION;
+    return NodeInteractionFilter.FILTER_DESCRIPTION;
   }
 
   public Class getFilterClass(){
@@ -112,7 +112,7 @@ public class NodeInteractionFilterEditor
   }
 
   public Filter createDefaultFilter(){
-    return new InteractionFilter(DEFAULT_FILTER,DEFAULT_TARGET,DEFAULT_FILTER_NAME);
+    return new NodeInteractionFilter(DEFAULT_FILTER,DEFAULT_TARGET,DEFAULT_FILTER_NAME);
   }
  
   /**
@@ -125,9 +125,9 @@ public class NodeInteractionFilterEditor
       
     } // end of if ()
     
-    if ( filter instanceof InteractionFilter ) {
+    if ( filter instanceof NodeInteractionFilter ) {
       // good, this Filter is of the right type
-      this.filter = ( InteractionFilter )filter;
+      this.filter = ( NodeInteractionFilter )filter;
       setFilterName(this.filter.toString());
       setSelectedFilter(this.filter.getFilter());
       setTarget(this.filter.getTarget());

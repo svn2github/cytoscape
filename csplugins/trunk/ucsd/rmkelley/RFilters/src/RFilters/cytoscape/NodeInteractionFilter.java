@@ -34,7 +34,7 @@ public class NodeInteractionFilter
   public static String FILTER_NAME_EVENT = "FILTER_NAME_EVENT";
   public static String FILTER_BOX_EVENT = "FILTER_BOX_EVENT";
   public static String TARGET_BOX_EVENT = "TARGET_BOX_EVENT";
-  public static String FILTER_ID = "InteractionFilter";
+  public static String FILTER_ID = "NodeInteractionFilter";
   public static String FILTER_DESCRIPTION = "Select nodes based on adjacent edges";
   public static String SOURCE = "source";
   public static String TARGET = "target";
@@ -45,7 +45,7 @@ public class NodeInteractionFilter
   //----------------------------------------//
   // Needed Variables
   //----------------------------------------//
-  protected String identifier = "InteractionFilter";
+  protected String identifier = "NodeInteractionFilter";
   protected SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(this);
   
   
@@ -139,7 +139,7 @@ public class NodeInteractionFilter
   }
   
   public Object clone () {
-    return new InteractionFilter ( filter,target,identifier+"_new" );
+    return new NodeInteractionFilter ( filter,target,identifier+"_new" );
   }
   
   public SwingPropertyChangeSupport getSwingPropertyChangeSupport() {
