@@ -323,6 +323,7 @@ public class GOBRegistry
   }
 
   /**
+   * @param objID a potential object identifier.
    * @return an enumeration of unique attribute definition identifiers such
    *   that the specified object (objID) currently has an assigned attribute
    *   value in each of the returned attribute definitions; this method never
@@ -337,6 +338,8 @@ public class GOBRegistry
   }
 
   /**
+   * @param defID an identifier of an attribute definition that was created
+   *   using defineAttribute().
    * @return an enumeration of unique objects (object identifiers) that have
    *   an attribute value in the specified attribute definition domain (defID)
    *   assigned; this method never returns null.
@@ -368,8 +371,10 @@ public class GOBRegistry
    * if no attribute value from the specified attribute definition domain
    * is assigned to the specified object at the time this
    * method is called, nothing is changed, and no error condition is raised.
-   * @return true if and only if a value for the specified attribute is
-   *   assigned to the specified object at the time this method is called.
+   * @param objID an object identifier that was previously used in assigning
+   *   an attribute value in the specified attribute definition domain (defID).
+   * @param defID an identifier of an attribute definition that was created
+   *   using defineAttribute().
    * @exception IllegalArgumentException if no attribute definition with
    *   specified ID (defID) exists.
    */
