@@ -117,8 +117,7 @@ public abstract class FileUtil {
       
       if ( chooser.getFile() != null ) {
         File result = new File(chooser.getDirectory()+"/"+ chooser.getFile() );
-        //if ( start_dir == null )
-        //  CytoscapeInit.setMRUD( new File( chooser.getDirectory() ) );
+        CytoscapeInit.setMRUD( new File( chooser.getDirectory() ) );
         return result;
       }
       return null;
