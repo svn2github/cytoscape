@@ -44,21 +44,28 @@ public final class IntHash
 
   /**
    * Puts a new value into this hashtable if that value is not already in
-   * this hashtable; otherwise does nothing.
-   * Returns false if and only if this value is already in the hashtable.<p>
+   * this hashtable; otherwise does nothing.  Returns the input value if this
+   * value was already in this hashtable; returns -1 if the input value was
+   * not in this hashtable prior to this call.<p>
    * Only non-negative values can be passed to this method.
    * Behavior is undefined If negative values are passed to put(int).<p>
    * Insertions into the hashtable are performed in [amortized] constant time.
    */
-  public final boolean put(int value)
+  public final int put(int value)
   {
     checkSize();
-    // Double hashing.
-    // h(key, i) = (h1(key) + i*h2(key)) mod size.
-    // h1(key) = key mod size.
-    // h2(key) = 1 + (key mod (size - 1)).
-    // Note that size is always prime.
-    return false;
+    int incr = 0;
+    int index;
+    for (index = value % m_size;
+         m_arr[index] >= 0 && m_arr[index] != value;
+         index = (index + incr) % m_size) {
+      // Caching increment, which is an expensive operation, at the expense
+      // of having an if statement.  I don't want to compute the increment
+      // before this for loop in case we get an immediate hit.
+      if (incr == 0) { incr = 1 + (value % (m_size - 1)); } }
+    int returnVal = m_arr[index];
+    m_arr[index] = value;
+    return returnVal;
   }
 
   /**
@@ -67,7 +74,8 @@ public final class IntHash
    * returns -1.<p>
    * It is an error to pass negative values to this method.  Passing
    * negative values to this method will result in undefined behavior of
-   * this hashtable.
+   * this hashtable.<p>
+   * Searches of this hashtable are performed in [amortized] constant time.
    */
   public final int get(final int value)
   {
@@ -120,7 +128,7 @@ public final class IntHash
           return array[index]; } };
   }
 
-  private final void checkSize()
+  private final boolean checkSize()
   {
     if (m_elements >= m_thresholdSize)
     {
@@ -146,7 +154,9 @@ public final class IntHash
       m_size = newSize;
       m_thresholdSize = (int) (THRESHOLD_FACTOR * (double) m_size);
       for (int i = 0; i < dump.length; i++) put(dump[i]);
+      return true;
     }
+    return false;
   } 
 
 }
