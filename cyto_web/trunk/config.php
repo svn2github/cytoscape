@@ -38,10 +38,10 @@ $cyto1_source_east= $cbio_base . "cytoscapeSource-v1.1.1.tar.gz";
 # Cytoscape 2.0 Release File Names
 # Note:  these probably don't need to ever be updated.
 #################################################
-$cyto2_gz_east= $cbio_base . "cytoscape-2.00.tar.gz";
-$cyto2_zip_east= $cbio_base . "cytoscape-2.00.zip";
-$cyto2_source_east= $cbio_base . "cytoscapeSource-2.00.tar.gz";
-$cyto2_mac_east= $cbio_base . "cytoscape-2.00.dmg.zip";
+$cyto2_gz_east= $cbio_base . "cytoscape-v2.00.tar.gz";
+$cyto2_zip_east= $cbio_base . "cytoscape-v2.00.zip";
+$cyto2_source_east= $cbio_base . "cytoscapeSource-v2.00.tar.gz";
+$cyto2_mac_east= $cbio_base . "cytoscape-v2.00.dmg.zip";
 
 #################################################
 # Cytoscape 2.1 Release File Names
