@@ -138,9 +138,14 @@ public class CyFileFilter
      * @see FileFilter#accepts
      */
     public boolean accept(File f) {
+
 	if(f != null) {
+        //  If there are no filters, always accept
+        if (filters.size()==0) {
+            return true;
+        }
 	    if(f.isDirectory()) {
-		return true;
+    		return true;
 	    }
 	    String extension = getExtension(f);
 	    if(extension != null && filters.get(getExtension(f)) != null) {
