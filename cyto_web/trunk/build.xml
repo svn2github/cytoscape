@@ -4,7 +4,7 @@
 -->
 <project name="cyto_web" default="deploy" basedir=".">
 
-	<property file="cyto.properties"/>
+	<property file="cw.properties"/>
 
 	<target name="config_prod" description="Configures for production set-up at cytoscape.org">
 	<replace file="config.php" summary="yes">
@@ -32,7 +32,7 @@
 			<fileset dir=".">
 				<exclude name="build.xml"/>
 				<exclude name="README.txt"/>
-				<exclude name="cyto.propertiess"/>
+				<exclude name="cw.properties"/>
 				<exclude name="CVS*"/>
 			</fileset>
 		</ftp>
