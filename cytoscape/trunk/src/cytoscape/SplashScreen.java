@@ -144,11 +144,10 @@ public class SplashScreen extends Canvas implements Runnable
 		offscreenGfx.drawString("Welcome to Cytoscape!", 3,40);
 		
 		offscreenGfx.setFont(new Font("Arial", Font.BOLD, 14));
-		offscreenGfx.drawString ("A bioinformatics software platform",3,210 );
-		offscreenGfx.drawString ("for visualizing molecular interaction networks",3,230);
-		offscreenGfx.drawString ("and  integrating these interactions with",3,250);
-		offscreenGfx.drawString ("gene expression profiles.",3,270); 
-
+		offscreenGfx.drawString ("A general-purpose modeling environment",3,210 );
+		offscreenGfx.drawString ("for integrating biomolecular interaction",3,230);
+		offscreenGfx.drawString ("networks, network states, and functional",3,250);
+		offscreenGfx.drawString ("ontologies.",3,270); 
 		g.drawImage(offscreenImg,0,0,this);
 		
 		notify();

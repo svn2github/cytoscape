@@ -1246,6 +1246,10 @@ protected JMenuBar createMenuBar ()
   mi = loadSubMenu.add (new LoadExpressionMatrixAction ());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_E, ActionEvent.CTRL_MASK));
   mi = loadSubMenu.add (new LoadBioDataServerAction ());
+  mi = loadSubMenu.add (new LoadNodeAttributesAction ());
+  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_N, ActionEvent.CTRL_MASK));
+  mi = loadSubMenu.add (new LoadEdgeAttributesAction ());
+  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_J, ActionEvent.CTRL_MASK));
 
   JMenu saveSubMenu = new JMenu ("Save");
   fileMenu.add (saveSubMenu);
@@ -3011,6 +3015,7 @@ protected class LoadGMLFileAction extends AbstractAction {
 
 } // inner class LoadAction
 //------------------------------------------------------------------------------
+
 protected class LoadInteractionFileAction extends AbstractAction {
   LoadInteractionFileAction() { super ("Interaction..."); }
     
@@ -3024,6 +3029,53 @@ protected class LoadInteractionFileAction extends AbstractAction {
     } // actionPerformed
 
 } // inner class LoadAction
+//------------------------------------------------------------------------------
+/* 
+ * Added by T. Ideker April 16, 2003
+ * to allow loading of node / edge attributes from the GUI
+ */
+
+protected class LoadNodeAttributesAction extends AbstractAction {
+  LoadNodeAttributesAction() { super ("Node Attributes..."); }
+    
+  public void actionPerformed (ActionEvent e)  {
+   JFileChooser chooser = new JFileChooser (currentDirectory);
+   chooser.setDialogTitle("Load Node Attributes");
+   if (chooser.showOpenDialog (CytoscapeWindow.this) == chooser.APPROVE_OPTION) {
+      currentDirectory = chooser.getCurrentDirectory();
+      String [] attrFileNames = new String [1]; 
+      attrFileNames[0] = chooser.getSelectedFile ().toString ();
+      FileReadingAbstractions.readAttribs(bioDataServer, defaultSpecies, 
+		    graph, nodeAttributes, null, attrFileNames, null);
+      } // if
+    } // actionPerformed
+
+} // inner class LoadAction
+
+//------------------------------------------------------------------------------
+/* 
+ * Added by T. Ideker April 16, 2003
+ * to allow loading of node / edge attributes from the GUI
+ */
+
+protected class LoadEdgeAttributesAction extends AbstractAction {
+  LoadEdgeAttributesAction() { super ("Edge Attributes..."); }
+    
+  public void actionPerformed (ActionEvent e)  {
+   JFileChooser chooser = new JFileChooser (currentDirectory);
+   chooser.setDialogTitle("Load Edge Attributes");
+   if (chooser.showOpenDialog (CytoscapeWindow.this) == chooser.APPROVE_OPTION) {
+      currentDirectory = chooser.getCurrentDirectory();
+      String [] attrFileNames = new String [1]; 
+      attrFileNames[0] = chooser.getSelectedFile ().toString ();
+      FileReadingAbstractions.readAttribs(bioDataServer, defaultSpecies, 
+		    graph, null, edgeAttributes, null, attrFileNames);
+      } // if
+    } // actionPerformed
+
+} // inner class LoadAction
+
+
 //------------------------------------------------------------------------------
 protected class LoadExpressionMatrixAction extends AbstractAction {
     LoadExpressionMatrixAction () { super ("Expression Matrix File..."); }

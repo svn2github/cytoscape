@@ -137,6 +137,25 @@ public static void initAttribs (BioDataServer dataServer,
                                 GraphObjAttributes edgeAttributes,
                                 String [] nodeAttributeFilenames,
                                 String [] edgeAttributeFilenames)
+
+{
+    readAttribs(dataServer, species, graph, nodeAttributes, edgeAttributes,
+		nodeAttributeFilenames, edgeAttributeFilenames);
+    if (nodeAttributes != null)
+	addNameMappingToAttributes (graph.getNodeArray (), nodeAttributes);
+    
+    // no need to add name mapping for edge attributes -- it has already been
+    // done, at the time when the interactions file (or gml file) was read
+    
+}
+//----------------------------------------------------------------------------
+public static void readAttribs (BioDataServer dataServer,
+                                String species,
+                                Graph2D graph,
+                                GraphObjAttributes nodeAttributes,
+                                GraphObjAttributes edgeAttributes,
+                                String [] nodeAttributeFilenames,
+                                String [] edgeAttributeFilenames)
 {
   if (nodeAttributeFilenames != null)
     for (int i=0; i < nodeAttributeFilenames.length; i++) {
@@ -168,14 +187,7 @@ public static void initAttribs (BioDataServer dataServer,
          } 
         } // for i
 
-    if (nodeAttributes != null)
-      addNameMappingToAttributes (graph.getNodeArray (), nodeAttributes);
-
-    // no need to add name mapping for edge attributes -- it has already been
-    // done, at the time when the interactions file (or gml file) was read
-
-
-} // initAttribs
+} // readAttribs
 //----------------------------------------------------------------------------
     /**
      * add node-to-canonical name mapping (and the same for edges), so that
