@@ -177,18 +177,14 @@ public class EdgeAction {
     JMenu sourceEndMenu = new JMenu("Source Edge End");
     for (i = 0; i < ENDMENUCAPTION.length; i++) {
         jmi = new JCheckBoxMenuItem( new SourceEndMenuAction(i, ev));
-/*TODO: uncomment when giny is updated to include getSourceEdgeEnd
         jmi.setSelected(ev.getSourceEdgeEnd() == ENDMENUVALUE[i]);
-*/
         sourceEndMenu.add(jmi);
     }
     editMenu.add(sourceEndMenu);
     JMenu targetEndMenu = new JMenu("Target Edge End");
     for (i = 0; i < ENDMENUCAPTION.length; i++) {
         jmi = new JCheckBoxMenuItem( new TargetEndMenuAction(i, ev));
-/*TODO: uncomment when giny is updated to include getTargetEdgeEnd
         jmi.setSelected(ev.getTargetEdgeEnd() == ENDMENUVALUE[i]);
-*/
         targetEndMenu.add(jmi);
     }
     editMenu.add(targetEndMenu);
