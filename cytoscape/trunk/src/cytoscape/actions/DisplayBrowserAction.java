@@ -11,13 +11,12 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 import javax.swing.AbstractAction;
-import phoebe.*;
 
-import phoebe.util.*;
+
+
 import giny.model.*;
 import giny.view.*;
 import java.util.*;
-import edu.umd.cs.piccolo.*;
 
 import cytoscape.browsers.*;
 import cytoscape.util.*;

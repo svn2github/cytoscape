@@ -61,17 +61,6 @@ import giny.view.NodeView;
 import phoebe.*;
 import phoebe.util.*;
 import phoebe.event.*;
-import coltginy.*;
-import luna.*;
-import edu.umd.cs.piccolo.*;
-import edu.umd.cs.piccolox.*;
-import edu.umd.cs.piccolox.util.*;
-import edu.umd.cs.piccolox.handles.*;
-import edu.umd.cs.piccolo.event.*;
-import edu.umd.cs.piccolo.activities.*;
-import edu.umd.cs.piccolo.nodes.*;
-import edu.umd.cs.piccolo.util.*;
-
 
 import cytoscape.*;
 import cytoscape.graphutil.*;

@@ -38,7 +38,6 @@ import java.util.*;
 import java.io.*;
 
 import cytoscape.*;
-import y.base.*;
 
 import cytoscape.data.readers.*;
 //--------------------------------------------------------------------
