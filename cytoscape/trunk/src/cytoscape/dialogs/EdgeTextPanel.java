@@ -22,7 +22,7 @@ import cytoscape.util.MutableString;
 import cytoscape.util.MutableColor;
 import cytoscape.vizmap.*;
 import cytoscape.dialogs.MiscGB;
-//--------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 public class EdgeTextPanel extends JPanel {
 
     String [] attributeNames;
@@ -35,43 +35,42 @@ public class EdgeTextPanel extends JPanel {
     String theMapKey;
     boolean useThisMap;
 
-//--------------------------------------------------------------------------------------
-public EdgeTextPanel (GraphObjAttributes edgeAttribs,
-		      AttributeMapper aMapper,
-		      Frame parentFrame,
-		      MutableString writeHere)
-{
-    super ();
-    this.aMapper = aMapper;
-    this.parentFrame = parentFrame;
-    attributeNames = edgeAttribs.getAttributeNames ();
-    edgeKey = writeHere;
-    attribKey = new MutableString("");
-    theMap = null;
-    useThisMap=false;
-    
-    this.setLayout (new GridLayout(1,2,10,10));
-    
-    DefaultComboBoxModel boxModel = new DefaultComboBoxModel();
-    for (int i=0; i < attributeNames.length; i++)
-	boxModel.addElement(new String(attributeNames [i]));
-    theBox = new JComboBox(boxModel);
-    
-    theBox.addActionListener(new BoxAction(edgeKey));
-    if(boxModel.getSize()==1) {
-	theBox.setSelectedIndex(0);
-	edgeKey.setString((String)boxModel.getElementAt(0));
+    public EdgeTextPanel (GraphObjAttributes edgeAttribs,
+			  AttributeMapper aMapper,
+			  Frame parentFrame,
+			  MutableString writeHere)
+    {
+	super ();
+	this.aMapper = aMapper;
+	this.parentFrame = parentFrame;
+	attributeNames = edgeAttribs.getAttributeNames ();
+	edgeKey = writeHere;
+	attribKey = new MutableString("");
+	theMap = null;
+	useThisMap=false;
+	
+	this.setLayout (new GridLayout(1,2,10,10));
+	
+	DefaultComboBoxModel boxModel = new DefaultComboBoxModel();
+	for (int i=0; i < attributeNames.length; i++)
+	    boxModel.addElement(new String(attributeNames [i]));
+	theBox = new JComboBox(boxModel);
+	
+	theBox.addActionListener(new BoxAction(edgeKey));
+	if(boxModel.getSize()==1) {
+	    theBox.setSelectedIndex(0);
+	    edgeKey.setString((String)boxModel.getElementAt(0));
+	}
+	else
+	    theBox.setSelectedItem(edgeKey.getString());
+	
+	this.add(theBox);
+	
+	JButton pickThisAttribute = new JButton ("Define Mapping");
+	pickThisAttribute.addActionListener (new ColorToDiscreteListener());
+	this.add(pickThisAttribute);
+	
     }
-    else
-	theBox.setSelectedItem(edgeKey.getString());
-    
-    this.add(theBox);
-    
-    JButton pickThisAttribute = new JButton ("Define Mapping");
-    pickThisAttribute.addActionListener (new ColorToDiscreteListener());
-    this.add(pickThisAttribute);
-    
-} // EdgeTextPanel ctor
     
     public Map getMap() {
 	return theMap;
@@ -213,16 +212,7 @@ public EdgeTextPanel (GraphObjAttributes edgeAttribs,
 		return;
 		
 	    }
-	    
-	    //valueMapColor.remove(key);
-	    //valueMapColor.put(key,c);
-	    
-	    JPanel popupPanel = new JPanel();
-	    
-	    GridBagLayout gridbag = new GridBagLayout(); 
-	    GridBagConstraints c = new GridBagConstraints();
-	    popupPanel.setLayout (gridbag);
-	    
+	    GridBagGroup popupGBG = new GridBagGroup();
 	    JScrollPane listScrollPane =
 		new JScrollPane(intScrollPanel,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
@@ -230,20 +220,16 @@ public EdgeTextPanel (GraphObjAttributes edgeAttribs,
 	    listScrollPane.setPreferredSize(new Dimension(150,150));
 	    extScrollPanel = new JPanel(new GridLayout(1,1));
 	    extScrollPanel.add(listScrollPane);
-	    MiscGB.set(c,0,0,2,1);
-	    MiscGB.insert(popupPanel,extScrollPanel,gridbag,c);
+	    MiscGB.insert(popupGBG,extScrollPanel,0,0,2,1);
 	    
 	    JButton cancelButton = new JButton ("Cancel");
 	    cancelButton.addActionListener (new CancelAction ());
-	    MiscGB.set(c,0,3);
-	    MiscGB.insert(popupPanel,cancelButton,gridbag,c);
-	    
+	    MiscGB.insert(popupGBG,cancelButton,0,3);
 	    JButton applyButton = new JButton ("Apply");
 	    applyButton.addActionListener (new ApplyAction ());
-	    MiscGB.set(c,1,3);
-	    MiscGB.insert(popupPanel,applyButton,gridbag,c);
+	    MiscGB.insert(popupGBG,applyButton,1,3);
 	    
-	    setContentPane(popupPanel);
+	    setContentPane(popupGBG.panel);
 	    pack ();
 	    setLocationRelativeTo (EdgeTextPanel.this);
 	    setVisible (true);
@@ -286,5 +272,3 @@ public EdgeTextPanel (GraphObjAttributes edgeAttribs,
     } // class ColorToDiscreteDialog
     
 } // class EdgeTextPanel
-
-
