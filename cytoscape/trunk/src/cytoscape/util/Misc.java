@@ -13,6 +13,7 @@ import java.util.*;
 
 import y.view.Arrow;
 import y.view.LineType;
+import y.view.ShapeNodeRealizer;
 //------------------------------------------------------------------------------
 public class Misc {
 
@@ -142,5 +143,47 @@ public static LineType parseLineTypeText (String text)
   else
       return LineType.LINE_1;
 } // parseLineTypeText
+
+
+public static Byte parseNodeShapeTextIntoByte (String text) {
+    return new Byte(parseNodeShapeText(text));
+}
+
+public static byte parseNodeShapeText (String text)
+{
+  StringTokenizer strtok = new StringTokenizer (text, ",");
+  if (strtok.countTokens () != 1) {
+      System.err.println ("illegal NodeShape string in EdgeViz.parseNodeShapeText: " + text);
+      return ShapeNodeRealizer.RECT;
+  }
+
+  String nstext = strtok.nextToken().trim();
+  nstext = nstext.replaceAll("_",""); // ditch all underscores
+  
+  if(nstext.equalsIgnoreCase("rect"))
+      return ShapeNodeRealizer.RECT;
+  else if(nstext.equalsIgnoreCase("roundrect"))
+      return ShapeNodeRealizer.ROUND_RECT;
+  else if(nstext.equalsIgnoreCase("rect3d"))
+      return ShapeNodeRealizer.RECT_3D;
+  else if(nstext.equalsIgnoreCase("trapezoid"))
+      return ShapeNodeRealizer.TRAPEZOID;
+  else if(nstext.equalsIgnoreCase("trapezoid2"))
+      return ShapeNodeRealizer.TRAPEZOID_2;
+  else if(nstext.equalsIgnoreCase("triangle"))
+      return ShapeNodeRealizer.TRIANGLE;
+  else if(nstext.equalsIgnoreCase("parallelogram"))
+      return ShapeNodeRealizer.PARALLELOGRAM;
+  else if(nstext.equalsIgnoreCase("diamond"))
+      return ShapeNodeRealizer.DIAMOND;
+  else if(nstext.equalsIgnoreCase("ellipse") || nstext.equalsIgnoreCase("circle"))
+      return ShapeNodeRealizer.ELLIPSE;
+  else if(nstext.equalsIgnoreCase("hexagon"))
+      return ShapeNodeRealizer.HEXAGON;
+  else if(nstext.equalsIgnoreCase("octagon"))
+      return ShapeNodeRealizer.OCTAGON;
+  else
+      return ShapeNodeRealizer.RECT;
+} // parseNodeShapeText
 
 }

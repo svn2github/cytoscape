@@ -148,14 +148,12 @@ public class VizMapperCategories implements AttributeMapperCategories {
 	} else if ( vizAttribute.equals(NODE_HEIGHT) ||
 		    vizAttribute.equals(NODE_WIDTH) ) {
 	    returnVal = new Integer(value);
-	    //parse Integer from value
 	} else if( vizAttribute.equals(NODE_SHAPE) ) {
-	    //parse shape byte from value
+	    returnVal = Misc.parseNodeShapeTextIntoByte(value);
 	} else if ( vizAttribute.equals(EDGE_LINETYPE) ) {
 	    returnVal = Misc.parseLineTypeText(value);
 	} else if ( vizAttribute.equals(EDGE_SOURCE_DECORATION) ||
 		    vizAttribute.equals(EDGE_TARGET_DECORATION) ) {
-	    System.out.println("arrow " + value);
 	    returnVal = Misc.parseArrowText(value);
 	} else {//unknown attribute
 	    System.err.println("Error parsing range attribute value:");

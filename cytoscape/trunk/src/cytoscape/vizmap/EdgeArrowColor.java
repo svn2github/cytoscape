@@ -29,7 +29,7 @@ public class EdgeArrowColor {
     }
 //------------------------------------------------------------------------------
 public static void removeThenAddEdgeColor(AttributeMapper aMapper, String key, Color c) {
-    System.out.println(key);
+    //System.out.println(key);
     DiscreteMapper dmColor =
 	(DiscreteMapper)
 	aMapper.getValueMapper(VizMapperCategories.EDGE_COLOR);
@@ -47,7 +47,7 @@ public static void removeThenAddEdgeColor(AttributeMapper aMapper, String key, C
 	if(sourceArrow!=null) {
 	    String sourceArrowName = sourceArrow.getCustomName();
 	    if(sourceArrowName!=null) {
-		System.out.println("fixing source arrow");
+		//System.out.println("fixing source arrow");
 		Shape sourceShape = sourceArrow.getShape();
 		Arrow sourceArrowNew =
 		    Arrow.addCustomArrow(sourceArrowName,sourceShape,c);
@@ -66,7 +66,7 @@ public static void removeThenAddEdgeColor(AttributeMapper aMapper, String key, C
 	if(targetArrow!=null) {
 	    String targetArrowName = targetArrow.getCustomName();
 	    if(targetArrowName!=null) {
-		System.out.println("fixing target arrow");
+		//System.out.println("fixing target arrow");
 		Shape targetShape = targetArrow.getShape();
 		Arrow targetArrowNew =
 		    Arrow.addCustomArrow(targetArrowName,targetShape,c);
