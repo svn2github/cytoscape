@@ -390,13 +390,14 @@ protected void loadVizMapper() {
     JToolBar toolBar = getCyMenus().getToolBar();
     toolBar.addSeparator();
     JButton b = toolBar.add(new SetVisualPropertiesAction(this, false));
-    b.setIcon(new ImageIcon(getClass().getResource("images/ColorVisual.gif")));
+    b.setIcon(new ImageIcon(getClass().getResource("images/new/color_wheel36.gif")));
     b.setToolTipText("Set Visual Properties");
     b.setBorderPainted(false);
 
     // easy-access visual styles changer
     toolBar.add(vizMapUI.getStyleSelector().getToolbarComboBox());
     toolBar.addSeparator();
+
 }
 //------------------------------------------------------------------------------
 /**

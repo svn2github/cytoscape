@@ -39,9 +39,11 @@ public class ZoomSelectedAction extends AbstractAction {
         double smallY;
         double W;
         double H;
-        bigX = ( ( NodeView )selected_nodes_iterator.next() ).getXPosition();
+        
+        NodeView first = ( NodeView )selected_nodes_iterator.next();
+        bigX = first.getXPosition();
         smallX = bigX;
-        bigY = ( ( NodeView )selected_nodes_iterator.next() ).getYPosition();
+        bigY = first.getYPosition();
         smallY = bigY;
     
         while ( selected_nodes_iterator.hasNext() ) {

@@ -24,6 +24,11 @@ public class SaveAsGMLAction extends AbstractAction {
         super("Graph as GML...");
         this.networkView = networkView;
     }
+
+    public SaveAsGMLAction (NetworkView networkView, String text ) {
+        super();
+        this.networkView = networkView;
+    }
     
     public void actionPerformed(ActionEvent e) {
         //save as GML isn't supported yet, so for now we put up an

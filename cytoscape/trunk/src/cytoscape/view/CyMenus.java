@@ -41,7 +41,8 @@ import cytoscape.actions.*;
 import cytoscape.dialogs.ShrinkExpandGraphUI;
 import cytoscape.data.annotation.AnnotationGui;
 import cytoscape.util.CytoscapeMenuBar;
-
+import cytoscape.util.CytoscapeToolBar;
+import cytoscape.util.CytoscapeAction;
 //------------------------------------------------------------------------------
 /**
  * This class creates the menu and tool bars for a Cytoscape window object. It
@@ -60,7 +61,7 @@ public class CyMenus {
   JMenu vizMenu;
   JMenu opsMenu;
   JMenuItem NO_OPERATIONS;
-  JToolBar toolBar;
+  CytoscapeToolBar toolBar;
     
 
   public CyMenus(CyWindow cyWindow) {
@@ -68,7 +69,7 @@ public class CyMenus {
     //the following methods construct the basic bar objects, but
     //don't fill them with menu items and associated action listeners
     createMenuBar();
-    toolBar = new JToolBar();
+    toolBar = new CytoscapeToolBar();
     //default menu item used when the operations menu is empty
     NO_OPERATIONS = new JMenuItem("No operations available");
     NO_OPERATIONS.setEnabled(false);
@@ -77,7 +78,7 @@ public class CyMenus {
   /**
    * Returns the main menu bar constructed by this object.
    */
-  public JMenuBar getMenuBar() {return menuBar;}
+  public CytoscapeMenuBar getMenuBar() {return menuBar;}
     
   /**
    * Returns the submenu that holds menu items such as
@@ -125,8 +126,23 @@ public class CyMenus {
   /**
    * Returns the toolbar object constructed by this class.
    */
-  public JToolBar getToolBar() {return toolBar;}
+  public CytoscapeToolBar getToolBar() {return toolBar;}
     
+
+  /**
+   * Takes a CytoscapeAction and will add it to the MenuBar or the 
+   * Toolbar as is appropriate.
+   */
+  public void addCytoscapeAction ( CytoscapeAction action ) {
+    if ( action.isInMenuBar() ) {
+      getMenuBar().addAction( action );
+    }
+    if ( action.isInToolBar() ) {
+      getToolBar().addAction( action );
+    }
+  }
+
+
   /**
    * @deprecated This method is no longer needed now that the undo
    * manager has been removed. It will soon be removed, because
@@ -342,38 +358,52 @@ public class CyMenus {
   private void fillToolBar() {
     NetworkView networkView = cyWindow; //restricted interface
     JButton b;
-        
+    
+    b = toolBar.add( new LoadGraphFileAction( networkView, null ) );
+    b.setIcon( new ImageIcon(getClass().getResource("images/new/load36.gif") ) );
+    b.setToolTipText("Load Graph");
+    b.setBorderPainted(false);
+    b.setRolloverEnabled(true);
+    
+    b = toolBar.add( new SaveAsGMLAction( networkView, null ) );
+    b.setIcon( new ImageIcon(getClass().getResource("images/new/save36.gif") ) );
+    b.setToolTipText("Save Graph as GML");
+    b.setBorderPainted(false);
+    b.setRolloverEnabled(true);
+
+    toolBar.addSeparator();
+    
     b = toolBar.add(new ZoomAction(networkView, 0.9));
-    b.setIcon(new ImageIcon(getClass().getResource("images/ZoomOut24.gif")));
+    b.setIcon(new ImageIcon(getClass().getResource("images/new/zoom_out36.gif")));
     b.setToolTipText("Zoom Out");
     b.setBorderPainted(false);
     b.setRolloverEnabled(true);
         
     b = toolBar.add(new ZoomAction(networkView, 1.1));
-    b.setIcon(new ImageIcon(getClass().getResource("images/ZoomIn24.gif")));
+    b.setIcon(new ImageIcon(getClass().getResource("images/new/zoom_in36.gif")));
     b.setToolTipText("Zoom In");
     b.setBorderPainted(false);
         
     b = toolBar.add(new ZoomSelectedAction(networkView));
-    b.setIcon(new ImageIcon(getClass().getResource("images/ZoomArea24.gif")));
+    b.setIcon(new ImageIcon(getClass().getResource("images/new/crop36.gif")));
     b.setToolTipText("Zoom Selected Region");
     b.setBorderPainted(false);
         
     b = toolBar.add(new FitContentAction(networkView));
-    b.setIcon(new ImageIcon(getClass().getResource("images/overview.gif")));
+    b.setIcon(new ImageIcon(getClass().getResource("images/new/fit36.gif")));
     b.setToolTipText("Zoom out to display all of current graph");
     b.setBorderPainted(false);
         
     // toolBar.addSeparator();
         
     b = toolBar.add(new ShowAllAction(networkView));
-    b.setIcon(new ImageIcon(getClass().getResource("images/overall.gif")));
+    b.setIcon(new ImageIcon(getClass().getResource("images/new/add36.gif")));
     b.setToolTipText("Show all nodes and edges (unhiding as necessary)");
     b.setBorderPainted(false);
         
         
     b = toolBar.add(new HideSelectedAction(networkView));
-    b.setIcon(new ImageIcon(getClass().getResource("images/Zoom24.gif")));
+    b.setIcon(new ImageIcon(getClass().getResource("images/new/delete36.gif")));
     b.setToolTipText("Hide Selected Region");
     b.setBorderPainted(false);
         

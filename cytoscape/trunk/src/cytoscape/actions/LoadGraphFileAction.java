@@ -24,11 +24,17 @@ import cytoscape.data.readers.GMLReader;
 public class LoadGraphFileAction extends AbstractAction {
     NetworkView networkView;
     
-    public LoadGraphFileAction(NetworkView networkView) {
+    public LoadGraphFileAction(NetworkView networkView, String text ) {
+        super();
+        this.networkView = networkView;
+    }
+
+  public LoadGraphFileAction(NetworkView networkView ) {
         super("Graph...");
         this.networkView = networkView;
     }
-    
+
+  
     public void actionPerformed(ActionEvent e)  {
         CytoscapeObj cytoscapeObj = networkView.getCytoscapeObj();
         File currentDirectory = networkView.getCytoscapeObj().getCurrentDirectory();

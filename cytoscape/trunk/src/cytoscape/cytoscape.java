@@ -267,21 +267,23 @@ public static void main(String args []) throws Exception {
   Options.setDefaultIconSize(new Dimension(18, 18));
  
   try {
-    if ( LookUtils.isWindowsXP() ) {
-      // use XP L&F
-      UIManager.setLookAndFeel( Options.getCrossPlatformLookAndFeelClassName() );
-    } else if ( System.getProperty("os.name").startsWith( "Mac" ) ) {
-      // do nothing, I like the OS X L&F
-    } else {
-      // this is for for *nix
-      // I happen to like this color combo, there are others
-      Plastic3DLookAndFeel laf = new Plastic3DLookAndFeel();
-      laf.setMyCurrentTheme( new com.jgoodies.plaf.plastic.theme.SkyBluerTahoma() );
-      UIManager.setLookAndFeel( laf );
-    }
-  } catch (Exception e) {
-    System.err.println("Can't set look & feel:" + e);
-  }
+     if ( LookUtils.isWindowsXP() ) {
+       // use XP L&F
+       UIManager.setLookAndFeel( Options.getCrossPlatformLookAndFeelClassName() );
+     } else if ( System.getProperty("os.name").startsWith( "Mac" ) ) {
+       // do nothing, I like the OS X L&F
+     } else {
+       // this is for for *nix
+       // I happen to like this color combo, there are others
+       Plastic3DLookAndFeel laf = new Plastic3DLookAndFeel();
+       laf.setTabStyle( Plastic3DLookAndFeel.TAB_STYLE_METAL_VALUE ); 
+       laf.setHighContrastFocusColorsEnabled(true); 
+       laf.setMyCurrentTheme( new com.jgoodies.plaf.plastic.theme.ExperienceBlue() );
+       UIManager.setLookAndFeel( laf );
+     }
+   } catch (Exception e) {
+     System.err.println("Can't set look & feel:" + e);
+   }
   
 
 

@@ -507,7 +507,7 @@ class ApplyAnnotationAction extends AbstractAction {
     if (uniqueAnnotationValues != null && 
         uniqueAnnotationValues.length > 0 && 
         uniqueAnnotationValues [0].getClass() == "string".getClass ()) {
-      java.util.Arrays.sort (uniqueAnnotationValues, String.CASE_INSENSITIVE_ORDER);
+      java.util.Arrays.sort (uniqueAnnotationValues, ( Comparator )String.CASE_INSENSITIVE_ORDER);
       appendToSelectionTree (currentAnnotationCategory, uniqueAnnotationValues);
       }
     cyWindow.getNetwork().endActivity(callerID);
