@@ -1,12 +1,12 @@
 ################################################
 # CYTOSCAPE INSTALLATION INSTRUCTIONS          #
-# Cytoscape v. 0.9; November 2002              #
+# Cytoscape v. 1.0; March, 2003                #
 # http://www.cytoscape.org                     #
 #                                              # 
 # (c) Paul Shannon, Owen Ozier,                #
 # Andrew Markiel, Daniel Ramage, Nada Amin,    #
 # Mindy Chang, Jonathan Wang,                  #
-# Benno Schwikowski and Trey Ideker 2002       #
+# Benno Schwikowski and Trey Ideker 2003       #
 #                                              # 
 ################################################
 
@@ -51,6 +51,7 @@ LICENSE.txt ............ The license agreement
 
 cytoscape.jar .......... Main Cytoscape application (Java archive)
 cytoscape.props ........ User-configurable properties and preferences
+vizmap.props ........... User-configurable visualization preferences
 
 cytoscape.sh ........... Shell script used to run Cytoscape (Linux)
 cytoscape.bat .......... Shell script used to run Cytoscape (Windows)
@@ -77,10 +78,10 @@ GO/ .................... Directory containing Gene Ontology database
 ** Obtained from data hosted at http://www.bind.ca/
 
 (2) If not already installed on your computer, download and install
-the Java 2 Runtime Environment, version 1.4 or higher.  It can be
+the Java 2 Runtime Environment, version 1.4.1 or higher.  It can be
 found at:
 
-http://java.sun.com/j2se/1.4/download.html.
+http://java.sun.com/j2se/1.4.1/download.html.
 
 (3) Launch the application by running "cytoscape.sh" from the command
 line (Linux) or double-clicking "cytoscape.bat" (Windows).
