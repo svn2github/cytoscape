@@ -13,8 +13,8 @@ package cytoscape.util.intr;
  * it takes at most four times as much memory as it would take
  * to store the hashtable's elements in a perfectly-sized array.
  * Underlying size expansions are implemented such that the operation of
- * expanding in size is amortized over the contstant time complexity needed to
- * insert new elements.
+ * expanding in size is amortized over the contstant time complexity of
+ * inserting new elements.
  */
 public final class IntHash
 {
@@ -35,7 +35,7 @@ public final class IntHash
   private int m_thresholdSize;
 
   /**
-   * Create a new hashtable.
+   * Creates a new hashtable.
    */
   public IntHash()
   {

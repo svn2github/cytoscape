@@ -2,7 +2,15 @@ package cytoscape.util.intr;
 
 /**
  * A dynamically growing array of integers.
- * Valid indices: [0, Integer.MAX_VALUE - 1].
+ * Valid indices of this array are in the range [0, Integer.MAX_VALUE - 1].<p>
+ * In the underlying implementation, this dynamically growing array
+ * increases in size to adapt to elements being added (the size of the
+ * underlying data structure supporting this dynamically growing array
+ * is invisible to the programmer).  In the underlying implementation, this
+ * dynamic array never decreases in size.  Underlying size expansions are
+ * implemented such that the operation of expanding in size is amortized over
+ * the constant time complexity of inserting new elements into this
+ * dynamic array.
  */
 public final class IntArray
 {
