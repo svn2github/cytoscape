@@ -11,13 +11,15 @@ import giny.view.*;
 
 
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 
 import java.util.*;
 import java.util.List;
 
-
-
+import edu.umd.cs.piccolo.*;
+import edu.umd.cs.piccolo.event.*;
+import edu.umd.cs.piccolo.nodes.*;
 
 public class PhoebeNetworkView 
   extends 
@@ -57,6 +59,7 @@ public class PhoebeNetworkView
    */
   protected Map clientData;
 
+  protected PBasicInputEventHandler keyEventHandler;
 
   public PhoebeNetworkView ( CyNetwork network,
                              String title ) {
@@ -82,7 +85,52 @@ public class PhoebeNetworkView
     new FlagAndSelectionHandler( ( ( ColtCyNetwork )getNetwork()).getFlagger(), this);
     //TODO:
     //     Add NetworkView specific ToolBars
-    
+
+  }
+   
+  protected void initializeEventHandlers() {
+    super.initializeEventHandlers();
+
+    keyEventHandler = new PBasicInputEventHandler () {
+        boolean space_down = false;
+        boolean slash_pressed = false;
+
+        public void keyPressed ( PInputEvent event ) {
+
+          
+          if ( event.getKeyCode() == KeyEvent.VK_SPACE ) {
+            space_down = true;
+            getCanvas().setCursor( Cursor.getPredefinedCursor( Cursor.HAND_CURSOR ) );
+            getCanvas().getPanEventHandler().
+              setEventFilter(new PInputEventFilter(InputEvent.BUTTON1_MASK));
+            if ( nodeSelection ) {
+              getCanvas().removeInputEventListener( getSelectionHandler() );
+            }
+            if ( edgeSelection ) {
+              getCanvas().removeInputEventListener( getEdgeSelectionHandler() );
+            }
+          }
+        }
+           
+        public void keyReleased ( PInputEvent event ) {
+          if ( space_down ) {
+            space_down = false;
+            getCanvas().setCursor( Cursor.getPredefinedCursor( Cursor.DEFAULT_CURSOR ) );
+            getCanvas().getPanEventHandler().
+              setEventFilter(new PInputEventFilter(InputEvent.BUTTON2_MASK));
+            if ( nodeSelection ) {
+              getCanvas().addInputEventListener( getSelectionHandler() );
+            }
+            if ( edgeSelection ) {
+              getCanvas().addInputEventListener( getEdgeSelectionHandler() );
+            }
+          }
+        }
+      }; 
+    getCanvas().addInputEventListener(keyEventHandler );
+    getCanvas().getRoot().getDefaultInputManager().setKeyboardFocus( keyEventHandler );
+
+ 
   }
   
   public CyNetworkView getView () {

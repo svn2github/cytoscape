@@ -334,7 +334,7 @@ public class CyMenus  implements GraphViewChangeListener {
                   lines.append("Addional Collaborators\n" );
                   
                   
-                CreditScreen.showCredits( getClass().getResource("/cytoscape/images/cytoCredits.jpg"), lines.toString() );
+                CreditScreen.showCredits( getClass().getResource("/cytoscape/images/CytoscapeCredits.png"), lines.toString() );
                                   
               } } ); } } );
     //help_menu.add( about );

@@ -83,7 +83,9 @@ public class CyMain implements WindowListener {
     
 
     // setup the Splash Screen
-    ImageIcon image = new ImageIcon( getClass().getResource("images/cytoSplash.gif") );
+
+    ImageIcon image = new ImageIcon( getClass().getResource("/cytoscape/images/CytoscapeSplashScreen.png") );
+    //ImageIcon image = new ImageIcon( getClass().getResource("images/cytoSplash.gif") );
     WindowUtilities.showSplash( image, 8000 );
 
     //parse args and config files into config object
