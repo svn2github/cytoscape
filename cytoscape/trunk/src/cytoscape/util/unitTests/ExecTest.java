@@ -130,6 +130,43 @@ public void testUsingStandardInput ()
 
 } // testUsingStandardInput
 //---------------------------------------------------------------------------
+public void disabled_testRunNetscape ()
+{
+  String [] cmd = new String [2];
+  cmd [0] = "/users/pshannon/data/human/jdrf/web";
+  cmd [1] = "http://sewardpark.net";
+
+
+  Exec child = new Exec (cmd);
+  int result = child.run ();
+  assertTrue (result == 0);
+
+  Enumeration iterator = child.getStdout().elements ();
+  StringBuffer sb = new StringBuffer ();
+  sb.append ("=========== STDOUT =============\n");
+  while (iterator.hasMoreElements ()) {
+    String newLine = (String) iterator.nextElement ();
+    sb.append (newLine);
+    // System.out.println (newLine);
+    sb.append ("\n");
+    }
+
+  iterator = child.getStderr().elements ();
+  sb.append ("=========== STDERR =============\n");
+  while (iterator.hasMoreElements ()) {
+    String newLine = (String) iterator.nextElement ();
+    //System.out.println (newLine);
+    sb.append (newLine);
+    sb.append ("\n");
+    }
+
+  String fullResult = sb.toString ();
+  //assertTrue (fullResult.indexOf ("ExecTest.java") >= 0);
+  //assertTrue (fullResult.indexOf ("ExecTest.class") >= 0);
+  System.out.println (fullResult);
+
+}
+//---------------------------------------------------------------------------
 public static void main (String[] args) 
 {
   junit.textui.TestRunner.run (new TestSuite (ExecTest.class));
