@@ -139,10 +139,14 @@ public class VizMapAttrTab extends VizMapTab {
 	// get current defaults
 	getDefaults(type);
 
-	// redraw everything
-	this.removeAll();
-	drawDefault();
-	drawCalc();
+	if (defaultValueDisplayer == null) { // haven't initialized yet
+	    drawDefault();
+	    drawCalc();
+	}
+	else {
+	    setDefault(defaultObj);
+	    refreshUI();
+	}
     }
 
     private void setupCalcComboBox() {
@@ -437,7 +441,8 @@ public class VizMapAttrTab extends VizMapTab {
 	    }
 	    // check duplication
 	    Vector conflicts = mainUIDialog.checkCalculatorUsage(currentCalculator);
-	    if (conflicts.size() != 0) {
+	    // if only one conflict reported, that's myself, so ignore.
+	    if (conflicts.size() != 0 && !(conflicts.size() == 1 && ((Vector)conflicts.get(0)).size() == 2)) {
 		StringBuffer errMsg = new StringBuffer("Calculator ");
 		errMsg.append(currentCalculator.toString());
 		errMsg.append(" currently in use by:<br><ul>");
@@ -478,6 +483,8 @@ public class VizMapAttrTab extends VizMapTab {
     private class CatalogListener implements ChangeListener {
 	public void stateChanged(ChangeEvent e) {
 	    resetCalculatorDisplay();
+	    validate();
+	    repaint();
 	}
     }
     
