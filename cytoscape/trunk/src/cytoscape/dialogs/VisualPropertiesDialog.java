@@ -303,9 +303,12 @@ public class CancelAction extends AbstractAction {
     private void initializeArrowDefault() {
 	int ns = ((Integer)aMapper.getDefaultValue(VizMapperCategories.NODE_HEIGHT)).intValue();
 	Object currentArrow =  aMapper.getDefaultValue(VizMapperCategories.EDGE_TARGET_DECORATION);
+
 	HashMap arrowToString = MiscDialog.getArrowToStringHashMap(ns);
 	HashMap stringToArrow = MiscDialog.getStringToArrowHashMap(ns);
-	ImageIcon [] icons = MiscDialog.getArrowIcons();
+
+	MiscDialog iconLoader = new MiscDialog();
+	ImageIcon [] icons = iconLoader.getArrowIcons();
 	arrowDefault =
 	    new IconPopupButton ("Arrow",
 				 "Arrow",
@@ -321,7 +324,9 @@ public class CancelAction extends AbstractAction {
 	Object currentShape =  aMapper.getDefaultValue(VizMapperCategories.NODE_SHAPE);
 	HashMap shapeToString = MiscDialog.getShapeByteToStringHashMap();
 	HashMap stringToShape = MiscDialog.getStringToShapeByteHashMap();
-	ImageIcon [] icons = MiscDialog.getShapeIcons();
+
+	MiscDialog iconLoader = new MiscDialog();
+	ImageIcon [] icons = iconLoader.getShapeIcons();
 	shapeDefault =
 	    new IconPopupButton ("Node Shape",
 				 "Node Shape",
@@ -337,7 +342,9 @@ public class CancelAction extends AbstractAction {
 	Object currentLineType =  aMapper.getDefaultValue(VizMapperCategories.EDGE_LINETYPE);
 	HashMap lineTypeToString = MiscDialog.getLineTypeToStringHashMap();
 	HashMap stringToLineType = MiscDialog.getStringToLineTypeHashMap();
-	ImageIcon [] icons = MiscDialog.getLineTypeIcons();
+
+	MiscDialog iconLoader = new MiscDialog();
+	ImageIcon [] icons = iconLoader.getLineTypeIcons();
 	lineTypeDefault =
 	    new IconPopupButton ("Line Type",
 				 "Line Type",
