@@ -27,13 +27,13 @@
  ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  **/
 
-//-----------------------------------------------------------------------------------------
+//------------------------------
 // $Revision$   
 // $Date$ 
 // $Author$
-//-----------------------------------------------------------------------------------
+//------------------------------
 package cytoscape.data.readers;
-//-----------------------------------------------------------------------------------------
+//------------------------------
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.Hashtable;
@@ -52,118 +52,161 @@ import cytoscape.data.Interaction;
 import cytoscape.data.*;
 import cytoscape.data.servers.*;
 import cytoscape.data.readers.*;
-//-----------------------------------------------------------------------------------------
+
+/**
+ * This is an Interaction Reader, it will create a network from
+ * a given file.
+ * 
+ * The network can then be merged/added/replaced in Cytoscape
+ */
 public class InteractionsReader implements GraphReader {
-  String filename;
-  Vector allInteractions = new Vector ();
+
+  /**
+   * The File to be loaded
+   */
+  protected String filename;
+  
+  /**
+   * A Vector that holds all of the Interactions
+   */
+  protected Vector allInteractions = new Vector ();
   GraphObjAttributes edgeAttributes = new GraphObjAttributes ();
   Graph2D graph;
   RootGraph rootGraph;
   BioDataServer dataServer;
   String species;
   boolean isYFiles;
-//-----------------------------------------------------------------------------------------
-public InteractionsReader (BioDataServer dataServer, String species, String filename, boolean isYFiles)
-{
-  this.filename = filename;
-  this.dataServer = dataServer;
-  this.species = species;
-  this.isYFiles = isYFiles;
-}
 
-//----------------------------------------------------------------------------------------
-public void read (boolean canonicalize)
-{
-  
-  String rawText;
-  try {
-    if (filename.trim().startsWith ("jar://")) {
-      TextJarReader reader = new TextJarReader (filename);
-      reader.read ();
-      rawText = reader.getText ();
-      }
-    else {
-      TextFileReader reader = new TextFileReader (filename);
-      reader.read ();
-      rawText = reader.getText ();
-      }
-    }
-  catch (Exception e0) {
-    System.err.println ("-- Exception while reading interaction file " + filename);
-    System.err.println (e0.getMessage ());
-    return;
-    }
+  //------------------------------
+  // Constructors
 
-  String delimiter = " ";
-  if (rawText.indexOf ("\t") >= 0)
-    delimiter = "\t";
-  StringTokenizer strtok = new StringTokenizer (rawText, "\n");
-  
-  // commented out by iliana on 11.26.2002 :
-  // Vector interactions = new Vector ();
-  
-  while (strtok.hasMoreElements ()) {
-    String newLine = (String) strtok.nextElement ();
-    Interaction newInteraction = new Interaction (newLine, delimiter);
-    allInteractions.addElement (newInteraction);
-  }
-  if (isYFiles)
-	  createYGraphFromInteractionData (canonicalize);
-  else
-	  createRootGraphFromInteractionData (canonicalize);
-  
-}
-//-----------------------------------------------------------------------------------------
-/**
- * Calls read(true)
- */
-public void read ()
-{
-  read(true);
-}  // readFromFile
-//-------------------------------------------------------------------------------------------
-public int getCount ()
-{
-  return allInteractions.size ();
-}
-//-------------------------------------------------------------------------------------------
-public Interaction [] getAllInteractions ()
-{
-  Interaction [] result = new Interaction [allInteractions.size ()];
-
-  for (int i=0; i < allInteractions.size (); i++) {
-    Interaction inter = (Interaction) allInteractions.elementAt (i);
-    result [i] = inter;
+  /**
+   * Interactions Reader Constructor
+   * Creates a new Interactions Reader
+   * @param dataServer  a BioDataServer
+   * @param species the species of the network being loaded
+   * @param filename the file to load the network from
+   * @param isYFiles should we create a YFiles graph?
+   */ 
+  public InteractionsReader (BioDataServer dataServer, String species, String filename, boolean isYFiles)
+  {
+    this.filename = filename;
+    this.dataServer = dataServer;
+    this.species = species;
+    this.isYFiles = isYFiles;
   }
 
-  return result;
+  /**
+   * Interactions Reader Constructor
+   * Creates a new Interactions Reader
+   * This constructor assumes a Y-Files graph is wanted. If not
+   * then use the other constructor to say so.
+   * @param dataServer  a BioDataServer
+   * @param species the species of the network being loaded
+   * @param filename the file to load the network from
+   */ 
+  public InteractionsReader ( BioDataServer dataServer, 
+                              String species, 
+                              String filename ) {
+    this.filename = filename;
+    this.dataServer = dataServer;
+    this.species = species;
+    this.isYFiles = true;
+  }
 
-}
-//-------------------------------------------------------------------------------------------
-protected String canonicalizeName (String name)
-{
+
+  //----------------------------------------------------------------------------------------
+  public void read ( boolean canonicalize ) {
+  
+    String rawText;
+    try {
+      if (filename.trim().startsWith ("jar://")) {
+        TextJarReader reader = new TextJarReader (filename);
+        reader.read ();
+        rawText = reader.getText ();
+      }
+      else {
+        TextFileReader reader = new TextFileReader (filename);
+        reader.read ();
+        rawText = reader.getText ();
+      }
+    }
+    catch (Exception e0) {
+      System.err.println ("-- Exception while reading interaction file " + filename);
+      System.err.println (e0.getMessage ());
+      return;
+    }
+
+    String delimiter = " ";
+    if (rawText.indexOf ("\t") >= 0)
+      delimiter = "\t";
+    StringTokenizer strtok = new StringTokenizer (rawText, "\n");
+  
+    // commented out by iliana on 11.26.2002 :
+    // Vector interactions = new Vector ();
+  
+    while (strtok.hasMoreElements ()) {
+      String newLine = (String) strtok.nextElement ();
+      Interaction newInteraction = new Interaction (newLine, delimiter);
+      allInteractions.addElement (newInteraction);
+    }
+    if (isYFiles)
+      createYGraphFromInteractionData (canonicalize);
+    else
+      createRootGraphFromInteractionData (canonicalize);
+  
+  }
+  //-----------------------------------------------------------------------------------------
+  /**
+   * Calls read(true)
+   */
+  public void read ()
+  {
+    read(true);
+  }  // readFromFile
+  //-------------------------------------------------------------------------------------------
+  public int getCount ()
+  {
+    return allInteractions.size ();
+  }
+  //-------------------------------------------------------------------------------------------
+  public Interaction [] getAllInteractions ()
+  {
+    Interaction [] result = new Interaction [allInteractions.size ()];
+
+    for (int i=0; i < allInteractions.size (); i++) {
+      Interaction inter = (Interaction) allInteractions.elementAt (i);
+      result [i] = inter;
+    }
+
+    return result;
+
+  }
+  //-------------------------------------------------------------------------------------------
+  protected String canonicalizeName (String name)
+  {
     
-  String canonicalName = name;
-  if (dataServer != null) {
-    canonicalName = dataServer.getCanonicalName (species, name);
-    // added by iliana 11.14.2002
-    // for some strange reason the server returned a null canonical name
-    if(canonicalName == null){canonicalName = name;} 
-    //System.out.println (" -- canonicalizeName from server: " + canonicalName);
-  }
-  //System.out.println("the canonicalName for " + name + " is " + canonicalName);
-  //System.out.flush();
-  return canonicalName;
+    String canonicalName = name;
+    if (dataServer != null) {
+      canonicalName = dataServer.getCanonicalName (species, name);
+      // added by iliana 11.14.2002
+      // for some strange reason the server returned a null canonical name
+      if(canonicalName == null){canonicalName = name;} 
+      //System.out.println (" -- canonicalizeName from server: " + canonicalName);
+    }
+    //System.out.println("the canonicalName for " + name + " is " + canonicalName);
+    //System.out.flush();
+    return canonicalName;
 
-} // canonicalizeName
-//-------------------------------------------------------------------------------------------
-protected void createYGraphFromInteractionData (boolean canonicalize)
-{
+  } // canonicalizeName
+  //-------------------------------------------------------------------------------------------
+  protected void createYGraphFromInteractionData (boolean canonicalize)
+  {
 
-  graph = new Graph2D ();
-  Interaction [] interactions = getAllInteractions ();
+    graph = new Graph2D ();
+    Interaction [] interactions = getAllInteractions ();
 
-  Hashtable nodes = new Hashtable ();
+    Hashtable nodes = new Hashtable ();
 
     //---------------------------------------------------------------------------
     // loop through all of the interactions -- which are triples of the form:
@@ -172,33 +215,33 @@ protected void createYGraphFromInteractionData (boolean canonicalize)
     // for each source and target
     // in addition,
     //---------------------------------------------------------------------------
-  String nodeName, targetNodeName;
-  for (int i=0; i < interactions.length; i++) {
-    Interaction interaction = interactions [i];
-    //System.out.println ("source: " + interaction.getSource ());
-    if(canonicalize){
-      nodeName = canonicalizeName (interaction.getSource ());
-    }else{
-      nodeName = interaction.getSource();
-    }
-        
-    if (!nodes.containsKey (nodeName)) {
-      Node node = graph.createNode (0.0, 0.0, 70.0, 30.0, nodeName);
-      nodes.put (nodeName, node);
-    }
-    String [] targets = interaction.getTargets ();
-    for (int t=0; t < targets.length; t++) {
+    String nodeName, targetNodeName;
+    for (int i=0; i < interactions.length; i++) {
+      Interaction interaction = interactions [i];
+      //System.out.println ("source: " + interaction.getSource ());
       if(canonicalize){
-        targetNodeName = canonicalizeName (targets [t]);
+        nodeName = canonicalizeName (interaction.getSource ());
       }else{
-        targetNodeName = targets[t];
+        nodeName = interaction.getSource();
       }
-      if (!nodes.containsKey (targetNodeName)) {
-        Node targetNode = graph.createNode (0.0, 0.0, 70.0, 30.0, targetNodeName);
-        nodes.put (targetNodeName, targetNode);
-      } // if target node is previously unknown
-    } // for t
-  } // i
+        
+      if (!nodes.containsKey (nodeName)) {
+        Node node = graph.createNode (0.0, 0.0, 70.0, 30.0, nodeName);
+        nodes.put (nodeName, node);
+      }
+      String [] targets = interaction.getTargets ();
+      for (int t=0; t < targets.length; t++) {
+        if(canonicalize){
+          targetNodeName = canonicalizeName (targets [t]);
+        }else{
+          targetNodeName = targets[t];
+        }
+        if (!nodes.containsKey (targetNodeName)) {
+          Node targetNode = graph.createNode (0.0, 0.0, 70.0, 30.0, targetNodeName);
+          nodes.put (targetNodeName, targetNode);
+        } // if target node is previously unknown
+      } // for t
+    } // i
 
 
     //---------------------------------------------------------------------------
@@ -210,47 +253,47 @@ protected void createYGraphFromInteractionData (boolean canonicalize)
     //   interactionHash [sourceNode::targetNode] = "pd"
     //---------------------------------------------------------------------------
 
-  for (int i=0; i < interactions.length; i++) {
-    Interaction interaction = interactions [i];
-    if(canonicalize){
-      nodeName = canonicalizeName (interaction.getSource ());
-    }else{
-      nodeName = interaction.getSource();
-    }
-    
-    String interactionType = interaction.getType ();
-    Node sourceNode = (Node) nodes.get (nodeName);
-    String [] targets = interaction.getTargets ();
-    for (int t=0; t < targets.length; t++) {
+    for (int i=0; i < interactions.length; i++) {
+      Interaction interaction = interactions [i];
       if(canonicalize){
-        targetNodeName = canonicalizeName (targets [t]);
+        nodeName = canonicalizeName (interaction.getSource ());
       }else{
-        targetNodeName = targets[t];
+        nodeName = interaction.getSource();
       }
     
+      String interactionType = interaction.getType ();
+      Node sourceNode = (Node) nodes.get (nodeName);
+      String [] targets = interaction.getTargets ();
+      for (int t=0; t < targets.length; t++) {
+        if(canonicalize){
+          targetNodeName = canonicalizeName (targets [t]);
+        }else{
+          targetNodeName = targets[t];
+        }
+    
       
-      Node targetNode = (Node) nodes.get (targetNodeName);
-      Edge edge = graph.createEdge (sourceNode, targetNode);
-      String edgeName = nodeName + " (" + interactionType + ") " + targetNodeName;
-      int previousMatchingEntries = edgeAttributes.countIdentical(edgeName);
-      if (previousMatchingEntries > 0)
-        edgeName = edgeName + "_" + previousMatchingEntries;
-      edgeAttributes.add ("interaction", edgeName, interactionType);
-      edgeAttributes.addNameMapping (edgeName, edge);
+        Node targetNode = (Node) nodes.get (targetNodeName);
+        Edge edge = graph.createEdge (sourceNode, targetNode);
+        String edgeName = nodeName + " (" + interactionType + ") " + targetNodeName;
+        int previousMatchingEntries = edgeAttributes.countIdentical(edgeName);
+        if (previousMatchingEntries > 0)
+          edgeName = edgeName + "_" + previousMatchingEntries;
+        edgeAttributes.add ("interaction", edgeName, interactionType);
+        edgeAttributes.addNameMapping (edgeName, edge);
       } // for t
-   } // for i
+    } // for i
 
-} // createYGraphFromInteractionData
+  } // createYGraphFromInteractionData
 
 
-//-------------------------------------------------------------------------------------------
-protected void createRootGraphFromInteractionData (boolean canonicalize)
-{
+  //-------------------------------------------------------------------------------------------
+  protected void createRootGraphFromInteractionData (boolean canonicalize)
+  {
 
-  rootGraph = new LunaRootGraph ();
-  Interaction [] interactions = getAllInteractions ();
+    rootGraph = new LunaRootGraph ();
+    Interaction [] interactions = getAllInteractions ();
 
-  Hashtable nodes = new Hashtable ();
+    Hashtable nodes = new Hashtable ();
 
     //---------------------------------------------------------------------------
     // loop through all of the interactions -- which are triples of the form:
@@ -259,35 +302,35 @@ protected void createRootGraphFromInteractionData (boolean canonicalize)
     // for each source and target
     // in addition,
     //---------------------------------------------------------------------------
-  String nodeName, targetNodeName;
-  for (int i=0; i < interactions.length; i++) {
-    Interaction interaction = interactions [i];
-    //System.out.println ("source: " + interaction.getSource ());
-    if(canonicalize){
-      nodeName = canonicalizeName (interaction.getSource ());
-    }else{
-      nodeName = interaction.getSource();
-    }
-        
-    if (!nodes.containsKey (nodeName)) {
-      giny.model.Node node = rootGraph.getNode(rootGraph.createNode ());
-      node.setIdentifier(nodeName);
-      nodes.put (nodeName, node);
-    }
-    String [] targets = interaction.getTargets ();
-    for (int t=0; t < targets.length; t++) {
+    String nodeName, targetNodeName;
+    for (int i=0; i < interactions.length; i++) {
+      Interaction interaction = interactions [i];
+      //System.out.println ("source: " + interaction.getSource ());
       if(canonicalize){
-        targetNodeName = canonicalizeName (targets [t]);
+        nodeName = canonicalizeName (interaction.getSource ());
       }else{
-        targetNodeName = targets[t];
+        nodeName = interaction.getSource();
       }
-      if (!nodes.containsKey (targetNodeName)) {
+        
+      if (!nodes.containsKey (nodeName)) {
         giny.model.Node node = rootGraph.getNode(rootGraph.createNode ());
-	node.setIdentifier(targetNodeName);
-	nodes.put (targetNodeName, node);
-      } // if target node is previously unknown
-    } // for t
-  } // i
+        node.setIdentifier(nodeName);
+        nodes.put (nodeName, node);
+      }
+      String [] targets = interaction.getTargets ();
+      for (int t=0; t < targets.length; t++) {
+        if(canonicalize){
+          targetNodeName = canonicalizeName (targets [t]);
+        }else{
+          targetNodeName = targets[t];
+        }
+        if (!nodes.containsKey (targetNodeName)) {
+          giny.model.Node node = rootGraph.getNode(rootGraph.createNode ());
+          node.setIdentifier(targetNodeName);
+          nodes.put (targetNodeName, node);
+        } // if target node is previously unknown
+      } // for t
+    } // i
 
 
     //---------------------------------------------------------------------------
@@ -299,57 +342,57 @@ protected void createRootGraphFromInteractionData (boolean canonicalize)
     //   interactionHash [sourceNode::targetNode] = "pd"
     //---------------------------------------------------------------------------
 
-  for (int i=0; i < interactions.length; i++) {
-    Interaction interaction = interactions [i];
-    if(canonicalize){
-      nodeName = canonicalizeName (interaction.getSource ());
-    }else{
-      nodeName = interaction.getSource();
-    }
-    
-    String interactionType = interaction.getType ();
-    giny.model.Node sourceNode = (giny.model.Node) nodes.get (nodeName);
-    String [] targets = interaction.getTargets ();
-    for (int t=0; t < targets.length; t++) {
+    for (int i=0; i < interactions.length; i++) {
+      Interaction interaction = interactions [i];
       if(canonicalize){
-        targetNodeName = canonicalizeName (targets [t]);
+        nodeName = canonicalizeName (interaction.getSource ());
       }else{
-        targetNodeName = targets[t];
+        nodeName = interaction.getSource();
       }
     
+      String interactionType = interaction.getType ();
+      giny.model.Node sourceNode = (giny.model.Node) nodes.get (nodeName);
+      String [] targets = interaction.getTargets ();
+      for (int t=0; t < targets.length; t++) {
+        if(canonicalize){
+          targetNodeName = canonicalizeName (targets [t]);
+        }else{
+          targetNodeName = targets[t];
+        }
+    
       
-      giny.model.Node targetNode = (giny.model.Node) nodes.get (targetNodeName);
-      giny.model.Edge edge = rootGraph.getEdge(rootGraph.createEdge (sourceNode, targetNode));
-      String edgeName = nodeName + " (" + interactionType + ") " + targetNodeName;
-      int previousMatchingEntries = edgeAttributes.countIdentical(edgeName);
-      if (previousMatchingEntries > 0)
-        edgeName = edgeName + "_" + previousMatchingEntries;
-      edgeAttributes.add ("interaction", edgeName, interactionType);
-      edgeAttributes.addNameMapping (edgeName, edge);
+        giny.model.Node targetNode = (giny.model.Node) nodes.get (targetNodeName);
+        giny.model.Edge edge = rootGraph.getEdge(rootGraph.createEdge (sourceNode, targetNode));
+        String edgeName = nodeName + " (" + interactionType + ") " + targetNodeName;
+        int previousMatchingEntries = edgeAttributes.countIdentical(edgeName);
+        if (previousMatchingEntries > 0)
+          edgeName = edgeName + "_" + previousMatchingEntries;
+        edgeAttributes.add ("interaction", edgeName, interactionType);
+        edgeAttributes.addNameMapping (edgeName, edge);
       } // for t
-   } // for i
+    } // for i
 
-} // createRootGraphFromInteractionData
-//-------------------------------------------------------------------------------------------
-public Graph2D getGraph ()
-{
-  return graph;
+  } // createRootGraphFromInteractionData
+  //-------------------------------------------------------------------------------------------
+  public Graph2D getGraph ()
+  {
+    return graph;
 
-} // createGraph
+  } // createGraph
 
-//-------------------------------------------------------------------------------------------
-public RootGraph getRootGraph ()
-{
-  return rootGraph;
+  //-------------------------------------------------------------------------------------------
+  public RootGraph getRootGraph ()
+  {
+    return rootGraph;
 
-} // createGraph
-//------------------------------------------------------------------------------------
-public GraphObjAttributes getEdgeAttributes ()
-{
-  return edgeAttributes;
+  } // createGraph
+  //------------------------------------------------------------------------------------
+  public GraphObjAttributes getEdgeAttributes ()
+  {
+    return edgeAttributes;
 
-} // getEdgeAttributes
-//------------------------------------------------------------------------------------
+  } // getEdgeAttributes
+  //------------------------------------------------------------------------------------
 } // InteractionsReader
 
 

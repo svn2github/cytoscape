@@ -147,7 +147,7 @@
     		<classpath refid="classpath"/>
     	</javac>
 	<!-- Run RMIC for BioDataServer -->
-	<rmic classname="cytoscape/data/servers/BioDataServerRmi" base="${build.classes}"/>	
+	<!-- rmic classname="cytoscape/data/servers/BioDataServerRmi" base="${build.classes}"/ -->	
   	</target>
   	
   	<!--  Target to Run Cytoscape with non-obfuscated jar file -->

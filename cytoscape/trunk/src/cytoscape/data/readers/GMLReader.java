@@ -40,46 +40,55 @@ import y.view.*;
 import y.io.YGFIOHandler;
 import y.io.GMLIOHandler;
 
+import giny.model.RootGraph;
+
 import cytoscape.GraphObjAttributes;
 //-------------------------------------------------------------------------------------
 public class GMLReader implements GraphReader {
   private String filename;
   GraphObjAttributes edgeAttributes = new GraphObjAttributes ();
   Graph2D graph;    
-//-------------------------------------------------------------------------------------
-public GMLReader (String filename)
-{
-  this.filename = filename;
-}
-//------------------------------------------------------------------------------------
-/**
- * Calls read()
- */
-public void read (boolean canonicalize)
-{
-  read();
-}
-//-------------------------------------------------------------------------------------
-public void read ()
-{
-  GMLIOHandler ioh  = new GMLIOHandler ();
-  graph = new Graph2D ();
-  try {
-    ioh.read (graph, filename);
+
+
+  /**
+   * @param filename The GML file to be read in
+   */
+  public GMLReader ( String filename ) {
+    this.filename = filename;
+  }
+
+
+  /**
+   * Calls read()
+   * @param canonicalize <B>Note</B> this seems to have no effect
+   */
+  public void read ( boolean canonicalize ) {
+    read();
+  }
+
+  /**
+   * This will read AND create a Graph from the file specified in the constructor
+   */
+  public void read ()
+  {
+    GMLIOHandler ioh  = new GMLIOHandler ();
+    graph = new Graph2D ();
+    try {
+      ioh.read (graph, filename);
     }
     catch (java.io.IOException e) {
-    System.err.println ("error reading '" + filename + "' -- " + e.getMessage ());
-    e.printStackTrace ();
-    graph = null; //signals callers that something went wrong
-    return;
+      System.err.println ("error reading '" + filename + "' -- " + e.getMessage ());
+      e.printStackTrace ();
+      graph = null; //signals callers that something went wrong
+      return;
     }
 
-  // set the interaction types recorded in the labels
-  // erase the labels serving this purpose
-  // while creating the edge names (the hard way)
-  Graph2DView gView = new Graph2DView(graph);
+    // set the interaction types recorded in the labels
+    // erase the labels serving this purpose
+    // while creating the edge names (the hard way)
+    Graph2DView gView = new Graph2DView(graph);
 
-  for (EdgeCursor ec = graph.edges(); ec.ok(); ec.next()) {
+    for (EdgeCursor ec = graph.edges(); ec.ok(); ec.next()) {
       Edge edge = ec.edge();
       String interactionType = graph.getLabelText(edge);
       graph.setLabelText(edge, null); // erase the label
@@ -92,22 +101,33 @@ public void read ()
       edgeAttributes.add("interaction", edgeName, interactionType);
       edgeAttributes.addNameMapping(edgeName, edge);
       edgeAttributes.add("interaction", edgeName, interactionType);      
-  }
+    }
   
-} // read
-//------------------------------------------------------------------------------------
-public Graph2D getGraph ()
-{
-  return graph;
+  } // read
 
-} // createGraph
-//------------------------------------------------------------------------------------
-public GraphObjAttributes getEdgeAttributes ()
-{
-  return edgeAttributes;
+  /**
+   * @return the Graph2D that was created
+   */
+  public Graph2D getGraph () {
+    return graph;
 
-} // getEdgeAttributes
-//------------------------------------------------------------------------------
+  } // createGraph
+
+  /**
+   * @return null, there is no GML reader available outside of Y-Files right now
+   */
+  public RootGraph getRootGraph () {
+    return null;
+  } // getRootGraph
+
+  /**
+   * @return the Edge Attributes that were read in from the GML file.
+   */
+  public GraphObjAttributes getEdgeAttributes () {
+    return edgeAttributes;
+
+  } // getEdgeAttributes
+ 
 } // class GMLReader
 
 

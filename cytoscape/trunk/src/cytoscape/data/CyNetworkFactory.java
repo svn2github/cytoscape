@@ -53,7 +53,19 @@ import cytoscape.data.servers.BioDataServer;
  * as an argument.
  */
 public class CyNetworkFactory {
-//-------------------------------------------------------------------------
+
+/**
+ * Constructs a network from an interactions file describing the graph,
+ * with no canonicalization of names via a BioDataServer. Equivalent to
+ * createNetworkFromInteractionsFile(location, false, null, null).
+ *
+ * Returns null if the argument is null or cannot be parsed into a graph.
+ */
+public static CyNetwork createNetworkFromInteractionsFile ( String location ) {
+    return createNetworkFromInteractionsFile(location, false, null, null, true );
+}
+
+
 /**
  * Constructs a network from an interactions file describing the graph,
  * with no canonicalization of names via a BioDataServer. Equivalent to
@@ -64,7 +76,8 @@ public class CyNetworkFactory {
 public static CyNetwork createNetworkFromInteractionsFile(String location, boolean isYFiles) {
     return createNetworkFromInteractionsFile(location, false, null, null, isYFiles);
 }
-//-------------------------------------------------------------------------
+
+
 /**
  * Constructs a network from an interactions file describing the graph.
  * The node and edge attributes will be filled with the object-to-name
@@ -88,8 +101,46 @@ public static CyNetwork createNetworkFromInteractionsFile(String location, boole
  * will be supplied. Otherwise, the names in the graph file will be
  * converted to canonical names using the bioDataServer.
  */
-public static CyNetwork createNetworkFromInteractionsFile(String location,
-        boolean canonicalize, BioDataServer bioDataServer, String species, boolean isYFiles) {
+public static CyNetwork createNetworkFromInteractionsFile ( String location,   
+                                                            boolean canonicalize, 
+                                                            BioDataServer bioDataServer, 
+                                                            String species ) {
+    if (location == null) {return null;}
+    InteractionsReader reader = new InteractionsReader(bioDataServer, species, location, true);
+    CyNetwork network = createNetworkFromGraphReader(reader, canonicalize, true );
+    if (network != null) {network.setNeedsLayout(true);}
+    return network;
+}
+
+
+/**
+ * Constructs a network from an interactions file describing the graph.
+ * The node and edge attributes will be filled with the object-to-name
+ * mappings, and the edge attributes filled with the interaction type
+ * for each edge.
+ *
+ * This method creates a reader for the file and delegates to
+ * createNetworkFromGraphReader.
+ *
+ * @param location  the location of the external file containing the graph data
+ * @param canonicalize  a flag indicating whether to convert names in the
+ *                      external file to canonical names using the bioDataServer
+ * @param bioDataServer  provides the name conversion service
+ * @param species  the species to use as argument to the bioDataServer's
+ *                 naming services
+ *
+ * If location is null, or no graph can be parsed from the file, then this
+ * method return null.
+ * If canonicalize is false, and/or either of the last two arguments is
+ * null, then the graph will be read but no name conversion services
+ * will be supplied. Otherwise, the names in the graph file will be
+ * converted to canonical names using the bioDataServer.
+ */
+public static CyNetwork createNetworkFromInteractionsFile ( String location,
+                                                            boolean canonicalize, 
+                                                            BioDataServer bioDataServer, 
+                                                            String species, 
+                                                            boolean isYFiles ) {
     if (location == null) {return null;}
     InteractionsReader reader = new InteractionsReader(bioDataServer, species, location, isYFiles);
     CyNetwork network = createNetworkFromGraphReader(reader, canonicalize, isYFiles);
@@ -114,7 +165,32 @@ public static CyNetwork createNetworkFromGMLFile(String location) {
     if (network != null) {network.setNeedsLayout(false);}
     return network;
 }
-//-------------------------------------------------------------------------
+
+
+/**
+ * Constructs a network from the supplied graph reader. The node and
+ * edge attribute objects will be filled with the data available from
+ * the graph file, such as the object-to-name- mappings and the
+ * interaction type.
+ *
+ * This method is protected because it depends on the public methods
+ * of this class to provide some wrapping functionality (for example,
+ * deciding if a new layout is needed for the graph).
+ *
+ * The canonicalize argument is passed to the read() method of the
+ * graph reader and controls whether the names in the file should
+ * be converted to canonical names using the facilities of the
+ * BioDataServer.
+ *
+ * The reader argument is assumed to be non-null. Returns null if no
+ * graph can be parsed by the reader.
+ */
+protected static CyNetwork createNetworkFromGraphReader(GraphReader reader,
+                                                        boolean canonicalize ) {
+  
+  return createNetworkFromGraphReader( reader, canonicalize, true );
+}
+
 /**
  * Constructs a network from the supplied graph reader. The node and
  * edge attribute objects will be filled with the data available from
