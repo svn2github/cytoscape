@@ -150,17 +150,12 @@ class FRootGraph implements RootGraph
     m_heap.empty();
     final MinIntHeap edgeBucket = m_heap;
     while (edgeInxEnum.numRemaining() > 0)
-      // Toss edges to be removed onto the heap; assume that the edge iteration
-      // becomes invalid if we remove edges while iterating through.
       edgeBucket.toss(~(edgeInxEnum.nextInt()));
     final int[] edgeRemoveArr = new int[edgeBucket.size()];
     edgeBucket.copyInto(edgeRemoveArr, 0);
-    // Remove adjacent edges using method defined on this instance.
     removeEdges(edgeRemoveArr);
-    // Remove node from underlying graph.  positiveNodeIndex has already
-    // been tested for validity by calling adjacentEdges().
+    // positiveNodeIndex tested for validity with adjacentEdges() above.
     if (m_graph.removeNode(positiveNodeIndex)) {
-      // Remove node from our node array.
       FNode garbage = m_nodes.getNodeAtIndex(positiveNodeIndex);
       m_nodes.setNodeAtIndex(null, positiveNodeIndex);
       m_nodeDepot.recycleNode(garbage);
