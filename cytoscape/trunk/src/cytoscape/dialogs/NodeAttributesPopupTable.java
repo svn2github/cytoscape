@@ -106,7 +106,7 @@ public AllAttributesTableModel (String [] geneNames,
 {
   this.geneExpression = geneExpressionInfo;
   int geneCount = geneNames.length;
-  int columnsDevotedToGoData = 5;
+  int columnsDevotedToGoData = 6;
 
   int numberOfColumns = 1;   // always at least 1 column, for the Gene name
   if (bioDataServer != null) numberOfColumns += columnsDevotedToGoData;
@@ -127,6 +127,7 @@ public AllAttributesTableModel (String [] geneNames,
 
   if (bioDataServer != null) {
     columnNames [nextFreeColumn++] = "SYNONYMS";
+    columnNames [nextFreeColumn++] = "PATHWAYS";
     columnNames [nextFreeColumn++] = "PROCESS";
     columnNames [nextFreeColumn++] = "FUNCTION";
     columnNames [nextFreeColumn++] = "COMPONENT";
@@ -300,7 +301,7 @@ public class DismissAction extends AbstractAction {
 //-----------------------------------------------------------------------------------
 private String [] getConciseGOInfo (BioDataServer bioDataServer, String nodeName)
 {
-  String [] result = new String [4];
+  String [] result = new String [5];
   for (int i=0; i < result.length; i++) result [i] = "";
 
   try {
@@ -311,17 +312,21 @@ private String [] getConciseGOInfo (BioDataServer bioDataServer, String nodeName
       if (i < (synonyms.length-1)) sb.append (", ");
       }
     result [0] = sb.toString ();
+
+    KeggPathways pathways = bioDataServer.getKeggPathways();
+    result[1] = pathways.ofNodeConciseDesc(bioDataServer.getCanonicalName(nodeName));
+
     int [] bioProcessIDs = bioDataServer.getBioProcessIDs (nodeName);
     if (bioProcessIDs.length > 0)
-      result [1] = bioDataServer.getGoTermName (bioProcessIDs [0]);
+      result [2] = bioDataServer.getGoTermName (bioProcessIDs [0]);
 
     int [] molFuncIDs = bioDataServer.getMolecularFunctionIDs (nodeName);
     if (molFuncIDs.length > 0) 
-      result [2] = bioDataServer.getGoTermName (molFuncIDs [0]);
+      result [3] = bioDataServer.getGoTermName (molFuncIDs [0]);
 
     int [] componentIDs = bioDataServer.getCellularComponentIDs (nodeName);
     if (componentIDs.length > 0) 
-      result [3] = bioDataServer.getGoTermName (componentIDs [0]);
+      result [4] = bioDataServer.getGoTermName (componentIDs [0]);
     } // try
   catch (Exception e) {
     e.printStackTrace ();
@@ -356,6 +361,27 @@ private String getFullGOInfo (String geneName)
       sb.append ("\n");
       }
     sb.append ("\n\n");
+
+    sb.append (spacer);
+    sb.append ("KEGG PATHWAYS");
+    sb.append (spacer);
+    sb.append ("\n");
+    KeggPathways keggPathways = bioDataServer.getKeggPathways();
+    Vector pathways = keggPathways.ofNode(bioDataServer.getCanonicalName(geneName));
+    for (int v = 0; v < pathways.size (); v++) {
+	String id = (String) pathways.elementAt(v);
+	String desc = keggPathways.getPathwayDesc(id);
+          sb.append (spacer);
+          sb.append (spacer);
+          sb.append (id);
+          sb.append (": ");
+          sb.append (desc);
+          sb.append (spacer);
+          sb.append ("\n");
+    }
+    sb.append (spacer);
+    sb.append ("\n");
+
 
     sb.append (spacer);
     sb.append ("BIOLOGICAL PROCESSES");

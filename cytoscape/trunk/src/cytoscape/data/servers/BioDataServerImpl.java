@@ -12,11 +12,14 @@ import cytoscape.data.BindingPair;
 import cytoscape.data.GeneProduct;
 import cytoscape.data.GeneSynonym;
 import cytoscape.data.GoTerm;
+import cytoscape.data.KeggPathways;
 import java.io.*;
 import java.util.*;
 //------------------------------------------------------------------------------
 public class BioDataServerImpl extends UnicastRemoteObject 
                                implements RMIBioDataServer {
+    // KEGG
+    KeggPathways keggPathways = new KeggPathways();
 
   Vector bindingPairs = new Vector ();
   Vector geneProducts = new Vector ();
@@ -61,6 +64,10 @@ public class BioDataServerImpl extends UnicastRemoteObject
   long loadOperations = 0;
   long requests = 0;
 //------------------------------------------------------------------------------
+// KEGG
+public KeggPathways getKeggPathways() {
+    return keggPathways;
+}
 public BioDataServerImpl () throws RemoteException 
 {
   super ();

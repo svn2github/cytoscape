@@ -339,6 +339,10 @@ run6a:
 #          -b $(CYTOSCAPE_DATA)/GO
 
 
+metabolic:
+	$(JAVA) cytoscape.cytoscape \
+          -i /common/users/nada/pub/metabolic.intr \
+          -b $(CYTOSCAPE_DATA)/GO
 help:
 	egrep "^#" makefile | sed "s/^#//"
 

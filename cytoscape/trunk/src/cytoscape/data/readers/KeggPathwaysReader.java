@@ -12,6 +12,10 @@ import cytoscape.data.KeggPathways;
  * Each line maps one pathway to N nodes:
  * Pathway description\t PathwayID Node1ID Node2ID NodeNID
  * <p>
+ * Notes: For convenience, this file will be stored with 
+ *        the GO files and have a similar status,
+ *        so the end user doesn't have to worry about it separately.
+ * <p>
  * Issues: The file must end with a new line
  *
  * @author namin@mit.edu
@@ -22,6 +26,10 @@ public class KeggPathwaysReader {
 
     public KeggPathwaysReader(String filename) {
 	this.filename = filename;
+    }
+
+    public KeggPathwaysReader(File file) {
+	this.filename = file.toString();
     }
 
     public KeggPathways read() {
