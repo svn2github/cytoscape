@@ -48,9 +48,9 @@ dialogsDirectory:
 	(cd dialogs; make)
 
 activePathsDirectory:
-	(cd activePaths; make)
+	(cd activePathsNew; make)
 
-nativelib: activePaths
+nativelib: activePathsNew
 	make -f libActivePaths.make
 
 nativelibTest: nativelib
@@ -63,8 +63,7 @@ test: dataTest currentDirTest nativelibTest
 
 clean:
 	- rm *.class libActivePaths.so core
-	- (cd activePaths; make clean)
-	- (cd activePaths/unitTests; make clean)
+	- (cd activePathsNew; make clean)
 	- (cd data; make clean)
 	- (cd data/unitTests; make clean)
 	- (cd data/readers; make clean)
@@ -101,6 +100,12 @@ doc:
 
 run0:
 	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape
+
+run1o:
+	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
+          -g /common/src/merge0307/cytoscape/data/galFiltered.gml \
+          -e /common/data/exp/data_gal1-20.pvals \
+          -b /common/src/merge0307/cytoscape/data/GO
 
 #
 # --- run1
