@@ -65,6 +65,8 @@ public final class AllGraphPerspectiveMethodsTest
       (root.createEdge(nodeInx[1], nodeInx[0], true));
     final Edge edge2NotInPersp = root.getEdge
       (root.createEdge(nodeInx[2], nodeNotInPersp.getRootGraphIndex(), false));
+    root.addNodeMetaChild(nodeInx[2], nodeNotInPersp.getRootGraphIndex());
+    root.addEdgeMetaChild(nodeInx[3], edge1NotInPersp.getRootGraphIndex());
 
     // Not testing GraphPerspectiveChangeListener methods.
 
@@ -202,6 +204,12 @@ public final class AllGraphPerspectiveMethodsTest
         !persp.getRootGraph().containsNode(nodeNotInPersp))
       throw new IllegalStateException("GraphPerspective contains node");
 
+    // containsNode(Node, boolean).
+    if (persp.containsNode(nodeNotInPersp, false))
+      throw new IllegalStateException("GraphPersp should not contain node");
+    if (!persp.containsNode(nodeNotInPersp, true))
+      throw new IllegalStateException("GraphPersp should contain node recur.");
+
     // containsEdge(Edge).
     if (!persp.containsEdge(twoEdges[1]))
       throw new IllegalStateException("GraphPersp does not contain edge");
@@ -212,6 +220,12 @@ public final class AllGraphPerspectiveMethodsTest
         !(persp.getRootGraph().containsEdge(edge1NotInPersp) &&
           persp.getRootGraph().containsEdge(edge2NotInPersp)))
       throw new IllegalStateException("GraphPerspective contains edge");
+
+    // containsEdge(Edge, boolean).
+    if (persp.containsEdge(edge1NotInPersp, false))
+      throw new IllegalStateException("GraphPersp should not contains edge");
+    if (!persp.containsEdge(edge1NotInPersp, true))
+      throw new IllegalStateException("GraphPersp should contain edge recur.");
   }
 
 }
