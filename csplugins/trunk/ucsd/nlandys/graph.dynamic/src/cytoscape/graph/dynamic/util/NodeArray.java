@@ -15,32 +15,29 @@ class NodeArray
 
   // Understand that this method will not increase the size of the underlying
   // array, no matter what.
-  // Throws ArrayIndexOutOfBoundsException if index is negative or
-  // Integer.MAX_VALUE.
+  // Throws ArrayIndexOutOfBoundsException if index is negative.
+  // The package-level agreement for this class is that Integer.MAX_VALUE
+  // will never be passed to this method.
   Node getNodeAtIndex(int index)
   {
-    // Do pre-checking because try/catch with thrown exception causes huge
-    // performance hit.
-    if (index >= m_nodeArr.length && index != Integer.MAX_VALUE) return null;
-    return m_nodeArr[index]; // Exception if Integer.MAX_VALUE or negative.
+    if (index >= m_nodeArr.length) return null;
+    return m_nodeArr[index];
   }
 
   // Understand that this method will potentially increase the size of the
   // underlying array, but only if two conditions hold:
   //   1. node is not null and
   //   2. index is greater than or equal to the length of the array.
-  // Throws ArrayIndexOutOfBoundsException if index is negative or
-  // Integer.MAX_VALUE.
+  // Throws ArrayIndexOutOfBoundsException if index is negative.
+  // The package-level agreement for this class is that Integer.MAX_VALUE
+  // will never be passed to this method.
   void setNodeAtIndex(Node node, int index)
   {
-    // Do pre-checking because try/catch with thrown exception causes huge
-    // performance hit.
-    if (index >= m_nodeArr.length && node == null &&
-        index != Integer.MAX_VALUE) return;
+    if (index >= m_nodeArr.length && node == null) return;
     try { m_nodeArr[index] = node; }
     catch (ArrayIndexOutOfBoundsException e)
     {
-      if (index < 0 || index == Integer.MAX_VALUE) throw e;
+      if (index < 0) throw e;
       final int newArrSize = (int)
         Math.min((long) Integer.MAX_VALUE,
                  Math.max(((long) m_nodeArr.length) * 2l + 1l,
