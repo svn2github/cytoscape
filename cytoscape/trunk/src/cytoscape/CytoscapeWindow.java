@@ -51,6 +51,7 @@ import cytoscape.dialogs.*;
 import cytoscape.layout.*;
 import cytoscape.vizmap.*;
 import cytoscape.view.*;
+import cytoscape.undo.*;
 import cytoscape.util.MutableString;
 import cytoscape.util.MutableBool;
 
@@ -108,10 +109,13 @@ public class CytoscapeWindow extends JPanel implements FilterDialogClient, Graph
   protected final String goModeMenuLabel = "Show GeneOntology Info";
   protected final String expressionModeMenuLabel = "Show mRNA Expression";
 
+    // added by dramage 2002-08-21
+    protected CytoscapeUndoManager undoManager;
+    protected JMenuItem undoMenuItem, redoMenuItem;
 
   // protected VizChooser theVizChooser = new VizChooser();
 
-  protected GraphHider graphHider;
+  protected UndoableGraphHider graphHider;
   protected Vector subwindows = new Vector ();
 
   protected String windowTitle;
@@ -253,6 +257,16 @@ public CytoscapeConfig getConfiguration() {
 }
 
 
+/**
+ * Returns the window's current UndoManager.
+ *
+ * added by dramage 2002-08-22
+ */
+public CytoscapeUndoManager getUndoManager() {
+    return undoManager;
+}
+
+
 //------------------------------------------------------------------------------
 public Graph2D getGraph ()
 {  
@@ -276,6 +290,10 @@ public void setGraph (Graph2D graph) {
     // remove old selection listener - dramage 2002.08.16
     if (this.graph != null) {
 	this.graph.removeGraph2DSelectionListener(this);
+
+      // remove UndoManager as graph listener if necessary
+      if (undoManager != null)
+          this.graph.removeGraphListener(undoManager);
     }
 
     this.graph = graph;
@@ -283,6 +301,14 @@ public void setGraph (Graph2D graph) {
     // register the window as a selection listener - dramage 2002.08.16
     graph.addGraph2DSelectionListener(this);
 
+    // create a new UndoManager for this graph
+    undoManager = new CytoscapeUndoManager(this, graph);
+    graph.addGraphListener(undoManager);
+    updateUndoRedoMenuItemStatus();
+
+    // create the graph hider
+    graphHider = new UndoableGraphHider (graph, undoManager);
+    
     setLayouterAndGraphView();
 }
 //-----------------------------------------------------------------------------
@@ -290,7 +316,7 @@ public Graph2DView getGraphView(){
     return graphView;
 }
 //------------------------------------------------------------------------------
-public GraphHider getGraphHider ()
+public UndoableGraphHider getGraphHider ()
 {  
   return graphHider;
 }
@@ -469,7 +495,6 @@ protected void displayNewGraph (boolean doLayout)
   ol.setPreferredEdgeLength (80);
   layouter = ol;
   graphView.setGraph2D (graph);
-  graphHider = new GraphHider (graph);
 
   this.redrawGraph(doLayout);
 
@@ -490,7 +515,6 @@ protected void setLayouterAndGraphView(){
     ol.setPreferredEdgeLength (80);
     layouter = ol;
     graphView.setGraph2D (graph);
-    graphHider = new GraphHider (graph);
     
     graphView.fitContent ();
     graphView.setZoom (graphView.getZoom ()*0.9); 
@@ -691,6 +715,10 @@ public void setInteractivity (boolean newState)
       }
     graphView.setViewCursor (defaultCursor);
     setCursor (defaultCursor);
+
+    // accept new undo entries - added by dramage 2002-08-23
+    if (undoManager != null)
+      undoManager.resume();
     }
   else {  // turn interactivity OFF
     if (viewModesInstalled) {
@@ -700,6 +728,10 @@ public void setInteractivity (boolean newState)
       }
     graphView.setViewCursor (busyCursor);
     setCursor (busyCursor);
+
+    // deny new undo entries - added by dramage 2002-08-23
+    if (undoManager != null)
+	undoManager.pause();
     }
 
 } // setInteractivity
@@ -737,6 +769,12 @@ protected JMenuBar createMenuBar ()
 
   JMenu editMenu = new JMenu ("Edit");
   menuBar.add (editMenu);
+  // added by dramage 2002-08-21
+  undoMenuItem = editMenu.add (new UndoAction ());
+  undoMenuItem.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_Z, ActionEvent.CTRL_MASK));
+  redoMenuItem = editMenu.add (new RedoAction ());
+  redoMenuItem.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_Y, ActionEvent.CTRL_MASK));
+  editMenu.addSeparator();
 
   ButtonGroup modeGroup = new ButtonGroup ();
   JRadioButtonMenuItem readOnlyModeButton = new JRadioButtonMenuItem ("Read-only mode");
@@ -1453,7 +1491,10 @@ protected class LayoutAction extends AbstractAction   {
   LayoutAction () { super ("Layout whole graph"); }
     
   public void actionPerformed (ActionEvent e) {
+      undoManager.saveRealizerState();
+      undoManager.pause();
       applyLayout (false);
+      undoManager.resume();
       redrawGraph ();
     }
 }
@@ -1463,7 +1504,10 @@ protected class LayoutSelectionAction extends AbstractAction {
     LayoutSelectionAction () { super ("Layout current selection"); }
 
   public void actionPerformed (ActionEvent e) {
+      undoManager.saveRealizerState();
+      undoManager.pause();
       applyLayoutSelection ();
+      undoManager.resume();
       redrawGraph ();
     }
 }
@@ -1533,6 +1577,10 @@ protected class AlignHorizontalAction extends AbstractAction {
     AlignHorizontalAction () { super ("Horizontal"); }
 
     public void actionPerformed (ActionEvent e) {
+	// remember state for undo - dramage 2002-08-22
+	undoManager.saveRealizerState();
+	undoManager.pause();
+
 	// compute average Y coordinate
 	double avgYcoord=0;
 	int numSelected=0;
@@ -1552,6 +1600,9 @@ protected class AlignHorizontalAction extends AbstractAction {
 		graph.setLocation(n, graph.getX(n), avgYcoord);
 	}
 
+	// resume undo manager's listener - dramage
+	undoManager.resume();
+
 	redrawGraph();
     }
 }
@@ -1560,6 +1611,10 @@ protected class AlignVerticalAction extends AbstractAction {
     AlignVerticalAction () { super ("Vertical"); }
 
     public void actionPerformed (ActionEvent e) {
+	// remember state for undo - dramage 2002-08-22
+	undoManager.saveRealizerState();
+	undoManager.pause();
+
 	// compute average X coordinate
 	double avgXcoord=0;
 	int numSelected=0;
@@ -1579,6 +1634,8 @@ protected class AlignVerticalAction extends AbstractAction {
 		graph.setLocation(n, avgXcoord, graph.getY(n));
 	}
 
+	// resume undo manager's listener - dramage
+	undoManager.resume();
 
 	redrawGraph();
     }
@@ -1593,9 +1650,12 @@ protected class RotateSelectedNodesAction extends AbstractAction {
     RotateSelectedNodesAction () { super ("Rotate Selected Nodes"); }
 
     public void actionPerformed (ActionEvent e) {
+	undoManager.saveRealizerState();
+	undoManager.pause();
 	RotateSelectionDialog d = new RotateSelectionDialog(mainFrame,
 							 CytoscapeWindow.this,
 							    graph);
+	undoManager.resume();
     }
 }
 
@@ -1773,6 +1833,51 @@ protected class DeselectAllAction extends AbstractAction   {
     deselectAllNodes ();
     }
 }
+
+
+/**
+ * Updates the undoMenuItem and redoMenuItem enabled status depending
+ * on the number of available undo and redo actions
+ *
+ * added by dramage 2002-08-21
+ */
+public void updateUndoRedoMenuItemStatus () {
+    undoMenuItem.setEnabled(undoManager.undoLength() > 0 ? true : false);
+    redoMenuItem.setEnabled(undoManager.redoLength() > 0 ? true : false);
+}
+
+/**
+ * Uses the UndoManager to undo changes.
+ *
+ * added by dramage 2002-08-21
+ */
+protected class UndoAction extends AbstractAction {
+    UndoAction () { super ("Undo"); }
+    
+    public void actionPerformed(ActionEvent e) {
+      undoManager.undo();
+      updateUndoRedoMenuItemStatus();
+      redrawGraph();
+    }
+}
+
+/**
+ * Uses the UndoManager to redo changes.
+ *
+ * added by dramage 2002-08-21
+ */
+protected class RedoAction extends AbstractAction {
+    RedoAction () { super ("Redo"); }
+
+    public void actionPerformed(ActionEvent e) {
+      undoManager.redo();
+      updateUndoRedoMenuItemStatus();
+      redrawGraph();
+    }
+}
+
+
+
 
 
 //------------------------------------------------------------------------------
@@ -2292,7 +2397,10 @@ protected class FitContentAction extends AbstractAction  {
 protected class ShowAllAction extends AbstractAction  {
    ShowAllAction () { super ("Show All"); }
     public void actionPerformed (ActionEvent e) {
-      graphHider.unhideAll ();
+	graph.firePreEvent();
+	graphHider.unhideAll ();
+	graph.firePostEvent();
+
       graphView.fitContent ();
       graphView.setZoom (graphView.getZoom ()*0.9);
   redrawGraph ();
@@ -2301,8 +2409,10 @@ protected class ShowAllAction extends AbstractAction  {
 protected class HideSelectedAction extends AbstractAction  {
     HideSelectedAction () { super ("Hide Selected"); }
     public void actionPerformed (ActionEvent e) {
+	graph.firePreEvent();
 	hideSelectedNodes();
 	hideSelectedEdges();
+	graph.firePostEvent();
     }
 }
 //------------------------------------------------------------------------------
