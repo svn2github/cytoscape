@@ -33,7 +33,7 @@
 <table cellpadding="8" cellspacing="0" border="0">
   <tr><!-- Stupid table wants to put itself all the way to the left lol! -->
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
-    <td>Trey Ideker<br /></td>
+    <td>Trey Ideker</td>
     <td>Benno<br />Schwikowski</td>
     <td>Chris Sander</td>
     <td>Hamid Bolouri</td>
@@ -74,11 +74,11 @@
 <table cellpadding="8" cellspacing="0" border="0">
   <tr><!-- Stupid table wants to put itself all the way to the left lol! -->
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
-    <td>Mark Anderson<br /></td>
+    <td>Mark Anderson</td>
     <td>Iliana<br />Avila-Campillo</td>
     <td>Gary Bader</td>
     <td>Ethan Cerami</td>
-    <td>Rowan Christmas</td>
+    <td>Rowan<br />Christmas</td>
   </tr>
   <tr>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
@@ -93,7 +93,7 @@
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
     <td>Ryan Kelley</td>
     <td>Nerius Landys</td>
-    <td>Robert Sheridan</td>
+    <td>Robert<br />Sheridan</td>
     <td>Chris Workman</td>
     <td>&nbsp;</td>
   </tr>
