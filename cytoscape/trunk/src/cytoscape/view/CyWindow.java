@@ -181,6 +181,10 @@ protected void doInit(CytoscapeObj globalInstance, CyNetwork network, String tit
  * @see JarLoaderUI
  */
 protected void loadPlugins() {
+    //create the JarLoader first so its menu items appear first in the plugin menu
+    JarLoaderUI jlu = new JarLoaderUI(this,
+                                      this.getCyMenus().getOperationsMenu() );
+    
     PluginLoader pluginLoader
         = new PluginLoader (this,
                             this.getCytoscapeObj().getConfiguration(),
@@ -193,8 +197,6 @@ protected void loadPlugins() {
     // add default unselectable "no plugins loaded" if none loaded
     //getCyMenus().refreshOperationsMenu();
 
-    JarLoaderUI jlu = new JarLoaderUI(this,
-                                      this.getCyMenus().getOperationsMenu() );
 }
 
 //------------------------------------------------------------------------------
