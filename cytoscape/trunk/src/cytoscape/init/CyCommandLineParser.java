@@ -35,10 +35,11 @@ public class CyCommandLineParser {
 
   boolean helpRequested = false;
 
-  public static String HELP = "java -Xmx1G -server -jar cytoscape.jar [options]\n"+
-    "-h -help --h --help : display this help message\n"+
-    "-p -plugin [file+]: load a jar from the local file system or from a http address, or specify a manifest of jar files to load\n"+
-    "-g -graph -i -interaction [file+]: specifies any number of graph files to load ";
+  public static String HELP = "/n"+
+"java -Xmx1G -server -jar cytoscape.jar [options]\n"+
+    "-h : display this help message\n"+
+    "-p [file+]: load a jar from the local file system or from a http address, or specify a manifest of jar files to load\n"+
+    "-g [file+]: specifies any number of graph files to load ";
 
   ////////////////////////////////////////
   // Constructor
@@ -358,6 +359,12 @@ public class CyCommandLineParser {
       } 
 
       
+      else if ( args[i].startsWith( "-" ) ) {
+        // flag for plugin perhaps
+        resetFalse();
+        i++;
+      }
+
       //////////////////////////////
       // Continuation Catches
 
@@ -391,16 +398,12 @@ public class CyCommandLineParser {
         i++;
       }
 
-      else if ( args[i].startsWith( "-" ) ) {
-        // flag for plugin perhaps
-        resetFalse();
-        i++;
-      }
-      // no matches, exit and request help
+      
       else {        
-        System.err.println( "nothing matches, call for help" );
-        helpRequested = true;
-        return;
+        //System.err.println( "nothing matches, call for help" );
+        //helpRequested = true;
+        i++;
+        //return;
       }
 
     }// end args for loop

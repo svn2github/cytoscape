@@ -45,15 +45,15 @@ public class CytoscapeInit
   private static File mrud;
   private static File mruf;
 
-  private static ArrayList pluginURLs; 
+  private static Set pluginURLs; 
 
   // Data variables
   private static String bioDataServer;
   private static boolean noCanonicalization;
-  private static ArrayList expressionFiles;
-  private static ArrayList graphFiles;
-  private static ArrayList edgeAttributes;
-  private static ArrayList nodeAttributes;
+  private static Set expressionFiles;
+  private static Set graphFiles;
+  private static Set edgeAttributes;
+  private static Set nodeAttributes;
   private static String defaultSpeciesName;
   
   // Configuration variables
@@ -104,11 +104,11 @@ public class CytoscapeInit
     this.args = args;
     bioDataServer = null;
     noCanonicalization = false;
-    expressionFiles = new ArrayList();
-    graphFiles = new ArrayList();
-    edgeAttributes = new ArrayList();
-    nodeAttributes = new ArrayList();
-    pluginURLs = new ArrayList();
+    expressionFiles = new HashSet();
+    graphFiles = new HashSet();
+    edgeAttributes = new HashSet();
+    nodeAttributes = new HashSet();
+    pluginURLs = new HashSet();
      
    
     
@@ -179,14 +179,16 @@ public class CytoscapeInit
 
     // load expression data if specified
     if ( getExpressionFiles().size() > 0 ) {
-      String expDataFilename =( String ) getExpressionFiles().get(0);
-     if (expDataFilename != null) {
-       try {
-         Cytoscape.loadExpressionData( expDataFilename, true );
-        } catch (Exception e) {
-          e.printStackTrace();
+      for ( Iterator iter = expressionFiles.iterator(); iter.hasNext(); ) {
+        String expDataFilename =( String )iter.next();
+        if (expDataFilename != null) {
+          try {
+            Cytoscape.loadExpressionData( expDataFilename, true );
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
         }
-     }
+      }
     }
 
     loadPlugins( pluginURLs );
@@ -243,7 +245,7 @@ public class CytoscapeInit
     return classLoader;
   }
 
-  public static ArrayList getPluginURLs () {
+  public static Set getPluginURLs () {
     return pluginURLs;
   }
 
@@ -256,19 +258,19 @@ public class CytoscapeInit
     return noCanonicalization;
   }
   
-  public static ArrayList getExpressionFiles () {
+  public static Set getExpressionFiles () {
     return expressionFiles;
   }
   
-  public static ArrayList getGraphFiles () {
+  public static Set getGraphFiles () {
     return graphFiles;
   }
   
-  public static ArrayList getEdgeAttributes () {
+  public static Set getEdgeAttributes () {
     return edgeAttributes;
   }
   
-  public static ArrayList getNodeAttributes () {
+  public static Set getNodeAttributes () {
     return nodeAttributes;
   }
    
@@ -422,11 +424,13 @@ public class CytoscapeInit
    * Optionally, iterate through all classes on the classpath, and 
    * try to find plugins that way as well. 
    */
-  private void loadPlugins ( List plugin_urls) {
+  private void loadPlugins ( Set plugin_urls) {
     
     URL[] urls = new URL[ plugin_urls.size() ];
-    for ( int i = 0; i < plugin_urls.size(); ++i ) {
-      urls[i] =  (URL)plugin_urls.get(i);
+    int count = 0;
+    for ( Iterator iter = plugin_urls.iterator(); iter.hasNext(); ) {
+      urls[count] =  (URL)iter.next();
+      count++;
     }
 
     // the creation of the class loader automatically loads the plugins
