@@ -1,6 +1,8 @@
 package fing.model;
 
+import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.util.intr.IntArray;
+import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntIntHash;
 
 import giny.filter.Filter;
@@ -18,19 +20,32 @@ class FGraphPerspective implements GraphPerspective
 
   public void addGraphPerspectiveChangeListener
     (GraphPerspectiveChangeListener listener)
-  {
+  { // This method is not thread safe; synchronize on an object to make it so.
     m_lis = GraphPerspectiveChangeListenerChain.add(m_lis, listener);
   }
 
   public void removeGraphPerspectiveChangeListener
     (GraphPerspectiveChangeListener listener)
-  {
+  { // This method is not thread safe; synchronize on an object to make it so.
     m_lis = GraphPerspectiveChangeListenerChain.remove(m_lis, listener);
   }
 
+  // The object returned shares the same RootGraph with this object.
   public Object clone()
   {
-    throw new IllegalStateException("not implemented yet");
+    final int numNodes = m_numNodes;
+    final IntEnumerator rootGraphNodeInx = new IntEnumerator() {
+        private int index = 0;
+        public int numRemaining() { return numNodes - index; }
+        public int nextInt() {
+          return m_perspToRootNodeInxMap.getIntAtIndex(index++); } };
+    final int numEdges = m_numEdges;
+    final IntEnumerator rootGraphEdgeInx = new IntEnumerator() {
+        private int index = 0;
+        public int numRemaining() { return numEdges - index; }
+        public int nextInt() {
+          return m_perspToRootEdgeInxMap.getIntAtIndex(index++); } };
+    return new FGraphPerspective(m_root, rootGraphNodeInx, rootGraphEdgeInx);
   }
 
   public RootGraph getRootGraph()
@@ -532,28 +547,28 @@ class FGraphPerspective implements GraphPerspective
   private final IntIntHash m_rootToPerspNodeInxMap;
   private final IntIntHash m_rootToPerspEdgeInxMap;
 
-  // Package visible constructor.
-  // Note that neither of the input arrays can be null.  RootGraphNodeInx
+  // Package visible constructor.  rootGraphNodeInx
   // must contain all endpoint nodes corresponding to edges in
   // rootGraphEdgeInx.  All indices must correspond to existing nodes
   // and edges.  The indices lists must be non-repeating.
-  FGraphPerspective(FRootGraph root, int[] rootGraphNodeInx,
-                    int[] rootGraphEdgeInx)
+  FGraphPerspective(FRootGraph root,
+                    IntEnumerator rootGraphNodeInx,
+                    IntEnumerator rootGraphEdgeInx)
   {
     m_root = root;
     m_lis = null;
-    m_numNodes = rootGraphNodeInx.length;
-    m_numEdges = rootGraphEdgeInx.length;
+    m_numNodes = rootGraphNodeInx.numRemaining();
+    m_numEdges = rootGraphEdgeInx.numRemaining();
     m_perspToRootNodeInxMap = new IntArray();
     m_rootToPerspNodeInxMap = new IntIntHash();
     for (int i = 0; i < m_numNodes; i++) {
-      final int rootGraphInx = rootGraphNodeInx[i];
+      final int rootGraphInx = rootGraphNodeInx.nextInt();
       m_perspToRootNodeInxMap.setIntAtIndex(rootGraphInx, i);
       m_rootToPerspNodeInxMap.put(rootGraphInx, i); }
     m_perspToRootEdgeInxMap = new IntArray();
     m_rootToPerspEdgeInxMap = new IntIntHash();
     for (int i = 0; i < m_numEdges; i++) {
-      final int rootGraphInx = rootGraphEdgeInx[i];
+      final int rootGraphInx = rootGraphEdgeInx.nextInt();
       m_perspToRootEdgeInxMap.setIntAtIndex(rootGraphInx, i);
       m_rootToPerspEdgeInxMap.put(rootGraphInx, i); }
   }
