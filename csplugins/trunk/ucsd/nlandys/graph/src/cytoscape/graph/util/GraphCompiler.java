@@ -194,9 +194,7 @@ public final class GraphCompiler
     m_nodeNeighborsCompiled = true;
 
     m_nodeNeighbors = new Hashtable[graph.getNumNodes()];
-    if (!(graph.areAllEdgesSimilar() && graph.getNumEdges() > 0 &&
-          !graph.isDirectedEdge(0))) // At least one directed edge exists.
-      m_fakeNodeNeighbors = new Hashtable[graph.getNumNodes()];
+    m_fakeNodeNeighbors = new Hashtable[graph.getNumNodes()];
     for (int edgeIndex = 0; edgeIndex < graph.getNumEdges(); edgeIndex++)
     {
       Integer sourceNode =

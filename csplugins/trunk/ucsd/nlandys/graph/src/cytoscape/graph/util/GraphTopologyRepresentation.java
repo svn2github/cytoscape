@@ -152,6 +152,10 @@ public class GraphTopologyRepresentation implements GraphTopology
          " edges, yet edgeIndex has value " + edgeIndex);
     return edgeIndex < m_directedEdgeSourceNodeIndices.length; }
 
+  /**
+   * Returns <code>true</code> if and only if edges in this graph are either
+   * all directed or all undirected.
+   **/
   public final boolean areAllEdgesSimilar() {
     return
       m_directedEdgeSourceNodeIndices.length == 0 ||
