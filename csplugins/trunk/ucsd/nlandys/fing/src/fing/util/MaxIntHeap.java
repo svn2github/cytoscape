@@ -130,22 +130,15 @@ public final class MaxIntHeap
     arr[index2] = temp;
   }
 
-  public static final int ELEMENTS_ORDER_LEAST_FIRST = 1;
-  public static final int ELEMENTS_ORDER_GREATEST_FIRST = 2;
-  public static final int ELEMENTS_PRUNE_DUPLICATES = 4;
-
-  /**
-   * If both ELEMENTS_ORDER_LEAST_FIRST and ELEMENTS_ORDER_GREATEST_FIRST
-   * are specified as flags, results of this operation are undefined.
-   */
-  public final IntIterator getElements(int flags)
+  public final IntIterator orderedElements(boolean pruneDuplicates,
+                                           boolean reverseOrder)
   {
-    final boolean orderLFirst = flags & ELEMENTS_ORDER_LEAST_FIRST != 0;
-    final boolean orderGFirst = flags & ELEMENTS_ORDER_GREATEST_FIRST != 0;
-    if (orderLFirst && orderGFirst)
-      throw new IllegalStateException
-        ("cannot order least first and greatest first simultaneously");
-    final boolean pruneDups = flags & ELEMENTS_PRUNE_DUPLICATES
+    return null;
+  }
+
+  public final IntIterator elements()
+  {
+    return null;
   }
 
 }
