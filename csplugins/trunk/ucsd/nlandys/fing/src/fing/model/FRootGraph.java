@@ -10,6 +10,7 @@ import giny.model.Edge;
 import giny.model.GraphPerspective;
 import giny.model.Node;
 import giny.model.RootGraph;
+import giny.model.RootGraphChangeListener;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -17,6 +18,20 @@ import java.util.NoSuchElementException;
 // Package visible class.  Use factory to get instance.
 class FRootGraph implements RootGraph
 {
+
+  // Not specified by giny.model.RootGraph.  GraphPerspective implementation
+  // in this package relies on this method.
+  void addRootGraphChangeListener(RootGraphChangeListener listener)
+  {
+    m_lis = RootGraphChangeListenerChain.add(m_lis, listener);
+  }
+
+  // Not specified by giny.model.RootGraph.  GraphPerspective implementation
+  // in this package relies on this method.
+  void removeRootGraphChangeListener(RootGraphChangeListener listener)
+  {
+    m_lis = RootGraphChangeListenerChain.remove(m_lis, listener);
+  }
 
   public GraphPerspective createGraphPerspective(Node[] nodes, Edge[] edges)
   {
@@ -657,6 +672,8 @@ class FRootGraph implements RootGraph
   // rootGraphIndex == ~(dynamicGraphIndex)
   private final DynamicGraph m_graph;
 
+  private RootGraphChangeListener m_lis;
+
   // This hash is re-used by many methods.  Make sure to empty() it before
   // using it.  You can use it as a bag of integers or to filter integer
   // duplicates.  You don't need to empty() it after usage.
@@ -680,6 +697,10 @@ class FRootGraph implements RootGraph
   private final EdgeArray m_edges = new EdgeArray();
 
   // Package visible constructor.
-  FRootGraph(DynamicGraph graph) { m_graph = graph; }
+  FRootGraph(DynamicGraph graph)
+  {
+    m_graph = graph;
+    m_lis = null;
+  }
 
 }
