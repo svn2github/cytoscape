@@ -258,7 +258,7 @@ class FRootGraph implements RootGraph, DynamicGraph
       final FEdge removedEdge = m_edges.getEdgeAtIndex(nativeEdgeInx);
       m_edges.setEdgeAtIndex(null, nativeEdgeInx);
       m_edgeDepot.recycleEdge(removedEdge); }
-    final FNode removedNode = m_nodes.getNodeAtIndex(nativeNodeInx);
+    final FingNode removedNode = m_nodes.getNodeAtIndex(nativeNodeInx);
     m_graph.nodeRemove(nativeNodeInx);
     m_nodes.setNodeAtIndex(null, nativeNodeInx);
     m_nodeDepot.recycleNode(removedNode);
@@ -287,10 +287,10 @@ class FRootGraph implements RootGraph, DynamicGraph
   {
     final int nativeNodeInx = m_graph.nodeCreate();
     final int returnThis = ~nativeNodeInx;
-    FNode newNode = m_nodeDepot.getNode();
-    newNode.m_rootGraph = this;
-    newNode.m_rootGraphIndex = returnThis;
-    newNode.m_identifier = null;
+    FingNode newNode = m_nodeDepot.getNode();
+    newNode._setRootGraph(this);
+    newNode._setRootGraphIndex(returnThis);
+    newNode._setIdentifier(null);
     m_nodes.setNodeAtIndex(newNode, nativeNodeInx);
     return returnThis;
   }

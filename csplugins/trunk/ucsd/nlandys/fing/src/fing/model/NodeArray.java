@@ -6,18 +6,18 @@ class NodeArray
 
   private final static int INITIAL_CAPACITY = 0; // Must be non-negative.
 
-  private FNode[] m_nodeArr;
+  private FingNode[] m_nodeArr;
 
   NodeArray()
   {
-    m_nodeArr = new FNode[INITIAL_CAPACITY];
+    m_nodeArr = new FingNode[INITIAL_CAPACITY];
   }
 
   // Understand that this method will not increase the size of the underlying
   // array, no matter what.
   // Throws ArrayIndexOutOfBoundsException if index is negative or
   // Integer.MAX_VALUE.
-  FNode getNodeAtIndex(int index)
+  FingNode getNodeAtIndex(int index)
   {
     // Do pre-checking because try/catch with thrown exception causes huge
     // performance hit.
@@ -31,7 +31,7 @@ class NodeArray
   //   2. index is greater than or equal to the length of the array.
   // Throws ArrayIndexOutOfBoundsException if index is negative or
   // Integer.MAX_VALUE.
-  void setNodeAtIndex(FNode node, int index)
+  void setNodeAtIndex(FingNode node, int index)
   {
     // Do pre-checking because try/catch with thrown exception causes huge
     // performance hit.
@@ -45,7 +45,7 @@ class NodeArray
         Math.min((long) Integer.MAX_VALUE,
                  Math.max(((long) m_nodeArr.length) * 2l + 1l,
                           ((long) index) + 1l + (long) INITIAL_CAPACITY));
-      FNode[] newArr = new FNode[newArrSize];
+      FingNode[] newArr = new FingNode[newArrSize];
       System.arraycopy(m_nodeArr, 0, newArr, 0, m_nodeArr.length);
       m_nodeArr = newArr;
       m_nodeArr[index] = node;
