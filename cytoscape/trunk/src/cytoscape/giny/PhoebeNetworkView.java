@@ -106,66 +106,35 @@ public class PhoebeNetworkView
 
 
         protected void selectAndZoom () {
-          System.out.println( "Slash? :"+slash_pressed );
+          String search_string;
+          if ( length == 0 ) {
+            search_string = "";
+          } else {
+            search_string = typeBuffer.toString()+"*";
+          }
           GinyUtils.deselectAllNodes( Cytoscape.getCurrentNetworkView() );
-          String search_string = typeBuffer.toString();
-          typeAheadNode.setText( search_string );
+          typeAheadNode.setText( typeBuffer.toString() );
           CyNetworkUtilities.selectNodesStartingWith( Cytoscape.getCurrentNetwork(),
                                                       search_string,
                                                       Cytoscape.getCytoscapeObj(), 
                                                       Cytoscape.getCurrentNetworkView() );
           cytoscape.actions.ZoomSelectedAction.zoomSelected();
-          System.out.println( "Buffer: "+search_string );
         }
         
         protected void resetFind () {
           slash_pressed = false;
           length = 0;
           typeBuffer = new StringBuffer();
+          typeAheadNode.setText("");
           getCanvas().getCamera().removeChild( typeAheadNode );
-          System.out.println( "reset" );
         }
         
-        public void keyTyped ( PInputEvent event ) {
-
-          
-          System.out.println( "Key Code Typed: "+event.getKeyCode() );
-          System.out.println( "Key text: "+KeyEvent.getKeyText( event.getKeyCode() ) );
-
-
-          if ( !slash_pressed && event.getKeyCode() == KeyEvent.VK_SLASH ) {
-            System.out.println( "start taf " );
-            slash_pressed = true;
-            getCanvas().getCamera().addChild( typeAheadNode );
-            typeAheadNode.setOffset( 200, 200 );
-            typeAheadNode.setPaint( new java.awt.Color( .3f, .3f, .3f, .2f ) );
-            typeAheadNode.setTextPaint( java.awt.Color.black );
-            return;
-          }
-          
-          if ( slash_pressed && event.getKeyCode() != KeyEvent.VK_ESCAPE ||  event.getKeyCode() != KeyEvent.VK_BACK_SPACE ) {
-            typeBuffer.append( KeyEvent.getKeyText( event.getKeyCode() ) );
-            length++;
-            selectAndZoom();
-            return;
-          } 
-            
-          if ( slash_pressed && event.getKeyCode() != KeyEvent.VK_ESCAPE ) {
-            resetFind();
-            return;
-          }
-
-          if ( slash_pressed && event.getKeyCode() != KeyEvent.VK_BACK_SPACE ) {
-            typeBuffer.deleteCharAt( length );
-            length--;
-            selectAndZoom();
-            return;
-          }
-            
-        }
 
         public void keyPressed ( PInputEvent event ) {
           
+          //System.out.println( "Key Code Pressed: "+event.getKeyCode() );
+          //System.out.println( "Key text: "+KeyEvent.getKeyText( event.getKeyCode() ) );
+
           if ( event.getKeyCode() == KeyEvent.VK_SPACE ) {
             space_down = true;
             getCanvas().setCursor( Cursor.getPredefinedCursor( Cursor.HAND_CURSOR ) );
@@ -177,7 +146,43 @@ public class PhoebeNetworkView
             if ( edgeSelection ) {
               getCanvas().removeInputEventListener( getEdgeSelectionHandler() );
             }
+            
           }
+
+          else if ( !slash_pressed && event.getKeyCode() == KeyEvent.VK_SLASH ) {
+            //System.out.println( "start taf " );
+            slash_pressed = true;
+            getCanvas().getCamera().addChild( typeAheadNode );
+            typeAheadNode.setOffset( 20, 20 );
+            typeAheadNode.setPaint( new java.awt.Color( 0f, 0f, 0f, .6f ) );
+            typeAheadNode.setTextPaint( java.awt.Color.white );
+            typeAheadNode.setFont( typeAheadNode.getFont().deriveFont( 30f ) );
+            
+          }
+          
+          else if ( slash_pressed && event.getKeyCode() != KeyEvent.VK_ESCAPE &&  event.getKeyCode() != KeyEvent.VK_BACK_SPACE ) {
+            //System.out.println( "Normal Press" );
+            typeBuffer.append( KeyEvent.getKeyText( event.getKeyCode() ) );
+            length++;
+            selectAndZoom();
+           
+          } 
+            
+          else if ( slash_pressed && event.getKeyCode() == KeyEvent.VK_ESCAPE ) {
+            // System.out.println( "ESCAPRE PRESSED" );
+            resetFind();
+          }
+          else if ( slash_pressed && event.getKeyCode() == KeyEvent.VK_BACK_SPACE ) {
+            //System.out.println( "back space: "+length+" "+typeBuffer.toString() );
+            if ( length != 0 ) {
+              typeBuffer.deleteCharAt( length - 1);
+              length--;
+            }
+            selectAndZoom();
+            return;
+          }
+
+
         }
            
         public void keyReleased ( PInputEvent event ) {

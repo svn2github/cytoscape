@@ -103,6 +103,8 @@ public abstract class Cytoscape {
   protected static CytoscapeObj cytoscapeobj;
 
   public static CytoscapeObj getCytoscapeObj () {
+    if ( cytoscapeobj == null )
+      cytoscapeobj = new CytoscapeObj( new CytoscapeConfig( new String[]{} ) );
     return cytoscapeobj;
   }
 
