@@ -5,6 +5,7 @@ import cytoscape.graph.dynamic.util.DynamicGraphFactory;
 import cytoscape.util.intr.IntArray;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntIntHash;
+import cytoscape.util.intr.MinIntHeap;
 
 import giny.filter.Filter;
 import giny.model.Edge;
@@ -582,6 +583,12 @@ class FGraphPerspective implements GraphPerspective
                     IntEnumerator rootGraphEdgeInx)
   {
     m_root = root;
+    m_weeder = new GraphWeeder(m_root, m_graph,
+                               m_nativeToRootNodeInxMap,
+                               m_nativeToRootEdgeInxMap,
+                               m_rootToNativeNodeInxMap,
+                               m_rootToNativeEdgeInxMap, m_lis);
+    m_changeSniffer = new RootGraphChangeSniffer(m_weeder);
     while (rootGraphNodeInx.numRemaining() > 0) {
       final int rootNodeInx = rootGraphNodeInx.nextInt();
       final int nativeNodeInx = m_graph.createNode();
@@ -601,8 +608,6 @@ class FGraphPerspective implements GraphPerspective
                            rootEdgeDirected);
       m_nativeToRootEdgeInxMap.setIntAtIndex(rootEdgeInx, nativeEdgeInx);
       m_rootToNativeEdgeInxMap.put(~rootEdgeInx, nativeEdgeInx); }
-    m_weeder = new GraphWeeder(m_graph, m_lis);
-    m_changeSniffer = new RootGraphChangeSniffer(m_weeder);
     m_root.addRootGraphChangeListener(m_changeSniffer);
   }
 
@@ -622,6 +627,10 @@ class FGraphPerspective implements GraphPerspective
 
     public final void rootGraphChanged(RootGraphChangeEvent evt)
     {
+      if ((evt.getType() & RootGraphChangeEvent.NODES_REMOVED_TYPE) != 0)
+        m_weeder.hideNodes(evt.getRemovedNodes());
+      if ((evt.getType() & RootGraphChangeEvent.EDGES_REMOVED_TYPE) != 0)
+        m_weeder.hideEdges(evt.getRemovedEdges());
     }
 
   }
@@ -635,36 +644,83 @@ class FGraphPerspective implements GraphPerspective
   private final static class GraphWeeder
   {
 
+    private final RootGraph m_root;
     private final DynamicGraph m_graph;
+    private final IntArray m_nativeToRootNodeInxMap;
+    private final IntArray m_nativeToRootEdgeInxMap;
+    private final IntIntHash m_rootToNativeNodeInxMap;
+    private final IntIntHash m_rootToNativeEdgeInxMap;
 
     // This is an array of length 1 - we need an array as an extra reference
     // to a reference because the surrounding GraphPerspective will be
     // modifying the entry at index 0 in this array.
     private final GraphPerspectiveChangeListener[] m_lis;
 
-    private GraphWeeder(DynamicGraph graph,
+    private GraphWeeder(RootGraph root,
+                        DynamicGraph graph,
+                        IntArray nativeToRootNodeInxMap,
+                        IntArray nativeToRootEdgeInxMap,
+                        IntIntHash rootToNativeNodeInxMap,
+                        IntIntHash rootToNativeEdgeInxMap,
                         GraphPerspectiveChangeListener[] listener)
     {
+      m_root = root;
       m_graph = graph;
+      m_nativeToRootNodeInxMap = nativeToRootNodeInxMap;
+      m_nativeToRootEdgeInxMap = nativeToRootEdgeInxMap;
+      m_rootToNativeNodeInxMap = rootToNativeNodeInxMap;
+      m_rootToNativeEdgeInxMap = rootToNativeEdgeInxMap;
       m_lis = listener;
     }
 
-    private final int hideNode(int rootGraphNodeInx)
+    private final int hideNode(Node node)
     {
-      return 0;
+      return -1;
     }
 
-    private final int[] hideNodes(int[] rootGraphNodeInx)
+    // Don't call this method from outside this inner class.
+    // Returns 0 if and only if hiding this node was unsuccessful.
+    private int _hideNode(int rootGraphNodeInx)
+    {
+      final int nativeNodeIndex =
+        m_rootToNativeNodeInxMap.get(~rootGraphNodeInx);
+      final IntEnumerator edgeInxEnum;
+      try { edgeInxEnum = m_graph.adjacentEdges
+              (nativeNodeIndex, true, true, true); }
+      catch (IllegalArgumentException e) { return 0; }
+      if (edgeInxEnum == null) return 0;
+      final Edge[] edgeRemoveArr = new Edge[edgeInxEnum.numRemaining()];
+      for (int i = 0; i < edgeRemoveArr.length; i++) {
+        final int rootGraphEdgeInx =
+          m_nativeToRootEdgeInxMap.getIntAtIndex(edgeInxEnum.nextInt());
+        // The edge returned by the RootGraph won't be null even if this
+        // hideNode operation is triggered by a node being removed from
+        // the underlying RootGraph - this is because when a node is removed
+        // from an underlying RootGraph, all touching edges to that node are
+        // removed first from that RootGraph, and corresponding edge removal
+        // events are fired before the node removal event is fired.
+        edgeRemoveArr[i] = m_root.getEdge(rootGraphEdgeInx); }
+      hideEdges(edgeRemoveArr);
+      // nativeNodeIndex tested for validity with adjacentEdges() above.
+      if (m_graph.removeNode(nativeNodeIndex)) {
+        m_rootToNativeNodeInxMap.put(~rootGraphNodeInx, Integer.MAX_VALUE);
+        m_nativeToRootNodeInxMap.setIntAtIndex(0, nativeNodeIndex);
+        return rootGraphNodeInx; }
+      else throw new IllegalStateException
+             ("internal error - node didn't exist, its adjacent edges did");
+    }
+
+    private final int[] hideNodes(Node[] nodes)
     {
       return null;
     }
 
-    private final int hideEdge(int rootGraphNodeInx)
+    private final int hideEdge(Edge edge)
     {
       return 0;
     }
 
-    private final int[] hideEdges(int[] rootGraphNodeInx)
+    private final int[] hideEdges(Edge[] edges)
     {
       return null;
     }
