@@ -275,11 +275,16 @@ public CytoscapeWindow (cytoscape parentApp,
   loadPlugins ();
   setPopupMode (new NodeBrowsingMode ());
   // System.out.println ("----------------- edgeAttributes\n" + edgeAttributes);
-  
 
 } // ctor
     
 private void loadVizMapper() {
+  
+  // BUG: vizMapper.applyAppearances() gets called twice here
+  
+  //TODO: Remove
+  //System.out.println("In loadVizMapper...");
+  //--
   if (calculatorCatalog == null) {loadCalculatorCatalog();}
 
   //try to get visual style from properties
@@ -323,14 +328,18 @@ private void loadVizMapper() {
   // easy-access visual styles changer
   toolbar.add(vizMapUI.getStyleSelector().getToolbarComboBox());
   toolbar.addSeparator ();
+  
+  // TODO: Remove
+  //System.out.println("Exiting loadVizMapper.");
+  //--
 }
 
 private void loadCalculatorCatalog() {
   calculatorCatalog = new CalculatorCatalog();
   // register mappings
- calculatorCatalog.addMapping("Discrete Mapper", DiscreteMapping.class);
- calculatorCatalog.addMapping("Continuous Mapper", ContinuousMapping.class);
- calculatorCatalog.addMapping("Passthrough Mapper", PassThroughMapping.class);
+  calculatorCatalog.addMapping("Discrete Mapper", DiscreteMapping.class);
+  calculatorCatalog.addMapping("Continuous Mapper", ContinuousMapping.class);
+  calculatorCatalog.addMapping("Passthrough Mapper", PassThroughMapping.class);
 
   //load in calculators from file
   //we look for, in order, a file in CYTOSCAPE_HOME, one in the current directory,
@@ -736,11 +745,14 @@ public UndoableGraphHider getGraphHider ()
 }
 //------------------------------------------------------------------------------
 public void redrawGraph () {
-  redrawGraph(false);
+  // Do not do a layout and apply appearances
+  redrawGraph(false,true);
 }
 //------------------------------------------------------------------------------
-public void redrawGraph (boolean doLayout)
-{
+
+// Added by iliana
+public void redrawGraph (boolean doLayout, boolean applyAppearances){
+  
   // added by iliana on 1.6.2003 (works with yFiles 2.01)
   // Remove graph listeners: (including undoManager)
   Iterator it = graph.getGraphListeners();
@@ -754,20 +766,30 @@ public void redrawGraph (boolean doLayout)
     graph.removeGraphListener((GraphListener)gls.get(i));
   }
   
-  applyVizmapSettings();
+  if(applyAppearances){
+    applyVizmapSettings();
+  }
   if (doLayout) {
     applyLayout(false);
   }
+  
   graphView.updateView(); //forces the view to update it's contents
   /* paintImmediately() is needed because sometimes updates can be buffered */
   graphView.paintImmediately(0,0,graphView.getWidth(),graphView.getHeight());
+    
   updateStatusText();
-
+  
   // Add back graph listeners:
   for(int i = 0; i < gls.size(); i++){
     graph.addGraphListener((GraphListener)gls.get(i));
   }
-  
+}
+//------------------------------------------------------------------------------
+public void redrawGraph (boolean doLayout)
+{
+  // apply appearances by default
+  redrawGraph(doLayout, true);
+    
 } // redrawGraph
 
 
@@ -980,7 +1002,8 @@ protected void displayNewGraph (boolean doLayout)
 
   graphView.setGraph2D (graph);
 
-  this.redrawGraph(doLayout);
+  // Apply appearances since we are displaying the graph for the first time
+  this.redrawGraph(doLayout,true);
 
   graphView.fitContent ();
   graphView.setZoom (graphView.getZoom ()*0.9);
@@ -1519,7 +1542,8 @@ protected void showNodesByName (String [] nodeNames)
             graphHider.hide (nodes [i]);
         }
     }
-    redrawGraph ();
+    // no need to do a layout or apply apps
+    redrawGraph(false,false);
 
     // old code follows:
     //
@@ -1601,7 +1625,8 @@ public String [] selectNodesByName (String [] nodeNames, boolean clearAllSelecti
         }
       }
     }
-    redrawGraph ();
+    // no need to do a layout or reapply apps.
+    redrawGraph(false,false);
     return (String[])notSelectedNodes.toArray(new String[notSelectedNodes.size()]);
   // old code follows
   //
@@ -1635,7 +1660,8 @@ public void selectEdges (Edge[] edgesToSelect, boolean clearAllSelectionsFirst) 
         eR.setSelected(true);
     }
 
-    redrawGraph();
+    // no need to apply layout or apps.
+    redrawGraph(false,false);
 }
 
 /**
@@ -1672,7 +1698,8 @@ public void selectNodes (Node [] nodesToSelect, boolean clearAllSelectionsFirst)
     } // for i
   */
 
-  redrawGraph ();
+  // no need to apply layout or apps.
+  redrawGraph (false, false);
 
 } // selectNodesByName
 //-----------------------------------------------------------------------------
@@ -1710,7 +1737,8 @@ public void deselectAllNodes ()
     nodeRealizer.setSelected (false);
     } // for i
     */
-  redrawGraph ();
+    // no need to layout or reapply apps
+  redrawGraph (false, false);
 
 } // deselectAllNodes
 //------------------------------------------------------------------------------
@@ -1719,7 +1747,7 @@ protected void selectNodesStartingWith (String key)
   setInteractivity (false);
   key = key.toLowerCase ();
   Graph2D g = graphView.getGraph2D();
-  redrawGraph ();
+  redrawGraph (false,false);// no need to layout or reapply apps
 
   Node [] nodes = graphView.getGraph2D().getNodeArray();
   
@@ -1742,7 +1770,7 @@ protected void selectNodesStartingWith (String key)
   } // for i
   
   setInteractivity (true);
-  redrawGraph ();
+  redrawGraph (false, false); // no need to layout or reapply apps
   
 } // selectDisplyToNodesStartingWith ...
 //------------------------------------------------------------------------------
@@ -1751,7 +1779,7 @@ protected void additionallySelectNodesMatching (String key)
   setInteractivity (false);
   key = key.toLowerCase ();
   Graph2D g = graphView.getGraph2D();
-  redrawGraph ();
+  redrawGraph (false, false);
 
   Node [] nodes = graphView.getGraph2D().getNodeArray();
 
@@ -1776,7 +1804,7 @@ protected void additionallySelectNodesMatching (String key)
     } // for i
 
   setInteractivity (true);
-  redrawGraph ();
+  redrawGraph (false, false);
 
 } // selectDisplyToNodesStartingWith ...
 //------------------------------------------------------------------------------
@@ -1841,11 +1869,11 @@ public void applyLayout (boolean animated)
   
   logger.warning ("starting layout...");
   setInteractivity (false);
-  //System.out.println("CytoscapeWindow: doLayout");
-  //System.out.flush();
+  // Added by iliana.
+  //if(layouter instanceof OrganicLayouter){
+  //((OrganicLayouter)layouter).setMaximumDuration(15000);
+  //}
   layouter.doLayout (graphView.getGraph2D ());
-  //System.out.println("done doLayout");
-  //System.out.flush();
   graphView.fitContent ();
   graphView.setZoom (graphView.getZoom ()*0.9);
 
@@ -2017,6 +2045,7 @@ protected class SetVisualPropertiesAction extends AbstractAction   {
     }
 
 }
+
 //------------------------------------------------------------------------------
 /*
 protected class HideEdgesAction extends AbstractAction   {
@@ -2038,7 +2067,7 @@ protected void hideSelectedNodes() {
     graphHider.hide (node);
     nc.next ();
   }
-  redrawGraph ();
+  redrawGraph (false, false);
   graphView.getGraph2D().firePostEvent();
 }
 protected void hideSelectedEdges() {
@@ -2050,7 +2079,7 @@ protected void hideSelectedEdges() {
         graphHider.hide (edge);
         nc.next ();
     }
-    redrawGraph ();
+    redrawGraph (false, false);
     graphView.getGraph2D().firePostEvent();
 }
 protected class HideSelectedNodesAction extends AbstractAction   {
@@ -2071,7 +2100,8 @@ protected class InvertSelectedNodesAction extends AbstractAction {
             NodeRealizer nodeRealizer = graphView.getGraph2D().getRealizer(nodes [i]);
             nodeRealizer.setSelected (!nodeRealizer.isSelected());
         }
-        redrawGraph ();
+        // not sure if this is OK
+        redrawGraph (false, false);
     }
 }
 protected class HideSelectedEdgesAction extends AbstractAction   {
@@ -2092,7 +2122,8 @@ protected class InvertSelectedEdgesAction extends AbstractAction {
             EdgeRealizer edgeRealizer = graphView.getGraph2D().getRealizer(edges [i]);
             edgeRealizer.setSelected (!edgeRealizer.isSelected());
         }
-        redrawGraph ();
+        // not sure if this is OK
+        redrawGraph (false,false);
     }
 }
 //------------------------------------------------------------------------------
@@ -2142,7 +2173,7 @@ protected class DeleteSelectedAction extends AbstractAction   {
     g.firePostEvent();
 
     
-    redrawGraph ();
+    redrawGraph (false, false);
   } // actionPerformed
   
 
@@ -2156,7 +2187,8 @@ protected class LayoutAction extends AbstractAction   {
       undoManager.pause();
       applyLayout (false);
       undoManager.resume();
-      redrawGraph ();
+      // we already applied the layout, and we don't need to reapply apps
+      redrawGraph (false, false);
     }
 }
 
@@ -2169,7 +2201,7 @@ protected class LayoutSelectionAction extends AbstractAction {
       undoManager.pause();
       applyLayoutSelection ();
       undoManager.resume();
-      redrawGraph ();
+      redrawGraph (false, false);
     }
 }
 
@@ -2264,7 +2296,7 @@ protected class AlignHorizontalAction extends AbstractAction {
         // resume undo manager's listener - dramage
         undoManager.resume();
 
-        redrawGraph();
+        redrawGraph(false, false);
     }
 }
 
@@ -2298,7 +2330,7 @@ protected class AlignVerticalAction extends AbstractAction {
         // resume undo manager's listener - dramage
         undoManager.resume();
 
-        redrawGraph();
+        redrawGraph(false, false);
     }
 }
 
@@ -2314,7 +2346,7 @@ protected class RotateSelectedNodesAction extends AbstractAction {
         undoManager.saveRealizerState();
         undoManager.pause();
         RotateSelectionDialog d = new RotateSelectionDialog(mainFrame,
-                                                         CytoscapeWindow.this,
+                                                            CytoscapeWindow.this,
                                                             graph);
         undoManager.resume();
     }
@@ -2328,7 +2360,7 @@ protected class ReduceEquivalentNodesAction extends AbstractAction  {
     } // ctor
    public void actionPerformed (ActionEvent e) {
        new ReduceEquivalentNodes(nodeAttributes, edgeAttributes, graph);
-       redrawGraph();
+       redrawGraph(false, true); // newly added nodes need apps
    }
 }
 
@@ -2365,7 +2397,6 @@ protected class ListFromFileSelectionAction extends AbstractAction   {
             try {
                 FileReader fin = new FileReader(file);
                 BufferedReader bin = new BufferedReader(fin);
-                
                 // create a hash of all the nodes in the file
                 Hashtable fileNodes = new Hashtable();
                 while ((s = bin.readLine()) != null) {
@@ -2395,7 +2426,7 @@ protected class ListFromFileSelectionAction extends AbstractAction   {
                         graphView.getGraph2D().getRealizer(node).setSelected(true);
                     }
                 }
-                redrawGraph ();
+                redrawGraph (false, false);
                   
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, e.toString(),
@@ -2552,7 +2583,7 @@ protected class UndoAction extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
       undoManager.undo();
       updateUndoRedoMenuItemStatus();
-      redrawGraph();
+      redrawGraph(false, true);
     }
 }
 
@@ -2633,7 +2664,7 @@ protected class SelectFirstNeighborsAction extends AbstractAction {
       realizer.setSelected (true);
       }
     
-    redrawGraph ();
+    redrawGraph (false, false);
     } // actionPerformed
 
 } // SelectFirstNeighborsAction
@@ -2881,11 +2912,21 @@ protected boolean loadGML (String filename)
 //------------------------------------------------------------------------------
 protected void loadInteraction (String filename)
 {
+  
+  long time1 = System.currentTimeMillis();
+  System.out.println("Calling FileReadingAbstractions.loadIntrBasic...");
   setGraph (FileReadingAbstractions.loadIntrBasic (bioDataServer, getDefaultSpecies (), 
                                                    filename,edgeAttributes));
+  System.out.println("done calling FileReadingAbstractions.loadIntrBasic " +  (System.currentTimeMillis() - time1));
+  time1 = System.currentTimeMillis();
+  System.out.println("Calling FileReadingAbstractions.initAttribs...");
   FileReadingAbstractions.initAttribs (bioDataServer, getDefaultSpecies (), config,
                                        graph,nodeAttributes,edgeAttributes);
+  System.out.println("done calling FileReadingAbstractions.initAttribs..." + (System.currentTimeMillis() - time1));
+  time1 = System.currentTimeMillis();
+  System.out.println("Calling displayCommonNodeNames...");
   displayCommonNodeNames (); // fills in canonical name for blank common names
+  System.out.println("done calling displayCommonNames" + (System.currentTimeMillis() - time1));
   geometryFilename = null;
   setWindowTitle(filename);
   //loadPlugins();  //don't reload plugins
@@ -3201,7 +3242,7 @@ protected class LoadBioDataServerAction extends AbstractAction {
               logger.warning ("cannot create new biodata server at " + bioDataDirectory);
               }
             displayCommonNodeNames();
-            redrawGraph();
+            redrawGraph(false, true);
         }
             
     }
@@ -3214,7 +3255,7 @@ protected class DeleteSelectionAction extends AbstractAction {
   public void actionPerformed (ActionEvent e) {
       graphView.getGraph2D ().removeSelection ();
 
-  redrawGraph ();
+  redrawGraph (false, false);
     }
   }
 //------------------------------------------------------------------------------
@@ -3227,7 +3268,7 @@ protected class ZoomAction extends AbstractAction {
     
   public void actionPerformed (ActionEvent e) {
     graphView.setZoom (graphView.getZoom ()*factor);
-  redrawGraph ();
+  redrawGraph (false,false);
     }
   }
 //------------------------------------------------------------------------------
@@ -3235,7 +3276,7 @@ protected class FitContentAction extends AbstractAction  {
    FitContentAction () { super (); }
     public void actionPerformed (ActionEvent e) {
       graphView.fitContent ();
-      redrawGraph ();
+      redrawGraph (false, false);
       }
 }
 //------------------------------------------------------------------------------
@@ -3248,7 +3289,7 @@ protected class ShowAllAction extends AbstractAction  {
 
       graphView.fitContent ();
       graphView.setZoom (graphView.getZoom ()*0.9);
-  redrawGraph ();
+      redrawGraph (false, true);// the apps may have changed dynamically
       }
 }
 protected class HideSelectedAction extends AbstractAction  {
@@ -3272,7 +3313,7 @@ protected class ZoomSelectedAction extends AbstractAction  {
         g.getRealizer (nc.node ()).calcUnionRect (box);
         graphView.zoomToArea (box.getX(),box.getY(),box.getWidth(),box.getHeight());
         if (graphView.getZoom () > 2.0) graphView.setZoom (2.0);
-        redrawGraph ();
+        redrawGraph (false, false);
       }
     }
 }
