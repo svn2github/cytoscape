@@ -46,6 +46,17 @@ public class CyNetwork {
     GraphObjAttributes edgeAttributes;     //attributes for edges
     ExpressionData expressionData;         //expression data
     
+    
+    /**
+     * Constructor specifying no expression data. Equivalent to
+     * CyNetwork(graph, nodeAttributes, edgeAttributes, null).
+     */
+    public CyNetwork(Graph2D graph,
+                     GraphObjAttributes nodeAttributes,
+                     GraphObjAttributes edgeAttributes) {
+        this(graph, nodeAttributes, edgeAttributes, null);
+    }
+    
     /**
      * Constructor that ensures that a valid graph and attributes objects
      * exist. The ExpressionData argument may be null.
