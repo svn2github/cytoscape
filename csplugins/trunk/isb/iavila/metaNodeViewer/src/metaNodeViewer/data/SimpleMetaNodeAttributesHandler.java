@@ -59,7 +59,7 @@ public class SimpleMetaNodeAttributesHandler implements MetaNodeAttributesHandle
 	if(node == null) { return null; }
 	String unique_name = getCanonicalMetaName (metanode_root_index);
 	String common_name = getCommonMetaName (metanode_root_index);
-	System.err.println("Common Name = " + common_name);
+	//System.err.println("Common Name = " + common_name);
 	nodeAttr.addNameMapping(unique_name, node);
 	nodeAttr.set("canonicalName", unique_name, unique_name);
 	nodeAttr.set("commonName", unique_name, common_name);
@@ -113,7 +113,17 @@ public class SimpleMetaNodeAttributesHandler implements MetaNodeAttributesHandle
 	    }
 	    
 	    // add to node attributes for meta node
-	    nodeAttr.set(attrName, metaName, uniqueValues.toArray());
+	    if ( attrName == null )
+        System.out.println( "attrName null" );
+
+      if ( metaName == null ) 
+        System.out.println( "metaName null" );
+
+      //Object[] array = uniqueValues.toArray();
+      //for ( int i = 0; i < array.length; ++i ) {
+      //System.out.println( "uv :"+i+ " "+array[i] );
+      //}
+      nodeAttr.set(attrName, metaName, uniqueValues.toArray());
 	    //System.err.println("DBG " +attrName+ " " +metaName+ " " +uniqueValues);
 	}
 	return true;

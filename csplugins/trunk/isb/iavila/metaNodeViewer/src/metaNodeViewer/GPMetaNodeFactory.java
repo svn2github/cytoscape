@@ -27,10 +27,10 @@
  * @since 2.0
  */
 package metaNodeViewer;
-import metaNodeViewer.data.MetaNodeAttributesHandler;
+import metaNodeViewer.data.*;
 import java.util.*;
 import giny.model.*;
-import cytoscape.data.*;
+import cytoscape.data.GraphObjAttributes;
 import cytoscape.*;
 import cern.colt.list.IntArrayList;
 
@@ -51,7 +51,7 @@ public class GPMetaNodeFactory implements MetaNodeFactory {
   protected Map gpToMetaNodes;
   
   /**
-   * Specifies whether or not this class should assign a name to newly created meta-nodes and 
+   * Specifies whether or not this class should assign a name to newly created meta-nodes
    */
   protected boolean assignDefaultName;
   
@@ -59,6 +59,14 @@ public class GPMetaNodeFactory implements MetaNodeFactory {
    * The MetaNodeAttributesHandler that names newly created meta-nodes
    */
   protected MetaNodeAttributesHandler attributesHandler;
+
+  /**
+   * Constructor.
+   * Calls <code>this(new SimpleMetaNodeAttributesHandler(), true)</code>.
+   */
+  public GPMetaNodeFactory (){
+    this(new SimpleMetaNodeAttributesHandler(),true);
+  }//GPMetaNodeFactory
 
   /**
    * Constructor.

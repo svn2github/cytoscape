@@ -10,17 +10,13 @@
    <property name="cytoscape.plugin.dir" value="../../../../cytoscape/plugins"/>
 
    <path id = "classpath_compile">
-      <pathelement path = "${build}"/>
-      <pathelement path = "../../../../cytoscape/build/cytoscape.jar"/>
-      <fileset dir = "${lib}">
+       <fileset dir = "${lib}">
           <include name = "**/*.jar"/>
        </fileset>
    </path>
 
    <path id = "classpath_run">
-      <pathelement path = "${build}"/>
-      <pathelement path = "../../../../cytoscape/build/cytoscape.jar"/>
-      <fileset dir = "${lib}">
+       <fileset dir = "${lib}">
           <include name = "**/*.jar"/>
        </fileset>
    </path>
@@ -31,7 +27,7 @@
 
    <target name="compile" depends = "prepare" description="Compile">
    <!-- Compile the java code from ${src} into ${build} -->
-   <javac source = "1.4" srcdir = "${src}" destdir="${build}">
+   <javac source = "1.4" debug="true" srcdir = "${src}" destdir="${build}">
       <classpath refid = "classpath_compile"/>
    </javac>
    </target>
@@ -51,13 +47,10 @@
    </target>
 
    <target name = "run" depends="jar" description = "Run">
-      <java classname = "cytoscape.cytoscape" classpathref = "classpath_run"
+      <java classname = "cytoscape.CyMain" classpathref = "classpath_run"
           fork = "true" maxmemory = "1g">
-          <arg line = "-y giny"/>
-          <arg line = "-i"/>
-          <arg line = "../bmtest/src/csplugins/bmtest/input/network.sif"/>
           <arg line = "--JLD"/>
           <arg file = "${jar}/metanode.jar"/>
-    </java>
+      </java>
     </target>
 </project>

@@ -47,7 +47,7 @@ import cern.colt.map.OpenIntIntHashMap;
  */
 public class AbstractMetaNodeModeler {
 
-  protected static final boolean DEBUG = true;
+  protected static final boolean DEBUG = false;
   
   /**
    * An object that tranfers node and edge attributes
@@ -69,9 +69,13 @@ public class AbstractMetaNodeModeler {
   // one meta-node
   protected IntArrayList metaEdgesRindices;
   
+  // A Map from CyNetworks to IntArrayLists that contain RootGraph indices of nodes
+  // that are contained in the corresponding network
+  protected Map networkToNodes;
+
   // A list of node RootGraph indices of nodes that are in a GraphPerspective, even
   // if GraphPerspective.getNodeIndex(rootGraphIndex) returns 0 for those nodes
-  protected IntArrayList gpNodeRindices;
+  // protected IntArrayList gpNodeRindices;
     
   /**
    * Constructor.
@@ -87,6 +91,7 @@ public class AbstractMetaNodeModeler {
     this.attributesHandler = atts_handler;
     this.metaNodeToProcessedEdges = new OpenIntObjectHashMap();
     this.metaEdgesRindices = new IntArrayList();
+    this.networkToNodes = new HashMap();
   }//constructor
 
   /**
@@ -120,6 +125,7 @@ public class AbstractMetaNodeModeler {
     this.rootGraph = new_root_graph;
     this.metaNodeToProcessedEdges.clear();
     this.metaEdgesRindices.clear();
+    this.networkToNodes.clear();
   }//setRootGraph
   
   /**
@@ -157,8 +163,10 @@ public class AbstractMetaNodeModeler {
 
   /**
    * Applies the model to the <code>Node</code> with the given <code>RootGraph</code> or 
-   * <code>GraphPerspective</code> index.
+   * <code>GraphPerspective</code> index. 
+   * Calls <code>applyModel(cy_network,node_index,getDescendants(node_index))</code>
    *
+   * @param cy_network the <code>CyNetwork</code> that will be modified
    * @param node_index the index of the <code>Node</code>, if the node is not contained in
    * <code>cy_network</code> (and is contained in <code>cy_network</code>'s 
    * <code>RootGraph</code>) then the <code>RootGraph</code> index should be given
@@ -170,8 +178,52 @@ public class AbstractMetaNodeModeler {
                              CyNetwork cy_network,
                              int node_index
                              ){
+    GraphPerspective graphPerspective = cy_network.getGraphPerspective();
+    int rootNodeIndex = 0;
+    if(node_index > 0){
+      rootNodeIndex = graphPerspective.getRootGraphNodeIndex(node_index);
+    }else if(node_index < 0){
+      rootNodeIndex = node_index;
+    }
+    
+    if(rootNodeIndex == 0){
+      if(DEBUG){
+        System.err.println("----- applyModel (CyNetwork,"+node_index+",descendants) returning"+
+                           " false because root index is 0 -----"); 
+      }
+      return false;
+    }
+    IntArrayList d = new IntArrayList();
+    getDescendants(rootNodeIndex,d);
+    d.trimToSize();
+    int [] descendants = d.elements();
+    return applyModel(cy_network,node_index,descendants);
+  }//applyModel
+  
+  /**
+   * Applies the model to the <code>Node</code> with the given <code>RootGraph</code> or 
+   * <code>GraphPerspective</code> index. Use this method instead of 
+   * <code>applyModel(cy_network,node_index)</code> if the descendants of the node are
+   * available.
+   *
+   * @param cy_network the <code>CyNetwork</code> that will be modified
+   * @param node_index the index of the <code>Node</code>, if the node is not contained in
+   * <code>cy_network</code> (and is contained in <code>cy_network</code>'s 
+   * <code>RootGraph</code>) then the <code>RootGraph</code> index should be given
+   * @param descendants the <code>RootGraph</code> indices of the descendants of node 
+   * with index node_index, faster than calling <code>applyModel(cy_network,node_index)</code>
+   *
+   * @return true if the node was successfuly abstracted, false otherwise (maybe the node 
+   * is not a meta-node, or the node has already been abstracted)
+   */
+  public boolean applyModel (
+                             CyNetwork cy_network,
+                             int node_index,
+                             int [] descendants
+                             ){
+    
     if(DEBUG){
-      System.err.println("----- applyModel (GraphPerspective,"+node_index+") -----");
+      System.err.println("----- applyModel (cy_network,"+node_index+") -----");
     }
     
     GraphPerspective graphPerspective = cy_network.getGraphPerspective();
@@ -201,7 +253,13 @@ public class AbstractMetaNodeModeler {
       return false;
     }
     
-    this.gpNodeRindices = new IntArrayList(getNodeRindicesInGP(graphPerspective));
+    IntArrayList cnNodes = (IntArrayList)this.networkToNodes.get(cy_network);
+    if(cnNodes == null){
+      // I know that this is the first time that applyModel is called for the
+      // given network
+      cnNodes = new IntArrayList(getNodeRindicesInGP(graphPerspective));
+      this.networkToNodes.put(cy_network,cnNodes);
+    }
     
     if(!prepareNodeForModel(cy_network,rootNodeIndex)){
       if(DEBUG){
@@ -213,16 +271,24 @@ public class AbstractMetaNodeModeler {
         
     // Restore the meta-node, in case that it is not showing
     int restoredNodeIndex = graphPerspective.restoreNode(rootNodeIndex);
+    // The restored meta-node is now contained in the network, so remember this:
+    cnNodes.add(restoredNodeIndex);
+    
     if(DEBUG){
       System.err.println("Restored node w/rindex " + rootNodeIndex + " and got back index " +
                          restoredNodeIndex);
     }
+    
     // Hide the meta-node's descendants and connected edges
-    int [] descendants = this.rootGraph.getNodeMetaChildIndicesArray(rootNodeIndex,true);
+    
+    // This method is too slow: (given as an argument instead)
+    //int [] descendants = this.rootGraph.getNodeMetaChildIndicesArray(rootNodeIndex,true);
+    
     int [] hiddenNodes = graphPerspective.hideNodes(descendants);
     if(DEBUG){
-      System.err.println("Hid " + hiddenNodes.length + " descendant nodes of node " + rootNodeIndex + 
-                         ", from a total of " + descendants.length + " descendants");
+      System.err.println("Hid " + hiddenNodes.length + " descendant nodes of node " + 
+                         rootNodeIndex + ", from a total of " + descendants.length + 
+                         " descendants");
     }
     // Restore the edges connecting the meta-node and nodes that are in graphPerspective
     int [] gpNodes = graphPerspective.getNodeIndicesArray();
@@ -278,8 +344,8 @@ public class AbstractMetaNodeModeler {
       int [] restoredRindices = graphPerspective.restoreEdges(connectingEdgesRindices);
       if(DEBUG){
         System.err.println("Restored " + restoredRindices.length + "/" + 
-                           connectingEdgesRindices.length + " edges connecting " + rootNodeIndex +
-                           " and " + gpNodes[node_i]);
+                           connectingEdgesRindices.length + " edges connecting " + 
+                           rootNodeIndex + " and " + gpNodes[node_i]);
       }
       numRestoredEdges += restoredRindices.length;
     }//for node_i
@@ -350,6 +416,8 @@ public class AbstractMetaNodeModeler {
       
       // Get the descendants with no children of this meta-node, since they will
       // be displayed after this call to undo
+      //TODO: Check performance of this method:
+      // COULD IMPROVE BY USING this.networkToNodes ??
       childrenRindices = this.rootGraph.getChildlessMetaDescendants(metaNodeRindex);
       
       if(DEBUG){
@@ -391,6 +459,12 @@ public class AbstractMetaNodeModeler {
     }
     // Hide the meta-node and adjacent edges
     int hiddenNodeRindex = graphPerspective.hideNode(metaNodeRindex);
+    // The meta-node is no longer in the network, so remember this:
+    IntArrayList cnNodes = (IntArrayList)this.networkToNodes.get(cy_network);
+    if(cnNodes != null){
+      cnNodes.delete(metaNodeRindex);
+    }
+    
     if(DEBUG){
       System.err.println("Hid node " + metaNodeRindex + 
                          " in graphPerspective and got back node index " + hiddenNodeRindex);
@@ -432,9 +506,15 @@ public class AbstractMetaNodeModeler {
       System.err.println("----- prepareNodeForModel (CyNetwork,"+node_rindex+") -----");
     }
     
+    IntArrayList cnNodes = (IntArrayList)this.networkToNodes.get(cy_network);
+    if(cnNodes == null){
+      // Should not get here
+      throw new IllegalStateException ("this.networkToNodes.get(cy_network) returned null");
+    }
+
     if(!isMetaNode(node_rindex)){
       boolean returnBool;
-      if(this.gpNodeRindices.contains(node_rindex)){
+      if(cnNodes.contains(node_rindex)){
         returnBool = true;
       }else{
         returnBool = false;
@@ -650,7 +730,12 @@ public class AbstractMetaNodeModeler {
   
     // If recursive, get all the descendants of this meta-node, and remove their meta-edges
     if(recursive){
-      int [] descendants = this.rootGraph.getNodeMetaChildIndicesArray(meta_node_index,true);
+      // This method is too slow:
+      //int [] descendants = this.rootGraph.getNodeMetaChildIndicesArray(meta_node_index,true);
+      IntArrayList d = new IntArrayList();
+      getDescendants(meta_node_index, d);
+      d.trimToSize();
+      int [] descendants = d.elements();
       for(int i = 0; i < descendants.length; i++){
         removeMetaEdges(cy_net, descendants[i], false);
       }// for i
@@ -759,23 +844,58 @@ public class AbstractMetaNodeModeler {
 
   /**
    * @return an array of RootGraph node indices, each index corresponds to a Node that 
-   * is contained in graph_perspective or that is contained in this.rootGraph and is a descendant
-   * of a Node contained in graph_perspective
+   * is contained in graph_perspective or that is contained in this.rootGraph and is 
+   * a descendant of a Node contained in graph_perspective
    */
+  // NOTE: This method is slow, avoid calling it as much as possible
   protected int [] getNodeRindicesInGP(GraphPerspective graph_perspective){
+    if(DEBUG){
+      System.err.println("--------- getNodeRindicesInGP (GraphPerspective) ---------");
+    }
     int [] nodeRindices = graph_perspective.getNodeIndicesArray();
     IntArrayList gpNodeRindices = new IntArrayList(nodeRindices);
     // If graph_perspective contains meta-nodes, then their descendants are also
     // in this graph_perspective
     for(int i = 0; i < nodeRindices.length; i++){
-      int [] children = this.rootGraph.getNodeMetaChildIndicesArray(nodeRindices[i],true);
+      if(DEBUG){
+        System.err.println("i = " + i);
+      }
+      // NOTE: This method takes a very long time to run:
+      // int [] children = this.rootGraph.getNodeMetaChildIndicesArray(nodeRindices[i],true);
+      IntArrayList descendants = new IntArrayList();
+      getDescendants(nodeRindices[i],descendants);
+      descendants.trimToSize();
+      int [] children = descendants.elements();
       //TODO: Optimize
       for(int j = 0; j < children.length; j++){
+        if(DEBUG){
+          System.err.println("j = " + j + " child = " + children[j]);
+        }
         gpNodeRindices.add(children[j]);
       }// for j
+    }
+    if(DEBUG){
+      System.err.println("--------- leaving getNodeRindicesInGP (GraphPerspective) ---------");
     }
     return gpNodeRindices.elements();
   }//getNodeRindicesInGP
 
+  /**
+   * This is faster than RootGraph.getNodeMetaChildIndicesArray(index,true).
+   * TODO: Replace in giny?
+   */
+  public void getDescendants (int node_root_index, IntArrayList descendants){
+    if(descendants == null){
+      descendants = new IntArrayList();
+    }
+    // Get all the immediate children
+    int [] allNodes = this.rootGraph.getNodeIndicesArray();
+    for(int i = 0; i < allNodes.length; i++){
+      if(this.rootGraph.isNodeMetaParent(allNodes[i],node_root_index)){
+        descendants.add(allNodes[i]);
+        getDescendants(allNodes[i],descendants);
+      }
+    }
+  }//getDescendants
   
 }//class AbstractMetaNodeModeler
