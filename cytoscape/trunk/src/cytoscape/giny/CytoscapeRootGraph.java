@@ -11,13 +11,13 @@ public class CytoscapeRootGraph extends ColtRootGraph {
    * The Nodes that are created, though they need not be are stored so has to allow 
    * modification of node values and to ensure node persistance, this may be later changed.
    */
-  protected OpenIntObjectHashMap nodeIndexObjectMap;
+   private OpenIntObjectHashMap nodeIndexObjectMap;
 
   /**
    * The Edges that are created, though they need not be are stored so has to allow 
    * modification of edge values and to ensure edge persistance, this may be later changed.
    */
-  protected OpenIntObjectHashMap edgeIndexObjectMap;
+  private OpenIntObjectHashMap edgeIndexObjectMap;
 
 
   //-------------------------------------------------------------------------//
