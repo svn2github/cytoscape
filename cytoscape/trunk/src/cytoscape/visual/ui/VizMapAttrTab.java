@@ -69,7 +69,7 @@ public class VizMapAttrTab extends VizMapTab {
     private GridBagGroup mapPanelGBG;
     private JPanel calcContainer;
 
-    /**	
+    /**
      * the panel containing the calculator-specific UI provided
      * by the currently selected calculator
      */
@@ -87,11 +87,11 @@ public class VizMapAttrTab extends VizMapTab {
      *  @param	tabIndex	index of this tab in tabContainer
      *	@param	n	Underlying network
      *	@param	type	One of types defined in {@link VisualMappingManager}
-     *	@param	c	
+     *	@param	c
      */
     public VizMapAttrTab (VizMapUI mainUI, JTabbedPane tabContainer, int tabIndex, VisualMappingManager VMM, byte type) {
 	super(new BorderLayout(), false);
-	
+
 	// set the name of this component appropriately
 	setName(getTypeName(type));
 
@@ -136,12 +136,12 @@ public class VizMapAttrTab extends VizMapTab {
 	}
 	public void stateChanged(ChangeEvent e) {
 	    JTabbedPane source = (JTabbedPane) e.getSource();
-	    if (source.getModel().getSelectedIndex() == tabIndex) {		
+	    if (source.getModel().getSelectedIndex() == tabIndex) {
 		refreshUI();
             }
 	}
     }
-    
+
     /**
      *  Alert the VizMapAttrTab that the relevant visual style has changed.
      */
@@ -180,7 +180,7 @@ public class VizMapAttrTab extends VizMapTab {
 	validate();
 	repaint();
     }
-    
+
     /**
      * Changes the 'currentCalculator' field of this class to the new calculator
      * specified by the argument. A null argument is allowed. This method also
@@ -204,8 +204,8 @@ public class VizMapAttrTab extends VizMapTab {
             newCalculator.addChangeListener(calcListener);
         }
     }
-    
-    
+
+
     /**
      * Builds the panel for displaying and changing the default value for this
      * visual attribute.
@@ -260,7 +260,7 @@ public class VizMapAttrTab extends VizMapTab {
 	    this.add(outerDefPanel, BorderLayout.NORTH);
 	}
     }
-    
+
     /**
      * Returns an ImageIcon suitable for this visual attribute, or null if we
      * don't have an icon for this particular visual attribute.
@@ -301,7 +301,7 @@ public class VizMapAttrTab extends VizMapTab {
     protected void rebuildCalcComboBox() {
         if (this.calcComboBox != null) {
 	    mapPanelGBG.panel.remove(this.calcComboBox);
-        }            
+        }
 	/* build the list of known calculators - each calculator has a toString()
 	   method that returns the name, so calculators can be passed to the
 	   JComboBox.
@@ -332,7 +332,7 @@ public class VizMapAttrTab extends VizMapTab {
 	// attach listener
 	this.calcComboBox.addItemListener(new CalcComboSelectionListener());
     }
-    
+
     /**
      * Listens to selection events on the calculator selection combo box. When
      * a selection occurs, calls switchCalculator with the new calculator.
@@ -349,7 +349,7 @@ public class VizMapAttrTab extends VizMapTab {
 	    }
 	}
     }
-    
+
     /**
      * Called by action listener on the calculator selection combo box. Switch
      * the current calculator to the selected calculator and place the calculator's
@@ -360,19 +360,19 @@ public class VizMapAttrTab extends VizMapTab {
     void switchCalculator(Calculator calc) {
         //do nothing if the new calculator is the same as the current one
         if (calc != null && calc.equals(this.currentCalculator)) {return;}
-        
+
         setCurrentCalculator(calc); //handles listeners
 
     	// tell the respective appearance calculators
         // this method doesn't fire an event to come back to us
         VizUIUtilities.setCurrentCalculator(VMM.getVisualStyle(), this.type, calc);
-	
+
         //get the view of the new calculator
 	    refreshUI();
         //redraw the graph
 	    VMM.getNetworkView().redrawGraph(false, true);
     }
-    
+
     /**
      * Draws the panel containing the calculator selection combo box and the
      * calculator manipulation buttons. The panel containing the UI for the
@@ -588,7 +588,7 @@ public class VizMapAttrTab extends VizMapTab {
 	if (c != null) {
 	    suggestedName = this.catalog.checkCalculatorName(c.toString(), this.type);
         }
-	
+
 	// keep prompting for input until user cancels or we get a valid name
 	while(true) {
 	    String ret = (String) JOptionPane.showInputDialog(mainUIDialog,
@@ -663,15 +663,11 @@ public class VizMapAttrTab extends VizMapTab {
                                                          JOptionPane.YES_NO_OPTION);
                 if (conf == JOptionPane.NO_OPTION) {return;}
             }
-            
+
 	    Calculator temp = currentCalculator;
-        //  Code changed by Ethan Cerami;  code now calls setCurrentCalculator
-        //  instead of switchCalculator.  This prevents the currently selected
-        //  calculator from being added back to the JComboBox, after it has
-        //  been deleted.  Bug Reference # 0000223.
-        setCurrentCalculator(null);
+        switchCalculator(null);
 	    catalog.removeCalculator(temp); // triggers events that switch the calculator
-	}    
+	}
     }
 
 
@@ -719,7 +715,7 @@ public class VizMapAttrTab extends VizMapTab {
     }
 
 
-    
+
     private Collection getCalculators(byte type) {
 	switch(type) {
 	case VizMapUI.NODE_COLOR:
@@ -763,7 +759,7 @@ public class VizMapAttrTab extends VizMapTab {
 	    return null;
 	}
     }
-    
+
     protected static String getTypeName(byte type) {
 	switch (type) {
 	case VizMapUI.NODE_COLOR:
