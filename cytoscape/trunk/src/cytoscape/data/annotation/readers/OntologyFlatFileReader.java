@@ -55,6 +55,7 @@ public OntologyFlatFileReader (File file) throws Exception
 //-------------------------------------------------------------------------
 public OntologyFlatFileReader (String filename) throws Exception
 {
+  this.filename = filename;
   try {
     if (filename.trim().startsWith ("jar://")) {
       TextJarReader reader = new TextJarReader (filename);
@@ -91,7 +92,7 @@ private int stringToInt (String s)
 //-------------------------------------------------------------------------
 private void parseHeader () throws Exception
 {
-  String firstLine = lines [0];
+  String firstLine = lines [0].trim ();
   String [] tokens = firstLine.split ("\\)");
 
   String errorMsg = "error in OntologyFlatFileReader.parseHeader ().\n";
