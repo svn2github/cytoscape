@@ -514,7 +514,6 @@ if (null != plotter) {
   JTable table = (JTable)tableList.get(getCurrentTabAndTableIndex());
   DataMatrixLens lens = (DataMatrixLens) lensList.get (getCurrentTabAndTableIndex ());
   lens.setSelectedRows (table.getSelectedRows());
-  System.out.println("in resetPlotter()");
   // fire event to listeners
   DataMatrixBrowserEvent evt = new DataMatrixBrowserEvent(lens);
   Iterator it = listeners.iterator();

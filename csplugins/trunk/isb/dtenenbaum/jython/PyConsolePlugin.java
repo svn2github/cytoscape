@@ -17,6 +17,8 @@ import cytoscape.*;
 import cytoscape.plugin.*;
 import cytoscape.util.*;
 
+// we're now depending on the sharedData plugin
+import csplugins.isb.dtenenbaum.sharedData.*;
 
 
 //bla bla freaking bla y mas
@@ -57,10 +59,33 @@ public class PyConsolePlugin extends CytoscapePlugin {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			System.out.println("starting jython console...");
 			StringBuffer strb = new StringBuffer("For help and example scripts, please see\n");
 			strb.append("http://db.systemsbiology.net/cytoscape/jython");
+
+	        ThreadGroup currentGroup = Thread.currentThread().getThreadGroup();
+			int numThreads = currentGroup.activeCount();
+			Thread[] listOfThreads = new Thread[numThreads];
+
+			currentGroup.enumerate(listOfThreads);
+			for (int i = 0; i < numThreads; i++) {
+				if (null != listOfThreads[i]) { // in case the list has changed since we created it
+					if ("jythonConsoleThread".equals(listOfThreads[i].getName())) {
+						// TODO - get the console frame and give it the focus
+						System.out.println("There is already a console running, no action taken.");
+						return;
+					}
+				}
+			}
+			
+			System.out.println("starting jython console...");
+			
+			
+			SharedDataSingleton singleton = SharedDataSingleton.getInstance();
+			
 			pythonConsole = new SPyConsoleThread(strb.toString());
+			singleton.put("PyConsole", pythonConsole);
+			
+			
 			consoleThread = new Thread(pythonConsole, "jythonConsoleThread");
 			consoleThread.start();
 			consoleFrame = new JFrame("Jython Console");
