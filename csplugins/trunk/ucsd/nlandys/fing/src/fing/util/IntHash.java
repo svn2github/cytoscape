@@ -43,16 +43,43 @@ public final class IntHash
   }
 
   /**
-   * Returns -1 if this value is already in the hashtable, otherwise
-   * returns the value that has been inserted into the hashtable.<p>
+   * Puts a new value into this hashtable if that value is not already in
+   * this hashtable; otherwise does nothing.
+   * Returns false if and only if this value is already in the hashtable.<p>
    * Only non-negative values can be passed to this method.
    * Behavior is undefined If negative values are passed to put(int).<p>
    * Insertions into the hashtable are performed in [amortized] constant time.
    */
-  public final int put(int val)
+  public final boolean put(int value)
   {
     checkSize();
-    return -1;
+    // Double hashing.
+    // h(key, i) = (h1(key) + i*h2(key)) mod size.
+    // h1(key) = key mod size.
+    // h2(key) = 1 + (key mod (size - 1)).
+    // Note that size is always prime.
+    return false;
+  }
+
+  /**
+   * Determines whether or not the value specified is in this hashtable.
+   * Returns true if and only if the value specified is in this hashtable.<p>
+   * It is an error to pass negative values to this method.  Passing
+   * negative values to this method will result in undefined behavior of
+   * this hashtable.
+   */
+  public final boolean get(final int value)
+  {
+    final int h1OfKey = value % m_size;
+    int valInArr = m_arr[h1OfKey];
+    if (valInArr < 0) return false;
+    if (valInArr == value) return true;
+    final int h2OfKey = 1 + (value % (m_size - 1));
+    int index = (h1OfKey + h2OfKey) % m_size;
+    valInArr = m_arr[index];
+    while (true) {
+      if (valInArr < 0) return false;
+      if (valInArr == value) return true; }
   }
 
   /**
@@ -72,9 +99,9 @@ public final class IntHash
    * arbitrarily.<p>
    * The returned enumeration becomes "invalid" as soon as any other method
    * on this hashtable instance is called; calling methods on an invalid
-   * enumeration will cause undefined behavior in the enumerator.<p>
+   * enumeration will cause undefined behavior in the enumerator.
    * The returned enumerator has absolutely no effect on the underlying
-   * hashtable in all cases.<p>
+   * hashtable.<p>
    * This method returns a value in constant time.  The returned enumerator
    * returns successive elements in [amortized] constant time.
    */
@@ -98,9 +125,9 @@ public final class IntHash
     {
       final int newSize;
       try {
-        int primesInx;
-        for (primesInx = 0; m_arr.length != PRIMES[primesInx]; primesInx++) { }
-        newSize = PRIMES[primesInx + 1]; }
+        int primesInx = 0;
+        while (m_arr.length != PRIMES[primesInx++]) { }
+        newSize = PRIMES[primesInx]; }
       catch (ArrayIndexOutOfBoundsException e) {
         throw new IllegalStateException
           ("too many elements in this hashtable"); }
