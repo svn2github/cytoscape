@@ -143,6 +143,76 @@ public void testReadSmallAnnotationAddFullGoOntology () throws Exception
 
 } // testReadSmallAnnotationAddFullGoOntology
 //-------------------------------------------------------------------------
+public void testReadHeader_0 () throws Exception
+{
+  System.out.println ("testReadHeader_0");
+  String species = "Halobacterium sp.";
+  String curator = "KEGG";
+  String annotationType = "Metabolic Pathways";
+
+  String text = "(species=" + species + ") " +
+                "(type=" + annotationType + ") " +
+                "(curator=" + curator + ")  \n" +
+                 "VNG0006G = 251\n" +
+                 "VNG1821G = 10\n" +
+                 "VNG1821G = 71\n" +
+                 "VNG1821G = 120\n" +
+                 "VNG1821G = 350\n" +
+                 "VNG1821G = 561\n";
+  String filename = createTemporaryFile (text, ".test");
+  AnnotationFlatFileReader reader = new AnnotationFlatFileReader (new File (filename));
+  Annotation annotation = reader.getAnnotation ();
+
+  assertTrue (annotation.getCurator().equals (curator));
+  assertTrue (annotation.getSpecies().equals (species));
+  assertTrue (annotation.getType().equals (annotationType));
+
+} // testReadHeader_0
+//-------------------------------------------------------------------------
+public void testReadHeader_1 () throws Exception
+{
+  System.out.println ("testReadHeader_1");
+  String species = "Mus musculus";
+  String curator = "KEGG";
+  String annotationType = "Metabolic Pathways";
+
+  String text = "(type=" + annotationType + ") " +
+                "(curator=" + curator + ")  " +
+                "(species=" + species + ") \n" +
+                 "VNG0006G = 251\n" +
+                 "VNG1821G = 10\n" +
+                 "VNG1821G = 71\n" +
+                 "VNG1821G = 120\n" +
+                 "VNG1821G = 350\n" +
+                 "VNG1821G = 561\n";
+  String filename = createTemporaryFile (text, ".test");
+  AnnotationFlatFileReader reader = new AnnotationFlatFileReader (new File (filename));
+  Annotation annotation = reader.getAnnotation ();
+
+  assertTrue (annotation.getCurator().equals (curator));
+  assertTrue (annotation.getSpecies().equals (species));
+  assertTrue (annotation.getType().equals (annotationType));
+
+} // testReadHeader_2
+//-------------------------------------------------------------------------
+private static String createTemporaryFile (String text, String fileExtension) 
+{
+  try {
+    File filename = File.createTempFile ("cyto", fileExtension);
+    filename.deleteOnExit ();
+    FileWriter fileWriter = new FileWriter (filename);
+    fileWriter.write (text, 0, text.length ());
+    fileWriter.close ();
+    return filename.getPath ();
+    }
+  catch (Exception e) {
+    assertTrue (false);
+    }
+
+  return "error";
+
+} // createTemporaryFile
+//----------------------------------------------------------------------------------------
 public static void main (String [] args) 
 {
   junit.textui.TestRunner.run (new TestSuite (AnnotationFlatFileReaderTest.class));

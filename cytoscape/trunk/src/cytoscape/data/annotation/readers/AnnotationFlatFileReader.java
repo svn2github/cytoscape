@@ -55,10 +55,16 @@ public AnnotationFlatFileReader (File file) throws Exception
 //-------------------------------------------------------------------------
 public AnnotationFlatFileReader (String filename) throws Exception
 {
+  //System.out.println ("AnnotationFlatFileReader on " + filename);
   this.filename = filename;
   try {
     if (filename.trim().startsWith ("jar://")) {
       TextJarReader reader = new TextJarReader (filename);
+      reader.read ();
+      fullText = reader.getText ();
+      }
+    else if (filename.trim().startsWith ("http://")) {
+      TextHttpReader reader = new TextHttpReader (filename);      
       reader.read ();
       fullText = reader.getText ();
       }
@@ -84,7 +90,8 @@ public AnnotationFlatFileReader (String filename) throws Exception
   *************************/
 
   lines = fullText.split ("\n");
-  parseHeader ();
+  // System.out.println ("number of lines: " + lines.length);
+  parseHeader (lines [0]);
   parse ();
 
 }
@@ -99,10 +106,9 @@ private int stringToInt (String s)
     }
 }
 //-------------------------------------------------------------------------
-private void parseHeader () throws Exception
+public void parseHeader (String firstLine) throws Exception
 {
-  String firstLine = lines [0];
-  String [] tokens = firstLine.split ("\\)");
+  String [] tokens = firstLine.trim ().split ("\\)");
 
   String errorMsg = "error in AnnotationFlatFileReader.parseHeader ().\n";
   errorMsg += "First line of " + filename + " must have form:\n";
@@ -112,17 +118,18 @@ private void parseHeader () throws Exception
 
   if (tokens.length !=3) throw new IllegalArgumentException (errorMsg);
 
-  String [] speciesRaw = tokens [0].split ("=");
-  if (speciesRaw.length != 2) throw new IllegalArgumentException (errorMsg);
-  species = speciesRaw [1].trim();
-
-  String [] typeRaw = tokens [1].split ("=");
-  if (typeRaw.length != 2) throw new IllegalArgumentException (errorMsg);
-  annotationType = typeRaw [1].trim();
-
-  String [] curatorRaw = tokens [2].split ("=");
-  if (curatorRaw.length != 2) throw new IllegalArgumentException (errorMsg);
-  curator = curatorRaw [1].trim();
+  for (int i=0; i < tokens.length; i++) {
+    String [] subTokens = tokens [i].split ("=");
+    if (subTokens.length != 2) throw new IllegalArgumentException (errorMsg);
+    String name = subTokens [0].trim ();
+    String value = subTokens [1].trim ();
+    if (name.equalsIgnoreCase ("(species"))
+      species = value;
+    else if (name.equalsIgnoreCase ("(type"))
+      annotationType = value;
+    else if (name.equalsIgnoreCase ("(curator"))
+      curator = value;
+    }
 
 } // parseHeader
 //-------------------------------------------------------------------------
@@ -138,6 +145,8 @@ private void parse () throws Exception
     int id = stringToInt (tokens [1].trim());    
     annotation.add (entityName, id);
     }
+
+  // System.out.println ("AnnotationFlatFileReader.parse, annotation:\n" + annotation);
 
 } // parse
 //-------------------------------------------------------------------------
