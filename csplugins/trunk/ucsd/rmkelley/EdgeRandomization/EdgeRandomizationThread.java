@@ -22,20 +22,32 @@ import java.awt.event.*;
 import cytoscape.layout.*;
 
 
-class EdgeRandomizationThread extends Thread{
+public class EdgeRandomizationThread extends Thread{
   int iteration_limit;
   Random rand = new Random();
   //the file to which the results are output
   File scoreFile;
-  boolean error = false;
+
+  /**
+   * The network which will be randomizaed
+   */
+  CyNetwork currentNetwork;
+  
+  /**
+   * The options for computation
+   */
+  EdgeRandomizationOptions options;
+
+  public EdgeRandomizationThread(EdgeRandomizationOptions options){
+    this.options = options;
+  }
   
   public void run(){
-    CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
-    //first need to figure out if 
+    currentNetwork = options.currentNetwork;
     int [][] counts = createCountMatrix(currentNetwork.getNodeCount());
+     //figure out what the different edge types are in the graph
     
-    //figure out what the different edge types are in the graph
-    Set types = new HashSet();
+    //Assign each edge to its respective type
     HashMap type2EdgeList = new HashMap();
     for(Iterator edgeIt = currentNetwork.edgesIterator();edgeIt.hasNext();){
       Edge edge = (Edge)edgeIt.next();
@@ -48,16 +60,14 @@ class EdgeRandomizationThread extends Thread{
 	type2EdgeList.put(type,new Vector());
       }
       ((List)type2EdgeList.get(type)).add(edge);
-      types.add(type);
     }
     
-    EdgeRandomizationDialog dialog = new EdgeRandomizationDialog(new Vector(types));
-    dialog.show();
-    List directedTypes = dialog.getDirectedTypes();
-    iteration_limit = dialog.getIterations();
+   
+    List directedTypes = options.directedTypes;
+    iteration_limit = options.iterations;
     boolean [][] adjacencyMatrix = new boolean[currentNetwork.getNodeCount()][currentNetwork.getNodeCount()];
     
-    for(Iterator typeIt = types.iterator();typeIt.hasNext();){
+    for(Iterator typeIt = type2EdgeList.keySet().iterator();typeIt.hasNext();){
       String type = (String)typeIt.next();
       boolean directed = directedTypes.contains(type);
       List edgeList = (List)type2EdgeList.get(type);
@@ -79,15 +89,25 @@ class EdgeRandomizationThread extends Thread{
     String filename = currentNetwork.getTitle()+".rand";
     scoreFile = new File(filename);
     try{
+      ProgressMonitor myMonitor =  new ProgressMonitor(Cytoscape.getDesktop(),null, "Writing file to disk",0,currentNetwork.getNodeCount());
+      myMonitor.setMillisToPopup(50);
+      int updateInterval = (int)Math.ceil(currentNetwork.getNodeCount()/100.0);
       PrintStream stream = new PrintStream(new FileOutputStream(scoreFile));
       stream.println(iteration_limit);
       for(int idx=0;idx<currentNetwork.getNodeCount();idx++){
+	if(idx % updateInterval == 0){
+	  if(myMonitor.isCanceled()){
+	    throw new RuntimeException("Score file generation cancelled");
+	  }
+	  myMonitor.setProgress(idx);
+	}
 	stream.print(currentNetwork.getNodeAttributeValue(currentNetwork.getNode(idx+1),Semantics.CANONICAL_NAME));
 	for(int idy=0;idy<counts[idx].length;idy++){
 	  stream.print("\t"+counts[idx][idy]);
 	}
 	stream.println();
       }
+      myMonitor.close();
       stream.close();
     }catch(Exception e){
       e.printStackTrace();
@@ -97,18 +117,9 @@ class EdgeRandomizationThread extends Thread{
   }
 
 
-  /**
-   * Get the file where teh scoring information was stored
-   */
+
   public File getScoreFile(){
     return scoreFile;
-  }
-
-  /**
-   * Did the thread run to completion without an error?
-   */
-  public boolean isError(){
-    return error;
   }
 
   public int [][] createCountMatrix(int nodeCount){
@@ -139,10 +150,14 @@ class EdgeRandomizationThread extends Thread{
 
     int iteration = 0;
     ProgressMonitor myMonitor =  new ProgressMonitor(Cytoscape.getDesktop(),null, "Randomizing Type: "+type,0,100);
+    myMonitor.setMillisToPopup(50);
     int updateInterval = (int)Math.ceil(iteration_limit/100.0);
     int progress = 0;
     while(iteration++ < iteration_limit){
       if(iteration%updateInterval == 0){
+	if(myMonitor.isCanceled()){
+	  throw new RuntimeException("Score file generation cancelled");
+	}
 	myMonitor.setProgress(progress++);
       }
       int randomized_edges = 0;

@@ -22,14 +22,42 @@ import java.awt.event.*;
 import cytoscape.layout.*;
 
 
-class EdgeRandomizationDialog extends JDialog{
+public class EdgeRandomizationDialog extends JDialog{
   JTable table;
+  EdgeRandomizationThread thread;
   EdgeRandomizationTableModel tableModel;
   List directedTypes;
   int iterations = 10000;
   JTextField iterationText;
-  public EdgeRandomizationDialog(Vector types){
-    setModal(true);
+  /**
+   * The network for which scores are being determined
+   */
+  CyNetwork currentNetwork;
+  /**
+   * Assume the dialog is cancelld until the ok button 
+   * is pressed
+   */
+  boolean cancelled = true;
+  /**
+   * The options specified by the dialog
+   */
+  EdgeRandomizationOptions options;
+  
+  public EdgeRandomizationDialog(CyNetwork currentNetwork){
+    //figure out what the different edge types are in the graph
+    this.currentNetwork = currentNetwork;
+    Set typeSet = new HashSet();
+    for(Iterator edgeIt = currentNetwork.edgesIterator();edgeIt.hasNext();){
+      Edge edge = (Edge)edgeIt.next();
+      if(edge.getSource() == edge.getTarget()){
+	continue;
+      }
+      String type = (String)currentNetwork.getEdgeAttributeValue(edge,Semantics.INTERACTION);
+      typeSet.add(type);
+    }
+   
+    Vector types = new Vector(typeSet);
+
     getContentPane().setLayout(new BorderLayout());
     
     JPanel northPanel = new JPanel();
@@ -54,29 +82,61 @@ class EdgeRandomizationDialog extends JDialog{
     getContentPane().add(new JScrollPane(table),BorderLayout.CENTER);
     
     JPanel southPanel = new JPanel();
-    JButton ok = new JButton("OK");
+    JButton ok = new JButton("Begin Randomization");
     southPanel.add(ok);
     getContentPane().add(southPanel,BorderLayout.SOUTH);
     ok.addActionListener(new ActionListener(){
 	public void actionPerformed(ActionEvent ae){
-	  directedTypes = new Vector();
+	  /*
+	   * Remeber that the user requested the action, and did
+	   * not cancel the dialog
+	   */
+	  cancelled = false;
+
+	  /*
+	   * Set the options
+	   */
+	  options = new EdgeRandomizationOptions();
+	  options.directedTypes = new Vector();
 	  for(int idx=0;idx<tableModel.getRowCount();idx++){
 	    if(((Boolean)tableModel.getValueAt(idx,1)).booleanValue()){
-	      directedTypes.add(tableModel.getValueAt(idx,0));
+	      options.directedTypes.add(tableModel.getValueAt(idx,0));
 	    }
 	  }
+	  options.iterations = iterations;
+	  options.currentNetwork = EdgeRandomizationDialog.this.currentNetwork;
+	  
+	  /*
+	   * Get rid of the dialog
+	   */
+	  
 	  dispose();
 	}});
     pack();
 
   }
 
-  public List getDirectedTypes(){
-    return directedTypes;
+
+  public boolean isCancelled(){
+    return cancelled;
   }
 
-  public int getIterations(){
-    return iterations;
+  public EdgeRandomizationOptions getOptions(){
+    return options;
+  }
+
+  public void dispose(){
+    super.dispose();
+    synchronized(this){
+      notify();
+    }
+  }
+
+  public void hide(){
+    super.hide();
+    synchronized(this){
+      notify();
+    }
   }
   
 }

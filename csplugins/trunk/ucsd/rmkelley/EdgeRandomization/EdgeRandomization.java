@@ -34,29 +34,41 @@ import cytoscape.layout.*;
  * graph and its view.
  */
 public class EdgeRandomization extends CytoscapePlugin{
+    
+  EdgeRandomizationDialog dialog;
+  /**
+   * This constructor saves the cyWindow argument (the window to which this
+   * plugin is attached) and adds an item to the operations menu.
+   */
+  public EdgeRandomization(){
+    Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add( new TestAction() );
+  }
+    
+  
+
+  public class TestAction extends AbstractAction{
+    
+    public TestAction() {super("Calculate Edge Scores");}
+    
     /**
-     * This constructor saves the cyWindow argument (the window to which this
-     * plugin is attached) and adds an item to the operations menu.
+     * This method is called when the user selects the menu item.
      */
-    public EdgeRandomization(){
-	Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add( new TestAction() );
+    public void actionPerformed(ActionEvent ae) {
+      dialog = new EdgeRandomizationDialog(Cytoscape.getCurrentNetwork());
+      dialog.show();
+      if(!dialog.isCancelled()){
+	new Thread(new Runnable(){
+	    public void run(){
+	      try{
+		EdgeRandomizationThread thread = new EdgeRandomizationThread(dialog.getOptions());
+		thread.run();
+	      }catch(Exception e){
+		JOptionPane.showMessageDialog(Cytoscape.getDesktop(),e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+	      }}}).start();
+      }
     }
-    
-   
-
-    public class TestAction extends AbstractAction{
-    
-	public TestAction() {super("Calculate Edge Scores");}
-    
-	/**
-	 * This method is called when the user selects the menu item.
-	 */
-	public void actionPerformed(ActionEvent ae) {
-	    Thread t = new EdgeRandomizationThread();
-	    t.start();
-	}
-
-    }
+      
+  }
 }
 
 
