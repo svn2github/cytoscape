@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+	<head></head>
+	<body bgcolor="white">
+    Task Framework for running and monitoring long-running processes
+    within Cytoscape.
+
+    <H3>Task Framework:  Overview</H3>
+    For our purposes, we define a <I>Task</I> as any long-running process that may
+    occur within Cytoscape.  A long-running task may take several seconds
+    or several minutes to complete.  For example, retrieving data from a remote
+    database, running a layout algorithm, or running a custom algorithm on
+    expression data are all examples of tasks.
+    <P>
+    When running a task, it is important that the main Cytoscape UI remain
+    responsive, and it is therefore imperative that tasks run in a separate
+    thread.  This task package provides a convenient framework for building
+    new tasks in separate threads, and for monitoring those tasks from the
+    Cytoscape UI.
+    <H3>Task Attributes</H3>
+    Tasks share a number of important attributes, and the task framework
+    provides support for the following:
+    <UL>
+    <LI>Transparent Progress:  it is useful to determine how much progress
+    a task has completed.  However, some tasks may have no idea how long they
+    will execute.  For example, a task may download an initial data file,
+    and based on this file, may need to download X number of additional files.
+    In this case, the task progress is initially indeterminate, and will be
+    represented with an appropriate indeterminate progress bar in the Cytoscape
+    UI.  A task can safely switch back and forth between determinate and
+    indeterminate as it sees fit.  To determine if the task is indeterminate,
+    use the {@link csplugins.task.BaseTask#isIndeterminate()}
+    method.  If the task is determinate, use the
+    {@link csplugins.task.BaseTask#getProgressValue getProgressValue()} and
+    {@link csplugins.task.BaseTask#getMaxProgressValue getMaxProgressValue()}
+    methods to determine the actual state of progress.
+    <BR><P>Tasks also have the option of providing time estimates for remaining
+    execution via the
+    {@link csplugins.task.BaseTask#getEstimatedTimeRemaining getEstimatedTimeRemaining()}
+    method.  Note that not all tasks can provide accurate time estimates.
+    A negative return value indicates that time estimates are not available.
+    </LI>
+    <P>
+    <LI>Easy Access to Exceptions and Human-Readable Error Messages:
+    By definition, tasks run in a separate thread, and this can make it more
+    difficult to handle exceptions appropriately and display error messages
+    to the end user.  By default, the task framework will store an internal
+    exception so that it can be easily inspected by another thread.
+    Use the {@link csplugins.task.BaseTask#errorOccurred errorOccurred()}
+    method to determine if the task has encountered an error,  use the
+    {@link csplugins.task.BaseTask#getInternalException getInternalException()}
+    method to determine the actual exception encountered, and use the
+    {@link csplugins.task.BaseTask#getHumanReadableErrorMessage getHumanReadableErrorMessage()}
+    to determine the error message to be displayed to the end-user.
+    <P>
+    <LI>Interruptability:  Long-running tasks should be interruptable
+    by another thread or by the end-user.  For example, if a user decides to
+    query a remote database, and the query is taking too long, the end-user
+    should be able to easily cancel the task.  Tasks are not required to be
+    interruptable, but the task framework provides a convenient framework for
+    doing so.  First, a task can be interrupted via the Thread
+    {@link csplugins.task.BaseTask#interrupt interrupt()} method.
+    Once a task has been interrupted, its
+    {@link csplugins.task.BaseTask#isInterrupted isInterrupted()}
+    flag will be set to true.  The task can then choose among three courses
+    of action:  1)  ignore the interrupt and proceed as before;  2)  immediately
+    suspend all work;  or 3) get the task to some safe state, perform some clean
+    up and then stop all task work.  The third option is recommended, but
+    requres a little extra work.  For a simple example of implementing the
+    third option, refer to the example
+    {@link  csplugins.task.SampleTask}.
+    </LI>
+    </UL>
+    <H3>Creating New Tasks</H3>
+    To create a new task, create a new class which extends
+    {@link csplugins.task.BaseTask BaseTask}, and provide an
+    implementation for the
+    {@link csplugins.task.BaseTask#executeTask executeTask()} method.
+    <P>
+    Your subclass is then responsible for indicating whether it is determinate
+    or indeterminate, updating its own progress, providing time
+    estimates on remaining execution time, setting its own error
+    messages, and deciding what to do when interrupted.
+    <P>For a bare bones example task, refer to
+    {@link csplugins.task.SampleTask SampleTask}.  This task
+    counts from 0..100 in 5 seconds, provides time remaining estimates,
+    and provides for interruptability.
+
+    <H3>The MVC Pattern and Creating Swing Safe Tasks</H3>
+    In context of the Model-View-Controller (MVC) pattern, we consider
+    Tasks to be Model objects.  These model objects run specific processes,
+    and provide updated information about those processes.  Tasks should
+    therefore never contain a View, and should never never modify UI components
+    directly.  This is in keeping with the Swing Single Thread rule:
+    <P>
+    <BLOCKQUOTE>
+    "Once a Swing component has been realized, all code that might affect or
+    depend on the state of that component should be executed in the
+    event-dispatching thread."
+    </BLOCKQUOTE>
+    <P>
+    If your task must modify a UI component, you are advised to use one of the
+    {@link javax.swing.SwingUtilities javax.swing.SwingUtilities}:
+    <UL>
+    <LI>{@link javax.swing.SwingUtilities#invokeLater invokeLater()}:
+    Requests that some code be executed in the
+    event-dispatching thread. This method returns immediately, without waiting
+    for the code to execute.
+    <LI>{@link javax.swing.SwingUtilities#invokeAndWait invokeAndWait()}:
+    Acts like invokeLater(), except that this method waits for the code to
+    execute. As a rule, you should use invokeLater() instead of this method.
+    </UL>
+    For additional information on creating Swing safe tasks, refer
+    to the following resources:
+    <UL>
+    <LI><A HREF=
+    "http://java.sun.com/products/jfc/tsc/articles/threads/threads1.html">
+    Threads and Swing</A>
+    <LI><A HREF=
+    "http://java.sun.com/products/jfc/tsc/articles/threads/threads3.html">
+    The Last Word in Swing Threads</A>
+    </UL>
+    <H3>Monitoring / Managing Tasks</H3>
+    The Task framework also includes a reusable
+    {@link csplugins.task.TaskMonitorUI TaskMonitorUI} class for
+    monitoring / managing long-runnning tasks.
+    <P>
+    A sample screenshot of the TaskMonitorUI class is shown below:
+    <P>
+    <IMG SRC="doc-files/taskMonitorUI.png" BORDER=0/>
+	</body>
+</html>

@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<!-- build.xml - Build file for csplugins commons library -->
+<project name="csplugins Commons Library" default="compile" basedir=".">
+
+	<!--  Define Check Style Task -->
+	<taskdef resource="checkstyletask.properties"/>
+	
+	<!--  The directory containing library jar files -->	
+	<property name="lib.dir" value="lib"/>
+
+  	<!-- The directory containing source code -->
+  	<property name="src.dir" value="src"/>
+
+  	<!-- The directory containing config files-->
+  	<property name="config.dir" value="config"/>
+
+  	<!-- Temporary build directories -->
+ 	<property name="build.dir" value="target"/>
+  	<property name="build.classes" value="${build.dir}/classes"/>
+    <property name="build.docs" value="${build.dir}/docs"/>
+
+	<!-- Distribution directory -->
+	<property name="dist.dir" value="dist"/>
+
+	<!-- Global "magic" property for <javac> -->
+	<property name="build.compiler" value="modern"/>
+	
+	<!-- Classpath with all lib JAR Files -->
+	<path id="classpath">
+		<pathelement path="${build.classes}"/>	
+		<pathelement path="${basedir}"/>
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar"/>
+		</fileset>
+	</path>
+
+  	<!-- Target to create the build directories prior to compilation -->
+  	<target name="prepare">
+    	<mkdir dir="${build.dir}"/>
+	    <mkdir dir="${build.docs}"/>
+    	<mkdir dir="${build.classes}"/>
+        <mkdir dir="${dist.dir}"/>
+  	</target>
+
+	<!--  Target to clean out all directories -->
+  	<target name="clean" description="Removes all generated files.">
+    	<delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}"/>
+        <delete>
+                <fileset dir="." includes="*.log"/>
+        </delete>
+  	</target>
+
+	<!--  Target to compile all code -->
+  	<target name="compile" depends="prepare"
+          description="Compiles all source code.">
+    	<javac srcdir="${src.dir}" destdir="${build.classes}"
+            nowarn="on" debug="true" debuglevel="source,lines,var">
+    		<classpath refid="classpath"/>
+    	</javac>
+  	</target>
+
+    <!--  Target to Create PlugIn JAR -->
+    <target name="jar" depends="compile" description="Creates Jar">
+        <jar destfile="${dist.dir}/commons.jar">
+            <fileset dir="${build.classes}"/>
+        </jar>
+    </target>
+
+    <!--  Target to Create Run Samples -->
+    <target name="sample1" depends="compile"
+        description="Runs Sample1:  Default TaskMonitorUI">
+		<java classname="csplugins.test.task.TestUI"
+    		classpathref="classpath" fork="true" maxmemory="512m">
+		<arg line="1"/>
+       	</java>
+    </target>
+    <target name="sample2" depends="compile"
+        description="Runs Sample2:  Customized TaskMonitorUI">
+		<java classname="csplugins.test.task.TestUI"
+    		classpathref="classpath" fork="true" maxmemory="512m">
+		<arg line="2"/>
+       	</java>
+    </target>
+
+	<!--  Target to Run CheckStyle on all Source Code -->
+	<!--  Uses the Sun Coding Conventions Configuration -->
+	<target name="check" description="Checks Sun Coding Conventions">
+		<checkstyle config="${config.dir}/sun_checks.xml">
+  			<fileset dir="${src.dir}">
+				<include name="**/*.java"/>
+			</fileset>
+  		</checkstyle>
+  	</target>
+
+	<!--  Target to Run JavaDoc on all Source Code -->
+	<target name="doc" description="Runs JavaDoc">
+		<javadoc packagenames="csplugins.**" sourcepath="${src.dir}"
+            destdir="${build.docs}" classpathref="classpath">
+		</javadoc>
+	</target>
+</project>
