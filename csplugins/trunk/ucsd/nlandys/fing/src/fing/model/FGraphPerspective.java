@@ -517,16 +517,18 @@ class FGraphPerspective implements GraphPerspective
     return nativeConnEdgeIter.hasNext();
   }
 
-  public int getEdgeCount(Node from, Node to, boolean countUndirectedEdges)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  public int getEdgeCount(Node from, Node to, boolean countUndirectedEdges) {
+    if (from.getRootGraph() == m_root && to.getRootGraph() == m_root)
+      return getEdgeCount(from.getRootGraphIndex(),
+                          to.getRootGraphIndex(),
+                          countUndirectedEdges);
+    else return -1; }
 
-  public int getEdgeCount(int perspFromNodeInx, int perspToNodeInx,
-                          boolean countUndirectedEdges)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  public int getEdgeCount(int fromNodeInx, int toNodeInx,
+                          boolean countUndirectedEdges) {
+    try { return getEdgeIndicesArray(fromNodeInx, toNodeInx,
+                                     countUndirectedEdges).length; }
+    catch (NullPointerException e) { return -1; } }
 
   public java.util.List edgesList(Node from, Node to)
   {
