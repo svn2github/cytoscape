@@ -1089,8 +1089,70 @@ public final class AllGraphPerspectiveMethodsTest
       throw new IllegalStateException("expected null edge children");
 
     // getAdjacentEdgesList(Node, boolean, boolean, boolean).
+    List adjacentEdges = persp.getAdjacentEdgesList
+      (persp.getNode(nodeInx[2]), true, true, true);
+    if (adjacentEdges.size() != 4)
+      throw new IllegalStateException("expected 4 adjacent edges");
+    for (int i = 0;; i++)
+      if (((Edge) adjacentEdges.get(i)).getRootGraphIndex() == edgeInx[1])
+        break;
+    for (int i = 0;; i++)
+      if (((Edge) adjacentEdges.get(i)).getRootGraphIndex() == edgeInx[2])
+        break;
+    for (int i = 0;; i++)
+      if (((Edge) adjacentEdges.get(i)).getRootGraphIndex() == edgeInx[3])
+        break;
+    for (int i = 0;; i++)
+      if (((Edge) adjacentEdges.get(i)).getRootGraphIndex() == edgeInx[6])
+        break;
+    if (persp.getAdjacentEdgesList(root2Node, false, false, false) != null ||
+        persp.getAdjacentEdgesList(nodeNotInPersp, true, false, true) != null)
+      throw new IllegalStateException("expected null adjacent edges list");
+    adjacentEdges = persp.getAdjacentEdgesList
+      (persp.getNode(nodeInx[2]), false, false, false);
+    if (adjacentEdges.size() != 0)
+      throw new IllegalStateException("should have been 0 adjacent edges");
 
     // getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean).
+    int[] adjacentEdgeInx = persp.getAdjacentEdgeIndicesArray
+      (nodeInx[0], false, true, false);
+    if (adjacentEdgeInx.length != 2)
+      throw new IllegalStateException("should have been 2 adjacent edges");
+    for (int i = 0;; i++) if (adjacentEdgeInx[i] == edgeInx[2]) break;
+    for (int i = 0;; i++) if (adjacentEdgeInx[i] == edgeInx[5]) break;
+    adjacentEdgeInx = persp.getAdjacentEdgeIndicesArray
+      (nodeInx[1], true, true, false);
+    if (adjacentEdgeInx.length != 3)
+      throw new IllegalStateException("should have been 3 adjacent edges");
+    for (int i = 0;; i++) if (adjacentEdgeInx[i] == edgeInx[1]) break;
+    for (int i = 0;; i++) if (adjacentEdgeInx[i] == edgeInx[0]) break;
+    for (int i = 0;; i++) if (adjacentEdgeInx[i] == edgeInx[4]) break;
+    adjacentEdgeInx = persp.getAdjacentEdgeIndicesArray
+      (nodeInx[3], true, false, true);
+    if (adjacentEdgeInx.length != 1)
+      throw new IllegalStateException("should have been 1 adjacent edge");
+    for (int i = 0;; i++) if (adjacentEdgeInx[i] == edgeInx[6]) break;
+    adjacentEdgeInx = persp.getAdjacentEdgeIndicesArray
+      (nodeInx[4], false, false, true);
+    if (adjacentEdgeInx.length != 0)
+      throw new IllegalStateException("should have been 0 adjacent edges");
+    adjacentEdgeInx = persp.getAdjacentEdgeIndicesArray
+      (nodeInx[0], true, false, false);
+    if (adjacentEdgeInx.length != 0)
+      throw new IllegalStateException("should have been 0 adjacent edges");
+    adjacentEdgeInx = persp.getAdjacentEdgeIndicesArray
+      (nodeInx[1], false, false, true);
+    if (adjacentEdgeInx.length != 1)
+      throw new IllegalStateException("should have been 1 adjacent edge");
+    for (int i = 0;; i++) if (adjacentEdgeInx[i] == edgeInx[5]) break;
+    if (persp.getAdjacentEdgeIndicesArray(0, true, false, true) != null ||
+        persp.getAdjacentEdgeIndicesArray(Integer.MIN_VALUE, true, true,
+                                          true) != null ||
+        persp.getAdjacentEdgeIndicesArray(nodeNotInPersp.getRootGraphIndex(),
+                                          false, true, true) != null ||
+        persp.getAdjacentEdgeIndicesArray(minNodeInx - 1, false, true,
+                                          true) != null)
+      throw new IllegalStateException("expected null adjacent edge inx arr");
 
     // getConnectingEdges(List).
 
