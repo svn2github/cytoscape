@@ -40,6 +40,8 @@ public class FooAction extends CytoscapeAction
           b = !b;
           int addThis = (forward ? 1 : -1);
           for (int i = 0; i < nodes.length; i++) {
+//             nodes[i].setXPosition(nodes[i].getXPosition() + addThis);
+//             nodes[i].setYPosition(nodes[i].getYPosition() + addThis); } } } );
             nodes[i].setOffset(nodes[i].getXPosition() + addThis,
                                nodes[i].getYPosition() + addThis); } } } );
     dialog.getContentPane().add(slider);
