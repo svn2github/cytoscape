@@ -84,12 +84,17 @@ public class PyConsolePlugin extends CytoscapePlugin {
 		public void actionPerformed(ActionEvent e) {
 			SharedDataSingleton singleton = SharedDataSingleton.getInstance();
 			StringBuffer strb = new StringBuffer("For help and example scripts, please see\n");
-			strb.append("http://db.systemsbiology.net/cytoscape/jython");
+			strb.append("http://db.systemsbiology.net/cytoscape/jython or type\n");
+			strb.append("help()\n");
+			strb.append("at the prompt.");
 
 	        ThreadGroup currentGroup = Thread.currentThread().getThreadGroup();
 			int numThreads = currentGroup.activeCount();
 			Thread[] listOfThreads = new Thread[numThreads];
 
+			// see if there is a previous console running
+			// if so, don't start a new one
+			// but give the existing one the focus
 			currentGroup.enumerate(listOfThreads);
 			for (int i = 0; i < numThreads; i++) {
 				if (null != listOfThreads[i]) { // in case the list has changed since we created it
