@@ -184,7 +184,7 @@ public final class MinIntHeap
           public int numRemaining() { return size - index; }
           public int nextInt()
           {
-            
+            return -1;
           } };
     }
   }
