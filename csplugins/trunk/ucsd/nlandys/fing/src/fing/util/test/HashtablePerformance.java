@@ -38,6 +38,9 @@ public class HashtablePerformance
     in = null;
     buff = null;
 
+    // Load the classes we're going to use into the classloader.
+    _THE_TEST_CASE_(new int[] { 0, 3, 4, 3, 9, 9, 1 });
+
     // Sleep, collect garbage, have a snack, etc.
     Thread.sleep(1000);
 
