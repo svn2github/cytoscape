@@ -5,23 +5,31 @@
 		</p>
 		<p>
 		You may now download Cytoscape for Unix, Windows and Mac OS X systems through any of the following 
-		three options:
+		four options:
 		</p>
 		<h4>
-		Option 1 (One Click Install) : Run the InstallAnywhere Cytoscape Installer. 
+		Option 1:  Windows / Linux:  One Step Installation
 		</h4>
 		<p>
 		</p>
-		<h2>
-			<a href='<?= $cyto2_install_anywhere ?>'>
-			Click here</a> to install Cytoscape 2.0.
+		<UL>
+			<LI><a href='<?= $cyto2_install_anywhere ?>'>
+			Install Cytoscape 2.0 (One Click Install)</a> 
+		</UL>
 		</h2>
 		<p>
 		</p>
-		<br>
-		<br>
+		
+		<h4>
+		Option 2:  Mac OS X Release
+		</h4>
 		<p>
-		<h4>Option 2:  Download a .tar.gz or .zip distribution file: 
+		<ul>
+			<li><a href='<?= $cyto2_mac_east ?>' >Mac OS X Release</A></li>
+		</ul>
+		</p>
+		<p>
+		<h4>Option 3:  All Platforms:  Download a .tar.gz or .zip distribution file
 		</H4>
 		</p>
 		<p>
@@ -29,7 +37,7 @@
 		<ul>
 			<li>
 				<a href='<?= $cyto2_gz_east ?>' >
-					Unix 
+					Unix / Linux / Mac OS X
 				</a>
 				- 
 				<a href='<?= $cyto2_zip_east ?>'>
@@ -41,12 +49,9 @@
 		</p>
 		<p>
 		<p>
-		<h4>Option 3:  Download the Complete Source Code for Cytoscape:
+		<h4>Option 4:  All Platforms:  Download the Complete Source Code for Cytoscape
 		</h4>
     		<UL>
 		    <li><a href='<?= $cyto2_source_east ?>'>Cytoscape source</a> - USA, East Coast (New York, NY).</li>  
 		</UL>
-	<p>&nbsp;&nbsp;<b>Note:</b>
-In order to compile Cytoscape 1.1 from the source files, you will need a copy of yFiles 2.01, available from <a
- href="http://www.yworks.com/en/products_yfiles_about.htm">yWorks</a>.
   </p>
