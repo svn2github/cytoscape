@@ -356,19 +356,15 @@ class FGraphPerspective implements GraphPerspective
     return node.getRootGraph() == m_root &&
       !(m_rootToNativeNodeInxMap.get(~(node.getRootGraphIndex())) < 0); }
 
-  public boolean containsNode(Node node, boolean recurse)
-  {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
-  }
+  public boolean containsNode(Node node, boolean recurse) {
+    throw new UnsupportedOperationException("meta nodes not yet supported"); }
 
   public boolean containsEdge(Edge edge) {
     return edge.getRootGraph() == m_root &&
       !(m_rootToNativeEdgeInxMap.get(~(edge.getRootGraphIndex())) < 0); }
 
-  public boolean containsEdge(Edge edge, boolean recurse)
-  {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
-  }
+  public boolean containsEdge(Edge edge, boolean recurse) {
+    throw new UnsupportedOperationException("meta nodes not yet supported"); }
 
   public GraphPerspective join(GraphPerspective persp) {
     final FGraphPerspective thisPersp = this;
@@ -692,108 +688,68 @@ class FGraphPerspective implements GraphPerspective
     return m_graph.isDirectedEdge(m_rootToNativeEdgeInxMap.get(~edgeInx)) == 1;
   }
 
-  public boolean isMetaParent(Node child, Node parent)
-  {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
-  }
+  public boolean isMetaParent(Node child, Node parent) {
+    throw new UnsupportedOperationException("meta nodes not yet supported"); }
 
   public boolean isNodeMetaParent(int perspChildNodeInx,
-                                  int perspParentNodeInx)
-  {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
-  }
+                                  int perspParentNodeInx) {
+    throw new UnsupportedOperationException("meta nodes not yet supported"); }
 
-  public java.util.List metaParentsList(Node node)
-  {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
-  }
+  public java.util.List metaParentsList(Node node) {
+    throw new UnsupportedOperationException("meta nodes not yet supported"); }
 
-  public java.util.List nodeMetaParentsList(int perspNodeInx)
-  {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
-  }
+  public java.util.List nodeMetaParentsList(int perspNodeInx) {
+    throw new UnsupportedOperationException("meta nodes not yet supported"); }
 
-  public int[] getNodeMetaParentIndicesArray(int perspNodeInx)
-  {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
-  }
+  public int[] getNodeMetaParentIndicesArray(int perspNodeInx) {
+    throw new UnsupportedOperationException("meta nodes not yet supported"); }
 
-  public boolean isMetaChild(Node parent, Node child)
-  {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
-  }
+  public boolean isMetaChild(Node parent, Node child) {
+    throw new UnsupportedOperationException("meta nodes not yet supported"); }
 
-  public boolean isNodeMetaChild(int perspNodeInx, int perspChildInx)
-  {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
-  }
+  public boolean isNodeMetaChild(int perspNodeInx, int perspChildInx) {
+    throw new UnsupportedOperationException("meta nodes not yet supported"); }
 
-  public java.util.List nodeMetaChildrenList(Node node)
-  {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
-  }
+  public java.util.List nodeMetaChildrenList(Node node) {
+    throw new UnsupportedOperationException("meta nodes not yet supported"); }
 
-  public java.util.List nodeMetaChildrenList(int perspParentInx)
-  {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
-  }
+  public java.util.List nodeMetaChildrenList(int perspParentInx) {
+    throw new UnsupportedOperationException("meta nodes not yet supported"); }
 
-  public int[] getNodeMetaChildIndicesArray(int perspNodeInx)
-  {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
-  }
+  public int[] getNodeMetaChildIndicesArray(int perspNodeInx) {
+    throw new UnsupportedOperationException("meta nodes not yet supported"); }
 
-  public boolean isMetaParent(Edge child, Node parent)
-  {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
-  }
+  public boolean isMetaParent(Edge child, Node parent) {
+    throw new UnsupportedOperationException("meta nodes not yet supported"); }
 
   public boolean isEdgeMetaParent(int perspChildEdgeInx,
-                                  int perspParentNodeInx)
-  {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
-  }
+                                  int perspParentNodeInx) {
+    throw new UnsupportedOperationException("meta nodes not yet supported"); }
 
-  public java.util.List metaParentsList(Edge edge)
-  {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
-  }
+  public java.util.List metaParentsList(Edge edge) {
+    throw new UnsupportedOperationException("meta nodes not yet supported"); }
 
-  public java.util.List edgeMetaParentsList(int perspEdgeInx)
-  {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
-  }
+  public java.util.List edgeMetaParentsList(int perspEdgeInx) {
+    throw new UnsupportedOperationException("meta nodes not yet supported"); }
 
-  public int[] getEdgeMetaParentIndicesArray(int perspEdgeInx)
-  {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
-  }
+  public int[] getEdgeMetaParentIndicesArray(int perspEdgeInx) {
+    throw new UnsupportedOperationException("meta nodes not yet supported"); }
 
-  public boolean isMetaChild(Node parent, Edge child)
-  {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
-  }
+  public boolean isMetaChild(Node parent, Edge child) {
+    throw new UnsupportedOperationException("meta nodes not yet supported"); }
 
   public boolean isEdgeMetaChild(int perspParentNodeInx,
-                                 int perspChildEdgeInx)
-  {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
-  }
+                                 int perspChildEdgeInx) {
+    throw new UnsupportedOperationException("meta nodes not yet supported"); }
 
-  public java.util.List edgeMetaChildrenList(Node node)
-  {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
-  }
+  public java.util.List edgeMetaChildrenList(Node node) {
+    throw new UnsupportedOperationException("meta nodes not yet supported"); }
 
-  public java.util.List edgeMetaChildrenList(int perspParentNodeInx)
-  {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
-  }
+  public java.util.List edgeMetaChildrenList(int perspParentNodeInx) {
+    throw new UnsupportedOperationException("meta nodes not yet supported"); }
 
-  public int[] getEdgeMetaChildIndicesArray(int perspParentNodeInx)
-  {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
-  }
+  public int[] getEdgeMetaChildIndicesArray(int perspParentNodeInx) {
+    throw new UnsupportedOperationException("meta nodes not yet supported"); }
 
   public java.util.List getAdjacentEdgesList(Node node,
                                              boolean undirected,
