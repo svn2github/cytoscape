@@ -114,7 +114,7 @@ public class ShrinkExpandGraph extends AbstractAction {
             cursor.cyclicNext();
         }
 
-        parent.redrawGraph();
+        parent.redrawGraph(false, false);
     }//Action Performed
 
 }//ShrinkExpandGraph class
