@@ -93,6 +93,8 @@ class DynamicGraphRepresentation implements DynamicGraph
     try { e.m_prevInEdge.m_nextInEdge = e.m_nextInEdge; }
     catch (NullPointerException exc) { // e.m_prevInEdge is null.
       m_nodes.getNodeAtIndex(e.m_targetNode).m_firstInEdge = e.m_nextInEdge; }
+    e.m_nextOutEdge = null; e.m_prevOutEdge = null;
+    e.m_nextInEdge = null; e.m_prevInEdge = null;
     m_edgeDepot.recycleEdge(e);
     return true;
   }
