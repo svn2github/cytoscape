@@ -47,7 +47,7 @@
            debug="true"
            includeAntRuntime="no"/>
     <delete file="${build.dir}/build.xml"/>
-    <java fork="true" classname="GenerateBuildFile"
+    <java fork="true" classname="GenerateBuildFile" failonerror="true"
           output="${build.dir}/build.xml">
       <classpath path="${classes.dir}/buildgen"/>
       <arg value="cytoscape.task framework"/>
