@@ -156,8 +156,13 @@ public final class GraphConverter
       if (!isMovableNode(nodeIndex))
         throw new UnsupportedOperationException
           ("node at index " + nodeIndex + " is not movable");
-      node.setXPosition(xPos + m_xOff);
-      node.setYPosition(yPos + m_yOff); }
+      //node.setXPosition(xPos + m_xOff);
+      //node.setYPosition(yPos + m_yOff); }
+   
+      // use setOffset to bypass uneeded sandbox checking, and to cut down on method calls
+      node.setOffset( xPos + m_xOff, yPos + m_yOff );
+
+    }
     public int getNumAnchors(int edgeIndex) {
       return m_edgeTranslation[edgeIndex].getBend().getHandles().size(); }
     public double getAnchorPosition(int edgeIndex, int anchorIndex,
@@ -424,10 +429,16 @@ public final class GraphConverter
 
     // Move nodes in underlying Giny.
     for (int n = 0; n < nodeTranslation.length; n++) {
-      nodeTranslation[n].setXPosition
-        (layout.getNodePosition(n, true) + myLayout.m_xOff);
-      nodeTranslation[n].setYPosition
-        (layout.getNodePosition(n, false) + myLayout.m_yOff); }
+      //nodeTranslation[n].setXPosition
+      //  (layout.getNodePosition(n, true) + myLayout.m_xOff);
+      //nodeTranslation[n].setYPosition
+      //  (layout.getNodePosition(n, false) + myLayout.m_yOff); 
+
+      nodeTranslation[n].setOffset( layout.getNodePosition(n, true) + myLayout.m_xOff,
+                                    layout.getNodePosition(n, false) + myLayout.m_yOff );
+
+      
+    }
 
     // Set edge anchor points in underlying Giny.
     for (int e = 0; e < edgeTranslation.length; e++) {

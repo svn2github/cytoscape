@@ -1,6 +1,9 @@
 #Cytoscape Property File
-#Wed Nov 03 15:24:07 PST 2004
+#Wed Nov 03 18:43:09 PST 2004
 viewType=tabbed
 bioDataDirectory=annotation/manifest
+>>>>>>>=1.25
 defaultSpeciesName=Saccharomyces cerevisiae
 viewThreshold=500
+=\=\=\=\=\=\=
+<<<<<<<=cytoscape.props
