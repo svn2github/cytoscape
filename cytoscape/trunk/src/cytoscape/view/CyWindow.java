@@ -141,6 +141,8 @@ public CyWindow(CytoscapeObj globalInstance, CyNetwork network, String title) {
     updateStatusLabel(0, 0);
     this.mainFrame = new JFrame(windowTitle);
 
+    
+
     //need to create a graph view before creating menu actions that
     //want access to the view
     createGraphView();
@@ -151,6 +153,9 @@ public CyWindow(CytoscapeObj globalInstance, CyNetwork network, String title) {
     cyMenus.initializeMenus();
     add(cyMenus.getToolBar(), BorderLayout.NORTH);
     mainFrame.setJMenuBar(cyMenus.getMenuBar());
+
+    // toggleVisualMapperEnabled();
+
     installGraphView();
     // load vizmapper after menus are done and graph is available
     loadVizMapper();

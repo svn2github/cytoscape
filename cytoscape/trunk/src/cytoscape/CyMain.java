@@ -159,7 +159,7 @@ public class CyMain implements WindowListener {
      
       network = Cytoscape.createNetwork( interactionsFilename,
                                          Cytoscape.FILE_SIF,
-                                         true,
+                                         canonicalize,
                                          bioDataServer,
                                          defaultSpecies );
       logger.info("  done");

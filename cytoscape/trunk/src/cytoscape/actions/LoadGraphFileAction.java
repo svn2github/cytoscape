@@ -117,8 +117,9 @@ public class LoadGraphFileAction extends AbstractAction {
       if (newNetwork != null) {//valid read
 	//apply the semantics we usually expect
 	Semantics.applyNamingServices(newNetwork, networkView.getCytoscapeObj());
+  networkView.getGraphViewController().stopListening();
 	networkView.getNetwork().setNewGraphFrom(newNetwork, false);
-	      
+  networkView.getGraphViewController().resumeListening();
 	//all the following is for future consideration
 	//we want to preserve the old attributes or expression data. Expression
 	//data is read-only, so we can just reference the same object, but we

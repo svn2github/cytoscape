@@ -201,17 +201,14 @@ public class ColtCyNetwork
    */
   public void setGraphPerspective( GraphPerspective perspective ) {
    
-    // hide the current nodes and edges
-    int[] old_nodes = getEdgeIndicesArray();
-    int[] old_edges = getEdgeIndicesArray();
-    hideNodes( old_nodes );
-    hideEdges( old_edges );
+    // hide the current nodes 
+    hideNodes( getNodeIndicesArray() );
+    // hide the current edges
+    hideEdges( getEdgeIndicesArray() );
 
     // restore the new nodes and edges
-    int[] new_nodes = perspective.getNodeIndicesArray();
-    int[] new_edges = perspective.getEdgeIndicesArray();
-    restoreNodes( new_nodes );
-    restoreEdges( new_edges );
+    restoreNodes( perspective.getNodeIndicesArray() );
+    restoreEdges( perspective.getEdgeIndicesArray() );
     
     fireEvent(CyNetworkEvent.GRAPH_REPLACED);
   }

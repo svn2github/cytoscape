@@ -6,6 +6,11 @@ import cytoscape.data.ExpressionData;
 import cytoscape.data.readers.*;
 import cytoscape.data.servers.BioDataServer;
 
+import giny.util.AbstractLayout;
+
+import java.util.Map;
+import java.util.HashMap;
+
 public abstract class Cytoscape {
   
   /**
@@ -42,6 +47,9 @@ public abstract class Cytoscape {
 
   //TODO: remove, replace with NetworkData
   protected static ExpressionData expressionData;
+
+  protected static Map storedLayouts = new HashMap();;
+
 
   //--------------------//
   // Root Graph Methods

@@ -95,5 +95,7 @@ public interface NetworkView {
     * added for giny, applies the layout on the view
     */
     void applyLayout ( GraphView view );
+  
+  public GraphViewController getGraphViewController ();
 }
 
