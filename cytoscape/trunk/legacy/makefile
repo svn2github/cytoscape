@@ -21,6 +21,7 @@ OBJS =	ActivePathsFinderBridge.class \
         WindowFactory.class \
         CytoscapeWindow.class \
         BioModulesWindow.class \
+        FilterDialogClient.class \
         cytoscape.class
 
 
