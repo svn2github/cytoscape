@@ -306,7 +306,11 @@ public final class IntBTree
    *   0x80 - if entries have been shifted from sibling nodes into n (if
    *          this bit is set then at least one of 0x02 and 0x04 is also set).
    *   0x40 - if two nodes have been merged into one (this is exclusive with
-   *          respect to 0x80 -- at least one of 0x02 and 0x04 is also set).
+   *          respect to 0x80 -- at least one of 0x02 and 0x04 is also set); if
+   *          n is merged with the left sibling then all data will be
+   *          contained in leftSib and n can be discarded; if
+   *          n is merged with the right sibling then all data will be
+   *          contained in n and rightSib can be discarded.
    *   0x02 - left sibling.
    *   0x04 - right sibling.
    */
@@ -333,8 +337,14 @@ public final class IntBTree
         n.sliceCount = rightSib.values[rightSib.sliceCount];
         return 0x01 | 0x80 | 0x04; }
       else { // We must perform a merge.
-        // Not implemented yet.
-        return -1; } }
+        if (leftSib != null) { // Left sibling merge more efficient.
+          mergeWithLeftSibling(foundInx, n.values, leftSib.values);
+          leftSib.sliceCount = (m_minBranches * 2) - 1; // All data in leftSib.
+          return 0x01 | 0x40 | 0x02; }
+        else { // Right sibling is not null; don't even check that.
+          mergeWithRightSibling(foundInx, n.values, rightSib.values);
+          n.sliceCount = (m_minBranches * 2) - 1; // All data in n.
+          return 0x01 | 0x40 | 0x04; } } }
     else { // Internal node.
       int foundPath = 0;
       for (int i = n.sliceCount - 2; i >= 0; i--)
