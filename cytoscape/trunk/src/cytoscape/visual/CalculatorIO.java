@@ -199,6 +199,7 @@ public class CalculatorIO {
             } catch (Exception e) {
                 System.err.println("Exception while saving " + calcBaseKey);
                 System.err.println(e.getMessage());
+                e.printStackTrace();
             }
         }
     }
