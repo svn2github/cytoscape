@@ -4,7 +4,6 @@ import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
 import control.actions.dist.*;
-import cytoscape.plugin.jar.JarLoader;
 import cytoscape.view.*;
 
 public class DistPanel extends JPanel {

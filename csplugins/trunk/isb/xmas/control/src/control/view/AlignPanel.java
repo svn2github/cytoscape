@@ -4,7 +4,6 @@ import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
 import control.actions.align.*;
-import cytoscape.plugin.jar.JarLoader;
 import cytoscape.view.*;
 
 public class AlignPanel extends JPanel {
