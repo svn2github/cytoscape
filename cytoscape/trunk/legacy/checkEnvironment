@@ -124,7 +124,8 @@ sub checkLdLibraryPath
     }# foreach $lib
 
   if ($someProblemFindingLibraries) {
-    printError ($errorMessage . "Please check your LD_LIBRARY_PATH.")
+    printError ($errorMessage . "Please check your LD_LIBRARY_PATH.");
+    exit (1);
     }
 
   printSuccessMessage ("LD_LIBRARY_PATH okay");
