@@ -19,6 +19,7 @@ OBJS = CytoscapeConfig.class \
         PluginLoader.class \
         SelectedSubGraphFactory.class \
         CytoscapeWindow.class \
+	AbstractPlugin.class \
         cytoscape.class
 #        VizChooserClient.class \
 
