@@ -21,8 +21,10 @@ import java.awt.BorderLayout;
 import java.awt.event.*;
 import cytoscape.layout.*;
 import javax.swing.border.TitledBorder;
+import java.awt.Dimension;
+import ucsd.rmkelley.Util.RyanDialog;
 
-public class EdgeRandomizationDialog extends JDialog{
+public class EdgeRandomizationDialog extends RyanDialog{
   JTable table;
   EdgeRandomizationThread thread;
   EdgeRandomizationTableModel tableModel;
@@ -87,7 +89,9 @@ public class EdgeRandomizationDialog extends JDialog{
     
     tableModel = new EdgeRandomizationTableModel(types);
     table = new JTable(tableModel);
-    centerPanel.add(new JScrollPane(table),BorderLayout.CENTER);
+    JScrollPane scroller = new JScrollPane(table);
+    scroller.setPreferredSize(new Dimension(250,200));
+    centerPanel.add(scroller,BorderLayout.CENTER);
     getContentPane().add(centerPanel,BorderLayout.CENTER);
     
     JPanel southPanel = new JPanel();
@@ -114,9 +118,10 @@ public class EdgeRandomizationDialog extends JDialog{
 	  }
 	  options.iterations = iterations;
 	  options.currentNetwork = EdgeRandomizationDialog.this.currentNetwork;
-	  JFileChooser chooser = new JFileChooser(Cytoscape.getCytoscapeObj().getCurrentDirectory());
+	  JFileChooser chooser = new JFileChooser();
 	  chooser.setApproveButtonText("OK");
 	  chooser.setDialogTitle("Choose Destination File");
+	  EdgeRandomizationDialog.this.disableInput();
 	  int returnVal = chooser.showSaveDialog(Cytoscape.getDesktop());
 	  if(returnVal == JFileChooser.APPROVE_OPTION){
 	    options.saveFile = chooser.getSelectedFile();
@@ -124,6 +129,7 @@ public class EdgeRandomizationDialog extends JDialog{
 	  else{
 	    cancelled = true;
 	  }
+	  EdgeRandomizationDialog.this.enableInput();
 	  /*
 	   * Get rid of the dialog
 	   */
@@ -143,20 +149,6 @@ public class EdgeRandomizationDialog extends JDialog{
     return options;
   }
 
-  public void dispose(){
-    super.dispose();
-    synchronized(this){
-      notify();
-    }
-  }
-
-  public void hide(){
-    super.hide();
-    synchronized(this){
-      notify();
-    }
-  }
-  
 }
 
 class EdgeRandomizationTableModel extends AbstractTableModel{

@@ -54,20 +54,21 @@ public class EdgeRandomization extends CytoscapePlugin{
      * This method is called when the user selects the menu item.
      */
     public void actionPerformed(ActionEvent ae) {
-      dialog = new EdgeRandomizationDialog(Cytoscape.getCurrentNetwork());
-      dialog.show();
-      if(!dialog.isCancelled()){
+     
+      
 	new Thread(new Runnable(){
 	    public void run(){
 	      try{
-		EdgeRandomizationThread thread = new EdgeRandomizationThread(dialog.getOptions());
-		thread.run();
+		dialog = new EdgeRandomizationDialog(Cytoscape.getCurrentNetwork());
+		dialog.show();
+		if(!dialog.isCancelled()){
+		  EdgeRandomizationThread thread = new EdgeRandomizationThread(dialog.getOptions());
+		  thread.run();
+		}
 	      }catch(Exception e){
 		JOptionPane.showMessageDialog(Cytoscape.getDesktop(),e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
 	      }}}).start();
-      }
     }
-      
   }
 }
 
