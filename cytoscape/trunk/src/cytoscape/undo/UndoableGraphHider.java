@@ -243,4 +243,39 @@ public class UndoableGraphHider {
 
 	graph.firePostEvent();
     }
+
+
+
+    /**
+     * Hides the edges contained on the given list
+     */
+    public void hide(EdgeCursor ec) {
+	graph.firePreEvent();
+
+	for (ec.toFirst(); ec.ok(); ec.next()) {
+	    hide(ec.edge());
+	}
+	
+	graph.firePostEvent();
+    }
+
+
+    /**
+     * Hide all edges in the graph
+     */
+    public void hideEdges() {
+	hide(graph.edges());
+    }
+
+    /**
+     * Unhide all edges in the graph
+     */
+    public void unhideEdges() {
+	graph.firePreEvent();
+	
+	for (EdgeCursor ec = edges.edges(); ec.ok(); ec.next())
+	    unhide(ec.edge());
+
+	graph.firePostEvent();
+    }
 }
