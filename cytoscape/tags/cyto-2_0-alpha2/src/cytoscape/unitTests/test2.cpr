@@ -1,0 +1,9 @@
+gml=galFiltered.gml
+noa=nodeAttributes1.noa
+noa=nodeAttributes2.noa
+eda=edgeAttributes1.eda
+eda=edgeAttributes2.eda
+layout=embedded
+species=Saccharomyces cerevisiae
+dataServer=annotationsAndSynonyms
+props=cytoscape.props

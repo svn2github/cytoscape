@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+    <body>
+        <section name="About this Document">
+            <p> This document provides release notes for the Cytoscape Data Services Layer project. </p>
+        </section>
+        <section name="Beta Release:  0.01 (Release Date:  Friday, May 9)">
+            <P>
+                <OL>
+                    <LI>Emulates basic database functionality fround in Osprey, including the
+                        ability to retrieve individual protein data, and interactions associated
+                        with proteins. New GRID interactions can be easily added to the Cytoscape graph.</LI>
+                    <LI>Includes first draft implementation of entire Cytoscape Data Services API.</LI>
+                    <LI>Includes data services for retrieving data directly from the GRID mySQL
+                        database. </LI>
+                    <LI>Includes data services for retrieving GenBank Flat Files from NCBI. GenBank
+                        flat files are subsequently parsed via BioJava. </LI>
+                    <LI>Includes a basic caching layer for caching all data objects locally within
+                        memory. </LI>
+                    <LI>All web connections currently use the HttpClient library from Jakarta.</LI>
+                    <LI>SeqHound data service is currently disabled (pending bug fixes in the
+                        SeqHound web API.)</LI>
+                    <LI>Includes first round of JUnit test cases for automated testing. </LI>
+                </OL>
+            </P>
+        </section>
+    </body>
+</document>
