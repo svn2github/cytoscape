@@ -457,6 +457,55 @@ public final class IntBTree
     if (nullOut) for (int i = o; i < origLen; i++) arr[i] = null;
   }
 
+  /*
+   * I give an example:
+   *
+   *
+   *   INPUTS
+   *   ======
+   *
+   *   holeInx: 1
+   *
+   *            +---+---+---+---+---+---+---+---+---+
+   *   thisArr: | 9 |   | 1 | 5 |   |   |   |   |   |
+   *            +---+---+---+---+---+---+---+---+---+
+   *
+   *   thisOrigLen: 4
+   *
+   *            +---+---+---+---+---+---+---+---+---+
+   *   leftArr: | 8 | 3 | 2 | 4 | 7 | 6 | 0 |-1 |   |
+   *            +---+---+---+---+---+---+---+---+---+
+   *
+   *   leftLen: 8
+   *
+   *
+   *   OUTPUTS
+   *   =======
+   *
+   *            +---+---+---+---+---+---+---+---+---+
+   *   thisArr: | 0 |-1 | 9 | 1 | 5 |   |   |   |   |
+   *            +---+---+---+---+---+---+---+---+---+
+   *
+   *            +---+---+---+---+---+---+---+---+---+
+   *   leftArr: | 8 | 3 | 2 | 4 | 7 | 6 |   |   |   |
+   *            +---+---+---+---+---+---+---+---+---+
+   *
+   *   returns: 5 (the new size of thisArr)
+   *
+   *   If I need to return more values, I can use thisArr[returnVal] for
+   *   example.
+   */
+  private final static int shiftFromLeftSibling(final int holeInx,
+                                                final int[] thisArr,
+                                                final int thisOrigLen,
+                                                final int[] leftArr,
+                                                final int leftLen)
+  {
+    return -1;
+  }
+                                                 
+                                                 
+
   /**
    * Returns the number of entries of the integer x in this tree.
    * This method has a time complexity of O(log(N)) where N is the total
