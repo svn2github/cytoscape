@@ -2,10 +2,10 @@ package cytoscape.graph.layout.impl;
 
 import cytoscape.graph.GraphTopology;
 import cytoscape.graph.IndexIterator;
-import cytoscape.graph.layout.algorithm.LayoutAlgorithm;
 import cytoscape.graph.layout.algorithm.MutableGraphLayout;
 import cytoscape.graph.util.GraphCompiler;
 import cytoscape.process.PercentCompletedCallback;
+import cytoscape.process.Task;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,7 +25,7 @@ import java.util.List;
  * This layout algorithm does support subgraph layout - that is, it respects
  * <code>MutableGraphLayout</code> objects whose nodes are not all movable.
  **/
-public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
+public final class SpringEmbeddedLayouter2 implements Task
 {
 
   private static final
@@ -60,6 +60,7 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
   private double[][] m_nodeDistanceSpringStrengths;
   private double[][] m_nodeDistanceSpringRestLengths;
 
+  private final MutableGraphLayout m_graph;
   private final int m_nodeCount;
   private final int m_edgeCount;
   private int m_layoutPass;
@@ -80,7 +81,8 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
    **/
   public SpringEmbeddedLayouter2(MutableGraphLayout graph)
   {
-    super(graph);
+    if (graph == null) throw new NullPointerException("graph is null");
+    m_graph = graph;
     m_numLayoutPasses = DEFAULT_NUM_LAYOUT_PASSES;
     m_averageIterationsPerNode = DEFAULT_AVERAGE_ITERATIONS_PER_NODE;
     m_nodeDistanceSpringScalars = DEFAULT_NODE_DISTANCE_SPRING_SCALARS;
