@@ -79,7 +79,7 @@ public class CyMenus  implements GraphViewChangeListener {
   JMenu vizMenu;
   JMenu helpMenu;
 
-  CytoscapeAction menuPrintAction, menuExportAction;
+  CytoscapeAction menuPrintAction, menuExportAction, menuPreferenceAction;
   JMenuItem vizMenuItem,vizMapperItem;
   JMenuItem helpContentsMenuItem, helpContextSensitiveMenuItem,
 		helpAboutMenuItem;
@@ -87,7 +87,7 @@ public class CyMenus  implements GraphViewChangeListener {
   JButton loadButton, saveButton, zoomInButton, zoomOutButton,
 	zoomSelectedButton, zoomDisplayAllButton, showAllButton, 
 	hideSelectedButton, annotationButton, vizButton;
-  JMenu opsMenu;
+  //JMenu opsMenu;
   CytoscapeToolBar toolBar;
   boolean nodesRequiredItemsEnabled;
 
@@ -149,7 +149,7 @@ public class CyMenus  implements GraphViewChangeListener {
    * The plugins should then call refreshOperationsMenu to
    * update the menu.
    */
-  public JMenu getOperationsMenu() {return opsMenu;}
+  //public JMenu getOperationsMenu() {return opsMenu;}
   /**
    * @deprecated This method is no longer needed now that we don't
    * use the NO_OPERATIONS menu placeholder.
@@ -271,7 +271,7 @@ public class CyMenus  implements GraphViewChangeListener {
     selectMenu  = menuBar.getMenu( "Select" );
     layoutMenu  = menuBar.getMenu( "Layout" );
     vizMenu     = menuBar.getMenu( "Visualization" );
-    opsMenu     = menuBar.getMenu( "Plugins" );
+    //opsMenu     = menuBar.getMenu( "Plugins" );
     helpMenu    = menuBar.getMenu( "Help" );
   }
 
@@ -338,6 +338,10 @@ public class CyMenus  implements GraphViewChangeListener {
     addAction( new DestroyNetworkViewAction() );
     addAction( new DestroyNetworkAction() );
     addAction( new DestroySelectedAction() );
+
+    //added by Jung - For Preference window
+    menuPreferenceAction = new PreferenceAction();
+    addAction( menuPreferenceAction );
 
     //fill the Data menu
     addAction( new DisplayBrowserAction() );
