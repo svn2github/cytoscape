@@ -21,7 +21,7 @@ public class GOBRegistry2 extends GOBRegistry
    *   the length of this array must be greater than one and less than ___
    *   (dimensionality is limited because of memory constraints); every entry
    *   in this array must be one of the ATTR_TYPE_* constants specifying a
-   *   primitive type (no ATTR_TYPE_MULTI allowed within this array).
+   *   primitive type (no ATTR_TYPE_MULTI is allowed within this array).
    * @return an identifier for this newly created attribute definition;
    *   attribute definition IDs are non-negative and clustered close to
    *   zero.
@@ -29,6 +29,21 @@ public class GOBRegistry2 extends GOBRegistry
   public int defineMultiAttribute(byte[] types)
   {
     throw new IllegalArgumentException("not implemented yet - pardon me");
+  }
+
+  /**
+   * @param defID
+   * @return a carbon copy of the types array used in the definition of the
+   *   specified attribute definition (defID) is returned (see
+   *   defineMultiAttribute(byte[])); therefore, the returned value defines
+   *   the dimensionality of this attribute definition (the length of returned
+   *   array defines the dimensionality, that is) and it defines the type
+   *   of primitive (ATTR_TYPE_*) used in each dimension.
+   * @exception IllegalArgumentException
+   */
+  public byte[] multiAttributeType(int defID)
+  {
+    throw new IllegalArgumentException();
   }
 
   /**
@@ -46,6 +61,9 @@ public class GOBRegistry2 extends GOBRegistry
    * attributes attrID1 and attrID2 in space defID1 such that attrID1's value
    * is (1,2) and attrID2's value is (1,2) - it is possible for attrID1's
    * value to be (1,2) and for attrID2's value to be (1,3), for example.
+   * @param objID
+   * @param defID
+   * @param attrValue
    * @return a multi-attribute identifier, referred to as "attrID" in other
    *   methods; to uniquely identify an attribute value [multidimensional]
    *   point for a given object in a given [multi] attribute definition domain,
@@ -53,6 +71,7 @@ public class GOBRegistry2 extends GOBRegistry
    *   method multiAttributeValue()) - the attrID by itself
    *   is not enough to uniquely identify a multi-attribute value point;
    *   attribute IDs are nonnegative and are clustered close to zero.
+   * @exception IllegalArgumentExcetion
    */
   public int assignMultiAttribute(int objID, int defID, Object[] attrValue)
   {
@@ -60,17 +79,53 @@ public class GOBRegistry2 extends GOBRegistry
   }
 
   /**
-   * @return an enumeration of attribute IDs (attrID types) for attributes
+   * @param objID
+   * @param defID
+   * @return an enumeration of unique attribute IDs (attrID types) for
+   *   attributes
    *   assigned to the specified object (objID) in the specified attribute
    *   definition domain (defID); the attribute definition domain must
    *   be of type ATTR_TYPE_MULTI, otherwise an error condition is raised.
+   * @exception IllegalArgumentException
    */
   public IntEnumerator multiAttributeKeys(int objID, int defID)
   {
     throw new IllegalArgumentException();
   }
 
-  public Object[] multiAttributeValue(int objID, int defID, int attrID)
+  /**
+   * @param objID
+   * @param defID
+   * @param beginningValues this array must be of length less than or equal
+   *   to the dimensionality of the attribute definition specified (defID);
+   *   the entry at index zero in this array must be of type corresponding
+   *   to the type of the first dimension of the attribute definition
+   *   specified, the entry at index one in this array must be of type
+   *   corresponding to the type of the second dimension of the attribute
+   *   definition specified, etc.; the values in this array are used to
+   *   filter all attribute values assigned to the specified object (objID)
+   *   in specified attribute definition domain (defID), returning only those
+   *   point attribute values whose beginning dimension values match
+   *   the values in this array.
+   * @exception IllegalArgumentException
+   */
+  public IntEnumerator multiAttributeKeys(int objID, int defID,
+                                          Object[] beginningValues)
+  {
+    throw new IllegalArgumentException();
+  }
+
+  /**
+   * The returnVal parameter is written into - it is meant as a structure for
+   * giving a return value in.
+   * @param objID
+   * @param defID
+   * @param attrID
+   * @param returnVal
+   * @exception IllegalArgumentException
+   */
+  public void multiAttributeValue(int objID, int defID, int attrID,
+                                  Object[] returnVal)
   {
     throw new IllegalArgumentException();
   }
@@ -80,6 +135,10 @@ public class GOBRegistry2 extends GOBRegistry
    * forgetAssignedAttribute(objID, defID) is equivalent to calling this
    * method with every attrID assigned to this object in this attribute
    * definition domain.
+   * @param objID
+   * @param defID
+   * @param attrID
+   * @exception IllegalArgumentException
    */
   public void forgetAssignedMultiAttribute(int objID, int defID, int attrID)
   {
