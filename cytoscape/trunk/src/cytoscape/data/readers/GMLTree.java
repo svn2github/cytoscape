@@ -3,6 +3,7 @@ import java.util.*;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.awt.Color;
+import java.text.DecimalFormat;
 import giny.view.*;
 import giny.model.*;
 /**
@@ -55,6 +56,8 @@ public class GMLTree{
 	 * @param myView the GraphView used to create the GMLTree
 	 */
 	public GMLTree(GraphView myView){
+	    //DecimalFormat cf = new DecimalFormat("00");
+	    DecimalFormat df = new DecimalFormat("####0.0#");
 		//create a new root
 		root = new GMLNode();
 		//add the base level mappings
@@ -74,16 +77,16 @@ public class GMLTree{
 			currentGML.addMapping("id",new GMLNode(""+(-currentNode.getRootGraphIndex())));
 			currentGML.addMapping("label",new GMLNode("\""+currentView.getLabel()+"\""));
 			GMLNode graphics = new GMLNode();
-			graphics.addMapping("x",new GMLNode(""+currentView.getXPosition()));
-			graphics.addMapping("y",new GMLNode(""+currentView.getYPosition()));
-			graphics.addMapping("h",new GMLNode(""+currentView.getHeight()));
-			graphics.addMapping("w",new GMLNode(""+currentView.getWidth()));
-			Color nodeColor = (Color) currentView.getSelectedPaint();
-			//System.out.println(nodeColor.toString());
-			GMLNode nC = new GMLNode("\"#"+Integer.toHexString(nodeColor.getRed())
-						 +Integer.toHexString(nodeColor.getGreen())
-						 +Integer.toHexString(nodeColor.getBlue())+"\"");
-			graphics.addMapping("fill", nC);
+			graphics.addMapping("x",new GMLNode(""+df.format(currentView.getXPosition())));
+			graphics.addMapping("y",new GMLNode(""+df.format(currentView.getYPosition())));
+			graphics.addMapping("h",new GMLNode(""+df.format(currentView.getHeight())));
+			graphics.addMapping("w",new GMLNode(""+df.format(currentView.getWidth())));
+// 			Color nodeColor = (Color) currentView.getSelectedPaint();
+// 			//System.out.println(nodeColor.toString());
+// 			GMLNode nC = new GMLNode("\"#"+Integer.toHexString(nodeColor.getRed())
+// 						 +Integer.toHexString(nodeColor.getGreen())
+// 						 +Integer.toHexString(nodeColor.getBlue())+"\"");
+// 			graphics.addMapping("fill", nC);
 			switch(currentView.getShape()) {
 			case NodeView.RECTANGLE:
 			    graphics.addMapping("type",new GMLNode("\"rectangle\"")); break;
