@@ -78,8 +78,8 @@
 					</tr>
 				</tbody>
 			</table>
-			<hr width="100%" size="2">
 			<div id="indent">
+			<hr width="100%" size="2">
 			<big>
 				<b>
 					Past Software Developers:</b></big>
@@ -106,11 +106,11 @@
 				</tbody>
 			</table>
 			</div>
-		</div>
 		<br>
 		<img src="/images/2004Aug_devteam-updated.gif">
 		<br>
 		Image created with Cytoscape
+		</div>
 		<br>
 <? include "footer.php"; ?>
 	</body>
