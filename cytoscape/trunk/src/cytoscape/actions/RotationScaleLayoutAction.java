@@ -42,9 +42,11 @@ public class RotationScaleLayoutAction extends CytoscapeAction
 
     // Define the panel containing rotation widget.
     JPanel rotPanel = new JPanel(new BorderLayout());
-    rotPanel.setBorder(new EmptyBorder(8, 8, 8, 8));
-    rotPanel.add(new JLabel("Degrees of Rotation:"), BorderLayout.NORTH);
+    JLabel rotLabel = new JLabel("Degrees of Rotation:");
+    rotLabel.setBorder(new EmptyBorder(5, 5, 5, 5));
+    rotPanel.add(rotLabel, BorderLayout.NORTH);
     final JSlider rotSlider = new JSlider(0, 360, 0);
+    rotSlider.setBorder(new EmptyBorder(5, 5, 5, 5));
     rotSlider.setMajorTickSpacing(90);
     rotSlider.setMinorTickSpacing(15);
     rotSlider.setPaintTicks(true);
@@ -61,13 +63,15 @@ public class RotationScaleLayoutAction extends CytoscapeAction
 
     // Define the panel containing the scale widget.
     JPanel sclPanel = new JPanel(new BorderLayout());
-    sclPanel.setBorder(new EmptyBorder(8, 8, 8, 8));
-    sclPanel.add(new JLabel("Scale Factor:"), BorderLayout.NORTH);
+    JLabel sclLabel = new JLabel("Scale Factor:");
+    sclLabel.setBorder(new EmptyBorder(5, 5, 5, 5));
+    sclPanel.add(sclLabel, BorderLayout.NORTH);
     final JSlider sclSlider = new JSlider(JSlider.VERTICAL, -300, 300, 0) {
         public Dimension getPreferredSize() {
           Dimension dim = super.getPreferredSize();
           if (dim == null) return null;
           else return new Dimension(dim.width, Math.min(dim.height, 100)); } };
+    sclSlider.setBorder(new EmptyBorder(5, 5, 5, 5));
     sclSlider.setMajorTickSpacing(100);
     Hashtable labels = new Hashtable();
     labels.put(new Integer(-300), new JLabel("1/8"));
