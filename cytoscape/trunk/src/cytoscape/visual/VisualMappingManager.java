@@ -1,10 +1,5 @@
-//----------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//----------------------------------------------------------------------------
 package cytoscape.visual;
-//----------------------------------------------------------------------------
+
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.ArrayList;
@@ -28,7 +23,7 @@ import cytoscape.visual.ui.VizMapUI;
 
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
-//----------------------------------------------------------------------------
+
 /**
  * Top-level class for controlling the visual appearance of nodes and edges
  * according to data attributes, as well as some global visual attributes.
@@ -62,23 +57,47 @@ public class VisualMappingManager extends SubjectBase {
   // Optimizer Flag
   private boolean optimizer = true;
 
-  public VisualMappingManager( CyNetworkView networkView,
-                               CalculatorCatalog catalog,
-                               VisualStyle vs,
-                               Logger logger) {
+  public VisualMappingManager( CyNetworkView networkView ) {
     this.networkView = networkView;
-    this.catalog = catalog;
     this.logger = logger;
+
+    loadCalculatorCatalog();
+
+    VisualStyle vs = catalog.getVisualStyle( CytoscapeInit.getDefaultVisualStyle() );
+    if (vs == null) {
+      //none specified, or not found; use the default
+      vs = catalog.getVisualStyle("default");
+    }
     setVisualStyle( vs );
-   
+
   }
 
   
+   /**
+   * Attempts to load a CalculatorCatalog object, using the information
+   * from the CytoscapeConfig object.
+   *
+   * Does nothing if a catalog has already been loaded.
+   *
+   * @see CalculatorCatalog
+   * @see CalculatorCatalogFactory
+   */
+  public void loadCalculatorCatalog() {
+    if ( catalog == null) {
+      catalog =
+        CalculatorCatalogFactory.loadCalculatorCatalog();
+    }
+  }
+
+ 
+
+
+
   public void setNetworkView ( CyNetworkView new_view ) {
    
     this.networkView = new_view;
   }
-
+  
   public CyNetworkView getNetworkView() {
     return networkView;
   }

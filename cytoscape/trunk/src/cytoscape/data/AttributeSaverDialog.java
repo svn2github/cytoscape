@@ -4,6 +4,7 @@ import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.CytoscapeInit;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -152,11 +153,11 @@ public class AttributeSaverDialog extends JDialog{
     JButton saveButton = new JButton("Choose Directory and Save");
     saveButton.addActionListener(new ActionListener(){
 	public void actionPerformed(ActionEvent ae){
-	  JFileChooser myChooser = new JFileChooser(Cytoscape.getCytoscapeObj().getCurrentDirectory());
+	  JFileChooser myChooser = new JFileChooser(CytoscapeInit.getMRUD());
 	  myChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 	  if ( myChooser.showOpenDialog(Cytoscape.getDesktop()) == JFileChooser.APPROVE_OPTION){
 	    state.setSaveDirectory(myChooser.getSelectedFile());
-	    Cytoscape.getCytoscapeObj().setCurrentDirectory(myChooser.getSelectedFile());
+	    CytoscapeInit.setMRUD(myChooser.getSelectedFile());
 	    int count = state.writeState(attributeTable.getSelectedRows());
 	    JOptionPane.showMessageDialog(Cytoscape.getDesktop(),"Successfully saved "+count+" files");
 	    AttributeSaverDialog.this.dispose();

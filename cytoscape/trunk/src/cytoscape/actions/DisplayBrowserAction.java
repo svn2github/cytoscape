@@ -1,8 +1,7 @@
-//-------------------------------------------------------------------------
 // $Revision$
 // $Date$
 // $Author$
-//-------------------------------------------------------------------------
+
 
 package cytoscape.actions;
 
@@ -20,6 +19,7 @@ import java.util.*;
 import cytoscape.browsers.*;
 import cytoscape.util.*;
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 import cytoscape.view.CyNetworkView;
 
 public class DisplayBrowserAction extends CytoscapeAction  {
@@ -32,7 +32,7 @@ public class DisplayBrowserAction extends CytoscapeAction  {
     super ("Display attribute browser");
     setPreferredMenu( "Data" );
     setAcceleratorCombo( KeyEvent.VK_F5, 0 );
-    Properties configProps = Cytoscape.getCytoscapeObj().getConfiguration().getProperties();
+    Properties configProps = CytoscapeInit.getProperties();
     webBrowserScript = configProps.getProperty("webBrowserScript", "noScriptDefined");
     attributeCategoriesToIgnore = Misc.getPropertyValues(configProps, invisibilityPropertyName);
     for (int i=0; i < attributeCategoriesToIgnore.size(); i++) {

@@ -1,4 +1,3 @@
-//---------------------------------------------------------------------------
 //  $Revision$ 
 //  $Date$
 //  $Author$
@@ -109,22 +108,6 @@ public abstract class Cytoscape {
   protected static CyNetworkView nullNetworkView =  new PhoebeNetworkView ( nullNetwork, "null" );
 
 
-  protected static CytoscapeObj cytoscapeobj;
-
-  /**
-   * The CytoscapeObj contains useful references to things like the BioDataServer, 
-   * CytoscapeConfig ( for command line switches ), and the Plugin registry.
-   */
-  public static CytoscapeObj getCytoscapeObj () {
-    if ( cytoscapeobj == null )
-      cytoscapeobj = new CytoscapeObj( new CytoscapeConfig( new String[]{} ) );
-    return cytoscapeobj;
-  }
-
-  public static void setCytoscapeObj ( CytoscapeObj obj ) {
-    cytoscapeobj = obj;
-  }
-
   /**
    * Shuts down Cytoscape, after giving plugins time to react.
    */
@@ -138,11 +121,9 @@ public abstract class Cytoscape {
     } catch ( Exception e ) {
       System.out.println( "Errors on close, closed anyways." );
     }
-    if (getCytoscapeObj().getParentApp() != null) {
-        getCytoscapeObj().getParentApp().exit(0);
-    } else {
-        System.exit(0);
-    }
+    
+    System.exit(0);
+
   }
 
   //--------------------//
@@ -434,7 +415,7 @@ public abstract class Cytoscape {
    * @deprecated argh!...
    */
   public static void setSpecies () {
-    species = cytoscape.data.Semantics.getDefaultSpecies( getCurrentNetwork(), getCytoscapeObj() );
+    species = CytoscapeInit.getDefaultSpeciesName();
   }
 
   //--------------------//
@@ -513,7 +494,7 @@ public abstract class Cytoscape {
   public static CytoscapeDesktop getDesktop() {
     if ( defaultDesktop == null ) {
       //System.out.println( " Defaultdesktop created: "+defaultDesktop );
-      defaultDesktop = new CytoscapeDesktop( getCytoscapeObj().getConfiguration().getViewType() );
+      defaultDesktop = new CytoscapeDesktop( CytoscapeInit.getViewType() );
     }
     return defaultDesktop;
   }
@@ -707,7 +688,7 @@ public abstract class Cytoscape {
 
     System.out.println( "GML data is: "+network.getClientData( "GML" ) );
 
-    if ( network.getNodeCount() < getCytoscapeObj().getViewThreshold()  ) {
+    if ( network.getNodeCount() < CytoscapeInit.getViewThreshold()  ) {
        createNetworkView( network );
     }
       
@@ -1094,13 +1075,19 @@ public abstract class Cytoscape {
 
      try {
        bioDataServer = new BioDataServer ( location );
-       getCytoscapeObj().setBioDataServer(bioDataServer);
      } catch ( Exception e ) {
-       String es = "cannot create new biodata server at " + location;
-       getCytoscapeObj().getLogger().warning(es);
+       System.err.println( "Could not Load BioDataServer from: "+location );
        return null;
      }
      return bioDataServer;
+  }
+
+  /**
+   * @return the BioDataServer that was loaded, should not be null,
+   *         but not contain any data.
+   */
+  public static BioDataServer getBioDataServer () {
+    return bioDataServer;
   }
 
   //------------------------------//

@@ -69,227 +69,71 @@ import com.jgoodies.plaf.plastic.Plastic3DLookAndFeel;
  * when the last window is closed.
  */
 public class CyMain implements WindowListener {
-  protected Vector windows = new Vector ();
+  protected static Vector windows = new Vector ();
   protected CyWindow cyWindow;
   protected CytoscapeVersion version = new CytoscapeVersion();
   protected Logger logger;
    
+  protected boolean headless = false;
+
+  protected String[] args;
+
   /**
    * Primary Method for Starting Cytoscape. Use the passed
    * args to create a CytoscapeConfig object.
    */
   public CyMain ( String [] args ) throws Exception {
-    
-
-    CytoscapeInit init = new CytoscapeInit();
-    init.parseCommandLine( args );
-
-    // setup the Splash Screen
-
-    ImageIcon image = new ImageIcon( getClass().getResource("/cytoscape/images/CytoscapeSplashScreen.png") );
-    //ImageIcon image = new ImageIcon( getClass().getResource("images/cytoSplash.gif") );
-    WindowUtilities.showSplash( image, 8000 );
-
-    //parse args and config files into config object
-    CytoscapeConfig config = new CytoscapeConfig(args);
-   
-    //handle special cases of arguments
-    if ( config.helpRequested() )
-      displayHelp( config );
-    else if ( config.inputsError() ) 
-      inputError( config );
-    else if ( config.displayVersion() )
-      displayHelp( config );
-
-    //set up the logger
-    setupLogger(config);
-    logger.info(config.toString());
-         
-
-    //create the global CytoscapeObj object
-    CytoscapeObj cytoscapeObj = new CytoscapeObj(this, config, logger, null);
-    Cytoscape.setCytoscapeObj( cytoscapeObj );
-    BioDataServer bioDataServer = Cytoscape.getCytoscapeObj().getBioDataServer();
-    //try to create a bioDataServer
-    //String bioDataDirectory = config.getBioDataDirectory();
-    //BioDataServer bioDataServer = Cytoscape.loadBioDataServer( bioDataDirectory );// null;
-//     if ( bioDataDirectory != null ) {
-//       try {
-//         bioDataServer = new BioDataServer( bioDataDirectory );
-//       } catch ( Exception e ) {
-//         logger.severe( "Unable to load bioDataServer from '" + bioDataDirectory + "'" );
-//         logger.severe( e.getMessage() );
-//         e.printStackTrace();
-//       }
-//     }
-
-  
-    // general setup
-    cytoscapeObj.setViewThreshold( config.getViewThreshold() );
-
-
-
-    //get some standard fields for doing name resolution
-    boolean canonicalize = Semantics.getCanonicalize( cytoscapeObj );
-    String defaultSpecies = Semantics.getDefaultSpecies( null, cytoscapeObj );
-  
-
-    //String cp =  System.getProperty("java.class.path",".");
-    //System.out.println( "User classpath: "+cp );
-    
-
-
-    //TODO: make CytoscapeDesktop find out about everything loaded when it starts up.
-    //CytoscapeDesktop cd = new CytoscapeDesktop();
-    Cytoscape.getDesktop();
-    Cytoscape.getDesktop().setupPlugins();
-
-    // Load all requested networks
-    Iterator gi = config.getGeometryFilenames().iterator();
-    Iterator ii = config.getInteractionsFilenames().iterator();
-    while ( gi.hasNext() ) {
-      CyNetwork network = Cytoscape.createNetwork( (String)gi.next(),
-                                                   Cytoscape.FILE_BY_SUFFIX,
-                                                   false,
-                                                   null,
-                                                   null );
-      if ( network.getNodeCount() < cytoscapeObj.getViewThreshold() )
-        Cytoscape.createNetworkView( network );
-    }
-    while ( ii.hasNext() ) {
-      CyNetwork network = Cytoscape.createNetwork( (String)ii.next(),
-                               Cytoscape.FILE_SIF,
-                               canonicalize,
-                               bioDataServer,
-                               defaultSpecies );
-      
-      if ( network.getNodeCount() < cytoscapeObj.getViewThreshold() )
-        Cytoscape.createNetworkView( network );
-    }
-
-     
-    //TODO: move to Cytoscape?
-    //add the semantics we usually expect
-    //Semantics.applyNamingServices(network, cytoscapeObj);
-
-
-    //load any specified data attribute files
-    Cytoscape.loadAttributes( config.getNodeAttributeFilenames(),
-                              config.getEdgeAttributeFilenames(),
-                              canonicalize, 
-                              bioDataServer, 
-                              defaultSpecies);
-    
-    Cytoscape.firePropertyChange( Cytoscape.ATTRIBUTES_CHANGED, null, null );
-
-    
-    
-
-    // load expression data if specified
-    String expDataFilename = config.getExpressionFilename();
-    if (expDataFilename != null) {
-       logger.info("reading " + expDataFilename + "...");
-       try {
-         Cytoscape.loadExpressionData( expDataFilename, config.getWhetherToCopyExpToAttribs() );
-       } catch (Exception e) {
-         logger.severe("Exception reading expression data file '" + expDataFilename + "'");
-         logger.severe(e.getMessage());
-         e.printStackTrace();
-       }
-       logger.info("  done");
-    }
-
-
-    WindowUtilities.hideSplash();
-
-  } // ctor
-  
-
-  protected void displayHelp ( CytoscapeConfig config ) {
-    System.out.println(version);
-    System.out.println(config.getUsage());
-    exit(0);
-  }
-
-  protected void inputError ( CytoscapeConfig config  ) {
-    System.out.println(version);
-    System.out.println("------------- Inputs Error");
-    System.out.println(config.getUsage ());
-    System.out.println(config);
-    exit(1);
-  }
-
-  /**
-   * configure logging:  cytoscape.props specifies what level of logging
-   * messages are written to the console; by default, only SEVERE messages
-   * are written.  in time, more control of logging (i.e., optional logging
-   * to a file, disabling console logging, per-window or per-plugin logging)
-   * can be provided
-   */
-  protected void setupLogger (CytoscapeConfig config) {
-    logger = Logger.getLogger("global");
-    Properties properties = config.getProperties();
-    String level = properties.getProperty("logging", "SEVERE");
-
-    if (level.equalsIgnoreCase("severe")) {
-      logger.setLevel(Level.SEVERE);
-    } else if (level.equalsIgnoreCase("warning")) {
-      logger.setLevel(Level.WARNING);
-    } else if (level.equalsIgnoreCase("info")) {
-      logger.setLevel(Level.INFO);
-    } else if (level.equalsIgnoreCase("config")) {
-      logger.setLevel(Level.CONFIG);
-    } else if (level.equalsIgnoreCase("all")) {
-      logger.setLevel(Level.ALL);
-    } else if (level.equalsIgnoreCase("none")) {
-      logger.setLevel(Level.OFF);
-    } else if (level.equalsIgnoreCase("off")) {
-      logger.setLevel(Level.OFF);
-    }
-  }
+    this.args = args;
  
-  public void windowActivated   (WindowEvent e) {
-   
-  }
-  //------------------------------------------------------------------------------
+    // create the CytoscapeInit class
+    // TODO: store this in Cytoscape.
+    CytoscapeInit init = new CytoscapeInit();
+
+    // pass the command line arguments.
+    // if false, then we need to stop, since help was requested
+    if ( !init.init( args ) ) {
+      System.out.println( init.getHelp() );
+      System.exit( 0 );
+    }
+    // continue normally
+
+  } 
+
+
   /**
    * on linux (at least) a killed window generates a 'windowClosed' event; trap that here
    */
   public void windowClosing     (WindowEvent e) {windowClosed (e);}
+
   public void windowDeactivated (WindowEvent e) {}
   public void windowDeiconified (WindowEvent e) {}
   public void windowIconified   (WindowEvent e) {}
+  public void windowActivated   (WindowEvent e) {}
 
-  //------------------------------------------------------------------------------
   public void windowOpened      (WindowEvent e) {
     windows.add (e.getWindow ());
   }
-  //------------------------------------------------------------------------------
+
   public void windowClosed     (WindowEvent e) {
     Window window = e.getWindow();
     if (windows.contains(window)) {windows.remove (window);}
 
     if (windows.size () == 0) {
-      logger.info("all windows closed, exiting...");
       exit(0);
     }
   }
 
-  public CyWindow getMainWindow()
-  {
-    return cyWindow;
-  }
-  //------------------------------------------------------------------------------
-  public void exit(int exitCode) {
+  public static void exit(int exitCode) {
     for (int i=0; i < windows.size (); i++) {
       Window w = (Window) windows.elementAt(i);
       w.dispose();
     }
     System.exit(exitCode);
   }
-  //------------------------------------------------------------------------------
+
   public static void main(String args []) throws Exception {
 
+    // first thing is to set up the GUI environment, even though it may not be used...
     UIManager.put(Options.USE_SYSTEM_FONTS_APP_KEY, Boolean.TRUE);
     Options.setGlobalFontSizeHints(FontSizeHints.MIXED);
     Options.setDefaultIconSize(new Dimension(18, 18));
@@ -314,18 +158,13 @@ public class CyMain implements WindowListener {
         laf.setHighContrastFocusColorsEnabled(true);
         laf.setMyCurrentTheme( new com.jgoodies.plaf.plastic.theme.ExperienceBlue() );
         UIManager.setLookAndFeel( laf );
-        
-       
-
       }
     } catch (Exception e) {
       System.err.println("Can't set look & feel:" + e);
     }
 
-
-
     CyMain app = new CyMain(args);
   } // main
-  //------------------------------------------------------------------------------
+
 }
 

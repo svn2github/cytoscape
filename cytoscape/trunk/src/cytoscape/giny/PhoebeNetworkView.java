@@ -133,7 +133,6 @@ public class PhoebeNetworkView
           typeAheadNode.setText( typeBuffer.toString() );
           CyNetworkUtilities.selectNodesStartingWith( Cytoscape.getCurrentNetwork(),
                                                       search_string,
-                                                      Cytoscape.getCytoscapeObj(), 
                                                       Cytoscape.getCurrentNetworkView() );
           cytoscape.actions.ZoomSelectedAction.zoomSelected();
         }

@@ -24,19 +24,18 @@
  ** along with this library; if not, write to the Free Software Foundation,
  ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  **/
- //-------------------------------------------------------------------------
 // $Revision$
 // $Date$
 // $Author$
-//-------------------------------------------------------------------------
+
 package cytoscape.view;
-//-------------------------------------------------------------------------
+
 import javax.swing.JFrame;
 
 import giny.view.GraphView;
 //import phoebe.PGraphView;
 
-import cytoscape.CytoscapeObj;
+
 import cytoscape.CyNetwork;
 import cytoscape.visual.VisualMappingManager;
 //-------------------------------------------------------------------------
@@ -48,10 +47,7 @@ import cytoscape.visual.VisualMappingManager;
  */
 public interface NetworkView {
     
-    /**
-     * Returns the global object representing this instance of Cytoscape.
-     */
-    CytoscapeObj getCytoscapeObj();
+
     /**
      * Returns the network displayed by this object.
      */

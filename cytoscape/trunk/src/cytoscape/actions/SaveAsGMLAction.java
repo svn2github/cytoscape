@@ -1,10 +1,13 @@
-//-------------------------------------------------------------------------
 // $Revision$
 // $Date$
 // $Author$
-//-------------------------------------------------------------------------
+
+// $Revision$
+// $Date$
+// $Author$
+
 package cytoscape.actions;
-//-------------------------------------------------------------------------
+
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
@@ -16,9 +19,9 @@ import java.io.IOException;
 import cytoscape.Cytoscape;
 import cytoscape.view.CyNetworkView;
 import cytoscape.data.readers.GMLTree;
-import cytoscape.util.CytoscapeAction;
+import cytoscape.util.*;
 
-//-------------------------------------------------------------------------
+
 public class SaveAsGMLAction extends CytoscapeAction {
     
   public SaveAsGMLAction () {
@@ -31,25 +34,31 @@ public class SaveAsGMLAction extends CytoscapeAction {
   }
     
   public void actionPerformed(ActionEvent e) {
-        
-    File currentDirectory = Cytoscape.getCytoscapeObj().getCurrentDirectory();
-    JFileChooser chooser = new JFileChooser (currentDirectory);
-    if (chooser.showSaveDialog ( Cytoscape.getDesktop() ) == chooser.APPROVE_OPTION) {
-      String name = chooser.getSelectedFile ().toString ();
-      currentDirectory = chooser.getCurrentDirectory();
-      Cytoscape.getCytoscapeObj().setCurrentDirectory(currentDirectory);
-      if (!name.endsWith (".gml") ) name = name + ".gml";
-      try {
-        FileWriter fileWriter = new FileWriter(name);
-        GMLTree result = new GMLTree( Cytoscape.getCurrentNetworkView() );
-        fileWriter.write(result.toString());
-        fileWriter.close();
-      }
-      catch (IOException ioe) {
-        System.err.println("Error while writing " + name);
-        ioe.printStackTrace();
-      } 
+    // get the file name
+    String name;
+    try {
+      name = FileUtil.getFile( "Save Graph as GML",
+                               FileUtil.SAVE,
+                               new CyFileFilter[] {} ).toString();
+    } catch ( Exception exp ) {
+      // this is because the selection was canceled
+      return;
     }
+   
+    if (!name.endsWith (".gml") ) 
+      name = name + ".gml";
+    
+    try {
+      FileWriter fileWriter = new FileWriter(name);
+      GMLTree result = new GMLTree( Cytoscape.getCurrentNetworkView() );
+      fileWriter.write(result.toString());
+      fileWriter.close();
+    }
+    catch (IOException ioe) {
+      System.err.println("Error while writing " + name);
+      ioe.printStackTrace();
+    } 
   }
+  
 } // SaveAsGMLAction
 

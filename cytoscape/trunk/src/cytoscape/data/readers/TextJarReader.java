@@ -27,19 +27,18 @@
  ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  **/
 
-//---------------------------------------------------------------------------
 //  $Revision$ 
 //  $Date$
 //  $Author$
-//---------------------------------------------------------------------------
+
 package cytoscape.data.readers;
-//------------------------------------------------------------------------------
+
 import java.io.*;
 import java.util.*;
 import java.util.jar.*;
 import java.net.*;
 
-import cytoscape.plugin.jar.*;
+import cytoscape.*;
 //---------------------------------------------------------------------------
 public class TextJarReader {
   String filename;
@@ -54,7 +53,7 @@ public TextJarReader (String URI) throws Exception
   //should bootstrap to the class loader that loads the Cytoscape core classes
   //However, we can't use it until it's been instantiated, so if we get a null
   //reference then we'll fall back to the class loader that loaded this class
-  ClassLoader cl = JarLoader.getLoader();
+  ClassLoader cl = CytoscapeInit.getClassLoader();
   if (cl == null) {cl = this.getClass().getClassLoader();}
   URL url = cl.getResource (filename);
   JarURLConnection juc = (JarURLConnection) url.openConnection ();
