@@ -249,6 +249,9 @@
     			
         <packageset dir="${src.dir}">
       	  <include name="cytoscape/**"/>
+	  <exclude name="cytoscape/data/servers/archive/"/>
+	  <exclude name="cytoscape/data/servers/unitTests/"/>
+	  <exclude name="cytoscape/unitTests/deferred/"/>
           <exclude name="**test/**"/>
           <exclude name="**.unitTests/**"/>
 			  </packageset>
