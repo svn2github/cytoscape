@@ -186,27 +186,27 @@ public final class MinIntHeap
   }
 
   /**
-   * Returns an iterator of elements in this heap, ordered such that
-   * the least element is first in the returned iterator.  Pruning of
+   * Returns an enumeration of elements in this heap, ordered such that
+   * the least element is first in the returned enumeration.  Pruning of
    * duplicate elements is enabled by setting pruneDuplicates to true.<p>
    * If pruneDuplicates is false, this method returns in constant
    * time (unless this heap is unordered when this method is called, in
-   * which case this method returns in O(N) time), and the returned iterator
+   * which case this method returns in O(N) time), and the returned enumeration
    * takes O(log(N)) time complexity to return each successive element.
    * If pruneDuplicates is true, this method takes O(N*log(N)) time
    * complexity to come up with the return value, and
-   * the retuned iterator takes constant time to return each successive
+   * the retuned enumeration takes constant time to return each successive
    * element.<p>
-   * The returned iterator becomes "invalid" as soon as any other method
-   * on this heap instance is called; calling methods on an invalid iterator
-   * will cause undefined behavior in both the iterator and in the underlying
+   * The returned enumeration becomes "invalid" as soon as any other method
+   * on this heap instance is called; calling methods on an invalid enumeration
+   * will cause undefined behavior in both the enumerator and in the underlying
    * heap.<p>
    * Calling this function automatically causes this heap to become
    * unordered.  No elements are added or removed from this heap as a
-   * result of using the returned iterator.
+   * result of using the returned enumeration.
    * @see #elements()
    */
-  public final IntIterator orderedElements(boolean pruneDuplicates)
+  public final IntEnumerator orderedElements(boolean pruneDuplicates)
   {
     final int[] heap = m_heap;
     final int size = m_currentSize;
@@ -223,7 +223,7 @@ public final class MinIntHeap
         if (heap[1] == heap[sizeIter]) dups++;
         sizeIter--; }
       final int numDuplicates = dups;
-      return new IntIterator() {
+      return new IntEnumerator() {
           int m_index = size;
           int m_dups = numDuplicates;
           int m_prevValue = heap[m_index] + 1;
@@ -236,7 +236,7 @@ public final class MinIntHeap
     }
     else // Don't prune duplicates.  Do lazy computation.
     {
-      return new IntIterator() {
+      return new IntEnumerator() {
           int m_size = size;
           public int numRemaining() { return m_size; }
           public int nextInt() {
@@ -247,19 +247,19 @@ public final class MinIntHeap
   }
 
   /**
-   * Returns an iteration over all the elements currently in this heap;
-   * the order of elements in the returned iteration is undefined.<p>
-   * If other methods in this heap are called while iterating through
-   * the return value, behavior of the iterator is undefined.<p>
-   * This iterator has no effect on the set of element in this heap.  This
-   * iterator has no effect on the ordered state of this heap.
+   * Returns an enumeration over all the elements currently in this heap;
+   * the order of elements in the returned enumeration is undefined.<p>
+   * If other methods in this heap are called while enumerating through
+   * the return value, behavior of the enumerator is undefined.<p>
+   * This enumerator has no effect on the set of element in this heap.  This
+   * enumeration has no effect on the ordered state of this heap.
    * @see #orderedElements(boolean)
    */
-  public final IntIterator elements()
+  public final IntEnumerator elements()
   {
     final int[] heap = m_heap;
     final int size = m_currentSize;
-    return new IntIterator() {
+    return new IntEnumerator() {
         int index = 0;
         public int numRemaining() { return size - index; }
         public int nextInt() { return heap[++index]; } };

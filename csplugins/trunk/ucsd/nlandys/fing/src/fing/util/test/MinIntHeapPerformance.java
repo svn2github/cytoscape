@@ -31,7 +31,7 @@
 
 package fing.util.test;
 
-import fing.util.IntIterator;
+import fing.util.IntEnumerator;
 import fing.util.MinIntHeap;
 
 import java.io.IOException;
@@ -136,7 +136,7 @@ public class MinIntHeapPerformance
   private static final int[] _THE_TEST_CASE_(int[] elements)
   {
     _THE_HEAP_ = new MinIntHeap(elements, 0, elements.length);
-    IntIterator iter = _THE_HEAP_.orderedElements(true);
+    IntEnumerator iter = _THE_HEAP_.orderedElements(true);
     final int[] returnThis = new int[iter.numRemaining()];
     for (int i = 0; i < returnThis.length; i++)
       returnThis[i] = iter.nextInt();

@@ -1,6 +1,6 @@
 package fing.util.test;
 
-import fing.util.IntIterator;
+import fing.util.IntEnumerator;
 import fing.util.MinIntHeap;
 
 public class MinIntHeapTest
@@ -17,22 +17,22 @@ public class MinIntHeapTest
     for (int i = 0; i < arr.length; i++) heap.toss(arr[i]);
     System.out.println
       ("Tossed all elements of array onto heap.");
-    IntIterator iter = heap.orderedElements(true);
+    IntEnumerator iter = heap.orderedElements(true);
     System.out.println
-      ("Got an IntIterator by calling orderedElements(true) on heap.");
+      ("Got an IntEnumerator by calling orderedElements(true) on heap.");
     System.out.println
-      ("The iterator's numRemaining() method returns " +
+      ("The enumerator's numRemaining() method returns " +
        iter.numRemaining() + ".");
-    System.out.print("The iterator looks like this: { ");
+    System.out.print("The enumerator looks like this: { ");
     while (iter.numRemaining() > 1)
       System.out.print(iter.nextInt() + ", ");
     System.out.println(iter.nextInt() + " }.");
     iter = heap.orderedElements(false);
     System.out.println
-      ("Got an IntIterator by calling orderedElements(false) on heap.");
-    System.out.println("The iterator's numRemaining() method returns " +
+      ("Got an IntEnumerator by calling orderedElements(false) on heap.");
+    System.out.println("The enumerator's numRemaining() method returns " +
                        iter.numRemaining() + ".");
-    System.out.print("The iterator looks like this: { ");
+    System.out.print("The enumerator looks like this: { ");
     while (iter.numRemaining() > 1)
       System.out.print(iter.nextInt() + ", ");
     System.out.println(iter.nextInt() + " }.");
