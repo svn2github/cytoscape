@@ -20,6 +20,17 @@
 <? include "nav.php"; ?>
 <div id="indent">
 	<p>
+		<b>Bioinformatics August 2004</b>
+		<br>
+		Reiss David, Schwikowski Benno
+		<br>
+		Predicting protein–peptide interactions via a network-based motif sampler
+		<br>
+		Bioinformatics. 2004 Aug 4;20 Suppl 1:I274-I282
+		<br>
+		[<a href="http://bioinformatics.oupjournals.org/cgi/content/abstract/20/suppl_1/i274">Abstract</a>] [<a href="http://bioinformatics.oupjournals.org/cgi/reprint/20/suppl_1/i274">PDF</a>]
+
+	<p>
 		<b>Genome Biology, July 2004</b>
 		<br>
 		Bonneau, Richard, Baliga Nitin S, Deutsch, Eric W, Shannon Paul and Hood, Leroy
@@ -82,36 +93,27 @@
 		Proc Natl Acad Sci U S A. 2003 Sep 30;100(20):11394-9.
 		<br>
 		[<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&amp;db=pubmed&amp;dopt=Abstract&amp;list_uids=14504397">Pub Med Entry</a>] [<a href="http://www.pubmedcentral.nih.gov/articlerender.fcgi?tool=pubmed&amp;pubmedid=14504397">Full Text</a>]
-		
+
 <p><b>RECOMB 2003</b><br>
           Yeang C-H, Jaakkola T. Physical network models and multi-source data
           integration. <i> The Seventh Annual International Conference on Research
-          in Computational Molecular Biology</i>, 2003 <a
- href="http://www.ai.mit.edu/people/tommi/papers/YeaJaa-recomb03.pdf">[PDF]</a>
+          in Computational Molecular Biology</i>, 2003 <BR>
+          <a href="http://www.ai.mit.edu/people/tommi/papers/YeaJaa-recomb03.pdf">[PDF]</a>
 
 <br>
 <p><b>Molecular Cancer Research, 2002</b><br>
           Begley TJ, Rosenbach AS, Ideker T, Samson LD. Damage Recovery Pathways
           in Saccharomyces cerevisiae Revealed by Genomic Phenotyping and Interactome
-          Mapping. Mol Cancer Res. 2002 Dec;1(2):103-12. <a
- target="_blank"
- href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&amp;db=PubMed&amp;list_uids=12496357&amp;dopt=Abstract">[PubMed
-          entry]</a>
+          Mapping. Mol Cancer Res. 2002 Dec;1(2):103-12. <BR>
+          <a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&amp;db=PubMed&amp;list_uids=12496357&amp;dopt=Abstract">[PubMed entry]</a>
 <br>
-<b><a
- href="http://bioinformatics.oupjournals.org/cgi/content/abstract/18/suppl_1/S233">ISMB
-2002</a></b><br>
-Ideker T, Ozier O, Schwikowski B, Siegel A. Discovering regulatory and
-signaling circuits in molecular interaction networks.
-<a href="http://bioinformatics.oupjournals.org/"> Bioinformatics</a>
-18, S233 (2002).
-<a
- href="http://bioinformatics.oupjournals.org/cgi/content/abstract/18/suppl_1/S233">[Abstract]</a>
-<a
- href="http://bioinformatics.oupjournals.org/cgi/reprint/18/suppl_1/S233.pdf">[PDF]</a>
-<a target="_blank"
- href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&amp;db=PubMed&amp;list_uids=12169552&amp;dopt=Abstract">[PubMed
-entry]</a> <a href="ISMB2002/index.html">[Supplementary Material]</a><br>
+
+<p><b>ISMB 2002</b><br>
+        Ideker T, Ozier O, Schwikowski B, Siegel A. Discovering regulatory and signaling circuits in molecular interaction networks.
+        <a href="http://bioinformatics.oupjournals.org/"> Bioinformatics</a> 18, S233 (2002).
+        <a href="http://bioinformatics.oupjournals.org/cgi/content/abstract/18/suppl_1/S233">[Abstract]</a>
+        <a href="http://bioinformatics.oupjournals.org/cgi/reprint/18/suppl_1/S233.pdf">[PDF]</a>
+        <a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&amp;db=PubMed&amp;list_uids=12169552&amp;dopt=Abstract">[PubMed entry]</a> <a href="ISMB2002/index.html">[Supplementary Material]</a><br>
 
 </div>
 <? include "footer.php"; ?>

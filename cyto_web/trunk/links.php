@@ -48,6 +48,11 @@
 <a href="http://psidev.sourceforge.net">PSI-MI (Proteomics Standards Initiative - Molecular Interaction)</a>
 <br><br>
 
+<big><b>Projects Using Cytoscape</b></big>
+<P>
+<a href="http://www.t1dbase.org">T1DBase - A Bioinformatics Resource for Type 1 Diabetes Researchers</a>
+<br><br>
+
     </div>
     <? include "footer.php"; ?>
   </body>
