@@ -143,30 +143,24 @@ public final class AllRootGraphMethodsTest
     if (root.removeEdge(deleteThisEdge2) != deleteThisEdge2)
       throw new IllegalStateException("could not delete edge");
     // Meta-nodes.  First restore what was there originally.
-// //     if (root.isMetaParent(root.getEdge(edgeInx[1]),
-// //                           root.getNode(nodeInx[3])))
-// //       throw new IllegalStateException();
 //     if (!(root.addEdgeMetaChild(nodeInx[3], edgeInx[0]) &&
 //           root.addEdgeMetaChild(nodeInx[0], edgeInx[4])))
 //       throw new IllegalStateException("errors during restoration");
     if (!(root.addEdgeMetaChild(nodeInx[4], edgeInx[6]) &&
           root.addEdgeMetaChild(nodeInx[3], edgeInx[6])))
       throw new IllegalStateException("errors during restoration");
-// //     if (root.isMetaParent(root.getEdge(edgeInx[1]),
-// //                           root.getNode(nodeInx[3])))
-// //       throw new IllegalStateException();
-//     if (root.addEdgeMetaChild(nodeInx[3], edgeInx[0]) ||
-//         root.addEdgeMetaChild(nodeInx[4], edgeInx[2]) ||
-//         root.addNodeMetaChild(nodeInx[3], nodeInx[1]) ||
-//         root.addEdgeMetaChild(0, edgeInx[0]) ||
-//         root.addEdgeMetaChild(nodeInx[1], 0) ||
-//         root.addEdgeMetaChild(99, 98) ||
-//         root.addEdgeMetaChild(Integer.MAX_VALUE, Integer.MIN_VALUE) ||
-//         root.addNodeMetaChild(0, nodeInx[2]) ||
-//         root.addNodeMetaChild(nodeInx[2], 0) ||
-//         root.addNodeMetaChild(87, 23) ||
-//         root.addNodeMetaChild(Integer.MIN_VALUE, Integer.MAX_VALUE))
-//       throw new IllegalStateException("failure of failure during creation");
+    if (root.addEdgeMetaChild(nodeInx[3], edgeInx[0]) ||
+        root.addEdgeMetaChild(nodeInx[4], edgeInx[2]) ||
+        root.addNodeMetaChild(nodeInx[3], nodeInx[1]) ||
+        root.addEdgeMetaChild(0, edgeInx[0]) ||
+        root.addEdgeMetaChild(nodeInx[1], 0) ||
+        root.addEdgeMetaChild(99, 98) ||
+        root.addEdgeMetaChild(Integer.MAX_VALUE, Integer.MIN_VALUE) ||
+        root.addNodeMetaChild(0, nodeInx[2]) ||
+        root.addNodeMetaChild(nodeInx[2], 0) ||
+        root.addNodeMetaChild(87, 23) ||
+        root.addNodeMetaChild(Integer.MIN_VALUE, Integer.MAX_VALUE))
+      throw new IllegalStateException("failure of failure during creation");
 //     // Meta-nodes.  Create and remove extra meta-relationships.
 //     if (!root.addNodeMetaChild(nodeInx[2], nodeInx[1]))
 //       throw new IllegalStateException("failed to create relationship");
