@@ -48,11 +48,12 @@ public class MutableGraphLayoutRepresentation
    * <code>GraphLayoutRepresentation</code> for a definition of these first
    * nine input parameters.
    *
-   * @param isMovableNode an array of length <code>numNodes</code> such that
+   * @param isMovableNode
+   *   <blockquote>an array of length <code>numNodes</code> such that
    *   <code>isMovableNode[nodeIndex]</code> defines
    *   <code>isMovableNode(nodeIndex)</code>; if <code>isMovableNode</code>
    *   is <code>null</code>, all
-   *   nodes in this graph are defined to be movable.
+   *   nodes in this graph are defined to be movable.</blockquote>
    * @exception IllegalArgumentException if parameters are passed which
    *   don't agree with a possible graph definition.
    * @see GraphLayoutRepresentation#GraphLayoutRepresentation(int, int[], int[], int[], int[], double, double, double[], double[])
