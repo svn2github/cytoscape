@@ -232,21 +232,25 @@ information is available to varying degrees for several species including yeast,
 mouse, fruitly, and worm. Some of this information is integrated, for example, 
 retrieved synonym information may be used to expand the possible interactions that are retrieved, and
 retrieved ortholog information may be used to fetch interlogs for the species listed above.
-Available interaction data sets include BIND, DIP, HPRD, PreBIND, and several others.
+Available interaction data sets include <a href="http://www.blueprint.org/bind/bind.php">BIND</a>, 
+<a href="http://dip.doe-mbi.ucla.edu">DIP</a>, <a href="http://hprd.org">HPRD</a>, 
+<a href="http://www.blueprint.org/products/prebind/prebind.html">PreBIND</a>, and several others.
 <br><br>
-A (somewhat outdated) tutorial for many of the features of this plugin are available at 
+Additional notes:
+<ul>
+<li> Some data sources are currently not allowed for "public use" (such as HPRD which is free for 
+non-profit use only) and will require a password to allow access. Please email me for a password 
+and do not share it with anyone.
+<li> A (somewhat outdated) tutorial for many of the features of this plugin are available at 
 <a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/getInteractions">
-http://db.systemsbiology.net/cytoscape/projects/static/dreiss/getInteractions</a>. Note that
-the web start on this tutorial page still uses Cytoscape v1.1.1.
-<br><br>
-The structure of the plugins were written to allow easy expansion of the type of information that is
-fetched, and may be extended in the future to various types of annotations and public microarray data,
-for example.
-<br><br>
-Also included in the plugin jar are all necessary classes required to run a local version of the 
-information server (not including, of course, the database). The server may be run locally as a stand-
-alone XML-RPC server, or behind an external web server such as Apache Tomcat.
-<br><br>
+here</a>. Note that the web start (and screenshots) on this tutorial page still use Cytoscape v1.1.1.
+<li>The structure of the plugins were written to allow easy expansion of the type of information that 
+may be fetched, and may be extended in the future to various types of annotations and public microarray 
+datasets, for example.
+<li>Also included in the plugin jar are all necessary classes required to run a local version of the 
+information server (not including, of course, the database). The server may be run locally as a 
+stand-alone XML-RPC server, or behind an external web server such as Apache Tomcat.
+</ul>
 Released by: David J. Reiss, Galitski and Schwikowski Groups, 
 <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>.
      </td>
@@ -268,18 +272,20 @@ Released by: David J. Reiss, Galitski and Schwikowski Groups,
 Dynamically interact with and manipulate the current network from an external process.<br><br>
 This plugin runs a simple internal XML-RPC server from within Cytoscape that allows the current
 network and its various attributes to be manipulated from an external process that is XML-RPC 
-capable. Examples include external Perl, Python, R or UNIX shell scripts, C or C++ programs, 
-or external Java processes. It even allows other "plugins" to be written in these languages.
-The external process may be run on the same machine as Cytoscape, or anywhere else on the network.
-<br><br>
-<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/cytoTalk/CytoTalkHandler.html">
-JavaDoc documentation of the client functions are available.<br>
-<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/cytoTalk/CytoTalkClient.R">R</a> and
+capable. Examples include external <a href="http://perl.org">Perl</a>, 
+<a href="http://python.org">Python</a>, <a href="http://www.r-project.org">the R statistical language</a>,
+UNIX shell scripts, C or C++ programs, or external Java processes. It even allows for other "plugins" 
+to be written in these languages. The external process may be run on the same machine as 
+Cytoscape, or anywhere else on the network.
+<ul>
+<li><a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/cytoTalk/CytoTalkHandler.html">
+JavaDoc documentation of the client functions are available.
+<li><a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/cytoTalk/CytoTalkClient.R">R</a> and
 <a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/cytoTalk/CytoTalkClient.pm">Perl</a> 
-client classes are also available.<br>
-Some simple <a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/cytoTalk/examples">
+client classes are also available.
+<li>Some simple <a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/cytoTalk/examples">
 example Perl, Python, and R scripts</a> have been written.
-<br><br>
+</ul>
 Released by: David J. Reiss, Schwikowski Group, 
 <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>.
      </td>
