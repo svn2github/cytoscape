@@ -176,8 +176,12 @@ public String [] getClassesToLoad ()
 public void load ()
 {
   String [] classNames = getClassesToLoad ();
-  for (int i=0; i < classNames.length; i++)
-    loadPlugin (classNames [i], cytoscapeWindow);
+  List classList = new ArrayList( Arrays.asList(classNames) );
+  Collections.sort(classList);
+  for (Iterator li = classList.iterator(); li.hasNext(); ) {
+      String className = (String)li.next();
+      loadPlugin(className, cytoscapeWindow);
+  }
 
 } // load
 //-----------------------------------------------------------------------------------
