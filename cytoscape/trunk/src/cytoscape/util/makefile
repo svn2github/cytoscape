@@ -12,7 +12,8 @@ JC=javac
 	$(JC) $<
 
 OBJS =  Misc.class \
-        MutableColor.class
+        MutableColor.class \
+        MutableString.class
 
 default: objs 
 

@@ -16,10 +16,12 @@ import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
 
+import cytoscape.GraphObjAttributes;
 import cytoscape.data.*;
 import cytoscape.vizmap.*;
 import cytoscape.dialogs.NewSlider;
 import cytoscape.util.MutableColor;
+import cytoscape.util.MutableString;
 import cytoscape.dialogs.GeneralColorDialogListener;
 //--------------------------------------------------------------------------------------
 public class VisualPropertiesDialog extends JDialog {
@@ -30,10 +32,14 @@ public class VisualPropertiesDialog extends JDialog {
     MutableColor ppColor;
     MutableColor pdColor;
     MutableColor bgColor;
+    MutableString localNodeLabelKey;
+    MutableString parentNodeLabelKey;
 //--------------------------------------------------------------------------------------
 public VisualPropertiesDialog (Frame parentFrame,
 			       String title,
-			       AttributeMapper mapper)
+			       AttributeMapper mapper,
+			       GraphObjAttributes nodeAttribs,
+			       MutableString nodeLabelKey)
 {
   super (parentFrame, true);
   setTitle (title);
@@ -43,10 +49,12 @@ public VisualPropertiesDialog (Frame parentFrame,
   ppColor = new MutableColor(getDMColor(VizMapperCategories.EDGE_COLOR, "pp"));
   pdColor = new MutableColor(getDMColor(VizMapperCategories.EDGE_COLOR, "pd"));
   bgColor = new MutableColor(getBasicColor(VizMapperCategories.BG_COLOR));
+  localNodeLabelKey = new MutableString(nodeLabelKey.getString());
+  parentNodeLabelKey = nodeLabelKey;
 
   JPanel mainPanel = new JPanel ();
-  GridBagLayout gridbag = new GridBagLayout();   // see note below
-  GridBagConstraints c = new GridBagConstraints();  // see note below
+  GridBagLayout gridbag = new GridBagLayout(); 
+  GridBagConstraints c = new GridBagConstraints();
   mainPanel.setLayout (gridbag);
 
   JButton applyButton = new JButton ("Apply");
@@ -85,6 +93,13 @@ public VisualPropertiesDialog (Frame parentFrame,
   gridbag.setConstraints(bgColorButton,c);
   mainPanel.add(bgColorButton);
 
+  JPanel labelTextPanel
+      = new LabelTextPanel(nodeAttribs,localNodeLabelKey);
+  c.gridx=0;
+  c.gridy=4;
+  gridbag.setConstraints(labelTextPanel,c);
+  mainPanel.add(labelTextPanel);
+  
   setContentPane (mainPanel);
 } // PopupDialog ctor
 
@@ -102,6 +117,8 @@ public class ApplyAction extends AbstractAction {
       EdgeArrowColor.removeThenAddEdgeColor(aMapper,"pp",ppColor.getColor());
       EdgeArrowColor.removeThenAddEdgeColor(aMapper,"pd",pdColor.getColor());
 
+      System.out.println(localNodeLabelKey.getString());
+      parentNodeLabelKey.setString(localNodeLabelKey.getString());
       VisualPropertiesDialog.this.dispose ();
   }
 

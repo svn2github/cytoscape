@@ -20,6 +20,7 @@ OBJS = ColorPopupButton.class \
         NodeAttributesPopupTable.class \
         PopupTextArea.class \
         VisualPropertiesDialog.class \
+        LabelTextPanel.class \
         GeneralColorDialogListener.class
 
 

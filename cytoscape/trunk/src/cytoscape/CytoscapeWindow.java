@@ -53,6 +53,7 @@ import cytoscape.data.servers.*;
 import cytoscape.dialogs.*;
 import cytoscape.layout.*;
 import cytoscape.vizmap.*;
+import cytoscape.util.MutableString;
 //-----------------------------------------------------------------------------------
 public class CytoscapeWindow extends JPanel { // implements VizChooserClient {
 
@@ -403,6 +404,26 @@ protected void displayCommonNodeNames ()
     } // for i
 
 } // displayCommonNodeNames
+
+
+protected void displayNodeLabels (String key)
+{
+    Node [] nodes = graph.getNodeArray ();
+
+    for (int i=0; i < nodes.length; i++) {
+	Node node = nodes [i];
+	String canonicalName = getCanonicalNodeName(node);
+	HashMap attribmap = nodeAttributes.getAttributes(canonicalName);
+	Object newObjectWithName  = (Object)attribmap.get(key);
+	String newName = "";
+	if(newObjectWithName != null)
+	    newName = newObjectWithName.toString();
+	NodeRealizer r = graphView.getGraph2D().getRealizer(node);
+	r.setLabelText (newName);
+    }
+    
+} // displayNodeLabels
+
 //------------------------------------------------------------------------------
 public JMenu getOperationsMenu ()
 {
@@ -548,6 +569,7 @@ protected JMenuBar createMenuBar ()
   vizMenu = new JMenu ("Visualization"); // always create the viz menu
   menuBar.add (vizMenu);
   vizMenu.add (new SetVisualPropertiesAction ());
+  //  vizMenu.add (new PrintPropsAction ());
 
 
   JMenu selectiveDisplayMenu = new JMenu ("DEBUG");
@@ -964,18 +986,44 @@ class PrintAction extends AbstractAction
 } // inner class PrintAction
 
 //------------------------------------------------------------------------------
-protected class SetVisualPropertiesAction extends AbstractAction   {
-  SetVisualPropertiesAction () { super ("Set Visual Properties"); }
+/*
+protected class PrintPropsAction extends AbstractAction   {
+  PrintPropsAction () { super ("Print Properties"); }
 
   public void actionPerformed (ActionEvent e) {
-    JDialog vizDialog = new VisualPropertiesDialog
-	(mainFrame, "Set Visual Properties", vizMapper);
-    vizDialog.pack ();
-    vizDialog.setLocationRelativeTo (mainFrame);
-    vizDialog.setVisible (true);
-
-    renderNodesAndEdges();//implicitly calls redrawGraph()
+      // for all properties, print their names (keys) out.
+      
+      String [] attributeNames = nodeAttributes.getAttributeNames ();
+      for (int i=0; i < attributeNames.length; i++) {
+	  String attributeName = attributeNames [i];
+	  System.out.println(attributeName);
+      }
   }
+
+}
+*/
+
+
+//------------------------------------------------------------------------------
+protected class SetVisualPropertiesAction extends AbstractAction   {
+    MutableString labelKey;
+
+    SetVisualPropertiesAction () {
+	super ("Set Visual Properties");
+	labelKey = new MutableString("commonName");
+    }
+    
+    public void actionPerformed (ActionEvent e) {
+	
+	JDialog vizDialog = new VisualPropertiesDialog
+	    (mainFrame, "Set Visual Properties", vizMapper, nodeAttributes, labelKey);
+	vizDialog.pack ();
+	vizDialog.setLocationRelativeTo (mainFrame);
+	vizDialog.setVisible (true);
+	
+	displayNodeLabels(labelKey.getString());
+	renderNodesAndEdges();//implicitly calls redrawGraph()
+    }
 
 }
 //------------------------------------------------------------------------------
