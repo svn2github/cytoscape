@@ -16,6 +16,7 @@ public abstract class OpenBrowser {
   static String UNIX_FLAG = "-remote openURL";
 
   static String WINDOWS_PATH = "cmd.exe /c start";
+  static String MAC_PATH = "open";
 
   public static void openURL ( String url ) {
 
@@ -25,6 +26,8 @@ public abstract class OpenBrowser {
       String cmd;
       if ( osName.startsWith("Windows") ) {
         cmd =  WINDOWS_PATH + " " + url;
+      } else if ( osName.startsWith("Mac" ) ) {
+        cmd = MAC_PATH + " " + url;
       } else {
         //cmd = UNIX_PATH + " " + UNIX_FLAG + "(" + url + ")";
         cmd = UNIX_PATH + " " + url;
