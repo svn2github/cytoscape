@@ -25,6 +25,9 @@ import y.base.Node;
 import javax.swing.colorchooser.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.Iterator;
+
 import cytoscape.data.*;
 import cytoscape.vizmap.*;
 import cytoscape.dialogs.NewSlider;
@@ -44,7 +47,16 @@ public class ExpressionDataDialog extends JDialog {
     ExpressionData eData;
     GraphObjAttributes nAttrib;
     String[] condNames;
-    Color nColor;
+
+    Color pt0ColorLT;
+    Color pt0Color;
+    Color pt1Color;
+    Color pt2Color;
+    Color pt2ColorGT;
+
+    JTextField minPtText, midPtText, maxPtText;
+    double minPtNum, midPtNum, maxPtNum;
+
 //--------------------------------------------------------------------------------------
 public ExpressionDataDialog (Frame parentFrame,
 			     String title,
@@ -59,55 +71,31 @@ public ExpressionDataDialog (Frame parentFrame,
   nodes = incomingNodes;
   eData = expressionData;
   nAttrib = nodeAttributes;
+  initializeColors();
 
   JPanel mainPanel = new JPanel ();
   GridBagLayout gridbag = new GridBagLayout();
   GridBagConstraints c = new GridBagConstraints();
   mainPanel.setLayout (gridbag);
 
-
-  // begin condPanel
+  /**
+   * condPanel;  rsnPanel = ratio / significance / none Panel;
+   * colorPanel; adPanel = apply / dismiss Panel;
+   */
   JPanel condPanel = createCondPanel ();
-
-  // begin rsnPanel = expression / significance / none Panel
   JPanel rsnPanel = createRSNPanel ();
-
-  // begin colorPanel
-  JPanel colorPanel = new JPanel ();
-  GridBagLayout colorGridbag = new GridBagLayout();
-  GridBagConstraints colorConstraints = new GridBagConstraints();
-  colorPanel.setLayout (colorGridbag);
-
-
-  // begin adPanel = apply / dismiss Panel
-  JPanel adPanel = new JPanel ();
-  GridBagLayout adGridbag = new GridBagLayout();
-  GridBagConstraints adConstraints = new GridBagConstraints();
-  adPanel.setLayout (adGridbag);
-
-  JButton applyButton = new JButton ("Apply");
-  applyButton.addActionListener (new ApplyAction ());
-  adConstraints.gridx=0;
-  adConstraints.gridy=0;
-  adGridbag.setConstraints(applyButton,adConstraints);
-  adPanel.add (applyButton);
-
-  JButton dismissButton = new JButton ("Dismiss");
-  dismissButton.addActionListener (new DismissAction ());
-  adConstraints.gridx=1;
-  adConstraints.gridy=0;
-  adGridbag.setConstraints(dismissButton,adConstraints);
-  adPanel.add (dismissButton);
+  JPanel colorPanel = createColorPanel ();
+  JPanel adPanel = createADPanel ();
 
   c.gridx=0;
   c.gridy=0;
+  c.gridheight = 3;
   gridbag.setConstraints(condPanel,c);
   mainPanel.add (condPanel);
 
-
   c.gridx=1;
   c.gridy=0;
-  c.gridheight = 3;
+  c.gridheight = 1;
   gridbag.setConstraints(rsnPanel,c);
   mainPanel.add (rsnPanel);
 
@@ -119,12 +107,22 @@ public ExpressionDataDialog (Frame parentFrame,
 
   c.gridx=1;
   c.gridy=2;
+  c.gridheight = 1;
   gridbag.setConstraints(adPanel,c);
   mainPanel.add (adPanel);
   
 
   setContentPane (mainPanel);
 } // PopupDialog ctor
+
+
+    private void initializeColors() {
+	pt0ColorLT = getMinLTColor();
+	pt0Color = getMinGTColor();
+	pt1Color = getMidColor();
+	pt2Color = getMaxLTColor();
+	pt2ColorGT = getMaxGTColor();
+    }
 
 //--------------------------------------------------------------------------------------
 public class ApplyAction extends AbstractAction {
@@ -134,6 +132,44 @@ public class ApplyAction extends AbstractAction {
 
   public void actionPerformed (ActionEvent e) {
 
+
+      /**
+       * updating color mapper
+       */
+      ContinuousMapper cm =
+	  (ContinuousMapper)
+	  aMapper.getValueMapper(VizMapperCategories.NODE_FILL_COLOR);
+
+      SortedMap valueMap = cm.getBoundaryRangeValuesMap();
+      Iterator it = valueMap.keySet().iterator();
+
+      Double doubleBVal = (Double)it.next();
+      BoundaryRangeValues bvObj = (BoundaryRangeValues)valueMap.get(doubleBVal);
+	
+      bvObj.lesserValue = pt0ColorLT;
+      bvObj.equalValue = pt0Color;
+      bvObj.greaterValue = pt0Color;
+      valueMap.put(doubleBVal,bvObj);
+
+      doubleBVal = (Double)it.next();
+      bvObj = (BoundaryRangeValues)valueMap.get(doubleBVal);
+	
+      bvObj.lesserValue = pt1Color;
+      bvObj.equalValue = pt1Color;
+      bvObj.greaterValue = pt1Color;
+      valueMap.put(doubleBVal,bvObj);
+
+      doubleBVal = (Double)it.next();
+      bvObj = (BoundaryRangeValues)valueMap.get(doubleBVal);
+	
+      bvObj.lesserValue = pt2Color;
+      bvObj.equalValue = pt2Color;
+      bvObj.greaterValue = pt2ColorGT;
+      valueMap.put(doubleBVal,bvObj);
+
+      /**
+       * updating which condition is displayed on the nodes' "expression"
+       */
       String condName = condNames[expressionConditionNumber];
 
       for (int i=0; i < nodes.length; i++) {
@@ -191,58 +227,65 @@ public class RSNAction extends AbstractAction {
     }
 }
 
-public class ColorChooserDialog extends JDialog {
-    public ColorChooserDialog(JDialog parentDialog, String whatFor) {
-        super(parentDialog, "Choose Color for " + whatFor);
-
-        //Set up the banner at the top of the window
-        final JLabel banner = new JLabel("Choose Color for " + whatFor,
-                                         JLabel.CENTER);
-        banner.setForeground(Color.yellow);
-        banner.setBackground(Color.blue);
-        banner.setOpaque(true);
-        banner.setFont(new Font("SansSerif", Font.BOLD, 24));
-        banner.setPreferredSize(new Dimension(100, 65));
-
-        JPanel bannerPanel = new JPanel(new BorderLayout());
-        bannerPanel.add(banner, BorderLayout.CENTER);
-        bannerPanel.setBorder(BorderFactory.createTitledBorder("Banner"));
-
-        //Set up color chooser for setting text color
-        final JColorChooser tcc = new JColorChooser(banner.getForeground());
-        tcc.getSelectionModel().addChangeListener(
-            new ChangeListener() {
-                public void stateChanged(ChangeEvent e) {
-                    Color newColor = tcc.getColor();
-		    //System.out.println("hello!");
-                    banner.setForeground(newColor);
-                }
-            }
-        );
-        tcc.setBorder(BorderFactory.createTitledBorder(
-                                             "Choose Text Color"));
-
-        //Add the components to the demo frame
-        Container contentPane = getContentPane();
-        contentPane.add(bannerPanel, BorderLayout.CENTER);
-        contentPane.add(tcc, BorderLayout.SOUTH);
-    }
-    
-}
     
 
-
-    
-    
-class SpawnNodeColorDialogListener implements ActionListener {
+class SpawnMinLTColorDialogListener implements ActionListener {
     
     public void actionPerformed(ActionEvent e) {
 	// Args are parent component, title, initial color
 	Color tempColor = JColorChooser.showDialog(ExpressionDataDialog.this,
-						   "Choose Color",
-						   nColor);
+						   "Choose Sub-Min Color",
+						   pt0ColorLT);
 	if (tempColor != null)
-	    nColor = tempColor;
+	    pt0ColorLT = tempColor;
+    }
+}
+
+class SpawnMinGTColorDialogListener implements ActionListener {
+    
+    public void actionPerformed(ActionEvent e) {
+	// Args are parent component, title, initial color
+	Color tempColor = JColorChooser.showDialog(ExpressionDataDialog.this,
+						   "Choose Min Color",
+						   pt0Color);
+	if (tempColor != null)
+	    pt0Color = tempColor;
+    }
+}
+
+class SpawnMidColorDialogListener implements ActionListener {
+    
+    public void actionPerformed(ActionEvent e) {
+	// Args are parent component, title, initial color
+	Color tempColor = JColorChooser.showDialog(ExpressionDataDialog.this,
+						   "Choose Mid Color",
+						   pt1Color);
+	if (tempColor != null)
+	    pt1Color = tempColor;
+    }
+}
+
+class SpawnMaxLTColorDialogListener implements ActionListener {
+    
+    public void actionPerformed(ActionEvent e) {
+	// Args are parent component, title, initial color
+	Color tempColor = JColorChooser.showDialog(ExpressionDataDialog.this,
+						   "Choose Sub-Max Color",
+						   pt2Color);
+	if (tempColor != null)
+	    pt2Color = tempColor;
+    }
+}
+
+class SpawnMaxGTColorDialogListener implements ActionListener {
+    
+    public void actionPerformed(ActionEvent e) {
+	// Args are parent component, title, initial color
+	Color tempColor = JColorChooser.showDialog(ExpressionDataDialog.this,
+						   "Choose Max Color",
+						   pt2ColorGT);
+	if (tempColor != null)
+	    pt2ColorGT = tempColor;
     }
 }
 
@@ -307,82 +350,241 @@ private JPanel createRSNPanel() {
 }
 
 
-class BGColorDialogListener implements ActionListener {
-    
-    public void actionPerformed(ActionEvent e) {
-	//Color tempColor = JColorChooser.showDialog(ExpressionDataDialog.this,
-	//						   "Choose Color",
-	//						   bgColor);
-	//	if (tempColor != null)
-	    //bgColor = tempColor;
-    }
+
+
+private JPanel createColorPanel() {
+  JPanel colorPanel = new JPanel ();
+  GridBagLayout colorGridbag = new GridBagLayout();
+  GridBagConstraints colorConstraints = new GridBagConstraints();
+  colorPanel.setLayout (colorGridbag);
+
+  JButton minLTColorButton = new JButton ("min LT Color");
+  minLTColorButton.addActionListener (new SpawnMinLTColorDialogListener ());
+  colorConstraints.gridx=0;
+  colorConstraints.gridy=0;
+  colorGridbag.setConstraints(minLTColorButton,colorConstraints);
+  colorPanel.add (minLTColorButton);
+
+  JButton minGTColorButton = new JButton ("min GT Color");
+  minGTColorButton.addActionListener (new SpawnMinGTColorDialogListener ());
+  colorConstraints.gridx=0;
+  colorConstraints.gridy=1;
+  colorGridbag.setConstraints(minGTColorButton,colorConstraints);
+  colorPanel.add (minGTColorButton);
+
+  JButton midColorButton = new JButton ("mid Color");
+  midColorButton.addActionListener (new SpawnMidColorDialogListener ());
+  colorConstraints.gridx=0;
+  colorConstraints.gridy=2;
+  colorGridbag.setConstraints(midColorButton,colorConstraints);
+  colorPanel.add (midColorButton);
+
+  JButton maxLTColorButton = new JButton ("max LT Color");
+  maxLTColorButton.addActionListener (new SpawnMaxLTColorDialogListener ());
+  colorConstraints.gridx=0;
+  colorConstraints.gridy=3;
+  colorGridbag.setConstraints(maxLTColorButton,colorConstraints);
+  colorPanel.add (maxLTColorButton);
+
+  JButton maxGTColorButton = new JButton ("max GT Color");
+  maxGTColorButton.addActionListener (new SpawnMaxGTColorDialogListener ());
+  colorConstraints.gridx=0;
+  colorConstraints.gridy=4;
+  colorGridbag.setConstraints(maxGTColorButton,colorConstraints);
+  colorPanel.add (maxGTColorButton);
+
+  return colorPanel;
+}
+
+private JPanel createADPanel() {
+  JPanel adPanel = new JPanel ();
+  GridBagLayout adGridbag = new GridBagLayout();
+  GridBagConstraints adConstraints = new GridBagConstraints();
+  adPanel.setLayout (adGridbag);
+
+  JButton applyButton = new JButton ("Apply");
+  applyButton.addActionListener (new ApplyAction ());
+  adConstraints.gridx=0;
+  adConstraints.gridy=0;
+  adGridbag.setConstraints(applyButton,adConstraints);
+  adPanel.add (applyButton);
+
+  JButton dismissButton = new JButton ("Dismiss");
+  dismissButton.addActionListener (new DismissAction ());
+  adConstraints.gridx=1;
+  adConstraints.gridy=0;
+  adGridbag.setConstraints(dismissButton,adConstraints);
+  adPanel.add (dismissButton);
+
+  return adPanel;
 }
 
 
-    private Color getNodeColor() {
+
+
+
+    private Color getMinLTColor() {
 	Color tempColor;
-	try {
-	    tempColor = 
-		(Color)aMapper.getDefaultValue(VizMapperCategories.NODE_FILL_COLOR);
-	    //System.out.println("get: found real color");
-	} catch (NullPointerException ex) {
-	    System.out.println("get: made up color");
-	    tempColor = new Color(255,255,255);
-	}
-	//if(tempColor != null)
-	return tempColor;
-	//else {
-	//return
+
+	ContinuousMapper cm =
+	    (ContinuousMapper)
+	    aMapper.getValueMapper(VizMapperCategories.NODE_FILL_COLOR);
+
+	//Map valueMap = cm.getValueMap();
+	SortedMap valueMap = cm.getBoundaryRangeValuesMap();
+	Iterator i = valueMap.keySet().iterator();
+
+	//for ( ; i.hasNext(); ) {
+	Double doubleBVal = (Double)i.next();
 	//}
-    }
-    private Color getBGColor() {
-	Color tempColor;
-	try {
-	    tempColor = 
-		(Color)aMapper.getDefaultValue(VizMapperCategories.BG_COLOR);
-	} catch (NullPointerException ex) {
-	    tempColor = new Color(255,255,255);
+	
+	BoundaryRangeValues bvObj = (BoundaryRangeValues)valueMap.get(doubleBVal);
+	
+	if(bvObj!=null) {
+	    tempColor = (Color)bvObj.lesserValue;
+	    
+	    if(tempColor != null)
+		return tempColor;
+	    else {
+		return new Color(255,255,0);
+	    }
 	}
-	if(tempColor != null)
-	    return tempColor;
-	else {
-	    return new Color(255,255,255);
-	}
-    }
-
-    private Color getPPColor() {
-	Color tempColor;
-
-	DiscreteMapper dm =
-	    (DiscreteMapper)
-	    aMapper.getValueMapper(VizMapperCategories.EDGE_COLOR);
-
-	Map valueMap = dm.getValueMap();
-	tempColor = (Color)valueMap.get("pp");
-
-	if(tempColor != null)
-	    return tempColor;
-	else {
-	    return new Color(0,0,255);
-	}
-    }
-
-    private Color getPDColor() {
-	Color tempColor;
-
-	DiscreteMapper dm =
-	    (DiscreteMapper)
-	    aMapper.getValueMapper(VizMapperCategories.EDGE_COLOR);
-
-	Map valueMap = dm.getValueMap();
-	tempColor = (Color)valueMap.get("pd");
-
-	if(tempColor != null)
-	    return tempColor;
 	else {
 	    return new Color(255,255,0);
 	}
     }
+
+    private Color getMinGTColor() {
+	Color tempColor;
+
+	ContinuousMapper cm =
+	    (ContinuousMapper)
+	    aMapper.getValueMapper(VizMapperCategories.NODE_FILL_COLOR);
+
+	//Map valueMap = cm.getValueMap();
+	SortedMap valueMap = cm.getBoundaryRangeValuesMap();
+	Iterator i = valueMap.keySet().iterator();
+
+	//for ( ; i.hasNext(); ) {
+	Double doubleBVal = (Double)i.next();
+	//}
+	
+	BoundaryRangeValues bvObj = (BoundaryRangeValues)valueMap.get(doubleBVal);
+	
+	if(bvObj!=null) {
+	    tempColor = (Color)bvObj.greaterValue;
+	    
+	    if(tempColor != null)
+		return tempColor;
+	    else {
+		return new Color(255,255,0);
+	    }
+	}
+	else {
+	    return new Color(255,255,0);
+	}
+    }
+
+
+    private Color getMidColor() {
+	Color tempColor;
+
+	ContinuousMapper cm =
+	    (ContinuousMapper)
+	    aMapper.getValueMapper(VizMapperCategories.NODE_FILL_COLOR);
+
+	//Map valueMap = cm.getValueMap();
+	SortedMap valueMap = cm.getBoundaryRangeValuesMap();
+	Iterator i = valueMap.keySet().iterator();
+
+	//for ( ; i.hasNext(); ) {
+	Double doubleBVal = (Double)i.next();
+	doubleBVal = (Double)i.next();
+	//}
+	
+	BoundaryRangeValues bvObj = (BoundaryRangeValues)valueMap.get(doubleBVal);
+	
+	if(bvObj!=null) {
+	    tempColor = (Color)bvObj.greaterValue;
+	    
+	    if(tempColor != null)
+		return tempColor;
+	    else {
+		return new Color(255,255,0);
+	    }
+	}
+	else {
+	    return new Color(255,255,0);
+	}
+    }
+
+    private Color getMaxLTColor() {
+	Color tempColor;
+
+	ContinuousMapper cm =
+	    (ContinuousMapper)
+	    aMapper.getValueMapper(VizMapperCategories.NODE_FILL_COLOR);
+
+	//Map valueMap = cm.getValueMap();
+	SortedMap valueMap = cm.getBoundaryRangeValuesMap();
+	Iterator i = valueMap.keySet().iterator();
+
+	//for ( ; i.hasNext(); ) {
+	Double doubleBVal = (Double)i.next();
+	doubleBVal = (Double)i.next();
+	doubleBVal = (Double)i.next();
+	//}
+	
+	BoundaryRangeValues bvObj = (BoundaryRangeValues)valueMap.get(doubleBVal);
+	
+	if(bvObj!=null) {
+	    tempColor = (Color)bvObj.lesserValue;
+	    
+	    if(tempColor != null)
+		return tempColor;
+	    else {
+		return new Color(255,255,0);
+	    }
+	}
+	else {
+	    return new Color(255,255,0);
+	}
+    }
+
+    private Color getMaxGTColor() {
+	Color tempColor;
+
+	ContinuousMapper cm =
+	    (ContinuousMapper)
+	    aMapper.getValueMapper(VizMapperCategories.NODE_FILL_COLOR);
+
+	//Map valueMap = cm.getValueMap();
+	SortedMap valueMap = cm.getBoundaryRangeValuesMap();
+	Iterator i = valueMap.keySet().iterator();
+
+	//for ( ; i.hasNext(); ) {
+	Double doubleBVal = (Double)i.next();
+	doubleBVal = (Double)i.next();
+	doubleBVal = (Double)i.next();
+	//}
+	
+	BoundaryRangeValues bvObj = (BoundaryRangeValues)valueMap.get(doubleBVal);
+	
+	if(bvObj!=null) {
+	    tempColor = (Color)bvObj.greaterValue;
+	    
+	    if(tempColor != null)
+		return tempColor;
+	    else {
+		return new Color(255,255,0);
+	    }
+	}
+	else {
+	    return new Color(255,255,0);
+	}
+    }
+
+
 
 } // class ExpressionDataDialog
 
