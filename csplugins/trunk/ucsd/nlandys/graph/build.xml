@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="cytoscape.graph" default="compile" basedir=".">
+<project name="cytoscape.graph.layout" default="compile" basedir=".">
   <property name="src.dir" value="${basedir}/src"/>
   <property name="lib.dir" value="${basedir}/lib"/>
   <property name="build.dir" value="${basedir}/build"/>
@@ -15,16 +15,9 @@
 
   <target name="doc">
     <javadoc destdir="${javadoc.dir}"
-             source="1.4"
-             windowtitle="Javadoc - cytoscape.graph.* packages">
+             source="1.4">
       <fileset dir="${src.dir}">
-        <include name="cytoscape/graph/*.java"/>
         <include name="cytoscape/graph/layout/*.java"/>
-        <include name="cytoscape/graph/layout/algorithm/*.java"/>
-        <include name="cytoscape/graph/layout/algorithm/util/*.java"/>
-        <include name="cytoscape/graph/layout/impl/*.java"/>
-        <include name="cytoscape/graph/layout/util/*.java"/>
-        <include name="cytoscape/graph/util/*.java"/>
       </fileset>
       <classpath>
         <fileset dir="${lib.dir}">
@@ -55,10 +48,10 @@
     <java fork="true" classname="GenerateBuildFile" failonerror="true"
           output="${build.dir}/build.xml">
       <classpath path="${classes.dir}/buildgen"/>
-      <arg value="cytoscape.graph framework"/>
+      <arg value="cytoscape.graph.layout framework"/>
       <arg value="${src.dir}"/>
       <arg value="${lib.dir}"/>
-      <arg value="${build.dir}/cytoscape-graph.jar"/>
+      <arg value="${build.dir}/cytoscape-graph-layout.jar"/>
       <arg value="${temp.src.dir}"/>
       <arg value="${classes.dir}"/>
       <arg value="${little.jars.dir}"/>
