@@ -110,18 +110,6 @@ public class GMLTree{
 	    graph.addMapping("edge",currentGML);
 	}
     }
-    /**
-     * Get the String representation of the 6 character hexidecimal RGB values
-     * i.e. #ff000a
-     * @param Color The color to be converted
-    */
-    private String getColorHexString(Color c) {
-	return ("#"
-		+Integer.toHexString(256+c.getRed()).substring(1)
-		+Integer.toHexString(256+c.getGreen()).substring(1)
-		+Integer.toHexString(256+c.getBlue()).substring(1)
-		);
-    }
 
     /**
      * Create a GMLTree from data contained in a file
@@ -218,6 +206,19 @@ public class GMLTree{
 	//this function basically just calls toString on the root
 	String result =  root.toString();
 	return result.substring(3,result.length()-2)+"\n";
+    }
+
+    /**
+     * Get the String representation of the 6 character hexidecimal RGB values
+     * i.e. #ff000a
+     * @param Color The color to be converted
+    */
+    public String getColorHexString(Color c) {
+	return ("#"
+		+Integer.toHexString(256+c.getRed()).substring(1)
+		+Integer.toHexString(256+c.getGreen()).substring(1)
+		+Integer.toHexString(256+c.getBlue()).substring(1)
+		);
     }
 
     /**
