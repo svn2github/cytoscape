@@ -137,10 +137,20 @@ public class CyMenus {
    */
   public void updateUndoRedoMenuItemStatus() {
     if (undoMenuItem != null) {
-      undoMenuItem.setEnabled(cyWindow.getUndoManager().undoLength() > 0 ? true : false);
+        if (cyWindow.getUndoManager() == null) {
+            undoMenuItem.setEnabled(false);
+        } else {
+            boolean enable = (cyWindow.getUndoManager().undoLength() > 0);
+            undoMenuItem.setEnabled(enable);
+        }
     }
     if (redoMenuItem != null) {
-      redoMenuItem.setEnabled(cyWindow.getUndoManager().redoLength() > 0 ? true : false);
+        if (cyWindow.getUndoManager() == null) {
+            redoMenuItem.setEnabled(false);
+        } else {
+            boolean enable = (cyWindow.getUndoManager().redoLength() > 0);
+            redoMenuItem.setEnabled(enable);
+        }
     }
   }
     
@@ -152,7 +162,9 @@ public class CyMenus {
    * a reference to the menu item and manage its state.
    */
   public void enableDeleteSelectionMenuItem() {
-    deleteSelectionMenuItem.setEnabled(true);
+      if (deleteSelectionMenuItem != null) {
+          deleteSelectionMenuItem.setEnabled(true);
+      }
   }
     
   /**
@@ -163,7 +175,9 @@ public class CyMenus {
    * a reference to the menu item and manage its state.
    */
   public void disableDeleteSelectionMenuItem() {
-    deleteSelectionMenuItem.setEnabled(false);
+      if (deleteSelectionMenuItem != null) {
+          deleteSelectionMenuItem.setEnabled(false);
+      }
   }
 
   /**
@@ -270,25 +284,26 @@ public class CyMenus {
         
     //fill the Edit menu
     // added by dramage 2002-08-21
-    if (cytoscapeObj.getConfiguration().enableUndo()) {
-      undoMenuItem = editMenu.add(new UndoAction(cyWindow));
-      undoMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, ActionEvent.CTRL_MASK));
-      redoMenuItem = editMenu.add(new RedoAction(cyWindow));
-      redoMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, ActionEvent.CTRL_MASK));
-      editMenu.addSeparator();
-    }
-    if ( networkView.getCytoscapeObj().getConfiguration().isYFiles() ) {    
-	    ButtonGroup modeGroup = new ButtonGroup();
-	    JRadioButtonMenuItem readOnlyModeButton = new JRadioButtonMenuItem("Read-only mode");
-	    JRadioButtonMenuItem editModeButton = new JRadioButtonMenuItem("Edit mode for nodes and edges");
-	    modeGroup.add(readOnlyModeButton);
-	    modeGroup.add(editModeButton);
-	    editMenu.add(readOnlyModeButton);
-	    editMenu.add(editModeButton);
-	    readOnlyModeButton.setSelected(true);
-	    readOnlyModeButton.addActionListener(new ReadOnlyModeAction(cyWindow));
-	    editModeButton.addActionListener(new EditModeAction(cyWindow));
-	    editMenu.addSeparator();
+    //undo and editing are only supported in yFiles mode
+    if ( networkView.getCytoscapeObj().getConfiguration().isYFiles() ) {
+        if (cytoscapeObj.getConfiguration().enableUndo()) {
+            undoMenuItem = editMenu.add(new UndoAction(cyWindow));
+            undoMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, ActionEvent.CTRL_MASK));
+            redoMenuItem = editMenu.add(new RedoAction(cyWindow));
+            redoMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, ActionEvent.CTRL_MASK));
+            editMenu.addSeparator();
+        }
+        ButtonGroup modeGroup = new ButtonGroup();
+        JRadioButtonMenuItem readOnlyModeButton = new JRadioButtonMenuItem("Read-only mode");
+        JRadioButtonMenuItem editModeButton = new JRadioButtonMenuItem("Edit mode for nodes and edges");
+        modeGroup.add(readOnlyModeButton);
+        modeGroup.add(editModeButton);
+        editMenu.add(readOnlyModeButton);
+        editMenu.add(editModeButton);
+        readOnlyModeButton.setSelected(true);
+        readOnlyModeButton.addActionListener(new ReadOnlyModeAction(cyWindow));
+        editModeButton.addActionListener(new EditModeAction(cyWindow));
+        editMenu.addSeparator();
         
 	deleteSelectionMenuItem = editMenu.add(new DeleteSelectedAction(networkView));
 	deleteSelectionMenuItem.setEnabled(false);
@@ -357,7 +372,10 @@ public class CyMenus {
 
     selectNodesSubMenu.add(new AlphabeticalSelectionAction(networkView));
     selectNodesSubMenu.add(new ListFromFileSelectionAction(networkView));
-    selectNodesSubMenu.add(new MenuFilterAction(networkView));
+    //filters are only supported in yFiles mode
+    if (networkView.getCytoscapeObj().getConfiguration().isYFiles()) {
+        selectNodesSubMenu.add(new MenuFilterAction(networkView));
+    }
         
     mi = displayNWSubMenu.add(new NewWindowSelectedNodesOnlyAction(cyWindow));
     mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
@@ -366,54 +384,59 @@ public class CyMenus {
     mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, ActionEvent.CTRL_MASK));
         
     //fill the Layout menu
-    String defaultLayoutStrategy =
-      cyWindow.getCytoscapeObj().getConfiguration().getDefaultLayoutStrategy();
-    ButtonGroup layoutGroup = new ButtonGroup();
-    JRadioButtonMenuItem layoutButton;
-    layoutButton = new JRadioButtonMenuItem("Circular");
-    layoutGroup.add(layoutButton);
-    layoutMenu.add(layoutButton);
-    layoutButton.addActionListener(new CircularLayoutAction(networkView));
-    if(defaultLayoutStrategy.equals("circular")){
-      layoutButton.setSelected(true);
-    }
+    //these layouts are only available in yFiles mode
+    if (networkView.getCytoscapeObj().getConfiguration().isYFiles() ) {
+        String defaultLayoutStrategy =
+        cyWindow.getCytoscapeObj().getConfiguration().getDefaultLayoutStrategy();
+        ButtonGroup layoutGroup = new ButtonGroup();
+        JRadioButtonMenuItem layoutButton;
+        layoutButton = new JRadioButtonMenuItem("Circular");
+        layoutGroup.add(layoutButton);
+        layoutMenu.add(layoutButton);
+        layoutButton.addActionListener(new CircularLayoutAction(networkView));
+        if(defaultLayoutStrategy.equals("circular")){
+            layoutButton.setSelected(true);
+        }
         
-    layoutButton = new JRadioButtonMenuItem("Hierarchicial");
-    layoutGroup.add(layoutButton);
-    layoutMenu.add(layoutButton);
-    layoutButton.addActionListener(new HierarchicalLayoutAction(networkView));
-    if(defaultLayoutStrategy.equals("hierarchical")){
-      layoutButton.setSelected(true);
-    }
+        layoutButton = new JRadioButtonMenuItem("Hierarchicial");
+        layoutGroup.add(layoutButton);
+        layoutMenu.add(layoutButton);
+        layoutButton.addActionListener(new HierarchicalLayoutAction(networkView));
+        if(defaultLayoutStrategy.equals("hierarchical")){
+            layoutButton.setSelected(true);
+        }
         
-    layoutButton = new JRadioButtonMenuItem("Organic");
-    layoutGroup.add(layoutButton);
-    layoutMenu.add(layoutButton);
-    if(defaultLayoutStrategy.equals("organic")){
-      layoutButton.setSelected(true);
-    }
-    layoutButton.addActionListener(new OrganicLayoutAction(networkView));
+        layoutButton = new JRadioButtonMenuItem("Organic");
+        layoutGroup.add(layoutButton);
+        layoutMenu.add(layoutButton);
+        if(defaultLayoutStrategy.equals("organic")){
+            layoutButton.setSelected(true);
+        }
+        layoutButton.addActionListener(new OrganicLayoutAction(networkView));
         
-    layoutButton = new JRadioButtonMenuItem("Embedded");
-    layoutGroup.add(layoutButton);
-    layoutMenu.add(layoutButton);
-    if(defaultLayoutStrategy.equals("embedded")){
-      layoutButton.setSelected(true);
-    }
-    layoutButton.addActionListener(new EmbeddedLayoutAction(networkView));
+        layoutButton = new JRadioButtonMenuItem("Embedded");
+        layoutGroup.add(layoutButton);
+        layoutMenu.add(layoutButton);
+        if(defaultLayoutStrategy.equals("embedded")){
+            layoutButton.setSelected(true);
+        }
+        layoutButton.addActionListener(new EmbeddedLayoutAction(networkView));
         
-    layoutButton = new JRadioButtonMenuItem("Random");
-    layoutGroup.add(layoutButton);
-    layoutMenu.add(layoutButton);
-    if(defaultLayoutStrategy.equals("random")){
-      layoutButton.setSelected(true);
-    }
-    layoutButton.addActionListener(new RandomLayoutAction(networkView));
+        layoutButton = new JRadioButtonMenuItem("Random");
+        layoutGroup.add(layoutButton);
+        layoutMenu.add(layoutButton);
+        if(defaultLayoutStrategy.equals("random")){
+            layoutButton.setSelected(true);
+        }
+        layoutButton.addActionListener(new RandomLayoutAction(networkView));
+    }//only if yFiles
         
     layoutMenu.addSeparator();
     mi = layoutMenu.add(new LayoutAction(networkView));
     mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.CTRL_MASK));
-    layoutMenu.add(new LayoutSelectionAction(cyWindow));
+    if ( networkView.getCytoscapeObj().getConfiguration().isYFiles() ) {
+        layoutMenu.add(new LayoutSelectionAction(cyWindow));
+    }
         
     layoutMenu.addSeparator();
     JMenu alignSubMenu = new JMenu("Align Selected Nodes");
@@ -472,10 +495,13 @@ public class CyMenus {
     b.setBorderPainted(false);
         
     toolBar.addSeparator();
-    b = toolBar.add(new MainFilterDialogAction(networkView));
-    b.setIcon(new ImageIcon(getClass().getResource("images/Grid24.gif")));
-    b.setToolTipText("Apply Filters to Graph");
-    b.setBorderPainted(false);
+    //filters are only supported in yFiles mode
+    if (networkView.getCytoscapeObj().getConfiguration().isYFiles()) {
+        b = toolBar.add(new MainFilterDialogAction(networkView));
+        b.setIcon(new ImageIcon(getClass().getResource("images/Grid24.gif")));
+        b.setToolTipText("Apply Filters to Graph");
+        b.setBorderPainted(false);
+    }
         
     b = toolBar.add(new AnnotationGui(cyWindow));
     b.setIcon(new ImageIcon(getClass().getResource("images/AnnotationGui.gif")));

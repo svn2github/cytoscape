@@ -960,10 +960,10 @@ public void redrawGraph(boolean doLayout, boolean applyAppearances) {
  * call the vizmapper if requested.
  */
 protected void ginyRedrawGraph(boolean doLayout, boolean applyAppearances) {
-    if (view != null && applyAppearances) {
-        applyVizmapSettings();
-        view.updateView();
-    }
+    if (view == null) {return;}
+    if (doLayout) {applyLayout(view);}
+    if (applyAppearances) {applyVizmapSettings();}
+    view.updateView();
 }
 //------------------------------------------------------------------------------
 /**
