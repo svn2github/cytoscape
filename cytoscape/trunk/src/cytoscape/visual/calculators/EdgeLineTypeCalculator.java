@@ -11,10 +11,10 @@ import javax.swing.JPanel;
 import y.base.Edge;
 import y.view.LineType;
 
-import cytoscape.visual.Network;
+import cytoscape.data.CyNetwork;
 //----------------------------------------------------------------------------
 public interface EdgeLineTypeCalculator extends Calculator{
     
-    LineType calculateEdgeLineType(Edge edge, Network network);
+    LineType calculateEdgeLineType(Edge edge, CyNetwork network);
 }
 

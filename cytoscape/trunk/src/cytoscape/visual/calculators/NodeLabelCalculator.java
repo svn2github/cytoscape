@@ -10,10 +10,10 @@ import javax.swing.JPanel;
 
 import y.base.Node;
 
-import cytoscape.visual.Network;
+import cytoscape.data.CyNetwork;
 //----------------------------------------------------------------------------
 public interface NodeLabelCalculator extends Calculator {
     
-    String calculateNodeLabel(Node node, Network network);
+    String calculateNodeLabel(Node node, CyNetwork network);
 }
 

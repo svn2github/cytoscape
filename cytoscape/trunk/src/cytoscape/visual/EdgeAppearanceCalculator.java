@@ -14,6 +14,7 @@ import y.base.Edge;
 import y.view.LineType;
 import y.view.Arrow;
 
+import cytoscape.data.CyNetwork;
 import cytoscape.visual.calculators.*;
 import cytoscape.visual.parsers.*;
 //----------------------------------------------------------------------------
@@ -87,9 +88,9 @@ public class EdgeAppearanceCalculator implements Cloneable {
     /**
      * Using the rules defined by the default values and calculators in this
      * object, compute an appearance for the requested Edge in the supplied
-     * Network. A new EdgeApperance object will be created.
+     * CyNetwork. A new EdgeApperance object will be created.
      */
-    public EdgeAppearance calculateEdgeAppearance(Edge edge, Network network) {
+    public EdgeAppearance calculateEdgeAppearance(Edge edge, CyNetwork network) {
         EdgeAppearance appr = new EdgeAppearance();
         calculateEdgeAppearance(appr, edge, network);
         return appr;
@@ -98,10 +99,10 @@ public class EdgeAppearanceCalculator implements Cloneable {
     /**
      * Using the rules defined by the default values and calculators in this
      * object, compute an appearance for the requested Edge in the supplied
-     * Network. The supplied EdgeAppearance object will be changed to hold
+     * CyNetwork. The supplied EdgeAppearance object will be changed to hold
      * the new values.
      */
-    public void calculateEdgeAppearance(EdgeAppearance appr, Edge edge, Network network) {
+    public void calculateEdgeAppearance(EdgeAppearance appr, Edge edge, CyNetwork network) {
         appr.setColor( calculateEdgeColor(edge, network) );
         appr.setLineType( calculateEdgeLineType(edge, network) );
         appr.setSourceArrow( calculateEdgeSourceArrow(edge, network) );
@@ -118,7 +119,7 @@ public class EdgeAppearanceCalculator implements Cloneable {
     }
     public EdgeColorCalculator getEdgeColorCalculator() {return edgeColorCalculator;}
     public void setEdgeColorCalculator(EdgeColorCalculator c) {edgeColorCalculator = c;}
-    public Color calculateEdgeColor(Edge edge, Network network) {
+    public Color calculateEdgeColor(Edge edge, CyNetwork network) {
         if (edge == null || network == null || edgeColorCalculator == null) {
             return defaultEdgeColor;
         }
@@ -136,7 +137,7 @@ public class EdgeAppearanceCalculator implements Cloneable {
     public void setEdgeLineTypeCalculator(EdgeLineTypeCalculator c) {
         edgeLineTypeCalculator = c;
     }
-    public LineType calculateEdgeLineType(Edge edge, Network network) {
+    public LineType calculateEdgeLineType(Edge edge, CyNetwork network) {
         if (edge == null || network == null || edgeLineTypeCalculator == null) {
             return defaultEdgeLineType;
         }
@@ -154,7 +155,7 @@ public class EdgeAppearanceCalculator implements Cloneable {
     public void setEdgeSourceArrowCalculator(EdgeArrowCalculator c) {
         edgeSourceArrowCalculator = c;
     }
-    public Arrow calculateEdgeSourceArrow(Edge edge, Network network) {
+    public Arrow calculateEdgeSourceArrow(Edge edge, CyNetwork network) {
         if (edge == null || network == null || edgeSourceArrowCalculator == null) {
             return defaultEdgeSourceArrow;
         }
@@ -172,7 +173,7 @@ public class EdgeAppearanceCalculator implements Cloneable {
     public void setEdgeTargetArrowCalculator(EdgeArrowCalculator c) {
         edgeTargetArrowCalculator = c;
     }
-    public Arrow calculateEdgeTargetArrow(Edge edge, Network network) {
+    public Arrow calculateEdgeTargetArrow(Edge edge, CyNetwork network) {
         if (edge == null || network == null || edgeTargetArrowCalculator == null) {
             return defaultEdgeTargetArrow;
         }
@@ -186,7 +187,7 @@ public class EdgeAppearanceCalculator implements Cloneable {
     }
     public EdgeLabelCalculator getEdgeLabelCalculator() {return edgeLabelCalculator;}
     public void setEdgeLabelCalculator(EdgeLabelCalculator c) {edgeLabelCalculator = c;}
-    public String calculateEdgeLabel(Edge edge, Network network) {
+    public String calculateEdgeLabel(Edge edge, CyNetwork network) {
         if (edge == null || network == null || edgeLabelCalculator == null) {
             return defaultEdgeLabel;
         }
@@ -216,7 +217,7 @@ public class EdgeAppearanceCalculator implements Cloneable {
     public EdgeFontSizeCalculator getEdgeFontSizeCalculator() {return edgeFontSizeCalculator;}
     public void setEdgeFontSizeCalculator(EdgeFontSizeCalculator c) {edgeFontSizeCalculator = c;}
     
-    public Font calculateEdgeFont(Edge edge, Network network) {
+    public Font calculateEdgeFont(Edge edge, CyNetwork network) {
 	if (edge == null || network == null ||
 	    (edgeFontFaceCalculator == null && edgeFontSizeCalculator == null)) {
 	    return defaultEdgeFont;
@@ -257,7 +258,7 @@ public class EdgeAppearanceCalculator implements Cloneable {
     public void setEdgeToolTipCalculator(EdgeToolTipCalculator c) {
         edgeToolTipCalculator = c;
     }
-    public String calculateEdgeToolTip(Edge edge, Network network) {
+    public String calculateEdgeToolTip(Edge edge, CyNetwork network) {
         if (edge == null || network == null || edgeToolTipCalculator == null) {
             return defaultEdgeToolTip;
         }

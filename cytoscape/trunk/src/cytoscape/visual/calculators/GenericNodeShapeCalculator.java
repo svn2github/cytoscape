@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import y.base.Node;
 import y.view.ShapeNodeRealizer;
 
-import cytoscape.visual.Network;
+import cytoscape.data.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.NodeShapeParser;
 //----------------------------------------------------------------------------
@@ -41,7 +41,7 @@ public class GenericNodeShapeCalculator extends NodeCalculator implements NodeSh
     /**  It is hoped that the -1 value of a byte will not conflict
      *   with any of the values used by ShapeNodeRealizer.
      */
-    public byte calculateNodeShape(Node node, Network network) {
+    public byte calculateNodeShape(Node node, CyNetwork network) {
         String canonicalName = network.getNodeAttributes().getCanonicalName(node);
         Map attrBundle = network.getNodeAttributes().getAttributes(canonicalName);
 	Object rangeValue = super.getMapping().calculateRangeValue(attrBundle);

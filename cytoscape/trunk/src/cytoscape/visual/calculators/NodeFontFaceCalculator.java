@@ -5,10 +5,10 @@
 //--------------------------------------------------------------------------
 package cytoscape.visual.calculators;
 //--------------------------------------------------------------------------
-import cytoscape.visual.Network;
+import cytoscape.data.CyNetwork;
 import java.awt.Font;
 import y.base.Node;
 //--------------------------------------------------------------------------
 public interface NodeFontFaceCalculator extends Calculator {
-    public Font calculateNodeFontFace(Node node, Network network);
+    public Font calculateNodeFontFace(Node node, CyNetwork network);
 }

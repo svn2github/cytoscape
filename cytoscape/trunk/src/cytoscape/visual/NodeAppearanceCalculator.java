@@ -16,6 +16,7 @@ import y.view.Arrow;
 import y.view.ShapeNodeRealizer;
 
 import cytoscape.GraphObjAttributes;
+import cytoscape.data.CyNetwork;
 import cytoscape.visual.calculators.*;
 import cytoscape.visual.parsers.*;
 //----------------------------------------------------------------------------
@@ -115,9 +116,9 @@ public class NodeAppearanceCalculator implements Cloneable {
     /**
      * Using the rules defined by the default values and calculators in this
      * object, compute an appearance for the requested Node in the supplied
-     * Network. A new NodeApperance object will be created.
+     * CyNetwork. A new NodeApperance object will be created.
      */
-    public NodeAppearance calculateNodeAppearance(Node node, Network network) {
+    public NodeAppearance calculateNodeAppearance(Node node, CyNetwork network) {
         NodeAppearance appr = new NodeAppearance();
         calculateNodeAppearance(appr, node, network);
         return appr;
@@ -126,10 +127,10 @@ public class NodeAppearanceCalculator implements Cloneable {
     /**
      * Using the rules defined by the default values and calculators in this
      * object, compute an appearance for the requested Node in the supplied
-     * Network. The supplied NodeAppearance object will be changed to hold
+     * CyNetwork. The supplied NodeAppearance object will be changed to hold
      * the new values.
      */
-    public void calculateNodeAppearance(NodeAppearance appr, Node node, Network network) {
+    public void calculateNodeAppearance(NodeAppearance appr, Node node, CyNetwork network) {
         appr.setFillColor( calculateNodeFillColor(node, network) );
         appr.setBorderColor( calculateNodeBorderColor(node, network) );
 	appr.setBorderLineType( calculateNodeLineType(node, network) );
@@ -157,7 +158,7 @@ public class NodeAppearanceCalculator implements Cloneable {
     }
     public NodeColorCalculator getNodeFillColorCalculator() {return nodeFillColorCalculator;}
     public void setNodeFillColorCalculator(NodeColorCalculator c) {nodeFillColorCalculator = c;}
-    public Color calculateNodeFillColor(Node node, Network network) {
+    public Color calculateNodeFillColor(Node node, CyNetwork network) {
         if (node == null || network == null) {return defaultNodeFillColor;}
         //look for a suitable value in a specific data attribute
         GraphObjAttributes nodeAttributes = network.getNodeAttributes();
@@ -180,7 +181,7 @@ public class NodeAppearanceCalculator implements Cloneable {
     }
     public NodeColorCalculator getNodeBorderColorCalculator() {return nodeBorderColorCalculator;}
     public void setNodeBorderColorCalculator(NodeColorCalculator c) {nodeBorderColorCalculator = c;}
-    public Color calculateNodeBorderColor(Node node, Network network) {
+    public Color calculateNodeBorderColor(Node node, CyNetwork network) {
         if (node == null || network == null) {return defaultNodeBorderColor;}
         //look for a suitable value in a specific data attribute
         GraphObjAttributes nodeAttributes = network.getNodeAttributes();
@@ -203,7 +204,7 @@ public class NodeAppearanceCalculator implements Cloneable {
     }
     public NodeLineTypeCalculator getNodeLineTypeCalculator() {return nodeLineTypeCalculator;}
     public void setNodeLineTypeCalculator(NodeLineTypeCalculator c) {nodeLineTypeCalculator = c;}
-    public LineType calculateNodeLineType(Node node, Network network) {
+    public LineType calculateNodeLineType(Node node, CyNetwork network) {
         if (node == null || network == null) {return defaultNodeLineType;}
         //look for a suitable value in a specific data attribute
         GraphObjAttributes nodeAttributes = network.getNodeAttributes();
@@ -226,7 +227,7 @@ public class NodeAppearanceCalculator implements Cloneable {
     }
     public NodeShapeCalculator getNodeShapeCalculator() {return nodeShapeCalculator;}
     public void setNodeShapeCalculator(NodeShapeCalculator c) {nodeShapeCalculator = c;}
-    public byte calculateNodeShape(Node node, Network network) {
+    public byte calculateNodeShape(Node node, CyNetwork network) {
         if (node == null || network == null) {return defaultNodeShape;}
         //look for a suitable value in a specific data attribute
         GraphObjAttributes nodeAttributes = network.getNodeAttributes();
@@ -276,7 +277,7 @@ public class NodeAppearanceCalculator implements Cloneable {
     }
     public NodeSizeCalculator getNodeWidthCalculator() {return nodeWidthCalculator;}
     public void setNodeWidthCalculator(NodeSizeCalculator c) {nodeWidthCalculator = c;}
-    public double calculateNodeWidth(Node node, Network network) {
+    public double calculateNodeWidth(Node node, CyNetwork network) {
         if (node == null || network == null) {return defaultNodeWidth;}
         //look for a suitable value in a specific data attribute
         GraphObjAttributes nodeAttributes = network.getNodeAttributes();
@@ -299,7 +300,7 @@ public class NodeAppearanceCalculator implements Cloneable {
     }
     public NodeSizeCalculator getNodeHeightCalculator() {return nodeHeightCalculator;}
     public void setNodeHeightCalculator(NodeSizeCalculator c) {nodeHeightCalculator = c;}
-    public double calculateNodeHeight(Node node, Network network) {
+    public double calculateNodeHeight(Node node, CyNetwork network) {
         if (node == null || network == null) {return defaultNodeHeight;}
         //look for a suitable value in a specific data attribute
         GraphObjAttributes nodeAttributes = network.getNodeAttributes();
@@ -329,7 +330,7 @@ public class NodeAppearanceCalculator implements Cloneable {
     }
     public NodeLabelCalculator getNodeLabelCalculator() {return nodeLabelCalculator;}
     public void setNodeLabelCalculator(NodeLabelCalculator c) {nodeLabelCalculator = c;}
-    public String calculateNodeLabel(Node node, Network network) {
+    public String calculateNodeLabel(Node node, CyNetwork network) {
         if (node == null || network == null) {return defaultNodeLabel;}
         //look for a suitable value in a specific data attribute
         GraphObjAttributes nodeAttributes = network.getNodeAttributes();
@@ -348,7 +349,7 @@ public class NodeAppearanceCalculator implements Cloneable {
     }
     public NodeToolTipCalculator getNodeToolTipCalculator() {return nodeToolTipCalculator;}
     public void setNodeToolTipCalculator(NodeToolTipCalculator c) {nodeToolTipCalculator = c;}
-    public String calculateNodeToolTip(Node node, Network network) {
+    public String calculateNodeToolTip(Node node, CyNetwork network) {
         if (node == null || network == null) {return defaultNodeToolTip;}
         //look for a suitable value in a specific data attribute
         GraphObjAttributes nodeAttributes = network.getNodeAttributes();
@@ -384,7 +385,7 @@ public class NodeAppearanceCalculator implements Cloneable {
     public NodeFontSizeCalculator getNodeFontSizeCalculator() {return nodeFontSizeCalculator;}
     public void setNodeFontSizeCalculator(NodeFontSizeCalculator c) {nodeFontSizeCalculator = c;}
     
-    public Font calculateNodeFont(Node node, Network network) {
+    public Font calculateNodeFont(Node node, CyNetwork network) {
 	if (node == null || network == null) {return defaultNodeFont;}
         //look for a suitable value in a specific data attribute
         GraphObjAttributes nodeAttributes = network.getNodeAttributes();

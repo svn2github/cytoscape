@@ -17,7 +17,7 @@ import cytoscape.dialogs.GridBagGroup;
 import cytoscape.dialogs.MiscGB;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.mappings.MappingFactory;
-import cytoscape.visual.Network;
+import cytoscape.data.CyNetwork;
 //------------------------------------------------------------------------------
 /**
  * AbstractCalculator is the top of the tree for the Calculator classes. <b>DO NOT</b>
@@ -202,27 +202,27 @@ public abstract class AbstractCalculator implements Calculator {
      * updateAttribute is called when the currently selected attribute changes.
      *
      * @param	attrName	the name of the newly selected attribute
-     * @param   network         the Network on which this attribute is defined
+     * @param   network         the CyNetwork on which this attribute is defined
      * @deprecated Only supports one mapping, use
-     *		{@link #updateAttribute(String, Network, ObjectMapping)} or
+     *		{@link #updateAttribute(String, CyNetwork, ObjectMapping)} or
      *		{@link #updateAttribute(String, Newtork, int)) instead.
      */
-    void updateAttribute(String attrName, Network network) {
+    void updateAttribute(String attrName, CyNetwork network) {
 	this.updateAttribute(attrName, network, 0);
     }
 
     /**
      * updateAttribute is called when the currently selected attribute changes.
      * Any changes needed in the mapping UI should be performed at this point.
-     * Use {@link #updateAttribute(String, Network, int)} for best performance.
+     * Use {@link #updateAttribute(String, CyNetwork, int)} for best performance.
      *
      * @param	attrName	the name of the newly selected attribute
-     * @param   network         the Network on which this attribute is defined
+     * @param   network         the CyNetwork on which this attribute is defined
      * @param	m		the object mapping to update
      * @throws	IllegalArgumentException if the given object mapping isn't in this
      *		    calculator.
      */
-    void updateAttribute(String attrName, Network network, ObjectMapping m)
+    void updateAttribute(String attrName, CyNetwork network, ObjectMapping m)
     throws IllegalArgumentException {
 	int mapIndex = this.mappings.indexOf(m);
 	if (mapIndex == -1) {
@@ -239,12 +239,12 @@ public abstract class AbstractCalculator implements Calculator {
      * <p>
      * Calls the specified mapper's setControllingAttribute method.
      * @param	attrName	the name of the newly selected attribute
-     * @param   network         the Network on which this attribute is defined
+     * @param   network         the CyNetwork on which this attribute is defined
      * @param	mIndex		the index of the object mapping to update
      * @throws	ArrayIndexOutOfBoundsException if the given object mapping index
      *		    is out of bounds.
      */
-    void updateAttribute(String attrName, Network network, int mIndex)
+    void updateAttribute(String attrName, CyNetwork network, int mIndex)
     throws ArrayIndexOutOfBoundsException {
 	ObjectMapping m = (ObjectMapping) this.mappings.get(mIndex);
 	m.setControllingAttributeName(attrName, network, false);
@@ -255,20 +255,20 @@ public abstract class AbstractCalculator implements Calculator {
      * Get the UI for the calculator.
      * 
      * @param	parent	Parent JDialog for the UI
-     * @param	network	Network object containing underlying graph data
+     * @param	network	CyNetwork object containing underlying graph data
      */
-    public abstract JPanel getUI(JDialog parent, Network network);
+    public abstract JPanel getUI(JDialog parent, CyNetwork network);
 
     /**
      * Get the UI for calculators. Display a JComboBox with attributes in the given
      * GraphObjAttributes whose data are instances of the classes accepted by each
      * ObjectMapping. The resulting JComboBox calls
-     * {@link #updateAttribute(String, Network, int)} when frobbed.
+     * {@link #updateAttribute(String, CyNetwork, int)} when frobbed.
      *
      * @param	attr	GraphObjAttributes to look up attributes from
      * @return	UI with controlling attribute selection facilities
      */
-    protected JPanel getUI(GraphObjAttributes attr, JDialog parent, Network network) {
+    protected JPanel getUI(GraphObjAttributes attr, JDialog parent, CyNetwork network) {
 	return new CalculatorUI(attr, parent, network);
     }
 
@@ -281,7 +281,7 @@ public abstract class AbstractCalculator implements Calculator {
 	 */
 	protected GridBagGroup myGBG;
 	
-	public CalculatorUI(GraphObjAttributes attr, JDialog parent, Network network) {
+	public CalculatorUI(GraphObjAttributes attr, JDialog parent, CyNetwork network) {
 	    this.myGBG = new GridBagGroup(this);
 	    String[] attrNames = attr.getAttributeNames();
 	    int i, yPos;
@@ -332,7 +332,7 @@ public abstract class AbstractCalculator implements Calculator {
 	 * select the controlling attribute for mappers contained in each calculator.
 	 */
 	protected class AttributeSelectorListener implements ItemListener {
-	    private Network network;
+	    private CyNetwork network;
 	    private int mapIndex;
 	    private int yPos;
 	    private JPanel mapperUI;
@@ -350,7 +350,7 @@ public abstract class AbstractCalculator implements Calculator {
 	     *		       updating mapping UI.
 	     * @param mapperUI Current mapper UI panel
 	     */
-	    protected AttributeSelectorListener(JDialog parent, Network network, int mapIndex, int yPos, JPanel mapperUI) {
+	    protected AttributeSelectorListener(JDialog parent, CyNetwork network, int mapIndex, int yPos, JPanel mapperUI) {
 		this.parent = parent;
 		this.network = network;
 		this.mapIndex = mapIndex;

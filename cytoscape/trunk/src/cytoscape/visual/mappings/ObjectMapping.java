@@ -10,7 +10,7 @@ import java.util.Properties;
 import javax.swing.JPanel;
 import javax.swing.JDialog;
 import javax.swing.event.ChangeListener;
-import cytoscape.visual.Network;
+import cytoscape.data.CyNetwork;
 import cytoscape.visual.parsers.ValueParser;
 //----------------------------------------------------------------------------
 /**
@@ -21,8 +21,8 @@ import cytoscape.visual.parsers.ValueParser;
  * the mapping.
  * <p>
  * All classes implementing this interface <b>MUST</b> have a constructor that
- * takes the arguments Object, Network, byte, where Object is the default object
- * the mapper should map to, Network is the Network object representing the network
+ * takes the arguments Object, CyNetwork, byte, where Object is the default object
+ * the mapper should map to, CyNetwork is the CyNetwork object representing the network
  * displayed in Cytoscape, and the byte is one of {@link #EDGE_MAPPING} or
  * {@link #NODE_MAPPING}.
  */
@@ -52,7 +52,7 @@ public interface ObjectMapping extends Cloneable {
      * provided so that the current values for the given attribute name can
      * be loaded for UI purposes. Null values for the network argument are allowed.
      */
-    void setControllingAttributeName(String attrName, Network network,
+    void setControllingAttributeName(String attrName, CyNetwork network,
                                      boolean preserveMapping);
 
     /**
@@ -84,7 +84,7 @@ public interface ObjectMapping extends Cloneable {
 
     Object calculateRangeValue(Map attrBundle);
 
-    JPanel getUI(JDialog parent, Network network);
+    JPanel getUI(JDialog parent, CyNetwork network);
 
     Object clone();
     

@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 
 import y.base.Edge;
 
-import cytoscape.visual.Network;
+import cytoscape.data.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.ColorParser;
 //----------------------------------------------------------------------------
@@ -36,7 +36,7 @@ public class GenericEdgeColorCalculator extends EdgeCalculator implements EdgeCo
         super(name, props, baseKey, new ColorParser(), Color.WHITE);
     }
     
-    public Color calculateEdgeColor(Edge edge, Network network) {
+    public Color calculateEdgeColor(Edge edge, CyNetwork network) {
         String canonicalName = network.getEdgeAttributes().getCanonicalName(edge);
         Map attrBundle = network.getEdgeAttributes().getAttributes(canonicalName);
         return (Color) super.getMapping().calculateRangeValue(attrBundle);

@@ -72,8 +72,8 @@ public class VizMapUI extends JDialog {
      *
      *	@param	VMM	VisualMappingManager for the graph
      */
-    public VizMapUI(VisualMappingManager VMM) {
-	super(VMM.getCytoscapeWindow().getMainFrame(), "Set Visual Properties");
+    public VizMapUI(VisualMappingManager VMM, JFrame mainFrame) {
+	super(mainFrame, "Set Visual Properties");
 	
 	this.VMM = VMM;
 	this.mainGBG = new GridBagGroup();
@@ -132,7 +132,7 @@ public class VizMapUI extends JDialog {
 	attrSelectorPanel.add(defSelect);
  	//attrSelectorPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
-	this.styleSelector = new StyleSelector(this);
+	this.styleSelector = new StyleSelector(this, mainFrame);
 
 	//MiscGB.insert(mainGBG, vizStylePanel, 0, 0, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
 	MiscGB.insert(mainGBG, attrSelectorPanel, 0, 0, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
@@ -212,8 +212,8 @@ public class VizMapUI extends JDialog {
 	 */
 	protected boolean styleDefNeedsUpdate = true;
 	
-	protected StyleSelector(VizMapUI styleDef) {
-	    super(VMM.getCytoscapeWindow().getMainFrame(), "Visual Styles");
+	protected StyleSelector(VizMapUI styleDef, JFrame mainFrame) {
+	    super(mainFrame, "Visual Styles");
             this.currentStyle = VMM.getVisualStyle();
 	    this.styleDefUI = styleDef;
 	    this.catalog = VMM.getCalculatorCatalog();
@@ -400,7 +400,7 @@ public class VizMapUI extends JDialog {
 			currentStyle = newStyle;
 			VMM.setVisualStyle(currentStyle);
                         //this call will apply the new visual style
-			VMM.getCytoscapeWindow().redrawGraph();
+			VMM.getNetworkView().redrawGraph();
 			if (styleDefUI.isShowing())
 			    visualStyleChanged();
 			else
@@ -497,7 +497,7 @@ public class VizMapUI extends JDialog {
     // apply button action listener
     private class ApplyAction extends AbstractAction {
 	public void actionPerformed(ActionEvent e) {
-	    VMM.getCytoscapeWindow().redrawGraph();
+	    VMM.getNetworkView().redrawGraph();
 	}
     }
 

@@ -10,10 +10,10 @@ import javax.swing.JPanel;
 
 import y.base.Node;
 
-import cytoscape.visual.Network;
+import cytoscape.data.CyNetwork;
 //----------------------------------------------------------------------------
 public interface NodeShapeCalculator extends Calculator {
     
-    byte calculateNodeShape(Node node, Network network);
+    byte calculateNodeShape(Node node, CyNetwork network);
 }
 

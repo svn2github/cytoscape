@@ -11,10 +11,10 @@ import javax.swing.JPanel;
 
 import y.base.Node;
 
-import cytoscape.visual.Network;
+import cytoscape.data.CyNetwork;
 //----------------------------------------------------------------------------
 public interface NodeColorCalculator extends Calculator {
     
-    Color calculateNodeColor(Node node, Network network);
+    Color calculateNodeColor(Node node, CyNetwork network);
 }
 

@@ -12,7 +12,7 @@ import cytoscape.dialogs.MiscGB;
 import cytoscape.dialogs.GridBagGroup;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.mappings.MappingFactory;
-import cytoscape.visual.Network;
+import cytoscape.data.CyNetwork;
 import cytoscape.visual.parsers.ValueParser;
 //------------------------------------------------------------------------------
 /**
@@ -39,11 +39,11 @@ public abstract class NodeCalculator extends AbstractCalculator {
      * mapper's UI JPanel in a FlowLayout.
      *
      * @param	parent	Parent dialog for the child UI
-     * @param	n	Network representing the graph
+     * @param	n	CyNetwork representing the graph
      *
      * @return	JPanel containing JComboBox
      */
-    public JPanel getUI(JDialog parent, Network n) {
+    public JPanel getUI(JDialog parent, CyNetwork n) {
 	// everything comes straight from the superclass
 	return super.getUI(n.getNodeAttributes(), parent, n);
 	/*

@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 
 import y.base.Node;
 
-import cytoscape.visual.Network;
+import cytoscape.data.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.ColorParser;
 //----------------------------------------------------------------------------
@@ -36,7 +36,7 @@ public class GenericNodeColorCalculator extends NodeCalculator implements NodeCo
         super(name, props, baseKey, new ColorParser(), Color.WHITE);
     }
     
-    public Color calculateNodeColor(Node node, Network network) {
+    public Color calculateNodeColor(Node node, CyNetwork network) {
         String canonicalName = network.getNodeAttributes().getCanonicalName(node);
         Map attrBundle = network.getNodeAttributes().getAttributes(canonicalName);
         return (Color)super.getMapping().calculateRangeValue(attrBundle);

@@ -11,10 +11,10 @@ import javax.swing.JPanel;
 import y.base.Node;
 import y.view.LineType;
 
-import cytoscape.visual.Network;
+import cytoscape.data.CyNetwork;
 //----------------------------------------------------------------------------
 public interface NodeLineTypeCalculator extends Calculator {
     
-    LineType calculateNodeLineType(Node node, Network network);
+    LineType calculateNodeLineType(Node node, CyNetwork network);
 }
 

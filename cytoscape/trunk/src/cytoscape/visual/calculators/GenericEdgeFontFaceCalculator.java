@@ -12,7 +12,7 @@ import javax.swing.*;
 
 import y.base.Edge;
 
-import cytoscape.visual.Network;
+import cytoscape.data.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.FontParser;
 //--------------------------------------------------------------------------
@@ -33,7 +33,7 @@ public class GenericEdgeFontFaceCalculator extends EdgeCalculator
         super(name, props, baseKey, new FontParser(), new Font(null, Font.PLAIN, 12));
     }
 
-    public Font calculateEdgeFontFace(Edge edge, Network network) {
+    public Font calculateEdgeFontFace(Edge edge, CyNetwork network) {
 	String canonicalName = network.getEdgeAttributes().getCanonicalName(edge);
 	Map attrBundle = network.getEdgeAttributes().getAttributes(canonicalName);
 	return (Font) super.getMapping().calculateRangeValue(attrBundle);

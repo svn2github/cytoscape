@@ -328,8 +328,10 @@ private void loadVizMapper() {
   }
   
   //create the vizMapping objects
-  this.vizMapper = new VisualMappingManager(cytoscapeWindow, calculatorCatalog, vs);
-  this.vizMapUI = new VizMapUI(this.vizMapper);
+  this.vizMapper = new VisualMappingManager(this, calculatorCatalog, vs,
+                                            getCytoscape().getLogger());
+  this.vizMapUI = new VizMapUI(this.vizMapper, this.mainFrame);
+  vizMapper.setUI(vizMapUI);
 
   // add vizmapper to toolbar
   JToolBar toolBar = getCytoscapeMenus().getToolBar();

@@ -46,7 +46,7 @@ import y.view.Graph2D;
 import y.view.ShapeNodeRealizer;
 
 import cytoscape.GraphObjAttributes;
-import cytoscape.visual.Network;
+import cytoscape.data.CyNetwork;
 import cytoscape.visual.NodeAppearance;
 import cytoscape.visual.NodeAppearanceCalculator;
 //----------------------------------------------------------------------------
@@ -102,8 +102,8 @@ public class NodeAppearanceCalculatorTest extends TestCase {
         secondNodeAttr.set("node.toolTip", secondName, "testToolTip");
         secondNodeAttr.set("node.font", secondName, "SansSerif,italic,10");
         
-        Network network1 = new Network(graph, firstNodeAttr, new GraphObjAttributes() );
-        Network network2 = new Network(graph, secondNodeAttr, new GraphObjAttributes() );
+        CyNetwork network1 = new CyNetwork(graph, firstNodeAttr, new GraphObjAttributes() );
+        CyNetwork network2 = new CyNetwork(graph, secondNodeAttr, new GraphObjAttributes() );
         NodeAppearanceCalculator nac = new NodeAppearanceCalculator();
         nac.setNodeSizeLocked(false);
         

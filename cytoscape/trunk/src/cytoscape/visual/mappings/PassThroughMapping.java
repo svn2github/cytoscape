@@ -10,7 +10,7 @@ import javax.swing.*;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 import java.awt.GridLayout;
-import cytoscape.visual.Network;
+import cytoscape.data.CyNetwork;
 import cytoscape.visual.parsers.ValueParser;
 //----------------------------------------------------------------------------
 /**
@@ -68,7 +68,7 @@ public class PassThroughMapping implements ObjectMapping {
     }
     
     public String getControllingAttributeName() {return attrName;}
-    public void setControllingAttributeName(String attrName, Network network,
+    public void setControllingAttributeName(String attrName, CyNetwork network,
                                             boolean preserveMapping) {
         this.attrName = attrName;
     }
@@ -85,7 +85,7 @@ public class PassThroughMapping implements ObjectMapping {
     public void removeChangeListener(ChangeListener l) {
     }
         
-    public JPanel getUI(JDialog parent, Network network) {
+    public JPanel getUI(JDialog parent, CyNetwork network) {
         //construct a UI to view/edit this mapping; only needs to view/set
         //the controlling attribute name
 	JPanel p = new JPanel();

@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import y.base.Node;
 import y.view.LineType;
 
-import cytoscape.visual.Network;
+import cytoscape.data.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.LineTypeParser;
 //----------------------------------------------------------------------------
@@ -37,7 +37,7 @@ public class GenericNodeLineTypeCalculator extends NodeCalculator implements Nod
         super(name, props, baseKey, new LineTypeParser(), LineType.LINE_1);
     }
     
-    public LineType calculateNodeLineType(Node node, Network network) {
+    public LineType calculateNodeLineType(Node node, CyNetwork network) {
         String canonicalName = network.getNodeAttributes().getCanonicalName(node);
         Map attrBundle = network.getNodeAttributes().getAttributes(canonicalName);
         return (LineType)super.getMapping().calculateRangeValue(attrBundle);

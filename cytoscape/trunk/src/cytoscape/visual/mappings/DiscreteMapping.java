@@ -17,7 +17,7 @@ import java.awt.GridBagConstraints;
 import cytoscape.GraphObjAttributes;
 import cytoscape.dialogs.MiscGB;
 import cytoscape.dialogs.GridBagGroup;
-import cytoscape.visual.Network;
+import cytoscape.data.CyNetwork;
 import cytoscape.visual.ui.ValueDisplayer;
 import cytoscape.visual.parsers.ValueParser;
 import cytoscape.visual.parsers.ObjectToString;
@@ -85,7 +85,7 @@ public class DiscreteMapping extends TreeMap implements ObjectMapping {
      *
      * @param	attrName	The name of the new attribute to map to
      */
-    public void setControllingAttributeName(String attrName, Network n, boolean preserveMapping) {
+    public void setControllingAttributeName(String attrName, CyNetwork n, boolean preserveMapping) {
         this.attrName = attrName;
 	if (!preserveMapping) {
             this.clear();
@@ -101,7 +101,7 @@ public class DiscreteMapping extends TreeMap implements ObjectMapping {
      * This method is called by the {@link #getUI} method before building
      * the UI.
      */
-    public void loadKeys(Network network) {
+    public void loadKeys(CyNetwork network) {
         if (network == null) {return;}
 	GraphObjAttributes attrs;
 	if (mapType == ObjectMapping.EDGE_MAPPING)
@@ -281,7 +281,7 @@ public class DiscreteMapping extends TreeMap implements ObjectMapping {
         }
     }
 
-    public JPanel getUI(JDialog parent, Network n) {
+    public JPanel getUI(JDialog parent, CyNetwork n) {
         //construct a UI to view/edit this mapping. Mapping is contained in
 	//superclass TreeMap map - maps are from attribute bundles to Objects.
 	//The UI only contains a JScrollPane containing a bunch of JButtons and

@@ -10,10 +10,10 @@ import javax.swing.JPanel;
 
 import y.base.Edge;
 
-import cytoscape.visual.Network;
+import cytoscape.data.CyNetwork;
 //----------------------------------------------------------------------------
 public interface EdgeLabelCalculator extends Calculator {
     
-    public String calculateEdgeLabel(Edge edge, Network network);
+    public String calculateEdgeLabel(Edge edge, CyNetwork network);
 }
 

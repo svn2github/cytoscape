@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JDialog;
 import javax.swing.event.ChangeListener;
 import cytoscape.visual.mappings.ObjectMapping;
-import cytoscape.visual.Network;
+import cytoscape.data.CyNetwork;
 //------------------------------------------------------------------------------
 /**
  *  Calculator specifies a super-interface for all calculator interfaces.
@@ -24,9 +24,9 @@ public interface Calculator extends Cloneable {
      *	Get the UI for a calculator.
      *
      *	@param	parent	Parent JDialog for the UI
-     *	@param	network	Network object containing underlying graph data
+     *	@param	network	CyNetwork object containing underlying graph data
      */
-    JPanel getUI(JDialog parent, Network network);
+    JPanel getUI(JDialog parent, CyNetwork network);
 
     /**
      *  Gets calculator name.

@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 
 import y.base.Edge;
 
-import cytoscape.visual.Network;
+import cytoscape.data.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.StringParser;
 //----------------------------------------------------------------------------
@@ -35,7 +35,7 @@ public class GenericEdgeLabelCalculator extends EdgeCalculator implements EdgeLa
         super(name, props, baseKey, new StringParser(), new String());
     }
     
-    public String calculateEdgeLabel(Edge edge, Network network) {
+    public String calculateEdgeLabel(Edge edge, CyNetwork network) {
         String canonicalName = network.getEdgeAttributes().getCanonicalName(edge);
         Map attrBundle = network.getEdgeAttributes().getAttributes(canonicalName);
         return (String)super.getMapping().calculateRangeValue(attrBundle);

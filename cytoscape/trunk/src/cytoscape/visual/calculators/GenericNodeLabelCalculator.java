@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 
 import y.base.Node;
 
-import cytoscape.visual.Network;
+import cytoscape.data.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.StringParser;
 //----------------------------------------------------------------------------
@@ -35,7 +35,7 @@ public class GenericNodeLabelCalculator extends NodeCalculator implements NodeLa
         super(name, props, baseKey, new StringParser(), new String());
     }
     
-    public String calculateNodeLabel(Node node, Network network) {
+    public String calculateNodeLabel(Node node, CyNetwork network) {
         String canonicalName = network.getNodeAttributes().getCanonicalName(node);
         Map attrBundle = network.getNodeAttributes().getAttributes(canonicalName);
         return (String)super.getMapping().calculateRangeValue(attrBundle);

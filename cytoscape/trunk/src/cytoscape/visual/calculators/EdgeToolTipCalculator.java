@@ -10,10 +10,10 @@ import javax.swing.JPanel;
 
 import y.base.Edge;
 
-import cytoscape.visual.Network;
+import cytoscape.data.CyNetwork;
 //----------------------------------------------------------------------------
 public interface EdgeToolTipCalculator extends Calculator {
     
-    String calculateEdgeToolTip(Edge edge, Network network);
+    String calculateEdgeToolTip(Edge edge, CyNetwork network);
 }
 

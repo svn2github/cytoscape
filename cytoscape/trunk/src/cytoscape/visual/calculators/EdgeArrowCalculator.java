@@ -11,10 +11,10 @@ import javax.swing.JPanel;
 import y.base.Edge;
 import y.view.Arrow;
 
-import cytoscape.visual.Network;
+import cytoscape.data.CyNetwork;
 //----------------------------------------------------------------------------
 public interface EdgeArrowCalculator extends Calculator {
     
-    public Arrow calculateEdgeArrow(Edge edge, Network network);
+    public Arrow calculateEdgeArrow(Edge edge, CyNetwork network);
 }
 

@@ -33,11 +33,11 @@ public class TestNewMappingsUI {
     /** standard reference to the CytoscapeWindow. */
     protected CytoscapeWindow cytoscapeWindow;
     /** contains all information necessary to compute appearances. */
-    protected Network network;
+    protected CyNetwork network;
     public TestNewMappingsUI (CytoscapeWindow cytoscapeWindow)
     {
 	this.cytoscapeWindow = cytoscapeWindow;
-	this.network = new Network(cytoscapeWindow);
+	this.network = cytoscapeWindow.getNetwork();
  	cytoscapeWindow.getOperationsMenu().addSeparator();
 	/*
  	cytoscapeWindow.getOperationsMenu().add

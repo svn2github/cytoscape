@@ -11,7 +11,7 @@ import javax.swing.*;
 
 import y.base.Node;
 
-import cytoscape.visual.Network;
+import cytoscape.data.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.DoubleParser;
 //--------------------------------------------------------------------------
@@ -41,7 +41,7 @@ public class GenericNodeFontSizeCalculator extends NodeCalculator
      *  should expect to handle.  The usual caller is
      *  NodeAppearanceCalculator.
      */
-    public float calculateNodeFontSize(Node node, Network network) {
+    public float calculateNodeFontSize(Node node, CyNetwork network) {
 	String canonicalName = network.getNodeAttributes().getCanonicalName(node);
 	Map attrBundle = network.getNodeAttributes().getAttributes(canonicalName);
 	Object rangeValue = super.getMapping().calculateRangeValue(attrBundle);

@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import y.base.Edge;
 import y.view.Arrow;
 
-import cytoscape.visual.Network;
+import cytoscape.data.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.ArrowParser;
 //----------------------------------------------------------------------------
@@ -37,7 +37,7 @@ public class GenericEdgeArrowCalculator extends EdgeCalculator implements EdgeAr
         super(name, props, baseKey, new ArrowParser(), Arrow.NONE);
     }
     
-    public Arrow calculateEdgeArrow(Edge edge, Network network) {
+    public Arrow calculateEdgeArrow(Edge edge, CyNetwork network) {
         String canonicalName = network.getEdgeAttributes().getCanonicalName(edge);
         Map attrBundle = network.getEdgeAttributes().getAttributes(canonicalName);
         return (Arrow) super.getMapping().calculateRangeValue(attrBundle);

@@ -11,10 +11,10 @@ import javax.swing.JPanel;
 
 import y.base.Edge;
 
-import cytoscape.visual.Network;
+import cytoscape.data.CyNetwork;
 //----------------------------------------------------------------------------
 public interface EdgeColorCalculator extends Calculator{
     
-    public Color calculateEdgeColor(Edge edge, Network network);
+    public Color calculateEdgeColor(Edge edge, CyNetwork network);
 }
 

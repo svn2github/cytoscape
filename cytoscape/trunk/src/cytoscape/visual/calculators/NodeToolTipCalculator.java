@@ -10,10 +10,10 @@ import javax.swing.JPanel;
 
 import y.base.Node;
 
-import cytoscape.visual.Network;
+import cytoscape.data.CyNetwork;
 //----------------------------------------------------------------------------
 public interface NodeToolTipCalculator extends Calculator {
     
-    String calculateNodeToolTip(Node node, Network network);
+    String calculateNodeToolTip(Node node, CyNetwork network);
 }
 

@@ -15,6 +15,7 @@ import y.view.LineType;
 import y.view.Arrow;
 import y.view.ShapeNodeRealizer;
 
+import cytoscape.data.CyNetwork;
 import cytoscape.visual.calculators.*;
 import cytoscape.visual.parsers.*;
 //----------------------------------------------------------------------------
@@ -60,7 +61,7 @@ public class GlobalAppearanceCalculator implements Cloneable {
      * Constructs a new GlobalAppearance object containing the values for
      * the known global visual attributes.
      */
-    public GlobalAppearance calculateGlobalAppearance(Network network) {
+    public GlobalAppearance calculateGlobalAppearance(CyNetwork network) {
         GlobalAppearance appr = new GlobalAppearance();
         calculateGlobalAppearance(appr, network);
         return appr;
@@ -70,7 +71,7 @@ public class GlobalAppearanceCalculator implements Cloneable {
      * The supplied GlobalAppearance object will be changed to hold new
      * values for the known global visual attributes.
      */
-    public void calculateGlobalAppearance(GlobalAppearance appr, Network network) {
+    public void calculateGlobalAppearance(GlobalAppearance appr, CyNetwork network) {
         appr.setBackgroundColor( calculateBackgroundColor(network) );
         appr.setSloppySelectionColor( calculateSloppySelectionColor(network) );
     }
@@ -84,7 +85,7 @@ public class GlobalAppearanceCalculator implements Cloneable {
      * Currently no calculators are supported for global visual attributes,
      * so this method simply returns the default background color.
      */
-    public Color calculateBackgroundColor(Network network) {
+    public Color calculateBackgroundColor(CyNetwork network) {
         return defaultBackgroundColor;
     }
         
@@ -96,7 +97,7 @@ public class GlobalAppearanceCalculator implements Cloneable {
      * Currently no calculators are supported for global visual attributes,
      * so this method simply returns the default sloppy selection color.
      */
-    public Color calculateSloppySelectionColor(Network network) {
+    public Color calculateSloppySelectionColor(CyNetwork network) {
         return defaultSloppySelectionColor;
     }
 

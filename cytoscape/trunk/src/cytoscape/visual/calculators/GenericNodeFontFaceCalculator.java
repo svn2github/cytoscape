@@ -12,7 +12,7 @@ import javax.swing.*;
 
 import y.base.Node;
 
-import cytoscape.visual.Network;
+import cytoscape.data.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.FontParser;
 //--------------------------------------------------------------------------
@@ -33,7 +33,7 @@ public class GenericNodeFontFaceCalculator extends NodeCalculator
         super(name, props, baseKey, new FontParser(), new Font(null, Font.PLAIN, 12));
     }
     
-    public Font calculateNodeFontFace(Node node, Network network) {
+    public Font calculateNodeFontFace(Node node, CyNetwork network) {
 	String canonicalName = network.getNodeAttributes().getCanonicalName(node);
 	Map attrBundle = network.getNodeAttributes().getAttributes(canonicalName);
 	return (Font) super.getMapping().calculateRangeValue(attrBundle);

@@ -11,7 +11,7 @@ import javax.swing.*;
 
 import y.base.Edge;
 
-import cytoscape.visual.Network;
+import cytoscape.data.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.DoubleParser;
 //--------------------------------------------------------------------------
@@ -41,7 +41,7 @@ public class GenericEdgeFontSizeCalculator extends EdgeCalculator
      *  should expect to handle.  The usual caller is
      *  NodeAppearanceCalculator.
      */
-    public float calculateEdgeFontSize(Edge edge, Network network) {
+    public float calculateEdgeFontSize(Edge edge, CyNetwork network) {
 	String canonicalName = network.getEdgeAttributes().getCanonicalName(edge);
 	Map attrBundle = network.getEdgeAttributes().getAttributes(canonicalName);
 	Object rangeValue = super.getMapping().calculateRangeValue(attrBundle);

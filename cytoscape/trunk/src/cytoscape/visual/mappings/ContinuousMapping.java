@@ -15,7 +15,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import cytoscape.dialogs.MiscGB;
 import cytoscape.dialogs.GridBagGroup;
-import cytoscape.visual.Network;
+import cytoscape.data.CyNetwork;
 import cytoscape.visual.ui.ValueDisplayer;
 import cytoscape.visual.parsers.ValueParser;
 import cytoscape.visual.parsers.ObjectToString;
@@ -97,7 +97,7 @@ public class ContinuousMapping extends TreeMap implements ObjectMapping {
     }
 
     public String getControllingAttributeName() {return attrName;}
-    public void setControllingAttributeName(String attrName, Network n, boolean preserveMapping) {
+    public void setControllingAttributeName(String attrName, CyNetwork n, boolean preserveMapping) {
         this.attrName = attrName;
     }
     
@@ -134,7 +134,7 @@ public class ContinuousMapping extends TreeMap implements ObjectMapping {
         }
     }
 
-    public JPanel getUI(JDialog parent, Network network) {
+    public JPanel getUI(JDialog parent, CyNetwork network) {
         //construct a UI to view/edit this mapping
 	myUI = new ContinuousUI(parent, network);
 	return myUI;
@@ -437,7 +437,7 @@ public class ContinuousMapping extends TreeMap implements ObjectMapping {
 	 *  @param jd parent dialog
 	 *  @param network the network
 	 */
-	ContinuousUI (JDialog jd, Network network)
+	ContinuousUI (JDialog jd, CyNetwork network)
 	{
 	    this.parentDialog = jd;
 	    this.cm = ContinuousMapping.this;

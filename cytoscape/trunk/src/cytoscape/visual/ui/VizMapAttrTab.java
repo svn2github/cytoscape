@@ -11,6 +11,7 @@ import javax.swing.border.*;
 import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
+import cytoscape.data.CyNetwork;
 import cytoscape.visual.*;
 import cytoscape.visual.calculators.*;
 import cytoscape.visual.mappings.ObjectMapping;
@@ -49,7 +50,7 @@ public class VizMapAttrTab extends VizMapTab {
     /**
      *	underlying network
      */
-    private Network n;
+    private CyNetwork n;
 
     /**	the panel containing calculator-specific UI and provided
      *	by the currently selected calculator
@@ -515,7 +516,7 @@ public class VizMapAttrTab extends VizMapTab {
      */
     protected class CalculatorUIListener implements ChangeListener {
 	public void stateChanged(ChangeEvent e) {
-	    VMM.getCytoscapeWindow().redrawGraph();
+	    VMM.getNetworkView().redrawGraph();
 	}
     }
 
@@ -669,7 +670,7 @@ public class VizMapAttrTab extends VizMapTab {
 	refreshUI();
 	//mainUIDialog.pack();
 	//mainUIDialog.repaint();
-	VMM.getCytoscapeWindow().redrawGraph();
+	VMM.getNetworkView().redrawGraph();
     }
 
     /**
@@ -758,7 +759,7 @@ public class VizMapAttrTab extends VizMapTab {
 	    nodeCalc.setDefaultNodeFontSize(((Double) c).floatValue());
 	    break;
 	}
-	VMM.getCytoscapeWindow().redrawGraph();
+	VMM.getNetworkView().redrawGraph();
     }	
 
     /**

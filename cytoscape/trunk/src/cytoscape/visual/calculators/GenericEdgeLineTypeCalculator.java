@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import y.base.Edge;
 import y.view.LineType;
 
-import cytoscape.visual.Network;
+import cytoscape.data.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.parsers.LineTypeParser;
 //----------------------------------------------------------------------------
@@ -37,7 +37,7 @@ public class GenericEdgeLineTypeCalculator extends EdgeCalculator implements Edg
         super(name, props, baseKey, new LineTypeParser(), LineType.LINE_1);
     }
     
-    public LineType calculateEdgeLineType(Edge edge, Network network) {
+    public LineType calculateEdgeLineType(Edge edge, CyNetwork network) {
         String canonicalName = network.getEdgeAttributes().getCanonicalName(edge);
         Map attrBundle = network.getEdgeAttributes().getAttributes(canonicalName);
         return (LineType)super.getMapping().calculateRangeValue(attrBundle);
