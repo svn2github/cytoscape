@@ -125,16 +125,50 @@ public final class GraphConverter2
           nodeView.setYPosition(yPos + yOff); }
 
         // PolyEdgeGraphLayout methods.
-        public int getNumAnchors(int edge) { return 0; }
+        public int getNumAnchors(int edge) {
+          return getEdgeView(edge).getBend().getHandles().size(); }
         public double getAnchorPosition(int edge, int anchorIndex,
                                         boolean xPosition) {
-          return 0.0; }
+          Point2D point = (Point2D)
+            getEdgeView(edge).getBend().getHandles().get(anchorIndex);
+          return (xPosition ? (point.getX() - xOff): (point.getY() - yOff)); }
 
         // MutablePolyEdgeGraphLayout methods.
-        public void deleteAnchor(int edge, int anchorIndex) {}
-        public void createAnchor(int edge, int anchorIndex) {}
+        public void deleteAnchor(int edge, int anchorIndex) {
+          checkAnchorIndexBounds(edge, anchorIndex, false);
+          checkMutableAnchor(edge);
+          getEdgeView(edge).getBend().removeHandle(anchorIndex); }
+        public void createAnchor(int edge, int anchorIndex) {
+          checkAnchorIndexBounds(edge, anchorIndex, true);
+          checkMutableAnchor(edge);
+          getEdgeView(edge).getBend().addHandle
+            (anchorIndex, new Point2D.Double());
+          Point2D src =
+            ((anchorIndex == 0) ?
+             (new Point2D.Double
+              (getNodePosition(edgeSource(edge), true),
+               getNodePosition(edgeSource(edge), false))) :
+             (new Point2D.Double
+              (getAnchorPosition(edge, anchorIndex - 1, true),
+               getAnchorPosition(edge, anchorIndex - 1, false))));
+          Point2D trg =
+            ((anchorIndex == getNumAnchors(edge) - 1) ?
+             (new Point2D.Double
+              (getNodePosition(edgeTarget(edge), true),
+               getNodePosition(edgeTarget(edge), false))) :
+             (new Point2D.Double
+              (getAnchorPosition(edge, anchorIndex + 1, true),
+               getAnchorPosition(edge, anchorIndex + 1, false))));
+          setAnchorPosition(edge, anchorIndex,
+                            (src.getX() + trg.getX()) / 2.0d,
+                            (src.getY() + trg.getY()) / 2.0d); }
         public void setAnchorPosition(int edge, int anchorIndex,
-                                      double xPos, double yPos) {}
+                                      double xPos, double yPos) {
+          checkAnchorIndexBounds(edge, anchorIndex, false);
+          checkMutableAnchor(edge);
+          checkPosition(xPos, yPos);
+          getEdgeView(edge).getBend().moveHandle
+            (anchorIndex, new Point2D.Double(xPos + xOff, yPos + yOff)); }
 
         // Helper methods.
         private NodeView getNodeView(int node) {
@@ -142,11 +176,28 @@ public final class GraphConverter2
           if (nodeView == null) throw new IllegalArgumentException
                                   ("node " + node + " not in this graph");
           return nodeView; }
+        private EdgeView getEdgeView(int edge) {
+          EdgeView edgeView = graphView.getEdgeView(~edge);
+          if (edgeView == null) throw new IllegalArgumentException
+                                  ("edge " + edge + " not in this graph");
+          return edgeView; }
         private void checkPosition(double xPos, double yPos) {
           if (xPos < 0.0d || xPos > getMaxWidth())
             throw new IllegalArgumentException("X position out of bounds");
           if (yPos < 0.0d || yPos > getMaxHeight())
             throw new IllegalArgumentException("Y position out of bounds"); }
+        private void checkAnchorIndexBounds(int edge, int anchorIndex,
+                                            boolean create) {
+          int numAnchors = getNumAnchors(edge) + (create ? 0 : -1);
+          if (anchorIndex < 0 || anchorIndex > numAnchors)
+            throw new IndexOutOfBoundsException
+              ("anchor index out of bounds"); }
+        private void checkMutableAnchor(int edge) {
+          int srcNode = edgeSource(edge);
+          int trgNode = edgeTarget(edge);
+          if ((!isMovableNode(srcNode)) && (!isMovableNode(trgNode)))
+            throw new UnsupportedOperationException
+              ("anchors at specified edge cannot be changed"); }
       };
   }
 
