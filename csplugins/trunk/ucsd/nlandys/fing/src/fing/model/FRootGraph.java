@@ -599,6 +599,7 @@ class FRootGraph implements RootGraph
                                   boolean includeUndirectedEdges) {
     final int[] edgeInx = getEdgeIndicesArray(fromNodeInx, toNodeInx,
                                               includeUndirectedEdges);
+    if (edgeInx == null) return null;
     java.util.ArrayList returnList = new java.util.ArrayList(edgeInx.length);
     for (int i = 0; i < edgeInx.length; i++)
       returnList.add(getEdge(edgeInx[i]));
