@@ -11,6 +11,8 @@ import giny.model.GraphPerspective;
 import giny.model.GraphPerspectiveChangeListener;
 import giny.model.Node;
 import giny.model.RootGraph;
+import giny.model.RootGraphChangeEvent;
+import giny.model.RootGraphChangeListener;
 
 import java.util.Iterator;
 
@@ -571,6 +573,16 @@ class FGraphPerspective implements GraphPerspective
       final int rootGraphInx = rootGraphEdgeInx.nextInt();
       m_perspToRootEdgeInxMap.setIntAtIndex(rootGraphInx, i);
       m_rootToPerspEdgeInxMap.put(rootGraphInx, i); }
+  }
+
+  private static class RootGraphChangeSniffer
+    implements RootGraphChangeListener
+  {
+
+    public void rootGraphChanged(RootGraphChangeEvent evt)
+    {
+    }
+
   }
 
 }
