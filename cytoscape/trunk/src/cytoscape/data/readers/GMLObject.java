@@ -1,6 +1,37 @@
 // GMLObject.java
 
-//-----------------------------------------------------------------
+/** Copyright (c) 2002 Institute for Systems Biology and the Whitehead Institute
+ **
+ ** This library is free software; you can redistribute it and/or modify it
+ ** under the terms of the GNU Lesser General Public License as published
+ ** by the Free Software Foundation; either version 2.1 of the License, or
+ ** any later version.
+ ** 
+ ** This library is distributed in the hope that it will be useful, but
+ ** WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ ** MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ ** documentation provided hereunder is on an "as is" basis, and the
+ ** Institute for Systems Biology and the Whitehead Institute 
+ ** have no obligations to provide maintenance, support,
+ ** updates, enhancements or modifications.  In no event shall the
+ ** Institute for Systems Biology and the Whitehead Institute 
+ ** be liable to any party for direct, indirect, special,
+ ** incidental or consequential damages, including lost profits, arising
+ ** out of the use of this software and its documentation, even if the
+ ** Institute for Systems Biology and the Whitehead Institute 
+ ** have been advised of the possibility of such damage.  See
+ ** the GNU Lesser General Public License for more details.
+ ** 
+ ** You should have received a copy of the GNU Lesser General Public License
+ ** along with this library; if not, write to the Free Software Foundation,
+ ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ **/
+
+//-------------------------------------------------------------------------------------
+// $Revision$   
+// $Date$ 
+// $Author$
+//-----------------------------------------------------------------------------------
 package cytoscape.data.readers;
 //-----------------------------------------------------------------
 import java.util.*;
@@ -62,8 +93,8 @@ public class GMLObject {
 	// handle the lines -> build GMLToken list
 	StringTokenizer lines = new StringTokenizer(reader.getText(), "\n");
 
-	// slow from here....
-	System.out.println("lines list done");
+	//System.out.println("lines list done");
+	// slow from here ----->
 
 	while (lines.hasMoreTokens()) {
 	    StringTokenizer tokens = new StringTokenizer(lines.nextToken());
@@ -73,8 +104,8 @@ public class GMLObject {
 	}
 	tokenList.add(new GMLToken(0, "EOF", LineNumber));
 
-	// ... to here
-	System.out.println("token list done");
+	// <----- to here
+	//System.out.println("token list done");
 
 	// handle GMLToken list -> build GML
 	scope = 0;
@@ -90,7 +121,7 @@ public class GMLObject {
     public void write(String fileName){
 	System.out.println("writing " + fileName);
 	String gmlStr = toString();
-	//System.out.print(gmlStr);
+
 	//networkView.getCytoscapeObj().setCurrentDirectory(currentDirectory);
 	if ( !fileName.endsWith(".gml") || !fileName.endsWith(".GML") ) 
 	    fileName = fileName + ".gml";
@@ -118,10 +149,8 @@ public class GMLObject {
 	Iterator ki = rootPair.values.iterator();
 	while(ki.hasNext()) {
 	    p = (GMLPair) ki.next();
-	    if(p.key.GMLstring.equals(key)) {
-		//p.key.print("KEY:"); System.out.println("");
+	    if(p.key.GMLstring.equals(key))
 		items.rootPair.values.add(p);
-	    } //else { p.key.print("NOT:"); System.out.println(""); }
 	}
 	return items;
     }
@@ -143,21 +172,19 @@ public class GMLObject {
 	while(ri.hasNext()) {
 	    rp = (GMLPair) ri.next();
 	    if(rp.key.GMLstring.equals(key1)) {
-		//rp.key.print("KEY1:"); System.out.println("");
 		Iterator ki = rp.values.iterator();
 		while(ki.hasNext()) {
 		    p = (GMLPair) ki.next();
-		    if(p.key.GMLstring.equals(key2)) {
-			//p.key.print("KEY2:"); System.out.println("");
+		    if(p.key.GMLstring.equals(key2))
 			items.rootPair.values.add(p);
-		    } //else { p.key.print("NOT2:"); System.out.println(""); }
 		}
-	    } //else { rp.key.print("NOT1:"); System.out.println(""); }
+	    }
 	}
 	return items;
     }
     /**
-     * 
+     * Get the values {Integer, Double, String} associated with the string "key"
+     * @return Vector of values for "key". Will be empty if "key" does not exist at the root level
      */
     public Vector getVector(String key) {
 	GMLObject items = getItems(key) ;
@@ -166,16 +193,15 @@ public class GMLObject {
 	while(ri.hasNext()) {
 	    GMLPair p  = (GMLPair) ri.next();
 	    GMLPair vp = (GMLPair) p.values.firstElement();
-	    //System.out.println(vp.key.GMLtype);
 	    if(vp.key.GMLtype == "integer")     v.add(new Integer(vp.key.GMLinteger));
 	    else if(vp.key.GMLtype == "double") v.add(new Double(vp.key.GMLdouble));
 	    else                                v.add(vp.key.GMLstring);
-	    //v.add(vp.key.toString());
 	}
 	return v;
     }
     /**
-     * 
+     * Get the values {Integer, Double, String} associated with the string "key1" and "key2"
+     * @return Vector of values for "key". Will be empty if "key" does not exist at the root level
      */
     public Vector getVector(String key1, String key2) {
 	GMLObject items = getItems(key1, key2) ;
@@ -184,11 +210,10 @@ public class GMLObject {
 	while(ri.hasNext()) {
 	    GMLPair p  = (GMLPair) ri.next();
 	    GMLPair vp = (GMLPair) p.values.firstElement();
-	    //System.out.println(vp.key.GMLtype);
+
 	    if(vp.key.GMLtype == "integer")     v.add(new Integer(vp.key.GMLinteger));
 	    else if(vp.key.GMLtype == "double") v.add(new Double(vp.key.GMLdouble));
 	    else                                v.add(vp.key.GMLstring);
-	    //v.add(vp.key.toString());
 	}
 	return v;
     }
