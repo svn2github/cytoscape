@@ -19,11 +19,6 @@ import javax.swing.JMenuItem;
 public class SouravPlugin extends CytoscapePlugin
 {
 
-  private static int size(IntHash hash)
-  {
-    return hash.elements().numRemaining();
-  }
-
   private static void copyInto(IntHash hash, int[] arr, int beginIndex)
   {
     IntEnumerator enum = hash.elements();
@@ -80,9 +75,9 @@ public class SouravPlugin extends CytoscapePlugin
                   neighbors.put(~neighbor);
               }
             }
-            int[] allNodes = new int[size(nodeAttrMap[i]) + size(neighbors)];
+            int[] allNodes = new int[nodeAttrMap[i].size() + neighbors.size()];
             copyInto(nodeAttrMap[i], allNodes, 0);
-            copyInto(neighbors, allNodes, size(nodeAttrMap[i]));
+            copyInto(neighbors, allNodes, nodeAttrMap[i].size());
             int[] allEdges = cyNet.getConnectingEdgeIndicesArray(allNodes);
             CyNetwork newNetwork = Cytoscape.createNetwork
               (allNodes, allEdges, "" + nextAttr, cyNet);
