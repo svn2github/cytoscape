@@ -14,6 +14,21 @@ public final class GraphUtils
 {
 
   /**
+   * I'm not sure whether or not having this method is a good idea.  If it is
+   * I'm not sure whether or not having it <i>here</i> is a good idea.
+   *
+   * @exception IllegalArgumentException
+   *   if <code>graph</code> does not pass the integrity check; in other
+   *   words, some parts of <code>graph</code>'s definition are
+   *   erroneous - this would happen, for example, if an edge's source
+   *   node had an invalid index.
+   **/
+  public static void verifyTopologicalIntegrity(GraphTopology graph)
+  {
+    throw new RuntimeException("not yet implemented");
+  }
+
+  /**
    * <code>graph</code> stores a reference to the underlying graph
    * topology - this happens to be exactly the <code>GraphTopology</code>
    * that was passed to the contructor.<p>
