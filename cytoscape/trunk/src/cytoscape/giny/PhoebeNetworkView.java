@@ -226,6 +226,9 @@ public class PhoebeNetworkView
   public void redrawGraph( boolean layout, boolean vizmap ) { 
     
     Cytoscape.getDesktop().getVizMapManager().applyAppearances();
+    getCanvas().setInteracting( true );
+    //getCanvas().paintImmediately();
+    getCanvas().setInteracting( false );
 
   //   if (getVizMapManager() != null && this.visualMapperEnabled) {
 //         getVizMapManager().applyAppearances();
