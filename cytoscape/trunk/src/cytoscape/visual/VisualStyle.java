@@ -155,9 +155,12 @@ public class VisualStyle implements Cloneable {
     public VisualStyle(VisualStyle toCopy) {
         if (toCopy == null) {return;}
         setName( toCopy.getName() );
-        setNodeAppearanceCalculator( toCopy.getNodeAppearanceCalculator() );
-        setEdgeAppearanceCalculator( toCopy.getEdgeAppearanceCalculator() );
-        setGlobalAppearanceCalculator( toCopy.getGlobalAppearanceCalculator() );
+        setNodeAppearanceCalculator(
+            new NodeAppearanceCalculator(toCopy.getNodeAppearanceCalculator()) );
+        setEdgeAppearanceCalculator(
+            new EdgeAppearanceCalculator(toCopy.getEdgeAppearanceCalculator()) );
+        setGlobalAppearanceCalculator(
+            new GlobalAppearanceCalculator(toCopy.getGlobalAppearanceCalculator()) );
     }
         
     /**
