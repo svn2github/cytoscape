@@ -19,7 +19,10 @@ import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
 import cytoscape.view.CyMenus;
+import cytoscape.view.CyNetworkView;
+import cytoscape.view.NetworkViewManager;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
@@ -105,8 +108,8 @@ public class LoadGraphFileAction extends CytoscapeAction {
             jTaskConfig.displayStatus(true);
             jTaskConfig.setAutoDispose(false);
 
-            //  Execute Task in New Thread;  pop open JTask Dialog Box.
-            TaskManager.executeTask(task, jTaskConfig);
+            //  Execute Task in New Thread;  pops open JTask Dialog Box.
+            boolean success = TaskManager.executeTask(task, jTaskConfig);
         }
     }
 }
@@ -117,6 +120,7 @@ public class LoadGraphFileAction extends CytoscapeAction {
 class LoadNetworkTask implements Task {
     private File file;
     private int fileType;
+    private CyNetwork cyNetwork;
     private TaskMonitor taskMonitor;
 
     /**
@@ -138,16 +142,12 @@ class LoadNetworkTask implements Task {
         taskMonitor.setStatus("Reading in Graph Data...");
 
         try {
-            //  Determine Number of Nodes/Edges Before loading network.
-            int root_nodes = Cytoscape.getRootGraph().getNodeCount();
-            int root_edges = Cytoscape.getRootGraph().getEdgeCount();
-
-            CyNetwork newNetwork = this.createNetwork(file.getAbsolutePath(),
+            cyNetwork = this.createNetwork(file.getAbsolutePath(),
                     fileType, Cytoscape.getBioDataServer(),
                     CytoscapeInit.getDefaultSpeciesName());
 
-            if (newNetwork != null) {
-                informUserOfGraphStats(root_nodes, root_edges, newNetwork);
+            if (cyNetwork != null) {
+                informUserOfGraphStats(cyNetwork);
             } else {
                 StringBuffer sb = new StringBuffer();
                 sb.append("Could not read graph from file: " + file.getName());
@@ -164,12 +164,8 @@ class LoadNetworkTask implements Task {
     /**
      * Inform User of Graph Stats.
      */
-    private void informUserOfGraphStats(int root_nodes, int root_edges,
-            CyNetwork newNetwork) {
+    private void informUserOfGraphStats(CyNetwork newNetwork) {
         NumberFormat formatter = new DecimalFormat("#,###,###");
-        int nn = Cytoscape.getRootGraph().getNodeCount() - root_nodes;
-        int ne = Cytoscape.getRootGraph().getEdgeCount() - root_edges;
-
         StringBuffer sb = new StringBuffer();
 
         //  Give the user some confirmation
@@ -179,35 +175,16 @@ class LoadNetworkTask implements Task {
         sb.append(" nodes and " + formatter.format(newNetwork.getEdgeCount()));
         sb.append(" edges.\n\n");
 
-        //  This code was supposed to display unique nodes, but I think
-        //  it's a bit muddled, as it really shows # of nodes that are new
-        //  to the root graph perspective, and I am not sure why a user
-        //  would care to know it.  Commented out for now by
-        //  Ethan Cerami (1/20/05).
-        //
-        //        if (newNetwork.getNodeCount() !=  nn
-        //            || newNetwork.getEdgeCount() != ne) {
-        //            sb.append("\nThere were " + formatter.format(nn)
-        //                    + " unique nodes, and "
-        //                    + formatter.format(ne) + " unique edges.\n\n");
-        //        } else {
-        //            sb.append ("\n\n");
-        //        }
-
         if (newNetwork.getNodeCount() < CytoscapeInit.getViewThreshold()) {
             sb.append("Graph is under "
                     + CytoscapeInit.getViewThreshold()
-                    + " nodes.  A view was automatically created.");
+                    + " nodes.  A view will be automatically created.");
         } else {
             sb.append("Graph is over "
                     + CytoscapeInit.getViewThreshold()
-                    + " nodes.  A view has not been created."
+                    + " nodes.  A view will not been created."
                     + "  If you wish to view this graph, use "
                     + "\"Create View\" from the \"Edit\" menu.");
-        //  I don't know why we would ever want the feature below.
-        //  Commented out by Ethan Cerami (1/20/05).
-        //  cytoscape.foo.RandomRenderableSubgraphLogic.justDoIt
-        //    (newNetwork);
         }
         taskMonitor.setStatus(sb.toString());
     }
@@ -254,6 +231,7 @@ class LoadNetworkTask implements Task {
 
         GraphReader reader;
         taskMonitor.setStatus("Analyzing Graph Data File...");
+        taskMonitor.setPercentCompleted(5);
 
         //  Set the reader according to what file type was passed.
         if (file_type == Cytoscape.FILE_SIF) {
@@ -281,7 +259,7 @@ class LoadNetworkTask implements Task {
         taskMonitor.setPercentCompleted(-1);
         final CyNetwork network[] = new CyNetwork[1];
 
-        //  If the graph is small enough, the view gets created here
+        //  This call will trigger the creation of the CyNetworkView
         network[0] = Cytoscape.createNetwork(nodes, edges,
             CyNetworkNaming.getSuggestedNetworkTitle (title));
 
