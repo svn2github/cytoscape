@@ -3,7 +3,6 @@ package cytoscape.graph.dynamic.util.test;
 import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.graph.dynamic.util.DynamicGraphRepresentation;
 import cytoscape.util.intr.IntEnumerator;
-import cytoscape.util.intr.MinIntHeap;
 
 public class GraphTest
 {
@@ -11,7 +10,6 @@ public class GraphTest
   public static void main(String[] args)
   {
     final DynamicGraph graph = new DynamicGraphRepresentation();
-    final MinIntHeap heap = new MinIntHeap();
     System.out.println("Creating 10 nodes...");
     for (int i = 0; i < 10; i++) graph.createNode();
     IntEnumerator nodesEnum = graph.nodes();
@@ -21,7 +19,7 @@ public class GraphTest
     while (nodesEnum.numRemaining() > 0) {
       nodes[++index] = nodesEnum.nextInt();
       System.out.print(nodes[index] + " "); }
-    System.out.println();
+    System.out.println(); System.out.println();
     boolean[] edgesDir = new boolean[] { false, true, true, true, false,
                                          true, false, false, true, true,
                                          false, false, true, false, true };
@@ -36,6 +34,7 @@ public class GraphTest
       graph.createEdge(nodes[edgesDef[i][0]],
                        nodes[edgesDef[i][1]], edgesDir[i]); }
     IntEnumerator edgesEnum = graph.edges();
+    System.out.println();
     System.out.println("Here are the edges:");
     while (edgesEnum.numRemaining() > 0) {
       final int edge = edgesEnum.nextInt();
@@ -43,6 +42,17 @@ public class GraphTest
         ((graph.isDirectedEdge(edge) == 1 ? "Directed" : "Undirected") +
          " edge " + edge + " with source " + graph.sourceNode(edge) +
          " and target " + graph.targetNode(edge) + "."); }
+    System.out.println();
+    System.out.println("All adjacent edges for node...");
+    nodesEnum = graph.nodes();
+    while (nodesEnum.numRemaining() > 0) {
+      final int node = nodesEnum.nextInt();
+      IntEnumerator adjEdges = graph.adjacentEdges(node, true, true, true);
+      System.out.print("For node " + node + ": ");
+      while (adjEdges.numRemaining() > 0) {
+        final int edge = adjEdges.nextInt();
+        System.out.print(edge + " "); }
+      System.out.println(); }
   }
 
 }
