@@ -488,11 +488,14 @@ public class InteractionGraph
      */
     private void writeSubmodel(Submodel m, String filename, int modelNum) throws IOException
     {
-        logger.info("writing submodel: " + m.getId());
-        PrintStream out = new PrintStream(new FileOutputStream(filename
-                                                               + "-"
-                                                               + modelNum
-                                                               + ".sif"));
+        StringBuffer b = new StringBuffer(filename);
+        b.append("-");
+        b.append(modelNum);
+        b.append(".sif");
+
+        logger.info("writing submodel: " + m.getId() + " to " + b.toString());
+        
+        PrintStream out = new PrintStream(new FileOutputStream(b.toString()));
         writeEdges(out, m.getEdges(), 1);
         out.close();
     }

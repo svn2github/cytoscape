@@ -51,10 +51,8 @@ public class FactorGraph
     private static double NUM_REPLICATES = 3;
     private static double lnN = Math.log(NUM_REPLICATES);
 
-    
     private int _nextNodeIndex;
     private int _nextEdgeIndex;
-
 
     //protected RootGraph _g;
     
@@ -973,17 +971,6 @@ public class FactorGraph
         throws AlgorithmException
     {
         int x;
-
-        int notFixed = 0; 
-        for(int y=0; y < varNodes.size(); y++)
-        {
-            int v = varNodes.get(y);
-            
-            if(!getVarNode(v).isFixed())
-            {
-                notFixed++;
-            }
-        }
         
         // Even though we are not iterating through varNods,
         // this loop is more efficient than using allFixed(varNodes)
@@ -1003,10 +990,10 @@ public class FactorGraph
                 _runMaxProduct();
                 Submodel model = fixUniqueVars(var);
                 _submodels.add(model);
-                notFixed -= model.getNumDepVars();
+                //notFixed -= model.getNumDepVars();
                 logger.info("added submodel " + model.getId()
                             + " with " + model.size() + " vars. "
-                            + notFixed + " vars still not fixed");
+                            + countDegenerate(varNodes) + " vars still not fixed");
             }
             else
             {
@@ -1016,6 +1003,26 @@ public class FactorGraph
         }
         
         return x;
+    }
+
+    /**
+     * @param nodes a list of variable nodes indicies
+     * @return the number of variables that are not fixed.
+     */
+    private int countDegenerate(IntArrayList nodes)
+    {
+        int notFixed = 0; 
+        for(int y=0; y < nodes.size(); y++)
+        {
+            int v = nodes.get(y);
+            
+            if(!getVarNode(v).isFixed())
+            {
+                notFixed++;
+            }
+        }
+
+        return notFixed;
     }
         
     /**

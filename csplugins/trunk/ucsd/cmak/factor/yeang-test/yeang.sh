@@ -22,5 +22,5 @@ yeang-data-ORF.eda \
 1 \
 testOut \
 test_yeang \
-print \
+normal \
 STE12candidategenes.txt

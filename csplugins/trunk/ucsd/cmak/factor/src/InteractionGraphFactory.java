@@ -363,7 +363,10 @@ public class InteractionGraphFactory
         {
             Interaction i = (Interaction) it.next();
             boolean remove = false;
-            
+
+            // remove an interaction if neither its source or any of its
+            // targets are in the set of candidate genes.
+
             if(!candidates.contains(i.getSource()))
             {
                 remove = true;
