@@ -275,17 +275,33 @@ public final class IntBTree
       origNodes[i] = null; // Remove dangling pointers for garbage collection.
   }
 
-//   /**
-//    * Deletes at most one entry of the integer x.  To delete all
-//    * entries of the integer x, use ____.
-//    * @param x the integer to try to delete (just one entry).
-//    * @return true if and only if an entry was deleted (at most one entry is
-//    *   deleted by this method).
-//    */
-//   public boolean delete(int x)
-//   {
-//     return false;
-//   }
+  /**
+   * NOT IMPLEMENTED YET.
+   * Deletes at most one entry of the integer x.  To delete all
+   * entries of the integer x, use ____.
+   * @param x the integer to try to delete (just one entry).
+   * @return true if and only if an entry was deleted (at most one entry is
+   *   deleted by this method).
+   */
+  public final boolean delete(final int x)
+  {
+    return false;
+  }
+
+  /*
+   * Bits are set on the return value:
+   *   0x01 - If an entry was deleted (no other bits will be set unless
+   *          this bit is set).
+   *   0x80 - If entries have been shifted from sibling nodes into n (if
+   *          this bit is set then at least one of 0x02 and 0x04 is also set).
+   *   0x02 - If entries have been shifted from left sibling into n.
+   *   0x04 - If entries have been shifted from right sibling into n.
+   */
+  private final byte delete(final Node n, final Node leftSibling,
+                            final Node rightSibling, final int x)
+  {
+    return 0x0b;
+  }
 
   /**
    * Returns the number of entries of the integer x in this tree.
