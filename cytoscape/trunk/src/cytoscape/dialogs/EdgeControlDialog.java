@@ -187,6 +187,7 @@ class SelectAction extends AbstractAction {
       EdgeControlDialog.this.getToolkit().beep ();
       return;
       }
+    cytoscapeWindow.getGraph().unselectEdges ();
     for (int i=0; i < selectedTreePaths.length; i++)
       selectEdgesByName (selectedTreePaths [i]);
     cytoscapeWindow.redrawGraph ();
@@ -230,10 +231,11 @@ boolean pathMatchesEdge (String edgeName, TreePath treePath, GraphObjAttributes 
     return true;
 
   if (pathLength == 3) {
-    String value = edgeAttributes.getStringValue (pathNames [1], edgeName);
-    if (value.equalsIgnoreCase (pathNames [2]))
-      return true;
-    }
+    String [] values = edgeAttributes.getStringArrayValues (pathNames [1], edgeName);
+    for (int i=0; i < values.length; i++)
+      if (values [i].equalsIgnoreCase (pathNames [2]))
+        return true;
+    } // pathLength == 3
 
    return false;
 
