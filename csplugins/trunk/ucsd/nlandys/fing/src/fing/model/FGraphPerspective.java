@@ -483,7 +483,8 @@ class FGraphPerspective implements GraphPerspective
       return isNeighbor(a.getRootGraphIndex(), b.getRootGraphIndex());
     else return false; }
 
-  public boolean isNeighbor(final int nodeInxA, final int nodeInxB) {
+  public boolean isNeighbor(final int nodeInxA, final int nodeInxB)
+  {
     if (!(nodeInxA < 0 && nodeInxB < 0)) return false;
     final int nativeNodeA = m_rootToNativeNodeInxMap.get(nodeInxA);
     final int nativeNodeB = m_rootToNativeNodeInxMap.get(nodeInxB);
@@ -493,16 +494,27 @@ class FGraphPerspective implements GraphPerspective
         (nativeNodeA, nativeNodeB, true, true, true); }
     catch (IllegalArgumentException e) { return false; }
     if (nativeConnEdgeIter == null) return false;
-    return nativeConnEdgeIter.hasNext(); }
-
-  public boolean edgeExists(Node from, Node to)
-  {
-    throw new IllegalStateException("not implemented yet");
+    return nativeConnEdgeIter.hasNext();
   }
 
-  public boolean edgeExists(int perspFromNodeInx, int perspToNodeInx)
+  public boolean edgeExists(Node from, Node to) {
+    if (from.getRootGraph() == m_root && to.getRootGraph() == m_root)
+      return edgeExists(from.getRootGraphIndex(),
+                        to.getRootGraphIndex());
+    else return false; }
+
+  public boolean edgeExists(final int fromNodeInx, final int toNodeInx)
   {
-    throw new IllegalStateException("not implemented yet");
+    if (!(fromNodeInx < 0 && toNodeInx < 0)) return false;
+    final int nativeFromNode = m_rootToNativeNodeInxMap.get(fromNodeInx);
+    final int nativeToNode = m_rootToNativeNodeInxMap.get(toNodeInx);
+    final IntIterator nativeConnEdgeIter;
+    try {
+      nativeConnEdgeIter = m_graph.connectingEdges
+        (nativeFromNode, nativeToNode, true, false, true); }
+    catch (IllegalArgumentException e) { return false; }
+    if (nativeConnEdgeIter == null) return false;
+    return nativeConnEdgeIter.hasNext();
   }
 
   public int getEdgeCount(Node from, Node to, boolean countUndirectedEdges)
