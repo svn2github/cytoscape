@@ -360,7 +360,8 @@
         <tar tarfile="${zip_release.dir}/cytoscapeSource-v${version}.tar">
             <tarfileset dir=".">
                 <exclude name="${release.dir}/**"/>
-                <exclude name="${zip_release.dir}/**"/>
+                <exclude name="${dist.dir}/**"/>
+		<exclude name="${zip_release.dir}/**"/>
                 <exclude name="${build.dir}/**"/>
                 <exclude name="CVS/**"/>
             </tarfileset>
