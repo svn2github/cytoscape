@@ -4,8 +4,8 @@ import cytoscape.graph.GraphTopology;
 import cytoscape.graph.IndexIterator;
 import cytoscape.graph.layout.algorithm.MutableGraphLayout;
 import cytoscape.graph.util.GraphCompiler;
-import cytoscape.task.PercentCompletedCallback;
 import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,7 +68,7 @@ public final class SpringEmbeddedLayouter2 implements Task
   private int m_layoutPass;
 
   private boolean m_halt = false;
-  private PercentCompletedCallback m_percentComplete;
+  private TaskMonitor m_taskMonitor;
 
   private final AutoScalingGraphLayout m_autoScaleGraph;
 
@@ -102,33 +102,25 @@ public final class SpringEmbeddedLayouter2 implements Task
     m_autoScaleGraph = new AutoScalingGraphLayout(m_graph);
   }
 
+  public String getTaskTitle()
+  {
+    return "Spring Embedded Graph Layout";
+  }
+
   /**
-   * The programmer who created this class originally had
-   * a <code>PercentCompletedCallback</code> set in the constructor of this
-   * class; this caused a &quot;which-came-first-chicken-or-egg&quot; problem
-   * because in many practical cases, to get a valid instance of
-   * <code>PercentCompletedCallback</code> we had to first define an
-   * instance of this class.<p>
-   * <code>percentComplete</code> may be
-   * <code>null</code>, in which case this layout algorithm will not report
-   * percent completed to the parent application.  If
-   * <code>percentComplete</code> is not <code>null</code> then this object
-   * will call <code>percentComplete.setPercentCompleted()</code> <i>ONLY</i>
-   * from the thread that calls <code>run()</code>, as frequently as this
-   * object sees fit.
-   *
-   * @param percentComplete a hook that a parent application may pass in
+   * @param taskMonitor a hook that a parent application may pass in
    *   to get information regarding what percentage of the layout
-   *   has been completed, or <code>null</code> to stop this layout
+   *   has been completed etc., or <code>null</code> to stop this layout
    *   algorithm from reporting how much progress it has made.
    **/
-  public void setPercentCompletedCallback
-    (PercentCompletedCallback percentComplete)
+  public void setTaskMonitor(TaskMonitor taskMonitor)
   {
-    m_percentComplete =
-      ((percentComplete != null) ? percentComplete :
-       new PercentCompletedCallback() {
-         public void setPercentCompleted(int percent) {} });
+    m_taskMonitor =
+      ((taskMonitor != null) ? taskMonitor :
+       new TaskMonitor() {
+         public void setPercentCompleted(int percent) {}
+         public void setException(Throwable t, String foo) {}
+         public void setStatus(String message) {} } );
   }
 
   private static class AutoScalingGraphLayout
@@ -727,6 +719,7 @@ public final class SpringEmbeddedLayouter2 implements Task
   public void run()
   {
     if (m_halt) return;
+    m_taskMonitor.setStatus("Creating data structures");
 
     // Stop if all nodes are closer together than this euclidean distance.
     final double euclideanDistanceThreshold =
@@ -746,12 +739,14 @@ public final class SpringEmbeddedLayouter2 implements Task
     m_nodeDistanceSpringStrengths = new double[m_nodeCount][m_nodeCount];
 
     if (m_halt) return;
-    m_percentComplete.setPercentCompleted(2);
+    m_taskMonitor.setPercentCompleted(2);
+    m_taskMonitor.setStatus("Calculating node distances");
 
     int[][] nodeDistances = calculateNodeDistances(m_graph);
 
     if (m_halt) return;
-    m_percentComplete.setPercentCompleted(4);
+    m_taskMonitor.setPercentCompleted(4);
+    m_taskMonitor.setStatus("Calculating spring constants");
 
     // Calculate rest lengths and strengths based on node distance data.
     for (int node_i = 0; node_i < m_nodeCount; node_i++)
@@ -806,8 +801,9 @@ public final class SpringEmbeddedLayouter2 implements Task
       {
         if (!m_autoScaleGraph.isMovableNode(nodeIndex)) continue;
         if (m_halt) return;
-        if (m_layoutPass == 0)
-          m_percentComplete.setPercentCompleted((int) currentProgress);
+        if (m_layoutPass == 0) {
+          m_taskMonitor.setPercentCompleted((int) currentProgress);
+          m_taskMonitor.setStatus("Calculating partial derivatives"); }
 
         partials = new PartialDerivatives(nodeIndex);
         calculatePartials(partials, null, potentialEnergy, false,
@@ -827,8 +823,9 @@ public final class SpringEmbeddedLayouter2 implements Task
            iterations_i++)
       {
         if (m_halt) return;
-        if (m_layoutPass == 0)
-          m_percentComplete.setPercentCompleted((int) currentProgress);
+        if (m_layoutPass == 0) {
+          m_taskMonitor.setPercentCompleted((int) currentProgress);
+          m_taskMonitor.setStatus("Moving nodes in local data structures"); }
         
         furthestNodePartials = moveNode(furthestNodePartials, partialsList,
                                         potentialEnergy,
@@ -839,12 +836,14 @@ public final class SpringEmbeddedLayouter2 implements Task
     }
 
     if (m_halt) return;
-    m_percentComplete.setPercentCompleted((int) percentCompletedAfterPasses);
+    m_taskMonitor.setPercentCompleted((int) percentCompletedAfterPasses);
+    m_taskMonitor.setStatus("Moving nodes in underlying graph");
 
     // The last thing we do is trigger node movement in the underlying graph.
     m_autoScaleGraph.moveUnderlyingNodes();
 
-    m_percentComplete.setPercentCompleted(100);
+    m_taskMonitor.setPercentCompleted(100);
+    m_taskMonitor.setStatus("Finished");
   }
 
   /**
