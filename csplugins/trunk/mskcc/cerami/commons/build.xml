@@ -58,11 +58,16 @@
             nowarn="on" debug="true" debuglevel="source,lines,var">
     		<classpath refid="classpath"/>
     	</javac>
+
+        <!--  Copy UI image resources -->
+        <copy todir="${build.classes}/csplugins/ui/resources">
+            <fileset dir="${src.dir}/csplugins/ui/resources"/>
+        </copy>
   	</target>
 
     <!--  Target to Create PlugIn JAR -->
     <target name="jar" depends="compile" description="Creates Jar">
-        <jar destfile="${dist.dir}/task.jar">
+        <jar destfile="${dist.dir}/cyto_commons.jar">
             <fileset dir="${build.classes}"/>
         </jar>
     </target>
@@ -87,6 +92,12 @@
 		<java classname="csplugins.test.task.TestUI"
     		classpathref="classpath" fork="true" maxmemory="512m">
 		<arg line="3"/>
+       	</java>
+    </target>
+    <target name="demo1" depends="compile"
+        description="Runs Demo of JFloatableTabbedPane">
+		<java classname="csplugins.ui.Demo1"
+    		classpathref="classpath" fork="true" maxmemory="512m">
        	</java>
     </target>
 
