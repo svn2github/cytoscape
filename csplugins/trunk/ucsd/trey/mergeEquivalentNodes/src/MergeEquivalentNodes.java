@@ -4,6 +4,7 @@ import java.util.*;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
+import javax.swing.JMenu;
 
 import cytoscape.*;
 import cytoscape.giny.*;
@@ -30,19 +31,23 @@ public class MergeEquivalentNodes extends CytoscapePlugin {
      */
     public MergeEquivalentNodes() {
 	this.cyObj = Cytoscape.getCytoscapeObj();
+	JMenu MergeMenu = new JMenu("Merge Nodes");
+	MergeMenu.add( new MergeSelectedAction() );
+	MergeMenu.add( new MergeEquivalentAction() );
 	Cytoscape.getDesktop().getCyMenus().getOperationsMenu().
-	    add( new MainPluginAction() );
+	    add( MergeMenu );
     }
     
+
     /**
      * This class gets attached to the menu item.
      */
-    public class MainPluginAction extends AbstractAction {
+    public class MergeEquivalentAction extends AbstractAction {
         
         /**
          * The constructor sets the text that should appear on the menu item.
          */
-        public MainPluginAction() {super("MergeEquivalentNodes");}
+        public MergeEquivalentAction() {super("Auto-merge nodes w/ same neighbors");}
         
         /**
          * Gives a description of this plugin.
@@ -62,6 +67,57 @@ public class MergeEquivalentNodes extends CytoscapePlugin {
 	    Thread t = new MergeEquivalentNodesThread();
 	    t.start();
 	}
+    }
+
+    /**
+     * This class gets attached to the menu item.
+     */
+    public class MergeSelectedAction extends AbstractAction {
+        
+        /**
+         * The constructor sets the text that should appear on the menu item.
+         */
+        public MergeSelectedAction() {super("Merge selected nodes");}
+        
+        /**
+         * Gives a description of this plugin.
+         */
+        public String describe() {
+            StringBuffer sb = new StringBuffer();
+            sb.append("Merges selected nodes");
+            return sb.toString();
+        }
+        
+	        /**
+         * This method is called when the user selects the menu item.
+         */
+        public void actionPerformed(ActionEvent ae) {
+	    network = Cytoscape.getCurrentNetwork();
+            if (network == null) {return;}
+	    Thread t = new MergeSelectedNodesThread();
+	    t.start();
+	}
+    }
+
+    class MergeSelectedNodesThread extends Thread{
+	// just like MergeEquivalentNodesThread below but no 
+	// need to compute the nodes to collapse
+
+	public void run(){
+	    System.err.println("Starting MergeSelectedNodes plugin");
+	    
+	    // get selected nodes and convert to vector of root graph indices
+	    int [] flaggedNodesGP = network.getFlaggedNodeIndicesArray();
+	    Vector flaggedNodesRG = new Vector();
+	    for (int i=0; i<flaggedNodesGP.length; i++)
+		flaggedNodesRG.add(
+		   new Integer(network.getRootGraphNodeIndex(flaggedNodesGP[i])));
+	    
+	    // now do the collapsing
+	    collapse(convertIntVectorToArray((Vector) flaggedNodesRG ));
+	    System.err.println("Finished MergeSelectedNodes");
+	}
+
     }
 
     class MergeEquivalentNodesThread extends Thread{
@@ -123,185 +179,185 @@ public class MergeEquivalentNodes extends CytoscapePlugin {
 		collapse(convertIntVectorToArray((Vector) vIt.next()));
 	    System.err.println("Finished MergeEquivalentNodes");
 	} // end method run()
+    } // end mergeEquivalentNodesThread
+
+    private void collapse(int [] RGindices) {
 	
-	private void collapse(int [] RGindices) {
-
-	    // output debugging info
-	    if (DEBUG)System.err.println("Collapsing " + printNodeArray(RGindices));
-
-	    //create new node in rgraph representing collapsed node
-	    CytoscapeRootGraph rootGraph = Cytoscape.getRootGraph();
-	    int groupNodeRG = rootGraph.createNode();
-	    int groupNodeGP = network.addNode(groupNodeRG);
-	    transferNodeAttributes(RGindices, groupNodeRG);
-
-	    // add edges to the newly created "group" node
-	    // First, construct a set of all nodes in the group
-	    HashSet nodesInGroup = new HashSet();
-	    for (int i=0; i<RGindices.length; i++)
-		nodesInGroup.add(new Integer(RGindices[i]));
-
-	    // Next, iterate over neighbors of the group
-	    List neighborsList = rootGraph.neighborsList(rootGraph.getNode(RGindices[0]));
-	    for (Iterator nIt = neighborsList.iterator(); nIt.hasNext();) {
-		giny.model.Node nodeRG = (giny.model.Node) nIt.next();
-		int [] adjEdgeIndices = rootGraph.
-		    getAdjacentEdgeIndicesArray(rootGraph.getIndex(nodeRG),true,true,true);
-		Vector validAdjEdgeIndices = new Vector ();
-		int groupEdgeRG = Integer.MIN_VALUE;  // out of range initialization
-		// Visit the edges incoming from each neighbor	  
-		for (int i=0; i<adjEdgeIndices.length; i++) {
-		    int edgeRG = adjEdgeIndices[i];
-		    if (!network.containsEdge(rootGraph.getEdge(edgeRG))) continue;
-		    int tgtNodeRG =rootGraph.getEdgeTargetIndex(adjEdgeIndices[i]);
-		    int srcNodeRG =rootGraph.getEdgeSourceIndex(adjEdgeIndices[i]);
-		    if      (nodesInGroup.contains(new Integer(tgtNodeRG))) 
-			tgtNodeRG = groupNodeRG;
-		    else if (nodesInGroup.contains(new Integer(srcNodeRG)))
-			srcNodeRG = groupNodeRG;
-		    else    continue;  // this edge is not to group
-		    // if first time through loop, create the new edge
-		    // regardless, remember the current edge so as to later get its attributes
-		    if (validAdjEdgeIndices.size() == 0) { 
-			groupEdgeRG = rootGraph.createEdge(srcNodeRG,tgtNodeRG);
-			network.addEdge(groupEdgeRG);
-			if (DEBUG) System.err.println("Adding edge from src="
-				+ rootGraph.getNode(srcNodeRG) + " to tgt="
-				+ rootGraph.getNode(tgtNodeRG));
-		    }
-		    validAdjEdgeIndices.add(new Integer (edgeRG));
+	// output debugging info
+	if (DEBUG)System.err.println("Collapsing " + printNodeArray(RGindices));
+	
+	//create new node in rgraph representing collapsed node
+	CytoscapeRootGraph rootGraph = Cytoscape.getRootGraph();
+	int groupNodeRG = rootGraph.createNode();
+	int groupNodeGP = network.addNode(groupNodeRG);
+	transferNodeAttributes(RGindices, groupNodeRG);
+	
+	// add edges to the newly created "group" node
+	// First, construct a set of all nodes in the group
+	HashSet nodesInGroup = new HashSet();
+	for (int i=0; i<RGindices.length; i++)
+	    nodesInGroup.add(new Integer(RGindices[i]));
+	
+	// Next, iterate over neighbors of the group
+	List neighborsList = rootGraph.neighborsList(rootGraph.getNode(RGindices[0]));
+	for (Iterator nIt = neighborsList.iterator(); nIt.hasNext();) {
+	    giny.model.Node nodeRG = (giny.model.Node) nIt.next();
+	    int [] adjEdgeIndices = rootGraph.
+		getAdjacentEdgeIndicesArray(rootGraph.getIndex(nodeRG),true,true,true);
+	    Vector validAdjEdgeIndices = new Vector ();
+	    int groupEdgeRG = Integer.MIN_VALUE;  // out of range initialization
+	    // Visit the edges incoming from each neighbor	  
+	    for (int i=0; i<adjEdgeIndices.length; i++) {
+		int edgeRG = adjEdgeIndices[i];
+		if (!network.containsEdge(rootGraph.getEdge(edgeRG))) continue;
+		int tgtNodeRG =rootGraph.getEdgeTargetIndex(adjEdgeIndices[i]);
+		int srcNodeRG =rootGraph.getEdgeSourceIndex(adjEdgeIndices[i]);
+		if      (nodesInGroup.contains(new Integer(tgtNodeRG))) 
+		    tgtNodeRG = groupNodeRG;
+		else if (nodesInGroup.contains(new Integer(srcNodeRG)))
+		    srcNodeRG = groupNodeRG;
+		else    continue;  // this edge is not to group
+		// if first time through loop, create the new edge
+		// regardless, remember the current edge so as to later get its attributes
+		if (validAdjEdgeIndices.size() == 0) { 
+		    groupEdgeRG = rootGraph.createEdge(srcNodeRG,tgtNodeRG);
+		    network.addEdge(groupEdgeRG);
+		    if (DEBUG) System.err.println("Adding edge from src="
+						  + rootGraph.getNode(srcNodeRG) + " to tgt="
+						  + rootGraph.getNode(tgtNodeRG));
 		}
-		// now transfer the old edge attrs to the new edges
-		int [] validAdjEdgeIndicesArray = new int[validAdjEdgeIndices.size()];
-		for (int i=0; i<validAdjEdgeIndices.size(); i++)
-		    validAdjEdgeIndicesArray[i] = 
-			((Integer)validAdjEdgeIndices.get(i)).intValue();
-		transferEdgeAttributes(validAdjEdgeIndicesArray, groupEdgeRG);
+		validAdjEdgeIndices.add(new Integer (edgeRG));
 	    }
-	    
-	    // remove nodes from GP 
-	    network.hideNodes(convertRGtoGPindices(RGindices));
-	} // end method collapse
-
-	// utility methods are below here
-	private int [] convertIntVectorToArray (Vector vtr) {
-	    int [] arr = new int [vtr.size()];
-	    int i=0;
-	    for (Iterator it = vtr.iterator(); it.hasNext(); ) {
-		arr[i++] = ((Integer) it.next()).intValue();
-	    }
-	    return arr;
-	} // end method convertIntVectorToArray
-
-	private int [] convertRGtoGPindices (int [] RGindices) {
-	    int [] GPindices = new int [RGindices.length];
-	    for (int i=0; i<RGindices.length; i++)
-		GPindices[i] = network.getNodeIndex(RGindices[i]); 
-	    return GPindices;
-	} // end method convertRGtoGPindices
-
-	private String printNodeArray (int [] RGindices) {
-	    String s = new String();
-	    int i=0;
-	    while (i<RGindices.length-1)
-		s += Cytoscape.getRootGraph().getNode(RGindices[i++])+", ";
-	    s += Cytoscape.getRootGraph().getNode(RGindices[i]);
-	    return s;
-	} // end method printNodeArray
+	    // now transfer the old edge attrs to the new edges
+	    int [] validAdjEdgeIndicesArray = new int[validAdjEdgeIndices.size()];
+	    for (int i=0; i<validAdjEdgeIndices.size(); i++)
+		validAdjEdgeIndicesArray[i] = 
+		    ((Integer)validAdjEdgeIndices.get(i)).intValue();
+	    transferEdgeAttributes(validAdjEdgeIndicesArray, groupEdgeRG);
+	}
 	
-	private void transferEdgeAttributes (int [] fromEdgeIndices, int toEdgeIndex) {
+	// remove nodes from GP 
+	network.hideNodes(convertRGtoGPindices(RGindices));
+    } // end method collapse
+    
+    // utility methods are below here
+    private int [] convertIntVectorToArray (Vector vtr) {
+	int [] arr = new int [vtr.size()];
+	int i=0;
+	for (Iterator it = vtr.iterator(); it.hasNext(); ) {
+	    arr[i++] = ((Integer) it.next()).intValue();
+	}
+	return arr;
+    } // end method convertIntVectorToArray
+    
+    private int [] convertRGtoGPindices (int [] RGindices) {
+	int [] GPindices = new int [RGindices.length];
+	for (int i=0; i<RGindices.length; i++)
+	    GPindices[i] = network.getNodeIndex(RGindices[i]); 
+	return GPindices;
+    } // end method convertRGtoGPindices
+    
+    private String printNodeArray (int [] RGindices) {
+	String s = new String();
+	int i=0;
+	while (i<RGindices.length-1)
+	    s += Cytoscape.getRootGraph().getNode(RGindices[i++])+", ";
+	s += Cytoscape.getRootGraph().getNode(RGindices[i]);
+	return s;
+    } // end method printNodeArray
+    
+    private void transferEdgeAttributes (int [] fromEdgeIndices, int toEdgeIndex) {
 
-	    // get basic data structures
-	    CytoscapeRootGraph rootGraph = Cytoscape.getRootGraph();
-	    GraphObjAttributes attrs = network.getEdgeAttributes();
-	    String [] attrNames = network.getEdgeAttributesList();
-	    if (fromEdgeIndices == null || rootGraph.getEdge(toEdgeIndex) == null) return;
-	    giny.model.Edge toEdge   = rootGraph.getEdge(toEdgeIndex);
-
-	    // set canonicalName and commonName attribute of the new "to Edge"
-	    int srcIndex = rootGraph.getEdgeSourceIndex(toEdgeIndex);
-	    int tgtIndex = rootGraph.getEdgeTargetIndex(toEdgeIndex);
-	    String intType = (String) network.
-		getEdgeAttributeValue(fromEdgeIndices[0], "interaction");
-	    String edgeName = rootGraph.getNode(srcIndex).getIdentifier()
-		+ " (" + intType + ") "
-		+ rootGraph.getNode(tgtIndex).getIdentifier();
-	    toEdge.setIdentifier(edgeName);
-	    attrs.addNameMapping(edgeName, toEdge);
+	// get basic data structures
+	CytoscapeRootGraph rootGraph = Cytoscape.getRootGraph();
+	GraphObjAttributes attrs = network.getEdgeAttributes();
+	String [] attrNames = network.getEdgeAttributesList();
+	if (fromEdgeIndices == null || rootGraph.getEdge(toEdgeIndex) == null) return;
+	giny.model.Edge toEdge   = rootGraph.getEdge(toEdgeIndex);
+	
+	// set canonicalName and commonName attribute of the new "to Edge"
+	int srcIndex = rootGraph.getEdgeSourceIndex(toEdgeIndex);
+	int tgtIndex = rootGraph.getEdgeTargetIndex(toEdgeIndex);
+	String intType = (String) network.
+	    getEdgeAttributeValue(fromEdgeIndices[0], "interaction");
+	String edgeName = rootGraph.getNode(srcIndex).getIdentifier()
+	    + " (" + intType + ") "
+	    + rootGraph.getNode(tgtIndex).getIdentifier();
+	toEdge.setIdentifier(edgeName);
+	attrs.addNameMapping(edgeName, toEdge);
+	
+	// build up vector of incoming attr values
+	for (int i=0; i<attrNames.length; i++) {
+	    if (DEBUG) System.err.println("Visiting edge attr " + attrNames[i]);
+	    Vector values = new Vector();
+	    Object attrVal=null;
+	    for (int j=0; j<fromEdgeIndices.length; j++) {
+		giny.model.Edge fromEdge = rootGraph.getEdge(fromEdgeIndices[j]);
+		attrVal = network.getEdgeAttributeValue(fromEdge, attrNames[i]);
+		values.add(attrVal);
+	    }
 	    
+	    // distribute the vector depending on object type
+	    if (values.size() > 1) {
+		if (DEBUG) System.err.println("Edge " + toEdge 
+					      + ": Merging attr " + attrNames[i]);
+		Object mergedVal = merge(values);		
+		network.setEdgeAttributeValue(toEdge, attrNames[i], mergedVal);
+	    }
+	    else if (attrVal != null) {
+		if (DEBUG) System.err.println("Edge " + toEdge
+					      + ": direct xfer attr " + attrNames[i]);
+		network.setEdgeAttributeValue(toEdge, attrNames[i], attrVal);
+	    }
+	}
+    } // end method transferEdgeAttributes
+    
+    private void transferNodeAttributes (int [] fromNodeIndices, int toNodeIndex) {
+	
+	// get basic data structures
+	CytoscapeRootGraph rootGraph = Cytoscape.getRootGraph();
+	GraphObjAttributes attrs = network.getNodeAttributes();
+	if (fromNodeIndices == null || rootGraph.getNode(toNodeIndex) == null) return;
+	giny.model.Node toNode = rootGraph.getNode(toNodeIndex);
+	String [] attrNames = network.getNodeAttributesList();
+	
+	// set canonicalName and commoName attribute of the new "toNode"
+	String nodeName = "Group" + toNodeIndex;
+	toNode.setIdentifier(nodeName);
+	attrs.addNameMapping(nodeName, toNode);
+	network.setNodeAttributeValue(toNode, "canonicalName2",
+				      printNodeArray(fromNodeIndices));
+	
+	// transfer other attributes
+	for (int i=0; i<attrNames.length; i++) {
+	    Vector values = new Vector();
+	    Object attrVal=null;
+	    if (attrNames[i].equals("canonicalName")) continue;
+	    //		if (attrNames[i].equals("commonName")) continue;
+	    if (DEBUG) System.err.println("Visiting node attr " + attrNames[i]);
 	    // build up vector of incoming attr values
-	    for (int i=0; i<attrNames.length; i++) {
-		if (DEBUG) System.err.println("Visiting edge attr " + attrNames[i]);
-		Vector values = new Vector();
-		Object attrVal=null;
-		for (int j=0; j<fromEdgeIndices.length; j++) {
-		    giny.model.Edge fromEdge = rootGraph.getEdge(fromEdgeIndices[j]);
-		    attrVal = network.getEdgeAttributeValue(fromEdge, attrNames[i]);
-		    values.add(attrVal);
-		}
-		
-		// distribute the vector depending on object type
-		if (values.size() > 1) {
-		    if (DEBUG) System.err.println("Edge " + toEdge 
-						  + ": Merging attr " + attrNames[i]);
-		    Object mergedVal = merge(values);		
-		    network.setEdgeAttributeValue(toEdge, attrNames[i], mergedVal);
-		}
-		else if (attrVal != null) {
-		    if (DEBUG) System.err.println("Edge " + toEdge
-						  + ": direct xfer attr " + attrNames[i]);
-		    network.setEdgeAttributeValue(toEdge, attrNames[i], attrVal);
-		}
+	    for (int j=0; j<fromNodeIndices.length; j++) {
+		giny.model.Node fromNode = rootGraph.getNode(fromNodeIndices[j]);
+		attrVal = network.getNodeAttributeValue(fromNode, attrNames[i]);
+		values.add(attrVal);
 	    }
-	} // end method transferEdgeAttributes
-	
-	private void transferNodeAttributes (int [] fromNodeIndices, int toNodeIndex) {
-
-	    // get basic data structures
-	    CytoscapeRootGraph rootGraph = Cytoscape.getRootGraph();
-	    GraphObjAttributes attrs = network.getNodeAttributes();
-	    if (fromNodeIndices == null || rootGraph.getNode(toNodeIndex) == null) return;
-	    giny.model.Node toNode = rootGraph.getNode(toNodeIndex);
-	    String [] attrNames = network.getNodeAttributesList();
-
-	    // set canonicalName and commoName attribute of the new "toNode"
-	    String nodeName = "Group" + toNodeIndex;
-	    toNode.setIdentifier(nodeName);
-	    attrs.addNameMapping(nodeName, toNode);
-	    network.setNodeAttributeValue(toNode, "canonicalName2",
-					  printNodeArray(fromNodeIndices));
-	    
-	    // transfer other attributes
-	    for (int i=0; i<attrNames.length; i++) {
-		Vector values = new Vector();
-		Object attrVal=null;
-		if (attrNames[i].equals("canonicalName")) continue;
-		//		if (attrNames[i].equals("commonName")) continue;
-		if (DEBUG) System.err.println("Visiting node attr " + attrNames[i]);
-		// build up vector of incoming attr values
-		for (int j=0; j<fromNodeIndices.length; j++) {
-		    giny.model.Node fromNode = rootGraph.getNode(fromNodeIndices[j]);
-		    attrVal = network.getNodeAttributeValue(fromNode, attrNames[i]);
-		    values.add(attrVal);
-		}
-		// distribute this vector depending on object type
-		if (values.size() > 1) {
-		    if (DEBUG) System.err.println("Node " + toNode 
-						  + ": Merging attr " + attrNames[i]);
-		    Object mergedVal = merge(values);
-		    network.setNodeAttributeValue(toNode, attrNames[i], mergedVal);
-		}
-		else if (attrVal != null) {
-		    if (DEBUG) System.err.println("Node " + toNode 
-						  + ": Direct xfer attr " + attrNames[i]);
-		    network.setNodeAttributeValue(toNode, attrNames[i], attrVal);
-		}
+	    // distribute this vector depending on object type
+	    if (values.size() > 1) {
+		if (DEBUG) System.err.println("Node " + toNode 
+					      + ": Merging attr " + attrNames[i]);
+		Object mergedVal = merge(values);
+		network.setNodeAttributeValue(toNode, attrNames[i], mergedVal);
+	    }
+	    else if (attrVal != null) {
+		if (DEBUG) System.err.println("Node " + toNode 
+					      + ": Direct xfer attr " + attrNames[i]);
+		network.setNodeAttributeValue(toNode, attrNames[i], attrVal);
 	    }
 	}
     } // end method transferNodeAttributes
-
+    
     // utility methods to handle specific attribute object types
-
+    
     private Object merge (Vector values) {
 	if (values == null || values.get(0) == null) return null;
 	Class cType = values.get(0).getClass();
