@@ -24,9 +24,9 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
     double DEFAULT_DISCONNECTED_NODE_DISTANCE_SPRING_STRENGTH = 0.05;
   private static final
     double DEFAULT_DISCONNECTED_NODE_DISTANCE_SPRING_REST_LENGTH = 2500.0;
-  public static final
+  private static final
     double[] DEFAULT_ANTICOLLISION_SPRING_SCALARS = new double[] { 0.0, 1.0 };
-  public static final
+  private static final
     double DEFAULT_ANTICOLLISION_SPRING_STRENGTH = 100.0;
 
   private final int m_numLayoutPasses;
