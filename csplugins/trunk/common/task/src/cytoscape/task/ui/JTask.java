@@ -219,6 +219,8 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
                         setCancelStatusMsg("Canceled by User");
                     }
                 }
+                pack();
+                validate();
             }
         });
     }
@@ -256,31 +258,31 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
         //  Create Description, Status, Time Left and Time Elapsed Fields
         int y = 0;
         addLabel("Description:  ", progressPanel, 0, y,
-                GridBagConstraints.EAST, true);
+                GridBagConstraints.NORTHEAST, true);
         descriptionValue = addLabel(StringUtils.truncateOrPadString(taskTitle),
                 progressPanel, 1, y,
-                GridBagConstraints.NORTHEAST, true);
+                GridBagConstraints.NORTHWEST, true);
 
         addLabel("Status:  ", progressPanel, 0, ++y,
                 GridBagConstraints.NORTHEAST, config.getStatusFlag());
         statusValue = addTextArea
                 (StringUtils.truncateOrPadString("Starting..."),
-                        progressPanel, 1, y, GridBagConstraints.WEST,
+                        progressPanel, 1, y, GridBagConstraints.NORTHWEST,
                         config.getStatusFlag());
 
         addLabel("Time Left:  ", progressPanel, 0, ++y,
                 GridBagConstraints.NORTHEAST, config.getTimeRemainingFlag());
         timeRemainingValue = addLabel("", progressPanel, 1, y,
-                GridBagConstraints.WEST, config.getTimeRemainingFlag());
+                GridBagConstraints.NORTHWEST, config.getTimeRemainingFlag());
 
         addLabel("Time Elapsed:  ", progressPanel, 0, ++y,
                 GridBagConstraints.NORTHEAST, config.getTimeElapsedFlag());
         timeElapsedValue = addLabel(StringUtils.getTimeString(0),
-                progressPanel, 1, y, GridBagConstraints.WEST,
+                progressPanel, 1, y, GridBagConstraints.NORTHWEST,
                 config.getTimeElapsedFlag());
 
         progressValue = addLabel("Progress:  ", progressPanel, 0, ++y,
-                GridBagConstraints.EAST, true);
+                GridBagConstraints.NORTHEAST, true);
 
         initProgressBar(progressPanel, y);
         container.add(progressPanel, BorderLayout.CENTER);
@@ -529,7 +531,5 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
     private void removeProgressBar() {
         progressPanel.remove(pBar);
         progressPanel.remove(progressValue);
-        pack();
-        validate();
     }
 }
