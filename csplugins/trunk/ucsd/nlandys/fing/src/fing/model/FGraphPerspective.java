@@ -1122,13 +1122,12 @@ class FGraphPerspective implements GraphPerspective
       if (!(rootGraphEdgeInx < 0)) return 0;
       final int nativeEdgeIndex =
         m_rootToNativeEdgeInxMap.get(~rootGraphEdgeInx);
-      try {
-        if (m_graph.removeEdge(nativeEdgeIndex)) {
-          m_rootToNativeEdgeInxMap.put(~rootGraphEdgeInx, Integer.MAX_VALUE);
-          m_nativeToRootEdgeInxMap.setIntAtIndex(0, nativeEdgeIndex);
-          return rootGraphEdgeInx; } }
-      catch (IllegalArgumentException e) { } // Thrown by m_graph.removeEdge().
-      return 0;
+      if (nativeEdgeIndex < 0) return 0;
+      if (m_graph.removeEdge(nativeEdgeIndex)) {
+        m_rootToNativeEdgeInxMap.put(~rootGraphEdgeInx, Integer.MAX_VALUE);
+        m_nativeToRootEdgeInxMap.setIntAtIndex(0, nativeEdgeIndex);
+        return rootGraphEdgeInx; }
+      else return 0;
     }
 
     // RootGraphChangeSniffer is not to call this method.  We rely on
