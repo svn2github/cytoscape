@@ -12,6 +12,11 @@ public class TaskManager {
     /**
      * Executes the specified task in a new thread, and automatically
      * pops open a JTask UI Component for visually monitoring the task.
+     * <P>
+     * This method will block until the JTask UI Component is disposed.
+     * Disposal will occur automatically if JTaskConfig is set to
+     * setAutoDispose(true).  Otherwise, disposal will occur when the user
+     * manually closes the JTask UI Dialog Box.  
      *
      * @param task   the task to execute.
      * @param config Configuration options for the JTask UI Component.
