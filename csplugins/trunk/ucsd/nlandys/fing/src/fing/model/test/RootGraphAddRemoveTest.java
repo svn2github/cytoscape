@@ -38,8 +38,9 @@ public final class RootGraphAddRemoveTest
         edgeInx[i] = root.createEdge(nodeInx[i % nodeInx.length],
                                      nodeInx[(i * 3) % nodeInx.length]);
       if (print) printme(root);
-      if (print) System.out.println("removing all edges from RootGraph");
-      root.removeEdges(edgeInx);
+      if (foo % 2 == 0) {
+        if (print) System.out.println("removing all edges from RootGraph");
+        root.removeEdges(edgeInx); }
       if (print) System.out.println("removing all nodes from RootGraph");
       root.removeNodes(nodeInx);
       if (print) printme(root);

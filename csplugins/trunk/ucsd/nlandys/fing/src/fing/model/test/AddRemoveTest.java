@@ -40,8 +40,9 @@ public final class AddRemoveTest
       if (print) System.out.println("creating GraphPerspective");
       GraphPerspective persp = root.createGraphPerspective(nodeInx, edgeInx);
       if (print) printme(root, persp);
-      if (print) System.out.println("removing all edges from RootGraph");
-      root.removeEdges(edgeInx);
+      if (foo % 2 == 0) {
+        if (print) System.out.println("removing all edges from RootGraph");
+        root.removeEdges(edgeInx); }
       if (print) System.out.println("removing all nodes from RootGraph");
       root.removeNodes(nodeInx);
       if (print) printme(root, persp);
