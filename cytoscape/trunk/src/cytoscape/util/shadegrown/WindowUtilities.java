@@ -15,6 +15,8 @@ import java.awt.event.WindowListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JWindow;
@@ -45,7 +47,7 @@ public abstract class WindowUtilities
 
   protected static JWindow splashWindow = null;
   protected static JComponent splashContent = null;
-  protected static javax.swing.Timer splashTimer = null;
+  // protected static javax.swing.Timer splashTimer = null;
 
  
 
@@ -128,40 +130,60 @@ public abstract class WindowUtilities
     centerWindowLocation( splashWindow );
     splashWindow.setVisible( true );
 
-    if( splashTimer == null ) {
-      splashTimer = new javax.swing.Timer (
-        milliseconds,
-        new ActionListener () {
-            public void actionPerformed ( ActionEvent event ) {
-              WindowUtilities.hideSplash();
-            }
-          }
-      );
-      splashTimer.setRepeats( false );
-    } else {
-      splashTimer.setDelay( milliseconds );
-    }
 
-    if( start_timer ) {
-      splashTimer.start();
-    }
+    splashContent.addMouseListener( 
+                                   new MouseListener () {
+                                     public  void 	mouseClicked(MouseEvent e) {
+                                       hideSplash();
+                                     }
+                                     
+                                     public void 	mouseEntered(MouseEvent e) {}
+                                     
+                                     public void 	mouseExited(MouseEvent e){}
+                                     
+                                     public void 	mousePressed(MouseEvent e){}
+                                     
+                                     public void 	mouseReleased(MouseEvent e) {}
+                                   }
+                                   );
+
+
+//     if( splashTimer == null ) {
+//       splashTimer = new javax.swing.Timer (
+//         milliseconds,
+//         new ActionListener () {
+//             public void actionPerformed ( ActionEvent event ) {
+//               WindowUtilities.hideSplash();
+//             }
+//           }
+//       );
+//       splashTimer.setRepeats( false );
+//     } else {
+//       splashTimer.setDelay( milliseconds );
+//     }
+
+    // if( start_timer ) {
+//       splashTimer.start();
+//     }
+
+
   } // static showSplash( JComponent, int, boolean );
 
-  public static Timer getSplashTimer () {
-    return splashTimer;
-  } // static getSplashTimer()
+//   public static Timer getSplashTimer () {
+//     return splashTimer;
+//   } // static getSplashTimer()
 
-  public static void startSplashTimer () {
-    if( splashTimer == null ) {
-      throw new IllegalStateException( "The splashTimer is null.  Call showSplash(..) first." );
-    }
-    splashTimer.start();
-  } // static startSplashTimer()
+  // public static void startSplashTimer () {
+//     if( splashTimer == null ) {
+//       throw new IllegalStateException( "The splashTimer is null.  Call showSplash(..) first." );
+//     }
+//     splashTimer.start();
+//   } // static startSplashTimer()
 
   public static void hideSplash () {
-    if( ( splashTimer != null ) && splashTimer.isRunning() ) {
-      splashTimer.stop();
-    }
+   //  if( ( splashTimer != null ) && splashTimer.isRunning() ) {
+//       splashTimer.stop();
+//     }
     if( ( splashWindow != null ) && splashWindow.isVisible() ) {
       splashWindow.setVisible( false );
       if( splashContent != null ) {

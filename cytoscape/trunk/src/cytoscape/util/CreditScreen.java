@@ -23,7 +23,7 @@ public abstract class CreditScreen  {
 
 
   public static void moveCredits ( PNode node ) {
-    node.offset( 0, -.3 );
+    node.offset( 0, -.5 );
     //PBounds bounds = node.getBounds();
     //node.animateToBounds( 0, -.3, bounds.getWidth(), bounds.getHeight(), 10 );
   }
@@ -71,7 +71,7 @@ public abstract class CreditScreen  {
 
     PClip credit_clip = new PClip();
     credit_clip.setStrokePaint( null );
-    credit_clip.setPaint( new java.awt.Color( 0, 0, 0, .1f ) );
+    credit_clip.setPaint( new java.awt.Color( 1, 1, 1, .1f ) );
     credit_clip.setPathToRectangle( 80, 60, 230, 280 );
     layer.addChild( credit_clip );
 
@@ -84,11 +84,23 @@ public abstract class CreditScreen  {
 //     }
     credit_clip.addChild( credits );
     
+    
+    
+
     //layer.addChild( credits );
 
     PBounds clip_bounds = credit_clip.getBounds();
     PBounds credit_bounds = credits.getBounds();
     
+
+    PNode fade = new PNode();
+    fade.offset(  clip_bounds.getX() , clip_bounds.getY() );
+    credit_clip.addChild( fade );
+    fade.setPaint( new GradientPaint( 155, 60,  new java.awt.Color( 1, 1, 1, 1f ),
+                                      155, 90,  new java.awt.Color( 1, 1, 1, 0f ) ) );
+                   
+
+
     System.out.println( "cliP :"+clip_bounds );
     System.out.println( "credit: "+credit_bounds );
 

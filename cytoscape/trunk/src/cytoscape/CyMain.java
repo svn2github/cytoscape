@@ -196,6 +196,9 @@ public class CyMain implements WindowListener {
        logger.info("  done");
     }
 
+
+    WindowUtilities.hideSplash();
+
   } // ctor
   
 
