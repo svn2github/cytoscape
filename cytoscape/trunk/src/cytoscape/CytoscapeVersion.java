@@ -35,28 +35,29 @@
 package cytoscape;
 //-----------------------------------------------------------------------------------
 public class CytoscapeVersion {
-  private String versionString = "0.97";
-  private String dateString = "2002/12/05";
+  private String versionString = "0.991";
+  private String dateString = "2002/02/18";
 
   private String [] briefHistory = {
-      "0.1  (2001/12/12) initial version",
-      "0.2  (2001/12/18) sped up node selection by name",
-      "0.3  (2001/12/20) node synonyms displayed in NodeProps dialog",
-      "0.4  (2001/12/21) edge attribute files supported",
-      "0.5  (2001/12/28) edge attributes now can control edge color",
-      "0.6  (2002/01/01) popup dialog 'relocation flash' now fixed",
-      "0.7  (2002/01/04) checkEnviroment centralized, now checks for java version",
-      "0.8  (2002/01/07) active paths dialog bounds checking fixed",
-      "0.9  (2002/01/07) IPBiodataServer.getGoTermName exception fixed",
-      "0.10 (2002/01/22) selected nodes make new window; active paths bug fixed",
-      "0.11 (2002/02/04) automatic running of active paths from command line\n" +
+      "0.1   (2001/12/12) initial version",
+      "0.2   (2001/12/18) sped up node selection by name",
+      "0.3   (2001/12/20) node synonyms displayed in NodeProps dialog",
+      "0.4   (2001/12/21) edge attribute files supported",
+      "0.5   (2001/12/28) edge attributes now can control edge color",
+      "0.6   (2002/01/01) popup dialog 'relocation flash' now fixed",
+      "0.7   (2002/01/04) checkEnviroment centralized, now checks for java version",
+      "0.8   (2002/01/07) active paths dialog bounds checking fixed",
+      "0.9   (2002/01/07) IPBiodataServer.getGoTermName exception fixed",
+      "0.10  (2002/01/22) selected nodes make new window; active paths bug fixed",
+      "0.11  (2002/02/04) automatic running of active paths from command line\n" +
        "                 data passed to ActivePathsFinder via arrays",
-      "0.12 (2002/02/19) reorganized directories; gene common names supported",
-      "0.20 (2002/03/28) now uses plugin architecture; redesign of VizMapping underway",
-      "0.8  (2002/06/17) first alpha release",
-      "0.9  (2002/11/01) first beta release",
-      "0.95 (2002/11/04) added generic annotation",
-      "0.97 (2002/12/05) added LGPL to all source",
+      "0.12  (2002/02/19) reorganized directories; gene common names supported",
+      "0.20  (2002/03/28) now uses plugin architecture; redesign of VizMapping underway",
+      "0.8   (2002/06/17) first alpha release",
+      "0.9   (2002/11/01) first beta release",
+      "0.95  (2002/11/04) added generic annotation",
+      "0.97  (2002/12/05) added LGPL to all source",
+      "0.991 (2003/02/18) added visual properties UI",
       };
 
 //-----------------------------------------------------------------------------------
