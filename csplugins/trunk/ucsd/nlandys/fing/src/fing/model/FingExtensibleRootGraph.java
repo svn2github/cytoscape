@@ -7,10 +7,10 @@ package fing.model;
  * @deprecated Use FingRootGraphFactory instead.
  * @see FingRootGraphFactory
  **/
-public class FingExtendableRootGraph extends FRootGraph
+public class FingExtensibleRootGraph extends FRootGraph
 {
 
-  public FingExtendableRootGraph(FingNodeDepot nodeDepot,
+  public FingExtensibleRootGraph(FingNodeDepot nodeDepot,
                                  FingEdgeDepot edgeDepot)
   {
     super(nodeDepot, edgeDepot);

@@ -9,7 +9,7 @@ import cytoscape.util.intr.IntIterator;
  * @deprecated Use FingRootGraphFactory instead.
  * @see FingRootGraphFactory
  **/
-public class FingExtendableGraphPerspective extends FGraphPerspective
+public class FingExtensibleGraphPerspective extends FGraphPerspective
 {
 
   /**
@@ -20,7 +20,7 @@ public class FingExtendableGraphPerspective extends FGraphPerspective
    * be non-repeating - the logic in this constructor handles duplicate
    * filtering.
    **/
-  public FingExtendableGraphPerspective(FingExtendableRootGraph root,
+  public FingExtensibleGraphPerspective(FingExtensibleRootGraph root,
                                         IntIterator rootGraphNodeInx,
                                         IntIterator rootGraphEdgeInx)
   {
