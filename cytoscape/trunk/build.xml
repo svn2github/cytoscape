@@ -15,7 +15,7 @@
  	<property name="build.dir" value="build"/>
   	<property name="build.classes" value="${build.dir}/classes"/>
   	
-	<!-- Distribution directory -->
+	<!-- Temporary Distribution directory -->
 	<property name="dist.dir" value="dist"/>
 	
 	<!-- Global "magic" property for <javac> -->
@@ -30,7 +30,7 @@
 		</fileset>
 	</path>
 
-	<!-- Classpath with all lib JAR Files -->
+	<!-- Classpath for running Cytoscape with non-obfuscated Cytoscape Jar file -->
 	<path id="classpath_run">
 		<fileset dir="${lib.dir}">
 			<include name="**/*.jar"/>
@@ -38,7 +38,7 @@
 		<pathelement location="${build.dir}/cytoscape.jar"/>
 	</path>
 
-	<!-- Classpath with Obfuscated Jar file -->
+	<!-- Classpath for running Cytoscape with obfuscated Cytoscape Jar file -->
 	<path id="classpath_obfuscated">
 		<fileset dir="${lib.dir}">
 			<include name="**/*.jar"/>
@@ -61,6 +61,7 @@
 		<fail>Build aborted:  Make sure that y.jar is available within your lib directory.</fail>
 	</target>
 
+	<!-- Outputs Current compilation classpath -->
 	<target name="show_cp">
 		<property name="temp" refid="classpath.compile"/>
 		<echo message="Classpath:  ${temp}"/>
@@ -136,12 +137,9 @@
 	<rmic classname="cytoscape/data/servers/BioDataServerRmi" base="${build.classes}"/>	
   	</target>
   	
-  	<!--  Target to Run Cytoscape with Simple Sample Data -->
-  	<target name="run" depends="jar" 
-		description="Runs Cytoscape.">
-		<java classname="cytoscape.cytoscape"
-		classpathref="classpath_run" fork="true">
-       	</java> 
+  	<!--  Target to Run Cytoscape with non-obfuscated jar file -->
+  	<target name="run" depends="jar" description="Runs Cytoscape.">
+		<java classname="cytoscape.cytoscape" classpathref="classpath_run" fork="true"/>
 	</target>
 	
 	<!-- Target to Run JavaDoc -->
