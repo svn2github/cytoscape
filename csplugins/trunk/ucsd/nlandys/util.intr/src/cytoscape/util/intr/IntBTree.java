@@ -82,14 +82,13 @@ public final class IntBTree
   {
     if (isLeafNode(n)) {
       if (n.sliceCount < MAX_BRANCHES) { // There's room for a value.
-        int i = -1;
-        while (++i < n.sliceCount) if (x <= n.values[i]) break;
+        int i = -1; while (++i < n.sliceCount) if (x <= n.values[i]) break;
         for (int j = n.sliceCount; j > i;) n.values[j] = n.values[--j];
         n.values[i] = x; n.sliceCount++;
         return null; }
       else { // No room for another value in this leaf node; perform split.
-        Node newNode = new Node(MAX_BRANCHES, true);
-        int combinedCount = MAX_BRANCHES + 1;
+        final Node newNode = new Node(MAX_BRANCHES, true);
+        final int combinedCount = MAX_BRANCHES + 1;
         n.sliceCount = combinedCount >> 1; // Divide by two.
         newNode.sliceCount = combinedCount - n.sliceCount;
         split(x, n.values, newNode.values, newNode.sliceCount);
@@ -97,17 +96,14 @@ public final class IntBTree
     else { // Not a leaf node.
       int foundPath = 0;
       for (int i = n.sliceCount - 2; i >= 0; i--) {
-        if (x >= n.data.splitVals[i]) {
-          foundPath = i + 1;
-          break; } }
-      Node oldChild = n.data.children[foundPath];
-      Node newChild = insert(oldChild, x);
+        if (x >= n.data.splitVals[i]) { foundPath = i + 1; break; } }
+      final Node oldChild = n.data.children[foundPath];
+      final Node newChild = insert(oldChild, x);
       if (newChild == null) {
         n.data.deepCount++;
         return null; }
-      else
-      { // A split was performed at one level deeper.
-        int newSplit;
+      else { // A split was performed at one level deeper.
+        final int newSplit;
         if (isLeafNode(newChild)) newSplit = newChild.values[0];
         else newSplit = oldChild.data.splitVals[oldChild.sliceCount - 1];
         if (n.sliceCount < MAX_BRANCHES) { // There's room here.
@@ -140,9 +136,7 @@ public final class IntBTree
             for (int i = 0; i < newNode.sliceCount; i++)
               newNode.data.deepCount +=
                 newNode.data.children[i].data.deepCount; }
-          return newNode; }
-      }
-    }
+          return newNode; } } }
   }
 
   /*
