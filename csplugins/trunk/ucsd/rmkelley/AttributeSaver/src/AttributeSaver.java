@@ -15,12 +15,17 @@ import javax.swing.JFileChooser;
 import javax.swing.BoxLayout;
 import javax.swing.JOptionPane;
 import javax.swing.event.MouseInputAdapter;
+import javax.swing.event.TableModelEvent;
 import javax.swing.tree.TreePath;
+import javax.swing.table.TableModel;
+import javax.swing.event.TableModelListener;
+import javax.swing.JTable;
 
 
 import java.awt.Container;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.MouseEvent;
@@ -50,6 +55,7 @@ public class AttributeSaver extends CytoscapePlugin{
 class AttributeSaverDialog extends JDialog{
   protected static String NODE_SUFFIX = ".NA";
   protected static String EDGE_SUFFIX = ".EA";
+  protected static int MAX_PREFERRED_SIZE = 100;
 
   public static void showDialog(){
     AttributeSaverDialog dialog = new AttributeSaverDialog();
@@ -61,11 +67,9 @@ class AttributeSaverDialog extends JDialog{
   
   AttributeSaverState nodeState;
   AttributeSaverState edgeState;
-  AttributeSaverState currentState;
-  
-  JList nodeAttributesList;
-  JList edgeAttributesList;
-  JTextField fileTextField;
+    
+  JTable nodeTable;
+  JTable edgeTable;
   MyFileChooser fileChooser;
 
   public AttributeSaverDialog(){
@@ -86,39 +90,44 @@ class AttributeSaverDialog extends JDialog{
     edgeState = new AttributeSaverState(edgeAttributes,EDGE_SUFFIX,AttributeSaverState.EDGES,Cytoscape.getCurrentNetwork());
 
     //create a text field that contains the file name for the current attribute
-    fileTextField = new JTextField(10);
-    fileTextField.setEnabled(false);
-    fileTextField.setToolTipText("The current filename for the last clicked attribute");
+    //fileTextField = new JTextField(10);
+    //fileTextField.setEnabled(false);
+    //fileTextField.setToolTipText("The current filename for the last clicked attribute");
     //create a focus listener that will update the filename when the text field loses keyboard focus
-    fileTextField.addFocusListener(new FocusAdapter(){
-	public void focusLost(FocusEvent fe){
-	  currentState.setAttributeFile(fileTextField.getText());}});
+    //fileTextField.addFocusListener(new FocusAdapter(){
+    //public void focusLost(FocusEvent fe){
+    //  currentState.setAttributeFile(fileTextField.getText());}});
     
-
-    
+    String toolTipText = "Select multiple attributes to save. Modify \"Filename\" field to specify filename";
+    nodeTable = new JTable(nodeState);
+    nodeTable.setToolTipText(toolTipText);
+    edgeTable = new JTable(edgeState);
+    edgeTable.setToolTipText(toolTipText);
     //create a list that contains all of the node attributes
-    nodeAttributesList = new JList(nodeAttributes);
-    nodeAttributesList.setToolTipText("The list of available node attributes for the current network");
+    //nodeAttributesList = new JList(nodeAttributes);
+    //nodeAttributesList.setToolTipText("The list of available node attributes for the current network");
     //create a mouse listener that will update the contents of the text field with the file name of
     //the particular attribute that is clicked on
-    nodeAttributesList.addMouseListener(new MouseInputAdapter(){
-	public void mousePressed(MouseEvent me){
-	  fileTextField.setEnabled(true);
-	  if ( currentState != null) currentState.setAttributeFile(fileTextField.getText());
-	  currentState = nodeState;
-	  currentState.setCurrentAttribute((String)nodeAttributesList.getModel().getElementAt(nodeAttributesList.locationToIndex(me.getPoint())));
-	  fileTextField.setText(currentState.getAttributeFile());}});
+    //nodeAttributesList.addMouseListener(new MouseInputAdapter(){
+    //	public void mousePressed(MouseEvent me){
+    //fileTextField.setEnabled(true);
+    //  if ( currentState != null) currentState.setAttributeFile(fileTextField.getText());
+    //  currentState = nodeState;
+    //  currentState.setCurrentAttribute((String)nodeAttributesList.getModel().getElementAt(nodeAttributesList.locationToIndex(me.getPoint())));
+    //fileTextField.setText(currentState.getAttributeFile());}});
     
     //ibid
-    edgeAttributesList = new JList(edgeAttributes);
-    edgeAttributesList.setToolTipText("The list of available edge attributes for the current network");
-    edgeAttributesList.addMouseListener(new MouseInputAdapter(){
-	public void mousePressed(MouseEvent me){
-	  fileTextField.setEnabled(true);
-	  if ( currentState != null) currentState.setAttributeFile(fileTextField.getText());
-	  currentState = edgeState;
-	  currentState.setCurrentAttribute((String)edgeAttributesList.getModel().getElementAt(edgeAttributesList.locationToIndex(me.getPoint())));
-	  fileTextField.setText(currentState.getAttributeFile());}});
+    //edgeAttributesList = new JList(edgeAttributes);
+    //edgeAttributesList.setToolTipText("The list of available edge attributes for the current network");
+    //edgeAttributesList.addMouseListener(new MouseInputAdapter(){
+    //	public void mousePressed(MouseEvent me){
+    //fileTextField.setEnabled(true);
+    //  if ( currentState != null){
+    //currentState.setAttributeFile(fileTextField.getText());
+    //  }
+    //  currentState = edgeState;
+    //  currentState.setCurrentAttribute((String)edgeAttributesList.getModel().getElementAt(edgeAttributesList.locationToIndex(me.getPoint())));
+    //  fileTextField.setText(currentState.getAttributeFile());}});
 	  
 
     //initialize the directory browser component
@@ -126,7 +135,7 @@ class AttributeSaverDialog extends JDialog{
     fileChooser = new MyFileChooser(currentDirectory);
 
   
-    JButton saveButton = new JButton("Save Attribute Files");
+    JButton saveButton = new JButton("Choose Directory and Save");
     saveButton.addActionListener(new ActionListener(){
 	public void actionPerformed(ActionEvent ae){
 	  //if the user navigates to a particular directory but
@@ -137,43 +146,55 @@ class AttributeSaverDialog extends JDialog{
 	  //if ( !currentDirectory.equals(selectedFile.getParentFile())) {
 	  //  selectedFile = currentDirectory;
 	  //} // end of if ()
-	  File selectedFile = fileChooser.getCurrentDirectory();
-	  nodeState.setSaveDirectory(selectedFile);
-	  edgeState.setSaveDirectory(selectedFile);
-	  int count = 0;
-	  count += nodeState.writeState(nodeAttributesList.getSelectedValues());
-	  count += edgeState.writeState(edgeAttributesList.getSelectedValues());
-	  JOptionPane.showMessageDialog(Cytoscape.getDesktop(),"Successfully saved "+count+" files");
-	  AttributeSaverDialog.this.dispose();}});
+	  JFileChooser myChooser = new JFileChooser(Cytoscape.getCytoscapeObj().getCurrentDirectory());
+	  myChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+	  if ( myChooser.showOpenDialog(Cytoscape.getDesktop()) == JFileChooser.APPROVE_OPTION){
+	    nodeState.setSaveDirectory(myChooser.getSelectedFile());
+	    edgeState.setSaveDirectory(myChooser.getSelectedFile());
+	    int count = 0;
+	    count += nodeState.writeState(nodeTable.getSelectedRows());
+	    count += edgeState.writeState(edgeTable.getSelectedRows());
+	    JOptionPane.showMessageDialog(Cytoscape.getDesktop(),"Successfully saved "+count+" files");
+	    AttributeSaverDialog.this.dispose();
+	  }}});
+				 
 
 
 
-    JPanel westPanel = new JPanel();
-    westPanel.setLayout(new BoxLayout(westPanel,BoxLayout.Y_AXIS));
-    westPanel.add(new JLabel("Node Attributes:"));
-    westPanel.add(new JScrollPane(nodeAttributesList));
-    westPanel.add(new JLabel("Edge Attributes:"));
-    westPanel.add(new JScrollPane(edgeAttributesList));
-    westPanel.add(new JLabel("Filename:"));
-    westPanel.add(fileTextField);
+    JPanel leftPanel = new JPanel();
+    leftPanel.setLayout(new BoxLayout(leftPanel,BoxLayout.Y_AXIS));
+    leftPanel.add(new JLabel("Select multiple node attribute to save:"));
+    //JScrollPane leftScrollPane = new JScrollPane(nodeTable,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    JScrollPane leftScrollPane = new JScrollPane(nodeTable);
+    leftScrollPane.setPreferredSize(new Dimension(MAX_PREFERRED_SIZE,(int)Math.min(MAX_PREFERRED_SIZE,nodeTable.getPreferredSize().getHeight())+nodeTable.getRowCount()*nodeTable.getRowMargin()+nodeTable.getRowHeight()));
+    leftPanel.add(leftScrollPane);
+    //leftPanel.add(nodeTable);
 
+    JPanel rightPanel = new JPanel();
+    rightPanel.setLayout(new BoxLayout(rightPanel,BoxLayout.Y_AXIS));
+    rightPanel.add(new JLabel("Select multiple edge attributes to save:"));
+    JScrollPane rightScrollPane = new JScrollPane(edgeTable);
+    rightScrollPane.setPreferredSize(new Dimension(MAX_PREFERRED_SIZE,(int)Math.min(MAX_PREFERRED_SIZE,edgeTable.getPreferredSize().getHeight())+edgeTable.getRowCount()*edgeTable.getRowMargin()+edgeTable.getRowHeight()));
+    rightPanel.add(rightScrollPane);
+    
     JPanel centerPanel = new JPanel();
-    centerPanel.add(fileChooser);
-
+    centerPanel.setLayout(new BoxLayout(centerPanel,BoxLayout.Y_AXIS));
+    centerPanel.add(leftPanel);
+    centerPanel.add(rightPanel);
+    
     JPanel southPanel = new JPanel();
     southPanel.add(saveButton);
 
     //    contentPane.add(new JScrollPane(fileTree));
     contentPane.add(centerPanel,BorderLayout.CENTER);
     contentPane.add(southPanel,BorderLayout.SOUTH);
-    contentPane.add(westPanel,BorderLayout.WEST);
     pack();
   }
 
 }
 
 
-class AttributeSaverState{
+class AttributeSaverState implements TableModel{
   public static String newline = System.getProperty("line.separator");
   /**
    * The default string to append for an attribute filename
@@ -188,17 +209,6 @@ class AttributeSaverState{
    * Operate on edges
    */
   public static int EDGES = 2;
-
-  /**
-   * Maintain a mapping of attributes to names to use for that attribute
-   */
-  HashMap attribute2File;
-  
-  /**
-   * The currently active attribute
-   */
-  String currentAttribute;
-
   /**
    * The directory in which to save the files
    */
@@ -209,6 +219,21 @@ class AttributeSaverState{
    */
   int type;
 
+  /**
+   * List of all attributes
+   */
+  Vector attributes;
+
+  /**
+   * List of all filenames
+   */
+  Vector filenames;
+
+  /**
+   * A vector of all the objects that
+   * are listening to this TableModel
+   */
+  Vector listeners;
   /**
    * Network to from which to read graph objects
    */
@@ -221,38 +246,52 @@ class AttributeSaverState{
    * @param cyNetwork the network to save
    */
   public AttributeSaverState(String [] nodeAttributes, String suffix, int type, CyNetwork cyNetwork){
-    attribute2File = new HashMap();
-    for ( int idx = 0; idx < nodeAttributes.length ; idx++) {
-      attribute2File.put(nodeAttributes[idx],nodeAttributes[idx]+suffix);
-    } // end of for ()
     this.type = type;
     this.cyNetwork = cyNetwork;
+    this.listeners = new Vector();
+    this.attributes = new Vector();
+    this.filenames = new Vector();
+    for ( int idx = 0; idx < nodeAttributes.length ; idx++) {
+      attributes.add(nodeAttributes[idx]);
+      filenames.add(nodeAttributes[idx]+suffix);
+    } // end of for ()
   }
 
   /**
    * Get the filename assoicated with the current node attribute
    * @returns the filename
    */
-  public String getAttributeFile(){
-    return (String)attribute2File.get(currentAttribute);
-  }
+  //public String getAttributeFile(String attribute){
+  //  return (String)attribute2File.get(attribute);
+  //}
 
   /**
    * Sets the filename for the current node attribute
    * @returns previous value associate with key or null if no such value 
    */
-  public String setAttributeFile(String file){
-    return (String)attribute2File.put(currentAttribute,file);
-  }
+  //public String setAttributeFile(String attribute,String file){
+  //  return (String)attribute2File.put(attribute,file);
+  //}
 
   /**
-   * Set the current attribute
-   * @param currentAttribute the current attribute
-   */
-  public void setCurrentAttribute(String currentAttribute){
-    this.currentAttribute = currentAttribute;
-  }
+   * Add an attribute ot the list of attributes which will be svaed
+   * @param attribute the attribute to be added
+  */
+  //public void addAttribute(String attribute){
+  //  currentAttributes.add(attribute);
+  //  notify();
+  //}
 
+  /**
+   * Remove an attribute from the list of attributes whic will be saved
+   * @param attribute the attribute ot be removed
+   * @return true if sucessful
+   */
+  //public boolean removeAttribute(String attribute){
+  //  boolean result = currentAttributes.remove(attribute);
+  //  this.notify();
+  //  return result;
+  //}
   /**
    * Set the directory where the files will be saved to
    */
@@ -265,7 +304,7 @@ class AttributeSaverState{
    * @return number of files successfully saved, the better way to do this would just be to throw the error and display a specific message
    * for each failure, but oh well.
   */
-  public int writeState(Object [] attributes){
+  public int writeState(int [] selectedRows){
     List graphObjects = null;
     GraphObjAttributes graphObjAttributes = null;
     if ( type == NODES) {
@@ -289,10 +328,11 @@ class AttributeSaverState{
     } // end of for ()
     
     int count = 0;
-    for ( int idx=0 ; idx < attributes.length; idx++ ) {
+    for ( int idx=0 ; idx < selectedRows.length; idx++ ) {
       try {
-	String attribute = (String)attributes[idx];
-	File attributeFile = new File(saveDirectory,(String)attribute2File.get(attribute));
+	String attribute = (String)attributes.get(selectedRows[idx]);
+	//File attributeFile = new File(saveDirectory,(String)attribute2File.get(attribute));
+	File attributeFile = new File(saveDirectory,(String)filenames.get(attributes.indexOf(attribute)));
 	FileWriter fileWriter = new FileWriter(attributeFile);
 	fileWriter.write(attribute+newline);
 	HashMap attributeMap = graphObjAttributes.getAttribute(attribute);
@@ -340,6 +380,79 @@ class AttributeSaverState{
     } // end of for ()
     return count;
   }
+
+
+  
+  //below here is implementing the tableModel
+  //see the interface for description of the methods
+  public void addTableModelListener(TableModelListener tml){
+    this.listeners.add(tml);
+    return;
+  }
+
+  public void removeTableModelListener(TableModelListener tml){
+    this.listeners.remove(tml);
+    return;
+  }
+
+  //public void notifyListeners(){
+  //  for ( Iterator tmlIt = listeners.iterator();tmlIt.hasNext();) {
+  //    TableModelListener tml = (TableModelListener)tmlIt.next();
+  //    tml.tableChanged(new TableModelEvent(this));
+  //  } // end of for ()
+    
+  //}    
+
+  public java.lang.Class getColumnClass(int columnIndex){
+    return String.class;
+  }
+
+  public int getColumnCount(){
+    return 2;
+  }
+    
+  public int getRowCount(){
+    return attributes.size();
+  }
+
+  public Object getValueAt(int rowIndex, int columnIndex){
+    if (columnIndex == 0) {
+      return attributes.get(rowIndex);
+    } // end of if ()
+    else {
+      return filenames.get(rowIndex);
+    } // end of else
+  }
+
+  public String getColumnName(int columnIndex){
+    if ( columnIndex == 0) {
+      return "Attribute";
+    } // end of if ()
+    else {
+      return "Filename";
+    } // end of else
+  }
+  
+  public boolean isCellEditable(int rowIndex, int columnIndex){
+    if ( columnIndex == 1) {
+      return true;
+    } // end of if ()
+    return false;
+  }
+
+  public void setValueAt(Object aValue, int rowIndex, int columnIndex){
+    if ( columnIndex != 1) {
+      throw new RuntimeException("Can't set value in this column");
+    } // end of if ()
+    else {
+      filenames.set(rowIndex,aValue);
+    } // end of else
+  }   
+    
+    
+
+  
+
 }
 
 
