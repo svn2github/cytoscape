@@ -1,80 +1,50 @@
 <?xml version="1.0"?>
-<!-- Build file for Cytoscape 					-->
-<!-- Created by Ethan Cerami, cerami@cbio.mskcc.org		-->
-<!-- To get a quick listing of all ant targets, type: 		-->
-<!-- ant -projecthelp						-->
-<project name="Cytoscape" default="build" basedir=".">
+<!-- build.xml - Build file for Cytoscape -->
+<project name="Cytoscape" default="compile" basedir=".">
 
 	<!--  The directory containing library jar files -->	
 	<property name="lib.dir" value="lib"/>
-
   	<!-- The directory containing source code -->
   	<property name="src.dir" value="src"/>
 	
-  	<!-- Temporary build directories (will not be checked into cvs) -->
+  	<!-- Temporary build directories -->
  	<property name="build.dir" value="build"/>
   	<property name="build.classes" value="${build.dir}/classes"/>
   	
-	<!-- Distribution directory (will not be checked into cvs) -->
+	<!-- Distribution directory -->
 	<property name="dist.dir" value="dist"/>
 	
 	<!-- Global "magic" property for <javac> -->
 	<property name="build.compiler" value="modern"/>
 	
 	<!-- Classpath with all lib JAR Files -->
-	<path id="classpath.compile">
-		<pathelement location="${build.classes}"/>	
-		<pathelement location="${basedir}"/>
+	<path id="classpath">
+		<pathelement path="${build.classes}"/>	
+		<pathelement path="${basedir}"/>
 		<fileset dir="${lib.dir}">
-			<include name="*.jar"/>
+			<include name="**/*.jar"/>
 		</fileset>
 	</path>
 
-	<!-- Classpath with all lib JAR Files Plus Cytoscape Jar File -->
-	<path id="classpath.run">
+	<!-- Classpath with all lib JAR Files -->
+	<path id="classpath_run">
 		<fileset dir="${lib.dir}">
-			<include name="*.jar"/>
+			<include name="**/*.jar"/>
 		</fileset>
-		<fileset dir="${dist.dir}">
+		<fileset dir="${build.dir}">
 			<include name="cytoscape.jar"/>
 		</fileset>
 	</path>
-
-	<!-- Target to Query Environment -->
-	<!-- Checks if y.jar exists -->
-	<!-- This check in necessary because we cannot check y.jar into cvs. -->
-	<target name="query_environment">
-		<condition property="environment.configured">
-			<available file="${lib.dir}/y.jar"/>		
-		</condition>
-	</target>
-
-	<!-- Stop build if Environment is not configured correctly -->
-	<target name="check_environment" depends="query_environment" unless="environment.configured">
-		<fail>Build aborted:  Make sure that y.jar is available within your lib directory.</fail>
-	</target>
-
-	<target name="show_cp">
-		<property name="temp" refid="classpath.compile"/>
-		<echo message="Classpath:  ${temp}"/>
-	</target>
 	
   	<!-- Target to create the build directories prior to compilation -->
-  	<target name="prepare" depends="check_environment">
+  	<target name="prepare">
     		<mkdir dir="${build.dir}"/>
 		<mkdir dir="${build.dir}/docs"/>
     		<mkdir dir="${build.classes}"/>
 		<mkdir dir="${build.classes}/images"/>
-		<mkdir dir="${dist.dir}"/>
-		<!-- copy images to classes directory -->
+		<!-- copy over images -->
 		<copy todir="${build.classes}/cytoscape/images">
 			<fileset dir="${basedir}/images"/>
-		</copy>
-		<copy todir="${build.classes}/cytoscape/dialogs/images">
-			<fileset dir="${src.dir}/cytoscape/dialogs/images"/>
-		</copy>
-		<copy todir="${build.classes}/cytoscape/visual/ui/images">
-			<fileset dir="${src.dir}/cytoscape/visual/ui/images"/>
 		</copy>
   	</target>
 
@@ -88,13 +58,8 @@
   	</target>
 
 	<!--  Target to compile all code -->
-  	<target name="compile" depends="prepare" description="Compiles all source code."
-		if="environment.configured">
-	<property name="temp" refid="classpath.compile"/>
-	<echo message="Classpath:  ${temp}"/>
-    	<javac srcdir="${src.dir}" destdir="${build.classes}" nowarn="on" source="1.4"
-		includeAntRuntime="false">
-		<classpath refid="classpath.compile"/>
+  	<target name="compile" depends="prepare" description="Compiles all source code.">
+    	<javac srcdir="${src.dir}" destdir="${build.classes}" nowarn="on" source="1.4">
 		<include name="cytoscape/**"/>
 		
 		<!-- Deferred classes are never compiled -->
@@ -123,72 +88,37 @@
 		<!-- For details, see cytoscape/data/readers/makefile -->
 		<exclude name="cytoscape/data/annotation/readers/unitTests/*"/>	
 
-		<!-- only compile those filese specified in the makefile -->
-		<!-- For details, see cytoscape/dialogs/makefile -->
-		<exclude name="cytoscape/dialogs/**"/>
-		<include name="cytoscape/dialogs/ColorPopupButton"/>
-		<include name="cytoscape/dialogs/ColorScaleTable"/>
-		<include name="cytoscape/dialogs/ExpressionDataPopupTable"/>
-		<include name="cytoscape/dialogs/NewSlider"/>
-		<include name="cytoscape/dialogs/PopupTextArea"/>
-		<include name="cytoscape/dialogs/iVisualPropertiesDialog"/>
-		<include name="cytoscape/dialogs/LabelTextPanel"/>
-		<include name="cytoscape/dialogs/GeneralColorDialogListener"/>
-		<include name="cytoscape/dialogs/IntegerEntryField"/>
-		<include name="cytoscape/dialogs/IconPopupButton"/>
-		<include name="cytoscape/dialogs/MiscDialog"/>
-		<include name="cytoscape/dialogs/MiscGB"/>
-		<include name="cytoscape/dialogs/GridBagGroup"/>
-		<include name="cytoscape/dialogs/EdgeTextPanel"/>
-		<include name="cytoscape/dialogs/NewStringPopupDialog"/>
-		<include name="cytoscape/dialogs/JointIntegerEntry"/>
-		<include name="cytoscape/dialogs/RotateSelectionDialog"/>
-		<include name="cytoscape/dialogs/EdgePopupMenu"/>
-		<include name="cytoscape/dialogs/EdgeAttributesPopupDetails"/>
-		<include name="cytoscape/dialogs/ShrinkExpandGraph"/>
-		<include name="cytoscape/dialogs/ShrinkExpandGraphUI"/>
-		<include name="cytoscape/dialogs/EdgeControlDialog"/>
+		<!-- Exclude Dialog Files that do not currently compile -->
+                <exclude name="cytoscape/dialogs/GoDataServerPopupTable.java"/>
+                <exclude name="cytoscape/dialogs/GoIDAttributesPopupTable.java"/>
+                <exclude name="cytoscape/dialogs/NodeAttributesPopupTable.java"/>
+
+    		<classpath refid="classpath"/>
     	</javac>
   	</target>
-
-	<!-- Target to build everything -->
-	<!-- May be expanded in the future -->
-  	<target name="build" depends="compile"/>
   	
   	<!--  Target to Run Cytoscape with Simple Sample Data -->
-  	<target name="run" description="Runs Cytoscape" depends="jar">
-		<java classname="cytoscape.cytoscape" classpathref="classpath.run" fork="true"
-			dir="${basedir}/config"/>
+  	<target name="run" depends="compile,jar" 
+		description="Runs Cytoscape">
+		<java classname="cytoscape.cytoscape"
+		classpathref="classpath_run" fork="true">
+       	</java> 
 	</target>
 	
 	<!-- Target to Run JavaDoc -->
 	<target name="doc" description="Runs JavaDoc">
-		<javadoc destdir="${build.dir}/docs" classpathref="classpath.compile"
-			overview="${src.dir}/cytoscape/overview.html" source="1.4">
+		<javadoc destdir="${build.dir}/docs" classpathref="classpath"
+			overview="${src.dir}/org/mskcc/dataservices/overview.html">
     			<packageset dir="${src.dir}">
       				<include name="cytoscape/**" />
 			</packageset>
 		</javadoc>
 	</target>
 
-        <!--  Create Cytoscape Jar File  -->
-        <target name="jar" description="Creates Cytoscape Jar File" depends="compile">
-                <jar destfile="${dist.dir}/cytoscape.jar" manifest="tools/jars/jar.manifest"
-			update="false">
+        <!--  Create Data Services Jar File  -->
+        <target name="jar" description="Creates Cytoscape Jar File">
+                <jar destfile="${build.dir}/cytoscape.jar">
 			<fileset dir="${build.classes}"/>
 		</jar>
         </target>
-	
-	<!-- Create Cytoscape Distribution -->
-	<!-- This task is not yet complete -->
-	<target name="dist" description="Creates Cytoscape Distribution" depends="jar">
-		<copy file="user_docs/INSTALL.txt" todir="${dist.dir}"/>
-		<copy file="user_docs/LICENSE.txt" todir="${dist.dir}"/>
-		<copy file="user_docs/MANUAL.txt" todir="${dist.dir}"/>
-		<copy todir="${dist.dir}/GO">
-			<fileset dir="testData/GO">
-				<include name="*.*"/>	
-			</fileset>
-		</copy>
-	</target>
 </project>
