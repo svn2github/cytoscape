@@ -1958,29 +1958,37 @@ protected class SaveAsInteractionsAction extends AbstractAction
         FileWriter fileWriter = new FileWriter (name);
         Node [] nodes = graphView.getGraph2D().getNodeArray();
         for (int i=0; i < nodes.length; i++) {
+          StringBuffer sb = new StringBuffer ();
           Node node = nodes [i];
           String canonicalName = getCanonicalNodeName (node);
-          EdgeCursor ec = node.outEdges ();
-          for (ec.toFirst (); ec.ok (); ec.next ()) {
-             Edge edge = ec.edge ();
-             Node target = edge.target ();
-             String canonicalTargetName = getCanonicalNodeName (target);
-	     String edgeName = (String)edgeAttributes.getCanonicalName(edge);
-	     String interactionName =
-	    	 (String)(edgeAttributes.getValue("interaction", edgeName));
-	     if (interactionName == null) {interactionName = "xx";}
-	     fileWriter.write (canonicalName + " ");
-	     fileWriter.write (interactionName);
-	     fileWriter.write (" " + canonicalTargetName);
-             fileWriter.write ("\n");
-             } // for ec
+          if (node.edges().size() == 0)
+            sb.append (canonicalName + "\n");
+          else {
+            EdgeCursor ec = node.outEdges ();
+            for (ec.toFirst (); ec.ok (); ec.next ()) {
+              Edge edge = ec.edge ();
+              Node target = edge.target ();
+              String canonicalTargetName = getCanonicalNodeName (target);
+              String edgeName = (String)edgeAttributes.getCanonicalName(edge);
+              String interactionName =
+                 (String)(edgeAttributes.getValue("interaction", edgeName));
+              if (interactionName == null) {interactionName = "xx";}
+              sb.append (canonicalName);
+              sb.append (" ");
+              sb.append (interactionName);
+              sb.append (" ");
+              sb.append (canonicalTargetName);
+              sb.append ("\n");
+              } // for ec
+             } // else: this node has edges, write out one line for every out edge (if any)
+           fileWriter.write (sb.toString ());
           }  // for i
           fileWriter.close ();
-          } 
-        catch (IOException ioe) {
-          System.err.println ("Error while writing " + name);
-          ioe.printStackTrace ();
-          } // catch
+        } 
+      catch (IOException ioe) {
+        System.err.println ("Error while writing " + name);
+        ioe.printStackTrace ();
+        } // catch
       } // if
     }  // actionPerformed
 
