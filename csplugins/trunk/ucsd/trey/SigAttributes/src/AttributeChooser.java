@@ -18,6 +18,8 @@ public class AttributeChooser extends JDialog implements ActionListener{
     JList nameSelector;
     JTextField cutoffField;
     JTextField maxField;
+    JRadioButton singleGroupButton;
+    boolean singleGroup;
     double DEFAULT_PVALUE = 0.001;
     int    DEFAULT_MAX    = 3;
 
@@ -26,13 +28,10 @@ public class AttributeChooser extends JDialog implements ActionListener{
 	this.parent = parent;
 	this.attributes = attributes;
 	this.annotations = annotations;
-	JPanel mainPanel = new JPanel ();
-	mainPanel.setLayout(new BorderLayout());
 
 	// set up instructions
-	JLabel instructions = new JLabel("Finds significant functions for selected nodes",
-					 JLabel.LEFT);	
-	
+	JLabel instructions = new JLabel("Finds significant functions for selected nodes");
+				      
 	// set up tabbed pane
 	tabbedPane = new JTabbedPane();
 	tabbedPane.addTab("By Attribute", makeAttributePanel(attributes) );
@@ -40,6 +39,7 @@ public class AttributeChooser extends JDialog implements ActionListener{
 
 	// set up cutoffs and protein names chooser
 	JPanel cutoffPane = new JPanel(new GridLayout(3,2));
+	cutoffPane.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 	cutoffField = new JTextField(Double.toString(DEFAULT_PVALUE));
 	maxField = new JTextField(Integer.toString(DEFAULT_MAX));
 	JLabel cutoffLabel = new JLabel("Pvalue Cutoff", JLabel.LEFT);
@@ -58,21 +58,43 @@ public class AttributeChooser extends JDialog implements ActionListener{
 	cutoffPane.add(nameLabel);
 	cutoffPane.add(scrollPane);
 
-	// set up button
-	JPanel buttonPane = new JPanel();
-	buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
-	buttonPane.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-	buttonPane.add(cutoffPane);
-	buttonPane.add(Box.createHorizontalGlue());
-	buttonPane.add(Box.createRigidArea(new Dimension(100,0)));
-	JButton ok = new JButton("OK");
+	// set up radio buttons
+	JPanel groupNodesPanel = new JPanel();
+	groupNodesPanel.setLayout(new BoxLayout(groupNodesPanel, BoxLayout.LINE_AXIS));
+	singleGroupButton = new JRadioButton("Single group", true);
+	JRadioButton separateGroupButton = new JRadioButton("Separate groups", false);
+	ButtonGroup groupNodesButtons = new ButtonGroup();
+	groupNodesButtons.add(singleGroupButton);
+	groupNodesButtons.add(separateGroupButton);
+	groupNodesPanel.add(singleGroupButton);
+	groupNodesPanel.add(separateGroupButton);
+	groupNodesPanel.add(Box.createHorizontalGlue());
+	JButton ok = new JButton("OK");   	// add ok button
 	ok.addActionListener(this);
-	buttonPane.add(ok);
+	groupNodesPanel.add(ok);
+
+	JPanel groupNodesAndLabelPanel = new JPanel();
+	groupNodesAndLabelPanel.setLayout(new BoxLayout(groupNodesAndLabelPanel, BoxLayout.PAGE_AXIS));
+	groupNodesAndLabelPanel.setBorder(BorderFactory.createEmptyBorder(0,10,10,10));
+	JLabel groupNodesLabel = new JLabel("Treat selected nodes as:");
+	groupNodesLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+	groupNodesPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+	groupNodesAndLabelPanel.add(groupNodesLabel);
+	groupNodesAndLabelPanel.add(groupNodesPanel);
 
 	// put everything together inside main panel
-	mainPanel.add(instructions, BorderLayout.NORTH);
-	mainPanel.add(tabbedPane, BorderLayout.CENTER);	
-	mainPanel.add(buttonPane, BorderLayout.PAGE_END);
+	JPanel mainPanel = new JPanel ();
+	mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
+	mainPanel.setBorder(BorderFactory.createEmptyBorder(3,3,3,3));
+	instructions.setAlignmentX(Component.LEFT_ALIGNMENT);
+	tabbedPane.setAlignmentX(Component.LEFT_ALIGNMENT);
+	cutoffPane.setAlignmentX(Component.LEFT_ALIGNMENT);
+	groupNodesAndLabelPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+	mainPanel.add(instructions);
+	mainPanel.add(Box.createVerticalGlue());
+	mainPanel.add(tabbedPane);	
+	mainPanel.add(cutoffPane);
+	mainPanel.add(groupNodesAndLabelPanel);
 	setContentPane(mainPanel);
     }
 
@@ -117,18 +139,24 @@ public class AttributeChooser extends JDialog implements ActionListener{
 	else return false;
     }
 
+    public boolean shouldGroupNodes() { 
+	return singleGroup; 
+    }
+
     public void actionPerformed(ActionEvent e){
 	
 	if (tabbedPane.getSelectedIndex() == 0)  // attributes used
 	    chosenAttribute = (String)attributeSelector.getSelectedItem();
 	else                                     // annotations used
 	    chosenAttribute = (String)annotationSelector.getSelectedItem();
-
 	chosenCutoff    =  Double.parseDouble(cutoffField.getText());
 	maxNumber       =  Integer.parseInt(maxField.getText());
 	int [] indices  =  nameSelector.getSelectedIndices();
 	chosenNameAttrs = new String [indices.length];
 	for (int i=0; i<indices.length; i++) chosenNameAttrs[i] = attributes[indices[i]];
+	if (singleGroupButton.isSelected()) { singleGroup = true;  }
+	else                                { singleGroup = false; }
+
 	synchronized (this){
 	    notify();
 	}
@@ -140,7 +168,8 @@ public class AttributeChooser extends JDialog implements ActionListener{
 	attributePanel.setLayout(new BoxLayout(attributePanel, BoxLayout.PAGE_AXIS));
 	attributePanel.setBorder(BorderFactory.createEmptyBorder(0,100,0,100));
 	attributePanel.setBackground(Color.LIGHT_GRAY);
-	JLabel attributeLabel = new JLabel("Select Node Attribute:");
+	JLabel attributeLabel = new JLabel("SELECT NODE ATTRIBUTE");
+	attributeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 	attributeSelector = new JComboBox(attributes);
 	attributePanel.add(attributeLabel);
 	attributePanel.add(attributeSelector);
@@ -156,7 +185,8 @@ public class AttributeChooser extends JDialog implements ActionListener{
 	annotationPanel.setLayout(new BoxLayout(annotationPanel, BoxLayout.PAGE_AXIS));
 	annotationPanel.setBorder(BorderFactory.createEmptyBorder(0,100,0,100));
 	annotationPanel.setBackground(Color.LIGHT_GRAY);
-	JLabel annotationLabel = new JLabel("Select Annotation:");
+	JLabel annotationLabel = new JLabel("SELECT ANNOTATION");
+	annotationLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 	annotationSelector = new JComboBox(annotations);
 	annotationPanel.add(annotationLabel);
 	annotationPanel.add(annotationSelector);

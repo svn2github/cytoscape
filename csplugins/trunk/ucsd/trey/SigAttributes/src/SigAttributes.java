@@ -127,47 +127,73 @@ public class SigAttributes extends AbstractPlugin {
 	    String [] chosenNames = chooser.getNameAttribute();
 	    double pvalueCutoff   = chooser.getCutoff();
 	    int maxNum            = chooser.getMaxNumber();
-	    if (chooser.useAttributes())  runAttributes(chosenAttr, chosenNames, 
-							pvalueCutoff, maxNum);
+	    boolean groupNodes    = chooser.shouldGroupNodes();
+	    if (chooser.useAttributes()) runAttributes(chosenAttr, chosenNames, 
+						       pvalueCutoff, maxNum, groupNodes);
 	    if (chooser.useAnnotations()) runAnnotations(chosenAttr, chosenNames,
-							 pvalueCutoff, maxNum);
+							 pvalueCutoff, maxNum, groupNodes);
 	}
 
 	private void runAttributes(String chosenAttr, String [] chosenNames,
-				   double pvalueCutoff, int maxNum) {
+				   double pvalueCutoff, int maxNum, boolean groupNodes) {
 	    
 	    // get all genes and selected genes
 	    String [] allFunctions = network.getNodeAttributes().getUniqueStringValues(chosenAttr);
-	    String [] allGeneNames = network.getNodeAttributes().getObjectNames(chosenAttr);
-	    String [] nodeNames = getSelectedNames(chosenNames);	    
+	    String [] allNodeIDs   = network.getNodeAttributes().getObjectNames(chosenAttr);
+	    String [] selectedNodeIDs   = getIDsForAllSelectedNodes();
+	    String [] selectedGeneNames = getNamesForAllSelectedNodes(chosenNames);	    
 	    System.err.println("Attribute has " + allFunctions.length + 
-			       " values over " + allGeneNames.length + " genes");
+			       " values over " + allNodeIDs.length + " genes");
 	    
 	    // get # occurrences of each function across all genes and selected genes
-	    HashMap allFunctionCount = getFunctionCount(allGeneNames, chosenAttr, 
+	    HashMap allFunctionCount  = getFunctionCount(allNodeIDs, chosenAttr, 
 							network.getNodeAttributes());
-	    HashMap thisFunctionCount = getFunctionCount(nodeNames, chosenAttr, 
-							 network.getNodeAttributes());
 
-	    // compute significances of enrichment for each function
-	    Vector sigFunctions = getSignificance(thisFunctionCount, allFunctionCount, 
-						  pvalueCutoff, maxNum, null);
-
-	    // create new node attribute for significant functions
+	    // create and clear a node attribute for significant functions
+	    GraphObjAttributes nodeAttr = network.getNodeAttributes();
 	    String newAttrName = "Significant Attributes";
-	    network.getNodeAttributes().deleteAttribute(newAttrName);
-	    for (int i=0; i<nodeNames.length; i++) {
-		for (Iterator it = sigFunctions.iterator(); it.hasNext(); ) {
-		    String function = (String) it.next();
-		    if (hasAttributeValue(network.getNodeAttributes(), chosenAttr, 
-					  nodeNames[i], function))
-			network.getNodeAttributes().append(newAttrName, nodeNames[i], function);
+	    nodeAttr.deleteAttribute(newAttrName);
+	    
+	    //iterate over each selected node unless nodes are grouped (the default)
+	    for (int k=0; k<selectedNodeIDs.length; k++) {
+		
+		// get (possibly multiple) genes associated with each node
+		String [] consideredGeneNames;
+		String [] consideredNodeIDs;
+		if (groupNodes) {
+		    consideredNodeIDs   = selectedNodeIDs;
+		    consideredGeneNames = getNamesForAllSelectedNodes(chosenNames);
 		}
+		else {  // if treated individually
+		    consideredNodeIDs    = new String [1];
+		    consideredNodeIDs[0] = selectedNodeIDs[k];
+		    consideredGeneNames = getNamesForNodeID(chosenNames, selectedNodeIDs[k]);
+		}
+
+		// compute histogram of functions across considered gene names
+		HashMap thisFunctionCount = getFunctionCount(consideredGeneNames, chosenAttr, 
+							     network.getNodeAttributes());
+
+		// compute significances of enrichment for each function
+		Vector sigFunctions = getSignificance(thisFunctionCount, allFunctionCount, 
+						      pvalueCutoff, maxNum, null);
+		
+		// iterate over all nodes, all names per node, and all sig. functions per name
+		for (int j=0; j<consideredNodeIDs.length; j++) {
+		    String nodeID = consideredNodeIDs[j];
+		    String [] geneNames = convertIDtoNames(nodeID, chosenNames);
+		    for (Iterator it2 = sigFunctions.iterator(); it2.hasNext(); ) {
+			String function = (String) it2.next();
+			if (hasAttributeValue(nodeAttr, chosenAttr, geneNames, function))
+			    nodeAttr.append(newAttrName, nodeID, function);
+		    }
+		}
+		if (groupNodes) break;  // do not iterate if grouping all nodes as one cluster
 	    }
-	}
+	} // end runAttributes
 
 	private void runAnnotations (String chosenAnnot, String [] chosenNames,
-				     double pvalueCutoff, int maxNum) {
+				     double pvalueCutoff, int maxNum, boolean groupNodes) {
 
 	    // cannot run unless annotations exist
 	    if (cyObj.getBioDataServer() == null) return;
@@ -180,33 +206,61 @@ public class SigAttributes extends AbstractPlugin {
 	    if (annotDesc[i] == null) return;
 	    Annotation annotation = cyObj.getBioDataServer().getAnnotation(annotDesc[i]);
 
-	    // get all genes and selected genes
-	    String [] allGeneNames = annotation.getNames();
-	    String [] nodeNames = getSelectedNames(chosenNames);
+	    // precompute list of selected nodes, all genes & histogram of all functions
+	    String [] selectedNodeIDs   = getIDsForAllSelectedNodes();
+	    String [] allGeneNames      = annotation.getNames();
+	    HashMap allFunctionCount    = getFunctionCount(allGeneNames, annotation);
 
-	    // get # occurrences of each function across all genes and selected genes	    
-	    HashMap allFunctionCount = getFunctionCount(allGeneNames, annotation);
-	    HashMap thisFunctionCount = getFunctionCount(nodeNames, annotation);
+	    // create and clear a node attribute for significant functions
+	    GraphObjAttributes nodeAttr = network.getNodeAttributes();
+	    String newAttrName = "Significant Attributes";
+	    nodeAttr.deleteAttribute(newAttrName);
 	    
-	    // compute significances of enrichment for each function
-	    Vector sigFunctions = getSignificance(thisFunctionCount, allFunctionCount, 
-						  pvalueCutoff, maxNum, annotation);
-	    
-	    // create new node attribute for significant functions
-	    String newAttrName = "Significant Annotations";
-	    network.getNodeAttributes().deleteAttribute(newAttrName);
-	    for (i=0; i<nodeNames.length; i++) {
-		for (Iterator it = sigFunctions.iterator(); it.hasNext(); ) {
-		    String function = (String) it.next();
-		    if (hasAttributeValue(annotation, nodeNames[i], function)) {
-			OntologyTerm term = 
-			    annotation.getOntology().getTerm(Integer.parseInt(function));
-			network.getNodeAttributes().append(newAttrName, 
-							   nodeNames[i], term.getName());
+	    //iterate over each selected node unless nodes are grouped (the default)
+	    for (int k=0; k<selectedNodeIDs.length; k++) {
+		
+		// get (possibly multiple) genes associated with each node
+		String [] consideredGeneNames;
+		String [] consideredNodeIDs;
+		if (groupNodes) {
+		    consideredNodeIDs   = selectedNodeIDs;
+		    consideredGeneNames = getNamesForAllSelectedNodes(chosenNames);
+		}
+		else {  // if treated individually
+		    consideredNodeIDs    = new String [1];
+		    consideredNodeIDs[0] = selectedNodeIDs[k];
+		    consideredGeneNames = getNamesForNodeID(chosenNames, selectedNodeIDs[k]);
+		}
+		
+		// compute histogram of functions across considered gene names
+		HashMap thisFunctionCount = getFunctionCount(consideredGeneNames, annotation);
+		
+		// compute significances of enrichment for each function
+		Vector sigFunctions = getSignificance(thisFunctionCount, allFunctionCount, 
+						      pvalueCutoff, maxNum, annotation);
+
+		// create new node attributes for sigFunctions
+		// iterate over nodes, all names per node, and all sig. functions per name
+		//System.err.println("ConsideredNodes = " + Arrays.asList(consideredNodeIDs));
+		for (int j=0; j<consideredNodeIDs.length; j++) {
+		    String nodeID = consideredNodeIDs[j];
+		    String [] geneNames = convertIDtoNames(nodeID, chosenNames);
+		    //System.err.println("ConsideredNames = " + Arrays.asList(geneNames));
+		    for (Iterator it = sigFunctions.iterator(); it.hasNext(); ) {
+			String function = (String) it.next();
+			// check to see if any of this node's gene names have this func.
+			if (hasAttributeValue(annotation, geneNames, function)) {
+			    OntologyTerm term = 
+				annotation.getOntology().getTerm(Integer.parseInt(function));
+			    nodeAttr.append(newAttrName, nodeID, term.getName());
+			    //System.err.println("nodeAttr.append " + newAttrName + " " 
+			    //+ nodeID + " " + term.getName());
+			}
 		    }
 		}
+		if (groupNodes) break;  // do not iterate if grouping all nodes as one cluster
 	    }
-	}
+	} // end runAnnotations
 
 	// Returns a hash mapping each function (attribute) name to the number
 	// of times the function is observed among the named genes.
@@ -278,23 +332,52 @@ public class SigAttributes extends AbstractPlugin {
 	    return result;
 	} // end flatten
 
-	private String [] getSelectedNames(String [] nameAttrs) {
+	private String [] getIDsForAllSelectedNodes() {
+	    GraphObjAttributes nodeAttr = network.getNodeAttributes();
+	    int [] nodeIndices = graphView.getSelectedNodeIndices();
+	    String [] nodeIDs = new String [nodeIndices.length];
+	    for (int i=0; i<nodeIndices.length; i++) {
+		int nodeIndex = nodeIndices[i];
+		Node node = graphPerspective.getNode(nodeIndex);
+		nodeIDs[i] = node.getIdentifier();
+	    }
+	    return nodeIDs;
+	} // end getSelectedNodeIDs
+
+	private String [] getNamesForAllSelectedNodes(String [] nameAttrs) {
 	    // make an array of selected names, allowing more than one name per node
 	    GraphObjAttributes nodeAttr = network.getNodeAttributes();
 	    int [] nodeIndices = graphView.getSelectedNodeIndices();
-	    HashSet nodeNames = new HashSet();  // ensures nodes only occur once
+	    HashSet geneNames = new HashSet();  // ensures gene namess only occur once
 	    for (int i=0; i<nodeIndices.length; i++) {
 		int nodeIndex = nodeIndices[i];
 		Node node = graphPerspective.getNode(nodeIndex);
 		for (int j=0; j<nameAttrs.length; j++) 
-		    nodeNames.addAll(nodeAttr.getList(nameAttrs[j], node.getIdentifier()));
+		    geneNames.addAll(nodeAttr.getList(nameAttrs[j], node.getIdentifier()));
 	    }
-	    //System.err.println("Node " + nodeNames);
-	    return (String []) nodeNames.toArray(new String [0]);
-	} // end getSelectedNames
+	    //System.err.println("Node " + geneNames);
+	    return (String []) geneNames.toArray(new String [0]);
+	} // end getNamesForAllSelectedNodes
+
+	private String [] getNamesForNodeID (String [] nameAttrs, String nodeID) {
+	    // make an array of selected names, allowing more than one name per node
+	    GraphObjAttributes nodeAttr = network.getNodeAttributes();
+	    HashSet geneNames = new HashSet();  // ensures gene namess only occur once
+	    for (int j=0; j<nameAttrs.length; j++) 
+		geneNames.addAll(nodeAttr.getList(nameAttrs[j], nodeID));
+	    return (String []) geneNames.toArray(new String [0]);
+	} // end getNamesForNodeID
+
+	private String [] convertIDtoNames (String nodeID, String [] nameAttrs) {
+	    GraphObjAttributes nodeAttr = network.getNodeAttributes();
+	    HashSet geneNames = new HashSet();   // ensures gene names only occur once
+	    for (int j=0; j<nameAttrs.length; j++) 
+		geneNames.addAll(nodeAttr.getList(nameAttrs[j], nodeID));
+	    return (String []) geneNames.toArray(new String [0]);
+	} // end convertIDtoName
 
 	private Vector getSignificance (HashMap thisFunctionCount, HashMap allFunctionCount,
-					double pvalueCutoff, int maxNumber, Annotation annotation) {
+					double pvalueCutoff, int maxNumber, Annotation annotation){
 	    
 	    double n = (double) sumFunctionCounts(thisFunctionCount);
 	    double t = (double) sumFunctionCounts(allFunctionCount);
@@ -329,25 +412,28 @@ public class SigAttributes extends AbstractPlugin {
 
 	// checks to see if the given node has been assigned the given value of chosenAttr
 	private boolean hasAttributeValue(GraphObjAttributes nodeAttr, String chosenAttr,
-					  String geneName, String value) {
+					  String [] geneNames, String value) {
 	    
-	    String [] attrValues = nodeAttr.getStringArrayValues(chosenAttr, geneName);
-	    for (int i=0; i<attrValues.length; i++)
-		if (attrValues[i].equals(value)) return true;
-	  
+	    for (int k=0; k<geneNames.length; k++) {
+		String [] attrValues = nodeAttr.getStringArrayValues(chosenAttr, geneNames[k]);
+		for (int i=0; i<attrValues.length; i++)
+		    if (attrValues[i].equals(value)) return true;
+	    }
 	    return false;
 	}
 
 
 	// Polymorphic to the above function, used for annotations instead of attributes
 	// REALLY INEFFICIENT RIGHT NOW-- SHOULD BE HASHED LATER
-	private boolean hasAttributeValue(Annotation annotation, String geneName, String value) {
+	private boolean hasAttributeValue(Annotation annotation, String [] geneNames, String value) {
 	    
 	    Ontology ontology = annotation.getOntology();
-	    int [] allIDs = flatten(annotation.getClassifications(geneName), ontology);
-	    for (int j=0; j<allIDs.length; j++) {
-		String idValue = Integer.toString(allIDs[j]);
-		if (idValue.equals(value)) return true;
+	    for (int k=0; k<geneNames.length; k++) {
+		int [] allIDs = flatten(annotation.getClassifications(geneNames[k]), ontology);
+		for (int j=0; j<allIDs.length; j++) {
+		    String idValue = Integer.toString(allIDs[j]);
+		    if (idValue.equals(value)) return true;
+		}
 	    }
 	    return false;
 	}
