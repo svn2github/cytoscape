@@ -90,7 +90,7 @@
     <td><img src="people_photos/nerius.jpg"></img></td>
     <td><img src="people_photos/robert.jpg"></img></td>
     <td><img src="people_photos/chris.jpg"></img></td>
-    <td>&nbsp;</td>
+    <td><img src="people_photos/rich.jpg"></img></td>
   </tr>
 </table>
 <blockquote>
