@@ -1,7 +1,6 @@
 package cytoscape.foo;
 
 import cytoscape.Cytoscape;
-import cytoscape.graph.layout.GraphLayout;
 import cytoscape.graph.layout.algorithm.MutableGraphLayout;
 import cytoscape.graph.layout.algorithm.util.MutableGraphLayoutRepresentation;
 import cytoscape.view.CyNetworkView;
@@ -23,7 +22,7 @@ public final class GraphConverter
   // No constructor.
   private GraphConverter() {}
 
-  private static final class MyMutableGraphLayout
+  private static final class MyCMutableGraphLayout
     extends MutableGraphLayoutRepresentation
   {
     // Definiition of m_nodeTranslation:
@@ -37,7 +36,7 @@ public final class GraphConverter
     final double m_maxY;
     final double m_percentBorder;
 
-    private MyMutableGraphLayout(int numNodes,
+    private MyCMutableGraphLayout(int numNodes,
                                  int[] directedEdgeSourceNodeIndices,
                                  int[] directedEdgeTargetNodeIndices,
                                  int[] undirectedEdgeNode0Indices,
@@ -65,6 +64,82 @@ public final class GraphConverter
       m_maxY = maxY;
       m_percentBorder = percentBorder;
     }
+  }
+
+  private static class MyRMutableGraphLayout
+    implements MutableGraphLayout
+  {
+    // Definiition of m_nodeTranslation:
+    // m_nodeTranslation[i] defines, for node at index i in our
+    // GraphTopology object, the corresponding NodeView in Giny.
+    private final NodeView[] m_nodeTranslation;
+
+    // Definition of m_edgeTranslation:
+    // m_edgeTranslation[i] defines, for edge at index i in our
+    // GraphTopology object, the corresponding EdgeView's Edge in Giny.
+    private final Edge[] m_edgeTranslation;
+
+    // Definiton of m_nodeIndexTranslation:
+    // Both keys and values of this hashtable are java.lang.Integer objects.
+    // There are exactly m_nodeTranslation.length keys in this hashtable.
+    // Key-to-value mappings define index-of-node-in-Giny to
+    // index-of-node-in-GraphTopology mappings.  When I say
+    // "index-of-node-in-Giny", I mean giny.model.Node.getRootGraphIndex().
+    private final Hashtable m_nodeIndexTranslation;
+
+    private final double m_xOff;
+    private final double m_yOff;
+    private final double m_width;
+    private final double m_height;
+    private final boolean m_allMovable;
+
+    private MyRMutableGraphLayout(NodeView[] nodeTranslation,
+                                  Edge[] edgeTranslation,
+                                  Hashtable nodeIndexTranslation,
+                                  double minX, double maxX,
+                                  double minY, double maxY,
+                                  double percentBorder,
+                                  boolean allMovable)
+    {
+      m_nodeTranslation = nodeTranslation;
+      m_edgeTranslation = edgeTranslation;
+      m_nodeIndexTranslation = nodeIndexTranslation;
+      m_xOff = minX - ((maxX - minX) * percentBorder * 0.5d);
+      m_yOff = minY - ((maxY - minY) * percentBorder * 0.5d);
+      m_width = (maxX - minX) * (percentBorder + 1.0d);
+      m_height = (maxY - minY) * (percentBorder + 1.0d);
+      m_allMovable = allMovable;
+    }
+
+    public int getNumNodes() { return m_nodeTranslation.length; }
+    public int getNumEdges() { return m_edgeTranslation.length; }
+    public boolean isDirectedEdge(int edgeIndex) {
+      return m_edgeTranslation[edgeIndex].isDirected(); }
+    public int getEdgeNodeIndex(int edgeIndex, boolean sourceNode) {
+      Edge edge = m_edgeTranslation[edgeIndex];
+      int ginyNInx;
+      if (sourceNode) ginyNInx = edge.getSource().getRootGraphIndex();
+      else ginyNInx = edge.getTarget().getRootGraphIndex();
+      Object nativeNodeIndex =
+        m_nodeIndexTranslation.get(new Integer(ginyNInx));
+      return ((Integer) nativeNodeIndex).intValue(); }
+    public double getMaxWidth() { return m_width; }
+    public double getMaxHeight() { return m_height; }
+    public double getNodePosition(int nodeIndex, boolean xPosition) {
+      NodeView node = m_nodeTranslation[nodeIndex];
+      if (xPosition) return node.getXPosition() - m_xOff;
+      else return node.getYPosition() - m_yOff; }
+    public boolean isMovableNode(int nodeIndex) {
+      NodeView node = m_nodeTranslation[nodeIndex];
+      if (m_allMovable) return true;
+      else return node.isSelected(); }
+    public void setNodePosition(int nodeIndex, double xPos, double yPos) {
+      NodeView node = m_nodeTranslation[nodeIndex];
+      if (xPos < 0.0d || xPos > getMaxWidth())
+        throw new IllegalArgumentException("xPos is out of bounds");
+      if (yPos < 0.0d || yPos > getMaxHeight())
+        throw new IllegalArgumentException("yPos is out of bounds");
+      node.setOffset(xPos + m_xOff, yPos + m_xOff); }
   }
 
   /**
@@ -175,23 +250,23 @@ public final class GraphConverter
       undirectedEdgeTargetNodeIndices[i] = edge[1]; }
     final double[] nodeXPositions = new double[numNodesInTopology];
     final double[] nodeYPositions = new double[numNodesInTopology];
+    final double xOff = -minX + ((maxX - minX) * percentBorder * 0.5d);
+    final double yOff = -minY + ((maxY - minY) * percentBorder * 0.5d);
     for (int i = 0; i < numNodesInTopology; i++) {
-      nodeXPositions[i] = nodeTranslation[i].getXPosition() - minX +
-        ((maxX - minX) * percentBorder * 0.5d);
-      nodeYPositions[i] = nodeTranslation[i].getYPosition() - minY +
-        ((maxY - minY) * percentBorder * 0.5d); }
-    return new MyMutableGraphLayout(numNodesInTopology,
-                                    directedEdgeSourceNodeIndices,
-                                    directedEdgeTargetNodeIndices,
-                                    undirectedEdgeSourceNodeIndices,
-                                    undirectedEdgeTargetNodeIndices,
-                                    (maxX - minX) * (percentBorder + 1.0d),
-                                    (maxY - minY) * (percentBorder + 1.0d),
-                                    nodeXPositions,
-                                    nodeYPositions,
-                                    mobility,
-                                    nodeTranslation,
-                                    minX, maxX, minY, maxY, percentBorder);
+      nodeXPositions[i] = nodeTranslation[i].getXPosition() + xOff;
+      nodeYPositions[i] = nodeTranslation[i].getYPosition() + yOff; }
+    return new MyCMutableGraphLayout(numNodesInTopology,
+                                     directedEdgeSourceNodeIndices,
+                                     directedEdgeTargetNodeIndices,
+                                     undirectedEdgeSourceNodeIndices,
+                                     undirectedEdgeTargetNodeIndices,
+                                     (maxX - minX) * (percentBorder + 1.0d),
+                                     (maxY - minY) * (percentBorder + 1.0d),
+                                     nodeXPositions,
+                                     nodeYPositions,
+                                     mobility,
+                                     nodeTranslation,
+                                     minX, maxX, minY, maxY, percentBorder);
   }
 
   /**
@@ -205,10 +280,10 @@ public final class GraphConverter
    * @exception IllegalArgumentException if <code>layout</code> is not
    *   a value that was previously returned by <code>getGraphCopy()</code>.
    **/
-  public static void updateCytoscapeLayout(GraphLayout layout)
+  public static void updateCytoscapeLayout(MutableGraphLayout layout)
   {
-    MyMutableGraphLayout myLayout;
-    try { myLayout = (MyMutableGraphLayout) layout; }
+    MyCMutableGraphLayout myLayout;
+    try { myLayout = (MyCMutableGraphLayout) layout; }
     catch (RuntimeException e) {
       throw new IllegalArgumentException
         ("layout is not a previous return value of getGraphCopy()"); }
@@ -222,9 +297,87 @@ public final class GraphConverter
                                    layout.getNodePosition(i, false) + yOff);
   }
 
-  public static MutableGraphLayout getGraphReference()
+  /**
+   * Returns a representation of Cytoscape's current network view.
+   * Returns a <code>MutableGraphLayout</code>, which, when mutated,
+   * has a direct effect on the underlying Cytoscape network view.  You'd
+   * sure as heck better'd be using the returned object from the AWT event
+   * dispatch thread!  Better yet, lock the Cytoscape desktop somehow
+   * (with a modal dialog for example) while using this returned object.
+   * Movable nodes are defined to be selected nodes in Cytoscape - if no
+   * nodes are selected then all nodes are movable.  If selected node
+   * information changes while we have a reference to this return object,
+   * then the movability of corresponding node also changes.  This is one
+   * reason why it's important to &quot;lock&quot; the Cytoscape desktop
+   * while operating on this return object.
+   **/
+  public static MutableGraphLayout getGraphReference(double percentBorder)
   {
-    return null;
+    if (percentBorder < 0.0d)
+      throw new IllegalArgumentException("percentBorder < 0.0");
+
+    CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
+    final int numNodesInTopology = graphView.getNodeViewCount();
+    final int numEdgesInTopology = graphView.getEdgeViewCount();
+
+    // Definiition of nodeTranslation:
+    // nodeTranslation[i] defines, for node at index i in our
+    // GraphTopology object, the corresponding NodeView in Giny.
+    final NodeView[] nodeTranslation = new NodeView[numNodesInTopology];
+
+    // Definition of edgeTranslation:
+    // edgeTranslation[i] defines, for edge at index i in our
+    // GraphTopology object, the corresponding EdgeView's Edge in Giny.
+    final Edge[] edgeTranslation = new Edge[numEdgesInTopology];
+
+    // Definiton of nodeIndexTranslation:
+    // Both keys and values of this hashtable are java.lang.Integer objects.
+    // There are exactly numNodesInTopology keys in this hashtable.
+    // Key-to-value mappings define index-of-node-in-Giny to
+    // index-of-node-in-GraphTopology mappings.  When I say
+    // "index-of-node-in-Giny", I mean giny.model.Node.getRootGraphIndex().
+    final Hashtable nodeIndexTranslation = new Hashtable();
+
+    Iterator nodeIterator = graphView.getNodeViewsIterator();
+    int nodeIndex = 0;
+    double minX = Double.MAX_VALUE;
+    double maxX = Double.MIN_VALUE;
+    double minY = Double.MAX_VALUE;
+    double maxY = Double.MIN_VALUE;
+    final boolean noNodesSelected =
+      (graphView.getSelectedNodeIndices().length == 0);
+
+    while (nodeIterator.hasNext())
+    {
+      NodeView currentNodeView = (NodeView) nodeIterator.next();
+      nodeTranslation[nodeIndex] = currentNodeView;
+      if (nodeIndexTranslation.put
+          (new Integer(currentNodeView.getNode().getRootGraphIndex()),
+           new Integer(nodeIndex)) != null)
+        throw new IllegalStateException("Giny farted and someone lit a match");
+      minX = Math.min(minX, currentNodeView.getXPosition());
+      maxX = Math.max(maxX, currentNodeView.getXPosition());
+      minY = Math.min(minY, currentNodeView.getYPosition());
+      maxY = Math.max(maxY, currentNodeView.getYPosition());
+      nodeIndex++;
+    }
+    if (nodeIndex != numNodesInTopology)
+      throw new IllegalStateException("something smells really bad here");
+    Iterator edgeIterator = graphView.getEdgeViewsIterator();
+    int edgeIndex = 0;
+    while (edgeIterator.hasNext())
+    {
+      Edge currentEdge = ((EdgeView) edgeIterator.next()).getEdge();
+      edgeTranslation[edgeIndex] = currentEdge;
+      edgeIndex++;
+    }
+    if (edgeIndex != numEdgesInTopology)
+      throw new IllegalStateException("someone [did] cut the cheese here");
+    return new MyRMutableGraphLayout(nodeTranslation,
+                                     edgeTranslation,
+                                     nodeIndexTranslation,
+                                     minX, maxX, minY, maxY,
+                                     percentBorder, noNodesSelected);
   }
 
 }
