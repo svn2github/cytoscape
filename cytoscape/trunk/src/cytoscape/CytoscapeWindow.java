@@ -339,10 +339,23 @@ public void setCurrentDirectory(File dir) {
 public void setGraph (Graph2D graph) 
 {
   if (this.graph != null) {
-   this.graph.removeGraph2DSelectionListener(this);
-   if (undoManager != null)
-     this.graph.removeGraphListener(undoManager);
-   }
+    this.graph.removeGraph2DSelectionListener(this);
+    if (undoManager != null){
+      Iterator it = this.graph.getGraphListeners();
+      GraphListener graphL;
+      // Make sure the undoManager is in the list of graph 
+      // listeners for graph, otherwise we get NullPointerException if we try to remove it
+      // iliana 1.16.2003
+      while(it.hasNext()){
+        graphL = (GraphListener)it.next();
+        if(graphL == undoManager){
+          this.graph.removeGraphListener(undoManager);
+          break;
+        }
+      }
+      
+    }
+  }
 
   this.graph = graph;
   graph.addGraph2DSelectionListener(this);
@@ -365,7 +378,7 @@ public UndoableGraphHider getGraphHider ()
   return graphHider;
 }
 //------------------------------------------------------------------------------
-public void redrawGraph() {
+public void redrawGraph () {
   redrawGraph(false);
 }
 //------------------------------------------------------------------------------
@@ -1478,6 +1491,19 @@ public void applyLayout (boolean animated)
 {
   if (graph.getNodeArray().length == 0) return;
   
+  // added by iliana on 1.6.2003 (works with yFiles 2.01)
+  // Remove graph listeners: (including undoManager)
+  Iterator it = graph.getGraphListeners();
+  ArrayList gls = new ArrayList();
+  GraphListener gl;
+  while(it.hasNext()){
+    gl = (GraphListener)it.next();
+    gls.add(gl);
+  }
+  for(int i = 0; i < gls.size(); i++){
+    graph.removeGraphListener((GraphListener)gls.get(i));
+  }
+  
   logger.warning ("starting layout...");
   setInteractivity (false);
   //System.out.println("CytoscapeWindow: doLayout");
@@ -1491,6 +1517,10 @@ public void applyLayout (boolean animated)
   setInteractivity (true);
   logger.info (" done");
   
+  // Add back graph listeners:
+  for(int i = 0; i < gls.size(); i++){
+    graph.addGraphListener((GraphListener)gls.get(i));
+  }
 } // applyLayout
 
 
@@ -1690,16 +1720,19 @@ protected class HideEdgesAction extends AbstractAction   {
 */
 //------------------------------------------------------------------------------
 protected void hideSelectedNodes() {
-    Graph2D g = graphView.getGraph2D ();
-    NodeCursor nc = g.selectedNodes (); 
-    while (nc.ok ()) {
-        Node node = nc.node ();
-        graphHider.hide (node);
-        nc.next ();
-    }
-    redrawGraph ();
+  graphView.getGraph2D().firePreEvent();
+  Graph2D g = graphView.getGraph2D ();
+  NodeCursor nc = g.selectedNodes (); 
+  while (nc.ok ()) {
+    Node node = nc.node ();
+    graphHider.hide (node);
+    nc.next ();
+  }
+  redrawGraph ();
+  graphView.getGraph2D().firePostEvent();
 }
 protected void hideSelectedEdges() {
+    graphView.getGraph2D().firePreEvent();
     Graph2D g = graphView.getGraph2D ();
     EdgeCursor nc = g.selectedEdges (); 
     while (nc.ok ()) {
@@ -1708,6 +1741,7 @@ protected void hideSelectedEdges() {
         nc.next ();
     }
     redrawGraph ();
+    graphView.getGraph2D().firePostEvent();
 }
 protected class HideSelectedNodesAction extends AbstractAction   {
   HideSelectedNodesAction () { super ("Hide selection"); }
@@ -1770,38 +1804,28 @@ protected class DeleteSelectedAction extends AbstractAction   {
    
     Graph2D g = graphView.getGraph2D ();
     
-    // ------ iliana testing
-    // Removing listeners makes this incredibly fast
-    //Iterator it = g.getGraphListeners();
-    //ArrayList gls = new ArrayList();
-    //GraphListener gl;
-    //while(it.hasNext()){
-    //gl = (GraphListener)it.next();
-    //gls.add(gl);
-    //}
-    
-    //for(int i = 0; i < gls.size(); i++){
-    //g.removeGraphListener((GraphListener)gls.get(i));
-    //}
-    //-------- iliana testing ends
-    
     // added by dramage 2002-08-23
     g.firePreEvent();
     
     int nodeNum = 0;
     NodeCursor nc = g.selectedNodes (); 
+    Node node;
     while (nc.ok ()) {
-      Node node = nc.node ();
+      node = nc.node ();
       g.removeNode (node);
       nodeNum++;
-      System.out.println("Removed node " + nodeNum);
-      System.out.flush();
+      nodeAttributes.removeObjectMapping (node);
+      //System.out.println("Removed node " + nodeNum);
+      //System.out.flush();
       nc.next ();
       } // while
     EdgeCursor ec = g.selectedEdges ();
+    Edge edge;
     while (ec.ok ()) {
-      g.removeEdge (ec.edge ());
+      edge = ec.edge();
+      g.removeEdge (edge);
       ec.next ();
+      edgeAttributes.removeObjectMapping (edge);
       }
 
     // added by dramage 2002-08-23
@@ -2756,7 +2780,7 @@ protected class FitContentAction extends AbstractAction  {
    FitContentAction () { super (); }
     public void actionPerformed (ActionEvent e) {
       graphView.fitContent ();
-  redrawGraph ();
+      redrawGraph ();
       }
 }
 //------------------------------------------------------------------------------
@@ -2973,7 +2997,7 @@ protected class MenuFilterAction extends MainFilterDialogAction  {
 //---------------------------------------------------------------------------------------------------
 protected class EdgeManipulationAction extends AbstractAction {
   EdgeManipulationAction () {
-    super ("Select or hide by attibutes...");
+    super ("Select or hide by attributes...");
     }
   public void actionPerformed (ActionEvent e) {
     String [] edgeAttributeNames = edgeAttributes.getAttributeNames ();
