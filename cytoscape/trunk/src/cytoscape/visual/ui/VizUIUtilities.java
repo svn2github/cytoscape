@@ -57,6 +57,9 @@ public class VizUIUtilities {
 	case VizMapUI.NODE_LABEL:
 	    defaultObj = nodeCalc.getDefaultNodeLabel();
 	    break;
+        case VizMapUI.NODE_LABEL_COLOR:
+            defaultObj = nodeCalc.getDefaultNodeLabelColor();
+            break;
 	case VizMapUI.NODE_TOOLTIP:
 	    defaultObj = nodeCalc.getDefaultNodeToolTip();
 	    break;

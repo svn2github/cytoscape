@@ -516,6 +516,9 @@ public class VizMapAttrTab extends VizMapTab {
 	    else if (type == VizMapUI.NODE_LABEL) {
         calc = new GenericNodeLabelCalculator(calcName, mapper);
 	    }
+            else if (type == VizMapUI.NODE_LABEL_COLOR) {
+        calc = new GenericNodeLabelColorCalculator(calcName, mapper);
+            }
 	    else if (type == VizMapUI.NODE_TOOLTIP) {
         calc = new GenericNodeToolTipCalculator(calcName, mapper);
 	    }
@@ -733,6 +736,8 @@ public class VizMapAttrTab extends VizMapTab {
 	    return catalog.getNodeSizeCalculators();
     case VizMapUI.NODE_LABEL:
 	    return catalog.getNodeLabelCalculators();
+    case VizMapUI.NODE_LABEL_COLOR:
+            return catalog.getNodeLabelColorCalculators();
     case VizMapUI.NODE_TOOLTIP:
 	    return catalog.getNodeToolTipCalculators();
     case VizMapUI.EDGE_COLOR:
@@ -801,6 +806,8 @@ public class VizMapAttrTab extends VizMapTab {
 	    return "Node Font Face";
     case VizMapUI.NODE_LABEL_FONT:
 	    return "Node Font Size";
+    case VizMapUI.NODE_LABEL_COLOR:
+            return "Node Label Color";
     default:
 	    return null;
     }

@@ -35,6 +35,7 @@ public class NodeAppearanceCalculator implements Cloneable {
   String defaultNodeLabel = "";
   String defaultNodeToolTip = "";
   Font defaultNodeFont = new Font(null, Font.PLAIN, 12);
+  Color defaultNodeLabelColor = Color.black;
 
   // true if node width/height locked
   private boolean nodeSizeLocked = true;
@@ -48,6 +49,7 @@ public class NodeAppearanceCalculator implements Cloneable {
   public static final String nodeLabelBypass = "node.label";
   public static final String nodeToolTipBypass = "node.toolTip";
   public static final String nodeFontBypass = "node.font";
+  public static final String nodeLabelColorBypass = "node.labelColor";
 
   NodeColorCalculator nodeFillColorCalculator;
   NodeColorCalculator nodeBorderColorCalculator;
@@ -59,6 +61,7 @@ public class NodeAppearanceCalculator implements Cloneable {
   NodeToolTipCalculator nodeToolTipCalculator;
   NodeFontFaceCalculator nodeFontFaceCalculator;
   NodeFontSizeCalculator nodeFontSizeCalculator;
+  NodeLabelColorCalculator nodeLabelColorCalculator;
 
   /**
    * Make shallow copy of this object
@@ -148,6 +151,7 @@ public class NodeAppearanceCalculator implements Cloneable {
     appr.setLabel( calculateNodeLabel(node, network) );
     appr.setToolTip( calculateNodeToolTip(node, network) );
     appr.setFont( calculateNodeFont(node, network) );
+    appr.setLabelColor( calculateNodeLabelColor(node, network) );
     //set other node appearance attributes
   }
 
@@ -425,7 +429,30 @@ public class NodeAppearanceCalculator implements Cloneable {
     }
     return (f == null) ? defaultNodeFont : f;
   }
-    
+
+  public Color getDefaultNodeLabelColor() {return defaultNodeLabelColor;}
+  public void setDefaultNodeLabelColor(Color c) {
+    if (c != null) {defaultNodeLabelColor = c;}
+  }
+  public NodeLabelColorCalculator getNodeLabelColorCalculator() {return nodeLabelColorCalculator;}
+  public void setNodeLabelColorCalculator(NodeLabelColorCalculator c) {nodeLabelColorCalculator = c;}
+  public Color calculateNodeLabelColor(Node node, CyNetwork network) {
+    if (node == null || network == null) {return defaultNodeLabelColor;}
+    //look for a suitable value in a specific data attribute
+    GraphObjAttributes nodeAttributes = network.getNodeAttributes();
+    String name = nodeAttributes.getCanonicalName(node);
+    Object attrValue = nodeAttributes.getValue(nodeLabelColorBypass, name);
+    if (attrValue instanceof Color) {return (Color)attrValue;}
+    if (attrValue instanceof String) {
+      Color c = (new ColorParser()).parseColor((String)attrValue);
+      if (c != null) {return c;}
+    }
+    //try to get a value from the calculator
+    if (nodeLabelColorCalculator == null) {return defaultNodeLabelColor;}
+    Color c = nodeLabelColorCalculator.calculateNodeLabelColor(node, network);
+    return (c == null) ? defaultNodeLabelColor : c;
+  }
+
   /**
    * Returns a text description of the current default values and calculator
    * names.
@@ -457,6 +484,7 @@ public class NodeAppearanceCalculator implements Cloneable {
     sb.append("nodeToolTipCalculator = ").append(nodeToolTipCalculator).append(lineSep);
     sb.append("nodeFontFaceCalculator = ").append(nodeFontFaceCalculator).append(lineSep);
     sb.append("nodeFontSizeCalculator = ").append(nodeFontSizeCalculator).append(lineSep);
+    sb.append("nodeLabelColorCalculator = ").append(nodeLabelColorCalculator).append(lineSep);
     return sb.toString();
   }
 
@@ -586,6 +614,11 @@ public class NodeAppearanceCalculator implements Cloneable {
 	    NodeFontSizeCalculator c = catalog.getNodeFontSizeCalculator(value);
 	    if (c != null) {setNodeFontSizeCalculator(c);}
     }
+    value = nacProps.getProperty(baseKey + ".nodeLabelColorCalculator");
+    if (value != null && !value.equals("null")) {
+      NodeLabelColorCalculator c = catalog.getNodeLabelColorCalculator(value);
+      if (c != null) {setNodeLabelColorCalculator(c);}
+    }
   }
     
   public Properties getProperties(String baseKey) {
@@ -670,6 +703,10 @@ public class NodeAppearanceCalculator implements Cloneable {
     newProps.setProperty(key, value);
     key = baseKey + ".nodeFontSizeCalculator";
     c = getNodeFontSizeCalculator();
+    value = (c == null) ? "null" : c.toString();
+    newProps.setProperty(key, value);
+    key = baseKey + ".nodeLabelColorCalculator";
+    c = getNodeLabelColorCalculator();
     value = (c == null) ? "null" : c.toString();
     newProps.setProperty(key, value);
         

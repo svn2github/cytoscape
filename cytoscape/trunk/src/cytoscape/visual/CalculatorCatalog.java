@@ -33,6 +33,9 @@ public class CalculatorCatalog {
 
     Map nodeLabelCalculators = new HashMap();
     List nodeLabelListeners = new Vector(1, 1);
+
+    Map nodeLabelColorCalculators = new HashMap();
+    List nodeLabelColorListeners = new Vector(1, 1);
     
     Map nodeToolTipCalculators = new HashMap();
     List nodeToolTipListeners = new Vector(1, 1);
@@ -104,6 +107,8 @@ public class CalculatorCatalog {
                 return nodeSizeListeners;
             case VizMapUI.NODE_LABEL:
                 return nodeLabelListeners;
+            case VizMapUI.NODE_LABEL_COLOR:
+                return nodeLabelColorListeners;
 	    case VizMapUI.NODE_TOOLTIP:
                 return nodeToolTipListeners;
 	    case VizMapUI.NODE_FONT_FACE:
@@ -197,6 +202,8 @@ public class CalculatorCatalog {
             return VizMapUI.NODE_SIZE;
         } else if (c instanceof NodeLabelCalculator) {
             return VizMapUI.NODE_LABEL;
+        } else if (c instanceof NodeLabelColorCalculator) {
+            return VizMapUI.NODE_LABEL_COLOR;
         } else if (c instanceof NodeToolTipCalculator) {
             return VizMapUI.NODE_TOOLTIP;
         } else if (c instanceof NodeFontFaceCalculator) {
@@ -244,6 +251,8 @@ public class CalculatorCatalog {
                 return nodeSizeCalculators;
             case VizMapUI.NODE_LABEL:
                 return nodeLabelCalculators;
+            case VizMapUI.NODE_LABEL_COLOR:
+                return nodeLabelColorCalculators;
 	    case VizMapUI.NODE_TOOLTIP:
                 return nodeToolTipCalculators;
 	    case VizMapUI.NODE_FONT_FACE:
@@ -432,6 +441,10 @@ public class CalculatorCatalog {
 	if(nlc!=null && !nodeLabelCalculators.values().contains(nlc) ) {
             addNodeLabelCalculator(nlc);
         }
+        NodeLabelColorCalculator nlcc = c.getNodeLabelColorCalculator();
+        if (nlcc!=null && !nodeLabelColorCalculators.values().contains(nlcc) ) {
+            addNodeLabelColorCalculator(nlcc);
+        }
 	NodeToolTipCalculator nttc = c.getNodeToolTipCalculator();
 	if(nttc!=null && !nodeToolTipCalculators.values().contains(nttc) ) {
             addNodeToolTipCalculator(nttc);
@@ -577,6 +590,21 @@ public class CalculatorCatalog {
     }
     public String checkNodeLabelCalculatorName(String name) {
 	return checkName(name, nodeLabelCalculators);
+    }
+
+    public Collection getNodeLabelColorCalculators() {return nodeLabelColorCalculators.values();}
+    public void addNodeLabelColorCalculator(NodeLabelColorCalculator c)
+        throws DuplicateCalculatorNameException {
+        addCalculator(c, nodeLabelColorCalculators);
+    }
+    public NodeLabelColorCalculator removeNodeLabelColorCalculator(String name) {
+        return (NodeLabelColorCalculator)nodeLabelColorCalculators.remove(name);
+    }
+    public NodeLabelColorCalculator getNodeLabelColorCalculator(String name) {
+        return (NodeLabelColorCalculator)nodeLabelColorCalculators.get(name);
+    }
+    public String checkNodeLabelColorCalculatorName(String name) {
+        return checkName(name, nodeLabelColorCalculators);
     }
     
     public Collection getNodeToolTipCalculators() {return nodeToolTipCalculators.values();}

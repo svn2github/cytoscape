@@ -33,15 +33,16 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
   public static final byte NODE_SIZE = 4;
   public static final byte NODE_LABEL = 5;
   public static final byte NODE_LABEL_FONT = 6;
-  public static final byte EDGE_COLOR = 7;
-  public static final byte EDGE_LINETYPE = 8;
-  public static final byte EDGE_SRCARROW = 9;
-  public static final byte EDGE_TGTARROW = 10;
-  public static final byte EDGE_LABEL = 11;
-  public static final byte EDGE_LABEL_FONT = 12;
-  public static final byte NODE_TOOLTIP = 13;
-  public static final byte EDGE_TOOLTIP = 14;
-    
+  public static final byte NODE_LABEL_COLOR = 7;
+  public static final byte EDGE_COLOR = 8;
+  public static final byte EDGE_LINETYPE = 9;
+  public static final byte EDGE_SRCARROW = 10;
+  public static final byte EDGE_TGTARROW = 11;
+  public static final byte EDGE_LABEL = 12;
+  public static final byte EDGE_LABEL_FONT = 13;
+  public static final byte NODE_TOOLTIP = 14;
+  public static final byte EDGE_TOOLTIP = 15;
+
   // for creating VizMapTabs with font face/size on one page
   public static final byte NODE_FONT_FACE = 122;
   public static final byte NODE_FONT_SIZE = 123;
@@ -98,7 +99,7 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
     JTabbedPane edgePane = new JTabbedPane();
 	
     // add panes to tabbed panes
-    for (byte i = NODE_COLOR; i <= NODE_LABEL_FONT; i++) {
+    for (byte i = NODE_COLOR; i <= NODE_LABEL_COLOR; i++) {
 	    VizMapTab tab;
 	    if (i == NODE_SIZE)
         tab = new VizMapSizeTab(this, nodePane, i, VMM, i);
