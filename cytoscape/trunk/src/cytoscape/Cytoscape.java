@@ -16,8 +16,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.lang.reflect.InvocationTargetException;
 
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import javax.swing.event.SwingPropertyChangeSupport;
 
 import cytoscape.data.ExpressionData;
@@ -1132,7 +1133,7 @@ public abstract class Cytoscape {
       if (viewExists(network.getIdentifier())) {
           return getNetworkView(network.getIdentifier());
       }
-      CyNetworkView view = new PhoebeNetworkView(network, title);
+      final PhoebeNetworkView view = new PhoebeNetworkView(network, title);
       view.setIdentifier(network.getIdentifier());
       getNetworkViewMap().put(network.getIdentifier(), view);
       view.setTitle(network.getTitle());
@@ -1146,9 +1147,12 @@ public abstract class Cytoscape {
 
       //  Instead of calling fitContent(), access PGraphView directly.
       //  This enables us to disable animation.  Modified by Ethan Cerami.
-      PGraphView view2 = (PGraphView) Cytoscape.getCurrentNetworkView();
-      view2.getCanvas().getCamera().animateViewToCenterBounds
-              (view2.getCanvas().getLayer().getFullBounds(), true, 0);
+      SwingUtilities.invokeLater(new Runnable() {
+          public void run() {
+            view.getCanvas().getCamera().animateViewToCenterBounds
+                    (view.getCanvas().getLayer().getFullBounds(), true, 0);
+            }
+       });
       view.redrawGraph(false, false);
       return view;
   }
