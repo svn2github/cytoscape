@@ -1,0 +1,120 @@
+<?xml version="1.0"?>
+<!-- build.xml - Build file for Sample Cytoscape Plugin -->
+<project name="Cytoscape" default="jar" basedir=".">
+	
+	<!-- Name of Plug In -->
+	<!-- Change this to the name of your Plug In -->
+	<!-- The name is used to create the plugin JAR file -->
+	<property name="plugin.name" value="ComplexFinder"/>
+
+  	<!-- The directory containing source code -->
+  	<property name="src.dir" value="."/>
+
+	<!--  The directory containing library jar files -->	
+
+	<property name="local.lib.dir" value="lib"/>
+    <property name="cyto.dir" value="../../../../cytoscape"/>
+	<property name="lib.dir" value="${cyto.dir}/lib"/>
+    <property name="EdgeRandomization.dir" value="../EdgeRandomization"/>
+    <property name="Util.dir" value="../Util"/>
+
+  	<!-- Temporary build directories -->
+ 	<property name="build.dir" value="build"/>
+  	<property name="build.classes" value="${build.dir}/classes"/>
+        <property name="doc.dir" value="doc"/>
+	
+	<!-- Global "magic" property for <javac> -->
+	<property name="build.compiler" value="modern"/>
+	
+	<!-- Classpath with all lib JAR Files and all Cytoscape Core classes -->
+	<path id="classpath">
+		<pathelement path="${build.classes}"/>	
+        <fileset dir="${cyto.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+        <fileset dir="${lib.dir}">
+			<include name="**/*.jar"/>
+		</fileset>
+		<fileset dir="${local.lib.dir}">
+			<include name="**/*.jar"/>
+		</fileset>
+	</path>
+
+  	<!-- Target to create the build directories prior to compilation -->
+  	<target name="prepare">
+    		<mkdir dir="${build.dir}"/>
+    		<mkdir dir="${build.classes}"/>
+            <mkdir dir="${doc.dir}"/>
+  	        <mkdir dir="${local.lib.dir}"/>
+    </target>
+
+	<!--  Target to clean out all directories -->
+  	<target name="clean" description="Removes all generated files.">
+    		<delete dir="${build.dir}"/>
+		<delete dir="${doc.dir}"/>
+  	</target>
+
+	<path id="classpath_run">
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar"/>
+		</fileset>
+		<pathelement location="${cyto.dir}/cytoscape.jar"/>
+	</path>
+
+
+	<!-- Target to debug with socket debugger -->
+	<target name="test" depends="jar" description="Runs jar to debug">
+		<java classname="cytoscape.CyMain" classpathref="classpath_run" fork="true">
+			<arg line="--JLD build/Temp.jar"/>
+			<jvmarg value="-Xdebug"/>
+			<jvmarg value="-Xmx512m"/>
+			<jvmarg value="-Xnoagent"/>
+			<jvmarg value="-Djava.compiler=NONE"/>
+			<jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,suspend=n"/>
+		</java>
+	</target>
+	
+	<!-- Target to create Cytoscape Jar File  -->
+	<target name="build_cytoscape">
+		<ant antfile="${cyto.dir}/build.xml" inheritAll="false" target="jar"/>
+	</target>
+    <target name="build_EdgeRandomization">
+        <ant antfile="${EdgeRandomization.dir}/build.xml" inheritAll="false" target="jar"/>
+        <copy file="${EdgeRandomization.dir}/build/EdgeRandomization.jar" todir="${local.lib.dir}"/>
+    </target>
+    <target name="build_Util">
+        <ant antfile="${Util.dir}/build.xml" inheritAll="false" target="jar"/>
+        <copy file="${Util.dir}/build/Util.jar" todir="${local.lib.dir}"/>
+    </target>
+
+    <!-- Target to create the javadoc information -->
+    <target name="doc" depends="prepare">
+        <echo>${src.dir}</echo>
+        <javadoc destdir="${doc.dir}" Private="yes">
+            <fileset dir="${src.dir}" defaultexcludes="no"/>
+        </javadoc>
+    </target>
+
+        
+	<!--  Target to compile all Plug In Code -->
+  	<target name="compile" depends="prepare,build_cytoscape,build_EdgeRandomization,build_Util" 
+		description="Compiles all PlugIn source code.">
+		<javac debug="Yes" srcdir="${src.dir}" destdir="${build.classes}">
+			<classpath refid="classpath"/>
+		</javac>
+	</target>
+  	
+	<!--  Create PlugIn Jar File (Unobfuscated) -->
+   	<target name="jar" depends="compile" description="Creates PlugIn Jar File.">
+	   <unjar overwrite="Yes" dest="${build.classes}">
+	   	<fileset dir="${local.lib.dir}">
+			<include name="**/*.jar"/>
+		</fileset>
+	   </unjar>
+	   <jar destfile="${build.dir}/${plugin.name}.jar">
+			<fileset dir="${build.classes}"/>
+	   </jar>
+	   <echo message="${plugin.name}.jar is now complete.  It is located in build/ directory"/>
+	</target>
+
+</project>
