@@ -425,7 +425,11 @@ public void showWindow(int width, int height) {
 }
 
 public void showWindow() {
+    if (mainFrame.isShowing()) {
+        this.showWindow(mainFrame.getWidth(), mainFrame.getHeight());
+    } else {
 	this.showWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+    }
 }
 
 //------------------------------------------------------------------------------
