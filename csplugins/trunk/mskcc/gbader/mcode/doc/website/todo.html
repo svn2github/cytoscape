@@ -1,0 +1,105 @@
+<html>
+<head>
+<title>MCODE Plugin for Cytoscape -&gt; Developer</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body bgcolor="#FFFFFF" link="#0000FF" vlink="#0000FF" alink="#0000FF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<table width="100%" border="0" cellspacing="0" cellpadding="4">
+  <tr> 
+    <td rowspan="2" bgcolor="#666666"> <img src="Cluster.gif" name="image" width="100" height="95"></td>
+    <td width="100%" bgcolor="#666666"><font color="#FFFFFF">MCODE PlugIn for 
+      <a href="http://www.cytoscape.org">Cytoscape</a> -&gt; Developer</font></td>
+  </tr>
+  <tr> 
+    <td> <table width="100%" border="0" cellspacing="1" cellpadding="2">
+        <tr> 
+          <td width="20%" align="center" bordercolor="#0000FF" bgcolor="#CCCCCC"><a href="index.html">Home</a></td>
+          <td align="center" width="20%" bgcolor="#CCCCCC"><a href="screenshots.html">Screenshots 
+            </a></td>
+          <td align="center" width="20%" bgcolor="#CCCCCC"><a href="doc.html">Documentation</a></td>
+          <td align="center" width="20%" bgcolor="#CCCCCC"><a href="code.html">Source 
+            code </a></td>
+          <td align="center" width="20%" bgcolor="#CCCCCC"><a href="developer.html">Developer</a></td>
+        </tr>
+      </table>
+      <table width="20%" border="0" align="right">
+        <tr>
+          <td bgcolor="#CCCCCC"><div align="center"><a href="javadoc/index.html">JavaDoc</a></div></td>
+          <td bgcolor="#CCCCCC"><div align="center"><a href="todo.html"><strong>TODO</strong></a></div></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+<br>
+<table width="80%" border="0" cellspacing="4" cellpadding="2">
+  <tr> 
+    <td width="100%" align="left" rowspan="3">
+<b>Major TODO items</b><BR>
+<ol>
+<li>Implement directed mode.<P>
+	The user would use a slider bar to find a high scoring cluster around a node of interest.  Moving the slider bar
+to the right would expand the cluster, moving all the way to the left would reduce the cluster to the single node of interest.
+To find the complex from a given node, the neighborhood of selected node should be searched for a high scoring node and
+base complex on that high scoring node.  Need to be able to specify parameters on the fly.
+
+<LI>Analysis option to evaluate results using a statistical model, as done in the MCODE paper.
+
+<LI>"CLAST" feature to compare one set of complexes with another (in CASTA format) using various similarity measures
+e.g. Dice, Jaccard, original one from MCODE, etc.
+</ol>
+<P>
+<b>Minor TODO items</b><BR>
+<ol>
+<LI>Advanced options menu: Thread and progress bar for scoring and (finding+displaying) complexes
+
+<LI>Deal better with parameter changes
+<ul>
+<LI>If scoring parameters change, entire network must be rescored and find complexes must run again
+<LI>If only cluster finding parameters change, results dialog box must be recalculated (currently you must reload the network or
+use the advanced options to force this to happen)
+<LI>When user changes the parameters and runs MCODE again and selects to create a new view for the complex, the views should
+be labelled with the parameters that were used to find them (and possibly grouped under their own subnetwork).
+</ul>
+
+<LI>Feature to save and load parameters (low priority)
+
+<LI>Mark seed node by a node attribute that can be visualized (e.g. by node color)
+
+<LI>Option to color by score in the menu (global options, would also have a visual attribute for a seed node). User
+can do this now using visual styles, so this would be a convenience feature.
+
+<LI>Convenience feature to save all complexes as sif or GML files.
+
+<LI>Allow filter to filter by k-core - currently only filters by 2 core - k could be a parameter
+
+<LI>Allow different node scoring functions - currently only MCODE, could have just clustering coefficient
+
+<LI>Visualize functional information from GO - provide functional consistency score (number of functional terms/protein/complex)
+
+<LI>Convenience option to turn off tooltips and some warning messages e.g. can't select nodes b/c no view created (advanced user mode)
+</ol>
+<P>
+
+<b>Code Refactoring TODO items</b><BR>
+<ol>
+<LI>Have MCODE return Cluster objects and implement a Java network clustering framework where MCODE is only one
+network clustering algorithm. Others are e.g. MCL, spectral clustering, etc.  At least 6 papers have been published in the past
+year describing others.
+</OL>
+
+
+</td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table width="100%" border="0" cellspacing="0" cellpadding="2" bgcolor="#CCCCCC">
+  <tr> 
+    <td> ©2004 Memorial Sloan-Kettering Cancer Center</td>
+    <td align="right"><a href="http://cbio.mskcc.org">cBio</a> &#149; <a href="http://www.mskcc.org">MSKCC</a> 
+      &#149; <a href="http://cytoscape.org">Cytoscape</a> &#149; <a href="http://biopax.org">BioPAX</a> 
+      &#149; <a href="http://cbio.mskcc.org/%7Ebader">Bader</a></td>
+  </tr>
+</table>
+</body>
+</html>
+

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp
+  codebase="http://www.cbio.mskcc.org/~bader/software/mcode/javaws/"
+  href="http://www.cbio.mskcc.org/~bader/software/mcode/javaws/mcode.jnlp">
+  <information>
+    <title>Cytoscape (MCODE Plugin)</title>
+    <vendor>MSKCC</vendor>
+    <homepage href="http://www.cbio.mskcc.org/~bader/software/mcode/"/>
+    <offline-allowed/>
+  </information>
+  <security>
+    <all-permissions/>
+  </security>
+  <resources>
+    <j2se version="1.4+" max-heap-size="1024M"/>
+    <jar href="cytoscape2_0_Jul182004.jar"/>
+    <jar href="data.jar"/>
+  </resources>
+  <application-desc>
+    <argument>-p</argument>
+    <argument>jar://projectFile</argument>
+    <argument>--JLW</argument>
+    <argument>http://www.cbio.mskcc.org/~bader/software/mcode/javaws/mcode.jar</argument>
+  </application-desc>
+</jnlp>
