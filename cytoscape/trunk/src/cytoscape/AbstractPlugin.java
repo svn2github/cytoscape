@@ -14,6 +14,12 @@ package cytoscape;
  */
 public abstract class AbstractPlugin {
     /**
+     * this method's presence is superfluous;
+     * it is only here so that you don't have to
+     * call super(cytoscapeWindow) in your ctor.
+     */
+    public AbstractPlugin() { }
+    /**
      * required constructor for plugins takes a single
      * {@link cytoscape.CytoscapeWindow CytoscapeWindow} argument.
      */
