@@ -82,13 +82,12 @@ class FileCellEditor extends AbstractCellEditor
     //Implement the one CellEditor method that AbstractCellEditor doesn't.
     public Object getCellEditorValue() {
 	if (fileChooser.isMultiSelectionEnabled()==true){
-	    System.out.println("fileCellEditor returning files");
 	    return currentFiles;
 	}
 	else{
-	    System.out.println("fileCellEditor returning file");
 	    return currentFiles[0];
 	}
+
     }
 
     //Implement the one method defined by TableCellEditor.
@@ -123,7 +122,7 @@ class FileCellEditor extends AbstractCellEditor
 	    currentFiles[i]=(File)validFiles.elementAt(i);
 	}
 	
-	button.setText(value.toString());
+	button.setText("Choose file(s)...");
 	button.repaint();
 	System.out.println("about to return button");
         return button;

@@ -112,6 +112,8 @@ public abstract class PluginUtil  extends CytoscapePlugin implements GenericPlug
     public boolean runActionsFromCmdLine(HashMap actions){
 	String actionName;
 	String[] curArg;
+	boolean actionsRun=false;
+	boolean exitWhenFinished=false;
 	for (int i=0;i<cmdArgs.length;i++){
 	    if (cmdArgs[i].indexOf("--")==0){
 		curArg=cmdArgs[i].split(",");
@@ -121,18 +123,23 @@ public abstract class PluginUtil  extends CytoscapePlugin implements GenericPlug
 		    //assign cmdLineVars in curArg
 		    HashMap actionArgs=(HashMap)actions.get((Object)actionName);
 		    for (int j=1;j<curArg.length;j++){
-			if (!setValue(actionArgs,(String)actionArgs.get(curArg[j].split("=")[0]),curArg[j].split("=")[1])){
+			if (!setValue(actionArgs,curArg[j].split("=")[0],curArg[j].split("=")[1])){
 			    System.err.println("could not assign commandLine Argument "+curArg[j].split("=")[0]);
 			}
 		    }
 		    //Run the action
 		    Thread t = new PluginUtilThread(actionName,(HashMap)actions.get(actionName),this); 
 		    t.start();
+		    actionsRun=true;
 		    
 		}   
+		else{
+		    if (cmdArgs[i].equals("--exit")){exitWhenFinished=true;}
+		}
 	    }
 	}
-	return false;
+	if (exitWhenFinished){System.exit(0);}
+	return actionsRun;
     }
 
     public String usage(String actionName,HashMap args) {
@@ -236,6 +243,8 @@ public abstract class PluginUtil  extends CytoscapePlugin implements GenericPlug
 	final HashMap internalArgs=new HashMap(1);
 	internalArgs.put("processed",new Boolean(false));
 	JDialog uiDialog=new JDialog();
+	//required in order to stop this process until the dialog is finished
+	uiDialog.setModal(true);
 	internalArgs.put("uiDialog",uiDialog);
 	Container contentPane = uiDialog.getContentPane();
 	contentPane.setLayout(new BorderLayout());    
@@ -259,6 +268,7 @@ public abstract class PluginUtil  extends CytoscapePlugin implements GenericPlug
 		    JDialog uiDialog=(JDialog)internalArgs.get("uiDialog");
 		    PluginUITableModel uiArgs=(PluginUITableModel)internalArgs.get("uiArgs");
 		    uiDialog.dispose();
+		    //change the arguments in the HashMap to those from the TableModel
 		    args.clear();
 		    args.putAll(uiArgs.args);
 		    internalArgs.put("processed",new Boolean(true));
@@ -279,9 +289,9 @@ public abstract class PluginUtil  extends CytoscapePlugin implements GenericPlug
 	contentPane.add(centerPanel,BorderLayout.CENTER);
 	contentPane.add(southPanel,BorderLayout.SOUTH);
 System.out.println("about to pack");
+	this.uiDialog=uiDialog;
 	uiDialog.pack();
 System.out.println("packed");
-	this.uiDialog=uiDialog;
 	uiDialog.show();
 System.out.println("returning "+((Boolean)internalArgs.get("processed")).toString());
 	return ((Boolean)internalArgs.get("processed")).booleanValue();
