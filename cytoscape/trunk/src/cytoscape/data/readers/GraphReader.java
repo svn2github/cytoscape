@@ -39,6 +39,7 @@ import y.view.Graph2D;
 //-----------------------------------------------------------------------------
 public interface GraphReader {
     public void read();
+    public void read(boolean canonicalizeNodeNames);
     public Graph2D getGraph ();
     public GraphObjAttributes getEdgeAttributes ();
 }
