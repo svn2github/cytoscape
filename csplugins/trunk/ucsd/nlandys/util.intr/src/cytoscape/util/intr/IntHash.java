@@ -60,23 +60,25 @@ public final class IntHash
    * this hashtable; otherwise does nothing.  Returns the input value if this
    * value was already in this hashtable; returns -1 if the input value was
    * not in this hashtable prior to this call.<p>
-   * Only non-negative values can be passed to this method.
-   * Behavior is undefined if negative values are passed to put(int).<p>
    * Insertions into the hashtable are performed in [amortized] time
    * complexity O(1).
+   * @exception IllegalArgumentException if value is negative.
    */
   public final int put(final int value)
   {
     checkSize();
     int incr = 0;
     int index;
-    for (index = value % (((~value) >>> 31) * m_size);
-         m_arr[index] >= 0 && m_arr[index] != value;
-         index = (index + incr) % m_size) {
-      // Caching increment, which is an expensive operation, at the expense
-      // of having an if statement.  I don't want to compute the increment
-      // before this 'for' loop in case we get an immediate hit.
-      if (incr == 0) { incr = 1 + (value % (m_size - 1)); } }
+    try {
+      for (index = value % (((~value) >>> 31) * m_size);
+           m_arr[index] >= 0 && m_arr[index] != value;
+           index = (index + incr) % m_size) {
+        // Caching increment, which is an expensive operation, at the expense
+        // of having an if statement.  I don't want to compute the increment
+        // before this 'for' loop in case we get an immediate hit.
+        if (incr == 0) { incr = 1 + (value % (m_size - 1)); } } }
+    catch (ArithmeticException exc) {
+      throw new IllegalArgumentException("value is negative"); }
     final int returnVal = m_arr[index];
     m_arr[index] = value;
     m_elements += (returnVal >>> 31);
@@ -87,23 +89,24 @@ public final class IntHash
    * Determines whether or not the value specified is in this hashtable.
    * Returns the value specified if this value is in the hashtable, otherwise
    * returns -1.<p>
-   * It is an error to pass negative values to this method.  Passing
-   * negative values to this method will result in undefined behavior of
-   * this hashtable.<p>
    * Searches in this hashtable are performed in [amortized] time
    * complexity O(1).
+   * @exception IllegalArgumentException if value is negative.
    */
   public final int get(final int value)
   {
     int incr = 0;
     int index;
-    for (index = value % (((~value) >>> 31) * m_size);
-         m_arr[index] >= 0 && m_arr[index] != value;
-         index = (index + incr) % m_size) {
-      // Caching increment, which is an expensive operation, at the expense
-      // of having an if statement.  I don't want to compute the increment
-      // before this 'for' loop in case we get an immediate hit.
-      if (incr == 0) { incr = 1 + (value % (m_size - 1)); } }
+    try {
+      for (index = value % (((~value) >>> 31) * m_size);
+           m_arr[index] >= 0 && m_arr[index] != value;
+           index = (index + incr) % m_size) {
+        // Caching increment, which is an expensive operation, at the expense
+        // of having an if statement.  I don't want to compute the increment
+        // before this 'for' loop in case we get an immediate hit.
+        if (incr == 0) { incr = 1 + (value % (m_size - 1)); } } }
+    catch (ArithmeticException exc) {
+      throw new IllegalArgumentException("value is negative"); }
     return m_arr[index];
   }
 
@@ -116,7 +119,7 @@ public final class IntHash
    * one method will not invalidate this enumeration: the get(int) method.
    * The returned enumerator has absolutely no effect on the underlying
    * hashtable.<p>
-   * This method returns a value in constant time.  The returned enumerator
+   * This method returns in constant time.  The returned enumerator
    * returns successive elements in [amortized] time complexity O(1).
    */
   public final IntEnumerator elements()
