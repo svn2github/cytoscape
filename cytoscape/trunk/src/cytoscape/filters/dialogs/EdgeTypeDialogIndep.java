@@ -59,6 +59,12 @@ public class EdgeTypeDialogIndep extends JDialog {
 	JButton selectButton = new JButton("Select");
 	actionButtonsPanel.add(selectButton);
 	selectButton.addActionListener(new SelectAction());
+	JButton invertButton = new JButton("Invert Selection");
+	actionButtonsPanel.add(invertButton);
+	invertButton.addActionListener(new InvertAction());
+	JButton hideButton = new JButton("Hide Selection");
+	actionButtonsPanel.add(hideButton);
+	hideButton.addActionListener(new HideAction());
 	JButton dismissButton = new JButton("Dismiss");
 	actionButtonsPanel.add(dismissButton);
 	dismissButton.addActionListener(new DismissAction());
@@ -98,6 +104,32 @@ public class EdgeTypeDialogIndep extends JDialog {
 		f.select();
 	    }
 	    client.redrawGraph();
+	}
+    }
+
+    public class InvertAction extends AbstractAction {
+	public void actionPerformed (ActionEvent e) {
+	    Edge [] edges = graph.getEdgeArray();
+	
+	    for (int i=0; i < edges.length; i++) {
+		EdgeRealizer edgeRealizer = graph.getRealizer(edges [i]);
+		edgeRealizer.setSelected (!edgeRealizer.isSelected());
+	    }
+
+	    client.redrawGraph ();
+	    
+	}
+    }
+
+    public class HideAction extends AbstractAction {
+	public void actionPerformed (ActionEvent e) {
+	    EdgeCursor edges = graph.selectedEdges(); 
+	    while (edges.ok()) {
+		graphHider.hide (edges.edge());
+		edges.next();
+	    }
+
+	    client.redrawGraph ();
 	}
     }
 }
