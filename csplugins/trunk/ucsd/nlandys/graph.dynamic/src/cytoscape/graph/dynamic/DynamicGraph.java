@@ -121,7 +121,7 @@ public interface DynamicGraph
    * @param node the node in this graph whose adjacent edges we're seeking.
    * @param undirected all undirected edges touching the specified node
    *   are included in the returned enumeration if this value is true;
-   *   otherwise, not a single undirected edge is included in the returned
+   *   otherwise, not a single such edge is included in the returned
    *   enumeration.
    * @param incoming all directed edges whose target is the node specified
    *   are included in the returned enumeration if this value is true;
