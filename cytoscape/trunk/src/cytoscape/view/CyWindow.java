@@ -188,8 +188,8 @@ protected void doInit(CytoscapeObj globalInstance, CyNetwork network, String tit
 	    //@@@@@@ what to do with graph modes in giny?
 	    System.out.println ( "Using giny library, initializing" ) ;
 	    initialize();
-	    //setInitialLayouter(); //@@@@@@@ to add for giny
-	    //attachGraphListeners(); //@@@@@@@ to add for giny?
+	    attachGraphViewListener();
+	    
     }
 	   
     //add a listener to save the visual mapping catalog on exit
@@ -253,11 +253,11 @@ protected void initializeWidgets() {
 */
 protected void initialize() {
 	GraphPerspective gp = network.getGraphPerspective();
+	setLayout( new BorderLayout() );  
 	if (gp != null) {
 		updateGraphView();
 		//applyLayout(); do not layout by the default, too slow
 		fitGraphView();
-		
 	}
 	else
 	{
@@ -272,7 +272,7 @@ protected void initialize() {
 	///*setLayout( new BorderLayout() );
 	this.infoLabel = new JLabel();
     add(infoLabel, BorderLayout.SOUTH);
-    
+    updateStatusLabel(null);
     this.mainFrame = new JFrame(windowTitle);
     
     mainFrame.setContentPane(this);
@@ -293,17 +293,17 @@ protected void initialize() {
 * initialize the Graph View 
 */
 protected void updateGraphView() {
-	
+	Component oldDisplay = null;
 	 if (display != null) {
-		    remove(display);
+		   oldDisplay = display;
 	    }
 	
 	GraphPerspective gp = network.getGraphPerspective();
 	
 	view = new PGraphView(network.getGraphPerspective());
 	display = view.getComponent();
-	setLayout( new BorderLayout() );  
 	add( display, BorderLayout.CENTER);
+	view.setBackgroundPaint(Color.YELLOW);
 	
 	java.util.List nodes = view.getNodeViewsList();
 	    for ( Iterator i= nodes.iterator(); i.hasNext();)
@@ -331,9 +331,10 @@ protected void updateGraphView() {
 	    }
 	    // add context menues
 	    addViewContextMenues();
-	    view.setBackgroundPaint(Color.YELLOW);
 	    view.fitContent();
-	    view.updateView(); 
+	    view.updateView();
+	    if (oldDisplay != null)
+		    this.remove(oldDisplay);
 }
 
 /**
@@ -467,6 +468,17 @@ protected void attachGraphListeners() {
         undoManager = new EmptyUndoManager(cyMenus, theGraph);
     }
     graphHider = new UndoableGraphHider(theGraph, undoManager);
+}
+
+//------------------------------------------------------------------------------
+/**
+ * Adds this object as a GraphViewChangeListener to the graph view, 
+ */
+protected void attachGraphViewListener() {
+    if (getNetwork() == null || getView() == null) {return;}
+    getNetwork().addCyNetworkListener(this);
+    System.out.println( " Attaching itself as a GraphViewListener" );
+    view.addGraphViewChangeListener(this);
 }
 //-----------------------------------------------------------------------------
 /**
@@ -767,15 +779,20 @@ public void setNewNetwork( CyNetwork newNetwork ) {
 	    setInteractivity(true);
     }
     else {
+	    //setInteractivity(false);
 	    //using giny update the view
+	    if (view != null)
+		    view.removeGraphViewChangeListener(this);
 	    this.network = newNetwork;
-	    //this.setVisible(false);
+	   
 	    updateGraphView();
+	    attachGraphViewListener();
 	    //applyLayout();
 	    fitGraphView();
 	    add(cyMenus.getToolBar(), BorderLayout.NORTH);
 	    
 	    showWindow();
+	     //setInteractivity(true);
 	   
     }
 }
@@ -1089,8 +1106,12 @@ public void onGraph2DSelectionEvent(y.view.Graph2DSelectionEvent e) {
 * @param event
 */
 public void graphViewChanged ( GraphViewChangeEvent event)
+
 {
+	System.out.println( " graphViewChanged(Event) called in CyWindow");
+	updateStatusLabel(event);
 }
+
 //--------------------------------------------------------------------------------
 /**
  * Equivalent to updateStatusText(0,0).
@@ -1113,6 +1134,7 @@ public void updateStatusText() {
  * when selections occur. -AM 2003-06-30
  */
 public void updateStatusText(int nodeAdjust, int edgeAdjust) {
+   		
     Graph2D theGraph = graphView.getGraph2D();
     int nodeCount = theGraph.nodeCount();
     int selectedNodes = theGraph.selectedNodes().size() + nodeAdjust;
@@ -1123,6 +1145,66 @@ public void updateStatusText(int nodeAdjust, int edgeAdjust) {
                       + " ("+selectedNodes+" selected)"
                       + " Edges: " + edgeCount
                       + " ("+selectedEdges+" selected)");
+}
+
+//------------------------------------------------------------------------------
+/**
+ * Resets the info label status bar text with the current number of
+ * nodes, edges, selected nodes, and selected edges.
+ *
+
+ */
+public void updateStatusLabel(GraphViewChangeEvent event) {
+	
+	if (view == null || event == null) { infoLabel.setText("  Nodes: " + 0
+                      + " ("+0+" selected)"
+		      + " ("+0 + " hidden)"  
+                      + " Edges: " + 0
+                      + " ("+0+" selected)"
+		      + " (" +0+ " hidden)");
+		return; }
+		
+	int type = event.getType();
+	int nodeCount = view.nodeCount();
+	int edgeCount = view.edgeCount();
+	int selectedNodes = event.getSelectedNodes().length;
+	int selectedEdges = event.getSelectedEdges().length;
+	
+	int hiddenNodes = event.getHiddenNodes().length;
+	int hiddenEdges = event.getHiddenEdges().length;
+   		
+    switch (type) {
+	case GraphViewChangeEvent.EDGES_SELECTED_TYPE :
+	case GraphViewChangeEvent.EDGES_UNSELECTED_TYPE :
+	case GraphViewChangeEvent.NODES_SELECTED_TYPE :
+	case GraphViewChangeEvent.NODES_UNSELECTED_TYPE :
+		
+		break;
+	case GraphViewChangeEvent.NODES_RESTORED_TYPE :
+	case GraphViewChangeEvent.EDGES_RESTORED_TYPE :
+	case GraphViewChangeEvent.EDGES_HIDDEN_TYPE :
+	case GraphViewChangeEvent.NODES_HIDDEN_TYPE :
+		
+		break;
+	default:
+		break;
+	}
+
+    	System.out.println ( " Updating statusBar " + "  Nodes: " + nodeCount
+                      + " ("+selectedNodes+" selected)"
+		      + " ("+hiddenNodes + " hidden)"  
+                      + " Edges: " + edgeCount
+                      + " ("+selectedEdges+" selected)"
+		      + " (" +hiddenEdges+ " hidden)");
+		      
+		      
+	infoLabel.setText("  Nodes: " + nodeCount
+                      + " ("+selectedNodes+" selected)"
+		      + " ("+hiddenNodes + " hidden)"  
+                      + " Edges: " + edgeCount
+                      + " ("+selectedEdges+" selected)"
+		      + " (" +hiddenEdges+ " hidden)");
+ 
 }
 //------------------------------------------------------------------------------
 /**
