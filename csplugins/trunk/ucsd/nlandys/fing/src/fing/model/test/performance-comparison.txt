@@ -227,10 +227,9 @@ CONNECTING WEB TEST:
     4000 nodes,   20000 edges           |   1150 |  68611 |
     8000 nodes,   20000 edges           |   1250 | 304403 |
    16000 nodes,   20000 edges           |   1700 |1419768 |
-   39999 nodes,   39999 edges           |        |    n/a |
-   16000 nodes,  100000 edges           |        |   FAIL |
-   50000 nodes,  400000 edges           |        |   FAIL |
-  100000 nodes, 1000000 edges           |        |   FAIL |
+   16000 nodes,  100000 edges           |   7012 |   FAIL |
+   50000 nodes,  400000 edges           |  29665 |   FAIL |
+  100000 nodes, 1000000 edges           |  80313 |   FAIL |
   --------------------------------------+--------+--------+
 
   Afterthoughts:
