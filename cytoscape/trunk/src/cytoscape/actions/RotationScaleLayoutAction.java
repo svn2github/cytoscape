@@ -64,6 +64,7 @@ public class RotationScaleLayoutAction extends CytoscapeAction
     rotSlider.addChangeListener(new ChangeListener() {
         private int prevValue = rotSlider.getValue();
         public void stateChanged(ChangeEvent e) {
+          if (rotSlider.getValue() == prevValue) return;
           double radians = ((double) (rotSlider.getValue() - prevValue)) *
             2.0d * Math.PI / 360.0d;
           rotation[0].rotateGraph(radians);
@@ -96,6 +97,7 @@ public class RotationScaleLayoutAction extends CytoscapeAction
     sclSlider.addChangeListener(new ChangeListener() {
         private int prevValue = sclSlider.getValue();
         public void stateChanged(ChangeEvent e) {
+          if (prevValue == sclSlider.getValue()) return;
           double prevAbsoluteScaleFactor =
             Math.pow(2, ((double) prevValue) / 100.0d);
           double currentAbsoluteScaleFactor =
