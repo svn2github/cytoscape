@@ -51,6 +51,7 @@ import cytoscape.dialogs.*;
 import cytoscape.layout.*;
 import cytoscape.vizmap.*;
 import cytoscape.view.*;
+import cytoscape.undo.*;
 import cytoscape.util.MutableString;
 import cytoscape.util.MutableBool;
 
@@ -66,8 +67,6 @@ public class CytoscapeWindow extends JPanel implements FilterDialogClient, Graph
 
   protected static final int DEFAULT_WIDTH = 700;
   protected static final int DEFAULT_HEIGHT = 700;
-
-  protected CytoscapeWindow thisWindow;
 
   protected cytoscape parentApp;
   protected Graph2D graph;
@@ -88,6 +87,7 @@ public class CytoscapeWindow extends JPanel implements FilterDialogClient, Graph
   protected Layouter layouter;
 
   protected Graph2DView graphView;
+
   protected ViewMode editGraphMode  = new EditGraphMode ();
   protected ViewMode readOnlyGraphMode = new ReadOnlyGraphMode ();
   protected ViewMode currentGraphMode = readOnlyGraphMode;
@@ -108,6 +108,10 @@ public class CytoscapeWindow extends JPanel implements FilterDialogClient, Graph
 
   protected final String goModeMenuLabel = "Show GeneOntology Info";
   protected final String expressionModeMenuLabel = "Show mRNA Expression";
+
+    // added by dramage 2002-08-21
+    protected CytoscapeUndoManager undoManager;
+    protected JMenuItem undoMenuItem, redoMenuItem;
 
 
   // protected VizChooser theVizChooser = new VizChooser();
@@ -138,9 +142,6 @@ public CytoscapeWindow (cytoscape parentApp,
                         boolean doFreshLayout)
    throws Exception
 {
-    // save the window pointer so it is accessible to nested subclasses
-    thisWindow = this;
-
   this.parentApp = parentApp;
   this.logger = logger;
   // do not set graph yet - set it using setGraph() function below
@@ -182,12 +183,12 @@ public CytoscapeWindow (cytoscape parentApp,
   mainFrame.setVisible (true);
   mainFrame.addWindowListener (parentApp);
 
+
   // load plugins last, after the main window is setup, since they
   // will often need access to all of the parts of a fully
   // instantiated CytoscapeWindow
 
   loadPlugins();
-
 } // ctor
 //------------------------------------------------------------------------------
 /**
@@ -255,6 +256,16 @@ public void windowStateChanged (WindowEvent e)
 public CytoscapeConfig getConfiguration() {
     return config;
 }
+
+/**
+ * Returns the window's current UndoManager.
+ *
+ * added by dramage 2002-08-22
+ */
+public CytoscapeUndoManager getUndoManager() {
+    return undoManager;
+}
+
 //------------------------------------------------------------------------------
 public Graph2D getGraph ()
 {  
@@ -276,13 +287,24 @@ public void setCurrentDirectory(File dir) {
 //------------------------------------------------------------------------------
 public void setGraph (Graph2D graph) {
     // remove old selection listener - dramage 2002.08.16
-    if (graph != null)
-	graph.removeGraph2DSelectionListener(this);
+    if (this.graph != null) {
+	this.graph.removeGraph2DSelectionListener(this);
+
+	// remove UndoManager as graph listener if necessary
+	if (undoManager != null)
+	    this.graph.removeGraphListener(undoManager);
+    }
 
     this.graph = graph;
 
     // register the window as a selection listener - dramage 2002.08.16
     graph.addGraph2DSelectionListener(this);
+
+    // create a new UndoManager for this graph
+    undoManager = new CytoscapeUndoManager(this, graph);
+    graph.addGraphListener(undoManager);
+    updateUndoRedoMenuItemStatus();
+    
     setLayouterAndGraphView();
 }
 //-----------------------------------------------------------------------------
@@ -690,7 +712,11 @@ public void setInteractivity (boolean newState)
       viewModesInstalled = true;
       }
     graphView.setViewCursor (defaultCursor);
-    setCursor (defaultCursor); 
+    setCursor (defaultCursor);
+
+    // accept new undo entries - added by dramage 2002-08-23
+    if (undoManager != null)
+	undoManager.resume();
     }
   else {  // turn interactivity OFF
     if (viewModesInstalled) {
@@ -700,6 +726,10 @@ public void setInteractivity (boolean newState)
       }
     graphView.setViewCursor (busyCursor);
     setCursor (busyCursor);
+
+    // deny new undo entries - added by dramage 2002-08-23
+    if (undoManager != null)
+	undoManager.pause();
     }
 
 } // setInteractivity
@@ -737,6 +767,12 @@ protected JMenuBar createMenuBar ()
 
   JMenu editMenu = new JMenu ("Edit");
   menuBar.add (editMenu);
+  // added by dramage 2002-08-21
+  undoMenuItem = editMenu.add (new UndoAction ());
+  undoMenuItem.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_Z, ActionEvent.CTRL_MASK));
+  redoMenuItem = editMenu.add (new RedoAction ());
+  redoMenuItem.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_Y, ActionEvent.CTRL_MASK));
+  editMenu.addSeparator();
 
   ButtonGroup modeGroup = new ButtonGroup ();
   JRadioButtonMenuItem readOnlyModeButton = new JRadioButtonMenuItem ("Read-only mode");
@@ -1423,6 +1459,10 @@ protected class DeleteSelectedAction extends AbstractAction   {
 
   public void actionPerformed (ActionEvent e) {
     Graph2D g = graphView.getGraph2D ();
+
+    // added by dramage 2002-08-23
+    g.firePreEvent();
+    
     NodeCursor nc = g.selectedNodes (); 
     while (nc.ok ()) {
       Node node = nc.node ();
@@ -1434,6 +1474,11 @@ protected class DeleteSelectedAction extends AbstractAction   {
       g.removeEdge (ec.edge ());
       ec.next ();
       }
+
+    // added by dramage 2002-08-23
+    g.firePostEvent();
+
+    
     redrawGraph ();
     } // actionPerformed
   
@@ -1444,8 +1489,11 @@ protected class LayoutAction extends AbstractAction   {
   LayoutAction () { super ("Layout whole graph"); }
     
   public void actionPerformed (ActionEvent e) {
-    applyLayout (false);
-    redrawGraph ();
+      undoManager.saveRealizerState();
+      undoManager.pause();
+      applyLayout (false);
+      undoManager.resume();
+      redrawGraph ();
     }
 }
 
@@ -1454,7 +1502,10 @@ protected class LayoutSelectionAction extends AbstractAction {
     LayoutSelectionAction () { super ("Layout current selection"); }
 
   public void actionPerformed (ActionEvent e) {
+      undoManager.saveRealizerState();
+      undoManager.pause();
       applyLayoutSelection ();
+      undoManager.resume();
       redrawGraph ();
     }
 }
@@ -1524,6 +1575,9 @@ protected class AlignHorizontalAction extends AbstractAction {
     AlignHorizontalAction () { super ("Horizontal"); }
 
     public void actionPerformed (ActionEvent e) {
+	// remember state for undo - dramage 2002-08-22
+	undoManager.saveRealizerState();
+	undoManager.pause();
 
 	// compute average Y coordinate
 	double avgYcoord=0;
@@ -1543,6 +1597,10 @@ protected class AlignHorizontalAction extends AbstractAction {
 	    if (graph.isSelected(n))
 		graph.setLocation(n, graph.getX(n), avgYcoord);
 	}
+
+	// resume undo manager's listener - dramage
+	undoManager.resume();
+
 	redrawGraph();
     }
 }
@@ -1551,6 +1609,9 @@ protected class AlignVerticalAction extends AbstractAction {
     AlignVerticalAction () { super ("Vertical"); }
 
     public void actionPerformed (ActionEvent e) {
+	// remember state for undo - dramage 2002-08-22
+	undoManager.saveRealizerState();
+	undoManager.pause();
 
 	// compute average X coordinate
 	double avgXcoord=0;
@@ -1570,6 +1631,10 @@ protected class AlignVerticalAction extends AbstractAction {
 	    if (graph.isSelected(n))
 		graph.setLocation(n, avgXcoord, graph.getY(n));
 	}
+
+
+	// resume undo manager's listener - dramage
+	undoManager.resume();
 	redrawGraph();
     }
 }
@@ -1583,9 +1648,12 @@ protected class RotateSelectedNodesAction extends AbstractAction {
     RotateSelectedNodesAction () { super ("Rotate Selected Nodes"); }
 
     public void actionPerformed (ActionEvent e) {
+	undoManager.saveRealizerState();
+	undoManager.pause();
 	RotateSelectionDialog d = new RotateSelectionDialog(mainFrame,
-							    thisWindow,
+							 CytoscapeWindow.this,
 							    graph);
+	undoManager.resume();
     }
 }
 
@@ -1763,6 +1831,51 @@ protected class DeselectAllAction extends AbstractAction   {
     deselectAllNodes ();
     }
 }
+
+/**
+ * Updates the undoMenuItem and redoMenuItem enabled status depending
+ * on the number of available undo and redo actions
+ *
+ * added by dramage 2002-08-21
+ */
+public void updateUndoRedoMenuItemStatus () {
+    undoMenuItem.setEnabled(undoManager.undoLength() > 0 ? true : false);
+    redoMenuItem.setEnabled(undoManager.redoLength() > 0 ? true : false);
+}
+
+/**
+ * Uses the UndoManager to undo changes.
+ *
+ * added by dramage 2002-08-21
+ */
+protected class UndoAction extends AbstractAction {
+    UndoAction () { super ("Undo"); }
+    
+    public void actionPerformed(ActionEvent e) {
+	undoManager.undo();
+	updateUndoRedoMenuItemStatus();
+	redrawGraph();
+    }
+}
+
+/**
+ * Uses the UndoManager to redo changes.
+ *
+ * added by dramage 2002-08-21
+ */
+protected class RedoAction extends AbstractAction {
+    RedoAction () { super ("Redo"); }
+
+    public void actionPerformed(ActionEvent e) {
+	undoManager.redo();
+	updateUndoRedoMenuItemStatus();
+	redrawGraph();
+    }
+}
+
+
+
+
 //------------------------------------------------------------------------------
 protected class ReadOnlyModeAction extends AbstractAction   {
   ReadOnlyModeAction () { super ("Read only Mode"); }
@@ -2250,7 +2363,8 @@ protected class LoadBioDataServerAction extends AbstractAction {
 protected class DeleteSelectionAction extends AbstractAction {
   DeleteSelectionAction () { super ("Delete Selection"); }
   public void actionPerformed (ActionEvent e) {
-    graphView.getGraph2D ().removeSelection ();
+      graphView.getGraph2D ().removeSelection ();
+
   redrawGraph ();
     }
   }
@@ -2429,16 +2543,29 @@ protected class NodeAttributesPopupMode extends PopupMode {
     dialog.setVisible (true);
     return null;
     }
-    
+
     /**
      * Returns an Edge Popup dialog for getting edge properties.
      *
      * added by dramage 2002-08-23
      */
-    public JPopupMenu getEdgePopup (Edge e) {
-	EdgePopupMenu epm = new EdgePopupMenu(CytoscapeWindow.this, e);
-	return epm;
+    public JPopupMenu getEdgePopup (Edge edge) {
+	//EdgePopupMenu epm = new EdgePopupMenu(CytoscapeWindow.this, edge);
+	//return epm;
+
+	String name = graph.getLabelText(edge);
+	if (name.length() == 0)
+	    name = edgeAttributes.getCanonicalName(edge);
+	    
+	JDialog dialog = new EdgeAttributesPopupDetails
+	    (mainFrame, name, edgeAttributes);
+
+	dialog.pack();
+	dialog.setLocationRelativeTo(mainFrame);
+	dialog.setVisible(true);
+	return null;
     }
+    
     
   public JPopupMenu getPaperPopup (double x, double y) {
     return null;
