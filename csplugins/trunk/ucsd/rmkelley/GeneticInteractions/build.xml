@@ -84,7 +84,7 @@
 	
 	<target name="test" depends="jar" description="Runs jar to debug">
 		<java classname="cytoscape.cytoscape" classpathref="classpath_run" fork="true">
-			<arg line="-n testData/ryan.attr -i testData/ryan.sif --JLD build/${plugin.name}.jar --GImin 1 --GImax 4 --GIdebug"/>
+			<arg line="-n testData/ryan-bait.attr -i testData/ryan.sif --JLD build/${plugin.name}.jar --GIdebug"/>
 			<jvmarg value="-Xdebug"/>
 			<jvmarg value="-Xnoagent"/>
 			<jvmarg value="-Djava.compiler=NONE"/>
@@ -93,8 +93,8 @@
 	</target>
 	
 	<target name="run" depends="jar" description="Runs jar">
-		<java classname="cytoscape.cytoscape" classpathref="classpath_run" fork="true">
-			<arg line="-n testData/lethal.attr -i testData/current.sif --JLD build/${plugin.name}.jar --GImin 3 --GImax 4 --GIthreads 2"/>
+		<java classname="cytoscape.CyMain" classpathref="classpath_run" fork="true">
+			<arg line="-i testData/current.sif -n testData/current-bait.attr --JLD build/GeneticInteractions.jar"/>
 			<jvmarg value="-Xmx1024m"/>
 		</java>
 	</target>

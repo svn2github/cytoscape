@@ -49,7 +49,23 @@ public class NodePairMap{
     }
     return true;
   }
-  public int getCount(Node one, Node two){
+
+  public void remove(Node one, Node two){
+    if (!isGreater(one,two)) {
+      Node temp = one;
+      one = two;
+      two = one;
+    } // end of if ()
+    HashMap node2Object = (HashMap)node2HashMap.get(one);
+    if (node2Object == null) {
+      return;
+    } // end of if ()
+    else {
+      node2Object.remove(two);
+    } // end of else
+  }
+  
+  public Object get(Node one, Node two){
     //figure out the order in which we want to access the hash
     //first look at the hashCode, since that should be pretty quick
     if(!isGreater(one,two)){
@@ -57,32 +73,26 @@ public class NodePairMap{
       one = two;
       two = temp;
     }
-    HashMap node2Int = (HashMap)node2HashMap.get(one);
-    if(node2Int == null){
-      return 0;
+    HashMap node2Object = (HashMap)node2HashMap.get(one);
+    if(node2Object == null){
+      return null;
     }
     else{
-      Integer count = (Integer)node2Int.get(two);
-      if(count == null){
-	return 0;
-      }
-      else{
-	return count.intValue();
-      }
+      return node2Object.get(two);
     }
   }
 
-  public void setCount(Node one, Node two,int count){
+  public void put(Node one, Node two,Object value){
     if(!isGreater(one,two)){
       Node temp = one;
       one = two;
       two = temp;
     }
-    HashMap node2Int = (HashMap)node2HashMap.get(one);
-    if(node2Int == null){
-      node2Int = new HashMap();
-      node2HashMap.put(one,node2Int);
+    HashMap node2Object = (HashMap)node2HashMap.get(one);
+    if(node2Object == null){
+      node2Object = new HashMap();
+      node2HashMap.put(one,node2Object);
     }
-    node2Int.put(two,new Integer(count));	
+    node2Object.put(two,value);	
   }
 }

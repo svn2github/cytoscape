@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.Iterator;
+import java.util.Collection;
 
 //GINY import statements
 import giny.model.Node;
@@ -20,7 +21,7 @@ public class NodePairSet{
     node2NodeSet = new HashMap();
   }
 
-  public NodePairSet(Set edgeSet){
+  public NodePairSet(Collection edgeSet){
     node2NodeSet = new HashMap();
     for (Iterator edgeIt = edgeSet.iterator();edgeIt.hasNext();) {
       Edge current = (Edge)edgeIt.next();
@@ -28,6 +29,21 @@ public class NodePairSet{
     } // end of for ()
     
   }
+
+  public void remove(Node one,Node two){
+    if(!isGreater(one,two)){
+      Node temp = one;
+      one = two;
+      two = temp;
+    }
+    HashSet nodeSet = (HashSet)node2NodeSet.get(one);
+    if (nodeSet == null) {
+      return;
+    } // end of if ()
+    else {
+      nodeSet.remove(two);
+    } // end of if ()
+  } // end of else
 
   public void add(Node one,Node two){
     if(!isGreater(one,two)){
