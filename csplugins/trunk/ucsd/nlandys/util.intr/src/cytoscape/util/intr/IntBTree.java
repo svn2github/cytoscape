@@ -9,7 +9,7 @@ public final class IntBTree
   // This quantity must be at least 3.
   // The author prefers that this quantity be odd because that way nodes
   // are split evenly when they get full.
-  // 45 or so seems to be the optimal value.
+  // 45 or so seems to be the optimal value for very large trees.
   private final static int MAX_BRANCHES = 45;
 
   private Node m_root;
@@ -172,22 +172,19 @@ public final class IntBTree
    *   overflowBuff: | 6 | 6 | 8 | 9 | / | / | / |
    *                 +---+---+---+---+---+---+---+
    */
-  private final void split(int newVal, int[] origBuff,
-                           int[] overflowBuff, int overflowCount)
+  private final void split(final int newVal, final int[] origBuff,
+                           final int[] overflowBuff, final int overflowCount)
   {
     int[] currentArr = overflowBuff;
     int currentInx = overflowCount;
     boolean found = false;
     for (int i = origBuff.length - 1; i >= 0; i--) {
       if ((!found) && (newVal >= origBuff[i])) {
-        currentArr[--currentInx] = newVal;
-        found = true;
-        if (currentArr == origBuff) break;
-        i++; }
+        currentArr[--currentInx] = newVal; found = true;
+        if (currentArr == origBuff) break; i++; }
       else { currentArr[--currentInx] = origBuff[i]; }
       if (currentInx == 0) {
-        if (found) break;
-        currentArr = origBuff;
+        if (found) break; currentArr = origBuff;
         currentInx = origBuff.length - overflowCount + 1; } }
     if (!found) currentArr[0] = newVal;
   }
@@ -234,21 +231,19 @@ public final class IntBTree
    *   every other node would entail specifying newInx as -1, which is not
    *   allowed.
    */
-  private final void split(Node newNode, int newInx, Node[] origNodes,
-                           Node[] overflowNodes, int overflowCount)
+  private final void split(Node newNode, final int newInx,
+                           final Node[] origNodes, final Node[] overflowNodes,
+                           final int overflowCount)
   {
     Node[] currentNodes = overflowNodes;
     int currentInx = overflowCount;
     for (int i = origNodes.length - 1; i >= 0; i--) {
       if ((newNode != null) && (i == newInx)) {
-        currentNodes[--currentInx] = newNode;
-        newNode = null;
-        if (currentNodes == origNodes) break;
-        i++; }
+        currentNodes[--currentInx] = newNode; newNode = null;
+        if (currentNodes == origNodes) break; i++; }
       else { currentNodes[--currentInx] = origNodes[i]; }
       if (currentInx == 0) {
-        if (newNode == null) break;
-        currentNodes = origNodes;
+        if (newNode == null) break; currentNodes = origNodes;
         currentInx = origNodes.length - overflowCount + 1; } }
     for (int i = origNodes.length - overflowCount + 1;
          i < origNodes.length; i++)
