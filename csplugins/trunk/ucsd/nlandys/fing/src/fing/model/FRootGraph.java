@@ -160,7 +160,8 @@ class FRootGraph implements RootGraph
       m_nodes.setNodeAtIndex(null, positiveNodeIndex);
       m_nodeDepot.recycleNode(garbage);
       return nodeInx; }
-    else return 0;
+    else throw new IllegalStateException("cannot remove node " + nodeInx +
+                                         " from underlying graph");
   }
 
   // This method has been marked deprecated in the Giny API.
@@ -237,6 +238,17 @@ class FRootGraph implements RootGraph
 
   public int removeEdge(int edgeInx)
   {
+    final int returnThis = _removeEdge(edgeInx);
+    if (returnThis != 0) {
+      final RootGraphChangeListener listener = m_lis;
+      if (listener != null)
+        listener.rootGraphChanged
+          (new RootGraphEdgesRemovedEvent(this, new int[] { returnThis })); }
+    return returnThis;
+  }
+
+  private int _removeEdge(int edgeInx)
+  {
     final int positiveEdgeIndex = ~edgeInx;
     try {
       if (m_graph.removeEdge(positiveEdgeIndex)) {
@@ -257,9 +269,19 @@ class FRootGraph implements RootGraph
     return returnThis; }
 
   public int[] removeEdges(int[] edgeIndices) {
+    m_heap.empty();
+    final MinIntHeap successes = m_heap;
     final int[] returnThis = new int[edgeIndices.length];
-    for (int i = 0; i < edgeIndices.length; i++)
-      returnThis[i] = removeEdge(edgeIndices[i]);
+    for (int i = 0; i < edgeIndices.length; i++) {
+      returnThis[i] = _removeEdge(edgeIndices[i]);
+      if (returnThis[i] != 0) successes.toss(returnThis[i]); }
+    if (successes.size() > 0) {
+      final RootGraphChangeListener listener = m_lis;
+      if (listener != null) {
+        final int[] successArr = new int[successes.size()];
+        successes.copyInto(successArr, 0);
+        listener.rootGraphChanged
+          (new RootGraphEdgesRemovedEvent(this, successArr)); } }
     return returnThis; }
 
   public int createEdge(Node source, Node target) {
