@@ -222,9 +222,15 @@ class FRootGraph implements RootGraph
         returnThis.add(nodes.get(i));
     return returnThis; }
 
+  private final MinIntHeap m_heap_removeNodes = new MinIntHeap();
+
   public int[] removeNodes(int[] nodeIndices) {
-    // Can't use m_heap because it's being used at each _removeNode(int).
-    final MinIntHeap successes = new MinIntHeap();
+    // Assume that m_lis is not null, because in practice, this will
+    // almost always be the case (GraphPerspective listening).
+    // Can't use m_heap because it's being used at each _removeNode(int)
+    // when edges are removed.
+    m_heap_removeNodes.empty();
+    final MinIntHeap successes = m_heap_removeNodes;
     final Node[] removedNodes = new Node[nodeIndices.length];
     final int[] returnThis = new int[nodeIndices.length];
     for (int i = 0; i < nodeIndices.length; i++) {
@@ -234,11 +240,15 @@ class FRootGraph implements RootGraph
     if (successes.size() > 0) {
       final RootGraphChangeListener listener = m_lis;
       if (listener != null) {
-        final Node[] successArr = new Node[successes.size()];
-        final IntEnumerator enum = successes.elements();
-        int index = -1;
-        while (enum.numRemaining() > 0)
-          successArr[++index] = removedNodes[enum.nextInt()];
+        final Node[] successArr;
+        if (successes.size() == removedNodes.length) {
+          successArr = removedNodes; }
+        else {
+          successArr = new Node[successes.size()];
+          final IntEnumerator enum = successes.elements();
+          int index = -1;
+          while (enum.numRemaining() > 0)
+            successArr[++index] = removedNodes[enum.nextInt()]; }
         listener.rootGraphChanged
           (new RootGraphNodesRemovedEvent(this, successArr)); } }
     return returnThis; }
