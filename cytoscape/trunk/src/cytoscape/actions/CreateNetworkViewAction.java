@@ -41,13 +41,13 @@ public class CreateNetworkViewAction extends CytoscapeAction {
                     + "Do you wish to proceed?", "Rendering Large Network",
                     JOptionPane.YES_NO_OPTION);
             if (n == JOptionPane.YES_OPTION) {
-                Cytoscape.createNetworkView(Cytoscape.getCurrentNetwork());
+                Cytoscape.createNetworkView(cyNetwork);
             } else {
                 JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
                         "Create View Request Cancelled by User.");
             }
         } else {
-            Cytoscape.createNetworkView(Cytoscape.getCurrentNetwork());            
+            Cytoscape.createNetworkView(cyNetwork);            
         }
     }
 }
