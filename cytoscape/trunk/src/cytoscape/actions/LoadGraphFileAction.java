@@ -18,6 +18,7 @@ import cytoscape.data.Semantics;
 import cytoscape.view.NetworkView;
 import cytoscape.util.CyFileFilter;
 import cytoscape.actions.CheckBoxFileChooser;
+import cytoscape.data.readers.GMLReader;
 
 //-------------------------------------------------------------------------
 public class LoadGraphFileAction extends AbstractAction {
@@ -32,7 +33,7 @@ public class LoadGraphFileAction extends AbstractAction {
         CytoscapeObj cytoscapeObj = networkView.getCytoscapeObj();
         File currentDirectory = networkView.getCytoscapeObj().getCurrentDirectory();
         //JFileChooser chooser = new JFileChooser(currentDirectory);
-        JFileChooser chooser = new CheckBoxFileChooser(currentDirectory, "append graph? (not implemented yet)");
+        JFileChooser chooser = new CheckBoxFileChooser(currentDirectory, "append graph? (not implemented)");
 	boolean appendFlag = false;
         //chooser.setApproveButtonText("TEST TEXT");
         CyFileFilter intFilter   = new CyFileFilter();
@@ -63,9 +64,12 @@ public class LoadGraphFileAction extends AbstractAction {
             boolean canonicalize = Semantics.getCanonicalize(cytoscapeObj);
             String  species = Semantics.getDefaultSpecies( networkView.getNetwork(), cytoscapeObj );
 
-	    if( name.endsWith("gml") || name.endsWith("GML") )
+	    if( name.endsWith("gml") || name.endsWith("GML") ) {
+		//newNetwork = CyNetworkFactory.createNetworkFromGraphReader(reader, false);
+		//if (newNetwork != null) { newNetwork.setNeedsLayout(false); } // NEED THIS??
 		newNetwork = CyNetworkFactory.createNetworkFromGMLFile( name );
-	    else
+	    }
+ 	    else
 		newNetwork =
 		    CyNetworkFactory.createNetworkFromInteractionsFile( name, 
 									canonicalize,
@@ -78,6 +82,11 @@ public class LoadGraphFileAction extends AbstractAction {
                 //we copy the new network into the existing one, replacing the graph
                 networkView.getNetwork().setNewGraphFrom(newNetwork, false);
                 networkView.setWindowTitle(name);
+
+		if( name.endsWith("gml") || name.endsWith("GML") ) {
+		    GMLReader reader = new GMLReader(name);
+		    reader.layoutByGML(networkView.getView(), newNetwork);
+		}
              } else {//give the user an error dialog
                 String lineSep = System.getProperty("line.separator");
                 StringBuffer sb = new StringBuffer();
