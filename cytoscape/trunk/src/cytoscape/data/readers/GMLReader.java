@@ -123,20 +123,24 @@ public class GMLReader implements GraphReader {
     //Hashtable nodeHash = new Hashtable ();
     Hashtable gmlId2GINYId = new Hashtable();
     String nodeName, interactionType;
-    Cytoscape.getRootGraph().createNodes(nodeIds.size());
+    int[] new_nodes = Cytoscape.getRootGraph().createNodes(nodeIds.size());
   
     //System.out.println( "GML: "+nodeIds.size()+" nodes created"+ " RG: "+Cytoscape.getRootGraph().nodesList().size() );
     
 
     //for(int i=0; i<nodeIds.size(); i++) {
-    for (Iterator nodeIt = Cytoscape.getRootGraph().nodesIterator(),idIt = nodeIds.iterator();nodeIt.hasNext();) {
-      //nodeName = (String) nodeNameMap.get(nodeIds.get(i));
+    //for (Iterator nodeIt = Cytoscape.getRootGraph().nodesIterator(),idIt = nodeIds.iterator();nodeIt.hasNext();) {
+    Iterator idIt = nodeIds.iterator();
+    for ( int i = 0; i < new_nodes.length; ++i ) {
+
+    //nodeName = (String) nodeNameMap.get(nodeIds.get(i));
       Integer gmlId = (Integer)idIt.next();
       nodeName = (String)nodeNameMap.get(gmlId);
       //if(canonicalize) nodeName = canonicalizeName(nodeName);	      
       //if (!nodeHash.containsKey(nodeName)) {
       //Node node = Cytoscape.getRootGraph().getNode(Cytoscape.getRootGraph().createNode());
-      Node node = (Node)nodeIt.next();
+      //Node node = (Node)nodeIt.next();
+      Node node = Cytoscape.getRootGraph().getNode( new_nodes[i] );
       nodes.add( node.getRootGraphIndex() );
       node.setIdentifier(nodeName);
       //nodeHash.put(nodeName, node);
@@ -198,7 +202,11 @@ public class GMLReader implements GraphReader {
     }
 
     edge_indices_array = Cytoscape.getRootGraph().createEdges(sources,targets,false);
-    for ( Iterator edgeIt = Cytoscape.getRootGraph().edgesList().iterator(),sourceIt = edgeSources.iterator(),targetIt = edgeTargets.iterator(),labelIt = edgeLabels.iterator();edgeIt.hasNext();) {
+    Iterator sourceIt = edgeSources.iterator();
+    Iterator labelIt = edgeLabels.iterator();
+    Iterator targetIt = edgeTargets.iterator();
+    for ( int i = 0; i < edge_indices_array.length; ++i ) {
+    //for ( Iterator edgeIt = Cytoscape.getRootGraph().edgesList().iterator(),sourceIt = edgeSources.iterator(),targetIt = edgeTargets.iterator(),labelIt = edgeLabels.iterator();edgeIt.hasNext();) {
 
       interactionType = (String)labelIt.next();
       String edgeName = ""+nodeNameMap.get(sourceIt.next())+" ("+interactionType+") "+nodeNameMap.get(targetIt.next());
@@ -207,7 +215,8 @@ public class GMLReader implements GraphReader {
 	edgeName = edgeName + "_" + previousMatchingEntries;
       }
       Cytoscape.getEdgeNetworkData().add("interaction", edgeName, interactionType);
-      Cytoscape.getEdgeNetworkData().addNameMapping(edgeName, edgeIt.next());
+      //Cytoscape.getEdgeNetworkData().addNameMapping(edgeName, edgeIt.next());
+      Cytoscape.getEdgeNetworkData().addNameMapping(edgeName, Cytoscape.getRootGraph().getEdge( edge_indices_array[i] ) );
     } // end of for ()
     
   } // read
