@@ -42,8 +42,9 @@ public class ActiveModulesUI extends CytoscapePlugin {
     //cytoscapeWindow.getCyMenus().getOperationsMenu().add ( new RandomizeAndRunAction () );
 
     /* check for command line arguments to run right away */
-    String[] args = Cytoscape.getCytoscapeObj().getConfiguration().getArgs();
-    ActivePathsCommandLineParser parser = new ActivePathsCommandLineParser(args);
+    //String[] args = Cytoscape.getCytoscapeObj().getConfiguration().getArgs();
+    String [] args = CytoscapeInit.getArgs();
+				ActivePathsCommandLineParser parser = new ActivePathsCommandLineParser(args);
     apfParams = parser.getActivePathFinderParameters();
     if (parser.shouldRunActivePaths()) {
       activePaths = new ActivePaths(Cytoscape.getCurrentNetwork(),apfParams);
@@ -88,13 +89,18 @@ public class ActiveModulesUI extends CytoscapePlugin {
     
     FindActivePathsAction () { super ("Active Modules: Find Modules"); }
 	
-    public void actionPerformed (ActionEvent e) {
-      activePaths = new ActivePaths(Cytoscape.getCurrentNetwork(),apfParams);  
-      Thread t = new Thread(activePaths);
-      t.start();
-    } 
+    public void actionPerformed (ActionEvent ae) {
+      try{
+	activePaths = new ActivePaths(Cytoscape.getCurrentNetwork(),apfParams);  
+	Thread t = new Thread(activePaths);
+	t.start();
+      }
+      catch(Exception e){
+	JOptionPane.showMessageDialog(Cytoscape.getDesktop(), e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+      }
+    }
   } 
-    
+     
   /**
    * This action will generate a score for the currently selected
    * nodes in the view

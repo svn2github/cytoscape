@@ -50,8 +50,8 @@ public class GreedySearchThread extends Thread{
    */
   HashSet withinMaxDepth;    
   Node [] nodes;
-  GraphPerspective graph;
-  public GreedySearchThread(GraphPerspective graph, int md, int sd, List nodeList,MyProgressMonitor tpm, HashMap temp_hash, Node[] node_array){
+ GraphPerspective graph;
+  public GreedySearchThread(GraphPerspective graph, int md, int sd, Collection nodeList,MyProgressMonitor tpm, HashMap temp_hash, Node[] node_array){
     max_depth = md-1;
     search_depth = sd-1;
     this.nodeIterator = nodeList.iterator();

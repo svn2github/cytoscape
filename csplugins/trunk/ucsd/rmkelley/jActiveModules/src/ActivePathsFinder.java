@@ -109,7 +109,7 @@ public class ActivePathsFinder{
     System.out.println("Done initializing Z Table");
 	
     nodes = new Node[1];
-    nodes = (Node [])(perspective.getRootGraph().nodesList().toArray(nodes));	
+    nodes = (Node [])(perspective.nodesList().toArray(nodes));	
 
     //Edge [] e_array;
     //This has is used to store all the edges that were connected
@@ -302,10 +302,15 @@ public class ActivePathsFinder{
    * search iteratively using each node of the graph as a starting point
    */
   private void runGreedySearch(){
-    runGreedySearch(cyNetwork.getGraphPerspective().nodesList());
+    if(apfParams.getSearchFromNodes()){
+      runGreedySearch(cyNetwork.getFlaggedNodes());
+    }
+    else{
+      runGreedySearch(cyNetwork.nodesList());
+    }
   }
 
-  private void runGreedySearch(List seedList){
+  private void runGreedySearch(Collection seedList){
     //initialize global best score
     node2BestComponent = new HashMap();
 	

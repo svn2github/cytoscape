@@ -56,6 +56,9 @@ public class ActivePaths implements ActivePathViewer, Runnable {
   {
     this.apfParams = apfParams;
     expressionData = cyNetwork.getExpressionData ();
+    if(expressionData == null){
+      throw new RuntimeException("No expression data loaded");
+    }
     attrNames = expressionData.getConditionNames ();
     Arrays.sort(attrNames);
     menubar = Cytoscape.getDesktop().getCyMenus().getMenuBar ();

@@ -60,7 +60,7 @@
 
         
 	<!--  Target to compile all Plug In Code -->
-  	<target name="compile" depends="prepare, build_cytoscape" 
+  	<target name="compile" depends="prepare" 
 		description="Compiles all PlugIn source code.">
                 <javac debug="Yes" srcdir="${src.dir}" destdir="${build.classes}">
 			<classpath refid="classpath"/>
