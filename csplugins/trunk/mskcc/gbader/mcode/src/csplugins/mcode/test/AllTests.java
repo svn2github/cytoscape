@@ -1,13 +1,13 @@
-package csplugins.mcode.test;
+package org.mskcc.csplugins.PDIDDyNet.test;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
+ * Copyright (c) 2005 Memorial Sloan-Kettering Cancer Center
  * *
  * * Code written by: Gary Bader
- * * Authors: Gary Bader, Ethan Cerami, Chris Sander
+ * * Authors: Gary Bader, Chris Sander
  * *
  * * This library is free software; you can redistribute it and/or modify it
  * * under the terms of the GNU Lesser General Public License as published
@@ -36,22 +36,22 @@ import junit.framework.TestSuite;
  * * User: Gary Bader
  * * Date: Jul 9, 2004
  * * Time: 1:46:16 PM
- * * Description: The test suite for MCODE
+ * * Description: The test suite for PDIDDyNet
  */
 
 /**
- * The main test suite for MCODE
+ * The main test suite for PDIDDyNet
  */
 public class AllTests {
 
     /**
-     * The main test suite for MCODE
+     * The main test suite for PDIDDyNet
      */
     public static Test suite() {
 
         TestSuite suite = new TestSuite();
-        suite.addTestSuite(MCODETest.class);
-        suite.setName("MCODE Tests");
+        suite.addTestSuite(ProteinDatabaseSearchTest.class);
+        suite.setName("PDIDDyNet Tests");
 
         return suite;
     }
