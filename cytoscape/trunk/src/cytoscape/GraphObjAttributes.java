@@ -567,8 +567,16 @@ public Object [] getUniqueValues (String attributeName)
   Object [] allValues = (Object []) hash.values().toArray (new Object [0]);
   Vector nonredundantList = new Vector ();
   for (int i=0; i < allValues.length; i++)
-    if (!nonredundantList.contains (allValues [i]))
-      nonredundantList.add (allValues [i]);
+    if (allValues [i].getClass() == (nonredundantList.getClass ())) {
+       Object [] allValuesI = (Object []) ((Vector) allValues [i]).toArray (new Object [0]);
+       for (int j=0; j < allValuesI.length; j++)
+         if (!nonredundantList.contains (allValuesI [j]))
+           nonredundantList.add (allValuesI [j]);
+         }
+    else { // allValues [i] is -not- a Vector
+      if (!nonredundantList.contains (allValues [i]))
+        nonredundantList.add (allValues [i]);
+      }
 
   return (Object []) nonredundantList.toArray (new Object [0]);
 
