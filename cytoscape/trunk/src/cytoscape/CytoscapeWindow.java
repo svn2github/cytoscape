@@ -98,7 +98,12 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
-//-----------------------------------------------------------------------------------
+
+/**
+ *  CytoscapeWindow is the <b>main class</b> for the application cytoscape.
+ *  Plugin writers need only use public functions of CytoscapeWindow to
+ *  gain access to the cytoscape data structures.
+ */
 public class CytoscapeWindow extends JPanel implements FilterDialogClient, Graph2DSelectionListener {
 
   protected static final int DEFAULT_WIDTH = 700;
