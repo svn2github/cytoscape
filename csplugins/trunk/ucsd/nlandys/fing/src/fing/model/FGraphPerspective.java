@@ -1,6 +1,7 @@
 package fing.model;
 
 import giny.model.GraphPerspective;
+import giny.model.GraphPerspectiveChangeEvent;
 import giny.model.GraphPerspectiveChangeListener;
 
 // Package visible class.
