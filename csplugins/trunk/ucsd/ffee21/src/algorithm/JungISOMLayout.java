@@ -4,9 +4,8 @@
 
 package	csplugins.layout.Jung;
 
-import java.util.Iterator;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
+import java.lang.Integer;
 
 import cern.colt.matrix.DoubleMatrix1D;
 import cern.colt.matrix.impl.DenseDoubleMatrix1D;
@@ -17,13 +16,19 @@ import cytoscape.*;
 import cytoscape.view.*;
 import cytoscape.util.*;
 import cytoscape.layout.*;
+
 import giny.view.*;
+import giny.view.GraphView;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+
+import java.awt.Dimension;
 
 public class JungISOMLayout extends AbstractLayout {  
 	private	int maxEpoch;
 	private	int epoch;
+	private int timeFactor;
 
 	private	int radiusConstantTime;
 	private	int radius;
@@ -48,6 +53,24 @@ public class JungISOMLayout extends AbstractLayout {
 	private	double globalX,	globalY;
 	private	double currentNetworkViewSizeX,	currentNetworkViewSizeY;
 
+	
+	private int largeVSSmallCriterion; // if NodeNumber exceeds this number, it's large group.
+	
+	private double scaleFactor;
+	private double largeGPX, largeGPY,
+	       	       smallGPX, smallGPY;
+	private double largeGPXInterval, largeGPSpacePerNode,
+	               smallGPXInterval, smallGPSpace,
+	               largeSmallInterval;
+	
+        private int[] nodeID;		// the array of the nodeID
+	private int[] nodeGP;		// the array of the group_Number which the node belonged
+	private int[] num_inGP;		// the array of the number_of_elements_in_the_group along the group_number
+
+	private int groupID;
+
+	private double[][] boundaries;
+	
 	public JungISOMLayout (	CyNetworkView view ) {
 		super( view );
 		nodeIndexToDataMap = new OpenIntObjectHashMap( PrimeFinder.nextPrime( view.getNodeViewCount() )	);
@@ -65,24 +88,6 @@ public class JungISOMLayout extends AbstractLayout {
 		CytoscapeProgressMonitor monitor = new CytoscapeProgressMonitor( this, Cytoscape.getDesktop() );
 		monitor.startMonitor( true );
 		
-		System.out.println( "Done with monitor in ISOM"	);
-	}
-
-	/**
-	 * Initializer,	calls <tt>intialize_local</tt> and
-	 * <tt>initializeLocations</tt>	to start construction
-	 * process.
-	 */
-	public void initialize () {
-		double node_count = ( double )network.getNodeCount();
-		node_count = Math.sqrt(	node_count );
-		// now we know how many	nodes on a side
-		// give	each node 100 room
-		node_count *= 100;
-		currentSize = new Dimension( (int)node_count, (int)node_count );
-
-		initialize_local();
-		initializeLocations();
 	}
 
 	/**
@@ -92,10 +97,9 @@ public class JungISOMLayout extends AbstractLayout {
 		String dialog;
 		done = false;
 
-		radiusConstantTime = 100;
-		radius = floor( Math.sqrt( ( double )network.getNodeCount() ) );
+		radiusConstantTime = 140;
+		radius = (int) Math.floor( Math.sqrt( ( double )network.getNodeCount() ) );
 		minRadius = 1;
-		maxEpoch = (radius - minRadius + 10) * radiusConstantTime;
 		epoch =	1;
 		lengthOfTask = maxEpoch;
 
@@ -103,55 +107,90 @@ public class JungISOMLayout extends AbstractLayout {
 		adaption = initialAdaption;
 		minAdaption = 0;
 
-		coolingFactor =	20;
+		coolingFactor =	1;
 		distanceFactor = 1;
-	}
 
-	/**
-	 * This	method calls <tt>initialize_local_vertex</tt> for
-	 * each	vertex,	and also adds initial coordinate information
-	 * for each vertex. (The vertex's initial location is
-	 * set by calling <tt>initializeLocation</tt>.
-	 */
-	protected void initializeLocations() {
-		int count = 0;
-		for (Iterator iter = network.nodesIterator(); iter.hasNext();) {
-			NodeView v = networkView.getNodeView( (	Node ) iter.next() );
-			if ( !staticNodes.contains( v )	)
-			initializeLocation( v, currentSize);
-			initialize_local_node_view(v);
-			//System.out.println( (count++)+"init: "+v.getNode().getIdentifier() );
+		/*
+		String timeFactorS = JOptionPane.showInputDialog("timeFactor:");
+		timeFactor = Integer.parseInt(timeFactorS);
+		String scaleFactorS = JOptionPane.showInputDialog("scaleFactor:");
+		scaleFactor = Double.parseDouble(scaleFactorS);
+		*/
+
+		timeFactor = 100;
+		scaleFactor = 10;
+		
+		largeVSSmallCriterion = 4; // if NodeNumber exceeds this number, it's large group.
+		
+		largeGPXInterval = 1000;
+		largeGPSpacePerNode = 40 	* scaleFactor;
+	        smallGPXInterval = 1000;
+		smallGPSpace = 50		* scaleFactor;
+	        largeSmallInterval = 150;
+
+		largeGPX = 0;
+		largeGPY = (smallGPSpace+largeSmallInterval);
+	       	smallGPX = 0;
+		smallGPY = 0;
+
+		nodeID = network.getNodeIndicesArray();
+		nodeGP = new int[nodeID.length];
+		num_inGP = new int[nodeID.length];
+
+		for (int loop = 0; loop<nodeID.length; loop++) {
+			int[] tempnei = networkView.getGraphPerspective().neighborsArray( nodeID[loop]);
+			NodeView temp = networkView.getNodeView(nodeID[loop]);
+			for (int j=0;j<tempnei.length;j++) {
+				NodeView temp2 = networkView.getNodeView(tempnei[j]);
+			}
+			
+			nodeGP[loop] = -1;
+			num_inGP[loop] = 0;
 		}
-	}
 
-	/**
-	 * Sets	random locations for a vertex within the dimensions of the space.
-	 * If you want to initialize in some different way, override this method.
-	 *
-	 * @param v
-	 * @param d
-	 */
-	protected void initializeLocation ( NodeView v, Dimension d )	{
-		double x = Math.random() * d.getWidth();
-		double y = Math.random() * d.getHeight();
-		v.setXPosition( x, false );
-		v.setYPosition( y, false );
-	}
 
-	/**
-	 * Initializes the local information on a single vertex.
-	 * The user is responsible for overriding this method
-	 * to do any vertex-level construction that may be
-	 * necessary: for example, to attach vertex-level
-	 * information to each vertex.
-	 */
-	protected void initialize_local_node_view( NodeView v) {
-		ISOMVertexData vd = getISOMVertexData(v);
-		if (vd == null)	{
-			vd = new ISOMVertexData();
-			nodeIndexToDataMap.put(	v.getGraphPerspectiveIndex(), vd );
+		int [] stack = new int [nodeID.length+1];
+		int top = 0;
+		
+		groupID = 0;
+
+		for (int index = 0;index<nodeID.length;index++) {		// for all nodes: 'index' will contain the array index.( 0 ~ (nodeID.length-1) )
+			if (nodeGP[index] == -1) {					// if the node is not belonged to any group
+				NodeView current_nodeview = networkView.getNodeView(nodeID[index]);			// get the name of this 'free' node
+				
+				nodeGP[index] = groupID;				// assign the group to the 'free' node
+				num_inGP[groupID]++;
+				stack[top++] = nodeID[index];				// store this node to stack
+				int currentID;
+				
+				while ( top!=0 ) {
+					currentID = stack[--top];
+					
+					int[] neighbors = networkView.getGraphPerspective().neighborsArray( currentID );
+
+					for ( int neighbor_index = 0; neighbor_index < neighbors.length; neighbor_index++ ) {
+						int neiID = neighbors[ neighbor_index ];
+						int neiIndex=-1;
+						for ( int i=0;i<nodeID.length;i++) {
+							if (Math.abs(network.getRootGraphNodeIndex(neiID)) == Math.abs(nodeID[i])) {
+								neiIndex = i;
+							}
+						}
+						NodeView currentNV = networkView.getNodeView(neiID);
+						if (neiIndex < nodeGP.length) {
+							if (nodeGP[neiIndex] == -1)	{
+								nodeGP[neiIndex] = groupID;
+								num_inGP[groupID]++;
+								stack[top++] = neiID;
+							}
+						}
+					}
+					neighbors = null;
+				}
+				groupID++;
+			}
+			
 		}
-		vd.visited = false;
 	}
 
 	public ISOMVertexData getISOMVertexData	(  NodeView v )	{
@@ -161,93 +200,68 @@ public class JungISOMLayout extends AbstractLayout {
 ///////////////////////////////////////////////////////////////////////////////
 
 	public Object construct	() {
-		System.out.println( "ISOM Being	Constructed" );
+		System.out.println( "ISOM Being	Constructed" );	
 		
-		int[] nodeIndicesArray = network.getNodeIndicesArray();
-		int[] BelongedGroupArray = new int[nodeIndicesArray.length];
-		int[] ElementsNumberInGroupsArray = new int[nodeIndicesArray.length];
-		
-		for (int loop = 0; loop<nodeIndicesArray.length; loop++) {
-			BelongedGroupArray[loop] = -1;
-			ElementsNumberInGroupsArray[loop] = 0;
-		}
-		
-		int groupID = 0;
-		queue.removeAllElements();
-		for (int nodeIndex = 0;nodeIndex<nodeIndicesArray.length;nodeIndex++) {
-			if (BelongedGroupArray[nodeIndex] == -1) {
-				BelongedGroupArray[nodeIndex] = groupID;
-				ElementsNumberInGroupsArray[groupID]++;
-				queue.add(nodeIndicesArray[nodeIndex]);
-				int current_index;
-				
-				while ( !queue.isEmpty() ) {
-					current_index = ( int ) queue.remove(0);
-					
-					int[] neighbors = networkView.getGraphPerspective().neighborsArray( current_index );
-					for ( int neighbor_index = 0; neighbor_index < neighbors.length; ++neighbor_index ) {
-						int child = neighbors[ neighbor_index ];
-						if (BelongedGroupArray[child] == -1)	{
-							BelongedGroupArray[child] = groupID;
-							ElementsNumberInGroupsArray[groupID]++;
-							queue.addElement(child);
-						}
-					}
-				}
-				groupID++;
-			}
-		}
-		
-		int largeVSSmallCriterion = 4; // if NodeNumber exceeds this number, it's large group.
-		
-		double largeGPX = 0, largeGPY = 0,
-		       smallGPX = 0, smallGPY = 0;
-		double largeGPXInterval = 10, largeGPSpacePerNode = 100,
-		       smallGPXInterval = 10, smallGPSpacePerNode = 10,
-		       largeSmallInterval = 30;
-		       
-		for (int groupIndex = 0; groupIndex < groupID; groupIndex++) {
-			if (ElementsNumberInGroupsArray[groupIndex] > largeVSSmallCriterion) {
-				for (int loop1 = 0; loop1 < nodeIndicesArray.length; loop1++) {
-					if (BelongedGroupArray[loop1] == groupIndex) {
-						NodeView movingNode = networkView.getNodeView(nodeIndices[loop1]);
-						movingNode.setNodeDoubleProperty(nodeIndicdes[loop1], NODE_X_POSITION, largeGPX + Math.sqrt(ElementsNumberInGroupsArray[groupIndex])*largeGPSpacePerNode*Math.random();
-						movingNode.setNodeDoubleProperty(nodeIndicdes[loop1], NODE_Y_POSITION, largeGPY + Math.sqrt(ElementsNumberInGroupsArray[groupIndex])*largeGPSpacePerNode*Math.random();
-					}
-				}
-				largeGPX += largeGPSpacePerNode*Math.sqrt(ElementsNumberInGroupsArray[groupIndex]);
-			} else {
-				for (int loop1 = 0; loop1 < nodeIndicesArray.length; loop1++) {
-					if (BelongedGroupArray[loop1] == groupIndex) {
-						networkView.setNodeDoubleProperty(nodeIndicdes[loop1], NODE_X_POSITION, smallGPX + Math.sqrt(ElementsNumberInGroupsArray[groupIndex])*smallGPSpacePerNode*Math.random();
-						networkView.setNodeDoubleProperty(nodeIndicdes[loop1], NODE_Y_POSITION, smallGPY + Math.sqrt(ElementsNumberInGroupsArray[groupIndex])*smallGPSpacePerNode*Math.random();
-					}
-				}
-				smallGPX += smallGPSpacePerNode*Math.sqrt(ElementsNumberInGroupsArray[groupIndex]);
-			}
-		}
-		
-		double percent;
-		this.currentProgress++;
-		percent	= (this.currentProgress	* 100 )/this.lengthOfTask;
-		this.statMessage = "Completed "	+ percent + "%";
+		boundaries = new double [groupID][4];
 
-		currentNetworkViewSizeX	= getCurrentSize().getWidth();
-		currentNetworkViewSizeY	= getCurrentSize().getHeight();
-		randomizeVerticesCoordinates();
+		for (int groupIndex = 0; groupIndex < groupID; groupIndex++) {
+			if (num_inGP[groupIndex] > largeVSSmallCriterion) {
+				for (int loop1 = 0; loop1 < nodeID.length; loop1++) {
+					if (nodeGP[loop1] == groupIndex) {
+						NodeView temp = networkView.getNodeView(nodeID[loop1]);
+						
+						networkView.setNodeDoubleProperty(nodeID[loop1], GraphView.NODE_X_POSITION, largeGPX +
+						Math.sqrt(num_inGP[groupIndex])*largeGPSpacePerNode*(0.4+0.2*Math.random()));
+						networkView.setNodeDoubleProperty(nodeID[loop1], GraphView.NODE_Y_POSITION, largeGPY +
+						Math.sqrt(num_inGP[groupIndex])*largeGPSpacePerNode*(0.4+0.2*Math.random()));
+						boundaries[groupIndex][0] = largeGPX;
+						boundaries[groupIndex][1] = largeGPY;
+						boundaries[groupIndex][2] = Math.sqrt(num_inGP[groupIndex])*largeGPSpacePerNode;
+						boundaries[groupIndex][3] = Math.sqrt(num_inGP[groupIndex])*largeGPSpacePerNode;
+					}
+				}
+				largeGPX += largeGPSpacePerNode*Math.sqrt(num_inGP[groupIndex]);
+			} else {
+				for (int loop1 = 0; loop1 < nodeID.length; loop1++) {
+					if (nodeGP[loop1] == groupIndex) {	
+						NodeView temp = networkView.getNodeView(nodeID[loop1]);
+						
+						networkView.setNodeDoubleProperty(nodeID[loop1], GraphView.NODE_X_POSITION, smallGPX +
+						smallGPSpace*Math.random());
+						networkView.setNodeDoubleProperty(nodeID[loop1], GraphView.NODE_Y_POSITION, smallGPY +
+						smallGPSpace*Math.random());
+						
+						boundaries[groupIndex][0] = smallGPX;
+						boundaries[groupIndex][1] = smallGPY;
+						boundaries[groupIndex][2] = smallGPSpace;
+						boundaries[groupIndex][3] = smallGPSpace;
+					}
+				}
+				smallGPX += smallGPSpace;
+			}
+		}
 		
-/*		while (	epoch <= maxEpoch ) {
+		System.out.println("NodeMoving Completed");
+
+		advancePositions();
+/*
+		while (	epoch <= maxEpoch ) {
 			advancePositions();
 			this.currentProgress++;
 			percent	= (this.currentProgress	* 100 )/this.lengthOfTask;
 			this.statMessage = "Completed "	+ percent + "%";
-		}*/
-		
+		}
+*/	
+
 		Iterator nodes = networkView.getNodeViewsIterator();
 		
 		while (	nodes.hasNext()	) {
 			( ( NodeView )nodes.next() ).setNodePosition( true );
 		}
+
+		nodeID = null;
+		nodeGP = null;
+		num_inGP = null;
 		done = true;
 		return null;
 	}
@@ -256,47 +270,59 @@ public class JungISOMLayout extends AbstractLayout {
 	* Advances the current positions of the	graph elements.
 	*/
 	public void advancePositions() {
-		status = "epoch: " + epoch + ";	";
-		if (epoch < maxEpoch) {
-			adjust();
-			updateParameters();
-			status += " status: running";
-		} else {
-			status += "adaption: " + adaption + "; ";
-			status += "status: done";
-			done = true;
+		for (int loop1=0;loop1<groupID;loop1++) {
+			System.out.println("Processing of the group "+Integer.toString(loop1) + "/" + Integer.toString(groupID));
+			maxEpoch = timeFactor*(int)Math.floor(Math.pow(num_inGP[loop1],0.8));
+			if (maxEpoch<400) {
+				maxEpoch = 400;
+				if (num_inGP[loop1]<=largeVSSmallCriterion) {
+					maxEpoch = 50;
+				}
+			}
+			radius = (int) Math.floor( Math.sqrt( ( double )network.getNodeCount() ) );
+			ISOMVertexData IVDs = new ISOMVertexData();
+			epoch = 1;
+			radiusConstantTime = (int)Math.floor(0.7*(double)maxEpoch/(double)(radius-1));
+			System.out.println("Processing of the group "+Integer.toString(loop1+1) + "/" + Integer.toString(groupID) + "   MaxEpoch: " + Integer.toString(maxEpoch));
+			while (epoch < maxEpoch ) {
+				if (epoch % 100 == 0) {
+					System.out.print("Progress: " + Integer.toString((int)Math.floor(epoch))+"/"+Integer.toString(maxEpoch) + "   radius: " +
+					Integer.toString(radius)+"  ");
+					for (int i=0;i<radius;i++) {
+						System.out.print(Double.toString(Math.floor(1000 * distanceFactor * adaption / Math.pow(2*(1+epoch/maxEpoch), i/1.5))/1000)+" ");
+					}
+					System.out.println(" ");
+				}
+				if (epoch < maxEpoch) {
+					NodeView winner;
+					do {
+						// creates a new XY data location
+						globalX	= boundaries[loop1][0] + Math.random()	* boundaries[loop1][2];
+						globalY	= boundaries[loop1][1] + Math.random()	* boundaries[loop1][3];
+				
+						//Get closest vertex to	random position
+						winner	= getNodeView( globalX,	globalY	);
+					} while (nodeGP[searchIndex(winner.getGraphPerspectiveIndex())]!=loop1);
+					
+					adjustVertex(winner);
+					
+					updateParameters();
+					status += " status: running";
+				}
+			}
 		}
+		done = true;
 	}
-
+	
 	public Dimension getCurrentSize() {
 		return currentSize;
-	}
-
-	private	synchronized void adjust() {
-		//Generate random position in graph space
-		ISOMVertexData tempISOM	= new ISOMVertexData();
-		
-		// creates a new XY data location
-		globalX	= Math.random()	* currentNetworkViewSizeX;
-		globalY	= Math.random()	* currentNetworkViewSizeY;
-
-		//Get closest vertex to	random position
-		NodeView winner	= getNodeView( globalX,	globalY	);
-		
-		for (Iterator iter = networkView.getNodeViewsIterator();iter.hasNext();) {
-			NodeView v = ( NodeView	) iter.next();
-			ISOMVertexData ivd = getISOMVertexData(v);
-			ivd.distance = 0;
-			ivd.visited = false;
-		}
-		adjustVertex(winner);
 	}
 
 	public static class ISOMVertexData {
 		public DoubleMatrix1D disp;
 
-		int distance;
-		boolean	visited;
+		public int distance;
+		public boolean	visited;
 
 		public ISOMVertexData()	{
 			initialize();
@@ -333,39 +359,58 @@ public class JungISOMLayout extends AbstractLayout {
 		}
 	}
 
+	private synchronized int searchIndex(int node) {
+		for (int i=0;i<nodeID.length;i++) {
+			if (Math.abs(network.getRootGraphNodeIndex(node)) == Math.abs(nodeID[i])) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	
 	private	synchronized void adjustVertex(	NodeView v ) {
-		queue.removeAllElements();
-		ISOMVertexData ivd = getISOMVertexData(v);
-		ivd.distance = 0;
-		ivd.visited = true;
-		queue.add(v);
-		NodeView current;
-
-		while (	!queue.isEmpty() ) {
-			current	= ( NodeView ) queue.remove(0);
-			ISOMVertexData currData	= getISOMVertexData(current);
+		int []IDq = new int[nodeID.length+1];
+		int []distance = new int[nodeID.length];
+		int []visited = new int[nodeID.length];
+		int top = 0;
+		
+		for (int i=0;i<nodeID.length;i++) {
+			distance[i] = 0;
+			visited[i] = 0;
+		}
+		
+		IDq[top++] = v.getGraphPerspectiveIndex();
+		
+		while ( top!=0 ) {
+			int current_nodeID = IDq[--top];
+			int cur_i = searchIndex(current_nodeID);
 			
-			int current_index = current.getGraphPerspectiveIndex();
-			double current_x = networkView.getNodeDoubleProperty( current_index, GraphView.NODE_X_POSITION );
-			double current_y = networkView.getNodeDoubleProperty( current_index, GraphView.NODE_Y_POSITION );
+			double current_x = networkView.getNodeDoubleProperty( current_nodeID, GraphView.NODE_X_POSITION );
+			double current_y = networkView.getNodeDoubleProperty( current_nodeID, GraphView.NODE_Y_POSITION );
 			
-			double dx = globalX - current_x;
-			double dy = globalY - current_y;
-			double factor =	adaption / Math.pow(2, distanceFactor * currData.distance);
+			double dx, dy;
+			if (distance[cur_i]>0) {
+				dx = (globalX - current_x)*(1-(distance[cur_i]/radius)+((2*distance[cur_i]/radius)*Math.random()));
+				dy = (globalY - current_y)*(1-(distance[cur_i]/radius)+((2*distance[cur_i]/radius)*Math.random()));
+			} else {
+				dx = globalX - current_x;
+				dy = globalY - current_y;
+			}
+			double factor = adaption / Math.pow(2*(1+epoch/maxEpoch), distanceFactor * distance[cur_i]/1.5);
 
-			networkView.setNodeDoubleProperty( current_index, GraphView.NODE_X_POSITION, current_x + factor	* dx );
-			networkView.setNodeDoubleProperty( current_index, GraphView.NODE_Y_POSITION, current_y + factor	* dy );
-
-			if (currData.distance <	radius)	{
-				int[] neighbors	= networkView.getGraphPerspective().neighborsArray( current_index );
+			
+			networkView.setNodeDoubleProperty( current_nodeID, GraphView.NODE_X_POSITION, current_x + factor * dx );
+			networkView.setNodeDoubleProperty( current_nodeID, GraphView.NODE_Y_POSITION, current_y + factor * dy );
+			
+			if (distance[cur_i] < radius) {
+				int[] neighbors	= networkView.getGraphPerspective().neighborsArray( current_nodeID );
 				for ( int neighbor_index = 0; neighbor_index < neighbors.length; ++neighbor_index ) {
-					NodeView child = networkView.getNodeView( neighbors[ neighbor_index ] );
-					ISOMVertexData childData = getISOMVertexData(child);
-					if (!childData.visited)	{
-						childData.visited = true;
-						
-						childData.distance = currData.distance + 1;
-						queue.addElement(child);
+					int nei_i = searchIndex(neighbors[ neighbor_index ] );
+					if (visited[nei_i]==0) {
+						visited[nei_i] = 1;
+
+						distance[nei_i] = distance[cur_i]+1;
+						IDq[top++] = neighbors[ neighbor_index ];
 					}
 				}
 			}
