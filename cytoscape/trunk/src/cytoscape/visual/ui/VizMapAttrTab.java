@@ -26,60 +26,38 @@ import cytoscape.dialogs.MiscGB;
  */
 public class VizMapAttrTab extends VizMapTab {
     /**
-     *	all calculators known to the CalculatorCatalog of this type
-     */
-    private Collection calculators;
-
-    /**
      *	reference to calculator catalog
      */
     private CalculatorCatalog catalog;
 
+    /** VisualMappingManager for the window */
+    private VisualMappingManager VMM;
+
     /**
-     *	the calculator whose UI is being displayed by this tab
+     * The type of this VizMapAttrTab. This should be one of the constants
+     * defined in VizMapUI that identifies a particular visual attribute.
+     * Utility methods in VizUIUtilites are used to convert this type into
+     * a particular object or method of the current visual style.
+     */
+    private byte type;
+
+    /**
+     * The calculator whose UI is being displayed by this tab. Note that this
+     * duplicates the calculator reference held by the current visual style.
+     * This is done for convenience, rather than continually using a utility
+     * method to figure out which calculator corresponds to the type field
+     * of this object. It is the responsibility of every method in this class
+     * to make sure this field is synchronized with the current state of the
+     * current visual style. This field should only be changed via the
+     * setCurrentCalculator method of this class, which additionally ensures
+     * that the proper listener is attached to the current calculator.
      */
     private Calculator currentCalculator;
-
-    /**
-     *	default object to display
-     */
-    private Object defaultObj;
-
-    /**
-     *	underlying network
-     */
-    //private CyNetwork n;
-
-    /**	the panel containing calculator-specific UI and provided
-     *	by the currently selected calculator
-     */
-    private JPanel calcPanel;
 
     /**
      *	the parent JDialog
      */
     private VizMapUI mainUIDialog;
-
-    /**
-     *  the containing JTabbedPane
-     */
-    protected JTabbedPane tabbedContainer;
-
-    /**
-     *  the 
-
-    /**
-     *	the type of this VizMapAttrTab
-     */
-    private byte type;
-
-    /** VisualMappingManager for the window */
-    private VisualMappingManager VMM;
-
-    /** Node apperance calculator reference */
-    private NodeAppearanceCalculator nodeCalc;
-    /** Edge appearance calculator reference */
-    private EdgeAppearanceCalculator edgeCalc;
 
     /** Default ValueDisplayer */
     private ValueDisplayer defaultValueDisplayer;
@@ -91,8 +69,11 @@ public class VizMapAttrTab extends VizMapTab {
     private GridBagGroup mapPanelGBG;
     private JPanel calcContainer;
 
-    /** Icon for upper left corner of tab */
-    private ImageIcon imageIcon;
+    /**	
+     * the panel containing the calculator-specific UI provided
+     * by the currently selected calculator
+     */
+    private JPanel calcPanel;
 
     /** Listener for calculator UI changes */
     protected CalculatorUIListener calcListener = new CalculatorUIListener();
@@ -117,7 +98,6 @@ public class VizMapAttrTab extends VizMapTab {
 	this.VMM = VMM;
 	this.mainUIDialog = mainUI;
 	this.catalog = VMM.getCalculatorCatalog();
-	//this.n = VMM.getNetwork();
 	this.type = type;
 
 	// register to listen for changes in the catalog
@@ -128,46 +108,214 @@ public class VizMapAttrTab extends VizMapTab {
     }
 
     /**
+     * Internal class to listen for possible changes in the state of the catalog.
+     * When triggered, causes this class to rebuild the combo box for selecting
+     * calculators.
+     *
+     * TODO: should check to see if the change was to calculators relevant to
+     * this UI component, instead of always rebuilding the combo box.
+     */
+    private class CatalogListener implements ChangeListener {
+	public void stateChanged(ChangeEvent e) {
+	    rebuildCalcComboBox();
+	    validate();
+	    repaint();
+	}
+    }
+
+    /**
+     * TabContainerListener refreshes the tab's UI when the tab becomes visible.
+     * This ensures that the UI stays synchronized for attributes that reuse the
+     * same calculator.
+     */
+    protected class TabContainerListener implements ChangeListener {
+	protected int tabIndex;
+
+	public TabContainerListener(int tabIndex) {
+	    this.tabIndex = tabIndex;
+	}
+	public void stateChanged(ChangeEvent e) {
+	    JTabbedPane source = (JTabbedPane) e.getSource();
+	    if (source.getModel().getSelectedIndex() == tabIndex) {		
+		refreshUI();
+            }
+	}
+    }
+    
+    /**
      *  Alert the VizMapAttrTab that the relevant visual style has changed.
      */
     public void visualStyleChanged() {
-	// get appearance calculator references
-	this.nodeCalc = VMM.getVisualStyle().getNodeAppearanceCalculator();
-	this.edgeCalc = VMM.getVisualStyle().getEdgeAppearanceCalculator();
-
 	// get current defaults
-	getDefaults(type);
+        Object defaultObj = VizUIUtilities.getDefault(VMM.getVisualStyle(), this.type);
+        setCurrentCalculator(
+                VizUIUtilities.getCurrentCalculator(VMM.getVisualStyle(), this.type) );
 
 	if (defaultValueDisplayer == null) { // haven't initialized yet
-	    drawDefault();
+	    drawDefault(defaultObj);
 	    drawCalc();
+            refreshUI();
 	}
 	else {
-	    setDefault(defaultObj);
+            defaultValueDisplayer.setObject(defaultObj);
 	    refreshUI();
 	}
     }
 
-    private void setupCalcComboBox() {
+    /**
+     * Refreshes the panel that displays the UI for the currently selected calculator.
+     * This method replaces the current panel with the panel provided by the current
+     * calculator, or nothing if there is no currently selected calculator.
+     */
+    public void refreshUI() {
+	if (this.calcPanel != null) {
+	    this.calcContainer.remove(this.calcPanel);
+        }
+	if (this.currentCalculator != null) {
+	    this.calcPanel = this.currentCalculator.getUI(this.mainUIDialog, VMM.getNetwork());
+	    this.calcContainer.add(this.calcPanel);
+	} else {
+	    this.calcPanel = null;
+        }
+	validate();
+	repaint();
+    }
+    
+    /**
+     * Changes the 'currentCalculator' field of this class to the new calculator
+     * specified by the argument. A null argument is allowed. This method also
+     * detaches the CalculatorUIListener from the old calculator, and attaches
+     * it to the new one iff the argument is not null.
+     *
+     * This method should be called whenever the visual style is changed, or when
+     * the calculator for this object's visual attribute is switched to a different
+     * calculator. If the change is made by a member of this class, they should
+     * call this method instead of directly changing the currentCalculator field
+     * (to make sure that the listener is properly updated). If the change was
+     * instead made directly to the underlying visual style, then a listener
+     * should respond by calling this method with the new calculator.
+     */
+    protected void setCurrentCalculator(Calculator newCalculator) {
+        if (this.currentCalculator != null) {
+            this.currentCalculator.removeChangeListener(calcListener);
+        }
+        this.currentCalculator = newCalculator;
+        if (newCalculator != null) {
+            newCalculator.addChangeListener(calcListener);
+        }
+    }
+    
+    
+    /**
+     * Builds the panel for displaying and changing the default value for this
+     * visual attribute.
+     */
+    protected void drawDefault(Object defaultObj) {
+	JPanel outerDefPanel = new JPanel(false);
+	outerDefPanel.setLayout(new BoxLayout(outerDefPanel,BoxLayout.X_AXIS));
+
+	JPanel defPanel = new JPanel(false);
+	defPanel.setLayout(new BoxLayout(defPanel, BoxLayout.Y_AXIS));
+	Box content = new Box(BoxLayout.X_AXIS);
+
+	// create the ValueDisplayer
+	this.defaultValueDisplayer = ValueDisplayer.getDisplayFor(mainUIDialog,
+								  getName(),
+								  defaultObj);
+	defaultValueDisplayer.addItemListener(new DefaultItemChangedListener());
+
+	// create the button
+	JButton defaultButton = new JButton("Change Default");
+	// attach ActionListener from ValueDisplayer to button
+	defaultButton.addActionListener(defaultValueDisplayer.getInputListener());
+
+	// dump components into content Box
+	content.add(Box.createHorizontalGlue());
+	content.add(defaultButton);
+	content.add(Box.createHorizontalStrut(3));
+	content.add(defaultValueDisplayer);
+	content.add(Box.createHorizontalGlue());
+
+	// pad the default panel
+	defPanel.add(Box.createVerticalStrut(3));
+	defPanel.add(content);
+	defPanel.add(Box.createVerticalStrut(3));
+
+	// attach a border
+	Border defBorder = BorderFactory.createLineBorder(Color.BLACK);
+	defPanel.setBorder(BorderFactory.createTitledBorder(defBorder,
+							    "Default",
+							    TitledBorder.CENTER,
+							    TitledBorder.TOP));
+	defPanel.validate();
+
+	ImageIcon imageIcon = getImageIcon();
+	if(imageIcon==null)
+	    this.add(defPanel, BorderLayout.NORTH);
+	else {
+	    JButton tempB = new JButton();
+	    tempB.setIcon(imageIcon);
+	    outerDefPanel.add(tempB);
+	    outerDefPanel.add(defPanel);
+	    this.add(outerDefPanel, BorderLayout.NORTH);
+	}
+    }
+    
+    /**
+     * Returns an ImageIcon suitable for this visual attribute, or null if we
+     * don't have an icon for this particular visual attribute.
+     */
+    protected ImageIcon getImageIcon() {
+        ImageIcon icon = null;
+        if (this.type == VizMapUI.NODE_COLOR) {
+            String imageFile = "images/nodeColorWheel.jpg";
+            icon =  new ImageIcon(this.getClass().getResource(imageFile),"Node Color");
+        } else if (this.type == VizMapUI.NODE_BORDER_COLOR) {
+            String imageFile = "images/nodeBorderColorWheel.jpg";
+            icon = new ImageIcon(this.getClass().getResource(imageFile),"Node Border Color");
+        }
+        return icon;
+    }
+
+    /**
+     *	Listener for the ValueDisplayer to notify VizMapAttrTab when the default
+     *	object changed.
+     */
+    private class DefaultItemChangedListener implements ItemListener {
+	public void itemStateChanged(ItemEvent e) {
+	    // prevent bugs, could be removed later
+	    if (e.getItemSelectable() == defaultValueDisplayer &&
+		e.getStateChange() == ItemEvent.SELECTED) {
+		//_setDefault(defaultValueDisplayer.getValue());
+                Object newDefault = defaultValueDisplayer.getValue();
+                VizUIUtilities.setDefault(VMM.getVisualStyle(), type, newDefault);
+                VMM.getNetworkView().redrawGraph(false, true);
+	    }
+	}
+    }
+
+    /**
+     * Creates the combo box for selecting a calculator and adds it to the
+     * appropriate panel after first removing any previous combo box.
+     */
+    protected void rebuildCalcComboBox() {
+        if (this.calcComboBox != null) {
+	    mapPanelGBG.panel.remove(this.calcComboBox);
+        }            
 	/* build the list of known calculators - each calculator has a toString()
 	   method that returns the name, so calculators can be passed to the
 	   JComboBox.
 	*/
-	Object comboArray[] = new Object[calculators.size() + 1];
-	comboArray[0] = new String("None");
-	Iterator calcIter = calculators.iterator();
-	for (int i = 1; calcIter.hasNext(); i++) {
-	    comboArray[i] = calcIter.next();
-	}
-	this.calcComboBox = new JComboBox(comboArray);
-	this.calcComboBox.setSelectedItem(null);
-	// attach listener
-	this.calcComboBox.addItemListener(new calcComboSelectionListener());
-
-	// check that the currently selected calculator exists
-	if (!calculators.contains(this.currentCalculator)) {
-	    this.currentCalculator = null;
-	}
+        Collection calculators = getCalculators(this.type);
+        Vector comboCalcs = new Vector(calculators);
+        //it's possible the current calculator isn't in the catalog; if so,
+        //add it to the combo box
+        if ( currentCalculator != null && !(calculators.contains(currentCalculator)) ) {
+            comboCalcs.add(currentCalculator);
+        }
+        //add an extra entry at the beginning for no calculator
+        comboCalcs.add( 0, new String("None") );
+        this.calcComboBox = new JComboBox(comboCalcs);
 
 	// set the currently selected calculator
 	if (this.currentCalculator == null) {
@@ -176,23 +324,62 @@ public class VizMapAttrTab extends VizMapTab {
 	    */
 	    this.calcComboBox.setSelectedIndex(0);
 	}
-	else
+	else {
 	    this.calcComboBox.setSelectedItem(this.currentCalculator);
-    }
-
-    /**
-     * Reset the calculator controls when the calculator choices have changed.
-     */
-    public void resetCalculatorDisplay() {
-	// reset local calculator collection
-	refreshCalculators();
-	if (this.calcComboBox != null)
-	    mapPanelGBG.panel.remove(this.calcComboBox);
-	setupCalcComboBox();
+        }
 	MiscGB.insert(mapPanelGBG, calcComboBox, 0, 0, 4, 1, 1, 0, GridBagConstraints.HORIZONTAL);
-	//switchCalculator(c);
+	// attach listener
+	this.calcComboBox.addItemListener(new CalcComboSelectionListener());
     }
+    
+    /**
+     * Listens to selection events on the calculator selection combo box. When
+     * a selection occurs, calls switchCalculator with the new calculator.
+     */
+    private class CalcComboSelectionListener implements ItemListener {
+	public void itemStateChanged(ItemEvent e) {
+	    if (e.getStateChange() == ItemEvent.SELECTED) {
+		if (calcComboBox.getSelectedIndex() == 0) // "None" selected, use null
+		    switchCalculator(null);
+		else {
+		    Object selected = calcComboBox.getSelectedItem();
+		    switchCalculator((Calculator) selected);
+		}
+	    }
+	}
+    }
+    
+    /**
+     * Called by action listener on the calculator selection combo box. Switch
+     * the current calculator to the selected calculator and place the calculator's
+     * UI into the calculator UI panel.
+     *
+     * @param	calc		new Calculator to use for this tab's mapping
+     */
+    void switchCalculator(Calculator calc) {
+        //do nothing if the new calculator is the same as the current one
+        if (calc == null || calc.equals(this.currentCalculator)) {return;}
+        
+        setCurrentCalculator(calc); //handles listeners
 
+	// tell the respective appearance calculators
+        // this method doesn't fire an event to come back to us
+        VizUIUtilities.setCurrentCalculator(VMM.getVisualStyle(), this.type, calc);
+	
+        //get the view of the new calculator
+	refreshUI();
+        //redraw the graph
+	VMM.getNetworkView().redrawGraph(false, true);
+    }
+    
+    /**
+     * Draws the panel containing the calculator selection combo box and the
+     * calculator manipulation buttons. The panel containing the UI for the
+     * current calculator is added later by refreshUI.
+     * Called only once; afterwards the UI is refreshed through either
+     * rebuildCalcComboBox, which refreshes the calculator selection combo box,
+     * or refreshUI which refreshes the current calculator view.
+     */
     protected void drawCalc() {
 	//this.mapPanel = new JPanel(false);
 	//mapPanel.setLayout(new BoxLayout(mapPanel, BoxLayout.Y_AXIS));
@@ -205,26 +392,30 @@ public class VizMapAttrTab extends VizMapTab {
 	// Initialize here
 	this.calcContainer = new JPanel(false);
 
-	resetCalculatorDisplay();
+	rebuildCalcComboBox();
 
 	// new calculator button
 	JButton newCalc = new JButton("New");
 	newCalc.addActionListener(new NewCalcListener());
+        newCalc.setToolTipText("Create a new calculator");
 	MiscGB.insert(mapPanelGBG, newCalc, 0, 1, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
 
 	// duplicate calculator button
 	JButton dupeCalc = new JButton("Duplicate");
 	dupeCalc.addActionListener(new DupeCalcListener());
+        dupeCalc.setToolTipText("Create a copy of this calculator");
 	MiscGB.insert(mapPanelGBG, dupeCalc, 1, 1, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
 
 	// rename calculator button
 	JButton renCalc = new JButton("Rename");
 	renCalc.addActionListener(new RenCalcListener());
+        renCalc.setToolTipText("Rename this calculator");
 	MiscGB.insert(mapPanelGBG, renCalc, 2, 1, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
 
 	// remove calculator button
 	JButton rmCalc = new JButton("Delete");
 	rmCalc.addActionListener(new RmCalcListener());
+        rmCalc.setToolTipText("Permanently delete this calculator");
 	MiscGB.insert(mapPanelGBG, rmCalc, 3, 1, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
 
 	// add to gridbag
@@ -292,6 +483,7 @@ public class VizMapAttrTab extends VizMapTab {
 	    default:
 		mapType = ObjectMapping.NODE_MAPPING;
 	    }
+            Object defaultObj = VizUIUtilities.getDefault(VMM.getVisualStyle(), type);
 	    Object[] invokeArgs = {defaultObj, new Byte(mapType)};
 	    ObjectMapping mapper = null;
 	    try {
@@ -353,7 +545,7 @@ public class VizMapAttrTab extends VizMapTab {
 		calc = new GenericNodeFontSizeCalculator(calcName, mapper);
 	    }
 	    // set current calculator to the new calculator
-	    currentCalculator = calc;
+	    switchCalculator(calc);  //handles listeners
 	    // notify the catalog - this triggers events that refresh the UI
 	    catalog.addCalculator(calc);
 	}
@@ -364,9 +556,9 @@ public class VizMapAttrTab extends VizMapTab {
 	public void actionPerformed(ActionEvent e) {
 	    Calculator clone = duplicateCalculator(currentCalculator);
 	    // die if user cancelled in the middle of duplication
-	    if (clone == null)
-		return;
-	    currentCalculator = clone;
+	    if (clone == null) {return;}
+	    switchCalculator(clone);
+            //this triggers an event that triggers rebuilding the combo box
 	    catalog.addCalculator(clone);
 	}
     }
@@ -384,8 +576,7 @@ public class VizMapAttrTab extends VizMapTab {
 	}
 	// get new name for clone
 	String newName = getCalculatorName(clone);
-	if (newName == null)
-	    return null;
+	if (newName == null) {return null;}
 	clone.setName(newName);
 	return clone;
     }
@@ -393,8 +584,9 @@ public class VizMapAttrTab extends VizMapTab {
     private String getCalculatorName(Calculator c) {
 	// default to the next available name for c
 	String suggestedName = null;
-	if (c != null)
+	if (c != null) {
 	    suggestedName = this.catalog.checkCalculatorName(c.toString(), this.type);
+        }
 	
 	// keep prompting for input until user cancels or we get a valid name
 	while(true) {
@@ -404,20 +596,16 @@ public class VizMapAttrTab extends VizMapTab {
 							      JOptionPane.QUESTION_MESSAGE,
 							      null, null,
 							      suggestedName);
-	    if (ret == null) {
-		return null;
-	    }
+	    if (ret == null) {return null;}
 	    String newName = catalog.checkCalculatorName(ret, this.type);
-	    if (newName.equals(ret))
-		return ret;
+	    if (newName.equals(ret)) {return ret;}
 	    int alt = JOptionPane.showConfirmDialog(mainUIDialog,
 						    "Calculator with name " + ret + " already exists,\nrename to " + newName + " okay?",
 						    "Duplicate calculator name",
 						    JOptionPane.YES_NO_OPTION,
 						    JOptionPane.WARNING_MESSAGE,
 						    null);
-	    if (alt == JOptionPane.YES_OPTION)
-		return newName;
+	    if (alt == JOptionPane.YES_OPTION) {return newName;}
 	}
     }
 
@@ -426,8 +614,8 @@ public class VizMapAttrTab extends VizMapTab {
 	public void actionPerformed(ActionEvent e) {
 	    // get the new name, keep prompting for input until a valid input is received
 	    String calcName = getCalculatorName(currentCalculator);
-	    if (calcName == null)
-		return;
+	    if (calcName == null) {return;}
+            //this triggers an event that triggers rebuilding the combo box
 	    catalog.renameCalculator(currentCalculator, calcName);
 	}
     }
@@ -435,9 +623,7 @@ public class VizMapAttrTab extends VizMapTab {
     // remove calculator button pressed
     private class RmCalcListener extends AbstractAction {
 	public void actionPerformed(ActionEvent e) {
-	    if (currentCalculator == null) {
-		return;
-	    }
+	    if (currentCalculator == null) {return;}
 	    // check duplication
 	    Vector conflicts = mainUIDialog.checkCalculatorUsage(currentCalculator);
 	    // if only one conflict reported, that's myself, so ignore.
@@ -467,8 +653,7 @@ public class VizMapAttrTab extends VizMapTab {
 							 "Calculator In Use",
 							 JOptionPane.YES_NO_OPTION,
 							 JOptionPane.WARNING_MESSAGE);
-		if (conf == JOptionPane.NO_OPTION)
-		    return;
+		if (conf == JOptionPane.NO_OPTION) {return;}
 	    } else {
                 //let's still make sure the user really wanted to do this
                 String s = "Are you sure you want to permanently delete this calculator?";
@@ -479,62 +664,28 @@ public class VizMapAttrTab extends VizMapTab {
             }
             
 	    Calculator temp = currentCalculator;
-	    currentCalculator = null;
+	    switchCalculator(null);
 	    catalog.removeCalculator(temp); // triggers events that switch the calculator
 	}    
     }
 
-    /**
-     * Internal class to listen for possible changes in the state of the catalog
-     */
-    private class CatalogListener implements ChangeListener {
-	public void stateChanged(ChangeEvent e) {
-	    resetCalculatorDisplay();
-	    validate();
-	    repaint();
-	}
-    }
-    
-    private class calcComboSelectionListener implements ItemListener {
-	public void itemStateChanged(ItemEvent e) {
-	    if (e.getStateChange() == ItemEvent.SELECTED) {
-		if (calcComboBox.getSelectedIndex() == 0) // "None" selected, use null
-		    switchCalculator(null);
-		else {
-		    Object selected = calcComboBox.getSelectedItem();
-		    switchCalculator((Calculator) selected);
-		}
-	    }
-	}
-    }
+
 
     /**
-     * CalculatorUIListener ensures that the UI for the calculator and the
-     * calculator's state remain in sync.
+     * CalculatorUIListener listens to the current calculator for the visual
+     * attribute displayed by this tab. When that calculator is modified, this
+     * listener updates the UI for that calculator and redraws the graph.
+     *
+     * A single instance of this listener is maintained by this class and
+     * is removed and reattached when the current calculator changes.
      */
     protected class CalculatorUIListener implements ChangeListener {
 	public void stateChanged(ChangeEvent e) {
+            refreshUI();
 	    VMM.getNetworkView().redrawGraph(false, true);
 	}
     }
 
-    /**
-     * TabContainerListener refreshes the tab's UI when the tab becomes visible.
-     * This ensures that the UI stays synchronized for attributes that reuse the
-     * same calculator.
-     */
-    protected class TabContainerListener implements ChangeListener {
-	protected int tabIndex;
-
-	public TabContainerListener(int tabIndex) {
-	    this.tabIndex = tabIndex;
-	}
-	public void stateChanged(ChangeEvent e) {
-	    JTabbedPane source = (JTabbedPane) e.getSource();
-	    if (source.getModel().getSelectedIndex() == tabIndex) 		
-		refreshUI();
-	}
-    }
 
     /**
      * Check that the calculator is not selected by other objects. If so,
@@ -562,365 +713,7 @@ public class VizMapAttrTab extends VizMapTab {
 	}
     }
 
-    public void refreshUI() {
-	if (this.calcPanel != null)
-	    this.calcContainer.remove(this.calcPanel);
-	if (this.currentCalculator != null) {
-	    this.calcPanel = this.currentCalculator.getUI(this.mainUIDialog, VMM.getNetwork());
-	    this.calcContainer.add(this.calcPanel);
-	}
-	else
-	    this.calcPanel = null;
-	validate();
-	repaint();
-    }
-    
-    /**
-     * Called by action listener on the calculator selection combo box. Switch
-     * the current calculator to the selected calculator and place the calculator's
-     * UI into the calculator UI panel.
-     *
-     * @param	c		new Calculator to use for this tab's mapping
-     */
-    void switchCalculator(Calculator c) {
-	if (c != null) {
-	    // check that the calculator is valid - a little kludgy
-	    String newName = catalog.checkCalculatorName(c.toString(), this.type);
-	    // if the names are equal, that means that the catalog doesn't know about
-	    // the Calculator c, so change the calculator to null and reflect this in
-	    // the combo box.
-	    if (newName.equals(c.toString())) {
-		c = null;
-		setComboBox(null);
-	    }
-	}
-	// switch listeners
-	if (this.currentCalculator != null) {
-	    this.currentCalculator.removeChangeListener(this.calcListener);
-	}
-	this.currentCalculator = c;
 
-	if (this.currentCalculator != null) {
-	    this.currentCalculator.addChangeListener(this.calcListener);
-	}
-
-	// tell the respective appearance calculators
-	switch(this.type) {
-	case VizMapUI.NODE_COLOR:
-	    nodeCalc.setNodeFillColorCalculator((NodeColorCalculator) c);
-	    break;
-	case VizMapUI.NODE_BORDER_COLOR:
-	    nodeCalc.setNodeBorderColorCalculator((NodeColorCalculator) c);
-	    break;
-	case VizMapUI.NODE_LINETYPE:
-	    nodeCalc.setNodeLineTypeCalculator((NodeLineTypeCalculator) c);
-	    break;
-	case VizMapUI.NODE_SHAPE:
-	    nodeCalc.setNodeShapeCalculator((NodeShapeCalculator) c);
-	    break;
-	case VizMapUI.NODE_LABEL:
-	    nodeCalc.setNodeLabelCalculator((NodeLabelCalculator) c);
-	    break;
-	case VizMapUI.NODE_HEIGHT:
-	    nodeCalc.setNodeHeightCalculator((NodeSizeCalculator) c);
-	    break;
-	case VizMapUI.NODE_WIDTH:
-	    nodeCalc.setNodeWidthCalculator((NodeSizeCalculator) c);
-	    break;
-	case VizMapUI.NODE_SIZE:
-	    nodeCalc.setNodeWidthCalculator((NodeSizeCalculator) c);
-	    nodeCalc.setNodeHeightCalculator((NodeSizeCalculator) c);
-	    break;
-	case VizMapUI.NODE_TOOLTIP:
-	    nodeCalc.setNodeToolTipCalculator((NodeToolTipCalculator) c);
-	    break;
-	case VizMapUI.EDGE_COLOR:
-	    edgeCalc.setEdgeColorCalculator((EdgeColorCalculator) c);
-	    break;
-	case VizMapUI.EDGE_LINETYPE:
-	    edgeCalc.setEdgeLineTypeCalculator((EdgeLineTypeCalculator) c);
-	    break;
-	case VizMapUI.EDGE_SRCARROW:
-	    edgeCalc.setEdgeSourceArrowCalculator((EdgeArrowCalculator) c);
-	    break;
-	case VizMapUI.EDGE_TGTARROW:
-	    edgeCalc.setEdgeTargetArrowCalculator((EdgeArrowCalculator) c);
-	    break;
-	case VizMapUI.EDGE_LABEL:
-	    edgeCalc.setEdgeLabelCalculator((EdgeLabelCalculator) c);
-	    break;
-	case VizMapUI.EDGE_TOOLTIP:
-	    edgeCalc.setEdgeToolTipCalculator((EdgeToolTipCalculator) c);
-	    break;
-	case VizMapUI.EDGE_FONT_FACE:
-	    edgeCalc.setEdgeFontFaceCalculator((EdgeFontFaceCalculator) c);
-	    break;
-	case VizMapUI.EDGE_FONT_SIZE:
-	    edgeCalc.setEdgeFontSizeCalculator((EdgeFontSizeCalculator) c);
-	    break;
-	case VizMapUI.NODE_FONT_FACE:
-	    nodeCalc.setNodeFontFaceCalculator((NodeFontFaceCalculator) c);
-	    break;
-	case VizMapUI.NODE_FONT_SIZE:
-	    nodeCalc.setNodeFontSizeCalculator((NodeFontSizeCalculator) c);
-	    break;
-	}
-	refreshUI();
-	//mainUIDialog.pack();
-	//mainUIDialog.repaint();
-	VMM.getNetworkView().redrawGraph(false, true);
-    }
-
-    /**
-     *	Listener for the ValueDisplayer to notify VizMapAttrTab when the default
-     *	object changed.
-     */
-    private class DefaultItemChangedListener implements ItemListener {
-	public void itemStateChanged(ItemEvent e) {
-	    // prevent bugs, could be removed later
-	    if (e.getItemSelectable() == defaultValueDisplayer &&
-		e.getStateChange() == ItemEvent.SELECTED) {
-		_setDefault(defaultValueDisplayer.getValue());
-	    }
-	}
-    }
-
-    /**
-     * Set the default value represented in this VizMapAttrTab.
-     */
-    public void setDefault(Object o) {
-	defaultValueDisplayer.setObject(o);
-    }
-
-    /**
-     *	Set the default object.
-     */
-    protected void _setDefault(Object c) {
-	// tell the respective appearance calculators
-	switch(this.type) {
-	case VizMapUI.NODE_COLOR:
-	    nodeCalc.setDefaultNodeFillColor((Color) c);
-	    break;
-	case VizMapUI.NODE_BORDER_COLOR:
-	    nodeCalc.setDefaultNodeBorderColor((Color) c);
-	    break;
-	case VizMapUI.NODE_LINETYPE:
-	    nodeCalc.setDefaultNodeLineType((LineType) c);
-	    break;
-	case VizMapUI.NODE_SHAPE:
-	    nodeCalc.setDefaultNodeShape(((Byte) c).byteValue());
-	    break;
-	case VizMapUI.NODE_HEIGHT:
-	    nodeCalc.setDefaultNodeHeight(((Double) c).doubleValue());
-	    break;
-	case VizMapUI.NODE_WIDTH:
-	    nodeCalc.setDefaultNodeWidth(((Double) c).doubleValue());
-	    break;
-	case VizMapUI.NODE_SIZE:
-	    nodeCalc.setDefaultNodeHeight(((Double) c).doubleValue());
-	    nodeCalc.setDefaultNodeWidth(((Double) c).doubleValue());
-	    break;
-	case VizMapUI.NODE_LABEL:
-	    nodeCalc.setDefaultNodeLabel((String) c);
-	    break;
-	case VizMapUI.NODE_TOOLTIP:
-	    nodeCalc.setDefaultNodeToolTip((String) c);
-	    break;
-	case VizMapUI.EDGE_COLOR:
-	    edgeCalc.setDefaultEdgeColor((Color) c);
-	    break;
-	case VizMapUI.EDGE_LINETYPE:
-	    edgeCalc.setDefaultEdgeLineType((LineType) c);
-	    break;
-	case VizMapUI.EDGE_SRCARROW:
-	    edgeCalc.setDefaultEdgeSourceArrow((Arrow) c);
-	    break;
-	case VizMapUI.EDGE_TGTARROW:
-	    edgeCalc.setDefaultEdgeTargetArrow((Arrow) c);
-	    break;
-	case VizMapUI.EDGE_LABEL:
-	    edgeCalc.setDefaultEdgeLabel((String) c);
-	    break;
-	case VizMapUI.EDGE_TOOLTIP:
-	    edgeCalc.setDefaultEdgeToolTip((String) c);
-	    break;
-	case VizMapUI.EDGE_FONT_FACE:
-	    edgeCalc.setDefaultEdgeFontFace((Font) c);
-	    break;
-	case VizMapUI.EDGE_FONT_SIZE:
-	    edgeCalc.setDefaultEdgeFontSize(((Double) c).floatValue());
-	    break;
-	case VizMapUI.NODE_FONT_FACE:
-	    nodeCalc.setDefaultNodeFontFace((Font) c);
-	    break;
-	case VizMapUI.NODE_FONT_SIZE:
-	    nodeCalc.setDefaultNodeFontSize(((Double) c).floatValue());
-	    break;
-	}
-	VMM.getNetworkView().redrawGraph(false, true);
-    }	
-
-    /**
-     *	Set the image icon
-     */
-    protected void setImageIcon() {
-	// tell the respective appearance calculators
-	imageIcon = null;
-	switch(this.type) {
-	case VizMapUI.NODE_COLOR:
-	    imageIcon = new ImageIcon(this.getClass().getResource("images/nodeColorWheel.jpg"),"Node Color");
-	    break;
-	case VizMapUI.NODE_BORDER_COLOR:
-	    imageIcon = new ImageIcon(this.getClass().getResource("images/nodeBorderColorWheel.jpg"),"Node Color");
-	    break;
-	}
-    }
-
-    protected void drawDefault() {
-	JPanel outerDefPanel = new JPanel(false);
-	outerDefPanel.setLayout(new BoxLayout(outerDefPanel,BoxLayout.X_AXIS));
-
-	JPanel defPanel = new JPanel(false);
-	defPanel.setLayout(new BoxLayout(defPanel, BoxLayout.Y_AXIS));
-	Box content = new Box(BoxLayout.X_AXIS);
-
-	// create the ValueDisplayer
-	this.defaultValueDisplayer = ValueDisplayer.getDisplayFor(mainUIDialog,
-								  getName(),
-								  defaultObj);
-	defaultValueDisplayer.addItemListener(new DefaultItemChangedListener());
-
-	// create the button
-	JButton defaultButton = new JButton("Change Default");
-	// attach ActionListener from ValueDisplayer to button
-	defaultButton.addActionListener(defaultValueDisplayer.getInputListener());
-
-	// dump components into content Box
-	content.add(Box.createHorizontalGlue());
-	content.add(defaultButton);
-	content.add(Box.createHorizontalStrut(3));
-	content.add(defaultValueDisplayer);
-	content.add(Box.createHorizontalGlue());
-
-	// pad the default panel
-	defPanel.add(Box.createVerticalStrut(3));
-	defPanel.add(content);
-	defPanel.add(Box.createVerticalStrut(3));
-
-	// attach a border
-	Border defBorder = BorderFactory.createLineBorder(Color.BLACK);
-	defPanel.setBorder(BorderFactory.createTitledBorder(defBorder,
-							    "Default",
-							    TitledBorder.CENTER,
-							    TitledBorder.TOP));
-	defPanel.validate();
-
-	setImageIcon();
-	if(imageIcon==null)
-	    this.add(defPanel, BorderLayout.NORTH);
-	else {
-	    JButton tempB = new JButton();
-	    tempB.setIcon(imageIcon);
-	    outerDefPanel.add(tempB);
-	    outerDefPanel.add(defPanel);
-	    this.add(outerDefPanel, BorderLayout.NORTH);
-	}
-    }	
-
-    /**
-     * Refreshes the UI for calculator selection. Use when the set of available
-     * calculators has changed.
-     */
-    public void refreshCalculators() {
-	this.calculators = getCalculators(this.type);
-    }
-
-    /**
-     * Gets the defaults for the VizMapAttrTab. Use when the default setting for
-     * an attribute, the currently selected calculator for an attribute, or
-     * the set of avaiable calculators has changed.
-     */
-    protected void getDefaults(byte type) {
-	// this.currentCalculatoralculators = getCalculators(type);
-	switch (type) {
-	case VizMapUI.NODE_COLOR:
-	    this.defaultObj = nodeCalc.getDefaultNodeFillColor();
-	    this.currentCalculator = nodeCalc.getNodeFillColorCalculator();
-	    break;
-	case VizMapUI.NODE_BORDER_COLOR:
-	    this.defaultObj = nodeCalc.getDefaultNodeBorderColor();
-	    this.currentCalculator = nodeCalc.getNodeBorderColorCalculator();
-	    break;
-	case VizMapUI.NODE_LINETYPE:
-	    this.defaultObj = nodeCalc.getDefaultNodeLineType();
-	    this.currentCalculator = nodeCalc.getNodeLineTypeCalculator();
-	    break;
-	case VizMapUI.NODE_SHAPE:
-	    this.defaultObj = new Byte(nodeCalc.getDefaultNodeShape());
-	    this.currentCalculator = nodeCalc.getNodeShapeCalculator();
-	    break;
-	case VizMapUI.NODE_HEIGHT:
-	    this.defaultObj = new Double(nodeCalc.getDefaultNodeHeight());
-	    this.currentCalculator = nodeCalc.getNodeHeightCalculator();
-	    break;
-	case VizMapUI.NODE_WIDTH:
-	    this.defaultObj = new Double(nodeCalc.getDefaultNodeWidth());
-	    this.currentCalculator = nodeCalc.getNodeWidthCalculator();
-	    break;
-	case VizMapUI.NODE_SIZE:
-	    this.defaultObj = new Double(nodeCalc.getDefaultNodeHeight());
-	    this.currentCalculator = nodeCalc.getNodeHeightCalculator();
-	    break;
-	case VizMapUI.NODE_LABEL:
-	    this.defaultObj = nodeCalc.getDefaultNodeLabel();
-	    this.currentCalculator = nodeCalc.getNodeLabelCalculator();
-	    break;
-	case VizMapUI.NODE_TOOLTIP:
-	    this.defaultObj = nodeCalc.getDefaultNodeToolTip();
-	    this.currentCalculator = nodeCalc.getNodeToolTipCalculator();
-	    break;
-	case VizMapUI.EDGE_COLOR:
-	    this.defaultObj = edgeCalc.getDefaultEdgeColor();
-	    this.currentCalculator = edgeCalc.getEdgeColorCalculator();
-	    break;
-	case VizMapUI.EDGE_LINETYPE:
-	    this.defaultObj = edgeCalc.getDefaultEdgeLineType();
-	    this.currentCalculator = edgeCalc.getEdgeLineTypeCalculator();
-	    break;
-	case VizMapUI.EDGE_SRCARROW:
-	    this.defaultObj = edgeCalc.getDefaultEdgeSourceArrow();
-	    this.currentCalculator = edgeCalc.getEdgeSourceArrowCalculator();
-	    break;
-	case VizMapUI.EDGE_TGTARROW:
-	    this.defaultObj = edgeCalc.getDefaultEdgeTargetArrow();
-	    this.currentCalculator = edgeCalc.getEdgeTargetArrowCalculator();
-	    break;
-	case VizMapUI.EDGE_LABEL:
-	    this.defaultObj = edgeCalc.getDefaultEdgeLabel();
-	    this.currentCalculator = edgeCalc.getEdgeLabelCalculator();
-	    break;
-	case VizMapUI.EDGE_TOOLTIP:
-	    this.defaultObj = edgeCalc.getDefaultEdgeToolTip();
-	    this.currentCalculator = edgeCalc.getEdgeToolTipCalculator();
-	    break;
-	case VizMapUI.NODE_FONT_FACE:
-	    this.defaultObj = nodeCalc.getDefaultNodeFont();
-	    this.currentCalculator = nodeCalc.getNodeFontFaceCalculator();
-	    break;
-	case VizMapUI.EDGE_FONT_FACE:
-	    this.defaultObj = edgeCalc.getDefaultEdgeFont();
-	    this.currentCalculator = edgeCalc.getEdgeFontFaceCalculator();
-	    break;	  
-	case VizMapUI.NODE_FONT_SIZE:
-	    this.defaultObj = new Double(nodeCalc.getDefaultNodeFont().getSize2D());
-	    this.currentCalculator = nodeCalc.getNodeFontSizeCalculator();
-	    break;
-	case VizMapUI.EDGE_FONT_SIZE:
-	    this.defaultObj = new Double(edgeCalc.getDefaultEdgeFont().getSize2D());
-	    this.currentCalculator = edgeCalc.getEdgeFontSizeCalculator();
-	    break;
-	}
-    }
     
     private Collection getCalculators(byte type) {
 	switch(type) {
