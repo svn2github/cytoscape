@@ -54,7 +54,6 @@ import javax.swing.*;
  * @author Robert Sheridan
  */
 public class HierarchicalLayoutPlugin extends AbstractPlugin {
-    private CyWindow cyWindow;
 
     /**
      * Adds a menuitem to the plugin menu of the provided Cytoscape Window.

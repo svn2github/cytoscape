@@ -43,12 +43,9 @@ package csplugins.hierarchicallayout;
 import cytoscape.data.CyNetwork;
 import cytoscape.view.CyWindow;
 import giny.model.GraphPerspective;
-import giny.util.NodeDistances;
 import giny.view.GraphView;
 import giny.view.NodeView;
 import giny.view.EdgeView;
-
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
@@ -75,7 +72,7 @@ class HierarchyFlowLayoutOrderNode implements Comparable {
 		layer = a_layer;
 		horizontalPosition = a_horizontalPosition;
 	}
-		
+
 	public int compareTo(Object o) {
 		HierarchyFlowLayoutOrderNode y = (HierarchyFlowLayoutOrderNode)o;
 		int diff = y.componentSize - componentSize;
@@ -126,7 +123,7 @@ public class HierarchicalLayoutListener implements ActionListener {
 	}
 
 	/**
-	 * Layes out the graph. See this class' description for an outline
+	 * Lays out the graph. See this class' description for an outline
          * of the method used. <br>
 	 * For the last step, assembly of the layed out components, the method
 	 * implemented is similar to the FlowLayout layout manager from the AWT.

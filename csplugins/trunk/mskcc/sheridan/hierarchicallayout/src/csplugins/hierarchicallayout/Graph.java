@@ -49,7 +49,6 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Comparator;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.ListIterator;
@@ -175,7 +174,7 @@ public class Graph {
 			edges.add(new Edge(edgeFrom,edgeTo));
 			edgesFrom[edgeFrom].add(new Integer(edgeTo));
 			edgesTo[edgeTo].add(new Integer(edgeFrom));
-		}		
+		}
 		edge = new Edge[edges.size()];
 		edges.toArray(edge);
 		acyclic = false;
@@ -196,13 +195,21 @@ public class Graph {
 		return retval;
 	}
 
-	/**
-	 * Accessor.
-	 * @return total number of nodes in graph
-	*/
-	public int getNodecount() {
-		return nodecount;
-	}
+    /**
+     * Accessor.
+     * @return total number of nodes in graph
+    */
+    public int getNodecount() {
+        return nodecount;
+    }
+
+    /**
+     * Accessor.
+     * @return total number of edges in graph
+    */
+    public int getEdgecount() {
+        return edge.length;
+    }
 
 	/**
 	 * Query to test whether an edge exists.
@@ -271,7 +278,7 @@ public class Graph {
 	 * numbered consecutively, beginning with 0. These numbers are returned in an
 	 * array, whose length is equal to nodecount.
 	 * @return An array of integer component numbers - one for each node in this graph.
-	*/	
+	*/
 	public int[] componentIndex() {
 		int cI[] = new int[nodecount];
 		LinkedList componentNode[] = new LinkedList[nodecount];
@@ -335,7 +342,7 @@ public class Graph {
 	 * subgraph according to the indicies in partitionIndex.
 	 * @throws IllegalArgumentException if the size of either argument
 	 * array is incorrect (!= nodecount)
-	*/	
+	*/
 	public Graph[] partition(int partitionIndex[], int nodeRenumber[]) {
 		if (partitionIndex.length != nodecount || nodeRenumber.length != nodecount) {
 			throw new IllegalArgumentException("partitionGraph received wrong sized argument");
@@ -398,7 +405,7 @@ public class Graph {
 	 * is that this ordering will be used to eliminate cycles by reversing
 	 * the direction of any edges which oppose the implied flow from
 	 * sources to sinks.
-	*/	
+	*/
 	public int[] getCycleEliminationVertexPriority()
 	{
 		int priority[] = new int[nodecount];
@@ -534,7 +541,7 @@ public class Graph {
 		}
 		return priority;
 	}
-	
+
 	/**
 	 * Make a graph where all "left" edges are reversed (according to provided node ordering).
 	 * A left edge is one which begins at a node which is later
@@ -546,7 +553,7 @@ public class Graph {
 	 * while those towards the end are condiered more "sinklike".
 	 * @return A Graph which is similar to the current graph, but
 	 * which has no cycles due to the reversal of left edges.
-	*/	
+	*/
 	public Graph getGraphWithoutCycles(int cycleEliminationPriority[]) {
 		int priorityIndex[] = new int[nodecount];
 		int x;
@@ -599,7 +606,7 @@ public class Graph {
 	 * is not equal to nodecount.
 	 * @throws RuntimeException if this method is called on a graph which
 	 * has not had cycles removed via a call to getGraphWithoutCycles.
-	*/	
+	*/
 	public Graph getReducedGraph(int topologicalOrder[]) {
 		if (topologicalOrder.length != nodecount) {
 			throw new IllegalArgumentException("topological ordering of nodes does not match nodecount");
@@ -664,12 +671,9 @@ public class Graph {
 	 * Creates the transitive reduction of the current graph by combining calls
 	 * to getCycleEliminationVertexPriority(), getGraphWithoutCycles(int[]),
 	 * and getReducedGraph(int[]).
-	 * @param topologicalOrder an ordering of node indecies such that
-	 * there are no edges from a node lower in the order to a node higher
-	 * in the ordedr.
 	 * @return A Graph which is the transitive reduction of the current
 	 * graph.
-	*/	
+	*/
 	public Graph getReducedGraph() {
 		int cycleEliminationPriority[] = getCycleEliminationVertexPriority();
 		Graph dag = getGraphWithoutCycles(cycleEliminationPriority);
@@ -698,7 +702,7 @@ public class Graph {
 		return set1.length < set2.length;
 	}
 
-	
+
 	/**
 	 * Return an array of layer assignments for the nodes.
 	 * This layering is done using the Coffman-Graham-Layering algorithm.
@@ -730,7 +734,7 @@ public class Graph {
 		int x;
 		for (x=0; x<nodecount; x++) {
 			vertexLabel[x] = 0; /* 0 is the "unlabelled" label */
-		} 
+		}
 		int parentLabels[][] = new int[nodecount][];
 		LinkedHashSet eligible = new LinkedHashSet(nodecount * 3 / 2);
 		boolean onEligible[] = new boolean[nodecount];
@@ -793,7 +797,7 @@ public class Graph {
 		int vertexLayer[] = new int[nodecount];
 		for (x=0; x<nodecount; x++) {
 			vertexLayer[x] = 0; /* 0 means unassigned */
-		} 
+		}
 		eligible.clear();
 		LinkedHashSet nominated = new LinkedHashSet();
 		/* add all sinks and isolated nodes to eligible */
@@ -952,31 +956,25 @@ public class Graph {
 				System.out.println(component[x].getGraphWithoutOneOrTwoCycles());
 				System.out.println("nonmulti component:\n");
 				System.out.println(component[x].getGraphWithoutMultipleEdges());
-*/
 				int cycleEliminationPriority[] = component[x].getCycleEliminationVertexPriority();
-/*
 				System.out.println("acyclic component:\n");
 				System.out.println(component[x].getGraphWithoutCycles(cycleEliminationPriority));
 				System.out.println("reduced component:\n");
 				System.out.println(component[x].getReducedGraph());
-				System.out.println("layer assignment:\n");
 */
+                System.out.println("layer assignment:\n");
 				Graph red = component[x].getReducedGraph();
 				int layer[] = red.getVertexLayers();
-/*
 				int y;
 				for (y=0;y<layer.length;y++) {
 					System.out.println("" + y + " : " + layer[y]);
 				}
 				System.out.println("horizontal position:\n");
-*/
 				int horizontalPosition[] = red.getHorizontalPosition(layer);
-/*
 				for (y=0;y<horizontalPosition.length;y++) {
 					System.out.println("" + y + " : " + horizontalPosition[y]);
 				}
-*/
-			} 
+			}
 		} catch (IOException e) {
 			System.out.println("Error detected reading graph\nExiting\n");
 		}
