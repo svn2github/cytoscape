@@ -16,9 +16,9 @@ public class testPlugin extends PluginUtil{
 	ArgVector args=new ArgVector(5);
 	args.put("name","something");
 	args.put("intVal",new Integer(123));
+	args.put("doubleVal",new Double(1234));
 	args.put("fileVal",new File(""));
 	args.put("filesVal",new File[2]);
-	args.put("doubleVal",new Double(1234));
 	actions.put("doSomething",args);
 	return actions;
     }
