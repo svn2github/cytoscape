@@ -196,13 +196,10 @@ public class GMLReader implements GraphReader {
       //Cytoscape.getEdgeNetworkData().add("interaction", edgeName, interactionType);
       //Cytoscape.getEdgeNetworkData().addNameMapping(edgeName, edge);
     }
-<<<<<<< GMLReader.java
-    rootGraph.createEdges(sources,targets,false);
-    for (Iterator edgeIt = rootGraph.edgesList().iterator(),sourceIt = edgeSources.iterator(),targetIt = edgeTargets.iterator(),labelIt = edgeLabels.iterator();edgeIt.hasNext();) {
-=======
+
     edge_indices_array = Cytoscape.getRootGraph().createEdges(sources,targets,false);
     for ( Iterator edgeIt = Cytoscape.getRootGraph().edgesList().iterator(),sourceIt = edgeSources.iterator(),targetIt = edgeTargets.iterator(),labelIt = edgeLabels.iterator();edgeIt.hasNext();) {
->>>>>>> 1.26
+
       interactionType = (String)labelIt.next();
       String edgeName = ""+nodeNameMap.get(sourceIt.next())+" ("+interactionType+") "+nodeNameMap.get(targetIt.next());
       int previousMatchingEntries = Cytoscape.getEdgeNetworkData().countIdentical(edgeName);
@@ -271,13 +268,10 @@ public class GMLReader implements GraphReader {
 	  //for(int i=0;i<nodeLabels.size();i++){
 	  String ELLIPSE = "ellipse";
 	  String RECTANGLE = "rectangle";
-<<<<<<< GMLReader.java
-	  int i = 0;
-	  for (Iterator nodeIt = rootGraph.nodesIterator(); nodeIt.hasNext(); i++) {
-=======
+
 	  int i=0;
 	  for (Iterator nodeIt = Cytoscape.getRootGraph().nodesIterator();nodeIt.hasNext();i++) {
->>>>>>> 1.26
+
 	    Node current = (Node)nodeIt.next();
 	    String nodeName = (String)nodeLabels.get(i);
 	    if ( !current.getIdentifier().equals(nodeName)) {
@@ -308,7 +302,7 @@ public class GMLReader implements GraphReader {
 
 	    // ASSUMING THE ORDER IN THE GML IS THE SAME AS THAT RETURNED BY THE ITERATOR!!!!
 	    int i = 0;
-	    for (Iterator edgeIt = rootGraph.edgesIterator(); edgeIt.hasNext(); i++) {
+	    for (Iterator edgeIt = Cytoscape.getRootGraph().edgesIterator(); edgeIt.hasNext(); i++) {
 		Edge current = (Edge)edgeIt.next();
 		GMLTree tmpGML = (GMLTree)edgeGML.get(i);
 		Vector tmpLine = tmpGML.getVector("graphics|Line", "|", GMLTree.GMLTREE);
