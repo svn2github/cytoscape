@@ -81,11 +81,13 @@ public class StringPatternFilter
     this.identifier =identifier;
     setClassType(classString); 
   }
-  
-  public StringPatternFilter ( String classString,
-                               String selectedAttribute, 
-                               String searchString,
-                               String identifier ) {
+
+
+ 
+
+
+
+  public StringPatternFilter ( String desc){
     this.cyWindow = Cytoscape.getDesktop();
     //this.classType = classType;
     try{
@@ -94,10 +96,7 @@ public class StringPatternFilter
     }catch(Exception e){
       e.printStackTrace();
     }
-    this.selectedAttribute = selectedAttribute;  
-    this.searchString = searchString;
-    this.identifier =identifier;
-    setClassType(classString); 
+    input(desc);
   }
   
   
@@ -118,6 +117,7 @@ public class StringPatternFilter
    */
   public void setIdentifier ( String new_id ) {
     this.identifier = new_id;
+    pcs.firePropertyChange(FILTER_NAME_EVENT,null,new_id);
   }
 
   /**
@@ -169,12 +169,6 @@ public class StringPatternFilter
       }
     }
     return false;
-    // try{
-    //           return value.matches(searchString);
-    // 				}catch(Exception e){
-    // 								return false;
-    // 				}
-		
   }
 
   public Class[] getPassingTypes () {
@@ -283,15 +277,13 @@ public class StringPatternFilter
     return buffer.toString();
   }
   
-  public Filter input ( String desc ) {
-    String[] array = desc.split( "," );
-    if ( array[0].equals( "filter.cytoscape.StringPatternFilter" ) ) {
-      System.out.println( "Found Filter" );
-      Filter new_filter = new StringPatternFilter( array[1], array[2], array[3], array[4] );
-      return new_filter;
-    }
-    return null;
+  public void input(String desc){
+    String [] array = desc.split(",");
+    setClassType(array[0]);
+    setSelectedAttribute(array[1]);
+    setSearchString(array[2]);
+    setIdentifier(array[3]);
   }
-
+  
 }
 

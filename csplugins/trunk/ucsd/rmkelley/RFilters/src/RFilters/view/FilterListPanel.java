@@ -20,7 +20,8 @@ import ViolinStrings.Strings;
 public class FilterListPanel 
   extends JPanel 
   implements PropertyChangeListener,
-             ListSelectionListener {
+             ListSelectionListener,
+             ListDataListener{
 
   
   JList filterList;
@@ -42,16 +43,17 @@ public class FilterListPanel
     JPanel listPanel = new JPanel();
     listPanel.setBorder( new TitledBorder( "Available Filters" ) );
 
+    //FilterManager.defaultManager().addListDataListener(this);
     filterList = new JList(FilterManager.defaultManager());
     filterList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     filterList.addListSelectionListener( this );
-    updateLists();
+    
     
     JScrollPane scroll = new JScrollPane( filterList );
     listPanel.add( scroll, BorderLayout.CENTER);
     setLayout( new BorderLayout() );
     add( listPanel, BorderLayout.CENTER );
-
+    scroll.setPreferredSize(new Dimension(250,100));
   }
 
   public SwingPropertyChangeSupport getSwingPropertyChangeSupport () {
@@ -60,11 +62,10 @@ public class FilterListPanel
 
   protected void fireFilterSelected () {
     pcs.firePropertyChange( FILTER_SELECTED, null, null );
-    System.err.println("Fire filter selected");
  }
 
 
-  public void valueChanged ( ListSelectionEvent e ) {
+  protected void handleEvent(EventObject e){
     if(filterList.getSelectedValue() == null){
       pcs.firePropertyChange( NO_SELECTION,null,null );
     }
@@ -73,27 +74,27 @@ public class FilterListPanel
     }
   }
 
+  public void valueChanged ( ListSelectionEvent e ) {
+    handleEvent(e);
+  }
+
+  public void contentsChanged(ListDataEvent e){}
+
+  public void intervalAdded(ListDataEvent e){
+    handleEvent(e);
+  }
+
+  public void intervalRemoved(ListDataEvent e){
+    handleEvent(e);
+  }
+
+
   public Filter getSelectedFilter(){
     return (Filter)filterList.getSelectedValue();
   }
-
-  //public Filter[] getSelectedFilters () {
-  //  Object[] selected_filters = compoundList.getSelectedValues();
-  //  return (Filter []) selected_filters;
-  //}
 
   public void propertyChange ( PropertyChangeEvent e ) {
     //updateLists();
   }
 
-  protected void updateLists () {
-    //System.err.println("update list");
-    //filterModel = new DefaultListModel();
-    //filterModel.ensureCapacity(FilterManager.defaultManager().getFilterCount());
-    //for(Iterator i = FilterManager.defaultManager().getFilters();i.hasNext();){
-    //  filterModel.addElement(i.next());
-    //}
-    //filterList.setModel(filterModel);
-    //filterList.setModel(FilterManager.defaultManager());
-  }
 }

@@ -40,12 +40,6 @@ public class NumericAttributeFilterEditor
 
   protected String identifier;
 
-  protected String filterName;
-  protected Number searchNumber;
-  protected String selectedAttribute;
-  protected String selectedClass;
-  protected String comparison;
-
   protected NumericAttributeFilter filter;
 
   protected CyWindow cyWindow;
@@ -81,7 +75,7 @@ public class NumericAttributeFilterEditor
     //this.objectAttributes = network.getNodeAttributes();
     setLayout(new BorderLayout());
     identifier = "Numeric Filter";
-    setBorder( new TitledBorder( getFilterID()+" - "+getDescription()));
+    setBorder( new TitledBorder( getFilterID() ) );
 
     JPanel namePanel = new JPanel();
     nameField = new JTextField(15);
@@ -172,7 +166,6 @@ public class NumericAttributeFilterEditor
   public void editFilter ( Filter filter ) {
     if ( filter instanceof NumericAttributeFilter ) {
       // good, this Filter is of the right type
-      getSwingPropertyChangeSupport().removePropertyChangeListener( this.filter );
       this.filter = ( NumericAttributeFilter )filter;
       setFilterName(this.filter.toString());
       setSearchNumber(this.filter.getSearchNumber());
@@ -180,7 +173,6 @@ public class NumericAttributeFilterEditor
       setSelectedClass(this.filter.getClassType());
       setSelectedComparison(this.filter.getComparison());
       updateName();
-      getSwingPropertyChangeSupport().addPropertyChangeListener( this.filter );
     }
   }
 
@@ -196,67 +188,61 @@ public class NumericAttributeFilterEditor
   // Filter Name ///////////////////////////////////////
 
   public String getFilterName () {
-    return filterName;
+    return filter.toString();
   }
 
   public void setFilterName ( String name ) {
     nameField.setText( name );
-    filterName = name;
-    fireFilterNameChanged();
+    filter.setIdentifier(name);
   }
 
   // Search String /////////////////////////////////////
   
   public Number getSearchNumber () {
-    return searchNumber;
-    
+    return filter.getSearchNumber();
   }
 
   public void setSearchNumber ( Number searchNumber ) {
-    this.searchNumber = searchNumber;
+    filter.setSearchNumber(searchNumber);
     searchField.setText( searchNumber.toString() );
-    fireSearchNumberChanged();
   }
 
   // Selected Attribute ////////////////////////////////
   
   public String getSelectedAttribute () {
-    return selectedAttribute;
+    return filter.getSelectedAttribute();
   }
 
   public void setSelectedAttribute ( String new_attr ) {
-    selectedAttribute = new_attr;
-    attributeBox.setSelectedItem( new_attr );
-    fireAttributeChanged();
+    filter.setSelectedAttribute(new_attr);
+    attributeBox.setSelectedItem(new_attr);
   }
 
   public String getSelectedClass(){
-    return selectedClass;
+    return filter.getClassType();
   }
 
   public void setSelectedClass(String newClass){
-    selectedClass = newClass;
-    if ( selectedClass == NumericAttributeFilter.NODE) {
+    filter.setClassType(newClass);
+    if ( newClass == NumericAttributeFilter.NODE) {
       attributeBox.setModel(nodeAttributeModel);
-      attributeBox.setSelectedItem(selectedAttribute);    
+      attributeBox.setSelectedItem(getSelectedAttribute());
     } // end of if ()
     else {
       attributeBox.setModel(edgeAttributeModel);
-      attributeBox.setSelectedItem(selectedAttribute);
+      attributeBox.setSelectedItem(getSelectedAttribute());
     } // end of else
     classBox.setSelectedItem(newClass);
-    fireClassChanged();
     setSelectedAttribute((String)attributeBox.getSelectedItem());
   }
 
   public String getSelectedComparison(){
-    return comparison;
+    return filter.getComparison();
   }
 
   public void setSelectedComparison(String comparison){
-    this.comparison = comparison;
+    filter.setComparison(comparison);
     comparisonBox.setSelectedItem(comparison);
-    fireComparisonChanged();
   }
 
   public void actionPerformed ( ActionEvent e ) {

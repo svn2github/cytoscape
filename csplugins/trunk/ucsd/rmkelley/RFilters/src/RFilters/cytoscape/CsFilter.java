@@ -46,7 +46,8 @@ public class CsFilter
         
         while ( i.hasNext() ) {
           try {
-            writer.write( ((Filter)i.next()).output());
+	    Filter f = (Filter)i.next();
+            writer.write( FilterManager.defaultManager().getFilterID(f)+"\t"+f.getClass()+"\t"+f.output());
             writer.newLine();
           } catch ( Exception ex ) {
             System.out.println( "Error with Filter output" );
@@ -59,7 +60,6 @@ public class CsFilter
         System.out.println( "Filter Write error" );
         ex.printStackTrace();
       }
-
     }
   }
 
@@ -98,8 +98,8 @@ public class CsFilter
 
     FilterEditorManager.defaultManager().addEditor( new NumericAttributeFilterEditor( window ) );
     FilterEditorManager.defaultManager().addEditor( new StringPatternFilterEditor (window)); 
-
-
+    FilterEditorManager.defaultManager().addEditor( new NodeTopologyFilterEditor (window));
+    FilterEditorManager.defaultManager().addEditor( new BooleanMetaFilterEditor ());
   }
 
   public String describe () {
@@ -108,8 +108,8 @@ public class CsFilter
 
   public  FilterUsePanel getFilterUsePanel () {
     if ( filterUsePanel == null ) {
-      filterUsePanel = new FilterUsePanel( network, window );
-     }
+      filterUsePanel = new FilterUsePanel( frame,network, window );
+    }
     return filterUsePanel;
   }
                 

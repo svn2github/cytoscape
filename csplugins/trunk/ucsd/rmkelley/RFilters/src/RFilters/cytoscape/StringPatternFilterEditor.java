@@ -38,19 +38,14 @@ public class StringPatternFilterEditor
   protected JTextField searchField;
   protected JComboBox attributeBox;
 
-  protected String searchString;
-  protected String selectedAttribute;
-  protected String selectedClass;
-
   protected StringPatternFilter filter;
 
   protected CyWindow cyWindow;
   protected String DEFAULT_SEARCH_STRING = "";
-  protected String DEFAULT_FILTER_NAME = "Regex: ";
+  protected String DEFAULT_FILTER_NAME = "Pattern: ";
   protected String DEFAULT_SELECTED_ATTRIBUTE = "";
 
 
-  protected String RESET_CLASS;
   protected Class NODE_CLASS;
   protected Class EDGE_CLASS;
   protected Class STRING_CLASS;
@@ -78,7 +73,7 @@ public class StringPatternFilterEditor
 				
     setLayout(new BorderLayout());
     identifier = "String Filter";
-    setBorder( new TitledBorder( getFilterID()+" - "+getDescription()));
+    setBorder( new TitledBorder( getFilterID() ) );
 
     JPanel namePanel = new JPanel();
     nameField = new JTextField(15);
@@ -109,7 +104,7 @@ public class StringPatternFilterEditor
     middlePanel.add(attributeBox);
 
     JPanel bottomPanel = new JPanel();
-    bottomPanel.add(new JLabel(" that matches the regular expression "));
+    bottomPanel.add(new JLabel(" that matches the pattern "));
 				
     searchField = new JTextField(10);
     searchField.setEditable( true );
@@ -158,14 +153,12 @@ public class StringPatternFilterEditor
   public void editFilter ( Filter filter ) {
     if ( filter instanceof StringPatternFilter ) {
       // good, this Filter is of the right type
-      getSwingPropertyChangeSupport().removePropertyChangeListener( this.filter );
       this.filter = ( StringPatternFilter )filter;      
       setSearchString(this.filter.getSearchString());
       setFilterName(this.filter.toString());
       setSelectedAttribute(this.filter.getSelectedAttribute());
       setSelectedClass(this.filter.getClassType());
       updateName();
-      getSwingPropertyChangeSupport().addPropertyChangeListener( this.filter );
     }
   }
 
@@ -186,64 +179,64 @@ public class StringPatternFilterEditor
 
   public void setFilterName ( String name ) {
     nameField.setText( name );
-    identifier = name;
-    fireFilterNameChanged();
+    filter.setIdentifier(name);
   }
 
   // Search String /////////////////////////////////////
   
   public String getSearchString () {
-    return searchString;
+    return filter.getSearchString();
   }
 
   public void setSearchString ( String search_string ) {
-    searchString = search_string;
-    searchField.setText( search_string );
-    fireSearchStringChanged();
+    filter.setSearchString(search_string);
+    searchField.setText(search_string);
   }
 
   // Selected Attribute ////////////////////////////////
   
   public String getSelectedAttribute () {
-    return selectedAttribute;
+    return filter.getSelectedAttribute();
   }
 
   public void setSelectedAttribute ( String new_attr ) {
-    selectedAttribute = new_attr;
+    filter.setSelectedAttribute(new_attr);
     attributeBox.setSelectedItem(new_attr);
-    fireAttributeChanged();
   }
 
   public String getSelectedClass(){
-    return selectedClass;
+    return filter.getClassType();
   }
 
   public void setSelectedClass(String newClass){
-    selectedClass = newClass;
-    if ( selectedClass == NumericAttributeFilter.NODE) {
+    filter.setClassType(newClass);
+    if ( newClass == NumericAttributeFilter.NODE) {
       attributeBox.setModel(nodeAttributeModel);
-      attributeBox.setSelectedItem(selectedAttribute);    
+      attributeBox.setSelectedItem(filter.getSelectedAttribute());    
     } // end of if ()
     else {
       attributeBox.setModel(edgeAttributeModel);
-      attributeBox.setSelectedItem(selectedAttribute);
     } // end of else    
     classBox.setSelectedItem(newClass);
-    fireClassChanged();
     setSelectedAttribute((String)attributeBox.getSelectedItem());
   }
 
   public void handleEvent ( AWTEvent e ) {
-    if ( e.getSource() == searchField ) {
-      setSearchString(searchField.getText());
-    } else if ( e.getSource() == nameField ) {
+    if ( e.getSource() == nameField){
       setFilterName(nameField.getText());
-    } else if ( e.getSource() == attributeBox ) {
-      setSelectedAttribute((String)attributeBox.getSelectedItem());
-    } else if( e.getSource() == classBox ){
-      setSelectedClass((String)classBox.getSelectedItem());
     }
-    updateName();
+    else {
+      if ( e.getSource() == searchField ) {
+	setSearchString(searchField.getText());
+      } else if ( e.getSource() == nameField ) {
+      setFilterName(nameField.getText());
+      } else if ( e.getSource() == attributeBox ) {
+	setSelectedAttribute((String)attributeBox.getSelectedItem());
+      } else if( e.getSource() == classBox ){
+	setSelectedClass((String)classBox.getSelectedItem());
+      }
+      updateName();
+    }
   }
 
   public void actionPerformed(ActionEvent ae){
@@ -263,22 +256,4 @@ public class StringPatternFilterEditor
     buffer.append( getSearchString() );
     setFilterName(buffer.toString());
   }
-
-  public void fireSearchStringChanged () {
-    pcs.firePropertyChange( StringPatternFilter.SEARCH_STRING_EVENT, null, getSearchString() );
-  }
-
-  public void fireFilterNameChanged () {
-    pcs.firePropertyChange( StringPatternFilter.FILTER_NAME_EVENT, null, getFilterName() );
-  }
- 
-  public void fireClassChanged(){
-    pcs.firePropertyChange( StringPatternFilter.CLASS_TYPE_EVENT,null, getSelectedClass());
-		
-  }
-
-  public void fireAttributeChanged () {
-    pcs.firePropertyChange( StringPatternFilter.SELECTED_ATTRIBUTE_EVENT, null, getSelectedAttribute() );
-  }
-
 }

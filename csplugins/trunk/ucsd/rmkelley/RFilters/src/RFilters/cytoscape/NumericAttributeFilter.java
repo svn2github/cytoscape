@@ -24,7 +24,7 @@ import ViolinStrings.Strings;
  * a selected attribute matches a specific value.
  */
 public class NumericAttributeFilter
-  implements Filter,PropertyChangeListener  {
+  implements Filter{
   
   //----------------------------------------//
   // Filter specific properties 
@@ -93,23 +93,16 @@ public class NumericAttributeFilter
   /**
    * Creates a new NumericAttributeFilter
    */  
-  public NumericAttributeFilter ( String comparison,
-				  String classString,
-				  String selectedAttribute, 
-				  String searchNumber,
-				  String identifier ) {
+  public NumericAttributeFilter ( String desc){
     this.cyWindow = Cytoscape.getDesktop();
-    this.comparison = comparison;
     try{
       NODE_CLASS = Class.forName("giny.model.Node");
       EDGE_CLASS = Class.forName("giny.model.Edge");
     }catch(Exception e){
       e.printStackTrace();
     }
-    this.selectedAttribute = selectedAttribute;  
-    this.searchNumber = new Double( searchNumber );
-    this.identifier =identifier;
-    setClassType(classString);
+    input(desc);
+   
   }
 
   
@@ -201,25 +194,7 @@ public class NumericAttributeFilter
     return pcs;
   }
 
-  //----------------------------------------//
-  // NumericAttributeFilter methods
-  //----------------------------------------//
-
-  public void propertyChange ( PropertyChangeEvent e ) {
-    if ( e.getPropertyName() == SEARCH_NUMBER_EVENT ) {
-      setSearchNumber( ( Number )e.getNewValue() );
-    } else if ( e.getPropertyName() == FILTER_NAME_EVENT ) {
-      setIdentifier( ( String )e.getNewValue() );
-    } else if ( e.getPropertyName() == SELECTED_ATTRIBUTE_EVENT ) {
-      setSelectedAttribute( ( String )e.getNewValue() );
-    } else if (e.getPropertyName() == CLASS_TYPE_EVENT)  {
-      setClassType((String)e.getNewValue());
-    } else if (e.getPropertyName() == COMPARISON_EVENT){
-      setComparison((String)e.getNewValue());
-    }
-  }
-  
-  // SearchString /////////////////////////////////
+   // SearchString /////////////////////////////////
 
   public Number getSearchNumber () {
     return searchNumber;
@@ -276,7 +251,6 @@ public class NumericAttributeFilter
 
   public String output () {
     StringBuffer buffer = new StringBuffer();
-    buffer.append( "filter.cytoscape.NumericAttributeFilter,");
     buffer.append( getComparison()+"," );
     buffer.append( getClassType()+"," );
     buffer.append( getSelectedAttribute()+"," );
@@ -284,10 +258,15 @@ public class NumericAttributeFilter
     buffer.append( toString() );
     return buffer.toString();
   }
-  
-  public Filter input ( String desc ) {
-    return null;
-  }
 
+  public void input(String desc){
+    String [] array = desc.split(",");
+    setComparison(array[0]);
+    setSelectedAttribute(array[2]);  
+    setSearchNumber(new Double( array[3] ));
+    setIdentifier(array[4]);
+    setClassType(array[1]);
+  }
+  
 }
 

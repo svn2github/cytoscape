@@ -20,26 +20,33 @@ public class FilterEditorPanel
   extends JPanel 
   implements PropertyChangeListener{
 
+  public static String ACTIVE_PANEL_CHANGED = "Active Panel Changed";
   JPanel currentEditor;
   JPanel defaultPanel;
+  PropertyChangeSupport pcs;
   public FilterEditorPanel () {
     super();
     initialize();
+    pcs = new PropertyChangeSupport(this);
   }
-
+  
   public void initialize() {
     defaultPanel = new DefaultPanel(); 
     currentEditor = defaultPanel;
     add(currentEditor);
   }
   
+  public PropertyChangeSupport getPropertyChangeSupport(){
+    return pcs;
+  }
+
   public void setActivePanel ( JPanel editor ) {
     remove(currentEditor);
     add(editor);
     validate();
     paint(getGraphics());
     currentEditor = editor;
-    System.err.println("Set editor active");
+    pcs.firePropertyChange(ACTIVE_PANEL_CHANGED, null,null);
   }
   
   public void propertyChange ( PropertyChangeEvent e ) {
@@ -60,7 +67,7 @@ class DefaultPanel extends JPanel{
     text.setLineWrap(true);
     text.setWrapStyleWord(true);
     text.setEditable(false);
-    text.setText("There is no filter currently selected. To edit a filter, select it from the list. If the list is empty, you can create a new filter with the \"Create new filter\" button.");
+    text.setText("There is no filter currently selected. To edit a filter, select it from the \"Available filters\" list. If the list is empty, you can create a new filter with the \"Create new filter\" button.");
     text.setColumns(25);
     text.setBackground(this.getBackground());
     setLayout(new BorderLayout());

@@ -3,7 +3,7 @@ import filter.view.FilterEditor;
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeListener;
 
-public interface Filter extends PropertyChangeListener {
+public interface Filter {
 
   public static String FILTER_MODIFIED = "FILTER_MODIFIED";
  
@@ -46,7 +46,7 @@ public interface Filter extends PropertyChangeListener {
    * the output is modifiable, so that one could change how a Filter behaves if
    * they wanted to.
    */
-  public Filter input ( String desc );
+  public void input ( String desc );
 
   /**
    * All filters should override the Object equals(..) method to return true

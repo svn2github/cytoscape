@@ -38,29 +38,29 @@ public class FilterUsePanel extends JPanel
   JButton addButton,removeButton;
   JCheckBox select, gray, hide,  overwrite;
   JRadioButton pulsate, spiral;
+  JFrame frame;
 
-  public FilterUsePanel ( CyNetwork network, CyWindow window ) {
+  public FilterUsePanel ( JFrame frame, CyNetwork network, CyWindow window ) {
     super();
+    this.frame = frame;
     this.network = network;
     this.window = window;
 
     //--------------------//
     // FilterEditorPanel
     filterEditorPanel = new FilterEditorPanel();
+    filterEditorPanel.getPropertyChangeSupport().addPropertyChangeListener(this);
 
     //--------------------//
     // Selected Filter Panel
     JPanel selected_filter_panel = new JPanel();
     selected_filter_panel.setLayout(new BorderLayout());
-    //selected_filter_panel.setBorder( new TitledBorder( "Available Filters" ) );
     filterListPanel = new FilterListPanel( );
     selected_filter_panel.add( filterListPanel,BorderLayout.CENTER );
     selected_filter_panel.add(createManagePanel(),BorderLayout.NORTH);
     selected_filter_panel.add(createActionPanel(),BorderLayout.SOUTH);
 
     JSplitPane pane0 = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, selected_filter_panel, filterEditorPanel );
-    //JSplitPane pane1 = new JSplitPane( JSplitPane.VERTICAL_SPLIT, filterEditorPanel, pane0 );
-    //add( pane0 );
     add(pane0);
     filterListPanel.getSwingPropertyChangeSupport().addPropertyChangeListener( filterEditorPanel );
     filterListPanel.getSwingPropertyChangeSupport().addPropertyChangeListener( this );
@@ -81,6 +81,9 @@ public class FilterUsePanel extends JPanel
       removeButton.setEnabled(false);
       apply.setEnabled(false);
     } // end of if ()
+    else if ( e.getPropertyName() == FilterEditorPanel.ACTIVE_PANEL_CHANGED ){
+      frame.pack();
+    }
   }
     
   public JPanel createManagePanel(){
@@ -121,18 +124,20 @@ public class FilterUsePanel extends JPanel
     if (passes ) {
       
       if ( object instanceof Node ) {
-	NodeView nv =   window.getView().getNodeView( ( Node )object );
-	if ( select.isSelected() ) {
-	  nv.setSelected( true );
-	}
+	//NodeView nv =   window.getView().getNodeView( ( Node )object );
+	//if ( select.isSelected() ) {
+	//  nv.setSelected( true );
+	//}
+	network.setFlagged((Node)object,true);
       } 
       else if ( object instanceof Edge ) {
-	EdgeView nv =   window.getView().getEdgeView( ( Edge )object );
-	if ( select.isSelected() ) {
-	  nv.setSelected( true );
-	}
+	//EdgeView nv =   window.getView().getEdgeView( ( Edge )object );
+	//if ( select.isSelected() ) {
+	//  nv.setSelected( true );
+	//}
+	network.setFlagged((Edge)object,true);
       } 
-    } else {
+    }/* else {
       if ( object instanceof Node ) {
 	NodeView nv =   window.getView().getNodeView( ( Node )object );
 	if ( hide.isSelected() ) {
@@ -147,7 +152,7 @@ public class FilterUsePanel extends JPanel
 	  ( ( phoebe.PGraphView )window.getView() ).hideEdgeView( nv );
 	}
       }
-    }
+      }*/
   }
 
   protected void testObjects () {
@@ -192,11 +197,11 @@ public class FilterUsePanel extends JPanel
 
   public JPanel createActionPanel () {
     JPanel actionPanel = new JPanel();
-    actionPanel.setBorder( new TitledBorder( "Available Actions" ) );
+    //actionPanel.setBorder( new TitledBorder( "Available Actions" ) );
 
-    select = new JCheckBox( "Select Passed" );
-    hide = new JCheckBox( "Hide Failed" );
-    apply = new JButton ( new AbstractAction( "Apply filter" ){
+    //select = new JCheckBox( "Select Passed" );
+    //hide = new JCheckBox( "Hide Failed" );
+    apply = new JButton ( new AbstractAction( "Apply selected filter" ){
 	public void actionPerformed(ActionEvent e){
 	  SwingUtilities.invokeLater(new Runnable(){
 	      public void run(){
@@ -204,8 +209,8 @@ public class FilterUsePanel extends JPanel
 	      }
 	    });}});
     apply.setEnabled(false);
-    actionPanel.add(select);
-    actionPanel.add(hide);
+    //actionPanel.add(select);
+    //actionPanel.add(hide);
     actionPanel.add(apply);
     return actionPanel;
   }
