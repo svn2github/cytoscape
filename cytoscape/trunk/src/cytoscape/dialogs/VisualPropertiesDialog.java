@@ -74,14 +74,10 @@ public VisualPropertiesDialog (Frame parentFrame,
   colorButton.addActionListener(new
       GeneralColorDialogListener(this,nColor,colorLabel,
 				 "Choose a Node Color"));
-  c.gridx=1;
-  c.gridy=1;
-  c.fill=GridBagConstraints.NONE;
+  gbcSet(c,1,1);
   gblPanelInsert(mainPanel,colorLabel,gridbag,c);
 
-  c.gridx=0;
-  c.gridy=1;
-  c.fill=GridBagConstraints.HORIZONTAL;
+  gbcSet(c,0,1,1,1,GridBagConstraints.HORIZONTAL);
   gblPanelInsert(mainPanel,colorButton,gridbag,c);
 
   JButton borderColorButton = new JButton("Node Border Color");
@@ -91,14 +87,10 @@ public VisualPropertiesDialog (Frame parentFrame,
   borderColorButton.addActionListener(new
       GeneralColorDialogListener(this,bColor,borderColorLabel,
 				 "Choose a Node Border Color"));
-  c.gridx=1;
-  c.gridy=2;
-  c.fill=GridBagConstraints.NONE;
+  gbcSet(c,1,2);
   gblPanelInsert(mainPanel,borderColorLabel,gridbag,c);
 
-  c.gridx=0;
-  c.gridy=2;
-  c.fill=GridBagConstraints.HORIZONTAL;
+  gbcSet(c,0,2,1,1,GridBagConstraints.HORIZONTAL);
   gblPanelInsert(mainPanel,borderColorButton,gridbag,c);
 
   JButton bgColorButton
@@ -109,116 +101,101 @@ public VisualPropertiesDialog (Frame parentFrame,
   bgColorButton.addActionListener(new
       GeneralColorDialogListener(this,bgColor,bgColorLabel,
 				 "Choose a Background Color"));
-  c.gridx=1;
-  c.gridy=3;
-  c.fill=GridBagConstraints.NONE;
+  gbcSet(c,1,3);
   gblPanelInsert(mainPanel,bgColorLabel,gridbag,c);
 
-  c.gridx=0;
-  c.gridy=3;
-  c.fill=GridBagConstraints.HORIZONTAL;
+  gbcSet(c,0,3,1,1,GridBagConstraints.HORIZONTAL);
   gblPanelInsert(mainPanel,bgColorButton,gridbag,c);
 
-  c.gridheight=1;
-  c.fill=GridBagConstraints.NONE;
-
-  
   sizeDefault = 
       new IntegerEntryField
 	  ("Default Node Size",
 	   ((Integer)aMapper.getDefaultValue(VizMapperCategories.NODE_HEIGHT)).intValue(),
 	   500);
-  c.gridx=0;
-  c.gridy=4;
+  gbcSet(c,0,4);
   gblPanelInsert(mainPanel,sizeDefault,gridbag,c);
 
   initializeShapeDefault();
-  c.gridx=0;
-  c.gridy=5;
+  gbcSet(c,0,5);
   gblPanelInsert(mainPanel,shapeDefault,gridbag,c);
 
   initializeLineTypeDefault();
-  c.gridx=0;
-  c.gridy=6;
+  gbcSet(c,0,6);
   gblPanelInsert(mainPanel,lineTypeDefault,gridbag,c);
 
   initializeArrowDefault();
-  c.gridx=0;
-  c.gridy=7;
+  gbcSet(c,0,7);
   gblPanelInsert(mainPanel,arrowDefault,gridbag,c);
 
   //////////////////////////////////////////////
-  JPanel labelMappingSubPanel = new JPanel();
-  GridBagLayout labelMappingSubPanelGridbag = new GridBagLayout(); 
-  GridBagConstraints labelMappingSubPanelConstraints = new GridBagConstraints();
-  labelMappingSubPanel.setLayout (labelMappingSubPanelGridbag);
+  JPanel labelMapPanel = new JPanel();
+  GridBagLayout labelMapPanelGridbag = new GridBagLayout(); 
+  GridBagConstraints labelMapPanelConstraints = new GridBagConstraints();
+  labelMapPanel.setLayout (labelMapPanelGridbag);
   
-  Border labelMappingSubPanelBorder = BorderFactory.createLineBorder (Color.black);
-  Border labelMappingSubPanelTitledBorder = 
-      BorderFactory.createTitledBorder (labelMappingSubPanelBorder,
+  Border labelMapPanelBorder = BorderFactory.createLineBorder (Color.black);
+  Border labelMapPanelTitledBorder = 
+      BorderFactory.createTitledBorder (labelMapPanelBorder,
 					"Node Label Mapping", 
 					TitledBorder.CENTER, 
 					TitledBorder.DEFAULT_POSITION);
-  labelMappingSubPanel.setBorder (labelMappingSubPanelTitledBorder);
+  labelMapPanel.setBorder (labelMapPanelTitledBorder);
 
   JPanel labelTextPanel
       = new LabelTextPanel(nodeAttribs,localNodeLabelKey);
-  labelMappingSubPanelConstraints.gridx=0;
-  labelMappingSubPanelConstraints.gridy=0;
-  gblPanelInsert(labelMappingSubPanel,labelTextPanel,labelMappingSubPanelGridbag,labelMappingSubPanelConstraints);
+  gbcSet(labelMapPanelConstraints,0,0);
+  gblPanelInsert(labelMapPanel,labelTextPanel,labelMapPanelGridbag,labelMapPanelConstraints);
 
   //////////////////////////////////////////////
-  c.gridwidth = 2;
-  c.gridx=0;
-  c.gridy=8;
-  c.fill=GridBagConstraints.HORIZONTAL;
-  gblPanelInsert(mainPanel,labelMappingSubPanel,gridbag,c);
+  gbcSet(c,0,8,2,1,GridBagConstraints.HORIZONTAL);
+  gblPanelInsert(mainPanel,labelMapPanel,gridbag,c);
 
   //////////////////////////////////////////////
-  JPanel edgeMappingSubPanel = new JPanel();
-  GridBagLayout edgeMappingSubPanelGridbag = new GridBagLayout(); 
-  GridBagConstraints edgeMappingSubPanelConstraints = new GridBagConstraints();
-  edgeMappingSubPanel.setLayout (edgeMappingSubPanelGridbag);
+  JPanel edgeMapPanel = new JPanel();
+  GridBagLayout edgeMapPanelGridbag = new GridBagLayout(); 
+  GridBagConstraints edgeMapPanelConstraints = new GridBagConstraints();
+  edgeMapPanel.setLayout (edgeMapPanelGridbag);
 
-  Border edgeMappingSubPanelBorder = BorderFactory.createLineBorder (Color.black);
-  Border edgeMappingSubPanelTitledBorder = 
-      BorderFactory.createTitledBorder (edgeMappingSubPanelBorder,
+  Border edgeMapPanelBorder = BorderFactory.createLineBorder (Color.black);
+  Border edgeMapPanelTitledBorder = 
+      BorderFactory.createTitledBorder (edgeMapPanelBorder,
 					"Edge Color Mapping", 
 					TitledBorder.CENTER, 
 					TitledBorder.DEFAULT_POSITION);
-  edgeMappingSubPanel.setBorder (edgeMappingSubPanelTitledBorder);
+  edgeMapPanel.setBorder (edgeMapPanelTitledBorder);
 
   if(localEdgeKey==null) localEdgeKey = new MutableString("temp");
   edgeTextPanel
       = new EdgeTextPanel(edgeAttribs,aMapper,parentFrame,localEdgeKey);
-  edgeMappingSubPanelConstraints.gridx=0;
-  edgeMappingSubPanelConstraints.gridy=0;
-  gblPanelInsert(edgeMappingSubPanel,edgeTextPanel,edgeMappingSubPanelGridbag,edgeMappingSubPanelConstraints);
+  gbcSet(edgeMapPanelConstraints,0,0);
+  gblPanelInsert(edgeMapPanel,edgeTextPanel,edgeMapPanelGridbag,edgeMapPanelConstraints);
 
   //////////////////////////////////////////////
-  c.gridwidth = 2;
-  c.gridx=0;
-  c.gridy=9;
-  c.fill=GridBagConstraints.HORIZONTAL;
-  gblPanelInsert(mainPanel,edgeMappingSubPanel,gridbag,c);
+  gbcSet(c,0,9,2,1,GridBagConstraints.HORIZONTAL);
+  gblPanelInsert(mainPanel,edgeMapPanel,gridbag,c);
 
   JButton applyButton = new JButton ("Apply");
   applyButton.addActionListener (new ApplyAction ());
-  c.gridwidth = 1;
-  c.gridx=0;
-  c.gridy=10;
-  c.fill=GridBagConstraints.NONE;
+  gbcSet(c,0,10);
   gblPanelInsert(mainPanel,applyButton,gridbag,c);
 
   JButton cancelButton = new JButton ("Cancel");
   cancelButton.addActionListener (new CancelAction ());
-  c.gridx=1;
-  c.gridy=10;
+  gbcSet(c,1,10);
   gblPanelInsert(mainPanel,cancelButton,gridbag,c);
 
   setContentPane (mainPanel);
 } // PopupDialog ctor
 
+    // sets GridBagConstraints.
+    private void gbcSet(GridBagConstraints c, int x, int y, int w, int h, int f) {
+	c.gridx = x;	c.gridy = y;
+	c.gridwidth = w;	c.gridheight = h;
+	c.fill = f;
+    }
+    private void gbcSet(GridBagConstraints c, int x, int y) {
+	gbcSet(c,x,y,1,1,GridBagConstraints.NONE);
+    }
 
     // inserts a component into a panel with a GridBagLayout.
     private void gblPanelInsert (JPanel panel,
