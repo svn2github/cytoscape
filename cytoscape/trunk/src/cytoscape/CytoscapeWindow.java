@@ -942,7 +942,7 @@ protected JMenuBar createMenuBar ()
   viewMenu.add(viewEdgeSubMenu);
   viewEdgeSubMenu.add(new InvertSelectedEdgesAction());
   viewEdgeSubMenu.add(new HideSelectedEdgesAction());
-  JMenu selectSubmenu = new JMenu("Select");
+  selectSubmenu = new JMenu("Select");
   viewMenu.add(selectSubmenu);
   selectSubmenu.add (new EdgeTypeDialogAction ());
   mi = selectSubmenu.add (new SelectFirstNeighborsAction ());
