@@ -96,7 +96,6 @@ public class PyConsolePlugin extends CytoscapePlugin {
 					if ("jythonConsoleThread".equals(listOfThreads[i].getName())) {
 						JFrame cFrame = (JFrame)singleton.get("ConsoleFrame");
 						cFrame.requestFocus();
-						// TODO - get the console frame and give it the focus
 						return;
 					}
 				}
