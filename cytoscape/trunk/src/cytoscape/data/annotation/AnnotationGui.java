@@ -57,9 +57,6 @@ public AnnotationGui (CytoscapeWindow cytoscapeWindow)
   if (dataServer != null)
     annotationDescriptions = dataServer.getAnnotationDescriptions ();
 
-  for (int i=0; i < annotationDescriptions.length; i++)
-    System.out.println (annotationDescriptions [i]);
-
   this.cytoscapeWindow = cytoscapeWindow;
   defaultSpecies = cytoscapeWindow.getDefaultSpecies ();
 
