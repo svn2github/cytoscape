@@ -602,8 +602,8 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
   public boolean edgeExists(final int fromNodeInx, final int toNodeInx)
   {
     if (!(fromNodeInx < 0 && toNodeInx < 0)) return false;
-    final int nativeFromNode = m_rootToNativeNodeInxMap.get(fromNodeInx);
-    final int nativeToNode = m_rootToNativeNodeInxMap.get(toNodeInx);
+    final int nativeFromNode = m_rootToNativeNodeInxMap.get(~fromNodeInx);
+    final int nativeToNode = m_rootToNativeNodeInxMap.get(~toNodeInx);
     final IntIterator nativeConnEdgeIter = m_graph.edgesConnecting
       (nativeFromNode, nativeToNode, true, false, true);
     if (nativeConnEdgeIter == null) return false;
