@@ -1,18 +1,21 @@
-import java.util.*;
-import java.io.*;
-import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
-
-import giny.model.*;
-
-import cytoscape.plugin.CytoscapePlugin;
-import cytoscape.util.CytoscapeAction;
-import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
-import cytoscape.data.FlagFilter;
+import cytoscape.Cytoscape;
 import cytoscape.data.FlagEvent;
 import cytoscape.data.FlagEventListener;
+import cytoscape.data.FlagFilter;
+import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.util.CytoscapeAction;
+import giny.model.Edge;
+import giny.model.GraphPerspectiveChangeEvent;
+import giny.model.GraphPerspectiveChangeListener;
+import giny.model.Node;
+
+import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * This plugin creates two menu options allowing the user to activate or
@@ -37,11 +40,11 @@ import cytoscape.data.FlagEventListener;
  */
 public class MultiNetworkNodeSelection extends CytoscapePlugin
     implements PropertyChangeListener, GraphPerspectiveChangeListener, FlagEventListener {
-    
+
     CytoscapeAction activateAction;   //turns on this plugin
     CytoscapeAction deactivateAction; //turns off this plugin
     boolean working = false; //prevents responding to our own flag requests
-    
+
     public MultiNetworkNodeSelection() {
         //creates two menu options for turning this plugin on and off
         activateAction = new ActivateMultiNetworkNodeSelectionAction();
@@ -52,7 +55,7 @@ public class MultiNetworkNodeSelection extends CytoscapePlugin
         Cytoscape.getDesktop().getCyMenus().addAction(deactivateAction);
         activateNetworkLinker(); //start with plugin activated
     }
-    
+
     /**
      * Activates this plugin so that all Cytoscape networks are synchronized
      * in the flagged state of nodes and edges. This method first synchronizes
@@ -68,8 +71,7 @@ public class MultiNetworkNodeSelection extends CytoscapePlugin
         //particular network just get skipped)
         //also add our listeners to these objects to catch future changes
         for (Iterator iter = Cytoscape.getNetworkSet().iterator(); iter.hasNext(); ) {
-            String net_id = (String)iter.next();
-            CyNetwork network = Cytoscape.getNetwork(net_id);
+            CyNetwork network = (CyNetwork) iter.next();
             network.setFlaggedNodes(flaggedNodes, true);
             network.setFlaggedEdges(flaggedEdges, true);
             //attach listeners
@@ -82,7 +84,7 @@ public class MultiNetworkNodeSelection extends CytoscapePlugin
         activateAction.setEnabled(false);
         deactivateAction.setEnabled(true);
     }
-    
+
     /**
      * Deactivates this plugin so that future changes to one network will not be
      * propagated to all other networks. The current flagged state of graph objects
@@ -92,8 +94,7 @@ public class MultiNetworkNodeSelection extends CytoscapePlugin
     public void deactivateNetworkLinker() {
         //detach all the listeners from the networks
         for (Iterator iter = Cytoscape.getNetworkSet().iterator(); iter.hasNext(); ) {
-            String net_id = (String)iter.next();
-            CyNetwork network = Cytoscape.getNetwork(net_id);
+            CyNetwork network = (CyNetwork) iter.next();
             network.removeGraphPerspectiveChangeListener(this);
             network.removeFlagEventListener(this);
         }
@@ -103,7 +104,7 @@ public class MultiNetworkNodeSelection extends CytoscapePlugin
         activateAction.setEnabled(true);
         deactivateAction.setEnabled(false);
     }
-    
+
     /**
      * Returns a Set containing all the nodes that are flagged in any network.
      * Works properly even if this plugin is currently disabled.
@@ -112,14 +113,13 @@ public class MultiNetworkNodeSelection extends CytoscapePlugin
         Set flaggedNodes = new HashSet();  //all nodes flagged in any network
         //iterate over all networks, saving the flagged objects in each network
         for (Iterator iter = Cytoscape.getNetworkSet().iterator(); iter.hasNext(); ) {
-            String net_id = (String)iter.next();
-            CyNetwork network = Cytoscape.getNetwork(net_id);
+            CyNetwork network = (CyNetwork) iter.next();
             Set nodes = network.getFlaggedNodes();
             flaggedNodes.addAll(nodes);
         }
         return flaggedNodes;
     }
-        
+
     /**
      * Returns a Set containing all the edges that are flagged in any network.
      * Works properly even if this plugin is currently disabled.
@@ -128,14 +128,13 @@ public class MultiNetworkNodeSelection extends CytoscapePlugin
         Set flaggedEdges = new HashSet();  //all nodes flagged in any network
         //iterate over all networks, saving the flagged objects in each network
         for (Iterator iter = Cytoscape.getNetworkSet().iterator(); iter.hasNext(); ) {
-            String net_id = (String)iter.next();
-            CyNetwork network = Cytoscape.getNetwork(net_id);
+            CyNetwork network = (CyNetwork) iter.next();
             Set edges = network.getFlaggedEdges();
             flaggedEdges.addAll(edges);
         }
         return flaggedEdges;
     }
-    
+
     /**
      * When a CyNetwork is created, this method catches the event and flags
      * any graph objects that are flagged in another network. Does nothing
@@ -167,7 +166,7 @@ public class MultiNetworkNodeSelection extends CytoscapePlugin
             }
         }
     }
-    
+
     /**
      * Responds to flag events from a network's flagger by setting the same
      * state for the graph objects in all other networks. Does nothing if
@@ -182,8 +181,7 @@ public class MultiNetworkNodeSelection extends CytoscapePlugin
         FlagFilter source = event.getSource();
         //iterate over all linked networks to set the same flagged state
         for (Iterator iter = Cytoscape.getNetworkSet().iterator(); iter.hasNext(); ) {
-            String net_id = (String)iter.next();
-            CyNetwork network = Cytoscape.getNetwork(net_id);
+            CyNetwork network = (CyNetwork) iter.next();
             FlagFilter filter = network.getFlagger();
             //if this filter is the source of the event, skip it
             if (source == filter) {continue;}
@@ -191,7 +189,7 @@ public class MultiNetworkNodeSelection extends CytoscapePlugin
         }
         working = false; //listen to flag events again
     }
-    
+
     /**
      * Given a FlagEvent representing flagging in one network, sets the
      * same flagged state in the supplied filter from another network.
@@ -212,7 +210,7 @@ public class MultiNetworkNodeSelection extends CytoscapePlugin
             //ignore for now
         }
     }
-    
+
     /**
      * When nodes or edges are added to a linked CyNetwork, this method flags
      * those objects in the network that was changed if any linked network
@@ -227,8 +225,7 @@ public class MultiNetworkNodeSelection extends CytoscapePlugin
                 Node nodeToCheck = newNodes[n];
                 //see if any linked network currently flags this node
                 for (Iterator iter = Cytoscape.getNetworkSet().iterator(); iter.hasNext(); ) {
-                    String net_id = (String)iter.next();
-                    CyNetwork network = Cytoscape.getNetwork(net_id);
+                    CyNetwork network = (CyNetwork) iter.next();
                     if (network == source) {continue;}//skip the source network
                     if ( network.isFlagged(nodeToCheck) ) {
                         //it's flagged in another network, so flag it in the source
@@ -245,8 +242,7 @@ public class MultiNetworkNodeSelection extends CytoscapePlugin
                 Edge edgeToCheck = newEdges[n];
                 //see if any linked network currently flags this edge
                 for (Iterator iter = Cytoscape.getNetworkSet().iterator(); iter.hasNext(); ) {
-                    String net_id = (String)iter.next();
-                    CyNetwork network = Cytoscape.getNetwork(net_id);
+                    CyNetwork network = (CyNetwork) iter.next();
                     if (network == source) {continue;}//skip the source network
                     if ( network.isFlagged(edgeToCheck) ) {
                         //it's flagged in another network, so flag it in the source
@@ -258,21 +254,21 @@ public class MultiNetworkNodeSelection extends CytoscapePlugin
         }
         working = false;//listen to flag events again
     }
-    
+
     /**
      * Menu item that activates this plugin.
      */
     private class ActivateMultiNetworkNodeSelectionAction extends CytoscapeAction {
-        
+
         public ActivateMultiNetworkNodeSelectionAction() {super("Activate Multi-Network Selection");}
         public void actionPerformed(ActionEvent ae) {activateNetworkLinker();}
     }
-    
+
     /**
      * Menu item that deactivates this plugin.
      */
     private class DeactivateMultiNetworkNodeSelectionAction extends CytoscapeAction {
-        
+
         public DeactivateMultiNetworkNodeSelectionAction() {super("Deactivate Multi-Network Selection");}
         public void actionPerformed(ActionEvent ae) {deactivateNetworkLinker();}
     }
