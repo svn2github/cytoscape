@@ -76,7 +76,6 @@ public class NonConsolePlugin extends CytoscapePlugin {
 		}
 		
         public void actionPerformed(ActionEvent evt) {
-			System.out.println("got a timer event");
         	if (!th.isAlive()) {
         		timer.stop();
         		this.dispose();
