@@ -588,6 +588,7 @@ protected void readProjectFile ()
   String [] vizmapPropsFiles = parseProjectFileText (lines, "vprops");
   String [] canonicalization = parseProjectFileText (lines, "canonicalizeNames"); // whether or not canonicalization should be done
   String [] otherArgs = parseProjectFileText (lines, "arg");
+  String [] graphMode = parseProjectFileText ( lines, "graphMode");
 
   if (sifFiles.length >= 1) {
     if (readingFromJar)
@@ -663,6 +664,15 @@ protected void readProjectFile ()
       canonicalize = true;
     }else if(canValue.equals("no")){
       canonicalize = false;
+    }
+  }
+  // giny or y-files mode?
+  if (graphMode.length > 0){
+    String graph = graphMode[0];
+    if(graph.equals("giny")){
+      yfiles = false;
+    }else if(graph.equals("y-files")){
+      yfiles = true;
     }
   }
 
