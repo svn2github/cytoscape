@@ -66,7 +66,8 @@
                   <pathelement location="${giny.lib}/coltginy.jar"/>
                   <pathelement location="${giny.lib}/luna.jar"/>
                   <pathelement location="${giny.lib}/piccolo.jar"/>
-                  <pathelement location="${giny.lib}/piccolox.jar"/>
+                  <pathelement location="${giny.lib}/looks-1.1.3.jar"/>
+
 	  </path>
 
 	  <!-- Classpath for running Cytoscape with non-obfuscated Cytoscape Jar file -->
@@ -83,6 +84,7 @@
                   <pathelement location="${giny.lib}/luna.jar"/>
                   <pathelement location="${giny.lib}/piccolo.jar"/>
                   <pathelement location="${giny.lib}/piccolox.jar"/>
+                  <pathelement location="${giny.lib}/looks-1.1.3.jar"/>
           </path>
 
 	  <!-- Classpath for running Cytoscape with obfuscated Cytoscape Jar file -->

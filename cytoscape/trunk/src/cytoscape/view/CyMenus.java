@@ -327,6 +327,9 @@ public class CyMenus {
     if ( !networkView.getCytoscapeObj().getConfiguration().isYFiles() ) {
       editMenu.add( new SquiggleAction( networkView ) ); 
       vizMenu.add( new BirdsEyeViewAction( networkView ) );
+
+        menuBar.addAction( new AnimatedLayoutAction( networkView ) );
+
       //added by larissa 10/03
        JMenu showExpressionData = new JMenu ("Show Expression Data" );
        vizMenu.add(showExpressionData);
@@ -336,8 +339,9 @@ public class CyMenus {
        mi = showExpressionData.add( new ShowExpressionDataAction( networkView, ShowExpressionDataAction.RADAR_NODE, "... as Radar Nodes" ) );
 
        
-       vizMenu.add( new AnimatedLayoutAction( networkView ) );
+
        vizMenu.add ( new BackgroundColorAction (networkView) );
+
     }
 
     selectNodesSubMenu.add(new AlphabeticalSelectionAction(networkView));

@@ -14,7 +14,7 @@ public class GraphObjectSelectionAction extends CytoscapeAction {
   public GraphObjectSelectionAction ( NetworkView networkView ) {
     super("Node Selection based on Attributes" );
     this.networkView = networkView;
-    setPreferredMenu( "Select.Nodes" );
+    setPreferredMenu( "Select" );
     setAcceleratorCombo( java.awt.event.KeyEvent.VK_T, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK );
   }
 

@@ -45,6 +45,14 @@ import java.util.logging.*;
 import cytoscape.data.*;
 import cytoscape.data.servers.*;
 import cytoscape.view.CyWindow;
+
+import com.jgoodies.plaf.FontSizeHints;
+import com.jgoodies.plaf.LookUtils;
+import com.jgoodies.plaf.Options;
+import com.jgoodies.plaf.plastic.Plastic3DLookAndFeel
+
+
+
 //------------------------------------------------------------------------------
 public class cytoscape implements WindowListener {
   protected Vector windows = new Vector ();
@@ -247,22 +255,30 @@ public void exit(int exitCode) {
 }
 //------------------------------------------------------------------------------
 public static void main(String args []) throws Exception {
-    if ( System.getProperty("os.name" ).startsWith("Windows") ) {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (  Exception e ) {
-            // TODO: Error handling.
-            System.err.println( "Hey. Error loading L&F: on Windows" );
-        }
+ 
+  UIManager.put(Options.USE_SYSTEM_FONTS_APP_KEY, Boolean.TRUE);
+  Options.setGlobalFontSizeHints(FontSizeHints.MIXED);
+  Options.setDefaultIconSize(new Dimension(18, 18));
+ 
+  try {
+    if ( LookUtils.isWindowsXP() ) {
+      // use XP L&F
+      UIManager.setLookAndFeel( Options.getCrossPlatformLookAndFeelClassName() );
+    } else if ( System.getProperty("os.name").startsWith( "Mac" ) ) {
+      // do nothing, I like the OS X L&F
     } else {
-        try { 
-            UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-        } catch( Exception e ) {
-            // TODO: Error handling.
-            System.err.println( "Hey. Error loading L&F: on NOT Windows"  );
-        }
+      // this is for for *nix
+      // I happen to like this color combo, there are others
+      Plastic3DLookAndFeel laf = new Plastic3DLookAndFeel();
+      laf.setMyCurrentTheme( new com.jgoodies.plaf.plastic.theme.SkyBluerTahoma() );
+      UIManager.setLookAndFeel( laf );
     }
-    
+  } catch (Exception e) {
+    System.err.println("Can't set look & feel:" + e);
+  }
+  
+
+
     cytoscape app = new cytoscape(args);
 } // main
 //------------------------------------------------------------------------------
