@@ -36,7 +36,8 @@ package cytoscape.util.intr;
  * to Integer.MAX_VALUE elements, this class is only able to hold
  * Integer.MAX_VALUE-1 elements.
  * @deprecated This implementation has not undergone adequate testing yet;
- *   deprecation will go away once this class is adequately tested.
+ *   deprecation will go away once this class is adequately tested; code
+ *   is in an un-optimized state.
  */
 public final class IntQueue
 {
@@ -45,6 +46,8 @@ public final class IntQueue
   private static final int DEFAULT_CAPACITY = 12;
 
   private int[] m_queue;
+  private int m_head;
+  private int m_tail;
 
   /**
    * Creates a new queue of integers.
@@ -52,6 +55,7 @@ public final class IntQueue
   public IntQueue()
   {
     m_queue = new int[DEFAULT_CAPACITY];
+    empty();
   }
 
   /**
@@ -60,6 +64,8 @@ public final class IntQueue
    */
   public final void empty()
   {
+    m_head = 0;
+    m_tail = 0;
   }
 
   /**
@@ -67,7 +73,9 @@ public final class IntQueue
    */
   public final int size()
   {
-    return -1;
+    int absHead = m_head;
+    if (absHead < m_tail) absHead += m_queue.length;
+    return absHead - m_tail;
   }
 
   /**
@@ -75,6 +83,9 @@ public final class IntQueue
    */
   public final void enqueue(int value)
   {
+    checkSize();
+    m_queue[m_head] = value;
+    m_head = (m_head + 1) % m_queue.length;
   }
 
   /**
@@ -85,18 +96,43 @@ public final class IntQueue
    */
   public final int peek()
   {
-    return -1;
+    return m_queue[m_tail];
   }
 
   /**
    * Removes and returns the next integer in this queue.<p>
    * It is considered an error to call this method if there are no integers
-   * currently in this queue.  If size() return zero immediately before
+   * currently in this queue.  If size() returns zero immediately before
    * this method is called, the results of this operation are undefined.
    */
   public final int dequeue()
   {
-    return -1;
+    int returnThis = m_queue[m_tail];
+    m_tail = (m_tail + 1) % m_queue.length;
+    return returnThis;
+  }
+
+  private final void checkSize()
+  {
+    if (size() + 2 > m_queue.length) {
+      final int newQueueArrSize =
+        (int) Math.min((long) Integer.MAX_VALUE,
+                       ((long) m_queue.length) * 2l + 1l);
+      if (newQueueArrSize == m_queue.length)
+        throw new IllegalStateException("cannot allocate large enough array");
+      final int[] newQueueArr = new int[newQueueArrSize];
+      if (m_tail <= m_head) {
+        System.arraycopy(m_queue, m_tail,
+                         newQueueArr, 0, m_head - m_tail);
+        m_head = m_head - m_tail; }
+      else {
+        System.arraycopy(m_queue, m_tail,
+                         newQueueArr, 0, m_queue.length - m_tail);
+        System.arraycopy(m_queue, 0,
+                         newQueueArr, m_queue.length - m_tail, m_head);
+        m_head = m_head + (m_queue.length - m_tail); }
+      m_tail = 0;
+      m_queue = newQueueArr; }
   }
 
 }
