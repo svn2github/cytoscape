@@ -467,48 +467,47 @@ class FGraphPerspective implements GraphPerspective
     throw new IllegalStateException("not implemented yet");
   }
 
-  public int getIndex(Node node)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  public int getIndex(Node node) {
+    if (node.getRootGraph() == m_root &&
+        getRootGraphNodeIndex(node.getRootGraphIndex()) ==
+        node.getRootGraphIndex())
+      return node.getRootGraphIndex();
+    else return 0; }
 
-  public int getNodeIndex(int rootGraphNodeInx)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  public int getNodeIndex(int rootGraphNodeInx) {
+    return getRootGraphNodeIndex(rootGraphNodeInx); }
 
-  public int getRootGraphNodeIndex(int perspNodeInx)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
-
-  public Node getNode(int rootGraphNodeInx)
-  {
-    if (!(rootGraphNodeInx < 0)) return null;
+  public int getRootGraphNodeIndex(int rootGraphNodeInx) {
+    if (!(rootGraphNodeInx < 0)) return 0;
     final int nativeNodeInx = m_rootToNativeNodeInxMap.get(~rootGraphNodeInx);
-    if (nativeNodeInx < 0 || nativeNodeInx == Integer.MAX_VALUE) return null;
-    return m_root.getNode(rootGraphNodeInx);
-  }
+    if (nativeNodeInx < 0 || nativeNodeInx == Integer.MAX_VALUE) return 0;
+    return rootGraphNodeInx; }
 
-  public int getIndex(Edge edge)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  public Node getNode(int rootGraphNodeInx) {
+    rootGraphNodeInx = getRootGraphNodeIndex(rootGraphNodeInx);
+    if (rootGraphNodeInx != 0) return m_root.getNode(rootGraphNodeInx);
+    else return null; }
 
-  public int getEdgeIndex(int rootGraphEdgeInx)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  public int getIndex(Edge edge) {
+    if (edge.getRootGraph() == m_root &&
+        getRootGraphEdgeIndex(edge.getRootGraphIndex()) ==
+        edge.getRootGraphIndex())
+      return edge.getRootGraphIndex();
+    else return 0; }
 
-  public int getRootGraphEdgeIndex(int perspEdgeInx)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  public int getEdgeIndex(int rootGraphEdgeInx) {
+    return getRootGraphEdgeIndex(rootGraphEdgeInx); }
 
-  public Edge getEdge(int perspEdgeInx)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  public int getRootGraphEdgeIndex(int rootGraphEdgeInx) {
+    if (!(rootGraphEdgeInx < 0)) return 0;
+    final int nativeEdgeInx = m_rootToNativeEdgeInxMap.get(~rootGraphEdgeInx);
+    if (nativeEdgeInx < 0 || nativeEdgeInx == Integer.MAX_VALUE) return 0;
+    return rootGraphEdgeInx; }
+
+  public Edge getEdge(int rootGraphEdgeInx) {
+    rootGraphEdgeInx = getRootGraphEdgeIndex(rootGraphEdgeInx);
+    if (rootGraphEdgeInx != 0) return m_root.getEdge(rootGraphEdgeInx);
+    else return null; }
 
   public int getEdgeSourceIndex(int perspEdgeInx)
   {
