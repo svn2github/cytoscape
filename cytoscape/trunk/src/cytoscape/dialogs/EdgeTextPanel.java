@@ -26,7 +26,6 @@ public class EdgeTextPanel extends JPanel {
     String [] attributeNames;
     MutableString edgeKey;
     MutableString attribKey;
-    //JList theList;
     JComboBox theBox;
     AttributeMapper aMapper;
     Frame parentFrame;
@@ -49,24 +48,12 @@ public EdgeTextPanel (GraphObjAttributes edgeAttribs,
   theMap = null;
   useThisMap=false;
 
-  //GridBagLayout gridbag = new GridBagLayout(); 
-  //GridBagConstraints c = new GridBagConstraints();
   this.setLayout (new GridLayout(1,2,10,10));
-  //this.setLayout (gridbag);
-
-  //DefaultListModel listModel = new DefaultListModel();
-  //for (int i=0; i < attributeNames.length; i++)
-  //    listModel.addElement(attributeNames [i]);
-  //theList = new JList(listModel);
 
   DefaultComboBoxModel boxModel = new DefaultComboBoxModel();
   for (int i=0; i < attributeNames.length; i++)
       boxModel.addElement(new String(attributeNames [i]));
   theBox = new JComboBox(boxModel);
-
-  //theList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-  //theList.addListSelectionListener(new SharedListSelectionHandler(edgeKey));
-  //theList.setSelectedValue(edgeKey.getString(),true);
 
   theBox.addActionListener(new BoxAction(edgeKey));
   if(boxModel.getSize()==1) {
@@ -75,27 +62,13 @@ public EdgeTextPanel (GraphObjAttributes edgeAttribs,
   }
   else
       theBox.setSelectedItem(edgeKey.getString());
-  /*
-    for (int i=0; i < attributeNames.length; i++) {
-    String attributeName = attributeNames [i];
-    System.out.println(attributeName);
-    }
-  */
 
-  //c.gridx=0;
-  //c.gridy=0;
-  //gridbag.setConstraints(theBox,c);
   this.add(theBox);
 
   JButton pickThisAttribute = new JButton ("Define Mapping");
   pickThisAttribute.addActionListener (new ColorToDiscreteListener());
-  //c.gridx=1;
-  //c.gridy=0;
-  //gridbag.setConstraints(pickThisAttribute,c);
   this.add(pickThisAttribute);
 
-  
-  
 } // EdgeTextPanel ctor
 
 public Map getMap() {
