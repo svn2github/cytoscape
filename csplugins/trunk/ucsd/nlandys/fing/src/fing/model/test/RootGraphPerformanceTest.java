@@ -34,6 +34,11 @@ public final class RootGraphPerformanceTest
     long millisEnd2 = System.currentTimeMillis();
     System.out.println("connecting edges test took " +
                        (millisEnd2 - millisBegin2) + " milliseconds");
+    long millisBegin3 = System.currentTimeMillis();
+    testNodeNeighbors(root, nodes);
+    long millisEnd3 = System.currentTimeMillis();
+    System.out.println("node neighbors test took " +
+                       (millisEnd3 - millisBegin3) + " milliseconds");
   }
 
   private static final RootGraph getRootGraph(String[] mainArgs)
@@ -141,6 +146,12 @@ public final class RootGraphPerformanceTest
       for (int j = 1; j < nodes.length; j++) {
         root.getEdgeIndicesArray
           (nodes[j - 1], nodes[j], undirected, bothDirections); } }
+  }
+
+  public static final void testNodeNeighbors(RootGraph root, int[] nodes)
+  {
+    for (int j = 1; j < nodes.length; j++) {
+      root.neighborsList(root.getNode(nodes[j])); }
   }
 
 }
