@@ -313,7 +313,7 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
   {
     partials.reset();
     int node = partials.nodeIndex;
-    double nodeRadius = 0.0;
+    double nodeRadius = 0.01;
     double nodeX = graph.getNodePosition(node).getX();
     double nodeY = graph.getNodePosition(node).getY();
     PartialDerivatives otherPartials = null;
@@ -326,7 +326,7 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
           private int ix = 0;
           public void remove() { throw new UnsupportedOperationException(); }
           public boolean hasNext() {
-            return ix >= graph.getNumNodes(); }
+            return ix < graph.getNumNodes(); }
           public Object next() {
             return new Integer(ix++); } };
     else
@@ -345,11 +345,15 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
         otherPartials = (PartialDerivatives) iterator.next();
         otherNode = otherPartials.nodeIndex; }
       if (node == otherNode) continue;
-      otherNodeRadius = 0.0;
+      otherNodeRadius = 0.01;
       deltaX = nodeX - graph.getNodePosition(otherNode).getX();
       deltaY = nodeY - graph.getNodePosition(otherNode).getY();
       euclideanDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+      if (((float) euclideanDistance) == 0.0)
+        throw new RuntimeException("euclideanDistance too close to 0");
       euclideanDistanceCubed = Math.pow(euclideanDistance, 3);
+      if (((float) euclideanDistanceCubed) == 0.0)
+        throw new RuntimeException("euclideanDistanceCubed too close to 0");
       distanceFromTouching =
         euclideanDistance - (nodeRadius + otherNodeRadius);
       incrementalChange =
@@ -542,7 +546,7 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
            (m_anticollisionSpringStrength *
             (1.0 -
              (
-              ((nodeRadius * otherNodeRadius) *
+              ((nodeRadius + otherNodeRadius) *
                (deltaX * deltaX)
                ) /
               euclideanDistanceCubed
@@ -577,7 +581,7 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
           (m_anticollisionSpringScalars[m_layoutPass] *
            (m_anticollisionSpringStrength *
             (
-             ((nodeRadius * otherNodeRadius) *
+             ((nodeRadius + otherNodeRadius) *
               (deltaX * deltaY)
               ) /
              euclideanDistanceCubed
@@ -627,7 +631,7 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
       if (otherPartials != null)
       {
         otherPartials.euclideanDistance =
-          Math.sqrt((otherPartials.x * otherPartials.x) *
+          Math.sqrt((otherPartials.x * otherPartials.x) +
                     (otherPartials.y * otherPartials.y));
         if ((furthestPartials == null) ||
             (otherPartials.euclideanDistance >
@@ -667,6 +671,8 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
     double denominator =
       ((partials.xx * partials.yy) -
        (partials.xy * partials.xy));
+    if (((float) denominator) == 0.0)
+      throw new RuntimeException("denominator too close to 0");
     double deltaX =
       (
        ((-partials.x * partials.yy) -
@@ -695,11 +701,12 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
     final double euclideanDistanceThreshold =
       (0.5 * (m_nodeCount + m_edgeCount));
 
-    final int numIterations =
-      (int) (m_averageIterationsPerNode * m_nodeCount / m_numLayoutPasses);
+    final int numIterations = (int)
+      ((m_nodeCount * m_averageIterationsPerNode) / m_numLayoutPasses);
 
     List partialsList = new ArrayList();
     double[] potentialEnergy = new double[1];
+    if (potentialEnergy[0] != 0.0) throw new RuntimeException();
 
     PartialDerivatives partials;
     PartialDerivatives furthestNodePartials = null;
@@ -715,7 +722,7 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
       for (int node_j = (node_i + 1); node_j < m_nodeCount; node_j++)
       {
         // BEGIN: Compute spring rest lengths.
-        if (nodeDistances[node_i][node_j] < 0) { // disconnected
+        if (nodeDistances[node_i][node_j] == Integer.MAX_VALUE) {
           m_nodeDistanceSpringRestLengths[node_i][node_j] =
             m_disconnectedNodeDistanceSpringRestLength; }
         else {
@@ -726,13 +733,13 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
         // END: Compute spring rest lengths.
 
         // BEGIN: Compute spring strengths.
-        if (nodeDistances[node_i][node_j] < 0) { // disconnected
+        if (nodeDistances[node_i][node_j] == Integer.MAX_VALUE) {
           m_nodeDistanceSpringStrengths[node_i][node_j] =
             m_disconnectedNodeDistanceSpringStrength; }
         else {
           m_nodeDistanceSpringStrengths[node_i][node_j] =
             m_nodeDistanceStrengthConstant /
-            nodeDistances[node_i][node_j] * nodeDistances[node_i][node_j]; }
+            (nodeDistances[node_i][node_j] * nodeDistances[node_i][node_j]); }
         m_nodeDistanceSpringStrengths[node_j][node_i] =
           m_nodeDistanceSpringStrengths[node_i][node_j];
         // END: Compute spring strengths.
