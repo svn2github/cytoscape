@@ -184,7 +184,9 @@ class FGraphPerspective implements GraphPerspective
     else return null; }
 
   public int restoreNode(int rootGraphNodeInx) {
-    final int returnThis = _restoreNode(rootGraphNodeInx);
+    final int returnThis;
+    if (_restoreNode(rootGraphNodeInx) != 0) returnThis = rootGraphNodeInx;
+    else returnThis = 0;
     if (returnThis != 0) {
       final GraphPerspectiveChangeListener listener = m_lis[0];
       if (listener != null) {
@@ -193,15 +195,18 @@ class FGraphPerspective implements GraphPerspective
            (this, new int[] { rootGraphNodeInx })); } }
     return returnThis; }
 
+  // Returns 0 if unsuccessful; returns the complement of the native node
+  // index if successful.  Complement is '~'.
   private int _restoreNode(int rootGraphNodeInx)
   {
     if (!(rootGraphNodeInx < 0)) return 0;
     int nativeNodeInx = m_rootToNativeNodeInxMap.get(~rootGraphNodeInx);
-    if (!(nativeNodeInx < 0 || nativeNodeInx == Integer.MAX_VALUE)) return 0;
+    if (m_root.getNode(rootGraphNodeInx) == null ||
+        !(nativeNodeInx < 0 || nativeNodeInx == Integer.MAX_VALUE)) return 0;
     nativeNodeInx = m_graph.createNode();
     m_rootToNativeNodeInxMap.put(~rootGraphNodeInx, nativeNodeInx);
     m_nativeToRootNodeInxMap.setIntAtIndex(rootGraphNodeInx, nativeNodeInx);
-    return rootGraphNodeInx;
+    return ~nativeNodeInx;
   }
 
   public java.util.List restoreNodes(java.util.List nodes) {
@@ -234,9 +239,10 @@ class FGraphPerspective implements GraphPerspective
     m_heap.empty();
     final MinIntHeap successes = m_heap;
     final int[] returnThis = new int[rootGraphNodeInx.length];
-    for (int i = 0; i < rootGraphNodeInx.length; i++) {
-      returnThis[i] = _restoreNode(rootGraphNodeInx[i]);
-      if (returnThis[i] != 0) successes.toss(returnThis[i]); }
+    for (int i = 0; i < rootGraphNodeInx.length; i++)
+      if (_restoreNode(rootGraphNodeInx[i]) != 0) {
+        returnThis[i] = rootGraphNodeInx[i];
+        successes.toss(returnThis[i]); }
     if (successes.size() > 0) {
       final GraphPerspectiveChangeListener listener = m_lis[0];
       if (listener != null) {
@@ -265,10 +271,10 @@ class FGraphPerspective implements GraphPerspective
   public int[] hideEdges(int[] rootGraphEdgeInx) {
     return m_weeder.hideEdges(this, rootGraphEdgeInx); }
 
-  public Edge restoreEdge(Edge edge)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  public Edge restoreEdge(Edge edge) {
+    if (edge.getRootGraph() == m_root &&
+        restoreEdge(edge.getRootGraphIndex()) != 0) return edge;
+    else return null; }
 
   public int restoreEdge(int rootGraphEdgeInx) {
     final int returnThis = _restoreEdge(rootGraphEdgeInx);
@@ -280,9 +286,40 @@ class FGraphPerspective implements GraphPerspective
            (this, new int[] { rootGraphEdgeInx })); } }
     return returnThis; }
 
-  private int _restoreEdge(int rootGraphEdgeInx)
-  {
-    return -1;
+  private int _restoreEdge(final int rootGraphEdgeInx) {
+    if (!(rootGraphEdgeInx < 0)) return 0;
+    int nativeEdgeInx = m_rootToNativeEdgeInxMap.get(~rootGraphEdgeInx);
+    if (m_root.getEdge(rootGraphEdgeInx) == null ||
+        !(nativeEdgeInx < 0 || nativeEdgeInx == Integer.MAX_VALUE)) return 0;
+    final int rootGraphSourceNodeInx =
+      m_root.getEdgeSourceIndex(rootGraphEdgeInx);
+    final int rootGraphTargetNodeInx =
+      m_root.getEdgeTargetIndex(rootGraphEdgeInx);
+    int nativeSourceNodeInx =
+      m_rootToNativeNodeInxMap.get(~rootGraphSourceNodeInx);
+    int nativeTargetNodeInx =
+      m_rootToNativeNodeInxMap.get(~rootGraphTargetNodeInx);
+    m_heap.empty();
+    final MinIntHeap restoredNodes = m_heap;
+    if (nativeSourceNodeInx < 0 || nativeSourceNodeInx == Integer.MAX_VALUE) {
+      nativeSourceNodeInx = ~(_restoreNode(rootGraphSourceNodeInx));
+      restoredNodes.toss(rootGraphSourceNodeInx); }
+    if (nativeTargetNodeInx < 0 || nativeTargetNodeInx == Integer.MAX_VALUE) {
+      nativeTargetNodeInx = ~(_restoreNode(rootGraphTargetNodeInx));
+      restoredNodes.toss(rootGraphTargetNodeInx); }
+    if (restoredNodes.size() > 0) {
+      final GraphPerspectiveChangeListener listener = m_lis[0];
+      if (listener != null) {
+        final int[] restoredNodesArr = new int[restoredNodes.size()];
+        restoredNodes.copyInto(restoredNodesArr, 0);
+        listener.graphPerspectiveChanged
+          (new GraphPerspectiveNodesRestoredEvent(this, restoredNodesArr)); } }
+    nativeEdgeInx = m_graph.createEdge
+      (nativeSourceNodeInx, nativeTargetNodeInx,
+       m_root.isEdgeDirected(rootGraphEdgeInx));
+    m_rootToNativeEdgeInxMap.put(~rootGraphEdgeInx, nativeEdgeInx);
+    m_nativeToRootEdgeInxMap.setIntAtIndex(rootGraphEdgeInx, nativeEdgeInx);
+    return rootGraphEdgeInx;
   }
 
   public java.util.List restoreEdges(java.util.List edges) {
