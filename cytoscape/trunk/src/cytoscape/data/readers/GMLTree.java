@@ -87,7 +87,11 @@ public class GMLTree{
 	    GMLNode currentGML = new GMLNode();
 	    //add the information about currentNode
 	    currentGML.addMapping("id",new GMLNode(""+(-currentNode.getRootGraphIndex())));
-	    currentGML.addMapping("label",new GMLNode("\""+currentView.getLabel()+"\""));
+	    String label = "\""+currentView.getNode().getIdentifier()+"\"";
+	    //brackets are reserved characters, let's replace them with parens
+	    label.replaceAll("\\]", ")");
+	    label.replaceAll("\\[", "(");
+	    currentGML.addMapping("label",new GMLNode(label));
 	    GMLNode graphics = new GMLNode();
 	    graphics.addMapping("x",new GMLNode(""+df.format(currentView.getXPosition())));
 	    graphics.addMapping("y",new GMLNode(""+df.format(currentView.getYPosition())));
