@@ -209,17 +209,14 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
       m_rootToNativeNodeInxMap.get(~rootGraphFromNodeInx);
     final int nativeToNodeInx =
       m_rootToNativeNodeInxMap.get(~rootGraphToNodeInx);
-    final IntIterator connectingEdges;
-    try {
-      connectingEdges = m_graph.edgesConnecting
-        (nativeFromNodeInx, nativeToNodeInx, true, bothDirections,
-         undirectedEdges); }
-    catch (IllegalArgumentException e) { return null; }
+    final IntIterator connectingEdges = m_graph.edgesConnecting
+      (nativeFromNodeInx, nativeToNodeInx, true, bothDirections,
+       undirectedEdges);
     if (connectingEdges == null) return null;
     m_heap.empty();
     final MinIntHeap edgeBucket = m_heap;
     while (connectingEdges.hasNext())
-      edgeBucket.toss(m_nativeToRootNodeInxMap.getIntAtIndex
+      edgeBucket.toss(m_nativeToRootEdgeInxMap.getIntAtIndex
                       (connectingEdges.nextInt()));
     final int[] returnThis = new int[edgeBucket.size()];
     edgeBucket.copyInto(returnThis, 0);
