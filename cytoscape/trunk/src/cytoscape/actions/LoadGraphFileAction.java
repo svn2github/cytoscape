@@ -8,16 +8,7 @@ package cytoscape.actions;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.WindowConstants;
-import javax.swing.border.EmptyBorder;
-import java.awt.BorderLayout;
-import java.awt.Cursor;
-import java.awt.Frame;
 import java.io.File;
 import java.util.Date;
 
@@ -27,6 +18,7 @@ import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.ExpressionData;
 import cytoscape.data.Semantics;
 import cytoscape.process.ui.ProgressUI;
+import cytoscape.process.ui.ProgressUIControl;
 import cytoscape.view.NetworkView;
 import cytoscape.view.CyMenus;
 import cytoscape.util.CyFileFilter;
@@ -110,26 +102,14 @@ public class LoadGraphFileAction extends CytoscapeAction {
       Cytoscape.setSpecies();
       //GraphReader reader = null;
 
-      final int root_nodes = Cytoscape.getRootGraph().getNodeCount();
-      final int root_edges = Cytoscape.getRootGraph().getEdgeCount();
+      int root_nodes = Cytoscape.getRootGraph().getNodeCount();
+      int root_edges = Cytoscape.getRootGraph().getEdgeCount();
 
       final int fileTypeF = fileType;
-      Frame f = Cytoscape.getDesktop();
-      final JDialog busyDialog = new JDialog(f, "Loading...", true);
-      busyDialog.setResizable(false);
-      busyDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-      JPanel panel = new JPanel(new BorderLayout());
-      panel.setBorder(new EmptyBorder(20, 20, 20, 20));
-      panel.add(new JLabel("Loading graph; please wait..."),
-                BorderLayout.CENTER);
-      JProgressBar progress = new JProgressBar();
-      progress.setIndeterminate(true);
-      panel.add(progress, BorderLayout.SOUTH);
-      busyDialog.getContentPane().add(panel);
-      busyDialog.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-      busyDialog.pack();
-      busyDialog.move((f.size().width - busyDialog.size().width) / 2 + f.location().x,
-                      (f.size().height - busyDialog.size().height) / 2 + f.location().y);
+      final ProgressUIControl contrl =
+        ProgressUI.startProgress("Loading...",
+                                 "Loading graph; please wait...",
+                                 null);
       final CyNetwork[] newNetwork = new CyNetwork[1];
       Runnable loadGraph = new Runnable() {
         public void run()
@@ -139,11 +119,11 @@ public class LoadGraphFileAction extends CytoscapeAction {
                                             canonicalize,
                                             Cytoscape.getCytoscapeObj().getBioDataServer(),
                                             species );
-      busyDialog.dispose();
+      contrl.dispose();
     } // run()
     }; // new Runnable()
       (new Thread(loadGraph)).start();
-      busyDialog.show(); // This blocks until busyDialog.dispose() is called, see JDK API spec.
+      contrl.show(); // This blocks until busyDialog.dispose() is called, see JDK API spec.
       if ( newNetwork[0] != null ) {//valid read
         //apply the semantics we usually expect
         //Semantics.applyNamingServices( newNetwork, Cytoscape.getCytoscapeObj() );
