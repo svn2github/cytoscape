@@ -42,7 +42,7 @@ package cytoscape.util.intr;
 public final class IntQueue
 {
 
-  // This must be a positive (non-zero) integer.
+  // This must be a non-negative integer.
   private static final int DEFAULT_CAPACITY = 12;
 
   private int[] m_queue;
@@ -84,8 +84,8 @@ public final class IntQueue
   public final void enqueue(int value)
   {
     checkSize();
-    m_queue[m_head] = value;
-    m_head = (m_head + 1) % m_queue.length;
+    m_queue[m_head++] = value;
+    if (m_head == m_queue.length) m_head = 0;
   }
 
   /**
@@ -107,14 +107,15 @@ public final class IntQueue
    */
   public final int dequeue()
   {
-    int returnThis = m_queue[m_tail];
-    m_tail = (m_tail + 1) % m_queue.length;
+    int returnThis = m_queue[m_tail++];
+    if (m_tail == m_queue.length) m_tail = 0;
     return returnThis;
   }
 
   private final void checkSize()
   {
-    if (size() + 2 > m_queue.length) {
+    if (size() + 2 > m_queue.length)
+    {
       final int newQueueArrSize =
         (int) Math.min((long) Integer.MAX_VALUE,
                        ((long) m_queue.length) * 2l + 1l);
@@ -132,7 +133,8 @@ public final class IntQueue
                          newQueueArr, m_queue.length - m_tail, m_head);
         m_head = m_head + (m_queue.length - m_tail); }
       m_tail = 0;
-      m_queue = newQueueArr; }
+      m_queue = newQueueArr;
+    }
   }
 
 }
