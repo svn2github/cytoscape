@@ -419,39 +419,22 @@ public final class IntBTree
 
   private final static class Node
   {
-
     private int sliceCount = 0;
-
-    // Exactly one of { values, data } is null, depending on whether or not
-    // this is a leaf node.
-    private final int[] values;
+    private final int[] values; // null if and only if internal node.
     private final InternalNodeData data;
-
-    private Node(int maxBranches, boolean leafNode)
-    {
-      if (leafNode) {
-        values = new int[maxBranches];
-        data = null; }
-      else {
-        values = null;
-        data = new InternalNodeData(maxBranches); }
-    }
-
+    private Node(int maxBranches, boolean leafNode) {
+      if (leafNode) { values = new int[maxBranches]; data = null; }
+      else { values = null; data = new InternalNodeData(maxBranches); } }
   }
 
   private final static class InternalNodeData
   {
-
     private int deepCount;
     private final int[] splitVals;
     private final Node[] children;
-
-    private InternalNodeData(int maxBranches)
-    {
+    private InternalNodeData(int maxBranches) {
       splitVals = new int[maxBranches - 1];
-      children = new Node[maxBranches];
-    }
-
+      children = new Node[maxBranches]; }
   }
 
   private final static class NodeStack
