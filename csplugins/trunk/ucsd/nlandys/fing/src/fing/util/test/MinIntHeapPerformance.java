@@ -13,9 +13,11 @@ public class MinIntHeapPerformance
    * Argument at index 0: a number representing the number of elements to be
    * tossed onto a heap.  If N elements are tossed onto a heap, each element
    * shall be in the range [0, N-1].<p>
-   * Standard input is read, and should contain random bytes of input, with
-   * enough
-   * bytes to define N integers (each integer is 4 bytes).  Integers are
+   * Standard input is read, and should contain bytes [read: binary data] of
+   * input defining 
+   * integer elements to be tossed onto the heap, with enough
+   * bytes to define N integers (each integer is 4 bytes of standard input).
+   * Integers are
    * defined from the input by taking groups of 4 consecutive bytes from input,
    * each group defining a single integer by interpreting the first byte in
    * a group to be the most significant bits of the integer etc.  The
@@ -23,22 +25,23 @@ public class MinIntHeapPerformance
    * value of each assembled
    * four-byte integer by N, and taking the remainder as the element to be
    * tossed onto the heap.<p>
-   * Output to standard out is the ordered set of input integers with
+   * Writes to standard out the ordered set of input integers with
    * duplicates pruned, such that each output integer is followed by the
-   * system's newline separator character sequence.<p>
+   * system's newline separator character sequence.  The integers written are
+   * in plaintext, unlike the format of the input.<p>
    * Output to standard error is the time taken to use the heap to order
-   * the input, with duplicates removed.  The output format is simply an
+   * the input, with duplicates removed.  The output format is simply a
+   * plaintext
    * integer representing the number of milliseconds required for this
-   * test case.  Basically, a timer starts
+   * test case, followed by the system's newline separator character
+   * sequence.  Basically, a timer starts
    * right before calling the MinIntHeap constructor with an array of
    * input integers; the timer stops after we've instantiated a new array to
    * contain the ordered list of elements with duplicates removed, and after
    * we've completely filled the array with these elements.  Note that
    * the process of instantiating this array is time consuming and has nothing
    * to do with the algorithm we're trying to test; this operation is
-   * included in this time trial anyways because the size of the array is
-   * a function of this algorithm - well, whatever - I guess I could
-   * precompute this size or else run this algorithm twice.  I'd rather not.
+   * included in this time trial anyways.
    */
   public static void main(String[] args) throws Exception
   {
@@ -55,21 +58,29 @@ public class MinIntHeapPerformance
       else off = 0;
       elements[inx++] = Math.abs(assembleInt(buff)) % N; }
     if (inx < N) throw new IOException("premature end of input");
+
     // Lose reference to as much as we can.
     in = null;
     buff = null;
+
     // Sleep, collect garbage, have a snack, etc.
     Thread.sleep(1000);
-    // Warm up.
+
+    // Wake up.  Warm up.  Get up on your feet.
     for (int i = 0; i < 100; i++) { int foo = i * 4 / 8; }
+
     // Start timer.
     long millisBegin = System.currentTimeMillis();
+
     // Run the test.  Quick, stopwatch is ticking!
     int[] orderedElements = _THE_TEST_CASE_(elements);
+
     // Stop timer.
     long millisEnd = System.currentTimeMillis();
+
     // Print the time taken to standard error.
     System.err.println(millisEnd - millisBegin);
+
     // Print sorted array to standard out.
     for (int i = 0; i < orderedElements.length; i++)
       System.out.println(orderedElements[i]);
@@ -85,7 +96,7 @@ public class MinIntHeapPerformance
   }
 
   // Keep a reference to our data structure so that we can determine how
-  // much memory was consumed by our algorithm.
+  // much memory was consumed by our algorithm (may be implemented in future).
   static MinIntHeap _THE_HEAP_ = null;
 
   private static final int[] _THE_TEST_CASE_(int[] elements)
