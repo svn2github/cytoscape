@@ -442,14 +442,11 @@ public class VizMapUI extends JDialog {
 		if (e.getStateChange() == ItemEvent.SELECTED) {
 		    VisualStyle newStyle = (VisualStyle) ((JComboBox) e.getSource()).getSelectedItem();
 		    if (newStyle != currentStyle && newStyle != null) {
-			currentStyle = newStyle;
-			VMM.setVisualStyle(currentStyle);
+			//this call triggers an event caught by a listener in this class
+                        //that updates the currentStyle held by this class
+			VMM.setVisualStyle(newStyle);
                         //this call will apply the new visual style
 			VMM.getNetworkView().redrawGraph(false, true);
-			if (styleDefUI.isShowing())
-			    visualStyleChanged();
-			else
-			    styleDefNeedsUpdate = true;
 		    }
 		}
 	    }
@@ -497,12 +494,18 @@ public class VizMapUI extends JDialog {
 	public void stateChanged(ChangeEvent ce) {
             if (currentStyle != VMM.getVisualStyle()) {
 		currentStyle = VMM.getVisualStyle();
-                if (styleComboModel.getIndexOf(currentStyle) == -1) {//not there
+                if (styleComboModel.getIndexOf(currentStyle) == -1) {//not in combo box
                     styleComboModel.addElement(currentStyle);
                 }
-                //this triggers an event that will be ignored since we've already
-                //updated the current style
+                //this triggers an event from the combo box that will be ignored
+                //since we've already updated the current style
 		styleComboModel.setSelectedItem(currentStyle);
+                //let the style definition UI know it should update
+                if (styleDefUI.isShowing()) {
+                    visualStyleChanged();
+                } else {
+                    styleDefNeedsUpdate = true;
+                }
 	    }
 	}
 
