@@ -42,7 +42,6 @@ import java.awt.Font;
 
 import giny.model.Node;
 import giny.model.RootGraph;
-import cytoscape.util.GinyFactory;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.GraphObjAttributes;

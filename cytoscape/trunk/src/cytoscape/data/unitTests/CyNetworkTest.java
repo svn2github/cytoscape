@@ -10,7 +10,6 @@ import java.io.*;
 import java.util.*;
 
 import giny.model.*;
-import cytoscape.util.GinyFactory;
 
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.CyNetwork;

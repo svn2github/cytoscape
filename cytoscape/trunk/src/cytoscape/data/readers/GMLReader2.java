@@ -6,7 +6,6 @@ import java.awt.geom.Point2D;
 import giny.model.*;
 import giny.view.*;
 import cytoscape.*;
-import cytoscape.util.GinyFactory;
 import cytoscape.data.Semantics;
 
 import java.awt.Color;

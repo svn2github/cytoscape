@@ -37,7 +37,6 @@ package cytoscape.data.readers;
 import java.util.*;
 import giny.view.GraphView;
 import giny.model.*;
-import cytoscape.util.GinyFactory;
 
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.Interaction;
