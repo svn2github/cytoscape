@@ -128,7 +128,7 @@ public final class IntHash
           return array[index]; } };
   }
 
-  private final boolean checkSize()
+  private final void checkSize()
   {
     if (m_elements >= m_thresholdSize)
     {
@@ -154,9 +154,7 @@ public final class IntHash
       m_size = newSize;
       m_thresholdSize = (int) (THRESHOLD_FACTOR * (double) m_size);
       for (int i = 0; i < dump.length; i++) put(dump[i]);
-      return true;
     }
-    return false;
   } 
 
 }
