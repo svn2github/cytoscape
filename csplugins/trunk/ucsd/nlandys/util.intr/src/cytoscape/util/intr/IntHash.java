@@ -10,7 +10,7 @@ package cytoscape.util.intr;
  * to elements being added (the underlying size of the hashtable is invisible
  * to the programmer).  In the underlying implementation, this hashtable never
  * decreases in size.  As a hashtable increases in size,
- * it takes at most 4 times as much memory as it would take
+ * it takes at most four times as much memory as it would take
  * to store the hashtable's elements in a perfectly-sized array.
  * Underlying size expansions are implemented such that the operation of
  * expanding in size is amortized over the contstant time complexity needed to
