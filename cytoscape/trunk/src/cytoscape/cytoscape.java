@@ -148,7 +148,9 @@ public cytoscape (String [] args) throws Exception
 
   FileReadingAbstractions.initAttribs (bioDataServer, defaultSpecies, config, graph, 
                                        nodeAttributes, edgeAttributes);
-  
+  if((expressionData !=null) && copyExpToAttribs)
+      expressionData.copyToAttribs(nodeAttributes);
+
   cytoscapeWindow = new CytoscapeWindow (this, config, logger,
                                          graph, expressionData, bioDataServer,
                                          nodeAttributes, edgeAttributes, 
@@ -158,10 +160,6 @@ public cytoscape (String [] args) throws Exception
   if (splashScreen!=null)
 	  splashScreen.advance(100);
   					 
-  if((expressionData !=null) && copyExpToAttribs) {
-      expressionData.copyToAttribs(cytoscapeWindow);
-  }
-
 } // ctor
 //------------------------------------------------------------------------------
 /**

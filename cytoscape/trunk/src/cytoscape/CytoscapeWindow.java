@@ -3170,7 +3170,7 @@ protected class LoadExpressionMatrixAction extends AbstractAction {
                 // depend on the ExpFileChooser's checkbox.
                 //if(config.getWhetherToCopyExpToAttribs()) {
                 if(chooser.getWhetherToCopyExpToAttribs()) {
-                    expressionData.copyToAttribs(CytoscapeWindow.this);
+                    expressionData.copyToAttribs(nodeAttributes);
                 }
                 //display a description of the data in a dialog
                 String expDescript = expressionData.getDescription();

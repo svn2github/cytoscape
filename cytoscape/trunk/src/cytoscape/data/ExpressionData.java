@@ -625,7 +625,7 @@ public boolean loadData (String filename)
 
     /** copies ExpressionData data structure into
      *  GraphObjAttributes data structure.        */
-    public void copyToAttribs(CytoscapeWindow cw) {
+    public void copyToAttribs2(CytoscapeWindow cw) {
 	Node[] nodes = cw.getGraph().getNodeArray();
 	GraphObjAttributes nAttrib = cw.getNodeAttributes();
 	String[] condNames = getConditionNames();
@@ -644,6 +644,27 @@ public boolean loadData (String filename)
 	    }
 	    nAttrib.setClass(eStr,Double.class);
 	    nAttrib.setClass(sStr,Double.class);
+	}
+    }
+
+    /** copies ExpressionData data structure into
+     *  GraphObjAttributes data structure.        */
+    public void copyToAttribs(GraphObjAttributes nodeAttribs) {
+	String[] condNames = getConditionNames();
+	for(int condNum=0; condNum<condNames.length; condNum++) {
+	    String condName = condNames[condNum];
+	    String eStr = condName + "exp";
+	    String sStr = condName + "sig";
+	    for (int i=0; i<geneNames.size(); i++) {
+		String canName = (String)geneNames.get(i);
+		mRNAMeasurement mm =  getMeasurement(canName,condName);
+		if(mm!=null) {
+		    nodeAttribs.add(eStr,canName,mm.getRatio());
+		    nodeAttribs.add(sStr,canName,mm.getSignificance());
+		}
+	    }
+	    nodeAttribs.setClass(eStr,Double.class);
+	    nodeAttribs.setClass(sStr,Double.class);
 	}
     }
 }
