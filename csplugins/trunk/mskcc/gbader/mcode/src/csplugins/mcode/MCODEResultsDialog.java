@@ -186,8 +186,8 @@ public class MCODEResultsDialog extends JDialog {
 			Arrays.sort(gpComplexArray, new Comparator() {
 				//sorting GraphPerpectives by decreasing score
 				public int compare(Object o1, Object o2) {
-					double d1 = MCODE.getInstance().alg.scoreComplex((GraphPerspective) o1);
-					double d2 = MCODE.getInstance().alg.scoreComplex((GraphPerspective) o2);
+					double d1 = MCODE.alg.scoreComplex((GraphPerspective) o1);
+					double d2 = MCODE.alg.scoreComplex((GraphPerspective) o2);
 					if (d1 == d2) {
 						return 0;
 					} else if (d1 < d2) {
@@ -208,7 +208,7 @@ public class MCODEResultsDialog extends JDialog {
 				data[i][0] = new String((new Integer(i + 1)).toString()); //rank
 				NumberFormat nf = NumberFormat.getInstance();
 				nf.setMaximumFractionDigits(3);
-				data[i][1] = nf.format(MCODE.getInstance().alg.scoreComplex(gpComplex));
+				data[i][1] = nf.format(MCODE.alg.scoreComplex(gpComplex));
 				//complex size - format: (# prot, # intx)
 				data[i][2] = new String(gpComplex.getNodeCount() + "," + gpComplex.getEdgeCount());
 				//create a string of node names - this can be long
@@ -369,7 +369,7 @@ public class MCODEResultsDialog extends JDialog {
 					NumberFormat nf = NumberFormat.getInstance();
 					nf.setMaximumFractionDigits(3);
 					String title = "Complex " + (selectedRow + 1) + " Score: " +
-					        nf.format(MCODE.getInstance().alg.scoreComplex(gpComplex));
+					        nf.format(MCODE.alg.scoreComplex(gpComplex));
 					try {
 						//this call creates a WindowOpened event, which is caught by
 						//cytoscape.java, enabling that class to manage the set of windows

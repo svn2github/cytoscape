@@ -60,17 +60,25 @@ public class MCODEPlugin extends AbstractPlugin {
 		//set-up menu options in plugins menu
 		JMenuItem item;
 		JMenu menu = cyWindow.getCyMenus().getOperationsMenu();
+        //MCODE submenu
 		JMenu submenu = new JMenu("MCODE");
+        item = new JMenuItem("Run MCODE on current network.");
+        item.addActionListener(new MCODEScoreAndFindAction(cyWindow));
+        submenu.add(item);
+        item = new JMenuItem("Set parameters");
+        item.addActionListener(new MCODEParameterChangeAction(cyWindow));
+        submenu.add(item);
+        menu.add(submenu);
+        //Advanced sub-sub menu
+        JMenu subsubmenu = new JMenu("Advanced");
 		item = new JMenuItem("Step 1: Score Network");
 		item.addActionListener(new MCODEScoreAction(cyWindow));
-		submenu.add(item);
+        subsubmenu.add(item);
 		item = new JMenuItem("Step 2: Find Complexes");
 		item.addActionListener(new MCODEFindAction(cyWindow));
-		submenu.add(item);
-		item = new JMenuItem("Set parameters");
-		item.addActionListener(new MCODEParameterChangeAction(cyWindow));
-		submenu.add(item);
-		menu.add(submenu);
+        subsubmenu.add(item);
+        submenu.add(subsubmenu);
+
 	}
 
 	/**

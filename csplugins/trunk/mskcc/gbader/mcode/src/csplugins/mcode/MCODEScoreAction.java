@@ -102,7 +102,7 @@ public class MCODEScoreAction implements ActionListener {
 
 		//run MCODE scoring algorithm - node scores are saved as node attributes
 		long msTimeBefore = System.currentTimeMillis();
-		MCODE.getInstance().alg.scoreGraph(gpInputGraph, network.getNodeAttributes());
+		MCODE.alg.scoreGraph(gpInputGraph, network.getNodeAttributes());
 		long msTimeAfter = System.currentTimeMillis();
 		JOptionPane.showMessageDialog(cyWindow.getMainFrame(),
 		        "Network was scored in " + (msTimeAfter - msTimeBefore) + " ms.");

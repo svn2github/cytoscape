@@ -111,8 +111,8 @@ public class MCODEParameterChangeDialog extends JDialog {
         degreeCutOffFormattedTextField.addPropertyChangeListener("value", new MCODEParameterChangeDialog.formattedTextFieldAction());
         String tipText1 = "Sets the degree cutoff below which a node will not be scored.\n" +
                 "Nodes with a degree equal or higher to this value will be scored.\n" +
-                "By default this is set to 2 to exclude singly connected nodes from getting an artificially high\n" +
-                "node score.";
+                "By default this is set to 2. Valid values are 2 or higher to prevent singly connected nodes\n" +
+                "from getting an artificially high node score.";
         degreeCutOffFormattedTextField.setToolTipText(tipText1);
         degreeCutOffFormattedTextField.setText((new Integer(degreeCutOff).toString()));
         JLabel degreeCutOffLabel = new JLabel("Degree Cutoff");
@@ -127,7 +127,87 @@ public class MCODEParameterChangeDialog extends JDialog {
         scorePanel.add(labelFieldPanel1);
 
 		//find clusters panel
-        JPanel findPanel = new JPanel(new GridLayout(3, 2));
+        JPanel findPanel = new JPanel(new BorderLayout());
+
+        JPanel mainOptionsPanel = new JPanel(new BorderLayout());
+        JPanel mainOptionsSubPanel = new JPanel(new BorderLayout(15,2));
+        JPanel fluffOptionsPanel = new JPanel();
+
+        nodeScoreCutOffFormattedTextField = new JFormattedTextField(new DecimalFormat("0.000")) {
+            public JToolTip createToolTip() {
+                return new JMultiLineToolTip();
+            }
+        };
+        nodeScoreCutOffFormattedTextField.setColumns(3);
+        nodeScoreCutOffFormattedTextField.addPropertyChangeListener("value", new MCODEParameterChangeDialog.formattedTextFieldAction());
+        String tipText3 = "Sets the node score cutoff for expanding a cluster. This is most important\n" +
+                "parameter to control the size of MCODE clusters, with smaller values creating smaller clusters.";
+        nodeScoreCutOffFormattedTextField.setToolTipText(tipText3);
+        nodeScoreCutOffFormattedTextField.setText((new Double(nodeScoreCutOff).toString()));
+        JLabel nodeScoreCutOffLabel = new JLabel("Node Score Cutoff");
+        JPanel labelFieldPanel3 = new JPanel(new FlowLayout(FlowLayout.LEFT)) {
+            public JToolTip createToolTip() {
+                return new JMultiLineToolTip();
+            }
+        };
+        labelFieldPanel3.setToolTipText(tipText3);
+        labelFieldPanel3.add(nodeScoreCutOffLabel);
+        labelFieldPanel3.add(nodeScoreCutOffFormattedTextField);
+        mainOptionsSubPanel.add(labelFieldPanel3, BorderLayout.WEST);
+
+        haircutCheckBox = new JCheckBox("Haircut", false) {
+            public JToolTip createToolTip() {
+                return new JMultiLineToolTip();
+            }
+        };
+        haircutCheckBox.addItemListener(new MCODEParameterChangeDialog.haircutCheckBoxAction());
+        haircutCheckBox.setToolTipText("If checked, MCODE will give clusters a haircut\n" +
+                "(remove singly connected nodes).");
+        haircutCheckBox.setSelected(haircut);
+        mainOptionsSubPanel.add(haircutCheckBox, BorderLayout.EAST);
+
+        fluffNodeDensityCutOffFormattedTextField  = new JFormattedTextField(new DecimalFormat("0.000")) {
+            public JToolTip createToolTip() {
+                return new JMultiLineToolTip();
+            }
+        };
+        fluffNodeDensityCutOffFormattedTextField.setColumns(3);
+        fluffNodeDensityCutOffFormattedTextField.addPropertyChangeListener("value", new MCODEParameterChangeDialog.formattedTextFieldAction());
+        String tipText4 = "Sets the fluff density cutoff for expanding a cluster according to the unadjusted\n" +
+                "node density (clustering coefficient) after the cluster has already been defined by the algorithm.\n" +
+                "This allows clusters to slightly overlap at their edges. This parameter is only valid if fluffing\n" +
+                "is turned on. A higher value will expand the cluster more.";
+        fluffNodeDensityCutOffFormattedTextField.setToolTipText(tipText4);
+        fluffNodeDensityCutOffFormattedTextField.setText((new Double(fluffNodeDensityCutOff).toString()));
+        fluffNodeDensityCutOffFormattedTextField.setEnabled(fluff);
+        JLabel fluffNodeDensityCutOffLabel = new JLabel("Fluff Node Density Cutoff");
+        JPanel labelFieldPanel4 = new JPanel(new FlowLayout(FlowLayout.LEFT)) {
+            public JToolTip createToolTip() {
+                return new JMultiLineToolTip();
+            }
+        };
+        labelFieldPanel4.setToolTipText(tipText4);
+        labelFieldPanel4.add(fluffNodeDensityCutOffLabel);
+        labelFieldPanel4.add(fluffNodeDensityCutOffFormattedTextField);
+        fluffOptionsPanel.add(labelFieldPanel4);
+
+        fluffCheckBox = new JCheckBox("Fluff", false) {
+            public JToolTip createToolTip() {
+                return new JMultiLineToolTip();
+            }
+        };
+        fluffCheckBox.addItemListener(new MCODEParameterChangeDialog.fluffCheckBoxAction());
+        fluffCheckBox.setToolTipText("If checked, MCODE will fluff clusters\n" +
+                "(expand core cluster one neighbour shell outwards according to fluff\n" +
+                "density threshold). This is done after the optional haircut step.");
+        fluffCheckBox.setSelected(fluff);
+        fluffOptionsPanel.add(fluffCheckBox);
+
+        mainOptionsPanel.setBorder(BorderFactory.createTitledBorder("Main Options"));
+        fluffOptionsPanel.setBorder(BorderFactory.createTitledBorder("Fluff Options"));
+        mainOptionsPanel.add(mainOptionsSubPanel, BorderLayout.NORTH);
+        mainOptionsPanel.add(fluffOptionsPanel, BorderLayout.SOUTH);
+        findPanel.add(mainOptionsPanel, BorderLayout.NORTH);
 
         maxDepthFormattedTextField = new JFormattedTextField(decFormat) {
             public JToolTip createToolTip() {
@@ -150,76 +230,7 @@ public class MCODEParameterChangeDialog extends JDialog {
         labelFieldPanel2.setToolTipText(tipText2);
         labelFieldPanel2.add(maxDepthLabel);
         labelFieldPanel2.add(maxDepthFormattedTextField);
-        findPanel.add(labelFieldPanel2);
-
-        nodeScoreCutOffFormattedTextField = new JFormattedTextField(new DecimalFormat("0.000")) {
-            public JToolTip createToolTip() {
-                return new JMultiLineToolTip();
-            }
-        };
-        nodeScoreCutOffFormattedTextField.setColumns(3);
-        nodeScoreCutOffFormattedTextField.addPropertyChangeListener("value", new MCODEParameterChangeDialog.formattedTextFieldAction());
-        String tipText3 = "Sets the node score cutoff for expanding a cluster. This is most important\n" +
-                "parameter to control the size of MCODE clusters, with smaller values creating smaller clusters.";
-        nodeScoreCutOffFormattedTextField.setToolTipText(tipText3);
-        nodeScoreCutOffFormattedTextField.setText((new Double(nodeScoreCutOff).toString()));
-        JLabel nodeScoreCutOffLabel = new JLabel("Node Score Cutoff");
-        JPanel labelFieldPanel3 = new JPanel() {
-            public JToolTip createToolTip() {
-                return new JMultiLineToolTip();
-            }
-        };
-        labelFieldPanel3.setToolTipText(tipText3);
-        labelFieldPanel3.add(nodeScoreCutOffLabel);
-        labelFieldPanel3.add(nodeScoreCutOffFormattedTextField);
-        findPanel.add(labelFieldPanel3);
-
-		haircutCheckBox = new JCheckBox("Haircut", false) {
-			public JToolTip createToolTip() {
-				return new JMultiLineToolTip();
-			}
-		};
-		haircutCheckBox.addItemListener(new MCODEParameterChangeDialog.haircutCheckBoxAction());
-		haircutCheckBox.setToolTipText("If checked, MCODE will give clusters a haircut\n" +
-		        "(remove singly connected nodes).");
-		haircutCheckBox.setSelected(haircut);
-		findPanel.add(haircutCheckBox);
-
-		fluffCheckBox = new JCheckBox("Fluff", false) {
-			public JToolTip createToolTip() {
-				return new JMultiLineToolTip();
-			}
-		};
-		fluffCheckBox.addItemListener(new MCODEParameterChangeDialog.fluffCheckBoxAction());
-		fluffCheckBox.setToolTipText("If checked, MCODE will fluff clusters\n" +
-		        "(expand core cluster one neighbour shell outwards according to fluff\n" +
-		        "density threshold). This is done after the optional haircut step.");
-		fluffCheckBox.setSelected(fluff);
-		findPanel.add(fluffCheckBox);
-
-        fluffNodeDensityCutOffFormattedTextField  = new JFormattedTextField(new DecimalFormat("0.000")) {
-            public JToolTip createToolTip() {
-                return new JMultiLineToolTip();
-            }
-        };
-        fluffNodeDensityCutOffFormattedTextField.setColumns(3);
-        fluffNodeDensityCutOffFormattedTextField.addPropertyChangeListener("value", new MCODEParameterChangeDialog.formattedTextFieldAction());
-        String tipText4 = "Sets the fluff density cutoff for expanding a cluster according to the unadjusted\n" +
-                "node density (clustering coefficient) after the cluster has already been defined by the algorithm.\n" +
-                "This allows clusters to slightly overlap at their edges. This parameter is only valid if fluffing\n" +
-                "is turned on. A higher value will expand the cluster more.";
-        fluffNodeDensityCutOffFormattedTextField.setToolTipText(tipText4);
-        fluffNodeDensityCutOffFormattedTextField.setText((new Double(fluffNodeDensityCutOff).toString()));
-        JLabel fluffNodeDensityCutOffLabel = new JLabel("Fluff Node Density Cutoff");
-        JPanel labelFieldPanel4 = new JPanel() {
-            public JToolTip createToolTip() {
-                return new JMultiLineToolTip();
-            }
-        };
-        labelFieldPanel4.setToolTipText(tipText4);
-        labelFieldPanel4.add(fluffNodeDensityCutOffLabel);
-        labelFieldPanel4.add(fluffNodeDensityCutOffFormattedTextField);
-        findPanel.add(labelFieldPanel4);
+        findPanel.add(labelFieldPanel2, BorderLayout.SOUTH);
 
 		//directed mode panel
         JPanel directedModePanel = new JPanel();
@@ -236,9 +247,10 @@ public class MCODEParameterChangeDialog extends JDialog {
 		directedModePanel.add(processCheckBox);
 
 		JTabbedPane tabbedPane = new JTabbedPane();
-		tabbedPane.addTab("Directed Mode", null, directedModePanel, "Set parameters for directed mode");
-		tabbedPane.addTab("Find Clusters", null, findPanel, "Set parameters for cluster finding stage (Stage 2)");
-		tabbedPane.addTab("Network Scoring", null, scorePanel, "Set parameters for scoring stage (Stage 1)");
+        tabbedPane.addTab("Network Scoring", null, scorePanel, "Set parameters for scoring stage (Stage 1)");
+        tabbedPane.addTab("Find Clusters", null, findPanel, "Set parameters for cluster finding stage (Stage 2)");
+        //uncomment below when directed mode is implemented
+		//tabbedPane.addTab("Directed Mode", null, directedModePanel, "Set parameters for directed mode");
 		panel.add(tabbedPane, BorderLayout.CENTER);
 
 		JPanel bottomPanel = new JPanel(new FlowLayout());
@@ -326,7 +338,7 @@ public class MCODEParameterChangeDialog extends JDialog {
             Object source = e.getSource();
             if (source == degreeCutOffFormattedTextField) {
                 Number value = (Number) degreeCutOffFormattedTextField.getValue();
-                if ((value != null) && (value.intValue() > 0)) {
+                if ((value != null) && (value.intValue() > 1)) {
                     degreeCutOff = value.intValue();
                 }
             } else if (source == maxDepthFormattedTextField) {
@@ -365,6 +377,7 @@ public class MCODEParameterChangeDialog extends JDialog {
 			} else {
 				fluff = true;
 			}
+            fluffNodeDensityCutOffFormattedTextField.setEnabled(fluff);
 		}
 	}
 

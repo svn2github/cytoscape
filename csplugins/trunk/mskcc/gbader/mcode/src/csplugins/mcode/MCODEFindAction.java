@@ -104,7 +104,7 @@ public class MCODEFindAction implements ActionListener {
 		}
 
 		//run MCODE complex finding algorithm after the nodes have been scored
-		ArrayList complexes = MCODE.getInstance().alg.findComplexes(gpInputGraph);
+		ArrayList complexes = MCODE.alg.findComplexes(gpInputGraph);
 		if (complexes == null) {
 			JOptionPane.showMessageDialog(cyWindow.getMainFrame(),
 			        "The network has not been scored.  Please run the scoring step first.");

@@ -55,9 +55,6 @@ public class MCODEParameterChangeAction implements ActionListener {
 	 * @param event Menu Item Selected.
 	 */
 	public void actionPerformed(ActionEvent event) {
-		//run MCODE complex finding algorithm after the nodes have been scored
-		MCODE alg = MCODE.getInstance();
-
 		//display complexes in a new non modal dialog box
 		MCODEParameterChangeDialog paramChangeDialog = new MCODEParameterChangeDialog(cyWindow.getMainFrame());
 		paramChangeDialog.pack();
