@@ -37,20 +37,20 @@ public final class RootGraphAddRemoveTest
       for (int i = 0; i < edgeInx.length; i++)
         edgeInx[i] = root.createEdge(nodeInx[i % nodeInx.length],
                                      nodeInx[(i * 3) % nodeInx.length]);
-      if (print) System.out.println("in RootGraph: " + root.getNodeCount() +
-                                    " nodes and " + root.getEdgeCount() +
-                                    " edges");
-      if (print) System.out.println();
+      if (print) printme(root);
       if (print) System.out.println("removing all edges from RootGraph");
       root.removeEdges(edgeInx);
       if (print) System.out.println("removing all nodes from RootGraph");
       root.removeNodes(nodeInx);
-      if (print) System.out.println("in RootGraph: " + root.getNodeCount() +
-                                    " nodes and " + root.getEdgeCount() +
-                                    " edges");
-      if (print) System.out.println();
+      if (print) printme(root);
     }
   }
+
+  private static void printme(RootGraph root) {
+    System.out.println("in RootGraph: " + root.getNodeCount() +
+                       " nodes and " + root.getEdgeCount() +
+                       " edges");
+    System.out.println(); }
 
   private static final RootGraph getRootGraph(String[] mainArgs)
     throws ClassNotFoundException, InstantiationException,
