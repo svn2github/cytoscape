@@ -48,10 +48,19 @@ networks, ISMB2002 and Bioinformatics (in press).
 
 DATA PREPARATION:
 In order to run jActiveModules, expression data must be provided by user.
-In addition, this expression data MUST supply p values. Note that these values must be between 0 and 1 (exclusive). (see the cytoscape manual for instructions on supplying p values with expression data). If thevsupplied p values are very small (ie, 0), jActiveModules will print a warning to standard error and round these values up.
+In addition, this expression data MUST supply p values. Note that these values
+must be between 0 and 1 (exclusive). (see the cytoscape manual for instructions
+on supplying p values with expression data). If thevsupplied p values are very
+small (ie, 0), jActiveModules will print a warning to standard error and round
+these values up.
 
 OPERATION:
-First, load a network (gml or sif) and associated expression data from the "File" menu. Note that expression data must be loaded in the form of an "Expression Matrix File" and not "Node Attributes". Next, specify the search and scoring parameters. From the menu bar, select "Plugins=>Active Modules: Set Parameters". This will bring up a dialog that allows you to choose from several different options.
+First, load a network (gml or sif) and associated expression data from the
+"File" menu. Note that expression data must be loaded in the form of an
+"Expression Matrix File" and not "Node Attributes". Next, specify the search
+and scoring parameters. From the menu bar, select
+"Plugins=>Active Modules: Set Parameters". This will bring up a dialog that
+allows you to choose from several different options.
 
 "Number of Paths", "Iterations":
 Starting from the specified "Number of Paths" (randomly seeded), the
@@ -106,13 +115,30 @@ Seed Graph Options
   a numeric representation of the current time into the "seed:" area.
 
 Search Extensions:
-  Instead of annealing, this will greedily search for local optima in the graph, starting from all nodes in the graph.  The depth specifies the number of moves required to consider an area a local maximum.  The greater the depth, the better the optima, and the longer the algorithm takes.  Typical depths are 1 or 2.  Searching (rather than annealing) will return the set of all optima it found, in the order that it found them.  They may overlap.
+  Instead of annealing, this will greedily search for local optima in the
+graph, starting from all nodes in the graph.  The depth specifies the number
+of moves required to consider an area a local maximum.  The greater the depth,
+the better the optima, and the longer the algorithm takes.  Typical depths are
+1 or 2.  Searching (rather than annealing) will return the set of all optima
+it found, in the order that it found them.  They may overlap.
 
 "Search from selected nodes?"
-  If you have a large graph, and the number of pairs of nodes (and thus starting points for searching) is quite large, you might consider selecting nodes that are likely to be near local optima, and starting the greedy search from there.
+  If you have a large graph, and the number of pairs of nodes (and thus
+starting points for searching) is quite large, you might consider selecting
+nodes that are likely to be near local optima, and starting the greedy search
+from there.
 
 
-Once options are set, press "Dismiss" and the options will be saved. Before starting the search, make sure that the appropriate network is selected (it will be high-lighted in blue in the left panel). To begin active path finding, select "Plugins=>Active Modules: Find Modules" from the menu-bar. At the termination of the search, a matrix appears tabulating which experimental conditions (rows) activated each path (columns). Clicking on a column of this matrix selects the corresponding pathway in the main Cytoscape window (note that the nodes are selected even if the view is not currently displayed). In order to view these results, choose "Select=>To New Window=>Selected Nodes, All Edges" from the menubar.
+Once options are set, press "Dismiss" and the options will be saved. Before
+starting the search, make sure that the appropriate network is selected (it
+will be high-lighted in blue in the left panel). To begin active path finding,
+select "Plugins=>Active Modules: Find Modules" from the menu-bar. At the
+termination of the search, a matrix appears tabulating which experimental
+conditions (rows) activated each path (columns). Clicking on a column of this
+matrix selects the corresponding pathway in the main Cytoscape window (note
+that the nodes are selected even if the view is not currently displayed). In
+order to view these results, choose "Select=>To New Window=>Selected Nodes,
+All Edges" from the menubar.
 
 The ActivePaths plug-in may also be controlled from the command line
 by specifying the following options:
@@ -193,9 +219,9 @@ For any questions concerning this PlugIn, please contact:
 
 Ryan Kelley:  rmkelley@ucsd.edu
 
-This software is made available under the LGPL (Lesser General Public License).  
+This software is made available under the LGPL (Lesser General Public License).
 Until we develop a better source code distribution system, please email Ryan
 for a complete copy of the source code.
  
-This product was developed using software supplied by the Apache Software Foundation
-(http://www.apache.org).
+This product was developed using software supplied by the Apache Software
+Foundation (http://www.apache.org).
