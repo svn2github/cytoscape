@@ -1725,7 +1725,9 @@ protected class CloneGraphInNewWindowAction extends AbstractAction   {
     CloneGraphInNewWindowAction () { super ("Whole graph"); }
 
   public void actionPerformed (ActionEvent e) {
+    setInteractivity (false);
     cloneWindow ();
+    setInteractivity (true);
     } // actionPerformed
 
 } // inner class CloneGraphInNewWindowAction
