@@ -10,10 +10,7 @@ package csplugins.isb.dtenenbaum.jython;
 import java.awt.event.*;
 import javax.swing.*;
 
-import java.util.*;
-
 import java.awt.*;
-
 
 import cytoscape.*;
 import cytoscape.plugin.*;
@@ -27,16 +24,24 @@ public class PyConsolePlugin extends CytoscapePlugin {
 	protected SPyConsoleThread pythonConsole;
 	protected Thread consoleThread;
 	JFrame consoleFrame;
-	HashMap variablesToPassToPython;
+	boolean bootstrap ;
 
+	// TODO - this ctor doesn't work with arg of "false" if PyConsolePlugin
+	// is already running. Can it be fixed or does it matter? We normally only
+    // call this with false if we don't already have a console.
 	public PyConsolePlugin() {
-
+		this(true);
+	}
+	
+	public PyConsolePlugin(boolean bootstrap) {
+		this.bootstrap = bootstrap;
 		CytoscapeAction consoleAction = new StartConsole();
-		consoleAction.setPreferredMenu("Plugins");
-		Cytoscape.getDesktop().getCyMenus().addAction(consoleAction);
-
-		variablesToPassToPython = new HashMap();
-
+		if (bootstrap) {
+			consoleAction.setPreferredMenu("Plugins");
+			Cytoscape.getDesktop().getCyMenus().addAction(consoleAction);
+		} else {
+			consoleAction.actionPerformed(null);
+		}
 	}
 
 	protected class StartConsole extends CytoscapeAction {
@@ -67,12 +72,17 @@ public class PyConsolePlugin extends CytoscapePlugin {
 
 
 
-
-			String bootCode = ImportPyLibs.getResourceCode("__run__.py");
+			String bootCode;
+			
+			if (bootstrap) {
+				bootCode = ImportPyLibs.getResourceCode("__run__.py");
+			} else {
+				bootCode = ImportPyLibs.getResourceCode("__run2__.py");
+			}
 			pythonConsole.exec(bootCode);
 
 		} // actionPerformed
 
 	} // inner class StartConsole
 	//------------------------------------------------------------------------------
-} // class SumbitInteractionsPlugin
+} // class PyConsolePlugin

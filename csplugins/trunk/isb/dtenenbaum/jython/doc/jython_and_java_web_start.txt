@@ -1,8 +1,3 @@
-todo:
-	update this
-	make cy1 version point here
-	deprecate csplugins.isb.pshannon.spy
-	move spyconsole code into this package?
 
 
 Developing Cytoscape Plugins Using Jython and Java Web Start
@@ -14,23 +9,6 @@ Overview
 
 This document is intended to be a compendium of tips and tricks necessary to
 make Cytoscape, Java, Jython, and Java Web Start all cooperate with each other.
-These instructions should be sufficient to make this possible; however, there 
-are several things that are not accomplished that should be accomplished first
-before you can use Jython/JWS/Cytoscape in an optimal manner--those things are:
-
-- Port both the console and non-console plugins to Cytoscape 2, making 
-  them both as generic as possible so they can be reused for many different
-  applications.
-
-- (There is a python console plugin as part of cytoscape 2, but it will not 
-  fully work with java web start and needs to be updated)
-
-- As part of the porting process, move all necessary classes into a single package
-  (where possible).  As of now, you will find things in somewhat nonintuitive
-  places.
-
-- After porting, move this document into that package where it should live.
-
 
 Why Two Plugins?
 
@@ -47,6 +25,10 @@ The two plugins are basically identical, except
  to the Plugins menu. When you start the console, it puts some important
  objects into the jython namespace (a PythonConsole in this case) and runs
  the script __run__.py packaged with the application. (more on this later)
+ Note: Cytoscape 2 version does not put anything into the namespace, as 
+ you can retrieve the objects you need statically from the Cytoscape class.
+ Initialization code and utility methods should be provided in jython code
+ anyway.
  
 -On startup, the non-console plugin puts some important objects into
  the jython namespace (an instance of PythonInterpreter in this case)
@@ -54,14 +36,20 @@ The two plugins are basically identical, except
  code in __run__.py has executed. For example, in the cell phone simulation
  the bootstrap code consists of setting up UI elements, and when the
  progress bar is finished, there is a new menu (Simulation) visible
- on the menu bar.
+ on the menu bar. Note: Cytoscape 2 version does not put anything into
+ the jython namespace.
+
+Cytoscape 2 only:
+You may want to combine both plugins--for example, you might want to
+use the non-console plugin to set up some UI and menu items, and one of
+the UI widgets could launch a console plugin. You can call the console
+plugin with a "bootstrap" parameter of "false" and instead of launching
+__run__.py it will launch __run2__.py. (Note that this doesn't work
+if you do it from the console plugin, but that should not be necessary).
+Also, it seems you can only open one console at a time--any code
+to launch a console should check and see if there is already one
+running.
  
-It seems reasonable that one might want to combine the functionality of
-the two plugins--for example, to have an application that functions like
-the non-console plugin, but have it create a menu option that opens a console.
-The console should have the same namespace as the underlying interpreter,
-but should not run any bootstrap code on its own. I have somewhat 
-tentatively explored this option as of now.
 
 How The Plugins Work
 
@@ -114,7 +102,6 @@ library and it adds it to sys.path; when it finds the jar containing
 "__run__.py" it knows it has found your custom jython code, 
 and it adds it to sys.path and then executes "__run__.py".
 
-
 Running Standalone (not as a Web Start)
 
 When you are developing your application and running it locally on
@@ -130,7 +117,17 @@ to importing necessary modules, then calling functions or classes
 in those modules. The called modules should not contain any global
 code (that is, code that is outside of functions and classes) unless
 it is just initialization code or unit testing code that only runs
-if '__name__' == '__main__'.
+if __name__ == '__main__'.
+
+About __run2__.py (Cytoscape 2 only)
+
+You should include a file called __run2__.py if you intend to use
+the non-console plugin but have it launch a console at some later point
+(for example, in response to a button click). The file should
+contain any code that you want to run when the console is called.
+The reason for this separate file is that you do not necessarily want
+to run your bootstrap code again, but you might want to run some 
+initialization code.
 
 Jython Development Guidelines
 
@@ -157,7 +154,8 @@ can do in this web start enviroment. However, there are some exceptions:
   run methods that were in other scripts. That was because I was not
   using "import" to get those modules into my namespace, but rather 
   a function that would get the code from the jar file and execute
-  and run it. Using "import" is strongly recommended over that latter
+  and run it (this option no longer available in Cytoscape 2 version).
+  Using "import" is strongly recommended over that latter
   approach. It should obviate this sort of problem but if you still
   run into it, try marking "public" identifiers as global.
   
@@ -176,20 +174,19 @@ can do in this web start enviroment. However, there are some exceptions:
 About the plugin classes
 
 Here is a list of the important classes and where they can be found.
-All paths are relative to cvsdir4. This section will be updated when
-plugins are ported to cytoscape 2 and cvsdir5.
+
+Cytoscape 1 setion:
+All paths are relative to cvsdir4. 
 
 The non-console plugin:
 csplugins/isb/dtenenbaum/cellphone/CellPhonePlugin.java
 
-Obviously it should be moved out of that package since you would use it
-in applications other than the cell phone. This will happen when it is ported.
+Not the best place for it--things have been moved into one
+sensible package in the Cytoscape 2 version.
 
 The console plugin:
 csplugins/trial/pshannon/spy/PyConsolePlugin.java
 This also depends on all the other .java files in that directory.
-(The non-console plugin depends upon a few as well--this will all be
-reorganized into one package that makes more sense)
 
 Both plugins depend on the following classes that are important
 and should be singled out for mention:
@@ -204,5 +201,39 @@ package because it calls a private constructor and overrides a private
 method in that package. This class exists to get around the fact that
 cached Web Start jar names do not always end with a ".jar" extension.
 
+
+Cytoscape 2 Section:
+All paths are relative to cvsdir5. 
+
+The non-console plugin:
+csplugins/isb/dtenenbaum/jython/NonConsolePlugin.java
+This depends on all the other .java files in that directory.
+
+The console plugin:
+csplugins/isb/dtenenbaum/jython/PyConsolePlugin.java
+This also depends on all the other .java files in that directory.
+
+** IMPORTANT ** - there is another PyConsolePlugin.java in
+the package csplugins.trial.pshannon.py. It is (or will be)
+deprecated. It is not the same plugin described here.
+
+Both plugins depend on the following classes that are important
+and should be singled out for mention:
+
+csplugins/isb/dtenenbaum/jython/ImportPyLibs.java
+This class is the one that figures out which jar files contain
+custom and standard jython modules.
+
+org/python/core/SyspathArchiveHack.java
+ImportPyLibs uses this class. This class must be in the org.python.core
+package because it calls a private constructor and overrides a private
+method in that package. This class exists to get around the fact that
+cached Web Start jar names do not always end with a ".jar" extension.
+
+
 A quick look at these classes is highly recommended.
 
+---------
+todo:
+	deprecate csplugins.isb.pshannon.spy
+	move spyconsole code into this package?

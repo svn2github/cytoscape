@@ -47,10 +47,15 @@ public class NonConsolePlugin extends CytoscapePlugin {
 	}
 	
 	
+	// I thought this class should be a modal dialog but that makes it
+	// not hear timer events. Why? Making it extend JDialog (but not 
+	// setting it modal) makes it look weird. Do we even need this in
+	// cytoscape 2?
 	class WaitUp extends JFrame  implements ActionListener {
 		
+		private javax.swing.Timer timer;
+		
 		public WaitUp() {
-			
 			setSize(300,100);
 			setTitle("Please Wait...");
 			// TODO - get rid of this--place it in center relative to cytoscape frame
@@ -65,12 +70,15 @@ public class NonConsolePlugin extends CytoscapePlugin {
 			cyNetworkView.redrawGraph(false,true);
 			show();
 			int delay = 300; // milliseconds
-			new javax.swing.Timer(delay, this).start();
+			timer = new javax.swing.Timer(delay, this);
+			timer.start();
 			
 		}
 		
         public void actionPerformed(ActionEvent evt) {
+			System.out.println("got a timer event");
         	if (!th.isAlive()) {
+        		timer.stop();
         		this.dispose();
         	}
         }

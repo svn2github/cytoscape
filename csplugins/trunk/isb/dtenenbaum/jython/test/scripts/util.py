@@ -11,6 +11,9 @@ def choose ():
         choice = chooser.getSelectedFile().getPath()
         return choice
 
+# this will probably break if you are running as a web start, since
+# urllib relies upon socket and socket is broken. Use the WebReader
+# class instead?
 def webRead (filename, 
   baseUrl = 'http://db.systemsbiology.net/cytoscape/projects/static/highSchool/scripts'):
     url = '%s/%s' % (baseUrl, filename)
