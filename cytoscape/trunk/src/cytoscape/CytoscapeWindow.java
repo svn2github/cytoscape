@@ -82,7 +82,6 @@ public class CytoscapeWindow extends JPanel implements FilterDialogClient, Graph
   protected JToolBar toolbar;
   protected JLabel infoLabel;
 
-
   protected Cursor defaultCursor = Cursor.getPredefinedCursor (Cursor.DEFAULT_CURSOR);
   protected Cursor busyCursor = Cursor.getPredefinedCursor (Cursor.WAIT_CURSOR);
 
