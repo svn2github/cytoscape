@@ -71,7 +71,7 @@ public interface DynamicGraph
   /**
    * Creates a new edge in this graph, having source node, target node,
    * and directedness specified.  Returns the new edge, or -1 if either the
-   * source or target node don't exist in this graph.  Edges are always
+   * source or target node does not exist in this graph.  Edges are always
    * non-negative.<p>
    * Implementations should try to create edges with small values.
    * Implementations should try to prevent new edges from taking
