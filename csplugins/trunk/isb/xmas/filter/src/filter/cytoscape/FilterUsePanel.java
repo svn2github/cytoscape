@@ -88,6 +88,11 @@ public class FilterUsePanel extends JPanel
   protected void testObjects () {
     
     Filter[] filters = filterListPanel.getSelectedFilters();
+    System.out.println( "Window: "+window );
+    network = window.getNetwork();
+    System.out.println( "Network: "+network );
+    System.out.println( "GP: "+network.getGraphPerspective() );
+
     List nodes_list = network.getGraphPerspective().nodesList();
     List edges_list = network.getGraphPerspective().edgesList();
     Iterator nodes;
@@ -214,7 +219,7 @@ public class FilterUsePanel extends JPanel
    */
   protected void passObject( Object object, boolean passes ) {
 
-
+    System.out.println( "Object: "+object+" passed? "+passes );
 
   }
 

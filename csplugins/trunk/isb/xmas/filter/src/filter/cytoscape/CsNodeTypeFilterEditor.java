@@ -83,20 +83,20 @@ public class CsNodeTypeFilterEditor
     search_panel.add( searchBox );
     add( search_panel );
 
-    add( new JButton (new AbstractAction( "Update" ) {
-          public void actionPerformed ( ActionEvent e ) {
-            // Do this in the GUI Event Dispatch thread...
-            SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
-                  String[] atts = nodeAttributes.getAttributeNames();
-                  System.out.println( "There are: "+atts.length+" attributes." );
-                  for ( int i = 0; i < atts.length; ++i ) {
-                    System.out.println( i+". "+atts[i] );
-                  }
-                  attributeBox.setModel( new DefaultComboBoxModel( nodeAttributes.getAttributeNames() ) );
-                  ( ( DefaultComboBoxModel )attributeBox.getModel() ).addElement( "canonicalName" );
-                }
-              } ); } } ) );
+   //  add( new JButton (new AbstractAction( "Update" ) {
+//           public void actionPerformed ( ActionEvent e ) {
+//             // Do this in the GUI Event Dispatch thread...
+//             SwingUtilities.invokeLater( new Runnable() {
+//                 public void run() {
+//                   String[] atts = nodeAttributes.getAttributeNames();
+//                   System.out.println( "There are: "+atts.length+" attributes." );
+//                   for ( int i = 0; i < atts.length; ++i ) {
+//                     System.out.println( i+". "+atts[i] );
+//                   }
+//                   attributeBox.setModel( new DefaultComboBoxModel( nodeAttributes.getAttributeNames() ) );
+//                   ( ( DefaultComboBoxModel )attributeBox.getModel() ).addElement( "canonicalName" );
+//                 }
+//               } ); } } ) );
 
     setDefaults();
 
