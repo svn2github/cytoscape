@@ -15,8 +15,6 @@ public final class AllRootGraphMethodsTest
   private AllRootGraphMethodsTest() { }
 
   public static final void main(String[] args)
-    throws ClassNotFoundException, InstantiationException,
-           IllegalAccessException
   {
     final RootGraph root = FingRootGraphFactory.instantiateRootGraph();
 
@@ -57,13 +55,13 @@ public final class AllRootGraphMethodsTest
     // existed before these tests.
     if (root.removeNode(nodeInx[1]) != nodeInx[1])
       throw new IllegalStateException("removal of node failed");
-//     if (root.removeEdge(edgeInx[0]) != 0 ||
-//         root.removeEdge(edgeInx[1]) != 0 ||
-//         root.removeEdge(edgeInx[4]) != 0 ||
-//         root.removeEdge(edgeInx[5]) != 0)
-//       throw new IllegalStateException("removal failure failed - edge");
-//     if (root.removeNode(nodeInx[1]) != 0)
-//       throw new IllegalStateException("removal failure failed - node");
+    if (root.removeEdge(edgeInx[0]) != 0 ||
+        root.removeEdge(edgeInx[1]) != 0 ||
+        root.removeEdge(edgeInx[4]) != 0 ||
+        root.removeEdge(edgeInx[5]) != 0)
+      throw new IllegalStateException("removal failure failed - edge");
+    if (root.removeNode(nodeInx[1]) != 0)
+      throw new IllegalStateException("removal failure failed - node");
     if (root.removeEdge(edgeInx[6]) != edgeInx[6])
       throw new IllegalStateException("removal of edge failed");
     if (root.removeEdge(edgeInx[6]) != 0)
