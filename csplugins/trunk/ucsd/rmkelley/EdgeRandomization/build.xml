@@ -13,7 +13,8 @@
 	<!--  The directory containing library jar files -->	
 	<property name="lib.dir" value="../../../../cytoscape/lib"/>
 	<property name="local.lib.dir" value="lib"/>
-
+	<property name="Util.dir" value="../Util"/>
+	<property name="cyto.dir" value="../../../../cytoscape"/>
   	<!-- Temporary build directories -->
  	<property name="build.dir" value="build"/>
   	<property name="build.classes" value="${build.dir}/classes"/>
@@ -25,8 +26,10 @@
 	<!-- Classpath with all lib JAR Files and all Cytoscape Core classes -->
 	<path id="classpath">
 		<pathelement path="${build.classes}"/>	
-		<pathelement path="../../../../cytoscape/build/classes"/>
 		<fileset dir="${lib.dir}">
+			<include name="**/*.jar"/>
+		</fileset>
+		<fileset dir="${cyto.dir}">
 			<include name="**/*.jar"/>
 		</fileset>
 		<fileset dir="${local.lib.dir}">
@@ -39,7 +42,8 @@
     		<mkdir dir="${build.dir}"/>
     		<mkdir dir="${build.classes}"/>
                 <mkdir dir="${doc.dir}"/>
-  	</target>
+		<mkdir dir="${local.lib.dir}"/>
+	</target>
 
 	<!--  Target to clean out all directories -->
   	<target name="clean" description="Removes all generated files.">
@@ -51,7 +55,7 @@
 		<fileset dir="${lib.dir}">
 			<include name="**/*.jar"/>
 		</fileset>
-		<pathelement location="${lib.dir}/../build/cytoscape.jar"/>
+		<pathelement location="${cyto.dir}/cytoscape.jar"/>
 	</path>
 
 
@@ -69,7 +73,12 @@
 	
 	<!-- Target to create Cytoscape Jar File  -->
 	<target name="build_cytoscape">
-		<ant antfile="../../../../cytoscape/build.xml" inheritAll="false" target="jar"/>
+		<ant antfile="${cyto.dir}/build.xml" inheritAll="false" target="jar"/>
+	</target>
+	
+	<target name="build_Util">
+		<ant antfile="${Util.dir}/build.xml" inheritAll="false" target="jar"/>
+		<copy file="${Util.dir}/build/Util.jar" todir="${local.lib.dir}"/>
 	</target>
 
         <!-- Target to create the javadoc information -->
@@ -82,7 +91,7 @@
 
         
 	<!--  Target to compile all Plug In Code -->
-  	<target name="compile" depends="prepare, build_cytoscape" 
+  	<target name="compile" depends="prepare, build_cytoscape,build_Util" 
 		description="Compiles all PlugIn source code.">
 		<javac debug="Yes" srcdir="${src.dir}" destdir="${build.classes}">
 			<classpath refid="classpath"/>
