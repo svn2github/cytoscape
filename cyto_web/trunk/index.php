@@ -165,7 +165,6 @@
 </div>
 </div>
 <td>
-<P>
 <?php
 	if ($news_option == "rss") {
 		include "feed.php";

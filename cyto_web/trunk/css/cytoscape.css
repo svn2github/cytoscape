@@ -147,6 +147,9 @@ body {
  #border: dotted gray 1px;
  padding-left: 10px;
  padding-bottom: 10px;
+ background: #FFFFFF   url(../images/blue_grad.png) ;
+ background-repeat: repeat-y;
+ border: 1px solid #b0d6fc;
 }
 #content .item h2 {
  margin-bottom: 0px;

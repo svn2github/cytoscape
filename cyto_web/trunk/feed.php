@@ -7,7 +7,7 @@ require_once 'magpie/rss_fetch.inc';
 $url = 'http://groups-beta.google.com/group/cytoscape-announce/feed/msgs.xml';
 $rss = fetch_rss($url);
 
-echo "<B>" ,"<A HREF='http://groups-beta.google.com/group/cytoscape-announce'>";
+echo "<A HREF='http://groups-beta.google.com/group/cytoscape-announce'>";
 echo "Cytoscape Announcements:</A></B><P>\n";
 foreach ($rss->items as $item ) {
 	$name = $item["author_name"];
