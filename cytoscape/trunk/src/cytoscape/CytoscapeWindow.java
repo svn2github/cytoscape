@@ -1882,7 +1882,7 @@ protected class ReduceEquivalentNodesAction extends AbstractAction  {
 }
 
 //-----------------------------------------------------------------------------
-protected class AlphabeticalSelectionAction extends AbstractAction   {
+public class AlphabeticalSelectionAction extends AbstractAction   {
   AlphabeticalSelectionAction () { super ("Nodes By Name"); }
 
   public void actionPerformed (ActionEvent e) {
