@@ -56,6 +56,16 @@ public static Arrow parseArrowText (String text)
       return Arrow.STANDARD;
   else if(arrowtext.equalsIgnoreCase("arrow"))
       return Arrow.STANDARD;
+  else if(arrowtext.equalsIgnoreCase("diamond"))
+      return Arrow.DIAMOND;
+  else if(arrowtext.equalsIgnoreCase("white_delta"))
+      return Arrow.WHITE_DELTA;
+  else if(arrowtext.equalsIgnoreCase("whitedelta"))
+      return Arrow.WHITE_DELTA;
+  else if(arrowtext.equalsIgnoreCase("white_diamond"))
+      return Arrow.WHITE_DIAMOND;
+  else if(arrowtext.equalsIgnoreCase("whitediamond"))
+      return Arrow.WHITE_DIAMOND;
   else if(arrowtext.equalsIgnoreCase("none"))
       return Arrow.NONE;
   else
