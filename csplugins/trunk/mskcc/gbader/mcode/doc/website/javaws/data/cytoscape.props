@@ -1,8 +1,6 @@
-species=Saccharomyces cerevisiae
-#set this to false to disable the undo features
-enableUndo=false
+viewType=tabbed
+defaultSpeciesName=Saccharomyces cerevisiae
+viewThreshold=500
 
-# pick calculators from the vizmap.props file
-nodeAppearanceCalculator=Basic
-edgeAppearanceCalculator=Basic
-
+plugin.yeastContext.load=csplugins.contextmenu.yeast.YeastPlugin
+plugin.mcode.load=csplugins.mcode.MCODEPlugin
