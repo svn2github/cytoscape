@@ -37,11 +37,9 @@ package cytoscape;
 public class CytoscapeVersion {
 
   /** */
-  public static String version =
-    "2.1" + System.getProperty("line.separator") + "private build";
-  private String versionString =
-    "2.1" + System.getProperty("line.separator") + "private build";
-  private String dateString = "2005.02.02";
+  public static String version = "2.1";
+  private String versionString = "2.1";
+  private String dateString = "2005.02.23";
   // would need ant or build script to modify this value
   // maybe dateString should serve this purpose?
   //private String buildDate = "2003/09/18";
