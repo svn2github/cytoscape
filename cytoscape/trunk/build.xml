@@ -185,19 +185,11 @@
 		    <!-- For details, see cytoscape/data/makefile -->
 		      <exclude name="cytoscape/data/util/*"/>
 
-   		  <!-- only compile those files specified in the makefile -->
+   		  <!-- ignore files moved to cytoscape/data/servers/archive -->
 		    <!-- For details, see cytoscape/data/servers/makefile -->
-		      <exclude name="cytoscape/data/servers/**"/>
-		      <include name="cytoscape/data/servers/BioDataServerInterface"/>
-		      <include name="cytoscape/data/servers/BioDataServerRmi"/>
-		      <include name="cytoscape/data/servers/BioDataServer"/>
-		      <include name="cytoscape/data/servers/loadAnnotation"/>
-		      <include name="cytoscape/data/servers/loadAnnotationFromFlatFiles"/>
-		      <include name="cytoscape/data/servers/loadThesaurus"/>
-		      <include name="cytoscape/data/servers/status"/>
-		      <include name="cytoscape/data/servers/clear"/>
-		      <include name="cytoscape/data/servers/getCommonName"/>
-		      <include name="cytoscape/data/servers/getCanonicalName"/>
+		      <exclude name="cytoscape/data/servers/archive/*"/>
+                  <!-- also ignore tests of the archived classes -->
+                      <exclude name="cytoscape/data/servers/unitTests/archive/*"/>
 
 		    <!-- data/annotation/reader/unitTests are never compiled -->
 		    <!-- For details, see cytoscape/data/readers/makefile -->
@@ -218,7 +210,7 @@
     	</javac>
 	
     <!-- Run RMIC for BioDataServer -->
-    <!-- rmic classname="cytoscape/data/servers/BioDataServerRmi" base="${build.classes}"/ -->	
+    <rmic classname="cytoscape/data/servers/BioDataServerRmi" base="${build.classes}" classpathref="classpath"/>
     </target>
   	
   <!-- ======================================================= -->

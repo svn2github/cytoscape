@@ -115,6 +115,14 @@ public class CyNetwork {
         this.expressionData = expressionData;
     }
     
+    /**
+     * Default constructor for Giny network. Equivalent to
+     * CyNetwork(new LunaRootGraph(), null, null, null, isYFiles).
+     */
+    public CyNetwork(boolean isYFiles) {
+        this(new LunaRootGraph(), null, null, null, isYFiles);
+    }
+    
     
      /**
      * Constructor that ensures that a valid graph and attributes objects

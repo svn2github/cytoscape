@@ -56,6 +56,18 @@ import java.util.*;
 public class CyNetworkFactory {
 
 /**
+ * Creates a network with an empty graph, empty attributes object, and
+ * no expression data.
+ */
+public static CyNetwork createEmptyNetwork(boolean isYFiles) {
+    if (isYFiles) {
+        return new CyNetwork();
+    } else {
+        return new CyNetwork(false);
+    }
+}
+
+/**
  * Constructs a network from an interactions file describing the graph,
  * with no canonicalization of names via a BioDataServer. Equivalent to
  * createNetworkFromInteractionsFile(location, false, null, null).
