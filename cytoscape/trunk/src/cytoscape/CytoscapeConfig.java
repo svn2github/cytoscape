@@ -356,7 +356,7 @@ public class CytoscapeConfig
 
     viewThreshold = new Integer(props.getProperty( "viewThreshold", "500" ) );
     viewType = props.getProperty( "viewType", "tabbed" );
-    defaultSpeciesName = props.getProperty("defaultSpeciesName", "Saccharomyces Cerevisiae" );
+    defaultSpeciesName = props.getProperty("defaultSpeciesName", "Saccharomyces cerevisiae" );
     bioDataDirectory = props.getProperty( "bioDataDirectory", "testData/annotation/manifest");
   }
 
@@ -780,7 +780,8 @@ public class CytoscapeConfig
     if (dataServers.length >= 1) {
       String tmp = dataServers [0];
       if ((!tmp.startsWith ("rmi://")) && 
-          (!tmp.startsWith ("jar://"))) {
+          (!tmp.startsWith ("jar://")) &&
+          (!tmp.startsWith ("http://"))) {
         bioDataDirectory = absolutizeFilename (projectFileDirectoryAbsolute, tmp);
       }
       else
