@@ -2973,7 +2973,9 @@ public boolean loadExpressionData (String filename) {
     if (validLoad) {
         this.expressionData = newData;
 
-        config.addNodeAttributeFilename(filename);
+        //I don't understand why the following line is here; expression data
+        //isn't an attribute file. commented out 05/15/03 AM
+        //config.addNodeAttributeFilename(filename);
         // update plugin list
         //loadPlugins();  //don't reload plugins
     }
