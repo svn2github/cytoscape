@@ -1,0 +1,8876 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- $Revision$
+     $Date$
+     $Author$
+  -->
+
+<annotation species="Halobacterium sp." 
+            type="Metabolic Pathway"
+            ontology="kegg.xml">
+
+  <term>
+     <entity> VNG0006G </entity>
+     <id> 251 </id>
+     <name> Glutamate metabolism </name>
+  </term>
+
+   <term>
+      <entity> VNG0006G </entity>
+      <id> 530 </id>
+      <name> Aminosugars metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0008G </entity>
+      <id> 520 </id>
+      <name> Nucleotide sugars metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0008G </entity>
+      <id> 522 </id>
+      <name> Erythromycin biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0009G </entity>
+      <id> 520 </id>
+      <name> Nucleotide sugars metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0009G </entity>
+      <id> 522 </id>
+      <name> Erythromycin biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0046G </entity>
+      <id> 40 </id>
+      <name> Pentose and glucuronate interconversions </name>
+   </term>
+
+   <term>
+      <entity> VNG0046G </entity>
+      <id> 500 </id>
+      <name> Starch and sucrose metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0046G </entity>
+      <id> 520 </id>
+      <name> Nucleotide sugars metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0047G </entity>
+      <id> 520 </id>
+      <name> Nucleotide sugars metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0063G </entity>
+      <id> 52 </id>
+      <name> Galactose metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0063G </entity>
+      <id> 520 </id>
+      <name> Nucleotide sugars metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0064G </entity>
+      <id> 520 </id>
+      <name> Nucleotide sugars metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0064G </entity>
+      <id> 522 </id>
+      <name> Erythromycin biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0065G </entity>
+      <id> 52 </id>
+      <name> Galactose metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0065G </entity>
+      <id> 520 </id>
+      <name> Nucleotide sugars metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0095G </entity>
+      <id> 10 </id>
+      <name> Glycolysis / Gluconeogenesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0095G </entity>
+      <id> 472 </id>
+      <name> D-Arginine and D-ornithine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0099G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG0149G </entity>
+      <id> 500 </id>
+      <name> Starch and sucrose metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0149G </entity>
+      <id> 790 </id>
+      <name> Folate biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0161G </entity>
+      <id> 220 </id>
+      <name> Urea cycle and metabolism of amino groups </name>
+   </term>
+
+   <term>
+      <entity> VNG0161G </entity>
+      <id> 251 </id>
+      <name> Glutamate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0161G </entity>
+      <id> 330 </id>
+      <name> Arginine and proline metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0161G </entity>
+      <id> 471 </id>
+      <name> D-Glutamine and D-glutamate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0161G </entity>
+      <id> 910 </id>
+      <name> Nitrogen metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0177G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG0228G </entity>
+      <id> 230 </id>
+      <name> Purine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0228G </entity>
+      <id> 251 </id>
+      <name> Glutamate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0245G </entity>
+      <id> 240 </id>
+      <name> Pyrimidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0254G </entity>
+      <id> 3022 </id>
+      <name> Transcription factors </name>
+   </term>
+
+   <term>
+      <entity> VNG0259G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG0281G </entity>
+      <id> 260 </id>
+      <name> Glycine, serine and threonine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0305G </entity>
+      <id> 400 </id>
+      <name> Phenylalanine, tyrosine and tryptophan biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0307G </entity>
+      <id> 400 </id>
+      <name> Phenylalanine, tyrosine and tryptophan biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0308G </entity>
+      <id> 400 </id>
+      <name> Phenylalanine, tyrosine and tryptophan biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0315G </entity>
+      <id> 3022 </id>
+      <name> Transcription factors </name>
+   </term>
+
+   <term>
+      <entity> VNG0324G </entity>
+      <id> 10 </id>
+      <name> Glycolysis / Gluconeogenesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0324G </entity>
+      <id> 230 </id>
+      <name> Purine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0324G </entity>
+      <id> 620 </id>
+      <name> Pyruvate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0324G </entity>
+      <id> 710 </id>
+      <name> Carbon fixation </name>
+   </term>
+
+   <term>
+      <entity> VNG0326G </entity>
+      <id> 271 </id>
+      <name> Methionine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0326G </entity>
+      <id> 450 </id>
+      <name> Selenoamino acid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0326G </entity>
+      <id> 970 </id>
+      <name> Aminoacyl-tRNA biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0327G </entity>
+      <id> 251 </id>
+      <name> Glutamate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0327G </entity>
+      <id> 252 </id>
+      <name> Alanine and aspartate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0327G </entity>
+      <id> 410 </id>
+      <name> beta-Alanine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0327G </entity>
+      <id> 430 </id>
+      <name> Taurine and hypotaurine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0327G </entity>
+      <id> 650 </id>
+      <name> Butanoate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0330G </entity>
+      <id> 620 </id>
+      <name> Pyruvate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0330G </entity>
+      <id> 720 </id>
+      <name> Reductive carboxylate cycle (CO2 fixation) </name>
+   </term>
+
+   <term>
+      <entity> VNG0371G </entity>
+      <id> 120 </id>
+      <name> Bile acid biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0371G </entity>
+      <id> 360 </id>
+      <name> Phenylalanine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0371G </entity>
+      <id> 600 </id>
+      <name> Sphingoglycolipid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0382G </entity>
+      <id> 400 </id>
+      <name> Phenylalanine, tyrosine and tryptophan biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0387G </entity>
+      <id> 280 </id>
+      <name> Valine, leucine and isoleucine degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG0387G </entity>
+      <id> 290 </id>
+      <name> Valine, leucine and isoleucine biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0387G </entity>
+      <id> 770 </id>
+      <name> Pantothenate and CoA biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0390G </entity>
+      <id> 520 </id>
+      <name> Nucleotide sugars metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0390G </entity>
+      <id> 522 </id>
+      <name> Erythromycin biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0403G </entity>
+      <id> 330 </id>
+      <name> Arginine and proline metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0403G </entity>
+      <id> 970 </id>
+      <name> Aminoacyl-tRNA biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0412G </entity>
+      <id> 790 </id>
+      <name> Folate biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0414G </entity>
+      <id> 230 </id>
+      <name> Purine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0414G </entity>
+      <id> 670 </id>
+      <name> One carbon pool by folate </name>
+   </term>
+
+   <term>
+      <entity> VNG0415G </entity>
+      <id> 230 </id>
+      <name> Purine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0415G </entity>
+      <id> 252 </id>
+      <name> Alanine and aspartate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0426G </entity>
+      <id> 3020 </id>
+      <name> RNA polymerase </name>
+   </term>
+
+   <term>
+      <entity> VNG0428G </entity>
+      <id> 62 </id>
+      <name> Fatty acid biosynthesis (path 2) </name>
+   </term>
+
+   <term>
+      <entity> VNG0428G </entity>
+      <id> 71 </id>
+      <name> Fatty acid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0428G </entity>
+      <id> 280 </id>
+      <name> Valine, leucine and isoleucine degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG0428G </entity>
+      <id> 310 </id>
+      <name> Lysine degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG0428G </entity>
+      <id> 380 </id>
+      <name> Tryptophan metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0428G </entity>
+      <id> 410 </id>
+      <name> beta-Alanine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0428G </entity>
+      <id> 632 </id>
+      <name> Benzoate degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG0428G </entity>
+      <id> 640 </id>
+      <name> Propanoate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0428G </entity>
+      <id> 650 </id>
+      <name> Butanoate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0444G </entity>
+      <id> 300 </id>
+      <name> Lysine biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0448G </entity>
+      <id> 240 </id>
+      <name> Pyrimidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0461G </entity>
+      <id> 252 </id>
+      <name> Alanine and aspartate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0461G </entity>
+      <id> 970 </id>
+      <name> Aminoacyl-tRNA biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0473G </entity>
+      <id> 20 </id>
+      <name> Citrate cycle (TCA cycle) </name>
+   </term>
+
+   <term>
+      <entity> VNG0473G </entity>
+      <id> 720 </id>
+      <name> Reductive carboxylate cycle (CO2 fixation) </name>
+   </term>
+
+   <term>
+      <entity> VNG0474G </entity>
+      <id> 20 </id>
+      <name> Citrate cycle (TCA cycle) </name>
+   </term>
+
+   <term>
+      <entity> VNG0474G </entity>
+      <id> 720 </id>
+      <name> Reductive carboxylate cycle (CO2 fixation) </name>
+   </term>
+
+   <term>
+      <entity> VNG0481G </entity>
+      <id> 280 </id>
+      <name> Valine, leucine and isoleucine degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG0481G </entity>
+      <id> 640 </id>
+      <name> Propanoate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0484G </entity>
+      <id> 10 </id>
+      <name> Glycolysis / Gluconeogenesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0484G </entity>
+      <id> 620 </id>
+      <name> Pyruvate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0484G </entity>
+      <id> 640 </id>
+      <name> Propanoate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0484G </entity>
+      <id> 720 </id>
+      <name> Reductive carboxylate cycle (CO2 fixation) </name>
+   </term>
+
+   <term>
+      <entity> VNG0502G </entity>
+      <id> 251 </id>
+      <name> Glutamate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0502G </entity>
+      <id> 252 </id>
+      <name> Alanine and aspartate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0502G </entity>
+      <id> 272 </id>
+      <name> Cysteine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0502G </entity>
+      <id> 330 </id>
+      <name> Arginine and proline metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0502G </entity>
+      <id> 350 </id>
+      <name> Tyrosine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0502G </entity>
+      <id> 360 </id>
+      <name> Phenylalanine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0502G </entity>
+      <id> 400 </id>
+      <name> Phenylalanine, tyrosine and tryptophan biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0502G </entity>
+      <id> 710 </id>
+      <name> Carbon fixation </name>
+   </term>
+
+   <term>
+      <entity> VNG0502G </entity>
+      <id> 950 </id>
+      <name> Alkaloid biosynthesis I </name>
+   </term>
+
+   <term>
+      <entity> VNG0521G </entity>
+      <id> 3030 </id>
+      <name> DNA polymerase </name>
+   </term>
+
+   <term>
+      <entity> VNG0541G </entity>
+      <id> 260 </id>
+      <name> Glycine, serine and threonine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0541G </entity>
+      <id> 750 </id>
+      <name> Vitamin B6 metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0550G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG0551G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG0559G </entity>
+      <id> 230 </id>
+      <name> Purine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0563G </entity>
+      <id> 130 </id>
+      <name> Ubiquinone biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0563G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG0593G </entity>
+      <id> 100 </id>
+      <name> Sterol biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0606G </entity>
+      <id> 272 </id>
+      <name> Cysteine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0606G </entity>
+      <id> 450 </id>
+      <name> Selenoamino acid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0606G </entity>
+      <id> 920 </id>
+      <name> Sulfur metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0610G </entity>
+      <id> 130 </id>
+      <name> Ubiquinone biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0623G </entity>
+      <id> 280 </id>
+      <name> Valine, leucine and isoleucine degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG0623G </entity>
+      <id> 640 </id>
+      <name> Propanoate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0627G </entity>
+      <id> 20 </id>
+      <name> Citrate cycle (TCA cycle) </name>
+   </term>
+
+   <term>
+      <entity> VNG0627G </entity>
+      <id> 720 </id>
+      <name> Reductive carboxylate cycle (CO2 fixation) </name>
+   </term>
+
+   <term>
+      <entity> VNG0628G </entity>
+      <id> 220 </id>
+      <name> Urea cycle and metabolism of amino groups </name>
+   </term>
+
+   <term>
+      <entity> VNG0628G </entity>
+      <id> 251 </id>
+      <name> Glutamate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0628G </entity>
+      <id> 330 </id>
+      <name> Arginine and proline metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0628G </entity>
+      <id> 471 </id>
+      <name> D-Glutamine and D-glutamate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0628G </entity>
+      <id> 910 </id>
+      <name> Nitrogen metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0629G </entity>
+      <id> 251 </id>
+      <name> Glutamate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0629G </entity>
+      <id> 252 </id>
+      <name> Alanine and aspartate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0629G </entity>
+      <id> 272 </id>
+      <name> Cysteine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0629G </entity>
+      <id> 330 </id>
+      <name> Arginine and proline metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0629G </entity>
+      <id> 350 </id>
+      <name> Tyrosine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0629G </entity>
+      <id> 360 </id>
+      <name> Phenylalanine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0629G </entity>
+      <id> 400 </id>
+      <name> Phenylalanine, tyrosine and tryptophan biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0629G </entity>
+      <id> 710 </id>
+      <name> Carbon fixation </name>
+   </term>
+
+   <term>
+      <entity> VNG0629G </entity>
+      <id> 950 </id>
+      <name> Alkaloid biosynthesis I </name>
+   </term>
+
+   <term>
+      <entity> VNG0630G </entity>
+      <id> 740 </id>
+      <name> Riboflavin metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0632G </entity>
+      <id> 230 </id>
+      <name> Purine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0633G </entity>
+      <id> 230 </id>
+      <name> Purine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0635G </entity>
+      <id> 130 </id>
+      <name> Ubiquinone biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0635G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG0636G </entity>
+      <id> 130 </id>
+      <name> Ubiquinone biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0636G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG0637G </entity>
+      <id> 130 </id>
+      <name> Ubiquinone biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0637G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG0639G </entity>
+      <id> 130 </id>
+      <name> Ubiquinone biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0639G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG0640G </entity>
+      <id> 130 </id>
+      <name> Ubiquinone biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0640G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG0643G </entity>
+      <id> 130 </id>
+      <name> Ubiquinone biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0643G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG0646G </entity>
+      <id> 130 </id>
+      <name> Ubiquinone biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0646G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG0647G </entity>
+      <id> 130 </id>
+      <name> Ubiquinone biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0647G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG0648G </entity>
+      <id> 130 </id>
+      <name> Ubiquinone biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0648G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG0651G </entity>
+      <id> 230 </id>
+      <name> Purine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0653G </entity>
+      <id> 280 </id>
+      <name> Valine, leucine and isoleucine degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG0653G </entity>
+      <id> 640 </id>
+      <name> Propanoate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0657G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG0662G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG0665G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG0666G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG0673G </entity>
+      <id> 280 </id>
+      <name> Valine, leucine and isoleucine degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG0673G </entity>
+      <id> 640 </id>
+      <name> Propanoate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0678G </entity>
+      <id> 62 </id>
+      <name> Fatty acid biosynthesis (path 2) </name>
+   </term>
+
+   <term>
+      <entity> VNG0678G </entity>
+      <id> 71 </id>
+      <name> Fatty acid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0678G </entity>
+      <id> 120 </id>
+      <name> Bile acid biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0678G </entity>
+      <id> 280 </id>
+      <name> Valine, leucine and isoleucine degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG0678G </entity>
+      <id> 360 </id>
+      <name> Phenylalanine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0679G </entity>
+      <id> 120 </id>
+      <name> Bile acid biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0679G </entity>
+      <id> 360 </id>
+      <name> Phenylalanine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0679G </entity>
+      <id> 600 </id>
+      <name> Sphingoglycolipid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0681G </entity>
+      <id> 62 </id>
+      <name> Fatty acid biosynthesis (path 2) </name>
+   </term>
+
+   <term>
+      <entity> VNG0681G </entity>
+      <id> 71 </id>
+      <name> Fatty acid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0681G </entity>
+      <id> 280 </id>
+      <name> Valine, leucine and isoleucine degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG0681G </entity>
+      <id> 310 </id>
+      <name> Lysine degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG0681G </entity>
+      <id> 380 </id>
+      <name> Tryptophan metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0681G </entity>
+      <id> 632 </id>
+      <name> Benzoate degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG0681G </entity>
+      <id> 650 </id>
+      <name> Butanoate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0734G </entity>
+      <id> 3022 </id>
+      <name> Transcription factors </name>
+   </term>
+
+   <term>
+      <entity> VNG0752G </entity>
+      <id> 52 </id>
+      <name> Galactose metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0752G </entity>
+      <id> 520 </id>
+      <name> Nucleotide sugars metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0771G </entity>
+      <id> 10 </id>
+      <name> Glycolysis / Gluconeogenesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0771G </entity>
+      <id> 53 </id>
+      <name> Ascorbate and aldarate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0771G </entity>
+      <id> 71 </id>
+      <name> Fatty acid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0771G </entity>
+      <id> 120 </id>
+      <name> Bile acid biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0771G </entity>
+      <id> 280 </id>
+      <name> Valine, leucine and isoleucine degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG0771G </entity>
+      <id> 310 </id>
+      <name> Lysine degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG0771G </entity>
+      <id> 330 </id>
+      <name> Arginine and proline metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0771G </entity>
+      <id> 340 </id>
+      <name> Histidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0771G </entity>
+      <id> 380 </id>
+      <name> Tryptophan metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0771G </entity>
+      <id> 410 </id>
+      <name> beta-Alanine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0771G </entity>
+      <id> 561 </id>
+      <name> Glycerolipid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0771G </entity>
+      <id> 620 </id>
+      <name> Pyruvate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0771G </entity>
+      <id> 631 </id>
+      <name> 1,2-Dichloroethane degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG0771G </entity>
+      <id> 640 </id>
+      <name> Propanoate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0771G </entity>
+      <id> 650 </id>
+      <name> Butanoate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0775G </entity>
+      <id> 120 </id>
+      <name> Bile acid biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0775G </entity>
+      <id> 360 </id>
+      <name> Phenylalanine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0775G </entity>
+      <id> 600 </id>
+      <name> Sphingoglycolipid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0777G </entity>
+      <id> 561 </id>
+      <name> Glycerolipid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0784G </entity>
+      <id> 260 </id>
+      <name> Glycine, serine and threonine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0784G </entity>
+      <id> 561 </id>
+      <name> Glycerolipid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0787G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG0790G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG0796G </entity>
+      <id> 271 </id>
+      <name> Methionine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0796G </entity>
+      <id> 272 </id>
+      <name> Cysteine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0796G </entity>
+      <id> 450 </id>
+      <name> Selenoamino acid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0796G </entity>
+      <id> 910 </id>
+      <name> Nitrogen metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0808G </entity>
+      <id> 251 </id>
+      <name> Glutamate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0808G </entity>
+      <id> 350 </id>
+      <name> Tyrosine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0808G </entity>
+      <id> 650 </id>
+      <name> Butanoate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0841G </entity>
+      <id> 910 </id>
+      <name> Nitrogen metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0860G </entity>
+      <id> 3020 </id>
+      <name> RNA polymerase </name>
+   </term>
+
+   <term>
+      <entity> VNG0862G </entity>
+      <id> 340 </id>
+      <name> Histidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0864G </entity>
+      <id> 230 </id>
+      <name> Purine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0867G </entity>
+      <id> 252 </id>
+      <name> Alanine and aspartate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0867G </entity>
+      <id> 910 </id>
+      <name> Nitrogen metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0869G </entity>
+      <id> 3022 </id>
+      <name> Transcription factors </name>
+   </term>
+
+   <term>
+      <entity> VNG0876G </entity>
+      <id> 230 </id>
+      <name> Purine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0893G </entity>
+      <id> 240 </id>
+      <name> Pyrimidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0896G </entity>
+      <id> 240 </id>
+      <name> Pyrimidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0905G </entity>
+      <id> 51 </id>
+      <name> Fructose and mannose metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0931G </entity>
+      <id> 62 </id>
+      <name> Fatty acid biosynthesis (path 2) </name>
+   </term>
+
+   <term>
+      <entity> VNG0931G </entity>
+      <id> 71 </id>
+      <name> Fatty acid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0931G </entity>
+      <id> 120 </id>
+      <name> Bile acid biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0931G </entity>
+      <id> 280 </id>
+      <name> Valine, leucine and isoleucine degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG0931G </entity>
+      <id> 360 </id>
+      <name> Phenylalanine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0997G </entity>
+      <id> 10 </id>
+      <name> Glycolysis / Gluconeogenesis </name>
+   </term>
+
+   <term>
+      <entity> VNG0997G </entity>
+      <id> 620 </id>
+      <name> Pyruvate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0997G </entity>
+      <id> 640 </id>
+      <name> Propanoate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG0997G </entity>
+      <id> 720 </id>
+      <name> Reductive carboxylate cycle (CO2 fixation) </name>
+   </term>
+
+   <term>
+      <entity> VNG1001G </entity>
+      <id> 230 </id>
+      <name> Purine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1027G </entity>
+      <id> 10 </id>
+      <name> Glycolysis / Gluconeogenesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1027G </entity>
+      <id> 31 </id>
+      <name> Inositol metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1027G </entity>
+      <id> 51 </id>
+      <name> Fructose and mannose metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1027G </entity>
+      <id> 561 </id>
+      <name> Glycerolipid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1027G </entity>
+      <id> 710 </id>
+      <name> Carbon fixation </name>
+   </term>
+
+   <term>
+      <entity> VNG1030G </entity>
+      <id> 561 </id>
+      <name> Glycerolipid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1033G </entity>
+      <id> 340 </id>
+      <name> Histidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1033G </entity>
+      <id> 350 </id>
+      <name> Tyrosine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1033G </entity>
+      <id> 360 </id>
+      <name> Phenylalanine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1033G </entity>
+      <id> 400 </id>
+      <name> Phenylalanine, tyrosine and tryptophan biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1055G </entity>
+      <id> 520 </id>
+      <name> Nucleotide sugars metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1055G </entity>
+      <id> 522 </id>
+      <name> Erythromycin biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1070G </entity>
+      <id> 561 </id>
+      <name> Glycerolipid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1073G </entity>
+      <id> 71 </id>
+      <name> Fatty acid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1075G </entity>
+      <id> 130 </id>
+      <name> Ubiquinone biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1079G </entity>
+      <id> 130 </id>
+      <name> Ubiquinone biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1081G </entity>
+      <id> 130 </id>
+      <name> Ubiquinone biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1089G </entity>
+      <id> 230 </id>
+      <name> Purine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1089G </entity>
+      <id> 252 </id>
+      <name> Alanine and aspartate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1097G </entity>
+      <id> 272 </id>
+      <name> Cysteine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1097G </entity>
+      <id> 970 </id>
+      <name> Aminoacyl-tRNA biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1103G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1104G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1105G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1108G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1121G </entity>
+      <id> 251 </id>
+      <name> Glutamate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1121G </entity>
+      <id> 252 </id>
+      <name> Alanine and aspartate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1121G </entity>
+      <id> 272 </id>
+      <name> Cysteine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1121G </entity>
+      <id> 330 </id>
+      <name> Arginine and proline metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1121G </entity>
+      <id> 350 </id>
+      <name> Tyrosine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1121G </entity>
+      <id> 360 </id>
+      <name> Phenylalanine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1121G </entity>
+      <id> 400 </id>
+      <name> Phenylalanine, tyrosine and tryptophan biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1121G </entity>
+      <id> 710 </id>
+      <name> Carbon fixation </name>
+   </term>
+
+   <term>
+      <entity> VNG1121G </entity>
+      <id> 950 </id>
+      <name> Alkaloid biosynthesis I </name>
+   </term>
+
+   <term>
+      <entity> VNG1125G </entity>
+      <id> 20 </id>
+      <name> Citrate cycle (TCA cycle) </name>
+   </term>
+
+   <term>
+      <entity> VNG1125G </entity>
+      <id> 720 </id>
+      <name> Reductive carboxylate cycle (CO2 fixation) </name>
+   </term>
+
+   <term>
+      <entity> VNG1128G </entity>
+      <id> 20 </id>
+      <name> Citrate cycle (TCA cycle) </name>
+   </term>
+
+   <term>
+      <entity> VNG1128G </entity>
+      <id> 720 </id>
+      <name> Reductive carboxylate cycle (CO2 fixation) </name>
+   </term>
+
+   <term>
+      <entity> VNG1132G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1133G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1134G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1136G </entity>
+      <id> 3020 </id>
+      <name> RNA polymerase </name>
+   </term>
+
+   <term>
+      <entity> VNG1137G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1138G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1139G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1140G </entity>
+      <id> 3020 </id>
+      <name> RNA polymerase </name>
+   </term>
+
+   <term>
+      <entity> VNG1141G </entity>
+      <id> 3020 </id>
+      <name> RNA polymerase </name>
+   </term>
+
+   <term>
+      <entity> VNG1142G </entity>
+      <id> 10 </id>
+      <name> Glycolysis / Gluconeogenesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1142G </entity>
+      <id> 400 </id>
+      <name> Phenylalanine, tyrosine and tryptophan biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1143G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1145G </entity>
+      <id> 100 </id>
+      <name> Sterol biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1150G </entity>
+      <id> 100 </id>
+      <name> Sterol biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1150G </entity>
+      <id> 900 </id>
+      <name> Terpenoid biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1153G </entity>
+      <id> 251 </id>
+      <name> Glutamate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1153G </entity>
+      <id> 860 </id>
+      <name> Porphyrin and chlorophyll metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1153G </entity>
+      <id> 970 </id>
+      <name> Aminoacyl-tRNA biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1157G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1158G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1159G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1160G </entity>
+      <id> 230 </id>
+      <name> Purine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1160G </entity>
+      <id> 240 </id>
+      <name> Pyrimidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1170G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1172G </entity>
+      <id> 260 </id>
+      <name> Glycine, serine and threonine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1172G </entity>
+      <id> 271 </id>
+      <name> Methionine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1172G </entity>
+      <id> 272 </id>
+      <name> Cysteine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1172G </entity>
+      <id> 450 </id>
+      <name> Selenoamino acid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1172G </entity>
+      <id> 920 </id>
+      <name> Sulfur metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1191G </entity>
+      <id> 120 </id>
+      <name> Bile acid biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1191G </entity>
+      <id> 360 </id>
+      <name> Phenylalanine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1191G </entity>
+      <id> 600 </id>
+      <name> Sphingoglycolipid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1201G </entity>
+      <id> 51 </id>
+      <name> Fructose and mannose metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1204G </entity>
+      <id> 220 </id>
+      <name> Urea cycle and metabolism of amino groups </name>
+   </term>
+
+   <term>
+      <entity> VNG1204G </entity>
+      <id> 251 </id>
+      <name> Glutamate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1204G </entity>
+      <id> 330 </id>
+      <name> Arginine and proline metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1204G </entity>
+      <id> 471 </id>
+      <name> D-Glutamine and D-glutamate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1204G </entity>
+      <id> 910 </id>
+      <name> Nitrogen metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1208G </entity>
+      <id> 340 </id>
+      <name> Histidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1209G </entity>
+      <id> 340 </id>
+      <name> Histidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1211G </entity>
+      <id> 340 </id>
+      <name> Histidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1212G </entity>
+      <id> 340 </id>
+      <name> Histidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1212G </entity>
+      <id> 910 </id>
+      <name> Nitrogen metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1216G </entity>
+      <id> 10 </id>
+      <name> Glycolysis / Gluconeogenesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1216G </entity>
+      <id> 710 </id>
+      <name> Carbon fixation </name>
+   </term>
+
+   <term>
+      <entity> VNG1219G </entity>
+      <id> 240 </id>
+      <name> Pyrimidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1230G </entity>
+      <id> 400 </id>
+      <name> Phenylalanine, tyrosine and tryptophan biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1232G </entity>
+      <id> 400 </id>
+      <name> Phenylalanine, tyrosine and tryptophan biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1241G </entity>
+      <id> 740 </id>
+      <name> Riboflavin metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1251G </entity>
+      <id> 500 </id>
+      <name> Starch and sucrose metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1251G </entity>
+      <id> 790 </id>
+      <name> Folate biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1256G </entity>
+      <id> 740 </id>
+      <name> Riboflavin metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1259G </entity>
+      <id> 240 </id>
+      <name> Pyrimidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1301G </entity>
+      <id> 272 </id>
+      <name> Cysteine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1301G </entity>
+      <id> 450 </id>
+      <name> Selenoamino acid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1301G </entity>
+      <id> 920 </id>
+      <name> Sulfur metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1305G </entity>
+      <id> 230 </id>
+      <name> Purine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1306G </entity>
+      <id> 20 </id>
+      <name> Citrate cycle (TCA cycle) </name>
+   </term>
+
+   <term>
+      <entity> VNG1306G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG1306G </entity>
+      <id> 632 </id>
+      <name> Benzoate degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG1306G </entity>
+      <id> 650 </id>
+      <name> Butanoate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1306G </entity>
+      <id> 720 </id>
+      <name> Reductive carboxylate cycle (CO2 fixation) </name>
+   </term>
+
+   <term>
+      <entity> VNG1308G </entity>
+      <id> 20 </id>
+      <name> Citrate cycle (TCA cycle) </name>
+   </term>
+
+   <term>
+      <entity> VNG1308G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG1308G </entity>
+      <id> 632 </id>
+      <name> Benzoate degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG1308G </entity>
+      <id> 650 </id>
+      <name> Butanoate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1308G </entity>
+      <id> 720 </id>
+      <name> Reductive carboxylate cycle (CO2 fixation) </name>
+   </term>
+
+   <term>
+      <entity> VNG1309G </entity>
+      <id> 20 </id>
+      <name> Citrate cycle (TCA cycle) </name>
+   </term>
+
+   <term>
+      <entity> VNG1309G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG1309G </entity>
+      <id> 632 </id>
+      <name> Benzoate degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG1309G </entity>
+      <id> 650 </id>
+      <name> Butanoate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1309G </entity>
+      <id> 720 </id>
+      <name> Reductive carboxylate cycle (CO2 fixation) </name>
+   </term>
+
+   <term>
+      <entity> VNG1310G </entity>
+      <id> 20 </id>
+      <name> Citrate cycle (TCA cycle) </name>
+   </term>
+
+   <term>
+      <entity> VNG1310G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG1310G </entity>
+      <id> 632 </id>
+      <name> Benzoate degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG1310G </entity>
+      <id> 650 </id>
+      <name> Butanoate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1310G </entity>
+      <id> 720 </id>
+      <name> Reductive carboxylate cycle (CO2 fixation) </name>
+   </term>
+
+   <term>
+      <entity> VNG1313G </entity>
+      <id> 62 </id>
+      <name> Fatty acid biosynthesis (path 2) </name>
+   </term>
+
+   <term>
+      <entity> VNG1313G </entity>
+      <id> 71 </id>
+      <name> Fatty acid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1313G </entity>
+      <id> 280 </id>
+      <name> Valine, leucine and isoleucine degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG1313G </entity>
+      <id> 310 </id>
+      <name> Lysine degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG1313G </entity>
+      <id> 380 </id>
+      <name> Tryptophan metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1313G </entity>
+      <id> 410 </id>
+      <name> beta-Alanine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1313G </entity>
+      <id> 632 </id>
+      <name> Benzoate degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG1313G </entity>
+      <id> 640 </id>
+      <name> Propanoate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1313G </entity>
+      <id> 650 </id>
+      <name> Butanoate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1341G </entity>
+      <id> 61 </id>
+      <name> Fatty acid biosynthesis (path 1) </name>
+   </term>
+
+   <term>
+      <entity> VNG1356G </entity>
+      <id> 20 </id>
+      <name> Citrate cycle (TCA cycle) </name>
+   </term>
+
+   <term>
+      <entity> VNG1356G </entity>
+      <id> 720 </id>
+      <name> Reductive carboxylate cycle (CO2 fixation) </name>
+   </term>
+
+   <term>
+      <entity> VNG1367G </entity>
+      <id> 3060 </id>
+      <name> Protein export </name>
+   </term>
+
+   <term>
+      <entity> VNG1414G </entity>
+      <id> 260 </id>
+      <name> Glycine, serine and threonine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1414G </entity>
+      <id> 310 </id>
+      <name> Lysine degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG1414G </entity>
+      <id> 460 </id>
+      <name> Cyanoamino acid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1414G </entity>
+      <id> 670 </id>
+      <name> One carbon pool by folate </name>
+   </term>
+
+   <term>
+      <entity> VNG1414G </entity>
+      <id> 680 </id>
+      <name> Methane metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1416G </entity>
+      <id> 630 </id>
+      <name> Glyoxylate and dicarboxylate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1416G </entity>
+      <id> 670 </id>
+      <name> One carbon pool by folate </name>
+   </term>
+
+   <term>
+      <entity> VNG1432G </entity>
+      <id> 330 </id>
+      <name> Arginine and proline metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1432G </entity>
+      <id> 410 </id>
+      <name> beta-Alanine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1433G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1435G </entity>
+      <id> 260 </id>
+      <name> Glycine, serine and threonine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1435G </entity>
+      <id> 300 </id>
+      <name> Lysine biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1444G </entity>
+      <id> 340 </id>
+      <name> Histidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1458G </entity>
+      <id> 100 </id>
+      <name> Sterol biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1458G </entity>
+      <id> 900 </id>
+      <name> Terpenoid biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1478G </entity>
+      <id> 670 </id>
+      <name> One carbon pool by folate </name>
+   </term>
+
+   <term>
+      <entity> VNG1478G </entity>
+      <id> 770 </id>
+      <name> Pantothenate and CoA biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1481G </entity>
+      <id> 272 </id>
+      <name> Cysteine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1481G </entity>
+      <id> 920 </id>
+      <name> Sulfur metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1482G </entity>
+      <id> 120 </id>
+      <name> Bile acid biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1482G </entity>
+      <id> 360 </id>
+      <name> Phenylalanine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1482G </entity>
+      <id> 600 </id>
+      <name> Sphingoglycolipid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1493G </entity>
+      <id> 230 </id>
+      <name> Purine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1493G </entity>
+      <id> 251 </id>
+      <name> Glutamate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1494G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1498G </entity>
+      <id> 500 </id>
+      <name> Starch and sucrose metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1515G </entity>
+      <id> 240 </id>
+      <name> Pyrimidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1529G </entity>
+      <id> 640 </id>
+      <name> Propanoate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1532G </entity>
+      <id> 20 </id>
+      <name> Citrate cycle (TCA cycle) </name>
+   </term>
+
+   <term>
+      <entity> VNG1532G </entity>
+      <id> 252 </id>
+      <name> Alanine and aspartate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1532G </entity>
+      <id> 620 </id>
+      <name> Pyruvate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1541G </entity>
+      <id> 20 </id>
+      <name> Citrate cycle (TCA cycle) </name>
+   </term>
+
+   <term>
+      <entity> VNG1541G </entity>
+      <id> 640 </id>
+      <name> Propanoate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1541G </entity>
+      <id> 660 </id>
+      <name> C5-Branched dibasic acid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1541G </entity>
+      <id> 720 </id>
+      <name> Reductive carboxylate cycle (CO2 fixation) </name>
+   </term>
+
+   <term>
+      <entity> VNG1542G </entity>
+      <id> 20 </id>
+      <name> Citrate cycle (TCA cycle) </name>
+   </term>
+
+   <term>
+      <entity> VNG1542G </entity>
+      <id> 640 </id>
+      <name> Propanoate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1542G </entity>
+      <id> 660 </id>
+      <name> C5-Branched dibasic acid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1542G </entity>
+      <id> 720 </id>
+      <name> Reductive carboxylate cycle (CO2 fixation) </name>
+   </term>
+
+   <term>
+      <entity> VNG1551G </entity>
+      <id> 860 </id>
+      <name> Porphyrin and chlorophyll metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1553G </entity>
+      <id> 860 </id>
+      <name> Porphyrin and chlorophyll metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1555G </entity>
+      <id> 860 </id>
+      <name> Porphyrin and chlorophyll metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1557G </entity>
+      <id> 860 </id>
+      <name> Porphyrin and chlorophyll metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1567G </entity>
+      <id> 860 </id>
+      <name> Porphyrin and chlorophyll metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1568G </entity>
+      <id> 860 </id>
+      <name> Porphyrin and chlorophyll metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1573G </entity>
+      <id> 860 </id>
+      <name> Porphyrin and chlorophyll metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1574G </entity>
+      <id> 860 </id>
+      <name> Porphyrin and chlorophyll metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1576G </entity>
+      <id> 860 </id>
+      <name> Porphyrin and chlorophyll metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1582G </entity>
+      <id> 340 </id>
+      <name> Histidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1582G </entity>
+      <id> 350 </id>
+      <name> Tyrosine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1582G </entity>
+      <id> 360 </id>
+      <name> Phenylalanine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1582G </entity>
+      <id> 400 </id>
+      <name> Phenylalanine, tyrosine and tryptophan biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1601G </entity>
+      <id> 260 </id>
+      <name> Glycine, serine and threonine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1603G </entity>
+      <id> 260 </id>
+      <name> Glycine, serine and threonine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1606G </entity>
+      <id> 260 </id>
+      <name> Glycine, serine and threonine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1606G </entity>
+      <id> 670 </id>
+      <name> One carbon pool by folate </name>
+   </term>
+
+   <term>
+      <entity> VNG1606G </entity>
+      <id> 910 </id>
+      <name> Nitrogen metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1615G </entity>
+      <id> 72 </id>
+      <name> Synthesis and degradation of ketone bodies </name>
+   </term>
+
+   <term>
+      <entity> VNG1615G </entity>
+      <id> 280 </id>
+      <name> Valine, leucine and isoleucine degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG1615G </entity>
+      <id> 650 </id>
+      <name> Butanoate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1624G </entity>
+      <id> 620 </id>
+      <name> Pyruvate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1624G </entity>
+      <id> 710 </id>
+      <name> Carbon fixation </name>
+   </term>
+
+   <term>
+      <entity> VNG1644G </entity>
+      <id> 230 </id>
+      <name> Purine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1644G </entity>
+      <id> 240 </id>
+      <name> Pyrimidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1646G </entity>
+      <id> 400 </id>
+      <name> Phenylalanine, tyrosine and tryptophan biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1647G </entity>
+      <id> 400 </id>
+      <name> Phenylalanine, tyrosine and tryptophan biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1648G </entity>
+      <id> 400 </id>
+      <name> Phenylalanine, tyrosine and tryptophan biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1649G </entity>
+      <id> 400 </id>
+      <name> Phenylalanine, tyrosine and tryptophan biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1668G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1673G </entity>
+      <id> 240 </id>
+      <name> Pyrimidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1680G </entity>
+      <id> 100 </id>
+      <name> Sterol biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1680G </entity>
+      <id> 900 </id>
+      <name> Terpenoid biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1686G </entity>
+      <id> 790 </id>
+      <name> Folate biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1689G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1690G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1691G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1692G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1693G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1695G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1697G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1698G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1700G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1701G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1702G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1703G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1705G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1706G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1707G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1709G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1711G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1713G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1714G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1715G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1716G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1718G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG1719G </entity>
+      <id> 3060 </id>
+      <name> Protein export </name>
+   </term>
+
+   <term>
+      <entity> VNG1724G </entity>
+      <id> 230 </id>
+      <name> Purine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1727G </entity>
+      <id> 240 </id>
+      <name> Pyrimidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1729G </entity>
+      <id> 240 </id>
+      <name> Pyrimidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1767G </entity>
+      <id> 330 </id>
+      <name> Arginine and proline metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1774G </entity>
+      <id> 860 </id>
+      <name> Porphyrin and chlorophyll metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1797G </entity>
+      <id> 260 </id>
+      <name> Glycine, serine and threonine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1814G </entity>
+      <id> 240 </id>
+      <name> Pyrimidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1814G </entity>
+      <id> 251 </id>
+      <name> Glutamate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1815G </entity>
+      <id> 240 </id>
+      <name> Pyrimidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1815G </entity>
+      <id> 251 </id>
+      <name> Glutamate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1818G </entity>
+      <id> 100 </id>
+      <name> Sterol biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1818G </entity>
+      <id> 900 </id>
+      <name> Terpenoid biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1821G </entity>
+      <id> 10 </id>
+      <name> Glycolysis / Gluconeogenesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1821G </entity>
+      <id> 71 </id>
+      <name> Fatty acid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1821G </entity>
+      <id> 120 </id>
+      <name> Bile acid biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1821G </entity>
+      <id> 350 </id>
+      <name> Tyrosine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1821G </entity>
+      <id> 561 </id>
+      <name> Glycerolipid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1829G </entity>
+      <id> 230 </id>
+      <name> Purine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1829G </entity>
+      <id> 251 </id>
+      <name> Glutamate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1830G </entity>
+      <id> 240 </id>
+      <name> Pyrimidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1835G </entity>
+      <id> 260 </id>
+      <name> Glycine, serine and threonine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1835G </entity>
+      <id> 970 </id>
+      <name> Aminoacyl-tRNA biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1844G </entity>
+      <id> 252 </id>
+      <name> Alanine and aspartate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1844G </entity>
+      <id> 460 </id>
+      <name> Cyanoamino acid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1844G </entity>
+      <id> 910 </id>
+      <name> Nitrogen metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1850G </entity>
+      <id> 240 </id>
+      <name> Pyrimidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1851G </entity>
+      <id> 30 </id>
+      <name> Pentose phosphate pathway </name>
+   </term>
+
+   <term>
+      <entity> VNG1859G </entity>
+      <id> 30 </id>
+      <name> Pentose phosphate pathway </name>
+   </term>
+
+   <term>
+      <entity> VNG1873G </entity>
+      <id> 20 </id>
+      <name> Citrate cycle (TCA cycle) </name>
+   </term>
+
+   <term>
+      <entity> VNG1873G </entity>
+      <id> 480 </id>
+      <name> Glutathione metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1873G </entity>
+      <id> 720 </id>
+      <name> Reductive carboxylate cycle (CO2 fixation) </name>
+   </term>
+
+   <term>
+      <entity> VNG1875G </entity>
+      <id> 100 </id>
+      <name> Sterol biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1883G </entity>
+      <id> 252 </id>
+      <name> Alanine and aspartate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1884G </entity>
+      <id> 760 </id>
+      <name> Nicotinate and nicotinamide metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1887G </entity>
+      <id> 10 </id>
+      <name> Glycolysis / Gluconeogenesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1926G </entity>
+      <id> 10 </id>
+      <name> Glycolysis / Gluconeogenesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1926G </entity>
+      <id> 290 </id>
+      <name> Valine, leucine and isoleucine biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1926G </entity>
+      <id> 620 </id>
+      <name> Pyruvate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1926G </entity>
+      <id> 650 </id>
+      <name> Butanoate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1929G </entity>
+      <id> 240 </id>
+      <name> Pyrimidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1932G </entity>
+      <id> 130 </id>
+      <name> Ubiquinone biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1932G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG1939G </entity>
+      <id> 230 </id>
+      <name> Purine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1945G </entity>
+      <id> 230 </id>
+      <name> Purine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1946G </entity>
+      <id> 630 </id>
+      <name> Glyoxylate and dicarboxylate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1946G </entity>
+      <id> 670 </id>
+      <name> One carbon pool by folate </name>
+   </term>
+
+   <term>
+      <entity> VNG1967G </entity>
+      <id> 561 </id>
+      <name> Glycerolipid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1969G </entity>
+      <id> 561 </id>
+      <name> Glycerolipid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1971G </entity>
+      <id> 561 </id>
+      <name> Glycerolipid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1972G </entity>
+      <id> 561 </id>
+      <name> Glycerolipid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG1987G </entity>
+      <id> 3060 </id>
+      <name> Protein export </name>
+   </term>
+
+   <term>
+      <entity> VNG1988G </entity>
+      <id> 3060 </id>
+      <name> Protein export </name>
+   </term>
+
+   <term>
+      <entity> VNG1992G </entity>
+      <id> 10 </id>
+      <name> Glycolysis / Gluconeogenesis </name>
+   </term>
+
+   <term>
+      <entity> VNG1992G </entity>
+      <id> 30 </id>
+      <name> Pentose phosphate pathway </name>
+   </term>
+
+   <term>
+      <entity> VNG1992G </entity>
+      <id> 500 </id>
+      <name> Starch and sucrose metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2003G </entity>
+      <id> 240 </id>
+      <name> Pyrimidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2005G </entity>
+      <id> 340 </id>
+      <name> Histidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2005G </entity>
+      <id> 970 </id>
+      <name> Aminoacyl-tRNA biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2010G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG2011G </entity>
+      <id> 730 </id>
+      <name> Thiamine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2017G </entity>
+      <id> 300 </id>
+      <name> Lysine biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2017G </entity>
+      <id> 970 </id>
+      <name> Aminoacyl-tRNA biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2031G </entity>
+      <id> 251 </id>
+      <name> Glutamate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2031G </entity>
+      <id> 760 </id>
+      <name> Nicotinate and nicotinamide metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2032G </entity>
+      <id> 62 </id>
+      <name> Fatty acid biosynthesis (path 2) </name>
+   </term>
+
+   <term>
+      <entity> VNG2032G </entity>
+      <id> 71 </id>
+      <name> Fatty acid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2032G </entity>
+      <id> 280 </id>
+      <name> Valine, leucine and isoleucine degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG2032G </entity>
+      <id> 310 </id>
+      <name> Lysine degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG2032G </entity>
+      <id> 380 </id>
+      <name> Tryptophan metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2032G </entity>
+      <id> 410 </id>
+      <name> beta-Alanine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2032G </entity>
+      <id> 632 </id>
+      <name> Benzoate degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG2032G </entity>
+      <id> 640 </id>
+      <name> Propanoate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2032G </entity>
+      <id> 650 </id>
+      <name> Butanoate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2043G </entity>
+      <id> 230 </id>
+      <name> Purine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2043G </entity>
+      <id> 730 </id>
+      <name> Thiamine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2047G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG2048G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG2051G </entity>
+      <id> 3020 </id>
+      <name> RNA polymerase </name>
+   </term>
+
+   <term>
+      <entity> VNG2053G </entity>
+      <id> 3020 </id>
+      <name> RNA polymerase </name>
+   </term>
+
+   <term>
+      <entity> VNG2063G </entity>
+      <id> 62 </id>
+      <name> Fatty acid biosynthesis (path 2) </name>
+   </term>
+
+   <term>
+      <entity> VNG2063G </entity>
+      <id> 71 </id>
+      <name> Fatty acid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2063G </entity>
+      <id> 120 </id>
+      <name> Bile acid biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2063G </entity>
+      <id> 280 </id>
+      <name> Valine, leucine and isoleucine degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG2063G </entity>
+      <id> 360 </id>
+      <name> Phenylalanine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2071G </entity>
+      <id> 71 </id>
+      <name> Fatty acid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2072G </entity>
+      <id> 260 </id>
+      <name> Glycine, serine and threonine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2072G </entity>
+      <id> 970 </id>
+      <name> Aminoacyl-tRNA biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2076G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG2082G </entity>
+      <id> 3030 </id>
+      <name> DNA polymerase </name>
+   </term>
+
+   <term>
+      <entity> VNG2087G </entity>
+      <id> 340 </id>
+      <name> Histidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2093G </entity>
+      <id> 251 </id>
+      <name> Glutamate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2093G </entity>
+      <id> 550 </id>
+      <name> Peptidoglycan biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2093G </entity>
+      <id> 910 </id>
+      <name> Nitrogen metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2100G </entity>
+      <id> 260 </id>
+      <name> Glycine, serine and threonine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2102G </entity>
+      <id> 20 </id>
+      <name> Citrate cycle (TCA cycle) </name>
+   </term>
+
+   <term>
+      <entity> VNG2102G </entity>
+      <id> 630 </id>
+      <name> Glyoxylate and dicarboxylate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2108G </entity>
+      <id> 260 </id>
+      <name> Glycine, serine and threonine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2108G </entity>
+      <id> 750 </id>
+      <name> Vitamin B6 metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2118G </entity>
+      <id> 240 </id>
+      <name> Pyrimidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2122G </entity>
+      <id> 280 </id>
+      <name> Valine, leucine and isoleucine degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG2122G </entity>
+      <id> 290 </id>
+      <name> Valine, leucine and isoleucine biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2122G </entity>
+      <id> 770 </id>
+      <name> Pantothenate and CoA biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2135G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG2135G </entity>
+      <id> 193 </id>
+      <name> ATP Synthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2135G </entity>
+      <id> 195 </id>
+      <name> Photosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2138G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG2138G </entity>
+      <id> 193 </id>
+      <name> ATP Synthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2138G </entity>
+      <id> 195 </id>
+      <name> Photosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2139G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG2139G </entity>
+      <id> 193 </id>
+      <name> ATP Synthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2139G </entity>
+      <id> 195 </id>
+      <name> Photosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2140G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG2140G </entity>
+      <id> 193 </id>
+      <name> ATP Synthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2140G </entity>
+      <id> 195 </id>
+      <name> Photosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2141G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG2141G </entity>
+      <id> 193 </id>
+      <name> ATP Synthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2141G </entity>
+      <id> 195 </id>
+      <name> Photosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2142G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG2142G </entity>
+      <id> 193 </id>
+      <name> ATP Synthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2142G </entity>
+      <id> 195 </id>
+      <name> Photosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2143G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG2143G </entity>
+      <id> 193 </id>
+      <name> ATP Synthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2143G </entity>
+      <id> 195 </id>
+      <name> Photosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2144G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG2144G </entity>
+      <id> 193 </id>
+      <name> ATP Synthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2144G </entity>
+      <id> 195 </id>
+      <name> Photosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2158G </entity>
+      <id> 61 </id>
+      <name> Fatty acid biosynthesis (path 1) </name>
+   </term>
+
+   <term>
+      <entity> VNG2159G </entity>
+      <id> 51 </id>
+      <name> Fructose and mannose metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2184G </entity>
+      <id> 3022 </id>
+      <name> Transcription factors </name>
+   </term>
+
+   <term>
+      <entity> VNG2190G </entity>
+      <id> 290 </id>
+      <name> Valine, leucine and isoleucine biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2190G </entity>
+      <id> 970 </id>
+      <name> Aminoacyl-tRNA biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2193G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG2195G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG2201G </entity>
+      <id> 500 </id>
+      <name> Starch and sucrose metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2201G </entity>
+      <id> 790 </id>
+      <name> Folate biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2203G </entity>
+      <id> 30 </id>
+      <name> Pentose phosphate pathway </name>
+   </term>
+
+   <term>
+      <entity> VNG2203G </entity>
+      <id> 230 </id>
+      <name> Purine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2206G </entity>
+      <id> 51 </id>
+      <name> Fructose and mannose metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2208G </entity>
+      <id> 380 </id>
+      <name> Tryptophan metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2208G </entity>
+      <id> 970 </id>
+      <name> Aminoacyl-tRNA biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2217G </entity>
+      <id> 10 </id>
+      <name> Glycolysis / Gluconeogenesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2217G </entity>
+      <id> 290 </id>
+      <name> Valine, leucine and isoleucine biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2217G </entity>
+      <id> 620 </id>
+      <name> Pyruvate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2217G </entity>
+      <id> 650 </id>
+      <name> Butanoate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2218G </entity>
+      <id> 10 </id>
+      <name> Glycolysis / Gluconeogenesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2218G </entity>
+      <id> 290 </id>
+      <name> Valine, leucine and isoleucine biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2218G </entity>
+      <id> 620 </id>
+      <name> Pyruvate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2218G </entity>
+      <id> 650 </id>
+      <name> Butanoate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2219G </entity>
+      <id> 10 </id>
+      <name> Glycolysis / Gluconeogenesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2219G </entity>
+      <id> 620 </id>
+      <name> Pyruvate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2220G </entity>
+      <id> 10 </id>
+      <name> Glycolysis / Gluconeogenesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2220G </entity>
+      <id> 20 </id>
+      <name> Citrate cycle (TCA cycle) </name>
+   </term>
+
+   <term>
+      <entity> VNG2220G </entity>
+      <id> 260 </id>
+      <name> Glycine, serine and threonine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2220G </entity>
+      <id> 620 </id>
+      <name> Pyruvate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2222G </entity>
+      <id> 400 </id>
+      <name> Phenylalanine, tyrosine and tryptophan biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2223G </entity>
+      <id> 290 </id>
+      <name> Valine, leucine and isoleucine biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2223G </entity>
+      <id> 970 </id>
+      <name> Aminoacyl-tRNA biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2224G </entity>
+      <id> 330 </id>
+      <name> Arginine and proline metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2232G </entity>
+      <id> 380 </id>
+      <name> Tryptophan metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2232G </entity>
+      <id> 970 </id>
+      <name> Aminoacyl-tRNA biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2237G </entity>
+      <id> 400 </id>
+      <name> Phenylalanine, tyrosine and tryptophan biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2237G </entity>
+      <id> 970 </id>
+      <name> Aminoacyl-tRNA biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2243G </entity>
+      <id> 3022 </id>
+      <name> Transcription factors </name>
+   </term>
+
+   <term>
+      <entity> VNG2247G </entity>
+      <id> 340 </id>
+      <name> Histidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2251G </entity>
+      <id> 271 </id>
+      <name> Methionine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2251G </entity>
+      <id> 450 </id>
+      <name> Selenoamino acid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2267G </entity>
+      <id> 3060 </id>
+      <name> Protein export </name>
+   </term>
+
+   <term>
+      <entity> VNG2269G </entity>
+      <id> 3060 </id>
+      <name> Protein export </name>
+   </term>
+
+   <term>
+      <entity> VNG2272G </entity>
+      <id> 30 </id>
+      <name> Pentose phosphate pathway </name>
+   </term>
+
+   <term>
+      <entity> VNG2272G </entity>
+      <id> 710 </id>
+      <name> Carbon fixation </name>
+   </term>
+
+   <term>
+      <entity> VNG2276G </entity>
+      <id> 51 </id>
+      <name> Fructose and mannose metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2283G </entity>
+      <id> 252 </id>
+      <name> Alanine and aspartate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2283G </entity>
+      <id> 970 </id>
+      <name> Aminoacyl-tRNA biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2284G </entity>
+      <id> 340 </id>
+      <name> Histidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2286G </entity>
+      <id> 660 </id>
+      <name> C5-Branched dibasic acid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2294G </entity>
+      <id> 340 </id>
+      <name> Histidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2295G </entity>
+      <id> 340 </id>
+      <name> Histidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2322G </entity>
+      <id> 860 </id>
+      <name> Porphyrin and chlorophyll metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2326G </entity>
+      <id> 860 </id>
+      <name> Porphyrin and chlorophyll metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2330G </entity>
+      <id> 860 </id>
+      <name> Porphyrin and chlorophyll metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2331G </entity>
+      <id> 860 </id>
+      <name> Porphyrin and chlorophyll metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2332G </entity>
+      <id> 860 </id>
+      <name> Porphyrin and chlorophyll metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2338G </entity>
+      <id> 3030 </id>
+      <name> DNA polymerase </name>
+   </term>
+
+   <term>
+      <entity> VNG2352G </entity>
+      <id> 260 </id>
+      <name> Glycine, serine and threonine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2352G </entity>
+      <id> 970 </id>
+      <name> Aminoacyl-tRNA biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2356G </entity>
+      <id> 130 </id>
+      <name> Ubiquinone biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2367G </entity>
+      <id> 20 </id>
+      <name> Citrate cycle (TCA cycle) </name>
+   </term>
+
+   <term>
+      <entity> VNG2367G </entity>
+      <id> 620 </id>
+      <name> Pyruvate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2367G </entity>
+      <id> 630 </id>
+      <name> Glyoxylate and dicarboxylate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2367G </entity>
+      <id> 710 </id>
+      <name> Carbon fixation </name>
+   </term>
+
+   <term>
+      <entity> VNG2367G </entity>
+      <id> 720 </id>
+      <name> Reductive carboxylate cycle (CO2 fixation) </name>
+   </term>
+
+   <term>
+      <entity> VNG2368G </entity>
+      <id> 500 </id>
+      <name> Starch and sucrose metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2368G </entity>
+      <id> 790 </id>
+      <name> Folate biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2373G </entity>
+      <id> 380 </id>
+      <name> Tryptophan metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2373G </entity>
+      <id> 910 </id>
+      <name> Nitrogen metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2374G </entity>
+      <id> 260 </id>
+      <name> Glycine, serine and threonine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2374G </entity>
+      <id> 300 </id>
+      <name> Lysine biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2383G </entity>
+      <id> 230 </id>
+      <name> Purine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2383G </entity>
+      <id> 240 </id>
+      <name> Pyrimidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2384G </entity>
+      <id> 230 </id>
+      <name> Purine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2384G </entity>
+      <id> 240 </id>
+      <name> Pyrimidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2417G </entity>
+      <id> 3030 </id>
+      <name> DNA polymerase </name>
+   </term>
+
+   <term>
+      <entity> VNG2418G </entity>
+      <id> 300 </id>
+      <name> Lysine biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2418G </entity>
+      <id> 440 </id>
+      <name> Aminophosphonate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2418G </entity>
+      <id> 930 </id>
+      <name> Caprolactam degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG2420G </entity>
+      <id> 271 </id>
+      <name> Methionine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2420G </entity>
+      <id> 920 </id>
+      <name> Sulfur metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2421G </entity>
+      <id> 271 </id>
+      <name> Methionine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2421G </entity>
+      <id> 272 </id>
+      <name> Cysteine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2423G </entity>
+      <id> 260 </id>
+      <name> Glycine, serine and threonine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2424G </entity>
+      <id> 260 </id>
+      <name> Glycine, serine and threonine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2430G </entity>
+      <id> 260 </id>
+      <name> Glycine, serine and threonine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2430G </entity>
+      <id> 750 </id>
+      <name> Vitamin B6 metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2436G </entity>
+      <id> 220 </id>
+      <name> Urea cycle and metabolism of amino groups </name>
+   </term>
+
+   <term>
+      <entity> VNG2436G </entity>
+      <id> 252 </id>
+      <name> Alanine and aspartate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2436G </entity>
+      <id> 330 </id>
+      <name> Arginine and proline metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2437G </entity>
+      <id> 220 </id>
+      <name> Urea cycle and metabolism of amino groups </name>
+   </term>
+
+   <term>
+      <entity> VNG2437G </entity>
+      <id> 252 </id>
+      <name> Alanine and aspartate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2437G </entity>
+      <id> 330 </id>
+      <name> Arginine and proline metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2447G </entity>
+      <id> 310 </id>
+      <name> Lysine degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG2447G </entity>
+      <id> 350 </id>
+      <name> Tyrosine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2447G </entity>
+      <id> 360 </id>
+      <name> Phenylalanine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2447G </entity>
+      <id> 600 </id>
+      <name> Sphingoglycolipid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2447G </entity>
+      <id> 626 </id>
+      <name> Nitorobenzene degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG2447G </entity>
+      <id> 627 </id>
+      <name> 1,4-Dichlorobenzene degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG2447G </entity>
+      <id> 628 </id>
+      <name> Fluorene degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG2447G </entity>
+      <id> 629 </id>
+      <name> Carbazole degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG2447G </entity>
+      <id> 643 </id>
+      <name> Styrene degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG2459G </entity>
+      <id> 3060 </id>
+      <name> Protein export </name>
+   </term>
+
+   <term>
+      <entity> VNG2462G </entity>
+      <id> 3060 </id>
+      <name> Protein export </name>
+   </term>
+
+   <term>
+      <entity> VNG2467G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG2469G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG2499G </entity>
+      <id> 71 </id>
+      <name> Fatty acid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2499G </entity>
+      <id> 310 </id>
+      <name> Lysine degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG2499G </entity>
+      <id> 380 </id>
+      <name> Tryptophan metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2499G </entity>
+      <id> 632 </id>
+      <name> Benzoate degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG2504G </entity>
+      <id> 400 </id>
+      <name> Phenylalanine, tyrosine and tryptophan biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2504G </entity>
+      <id> 970 </id>
+      <name> Aminoacyl-tRNA biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2505G </entity>
+      <id> 400 </id>
+      <name> Phenylalanine, tyrosine and tryptophan biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2505G </entity>
+      <id> 970 </id>
+      <name> Aminoacyl-tRNA biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2507G </entity>
+      <id> 240 </id>
+      <name> Pyrimidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2513G </entity>
+      <id> 10 </id>
+      <name> Glycolysis / Gluconeogenesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2513G </entity>
+      <id> 53 </id>
+      <name> Ascorbate and aldarate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2513G </entity>
+      <id> 71 </id>
+      <name> Fatty acid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2513G </entity>
+      <id> 120 </id>
+      <name> Bile acid biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2513G </entity>
+      <id> 280 </id>
+      <name> Valine, leucine and isoleucine degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG2513G </entity>
+      <id> 310 </id>
+      <name> Lysine degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG2513G </entity>
+      <id> 330 </id>
+      <name> Arginine and proline metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2513G </entity>
+      <id> 340 </id>
+      <name> Histidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2513G </entity>
+      <id> 380 </id>
+      <name> Tryptophan metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2513G </entity>
+      <id> 410 </id>
+      <name> beta-Alanine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2513G </entity>
+      <id> 561 </id>
+      <name> Glycerolipid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2513G </entity>
+      <id> 620 </id>
+      <name> Pyruvate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2513G </entity>
+      <id> 631 </id>
+      <name> 1,2-Dichloroethane degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG2513G </entity>
+      <id> 640 </id>
+      <name> Propanoate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2513G </entity>
+      <id> 650 </id>
+      <name> Butanoate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2514G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG2533G </entity>
+      <id> 240 </id>
+      <name> Pyrimidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2537G </entity>
+      <id> 130 </id>
+      <name> Ubiquinone biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2547G </entity>
+      <id> 290 </id>
+      <name> Valine, leucine and isoleucine biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2547G </entity>
+      <id> 970 </id>
+      <name> Aminoacyl-tRNA biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2570G </entity>
+      <id> 240 </id>
+      <name> Pyrimidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2574G </entity>
+      <id> 20 </id>
+      <name> Citrate cycle (TCA cycle) </name>
+   </term>
+
+   <term>
+      <entity> VNG2574G </entity>
+      <id> 630 </id>
+      <name> Glyoxylate and dicarboxylate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2574G </entity>
+      <id> 720 </id>
+      <name> Reductive carboxylate cycle (CO2 fixation) </name>
+   </term>
+
+   <term>
+      <entity> VNG2596G </entity>
+      <id> 340 </id>
+      <name> Histidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2606G </entity>
+      <id> 730 </id>
+      <name> Thiamine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2624G </entity>
+      <id> 740 </id>
+      <name> Riboflavin metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2629G </entity>
+      <id> 10 </id>
+      <name> Glycolysis / Gluconeogenesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2629G </entity>
+      <id> 51 </id>
+      <name> Fructose and mannose metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2629G </entity>
+      <id> 52 </id>
+      <name> Galactose metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2629G </entity>
+      <id> 500 </id>
+      <name> Starch and sucrose metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2629G </entity>
+      <id> 522 </id>
+      <name> Erythromycin biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2640G </entity>
+      <id> 260 </id>
+      <name> Glycine, serine and threonine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2640G </entity>
+      <id> 670 </id>
+      <name> One carbon pool by folate </name>
+   </term>
+
+   <term>
+      <entity> VNG2640G </entity>
+      <id> 910 </id>
+      <name> Nitrogen metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2648G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG2650G </entity>
+      <id> 260 </id>
+      <name> Glycine, serine and threonine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG2650G </entity>
+      <id> 300 </id>
+      <name> Lysine biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG2657G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG2658G </entity>
+      <id> 3010 </id>
+      <name> Ribosome </name>
+   </term>
+
+   <term>
+      <entity> VNG2662G </entity>
+      <id> 3020 </id>
+      <name> RNA polymerase </name>
+   </term>
+
+   <term>
+      <entity> VNG2664G </entity>
+      <id> 3020 </id>
+      <name> RNA polymerase </name>
+   </term>
+
+   <term>
+      <entity> VNG2665G </entity>
+      <id> 3020 </id>
+      <name> RNA polymerase </name>
+   </term>
+
+   <term>
+      <entity> VNG2666G </entity>
+      <id> 3020 </id>
+      <name> RNA polymerase </name>
+   </term>
+
+   <term>
+      <entity> VNG2668G </entity>
+      <id> 3020 </id>
+      <name> RNA polymerase </name>
+   </term>
+
+   <term>
+      <entity> VNG6037G </entity>
+      <id> 3022 </id>
+      <name> Transcription factors </name>
+   </term>
+
+   <term>
+      <entity> VNG6050G </entity>
+      <id> 3022 </id>
+      <name> Transcription factors </name>
+   </term>
+
+   <term>
+      <entity> VNG6053G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG6055G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG6074G </entity>
+      <id> 240 </id>
+      <name> Pyrimidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG6075G </entity>
+      <id> 240 </id>
+      <name> Pyrimidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG6081G </entity>
+      <id> 100 </id>
+      <name> Sterol biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG6081G </entity>
+      <id> 900 </id>
+      <name> Terpenoid biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG6140G </entity>
+      <id> 3022 </id>
+      <name> Transcription factors </name>
+   </term>
+
+   <term>
+      <entity> VNG6211G </entity>
+      <id> 53 </id>
+      <name> Ascorbate and aldarate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG6211G </entity>
+      <id> 130 </id>
+      <name> Ubiquinone biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG6211G </entity>
+      <id> 230 </id>
+      <name> Purine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG6211G </entity>
+      <id> 330 </id>
+      <name> Arginine and proline metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG6211G </entity>
+      <id> 350 </id>
+      <name> Tyrosine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG6211G </entity>
+      <id> 351 </id>
+      <name> 1,1,1-Trichloro-2,2-bis(4-chlorophenyl)ethane (DDT) degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG6211G </entity>
+      <id> 360 </id>
+      <name> Phenylalanine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG6211G </entity>
+      <id> 380 </id>
+      <name> Tryptophan metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG6211G </entity>
+      <id> 440 </id>
+      <name> Aminophosphonate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG6211G </entity>
+      <id> 620 </id>
+      <name> Pyruvate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG6211G </entity>
+      <id> 628 </id>
+      <name> Fluorene degradation </name>
+   </term>
+
+   <term>
+      <entity> VNG6211G </entity>
+      <id> 750 </id>
+      <name> Vitamin B6 metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG6211G </entity>
+      <id> 940 </id>
+      <name> Flavonoids, stilbene and lignin biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG6211G </entity>
+      <id> 950 </id>
+      <name> Alkaloid biosynthesis I </name>
+   </term>
+
+   <term>
+      <entity> VNG6270G </entity>
+      <id> 561 </id>
+      <name> Glycerolipid metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG6294G </entity>
+      <id> 380 </id>
+      <name> Tryptophan metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG6294G </entity>
+      <id> 680 </id>
+      <name> Methane metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG6309G </entity>
+      <id> 240 </id>
+      <name> Pyrimidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG6309G </entity>
+      <id> 252 </id>
+      <name> Alanine and aspartate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG6311G </entity>
+      <id> 240 </id>
+      <name> Pyrimidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG6311G </entity>
+      <id> 252 </id>
+      <name> Alanine and aspartate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG6312G </entity>
+      <id> 330 </id>
+      <name> Arginine and proline metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG6312G </entity>
+      <id> 970 </id>
+      <name> Aminoacyl-tRNA biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG6315G </entity>
+      <id> 220 </id>
+      <name> Urea cycle and metabolism of amino groups </name>
+   </term>
+
+   <term>
+      <entity> VNG6315G </entity>
+      <id> 330 </id>
+      <name> Arginine and proline metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG6316G </entity>
+      <id> 251 </id>
+      <name> Glutamate metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG6316G </entity>
+      <id> 330 </id>
+      <name> Arginine and proline metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG6316G </entity>
+      <id> 910 </id>
+      <name> Nitrogen metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG6351G </entity>
+      <id> 3022 </id>
+      <name> Transcription factors </name>
+   </term>
+
+   <term>
+      <entity> VNG6362G </entity>
+      <id> 3030 </id>
+      <name> DNA polymerase </name>
+   </term>
+
+   <term>
+      <entity> VNG6389G </entity>
+      <id> 3022 </id>
+      <name> Transcription factors </name>
+   </term>
+
+   <term>
+      <entity> VNG6438G </entity>
+      <id> 3022 </id>
+      <name> Transcription factors </name>
+   </term>
+
+   <term>
+      <entity> VNG6445G </entity>
+      <id> 100 </id>
+      <name> Sterol biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG6445G </entity>
+      <id> 900 </id>
+      <name> Terpenoid biosynthesis </name>
+   </term>
+
+   <term>
+      <entity> VNG6451G </entity>
+      <id> 240 </id>
+      <name> Pyrimidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG6452G </entity>
+      <id> 240 </id>
+      <name> Pyrimidine metabolism </name>
+   </term>
+
+   <term>
+      <entity> VNG6471G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG6473G </entity>
+      <id> 190 </id>
+      <name> Oxidative phosphorylation </name>
+   </term>
+
+   <term>
+      <entity> VNG6476G </entity>
+      <id> 3022 </id>
+      <name> Transcription factors </name>
+   </term>
+
+  <term>
+     <entity> VNG6317G </entity>
+     <id> 80005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1148G </entity>
+     <id> 80005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0314G </entity>
+     <id> 80005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6210G </entity>
+     <id> 80005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0915G </entity>
+     <id> 80005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2598G </entity>
+     <id> 80005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2288G </entity>
+     <id> 80005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1882G </entity>
+     <id> 80005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1364G </entity>
+     <id> 80005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1437G </entity>
+     <id> 80005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0104G </entity>
+     <id> 80005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1912G </entity>
+     <id> 80005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0384G </entity>
+     <id> 80005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0386G </entity>
+     <id> 80005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1837G </entity>
+     <id> 80005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1074G </entity>
+     <id> 80005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> yusM </entity>
+     <id> 80005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0572G </entity>
+     <id> 80104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0335G </entity>
+     <id> 80104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0890G </entity>
+     <id> 80104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> purL1 </entity>
+     <id> 80104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trxA1 </entity>
+     <id> 80104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2600G </entity>
+     <id> 80104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trxB1 </entity>
+     <id> 80104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2301G </entity>
+     <id> 80104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1048G </entity>
+     <id> 80104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1408G </entity>
+     <id> 80104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> birA </entity>
+     <id> 80109 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1554G </entity>
+     <id> 80109 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1635G </entity>
+     <id> 80109 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1550G </entity>
+     <id> 80109 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1566G </entity>
+     <id> 80109 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0824G </entity>
+     <id> 80109 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1163G </entity>
+     <id> 80109 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1565G </entity>
+     <id> 80109 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0830G </entity>
+     <id> 80109 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6214G </entity>
+     <id> 80109 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6256G </entity>
+     <id> 80109 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1083G </entity>
+     <id> 80109 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0085G </entity>
+     <id> 80109 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1822G </entity>
+     <id> 80109 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1273G </entity>
+     <id> 80109 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0081G </entity>
+     <id> 80109 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0090G </entity>
+     <id> 80109 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0086G </entity>
+     <id> 80109 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0084G </entity>
+     <id> 80109 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1911G </entity>
+     <id> 80109 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1776G </entity>
+     <id> 80109 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1184G </entity>
+     <id> 80109 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1185G </entity>
+     <id> 80109 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2125G </entity>
+     <id> 80109 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2604G </entity>
+     <id> 80109 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0715G </entity>
+     <id> 80109 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1450G </entity>
+     <id> 80109 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0815G </entity>
+     <id> 80109 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1628G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0940G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2171G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2617G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1018G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0136G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2291G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0583G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0422G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG7170 </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG7169 </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> dhpS </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2429G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0829G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2151G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2150G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0684G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> ferA1 </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> ferA2 </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0438G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2496G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1327G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> gapA </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0446G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1605G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2422G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1037G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0158G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2216G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2289G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> mcmA3 </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0223G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0831G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0882G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1914G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0467G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0891G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0873G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2553G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0933G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1540G </entity>
+     <id> 80102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2426G </entity>
+     <id> 80103 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0162G </entity>
+     <id> 80103 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2638G </entity>
+     <id> 80103 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1467G </entity>
+     <id> 80103 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1465G </entity>
+     <id> 80103 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> crt </entity>
+     <id> 80103 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1684G </entity>
+     <id> 80103 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1755G </entity>
+     <id> 80103 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0277G </entity>
+     <id> 80103 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2679G </entity>
+     <id> 80103 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0318G </entity>
+     <id> 80103 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1474G </entity>
+     <id> 80103 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1067G </entity>
+     <id> 80103 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6303G </entity>
+     <id> 80103 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0680G </entity>
+     <id> 80103 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2153G </entity>
+     <id> 80103 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2137G </entity>
+     <id> 80103 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0180G </entity>
+     <id> 80103 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0321G </entity>
+     <id> 80103 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0062G </entity>
+     <id> 80103 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0060G </entity>
+     <id> 80103 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1187G </entity>
+     <id> 80103 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1062G </entity>
+     <id> 80103 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0556G </entity>
+     <id> 80103 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1660G </entity>
+     <id> 80103 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1764G </entity>
+     <id> 80103 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0763G </entity>
+     <id> 80103 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6265G </entity>
+     <id> 80103 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2359G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2361G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2365G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0365G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> arsA2 </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2602G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0380G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0174G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6220G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6179G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6184G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1634G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2317G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1631G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1632G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1862G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1544G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2397G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2396G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1592G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2349G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2347G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2529G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2531G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2346G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2527G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2526G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2558G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2551G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6308G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1370G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1369G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1371G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0924G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6212G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6213G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6216G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6176G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6177G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6178G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6383G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1528G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2257G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0436G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2123G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6313G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2472G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2378G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0465G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2377G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2363G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2344G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1077G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0157G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1785G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2085G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> phoT1 </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6196G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6250G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0457G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0921G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1871G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1868G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1867G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0813G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1762G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2483G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0453G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2482G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0452G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2484G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0455G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0908G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0901G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0897G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0898G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0923G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0175G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6175G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6218G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6247G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1282G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1924G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1284G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1721G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2565G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0123G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1893G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0470G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0667G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0689G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6326G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trp7 </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6144G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6279G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6277G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6281G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6280G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1247G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> yfmD1 </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2560G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2552G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0501G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0427G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1240G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2343G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0753G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6261G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2486G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0794G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0524G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0115G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2632G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0364G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0700G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0002G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6264G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6262G </entity>
+     <id> 82101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0716G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0916G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2226G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2096G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1462G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1472G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1667G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6199G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1654G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0971G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0973G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0970G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1607G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0967G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0966G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0976G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0942G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0974G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0101G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1836G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0489G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0491G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2443G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> fabE </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0950G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0947G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1008G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1181G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1009G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0960G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0961G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0962G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0376G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0192G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1933G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0265G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6260G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2263G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0494G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2023G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0218G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0823G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0949G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6029G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6241G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6031G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6242G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6028G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6240G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6027G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6239G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6026G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6237G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6025G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6236G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6024G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6024G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6023G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6233G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6022G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6232G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6021G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6230G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6020G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6229G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6019G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6032G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6244G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6033G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6246G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> hacA </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1801G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0097G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1156G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0129G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6201G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1659G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1765G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1856G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0806G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1760G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0793G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1759G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1523G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1395G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1505G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1442G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1013G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0355G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0958G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0614G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1733G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0812G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0226G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1834G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1899G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2181G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0154G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0946G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2130G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1804G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0935G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6150G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6164G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6187G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6363G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6272G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2271G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2411G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1224G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6091G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1506G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0880G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0166G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> rrt </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0442G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2416G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0375G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0342G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG7008 </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG7029 </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6086G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6153G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG7087 </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6337G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2249G </entity>
+     <id> 90104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1311G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2214G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2404G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0720G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0761G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0889G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0887G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1501G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2252G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0134G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0881G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0159G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0163G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0172G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2270G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2079G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1520G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0363G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0398G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0592G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0694G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1266G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2256G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1754G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1335G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1470G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1359G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2173G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2372G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6130G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1383G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2441G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2473G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1665G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG7011 </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG7095 </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG7105 </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2280G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2240G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1622G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1406G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0106G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0107G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0108G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1984G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0133G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1190G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1332G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0838G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0884G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0885G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0349G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2636G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2390G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2381G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2620G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0183G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1252G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1014G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1543G </entity>
+     <id> 81104 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2213G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0137G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2210G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2512G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0401G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2661G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0374G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1496G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG7031 </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG7171 </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG7100 </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG7114 </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0757G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2647G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6318G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG7126 </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG7124 </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG7125 </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1377G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1464G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> birA </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1071G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2036G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0735G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0917G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2579G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0835G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1215G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1175G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0451G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6373G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0458G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0152G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0536G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1404G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1285G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1816G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2094G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1922G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1351G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1123G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0530G </entity>
+     <id> 81101 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0499G </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1111G </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> dys </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2649G </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1173G </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2654G </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2234G </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1756G </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0549G </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1262G </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1853G </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1452G </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2056G </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1768G </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2131G </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> fib </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0872G </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1352G </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0345G </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0870G </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6139G </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6299G </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1997G </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1165G </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1866G </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> nop58 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0089G </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0425G </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0051G </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0410G </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2575G </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0098G </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> rnpB </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> rrlA </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> rrlB </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> rrs </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1959G </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1957G </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2088G </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn1 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn2 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn3 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn4 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn5 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn6 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn7 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn8 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn9 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn10 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn11 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn12 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn13 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn14 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn15 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn16 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn17 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn18 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn19 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn20 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn21 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn22 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn23 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn24 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn25 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn26 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn27 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn28 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn29 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn30 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn31 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn32 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn33 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn34 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn35 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn36 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn37 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn38 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn39 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn40 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn41 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn42 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn43 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn44 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn45 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn46 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trn47 </entity>
+     <id> 81102 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0431G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6301G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2358G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0719G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2062G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1197G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2136G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1463G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0160G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1488G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> boa3 </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0996G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0329G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1773G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1320G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1623G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0816G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6354G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0963G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2616G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2669G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2167G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2065G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0620G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1811G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0249G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1749G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1676G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2410G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2595G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0504G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2045G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1114G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0919G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1053G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0938G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0878G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1949G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0486G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2078G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1637G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2196G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0795G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1188G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2320G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0164G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2611G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1275G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2186G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1864G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2308G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2573G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2147G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2086G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1428G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1726G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1739G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6035G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0540G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0523G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> ISH1 </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> ISH2 </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> ISH3 </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> ISH27 </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> ISH4 </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> ISH5 </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> ISH6 </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> ISH7 </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> ISH8 </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> ISH9 </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> ISH10 </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> ISH11 </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> ISH12 </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1374G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0736G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1118G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0303G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0181G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0928G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2290G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0626G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1342G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1131G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6371G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1180G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2471G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0459G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6361G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0042G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0786G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1847G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2104G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0186G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2449G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2546G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0723G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1233G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1772G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2084G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2060G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG6408G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0294G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0500G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0512G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0748G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0766G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2000G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0510G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1054G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2612G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2398G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2106G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1294G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0745G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1951G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1379G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1879G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> tnp </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1068G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0732G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0874G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> trh </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2393G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2394G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2639G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0479G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0998G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1084G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2302G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0930G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG1385G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG0575G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+  <term>
+     <entity> VNG2025G </entity>
+     <id> 90005 </id>
+     <name> none </name>
+  </term>
+
+
+
+</annotation>
