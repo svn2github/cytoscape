@@ -35,7 +35,6 @@ public void read ()
   // while creating the edge names (the hard way)
   Graph2DView gView = new Graph2DView(graph);
 
-  edgeAttributes.initCountMap();
   for (EdgeCursor ec = graph.edges(); ec.ok(); ec.next()) {
       Edge edge = ec.edge();
       String interactionType = graph.getLabelText(edge);
@@ -50,9 +49,9 @@ public void read ()
       edgeAttributes.addNameMapping(edgeName, edge);
       edgeAttributes.add("interaction", edgeName, interactionType);      
   }
-  edgeAttributes.finalCountMap();
   
 } // read
+//------------------------------------------------------------------------------------
 public Graph2D getGraph ()
 {
   return graph;

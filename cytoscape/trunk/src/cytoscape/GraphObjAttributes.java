@@ -20,11 +20,13 @@ import cytoscape.data.readers.*;
 public class GraphObjAttributes implements Cloneable {
   HashMap map;
   HashMap nameFinder;
+  HashMap countIdMap;
 //--------------------------------------------------------------------------------
 public GraphObjAttributes ()
 {
   map = new HashMap ();
   nameFinder = new HashMap ();
+  countIdMap = new HashMap ();
 }
 //--------------------------------------------------------------------------------
 public Object clone ()
@@ -318,32 +320,37 @@ public void setAttributes (String canonicalName, HashMap bundle)
  * A hash to keep a TEMPORARY count of how many times a certain name has been COUNTED.
  * It should only be trused if every object created is counted once, systematically.
  */
-private Hashtable countIdMap = null;
+//private Hashtable countIdMap = null;
 
 /**
  * Initialize the counter map
  */
-public void initCountMap() {
-    countIdMap = new Hashtable();
-}
+//--------------------------------------------------------------------------------
+//protected void initCountMap() {
+//    countIdMap = new Hashtable();
+//}
 
+//--------------------------------------------------------------------------------
 /**
  * Destroy the counter map
  */
-public void finalCountMap() {
-    countIdMap = null;
-}
+//public void finalCountMap() {
+//    countIdMap = null;
+//}
 
-public int countIdentical(String objectName)  {
-    Integer count = (Integer) countIdMap.get(objectName);
-    if (count == null) {
-	count = new Integer(0);
-    }
+//--------------------------------------------------------------------------------
+public int countIdentical (String objectName)  
+{
+  Integer count = (Integer) countIdMap.get(objectName);
+  if (count == null) 
+    count = new Integer(0);
+
     // update the counter as well
-    countIdMap.put(objectName, new Integer(count.intValue() + 1));
-    return count.intValue();
-} 
+  countIdMap.put(objectName, new Integer(count.intValue() + 1));
+  return count.intValue();
 
+} 
+//--------------------------------------------------------------------------------
 
 /*
 public int countIdentical (String attribute, String objectName) 

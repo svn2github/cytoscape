@@ -192,6 +192,11 @@ public Graph2D getGraph ()
   return graph;
 }
 //------------------------------------------------------------------------------
+public void setGraph (2D getGraph ()
+{  
+  this.graph;
+}
+//------------------------------------------------------------------------------
 public GraphHider getGraphHider ()
 {  
   return graphHider;
@@ -399,16 +404,13 @@ protected void displayCommonNodeNames ()
   for (int i=0; i < nodes.length; i++) {
     Node node = nodes [i];
     NodeRealizer r = graphView.getGraph2D().getRealizer(node);
-    String defaultName = r.getLabelText ();
-    String newName = defaultName;
-    String canonicalName = getCanonicalNodeName(node);
+    String newName = r.getLabelText ();  // we hope to replace this 
+    String canonicalName = getCanonicalNodeName (node);
     try {
-      //String [] synonyms = bioDataServer.getSynonyms (defaultName);
       String [] synonyms = bioDataServer.getSynonyms (canonicalName);
       if (synonyms.length > 0) {
         newName = synonyms [0];
         }
-      //nodeAttributes.add ("commonName", defaultName, newName);
       nodeAttributes.add ("commonName", canonicalName, newName);
       r.setLabelText (newName);
       }
@@ -416,8 +418,7 @@ protected void displayCommonNodeNames ()
     } // for i
 
 } // displayCommonNodeNames
-
-
+//------------------------------------------------------------------------------
 /**
  *  displayNodeLabels()
  *  attempts to display the hashed graphObjAttribute value
@@ -546,7 +547,9 @@ protected JMenuBar createMenuBar ()
   viewNodeSubMenu.add(new InvertSelectedNodesAction());
   mi = viewNodeSubMenu.add(new HideSelectedNodesAction());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_H, ActionEvent.CTRL_MASK));
-  viewNodeSubMenu.add(new DisplaySelectedInNewWindowAction());
+
+  mi = viewNodeSubMenu.add(new DisplaySelectedInNewWindowAction());
+  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_N, ActionEvent.CTRL_MASK));
   mi = viewNodeSubMenu.add (new DisplayAttributesOfSelectedNodesAction ());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_D, ActionEvent.CTRL_MASK));
   JMenu viewEdgeSubMenu = new JMenu("Edge Selection");
@@ -2058,8 +2061,9 @@ protected class NodeAttributesPopupMode extends PopupMode {
     Vector nodeList = new Vector ();
     while (nc.ok ()) {
       Node node = nc.node ();
-      NodeRealizer r = graphView.getGraph2D().getRealizer(node);
-      String nodeName = r.getLabelText (); 
+      //NodeRealizer r = graphView.getGraph2D().getRealizer(node);
+      //String nodeName = r.getLabelText (); 
+      String nodeName = getCanonicalNodeName (node);
       nodeList.addElement (nodeName);
       nc.next ();
       }

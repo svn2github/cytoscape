@@ -111,7 +111,6 @@ protected void createGraphFromInteractionData ()
     //   interactionHash [sourceNode::targetNode] = "pd"
     //---------------------------------------------------------------------------
 
-  edgeAttributes.initCountMap();
   for (int i=0; i < interactions.length; i++) {
     Interaction interaction = interactions [i];
     String nodeName = interaction.getSource ();
@@ -130,7 +129,6 @@ protected void createGraphFromInteractionData ()
       edgeAttributes.addNameMapping (edgeName, edge);
       } // for t
    } // for i
-  edgeAttributes.finalCountMap();
   
 } // createGraphFromInteractionData
 //-------------------------------------------------------------------------------------------
