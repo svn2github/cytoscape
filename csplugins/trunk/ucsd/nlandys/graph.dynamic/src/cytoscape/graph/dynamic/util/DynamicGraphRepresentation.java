@@ -84,17 +84,20 @@ class DynamicGraphRepresentation implements DynamicGraph
       // edge is negative or Integer.MAX_VALUE.
       throw new IllegalArgumentException("edge is negative"); }
     if (e == null) return false;
+    final Node source = m_nodes.getNodeAtIndex(e.sourceNode);
+    final Node target = m_nodes.getNodeAtIndex(e.targetNode);
+    try { e.prevOutEdge.nextOutEdge = e.nextOutEdge; }
+    catch (NullPointerException exc) { source.firstOutEdge = e.nextOutEdge; }
+    try { e.prevInEdge.nextInEdge = e.nextInEdge; }
+    catch (NullPointerException exc) { target.firstInEdge = e.nextInEdge; }
+    if (e.directed) { source.outDegree--; target.inDegree--; }
+    else { source.undDegree--; target.undDegree--; }
     m_edges.setEdgeAtIndex(null, edge);
     m_freeEdges.push(edge);
-    try { e.prevOutEdge.nextOutEdge = e.nextOutEdge; }
-    catch (NullPointerException exc) { // e.prevOutEdge is null.
-      m_nodes.getNodeAtIndex(e.sourceNode).firstOutEdge = e.nextOutEdge; }
-    try { e.prevInEdge.nextInEdge = e.nextInEdge; }
-    catch (NullPointerException exc) { // e.prevInEdge is null.
-      m_nodes.getNodeAtIndex(e.targetNode).firstInEdge = e.nextInEdge; }
     e.nextOutEdge = null; e.prevOutEdge = null;
     e.nextInEdge = null; e.prevInEdge = null;
     m_edgeDepot.recycleEdge(e);
+    m_edgeCount--;
     return true;
   }
 
