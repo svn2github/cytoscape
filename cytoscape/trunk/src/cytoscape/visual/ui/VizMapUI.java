@@ -210,7 +210,7 @@ public class VizMapUI extends JDialog {
 	/**
 	 *  Lazily create visual style parameter UI.
 	 */
-	protected boolean styleDefNeedsUpdate = false;
+	protected boolean styleDefNeedsUpdate = true;
 	
 	protected StyleSelector(VizMapUI styleDef) {
 	    super(VMM.getCytoscapeWindow().getMainFrame(), "Visual Styles");
@@ -313,8 +313,10 @@ public class VizMapUI extends JDialog {
 
 	protected class DefStyleListener extends AbstractAction {
 	    public void actionPerformed(ActionEvent e) {
-		if (styleDefNeedsUpdate)
+		if (styleDefNeedsUpdate) {
 		    styleDefUI.visualStyleChanged();
+		    styleDefNeedsUpdate = false;
+		}
 		styleDefUI.show();
 	    }
 	}
@@ -409,46 +411,11 @@ public class VizMapUI extends JDialog {
 	}
 
 	/**
-	 *  Populates the styles combo box
-	 */
-	/*
-	protected void setupStyleComboBox() {
-	    Object styleArray[] = new Object[styles.size()];
-	    Iterator styleIter = styles.iterator();
-	    for (int i = 0; styleIter.hasNext(); i++) {
-		styleArray[i] = (VisualStyle)styleIter.next();
-	    }
-	    this.styleComboBox = new JComboBox(styleArray);
-	    this.styleComboBoxDupe = new JComboBox(styleArray);
-	    this.styleComboBox.setSelectedItem(null);
-	    this.styleComboBoxDupe.setSelectedItem(null);
-	    // attach listener
-	    StyleSelectionListener listen = new StyleSelectionListener();
-	    this.styleComboBox.addItemListener(listen);
-	    this.styleComboBoxDupe.addItemListener(listen);
-	    
-	    if (this.currentStyle == null)
-		this.currentStyle = (VisualStyle) styleArray[0];
-	    this.styleComboBox.setSelectedItem(this.currentStyle);
-	    this.styleComboBoxDupe.setSelectedItem(this.currentStyle);
-	}
-	 */
-
-	/**
 	 *  Retrieve copy of style selection combo box for toolbar
 	 */
 	public JComboBox getToolbarComboBox() {
 	    return this.styleComboBoxDupe;
 	}
-	
-	/**
-        * Sets the a new VisualStyle
-        */
-       public void setVisualStyle (VisualStyle newVisualStyle){
-         this.currentStyle = newVisualStyle;
-         this.styleComboModel.setSelectedItem(this.currentStyle);
-       }// setVisualStyle
-
 
 	/**
 	 *  Update the style combo box model
@@ -491,7 +458,23 @@ public class VizMapUI extends JDialog {
 	    validate();
 	    repaint(); */
 	}
-    }
+
+	/**
+	 *  System call to set new visual style
+	 *
+	 *  @param vs New visual style to set UI to
+	 *  @return true if set successfully, false if error
+	 */
+	boolean setVisualStyle(VisualStyle vs) {
+	    if (styleComboModel.getIndexOf(vs) != -1) {
+		this.currentStyle = vs;
+		this.styleComboModel.setSelectedItem(vs);
+		return true;
+	    }
+	    return false;
+	}
+
+    } // StyleSelector
     
     private class AttrSelector implements ActionListener {
 	private JComponent myTab;
@@ -570,7 +553,6 @@ public class VizMapUI extends JDialog {
 	}
 	return selected;
     }
-    
 
     /**
      * Ensure that the calculator to be removed isn't used in other visual styles.
