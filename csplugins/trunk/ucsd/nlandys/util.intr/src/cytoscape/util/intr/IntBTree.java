@@ -27,6 +27,35 @@ public final class IntBTree
    */
   public void insert(int x)
   {
+    Node newNode = insert(m_root, x);
+    if (newNode != null) {
+      
+    }
+  }
+
+  // Return a Node being the newly created node if a split was performed.
+  // The first value of the Node is to be the new split index.
+  private Node insert(Node n, int x)
+  {
+    if (isLeafNode(n)) {
+      if (n.sliceCount < n.values.length) { // There's room for a value.
+        boolean found = false;
+        for (int i = 0; i < n.sliceCount; i++) {
+          if (x < n.values[i]) {
+            for (int j = n.sliceCount; j > i; j--) {
+              n.values[j] = n.values[j - 1]; }
+            n.values[i] = x;
+            found = true;
+            break; } }
+        if (!found) {
+          n.values[n.sliceCount] = x; }
+        n.sliceCount++;
+        return null; }
+      else { // No room for another value in this leaf node; perform split.
+        return null;
+      }
+    }
+    return null;
   }
 
   /**
@@ -85,7 +114,7 @@ public final class IntBTree
       int count = 0;
       for (int i = 0; i < n.sliceCount; i++)
       {
-        if (x >= m_buff[i] & x <= m_buff[i + 1]) {
+        if (x >= m_buff[i] && x <= m_buff[i + 1]) {
           if (m_buff[i] == m_buff[i + 1]) count += n.data.deepCount;
           else count += count(n.data.children[i], x); }
       }
