@@ -363,6 +363,7 @@
 
         <copy file="testData/sampleDataContents" todir="${release.dir}/sampleData"/>
         <copy file="testData/BINDyeast.sif" todir="${release.dir}/sampleData"/>
+        <copy file="testData/BINDhuman.sif" todir="${release.dir}/sampleData"/>
         <copy file="testData/galExpData.pvals" todir="${release.dir}/sampleData"/>
         <copy file="testData/galFiltered.gml" todir="${release.dir}/sampleData"/>
         <copy file="testData/galFiltered.sif" todir="${release.dir}/sampleData"/>
