@@ -1,0 +1,503 @@
+################################################
+# CYTOSCAPE USER MANUAL                        #
+# Cytoscape v. 0.8; June 2002                  #
+# http://www.cytoscape.org                     #
+#                                              # 
+# Software (c) Paul Shannon, Owen Ozier,       #
+# Andrew Markiel, Daniel Ramage, Nada Amin,    #
+# Benno Schwikowski and Trey Ideker 2002       #
+# Documentation (c) Trey Ideker 2002           #
+#                                              # 
+################################################
+
+######################################################################
+LICENSE AGREEMENT AND DISCLAIMER #####################################
+######################################################################
+
+Cytoscape is a collaborative effort between the Institute for Systems
+Biology and the Whitehead Institute for Biomedical Research.  It is
+available at http://www.cytoscape.org and provided to academic and
+non-for-profit users free of charge.
+
+Users of Cytoscape must first agree to the license agreement provided
+in the file "LICENSE.txt".
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+######################################################################
+INTRODUCTION #########################################################
+######################################################################
+
+Cytoscape is a bioinformatics software platform for visualizing
+molecular interaction networks and integrating these interactions with
+other large data sets such as gene expression profiles.  It provides a
+general framework for integrating information/measurements of network
+connectivity with information/measurements of cellular state.  The
+Cytoscape project is a large-scale collaborative effort between labs
+at the MIT/Whitehead Institute in Cambridge, MA (Dr. Trey Ideker) and
+the Institute for Systems Biology in Seattle, WA (Dr. Benno
+Schwikowski).  The core software is implemented in Java, with several
+time-critical algorithms coded in C++ and linked through a JNI bridge.
+  
+Cytoscape provides the following key features:
+
+1) DATA INTEGRATION AND MANAGEMENT
+
+   Import molecular interactions from flat files listing 
+   protein-protein, protein-DNA, or other interaction type
+
+   Load and save interaction networks and network layouts in GML
+   format (Graph Markup Language) 
+
+   Import of mRNA / protein expression profiles from space- or 
+   tab-delimited text files
+
+   Access to gene functional annotations from the Gene Ontology (GO)
+   database
+
+   Manual editing of the network, allowing for node and edge creation,
+   deletion, positioning, and user-configured labels, colors, sizes,
+   etc.
+
+2) VISUALIZATION
+
+   Graphical superposition of gene expression ratios and p-values on
+   the network.  Expression data are mapped to node color, border 
+   color, or label according to user-configurable visualization 
+   schemes.  Expression sets are selected from a pulldown menu.
+
+   Network layout in two dimensions.  A variety of algorithms are
+   available, including Cyclic layout, Spring-Embedded layout, and 
+   layout based on Network Cluster Identification
+
+   Miscellaneous: zoom in/out, pan, print, spawn new viewer on selected 
+   subgraph
+
+3) NETWORK FILTERING: A system of nested filters is provided (based on 
+   a general and extensible filtering API) to select subsets of nodes
+   and/or interactions based on current data.  For instance, users may
+   select nodes involved in a threshold number of interactions, nodes
+   that share a particular GO annotation, nodes whose gene expression
+   levels change significantly in specified conditions, or a
+   combination of these criteria.
+
+4) ACTIVE PATHWAYS AND SUBSYSTEMS: Active subsystems are connected 
+   regions of the network that show significant changes in gene or 
+   protein expression over particular experimental conditions.  By 
+   screening the network to show active subsystems only, it is 
+   possible to reduce the immense complexity of an entire interaction 
+   network or database by pinpointing just those network regions that 
+   are relevant to the conditions of interest.  Conversely, false 
+   positive interactions and interactions not involved in the 
+   expression response are removed from further analysis.  The 
+   remaining active subsystems contain interactions that are concrete 
+   hypotheses as to the underlying signaling and regulatory 
+   mechanisms in the cell. This approach is described in:
+
+   Ideker, Ozier, Schwikowski, and Siegel, Discovering Regulatory and 
+   Signaling Circuits in Molecular Interaction Networks, to appear at 
+   ISMB2002 and in Bioinformatics journal.
+
+######################################################################
+LAUNCHING CYTOSCAPE ##################################################
+######################################################################
+
+Basic instructions for installing and launching Cytoscape are provided
+in the separate file "INSTALL.txt".  Cytoscape also recognizes a
+number of optional command line arguments, including run-time
+specification of network files and expression data:
+
+ -g  <GML network filename>        (xxx.gml)
+ -b  <bioData directory>           (e.g. GO/) 
+ -i  <SIF interactions filename>   (yyy.sif)
+ -e  <expression filename>         (zzz.pvals)
+ -h  help: display these command line arguments
+ -v  display version
+
+Most data sets may also be loaded after Cytoscape is running.  See
+section on LOADING DATA below.
+
+Additional command line arguments that are not recognized by the
+Cytoscape core are passed to the plug-in modules (e.g. the activePaths
+plug-in included in this distribution). Please refer to the
+documentation for each specific plug-in for more details.
+
+######################################################################
+BUILDING AND STORING INTERACTION NETWORKS ############################
+######################################################################
+
+Cytoscape reads an interaction network in two ways: from a simple
+interaction file (SIF or .sif format) or from a universal format known
+as Graph Markup Language (GML or .gml format).  SIF specifies
+components and interactions only, while GML stores additional
+information about network layout and allows network data exchange with
+a variety of other network display programs.  Typically, SIF is used
+to import interactions when building a network for the first time.
+Once the interactions have been loaded and layout has been performed,
+the network may be saved to and subsequently reloaded from GML format
+in future Cytoscape sessions.  Both SIF and GML are implemented as
+ASCII text files.
+
+SIF FORMAT: 
+Lines in the SIF file specify a source node, an interaction type, and
+one or more target nodes:
+
+geneA <interaction type> geneB
+geneC <interaction type> geneA
+geneD <interaction type> geneE geneF geneB
+geneG
+...
+geneY <interaction type> geneZ
+
+In the network specified by this file, genes are represented by nodes,
+and interactions are represented by edges between nodes.  For
+compactness, a gene also represents its corresponding protein.  Nodes
+may also be used to represent compounds and reactions instead of
+genes, but this is experimental.  Note that it is possible to specify
+an isolated node with no interactions, as in the line "geneG" above.
+
+Gene names must be unique.  If the network is to be integrated with
+Gene Ontology (GO) or gene expression data, the gene names must
+exactly match the systematic ORF names specified in the other data
+files.  We strongly encourage naming genes and proteins by their
+systematic ORF name; common names may be displayed on the screen for
+ease of interpretation, so long as these are available to the program
+in the bioData directory (Cytoscape ships with all yeast ORF-to-common
+name mappings in a synonym table within the GO/ directory).
+
+The tag <interaction type> must be one of:
+   pp .................. protein -- protein
+   pd .................. protein -> DNA
+
+Additional interaction types are also available but experimental:
+   pr .................. protein -> reaction
+   rc .................. reaction -> compound      
+   cr .................. compound -> reaction
+   gl .................. genetic lethal relationship
+
+GML FORMAT: In contrast to SIF, GML is a rich graph format language
+supported by many other graph visualization packages.  Its file format
+specification is available at:
+http://www.infosun.fmi.uni-passau.de/Graphlet/GML/.  It is generally
+not necessary to modify the content of a GML file directly.  Once a
+network is built in SIF format and then laid out, the layout is
+perserved by saving to and loading from GML.
+
+COMMANDS:
+Load and save network files using the File menu of Cytoscape. Network
+files may also be loaded directly from the command line using the -i 
+(SIF format) or -g (GML format) options.  
+
+FOR EXAMPLE:
+To load a sample molecular interaction network in SIF format, use the
+menu File -> Load -> Interactions.  In the resulting file dialog box,
+select the file "sampleData/galFiltered.sif". After a few seconds, a
+small network of 329 nodes should appear in the main window. To load
+the same interaction network as a GML, use the menu: File -> Load ->
+GML. In the resulting file dialog box, select the file
+"sampleData/galFiltered.gml".
+
+EDITING THE NETWORK AFTER LOADING:
+It is possible to add and delete nodes and edges from within the
+visual interface.  Use the Edit menu to toggle between Read-only mode
+(the default) and Edit mode.  In Edit mode, nodes are created by
+left-clicking on the workspace.  Edges (i.e. representing molecular
+interactions) are created by left-dragging from one node to another.
+These editing features are still under development. Selected nodes
+and edges are deleted from the Edit menu.
+
+######################################################################
+LOADING GENE EXPRESSION DATA #########################################
+######################################################################
+
+Interaction networks are certainly useful as stand-alone models.
+However, they are most powerful when integrated with information about
+the biological states that are induced by the network, such as gene or
+protein expression levels.  Once loaded, expression ratios/levels may
+be visually superimposed on the network, used in a filter to select a
+subset of nodes, or used to identify active paths and subsystems (see
+sections below).  Expression data are only relevant once a network has
+been loaded.
+
+FORMAT: 
+Gene expression ratios are specified over one or more experiments
+using an ASCII text file.  The file consists of a number of space- or
+tab-delimited fields, one line per gene, with the following format:
+
+GeneName [CommonName] ratio1 ratio2 ... ratioN [pval1 pval2 ... pvalN]
+
+Brackets [] indicate fields that are optional.  The first two fields
+are the systematic gene name followed by an optional common name.
+Expression ratios are provided for each experiment, optionally
+followed by a p-value per experiment or other measure of the
+significance of each ratio, i.e. whether the ratio represents a true
+change in expression.  Significance values are generated by a variety
+of software packages for analyzing expression data generated by DNA
+microarrays, for instance our program VERA
+(http://www.systemsbiology.org/VERAandSAM).  A list of other
+microarray analysis packages is available from:
+http://linkage.rockefeller.edu/wli/microarray/soft.html
+
+COMMANDS:
+Load an expression data file using the File menu of Cytoscape or by
+specifying the filename using the -e option at the command line.
+
+FOR EXAMPLE:
+Load a sample gene expression data set using the menu: File -> Load ->
+Expression Matrix File. In the resulting file dialog box, select the
+file "sampleData/gal1-20.pvals".  As described in the following
+sections, Cytoscape is now ready to integrate these data with the
+underlying molecular interaction network.
+
+######################################################################
+VISUALIZATION ########################################################
+######################################################################
+
+BASIC FEATURES:
+Use the zooming buttons located on the toolbar to zoom in / out of
+the interaction network shown in the current network display.
+
+Navigate around the network by using the window sliders or by clicking
+with the right mouse button (with no nodes or edges selected) and
+dragging in the desired direction.
+
+Use the left mouse button to select one or more nodes (genes).  A
+right click then launches a node attributes panel providing detailed
+information about the selected nodes, including its corresponding
+annotation in the Gene Ontology (GO) database (if available and
+specified with the -b command line option).  If a gene expression
+experiment has been selected (see below), the relevant expression data
+are also shown in the node attributes panel.
+
+NETWORK LAYOUT:
+Explore a variety of schemes for layout of the network in two
+dimensions using the "Layout" menu.  First select the type of layout
+desired (Circular, Hierarchical, ...)  and then choose "Whole graph"
+or "Current Selection" to perform the layout on either all nodes or
+only those that are currently selected.  It is also possible to align
+selected nodes vertically or horizontally.  Saving a network in GML
+format (see section above) records the network topology (nodes and
+links) and its current layout.
+
+CONFIGURING AND MAPPING VISUAL PROPERTIES:
+Bring up the Visual Properties dialog by choosing Visualization -> Set
+Visual Properties.  Default node and edge visual properties such as
+color, size, and style are specified in the upper portion of the
+dialog.  Defaults may also be configured at run-time by editing the
+cytoscape.props file.  Please follow the models provided in the props
+file that is included with this distribution.
+
+A powerful feature of Cytoscape is that (in addition to the defaults)
+it can also map visual properties to node- or edge-specific biological
+information.  Several of these mappings are specified in the lower
+portion of the visual properties dialog.  For instance, node label may
+be mapped to display its gene name (canonical or common) or current
+gene expression values if an experiment has been selected (see below).
+Edge color may be used to reflect the type of interaction each edge
+represents, e.g. protein-protein ('pp' tag) or protein->DNA ('pd'
+tag).  As described next, one of the most important mappings is from
+node color to gene expression values.
+
+SUPERPOSITION OF EXPRESSION DATA ON THE NETWORK: 
+To visually map and superimpose expression data on the network, choose
+Visualization -> Overlay Expression Data. This function requires that
+expression data are loaded in memory. The resulting dialog allows data
+from any one of the currently loaded expression experiments to appear
+as a color mapped to the node fill color or node border color.  Select
+the particular experiment to display from the menu at left, and
+specify the color mapping at right.  Either expression values
+(i.e. ratios or levels) or significances (i.e.  p-values) may be
+mapped.  After pressing "Apply", the color of each gene (network node)
+will reflect its expression value in the selected experiment.
+
+The initial expression color mapping which Cytoscape loads at run-time
+is specified in the cytoscape.props file as a list of fields and their
+comma-separated RGB values.  Follow the model provided in the props
+file included with this distribution.
+
+######################################################################
+SELECTION AND FILTERING ##############################################
+######################################################################
+
+It is often useful to view and operate on a selected subset of nodes
+and/or edges.  Individual nodes and edges are selected in the
+Cytoscape window by a left mouse click or using the left mouse button
+to drag a selection box around a group of nodes.  Holding down SHIFT
+while selecting preserves any currently selected components.  Using
+the variety of commands available in the Edit, View or Layout menus,
+selected nodes and edges may be hidden from view, permanently deleted,
+laid out separately, or displayed in a new Cytoscape window.
+
+The Filters dialog allows the user to select groups of nodes based on
+more complex queries.  Launch this dialog either from the menu bar or
+by choosing View -> Select -> Using filters.  Six classes of
+filters are currently available:
+
+   Topology ............ Select nodes with more than a specified
+                         number of edges
+   Nodes Center ........ Select nodes within a specified distance from
+                         one or more currently selected nodes
+   Interaction ......... Select nodes involved in interactions of a
+                         specified type (pp, pd, etc.) 
+   Expression .......... Select nodes whose expression levels are
+                         affected in one or more experiments, as well
+                         as neighbors of these nodes
+   Node Type ........... (Experimental) Select only those nodes that
+                         are of the specified molecular type
+   Combination ......... Combine several filters together using AND
+                         or OR logic.
+
+Through the use of the Combination filter, it is therefore possible to
+construct arbitrarily complex selection queries.
+
+FOR EXAMPLE:
+Load the sample network (sampleData/gal1-20.pval) and expression data
+set (sampleData/galFiltered.gml) as described in the preceding
+sections.  Launch the Filters dialog from the menu bar and choose the
+Topology1 tab.  Specify "3" as the minimum number of neighbors, "1" as
+the depth, and choose "No" for the option "Apply Filter Until Stable
+Point".  Pressing "Select" highlights the 64 nodes in the network with
+more than 3 immediate neighbors.  Increase the depth to "2" and press
+"Select" again.  This will select 117 additional nodes that lack 3
+immediate neighbors but that have 3 neighbors within a distance of 2
+edges away.  Next, hide all of the nonselected nodes using the menu
+command View -> Node Selection -> Invert followed by View -> Node
+Selection -> Hide.  As indicated in the message panel on the bottom
+right of the main Cytoscape window, this operation takes the network
+from 329 nodes / 357 edges to 256 nodes / 299 edges.
+
+######################################################################
+FINDING ACTIVE SUBSYSTEMS ############################################
+######################################################################
+
+In model organisms such as yeast, large databases of protein-protein
+and protein-DNA interactions have become an extremely important
+resource for the study of protein function, evolution, and gene
+regulatory dynamics. By integrating these interactions with
+widely-available gene expression data, it is possible to generate
+concrete hypotheses for the underlying mechanisms governing the
+observed changes in gene expression.  The ActivePaths plugin is
+designed to perform this integration systematically and at large
+scale.  
+
+The plugin works by filtering the molecular interaction network to
+reveal active subnetworks, i.e., connected regions of the network that
+show significant changes in expression over particular subsets of
+conditions. It includes a rigorous statistical measure for scoring
+subnetworks against expression data, along with a search algorithm for
+identifying subnetworks with high score.  In this way, the activePaths
+plugin is one example of how large-scale genomic approaches may be
+used to uncover signaling and regulatory pathways in a systematic,
+integrative fashion.
+
+This plug-in implements methods described in the publication:
+Trey Ideker, Owen Ozier, Benno Schwikowski, and Andrew F. Siegel,
+Discovering regulatory and signaling circuits in molecular interaction
+networks, ISMB2002 and Bioinformatics (in press).
+
+NOTE:
+To load the activePaths plugin, specify a network file (-i or -g
+option) AND an expression file (-e option) on the command line. 
+The plugin will NOT appear if these files are loaded from the
+File menu after the application starts.
+
+OPERATION:
+Choosing "PlugIns -> Find Active Paths" launches the Active Paths
+dialog.  Starting from a specified number of initial path "seeds", the
+algorithm searches for paths with maximal score.  In this context, any
+connected subnetwork of nodes and edges is allowed as a "path".  The
+path score is obtained by combining the significance of expression
+(p-values) over all nodes in the path such that paths containing many
+genes with significant p-values are assigned a high score (see the
+publication for more details).  When expression data are provided over
+multiple experiments, a particular subset of experiments is chosen
+that results in the highest score overall.
+
+The Active Paths dialog contains several options that control how
+high-scoring paths are found via a simulated annealing algorithm.
+Starting from the specified "Number of Paths" (randomly seeded), the
+algorithm anneals over the specified "Number of Iterations".  The top
+scoring paths are displayed in the Cytoscape window at regular
+intervals of iterations, controlled by the "Display Interval".
+Specific options are discussed in more detail in the publication.  
+
+Once options are set, press "Apply" to begin active path finding.
+Another dialog appears requesting whether MonteCarlo statistics should
+be generated on the fly or loaded from a file.  This is an advanced
+option and users should generally choose to "generate" the values on
+the fly. The generated montecarlo values are saved to the local
+directory in the file "current.mc".  
+
+Each time the Cytoscape window is updated during the annealing run,
+a brief line of text is sent to standard output reporting the 
+run status.  An example of this line is:
+
+[ 0.0142 : 9241 : 0.01 ] scores: 7.45 19.4
+
+The three numbers in brackets are the current temperature (decreasing
+from the initial to the final specified values), the iteraction
+number, and the amount of CPU time in seconds utilized since the last
+screen update.  The two scores reported are the score of the current
+highest-scoring subnetwork and the sum of scores over all of the
+paths being tracked.
+
+At the termination of annealing, the resulting high-scoring paths are
+displayed (other nodes are hidden) and a matrix appears tabulating
+which experimental conditions (rows) activated each path (columns).
+Clicking on a column of this matrix selects the corresponding pathway
+in the main Cytoscape window.
+
+The ActivePaths plug-in may also be controlled from the command line
+by specifying the following options:
+
+    --APt0 <double>         initial temperature
+    --APtf <double>         final temperature
+    --APni <integer>        number of iterations
+    --APnp <integer>        number of paths
+    --APdi <integer>        display interval
+    --APhs <integer>        minimum hub size
+    --APrs <integer>        random seed
+    --APqu <true|false>     apply quenching
+    --APmc <string>         monte-carlo file name
+    --APexit                save and exit after run
+    --APhelp                prints these options
+
+These options are used to automatically start ActivePaths once
+Cytoscape is running.  It requires that a network file and expression
+data are also specified from the command line.  When --APexit is
+specified, this instructs the program to additionally save the
+high-scoring active pathways to the current directory as the file
+"paths.gml" and exit Cytoscape. This option is useful for running
+ActivePaths from other programs or shell scripts.  
+
+FOR EXAMPLE: 
+Load the sample network (sampleData/gal1-20.pval) and expression data
+set (sampleData/galFiltered.gml) as described in the preceding
+sections.  Choose PlugIns -> Find Active Paths and enter the following
+values as options:
+
+   Iterations ............... 10000
+   Number of Paths .......... 5
+   Start Temp ............... 1
+   Final Temp ............... 0.01
+   Display Interval ......... 10
+   Quenching ................ (on)
+   Hubfinding ............... (off)
+   Seed Graph ............... Non-Random
+
+Press "Apply" and then "Generate" in the next dialog.  Annealing will
+begin after a few seconds.  Although the run is nondeterministic,
+annealing will typically produce a high scoring subnetwork of 35 nodes
+and score 7 that is active in 14 out of the 20 experimental conditions
+(indicated by red blocks in the matrix).  After the run, perform
+layout on the resulting subnetworks by issuing the menu command
+"Layout -> Organic" followed by "Whole graph".
+
+######################################################################
+

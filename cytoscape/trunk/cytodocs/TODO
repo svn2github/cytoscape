@@ -20,6 +20,13 @@ official "verbose" or "debug" mode, that could even take a debug level, etc.
 
 * Save Visible Nodes...
 
+* Implement status bar for long jobs (layout, activePaths) with ability to 
+interrupt/cancel the operation
+
+* Implement an undo feature for changes to the graph
+
+* Expand node/edge editing features
+
 
 *-----------------------------------------------------------------------------------------------------------------------------
                                                                                                     DUE DATE           
