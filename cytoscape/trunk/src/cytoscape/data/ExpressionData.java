@@ -113,6 +113,7 @@ public class ExpressionData {
     int numGenes;
     int numConds;
     int extraTokens;
+    boolean haveSigValues;
 
     Vector geneNames;
     Vector geneDescripts;
@@ -132,6 +133,7 @@ public class ExpressionData {
 	numGenes = 0;
 	numConds = 0;
 	extraTokens = 0;
+        haveSigValues = false;
 	this.initDataStructures();
     }
     public ExpressionData(String filename) {
@@ -139,6 +141,7 @@ public class ExpressionData {
 	numGenes = 0;
 	numConds = 0;
 	extraTokens = 0;
+        haveSigValues = false;
 	this.initDataStructures();
 	this.loadData(filename);
     }
@@ -332,6 +335,7 @@ public boolean loadData (String filename)
     System.err.println("Number of tokens parsed: " + numTokens);
     for (int i=0; i<numTokens; i++)
       System.err.println("Token " + i + ": " + headerTok.nextToken() );
+    return false;
     } // if
 
   double tmpF = numTokens/2.0;
@@ -381,6 +385,7 @@ public boolean loadData (String filename)
   this.filename = filename;
   this.numConds = numberOfConditions;
   this.extraTokens = haveExtraTokens;
+  this.haveSigValues = expectPvals;
     /* wipe old data */
   initDataStructures();
     /* store condition names */
@@ -531,6 +536,26 @@ public boolean loadData (String filename)
 
 //--------------------------------------------------------------------
 
+    /**
+     * Returns a text description of this data object.
+     */
+    public String getDescription() {
+        String lineSep = System.getProperty("line.separator");
+        StringBuffer sb = new StringBuffer();
+        sb.append("Data read from: " + filename + lineSep);
+        sb.append(lineSep);
+        sb.append("Number of genes = " + getNumberOfGenes() + lineSep);
+        sb.append("Number of conditions = " + getNumberOfConditions() + lineSep);
+        sb.append("Significance values: ");
+        if (this.haveSigValues) {sb.append("yes");} else {sb.append("no");}
+        sb.append(lineSep).append(lineSep);
+        sb.append("MinExp: " + minExp + "    MaxExp: " + maxExp + lineSep);
+        if (this.haveSigValues) {
+            sb.append("MinSig: " + minSig + "    MaxSig: " + maxSig + lineSep);
+        }
+        return sb.toString();
+    }
+        
     public int getNumberOfGenes() {return numGenes;}
     public int getNumberOfConditions() {return numConds;}
     public String[] getGeneNames() {
@@ -569,6 +594,8 @@ public boolean loadData (String filename)
 
 	return (String)geneDescripts.get( geneIndex.intValue() );
     }
+    
+    public boolean hasSignificanceValues() {return haveSigValues;}
 
     public Vector getAllMeasurements() {return allMeasurements;}
 

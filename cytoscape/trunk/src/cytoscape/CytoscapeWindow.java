@@ -2898,13 +2898,19 @@ protected void loadInteraction (String filename)
  *
  * added by dramage 2002-08-21
  * modified by owen 2003-03-03
+ * modified by amarkiel 2003-04-09 to check for a valid read
  */
-protected void loadExpressionData (String filename) {
-    expressionData = new ExpressionData (filename);
+protected boolean loadExpressionData (String filename) {
+    ExpressionData newData = new ExpressionData();
+    boolean validLoad = newData.loadData(filename);
+    if (validLoad) {
+        this.expressionData = newData;
 
-    config.addNodeAttributeFilename(filename);
-    // update plugin list
-    loadPlugins();
+        config.addNodeAttributeFilename(filename);
+        // update plugin list
+        loadPlugins();
+    }
+    return validLoad;
 }
 
 //------------------------------------------------------------------------------
@@ -3050,14 +3056,28 @@ protected class LoadExpressionMatrixAction extends AbstractAction {
 	    chooser.APPROVE_OPTION) {
 	    currentDirectory = chooser.getCurrentDirectory();
 	    expressionDataFilename = chooser.getSelectedFile ().toString ();
-	    loadExpressionData (expressionDataFilename);
+	    boolean validLoad = loadExpressionData (expressionDataFilename);
 	    
-	    // rather than depend on the configuration file,
-	    // depend on the ExpFileChooser's checkbox.
-	    //if(config.getWhetherToCopyExpToAttribs()) {
-	    if(chooser.getWhetherToCopyExpToAttribs()) {
-		expressionData.copyToAttribs(CytoscapeWindow.this);
-	    }
+            if (validLoad) {
+                // rather than depend on the configuration file,
+                // depend on the ExpFileChooser's checkbox.
+                //if(config.getWhetherToCopyExpToAttribs()) {
+                if(chooser.getWhetherToCopyExpToAttribs()) {
+                    expressionData.copyToAttribs(CytoscapeWindow.this);
+                }
+                //display a description of the data in a dialog
+                String expDescript = expressionData.getDescription();
+                String title = "Load Expression Data";
+                JOptionPane.showMessageDialog(mainFrame, expDescript, title,
+                                              JOptionPane.PLAIN_MESSAGE);
+            } else {
+                //show an error message in a dialog
+                String errString = "Unable to load expression data from "
+                    + expressionDataFilename;
+                String title = "Load Expression Data";
+                JOptionPane.showMessageDialog(mainFrame, errString, title,
+                                              JOptionPane.ERROR_MESSAGE);
+            }
 	} // if
     } // actionPerformed
     
