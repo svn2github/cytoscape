@@ -374,9 +374,9 @@ protected void applyVizmapSettings ()
 	vizMapperCategories.getNodeFillColor(bundle, vizMapper);
     Color nodeBorderColor =
 	vizMapperCategories.getNodeBorderColor(bundle, vizMapper);
-    int nodeHeight =
+    double nodeHeight =
 	vizMapperCategories.getNodeHeight(bundle, vizMapper);
-    int nodeWidth =
+    double nodeWidth =
 	vizMapperCategories.getNodeWidth(bundle, vizMapper);
     byte nodeShape =
 	vizMapperCategories.getNodeShape(bundle, vizMapper);
