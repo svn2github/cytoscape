@@ -354,6 +354,8 @@ public class CyMenus  implements GraphViewChangeListener {
     //fill the Save submenu
     addAction( new SaveAsGMLAction() );
     addAction( new SaveAsInteractionsAction() );
+    addAction( new SaveNodeAttributesAction() );
+    addAction( new SaveEdgeAttributesAction() );
     // what does this do?
     //saveSubMenu.add(new SaveVisibleNodesAction(networkView));
     //saveSubMenu.add(new SaveSelectedNodesAction(networkView));

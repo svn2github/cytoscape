@@ -77,12 +77,17 @@ public class NetworkPanel
     JSplitPane split = new JSplitPane( JSplitPane.VERTICAL_SPLIT, scroll, navigatorPanel );
     add( split );
 
- 
+    //this mouse listener listens for the right-click event and will show the pop-up
+    //window when that occurrs
     treeTable.addMouseListener(new PopupListener());
+    
+    //create and populate the popup window
     popup = new JPopupMenu();
     createViewItem = new JMenuItem(PopupActionListener.CREATE_VIEW);
     destroyViewItem = new JMenuItem(PopupActionListener.DESTROY_VIEW);
     destroyNetworkItem = new JMenuItem(PopupActionListener.DESTROY_NETWORK);
+    
+    //action listener which performs the tasks associated with the popup listener
     popupActionListener = new PopupActionListener();
     createViewItem.addActionListener(popupActionListener);
     destroyViewItem.addActionListener(popupActionListener);
@@ -327,9 +332,9 @@ public class NetworkPanel
 
   /**
    * This class listens to mouse events from the TreeTable, if the mouse event
-   * is one that is canonically associated with a popup menu (ie, a left click)
+   * is one that is canonically associated with a popup menu (ie, a right click)
    * it will pop up the menu with option for destroying view, creating view, and 
-   * destroying network
+   * destroying network (this is platform specific apparently)
    */
   protected class PopupListener extends MouseAdapter{
     /**
@@ -340,7 +345,7 @@ public class NetworkPanel
     }
 
     /**
-     * Don't know why you need both of these, but this is how they did it in hte example
+     * Don't know why you need both of these, but this is how they did it in the example
      */
     public void mouseReleased(MouseEvent e){
       maybeShowPopup(e);
@@ -353,9 +358,7 @@ public class NetworkPanel
     private void maybeShowPopup(MouseEvent e){
       //check for the popup type
       if (e.isPopupTrigger()) {
-	//get the path where the mouse event originated
-	//JTree tree = treeTable.getTree();
-	//TreePath treePath= tree.getPathForLocation(e.getX(), e.getY());
+	//get the row where the mouse-click originated
 	int row = treeTable.rowAtPoint(e.getPoint());
 	if ( row != -1 ) {
 	  JTree tree = treeTable.getTree();
@@ -400,7 +403,17 @@ class PopupActionListener implements ActionListener{
   public static String DESTROY_VIEW = "Destroy View";
   public static String CREATE_VIEW = "Create View";
   public static String DESTROY_NETWORK = "Destroy Network";
+  
+  /**
+   * This is the network which originated the mouse-click event (more appropriately, the network
+   * associated with the ID associated with the row associated with the JTable that originated
+   * the popup event
+   */
   protected CyNetwork cyNetwork;
+  
+  /**
+   * Based on the action event, destroy or create a view, or destroy a network
+   */
   public void actionPerformed(ActionEvent ae){
     String label = ((JMenuItem)ae.getSource()).getText();
     //Figure out the appropriate action
@@ -414,6 +427,7 @@ class PopupActionListener implements ActionListener{
       Cytoscape.destroyNetwork(cyNetwork);
     } // end of if ()
     else {
+      //throw an exception here?
       System.err.println("Unexpected network panel popup option");
     } // end of else
   }

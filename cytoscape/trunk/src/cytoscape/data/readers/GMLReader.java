@@ -190,7 +190,6 @@ public class GMLReader implements GraphReader {
       Vector nodeWidth  = gmlTree.getVector(new String[] {"graph","node","graphics","w"},GMLTree.DOUBLE);
       Vector nodeType   = gmlTree.getVector(new String[] {"graph","node","graphics","type"},GMLTree.STRING);
 
-
       String ELLIPSE = "ellipse";
       String RECTANGLE = "rectangle";
 
@@ -217,7 +216,9 @@ public class GMLReader implements GraphReader {
 	  currentView.setWidth( ((Double) nodeWidth.get(i)).doubleValue());
 	if( nodeType.size() == nodeLabels.size() ) {
 	  String nType = (String) nodeType.get(i);
-	  if( nType.equals(ELLIPSE) ) currentView.setShape(NodeView.ELLIPSE);
+	  if( nType.equals(ELLIPSE) ) {
+	    currentView.setShape(NodeView.ELLIPSE);
+	  }
 	  else if( nType.equals(RECTANGLE) ) currentView.setShape(NodeView.RECTANGLE);		      
 	}
       }

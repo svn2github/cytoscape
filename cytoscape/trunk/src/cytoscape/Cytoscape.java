@@ -991,8 +991,7 @@ public abstract class Cytoscape {
       System.out.println( "GML data found for: "+network.getTitle()+" "+network.getClientData( "GML" ) );
       //network.putClientData( "GML" , null );
     }
-
-
+    
      firePropertyChange( cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED,
                          null,
                          view );

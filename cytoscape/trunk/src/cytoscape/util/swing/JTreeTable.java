@@ -257,26 +257,26 @@ public class JTreeTable extends JTable {
      * <p>By returning false we are also enforcing the policy that
      * the tree will never be editable (at least by a key sequence).
      */
-    public boolean isCellEditable(EventObject e) {
-        if (e instanceof MouseEvent) {
-        for (int counter = getColumnCount() - 1; counter >= 0;
-             counter--) {
-            if (getColumnClass(counter) == TreeTableModel.class) {
-            MouseEvent me = (MouseEvent)e;
-            MouseEvent newME = new MouseEvent(tree, me.getID(),
-                   me.getWhen(), me.getModifiers(),
-                   me.getX() - getCellRect(0, counter, true).x,
-                   me.getY(), me.getClickCount(),
-                                   me.isPopupTrigger());
-            tree.dispatchEvent(newME);
-            break;
+      public boolean isCellEditable(EventObject e) {
+	if (e instanceof MouseEvent) {
+	  for (int counter = getColumnCount() - 1; counter >= 0;
+	       counter--) {
+	    if (getColumnClass(counter) == TreeTableModel.class) {
+	      MouseEvent me = (MouseEvent)e;
+	      MouseEvent newME = new MouseEvent(tree, me.getID(),
+						me.getWhen(), me.getModifiers(),
+						me.getX() - getCellRect(0, counter, true).x,
+						me.getY(), me.getClickCount(),
+						me.isPopupTrigger());
+	      tree.dispatchEvent(newME);
+	      break;
             }
-        }
+	  }
         }
         return false;
+      }
     }
-    }
-
+  
 
     /**
      * ListToTreeSelectionModelWrapper extends DefaultTreeSelectionModel
