@@ -214,6 +214,7 @@ public class VizMapUI extends JDialog {
 	
 	protected StyleSelector(VizMapUI styleDef) {
 	    super(VMM.getCytoscapeWindow().getMainFrame(), "Visual Styles");
+            this.currentStyle = VMM.getVisualStyle();
 	    this.styleDefUI = styleDef;
 	    this.catalog = VMM.getCalculatorCatalog();
 	    styles = catalog.getVisualStyles();
@@ -445,14 +446,24 @@ public class VizMapUI extends JDialog {
 	protected void refreshStyleComboBox() {
 	    Iterator styleIter = styles.iterator();
 	    
+            /* When we remove and add the elements in the following code, it
+             * triggers the StyleSelectionListener to change the visual style.
+             * To get around this, we save the current style and reset it
+             * after rebuilding the combo box
+             */
+            VisualStyle tmpStyle = currentStyle;
 	    this.styleComboModel.removeAllElements();
 	    for (int i = 0; styleIter.hasNext(); i++) {
 		this.styleComboModel.addElement(styleIter.next());
 	    }
 	    this.styleComboModel.setSelectedItem(null);
-	    if (this.currentStyle == null)
-		this.currentStyle = (VisualStyle) this.styleComboModel.getElementAt(0);
-	    this.styleComboModel.setSelectedItem(this.currentStyle);
+            //make sure we set a non-null style
+            if (tmpStyle == null) {
+                tmpStyle = (VisualStyle) this.styleComboModel.getElementAt(0);
+            }
+            //now reset the style; this triggers the listener to change the
+            //style currently in use, as well as updating the UI
+            this.styleComboModel.setSelectedItem(tmpStyle);
 	}
 	    
 
