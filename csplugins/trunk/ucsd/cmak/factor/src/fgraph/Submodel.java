@@ -44,7 +44,8 @@ public class Submodel
     {
         return _explainedKO;
     }
-
+    
+    
     public void setNumDepVars(int x)
     {
         _depVars = x;
@@ -58,7 +59,7 @@ public class Submodel
     {
         return _depVars;
     }
-
+    
     
     public int getId() {return _id;}
     
@@ -227,6 +228,7 @@ public class Submodel
         }
     }
 
+    /*
     public void setActivePaths(int[] activePaths)
     {
         _activePaths = activePaths;
@@ -236,7 +238,7 @@ public class Submodel
     {
         return _activePaths;
     }
-    
+    */
     /**
      * Find all active paths that are covered by edges in this model.
      *

@@ -14,11 +14,11 @@ public class MaxProduct
 {
     
     private static Logger logger = Logger.getLogger(MaxProduct.class.getName());
-    String _interaction;
-    String _candidateGenes;
-    String _expressionData;
-    String _edgeData;
-    double _thresh;
+    private String _interaction;
+    private String _candidateGenes;
+    private String _expressionData;
+    private String _edgeData;
+    private double _thresh;
 
     private InteractionGraph _ig;
 
@@ -165,15 +165,17 @@ public class MaxProduct
         
         FactorGraph fg =  FactorGraph.create(ig, paths); 
 
+        MaxProductAlgorithm mpa = new MaxProductAlgorithm(fg);
+
         if(decomposeModel)
         {
             log("Running recursive max product. Output decomposed models.");
-            fg.runMaxProductAndDecompose();
+            mpa.runMaxProductAndDecompose();
         }
         else
         {
             log("Running recursive max product. Output single model.");
-            fg.runMaxProduct();
+            mpa.runMaxProduct();
         }
         
         log("Updating interaction graph");

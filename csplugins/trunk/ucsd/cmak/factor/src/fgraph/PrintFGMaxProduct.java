@@ -33,9 +33,11 @@ public class PrintFGMaxProduct extends MaxProduct
         log("Writing factor graph sif file: " + fname);
         
         fg.writeSif(fname);
+
+        MaxProductAlgorithm mpa = new MaxProductAlgorithm(fg);
         
         log("Running max product");
-        fg.runMaxProductAndDecompose();
+        mpa.runMaxProductAndDecompose();
         
         log("Printing max config");
         fg.printMaxConfig();
