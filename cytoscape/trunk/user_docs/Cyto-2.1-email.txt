@@ -24,9 +24,9 @@ For users:
 	See http://www.cytoscape.org/plugins2.php
 
 For programmers:
--Significantly expanded core technical documentation
+-Significantly expanded API technical documentation
 -New task framework for long-term tasks
--Headless mode (command line only operation)
+-Headless mode (command line only operation) for advanced scripting
 
 Cytoscape is jointly developed by the groups of Benno Schwikowski (Pasteur
 Institute, Paris), Trey Ideker (University of California San Diego), Chris
