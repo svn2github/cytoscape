@@ -19,7 +19,7 @@ import cytoscape.util.CytoscapeAction;
 
 public class PreferenceAction extends CytoscapeAction  {
     
-    private PreferencesDialog preferencePopup;
+    private PreferencesDialog preferencesDialog = null;
     
     public PreferenceAction () {
         super ("Preferences...");
@@ -27,9 +27,12 @@ public class PreferenceAction extends CytoscapeAction  {
     }
 
     public void actionPerformed(ActionEvent e) {
-        preferencePopup = new PreferencesDialog(
+	if (preferencesDialog == null) {
+            preferencesDialog = new PreferencesDialog(
 			Cytoscape.getDesktop().getMainFrame());
-        preferencePopup.setVisible(true);
+	}
+	preferencesDialog.refresh();
+        preferencesDialog.setVisible(true);
 
     } // actionPerformed
 }
