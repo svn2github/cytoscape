@@ -150,10 +150,7 @@ public class LoadGraphFileAction extends CytoscapeAction {
                                       "Load graph successful",
                                       JOptionPane.INFORMATION_MESSAGE);
 
-        if ( newNetwork.getNodeCount() < Cytoscape.getCytoscapeObj().getViewThreshold()  ) {
-          Cytoscape.createNetworkView( newNetwork );
-        }
-      
+       
 
 
       } else {//give the user an error dialog

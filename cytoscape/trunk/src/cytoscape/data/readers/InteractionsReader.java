@@ -64,6 +64,8 @@ public class InteractionsReader implements GraphReader {
   protected Vector allInteractions = new Vector ();
   BioDataServer dataServer;
   String species;
+  String zip_entry;
+  boolean is_zip = false;
 
   IntArrayList node_indices;
   OpenIntIntHashMap edges;
@@ -86,28 +88,45 @@ public class InteractionsReader implements GraphReader {
     this.species = species;
   }
 
+  public InteractionsReader ( BioDataServer dataServer,
+                              String species,
+                              String zip_entry,
+                              boolean is_zip) {
+    this.zip_entry = zip_entry;
+    this.dataServer = dataServer;
+    this.species = species;
+    this.is_zip = is_zip;
+  }
+
+
   public void layout(GraphView view){}
   //----------------------------------------------------------------------------------------
   public void read ( boolean canonicalize ) {
 
     String rawText;
-    try {
-      if (filename.trim().startsWith ("jar://")) {
-        TextJarReader reader = new TextJarReader (filename);
-        reader.read ();
-        rawText = reader.getText ();
+    if ( !is_zip ) {
+      try {
+        if (filename.trim().startsWith ("jar://")) {
+          TextJarReader reader = new TextJarReader (filename);
+          reader.read ();
+          rawText = reader.getText ();
+        }
+        else {
+          TextFileReader reader = new TextFileReader (filename);
+          reader.read ();
+          rawText = reader.getText ();
+        }
       }
-      else {
-        TextFileReader reader = new TextFileReader (filename);
-        reader.read ();
-        rawText = reader.getText ();
+      catch (Exception e0) {
+        System.err.println ("-- Exception while reading interaction file " + filename);
+        System.err.println (e0.getMessage ());
+        return;
       }
+    } else {
+      rawText = zip_entry;
     }
-    catch (Exception e0) {
-      System.err.println ("-- Exception while reading interaction file " + filename);
-      System.err.println (e0.getMessage ());
-      return;
-    }
+
+
 
     String delimiter = " ";
     if (rawText.indexOf ("\t") >= 0)
@@ -116,7 +135,7 @@ public class InteractionsReader implements GraphReader {
 
     // commented out by iliana on 11.26.2002 :
     // Vector interactions = new Vector ();
-
+ 
     while (strtok.hasMoreElements ()) {
       String newLine = (String) strtok.nextElement ();
       Interaction newInteraction = new Interaction (newLine, delimiter);

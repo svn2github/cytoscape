@@ -213,6 +213,7 @@ public abstract class Cytoscape {
     //if ( old_name != alias )
     //  setNodeAttributeValue( node, "alias", old_name );
     Cytoscape.getNodeNetworkData().addNameMapping( alias, node );
+    Semantics.assignNodeAliases( node, null, null );
     return node;
 
   }
@@ -561,14 +562,17 @@ public abstract class Cytoscape {
       p_id = parent.getIdentifier();
     }
 
-    
-    System.out.println( "applying naming servies to: "+network.getIdentifier() );
-    Semantics.applyNamingServices( network, getCytoscapeObj() );
-
     firePropertyChange( NETWORK_CREATED,
                         p_id,
                         network.getIdentifier() );
 
+
+    System.out.println( "GML data is: "+network.getClientData( "GML" ) );
+
+    if ( network.getNodeCount() < getCytoscapeObj().getViewThreshold()  ) {
+       createNetworkView( network );
+    }
+      
 
     // createNetworkView( network );
   }
@@ -696,7 +700,7 @@ public abstract class Cytoscape {
       return Cytoscape.createNetwork(null);
     }
 
-    // have the GraphReader read the give file
+    // have the GraphReader read the given file
     try {
       reader.read();
     } catch ( Exception e ) {
@@ -719,9 +723,13 @@ public abstract class Cytoscape {
     }
 
     String[] title = location.split( "/" );
+    if ( System.getProperty("os.name").startsWith( "Win" ) ) {
+      title = location.split( "//" );
+    }
 
     // Create a new cytoscape.data.CyNetwork from these nodes and edges
     CyNetwork network = createNetwork( nodes, edges, title[title.length - 1] );
+
     
     if ( file_type == FILE_GML
          || ( file_type == FILE_BY_SUFFIX && location.endsWith( "gml" ) ) ) {
@@ -729,6 +737,14 @@ public abstract class Cytoscape {
       System.out.println( "GML file gettign reader: "+title[title.length - 1] );
       network.putClientData( "GML", reader );
     }
+
+
+    System.out.println( "NV: "+getNetworkView( network.getIdentifier() ) );
+
+    if ( getNetworkView( network.getIdentifier() ) != null ) {
+      reader.layout( getNetworkView( network.getIdentifier() ) );
+    }
+
     return network;
 
   }

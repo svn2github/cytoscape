@@ -62,7 +62,9 @@ public class NetworkPanel
     treeTable.getTree().addTreeSelectionListener( this );
     treeTable.getTree().setRootVisible( false );
 
-    ToolTipManager.sharedInstance().registerComponent(treeTable.getTree());
+    //ToolTipManager.sharedInstance().registerComponent(treeTable.getTree());
+    ToolTipManager.sharedInstance().registerComponent(treeTable);
+    
     treeTable.getTree().setCellRenderer( new MyRenderer() );
 
 
@@ -72,9 +74,13 @@ public class NetworkPanel
 
     //treeTable.setMaximumSize( new Dimension( 150,  ) );
     navigatorPanel = new JPanel();
+    navigatorPanel.setMinimumSize( new Dimension( 180, 180 ) );
+    navigatorPanel.setMaximumSize( new Dimension( 180, 180 ) );
+    navigatorPanel.setPreferredSize( new Dimension( 180, 180 ) );
 
     JScrollPane scroll = new JScrollPane( treeTable );
     JSplitPane split = new JSplitPane( JSplitPane.VERTICAL_SPLIT, scroll, navigatorPanel );
+    split.setResizeWeight(1);
     add( split );
 
     //this mouse listener listens for the right-click event and will show the pop-up
@@ -306,12 +312,12 @@ public class NetworkPanel
 					 hasFocus);
             
       if ( hasView(value) ) {
-	//setIcon(tutorialIcon);
-	setBackgroundNonSelectionColor( java.awt.Color.green.brighter() );
-	//setBackgroundSelectionColor( java.awt.Color.green.darker() );
+        //setIcon(tutorialIcon);
+        setBackgroundNonSelectionColor( java.awt.Color.green.brighter() );
+        setBackgroundSelectionColor( java.awt.Color.green.darker() );
       } else {
-	setBackgroundNonSelectionColor( java.awt.Color.pink.brighter() );
-	//setBackgroundSelectionColor( java.awt.Color.pink.darker() );
+        //setBackgroundNonSelectionColor( java.awt.Color.red.brighter() );
+        //setBackgroundSelectionColor( java.awt.Color.red.darker() );
                
       }
 

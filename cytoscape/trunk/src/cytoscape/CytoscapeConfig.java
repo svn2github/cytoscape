@@ -67,10 +67,11 @@ public class CytoscapeConfig
 
     props = readProperties ();
 
+    loadProperties();
     parseArgs ();
     //readProjectFile (); //project file is read immediately when found
    
-    loadProperties();
+   
     getConfigurationsFromProperties ();
     System.out.println("config properties:");
     System.out.println(props);

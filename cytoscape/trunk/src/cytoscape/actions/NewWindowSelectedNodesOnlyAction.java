@@ -15,6 +15,9 @@ import cytoscape.CyNetwork;
 import cytoscape.view.CyNetworkView;
 import cytoscape.util.CytoscapeAction;
 
+import giny.model.Node;
+import java.util.Iterator;
+
 public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 
     public NewWindowSelectedNodesOnlyAction () {
@@ -34,9 +37,21 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
       CyNetwork new_network = Cytoscape.createNetwork( nodes, current_network.getConnectingEdgeIndicesArray( nodes ) , current_network.getTitle()+"->child", current_network );
       new_network.setExpressionData( current_network.getExpressionData() );
 
-      //String title = " selection";
-      //Cytoscape.createNetworkView( new_network, title );
-     
+      CyNetworkView new_view = Cytoscape.getNetworkView( new_network.getIdentifier() );
+      if ( new_view == null )
+        return;
+
+      Iterator i = new_network.nodesIterator();
+      while ( i.hasNext() ) {
+        Node node = ( Node )i.next();
+        new_view.getNodeView( node ).setOffset( current_network_view.getNodeDoubleProperty( node.getRootGraphIndex(), CyNetworkView.NODE_X_POSITION ),
+                                                current_network_view.getNodeDoubleProperty( node.getRootGraphIndex(), CyNetworkView.NODE_Y_POSITION ) );
+      }
+
+
     }
+      
+     
 }
+
 

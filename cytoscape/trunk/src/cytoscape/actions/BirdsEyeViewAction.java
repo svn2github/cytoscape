@@ -27,7 +27,7 @@ public class BirdsEyeViewAction
   
 
   public BirdsEyeViewAction () {
-    super("Birds Eye View");
+    super("Overview");
     setPreferredMenu( "Visualization" );
     
    
@@ -64,6 +64,9 @@ public class BirdsEyeViewAction
     bev = new BirdsEyeView();
     bev.connect(  ( ( PhoebeNetworkView )Cytoscape.getCurrentNetworkView() ).getCanvas(), new PLayer[] { ( ( PhoebeNetworkView )Cytoscape.getCurrentNetworkView() ).getCanvas().getLayer() } );
       
+    //bev.setMinimumSize( new Dimension( 180, 180 ) );
+    //bev.setMaximumSize( new Dimension( 180, 180 ) );
+    //bev.setPreferredSize( new Dimension( 180, 180 ) );
     bev.setSize( Cytoscape.getDesktop().getNetworkPanel().getNavigatorPanel().getSize( null ) );
     Cytoscape.getDesktop().getNetworkPanel().getNavigatorPanel().add( bev );
     //Cytoscape.getDesktop().getNetworkPanel().getNavigatorPanel().add( new JLabel( "Birds Eye View " ) ); 

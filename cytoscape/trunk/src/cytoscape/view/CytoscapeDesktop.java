@@ -158,7 +158,7 @@ public class CytoscapeDesktop
   
   protected void initialize () {
   
-    setIconImage( Toolkit.getDefaultToolkit().getImage( getClass().getResource("images/icon16.png") ) );
+    setIconImage( Toolkit.getDefaultToolkit().getImage( getClass().getResource("images/c16.png") ) );
 
     JPanel main_panel = new JPanel();
 

@@ -65,6 +65,13 @@ public class GMLReader implements GraphReader {
    */
   public GMLReader ( String filename ) {
     this.filename = filename;
+     // create and read the GML file
+    gmlTree = new GMLTree(filename);
+  }
+
+
+  public GMLReader ( String zip_entry, boolean is_zip ) {
+    gmlTree = new GMLTree( zip_entry, is_zip );
   }
 
   /**
@@ -79,8 +86,7 @@ public class GMLReader implements GraphReader {
    * This will read AND create a Graph from the file specified in the constructor
    */
   public void read () {
-    // create and read the GML file
-    gmlTree = new GMLTree(filename);
+   
     Vector nodeIds = gmlTree.getVector(new String[] {"graph","node","id"},GMLTree.INTEGER);
     Vector nodeLabels = gmlTree.getVector(new String[] {"graph","node","label"},GMLTree.STRING);
 

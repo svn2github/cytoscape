@@ -386,7 +386,7 @@ public class CyMenus  implements GraphViewChangeListener {
     //fill the Select menu
     selectMenu.add( new SelectionModeAction() );
 
-    displayNWSubMenu = menuBar.getMenu( "Select.To New Window" );
+    displayNWSubMenu = menuBar.getMenu( "Select.To New Network" );
 
 
     addAction( new InvertSelectedNodesAction() );
