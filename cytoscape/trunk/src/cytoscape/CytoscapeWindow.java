@@ -485,26 +485,27 @@ protected JMenuBar createMenuBar ()
   viewMenu.add (new HideEdgesAction ());
   viewMenu.add (new ShowEdgesAction ());
   viewMenu.add (new HideSelectedNodesAction ());
+
+  mi = viewMenu.add (new DisplaySelectedInNewWindowAction ());
+  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_N, ActionEvent.CTRL_MASK));
+
   menuBar.add (viewMenu);
 
   JMenu selectiveDisplayMenu = new JMenu ("Select");
   selectiveDisplayMenu.setToolTipText ("Select nodes by different criteria");
   menuBar.add (selectiveDisplayMenu);
   selectiveDisplayMenu.add (new DeselectAllAction ());
+  mi = selectiveDisplayMenu.add (new InvertSelectionAction ());
+  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_K, ActionEvent.CTRL_MASK));
+
   if (bioDataServer != null) selectiveDisplayMenu.add (new GoIDSelectAction ());
   selectiveDisplayMenu.add (new AlphabeticalSelectionAction ());
-  mi = selectiveDisplayMenu.add (new DisplaySelectedInNewWindowAction ());
-  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_S, ActionEvent.CTRL_MASK));
-  
+  selectiveDisplayMenu.add (new ListFromFileSelectionAction ());
+
   mi = selectiveDisplayMenu.add (new DisplayAttributesOfSelectedNodesAction ());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_D, ActionEvent.CTRL_MASK));
   mi = selectiveDisplayMenu.add (new SelectFirstNeighborsAction ());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_F, ActionEvent.CTRL_MASK));
-
-  selectiveDisplayMenu.add (new ListFromFileSelectionAction ());
-
-  mi = selectiveDisplayMenu.add (new InvertSelectionAction ());
-  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_N, ActionEvent.CTRL_MASK));
 
   ButtonGroup layoutGroup = new ButtonGroup ();
   JMenu layoutMenu = new JMenu ("Layout");
