@@ -81,6 +81,47 @@ public final class AllGraphPerspectiveMethodsTest
     // getEdgeCount().
     if (persp.getEdgeCount() != 7)
       throw new IllegalStateException("wrong number of edges");
+
+    // nodesIterator().
+    Iterator nodesIter = persp.nodesIterator();
+    Node[] twoNodes = new Node[] { (Node) nodesIter.next(),
+                                   (Node) nodesIter.next() };
+
+    // nodesList().
+    List nodesList = persp.nodesList();
+    if (nodesList.size() != 5)
+      throw new IllegalStateException("incorrect node List size");
+    for (int i = 0; i < nodesList.size(); i++) {
+      Node n = (Node) nodesList.get(i); }
+
+    // getNodeIndicesArray().
+    int[] nodeIndicesArray = persp.getNodeIndicesArray();
+    if (nodeIndicesArray.length != nodesList.size())
+      throw new IllegalStateException
+        ("size of nodes List and length of node indices array don't match");
+    if (persp.createGraphPerspective(nodeIndicesArray, null) == null)
+      throw new IllegalStateException("GraphPerspective is null");
+
+    // edgesIterator().
+    Iterator edgesIter = persp.edgesIterator();
+    Edge[] twoEdges = new Edge[] { (Edge) edgesIter.next(),
+                                   (Edge) edgesIter.next() };
+
+    // edgesList().
+    List edgesList = persp.edgesList();
+    if (edgesList.size() != 7)
+      throw new IllegalStateException("incorrect edge List size");
+    for (int i = 0; i < edgesList.size(); i++) {
+      Edge e = (Edge) edgesList.get(i); }
+
+    // getEdgeIndicesArray().
+    int[] edgeIndicesArray = persp.getEdgeIndicesArray();
+    if (edgeIndicesArray.length != edgesList.size())
+      throw new IllegalStateException
+        ("size of edges List and length of edge indices array don't match");
+    if (persp.createGraphPerspective(null, edgeIndicesArray) == null)
+      throw new IllegalStateException("GraphPerspective is null");
+
   }
 
 }
