@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.Iterator;
 import java.util.List;
+import cytoscape.Cytoscape;
 //-----------------------------------------------------------------------------------
 /**
  * This object represent a set of connected nodes that we wish to score for signficance.
@@ -579,7 +580,7 @@ public class Component implements Comparable{
     String [] result = new String[nodes.size()];
     Iterator it = nodes.iterator();
     for(int i=0;i<result.length;i++){
-      result[i] = (String)it.next();
+      result[i] = (String)Cytoscape.getNodeAttributeValue((Node)it.next(),Semantics.CANONICAL_NAME);
     }
     return result;
 	

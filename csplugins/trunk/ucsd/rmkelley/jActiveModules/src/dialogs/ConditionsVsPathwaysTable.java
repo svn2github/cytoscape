@@ -134,7 +134,7 @@ public void saveState(String filename) {
 //--------------------------------------------------------------------------------
 
 public void saveState() {
-    JFileChooser chooser = new JFileChooser (Cytoscape.getCytoscapeObj().getCurrentDirectory()); 
+    JFileChooser chooser = new JFileChooser (); 
     if (chooser.showSaveDialog (null) == chooser.APPROVE_OPTION) {
 	String name = chooser.getSelectedFile ().toString ();
 	saveState(name);
