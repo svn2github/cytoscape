@@ -60,7 +60,7 @@ public class VisualMappingManager extends SubjectBase {
   GlobalAppearance myGlobalApp = new GlobalAppearance();
 
   // Optimizer Flag
-  private boolean optimizer = true;
+  private boolean optimizer = false;
 
   public VisualMappingManager( CyNetworkView networkView,
                                CalculatorCatalog catalog,
