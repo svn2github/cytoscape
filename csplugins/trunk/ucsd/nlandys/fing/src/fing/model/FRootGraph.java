@@ -3,7 +3,9 @@ package fing.model;
 import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.graph.dynamic.util.DynamicGraphFactory;
 import cytoscape.util.intr.ArrayIntIterator;
+import cytoscape.util.intr.IntArray;
 import cytoscape.util.intr.IntEnumerator;
+import cytoscape.util.intr.IntIntHash;
 import cytoscape.util.intr.IntIterator;
 import cytoscape.util.intr.IntHash;
 import cytoscape.util.intr.IntIterator;
@@ -248,7 +250,37 @@ class FRootGraph implements RootGraph, DynamicGraph
   {
     // Casting to check that we aren't going to get garbage nodes and edges.
     if (((FGraphPerspective) perspective).getRootGraph() != this) return 0;
-    throw new UnsupportedOperationException("meta nodes not yet supported");
+    final int returnThis = createNode();
+    final int nativeParentNodeInx = ~returnThis;
+    final int[] perspEdgeInxArr = perspective.getEdgeIndicesArray();
+    final int[] perspNodeInxArr = perspective.getNodeIndicesArray();
+    if (perspEdgeInxArr.length == 0 && perspNodeInxArr.length == 0)
+      return returnThis;
+    final int metaParentNodeInx = m_metaGraph.nodeCreate();
+    m_metaToNativeInxMap.setIntAtIndex(nativeParentNodeInx + 1,
+                                       metaParentNodeInx);
+    m_nativeToMetaNodeInxMap.put(nativeParentNodeInx, metaParentNodeInx);
+    for (int i = 0; i < perspNodeInxArr.length; i++) {
+      final int nativeChildNodeInx = ~perspNodeInxArr[i];
+      int metaChildNodeInx = m_nativeToMetaNodeInxMap.get(nativeChildNodeInx);
+      if (metaChildNodeInx < 0 || metaChildNodeInx == Integer.MAX_VALUE) {
+        metaChildNodeInx = m_metaGraph.nodeCreate();
+        m_metaToNativeInxMap.setIntAtIndex(nativeChildNodeInx + 1,
+                                           metaChildNodeInx);
+        m_nativeToMetaNodeInxMap.put(nativeChildNodeInx, metaChildNodeInx); }
+      // This edge can't yet exist because we just created metaParentNodeInx.
+      m_metaGraph.edgeCreate(metaParentNodeInx, metaChildNodeInx, true); }
+    for (int i = 0; i < perspEdgeInxArr.length; i++) {
+      final int nativeChildEdgeInx = ~perspEdgeInxArr[i];
+      int metaChildEdgeInx = m_nativeToMetaEdgeInxMap.get(nativeChildEdgeInx);
+      if (metaChildEdgeInx < 0 || metaChildEdgeInx == Integer.MAX_VALUE) {
+        metaChildEdgeInx = m_metaGraph.nodeCreate();
+        m_metaToNativeInxMap.setIntAtIndex(~nativeChildEdgeInx,
+                                           metaChildEdgeInx);
+        m_nativeToMetaEdgeInxMap.put(nativeChildEdgeInx, metaChildEdgeInx); }
+      // This edge can't yet exist because we just created metaParentNodeInx.
+      m_metaGraph.edgeCreate(metaParentNodeInx, metaChildEdgeInx, true); }
+    return returnThis;
   }
 
   public int createNode(int[] nodeIndices, int[] edgeIndices) {
@@ -770,6 +802,27 @@ class FRootGraph implements RootGraph, DynamicGraph
 
   // This is our index-to-edge mapping.
   private final EdgeArray m_edges = new EdgeArray();
+
+  // This is our meta-relationships graph where nodes in the meta-graph
+  // are edges and nodes in the original graph, and directed edges in the
+  // meta-graph are parent->child relationships.  Note that only nodes
+  // in the original graph can be parents, and both nodes and edges from the
+  // original graph can be children.  We're only going to populate the
+  // meta-graph with nodes or edges from the original graph that are defined
+  // in a parent->child relationship; in other words, we don't add nodes
+  // to the meta-graph for every node and edge in the orignal graph,
+  // necessarily.
+  private final DynamicGraph m_metaGraph =
+    DynamicGraphFactory.instantiateDynamicGraph();
+
+  // An index in the array corresponds to a node in the meta graph;
+  // the value at that index, if strictly positive, is one plus the native
+  // node in the original graph; if strictly negative, is the complement
+  // of the native edge in the original graph.
+  private final IntArray m_metaToNativeInxMap = new IntArray();
+
+  private final IntIntHash m_nativeToMetaNodeInxMap = new IntIntHash();
+  private final IntIntHash m_nativeToMetaEdgeInxMap = new IntIntHash();
 
   // Package visible constructor.
   FRootGraph() { }
