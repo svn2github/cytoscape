@@ -72,9 +72,9 @@ public class NetworkPanel
     treeTable.getTree().setCellRenderer( new MyRenderer() );
 
 
-    treeTable.getColumn( "Network" ).setMaxWidth(100);
-    treeTable.getColumn( "Nodes" ).setMaxWidth(40);
-    treeTable.getColumn( "Edges" ).setMaxWidth(40);
+    treeTable.getColumn( "Network" ).setPreferredWidth(100);
+    treeTable.getColumn( "Nodes" ).setPreferredWidth(45);
+    treeTable.getColumn( "Edges" ).setPreferredWidth(45);
 
     //treeTable.setMaximumSize( new Dimension( 150,  ) );
     navigatorPanel = new JPanel();
