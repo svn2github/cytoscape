@@ -59,7 +59,7 @@ public class InteractionGraphFactory
      * @param filename The name of the file. 
      */
     public static InteractionGraph createFromSif(String filename)
-        throws Exception
+        //throws Exception
     {
         List interactions = loadInteractions(filename);
 
@@ -293,7 +293,7 @@ public class InteractionGraphFactory
 
     public static InteractionGraph createFromSif(String sifFile,
                                                  String candidateGenes)
-        throws Exception
+        //        throws Exception
     {
         List interactions = loadInteractions(sifFile);
         

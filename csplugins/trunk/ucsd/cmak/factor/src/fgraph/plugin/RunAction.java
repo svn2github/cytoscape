@@ -7,13 +7,20 @@ import java.awt.event.ActionListener;
 
 public class RunAction implements ActionListener
 {
+    RunDialog dialog = null;
+
     /**
      * Invoked when the run action occurs.
      */
     public void actionPerformed(ActionEvent e)
     {
-        RunDialog dialog = new RunDialog(Cytoscape.getDesktop());
-        dialog.pack();
-        dialog.setVisible(true);        
+        if(dialog == null)
+        {
+            dialog = new RunDialog(Cytoscape.getDesktop());
+            dialog.pack();
+        }
+        
+        //dialog.setVisible(true);        
+        dialog.show();
     }
 }

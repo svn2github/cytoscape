@@ -2,6 +2,7 @@ package fgraph;
 
 import fgraph.util.ObjectIntMap;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -356,10 +357,16 @@ public class InteractionGraph
     {
         return _graph.getEdgeIndicesArray();
     }
-    
+
+    /**
+     * Create edges in this interaction graph
+     */
     void createEdges(int[] src, int[] tgt, String[] types, boolean directed)
     {
+        // create the edges in the RootGraph
         int[] edges = _graph.createEdges(src, tgt, directed);
+
+        // update internal data structures
         for(int e=0; e < edges.length; e++)
         {
             _edge2type.put(edges[e], types[e]);
@@ -458,27 +465,34 @@ public class InteractionGraph
      * @param filter only write submodels that explain at least this many
      * knockout experiments (NOTE: not knockout effects. need to fix?)
      * @param filename the base filename used to write each submodel.
+     *
+     * @return a List of File objects.  Each File corresponds to a submodel.
+     * 
      * @see #writeSubmodel()
      */ 
 
-    public void writeGraphAsSubmodels(String filename, int filter)
+    public SubmodelOutput writeGraphAsSubmodels(String filename, int filter)
         throws IOException
     {
         logger.info("writing submodels explaining >= " + filter
                     + " ko experiments");
 
+        SubmodelOutput output = new SubmodelOutput();
         int cnt = 0;
         for(int x=0; x < _submodels.size(); x++)
         {
             Submodel m = (Submodel) _submodels.get(x);
             if(m.getNumExplainedKO() >= filter)
             {
-                writeSubmodel(m, filename, cnt);
+                File f = writeSubmodel(m, filename, cnt);
+                output.addModel(f);
                 cnt++;
             }
         }
 
-        writeAttributes(filename);
+        writeAttributes(filename, output);
+
+        return output;
     }
 
     /**
@@ -490,18 +504,22 @@ public class InteractionGraph
      *
      * @throws
      */
-    private void writeSubmodel(Submodel m, String filename, int modelNum) throws IOException
+    private File writeSubmodel(Submodel m, String filename, int modelNum) throws IOException
     {
         StringBuffer b = new StringBuffer(filename);
         b.append("-");
         b.append(modelNum);
         b.append(".sif");
 
+        File file = new File(b.toString());
+        
         logger.info("writing submodel: " + m.getId() + " to " + b.toString());
         
-        PrintStream out = new PrintStream(new FileOutputStream(b.toString()));
+        PrintStream out = new PrintStream(new FileOutputStream(file));
         writeEdges(out, m.getEdges(), 1);
         out.close();
+
+        return file;
     }
 
 
@@ -549,30 +567,42 @@ public class InteractionGraph
     
     public void writeGraph(String filename) throws IOException
     {
-        PrintStream out = new PrintStream(new FileOutputStream(filename + ".sif"));
+        SubmodelOutput output = new SubmodelOutput();
+        File model = new File(filename + ".sif");
+        PrintStream out = new PrintStream(new FileOutputStream(model));
         writeEdges(out, _activeEdges, 0);
         out.close();
+        output.addModel(model);
 
-        writeAttributes(filename);
+        writeAttributes(filename, output);
     }
 
-    private void writeAttributes(String filename) throws IOException
+    private void writeAttributes(String filename, SubmodelOutput output)
+        throws IOException
     {
-        PrintStream out = new PrintStream(new FileOutputStream(filename + "_dir.eda"));
+        File f = new File(filename + "_dir.eda");
+        PrintStream out = new PrintStream(new FileOutputStream(f));
         writeEdgeDir(out);
         out.close();
+        output.setEdgeDir(f);
 
-        out = new PrintStream(new FileOutputStream(filename + "_sign.eda"));
+        File f2 = new File(filename + "_sign.eda");
+        out = new PrintStream(new FileOutputStream(f2));
         writeEdgeSign(out);
         out.close();
+        output.setEdgeSign(f2);
 
-        out = new PrintStream(new FileOutputStream(filename + "_model.eda"));
+        File f3 = new File(filename + "_model.eda");
+        out = new PrintStream(new FileOutputStream(f3));
         writeEdgeModel(out);
         out.close();
-        
-        out = new PrintStream(new FileOutputStream(filename + "_type.noa"));
+        //output.setEdgeSign(f2);
+
+        File f4 = new File(filename + "_type.noa");
+        out = new PrintStream(new FileOutputStream(f4));
         writeNodeTypes(out);
         out.close();
+        output.setNodeType(f4);
 
         /*
         out = new PrintStream(new FileOutputStream(filename + "_ncount.noa"));

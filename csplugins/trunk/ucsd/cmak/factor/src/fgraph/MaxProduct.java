@@ -32,7 +32,12 @@ public class MaxProduct
 
     }
 
-    public void setInteractionFile(String interaction) throws Exception
+    public InteractionGraph getInteractionGraph()
+    {
+        return _ig;
+    }
+    
+    public void setInteractionFile(String interaction) //throws Exception
     {
         _interaction = interaction;
 
@@ -42,7 +47,7 @@ public class MaxProduct
     }
 
     public void setInteractionFile(String interaction, String candidateGenes)
-       throws Exception
+        //throws Exception
     {
         _interaction = interaction;
         _candidateGenes = candidateGenes;
@@ -93,7 +98,7 @@ public class MaxProduct
         _ig.loadExpressionData(_expressionData);
         _ig.setExpressionPvalThreshold(_thresh);
 
-        logger.info("  " + _ig.toString());
+        //logger.info("  " + _ig.toString());
     }
 
 
@@ -117,6 +122,12 @@ public class MaxProduct
         }
     }
 
+
+    public void run()
+        throws IOException, AlgorithmException
+    {
+        run(null, null);
+    }
     
     public void run(String outputDir, String outputFile)
         throws IOException, AlgorithmException
@@ -138,11 +149,8 @@ public class MaxProduct
         throws IOException, AlgorithmException
     {
         log("Creating factor graph");
-
-        String fname = outputDir + File.separator + outputFile;
         
         FactorGraph fg =  FactorGraph.create(ig, paths); 
-
         
         log("Running max product and decompose");
         fg.runMaxProductAndDecompose();
@@ -155,11 +163,16 @@ public class MaxProduct
         log("Updating interaction graph");
         fg.updateInteractionGraph();
 
-        log("Writing interaction graph sif file: " + fname);
-        log("Filtering submodels that explain fewer than: " + KO_EXPLAIN_CUTOFF
-            + " KO experiments");
-        ig.writeGraphAsSubmodels(fname, KO_EXPLAIN_CUTOFF);
-
+        if(outputDir != null && outputFile != null)
+        {
+            String fname = outputDir + File.separator + outputFile;
+            
+            log("Writing interaction graph sif file: " + fname);
+            log("Filtering submodels that explain fewer than: " + KO_EXPLAIN_CUTOFF
+                + " KO experiments");
+            ig.writeGraphAsSubmodels(fname, KO_EXPLAIN_CUTOFF);
+        }
+        
         log("Done. ");
     }
 
