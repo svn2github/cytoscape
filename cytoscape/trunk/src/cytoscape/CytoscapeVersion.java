@@ -34,12 +34,15 @@
 //-----------------------------------------------------------------------------------
 package cytoscape;
 //-----------------------------------------------------------------------------------
+import java.util.Date;
+//-----------------------------------------------------------------------------------
 public class CytoscapeVersion {
 
   /** */
   public static String version = "1.1";	
   private String versionString = "1.1";
   private String dateString = "2003/05/12";
+  private Date   buildDate = new Date();
 
   private String [] briefHistory = {
       "0.1   (2001/12/12) initial version",
@@ -67,7 +70,13 @@ public class CytoscapeVersion {
 //-----------------------------------------------------------------------------------
 public String getVersion ()
 {
-  return "cytoscape version " + versionString + ", " + dateString;
+  return "Cytoscape version: " + versionString + ", " + dateString;
+}
+//-----------------------------------------------------------------------------------
+// 20030915 cworkman
+public String getBuildDate ()
+{
+  return buildDate.toString();
 }
 //------------------------------------------------------------------------------
 public String toString ()
