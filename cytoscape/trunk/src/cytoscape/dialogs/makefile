@@ -24,7 +24,10 @@ OBJS = ColorPopupButton.class \
         GeneralColorDialogListener.class \
         IntegerEntryField.class \
         IconPopupButton.class \
-        MiscDialog.class
+        MiscDialog.class \
+        EdgeTextPanel.class \
+	NewStringPopupDialog.class \
+
 
 
 default: objs 

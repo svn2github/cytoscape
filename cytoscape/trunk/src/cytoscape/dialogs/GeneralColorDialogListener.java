@@ -51,6 +51,10 @@ public class GeneralColorDialogListener implements ActionListener {
     }
     
     public void actionPerformed(ActionEvent e) {
+	popup();
+    }
+
+    public void popup() {
 	Color tempColor = JColorChooser.showDialog(component,
 						   title,
 						   returnColor.getColor());

@@ -34,28 +34,38 @@ public class VisualPropertiesDialog extends JDialog {
     IconPopupButton arrowDefault;
     IntegerEntryField sizeDefault;
     AttributeMapper aMapper;
+    Frame parentFrame;
     MutableColor nColor;
     MutableColor bColor;
+    /*
     MutableColor ppColor;
     MutableColor pdColor;
+    */
     MutableColor bgColor;
     MutableString localNodeLabelKey;
     MutableString parentNodeLabelKey;
+    MutableString localEdgeKey;
+    EdgeTextPanel edgeTextPanel;
 //--------------------------------------------------------------------------------------
 public VisualPropertiesDialog (Frame parentFrame,
 			       String title,
 			       AttributeMapper mapper,
 			       GraphObjAttributes nodeAttribs,
+			       GraphObjAttributes edgeAttribs,
 			       MutableString nodeLabelKey)
 {
   super (parentFrame, true);
   setTitle (title);
+  this.parentFrame = parentFrame;
 
   aMapper = mapper;
   nColor = new MutableColor(getBasicColor(VizMapperCategories.NODE_FILL_COLOR));
   bColor = new MutableColor(getBasicColor(VizMapperCategories.NODE_BORDER_COLOR));
+
+  /*
   ppColor = new MutableColor(getDMColor(VizMapperCategories.EDGE_COLOR, "pp"));
   pdColor = new MutableColor(getDMColor(VizMapperCategories.EDGE_COLOR, "pd"));
+  */
   bgColor = new MutableColor(getBasicColor(VizMapperCategories.BG_COLOR));
   localNodeLabelKey = new MutableString(nodeLabelKey.getString());
   parentNodeLabelKey = nodeLabelKey;
@@ -65,6 +75,7 @@ public VisualPropertiesDialog (Frame parentFrame,
   GridBagConstraints c = new GridBagConstraints();
   mainPanel.setLayout (gridbag);
 
+  /*
   JButton edgePPButton = new JButton ("Edge Coloring: PP");
   edgePPButton.addActionListener (new GeneralColorDialogListener(this,ppColor,"Choose a P-P Edge Color"));
   c.gridx=0;
@@ -78,6 +89,7 @@ public VisualPropertiesDialog (Frame parentFrame,
   c.gridy=0;
   gridbag.setConstraints(edgePDButton,c);
   mainPanel.add (edgePDButton);
+  */
   
   JButton colorButton = new JButton("Choose Node Color");
   colorButton.addActionListener(new GeneralColorDialogListener(this,nColor,"Choose a Node Color"));
@@ -136,17 +148,56 @@ public VisualPropertiesDialog (Frame parentFrame,
   gridbag.setConstraints(arrowDefault,c);
   mainPanel.add(arrowDefault);
 
-  JButton applyButton = new JButton ("Apply");
-  applyButton.addActionListener (new ApplyAction ());
+  //////////////////////////////////////////////
+  JPanel complexSubPanel = new JPanel();
+  GridBagLayout complexSubPanelGridbag = new GridBagLayout(); 
+  GridBagConstraints complexSubPanelConstraints = new GridBagConstraints();
+  complexSubPanel.setLayout (complexSubPanelGridbag);
+
+  Border complexSubPanelBorder = BorderFactory.createLineBorder (Color.black);
+  Border complexSubPanelTitledBorder = 
+      BorderFactory.createTitledBorder (complexSubPanelBorder,
+					"Edge Color Mapping", 
+					TitledBorder.CENTER, 
+					TitledBorder.DEFAULT_POSITION);
+  complexSubPanel.setBorder (complexSubPanelTitledBorder);
+
+  complexSubPanelConstraints.gridx=0;
+  complexSubPanelConstraints.gridy=0;
+  JLabel tempLabel = new JLabel("Select an attribute to map.");
+  complexSubPanelGridbag.setConstraints(tempLabel,complexSubPanelConstraints);
+  complexSubPanel.add(tempLabel);
+
+  if(localEdgeKey==null) localEdgeKey = new MutableString("temp");
+  edgeTextPanel
+      = new EdgeTextPanel(edgeAttribs,aMapper,parentFrame,localEdgeKey);
+  complexSubPanelConstraints.gridx=0;
+  complexSubPanelConstraints.gridy=4;
+  complexSubPanelGridbag.setConstraints(edgeTextPanel,complexSubPanelConstraints);
+  complexSubPanel.add(edgeTextPanel);
+
+  
+
+  //////////////////////////////////////////////
+  c.gridwidth = 2;
   c.gridx=0;
   c.gridy=9;
+  gridbag.setConstraints(complexSubPanel,c);
+  mainPanel.add(complexSubPanel);
+
+
+  JButton applyButton = new JButton ("Apply");
+  applyButton.addActionListener (new ApplyAction ());
+  c.gridwidth = 1;
+  c.gridx=0;
+  c.gridy=10;
   gridbag.setConstraints(applyButton,c);
   mainPanel.add (applyButton);
 
   JButton cancelButton = new JButton ("Cancel");
   cancelButton.addActionListener (new CancelAction ());
   c.gridx=1;
-  c.gridy=9;
+  c.gridy=10;
   gridbag.setConstraints(cancelButton,c);
   mainPanel.add (cancelButton);
 
@@ -171,10 +222,20 @@ public class ApplyAction extends AbstractAction {
       Object o7 = aMapper.setDefaultValue(VizMapperCategories.NODE_BORDER_COLOR, bColor.getColor());
       Object o8 = aMapper.setDefaultValue(VizMapperCategories.EDGE_TARGET_DECORATION, (Arrow)arrowDefault.getIconObject());
 
+      /*
       EdgeArrowColor.removeThenAddEdgeColor(aMapper,"pp",ppColor.getColor());
       EdgeArrowColor.removeThenAddEdgeColor(aMapper,"pd",pdColor.getColor());
+      */
 
-      //System.out.println(localNodeLabelKey.getString());
+      if(edgeTextPanel.getWhetherToUseTheMap()) {
+	  Map m = edgeTextPanel.getMap();
+	  if(m != null) {
+	      aMapper.setAttributeMapEntry(VizMapperCategories.EDGE_COLOR,
+					   localEdgeKey.getString(),
+					   new DiscreteMapper(m));
+
+	  }
+      }
       parentNodeLabelKey.setString(localNodeLabelKey.getString());
       VisualPropertiesDialog.this.dispose ();
   }
