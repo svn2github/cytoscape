@@ -213,6 +213,7 @@ public class DualLayoutTask extends Thread{
   if(parser.addEdges()){
     GraphPerspective newPerspective = newView.getGraphPerspective();
     HashMap outerMap = homologyPairSet.getOuterMap();
+    GraphObjAttributes edgeAttributes = cyWindow.getNetwork().getEdgeAttributes();
     for(Iterator outerSetIt = outerMap.keySet().iterator();
 	outerSetIt.hasNext();){
       Node outerNode = (Node)outerSetIt.next();
@@ -223,8 +224,9 @@ public class DualLayoutTask extends Thread{
 	Edge homologyEdge = newRoot.getEdge(newRoot.createEdge(outerNode,innerNode,false));
 	String homologyName = ""+outerNode+" (hm) "+innerNode;
 	homologyEdge.setIdentifier(homologyName);
-	newEdgeAttributes.addNameMapping(homologyName,homologyEdge);
-	newEdgeAttributes.add("interaction",homologyName,"hm");
+	edgeAttributes.addNameMapping(homologyName,homologyEdge);
+	edgeAttributes.add("interaction",homologyName,"hm");
+
 	newPerspective.restoreEdge(homologyEdge);
       }
     }
