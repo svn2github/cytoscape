@@ -39,7 +39,7 @@ public class CytoscapeVersion {
   /** */
   public static String version = "1.1";	
   private String versionString = "1.1";
-  private String dateString = "2003/03/05";
+  private String dateString = "2003/05/12";
 
   private String [] briefHistory = {
       "0.1   (2001/12/12) initial version",
@@ -61,6 +61,7 @@ public class CytoscapeVersion {
       "0.95  (2002/11/04) added generic annotation",
       "0.97  (2002/12/05) added LGPL to all source",
       "1.0   (2003/03/05) added visual properties UI, attributes filter.",
+      "1.1   (2003/05/12) jar loader; visual styles.",
       };
 
 //-----------------------------------------------------------------------------------
