@@ -34,6 +34,7 @@ edge.linetype.interaction.type=discrete
 edge.linetype.interaction.map.pd=line2
 edge.linetype.interaction.map.pp=dashed2
 
+
 #--------------------------------------------------------------------
 # window and graph defaults:
 
@@ -43,6 +44,30 @@ node.borderColor.default=255,0,0
 node.height.default=20
 node.width.default=20
 node.shape.default=circle
+
+#--------------------------------------------------------------------
+# node color based on interactions:
+
+node.fillColor.controller=expression
+node.fillColor.expression.type=continuous
+
+node.fillColor.expression.boundaryvalues=3
+
+node.fillColor.expression.bv0.domainvalue=0.0
+node.fillColor.expression.bv0.lesser=255,255,0
+node.fillColor.expression.bv0.equal=255,0,0
+node.fillColor.expression.bv0.greater=255,0,0
+
+node.fillColor.expression.bv1.domainvalue=0.1
+node.fillColor.expression.bv1.lesser=255,255,255
+node.fillColor.expression.bv1.equal=0,0,0
+node.fillColor.expression.bv1.greater=255,255,255
+
+node.fillColor.expression.bv2.domainvalue=1.0
+node.fillColor.expression.bv2.lesser=0,0,255
+node.fillColor.expression.bv2.equal=0,0,255
+node.fillColor.expression.bv2.greater=0,255,255
+
 
 #--------------------------------------------------------------------
 # plugins. for each plugin, specify
