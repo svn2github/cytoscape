@@ -7,8 +7,8 @@ package cytoscape.visual;
 //----------------------------------------------------------------------------
 import java.awt.Color;
 import java.awt.Font;
-import y.view.LineType;
-import y.view.Arrow;
+import cytoscape.visual.LineType;
+import cytoscape.visual.Arrow;
 //----------------------------------------------------------------------------
 /**
  * Objects of this class hold data describing the appearance of an Edge.

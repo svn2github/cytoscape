@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.Properties;
 import javax.swing.JPanel;
 
-import y.base.Edge;
-import y.view.LineType;
+import giny.model.Edge;
+import cytoscape.visual.LineType;
 
 import cytoscape.data.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
@@ -23,7 +23,7 @@ public class GenericEdgeLineTypeCalculator extends EdgeCalculator implements Edg
 
         Class c = null;
 	//c = LineType.class;  // this line won't obfuscate; the one below does.
-	c = (LineType.getLineType(1,LineType.LINE_STYLE)).getClass();
+	c = LineType.LINE_1.getClass();
         if (!c.isAssignableFrom(m.getRangeClass()) ) {
             String s = "Invalid Calculator: Expected class " + c.toString()
 		+ ", got " + m.getRangeClass().toString();

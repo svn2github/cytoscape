@@ -7,7 +7,7 @@ package cytoscape.visual;
 //----------------------------------------------------------------------------
 import java.awt.Color;
 import java.awt.Font;
-import y.view.LineType;
+import cytoscape.visual.LineType;
 //----------------------------------------------------------------------------
 /**
  * Objects of this class hold data describing the appearance of a Node.

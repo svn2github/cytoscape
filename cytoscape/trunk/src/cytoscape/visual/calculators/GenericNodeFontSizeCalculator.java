@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Properties;
 import javax.swing.*;
 
-import y.base.Node;
+import giny.model.Node;
 
 import cytoscape.data.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;

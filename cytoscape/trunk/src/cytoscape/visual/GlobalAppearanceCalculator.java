@@ -8,16 +8,10 @@ package cytoscape.visual;
 import java.util.Map;
 import java.util.Properties;
 import java.awt.Color;
-import java.awt.Font;
-
-import y.base.Node;
-import y.view.LineType;
-import y.view.Arrow;
-import y.view.ShapeNodeRealizer;
 
 import cytoscape.data.CyNetwork;
-import cytoscape.visual.calculators.*;
-import cytoscape.visual.parsers.*;
+import cytoscape.visual.parsers.ColorParser;
+import cytoscape.visual.parsers.ObjectToString;
 //----------------------------------------------------------------------------
 /**
  * This class calculates global visual attributes such as the background

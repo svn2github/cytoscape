@@ -6,7 +6,7 @@
 package cytoscape.visual.calculators;
 //--------------------------------------------------------------------------
 import cytoscape.data.CyNetwork;
-import y.base.Edge;
+import giny.model.Edge;
 //--------------------------------------------------------------------------
 public interface EdgeFontSizeCalculator extends Calculator {
     public float calculateEdgeFontSize(Edge edge, CyNetwork network);

@@ -8,8 +8,8 @@ package cytoscape.visual.calculators;
 import java.util.Map;
 import javax.swing.JPanel;
 
-import y.base.Edge;
-import y.view.Arrow;
+import giny.model.Edge;
+import cytoscape.visual.Arrow;
 
 import cytoscape.data.CyNetwork;
 //----------------------------------------------------------------------------

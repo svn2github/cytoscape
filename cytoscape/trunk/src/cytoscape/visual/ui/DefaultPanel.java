@@ -10,9 +10,6 @@ import java.awt.*;
 import java.awt.event.*;
 import cytoscape.dialogs.GridBagGroup;
 import cytoscape.dialogs.MiscGB;
-import y.view.Graph2D;
-import y.view.Graph2DView;
-import y.view.DefaultBackgroundRenderer;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 //----------------------------------------------------------------------------

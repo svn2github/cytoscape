@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.Properties;
 import javax.swing.JPanel;
 
-import y.base.Edge;
-import y.view.Arrow;
+import giny.model.Edge;
+import cytoscape.visual.Arrow;
 
 import cytoscape.data.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
@@ -23,7 +23,7 @@ public class GenericEdgeArrowCalculator extends EdgeCalculator implements EdgeAr
 
         Class c = null;
 	//c = Arrow.class;  // this line won't obfuscate; the one below does.
-	c = (Arrow.getArrow(Arrow.STANDARD_TYPE)).getClass();
+	c = Arrow.STANDARD.getClass();
 	if (!c.isAssignableFrom(m.getRangeClass()) ) {
             String s = "Invalid Calculator: Expected class " + c.toString()
 		+ ", got " + m.getRangeClass().toString();

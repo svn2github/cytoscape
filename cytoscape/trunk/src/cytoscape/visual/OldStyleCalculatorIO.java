@@ -13,6 +13,8 @@ import java.util.Properties;
 import java.util.Enumeration;
 
 import cytoscape.util.Misc;
+import cytoscape.visual.parsers.ArrowParser;
+import cytoscape.visual.parsers.LineTypeParser;
 import cytoscape.visual.calculators.*;
 //----------------------------------------------------------------------------
 /**
@@ -431,6 +433,7 @@ public class OldStyleCalculatorIO {
         NodeAppearanceCalculator nac = vs.getNodeAppearanceCalculator();
         //we'll also store any entries in the default nac
         NodeAppearanceCalculator defNAC = defVS.getNodeAppearanceCalculator();
+        LineTypeParser ltParser = new LineTypeParser();
         
         //set the node label calculator
         nac.setNodeLabelCalculator( defNAC.getNodeLabelCalculator() );
@@ -447,8 +450,8 @@ public class OldStyleCalculatorIO {
         }
         String defaultLineTypeString = props.getProperty("node.borderLinetype.default");
         if (defaultLineTypeString != null) {
-            nac.setDefaultNodeLineType( Misc.parseLineTypeText(defaultLineTypeString) );
-            defNAC.setDefaultNodeLineType( Misc.parseLineTypeText(defaultLineTypeString) );
+            nac.setDefaultNodeLineType( ltParser.parseLineType(defaultLineTypeString) );
+            defNAC.setDefaultNodeLineType( ltParser.parseLineType(defaultLineTypeString) );
         }
         String defaultWidthString = props.getProperty("node.width.default");
         if (defaultWidthString != null) {
@@ -522,6 +525,8 @@ public class OldStyleCalculatorIO {
         EdgeAppearanceCalculator eac = vs.getEdgeAppearanceCalculator();
         //we'll also store any entries in the default eac
         EdgeAppearanceCalculator defEAC = defVS.getEdgeAppearanceCalculator();
+        LineTypeParser ltParser = new LineTypeParser();
+        ArrowParser arrowParser = new ArrowParser();
         
         String defaultColorString = props.getProperty("edge.color.default");
         if (defaultColorString != null) {
@@ -530,18 +535,18 @@ public class OldStyleCalculatorIO {
         }
         String defaultLineTypeString = props.getProperty("edge.linetype.default");
         if (defaultLineTypeString != null) {
-            eac.setDefaultEdgeLineType(Misc.parseLineTypeText(defaultLineTypeString));
-            defEAC.setDefaultEdgeLineType(Misc.parseLineTypeText(defaultLineTypeString));
+            eac.setDefaultEdgeLineType(ltParser.parseLineType(defaultLineTypeString));
+            defEAC.setDefaultEdgeLineType(ltParser.parseLineType(defaultLineTypeString));
         }
         String defaultSourceString = props.getProperty("edge.sourceDecoration.default");
         if (defaultSourceString != null) {
-            eac.setDefaultEdgeSourceArrow( Misc.parseArrowText(defaultSourceString) );
-            defEAC.setDefaultEdgeSourceArrow( Misc.parseArrowText(defaultSourceString) );
+            eac.setDefaultEdgeSourceArrow( arrowParser.parseArrow(defaultSourceString) );
+            defEAC.setDefaultEdgeSourceArrow( arrowParser.parseArrow(defaultSourceString) );
         }
         String defaultTargetString = props.getProperty("edge.targetDecoration.default");
         if (defaultTargetString != null) {
-            eac.setDefaultEdgeTargetArrow( Misc.parseArrowText(defaultTargetString) );
-            defEAC.setDefaultEdgeTargetArrow( Misc.parseArrowText(defaultTargetString) );
+            eac.setDefaultEdgeTargetArrow( arrowParser.parseArrow(defaultTargetString) );
+            defEAC.setDefaultEdgeTargetArrow( arrowParser.parseArrow(defaultTargetString) );
         }
         
         EdgeColorCalculator ecc = catalog.getEdgeColorCalculator(calcName);

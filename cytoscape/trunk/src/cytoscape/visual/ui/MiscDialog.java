@@ -15,11 +15,11 @@ import java.net.URL;
 
 import javax.swing.*;
 
-import y.view.Arrow;
-import y.view.LineType;
-import y.view.ShapeNodeRealizer;
+import cytoscape.visual.Arrow;
+import cytoscape.visual.LineType;
+import cytoscape.visual.ShapeNodeRealizer;
 
-import cytoscape.util.Misc;
+//import cytoscape.util.Misc;
 
 //------------------------------------------------------------------------------
 public class MiscDialog {
@@ -31,6 +31,8 @@ public class MiscDialog {
      *   getArrowToStringHashMap(int nodeSize)
      *   getArrowIcons()
      *
+     * Note: with the move to Giny, I'm dropping support for the scalable
+     * arrow type; we can add this back later if desired. -AM 2003-10-28
      */
     public static HashMap getStringToArrowHashMap(int nodeSize) {
 	HashMap h = new HashMap();
@@ -41,9 +43,10 @@ public class MiscDialog {
 	h.put("SHORT", (Object)Arrow.SHORT);
 	h.put("WHITE_DELTA", (Object)Arrow.WHITE_DELTA);
 	h.put("WHITE_DIAMOND", (Object)Arrow.WHITE_DIAMOND);
-	h.put("SCALABLE",
-	      (Object)Misc.parseArrowText("scalableArrow" +
-					  Integer.toString((int)(nodeSize/2))));
+        h.put("SCALABLE", (Object)Arrow.SCALABLE);
+	//h.put("SCALABLE",
+	//      (Object)Misc.parseArrowText("scalableArrow" +
+	//				  Integer.toString((int)(nodeSize/2))));
 	return h;
     }
 
@@ -56,9 +59,10 @@ public class MiscDialog {
 	h.put((Object)Arrow.SHORT, "SHORT");
 	h.put((Object)Arrow.WHITE_DELTA, "WHITE_DELTA");
 	h.put((Object)Arrow.WHITE_DIAMOND, "WHITE_DIAMOND");
-	h.put((Object)Misc.parseArrowText("scalableArrow" +
-					  Integer.toString((int)(nodeSize/2))),
-	      "SCALABLE");
+        h.put((Object)Arrow.SCALABLE, "SCALABLE");
+	//h.put((Object)Misc.parseArrowText("scalableArrow" +
+	//				  Integer.toString((int)(nodeSize/2))),
+	//      "SCALABLE");
 	return h;
     }
 

@@ -10,10 +10,10 @@ import java.util.Properties;
 import java.awt.Color;
 import java.awt.Font;
 
-import y.base.Node;
-import y.view.LineType;
-import y.view.Arrow;
-import y.view.ShapeNodeRealizer;
+import giny.model.Node;
+import cytoscape.visual.LineType;
+import cytoscape.visual.Arrow;
+import cytoscape.visual.ShapeNodeRealizer;
 
 import cytoscape.GraphObjAttributes;
 import cytoscape.data.CyNetwork;

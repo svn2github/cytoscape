@@ -8,7 +8,7 @@ package cytoscape.visual.calculators;
 import java.util.Map;
 import javax.swing.JPanel;
 
-import y.base.Node;
+import giny.model.Node;
 
 import cytoscape.data.CyNetwork;
 //----------------------------------------------------------------------------

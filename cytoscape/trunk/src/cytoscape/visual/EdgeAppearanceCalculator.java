@@ -10,9 +10,9 @@ import java.util.Properties;
 import java.awt.Color;
 import java.awt.Font;
 
-import y.base.Edge;
-import y.view.LineType;
-import y.view.Arrow;
+import giny.model.Edge;
+import cytoscape.visual.LineType;
+import cytoscape.visual.Arrow;
 
 import cytoscape.data.CyNetwork;
 import cytoscape.visual.calculators.*;

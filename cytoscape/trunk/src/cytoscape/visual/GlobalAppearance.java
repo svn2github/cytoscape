@@ -6,8 +6,6 @@
 package cytoscape.visual;
 //----------------------------------------------------------------------------
 import java.awt.Color;
-import java.awt.Font;
-import y.view.LineType;
 //----------------------------------------------------------------------------
 /**
  * Objects of this class hold data describing global appearance attributes

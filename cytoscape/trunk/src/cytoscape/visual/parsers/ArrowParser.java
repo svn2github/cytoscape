@@ -5,8 +5,8 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual.parsers;
 //----------------------------------------------------------------------------
-import y.view.Arrow;
-import cytoscape.util.Misc;
+import cytoscape.visual.Arrow;
+//import cytoscape.util.Misc;
 //----------------------------------------------------------------------------
 /**
  * Parses a String into a yFiles Arrow object.
@@ -17,7 +17,8 @@ public class ArrowParser implements ValueParser {
         return parseArrow(value);
     }
     public Arrow parseArrow(String value) {
-        return Misc.parseArrowText(value);
+        //return Misc.parseArrowText(value);
+        return Arrow.parseArrowText(value);
     }
 }
 

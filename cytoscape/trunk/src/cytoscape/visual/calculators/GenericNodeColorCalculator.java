@@ -10,7 +10,7 @@ import java.util.Properties;
 import java.awt.Color;
 import javax.swing.JPanel;
 
-import y.base.Node;
+import giny.model.Node;
 
 import cytoscape.data.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;

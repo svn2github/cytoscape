@@ -40,15 +40,16 @@ import java.io.*;
 import java.awt.Color;
 import java.awt.Font;
 
-import y.base.Node;
-import y.view.LineType;
-import y.view.Graph2D;
-import y.view.ShapeNodeRealizer;
+import giny.model.Node;
+import giny.model.RootGraph;
+import luna.LunaRootGraph;
 
 import cytoscape.GraphObjAttributes;
 import cytoscape.data.CyNetwork;
 import cytoscape.visual.NodeAppearance;
 import cytoscape.visual.NodeAppearanceCalculator;
+import cytoscape.visual.LineType;
+import cytoscape.visual.ShapeNodeRealizer;
 //----------------------------------------------------------------------------
 public class NodeAppearanceCalculatorTest extends TestCase {
 
@@ -70,18 +71,18 @@ public class NodeAppearanceCalculatorTest extends TestCase {
         String toolTip = "testToolTip";
         Font font = new Font("SansSerif", Font.ITALIC, 10);
         
-        Graph2D graph = new Graph2D();
-        Node first = graph.createNode();
-        Node second = graph.createNode();
+        RootGraph graph = new LunaRootGraph();
+        int index1 = graph.createNode();
+        Node first = graph.getNode(index1);
+        int index2 = graph.createNode();
+        Node second = graph.getNode(index2);
         
         GraphObjAttributes firstNodeAttr = new GraphObjAttributes();
         String firstName = "first node";
         firstNodeAttr.addNameMapping(firstName, first);
         firstNodeAttr.set("node.fillColor", firstName, fillColor);
         firstNodeAttr.set("node.borderColor", firstName, borderColor);
-        //this attribute cannot be set, because LineType isn't Serializable
-        //and GraphObjAttributes requires attribute values to be Serializable
-        //firstNodeAttr.set("node.lineType", firstName, lineType);
+        firstNodeAttr.set("node.lineType", firstName, lineType);
         firstNodeAttr.set("node.shape", firstName, new Byte(shape));
         firstNodeAttr.set("node.width", firstName, width);
         firstNodeAttr.set("node.height", firstName, height);
@@ -102,8 +103,10 @@ public class NodeAppearanceCalculatorTest extends TestCase {
         secondNodeAttr.set("node.toolTip", secondName, "testToolTip");
         secondNodeAttr.set("node.font", secondName, "SansSerif,italic,10");
         
-        CyNetwork network1 = new CyNetwork(graph, firstNodeAttr, new GraphObjAttributes() );
-        CyNetwork network2 = new CyNetwork(graph, secondNodeAttr, new GraphObjAttributes() );
+        CyNetwork network1 = new CyNetwork(graph, firstNodeAttr, new GraphObjAttributes(),
+                                           null, false);
+        CyNetwork network2 = new CyNetwork(graph, secondNodeAttr, new GraphObjAttributes(),
+                                           null, false);
         NodeAppearanceCalculator nac = new NodeAppearanceCalculator();
         nac.setNodeSizeLocked(false);
         

@@ -8,8 +8,9 @@ package cytoscape.visual.parsers;
 import java.awt.Color;
 import java.awt.Font;
 
-import y.view.LineType;
-import y.view.Arrow;
+import cytoscape.visual.LineType;
+import cytoscape.visual.Arrow;
+import cytoscape.visual.ShapeNodeRealizer;
 
 import cytoscape.util.Misc;
 //----------------------------------------------------------------------------
@@ -28,11 +29,14 @@ public class ObjectToString {
         if (o instanceof Color) {
             return Misc.getRGBText((Color)o);
         } else if (o instanceof LineType) {
-            return Misc.getLineTypeText((LineType)o);
+            //return Misc.getLineTypeText((LineType)o);
+            return o.toString();
         } else if (o instanceof Byte) {
-            return Misc.getNodeShapeText( ((Byte)o).byteValue() );
+            //return Misc.getNodeShapeText( ((Byte)o).byteValue() );
+            return ShapeNodeRealizer.getNodeShapeText( ((Byte)o).byteValue() );
         } else if (o instanceof Arrow) {
-            return Misc.getArrowText((Arrow)o);
+            //return Misc.getArrowText((Arrow)o);
+            return o.toString();
         } else if (o instanceof Font) {
             return getStringValue((Font)o);
         } else if (o instanceof Number) {

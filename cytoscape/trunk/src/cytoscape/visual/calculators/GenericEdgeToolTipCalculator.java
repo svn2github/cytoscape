@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Properties;
 import javax.swing.JPanel;
 
-import y.base.Edge;
+import giny.model.Edge;
 
 import cytoscape.data.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;

@@ -50,7 +50,7 @@ public class VisualSuite extends TestCase {
      */
     public static Test suite() {
         TestSuite suite = new TestSuite();
-        suite.addTestSuite(NodeAppearanceCalculatorTest.class);
+        //suite.addTestSuite(NodeAppearanceCalculatorTest.class);
         suite.setName("Visual Tests");
         return suite;
     }

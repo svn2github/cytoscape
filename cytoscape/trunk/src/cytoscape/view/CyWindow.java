@@ -242,7 +242,8 @@ protected void initializeWidgets() {
     //this does nothing if undo is disabled
     cyMenus.updateUndoRedoMenuItemStatus();
     // load vizmapper after menus are done and graph is available
-    loadVizMapper();
+    //vizmapper is now Giny only
+    //loadVizMapper();
 } // initializeWidgets
 
 
@@ -287,7 +288,7 @@ protected void initialize() {
     //this does nothing if undo is disabled
     cyMenus.updateUndoRedoMenuItemStatus();
     // load vizmapper after menus are done and graph is available
-    //loadVizMapper();
+    loadVizMapper();
 
 	
 }
@@ -337,7 +338,7 @@ protected void updateGraphView() {
 	    // add context menues
 	    addViewContextMenues();
 	    view.fitContent();
-	    view.updateView();
+            redrawGraph(false, true);
 	    if (oldDisplay != null)
 		    this.remove(oldDisplay);
 }
@@ -904,7 +905,10 @@ public void redrawGraph(boolean doLayout) {
  * to the applyLayout method.
  */
 public void redrawGraph(boolean doLayout, boolean applyAppearances) {
-    if (!isYFiles) {return;}
+    if (!isYFiles) {
+        ginyRedrawGraph(doLayout, applyAppearances);
+        return;
+    }
     if (graphView.getGraph2D() == null) {return;}
     // added by iliana on 1.6.2003 (works with yFiles 2.01)
     // Remove graph listeners: (including undoManager)
@@ -937,6 +941,17 @@ public void redrawGraph(boolean doLayout, boolean applyAppearances) {
     // Add back graph listeners:
     for (int i = 0; i < gls.size(); i++) {
         theGraph.addGraphListener((GraphListener)gls.get(i));
+    }
+}
+//------------------------------------------------------------------------------
+/**
+ * redrawGraph method used when in Giny mode. Does not do layout but does
+ * call the vizmapper if requested.
+ */
+protected void ginyRedrawGraph(boolean doLayout, boolean applyAppearances) {
+    if (view != null && applyAppearances) {
+        applyVizmapSettings();
+        view.updateView();
     }
 }
 //------------------------------------------------------------------------------
@@ -1079,7 +1094,9 @@ public void applyLayoutSelection() {
  * @see VisualMappingManager
  */
 protected void applyVizmapSettings() {
-    getVizMapManager().applyAppearances();
+    if (getVizMapManager() != null) {
+        getVizMapManager().applyAppearances();
+    }
 }
 //------------------------------------------------------------------------------
 /**

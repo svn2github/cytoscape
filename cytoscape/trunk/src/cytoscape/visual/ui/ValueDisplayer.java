@@ -13,7 +13,9 @@ import java.awt.event.*;
 import java.text.*;
 import javax.swing.event.*;
 import java.util.HashMap;
-import y.view.*;
+import cytoscape.visual.Arrow;
+import cytoscape.visual.LineType;
+import cytoscape.visual.ShapeNodeRealizer;
 //----------------------------------------------------------------------------
 /**
  * Given an Object, figures out the class of the object and creates a JButton

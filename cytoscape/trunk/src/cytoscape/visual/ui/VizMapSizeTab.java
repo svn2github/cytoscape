@@ -13,8 +13,6 @@ import java.awt.*;
 import java.awt.event.*;
 import cytoscape.visual.*;
 import cytoscape.visual.calculators.*;
-import y.view.LineType;
-import y.view.Arrow;
 import java.util.*;
 /**
  * Create a tab for the Set Visual Properties dialog for Node Size. Because

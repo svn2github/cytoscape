@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.Properties;
 import javax.swing.JPanel;
 
-import y.base.Node;
-import y.view.ShapeNodeRealizer;
+import giny.model.Node;
+import cytoscape.visual.ShapeNodeRealizer;
 
 import cytoscape.data.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;

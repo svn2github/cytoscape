@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.Properties;
 import javax.swing.JPanel;
 
-import y.base.Node;
-import y.view.LineType;
+import giny.model.Node;
+import cytoscape.visual.LineType;
 
 import cytoscape.data.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;
@@ -23,7 +23,7 @@ public class GenericNodeLineTypeCalculator extends NodeCalculator implements Nod
 
         Class c = null;
 	//c = LineType.class;  // this line won't obfuscate; the one below does.
-	c = (LineType.getLineType(1,LineType.LINE_STYLE)).getClass();
+	c = LineType.LINE_1.getClass();
         if (!c.isAssignableFrom(m.getRangeClass()) ) {
             String s = "Invalid Calculator: Expected class " + c.toString()
                     + ", got " + m.getRangeClass().toString();

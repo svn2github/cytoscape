@@ -15,8 +15,6 @@ import cytoscape.data.CyNetwork;
 import cytoscape.visual.*;
 import cytoscape.visual.calculators.*;
 import cytoscape.visual.mappings.ObjectMapping;
-import y.view.LineType;
-import y.view.Arrow;
 import java.util.*;
 import java.lang.reflect.Constructor;
 import cytoscape.dialogs.GridBagGroup;
@@ -50,7 +48,7 @@ public class VizMapAttrTab extends VizMapTab {
     /**
      *	underlying network
      */
-    private CyNetwork n;
+    //private CyNetwork n;
 
     /**	the panel containing calculator-specific UI and provided
      *	by the currently selected calculator
@@ -119,7 +117,7 @@ public class VizMapAttrTab extends VizMapTab {
 	this.VMM = VMM;
 	this.mainUIDialog = mainUI;
 	this.catalog = VMM.getCalculatorCatalog();
-	this.n = VMM.getNetwork();
+	//this.n = VMM.getNetwork();
 	this.type = type;
 
 	// register to listen for changes in the catalog
@@ -568,7 +566,7 @@ public class VizMapAttrTab extends VizMapTab {
 	if (this.calcPanel != null)
 	    this.calcContainer.remove(this.calcPanel);
 	if (this.currentCalculator != null) {
-	    this.calcPanel = this.currentCalculator.getUI(this.mainUIDialog, this.n);
+	    this.calcPanel = this.currentCalculator.getUI(this.mainUIDialog, VMM.getNetwork());
 	    this.calcContainer.add(this.calcPanel);
 	}
 	else
@@ -906,27 +904,19 @@ public class VizMapAttrTab extends VizMapTab {
 	    this.currentCalculator = edgeCalc.getEdgeToolTipCalculator();
 	    break;
 	case VizMapUI.NODE_FONT_FACE:
-	    this.defaultObj = n.getGraph().getDefaultNodeRealizer().getLabel().getFont();
-	    // set the font in the appearance calculator, since they might not match at this point
-	    _setDefault(defaultObj);
+	    this.defaultObj = nodeCalc.getDefaultNodeFont();
 	    this.currentCalculator = nodeCalc.getNodeFontFaceCalculator();
 	    break;
 	case VizMapUI.EDGE_FONT_FACE:
-	    this.defaultObj = n.getGraph().getDefaultEdgeRealizer().getLabel().getFont();
-	    // set the font in the appearance calculator, since they might not match at this point
-	    _setDefault(defaultObj);
+	    this.defaultObj = edgeCalc.getDefaultEdgeFont();
 	    this.currentCalculator = edgeCalc.getEdgeFontFaceCalculator();
 	    break;	  
 	case VizMapUI.NODE_FONT_SIZE:
-	    this.defaultObj = new Double(n.getGraph().getDefaultNodeRealizer().getLabel().getFont().getSize2D());
-	    // set the font in the appearance calculator, since they might not match at this point
-	    _setDefault(defaultObj);
+	    this.defaultObj = new Double(nodeCalc.getDefaultNodeFont().getSize2D());
 	    this.currentCalculator = nodeCalc.getNodeFontSizeCalculator();
 	    break;
 	case VizMapUI.EDGE_FONT_SIZE:
-	    this.defaultObj = new Double(n.getGraph().getDefaultEdgeRealizer().getLabel().getFont().getSize2D());
-	    // set the font in the appearance calculator, since they might not match at this point
-	    _setDefault(defaultObj);
+	    this.defaultObj = new Double(edgeCalc.getDefaultEdgeFont().getSize2D());
 	    this.currentCalculator = edgeCalc.getEdgeFontSizeCalculator();
 	    break;
 	}

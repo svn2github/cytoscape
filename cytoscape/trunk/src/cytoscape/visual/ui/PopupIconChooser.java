@@ -11,7 +11,6 @@ import javax.swing.*;
 import javax.swing.event.*;
 import java.text.*;
 import java.util.*;
-import y.view.*;
 
 /**
  * PopupIconChooser borrows all of its functionality from IconPopupButton.

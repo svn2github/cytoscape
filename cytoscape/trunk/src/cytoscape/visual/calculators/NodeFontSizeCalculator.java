@@ -6,7 +6,7 @@
 package cytoscape.visual.calculators;
 //--------------------------------------------------------------------------
 import cytoscape.data.CyNetwork;
-import y.base.Node;
+import giny.model.Node;
 //--------------------------------------------------------------------------
 public interface NodeFontSizeCalculator extends Calculator {
     public float calculateNodeFontSize(Node node, CyNetwork network);

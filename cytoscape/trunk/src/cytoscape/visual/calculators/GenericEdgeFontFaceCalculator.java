@@ -10,7 +10,7 @@ import java.util.Properties;
 import java.awt.Font;
 import javax.swing.*;
 
-import y.base.Edge;
+import giny.model.Edge;
 
 import cytoscape.data.CyNetwork;
 import cytoscape.visual.mappings.ObjectMapping;

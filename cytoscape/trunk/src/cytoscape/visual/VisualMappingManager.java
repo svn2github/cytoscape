@@ -5,11 +5,15 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual;
 //----------------------------------------------------------------------------
+import java.util.Iterator;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-import y.base.*;
-import y.view.*;
+import giny.model.Node;
+import giny.model.Edge;
+import giny.view.GraphView;
+import giny.view.NodeView;
+import giny.view.EdgeView;
 
 import cytoscape.data.CyNetwork;
 import cytoscape.view.NetworkView;
@@ -136,16 +140,14 @@ public class VisualMappingManager {
      */
     public void applyNodeFillColor() {
         CyNetwork network = getNetwork();
-        Graph2DView graphView = networkView.getGraphView();
+        GraphView graphView = networkView.getView();
         NodeAppearanceCalculator nodeAppearanceCalculator =
-        visualStyle.getNodeAppearanceCalculator();
-        Node [] nodes = graphView.getGraph2D().getNodeArray();
-        for (int i=0; i < nodes.length; i++) {
-            Node node = nodes [i];
-            NodeAppearance na = new NodeAppearance();
-            nodeAppearanceCalculator.calculateNodeAppearance(na,node,network);
-            NodeRealizer nr = graphView.getGraph2D().getRealizer(node);
-            nr.setFillColor(na.getFillColor());
+                visualStyle.getNodeAppearanceCalculator();
+        for (Iterator i = graphView.getNodeViewsIterator(); i.hasNext(); ) {
+            NodeView nodeView = (NodeView)i.next();
+            Node node = nodeView.getNode();
+            nodeView.setUnselectedPaint(
+                    nodeAppearanceCalculator.calculateNodeFillColor(node, network) );
         }
     }
 
@@ -156,28 +158,24 @@ public class VisualMappingManager {
      */
     public void applyNodeAppearances() {
         CyNetwork network = getNetwork();
-        Graph2DView graphView = networkView.getGraphView();
+        GraphView graphView = networkView.getView();
         NodeAppearanceCalculator nodeAppearanceCalculator =
                 visualStyle.getNodeAppearanceCalculator();
-        Node [] nodes = graphView.getGraph2D().getNodeArray();
-        for (int i=0; i < nodes.length; i++) {
-            Node node = nodes [i];
+        for (Iterator i = graphView.getNodeViewsIterator(); i.hasNext(); ) {
+            NodeView nodeView = (NodeView)i.next();
+            Node node = nodeView.getNode();
             NodeAppearance na = new NodeAppearance();
             nodeAppearanceCalculator.calculateNodeAppearance(na,node,network);
-            NodeRealizer nr = graphView.getGraph2D().getRealizer(node);
-            nr.setFillColor(na.getFillColor());
-            nr.setLineColor(na.getBorderColor());
-            nr.setLineType(na.getBorderLineType());
-            nr.setHeight(na.getHeight());
-            nr.setWidth(na.getWidth());
-            if (nr instanceof ShapeNodeRealizer) {
-                ShapeNodeRealizer snr = (ShapeNodeRealizer)nr;
-                snr.setShapeType(na.getShape());
-            }
-            NodeLabel nl = nr.getLabel();
-            nl.setText(na.getLabel());
-            nl.setFont(na.getFont());
-            //nr.setToolTip(na.getToolTip()); // how do you do this?
+            
+            nodeView.setUnselectedPaint(na.getFillColor());
+            nodeView.setBorderPaint(na.getBorderColor());
+            nodeView.setBorder(na.getBorderLineType().getStroke());
+            nodeView.setHeight(na.getHeight());
+            nodeView.setWidth(na.getWidth());
+            nodeView.setShape( ShapeNodeRealizer.getGinyShape(na.getShape()) );
+            nodeView.setLabel(na.getLabel());
+            //can't set font yet
+            //can't set tooltip yet
         }
     }
 
@@ -188,27 +186,23 @@ public class VisualMappingManager {
      */
     public void applyEdgeAppearances() {
         CyNetwork network = getNetwork();
-        Graph2DView graphView = networkView.getGraphView();
+        GraphView graphView = networkView.getView();
         
         EdgeAppearanceCalculator edgeAppearanceCalculator =
                 visualStyle.getEdgeAppearanceCalculator();
-        Edge[] edges = graphView.getGraph2D().getEdgeArray();
-        for (int i=0; i < edges.length; i++) {
-            Edge edge = edges[i];
+        for (Iterator i = graphView.getEdgeViewsIterator(); i.hasNext(); ) {
+            EdgeView edgeView = (EdgeView)i.next();
+            Edge edge = edgeView.getEdge();
             EdgeAppearance ea = new EdgeAppearance();
             edgeAppearanceCalculator.calculateEdgeAppearance(ea,edge,network);
-            EdgeRealizer er = graphView.getGraph2D().getRealizer(edge);
-            er.setLineColor(ea.getColor());
-            er.setLineType(ea.getLineType());
-            er.setSourceArrow(ea.getSourceArrow());
-            er.setTargetArrow(ea.getTargetArrow());
-            EdgeLabel el = er.getLabel();
-            // this is really dumb, but EdgeRealizer doesn't support setLabel()
-            er.removeLabel(el);
-            el.setText(ea.getLabel());
-            el.setFont(ea.getFont());
-            er.addLabel(el);
-            //er.setToolTip(ea.getToolTip()); // how do you do this?
+            
+            edgeView.setUnselectedPaint(ea.getColor());
+            edgeView.setStroke(ea.getLineType().getStroke());
+            edgeView.setSourceEdgeEnd(ea.getSourceArrow().getGinyArrow());
+            edgeView.setTargetEdgeEnd(ea.getTargetArrow().getGinyArrow());
+            //edgeView.setLabel(ea.getLabel());  //can't set edge label yet
+            //can't set font yet
+            //can't set tooltip yet
         }
     }
 
@@ -219,14 +213,14 @@ public class VisualMappingManager {
      */
     public void applyGlobalAppearances() {
         CyNetwork network = getNetwork();
-        Graph2DView graphView = networkView.getGraphView();
+        GraphView graphView = networkView.getView();
         GlobalAppearanceCalculator globalAppearanceCalculator =
                 visualStyle.getGlobalAppearanceCalculator();
-        GlobalAppearance ga = globalAppearanceCalculator.calculateGlobalAppearance(network);
-        DefaultBackgroundRenderer bgRender =
-        (DefaultBackgroundRenderer)graphView.getBackgroundRenderer();
-        bgRender.setColor( ga.getBackgroundColor() );
-        NodeRealizer.setSloppySelectionColor( ga.getSloppySelectionColor() );
+        GlobalAppearance ga =
+                globalAppearanceCalculator.calculateGlobalAppearance(network);
+        
+        graphView.setBackgroundPaint(ga.getBackgroundColor());
+        //will ignore sloppy selection color for now
     }
 
     /**
