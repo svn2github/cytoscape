@@ -1,0 +1,16 @@
+2edge.color.controller=interaction
+edge.color.interaction.type=discrete
+edge.color.interaction.map.pp=0,0,255
+edge.color.interaction.map.pd=255,255,0
+
+edge.targetDecoration.controller=interaction
+edge.targetDecoration.interaction.type=discrete
+edge.targetDecoration.interaction.map.pd=arrow
+
+edge.sourceDecoration.controller=interaction
+edge.sourceDecoration.interaction.type=discrete
+edge.sourceDecoration.interaction.map.pp=arrow
+
+node.fillcolor.controller=expression
+node.fillcolor.expression.type=continuous
+node.fillcolor.expression.map.min=
