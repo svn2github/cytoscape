@@ -147,14 +147,14 @@ public final class MinIntHeap
 
   /**
    * Returns an iterator of elements in this heap, ordered such that
-   * the least element is first in the returned iterator.
-   * If both pruneDuplicates and reverseOrder are false,
-   * this method returns in O(n) time (unless this heap is ordered when
-   * this method is called, in which case this method returns in
-   * constant time), and the returned iterator
+   * the least element is first in the returned iterator.  Pruning of
+   * duplicate elements is enabled by setting pruneDuplicates to true.<p>
+   * If pruneDuplicates is false, this method returns in constant
+   * time (unless this heap is unordered when this method is called, in
+   * which case this method returns in O(n) time), and the returned iterator
    * takes O(log(n)) time complexity to return each successive element.
-   * If either pruneDuplicates or reverseOrder is true, this method
-   * takes O(n*log(n)) time complexity to come up with the return value;
+   * If pruneDuplicates is true, this method takes O(n*log(n)) time
+   * complexity to come up with the return value, and
    * the retuned iterator takes constant time to return each successive
    * element.<p>
    * The returned iterator becomes "invalid" as soon as any other method
@@ -166,48 +166,35 @@ public final class MinIntHeap
    * result of using the returned iterator.
    * @see #elements()
    */
-  public final IntIterator orderedElements(boolean pruneDuplicates,
-                                           final boolean reverseOrder)
+  public final IntIterator orderedElements(boolean pruneDuplicates)
   {
     final int[] heap = m_heap;
     final int size = m_currentSize;
     if (!m_orderOK) // Fix heap.
       for (int i = size / 2; i > 0; i--) percolateDown(heap, i, size);
-    m_orderOK = false;
-    if (pruneDuplicates || reverseOrder)
+    m_orderOK = false; // That's right - the heap becomes unordered.
+    if (pruneDuplicates)
     {
       int dups = 0;
       int sizeIter = size;
       while (sizeIter > 1) { // Needs to be 1, not 0, for duplicates.
         swap(heap, 1, sizeIter);
         percolateDown(heap, 1, sizeIter - 1);
-        if (pruneDuplicates && heap[1] == heap[sizeIter]) dups++;
+        if (heap[1] == heap[sizeIter]) dups++;
         sizeIter--; }
-      if (pruneDuplicates)
-      {
-        final int numDuplicates = dups;
-        if (reverseOrder) // Prune duplicates and reverse the order.
-        {
-          return new IntIterator() {
-              
-        }
-        else // Prune duplicates and normal order.
-        {
-          return new IntIterator() {
-              int m_index = size;
-              int m_dups = numDuplicates;
-              int m_prevValue = heap[m_index] + 1;
-              public int numRemaining() { return m_index - m_dups; }
-              public int nextInt() {
-                while (heap[m_index] == m_prevValue) {
-                  m_dups--; m_index--; }
-                m_prevValue = heap[m_index--];
-                return m_prevValue; } };
-        }
-      }
-      else // Don't prune duplicates, reverse the order.
+      final int numDuplicates = dups;
+      return new IntIterator() {
+          int m_index = size;
+          int m_dups = numDuplicates;
+          int m_prevValue = heap[m_index] + 1;
+          public int numRemaining() { return m_index - m_dups; }
+          public int nextInt() {
+            while (heap[m_index] == m_prevValue) {
+              m_dups--; m_index--; }
+            m_prevValue = heap[m_index--];
+            return m_prevValue; } };
     }
-    else // Don't prune duplicates, normal order.  Do lazy computation.
+    else // Don't prune duplicates.  Do lazy computation.
     {
       return new IntIterator() {
           int m_size = size;
