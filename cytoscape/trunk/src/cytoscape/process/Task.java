@@ -2,10 +2,13 @@ package cytoscape.process;
 
 /**
  * Represents a task that can be terminated prematurely by the same
- * entity that started the task.<p>
+ * entity that started the task - tasks are started with
+ * <code>Task.run()</code> and tasks are terminated prematurely
+ * [and asynchronously] with <code>Task.halt()</code>.
+ * Tasks, by definition, can only be run once per instance.<p>
  * Because the same &quot;parent program&quot; that starts
  * <code>run()</code> will determine whether or not <code>halt()</code>
- * will be called at some point, there is no problem determining whether
+ * will be called at some point, there is no ambiguity in determining whether
  * or not a process was terminated prematurely when <code>run()</code>
  * returns. 
  **/

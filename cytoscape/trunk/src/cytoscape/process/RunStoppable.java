@@ -2,6 +2,10 @@ package cytoscape.process;
 
 /**
  * Creates a <code>Stoppable</code> out of a <code>Task</code>.
+ * Code that uses an instance of this class should not
+ * use the <code>Task.run()</code> or <code>Task.halt()</code> methods of
+ * the underlying <code>Task</code> - <code>RunStoppable.run()</code> and
+ * <code>RunStoppable.stop()</code> should be used instead.
  **/
 public final class RunStoppable implements Runnable, Stoppable
 {
@@ -12,6 +16,15 @@ public final class RunStoppable implements Runnable, Stoppable
   private boolean m_running = false;
   private boolean m_stop = false;
 
+  /**
+   * Creates a <code>Runnable</code> and <code>Stoppable</code> out of
+   * <code>task</code>.  Code using an instance of
+   * <code>RunStoppable</code> should never call
+   * <code>task.run()</code> or <code>task.halt()</code>.
+   * <font color="#ff0000">This <code>RunStoppable</code> object relies on
+   * being the sole caller of <code>task.run()</code> and
+   * <code>task.halt()</code></font>.
+   **/
   public RunStoppable(Task task)
   {
     if (task == null)

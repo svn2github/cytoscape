@@ -54,7 +54,7 @@ public final class ProgressUI
    * A plain vanilla progress dialog has no stop button and has a generic
    * progress animation which knows nothing about percent completed of the
    * process.  The two options for a progress dialog are a stop button (which
-   * can be made to appear by passing a non-<code>nulL</code>
+   * can be made to appear by passing a non-<code>null</code>
    * <code>stop</code> parameter to this method) and a progress animation with
    * a percent completed (the percent completed animation is triggered by
    * using the returned <code>ProgressUIControl</code> object).<p>
@@ -72,26 +72,33 @@ public final class ProgressUI
    * should prevent passing <code>Stoppable</code> objects which block for
    * long periods.
    *
-   * @param parent the parent frame that will show this modal dialog; in most
+   * @param parent
+   *   <blockquote>the parent frame that will show this modal dialog; in most
    *   cases this will be <code>Cytoscape.getDesktop()</code>; this class uses
    *   an input parameter instead of using <code>cytoscape.Cytoscape</code>
-   *   to avoid dependencies - this keeps code more modular.
-   * @param title desired title of the dialog window; may not be
-   *   <code>null</code>.
-   * @param message brief message that will appear to the user;
-   *   may not be <code>null</code>.
-   * @param stop hook to allow a stop button to stop a process; if
+   *   to avoid dependencies - this keeps code more modular.</blockquote>
+   * @param title
+   *   <blockquote>desired title of the dialog window; may not be
+   *   <code>null</code>.</blockquote>
+   * @param message
+   *   <blockquote>brief message that will appear to the user;
+   *   may not be <code>null</code>.</blockquote>
+   * @param stop
+   *   <blockquote>hook to allow a stop button to stop a process; if
    *   <code>null</code>, no stop button will appear in the dialog;
    *   <code>stop.stop()</code> is called by this framework if and only if
    *   the &quot;Stop&quot; button is pushed by a user; disposing of the
    *   returned <code>ProgressUIControl</code> does <i>not</i> cause
-   *   <code>stop()</code> to be called.
+   *   <code>stop()</code> to be called.</blockquote>
    * @return hook for controlling this UI.
-   * @exception IllegalStateException if this is called while another
-   *   progress dialog is currently open.
-   * @exception IllegalThreadStateException if this is called from a thread
+   * @exception IllegalStateException
+   *   <blockquote>if this is called while another
+   *   progress dialog is currently open.</blockquote>
+   * @exception IllegalThreadStateException
+   *   <blockquote>if this is called from a thread
    *   that is not the AWT event handling thread
    *   (<nobr><code>java.awt.EventQueue.isDispatchThread()</code></nobr>).
+   *   </blockquote>
    **/
   public static ProgressUIControl startProgress(Frame parent,
                                                 String title,

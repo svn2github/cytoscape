@@ -34,13 +34,15 @@ public interface PercentCompletedCallback
    * which thread is allowed to call this method.<p>
    * This method should not block; it should return quickly.
    *
-   * @exception IllegalThreadStateException may be thrown if more than one
+   * @exception IllegalThreadStateException
+   *   <blockquote>may be thrown if more than one
    *   thread is trying to access this method on a given instance; note that
    *   <code>IllegalThreadStateException</code> extends the more general
    *   <code>IllegalArgumentException</code>, which is thrown when a bad
-   *   integer argument is passed.
-   * @exception IllegalArgumentException if <code>percent</code> is not in
-   *   the interval <nobr><code>[0, 100]</code></nobr>.
+   *   integer argument is passed.</blockquote>
+   * @exception IllegalArgumentException
+   *   <blockquote>if <code>percent</code> is not in
+   *   the interval <nobr><code>[0, 100]</code></nobr>.</blockquote>
    **/
   void setPercentCompleted(int percent);
 
