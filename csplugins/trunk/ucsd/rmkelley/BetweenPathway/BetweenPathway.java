@@ -35,11 +35,12 @@ import ucsd.rmkelley.EdgeRandomization.EdgeRandomizer;
  * graph and its view.
  */
 public class BetweenPathway extends CytoscapePlugin{
-    BetweenPathwayOptionsDialog dialog;  
-    /**
-     * This constructor saves the cyWindow argument (the window to which this
-     * plugin is attached) and adds an item to the operations menu.
-     */
+  BetweenPathwayOptionsDialog dialog;  
+  
+  /**
+   * This constructor saves the cyWindow argument (the window to which this
+   * plugin is attached) and adds an item to the operations menu.
+   */
   
     public BetweenPathway(){
 	Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add( new AbstractAction("Find Between Pathway Models"){
@@ -52,6 +53,11 @@ public class BetweenPathway extends CytoscapePlugin{
 				dialog.show();
 				if(!dialog.isCancelled()){
 				    BetweenPathwayOptions options = dialog.getOptions();
+				    RandomizationDialog randomDialog = new RandomizationDialog(options.geneticNetwork,options);
+				    randomDialog.show();
+				    if(randomDialog.isCancelled()){
+				      throw new RuntimeException("Thresh-hold generation cancelled");
+				    }
 				    BetweenPathwayThread2 thread = new BetweenPathwayThread2(options);
 				    try{
 				      thread.setPhysicalNetwork(options.physicalNetwork);
@@ -69,7 +75,7 @@ public class BetweenPathway extends CytoscapePlugin{
 					options.cutoff = 0.0;
 					CyNetwork geneticNetwork = options.geneticNetwork;
 					double [] scores = new double[options.iterations];
-					EdgeRandomizer randomizer = new EdgeRandomizer(geneticNetwork,directedTypes);
+					EdgeRandomizer randomizer = new EdgeRandomizer(geneticNetwork,options.directedTypes);
 					for(int idx=0 ; idx<options.iterations ; idx++){
 					  CyNetwork randomNetwork = randomizer.randomizeNetwork();
 					  thread.setGeneticNetwork(randomNetwork);	

@@ -28,4 +28,5 @@ public class BetweenPathwayOptions{
   public File physicalScores,geneticScores;
   public double alpha,cutoff;
   public int iterations;
+  public List directedTypes;
 }

@@ -81,8 +81,8 @@ public class BetweenPathwayOptionsDialog extends RyanDialog implements PropertyC
 	  options.newScore = searchOptionsPanel.newScore();
 	  options.generateCutoff = searchOptionsPanel.generateCutoff();
 	  options.cutoff = searchOptionsPanel.getCutoff();
-	  options.alpha = searchOptionsPanel.getAlpha();
-	  options.iterations = searchOptionsPanel.getIterations();
+	  //options.alpha = searchOptionsPanel.getAlpha();
+	  //options.iterations = searchOptionsPanel.getIterations();
 	  options.geneticNetwork = geneticPanel.getSelectedNetwork();
 	  options.physicalNetwork = physicalPanel.getSelectedNetwork();
 	  options.geneticScores = geneticPanel.getScoreFile();
