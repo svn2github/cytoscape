@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
-	<title> Cytoscape Features </title> 
+	<title> Cytoscape Features </title>
 	<link rel="stylesheet" type="text/css" media="screen" href="css/cytoscape.css" />
 	<link rel="shortcut icon" href="images/cyto.ico" />
 </head>
@@ -10,10 +10,10 @@
 <table id="feature" border="0" cellpadding="0" cellspacing="0" summary="">
 	<tr>
 		<td width="10">
-			&nbsp; 
+			&nbsp;
 		</td>
 		<td valign="center">
-			<h1> Cytoscape Features </h1> 
+			<h1> Cytoscape Features </h1>
 		</td>
 	</tr>
 </table>
@@ -25,7 +25,7 @@
 		The current version of Cytoscape is v2.0 was released in July 2004 with the following features:
 		<br>
 	</p>
-	<h3>Input</h3> 
+	<h3>Input</h3>
 	<ul type="square">
 		<li>
 			Input and construct molecular interaction networks from raw interaction files (SIF format) containing lists of protein-protein and/or protein-DNA interaction pairs. &nbsp;For yeast and other model organisms, large sources of pairwise interactions are available through the <a href="http://www.bind.ca"> BIND</a> and <a href="http://transfac.gbf.de/TRANSFAC">TRANSFAC</a> databases. User-defined interaction types are also supported.
@@ -43,14 +43,12 @@
 			Import gene functional annotations from the <a href="http://www.geneontology.org">Gene Ontology (GO)</a> and <a href="http://www.genome.ad.jp/kegg/">KEGG</a> databases.
 		</li>
 	</ul>
-	<h3>Visualization</h3> 
+	<h3>Visualization</h3>
 	<ul type="square">
 		<li>
-			<p class="MsoNormal">
 				Customize network data display using powerful visual styles.
 		</li>
 		<li>
-			<p class="MsoNormal">
 				View a superposition of gene expression ratios and p-values on the network. &nbsp;Expression data can be mapped to node color, label, border thickness, or border color, etc. according to user-configurable colors and visualization schemes.
 		</li>
 		<li>
@@ -60,16 +58,14 @@
 			Zoom in/out and pan for browsing the network.
 		</li>
 		<li>
-			<p class="MsoNormal">
 				Use the network manager to easily organize multiple networks.
 		</li>
 		<li>
-			<p class="MsoNormal">
-				<span style="font-size: 12.0pt; font-family: Times New Roman">Use the bird’s eye view to easily navigate large networks.</span>
+				Use the bird’s eye view to easily navigate large networks.
 				<br>
 		</li>
 	</ul>
-	<h3>Analysis</h3> 
+	<h3>Analysis</h3>
 	<ul type="square">
 		<li>
 			Plug-ins available for network and molecular profile analysis. For example:
@@ -95,7 +91,7 @@
 	</p>
 	<p>
 		<br>
-		The <b>Cytoscape</b> project is an ongoing collaboration between the <a href="http://www.systemsbiology.org">Institute for Systems Biology</a>, <a href="http://www.ucsd.edu/">University of California, San Diego</a>, <a href="http://www.mskcc.org">Memorial Sloan-Kettering Cancer Center</a> and the <a href="http://www.pasteur.fr">Institut Pasteur</a>. 
+		The <b>Cytoscape</b> project is an ongoing collaboration between the <a href="http://www.systemsbiology.org">Institute for Systems Biology</a>, <a href="http://www.ucsd.edu/">University of California, San Diego</a>, <a href="http://www.mskcc.org">Memorial Sloan-Kettering Cancer Center</a> and the <a href="http://www.pasteur.fr">Institut Pasteur</a>.
 </div>
 <? include "footer.php"; ?>
 </body>

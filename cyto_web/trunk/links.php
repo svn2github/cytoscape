@@ -27,21 +27,21 @@
     <? include "nav.php"; ?>
     <div id="indent">
 <P>
-<big><b>Software</b></big> 
+<big><b>Software</b></big>
 <P>
 <a href="http://www.genmapp.org/">GenMAPP</a>
 <br>
 <a href="http://biodata.mshri.on.ca/osprey/servlet/Index">Osprey</a>
 <br><br>
 
-<big><b>Network Databases</b></big> 
+<big><b>Network Databases</b></big>
 <P>
-<a href="%20http:/bind.ca">Biomolecular Interaction Network Database (BIND)</a>
+<a href="http:/bind.ca">Biomolecular Interaction Network Database (BIND)</a>
 <br>
-<a href="%20http:/www.cbio.mskcc.org/bpd">BioPAX Directory</a>
+<a href="http:/www.cbio.mskcc.org/prl">BioPAX Directory</a>
 <br><br>
 
-<big><b>Data Exchange Formats</b></big> 
+<big><b>Data Exchange Formats</b></big>
 <P>
 <a href="http://www.biopax.org">BioPAX (Biological Pathway Exchange)</a>
 <br>
