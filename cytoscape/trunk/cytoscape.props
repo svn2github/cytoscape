@@ -28,8 +28,8 @@ edge.targetDecoration.interaction.map.pd=arrow
 # window and graph defaults:
 
 background.color.default=230,230,205
-node.fill.color.default=250,255,255
-node.border.color.default=255,0,0
+node.fillColor.default=250,255,255
+node.borderColor.default=255,0,0
 
 #--------------------------------------------------------------------
 # plugins. for each plugin, specify

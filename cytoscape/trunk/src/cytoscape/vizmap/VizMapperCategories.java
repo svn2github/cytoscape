@@ -22,7 +22,7 @@ import cytoscape.util.Misc;
  * visual properties (that is, range attributes) known to Cytoscape.
  * A set of static Integer constants identifies each attribute. In
  * addition to the methods inherited from AttributeMapperCategories,
- * this class defines wrappers around an Attributemapper object that
+ * this class defines wrappers around an AttributeMapper object that
  * convert the Objects obtained from that object into the specific types
  * associated with each vizual attribute via a cast operation.
  */
@@ -118,8 +118,8 @@ public class VizMapperCategories implements AttributeMapperCategories {
     public Map getPropertyNamesMap() {
 	Map returnVal = new HashMap();
 
-	returnVal.put( NODE_FILL_COLOR, "node.fill.color" );
-	returnVal.put( NODE_BORDER_COLOR, "node.border.color" );
+	returnVal.put( NODE_FILL_COLOR, "node.fillColor" );
+	returnVal.put( NODE_BORDER_COLOR, "node.borderColor" );
 	returnVal.put( NODE_HEIGHT, "node.height" );
 	returnVal.put( NODE_WIDTH, "node.width" );
 	returnVal.put( NODE_SHAPE, "node.shape" );
