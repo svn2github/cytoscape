@@ -1,0 +1,12 @@
+EdgeProbs (class=java.lang.Double)
+A (pd) Z = 0.005
+A (pp) B = 0.7
+A (pp) C = 0.9
+B (pd) Z = 0.04
+B (pp) C = 0.78
+C (pp) D = 0.55
+D (pd) Z = 0.009
+C (pp) E = 0.78
+E (pp) Z = 0.23
+F (pd) C = 0.03
+F (pp) Z = 0.85
