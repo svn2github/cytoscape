@@ -67,6 +67,7 @@ public class CyMenus  implements GraphViewChangeListener {
   JMenu vizMenu;
   JMenuItem vizMenuItem, vizMapperItem;
   AbstractAction menuPrintAction;
+  AbstractAction menuExportAction;
   JButton saveButton;
   JButton vizButton;
   JMenu opsMenu;
@@ -223,6 +224,7 @@ newState = true; //TODO: remove this once the GraphViewChangeListener system is 
       saveButton.setEnabled(newState);
       saveSubMenu.setEnabled(newState);
       menuPrintAction.setEnabled(newState);
+      menuExportAction.setEnabled(newState);
       displayNWSubMenu.setEnabled(newState);
       nodesRequiredItemsEnabled = newState;
   }
@@ -278,6 +280,7 @@ newState = true; //TODO: remove this once the GraphViewChangeListener system is 
           saveButton.setEnabled(false);
           saveSubMenu.setEnabled(false);
           menuPrintAction.setEnabled(false);
+          menuExportAction.setEnabled(false);
           displayNWSubMenu.setEnabled(false);
           setNodesRequiredItemsEnabled();
           cyWindow.getView().addGraphViewChangeListener(this);
@@ -312,7 +315,9 @@ newState = true; //TODO: remove this once the GraphViewChangeListener system is 
       saveSubMenu.add(new SaveVisibleNodesAction(networkView));
       saveSubMenu.add(new SaveSelectedNodesAction(networkView));
       menuPrintAction = new PrintAction(networkView);
+      menuExportAction = new ExportAction(networkView);
       fileMenu.add(menuPrintAction);
+      fileMenu.add(menuExportAction);
 
       //mi = fileMenu.add(new CloseWindowAction(cyWindow)); removed 2004-03-08
       //mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
