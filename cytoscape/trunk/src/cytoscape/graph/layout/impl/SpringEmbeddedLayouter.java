@@ -3,6 +3,9 @@ package cytoscape.graph.layout.impl;
 import cytoscape.graph.layout.algorithm.LayoutAlgorithm;
 import cytoscape.graph.layout.algorithm.MutableGraphLayout;
 import cytoscape.process.PercentCompletedCallback;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * An implementation of Kamada and Kawai's spring embedded layout algorithm.
@@ -88,6 +91,50 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
     m_edgeCount = m_graph.getNumEdges();
   }
 
+  private static class PartialDerivatives
+  {
+
+    final int nodeIndex;
+    double x;
+    double y;
+    double xx;
+    double yy;
+    double xy;
+    double euclideanDistance;
+
+    PartialDerivatives(int nodeIndex)
+    {
+      this.nodeIndex = nodeIndex;
+    }
+
+    PartialDerivatives(PartialDerivatives copyFrom)
+    {
+      this.nodeIndex = copyFrom.nodeIndex;
+      copyFrom(copyFrom);
+    }
+
+    void reset ()
+    {
+      x = 0.0;
+      y = 0.0;
+      xx = 0.0;
+      yy = 0.0;
+      xy = 0.0;
+      euclideanDistance = 0.0;
+    }
+
+    void copyFrom (PartialDerivatives otherPartialDerivatives)
+    {
+      x = otherPartialDerivatives.x;
+      y = otherPartialDerivatives.y;
+      xx = otherPartialDerivatives.xx;
+      yy = otherPartialDerivatives.yy;
+      xy = otherPartialDerivatives.xy;
+      euclideanDistance = otherPartialDerivatives.euclideanDistance;
+    }
+
+  }
+
   /**
    * This starts the layout process.  This method is called by a parent
    * application using this layout algorithm.
@@ -103,7 +150,16 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
     final int numIterations =
       (int) (m_averageIterationsPerNode * m_nodeCount / m_numLayoutPasses);
 
+    List partialsList = new ArrayList();
+    final double[] potentialEnergy = new double[] { 0,0 };
 
+    PartialDerivatives partials;
+    PartialDerivatives furthestNodePartials = null;
+    double currentProgressTemp;
+    double setupProgress = 0.0;
+    for (m_layoutPass = 0; m_layoutPass < m_numLayoutPasses; m_layoutPass++)
+    {
+    }
   }
 
   /**
@@ -120,17 +176,6 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
   /*
   public Object construct () {
 
-
-
-    List partials_list = createPartialsList();
-    PotentialEnergy potential_energy = new PotentialEnergy();
-    Iterator node_views_iterator;
-    NodeView node_view;
-    PartialDerivatives partials;
-    PartialDerivatives furthest_node_partials = null;
-    double current_progress_temp;
-    double setup_progress = 0.0;
-    for( layoutPass = 0; layoutPass < numLayoutPasses; layoutPass++ ) {
 
       setupForLayoutPass();
 
@@ -788,65 +833,8 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
 
   } // simpleMoveNode( PartialDerivatives )
 
-  protected List createPartialsList () {
-    return new ArrayList();
-  } // createPartialsList()
 
-  class PartialDerivatives {
-    protected NodeView nodeView;
-    public double x;
-    public double y;
-    public double xx;
-    public double yy;
-    public double xy;
-    public double euclideanDistance;
 
-    public PartialDerivatives ( NodeView node_view ) {
-      nodeView = node_view;
-    }
-
-    public PartialDerivatives ( PartialDerivatives copy_from ) {
-      nodeView = copy_from.getNodeView();
-      copyFrom( copy_from );
-    }
-
-    public void reset () {
-      x = 0.0;
-      y = 0.0;
-      xx = 0.0;
-      yy = 0.0;
-      xy = 0.0;
-      euclideanDistance = 0.0;
-    } // reset()
-
-    public NodeView getNodeView () {
-      return nodeView;
-    } // getNodeView()
-
-    public void copyFrom ( PartialDerivatives other_partial_derivatives ) {
-      x = other_partial_derivatives.x;
-      y = other_partial_derivatives.y;
-      xx = other_partial_derivatives.xx;
-      yy = other_partial_derivatives.yy;
-      xy = other_partial_derivatives.xy;
-      euclideanDistance = other_partial_derivatives.euclideanDistance;
-    } // copyFrom( PartialDerivatives )
-
-    public String toString () {
-      return "PartialDerivatives( \"" + getNodeView() + "\", x=" + x + ", y=" + y + ", xx=" + xx + ", yy=" + yy + ", xy=" + xy + ", euclideanDistance=" + euclideanDistance + " )";
-    } // toString()
-
-  } // inner class PartialDerivatives
-
-  class PotentialEnergy {
-
-    public double totalEnergy = 0.0;
-
-    public void reset () {
-      totalEnergy = 0.0;
-    } // reset()
-
-  } // class PotentialEnergy
 */
 
 }
