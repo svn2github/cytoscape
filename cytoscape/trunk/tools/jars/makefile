@@ -48,6 +48,17 @@ auxjar:
 	(cd ~/jars/xercesUnpacked; jar uvf $(AUXJARFILE) `find org/* -name "*.class"`)
 
 
+
+#
+#  --- obf
+#  obfuscates cytoscape.jar to cytoscape-obf.jar using the yFiles hacked
+#  version of RetroGuard
+#
+
+obf:
+	java -cp retroguard.jar RetroGuard cytoscape.jar cytoscape-obf.jar script.rgs
+
+
 help:
 	egrep "^#  " makefile | sed "s/^#//"
 
