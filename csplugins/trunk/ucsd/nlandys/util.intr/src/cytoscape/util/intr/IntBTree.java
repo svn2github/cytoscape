@@ -103,7 +103,7 @@ public final class IntBTree
             if (isLeafNode(newNode)) newSplit = newNode.values[0];
             else newSplit = newNode.data.splitVals[newNode.sliceCount];
             if (n.sliceCount < n.data.children.length) { // There's room here.
-              for (int j = n.sliceCount; j < i + 1; j--) {
+              for (int j = n.sliceCount; j > i + 1; j--) {
                 n.data.children[j] = n.data.children[j - 1];
                 n.data.splitVals[j - 1] = n.data.splitVals[j - 2]; }
               n.data.children[i + 1] = newNode;
