@@ -40,7 +40,7 @@
     <property name="giny.lib" value="..\giny\lib" />
 
     <!-- Release number -->
-    <property name="version" value="2.0ALPH1"/>
+    <property name="version" value="2.0ALPHA2"/>
 
     <!-- Temporary Release Directory -->
     <property name="release.dir" value="release"/>
@@ -52,7 +52,7 @@
   <!-- Cytoscape ClassPath definition                          -->
   <!-- ======================================================= -->
 
-	  <!-- Classpathwith all lib JAR Files -->
+	  <!-- Classpath with all lib JAR Files -->
 	  <path id="classpath">
 		  <pathelement path="${build.classes}"/>	
 		  <pathelement path="${basedir}"/>
@@ -60,7 +60,6 @@
 		    <include name="**/*.jar"/>
 		  </fileset>
 		  <pathelement location="${giny.lib}/giny.jar"/>
-                  <pathelement location="${giny.lib}/giny.jar"/>
                   <pathelement location="${giny.lib}/phoebe.jar"/>
                   <pathelement location="${giny.lib}/colt.jar"/>
                   <pathelement location="${giny.lib}/coltginy.jar"/>
@@ -70,13 +69,12 @@
 
 	  </path>
 
-	  <!-- Classpath for running Cytoscape with non-obfuscated Cytoscape Jar file -->
+	  <!-- Classpath for running Cytoscape -->
 	  <path id="classpath_run">
 		  <fileset dir="${lib.dir}">
 			  <include name="**/*.jar"/>
 		  </fileset>
 		  <pathelement location="${build.dir}/cytoscape.jar"/>
-                  <pathelement location="${giny.lib}/giny.jar"/>
                   <pathelement location="${giny.lib}/giny.jar"/>
                   <pathelement location="${giny.lib}/phoebe.jar"/>
                   <pathelement location="${giny.lib}/colt.jar"/>
@@ -87,31 +85,9 @@
                   <pathelement location="${giny.lib}/looks-1.1.3.jar"/>
           </path>
 
-	  <!-- Classpath for running Cytoscape with obfuscated Cytoscape Jar file -->
-	  <path id="classpath_obfuscated">
-		  <fileset dir="${lib.dir}">
-			  <include name="**/*.jar"/>
-			  <exclude name="y.jar"/>
-		  </fileset>
-		  <pathelement location="${dist.dir}/cytoscape-obfuscated.jar"/>
-	  </path>
-
   <!-- ======================================================= -->
-  <!-- Environment Checks and Information                      -->
+  <!-- Environment Information                                 -->
   <!-- ======================================================= -->
-
-	  <!-- Target to Query Environment && Checks if y.jar exists -->
-	  <!-- This check in necessary because we cannot check y.jar into cvs. -->
-	  <target name="query_environment">
-		  <condition property="environment.configured">
-			  <available file="${lib.dir}/y.jar"/>
-		  </condition>
-	  </target>
-
-	  <!-- Stop build if Environment is not configured correctly -->
-	  <target name="check_environment" depends="query_environment" unless="environment.configured">
-		  <fail>Build aborted:  Make sure that y.jar is available within your lib directory.</fail>
-	  </target>
 
 	  <!-- Outputs Current compilation classpath -->
 	  <target name="show_cp">
@@ -124,7 +100,7 @@
   <!-- ======================================================= -->
 
   	<!-- Target to create the build directories prior to compilation -->
-  	<target name="prepare" depends="check_environment">
+  	<target name="prepare">
     	<mkdir dir="${build.dir}"/>
 		  <mkdir dir="${build.dir}/docs"/>
     	<mkdir dir="${build.classes}"/>
@@ -220,7 +196,7 @@
   <!-- Run Cytoscape with Y-Files                              -->
   <!-- ======================================================= -->
 
-  	<!--  Target to Run Cytoscape with non-obfuscated jar file -->
+  	<!--  Target to Run Cytoscape -->
   	<target name="run" depends="jar" description="Runs Cytoscape.">
 		  <java classname="cytoscape.cytoscape" classpathref="classpath_run" fork="true"/>
    	</target>
@@ -229,7 +205,7 @@
   <!-- Run Cytoscape with GINY                                 -->
   <!-- ======================================================= -->
 
-	  <!--  Target to Run Cytoscape with non-obfuscated jar file using giny-->
+	  <!--  Target to Run Cytoscape using giny-->
   	<target name="giny" depends="jar" description="Runs Cytoscape/Giny.">
 		  <java classname="cytoscape.cytoscape"  args= "-y giny" classpathref="classpath_run" fork="true"/>
 	  </target>
@@ -280,54 +256,6 @@
       </target>
 
   <!-- ======================================================= -->
-  <!-- Create the Obfuscated Cytoscape Jar File                -->
-  <!-- ======================================================= -->
-
-  <!-- Target to Obfuscate Cytoscape.jar -->
-  <target name="obfuscate" depends="jar" description="Obfuscates Cytoscape Jar File.">
-
-	<echo>
-	***********************************************
-	Obfuscating Cytoscape
-	***********************************************
-	</echo>
-		
-  	<!-- Copy Cytoscape.jar to distribution directory -->
-	<copy file="${build.dir}/cytoscape.jar" todir="${dist.dir}"/>
-
-	<!-- Unjar YFiles Jar Files To Temporary Directory -->
-	<mkdir dir="${dist.dir}/temp"/>
-	<unjar src="${lib.dir}/y.jar" dest="${dist.dir}/temp"/>
-
-	<!-- Add YFiles classes to cytoscape.jar -->
-	<jar destfile="${dist.dir}/cytoscape.jar" update="true">
- 		<fileset dir="${dist.dir}/temp"/>
-	</jar>
-		
-      	<!-- Obfuscate Jar File with RetroGuard -->                       
-      	<java classname="RetroGuard" classpathref="classpath" fork="true" dir="${dist.dir}">   
-        	<arg line="cytoscape.jar cytoscape-obfuscated.jar ../tools/jars/cytoscape-obf-1_1.log retro.log"/>
-      	</java>
-
-      	<echo message="Obfuscated Cytoscape.jar is now completed.  It is located in dist/ directory"/>
-	<delete dir="${dist.dir}/temp"/>
-    </target>
-
-  <!-- ======================================================= -->
-  <!-- Run Cytoscape Using the Obfuscated jar file             -->
-  <!-- ======================================================= -->
-
-  <!--  Target to Run Cytoscape with Obfuscated Jar File -->
-  <target name="run_obfuscated" 
-            description="Runs Cytoscape with Obfuscated Jar File.">
-		
-      <java classname="cytoscape.cytoscape"
-		        classpathref="classpath_obfuscated" 
-            fork="true">
-      </java> 
-  </target>
-
-  <!-- ======================================================= -->
   <!-- Run All of the Cytoscape Unit Tests                     -->
   <!-- ======================================================= -->
   <target name="test" depends="compile" description="Runs all Cytoscape Unit Tests.">
@@ -341,7 +269,7 @@
   <!-- Final releases are made available in zip_release/ dir   -->
   <!-- Questions?  email:  cerami@cbio.mskcc.org	       -->
   <!-- ======================================================= -->
-  <target name="release" depends="obfuscate" description="Creates Cytoscape Release">
+  <target name="release" depends="jar" description="Creates Cytoscape Release">
 
         <echo>
         ***********************************************
@@ -362,11 +290,9 @@
 	---------------------------------------
         </echo>
 
-	<!-- Copy Obfuscated Jar File over -->
-	<copy file="${dist.dir}/cytoscape-obfuscated.jar"
-		tofile="${release.dir}/cytoscape.jar"/>
+        <copy file="${build.dir}/cytoscape.jar" todir="${release.dir}"/>
  
-	<!-- Add All other JARs to Obfuscated Cytoscape Jar File -->
+	<!-- Add All other JARs to Cytoscape Jar File -->
 	<delete dir="${dist.dir}/temp"/>
 	<mkdir dir="${dist.dir}/temp"/>
 	<unjar dest="${dist.dir}/temp">
