@@ -28,9 +28,6 @@ import y.layout.hierarchic.*;
 import y.layout.organic.OrganicLayouter;
 import y.layout.random.RandomLayouter;
 
-import cytoscape.dialogs.ShrinkExpandGraph;
-import cytoscape.dialogs.ShrinkExpandGraphUI;
-
 import y.io.YGFIOHandler;
 import y.io.GMLIOHandler;
 
@@ -48,9 +45,11 @@ import y.view.Graph2DPrinter;
 
 
 import cytoscape.data.*;
+import cytoscape.data.annotation.*;
 import cytoscape.data.readers.*;
 import cytoscape.data.servers.*;
 import cytoscape.dialogs.*;
+import cytoscape.browsers.*;
 import cytoscape.layout.*;
 import cytoscape.vizmap.*;
 import cytoscape.view.*;
@@ -66,7 +65,7 @@ import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 //-----------------------------------------------------------------------------------
-public class CytoscapeWindow extends JPanel implements FilterDialogClient, Graph2DSelectionListener { // implements VizChooserClient {
+public class CytoscapeWindow extends JPanel implements FilterDialogClient, Graph2DSelectionListener {
 
   protected static final int DEFAULT_WIDTH = 700;
   protected static final int DEFAULT_HEIGHT = 700;
@@ -79,7 +78,7 @@ public class CytoscapeWindow extends JPanel implements FilterDialogClient, Graph
 
   protected JFrame mainFrame;
   protected JMenuBar menuBar;
-  protected JMenu opsMenu, vizMenu, selectMenu, layoutMenu;
+  protected JMenu opsMenu, vizMenu, selectSubmenu, layoutMenu;
   protected JToolBar toolbar;
   protected JLabel infoLabel;
 
@@ -94,7 +93,7 @@ public class CytoscapeWindow extends JPanel implements FilterDialogClient, Graph
   protected ViewMode editGraphMode  = new EditGraphMode ();
   protected ViewMode readOnlyGraphMode = new ReadOnlyGraphMode ();
   protected ViewMode currentGraphMode = readOnlyGraphMode;
-  protected ViewMode nodeAttributesPopupMode = new NodeAttributesPopupMode ();
+  protected ViewMode nodeAttributesPopupMode = new NodeBrowsingMode ();
   protected ViewMode currentPopupMode = nodeAttributesPopupMode;
   protected boolean viewModesInstalled = false;
 
@@ -144,11 +143,9 @@ public CytoscapeWindow (cytoscape parentApp,
                         boolean doFreshLayout)
    throws Exception
 {
+  // System.out.println ("--- constructing CytoscapeWindow in cstest0");
   this.parentApp = parentApp;
   this.logger = logger;
-  // do not set graph yet - set it using setGraph() function below
-  // dramage 2002-08-16
-  // this.graph = graph;
   this.geometryFilename = geometryFilename;
   this.expressionDataFilename = expressionDataFilename;
   this.bioDataServer = bioDataServer;
@@ -176,9 +173,12 @@ public CytoscapeWindow (cytoscape parentApp,
   else
     this.windowTitle = title;
 
-  initializeWidgets ();
 
-  setGraph(graph);
+  initializeWidgets ();
+  toolbar.add (new AnnotationGui (CytoscapeWindow.this));
+  setGraph (graph);
+
+  assignSpeciesAttributeToAllNodes ();
   displayCommonNodeNames ();
   displayNewGraph (doFreshLayout);
 
@@ -190,7 +190,9 @@ public CytoscapeWindow (cytoscape parentApp,
   // will often need access to all of the parts of a fully
   // instantiated CytoscapeWindow
 
-  loadPlugins();
+  loadPlugins ();
+  setPopupMode (new NodeBrowsingMode ());
+
 } // ctor
 //------------------------------------------------------------------------------
 /**
@@ -217,9 +219,11 @@ protected void setupLogging ()
 } // setupLogging
 
 //------------------------------------------------------------------------------
-public BioDataServer getBioDataServer(){
-    return this.bioDataServer;
-}//getBioDataServer 
+public BioDataServer getBioDataServer ()
+{
+ return this.bioDataServer;
+
+} // getBioDataServer 
 //------------------------------------------------------------------------------
 public Logger getLogger ()
 {
@@ -240,16 +244,16 @@ public void loadPlugins () {
 
     // load plugins
     PluginLoader pluginLoader
-	= new PluginLoader (this, config, nodeAttributes, edgeAttributes);
+        = new PluginLoader (this, config, nodeAttributes, edgeAttributes);
 
     pluginLoader.load ();
     logger.info (pluginLoader.getMessages ());
 
     // add default unselectable "no plugins loaded" if none loaded
     if (opsMenu.getItemCount() == 0) {
-	JMenuItem none = new JMenuItem("No plugins loaded");
-	none.setEnabled(false);
-	opsMenu.add(none);
+        JMenuItem none = new JMenuItem("No plugins loaded");
+        none.setEnabled(false);
+        opsMenu.add(none);
     }
 }
 
@@ -294,31 +298,25 @@ public void setCurrentDirectory(File dir) {
     currentDirectory = dir;
 }
 //------------------------------------------------------------------------------
-public void setGraph (Graph2D graph) {
-    // remove old selection listener - dramage 2002.08.16
-    if (this.graph != null) {
-	this.graph.removeGraph2DSelectionListener(this);
+public void setGraph (Graph2D graph) 
+{
+  if (this.graph != null) {
+   this.graph.removeGraph2DSelectionListener(this);
+   if (undoManager != null)
+     this.graph.removeGraphListener(undoManager);
+   }
 
-      // remove UndoManager as graph listener if necessary
-      if (undoManager != null)
-          this.graph.removeGraphListener(undoManager);
-    }
-
-    this.graph = graph;
-
-    // register the window as a selection listener - dramage 2002.08.16
-    graph.addGraph2DSelectionListener(this);
-
-    // create a new UndoManager for this graph
-    undoManager = new CytoscapeUndoManager(this, graph);
-    graph.addGraphListener(undoManager);
-    updateUndoRedoMenuItemStatus();
-
-    // create the graph hider
-    graphHider = new UndoableGraphHider (graph, undoManager);
+  this.graph = graph;
+  graph.addGraph2DSelectionListener(this);
+  undoManager = new CytoscapeUndoManager(this, graph);
+  graph.addGraphListener(undoManager);
+  updateUndoRedoMenuItemStatus();
+  graphHider = new UndoableGraphHider (graph, undoManager);
     
-    setLayouterAndGraphView();
-}
+  setLayouterAndGraphView();
+  // displayCommonNodeNames ();
+
+} // setGraph
 //-----------------------------------------------------------------------------
 public Graph2DView getGraphView(){
     return graphView;
@@ -367,9 +365,9 @@ public void updateStatusText (int nodeAdjust, int edgeAdjust) {
     int edgeCount = graph.edgeCount();
     int selectedEdges = graph.selectedEdges().size() + edgeAdjust;
     infoLabel.setText ("  Nodes: " + nodeCount
-		       + " ("+selectedNodes+" selected)"
-		       + " Edges: " + edgeCount
-		       + " ("+selectedEdges+" selected)");
+                       + " ("+selectedNodes+" selected)"
+                       + " Edges: " + edgeCount
+                       + " ("+selectedEdges+" selected)");
 }
 
 /**
@@ -384,11 +382,11 @@ public void updateStatusText (int nodeAdjust, int edgeAdjust) {
  */
 public void selectionStateChanged(Graph2DSelectionEvent e) {
     if (e.isEdgeSelection()) {
-	updateStatusText(0,
-			 (graph.isSelected((Edge)e.getSubject()) ? -1 : +1));
+        updateStatusText(0,
+                         (graph.isSelected((Edge)e.getSubject()) ? -1 : +1));
     } else if (e.isNodeSelection()) {
-	updateStatusText((graph.isSelected((Node)e.getSubject()) ? -1 : +1),
-			 0);
+        updateStatusText((graph.isSelected((Node)e.getSubject()) ? -1 : +1),
+                         0);
     }
 }
 
@@ -476,6 +474,16 @@ public String getCanonicalNodeName (Node node)
 
 } // getCanonicalNodeName
 //------------------------------------------------------------------------------
+protected void assignSpeciesAttributeToAllNodes ()
+{
+  Node [] nodes = graphView.getGraph2D().getNodeArray();
+  for (int i=0; i < nodes.length; i++)
+    nodeAttributes.set ("species", 
+                        nodeAttributes.getCanonicalName (nodes [i]), 
+                        getSpecies (nodes [i]));
+
+} // assignSpeciesAttributeToAllNodes
+//------------------------------------------------------------------------------
 public String getDefaultSpecies ()
 {
   String species = config.getDefaultSpeciesName ();
@@ -498,15 +506,39 @@ public String getSpecies (Node node)
 
 } // getSpecies
 //------------------------------------------------------------------------------
+public String [] getAllSpecies ()
+{
+  Vector list = new Vector ();
+  Node [] nodes = graphView.getGraph2D().getNodeArray();
+  for (int i=0; i < nodes.length; i++) {
+    String species = getSpecies (nodes [i]);
+    if (!list.contains (species) && species != null)
+      list.add (species);
+    } // for i
+
+  return (String []) list.toArray (new String [0]);
+
+} // getAllSpecies
+//------------------------------------------------------------------------------
 protected void displayNewGraph (boolean doLayout)
 {
   if (graph == null)
       setGraph(new Graph2D ());
 
-  OrganicLayouter ol = new OrganicLayouter ();
-  ol.setActivateDeterministicMode (true);
-  ol.setPreferredEdgeLength (80);
-  layouter = ol;
+  String defaultLayoutStrategy = config.getDefaultLayoutStrategy ();
+  if (defaultLayoutStrategy.equals ("hierarchical"))
+    layouter = new HierarchicLayouter ();
+  else if (defaultLayoutStrategy.equals ("circular"))
+    layouter = new CircularLayouter ();
+  else if (defaultLayoutStrategy.equals ("embedded"))
+    layouter = new EmbeddedLayouter();
+  else if (defaultLayoutStrategy.equals ("organic")) {
+    OrganicLayouter ol = new OrganicLayouter ();
+    ol.setActivateDeterministicMode (true);
+    ol.setPreferredEdgeLength (80);
+    layouter = ol;
+    }
+
   graphView.setGraph2D (graph);
 
   this.redrawGraph(doLayout);
@@ -516,23 +548,31 @@ protected void displayNewGraph (boolean doLayout)
 
 } // displayGraph
 //------------------------------------------------------------------------------
-protected void setLayouterAndGraphView(){
+protected void setLayouterAndGraphView ()
+{
+  if (graph == null)
+   setGraph (new Graph2D ());
     
-    if(graph == null){
-	setGraph (new Graph2D ());
-    }
-	
-    
+  String defaultLayoutStrategy = config.getDefaultLayoutStrategy ();
+  if (defaultLayoutStrategy.equals ("hierarchical"))
+    layouter = new HierarchicLayouter ();
+  else if (defaultLayoutStrategy.equals ("circular"))
+    layouter = new CircularLayouter ();
+  else if (defaultLayoutStrategy.equals ("embedded"))
+    layouter = new EmbeddedLayouter();
+  else if (defaultLayoutStrategy.equals ("organic")) {
     OrganicLayouter ol = new OrganicLayouter ();
     ol.setActivateDeterministicMode (true);
     ol.setPreferredEdgeLength (80);
     layouter = ol;
-    graphView.setGraph2D (graph);
-    
-    graphView.fitContent ();
-    graphView.setZoom (graphView.getZoom ()*0.9); 
-}
+    }
 
+  graphView.setGraph2D (graph);
+    
+  graphView.fitContent ();
+  graphView.setZoom (graphView.getZoom ()*0.9); 
+
+}
 //------------------------------------------------------------------------------
 protected void applyVizmapSettings ()
 {
@@ -553,17 +593,17 @@ protected void applyVizmapSettings ()
     String canonicalName = nodeAttributes.getCanonicalName (node);
     HashMap bundle = nodeAttributes.getAttributes (canonicalName);
     Color nodeColor =
-	vizMapperCategories.getNodeFillColor(bundle, vizMapper);
+        vizMapperCategories.getNodeFillColor(bundle, vizMapper);
     Color nodeBorderColor =
-	vizMapperCategories.getNodeBorderColor(bundle, vizMapper);
+        vizMapperCategories.getNodeBorderColor(bundle, vizMapper);
     LineType nodeBorderLinetype = 
-	vizMapperCategories.getNodeBorderLineType(bundle,vizMapper);
+        vizMapperCategories.getNodeBorderLineType(bundle,vizMapper);
     double nodeHeight =
-	vizMapperCategories.getNodeHeight(bundle, vizMapper);
+        vizMapperCategories.getNodeHeight(bundle, vizMapper);
     double nodeWidth =
-	vizMapperCategories.getNodeWidth(bundle, vizMapper);
+        vizMapperCategories.getNodeWidth(bundle, vizMapper);
     byte nodeShape =
-	vizMapperCategories.getNodeShape(bundle, vizMapper);
+        vizMapperCategories.getNodeShape(bundle, vizMapper);
     
     NodeRealizer nr = graphView.getGraph2D().getRealizer(node);
     nr.setFillColor (nodeColor);
@@ -572,8 +612,8 @@ protected void applyVizmapSettings ()
     nr.setHeight(nodeHeight);
     nr.setWidth(nodeWidth);
     if (nr instanceof ShapeNodeRealizer) {
-	ShapeNodeRealizer snr = (ShapeNodeRealizer)nr;
-	snr.setShapeType(nodeShape);
+        ShapeNodeRealizer snr = (ShapeNodeRealizer)nr;
+        snr.setShapeType(nodeShape);
     }
   } // for i
 
@@ -620,8 +660,36 @@ public GraphObjAttributes getNodeAttributes ()
   return nodeAttributes;
 }
 //------------------------------------------------------------------------------
-public void setNodeAttributes(GraphObjAttributes nodeAttributes){
-    this.nodeAttributes = nodeAttributes;
+public void setNodeAttributes (GraphObjAttributes newValue)
+{
+  nodeAttributes = newValue;
+  nodeAttributes.clearNameMap ();
+  Node [] nodes = graphView.getGraph2D().getNodeArray();
+
+  for (int i=0; i < nodes.length; i++) {
+    String canonicalName = nodes [i].toString ();
+    nodeAttributes.addNameMapping (canonicalName, nodes [i]);
+    }
+
+  displayCommonNodeNames ();
+  
+}
+//------------------------------------------------------------------------------
+public void setNodeAttributes (GraphObjAttributes newValue, boolean skipAddNameMapping)
+{
+  nodeAttributes = newValue;
+  if (!skipAddNameMapping) {
+    nodeAttributes.clearNameMap ();
+    Node [] nodes = graphView.getGraph2D().getNodeArray();
+    for (int i=0; i < nodes.length; i++) {
+      String canonicalName = nodes [i].toString ();
+      System.out.println ("-- adding name mapping for node " + nodes [i] + "   canonical: " + canonicalName);
+      nodeAttributes.addNameMapping (canonicalName, nodes [i]);
+      }
+    }
+
+  displayCommonNodeNames ();
+  
 }
 //------------------------------------------------------------------------------
 public GraphObjAttributes getEdgeAttributes ()
@@ -636,7 +704,7 @@ public void setEdgeAttributes(GraphObjAttributes edgeAttributes){
 /**
  * 
  */
-protected void displayCommonNodeNames ()
+public void displayCommonNodeNames ()
 {
   if (bioDataServer == null) return;
 
@@ -648,11 +716,12 @@ protected void displayCommonNodeNames ()
     String newName = r.getLabelText ();  // we hope to replace this 
     String canonicalName = getCanonicalNodeName (node);
     try {
-      String [] synonyms = bioDataServer.getSynonyms (canonicalName);
+      String [] synonyms = bioDataServer.getAllCommonNames (getDefaultSpecies (), canonicalName);
       if (synonyms.length > 0) {
         newName = synonyms [0];
         }
-      nodeAttributes.add ("commonName", canonicalName, newName);
+      nodeAttributes.set ("commonName", canonicalName, newName);
+      // System.out.println ("setting node attribute commonName for " + canonicalName + " to " + newName);
       r.setLabelText (newName);
       }
     catch (Exception ignoreForNow) {;}
@@ -672,10 +741,10 @@ public void displayNodeLabels (String key)
     Node [] nodes = graph.getNodeArray ();
 
     for (int i=0; i < nodes.length; i++) {
-	Node node = nodes [i];
-	String canonicalName = getCanonicalNodeName(node);
-	String newName = "";
-	if(!(key.equals("canonicalName"))) {
+        Node node = nodes [i];
+        String canonicalName = getCanonicalNodeName(node);
+        String newName = "";
+        if(!(key.equals("canonicalName"))) {
             if (nodeAttributes.getClass (key) == "string".getClass ())
                newName = nodeAttributes.getStringValue (key, canonicalName);
             else {
@@ -684,11 +753,11 @@ public void displayNodeLabels (String key)
               if(newObjectWithName != null)
                 newName = newObjectWithName.toString();
               }
-	} // if key is not canonicalName
-	else
-	    newName = canonicalName;
-	NodeRealizer r = graphView.getGraph2D().getRealizer(node);
-	r.setLabelText (newName);
+        } // if key is not canonicalName
+        else
+            newName = canonicalName;
+        NodeRealizer r = graphView.getGraph2D().getRealizer(node);
+        r.setLabelText (newName);
     } // for i
     
 } // displayNodeLabels
@@ -705,7 +774,7 @@ public JMenu getVizMenu ()
 //------------------------------------------------------------------------------
 public JMenu getSelectMenu ()
 {
-  return selectMenu;
+  return selectSubmenu;
 }
 //------------------------------------------------------------------------------
 public JMenu getLayoutMenu ()
@@ -720,6 +789,18 @@ public void setPopupMode (PopupMode newMode)
   if (currentPopupMode != null) {
     graphView.removeViewMode (currentPopupMode);
     currentPopupMode = newMode;
+      // todo (pshannon, 23 oct 2002): a terrible hack! 
+      // find a way to remove this special case, perhaps by adjusting 
+      // CytoscapeWindow's ctor so that modes are installed only after
+      // the CW is well initialized.  but since the y-supplied nodes no
+      // nothing about their CytoscapeWindow parent, this is again a special
+      // case.  this problem did not arise in the previous version because our
+      // cytocape-aware mode was an inner class of CW, and thus could gain
+      // access to CW data without being explicitly constructed with a CW reference.
+    if (newMode instanceof NodeBrowsingMode) {
+      NodeBrowsingMode m = (NodeBrowsingMode) newMode;
+      m.set (CytoscapeWindow.this);
+      }
     }
 
   graphView.addViewMode (newMode);
@@ -731,7 +812,7 @@ public void setInteractivity (boolean newState)
   if (newState == true) { // turn interactivity ON
     if (!viewModesInstalled) {
       graphView.addViewMode (currentGraphMode);
-      graphView.addViewMode (currentPopupMode);
+      if (currentPopupMode != null) graphView.addViewMode (currentPopupMode);
       viewModesInstalled = true;
       }
     graphView.setViewCursor (defaultCursor);
@@ -752,7 +833,7 @@ public void setInteractivity (boolean newState)
 
     // deny new undo entries - added by dramage 2002-08-23
     if (undoManager != null)
-	undoManager.pause();
+        undoManager.pause();
     }
 
 } // setInteractivity
@@ -812,8 +893,12 @@ protected JMenuBar createMenuBar ()
   deleteSelectionMenuItem = editMenu.add (new DeleteSelectedAction ());
   deleteSelectionMenuItem.setEnabled (false);
 
+  JMenu selectMenu = new JMenu ("Select");
+  menuBar.add (selectMenu);
+  mi = selectMenu.add (new EdgeManipulationAction ());
   JMenu viewMenu = new JMenu ("View");
   menuBar.add (viewMenu);
+
   JMenu displayNWSubMenu = new JMenu("New Window");
   viewMenu.add(displayNWSubMenu);
   mi = displayNWSubMenu.add(new NewWindowSelectedNodesOnlyAction());
@@ -835,15 +920,14 @@ protected JMenuBar createMenuBar ()
   viewMenu.add(viewEdgeSubMenu);
   viewEdgeSubMenu.add(new InvertSelectedEdgesAction());
   viewEdgeSubMenu.add(new HideSelectedEdgesAction());
-  JMenu selectMenu = new JMenu("Select");
-  viewMenu.add(selectMenu);
-  selectMenu.add (new EdgeTypeDialogAction ());
-  mi = selectMenu.add (new SelectFirstNeighborsAction ());
+  JMenu selectSubmenu = new JMenu("Select");
+  viewMenu.add(selectSubmenu);
+  selectSubmenu.add (new EdgeTypeDialogAction ());
+  mi = selectSubmenu.add (new SelectFirstNeighborsAction ());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_F, ActionEvent.CTRL_MASK));
-  selectMenu.add (new AlphabeticalSelectionAction ());
-  selectMenu.add (new ListFromFileSelectionAction ());
-  selectMenu.add (new MenuFilterAction ());
-  if (bioDataServer != null) selectMenu.add (new GoIDSelectAction ());
+  selectSubmenu.add (new AlphabeticalSelectionAction ());
+  selectSubmenu.add (new ListFromFileSelectionAction ());
+  selectSubmenu.add (new MenuFilterAction ());
 
   ButtonGroup layoutGroup = new ButtonGroup ();
   layoutMenu = new JMenu ("Layout");
@@ -889,8 +973,8 @@ protected JMenuBar createMenuBar ()
   alignSubMenu.add (new AlignVerticalAction   ());
   layoutMenu.add(new RotateSelectedNodesAction());
   layoutMenu.add(new ReduceEquivalentNodesAction());
-  ShrinkExpandGraphUI shrinkExpand = new ShrinkExpandGraphUI(this);  
 
+  ShrinkExpandGraphUI shrinkExpand = new ShrinkExpandGraphUI(this);  
   vizMenu = new JMenu ("Visualization"); // always create the viz menu
   menuBar.add (vizMenu);
   vizMenu.add (new SetVisualPropertiesAction ());
@@ -916,6 +1000,7 @@ protected JToolBar createToolBar ()
   // bar.add (new RenderAction ());
   bar.addSeparator ();
   bar.add (new MainFilterDialogAction());
+  // bar.add (new AnnotationGui (CytoscapeWindow.this));
 
   bar.addSeparator ();
   // bar.add (new AppearanceControllerLauncherAction (nodeAttributes, edgeAttributes));
@@ -945,18 +1030,18 @@ protected void showNodesByName (String [] nodeNames)
     // construct a hash of the nodeNames
     Hashtable namedNodes = new Hashtable();
     for (int n=0; n < nodeNames.length; n++) {
-	nodeNames[n].toLowerCase();
-	namedNodes.put(nodeNames[n],Boolean.TRUE);
+        nodeNames[n].toLowerCase();
+        namedNodes.put(nodeNames[n],Boolean.TRUE);
     }
     
     // if a node in the graph isn't in the hash, hide it.
     for (int i=0; i < nodes.length; i++) {
-	String graphNodeName = getCanonicalNodeName (nodes [i]);
-	graphNodeName.toLowerCase();
-	Boolean select = (Boolean) namedNodes.get(graphNodeName);
-	if(select==null) {
-	    graphHider.hide (nodes [i]);
-	}
+        String graphNodeName = getCanonicalNodeName (nodes [i]);
+        graphNodeName.toLowerCase();
+        Boolean select = (Boolean) namedNodes.get(graphNodeName);
+        if(select==null) {
+            graphHider.hide (nodes [i]);
+        }
     }
     redrawGraph ();
 
@@ -999,23 +1084,23 @@ public void selectNodesByName (String [] nodeNames, boolean clearAllSelectionsFi
     // construct a hash of the nodeNames
     Hashtable namedNodes = new Hashtable();
     for (int n=0; n < nodeNames.length; n++) {
-	nodeNames[n].toLowerCase();
-	namedNodes.put(nodeNames[n],Boolean.TRUE);
+        nodeNames[n].toLowerCase();
+        namedNodes.put(nodeNames[n],Boolean.TRUE);
     }
 
     // if a node in the graph is in the hash, select it;
     // if not, and clearAllSelectionsFirst is true, unselect it.
     for (int i=0; i < nodes.length; i++) {
-	String graphNodeName = getCanonicalNodeName (nodes [i]);
-	NodeRealizer nodeRealizer = graphView.getGraph2D().getRealizer(nodes [i]);
-	graphNodeName.toLowerCase();
-	Boolean select = (Boolean) namedNodes.get(graphNodeName);
-	if(select!=null) {
-	    nodeRealizer.setSelected (true);
-	}
-	else if (clearAllSelectionsFirst) {
-	    nodeRealizer.setSelected (false);
-	}
+        String graphNodeName = getCanonicalNodeName (nodes [i]);
+        NodeRealizer nodeRealizer = graphView.getGraph2D().getRealizer(nodes [i]);
+        graphNodeName.toLowerCase();
+        Boolean select = (Boolean) namedNodes.get(graphNodeName);
+        if(select!=null) {
+            nodeRealizer.setSelected (true);
+        }
+        else if (clearAllSelectionsFirst) {
+            nodeRealizer.setSelected (false);
+        }
     }
     redrawGraph ();
 
@@ -1045,11 +1130,11 @@ public void selectNodesByName (String [] nodeNames, boolean clearAllSelectionsFi
 // added by jtwang 30 Sep 2002
 public void selectEdges (Edge[] edgesToSelect, boolean clearAllSelectionsFirst) {
     if (clearAllSelectionsFirst)
-	graph.unselectEdges();
+        graph.unselectEdges();
     
     for (int i = 0; i < edgesToSelect.length; i++) {
-	EdgeRealizer eR = graph.getRealizer(edgesToSelect[i]);
-	eR.setSelected(true);
+        EdgeRealizer eR = graph.getRealizer(edgesToSelect[i]);
+        eR.setSelected(true);
     }
 
     redrawGraph();
@@ -1095,19 +1180,19 @@ public void selectNodes (Node [] nodesToSelect, boolean clearAllSelectionsFirst)
 //-----------------------------------------------------------------------------
 public void deselectAllNodes(boolean redrawGraph){
     if(redrawGraph){
-	deselectAllNodes();
+        deselectAllNodes();
     }else{
-	// fixed by jtwang 30 Sep 2002
-	graph.unselectNodes();
-	/*
-	//Graph2D g = graphView.getGraph2D();
-	//Node [] nodes = graphView.getGraph2D().getNodeArray();
-	Node [] nodes = graph.getNodeArray();
-	for (int i=0; i < nodes.length; i++) {
-	    //NodeRealizer nodeRealizer = graphView.getGraph2D().getRealizer(nodes [i]);
-	    //nodeRealizer.setSelected (false);
-	    this.graph.setSelected(nodes[i],false);
-	    } // for i */
+        // fixed by jtwang 30 Sep 2002
+        graph.unselectNodes();
+        /*
+        //Graph2D g = graphView.getGraph2D();
+        //Node [] nodes = graphView.getGraph2D().getNodeArray();
+        Node [] nodes = graph.getNodeArray();
+        for (int i=0; i < nodes.length; i++) {
+            //NodeRealizer nodeRealizer = graphView.getGraph2D().getRealizer(nodes [i]);
+            //nodeRealizer.setSelected (false);
+            this.graph.setSelected(nodes[i],false);
+            } // for i */
     }
     
 }
@@ -1147,7 +1232,7 @@ protected void selectNodesStartingWith (String key)
       matched = true;
     else if (bioDataServer != null) {
       try {
-        String [] synonyms = bioDataServer.getSynonyms (nodeName);
+        String [] synonyms = bioDataServer.getAllCommonNames (getSpecies (nodes [i]), nodeName);
         for (int s=0; s < synonyms.length; s++)
           if (synonyms [s].toLowerCase().startsWith (key)) {
             matched = true;
@@ -1180,7 +1265,7 @@ protected void additionallySelectNodesMatching (String key)
       matched = true;
     else if (bioDataServer != null) {
       try {
-        String [] synonyms = bioDataServer.getSynonyms (nodeName);
+        String [] synonyms = bioDataServer.getAllCommonNames (getSpecies (nodes [i]), nodeName);
         for (int s=0; s < synonyms.length; s++)
           if (synonyms [s].equalsIgnoreCase (key)) {
             matched = true;
@@ -1190,7 +1275,7 @@ protected void additionallySelectNodesMatching (String key)
       catch (Exception ignoreForNow) {;}
       } // else if: checking synonyms
     if(matched)
-	setNodeSelected (nodes [i], true);
+        setNodeSelected (nodes [i], true);
     } // for i
 
   setInteractivity (true);
@@ -1201,76 +1286,20 @@ protected void additionallySelectNodesMatching (String key)
 protected String findCanonicalName(String key) {
     String canonicalName = key;
     if (bioDataServer != null) {
-	try {
-	    String [] synonyms = bioDataServer.getSynonyms(key);
-	    for (int s = 0; s < synonyms.length; s++) {
-		String sname = synonyms[s];
-		if (sname.equalsIgnoreCase (key)) {
-		    canonicalName = sname;
-		    break;
-		}
-	    }
-	} catch (Exception ignoreForNow) {;}
+        try {
+            String [] synonyms = bioDataServer.getAllCommonNames (getDefaultSpecies (), key);
+            for (int s = 0; s < synonyms.length; s++) {
+                String sname = synonyms[s];
+                if (sname.equalsIgnoreCase (key)) {
+                    canonicalName = sname;
+                    break;
+                }
+            }
+        } catch (Exception ignoreForNow) {;}
     }
     return canonicalName;
 } // else if: checking synonyms
 
-protected void selectNodesSharingGoID (int goID)
-{
-  setInteractivity (false);
-  Graph2D g = graphView.getGraph2D();
-  Node [] nodes = graphView.getGraph2D().getNodeArray();
-
-  try {
-    for (int n=0; n < nodes.length; n++) {
-      String nodeName = graphView.getGraph2D().getLabelText (nodes [n]);
-      int [] bioProcessIDs = bioDataServer.getBioProcessIDs (nodeName);
-      int [] molFuncIDs = bioDataServer.getMolecularFunctionIDs (nodeName);
-      int [] cellularComponentIDs = bioDataServer.getCellularComponentIDs (nodeName);
-      int [] allIDs = new int [bioProcessIDs.length +
-                               molFuncIDs.length +
-                               cellularComponentIDs.length];
-      int d=0;  // destination (allIDs) index
-  
-      for (int i=0; i < bioProcessIDs.length; i++)
-        allIDs [d++] = bioProcessIDs [i];
-  
-      for (int i=0; i < molFuncIDs.length; i++)
-        allIDs [d++] = molFuncIDs [i];
-  
-      for (int i=0; i < cellularComponentIDs.length; i++)
-        allIDs [d++] = cellularComponentIDs [i];
-  
-      Vector allPaths = new Vector ();
-      for (int i=0; i < allIDs.length; i++) {
-        Vector tmp = bioDataServer.getAllBioProcessPaths (allIDs [i]);
-        for (int t=0; t < tmp.size (); t++)
-          allPaths.addElement (tmp.elementAt (t));
-        } // for i
-  
-      boolean matched = false;
-      for (int v=0; v < allPaths.size (); v++) {
-        Vector path = (Vector) allPaths.elementAt (v);
-        for (int p=path.size()-1; p >= 0; p--) {
-          Integer ID = (Integer) path.elementAt (p);
-          int id = ID.intValue ();
-          if (id == goID) {
-            matched = true;
-            // todo: break out of inner and outer loops from here
-            }
-          } // for p
-        } // for v
-      NodeRealizer nodeRealizer = graphView.getGraph2D().getRealizer(nodes [n]);
-      nodeRealizer.setSelected (matched);
-      } // for n
-    } // try
-  catch (Exception ignoreForNow) {;}
-
-  setInteractivity (true);
-  redrawGraph ();
-
-} // selectNodesSharingGoId
-//------------------------------------------------------------------------------
 protected void setNodeSelected (Node node, boolean visible)
 {
   NodeRealizer r = graphView.getGraph2D().getRealizer(node);
@@ -1322,74 +1351,74 @@ public void applyLayoutSelection() {
     // holding unselected nodes in place
     // OPTIMIZE ME!
     if (layouter.getClass().getName().endsWith("EmbeddedLayouter")) {
-	// data provider of sluggishness for each node
-	NodeMap slug = g.createNodeMap();
-	g.addDataProvider("Cytoscape:slug", slug);
+        // data provider of sluggishness for each node
+        NodeMap slug = g.createNodeMap();
+        g.addDataProvider("Cytoscape:slug", slug);
 
-	for (NodeCursor nc = g.selectedNodes(); nc.ok(); nc.next())
-	    slug.setDouble(nc.node(), 0.5);
+        for (NodeCursor nc = g.selectedNodes(); nc.ok(); nc.next())
+            slug.setDouble(nc.node(), 0.5);
 
-	Node[] nodeList = g.getNodeArray();
-	int nC = g.nodeCount();
-	for (int i = 0; i < nC; i++)
-	    if (slug.getDouble(nodeList[i]) != 0.5)
-		slug.setDouble(nodeList[i], 0.0);
+        Node[] nodeList = g.getNodeArray();
+        int nC = g.nodeCount();
+        for (int i = 0; i < nC; i++)
+            if (slug.getDouble(nodeList[i]) != 0.5)
+                slug.setDouble(nodeList[i], 0.0);
 
-	applyLayout(false);
+        applyLayout(false);
 
-	g.removeDataProvider("Cytoscape:slug");
-	g.disposeNodeMap(slug);
+        g.removeDataProvider("Cytoscape:slug");
+        g.disposeNodeMap(slug);
     }
 
     // special case for OrganicLayouter: layout whole graph, holding
     // unselected nodes in place
     else if (layouter.getClass().getName().endsWith("OrganicLayouter")) {
-	OrganicLayouter ogo = (OrganicLayouter)layouter;
+        OrganicLayouter ogo = (OrganicLayouter)layouter;
 
-	// data provider of selectedness for each node
-	NodeMap s = g.createNodeMap();
-	g.addDataProvider(Layouter.SELECTED_NODES, s);
+        // data provider of selectedness for each node
+        NodeMap s = g.createNodeMap();
+        g.addDataProvider(Layouter.SELECTED_NODES, s);
 
-	for (NodeCursor nc = g.selectedNodes(); nc.ok(); nc.next())
-	    s.setBool(nc.node(), true);
+        for (NodeCursor nc = g.selectedNodes(); nc.ok(); nc.next())
+            s.setBool(nc.node(), true);
 
-	Node[] nodeList = g.getNodeArray();
-	int nC = g.nodeCount();
-	for (int i = 0; i < nC; i++)
-	    if (s.getBool(nodeList[i]) != true)
-		s.setBool(nodeList[i], false);
-	
-	byte oldSphere = ogo.getSphereOfAction();
-	ogo.setSphereOfAction(OrganicLayouter.ONLY_SELECTION);
-	applyLayout(false);
-	ogo.setSphereOfAction(oldSphere);
+        Node[] nodeList = g.getNodeArray();
+        int nC = g.nodeCount();
+        for (int i = 0; i < nC; i++)
+            if (s.getBool(nodeList[i]) != true)
+                s.setBool(nodeList[i], false);
+        
+        byte oldSphere = ogo.getSphereOfAction();
+        ogo.setSphereOfAction(OrganicLayouter.ONLY_SELECTION);
+        applyLayout(false);
+        ogo.setSphereOfAction(oldSphere);
 
-	g.removeDataProvider(Layouter.SELECTED_NODES);
-	g.disposeNodeMap(s);
+        g.removeDataProvider(Layouter.SELECTED_NODES);
+        g.disposeNodeMap(s);
     }
 
 
     // other layouters
     else {
-	logger.warning ("starting layout..."); 
-	setInteractivity (false);
+        logger.warning ("starting layout..."); 
+        setInteractivity (false);
 
-	Subgraph subgraph = new Subgraph(g, g.selectedNodes());
-	layouter.doLayout (subgraph);
-	subgraph.reInsert();
+        Subgraph subgraph = new Subgraph(g, g.selectedNodes());
+        layouter.doLayout (subgraph);
+        subgraph.reInsert();
 
-	// remove bends
-	EdgeCursor cursor = graphView.getGraph2D().edges();
-	cursor.toFirst ();
-	for (int i=0; i < cursor.size(); i++){
-	    Edge target = cursor.edge();
-	    EdgeRealizer e = graphView.getGraph2D().getRealizer(target);
-	    e.clearBends();
-	    cursor.cyclicNext();
-	}
+        // remove bends
+        EdgeCursor cursor = graphView.getGraph2D().edges();
+        cursor.toFirst ();
+        for (int i=0; i < cursor.size(); i++){
+            Edge target = cursor.edge();
+            EdgeRealizer e = graphView.getGraph2D().getRealizer(target);
+            e.clearBends();
+            cursor.cyclicNext();
+        }
 
-	setInteractivity (true);
-	logger.info("  done");
+        setInteractivity (true);
+        logger.info("  done");
     }
 }
 
@@ -1440,8 +1469,8 @@ protected class PrintPropsAction extends AbstractAction   {
       
       String [] attributeNames = nodeAttributes.getAttributeNames ();
       for (int i=0; i < attributeNames.length; i++) {
-	  String attributeName = attributeNames [i];
-	  logger.info(attributeName);
+          String attributeName = attributeNames [i];
+          logger.info(attributeName);
       }
   }
 
@@ -1454,23 +1483,23 @@ protected class SetVisualPropertiesAction extends AbstractAction   {
     MutableString labelKey;
     MutableBool shouldUpdateNodeLabels;
     SetVisualPropertiesAction () {
-	super ("Set Visual Properties");
-	labelKey = new MutableString("canonicalName");
-	shouldUpdateNodeLabels = new MutableBool(false);
+        super ("Set Visual Properties");
+        labelKey = new MutableString("canonicalName");
+        shouldUpdateNodeLabels = new MutableBool(false);
     }
     
     public void actionPerformed (ActionEvent e) {
-	JDialog vizDialog = new VisualPropertiesDialog
-	    (mainFrame, "Set Visual Properties",
-	     vizMapper, nodeAttributes,
-	     edgeAttributes, labelKey,
-	     shouldUpdateNodeLabels);
-	vizDialog.pack ();
-	vizDialog.setLocationRelativeTo (mainFrame);
-	vizDialog.setVisible (true);
+        JDialog vizDialog = new VisualPropertiesDialog
+            (mainFrame, "Set Visual Properties",
+             vizMapper, nodeAttributes,
+             edgeAttributes, labelKey,
+             shouldUpdateNodeLabels);
+        vizDialog.pack ();
+        vizDialog.setLocationRelativeTo (mainFrame);
+        vizDialog.setVisible (true);
 
-	if(shouldUpdateNodeLabels.getBool())
-	    displayNodeLabels(labelKey.getString());
+        if(shouldUpdateNodeLabels.getBool())
+            displayNodeLabels(labelKey.getString());
 
         redrawGraph();
     }
@@ -1492,9 +1521,9 @@ protected void hideSelectedNodes() {
     Graph2D g = graphView.getGraph2D ();
     NodeCursor nc = g.selectedNodes (); 
     while (nc.ok ()) {
-	Node node = nc.node ();
-	graphHider.hide (node);
-	nc.next ();
+        Node node = nc.node ();
+        graphHider.hide (node);
+        nc.next ();
     }
     redrawGraph ();
 }
@@ -1502,9 +1531,9 @@ protected void hideSelectedEdges() {
     Graph2D g = graphView.getGraph2D ();
     EdgeCursor nc = g.selectedEdges (); 
     while (nc.ok ()) {
-	Edge edge = nc.edge ();
-	graphHider.hide (edge);
-	nc.next ();
+        Edge edge = nc.edge ();
+        graphHider.hide (edge);
+        nc.next ();
     }
     redrawGraph ();
 }
@@ -1519,14 +1548,14 @@ protected class InvertSelectedNodesAction extends AbstractAction {
     InvertSelectedNodesAction () { super ("Invert"); }
 
     public void actionPerformed (ActionEvent e) {
-	Graph2D g = graphView.getGraph2D();
-	Node [] nodes = graphView.getGraph2D().getNodeArray();
-	
-	for (int i=0; i < nodes.length; i++) {
-	    NodeRealizer nodeRealizer = graphView.getGraph2D().getRealizer(nodes [i]);
-	    nodeRealizer.setSelected (!nodeRealizer.isSelected());
-	}
-	redrawGraph ();
+        Graph2D g = graphView.getGraph2D();
+        Node [] nodes = graphView.getGraph2D().getNodeArray();
+        
+        for (int i=0; i < nodes.length; i++) {
+            NodeRealizer nodeRealizer = graphView.getGraph2D().getRealizer(nodes [i]);
+            nodeRealizer.setSelected (!nodeRealizer.isSelected());
+        }
+        redrawGraph ();
     }
 }
 protected class HideSelectedEdgesAction extends AbstractAction   {
@@ -1540,14 +1569,14 @@ protected class InvertSelectedEdgesAction extends AbstractAction {
     InvertSelectedEdgesAction () { super ("Invert"); }
 
     public void actionPerformed (ActionEvent e) {
-	Graph2D g = graphView.getGraph2D();
-	Edge [] edges = graphView.getGraph2D().getEdgeArray();
-	
-	for (int i=0; i < edges.length; i++) {
-	    EdgeRealizer edgeRealizer = graphView.getGraph2D().getRealizer(edges [i]);
-	    edgeRealizer.setSelected (!edgeRealizer.isSelected());
-	}
-	redrawGraph ();
+        Graph2D g = graphView.getGraph2D();
+        Edge [] edges = graphView.getGraph2D().getEdgeArray();
+        
+        for (int i=0; i < edges.length; i++) {
+            EdgeRealizer edgeRealizer = graphView.getGraph2D().getRealizer(edges [i]);
+            edgeRealizer.setSelected (!edgeRealizer.isSelected());
+        }
+        redrawGraph ();
     }
 }
 //------------------------------------------------------------------------------
@@ -1636,16 +1665,16 @@ protected class HierarchicalLayoutAction extends AbstractAction   {
     HierarchicalLayoutAction () { super ("Hierarchical"); }
     
     public void actionPerformed (ActionEvent e) {
-	
-      /********************/
-	if (hDialog == null)
-	    hDialog = new HierarchicalLayoutDialog (mainFrame);
-	hDialog.pack ();
-	hDialog.setLocationRelativeTo (mainFrame);
-	hDialog.setVisible (true);
-	layouter = hDialog.getLayouter();
-      /********************/
-      //layouter = new HierarchicLayouter ();
+        
+      /********************
+        if (hDialog == null)
+            hDialog = new HierarchicalLayoutDialog (mainFrame);
+        hDialog.pack ();
+        hDialog.setLocationRelativeTo (mainFrame);
+        hDialog.setVisible (true);
+        layouter = hDialog.getLayouter();
+      ********************/
+      layouter = new HierarchicLayouter ();
     }
 }
 //------------------------------------------------------------------------------
@@ -1673,7 +1702,7 @@ protected class EmbeddedLayoutAction extends AbstractAction {
     EmbeddedLayoutAction () { super("Embedded"); }
 
     public void actionPerformed (ActionEvent e) {
-	layouter = new EmbeddedLayouter();
+        layouter = new EmbeddedLayouter();
     }
 }
 
@@ -1683,33 +1712,33 @@ protected class AlignHorizontalAction extends AbstractAction {
     AlignHorizontalAction () { super ("Horizontal"); }
 
     public void actionPerformed (ActionEvent e) {
-	// remember state for undo - dramage 2002-08-22
-	undoManager.saveRealizerState();
-	undoManager.pause();
+        // remember state for undo - dramage 2002-08-22
+        undoManager.saveRealizerState();
+        undoManager.pause();
 
-	// compute average Y coordinate
-	double avgYcoord=0;
-	int numSelected=0;
-	for (NodeCursor nc = graph.nodes(); nc.ok(); nc.next()) {
-	    Node n = nc.node();
-	    if (graph.isSelected(n)) {
-		avgYcoord += graph.getY(n);
-		numSelected++;
-	    }
-	}
-	avgYcoord /= numSelected;
-	
-	// move all nodes to average Y coord
-	for (NodeCursor nc = graph.nodes(); nc.ok(); nc.next()) {
-	    Node n = nc.node();
-	    if (graph.isSelected(n))
-		graph.setLocation(n, graph.getX(n), avgYcoord);
-	}
+        // compute average Y coordinate
+        double avgYcoord=0;
+        int numSelected=0;
+        for (NodeCursor nc = graph.nodes(); nc.ok(); nc.next()) {
+            Node n = nc.node();
+            if (graph.isSelected(n)) {
+                avgYcoord += graph.getY(n);
+                numSelected++;
+            }
+        }
+        avgYcoord /= numSelected;
+        
+        // move all nodes to average Y coord
+        for (NodeCursor nc = graph.nodes(); nc.ok(); nc.next()) {
+            Node n = nc.node();
+            if (graph.isSelected(n))
+                graph.setLocation(n, graph.getX(n), avgYcoord);
+        }
 
-	// resume undo manager's listener - dramage
-	undoManager.resume();
+        // resume undo manager's listener - dramage
+        undoManager.resume();
 
-	redrawGraph();
+        redrawGraph();
     }
 }
 
@@ -1717,33 +1746,33 @@ protected class AlignVerticalAction extends AbstractAction {
     AlignVerticalAction () { super ("Vertical"); }
 
     public void actionPerformed (ActionEvent e) {
-	// remember state for undo - dramage 2002-08-22
-	undoManager.saveRealizerState();
-	undoManager.pause();
+        // remember state for undo - dramage 2002-08-22
+        undoManager.saveRealizerState();
+        undoManager.pause();
 
-	// compute average X coordinate
-	double avgXcoord=0;
-	int numSelected=0;
-	for (NodeCursor nc = graph.nodes(); nc.ok(); nc.next()) {
-	    Node n = nc.node();
-	    if (graph.isSelected(n)) {
-		avgXcoord += graph.getX(n);
-		numSelected++;
-	    }
-	}
-	avgXcoord /= numSelected;
-	
-	// move all nodes to average X coord
-	for (NodeCursor nc = graph.nodes(); nc.ok(); nc.next()) {
-	    Node n = nc.node();
-	    if (graph.isSelected(n))
-		graph.setLocation(n, avgXcoord, graph.getY(n));
-	}
+        // compute average X coordinate
+        double avgXcoord=0;
+        int numSelected=0;
+        for (NodeCursor nc = graph.nodes(); nc.ok(); nc.next()) {
+            Node n = nc.node();
+            if (graph.isSelected(n)) {
+                avgXcoord += graph.getX(n);
+                numSelected++;
+            }
+        }
+        avgXcoord /= numSelected;
+        
+        // move all nodes to average X coord
+        for (NodeCursor nc = graph.nodes(); nc.ok(); nc.next()) {
+            Node n = nc.node();
+            if (graph.isSelected(n))
+                graph.setLocation(n, avgXcoord, graph.getY(n));
+        }
 
-	// resume undo manager's listener - dramage
-	undoManager.resume();
+        // resume undo manager's listener - dramage
+        undoManager.resume();
 
-	redrawGraph();
+        redrawGraph();
     }
 }
 
@@ -1756,12 +1785,12 @@ protected class RotateSelectedNodesAction extends AbstractAction {
     RotateSelectedNodesAction () { super ("Rotate Selected Nodes"); }
 
     public void actionPerformed (ActionEvent e) {
-	undoManager.saveRealizerState();
-	undoManager.pause();
-	RotateSelectionDialog d = new RotateSelectionDialog(mainFrame,
-							 CytoscapeWindow.this,
-							    graph);
-	undoManager.resume();
+        undoManager.saveRealizerState();
+        undoManager.pause();
+        RotateSelectionDialog d = new RotateSelectionDialog(mainFrame,
+                                                         CytoscapeWindow.this,
+                                                            graph);
+        undoManager.resume();
     }
 }
 
@@ -1769,7 +1798,7 @@ protected class RotateSelectedNodesAction extends AbstractAction {
 
 protected class ReduceEquivalentNodesAction extends AbstractAction  {
     ReduceEquivalentNodesAction () {
-	super ("Reduce Equivalent Nodes"); 
+        super ("Reduce Equivalent Nodes"); 
     } // ctor
    public void actionPerformed (ActionEvent e) {
        new ReduceEquivalentNodes(nodeAttributes, edgeAttributes, graph);
@@ -1778,23 +1807,6 @@ protected class ReduceEquivalentNodesAction extends AbstractAction  {
 }
 
 //-----------------------------------------------------------------------------
-protected class GoIDSelectAction extends AbstractAction   {
-  GoIDSelectAction () { super ("By GO ID"); }
-
-  public void actionPerformed (ActionEvent e) {
-    String answer = 
-      (String) JOptionPane.showInputDialog (mainFrame, "Select genes with GO ID");
-    if (answer != null && answer.length () > 0) try {
-      int goID = Integer.parseInt (answer);
-      selectNodesSharingGoID (goID);
-      }
-    catch (NumberFormatException nfe) {
-      JOptionPane.showMessageDialog (mainFrame, "Not an integer: " + answer);
-      }
-    } // actionPerformed
-
-}// GoIDSelectAction
-//------------------------------------------------------------------------------
 protected class AlphabeticalSelectionAction extends AbstractAction   {
   AlphabeticalSelectionAction () { super ("Nodes By Name"); }
 
@@ -1811,67 +1823,67 @@ protected class ListFromFileSelectionAction extends AbstractAction   {
   ListFromFileSelectionAction () { super ("Nodes From File"); }
 
     public void actionPerformed (ActionEvent e) {
-	boolean cancelSelectionAction = !useSelectionFile();
+        boolean cancelSelectionAction = !useSelectionFile();
     }
 
     private boolean useSelectionFile() {
-	JFileChooser fChooser = new JFileChooser(currentDirectory);	
-	fChooser.setDialogTitle("Load Gene Selection File");
-	switch (fChooser.showOpenDialog(null)) {
-		
-	case JFileChooser.APPROVE_OPTION:
-	    File file = fChooser.getSelectedFile();
-	    currentDirectory = fChooser.getCurrentDirectory();
-	    String s;
+        JFileChooser fChooser = new JFileChooser(currentDirectory);     
+        fChooser.setDialogTitle("Load Gene Selection File");
+        switch (fChooser.showOpenDialog(null)) {
+                
+        case JFileChooser.APPROVE_OPTION:
+            File file = fChooser.getSelectedFile();
+            currentDirectory = fChooser.getCurrentDirectory();
+            String s;
 
-	    try {
-		FileReader fin = new FileReader(file);
-		BufferedReader bin = new BufferedReader(fin);
-		
-		// create a hash of all the nodes in the file
-		Hashtable fileNodes = new Hashtable();
-		while ((s = bin.readLine()) != null) {
-		    StringTokenizer st = new StringTokenizer(s);
-		    String name = st.nextToken();
-		    String trimname = name.trim();
-		    if(trimname.length() > 0) {
-			String canonicalName = findCanonicalName(trimname);
-			fileNodes.put(canonicalName, Boolean.TRUE);
-		    }
-		}
-		fin.close();
+            try {
+                FileReader fin = new FileReader(file);
+                BufferedReader bin = new BufferedReader(fin);
+                
+                // create a hash of all the nodes in the file
+                Hashtable fileNodes = new Hashtable();
+                while ((s = bin.readLine()) != null) {
+                    StringTokenizer st = new StringTokenizer(s);
+                    String name = st.nextToken();
+                    String trimname = name.trim();
+                    if(trimname.length() > 0) {
+                        String canonicalName = findCanonicalName(trimname);
+                        fileNodes.put(canonicalName, Boolean.TRUE);
+                    }
+                }
+                fin.close();
 
-		// loop through all the node of the graph
-		// selecting those in the file
-		Graph2D g = graphView.getGraph2D();
-		Node [] nodes = graphView.getGraph2D().getNodeArray();
-		for (int i=0; i < nodes.length; i++) {
-		    Node node = nodes[i];
-		    String canonicalName = nodeAttributes.getCanonicalName(node);
-		    if (canonicalName == null) {
-			// use node label as canonical name
-			canonicalName = graph.getLabelText(node);
-		    }
-		    Boolean select = (Boolean) fileNodes.get(canonicalName);
-		    if (select != null) {
-			graphView.getGraph2D().getRealizer(node).setSelected(true);
-		    }
-		}
-		redrawGraph ();
-		  
-	    } catch (Exception e) {
-		JOptionPane.showMessageDialog(null, e.toString(),
-			         "Error Reading \"" + file.getName()+"\"",
-					       JOptionPane.ERROR_MESSAGE);
-		return false;
-	    }
+                // loop through all the node of the graph
+                // selecting those in the file
+                Graph2D g = graphView.getGraph2D();
+                Node [] nodes = graphView.getGraph2D().getNodeArray();
+                for (int i=0; i < nodes.length; i++) {
+                    Node node = nodes[i];
+                    String canonicalName = nodeAttributes.getCanonicalName(node);
+                    if (canonicalName == null) {
+                        // use node label as canonical name
+                        canonicalName = graph.getLabelText(node);
+                    }
+                    Boolean select = (Boolean) fileNodes.get(canonicalName);
+                    if (select != null) {
+                        graphView.getGraph2D().getRealizer(node).setSelected(true);
+                    }
+                }
+                redrawGraph ();
+                  
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e.toString(),
+                                 "Error Reading \"" + file.getName()+"\"",
+                                               JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
 
-	    return true;
+            return true;
 
-	default:
-	    // cancel or error
-	    return false;
-	}
+        default:
+            // cancel or error
+            return false;
+        }
     }
     
 }
@@ -1890,23 +1902,23 @@ public boolean saveVisibleNodeNames (String filename)
     Node [] nodes = graphView.getGraph2D().getNodeArray();
     File file = new File(filename);
     try {
-	FileWriter fout = new FileWriter(file);
-	for (int i=0; i < nodes.length; i++) {
-	    Node node = nodes [i];
-	    NodeRealizer r = graphView.getGraph2D().getRealizer(node);
-	    String defaultName = r.getLabelText ();
-	    String canonicalName = nodeAttributes.getCanonicalName (node);
-	    fout.write(canonicalName + "\n");
-	} // for i
-	fout.close();
-	return true;
+        FileWriter fout = new FileWriter(file);
+        for (int i=0; i < nodes.length; i++) {
+            Node node = nodes [i];
+            NodeRealizer r = graphView.getGraph2D().getRealizer(node);
+            String defaultName = r.getLabelText ();
+            String canonicalName = nodeAttributes.getCanonicalName (node);
+            fout.write(canonicalName + "\n");
+        } // for i
+        fout.close();
+        return true;
     }  catch (IOException e) {
-	JOptionPane.showMessageDialog(null, e.toString(),
-				      "Error Writing to \"" + file.getName()+"\"",
-				      JOptionPane.ERROR_MESSAGE);
-	return false;
+        JOptionPane.showMessageDialog(null, e.toString(),
+                                      "Error Writing to \"" + file.getName()+"\"",
+                                      JOptionPane.ERROR_MESSAGE);
+        return false;
     }
-	  
+          
 } // saveVisibleNodeNames
 
 //------------------------------------------------------------------------------
@@ -1914,21 +1926,21 @@ protected class SaveVisibleNodesAction extends AbstractAction   {
   SaveVisibleNodesAction () { super ("Visible Nodes"); }
 
     public void actionPerformed (ActionEvent e) {
-	JFileChooser chooser = new JFileChooser (currentDirectory);
-	if (chooser.showSaveDialog (CytoscapeWindow.this) == chooser.APPROVE_OPTION) {
-	    String name = chooser.getSelectedFile ().toString ();
-	    currentDirectory = chooser.getCurrentDirectory();
-	    boolean itWorked = saveVisibleNodeNames (name);
-	    Object[] options = {"OK"};
-	    if(itWorked) {
-		JOptionPane.showOptionDialog(null,
-					 "Visible Nodes Saved.",
-					 "Visible Nodes Saved.",
-					 JOptionPane.DEFAULT_OPTION,
-					 JOptionPane.PLAIN_MESSAGE,
-					 null, options, options[0]);
-	    }
-	}
+        JFileChooser chooser = new JFileChooser (currentDirectory);
+        if (chooser.showSaveDialog (CytoscapeWindow.this) == chooser.APPROVE_OPTION) {
+            String name = chooser.getSelectedFile ().toString ();
+            currentDirectory = chooser.getCurrentDirectory();
+            boolean itWorked = saveVisibleNodeNames (name);
+            Object[] options = {"OK"};
+            if(itWorked) {
+                JOptionPane.showOptionDialog(null,
+                                         "Visible Nodes Saved.",
+                                         "Visible Nodes Saved.",
+                                         JOptionPane.DEFAULT_OPTION,
+                                         JOptionPane.PLAIN_MESSAGE,
+                                         null, options, options[0]);
+            }
+        }
     }
 }
 //------------------------------------------------------------------------------
@@ -2111,16 +2123,16 @@ protected class NewWindowSelectedNodesEdgesAction extends AbstractAction   {
 
       // hide unselected nodes
       for (NodeCursor nodes = graph.nodes(); nodes.ok(); nodes.next())
-	  if (!graph.isSelected(nodes.node()))
-	      hider.hide(nodes.node());
+          if (!graph.isSelected(nodes.node()))
+              hider.hide(nodes.node());
 
       // hide unselected edges
       for (EdgeCursor edges = graph.edges(); edges.ok(); edges.next())
-	  if (!graph.isSelected(edges.edge()))
-	      hider.hide(edges.edge());
+          if (!graph.isSelected(edges.edge()))
+              hider.hide(edges.edge());
 
       SelectedSubGraphFactory factory
-	  = new SelectedSubGraphFactory(graph, nodeAttributes, edgeAttributes);
+          = new SelectedSubGraphFactory(graph, nodeAttributes, edgeAttributes);
       Graph2D subGraph = factory.getSubGraph ();
       GraphObjAttributes newNodeAttributes = factory.getNodeAttributes ();
       GraphObjAttributes newEdgeAttributes = factory.getEdgeAttributes ();
@@ -2130,20 +2142,20 @@ protected class NewWindowSelectedNodesEdgesAction extends AbstractAction   {
 
       String title = "selection";
       if (titleForCurrentSelection != null) 
-	  title = titleForCurrentSelection;
+          title = titleForCurrentSelection;
       try {
-	  boolean requestFreshLayout = true;
-	  CytoscapeWindow newWindow =
-	      new CytoscapeWindow  (parentApp, config, logger, subGraph,
-				    expressionData, bioDataServer,
-				    newNodeAttributes, newEdgeAttributes, 
-				    "dataSourceName", expressionDataFilename,
-				    title, requestFreshLayout);
-	  subwindows.add (newWindow);  
+          boolean requestFreshLayout = true;
+          CytoscapeWindow newWindow =
+              new CytoscapeWindow  (parentApp, config, logger, subGraph,
+                                    expressionData, bioDataServer,
+                                    newNodeAttributes, newEdgeAttributes, 
+                                    "dataSourceName", expressionDataFilename,
+                                    title, requestFreshLayout);
+          subwindows.add (newWindow);  
       }
       catch (Exception e00) {
-	  System.err.println ("exception when creating new window");
-	  e00.printStackTrace ();
+          System.err.println ("exception when creating new window");
+          e00.printStackTrace ();
       }
 
     } // actionPerformed
@@ -2269,24 +2281,28 @@ protected class ShowConditionAction extends AbstractAction   {
 //------------------------------------------------------------------------------
 protected void loadGML (String filename)
 {
-    setGraph( FileReadingAbstractions.loadGMLBasic(filename,edgeAttributes));
-    FileReadingAbstractions.initAttribs(config,graph,nodeAttributes,edgeAttributes);
+    setGraph (FileReadingAbstractions.loadGMLBasic(filename,edgeAttributes));
+    FileReadingAbstractions.initAttribs (bioDataServer, getDefaultSpecies (),
+                                         config,graph,nodeAttributes,edgeAttributes);
     displayCommonNodeNames (); // fills in canonical name for blank common names
     geometryFilename = filename;
     setWindowTitle(filename);
     loadPlugins();
     displayNewGraph (false);
+
 } // loadGML
 //------------------------------------------------------------------------------
 protected void loadInteraction (String filename)
 {
-    setGraph (FileReadingAbstractions.loadIntrBasic(filename,edgeAttributes));
-    FileReadingAbstractions.initAttribs(config,graph,nodeAttributes,edgeAttributes);
-    displayCommonNodeNames (); // fills in canonical name for blank common names
-    geometryFilename = null;
-    setWindowTitle(filename);
-    loadPlugins();
-    displayNewGraph (true);
+  setGraph (FileReadingAbstractions.loadIntrBasic (bioDataServer, getDefaultSpecies (), 
+                                                   filename,edgeAttributes));
+  FileReadingAbstractions.initAttribs (bioDataServer, getDefaultSpecies (), config,
+                                       graph,nodeAttributes,edgeAttributes);
+  displayCommonNodeNames (); // fills in canonical name for blank common names
+  geometryFilename = null;
+  setWindowTitle(filename);
+  loadPlugins();
+  displayNewGraph (true);
 } // loadInteraction
 
 
@@ -2452,19 +2468,25 @@ protected class LoadBioDataServerAction extends AbstractAction {
     LoadBioDataServerAction () { super ("Bio Data Server..."); }
 
     public void actionPerformed (ActionEvent e) {
-	JFileChooser chooser = new JFileChooser (currentDirectory);
-	chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        JFileChooser chooser = new JFileChooser (currentDirectory);
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-	if (chooser.showOpenDialog (CytoscapeWindow.this)
-	    == chooser.APPROVE_OPTION) {
+        if (chooser.showOpenDialog (CytoscapeWindow.this)
+            == chooser.APPROVE_OPTION) {
 
-	    currentDirectory = chooser.getCurrentDirectory();
-	    String bioDataDirectory = chooser.getSelectedFile().toString();
-	    bioDataServer = BioDataServerFactory.create (bioDataDirectory);
-	    displayCommonNodeNames();
-	    redrawGraph();
-	}
-	    
+            currentDirectory = chooser.getCurrentDirectory();
+            String bioDataDirectory = chooser.getSelectedFile().toString();
+            //bioDataServer = BioDataServerFactory.create (bioDataDirectory);
+            try {
+              bioDataServer = new BioDataServer (bioDataDirectory);
+              }
+            catch (Exception e0) {
+              logger.warning ("cannot create new biodata server at " + bioDataDirectory);
+              }
+            displayCommonNodeNames();
+            redrawGraph();
+        }
+            
     }
 }
 
@@ -2503,9 +2525,9 @@ protected class FitContentAction extends AbstractAction  {
 protected class ShowAllAction extends AbstractAction  {
    ShowAllAction () { super ("Show All"); }
     public void actionPerformed (ActionEvent e) {
-	graph.firePreEvent();
-	graphHider.unhideAll ();
-	graph.firePostEvent();
+        graph.firePreEvent();
+        graphHider.unhideAll ();
+        graph.firePostEvent();
 
       graphView.fitContent ();
       graphView.setZoom (graphView.getZoom ()*0.9);
@@ -2515,10 +2537,10 @@ protected class ShowAllAction extends AbstractAction  {
 protected class HideSelectedAction extends AbstractAction  {
     HideSelectedAction () { super ("Hide Selected"); }
     public void actionPerformed (ActionEvent e) {
-	graph.firePreEvent();
-	hideSelectedNodes();
-	hideSelectedEdges();
-	graph.firePostEvent();
+        graph.firePreEvent();
+        hideSelectedNodes();
+        hideSelectedEdges();
+        graph.firePostEvent();
     }
 }
 //------------------------------------------------------------------------------
@@ -2590,7 +2612,8 @@ class EditGraphMode extends EditMode {
     if (canonicalName == null || canonicalName.length () < 1)
       canonicalName = defaultName;
    
-    nodeAttributes.add (canonicalName, nodeAttributeBundle);
+    //nodeAttributes.add (canonicalName, nodeAttributeBundle);
+    nodeAttributes.set (canonicalName, nodeAttributeBundle);
     nodeAttributes.addNameMapping (canonicalName, newNode);
     } // nodeCreated
 
@@ -2640,85 +2663,6 @@ class ReadOnlyGraphMode extends EditMode {
 
 } // inncer class ReadOnlyGraphMode
 //------------------------------------------------------------------------------
-protected class NodeAttributesPopupMode extends PopupMode {
-
-  public JPopupMenu getNodePopup (Node v) {
-    NodeRealizer r = graphView.getGraph2D().getRealizer(v);
-    JDialog dialog = null;
-    r.setSelected (false);
-    String nodeName = r.getLabelText ();
-    String [] nodeNames = new String [1];
-    nodeNames [0] = nodeName;
-    String currentCondition = null;
-    dialog = new NodeAttributesPopupTable (mainFrame, nodeNames, bioDataServer, 
-                                           currentCondition, expressionData,
-                                           nodeAttributes);
-    dialog.pack ();
-    dialog.setLocationRelativeTo (mainFrame);
-    dialog.setVisible (true);
-    return null;
-    }
-
-    /**
-     * Returns an Edge Popup dialog for getting edge properties.
-     *
-     * added by dramage 2002-08-23
-     */
-    public JPopupMenu getEdgePopup (Edge edge) {
-	//EdgePopupMenu epm = new EdgePopupMenu(CytoscapeWindow.this, edge);
-	//return epm;
-
-	String name = graph.getLabelText(edge);
-	if (name.length() == 0)
-	    name = edgeAttributes.getCanonicalName(edge);
-	    
-	JDialog dialog = new EdgeAttributesPopupDetails
-	    (mainFrame, name, edgeAttributes);
-
-	dialog.pack();
-	dialog.setLocationRelativeTo(mainFrame);
-	dialog.setVisible(true);
-	return null;
-    }
-    
-    
-  public JPopupMenu getPaperPopup (double x, double y) {
-    return null;
-    }
-    
-  public JPopupMenu getSelectionPopup (double x, double y) {
-    Graph2D g = graphView.getGraph2D ();
-    NodeCursor nc = g.selectedNodes (); 
-    Vector nodeList = new Vector ();
-    while (nc.ok ()) {
-      Node node = nc.node ();
-      //NodeRealizer r = graphView.getGraph2D().getRealizer(node);
-      //String nodeName = r.getLabelText (); 
-      String nodeName = getCanonicalNodeName (node);
-      nodeList.addElement (nodeName);
-      nc.next ();
-      }
-    if (nodeList.size () > 0) {
-      String [] nodeNames = new String [nodeList.size ()];
-      for (int i=0; i < nodeList.size (); i++)
-        nodeNames [i] = (String) nodeList.elementAt (i);
-      JDialog dialog = null;
-      String currentCondition = null;
-      dialog = new NodeAttributesPopupTable (mainFrame, nodeNames, bioDataServer, 
-                                             currentCondition, expressionData,
-                                             nodeAttributes);
-      dialog.pack ();
-      dialog.setLocationRelativeTo (mainFrame);
-      dialog.setVisible (true);
-      } // if nodeList > 0     
-    return null;
-    }
-
-} // inner class NodeAttributesPopupMode
-//---------------------------------------------------------------------------------------
-
-
-
 protected HashMap configureNewNode (Node node)
 {
   OptionHandler options = new OptionHandler ("New Node");
@@ -2766,40 +2710,69 @@ protected HashMap configureNewNode (Node node)
 
 protected class MainFilterDialogAction extends AbstractAction  {
     MainFilterDialogAction () {
-	super("Filters"); 
+        super("Filters"); 
     }
     MainFilterDialogAction (String title) {
-	super(title);
+        super(title);
     }
 
    public void actionPerformed (ActionEvent e) {
        String[] interactionTypes = getInteractionTypes();
        new MainFilterDialog (CytoscapeWindow.this,
-			     mainFrame,
-			     graph, nodeAttributes, edgeAttributes,
-			     expressionData,
-			     graphHider,
-			     interactionTypes);
+                             mainFrame,
+                             graph, nodeAttributes, edgeAttributes,
+                             expressionData,
+                             graphHider,
+                             interactionTypes);
    }
 }
 
 protected class MenuFilterAction extends MainFilterDialogAction  {
     MenuFilterAction () {
-	super("Using filters..."); 
+        super("Using filters..."); 
     }
 }
+//---------------------------------------------------------------------------------------------------
+protected class EdgeManipulationAction extends AbstractAction {
+  EdgeManipulationAction () {
+    super ("Select or Hide Edges ");
+    }
+  public void actionPerformed (ActionEvent e) {
+    String [] edgeAttributeNames = edgeAttributes.getAttributeNames ();
+    HashMap attributesTree = new HashMap ();
+    for (int i=0; i < edgeAttributeNames.length; i++) {
+      String name = edgeAttributeNames [i];
+      if (edgeAttributes.getClass (name) == "string".getClass ()) {
+        String [] uniqueNames = edgeAttributes.getUniqueStringValues (name);
+        attributesTree.put (name, uniqueNames);
+        } // if a string attribute
+      } // for i
+    if (attributesTree.size () > 0) {
+      JDialog dialog = new EdgeControlDialog (CytoscapeWindow.this, attributesTree, "Control Edges");
+      dialog.pack ();
+      dialog.setLocationRelativeTo (getMainFrame ());
+      dialog.setVisible (true);
+      }
+    else {
+      JOptionPane.showMessageDialog (null, 
+         "There are no String edge attributes suitable for controlling edge display");
+     }
 
+   } // actionPerformed
+
+} // inner class EdgeManipulationAction
+//---------------------------------------------------------------------------------------------------
 protected class EdgeTypeDialogAction extends AbstractAction  {
     EdgeTypeDialogAction () {
-	super("Edges by Interaction Type"); 
+        super("Edges by Interaction Type"); 
     }
    public void actionPerformed (ActionEvent e) {
        String[] interactionTypes = getInteractionTypes();
        new EdgeTypeDialogIndep (CytoscapeWindow.this,
-			   mainFrame,
-			   graph,  edgeAttributes,
-			   graphHider,
-       			   getInteractionTypes());
+                           mainFrame,
+                           graph,  edgeAttributes,
+                           graphHider,
+                           getInteractionTypes());
    }
 }
 
@@ -2812,8 +2785,8 @@ protected String[] getInteractionTypes() {
     interactionTypes = new String[typeIds.size()];
     Iterator iter = typeIds.iterator();
     for(int i = 0; iter.hasNext(); i++) {
-	String type = (String)iter.next();
-	interactionTypes[i] = type;
+        String type = (String)iter.next();
+        interactionTypes[i] = type;
     }
     return interactionTypes;
 }
