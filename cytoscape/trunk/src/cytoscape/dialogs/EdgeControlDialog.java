@@ -21,8 +21,6 @@ import y.view.*;
 import cytoscape.CytoscapeWindow;
 import cytoscape.GraphObjAttributes;
 
-//import csplugins.data.annotation.*;
-//import csplugins.data.servers.*;
 import cytoscape.undo.UndoableGraphHider;
 //--------------------------------------------------------------------------------------
 /**

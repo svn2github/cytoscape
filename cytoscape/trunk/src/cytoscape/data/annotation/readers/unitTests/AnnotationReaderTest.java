@@ -4,13 +4,13 @@
 // $Date$
 // $Author$
 //--------------------------------------------------------------------------------------
-package csplugins.data.readers.unitTests;
+package cytoscape.data.readers.unitTests;
 //--------------------------------------------------------------------------------------
 import junit.framework.*;
 import java.io.*;
 import java.util.*;
 
-import csplugins.data.readers.*;
+import cytoscape.data.readers.*;
 //------------------------------------------------------------------------------
 /**
  * test the AnnotationReader class

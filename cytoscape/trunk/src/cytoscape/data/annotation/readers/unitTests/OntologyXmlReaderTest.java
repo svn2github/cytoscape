@@ -3,7 +3,7 @@
 // $Revision$  
 // $Date$
 //------------------------------------------------------------------------------
-package csplugins.data.annotation.readers.unitTests;
+package cytoscape.data.annotation.readers.unitTests;
 //------------------------------------------------------------------------------
 import java.io.*; 
 import org.jdom.*; 
@@ -12,10 +12,10 @@ import org.jdom.output.*;
 import java.util.*;
 import junit.framework.*;
 
-import csplugins.data.annotation.OntologyTerm;
-import csplugins.data.annotation.Ontology;
-import csplugins.data.annotation.readers.OntologyXmlReader;
-import csplugins.data.annotation.readers.*;
+import cytoscape.data.annotation.OntologyTerm;
+import cytoscape.data.annotation.Ontology;
+import cytoscape.data.annotation.readers.OntologyXmlReader;
+import cytoscape.data.annotation.readers.*;
 //------------------------------------------------------------------------------
 /**
  * test the OntologyXmlReader class

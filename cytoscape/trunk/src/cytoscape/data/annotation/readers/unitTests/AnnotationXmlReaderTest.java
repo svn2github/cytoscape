@@ -3,7 +3,7 @@
 // $Revision$  
 // $Date$
 //------------------------------------------------------------------------------
-package csplugins.data.annotation.readers.unitTests;
+package cytoscape.data.annotation.readers.unitTests;
 //------------------------------------------------------------------------------
 import java.io.*; 
 import org.jdom.*; 
@@ -12,8 +12,8 @@ import org.jdom.output.*;
 import java.util.*;
 import junit.framework.*;
 
-import csplugins.data.annotation.*;
-import csplugins.data.annotation.readers.AnnotationXmlReader;
+import cytoscape.data.annotation.*;
+import cytoscape.data.annotation.readers.AnnotationXmlReader;
 //------------------------------------------------------------------------------
 /**
  * test the AnnotationXmlReader class
