@@ -42,6 +42,8 @@ import java.util.HashMap;
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.IOException;
+
+import cytoscape.data.readers.*;
 //--------------------------------------------------------------------
 /**
  * This class provides a reader for the common file format for expression
@@ -163,7 +165,7 @@ public class ExpressionData {
 
 //--------------------------------------------------------------------
 
-    public boolean loadData(String filename) {
+    public boolean oldLoadData(String filename) {
 	if (filename == null) {return false;}
 	BufferedReader input;
 	try {
@@ -280,8 +282,128 @@ public class ExpressionData {
 	}
 
 	return true;
-    }//loadData
+    }//oldLoadData
 
+//--------------------------------------------------------------------
+public boolean loadData (String filename) 
+{
+  if (filename == null) 
+   return false;
+
+  String rawText;
+  try {
+    if (filename.trim().startsWith ("jar://")) {
+      TextJarReader reader = new TextJarReader (filename);
+      reader.read ();
+      rawText = reader.getText ();
+      }
+    else {
+      TextFileReader reader = new TextFileReader (filename);
+      reader.read ();
+      rawText = reader.getText ();
+      }
+    }
+  catch (Exception e0) {
+    System.err.println ("-- Exception while reading expression file " + filename);
+    System.err.println (e0.getMessage ());
+    return false;
+    }
+  String [] lines = rawText.split ("\n");
+
+  int lineCount = 0;
+  String headerLine = lines [lineCount++];
+  if (headerLine == null || headerLine.length () == 0)
+    return false;
+  if (isHeaderLineMTXHeader (headerLine))
+      headerLine = lines [lineCount++];
+
+  boolean expectPvals = doesHeaderLineHaveDuplicates(headerLine);
+  StringTokenizer headerTok = new StringTokenizer(headerLine);
+  int numTokens = headerTok.countTokens();
+
+    // if we expect p-values, 4 is the minimum number.
+    // if we don't, 3 is the minimum number.  Ergo:
+    // either way, we need 3, and if we expectPvals, we need 4.
+  if ((numTokens < 3) || ((numTokens<4)&&expectPvals)) {
+    System.err.println("Bad header format in data file " + filename);
+    System.err.println("Number of tokens parsed: " + numTokens);
+    for (int i=0; i<numTokens; i++)
+      System.err.println("Token " + i + ": " + headerTok.nextToken() );
+    } // if
+
+  double tmpF = numTokens/2.0;
+  int tmpI = (int)Math.rint(tmpF);
+  int numberOfConditions;
+  int haveExtraTokens = 0;
+  if (expectPvals) {
+    if (tmpI == tmpF ) {//missing numSigConds field
+      numberOfConditions = (numTokens - 2) / 2;
+      haveExtraTokens = 0;
+      } 
+   else {
+     numberOfConditions = (numTokens - 3) / 2;
+     haveExtraTokens = 1;
+     } // else
+    }
+  else {
+    numberOfConditions = numTokens - 2; 
+    }
+
+  System.out.println ("parsed " + numTokens + " tokens from header line," +
+                      " representing " + numberOfConditions +
+                      " conditions.");
+
+    /* eat the first two tokens from the header line */
+  headerTok.nextToken ();
+  headerTok.nextToken ();
+    /* the next numConds tokens are the condition names */
+  Vector cNames = new Vector(numberOfConditions);
+  for (int i=0; i<numberOfConditions; i++)
+    cNames.add (headerTok.nextToken());
+    /* the next numConds tokens should duplicate the previous list of condition names */
+  if (expectPvals) {
+     for (int i=0; i<numberOfConditions; i++) {
+       String title = headerTok.nextToken();
+       if ( !(title.equals( cNames.get(i) )) ) {
+         System.err.println("Expecting both ratios and p-values.\n");
+         System.err.println("Condition name mismatch in header line"
+                            + " of data file " + filename + ": "
+                            + cNames.get(i) + " vs. " + title);
+         return false;
+         } // if !title
+       } // for i
+    } // if expectPvals
+
+     /* OK, we have a reasonable header; clobber all old information */
+  this.filename = filename;
+  this.numConds = numberOfConditions;
+  this.extraTokens = haveExtraTokens;
+    /* wipe old data */
+  initDataStructures();
+    /* store condition names */
+  condNames = cNames;
+  for (int i=0; i<numConds; i++) {
+     condNameToIndex.put (condNames.get(i), new Integer(i));
+    }
+
+    /* parse rest of file line by line */
+  for (int i = lineCount; i < lines.length; i++)
+    parseOneLine (lines [i], lineCount, expectPvals);
+
+    /* save numGenes and build hash of gene names to indices */
+  this.numGenes = geneNames.size();
+  for (int i=0; i<geneNames.size(); i++) {
+    geneNameToIndex.put (geneNames.get(i), new Integer(i));
+    }
+
+    /* trim capacity of data structures for efficiency */
+  geneNames.trimToSize();
+  geneDescripts.trimToSize();
+  allMeasurements.trimToSize();
+
+  return true;
+
+} // loadData
 //--------------------------------------------------------------------
 
     private boolean doesHeaderLineHaveDuplicates(String hline) {
