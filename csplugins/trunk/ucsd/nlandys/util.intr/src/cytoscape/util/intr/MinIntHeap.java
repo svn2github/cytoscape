@@ -6,15 +6,16 @@ package cytoscape.util.intr;
  * element in the queue.  A heap can be used to order N elements in
  * O(n*log(N)) time complexity.  Because of some of the propeties of a heap,
  * heaps are especially good at returning the M least elements from a set
- * of N elements, where M < N.  In particular, if M is less than or equal to
- * N/log(N), then the first M least elements from a set of N elements can be
+ * of N elements, where M < N.  In particular, if M is constrained to be
+ * [less than or] equal to N/log<sub>2</sub>(N) [as N varies]
+ * then the first M least elements from a set of N elements can be
  * computed in O(N) time complexity (linear time).<p>
  * A heap can have two states: ordered and unordered.  The time complexity of
  * certain operations is dependent on the state of the heap.  Certain
- * operation will effect the state of the heap.  Please read
+ * operations will effect the state of the heap.  Please read
  * the documentation of each method to better understand the time
- * complexity of each operation and its relationship to the state of the
- * heap.
+ * complexity of each operation and the operation's relationship to the state
+ * of the heap.
  */
 public final class MinIntHeap
 {
@@ -27,7 +28,7 @@ public final class MinIntHeap
   private boolean m_orderOK;
 
   /**
-   * A new heap is ordered.
+   * Creates a new heap; a new heap is ordered.
    */
   public MinIntHeap()
   {
