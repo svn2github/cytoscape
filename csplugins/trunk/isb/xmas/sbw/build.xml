@@ -79,7 +79,8 @@
    <echo message=" COMPILE sbw "/>
 
     <mkdir dir="${sbw.classes.dir}"/>
-    <javac srcdir="${sbw.src.dir}"
+    <javac compiler="jikes"
+           srcdir="${sbw.src.dir}"
            excludes="${sbw.excludes}"
            classpathref="sbw.project.class.path"
            destdir="${sbw.classes.dir}"
@@ -106,6 +107,7 @@
     </jar>
     <copy todir="${sbw.lib.dir}" file="sbw.jar"/>
     <copy todir="${cytoscape.plugin.dir}" file="sbw.jar"/>
+    <copy todir="${cytoscape.lib.dir}" file="sbw.jar"/>
   </target>
 
   <!-- =================================================================== -->
