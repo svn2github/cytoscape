@@ -74,6 +74,12 @@ For questions, email Ethan Cerami:  cerami@cbio.mskcc.org.
 IV.  Building Cytoscape Plug-Ins
 ================================
 
+Cytoscape plug-ins are expected to have their own ant build.xml files that can be used to
+build JAR files for each plugin.  Also, cytoscape/plugins contains stable plugins that are
+made available with the official Cytoscape release.
+
+For old Cytoscape 1.1 plug-ins, you might have to follow these directions:
+
 The csplugins directory uses the same build process as before.  To compile csplugins,
 you therefore need to do the following:
 
