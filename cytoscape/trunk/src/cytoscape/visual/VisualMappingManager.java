@@ -48,6 +48,11 @@ public class VisualMappingManager extends SubjectBase {
     VisualStyle visualStyle;      //the currently active visual style
     Logger logger;                //for reporting errors
     VizMapUI vizMapUI;            //the UI, to report visual style changes
+    
+    //reusable appearance objects
+    NodeAppearance myNodeApp = new NodeAppearance();
+    EdgeAppearance myEdgeApp = new EdgeAppearance();
+    GlobalAppearance myGlobalApp = new GlobalAppearance();
 
     public VisualMappingManager(NetworkView networkView,
                                 CalculatorCatalog catalog,
@@ -169,16 +174,15 @@ public class VisualMappingManager extends SubjectBase {
         for (Iterator i = graphView.getNodeViewsIterator(); i.hasNext(); ) {
             NodeView nodeView = (NodeView)i.next();
             Node node = nodeView.getNode();
-            NodeAppearance na = new NodeAppearance();
-            nodeAppearanceCalculator.calculateNodeAppearance(na,node,network);
+            nodeAppearanceCalculator.calculateNodeAppearance(myNodeApp,node,network);
 
-            nodeView.setUnselectedPaint(na.getFillColor());
-            nodeView.setBorderPaint(na.getBorderColor());
-            nodeView.setBorder(na.getBorderLineType().getStroke());
-            nodeView.setHeight(na.getHeight());
-            nodeView.setWidth(na.getWidth());
-            nodeView.setShape( ShapeNodeRealizer.getGinyShape(na.getShape()) );
-            nodeView.setLabel(na.getLabel());
+            nodeView.setUnselectedPaint(myNodeApp.getFillColor());
+            nodeView.setBorderPaint(myNodeApp.getBorderColor());
+            nodeView.setBorder(myNodeApp.getBorderLineType().getStroke());
+            nodeView.setHeight(myNodeApp.getHeight());
+            nodeView.setWidth(myNodeApp.getWidth());
+            nodeView.setShape( ShapeNodeRealizer.getGinyShape(myNodeApp.getShape()) );
+            nodeView.setLabel(myNodeApp.getLabel());
             //can't set font yet
             //can't set tooltip yet
         }
@@ -198,14 +202,13 @@ public class VisualMappingManager extends SubjectBase {
         for (Iterator i = graphView.getEdgeViewsIterator(); i.hasNext(); ) {
             EdgeView edgeView = (EdgeView)i.next();
             Edge edge = edgeView.getEdge();
-            EdgeAppearance ea = new EdgeAppearance();
-            edgeAppearanceCalculator.calculateEdgeAppearance(ea,edge,network);
+            edgeAppearanceCalculator.calculateEdgeAppearance(myEdgeApp,edge,network);
 
-            edgeView.setUnselectedPaint(ea.getColor());
-            edgeView.setStroke(ea.getLineType().getStroke());
-            edgeView.setSourceEdgeEnd(ea.getSourceArrow().getGinyArrow());
-            edgeView.setTargetEdgeEnd(ea.getTargetArrow().getGinyArrow());
-            //edgeView.setLabel(ea.getLabel());  //can't set edge label yet
+            edgeView.setUnselectedPaint(myEdgeApp.getColor());
+            edgeView.setStroke(myEdgeApp.getLineType().getStroke());
+            edgeView.setSourceEdgeEnd(myEdgeApp.getSourceArrow().getGinyArrow());
+            edgeView.setTargetEdgeEnd(myEdgeApp.getTargetArrow().getGinyArrow());
+            //edgeView.setLabel(myEdgeApp.getLabel());  //can't set edge label yet
             //can't set font yet
             //can't set tooltip yet
         }
@@ -221,10 +224,9 @@ public class VisualMappingManager extends SubjectBase {
         GraphView graphView = networkView.getView();
         GlobalAppearanceCalculator globalAppearanceCalculator =
                 visualStyle.getGlobalAppearanceCalculator();
-        GlobalAppearance ga =
-                globalAppearanceCalculator.calculateGlobalAppearance(network);
+        globalAppearanceCalculator.calculateGlobalAppearance(myGlobalApp, network);
 
-        graphView.setBackgroundPaint(ga.getBackgroundColor());
+        graphView.setBackgroundPaint(myGlobalApp.getBackgroundColor());
         //will ignore sloppy selection color for now
     }
 
