@@ -529,35 +529,29 @@ protected JMenuBar createMenuBar ()
   deleteSelectionMenuItem.setEnabled (false);
 
   JMenu viewMenu = new JMenu ("View");
-  viewMenu.add (new HideEdgesAction ());
-  viewMenu.add (new ShowEdgesAction ());
-  mi = viewMenu.add (new HideSelectedNodesAction ());
+  menuBar.add (viewMenu);
+  JMenu viewNodeSubMenu = new JMenu("Node Selection");
+  viewMenu.add(viewNodeSubMenu);
+  viewNodeSubMenu.add(new InvertSelectedNodesAction());
+  mi = viewNodeSubMenu.add(new HideSelectedNodesAction());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_H, ActionEvent.CTRL_MASK));
-
-  mi = viewMenu.add (new DisplaySelectedInNewWindowAction ());
-  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_N, ActionEvent.CTRL_MASK));
-
+  viewNodeSubMenu.add(new DisplaySelectedInNewWindowAction());
+  JMenu viewEdgeSubMenu = new JMenu("Edge Selection");
+  viewMenu.add(viewEdgeSubMenu);
+  viewEdgeSubMenu.add(new InvertSelectedEdgesAction());
+  viewEdgeSubMenu.add(new HideSelectedEdgesAction());
+  JMenu selectMenu = new JMenu("Select");
+  viewMenu.add(selectMenu);
+  mi = selectMenu.add (new SelectFirstNeighborsAction ());
+  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_F, ActionEvent.CTRL_MASK));
+  selectMenu.add (new AlphabeticalSelectionAction ());
+  selectMenu.add (new ListFromFileSelectionAction ());
+  if (bioDataServer != null) selectMenu.add (new GoIDSelectAction ());
   mi = viewMenu.add (new CloneGraphInNewWindowAction ());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_K, ActionEvent.CTRL_MASK));
-
-  menuBar.add (viewMenu);
-
-  JMenu selectiveDisplayMenu = new JMenu ("Select");
-  menuBar.add (selectiveDisplayMenu);
-  selectiveDisplayMenu.add (new DeselectAllAction ());
-  mi = selectiveDisplayMenu.add (new InvertSelectionAction ());
-  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_K, ActionEvent.CTRL_MASK));
-
-  if (bioDataServer != null) selectiveDisplayMenu.add (new GoIDSelectAction ());
-  selectiveDisplayMenu.add (new AlphabeticalSelectionAction ());
-  selectiveDisplayMenu.add (new ListFromFileSelectionAction ());
-
-  mi = selectiveDisplayMenu.add (new SelectFirstNeighborsAction ());
-  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_F, ActionEvent.CTRL_MASK));
-
-  mi = selectiveDisplayMenu.add (new DisplayAttributesOfSelectedNodesAction ());
+  viewMenu.add(new ReduceEquivalentNodesAction());
+  mi = viewMenu.add (new DisplayAttributesOfSelectedNodesAction ());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_D, ActionEvent.CTRL_MASK));
-  
 
   ButtonGroup layoutGroup = new ButtonGroup ();
   layoutMenu = new JMenu ("Layout");
@@ -609,18 +603,6 @@ protected JMenuBar createMenuBar ()
   opsMenu = new JMenu ("Ops"); // always create the ops menu
   menuBar.add (opsMenu);
 
-
-  if (bioDataServer != null) selectiveDisplayMenu.add (new GoIDSelectAction ());
-  selectiveDisplayMenu.add (new AlphabeticalSelectionAction ());
-  selectiveDisplayMenu.add (new ListFromFileSelectionAction ());
-  selectiveDisplayMenu.add (new ReduceEquivalentNodesAction ());
-  
-  mi = selectiveDisplayMenu.add (new SelectFirstNeighborsAction ());
-  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_F, ActionEvent.CTRL_MASK));
-
-  mi = selectiveDisplayMenu.add (new DisplayAttributesOfSelectedNodesAction ());
-  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_D, ActionEvent.CTRL_MASK));
-  
   return menuBar;
 
 } // createMenuBar
@@ -632,8 +614,12 @@ protected JToolBar createToolBar ()
   bar.add (new ZoomAction (1.1));
   bar.add (new ZoomSelectedAction ());
   bar.add (new FitContentAction ());
+  bar.addSeparator ();
   bar.add (new ShowAllAction ());
+  bar.add (new HideSelectedAction ());
   // bar.add (new RenderAction ());
+  bar.addSeparator ();
+  // bar.add (new filterAction ());
 
   bar.addSeparator ();
   // bar.add (new AppearanceControllerLauncherAction (nodeAttributes, edgeAttributes));
@@ -723,18 +709,6 @@ public void deselectAllNodes ()
   redrawGraph ();
 
 } // deselectAllNodes
-protected void invertSelection () {
-  Graph2D g = graphView.getGraph2D();
-  Node [] nodes = graphView.getGraph2D().getNodeArray();
-
-  for (int i=0; i < nodes.length; i++) {
-    NodeRealizer nodeRealizer = graphView.getGraph2D().getRealizer(nodes [i]);
-    nodeRealizer.setSelected (!nodeRealizer.isSelected());
-    } // for i
-
-  redrawGraph ();
-}
-
 //------------------------------------------------------------------------------
 protected void selectNodesStartingWith (String key)
 {
@@ -1079,6 +1053,7 @@ protected class SetVisualPropertiesAction extends AbstractAction   {
 
 }
 //------------------------------------------------------------------------------
+/*
 protected class HideEdgesAction extends AbstractAction   {
   HideEdgesAction () { super ("Hide Edges"); }
 
@@ -1087,22 +1062,72 @@ protected class HideEdgesAction extends AbstractAction   {
     redrawGraph ();
     }
 }
+*/
 //------------------------------------------------------------------------------
+protected void hideSelectedNodes() {
+    Graph2D g = graphView.getGraph2D ();
+    NodeCursor nc = g.selectedNodes (); 
+    while (nc.ok ()) {
+	Node node = nc.node ();
+	graphHider.hide (node);
+	nc.next ();
+    }
+    redrawGraph ();
+}
+protected void hideSelectedEdges() {
+    Graph2D g = graphView.getGraph2D ();
+    EdgeCursor nc = g.selectedEdges (); 
+    while (nc.ok ()) {
+	Edge edge = nc.edge ();
+	graphHider.hide (edge);
+	nc.next ();
+    }
+    redrawGraph ();
+}
 protected class HideSelectedNodesAction extends AbstractAction   {
-  HideSelectedNodesAction () { super ("Hide Selected Nodes"); }
+  HideSelectedNodesAction () { super ("Hide"); }
 
   public void actionPerformed (ActionEvent e) {
-      Graph2D g = graphView.getGraph2D ();
-      NodeCursor nc = g.selectedNodes (); 
-      while (nc.ok ()) {
-	  Node node = nc.node ();
-	  graphHider.hide (node);
-	  nc.next ();
-      } // while
-      redrawGraph ();
-  } // actionPerformed
+      hideSelectedNodes();
+  }
+}
+protected class InvertSelectedNodesAction extends AbstractAction {
+    InvertSelectedNodesAction () { super ("Invert"); }
+
+    public void actionPerformed (ActionEvent e) {
+	Graph2D g = graphView.getGraph2D();
+	Node [] nodes = graphView.getGraph2D().getNodeArray();
+	
+	for (int i=0; i < nodes.length; i++) {
+	    NodeRealizer nodeRealizer = graphView.getGraph2D().getRealizer(nodes [i]);
+	    nodeRealizer.setSelected (!nodeRealizer.isSelected());
+	}
+	redrawGraph ();
+    }
+}
+protected class HideSelectedEdgesAction extends AbstractAction   {
+  HideSelectedEdgesAction () { super ("Hide"); }
+
+  public void actionPerformed (ActionEvent e) {
+      hideSelectedEdges();
+  }
+}
+protected class InvertSelectedEdgesAction extends AbstractAction {
+    InvertSelectedEdgesAction () { super ("Invert"); }
+
+    public void actionPerformed (ActionEvent e) {
+	Graph2D g = graphView.getGraph2D();
+	Edge [] edges = graphView.getGraph2D().getEdgeArray();
+	
+	for (int i=0; i < edges.length; i++) {
+	    EdgeRealizer edgeRealizer = graphView.getGraph2D().getRealizer(edges [i]);
+	    edgeRealizer.setSelected (!edgeRealizer.isSelected());
+	}
+	redrawGraph ();
+    }
 }
 //------------------------------------------------------------------------------
+/*
 protected class ShowEdgesAction extends AbstractAction   {
   ShowEdgesAction () { super ("Show Edges"); }
 
@@ -1111,6 +1136,7 @@ protected class ShowEdgesAction extends AbstractAction   {
     redrawGraph ();
     }
 }
+*/
 //------------------------------------------------------------------------------
 protected class DeleteSelectedAction extends AbstractAction   {
   DeleteSelectedAction () { super ("Delete Selected Nodes and Edges"); }
@@ -1426,17 +1452,6 @@ protected class DeselectAllAction extends AbstractAction   {
     deselectAllNodes ();
     }
 }
-protected InvertSelectionAction createInvertSelectionAction () {
-    return new InvertSelectionAction();
-}
-protected class InvertSelectionAction extends AbstractAction {
-    InvertSelectionAction () { super ("Invert Selection"); }
-
-    public void actionPerformed (ActionEvent e) {
-	invertSelection ();
-    }
-}
-
 //------------------------------------------------------------------------------
 protected class ReadOnlyModeAction extends AbstractAction   {
   ReadOnlyModeAction () { super ("Read only Mode"); }
@@ -1519,7 +1534,7 @@ protected class DisplayAttributesOfSelectedNodesAction extends AbstractAction {
 }
 //------------------------------------------------------------------------------
 protected class DisplaySelectedInNewWindowAction extends AbstractAction   {
-  DisplaySelectedInNewWindowAction () { super ("Display Selected Nodes in New Window"); }
+  DisplaySelectedInNewWindowAction () { super ("Display in New Window"); }
 
   public void actionPerformed (ActionEvent e) {
     SelectedSubGraphFactory factory = new SelectedSubGraphFactory (graph, nodeAttributes, edgeAttributes);
@@ -1550,7 +1565,7 @@ protected class DisplaySelectedInNewWindowAction extends AbstractAction   {
 } // inner class DisplaySelectedInNewWindowAction
 //------------------------------------------------------------------------------
 protected class CloneGraphInNewWindowAction extends AbstractAction   {
-  CloneGraphInNewWindowAction () { super ("Clone Graph New Window"); }
+    CloneGraphInNewWindowAction () { super ("Clone Graph In New Window"); }
 
   public void actionPerformed (ActionEvent e) {
     cloneWindow ();
@@ -1753,7 +1768,7 @@ protected class SaveAsInteractionsAction extends AbstractAction
 //------------------------------------------------------------------------------
 protected class SaveAsGMLAction extends AbstractAction  
 {
-  SaveAsGMLAction () {super ("GML..."); }
+  SaveAsGMLAction () {super ("As GML..."); }
   public void actionPerformed (ActionEvent e) {
     File currentDirectory = new File (System.getProperty ("user.dir"));
     JFileChooser chooser = new JFileChooser (currentDirectory);
@@ -1848,6 +1863,13 @@ protected class ShowAllAction extends AbstractAction  {
       graphView.setZoom (graphView.getZoom ()*0.9);
   redrawGraph ();
       }
+}
+protected class HideSelectedAction extends AbstractAction  {
+    HideSelectedAction () { super ("Hide Selected"); }
+    public void actionPerformed (ActionEvent e) {
+	hideSelectedNodes();
+	hideSelectedEdges();
+    }
 }
 //------------------------------------------------------------------------------
 protected class ZoomSelectedAction extends AbstractAction  {
