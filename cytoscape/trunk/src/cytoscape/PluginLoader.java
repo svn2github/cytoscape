@@ -34,6 +34,7 @@ public class PluginLoader {
   protected Properties props;
   protected GraphObjAttributes nodeAttributes;
   protected GraphObjAttributes edgeAttributes;
+  StringBuffer messageBuffer = new StringBuffer ();
 
 //-----------------------------------------------------------------------------------
 public PluginLoader (CytoscapeWindow cytoscapeWindow, CytoscapeConfig config,
@@ -47,12 +48,12 @@ public PluginLoader (CytoscapeWindow cytoscapeWindow, CytoscapeConfig config,
 
   String [] pluginProps = extractPluginProperties (props);
   for (int i=0; i < pluginProps.length; i++)
-    cytoscapeWindow.getLogger().info ("  " + pluginProps [i]);
+    messageBuffer.append ("  " + pluginProps [i] + "\n");
 
   findUnconditionallyLoadedClasses (pluginProps);
   findConditionallyLoadedClasses (pluginProps);
 
-  cytoscapeWindow.getLogger().info (this.toString ());
+   messageBuffer.append (this.toString () + "\n");
 
 } // ctor
 //-----------------------------------------------------------------------------------
@@ -80,7 +81,7 @@ protected void findUnconditionallyLoadedClasses (String [] pluginProps)
     String propName = pluginProps [i];
     if (propName.endsWith (".load")) {
       String className = props.getProperty (propName);
-      cytoscapeWindow.getLogger().info (" PluginLoader, unconditional: " + className);
+      messageBuffer.append (" PluginLoader, unconditional: " + className + "\n");
       addClassForLoading (className);
       } // if endswith 
     } // for
@@ -99,7 +100,7 @@ protected void findConditionallyLoadedClasses (String [] pluginProps)
         int end = propName.indexOf (".", start + 1); 
         String pluginName = propName.substring (start, end);
         String category = propName.substring (end + 1);
-        cytoscapeWindow.getLogger().info (" PluginLoader, conditional: " + pluginName + " category: " + category);
+        messageBuffer.append (" PluginLoader, conditional: " + pluginName + " category: " + category + "\n");
         PluginInfo info = (PluginInfo) pluginHash.get (pluginName);
         if (info == null) {
           info = new PluginInfo ();
@@ -131,7 +132,6 @@ protected void findConditionallyLoadedClasses (String [] pluginProps)
   
   for (int i=0; i < pluginNameKeys.length; i++) {
     PluginInfo pluginInfo = (PluginInfo) pluginHash.get (pluginNameKeys [i]);
-    // cytoscapeWindow.getLogger().info (pluginInfo); 
     if (extensions.contains (pluginInfo.getFileExtension ()))
       addClassForLoading (pluginInfo.getClassName ());
     } // for i
@@ -151,7 +151,6 @@ protected void findConditionallyLoadedClasses (String [] pluginProps)
   
   for (int i=0; i < pluginNameKeys.length; i++) {
     PluginInfo pluginInfo = (PluginInfo) pluginHash.get (pluginNameKeys [i]);
-    // cytoscapeWindow.getLogger().info (pluginInfo); 
     if (attributes.contains (pluginInfo.getFileExtension ()))
       addClassForLoading (pluginInfo.getClassName ());
     } // for i
@@ -164,7 +163,7 @@ protected void addClassForLoading (String className)
 {
   if (className != null && className.length () > 0 && !classesToLoad.contains (className)) {
     classesToLoad.add (className);
-    cytoscapeWindow.getLogger().info (" PluginLoader, by file extension: " + className);
+    messageBuffer.append (" PluginLoader, by file extension: " + className + "\n");
     } // if 
  
 } // addClassForLoading
@@ -192,7 +191,7 @@ protected void loadPlugin (String className, CytoscapeWindow cytoscapeWindow)
     args [0] = cytoscapeWindow;
     Constructor [] ctors = pluginClass.getConstructors ();
     Constructor ctor = pluginClass.getConstructor (argClasses);
-    cytoscapeWindow.getLogger().info ("  now loading plugin:  " + ctor);
+    messageBuffer.append ("  now loading plugin:  " + ctor + "\n");
     Object plugin = ctor.newInstance (args);
     }
   catch (Exception e) {
@@ -213,5 +212,10 @@ public String toString ()
   return sb.toString ();
 
 } // toString
+//------------------------------------------------------------------------------
+public String getMessages ()
+{
+  return messageBuffer.toString ();
+}
 //------------------------------------------------------------------------------
 } // class PluginLoader
