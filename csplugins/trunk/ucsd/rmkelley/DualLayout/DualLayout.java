@@ -16,7 +16,7 @@ import giny.model.RootGraphChangeListener;
 import giny.model.RootGraphChangeEvent;
 
 import cytoscape.AbstractPlugin;
-import cytoscape.GraphObjAttributes;
+import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.CyNetwork;
 import cytoscape.util.GinyFactory;
 import cytoscape.data.Semantics;
