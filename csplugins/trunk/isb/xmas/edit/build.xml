@@ -1,0 +1,213 @@
+<project name="edit" default="edit" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init-edit">
+    <tstamp/>
+    <property name="edit.Name" value="edit"/>
+    <property name="edit.name" value="edit"/>
+    <property name="edit.version" value="0.1"/>
+    <property name="edit.year" value="200"/>
+
+    <echo message="Building ${edit.name} version ${edit.version}."/>
+
+    <!-- Inheritable properties -->
+    <property name="debug" value="on"/>
+    <property name="optimize" value="off"/>
+    <property name="deprecation" value="on"/>
+    <property name="nowarn" value="true"/>
+    <property name="fork" value="false"/>
+    <property name="edit.root.dir" value="."/>
+    <property name="edit.lib.dir" value="${edit.root.dir}/lib"/>
+    <property name="cytoscape.lib.dir" value="${edit.root.dir}/../../../../cytoscape/lib"/>
+    <property name="cytoscape.plugin.dir" value="${edit.root.dir}/../../../../cytoscape/plugins"/>
+    <path id="project.class.path">
+      <pathelement path="${java.class.path}/"/>
+    </path>
+
+    <!-- Define the directories -->
+    <property name="edit.root.dir" value="./"/>
+    <property name="edit.src.dir" value="${edit.root.dir}/src"/>
+    <property name="edit.classes.dir" value="${edit.root.dir}/classes"/>
+    <property name="edit.javadoc.dir" value="${javadoc.dir}/edit"/>
+    <property name="edit.resources.dir" value="${edit.root.dir}/resources"/>
+    <property name="edit.manifest.dir" value="${edit.root.dir}/manifest"/>
+    <property name="edit.packages" value="edit.*"/>
+    <!-- Subdirectory for test reports -->
+    <property name="edit.tests.reports.dir" value="${edit.root.dir}/reports/tests" />
+    <property name="cytoscape.lib" value="../../cytoscape/lib" />
+
+    <!-- Define the condition for compilation -->
+    <property name="cytoscape.jar" value="${edit.lib.dir}/cytoscape.jar"/>
+    <property name="colt.jar" value="${edit.lib.dir}/colt.jar"/>
+    
+
+    <condition property="cytoscape.present">
+      <and> 
+	  		<available file="${cytoscape.jar}"/> 
+				<available file="${colt.jar}"/> 
+		  </and>
+    </condition>
+
+    <!-- Define excludes for edit compile and javadoc -->
+    <property name="edit.excludes" value="**/notyet/*"/>
+    <property name="edit.tests.excludes" value="**/notyet/*"/>
+    <property name="edit.packages.excludes" value="**.test.*,**.notyet.*"/>
+
+    <path id="edit.project.class.path">
+      <pathelement location="${edit.classes.dir}"/>
+      <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/y.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/piccolo.jar"/>
+      <pathelement path="${project.class.path}/"/>
+    </path>
+
+   
+
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the edit project                                           -->
+  <!-- =================================================================== -->
+  <target name="compile-edit" depends="init-edit"  >
+
+   <echo message=" COMPILE edit "/>
+
+    <mkdir dir="${edit.classes.dir}"/>
+    <javac srcdir="${edit.src.dir}"
+           excludes="${edit.excludes}"
+           classpathref="edit.project.class.path"
+           destdir="${edit.classes.dir}"
+           debug="${debug}"
+           nowarn="${nowarn}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the edit.jar file                                           -->
+  <!-- =================================================================== -->
+  <target name="edit" depends="compile-edit"  >
+    <jar destfile="edit.jar" manifest="${edit.manifest.dir}/edit.manifest">
+      <fileset
+        dir="${edit.classes.dir}"
+        includes="**"/>
+      <fileset
+        dir="${edit.root.dir}/lib"
+        includes="resources/**"/>
+      <fileset 
+        dir="${edit.root.dir}/images"/>
+    </jar>
+    <copy todir="${edit.lib.dir}" file="edit.jar"/>
+    <copy todir="${cytoscape.plugin.dir}" file="edit.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the edit tests                                             -->
+  <!-- =================================================================== -->
+  <target name="compile-tests" depends="edit"  >
+    <mkdir dir="${edit.classes.dir}"/>
+    <javac srcdir="${edit.src.dir}"
+           includes="**/test/*"
+           excludes="${edit.tests.excludes}"
+           classpathref="edit.project.class.path"
+           destdir="${edit.classes.dir}"
+           debug="${debug}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the edit-tests.jar file                                     -->
+  <!-- =================================================================== -->
+  <target name="tests" depends="compile-tests"  >
+    <jar jarfile="edit-tests.jar"
+         basedir="${edit.classes.dir}"
+         includes="**/test/*"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Build all jars                                                      -->
+  <!-- =================================================================== -->
+  <target name="all" depends="edit"/>
+
+   <!-- =================================================================== -->
+  <!-- Run the Plugin                                                      -->
+  <!-- =================================================================== -->
+  <target name="run" depends="edit" >
+     
+     <java classname="cytoscape.cytoscape" 
+           classpathref="edit.project.class.path"
+           fork="true"/>
+           <arg line = "-y giny"/>
+           <arg line = "--JLD"/>
+           <arg line = "${edit.lib.dir}/edit.jar"/>
+           
+
+  </target>
+
+
+
+  <!-- =================================================================== -->
+  <!-- Runs the tests in edit-tests.jar                                    -->
+  <!-- =================================================================== -->
+  <target name="runtests" depends="tests"  >
+    <mkdir dir="${edit.tests.reports.dir}"/>
+    <junit
+       printsummary="yes"
+       haltonfailure="no"
+       dir="${edit.classes.dir}"
+       maxmemory="1G"
+    >
+      <formatter type="plain" usefile="true" />
+      <classpath refid="edit.project.class.path"/>
+      <!-- The junit task doesn't support 'if' so we test for JUnit here -->
+      <batchtest fork="yes" todir="${edit.tests.reports.dir}" if="junit.present">
+        <fileset
+           dir="${edit.classes.dir}"
+           includes="**/test/*"
+           excludes="${edit.tests.excludes}"
+        />
+      </batchtest>
+    </junit>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the API documentation                                       -->
+  <!-- =================================================================== -->
+  <target name="docs" depends="init-edit" >
+    <mkdir dir="${edit.javadoc.dir}"/>
+    <javadoc packagenames="${edit.packages}"
+             excludepackagenames="${edit.packages.excludes}"
+             sourcepath="${edit.src.dir}"
+             destdir="${edit.javadoc.dir}"
+             classpathref="edit.project.class.path"
+             author="true"
+             version="true"
+             use="true"
+             splitindex="true"
+             noindex="false"
+             windowtitle="${edit.Name} API"
+             doctitle="${edit.Name}"
+    />
+  </target>
+ 
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init-edit">
+    <delete dir="${edit.classes.dir}"/>
+    <delete file="edit.jar"/>
+    <delete file="edit-tests.jar"/>
+  </target>
+
+</project>
+
+<!-- End of file -->
