@@ -57,7 +57,7 @@ public abstract class CreditScreen  {
    
    
     canvas.setDefaultRenderQuality(PPaintContext.LOW_QUALITY_RENDERING);
-    PImage image_node = new PImage( url, false ); 
+    PImage image_node = new PImage( url ); 
     PLayer layer = canvas.getLayer();
 		PRoot root = canvas.getRoot();
     layer.addChild( image_node );
