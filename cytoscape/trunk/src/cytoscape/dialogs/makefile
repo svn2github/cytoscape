@@ -19,7 +19,8 @@ OBJS = ColorPopupButton.class \
         NewSlider.class \
         NodeAttributesPopupTable.class \
         PopupTextArea.class \
-        VisualPropertiesDialog.class
+        VisualPropertiesDialog.class \
+        ExpressionDataDialog.class
 
 
 default: objs 

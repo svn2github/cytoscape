@@ -542,6 +542,7 @@ protected JMenuBar createMenuBar ()
   vizMenu = new JMenu ("Visualization"); // always create the viz menu
   menuBar.add (vizMenu);
   vizMenu.add (new SetVisualPropertiesAction ());
+  vizMenu.add (new ChooseExpressionAction ());
   
   return menuBar;
 
@@ -939,12 +940,30 @@ class PrintAction extends AbstractAction
     } // actionPerformed
 
 } // inner class PrintAction
+
+//------------------------------------------------------------------------------
+protected class ChooseExpressionAction extends AbstractAction   {
+  ChooseExpressionAction () { super ("Choose Expression"); }
+
+  public void actionPerformed (ActionEvent e) {
+
+      Node [] nodes = graphView.getGraph2D().getNodeArray();
+      JDialog expDialog = new ExpressionDataDialog
+      	  (mainFrame, "Choose Expression Condition", expressionData, nodes, vizMapper, nodeAttributes);
+      expDialog.pack ();
+      expDialog.setLocationRelativeTo (mainFrame);
+      expDialog.setVisible (true);
+
+      renderNodesAndEdges();//implicitly calls redrawGraph()
+  }
+}
+
 //------------------------------------------------------------------------------
 protected class SetVisualPropertiesAction extends AbstractAction   {
   SetVisualPropertiesAction () { super ("Set Visual Properties"); }
 
   public void actionPerformed (ActionEvent e) {
-    JDialog vizDialog = new VisualPropertiesDialog 
+    JDialog vizDialog = new VisualPropertiesDialog
 	(mainFrame, "Set Visual Properties", vizMapper);
     vizDialog.pack ();
     vizDialog.setLocationRelativeTo (mainFrame);
