@@ -52,14 +52,12 @@ class FRootGraph //implements RootGraph
   }
 
   // This method has been marked deprecated in the Giny API.
-  public java.util.List nodesList()
-  {
+  public java.util.List nodesList() {
     final int nodeCount = getNodeCount();
     final java.util.ArrayList returnThis = new java.util.ArrayList(nodeCount);
     Iterator iter = nodesIterator();
     for (int i = 0; i < nodeCount; i++) returnThis.add(iter.next());
-    return returnThis;
-  }
+    return returnThis; }
 
   // This method has been marked deprecated in the Giny API.
   public int[] getNodeIndicesArray()
@@ -67,7 +65,7 @@ class FRootGraph //implements RootGraph
     IntEnumerator nodes = m_graph.nodes();
     final int[] returnThis = new int[nodes.numRemaining()];
     for (int i = 0; i < returnThis.length; i++)
-      returnThis[i] = nodes.nextInt();
+      returnThis[i] = ~(nodes.nextInt());
     return returnThis;
   }
 
@@ -86,14 +84,12 @@ class FRootGraph //implements RootGraph
   }
 
   // This method has been marked deprecated in the Giny API.
-  public java.util.List edgesList()
-  {
+  public java.util.List edgesList() {
     final int edgeCount = getEdgeCount();
     final java.util.ArrayList returnThis = new java.util.ArrayList(edgeCount);
     Iterator iter = edgesIterator();
     for (int i = 0; i < edgeCount; i++) returnThis.add(iter.next());
-    return returnThis;
-  }
+    return returnThis; }
 
   // This method has been marked deprecated in the Giny API.
   public int[] getEdgeIndicesArray()
@@ -101,16 +97,14 @@ class FRootGraph //implements RootGraph
     IntEnumerator edges = m_graph.edges();
     final int[] returnThis = new int[edges.numRemaining()];
     for (int i = 0; i < returnThis.length; i++)
-      returnThis[i] = edges.nextInt();
+      returnThis[i] = ~(edges.nextInt());
     return returnThis;
   }
 
-  public Node removeNode(Node node)
-  {
+  public Node removeNode(Node node) {
     if (node.getRootGraph() == this &&
         removeNode(node.getRootGraphIndex()) < 0) return node;
-    else return null;
-  }
+    else return null; }
 
   public int removeNode(int nodeInx)
   {
@@ -139,26 +133,18 @@ class FRootGraph //implements RootGraph
   }
 
   // This method has been marked deprecated in the Giny API.
-  public java.util.List removeNodes(java.util.List nodes)
-  {
+  public java.util.List removeNodes(java.util.List nodes) {
     final java.util.ArrayList returnThis = new java.util.ArrayList();
     for (int i = 0; i < nodes.size(); i++)
       if (removeNode((Node) nodes.get(i)) != null)
         returnThis.add(nodes.get(i));
-    return returnThis;
-  }
+    return returnThis; }
 
-  public int[] removeNodes(int[] nodeIndices)
-  {
-    // Instead of doing individual removes for every node, there may
-    // be a way to optimize by removing a block of nodes.  Once this
-    // implementation matures more, come back here and see if it's
-    // possible to optimize.
+  public int[] removeNodes(int[] nodeIndices) {
     final int[] returnThis = new int[nodeIndices.length];
     for (int i = 0; i < nodeIndices.length; i++)
       returnThis[i] = removeNode(nodeIndices[i]);
-    return returnThis;
-  }
+    return returnThis; }
 
   public int createNode()
   {
@@ -190,23 +176,15 @@ class FRootGraph //implements RootGraph
     throw new UnsupportedOperationException("meta nodes not yet supported");
   }
 
-  public int[] createNodes(int numNewNodes)
-  {
-    // Instead of doing individual creations for every node, there may
-    // be a way to optimize by creating a block of nodes.  Once this
-    // implementation matures more, come back here and see if it's possible
-    // to optimize.
+  public int[] createNodes(int numNewNodes) {
     final int[] returnThis = new int[numNewNodes];
     for (int i = 0; i < returnThis.length; i++) returnThis[i] = createNode();
-    return returnThis;
-  }
+    return returnThis; }
 
-  public Edge removeEdge(Edge edge)
-  {
+  public Edge removeEdge(Edge edge) {
     if (edge.getRootGraph() == this &&
         removeEdge(edge.getRootGraphIndex()) < 0) return edge;
-    else return null;
-  }
+    else return null; }
 
   public int removeEdge(int edgeInx)
   {
@@ -220,47 +198,33 @@ class FRootGraph //implements RootGraph
   }
 
   // This method has been marked deprecated in the Giny API.
-  public java.util.List removeEdges(java.util.List edges)
-  {
+  public java.util.List removeEdges(java.util.List edges) {
     final java.util.ArrayList returnThis = new java.util.ArrayList();
     for (int i = 0; i < edges.size(); i++)
       if (removeEdge((Edge) edges.get(i)) != null)
         returnThis.add(edges.get(i));
-    return returnThis;
-  }
+    return returnThis; }
 
-  public int[] removeEdges(int[] edgeIndices)
-  {
-    // Instead of doing individual removes for every edge, there may be a
-    // way to optimize by removing a block of edges.  Once this implementation
-    // matures more, come back here and see if it's possible to optimize.
+  public int[] removeEdges(int[] edgeIndices) {
     final int[] returnThis = new int[edgeIndices.length];
     for (int i = 0; i < edgeIndices.length; i++)
       returnThis[i] = removeEdge(edgeIndices[i]);
-    return returnThis;
-  }
+    return returnThis; }
 
-  public int createEdge(Node source, Node target)
-  {
-    return
-      createEdge(source, target,
-                 source.getRootGraphIndex() != target.getRootGraphIndex());
-  }
+  public int createEdge(Node source, Node target) {
+    return createEdge
+      (source, target,
+       source.getRootGraphIndex() != target.getRootGraphIndex()); }
 
-  public int createEdge(Node source, Node target, boolean directed)
-  {
+  public int createEdge(Node source, Node target, boolean directed) {
     if (source.getRootGraph() == this && target.getRootGraph() == this)
       return createEdge(source.getRootGraphIndex(),
-                        target.getRootGraphIndex(),
-                        directed);
-    else return 0;
-  }
+                        target.getRootGraphIndex(), directed);
+    else return 0; }
 
-  public int createEdge(int sourceNodeIndex, int targetNodeIndex)
-  {
+  public int createEdge(int sourceNodeIndex, int targetNodeIndex) {
     return createEdge(sourceNodeIndex, targetNodeIndex,
-                      sourceNodeIndex != targetNodeIndex);
-  }
+                      sourceNodeIndex != targetNodeIndex); }
 
   public int createEdge(int sourceNodeIndex, int targetNodeIndex,
                         boolean directed)
@@ -284,73 +248,50 @@ class FRootGraph //implements RootGraph
   }
 
   public int[] createEdges(int[] sourceNodeIndices, int[] targetNodeIndices,
-                           boolean directed)
-  {
-    // Instead of doing individual creations for every edge, there may be a
-    // way to optimize by creating a block of edges.  Once this implementation
-    // matures more, come back here and see if it's possible to optimize.
+                           boolean directed) {
     int foo = targetNodeIndices[sourceNodeIndices.length - 1];
     foo = sourceNodeIndices[targetNodeIndices.length - 1];
     foo = 0;
     final int[] returnThis = new int[sourceNodeIndices.length];
     for (int i = 0; i < returnThis.length; i++)
       returnThis[i] = createEdge(sourceNodeIndices[i],
-                                 targetNodeIndices[i],
-                                 directed);
-    return returnThis;
-  }
+                                 targetNodeIndices[i], directed);
+    return returnThis; }
 
-  public boolean containsNode(Node node)
-  {
+  public boolean containsNode(Node node) {
     return node.getRootGraph() == this &&
-      getNode(node.getRootGraphIndex()) != null;
-  }
+      getNode(node.getRootGraphIndex()) != null; }
 
-  public boolean containsEdge(Edge edge)
-  {
+  public boolean containsEdge(Edge edge) {
     return edge.getRootGraph() == this
-      && getEdge(edge.getRootGraphIndex()) != null;
-  }
+      && getEdge(edge.getRootGraphIndex()) != null; }
 
   // This method has been marked deprecated in the Giny API.
-  public java.util.List neighborsList(Node node)
-  {
-    if (node.getRootGraph() == this)
-    {
+  public java.util.List neighborsList(Node node) {
+    if (node.getRootGraph() == this) {
       final int nodeIndex = node.getRootGraphIndex();
       int[] adjacentEdgeIndices =
         getAdjacentEdgeIndicesArray(nodeIndex, true, true, true);
       m_hash.empty();
       for (int i = 0; i < adjacentEdgeIndices.length; i++) {
-        Edge e = getEdge(adjacentEdgeIndices[i]);
-        int neighborIndex = (nodeIndex ^ e.getSource().getRootGraphIndex()) ^
-          e.getTarget().getRootGraphIndex();
-        m_hash.put(neighborIndex); }
+        int neighborIndex = nodeIndex ^
+          getEdgeSourceIndex(adjacentEdgeIndices[i]) ^
+          getEdgeTargetIndex(adjacentEdgeIndices[i]);
+        m_hash.put(~neighborIndex); }
       IntEnumerator enum = m_hash.elements();
       java.util.ArrayList list = new java.util.ArrayList(enum.numRemaining());
       while (enum.numRemaining() > 0)
-        list.add(new Integer(enum.nextInt()));
-      return list;
-    }
-    else
-    {
-      return new java.util.ArrayList();
-    }
-  }
+        list.add(getNode(~(enum.nextInt())));
+      return list; }
+    else { return new java.util.ArrayList(); } }
 
   // This method has been marked deprecated in the Giny API.
-  public boolean isNeighbor(Node a, Node b)
-  {
+  public boolean isNeighbor(Node a, Node b) {
     if (a.getRootGraph() == this && b.getRootGraph() == this)
-    {
       return isNeighbor(a.getRootGraphIndex(), b.getRootGraphIndex());
-    }
-    else
-    {
-      return false;
-    }
-  }
+    else return false; }
 
+  // This method has been marked deprecated in the Giny API.
   public boolean isNeighbor(int nodeInxA, int nodeInxB)
   {
     final int positiveNodeInxA = ~nodeInxA;
@@ -375,19 +316,14 @@ class FRootGraph //implements RootGraph
     return false;
   }
 
-  public boolean edgeExists(Node from, Node to)
-  {
+  // This method has been marked deprecated in the Giny API.
+  public boolean edgeExists(Node from, Node to) {
     if (from.getRootGraph() == this && to.getRootGraph() == this)
-    {
       return edgeExists(from.getRootGraphIndex(),
                         to.getRootGraphIndex());
-    }
-    else
-    {
-      return false;
-    }
-  }
+    else return false; }
 
+  // This method has been marked deprecated in the Giny API.
   public boolean edgeExists(int fromNodeInx, int toNodeInx)
   {
     final int positiveFromNodeInx = ~fromNodeInx;
@@ -411,55 +347,29 @@ class FRootGraph //implements RootGraph
     return false;
   }
 
-  public int getEdgeCount(Node from, Node to, boolean countUndirectedEdges)
-  {
+  // This method has been marked deprecated in the Giny API.
+  public int getEdgeCount(Node from, Node to, boolean countUndirectedEdges) {
     if (from.getRootGraph() == this && to.getRootGraph() == this)
-    {
       return getEdgeCount(from.getRootGraphIndex(),
                           to.getRootGraphIndex(),
                           countUndirectedEdges);
-    }
-    else
-    {
-      return -1;
-    }
-  }
+    else return -1; }
 
+  // This method has been marked deprecated in the Giny API.
   public int getEdgeCount(int fromNodeInx, int toNodeInx,
-                          boolean countUndirectedEdges)
-  {
-    final int positiveFromNodeInx = ~fromNodeInx;
-    final int positiveToNodeInx = ~toNodeInx;
-    final IntEnumerator fromAdj;
-    final IntEnumerator toAdj;
-    try {
-      fromAdj = m_graph.adjacentEdges(positiveFromNodeInx,
-                                      countUndirectedEdges, false, true);
-      toAdj = m_graph.adjacentEdges(positiveToNodeInx,
-                                    countUndirectedEdges, true, false); }
-    catch (IllegalArgumentException e) { return -1; }
-    final IntEnumerator theAdj =
-      ((fromAdj.numRemaining() < toAdj.numRemaining()) ? fromAdj : toAdj);
-    final int adjPositiveNode =
-      ((theAdj == fromAdj) ? positiveFromNodeInx : positiveToNodeInx);
-    final int neighPositiveNode =
-      ((theAdj == fromAdj) ? positiveToNodeInx : positiveFromNodeInx);
-    int edgeCount = 0;
-    while (theAdj.numRemaining() > 0) {
-      final int adjEdge = theAdj.nextInt();
-      if ((m_graph.sourceNode(adjEdge) ^ m_graph.targetNode(adjEdge) ^
-           adjPositiveNode) == neighPositiveNode) edgeCount++; }
-    return edgeCount;
-  }
+                          boolean countUndirectedEdges) {
+    return getEdgeIndicesArray(fromNodeInx, toNodeInx,
+                               countUndirectedEdges).length; }
 
   public int[] getAdjacentEdgeIndicesArray(int nodeInx,
-                                           boolean a,
-                                           boolean b,
-                                           boolean c)
+                                           boolean undirected,
+                                           boolean incomingDirected,
+                                           boolean outgoingDirected)
   {
     final int positiveNodeInx = ~nodeInx;
     final IntEnumerator adj;
-    try { adj = m_graph.adjacentEdges(positiveNodeInx, a, b, c); }
+    try { adj = m_graph.adjacentEdges(positiveNodeInx, undirected,
+                                      incomingDirected, outgoingDirected); }
     catch (IllegalArgumentException e) { return new int[0]; }
     final int[] returnThis = new int[adj.numRemaining()];
     for (int i = 0; i < returnThis.length; i++) returnThis[i] = ~adj.nextInt();
@@ -557,31 +467,21 @@ class FRootGraph //implements RootGraph
   }
 
   // This method has been marked deprecated in the Giny API.
-  public java.util.List edgesList(Node from, Node to)
-  {
+  public java.util.List edgesList(Node from, Node to) {
     if (from.getRootGraph() == this && to.getRootGraph() == this)
-    {
       return edgesList(from.getRootGraphIndex(),
                        to.getRootGraphIndex(), true);
-    }
-    else
-    {
-      return null;
-    }
-  }
+    else return new java.util.ArrayList(); }
 
   // This method has been marked deprecated in the Giny API.
   public java.util.List edgesList(int fromNodeInx, int toNodeInx,
-                                  boolean includeUndirectedEdges)
-  {
+                                  boolean includeUndirectedEdges) {
     final int[] edgeInx = getEdgeIndicesArray(fromNodeInx, toNodeInx,
                                               includeUndirectedEdges);
-    if (edgeInx == null) return null;
     java.util.ArrayList returnList = new java.util.ArrayList(edgeInx.length);
     for (int i = 0; i < edgeInx.length; i++)
       returnList.add(getEdge(edgeInx[i]));
-    return returnList;
-  }
+    return returnList; }
 
   // This method has been marked deprecated in the Giny API.
   public int[] getEdgeIndicesArray(int fromNodeInx, int toNodeInx,
@@ -659,6 +559,16 @@ class FRootGraph //implements RootGraph
   {
     if (edgeInx < 0) return m_edges.getEdgeAtIndex(~edgeInx);
     else return null;
+  }
+
+  public int getEdgeSourceIndex(int edgeInx)
+  {
+    return ~(m_graph.sourceNode(~edgeInx));
+  }
+
+  public int getEdgeTargetIndex(int edgeInx)
+  {
+    return ~(m_graph.targetNode(~edgeInx));
   }
 
   // The relationship between indices (both node and edge) in this
