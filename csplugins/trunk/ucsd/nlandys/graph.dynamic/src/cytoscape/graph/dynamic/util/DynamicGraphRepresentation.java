@@ -2,6 +2,7 @@ package cytoscape.graph.dynamic.util;
 
 import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.util.intr.IntEnumerator;
+import cytoscape.util.intr.IntIterator;
 import cytoscape.util.intr.IntStack;
 
 public class DynamicGraphRepresentation implements DynamicGraph
@@ -255,6 +256,44 @@ public class DynamicGraphRepresentation implements DynamicGraph
             edge = edge.nextInEdge; }
           numRemaining--;
           return returnThis; } };   
+  }
+
+  public IntIterator connectingEdges(int node0, int node1,
+                                     boolean outgoing, boolean incoming,
+                                     boolean undirected)
+  {
+    IntEnumerator node0Adj = adjacentEdges(node0, outgoing, incoming,
+                                           undirected);
+    IntEnumerator node1Adj = adjacentEdges(node1, incoming, outgoing,
+                                           undirected);
+    if (node0Adj == null || node1Adj == null) return null;
+    final DynamicGraph graph = this;
+    final IntEnumerator theAdj;
+    final int nodeZero;
+    final int nodeOne;
+    if (node0Adj.numRemaining() <= node1Adj.numRemaining()) {
+      theAdj = node0Adj; nodeZero = node0; nodeOne = node1; }
+    else {
+      theAdj = node1Adj; nodeZero = node1; nodeOne = node0; }
+    return new IntIterator() {
+        private int nextEdge = -1;
+        private void ensureComputeNext() {
+          if (nextEdge != -1) return;
+          while (theAdj.numRemaining() > 0) {
+            final int edge = theAdj.nextInt();
+            if (nodeOne == (nodeZero ^ graph.sourceNode(edge) ^
+                graph.targetNode(edge))) {
+              nextEdge = edge; return; } }
+          nextEdge = -2; }
+        public boolean hasNext() {
+          ensureComputeNext();
+          if (nextEdge < 0) return false;
+          else return true; }
+        public int nextInt() {
+          ensureComputeNext();
+          final int returnThis = nextEdge;
+          nextEdge = -1;
+          return returnThis; } };
   }
 
   public int sourceNode(int edge)

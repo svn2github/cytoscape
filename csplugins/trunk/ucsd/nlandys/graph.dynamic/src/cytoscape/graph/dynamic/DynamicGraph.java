@@ -1,6 +1,7 @@
 package cytoscape.graph.dynamic;
 
 import cytoscape.util.intr.IntEnumerator;
+import cytoscape.util.intr.IntIterator;
 
 /**
  * A graph whose topology can be modified.
@@ -115,13 +116,15 @@ public interface DynamicGraph
   /**
    * Returns a non-repeating enumeration of edges adjacent to a node.
    * The three boolean input parameters define what is meant by "adjacent
-   * edge".  Notice that the three boolean input parameters define three
-   * disjoint sets of edges.  Notice also that if all three boolean input
-   * parameters are false, then the returned enumeration will have zero
-   * elements.
+   * edge".  If all three boolean input parameters are false, the returned
+   * enumeration will have zero elements.<p>
+   * The returned enumeration becomes invalid as soon as any
+   * graph-topology-modifying method on this graph is called.  Calling
+   * methods on an invalid enumeration will result in undefined behavior
+   * of that enumeration.
    * @param node the node in this graph whose adjacent edges we're seeking.
    * @param outgoing all directed edges whose source is the node specified
-   *   are included in the returned enumeration if ths value is true;
+   *   are included in the returned enumeration if this value is true;
    *   otherwise, not a single such edge is included in the returned
    *   enumeration.
    * @param incoming all directed edges whose target is the node specified
@@ -138,6 +141,49 @@ public interface DynamicGraph
    */
   public IntEnumerator adjacentEdges(int node, boolean outgoing,
                                      boolean incoming, boolean undirected);
+
+  /**
+   * Returns a non-repeating iteration of edges connecting two nodes.
+   * The three boolean input parameters define what is meant by "connecting
+   * edge".  If all three boolean input parameters are false, the returned
+   * iteration will have no elements.<p>
+   * The returned iteration becomes invalid as soon as any
+   * graph-topology-modifying method on this graph is called.  Calling
+   * methods on an invalid iteration will result in undefined behavior
+   * of that iteration.<p>
+   * I'd like to discuss the motivation behind this interface method.
+   * I assume that most implementations of this interface will implement
+   * this method in terms of adjacentEdges().  Why, then, is this method
+   * necessary?  Because some implementations may choose to optimize the
+   * implementation of this method by using a binary search tree, for
+   * example.  Therefore, this method is a hook to provide such optimization.
+   * This method returns an IntIterator as opposed to an IntEnumerator
+   * so that non-optimized implementations would not be required to
+   * pre-compute the number of edges being returned.
+   * @param node0 one of the nodes in this graph whose connecting edges
+   *   we're seeking.
+   * @param node1 one of the nodes in this graph whose connecting edges
+   *   we're seeking.
+   * @param outgoing all directed edges whose source is node0 and whose
+   *   target is node1 are included in the returned iteration if this value
+   *   is true; otherwise, not a single such edge is included in the returned
+   *   iteration.
+   * @param incoming all directed edges whose source is node1 and whose
+   *   target is node0 are included in the returned iteration if this value
+   *   is true; otherwise, not a single such edge is included in the returned
+   *   iteration.
+   * @param undirected all undirected edges E such that E's endpoints
+   *   are node0 and node1 are included in the returned iteration if this
+   *   value is true; otherwise, not a single such edge is incuded in the
+   *   returned iteration.
+   * @return an iteration of edges connecting node0 with node1 in a fashion
+   *   specified by boolean input parameters or null if either of node0 or
+   *   node1 does not exist in this graph.
+   * @exception IllegalArgumentException if node0 or node1 is negative.
+   */
+  public IntIterator connectingEdges(int node0, int node1,
+                                     boolean outgoing, boolean incoming,
+                                     boolean undirected);
 
   /**
    * Determines the source node of an edge.
