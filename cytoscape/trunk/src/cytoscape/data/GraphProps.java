@@ -94,9 +94,9 @@ public class GraphProps {
 
     public String getName(Edge edge) {
 	String name = edgeAttributes.getCanonicalName(edge);
-	if (name == null) {
-	    System.out.println("ERROR: getName for edge was called before name attribute was initialized");
-	}
+	//if (name == null) {
+	//  System.out.println("ERROR: getName for edge was called before name attribute was initialized");
+	//}
 	return name;
     }
 
