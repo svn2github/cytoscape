@@ -67,6 +67,12 @@ public VisualPropertiesDialog (Frame parentFrame,
   gbcPad(c,5,5);
   mainPanel.setLayout (gridbag);
 
+  BorderedPanel defaultBP = new BorderedPanel("Defaults");
+  JPanel defaultPanel = defaultBP.getPanel();
+  GridBagLayout defaultLayout = defaultBP.getLayout();
+  GridBagConstraints defaultC = defaultBP.getConstraints();
+  gbcPad(defaultC,5,5);
+
 
   JButton colorButton = new JButton("Node Color");
   JLabel colorLabel = new JLabel("    ");
@@ -75,11 +81,10 @@ public VisualPropertiesDialog (Frame parentFrame,
   colorButton.addActionListener(new
       GeneralColorDialogListener(this,nColor,colorLabel,
 				 "Choose a Node Color"));
-  gbcSet(c,1,1);
-  gblPanelInsert(mainPanel,colorLabel,gridbag,c);
-
-  gbcSet(c,0,1,1,1,GridBagConstraints.HORIZONTAL);
-  gblPanelInsert(mainPanel,colorButton,gridbag,c);
+  gbcSet(defaultC,0,0,1,1,GridBagConstraints.HORIZONTAL);
+  gblPanelInsert(defaultPanel,colorButton,defaultLayout,defaultC);
+  gbcSet(defaultC,1,0);
+  gblPanelInsert(defaultPanel,colorLabel,defaultLayout,defaultC);
 
   JButton borderColorButton = new JButton("Node Border Color");
   JLabel borderColorLabel = new JLabel("    ");
@@ -88,11 +93,11 @@ public VisualPropertiesDialog (Frame parentFrame,
   borderColorButton.addActionListener(new
       GeneralColorDialogListener(this,bColor,borderColorLabel,
 				 "Choose a Node Border Color"));
-  gbcSet(c,1,2);
-  gblPanelInsert(mainPanel,borderColorLabel,gridbag,c);
+  gbcSet(defaultC,1,2);
+  gblPanelInsert(defaultPanel,borderColorLabel,defaultLayout,defaultC);
 
-  gbcSet(c,0,2,1,1,GridBagConstraints.HORIZONTAL);
-  gblPanelInsert(mainPanel,borderColorButton,gridbag,c);
+  gbcSet(defaultC,0,2,1,1,GridBagConstraints.HORIZONTAL);
+  gblPanelInsert(defaultPanel,borderColorButton,defaultLayout,defaultC);
 
   JButton bgColorButton
       = new JButton("Background Color");
@@ -102,39 +107,43 @@ public VisualPropertiesDialog (Frame parentFrame,
   bgColorButton.addActionListener(new
       GeneralColorDialogListener(this,bgColor,bgColorLabel,
 				 "Choose a Background Color"));
-  gbcSet(c,1,3);
-  gblPanelInsert(mainPanel,bgColorLabel,gridbag,c);
+  gbcSet(defaultC,1,3);
+  gblPanelInsert(defaultPanel,bgColorLabel,defaultLayout,defaultC);
 
-  gbcSet(c,0,3,1,1,GridBagConstraints.HORIZONTAL);
-  gblPanelInsert(mainPanel,bgColorButton,gridbag,c);
+  gbcSet(defaultC,0,3,1,1,GridBagConstraints.HORIZONTAL);
+  gblPanelInsert(defaultPanel,bgColorButton,defaultLayout,defaultC);
 
   sizeDefault = 
       new IntegerEntryField
-	  ("Default Node Size",
+	  ("Node Size",
 	   ((Integer)aMapper.getDefaultValue(VizMapperCategories.NODE_HEIGHT)).intValue(),
 	   500);
-  gbcSet(c,0,4);
-  gblPanelInsert(mainPanel,sizeDefault.getLabel(),gridbag,c);
-  gbcSet(c,1,4);
-  gblPanelInsert(mainPanel,sizeDefault.getField(),gridbag,c);
+  gbcSet(defaultC,0,4);
+  gblPanelInsert(defaultPanel,sizeDefault.getLabel(),defaultLayout,defaultC);
+  gbcSet(defaultC,1,4);
+  gblPanelInsert(defaultPanel,sizeDefault.getField(),defaultLayout,defaultC);
 
   initializeShapeDefault();
-  gbcSet(c,0,5,1,1,GridBagConstraints.HORIZONTAL);
-  gblPanelInsert(mainPanel,shapeDefault.getButton(),gridbag,c);
-  gbcSet(c,1,5);
-  gblPanelInsert(mainPanel,shapeDefault.getLabel(),gridbag,c);
+  gbcSet(defaultC,0,5,1,1,GridBagConstraints.HORIZONTAL);
+  gblPanelInsert(defaultPanel,shapeDefault.getButton(),defaultLayout,defaultC);
+  gbcSet(defaultC,1,5);
+  gblPanelInsert(defaultPanel,shapeDefault.getLabel(),defaultLayout,defaultC);
 
   initializeLineTypeDefault();
-  gbcSet(c,0,6,1,1,GridBagConstraints.HORIZONTAL);
-  gblPanelInsert(mainPanel,lineTypeDefault.getButton(),gridbag,c);
-  gbcSet(c,1,6);
-  gblPanelInsert(mainPanel,lineTypeDefault.getLabel(),gridbag,c);
+  gbcSet(defaultC,0,6,1,1,GridBagConstraints.HORIZONTAL);
+  gblPanelInsert(defaultPanel,lineTypeDefault.getButton(),defaultLayout,defaultC);
+  gbcSet(defaultC,1,6);
+  gblPanelInsert(defaultPanel,lineTypeDefault.getLabel(),defaultLayout,defaultC);
 
   initializeArrowDefault();
-  gbcSet(c,0,7,1,1,GridBagConstraints.HORIZONTAL);
-  gblPanelInsert(mainPanel,arrowDefault.getButton(),gridbag,c);
-  gbcSet(c,1,7);
-  gblPanelInsert(mainPanel,arrowDefault.getLabel(),gridbag,c);
+  gbcSet(defaultC,0,7,1,1,GridBagConstraints.HORIZONTAL);
+  gblPanelInsert(defaultPanel,arrowDefault.getButton(),defaultLayout,defaultC);
+  gbcSet(defaultC,1,7);
+  gblPanelInsert(defaultPanel,arrowDefault.getLabel(),defaultLayout,defaultC);
+
+  //////////////////////////////////////////////
+  gbcSet(c,0,0,2,1,GridBagConstraints.HORIZONTAL);
+  gblPanelInsert(mainPanel,defaultPanel,gridbag,c);
 
   //////////////////////////////////////////////
   BorderedPanel labelBP = new BorderedPanel("Node Label Mapping");
@@ -344,7 +353,7 @@ public class BorderedPanel {
 	HashMap stringToArrow = MiscDialog.getStringToArrowHashMap(ns);
 	ImageIcon [] icons = MiscDialog.getArrowIcons();
 	arrowDefault =
-	    new IconPopupButton ("Default Arrow",
+	    new IconPopupButton ("Arrow",
 				 "Arrow",
 				 arrowToString,
 				 stringToArrow,
@@ -360,7 +369,7 @@ public class BorderedPanel {
 	HashMap stringToShape = MiscDialog.getStringToShapeByteHashMap();
 	ImageIcon [] icons = MiscDialog.getShapeIcons();
 	shapeDefault =
-	    new IconPopupButton ("Default Node Shape",
+	    new IconPopupButton ("Node Shape",
 				 "Node Shape",
 				 shapeToString,
 				 stringToShape,
@@ -376,7 +385,7 @@ public class BorderedPanel {
 	HashMap stringToLineType = MiscDialog.getStringToLineTypeHashMap();
 	ImageIcon [] icons = MiscDialog.getLineTypeIcons();
 	lineTypeDefault =
-	    new IconPopupButton ("Default Line Type",
+	    new IconPopupButton ("Line Type",
 				 "Line Type",
 				 lineTypeToString,
 				 stringToLineType,
