@@ -322,15 +322,17 @@
         <copy file="testData/galFiltered.sif" todir="${release.dir}/sampleData"/>
         <copy file="testData/yeastHighQuality.sif" todir="${release.dir}/sampleData"/>
 
-        <!-- Copy over GO Data Files -->
-        <copy todir="${release.dir}/GO">
-            <fileset dir="testData/GO">
-                <include name="annotationAndSynonyms"/>
-                <include name="biologicalProcess.xml"/>
-                <include name="molecularFunction.xml"/>
-                <include name="cellularComponent.xml"/>
-                <include name="go.xml"/>
-                <include name="synonyms"/>
+        <!-- Copy over annotation Data Files -->
+        <copy todir="${release.dir}/annotation">
+            <fileset dir="testData/annotation">
+                <include name="manifest"/>
+                <include name="go.onto"/>
+                <include name="kegg.onto"/>
+                <include name="bioproc.anno"/>
+                <include name="molfunc.anno"/>
+                <include name="cellcomp.anno"/>
+                <include name="kegg.anno"/>
+                <include name="yeast.syno"/>
             </fileset>
         </copy>
 

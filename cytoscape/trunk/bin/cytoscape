@@ -29,5 +29,5 @@ LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/X11R6/lib
 java -Xmx1024MB -Djava.library.path=$CYTOSCAPE_HOME \
 		-classpath cytoscape.jar:.:$CLASSPATH \
 		cytoscape.CyMain \
-                -b $CYTOSCAPE_DATA/GO $*
+                -b $CYTOSCAPE_DATA/annotation/manifest $*
 
