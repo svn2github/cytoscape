@@ -141,6 +141,89 @@ public int [] getParentsAndContainers ()
 
 } // getParentsAndContainers
 //-----------------------------------------------------------------------------
+public boolean isParentOf (OntologyTerm other){
+  int [] otherParents = other.getParents();
+  for(int i = 0; i < otherParents.length; i++){
+    if(this.id == otherParents[i]){
+      return true;
+    }
+  }
+  return false;
+}
+//-----------------------------------------------------------------------------
+/**
+ * @param ontology the Ontology that contains the terms
+ * @returns true if this OntologyTerm has a path to the other ontologyTerm via
+ * parent-child or container-contained relationships
+ */
+public boolean isAncestorOf (Ontology ontology, OntologyTerm other){
+  
+  if(isParentOrContainerOf(other)){
+    return true;
+  }
+  int [] myParents = getParentsAndContainers();
+  for(int i = 0; i < myParents.length; i++){
+    OntologyTerm parentTerm = ontology.getTerm(myParents[i]);
+    if(parentTerm != null && parentTerm.isAncestorOf(ontology, other)){
+      return true;
+    }
+  }
+  return false;
+}
+//-----------------------------------------------------------------------------
+public boolean isChildOf (OntologyTerm other){
+  int otherId = other.getId();
+  int [] myParents = getParents();
+  for(int i = 0; i < myParents.length; i++){
+    if(myParents[i] == otherId){
+      return true;
+    }
+  }
+  return false;
+}
+//-----------------------------------------------------------------------------
+public boolean isContainerOf (OntologyTerm other){
+  int [] otherContainers = other.getContainers();
+  for(int i = 0; i < otherContainers.length; i++){
+    if(this.id == otherContainers[i]){
+      return true;
+    }
+  }
+  return false;
+}//isContainerOf
+//-----------------------------------------------------------------------------
+public boolean isContainedIn (OntologyTerm other){
+  int [] myContainers = getContainers();
+  int otherID = other.getId();
+  for(int i = 0; i < myContainers.length; i++){
+    if(myContainers[i] == otherID){
+      return true;
+    }
+  }
+  return false;
+}//isContainedIn
+//-----------------------------------------------------------------------------
+public boolean isChildOfOrContainedIn (OntologyTerm other){
+  int otherID = other.getId();
+  int [] myParentsAndContainers = getParentsAndContainers();
+  for(int i = 0; i < myParentsAndContainers.length; i++){
+    if(otherID == myParentsAndContainers[i]){
+      return true;
+    }
+  }
+  return false;
+}//isChildOfOrContainedIn
+//-----------------------------------------------------------------------------
+public boolean isParentOrContainerOf (OntologyTerm other){
+  int [] otherParentsAndContainers = other.getParentsAndContainers();
+  for(int i = 0; i < otherParentsAndContainers.length; i++){
+    if(this.id == otherParentsAndContainers[i]){
+      return true;
+    }
+  }
+  return false;
+}//isParentOrContainerOf
+//-----------------------------------------------------------------------------
 public String toString ()
 {
   StringBuffer sb = new StringBuffer ();
