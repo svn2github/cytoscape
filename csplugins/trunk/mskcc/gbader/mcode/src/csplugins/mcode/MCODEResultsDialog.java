@@ -1,8 +1,8 @@
 package csplugins.mcode;
 
 import cytoscape.actions.GinyUtils;
-import cytoscape.data.CyNetwork;
-import cytoscape.data.GraphObjAttributes;
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
 import cytoscape.util.GinyFactory;
 import cytoscape.view.CyWindow;
 import giny.model.GraphPerspective;
@@ -73,7 +73,7 @@ public class MCODEResultsDialog extends JDialog {
 	JScrollPane scrollPane;
 	protected MCODEResultsDialog.MCODEResultsTableModel model;
 	//table size parameters
-	protected final int defaultRowHeight = 50;
+	protected final int defaultRowHeight = 80;
 	protected int preferredTableWidth = 0; // incremented below
 	//User preference
 	protected boolean openInNewWindow = false;
@@ -355,11 +355,10 @@ public class MCODEResultsDialog extends JDialog {
 					//save the vizmapper catalog
 					cyWindow.getCytoscapeObj().saveCalculatorCatalog();
 					CyNetwork oldNetwork = cyWindow.getNetwork();
-					GraphObjAttributes newNodeAttributes = oldNetwork.getNodeAttributes();
-					GraphObjAttributes newEdgeAttributes = oldNetwork.getEdgeAttributes();
 
-					CyNetwork newNetwork = new CyNetwork(gpComplex, newNodeAttributes,
-					        newEdgeAttributes, oldNetwork.getExpressionData());
+                    CyNetwork newNetwork = Cytoscape.createNetwork(gpComplex.getNodeIndicesArray(),
+                            gpComplex.getEdgeIndicesArray());
+                    newNetwork.setExpressionData(oldNetwork.getExpressionData());
 
 					NumberFormat nf = NumberFormat.getInstance();
 					nf.setMaximumFractionDigits(3);

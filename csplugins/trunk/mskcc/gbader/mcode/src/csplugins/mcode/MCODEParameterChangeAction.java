@@ -1,7 +1,7 @@
 package csplugins.mcode;
 
 import cytoscape.view.CyWindow;
-import cytoscape.data.CyNetwork;
+import cytoscape.CyNetwork;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;

@@ -1,6 +1,6 @@
 package csplugins.mcode;
 
-import cytoscape.data.CyNetwork;
+import cytoscape.CyNetwork;
 import cytoscape.view.CyWindow;
 import giny.model.GraphPerspective;
 import giny.view.GraphView;
