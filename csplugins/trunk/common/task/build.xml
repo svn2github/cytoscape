@@ -8,6 +8,10 @@
   <property name="temp.src.dir" value="${build.dir}/tempsrc"/>
   <property name="classes.dir" value="${build.dir}/classes"/>
   <property name="little.jars.dir" value="${build.dir}/littlejars"/>
+  <property name="config.dir" value="config"/>
+
+  <!--  Define Check Style Task -->
+  <taskdef resource="checkstyletask.properties"/>
 
   <target name="clean">
     <delete dir="${build.dir}"/>
@@ -108,5 +112,15 @@
       <arg line="2"/>
     </java>
   </target>
-
+    
+  <!--  Target to Run CheckStyle on all Source Code -->
+  <!--  Uses the Sun Coding Conventions Configuration -->
+  <target name="check" description="Checks Sun Coding Conventions">
+        <checkstyle config="${config.dir}/sun_checks.xml">
+              <fileset dir="${src.dir}">
+                <include name="**/*.java"/>
+		<exclude name="archive/**.*"/>
+            </fileset>
+          </checkstyle>
+  </target>
 </project>
