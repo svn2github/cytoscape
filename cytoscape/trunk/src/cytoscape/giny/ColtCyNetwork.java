@@ -360,7 +360,7 @@ public class ColtCyNetwork
    * Return the requested Attribute for the given Edge
    */
   public Object getEdgeAttributeValue ( CyEdge edge, String attribute ) {
-    return Cytoscape.getNodeNetworkData().get( attribute, 
+    return Cytoscape.getEdgeNetworkData().get( attribute, 
                                                Cytoscape.getEdgeNetworkData().getCanonicalName( edge ) );
   }
 
@@ -368,7 +368,7 @@ public class ColtCyNetwork
    * Return the requested Attribute for the given Edge
    */
   public Object getEdgeAttributeValue ( int edge, String attribute ) {
-    return Cytoscape.getNodeNetworkData().get( attribute, 
+    return Cytoscape.getEdgeNetworkData().get( attribute, 
                                                Cytoscape.getEdgeNetworkData().getCanonicalName( getEdge( edge ) ) );
   }
 
