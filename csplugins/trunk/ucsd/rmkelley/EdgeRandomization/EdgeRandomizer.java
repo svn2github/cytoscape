@@ -20,7 +20,7 @@ import javax.swing.event.*;
 import java.awt.BorderLayout;
 import java.awt.event.*;
 import cytoscape.layout.*;
-
+import cern.colt.map.OpenIntIntHashMap;
 
 
 
@@ -36,19 +36,46 @@ import cytoscape.layout.*;
  */
 public class EdgeRandomizer{
   Random rand;
-  CyNetwork seedNetwork;
+  //CyNetwork seedNetwork;
   List directedTypes;
-  HashMap type2EdgeList;
+  //HashMap type2EdgeList;
+  HashMap type2SourceArray;
+  HashMap type2TargetArray;
+  boolean [][] adjacencyMatrix;
+  int [] nodeIndices;
+  OpenIntIntHashMap perspective2root;
   /**
    * When randomizing, the expected number of times each
    * edge will be swapped
    */
   protected static final int EXPTECTED_EDGE_SWAPS = 2;
   public EdgeRandomizer(CyNetwork seedNetwork, List directedTypes){
-    this.seedNetwork = seedNetwork;
+    //this.seedNetwork = seedNetwork;
     this.directedTypes = directedTypes;
     this.rand = new Random();
-    this.type2EdgeList = createType2EdgeListMap();
+    perspective2root = new OpenIntIntHashMap(seedNetwork.getNodeCount());
+    nodeIndices = seedNetwork.getNodeIndicesArray();
+    for(int idx = 0;idx<nodeIndices.length;idx++){
+      perspective2root.put(idx+1,nodeIndices[idx]);
+    }
+    HashMap type2EdgeList = createType2EdgeListMap(seedNetwork);
+    type2SourceArray = new HashMap();
+    type2TargetArray = new HashMap();
+    adjacencyMatrix = new boolean[seedNetwork.getNodeCount()][seedNetwork.getNodeCount()];
+    for(Iterator typeIt = type2EdgeList.keySet().iterator();typeIt.hasNext();){
+      Object type = typeIt.next();
+      int [] sources = generateSources((List)type2EdgeList.get(type),seedNetwork);
+      int [] targets = generateTargets((List)type2EdgeList.get(type),seedNetwork);
+      type2SourceArray.put(type,sources);
+      type2TargetArray.put(type,targets);
+      boolean directed = directedTypes.contains(type);
+      for(int idx = 0;idx < sources.length; idx++){
+	adjacencyMatrix[sources[idx]][targets[idx]] = true;
+	if(!directed){
+	  adjacencyMatrix[targets[idx]][sources[idx]] = true;
+	}
+      }
+    }
   }
 
   /**
@@ -62,15 +89,15 @@ public class EdgeRandomizer{
      * triangle because we are only interested in keeping track
      * of undirected counts
      */
-    int [][] counts = initializeUndirectedCountMatrix(seedNetwork.getNodeCount());
+    int [][] counts = initializeUndirectedCountMatrix(nodeIndices.length);
        
     /**
      * Separately randomize each type of edge, updating the count
      * matrix
      */
-    for(Iterator typeIt = type2EdgeList.keySet().iterator();typeIt.hasNext();){
+    for(Iterator typeIt = type2SourceArray.keySet().iterator();typeIt.hasNext();){
       String type = (String)typeIt.next();
-      updateUndirectedCountsForType(type,(List)type2EdgeList.get(type),directedTypes.contains(type), iteration_limit, counts);
+      updateUndirectedCountsForType(type,(int[])type2SourceArray.get(type),(int[])type2TargetArray.get(type),directedTypes.contains(type), iteration_limit, counts);
     }
 
     return counts;
@@ -82,34 +109,31 @@ public class EdgeRandomizer{
     /*
      * For each edge type, create the random edges
      */
-    for(Iterator typeIt = type2EdgeList.keySet().iterator();typeIt.hasNext();){
+    for(Iterator typeIt = type2SourceArray.keySet().iterator();typeIt.hasNext();){
       String type = (String)typeIt.next();
-      List edgeList = (List)type2EdgeList.get(type);
-      int [] sources = generateSources(edgeList);
-      int [] targets = generateTargets(edgeList);
-      boolean [][] adjacencyMatrix = new boolean[seedNetwork.getNodeCount()][seedNetwork.getNodeCount()];
+      //List edgeList = (List)type2EdgeList.get(type);
+      //int [] sources = generateSources(edgeList);
+      //int [] targets = generateTargets(edgeList);
+      int [] sources = (int[])type2SourceArray.get(type);
+      int [] targets = (int[])type2TargetArray.get(type);
       boolean directed = directedTypes.contains(type);
-      for(int idx = 0;idx < sources.length; idx++){
-	adjacencyMatrix[sources[idx]][targets[idx]] = true;
-	if(!directed){
-	  adjacencyMatrix[targets[idx]][sources[idx]] = true;
-	}
-      }
       randomizeEdges(sources,targets,directed,adjacencyMatrix);
       /*
        * Map the indices back into root graph indices so we can generate
        * hte nodes
        */
+      int [] root_sources = new int [sources.length];
+      int [] root_targets = new int [targets.length];
       for(int idx = 0;idx < sources.length; idx++){
-	sources[idx] = seedNetwork.getRootGraphNodeIndex(sources[idx]+1);
-	targets[idx] = seedNetwork.getRootGraphNodeIndex(targets[idx]+1);
+	root_sources[idx] = perspective2root.get(sources[idx]);
+	root_targets[idx] = perspective2root.get(targets[idx]);
       }
       /*
        * Generate the new edges
        */
-      int [] new_edges = Cytoscape.getRootGraph().createEdges(sources,targets,directed);
+      int [] new_edges = Cytoscape.getRootGraph().createEdges(root_sources,root_targets,directed);
       if(result == null){
-	result = Cytoscape.createNetwork(seedNetwork.getNodeIndicesArray(),new_edges,"Random network");
+	result = Cytoscape.createNetwork(nodeIndices,new_edges,"Random network");
       }
       else{
 	/*
@@ -121,7 +145,7 @@ public class EdgeRandomizer{
     return result;
   }
   
-  protected HashMap createType2EdgeListMap(){
+  protected HashMap createType2EdgeListMap(CyNetwork seedNetwork){
     /*
      * Generate a list of edges for each type
      * of edge
@@ -153,23 +177,21 @@ public class EdgeRandomizer{
     return result;
   }
 
-  protected void updateUndirectedCountsForType(String type,List edgeList, boolean directed, int iteration_limit, int [][] counts){
-    int [] sources = generateSources(edgeList);
-    int [] targets = generateTargets(edgeList);
+  protected void updateUndirectedCountsForType(String type, int [] sources, int [] targets, boolean directed, int iteration_limit, int [][] counts){
     /*
      * The adjacency matrix keeps track of adjacent nodes for this edge type
      */
-    boolean [][] adjacencyMatrix = new boolean[seedNetwork.getNodeCount()][seedNetwork.getNodeCount()];
+    //boolean [][] adjacencyMatrix = new boolean[nodeIndicies.getNodeCount()][seedNetwork.getNodeCount()];
     /*
      * Make the adjacency matrix consistent with the current sources
      * and targets
      */
-    for(int idx = 0;idx < sources.length; idx++){
-      adjacencyMatrix[sources[idx]][targets[idx]] = true;
-      if(!directed){
-	adjacencyMatrix[targets[idx]][sources[idx]] = true;
-      }
-    }
+    //for(int idx = 0;idx < sources.length; idx++){
+    //  adjacencyMatrix[sources[idx]][targets[idx]] = true;
+    //  if(!directed){
+    //	adjacencyMatrix[targets[idx]][sources[idx]] = true;
+    //  }
+    //}
     /*
      * Set up the progress monitor
      */
@@ -288,7 +310,7 @@ public class EdgeRandomizer{
     }
   }
 
-  protected int [] generateSources(List edgeList){
+  protected int [] generateSources(List edgeList, CyNetwork seedNetwork){
     int [] sources = new int[edgeList.size()];
     int idx = 0;
     for(Iterator edgeIt = edgeList.iterator();edgeIt.hasNext();idx++){
@@ -298,7 +320,7 @@ public class EdgeRandomizer{
     return sources;
   }
   
-  protected int [] generateTargets(List edgeList){
+  protected int [] generateTargets(List edgeList, CyNetwork seedNetwork){
     int [] targets = new int[edgeList.size()];
     int idx = 0;
     for(Iterator edgeIt = edgeList.iterator();edgeIt.hasNext();idx++){
