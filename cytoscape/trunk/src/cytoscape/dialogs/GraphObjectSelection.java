@@ -30,11 +30,12 @@ public class GraphObjectSelection extends JPanel implements ActionListener {
   GraphObjAttributes nodeAttributes;
   GraphObjAttributes edgeAttributes;
   PGraphView graphView;
-
+  NetworkView networkView;
 
   public GraphObjectSelection ( NetworkView networkView  ) {
+    this.networkView = networkView;
     this.cyNetwork = networkView.getNetwork();
-    this.graphView = networkView.getView();
+    
     this.nodeAttributes = cyNetwork.getNodeAttributes();
     this.edgeAttributes = cyNetwork.getEdgeAttributes();
     initialize();
@@ -169,7 +170,8 @@ public class GraphObjectSelection extends JPanel implements ActionListener {
   }
 
    public void actionPerformed ( ActionEvent event ) {
-    // when ENTER is pressed do a search
+     // when ENTER is pressed do a search
+     this.graphView = networkView.getView();
     performSearch();    
     
     // update the view
@@ -178,7 +180,7 @@ public class GraphObjectSelection extends JPanel implements ActionListener {
 
   public void performSearch () {
 
-    Set passes = new TreeSet();
+    ArrayList passes = new ArrayList();
     Object[] selected_attributes_o = getSelectionList();
     String[] selected_attributes = new String[selected_attributes_o.length];
     for ( int i = 0; i<selected_attributes_o.length; ++i ) {
@@ -209,30 +211,70 @@ public class GraphObjectSelection extends JPanel implements ActionListener {
                 // the value, which is associated with a given selected attribute
                 //     and a node name is like one of the strings in the search
                 //     box, which includes wildcards.
+                //passes.add( graphView.getNodeView( nodes_with_attribute[j] ) );
+                //System.out.println( nodes_with_attribute[j]+" Matches Pattern: "+pattern[p]+" on Attribute: "+selected_attributes[i]+" and the object is a: "+ ( nodeAttributes.getGraphObject( nodes_with_attribute[j]) ).getClass().getName() );
+                //passes.add( graphView.getNodeView( ( Node )nodeAttributes.getGraphObject( nodes_with_attribute[j]) ) );
+                //System.out.println( "This got added to Passed: "+graphView.getNodeView( ( Node )nodeAttributes.getGraphObject( nodes_with_attribute[j]) ) );
                 passes.add( nodes_with_attribute[j] );
-                System.out.println( nodes_with_attribute[j]+" Matches Pattern: "+pattern[p]+" on Attribute: "+selected_attributes[i]+" and the object is a: "+ ( nodeAttributes.getGraphObject( nodes_with_attribute[j]) ).getClass().getName() );
+
               }
           }
         }
     }
 
-    Iterator sel;
-    DefaultListModel new_model;
-    if ( clearSelection.isSelected() ) {
-      sel = passes.iterator();
-    } else {
-            
-      // add them to the selection list
-      Set current_selection = new TreeSet( java.util.Arrays.asList( ( ( DefaultListModel )selectedAttributes.getModel() ).toArray() ) );
-      current_selection.addAll( passes );
+//     Iterator views = networkView.getView().getNodeViewsList().iterator();
+//     while ( views.hasNext() ) {
+//       System.out.println( "On Crack: "+views.next() );
+//     }
+
+
+    // restore all EdgeViews prior to hiding
+    networkView.getView().showGraphObjects( networkView.getView().getEdgeViewsList() );
+
+    Iterator all_nodes = networkView.getView().getGraphPerspective().nodesList().iterator();
+    while ( all_nodes.hasNext() ) {
+      Node node =  ( Node )all_nodes.next();
       
-      sel = current_selection.iterator();
+      //System.out.println( "ALL NODES: "+ nv.toString() );
+
+      if ( passes.contains( node.getIdentifier() ) ) {
+        //graphView.showGraphObject( nv );
+        //System.out.println( "PASSES: "+node.getIdentifier() );
+        //System.out.println( "PASSES: "+node );
+        //NodeView nv =  networkView.getView().getNodeView( node );
+        //System.out.println( "Will Show: "+nv );
+        //graphView.showGraphObject( networkView.getView().getNodeView( node.getRootGraphIndex() ) );
+        //networkView.getView().showGraphObject( nv );
+        networkView.getView().showNodeView( networkView.getView().getNodeView( node ), false );
+      } else {
+        //graphView.hideGraphObject( nv );
+        //System.out.println( "        NOPE: "+node.getIdentifier()+ " : "+node.getRootGraphIndex()+" : "+networkView.getView().getGraphPerspective().getIndex( node ) );
+        //System.out.println( "        NOPE: "+node.getIdentifier() );
+        //NodeView nv =  networkView.getView().getNodeView( node );
+        //System.out.println( "        Will Hide: "+nv );
+        //networkView.getView().hideGraphObject( nv );
+        networkView.getView().hideNodeView(  networkView.getView().getNodeView( node ) );
+      }
     }
-    new_model = new DefaultListModel();
-    while ( sel.hasNext() ){
-      new_model.addElement( sel.next() );
-    }
-    selectedAttributes.setModel( new_model );
+    
+
+  //   Iterator sel;
+//     DefaultListModel new_model;
+//     if ( clearSelection.isSelected() ) {
+//       sel = passes.iterator();
+//     } else {
+            
+//       // add them to the selection list
+//       Set current_selection = new TreeSet( java.util.Arrays.asList( ( ( DefaultListModel )selectedAttributes.getModel() ).toArray() ) );
+//       current_selection.addAll( passes );
+      
+//       sel = current_selection.iterator();
+//     }
+//     new_model = new DefaultListModel();
+//     while ( sel.hasNext() ){
+//       new_model.addElement( sel.next() );
+//     }
+//     selectedAttributes.setModel( new_model );
     
   }
 
