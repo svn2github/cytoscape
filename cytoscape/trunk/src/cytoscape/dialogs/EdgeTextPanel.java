@@ -22,6 +22,7 @@ import cytoscape.util.MutableString;
 import cytoscape.util.MutableColor;
 import cytoscape.vizmap.*;
 import cytoscape.dialogs.MiscGB;
+import cytoscape.dialogs.GridBagGroup;
 //----------------------------------------------------------------------------
 public class EdgeTextPanel extends JPanel {
 
@@ -210,18 +211,22 @@ public class EdgeTextPanel extends JPanel {
 	    super(parentFrame, true);
 	    setTitle("Colors for " + edgeKey.getString() + " types");
 	    
-	    intScrollPanel = new JPanel(new GridLayout(0,2));
+	    GridBagGroup ctddGBG = new GridBagGroup();
+	    intScrollPanel = ctddGBG.panel;
+	    //intScrollPanel = new JPanel(new GridLayout(0,2));
+
 	    /** setupTheMap does some heavy lifting. */
 	    //if(EdgeTextPanel.this.setupTheMap()) {
 	    if(mapSetup) {
 		Set allKeys = theMap.keySet();
 		Iterator keyIter = allKeys.iterator();
+		int yPos = 0;
 		for(;keyIter.hasNext();) {
 		    Object keyObject = keyIter.next();
 		    String keyString = (String)keyObject;
 		    //System.out.println(" key: " + keyString);
 		    JButton tempButton = new JButton(keyString);
-		    JLabel tempLabel = new JLabel("     ");
+		    JLabel tempLabel = new JLabel("       ");
 		    tempLabel.setOpaque(true);
 		    tempLabel.setBackground((Color)theMap.get(keyString));
 		    String tempTitle = edgeKey.getString() + " / " + keyString;
@@ -231,8 +236,11 @@ public class EdgeTextPanel extends JPanel {
 					  keyString,
 					  tempLabel,
 					  tempTitle));
-		    intScrollPanel.add(tempButton);
-		    intScrollPanel.add(tempLabel);
+		    MiscGB.insert(ctddGBG,tempButton,0,yPos,1,1,GridBagConstraints.BOTH);
+		    MiscGB.insert(ctddGBG,tempLabel,1,yPos,1,1,GridBagConstraints.VERTICAL);
+		    yPos++;
+		    //intScrollPanel.add(tempButton);
+		    //intScrollPanel.add(tempLabel);
 		}
 	    }
 	    else {
@@ -251,7 +259,9 @@ public class EdgeTextPanel extends JPanel {
 		new JScrollPane(internalScroll,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-	    listScrollPane.setPreferredSize(new Dimension(150,150));
+	    //listScrollPane.setMinimumSize(new Dimension(10,150));
+	    //listScrollPane.setMaximumSize(new Dimension(500,150));
+	    //listScrollPane.setPreferredSize(new Dimension(150,150));
 	    externalScroll = new JPanel(new GridLayout(1,1));
 	    externalScroll.add(listScrollPane);
 	    MiscGB.insert(popupGBG,externalScroll,0,0,2,1);
@@ -264,6 +274,10 @@ public class EdgeTextPanel extends JPanel {
 	    MiscGB.insert(popupGBG,applyButton,1,3);
 
 	    setContentPane(popupGBG.panel);
+	    Dimension d = listScrollPane.getPreferredSize();
+	    int prefHeight = (int)d.getHeight();
+	    if(prefHeight>150) prefHeight=150;
+	    listScrollPane.setPreferredSize(new Dimension((int)d.getWidth(),prefHeight));
 	    pack ();
 	}
 	public class EditAction extends AbstractAction {
