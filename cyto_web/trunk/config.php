@@ -6,10 +6,10 @@
 
 ################################################
 #  Specifies the News Option for the Home Page
-#  If set to "rss", we use the RSS Feed from the Cytoscape Announce List.
-#  If set to "statis", we use the Static News Feed
+#  If set to "atom", we use the XML/Atom Feed from the Cytoscape Announce List.
+#  If set to "static", we use the Static News Feed in news.php
 ################################################
-$news_option = "rss";
+$news_option = "atom";
 
 #################################################
 #  Specifies the Current Cytoscape Release Version

@@ -166,8 +166,9 @@
 </div>
 <td>
 <?php
-	if ($news_option == "rss") {
+	if ($news_option == "atom") {
 		include "feed.php";
+		include "community_box.php";
 	} else {
 		include "news.php";
 		include "community_box.php";
