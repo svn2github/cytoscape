@@ -20,7 +20,10 @@ import java.util.List;
  * project.  As little as possible has been done to change the algorithmic
  * logic, even where flaws might have been found.  The legacy class which
  * this class borrows code from is
- * <code>cytoscape.layout.SpringEmbeddedLayouter</code>.
+ * <code>cytoscape.layout.SpringEmbeddedLayouter</code>.<p>
+ * This algorithm only works with graph layouts with nodes that are all
+ * movable - no subgraph layout is supported.  Subgraph layouts will be
+ * supported very soon.
  **/
 public final class SpringEmbeddedLayouter extends LayoutAlgorithm
 {
@@ -84,11 +87,17 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
    * @param percentComplete a hook that a parent application may pass in
    *   in order to get information regarding what percentage of the layout
    *   has been completed.
+   * @exception UnsupportedOperationException
+   *   if <code>graph.areAllNodesMovable()</code> returns <code>false</code>.
    **/
   public SpringEmbeddedLayouter(MutableGraphLayout graph,
                                 PercentCompletedCallback percentComplete)
   {
     super(graph);
+    if (!m_graph.areAllNodesMovable())
+      throw new UnsupportedOperationException
+        ("this algirithm only works with graphs whose nodes are all " +
+         "movable");
     m_numLayoutPasses = DEFAULT_NUM_LAYOUT_PASSES;
     m_averageIterationsPerNode = DEFAULT_AVERAGE_ITERATIONS_PER_NODE;
     m_nodeDistanceSpringScalars = DEFAULT_NODE_DISTANCE_SPRING_SCALARS;

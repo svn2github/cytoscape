@@ -1,10 +1,5 @@
 package cytoscape.graph.layout.algorithm;
 
-// This import statement implies that this package depends on
-// packages outside of cytoscape.graph.*.  I kind of hesitate to do this.
-// At least, put this class in a package with as little code as possible so
-// that other code wouldn't necessitate this dependency also; dependencies are
-// a per-package concept.
 import cytoscape.process.Task;
 
 /**
@@ -28,6 +23,8 @@ public abstract class LayoutAlgorithm implements Task
 
   /**
    * Simply sets <code>m_graph</code> to reference the input parameter.
+   * Some layouts may only operate on graph layouts whose nodes are all
+   * movable.  
    **/
   protected LayoutAlgorithm(MutableGraphLayout graph)
   {

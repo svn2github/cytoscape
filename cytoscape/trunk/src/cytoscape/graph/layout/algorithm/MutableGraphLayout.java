@@ -9,6 +9,25 @@ public interface MutableGraphLayout extends GraphLayout
 {
 
   /**
+   * Tells us whether or not the node at index <code>nodeIndex</code>
+   * can be moved by <code>setNodePosition()</code>.
+   *
+   * @param nodeIndex index of node whose mobility we are querying.
+   * @exception IndexOutOfBoundsException if <code>nodeIndex</code> is not
+   *   in the interval <nobr><code>[0, getNumNodes() - 1]</code></nobr>.
+   * @see #setNodePosition(int, double, double)
+   */
+  public boolean isMovableNode(int nodeIndex);
+
+  /**
+   * Returns <code>true</code> if and only if
+   * <code>isMovableNode(nodeIx)</code> returns <code>true</code> for every
+   * <code>nodeIx</code> in the interval
+   * <nobr><code>[0, getNumNodes() - 1]</code></nobr>.
+   **/
+  public boolean areAllNodesMovable();
+
+  /**
    * Sets the X,Y position of a node at index <code>nodeIndex</code>.
    * This is a hook for layout algorithms to actually set locations of
    * nodes.  Layout algorithms should call this method.<p>
@@ -38,9 +57,14 @@ public interface MutableGraphLayout extends GraphLayout
    *   <nobr><code>yPos > getMaxHeight()</code></nobr>.
    * @exception IndexOutOfBoundsException if <code>nodeIndex</code> is not
    *   in the interval <nobr><code>[0, getNumNodes() - 1]</code></nobr>.
+   * @exception UnsupportedOperationException if
+   *   <nobr><code>isMovableNode(nodeIndex)</code></nobr> returns
+   *   <code>false</code>.
+   *
    * @see #getMaxWidth()
    * @see #getMaxHeight()
    * @see #getNodePosition(int)
+   * @see #isMovableNode(int)
    */
   public void setNodePosition(int nodeIndex, double xPos, double yPos);
 
