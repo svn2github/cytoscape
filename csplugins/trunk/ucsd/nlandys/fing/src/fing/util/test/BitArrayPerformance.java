@@ -1,11 +1,11 @@
 package fing.util.test;
 
-import fing.util.BitArray;
 import fing.util.IntEnumerator;
 import fing.util.MinIntHeap;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.BitSet;
 
 public class BitArrayPerformance
 {
@@ -78,7 +78,7 @@ public class BitArrayPerformance
 
   // Keep a reference to our data structure so that we can determine how
   // much memory was consumed by our algorithm (may be implemented in future).
-  static BitArray _THE_BIT_ARRAY_ = null;
+  static BitSet _THE_BIT_ARRAY_ = null;
   // The heap is used only for the purpose of being a bucket of unique
   // integers; we add an integer to this bucket if and only the bit array
   // tells us that the value at index integer is false (and then we set the
@@ -90,12 +90,12 @@ public class BitArrayPerformance
     // The dynamic range of the integers in this array happens to be the
     // same as the number of integers in this array based on our test case
     // definition.
-    _THE_BIT_ARRAY_ = new BitArray(elements.length);
+    _THE_BIT_ARRAY_ = new BitSet(elements.length);
     _THE_HEAP_ = new MinIntHeap();
     for (int i = 0; i < elements.length; i++)
       if (!_THE_BIT_ARRAY_.get(elements[i])) {
         _THE_HEAP_.toss(elements[i]);
-        _THE_BIT_ARRAY_.put(elements[i], true); }
+        _THE_BIT_ARRAY_.set(elements[i]); }
     IntEnumerator iter = _THE_HEAP_.elements();
     final int[] returnThis = new int[iter.numRemaining()];
     for (int i = 0; i < returnThis.length; i++)
