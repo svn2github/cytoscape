@@ -27,6 +27,11 @@ import cytoscape.util.GinyFactory;
 import cytoscape.actions.FitContentAction;
 import cytoscape.data.Semantics;
 
+//for saving the view to an image
+import java.io.File;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import phoebe.PGraphView;
 
 /**
  * This plugin will display is used to browser a number of gml files created
@@ -160,6 +165,7 @@ class LoadPathBlastGMLTask extends Thread{
     //CyWindow newWindow = new CyWindow(cyWindow.getCytoscapeObj(), newNetwork, "Overlap Graph");
     //create a new menu item and actionlistener for that window
     cyWindow.getCyMenus().getOperationsMenu().add(new ShowGMLAction(cyWindow,node2CyNetwork));	 	
+    cyWindow.getCyMenus().getOperationsMenu().add(new SaveImagesAction(cyWindow,node2CyNetwork));
     //newWindow.showWindow();
     cyWindow.getCyMenus().setNodesRequiredItemsEnabled();
   }
@@ -312,15 +318,55 @@ class ShowGMLAction extends AbstractAction {
     List selectedNodes = cyWindow.getView().getSelectedNodes();	
     if(selectedNodes.size() > 0){				
       Node selectedNode = ((NodeView)selectedNodes.get(0)).getNode();
-      Thread t = new ShowGMLThread(selectedNode,node2CyNetwork,cyWindow);
+      Thread t = new ShowGMLThread(selectedNode,node2CyNetwork,cyWindow,false);
       t.start();								
     }										
   }										
-}										
+}	
+
+class SaveImagesAction extends AbstractAction {
+  /**
+   * This is the window containing the overlap graph
+   */
+  CyWindow cyWindow;
+  /**			
+   * This contains a mapping from nodes in the network to the GMLTree associated with that ndoe	
+   */
+  HashMap node2CyNetwork;
+  /**					
+   * The constructor sets the text that should appear on the menu item.
+   */									
+  public SaveImagesAction(CyWindow cyWindow, HashMap node2CyNetwork){	
+    super("Save All Layouts to Images");							
+    this.node2CyNetwork = node2CyNetwork;
+    this.cyWindow = cyWindow;			
+  }						
+    
+  /**						
+   * This method is called when the user selects the menu item.
+   */								
+  public void actionPerformed(ActionEvent ae) {			
+    for ( Iterator nodeIt = cyWindow.getView().getGraphPerspective().nodesIterator();nodeIt.hasNext();) {
+      Thread t = new ShowGMLThread((Node)nodeIt.next(),node2CyNetwork,cyWindow,true);
+      t.start();								
+      try {
+	t.join();
+      } catch ( Exception e) {
+	e.printStackTrace();
+      } // end of try-catch
+      
+    }										
+  }										
+}	
+
 /**										
  * Load up the specified GMLFile in a window 					
  */										
-class ShowGMLThread extends Thread{						
+class ShowGMLThread extends Thread{	
+  /**
+   * Whether to save the layout to an image
+   */
+  private boolean save;
   /**										
    * The old window with the overlap graph, bascially just need this to geta  reference to the global
    * cytoscape thingy											
@@ -340,10 +386,11 @@ class ShowGMLThread extends Thread{
    * Keeps track of the CyNetworks we have already 							
    * created so we don't have to create them again							
    */													
-  public ShowGMLThread(Node selectedNode, HashMap node2CyNetwork, CyWindow overlapWindow){		
+  public ShowGMLThread(Node selectedNode, HashMap node2CyNetwork, CyWindow overlapWindow, boolean save){		
     this.node2CyNetwork = node2CyNetwork;								
     this.selectedNode = selectedNode;									
     this.overlapWindow = overlapWindow;									
+    this.save = save;
   }													
 													
   /**													
@@ -371,12 +418,18 @@ class ShowGMLThread extends Thread{
       } // end of try-catch
       Semantics.applyNamingServices(newWindow.getNetwork(),overlapWindow.getCytoscapeObj());
       newWindow.getMainFrame().setVisible(false);
-      FitContentAction fitAction = new FitContentAction(newWindow);									
-      fitAction.actionPerformed(new ActionEvent(this,0,""));										
+      FitContentAction fitAction = new FitContentAction(newWindow);							   
+      fitAction.actionPerformed(new ActionEvent(this,0,""));								   
       newWindow.getMainFrame().setVisible(true);
       newWindow.getCyMenus().setNodesRequiredItemsEnabled();
-    }																	
-  }																	
- 																	
+      if ( save) {
+	try {
+	  ImageIO.write((BufferedImage)((PGraphView)(newWindow.getView())).getCanvas().getLayer().toImage(),"png",new File(selectedNode.getIdentifier()+".png"));  
+	} catch ( Exception e) {
+	  e.printStackTrace();
+	} // end of try-catch
+      } // end of if ()
+    }
+  }
 }
 

@@ -54,7 +54,7 @@
 	<!-- Target to debug with socket debugger -->
 	<target name="test" depends="jar" description="Runs jar to debug">
 		<java classname="cytoscape.cytoscape" classpathref="classpath_run" fork="true">
-			<arg line="--JLD build/${plugin.name}.jar"/>
+			<arg line="--JLD build/${plugin.name}.jar --DLedges"/>
 			<jvmarg value="-Xdebug"/>
 			<jvmarg value="-Xnoagent"/>
 			<jvmarg value="-Djava.compiler=NONE"/>
