@@ -548,7 +548,7 @@ protected JMenuBar createMenuBar ()
   vizMenu = new JMenu ("Visualization"); // always create the viz menu
   menuBar.add (vizMenu);
   vizMenu.add (new SetVisualPropertiesAction ());
-  vizMenu.add (new ChooseExpressionAction ());
+  //vizMenu.add (new ChooseExpressionAction ());
 
 
 
@@ -966,6 +966,7 @@ class PrintAction extends AbstractAction
 } // inner class PrintAction
 
 //------------------------------------------------------------------------------
+/*
 protected class ChooseExpressionAction extends AbstractAction   {
   ChooseExpressionAction () { super ("Choose Expression"); }
 
@@ -981,6 +982,7 @@ protected class ChooseExpressionAction extends AbstractAction   {
       renderNodesAndEdges();//implicitly calls redrawGraph()
   }
 }
+*/
 
 //------------------------------------------------------------------------------
 protected class SetVisualPropertiesAction extends AbstractAction   {
