@@ -39,23 +39,23 @@ public class FilterEditorPanel
     editorIndexMap = new HashMap();
     editorCount = 0;
 
-    JPanel controlPanel = new JPanel();
-    controlPanel.setBorder( new TitledBorder( "Filter Control" ) );
-    controlPanel.setLayout( new GridLayout( 0, 1 ) );
+    //JPanel controlPanel = new JPanel();
+    //controlPanel.setBorder( new TitledBorder( "Filter Control" ) );
+    //controlPanel.setLayout( new GridLayout( 0, 1 ) );
 
     editorTabs = new JTabbedPane();
 
-    addButton =    new JButton( "Add/Replace" );
-    removeButton = new JButton( "   Remove  " );
-    resetButton =  new JButton( "   Reset   " );
-    addButton.addActionListener( this );
-    removeButton.addActionListener( this );
-    resetButton.addActionListener( this );
-    controlPanel.add( addButton );
-    controlPanel.add( removeButton );
-    controlPanel.add( resetButton );
+    //addButton =    new JButton( "Add/Replace" );
+    //removeButton = new JButton( "   Remove  " );
+    //resetButton =  new JButton( "   Reset   " );
+    //addButton.addActionListener( this );
+    //removeButton.addActionListener( this );
+    //resetButton.addActionListener( this );
+    //controlPanel.add( addButton );
+    //controlPanel.add( removeButton );
+    //controlPanel.add( resetButton );
 
-    add( controlPanel );
+    //add( controlPanel );
     add( editorTabs );
   
 

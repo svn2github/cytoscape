@@ -106,7 +106,8 @@ public class FilterListPanel
 
     } else if ( type == SHOW_TOGETHER ) {
       compoundList = new JList();
-      compoundList.addListSelectionListener( this );
+						compoundList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+						compoundList.addListSelectionListener( this );
       updateLists();
       //listPanel.setBorder( new TitledBorder( "Filters and FilterTrees" ) );
       JScrollPane scroll = new JScrollPane( compoundList );
@@ -120,16 +121,16 @@ public class FilterListPanel
       listPanel.add( scroll, BorderLayout.CENTER );
     } else {
       filterList = new JList();
-      filterList.addListSelectionListener( this );
+						filterList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+						filterList.addListSelectionListener( this );
       updateLists();
       //listPanel.setBorder( new TitledBorder( "Filters" ) );
       JScrollPane scroll = new JScrollPane( filterList );
       listPanel.add( scroll, BorderLayout.CENTER );
 						//add(scroll,BorderLayout.CENTER); 
 				}
-
     setLayout( new BorderLayout() );
-    add( searchPanel, BorderLayout.NORTH );
+    //add( searchPanel, BorderLayout.NORTH );
     add( listPanel, BorderLayout.CENTER );
 
   }
@@ -183,7 +184,9 @@ public class FilterListPanel
     }
   }
 
-
+		public Filter getSelectedFilter(){
+						return FilterManager.defaultManager().getFilter((String)compoundList.getSelectedValue());
+		}
   public Filter[] getSelectedFilters () {
     
     if ( type == SHOW_SEPARATE ) {

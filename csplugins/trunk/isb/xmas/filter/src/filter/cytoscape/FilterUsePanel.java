@@ -35,7 +35,7 @@ public class FilterUsePanel extends JPanel
   JRadioButton and, or, xor;
   CyNetwork network;
   CyWindow window;
-
+		JButton addButton,removeButton;
   JCheckBox select, gray, hide,  overwrite;
   JRadioButton pulsate, spiral;
 
@@ -51,15 +51,17 @@ public class FilterUsePanel extends JPanel
     //--------------------//
     // Selected Filter Panel
     JPanel selected_filter_panel = new JPanel();
-    //selected_filter_panel.setBorder( new TitledBorder( "Available Filters" ) );
+    selected_filter_panel.setLayout(new BorderLayout());
+				//selected_filter_panel.setBorder( new TitledBorder( "Available Filters" ) );
     filterListPanel = new FilterListPanel( FilterListPanel.SHOW_TOGETHER );
-    selected_filter_panel.add( filterListPanel );
+    selected_filter_panel.add( filterListPanel,BorderLayout.CENTER );
+				selected_filter_panel.add(createManagePanel(),BorderLayout.NORTH);
     
 
     //--------------------//
     // Use Panel
-    JPanel use_panel = new JPanel();
-    use_panel.setBorder( new TitledBorder( "Take Action" ) );
+    /*JPanel use_panel = new JPanel();
+    use_panel.setBorder( new TitledBorder( "Actions" ) );
     use_panel.add( createActionPanel(), BorderLayout.SOUTH );
     ButtonGroup logic_group = new ButtonGroup();
     and = new JRadioButton( "AND", true );
@@ -74,11 +76,12 @@ public class FilterUsePanel extends JPanel
     logic_group.add( or );
     logic_group.add( xor );
     //use_panel.add( logic_panel, BorderLayout.NORTH );
+				*/
+				selected_filter_panel.add(createActionPanel(),BorderLayout.SOUTH);
 
-
-    JSplitPane pane0 = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, selected_filter_panel, use_panel );
-    JSplitPane pane1 = new JSplitPane( JSplitPane.VERTICAL_SPLIT, filterEditorPanel, pane0 );
-    add( pane1 );
+    JSplitPane pane0 = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, selected_filter_panel, filterEditorPanel );
+    //JSplitPane pane1 = new JSplitPane( JSplitPane.VERTICAL_SPLIT, filterEditorPanel, pane0 );
+    add( pane0 );
 
     filterListPanel.getSwingPropertyChangeSupport().addPropertyChangeListener( filterEditorPanel );
   
@@ -95,13 +98,37 @@ public class FilterUsePanel extends JPanel
      }
 
   }
-  
-  public void actionPerformed ( ActionEvent e ) {}
+		public JPanel createManagePanel(){
+						JPanel result = new JPanel();
+						result.setBorder(new TitledBorder("Manage Filters"));
+						addButton = new JButton("Add current filter");
+						addButton.addActionListener(this);
+						removeButton = new JButton("Remove selected filter");
+						removeButton.addActionListener(this);
+						result.add(addButton);
+						result.add(removeButton);
+						return result;
+		}
+
+		public void actionPerformed ( ActionEvent e ) {
+						if ( e.getSource() == addButton ) {
+										//System.out.println( "Adding Filter from selected editor: "+getSelectedEditor() );
+										FilterManager.defaultManager().addFilter( filterEditorPanel.getSelectedEditor().getFilter() );
+						}
+						if ( e.getSource() == removeButton ) {
+										Filter filter = filterListPanel.getSelectedFilter();
+										if(filter != null){
+														FilterManager.defaultManager().removeFilter( filter);
+										}
+														//filterEditorPanel.getSelectedEditor().clear();
+						}
+
+		}
 
 
   protected void testObjects () {
     
-    Filter[] filters = filterListPanel.getSelectedFilters();
+    Filter filter = filterListPanel.getSelectedFilter();
     System.out.println( "Window: "+window );
     network = window.getNetwork();
     System.out.println( "Network: "+network );
@@ -118,36 +145,47 @@ public class FilterUsePanel extends JPanel
     boolean passes;
 
     // and combo
-    if ( and.isSelected() ) {
+    //if ( and.isSelected() ) {
+				if(filter != null){
       nodes = nodes_list.iterator();
       while ( nodes.hasNext() ) {
         node = ( Node )nodes.next();
-        passes = true;
-        for ( int i = 0; i < filters.length; ++i ) {
-          boolean passed = filters[i].passesFilter( node );
-          if ( !passed ) {
-            passes = false;
-          }
-        }
-        passObject( node, passes ); 
+								try{
+												passObject(node,filter.passesFilter(node));
+								}catch(StackOverflowError soe){
+												return;
+								}
+        //ipasses = true;
+        //for ( int i = 0; i < filters.length; ++i ) {
+        //  boolean passed = filters[i].passesFilter( node );
+        //  if ( !passed ) {
+        //    passes = false;
+        //  }
+        //}
+        //passObject( node, passes ); 
       }
 
       edges = edges_list.iterator();
       while ( edges.hasNext() ) {
         edge = ( Edge )edges.next();
-        passes = true;
-        for ( int i = 0; i < filters.length; ++i ) {
-          boolean passed = filters[i].passesFilter( edge );
-          if ( !passed ) {
-            passes = false;
-          }
-        }
-        passObject( edge, passes ); 
+								try{
+												passObject(edge,filter.passesFilter(edge));
+								}catch(StackOverflowError soe){
+												return;
+								}
+        //passes = true;
+        //for ( int i = 0; i < filters.length; ++i ) {
+        //  boolean passed = filters[i].passesFilter( edge );
+        //  if ( !passed ) {
+        //    passes = false;
+        //  }
+        //}
+        //passObject( edge, passes ); 
       }
       
     }
     // or combo
-    else if ( or.isSelected() ) {
+    /*else if ( or.isSelected() ) {
       nodes = nodes_list.iterator();
       while ( nodes.hasNext() ) {
         node = ( Node )nodes.next();
@@ -216,7 +254,7 @@ public class FilterUsePanel extends JPanel
         }        
         passObject( edge, passes ); 
       }
-    } 
+    }*/ 
   }
 
   /**
@@ -235,7 +273,7 @@ public class FilterUsePanel extends JPanel
         if ( select.isSelected() ) {
           nv.setSelected( true );
         }
-      
+      /*
         if ( pulsate.isSelected() ) {
           final PNodeView node = ( PNodeView )nv;
 
@@ -307,7 +345,7 @@ public class FilterUsePanel extends JPanel
           if ( hide.isSelected() ) {
             ( ( phoebe.PGraphView )window.getView() ).showNodeView( nv );
           }
-        }
+        }*/
       } 
 
       else if ( object instanceof Edge ) {
@@ -319,7 +357,7 @@ public class FilterUsePanel extends JPanel
         if ( select.isSelected() ) {
           nv.setSelected( true );
         }
-      
+      /*
         if ( overwrite.isSelected() ) {
           // things to overwrite if passes
           if ( gray.isSelected() ) {
@@ -328,7 +366,7 @@ public class FilterUsePanel extends JPanel
           if ( hide.isSelected() ) {
             ( ( phoebe.PGraphView )window.getView() ).showEdgeView( nv );
           }
-        }
+        }*/
       } 
 
 
@@ -336,39 +374,39 @@ public class FilterUsePanel extends JPanel
     } else {
       if ( object instanceof Node ) {
         NodeView nv =   window.getView().getNodeView( ( Node )object );
-        
+        /*
         // things to do if failed
         if ( gray.isSelected() ) {
           nv.setTransparency( 0.5f );
-        } 
+        } */
         if ( hide.isSelected() ) {
           ( ( phoebe.PGraphView )window.getView() ).hideNodeView( nv );
-        }
+        }/*
         if ( overwrite.isSelected() ) {
           // things to overwrite if failed
           if ( select.isSelected() ) {
             nv.setSelected( false );
           }
-        }
+        }*/
         
       }
 
       else if ( object instanceof Edge ) {
          EdgeView nv =   window.getView().getEdgeView( ( Edge )object );
-        
+        /*
          // things to do if failed
          if ( gray.isSelected() ) {
            //nv.setTransparency( 0.5f );
-         } 
+         }*/ 
          if ( hide.isSelected() ) {
            ( ( phoebe.PGraphView )window.getView() ).hideEdgeView( nv );
-         }
+         }/*
          if ( overwrite.isSelected() ) {
           // things to overwrite if failed
            if ( select.isSelected() ) {
              nv.setSelected( false );
            }
-         }
+         }*/
         
       }
 
@@ -381,26 +419,28 @@ public class FilterUsePanel extends JPanel
     actionPanel.setBorder( new TitledBorder( "Available Actions" ) );
 
     select = new JCheckBox( "Select Passed" );
-    gray = new JCheckBox( "Gray Failed" );
+    //gray = new JCheckBox( "Gray Failed" );
     hide = new JCheckBox( "Hide Failed" );
-    pulsate = new JRadioButton( "Pulsate" );
-    spiral = new JRadioButton( "Spiral" );
-    overwrite = new JCheckBox( "Overwrite State" );
+    //pulsate = new JRadioButton( "Pulsate" );
+    //spiral = new JRadioButton( "Spiral" );
+    //overwrite = new JCheckBox( "Overwrite State" );
 
-    JPanel boxes = new JPanel();
-    boxes.setLayout( new GridLayout( 0, 1 ) );
-    boxes.add( select );
-    boxes.add( gray );
-    boxes.add( hide );
-    boxes.add( pulsate );
-    boxes.add( spiral );
+    //JPanel boxes = new JPanel();
+    //boxes.setLayout( new GridLayout( 0, 1 ) );
+    //boxes.add( select );
+    //boxes.add( gray );
+    //boxes.add( hide );
+    //boxes.add( pulsate );
+    //boxes.add( spiral );
     
-    ButtonGroup g = new ButtonGroup();
-    g.add( spiral );
-    g.add( pulsate );
+    //ButtonGroup g = new ButtonGroup();
+    //g.add( spiral );
+    //g.add( pulsate );
 
-    actionPanel.add( boxes );
-    actionPanel.add( overwrite );
+    //actionPanel.add( boxes );
+    //actionPanel.add( overwrite );
+				actionPanel.add(select);
+				actionPanel.add(hide);
 
     actionPanel.add( new JButton (new AbstractAction( "Go!" ) {
           public void actionPerformed ( ActionEvent e ) {
