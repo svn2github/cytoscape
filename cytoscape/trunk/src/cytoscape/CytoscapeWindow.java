@@ -452,6 +452,7 @@ protected JMenuBar createMenuBar ()
   layoutMenu.add (new HierarchicalLayoutAction ());
   layoutMenu.add (new OrganicLayoutAction ());
   layoutMenu.add (new RandomLayoutAction ());
+  layoutMenu.add (new EmbeddedLayoutAction ());
   // layoutMenu.add (new GroupWiseLayoutAction ());
   layoutMenu.add (new LayoutAction ());
 
@@ -801,6 +802,19 @@ protected class RandomLayoutAction extends AbstractAction   {
     redrawGraph ();
     }
 }
+
+
+protected class EmbeddedLayoutAction extends AbstractAction {
+    EmbeddedLayoutAction () { super("Embedded"); }
+
+    public void actionPerformed (ActionEvent e) {
+	layouter = new EmbeddedLayouter();
+	applyLayout (false);
+	redrawGraph ();
+    }
+}
+
+
 //-----------------------------------------------------------------------------
 protected class GoIDSelectAction extends AbstractAction   {
   GoIDSelectAction () { super ("By GO ID"); }
