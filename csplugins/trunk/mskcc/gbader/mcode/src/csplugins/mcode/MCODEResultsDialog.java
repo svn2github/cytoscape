@@ -1,8 +1,8 @@
 package csplugins.mcode;
 
-import cytoscape.GraphObjAttributes;
 import cytoscape.actions.GinyUtils;
 import cytoscape.data.CyNetwork;
+import cytoscape.data.GraphObjAttributes;
 import cytoscape.util.GinyFactory;
 import cytoscape.view.CyWindow;
 import giny.model.GraphPerspective;
@@ -215,7 +215,7 @@ public class MCODEResultsDialog extends JDialog {
 				for (Iterator in = view.getNodeViewsIterator(); in.hasNext();) {
 					NodeView nv = (NodeView) in.next();
 					String label = nv.getNode().getIdentifier();
-					nv.setLabel(label);
+					nv.getLabel().setText(label);
 					nv.setShape(NodeView.ELLIPSE);
 					nv.setUnselectedPaint(Color.red);
 					nv.setBorderPaint(Color.black);
@@ -229,7 +229,7 @@ public class MCODEResultsDialog extends JDialog {
 				for (Iterator ie = view.getEdgeViewsIterator(); ie.hasNext();) {
 					EdgeView ev = (EdgeView) ie.next();
 					ev.setUnselectedPaint(Color.blue);
-					ev.setTargetEdgeEnd(EdgeView.ARROW_END);
+					ev.setTargetEdgeEnd(EdgeView.BLACK_ARROW);
 					ev.setTargetEdgeEndPaint(Color.CYAN);
 					ev.setSourceEdgeEndPaint(Color.CYAN);
 					ev.setStroke(new BasicStroke(5f));

@@ -1,14 +1,22 @@
+package csplugins.mcode;
+
+import cytoscape.view.CyWindow;
+import cytoscape.data.CyNetwork;
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+
+import giny.view.GraphView;
+import giny.model.GraphPerspective;
+
+import javax.swing.*;
+
 /** Copyright (c) 2003 Institute for Systems Biology, University of
  ** California at San Diego, and Memorial Sloan-Kettering Cancer Center.
  **
  ** Code written by: Gary Bader
  ** Authors: Gary Bader, Ethan Cerami, Chris Sander
- ** Date: Jan.20.2003
- ** Description: Cytoscape Plug In that clusters a graph according to the MCODE
- ** algorithm.
- **
- ** Based on the csplugins.tutorial written by Ethan Cerami and GINY plugin
- ** written by Andrew Markiel
  **
  ** This library is free software; you can redistribute it and/or modify it
  ** under the terms of the GNU Lesser General Public License as published
@@ -36,48 +44,30 @@
  ** You should have received a copy of the GNU Lesser General Public License
  ** along with this library; if not, write to the Free Software Foundation,
  ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ **
+ ** User: Gary Bader
+ ** Date: Feb 6, 2004
+ ** Time: 4:54:53 PM
+ ** Description
  **/
+public class MCODEParameterChangeAction implements ActionListener {
+	private CyWindow cyWindow;
 
-package csplugins.mcode;
-
-import cytoscape.AbstractPlugin;
-import cytoscape.view.CyWindow;
-
-import javax.swing.*;
-
-/**
- * MCODE Network Clustering Plug In.
- * Clusters a graph.
- *
- * @author Gary Bader
- */
-public class MCODEPlugin extends AbstractPlugin {
-	/**
-	 * Constructor.
-	 * @param cyWindow Main Cytoscape Window object.
-	 */
-	public MCODEPlugin(CyWindow cyWindow) {
-		//set-up menu options in plugins menu
-		JMenuItem item;
-		JMenu menu = cyWindow.getCyMenus().getOperationsMenu();
-		JMenu submenu = new JMenu("MCODE");
-		item = new JMenuItem("Step 1: Score Network");
-		item.addActionListener(new MCODEScoreAction(cyWindow));
-		submenu.add(item);
-		item = new JMenuItem("Step 2: Find Complexes");
-		item.addActionListener(new MCODEFindAction(cyWindow));
-		submenu.add(item);
-		item = new JMenuItem("Set parameters");
-		item.addActionListener(new MCODEParameterChangeAction(cyWindow));
-		submenu.add(item);
-		menu.add(submenu);
+	public MCODEParameterChangeAction(CyWindow cyWindow) {
+		this.cyWindow = cyWindow;
 	}
 
 	/**
-	 * Describes the plug in.
-	 * @return short plug in description.
+	 * This method is called when the user selects the menu item.
+	 * @param event Menu Item Selected.
 	 */
-	public String describe() {
-		return new String("Clusters a graph according to the MCODE algorithm.");
+	public void actionPerformed(ActionEvent event) {
+		//run MCODE complex finding algorithm after the nodes have been scored
+		MCODE alg = MCODE.getInstance();
+
+		//display complexes in a new non modal dialog box
+		MCODEParameterChangeDialog paramChangeDialog = new MCODEParameterChangeDialog(cyWindow.getMainFrame());
+		paramChangeDialog.pack();
+		paramChangeDialog.setVisible(true);
 	}
 }

@@ -1,9 +1,10 @@
 package csplugins.mcode;
 
-import cytoscape.GraphObjAttributes;
 import giny.model.GraphPerspective;
 
 import java.util.*;
+
+import cytoscape.data.GraphObjAttributes;
 
 /** Copyright (c) 2003 Institute for Systems Biology, University of
  ** California at San Diego, and Memorial Sloan-Kettering Cancer Center.
@@ -67,17 +68,16 @@ public class MCODEAlgorithm {
 
 	//parameters
 	//used in scoring stage
-	public boolean includeLoops;
+	private boolean includeLoops;
+	private int degreeCutOff;
 	//used in complex finding stage
-	public int maxDepthFromStart;
-	public int degreeCutOff;
-	public double nodeScoreCutOff;
-	public boolean fluff;
-	public boolean haircut;
-	public double fluffNodeDensityCutOff;
+	private int maxDepthFromStart;
+	private double nodeScoreCutOff;
+	private boolean fluff;
+	private boolean haircut;
+	private double fluffNodeDensityCutOff;
 	//used in directed mode
-	public String directedNodeName;
-	public boolean preprocessNetwork;
+	private boolean preprocessNetwork;
 
 	public MCODEAlgorithm() {
 		//default parameters
@@ -95,18 +95,68 @@ public class MCODEAlgorithm {
 	}
 
 	//parameter setting
-	public void setScoreParams(boolean includeLoops, int degreeCutOff) {
+	public boolean isIncludeLoops() {
+		return includeLoops;
+	}
+
+	public void setIncludeLoops(boolean includeLoops) {
 		this.includeLoops = includeLoops;
+	}
+
+	public int getDegreeCutOff() {
+		return degreeCutOff;
+	}
+
+	public void setDegreeCutOff(int degreeCutOff) {
 		this.degreeCutOff = degreeCutOff;
 	}
 
-	public void setFindComplexesParams(int depth, double nodeScoreCutOff, boolean fluff,
-	                                   boolean haircut, double fluffNodeDensityCutOff) {
-		this.maxDepthFromStart = depth;
+	public int getMaxDepthFromStart() {
+		return maxDepthFromStart;
+	}
+
+	public void setMaxDepthFromStart(int maxDepthFromStart) {
+		this.maxDepthFromStart = maxDepthFromStart;
+	}
+
+	public double getNodeScoreCutOff() {
+		return nodeScoreCutOff;
+	}
+
+	public void setNodeScoreCutOff(double nodeScoreCutOff) {
 		this.nodeScoreCutOff = nodeScoreCutOff;
+	}
+
+	public boolean isFluff() {
+		return fluff;
+	}
+
+	public void setFluff(boolean fluff) {
 		this.fluff = fluff;
+	}
+
+	public boolean isHaircut() {
+		return haircut;
+	}
+
+	public void setHaircut(boolean haircut) {
 		this.haircut = haircut;
+	}
+
+	public double getFluffNodeDensityCutOff() {
+		return fluffNodeDensityCutOff;
+	}
+
+	public void setFluffNodeDensityCutOff(double fluffNodeDensityCutOff) {
 		this.fluffNodeDensityCutOff = fluffNodeDensityCutOff;
+	}
+
+	public boolean isPreprocessNetwork() {
+		return preprocessNetwork;
+	}
+
+	public void setPreprocessNetwork(boolean preprocessNetwork) {
+		this.preprocessNetwork = preprocessNetwork;
 	}
 
 	//Step 1 - score the graph and save scores as node attributes
