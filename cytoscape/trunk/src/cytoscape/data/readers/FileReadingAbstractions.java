@@ -79,11 +79,25 @@ public static void initAttribs (BioDataServer dataServer,
                                 GraphObjAttributes nodeAttributes,
                                 GraphObjAttributes edgeAttributes)
 {
-  String [] nAFilenames = config.getNodeAttributeFilenames ();
-  if (nAFilenames != null)
-    for (int i=0; i < nAFilenames.length; i++) {
+  String [] edgeAttributeFilenames = config.getEdgeAttributeFilenames ();
+  String [] nodeAttributeFilenames = config.getNodeAttributeFilenames ();
+  initAttribs (dataServer, species, graph, nodeAttributes, edgeAttributes,
+               edgeAttributeFilenames, nodeAttributeFilenames);
+
+}
+//----------------------------------------------------------------------------
+public static void initAttribs (BioDataServer dataServer,
+                                String species,
+                                Graph2D graph,
+                                GraphObjAttributes nodeAttributes,
+                                GraphObjAttributes edgeAttributes,
+                                String [] nodeAttributeFilenames,
+                                String [] edgeAttributeFilenames)
+{
+  if (nodeAttributeFilenames != null)
+    for (int i=0; i < nodeAttributeFilenames.length; i++) {
        try {
-         nodeAttributes.readAttributesFromFile (dataServer, species, nAFilenames[i]);
+         nodeAttributes.readAttributesFromFile (dataServer, species, nodeAttributeFilenames[i]);
          } 
        catch (NumberFormatException nfe) {
          System.err.println (nfe.getMessage ());
@@ -99,24 +113,23 @@ public static void initAttribs (BioDataServer dataServer,
          }
        }
 
-   String [] eAFilenames = config.getEdgeAttributeFilenames ();
-   if (eAFilenames != null)
-     for (int i=0; i < eAFilenames.length; i++) {
+   if (edgeAttributeFilenames != null)
+     for (int i=0; i < edgeAttributeFilenames.length; i++) {
        try {
-         edgeAttributes.readAttributesFromFile (eAFilenames [i]);
+         edgeAttributes.readAttributesFromFile (edgeAttributeFilenames [i]);
          } 
-       catch (NumberFormatException nfe) {
-         continue;
+       catch (Exception excp) {
+         System.err.println (excp.getMessage ());
+         excp.printStackTrace ();
          } 
-       catch (IllegalArgumentException iae) {
-         continue;
-         } 
-       catch (FileNotFoundException fnfe) {
-         continue;
-         }
         } // for i
+
     if (nodeAttributes != null)
-   addNameMappingToAttributes (graph.getNodeArray (), nodeAttributes);
+      addNameMappingToAttributes (graph.getNodeArray (), nodeAttributes);
+
+    // no need to add name mapping for edge attributes -- it has already been
+    // done, at the time when the interactions file (or gml file) was read
+
 
 } // initAttribs
 //----------------------------------------------------------------------------
