@@ -172,6 +172,7 @@ public static void assignCommonNames( cytoscape.CyNetwork network, BioDataServer
             nodeAttributes.set(COMMON_NAME, canonicalName, canonicalName);
         } else {
             nodeAttributes.set(COMMON_NAME, canonicalName, synonyms[0]);
+            //System.out.println( canonicalName +" :: "+synonyms[0] );
         }
     }
     //network.endActivity(callerID);

@@ -178,6 +178,7 @@ public abstract class Cytoscape {
    * @return will always return a node
    */
   public static CyNode getCyNode ( String alias, boolean create ) {
+    String old_name =  alias;
     alias = canonicalizeName( alias );
     CyNode node = ( CyNode )getNodeNetworkData().getGraphObject( alias );
     if ( node != null ) {
@@ -190,9 +191,12 @@ public abstract class Cytoscape {
       return null;
     }
 
-    ///System.out.print( "|" );
+    //System.out.print( "|" );
     node = ( CyNode )Cytoscape.getRootGraph().getNode( Cytoscape.getRootGraph().createNode() );
     node.setIdentifier( alias );
+    //System.out.println( "Node: "+node+" alias :"+alias+" old_name: "+old_name );
+    //if ( old_name != alias )
+    //  setNodeAttributeValue( node, "alias", old_name );
     Cytoscape.getNodeNetworkData().addNameMapping( alias, node );
     return node;
 
@@ -340,11 +344,15 @@ public abstract class Cytoscape {
   private static String canonicalizeName ( String name ) {
     String canonicalName = name;
 
-    //System.out.println( "Biodataserver is: "+bioDataServer );
+    // System.out.println( "Biodataserver is: "+bioDataServer );
 
     if ( bioDataServer != null) {
       canonicalName = bioDataServer.getCanonicalName (species, name);
-      if(canonicalName == null){canonicalName = name;}
+      if(canonicalName == null){
+        // System.out.println( "canonicalName was null for "+name );
+        canonicalName = name;
+      }
+      //System.out.println( name+" canonicalized to: "+canonicalName );
     }
     return canonicalName;
   }
@@ -919,6 +927,8 @@ public abstract class Cytoscape {
    * or from a URL.
    */
   public static BioDataServer loadBioDataServer ( String location ) {
+    System.out.println( "laod BDS: "+location );
+
      try {
        bioDataServer = new BioDataServer ( location );
        getCytoscapeObj().setBioDataServer(bioDataServer);
@@ -983,6 +993,7 @@ public abstract class Cytoscape {
      firePropertyChange( cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED,
                          null,
                          view );
+     view.fitContent();
      return view;
   }
   

@@ -248,7 +248,7 @@ public class CytoscapeObj
    * @see CalculatorIO
    */
   public void saveCalculatorCatalog() {
-    File userHomePropsFile = new File(System.getProperty ("user.home"), "vizmap.props");
+    File userHomePropsFile = getConfigFile( "vizmap.props" );
     CalculatorIO.storeCatalog(calculatorCatalog, userHomePropsFile);
   }
   //------------------------------------------------------------------------------

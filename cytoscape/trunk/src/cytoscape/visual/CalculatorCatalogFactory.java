@@ -33,7 +33,7 @@ package cytoscape.visual;
 //----------------------------------------------------------------------------
 import java.util.Properties;
 import java.io.*;
-
+import cytoscape.Cytoscape;
 import cytoscape.CytoscapeConfig;
 import cytoscape.visual.calculators.NodeLabelCalculator;
 import cytoscape.visual.calculators.GenericNodeLabelCalculator;
@@ -67,6 +67,18 @@ public class CalculatorCatalogFactory {
         //for cytoscape.props, because we always write vizmaps to the home directory
         Properties calcProps = new Properties();
         String vizPropsFileName = "vizmap.props";
+        try {
+          File defaultPropsFile = Cytoscape.getCytoscapeObj().getConfigFile(vizPropsFileName); 
+            if (defaultPropsFile != null && defaultPropsFile.canRead()) {
+              Properties loadProps = new Properties();
+              InputStream is = new FileInputStream(defaultPropsFile);
+              loadProps.load(is);
+              is.close();
+              calcProps.putAll(loadProps);
+            }
+        } catch (Exception ioe) {
+          ioe.printStackTrace();
+        }
         try {//load from CYTOSCAPE_HOME if defined
             File propsFile = new File(System.getProperty ("CYTOSCAPE_HOME"), vizPropsFileName);
             if (propsFile != null && propsFile.canRead()) {
@@ -103,6 +115,10 @@ public class CalculatorCatalogFactory {
         } catch (Exception ioe) {
             ioe.printStackTrace();
         }
+
+
+
+
         if(config.getProjectVizmapPropsFileName()!=null) {
             String projViz = config.getProjectVizmapPropsFileName();
             calcProps.putAll(config.readPropertyFileAsText(projViz));
