@@ -1101,14 +1101,14 @@ class EditGraphMode extends EditMode {
     return geneName;
     } // getNodeTip
 
-  protected void nodeCreated (Node node) {
-    String defaultName = graphView.getGraph2D().getLabelText (node);
-    HashMap nodeAttributeBundle = configureNewNode (node);
+  protected void nodeCreated (Node newNode) {
+    String defaultName = graphView.getGraph2D().getLabelText (newNode);
+    HashMap nodeAttributeBundle = configureNewNode (newNode);
     String commonNameKey = "commonName";
     String commonName = defaultName;
     if (nodeAttributeBundle.containsKey (commonNameKey)) {
       commonName = (String) nodeAttributeBundle.get (commonNameKey);
-      NodeRealizer r = graphView.getGraph2D().getRealizer(node);
+      NodeRealizer r = graphView.getGraph2D().getRealizer(newNode);
       r.setLabelText (commonName);
       }
     String canonicalName = (String) nodeAttributeBundle.get ("canonicalName");
@@ -1119,6 +1119,7 @@ class EditGraphMode extends EditMode {
       canonicalName = defaultName;
    
     nodeAttributes.add (canonicalName, nodeAttributeBundle);
+    nodeAttributes.addNameMapping (canonicalName, newNode);
     } // nodeCreated
 
   protected void edgeCreated (Edge e) {
@@ -1213,7 +1214,12 @@ protected HashMap configureNewNode (Node node)
   String [] attributeNames = nodeAttributes.getAttributeNames ();
   System.out.println ("attributes: " + attributeNames.length);
 
-  for (int i=0; i < attributeNames.length; i++) {
+  if (attributeNames.length == 0) {
+    options.addComment ("commonName is required; canonicalName is optional and defaults to commonName");
+    options.addString ("commonName", "");
+    options.addString ("canonicalName", "");
+    }
+  else for (int i=0; i < attributeNames.length; i++) {
     String attributeName = attributeNames [i];
     Class attributeClass = nodeAttributes.getClass (attributeName);
     if (attributeClass.equals ("string".getClass ()))
@@ -1222,13 +1228,18 @@ protected HashMap configureNewNode (Node node)
       options.addDouble (attributeName, 0);
     else if (attributeClass.equals (new Integer (0).getClass ()))
       options.addInt (attributeName, 0);
-    } // for i
+    } // else/for i
   
   options.showEditor ();
 
   HashMap result = new HashMap ();
 
-  for (int i=0; i < attributeNames.length; i++) {
+  if (attributeNames.length == 0) {
+    result.put ("commonName", (String) options.get ("commonName"));
+    result.put ("canonicalName", (String) options.get ("canonicalName"));
+    System.out.println ("result: " + result);
+    }
+  else for (int i=0; i < attributeNames.length; i++) {
     String attributeName = attributeNames [i];
     Class attributeClass = nodeAttributes.getClass (attributeName);
     if (attributeClass.equals ("string".getClass ()))
@@ -1237,7 +1248,7 @@ protected HashMap configureNewNode (Node node)
        result.put (attributeName, (Double) options.get (attributeName));
     else if (attributeClass.equals (new Integer (0).getClass ()))
        result.put (attributeName, (Integer) options.get (attributeName));
-    } // for i
+    } // else/for i
 
   return result;
 
