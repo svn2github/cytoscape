@@ -7,7 +7,7 @@
 package cytoscape;
 //-----------------------------------------------------------------------------------
 public class CytoscapeVersion {
-  private String versionString = "0.9";
+  private String versionString = "0.95";
   private String dateString = "2002/11/01";
 
   private String [] briefHistory = {
@@ -27,6 +27,7 @@ public class CytoscapeVersion {
       "0.20 (2002/03/28) now uses plugin architecture; redesign of VizMapping underway",
       "0.8  (2002/06/17) first alpha release",
       "0.9  (2002/11/01) first beta release",
+      "0.95 (2002/11/04) added generic annotation",
       };
 
 //-----------------------------------------------------------------------------------
