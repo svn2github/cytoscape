@@ -3,16 +3,34 @@
 	Author:  Ethan Cerami
 -->
 <project name="cyto_web" default="deploy" basedir=".">
-	<target name="deploy" description="Deploys Web Site to cytoscape.org">
+
+	<target name="config_prod" description="Configures for production set-up at cytoscape.org">
+	<replace file="config.php" summary="yes">
+		<replacetoken>$in_production = false;</replacetoken>
+		<replacevalue>$in_production = true;</replacevalue>
+	</replace>
+	</target>
+
+	<target name="config_local" description="Configures for local testing set-up">
+	<replace file="config.php" summary="yes">
+		<replacetoken>$in_production = true;</replacetoken>
+		<replacevalue>$in_production = false;</replacevalue>
+	</replace>
+	</target>
+
+	<target name="deploy" description="Deploys Web Site to cytoscape.org"
+		depends="config_prod">
 		<ftp server="cytoscape.org" 
 			remotedir="/html/new" 
 			verbose="yes"
 			userid="treyideker"
-			password="------"
+			password="-----"
 			depends="yes"
 			binary="yes">
 			<fileset dir=".">
-			<include name="index.php"/>
+				<exclude name="build.xml"/>
+				<exclude name="README.txt"/>
+				<exclude name="CVS*"/>
 			</fileset>
 		</ftp>
 	</target>
