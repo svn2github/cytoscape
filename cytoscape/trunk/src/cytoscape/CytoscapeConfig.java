@@ -361,7 +361,7 @@ public String getUsage ()
    sb.append (" -b  <bioData directory>           (./biodata\n");
    sb.append (" -i  <interactions filename>       (yyyy.intr)\n");
    sb.append (" -e  <expression filename>         (zzz.mrna)\n");
-   sb.append (" -s  <default species name>        (\"Saccharomyces cerversiae\")\n");
+   sb.append (" -s  <default species name>        (\"Saccharomyces cerevisiae\")\n");
    sb.append (" -n  <nodeAttributes filename>     (zero or more)\n");
    sb.append (" -j  <edgeAttributes filename>     (zero or more)\n");
    sb.append ("\n");
