@@ -77,14 +77,14 @@ public class TabbedBrowser extends JFrame implements ClipboardOwner {
   HashMap customAttributes; // a copy of one of the previous two that we use on this invocation
 
   int browseObjectClass;
-  static final int BROWSING_UNRECOGNIZED_OBJECTS = 0;
-  static final int BROWSING_NODES = 1;
-  static final int BROWSING_EDGES = 2;
+  public static final int BROWSING_UNRECOGNIZED_OBJECTS = 0;
+  public static final int BROWSING_NODES = 1;
+  public static final int BROWSING_EDGES = 2;
 
 //---------------------------------------------------------------------------------------
 public TabbedBrowser (Object [] graphObjects, GraphObjAttributes attributes, 
                       Vector attributeCategoriesToIgnore,
-                      String webBrowserScript)
+                      String webBrowserScript, int browseObjectClass)
 {
   super ();
   this.graphObjects = graphObjects;
@@ -92,7 +92,7 @@ public TabbedBrowser (Object [] graphObjects, GraphObjAttributes attributes,
   this.attributeCategoriesToIgnore = attributeCategoriesToIgnore;
   this.webBrowserScript = webBrowserScript;
 
-  browseObjectClass = detectClassOfBrowsedObjects (graphObjects);
+  this.browseObjectClass = browseObjectClass;
   if (browseObjectClass == BROWSING_NODES) {
     customAttributes = customNodeAttributes;
     setTitle ("Node Browser");
@@ -159,16 +159,7 @@ JTabbedPane createGui (GraphObjAttributes attributes)
 
 } // createGui
 //------------------------------------------------------------------------------
-protected int detectClassOfBrowsedObjects (Object [] graphObjects)
-{
-  if (graphObjects[0] instanceof y.base.Node)
-      return BROWSING_NODES;
-  else if (graphObjects[0] instanceof y.base.Edge)
-      return BROWSING_EDGES;
-  else
-      return BROWSING_UNRECOGNIZED_OBJECTS;
 
-} // detectClassOfBrowsedObjects
 //------------------------------------------------------------------------------
 protected JPanel createCustomizerTab (String [] attributeNames)
 {

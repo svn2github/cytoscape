@@ -6,6 +6,10 @@
 package cytoscape.actions;
 //-------------------------------------------------------------------------
 import java.awt.event.ActionEvent;
+import java.io.*;
+import javax.swing.*;
+import javax.swing.event.*;
+
 import javax.swing.AbstractAction;
 import phoebe.*;
 
@@ -41,14 +45,56 @@ public class DisplayBrowserAction extends AbstractAction  {
     }
     
 
-    public void actionPerformed (ActionEvent e) {
+    public void actionPerformed (ActionEvent ev) {
 	if (networkView.getCytoscapeObj().getConfiguration().isYFiles()) {    
 	  //not implemented for y files
 	}
 	else { // using giny
 		
-			GinyUtils.deselectAllNodes(networkView.getView());
-			//GinyUtils.deselectAllEdges(networkView.getView());
+			List nvlist = networkView.getView().getSelectedNodes();
+			Vector nodeList = new Vector();
+			Iterator ni = nvlist.iterator();
+			while (ni.hasNext())
+			{
+				NodeView nview =(NodeView) ni.next();
+				giny.model.Node n = nview.getNode();
+				nodeList.add(n);
+			}//while
+			
+			Node [] selectedNodes = (giny.model.Node []) nodeList.toArray (new giny.model.Node [0]);
+			
+			
+			List evList = networkView.getView().getSelectedEdges();
+			
+			Vector edgeList = new Vector();
+			Iterator ei = evList.iterator();
+			while (ei.hasNext())
+			{
+				EdgeView eview =(EdgeView) ei.next();
+				giny.model.Edge e = eview.getEdge();
+				edgeList.add(e);
+			}//while
+			
+			giny.model.Edge [] selectedEdges = (giny.model.Edge []) edgeList.toArray (new Edge [0]);
+			
+			TabbedBrowser nodeBrowser = null;
+			TabbedBrowser edgeBrowser = null;
+			
+			if (selectedNodes.length == 0 && selectedEdges.length == 0) {
+				JOptionPane.showMessageDialog (null, "No selected nodes or edges", "Error",
+				JOptionPane.ERROR_MESSAGE);
+			}
+			
+			if (selectedNodes.length > 0) {
+				nodeBrowser = new TabbedBrowser (selectedNodes, networkView.getNetwork().getNodeAttributes(),
+				attributeCategoriesToIgnore, webBrowserScript, TabbedBrowser.BROWSING_NODES);
+			}
+			
+			if (selectedEdges.length > 0) {
+				edgeBrowser = new TabbedBrowser (selectedEdges, networkView.getNetwork().getEdgeAttributes(),
+				attributeCategoriesToIgnore, webBrowserScript, TabbedBrowser.BROWSING_EDGES);
+			}
+			
 		
 	}//!Yfiles
 			

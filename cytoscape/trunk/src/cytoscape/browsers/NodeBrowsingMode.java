@@ -115,12 +115,12 @@ public JPopupMenu getSelectionPopup (double x, double y)
     
   if (selectedNodes.length > 0) {
     nodeBrowser = new TabbedBrowser (selectedNodes, parent.getNetwork().getNodeAttributes(),
-                                     attributeCategoriesToIgnore, webBrowserScript);
+                                     attributeCategoriesToIgnore, webBrowserScript, TabbedBrowser.BROWSING_NODES);
     }
 
   if (selectedEdges.length > 0) {
     edgeBrowser = new TabbedBrowser (selectedEdges, parent.getNetwork().getEdgeAttributes(),
-                                     attributeCategoriesToIgnore, webBrowserScript);
+                                     attributeCategoriesToIgnore, webBrowserScript, TabbedBrowser.BROWSING_EDGES);
     }
 
    return null;

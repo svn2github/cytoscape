@@ -801,7 +801,8 @@ public void setNewNetwork( CyNetwork newNetwork ) {
 	    //showWindow();
 	    getCyMenus().updateUndoRedoMenuItemStatus();
 	    //@@@@ for some reason the tool bar does not get painted correctly, look in to it later
-	   //System.out.println("Node Attributes: " + network.getNodeAttributes().toString()); 
+	   //System.out.println("Node Attributes: " + network.getNodeAttributes().toString());
+	   //System.out.println("Edge Attributes: " + network.getEdgeAttributes().toString()); 
     }
 }
 //------------------------------------------------------------------------------
