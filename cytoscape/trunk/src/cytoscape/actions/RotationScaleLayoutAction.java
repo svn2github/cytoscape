@@ -115,6 +115,8 @@ public class RotationScaleLayoutAction extends CytoscapeAction
     if (noNodesSelected) chx.setEnabled(false);
     chx.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
+          System.out.println("selected edges: " +
+                             Cytoscape.getCurrentNetworkView().getSelectedEdgeIndices().length);
           nativeGraph[0] = GraphConverter2.getGraphReference
             (128.0d, true, chx.isSelected());
           rotation[0] = new RotationLayouter(nativeGraph[0]);
