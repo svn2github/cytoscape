@@ -618,7 +618,7 @@ class FRootGraph implements RootGraph, DynamicGraph
   public java.util.List nodeMetaParentsList(int nodeInx) {
     final int[] parentInxArr = getNodeMetaParentIndicesArray(nodeInx);
     if (parentInxArr == null) return null;
-    java.util.ArrayList returnThis =
+    final java.util.ArrayList returnThis =
       new java.util.ArrayList(parentInxArr.length);
     for (int i = 0; i < parentInxArr.length; i++)
       returnThis.add(getNode(parentInxArr[i]));
@@ -648,7 +648,7 @@ class FRootGraph implements RootGraph, DynamicGraph
   public java.util.List nodeMetaChildrenList(int parentNodeInx) {
     final int[] childInxArr = getNodeMetaChildIndicesArray(parentNodeInx);
     if (childInxArr == null) return null;
-    java.util.ArrayList returnThis =
+    final java.util.ArrayList returnThis =
       new java.util.ArrayList(childInxArr.length);
     for (int i = 0; i < childInxArr.length; i++)
       returnThis.add(getNode(childInxArr[i]));
@@ -702,7 +702,7 @@ class FRootGraph implements RootGraph, DynamicGraph
   public java.util.List edgeMetaParentsList(int edgeInx) {
     final int[] metaParentInx = getEdgeMetaParentIndicesArray(edgeInx);
     if (metaParentInx == null) return null;
-    java.util.ArrayList returnThis =
+    final java.util.ArrayList returnThis =
       new java.util.ArrayList(metaParentInx.length);
     for (int i = 0; i < metaParentInx.length; i++)
       returnThis.add(getNode(metaParentInx[i]));
@@ -714,19 +714,28 @@ class FRootGraph implements RootGraph, DynamicGraph
   }
 
   public boolean isMetaChild(Node parent, Edge child) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+    return isMetaParent(child, parent); }
 
   public boolean isEdgeMetaChild(int parentNodeInx, int childEdgeInx) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+    return isEdgeMetaParent(childEdgeInx, parentNodeInx); }
 
   public java.util.List edgeMetaChildrenList(Node node) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+    if (node.getRootGraph() != this) return null;
+    return edgeMetaChildrenList(node.getRootGraphIndex()); }
 
   public java.util.List edgeMetaChildrenList(int parentNodeInx) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+    final int[] edgeChildrenArr = getEdgeMetaChildIndicesArray(parentNodeInx);
+    if (edgeChildrenArr == null) return null;
+    final java.util.ArrayList returnThis =
+      new java.util.ArrayList(edgeChildrenArr.length);
+    for (int i = 0; i < edgeChildrenArr.length; i++)
+      returnThis.add(getEdge(edgeChildrenArr[i]));
+    return returnThis; }
 
-  public int[] getEdgeMetaChildIndicesArray(int parentNodeInx) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+  public int[] getEdgeMetaChildIndicesArray(int parentNodeInx)
+  {
+    throw new UnsupportedOperationException("meta nodes not yet supported");
+  }
 
   // The relationship between indices (both node and edge) in this
   // RootGraph and in the DynamicGraph is "flip the bits":
