@@ -1210,6 +1210,19 @@ public final class AllRootGraphMethodsTest
     for (int i = 0;; i++) if (edgeParentInx[i] == nodeInx[4]) break;
 
     // isMetaChild(Node, Edge).
+    if (root.isMetaChild(root2Node, root2Edge) ||
+        root.isMetaChild(root2Node, root.getEdge(edgeInx[0])))
+      throw new IllegalStateException("child with other graph's elements");
+    if (root.isMetaChild(root.getNode(nodeInx[1]),
+                         root.getEdge(edgeInx[2])) ||
+        root.isMetaChild(root.getNode(nodeInx[4]),
+                         root.getEdge(edgeInx[4])))
+      throw new IllegalStateException("reported wrong meta relationship");
+    if (!(root.isMetaChild(root.getNode(nodeInx[4]),
+                           root.getEdge(edgeInx[6])) &&
+          root.isMetaChild(root.getNode(nodeInx[0]),
+                           root.getEdge(edgeInx[4]))))
+      throw new IllegalStateException("missing meta relationship");
 
     // isEdgeMetaChild(int, int).
 
