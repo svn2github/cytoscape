@@ -16,6 +16,8 @@ import giny.model.*;
 public class FileLoader {
 
 
+  static Object null_att = new String("null");
+
   public static void loadCytoscape ( String in_file) {
     try {
                   
@@ -62,7 +64,7 @@ public class FileLoader {
 
           // load nodes by row
           for ( int i = 1; i < sa.length; ++i ) {
-            System.out.println( i+ ".) "+sa[i] );
+            //System.out.println( i+ ".) "+sa[i] );
             FileLoader.loadRow( sa[i].split(";"), titles, true ); 
           }
                     
@@ -80,7 +82,7 @@ public class FileLoader {
     try {
       ///////////////
       // edges.txt
-      FileInputStream fis = new FileInputStream("/users/xmas/CSBI/cytoscape/temp/outfile.zip");
+      FileInputStream fis = new FileInputStream(in_file);
 
       // first get edges.txt
       ZipInputStream zis = new  ZipInputStream(new BufferedInputStream(fis));
@@ -119,7 +121,7 @@ public class FileLoader {
 
           // load nodes by row
           for ( int i = 1; i < sa.length; ++i ) {
-            System.out.println( i+ ".) "+sa[i] );
+            //System.out.println( i+ ".) "+sa[i] );
             FileLoader.loadRow( sa[i].split(";"), titles, false ); 
           }
                                                           
@@ -136,7 +138,7 @@ public class FileLoader {
       ///////////////
       // networks..
               
-      FileInputStream fis = new FileInputStream("/users/xmas/CSBI/cytoscape/temp/outfile.zip");
+      FileInputStream fis = new FileInputStream(in_file);
 
       ZipInputStream zis = new  ZipInputStream(new BufferedInputStream(fis));
       ZipEntry entry;
@@ -243,6 +245,7 @@ public class FileLoader {
       String[] node_attributes = Cytoscape.getNodeAttributesList();
                 
       StringBuffer buffer = new StringBuffer();
+      buffer.append(Semantics.CANONICAL_NAME+";" );
       for ( int i = 0; i < node_attributes.length; ++i ) {
         buffer.append( node_attributes[i]+";" );
       }
@@ -253,7 +256,9 @@ public class FileLoader {
       for ( Iterator it = nodes_list.iterator(); it.hasNext(); ) {
         CyNode node = ( CyNode )it.next();
         buffer = new StringBuffer();
+        buffer.append( Cytoscape.getNodeAttributeValue( node, Semantics.CANONICAL_NAME )+";" );
         for ( int i = 0; i < node_attributes.length; ++i ) {
+          
           buffer.append( Cytoscape.getNodeAttributeValue( node, node_attributes[i] )+";" );
         }
         buffer.append( lineSep );
@@ -434,10 +439,12 @@ public class FileLoader {
       if ( node != null )
         System.out.println( "NOde exists: "+node.getIdentifier() );
       // if no node is found, create one with the first column name
-      if ( node == null )
+      if ( node == null ) {
+        //System.out.println( "Creating Node: "+row[0] );
         node = Cytoscape.getCyNode( row[0], true );
 
-      System.out.println( "Loading data for: "+node.getIdentifier() );
+      }
+      //      System.out.println( "Loading data for: "+node.getIdentifier() );
 
 
       
@@ -451,7 +458,8 @@ public class FileLoader {
           attribute = row[i];
         }
         try {
-          Cytoscape.setNodeAttributeValue( node, (String)titles.get( i ), attribute );
+          if ( !attribute.equals( null_att ) )
+            Cytoscape.setNodeAttributeValue( node, (String)titles.get( i ), attribute );
         } catch ( Exception ex ) {
           ex.printStackTrace();
           System.out.print( "Error Loading node: "+node.getIdentifier() );
@@ -462,9 +470,19 @@ public class FileLoader {
       }
       return true;
     } else {
-      CyNode source = Cytoscape.getCyNode( row[0], true );
-      CyNode target = Cytoscape.getCyNode( row[2], true );
-      CyEdge edge = Cytoscape.getCyEdge( source, target, Semantics.INTERACTION, row[1], true );
+      //System.out.print( "Source: "+row[0] );
+     //  CyNode source = Cytoscape.getCyNode( row[0], true );
+//       //System.out.println("");
+//       //System.out.print( "Target: "+row[2] );
+//       CyNode target = Cytoscape.getCyNode( row[2], true );
+//       //System.out.println("");
+//       CyEdge edge = Cytoscape.getCyEdge( source, target, Semantics.INTERACTION, row[1], true );
+
+      String edgeName = row[0] + " (" + row[1] + ") " + row[2];
+      CyEdge edge = Cytoscape.getCyEdge( row[0], edgeName, row[2], row[1] );
+
+
+
       for ( int i = 0; i < row.length; ++i ) {
         Object attribute;
         try {

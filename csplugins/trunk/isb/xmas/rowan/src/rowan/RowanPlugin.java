@@ -29,6 +29,22 @@ public class RowanPlugin extends CytoscapePlugin {
 
     System.out.println( "initialize rowan plugin" );
 
+    JMenuItem des = new JMenuItem( new AbstractAction( "destroy" ) {
+        public void actionPerformed ( ActionEvent e ) {
+          // Do this in the GUI Event Dispatch thread...
+          SwingUtilities.invokeLater( new Runnable() {
+              public void run() {
+                
+                CyNetwork net = Cytoscape.getCurrentNetwork();
+                Cytoscape.destroyNetwork( net, true );
+
+               
+
+              } } ); } } );
+    Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu( "Plugins" ).add( des );
+    
+
+
 
     JMenuItem credits = new JMenuItem( new AbstractAction( "Credits" ) {
         public void actionPerformed ( ActionEvent e ) {

@@ -259,12 +259,54 @@
     <ant dir="control" target="clean"/>
   </target>
 
+  <!-- =================================================================== -->
+  <!-- Create the metabolic/metabolic.jar file                                       -->
+  <!-- =================================================================== -->
+  <target name="metabolic" depends="init">
+    <ant dir="metabolic" target="metabolic"/>
+    <copy todir="${shared.lib.dir}" file="metabolic/metabolic.jar"/>
+  </target>
 
+  <!-- =================================================================== -->
+  <!-- Create the API documentation for metabolic                               -->
+  <!-- =================================================================== -->
+  <target name="docs-metabolic" depends="init">
+    <ant dir="metabolic" target="docs"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Clean the metabolic directory                                            -->
+  <!-- =================================================================== -->
+  <target name="clean-metabolic" depends="init">
+    <ant dir="metabolic" target="clean"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Create the sbml/sbml.jar file                                       -->
+  <!-- =================================================================== -->
+  <target name="sbml" depends="metabolic">
+    <ant dir="sbml" target="sbml"/>
+    <copy todir="${shared.lib.dir}" file="sbml/sbml.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Create the API documentation for sbml                               -->
+  <!-- =================================================================== -->
+  <target name="docs-sbml" depends="init">
+    <ant dir="sbml" target="docs"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Clean the sbml directory                                            -->
+  <!-- =================================================================== -->
+  <target name="clean-sbml" depends="init">
+    <ant dir="sbml" target="clean"/>
+  </target>
 
   <!-- =================================================================== -->
   <!-- Build all jars                                                      -->
   <!-- =================================================================== -->
-  <target name="all" depends="yfiles, filter, sbw, control"/>
+  <target name="all" depends="filter, control, metabolic, sbml"/>
 
   <!-- =================================================================== -->
   <!-- Create all API documentation                                        -->
