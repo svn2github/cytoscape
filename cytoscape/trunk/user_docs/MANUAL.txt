@@ -1,12 +1,12 @@
 ################################################
 # CYTOSCAPE USER MANUAL                        #
-# Cytoscape v. 0.8; June 2002                  #
+# Cytoscape v. 0.9; November 2002              #
 # http://www.cytoscape.org                     #
 #                                              # 
-# Software (c) Paul Shannon, Owen Ozier,       #
+# (c) Paul Shannon, Owen Ozier,                #
 # Andrew Markiel, Daniel Ramage, Nada Amin,    #
+# Mindy Chang, Jonathan Wang,                  #
 # Benno Schwikowski and Trey Ideker 2002       #
-# Documentation (c) Trey Ideker 2002           #
 #                                              # 
 ################################################
 
@@ -115,9 +115,9 @@ Cytoscape provides the following key features:
    hypotheses as to the underlying signaling and regulatory 
    mechanisms in the cell. This approach is described in:
 
-   Ideker, Ozier, Schwikowski, and Siegel, Discovering Regulatory and 
-   Signaling Circuits in Molecular Interaction Networks, to appear at 
-   ISMB2002 and in Bioinformatics journal.
+   Ideker, Ozier, Schwikowski, and Siegel, Discovering Regulatory and
+   Signaling Circuits in Molecular Interaction Networks.
+   Bioinformatics 18 S1 p. S233 (2002).
 
 ######################################################################
 4. LAUNCHING CYTOSCAPE ###############################################
@@ -268,7 +268,7 @@ specifying the filename using the -e option at the command line.
 FOR EXAMPLE:
 Load a sample gene expression data set using the menu: File -> Load ->
 Expression Matrix File. In the resulting file dialog box, select the
-file "sampleData/gal1-20.pvals".  As described in the following
+file "sampleData/galExpData.pvals".  As described in the following
 sections, Cytoscape is now ready to integrate these data with the
 underlying molecular interaction network.
 
@@ -404,20 +404,21 @@ Through the use of the Combination filter, it is therefore possible to
 construct arbitrarily complex selection queries.
 
 FOR EXAMPLE:
-Load the sample network (sampleData/gal1-20.pval) from File -> Load -> GML.
-Then load the expression data set (sampleData/galFiltered.gml) as described 
-in the preceding sections (File -> Load -> Expression Matrix File).  
-Launch the Filters dialog from the menu bar and choose the Topology1 tab.  
-Specify "3" as the minimum number of neighbors, "1" as the depth, and 
-choose "No" for the option "Apply Filter Until Stable Point".  
-Pressing "Select" highlights the 64 nodes in the network with more than 
-3 immediate neighbors.  Increase the depth to "2" and press "Select" again.
-This will select 117 additional nodes that lack 3 immediate neighbors 
-but that have 3 neighbors within a distance of 2 edges away.  Next, hide 
-all of the nonselected nodes using the menu command View -> Node Selection 
--> Invert followed by View -> Node Selection -> Hide.  As indicated in 
-the message panel on the bottom right of the main Cytoscape window, this 
-operation takes the network from 329 nodes / 357 edges to 256 nodes / 299 edges.
+Load the sample network (sampleData/galFiltered.gml) from File -> Load
+->GML. Then load the expression data set (sampleData/galExpData.pvals)
+as described in the preceding sections (File -> Load -> Expression
+Matrix File).  Launch the Filters dialog from the menu bar and choose
+the Topology1 tab.  Specify "3" as the minimum number of neighbors,
+"1" as the depth, and choose "No" for the option "Apply Filter Until
+Stable Point".  Pressing "Select" highlights the 64 nodes in the
+network with more than 3 immediate neighbors.  Increase the depth to
+"2" and press "Select" again.  This will select 117 additional nodes
+that lack 3 immediate neighbors but that have 3 neighbors within a
+distance of 2 edges away.  Next, hide all of the nonselected nodes
+using the menu command View -> Node Selection -> Invert followed by
+View -> Node Selection -> Hide.  As indicated in the message panel on
+the bottom right of the main Cytoscape window, this operation takes
+the network from 329 nodes / 357 edges to 256 nodes / 299 edges.
 
 ######################################################################
 10. FINDING ACTIVE SUBSYSTEMS ########################################
@@ -607,8 +608,8 @@ high-scoring active pathways to the current directory as the file
 ActivePaths from other programs or shell scripts.  
 
 FOR EXAMPLE: 
-Load the sample network (sampleData/gal1-20.pval) and expression data
-set (sampleData/galFiltered.gml) as described in the preceding
+Load the sample network (sampleData/galFiltered.gml) and expression data
+set (sampleData/galExpData.pvals) as described in the preceding
 sections.  Choose PlugIns -> Find Active Paths and enter the following
 values as options:
 
