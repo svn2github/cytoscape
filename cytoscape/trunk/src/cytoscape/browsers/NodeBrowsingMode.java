@@ -44,35 +44,33 @@ import java.util.*;
 import y.base.*;
 import y.view.*;
 
-import cytoscape.*;
+//import cytoscape.*;
 import cytoscape.util.Misc;
+import cytoscape.view.NetworkView;
 //----------------------------------------------------------------------------------------
 /** 
   * 
  */
 public class NodeBrowsingMode extends PopupMode {
-  protected CytoscapeWindow cytoscapeWindow;
-  protected Graph2D graph;
-  Vector attributeCategoriesToIgnore;
-  final static String invisibilityPropertyName = "nodeAttributeCategories.invisibleToBrowser";
-  String webBrowserScript;
+    protected NetworkView parent;
+    protected Graph2D graph;
+    Vector attributeCategoriesToIgnore;
+    final static String invisibilityPropertyName = "nodeAttributeCategories.invisibleToBrowser";
+    String webBrowserScript;
 //----------------------------------------------------------------------------------------
-public void set (CytoscapeWindow cytoscapeWindow)
-{
-  this.cytoscapeWindow = cytoscapeWindow;
-  Properties props = cytoscapeWindow.getConfiguration().getProperties();
-  webBrowserScript = 
-      cytoscapeWindow.getConfiguration().getProperties().getProperty ("webBrowserScript", "noScriptDefined");
-  cytoscapeWindow.getNodeAttributes().setCategory ("tissueCount", "hideFromBrowser");
-  attributeCategoriesToIgnore = Misc.getPropertyValues (props, invisibilityPropertyName);
-  for (int i=0; i < attributeCategoriesToIgnore.size(); i++)
-    System.out.println ("  ignore type " + attributeCategoriesToIgnore.get (i));
-  
-} // ctor
+public NodeBrowsingMode(Properties configProps, NetworkView networkView) {
+    this.parent = networkView;
+    webBrowserScript = configProps.getProperty("webBrowserScript", "noScriptDefined");
+    attributeCategoriesToIgnore = Misc.getPropertyValues(configProps, invisibilityPropertyName);
+    for (int i=0; i < attributeCategoriesToIgnore.size(); i++) {
+        System.out.println ("  ignore type " + attributeCategoriesToIgnore.get(i));
+    }
+}
 //----------------------------------------------------------------------------------------
 public JPopupMenu getNodePopup (Node v) 
 {
-    graph = cytoscapeWindow.getGraph();
+    //note that in yFiles, the graph holds selection information
+    graph = parent.getGraphView().getGraph2D();
     boolean selectedState = graph.isSelected(v);
     graph.setSelected(v, true);
     getSelectionPopup(graph.getCenterX(v), graph.getCenterY(v));
@@ -87,7 +85,7 @@ public JPopupMenu getPaperPopup (double x, double y)
 //----------------------------------------------------------------------------------------
 public JPopupMenu getSelectionPopup (double x, double y) 
 {
-  graph = cytoscapeWindow.getGraph();
+  graph = parent.getGraphView().getGraph2D();
   NodeCursor nc = graph.selectedNodes (); 
   Vector nodeList = new Vector ();
   while (nc.ok ()) {
@@ -116,12 +114,12 @@ public JPopupMenu getSelectionPopup (double x, double y)
     }
     
   if (selectedNodes.length > 0) {
-    nodeBrowser = new TabbedBrowser (selectedNodes, cytoscapeWindow.getNodeAttributes (),
+    nodeBrowser = new TabbedBrowser (selectedNodes, parent.getNetwork().getNodeAttributes(),
                                      attributeCategoriesToIgnore, webBrowserScript);
     }
 
   if (selectedEdges.length > 0) {
-    edgeBrowser = new TabbedBrowser (selectedEdges, cytoscapeWindow.getEdgeAttributes (),
+    edgeBrowser = new TabbedBrowser (selectedEdges, parent.getNetwork().getEdgeAttributes(),
                                      attributeCategoriesToIgnore, webBrowserScript);
     }
 

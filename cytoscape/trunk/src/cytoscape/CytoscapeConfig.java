@@ -77,12 +77,9 @@ public class CytoscapeConfig {
   protected StringBuffer errorMessages = new StringBuffer ();
     // system and user property files use the same name
   protected Properties props;
+  
+  static public StringBuffer debugLog = new StringBuffer ();
 
-//------------------------------------------------------------------------------------------
-public CytoscapeConfig ()
-{ 
-  this (new String [0]);
-}
 //------------------------------------------------------------------------------------------
 public CytoscapeConfig (String [] args)
 {
@@ -299,7 +296,7 @@ protected Properties readProperties ()
   if (userSpecialPropsFile != null)
     userSpecialProps = readOnePropertyFile (userGeneralProps, userSpecialPropsFile);
 
-  CytoscapeWindow.debugLog.append ("projectPropsFileName: " + projectPropsFileName);
+  this.debugLog.append ("projectPropsFileName: " + projectPropsFileName);
   if (projectPropsFileName != null) {
     projectProps = readPropertyFileAsText (projectPropsFileName);
     // projectProps = readOnePropertyFile (projectProps, projectPropsFile);
@@ -323,7 +320,7 @@ protected Properties readProperties ()
 
 
   if (projectProps != null) {
-     CytoscapeWindow.debugLog.append ("--- about to add " + projectProps.size ()  +
+     this.debugLog.append ("--- about to add " + projectProps.size ()  +
                                        " project Cyproperties");    fullProps.putAll (projectProps);
     }
 
@@ -336,22 +333,22 @@ public Properties readPropertyFileAsText (String filename)
 {
   String rawText = "";
   //String filename = projectPropsFile.getPath ();
-  CytoscapeWindow.debugLog.append ("CC.readPropertyFileAsText, path: " + filename + "\n");
+  this.debugLog.append ("CC.readPropertyFileAsText, path: " + filename + "\n");
   try {
     if (filename.trim().startsWith ("jar://")) {
-      CytoscapeWindow.debugLog.append ("CC.readPropertyFileAsText, starts with jar://\n");
+      this.debugLog.append ("CC.readPropertyFileAsText, starts with jar://\n");
       TextJarReader reader = new TextJarReader (filename);
       reader.read ();
       rawText = reader.getText ();
-      CytoscapeWindow.debugLog.append ("from jar, rawText:\n" + rawText + "\n");
+      this.debugLog.append ("from jar, rawText:\n" + rawText + "\n");
       }
     else {
-      CytoscapeWindow.debugLog.append ("CC.readPropertyFileAsText, does not start with jar://\n");
+      this.debugLog.append ("CC.readPropertyFileAsText, does not start with jar://\n");
       File projectPropsFile = new File (absolutizeFilename (projectFileDirectoryAbsolute, filename));
       TextFileReader reader = new TextFileReader (projectPropsFile.getPath ());
       reader.read ();
       rawText = reader.getText ();
-      CytoscapeWindow.debugLog.append ("from file, rawText:\n" + rawText + "\n");
+      this.debugLog.append ("from file, rawText:\n" + rawText + "\n");
       }
     }
   catch (Exception e0) {
@@ -571,9 +568,7 @@ protected void readProjectFile ()
   String [] defaultLayouts = parseProjectFileText (lines, "layout");
   String [] propsFiles = parseProjectFileText (lines, "props");
   String [] vizmapPropsFiles = parseProjectFileText (lines, "vprops");
-  String [] canonicalization = parseProjectFileText (lines, "canonicalizeNames"); 
-           // whether or not canonicalization should be done
-  String [] matrixFiles = parseProjectFileText (lines, "matrix");
+  String [] canonicalization = parseProjectFileText (lines, "canonicalizeNames"); // whether or not canonicalization should be done
   String [] otherArgs = parseProjectFileText (lines, "arg");
 
   if (sifFiles.length >= 1) {
@@ -611,12 +606,10 @@ protected void readProjectFile ()
        edgeAttributeFilenames.add (absolutizeFilename (projectFileDirectoryAbsolute, edaFiles [i]));
     }
     
-    
   if (dataServers.length >= 1) {
     String tmp = dataServers [0];
     if ((!tmp.startsWith ("rmi://")) && 
-        (!tmp.startsWith ("jar://")) &&
-        (!tmp.startsWith ("http://"))) {
+        (!tmp.startsWith ("jar://"))) {
       bioDataDirectory = absolutizeFilename (projectFileDirectoryAbsolute, tmp);
       }
     else
@@ -631,17 +624,17 @@ protected void readProjectFile ()
     defaultLayoutStrategy = defaultLayouts [0];
     }
 
-  CytoscapeWindow.debugLog.append ("config.readProjectFile, propsFile count: " + propsFiles.length + "\n");
+  this.debugLog.append ("config.readProjectFile, propsFile count: " + propsFiles.length + "\n");
   if (propsFiles.length >= 1) {
       projectPropsFileName = propsFiles [0];
-      CytoscapeWindow.debugLog.append ("config.readProjectFile, propsPropsFileName: " + 
+      this.debugLog.append ("config.readProjectFile, propsPropsFileName: " + 
 				       projectPropsFileName + "\n");
   }
 
-  CytoscapeWindow.debugLog.append ("config.readProjectFile, vizmapPropsFile count: " + vizmapPropsFiles.length + "\n");
+  this.debugLog.append ("config.readProjectFile, vizmapPropsFile count: " + vizmapPropsFiles.length + "\n");
   if (vizmapPropsFiles.length >= 1) {
       projectVizmapPropsFileName = vizmapPropsFiles [0];
-      CytoscapeWindow.debugLog.append ("config.readProjectFile, vizmapPropsFileName: " + 
+      this.debugLog.append ("config.readProjectFile, vizmapPropsFileName: " + 
 				       projectVizmapPropsFileName + "\n");
   }
 
@@ -732,56 +725,6 @@ public String getErrorMessages ()
 
 }
 //---------------------------------------------------------------------------------
-public void setGeometryFilename (String newValue)
-{
-  geometryFilename = newValue;
-}
-//---------------------------------------------------------------------------------
-public void setExpressionFilename (String newValue)
-{
-  expressionFilename = newValue;
-}
-//---------------------------------------------------------------------------------
-public void setProjectFilename (String newValue)
-{
-  projectFilename = newValue;
-}
-//---------------------------------------------------------------------------------
-public void setProjectVizmapPropsFileName (String newValue)
-{
-  projectVizmapPropsFileName = newValue;
-}
-//---------------------------------------------------------------------------------
-public void setBioDataDirectory (String newValue)
-{
-  bioDataDirectory = newValue;
-}
-//---------------------------------------------------------------------------------
-public void setInteractionsFilename (String newValue)
-{
-  interactionsFilename = newValue;
-}
-//---------------------------------------------------------------------------------
-public void setDefaultSpecies (String newValue)
-{
-  defaultSpeciesName = newValue;
-}
-//---------------------------------------------------------------------------------
-public void setDefaultLayoutStrategy (String newValue)
-{
-  defaultLayoutStrategy = newValue;
-}
-//---------------------------------------------------------------------------------
-public void setProperties (Properties newProps)
-{
-  props = newProps;
-}
-//---------------------------------------------------------------------------------
-public void setWhetherToCopyExpToAttribs (boolean newValue) 
-{
-  copyExpToAttribs = newValue;
-}
-//-------------------------------------------------------------------------------------------------
 public String getUsage ()
 {
    StringBuffer sb = new StringBuffer ();

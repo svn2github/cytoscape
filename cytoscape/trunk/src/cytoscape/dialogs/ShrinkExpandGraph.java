@@ -34,19 +34,16 @@
 //--------------------------------------------------------------------------
 package cytoscape.dialogs;
 //--------------------------------------------------------------------------
-import java.awt.event.*;
-//import java.awt.Color;
-import javax.swing.*;
-import cytoscape.*;
-import java.util.HashMap;
+import java.awt.event.ActionEvent;
+import javax.swing.AbstractAction;
 
 import y.base.*;
-import y.view.*;
-import y.algo.*;
-import y.geom.*;
-import y.layout.*;
+import y.view.Graph2D;
+import y.view.NodeRealizer;
+import y.view.EdgeRealizer;
 
-import cytoscape.data.*;
+import cytoscape.GraphObjAttributes;
+import cytoscape.view.NetworkView;
 //--------------------------------------------------------------------------
 //
 // this class shifts the nodes to shrink or expand the graph:
@@ -56,16 +53,17 @@ import cytoscape.data.*;
 //    it translates the graph back to the original center
 //
 public class ShrinkExpandGraph extends AbstractAction {
-    protected CytoscapeWindow cytoscapeWindow;
+    protected NetworkView parent;
     protected double m;
-    ShrinkExpandGraph(CytoscapeWindow cytoscapeWindow, String change, double m) {
+    ShrinkExpandGraph(NetworkView networkView, String change, double m) {
 	super (change);
-	this.cytoscapeWindow = cytoscapeWindow;
+	this.parent = networkView;
 	this.m = m;
     }
-    public void actionPerformed (ActionEvent e) {
-	Graph2D graph = cytoscapeWindow.getGraph();
-	GraphObjAttributes edgeAttributes = cytoscapeWindow.getEdgeAttributes ();
+    public void actionPerformed(ActionEvent e) {
+	Graph2D graph = parent.getNetwork().getGraph();
+	GraphObjAttributes edgeAttributes =
+                parent.getNetwork().getEdgeAttributes();
 	Node [] nodes = graph.getNodeArray();
 	
 	// sum of coordinates
@@ -116,7 +114,7 @@ public class ShrinkExpandGraph extends AbstractAction {
             cursor.cyclicNext();
         }
 
-        cytoscapeWindow.redrawGraph();
+        parent.redrawGraph();
     }//Action Performed
 
 }//ShrinkExpandGraph class
