@@ -59,7 +59,6 @@ protected boolean updateSelectionsToCytoscapeWindow = true;
 protected JToolBar toolbar;
 protected SelectionPlotter plotter = null;
 
-private JButton plotChangeButton;
 
 //-----------------------------------------------------------------------------------
 public DataMatrixBrowser (DataMatrix [] matrices) 
@@ -77,8 +76,6 @@ add (toolbar, BorderLayout.NORTH);
 
 add (createGui (matrices), BorderLayout.CENTER);
 
-plotChangeButton = new JButton();
-plotChangeButton.setActionCommand("selectionChanged");
 
 addActions ();
 
