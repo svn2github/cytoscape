@@ -60,20 +60,22 @@ public class MiscDialog {
     }
 
     public ImageIcon[] getArrowIcons() {
-	String p = getDialogImagePath();
-	if(p==null) return new ImageIcon [0];
-
 	ImageIcon [] arrowIcons = new ImageIcon [7];
 
-	// THIS SHOULD WORK!
-	System.out.println("Yo!: "+locateImage("arrow_delta.jpg"));
-	arrowIcons[0] = new ImageIcon(p+"arrow_delta.jpg", "DELTA");
-	arrowIcons[1] = new ImageIcon(p+"arrow_diamond.jpg", "DIAMOND");
-	arrowIcons[2] = new ImageIcon(p+"arrow_standard.jpg", "STANDARD");
-	arrowIcons[3] = new ImageIcon(p+"arrow_short.jpg", "SHORT");
-	arrowIcons[4] = new ImageIcon(p+"arrow_whitediamond.jpg", "WHITE_DIAMOND");
-	arrowIcons[5] = new ImageIcon(p+"arrow_whitedelta.jpg", "WHITE_DELTA");
-	arrowIcons[6] = new ImageIcon(p+"arrow_scalable.jpg", "SCALABLE");
+	arrowIcons[0] = new ImageIcon(locateImage("arrow_delta.jpg"),
+				      "DELTA");
+	arrowIcons[1] = new ImageIcon(locateImage("arrow_diamond.jpg"),
+				      "DIAMOND");
+	arrowIcons[2] = new ImageIcon(locateImage("arrow_standard.jpg"),
+				      "STANDARD");
+	arrowIcons[3] = new ImageIcon(locateImage("arrow_short.jpg"),
+				      "SHORT");
+	arrowIcons[4] = new ImageIcon(locateImage("arrow_whitediamond.jpg"),
+				      "WHITE_DIAMOND");
+	arrowIcons[5] = new ImageIcon(locateImage("arrow_whitedelta.jpg"),
+				      "WHITE_DELTA");
+	arrowIcons[6] = new ImageIcon(locateImage("arrow_scalable.jpg"),
+				      "SCALABLE");
 
 	return arrowIcons;
     }
@@ -110,16 +112,19 @@ public class MiscDialog {
     }
 
     public ImageIcon[] getShapeIcons() {
-	String p = getDialogImagePath();
-	if(p==null) return new ImageIcon [0];
-
 	ImageIcon [] shapeIcons = new ImageIcon [6];  // Array of icons for the list
-	shapeIcons[0] = new ImageIcon(p+"rectangle.jpg", "RECTANGLE");
-	shapeIcons[1] = new ImageIcon(p+"diamond.jpg", "DIAMOND");
-	shapeIcons[2] = new ImageIcon(p+"ellipse.jpg", "ELLIPSE");
-	shapeIcons[3] = new ImageIcon(p+"hexagon.jpg", "HEXAGON");
-	shapeIcons[4] = new ImageIcon(p+"trapezoid.jpg", "TRAPEZOID");
-	shapeIcons[5] = new ImageIcon(p+"triangle.jpg", "TRIANGLE");
+	shapeIcons[0] = new ImageIcon(locateImage("rectangle.jpg"),
+				      "RECTANGLE");
+	shapeIcons[1] = new ImageIcon(locateImage("diamond.jpg"),
+				      "DIAMOND");
+	shapeIcons[2] = new ImageIcon(locateImage("ellipse.jpg"),
+				      "ELLIPSE");
+	shapeIcons[3] = new ImageIcon(locateImage("hexagon.jpg"),
+				      "HEXAGON");
+	shapeIcons[4] = new ImageIcon(locateImage("trapezoid.jpg"),
+				      "TRAPEZOID");
+	shapeIcons[5] = new ImageIcon(locateImage("triangle.jpg"),
+				      "TRIANGLE");
 
 	return shapeIcons;
     }
@@ -169,39 +174,32 @@ public class MiscDialog {
     }
 
     public ImageIcon[] getLineTypeIcons() {
-	String p = getDialogImagePath();
-	if(p==null) return new ImageIcon [0];
-
 	ImageIcon [] lineTypeIcons = new ImageIcon [12];  // Array of icons for the list
-	lineTypeIcons[0] = new ImageIcon(p+"line_1.jpg", "LINE_1");
-	lineTypeIcons[1] = new ImageIcon(p+"line_2.jpg", "LINE_2");
-	lineTypeIcons[2] = new ImageIcon(p+"line_3.jpg", "LINE_3");
-	lineTypeIcons[3] = new ImageIcon(p+"line_4.jpg", "LINE_4");
-	lineTypeIcons[4] = new ImageIcon(p+"line_5.jpg", "LINE_5");
-	lineTypeIcons[5] = new ImageIcon(p+"line_6.jpg", "LINE_6");
-	lineTypeIcons[6] = new ImageIcon(p+"line_7.jpg", "LINE_7");
-	lineTypeIcons[7] = new ImageIcon(p+"dashed_1.jpg", "DASHED_1");
-	lineTypeIcons[8] = new ImageIcon(p+"dashed_2.jpg", "DASHED_2");
-	lineTypeIcons[9] = new ImageIcon(p+"dashed_3.jpg", "DASHED_3");
-	lineTypeIcons[10] = new ImageIcon(p+"dashed_4.jpg", "DASHED_4");
-	lineTypeIcons[11] = new ImageIcon(p+"dashed_5.jpg", "DASHED_5");
+	lineTypeIcons[0] = new ImageIcon(locateImage("line_1.jpg"),
+					 "LINE_1");
+	lineTypeIcons[1] = new ImageIcon(locateImage("line_2.jpg"),
+					 "LINE_2");
+	lineTypeIcons[2] = new ImageIcon(locateImage("line_3.jpg"),
+					 "LINE_3");
+	lineTypeIcons[3] = new ImageIcon(locateImage("line_4.jpg"),
+					 "LINE_4");
+	lineTypeIcons[4] = new ImageIcon(locateImage("line_5.jpg"),
+					 "LINE_5");
+	lineTypeIcons[5] = new ImageIcon(locateImage("line_6.jpg"),
+					 "LINE_6");
+	lineTypeIcons[6] = new ImageIcon(locateImage("line_7.jpg"),
+					 "LINE_7");
+	lineTypeIcons[7] = new ImageIcon(locateImage("dashed_1.jpg"),
+					 "DASHED_1");
+	lineTypeIcons[8] = new ImageIcon(locateImage("dashed_2.jpg"),
+					 "DASHED_2");
+	lineTypeIcons[9] = new ImageIcon(locateImage("dashed_3.jpg"),
+					 "DASHED_3");
+	lineTypeIcons[10] = new ImageIcon(locateImage("dashed_4.jpg"),
+					  "DASHED_4");
+	lineTypeIcons[11] = new ImageIcon(locateImage("dashed_5.jpg"),
+					  "DASHED_5");
 	return lineTypeIcons;
-    }
-
-    
-    private static String getRootPath() {
-	String path = System.getProperty ("CYTOSCAPE_HOME");
-	return path;
-    }
-
-    private static String getDialogImagePath() {
-	String path = getRootPath();
-	if(path==null) return null;
-	else {
-	    if (path.endsWith("/")) path = path.substring(0,path.length()-1);
-	    path = path + "/cytoscape/dialogs/images/";
-	    return path;
-	}
     }
 
 
@@ -209,6 +207,7 @@ public class MiscDialog {
      * Get the image from the .jar file
      */
     private URL locateImage(String imageFilename) {
-	return this.getClass().getClassLoader().getResource(imageFilename);
+	return this.getClass().getClassLoader().getResource(
+	    "cytoscape/dialogs/images/"+imageFilename);
     }
 }
