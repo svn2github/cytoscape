@@ -52,26 +52,28 @@ import cytoscape.data.servers.*;
 import cytoscape.util.Misc;
 //--------------------------------------------------------------------------------
 /**
- * Store multiple attributes of multiple "graph objects" (usually graph nodes or 
- * edges) for easy and flexible retrieval.  There is typically two instances of
- * this class associated with every cytoscape graph:  one set of attributes for
- * all of the nodes, and another set of attributes for all the edges.  
+ * Store multiple attributes of multiple "graph objects" (usually graph nodes
+ * or edges) for easy and flexible retrieval.  There are typically two
+ * instances of this class associated with every cytoscape graph:  one set of
+ * attributes for all of the nodes, and another set of attributes for all the
+ * edges.  
  * <p>
  * It may be useful to understand the implementation of this data structure, at
  * least at a high level, in order to use it effectively.  At the top level
- * there is a hashtable, with one entry for each attribute; the attribute's name
- * (a String) is the key to this top level hashtable.  The <em> value </em> 
- * associated with each of these keys is another hashtable, in which are stored
- * possibly many entries whose keys are node or edge names, and whose values are
- * any kind of java object.
+ * there is a hashtable, with one entry for each attribute; the attribute's
+ * name (a String) is the key to this top level hashtable.  The <em> value
+ * </em> associated with each of these keys is another hashtable, in which are
+ * stored possibly many entries whose keys are node or edge names, and whose
+ * values are any kind of java object.
  * <p>
- * We make an important distinction between the semantics of 'set' and 'append'.
- * For set, the specified java object becomes the sole and single value of that attribute
- * for the named graph object.  In the example just below, a java Double with value
- * 1.8 becomes the sole value of 'mRNA ratio'  * for the graph object named 'GAL4'.
+ * We make an important distinction between the semantics of 'set' and
+ * 'append'. For set, the specified java object becomes the sole and single
+ * value of that attribute for the named graph object.  In the example just
+ * below, a java Double with value 1.8 becomes the sole value of 'mRNA ratio'
+ * for the graph object named 'GAL4'.
  * <p>
- * The append semantics are different: in this case, a java.util.Vector is created,
- * and every appended object is added to that vector.
+ * The append semantics are different: in this case, a java.util.Vector is
+ * created, and every appended object is added to that vector.
  * <p>
  * For example: <br>
  * <pre>
@@ -93,11 +95,12 @@ import cytoscape.util.Misc;
  *
  * </pre>
  * <p>
- * These nine lines of code create 4 entries (and therefor 4 keys) in the top level hash:
- * <i>mRNA ratio, mRNA significance, gene product, and SGD summary</i>.  The values
- * of each of these keys in the top level hash are each themselves hashtables,
- * which have, in turn, just two entries (GAL4 and GAL80); the values of each of these
- * second-level hashes are java objects, as follows:
+ * These nine lines of code create 4 entries (and therefor 4 keys) in the top
+ * level hash: <i>mRNA ratio, mRNA significance, gene product, and SGD
+ * summary</i>.  The values of each of these keys in the top level hash are
+ * each themselves hashtables, which have, in turn, just two entries (GAL4 and
+ * GAL80); the values of each of these second-level hashes are java objects, as
+ * follows:
  * <ol>
  *   <li> <b>mRNA ratio</b>: &nbsp; java.lang.Double
  *   <li> <b>mRNA significance</b>: &nbsp; java.lang.Double
@@ -115,8 +118,8 @@ import cytoscape.util.Misc;
  * may be given any String value.  There is as yet no controlled vocabulary
  * for category names, but here are some suggestions which may be useful:
  * <ul> 
- *   <li> <b>annotation</b>: &nbsp; useful if you want to do layout based on this
- *        attribute.  Annotation is an exception to the general rule about
+ *   <li> <b>annotation</b>: &nbsp; useful if you want to do layout based on
+ *        this attribute.  Annotation is an exception to the general rule about
  *        category names:  it is a privileged category, recognized elsewhere
  *        in cytoscape; for example, the Annotation Layout option uses it
  *        to recognize which of the current node attributes on nodes
@@ -159,16 +162,19 @@ import cytoscape.util.Misc;
  * <ol>
  *   <li> a header line, containing at least an attribute name, and optionally 
  *        class and category specifications
- *   <li> one or more data lines, of the form &lt;object name&gt; = &lt;object value&gt;;
- *        white space may be used for either the name or the value 
- *   <li> &lt;object value&gt; may be a scalar (which, however, can include whitespace for strings)
- *        or a list, surrounded by parentheses, with each scalar delimited by "::"
- *   <li> other tokens for list and token delmiters can be specified in your cytoscape.props
+ *   <li> one or more data lines, of the form &lt;object name&gt; =
+ *        &lt;object value&gt;; whitespace may be used for either the name or
+ *        the value 
+ *   <li> &lt;object value&gt; may be a scalar (which, however, can include
+ *        whitespace for strings) or a list, surrounded by parentheses, with
+ *        each scalar delimited by "::"
+ *   <li> other tokens for list and token delmiters can be specified in your
+ *        cytoscape.props
  * </ol>
  *
  * <h4> Attribute File Example 1 </h4>
- * Create a String attribute named "animal species" of unknown category, for four 
- * nodes 
+ * Create a String attribute named "animal species" of unknown category, for
+ * four nodes 
  * <p>
  * <pre>
  * animal species
@@ -208,8 +214,9 @@ import cytoscape.util.Misc;
  * <p>
  * <h3> todo </h3>
  * <ol>
- *    <li> create an example file and good documentation for an edge attributes file.
- *         how do we specify edge names these days?  YPR065W (pp) YPR065W = 2232
+ *    <li> create an example file and good documentation for an edge attributes
+ *         file. how do we specify edge names these days?
+ *         YPR065W (pp) YPR065W = 2232
  * </ol>
  *
  */
