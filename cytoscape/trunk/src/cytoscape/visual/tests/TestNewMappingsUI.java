@@ -31,9 +31,13 @@ import cytoscape.vizmap.LinearNumberToColorInterpolator;
 import cytoscape.vizmap.LinearNumberToNumberInterpolator;
 import cytoscape.vizmap.BoundaryRangeValues;
 
-//--------------------------------------------------------------------------
+/**  Contains methods and classes for exercising the calculators,
+ *   mappings, and UI's in the cytoscape.visual package.
+ */
 public class TestNewMappingsUI {
+    /** standard reference to the CytoscapeWindow. */
     protected CytoscapeWindow cytoscapeWindow;
+    /** contains all information necessary to compute appearances. */
     protected Network network;
     public TestNewMappingsUI (CytoscapeWindow cytoscapeWindow)
     {
