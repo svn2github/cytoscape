@@ -185,6 +185,15 @@ final class DynamicGraphRepresentation implements DynamicGraph
     return true;
   }
 
+  public boolean containsNode(int node)
+  {
+    try { return m_nodes.getNodeAtIndex(node) != null; }
+    catch (ArrayIndexOutOfBoundsException exc) {
+      // node is negative or Integer.MAX_VALUE.
+      if (node == Integer.MAX_VALUE) return false;
+      throw new IllegalArgumentException("node is negative"); }
+  }
+
   public byte edgeType(int edge)
   {
     final Edge e;
