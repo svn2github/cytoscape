@@ -1385,15 +1385,15 @@ protected class HierarchicalLayoutAction extends AbstractAction   {
     
     public void actionPerformed (ActionEvent e) {
 	
-      /********************
+      /********************/
 	if (hDialog == null)
 	    hDialog = new HierarchicalLayoutDialog (mainFrame);
 	hDialog.pack ();
 	hDialog.setLocationRelativeTo (mainFrame);
 	hDialog.setVisible (true);
 	layouter = hDialog.getLayouter();
-      ********************/
-      layouter = new HierarchicLayouter ();
+      /********************/
+      //layouter = new HierarchicLayouter ();
     }
 }
 //------------------------------------------------------------------------------
