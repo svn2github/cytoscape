@@ -179,12 +179,18 @@ class DynamicGraphRepresentation implements DynamicGraph
 
   public boolean containsNode(int node)
   {
-    return false;
+    try { return m_nodes.getNodeAtIndex(node) != null; }
+    catch (ArrayIndexOutOfBoundsException exc) {
+      // node is negative or Integer.MAX_VALUE.
+      throw new IllegalArgumentException("node is negative"); }
   }
 
   public boolean containsEdge(int edge)
   {
-    return false;
+    try { return m_edges.getEdgeAtIndex(edge) != null; }
+    catch (ArrayIndexOutOfBoundsException exc) {
+      // edge is negative or Integer.MAX_VALUE.
+      throw new IllegalArgumentException("edge is negative"); }
   }
 
   public IntEnumerator adjacentEdges(int node, boolean undirected,
