@@ -6,11 +6,6 @@ public class BarebonesGraphRepresentation
   implements SubMutableGraphLayout
 {
 
-  private final int m_numNodes;
-  private final int[] m_directedEdgeSourceNodeIndices;
-  private final int[] m_directedEdgeTargetNodeIndices;
-  private final int[] m_undirectedEdgeNode0Indices;
-  private final int[] m_undirectedEdgeNode1Indices;
 
   /**
    * Copies are made of all the array input parameters; modifying
@@ -36,17 +31,6 @@ public class BarebonesGraphRepresentation
                                       double[] nodeYPositions,
                                       boolean[] isMovableNode)
   {
-    // Preliminary parameter checking.
-    if (numNodes < 0) throw new IllegalArgumentException
-                        ("cannot have a negative number of nodes");
-    if (directedEdgeSourceNodeIndices == null)
-      directedEdgeSourceNodeIndices = new int[0];
-    if (directedEdgeTargetNodeIndices == null)
-      directedEdgeTargetNodeIndices = new int[0];
-    if (undirectedEdgeNode0Indices == null)
-      undirectedEdgeNode0Indices = new int[0];
-    if (undirectedEdgeNode1Indices == null)
-      undirectedEdgeNode1Indices = new int[0];
     if (nodeXPositions == null)
       nodeXPositions = new double[numNodes];
     if (nodeYPositions == null)
@@ -56,50 +40,6 @@ public class BarebonesGraphRepresentation
       for (int i = 0; i < isMovalbeNode.length; i++) {
         isMovableNode[i] = true; } }
 
-    // Real parameter checking.  Set member variables.
-    m_numNodes = numNodes;
-    if (directedEdgeSourceNodeIndices.length !=
-        directedEdgeTargetNodeIndices.length)
-      throw new IllegalArgumentException
-        ("directed edge node index arrays are not the same length");
-    m_directedEdgeSourceNodeIndices =
-      new int[directedEdgeSourceNodeIndices.length];
-    System.arraycopy(directedEdgeSourceNodeIndices, 0,
-                     m_directedEdgeSourceNodeIndices, 0,
-                     directedEdgeSourceNodeIndices.length);
-    m_directedEdgeTargetNodeIndices =
-      new int[directedEdgeTargetNodeIndices.length];
-    System.arraycopy(directedEdgeTargetNodeIndices, 0,
-                     m_directedEdgeTargetNodeIndices, 0,
-                     directedEdgeTargetNodeIndices.length);
-    for (int i = 0; i < m_directedEdgeSourceNodeIndices.length; i++) {
-      if (m_directedEdgeSourceNodeIndices[i] < 0 ||
-          m_directedEdgeSourceNodeIndices[i] >= m_numEdges ||
-          m_directedEdgeTargetNodeIndices[i] < 0 ||
-          m_directedEdgeTargetNodeIndices[i] >= m_numEdges) {
-        throw new IllegalArgumentException
-          ("a node index in a directed edge array is not valid"); } }
-    if (undirectedEdgeNode0Indices.length !=
-        undirectedEdgeNode1Indices.length)
-      throw new IllegalArgumentException
-        ("undirected edge node index arrays are not the same length");
-    m_undirectedEdgeNode0Indices =
-      new int[undirectedEdgeNode0Indices.length];
-    System.arraycopy(undirectedEdgeNode0Indices, 0
-                     m_undirectedEdgeNode0Indices, 0
-                     undirectedEdgeNode0Indices.length);
-    m_undirectedEdgeNode1Indices =
-      new int[undirectedEdgeNode1Indices.length];
-    System.arraycopy(undirectedEdgeNode1Indices, 0
-                     m_undirectedEdgeNode1Indices, 0
-                     undirectedEdgeNode1Indices.length);
-    for (int i = 0; i < m_undirectedEdgeNode0Indices.length; i++) {
-      if (m_undirectedEdgeNode0Indices[i] < 0 ||
-          m_undirectedEdgeNode0Indices[i] >= m_numEdges ||
-          m_undirectedEdgeNode1Indices[i] < 0 ||
-          m_undirectedEdgeNode1Indices[i] >= m_numEdges) {
-        throw new IllegalArgumentException
-          ("a node index in an undirected edge array is not valid"); } }
     if (nodeXPositions.length != numNodes)
       throw new IllegalArgumentException
         ("node X position array's length is not equal to number of nodes");
