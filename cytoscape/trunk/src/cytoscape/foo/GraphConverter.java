@@ -156,7 +156,8 @@ public final class GraphConverter
       if (!isMovableNode(nodeIndex))
         throw new UnsupportedOperationException
           ("node at index " + nodeIndex + " is not movable");
-      node.setOffset(xPos + m_xOff, yPos + m_yOff); }
+      node.setXPosition(xPos + m_xOff);
+      node.setYPosition(yPos + m_yOff); }
     public int getNumAnchors(int edgeIndex) {
       return m_edgeTranslation[edgeIndex].getBend().getHandles().size(); }
     public double getAnchorPosition(int edgeIndex, int anchorIndex,
