@@ -1,9 +1,4 @@
-// GraphObjAttributes.java:  represent attributes of graph nodes, or graph edges
-// implementation:  a hash of hashes:
-//     (attributeName, hash (objName, objValue))
-//
-// for now, <objValues> are not dynamically discovered:  they must be
-// of type Double, or String
+// GraphObjAttributes.java
 //--------------------------------------------------------------------------------
 // $Revision$   
 // $Date$ 
@@ -17,6 +12,13 @@ import java.io.*;
 import cytoscape.data.*;
 import cytoscape.data.readers.*;
 //--------------------------------------------------------------------------------
+/** represent attributes of graph nodes, or graph edges, implemented as a hash of hashes
+ *    (attributeName, hash (objName, objValue)).
+ *
+ * for now, <objValues> are not dynamically discovered: they must be
+ * of type Double, or String.
+ *
+ */
 public class GraphObjAttributes implements Cloneable {
   HashMap map;
   HashMap nameFinder;
