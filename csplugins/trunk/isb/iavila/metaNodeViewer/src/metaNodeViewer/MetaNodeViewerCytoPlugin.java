@@ -7,7 +7,6 @@ import cytoscape.*;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.plugin.CytoscapePlugin;
-import cytoscape.plugin.jar.JarLoader;
 
 import java.beans.*;
 
@@ -52,7 +51,7 @@ implements PropertyChangeListener {
 					"metaNodeViewer.ui.AbstractMetaNodeMenu",
 					"getAbstractMetaNodeMenu",
 					new Object[] { view } ,
-					JarLoader.getLoader() );
+					CytoscapeInit.getClassLoader() );
 		}
 	}//propertyChange
 
