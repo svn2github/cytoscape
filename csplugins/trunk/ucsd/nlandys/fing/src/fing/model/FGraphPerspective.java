@@ -169,14 +169,19 @@ class FGraphPerspective implements GraphPerspective
     return m_weeder.hideEdge(this, rootGraphEdgeInx);
   }
 
+  // This methods has been marked deprecated in the Giny API.
   public java.util.List hideEdges(java.util.List edges)
   {
-    throw new IllegalStateException("not implemented yet");
+    final java.util.ArrayList returnThis = new java.util.ArrayList();
+    for (int i = 0; i < edges.size(); i++)
+      if (hideEdge((Edge) edges.get(i)) != null)
+        returnThis.add(edges.get(i));
+    return returnThis;
   }
 
-  public int[] hideEdges(int[] perspEdgeInx)
+  public int[] hideEdges(int[] rootGraphEdgeInx)
   {
-    throw new IllegalStateException("not implemented yet");
+    return m_weeder.hideEdges(this, rootGraphEdgeInx);
   }
 
   public Edge restoreEdge(Edge edge)
@@ -781,14 +786,38 @@ class FGraphPerspective implements GraphPerspective
 
     private final MinIntHeap m_heap = new MinIntHeap();
 
-    private final int[] hideEdges(Object source, Edge[] edges)
+    // RootGraphChangeSniffer is not to call this method.  We rely on
+    // the specified edges still existing in the RootGraph in this method.
+    private final int[] hideEdges(GraphPerspective source, int[] rootEdgeInx)
     {
       m_heap.empty();
       final MinIntHeap successes = m_heap;
-      final int[] returnThis = new int[edges.length];
-      for (int i = 0; i < edges.length; i++) {
-        returnThis[i] = _hideEdge(edges[i].getRootGraphIndex());
+      final int[] returnThis = new int[rootEdgeInx.length];
+      for (int i = 0; i < rootEdgeInx.length; i++) {
+        returnThis[i] = _hideEdge(rootEdgeInx[i]);
         if (returnThis[i] != 0) successes.toss(i); }
+      if (successes.size() > 0) {
+        final GraphPerspectiveChangeListener listener = m_lis[0];
+        if (listener != null) {
+          final Edge[] successArr = new Edge[successes.size()];
+          final IntEnumerator enum = successes.elements();
+          int index = -1;
+          while (enum.numRemaining() > 0)
+            successArr[++index] = m_root.getEdge(rootEdgeInx[enum.nextInt()]);
+          listener.graphPerspectiveChanged
+            (new GraphPerspectiveEdgesHiddenEvent(source, successArr)); } }
+      return returnThis;
+    }
+
+    // Entries in the edges array may not be null.
+    // This method is to be called by RootGraphChangeSniffer.
+    private final void hideEdges(Object source, Edge[] edges)
+    {
+      m_heap.empty();
+      final MinIntHeap successes = m_heap;
+      for (int i = 0; i < edges.length; i++)
+        if (_hideEdge(edges[i].getRootGraphIndex()) != 0)
+          successes.toss(i);
       if (successes.size() > 0) {
         final GraphPerspectiveChangeListener listener = m_lis[0];
         if (listener != null) {
@@ -799,7 +828,6 @@ class FGraphPerspective implements GraphPerspective
             successArr[++index] = edges[enum.nextInt()];
           listener.graphPerspectiveChanged
             (new GraphPerspectiveEdgesHiddenEvent(source, successArr)); } }
-      return returnThis;
     }
 
   }
