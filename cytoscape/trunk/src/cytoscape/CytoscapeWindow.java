@@ -157,7 +157,10 @@ public class CytoscapeWindow extends JPanel implements FilterDialogClient, Graph
   protected Vector subwindows = new Vector ();
 
   protected String windowTitle;
-  protected File currentDirectory;
+
+    /**  keeps track of the current directory being browsed */
+    protected File currentDirectory;
+
    // selected nodes can be displayed in a new window.  this next variable
    // provides a title for that new window
   protected String titleForCurrentSelection = null;
@@ -555,10 +558,19 @@ public GraphProps getProps ()
     return new GraphProps(graph, nodeAttributes, edgeAttributes);
 }
 //------------------------------------------------------------------------------
+/**  Cytoscape keeps track of the current directory being browsed;
+ *   it is recommended that all methods with file dialogs use
+ *   getCurrentDirectory() to begin browsing for files.
+ */
 public File getCurrentDirectory() {
     return currentDirectory;
 }
 //------------------------------------------------------------------------------
+/**  Cytoscape keeps track of the current directory being browsed;
+ *   it is recommended that all methods with file dialogs use
+ *   setCurrentDirectory(dir) to record the destination directory for
+ *   future browsing.
+ */
 public void setCurrentDirectory(File dir) {
     currentDirectory = dir;
 }
