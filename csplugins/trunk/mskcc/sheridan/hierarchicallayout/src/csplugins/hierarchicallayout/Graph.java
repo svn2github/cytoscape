@@ -46,25 +46,19 @@ import java.io.Reader;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.ListIterator;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * A collection element for sorting key-value pairs
 */
 
-class SortNode implements Comparable {
+class IntSortNode implements Comparable {
 	/** the key */
 	private int first; /* holds the node's topological index */
 	/** the value */
 	private int second; /* holds the node's id */
 	/** initializes private members */
-	public SortNode(int a_first, int a_second) {
+	public IntSortNode(int a_first, int a_second) {
 		first = a_first;
 		second = a_second;
 	}
@@ -74,7 +68,69 @@ class SortNode implements Comparable {
 	public int getSecond() { return second; }
 	/** comparison function for sorting - sorts into ascending key order */
 	public int compareTo(Object o) {
-		return first - ((SortNode)o).first;
+		return first - ((IntSortNode)o).first;
+	}
+}
+
+/**
+ * A collection element for sorting key-value pairs
+*/
+
+class DoubleSortNode implements Comparable {
+	/** key */
+	private double key; /* holds the node's position */
+	/** value */
+	private int value; /* holds the node's id */
+	/** initializes private members */
+	public DoubleSortNode(double a_key, int a_value) {
+		key = a_key;
+        value = a_value;
+	}
+	/** get method */
+	public double getPrimary() { return key; }
+	/** get method */
+	public int getValue() { return value; }
+	/** comparison function for sorting - sorts into ascending key order */
+	public int compareTo(Object o) {
+        double diff = key - ((DoubleSortNode)o).key;
+        if (diff > 0) return 1;
+        if (diff < 0) return -1;
+        return 0;
+	}
+}
+
+/**
+ * A collection element for sorting key-value pairs
+*/
+
+class TwinDoubleSortNode implements Comparable {
+	/** first key */
+	private double primary; /* holds the node's median */
+	/** second key */
+	private double secondary; /* holds the node's barycenter */
+	/** the value */
+	private int value; /* holds the node's id */
+	/** initializes private members */
+	public TwinDoubleSortNode(double a_primary, double a_secondary, int a_value) {
+		primary = a_primary;
+		secondary = a_secondary;
+        value = a_value;
+	}
+	/** get method */
+	public double getPrimary() { return primary; }
+	/** get method */
+	public double getSecondary() { return secondary; }
+	/** get method */
+	public int getValue() { return value; }
+	/** comparison function for sorting - sorts into ascending key order */
+	public int compareTo(Object o) {
+        double diff = primary - ((TwinDoubleSortNode)o).primary;
+        if (diff > 0) return 1;
+        if (diff < 0) return -1;
+        diff = secondary - ((TwinDoubleSortNode)o).secondary;
+        if (diff > 0) return 1;
+        if (diff < 0) return -1;
+        return 0;
 	}
 }
 
@@ -101,7 +157,8 @@ public class Graph {
 	private boolean acyclic;
 	/** True if transitive reduction routine has generated this graph */
 	private boolean reduced;
-
+    /** number of passes to do adjacency exchange */
+    static int MAX_ADJACENT_EXCHANGE_PASSES = 5;
 	/**
 	 * Build a graph from a supplied Edge array.
 	 * Nodes must be consecutively indexed beginning with zero.
@@ -457,7 +514,7 @@ public class Graph {
 		int nodesRemaining;
 		for (nodesRemaining = nodecount; nodesRemaining != 0; nodesRemaining--) {
 			/* select node */
-			Integer u = null;
+			Integer u;
 			boolean goRight = false;
 			if (sink.size() > 0) {
 				u = (Integer)(sink.removeFirst());
@@ -626,12 +683,12 @@ public class Graph {
 			int nodeId = topologicalOrder[nodeIndex];
 			/* determine topologically ordered list of children */
 			LinkedHashSet daughters = new LinkedHashSet(edgesFrom[nodeId]);
-			SortNode daughter[] = new SortNode[daughters.size()];
+			IntSortNode daughter[] = new IntSortNode[daughters.size()];
 			int daughterIndex = 0;
 			Iterator iter = daughters.iterator();
 			while (iter.hasNext()) {
 				int daughterId = ((Integer)(iter.next())).intValue();
-				daughter[daughterIndex++] = new SortNode(priorityIndex[daughterId],daughterId);
+				daughter[daughterIndex++] = new IntSortNode(priorityIndex[daughterId],daughterId);
 			}
 			Arrays.sort(daughter);
 			for (daughterIndex = 0; daughterIndex < daughter.length; daughterIndex++) {
@@ -871,7 +928,10 @@ public class Graph {
 		if (!reduced) {
 			throw new RuntimeException("attempt to compute horizontal position in a non-reduced graph");
 		}
-		int position[] = new int[nodecount];
+		int position[] = new int[nodecount]; /* integer index on layer */
+        double xPosition[] = new double[nodecount]; /* x coordinate used for median and barycenter */
+        double median[] = new double[nodecount];
+        double baryCenter[] = new double[nodecount];
 		int nextFreeSpotOnLayer[] = new int[nodecount+1];
 		LinkedList nodesOnLayer[] = new LinkedList[nodecount+1];
 		int x;
@@ -888,37 +948,296 @@ public class Graph {
 				topLayer = nLayer;
 			}
 		}
-		Stack evalStack = new Stack();
+        /* top level all sources - order arbitrary */
+        ListIterator iter = nodesOnLayer[topLayer].listIterator();
+        double nextx = 0.0;
+        while (iter.hasNext()) {
+            int nodeId = ((Integer)iter.next()).intValue();
+            xPosition[nodeId] = nextx;
+            median[nodeId] = nextx;
+            baryCenter[nodeId] = nextx;
+            nextx += 1.0;
+        }
+        /* hybrid median/barycenter approach */
 		int scanLayer;
-		for (scanLayer=1; scanLayer<=topLayer; scanLayer++) {
-			ListIterator iter = nodesOnLayer[scanLayer].listIterator(nodesOnLayer[scanLayer].size());
-			while (iter.hasPrevious()) {
-				evalStack.push(iter.previous());
-			}
-		}
-		while (!evalStack.empty()) {
-			/* evaluate list head */
-			int nodeId = ((Integer)(evalStack.pop())).intValue();
-			if (position[nodeId] > 0) {
-				continue; /* already positioned */
-			}
-			/* place it */
-			position[nodeId] = nextFreeSpotOnLayer[vertexLayer[nodeId]]++;
-			/* put daughters on front of eval stack in layer order */
-			SortNode daughter[] = new SortNode[edgesFrom[nodeId].size()];
-			Iterator iter = edgesFrom[nodeId].iterator();
-			int daughterIndex = 0;
+		for (scanLayer=topLayer-1; scanLayer > 0; scanLayer--) {
+            /* compute median and barycenter */
+            int nodeInsertPos = 0;
+		    TwinDoubleSortNode nodeOrder[] = new TwinDoubleSortNode[nodesOnLayer[scanLayer].size()];
+            iter = nodesOnLayer[scanLayer].listIterator();
 			while (iter.hasNext()) {
-				int daughterId = ((Integer)(iter.next())).intValue();
-				daughter[daughterIndex++] = new SortNode(vertexLayer[daughterId],daughterId);
+                int nodeId = ((Integer)iter.next()).intValue();
+                if (edgesTo[nodeId].isEmpty()) {
+                    median[nodeId] = 0;
+                    baryCenter[nodeId] = 0;
+                } else {
+                    int parentNum = 0;
+                    double parentX[] = new double[edgesTo[nodeId].size()];
+                    Iterator parentIter = edgesTo[nodeId].listIterator();
+                    baryCenter[nodeId] = 0.0;
+                    while (parentIter.hasNext()) {
+                        int parentId = ((Integer)parentIter.next()).intValue();
+                        baryCenter[nodeId] += xPosition[parentId];
+                        parentX[parentNum++] = xPosition[parentId];
+                    }
+                    Arrays.sort(parentX);
+                    median[nodeId] = parentX[parentX.length/2];
+                    baryCenter[nodeId] /= edgesTo[nodeId].size();
+                }
+                nodeOrder[nodeInsertPos++] = new TwinDoubleSortNode(median[nodeId],baryCenter[nodeId],nodeId);
 			}
-			Arrays.sort(daughter);
-			for (daughterIndex = 0; daughterIndex < daughter.length; daughterIndex++) {
-				int daughterId = daughter[daughterIndex].getSecond();
-				Integer daughterIdObj = new Integer(daughterId);
-				evalStack.push(daughterIdObj);
-			}
+            /* order and position nodes */
+            double nextHigherMedian = - Double.MAX_VALUE; /* unknown */
+            int numNodesToSpread = 0;
+            Arrays.sort(nodeOrder);
+            for (x = 0; x < nodeOrder.length; x++) {
+                int nodeToPosition = nodeOrder[x].getValue();
+                if (x > 0 && median[nodeToPosition] == median[nodeOrder[x-1].getValue()]) {
+                    if (nextHigherMedian == - Double.MAX_VALUE) {
+                        /* find next higher Median through search */
+                        /* the reason this is being done so oddly is that parents may
+                            span several layers above -- so if the two sides of the
+                            bipartite graph are the sort layer and a constructed layer
+                            consisting of all the parents of nodes in this layer, then
+                            the parents must all be placed in a consistant coordinate
+                            system */
+                        numNodesToSpread = 1;
+                        int y;
+                        for (y = x + 1; y < nodeOrder.length; y++) {
+                            if (median[nodeOrder[y].getValue()] > median[nodeOrder[y - 1].getValue()]) {
+                                nextHigherMedian = median[nodeOrder[y].getValue()];
+                                break;
+                            }
+                            numNodesToSpread++;
+                        }
+                        if (nextHigherMedian == - Double.MAX_VALUE) {
+                            /* there is no next higher median - this is the highest */
+                            nextHigherMedian = median[nodeOrder[x].getValue()] + 1.0;
+                        }
+                    }
+                    xPosition[nodeToPosition] = xPosition[nodeOrder[x-1].getValue()] + (nextHigherMedian - xPosition[nodeOrder[x-1].getValue()]) / (numNodesToSpread-- + 1);
+                } else {
+                    nextHigherMedian = - Double.MAX_VALUE; /* reset .. now unknown */
+                    xPosition[nodeToPosition] = median[nodeToPosition];
+                }
+            }
+            /* set position of nodes on this level */
+            for (x = 0; x < nodeOrder.length; x++) {
+                position[nodeOrder[x].getValue()] = x + 1;
+            }
 		}
+        /* fine tune with adjacent exchange - looking up/down for interior layers, up only for bottom layer */
+        Object parent[] = new Object[nodecount];
+        Object child[] = new Object[nodecount];
+		for (scanLayer=topLayer-1; scanLayer > 1; scanLayer--) {
+            /* get the order for this layer */
+            int nodeInPosition[] = new int[nodesOnLayer[scanLayer].size()];
+            iter = nodesOnLayer[scanLayer].listIterator();
+            while (iter.hasNext()) {
+                int nodenum = ((Integer)iter.next()).intValue();
+                nodeInPosition[position[nodenum]-1] = nodenum;
+            }
+            int sweepCounter = MAX_ADJACENT_EXCHANGE_PASSES;
+            boolean done = false;
+            /* do not compute crossing numbers -- precomputing all combinations would be
+                O(L*(P+C), L = # of nodes in layer, P = # of nodes in parent, C = in child */
+            while (!done && sweepCounter-- > 0) {
+                done = true;
+                int scanpos;
+                for (scanpos = 1; scanpos < nodeInPosition.length; scanpos++) {
+                    int leftnode = nodeInPosition[scanpos -1];
+                    int rightnode = nodeInPosition[scanpos];
+                    int i;
+                    double arrayBuffer[];
+                    if (parent[leftnode] == null) {
+                        /* sort list of parents by X pos */
+                        arrayBuffer = new double[edgesTo[leftnode].size()];
+                        Iterator parentIter = edgesTo[leftnode].listIterator();
+                        i = 0;
+                        while (parentIter.hasNext()) {
+                            int parentId = ((Integer)parentIter.next()).intValue();
+                            arrayBuffer[i++] = xPosition[parentId];
+                        }
+                        Arrays.sort(arrayBuffer);
+                        parent[leftnode] = arrayBuffer;
+                    }
+                    if (child[leftnode] == null) {
+                        /* sort list of children by X pos */
+                        arrayBuffer = new double[edgesFrom[leftnode].size()];
+                        Iterator childIter = edgesFrom[leftnode].listIterator();
+                        i = 0;
+                        while (childIter.hasNext()) {
+                            int childId = ((Integer)childIter.next()).intValue();
+                            arrayBuffer[i++] = xPosition[childId];
+                        }
+                        Arrays.sort(arrayBuffer);
+                        child[leftnode] = arrayBuffer;
+                    }
+                    if (parent[rightnode] == null) {
+                        /* sort list of parents by X pos */
+                        arrayBuffer = new double[edgesTo[rightnode].size()];
+                        Iterator parentIter = edgesTo[rightnode].listIterator();
+                        i = 0;
+                        while (parentIter.hasNext()) {
+                            int parentId = ((Integer)parentIter.next()).intValue();
+                            arrayBuffer[i++] = xPosition[parentId];
+                        }
+                        Arrays.sort(arrayBuffer);
+                        parent[rightnode] = arrayBuffer;
+                    }
+                    if (child[rightnode] == null) {
+                        /* sort list of children by X pos */
+                        arrayBuffer = new double[edgesFrom[rightnode].size()];
+                        Iterator childIter = edgesFrom[rightnode].listIterator();
+                        i = 0;
+                        while (childIter.hasNext()) {
+                            int childId = ((Integer)childIter.next()).intValue();
+                            arrayBuffer[i++] = xPosition[childId];
+                        }
+                        Arrays.sort(arrayBuffer);
+                        child[rightnode] = arrayBuffer;
+                    }
+                    int nowCrossCount = 0;
+                    int revCrossCount = 0;
+                    double leftSet[] = (double [])parent[leftnode];
+                    double rightSet[] = (double [])parent[rightnode];
+                    int leftIndex = 0;
+                    int rightIndex = 0;
+                    while (leftIndex < leftSet.length && rightIndex < rightSet.length) {
+                        if (rightSet[rightIndex] < leftSet[leftIndex]) {
+                            nowCrossCount += leftSet.length - leftIndex;
+                            rightIndex++;
+                        } else {
+                            leftIndex++;
+                        }
+                    }
+                    leftIndex = 0;
+                    rightIndex = 0;
+                    while (leftIndex < leftSet.length && rightIndex < rightSet.length) {
+                        if (rightSet[rightIndex] > leftSet[leftIndex]) {
+                            revCrossCount += rightSet.length - rightIndex;
+                            leftIndex++;
+                        } else {
+                            rightIndex++;
+                        }
+                    }
+                    leftSet = (double [])child[leftnode];
+                    rightSet = (double [])child[rightnode];
+                    leftIndex = 0;
+                    rightIndex = 0;
+                    while (leftIndex < leftSet.length && rightIndex < rightSet.length) {
+                        if (rightSet[rightIndex] < leftSet[leftIndex]) {
+                            nowCrossCount += leftSet.length - leftIndex;
+                            rightIndex++;
+                        } else {
+                            leftIndex++;
+                        }
+                    }
+                    leftIndex = 0;
+                    rightIndex = 0;
+                    while (leftIndex < leftSet.length && rightIndex < rightSet.length) {
+                        if (rightSet[rightIndex] > leftSet[leftIndex]) {
+                            revCrossCount += rightSet.length - rightIndex;
+                            leftIndex++;
+                        } else {
+                            rightIndex++;
+                        }
+                    }
+                    if (nowCrossCount > revCrossCount) {
+                        int tmp = position[leftnode];
+                        position[leftnode] = position[rightnode];
+                        position[rightnode] = tmp;
+                        nodeInPosition[scanpos] = leftnode;
+                        nodeInPosition[scanpos - 1] = rightnode;
+                        double dtmp = xPosition[leftnode];
+                        xPosition[leftnode] = xPosition[rightnode];
+                        xPosition[rightnode] = dtmp;
+                        done = false;
+                    }
+                }
+            }
+        }
+//        /* adjacency exchange bottom layer */
+//        /* get the order for this layer */
+//        int nodeInPosition[] = new int[nodesOnLayer[1].size()];
+//        iter = nodesOnLayer[1].listIterator();
+//        while (iter.hasNext()) {
+//            int nodenum = ((Integer)iter.next()).intValue();
+//            nodeInPosition[position[nodenum]-1] = nodenum;
+//        }
+//        int sweepCounter = MAX_ADJACENT_EXCHANGE_PASSES;
+//        boolean done = false;
+//        /* do not compute crossing numbers -- precomputing all combinations would be
+//            O(L*P), L = # of nodes in layer, P = # of nodes in parent */
+//        while (!done && sweepCounter-- > 0) {
+//            done = true;
+//            int scanpos;
+//            for (scanpos = 1; scanpos < nodeInPosition.length; scanpos++) {
+//                int leftnode = nodeInPosition[scanpos -1];
+//                int rightnode = nodeInPosition[scanpos];
+//                int i;
+//                double arrayBuffer[];
+//                if (parent[leftnode] == null) {
+//                    /* sort list of parents by X pos */
+//                    arrayBuffer = new double[edgesTo[leftnode].size()];
+//                    Iterator parentIter = edgesTo[leftnode].listIterator();
+//                    i = 0;
+//                    while (parentIter.hasNext()) {
+//                        int parentId = ((Integer)parentIter.next()).intValue();
+//                        arrayBuffer[i++] = xPosition[parentId];
+//                    }
+//                    Arrays.sort(arrayBuffer);
+//                    parent[leftnode] = arrayBuffer;
+//                }
+//                if (parent[rightnode] == null) {
+//                    /* sort list of parents by X pos */
+//                    arrayBuffer = new double[edgesTo[rightnode].size()];
+//                    Iterator parentIter = edgesTo[rightnode].listIterator();
+//                    i = 0;
+//                    while (parentIter.hasNext()) {
+//                        int parentId = ((Integer)parentIter.next()).intValue();
+//                        arrayBuffer[i++] = xPosition[parentId];
+//                    }
+//                    Arrays.sort(arrayBuffer);
+//                    parent[rightnode] = arrayBuffer;
+//                }
+//                int nowCrossCount = 0;
+//                int revCrossCount = 0;
+//                double leftSet[] = (double [])parent[leftnode];
+//                double rightSet[] = (double [])parent[rightnode];
+//                int leftIndex = 0;
+//                int rightIndex = 0;
+//                while (leftIndex < leftSet.length && rightIndex < rightSet.length) {
+//                    if (rightSet[rightIndex] < leftSet[leftIndex]) {
+//                        nowCrossCount += leftSet.length - leftIndex;
+//                        rightIndex++;
+//                    } else {
+//                        leftIndex++;
+//                    }
+//                }
+//                leftIndex = 0;
+//                rightIndex = 0;
+//                while (leftIndex < leftSet.length && rightIndex < rightSet.length) {
+//                    if (rightSet[rightIndex] > leftSet[leftIndex]) {
+//                        revCrossCount += rightSet.length - rightIndex;
+//                        leftIndex++;
+//                    } else {
+//                        rightIndex++;
+//                    }
+//                }
+//                if (nowCrossCount > revCrossCount) {
+//                    int tmp = position[leftnode];
+//                    position[leftnode] = position[rightnode];
+//                    position[rightnode] = tmp;
+//                    nodeInPosition[scanpos] = leftnode;
+//                    nodeInPosition[scanpos - 1] = rightnode;
+//                    double dtmp = xPosition[leftnode];
+//                    xPosition[leftnode] = xPosition[rightnode];
+//                    xPosition[rightnode] = dtmp;
+//                    done = false;
+//                }
+//            }
+//        }
 		return position;
 	}
 
