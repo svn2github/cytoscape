@@ -418,11 +418,12 @@ public class GMLWriter{
     Point2D [] pointsArray = edgeView.getBend().getDrawPoints();
     Vector points = new Vector(pointsArray.length);
     // CTW funny thing with anchor points, need to trim off the first and last
-    for(int idx=1;idx<pointsArray.length-1;idx++){
-      Vector coords = new Vector(2);
-      coords.add(new KeyValue(GMLReader2.X,new Double(pointsArray[idx].getX())));
-      coords.add(new KeyValue(GMLReader2.Y,new Double(pointsArray[idx].getY())));
-      points.add(new KeyValue(GMLReader2.POINT,coords));
+    // and reverse the order x
+    for(int idx=pointsArray.length-2; idx>0; idx--){
+	Vector coords = new Vector(2);
+	coords.add(new KeyValue(GMLReader2.X,new Double(pointsArray[idx].getX())));
+	coords.add(new KeyValue(GMLReader2.Y,new Double(pointsArray[idx].getY())));
+	points.add(new KeyValue(GMLReader2.POINT,coords));
     }
     line.value = points;
     
