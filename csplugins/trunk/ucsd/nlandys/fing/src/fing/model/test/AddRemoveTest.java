@@ -14,8 +14,8 @@ public class AddRemoveTest
   public static void main(String[] args)
   {
     final RootGraph root = FingRootGraphFactory.instantiateRootGraph();
-    final int[] nodeInx = root.createNodes(3);
-    final int[] edgeInx = new int[5];
+    int[] nodeInx = root.createNodes(3);
+    int[] edgeInx = new int[5];
     for (int i = 0; i < edgeInx.length; i++)
       edgeInx[i] = root.createEdge(nodeInx[i % nodeInx.length],
                                    nodeInx[(i * 2) % nodeInx.length]);
@@ -58,6 +58,42 @@ public class AddRemoveTest
     for (int i = 0; i < nodeInx.length; i++)
       root.removeNode(nodeInx[i]);
     printme(root,persp1, persp2);
+
+    edgeInx = new int[100000];
+    final int[] nodeNums = new int[] { 10000, 9998, 10001 };
+    for (int foo = 0; foo < 100000; foo++) {
+      boolean print = false;
+      if (foo % 1 == 0)  print = true;
+      if (print)
+        System.out.println("at add/remove iteration " + foo + " of 100,000");
+      System.out.println("creating nodes");
+      nodeInx = root.createNodes(nodeNums[foo % nodeNums.length]);
+      System.out.println("creating edges");
+      for (int i = 0; i < edgeInx.length; i++)
+        edgeInx[i] = root.createEdge(nodeInx[i % nodeInx.length],
+                                     nodeInx[(i * 3) % nodeInx.length]);
+      System.out.println("creating GraphPerspective");
+      GraphPerspective persp = root.createGraphPerspective(nodeInx, edgeInx);
+      if (print) {
+        System.out.println("in RootGraph: " + root.getNodeCount() +
+                           " nodes and " + root.getEdgeCount() + " edges");
+        System.out.println("in GraphPerspective: " + persp.getNodeCount() +
+                           " nodes and " + persp.getEdgeCount() + " edges");
+        System.out.println(); }
+      if (print) {
+        System.out.println("removing all edges and nodes from RootGraph"); }
+      System.out.println("removing edges");
+      for (int i = 0; i < edgeInx.length; i++)
+        root.removeEdge(edgeInx[i]);
+      System.out.println("removing nodes");
+      for (int i = 0; i < nodeInx.length; i++)
+        root.removeNode(nodeInx[i]);
+      if (print) {
+        System.out.println("in RootGraph: " + root.getNodeCount() +
+                           " nodes and " + root.getEdgeCount() + " edges");
+        System.out.println("in GraphPerspective: " + persp.getNodeCount() +
+                           " nodes and " + persp.getEdgeCount() + " edges");
+        System.out.println(); } }
   }
 
   private static void printme(RootGraph root,
