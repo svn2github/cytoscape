@@ -51,6 +51,7 @@ public class GMLReader implements GraphReader {
   private String filename;
   private boolean isYFiles;
   GraphObjAttributes edgeAttributes = new GraphObjAttributes ();
+  GraphObjAttributes nodeAttributes = new GraphObjAttributes ();
   Graph2D graph;
   RootGraph rootGraph;
 
@@ -123,62 +124,50 @@ public class GMLReader implements GraphReader {
 	  GMLObject gml = new GMLObject();
 	  gml.read(filename);
 
-	  //GMLObject g = gml.getItems("graph"); System.out.println(g.toString());
-	  Vector graphCreator = gml.getVector("Creator");
-	  Vector graphLabel   = gml.getVector("graph", "label");
-	  //System.out.println("G_CREATOR:" + graphCreator.toString());
-	  //System.out.println("G___LABEL:" + graphLabel.toString());
+	  Vector gmlCreator = gml.getVector("Creator");
+	  Vector gmlGraphLabel = gml.getVector("graph", "label");
 
-	  GMLObject gmlNodes = gml.getItems("graph", "node");
-	  GMLObject gmlEdges = gml.getItems("graph", "edge");
+	  GMLObject gmlNodes = gml.getGML("graph", "node");
+	  GMLObject gmlEdges = gml.getGML("graph", "edge");
+
 	  Vector nodeIds     = gmlNodes.getVector("node", "id");
 	  Vector nodeLabels  = gmlNodes.getVector("node", "label");
-	  //System.out.println("   nodeIds:" + nodeIds.toString());
-	  //System.out.println("nodeLables:" + nodeLabels.toString());
 
 	  // in case gml node ids are not ordered consecutively (0..n)
-          Hashtable nodeMap  = new Hashtable(nodeIds.size());
+          Hashtable nodeNameMap  = new Hashtable(nodeIds.size());
 	  for(int i=0; i<nodeIds.size(); i++)
-	      nodeMap.put(nodeIds.get(i), nodeLabels.get(i));
+	      nodeNameMap.put(nodeIds.get(i), nodeLabels.get(i));
 
 	  Vector edgeSources = gmlEdges.getVector("edge", "source");
-	  Vector edgeTypes   = gmlEdges.getVector("edge", "label");
+	  Vector edgeLabels  = gmlEdges.getVector("edge", "label");
 	  Vector edgeTargets = gmlEdges.getVector("edge", "target");
 
+	  //GMLObject gmlNodeGraphics = gmlNodes.getGML("node", "graphics");
+	  //GMLObject gmlEdgeGraphics = gmlEdges.getGML("edge", "graphics");
+
 	  //---------------------------------------------------------------------------
-	  // Need to pass the graphical parameters
-	  GMLObject nodeGraphics = gmlNodes.getItems("node", "graphics");
-	  GMLObject edgeGraphics = gmlEdges.getItems("edge", "graphics");
-	  Vector nodeXPos, nodeYPos, nodeWidth, nodeHeight;
-	  if(nodeGraphics.size() == nodeIds.size()) {
-	      //System.out.println(nodeGraphics.toString());
-	      nodeXPos = nodeGraphics.getVector("graphics", "x");
-	      nodeYPos = nodeGraphics.getVector("graphics", "y");
-	      nodeWidth  = nodeGraphics.getVector("graphics", "w");
-	      nodeHeight = nodeGraphics.getVector("graphics", "h");
-	  }
 	  // set a default edge type if it's not defined in the GML file
 	  // need a better system for defining the default...
 	  String et = "pp";
-	  if(edgeTypes.isEmpty())
+	  if(edgeLabels.isEmpty())
 	      for(int i=0; i < edgeSources.size(); i++)
-		  edgeTypes.add(et);
+		  edgeLabels.add(et);
 
 	  //---------------------------------------------------------------------------
 	  // loop through all of the nodes (using a hash to avoid duplicates)
-	  // adding nodes to the rootGraph
+	  // adding nodes to the rootGraph. 
+	  // Create the nodeName mapping in nodeAttributes
 	  //---------------------------------------------------------------------------
-	  Hashtable nodes = new Hashtable ();
+	  Hashtable nodeHash = new Hashtable ();
 	  String nodeName, interactionType;
 	  for(int i=0; i<nodeIds.size(); i++) {
-	      nodeName = (String) nodeMap.get(nodeIds.get(i));
+	      nodeName = (String) nodeNameMap.get(nodeIds.get(i));
 	      //if(canonicalize) nodeName = canonicalizeName(nodeName);	      
-	      if (!nodes.containsKey(nodeName)) {
+	      if (!nodeHash.containsKey(nodeName)) {
 		  giny.model.Node node = rootGraph.getNode(rootGraph.createNode());
 		  node.setIdentifier(nodeName);
-		  //node.setXPosition(nodeXPos.get(i));
-		  //node.setYPosition(nodeYPos.get(i));
-		  nodes.put(nodeName, node);
+		  nodeHash.put(nodeName, node);
+		  nodeAttributes.addNameMapping(nodeName, node);
 	      }
 	  }
 	  //---------------------------------------------------------------------------
@@ -189,25 +178,75 @@ public class GMLReader implements GraphReader {
 	  // ???  edgeAttributes ["interaction"] = interactionHash
 	  // ???  interactionHash [sourceNode::targetNode] = "pd"
 	  //---------------------------------------------------------------------------
-	  String sourceName, targetName;
+	  String sourceName, targetName, edgeName;
 	  for (int i=0; i < edgeSources.size(); i++) {
-	      sourceName = (String) nodeMap.get(edgeSources.get(i));
-	      targetName = (String) nodeMap.get(edgeTargets.get(i));
-	      interactionType = (String) edgeTypes.get(i);
+	      sourceName = (String) nodeNameMap.get(edgeSources.get(i));
+	      targetName = (String) nodeNameMap.get(edgeTargets.get(i));
+	      interactionType = (String) edgeLabels.get(i);
 	      //if(canonicalize) nodeName = canonicalizeName(nodeName);
 	      //if(canonicalize) targetName = canonicalizeName(targetName);
 
-	      giny.model.Node sourceNode = (giny.model.Node) nodes.get(sourceName);
-	      giny.model.Node targetNode = (giny.model.Node) nodes.get(targetName);
+	      giny.model.Node sourceNode = (giny.model.Node) nodeHash.get(sourceName);
+	      giny.model.Node targetNode = (giny.model.Node) nodeHash.get(targetName);
 	      giny.model.Edge edge = rootGraph.getEdge(rootGraph.createEdge(sourceNode, targetNode));
-	      String edgeName = sourceName + " (" + interactionType + ") " + targetName;
+	      edgeName = sourceName + " (" + interactionType + ") " + targetName;
 	      int previousMatchingEntries = edgeAttributes.countIdentical(edgeName);
 	      if (previousMatchingEntries > 0)
 		  edgeName = edgeName + "_" + previousMatchingEntries;
-	      edgeAttributes.add ("interaction", edgeName, interactionType);
-	      edgeAttributes.addNameMapping (edgeName, edge);
+	      edgeAttributes.add("interaction", edgeName, interactionType);
+	      edgeAttributes.addNameMapping(edgeName, edge);
 	  }
 
+	  //--------------------------------------------------
+	  // load vectors with concatonated keys and their values
+	  //
+	  Vector nodeAttribs = new Vector();
+ 	  Vector edgeAttribs = new Vector();
+	  Vector nodeValues = new Vector();
+ 	  Vector edgeValues = new Vector();
+	  gmlNodes.flatPairs(nodeAttribs, nodeValues);
+ 	  gmlEdges.flatPairs(edgeAttribs, edgeValues);
+
+	  //--------------------------------------------------
+	  // load node attributes from here
+	  //
+	  nodeName = "";
+	  for(int i=0; i<nodeAttribs.size(); i++) {
+	      String attrib = (String) nodeAttribs.get(i);
+	      Object  value = (Object) nodeValues.get(i);
+	      if(attrib.equals("gml.node.label"))
+		  nodeName = (String) value;
+	      if(attrib.startsWith("gml.node.graphics")) {
+		  //System.out.println(attrib + "\t" + nodeName + "\t" + value);
+		  nodeAttributes.add(attrib, nodeName, value);
+	      }
+	  }
+	  //--------------------------------------------------
+	  // load edge attributes from here
+	  //
+	  // to prevent initialization error
+	  interactionType = (String) edgeLabels.get(0);
+	  sourceName = (String) nodeNameMap.get(edgeSources.get(0));
+	  targetName = (String) nodeNameMap.get(edgeTargets.get(0));
+	  edgeName = "";
+	  int edgeCount = 0;
+ 	  for(int i=0; i<edgeAttribs.size(); i++) {
+ 	      String attrib = (String) edgeAttribs.get(i);
+ 	      Object value = (Object) edgeValues.get(i);
+ 	      if(attrib.equals("gml.edge.source")) {
+ 		  sourceName = (String) nodeNameMap.get(value);
+		  interactionType = (String) edgeLabels.get(edgeCount);
+		  edgeCount++;
+	      }
+ 	      if(attrib.equals("gml.edge.target")) {
+		  targetName = (String) nodeNameMap.get(value);
+		  edgeName = sourceName + " (" + interactionType + ") " + targetName;
+	      }
+ 	      if(attrib.startsWith("gml.edge.graphics")) {
+ 		  //System.out.println(attrib + "\t" + edgeLabel + "\t" + value);
+ 		  edgeAttributes.add(attrib, edgeName, value);
+ 	      }
+ 	  }
       }
 
   } // read
@@ -217,24 +256,28 @@ public class GMLReader implements GraphReader {
    */
   public Graph2D getGraph () {
     return graph;
-
-  } // createGraph
+  }
 
   /**
    * @return null, there is no GML reader available outside of Y-Files right now
    */
   public RootGraph getRootGraph () {
     return rootGraph;
-
-  } // getRootGraph
+  }
 
   /**
-   * @return the Edge Attributes that were read in from the GML file.
+   * @return the node attributes that were read in from the GML file.
+   */
+  public GraphObjAttributes getNodeAttributes () {
+    return nodeAttributes;
+  }
+
+  /**
+   * @return the edge attributes that were read in from the GML file.
    */
   public GraphObjAttributes getEdgeAttributes () {
     return edgeAttributes;
-
-  } // getEdgeAttributes
+  }
  
 } // class GMLReader
 
