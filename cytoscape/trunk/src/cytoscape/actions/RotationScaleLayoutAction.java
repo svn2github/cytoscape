@@ -7,6 +7,8 @@ import cytoscape.graph.layout.impl.RotationLayouter;
 import cytoscape.graph.layout.impl.ScaleLayouter;
 import cytoscape.util.CytoscapeAction;
 import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -104,7 +106,9 @@ public class RotationScaleLayoutAction extends CytoscapeAction
           prevValue = sclSlider.getValue(); } });
     sclPanel.add(sclSlider, BorderLayout.CENTER);
 
-    JPanel westPanel = new JPanel(new BorderLayout());
+    GridBagLayout bag = new GridBagLayout();
+    JPanel westPanel = new JPanel(bag);
+    GridBagConstraints c = new GridBagConstraints();
     if (!noNodesSelected) {
       final JCheckBox chx = new JCheckBox("Selected Nodes Only");
       chx.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -114,8 +118,10 @@ public class RotationScaleLayoutAction extends CytoscapeAction
               (128.0d, true, chx.isSelected());
             rotation[0] = new RotationLayouter(nativeGraph[0]);
             scale[0] = new ScaleLayouter(nativeGraph[0]); } } );
-      westPanel.add(chx, BorderLayout.NORTH); }
-    westPanel.add(rotPanel, BorderLayout.CENTER);
+      c.gridwidth = GridBagConstraints.REMAINDER;
+      bag.setConstraints(chx, c);
+      westPanel.add(chx); }
+    westPanel.add(rotPanel);
 
     JPanel mainPanel = new JPanel(new BorderLayout());
     mainPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
