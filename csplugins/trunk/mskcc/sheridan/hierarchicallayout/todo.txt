@@ -1,13 +1,4 @@
 Now
-- add unit tests:
-	Empty graph, one node graph,  two node graph
-	Selection ? how do you test what the user has selected?
-	Partition: numbers 0,1,2..., no gaps, a few test cases for partitioning
-	Cycle elimination test cases (including one with no cycles), no lost edge
-	Transitive reduction test cases
-	Layer assignment: no empty layers, all edges downward, test cases
-	Horizontal assignment: no gaps, start at 1
-	Full pass test
 - testing and bug fixing
 - make list of parameters which will appear in parameter dialog box, design user
 	interaction (when will dialog box appear?)
