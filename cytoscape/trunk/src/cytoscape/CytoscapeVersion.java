@@ -35,7 +35,7 @@
 package cytoscape;
 //-----------------------------------------------------------------------------------
 public class CytoscapeVersion {
-  private String versionString = "0.991";
+  private String versionString = "0.9911";
   private String dateString = "2002/02/18";
 
   private String [] briefHistory = {
@@ -57,7 +57,7 @@ public class CytoscapeVersion {
       "0.9   (2002/11/01) first beta release",
       "0.95  (2002/11/04) added generic annotation",
       "0.97  (2002/12/05) added LGPL to all source",
-      "0.991 (2003/02/18) added visual properties UI",
+      "0.9911 (2003/02/26) added visual properties UI, almost released",
       };
 
 //-----------------------------------------------------------------------------------
