@@ -47,7 +47,7 @@ public class GMLReader2 implements GraphReader {
   protected static String DIAMOND = "diamond";
   protected static String HEXAGON = "hexagon";
   protected static String OCTAGON = "octagon";
-  protected static String PARALELLOGRAM = "paralellogram";
+  protected static String PARALELLOGRAM = "parallelogram";
   protected static String TRIANGLE = "triangle";
   protected static String VERSION = "Version";
   protected static String CREATOR = "Creator";
