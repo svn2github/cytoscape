@@ -32,6 +32,7 @@
 package utils;
 
 import javax.swing.*;
+import javax.swing.table.*;
 
 
 public class GuiUtils {
@@ -53,13 +54,21 @@ public class GuiUtils {
 			data[i][0] = row_names[i];
 		}//for i
 		
-		for(int i = 0; i < data.length; i++){
-			for(int j = 1; j < data[i].length; j++){
-				data[i][j] = Double.toString(rows[i][j-1]);
+		for(int i = 0; i < rows.length; i++){
+			for(int j = 0; j < rows[i].length; j++){
+				data[i][j+1] = Double.toString(rows[i][j]);
 			}//for j
 		}//for i
 		
-		JTable table = new JTable(data,column_names);
+		String [] colNames = new String[column_names.length + 1];
+		System.arraycopy(column_names,0,colNames,1,column_names.length);
+		colNames[0] = " ";
+		
+		JTable table = new JTable(data,colNames);
+		
+		TableColumn column = table.getColumnModel().getColumn(0);
+		column.setPreferredWidth(100); //gene name column is bigger
+		
 		return table;
 	}//createTable
 
@@ -81,15 +90,20 @@ public class GuiUtils {
 			data[i][0] = row_names[i];
 		}//for i
 		
-		for(int i = 0; i < data.length; i++){
-			for(int j = 1; j < data[i].length; j++){
-				data[i][j] = Integer.toString(rows[i][j-1]);
+		for(int i = 0; i < rows.length; i++){
+			for(int j = 0; j < rows[i].length; j++){
+				data[i][j+1] = Integer.toString(rows[i][j]);
 			}//for j
 		}//for i
+		
 		String [] colNames = new String[column_names.length + 1];
 		System.arraycopy(column_names,0,colNames,1,column_names.length);
-		colNames[0] = "";
+		colNames[0] = " ";
+		
 		JTable table = new JTable(data,colNames);
+		
+		TableColumn column = table.getColumnModel().getColumn(0);
+		column.setPreferredWidth(100); //gene name column is bigger
 		
 		return table;
 	}//createTable

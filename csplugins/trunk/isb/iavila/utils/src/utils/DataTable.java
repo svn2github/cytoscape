@@ -32,10 +32,13 @@
 
 package utils;
 import javax.swing.*;
-import java.util.*;
 import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
 
 public class DataTable extends JDialog{
+	
+	protected JFileChooser chooser;
 	
 	/**
 	 * Constructor
@@ -44,7 +47,8 @@ public class DataTable extends JDialog{
 	 * @param column_names the names of the columns
 	 * @param data the data to be displayed
 	 */
-	public DataTable (String [] row_names, String [] column_names, double [][] data){
+	public DataTable (String [] row_names, String [] column_names, double [][] data, String title){
+		setTitle(title);
 		create(row_names, column_names, data);
 	}//DataTable
 	
@@ -55,7 +59,8 @@ public class DataTable extends JDialog{
 	 * @param column_names the names of the columns
 	 * @param data the data to be displayed
 	 */
-	public DataTable (String [] row_names, String [] column_names, int [][] data){
+	public DataTable (String [] row_names, String [] column_names, int [][] data, String title){
+		setTitle(title);
 		create(row_names, column_names, data);
 	}//DataTable
 	
@@ -63,12 +68,36 @@ public class DataTable extends JDialog{
 		
 		JTable jtable = GuiUtils.createTable(column_names, row_names, data);
 		JScrollPane scrollPane = new JScrollPane(jtable);
-		jtable.setPreferredScrollableViewportSize(new Dimension(500, 70));
-		
+		jtable.setPreferredScrollableViewportSize(new Dimension(400, 70));
 		JPanel mainPanel = new JPanel();
-		mainPanel.setLayout(new BoxLayout(mainPanel,BoxLayout.Y_AXIS));
-		mainPanel.add(scrollPane);
+		mainPanel.setLayout(new BorderLayout());
+		mainPanel.add(scrollPane, BorderLayout.CENTER);
 		
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new FlowLayout());
+		JButton toFileButton = new JButton("Save to file...");
+		final String [] rowNames = row_names;
+		final String [] colNames = column_names;
+		final double [][] d = data;
+		toFileButton.addActionListener(new AbstractAction (){
+											
+											public void actionPerformed (ActionEvent e){
+												writeToFile(rowNames,colNames,d);
+											}//actionPerformed
+							
+										});
+		buttonPanel.add(toFileButton);
+		JButton closeButton = new JButton("Close");
+		closeButton.addActionListener(new AbstractAction(){
+												
+											public void actionPerformed (ActionEvent e){
+												DataTable.this.dispose();
+											}//actionEvent
+											
+										});
+		buttonPanel.add(closeButton);
+		mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+		mainPanel.setOpaque(true);
 		setContentPane(mainPanel);
 		
 	}//create
@@ -80,11 +109,143 @@ public class DataTable extends JDialog{
 		jtable.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		
 		JPanel mainPanel = new JPanel();
-		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-		mainPanel.add(scrollPane);
+		mainPanel.setLayout(new BorderLayout());
+		mainPanel.add(scrollPane, BorderLayout.CENTER);
 		
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new FlowLayout());
+		JButton toFileButton = new JButton("Save to file...");
+		buttonPanel.add(toFileButton);
+		final String [] rowNames = row_names;
+		final String [] colNames = column_names;
+		final int [][] d = data;
+		toFileButton.addActionListener(new AbstractAction (){
+											
+											public void actionPerformed (ActionEvent e){
+												writeToFile(rowNames,colNames,d);
+											}//actionPerformed
+							
+										});
+		
+		JButton closeButton = new JButton("Close");
+		closeButton.addActionListener(new AbstractAction(){
+			
+			public void actionPerformed (ActionEvent e){
+				DataTable.this.dispose();
+			}//actionEvent
+		
+		});
+		buttonPanel.add(closeButton);
+		mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+		
+		mainPanel.setOpaque(true);
 		setContentPane(mainPanel);
 	
 	}//create
+	
+	/**
+	 * Pops up a file browser, and saves the given data into the selected file.
+	 * 
+	 * @param cols the names of the columns
+	 * @param rows the names of the rows
+	 * @param data the rows/columns
+	 */
+	public void writeToFile (String [] cols, String [] rows, double [][] data){
+		if(this.chooser == null){
+			this.chooser = new JFileChooser();
+		}
+		int returnVal = this.chooser.showSaveDialog(this);
+	    File file;
+		if(returnVal == JFileChooser.APPROVE_OPTION) {
+	       file = this.chooser.getSelectedFile();
+	    }else{
+	    	return;
+	    }
+		
+		StringBuffer buffer = new StringBuffer();
+		String eol = System.getProperty("line.separator");
+		for(int i = 0; i < cols.length; i++){
+			buffer.append("\t");
+			buffer.append(cols[i]);
+		}//for i
+		buffer.append(eol);
+		for(int i = 0; i < data.length; i++){
+			buffer.append(rows[i]);
+			for(int j = 0; j < data[i].length; j++){
+				buffer.append("\t");
+				buffer.append(Double.toString(data[i][j]));
+			}//for j
+			buffer.append(eol);
+		}//for i
+		try{
+			BufferedWriter out = new BufferedWriter(new FileWriter(file,false));
+			out.write(buffer.toString());
+			out.flush();
+			out.close();
+		}catch(IOException ioe){
+			ioe.printStackTrace();
+			JOptionPane.showMessageDialog(this,
+					"An error was encountered while writing file.",  
+					"Oops!", 
+					 JOptionPane.ERROR_MESSAGE); 
+
+			return;
+		}
+
+	}//writeToFile
+	
+	/**
+	 * Pops up a file browser, and saves the given data into the selected file.
+	 *
+	 * @param cols the names of the columns
+	 * @param rows the names of the rows
+	 * @param data the rows/columns
+	 */
+	public void writeToFile (String [] cols, String [] rows, int [][] data){
+		if(this.chooser == null){
+			this.chooser = new JFileChooser();
+		}
+		this.chooser.setDialogType(JFileChooser.SAVE_DIALOG);
+		int returnVal = this.chooser.showSaveDialog(this);
+	    File file;
+		if(returnVal == JFileChooser.APPROVE_OPTION) {
+	       file = this.chooser.getSelectedFile();
+	    }else{
+	    	return;
+	    }
+		
+		StringBuffer buffer = new StringBuffer();
+		String eol = System.getProperty("line.separator");
+		for(int i = 0; i < cols.length; i++){
+			buffer.append("\t");
+			buffer.append(cols[i]);
+		}//for i
+		buffer.append(eol);
+		for(int i = 0; i < data.length; i++){
+			buffer.append(rows[i]);
+			for(int j = 0; j < data[i].length; j++){
+				buffer.append("\t");
+				buffer.append(Integer.toString(data[i][j]));
+			}//for j
+			buffer.append(eol);
+		}//for i
+		
+		try{
+			BufferedWriter out = new BufferedWriter(new FileWriter(file,false));
+			out.write(buffer.toString());
+			out.flush();
+			out.close();
+		}catch(IOException ioe){
+			ioe.printStackTrace();
+			JOptionPane.showMessageDialog(this,
+					"An error was encountered while writing file.",  
+					"Oops!", 
+					 JOptionPane.ERROR_MESSAGE); 
+
+			return;
+		}
+
+	}//writeToFile
+
 
 }//DataTable 
