@@ -39,10 +39,12 @@ public class SouravPlugin extends CytoscapePlugin
           int numUniqueAttrs = 0;
           for (int i = 0; i < nodeInxs.length; i++)
           {
-            Double souravsAttrObj = (Double)
+            Object souravsAttrObj =
               cyNet.getNodeAttributeValue(nodeInxs[i], "cluster");
             if (souravsAttrObj == null) continue;
-            int souravsAttrInt = (int) (souravsAttrObj.doubleValue());
+            if (!(souravsAttrObj instanceof Double)) continue;
+            Double souravsAttrDbl = (Double) souravsAttrObj;
+            int souravsAttrInt = (int) (souravsAttrDbl.doubleValue());
             if (hash.get(souravsAttrInt) < 0) { // Not in hash yet.
               hash.put(souravsAttrInt, numUniqueAttrs++);
               orderedAttrs.toss(souravsAttrInt); }
