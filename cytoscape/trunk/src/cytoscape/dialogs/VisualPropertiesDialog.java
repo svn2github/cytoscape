@@ -25,6 +25,7 @@ import cytoscape.vizmap.*;
 import cytoscape.dialogs.NewSlider;
 import cytoscape.util.MutableColor;
 import cytoscape.util.MutableString;
+import cytoscape.util.MutableBool;
 import cytoscape.dialogs.GeneralColorDialogListener;
 import cytoscape.dialogs.MiscGB;
 //--------------------------------------------------------------------------------------
@@ -42,6 +43,7 @@ public class VisualPropertiesDialog extends JDialog {
     MutableString localNodeLabelKey;
     MutableString parentNodeLabelKey;
     MutableString localEdgeKey;
+    MutableBool applied;
     EdgeTextPanel edgeTextPanel;
 //--------------------------------------------------------------------------------------
 public VisualPropertiesDialog (Frame parentFrame,
@@ -49,7 +51,8 @@ public VisualPropertiesDialog (Frame parentFrame,
 			       AttributeMapper mapper,
 			       GraphObjAttributes nodeAttribs,
 			       GraphObjAttributes edgeAttribs,
-			       MutableString nodeLabelKey)
+			       MutableString nodeLabelKey,
+			       MutableBool applied)
 {
   super (parentFrame, true);
   setTitle (title);
@@ -61,6 +64,7 @@ public VisualPropertiesDialog (Frame parentFrame,
   bgColor = new MutableColor(getBasicColor(VizMapperCategories.BG_COLOR));
   localNodeLabelKey = new MutableString(nodeLabelKey.getString());
   parentNodeLabelKey = nodeLabelKey;
+  this.applied = applied;
 
   JPanel mainPanel = new JPanel ();
   GridBagLayout gridbag = new GridBagLayout(); 
@@ -228,6 +232,7 @@ public class ApplyAction extends AbstractAction {
 	  }
       }
       parentNodeLabelKey.setString(localNodeLabelKey.getString());
+      applied.setBool(true);
       VisualPropertiesDialog.this.dispose ();
   }
 
@@ -236,6 +241,7 @@ public class ApplyAction extends AbstractAction {
 public class CancelAction extends AbstractAction {
   CancelAction () { super (""); }
   public void actionPerformed (ActionEvent e) {
+      applied.setBool(false);
       VisualPropertiesDialog.this.dispose ();
   }
 } // CancelAction

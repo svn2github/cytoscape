@@ -15,6 +15,7 @@ OBJS =  Misc.class \
         MutableColor.class \
         MutableString.class \
         MutableInt.class \
+        MutableBool.class \
         Exec.class
 
 default: objs 
