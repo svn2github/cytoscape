@@ -174,8 +174,8 @@ public CytoscapeWindow (cytoscape parentApp,
    throws Exception
 {
   // System.out.println ("--- constructing CytoscapeWindow in cstest0");
-  System.out.println("CytoscapeWindow.constructor " + Thread.currentThread());
-  System.out.flush();
+  //System.out.println("CytoscapeWindow.constructor " + Thread.currentThread());
+  //System.out.flush();
   this.parentApp = parentApp;
   this.logger = logger;
   this.geometryFilename = geometryFilename;
@@ -1454,11 +1454,11 @@ public void applyLayout (boolean animated)
   
   logger.warning ("starting layout...");
   setInteractivity (false);
-  System.out.println("CytoscapeWindow: doLayout");
-  System.out.flush();
+  //System.out.println("CytoscapeWindow: doLayout");
+  //System.out.flush();
   layouter.doLayout (graphView.getGraph2D ());
-  System.out.println("done doLayout");
-  System.out.flush();
+  //System.out.println("done doLayout");
+  //System.out.flush();
   graphView.fitContent ();
   graphView.setZoom (graphView.getZoom ()*0.9);
 
