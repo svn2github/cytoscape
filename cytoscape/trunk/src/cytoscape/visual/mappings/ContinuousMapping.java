@@ -231,11 +231,6 @@ public class ContinuousMapping extends SubjectBase implements ObjectMapping {
         ContinuousRangeCalculator calc = new ContinuousRangeCalculator
             (points, interpolator, attrBundle);
         Object object = calc.calculateRangeValue(attrName);
-        Object value = attrBundle.get(attrName);
-        if (object != null && value != null) {
-        System.out.println(value + ": " + object + " --> "
-                + object.getClass().getName());
-        }
         return object;
     }
 }

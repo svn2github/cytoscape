@@ -124,9 +124,6 @@ public class ContinuousRangeCalculator {
         Number upperDomain = new Double(upperBound.getValue());
         BoundaryRangeValues gv = upperBound.getRange();
         Object upperRange = gv.lesserValue;
-
-        System.out.println("Interpolator:  " + interpolator.getClass().getName());
-
         return interpolator.getRangeValue(lowerDomain, lowerRange,
                 upperDomain, upperRange, domainValue);
     }
