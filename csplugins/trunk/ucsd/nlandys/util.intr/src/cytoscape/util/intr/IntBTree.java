@@ -296,14 +296,14 @@ public final class IntBTree
 
   /*
    * Bits are set on the return value:
-   *   0x01 - If an entry was deleted (no other bits will be set unless
+   *   0x01 - if an entry was deleted (no other bits will be set unless
    *          this bit is set).
-   *   0x80 - If entries have been shifted from sibling nodes into n (if
+   *   0x80 - if entries have been shifted from sibling nodes into n (if
    *          this bit is set then at least one of 0x02 and 0x04 is also set).
-   *   0x40 - If two nodes have been merged into one (this is exclusive with
+   *   0x40 - if two nodes have been merged into one (this is exclusive with
    *          respect to 0x80 -- at least one of 0x02 and 0x04 is also set).
-   *   0x02 - Left sibling.
-   *   0x04 - Right sibling.
+   *   0x02 - left sibling.
+   *   0x04 - right sibling.
    */
   private final byte delete(final Node n, final Node leftSibling,
                             final Node rightSibling, final int x)
@@ -330,23 +330,65 @@ public final class IntBTree
 //   {
 //   }
 
-  private final static int fillHole(final int holeInx, final int[] arr,
-                                    final int origLen)
+  // All of these micro helper methods can be inlined later.
+
+  private final static void fillHole(final int holeInx, final int[] arr,
+                                     int origLen)
   {
-    final int returnThis = origLen - 1;
-    for (int i = holeInx; i < returnThis;) arr[i] = arr[++i];
-    return returnThis;
+    origLen--;
+    for (int i = holeInx; i < origLen;) arr[i] = arr[++i];
   }
 
-  private final static int fillHole(final int holeInx, final Node[] arr,
-                                    final int origLen)
+  private final static void fillHole(final int holeInx, final Node[] arr,
+                                     int origLen)
   {
-    final int returnThis = origLen - 1;
+    origLen--;
     int i = holeInx;
-    while (i < returnThis) arr[i] = arr[++i];
+    while (i < origLen) arr[i] = arr[++i];
     arr[i] = null;
-    return returnThis;
   }
+
+  /*
+   * I give an example:
+   *
+   *
+   *   INPUTS
+   *   ======
+   *
+   *        +---+---+---+---+---+---+---+---+---+---+
+   *   arr: |   |   | 8 | 5 | 9 |   |   |   |   |   |
+   *        +---+---+---+---+---+---+---+---+---+---+
+   *
+   *   startInx: 2
+   *
+   *   origLen: 5
+   *
+   *
+   *   OUTPUTS
+   *   =======
+   *
+   *        +---+---+---+---+---+---+---+---+---+---+
+   *   arr: | 8 | 5 | 9 |   |   |   |   |   |   |   |
+   *        +---+---+---+---+---+---+---+---+---+---+
+   */
+  private final static void shiftToBeginning(final int[] arr,
+                                             final int startInx,
+                                             final int origLen)
+  {
+    for (int i = startInx; i < origLen; i++) arr[i - startInx] = arr[i];
+  }
+
+//   private final static void shift(final int shiftAmount, final int[] arr,
+//                                   final int startInx, final int len)
+//   {
+//     if (shiftAmount < 0) { // Start with entry at lowest index.
+//       final int endInx = startInx + len;
+//       for (int i = startInx; i < endInx; i++) {
+//         arr[i]
+//     }
+//     else {
+//     }
+//   }
 
   /**
    * Returns the number of entries of the integer x in this tree.
