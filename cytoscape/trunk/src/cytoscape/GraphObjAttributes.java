@@ -579,10 +579,10 @@ public boolean append (String attributeName, String graphObjectName, Object obj)
   if (obj.getClass().isArray ()) {
     Object [] objAsArray = (Object []) obj;
     for (int i=0; i < objAsArray.length; i++)
-      if (!list.contains (objAsArray [i]))
+      // if (!list.contains (objAsArray [i]))
          list.add (objAsArray [i]);
     }
-  else if (!list.contains (obj)) {
+  else { //if (!list.contains (obj)) {
     list.add (obj);
     }
 
@@ -1171,12 +1171,9 @@ static public Object createInstanceFromString (Class requestedClass, String ctor
  *  <p>
  *
  */
-//public void readAttributesFromFile (BioDataServer dataServer, String species, File file)
 public void readAttributesFromFile (BioDataServer dataServer, String species, String filename)
    throws FileNotFoundException, IllegalArgumentException, NumberFormatException
 {
-
-  //String filename = file.getPath ();
 
   String rawText;
   try {
