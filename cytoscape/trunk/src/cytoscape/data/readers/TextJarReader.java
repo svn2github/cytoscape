@@ -45,8 +45,7 @@ public class TextJarReader {
   InputStreamReader reader;
   StringBuffer sb;
 //---------------------------------------------------------------------------
-public TextJarReader (String URI) throws Exception
-{
+public TextJarReader (String URI) throws IOException {
   sb = new StringBuffer ();
   filename = URI.substring (6);
   //we've created a new class loader that is used to load plugins and also
