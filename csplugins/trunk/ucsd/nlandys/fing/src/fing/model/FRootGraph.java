@@ -2,6 +2,7 @@ package fing.model;
 
 import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.graph.dynamic.util.DynamicGraphFactory;
+import cytoscape.util.intr.ArrayIntIterator;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntIterator;
 import cytoscape.util.intr.IntHash;
@@ -71,41 +72,14 @@ class FRootGraph implements RootGraph
              return edgeArr[index++].getRootGraphIndex(); } }); }
     catch (IllegalArgumentException exc) { return null; } }
 
-  // This hashtable is to be used only by createGraphPerspective(int[], int[])
-  // and by getConnectingEdgeIndicesArray(int[]).
-  private final IntHash m_hash2 = new IntHash();
-
   public GraphPerspective createGraphPerspective(int[] nodeInx,
                                                  int[] edgeInx) {
     if (nodeInx == null) nodeInx = new int[0];
     if (edgeInx == null) edgeInx = new int[0];
-    // There are more edges than nodes so we'll use m_hash for the edges.
-    m_hash2.empty();
-    final IntHash nodeBucket = m_hash2;
-    m_hash.empty();
-    final IntHash edgeBucket = m_hash;
-    for (int i = 0; i < nodeInx.length; i++) {
-      final int rootNodeInxCandidate = nodeInx[i];
-      if (getNode(rootNodeInxCandidate) != null)
-        nodeBucket.put(~rootNodeInxCandidate);
-      else return null; }
-    for (int i = 0; i < edgeInx.length; i++) {
-      final int rootEdgeInxCandidate = edgeInx[i];
-      if (getEdge(rootEdgeInxCandidate) != null) {
-        edgeBucket.put(~rootEdgeInxCandidate);
-        nodeBucket.put(~(getEdgeSourceIndex(rootEdgeInxCandidate)));
-        nodeBucket.put(~(getEdgeTargetIndex(rootEdgeInxCandidate))); }
-      else return null; }
-    final IntEnumerator nodesEnum = nodeBucket.elements();
-    final IntEnumerator edgesEnum = edgeBucket.elements();
-    return new FGraphPerspective
-      (this,
-       new IntIterator() {
-         public boolean hasNext() { return nodesEnum.numRemaining() > 0; }
-         public int nextInt() { return ~(nodesEnum.nextInt()); } },
-       new IntIterator() {
-         public boolean hasNext() { return edgesEnum.numRemaining() > 0; }
-         public int nextInt() { return ~(edgesEnum.nextInt()); } }); }
+    try { return new FGraphPerspective
+            (this, new ArrayIntIterator(nodeInx, 0, nodeInx.length),
+             new ArrayIntIterator(edgeInx, 0, edgeInx.length)); }
+    catch (IllegalArgumentException exc) { return null; } }
 
   public void ensureCapacity(int nodes, int edges)
   {
@@ -538,6 +512,8 @@ class FRootGraph implements RootGraph
     for (int i = 0; i < returnThis.length; i++) returnThis[i] = ~adj.nextInt();
     return returnThis;
   }
+
+  private final IntHash m_hash2 = new IntHash();
 
   public int[] getConnectingEdgeIndicesArray(int[] nodeInx)
   {
