@@ -67,4 +67,22 @@ If cytoscape appears, everything is set up correctly!
 
 For questions, email Ethan Cerami:  cerami@cbio.mskcc.org.
 
+IV.  Building Cytoscape Plug-Ins
+================================
+
+The csplugins directory uses the same build process as before.  To compile csplugins,
+you therefore need to do the following:
+
+define your java CLASSPATH to include at least
+
+    <full-path-to-current-directory>/build/classes
+    <full-path-to-current-directory>/lib/cyto-aux.jar
+    <full-path-to-current-directory>/lib/y.jar
+    <full-path-to-current-directory>/lib/junit.jar
+    <full-path-to-immediate-parent-directory>
+
+then, cd to csplugins, and type:
+
+  make
+
 
