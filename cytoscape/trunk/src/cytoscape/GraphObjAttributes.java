@@ -11,9 +11,7 @@
 //-----------------------------------------------------------------------------------
 package cytoscape;
 //--------------------------------------------------------------------------------
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.io.*;
 
 import cytoscape.data.*;
@@ -44,9 +42,9 @@ public Object clone ()
 
 } // clone
 //--------------------------------------------------------------------------------
-public void addNameMapping (String canonicalName, Object applicationObject)
+public void addNameMapping (String canonicalName, Object graphObject)
 {
-  nameFinder.put (applicationObject, canonicalName);
+  nameFinder.put (graphObject, canonicalName);
 }
 //--------------------------------------------------------------------------------
 public void clearNameMap ()
@@ -64,11 +62,11 @@ public void addNameMap (HashMap nameMapping)
   nameFinder.putAll (nameMapping);  
 }
 //--------------------------------------------------------------------------------
-public String getCanonicalName (Object applicationObject)
+public String getCanonicalName (Object graphObject)
 { 
-  String name = (String) nameFinder.get (applicationObject);
+  String name = (String) nameFinder.get (graphObject);
 
-  assert name != null;
+  // assert name != null;
 
   return name;
 }
@@ -139,6 +137,9 @@ public String [] getAttributeNames ()
   return (String []) map.keySet().toArray (new String [0]);
 }
 //--------------------------------------------------------------------------------
+/**
+ * return the canonical names of all objects with a given attribute.
+ */
 public String [] getObjectNames (String attributeName)
 {
   HashMap attributeMap = getAttribute (attributeName);
@@ -349,9 +350,17 @@ public HashMap getSummary ()
 public String toString ()
 {
   StringBuffer sb = new StringBuffer ();
-  sb.append ("-- canonicalNames\n" + nameFinder + "\n");
-  sb.append ("-- attributes\n");
+
+  sb.append ("\n-- canonicalNames: " + nameFinder.size ());
+  String nameFinderString = nameFinder.toString ();
+  StringTokenizer strtok = new StringTokenizer (nameFinderString, ",");
+  while (strtok.hasMoreElements ()) {
+    sb.append ("\n");
+    sb.append (strtok.nextToken ());
+    }
+  
   String [] names = getAttributeNames ();
+  sb.append ("\n-- attributes: " + names.length + "\n");
   for (int i=0; i < names.length; i++) {
     sb.append ("attribute " + i + ": " + names [i] + "\n");
     String [] keys = getObjectNames (names [i]);

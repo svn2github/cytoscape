@@ -6,6 +6,8 @@
 #--------------------------------------------------------------------
 
 JC=javac
+JR=java -ea
+
 PKG=cytoscape.unitTests
 TestDataDir=../testData
 DataDir=../data
@@ -29,26 +31,26 @@ clean:
 	- rm *.class
 
 run: $(OBJS)
-	java $(PKG).CytoscapeConfigTest
-	java $(PKG).GraphObjAttributesTest
-	java $(PKG).PluginLoaderTest
-	java $(PKG).PluginInfoTest
-	java $(PKG).SelectedSubGraphFactoryTest
+	$(JR) $(PKG).CytoscapeConfigTest
+	$(JR) $(PKG).GraphObjAttributesTest
+	$(JR) $(PKG).PluginLoaderTest
+	$(JR) $(PKG).PluginInfoTest
+	$(JR) $(PKG).SelectedSubGraphFactoryTest
 
 0: GraphObjAttributesTest.class
-	java $(PKG).GraphObjAttributesTest
+	$(JR) $(PKG).GraphObjAttributesTest
 
 1: CytoscapeConfigTest.class
-	java -DCYTOSCAPE_HOME=. $(PKG).CytoscapeConfigTest
+	$(JR) -DCYTOSCAPE_HOME=. $(PKG).CytoscapeConfigTest
 
 2: PluginInfoTest.class
-	java $(PKG).PluginInfoTest
+	$(JR) $(PKG).PluginInfoTest
 
 3: PluginLoaderTest.class
-	java $(PKG).PluginLoaderTest
+	$(JR) $(PKG).PluginLoaderTest
 
 4: SelectedSubGraphFactoryTest.class
-	java $(PKG).SelectedSubGraphFactoryTest
+	$(JR) $(PKG).SelectedSubGraphFactoryTest
 
 
 

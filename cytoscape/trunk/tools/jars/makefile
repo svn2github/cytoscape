@@ -25,6 +25,7 @@ default: help
 full:
 	(cd ../../..; jar cvmf cytoscape/tools/jars/jar.manifest $(JARFILE))
 	(cd ../../..; jar uvf $(JARFILE) `find cytoscape -name "*.class" -print`)
+	(cd ../../..; jar uvf $(JARFILE) `find csplugins -name "*.class" -print`)
 	(cd $(AUXJAR_UNPACKED_DIR); jar uvf $(JARFILE) `find gnu/ -name "*.class" -print`)
 	(cd $(AUXJAR_UNPACKED_DIR); jar uvf $(JARFILE) `find gnu/ -name "*.properties" -print`)
 	(cd $(YFILESDIR); jar uvf $(JARFILE) `find y -name "*.class"`)

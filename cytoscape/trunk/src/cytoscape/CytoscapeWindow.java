@@ -342,7 +342,7 @@ public Node getNode (String canonicalNodeName)
   for (int i=0; i < nodes.length; i++) {
     Node node = nodes [i];
     String canonicalName = nodeAttributes.getCanonicalName (node);
-    System.out.println (" -- checking " + canonicalNodeName + " against " + canonicalName + " " + node);
+    // System.out.println (" -- checking " + canonicalNodeName + " against " + canonicalName + " " + node);
     if (canonicalNodeName.equals (canonicalName)) 
       return node;
     }
@@ -1242,13 +1242,13 @@ protected class DisplayAttributesOfSelectedNodesAction extends AbstractAction {
     NodeCursor nc = g.selectedNodes (); 
     for (nc.toFirst (); nc.ok (); nc.next ()) { // get the canonical name of the old node
       String canonicalName = nodeAttributes.getCanonicalName (nc.node ());
-      System.out.println (canonicalName + ": " + nodeAttributes.getAttributes (canonicalName));
+      // System.out.println (canonicalName + ": " + nodeAttributes.getAttributes (canonicalName));
       } // for
     EdgeCursor ec = g.selectedEdges (); 
-    System.out.println ("number of selected edges: " + ec.size ());
+    //System.out.println ("number of selected edges: " + ec.size ());
     for (ec.toFirst (); ec.ok (); ec.next ()) { // get the canonical name of the old node
       String edgeName = edgeAttributes.getCanonicalName (ec.edge ());
-      System.out.println (edgeName + ": " + edgeAttributes.getAttributes (edgeName));
+      //System.out.println (edgeName + ": " + edgeAttributes.getAttributes (edgeName));
       } // for
     }
 }
@@ -1261,6 +1261,7 @@ protected class DisplaySelectedInNewWindowAction extends AbstractAction   {
     Graph2D subGraph = factory.getSubGraph ();
     GraphObjAttributes newNodeAttributes = factory.getNodeAttributes ();
     GraphObjAttributes newEdgeAttributes = factory.getEdgeAttributes ();
+    //System.out.println ("newEdgeAttributes: " + newEdgeAttributes);
 
     String title = "selection";
     if (titleForCurrentSelection != null) 
@@ -1315,7 +1316,7 @@ class SelectedSubGraphMaker {
     nc.toFirst ();
     subGraph = new Graph2D (parentGraph, nc);
     Node [] newNodes = subGraph.getNodeArray ();
-    System.out.println ("nodes in new subgraph: " + newNodes.length);
+    // System.out.println ("nodes in new subgraph: " + newNodes.length);
 
     newNodeAttributes = (GraphObjAttributes) parentNodeAttributes.clone ();
     newNodeAttributes.clearNameMap ();
@@ -1327,7 +1328,7 @@ class SelectedSubGraphMaker {
       NodeRealizer r = subGraph.getRealizer (newNode);
       r.setLabelText (canonicalName);
       newNodeAttributes.addNameMapping (canonicalName, newNode);
-      System.out.println (" new graph, commonName: " + commonName + "   canonical: " + canonicalName); 
+      //System.out.println (" new graph, commonName: " + commonName + "   canonical: " + canonicalName); 
       }
 
     newEdgeAttributes = (GraphObjAttributes) parentEdgeAttributes.clone ();
@@ -1348,7 +1349,7 @@ protected class ShowConditionAction extends AbstractAction   {
     }
 
   public void actionPerformed (ActionEvent e) {
-    System.out.println ("show " + conditionName);
+    //System.out.println ("show " + conditionName);
     // displayNodesWithExpressionValues (conditionName);
     }
 }
@@ -1707,7 +1708,7 @@ protected HashMap configureNewNode (Node node)
   OptionHandler options = new OptionHandler ("New Node");
 
   String [] attributeNames = nodeAttributes.getAttributeNames ();
-  System.out.println ("attributes: " + attributeNames.length);
+  //System.out.println ("attributes: " + attributeNames.length);
 
   if (attributeNames.length == 0) {
     options.addComment ("commonName is required; canonicalName is optional and defaults to commonName");
@@ -1732,7 +1733,7 @@ protected HashMap configureNewNode (Node node)
   if (attributeNames.length == 0) {
     result.put ("commonName", (String) options.get ("commonName"));
     result.put ("canonicalName", (String) options.get ("canonicalName"));
-    System.out.println ("result: " + result);
+    //System.out.println ("result: " + result);
     }
   else for (int i=0; i < attributeNames.length; i++) {
     String attributeName = attributeNames [i];
