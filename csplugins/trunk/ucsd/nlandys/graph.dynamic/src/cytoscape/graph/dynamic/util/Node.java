@@ -1,7 +1,7 @@
 package cytoscape.graph.dynamic.util;
 
 // Package visible.
-class Node
+final class Node
 {
 
   int nodeId;

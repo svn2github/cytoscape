@@ -1,7 +1,7 @@
 package cytoscape.graph.dynamic.util;
 
 // Package visible.
-class Edge
+final class Edge
 {
 
   int edgeId;
