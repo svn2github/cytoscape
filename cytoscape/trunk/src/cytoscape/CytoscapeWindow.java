@@ -179,6 +179,11 @@ public Graph2D getGraph ()
   return graph;
 }
 //------------------------------------------------------------------------------
+public GraphHider getGraphHider ()
+{  
+  return graphHider;
+}
+//------------------------------------------------------------------------------
 public void redrawGraph ()
 {
   graphView.paintImmediately (0, 0, graphView.getWidth(), graphView.getHeight());
