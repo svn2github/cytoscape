@@ -271,8 +271,10 @@ public class CyMenus  implements GraphViewChangeListener {
         public void menuSelected(MenuEvent e)
         {
           CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
+          CyNetwork graph = Cytoscape.getCurrentNetwork();
           boolean inactive = false;
           if (graphView == null || graphView.nodeCount() == 0) inactive = true;
+          boolean networkExists = (graph != null);
           MenuElement[] popup = f_fileMenu.getSubElements();
           if (popup[0] instanceof JPopupMenu) {
             MenuElement[] submenus =
@@ -281,10 +283,10 @@ public class CyMenus  implements GraphViewChangeListener {
               if (submenus[i] instanceof JMenuItem) {
                 JMenuItem item = (JMenuItem) submenus[i];
                 if (item.getText().equals(ExportAction.MENU_LABEL) ||
-                    item.getText().equals(PrintAction.MENU_LABEL) ||
-                    item.getText().equals("Save")) { // Cough, cough, hack.
-                  if (inactive) item.setEnabled(false);
-                  else item.setEnabled(true); } } } }
+                    item.getText().equals(PrintAction.MENU_LABEL)) {
+                  item.setEnabled(!inactive); }
+                else if (item.getText().equals("Save")) {
+                  item.setEnabled(networkExists); } } } }
         } });
     loadSubMenu = menuBar.getMenu( "File.Load" );
     saveSubMenu = menuBar.getMenu( "File.Save" );
