@@ -2,7 +2,7 @@
 # WARNING: any changes you make to this file while Cytoscape is running may be overwritten.
 # Any changes may make these visual mappings unreadable.
 # Please make sure you know what you are doing before modifying this file by hand.
-#Tue Nov 23 15:58:44 PST 2004
+#Fri Apr 02 11:59:50 EST 2004
 
 edgeAppearanceCalculator.Sample1.defaultEdgeColor=0,0,0
 edgeAppearanceCalculator.Sample1.defaultEdgeFont=Default,plain,10
@@ -41,7 +41,7 @@ edgeAppearanceCalculator.default.defaultEdgeLineType=LINE_1
 edgeAppearanceCalculator.default.defaultEdgeSourceArrow=NONE
 edgeAppearanceCalculator.default.defaultEdgeTargetArrow=NONE
 edgeAppearanceCalculator.default.defaultEdgeToolTip=
-edgeAppearanceCalculator.default.edgeColorCalculator=testMapper
+edgeAppearanceCalculator.default.edgeColorCalculator=null
 edgeAppearanceCalculator.default.edgeFontFaceCalculator=null
 edgeAppearanceCalculator.default.edgeFontSizeCalculator=null
 edgeAppearanceCalculator.default.edgeLabelCalculator=null
@@ -77,12 +77,6 @@ edgeColorCalculator.BasicDiscrete.mapping.map.pp=0,0,255
 edgeColorCalculator.BasicDiscrete.mapping.map.pr=255,0,255
 edgeColorCalculator.BasicDiscrete.mapping.map.rc=150,150,0
 edgeColorCalculator.BasicDiscrete.mapping.type=DiscreteMapping
-edgeColorCalculator.testMapper.class=cytoscape.visual.calculators.GenericEdgeColorCalculator
-edgeColorCalculator.testMapper.mapping.controller=testAttr
-edgeColorCalculator.testMapper.mapping.map.one=255,0,255
-edgeColorCalculator.testMapper.mapping.map.one\:two=255,0,51
-edgeColorCalculator.testMapper.mapping.map.two\:one=255,255,102
-edgeColorCalculator.testMapper.mapping.type=DiscreteMapping
 edgeFontFaceCalculator.BasicContinuous.class=cytoscape.visual.calculators.GenericEdgeFontFaceCalculator
 edgeFontFaceCalculator.BasicContinuous.mapping.boundaryvalues=2
 edgeFontFaceCalculator.BasicContinuous.mapping.bv0.domainvalue=0.0010
@@ -205,7 +199,6 @@ nodeAppearanceCalculator.Sample1.nodeFontFaceCalculator=null
 nodeAppearanceCalculator.Sample1.nodeFontSizeCalculator=null
 nodeAppearanceCalculator.Sample1.nodeHeightCalculator=null
 nodeAppearanceCalculator.Sample1.nodeLabelCalculator=NodeLabel
-nodeAppearanceCalculator.Sample1.nodeLabelColorCalculator=null
 nodeAppearanceCalculator.Sample1.nodeLineTypeCalculator=null
 nodeAppearanceCalculator.Sample1.nodeShapeCalculator=null
 nodeAppearanceCalculator.Sample1.nodeSizeLocked=true
@@ -226,7 +219,6 @@ nodeAppearanceCalculator.Sample2.nodeFontFaceCalculator=null
 nodeAppearanceCalculator.Sample2.nodeFontSizeCalculator=null
 nodeAppearanceCalculator.Sample2.nodeHeightCalculator=null
 nodeAppearanceCalculator.Sample2.nodeLabelCalculator=NodeLabel
-nodeAppearanceCalculator.Sample2.nodeLabelColorCalculator=null
 nodeAppearanceCalculator.Sample2.nodeLineTypeCalculator=null
 nodeAppearanceCalculator.Sample2.nodeShapeCalculator=null
 nodeAppearanceCalculator.Sample2.nodeSizeLocked=true
@@ -247,7 +239,6 @@ nodeAppearanceCalculator.default.nodeFontFaceCalculator=null
 nodeAppearanceCalculator.default.nodeFontSizeCalculator=null
 nodeAppearanceCalculator.default.nodeHeightCalculator=null
 nodeAppearanceCalculator.default.nodeLabelCalculator=canonical names as node labels
-nodeAppearanceCalculator.default.nodeLabelColorCalculator=null
 nodeAppearanceCalculator.default.nodeLineTypeCalculator=null
 nodeAppearanceCalculator.default.nodeShapeCalculator=null
 nodeAppearanceCalculator.default.nodeSizeLocked=true
