@@ -12,14 +12,11 @@
 		</h4>
 		<p>
 		</p>
-		<h2>
 			<a href='<?= $cyto1_install_anywhere ?>'>
-			Click here</a> to install Cytoscape 1.1.1. 
-		</h2>
+			Install Cytoscape 2.1 (One Click Install)
+			</a>
 		<p>
 		</p>
-		<br>
-		<br>
 		<p>
 		<h4>Option 2:  Download a .tar.gz or .zip distribution file: 
 		</H4>
@@ -50,3 +47,11 @@
 In order to compile Cytoscape 1.1 from the source files, you will need a copy of yFiles 2.01, available from <a
  href="http://www.yworks.com/en/products_yfiles_about.htm">yWorks</a>.
   </p>
+<? if ($in_production == false)  {
+  echo "<P>&nbsp;<P>Debug:  [will not appear in production environment]<P>";
+  echo "Link 1: $cyto1_install_anywhere <BR>";
+  echo "Link 2: $cyto1_gz_east	 <BR";
+  echo "Link 3: $cyto1_zip_east    <BR>";
+  echo "Link 4: $cyto1_source_east <BR>";
+  }
+?>    

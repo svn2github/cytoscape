@@ -55,3 +55,12 @@
 		    <li><a href='<?= $cyto2_source_east ?>'>Cytoscape source</a> - USA, East Coast (New York, NY).</li>  
 		</UL>
   </p>
+<? if ($in_production == false)  {
+  echo "<P>&nbsp;<P>Debug:  [will not appear in production environment]<P>";
+  echo "Link 1: $cyto2_install_anywhere <BR>";
+  echo "Link 2: $cyto2_mac_east    <BR>";
+  echo "Link 3: $cyto2_gz_east	 <BR";
+  echo "Link 4: $cyto2_zip_east    <BR>";
+  echo "Link 5: $cyto2_source_east <BR>";
+  }
+?>  
