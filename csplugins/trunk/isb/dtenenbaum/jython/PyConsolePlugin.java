@@ -8,6 +8,7 @@ package csplugins.isb.dtenenbaum.jython;
 //----------------------------------------------------------------------------------------
 
 import java.awt.event.*;
+
 import javax.swing.*;
 
 import java.awt.*;
@@ -37,6 +38,7 @@ public class PyConsolePlugin extends CytoscapePlugin {
 		this.bootstrap = bootstrap;
 		CytoscapeAction consoleAction = new StartConsole();
 		if (bootstrap) {
+			consoleAction.putValue(Action.MNEMONIC_KEY,new Integer(KeyEvent.VK_Y));
 			consoleAction.setPreferredMenu("Plugins");
 			Cytoscape.getDesktop().getCyMenus().addAction(consoleAction);
 		} else {
