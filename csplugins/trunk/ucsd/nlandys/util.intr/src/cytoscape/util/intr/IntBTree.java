@@ -32,7 +32,7 @@ public final class IntBTree
         newSplitVal = newSibling.values[0];
         newDeepCount = m_root.sliceCount + newSibling.sliceCount; }
       else {
-        newSplitVal = newSibling.data.splitVals[newSibling.sliceCount - 1];
+        newSplitVal = m_root.data.splitVals[m_root.sliceCount - 1];
         newDeepCount = m_root.data.deepCount + newSibling.data.deepCount; }
       Node newRoot = new Node(MAX_BRANCHES, false);
       newRoot.sliceCount = 2;
