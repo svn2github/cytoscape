@@ -16,6 +16,8 @@ import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
 
+import y.view.LineType;
+
 import cytoscape.GraphObjAttributes;
 import cytoscape.data.*;
 import cytoscape.vizmap.*;
@@ -28,6 +30,7 @@ public class VisualPropertiesDialog extends JDialog {
 
     ShapePopupButton shapeDefault;
     IntegerEntryField sizeDefault;
+    LineTypePopupButton lineTypeDefault;
     AttributeMapper aMapper;
     MutableColor nColor;
     MutableColor ppColor;
@@ -104,13 +107,23 @@ public VisualPropertiesDialog (Frame parentFrame,
   gridbag.setConstraints(shapeDefault,c);
   mainPanel.add(shapeDefault);
 
+  lineTypeDefault = 
+      new LineTypePopupButton
+	  ("Default Line Type",
+	   (LineType)aMapper.getDefaultValue(VizMapperCategories.EDGE_LINETYPE),
+	   this);
+  c.gridx=0;
+  c.gridy=5;
+  gridbag.setConstraints(lineTypeDefault,c);
+  mainPanel.add(lineTypeDefault);
+
   sizeDefault = 
       new IntegerEntryField
 	  ("Default Node Size",
 	   ((Integer)aMapper.getDefaultValue(VizMapperCategories.NODE_HEIGHT)).intValue(),
 	   500);
   c.gridx=0;
-  c.gridy=5;
+  c.gridy=6;
   gridbag.setConstraints(sizeDefault,c);
   mainPanel.add(sizeDefault);
 
@@ -118,14 +131,14 @@ public VisualPropertiesDialog (Frame parentFrame,
   JButton applyButton = new JButton ("Apply");
   applyButton.addActionListener (new ApplyAction ());
   c.gridx=0;
-  c.gridy=6;
+  c.gridy=7;
   gridbag.setConstraints(applyButton,c);
   mainPanel.add (applyButton);
 
   JButton cancelButton = new JButton ("Cancel");
   cancelButton.addActionListener (new CancelAction ());
   c.gridx=1;
-  c.gridy=6;
+  c.gridy=7;
   gridbag.setConstraints(cancelButton,c);
   mainPanel.add (cancelButton);
 
@@ -144,8 +157,10 @@ public class ApplyAction extends AbstractAction {
       Object o1 = aMapper.setDefaultValue(VizMapperCategories.NODE_FILL_COLOR, nColor.getColor());
       Object o2 = aMapper.setDefaultValue(VizMapperCategories.BG_COLOR, bgColor.getColor());
       Object o3 = aMapper.setDefaultValue(VizMapperCategories.NODE_SHAPE, shapeDefault.getShapeByte());
-      Object o4 = aMapper.setDefaultValue(VizMapperCategories.NODE_HEIGHT, sizeDefault.getInteger());
-      Object o5 = aMapper.setDefaultValue(VizMapperCategories.NODE_WIDTH, sizeDefault.getInteger());
+      Object o4 = aMapper.setDefaultValue(VizMapperCategories.EDGE_LINETYPE, lineTypeDefault.getLineType());
+      Object o5 = aMapper.setDefaultValue(VizMapperCategories.NODE_HEIGHT, sizeDefault.getInteger());
+      Object o6 = aMapper.setDefaultValue(VizMapperCategories.NODE_WIDTH, sizeDefault.getInteger());
+
 
       EdgeArrowColor.removeThenAddEdgeColor(aMapper,"pp",ppColor.getColor());
       EdgeArrowColor.removeThenAddEdgeColor(aMapper,"pd",pdColor.getColor());

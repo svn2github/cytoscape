@@ -23,7 +23,8 @@ OBJS = ColorPopupButton.class \
         LabelTextPanel.class \
         GeneralColorDialogListener.class \
         ShapePopupButton.class \
-        IntegerEntryField.class
+        IntegerEntryField.class \
+        LineTypePopupButton.class
 
 
 default: objs 
