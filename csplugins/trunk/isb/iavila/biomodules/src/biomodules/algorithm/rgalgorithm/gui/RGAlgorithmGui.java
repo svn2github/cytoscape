@@ -37,14 +37,15 @@ import common.algorithms.hierarchicalClustering.*;
 import cytoscape.*;
 import cytoscape.view.*;
 import cytoscape.data.*;
-import cytoscape.util.SwingWorker;
-import metaNodeViewer.GPMetaNodeFactory;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 import java.awt.event.ActionEvent;
 import java.text.NumberFormat;
 import utils.*;
+import giny.model.*;
+import metaNodeViewer.data.IntraDegreeComparator;
 
 public class RGAlgorithmGui extends JDialog {
   
@@ -71,7 +72,9 @@ public class RGAlgorithmGui extends JDialog {
   protected JRadioButton viewDataRadioButton;
   protected DataTable apspTable;
   protected DataTable mdTable;
-
+  protected DataTable biomodulesTable;
+  protected DisplayTableAction displayApspAction, displayMDAction;
+  protected DisplayBiomodulesAction displayBiomodulesAction;
   /**
    * Constructor, calls <code>create()</code>.
    *
@@ -308,23 +311,34 @@ public class RGAlgorithmGui extends JDialog {
    */
   protected JPanel createDataPanel (){
   	JPanel dataPanel = new JPanel();
-  	dataPanel.setLayout(new BoxLayout(dataPanel, BoxLayout.Y_AXIS));
+  	dataPanel.setLayout(new BorderLayout());
   	
   	this.viewDataRadioButton = new JRadioButton("View data after it is calculated", this.algorithmData.getSaveIntermediaryData());
-  	dataPanel.add(this.viewDataRadioButton);
+  	dataPanel.add(this.viewDataRadioButton, BorderLayout.NORTH);
+  	
+  	JPanel buttonsPanel = new JPanel();
+  	GridLayout gl = new GridLayout(3,1);
+  	gl.setVgap(20);
+  	buttonsPanel.setLayout(gl);
+  	
   	
   	JButton apspButton = new JButton("Display All-Pairs-Shortest-Paths");
-  	apspButton.addActionListener(new DisplayTableAction(APSP_TABLE));
+  	this.displayApspAction = new DisplayTableAction(APSP_TABLE);
+  	apspButton.addActionListener(this.displayApspAction);
   	
   	JButton distButton = new JButton("Display Manhattan Distances");
-  	distButton.addActionListener(new DisplayTableAction(MD_TABLE));
+  	this.displayMDAction = new DisplayTableAction(MD_TABLE);
+  	distButton.addActionListener(this.displayMDAction);
   	
   	JButton biomodsButton = new JButton("Display Biomodules Table");
-  	biomodsButton.addActionListener(new DisplayBiomodulesAction());
+  	this.displayBiomodulesAction = new DisplayBiomodulesAction();
+  	biomodsButton.addActionListener(this.displayBiomodulesAction);
   	
-  	dataPanel.add(apspButton);
-  	dataPanel.add(distButton);
-  	dataPanel.add(biomodsButton);
+  	buttonsPanel.add(apspButton);
+  	buttonsPanel.add(distButton);
+  	buttonsPanel.add(biomodsButton);
+  	
+  	dataPanel.add(buttonsPanel, BorderLayout.CENTER);
   	
     return dataPanel;
   }//createDataPanel
@@ -385,23 +399,59 @@ public class RGAlgorithmGui extends JDialog {
     }else{
       biomodules = RGAlgorithm.createBiomodules(this.algorithmData);
     }
-    this.algorithmData.setBiomodules(biomodules);
     
     // Visualize them if necessary
     
-    String netID = this.algorithmData.getNetwork().getIdentifier();
+    Map bioIdentifiersToMembers = new HashMap();
+    CyNetwork net = this.algorithmData.getNetwork();
+    
+    String netID = net.getIdentifier();
     CyNetworkView netView = Cytoscape.getNetworkView(netID);
   
     if(this.abstractRbutton.isSelected() && netView != null){
-      // Remove existent meta-nodes
-      int [] oldMetaNodeRindices = this.algorithmData.getMetaNodeRindices();
-      ViewUtils.removeMetaNodes(this.algorithmData.getNetwork(),oldMetaNodeRindices,false);
-      // Create new meta-nodes
+      // TODO: Remove existent meta-nodes:
+      // Call reset from the metaNodeViewer?
+      
+      //ViewUtils.removeMetaNodes(this.algorithmData.getNetwork(),oldMetaNodeRindices,false);
+      
+     // Create new meta-nodes
       int [] metaNodeRindices =  
         ViewUtils.abstractBiomodules(this.algorithmData.getNetwork(),biomodules);
-      this.algorithmData.setMetaNodeRindices(metaNodeRindices);
+      // Get the common names of the meta nodes
+      
+      int numUnknowns = 0;
+      for(int i = 0; i < metaNodeRindices.length; i++){
+      	Node node = net.getNode(metaNodeRindices[i]);
+      	String canonical = (String)Cytoscape.getNodeAttributeValue(node,Semantics.CANONICAL_NAME);
+      	if(node == null || canonical == null){
+      		System.out.println("The node with index [" + metaNodeRindices[i] + "] is null");
+      		canonical = "unknown" + Integer.toString(numUnknowns);
+      		numUnknowns++;
+      	}
+      	bioIdentifiersToMembers.put(canonical,biomodules[i]);
+      }//for i
+    }else{
+    	// The Biomodules need to have an identifier, so lets make it the member with the highest intra-degree
+    	CyNetwork network = this.algorithmData.getNetwork();
+    	for(int i = 0; i < biomodules.length; i++){
+    		int [] memberRindices = new int[biomodules[i].length];
+    		for(int j = 0; j < biomodules[i].length; j++){
+    			memberRindices[j] = biomodules[i][j].getRootGraphIndex();
+    		}//for j
+    		SortedSet ss = IntraDegreeComparator.sortNodes(network, memberRindices);
+    		CyNode highestNode = (CyNode)ss.first();
+    	    String alias = (String)network.getNodeAttributeValue(highestNode,Semantics.COMMON_NAME);
+    	    if(alias == null){
+    	      alias = (String)network.getNodeAttributeValue(highestNode,Semantics.CANONICAL_NAME);
+    	    }
+    	    bioIdentifiersToMembers.put(alias,biomodules[i]);
+    	}//for i
     }
-  
+ 
+    this.algorithmData.setBiomodules(bioIdentifiersToMembers);
+    this.displayApspAction.setUpdateNeeded(true);
+    this.displayMDAction.setUpdateNeeded(true);
+    this.displayBiomodulesAction.setUpdateNeeded(true);
   }//calculateBiomodules
 
   /**
@@ -688,6 +738,7 @@ public class RGAlgorithmGui extends JDialog {
   protected class DisplayTableAction extends AbstractAction {
   	
   	protected int type;
+  	protected boolean update;
   	
   	DisplayTableAction (int type){
   		this.type = type;
@@ -695,7 +746,7 @@ public class RGAlgorithmGui extends JDialog {
   	
   	public void actionPerformed (ActionEvent event){
   		if(this.type == APSP_TABLE){ 
-  			if(RGAlgorithmGui.this.apspTable == null){
+  			if(RGAlgorithmGui.this.apspTable == null || this.update){
   				ArrayList orderedNodes = RGAlgorithmGui.this.algorithmData.getOrderedNodes();
   				String [] nodeNames = new String[orderedNodes.size()];
   				for(int i = 0; i < nodeNames.length; i++){
@@ -714,7 +765,7 @@ public class RGAlgorithmGui extends JDialog {
   			RGAlgorithmGui.this.apspTable.setVisible(true);
   		}//apsp table
   		else if(this.type == MD_TABLE){
-  			if(RGAlgorithmGui.this.mdTable == null){
+  			if(RGAlgorithmGui.this.mdTable == null || this.update){
   				ArrayList orderedNodes = RGAlgorithmGui.this.algorithmData.getOrderedNodes();
   				String [] nodeNames = new String[orderedNodes.size()];
   				for(int i = 0; i < nodeNames.length; i++){
@@ -729,23 +780,80 @@ public class RGAlgorithmGui extends JDialog {
 								   ("Manhattan Distances: " + 
 								    RGAlgorithmGui.this.algorithmData.getNetwork().getTitle()));
   			}
+  			this.update = false;
   			RGAlgorithmGui.this.mdTable.pack();
   			RGAlgorithmGui.this.mdTable.setLocationRelativeTo(RGAlgorithmGui.this);
   			RGAlgorithmGui.this.mdTable.setVisible(true);
   		}//manhattan  distances table
   		
   	}//actionPerformed
+  	
+  	/**
+  	 * Whether or not the table should be updated next time it is displayed.
+  	 *
+  	 * @param update
+  	 */
+  	public void setUpdateNeeded (boolean update){
+  		this.update = update;
+  	}//setUpdateNeeded
   
   }//DisplayTableAction
   
   protected class DisplayBiomodulesAction extends AbstractAction {
+  	
+  	protected boolean update;
+  	protected final String [] colNames = {"Biomodule", "Num Members", "Members (canonical names)", "Members (common names)"};
+  	
   	DisplayBiomodulesAction (){
   		super("");
   	}//constructor
   	
   	public void actionPerformed (ActionEvent event){
-  		//left here
+  		if(RGAlgorithmGui.this.biomodulesTable == null || this.update){
+  			Map biomodules = RGAlgorithmGui.this.algorithmData.getBiomodules();
+  			String [][] data = new String[biomodules.size()][4];
+  			Set entries = biomodules.entrySet();
+  			Iterator it = entries.iterator();
+  			int i = 0;
+  			CyNetwork net = RGAlgorithmGui.this.algorithmData.getNetwork();
+  			while(it.hasNext()){
+  				Map.Entry entry = (Map.Entry)it.next();
+  				String biomoduleName = (String)entry.getKey();
+  				CyNode [] biomoduleMembers = (CyNode[])entry.getValue();
+  				data[i][0] = biomoduleName;
+  				data[i][1] = Integer.toString(biomoduleMembers.length);
+  				String canonicals = "";
+  				String commons = "";
+  				for(int j = 0; j < biomoduleMembers.length; j++){
+  					String can = (String)net.getNodeAttributeValue(biomoduleMembers[j],Semantics.CANONICAL_NAME);
+  					String com = (String)net.getNodeAttributeValue(biomoduleMembers[j],Semantics.COMMON_NAME);
+  					if(j == 0){
+  						canonicals = can;
+  						commons = com;
+  					}else{
+  						canonicals = canonicals + "," + can;
+  	  					commons = commons + "," + com;
+  					}
+  				}//for j
+  				data[i][2] = canonicals;
+  				data[i][3] = commons;
+  				i++;
+  			}//while it.hasNext
+  			RGAlgorithmGui.this.biomodulesTable = new DataTable(null, colNames, data, ("Biomodules Table: " + net.getTitle()));
+  		}// if the table is null
+  		this.update = false;
+  		RGAlgorithmGui.this.biomodulesTable.pack();
+  		RGAlgorithmGui.this.biomodulesTable.setLocationRelativeTo(RGAlgorithmGui.this);
+  		RGAlgorithmGui.this.biomodulesTable.setVisible(true);
   	}//actionPerformed
-  
+  	
+  	/**
+  	 * Whether or not the table should be updated next time it is displayed.
+  	 * 
+  	 * @param update
+  	 */
+  	public void setUpdateNeeded (boolean update){
+  		this.update = update;	
+  	}//setUpdateNeeded
   }//DisplayBiomodulesAction
 }//class RGAlgorithmGui

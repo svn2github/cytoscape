@@ -35,57 +35,55 @@ import cytoscape.view.*;
 import cytoscape.visual.*;
 import giny.model.*;
 import metaNodeViewer.model.*;
-import metaNodeViewer.GPMetaNodeFactory;
 import metaNodeViewer.data.*;
 import metaNodeViewer.view.VisualStyleFactory;
 
 public class ViewUtils {
 
-  public static MetaNodeAttributesHandler attributesHandler = 
-    new AbstractMetaNodeAttsHandler();
-  
-  public static GPMetaNodeFactory metaNodeFactory = 
-    new GPMetaNodeFactory(attributesHandler);
-  
-  public static AbstractMetaNodeModeler abstractModeler = 
-    new AbstractMetaNodeModeler(null,attributesHandler);
-
+  public static final MetaNodeAttributesHandler attributesHandler = new AbstractMetaNodeAttsHandler();
+  public static final AbstractMetaNodeModeler abstractModeler = MetaNodeModelerFactory.getCytoscapeAbstractMetaNodeModeler();
   
   /**
    * @return an array of RootGraph indices for the newly created meta-nodes, null
-   * if something went wront (null arguments for example)
+   * if something went wrong (null arguments for example)
+   * The order of the indices in the array corresponds to the order of the biomodules in
+   * the given CyNode[][]. For example, meta node with index 'i' in the returned array
+   * is the parent of nodes biomodules[i].
    */
   public static int [] abstractBiomodules (CyNetwork network, 
                                            CyNode [][] biomodules){
     
     long startTime = System.currentTimeMillis();
     System.err.println("Abstracting biomodules...");
-
-    RootGraph rootGraph = network.getRootGraph();
-    
-    if(ViewUtils.abstractModeler.getRootGraph() == null ||
-       ViewUtils.abstractModeler.getRootGraph() != rootGraph){
-      ViewUtils.abstractModeler.setRootGraph(rootGraph);
-    }
     
     if(biomodules == null){
-      //Nothing to visualize
-      return null;
+        //Nothing to visualize
+        return null;
     }
+    
+    RootGraph rootGraph = network.getRootGraph();
+    if(ViewUtils.abstractModeler.getRootGraph() == null ||
+       ViewUtils.abstractModeler.getRootGraph() != rootGraph){
+       ViewUtils.abstractModeler.setRootGraph(rootGraph);
+    }
+    
+     // Set the attributes handler for this network, all other networks will have the default handler.
+    ViewUtils.abstractModeler.setNetworkAttributesHandler(network,ViewUtils.attributesHandler);
+    
     int [] metaNodeIndices = new int[biomodules.length];
     for(int i = 0; i < biomodules.length; i++){
-      int [] nodeIndices = new int[biomodules[i].length]; // the children of the mentanode
+      int [] nodeIndices = new int[biomodules[i].length]; // the children of the meta-node
       for(int j = 0; j < biomodules[i].length; j++){
         CyNode node = biomodules[i][j];
         int index = network.getIndex(node);
         if(index == 0){
-          // The node is hidden, don't know what to do!
+          // TODO: The node is hidden, don't know what to do!
           System.err.println("CyNode " + node + " is hidden.");
           continue;
         }
         nodeIndices[j] = index;
       }//for j
-      metaNodeIndices[i] = ViewUtils.metaNodeFactory.createMetaNode(network,nodeIndices);
+      metaNodeIndices[i] = MetaNodeFactory.createMetaNode(network,nodeIndices);
       ViewUtils.abstractModeler.applyModel(network,metaNodeIndices[i],nodeIndices);
     }//for i
     
@@ -141,10 +139,10 @@ public class ViewUtils {
       }
       if(rindex == 0){
         // We are in trouble
-        System.err.println("Skipping index = 0.");
+        System.err.println("Skipping, index == 0.");
         continue;
       }
-      boolean temporary = false;
+      boolean temporary = false; // == don't remember these meta-nodes
       boolean ok = ViewUtils.abstractModeler.undoModel(network,rindex,recursive,temporary); 
       if(!ok){
         System.err.println("Could not remove meta-node " + rindex);

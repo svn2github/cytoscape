@@ -95,14 +95,11 @@ public class RGAlgorithmData {
    */
   RGAlgorithmGui gui;
   /**
-   * A 2D array that holds the calculated Biomodules. Each row is a biomodule.
+   * A Map from String objects to CyNode[] arrays. The String objects are the biomodule
+   * identifiers (for example, the CANONICAL_NAME attribute of meta-nodes, if meta-nodes
+   * are used) and the CyNode [] arrays are the member nodes of the biomodules.
    */
-  CyNode [][] biomodules;
-  /**
-   * An array of <code>RootGraph</code> indices of meta-nodes that represent biomodules
-   * in the <code>CyNetwork</code> contained in this <code>RGAlgorithmData</code>.
-   */
-  int [] metaNodeRindices;
+  Map bioIdentifierToMembers;
   /**
    * Whether or not intermediary data should be saved in memory or not. False by default (saves memory).
    */
@@ -236,25 +233,15 @@ public class RGAlgorithmData {
   }//setGUI
 
   /**
-   * Sets the calculated biomodules for the network stored in 
+   * Sets the calculated biomodules and their identifiers for the network stored in 
    * this <code>RGAlgorithmData</code>.
    *
-   * @param biomodules a 2D array of <code>CyNode</code>s in which each row represents
-   * a biomodule, and each cell is a member of that biomodule
+   * @param bioIdentifier_to_members a Map from String object that identify the 
+   * biomodule to CyNode [] objects that contain the members of the biomodule
    */
-  public void setBiomodules (CyNode [][] biomodules){
-    this.biomodules = biomodules;
+  public void setBiomodules (Map bioIdentifier_to_members){
+    this.bioIdentifierToMembers = bioIdentifier_to_members;
   }//setBiomodules
-
-  /**
-   * Sets an array of <code>RootGraph</code> indices of meta-nodes that represent biomodules
-   * in the <code>CyNetwork</code> contained in this <code>RGAlgorithmData</code>.
-   *
-   * @param meta_node_root_indices an array of <code>RootGraph</code> indices
-   */
-  public void setMetaNodeRindices (int [] meta_node_root_indices){
-    this.metaNodeRindices = meta_node_root_indices;
-  }//setMetaNodeRindices
   
   /**
    * Sets whether or not the intermediary data (APSP, Manhattan-Distances) should be kept in memory or not, false by default.
@@ -375,26 +362,18 @@ public class RGAlgorithmData {
   }//getGUI
 
   /**
-   * Gets the bimodules that were set through <code>setBiomodules()</code>.
+   * Gets the bimodules and their identifiers that were set through <code>setBiomodules()</code>.
    *
-   * @return a 2D array of <code>CyNode</code>s in which each row represents
-   * a biomodule, and each cell is a member of that biomodule
+   * @return a Map with String keys that represent the biomodule identifiers, and CyNode[] objects as values
+   * that contain the biomodule members
    */
-  public CyNode [][] getBiomodules (){
-    return this.biomodules;
+  public Map getBiomodules (){
+  	if(this.bioIdentifierToMembers == null){
+  		this.bioIdentifierToMembers = new HashMap();
+  	}
+    return this.bioIdentifierToMembers;
   }//getBiomodules
   
-
-  /**
-   * Gets an array of <code>RootGraph</code> indices of meta-nodes that represent biomodules
-   * in the <code>CyNetwork</code> contained in this <code>RGAlgorithmData</code>.
-   *
-   * @return an array of <code>RootGraph</code> indices
-   */
-  public int[] getMetaNodeRindices (){
-    return this.metaNodeRindices;
-  }//getMetaNodeRindices
-
   /**
    * @return a String description of this <code>RGAlgorithmData</code>
    */
@@ -447,8 +426,8 @@ public class RGAlgorithmData {
 
     desc = desc + "min num members = " + this.minNumMembers + nl;
     desc = desc + "join number = " + this.cutJoinNumber + nl;
-    if(this.biomodules != null){
-      desc = desc + "num biomodules = " + this.biomodules.length + nl;
+    if(this.bioIdentifierToMembers != null){
+      desc = desc + "num biomodules = " + this.bioIdentifierToMembers.size() + nl;
     }else{
       desc = desc + "num biomodules = NOT SET" + nl;
     }
