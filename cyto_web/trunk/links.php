@@ -59,7 +59,8 @@ and provides a powerful framework for user interaction and data display.
 
 <big><b>Projects Using Cytoscape</b></big>
 <P>
-<a href="http://www.t1dbase.org">T1DBase - A Bioinformatics Resource for Type 1 Diabetes Researchers</a>
+<a href="http://www.t1dbase.org">T1DBase - A Bioinformatics Resource for Type 1 Diabetes Researchers</a><BR>
+<a href="http://amdec-bioinfo.cu-genome.org/html/caWorkBench.htm">caWorkBench2.0 - A Platform for Integrated Genomics</a>
 <br><br>
 
 <big><b>Support</b></big>
