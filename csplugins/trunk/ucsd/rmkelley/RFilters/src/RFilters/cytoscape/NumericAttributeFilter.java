@@ -261,11 +261,30 @@ public class NumericAttributeFilter
 
   public void input(String desc){
     String [] array = desc.split(",");
-    setComparison(array[0]);
+    if(array[0].equals(GREATER)){
+      setComparison(GREATER);
+    }
+    else if(array[0].equals(LESS)){
+      setComparison(LESS);
+    }
+    else if(array[0].equals(EQUAL)){
+      setComparison(EQUAL);
+    }
+    else{
+      throw new IllegalArgumentException(array[0]+" is not a valid type of comparison");
+    }
     setSelectedAttribute(array[2]);  
     setSearchNumber(new Double( array[3] ));
     setIdentifier(array[4]);
-    setClassType(array[1]);
+    if(array[1].equals(NODE)){
+      setClassType(NODE);
+    }
+    else if(array[1].equals(EDGE)){
+      setClassType(EDGE);
+    }
+    else{
+      throw new IllegalArgumentException(array[0]+" is not a valid type of class");
+    }
   }
   
 }

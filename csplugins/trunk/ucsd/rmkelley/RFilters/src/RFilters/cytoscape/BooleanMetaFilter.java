@@ -104,7 +104,7 @@ public class BooleanMetaFilter
     }
     int count = 0;
     for(int idx=0;idx<filters.length;idx++){
-      //System.out.println(""+filters[idx]);
+      //System.err.println(""+filters[idx]);
       Filter f = FilterManager.defaultManager().getFilter(filters[idx]);
       boolean filterResult = false;
       if ( f != null) {
@@ -195,7 +195,18 @@ public class BooleanMetaFilter
       selectedFilters[idx] = (new Integer(filterStrings[idx])).intValue();
     } // end of for ()
     setFilters(selectedFilters);
-    setComparison(array[1]);
+    if(array[1].equals(AND)){
+      setComparison(AND);
+    }
+    else if(array[1].equals(OR)){
+      setComparison(OR);
+    }
+    else if(array[1].equals(XOR)){
+      setComparison(XOR);
+    }
+    else{
+      throw new IllegalArgumentException(array[1]+" is not a valid type of comparison");
+    }
     setIdentifier(array[2]);
   }
 

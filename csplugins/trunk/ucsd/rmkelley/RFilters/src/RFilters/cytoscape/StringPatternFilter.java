@@ -164,7 +164,7 @@ public class StringPatternFilter
     String[] pattern = searchString.split("\\s");
     for ( int p = 0; p < pattern.length; ++p ) {
       if ( Strings.isLike( ( String )value, pattern[p], 0, true ) ) {
-        // this is an OR function
+	// this is an OR function
         return true;
       }
     }
@@ -278,7 +278,15 @@ public class StringPatternFilter
   
   public void input(String desc){
     String [] array = desc.split(",");
-    setClassType(array[0]);
+    if(array[0].equals(NODE)){
+      setClassType(NODE);
+    }
+    else if(array[0].equals(EDGE)){
+      setClassType(EDGE);
+    }
+    else{
+      throw new IllegalArgumentException(array[0]+" is not a valid type of class");
+    }
     setSelectedAttribute(array[1]);
     setSearchString(array[2]);
     setIdentifier(array[3]);

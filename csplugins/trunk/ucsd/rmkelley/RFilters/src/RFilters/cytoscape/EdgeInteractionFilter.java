@@ -22,7 +22,7 @@ import cytoscape.CyNetwork;
  * This filter will pass nodes based on the edges that 
  * they have.
  */
-public class NodeInteractionFilter 
+public class EdgeInteractionFilter 
   implements Filter {
 
   //----------------------------------------//
@@ -34,8 +34,8 @@ public class NodeInteractionFilter
   public static String FILTER_NAME_EVENT = "FILTER_NAME_EVENT";
   public static String FILTER_BOX_EVENT = "FILTER_BOX_EVENT";
   public static String TARGET_BOX_EVENT = "TARGET_BOX_EVENT";
-  public static String FILTER_ID = "NodeInteractionFilter";
-  public static String FILTER_DESCRIPTION = "Select nodes based on adjacent edges";
+  public static String FILTER_ID = "EdgeInteractionFilter";
+  public static String FILTER_DESCRIPTION = "Select edges based on adjacent nodes";
   public static String SOURCE = "source";
   public static String TARGET = "target";
   //----------------------------------------//
@@ -45,7 +45,7 @@ public class NodeInteractionFilter
   //----------------------------------------//
   // Needed Variables
   //----------------------------------------//
-  protected String identifier = "NodeInteractionFilter";
+  protected String identifier = "EdgeInteractionFilter";
   protected SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(this);
   
   
@@ -56,7 +56,7 @@ public class NodeInteractionFilter
   /**
    * Creates a new InteractionFilter
    */  
-  public NodeInteractionFilter ( int filter, 
+  public EdgeInteractionFilter ( int filter, 
 			     String target,
 			     String identifier ) {
     this.filter = filter;
@@ -64,7 +64,7 @@ public class NodeInteractionFilter
     this.identifier =identifier;
   }
   
-  public NodeInteractionFilter(String desc){
+  public EdgeInteractionFilter(String desc){
     input(desc);
   }
 
@@ -107,27 +107,20 @@ public class NodeInteractionFilter
     if(filter == null){
       return false;
     }
-    if(!(object instanceof Node)){
+    if(!(object instanceof Edge)){
       return false;
     }
-    Node node = (Node)object;
+    Edge edge = (Edge)object;
     //get the list of all relevant edges
-    List adjacentEdges;
-    GraphPerspective myPerspective = Cytoscape.getCurrentNetwork();
+    Node adjacentNode;
     if(target == SOURCE){
-      adjacentEdges = myPerspective.getAdjacentEdgesList(node, true, false, true);	
+    	adjacentNode = edge.getSource();
     }
     else{
-      adjacentEdges = myPerspective.getAdjacentEdgesList(node,true,true,false);
+      adjacentNode = edge.getTarget();
     }
 
-    Iterator edgeIt = adjacentEdges.iterator();
-    while(edgeIt.hasNext()){
-      if(filter.passesFilter(edgeIt.next())){
-	return true;
-      }
-    }
-    return false;
+    return filter.passesFilter(adjacentNode);
   }
 
   public Class[] getPassingTypes () {
@@ -139,7 +132,7 @@ public class NodeInteractionFilter
   }
   
   public Object clone () {
-    return new NodeInteractionFilter ( filter,target,identifier+"_new" );
+    return new EdgeInteractionFilter ( filter,target,identifier+"_new" );
   }
   
   public SwingPropertyChangeSupport getSwingPropertyChangeSupport() {

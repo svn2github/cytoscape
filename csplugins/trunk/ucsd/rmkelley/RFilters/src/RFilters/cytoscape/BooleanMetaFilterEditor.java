@@ -117,6 +117,7 @@ public class BooleanMetaFilterEditor
       this.filter = ( BooleanMetaFilter )filter;
       setFilters(this.filter.getFilters());
       setComparison(this.filter.getComparison());
+      setFilterName(this.filter.toString());
     }
   }
 

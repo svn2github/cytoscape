@@ -175,6 +175,10 @@ import cern.colt.map.OpenIntObjectHashMap;
 	Filter new_filter = new filter.cytoscape.NodeInteractionFilter( array[2] );
 	addFilter( new_filter, (new Integer(array[0])).intValue());
 	return new_filter;
+      	} else if (array[1].equals("class filter.cytoscape.EdgeInteractionFilter" ) ){
+	Filter new_filter = new filter.cytoscape.EdgeInteractionFilter( array[2] );
+	addFilter( new_filter, (new Integer(array[0])).intValue());
+	return new_filter;
       } else if ( array[1].equals("class filter.cytoscape.NodeTopologyFilter" )) {
 	Filter new_filter = new filter.cytoscape.NodeTopologyFilter( array[2] );
 	addFilter( new_filter, (new Integer(array[0])).intValue());
@@ -184,7 +188,6 @@ import cern.colt.map.OpenIntObjectHashMap;
 	addFilter(new_filter, (new Integer(array[0])).intValue());
 	return new_filter;
       } // end of if ()
-          
       return null;
     }
 
