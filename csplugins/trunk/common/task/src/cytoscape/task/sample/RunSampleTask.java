@@ -35,8 +35,8 @@ public class RunSampleTask {
         if (option != 2) {
             task = new SampleTask(100, 100);
 
-            //  For Case 2:  throw an exception when we get to 10.
-            //  Used to illustrate exception handling / error display.
+        //  For Case 2:  throw an exception when we get to 10.
+        //  Used to illustrate exception handling / error display.
         } else {
             task = new SampleTask(100, 100, 10);
         }
