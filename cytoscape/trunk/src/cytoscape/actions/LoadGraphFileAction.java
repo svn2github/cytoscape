@@ -130,6 +130,17 @@ public class LoadGraphFileAction extends AbstractAction {
 		    GMLReader reader = new GMLReader(name);
 		    reader.layoutByGML(networkView.getView(), newNetwork);
 		}
+                //give the user some confirmation
+                String lineSep = System.getProperty("line.separator");
+                StringBuffer sb = new StringBuffer();
+                sb.append("Succesfully loaded graph from " + name + lineSep);
+                sb.append("Graph contains " + newNetwork.getGraphPerspective().getNodeCount());
+                sb.append(" nodes and " + newNetwork.getGraphPerspective().getEdgeCount());
+                sb.append(" edges.");
+                JOptionPane.showMessageDialog(networkView.getMainFrame(),
+                                              sb.toString(),
+                                              "Load graph successful",
+                                              JOptionPane.INFORMATION_MESSAGE);
              } else {//give the user an error dialog
                 String lineSep = System.getProperty("line.separator");
                 StringBuffer sb = new StringBuffer();
