@@ -115,9 +115,9 @@ public class ImportPyLibs {
         return path;
     }
 
-
+	// TODO - use this
     /** Load a module from a resource and run it as __main__. */
-    public static void runResource(String name) {
+    protected static void runResource(String name) {
         try {
             PyStringMap locals = new PyStringMap();
             locals.__setitem__("__name__", new PyString("__main__"));
@@ -140,7 +140,7 @@ public class ImportPyLibs {
 	/** Return the code from a python module as a string--ONLY use this from
 	 * plugins to return the bootstrap code (__run__.py). All other code should
 	 * be accessed by importing. */
-	public static String getResourceCode(String name) {
+	protected static String getResourceCode(String name) {
 		try {
 			String out = "";
 			StringBuffer sb = new StringBuffer();
