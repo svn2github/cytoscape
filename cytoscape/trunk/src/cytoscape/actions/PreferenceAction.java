@@ -11,6 +11,7 @@ import javax.swing.AbstractAction;
 
 import cytoscape.giny.*;
 
+import cytoscape.dialogs.preferences.*;
 import cytoscape.Cytoscape;
 import cytoscape.view.CyNetworkView;
 import cytoscape.util.*;
@@ -18,15 +19,17 @@ import cytoscape.util.CytoscapeAction;
 
 public class PreferenceAction extends CytoscapeAction  {
     
+    private PreferencesDialog preferencePopup;
     
     public PreferenceAction () {
-        super ("Preference...");
+        super ("Preferences...");
         setPreferredMenu( "Edit" );
     }
 
     public void actionPerformed(ActionEvent e) {
-
-     	System.out.println("Preference Menu Selected.");
+        preferencePopup = new PreferencesDialog(
+			Cytoscape.getDesktop().getMainFrame());
+        preferencePopup.setVisible(true);
 
     } // actionPerformed
 }
