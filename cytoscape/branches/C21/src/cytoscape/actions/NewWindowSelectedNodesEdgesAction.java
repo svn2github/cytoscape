@@ -9,48 +9,35 @@ import java.util.*;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
-import giny.model.RootGraph;
-import giny.model.GraphPerspective;
-import giny.view.GraphView;
-
 import cytoscape.data.GraphObjAttributes;
-import cytoscape.*;
-import cytoscape.view.CyWindow;
-//-------------------------------------------------------------------------
-public class NewWindowSelectedNodesEdgesAction extends AbstractAction {
-    CyWindow cyWindow;
+import cytoscape.Cytoscape;
+import cytoscape.CyNetwork;
+import cytoscape.view.CyNetworkView;
+import cytoscape.util.CytoscapeAction;
 
-    public NewWindowSelectedNodesEdgesAction(CyWindow cyWindow) {
+//-------------------------------------------------------------------------
+public class NewWindowSelectedNodesEdgesAction extends CytoscapeAction {
+
+    public NewWindowSelectedNodesEdgesAction () {
         super("Selected nodes, Selected edges");
-        this.cyWindow = cyWindow;
+        setPreferredMenu( "Select.To New Window" );
     }
 
     public void actionPerformed(ActionEvent e) {
         //save the vizmapper catalog
-        cyWindow.getCytoscapeObj().saveCalculatorCatalog();
-        CyNetwork oldNetwork = cyWindow.getNetwork();
-        String callerID = "NewWindowSelectedNodesEdgesAction.actionPerformed";
-        oldNetwork.beginActivity(callerID);
-        GraphView view = cyWindow.getView();
-        int[] nodes = view.getSelectedNodeIndices();
-        int[] edges = view.getSelectedEdgeIndices();
 
-        CyNetwork newNetwork = Cytoscape.createNetwork( nodes, edges );
-        newNetwork.setExpressionData( oldNetwork.getExpressionData() );
-        String title = " selection";
-        try {
-            //this call creates a WindowOpened event, which is caught by
-            //cytoscape.java, enabling that class to manage the set of windows
-            //and quit when the last window is closed
-            CyWindow newWindow = new CyWindow(cyWindow.getCytoscapeObj(),
-                                              newNetwork, title);
-            newWindow.showWindow();
-        } catch (Exception e00) {
-            System.err.println("exception when creating new window");
-            e00.printStackTrace();
-        }
-        cyWindow.getView().addGraphViewChangeListener(cyWindow.getCyMenus());
-        cyWindow.getCyMenus().setNodesRequiredItemsEnabled();
+      CyNetworkView current_network_view = Cytoscape.getCurrentNetworkView();
+      CyNetwork current_network = current_network_view.getNetwork();
+
+      int[] nodes = current_network_view.getSelectedNodeIndices();
+      int[] edges = current_network_view.getSelectedEdgeIndices();
+
+      CyNetwork new_network = Cytoscape.createNetwork( nodes, edges );
+      new_network.setExpressionData( current_network.getExpressionData() );
+
+      String title = " selection";
+      Cytoscape.createNetworkView( new_network, title );
+     
     }
 }
 

@@ -10,20 +10,19 @@ import javax.swing.AbstractAction;
 
 import giny.util.SpringEmbeddedLayouter;
 
-import cytoscape.view.NetworkView;
-//-------------------------------------------------------------------------
-public class SpringEmbeddedLayoutAction extends AbstractAction {
+import cytoscape.Cytoscape;
+import cytoscape.util.CytoscapeAction;
+
+public class SpringEmbeddedLayoutAction extends CytoscapeAction {
     
-    NetworkView networkView;
+  public SpringEmbeddedLayoutAction () {
+    super("Apply Spring Embedded Layout");
+    setPreferredMenu( "Layout" );
+  }
     
-    public SpringEmbeddedLayoutAction(NetworkView networkView) {
-        super("Apply Spring Embedded Layout");
-        this.networkView = networkView;
-    }
-    
-    public void actionPerformed(ActionEvent e) {
-        SpringEmbeddedLayouter lay = new SpringEmbeddedLayouter(networkView.getView());
-	lay.doLayout();
-    }
+  public void actionPerformed ( ActionEvent e ) {
+    SpringEmbeddedLayouter lay = new SpringEmbeddedLayouter( Cytoscape.getCurrentNetworkView() );
+    lay.doLayout();
+  }
 }
 

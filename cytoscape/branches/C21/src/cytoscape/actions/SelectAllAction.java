@@ -8,21 +8,19 @@ package cytoscape.actions;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
-import cytoscape.view.NetworkView;
+import cytoscape.Cytoscape;
+import cytoscape.util.CytoscapeAction;
 //-------------------------------------------------------------------------
-public class SelectAllAction extends AbstractAction  {
+public class SelectAllAction extends CytoscapeAction  {
 
-    NetworkView networkView;
-
-    public SelectAllAction(NetworkView networkView) {
+    public SelectAllAction () {
         super ("Select all nodes and edges");
-        this.networkView = networkView;
+        setPreferredMenu( "Select" );
     }
 
     public void actionPerformed (ActionEvent e) {		
-        GinyUtils.selectAllNodes(networkView.getView());
-        GinyUtils.selectAllEdges(networkView.getView());
-        networkView.redrawGraph(false, true);
+        GinyUtils.selectAllNodes( Cytoscape.getCurrentNetworkView() );
+        GinyUtils.selectAllEdges( Cytoscape.getCurrentNetworkView() );
     }//action performed
 }
 

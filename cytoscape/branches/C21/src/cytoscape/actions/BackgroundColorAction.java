@@ -7,7 +7,9 @@ package cytoscape.actions;
 
 //-------------------------------------------------------------------------
 
-import cytoscape.view.NetworkView;
+import cytoscape.view.CyNetworkView;
+import cytoscape.Cytoscape;
+import cytoscape.util.CytoscapeAction;
 import cytoscape.visual.GlobalAppearanceCalculator;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
@@ -20,20 +22,15 @@ import java.awt.event.ActionEvent;
 /**
  * Prompts User for New Background Color.
  */
-public class BackgroundColorAction extends AbstractAction {
+public class BackgroundColorAction extends CytoscapeAction {
 
-    /**
-     * Current Network View Object.
-     */
-    NetworkView networkView;
-
+   
     /**
      * Constructor.
-     * @param networkView Network View Object.
      */
-    public BackgroundColorAction(NetworkView networkView) {
+    public BackgroundColorAction () {
         super("Change Background Color");
-        this.networkView = networkView;
+        setPreferredMenu( "Visualization" );
     }
 
     /**
@@ -45,16 +42,16 @@ public class BackgroundColorAction extends AbstractAction {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 JColorChooser color = new JColorChooser();
-                Color newPaint = color.showDialog
-                        (networkView.getView().getComponent(),
-                                "Choose a Background Color",
-                                (java.awt.Color) networkView.getView().
-                                getBackgroundPaint());
+                Color newPaint = color.showDialog( 
+                                                  Cytoscape.getCurrentNetworkView().getComponent(),
+                                                  "Choose a Background Color",
+                                                  (java.awt.Color)Cytoscape.getCurrentNetworkView().
+                                                  getBackgroundPaint() );
 
-                //  Update the Current Background Color
-                //  and Synchronize with current Visual Style
-                networkView.getView().setBackgroundPaint(newPaint);
-                synchronizeVisualStyle(newPaint);
+            //  Update the Current Background Color
+            //  and Synchronize with current Visual Style
+            Cytoscape.getCurrentNetworkView().setBackgroundPaint(newPaint);
+            synchronizeVisualStyle(newPaint);
             }
         });
     }//action performed
@@ -64,7 +61,7 @@ public class BackgroundColorAction extends AbstractAction {
      * @param newColor New Color
      */
     private void synchronizeVisualStyle(Color newColor) {
-        VisualMappingManager vmm = networkView.getVizMapManager();
+        VisualMappingManager vmm = Cytoscape.getCurrentNetworkView().getVizMapManager();
         VisualStyle style = vmm.getVisualStyle();
         GlobalAppearanceCalculator gCalc =
                 style.getGlobalAppearanceCalculator();

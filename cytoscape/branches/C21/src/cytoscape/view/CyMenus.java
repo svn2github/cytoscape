@@ -37,14 +37,25 @@ import javax.swing.*;
 import javax.swing.event.MenuListener;
 import javax.swing.event.MenuEvent;
 
+
+import cytoscape.Cytoscape;
 import cytoscape.CytoscapeObj;
+import cytoscape.CyNetwork;
+
+import cytoscape.view.CyNetworkView;
+
 import cytoscape.plugin.AbstractPlugin;
+
 import cytoscape.actions.*;
+
 import cytoscape.dialogs.ShrinkExpandGraphUI;
+
 import cytoscape.data.annotation.AnnotationGui;
+
 import cytoscape.util.CytoscapeMenuBar;
 import cytoscape.util.CytoscapeToolBar;
 import cytoscape.util.CytoscapeAction;
+
 import giny.view.GraphViewChangeListener;
 import giny.view.GraphViewChangeEvent;
 //------------------------------------------------------------------------------
@@ -53,7 +64,7 @@ import giny.view.GraphViewChangeEvent;
  * also provides access to individual menus and items.
  */
 public class CyMenus  implements GraphViewChangeListener {
-  CyWindow cyWindow;
+  
   boolean menusInitialized = false;
   CytoscapeMenuBar menuBar;
   JMenu fileMenu, loadSubMenu, saveSubMenu;
@@ -74,8 +85,8 @@ public class CyMenus  implements GraphViewChangeListener {
   CytoscapeToolBar toolBar;
   boolean nodesRequiredItemsEnabled;
 
-  public CyMenus(CyWindow cyWindow){
-    this.cyWindow = cyWindow;
+  public CyMenus(){
+   
     //the following methods construct the basic bar objects, but
     //don't fill them with menu items and associated action listeners
     createMenuBar();
@@ -85,7 +96,9 @@ public class CyMenus  implements GraphViewChangeListener {
   /**
    * Returns the main menu bar constructed by this object.
    */
-  public CytoscapeMenuBar getMenuBar() {return menuBar;}
+  public CytoscapeMenuBar getMenuBar() {
+    return menuBar;
+  }
 
   /**
    * Returns the menu with items related to file operations.
@@ -142,6 +155,10 @@ public class CyMenus  implements GraphViewChangeListener {
   public CytoscapeToolBar getToolBar() {return toolBar;}
 
 
+  public void addAction ( CytoscapeAction action ) {
+    addCytoscapeAction( action );
+  }
+
   /**
    * Takes a CytoscapeAction and will add it to the MenuBar or the
    * Toolbar as is appropriate.
@@ -155,23 +172,6 @@ public class CyMenus  implements GraphViewChangeListener {
     }
   }
 
-
-  /**
-   * @deprecated This method is no longer needed now that the undo
-   * manager has been removed. It will soon be removed, because
-   * there are better ways to manage the menu items. -AM 12-30-03<P>
-   *
-   * This helper method enables or disables the menu items
-   * associated with the undo manager. The undo menu option
-   * is enabled only if there is a previous state to undo to,
-   * and similarly for the redo menu option.
-   *
-   * It may make more sense to give the menu item objects to
-   * the undo maanger and let it handle the activation state.
-   */
-  public void updateUndoRedoMenuItemStatus() {
-  }
-
   /**
    * Called when the window switches to edit mode, enabling
    * the menu option for deleting selected objects.
@@ -180,9 +180,9 @@ public class CyMenus  implements GraphViewChangeListener {
    * a reference to the menu item and manage its state.
    */
   public void enableDeleteSelectionMenuItem() {
-      if (deleteSelectionMenuItem != null) {
-          deleteSelectionMenuItem.setEnabled(true);
-      }
+    if (deleteSelectionMenuItem != null) {
+      deleteSelectionMenuItem.setEnabled(true);
+    }
   }
 
   /**
@@ -193,9 +193,9 @@ public class CyMenus  implements GraphViewChangeListener {
    * a reference to the menu item and manage its state.
    */
   public void disableDeleteSelectionMenuItem() {
-      if (deleteSelectionMenuItem != null) {
-          deleteSelectionMenuItem.setEnabled(false);
-      }
+    if (deleteSelectionMenuItem != null) {
+      deleteSelectionMenuItem.setEnabled(false);
+    }
   }
 
   /**
@@ -204,10 +204,10 @@ public class CyMenus  implements GraphViewChangeListener {
    * the window that holds this menu.
    */
   public void setVisualMapperItemsEnabled(boolean newState) {
-      vizMenuItem.setEnabled(newState);
-      vizButton.setEnabled(newState);
-      vizMapperItem.setText(newState ?
-              "Disable Visual Mapper" : "Enable Visual Mapper");
+    vizMenuItem.setEnabled(newState);
+    vizButton.setEnabled(newState);
+    vizMapperItem.setText(newState ?
+                          "Disable Visual Mapper" : "Enable Visual Mapper");
   }
 
   /**
@@ -218,15 +218,15 @@ public class CyMenus  implements GraphViewChangeListener {
    * the current window.
    */
   public void setNodesRequiredItemsEnabled() {
-      boolean newState = cyWindow.getView().getGraphPerspective().getNodeCount() > 0;
-newState = true; //TODO: remove this once the GraphViewChangeListener system is working
-      if (newState == nodesRequiredItemsEnabled) return;
-      saveButton.setEnabled(newState);
-      saveSubMenu.setEnabled(newState);
-      menuPrintAction.setEnabled(newState);
-      menuExportAction.setEnabled(newState);
-      displayNWSubMenu.setEnabled(newState);
-      nodesRequiredItemsEnabled = newState;
+    boolean newState = Cytoscape.getCurrentNetwork().getNodeCount() > 0;
+    newState = true; //TODO: remove this once the GraphViewChangeListener system is working
+    if (newState == nodesRequiredItemsEnabled) return;
+    //saveButton.setEnabled(newState);
+    //saveSubMenu.setEnabled(newState);
+    //menuPrintAction.setEnabled(newState);
+    //menuExportAction.setEnabled(newState);
+    //displayNWSubMenu.setEnabled(newState);
+    //nodesRequiredItemsEnabled = newState;
   }
 
   /**
@@ -237,11 +237,11 @@ newState = true; //TODO: remove this once the GraphViewChangeListener system is 
    * @param e
    */
   public void graphViewChanged(GraphViewChangeEvent e) {
-      // Do this in the GUI Event Dispatch thread...
-      SwingUtilities.invokeLater( new Runnable() {
+    // Do this in the GUI Event Dispatch thread...
+    SwingUtilities.invokeLater( new Runnable() {
         public void run() {
           setNodesRequiredItemsEnabled();
-      } } );
+        } } );
   }
 
   /**
@@ -272,74 +272,65 @@ newState = true; //TODO: remove this once the GraphViewChangeListener system is 
    * Any calls to this method after the first will do nothing.
    */
   public void initializeMenus() {
-      if (!menusInitialized) {
-          menusInitialized = true;
-          fillMenuBar();
-          fillToolBar();
-          nodesRequiredItemsEnabled = false;
-          saveButton.setEnabled(false);
-          saveSubMenu.setEnabled(false);
-          menuPrintAction.setEnabled(false);
-          menuExportAction.setEnabled(false);
-          displayNWSubMenu.setEnabled(false);
-          setNodesRequiredItemsEnabled();
-          cyWindow.getView().addGraphViewChangeListener(this);
-      }
+    if (!menusInitialized) {
+      menusInitialized = true;
+      fillMenuBar();
+      fillToolBar();
+      //nodesRequiredItemsEnabled = false;
+      //saveButton.setEnabled(false);
+      //saveSubMenu.setEnabled(false);
+      //menuPrintAction.setEnabled(false);
+      //menuExportAction.setEnabled(false);
+      //displayNWSubMenu.setEnabled(false);
+      //setNodesRequiredItemsEnabled();
+      
+      //TODO: add to all, or make state info
+      //cyWindow.getView().addGraphViewChangeListener(this);
+    }
   }
   /**
    * Fills the previously created menu bar with a large number of
    * items with attached action listener objects.
    */
   private void fillMenuBar() {
-      NetworkView networkView = cyWindow;  //restricted interface
-      CytoscapeObj cytoscapeObj = cyWindow.getCytoscapeObj();
+     
 
-      //fill the Load submenu
-      JMenuItem mi = loadSubMenu.add(new LoadGraphFileAction(cyWindow,this));
-      mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.CTRL_MASK));
-      //mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.CTRL_MASK));
-      //JMenuItem mi = loadSubMenu.add(new LoadInteractionFileAction(networkView));
-      //mi = loadSubMenu.add(new LoadGMLFileAction(networkView));
-      //mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.CTRL_MASK));
-      mi = loadSubMenu.add(new LoadNodeAttributesAction(networkView));
-      mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK));
-      mi = loadSubMenu.add(new LoadEdgeAttributesAction(networkView));
-      mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK));
-      mi = loadSubMenu.add(new LoadExpressionMatrixAction(networkView));
-      mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.CTRL_MASK));
-      mi = loadSubMenu.add(new LoadBioDataServerAction(networkView));
+    //fill the Load submenu
+    addAction( new LoadGraphFileAction( this ) );
+    addAction( new LoadNodeAttributesAction() );
+    addAction( new LoadNodeAttributesAction() );
+    addAction( new LoadExpressionMatrixAction() );
+    addAction( new LoadBioDataServerAction() );
 
-      //fill the Save submenu
-      saveSubMenu.add(new SaveAsGMLAction(networkView));
-      saveSubMenu.add(new SaveAsInteractionsAction(networkView));
-      saveSubMenu.add(new SaveVisibleNodesAction(networkView));
-      saveSubMenu.add(new SaveSelectedNodesAction(networkView));
-      menuPrintAction = new PrintAction(networkView);
-      menuExportAction = new ExportAction(networkView);
-      fileMenu.add(menuPrintAction);
-      fileMenu.add(menuExportAction);
 
-      //mi = fileMenu.add(new CloseWindowAction(cyWindow)); removed 2004-03-08
-      //mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
-      if (cytoscapeObj.getParentApp() != null) {
-          mi = fileMenu.add(new ExitAction(cyWindow));
-          mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
-      }
+
+    //fill the Save submenu
+    addAction( new SaveAsGMLAction() );
+    addAction( new SaveAsInteractionsAction() );
+    // what does this do?
+    //saveSubMenu.add(new SaveVisibleNodesAction(networkView));
+    //saveSubMenu.add(new SaveSelectedNodesAction(networkView));
+      
+    // Print Actions
+    addAction( new PrintAction() );
+    addAction( new ExportAction() );
+
+    //Exit
+    if ( Cytoscape.getCytoscapeObj().getParentApp() != null ) {
+      addAction( new ExitAction() );
+    }
 
     //fill the Edit menu
-    //editing the graph not fully supported in Giny mode
-    //deleteSelectionMenuItem = editMenu.add(new DeleteSelectedAction(networkView));
-    //deleteSelectionMenuItem.setEnabled(false);
-    editMenu.add( new SquiggleAction( networkView ) );
+    //TODO: make the Squiggle Stuff be better
+    editMenu.add( new SquiggleAction( ) );
 
     //fill the Data menu
-    mi = dataMenu.add(new DisplayBrowserAction(networkView));
-    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
-    menuBar.addAction( new GraphObjectSelectionAction( networkView ) );
-    mi = dataMenu.add(new EdgeManipulationAction(networkView));
-
+    addAction( new DisplayBrowserAction() );
+    addAction( new GraphObjectSelectionAction() );
+   
     //fill the Select menu
-    selectMenu.add( new SelectionModeAction(networkView));
+    selectMenu.add( new SelectionModeAction() );
+
     JMenu selectNodesSubMenu = new JMenu("Nodes");
     selectMenu.add(selectNodesSubMenu);
     JMenu selectEdgesSubMenu = new JMenu("Edges");
@@ -347,74 +338,50 @@ newState = true; //TODO: remove this once the GraphViewChangeListener system is 
     displayNWSubMenu = new JMenu("To New Window");
     selectMenu.add(displayNWSubMenu);
 
+    addAction( new InvertSelectedNodesAction() );
+    addAction( new HideSelectedNodesAction() );
+    addAction( new UnHideSelectedNodesAction() );
 
-    // mi = selectEdgesSubMenu.add(new EdgeTypeDialogAction());
+    addAction( new SelectAllNodesAction() );
+    addAction( new DeSelectAllNodesAction() );
+    addAction( new SelectFirstNeighborsAction() );
+    addAction( new AlphabeticalSelectionAction() );
+    addAction( new ListFromFileSelectionAction() );
 
-    mi = selectNodesSubMenu.add(new InvertSelectedNodesAction(networkView));
-    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK));
-    mi = selectNodesSubMenu.add(new HideSelectedNodesAction(networkView));
-    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, ActionEvent.CTRL_MASK));
+    addAction( new InvertSelectedEdgesAction() );
+    addAction( new HideSelectedEdgesAction() );
+    addAction( new UnHideSelectedEdgesAction() );
+    addAction( new SelectAllEdgesAction() );
+    addAction( new DeSelectAllEdgesAction() );
 
-    // added by larissa 10/09/03
-    mi = selectNodesSubMenu.add(new UnHideSelectedNodesAction(networkView));
-    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, ActionEvent.CTRL_MASK));
-    mi = selectNodesSubMenu.add(new SelectAllNodesAction(networkView));
-    mi = selectNodesSubMenu.add(new DeSelectAllNodesAction(networkView));
-    mi = selectNodesSubMenu.add(new SelectFirstNeighborsAction(networkView));
-    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK));
-    selectNodesSubMenu.add(new AlphabeticalSelectionAction(networkView));
-    selectNodesSubMenu.add(new ListFromFileSelectionAction(networkView));
+    addAction( new NewWindowSelectedNodesOnlyAction() );
+    addAction( new NewWindowSelectedNodesEdgesAction() );
 
-    //mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.CTRL_MASK));
-    mi = selectEdgesSubMenu.add(new InvertSelectedEdgesAction(networkView));
-    mi = selectEdgesSubMenu.add(new HideSelectedEdgesAction(networkView));
-    mi = selectEdgesSubMenu.add(new UnHideSelectedEdgesAction(networkView));
-    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, ActionEvent.CTRL_MASK));
-    mi = selectEdgesSubMenu.add(new SelectAllEdgesAction(networkView));
-    mi = selectEdgesSubMenu.add(new DeSelectAllEdgesAction(networkView));
+    addAction( new NewWindowSelectedNodesOnlyAction() );
+    addAction( new NewWindowSelectedNodesEdgesAction() );
+    addAction( new CloneGraphInNewWindowAction() );
+    addAction( new SelectAllAction() );
+    addAction( new DeselectAllAction() );
 
-    // RHC Added Menu Items
-    //selectNodesSubMenu.add(new GraphObjectSelectionAction(networkView));
-    //editMenu.add( new SquiggleAction( networkView ) );
 
-    mi = displayNWSubMenu.add(new NewWindowSelectedNodesOnlyAction(cyWindow));
-    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.SHIFT_MASK|ActionEvent.CTRL_MASK));
-    mi = displayNWSubMenu.add(new NewWindowSelectedNodesEdgesAction(cyWindow));
-    mi = displayNWSubMenu.add(new CloneGraphInNewWindowAction(cyWindow));
-    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
-
-    mi = selectMenu.add(new SelectAllAction(networkView));
-    mi = selectMenu.add(new DeselectAllAction(networkView));
-
-    //fill the Layout menu
-    //need to add Giny layout operations
-
-    //layoutMenu.addSeparator();
-    //mi = layoutMenu.add(new LayoutAction(networkView));
-    //mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.CTRL_MASK));
-    layoutMenu.add(new SpringEmbeddedLayoutAction(networkView));
-
+    addAction( new SpringEmbeddedLayoutAction() );
     layoutMenu.addSeparator();
-    JMenu alignSubMenu = new JMenu("Align Selected Nodes");
-    //layoutMenu.add(alignSubMenu);
-    //alignSubMenu.add(new AlignHorizontalAction(networkView));
-    //alignSubMenu.add(new AlignVerticalAction(networkView));
-    //layoutMenu.add(new RotateSelectedNodesAction(networkView));
-    //layoutMenu.add(new ReduceEquivalentNodesAction(networkView));
 
-    ShrinkExpandGraphUI.makeShrinkExpandGraphUI(cyWindow, layoutMenu);
+    // TODO: move the actions to the actions directory
+    ShrinkExpandGraphUI.makeShrinkExpandGraphUI( this );
 
     //fill the Visualization menu
-    vizMenu.add( new BirdsEyeViewAction( networkView ) );
-    //JMenu showExpressionData = new JMenu ("Show Expression Data" );
+    
+    // TODO: move to a plugin, and/or fix
+    addAction( new BirdsEyeViewAction() );
+    addAction( new BackgroundColorAction() );
+    addAction( new SetVisualPropertiesAction() );
+    addAction( new ToggleVisualMapperAction() );
 
-    vizMenu.add ( new BackgroundColorAction (networkView) );
-    vizMenuItem = vizMenu.add(new SetVisualPropertiesAction(cyWindow));
-    vizMapperItem = vizMenu.add(new ToggleVisualMapperAction(cyWindow));
-
-    menuBar.addAction( new AnimatedLayoutAction( networkView ) );
-    opsMenu.add(new LoadPluginAction (cyWindow.getCytoscapeObj()));
-    opsMenu.add(new LoadPluginDirectoryAction (cyWindow.getCytoscapeObj()));
+    //menuBar.addAction( new AnimatedLayoutAction( networkView ) );
+    
+    addAction( new LoadPluginAction() );
+    addAction( new LoadPluginDirectoryAction() );
     opsMenu.addSeparator();
 
   }
@@ -423,16 +390,16 @@ newState = true; //TODO: remove this once the GraphViewChangeListener system is 
    * Fills the toolbar for easy access to commonly used actions.
    */
   private void fillToolBar() {
-    NetworkView networkView = cyWindow; //restricted interface
+    
     JButton b;
 
-    b = toolBar.add( new LoadGraphFileAction( cyWindow, this, null ) );
+    b = toolBar.add( new LoadGraphFileAction(  this, false ) );
     b.setIcon( new ImageIcon(getClass().getResource("images/new/load36.gif") ) );
     b.setToolTipText("Load Graph");
     b.setBorderPainted(false);
     b.setRolloverEnabled(true);
 
-    saveButton = toolBar.add( new SaveAsGMLAction( networkView, null ) );
+    saveButton = toolBar.add( new SaveAsGMLAction(false ) );
     saveButton.setIcon( new ImageIcon(getClass().getResource("images/new/save36.gif") ) );
     saveButton.setToolTipText("Save Graph as GML");
     saveButton.setBorderPainted(false);
@@ -443,7 +410,7 @@ newState = true; //TODO: remove this once the GraphViewChangeListener system is 
 
 
 
-    final ZoomAction zoom_in = new ZoomAction(networkView, 1.1);
+    final ZoomAction zoom_in = new ZoomAction( 1.1);
     final JButton zoomInButton = new JButton();
     zoomInButton.setIcon(new ImageIcon(getClass().getResource("images/new/zoom_in36.gif")));
     zoomInButton.setToolTipText("Zoom In");
@@ -454,41 +421,41 @@ newState = true; //TODO: remove this once the GraphViewChangeListener system is 
           zoom_in.zoom();
         }
 
-         public void 	mouseEntered(MouseEvent e) {}
+        public void 	mouseEntered(MouseEvent e) {}
 
-         public void 	mouseExited(MouseEvent e) {}
+        public void 	mouseExited(MouseEvent e) {}
 
-         public void 	mousePressed(MouseEvent e) {
-           zoomInButton.setSelected( true );
+        public void 	mousePressed(MouseEvent e) {
+          zoomInButton.setSelected( true );
         }
 
-         public void 	mouseReleased(MouseEvent e) {
-           zoomInButton.setSelected( false );
+        public void 	mouseReleased(MouseEvent e) {
+          zoomInButton.setSelected( false );
         }
       } );
 
 
-    final ZoomAction zoom_out = new ZoomAction(networkView, 0.9);
+    final ZoomAction zoom_out = new ZoomAction( 0.9);
     final JButton zoomOutButton = new JButton();
     zoomOutButton.setIcon(new ImageIcon(getClass().getResource("images/new/zoom_out36.gif")));
     zoomOutButton.setToolTipText("Zoom Out");
     zoomOutButton.setBorderPainted(false);
     zoomOutButton.setRolloverEnabled(true);
     zoomOutButton.addMouseListener( new MouseListener () {
-         public void 	mouseClicked(MouseEvent e) {
+        public void 	mouseClicked(MouseEvent e) {
           zoom_out.zoom();
         }
 
-         public void 	mouseEntered(MouseEvent e) {}
+        public void 	mouseEntered(MouseEvent e) {}
 
-         public void 	mouseExited(MouseEvent e) {}
+        public void 	mouseExited(MouseEvent e) {}
 
-         public void 	mousePressed(MouseEvent e) {
-           zoomOutButton.setSelected( true );
+        public void 	mousePressed(MouseEvent e) {
+          zoomOutButton.setSelected( true );
         }
 
-         public void 	mouseReleased(MouseEvent e) {
-           zoomOutButton.setSelected( false );
+        public void 	mouseReleased(MouseEvent e) {
+          zoomOutButton.setSelected( false );
         }
       } );
 
@@ -503,55 +470,55 @@ newState = true; //TODO: remove this once the GraphViewChangeListener system is 
 
         }
       }
-                                   );
+                                         );
 
-     zoomInButton.addMouseWheelListener( new MouseWheelListener () {
-         public void	mouseWheelMoved(MouseWheelEvent e) {
-         if ( e.getWheelRotation() < 0 ) {
+    zoomInButton.addMouseWheelListener( new MouseWheelListener () {
+        public void	mouseWheelMoved(MouseWheelEvent e) {
+          if ( e.getWheelRotation() < 0 ) {
             zoom_in.zoom();
           } else {
             zoom_out.zoom();
           }
-         }
-       }
-                                   );
+        }
+      }
+                                        );
 
     toolBar.add( zoomOutButton );
     toolBar.add( zoomInButton );
 
-    b = toolBar.add(new ZoomSelectedAction(networkView));
+    b = toolBar.add( new ZoomSelectedAction() );
     b.setIcon(new ImageIcon(getClass().getResource("images/new/crop36.gif")));
     b.setToolTipText("Zoom Selected Region");
     b.setBorderPainted(false);
 
-    b = toolBar.add(new FitContentAction(networkView));
+    b = toolBar.add( new FitContentAction() );
     b.setIcon(new ImageIcon(getClass().getResource("images/new/fit36.gif")));
     b.setToolTipText("Zoom out to display all of current Graph");
     b.setBorderPainted(false);
 
     // toolBar.addSeparator();
 
-    b = toolBar.add(new ShowAllAction(networkView));
+    b = toolBar.add( new ShowAllAction() );
     b.setIcon(new ImageIcon(getClass().getResource("images/new/add36.gif")));
     b.setToolTipText("Show all Nodes and Edges (unhiding as necessary)");
     b.setBorderPainted(false);
 
 
-    b = toolBar.add(new HideSelectedAction(networkView));
+    b = toolBar.add( new HideSelectedAction( false ) );
     b.setIcon(new ImageIcon(getClass().getResource("images/new/delete36.gif")));
     b.setToolTipText("Hide Selected Region");
     b.setBorderPainted(false);
 
     toolBar.addSeparator();
 
-    b = toolBar.add(new AnnotationGui(cyWindow));
+    b = toolBar.add( new AnnotationGui() );
     b.setIcon(new ImageIcon(getClass().getResource("images/new/ontology36.gif")));
     b.setToolTipText("Add Annotation Ontology to Nodes");
     b.setBorderPainted(false);
 
     toolBar.addSeparator();
 
-    vizButton = toolBar.add(new SetVisualPropertiesAction(cyWindow, false));
+    vizButton = toolBar.add(new SetVisualPropertiesAction( false) );
     vizButton.setIcon(new ImageIcon(getClass().getResource("images/new/color_wheel36.gif")));
     vizButton.setToolTipText("Set Visual Properties");
     vizButton.setBorderPainted(false);

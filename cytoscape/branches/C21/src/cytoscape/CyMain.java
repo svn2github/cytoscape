@@ -48,6 +48,7 @@ import cytoscape.data.readers.InteractionsReader;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.data.servers.*;
 import cytoscape.view.CyWindow;
+import cytoscape.view.CytoscapeDesktop;
 
 import com.jgoodies.plaf.FontSizeHints;
 import com.jgoodies.plaf.LookUtils;
@@ -79,102 +80,81 @@ public class CyMain implements WindowListener {
    */
   public CyMain ( String [] args ) throws Exception {
     
+
+    // setup the Splash Screen
     splashScreen = new SplashScreen();
+    
     //parse args and config files into config object
     CytoscapeConfig config = new CytoscapeConfig(args);
     splashScreen.advance(10);
 
     //handle special cases of arguments
-    if (config.helpRequested()) {
-      System.out.println(version);
-      System.out.println(config.getUsage());
-      exit(0);
-    }
-    else if (config.inputsError()) {
-      System.out.println(version);
-      System.out.println("------------- Inputs Error");
-      System.out.println(config.getUsage ());
-      System.out.println(config);
-      exit(1);
-    }
-    else if (config.displayVersion()) {
-      System.out.println (version);
-      exit(0);
-    }
+    if ( config.helpRequested() )
+      displayHelp( config );
+    else if ( config.inputsError() ) 
+      inputError( config );
+    else if ( config.displayVersion() )
+      displayHelp( config );
 
     //set up the logger
     setupLogger(config);
     logger.info(config.toString());
-    if (splashScreen != null) {splashScreen.advance(20);}
-
+    splashScreen.advance(20);
+      
     //try to create a bioDataServer
     String bioDataDirectory = config.getBioDataDirectory();
     BioDataServer bioDataServer = null;
-    if (bioDataDirectory != null) {
+    if ( bioDataDirectory != null ) {
       try {
-        bioDataServer = new BioDataServer(bioDataDirectory);
-      } catch (Exception e) {
-        logger.severe("Unable to load bioDataServer from '" + bioDataDirectory + "'");
-        logger.severe(e.getMessage());
+        bioDataServer = new BioDataServer( bioDataDirectory );
+      } catch ( Exception e ) {
+        logger.severe( "Unable to load bioDataServer from '" + bioDataDirectory + "'" );
+        logger.severe( e.getMessage() );
         e.printStackTrace();
       }
     }
 
     //create the global CytoscapeObj object
     CytoscapeObj cytoscapeObj = new CytoscapeObj(this, config, logger, bioDataServer);
+    Cytoscape.setCytoscapeObj( cytoscapeObj );
+
     //get some standard fields for doing name resolution
-    boolean canonicalize = Semantics.getCanonicalize(cytoscapeObj);
-    String defaultSpecies = Semantics.getDefaultSpecies(null, cytoscapeObj);
-    if (splashScreen != null) {splashScreen.advance(25);}
+    boolean canonicalize = Semantics.getCanonicalize( cytoscapeObj );
+    String defaultSpecies = Semantics.getDefaultSpecies( null, cytoscapeObj );
+    splashScreen.advance(25);
 
-    //window title
-    String title = null;
-
-    //load a network if requested
-    CyNetwork network = null;
+    //TODO: make CytoscapeDesktop find out about everything loaded when it starts up.
+    //CytoscapeDesktop cd = new CytoscapeDesktop();
+    Cytoscape.getDesktop();
+ 
+    // Load all requested networks
     String geometryFilename = config.getGeometryFilename();
     String interactionsFilename = config.getInteractionsFilename();
-
-    if ( geometryFilename != null && interactionsFilename != null ) {
-      StringBuffer sb = new StringBuffer("Config specifies both interactions file '");
-      sb.append(interactionsFilename + "' and GML file '" + geometryFilename + "'");
-      sb.append("; using GML file");
-      logger.severe(sb.toString());
-    }
-
-     if ( geometryFilename != null ) {
- 
-      logger.info("reading " + geometryFilename + "...");
-      network = Cytoscape.createNetwork( geometryFilename,
-                                         Cytoscape.FILE_GML,
-                                         false,
-                                         null,
-                                         null );
-      logger.info("  done");
-      title = geometryFilename;
-    }
-
-    else if ( interactionsFilename != null ) {
-      logger.info("reading " + interactionsFilename + "...");
-     
-      network = Cytoscape.createNetwork( interactionsFilename,
-                                         Cytoscape.FILE_SIF,
-                                         canonicalize,
-                                         bioDataServer,
-                                         defaultSpecies );
-      logger.info("  done");
-      title = interactionsFilename;
-    }
     
-     if (network == null) {//none specified, or failed to read
-      logger.info("no graph read, creating empty network");
-      network = Cytoscape.createNetwork();
-      splashScreen.noGraph = true;
-      title = "(Untitled)";
+
+    if ( geometryFilename != null ) {
+      Cytoscape.createNetwork( geometryFilename,
+                               Cytoscape.FILE_GML,
+                               false,
+                               null,
+                               null );
     }
-     
+
+    if ( interactionsFilename != null ) {
+      Cytoscape.createNetwork( interactionsFilename,
+                               Cytoscape.FILE_SIF,
+                               canonicalize,
+                               bioDataServer,
+                               defaultSpecies );
+    }
+    if ( splashScreen != null )
+      splashScreen.advance(80);
+
+  
+    //TODO: move to Cytoscape?
     //add the semantics we usually expect
-     Semantics.applyNamingServices(network, cytoscapeObj);
+    //Semantics.applyNamingServices(network, cytoscapeObj);
+
 
     //load any specified data attribute files
     logger.info("reading attribute files");
@@ -185,36 +165,58 @@ public class CyMain implements WindowListener {
                               defaultSpecies);
     logger.info(" done");
 
+
+    Cytoscape.loadExpressionData( config.getExpressionFilename() );
+
     //load expression data if specified
-    String expDataFilename = config.getExpressionFilename();
-    if (expDataFilename != null) {
-      logger.info("reading " + expDataFilename + "...");
-      try {
-        ExpressionData expData = new ExpressionData(expDataFilename);
-        network.setExpressionData(expData);
-        if (config.getWhetherToCopyExpToAttribs()) {
-          expData.copyToAttribs( Cytoscape.getNodeNetworkData() );
-        }
-      } catch (Exception e) {
-        logger.severe("Exception reading expression data file '" + expDataFilename + "'");
-        logger.severe(e.getMessage());
-        e.printStackTrace();
-      }
-      logger.info("  done");
-    }
+   //  String expDataFilename = config.getExpressionFilename();
+//     if (expDataFilename != null) {
+//       logger.info("reading " + expDataFilename + "...");
+//       try {
+//         ExpressionData expData = new ExpressionData(expDataFilename);
+//         network.setExpressionData(expData);
+//         if (config.getWhetherToCopyExpToAttribs()) {
+//           expData.copyToAttribs( Cytoscape.getNodeNetworkData() );
+//         }
+//       } catch (Exception e) {
+//         logger.severe("Exception reading expression data file '" + expDataFilename + "'");
+//         logger.severe(e.getMessage());
+//         e.printStackTrace();
+//       }
+//       logger.info("  done");
+//     }
     if (splashScreen!=null) {splashScreen.advance(90);}
 
     //create the window
-    cyWindow = new CyWindow(cytoscapeObj, network, title);
+    // cyWindow = new CyWindow(cytoscapeObj, network, title);
    
     //if ( reader != null ) 
     //  reader.layout(cyWindow.getView());
 
-    cyWindow.showWindow();
+    // cyWindow.showWindow();
+
+   
 
     if (splashScreen!=null) {splashScreen.advance(100);}
   } // ctor
   
+
+
+
+  protected void displayHelp ( CytoscapeConfig config ) {
+    System.out.println(version);
+    System.out.println(config.getUsage());
+    exit(0);
+  }
+
+  protected void inputError ( CytoscapeConfig config  ) {
+    System.out.println(version);
+    System.out.println("------------- Inputs Error");
+    System.out.println(config.getUsage ());
+    System.out.println(config);
+    exit(1);
+  }
+
   /**
    * configure logging:  cytoscape.props specifies what level of logging
    * messages are written to the console; by default, only SEVERE messages

@@ -7,23 +7,21 @@ package cytoscape.actions;
 //-------------------------------------------------------------------------
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
-
-import cytoscape.view.NetworkView;
+import cytoscape.Cytoscape;
+import cytoscape.view.CyNetworkView;
+import cytoscape.util.CytoscapeAction;
 //-------------------------------------------------------------------------
-public class InvertSelectedNodesAction extends AbstractAction {
-    NetworkView networkView;
+public class InvertSelectedNodesAction extends CytoscapeAction {
     
-    public InvertSelectedNodesAction(NetworkView networkView) {
+    public InvertSelectedNodesAction () {
         super("Invert selection");
-        this.networkView = networkView;
+        setPreferredMenu( "Select.Nodes" );
+        setAcceleratorCombo( java.awt.event.KeyEvent.VK_V, ActionEvent.CTRL_MASK );
     }
 
     public void actionPerformed (ActionEvent e) {
         String callerID = "InvertSelectedNodesAction.actionPerformed";
-        networkView.getNetwork().beginActivity(callerID);
-        GinyUtils.invertSelectedNodes(networkView.getView());
-        networkView.redrawGraph(false, false);
-        networkView.getNetwork().endActivity(callerID);
+        GinyUtils.invertSelectedNodes( Cytoscape.getCurrentNetworkView() );
     }
 }
 

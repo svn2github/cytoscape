@@ -8,18 +8,17 @@ package cytoscape.actions;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
-import cytoscape.view.NetworkView;
+import cytoscape.util.CytoscapeAction;
+import cytoscape.Cytoscape;
 //-------------------------------------------------------------------------
-public class ShowAllAction extends AbstractAction {
-    NetworkView networkView;
-    
-    public ShowAllAction(NetworkView networkView) {
+public class ShowAllAction extends CytoscapeAction {
+       
+    public ShowAllAction () {
         super();
-        this.networkView = networkView;
     }
     
     public void actionPerformed(ActionEvent e) {
-        GinyUtils.unHideAll(networkView.getView());
+      GinyUtils.unHideAll( Cytoscape.getCurrentNetworkView() );
         //networkView.redrawGraph(false, true);
     }
 }

@@ -7,22 +7,20 @@ package cytoscape.actions;
 //-------------------------------------------------------------------------
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
-
-import cytoscape.view.NetworkView;
+import cytoscape.util.CytoscapeAction;
+import cytoscape.Cytoscape;
 //-------------------------------------------------------------------------
-public class UnHideSelectedNodesAction extends AbstractAction  {
+public class UnHideSelectedNodesAction extends CytoscapeAction  {
 
-    NetworkView networkView;
-
-    public UnHideSelectedNodesAction(NetworkView networkView) {
-        super ("Un Hide selection");
-        this.networkView = networkView;
+    public UnHideSelectedNodesAction () {
+        super ("UnHide selection");
+        setPreferredMenu( "Select.Nodes" );
+        setAcceleratorCombo( java.awt.event.KeyEvent.VK_U, ActionEvent.CTRL_MASK );
     }
 
     public void actionPerformed (ActionEvent e) {		
-        GinyUtils.unHideSelectedNodes(networkView.getView());
-        GinyUtils.unHideSelectedEdges(networkView.getView());
-        networkView.redrawGraph(false, true);
-    }//action performed
+        GinyUtils.unHideSelectedNodes( Cytoscape.getCurrentNetworkView() );
+        GinyUtils.unHideSelectedEdges( Cytoscape.getCurrentNetworkView() );
+     }//action performed
 }
 

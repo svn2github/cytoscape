@@ -8,33 +8,33 @@ package cytoscape.actions;
 import java.awt.event.*;
 import javax.swing.*;
 
-import cytoscape.view.NetworkView;
+import cytoscape.view.CyNetworkView;
 import cytoscape.data.CyNetworkUtilities;
+import cytoscape.Cytoscape;
+import cytoscape.util.CytoscapeAction;
 
 import ViolinStrings.Strings;
 
-//-------------------------------------------------------------------------
-public class AlphabeticalSelectionAction extends AbstractAction  {
-  
-  NetworkView networkView;
- 
-  public AlphabeticalSelectionAction( NetworkView networkView ) {
+
+public class AlphabeticalSelectionAction extends CytoscapeAction  {
+   
+  public AlphabeticalSelectionAction () {
     super("By Name...");
-    this.networkView = networkView;
+    setPreferredMenu( "Select.Nodes" );
   }
 
 
   public void actionPerformed (ActionEvent e) {
 
     String answer = 
-      (String) JOptionPane.showInputDialog(networkView.getMainFrame(), 
-                                           "<HTML>Select nodes whose <B>name or synonym</B> is like <small>(use \"*\" and \"?\" for wildcards)</small></HTML>");
+      (String) JOptionPane.showInputDialog( Cytoscape.getDesktop(), 
+                                            "<HTML>Select nodes whose <B>name or synonym</B> is like <small>(use \"*\" and \"?\" for wildcards)</small></HTML>");
     if (answer != null && answer.length() > 0) {
-      if ( CyNetworkUtilities.selectNodesStartingWith(networkView.getNetwork(),
-                                                      answer.trim(),
-                                                      networkView.getCytoscapeObj(), networkView ) ){
+      if ( CyNetworkUtilities.selectNodesStartingWith( Cytoscape.getCurrentNetwork(),
+                                                       answer.trim(),
+                                                       Cytoscape.getCytoscapeObj(), Cytoscape.getCurrentNetworkView() ) ){
 						       
-        networkView.redrawGraph(false, false);
+        
       }
 						       
         
@@ -46,10 +46,10 @@ public class AlphabeticalSelectionAction extends AbstractAction  {
           sb.append(" or starting with: ");
           sb.append(answer);
           sb.append(" not found.");
-          JOptionPane.showMessageDialog(networkView.getMainFrame(),
-                                        sb.toString(),
-                                        "Node by name not found",
-                                        JOptionPane.INFORMATION_MESSAGE);
+          JOptionPane.showMessageDialog( Cytoscape.getDesktop(),
+                                         sb.toString(),
+                                         "Node by name not found",
+                                         JOptionPane.INFORMATION_MESSAGE);
         }
     }
   }

@@ -29,6 +29,11 @@ public class ColtCyNetwork
   extends ColtGraphPerspective 
   implements CyNetwork {
     
+
+  public static int uid_counter = 0;
+
+  protected String identifier;
+
   /**
    * @deprecated
    */
@@ -78,7 +83,22 @@ public class ColtCyNetwork
   }
 
   protected void initialize () {
+
+    // TODO: get a better naming system in place
+    Integer i = new Integer( uid_counter );
+    identifier = i.toString();
+    uid_counter++;
+
     clientData = new HashMap();
+  }
+
+  public String getIdentifier () {
+    return identifier;
+  }
+
+  public String setIdentifier ( String new_id ) {
+    identifier = new_id;
+    return identifier;
   }
 
 

@@ -65,7 +65,7 @@ public class JarLoaderCommandLineParser {
                     tmp = g.getOptarg();
                     // try to load the jars.
                     messageBuffer.append("Command line to load jars from directory: "+tmp);
-                    LoadPluginDirectoryAction lpda = new LoadPluginDirectoryAction(cyObj);;
+                    LoadPluginDirectoryAction lpda = new LoadPluginDirectoryAction();
                     lpda.setDir(tmp);
                     lpda.tryDirectory();
                     break;

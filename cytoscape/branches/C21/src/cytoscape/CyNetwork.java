@@ -11,6 +11,11 @@ import cytoscape.data.GraphObjAttributes;
 
 public interface CyNetwork extends GraphPerspective {
 
+
+  public String getIdentifier ();
+
+  public String setIdentifier ( String new_id );
+
   //----------------------------------------//
   // Network Methods
   //----------------------------------------//

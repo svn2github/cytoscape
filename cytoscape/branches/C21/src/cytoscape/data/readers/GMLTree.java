@@ -8,7 +8,7 @@ import java.text.DecimalFormat;
 import giny.view.*;
 import giny.model.*;
 import cytoscape.data.GraphObjAttributes;
-import cytoscape.view.NetworkView;
+import cytoscape.view.CyNetworkView;
 /**
  * This class wraps around GMLNode and provides various methods for
  * constructing a tree structure given other data.
@@ -66,7 +66,7 @@ public class GMLTree{
    * this only concerns itself with x,y position information.
    * @param myView the GraphView used to create the GMLTree
    */
-  public GMLTree(NetworkView networkView){
+  public GMLTree( CyNetworkView networkView){
     //DecimalFormat cf = new DecimalFormat("00");
     DecimalFormat df = new DecimalFormat("####0.0#");
     GraphView myView = networkView.getView();

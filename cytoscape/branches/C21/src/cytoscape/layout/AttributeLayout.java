@@ -43,7 +43,7 @@ import cytoscape.util.GinyFactory;
 
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.Semantics;
-import cytoscape.view.CyWindow;
+import cytoscape.view.CyNetworkView;
 //----------------------------------------------------------------------------------------
 /**
  * This class provides methods for performing operations on a graph related to the
@@ -58,14 +58,14 @@ public class AttributeLayout {
     public static final int CREATE_EDGES = 1;
     public static final int CLEAR_OBJECTS = 2;
     
-    CyWindow cyWindow; //the window to which we're attached
+    CyNetworkView cyWindow; //the window to which we're attached
     
     //list of category nodes created during layout
     protected int[] categoryNodes;
     //list of edges created during create edges operation
     protected int[] createdEdges;
     
-    public AttributeLayout(CyWindow cyWindow) {
+    public AttributeLayout(CyNetworkView cyWindow) {
         this.cyWindow = cyWindow;
     }
     
@@ -193,7 +193,7 @@ public class AttributeLayout {
         //calculated position
         realGP.restoreNodes(this.categoryNodes);
         
-        GraphView realView = cyWindow.getView();
+        GraphView realView = ( GraphView )cyWindow;
         for (Iterator vi = realView.getNodeViewsIterator(); vi.hasNext(); ) {
             NodeView nv = (NodeView)vi.next();
             NodeView layoutV = layoutView.getNodeView( nv.getNode() );

@@ -149,21 +149,21 @@ public CyWindow(CytoscapeObj globalInstance, CyNetwork network, String title) {
 
     mainFrame.setContentPane(this);
     //create the menu objects
-    this.cyMenus = new CyMenus(this);
-    cyMenus.initializeMenus();
-    add(cyMenus.getToolBar(), BorderLayout.NORTH);
-    mainFrame.setJMenuBar(cyMenus.getMenuBar());
+    //this.cyMenus = new CyMenus(this);
+    //cyMenus.initializeMenus();
+    //add(cyMenus.getToolBar(), BorderLayout.NORTH);
+    //mainFrame.setJMenuBar(cyMenus.getMenuBar());
 
     // toggleVisualMapperEnabled();
 
     installGraphView();
     // load vizmapper after menus are done and graph is available
-    loadVizMapper();
+    //loadVizMapper();
     //applyLayout(); do not layout by the default, too slow
-    redrawGraph(false, true);
+    //redrawGraph(false, true);
     //view.fitContent();
     //view.setZoom(view.getZoom()*0.9);
-    setInteractivity(true);
+    //setInteractivity(true);
 
     //add a listener to save the visual mapping catalog on exit
     //this should eventually be replaced by a method in Cytoscape.java itself
@@ -229,7 +229,7 @@ protected void createGraphView() {
                            + " this.graphViewController.");
     }
 
-    addViewContextMenus();
+    // addViewContextMenus();
 
     /*
      * These are initial values for the view parameters, which are mostly
@@ -365,31 +365,31 @@ protected void loadVizMapper() {
 
     // BUG: vizMapper.applyAppearances() gets called twice here
 
-    CalculatorCatalog calculatorCatalog = getCytoscapeObj().getCalculatorCatalog();
-    //try to get visual style from properties
-    Properties configProps = getCytoscapeObj().getConfiguration().getProperties();
-    VisualStyle vs = null;
-    String vsName = configProps.getProperty("visualStyle");
-    if (vsName != null) {vs = calculatorCatalog.getVisualStyle(vsName);}
-    if (vs == null) {//none specified, or not found; use the default
-        vs = calculatorCatalog.getVisualStyle("default");
-    }
+  //   CalculatorCatalog calculatorCatalog = getCytoscapeObj().getCalculatorCatalog();
+//     //try to get visual style from properties
+//     Properties configProps = getCytoscapeObj().getConfiguration().getProperties();
+//     VisualStyle vs = null;
+//     String vsName = configProps.getProperty("visualStyle");
+//     if (vsName != null) {vs = calculatorCatalog.getVisualStyle(vsName);}
+//     if (vs == null) {//none specified, or not found; use the default
+//         vs = calculatorCatalog.getVisualStyle("default");
+//     }
 
-    //create the vizMapping objects
-    this.vizMapper = new VisualMappingManager(this, calculatorCatalog, vs,
-                                              getCytoscapeObj().getLogger());
-    this.vizMapUI = new VizMapUI(this.vizMapper, this.mainFrame);
-    //make UI a listener on the manager
-    vizMapper.addChangeListener( vizMapUI.getStyleSelector() );
+//     //create the vizMapping objects
+//     this.vizMapper = new VisualMappingManager(this, calculatorCatalog, vs,
+//                                               getCytoscapeObj().getLogger());
+//     this.vizMapUI = new VizMapUI(this.vizMapper, this.mainFrame);
+//     //make UI a listener on the manager
+//     vizMapper.addChangeListener( vizMapUI.getStyleSelector() );
 
-    // easy-access visual styles changer
-    JToolBar toolBar = getCyMenus().getToolBar();
-    JComboBox styleBox = vizMapUI.getStyleSelector().getToolbarComboBox();
-    Dimension newSize = new Dimension(150, (int)styleBox.getPreferredSize().getHeight());
-    styleBox.setMaximumSize(newSize);
-    styleBox.setPreferredSize(newSize);
-    toolBar.add(styleBox);
-    toolBar.addSeparator();
+//     // easy-access visual styles changer
+//     JToolBar toolBar = getCyMenus().getToolBar();
+//     JComboBox styleBox = vizMapUI.getStyleSelector().getToolbarComboBox();
+//     Dimension newSize = new Dimension(150, (int)styleBox.getPreferredSize().getHeight());
+//     styleBox.setMaximumSize(newSize);
+//     styleBox.setPreferredSize(newSize);
+//     toolBar.add(styleBox);
+//     toolBar.addSeparator();
 }
 //------------------------------------------------------------------------------
 /**

@@ -37,6 +37,7 @@ public class CytoscapeConfig {
   protected boolean copyExpToAttribs = true;
   protected boolean yfiles = true;
   protected String graphLibrary = null;
+  protected String viewType = "tabbed";
   //protected File projectPropsFile = null;
 
   protected String [] layoutStrategies = {"organic", "hierarchical", "embedded", "circular"};
@@ -74,6 +75,17 @@ public class CytoscapeConfig {
     return returnVal;
   }
  
+  public int getViewType() {
+    
+    if ( viewType.equals( "tabbed" ) ) 
+      return cytoscape.view.CytoscapeDesktop.TABBED_VIEW;
+    else if ( viewType.equals( "internal" ) ) 
+      return cytoscape.view.CytoscapeDesktop.INTERNAL_VIEW;
+    else if ( viewType.equals( "external" ) ) 
+      return cytoscape.view.CytoscapeDesktop.EXTERNAL_VIEW;
+    return cytoscape.view.CytoscapeDesktop.TABBED_VIEW;
+  }
+
   /**
    * @return the given location of a passed GML file
    */
@@ -410,6 +422,9 @@ public class CytoscapeConfig {
   //------------------------------------------------------------------------------------------
   protected void parseArgs ()
   {
+
+   
+
     helpRequested = false;
     boolean argsError = false;
     String tmp;
@@ -419,11 +434,14 @@ public class CytoscapeConfig {
 
     LongOpt[] longopts = new LongOpt[0];
     Getopt g = new Getopt ("cytoscape", commandLineArguments, argSpecificationString, longopts);
-    g.setOpterr (false); // We'll do our own error handling
+    g.setOpterr(false); // We'll do our own error handling
 
     int c;
     while ((c = g.getopt ()) != -1) {
       switch (c) {
+      case 't':
+        viewType = g.getOptarg();
+        break;
       case 'n':
         nodeAttributeFilenames.add (g.getOptarg ());
         break;

@@ -31,18 +31,19 @@ public class GraphObjectSelection extends JPanel implements ActionListener {
   GraphObjAttributes nodeAttributes;
   GraphObjAttributes edgeAttributes;
   PGraphView graphView;
-  NetworkView networkView;
+  CyNetworkView networkView;
 
-  public GraphObjectSelection ( NetworkView networkView  ) {
-    this.networkView = networkView;
-    this.cyNetwork = networkView.getNetwork();
-    
-    this.nodeAttributes = cyNetwork.getNodeAttributes();
-    this.edgeAttributes = cyNetwork.getEdgeAttributes();
+  public GraphObjectSelection (   ) {
+   
     initialize();
   }
 
   protected void initialize () {
+
+    networkView = Cytoscape.getCurrentNetworkView();
+    cyNetwork = networkView.getNetwork();
+    nodeAttributes = Cytoscape.getNodeNetworkData();
+    edgeAttributes = Cytoscape.getEdgeNetworkData();
 
     // Create the Node Selection Panel
     JPanel searchPanel = new JPanel();

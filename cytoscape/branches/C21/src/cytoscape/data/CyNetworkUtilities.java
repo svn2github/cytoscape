@@ -38,9 +38,10 @@ import javax.swing.JOptionPane;
 import giny.model.*;
 import giny.view.*;
 
+import cytoscape.Cytoscape;
 import cytoscape.CytoscapeObj;
 import cytoscape.data.GraphObjAttributes;
-import cytoscape.view.NetworkView;
+import cytoscape.view.CyNetworkView;
 import cytoscape.CyNetwork;
 import ViolinStrings.Strings;
 
@@ -55,7 +56,7 @@ public class CyNetworkUtilities {
 /**
  * Saves all selected nodes in the current view to a file with the given name.
  */
-public static boolean saveSelectedNodeNames(NetworkView networkView, CyNetwork network, String filename) {
+public static boolean saveSelectedNodeNames( CyNetworkView networkView, CyNetwork network, String filename) {
     if (networkView == null || network == null || filename == null) {return false;}
     
     GraphView graphView = networkView.getView();
@@ -124,7 +125,7 @@ public static boolean saveVisibleNodeNames(CyNetwork network, String filename) {
  * match the given key, allowing multiple selection queries to be concatenated.
  */
 public static boolean selectNodesStartingWith(CyNetwork network, String key,
-                                           CytoscapeObj cytoscapeObj, NetworkView networkView) {
+                                           CytoscapeObj cytoscapeObj, CyNetworkView networkView) {
     if (network == null || key == null || networkView == null) {return false;}
     key = key.toLowerCase();
     boolean found = false;

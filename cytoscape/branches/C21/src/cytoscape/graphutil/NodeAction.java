@@ -6,7 +6,7 @@
 
 
 package cytoscape.graphutil;
-
+import cytoscape.*;
 import cytoscape.view.*;
 import cytoscape.browsers.*;
 
@@ -61,7 +61,7 @@ public class NodeAction {
    * This will open a Node Attribute browser
    */
   public static JMenuItem viewNodeAttributeBrowser ( Object[] args, PNode node ) {
-    final NetworkView network = ( NetworkView )args[0];
+    final CyNetworkView network = ( CyNetworkView )args[0];
     final PNodeView view = ( PNodeView )node;
     return new JMenuItem( new AbstractAction( "Attribute Browser" ) {
           public void actionPerformed ( ActionEvent e ) {
@@ -69,7 +69,7 @@ public class NodeAction {
             SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
 
-                  List nodes = network.getView().getSelectedNodes();
+                  List nodes = network.getSelectedNodes();
                   Object[] objects;
                   if ( !nodes.isEmpty() ) {
                     if ( !view.isSelected() ) {
@@ -86,7 +86,7 @@ public class NodeAction {
     TabbedBrowser nodeBrowser = new TabbedBrowser ( objects,
                                                     network.getNetwork().getNodeAttributes(),
                                                     new Vector(),
-                                                    network.getCytoscapeObj().
+                                                    Cytoscape.getCytoscapeObj().
                                                     getConfiguration().getProperties().
                                                     getProperty("webBrowserScript",
                                                                  "noScriptDefined") ,
@@ -99,8 +99,8 @@ public class NodeAction {
    * Instant Node Editing
    */
   public static JMenuItem editNode ( Object[] args, PNode node ) {
-    final NetworkView network = ( NetworkView )args[0];
-    final GraphView v = network.getView();
+    final CyNetworkView network = ( CyNetworkView )args[0];
+    final GraphView v = network;
     final PNodeView nv = ( PNodeView )node;
 
     JMenu editMenu = new JMenu( "<html>Node Editing <I><small>(short-term)</I></small></html>");
