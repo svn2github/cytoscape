@@ -49,9 +49,9 @@ In order to compile Cytoscape 1.1 from the source files, you will need a copy of
   </p>
 <? if ($in_production == false)  {
   echo "<P>&nbsp;<P>Debug:  [will not appear in production environment]<P>";
-  echo "Link 1: $cyto1_install_anywhere <BR>";
-  echo "Link 2: $cyto1_gz_east	 <BR";
-  echo "Link 3: $cyto1_zip_east    <BR>";
-  echo "Link 4: $cyto1_source_east <BR>";
+  echo "Install Anywhere: $cyto1_install_anywhere <BR>";
+  echo "Gzipped Link: $cyto1_gz_east	 <BR";
+  echo "Zipped Link: $cyto1_zip_east    <BR>";
+  echo "Source Link: $cyto1_source_east <BR>";
   }
 ?>    
