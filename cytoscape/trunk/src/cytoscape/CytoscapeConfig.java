@@ -138,7 +138,6 @@ public int getNumberOfNodeAttributeFiles ()
 //------------------------------------------------------------------------------------------
 public int getNumberOfEdgeAttributeFiles ()
 {
-  System.out.println ("number of edge attributes: " + edgeAttributeFilenames.size ());
   return edgeAttributeFilenames.size ();
 }
 //------------------------------------------------------------------------------------------
@@ -604,7 +603,6 @@ protected void readProjectFile ()
 
   if (defaultLayouts.length > 0) {
     defaultLayoutStrategy = defaultLayouts [0];
-    System.out.println ("readProject file, setting layout to: " + defaultLayoutStrategy);
     }
 
   CytoscapeWindow.debugLog.append ("config.readProjectFile, propsFile count: " + propsFiles.length + "\n");
