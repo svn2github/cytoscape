@@ -18,7 +18,8 @@ import cytoscape.plugin.*;
 
 import cytoscape.giny.*;
 
-
+import giny.view.GraphView;
+import giny.util.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -39,7 +40,8 @@ public class CytoscapeDesktop
     JFrame 
   implements
     PropertyChangeListener,
-    PluginListener {
+    PluginListener,
+    CyWindow {
    
 
 
@@ -257,7 +259,7 @@ public class CytoscapeDesktop
       menuFrame.setVisible( true );
     }
 
-    
+    Cytoscape.getCytoscapeObj().getPluginRegistry().addPluginListener( this );
 
     //------------------------------//
     // Set up the VizMapper
@@ -298,6 +300,46 @@ public class CytoscapeDesktop
 
   }
 
+  //----------------------------------------//
+  // Common Desktop Variables
+
+
+  /**
+   * @deprecated
+   * Returns a reference to the global Cytoscape object.
+   * {@link cytoscape.Cytoscape#getCytoscapeObj} 
+   */
+  public CytoscapeObj getCytoscapeObj () {
+    return Cytoscape.getCytoscapeObj();
+  }
+
+  /**
+   * @deprecated
+   * returns the network displayed in this window.
+   * { @link cytoscape.Cytoscape#getCurrentNetwork}
+   */
+  public CyNetwork getNetwork () {
+    return Cytoscape.getCurrentNetwork();
+  }
+ 
+  /**
+   * @deprecated
+   * Returns the UI component that renders the displayed graph.
+   * {@link cytoscape.Cytoscape#getCurrentNetworkView}
+   */
+  public GraphView getView () {
+    return ( GraphView )Cytoscape.getCurrentNetworkView();
+  }
+
+ 
+  /**
+   * @deprecated
+   * {@link cytoscape.Cytoscape#getDesktop}
+   */
+  public JFrame getMainFrame () {
+    return ( JFrame )this;
+  }
+
   /**
    * Return the view type for this CytoscapeDesktop
    */
@@ -305,17 +347,135 @@ public class CytoscapeDesktop
     return VIEW_TYPE;
   }
 
-  /**
-   * Returns the visual mapping manager that controls the appearance
-   * of nodes and edges in this display.
-   */
-  public VisualMappingManager getVizMapManager() {return vizMapper;}
+
+  public CyMenus getCyMenus () {
+    return cyMenus;
+  }
+
+  //------------------------------//
+  // Deprecated CyWindow Methods
+
+  public void setNewNetwork( CyNetwork newNetwork ) {}
+
 
   /**
-   * returns the top-level UI object for the visual mapper.
+   * @deprecated
    */
-  public VizMapUI getVizMapUI() {return vizMapUI;}
-  
+  public String getWindowTitle () {
+    return "CD";
+  }
+
+  /**
+   * @deprecated
+   * { @link CyNetworkView#setTitle( String ) }
+   */
+  public void setWindowTitle ( String newTitle ) {
+  }
+
+  /**
+   * @deprecated
+   */
+  public void setInteractivity ( boolean newState ) {}
+
+
+  /**
+   * @deprecated
+   * {@link CyNetworkView#redrawGraph( boolean, boolean ) }
+   * Redraws the graph - equivalent to redrawGraph(false, true).
+   * That is, no new layout will be performed, but the visual
+   * appearances will be reapplied.
+   */
+  public void redrawGraph() {
+    Cytoscape.getCurrentNetworkView().redrawGraph( false, true );
+  }
+
+  /**
+   * @deprecated
+   * {@link CyNetworkView#redrawGraph( boolean, boolean ) }
+   * Redraws the graph - equivalent to redrawGraph(doLayout, true).
+   * That is, the visual appearances will be reapplied, and layout
+   * will be done iff the argument is true.
+   */
+  public void redrawGraph(boolean doLayout) {
+    // apply appearances by default
+    Cytoscape.getCurrentNetworkView().redrawGraph( doLayout, true );
+  }
+
+  /**
+   * @deprecated
+   * {@link CyNetworkView#redrawGraph( boolean, boolean ) }  
+   * Redraws the graph. A new layout will be performed if the first
+   * argument is true, and the visual appearances will be recalculated
+   * and reapplied by the visual mapper if the second argument is true
+   * and the visual mapper is not disabled.
+   */
+  public void redrawGraph(boolean doLayout, boolean applyAppearances) {
+    Cytoscape.getCurrentNetworkView().redrawGraph( doLayout, applyAppearances );
+  }
+
+  /**
+   * @deprecated
+   */
+  public void showWindow ( int width, int height) {
+  }
+
+  /**
+   * @deprecated
+   */
+  public void showWindow() {}
+
+  /**
+   * @deprecated
+   */
+  public void applyLayout ( GraphView lview ) {
+    //Cytoscape.getCurrentNetworkView().applyLayout( new SpringEmbeddedLayouter() );
+  }
+
+  /**
+   * @deprecated
+   */
+  public void applySelLayout() {
+    
+    //int[] selNodes = Cytoscape.getCurrentNetworkView().getSelectedNodeIndices();
+    //int[] selEdges = Cytoscape.getCurrentNetworkView().getSelectedEdgeIndices();
+    //Cytoscape.getCurrentNetworkView().applyLockedLayout( new SpringEmbeddedLayouter(), selNodes, selEdges );
+
+  }
+
+  /**
+   * @deprecated
+   */
+  public void applyVizmapSettings() {
+    Cytoscape.getCurrentNetworkView().redrawGraph( false, true );
+  }
+
+  /**
+   * @deprecated
+   */
+  public void setVisualMapperEnabled(boolean newState) {
+    Cytoscape.getCurrentNetworkView().setVisualMapperEnabled( newState );
+  }
+
+  /**
+   * @deprecated
+   */
+  public void toggleVisualMapperEnabled() {
+    Cytoscape.getCurrentNetworkView().toggleVisualMapperEnabled();
+  }
+
+  /**
+   * @deprecated
+   */
+  public void switchToReadOnlyMode () {
+  }
+ 
+  /**
+   * @deprecated
+   */
+  public void switchToEditMode (){
+  }
+
+
   /**
    * Load in the Plugins
    */
@@ -324,7 +484,16 @@ public class CytoscapeDesktop
     PluginUpdateList pul = Cytoscape.getCytoscapeObj().getPluginRegistry().getPluginsLoadedSince(0);
     Class neededPlugin[] = pul.getPluginArray();
     for (int i = 0; i < neededPlugin.length; i++) {
-      // AbstractPlugin.loadPlugin(neededPlugin[i], Cytoscape.getCytoscapeObj(), this);
+      if ( AbstractPlugin.class .isAssignableFrom( neededPlugin[i] ) ) {
+        AbstractPlugin.loadPlugin( neededPlugin[i], 
+                                   Cytoscape.getCytoscapeObj(), 
+                                   ( CyWindow )this);
+      } 
+
+      else if ( CytoscapePlugin.class.isAssignableFrom( neededPlugin[i] ) ) {
+        // System.out.println( "CytoscapePlugin Loaded" );
+        CytoscapePlugin.loadPlugin( neededPlugin[i] );
+      }
     }
     lastPluginRegistryUpdate = pul.getTimestamp();
     //add self as listener to the PluginRegistry from the shared CytoscapeObj
@@ -336,14 +505,43 @@ public class CytoscapeDesktop
    * currently loaded plugins.
    */
   public void pluginRegistryChanged(PluginEvent event) {
+
+    System.out.println( "CD PluginRegistry Changed: "+event );
+
     //poll Plugin Registry for new plugins since last update
     PluginUpdateList pul = Cytoscape.getCytoscapeObj().getPluginRegistry().getPluginsLoadedSince(lastPluginRegistryUpdate);
     Class neededPlugin[] = pul.getPluginArray();
     for (int i = 0; i < neededPlugin.length; i++) {
-      // AbstractPlugin.loadPlugin(neededPlugin[i], globalInstance, this);
+
+      if ( AbstractPlugin.class .isAssignableFrom( neededPlugin[i] ) ) {
+         System.out.println( "AbstractPlugin Loaded" );
+        AbstractPlugin.loadPlugin( neededPlugin[i], 
+                                   Cytoscape.getCytoscapeObj(), 
+                                   ( CyWindow )this);
+      } 
+
+      else if ( CytoscapePlugin.class.isAssignableFrom( neededPlugin[i] ) ) {
+        // System.out.println( "CytoscapePlugin Loaded" );
+        CytoscapePlugin.loadPlugin( neededPlugin[i] );
+      }
     }
     lastPluginRegistryUpdate = pul.getTimestamp();
   }
+
+  /**
+   * Returns the visual mapping manager that controls the appearance
+   * of nodes and edges in this display.
+   */
+  public VisualMappingManager getVizMapManager() {return vizMapper;}
+
+ 
+
+  /**
+   * returns the top-level UI object for the visual mapper.
+   */
+  public VizMapUI getVizMapUI() {return vizMapUI;}
+  
+
 
   /**
    * Create the VizMapper and the UI for it.
@@ -397,6 +595,28 @@ public class CytoscapeDesktop
       toolBar.addSeparator();
     }
   }
+
+
+  //----------------------------------------//
+  // Focus Management
+
+  /**
+   * @param style the NEW VisualStyle
+   * @return the OLD VisualStyle
+   */
+  public VisualStyle setVisualStyle ( VisualStyle style ) {
+
+    VisualStyle old_style = ( VisualStyle )vizMapUI.
+      getStyleSelector().
+      getToolbarComboBox().
+      getSelectedItem();
+
+    vizMapper.setVisualStyle( style );
+    vizMapUI.getStyleSelector().getToolbarComboBox().setSelectedItem( style );
+
+    return old_style;
+  }
+
 
 
   protected void updateFocus ( String network_view_id ) {

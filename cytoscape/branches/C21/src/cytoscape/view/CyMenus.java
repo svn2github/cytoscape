@@ -171,6 +171,8 @@ public class CyMenus  implements GraphViewChangeListener {
     if ( action.isInToolBar() ) {
       getToolBar().addAction( action );
     }
+    
+
   }
 
   /**

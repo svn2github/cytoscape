@@ -78,25 +78,37 @@ public abstract class AbstractPlugin {
                                      CyWindow cyWindow) {
         if (pluginClass == null) {return false;}
 
+
+        System.out.println( "AbstractPlugin loading: "+pluginClass );
+
         //look for constructor with CyWindow argument
         if (cyWindow != null) {
             Constructor ctor = null;
             try {
                 Class[] argClasses = new Class[1];
-                argClasses[0] =  cyWindow.getClass();
+                argClasses[0] =  CyWindow.class;//cyWindow.getClass();
                 ctor = pluginClass.getConstructor(argClasses);
-            } catch (SecurityException se) {
-                System.err.println("In AbstractPlugin.loadPlugin:");
-                System.err.println(se.getMessage());
-                se.printStackTrace();
-                return false;
-            } catch (NoSuchMethodException nsme) {
-                //ignore, there are other constructors to look for
+            } catch ( Exception e ) {
+              e.printStackTrace();
             }
+
+
+// (SecurityException se) {
+//                 System.err.println("In AbstractPlugin.loadPlugin:");
+//                 System.err.println(se.getMessage());
+//                 se.printStackTrace();
+//                 return false;
+//             } catch (NoSuchMethodException nsme) {
+//                 //ignore, there are other constructors to look for
+//             }
+
+            
+
             if (ctor != null) {
                 try {
                     Object[] args = new Object[1];
                     args[0] = cyWindow;
+                    System.out.println( "Creating new Instance of: "+pluginClass );
                     return ctor.newInstance(args) != null;
                 } catch (Exception e) {
                     System.err.println("In AbstractPlugin.loadPlugin:");

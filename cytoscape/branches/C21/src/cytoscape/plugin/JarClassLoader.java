@@ -38,7 +38,8 @@ public class JarClassLoader extends URLClassLoader {
     }
 
     /**
-     * browses the jar file for any classes that extend AbstractPlugin;
+     * browses the jar file for any classes that extend AbstractPlugin or
+     * CytoscapePlugin
      * upon finding such classes, add them to the plug in registry.
      */
     public void loadRelevantClasses() {
@@ -68,14 +69,15 @@ public class JarClassLoader extends URLClassLoader {
                 totalPlugins++;
                 invokePlugin(className);
             }
-            System.out.println(".jar summary: " +
+            System.err.println(".jar summary: " +
                     " entries=" + totalEntries +
                     " classes=" + totalClasses +
                     " plugins=" + totalPlugins);
         }
         catch (Exception e) {
-            System.err.println ("Error thrown: " + e.getMessage ());
+            System.err.println ("Loadrelevantclasses: Error thrown: " + e.getMessage ());
             if(uc==null) System.out.println("uc is null 4e");
+            e.printStackTrace();
         }
     }
 
@@ -94,7 +96,7 @@ public class JarClassLoader extends URLClassLoader {
      * @exception InvocationTargetException if the application raised an
      *            exception
      */
-    public void invokeClass(String name, String[] args)
+    public void invokeClass (String name, String[] args)
             throws ClassNotFoundException,
             NoSuchMethodException,
             InvocationTargetException
@@ -151,7 +153,8 @@ public class JarClassLoader extends URLClassLoader {
     {
         Class c = loadClass(name);
         Class p = AbstractPlugin.class;
-        return p.isAssignableFrom(c);
+        Class cp = CytoscapePlugin.class;
+        return ( p.isAssignableFrom(c) || cp.isAssignableFrom(c) );
     }
 
     /**

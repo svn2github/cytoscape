@@ -87,7 +87,7 @@ public class PluginRegistry {
      */
     public void addPluginToRegistry(Class plugin) throws
             NotAPluginException, PluginAlreadyRegisteredException {
-        if (!AbstractPlugin.class.isAssignableFrom(plugin)) {
+        if (!AbstractPlugin.class.isAssignableFrom(plugin) && !CytoscapePlugin.class.isAssignableFrom( plugin )) {
             throw new NotAPluginException("class: " + plugin.getName()
                     + "is not a plugin");
         }

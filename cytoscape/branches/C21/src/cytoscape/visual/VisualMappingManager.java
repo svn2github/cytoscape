@@ -345,7 +345,7 @@ public class VisualMappingManager extends SubjectBase {
   // Single Node/Edge Mapping Methods
   //------------------------------//
   
-  public void vizmapNode ( CyNodeView nodeView, CyNetworkView network_view  ) {
+  public void vizmapNode ( NodeView nodeView, CyNetworkView network_view  ) {
     CyNode node = ( CyNode )nodeView.getNode();
     NodeAppearanceCalculator nodeAppearanceCalculator =
       visualStyle.getNodeAppearanceCalculator();
@@ -411,5 +411,59 @@ public class VisualMappingManager extends SubjectBase {
     }
   }
 
+  public void vizmapEdge ( EdgeView edgeView, CyNetworkView network_view ) {
+    CyEdge edge = ( CyEdge )edgeView.getEdge();
+    EdgeAppearanceCalculator edgeAppearanceCalculator =
+      visualStyle.getEdgeAppearanceCalculator();
+    edgeAppearanceCalculator.calculateEdgeAppearance
+      (myEdgeApp,edge,network_view.getNetwork());
+
+    if (optimizer == false) {
+      edgeView.setUnselectedPaint(myEdgeApp.getColor());
+      edgeView.setStroke(myEdgeApp.getLineType().getStroke());
+      edgeView.setSourceEdgeEnd
+        (myEdgeApp.getSourceArrow().getGinyArrow());
+      edgeView.setTargetEdgeEnd
+        (myEdgeApp.getTargetArrow().getGinyArrow());
+      Label label = edgeView.getLabel();
+      label.setText(myEdgeApp.getLabel());
+      label.setFont(myEdgeApp.getFont());
+    } else {
+      Paint existingUnselectedPaint = edgeView.getUnselectedPaint();
+      Paint newUnselectedPaint = myEdgeApp.getColor();
+      if (!newUnselectedPaint.equals(existingUnselectedPaint)) {
+        edgeView.setUnselectedPaint(newUnselectedPaint);
+      }
+      Stroke existingStroke = edgeView.getStroke();
+      Stroke newStroke = myEdgeApp.getLineType().getStroke();
+      if (!newStroke.equals(existingStroke)) {
+        edgeView.setStroke(newStroke);
+      }
+
+      int existingSourceEdge = edgeView.getSourceEdgeEnd();
+      int newSourceEdge = myEdgeApp.getSourceArrow().getGinyArrow();
+      if (newSourceEdge != existingSourceEdge) {
+        edgeView.setSourceEdgeEnd(newSourceEdge);
+      }
+
+      int existingTargetEdge = edgeView.getTargetEdgeEnd();
+      int newTargetEdge = myEdgeApp.getTargetArrow().getGinyArrow();
+      if (newTargetEdge != existingTargetEdge) {
+        edgeView.setTargetEdgeEnd(newTargetEdge);
+      }
+
+      Label label = edgeView.getLabel();
+      String existingText = label.getText();
+      String newText = myEdgeApp.getLabel();
+      if (!newText.equals(existingText)) {
+        label.setText(newText);
+      }
+      Font existingFont = label.getFont();
+      Font newFont = myEdgeApp.getFont();
+      if (!newFont.equals(existingFont)) {
+        label.setFont(newFont);
+      }
+    }
+  }
 
 }

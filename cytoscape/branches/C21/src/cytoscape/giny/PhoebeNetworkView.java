@@ -2,15 +2,22 @@ package cytoscape.giny;
 
 import cytoscape.*;
 import cytoscape.view.*;
+import cytoscape.visual.*;
+import cytoscape.layout.*;
 
 import phoebe.*;
 import giny.model.*;
 import giny.view.*;
 
+
 import java.awt.*;
 import javax.swing.*;
 
 import java.util.*;
+import java.util.List;
+
+
+
 
 public class PhoebeNetworkView 
   extends 
@@ -60,7 +67,9 @@ public class PhoebeNetworkView
     // addViewContextMenus();
     clientData = new HashMap();
 
-
+    enableNodeSelection();
+    disableEdgeSelection();
+    
     //TODO:
     //     Add NetworkView specific ToolBars
     
@@ -82,7 +91,7 @@ public class PhoebeNetworkView
     this.title = new_title;
   }
   
-  //TODO: make the vizmapper more self-contained
+  //TODO: set up the proper focus
   public void redrawGraph( boolean layout, boolean vizmap ) { 
     
     Cytoscape.getDesktop().getVizMapManager().applyAppearances();
@@ -171,9 +180,250 @@ public class PhoebeNetworkView
                       + " ("+selectedEdges+" selected)" );
   }
 
+  //-------------------------------//
+  // Layouts and VizMaps
+  
+
+
+  /**
+   * Applies the given edge to the given vizmapper
+   */
+  public boolean applyVizMap ( CyEdge edge ) {
+    return applyVizMap( ( EdgeView )getEdgeView( edge ) );
+  }
+
+  /**
+   * Applies the given edge to the given vizmapper
+   */
+  public boolean applyVizMap ( EdgeView edge_view ) {
+    return applyVizMap( edge_view, ( VisualStyle )getClientData( CytoscapeDesktop.VISUAL_STYLE ) );
+  }
+                        
+  /**
+   * Applies the given edge to the given vizmapper
+   */
+  public boolean applyVizMap ( CyEdge edge, VisualStyle style ) {
+    return applyVizMap( ( EdgeView )getEdgeView( edge ), style );
+  }
+  /**
+   * Applies the given edge to the given vizmapper
+   */
+  public boolean applyVizMap ( EdgeView edge_view, VisualStyle style ) {
+    VisualStyle old_style = Cytoscape.getDesktop().setVisualStyle( style );
+    Cytoscape.getDesktop().getVizMapManager().vizmapEdge( edge_view, this );
+    Cytoscape.getDesktop().setVisualStyle( old_style );
+    return true;
+  }
+      
+  /**
+   * Applies the given node to the given vizmapper
+   */
+  public boolean applyVizMap ( CyNode node ) {
+    return applyVizMap( ( NodeView )getNodeView( node ) );
+  }
+
+  /**
+   * Applies the given node to the given vizmapper
+   */
+  public boolean applyVizMap ( NodeView node_view ) {
+    return applyVizMap( node_view, ( VisualStyle )getClientData( CytoscapeDesktop.VISUAL_STYLE ) );
+  }
+
+  /**
+   * Applies the given node to the given vizmapper
+   */
+  public boolean applyVizMap ( CyNode node, VisualStyle style ) {
+    return applyVizMap( ( NodeView )getNodeView( node ), style );
+  }
+  
+  /**
+   * Applies the given node to the given vizmapper
+   */
+  public boolean applyVizMap ( NodeView node_view, VisualStyle style ) {
+    VisualStyle old_style = Cytoscape.getDesktop().setVisualStyle( style );
+    Cytoscape.getDesktop().getVizMapManager().vizmapNode( node_view, this );
+    Cytoscape.getDesktop().setVisualStyle( old_style );
+    return true;
+  }
+
+  /**
+   * @param style the visual style
+   */
+  public void applyVizmapper ( VisualStyle style ) {
+    VisualStyle old_style = Cytoscape.getDesktop().setVisualStyle( style );
+    redrawGraph( false, true );
+  }
+    
+  /**
+   * Applies the given layout to the entire CyNetworkView
+   */
+  public void applyLayout ( LayoutAlgorithm layout ) {
+    layout.doLayout();
+  }
+
+  /**
+   * Applies the given layout to the entire CyNetworkView,
+   * but locks the given Nodes and Edges in place
+   */
+  public void applyLockedLayout ( LayoutAlgorithm layout, CyNode[] nodes, CyEdge[] edges ) {
+    layout.lockNodes( convertToViews( nodes ) );
+    layout.doLayout();
+  }
+
+  /**
+   * Applies the  given layout to only the given Nodes and Edges
+   */
+  public void applyLayout ( LayoutAlgorithm layout, CyNode[] nodes, CyEdge[] edges) {
+    layout.lockNodes( getInverseViews( convertToViews( nodes ) ) );
+    layout.doLayout();
+  }
+
+
+  /**
+   * Applies the given layout to the entire CyNetworkView,
+   * but locks the given NodeViews and EdgeViews in place
+   */
+  public void applyLockedLayout ( LayoutAlgorithm layout, CyNodeView[] nodes, CyEdgeView[] edges ) {
+    layout.lockNodes(  nodes );
+    layout.doLayout();
+  }
+
+  /**
+   * Applies the  given layout to only the given NodeViews and EdgeViews
+   */
+  public void applyLayout ( LayoutAlgorithm layout, CyNodeView[] nodes, CyEdgeView[] edges ) {
+    layout.lockNodes( getInverseViews( nodes ) );
+    layout.doLayout();
+  }
+
+  /**
+   * Applies the given layout to the entire CyNetworkView,
+   * but locks the given Nodes and Edges in place
+   */
+  public void applyLockedLayout ( LayoutAlgorithm layout, int[] nodes, int[] edges ) {
+    layout.lockNodes( convertToNodeViews( nodes ) );
+    layout.doLayout();
+  }
+
+  /**
+   * Applies the  given layout to only the given Nodes and Edges
+   */
+  public void applyLayout ( LayoutAlgorithm layout, int[] nodes, int[] edges ) {
+
+    layout.lockNodes( getInverseViews( convertToNodeViews( nodes ) ) );
+    layout.doLayout();
+  }
+
+  //--------------------//
+  // Convience Methods
+
+   /**
+   * Sets the Given nodes Selected
+   */
+  public boolean setSelected ( CyNode[] nodes ) {
+    return setSelected( convertToViews( nodes ) );
+  }
+
+  /**
+   * Sets the Given nodes Selected
+   */
+  public boolean setSelected ( NodeView[] node_views ) {
+    for ( int i = 0; i < node_views.length; ++i ) {
+      node_views[i].select();
+    }
+    return true;
+  }
+
+   /**
+   * Sets the Given edges Selected
+   */
+  public boolean setSelected ( CyEdge[] edges ) {
+     return setSelected( convertToViews( edges ) );
+  }
+
+  /**
+   * Sets the Given edges Selected
+   */
+  public boolean setSelected ( EdgeView[] edge_views ) {
+    for ( int i = 0; i < edge_views.length; ++i ) {
+      edge_views[i].select();
+    }
+    return true;
+  }
+
+
+  protected NodeView[] convertToViews ( CyNode[] nodes ) {
+    NodeView[] views = new NodeView[ nodes.length ];
+    for ( int i = 0; i < nodes.length; ++i ) {
+      views[i] = getNodeView( nodes[i] );
+    }
+    return views;    
+  }
+
+  protected EdgeView[] convertToViews ( CyEdge[] edges ) {
+    EdgeView[] views = new EdgeView[ edges.length ];
+    for ( int i = 0; i < edges.length; ++i ) {
+      views[i] = getEdgeView( edges[i] );
+    }
+    return views;    
+  }
+
+
+  protected NodeView[] convertToNodeViews ( int[] nodes ) {
+    NodeView[] views = new NodeView[ nodes.length ];
+    for ( int i = 0; i < nodes.length; ++i ) {
+      views[i] = getNodeView( nodes[i] );
+    }
+    return views;    
+  }
+
+  protected EdgeView[] convertToEdgeViews ( int[] edges ) {
+    EdgeView[] views = new EdgeView[ edges.length ];
+    for ( int i = 0; i < edges.length; ++i ) {
+      views[i] = getEdgeView( edges[i] );
+    }
+    return views;    
+  }
+
+
+
+  protected NodeView[] getInverseViews ( NodeView[] given ) {
+    NodeView[] inverse = new NodeView[ getNodeViewCount() - given.length ];
+    List node_views = getNodeViewsList();
+    int count = 0;
+    Iterator i = node_views.iterator();
+    Arrays.sort( given );
+    while ( i.hasNext() ) {
+      NodeView view = ( NodeView )i.next();
+      if ( Arrays.binarySearch( given, view ) < 0 ) {
+        // not a given, add
+        inverse[count] = view;
+        count++;
+      }
+    }
+    return inverse;
+  }
+
+  protected EdgeView[] getInverseViews ( EdgeView[] given ) {
+    EdgeView[] inverse = new EdgeView[ getEdgeViewCount() - given.length ];
+    List edge_views = getEdgeViewsList();
+    int count = 0;
+    Iterator i = edge_views.iterator();
+    Arrays.sort( given );
+    while ( i.hasNext() ) {
+      EdgeView view = ( EdgeView )i.next();
+      if ( Arrays.binarySearch( given, view ) < 0 ) {
+        // not a given, add
+        inverse[count] = view;
+        count++;
+      }
+    }
+    return inverse;
+  }
 
   //-------------------------------//
   // Misc Startup
+
 
   /**
    * Adds some useful context menus to the graph view.
@@ -205,12 +455,12 @@ public class PhoebeNetworkView
     addContextMethod( "class phoebe.PNodeView",
                            "cytoscape.graphutil.NodeAction",
                            "changeFirstNeighbors",
-                           new Object[] {this } );
+                           new Object[] {  ( CyNetworkView )this } );
 
     addContextMethod( "edu.umd.cs.piccolo.PNodeView",
                            "cytoscape.graphutil.NodeAction",
                            "zoomToNode",
-                           new Object[] {this } );
+                           new Object[] { ( CyNetworkView )this } );
 
     // Add some Edge Context Menus
     addContextMethod( "class phoebe.PEdgeView",
@@ -235,11 +485,11 @@ public class PhoebeNetworkView
     addContextMethod( "class phoebe.util.PEdgeEndIcon",
                            "cytoscape.graphutil.EdgeAction",
                            "edgeEndColor",
-                           new Object[] {this } );
+                           new Object[] { ( CyNetworkView )this } );
     addContextMethod( "class phoebe.util.PEdgeEndIcon",
                            "cytoscape.graphutil.EdgeAction",
                            "edgeEndBorderColor",
-                           new Object[] {this } );
+                           new Object[] { ( CyNetworkView )this } );
 
   }
 
