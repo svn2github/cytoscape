@@ -160,13 +160,13 @@ class FGraphPerspective implements GraphPerspective
   public Edge hideEdge(Edge edge)
   {
     if (edge.getRootGraph() == m_root &&
-        m_weeder.hideEdge(this, edge.getRootGraphIndex()) < 0) return edge;
+        hideEdge(edge.getRootGraphIndex()) < 0) return edge;
     else return null;
   }
 
-  public int hideEdge(int perspEdgeInx)
+  public int hideEdge(int rootGraphEdgeInx)
   {
-    throw new IllegalStateException("not implemented yet");
+    return m_weeder.hideEdge(this, rootGraphEdgeInx);
   }
 
   public java.util.List hideEdges(java.util.List edges)
