@@ -425,6 +425,7 @@ the network from 329 nodes / 357 edges to 256 nodes / 299 edges.
 ######################################################################
 
 Note: Only available for Linux
+(see more information below, under "Linux Variants")
 
 In model organisms such as yeast, large databases of protein-protein
 and protein-DNA interactions have become an extremely important
@@ -633,6 +634,14 @@ and score 7 that is active in 14 out of the 20 experimental conditions
 (indicated by red blocks in the matrix).  After the run, perform
 layout on the resulting subnetworks by issuing the menu command
 "Layout -> Organic" followed by "Whole graph".
+
+Linux Variants
+--------------
+Depending on your version of Linux, the plugin may or may not work;
+let us know how it goes.  We've seen it run successfully under Debian
+3.0, and unsuccessfully under SuSE.  We use Red Hat 7.1 and 7.3, and
+it appears to run reliably there.
+
 
 ######################################################################
 
