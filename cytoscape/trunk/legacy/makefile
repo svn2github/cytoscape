@@ -80,11 +80,14 @@ version:
 
 doc:
 	javadoc -d ./htdocs \
+                -private \
                 -overview ./overview.html \
                 -sourcepath .. \
                 cytoscape   \
                 cytoscape.data \
                 cytoscape.data.unitTests \
+                cytoscape.data.readers \
+                cytoscape.data.readers.unitTests \
                 cytoscape.dialogs \
                 cytoscape.unitTests \
                 cytoscape.layout \
@@ -262,6 +265,30 @@ run5a:
           -g $(CYTOSCAPE_DATA)/tidekerBig/network7000.gml \
           -e $(CYTOSCAPE_DATA)/gal.5936x20.mrna \
           -b $(CYTOSCAPE_DATA)/GO
+
+
+#
+# --- run6
+#  sample data for the biomodules window
+#     
+DIR=$(CYTOSCAPE_DATA)/import/biomodules/current
+run6:
+	java -Xmx1024MB -Djava.library.path=. cytoscape.cytoscape \
+          -i $(DIR)/44.intr \
+          -n $(DIR)/44.attr \
+#          -b $(CYTOSCAPE_DATA)/GO
+
+#
+# --- run6a
+#  attraction data layout for the biomodules window
+#     
+DIR=$(CYTOSCAPE_DATA)/import/biomodules/current
+run6a:
+	java -Xmx1024MB -Djava.library.path=. cytoscape.cytoscape \
+          -i $(DIR)/ygl075c.intr \
+          -j $(DIR)/ygl075c.force \
+          -n $(DIR)/44.attr \
+#          -b $(CYTOSCAPE_DATA)/GO
 
 
 help:
