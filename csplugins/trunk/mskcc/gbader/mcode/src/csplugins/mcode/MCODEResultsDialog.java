@@ -1,8 +1,8 @@
 package csplugins.mcode;
 
-import cytoscape.actions.GinyUtils;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.actions.GinyUtils;
 import cytoscape.util.GinyFactory;
 import cytoscape.view.CyWindow;
 import giny.model.GraphPerspective;
@@ -21,7 +21,10 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
 import java.text.NumberFormat;
 import java.util.*;
 import java.util.List;
@@ -212,10 +215,13 @@ public class MCODEResultsDialog extends JDialog {
 				data[i][3] = getNodeNameList(gpComplex);
 				//create an image for each complex - make it a nice layout of the complex
 				view = (PGraphView) GinyFactory.createGraphView(gpComplex);
+                //TODO apply a visual style here instead of doing this manually - visual style calls init code that might not be called manually
 				for (Iterator in = view.getNodeViewsIterator(); in.hasNext();) {
 					NodeView nv = (NodeView) in.next();
 					String label = nv.getNode().getIdentifier();
 					nv.getLabel().setText(label);
+                    nv.setWidth(40);
+                    nv.setHeight(40);
 					nv.setShape(NodeView.ELLIPSE);
 					nv.setUnselectedPaint(Color.red);
 					nv.setBorderPaint(Color.black);

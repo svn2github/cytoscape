@@ -1,16 +1,9 @@
 package csplugins.mcode;
 
 import cytoscape.view.CyWindow;
-import cytoscape.CyNetwork;
 
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-
-import giny.view.GraphView;
-import giny.model.GraphPerspective;
-
-import javax.swing.*;
+import java.awt.event.ActionListener;
 
 /** Copyright (c) 2003 Institute for Systems Biology, University of
  ** California at San Diego, and Memorial Sloan-Kettering Cancer Center.

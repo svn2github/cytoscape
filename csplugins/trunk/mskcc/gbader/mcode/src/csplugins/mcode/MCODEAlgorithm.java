@@ -1,10 +1,9 @@
 package csplugins.mcode;
 
+import cytoscape.data.GraphObjAttributes;
 import giny.model.GraphPerspective;
 
 import java.util.*;
-
-import cytoscape.data.GraphObjAttributes;
 
 /** Copyright (c) 2003 Institute for Systems Biology, University of
  ** California at San Diego, and Memorial Sloan-Kettering Cancer Center.
@@ -327,7 +326,7 @@ public class MCODEAlgorithm {
 		if (gpCore != null) {
 			nodeInfo.coreDensity = calcDensity(gpCore, includeLoops);
 		}
-		//record neighbor array for later use in complex detection step
+		//record neighbor array for later use in comkplex detection step
 		nodeInfo.nodeNeighbors = neighborhood;
 
 		return (nodeInfo);
