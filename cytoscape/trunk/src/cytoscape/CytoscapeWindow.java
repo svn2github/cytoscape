@@ -1458,12 +1458,13 @@ protected class ListFromFileSelectionAction extends AbstractAction   {
     }
 
     private boolean useSelectionFile() {
-	JFileChooser fChooser = new JFileChooser();	
+	JFileChooser fChooser = new JFileChooser(currentDirectory);	
 	fChooser.setDialogTitle("Load Gene Selection File");
 	switch (fChooser.showOpenDialog(null)) {
 		
 	case JFileChooser.APPROVE_OPTION:
 	    File file = fChooser.getSelectedFile();
+	    currentDirectory = chooser.getCurrentDirectory();
 	    String s;
 
 	    try {
