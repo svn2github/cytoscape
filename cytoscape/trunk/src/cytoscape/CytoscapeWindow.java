@@ -482,7 +482,7 @@ protected void displayCommonNodeNames ()
  *  if the key is "canonicalName": canonicalName is stored
  *  in a different data structure, so we access it differently.
  */
-protected void displayNodeLabels (String key)
+public void displayNodeLabels (String key)
 {
     Node [] nodes = graph.getNodeArray ();
 
