@@ -30,7 +30,7 @@ class BetweenPathwayThread2 extends Thread{
   double physical_logOneMinusBeta;
   double genetic_logBeta;
   double genetic_logOneMinusBeta;
-  //double overlap_cutoff = 0.30;
+  double overlap_cutoff = 0.5;
   BetweenPathwayOptions options;
   double [][] physicalScores;
   double [][] geneticScores;
@@ -164,7 +164,7 @@ class BetweenPathwayThread2 extends Thread{
     }
     myMonitor.setMillisToPopup(0);
     while(geneticIt.hasNext()){
-      System.err.println(""+progress);
+      //System.err.println(""+progress);
       Edge seedInteraction = (Edge)geneticIt.next();
       int cross_count_total = 0;
       double physical_source_score = 0;
@@ -192,7 +192,10 @@ class BetweenPathwayThread2 extends Thread{
       Set targetMembers = new HashSet();
       sourceMembers.add(seedInteraction.getSource());
       targetMembers.add(seedInteraction.getTarget());
-      
+      boolean initially_empty = sourceMembers.isEmpty() || targetMembers.isEmpty();
+      if(initially_empty){
+	System.err.println("Search from "+seedInteraction+" started empty");
+      }
       //initialize the set that represents the neighboring interactions in the 
       //genetic network
       Set neighbors = new HashSet((Vector)edgeNeighborMap.get(seedInteraction));
@@ -220,6 +223,7 @@ class BetweenPathwayThread2 extends Thread{
 	double best_physical_source_score = Double.NEGATIVE_INFINITY;
 	double best_physical_target_score = Double.NEGATIVE_INFINITY;
 	int best_cross_count = 0;
+	candidate_loop:
 	for(Iterator candidateIt = neighbors.iterator();candidateIt.hasNext();){
 	  NeighborEdge candidate = (NeighborEdge)candidateIt.next();
 	  List sourceCandidates = candidate.reverse ? candidate.targetCandidates : candidate.sourceCandidates;
@@ -263,27 +267,19 @@ class BetweenPathwayThread2 extends Thread{
 	   * If so, we never want to add this edge, so we can safely
 	   * ignore it from this point on.
 	   */
-	  boolean cont = false;
 	  for(Iterator sourceCandidateIt = newSources.iterator();sourceCandidateIt.hasNext();){
 	    if(targetMembers.contains(sourceCandidateIt.next())){
 	      candidateIt.remove();
-	      cont = true;
-	      break;
+	      continue candidate_loop;
 	    }
 	  }
-	  if(cont){
-	    continue;
-	  }
+	  
 
 	  for(Iterator targetCandidateIt = newTargets.iterator();targetCandidateIt.hasNext();){
 	    if(sourceMembers.contains(targetCandidateIt.next())){
 	      candidateIt.remove();
-	      cont = true;
-	      break;
+	      continue candidate_loop;
 	    }
-	  }
-	  if(cont){
-	    continue;
 	  }
 
 	  
@@ -301,13 +297,13 @@ class BetweenPathwayThread2 extends Thread{
 	  
 	  double this_physical_source_score = physical_source_score + calculatePhysicalIncrease(newSources,sourceMembers);
 	  double this_physical_target_score = physical_target_score + calculatePhysicalIncrease(newTargets,targetMembers);
-	  int source_size = newSources.size()+sourceMembers.size();
-	  int target_size = newTargets.size()+targetMembers.size();
-	  double sourceMax = source_size*7.5;
-	  double targetMax = target_size*7.5;
+	  //int source_size = newSources.size()+sourceMembers.size();
+	  //int target_size = newTargets.size()+targetMembers.size();
+	  //double sourceMax = source_size*7.5;
+	  //double targetMax = target_size*7.5;
 
-	  double temp1 = Math.max(0,Math.min(sourceMax,this_physical_source_score));
-	  double temp2 = Math.max(0,Math.min(targetMax,this_physical_target_score));
+	  //double temp1 = Math.max(0,Math.min(sourceMax,this_physical_source_score));
+	  //double temp2 = Math.max(0,Math.min(targetMax,this_physical_target_score));
 	  //double source_FDR = score2SuccessRate(this_physical_source_score);
 	  //double target_FDR = score2SuccessRate(this_physical_target_score);
 	  double this_genetic_score = genetic_score + calculateGeneticIncrease(newSources,newTargets,sourceMembers,targetMembers);
@@ -352,6 +348,15 @@ class BetweenPathwayThread2 extends Thread{
        * Here we calculate the number of potential
        * edges for each type of edges (physical vs genetic
        */
+      if( sourceMembers.isEmpty() || targetMembers.isEmpty()){
+	if(initially_empty){
+	  System.err.println("search from "+seedInteraction+" still empty");
+	}
+	else{
+	  System.err.println("search from "+seedInteraction+" became empty");
+	}
+      }
+	  
       results.add(new NetworkModel(progress,
 				   sourceMembers,
 				   targetMembers,
@@ -359,6 +364,7 @@ class BetweenPathwayThread2 extends Thread{
 				   physical_source_score,
 				   physical_target_score,
 				   genetic_score));
+      //System.err.println(results.size());
       if(myMonitor.isCanceled()){
 	//throw new RuntimeException("Search cancelled");
 	break;
@@ -368,6 +374,7 @@ class BetweenPathwayThread2 extends Thread{
     myMonitor.close();
     Collections.sort(results);
     results = prune(results);
+    //System.err.println(results.size());
   }
 
 //   protected void findAllPaths(Stack nodeStack, int max_depth, Node otherNode, List [] sourcePaths){
@@ -556,49 +563,103 @@ class BetweenPathwayThread2 extends Thread{
 //     return results;
 //   }
 
-  protected Vector prune(Vector old){
-    Vector results = new Vector();
-    ProgressMonitor myMonitor = new ProgressMonitor(Cytoscape.getDesktop(),"Pruning results",null,0,100);
-    myMonitor.setMillisToPopup(50);
-    int update_interval = (int)Math.ceil(old.size()/100.0);
-    int count = 0;
-    HashSet foundNodes = new HashSet();
-    for(Iterator modelIt = old.iterator();modelIt.hasNext();){
-      if(myMonitor.isCanceled()){
-	throw new RuntimeException("Search cancelled");
+
+  protected Set getGeneticInteractionsForModel(NetworkModel current){
+    Set result = new HashSet();
+    List nodeList = new Vector();
+    for(Iterator sourceIt = current.one.iterator();sourceIt.hasNext();){
+      Node source = (Node)sourceIt.next();
+      nodeList.add(source);
+      for(Iterator targetIt = current.two.iterator();targetIt.hasNext();){
+	Node target = (Node)targetIt.next();
+	nodeList.add(target);
+	result.addAll(geneticNetwork.getConnectingEdges(nodeList));
+	nodeList.remove(target);
       }
-      if(count%update_interval == 0){
-	myMonitor.setProgress(count/update_interval);
-      }
-      NetworkModel current = (NetworkModel)modelIt.next();
-      boolean model_added = false;
-      if(current.one.size() < 2 || current.two.size() < 2 || current.score < options.cutoff){
-	continue;
-      }
-      for(Iterator nodeIt = current.one.iterator();nodeIt.hasNext();){
-	Object node = nodeIt.next();
-	if(!foundNodes.contains(node)){
-	  foundNodes.add(node);
-	  if(!model_added){
-	    results.add(current);
-	    model_added = true;
-	  }
-	}
-      }
-      for(Iterator nodeIt = current.two.iterator();nodeIt.hasNext();){
-	Object node = nodeIt.next();
-	if(!foundNodes.contains(node)){
-	  foundNodes.add(node);
-	  if(!model_added){
-	    results.add(current);
-	    model_added = true;
-	  }
-	}
+      nodeList.remove(source);
+    }
+    return result;
+  }
+    
+  protected double getJacard(Set one, Set two){
+    int intersection = 0;
+    for(Iterator oneIt = one.iterator();oneIt.hasNext();){
+      if(two.contains(oneIt.next())){
+	intersection++;
       }
     }
-    myMonitor.close();
+    return intersection/(double)(one.size()+two.size()-intersection);
+  }
+  
+
+  protected Vector prune(Vector old){
+    Vector results = new Vector();
+    Vector edgeSets = new Vector();
+    for(Iterator modelIt = old.iterator();modelIt.hasNext();){
+      NetworkModel current = (NetworkModel)modelIt.next();
+      if(current.score < options.cutoff || current.one.size() < 2 || current.two.size() < 2){
+	continue;
+      }
+      Set geneticInteractions = getGeneticInteractionsForModel(current);
+      boolean found_overlap = false;
+      for(Iterator setIt = edgeSets.iterator();setIt.hasNext();){
+	if(overlap_cutoff < getJacard(geneticInteractions,(Set)setIt.next())){
+	  found_overlap = true;
+	  break;
+	}
+      }
+      if(!found_overlap){
+	results.add(current);
+	edgeSets.add(geneticInteractions);
+      }
+    }
     return results;
   }
+
+
+//   protected Vector prune(Vector old){
+//     Vector results = new Vector();
+//     ProgressMonitor myMonitor = new ProgressMonitor(Cytoscape.getDesktop(),"Pruning results",null,0,100);
+//     myMonitor.setMillisToPopup(50);
+//     int update_interval = (int)Math.ceil(old.size()/100.0);
+//     int count = 0;
+//     HashSet foundNodes = new HashSet();
+//     for(Iterator modelIt = old.iterator();modelIt.hasNext();){
+//       if(myMonitor.isCanceled()){
+// 	throw new RuntimeException("Search cancelled");
+//       }
+//       if(count%update_interval == 0){
+// 	myMonitor.setProgress(count/update_interval);
+//       }
+//       NetworkModel current = (NetworkModel)modelIt.next();
+//       boolean model_added = false;
+//       if(current.one.size() < 2 || current.two.size() < 2 || current.score < options.cutoff){
+// 	continue;
+//       }
+//       for(Iterator nodeIt = current.one.iterator();nodeIt.hasNext();){
+// 	Object node = nodeIt.next();
+// 	if(!foundNodes.contains(node)){
+// 	  foundNodes.add(node);
+// 	  if(!model_added){
+// 	    results.add(current);
+// 	    model_added = true;
+// 	  }
+// 	}
+//       }
+//       for(Iterator nodeIt = current.two.iterator();nodeIt.hasNext();){
+// 	Object node = nodeIt.next();
+// 	if(!foundNodes.contains(node)){
+// 	  foundNodes.add(node);
+// 	  if(!model_added){
+// 	    results.add(current);
+// 	    model_added = true;
+// 	  }
+// 	}
+//       }
+//     }
+//     myMonitor.close();
+//     return results;
+//   }
 
 //   public boolean overlap(NetworkModel one, NetworkModel two){
 //     return (intersection(one.one,two.one)>overlap_cutoff && intersection(one.two,two.two)>overlap_cutoff) || (intersection(one.one,two.two) > overlap_cutoff && intersection(one.two,two.one) > overlap_cutoff); 

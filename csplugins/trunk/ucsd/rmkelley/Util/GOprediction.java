@@ -6,7 +6,7 @@ import giny.model.Node;
 import DistLib.*;
 public class GOprediction{
   double P_VALUE_CUTOFF = .0000001;
-  double SIZE_CUTOFF = 1000;
+  int SIZE_CUTOFF = 100;
   int CROSS_VALIDATION_SPLIT = 5;
   /*
    * GOID2Orfs maps from each GOID to each orf and child orf
@@ -219,7 +219,7 @@ public class GOprediction{
     return sum/(double)count;
   }
 
-  public void crossValidate(Collection complexes){
+  public void crossValidate(Collection complexes, File screenFile){
     HashMap ORF2Predictions = new HashMap();
     int [] prediction_count_history = new int[complexes.size()];
     int [] prediction_correct_history = new int[complexes.size()];
@@ -228,14 +228,22 @@ public class GOprediction{
     List nodesList = Cytoscape.getRootGraph().nodesList();
     Collections.shuffle(nodesList);
     int cross_validation_size = nodesList.size()/CROSS_VALIDATION_SPLIT;
-
+    try{
+      BufferedReader reader = new BufferedReader(new FileReader(screenFile));
+      Vector screenList = new Vector();
+      while(reader.ready()){
+	screenList.add(new Prediction(reader.readLine()));
+      }
+      combinePredictions(screenList,ORF2Predictions);
+    }catch(Exception e){
+      e.printStackTrace();
+      throw new RuntimeException();
+    }
+    
     for(int idx=0;idx<CROSS_VALIDATION_SPLIT;idx++){
       HashSet hiddenNodes = new HashSet(nodesList.subList(idx*cross_validation_size,(idx+1)*cross_validation_size));
       int number_predictions = 0;
       int correct_predictions = 0;
-    
-      
-      
       int progress = 0;
       for(Iterator complexIt = complexes.iterator(); complexIt.hasNext();){
 	System.err.println(progress);
@@ -243,7 +251,7 @@ public class GOprediction{
 	/*
 	 * For each complex, find signficiant categories
 	 */
-	List categories = findCategories(currentModel,hiddenNodes);
+	List categories = findCategories(currentModel,hiddenNodes,SIZE_CUTOFF);
 	List predictions = new Vector();
 
 	/*
@@ -267,8 +275,8 @@ public class GOprediction{
 	 */
 	evaluatePredictions(predictions);
 	int [] result = combinePredictions(predictions, ORF2Predictions);
-	correct_predictions += result[0];
-	number_predictions += result[1];
+	correct_predictions += result[1];
+	number_predictions += result[0];
 	/*
 	 * Update the running accuracy tally
 	 */
@@ -285,11 +293,10 @@ public class GOprediction{
 	int correct = prediction_correct_history[idx];
 	writer.write(""+complex_score_history[idx]+"\t"+correct+"\t"+count+"\t"+(correct/(double)count)+"\n");
       }
+      writer.close();
     }catch(Exception e){
       throw new RuntimeException();
     }
-
-    
   }
 
   protected Collection determineAncestors(String GOID, HashMap GOID2Parents, HashMap GOID2Ancestors){
@@ -338,7 +345,7 @@ public class GOprediction{
 
     for(Iterator complexIt = complexes.iterator();complexIt.hasNext();){
       Pathway currentModel = (Pathway)complexIt.next();
-      List categories = findCategories(currentModel, null);
+      List categories = findCategories(currentModel, null,SIZE_CUTOFF);
       List predictions = new Vector();
       for(Iterator orfIt = currentModel.nodes.iterator();orfIt.hasNext();){
 	Node orf = (Node)orfIt.next();
@@ -447,7 +454,7 @@ public class GOprediction{
    * Given a network model, make go annotation predictions for
    * hidden nodes
    */
-  protected List findCategories(Pathway model, Set hiddenOrfs){
+  public List findCategories(Pathway model, Set hiddenOrfs, int SIZE_CUTOFF){
     Vector results = new Vector();
     Vector visibleOrfs = new Vector();
     Vector invisibleOrfs = new Vector();

@@ -45,9 +45,10 @@ public class EdgeRandomizationDialog extends RyanDialog{
    */
   EdgeRandomizationOptions options;
   
-  public EdgeRandomizationDialog(CyNetwork currentNetwork){
+  public EdgeRandomizationDialog(EdgeRandomizationOptions t_options){
     //figure out what the different edge types are in the graph
-    this.currentNetwork = currentNetwork;
+    this.currentNetwork = t_options.currentNetwork;
+    this.options = t_options;
     Set typeSet = new HashSet();
     for(Iterator edgeIt = currentNetwork.edgesIterator();edgeIt.hasNext();){
       Edge edge = (Edge)edgeIt.next();
@@ -109,7 +110,6 @@ public class EdgeRandomizationDialog extends RyanDialog{
 	  /*
 	   * Set the options
 	   */
-	  options = new EdgeRandomizationOptions();
 	  options.directedTypes = new Vector();
 	  for(int idx=0;idx<tableModel.getRowCount();idx++){
 	    if(((Boolean)tableModel.getValueAt(idx,1)).booleanValue()){
@@ -143,10 +143,6 @@ public class EdgeRandomizationDialog extends RyanDialog{
 
   public boolean isCancelled(){
     return cancelled;
-  }
-
-  public EdgeRandomizationOptions getOptions(){
-    return options;
   }
 
 }

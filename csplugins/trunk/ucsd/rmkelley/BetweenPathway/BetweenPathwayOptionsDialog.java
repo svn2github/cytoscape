@@ -40,7 +40,8 @@ public class BetweenPathwayOptionsDialog extends RyanDialog implements PropertyC
    * Create a new options dialog and specifiy the options that should be
    * used
    */
-  public BetweenPathwayOptionsDialog(){
+  public BetweenPathwayOptionsDialog(BetweenPathwayOptions t_options){
+    this.options = t_options;
     setTitle("Between-Pathway Search Options");
     geneticPanel = new NetworkSelectionPanel(this);
     physicalPanel = new NetworkSelectionPanel(this);
@@ -76,10 +77,9 @@ public class BetweenPathwayOptionsDialog extends RyanDialog implements PropertyC
 	  /**
 	   * Store the user's options
 	   */
-	  BetweenPathwayOptions options = new BetweenPathwayOptions();
 	  options.selectedSearch = searchOptionsPanel.selectedSearch();
-	  options.newScore = searchOptionsPanel.newScore();
-	  options.generateCutoff = searchOptionsPanel.generateCutoff();
+	  //options.newScore = searchOptionsPanel.newScore();
+	  //options.generateCutoff = searchOptionsPanel.generateCutoff();
 	  options.cutoff = searchOptionsPanel.getCutoff();
 	  options.beta = searchOptionsPanel.getBeta();
 	  //options.alpha = searchOptionsPanel.getAlpha();
@@ -111,14 +111,6 @@ public class BetweenPathwayOptionsDialog extends RyanDialog implements PropertyC
 
     
   
-  /**
-   * Get the options
-   */
-  public BetweenPathwayOptions getOptions(){
-    return options;
-  }
-
-
   /**
    * Get the directory that should be used to look for the score file
    */

@@ -21,6 +21,7 @@ import java.awt.BorderLayout;
 import java.awt.event.*;
 import cytoscape.layout.*;
 import cytoscape.data.GraphObjAttributes;
+import cytoscape.CytoscapeInit;
 
 /**
  * This is a sample Cytoscape plugin using Giny graph structures. For each
@@ -37,11 +38,22 @@ import cytoscape.data.GraphObjAttributes;
 public class EdgeRandomization extends CytoscapePlugin{
     
   EdgeRandomizationDialog dialog;
+  EdgeRandomizationOptions options;
   /**
    * This constructor saves the cyWindow argument (the window to which this
    * plugin is attached) and adds an item to the operations menu.
    */
   public EdgeRandomization(){
+    options = new EdgeRandomizationOptions();
+    String [] args = CytoscapeInit.getArgs();
+    EdgeRandomizationCommandLineParser parser = new EdgeRandomizationCommandLineParser(args,options);
+    if(parser.run()){
+      EdgeRandomizationThread thread = new EdgeRandomizationThread(options);
+      thread.run();
+      if(parser.exit()){
+	cytoscape.Cytoscape.exit();
+      }
+    }
     JMenu topMenu = new JMenu("Edge Randomization");
     Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add(topMenu);
     topMenu.add(new AbstractAction("Edge Randomization"){ 
@@ -49,11 +61,13 @@ public class EdgeRandomization extends CytoscapePlugin{
 	  new Thread(new Runnable(){
 	      public void run(){
 		try{
-		  dialog = new EdgeRandomizationDialog(Cytoscape.getCurrentNetwork());
+		  options.currentNetwork = Cytoscape.getCurrentNetwork();
+		  dialog = new EdgeRandomizationDialog(options);
 		  dialog.show();
 		  if(!dialog.isCancelled()){
-		    EdgeRandomizationThread thread = new EdgeRandomizationThread(dialog.getOptions());
-		thread.run();
+		    EdgeRandomizationThread thread = new EdgeRandomizationThread(options);
+		    thread.run();
+		    JOptionPane.showMessageDialog(Cytoscape.getDesktop(),"Result stored in file: "+thread.getScoreFile().getName(),"Randomization complete",JOptionPane.INFORMATION_MESSAGE);
 		  }
 		}catch(Exception e){
 		  JOptionPane.showMessageDialog(Cytoscape.getDesktop(),e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
@@ -66,13 +80,12 @@ public class EdgeRandomization extends CytoscapePlugin{
 	      public void run(){
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		int [] old_edges = network.getEdgeIndicesArray();
-
-		EdgeRandomizationDialog dialog = new EdgeRandomizationDialog(network);
+		options.currentNetwork = network;
+		EdgeRandomizationDialog dialog = new EdgeRandomizationDialog(options);
 		dialog.show();
 		if(dialog.isCancelled()){
 		  return;
 		}
-		EdgeRandomizationOptions options = dialog.getOptions();
 		EdgeRandomizer randomizer = new EdgeRandomizer(network,options.directedTypes);
 		for(int idx=0;idx<options.iterations;idx++){
 		  Cytoscape.destroyNetwork(network);

@@ -77,7 +77,7 @@ public class EdgeRandomizationThread extends Thread{
       e.printStackTrace();
       System.exit(-1);
     }
-    JOptionPane.showMessageDialog(Cytoscape.getDesktop(),"Result stored in file: "+scoreFile.getName(),"Randomization complete",JOptionPane.INFORMATION_MESSAGE);
+
   }
 
 

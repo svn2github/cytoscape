@@ -23,12 +23,13 @@ import cytoscape.layout.*;
 import java.awt.Dimension;
 
 public class BetweenPathwayOptions{
-  public boolean selectedSearch,newScore,generateCutoff;
+  public boolean selectedSearch = false;
   public CyNetwork physicalNetwork,geneticNetwork;
   public File physicalScores,geneticScores;
-  public double alpha,cutoff;
-  public double beta;
-  public int iterations;
-  public List directedTypes;
+  public double alpha = 0.05;
+  public double cutoff = 0.0;
+  public double beta = 0.9;
+  public int iterations = 100;
+  public List physicalDirectedTypes,geneticDirectedTypes;
 
 }

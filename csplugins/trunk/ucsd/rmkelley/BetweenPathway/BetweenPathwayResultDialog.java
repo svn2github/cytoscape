@@ -134,7 +134,7 @@ class BetweenPathwayResultDialog extends RyanDialog implements ListSelectionList
 	  int returnVal = chooser.showSaveDialog(Cytoscape.getDesktop());
 	  if(returnVal == JFileChooser.APPROVE_OPTION){
 	    try{
-	      saveResults(chooser.getSelectedFile());
+	      saveResults(results,geneticNetwork.getTitle(),physicalNetwork.getTitle(),chooser.getSelectedFile());
 	    }catch(Exception e){
 	      JOptionPane.showMessageDialog(Cytoscape.getDesktop(),e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);	    
 	    }
@@ -161,22 +161,67 @@ class BetweenPathwayResultDialog extends RyanDialog implements ListSelectionList
 	  prediction.makePredictions(pathways,new File("physical-predictions.txt"));
 	}});
 
-    JButton predictProteinButton = new JButton("Make Protein Predictions");
-    predictProteinButton.addActionListener(new ActionListener(){
+    JButton enrichButton = new JButton("Enriched Complexes");
+    enrichButton.addActionListener(new ActionListener(){
 	public void actionPerformed(ActionEvent ae){
-	  ProteinInteractionPrediction predictor = new ProteinInteractionPrediction(physicalNetwork,geneticNetwork,results);
-	  HashMap results = predictor.makePredictions();
+	  HashMap node2BestPathway = new HashMap();
+	  GOprediction prediction = new GOprediction(new File("GOID2orfs.txt"),new File("GOID2parents.txt"));
+	  for(Iterator resultIt = results.iterator();resultIt.hasNext();){
+	    NetworkModel model = (NetworkModel)resultIt.next();
+	    Pathway one = new Pathway();
+	    Pathway two = new Pathway();
+	    one.score = model.score;
+	    two.score = model.score;
+	    one.nodes = model.one;
+	    two.nodes = model.two;
+	    assignBestPathway(one,node2BestPathway);
+	    assignBestPathway(two,node2BestPathway);
+	  }
 	  try{
-	    FileWriter writer = new FileWriter("proteinPredictions.txt",false);
-	    for(Iterator pairIt = results.keySet().iterator();pairIt.hasNext();){
-	      UnorderedPair pair = (UnorderedPair)pairIt.next();
-	      writer.write(""+pair+"\t"+((Set)results.get(pair)).size()+"\n");
+	    FileWriter writer = new FileWriter("enrichment.txt",false);
+	    for(Iterator nodeIt = node2BestPathway.keySet().iterator();nodeIt.hasNext();){
+	      Node node = (Node)nodeIt.next();
+	      Pathway pathway = (Pathway)node2BestPathway.get(node);
+	      List categories = prediction.findCategories(pathway,null);
+	      writer.write(""+node+"\t"+!categories.isEmpty()+"\t"+categories+"\n");
 	    }
 	    writer.close();
 	  }catch(Exception e){
 	    e.printStackTrace();
 	    System.exit(-1);
 	  }
+	}
+	protected void assignBestPathway(Pathway pathway, HashMap node2BestPathway){
+	  for(Iterator nodeIt = pathway.nodes.iterator();nodeIt.hasNext();){
+	    Node node = (Node)nodeIt.next();
+	    if(!node2BestPathway.containsKey(node)){
+	      node2BestPathway.put(node, pathway);
+	    }
+	    else{
+	      Pathway oldPathway = (Pathway)node2BestPathway.get(node);
+	      if(pathway.score > oldPathway.score){
+		node2BestPathway.put(node,pathway);
+	      }
+	    }
+	  }
+	}});
+
+    JButton cvButton = new JButton("CrossValidate GO");
+    cvButton.addActionListener(new ActionListener(){
+	public void actionPerformed(ActionEvent ae){
+	  Vector pathways = new Vector();
+	  for(Iterator resultIt = results.iterator();resultIt.hasNext();){
+	    NetworkModel model = (NetworkModel)resultIt.next();
+	    Pathway pathway_one = new Pathway();
+	    Pathway pathway_two = new Pathway();
+	    pathway_one.nodes = model.one;
+	    pathway_two.nodes = model.two;
+	    pathway_one.score = pathway_two.score = model.score;
+	    pathways.add(pathway_one);
+	    pathways.add(pathway_two);
+	  }
+	  GOprediction prediction = new GOprediction(new File("GOID2orfs.txt"),new File("GOID2parents.txt"));
+	  prediction.crossValidate(pathways,new File("physical-predictions.txt"));
 	}});
 
     JButton pictureButton = new JButton("Click");
@@ -260,9 +305,10 @@ class BetweenPathwayResultDialog extends RyanDialog implements ListSelectionList
     southPanel.add(viewButton);
     southPanel.add(saveButton);
     southPanel.add(predictButton);
-    southPanel.add(predictProteinButton);
+    southPanel.add(cvButton);
     southPanel.add(pictureButton);
     southPanel.add(assessButton);
+    southPanel.add(enrichButton);
     getContentPane().add(southPanel,BorderLayout.SOUTH);
     pack();
   }
@@ -280,7 +326,6 @@ class BetweenPathwayResultDialog extends RyanDialog implements ListSelectionList
       }
     }
     throw new RuntimeException("No network found with title "+title+", please load this network and try again");
-
   }
 
   public void valueChanged(ListSelectionEvent e){
@@ -299,10 +344,10 @@ class BetweenPathwayResultDialog extends RyanDialog implements ListSelectionList
   }
 
 
-  protected void saveResults(File outputFile) throws IOException{
+  protected static void saveResults(Vector results, String geneticTitle, String physicalTitle, File outputFile) throws IOException{
     PrintStream stream = new PrintStream(new FileOutputStream(outputFile));
-    stream.println(geneticNetwork.getTitle());
-    stream.println(physicalNetwork.getTitle());
+    stream.println(geneticTitle);
+    stream.println(physicalTitle);
     for(Iterator modelIt = results.iterator();modelIt.hasNext();){
       NetworkModel model = (NetworkModel)modelIt.next();
       stream.print(model.ID);
@@ -342,7 +387,7 @@ class BetweenPathwayResultDialog extends RyanDialog implements ListSelectionList
    * Create a colon delimited list of node names
    * from a set of nodes
    */
-  protected String nodeSet2String(Set nodes){
+  protected static String nodeSet2String(Set nodes){
     String result = "";
     Iterator nodeIt = nodes.iterator();
     if(nodes.size() > 0){

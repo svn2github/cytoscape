@@ -48,6 +48,9 @@ public class SearchOptionsPanel extends JPanel{
     cutoffPanel.setBorder(new TitledBorder("Manually specify scoring thresh-hold"));
     cutoffPanel.add(cutoffField);
     add(cutoffPanel);
+
+
+    generateCutoff.setEnabled(false);
   }
 
 

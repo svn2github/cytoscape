@@ -32,7 +32,7 @@ class NetworkSelectionPanel extends JPanel{
   JTextField fileText;
   JList list;
   BetweenPathwayOptionsDialog dialog;
-  EdgeRandomizationDialog randomDialog;
+  //EdgeRandomizationDialog randomDialog;
   PropertyChangeSupport pcs;
   /**
    * This button will bring up dialog to generate a new score file
@@ -109,14 +109,17 @@ class NetworkSelectionPanel extends JPanel{
 	   * the network list, this button should only be enabled when such a selection exists, will
 	   * have to add a selection change listener to the list
 	   */
-	  randomDialog = new EdgeRandomizationDialog(((NetworkContainer)list.getSelectedValue()).getNetwork());
+	  
 	 	  
 	  new Thread(new Runnable(){
 	      public void run(){
+		EdgeRandomizationOptions edgeRandomizationOptions = new EdgeRandomizationOptions();
+		edgeRandomizationOptions.currentNetwork = (((NetworkContainer)list.getSelectedValue()).getNetwork());
+		EdgeRandomizationDialog randomDialog = new EdgeRandomizationDialog(edgeRandomizationOptions);
 		randomDialog.show();
 		if(!randomDialog.isCancelled()){
 		  try{
-		    EdgeRandomizationThread thread = new EdgeRandomizationThread(randomDialog.getOptions());
+		    EdgeRandomizationThread thread = new EdgeRandomizationThread(edgeRandomizationOptions);
 		    thread.run();
 		    scoreFile = thread.getScoreFile();
 		    fileText.setText(scoreFile.getName());
