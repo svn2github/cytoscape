@@ -17,6 +17,7 @@ import giny.model.RootGraphChangeEvent;
 import giny.model.RootGraphChangeListener;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 // Package visible class.
 class FGraphPerspective implements GraphPerspective
@@ -69,7 +70,16 @@ class FGraphPerspective implements GraphPerspective
 
   public Iterator nodesIterator()
   {
-    throw new IllegalStateException("not implemented yet");
+    final IntEnumerator nodes = m_graph.nodes();
+    return new Iterator() {
+        public void remove() {
+          throw new UnsupportedOperationException(); }
+        public boolean hasNext() {
+          return nodes.numRemaining() > 0; }
+        public Object next() {
+          if (!hasNext()) throw new NoSuchElementException();
+          return m_root.getNode
+            (m_nativeToRootNodeInxMap.getIntAtIndex(nodes.nextInt())); } };
   }
 
   public java.util.List nodesList()
