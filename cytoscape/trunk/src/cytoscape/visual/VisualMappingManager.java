@@ -33,17 +33,17 @@ import javax.swing.event.ChangeEvent;
  * This class holds a reference to a NetworkView that displays the network,
  * a CalculatorCatalog that holds the set of known visual styles and
  * calculators, and a current VisualStyle that is used to determine the
- * values of the visual attributes. A Logger is also supplied to report errors.
+ * values of the visual attributes. A Logger is also supplied to report errors.<P>
  *
  * Note that a null VisualStyle is not allowed; this class always provides
- * at least a default object.
+ * at least a default object.<P>
  *
  * The key methods are the apply* methods. These methods first recalculate
  * the visual appearances by delegating to the calculators contained in the
  * current visual style. The usual return value of these methods is an
  * Appearance object that contains the visual attribute values; these
  * values are then applied to the network by calling the appropriate set
- * methods in the graph view API.
+ * methods in the graph view API.<P>
  */
 public class VisualMappingManager extends SubjectBase {
 
