@@ -678,7 +678,9 @@ public void onCyNetworkEvent(CyNetworkEvent event) {
  * (seems like a bug?).
  */
 public void graphViewChanged ( GraphViewChangeEvent event) {
-    updateStatusLabel(0, 0);
+	int [] nodes = event.getHiddenNodeIndices();
+	int[] edges = event.getHiddenEdgeIndices();	
+    updateStatusLabel(nodes.length, edges.length);
 }
 //------------------------------------------------------------------------------
 /**
