@@ -7,11 +7,10 @@
 #-------------------------------------------------------------------------
 
 #AUXJAR_UNPACKED_DIR=$(PWD)/aux
-AUXJAR_UNPACKED_DIR=/common/aux
+AUXJAR_UNPACKED_DIR=/common/aux20030130
 JARFILE=$(PWD)/cytoscape.jar
 AUXJARFILE=$(PWD)/aux.jar
-#YFILESDIR=/net/compbio/src/distributions/yfiles/jarUnpacked
-YFILESDIR=/common/yfiles1.4.0.2-unpacked
+YFILESDIR=/common/yfiles2.0.1-unpacked
 VISADDIR=/common/visad-unpacked
 
 default: help
@@ -47,12 +46,23 @@ jar:
 	(cd ../../..; jar cvmf cytoscape/tools/jars/jar.manifest $(JARFILE))
 	(cd ../../..; jar uvf $(JARFILE) `find cytoscape/* -name "*.class" -print`)
 	(cd ../../..; jar uvf $(JARFILE) `find cytoscape/* -name "*.jpg" -print`)
-	(cd ../../..; jar uvf $(JARFILE) `find csplugins/* -name "*.class" -print`)
+	(cd ../../..; jar uvf $(JARFILE) `find cytoscape/* -name "*.gif" -print`)
+	(cd ../../..; jar uvf $(JARFILE) `find csplugins/setVisualProperties/* -name "*.jpg" -print`)
+	(cd ../../..; jar uvf $(JARFILE) `find csplugins/filtersPlugin -name "*.class" -print`)
+	(cd ../../..; jar uvf $(JARFILE) `find csplugins/vectormath -name "*.class" -print`)
+	(cd ../../..; jar uvf $(JARFILE) `find csplugins/setVisualProperties -name "*.class" -print`)
 	(cd $(AUXJAR_UNPACKED_DIR); jar uvf $(JARFILE) `find gnu/* -name "*.class" -print`)
 	(cd $(AUXJAR_UNPACKED_DIR); jar uvf $(JARFILE) `find gnu/* -name "*.properties" -print`)
 	(cd $(YFILESDIR); jar uvf $(JARFILE) `find y/* -name "*.class"`)
 	(cd $(AUXJAR_UNPACKED_DIR); jar uvf $(JARFILE) `find org/* -name "*.class"`)
-	(cd $(VISADDIR); jar uvf $(JARFILE) `find visad/* -name "*.class"`)
+	(cd $(AUXJAR_UNPACKED_DIR); jar uvf $(JARFILE) `find javax/* -name "*.class"`)
+
+#	(cd $(VISADDIR); jar uvf $(JARFILE) `find visad/* -name "*.class"`)
+#	(cd ../../..; jar uvf $(JARFILE) `find csplugins/filtersPlugin -name "*.class" -print`)
+#	(cd ../../..; jar uvf $(JARFILE) `find csplugins/vectormath -name "*.class" -print`)
+#	(cd ../../..; jar uvf $(JARFILE) `find csplugins/expressionData -name "*.class" -print`)
+#	(cd ../../..; jar uvf $(JARFILE) `find csplugins/setVisualProperties -name "*.class" -print`)
+#	(cd ../../..; jar uvf $(JARFILE) `find csplugins/* -name "*.class" -print`)
 
 #  
 #  --- auxjar
