@@ -38,8 +38,12 @@ public class DestroySelectedAction extends CytoscapeAction  {
 	for (Iterator i = flaggedEdges.iterator(); i.hasNext(); ) {
 	    hiddenEdgeIndices[j++] = gp.getIndex((Edge) i.next());
 	}
-	gp.hideNodes(hiddenNodeIndices);
+
+	// unflag then hide nodes from graph perspective
+	gp.unFlagAllNodes();
+	gp.unFlagAllEdges();
 	gp.hideEdges(hiddenEdgeIndices);
+	gp.hideNodes(hiddenNodeIndices);
 	    
     }//action performed
 
