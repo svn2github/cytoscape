@@ -316,19 +316,18 @@ public final class IntBTree
           else break; }
       return count; }
     else { // Internal node.
-      boolean found = false;
       int currentMax = maxBound;
       for (int i = n.sliceCount - 2; i >= -1; i--) {
         int currentMin;
         if (i < 0) currentMin = minBound;
         else currentMin = n.data.splitVals[i];
-        if ((x >= currentMin) && (x <= currentMax)) {
-          found = true;
-          if (currentMin == currentMax)
-            count += n.data.children[i + 1].deepCount;
-          else count += count(n.data.children[i + 1], x,
-                              currentMin, currentMax); }
-        else { if (found) break; }
+        if (x >= currentMin) {
+          if (currentMin == currentMax) {
+            count += n.data.children[i + 1].deepCount; }
+          else {
+            count += count(n.data.children[i + 1], x,
+                           currentMin, currentMax);
+            if (currentMin < x) break; } }
         currentMax = currentMin; }
       return count; }
   }
