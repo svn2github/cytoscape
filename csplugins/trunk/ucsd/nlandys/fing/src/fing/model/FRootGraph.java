@@ -131,7 +131,9 @@ class FRootGraph //implements RootGraph
     // Remove node from underlying graph.
     if (m_graph.removeNode(positiveNodeIndex)) {
       // Remove node from our node array.
+      FNode garbage = m_nodes.getNodeAtIndex(positiveNodeIndex);
       m_nodes.setNodeAtIndex(null, positiveNodeIndex);
+      m_nodeDepot.recycleNode(garbage);
       return nodeInx; }
     else return 0;
   }
@@ -210,7 +212,9 @@ class FRootGraph //implements RootGraph
   {
     final int positiveEdgeIndex = ~edgeInx;
     if (m_graph.removeEdge(positiveEdgeIndex)) {
+      FEdge garbage = m_edges.getEdgeAtIndex(positiveEdgeIndex);
       m_edges.setEdgeAtIndex(null, positiveEdgeIndex);
+      m_edgeDepot.recycleEdge(garbage);
       return edgeInx; }
     else { return 0; }
   }
