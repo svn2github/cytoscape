@@ -189,6 +189,20 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("node with no edges is its own neigh");
     if (root.isNeighbor(root.getNode(nodeInx[3]), root.getNode(nodeInx[1])))
       throw new IllegalStateException("nodes are neighbors");
+    if (!root.isNeighbor(root.getNode(nodeInx[1]), root.getNode(nodeInx[0])))
+      throw new IllegalStateException("nodes are not neighbors");
+    if (root.isNeighbor(root2Node, root.getNode(nodeInx[2])))
+      throw new IllegalStateException("nodes from another graph is neighbor");
+
+    // isNeighbor(int, int)
+    if (!root.isNeighbor(nodeInx[1], nodeInx[1]))
+      throw new IllegalStateException("node with self edge not neigbhor");
+    if (root.isNeighbor(nodeInx[0], nodeInx[0]))
+      throw new IllegalStateException("node with no self edge is neighbor");
+    if (!root.isNeighbor(nodeInx[3], nodeInx[2]))
+      throw new IllegalStateException("nodes are not neighbors");
+    if (!root.isNeighbor(nodeInx[1], nodeInx[2]))
+      throw new IllegalStateException("nodes are not neighbors");
   }
 
 }
