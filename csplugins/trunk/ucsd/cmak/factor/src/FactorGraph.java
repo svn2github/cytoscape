@@ -74,7 +74,6 @@ public class FactorGraph
     // that connect that node to its neighbors in the factor graph.
     // Used for MaxProduct algorithm.
     protected IntListMap _adjacencyMap;
-
     
     protected IntArrayList _vars;
     protected IntArrayList _factors;
@@ -122,12 +121,17 @@ public class FactorGraph
         return new AdjacencyListRootGraph();
     }
 
-
+    /**
+     * @return a unique node index in this factor graph
+     */
     private int getNextNodeIndex()
     {
         return _nextNodeIndex--;
     }
 
+    /**
+     * @return a unique edge index in this factor graph
+     */
     private int getNextEdgeIndex()
     {
         return _nextEdgeIndex--;
@@ -828,8 +832,6 @@ public class FactorGraph
         // annotate invariant edges in the interaction graph
         updateEdgeAnnotation();
         
-        //partitionFactorGraph();
-        
         // first fix degenerate sign variables
         int x=0;
         x += recursivelyFixVars(_sign);
@@ -859,7 +861,8 @@ public class FactorGraph
                 }
             }
         }
-        
+
+        // make the invariant model the first submodel
         _submodels.add(0, invariant);
         
         // annotate edges of submodel
@@ -1085,43 +1088,14 @@ public class FactorGraph
         
         int ct = 0;
         IntArrayList depVars = new IntArrayList();
-        
-        for(int x=0; x < _vars.size(); x++)
-        {
-            int v = _vars.get(x);
-            VariableNode vn = getVarNode(v);
 
-            ProbTable pt = vn.getProbs();
+        ct += addUniqueVarsToModel(model, _edge, depVars);
+        ct += addUniqueVarsToModel(model, _dir, depVars);
+        ct += addUniqueVarsToModel(model, _sign, depVars);
 
-            if(!vn.isFixed() && pt.hasUniqueMax())
-            {
-                if(vn.isType(NodeType.KO) && isExplained(v))
-                {
-                    vn.fixState(pt.maxState());
-                    ct++;
+        ct += addUniqueVarsToModel(model, _ko, depVars);
 
-                    addToModel(model, v, vn);
-                    depVars.add(v);
-                }
-                else if(vn.isType(NodeType.EDGE) ||
-                        vn.isType(NodeType.SIGN) ||
-                        vn.isType(NodeType.DIR)
-                        )
-                    // node is an EDGE, SIGN, or DIR variable
-                {
-                    vn.fixState(pt.maxState());
-                    //logger.fine("fixing " + vn + " to " + pt.maxState());
-                    decrementInfluenceCount(v);
-                    ct++;
-
-                    if(model.acceptsType(vn.type()))
-                    {
-                        addToModel(model, v, vn);
-                        depVars.add(v);
-                    }
-                }
-            }
-        }
+        printInfluenceCnt();
         
         if (!invariant)
         {
@@ -1139,6 +1113,60 @@ public class FactorGraph
         //printInfluenceCnt();
         
         return model;
+    }
+    
+    private int addUniqueVarsToModel(Submodel model,
+                                     IntArrayList vars,
+                                     IntArrayList depVars)
+    {
+        int ct = 0;
+        for(int x=0; x < vars.size(); x++)
+        {
+            int v = vars.get(x);
+            VariableNode vn = getVarNode(v);
+            
+            ProbTable pt = vn.getProbs();
+            
+            if(!vn.isFixed() && pt.hasUniqueMax())
+            {
+                logger.fine("fixing var node " + vn + " type=" + vn.type());
+                if(vn.isType(NodeType.KO) && isExplained(v))
+                {
+                    logger.fine("  isKO and explained: " + pt.maxState());
+                    vn.fixState(pt.maxState());
+                    ct++;
+
+                    //addToModel(model, v, vn);
+                    model.addVar(v);
+                    //depVars.add(v);
+                }
+                else if(vn.isType(NodeType.EDGE) ||
+                        vn.isType(NodeType.SIGN) ||
+                        vn.isType(NodeType.DIR)
+                        )
+                    // node is an EDGE, SIGN, or DIR variable
+                {
+                    vn.fixState(pt.maxState());
+                    logger.fine("fixing " + vn + " to " + pt.maxState());
+                    decrementInfluenceCount(v);
+                    ct++;
+
+                    if(model.acceptsType(vn.type()))
+                    {
+                        //addToModel(model, v, vn);
+                        model.addVar(v);
+                        depVars.add(v);
+                    }
+                }
+            }
+            else
+            {
+                logger.fine("## var node not fixed " + vn);
+            }
+                
+        }
+
+        return ct;
     }
 
     private void decrementInfluenceCount(int varNode)
@@ -1159,55 +1187,69 @@ public class FactorGraph
      * @param
      * @return
      * @throws
-     */
+     *
     private void addToModel(Submodel m, int var, VariableNode vn)
     {
         m.addVar(var);
 
-        /*
-        if(!m.isInvariant())
-        {
-            System.out.println("setting inSubmodel: " + vn);
-            vn.setInSubmodel(true);
-        }
-        */
+        
+        //if(!m.isInvariant())
+       // {
+        //    System.out.println("setting inSubmodel: " + vn);
+        //    vn.setInSubmodel(true);
+        //}
+        
     }
-    
+    */
+
+    /**
+     * Check if a knockout is explained by at least one path.
+     *
+     * @param koNode the knockout node
+     * @return true if at least one explanatory path for koNode is
+     * active and all of the edges, signs and dirs along the path
+     * are fixed.
+     */
     private boolean isExplained(int koNode)
     {
-        List messages = _adjacencyMap.get(koNode);
+        IntArrayList facs = _var2fac.get(koNode);
 
-        for(int m=0, M=messages.size(); m < M; m++)
+        logger.fine("   isExplained called on: " + koNode);
+        // check all paths that could explain this knockout
+        for(int x=0, Nf=facs.size(); x < Nf; x++)
         {
-            EdgeMessage em = (EdgeMessage) messages.get(m);
-            
-            int facNode = em.getFactorIndex();
-            
-            IntArrayList vars = _fac2var.get(facNode);
-            List fmsg = _adjacencyMap.get(facNode);
-            
-            boolean allFixed = true;
-        
-            for(int x=0, N=fmsg.size(); x < N; x++)
-            {
-                // v is the index of variable connected to the factor node
-                int v = ((EdgeMessage) fmsg.get(x)).getVariableIndex();
-                VariableNode vn = getVarNode(v);
+            int facNode = facs.get(x);
+            FactorNode fn = getFacNode(facNode);
 
-                if(!vn.isFixed())
+            logger.fine("   checking : " + fn);
+            
+            if(fn.isType(NodeType.PATH_FACTOR))
+            {
+                logger.fine("   checking PATH_FACTOR: " + facNode
+                            + " isFixed=" + isPathFixed(facNode)
+                            + " isActive=" + isPathActive(facNode));
+      
+                if(isPathFixed(facNode) && isPathActive(facNode))
                 {
-                    allFixed = false;
-                    break;
+                    return true;
                 }
-            }
-
-            if(allFixed)
-            {
-                return true;
             }
         }
 
         return false;
+    }
+
+    private boolean isPathFixed(int facNode)
+    {
+        int cnt = _factorInfluenceMap.get(facNode);
+
+        return (cnt == 0);
+    }
+
+    private boolean isPathActive(int facNode)
+    {
+        VariableNode sigma =  getSigmaForFactor(facNode);
+        return (sigma.getProbs().maxState() == State.ONE);
     }
     
     /**
@@ -1233,10 +1275,9 @@ public class FactorGraph
     private void addInferredVars(Submodel model,
                                  int indepVar, int depVar)
     {
-        /*
-        System.out.println("addInferredVars: indep-var:" + indepVar
-                           + ", dep-var:" + depVar);
-        */
+        logger.fine("addInferredVars: indep-var:" + indepVar
+                     + ", dep-var:" + depVar);
+        
         
         /**
          * 1. Identify path-factor nodes that are connected to
@@ -1250,25 +1291,24 @@ public class FactorGraph
          *    for the path to the model.
          */
 
-        List messages = _adjacencyMap.get(depVar);
-        for(int m=0, M=messages.size(); m < M; m++)
+        IntArrayList facs = _var2fac.get(depVar);
+        for(int x=0, Nf=facs.size(); x < Nf; x++)
         {
-            EdgeMessage em = (EdgeMessage) messages.get(m);
+            int fac = facs.get(x);
 
-            int fac = em.getFactorIndex();
-
-            //System.out.println("checking path " + fac);
-            IntArrayList varsToAdd = isActivePath(model, fac,
+            logger.fine("checking path " + fac);
+            IntArrayList varsToAdd = getInfluencingVars(model, fac,
                                                         indepVar, depVar);
 
-            for(int x=0; x < varsToAdd.size(); x++)
+            for(int y=0; y < varsToAdd.size(); y++)
             {
-                int v = varsToAdd.getQuick(x);
+                int v = varsToAdd.getQuick(y);
                 System.out.println("adding var: " + v
                                    + " from path " + fac
                                    + " to model "
                                    + model.getIndependentVar());
-                addToModel(model, v, getVarNode(v));
+                //addToModel(model, v, getVarNode(v));
+                model.addVar(v);
             }
         }
     }
@@ -1285,53 +1325,52 @@ public class FactorGraph
      * @return the indexes of all d,s, ko vars excluding indepVar, depVar,
      *         and any var that is already in the model.
      */
-    private IntArrayList isActivePath(Submodel model, int facNode,
+    private IntArrayList getInfluencingVars(Submodel model, int facNode,
                                             int indepVar, int depVar)
     {
-        List fmsg = _adjacencyMap.get(facNode);
-        IntArrayList newVars = new IntArrayList(fmsg.size());
+        IntArrayList vars = _fac2var.get(facNode);
+
+        IntArrayList newVars = new IntArrayList(vars.size());
         boolean containsIV = false;
         boolean containsDV = false;
-        boolean allFixed = true;
+        boolean isFixed = isPathFixed(facNode);
+        boolean isActive = isPathActive(facNode);
 
-        /*
-        System.out.println("isActivePath for: " + facNode
-                           + " vars=" + fmsg.size()
-                           + " IV=" + indepVar
-                           + " DV=" + depVar);
-        */
+
         
-        for(int x=0, N=fmsg.size(); x < N; x++)
-        {
-            // v is the index of variable connected to the factor node
-            int v = ((EdgeMessage) fmsg.get(x)).getVariableIndex();
-            VariableNode vn = getVarNode(v);
+        logger.fine("getInfluencingVars for: " + facNode
+                    + " isFixed=" + isFixed
+                    + " isActive=" + isActive
+                    + " #vars=" + vars.size()
+                    + " IV=" + indepVar
+                    + " DV=" + depVar);
+        
 
-            if(v == indepVar)
+        if(isFixed && isActive)
+        {
+            for(int x=0, N=vars.size(); x < N; x++)
             {
-                containsIV = true;
-            }
-            else if (v == depVar)
-            {
-                containsDV = true;
-            }
-            else if(!vn.isType(NodeType.PATH_ACTIVE))
-            {
-                if(!vn.isFixed())
+                int v = vars.get(x);
+                VariableNode vn = getVarNode(v);
+                
+                if(v == indepVar)
                 {
-                    //System.out.println("not fixed found: " + v + ", "+ vn);
-                    allFixed = false;
-                    break;
+                    containsIV = true;
+                }
+                else if (v == depVar)
+                {
+                    containsDV = true;
                 }
                 else if(model.acceptsType(vn.type()) &&
                         !model.containsVar(v))
                 {
                     newVars.add(v);
                 }
+                
             }
         }
         
-        if (!allFixed || !containsIV || !containsDV)
+        if (!containsIV || !containsDV)
         {
             newVars.clear();
         }
