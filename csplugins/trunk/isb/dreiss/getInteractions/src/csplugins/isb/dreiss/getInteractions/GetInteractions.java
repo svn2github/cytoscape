@@ -28,6 +28,8 @@ import csplugins.isb.dreiss.cytoTalk.CytoTalkHandler;
  * @version 1.0
  */
 public class GetInteractions extends CytoscapePlugin {
+   static protected Properties properties;
+
    protected CytoscapeDesktop cWindow;
    protected CytoTalkHandler handler;
    protected InteractionClient interactionFetcher;
@@ -36,6 +38,10 @@ public class GetInteractions extends CytoscapePlugin {
    protected Map arguments = new HashMap();
    protected Map sources, homologSpecies, nodeLookup, hSpeciesLookup;
    protected Vector nodesToBeSelected = new Vector(), edgesToBeSelected = new Vector();
+
+   static {
+      properties = MyUtils.readProperties( "csplugins/isb/dreiss/getInteractions.properties" );
+   }
 
    public GetInteractions() {
       this.cWindow = Cytoscape.getDesktop();
@@ -490,15 +496,29 @@ public class GetInteractions extends CytoscapePlugin {
 
    protected Map getNeighborNodeURLs( String source, String neighborName, String species, String infoString ) {
       Map map = new HashMap();
-      if ( neighborName.startsWith( "NP_" ) || neighborName.startsWith( "XP_" ) || neighborName.startsWith( "NM_" ) )
-	 map.put( "RefSeq URL", "http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?db=Protein&cmd=Search&doptcmdl=GenPept&term=" +
-		  neighborName );
+
+
+      if ( neighborName.startsWith( "NP_" ) || neighborName.startsWith( "XP_" ) || neighborName.startsWith( "NM_" ) ) {
+	 String refseqURL = (String) properties.get( "refseq.url" ); 
+	 refseqURL = refseqURL.replaceAll( "\\$\\{1\\}", neighborName );
+	 map.put( "RefSeq URL", refseqURL );
+      }
 
       if ( source.startsWith( "hprd" ) ) {
 	 String hprdid = getInfoArg( "HPRDID2", infoString );
-	 if ( ! "".equals( hprdid ) ) map.put( "HPRD URL", "http://hprd.org/protein/" + hprdid +
-					       "?selectedtab=INTERACTIONS" );
+	 String hprdURL = (String) properties.get( "hprd.url" );
+	 hprdURL = hprdURL.replaceAll( "\\$\\{1\\}", hprdid );
+	 if ( ! "".equals( hprdid ) ) map.put( "HPRD URL", hprdURL );
       }
+
+      if ( source.startsWith( "dip" ) ) {
+	 String dipid = getInfoArg( "dipID2", infoString );
+	 dipid = dipid.replaceAll( "N", "" );
+	 String url = (String) properties.get( "dip.node.url" );
+	 url = url.replaceAll( "\\$\\{1\\}", dipid );
+	 if ( ! "".equals( dipid ) ) map.put( "DIP URL", url );
+      }
+
       return map;
    }
 
@@ -599,21 +619,33 @@ public class GetInteractions extends CytoscapePlugin {
 	 // Add a bind url if that's the source, using the bind id in the info string
       } else if ( "bind".equals( source ) ) {
 	 String bid = getInfoArg( "BindID", infoString );
-	 String url = "http://bind.ca/cgi-bin/bind/dataget?get=search&rectype=4&type=int&id="; //5545
-	 if ( ! "".equals( bid ) ) out.put( "BIND URL", url + bid );
+	 String bindURL = (String) properties.get( "bind.url" );
+	 bindURL = bindURL.replaceAll( "\\$\\{1\\}", bid );
+	 if ( ! "".equals( bid ) ) out.put( "BIND URL", bindURL );
 
 	 // Add a hprd url from the HPRD id, if that's the source
       } else if ( source.startsWith( "hprd" ) ) {
 	 String hprdid = getInfoArg( "HPRDID1", infoString );
-	 if ( ! "".equals( hprdid ) ) out.put( "HPRD URL", "http://hprd.org/protein/" + hprdid + 
-					     "?selectedtab=INTERACTIONS" );
+	 String hprdURL = (String) properties.get( "hprd.url" );
+	 hprdURL = hprdURL.replaceAll( "\\$\\{1\\}", hprdid );
+	 if ( ! "".equals( hprdid ) ) out.put( "HPRD URL", hprdURL );
       }
 
       // Add a pubmed url if there's a PubMedID string in the info
       if ( infoString.indexOf( "PubMedID=" ) >= 0 ) {
 	 String pmid = getInfoArg( "PubMedID", infoString );
-	 String url = "http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&dopt=Abstract&list_uids=";//11283351
-	 if ( ! "".equals( pmid ) ) out.put( "PubMed URL", url + pmid );
+	 String url = (String) properties.get( "pubmed.url" );
+	 url = url.replaceAll( "\\$\\{1\\}", pmid );
+	 if ( ! "".equals( pmid ) ) out.put( "PubMed URL", url );
+      }
+
+      // Add a DIP url if there's a DIPID string in the info
+      if ( infoString.indexOf( "dipID=" ) >= 0 ) {
+	 String dipid = getInfoArg( "dipID", infoString );
+	 dipid = dipid.replaceAll( "E", "" );
+	 String url = (String) properties.get( "dip.url" );
+	 url = url.replaceAll( "\\$\\{1\\}", dipid );
+	 if ( ! "".equals( dipid ) ) out.put( "DIP URL", url );
       }
 
       // Add any other urls that are in the info string (e.g. if the info string contains
