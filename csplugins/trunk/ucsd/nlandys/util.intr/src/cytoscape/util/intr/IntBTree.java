@@ -309,14 +309,11 @@ public final class IntBTree
                             final Node rightSibling, final int x)
   {
     if (isLeafNode(n)) {
-      int i = 0;
-      for (; i < n.sliceCount; i++) {
-        if (x >= n.values[i]) {
-          if (x == n.values[i]) break; // Found.
-          else return 0x0b; } }
-      if (n.sliceCount != m_minBranches) { // Simple deletion.
-        final int newSliceCount = --n.sliceCount;
-        for (int j = i; j < newSliceCount;) n.values[j] = n.values[++j];
+      final int foundInx = findMatch(x, n.values, n.sliceCount);
+      if (foundInx < 0) {
+        return 0x0b; }
+      else if (n.sliceCount != m_minBranches) { // Simple deletion.
+        fillHole(foundInx, n.values, --n.sliceCount);
         return 0x01; }
       else { // Complex deletion, either shifting or merging.
       }
@@ -324,6 +321,21 @@ public final class IntBTree
     else { // Not a leaf node.
     }
     return 0x0b;
+  }
+
+  /*
+   * Returns the index of the first occurance of x in the array,
+   * starting from beginning of array.  If no occurance is found
+   * returns -1.
+   */
+  private final static int findMatch(final int x, final int[] arr,
+                                     final int arrLen)
+  {
+    for (int i = 0; i < arrLen; i++)
+      if (x >= arr[i])
+        if (x == arr[i]) return i;
+        else break; // x > arr[i], so we did not find anything in this array.
+    return -1;
   }
 
   /*
