@@ -19,10 +19,11 @@ public class FitContentAction extends AbstractAction {
     }
     
     public void actionPerformed(ActionEvent e) {
-        //we have to do it this way because PGraphView.fitContent()
+      //we have to do it this way because 
+      //networkView.getView().fitContent();
         //currently appears to do nothing -AM 12-17-2003
         PGraphView view =(PGraphView) networkView.getView();
-        view.getCanvas().getCamera().animateViewToCenterBounds( view.getCanvas().getLayer().getGlobalFullBounds(), true, 500l );
+        view.getCanvas().getCamera().animateViewToCenterBounds( view.getCanvas().getLayer().getGlobalFullBounds(), true, 50l );
     }
 }
 

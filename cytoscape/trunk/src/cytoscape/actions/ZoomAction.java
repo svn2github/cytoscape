@@ -23,9 +23,7 @@ public class ZoomAction extends AbstractAction {
     }
     
     public void actionPerformed (ActionEvent e) {
-        GraphView view = networkView.getView();
-        double newZoom = factor*view.getZoom();
-        view.setZoom( newZoom );
+      networkView.getView().setZoom( factor );
     }
 }
 

@@ -10,6 +10,8 @@ package cytoscape.graphutil;
 import cytoscape.*;
 import cytoscape.view.*;
 import cytoscape.data.*;
+import cytoscape.browsers.*;
+import cytoscape.util.*;
 
 import java.util.*;
 import giny.model.*;
@@ -48,11 +50,52 @@ public class NodeAction {
     return "";
   }
 
+  /**
+   * This will open a Node Attribute browser 
+   */
+  public static JMenuItem viewNodeAttributeBrowser ( Object[] args, PNode node ) {
+    final NetworkView network = ( NetworkView )args[0];
+    final PNodeView view = ( PNodeView )node;
+    return new JMenuItem( new AbstractAction( "Attribute Browser" ) {
+          public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
 
-  public static JMenuItem openSGD ( Object[] args, PNode node ) {
+    TabbedBrowser nodeBrowser = new TabbedBrowser ( new Object[] { view.getNode() }, 
+                                                    network.getNetwork().getNodeAttributes(),
+                                                    new Vector(),
+                                                    network.getCytoscapeObj().
+                                                    getConfiguration().getProperties().
+                                                    getProperty("webBrowserScript", 
+                                                                 "noScriptDefined") ,
+                                                    TabbedBrowser.BROWSING_NODES );
+     } } ); } } );
+  }
+
+
+  /**
+   * Instant Node Editing
+   */
+  public static JMenuItem editNode ( Object[] args, PNode node ) {
+    final NetworkView network = ( NetworkView )args[0];
+    final PNodeView view = ( PNodeView )node;
+    return new JMenuItem( new AbstractAction( "Node Editing" ) {
+          public void actionPerformed ( ActionEvent e ) {
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  ( ( PGraphView )network.getView() ).openNodeEditing();
+                } } ); } } );
+  }
+
+
+  /**
+   * This will open an web page that will give you more info.
+   */
+  public static JMenuItem openWebInfo ( Object[] args, PNode node ) {
 
     final PNode nv = node;
-    return new JMenuItem( new AbstractAction( "SGD" ) {
+    return new JMenuItem( new AbstractAction( "Web Info" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {

@@ -299,26 +299,31 @@ protected void addViewContextMenus() {
                          "getTitle",
                          new Object[] { ( NetworkView )this } );
 
-      view.addContextMethod( "class edu.umd.cs.piccolo.PNode",
-                             "cytoscape.graphutil.NodeAction",
-                             "openSGD",
-                             new Object[] {view } );
+  view.addContextMethod( "class phoebe.PNodeView",
+                         "cytoscape.graphutil.NodeAction",
+                         "openWebInfo",
+                         new Object[] { ( NetworkView )this } );
 
+  
+  view.addContextMethod( "class phoebe.PNodeView",
+                         "cytoscape.graphutil.NodeAction",
+                         "viewNodeAttributeBrowser",
+                         new Object[] { ( NetworkView )this } );
 
-	    view.addContextMethod( "class phoebe.PNodeView",
-                             "cytoscape.graphutil.NodeAction",
-                             "colorNode",
-                              new Object[] {view } );
+  view.addContextMethod( "class phoebe.PNodeView",
+                         "cytoscape.graphutil.NodeAction",
+                         "editNode",
+                         new Object[] {view } );
 
-	    view.addContextMethod( "class phoebe.PNodeView",
-                             "cytoscape.graphutil.NodeAction",
-                             "colorSelectNode",
-                              new Object[] {view });
-
-	    view.addContextMethod( "class phoebe.PNodeView",
-                                  "cytoscape.graphutil.NodeAction",
-                                  "shapeNode",
-                                 new Object[] {view } );
+  view.addContextMethod( "class phoebe.PNodeView",
+                         "cytoscape.graphutil.NodeAction",
+                         "colorSelectNode",
+                         new Object[] {view });
+  
+  view.addContextMethod( "class phoebe.PNodeView",
+                         "cytoscape.graphutil.NodeAction",
+                         "shapeNode",
+                         new Object[] {view } );
 
 	    // Add some Edge Context Menus
 	    view.addContextMethod( "class phoebe.PEdgeView",
