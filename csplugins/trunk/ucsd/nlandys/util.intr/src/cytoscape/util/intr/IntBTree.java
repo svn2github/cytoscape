@@ -7,6 +7,8 @@ public final class IntBTree
 {
 
   // This quantity must be at least 3.
+  // The author prefers that this quantity be odd because that way nodes
+  // are split evenly when they get full.
   private final static int MAX_BRANCHES = 3;
 
 //   private final int m_min_capacity;
@@ -87,12 +89,11 @@ public final class IntBTree
     }
     else
     { // Not a leaf node.
-      int foundPath = -1;
-      for (int i = 0; i < n.sliceCount - 1; i++) {
-        if (x <= n.data.splitVals[i]) {
-          foundPath = i;
+      int foundPath = 0;
+      for (int i = n.sliceCount - 2; i >= 0; i--) {
+        if (x >= n.data.splitVals[i]) {
+          foundPath = i + 1;
           break; } }
-      if (foundPath < 0) foundPath = n.sliceCount - 1;
       Node oldChild = n.data.children[foundPath];
       Node newChild = insert(oldChild, x);
       if (newChild == null) {
