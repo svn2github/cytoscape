@@ -313,6 +313,11 @@ public class AbstractMetaNodeModeler {
       System.err.println("graphPerspective has " + gpNodes.length + " nodes");
     }
     int numRestoredEdges = 0;
+
+    // RHC
+    // create a list of all edges that should be added to the Perspective
+    IntArrayList edges_to_restore = new IntArrayList(1000);
+
     for(int node_i = 0; node_i < gpNodes.length; node_i++){
       
       // Get edges in BOTH directions and restore them
@@ -358,14 +363,28 @@ public class AbstractMetaNodeModeler {
                            " edges between nodes " + rootNodeIndex + " and " +
                            gpNodes[node_i]);
       }
-      int [] restoredRindices = cy_network.restoreEdges(connectingEdgesRindices);
-      if(DEBUG){
-        System.err.println("Restored " + restoredRindices.length + "/" + 
-                           connectingEdgesRindices.length + " edges connecting " + 
-                           rootNodeIndex + " and " + gpNodes[node_i]);
+      
+      //RHC
+      // insted of restoring now, save, and restore all at once
+      //int [] restoredRindices = cy_network.restoreEdges(connectingEdgesRindices);
+      
+      for ( int ci = 0; ci < connectingEdgesRindices.length; ++ci ) {
+        edges_to_restore.add( connectingEdgesRindices[ci] );
       }
-      numRestoredEdges += restoredRindices.length;
+
+      //if(DEBUG){
+      //  System.err.println("Restored " + restoredRindices.length + "/" + 
+      //                     connectingEdgesRindices.length + " edges connecting " + 
+      //                     rootNodeIndex + " and " + gpNodes[node_i]);
+      //}
+      //numRestoredEdges += restoredRindices.length;
     }//for node_i
+
+    // RHC
+    // now restore all edges at once
+    edges_to_restore.trimToSize();
+    int[] restoredRindices = cy_network.restoreEdges( edges_to_restore.elements() );
+    numRestoredEdges += restoredRindices.length;
 
     if(restoredNodeIndex != 0 || hiddenNodes.length > 0 || numRestoredEdges > 0){
       if(DEBUG){
