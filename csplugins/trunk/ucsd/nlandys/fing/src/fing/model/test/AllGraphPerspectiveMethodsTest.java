@@ -368,6 +368,39 @@ public final class AllGraphPerspectiveMethodsTest
     if (persp.edgeExists(Integer.MAX_VALUE, Integer.MIN_VALUE) ||
         persp.edgeExists(Integer.MIN_VALUE, Integer.MAX_VALUE))
       throw new IllegalStateException("MIN_VALUE and MAX_VALUE edge exists");
+
+    // getEdgeCount(Node, Node, boolean).
+    if (persp.getEdgeCount(persp.getNode(nodeInx[0]),
+                           persp.getNode(nodeInx[1]), true) != 1)
+      throw new IllegalStateException("wrong number in edge count");
+    if (persp.getEdgeCount(persp.getNode(nodeInx[0]), root2Node, true) != -1 ||
+        persp.getEdgeCount(persp.getNode(nodeInx[1]),
+                           nodeNotInPersp, false) != -1)
+      throw new IllegalStateException("edge count not -1");
+    if (persp.getEdgeCount(persp.getNode(nodeInx[1]),
+                           persp.getNode(nodeInx[1]), false) != 0)
+      throw new IllegalStateException("edge count not 0");
+
+    // getEdgeCount(int, int, boolean).
+    if (persp.getEdgeCount(nodeInx[3], nodeInx[2], true) != 1)
+      throw new IllegalStateException("edge count not 1");
+    if (persp.getEdgeCount(nodeInx[2], nodeInx[3], true) != 0)
+      throw new IllegalStateException("edge count not 0");
+    if (persp.getEdgeCount(nodeInx[1], nodeInx[2], false) != 0)
+      throw new IllegalStateException("edge count not 0");
+    if (persp.getEdgeCount(nodeInx[1], nodeInx[1], true) != 1)
+      throw new IllegalStateException("edge count not 1 for und. self edge");
+    if (persp.getEdgeCount(99, 98, true) != -1)
+      throw new IllegalStateException("edge count not -1");
+    if (persp.getEdgeCount(Integer.MAX_VALUE,
+                           Integer.MIN_VALUE, false) != -1 ||
+        persp.getEdgeCount(Integer.MIN_VALUE,
+                           Integer.MAX_VALUE, true) != -1 ||
+        persp.getEdgeCount(nodeInx[0], minNodeInx - 1, true) != -1)
+      throw new IllegalStateException("edge count not -1");
+    if (persp.getEdgeCount(nodeInx[1], nodeInx[3], true) != 0 ||
+        !(root.getEdgeCount(nodeInx[1], nodeInx[3], true) > 0))
+      throw new IllegalStateException("bad edge count between 2 nodes");
   }
 
 }
