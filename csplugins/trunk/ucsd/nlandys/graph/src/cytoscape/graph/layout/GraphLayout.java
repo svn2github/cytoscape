@@ -1,6 +1,5 @@
 package cytoscape.graph.layout;
 
-import java.awt.geom.Point2D;
 import cytoscape.graph.GraphTopology;
 
 /**
@@ -27,11 +26,14 @@ public interface GraphLayout extends GraphTopology
   public double getMaxHeight();
 
   /**
-   * Returns the X,Y position of a node.
-   * This method shall never return <code>null</code>.
+   * Returns the X or Y position of a node.
+   * @param nodeIndex the index of node whose position we're seeking.
+   * @param xPosition if <code>true</code>, return X position; if
+   *   <code>false</code>, return Y position.
+   * @return the X or Y position of node at index <code>nodeIndex</code>.
    * @exception IndexOutOfBoundsException if <code>nodeIndex</code> is not
    *   in the interval <nobr><code>[0, getNumNodes() - 1]</code></nobr>.
    */
-  public Point2D getNodePosition(int nodeIndex);
+  public double getNodePosition(int nodeIndex, boolean xPosition);
 
 }
