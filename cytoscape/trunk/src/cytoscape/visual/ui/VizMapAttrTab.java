@@ -392,8 +392,8 @@ public class VizMapAttrTab extends VizMapTab {
     private String getCalculatorName(Calculator c) {
 	// default to the next available name for c
 	String suggestedName = null;
-	if (currentCalculator != null)
-	    suggestedName = catalog.checkCalculatorName(c.toString(), this.type);
+	if (c != null)
+	    suggestedName = this.catalog.checkCalculatorName(c.toString(), this.type);
 	
 	// keep prompting for input until user cancels or we get a valid name
 	while(true) {
