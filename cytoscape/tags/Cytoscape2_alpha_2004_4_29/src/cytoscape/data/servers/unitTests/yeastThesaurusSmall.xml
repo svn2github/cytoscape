@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+
+<!-- $Revision$
+     $Date$
+     $Author$
+ -->
+
+<thesaurus species="Saccharomyces cerevisiae">
+
+
+  <synonyms>
+    <canonicalName> YMR056C </canonicalName>
+    <commonName> AAC1 </commonName>
+  </synonyms>
+
+  <synonyms>
+    <canonicalName> YBR085W </canonicalName>
+    <commonName> AAC3 </commonName>
+    <alternateName> ANC3 </alternateName>
+  </synonyms>
+
+  <synonyms>
+    <canonicalName> YJR155W </canonicalName>
+    <commonName> AAD10 </commonName>
+  </synonyms>
+
+  <synonyms>
+    <canonicalName> YNL331C </canonicalName>
+    <commonName> AAD14 </commonName>
+  </synonyms>
+
+  <synonyms>
+    <canonicalName> YOL165C </canonicalName>
+    <commonName> AAD15 </commonName>
+  </synonyms>
+
+  <synonyms>
+    <canonicalName> YCR107W </canonicalName>
+    <commonName> AAD3 </commonName>
+  </synonyms>
+
+  <synonyms>
+    <canonicalName> YBR288C </canonicalName>
+    <commonName> APM3 </commonName>
+    <alternateName> YKS6 </alternateName>
+  </synonyms>
+
+  <synonyms>
+    <canonicalName> YOL062C </canonicalName>
+    <commonName> APM4 </commonName>
+    <alternateName> AMP1 </alternateName>
+  </synonyms>
+
+  <synonyms>
+    <canonicalName> YPR060C </canonicalName>
+    <commonName> ARO7 </commonName>
+    <alternateName> HGS1 </alternateName>
+    <alternateName> OSM2 </alternateName>
+    <alternateName> TYR7 </alternateName>
+  </synonyms>
+
+</thesaurus>
