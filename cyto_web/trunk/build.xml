@@ -4,6 +4,8 @@
 -->
 <project name="cyto_web" default="deploy" basedir=".">
 
+	<property file="cyto.properties"/>
+
 	<target name="config_prod" description="Configures for production set-up at cytoscape.org">
 	<replace file="config.php" summary="yes">
 		<replacetoken>$in_production = false;</replacetoken>
@@ -23,15 +25,21 @@
 		<ftp server="cytoscape.org" 
 			remotedir="/html/new" 
 			verbose="yes"
-			userid="treyideker"
-			password="-----"
+			userid="${cyto.user}"
+			password="${cyto.password}"
 			depends="yes"
 			binary="yes">
 			<fileset dir=".">
 				<exclude name="build.xml"/>
 				<exclude name="README.txt"/>
+				<exclude name="cyto.propertiess"/>
 				<exclude name="CVS*"/>
 			</fileset>
 		</ftp>
+	</target>
+
+	<target name="env">
+		<echo>cyto.user:  ${cyto.user}</echo>
+		<echo>cyto.password:  ${cyto.password}</echo>
 	</target>
 </project>
