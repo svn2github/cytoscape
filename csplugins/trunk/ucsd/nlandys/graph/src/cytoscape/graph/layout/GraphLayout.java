@@ -4,7 +4,7 @@ import cytoscape.graph.GraphTopology;
 
 /**
  * This class represents not just a graph's topology but also a layout of its
- * nodes in 2D space.
+ * nodes in 2D space (a &quot;straight-line graph drawing&quot;).
  */
 public interface GraphLayout extends GraphTopology
 {
