@@ -322,8 +322,8 @@ public class NetworkPanel
         setBackgroundNonSelectionColor( java.awt.Color.green.brighter() );
         setBackgroundSelectionColor( java.awt.Color.green.darker() );
       } else {
-        //setBackgroundNonSelectionColor( java.awt.Color.red.brighter() );
-        //setBackgroundSelectionColor( java.awt.Color.red.darker() );
+        setBackgroundNonSelectionColor( java.awt.Color.red.brighter() );
+        setBackgroundSelectionColor( java.awt.Color.red.darker() );
                
       }
 
