@@ -56,6 +56,7 @@ public class CyMenus {
   JMenu editMenu;
   //JMenuItem undoMenuItem, redoMenuItem;
   JMenuItem deleteSelectionMenuItem;
+  JMenu dataMenu;
   JMenu selectMenu;
   JMenu layoutMenu;
   JMenu vizMenu;
@@ -81,30 +82,45 @@ public class CyMenus {
    * Returns the main menu bar constructed by this object.
    */
   public CytoscapeMenuBar getMenuBar() {return menuBar;}
-    
+  
   /**
-   * Returns the submenu that holds menu items such as
-   * loading and saving.
+   * Returns the menu with items related to file operations.
+   */
+  public JMenu getFileMenu() {return fileMenu;}
+  /**
+   * Returns the submenu with items related to loading objects.
    */
   public JMenu getLoadSubMenu() {return loadSubMenu;}
   /**
-   * Returns the submenu holding menu items for actions that
-   * select nodes and edges in the graph.
+   * Returns the submenu with items related to saving objects.
+   */
+  public JMenu getSaveSubMenu() {return saveSubMenu;}
+  /**
+   * returns the menu with items related to editing the graph.
+   */
+  public JMenu getEditMenu() {return editMenu;}
+  /**
+   * Returns the menu with items related to data operations.
+   */
+  public JMenu getDataMenu() {return dataMenu;}
+  /**
+   * Returns the menu with items related to selecting
+   * nodes and edges in the graph.
    */
   public JMenu getSelectMenu() {return selectMenu;}
   /**
-   * Returns the submenu holding menu items for layout actions.
+   * Returns the menu with items realted to layout actions.
    */
   public JMenu getLayoutMenu() {return layoutMenu;}
   /**
-   * Returns the submenu holding menu items associated with
-   * the visual mapper.
+   * Returns the menu with items related to visualiation.
    */
   public JMenu getVizMenu() {return vizMenu;}
   /**
-   * Returns the submenu holding menu items associated with
-   * plug-ins. Most plug-ins grab this submenu and add their
-   * menu option.
+   * Returns the menu with items associated with plug-ins.
+   * Most plug-ins grab this menu and add their menu option.
+   * The plugins should then call refreshOperationsMenu to
+   * update the menu.
    */
   public JMenu getOperationsMenu() {return opsMenu;}
   /**
@@ -209,6 +225,7 @@ public class CyMenus {
     loadSubMenu = menuBar.getMenu( "File.Load" );
     saveSubMenu = menuBar.getMenu( "File.Save" );
     editMenu    = menuBar.getMenu( "Edit" );
+    dataMenu    = menuBar.getMenu( "Data" );
     selectMenu  = menuBar.getMenu( "Select" );
     layoutMenu  = menuBar.getMenu( "Layout" );
     vizMenu     = menuBar.getMenu( "Visualization" );
@@ -242,39 +259,45 @@ public class CyMenus {
 
       //fill the Load submenu
       JMenuItem mi = loadSubMenu.add(new LoadGraphFileAction(networkView));
+      mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.CTRL_MASK));
       //mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.CTRL_MASK));
       //JMenuItem mi = loadSubMenu.add(new LoadInteractionFileAction(networkView));
       //mi = loadSubMenu.add(new LoadGMLFileAction(networkView));
       //mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.CTRL_MASK));
-      mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.CTRL_MASK));
-      mi = loadSubMenu.add(new LoadExpressionMatrixAction(networkView));
-      mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.CTRL_MASK));
-      mi = loadSubMenu.add(new LoadBioDataServerAction(networkView));
       mi = loadSubMenu.add(new LoadNodeAttributesAction(networkView));
       mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK));
       mi = loadSubMenu.add(new LoadEdgeAttributesAction(networkView));
       mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_J, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK));
-      
+      mi = loadSubMenu.add(new LoadExpressionMatrixAction(networkView));
+      mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.CTRL_MASK));
+      mi = loadSubMenu.add(new LoadBioDataServerAction(networkView));
+
       //fill the Save submenu
-      //saveAsGML not supported yet
       saveSubMenu.add(new SaveAsGMLAction(networkView));
       saveSubMenu.add(new SaveAsInteractionsAction(networkView));
       saveSubMenu.add(new SaveVisibleNodesAction(networkView));
       saveSubMenu.add(new SaveSelectedNodesAction(networkView));
       
       fileMenu.add(new PrintAction(networkView));
-        
-        mi = fileMenu.add(new CloseWindowAction(cyWindow));
-        mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
-        if (cytoscapeObj.getParentApp() != null) {
-            mi = fileMenu.add(new ExitAction(cyWindow));
-            mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
-        }
+      
+      mi = fileMenu.add(new CloseWindowAction(cyWindow));
+      mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
+      if (cytoscapeObj.getParentApp() != null) {
+          mi = fileMenu.add(new ExitAction(cyWindow));
+          mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
+      }
         
     //fill the Edit menu
     //editing the graph not fully supported in Giny mode
     //deleteSelectionMenuItem = editMenu.add(new DeleteSelectedAction(networkView));
     //deleteSelectionMenuItem.setEnabled(false);
+    editMenu.add( new SquiggleAction( networkView ) ); 
+    
+    //fill the Data menu
+    mi = dataMenu.add(new DisplayBrowserAction(networkView));
+    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
+    menuBar.addAction( new GraphObjectSelectionAction( networkView ) );
+    mi = dataMenu.add(new EdgeManipulationAction(networkView));
 
     //fill the Select menu
     JMenu selectNodesSubMenu = new JMenu("Nodes");
@@ -283,13 +306,8 @@ public class CyMenus {
     selectMenu.add(selectEdgesSubMenu);
     JMenu displayNWSubMenu = new JMenu("To New Window");
     selectMenu.add(displayNWSubMenu);
-	
-	
-    // added by larissa 10/09/03
-    mi = selectMenu.add(new SelectAllAction(networkView));
-    mi = selectMenu.add(new DeselectAllAction(networkView));
-    mi = selectMenu.add(new DisplayBrowserAction(networkView));
-        
+    
+      
     // mi = selectEdgesSubMenu.add(new EdgeTypeDialogAction());
         
     mi = selectNodesSubMenu.add(new InvertSelectedNodesAction(networkView));
@@ -302,48 +320,27 @@ public class CyMenus {
     mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, ActionEvent.CTRL_MASK));
     mi = selectNodesSubMenu.add(new SelectAllNodesAction(networkView));
     mi = selectNodesSubMenu.add(new DeSelectAllNodesAction(networkView));
-        
+    mi = selectNodesSubMenu.add(new SelectFirstNeighborsAction(networkView));
+    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK));
+    selectNodesSubMenu.add(new AlphabeticalSelectionAction(networkView));
+    selectNodesSubMenu.add(new ListFromFileSelectionAction(networkView));
+    
     //mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.CTRL_MASK));
     mi = selectEdgesSubMenu.add(new InvertSelectedEdgesAction(networkView));
     mi = selectEdgesSubMenu.add(new HideSelectedEdgesAction(networkView));
     mi = selectEdgesSubMenu.add(new UnHideSelectedEdgesAction(networkView));
     mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, ActionEvent.CTRL_MASK));
-    mi = selectEdgesSubMenu.add(new EdgeManipulationAction(networkView));
     mi = selectEdgesSubMenu.add(new SelectAllEdgesAction(networkView));
     mi = selectEdgesSubMenu.add(new DeSelectAllEdgesAction(networkView));
-        
-        
-    mi = selectNodesSubMenu.add(new SelectFirstNeighborsAction(networkView));
-    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK));
-
-    // RHC Added Menu Items
-    //selectNodesSubMenu.add(new GraphObjectSelectionAction(networkView));
-    menuBar.addAction( new GraphObjectSelectionAction( networkView ) );
-    editMenu.add( new SquiggleAction( networkView ) ); 
-    vizMenu.add( new BirdsEyeViewAction( networkView ) );
     
-    menuBar.addAction( new AnimatedLayoutAction( networkView ) );
-    
-    //added by larissa 10/03
-    JMenu showExpressionData = new JMenu ("Show Expression Data" );
-    vizMenu.add(showExpressionData);
-    mi = showExpressionData.add( new ShowExpressionDataAction( networkView, ShowExpressionDataAction.STAR_PLOT, "... as Star Plots" ) );
-    mi = showExpressionData.add( new ShowExpressionDataAction( networkView, ShowExpressionDataAction.GRID_NODE, "... as Grid Nodes" ) );
-    mi = showExpressionData.add( new ShowExpressionDataAction( networkView, ShowExpressionDataAction.PETAL_NODE, "... as Petal Nodes" ) );
-    mi = showExpressionData.add( new ShowExpressionDataAction( networkView, ShowExpressionDataAction.RADAR_NODE, "... as Radar Nodes" ) );
-    
-    vizMenu.add ( new BackgroundColorAction (networkView) );
-
-
-    selectNodesSubMenu.add(new AlphabeticalSelectionAction(networkView));
-    selectNodesSubMenu.add(new ListFromFileSelectionAction(networkView));
-  
     mi = displayNWSubMenu.add(new NewWindowSelectedNodesOnlyAction(cyWindow));
     mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
     mi = displayNWSubMenu.add(new NewWindowSelectedNodesEdgesAction(cyWindow));
     mi = displayNWSubMenu.add(new CloneGraphInNewWindowAction(cyWindow));
     mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, ActionEvent.CTRL_MASK));
-        
+    
+    mi = selectMenu.add(new SelectAllAction(networkView));
+    mi = selectMenu.add(new DeselectAllAction(networkView));
     //fill the Layout menu
     //need to add Giny layout operations
         
@@ -364,10 +361,21 @@ public class CyMenus {
       new ShrinkExpandGraphUI(cyWindow, layoutMenu);  
 
     //fill the Visualization menu
+    vizMenu.add( new BirdsEyeViewAction( networkView ) );
+    JMenu showExpressionData = new JMenu ("Show Expression Data" );
+    vizMenu.add(showExpressionData);
+    mi = showExpressionData.add( new ShowExpressionDataAction( networkView, ShowExpressionDataAction.STAR_PLOT, "... as Star Plots" ) );
+    mi = showExpressionData.add( new ShowExpressionDataAction( networkView, ShowExpressionDataAction.GRID_NODE, "... as Grid Nodes" ) );
+    mi = showExpressionData.add( new ShowExpressionDataAction( networkView, ShowExpressionDataAction.PETAL_NODE, "... as Petal Nodes" ) );
+    mi = showExpressionData.add( new ShowExpressionDataAction( networkView, ShowExpressionDataAction.RADAR_NODE, "... as Radar Nodes" ) );
+    
+    vizMenu.add ( new BackgroundColorAction (networkView) );
     this.vizMenuItem = vizMenu.add(new SetVisualPropertiesAction(cyWindow));
     this.disableVizMapperItem = vizMenu.add(new ToggleVisualMapperAction(cyWindow, false));
     this.enableVizMapperItem = vizMenu.add(new ToggleVisualMapperAction(cyWindow, true));
     this.enableVizMapperItem.setEnabled(false);
+    
+    menuBar.addAction( new AnimatedLayoutAction( networkView ) );
   }
     
   /**
