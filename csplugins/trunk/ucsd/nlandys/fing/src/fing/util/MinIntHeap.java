@@ -90,8 +90,15 @@ public final class MinIntHeap
    */
   public final void toss(int[] elements, int beginIndex, int length)
   {
+    // Do some extra error checking just so that we don't create an
+    // extremely large array if incorrect parameters are passed.
+    if (beginIndex < 0)
+      throw new IllegalArgumentException("beginIndex is less than zero");
     if (length < 0)
-      throw new IllegalArgumentException("length cannot be negative");
+      throw new IllegalArgumentException("length is less than zero");
+    if (((long) beginIndex) + (long) length > (long) elements.length)
+      throw new IllegalArgumentException
+        ("combination of beginIndex and length exceed length of array");
     checkSize(length);
     System.arraycopy(elements, beginIndex,
                      m_heap, m_currentSize + 1, length);
