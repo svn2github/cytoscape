@@ -244,10 +244,12 @@ class FRootGraph implements RootGraph, DynamicGraph
     if (persp == null) return 0;
     return createNode(persp); }
 
-  public int createNode(GraphPerspective perspective) {
+  public int createNode(GraphPerspective perspective)
+  {
     // Casting to check that we aren't going to get garbage nodes and edges.
     if (((FGraphPerspective) perspective).getRootGraph() != this) return 0;
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+    throw new UnsupportedOperationException("meta nodes not yet supported");
+  }
 
   public int createNode(int[] nodeIndices, int[] edgeIndices) {
     // I don't care how inefficient this is because I don't like meta nodes.
@@ -607,66 +609,109 @@ class FRootGraph implements RootGraph, DynamicGraph
                             parent.getRootGraphIndex()); }
 
   public boolean isNodeMetaParent(int childNodeInx, int parentNodeInx) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+    return isNodeMetaChild(parentNodeInx, childNodeInx, false); }
 
   public java.util.List metaParentsList(Node node) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+    if (node.getRootGraph() != this) return null;
+    return nodeMetaParentsList(node.getRootGraphIndex()); }
 
   public java.util.List nodeMetaParentsList(int nodeInx) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+    final int[] parentInxArr = getNodeMetaParentIndicesArray(nodeInx);
+    if (parentInxArr == null) return null;
+    java.util.ArrayList returnThis =
+      new java.util.ArrayList(parentInxArr.length);
+    for (int i = 0; i < parentInxArr.length; i++)
+      returnThis.add(getNode(parentInxArr[i]));
+    return returnThis; }
 
-  public int[] getNodeMetaParentIndicesArray(int nodeInx) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+  public int[] getNodeMetaParentIndicesArray(int nodeInx)
+  {
+    throw new UnsupportedOperationException("meta nodes not yet supported");
+  }
 
   public boolean isMetaChild(Node parent, Node child) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+    return isMetaParent(child, parent); }
 
   public boolean isNodeMetaChild(int parentNodeInx, int childNodeInx) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+    return isNodeMetaParent(childNodeInx, parentNodeInx); }
 
   public boolean isNodeMetaChild(int parentNodeInx, int childNodeInx,
-                                 boolean recursive) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+                                 boolean recursive)
+  {
+    throw new UnsupportedOperationException("meta nodes not yet supported");
+  }
 
   public java.util.List nodeMetaChildrenList(Node node) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+    if (node.getRootGraph() != this) return null;
+    return nodeMetaChildrenList(node.getRootGraphIndex()); }
 
   public java.util.List nodeMetaChildrenList(int parentNodeInx) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+    final int[] childInxArr = getNodeMetaChildIndicesArray(parentNodeInx);
+    if (childInxArr == null) return null;
+    java.util.ArrayList returnThis =
+      new java.util.ArrayList(childInxArr.length);
+    for (int i = 0; i < childInxArr.length; i++)
+      returnThis.add(getNode(childInxArr[i]));
+    return returnThis; }
 
   public int[] getNodeMetaChildIndicesArray(int parentNodeInx) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+    return getNodeMetaChildIndicesArray(parentNodeInx, false); }
 
   public int[] getNodeMetaChildIndicesArray(int parentNodeInx,
-                                            boolean recursive) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+                                            boolean recursive)
+  {
+    throw new UnsupportedOperationException("meta nodes not yet supported");
+  }
 
-  public int[] getChildlessMetaDescendants(int nodeInx) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+  public int[] getChildlessMetaDescendants(int nodeInx)
+  {
+    throw new UnsupportedOperationException("meta nodes not yet supported");
+  }
 
   public boolean addMetaChild(Node parent, Edge child) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+    if (parent.getRootGraph() != this || child.getRootGraph() != this)
+      return false;
+    return addEdgeMetaChild(parent.getRootGraphIndex(),
+                            child.getRootGraphIndex()); }
 
-  public boolean addEdgeMetaChild(int parentNodeInx, int childEdgeInx) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+  public boolean addEdgeMetaChild(int parentNodeInx, int childEdgeInx)
+  {
+    throw new UnsupportedOperationException("meta nodes not yet supported");
+  }
 
-  public boolean removeEdgeMetaChild(int parentNodeInx, int childEdgeInx) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+  public boolean removeEdgeMetaChild(int parentNodeInx, int childEdgeInx)
+  {
+    throw new UnsupportedOperationException("meta nodes not yet supported");
+  }
 
   public boolean isMetaParent(Edge child, Node parent) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+    if (child.getRootGraph() != this || parent.getRootGraph() != this)
+      return false;
+    return isEdgeMetaParent(child.getRootGraphIndex(),
+                            parent.getRootGraphIndex()); }
 
-  public boolean isEdgeMetaParent(int childEdgeInx, int parentNodeInx) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+  public boolean isEdgeMetaParent(int childEdgeInx, int parentNodeInx)
+  {
+    throw new UnsupportedOperationException("meta nodes not yet supported");
+  }
 
   public java.util.List metaParentsList(Edge edge) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+    if (edge.getRootGraph() != this) return null;
+    return edgeMetaParentsList(edge.getRootGraphIndex()); }
 
   public java.util.List edgeMetaParentsList(int edgeInx) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+    final int[] metaParentInx = getEdgeMetaParentIndicesArray(edgeInx);
+    if (metaParentInx == null) return null;
+    java.util.ArrayList returnThis =
+      new java.util.ArrayList(metaParentInx.length);
+    for (int i = 0; i < metaParentInx.length; i++)
+      returnThis.add(getNode(metaParentInx[i]));
+    return returnThis; }
 
-  public int[] getEdgeMetaParentIndicesArray(int edgeInx) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+  public int[] getEdgeMetaParentIndicesArray(int edgeInx)
+  {
+    throw new UnsupportedOperationException("meta nodes not yet supported");
+  }
 
   public boolean isMetaChild(Node parent, Edge child) {
     throw new UnsupportedOperationException("meta nodes not yet supported"); }
