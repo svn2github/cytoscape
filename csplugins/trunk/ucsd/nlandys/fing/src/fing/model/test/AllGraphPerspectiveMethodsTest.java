@@ -434,6 +434,22 @@ public final class AllGraphPerspectiveMethodsTest
     edgesList = persp.edgesList(persp.getNode(nodeInx[3]), nodeNotInPersp);
     if (edgesList != null)
       throw new IllegalStateException("expected null");
+
+    // edgesList(int, int, boolean).
+    edgesList = persp.edgesList(nodeInx[2], nodeInx[0], true);
+    if (edgesList.size() != 1)
+      throw new IllegalStateException("edges List not of size 1");
+    if (((Edge) edgesList.get(0)).getRootGraphIndex() != edgeInx[2])
+      throw new IllegalStateException("wrong edge");
+    edgesList = persp.edgesList(nodeInx[4], nodeInx[3], false);
+    if (edgesList.size() != 0)
+      throw new IllegalStateException("edges List not of size 0");
+    edgesList = persp.edgesList(99, minNodeInx - 1, true);
+    if (edgesList != null) throw new IllegalStateException("not null");
+    if (persp.edgesList(Integer.MAX_VALUE, Integer.MIN_VALUE, true) != null ||
+        persp.edgesList(Integer.MIN_VALUE, Integer.MAX_VALUE, false) != null)
+      throw new IllegalStateException("not null");
+
   }
 
 }
