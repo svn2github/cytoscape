@@ -139,12 +139,13 @@ public class VizMapUI extends JDialog {
 	
 	// add apply & cancel button
 	this.actionButtonsPanel = new JPanel();
-	//JButton applyButton = new JButton("Apply");
-	//applyButton.addActionListener(new ApplyAction());
+
+    JButton applyButton = new JButton("Apply to Graph");
+	applyButton.addActionListener(new ApplyAction());
 	JButton closeButton = new JButton("Close");
 
 	closeButton.addActionListener(new CloseAction());
-	//actionButtonsPanel.add(applyButton);
+	actionButtonsPanel.add(applyButton);
 	actionButtonsPanel.add(closeButton);
 	
 	MiscGB.insert(mainGBG, actionButtonsPanel, 0, 3, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
@@ -154,7 +155,7 @@ public class VizMapUI extends JDialog {
 	nodeSelect.doClick();
 	initialized = true;
     }
-    
+
     public StyleSelector getStyleSelector() {
 	return this.styleSelector;
     }
@@ -493,7 +494,7 @@ public class VizMapUI extends JDialog {
     // apply button action listener
     private class ApplyAction extends AbstractAction {
 	public void actionPerformed(ActionEvent e) {
-	    VMM.getNetworkView().redrawGraph(false, true);
+        VMM.getNetworkView().redrawGraph(false, true);
 	}
     }
 
