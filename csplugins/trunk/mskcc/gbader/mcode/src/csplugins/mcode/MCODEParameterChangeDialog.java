@@ -47,8 +47,6 @@ import java.text.DecimalFormat;
  ** Description
  **/
 public class MCODEParameterChangeDialog extends JDialog {
-	private MCODEAlgorithm alg;
-
     //Parameters for MCODE
     MCODEParameterSet currentParamsCopy;    //stores current parameters - populates dialog box fields
 
@@ -257,7 +255,7 @@ public class MCODEParameterChangeDialog extends JDialog {
 		setContentPane(panel);
 	}
 
-	private void saveParams(MCODEAlgorithm alg) {
+	private void saveParams() {
 		MCODECurrentParameters.getInstance().setParams(currentParamsCopy);
 	}
 
@@ -270,7 +268,7 @@ public class MCODEParameterChangeDialog extends JDialog {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			saveParams(alg);
+			saveParams();
 			dialog.dispose();
 		}
 	}

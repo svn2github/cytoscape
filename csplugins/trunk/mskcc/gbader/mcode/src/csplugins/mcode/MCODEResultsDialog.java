@@ -264,6 +264,7 @@ public class MCODEResultsDialog extends JDialog {
 		}
 
 		public void actionPerformed(ActionEvent e) {
+            originalInputNetwork.putClientData("MCODE_running", new Boolean(false));
 			dialog.dispose();
 		}
 	}
@@ -403,5 +404,5 @@ public class MCODEResultsDialog extends JDialog {
 		}
 	}
 
-    
+
 }

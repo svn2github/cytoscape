@@ -66,6 +66,33 @@ public class MCODEAlgorithm {
 	private TreeMap nodeScoreSortedMap; //key is node score, value is nodeIndex
 
     private MCODEParameterSet params;   //the parameters used for this instance of the algorithm
+    //stats
+    private long lastScoreTime;
+    private long lastFindTime;
+    //progress
+    private String statusMessage;
+
+    /**
+     * Called from ProgressBarDemo to find out how much work needs
+     * to be done.
+     */
+    public String getStatusMessage() {
+        return statusMessage;
+    }
+
+    /**
+     * Get the time taken by the last score operation in this instance of the algorithm
+     */
+    public long getLastScoreTime() {
+        return lastScoreTime;
+    }
+
+    /**
+     * Get the time taken by the last find operation in this instance of the algorithm
+     */
+    public long getLastFindTime() {
+        return lastFindTime;
+    }
 
 	public MCODEAlgorithm() {
 		//init class members
@@ -84,6 +111,7 @@ public class MCODEAlgorithm {
 		}
 
 		//initialize
+        long msTimeBefore = System.currentTimeMillis();
 		nodeInfoHashMap = new HashMap(inputNetwork.getNodeCount());
 		nodeScoreSortedMap = new TreeMap(new Comparator() { //will store Doubles
 			//sort Doubles in descending order
@@ -112,6 +140,8 @@ public class MCODEAlgorithm {
 			//save score for later use in TreeMap
 			nodeScoreSortedMap.put(new Double(nodeScore), new Integer(i));
 		}
+        long msTimeAfter = System.currentTimeMillis();
+        lastScoreTime = msTimeAfter - msTimeBefore;
 	}
 
 	//Step 2: find all complexes given a scored graph
@@ -127,6 +157,7 @@ public class MCODEAlgorithm {
 		}
 
 		//initialization
+        long msTimeBefore = System.currentTimeMillis();
 		boolean[] nodeSeenArray = new boolean[inputNetwork.getNodeCount() + 1]; //+1 since node indices start at 1
 		Arrays.fill(nodeSeenArray, false);
 		int currentNode = 0;
@@ -164,6 +195,8 @@ public class MCODEAlgorithm {
 				}
 			}
 		}
+        long msTimeAfter = System.currentTimeMillis();
+        lastFindTime = msTimeAfter - msTimeBefore;
 
 		return (alComplexes);
 	}

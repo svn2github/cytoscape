@@ -67,17 +67,33 @@ public class MCODEScoreAndFindAction implements ActionListener {
             return;
         }
 
+        //MCODE needs a network of at least 1 node
         if (network.getNodeCount() < 1) {
             JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
                     "You must have a network loaded to run this plugin.");
             return;
         }
 
-        resultDialog = (MCODEResultsDialog) network.getClientData("dialog");
+        //check if MCODE is already running on this network
+        Boolean isRunning = (Boolean) network.getClientData("MCODE_running");
+        if((isRunning!=null)&&(isRunning.booleanValue())) {
+            //MCODE is already running - tell user and exit
+            JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+                    "MCODE is already running on this network. Please wait for it to complete.");
+            return;
+        }
+        else {
+            //MCODE is about to run - mark network that we are using it
+            network.putClientData("MCODE_running", new Boolean(true));
+        }
+
+        //check if MCODE has already been run on this network
+        resultDialog = (MCODEResultsDialog) network.getClientData("MCODE_dialog");
         if(resultDialog!=null) {
             resultDialog.setVisible(true);
+            network.putClientData("MCODE_running", new Boolean(false));
         }
-        else {    
+        else {
             class ThreadReturnInfo {
                 ArrayList complexes;
                 Image imageList[];
@@ -88,24 +104,49 @@ public class MCODEScoreAndFindAction implements ActionListener {
                 }
             }
 
+            //set up progress bar
+            final MCODEProgressBarDialog progressBarDialog = new MCODEProgressBarDialog(Cytoscape.getDesktop());
+            progressBarDialog.setIndeterminate(true);
+            progressBarDialog.pack();
+            progressBarDialog.setVisible(true);
+
             //threaded because MCODE may take a while
             final SwingWorker worker = new SwingWorker() {
                 public Object construct() {
                     //run MCODE scoring algorithm - node scores are saved as node attributes
-                    long msTimeBefore = System.currentTimeMillis();
                     MCODEAlgorithm alg = new MCODEAlgorithm();
+                    progressBarDialog.setString("Scoring Network (Step 1 of 3)");
                     alg.scoreGraph(network);
-                    long msTimeAfter = System.currentTimeMillis();
+                    if(progressBarDialog.isCancelled()) {
+                        progressBarDialog.dispose();
+                        network.putClientData("MCODE_running", new Boolean(false));
+                        return null;
+                    }
+                    progressBarDialog.setString("Finding Clusters (Step 2 of 3)");
                     ArrayList complexes = alg.findComplexes(network);
+                    if (progressBarDialog.isCancelled()) {
+                        progressBarDialog.dispose();
+                        network.putClientData("MCODE_running", new Boolean(false));
+                        return null;
+                    }
+                    progressBarDialog.setIndeterminate(false);
+                    progressBarDialog.setLengthOfTask(complexes.size());
+                    progressBarDialog.setString("Drawing Results (Step 3 of 3)");
                     //store this MCODE instance with the network to avoid duplicating the calculation
                     network.putClientData("MCODE_alg", alg);
-                    System.err.println("Network was scored in " + (msTimeAfter - msTimeBefore) + " ms.");
+                    System.err.println("Network was scored in " + alg.getLastScoreTime() + " ms.");
                     //also create all the images here for the complexes, since it can be a time consuming operation
                     GraphPerspective gpComplexArray[] = MCODEUtil.convertComplexListToSortedNetworkList(complexes, network, alg);
                     Image imageList[] = new Image[complexes.size()];
                     int imageSize = MCODECurrentParameters.getInstance().getParamsCopy().getDefaultRowHeight();
                     for (int i = 0; i < gpComplexArray.length; i++) {
+                        if (progressBarDialog.isCancelled()) {
+                            progressBarDialog.dispose();
+                            network.putClientData("MCODE_running", new Boolean(false));
+                            return null;
+                        }
                         imageList[i] = MCODEUtil.convertNetworkToImage(gpComplexArray[i], imageSize, imageSize);
+                        progressBarDialog.setValue(i+1);
                     }
                     ThreadReturnInfo returnInfo = new ThreadReturnInfo(complexes, imageList);
                     return returnInfo;
@@ -118,11 +159,15 @@ public class MCODEScoreAndFindAction implements ActionListener {
                 public void finished() {
                     //display complexes in a new non modal dialog box
                     ThreadReturnInfo returnInfo = (ThreadReturnInfo) this.get();
-                    resultDialog = new MCODEResultsDialog(Cytoscape.getDesktop(), returnInfo.complexes, network, returnInfo.imageList);
-                    resultDialog.pack();
-                    //store the results dialog box if the user wants to see it later
-                    network.putClientData("dialog", resultDialog);
-                    resultDialog.setVisible(true);
+                    if(returnInfo!=null) {
+                        resultDialog = new MCODEResultsDialog(Cytoscape.getDesktop(), returnInfo.complexes, network, returnInfo.imageList);
+                        resultDialog.pack();
+                        //store the results dialog box if the user wants to see it later
+                        network.putClientData("MCODE_dialog", resultDialog);
+                        network.putClientData("MCODE_running", new Boolean(false));
+                        progressBarDialog.dispose();
+                        resultDialog.setVisible(true);
+                    }
                 }
             };
             worker.start();
