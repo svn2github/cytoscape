@@ -28,10 +28,12 @@ public class VizMapSizeTab extends VizMapTab {
 
     private VizMapAttrTab height, width, size;
 
+    private VisualMappingManager VMM;
     private NodeAppearanceCalculator nodeCalc;
     private VizMapUI mainUIDialog;
 
     private boolean locked;
+    JCheckBox lockBox;
 
     /**
      *	create a new tab representing the node size. Retrieve current
@@ -47,7 +49,11 @@ public class VizMapSizeTab extends VizMapTab {
      *  @throws IllegalArgumentException if type is not {@link VizMapUI#NODE_SIZE}
      */
     public VizMapSizeTab (VizMapUI mainUI, JTabbedPane tabContainer, int tabIndex, VisualMappingManager VMM, byte type) throws IllegalArgumentException {
-	this(mainUI, tabContainer, tabIndex, VMM, type, true);
+	//this(mainUI, tabContainer, tabIndex, VMM, type, true);
+        //the above is a bug; instead of always setting the locked field to true,
+        //we should get it from the node appearance calculator
+        this(mainUI, tabContainer, tabIndex, VMM, type,
+            VMM.getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked());
     }
 
     /**
@@ -74,13 +80,16 @@ public class VizMapSizeTab extends VizMapTab {
 	// set the name of this component appropriately
 	setName("Node Size");
 
+        this.VMM = VMM;
 	this.nodeCalc = VMM.getVisualStyle().getNodeAppearanceCalculator();
 	this.mainUIDialog = mainUI;
 	this.locked = locked;
 
 	JPanel lockBoxPanel = new JPanel(false);
-	JCheckBox lockBox = new JCheckBox("Lock height/width calculators");
-	lockBox.setSelected(true);
+	this.lockBox = new JCheckBox("Lock height/width calculators");
+	//lockBox.setSelected(true);
+        //the above is also a bug; should set to value of locked
+        lockBox.setSelected(locked);
 	lockBox.addItemListener(new LockCalcListener());
 	lockBoxPanel.add(lockBox);
 
@@ -185,9 +194,16 @@ public class VizMapSizeTab extends VizMapTab {
     }
 
     public void visualStyleChanged() {
+        //must grab the new node appearance calculator
+        this.nodeCalc = VMM.getVisualStyle().getNodeAppearanceCalculator();
 	this.height.visualStyleChanged();
 	this.width.visualStyleChanged();
 	this.size.visualStyleChanged();
+        //must update the locked status and the lock box selection
+        this.locked = nodeCalc.getNodeSizeLocked();
+        if (this.lockBox.isSelected() != this.locked) {
+            lockBox.setSelected(locked);
+        }
     }
 
     VizMapTab checkCalcSelected(Calculator c) {
