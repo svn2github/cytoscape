@@ -101,7 +101,15 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("errors during restoration");
     if (root.addEdgeMetaChild(nodeInx[3], edgeInx[0]) ||
         root.addEdgeMetaChild(nodeInx[4], edgeInx[2]) ||
-        root.addNodeMetaChild(nodeInx[3], nodeInx[1]))
+        root.addNodeMetaChild(nodeInx[3], nodeInx[1]) ||
+        root.addEdgeMetaChild(0, edgeInx[0]) ||
+        root.addEdgeMetaChild(nodeInx[1], 0) ||
+        root.addEdgeMetaChild(99, 98) ||
+        root.addEdgeMetaChild(Integer.MAX_VALUE, Integer.MIN_VALUE) ||
+        root.addNodeMetaChild(0, nodeInx[2]) ||
+        root.addNodeMetaChild(nodeInx[2], 0) ||
+        root.addNodeMetaChild(87, 23) ||
+        root.addNodeMetaChild(Integer.MIN_VALUE, Integer.MAX_VALUE))
       throw new IllegalStateException("failure of failure during creation");
     // Meta-nodes.  Create and remove extra meta-relationships.
     if (!root.addNodeMetaChild(nodeInx[2], nodeInx[1]))
@@ -118,6 +126,13 @@ public final class AllRootGraphMethodsTest
           root.removeNodeMetaChild(nodeInx[4], nodeInx[1]) &&
           root.removeNodeMetaChild(nodeInx[2], nodeInx[2])))
       throw new IllegalStateException("could not delete meta relationship");
+    if (root.removeNodeMetaChild(nodeInx[2], nodeInx[3]) ||
+        root.removeEdgeMetaChild(nodeInx[4], edgeInx[0]) ||
+        root.removeNodeMetaChild(Integer.MAX_VALUE, Integer.MIN_VALUE) ||
+        root.removeEdgeMetaChild(Integer.MIN_VALUE, Integer.MAX_VALUE) ||
+        root.removeNodeMetaChild(0, 88) ||
+        root.removeEdgeMetaChild(88, 0))
+      throw new IllegalStateException("deleted non-existent meta");
     for (int i = 0; i < nodeInx.length; i++)
       if (nodeInx[i] >= 0)
         throw new IllegalStateException("non-negative node");
@@ -817,6 +832,52 @@ public final class AllRootGraphMethodsTest
         root.isEdgeDirected(edgeInx[4]) ||
         (!root.isEdgeDirected(edgeInx[5])))
       throw new IllegalStateException("wrong edge directedness");
+
+    // isMetaParent(Node, Node).
+    if (root.isMetaParent(root.getNode(nodeInx[2]),
+                          root.getNode(nodeInx[1])))
+      throw new IllegalStateException("reported wrong meta child node");
+    if (root.isMetaParent(root.getNode(nodeInx[1]),
+                          root.getNode(nodeInx[4])))
+      throw new IllegalStateException("reported wrong meta child node");
+    if (root.isMetaParent(root.getNode(nodeInx[4]),
+                          root.getNode(nodeInx[3])))
+      throw new IllegalStateException("reported wrong meta child node");
+    if (root.isMetaParent(root2Node, root.getNode(nodeInx[1])))
+      throw new IllegalStateException("reported wrong meta child node");
+    if (root.isMetaParent(root.getNode(nodeInx[3]), root2Node))
+      throw new IllegalStateException("reported wrong meta child node");
+    if (root.isMetaParent(root.getNode(nodeInx[2]),
+                          root.getNode(nodeInx[2])))
+      throw new IllegalStateException("reported wrong meta child node");
+    if (!(root.isMetaParent(root.getNode(nodeInx[4]),
+                            root.getNode(nodeInx[4]))))
+      throw new IllegalStateException("missing a meta relationship");
+    if (!(root.isMetaParent(root.getNode(nodeInx[4]),
+                            root.getNode(nodeInx[0]))))
+      throw new IllegalStateException("missing a meta relationship");
+    if (!(root.isMetaParent(root.getNode(nodeInx[1]),
+                            root.getNode(nodeInx[0]))))
+      throw new IllegalStateException("missing a meta relationship");
+
+    // isNodeMetaParent(int, int).
+    if (root.isNodeMetaParent(nodeInx[4], nodeInx[1]) ||
+        root.isNodeMetaParent(nodeInx[1], nodeInx[1]) ||
+        root.isNodeMetaParent(99, 0) ||
+        root.isNodeMetaParent(nodeInx[4], minNodeInx - 1) ||
+        root.isNodeMetaParent(Integer.MAX_VALUE, Integer.MIN_VALUE) ||
+        root.isNodeMetaParent(Integer.MIN_VALUE, 0))
+      throw new IllegalStateException("reported wrong meta child node");
+    if (!(root.isNodeMetaParent(nodeInx[3], nodeInx[3])))
+      throw new IllegalStateException("missing a meta relationship");
+    if (!(root.isNodeMetaParent(nodeInx[2], nodeInx[3])))
+      throw new IllegalStateException("missing a meta relationship");
+    if (!(root.isNodeMetaParent(nodeInx[0], nodeInx[4])))
+      throw new IllegalStateException("missing a meta relationship");
+    if (!(root.isNodeMetaParent(nodeInx[4], nodeInx[0])))
+      throw new IllegalStateException("missing a meta relationship");
+    if (!(root.isNodeMetaParent(nodeInx[0], nodeInx[3])))
+      throw new IllegalStateException("missing a meta relationship");
   }
 
 }
