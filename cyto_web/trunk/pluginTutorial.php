@@ -42,7 +42,7 @@ See
 <a href="http://java.sun.com/docs/books/tutorial/index.html">the Java Tutorial</a>
 for an excellent introduction and handy reference guide for Java.
 You will also want to check out the
-<a href="http://www.cbio.mskcc.org/cytoscape/alpha/javadoc/index.html">Cytoscape core API documentation</a>.
+<a href="http://www.cbio.mskcc.org/cytoscape/javadoc/">Cytoscape core API documentation</a>.
 </p>
 
 
