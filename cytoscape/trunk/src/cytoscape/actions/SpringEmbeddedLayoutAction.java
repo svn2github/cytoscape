@@ -64,6 +64,10 @@ public class SpringEmbeddedLayoutAction extends CytoscapeAction
     double maxX = Double.MIN_VALUE;
     double minY = Double.MAX_VALUE;
     double maxY = Double.MIN_VALUE;
+    boolean[] mobility = new boolean[numNodesInTopology];
+    final boolean noNodesSelected =
+      (graphView.getSelectedNodeIndices().length == 0);
+    //      graphView.getSelectedEdges().isEmpty();
 
     while (nodeIterator.hasNext())
     {
@@ -71,12 +75,15 @@ public class SpringEmbeddedLayoutAction extends CytoscapeAction
       nodeTranslation[nodeIndex] = currentNodeView;
       if (nodeIndexTranslation.put
           (new Integer(currentNodeView.getNode().getRootGraphIndex()),
-           new Integer(nodeIndex++)) != null)
+           new Integer(nodeIndex)) != null)
         throw new IllegalStateException("Giny farted and someone lit a match");
       minX = Math.min(minX, currentNodeView.getXPosition());
       maxX = Math.max(maxX, currentNodeView.getXPosition());
       minY = Math.min(minY, currentNodeView.getYPosition());
       maxY = Math.max(maxY, currentNodeView.getYPosition());
+      if (noNodesSelected) mobility[nodeIndex] = true;
+      else mobility[nodeIndex] = currentNodeView.isSelected();
+      nodeIndex++;
     }
     if (nodeIndex != numNodesInTopology)
       throw new IllegalStateException("something smells really bad here");
@@ -142,7 +149,7 @@ public class SpringEmbeddedLayoutAction extends CytoscapeAction
                                            maxLayoutDimension,
                                            nodeXPositions,
                                            nodeYPositions,
-                                           null);
+                                           mobility);
     SpringEmbeddedLayouter2 layoutAlg =
       new SpringEmbeddedLayouter2(nativeGraph);
 
