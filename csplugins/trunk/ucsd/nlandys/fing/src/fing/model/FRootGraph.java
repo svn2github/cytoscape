@@ -589,7 +589,10 @@ class FRootGraph implements RootGraph, DynamicGraph
   }
 
   public boolean addMetaChild(Node parent, Node child) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+    if (parent.getRootGraph() != this || child.getRootGraph() != this)
+      return false;
+    return addNodeMetaChild(parent.getRootGraphIndex(),
+                            child.getRootGraphIndex()); }
 
   public boolean addNodeMetaChild(int parentNodeInx, int childNodeInx) {
     throw new UnsupportedOperationException("meta nodes not yet supported"); }
@@ -598,7 +601,10 @@ class FRootGraph implements RootGraph, DynamicGraph
     throw new UnsupportedOperationException("meta nodes not yet supported"); }
 
   public boolean isMetaParent(Node child, Node parent) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+    if (child.getRootGraph() != this || parent.getRootGraph() != this)
+      return false;
+    return isNodeMetaParent(child.getRootGraphIndex(),
+                            parent.getRootGraphIndex()); }
 
   public boolean isNodeMetaParent(int childNodeInx, int parentNodeInx) {
     throw new UnsupportedOperationException("meta nodes not yet supported"); }
