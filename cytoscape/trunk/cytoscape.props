@@ -20,11 +20,11 @@ edge.color.interaction.map.pd=255,0,0
 
 edge.targetDecoration.controller=interaction
 edge.targetDecoration.interaction.type=discrete
-edge.targetDecoration.interaction.map.pd=scalableArrow50
+edge.targetDecoration.interaction.map.pd=scalableArrow20
 
 #edge.sourceDecoration.controller=interaction
 #edge.sourceDecoration.interaction.type=discrete
-#edge.sourceDecoration.interaction.map.pd=scalableArrow20
+#edge.sourceDecoration.interaction.map.pd=scalableArrow15
 #edge.sourceDecoration.interaction.map.pp=scalableArrow10
 
 #edge.targetDecoration.interaction.map.pd=delta
