@@ -33,10 +33,7 @@
 package cytoscape.view;
 //------------------------------------------------------------------------------
 import java.awt.event.*;
-import java.awt.*;
 import javax.swing.*;
-import javax.swing.event.MenuListener;
-import javax.swing.event.MenuEvent;
 
 import cytoscape.CytoscapeObj;
 import cytoscape.actions.*;
@@ -45,12 +42,14 @@ import cytoscape.data.annotation.AnnotationGui;
 import cytoscape.util.CytoscapeMenuBar;
 import cytoscape.util.CytoscapeToolBar;
 import cytoscape.util.CytoscapeAction;
+import giny.view.GraphViewChangeListener;
+import giny.view.GraphViewChangeEvent;
 //------------------------------------------------------------------------------
 /**
  * This class creates the menu and tool bars for a Cytoscape window object. It
  * also provides access to individual menus and items.
  */
-public class CyMenus {
+public class CyMenus  implements GraphViewChangeListener {
   CyWindow cyWindow;
   boolean menusInitialized = false;
   CytoscapeMenuBar menuBar;
@@ -63,15 +62,16 @@ public class CyMenus {
   JMenu displayNWSubMenu;
   JMenu layoutMenu;
   JMenu vizMenu;
-  JMenuItem vizMenuItem, disableVizMapperItem, enableVizMapperItem;
+  JMenuItem vizMenuItem, vizMapperItem;
   AbstractAction menuPrintAction;
+  JButton saveButton;
   JButton vizButton;
   JMenu opsMenu;
   JMenuItem NO_OPERATIONS;
   CytoscapeToolBar toolBar;
+  boolean nodesRequiredItemsEnabled;
 
-
-  public CyMenus(CyWindow cyWindow) {
+  public CyMenus(CyWindow cyWindow){
     this.cyWindow = cyWindow;
     //the following methods construct the basic bar objects, but
     //don't fill them with menu items and associated action listeners
@@ -220,10 +220,33 @@ public class CyMenus {
   public void setVisualMapperItemsEnabled(boolean newState) {
       vizMenuItem.setEnabled(newState);
       vizButton.setEnabled(newState);
-      this.disableVizMapperItem.setEnabled(newState);
-      this.enableVizMapperItem.setEnabled(!newState);
+      vizMapperItem.setText(newState ?
+              "Disable Visual Mapper" : "Enable Visual Mapper");
   }
 
+  /**
+   * Enables or disables save, print, and display nodes
+   * in new window GUI functions, based on the number of nodes
+   * in this window's graph perspective. This function should be
+   * called after every operation which adds or removes nodes from
+   * the current window.
+   */
+  public void setNodesRequiredItemsEnabled() {
+      boolean newState = cyWindow.getView().getGraphPerspective().getNodeCount() > 0;
+      if (newState == nodesRequiredItemsEnabled) return;
+      saveButton.setEnabled(newState);
+      saveSubMenu.setEnabled(newState);
+      menuPrintAction.setEnabled(newState);
+      displayNWSubMenu.setEnabled(newState);
+      nodesRequiredItemsEnabled = newState;
+  }
+  public void graphViewChanged(GraphViewChangeEvent e) {
+      // Do this in the GUI Event Dispatch thread...
+      SwingUtilities.invokeLater( new Runnable() {
+        public void run() {
+          setNodesRequiredItemsEnabled();
+      } } );
+  }
   /**
    * Creates the menu bar and the various menus and submenus, but
    * defers filling those menus with items until later.
@@ -253,9 +276,16 @@ public class CyMenus {
    */
   public void initializeMenus() {
       if (!menusInitialized) {
-	  menusInitialized = true;
-	  fillMenuBar();
-	  fillToolBar();
+	    menusInitialized = true;
+	    fillMenuBar();
+	    fillToolBar();
+        nodesRequiredItemsEnabled = false;
+        saveButton.setEnabled(false);
+        saveSubMenu.setEnabled(false);
+        menuPrintAction.setEnabled(false);
+        displayNWSubMenu.setEnabled(false);
+        setNodesRequiredItemsEnabled();
+        cyWindow.getView().addGraphViewChangeListener(this);
       }
   }
   /**
@@ -267,7 +297,7 @@ public class CyMenus {
       CytoscapeObj cytoscapeObj = cyWindow.getCytoscapeObj();
 
       //fill the Load submenu
-      JMenuItem mi = loadSubMenu.add(new LoadGraphFileAction(networkView));
+      JMenuItem mi = loadSubMenu.add(new LoadGraphFileAction(cyWindow,this));
       mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.CTRL_MASK));
       //mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.CTRL_MASK));
       //JMenuItem mi = loadSubMenu.add(new LoadInteractionFileAction(networkView));
@@ -288,16 +318,6 @@ public class CyMenus {
       saveSubMenu.add(new SaveSelectedNodesAction(networkView));
       menuPrintAction = new PrintAction(networkView);
       fileMenu.add(menuPrintAction);
-      fileMenu.addMenuListener(new MenuListener() {
-          public void menuCanceled(MenuEvent e) {}
-          public void menuDeselected(MenuEvent e) {}
-          public void menuSelected(MenuEvent e) {
-              if (saveSubMenu != null)
-              saveSubMenu.setEnabled(cyWindow.getView().getGraphPerspective().getNodeCount() >= 1);
-              if (menuPrintAction != null)
-              menuPrintAction.setEnabled(cyWindow.getView().getGraphPerspective().getNodeCount() >= 1);
-          }
-      });
 
       //mi = fileMenu.add(new CloseWindowAction(cyWindow)); removed 2004-03-08
       //mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
@@ -366,14 +386,6 @@ public class CyMenus {
     mi = selectMenu.add(new SelectAllAction(networkView));
     mi = selectMenu.add(new DeselectAllAction(networkView));
 
-    selectMenu.addMenuListener(new MenuListener() {
-        public void menuCanceled(MenuEvent e) {}
-        public void menuDeselected(MenuEvent e) {}
-        public void menuSelected(MenuEvent e) {
-            if (displayNWSubMenu != null)
-            displayNWSubMenu.setEnabled(cyWindow.getView().getGraphPerspective().getNodeCount() >= 1);
-        }
-    });
     //fill the Layout menu
     //need to add Giny layout operations
 
@@ -398,10 +410,8 @@ public class CyMenus {
     //JMenu showExpressionData = new JMenu ("Show Expression Data" );
 
     vizMenu.add ( new BackgroundColorAction (networkView) );
-    this.vizMenuItem = vizMenu.add(new SetVisualPropertiesAction(cyWindow));
-    this.disableVizMapperItem = vizMenu.add(new ToggleVisualMapperAction(cyWindow, false));
-    this.enableVizMapperItem = vizMenu.add(new ToggleVisualMapperAction(cyWindow, true));
-    this.enableVizMapperItem.setEnabled(false);
+    vizMenuItem = vizMenu.add(new SetVisualPropertiesAction(cyWindow));
+    vizMapperItem = vizMenu.add(new ToggleVisualMapperAction(cyWindow));
 
     menuBar.addAction( new AnimatedLayoutAction( networkView ) );
   }
@@ -413,17 +423,18 @@ public class CyMenus {
     NetworkView networkView = cyWindow; //restricted interface
     JButton b;
 
-    b = toolBar.add( new LoadGraphFileAction( networkView, null ) );
+    b = toolBar.add( new LoadGraphFileAction( cyWindow, this, null ) );
     b.setIcon( new ImageIcon(getClass().getResource("images/new/load36.gif") ) );
     b.setToolTipText("Load Graph");
     b.setBorderPainted(false);
     b.setRolloverEnabled(true);
 
-    b = toolBar.add( new SaveAsGMLAction( networkView, null ) );
-    b.setIcon( new ImageIcon(getClass().getResource("images/new/save36.gif") ) );
-    b.setToolTipText("Save Graph as GML");
-    b.setBorderPainted(false);
-    b.setRolloverEnabled(true);
+    saveButton = toolBar.add( new SaveAsGMLAction( networkView, null ) );
+    saveButton.setIcon( new ImageIcon(getClass().getResource("images/new/save36.gif") ) );
+    saveButton.setToolTipText("Save Graph as GML");
+    saveButton.setBorderPainted(false);
+    saveButton.setRolloverEnabled(true);
+    saveButton.setEnabled(false);
 
     toolBar.addSeparator();
 
@@ -470,7 +481,7 @@ public class CyMenus {
 
     toolBar.addSeparator();
 
-    this.vizButton = toolBar.add(new SetVisualPropertiesAction(cyWindow, false));
+    vizButton = toolBar.add(new SetVisualPropertiesAction(cyWindow, false));
     vizButton.setIcon(new ImageIcon(getClass().getResource("images/new/color_wheel36.gif")));
     vizButton.setToolTipText("Set Visual Properties");
     vizButton.setBorderPainted(false);

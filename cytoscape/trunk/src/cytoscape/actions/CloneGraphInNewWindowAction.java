@@ -16,12 +16,12 @@ import cytoscape.view.CyWindow;
 //-------------------------------------------------------------------------
 public class CloneGraphInNewWindowAction extends AbstractAction {
     CyWindow cyWindow;
-    
+
     public CloneGraphInNewWindowAction(CyWindow cyWindow) {
         super("Whole graph");
         this.cyWindow = cyWindow;
     }
-    
+
      public void actionPerformed(ActionEvent e) {
         //save the vizmapper catalog
         cyWindow.getCytoscapeObj().saveCalculatorCatalog();
@@ -30,15 +30,14 @@ public class CloneGraphInNewWindowAction extends AbstractAction {
         oldNetwork.beginActivity(callerID);
       	GraphPerspective subGraph =
                 (GraphPerspective)oldNetwork.getGraphPerspective().clone();
-	
+
         CyNetwork newNetwork = new CyNetwork(subGraph,
                                              oldNetwork.getNodeAttributes(),
                                              oldNetwork.getEdgeAttributes(),
                                              oldNetwork.getExpressionData() );
         newNetwork.setNeedsLayout(false);
-      
         oldNetwork.endActivity(callerID);
-        
+
         String title = " cloned whole graph";
         try {
             //this call creates a WindowOpened event, which is caught by
@@ -51,7 +50,9 @@ public class CloneGraphInNewWindowAction extends AbstractAction {
             System.err.println("exception when creating new window");
             e00.printStackTrace();
         }
+        cyWindow.getView().addGraphViewChangeListener(cyWindow.getCyMenus());
+        cyWindow.getCyMenus().setNodesRequiredItemsEnabled();
     }//end performinginyMode()
-    
+
 }
 

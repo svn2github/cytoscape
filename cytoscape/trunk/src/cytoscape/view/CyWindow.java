@@ -100,7 +100,7 @@ public class CyWindow extends JPanel implements GraphViewChangeListener,CyNetwor
      *  {@link #vizMapper vizMapper}.
      */
     protected VizMapUI vizMapUI;
-    
+
     //flag indicating whether the vizmapper is enabled
     protected boolean visualMapperEnabled = true;
 
@@ -184,7 +184,7 @@ protected void loadPlugins() {
     //create the JarLoader first so its menu items appear first in the plugin menu
     JarLoaderUI jlu = new JarLoaderUI(this,
                                       this.getCyMenus().getOperationsMenu() );
-    
+
     PluginLoader pluginLoader
         = new PluginLoader (this,
                             this.getCytoscapeObj().getConfiguration(),
@@ -226,7 +226,7 @@ protected void updateGraphView() {
     if (this.cyMenus != null) {
         add(cyMenus.getToolBar(), BorderLayout.NORTH);
     }
-    
+
     /*
      * the vizmapper makes most of these redundant
     view.setBackgroundPaint(Color.BLACK);
@@ -308,7 +308,7 @@ protected void addViewContextMenus() {
                          "openWebInfo",
                          new Object[] { ( NetworkView )this } );
 
-  
+
   view.addContextMethod( "class phoebe.PNodeView",
                          "cytoscape.graphutil.NodeAction",
                          "viewNodeAttributeBrowser",
@@ -323,7 +323,7 @@ protected void addViewContextMenus() {
                          "cytoscape.graphutil.NodeAction",
                          "changeFirstNeighbors",
                          new Object[] {view } );
-      
+
   view.addContextMethod( "edu.umd.cs.piccolo.PNodeView",
                          "cytoscape.graphutil.NodeAction",
                          "zoomToNode",
@@ -362,7 +362,7 @@ protected void addViewContextMenus() {
                          new Object[] {view } );
 
 }
-    
+
 //------------------------------------------------------------------------------
 /**
  * Creates the vizmapper and it's UI, making sure that a visual style
@@ -644,6 +644,14 @@ public void setVisualMapperEnabled(boolean newState) {
         getCyMenus().setVisualMapperItemsEnabled(newState);
         if (newState == true) {redrawGraph(false, true);}
     }
+}
+//------------------------------------------------------------------------------
+/**
+ * If enabled, disable the visual mapper (and vice versa). Menu items and
+ * redraw behavior follow the semantics of setVisualMapperEnabled()
+ */
+public void toggleVisualMapperEnabled() {
+    setVisualMapperEnabled(!visualMapperEnabled);
 }
 //------------------------------------------------------------------------------
 /**

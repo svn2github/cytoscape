@@ -6,7 +6,7 @@
 package cytoscape.actions;
 //-------------------------------------------------------------------------
 import java.awt.event.ActionEvent;
-import javax.swing.AbstractAction;
+import javax.swing.*;
 
 import cytoscape.view.CyWindow;
 //-------------------------------------------------------------------------
@@ -15,22 +15,15 @@ import cytoscape.view.CyWindow;
  * the visual mapper attached the the CyWindow argument.
  */
 public class ToggleVisualMapperAction extends AbstractAction {
-    
-    CyWindow cyWindow;
-    boolean enable;
-    
-    public ToggleVisualMapperAction(CyWindow cyWindow, boolean enable) {
-        super(getLabel(enable));
+    private CyWindow cyWindow;
+
+    public ToggleVisualMapperAction(CyWindow cyWindow) {
+        super("Disable Visual Mapper");
         this.cyWindow = cyWindow;
-        this.enable = enable;
     }
-    
-    private static String getLabel(boolean enable) {
-        return (enable == true) ? "Enable Visual Mapper" : "Disable Visual Mapper";
-    }
-    
+
     public void actionPerformed(ActionEvent e) {
-        cyWindow.setVisualMapperEnabled(enable);
+        cyWindow.toggleVisualMapperEnabled();
     }
 }
 

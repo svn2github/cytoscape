@@ -4,51 +4,42 @@ import java.awt.event.ActionEvent;
 import javax.swing.*;
 import phoebe.PGraphView;
 import cytoscape.view.NetworkView;
-import cytoscape.dialogs.GraphObjectSelection;
 
 public class SquiggleAction extends JMenu {
+  private JMenuItem squiggleMode;
+  private JMenuItem clearSquiggle;
+  private boolean enabled;
 
-  public SquiggleAction ( NetworkView networkview ) {
+  public SquiggleAction ( final NetworkView networkview ) {
     super("Squiggle");
-    
 
-    final NetworkView networkView = networkview;
-    //final PGraphView view = (PGraphView)networkView.getView();
-
-    ButtonGroup squiggleGroup = new ButtonGroup();
-    JCheckBoxMenuItem squiggleOn = new JCheckBoxMenuItem( new AbstractAction( "Squiggle ON" ) {
-	public void actionPerformed ( ActionEvent e ) {
-	  // Do this in the GUI Event Dispatch thread...
-	  SwingUtilities.invokeLater( new Runnable() {
+    squiggleMode = new JMenuItem( new AbstractAction( "Enable" ) {
+	  public void actionPerformed ( ActionEvent e ) {
+	    // Do this in the GUI Event Dispatch thread...
+	    SwingUtilities.invokeLater( new Runnable() {
 	      public void run() {
-		PGraphView view = (PGraphView)networkView.getView();
-		view.getSquiggleHandler().beginSquiggling();
-	      } } ); } } ) ;
-    JCheckBoxMenuItem squiggleOff = new JCheckBoxMenuItem( new AbstractAction( "Squiggle OFF" ) {
-	public void actionPerformed ( ActionEvent e ) {
-	  // Do this in the GUI Event Dispatch thread...
-	  SwingUtilities.invokeLater( new Runnable() {
-	      public void run() {
-		PGraphView view = (PGraphView)networkView.getView();
-		view.getSquiggleHandler().stopSquiggling();
-	      } } ); } } ) ;
-    squiggleGroup.add(squiggleOn);
-    squiggleGroup.add(squiggleOff);
-    
-    add(squiggleOn);
-    add(squiggleOff);
-    squiggleOff.setSelected(true);
+		    PGraphView view = (PGraphView)networkview.getView();
+		    if (enabled) {
+              view.getSquiggleHandler().beginSquiggling();
+              squiggleMode.setText("Disable");
+            } else {
+              view.getSquiggleHandler().stopSquiggling();
+              squiggleMode.setText("Enable");
+            }
+            clearSquiggle.setEnabled(enabled);
+            enabled = !enabled;
+	  } } ); } } ) ;
+    add(squiggleMode);
 
-    add( new JMenuItem( new AbstractAction( "Clear Squiggle" ) {
-          public void actionPerformed ( ActionEvent e ) {
-            // Do this in the GUI Event Dispatch thread...
-            SwingUtilities.invokeLater( new Runnable() {
-                public void run() {
-                 PGraphView view = (PGraphView)networkView.getView();
-                 view.getSquiggleHandler().clearSquiggles();
-                } } ); } } ) );
-    
-
+    clearSquiggle =  new JMenuItem( new AbstractAction( "Clear" ) {
+      public void actionPerformed ( ActionEvent e ) {
+        // Do this in the GUI Event Dispatch thread...
+        SwingUtilities.invokeLater( new Runnable() {
+          public void run() {
+            PGraphView view = (PGraphView)networkview.getView();
+              view.getSquiggleHandler().clearSquiggles();
+      } } ); } } );
+    clearSquiggle.setEnabled(false);
+    add(clearSquiggle);
   }
-
 }

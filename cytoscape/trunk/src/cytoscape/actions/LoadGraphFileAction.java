@@ -14,25 +14,40 @@ import java.io.File;
 import cytoscape.CytoscapeObj;
 import cytoscape.data.*;
 import cytoscape.view.NetworkView;
+import cytoscape.view.CyMenus;
 import cytoscape.util.CyFileFilter;
 import cytoscape.actions.CheckBoxFileChooser;
 import cytoscape.data.readers.GMLReader;
 
 //-------------------------------------------------------------------------
 public class LoadGraphFileAction extends AbstractAction {
-    NetworkView networkView;
-    
-    public LoadGraphFileAction(NetworkView networkView, String text ) {
-        super();
+    protected NetworkView networkView;
+    protected CyMenus windowMenu;
+    /* windowMenu remembered so that when new CyNetwork is created, the menu
+        can be added as a listener to its graphView - menu choices
+        (e.g. save) need to be disabled whenever the network is changed so as
+        to become empty or non empty.
+    */
+
+    public LoadGraphFileAction(NetworkView networkView, CyMenus windowMenu, String text ) {
+        super(text);
+        if (networkView == null || windowMenu == null) {
+            throw new IllegalArgumentException("Bad arguments to LoadGraphFileAction constructor");
+        }
         this.networkView = networkView;
+        this.windowMenu = windowMenu;
     }
 
-  public LoadGraphFileAction(NetworkView networkView ) {
+    public LoadGraphFileAction(NetworkView networkView, CyMenus windowMenu ) {
         super("Graph...");
+        if (networkView == null || windowMenu == null) {
+            throw new IllegalArgumentException("Bad arguments to LoadGraphFileAction constructor");
+        }
         this.networkView = networkView;
+        this.windowMenu = windowMenu;
     }
 
-  
+
     public void actionPerformed(ActionEvent e)  {
         CytoscapeObj cytoscapeObj = networkView.getCytoscapeObj();
         File currentDirectory = networkView.getCytoscapeObj().getCurrentDirectory();
@@ -74,9 +89,9 @@ public class LoadGraphFileAction extends AbstractAction {
                 boolean canonicalize = Semantics.getCanonicalize(cytoscapeObj);
                 String  species = Semantics.getDefaultSpecies( networkView.getNetwork(), cytoscapeObj );
 		newNetwork =
-		    CyNetworkFactory.createNetworkFromInteractionsFile( name, 
+		    CyNetworkFactory.createNetworkFromInteractionsFile( name,
 									canonicalize,
-									cytoscapeObj.getBioDataServer(), 
+									cytoscapeObj.getBioDataServer(),
 									species );
             }
             if (newNetwork != null) {//valid read
@@ -97,19 +112,19 @@ public class LoadGraphFileAction extends AbstractAction {
                 newNodeAttributes.clearObjectMap();
                 newNodeAttributes.inputAll( newNetwork.getNodeAttributes() );
                 newNetwork.setNodeAttributes(newNodeAttributes);
-                
+
                 GraphObjAttributes newEdgeAttributes = new GraphObjAttributes();
                 newEdgeAttributes.inputAll( networkView.getNetwork().getEdgeAttributes() );
                 newEdgeAttributes.clearNameMap();
                 newEdgeAttributes.clearObjectMap();
                 newEdgeAttributes.inputAll( newNetwork.getEdgeAttributes() );
                 newNetwork.setEdgeAttributes(newEdgeAttributes);
-                
+
                 newNetwork.setExpressionData( networkView.getNetwork().getExpressionData() );
                 //now we switch the window to the new network
                 networkView.setNewNetwork(newNetwork);
                 networkView.setWindowTitle(name);//and set a new title
-                
+
                 //hack to apply layout information from a GML file
 		if( name.endsWith("gml") || name.endsWith("GML") ) {
 		    GMLReader reader = new GMLReader(name);
@@ -126,6 +141,8 @@ public class LoadGraphFileAction extends AbstractAction {
                                               JOptionPane.ERROR_MESSAGE);
             }
         } // if
+        networkView.getView().addGraphViewChangeListener(windowMenu);
+        windowMenu.setNodesRequiredItemsEnabled();
     } // actionPerformed
 }
 

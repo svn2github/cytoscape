@@ -18,7 +18,7 @@ import cytoscape.view.CyWindow;
 //-------------------------------------------------------------------------
 public class NewWindowSelectedNodesOnlyAction extends AbstractAction {
     CyWindow cyWindow;
-    
+
     public NewWindowSelectedNodesOnlyAction(CyWindow cyWindow) {
         super("Selected nodes, All edges");
         this.cyWindow = cyWindow;
@@ -36,13 +36,13 @@ public class NewWindowSelectedNodesOnlyAction extends AbstractAction {
       	GraphPerspective subGraph = view.getGraphPerspective().createGraphPerspective(nodes);//, edges);
         GraphObjAttributes newNodeAttributes = oldNetwork.getNodeAttributes();
         GraphObjAttributes newEdgeAttributes = oldNetwork.getEdgeAttributes();
-	
+
         CyNetwork newNetwork = new CyNetwork(subGraph, newNodeAttributes,
                 newEdgeAttributes, oldNetwork.getExpressionData() );
         newNetwork.setNeedsLayout(true);
-      
+
         oldNetwork.endActivity(callerID);
-        
+
         String title = " selection";
         try {
             //this call creates a WindowOpened event, which is caught by
@@ -55,6 +55,8 @@ public class NewWindowSelectedNodesOnlyAction extends AbstractAction {
             System.err.println("exception when creating new window");
             e00.printStackTrace();
         }
+        cyWindow.getView().addGraphViewChangeListener(cyWindow.getCyMenus());
+        cyWindow.getCyMenus().setNodesRequiredItemsEnabled();
     }
 }
 
