@@ -74,14 +74,9 @@ public class VisualMappingManager {
     }
 
     public void applyAppearances() {
-	long timeTracker = System.currentTimeMillis();
-
 	Graph2DView graphView = cytoscapeWindow.getGraphView();
 
 	/** first apply the node appearance to all nodes */
-
-  
-  
         NodeAppearanceCalculator nodeAppearanceCalculator =
                 visualStyle.getNodeAppearanceCalculator();
 	Node [] nodes = graphView.getGraph2D().getNodeArray();
@@ -139,7 +134,7 @@ public class VisualMappingManager {
 	/** finally, have CytoscapeWindow update. */
 	graphView.updateView(); // forces the view to update its contents
 	// paintImmediately() needed because sometimes updates can be buffered
-	graphView.paintImmediately(0,0,graphView.getWdith(),
+	graphView.paintImmediately(0,0,graphView.getWidth(),
 				   graphView.getHeight());
 	cytoscapeWindow.updateStatusText();
     }
