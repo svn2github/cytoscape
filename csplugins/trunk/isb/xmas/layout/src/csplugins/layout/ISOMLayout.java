@@ -21,6 +21,7 @@ import giny.util.*;
 import javax.swing.JFrame;
 import java.awt.Dimension;
 
+
 public class ISOMLayout extends cytoscape.layout.AbstractLayout {
 
   

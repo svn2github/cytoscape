@@ -9,7 +9,7 @@ import cytoscape.view.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.util.*;
-import giny.util.GraphPartition;
+import phoebe.util.GraphPartition;
 
 public class LayoutPlugin extends CytoscapePlugin {
 
