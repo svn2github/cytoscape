@@ -1,4 +1,5 @@
-package cytoscape.dialogs;
+
+package cytoscape.util;
 import java.awt.Color;
 public class MutableColor {
     private Color color;

@@ -26,7 +26,7 @@ import java.util.Map;
 import cytoscape.data.*;
 import cytoscape.vizmap.*;
 import cytoscape.dialogs.NewSlider;
-import cytoscape.dialogs.MutableColor;
+import cytoscape.util.MutableColor;
 //import csplugins.activePathsNew.data.ActivePathFinderParameters;
 //--------------------------------------------------------------------------------------
 public class VisualPropertiesDialog extends JDialog {
