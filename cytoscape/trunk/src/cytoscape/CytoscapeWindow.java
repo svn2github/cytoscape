@@ -970,6 +970,7 @@ protected void setLayouterAndGraphView ()
     }
 
   graphView.setGraph2D (graph);
+  graph.setCurrentView(graphView);
     
   graphView.fitContent ();
   graphView.setZoom (graphView.getZoom ()*0.9); 
