@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp
+  codebase="http://www.cbio.mskcc.org/~bader/software/test/yeastSmall/"
+  href="http://www.cbio.mskcc.org/~bader/software/test/yeastSmall/yeastSmall.jnlp">
+  <information>
+    <title>Cytoscape Tutorial #2 - Small Yeast Network</title>
+    <vendor>Cytoscape.org</vendor>
+    <homepage href="http://cytoscape.org"/>
+    <description>Cytoscape Tutorial #2</description> 
+    <description kind="short">Visualize expression and gene annotation data on a small budding yeast network.</description>
+    <offline-allowed/>
+  </information>
+  <security>
+    <all-permissions/>
+  </security>
+  <resources>
+    <j2se version="1.4+" max-heap-size="1024M"/>
+    <jar href="cytoscape2_0_Jul182004.jar"/>
+    <jar href="data.jar"/>
+    <jar href="yeast-context.jar"/>
+    <jar href="mcode.jar"/>
+  </resources>
+  <application-desc>
+    <argument>-p</argument>
+    <argument>jar://projectFile</argument>
+    <argument>--JLW</argument>
+    <argument>http://www.cbio.mskcc.org/~bader/software/test/common/yLayouts.jar</argument>
+    <argument>--JLW</argument>
+    <argument>http://www.cbio.mskcc.org/~bader/software/test/common/layout.jar</argument>
+    <argument>--JLW</argument>
+    <argument>http://www.cbio.mskcc.org/~bader/software/test/common/jgraphLayout.jar</argument>
+    <argument>--JLW</argument>
+    <argument>http://www.cbio.mskcc.org/~bader/software/test/common/HierarchicalLayout.jar</argument>
+    <argument>--JLW</argument>
+    <argument>http://www.cbio.mskcc.org/~bader/software/test/common/control.jar</argument>
+    <argument>--JLW</argument>
+    <argument>http://www.cbio.mskcc.org/~bader/software/test/common/diff.jar</argument>
+    <argument>--JLW</argument>
+    <argument>http://www.cbio.mskcc.org/~bader/software/test/common/filter.jar</argument>
+    <argument>--JLW</argument>
+    <argument>http://www.cbio.mskcc.org/~bader/software/test/common/SigAttributes.jar</argument>
+    <argument>-s</argument>
+    <argument>Saccharomyces cerevisiae</argument>
+    <argument>-b</argument>
+    <argument>jar://annotList</argument>
+  </application-desc>
+</jnlp>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp
+  codebase="http://www.cbio.mskcc.org/~bader/software/test/runYeast/"
+  href="http://www.cbio.mskcc.org/~bader/software/test/runYeast/runYeast.jnlp">
+  <information>
+    <title>Cytoscape Tutorial #1 - Budding Yeast Demo</title>
+    <vendor>Cytoscape.org</vendor>
+    <homepage href="http://cytoscape.org/"/>
+    <description>Cytoscape Tutorial #1</description> 
+    <description kind="short">Load the basic information required for working with budding yeast networks.</description>
+    <offline-allowed/>
+  </information>
+  <security>
+    <all-permissions/>
+  </security>
+  <resources>
+    <j2se version="1.4+" max-heap-size="1024M"/>
+    <jar href="cytoscape2_0_Jul182004.jar"/>
+    <jar href="data.jar"/>
+    <jar href="yeast-context.jar"/>
+    <jar href="mcode.jar"/>
+  </resources>
+  <application-desc>
+    <argument>-p</argument>
+    <argument>jar://projectFile</argument>
+    <argument>--JLW</argument>
+    <argument>http://www.cbio.mskcc.org/~bader/software/test/common/yLayouts.jar</argument>
+    <argument>--JLW</argument>
+    <argument>http://www.cbio.mskcc.org/~bader/software/test/common/layout.jar</argument>
+    <argument>--JLW</argument>
+    <argument>http://www.cbio.mskcc.org/~bader/software/test/common/jgraphLayout.jar</argument>
+    <argument>--JLW</argument>
+    <argument>http://www.cbio.mskcc.org/~bader/software/test/common/HierarchicalLayout.jar</argument>
+    <argument>--JLW</argument>
+    <argument>http://www.cbio.mskcc.org/~bader/software/test/common/control.jar</argument>
+    <argument>--JLW</argument>
+    <argument>http://www.cbio.mskcc.org/~bader/software/test/common/diff.jar</argument>
+    <argument>--JLW</argument>
+    <argument>http://www.cbio.mskcc.org/~bader/software/test/common/filter.jar</argument>
+    <argument>--JLW</argument>
+    <argument>http://www.cbio.mskcc.org/~bader/software/test/common/SigAttributes.jar</argument>
+    <argument>-s</argument>
+    <argument>Saccharomyces cerevisiae</argument>
+    <argument>-b</argument>
+    <argument>jar://annotList</argument>
+  </application-desc>
+</jnlp>

@@ -1,0 +1,5 @@
+props=jar://cytoscape.props
+vprops=jar://vizmap.props
+gml=jar://network.gml
+noa=jar://gal4rgExpression.noa
+noa=jar://perturbation.noa
