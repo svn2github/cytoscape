@@ -230,7 +230,6 @@ class LoadNetworkTask implements Task {
             BioDataServer biodataserver, String species) throws IOException {
 
         GraphReader reader;
-        taskMonitor.setStatus("Analyzing Graph Data File...");
         taskMonitor.setPercentCompleted(5);
 
         //  Set the reader according to what file type was passed.
@@ -256,7 +255,6 @@ class LoadNetworkTask implements Task {
 
         // Create a new cytoscape.data.CyNetwork from these nodes and edges
         taskMonitor.setStatus("Creating Cytoscape Network...");
-        taskMonitor.setPercentCompleted(-1);
         final CyNetwork network[] = new CyNetwork[1];
 
         //  This call will trigger the creation of the CyNetworkView
