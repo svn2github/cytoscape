@@ -323,7 +323,7 @@ public final class IntBTree
         else currentMin = n.data.splitVals[i];
         if (x >= currentMin) {
           if (currentMin == currentMax) {
-            count += n.data.children[i + 1].deepCount; }
+            count += n.data.children[i + 1].data.deepCount; }
           else {
             count += count(n.data.children[i + 1], x,
                            currentMin, currentMax);
