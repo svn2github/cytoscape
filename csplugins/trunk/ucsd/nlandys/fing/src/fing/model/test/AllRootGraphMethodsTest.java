@@ -1179,34 +1179,35 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("wrong edge meta parents");
 
     // getEdgeMetaParentIndicesArray(int).
-//     if (root.getEdgeMetaParentIndicesArray(0) != null ||
-//         root.getEdgeMetaParentIndicesArray(Integer.MAX_VALUE) != null ||
-//         root.getEdgeMetaParentIndicesArray(Integer.MIN_VALUE) != null ||
-//         root.getEdgeMetaParentIndicesArray(minEdgeInx - 1) != null ||
-//         root.getEdgeMetaParentIndicesArray(66) != null)
-//       throw new IllegalStateException("expected null parent array");
-//     int[] edgeParentInx = root.getEdgeMetaParentIndicesArray(edgeInx[0]);
-//     if (edgeParentInx.length != 1)
-//       throw new IllegalStateException("wrong number of edge parents");
-//     edgeParentInx = root.getEdgeMetaParentIndicesArray(edgeInx[1]);
-//     if (edgeParentInx.length != 0) {
-//       System.out.println("length " + edgeParentInx.length);
-//       System.out.print("getEdgeMetaParentIndicesArray(edgeInx[1]) returns ");
-//       for (int i = 0;; i++) if (edgeParentInx[0] == nodeInx[i]) {
-//         System.out.println("nodeInx[" + i + "]"); break; }
-//       throw new IllegalStateException("wrong number of edge parents"); }
-//     edgeParentInx = root.getEdgeMetaParentIndicesArray(edgeInx[2]);
-//     if (edgeParentInx.length != 1)
-//       throw new IllegalStateException("wrong number of edge parents");
-//     edgeParentInx = root.getEdgeMetaParentIndicesArray(edgeInx[4]);
-//     if (edgeParentInx.length != 1)
-//       throw new IllegalStateException("wrong number of edge parents");
-//     edgeParentInx = root.getEdgeMetaParentIndicesArray(edgeInx[5]);
-//     if (edgeParentInx.length != 0)
-//       throw new IllegalStateException("wrong number of edge parents");
-//     edgeParentInx = root.getEdgeMetaParentIndicesArray(edgeInx[6]);
-//     if (edgeParentInx.length != 2)
-//       throw new IllegalStateException("wrong number of edge parents");
+    if (root.getEdgeMetaParentIndicesArray(0) != null ||
+        root.getEdgeMetaParentIndicesArray(Integer.MAX_VALUE) != null ||
+        root.getEdgeMetaParentIndicesArray(Integer.MIN_VALUE) != null ||
+        root.getEdgeMetaParentIndicesArray(minEdgeInx - 1) != null ||
+        root.getEdgeMetaParentIndicesArray(66) != null)
+      throw new IllegalStateException("expected null parent array");
+    int[] edgeParentInx = root.getEdgeMetaParentIndicesArray(edgeInx[0]);
+    if (edgeParentInx.length != 1)
+      throw new IllegalStateException("wrong number of edge parents");
+    for (int i = 0;; i++) if (edgeParentInx[i] == nodeInx[3]) break;
+    edgeParentInx = root.getEdgeMetaParentIndicesArray(edgeInx[1]);
+    if (edgeParentInx.length != 0)
+      throw new IllegalStateException("wrong number of edge parents");
+    edgeParentInx = root.getEdgeMetaParentIndicesArray(edgeInx[2]);
+    if (edgeParentInx.length != 1)
+      throw new IllegalStateException("wrong number of edge parents");
+    for (int i = 0;; i++) if (edgeParentInx[i] == nodeInx[4]) break;
+    edgeParentInx = root.getEdgeMetaParentIndicesArray(edgeInx[4]);
+    if (edgeParentInx.length != 1)
+      throw new IllegalStateException("wrong number of edge parents");
+    for (int i = 0;; i++) if (edgeParentInx[i] == nodeInx[0]) break;
+    edgeParentInx = root.getEdgeMetaParentIndicesArray(edgeInx[5]);
+    if (edgeParentInx.length != 0)
+      throw new IllegalStateException("wrong number of edge parents");
+    edgeParentInx = root.getEdgeMetaParentIndicesArray(edgeInx[6]);
+    if (edgeParentInx.length != 2)
+      throw new IllegalStateException("wrong number of edge parents");
+    for (int i = 0;; i++) if (edgeParentInx[i] == nodeInx[3]) break;
+    for (int i = 0;; i++) if (edgeParentInx[i] == nodeInx[4]) break;
 
     // isMetaChild(Node, Edge).
 
