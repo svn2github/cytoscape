@@ -28,8 +28,8 @@
 						Download
 					</a>
 					|
-					<a href="tutorial.php">
-						Tutorial
+					<a href="people.php">
+						Dev Team
 					</a>
 					| 
 					<a href="links.php">
