@@ -50,7 +50,7 @@ import y.layout.organic.OrganicLayouter;
 import y.layout.random.RandomLayouter;
 
 import cytoscape.*;
-import cytoscape.data.CyNetwork;
+import cytoscape.data.*;
 //import cytoscape.view.*;
 import cytoscape.visual.*;
 import cytoscape.visual.ui.VizMapUI;
@@ -68,7 +68,7 @@ import cytoscape.layout.Subgraph;
  * all of the UI components and the the graph view.
  */
 public class CyWindow extends JPanel implements Graph2DSelectionListener,
-NetworkView {
+CyNetworkListener, NetworkView {
         
     protected static final int DEFAULT_WIDTH = 700;
     protected static final int DEFAULT_HEIGHT = 700;
@@ -95,6 +95,7 @@ NetworkView {
     protected PopupMode nodeAttributesPopupMode;
     protected PopupMode currentPopupMode;
     protected boolean viewModesInstalled = false;
+    protected boolean currentInteractivityState = false;
     
     /** contains mappings from network properties and attributes to visual
      *  properties such as the sizes and colors of nodes and edges.
@@ -244,6 +245,7 @@ private void connectGraphAndView() {
  */
 private void attachGraphListeners() {
     if (getNetwork() == null || getNetwork().getGraph() == null) {return;}
+    getNetwork().addCyNetworkListener(this);
     Graph2D theGraph = getNetwork().getGraph();
     theGraph.addGraph2DSelectionListener(this);
     if (getCytoscapeObj().getConfiguration().enableUndo()) {
@@ -261,6 +263,7 @@ private void attachGraphListeners() {
  */
 private void detachGraphListeners() {
     if (getNetwork() == null || getNetwork().getGraph() == null) {return;}
+    getNetwork().removeCyNetworkListener(this); //no error if we're not a listener
     Graph2D currentGraph = getNetwork().getGraph();
     //remove this as a graph selection listener
     for (Iterator i = currentGraph.getGraph2DSelectionListeners(); i.hasNext(); ) {
@@ -463,9 +466,7 @@ public void setWindowTitle(String newTitle) {
  * Returns the object that holds references to the menu bars and
  * several of the major submenus.
  */
-public CytoscapeMenus getCytoscapeMenus() {
-    return cytoscapeMenus;
-}
+public CytoscapeMenus getCytoscapeMenus() {return cytoscapeMenus;}
 //------------------------------------------------------------------------------
 /**
  * Sets the popup mode - a yFiles specific thing that deals with
@@ -554,6 +555,12 @@ public void setNewNetwork(CyNetwork newNetwork, boolean doLayout) {
 }
 //------------------------------------------------------------------------------
 /**
+ *
+ * NOTE: algorithms in general should not call this method directly. Instead,
+ * they should call the beginActivity or endActivity methods on the CyNetwork
+ * object displayed in this window. Those methods will trigger this class to
+ * set the interactivity to the correct state. -AM 09-11-2003
+ *
  * Sets the interactivity state of this window. If the argument is
  * false. disables user interaction with the graph view and menus;
  * removes existing edit modes, and turns off the undo manager.
@@ -565,9 +572,10 @@ public void setNewNetwork(CyNetwork newNetwork, boolean doLayout) {
  * then turn interactivity back on.
  *
  * This class is initialized with interactivity off; it is turned
- * on my the showWindow method.
+ * on by the showWindow method.
  */
 public void setInteractivity (boolean newState) {
+    if (currentInteractivityState == newState) {return;}
     if (newState == true) { // turn interactivity ON
         if (!viewModesInstalled) {
             graphView.addViewMode(currentGraphMode);
@@ -790,6 +798,21 @@ public void applyLayoutSelection() {
  */
 protected void applyVizmapSettings() {
     getVizMapManager().applyAppearances();
+}
+//------------------------------------------------------------------------------
+/**
+ * This method responds to the given CyNetworkEvent If the source of this event
+ * is the network displayed in this window. Currently, this method turns off
+ * interactivity when a BEGIN event is received, and turns it back on when an
+ * END event is received.
+ */
+public void onCyNetworkEvent(CyNetworkEvent event) {
+    if (event.getNetwork() != this.getNetwork()) {return;}
+    if (event.getType() == CyNetworkEvent.BEGIN) {
+        setInteractivity(false);
+    } else if (event.getType() == CyNetworkEvent.END) {
+        setInteractivity(true);
+    }
 }
 //------------------------------------------------------------------------------
 /**

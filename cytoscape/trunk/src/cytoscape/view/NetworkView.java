@@ -31,9 +31,14 @@
 //-------------------------------------------------------------------------
 package cytoscape.view;
 //-------------------------------------------------------------------------
-import y.view.Graph2DView;
+import javax.swing.JFrame;
 
+import y.view.Graph2DView;
+import y.layout.Layouter;
+
+import cytoscape.CytoscapeObj;
 import cytoscape.data.CyNetwork;
+import cytoscape.undo.UndoableGraphHider;
 import cytoscape.visual.VisualMappingManager;
 //-------------------------------------------------------------------------
 /**
@@ -44,29 +49,39 @@ import cytoscape.visual.VisualMappingManager;
 public interface NetworkView {
     
     /**
+     * Returns the global object representing this instance of Cytoscape.
+     */
+    CytoscapeObj getCytoscapeObj();
+    /**
      * Returns the network displayed by this object.
      */
     CyNetwork getNetwork();
+    /**
+     * Returns the utility object for hiding graph objects for the above network.
+     */
+    UndoableGraphHider getGraphHider();
     /**
      * Returns the view object for the graph display.
      */
     Graph2DView getGraphView();
     /**
+     * Return the frame in which the graph is displayed. Useful for constructing
+     * dialogs dependent on this frame.
+     */
+    JFrame getMainFrame();
+    /**
+     * Returns the current layouter for the displayed graph.
+     */
+    Layouter getLayouter();
+    /**
+     * Sets a new layouter to be used for future layout operations.
+     */
+    void setLayouter(Layouter newLayouter);
+    /**
      * Returns the visual mapper associated with this display.
      */
     VisualMappingManager getVizMapManager();
     
-    /**
-     * Controls whether the user can interact with the display;
-     * often turned off during major graph operations.
-     *
-     * @param newState  true to allow interaction, false to disable
-     */
-    void setInteractivity(boolean newState);
-    /**
-     * Redraws the graph with default parameters.
-     */
-    void redrawGraph();
     /**
      * Redraws the graph. The arguments control what actions are
      * performed before repainting the view.
