@@ -10,6 +10,7 @@ import javax.swing.AbstractAction;
 
 import cytoscape.view.NetworkView;
 import cytoscape.dialogs.RotateSelectionDialog;
+import cytoscape.dialogs.PhoebeNodeControl;
 //-------------------------------------------------------------------------
 /**
  * Rotates the given selection by the specified amount.
@@ -25,12 +26,21 @@ public class RotateSelectedNodesAction extends AbstractAction {
     }
 
     public void actionPerformed (ActionEvent e) {
+      // Y-Files check
+      if ( networkView.getCytoscapeObj().getConfiguration().isYFiles() ) {
         String callerID = "RotateSelectedNodesAction.actionPerformed";
         networkView.getNetwork().beginActivity(callerID);
         RotateSelectionDialog d = new RotateSelectionDialog(networkView);
         /* the above dialog is a modal dialog, so it blocks this thread
          * until it finishes -AM 09-16-03 */
         networkView.getNetwork().endActivity(callerID);
+      
+      } else {
+
+        PhoebeNodeControl pnc = new PhoebeNodeControl( networkView.getView() );
+
+      }
     }
+
 }
 

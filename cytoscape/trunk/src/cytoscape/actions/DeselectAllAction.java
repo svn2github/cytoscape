@@ -20,21 +20,21 @@ public class DeselectAllAction extends AbstractAction {
 
     public void actionPerformed(ActionEvent e) {
 
-	if (networkView.getCytoscapeObj().getConfiguration().isYFiles()) {  	    
-	    //cytoscapeWindow.deselectAllNodes();
-	    String callerID = "DeselectAllAction.actionPerformed";
-	    networkView.getNetwork().beginActivity(callerID);
+      if (networkView.getCytoscapeObj().getConfiguration().isYFiles()) {  	    
+        //cytoscapeWindow.deselectAllNodes();
+        String callerID = "DeselectAllAction.actionPerformed";
+        networkView.getNetwork().beginActivity(callerID);
+        
+        networkView.getNetwork().getGraph().unselectAll();
 	    
-	    networkView.getNetwork().getGraph().unselectAll();
-	    
-	    //no new layout, but appearances may need to change
-	    networkView.redrawGraph(false, true);
-	    networkView.getNetwork().endActivity(callerID);
-	    
-	}
-	else {
-	    GinyUtils.deselectAllNodes(networkView.getView());
-	}
+        //no new layout, but appearances may need to change
+        networkView.redrawGraph(false, true);
+        networkView.getNetwork().endActivity(callerID);
+        
+      }
+      else {
+        GinyUtils.deselectAllNodes(networkView.getView());
+      }
     }
 }
 

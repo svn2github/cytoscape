@@ -65,6 +65,7 @@ public class CyMenus {
         //don't fill them with menu items and associated action listeners
         createMenuBar();
         toolBar = new JToolBar();
+        
     }
     
     /**

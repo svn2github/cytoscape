@@ -73,6 +73,32 @@ public class cytoscape implements WindowListener {
 public cytoscape (String [] args) throws Exception
 {
   
+
+    if ( System.getProperty("os.name" ).startsWith("Windows") ) {
+        try {
+          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (  Exception e ) {
+          // TODO: Error handling.
+          System.err.println( "Hey. Error loading L&F: on Windows" );
+          // TODO: REMOVE
+          // e.printStackTrace();
+        }
+      } else {
+        
+        
+        try { 
+          UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+        } catch( Exception e ) {
+          // TODO: Error handling.
+          System.err.println( "Hey. Error loading L&F: on NOT Windows"  );
+          // TODO: REMOVE
+          //e.printStackTrace();
+        }
+      }
+      
+
+
+
   splashScreen = new SplashScreen();
   CytoscapeConfig config = new CytoscapeConfig (args);
   setupLogger (config);

@@ -57,74 +57,77 @@ import cytoscape.layout.RotateLayoutHelper;
  * window interactively, through the use of a JSlider.
  */
 public class RotateSelectionDialog extends JDialog {
-    JDialog thisDialog;
+  JDialog thisDialog;
 	
-    public RotateSelectionDialog (NetworkView networkView) {
-	super (networkView.getMainFrame(), "Rotate Selected Nodes", true);
+  public RotateSelectionDialog (NetworkView networkView) {
+    super (networkView.getMainFrame(), "Rotate Selected Nodes", true);
 
-	thisDialog = this;
+    thisDialog = this;
 
-	JLabel sliderLabel = new JLabel("Angle",
-					JLabel.CENTER);
-	sliderLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    JLabel sliderLabel = new JLabel("Angle",
+                                    JLabel.CENTER);
+    sliderLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-	JPanel actionButtonsPanel = new JPanel();
-	actionButtonsPanel.setLayout(new FlowLayout());
+    JPanel actionButtonsPanel = new JPanel();
+    actionButtonsPanel.setLayout(new FlowLayout());
 
-	JButton dismissButton = new JButton("Dismiss");
-	actionButtonsPanel.add(dismissButton);
-	dismissButton.addActionListener(new DismissAction());
+    JButton dismissButton = new JButton("Dismiss");
+    actionButtonsPanel.add(dismissButton);
+    dismissButton.addActionListener(new DismissAction());
 
-	JPanel sliderPanel = new JPanel();
-	sliderPanel.setLayout(new FlowLayout());
+    JPanel sliderPanel = new JPanel();
+    sliderPanel.setLayout(new FlowLayout());
 
-	// new slider from -180 to +180 degrees
-	JSlider angle = new JSlider(JSlider.HORIZONTAL, -180, 180, 0);
-	sliderPanel.add(angle);
-	angle.setMajorTickSpacing(90);
-	angle.setPaintLabels(true);
-	angle.addChangeListener(new RotateSelectionAngleListener(networkView));
+    // new slider from -180 to +180 degrees
+    JSlider angle = new JSlider(JSlider.HORIZONTAL, -180, 180, 0);
+    sliderPanel.add(angle);
+    angle.setMajorTickSpacing(90);
+    angle.setPaintLabels(true);
+    angle.addChangeListener(new RotateSelectionAngleListener(networkView));
 	    
-	JPanel panel = new JPanel();
-	panel.setLayout(new BorderLayout());
-	panel.add(sliderPanel, BorderLayout.CENTER);
-	panel.add(actionButtonsPanel, BorderLayout.SOUTH);
+    JPanel panel = new JPanel();
+    panel.setLayout(new BorderLayout());
+    panel.add(sliderPanel, BorderLayout.CENTER);
+    panel.add(actionButtonsPanel, BorderLayout.SOUTH);
 
-	setContentPane(panel);
-	pack();
-	this.setLocation(networkView.getMainFrame().getLocationOnScreen());
-	pack();
-	setVisible(true);
-    }
+    setContentPane(panel);
+    pack();
+    this.setLocation(networkView.getMainFrame().getLocationOnScreen());
+    pack();
+    setVisible(true);
+  }
 
-    protected class RotateSelectionAngleListener implements ChangeListener {
-        NetworkView networkView;
-	double last = 0.0;
+  protected class RotateSelectionAngleListener implements ChangeListener {
+    NetworkView networkView;
+    double last = 0.0;
 	    
-	RotateSelectionAngleListener (NetworkView networkView) {
-	    this.networkView = networkView;
-	}
-
-	public void stateChanged(ChangeEvent e) {
-	    JSlider source = (JSlider)e.getSource();
-		
-	    double angle = (source.getValue() / 180.0 * Math.PI);
-	    RotateLayoutHelper.rotate(networkView.getNetwork().getGraph(),
-                                      networkView.getNetwork().getGraph().selectedNodes(),
-				      angle - last);
-
-	    last = angle;
-
-	    networkView.redrawGraph(false, false);
-	}
+    RotateSelectionAngleListener (NetworkView networkView) {
+      this.networkView = networkView;
     }
+      
+    public void stateChanged(ChangeEvent e) {
+      JSlider source = (JSlider)e.getSource();
+        
+      double angle = (source.getValue() / 180.0 * Math.PI);
+      if ( networkView.getCytoscapeObj().getConfiguration().isYFiles() ) {
+        RotateLayoutHelper.rotate(networkView.getNetwork().getGraph(),
+                                  networkView.getNetwork().getGraph().selectedNodes(),
+                                  angle - last);
+        last = angle;
 
-    protected class DismissAction extends AbstractAction {
-	DismissAction () {super (""); }
-	public void actionPerformed (ActionEvent e) {
+        networkView.redrawGraph(false, false);
+      } 
+    }
+      
+      
+  }
+  
+  protected class DismissAction extends AbstractAction {
+    DismissAction () {super (""); }
+    public void actionPerformed (ActionEvent e) {
 	    thisDialog.dispose();
-	}
     }
+  }
 
 }
 

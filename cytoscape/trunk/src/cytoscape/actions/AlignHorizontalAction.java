@@ -11,6 +11,9 @@ import javax.swing.AbstractAction;
 import y.base.*;
 import y.view.Graph2D;
 
+import giny.view.*;
+import java.util.*;
+
 import cytoscape.view.NetworkView;
 //-------------------------------------------------------------------------
 public class AlignHorizontalAction extends AbstractAction {
@@ -22,6 +25,10 @@ public class AlignHorizontalAction extends AbstractAction {
     }
 
     public void actionPerformed (ActionEvent e) {
+
+      // Y-Files check
+      if ( networkView.getCytoscapeObj().getConfiguration().isYFiles() ) {
+
         // remember state for undo - dramage 2002-08-22
         //networkView.getUndoManager().saveRealizerState();
         //networkView.getUndoManager().pause();
@@ -54,6 +61,27 @@ public class AlignHorizontalAction extends AbstractAction {
 
         networkView.redrawGraph(false, false);
         networkView.getNetwork().endActivity(callerID);
+      } else {
+        // GINY
+        
+        GraphView view = networkView.getView();
+        double avgYcoord=0;
+        
+        List selected_nodes = view.getSelectedNodes();
+        Iterator node_iterator;
+        
+        node_iterator = selected_nodes.iterator();
+        while( node_iterator.hasNext() ) {
+          avgYcoord += ( ( NodeView )node_iterator.next() ).getYPosition();
+        }
+
+        node_iterator = selected_nodes.iterator();
+        while( node_iterator.hasNext() ) {
+          ( ( NodeView )node_iterator.next() ).setYPosition( avgYcoord );
+        }
+
+        
+      }
     }
 }
 
