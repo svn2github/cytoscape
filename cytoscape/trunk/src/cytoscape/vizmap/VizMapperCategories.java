@@ -151,7 +151,7 @@ public class VizMapperCategories implements AttributeMapperCategories {
 	} else if( vizAttribute.equals(NODE_SHAPE) ) {
 	    //parse shape byte from value
 	} else if ( vizAttribute.equals(EDGE_LINETYPE) ) {
-	    //parse LineType from value
+	    returnVal = Misc.parseLineTypeText(value);
 	} else if ( vizAttribute.equals(EDGE_SOURCE_DECORATION) ||
 		    vizAttribute.equals(EDGE_TARGET_DECORATION) ) {
 	    returnVal = Misc.parseArrowText(value);
