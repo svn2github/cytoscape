@@ -285,7 +285,7 @@ protected void displayNewGraph (boolean doLayout)
 
 } // displayGraph
 //------------------------------------------------------------------------------
-public void applyVizmapSettings ()
+protected void applyVizmapSettings ()
 {
   Node [] nodes = graphView.getGraph2D().getNodeArray();
 
