@@ -315,18 +315,6 @@ public void setGraph (Graph2D graph)
   setLayouterAndGraphView();
   // displayCommonNodeNames ();
   
-  // register the window as a selection listener - dramage 2002.08.16
-  graph.addGraph2DSelectionListener(this);
-  
-  // create a new UndoManager for this graph
-  undoManager = new CytoscapeUndoManager(this, graph);
-  graph.addGraphListener(undoManager);
-  updateUndoRedoMenuItemStatus();
-  
-  // create the graph hider
-  graphHider = new UndoableGraphHider (graph, undoManager);
-  
-  setLayouterAndGraphView();
 } // setGraph
 //-----------------------------------------------------------------------------
 public Graph2DView getGraphView(){
