@@ -4,6 +4,8 @@ import junit.framework.TestCase;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import cytoscape.visual.unitTests.VisualSuite;
+import cytoscape.visual.mappings.continuous.unitTests.ContinuousMappingTestSuite;
+import cytoscape.visual.mappings.discrete.unitTests.DiscreteMappingTestSuite;
 import cytoscape.util.unitTests.UtilSuite;
 import cytoscape.data.unitTests.DataSuite;
 import cytoscape.data.readers.unitTests.DataReaderSuite;
@@ -65,6 +67,8 @@ public class AllTests extends TestCase {
         suite.addTest(SynonymSuite.suite());
         suite.addTest(UtilSuite.suite());
         suite.addTest(VisualSuite.suite());
+        suite.addTest(ContinuousMappingTestSuite.suite());
+        suite.addTest(DiscreteMappingTestSuite.suite());
 
         suite.setName("Cytoscape JUnit Tests");
         return suite;
