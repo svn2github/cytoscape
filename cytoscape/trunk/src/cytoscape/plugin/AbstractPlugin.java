@@ -38,12 +38,16 @@ import cytoscape.view.CyWindow;
 import cytoscape.CytoscapeObj;
 
 /**
+* @deprecated
+ * This class relies on CyWindow, which has been deprecated. Instead, use
+ * {@link CytoscapePlugin}
+ * <hr>
  * AbstractPlugin is the class that all Cytoscape plugins must subclass.
  * The plugin should provide a one-argument constructor where the argument
  * is an instance of {@link cytoscape.view.CyWindow CyWindow}.<P>
  *
  * It is encouraged, but not mandatory, for plugins to override the
- * {@link#describe describe} method to state what the plugin does and how it
+ * {@link #describe describe} method to state what the plugin does and how it
  * should be used.
  */
 public abstract class AbstractPlugin {
