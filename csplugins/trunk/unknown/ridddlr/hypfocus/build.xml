@@ -21,7 +21,9 @@ CVS project.
     <javac srcdir="${basedir}/src"
            includes="csplugins/layout/LayoutPlugin2.java"
            classpathref="hypfocus.classpath"
-           destdir="${basedir}/build/classes"/>
+           destdir="${basedir}/build/classes"
+           debug="true"
+           includeAntRuntime="no"/>
     <jar filesonly="true"
          destfile="${basedir}/build/hypfocus2.jar">
       <fileset dir="${basedir}/build/classes"/>
