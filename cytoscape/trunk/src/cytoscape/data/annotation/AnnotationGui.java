@@ -431,9 +431,10 @@ public String addAnnotationToNodes (AnnotationDescription aDesc, int level)
     else {
       String [] uniqueAnnotationsAtLevel = collapseToUniqueAnnotationsAtLevel (fullAnnotations, level);
       for(int j=0;j<uniqueAnnotationsAtLevel.length;j++) {
-	  nodeAttributes.append(annotationNameAtLevel, canonicalNodeNames [i], uniqueAnnotationsAtLevel[j]);
+	  nodeAttributes.append(annotationNameAtLevel,
+				canonicalNodeNames[i],
+				uniqueAnnotationsAtLevel[j]);
       }
-      //nodeAttributes.set (annotationNameAtLevel, canonicalNodeNames [i], uniqueAnnotationsAtLevel);
       int [] annotationIDs = dataServer.getClassifications (aDesc, canonicalNodeNames [i]);
       Integer [] integerArray = new Integer [annotationIDs.length];
       for (int j=0; j < annotationIDs.length; j++)
