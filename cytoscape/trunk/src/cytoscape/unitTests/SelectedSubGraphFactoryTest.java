@@ -278,6 +278,51 @@ public void testSubGraphOperation () throws Exception
     
 } // testSubGraphOperation
 //-------------------------------------------------------------------------
+/**
+ *  create a simple 3 node graph, with two edges.  select two 
+ *  neighboring nodes, and generate the subgraph.  only -one- edge
+ *  should come back with the two nodes
+ */
+public void testForSurplusEdges () throws Exception
+{ 
+  System.out.println ("testNoSurplusEdges");
+
+  Graph2D graph = new Graph2D ();
+
+  Node nodeA = graph.createNode (0.0, 0.0, 70.0, 30.0, "A");
+  Node nodeB = graph.createNode (0.0, 0.0, 70.0, 30.0, "B");
+  Node nodeC = graph.createNode (0.0, 0.0, 70.0, 30.0, "C");
+
+  GraphObjAttributes nodeAttributes = new GraphObjAttributes ();
+  nodeAttributes.addNameMapping ("A", nodeA);
+  nodeAttributes.addNameMapping ("B", nodeB);
+  nodeAttributes.addNameMapping ("C", nodeC);
+
+
+  GraphObjAttributes edgeAttributes = new GraphObjAttributes ();
+  Edge edge = graph.createEdge (nodeA, nodeB);
+  String edgeName = "A (test) B";
+  edgeAttributes.add ("interaction", edgeName, "test");
+  edgeAttributes.addNameMapping (edgeName, edge);
+
+  NodeRealizer realizer = graph.getRealizer (nodeA);
+  realizer.setSelected (true);
+  realizer = graph.getRealizer (nodeB);
+  realizer.setSelected (true);
+
+
+  SelectedSubGraphFactory factory = 
+      new SelectedSubGraphFactory (graph, nodeAttributes, edgeAttributes);
+
+  Graph2D subGraph = factory.getSubGraph ();
+  Node [] nodes = subGraph.getNodeArray ();
+  Edge [] edges = subGraph.getEdgeArray ();
+
+  assertTrue (nodes.length == 2);
+  assertTrue (edges.length == 1);
+
+} // testNoSurplusEdges
+//-------------------------------------------------------------------------
 public static void main (String[] args) 
 {
   junit.textui.TestRunner.run (new TestSuite (SelectedSubGraphFactoryTest.class));
