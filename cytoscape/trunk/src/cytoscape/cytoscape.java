@@ -125,15 +125,11 @@ public cytoscape (String [] args) throws Exception
     }
   else if (interactionsFilename != null) {
     logger.info ("reading " + interactionsFilename + "...");
-    //TODO: Remove performance
-    long time1 = System.currentTimeMillis();
-    System.out.println("Calling FileReadingAbstraction.loadIntrBasic...");
     graph = FileReadingAbstractions.loadIntrBasic (bioDataServer, 
                                                    defaultSpecies, 
                                                    interactionsFilename,
                                                    edgeAttributes,
                                                    config.getCanonicalize());
-    System.out.println("done calling FileReadingAbstraction.loadIntrBasic " +  (System.currentTimeMillis() - time1));
     logger.info ("  done");
     title = interactionsFilename;
     splashScreen.advance(90);
