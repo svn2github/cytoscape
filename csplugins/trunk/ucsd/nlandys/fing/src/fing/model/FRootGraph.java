@@ -148,12 +148,9 @@ class FRootGraph implements RootGraph
             (positiveNodeIndex, true, true, true); }
     catch (IllegalArgumentException e) { return null; }
     if (edgeInxEnum == null) return null;
-    m_heap.empty();
-    final MinIntHeap edgeBucket = m_heap;
-    while (edgeInxEnum.numRemaining() > 0)
-      edgeBucket.toss(~(edgeInxEnum.nextInt()));
-    final int[] edgeRemoveArr = new int[edgeBucket.size()];
-    edgeBucket.copyInto(edgeRemoveArr, 0);
+    final int[] edgeRemoveArr = new int[edgeInxEnum.numRemaining()];
+    for (int i = 0; i < edgeRemoveArr.length; i++)
+      edgeRemoveArr[i] = ~(edgeInxEnum.nextInt());
     removeEdges(edgeRemoveArr);
     // positiveNodeIndex tested for validity with adjacentEdges() above.
     if (m_graph.removeNode(positiveNodeIndex)) {
@@ -161,8 +158,8 @@ class FRootGraph implements RootGraph
       m_nodes.setNodeAtIndex(null, positiveNodeIndex);
       m_nodeDepot.recycleNode(garbage);
       return garbage; }
-    else throw new IllegalStateException("cannot remove node " + nodeInx +
-                                         " from underlying graph");
+    else throw new IllegalStateException
+           ("internal error - node didn't exist, its adjacent edges did");
   }
 
   // This method has been marked deprecated in the Giny API.
