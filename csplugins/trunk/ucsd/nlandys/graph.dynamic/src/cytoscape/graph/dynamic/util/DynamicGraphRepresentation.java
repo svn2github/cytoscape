@@ -120,15 +120,13 @@ final class DynamicGraphRepresentation implements DynamicGraph
   {
     final Node source;
     final Node target;
+    if (sourceNode == Integer.MAX_VALUE) return -1;
     try { source = m_nodes.getNodeAtIndex(sourceNode); }
     catch (ArrayIndexOutOfBoundsException exc) {
-      // sourceNode is negative or Integer.MAX_VALUE.
-      if (sourceNode == Integer.MAX_VALUE) return -1;
       throw new IllegalArgumentException("sourceNode is negative"); }
+    if (targetNode == Integer.MAX_VALUE) return -1;
     try { target = m_nodes.getNodeAtIndex(targetNode); }
     catch (ArrayIndexOutOfBoundsException exc) {
-      // targetNode is negative or Integer.MAX_VALUE.
-      if (targetNode == Integer.MAX_VALUE) return -1;
       throw new IllegalArgumentException("targetNode is negative"); }
     if (source == null || target == null) return -1;
     m_edgeCount++;
@@ -158,10 +156,9 @@ final class DynamicGraphRepresentation implements DynamicGraph
   public boolean removeEdge(int edge)
   {
     final Edge e;
+    if (edge == Integer.MAX_VALUE) return false;
     try { e = m_edges.getEdgeAtIndex(edge); }
     catch (ArrayIndexOutOfBoundsException exc) {
-      // edge is negative or Integer.MAX_VALUE.
-      if (edge == Integer.MAX_VALUE) return false;
       throw new IllegalArgumentException("edge is negative"); }
     if (e == null) return false;
     final Node source = m_nodes.getNodeAtIndex(e.sourceNode);
@@ -187,20 +184,18 @@ final class DynamicGraphRepresentation implements DynamicGraph
 
   public boolean containsNode(int node)
   {
+    if (node == Integer.MAX_VALUE) return false;
     try { return m_nodes.getNodeAtIndex(node) != null; }
     catch (ArrayIndexOutOfBoundsException exc) {
-      // node is negative or Integer.MAX_VALUE.
-      if (node == Integer.MAX_VALUE) return false;
       throw new IllegalArgumentException("node is negative"); }
   }
 
   public byte edgeType(int edge)
   {
+    if (edge == Integer.MAX_VALUE) return -1;
     final Edge e;
     try { e = m_edges.getEdgeAtIndex(edge); }
     catch (ArrayIndexOutOfBoundsException exc) {
-      // edge is negative or Integer.MAX_VALUE.
-      if (edge == Integer.MAX_VALUE) return -1;
       throw new IllegalArgumentException("edge is negative"); }
     if (e == null) return -1;
     else if (e.directed) return 1;
@@ -209,11 +204,10 @@ final class DynamicGraphRepresentation implements DynamicGraph
 
   public int sourceNode(int edge)
   {
+    if (edge == Integer.MAX_VALUE) return -1;
     final Edge e;
     try { e = m_edges.getEdgeAtIndex(edge); }
     catch (ArrayIndexOutOfBoundsException exc) {
-      // edge is negative or Integer.MAX_VALUE.
-      if (edge == Integer.MAX_VALUE) return -1;
       throw new IllegalArgumentException("edge is negative"); }
     if (e != null) return e.sourceNode;
     else return -1;
@@ -221,11 +215,10 @@ final class DynamicGraphRepresentation implements DynamicGraph
 
   public int targetNode(int edge)
   {
+    if (edge == Integer.MAX_VALUE) return -1;
     final Edge e;
     try { e = m_edges.getEdgeAtIndex(edge); }
     catch (ArrayIndexOutOfBoundsException exc) {
-      // edge is negative or Integer.MAX_VALUE.
-      if (edge == Integer.MAX_VALUE) return -1;
       throw new IllegalArgumentException("edge is negative"); }
     if (e != null) return e.targetNode;
     else return -1;
@@ -236,11 +229,10 @@ final class DynamicGraphRepresentation implements DynamicGraph
                                      final boolean incoming,
                                      final boolean undirected)
   {
+    if (node == Integer.MAX_VALUE) return null;
     final Node n;
     try { n = m_nodes.getNodeAtIndex(node); }
     catch (ArrayIndexOutOfBoundsException exc) {
-      // node is negative or Integer.MAX_VALUE.
-      if (node == Integer.MAX_VALUE) return null;
       throw new IllegalArgumentException("node is negative"); }
     if (n == null) return null;
     final Edge[] edgeLists;
