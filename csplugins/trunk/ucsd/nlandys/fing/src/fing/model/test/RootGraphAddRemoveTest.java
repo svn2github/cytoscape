@@ -21,13 +21,13 @@ public final class RootGraphAddRemoveTest
     final RootGraph root = getRootGraph(args);
 
     int[] nodeInx;
-    final int[] edgeInx = new int[100000];
-    final int[] nodeNums = new int[] { 20000, 19990, 20020 };
-    final int iterations = 10000;
+    final int[] edgeInx = new int[1000000];
+    final int[] nodeNums = new int[] { 200000, 199900, 200200 };
+    final int iterations = 100;
     for (int foo = 0; foo < iterations; foo++)
     {
       boolean print = true;
-      if (!(foo % 10 == 0)) print = false;
+      if (!(foo % 1 == 0)) print = false;
       if (print) System.out.println("at add/remove iteration " + (foo + 1) + 
                                     " of " + iterations);
       final int numNodes = nodeNums[foo % nodeNums.length];
