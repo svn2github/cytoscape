@@ -1,2 +1,4 @@
 cytoscape.graph.legacy
+cytoscape.graph.legacy.layout.algorithm
+cytoscape.graph.legacy.util
 lib:cytoscape-task.jar

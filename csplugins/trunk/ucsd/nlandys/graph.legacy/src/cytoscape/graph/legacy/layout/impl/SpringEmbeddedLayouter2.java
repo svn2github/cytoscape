@@ -2,8 +2,8 @@ package cytoscape.graph.legacy.layout.impl;
 
 import cytoscape.graph.legacy.GraphTopology;
 import cytoscape.graph.legacy.IndexIterator;
-import cytoscape.graph.layout.algorithm.MutableGraphLayout;
-import cytoscape.graph.util.GraphCompiler;
+import cytoscape.graph.legacy.layout.algorithm.MutableGraphLayout;
+import cytoscape.graph.legacy.util.GraphCompiler;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import java.awt.geom.Point2D;
