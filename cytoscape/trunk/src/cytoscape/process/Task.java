@@ -2,7 +2,7 @@ package cytoscape.process;
 
 /**
  * Represents a task that can be terminated prematurely by the same
- * entity that started the process.
+ * entity that started the task.
  **/
 public interface Task extends Runnable
 {
@@ -14,7 +14,7 @@ public interface Task extends Runnable
    * <code>run()</code> shall only be called once for a given instance.
    * If an asynchronous call to <code>halt()</code> is made while
    * <code>run()</code> is executing, <code>run()</code> should make an effort
-   * to abort its operations and exit as soon as possible.
+   * to abort its operations and exit as soon as it is safe to do so.
    */
   public abstract void run();
 
