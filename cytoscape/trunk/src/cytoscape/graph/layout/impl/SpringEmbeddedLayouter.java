@@ -49,6 +49,10 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
   private boolean m_halt = false;
 
   /**
+   * Constructs an object which is able to perform a specific layout algorithm
+   * on a graph.  An instance of this class will perform a layout at most
+   * once.  The constructor returns quickly; <code>run()</code> does the
+   * computations to perform the layout.<p>
    * A word about the <code>PercentCompletedCallback</code> parameter that
    * is passed to this constructor.  <code>percentComplete</code> may be
    * <code>null</code>, in which case this layout algorithm will not report
