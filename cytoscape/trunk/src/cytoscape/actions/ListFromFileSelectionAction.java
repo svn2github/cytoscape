@@ -41,10 +41,10 @@ public class ListFromFileSelectionAction extends CytoscapeAction {
     case JFileChooser.APPROVE_OPTION:
       File file = fChooser.getSelectedFile();
       currentDirectory = fChooser.getCurrentDirectory();
-       Cytoscape.getCytoscapeObj().setCurrentDirectory(currentDirectory);
+      Cytoscape.getCytoscapeObj().setCurrentDirectory(currentDirectory);
             
-      CyNetwork network = Cytoscape.getCurrentNetworkView().getNetwork();
-           
+      //CyNetwork network = Cytoscape.getCurrentNetworkView().getNetwork();
+      CyNetwork network = Cytoscape.getCurrentNetwork();     
             
       try {
         FileReader fin = new FileReader(file);
@@ -77,9 +77,10 @@ public class ListFromFileSelectionAction extends CytoscapeAction {
             }
           }
           if (select) {
-            CyNetworkView view = Cytoscape.getCurrentNetworkView();
-            NodeView nv = view.getNodeView(node.getRootGraphIndex());
-            nv.setSelected(true);
+            //CyNetworkView view = Cytoscape.getCurrentNetworkView();
+            //NodeView nv = view.getNodeView(node.getRootGraphIndex());
+            //nv.setSelected(true);
+	    network.setFlagged(node,true);
           }
         }
 
