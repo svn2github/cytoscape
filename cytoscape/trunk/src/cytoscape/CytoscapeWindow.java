@@ -2821,9 +2821,12 @@ protected class ShowConditionAction extends AbstractAction   {
     }
 }
 //------------------------------------------------------------------------------
-protected void loadGML (String filename)
+protected boolean loadGML (String filename)
 {
-    setGraph (FileReadingAbstractions.loadGMLBasic(filename,edgeAttributes));
+    Graph2D newGraph = FileReadingAbstractions.loadGMLBasic(filename,edgeAttributes);
+    if (newGraph == null) {return false;}//couldn't read the graph
+    
+    setGraph (newGraph);//sets class variable graph to reference newGraph object
     FileReadingAbstractions.initAttribs (bioDataServer, getDefaultSpecies (),
                                          config,graph,nodeAttributes,edgeAttributes);
     displayCommonNodeNames (); // fills in canonical name for blank common names
@@ -2831,6 +2834,7 @@ protected void loadGML (String filename)
     setWindowTitle(filename);
     loadPlugins();
     displayNewGraph (false);
+    return true;
 
 } // loadGML
 //------------------------------------------------------------------------------
@@ -2961,14 +2965,23 @@ protected class LoadGMLFileAction extends AbstractAction {
   LoadGMLFileAction () { super ("GML..."); }
     
   public void actionPerformed (ActionEvent e)  {
-   JFileChooser chooser = new JFileChooser (currentDirectory);
-   if (chooser.showOpenDialog (CytoscapeWindow.this) == chooser.APPROVE_OPTION) {
+    JFileChooser chooser = new JFileChooser (currentDirectory);
+    if (chooser.showOpenDialog (CytoscapeWindow.this) == chooser.APPROVE_OPTION) {
       currentDirectory = chooser.getCurrentDirectory();
       String name = chooser.getSelectedFile ().toString ();
       geometryFilename = name;
-      loadGML (name);
-      } // if
-    } // actionPerformed
+      boolean couldRead = loadGML (name);
+      if (!couldRead) {//give the user an error dialog
+          String lineSep = System.getProperty("line.separator");
+          StringBuffer sb = new StringBuffer();
+          sb.append("Could not read graph from file " + name + lineSep);
+          sb.append("This file may not be a valid GML file." + lineSep);
+          JOptionPane.showMessageDialog(mainFrame, sb.toString(),
+                                        "Error loading graph",
+                                        JOptionPane.ERROR_MESSAGE);
+      }
+    } // if
+  } // actionPerformed
 
 } // inner class LoadAction
 //------------------------------------------------------------------------------
