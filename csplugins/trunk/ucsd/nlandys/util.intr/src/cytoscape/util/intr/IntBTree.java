@@ -39,7 +39,7 @@ public final class IntBTree
   /*
    * Perhaps this should be inlined later for performance.
    */
-  private static final boolean isLeafNode(Node n)
+  private static final boolean isLeafNode(final Node n)
   {
     return n.data == null;
   }
@@ -48,19 +48,19 @@ public final class IntBTree
    * Inserts a new entry into this structure.  Duplicate entries are allowed.
    * @param x the new entry to insert.
    */
-  public final void insert(int x)
+  public final void insert(final int x)
   {
-    Node newSibling = insert(m_root, x);
+    final Node newSibling = insert(m_root, x);
     if (newSibling != null) { // The root has been split into two.
-      int newSplitVal;
-      int newDeepCount;
+      final int newSplitVal;
+      final int newDeepCount;
       if (isLeafNode(newSibling)) {
         newSplitVal = newSibling.values[0];
         newDeepCount = m_root.sliceCount + newSibling.sliceCount; }
       else {
         newSplitVal = m_root.data.splitVals[m_root.sliceCount - 1];
         newDeepCount = m_root.data.deepCount + newSibling.data.deepCount; }
-      Node newRoot = new Node(MAX_BRANCHES, false);
+      final Node newRoot = new Node(MAX_BRANCHES, false);
       newRoot.sliceCount = 2;
       newRoot.data.deepCount = newDeepCount;
       newRoot.data.splitVals[0] = newSplitVal;
@@ -78,18 +78,14 @@ public final class IntBTree
    * method sets; it's this method saying "use this index in the higher
    * levels".)
    */
-  private final Node insert(Node n, int x)
+  private final Node insert(final Node n, final int x)
   {
-    if (isLeafNode(n))
-    {
+    if (isLeafNode(n)) {
       if (n.sliceCount < MAX_BRANCHES) { // There's room for a value.
-        boolean found = false;
-        for (int i = 0; i < n.sliceCount; i++) {
-          if (x <= n.values[i]) {
-            for (int j = n.sliceCount; j > i;) n.values[j] = n.values[--j];
-            n.values[i] = x; found = true; break; } }
-        if (!found) n.values[n.sliceCount] = x;
-        n.sliceCount++;
+        int i = -1;
+        while (++i < n.sliceCount) if (x <= n.values[i]) break;
+        for (int j = n.sliceCount; j > i;) n.values[j] = n.values[--j];
+        n.values[i] = x; n.sliceCount++;
         return null; }
       else { // No room for another value in this leaf node; perform split.
         Node newNode = new Node(MAX_BRANCHES, true);
@@ -97,10 +93,8 @@ public final class IntBTree
         n.sliceCount = combinedCount >> 1; // Divide by two.
         newNode.sliceCount = combinedCount - n.sliceCount;
         split(x, n.values, newNode.values, newNode.sliceCount);
-        return newNode; }
-    }
-    else
-    { // Not a leaf node.
+        return newNode; } }
+    else { // Not a leaf node.
       int foundPath = 0;
       for (int i = n.sliceCount - 2; i >= 0; i--) {
         if (x >= n.data.splitVals[i]) {
