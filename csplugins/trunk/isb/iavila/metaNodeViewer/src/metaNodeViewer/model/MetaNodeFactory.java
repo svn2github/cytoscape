@@ -21,20 +21,18 @@
  **  along with this program; if not, write to the Free Software
  **  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  **/
+package metaNodeViewer.model;
+import cytoscape.CyNetwork;
+import metaNodeViewer.data.*;
 /**
- * @author Iliana Avila-Campillo iavila@systemsbiology.org, iliana.avila@gmail.com
- * @version %I%, %G%
- * @since 2.0
- * 
  * A class with easy to use static methods for creating meta-nodes for CyNetworks. Its most
  * important task is keeping track of which meta-nodes belong to which CyNetworks. If meta-nodes
  * are created by not using this factory, and then attempts are made to collapse/expand them, unexpected
  * errors/results may unsue.
+ * 
+ * @author Iliana Avila-Campillo iavila@systemsbiology.org, iliana.avila@gmail.com
+ * @since 2.0
  */
-package metaNodeViewer.model;
-import cytoscape.CyNetwork;
-import metaNodeViewer.data.*;
-
 public class MetaNodeFactory {
 	/**
 	 * The key to obtain a cern.colt.list.IntArrayList that contains RootGraph indices of meta-nodes for a

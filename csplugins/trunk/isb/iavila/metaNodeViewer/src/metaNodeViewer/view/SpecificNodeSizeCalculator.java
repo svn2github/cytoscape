@@ -21,13 +21,6 @@
  **  along with this program; if not, write to the Free Software
  **  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  **/
-/**
- * A node size calculator for meta-nodes.
- *
- * @author Iliana Avila-Campillo iavila@systemsbiology.org, iliana.avila@gmail.com
- * @version %I%, %G%
- * @since 2.0
- */
 package metaNodeViewer.view;
 
 import java.util.Map;
@@ -36,7 +29,13 @@ import cytoscape.CyNetwork;
 import cytoscape.visual.calculators.GenericNodeSizeCalculator;
 import cytoscape.visual.mappings.ObjectMapping;
 import giny.model.Node;
-
+/**
+ * A node size calculator for meta-nodes.
+ *
+ * @author Iliana Avila-Campillo iavila@systemsbiology.org, iliana.avila@gmail.com
+ * @version %I%, %G%
+ * @since 2.0
+ */
 public class SpecificNodeSizeCalculator extends GenericNodeSizeCalculator {
   
   protected String specialAttrName;

@@ -22,13 +22,6 @@
  **  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  **/
 
-/**
- * A Comparator for CyNodes that compares the given nodes depending on their intra-degrees.
- * 
- * @author Iliana Avila-Campillo iavila@systemsbiology.org, iliana.avila@gmail.com
- * @version %I%, %G%
- * @since 2.0
- */
 //TODO: RootGraph does not have getConnectingEdgeIndicesArray, need it in method countIntraDegrees()
 package metaNodeViewer.data;
 
@@ -38,7 +31,13 @@ import cern.colt.map.OpenIntIntHashMap;
 import cytoscape.*;
 import cytoscape.data.Semantics;
 import java.util.*;
-
+/**
+ * A Comparator for CyNodes that compares the given nodes depending on their intra-degrees.
+ * 
+ * @author Iliana Avila-Campillo iavila@systemsbiology.org, iliana.avila@gmail.com
+ * @version %I%, %G%
+ * @since 2.0
+ */
 public class IntraDegreeComparator implements Comparator{
 	
 	protected static final boolean DEBUG = false;

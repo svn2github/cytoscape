@@ -26,7 +26,7 @@ import edu.umd.cs.piccolo.PNode;
 import javax.swing.JMenu;
 
 /**
- * Small class for context menu.
+ * Small class for Cytoscape's context menu that contains collapse/expand/destroy operations for meta-nodes.
  * 
  * @author Iliana Avila-Campillo iavila@systemsbiology.org, iliana.avila@gmail.com
  */

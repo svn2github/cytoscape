@@ -21,14 +21,7 @@
  **  along with this program; if not, write to the Free Software
  **  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  **/
-/**
- * @author Iliana Avila-Campillo iavila@systemsbiology.org, iliana.avila@gmail.com
- * @version %I%, %G%
- * @since 2.0
- * 
- * This is a class that knows how to collapse/expand meta-nodes recursively.
- */
-
+ 
 package metaNodeViewer.model;
 import java.util.*;
 import giny.model.*;
@@ -41,13 +34,19 @@ import cern.colt.map.AbstractIntIntMap;
 import cern.colt.map.OpenIntIntHashMap;
 
 /**
- * TODO: Comment better (add class description)
- * TODO: Implements an interface and GraphPerspectiveChangeListener (?)
+ * This class models meta-nodes by abstracting the graphs that compose meta-nodes
+ * into single nodes that can be 'collapsed' or 'expanded'. Use class metaNodeViewer.model.MetaNodeModelerFactory
+ * to get an instance of this class.
+ * 
+ * @author Iliana Avila-Campillo iavila@systemsbiology.org, iliana.avila@gmail.com
+ * TODO: Must implement general interface for meta-node modelers
  * TODO: Optimize more
  */
 public class AbstractMetaNodeModeler {
 
   protected static final boolean DEBUG = false;
+  protected static final boolean REPORT_TIME = false;
+ 
   /**
    * A Map from CyNetworks to MetaNodeAttributesHandlers that are used to
    * assign names and attribute values to meta-nodes. 
@@ -196,7 +195,7 @@ public class AbstractMetaNodeModeler {
                              CyNetwork cy_network,
                              int node_index
                              ){
-    int rootNodeIndex = 0;
+  	int rootNodeIndex = 0;
     if(node_index > 0){
       rootNodeIndex = cy_network.getRootGraphNodeIndex(node_index);
     }else if(node_index < 0){
@@ -242,7 +241,12 @@ public class AbstractMetaNodeModeler {
                              int [] descendants
                              ){
     
-    if(DEBUG){
+  	long startTime;
+  	if(REPORT_TIME){
+  		startTime = System.currentTimeMillis();
+  	}
+  	
+  	if(DEBUG){
       System.err.println("----- applyModel (cy_network,"+node_index+") -----");
     }
     
@@ -278,6 +282,10 @@ public class AbstractMetaNodeModeler {
       this.networkToNodes.put(cy_network,cnNodes);
     }
     
+    long prepareTime;
+    if(REPORT_TIME){
+    	prepareTime = System.currentTimeMillis();
+    }
     if(!prepareNodeForModel(cy_network,rootNodeIndex)){
       if(DEBUG){
         System.err.println("----- applyModel (CyNetwork,"+node_index+") returning, "+
@@ -286,8 +294,16 @@ public class AbstractMetaNodeModeler {
       return false;
     }
         
+    if(REPORT_TIME){
+    	long timeToPrepare = (System.currentTimeMillis() - prepareTime) / 1000;
+    	System.out.println("time in prepareNodeForModel ( " + rootNodeIndex + ") = " + timeToPrepare);
+    }
     // Restore the meta-node, in case that it is not showing
-    int restoredNodeIndex =cy_network.restoreNode(rootNodeIndex);
+    
+    //------- THIS SEEMS TO BE TAKING A LONG TIME !!! ---------------------------------//
+    int restoredNodeIndex = cy_network.restoreNode(rootNodeIndex);
+    //---------------------------------------------------------------------------------//
+    
     // The restored meta-node is now contained in the network, so remember this:
     cnNodes.add(restoredNodeIndex);
     
@@ -308,13 +324,15 @@ public class AbstractMetaNodeModeler {
                          " descendants");
     }
     // Restore the edges connecting the meta-node and nodes that are in cyNetwork
+    
+    long restoreEdgesStart = System.currentTimeMillis();
+    
     int [] gpNodes = cy_network.getNodeIndicesArray();
     if(DEBUG){
       System.err.println("graphPerspective has " + gpNodes.length + " nodes");
     }
     int numRestoredEdges = 0;
 
-    // RHC
     // create a list of all edges that should be added to the Perspective
     IntArrayList edges_to_restore = new IntArrayList(1000);
 
@@ -364,23 +382,30 @@ public class AbstractMetaNodeModeler {
                            gpNodes[node_i]);
       }
       
-      //RHC
-      // insted of restoring now, save, and restore all at once
-      //int [] restoredRindices = cy_network.restoreEdges(connectingEdgesRindices);
       
       for ( int ci = 0; ci < connectingEdgesRindices.length; ++ci ) {
         edges_to_restore.add( connectingEdgesRindices[ci] );
       }
-
+      
+      //----------- For Kris Gonsalus:------------------------
+      // Kris has a graph with 78 nodes, and > 2000 edges, so she
+      // wants to see only one edge between metanodes...
+      // edges_to_restore.add(connectingEdgesRindices[0]);
+      //------------------------------------------------------
+      
       //if(DEBUG){
       //  System.err.println("Restored " + restoredRindices.length + "/" + 
       //                     connectingEdgesRindices.length + " edges connecting " + 
       //                     rootNodeIndex + " and " + gpNodes[node_i]);
       //}
-      //numRestoredEdges += restoredRindices.length;
+      
     }//for node_i
 
-    // RHC
+    //if(REPORT_TIME){
+    	//long timeToRestoreEdges = (System.currentTimeMillis() - restoreEdgesStart)/1000;
+    	//System.out.println("time to restore edges = " + timeToRestoreEdges);
+    //}
+   
     // now restore all edges at once
     edges_to_restore.trimToSize();
     int[] restoredRindices = cy_network.restoreEdges( edges_to_restore.elements() );
@@ -417,6 +442,8 @@ public class AbstractMetaNodeModeler {
                             int node_index, 
                             boolean recursive_undo,
                             boolean temporary_undo){
+  	
+  	long startOfUndo = System.currentTimeMillis();
 
     if(DEBUG){
       System.err.println("----- undoModel (CyNetwork," + node_index + "," + recursive_undo + 
@@ -500,6 +527,11 @@ public class AbstractMetaNodeModeler {
     IntArrayList cnNodes = (IntArrayList)this.networkToNodes.get(cy_network);
     if(cnNodes != null){
       cnNodes.delete(metaNodeRindex);
+    }
+    
+    if(REPORT_TIME){
+    	long timeToUndo = (System.currentTimeMillis() - startOfUndo)/1000;
+    	System.out.println("undoModel time = " + timeToUndo);
     }
     
     if(DEBUG){

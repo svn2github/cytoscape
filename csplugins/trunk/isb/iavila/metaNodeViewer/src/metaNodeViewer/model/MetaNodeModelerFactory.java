@@ -21,21 +21,19 @@
  **  along with this program; if not, write to the Free Software
  **  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  **/
-/**
- * @author Iliana Avila-Campillo iavila@systemsbiology.org, iliana.avila@gmail.com
- * @version %I%, %G%
- * @since 2.0
- * 
- * A class that contains all the meta-node modelers for Cytoscape. In most cases, a single modeler per/Cytoscape
- * is needed, so most modeler's constructors are protected, and only this factory can create them. So far we only have
- * one modeler (AbstractMetaNodeModeler) but more are to come.
- */
-package metaNodeViewer.model;
 
+package metaNodeViewer.model;
 import giny.model.RootGraph;
 import cytoscape.*;
 import metaNodeViewer.data.*;
-
+/**
+ * A class that contains all the meta-node modelers (implementations of metaNodeViewer.model.GPMetaNodeModel) for Cytoscape. 
+ * In most cases, a single modeler per/Cytoscape is needed, so most modeler's constructors are protected, 
+ * and only this factory can create them. So far we only have one modeler (AbstractMetaNodeModeler) but more are to come.
+ * 
+ * @author Iliana Avila-Campillo iavila@systemsbiology.org
+ * @since 2.0
+ */
 public class MetaNodeModelerFactory {
 	
 	/**

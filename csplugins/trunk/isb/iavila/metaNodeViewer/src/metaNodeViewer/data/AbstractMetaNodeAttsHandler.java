@@ -22,16 +22,6 @@
  **  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  **/
 
-/**
- * Assigns attributes and their values to meta-nodes:
- * 1. Common name = member with highest intra-connections
- * 2. Area = proportional to number of members
- * 3. Edges = same as member edges
- *
- * @author Iliana Avila-Campillo iavila@systemsbiology.org, iliana.avila@gmail.com
- * @version %I%, %G%
- * @since 2.0
- */
 //TODO: Implement removeFromAttributes()
 //TODO: Imeplemnt removeMetaEdgesFromAttributes()
 
@@ -46,6 +36,16 @@ import cern.colt.map.*;
 import giny.model.*;
 import giny.view.*;
 
+/**
+ * Specialized version of SimpleMetaNodeAttributesHandler.<br>
+ * 
+ * 1. Common name = member with highest intra-connections<br>
+ * 2. Area = proportional to number of members<br>
+ * 3. Edges = same as member edges<br>
+ *
+ * @author Iliana Avila-Campillo iavila@systemsbiology.org, iliana.avila@gmail.com
+ * @version 1.0
+ */
 public class AbstractMetaNodeAttsHandler extends SimpleMetaNodeAttributesHandler {
   public static final boolean DEBUG = false;
   

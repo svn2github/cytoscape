@@ -1,15 +1,27 @@
+package metaNodeViewer.data;
+//import cytoscape.data.GraphObjAttributes;
+import cytoscape.data.*;
+import giny.model.*;
+import cern.colt.map.AbstractIntIntMap;
+import cern.colt.function.IntIntProcedure;
+import java.util.*;
+import cytoscape.*;
+
 /**
- * Copyright (c) 2004 Trey Ideker Modified version of Iliana's (ISB)
- * MetaNodeViewer package
+ * Implementation of MetaNodesAttributesHandler that transfers the union of all
+ * attributes on the child nodes to the parent meta-nodes.
  * 
+ * <p>
  * This is a specific implementation of MetaNodesAttributesHandler that:
- * 
+ * </p>
+ * <p>
  * 1) Handles canonical and common naming of the new meta_node and its
  * associated meta_edges. 2) Transfers the union of all attributes on the child
  * nodes to the parent meta node. 3) Transfers edge attributes from each child
  * edge to its corresponding meta edge 4) Collapses meta edges with the same
  * name, taking the union of their attributes
- * 
+ * </p>
+ * <p>
  * Step 4 above is invoked whenever multiple meta_edges connect from the same
  * source or target. For instance, consider the graph: A pd B A pd C If the user
  * collapses B and C into a meta_node, this will create corresponding
@@ -19,27 +31,18 @@
  * handled things differently. But in this case where you are collapsing many
  * (N) nodes with the same neighbor, it seems undesirable to end up with N edges
  * connecting this neighbor to the meta_node.
- * 
+ * </p>
  * @author Trey Ideker trey@bioeng.ucsd.edu
- * @version %I%, %G%
- * @since 2.0
+ * @author Iliana Avila iavila@systemsbiology.org
+ * @version 1.0
  */
+
 // TODO: method setNodeAttributes(CyNetwork cy_network,int metanode_root_index, int[] children_nodes_root_indices) has commented
 // code that is crashing due to GraphObjAttributes. Since we think we are going to refactor/rewrite GraphObjAttrbutes, leave it
 // as it is and fix later. iliana.
 // TODO: internal class CopyEdgeAttr needs to be looked at. See comments. iliana.
 // TODO: Implement removeFromAttributes() -iliana
 // TODO: Imeplemnt removeMetaEdgesFromAttributes() -iliana
-
-package metaNodeViewer.data;
-
-import cytoscape.*;
-//import cytoscape.data.GraphObjAttributes;
-import cytoscape.data.*;
-import giny.model.*;
-import cern.colt.map.AbstractIntIntMap;
-import cern.colt.function.IntIntProcedure;
-import java.util.*;
 
 public class SimpleMetaNodeAttributesHandler implements
 		MetaNodeAttributesHandler {

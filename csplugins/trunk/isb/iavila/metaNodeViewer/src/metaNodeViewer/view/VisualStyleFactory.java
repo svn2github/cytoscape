@@ -21,7 +21,13 @@
  **  along with this program; if not, write to the Free Software
  **  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  **/
-
+package metaNodeViewer.view;
+import cytoscape.*;
+import cytoscape.view.CytoscapeDesktop;
+import cytoscape.visual.*;
+import cytoscape.visual.calculators.*;
+import cytoscape.visual.mappings.*;
+import cytoscape.data.Semantics;
 /**
  * A class with class methods that create and return custom visual styles for networks
  * that contain meta-nodes.
@@ -30,14 +36,6 @@
  * @version %I%, %G%
  * @since 2.0
  */
-package metaNodeViewer.view;
-import cytoscape.*;
-import cytoscape.view.CytoscapeDesktop;
-import cytoscape.visual.*;
-import cytoscape.visual.calculators.*;
-import cytoscape.visual.mappings.*;
-import cytoscape.data.Semantics;
-
 public class VisualStyleFactory {
   
   /**
@@ -54,6 +52,8 @@ public class VisualStyleFactory {
   /**
    * Creates and returns a visual style for meta-nodes as modeled by 
    * <code>metaNodeViewer.model.AbstractMetaNodeModeler</code>
+   * 
+   * @param network the CyNetwork with meta-nodes
    */
   public static VisualStyle createAbstractMetaNodeVisualStyle (CyNetwork network){
     
