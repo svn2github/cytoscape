@@ -1,7 +1,7 @@
 package cytoscape.util.intr;
 
 /**
- * This is actually a B+-tree.
+ * This is actually a B*-tree.
  */
 public final class IntBTree
 {
@@ -29,6 +29,7 @@ public final class IntBTree
   /**
    * Deletes at most one entry of the integer x.  To delete all
    * entries of the integer x, use deleteRange(x, 1).
+   * @param x the integer to try to delete (just one entry).
    * @return true if and only if an entry was deleted (at most one entry is
    *   deleted by this method).
    */
@@ -40,9 +41,12 @@ public final class IntBTree
   /**
    * Deletes all entries in the range [xStart, xStart + spanSize)
    * from this structure.
-   * @param spanSize specifies how many consecutive integers, starting
-   *   at xStart, to delete; spanSize cannot be negative (if spanSize is zero
-   *   no action is taken).
+   * @param xStart specifies the beginning of the range of integers to
+   *   delete from this structure.
+   * @param spanSize specifies the range width of integers to delete; all
+   *   integers greater than or equal to xStart and less than xStart + spanSize
+   *   will be deleted; spanSize cannot be negative
+   *   (if spanSize is zero no action is taken).
    * @return the number of entries that were deleted from this structure.
    * @exception IllegalArgumentException if spanSize is negative.
    */
@@ -52,6 +56,7 @@ public final class IntBTree
   }
 
   /**
+   * @param x the integer whose count to query.
    * @return the number of entries x currently in this structure.
    */
   public int count(int x)
@@ -62,7 +67,20 @@ public final class IntBTree
   /**
    * Returns an enumeration of all entries in the range
    * [xStart, xStart + spanSize) currently in this structure; the entries
-   * within the enumeration are returned in non-descending order.
+   * within the enumeration are returned in non-descending order.<p>
+   * IMPORTANT: The returned enumeration becomes invalid as soon as any
+   * structure-modifying operation (insert or delete) is performed on this
+   * tree.  Accessing an invalid enumeration's methods will result in
+   * unpredictable and ill-defined behavior in the enumeration, but will
+   * have no effect on the integrity of this tree structure.
+   * @param xStart specifies the beginning of the range of integers to
+   *   search.
+   * @param spanSize specifies the range width of integers to search;
+   *   all integers (duplicates included) greater than or equal to xStart
+   *   and less than xStart + spanSize will be returned; spanSize cannot be
+   *   negative (if spanSize is zero no action is taken).
+   * @return an enumeration of all entries matching this search query.
+   * @exception IllegalArgumentException if spanSize is negative.
    */
   public IntEnumerator searchRange(int xStart, int spanSize)
   {
