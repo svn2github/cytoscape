@@ -38,7 +38,7 @@
 			developed and made available in two releases,
 			currently scheduled for early February 2005 and 
 			June 2005 availability.<P>
-			<IMG SRC="roadmap/roadmap.gif"></IMG>.
+			<CENTER><IMG SRC="roadmap/roadmap.gif"></IMG></CENTER>
 			<P>The <B>Cytoscape 2.1</B> release, slated for early
 			February 2005 availability, is a performance and
 			scalability
