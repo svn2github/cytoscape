@@ -325,6 +325,9 @@ class LoadNetworkTask implements Task {
         view.getSquiggleHandler().beginSquiggling();
       }
 
+      // set the selection mode on the view
+      Cytoscape.setSelectionMode(Cytoscape.getSelectionMode(), view);
+
       Cytoscape.firePropertyChange
               (cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED,null, view);
 

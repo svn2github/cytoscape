@@ -6,6 +6,7 @@ package cytoscape;
 
 import giny.model.Edge;
 import giny.model.Node;
+import giny.view.GraphView;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
@@ -64,6 +65,14 @@ public abstract class Cytoscape {
   public static int FILE_GML = 1;
   public static int FILE_SIF = 2;
   public static int FILE_SBML = 3;
+
+  // constants for tracking selection mode globally
+  public static final int SELECT_NODES_ONLY = 1;
+  public static final int SELECT_EDGES_ONLY = 2;
+  public static final int SELECT_NODES_AND_EDGES = 3;
+
+  // global to represent which selection mode is active
+  private static int currentSelectionMode = SELECT_NODES_ONLY;
 
   private static BioDataServer bioDataServer;
   private static String species;
@@ -1158,6 +1167,8 @@ public abstract class Cytoscape {
             if (squiggleEnabled) {
               view.getSquiggleHandler().beginSquiggling();
             }
+            // set the selection mode on the view
+            setSelectionMode(currentSelectionMode, view);
           }
        });
       view.redrawGraph(false, false);
@@ -1223,6 +1234,69 @@ public abstract class Cytoscape {
    */
   public static boolean isSquiggleEnabled() {
     return squiggleEnabled;
+  }
+
+  /**
+   * Gets the selection mode value.
+   */
+  public static int getSelectionMode() {
+    return currentSelectionMode;
+  }
+
+  /**
+   * Sets the specified selection mode on all views.
+   * @param selectionMode SELECT_NODES_ONLY, SELECT_EDGES_ONLY, or
+   *                      SELECT_NODES_AND_EDGES.
+   */
+  public static void setSelectionMode(int selectionMode) {
+
+    // set the selection mode on all the views
+    GraphView view;
+    String network_id;
+    Map networkViewMap = getNetworkViewMap();
+    for (Iterator iter = networkViewMap.keySet().iterator(); iter.hasNext(); )
+    {
+      network_id = (String) iter.next();
+      view = (GraphView) networkViewMap.get(network_id);
+      setSelectionMode(selectionMode, view);
+    }
+
+    // update the global indicating the selection mode
+    currentSelectionMode = selectionMode;
+
+  }
+
+  /**
+   * Utility method to set the selection mode on the specified GraphView.
+   * @param selectionMode SELECT_NODES_ONLY, SELECT_EDGES_ONLY, or 
+   *                      SELECT_NODES_AND_EDGES.
+   * @param view the GraphView to set the selection mode on.
+   */
+  public static void setSelectionMode(int selectionMode, GraphView view) {
+
+    switch(selectionMode) {
+
+      case SELECT_NODES_ONLY:
+        view.disableNodeSelection();
+        view.disableEdgeSelection();
+        view.enableNodeSelection();
+        break;
+
+      case SELECT_EDGES_ONLY:
+        view.disableNodeSelection();
+        view.disableEdgeSelection();
+        view.enableEdgeSelection();
+        break;
+
+      case SELECT_NODES_AND_EDGES:
+        view.disableNodeSelection();
+        view.disableEdgeSelection();
+        view.enableNodeSelection();
+        view.enableEdgeSelection();
+        break;
+
+    }
+
   }
 
 }

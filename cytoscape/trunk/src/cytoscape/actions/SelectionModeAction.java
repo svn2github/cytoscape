@@ -18,10 +18,7 @@ public class SelectionModeAction extends JMenu {
           // Do this in the GUI Event Dispatch thread...
           SwingUtilities.invokeLater( new Runnable() {
               public void run() {
-                GraphView view = Cytoscape.getCurrentNetworkView();
-                view.disableNodeSelection();
-                view.disableEdgeSelection();
-                view.enableNodeSelection();
+                  Cytoscape.setSelectionMode(Cytoscape.SELECT_NODES_ONLY);
               } } ); } } ) ;
     nodes.setAccelerator( javax.swing.KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_N, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK ) );
 
@@ -30,10 +27,7 @@ public class SelectionModeAction extends JMenu {
           // Do this in the GUI Event Dispatch thread...
           SwingUtilities.invokeLater( new Runnable() {
               public void run() {
-                GraphView view = Cytoscape.getCurrentNetworkView();
-                view.disableNodeSelection();
-                view.disableEdgeSelection();
-                view.enableEdgeSelection();
+                  Cytoscape.setSelectionMode(Cytoscape.SELECT_EDGES_ONLY);
               } } ); } } ) ;
     edges.setAccelerator( javax.swing.KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_E, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK ) );
 
@@ -42,11 +36,7 @@ public class SelectionModeAction extends JMenu {
           // Do this in the GUI Event Dispatch thread...
           SwingUtilities.invokeLater( new Runnable() {
               public void run() {
-                GraphView view = Cytoscape.getCurrentNetworkView();
-                view.disableNodeSelection();
-                view.disableEdgeSelection();
-                view.enableNodeSelection();
-                view.enableEdgeSelection();
+                  Cytoscape.setSelectionMode(Cytoscape.SELECT_NODES_AND_EDGES);
               } } ); } } ) ;
     nodesAndEdges.setAccelerator( javax.swing.KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_N, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK|ActionEvent.ALT_MASK ) );
 
