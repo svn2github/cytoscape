@@ -176,19 +176,18 @@ public class VisualMappingManager extends SubjectBase {
             NodeView nodeView = (NodeView)i.next();
             Node node = nodeView.getNode();
 
-            NodeAppearance na = new NodeAppearance();
-            nodeAppearanceCalculator.calculateNodeAppearance(na,node,network);
+            nodeAppearanceCalculator.calculateNodeAppearance(myNodeApp,node,network);
 
-            nodeView.setUnselectedPaint(na.getFillColor());
-            nodeView.setBorderPaint(na.getBorderColor());
-            nodeView.setBorder(na.getBorderLineType().getStroke());
-            nodeView.setHeight(na.getHeight());
-            nodeView.setWidth(na.getWidth());
-            nodeView.setShape( ShapeNodeRealizer.getGinyShape(na.getShape()) );
-            nodeView.getLabel().setText( na.getLabel() );
+            nodeView.setUnselectedPaint(myNodeApp.getFillColor());
+            nodeView.setBorderPaint(myNodeApp.getBorderColor());
+            nodeView.setBorder(myNodeApp.getBorderLineType().getStroke());
+            nodeView.setHeight(myNodeApp.getHeight());
+            nodeView.setWidth(myNodeApp.getWidth());
+            nodeView.setShape( ShapeNodeRealizer.getGinyShape(myNodeApp.getShape()) );
+            nodeView.getLabel().setText( myNodeApp.getLabel() );
 
             Label label = nodeView.getLabel();
-            label.setFont(na.getFont());
+            label.setFont(myNodeApp.getFont());
 
             //can't set tooltip yet
         }
