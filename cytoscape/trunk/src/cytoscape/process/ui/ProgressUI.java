@@ -5,6 +5,7 @@ import cytoscape.process.Stoppable;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -90,6 +91,8 @@ public final class ProgressUI
     panel.add(new JLabel(message), BorderLayout.CENTER);
     final JProgressBar progress = new JProgressBar(0, 100);
     progress.setIndeterminate(true);
+    progress.setStringPainted(true);
+    progress.setString("");
     panel.add(progress, BorderLayout.SOUTH);
     busyDialog.getContentPane().add(panel, BorderLayout.CENTER);
     final ProgressUIControl returnThis = new ProgressUIControl
@@ -97,6 +100,8 @@ public final class ProgressUI
           public void setPercentCompleted(final int percent) {
             EventQueue.invokeLater(new Runnable() {
                 public void run() {
+                  progress.setIndeterminate(false);
+                  progress.setString(null);
                   progress.setValue(percent); } } ); } },
        frame);
     if (stop != null)
@@ -106,9 +111,9 @@ public final class ProgressUI
           public void actionPerformed(ActionEvent e) {
             try { stop.stop(); }
             finally { returnThis.dispose(); } } } );
-      JPanel panel2 = new JPanel(new BorderLayout());
+      JPanel panel2 = new JPanel(new FlowLayout());
       panel2.setBorder(new EmptyBorder(0, 20, 20, 20));
-      panel2.add(button, BorderLayout.CENTER);
+      panel2.add(button);
       busyDialog.getContentPane().add(panel2, BorderLayout.SOUTH);
     }
     else
