@@ -92,7 +92,25 @@ class LoadPathBlastGMLTask extends Thread{
 									* Title for the file selection dialog
 									*/
 								private static String TITLE = "Select all GML files";
-								private static int REQUIRED_OVERLAP = 4;
+								/**
+									* This was is used to specify the overlap required
+									* for adding an edge ot the graph
+									*/
+								private static int REQUIRED_OVERLAP = 2;
+								/**
+									* Teh attribute with which to associate data
+									* that contains information about the number of 
+									* overlapping nodes associated with this edge
+									*/
+								private static String COUNT_ATTRIBUTE = "count";
+								private static String SPECIES1NODES_ATTRIBUTE = "speciesOneNodes";
+								private static String SPECIES2NODES_ATTRIBUTE = "speciesTwoNodes";
+								private static String INTERACTION_ATTRIBUTE = "interaction";
+								/**
+									* The interaction string for our overlap edges
+									*/
+								private static String OVERLAP_INTERACTION = "ov";
+								private static String HOMOLOGY_INTERACTION = "hm";
 								private HashMap node2GMLTree;
 								/**
 									* Stores the cyWindow object for later reference
@@ -109,10 +127,7 @@ class LoadPathBlastGMLTask extends Thread{
 																chooser.setMultiSelectionEnabled(true);
 																chooser.setDialogTitle(TITLE);
 																int returnVal = chooser.showOpenDialog(cyWindow.getMainFrame());
-																if(returnVal == JFileChooser.APPROVE_OPTION) {
-																								System.out.println("You chose to open this file: "+chooser.getSelectedFiles());
-																}
-																else{
+																if(returnVal != JFileChooser.APPROVE_OPTION){
 																								if(PathBlastBrowser.DEBUG){
 																																System.out.println("File selection cancelled");
 																								}
@@ -137,9 +152,7 @@ class LoadPathBlastGMLTask extends Thread{
 																//create a root graph using the information about the file names
 																//and the node names contained, as a side effect this also creates
 																//a hash from node2GMLTree 
-																RootGraph rootGraph = createOverlapGraph(GMLTree2Name,GMLTree2NameSet);
-																//create a new network for this graph, what about graphobjattributes here? will need to handle it later
-																CyNetwork newNetwork = new CyNetwork(rootGraph, new GraphObjAttributes(), new GraphObjAttributes());	
+																CyNetwork newNetwork = createOverlapGraph(GMLTree2Name,GMLTree2NameSet);	
 																//set up the canonicalName mapping here
 																//create a new window and add this network to that window
 																CyWindow newWindow = new CyWindow(cyWindow.getCytoscapeObj(), newNetwork, "Overlap Graph");
@@ -157,20 +170,35 @@ class LoadPathBlastGMLTask extends Thread{
 									* to name the nodes in hte overlap graph.
 									* @param GMLTree2NameSet maps from a GMLTree object to a set of strings which are the node indentifiers
 									* in that GML file. This is used to determine overlap information between two networks.
-									* @return a root graph which is the overlap network
+									* @return a CyNetwork which is the overlap graph. For the attribute objects, this graph has canonical
+									* names mapped for all of the object. The edges also have a count attribute which counts the number
+									* of overlaps created from this graph
 									*/
-								public RootGraph createOverlapGraph(HashMap GMLTree2Name, HashMap GMLTree2NameSet){
-																RootGraph result = GinyFactory.createRootGraph();
+								public CyNetwork createOverlapGraph(HashMap GMLTree2Name, HashMap GMLTree2NameSet){
+																RootGraph rootGraph = GinyFactory.createRootGraph();
+																GraphObjAttributes nodeAttributes = new GraphObjAttributes();
+																GraphObjAttributes edgeAttributes = new GraphObjAttributes();
 																//create the nodes for this graph, also create a mapping from GMLTree objects to nodes in the graph
 																HashMap GMLTree2Node = new HashMap();	
 																node2GMLTree = new HashMap();
 																Iterator GMLTreeIt = GMLTree2Name.keySet().iterator();
 																while(GMLTreeIt.hasNext()){
 																								GMLTree current = (GMLTree)GMLTreeIt.next();
-																								Node newNode = result.getNode(result.createNode());
-																								newNode.setIdentifier((String)GMLTree2Name.get(current));
+																								Node newNode = rootGraph.getNode(rootGraph.createNode());
+																								String name = (String)GMLTree2Name.get(current);
+																								newNode.setIdentifier(name);
+																								nodeAttributes.addNameMapping(name,newNode);
 																								GMLTree2Node.put(current,newNode);
 																								node2GMLTree.put(newNode,current);
+																								//add the attributes about the identity of the nodes in the subtree
+																								HashSet nameSet = (HashSet)GMLTree2NameSet.get(current);
+																								Iterator nameIt = nameSet.iterator();
+																								while(nameIt.hasNext()){
+																												String compatName = (String)nameIt.next();
+																												String [] speciesNames = split(compatName,"|");
+																												nodeAttributes.append(SPECIES1NODES_ATTRIBUTE,name,speciesNames[0]);
+																												nodeAttributes.append(SPECIES2NODES_ATTRIBUTE,name,speciesNames[1]);
+																								}
 																}
 
 																Vector GMLTreeVec = new Vector(GMLTree2Name.keySet());
@@ -180,19 +208,38 @@ class LoadPathBlastGMLTask extends Thread{
 																																Set ySet = (Set)GMLTree2NameSet.get(GMLTreeVec.get(idy));
 																																Iterator xIt = xSet.iterator();
 																																int count = 0;
-																																while(xIt.hasNext() && count < REQUIRED_OVERLAP){
+																																while(xIt.hasNext()){
 																																								if(ySet.contains(xIt.next())){
 																																																count++;
 																																								}
 																																}
 																																if(count >= REQUIRED_OVERLAP){
-																																								//create an edge between the two correpsonding nodes
-																																								result.createEdge((Node)GMLTree2Node.get(GMLTreeVec.get(idx)),(Node)GMLTree2Node.get(GMLTreeVec.get(idy)));
+																																				//create an edge between the two correpsonding nodes
+																																				Node sourceNode = (Node)GMLTree2Node.get(GMLTreeVec.get(idx));
+																																				Node targetNode = (Node)GMLTree2Node.get(GMLTreeVec.get(idy));
+																																				Edge newEdge = rootGraph.getEdge(rootGraph.createEdge(sourceNode,targetNode));
+																																				String name = nodeAttributes.getCanonicalName(sourceNode)+" ("+OVERLAP_INTERACTION+") "+nodeAttributes.getCanonicalName(targetNode);
+																																				newEdge.setIdentifier(name);
+																																				edgeAttributes.addNameMapping(name,newEdge);
+																																				edgeAttributes.set(COUNT_ATTRIBUTE,name,(double)count);
+																																				edgeAttributes.set(INTERACTION_ATTRIBUTE,name,OVERLAP_INTERACTION);	
 																																}
 																								}
 																}
-																return result;
+																return new CyNetwork(rootGraph,nodeAttributes,edgeAttributes);
 								}
+								/**
+									* split the name of a node in the compatability graph into the names of
+								 * the component nodes
+									*/
+								private String [] split(String s,String split){
+												String [] result = new String [2];
+												int index = s.indexOf(split);
+												result[0] = s.substring(0,index);
+												result[1] = s.substring(index + 1,s.length());
+												return result;
+								}
+
 								/**
 									* Take in a list of GMLTrees and creates a hashmap which maps from a GMLTree
 									* to a set of the identifiers of all of the nodes in that GMLTree
@@ -204,7 +251,24 @@ class LoadPathBlastGMLTask extends Thread{
 																HashMap result = new HashMap();
 																while(GMLTreeIt.hasNext()){
 																								GMLTree current = ((GMLTree)GMLTreeIt.next());
-																								result.put(current, new HashSet(current.getVector("graph|node|label|","|",GMLTree.STRING)));
+																								HashSet compatLabels = new HashSet();
+																								Vector nodeLabels = current.getVector("graph|node|label","|",GMLTree.STRING);
+																								Vector nodeIds = current.getVector("graph|node|id","|",GMLTree.INTEGER);
+																								HashMap id2Label = new HashMap();
+																								for(int idx=0;idx<nodeLabels.size();idx++){
+																												id2Label.put(nodeIds.get(idx),nodeLabels.get(idx));
+																								}
+																								Vector edgeLabels = current.getVector("graph|edge|label","|",GMLTree.STRING);
+																								Vector edgeSources = current.getVector("graph|edge|source","|",GMLTree.INTEGER);
+																								Vector edgeTargets = current.getVector("graph|edge|target","|",GMLTree.INTEGER);
+																								for(int idx=0;idx<edgeLabels.size();idx++){
+																												if(edgeLabels.get(idx).equals(HOMOLOGY_INTERACTION)){
+																																String sourceLabel = (String)id2Label.get(edgeSources.get(idx));
+																																String targetLabel = (String)id2Label.get(edgeTargets.get(idx));
+																																compatLabels.add(sourceLabel+"|"+targetLabel);
+																												}
+																								}
+																								result.put(current,compatLabels);
 																}
 																return result;
 								}
