@@ -218,8 +218,8 @@ public class FilterUsePanel extends JPanel
    * according to what the available actions are.
    */
   protected void passObject( Object object, boolean passes ) {
-
-    System.out.println( "Object: "+object+" passed? "+passes );
+    if (passes ) 
+      System.out.println( "Object: "+object+" passed? "+passes );
 
   }
 

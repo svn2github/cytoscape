@@ -17,7 +17,6 @@ public class CsFilter extends AbstractPlugin {
 
     this.window = window;
     this.network = window.getNetwork();
-    System.out.println( "PI :Window: "+window );
     ( ( CytoscapeMenuBar )window.getCyMenus().getMenuBar() ).
       addAction( new FilterPlugin( network, window ) );
     ( ( CytoscapeMenuBar )window.getCyMenus().getMenuBar() ).

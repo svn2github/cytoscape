@@ -97,18 +97,20 @@ public class CsNodeTypeFilter
    */
   public boolean passesFilter ( Object object ) {
     // test to make sure this object has an entry in the node map
-    if ( !nodeAttributes.getObjectMap().containsKey( object )  ) {
-      System.out.println( "Object: "+object+" was not found in the nodeAttributes object map." );
-      return false;
-    }
+    //if ( !nodeAttributes.getObjectMap().containsKey( object )  ) {
+    //  System.out.println( "Object: "+object+" was not found in the nodeAttributes object map." );
+    //  return false;
+    //}
 
     // therefore we must be in the map, do a test to determine if 
     // our search string does indeed match the selectedAttribute for this
     // object.  this will be an "isLike" test to allow for wildcards.
     
     // get the value for the selectedAttribute for the given object
-    Object value = nodeAttributes.getValue( selectedAttribute, ( String )object );
-    
+    Object value = null;
+    if ( object instanceof giny.model.Node ) {
+     value = nodeAttributes.getValue( selectedAttribute, ( (giny.model.Node) object).getIdentifier() );
+    } 
     // I am assuming that we should have a string here
     if ( value instanceof String == false )
       return false;

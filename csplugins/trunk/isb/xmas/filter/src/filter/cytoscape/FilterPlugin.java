@@ -16,6 +16,8 @@ public class FilterPlugin extends CytoscapeAction {
 
   public FilterPlugin ( CyNetwork network, CyWindow window ) {
     super( "Use Filters" );
+    this.network = network;
+    this.window = window;
     setPreferredMenu( "Filters" );
     setAcceleratorCombo( java.awt.event.KeyEvent.VK_A, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK );
   }
