@@ -16,7 +16,7 @@ import cytoscape.view.CyWindow;
 import cytoscape.data.GraphObjAttributes;
 import filter.view.*;
 import filter.model.*;
-
+import cytoscape.CyNetwork;
 import ViolinStrings.Strings;
 
 /**

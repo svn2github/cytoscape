@@ -12,7 +12,7 @@ import javax.swing.event.SwingPropertyChangeSupport;
 
 import cytoscape.*;
 import cytoscape.data.*;
-
+import cytoscape.CyNetwork;
 import giny.model.*;
 
 import ViolinStrings.Strings;
@@ -96,7 +96,7 @@ public class BooleanMetaFilter
 				}
 				int count = 0;
 				for(int idx=0;idx<filters.length;idx++){
-								System.out.println(""+filters[idx]);
+          //System.out.println(""+filters[idx]);
 								boolean filterResult = ((Filter)(filters[idx])).passesFilter(object);
 								if(comparison == AND && !filterResult){
 												return false;

@@ -13,7 +13,7 @@ import javax.swing.event.SwingPropertyChangeSupport;
 import cytoscape.*;
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.view.CyWindow;
-
+import cytoscape.CyNetwork;
 import giny.model.*;
 
 import ViolinStrings.Strings;
@@ -117,35 +117,41 @@ public class StringPatternFilter
 				}
 				GraphObjAttributes objectAttributes = null;
 				if(classType.equals(NODE_CLASS)){
-								objectAttributes = cyWindow.getNetwork().getNodeAttributes();
+          objectAttributes = Cytoscape.getNodeNetworkData();
 				}
 				else{
-								objectAttributes = cyWindow.getNetwork().getEdgeAttributes();
+          objectAttributes = Cytoscape.getEdgeNetworkData();
 				}
 			
 				String name = objectAttributes.getCanonicalName(object);
 				if(name == null){
 								return false;
 				}
-				value = (String)objectAttributes.getValue( selectedAttribute,name );
-				if(value == null){
+				
+        Object valueObj = objectAttributes.getValue( selectedAttribute, name );//.toString();
+			
+        if (valueObj == null ){
 								return false;
 				}
 
-				/*String[] pattern = searchString.split("\\s");
+        value = valueObj.toString();
+
+        // I think that * and ? are better for now....
+				String[] pattern = searchString.split("\\s");
 				for ( int p = 0; p < pattern.length; ++p ) {
-								if ( Strings.isLike( ( String )value, pattern[p], 0, true ) ) {
-												// this is an OR function
-												return true;
-								}
-				}*/
-				try{
-							return value.matches(searchString);
-				}catch(Exception e){
-								return false;
+          if ( Strings.isLike( ( String )value, pattern[p], 0, true ) ) {
+            // this is an OR function
+            return true;
+          }
 				}
+        return false;
+				// try{
+//           return value.matches(searchString);
+// 				}catch(Exception e){
+// 								return false;
+// 				}
 		
-		}
+  }
 
   public Class[] getPassingTypes () {
     return null;
@@ -174,7 +180,7 @@ public class StringPatternFilter
 
   public void propertyChange ( PropertyChangeEvent e ) {
     if ( e.getPropertyName() == SEARCH_STRING_EVENT ) {
-      System.out.println( "Search String Changed to "+( String )e.getNewValue() );
+      //System.out.println( "Search String Changed to "+( String )e.getNewValue() );
       setSearchString( ( String )e.getNewValue() );
     } else if ( e.getPropertyName() == FILTER_NAME_EVENT ) {
       setIdentifier( ( String )e.getNewValue() );

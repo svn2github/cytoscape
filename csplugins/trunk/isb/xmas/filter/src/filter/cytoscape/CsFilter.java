@@ -5,10 +5,12 @@ import cytoscape.data.*;
 import cytoscape.view.*;
 import cytoscape.util.*;
 import cytoscape.plugin.*;
+import cytoscape.plugin.jar.*;
 import filter.model.*;
 import filter.view.*;
-
+import cytoscape.CyNetwork;
 import javax.swing.*;
+import filter.cytoscape.network.*;
 
 public class CsFilter extends AbstractPlugin {
  protected JFrame frame;
@@ -17,22 +19,26 @@ public class CsFilter extends AbstractPlugin {
   protected FilterUsePanel filterUsePanel;
 
   public CsFilter ( CyWindow window ) {
-
     this.window = window;
     this.network = window.getNetwork();
-    
-
     initialize();
   }
 
   public void initialize () {
 
-    ImageIcon icon =  new ImageIcon( getClass().getResource("/filter36.gif") );
-    ImageIcon icon2 =  new ImageIcon( getClass().getResource("/filter16.gif") );
+    ImageIcon icon = new ImageIcon( JarLoader.getLoader().getObjectIfYouWantIt( "filter36.gif" ) );
+    ImageIcon icon2 = new ImageIcon( JarLoader.getLoader().getObjectIfYouWantIt( "filter16.gif" ) );
+                                    //getClass().getResource("filter16.gif") );
     FilterPlugin action = new FilterPlugin( network, window, icon, this );
     FilterMenuItem menu_action = new FilterMenuItem(  network, window, icon2, this );
+    
     window.getCyMenus().addCytoscapeAction( ( CytoscapeAction )action );
     window.getCyMenus().addCytoscapeAction( ( CytoscapeAction )menu_action );
+
+    CreateAddNetwork can = new CreateAddNetwork( null );
+    window.getCyMenus().addCytoscapeAction( can );
+    FilterDataView fdv = new FilterDataView( null );
+    window.getCyMenus().addCytoscapeAction( fdv );
 
      
      //FilterManager.defaultManager().addEditor( new DefaultFilterEditor() );

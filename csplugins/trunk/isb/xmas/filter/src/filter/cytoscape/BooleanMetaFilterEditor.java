@@ -12,6 +12,7 @@ import javax.swing.event.SwingPropertyChangeSupport;
 
 import cytoscape.*;
 import cytoscape.data.*;
+import cytoscape.CyNetwork;
 
 import filter.view.*;
 import filter.model.*;

@@ -102,7 +102,7 @@ public class DefaultFilter
 
   public void propertyChange ( PropertyChangeEvent e ) {
     if ( e.getPropertyName() == SEARCH_STRING_EVENT ) {
-      System.out.println( "Search String Changed to "+( String )e.getNewValue() );
+      //System.out.println( "Search String Changed to "+( String )e.getNewValue() );
       setSearchString( ( String )e.getNewValue() );
     } else if ( e.getPropertyName() == FILTER_NAME_EVENT ) {
       setIdentifier( ( String )e.getNewValue() );

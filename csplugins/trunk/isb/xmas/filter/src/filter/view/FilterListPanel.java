@@ -243,7 +243,7 @@ public class FilterListPanel
       for ( int p = 0; p < pattern.length; ++p ) {
         if ( Strings.isLike( s.toString(), pattern[p], 0, true ) ) {
           filters_pass.add( s );
-          System.out.println( "Filter: "+s.toString()+" matches "+pattern[p] );
+          //System.out.println( "Filter: "+s.toString()+" matches "+pattern[p] );
         }
       }
     }
@@ -266,7 +266,7 @@ public class FilterListPanel
       for ( int p = 0; p < pattern.length; ++p ) {
         if ( Strings.isLike( s.toString(), pattern[p], 0, true ) ) {
           filters_pass.add( s );
-          System.out.println( "Filter: "+s.toString()+" matches "+pattern[p] );
+          //System.out.println( "Filter: "+s.toString()+" matches "+pattern[p] );
         }
       }
     }
@@ -289,7 +289,7 @@ public class FilterListPanel
       for ( int p = 0; p < pattern.length; ++p ) {
         if ( Strings.isLike( s.toString(), pattern[p], 0, true ) ) {
           filters_pass.add( s );
-          System.out.println( "Filter: "+s.toString()+" matches "+pattern[p] );
+          //System.out.println( "Filter: "+s.toString()+" matches "+pattern[p] );
         }
       }
     }

@@ -45,6 +45,9 @@
     <echo message=""/>
     <echo message=" Available targets are:"/>
     <echo message="   all        -> creates all the jars"/>
+    <echo message="   sbw        -> Compile the SBW plugin"/>
+    <echo message="   control    -> Compile the Control plugin"/>
+    <echo message="   yfiles     -> Compile the yFiles plugin"/>
     <echo message="   datamap    -> Compile the DataPropertyMap plugin"/>
     <echo message="   filter     -> Compile the Filter plugin"/>
     <echo message="   integration-> Compile the Integration Test plugin"/>
@@ -190,10 +193,79 @@
     <ant dir="weka" target="clean"/>
   </target>
 
+   <!-- =================================================================== -->
+  <!-- Create the yfiles/yfiles.jar file                                       -->
+  <!-- =================================================================== -->
+  <target name="yfiles" depends="init">
+    <ant dir="yfiles" target="yfiles"/>
+    <copy todir="${shared.lib.dir}" file="yfiles/yfiles.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Create the API documentation for yfiles                               -->
+  <!-- =================================================================== -->
+  <target name="docs-yfiles" depends="init">
+    <ant dir="yfiles" target="docs"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Clean the yfiles directory                                            -->
+  <!-- =================================================================== -->
+  <target name="clean-yfiles" depends="init">
+    <ant dir="yfiles" target="clean"/>
+  </target>
+
+   <!-- =================================================================== -->
+  <!-- Create thew sbw/sbw.jar file                                       -->
+  <!-- =================================================================== -->
+  <target name="sbw" depends="init">
+    <ant dir="sbw" target="sbw"/>
+    <copy todir="${shared.lib.dir}" file="sbw/sbw.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Create the API documentation for sbw                               -->
+  <!-- =================================================================== -->
+  <target name="docs-sbw" depends="init">
+    <ant dir="sbw" target="docs"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Clean the sbw directory                                            -->
+  <!-- =================================================================== -->
+  <target name="clean-sbw" depends="init">
+    <ant dir="sbw" target="clean"/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Create the control/control.jar file                                       -->
+  <!-- =================================================================== -->
+  <target name="control" depends="init">
+    <ant dir="control" target="control"/>
+    <copy todir="${shared.lib.dir}" file="control/control.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Create the API documentation for control                               -->
+  <!-- =================================================================== -->
+  <target name="docs-control" depends="init">
+    <ant dir="control" target="docs"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Clean the control directory                                            -->
+  <!-- =================================================================== -->
+  <target name="clean-control" depends="init">
+    <ant dir="control" target="clean"/>
+  </target>
+
+
+
   <!-- =================================================================== -->
   <!-- Build all jars                                                      -->
   <!-- =================================================================== -->
-  <target name="all" depends="datamap, integration, filter, metaviz, weka"/>
+  <target name="all" depends="yfiles, filter, sbw, control"/>
 
   <!-- =================================================================== -->
   <!-- Create all API documentation                                        -->
@@ -203,7 +275,7 @@
   <!-- =================================================================== -->
   <!-- Clean up, get back to original state                                -->
   <!-- =================================================================== -->
-  <target name="clean" depends="clean-datamap, clean-integration, clean-filter, clean-metaviz, clean-weka"/>
+  <target name="clean" depends="clean-yfiles, clean-filter, clean-sbw, clean-control"/>
 
 </project>
 

@@ -13,7 +13,7 @@ import javax.swing.event.SwingPropertyChangeSupport;
 
 import cytoscape.*;
 import cytoscape.data.*;
-
+import cytoscape.CyNetwork;
 import giny.model.*;
 
 import ViolinStrings.Strings;

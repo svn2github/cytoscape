@@ -16,7 +16,7 @@ import giny.model.GraphPerspective;
 import cytoscape.view.CyWindow;
 import filter.view.*;
 import filter.model.*;
-
+import cytoscape.CyNetwork;
 import ViolinStrings.Strings;
 
 /**

@@ -15,7 +15,7 @@ import cytoscape.*;
 import cytoscape.data.*;
 import cytoscape.view.CyWindow;
 import giny.model.*;
-
+import cytoscape.CyNetwork;
 import ViolinStrings.Strings;
 
 /**

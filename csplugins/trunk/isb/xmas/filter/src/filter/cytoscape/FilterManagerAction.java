@@ -6,7 +6,7 @@ import cytoscape.*;
 import cytoscape.data.*;
 import cytoscape.view.*;
 import cytoscape.util.*;
-
+import cytoscape.CyNetwork;
 import filter.model.*;
 import filter.view.*;
 

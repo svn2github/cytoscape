@@ -138,7 +138,7 @@ public class FilterTreeEditor
   public void editFilter ( Filter filter ) {
     FilterTree tree = ( FilterTree )filter;
     if ( tree.getRoot() == null ) {
-      System.out.println( "Tree Root was null for :"+tree.toString() );
+      //System.out.println( "Tree Root was null for :"+tree.toString() );
       return;
     }
     
@@ -192,7 +192,7 @@ public class FilterTreeEditor
           filterTreeList.addItem( name );
           filterTreeList.setSelectedItem( name );
         } else {
-          System.out.println( "Clonining Tree" );
+          //System.out.println( "Clonining Tree" );
           FilterTree new_tree = ( FilterTree )filterTree.clone();
           new_tree.setIdentifier( name );
           FilterManager.defaultManager().addFilterTree( new_tree );
@@ -206,7 +206,7 @@ public class FilterTreeEditor
       // or the Root, if none is selected
       Filter new_filter = filterListPanel.getLastSelectedFilter();
       if ( filterTree == null ) {
-        System.out.println( "The Filter TRee is null." );
+        //System.out.println( "The Filter TRee is null." );
         filterTree = new FilterTree( new FilterNode( 0, new_filter ) );
         return;
       }

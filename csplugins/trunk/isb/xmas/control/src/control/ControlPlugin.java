@@ -10,19 +10,18 @@ import control.view.*;
 
 import javax.swing.*;
 
-public class ControlPlugin extends AbstractPlugin {
+public class ControlPlugin extends CytoscapePlugin {
 
   protected JFrame frame;
-  protected CyWindow window;
 
-  public ControlPlugin ( CyWindow window ) {
-    this.window = window;
+
+  public ControlPlugin (  ) {
     initialize();
   }
 
   protected void initialize () {
-    ControlAction ca = new ControlAction( window );
-    window.getCyMenus().addCytoscapeAction( ( CytoscapeAction )ca );
+    ControlAction ca = new ControlAction( );
+    Cytoscape.getDesktop().getCyMenus().addCytoscapeAction( ( CytoscapeAction )ca );
   }
 
 

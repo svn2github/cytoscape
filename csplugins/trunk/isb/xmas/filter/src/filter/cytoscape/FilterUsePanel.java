@@ -14,7 +14,7 @@ import java.util.List;
 import cytoscape.*;
 import cytoscape.data.*;
 import cytoscape.view.*;
-
+import cytoscape.CyNetwork;
 import giny.model.*;
 import giny.view.*;
 
@@ -129,10 +129,10 @@ public class FilterUsePanel extends JPanel
   protected void testObjects () {
     
     Filter filter = filterListPanel.getSelectedFilter();
-    System.out.println( "Window: "+window );
+    //System.out.println( "Window: "+window );
     network = window.getNetwork();
-    System.out.println( "Network: "+network );
-    System.out.println( "GP: "+network.getGraphPerspective() );
+    //System.out.println( "Network: "+network );
+    //System.out.println( "GP: "+network.getGraphPerspective() );
 
     List nodes_list = network.getGraphPerspective().nodesList();
     List edges_list = network.getGraphPerspective().edgesList();
@@ -267,7 +267,7 @@ public class FilterUsePanel extends JPanel
       if ( object instanceof Node ) {
         NodeView nv =   window.getView().getNodeView( ( Node )object );
         
-        System.out.println( "Node: "+nv+" passes" );
+        //System.out.println( "Node: "+nv+" passes" );
 
         // things to do if passes
         if ( select.isSelected() ) {
@@ -351,7 +351,7 @@ public class FilterUsePanel extends JPanel
       else if ( object instanceof Edge ) {
         EdgeView nv =   window.getView().getEdgeView( ( Edge )object );
         
-        System.out.println( "Edge: "+nv+" passes" );
+        //System.out.println( "Edge: "+nv+" passes" );
 
         // things to do if passes
         if ( select.isSelected() ) {

@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
 import control.actions.align.*;
+import cytoscape.plugin.jar.JarLoader;
 import cytoscape.view.*;
 
 public class AlignPanel extends JPanel {
@@ -14,12 +15,12 @@ public class AlignPanel extends JPanel {
 
     this.window = window;
 
-    ImageIcon hari =  new ImageIcon( getClass().getResource("/H_ALIGN_RIGHT.gif") );
-    ImageIcon haci =  new ImageIcon( getClass().getResource("/H_ALIGN_CENTER.gif") );
-    ImageIcon hali =  new ImageIcon( getClass().getResource("/H_ALIGN_LEFT.gif") );
-    ImageIcon vati =  new ImageIcon( getClass().getResource("/V_ALIGN_TOP.gif") );
-    ImageIcon vaci =  new ImageIcon( getClass().getResource("/V_ALIGN_CENTER.gif") );
-    ImageIcon vabi =  new ImageIcon( getClass().getResource("/V_ALIGN_BOTTOM.gif") );
+    ImageIcon hari =  new ImageIcon( JarLoader.getLoader().getObjectIfYouWantIt("H_ALIGN_RIGHT.gif") );
+    ImageIcon haci =  new ImageIcon( JarLoader.getLoader().getObjectIfYouWantIt("H_ALIGN_CENTER.gif") );
+    ImageIcon hali =  new ImageIcon( JarLoader.getLoader().getObjectIfYouWantIt("H_ALIGN_LEFT.gif") );
+    ImageIcon vati =  new ImageIcon( JarLoader.getLoader().getObjectIfYouWantIt("V_ALIGN_TOP.gif") );
+    ImageIcon vaci =  new ImageIcon( JarLoader.getLoader().getObjectIfYouWantIt("V_ALIGN_CENTER.gif") );
+    ImageIcon vabi =  new ImageIcon( JarLoader.getLoader().getObjectIfYouWantIt("V_ALIGN_BOTTOM.gif") );
 
     HAlignRight har = new HAlignRight( window, hari );
     HAlignCenter hac = new HAlignCenter( window, haci );

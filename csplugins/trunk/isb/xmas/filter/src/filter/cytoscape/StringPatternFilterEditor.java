@@ -15,7 +15,7 @@ import cytoscape.data.GraphObjAttributes;
 import cytoscape.view.CyWindow;
 import filter.view.*;
 import filter.model.*;
-
+import cytoscape.CyNetwork;
 import ViolinStrings.Strings;
 
 /**
@@ -289,6 +289,7 @@ public class StringPatternFilterEditor
 										objectAttributes = cyWindow.getNetwork().getEdgeAttributes();
 						}
 						String [] attributeNames = objectAttributes.getAttributeNames();
+            Arrays.sort( attributeNames );
 						Vector stringAttributes = new Vector();
 						for(int idx=0;idx<attributeNames.length;idx++){
 										if(STRING_CLASS.isAssignableFrom(objectAttributes.getClass(attributeNames[idx]))){

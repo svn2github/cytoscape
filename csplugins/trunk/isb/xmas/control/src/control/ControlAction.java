@@ -16,10 +16,10 @@ public class ControlAction extends CytoscapeAction {
   JFrame frame;
   protected CyWindow window;
 
-  public ControlAction ( CyWindow window ) {
+  public ControlAction (  ) {
     super( "Align" );
-    this.window = window;
-    setPreferredMenu( "Window" );
+    this.window = ( CyWindow )Cytoscape.getDesktop();
+    setPreferredMenu( "Layout" );
   }
 
   

@@ -15,7 +15,7 @@ import cytoscape.data.*;
 import cytoscape.view.CyWindow;
 import cytoscape.data.GraphObjAttributes;
 import giny.model.*;
-
+import cytoscape.CyNetwork;
 import ViolinStrings.Strings;
 
 /**
@@ -146,8 +146,8 @@ public class NumericAttributeFilter
 								return searchNumber.doubleValue() < value.doubleValue();
 				}
 				else{
-								System.err.println("Comparison not identified");
-								return false;
+          //System.err.println("Comparison not identified");
+          return false;
 				}
 				
 				

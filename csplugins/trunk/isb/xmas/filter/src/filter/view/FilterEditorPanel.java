@@ -71,7 +71,7 @@ public class FilterEditorPanel
   }
   
   public void addEditor ( FilterEditor new_editor ) {
-    System.out.println( "New Editor Added: "+new_editor+" "+editorCount );
+    //System.out.println( "New Editor Added: "+new_editor+" "+editorCount );
     editorIndexMap.put( new_editor.getFilterID() , new Integer( editorCount ) );
     editorTabs.insertTab( new_editor.toString(), null, new_editor, new_editor.toString(), editorCount );
     editorCount++;
