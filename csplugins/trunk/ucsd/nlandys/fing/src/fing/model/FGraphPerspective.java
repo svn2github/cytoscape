@@ -898,10 +898,9 @@ class FGraphPerspective implements GraphPerspective
     return returnThis;
   }
 
-  public GraphPerspective createGraphPerspective(int[] perspNodeInx)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  public GraphPerspective createGraphPerspective(int[] nodeInx) {
+    return createGraphPerspective
+      (nodeInx, getConnectingEdgeIndicesArray(nodeInx)); }
 
   public void finalize()
   {
