@@ -17,7 +17,7 @@ public final class AllRootGraphMethodsTest
     throws ClassNotFoundException, InstantiationException,
            IllegalAccessException
   {
-    final RootGraph root = getRootGraph(args);
+    final RootGraph root = FingRootGraphFactory.instantiateRootGraph();
     addNodesAndEdges(root);
 
     // nodesIterator() and edgesIterator().
@@ -45,7 +45,7 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("GraphPerspective is null");
     if (root.createGraphPerspective(new Node[0], new Edge[0]) == null)
       throw new IllegalStateException("GraphPerspective is null");
-    RootGraph root2 = getRootGraph(args);
+    RootGraph root2 = FingRootGraphFactory.instantiateRootGraph();
     addNodesAndEdges(root2);
     Node root2Node = (Node) root2.nodesIterator().next();
     Edge root2Edge = (Edge) root2.edgesIterator().next();
@@ -121,13 +121,6 @@ public final class AllRootGraphMethodsTest
     if (root.createGraphPerspective(null, edgeIndicesArray) == null)
       throw new IllegalStateException("GraphPerspective is null");
   }
-
-  private static final RootGraph getRootGraph(String[] mainArgs)
-    throws ClassNotFoundException, InstantiationException,
-           IllegalAccessException {
-    if (mainArgs.length > 0 && mainArgs[0].equalsIgnoreCase("luna"))
-      return (RootGraph) Class.forName("luna.LunaRootGraph").newInstance();
-    else return FingRootGraphFactory.instantiateRootGraph(); }
 
   private static final void addNodesAndEdges(RootGraph root) {
     int[] nodeInx = new int[3];
