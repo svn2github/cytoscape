@@ -524,9 +524,7 @@ public void setNewNetwork( CyNetwork newNetwork ) {
     this.network = newNetwork;
     newNetwork.addCyNetworkListener(this);
 
-    System.out.println("Beginning updateGraphView..." + System.currentTimeMillis());
     updateGraphView();
-    System.out.println("Done updateGraphView..." + System.currentTimeMillis());
     //applyLayout();
     updateStatusLabel(0, 0);
 
