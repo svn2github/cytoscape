@@ -473,6 +473,23 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("edges List not of size 0");
     edgesList = root.edgesList(99, minNodeInx - 1, true);
     if (edgesList != null) throw new IllegalStateException("not null");
+
+    // getEdgeIndicesArray(int, int, boolean).
+    connEdges = root.getEdgeIndicesArray(nodeInx[1], nodeInx[1], false);
+    if (connEdges.length != 0)
+      throw new IllegalStateException("not 0 connecting edges");
+    connEdges = root.getEdgeIndicesArray(nodeInx[1], nodeInx[1], true);
+    if (connEdges.length != 1)
+      throw new IllegalStateException("not 1 connecting edge");
+    for (int i = 0;; i++) if (connEdges[i] == edgeInx[4]) break;
+    connEdges = root.getEdgeIndicesArray(nodeInx[1], nodeInx[0], true);
+    if (connEdges.length != 1)
+      throw new IllegalStateException("not 1 connecting edge");
+    for (int i = 0;; i++) if (connEdges[i] == edgeInx[5]) break;
+    connEdges = root.getEdgeIndicesArray(minNodeInx - 1, nodeInx[2], true);
+    if (connEdges != null) throw new IllegalStateException("not null");
+    connEdges = root.getEdgeIndicesArray(nodeInx[1], 99, true);
+    if (connEdges != null) throw new IllegalStateException("not null");
   }
 
 }
