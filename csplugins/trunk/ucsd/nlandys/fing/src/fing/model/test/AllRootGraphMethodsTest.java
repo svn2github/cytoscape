@@ -1166,17 +1166,17 @@ public final class AllRootGraphMethodsTest
     for (int i = 0;; i++) if (metaParents[i] == nodeInx[3]) break;
     for (int i = 0;; i++) if (metaParents[i] == nodeInx[4]) break;
 
-//     // edgeMetaParentsList(int).
-//     if (root.edgeMetaParentsList(0) != null ||
-//         root.edgeMetaParentsList(Integer.MAX_VALUE) != null ||
-//         root.edgeMetaParentsList(Integer.MIN_VALUE) != null ||
-//         root.edgeMetaParentsList(1) != null ||
-//         root.edgeMetaParentsList(minEdgeInx - 1) != null)
-//       throw new IllegalStateException("expected null meta parents array");
-//     nodesList = root.edgeMetaParentsList(edgeInx[2]);
-//     if (nodesList.size() != 1 ||
-//         ((Node) nodesList.get(0)).getRootGraphIndex() != nodeInx[4])
-//       throw new IllegalStateException("wrong edge meta parents");
+    // edgeMetaParentsList(int).
+    if (root.edgeMetaParentsList(0) != null ||
+        root.edgeMetaParentsList(Integer.MAX_VALUE) != null ||
+        root.edgeMetaParentsList(Integer.MIN_VALUE) != null ||
+        root.edgeMetaParentsList(1) != null ||
+        root.edgeMetaParentsList(minEdgeInx - 1) != null)
+      throw new IllegalStateException("expected null meta parents array");
+    nodesList = root.edgeMetaParentsList(edgeInx[2]);
+    if (nodesList.size() != 1 ||
+        ((Node) nodesList.get(0)).getRootGraphIndex() != nodeInx[4])
+      throw new IllegalStateException("wrong edge meta parents");
 
     // getEdgeMetaParentIndicesArray(int).
 //     if (root.getEdgeMetaParentIndicesArray(0) != null ||
