@@ -164,9 +164,12 @@ public class DualLayoutTask extends Thread{
 	//has already been added into the graph
 	if (!sourceSplat[idx].equals(targetSplat[idx])) {
 	  String idxName = sourceSplat[idx]+" ("+interactionTypes.get(idx)+") "+targetSplat[idx];
-	  if (!newEdgeAttributes.getObjectMap().keySet().contains(idxName)) {
-	    HashMap name2Node = (HashMap)name2Node_Vector.get(idx);
-	    Edge idxEdge = newRoot.getEdge(newRoot.createEdge((Node)name2Node.get(sourceSplat[idx]),(Node)name2Node.get(targetSplat[idx]),true));
+	  //if (!newEdgeAttributes.getObjectMap().keySet().contains(idxName)) {
+	  HashMap name2Node = (HashMap)name2Node_Vector.get(idx);
+	  Node sourceNode = (Node)name2Node.get(sourceSplat[idx]);
+	  Node targetNode = (Node)name2Node.get(targetSplat[idx]);
+	  if (!newRoot.isNeighbor(sourceNode,targetNode)) {
+	    Edge idxEdge = newRoot.getEdge(newRoot.createEdge(sourceNode,targetNode,true));
 	    idxEdge.setIdentifier(idxName);
 	    newEdgeAttributes.addNameMapping(idxName,idxEdge);
 	    newEdgeAttributes.add("interaction",idxName,(String)interactionTypes.get(idx));
@@ -178,77 +181,77 @@ public class DualLayoutTask extends Thread{
       
     }
     //now that the root graph has been created, put it into a window
-    //CyWindow newWindow = new CyWindow(cyWindow.getCytoscapeObj(), new CyNetwork(newRoot,newNodeAttributes,newEdgeAttributes), DualLayout.NEW_TITLE);
-    CyNetwork gmlNetwork = new CyNetwork(newRoot,newNodeAttributes,newEdgeAttributes);
-    cyWindow.getNetwork().setNewGraphFrom(gmlNetwork,false);
-    GraphView newView = cyWindow.getView();
-    cyWindow.getMainFrame().setVisible(false);
-    SpringEmbeddedLayouter layouter = new SpringEmbeddedLayouter(newView,node2Species,homologyPairSet);
-    layouter.doLayout();
-    gmlNetwork.setNeedsLayout(false);
-    cyWindow.getMainFrame().setVisible(true);
+  //CyWindow newWindow = new CyWindow(cyWindow.getCytoscapeObj(), new CyNetwork(newRoot,newNodeAttributes,newEdgeAttributes), DualLayout.NEW_TITLE);
+  CyNetwork gmlNetwork = new CyNetwork(newRoot,newNodeAttributes,newEdgeAttributes);
+  cyWindow.getNetwork().setNewGraphFrom(gmlNetwork,false);
+  GraphView newView = cyWindow.getView();
+  cyWindow.getMainFrame().setVisible(false);
+  SpringEmbeddedLayouter layouter = new SpringEmbeddedLayouter(newView,node2Species,homologyPairSet);
+  layouter.doLayout();
+  gmlNetwork.setNeedsLayout(false);
+  cyWindow.getMainFrame().setVisible(true);
     
     
 
-    //move all the nodes over an amount proportional to their species number
-    Iterator nodeViewIt = newView.getNodeViewsIterator();
-    while (nodeViewIt.hasNext()) {
-      NodeView nodeView = (NodeView)nodeViewIt.next();
-      int species = ((Integer)node2Species.get(nodeView.getNode())).intValue();
-      nodeView.setXPosition(nodeView.getXPosition()+OFFSET*species);
-    } // end of while ()
+  //move all the nodes over an amount proportional to their species number
+  Iterator nodeViewIt = newView.getNodeViewsIterator();
+  while (nodeViewIt.hasNext()) {
+    NodeView nodeView = (NodeView)nodeViewIt.next();
+    int species = ((Integer)node2Species.get(nodeView.getNode())).intValue();
+    nodeView.setXPosition(nodeView.getXPosition()+OFFSET*species);
+  } // end of while ()
     
     
-      //make sure all the nodes have their position updated
-    nodeViewIt = newView.getNodeViewsIterator();
-    while(nodeViewIt.hasNext()){
-      ((NodeView)nodeViewIt.next()).setNodePosition(true);
-    }
-    
-    
-    if(parser.addEdges()){
-      GraphPerspective newPerspective = newView.getGraphPerspective();
-      HashMap outerMap = homologyPairSet.getOuterMap();
-      for(Iterator outerSetIt = outerMap.keySet().iterator();
-	  outerSetIt.hasNext();){
-	Node outerNode = (Node)outerSetIt.next();
-	for(Iterator innerSetIt = ((Set)outerMap.get(outerNode)).iterator();
-	    innerSetIt.hasNext();){
-	  Node innerNode = (Node)innerSetIt.next();
-	  //want to add a homology edge to the from the left node to the rightnode
-	  Edge homologyEdge = newRoot.getEdge(newRoot.createEdge(outerNode,innerNode,false));
-	  String homologyName = ""+outerNode+" (hm) "+innerNode;
-	  homologyEdge.setIdentifier(homologyName);
-	  newEdgeAttributes.addNameMapping(homologyName,homologyEdge);
-	  newEdgeAttributes.add("interaction",homologyName,"hm");
-	  newPerspective.restoreEdge(homologyEdge);
-	}
-      }
-    }
-    
-
-    if(parser.applyColor()){
-      System.out.println("Color option not implemeneted");
-    }
-
-    if(parser.save()){
-      String name = parser.getGMLname(); 
-      try {
-	FileWriter fileWriter = new FileWriter(name);
-	GMLTree result = new GMLTree(cyWindow);
-	fileWriter.write(result.toString());
-	fileWriter.close();
-      }
-      catch (IOException ioe) {
-	System.err.println("Error while writing " + name);
-	ioe.printStackTrace();
-      }
-    }
-    if(parser.exit()){
-      System.exit(0);
-    }
-    
-    //sifNetwork.endActivity(callerID);
+  //make sure all the nodes have their position updated
+  nodeViewIt = newView.getNodeViewsIterator();
+  while(nodeViewIt.hasNext()){
+    ((NodeView)nodeViewIt.next()).setNodePosition(true);
   }
+    
+    
+  if(parser.addEdges()){
+    GraphPerspective newPerspective = newView.getGraphPerspective();
+    HashMap outerMap = homologyPairSet.getOuterMap();
+    for(Iterator outerSetIt = outerMap.keySet().iterator();
+	outerSetIt.hasNext();){
+      Node outerNode = (Node)outerSetIt.next();
+      for(Iterator innerSetIt = ((Set)outerMap.get(outerNode)).iterator();
+	  innerSetIt.hasNext();){
+	Node innerNode = (Node)innerSetIt.next();
+	//want to add a homology edge to the from the left node to the rightnode
+	Edge homologyEdge = newRoot.getEdge(newRoot.createEdge(outerNode,innerNode,false));
+	String homologyName = ""+outerNode+" (hm) "+innerNode;
+	homologyEdge.setIdentifier(homologyName);
+	newEdgeAttributes.addNameMapping(homologyName,homologyEdge);
+	newEdgeAttributes.add("interaction",homologyName,"hm");
+	newPerspective.restoreEdge(homologyEdge);
+      }
+    }
+  }
+    
+
+  if(parser.applyColor()){
+    System.out.println("Color option not implemeneted");
+  }
+
+  if(parser.save()){
+    String name = parser.getGMLname(); 
+    try {
+      FileWriter fileWriter = new FileWriter(name);
+      GMLTree result = new GMLTree(cyWindow);
+      fileWriter.write(result.toString());
+      fileWriter.close();
+    }
+    catch (IOException ioe) {
+      System.err.println("Error while writing " + name);
+      ioe.printStackTrace();
+    }
+  }
+  if(parser.exit()){
+    System.exit(0);
+  }
+    
+  //sifNetwork.endActivity(callerID);
+}
 
 }
