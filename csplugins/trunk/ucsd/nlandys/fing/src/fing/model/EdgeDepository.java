@@ -25,7 +25,9 @@ final class EdgeDepository
   // Deinitialize the object's members yourself if you need or want to.
   void recycleEdge(FEdge edge)
   {
-    if (m_size == m_edgeStack.length) {
+    if (edge == null) return;
+    try { m_edgeStack[m_size] = edge; m_size++; }
+    catch (ArrayIndexOutOfBoundsException e) {
       final int newArrSize = (int)
         Math.min((long) Integer.MAX_VALUE,
                  ((long) m_edgeStack.length) * 2l + 1l);
@@ -34,8 +36,8 @@ final class EdgeDepository
           ("unable to allocate large enough array");
       FEdge[] newArr = new FEdge[newArrSize];
       System.arraycopy(m_edgeStack, 0, newArr, 0, m_edgeStack.length);
-      m_edgeStack = newArr; }
-    m_edgeStack[m_size++] = edge;
+      m_edgeStack = newArr;
+      m_edgeStack[m_size++] = edge; }
   }
 
 }

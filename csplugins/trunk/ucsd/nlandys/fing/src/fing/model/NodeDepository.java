@@ -25,7 +25,9 @@ final class NodeDepository
   // Deinitialize the object's members yourself if you need or want to.
   void recycleNode(FNode node)
   {
-    if (m_size == m_nodeStack.length) {
+    if (node == null) return;
+    try { m_nodeStack[m_size] = node; m_size++; }
+    catch (ArrayIndexOutOfBoundsException e) {
       final int newArrSize = (int)
         Math.min((long) Integer.MAX_VALUE,
                  ((long) m_nodeStack.length) * 2l + 1l);
@@ -34,8 +36,8 @@ final class NodeDepository
           ("unable to allocate large enough array");
       FNode[] newArr = new FNode[newArrSize];
       System.arraycopy(m_nodeStack, 0, newArr, 0, m_nodeStack.length);
-      m_nodeStack = newArr; }
-    m_nodeStack[m_size++] = node;
+      m_nodeStack = newArr;
+      m_nodeStack[m_size++] = node; }
   }
 
 }
