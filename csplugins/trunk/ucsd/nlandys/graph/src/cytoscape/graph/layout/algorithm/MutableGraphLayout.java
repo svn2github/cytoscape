@@ -17,7 +17,7 @@ public interface MutableGraphLayout extends GraphLayout
    *   in this graph.
    * @see #setNodePosition(int, double, double)
    */
-  public boolean isMovableNode(int nodeIndex);
+  public boolean isMovableNode(int node);
 
   /**
    * Sets the X,Y position of a node.
