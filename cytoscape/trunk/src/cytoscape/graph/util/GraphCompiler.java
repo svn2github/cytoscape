@@ -164,33 +164,39 @@ public final class GraphCompiler
         specificRealNeighbors = m_dummyEmptyHashtable;
       if (specificFakeNeighbors == null)
         specificFakeNeighbors = m_dummyEmptyHashtable;
-      final int[] returnThis =
-        new int[specificRealNeighbors.size() + specificFakeNeighbors.size()];
+
+      // We're going to use the following hashtable to filter duplicates.
+      Hashtable returnValues = new Hashtable();
       Enumeration values = specificRealNeighbors.elements();
-      for (int i = 0; i < specificRealNeighbors.size(); i++)
-        returnThis[i] = ((Integer) values.nextElement()).intValue();
+      for (int i = 0; i < specificRealNeighbors.size(); i++) {
+        Object o = values.nextElement();
+        returnValues.put(o, o); }
       values = specificFakeNeighbors.elements();
-      for (int i = specificRealNeighbors.size(); i < returnThis.length; i++)
+      for (int i = 0; i < specificFakeNeighbors.size(); i++) {
+        Object o = values.nextElement();
+        returnValues.put(o, o); }
+      final int[] returnThis = new int[returnValues.size()];
+      values = returnValues.elements();
+      for (int i = 0; i < returnThis.length; i++)
         returnThis[i] = ((Integer) values.nextElement()).intValue();
       return returnThis;
     }
   }
 
-  private Hashtable[] m_nodeNeighbors;
-  private Hashtable[] m_fakeNodeNeighbors;
+  private Hashtable[] m_nodeNeighbors = null;
+  private Hashtable[] m_fakeNodeNeighbors = null;
   private final Hashtable m_dummyEmptyHashtable = new Hashtable();
   private boolean m_nodeNeighborsCompiled = false;
 
   private void compileNodeNeighbors()
   {
     if (m_nodeNeighborsCompiled) return;
-
-    // Lol!  I had forgetten the following statement on my first revision;
-    // this defeats the purpose of compiling the graph!
     m_nodeNeighborsCompiled = true;
 
     m_nodeNeighbors = new Hashtable[graph.getNumNodes()];
-    m_fakeNodeNeighbors = new Hashtable[graph.getNumNodes()];
+    if (!(graph.areAllEdgesSimilar() && graph.getNumEdges() > 0 &&
+          !graph.isDirectedEdge(0))) // At least one directed edge exists.
+      m_fakeNodeNeighbors = new Hashtable[graph.getNumNodes()];
     for (int edgeIndex = 0; edgeIndex < graph.getNumEdges(); edgeIndex++)
     {
       Integer sourceNode =
@@ -198,20 +204,16 @@ public final class GraphCompiler
       Integer targetNode =
         new Integer(graph.getEdgeNodeIndex(edgeIndex, false));
       Hashtable specificNeighbors = m_nodeNeighbors[sourceNode.intValue()];
-      boolean newTable = false;
-      if (specificNeighbors == null) {
-        specificNeighbors = new Hashtable(); newTable = true; }
+      if (specificNeighbors == null) specificNeighbors = new Hashtable();
       specificNeighbors.put(targetNode, targetNode);
-      if (newTable) m_nodeNeighbors[sourceNode.intValue()] = specificNeighbors;
+      m_nodeNeighbors[sourceNode.intValue()] = specificNeighbors;
       Hashtable[] oppositePut;
       if (graph.isDirectedEdge(edgeIndex)) oppositePut = m_fakeNodeNeighbors;
       else oppositePut = m_nodeNeighbors;
-      newTable = false;
       specificNeighbors = oppositePut[targetNode.intValue()];
-      if (specificNeighbors == null) {
-        specificNeighbors = new Hashtable(); newTable = true; }
+      if (specificNeighbors == null) specificNeighbors = new Hashtable();
       specificNeighbors.put(sourceNode, sourceNode);
-      if (newTable) oppositePut[targetNode.intValue()] = specificNeighbors;
+      oppositePut[targetNode.intValue()] = specificNeighbors;
     }
   }
 
