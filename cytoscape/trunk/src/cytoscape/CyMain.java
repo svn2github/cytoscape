@@ -71,14 +71,14 @@ public class CyMain implements WindowListener {
   protected CytoscapeVersion version = new CytoscapeVersion();
   protected Logger logger;
   protected SplashScreen splashScreen;
- 
+
 
   /**
    * Primary Method for Starting Cytoscape. Use the passed
    * args to create a CytoscapeConfig object.
    */
   public CyMain ( String [] args ) throws Exception {
-    
+
     splashScreen = new SplashScreen();
     //parse args and config files into config object
     CytoscapeConfig config = new CytoscapeConfig(args);
@@ -143,7 +143,7 @@ public class CyMain implements WindowListener {
     }
 
      if ( geometryFilename != null ) {
- 
+
       logger.info("reading " + geometryFilename + "...");
       network = Cytoscape.createNetwork( geometryFilename,
                                          Cytoscape.FILE_GML,
@@ -156,7 +156,7 @@ public class CyMain implements WindowListener {
 
     else if ( interactionsFilename != null ) {
       logger.info("reading " + interactionsFilename + "...");
-     
+
       network = Cytoscape.createNetwork( interactionsFilename,
                                          Cytoscape.FILE_SIF,
                                          canonicalize,
@@ -165,14 +165,14 @@ public class CyMain implements WindowListener {
       logger.info("  done");
       title = interactionsFilename;
     }
-    
+
      if (network == null) {//none specified, or failed to read
       logger.info("no graph read, creating empty network");
       network = Cytoscape.createNetwork();
       splashScreen.noGraph = true;
       title = "(Untitled)";
     }
-     
+
     //add the semantics we usually expect
      Semantics.applyNamingServices(network, cytoscapeObj);
 
@@ -180,8 +180,8 @@ public class CyMain implements WindowListener {
     logger.info("reading attribute files");
     Cytoscape.loadAttributes( config.getNodeAttributeFilenames(),
                               config.getEdgeAttributeFilenames(),
-                              canonicalize, 
-                              bioDataServer, 
+                              canonicalize,
+                              bioDataServer,
                               defaultSpecies);
     logger.info(" done");
 
@@ -206,15 +206,15 @@ public class CyMain implements WindowListener {
 
     //create the window
     cyWindow = new CyWindow(cytoscapeObj, network, title);
-   
-    //if ( reader != null ) 
+
+    //if ( reader != null )
     //  reader.layout(cyWindow.getView());
 
     cyWindow.showWindow();
 
     if (splashScreen!=null) {splashScreen.advance(100);}
   } // ctor
-  
+
   /**
    * configure logging:  cytoscape.props specifies what level of logging
    * messages are written to the console; by default, only SEVERE messages
@@ -243,7 +243,7 @@ public class CyMain implements WindowListener {
       logger.setLevel(Level.OFF);
     }
   }
- 
+
   public void windowActivated   (WindowEvent e) {
     if(splashScreen != null) {
       splashScreen.advance(200);
@@ -302,7 +302,7 @@ public class CyMain implements WindowListener {
     try {
       if ( LookUtils.isWindowsXP() ) {
         // use XP L&F
-        UIManager.setLookAndFeel( Options.getSystemLookAndFeelClassName() );
+        UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
       } else if ( System.getProperty("os.name").startsWith( "Mac" ) ) {
         // do nothing, I like the OS X L&F
       } else {
