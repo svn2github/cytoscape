@@ -63,20 +63,21 @@ public class HierarchicalLayoutPlugin extends CytoscapePlugin
      */
     public HierarchicalLayoutPlugin() {
 		HierarchicalLayoutListener listener = new HierarchicalLayoutListener();
-	    JMenu menu = Cytoscape.getDesktop().getCyMenus().getLayoutMenu();
+	    JMenu menu = Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Layout");
 
 	    JMenuItem item = new JMenuItem("Apply Hierarchical Layout");
 	    item.addActionListener(listener);
-        int numItems = menu.getItemCount();
-        int i;
-        for (i = 1;i < numItems; i++) {
-            if (menu.getItem(i).getText().equals("Apply Spring Embedded Layout")) {
-                menu.insert(item,i+1);
-                i = Integer.MAX_VALUE;
-                break;
-            }
-        }
-	    if (i != Integer.MAX_VALUE) menu.add(item);
+      menu.add( item );
+      //int numItems = menu.getItemCount();
+      //int i;
+      //for (i = 1;i < numItems; i++) {
+      //  if (menu.getItem(i).getText().equals("Apply Spring Embedded Layout")) {
+      //    menu.insert(item,i+1);
+      //    i = Integer.MAX_VALUE;
+      //    break;
+      //  }
+      //}
+	    //if (i != Integer.MAX_VALUE) menu.add(item);
     }
 
     /**

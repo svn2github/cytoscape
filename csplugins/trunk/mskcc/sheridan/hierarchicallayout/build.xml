@@ -51,7 +51,7 @@
 	<!--  Target to compile all Plug In Code -->
   	<target name="compile" depends="prepare, build_cytoscape"
 		description="Compiles all PlugIn source code.">
-    		<javac srcdir="${src.dir}" destdir="${build.classes}" nowarn="on" source="1.4">
+    		<javac srcdir="${src.dir}" destdir="${build.classes}" nowarn="on" source="1.4" debug="true">
 			<include name="csplugins/**"/>
 			<classpath refid="classpath"/>
 		</javac>
