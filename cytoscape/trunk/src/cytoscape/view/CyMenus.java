@@ -269,6 +269,22 @@ public class CyMenus  implements GraphViewChangeListener {
     editMenu    = menuBar.getMenu( "Edit" );
     dataMenu    = menuBar.getMenu( "Data" );
     selectMenu  = menuBar.getMenu( "Select" );
+    final JMenu f_selectMenu = selectMenu;
+    selectMenu.addMouseListener(new MouseAdapter() {
+        public void mouseEntered(MouseEvent e)
+        {
+          CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
+          boolean inactive = false;
+          if (graphView == null || graphView.nodeCount() == 0) inactive = true;
+          MenuElement[] popup = f_selectMenu.getSubElements();
+          if (popup[0] instanceof JPopupMenu) {
+            MenuElement[] submenus =
+              ((JPopupMenu) popup[0]).getSubElements();
+            for (int i = 0; i < submenus.length; i++) {
+              if (submenus[i] instanceof JMenuItem) {
+                if (inactive) ((JMenuItem) submenus[i]).setEnabled(false);
+                else ((JMenuItem) submenus[i]).setEnabled(true); } } }
+        } });
     layoutMenu  = menuBar.getMenu( "Layout" );
     final JMenu f_layoutMenu = layoutMenu;
     layoutMenu.addMouseListener(new MouseAdapter() {
