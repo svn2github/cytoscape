@@ -26,7 +26,6 @@ public interface SubMutableGraphLayout extends MutableGraphLayout
    *   <nobr><code>isMovableNode(nodeIndex)</code></nobr> returns
    *   <code>false</code>.
    * @see isMovableNode(int)
-   * @see super.setNodePosition(int, double, double)
    */
   public void setNodePosition(int nodeIndex, double xPos, double yPos);
 
