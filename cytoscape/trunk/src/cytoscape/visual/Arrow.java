@@ -72,7 +72,7 @@ public class Arrow implements Serializable {
       return EdgeView.WHITE_DIAMOND;
     } else if (  name.equals("BLACK_DIAMOND")) {
       return EdgeView.BLACK_DIAMOND;
-    } else if (  name.equals("WHITE_DIAMOND")) {
+    } else if (  name.equals("COLOR_DIAMOND")) {
       return EdgeView.EDGE_COLOR_DIAMOND;
     } 
 
@@ -80,7 +80,7 @@ public class Arrow implements Serializable {
       return EdgeView.WHITE_DELTA;
     } else if (  name.equals("BLACK_DELTA")) {
       return EdgeView.BLACK_DELTA;
-    } else if (  name.equals("WHITE_DELTA")) {
+    } else if (  name.equals("COLOR_DELTA")) {
       return EdgeView.EDGE_COLOR_DELTA;
     } 
 
@@ -88,7 +88,7 @@ public class Arrow implements Serializable {
       return EdgeView.WHITE_ARROW;
     } else if (  name.equals("BLACK_ARROW")) {
       return EdgeView.BLACK_ARROW;
-    } else if (  name.equals("WHITE_ARROW")) {
+    } else if (  name.equals("COLOR_ARROW")) {
       return EdgeView.EDGE_COLOR_ARROW;
     } 
 
@@ -96,7 +96,7 @@ public class Arrow implements Serializable {
       return EdgeView.WHITE_T;
     } else if (  name.equals("BLACK_T")) {
       return EdgeView.BLACK_T;
-    } else if (  name.equals("WHITE_T")) {
+    } else if (  name.equals("COLOR_T")) {
       return EdgeView.EDGE_COLOR_T;
     } 
 
@@ -105,7 +105,7 @@ public class Arrow implements Serializable {
       return EdgeView.WHITE_CIRCLE;
     } else if (  name.equals("BLACK_CIRCLE")) {
       return EdgeView.BLACK_CIRCLE;
-    } else if (  name.equals("WHITE_CIRCLE")) {
+    } else if (  name.equals("COLOR_CIRCLE")) {
       return EdgeView.EDGE_COLOR_CIRCLE;
     } 
 
@@ -125,7 +125,7 @@ public class Arrow implements Serializable {
       return Arrow.WHITE_DIAMOND;
     } else if (  arrowtext.equals("BLACK_DIAMOND")) {
       return Arrow.BLACK_DIAMOND;
-    } else if (  arrowtext.equals("WHITE_DIAMOND")) {
+    } else if (  arrowtext.equals("COLOR_DIAMOND")) {
       return Arrow.COLOR_DIAMOND;
     } 
 
@@ -133,7 +133,7 @@ public class Arrow implements Serializable {
       return Arrow.WHITE_DELTA;
     } else if (  arrowtext.equals("BLACK_DELTA")) {
       return Arrow.BLACK_DELTA;
-    } else if (  arrowtext.equals("WHITE_DELTA")) {
+    } else if (  arrowtext.equals("COLOR_DELTA")) {
       return Arrow.COLOR_DELTA;
     } 
 
@@ -141,7 +141,7 @@ public class Arrow implements Serializable {
       return Arrow.WHITE_ARROW;
     } else if (  arrowtext.equals("BLACK_ARROW")) {
       return Arrow.BLACK_ARROW;
-    } else if (  arrowtext.equals("WHITE_ARROW")) {
+    } else if (  arrowtext.equals("COLOR_ARROW")) {
       return Arrow.COLOR_ARROW;
     } 
 
@@ -149,7 +149,7 @@ public class Arrow implements Serializable {
       return Arrow.WHITE_T;
     } else if (  arrowtext.equals("BLACK_T")) {
       return Arrow.BLACK_T;
-    } else if (  arrowtext.equals("WHITE_T")) {
+    } else if (  arrowtext.equals("COLOR_T")) {
       return Arrow.COLOR_T;
     } 
 
@@ -158,7 +158,7 @@ public class Arrow implements Serializable {
       return Arrow.WHITE_CIRCLE;
     } else if (  arrowtext.equals("BLACK_CIRCLE")) {
       return Arrow.BLACK_CIRCLE;
-    } else if (  arrowtext.equals("WHITE_CIRCLE")) {
+    } else if (  arrowtext.equals("COLOR_CIRCLE")) {
       return Arrow.COLOR_CIRCLE;
     } 
 
