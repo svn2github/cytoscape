@@ -30,7 +30,8 @@ import javax.swing.BoxLayout;
 import javax.swing.ListSelectionModel;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
-
+import javax.swing.JLabel;
+import javax.swing.border.TitledBorder;
 /**
  * This is a sample Cytoscape plugin using Giny graph structures. For each
  * currently selected node in the graph view, the action method of this plugin
@@ -75,12 +76,14 @@ public class GraphMerge extends CytoscapePlugin{
 
 
 class MergeDialog extends JDialog{
-  JButton upButton,downButton,leftButton,rightButton;
+  JButton upButton,downButton,leftButton,rightButton,ok,cancel;
   JList networkList;
   JList unselectedNetworkList;
   DefaultListModel networkData;
   DefaultListModel unselectedNetworkData;
   boolean cancelled = true;
+  protected static int LIST_WIDTH = 150;
+  protected static int DIALOG_SPACE = 110;
   public MergeDialog(){
     setModal(true);
     setTitle("Merge Networks");
@@ -98,6 +101,9 @@ class MergeDialog extends JDialog{
     networkList.addListSelectionListener(new ListSelectionListener(){
 	public void valueChanged(ListSelectionEvent e){
 	  int index = networkList.getMinSelectionIndex();
+	  if(index > -1){
+	    unselectedNetworkList.getSelectionModel().clearSelection();
+	  }
 	  if(index == -1){
 	    upButton.setEnabled(false);
 	    downButton.setEnabled(false);
@@ -128,6 +134,9 @@ class MergeDialog extends JDialog{
     unselectedNetworkList.addListSelectionListener(new ListSelectionListener(){
 	public void valueChanged(ListSelectionEvent e){
 	  int index = unselectedNetworkList.getMinSelectionIndex();
+	  if(index > -1){
+	    networkList.getSelectionModel().clearSelection();
+	  }
 	  if(index == -1){
 	    rightButton.setEnabled(false);
 	  }
@@ -151,6 +160,7 @@ class MergeDialog extends JDialog{
 	  int currentIndex = networkList.getMinSelectionIndex();
 	  Object removed = networkData.remove(currentIndex);
 	  networkData.add(currentIndex-1,removed);
+	  networkList.setSelectedIndex(currentIndex-1);
 	  networkList.repaint();
 	}});
     downButton.addActionListener(new ActionListener(){
@@ -158,6 +168,7 @@ class MergeDialog extends JDialog{
 	  int currentIndex = networkList.getMinSelectionIndex();
 	  Object removed = networkData.remove(currentIndex);
 	  networkData.add(currentIndex+1,removed);
+	  networkList.setSelectedIndex(currentIndex+1);
 	  networkList.repaint();
 	}});
     leftButton.addActionListener(new ActionListener(){
@@ -165,26 +176,48 @@ class MergeDialog extends JDialog{
 	  int currentIndex = networkList.getMinSelectionIndex();
 	  Object removed = networkData.remove(currentIndex);
 	  unselectedNetworkData.addElement(removed);
+	  unselectedNetworkList.setSelectedIndex(unselectedNetworkData.getSize()-1);
 	  networkList.repaint();
 	  unselectedNetworkList.repaint();
+	  if(networkData.getSize()>1){
+	    ok.setEnabled(true);
+	    ok.setToolTipText(null);
+	  }
+	  else{
+	    ok.setEnabled(false);
+	    ok.setToolTipText("Select at least two network to merge");
+	  }
 	}});
     rightButton.addActionListener(new ActionListener(){
 	public void actionPerformed(ActionEvent ae){
 	  int currentIndex = unselectedNetworkList.getMinSelectionIndex();
 	  Object removed = unselectedNetworkData.remove(currentIndex);
 	  networkData.addElement(removed);
+	  networkList.setSelectedIndex(networkData.getSize()-1);
 	  networkList.repaint();
 	  unselectedNetworkList.repaint();
+	  if(networkData.getSize()>1){
+	    ok.setEnabled(true);
+	    ok.setToolTipText(null);
+	  }
+	  else{
+	    ok.setEnabled(false);
+	    ok.setToolTipText("Select at least two network to merge");
+	  }
 	}});
 
     upButton.setEnabled(false);
+    upButton.setToolTipText("Set the precedence of visual attributes");
     downButton.setEnabled(false);
+    downButton.setToolTipText("Set the precedence of visual attributes");
     leftButton.setEnabled(false);
     rightButton.setEnabled(false);
     
 
     JScrollPane leftPane = new JScrollPane(unselectedNetworkList);
-    leftPane.setPreferredSize(new Dimension(100,50));
+    leftPane.setBorder(new TitledBorder("Available Networks"));
+    leftPane.setMinimumSize(new Dimension(LIST_WIDTH,100));
+    leftPane.setMaximumSize(new Dimension(LIST_WIDTH,100));
     centerPanel.add(leftPane);
     JPanel lrButtonPanel = new JPanel();
     lrButtonPanel.setLayout(new BoxLayout(lrButtonPanel,BoxLayout.Y_AXIS));
@@ -192,7 +225,9 @@ class MergeDialog extends JDialog{
     lrButtonPanel.add(rightButton);
     centerPanel.add(lrButtonPanel);
     JScrollPane rightPane = new JScrollPane(networkList);
-    rightPane.setPreferredSize(new Dimension(100,50));
+    rightPane.setBorder(new TitledBorder("Selected Networks"));
+    rightPane.setMinimumSize(new Dimension(LIST_WIDTH,100));
+    rightPane.setMaximumSize(new Dimension(LIST_WIDTH,100));
     centerPanel.add(rightPane);
     JPanel udButtonPanel = new JPanel();
     udButtonPanel.setLayout(new BoxLayout(udButtonPanel,BoxLayout.Y_AXIS));
@@ -206,8 +241,10 @@ class MergeDialog extends JDialog{
     
 
     JPanel southPanel = new JPanel();
-    JButton ok,cancel;
+    
     ok = new JButton("OK");
+    ok.setEnabled(false);
+    ok.setToolTipText("Select at least two network to merge");
     cancel = new JButton("Cancel");
     ok.addActionListener(new ActionListener(){
 	public void actionPerformed(ActionEvent ae){
@@ -221,7 +258,9 @@ class MergeDialog extends JDialog{
     southPanel.add(cancel);
     southPanel.add(ok);
     getContentPane().add(southPanel,BorderLayout.SOUTH);
-    this.pack();
+    setSize(new Dimension(2*LIST_WIDTH+DIALOG_SPACE,180));
+    setResizable(false);
+    //this.pack();
   }
 
   public List getNetworkList(){
