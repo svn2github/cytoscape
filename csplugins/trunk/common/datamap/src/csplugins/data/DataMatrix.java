@@ -1,4 +1,4 @@
-package csplugins.trial.pshannon.dataCube;
+package csplugins.data;
 
 import java.util.*;
 import java.io.*;

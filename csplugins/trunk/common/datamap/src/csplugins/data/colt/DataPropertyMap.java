@@ -1,4 +1,5 @@
-package datamap;
+package csplugins.data.colt;
+
 
 import cern.colt.matrix.ObjectMatrix2D;
 import cern.colt.matrix.ObjectMatrix1D;
@@ -14,8 +15,8 @@ import java.util.Arrays;
 import java.util.ArrayList;
 
 //Data Cube Import ////////////////////
-import csplugins.trial.pshannon.dataCube.DataMatrix;
-import csplugins.trial.pshannon.dataCube.DataMatrixLens;
+import csplugins.data.*;
+
 
 
 /**

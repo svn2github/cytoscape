@@ -1,4 +1,4 @@
-package datamap;
+package csplugins.data;
 
 /**
  *    Objects who implement SharedIdentifiable are willing to

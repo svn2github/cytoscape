@@ -1,4 +1,4 @@
-package datamap;
+package csplugins.data.colt;
 
 import cern.colt.map.*;
 
