@@ -30,6 +30,7 @@ OBJS = ColorPopupButton.class \
         EdgeTextPanel.class \
 	NewStringPopupDialog.class \
         JointIntegerEntry.class \
+        RotateSelectionDialog.class
 
 
 
