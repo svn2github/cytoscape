@@ -11,6 +11,9 @@ public class GOBRegistry
   public final byte ATTR_TYPE_LONG = 5;
   public final byte ATTR_TYPE_STRING = 6;
 
+  // For now, offer no public construction mechanism.
+  GOBRegistry() {}
+
   /**
    * @param type one of the ATTR_TYPE_* constants.
    * @return an identifier for this newly created attribute definition;
