@@ -1,42 +1,68 @@
+# makefile for the csplugin.data.servers unitTests
+#--------------------------------------------------------------------------------------
+# $Revision$
+# $Date$
+# $Author$
+#--------------------------------------------------------------------------------------
+JC=javac -source 1.4
+JI=java
 PKG=cytoscape.data.servers.unitTests
-RMIHOST=localhost
-DATA_DIR=$(CYTOSCAPE_DATA)/biodata/current
 
 .SUFFIXES: .java .class
 .java.class: 
 	$(JC) $<
 
-JC=javac
-
-OBJS = BioDataServerFactoryTest.class \
-       IPBioDataServerTest.class \
-       BioDataServerProcessTest.class \
-       BioDataServerSynonymsTest.class \
-       BioDataServerMolFunctionsTest.class \
-       BioDataServerCellularComponentsTest.class \
+OBJS = BioDataServerTest.class
 
 default: objs run
 
 objs: $(OBJS)
 
-run:  $(OBJS)
-	java $(PKG).BioDataServerFactoryTest $(DATA_DIR) rmi://$(RMIHOST)/biodata
-	java $(PKG).BioDataServerSynonymsTest rmi://$(RMIHOST)/biodata
-	java $(PKG).BioDataServerMolFunctionsTest rmi://$(RMIHOST)/biodata
-	java $(PKG).BioDataServerProcessTest rmi://$(RMIHOST)/biodata
-	java $(PKG).BioDataServerCellularComponentsTest rmi://$(RMIHOST)/biodata
-	java $(PKG).IPBioDataServerTest  $(DATA_DIR)
-
-
-0: BioDataServerProcessTest.class
-	java $(PKG).BioDataServerProcessTest rmi://$(RMIHOST)/biodata
-
-1: IPBioDataServerTest.class
-	java $(PKG).IPBioDataServerTest  $(DATA_DIR)
-
-2: BioDataServerFactoryTest.class
-	java $(PKG).BioDataServerFactoryTest $(DATA_DIR) rmi://$(RMIHOST)/biodata
-
+run: 0
 
 clean:
 	- rm *.class
+
+#------ test
+#  start the data server with name 'test'
+# 
+
+#test: 0
+
+
+#------ 0
+#  run the BioDataServerTest
+# 
+
+0: BioDataServerTest.class
+	
+	java $(PKG).BioDataServerTest rmi://localhost/test
+
+#------ reg
+#  try to start a rmi registry.  this will fail if one is already running
+#  on the default port
+#
+reg:
+	- rmiregistry& 
+
+#------ killtest
+#  kill the rmi data server which runs with name 'test'
+#
+
+killtest:
+	- kill -9 `ps -efl |egrep BioDataServerRmi | egrep test | egrep -v egrep |awk '{print $$4}'`
+
+
+#------ starttest
+#  start the rmi version of the data server with name 'test'
+# 
+
+starttest: 
+	java csplugins.data.servers.BioDataServerRmi test &
+	#sleep 10
+	# java csplugins.data.servers.loadAnnotation rmi://localhost/test ../../kegg/haloMetabolicPathway.xml
+	
+
+help:
+	egrep "^#" makefile | sed "s/^#//"
+
