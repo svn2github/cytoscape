@@ -445,19 +445,34 @@ public final class IntBTree
 
       int currentMax = maxBound;
       int currentMin;
+      Node nodeTemp;
       for (int i = n.sliceCount - 2; i >= -1; i--) {
         currentMin = ((i < 0) ? minBound : n.data.splitVals[i]);
 
         // If [currentMin, currentMax] subset of [xMin, xMax]
         //   then include n.data.children[i + 1] in its entirety by
         //   adding its deep count to total and placing it on the stack.
+
+        if (currentMin >= xMin && currentMax <= xMax) { // Subset of.
+          nodeTemp = n.data.children[i + 1];
+          count += nodeTemp.data.deepCount;
+          nodeStack.push(nodeTemp); }
+
         // Else if [currentMin, currentMax] intersects [xMin, xMax]
         //   then recurse down child = n.data.children[i + 1] by calling
         //   searchRange(child, nodeStack, xMin, xMax, currentMin, currentMax),
         //   adding its output to our total count.
+
+        else if (Math.max(currentMin, xMin) <= Math.min(currentMax, xMax)) {
+          nodeTemp = n.data.children[i + 1];
+          count += searchRange(nodeTemp, nodeStack, xMin, xMax,
+                               currentMin, currentMax); }
+
         // Else
         //   [currentMin, currentMax] does not intersect [xMin, xMax] so
         //   do nothing.
+
+        else { }
 
         currentMax = currentMin; }
 
