@@ -251,10 +251,10 @@ public void testSubGraphOperation () throws Exception
 
   assertTrue (nodes.length == 3);
   assertTrue (edges.length == 3);
-  assertTrue (newNodeAttributes.size () == 2);  // commonName & expression
 
-  // System.out.println ("TEST:  newEdgeAttributes:\n" + newEdgeAttributes);
-  assertTrue (newEdgeAttributes.size () == 1);  // interaction
+  assertTrue (newNodeAttributes.size () == 3);  // commonName & expression & canonicalName
+
+  assertTrue (newEdgeAttributes.size () == 2);  // interaction & canonicalName
 
   for (int i=0; i < selectedNodeNames.length; i++) {
     assertTrue (expectedCommonNames [i] == 
