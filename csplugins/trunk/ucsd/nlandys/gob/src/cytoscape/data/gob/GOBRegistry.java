@@ -12,9 +12,9 @@ public class GOBRegistry
 
   /**
    * @param type one of the ATTR_TYPE_* constants.
-   * @return an identifier for this newly created attribute or -1 if
-   *   the specified attribute type is not recognized as a valid type;
-   *   attribute IDs are always non-negative.
+   * @return an identifier for this newly created attribute definition or -1 if
+   *   the specified attribute type [input parameter] is not recognized as a
+   *   valid type; attribute definition IDs are always non-negative.
    */
   public int defineAttribute(int type)
   {
@@ -22,19 +22,10 @@ public class GOBRegistry
   }
 
   /**
-   * @param attrID the attribute ID of the attribute span to remove.
-   * @return true if and only if the specified attribute exists at the time
-   *   this method is called.
-   */
-  public boolean removeAttribute(int attrID)
-  {
-    return false;
-  }
-
-  /**
+   * @param attrID an identifier of an existing attribute definition.
    * @return one of the ATTR_TYPE_* constants specifiying which kind of
-   *   attribute the specified attribute is, or -1 if no attribute with
-   *   specified attribute ID exists.
+   *   attribute the specified attribute definition is, or -1 if no attribute
+   *   definition with specified ID exists.
    */
   public int attributeType(int attrID)
   {
@@ -42,33 +33,96 @@ public class GOBRegistry
   }
 
   /**
-   * @return an enumeration of all attributes defined in this registry; each
-   *   entry in the returned enumeration is a unique attribute ID; this method
-   *   never returns null.
+   * @return an enumeration of all attribute definitions in this registry; each
+   *   entry in the returned enumeration is a unique attribute definition ID;
+   *   this method never returns null.
    */
   public IntEnumerator attributes()
   {
     return null;
   }
 
+  /**
+   * @param attrID the ID of the attribute definition to remove.
+   * @return true if and only if the specified attribute definition exists at
+   *   the time this method is called.
+   */
+  public boolean removeAttribute(int attrID)
+  {
+    return false;
+  }
+
   public void assignAttribute(int objID, int attrID, Object attrValue)
   {
   }
 
-  public void assignBooleanAttribute(int objID, int attrID, boolean attrValue)
+  /**
+   * @param objID an object identifier; assigned attribute values belong
+   *   to objects, and objects are abstracted as integers by this API.
+   * @param attrID an identifier of an attribute definition that was created
+   *   using defineAttribute().
+   * @param attrValue the attribute value that is to be assigned to the
+   *   specified object, in the specified attribute definition domain.
+   * @return false if and only if no attribute definition with specified
+   *   ID exists.
+   * @exception ClassCastException if the specified attribute definition
+   *   (attrID) exists but is not of type ATTR_TYPE_BOOLEAN.
+   */
+  public boolean assignBooleanAttribute(int objID, int attrID,
+                                        boolean attrValue)
   {
+    return false;
   }
 
-  public void assignDoubleAttribute(int objID, int attrID, double attrValue)
+  /**
+   * @param objID an object identifier; assigned attribute values belong
+   *   to objects, and objects are abstracted as integers by this API.
+   * @param attrID an identifier of an attribute definition that was created
+   *   using defineAttribute().
+   * @param attrValue the attribute value that is to be assigned to the
+   *   specified object, in the specified attribute definition domain.
+   * @return false if and only if no attribute definition with specified
+   *   ID exists.
+   * @exception ClassCastException if the specified attribute definition
+   *   (attrID) exists but is not of type ATTR_TYPE_DOUBLE.
+   */
+  public boolean assignDoubleAttribute(int objID, int attrID, double attrValue)
   {
+    return false;
   }
 
-  public void assignLongAttribute(int objID, int attrID, long attrValue)
+  /**
+   * @param objID an object identifier; assigned attribute values belong
+   *   to objects, and objects are abstracted as integers by this API.
+   * @param attrID an identifier of an attribute definition that was created
+   *   using defineAttribute().
+   * @param attrValue the attribute value that is to be assigned to the
+   *   specified object, in the specified attribute definition domain.
+   * @return false if and only if no attribute definition with specified
+   *   ID (attrID) exists.
+   * @exception ClassCastException if the specified attribute definition
+   *   (attrID) exists but is not of type ATTR_TYPE_LONG.
+   */
+  public boolean assignLongAttribute(int objID, int attrID, long attrValue)
   {
+    return false;
   }
-
-  public void assignStringAttribute(int objID, int attrID, String attrValue)
+  
+  /**
+   * @param objID an object identifier; assigned attribute values belong
+   *   to objects, and objects are abstracted as integers by this API.
+   * @param attrID an identifier of an attribute definition that was created
+   *   using defineAttribute().
+   * @param attrValue the attribute value that is to be assigned to the
+   *   specified object, in the specified attribute definition domain.
+   * @return false if and only if no attribute definition with specified
+   *   ID (attrID) exists.
+   * @exception ClassCastException if the specified attribute definition
+   *   (attrID) exists but is not of type ATTR_TYPE_STRING.
+   */
+  public boolean assignStringAttribute(int objID, int attrID, String attrValue)
   {
+    return false;
   }
 
   /**
