@@ -236,9 +236,25 @@ class FGraphPerspective implements GraphPerspective
     throw new IllegalStateException("not implemented yet");
   }
 
-  public int[] restoreNodes(int[] perspNodeInx)
+  public int[] restoreNodes(int[] rootGraphNodeInx)
   {
-    throw new IllegalStateException("not implemented yet");
+    m_heap.empty();
+    final MinIntHeap successes = m_heap;
+    final int[] returnThis = new int[rootGraphNodeInx.length];
+    for (int i = 0; i < rootGraphNodeInx.length; i++) {
+      returnThis[i] = _restoreNode(rootGraphNodeInx[i]);
+      if (returnThis[i] != 0) successes.toss(i); }
+    if (successes.size() > 0) {
+      final GraphPerspectiveChangeListener listener = m_lis[0];
+      if (listener != null) {
+        final int[] successArr = new int[successes.size()];
+        final IntEnumerator enum = successes.elements();
+        int index = -1;
+        while (enum.numRemaining() > 0)
+          successArr[++index] = rootGraphNodeInx[enum.nextInt()];
+        listener.graphPerspectiveChanged
+          (new GraphPerspectiveNodesRestoredEvent(this, successArr)); } }
+    return returnThis;
   }
 
   public Edge hideEdge(Edge edge)
