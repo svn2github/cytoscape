@@ -43,6 +43,7 @@ import java.util.*;
 import java.util.logging.*;
 
 import cytoscape.data.*;
+import cytoscape.data.readers.GMLReader;
 import cytoscape.data.servers.*;
 import cytoscape.view.CyWindow;
 
@@ -176,6 +177,12 @@ public cytoscape (String [] args) throws Exception {
     
     //create the window
     CyWindow cyWindow = new CyWindow(cytoscapeObj, network, title);
+
+    if (geometryFilename != null) {
+	GMLReader reader = new GMLReader(geometryFilename);
+	reader.layoutByGML(cyWindow.getView(), cyWindow.getNetwork());
+    }
+
     cyWindow.showWindow();
     
     if (splashScreen!=null) {splashScreen.advance(100);}
