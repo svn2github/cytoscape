@@ -66,8 +66,7 @@ public class CytoscapeWindow extends JPanel { // implements VizChooserClient {
 
   protected JFrame mainFrame;
   protected JMenuBar menuBar;
-  protected JMenu opsMenu;
-  protected JMenu vizMenu;
+  protected JMenu opsMenu, vizMenu, selectMenu, layoutMenu;
   protected JToolBar toolbar;
   protected JLabel infoLabel;
 
@@ -410,6 +409,21 @@ public JMenu getOperationsMenu ()
   return opsMenu;
 }
 //------------------------------------------------------------------------------
+public JMenu getVizMenu ()
+{
+  return vizMenu;
+}
+//------------------------------------------------------------------------------
+public JMenu getSelectMenu ()
+{
+  return selectMenu;
+}
+//------------------------------------------------------------------------------
+public JMenu getLayoutMenu ()
+{
+  return layoutMenu;
+}
+//------------------------------------------------------------------------------
 public void setInteractivity (boolean newState)
 {
   if (newState == true) { // turn interactivity ON
@@ -493,7 +507,7 @@ protected JMenuBar createMenuBar ()
   menuBar.add (viewMenu);
 
   ButtonGroup layoutGroup = new ButtonGroup ();
-  JMenu layoutMenu = new JMenu ("Layout");
+  layoutMenu = new JMenu ("Layout");
   layoutMenu.setToolTipText ("Apply new layout algorithm to graph");
   menuBar.add (layoutMenu);
 
