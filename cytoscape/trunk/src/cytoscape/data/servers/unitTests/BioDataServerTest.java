@@ -269,7 +269,7 @@ public void notestLoadAnnotationFiles () throws Exception
     absolutePathNames [i] = f.getAbsolutePath ();
     System.out.println (absolutePathNames [i]);
     }
-  server.loadAnnotationFiles (absolutePathNames);
+  //server.loadAnnotationFiles (absolutePathNames);
   //server.loadAnnotationFiles (annotationFiles);
   AnnotationDescription [] aDescs = server.getAnnotationDescriptions ();
   for (int i=0; i < aDescs.length; i++)
