@@ -26,6 +26,10 @@ ADJACENT EDGES TEST:
       iteration 2: getAdjacentEdgeIndicesArray(int, true, false, true)
       iteration 3: getAdjacentEdgeIndicesArray(int, false, false, false)
       iteration 4: getAdjacentEdgeIndicesArray(int, false, false, false)
+    This test measures the total time taken in
+    getAdjacentEdgeIndicesArray().  The time measure does not include
+    time to instantiate the RootGraph and populate it with nodes and
+    edges.
 
   Test circumstances:
     Tests were performed on a 1.8GHz P4 (512K cache), with 512M RAM,
@@ -43,11 +47,11 @@ ADJACENT EDGES TEST:
      100 nodes,   10000 edges           |        |        |
     1000 nodes,   20000 edges           |        |        |
     1000 nodes,   39998 edges           |        |        |
-    2000 nodes,   20000 edges           |        |        |
-    4000 nodes,   20000 edges           |        |        |
-    8000 nodes,   20000 edges           |        |        |
-   16000 nodes,   20000 edges           |        |        |
-   39999 nodes,   39999 edges           |        |        |
+    2000 nodes,   20000 edges           |     39 |   5072 |
+    4000 nodes,   20000 edges           |     40 |  21382 |
+    8000 nodes,   20000 edges           |     54 |  84766 |
+   16000 nodes,   20000 edges           |    115 | 337343 |
+   39999 nodes,   39999 edges           |    128 |2107868 |
    16000 nodes,  100000 edges           |        |   fail |
    50000 nodes,  400000 edges           |        |   fail |
   100000 nodes, 1000000 edges           |        |   fail |
@@ -80,7 +84,11 @@ CONNECTING EDGES TEST:
     getEdgeIndicesArray() is called on that pair.  Because
     getEdgeIndicesArray() takes two boolean input parameters, this test
     is be repeated four times, each time with a different set of
-    boolean input parameters.
+    boolean input parameters.  This test measures the total time taken
+    in getEdgeIndicesArray().  The time measure does not include
+    time to instantiate the RootGraph and populate it with nodes and
+    edges.
+
 
   Test circumstances:
     Tests were performed on a 1.8GHz P4 (512K cache), with 512M RAM,
@@ -142,6 +150,9 @@ NODE NEIGHBORS TEST:
     undirected) in a RootGraph.  The topology of RootGraph created is
     defined by [random] bytes read from standard input.  For every node
     in the RootGraph, neighborsList() is called on that node.
+    This test measures the total time taken in neighborsList().  The
+    time measure does not include time to instantiate the RootGraph and
+    populate it with nodes and edges.
 
   Test circumstances:
     Tests were performed on a 1.8GHz P4 (512K cache), with 512M RAM,
@@ -160,10 +171,10 @@ NODE NEIGHBORS TEST:
     1000 nodes,   20000 edges           |        |        |
     1000 nodes,   39998 edges           |        |        |
     2000 nodes,   20000 edges           |        |        |
-    4000 nodes,   20000 edges           |        |        |
-    8000 nodes,   20000 edges           |        |        |
-   16000 nodes,   20000 edges           |        |        |
-   39999 nodes,   39999 edges           |        |        |
+    4000 nodes,   20000 edges           |     78 |   6514 |
+    8000 nodes,   20000 edges           |     90 |  27266 |
+   16000 nodes,   20000 edges           |    150 | 111672 |
+   39999 nodes,   39999 edges           |    178 | 693433 |
    16000 nodes,  100000 edges           |        |   fail |
    50000 nodes,  400000 edges           |        |   fail |
   100000 nodes, 1000000 edges           |        |   fail |
@@ -189,7 +200,10 @@ CONNECTING WEB TEST:
     the nodes in this RootGraph, and call
     getConnectingEdgeIndicesArray() on this set.  Repeat 100 times,
     each time choosing a different set containing exactly half of all
-    nodes.
+    nodes.  This test measures the total time taken in
+    getConnectingEdgeIndicesArray().  The time measure does not include
+    time to instantiate the RootGraph and populate it with nodes and
+    edges.
 
   Test circumstances:
     Tests were performed on a 1.8GHz P4 (512K cache), with 512M RAM,
@@ -212,8 +226,8 @@ CONNECTING WEB TEST:
     2000 nodes,   20000 edges           |   1000 |  17600 |
     4000 nodes,   20000 edges           |   1150 |  68611 |
     8000 nodes,   20000 edges           |   1250 | 304403 |
-   16000 nodes,   20000 edges           |   1700 |        |
-   39999 nodes,   39999 edges           |        |        |
+   16000 nodes,   20000 edges           |   1700 |1419768 |
+   39999 nodes,   39999 edges           |        |    n/a |
    16000 nodes,  100000 edges           |        |   fail |
    50000 nodes,  400000 edges           |        |   fail |
   100000 nodes, 1000000 edges           |        |   fail |
@@ -225,3 +239,14 @@ CONNECTING WEB TEST:
     with each call to this method a rather large array must be
     allocated.  Performance could be improved if an iterator were
     returned instead of an int array in the API definition.
+
+
+=======================================================================
+ADD REMOVE TEST:
+
+  Testing:
+    RootGraph.createNode()
+    RootGraph.createEdge(int, int, boolean)
+    RootGraph.removeNode(int)
+    RootGraph.getNodeCount()
+    RootGraph.getEdgeCount()
