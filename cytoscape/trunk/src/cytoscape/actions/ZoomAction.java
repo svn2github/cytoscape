@@ -22,6 +22,10 @@ public class ZoomAction extends AbstractAction {
         this.factor = factor;
     }
     
+  public void zoom () {
+    networkView.getView().setZoom( factor );
+  }
+
     public void actionPerformed (ActionEvent e) {
       networkView.getView().setZoom( factor );
     }

@@ -406,10 +406,10 @@ newState = true; //TODO: remove this once the GraphViewChangeListener system is 
 
     layoutMenu.addSeparator();
     JMenu alignSubMenu = new JMenu("Align Selected Nodes");
-    layoutMenu.add(alignSubMenu);
-    alignSubMenu.add(new AlignHorizontalAction(networkView));
-    alignSubMenu.add(new AlignVerticalAction(networkView));
-    layoutMenu.add(new RotateSelectedNodesAction(networkView));
+    //layoutMenu.add(alignSubMenu);
+    //alignSubMenu.add(new AlignHorizontalAction(networkView));
+    //alignSubMenu.add(new AlignVerticalAction(networkView));
+    //layoutMenu.add(new RotateSelectedNodesAction(networkView));
     //layoutMenu.add(new ReduceEquivalentNodesAction(networkView));
 
     ShrinkExpandGraphUI.makeShrinkExpandGraphUI(cyWindow, layoutMenu);
@@ -451,17 +451,84 @@ newState = true; //TODO: remove this once the GraphViewChangeListener system is 
 
     toolBar.addSeparator();
 
-    b = toolBar.add(new ZoomAction(networkView, 0.9));
-    b.setIcon(new ImageIcon(getClass().getResource("images/new/zoom_out36.gif")));
-    b.setToolTipText("Zoom Out");
-    b.setBorderPainted(false);
-    b.setRolloverEnabled(true);
 
-    b = toolBar.add(new ZoomAction(networkView, 1.1));
-    b.setIcon(new ImageIcon(getClass().getResource("images/new/zoom_in36.gif")));
-    b.setToolTipText("Zoom In");
-    b.setBorderPainted(false);
+   
+    final ZoomAction zoom_in = new ZoomAction(networkView, 1.1);
+    final JButton zoomInButton = new JButton();
+    zoomInButton.setIcon(new ImageIcon(getClass().getResource("images/new/zoom_in36.gif")));
+    zoomInButton.setToolTipText("Zoom In");
+    zoomInButton.setBorderPainted(false);
+    zoomInButton.setRolloverEnabled(true);
+    zoomInButton.addMouseListener( new MouseListener () {
+        public void 	mouseClicked(MouseEvent e) {
+          zoom_in.zoom();
+        }
+        
+         public void 	mouseEntered(MouseEvent e) {}
+        
+         public void 	mouseExited(MouseEvent e) {}
+        
+         public void 	mousePressed(MouseEvent e) {
+           zoomInButton.setSelected( true );
+        }
+        
+         public void 	mouseReleased(MouseEvent e) {
+           zoomInButton.setSelected( false );
+        }
+      } );
 
+   
+    final ZoomAction zoom_out = new ZoomAction(networkView, 0.9);
+    final JButton zoomOutButton = new JButton();
+    zoomOutButton.setIcon(new ImageIcon(getClass().getResource("images/new/zoom_out36.gif")));
+    zoomOutButton.setToolTipText("Zoom Out");
+    zoomOutButton.setBorderPainted(false);
+    zoomOutButton.setRolloverEnabled(true);
+    zoomOutButton.addMouseListener( new MouseListener () {
+         public void 	mouseClicked(MouseEvent e) {
+          zoom_out.zoom();
+        }
+        
+         public void 	mouseEntered(MouseEvent e) {}
+        
+         public void 	mouseExited(MouseEvent e) {}
+        
+         public void 	mousePressed(MouseEvent e) {
+           zoomOutButton.setSelected( true );
+        }
+        
+         public void 	mouseReleased(MouseEvent e) {
+           zoomOutButton.setSelected( false );
+        }
+      } );
+
+
+    zoomOutButton.addMouseWheelListener( new MouseWheelListener () {
+        public void	mouseWheelMoved(MouseWheelEvent e) {
+          if ( e.getWheelRotation() < 0 ) {
+            zoom_in.zoom();
+          } else {
+            zoom_out.zoom();
+          }
+
+        } 
+      }
+                                   );
+
+     zoomInButton.addMouseWheelListener( new MouseWheelListener () {
+         public void	mouseWheelMoved(MouseWheelEvent e) {
+         if ( e.getWheelRotation() < 0 ) {
+            zoom_in.zoom();
+          } else {
+            zoom_out.zoom();
+          }
+         }
+       }
+                                   );
+
+    toolBar.add( zoomOutButton );
+    toolBar.add( zoomInButton );
+ 
     b = toolBar.add(new ZoomSelectedAction(networkView));
     b.setIcon(new ImageIcon(getClass().getResource("images/new/crop36.gif")));
     b.setToolTipText("Zoom Selected Region");

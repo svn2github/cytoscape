@@ -115,6 +115,8 @@ public class ShapeNodeRealizer {
             return NodeView.HEXAGON;
         } else if (byteShape == OCTAGON) {
             return NodeView.OCTAGON;
+        } else if (byteShape == ROUND_RECT ) {
+          return NodeView.ROUNDED_RECTANGLE;
         } else {//rectangle, or unknown shape
             return NodeView.RECTANGLE;
         }
