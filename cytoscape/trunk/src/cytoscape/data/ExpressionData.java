@@ -43,6 +43,9 @@ import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 
+import cytoscape.*;
+import y.base.*;
+
 import cytoscape.data.readers.*;
 //--------------------------------------------------------------------
 /**
@@ -591,6 +594,30 @@ public boolean loadData (String filename)
 	mRNAMeasurement returnVal =
 	    (mRNAMeasurement) measurements.get( condIndex.intValue() );
 	return returnVal;
+    }
+
+    /** copies ExpressionData data structure into
+     *  GraphObjAttributes data structure.        */
+    public void copyToAttribs(CytoscapeWindow cw) {
+	Node[] nodes = cw.getGraph().getNodeArray();
+	GraphObjAttributes nAttrib = cw.getNodeAttributes();
+	String[] condNames = getConditionNames();
+	for(int condNum=0; condNum<condNames.length; condNum++) {
+	    String condName = condNames[condNum];
+	    String eStr = condName + "exp";
+	    String sStr = condName + "sig";
+	    for (int i=0; i < nodes.length; i++) {
+		Node node = nodes [i];
+		String canName = nAttrib.getCanonicalName (node);
+		mRNAMeasurement mm =  getMeasurement(canName,condName);
+		if(mm!=null) {
+		    nAttrib.add(eStr,canName,mm.getRatio());
+		    nAttrib.add(sStr,canName,mm.getSignificance());
+		}
+	    }
+	    nAttrib.setClass(eStr,Double.class);
+	    nAttrib.setClass(sStr,Double.class);
+	}
     }
 }
 

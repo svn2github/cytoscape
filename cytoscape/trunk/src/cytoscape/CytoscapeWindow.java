@@ -40,6 +40,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.*;
 
 import java.io.*;
 import java.util.*;
@@ -2755,12 +2756,12 @@ protected void loadInteraction (String filename)
  * Load the named expression data filename.
  *
  * added by dramage 2002-08-21
+ * modified by owen 2003-03-03
  */
 protected void loadExpressionData (String filename) {
     expressionData = new ExpressionData (filename);
 
     config.addNodeAttributeFilename(filename);
-
     // update plugin list
     loadPlugins();
 }
@@ -2888,20 +2889,74 @@ protected class LoadInteractionFileAction extends AbstractAction {
 } // inner class LoadAction
 //------------------------------------------------------------------------------
 protected class LoadExpressionMatrixAction extends AbstractAction {
-  LoadExpressionMatrixAction () { super ("Expression Matrix File..."); }
+    LoadExpressionMatrixAction () { super ("Expression Matrix File..."); }
     
-  public void actionPerformed (ActionEvent e)  {
-   JFileChooser chooser = new JFileChooser (currentDirectory);
-   if (chooser.showOpenDialog (CytoscapeWindow.this) == chooser.APPROVE_OPTION) {
-      currentDirectory = chooser.getCurrentDirectory();
-      expressionDataFilename = chooser.getSelectedFile ().toString ();
-      loadExpressionData (expressionDataFilename);
-      // incorporateExpressionData ();
-      } // if
-    } // actionPerformed
+    public void actionPerformed (ActionEvent e)  {
 
+	ExpFileChooser chooser = new ExpFileChooser (currentDirectory);
+	if (chooser.showOpenDialog (CytoscapeWindow.this) ==
+	    chooser.APPROVE_OPTION) {
+	    currentDirectory = chooser.getCurrentDirectory();
+	    expressionDataFilename = chooser.getSelectedFile ().toString ();
+	    loadExpressionData (expressionDataFilename);
+	    
+	    // rather than depend on the configuration file,
+	    // depend on the ExpFileChooser's checkbox.
+	    //if(config.getWhetherToCopyExpToAttribs()) {
+	    if(chooser.getWhetherToCopyExpToAttribs()) {
+		expressionData.copyToAttribs(CytoscapeWindow.this);
+	    }
+	} // if
+    } // actionPerformed
+    
 } // inner class LoadExpressionMatrix
 
+/**  extends JFileChooser in the following way:
+ *   adds a JCheckBox at the bottom of the chooser, asking
+ *   whether to copy expression data to attributes.  The
+ *   state of this box can be accessed using the method
+ *   {@link
+ *   cytoscape.CytoscapeWindow.ExpFileChooser.getWhetherToCopyExpToAttribs
+ *   getWhetherToCopyExpToAttribs()}.
+ */
+protected class ExpFileChooser extends JFileChooser {
+    JCheckBox jcb;
+    boolean copyToAttribs=true;
+    public ExpFileChooser(File currentDirectory) {
+	super(currentDirectory, (FileSystemView) null);
+    }
+    protected JDialog createDialog(Component parent) throws HeadlessException {
+	JDialog jd = super.createDialog(parent);
+	jcb = new JCheckBox("Copy Expression Data to Graph Attributes?");
+	jcb.setSelected(copyToAttribs);
+	jcb.addItemListener(new CopyExpListener());
+        Container contentPane = jd.getContentPane();
+        contentPane.add(jcb, BorderLayout.SOUTH);
+	jd.pack();
+	return jd;
+    }
+    /** inner class for listening to the JCheckBox
+     *  {@link cytoscape.CytoscapeWindow.ExpFileChooser.jcb jcb}
+     *  and updating the boolean copyToAttribs when appropriate.
+     *  {@link cytoscape.CytoscapeWindow.ExpFileChooser.copyToAttribs
+     *  copyToAttribs} when appropriate. 
+     */
+    private class CopyExpListener implements ItemListener {
+	public void itemStateChanged(ItemEvent e) {
+	    if (e.getStateChange() == ItemEvent.SELECTED) {
+		copyToAttribs=true;
+	    }
+	    else if (e.getStateChange() == ItemEvent.DESELECTED) {
+		copyToAttribs=false;
+	    }
+	}
+    }
+    /** method for accessing last state of JCheckBox
+     *  {@link cytoscape.CytoscapeWindow.ExpFileChooser.jcb jcb}. */
+    public boolean getWhetherToCopyExpToAttribs() {
+	return copyToAttribs;
+    }
+}
 
 /**
  * Action allows the loading of a BioDataServer from the gui.

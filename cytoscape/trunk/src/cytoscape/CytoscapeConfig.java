@@ -48,7 +48,7 @@ import gnu.getopt.LongOpt;
  */
 public class CytoscapeConfig {
 
-  protected String argSpecificationString = "n:j:g:b:i:he:vWs:l:p:;";
+  protected String argSpecificationString = "n:j:g:b:i:he:vWs:l:p:x:;";
 
   protected String [] commandLineArguments;
   protected String[] argsCopy;
@@ -66,6 +66,7 @@ public class CytoscapeConfig {
   protected String projectPropsFileName = null;
   protected File projectFileDirectoryAbsolute;
   protected boolean enableUndo = false;
+  protected boolean copyExpToAttribs = true;
   //protected File projectPropsFile = null;
 
   protected String [] layoutStrategies = {"organic", "hierarchical", "embedded", "circular"};
@@ -242,6 +243,11 @@ public boolean enableUndo ()
 public Properties getProperties ()
 {
   return props;
+}
+/** if the -x flag is set on the command line, returns false;
+ *  otherwise, by default, returns true.                      */
+public boolean getWhetherToCopyExpToAttribs() {
+    return copyExpToAttribs;
 }
 //------------------------------------------------------------------------------------------
 /**
@@ -431,6 +437,9 @@ protected void parseArgs ()
        break;
      case 's':
        defaultSpeciesName = g.getOptarg ();
+       break;
+     case 'x':
+       copyExpToAttribs = false;
        break;
      case 'v':
        displayVersion = true;
@@ -662,6 +671,7 @@ public String getUsage ()
    sb.append (" -b  <bioData directory>           (./biodata)\n");
    sb.append (" -i  <interactions filename>       (yyyy.intr)\n");
    sb.append (" -e  <expression filename>         (zzz.mrna)\n");
+   sb.append (" -x  (causes Cytoscape not to copy expression to attribs)\n");
    sb.append (" -s  <default species name>        (\"Saccharomyces cerevisiae\")\n");
    sb.append (" -n  <nodeAttributes filename>     (zero or more)\n");
    sb.append (" -j  <edgeAttributes filename>     (zero or more)\n");

@@ -102,6 +102,7 @@ public cytoscape (String [] args) throws Exception
   CytoscapeWindow cytoscapeWindow = null;
   String title = null;
   boolean requestFreshLayout = true;
+  boolean copyExpToAttribs = config.getWhetherToCopyExpToAttribs();
 
   if (bioDataDirectory != null) {
     bioDataServer = new BioDataServer (bioDataDirectory);
@@ -138,6 +139,9 @@ public cytoscape (String [] args) throws Exception
                                          nodeAttributes, edgeAttributes, 
                                          geometryFilename, expressionDataFilename,
                                          title, requestFreshLayout);
+  if((expressionData !=null) && copyExpToAttribs) {
+      expressionData.copyToAttribs(cytoscapeWindow);
+  }
 
 } // ctor
 //------------------------------------------------------------------------------
