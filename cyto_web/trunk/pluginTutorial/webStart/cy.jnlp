@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp
+  codebase="http://cytoscape.systemsbiology.net/Cytoscape2.0"
+  href="plugin/pluginTutorial/webStart/cy.jnlp">
+  <information>
+    <title>Cytoscape Sample Plugins </title>
+    <vendor>Institute for Systems Biology</vendor>
+    <homepage href="user/JavaWebStart/webStart.html"/>
+    <offline-allowed/>
+  </information>
+  <security>
+      <all-permissions/>
+  </security>
+  <resources>
+    <j2se version="1.4+" max-heap-size="1024M"/>
+    <jar href="bin/cytoscape.jar"/>
+    <jar href="plugin/pluginTutorial/webStart/data.jar"/>
+    <jar href="plugin/pluginTutorial/HelloWorld.jar"/>
+  </resources>
+  <application-desc>
+    <argument>-p</argument>
+    <argument>jar://project</argument>
+  </application-desc>
+</jnlp>
+
