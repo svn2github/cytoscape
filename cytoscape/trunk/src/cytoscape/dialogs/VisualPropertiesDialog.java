@@ -159,14 +159,12 @@ public VisualPropertiesDialog (Frame parentFrame,
 } // PopupDialog ctor
 
 public class ApplyAction extends AbstractAction {
-  ApplyAction () {
-      super ("");
-  }
-
+    ApplyAction () {
+	super ("");
+    }
+    
     public void actionPerformed (ActionEvent event) {
-	
 	Object o;
-	
 	Color node = nColor.getColor();
 	if(node != null)
 	    o = aMapper.setDefaultValue(VizMapperCategories.NODE_FILL_COLOR, node);
@@ -193,26 +191,22 @@ public class ApplyAction extends AbstractAction {
 	Arrow arrow = (Arrow)arrowDefault.getIconObject();
 	if(arrow != null)
 	    o = aMapper.setDefaultValue(VizMapperCategories.EDGE_TARGET_DECORATION, arrow);
-	
-      /*
-      EdgeArrowColor.removeThenAddEdgeColor(aMapper,"pp",ppColor.getColor());
-      EdgeArrowColor.removeThenAddEdgeColor(aMapper,"pd",pdColor.getColor());
-      */
 
-      if(edgeTextPanel.getWhetherToUseTheMap()) {
-	  Map m = edgeTextPanel.getMap();
-	  if(m != null) {
-	      aMapper.setAttributeMapEntry(VizMapperCategories.EDGE_COLOR,
-					   localEdgeKey.getString(),
-					   new DiscreteMapper(m));
-
-	  }
-      }
-      parentNodeLabelKey.setString(localNodeLabelKey.getString());
-      applied.setBool(true);
-      VisualPropertiesDialog.this.dispose ();
-  }
-
+	if(edgeTextPanel.getWhetherToUseTheMap()) {
+	    Map m = edgeTextPanel.getMap();
+	    if(m != null) {
+		aMapper.setAttributeMapEntry(VizMapperCategories.EDGE_COLOR,
+					     localEdgeKey.getString(),
+					     new DiscreteMapper(m));
+		
+	    }
+	    edgeTextPanel.updateMapperScalableArrows();
+	}
+	parentNodeLabelKey.setString(localNodeLabelKey.getString());
+	applied.setBool(true);
+	VisualPropertiesDialog.this.dispose ();
+    }
+    
 } // ApplyAction
 
 public class CancelAction extends AbstractAction {

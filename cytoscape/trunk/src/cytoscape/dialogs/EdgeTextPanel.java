@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 import cytoscape.GraphObjAttributes;
 import cytoscape.util.MutableString;
@@ -75,9 +76,28 @@ public EdgeTextPanel (GraphObjAttributes edgeAttribs,
 public Map getMap() {
     return theMap;
 }
-
+    public void updateMapperScalableArrows() {
+	TreeMap tempSM = new TreeMap();
+	Set allKeys = theMap.keySet();
+	Iterator keyIter = allKeys.iterator();
+	for(;keyIter.hasNext();) {
+	    String keyString = (String)keyIter.next();
+	    Color c = (Color)theMap.get(keyString);
+	    tempSM.put(keyString,c);
+	}
+	allKeys = tempSM.keySet();
+	keyIter = allKeys.iterator();
+	for(;keyIter.hasNext();) {
+	    String keyString = (String)keyIter.next();
+	    Color c = (Color)theMap.get(keyString);
+	    EdgeArrowColor.removeThenAddEdgeColor(aMapper,keyString,c);
+	}
+    }
 public boolean getWhetherToUseTheMap() {
     return useThisMap;
+}
+public void setWhetherToUseTheMap(boolean b) {
+    useThisMap = b;
 }
 
 public class SharedListSelectionHandler implements ListSelectionListener {
@@ -87,12 +107,10 @@ public class SharedListSelectionHandler implements ListSelectionListener {
 	this.ms = ms;
     }
     public void valueChanged(ListSelectionEvent e) {
-
 	JList jl = (JList)e.getSource();
 	ms.setString(jl.getSelectedValue().toString());
     }
 }
-
 
 public class BoxAction extends AbstractAction {
     MutableString ms;
@@ -210,7 +228,6 @@ public class ColorToDiscreteDialog extends JDialog {
 	    */
 	}
 
-  
 	//valueMapColor.remove(key);
 	//valueMapColor.put(key,c);
 
@@ -220,9 +237,10 @@ public class ColorToDiscreteDialog extends JDialog {
 	GridBagConstraints c = new GridBagConstraints();
 	popupPanel.setLayout (gridbag);
 
-	JScrollPane listScrollPane = new JScrollPane(intScrollPanel,
-						     ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
-						     ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	JScrollPane listScrollPane =
+	    new JScrollPane(intScrollPanel,
+			    ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+			    ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 	listScrollPane.setPreferredSize(new Dimension(150,150));
 	extScrollPanel = new JPanel(new GridLayout(1,1));
 	extScrollPanel.add(listScrollPane);
@@ -256,7 +274,6 @@ public class ColorToDiscreteDialog extends JDialog {
 	popupPanel.add(removeButton);
 	*/
 
-
 	JButton cancelButton = new JButton ("Cancel");
 	cancelButton.addActionListener (new CancelAction ());
 	MiscGB.set(c,0,3);
@@ -271,7 +288,6 @@ public class ColorToDiscreteDialog extends JDialog {
 	pack ();
 	setLocationRelativeTo (EdgeTextPanel.this);
 	setVisible (true);
-	
 
 	/*	
 	DiscreteMapper dmSourceDec =
@@ -292,7 +308,6 @@ public class ColorToDiscreteDialog extends JDialog {
 		}
 	    }
 	}
-
 	*/
 	
     }
@@ -342,7 +357,6 @@ public class ColorToDiscreteDialog extends JDialog {
 		    intScrollPanel.add(tempLabel);
 		}
 	    }
-	    
 	    //ColorToDiscreteDialog.this.dispose ();
 	}
     } // NewAction
