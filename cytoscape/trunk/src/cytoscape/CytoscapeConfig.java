@@ -317,7 +317,7 @@ protected Properties readProperties ()
 } // readProperties
 //------------------------------------------------------------------------------------------
 //private Properties readPropertyFileAsText (File projectPropsFile)
-private Properties readPropertyFileAsText (String filename)
+public Properties readPropertyFileAsText (String filename)
 {
   String rawText = "";
   //String filename = projectPropsFile.getPath ();
