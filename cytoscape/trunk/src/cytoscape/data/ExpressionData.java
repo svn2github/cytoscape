@@ -29,18 +29,25 @@ import java.io.IOException;
  * 2. The file consists of an arbitrary number of lines, each of which
  *    contains the same number of tokens and has a total length less than
  *    8193 characters.
- * 3. The first line of the file is a header line with the following format:
+ * 3. The first line of the file is a header line with one of the following
+ *    two formats:
  *
  *    <text> <text> cond1 cond2 ... condN cond1 cond2 ... condN NumSigConds
  *
- * Here cond1 through condN are the names of the conditions. The two sequences
- * of condition names must match exactly in order and lexicographically.
+ *    <text> <text> cond1 cond2 ... condN
+ *
+ * Here cond1 through condN are the names of the conditions. In the first
+ * case, the two sequences of condition names must match exactly in order
+ * and lexicographically; each name among cond1 ... condN must be unique.
+ * In the second case, each name must be unique, but need only appear once.
  * The last label, NumSigConds, is optional.
  *
  * 4. Each successive line represents the measurements for a partcular gene,
- *    and has the format
+ *    and has one of the following two formats, depending on the header:
  *
  *   <FNAME> <CNAME> E E ... E S S ... S I
+ *
+ *   <FNAME> <CNAME> E E ... E
  *
  *  where <FNAME> is the formal name of the gene, <CNAME> is the common name,
  *  the E's are tokens, parsable as doubles, representing the expression
@@ -48,6 +55,8 @@ import java.io.IOException;
  *  representing the statistical significance of the expression level change,
  *  and I is an optional integer giving the number of conditions in which
  *  the expression level change was significant for this gene.
+ *
+ *  The second format is used in conjunction with the second header format.
  *
  * 5. An optional last line can be included with the following form:
  *
