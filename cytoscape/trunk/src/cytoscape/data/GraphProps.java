@@ -4,8 +4,6 @@ import y.base.*;
 import y.view.*;
 
 import cytoscape.GraphObjAttributes;
-import cytoscape.data.KeggPathways;
-
 /**
  * Graph Utilities Class.
  *
