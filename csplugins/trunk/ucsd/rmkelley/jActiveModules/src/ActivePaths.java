@@ -26,7 +26,7 @@ import csplugins.jActiveModules.dialogs.*;
 //import cytoscape.vizmap.*;
 //import cytoscape.layout.*;
 import cytoscape.*;
-import cytoscape.data.CyNetworkFactory;
+//import cytoscape.data.CyNetworkFactory;
 
 //-----------------------------------------------------------------------------------
 public class ActivePaths implements ActivePathViewer, Runnable {
