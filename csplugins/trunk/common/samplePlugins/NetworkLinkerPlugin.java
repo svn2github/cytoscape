@@ -77,11 +77,11 @@ public class NetworkLinkerPlugin extends CytoscapePlugin
         for (Iterator iter = Cytoscape.getNetworkSet().iterator(); iter.hasNext(); ) {
             String net_id = (String)iter.next();
             CyNetwork network = Cytoscape.getNetwork(net_id);
-            network.getFlagger().setFlaggedNodes(flaggedNodes, true);
-            network.getFlagger().setFlaggedEdges(flaggedEdges, true);
+            network.setFlaggedNodes(flaggedNodes, true);
+            network.setFlaggedEdges(flaggedEdges, true);
             //attach listeners
             network.addGraphPerspectiveChangeListener(this);
-            network.getFlagger().addFlagEventListener(this);
+            network.addFlagEventListener(this);
         }
         //this catches network creation and destruction events
         Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
@@ -102,7 +102,7 @@ public class NetworkLinkerPlugin extends CytoscapePlugin
             String net_id = (String)iter.next();
             CyNetwork network = Cytoscape.getNetwork(net_id);
             network.removeGraphPerspectiveChangeListener(this);
-            network.getFlagger().removeFlagEventListener(this);
+            network.removeFlagEventListener(this);
         }
         //don't pay attention to network creation/destruction events anymore
         Cytoscape.getSwingPropertyChangeSupport().removePropertyChangeListener(this);
@@ -121,7 +121,7 @@ public class NetworkLinkerPlugin extends CytoscapePlugin
         for (Iterator iter = Cytoscape.getNetworkSet().iterator(); iter.hasNext(); ) {
             String net_id = (String)iter.next();
             CyNetwork network = Cytoscape.getNetwork(net_id);
-            Set nodes = network.getFlagger().getFlaggedNodes();
+            Set nodes = network.getFlaggedNodes();
             flaggedNodes.addAll(nodes);
         }
         return flaggedNodes;
@@ -137,7 +137,7 @@ public class NetworkLinkerPlugin extends CytoscapePlugin
         for (Iterator iter = Cytoscape.getNetworkSet().iterator(); iter.hasNext(); ) {
             String net_id = (String)iter.next();
             CyNetwork network = Cytoscape.getNetwork(net_id);
-            Set edges = network.getFlagger().getFlaggedEdges();
+            Set edges = network.getFlaggedEdges();
             flaggedEdges.addAll(edges);
         }
         return flaggedEdges;
@@ -160,12 +160,12 @@ public class NetworkLinkerPlugin extends CytoscapePlugin
             if (network != null) {
                 //flag objects in this network if they are flagged elsewhere
                 Set flaggedNodes = getAllFlaggedNodes(); //flagged in any network
-                network.getFlagger().setFlaggedNodes(flaggedNodes, true);
+                network.setFlaggedNodes(flaggedNodes, true);
                 Set flaggedEdges = getAllFlaggedEdges(); //flagged in any network
-                network.getFlagger().setFlaggedEdges(flaggedEdges, true);
+                network.setFlaggedEdges(flaggedEdges, true);
                 //add listeners to catch future changes
                 network.addGraphPerspectiveChangeListener(this);
-                network.getFlagger().addFlagEventListener(this);
+                network.addFlagEventListener(this);
             } else {
                 String lineSep = System.getProperty("line.separator");
                 String errString = "In NetworkLinkerPlugin.propertyChange: " + lineSep
@@ -194,7 +194,7 @@ public class NetworkLinkerPlugin extends CytoscapePlugin
             FlagFilter filter = network.getFlagger();
             //if this filter is the source of the event, skip it
             if (source == filter) {continue;}
-            handleFlagEvent(event, filter);
+            handleFlagEvent(event, network);
         }
         working = false; //listen to flag events again
     }
@@ -205,16 +205,16 @@ public class NetworkLinkerPlugin extends CytoscapePlugin
      * Note that the FlagFilter makes sure the graph object actually exists
      * in the attached graph before flagging it.
      */
-    private void handleFlagEvent(FlagEvent event, FlagFilter filter) {
+    private void handleFlagEvent(FlagEvent event, CyNetwork network) {
         boolean flagOn = event.getEventType(); //true=flag on, false = flag off
         if (event.getTargetType() == FlagEvent.SINGLE_NODE) {
-            filter.setFlagged( (Node)event.getTarget(), flagOn );
+            network.setFlagged( (Node)event.getTarget(), flagOn );
         } else if (event.getTargetType() == FlagEvent.SINGLE_EDGE) {
-            filter.setFlagged( (Edge)event.getTarget(), flagOn );
+            network.setFlagged( (Edge)event.getTarget(), flagOn );
         } else if (event.getTargetType() == FlagEvent.NODE_SET) {
-            filter.setFlaggedNodes( (Set)event.getTarget(), flagOn );
+            network.setFlaggedNodes( (Set)event.getTarget(), flagOn );
         } else if (event.getTargetType() == FlagEvent.EDGE_SET) {
-            filter.setFlaggedEdges( (Set)event.getTarget(), flagOn );
+            network.setFlaggedEdges( (Set)event.getTarget(), flagOn );
         } else {//huh? unknown target type
             //ignore for now
         }
@@ -237,9 +237,9 @@ public class NetworkLinkerPlugin extends CytoscapePlugin
                     String net_id = (String)iter.next();
                     CyNetwork network = Cytoscape.getNetwork(net_id);
                     if (network == source) {continue;}//skip the source network
-                    if ( network.getFlagger().isFlagged(nodeToCheck) ) {
+                    if ( network.isFlagged(nodeToCheck) ) {
                         //it's flagged in another network, so flag it in the source
-                        source.getFlagger().setFlagged(nodeToCheck, true);
+                        source.setFlagged(nodeToCheck, true);
                         break; //no point in checking other networks
                     }
                 }
@@ -255,9 +255,9 @@ public class NetworkLinkerPlugin extends CytoscapePlugin
                     String net_id = (String)iter.next();
                     CyNetwork network = Cytoscape.getNetwork(net_id);
                     if (network == source) {continue;}//skip the source network
-                    if ( network.getFlagger().isFlagged(edgeToCheck) ) {
+                    if ( network.isFlagged(edgeToCheck) ) {
                         //it's flagged in another network, so flag it in the source
-                        source.getFlagger().setFlagged(edgeToCheck, true);
+                        source.setFlagged(edgeToCheck, true);
                         break; //no point in checking other networks
                     }
                 }
