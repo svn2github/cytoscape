@@ -53,7 +53,7 @@
 			<H3>Project Plan</H2>
 			The Cytoscape Project Plan is regularly updated, 
 			and is available in PDF and GIF formats.
-			<P>The current Project Plan, last updated 5 Nov 2004,
+			<P>The current Project Plan, last updated 28 Jan 2005,
 			is available below:
 			<UL>
 			  <LI><A HREF="roadmap/ProjPlan.pdf">PDF</A>
