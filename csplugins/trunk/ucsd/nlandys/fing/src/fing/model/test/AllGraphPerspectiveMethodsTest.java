@@ -226,6 +226,51 @@ public final class AllGraphPerspectiveMethodsTest
       throw new IllegalStateException("GraphPersp should not contains edge");
     if (!persp.containsEdge(edge1NotInPersp, true))
       throw new IllegalStateException("GraphPersp should contain edge recur.");
+
+    // join(GraphPerspective).
+
+    // createGraphPerspective(Node[], Edge[]).
+
+    // createGraphPerspective(int[], int[]).
+
+    // createGraphPerspective(Filter).
+
+    // neighborsList(Node).
+    List neighList = persp.neighborsList(persp.getNode(nodeInx[0]));
+    if (neighList.size() != 2)
+      throw new IllegalStateException("wrong number of neighbors");
+    neighList = persp.neighborsList(persp.getNode(nodeInx[1]));
+    if (neighList.size() != 3)
+      throw new IllegalStateException("wrong number of neighbors");
+    neighList = persp.neighborsList(persp.getNode(nodeInx[2]));
+    if (neighList.size() != 4)
+      throw new IllegalStateException("wrong number of neighbors");
+    int[] neighInx = new int[neighList.size()];
+    for (int i = 0; i < neighList.size(); i++) {
+      Node node = (Node) neighList.get(i);
+      int nodeIndex = node.getRootGraphIndex();
+      if (persp.getNode(nodeIndex) == null)
+        throw new IllegalStateException("bad node in neighbors");
+      if (nodeIndex == 0) throw new IllegalStateException("node index is 0");
+      int index = -1;
+      while (true) {
+        if (neighInx[++index] != 0) {
+          if (neighInx[index] == nodeIndex)
+            throw new IllegalStateException("duplicate neighbor");
+          else continue; }
+        else { neighInx[index] = nodeIndex; break; } } }
+    neighList = persp.neighborsList(persp.getNode(nodeInx[3]));
+    if (neighList.size() != 1)
+      throw new IllegalStateException("wrong number of neighbors");
+    neighList = persp.neighborsList(persp.getNode(nodeInx[4]));
+    if (neighList.size() != 0)
+      throw new IllegalStateException("wrong number of neighbors");
+    neighList = persp.neighborsList(root2Node);
+    if (neighList != null)
+      throw new IllegalStateException("neighbors List isn't null");
+    neighList = persp.neighborsList(nodeNotInPersp);
+    if (neighList != null)
+      throw new IllegalStateException("neighbors List isn't null");
   }
 
 }
