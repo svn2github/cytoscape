@@ -84,7 +84,7 @@ public class FilterBrowserSelection
         return ;
       }
     }
-     Properties configProps = Cytoscape.getCytoscapeObj().getConfiguration().getProperties();
+     Properties configProps = CytoscapeInit.getProperties();
      Vector attributeCategoriesToIgnore = Misc.
        getPropertyValues(configProps, invisibilityPropertyName);
      String webBrowserScript  = configProps.getProperty("webBrowserScript", "noScriptDefined");

@@ -5,7 +5,7 @@ import cytoscape.data.*;
 import cytoscape.view.*;
 import cytoscape.util.*;
 import cytoscape.plugin.*;
-import cytoscape.plugin.jar.*;
+
 
 import java.util.*;
 import java.awt.event.*;

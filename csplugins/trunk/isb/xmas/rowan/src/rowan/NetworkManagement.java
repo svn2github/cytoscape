@@ -154,7 +154,7 @@ public class NetworkManagement
        getMatchingNodes( "file" );
     else if ( e.getSource() == browse ) {
 
-      File currentDirectory = Cytoscape.getCytoscapeObj().getCurrentDirectory();
+      File currentDirectory = CytoscapeInit.getMRUD();
       JFileChooser fChooser = new JFileChooser(currentDirectory);     
       fChooser.setDialogTitle("Load Node File");
       switch (fChooser.showOpenDialog( Cytoscape.getDesktop() ) ) {
@@ -162,7 +162,7 @@ public class NetworkManagement
       case JFileChooser.APPROVE_OPTION:
         fileField.setText( fChooser.getSelectedFile().getAbsolutePath() );
         currentDirectory = fChooser.getCurrentDirectory();
-        Cytoscape.getCytoscapeObj().setCurrentDirectory(currentDirectory);
+        CytoscapeInit.setMRUD(currentDirectory);
         break;
 
     }
