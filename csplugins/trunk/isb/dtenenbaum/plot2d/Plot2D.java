@@ -1,5 +1,12 @@
 //Plot2D.java
 
+/*
+ * HEAVILY BROKEN! Do not use this for any production stuff--it's in an 
+ * in-between state. I checked it in because I develop on multiple machines
+ * and I'm too lazy to start my own branch. THis should only last a couple days if that.
+ * TODO - remove this
+ */
+
 package csplugins.isb.dtenenbaum.plot2d;
 
 
@@ -71,9 +78,11 @@ public class Plot2D extends JFrame  {
   private String xAxisLabel;
   private String yAxisLabel;
   private ChartPanel chartPanel;
-  private XYPlot plot;
+  //private XYPlot plot;
+  private CategoryPlot plot;
   private int maxCols = 0;
-  private XYSeriesCollection dataset;
+  //private XYSeriesCollection dataset;
+  private DefaultCategoryDataset dataset;
   private JPanel legPanel;
   private JPanel statusPanel;
   private boolean showStatus = true;
@@ -256,7 +265,8 @@ private void initUI() {
 	
 	
 	
-	dataset = new XYSeriesCollection();
+	//dataset = new XYSeriesCollection();
+	dataset = new DefaultCategoryDataset();
 	legPanel = new JPanel();
 	chart = createChart(dataset);
 		
@@ -593,9 +603,10 @@ public class DismissAction extends AbstractAction {
  * @return The series with that name.
  */
 
+/*
 private UnsortedXYSeries getSeries(String name) {
 	
-	
+		
 	if (dataset.getSeriesCount()==0) {
 		UnsortedXYSeries s = new UnsortedXYSeries(name);
 		dataset.addSeries(s);
@@ -611,7 +622,7 @@ private UnsortedXYSeries getSeries(String name) {
 	return s;
 } //getSeries
 
-
+*/
 
 /**
  * Adds x,y points to a series in the dataset. 
@@ -643,6 +654,8 @@ private void addPoints(UnsortedXYSeries series,  double[] x, double[] y) {
  * @param name  the name of the line/row of data
  * @param y  a double array containing the y values
  */
+
+/*
 public void addData (String name, double [] y)  {
   
   UnsortedXYSeries s = getSeries(name);
@@ -654,19 +667,19 @@ public void addData (String name, double [] y)  {
 
   
 } // addData(String, double[])
-
+*/
 
 
 /**
  * Sets the labels for the X axis. If the array passed to this method
- * has 3 elements and your data has 5 elements, the last two elements 
+ * has X elements and your data has X+Y elements, the last Y elements 
  * will be labelled "Unknown."
  * 
  * @param xLabels An array containing X axis labels
  */
 public void setXLabels (String[] xLabels) {
 	this.xLabels = xLabels;
-	setupXLabels();
+	//setupXLabels();
 } // setXLabels
 
 
@@ -681,12 +694,14 @@ public void setXLabels (String[] xLabels) {
  * @param y  a double array containing the y values
  * @param addColoredName Does nothing - here for backwards compatibility.
  */
+
+/*
 public void addData (String name, double [] y, boolean addColoredName) 
 {
   addData(name, y);
   
 } // addData
-
+*/
 
 /**
  * Adds arbitrary 2D data to the plot. 
@@ -697,6 +712,7 @@ public void addData (String name, double [] y, boolean addColoredName)
  *
  * @throws IndexOutOfBoundsException  if x.length != y.length
  */
+/*
 public void addData(String name, double[] x, double[] y)  
   throws IndexOutOfBoundsException {
 	// This exception handling code unchanged from Visad version.
@@ -713,7 +729,7 @@ public void addData(String name, double[] x, double[] y)
 	setupXLabels();
 
 } // addData (String, double[], double[])
-
+*/
 
 /**
  * Populates the combo box containing the X axis label legend. 
@@ -725,14 +741,20 @@ public void addData(String name, double[] x, double[] y)
  * TODO - handle negative X values.
  *
  */
+
+/*
 private void setupXLabels() {
 	cb.removeAllItems();
 	cb.addItem("X axis legend:");
 	cbWidth = cb.getWidth();
 	long uBound;
+	NumberAxis domainAxis = (NumberAxis) plot.getDomainAxis();
+	
+	
 
-	uBound = (long)plot.getDomainAxis().getUpperBound();
-	if (uBound > plot.getDomainAxis().getUpperBound()) 
+	uBound = (long)domainAxis.getUpperBound();
+	uBound = dataset.getRowCount();
+	if (uBound > domainAxis.getUpperBound()) 
 	    uBound--;
 
 	for (long i = 0; i <= uBound; i++) {
@@ -745,7 +767,7 @@ private void setupXLabels() {
 		cb.addItem(item);
 	}
 } //setupXLabels
-
+*/
 
 
 /**
@@ -755,8 +777,8 @@ private void setupXLabels() {
  * @param dataset The dataset from which the plot will get its data.
  * @return The chart object containing the plot.
  */
-private JFreeChart createChart(XYDataset dataset) {
-	JFreeChart chart = ChartFactory.createXYLineChart(
+private JFreeChart createChart(CategoryDataset dataset) {
+	JFreeChart chart = ChartFactory.createLineChart(
 		null,
 		xAxisLabel, yAxisLabel, dataset,
 		PlotOrientation.VERTICAL,
@@ -764,13 +786,34 @@ private JFreeChart createChart(XYDataset dataset) {
 		true,  // tooltips
 		false  // urls
 	);
-	plot = chart.getXYPlot();
+	//plot = chart.getXYPlot();
+	plot = (CategoryPlot)chart.getPlot();
 	
+	NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+
+	//plot.getDomainAxis().setVerticalCategoryLabels(true);
+	//CategoryLabelPositions cip = CategoryLabelPositions.createUpRotationLabelPositions(10);
+	CategoryLabelPositions cip = new CategoryLabelPositions();
+	
+	plot.getDomainAxis().setCategoryLabelPositions(cip);
+	
+	//plot.getDomainAxis().setVerticalTickLabels(true);
+	//CategoryItemRenderer cir = (CategoryItemRenderer)new CyclicXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES);
+	//plot.setRenderer(new CyclicXYItemRenderer(
+	//  StandardXYItemRenderer.SHAPES_AND_LINES));
+	//plot.setRenderer(cir);
+	LineAndShapeRenderer ren = (LineAndShapeRenderer) plot.getRenderer();
+	ren.setDrawShapes(true);
+	
+
+
+	/*
 	plot.getDomainAxis().setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 	
 	plot.getDomainAxis().setVerticalTickLabels(true);
 	plot.setRenderer(new CyclicXYItemRenderer(
 	  StandardXYItemRenderer.SHAPES_AND_LINES));
+	*/
 	
 	// why do i have to do this? CyclicXYItemRenderer inherits from
 	// abstract renderer!
@@ -784,6 +827,26 @@ private JFreeChart createChart(XYDataset dataset) {
 	ar.setShape(r);
 		
 	// Set up an algorithm for generating tooltips
+	plot.getRenderer().setToolTipGenerator(new CategoryToolTipGenerator(){
+		public String generateToolTip(CategoryDataset data, int row, int column) {
+			double x = ((Double)data.getValue(row,column)).doubleValue();
+			double y = column;
+			String name = (String)data.getRowKey(row);
+			String xName = "";
+			
+			if ((y % 1) == 0) {
+				try {
+					xName = ", " + xAxisLabel + "=" + data.getColumnKey(column);
+				} catch (Exception e) {
+					xName = ", " + xAxisLabel + "=Unknown";
+				}
+			}
+			return "x=" +x+", y="+y + ", row=" + name + xName;				
+		}
+	});
+
+
+	/*
 	plot.getRenderer().setToolTipGenerator(new XYToolTipGenerator(){
 		public String generateToolTip(XYDataset data, int series, int item) {
 			double  x = ((Double)data.getXValue(series, item)).doubleValue();
@@ -801,7 +864,8 @@ private JFreeChart createChart(XYDataset dataset) {
 			return "x=" +x+", y="+y + ", row=" + name + xName;				
 		}
 	});
-
+	*/
+	
 	return chart;
 } //createChart
 
@@ -849,7 +913,7 @@ class ML implements ChartMouseListener {
 		// If the column they clicked on has no name, we'll go to the
 		// catch block.
 		try {
-			lblXAxis.setText("   " + xAxisLabel+": "+md.getXTickName());
+			lblXAxis.setText("   " + xAxisLabel+": "+ md.getXTickName());
 		} catch (NullPointerException ex) {;}
 	} // chartMouseMoved
 		
@@ -890,10 +954,11 @@ class ML implements ChartMouseListener {
 	
 	
 	private void resetColors() {
-		XYItemRenderer ren = plot.getRenderer();
-		for (int i = 0; i < dataset.getSeriesCount(); i++) {
-			ren.setSeriesPaint(i, (Paint)savedPaints.get(i));
-		}
+		if (true)return;//TODO remove this
+		//XYItemRenderer ren = plot.getRenderer();
+		//for (int i = 0; i < dataset.getSeriesCount(); i++) {
+		//	ren.setSeriesPaint(i, (Paint)savedPaints.get(i));
+		//}
 	}
 	
 	
@@ -961,12 +1026,15 @@ class ML implements ChartMouseListener {
 		
 		this.setTitle(dm.getMatrixName());
 		resetStatusPanel();
-		dataset.removeAllSeries();
+		//dataset.removeAllSeries();
+		dataset.clear();
 		yAxisLabel = dm.getMatrixName();
 		
 		if (dm.getSelectedRowCount() == 0)return;
 		
 		String[] allColTitles = dm.getFilteredColumnTitles();
+		
+		
 		
 		if (allColTitles.length > dm.getEnabledColumnCount()) {
 			String[] colTitles = new String[dm.getEnabledColumnCount()];
@@ -974,14 +1042,16 @@ class ML implements ChartMouseListener {
 				if (i == 0)continue;
 				colTitles[i-1] = allColTitles[i];
 			}
-			setXLabels(colTitles);				
-		} else {
-			setXLabels(allColTitles);
+			allColTitles = colTitles;
 		}
+		setXLabels(allColTitles);
 		
 		for (int i = 0; i < dm.getSelectedRowCount(); i++) {
 			double[] d = dm.getFromSelected(i);
-			addData(dm.getSelectedRowTitles()[i], d);
+			for (int j = 0; j < d.length; j++) {
+				dataset.setValue(d[j],dm.getSelectedRowTitles()[i],allColTitles[j]);
+			}
+			//addData(dm.getSelectedRowTitles()[i], d);
 			// this way works too, but is more cumbersome:
 			//addData(dm.getRowTitles()[i], dm.get(dm.getRowTitles()[i]));
 		}
@@ -1241,10 +1311,11 @@ class ML implements ChartMouseListener {
 			
 			LegendItemCollection lic = plot.getLegendItems();
 			
-			XYItemRenderer ren = plot.getRenderer();
+			//XYItemRenderer ren = plot.getRenderer();
+			CategoryItemRenderer ren = plot.getRenderer();
 			
 			Color bgColor = new Color(230,230,230);
-			for (int i = 0; i < dataset.getSeriesCount(); i++) {
+			for (int i = 0; i < dataset.getRowCount(); i++) {
 				try {
 					String s = (String)selHash.get(new Integer(i));
 					if ("~".equals(s)) {

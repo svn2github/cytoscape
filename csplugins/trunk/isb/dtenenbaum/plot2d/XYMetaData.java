@@ -15,6 +15,7 @@ public class XYMetaData {
 	private String x; // these are strings and not doubles
 	private String y; // because of problems with Double.parseInt()
 					  // let the client deal with it. ;)
+					  // hey dumbass, try using Number instead.
 	private String row;
 	private String xTickName = null;
 
