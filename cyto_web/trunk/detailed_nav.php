@@ -50,7 +50,8 @@
 				</h1>
 				<p>
 					<a href="roadmap.php">
-						Cytoscape Roadmap</a>&nbsp;<img src="images/new.gif" border="0">
+						Cytoscape Roadmap
+					</a>
 				<p>
 					<a href="http://cbio.mskcc.org/cytoscape/javadoc/">
 						Cytoscape Javadoc API
