@@ -537,6 +537,9 @@ protected JMenuBar createMenuBar ()
   mi = viewMenu.add (new DisplaySelectedInNewWindowAction ());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_N, ActionEvent.CTRL_MASK));
 
+  mi = viewMenu.add (new CloneGraphInNewWindowAction ());
+  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_K, ActionEvent.CTRL_MASK));
+
   menuBar.add (viewMenu);
 
   JMenu selectiveDisplayMenu = new JMenu ("Select");
@@ -1546,7 +1549,55 @@ protected class DisplaySelectedInNewWindowAction extends AbstractAction   {
 
 } // inner class DisplaySelectedInNewWindowAction
 //------------------------------------------------------------------------------
+protected class CloneGraphInNewWindowAction extends AbstractAction   {
+  CloneGraphInNewWindowAction () { super ("Clone Graph New Window"); }
 
+  public void actionPerformed (ActionEvent e) {
+    cloneWindow ();
+    } // actionPerformed
+
+} // inner class CloneGraphInNewWindowAction
+//------------------------------------------------------------------------------
+/**
+ *  create a new CytoscapeWindow with an exact copy of the current window,
+ *  nodes, edges, and all attributes.  <p>
+ *  as a temporary expedient, this method piggybacks upon the already
+ *  existing and tested 'SelectedSubGraphFactory' class, by first selecting all
+ *  nodes in the current window and then invoking the factory.  when time
+ *  permits, the two stages (select, clone) should be refactored into two 
+ *  independent operations,  probably by creating a GraphFactory class, which
+ *  clones nodes, edges, and attributes.
+ */
+public void cloneWindow ()
+{
+  Node [] nodes = graph.getNodeArray ();
+  for (int i=0; i < nodes.length; i++)
+    graph.setSelected (nodes [i], true);
+  SelectedSubGraphFactory factory = new SelectedSubGraphFactory (graph, nodeAttributes, edgeAttributes);
+  Graph2D subGraph = factory.getSubGraph ();
+  GraphObjAttributes newNodeAttributes = factory.getNodeAttributes ();
+  GraphObjAttributes newEdgeAttributes = factory.getEdgeAttributes ();
+
+  String title = "selection";
+  if (titleForCurrentSelection != null) 
+    title = titleForCurrentSelection;
+  try {
+    boolean requestFreshLayout = true;
+    CytoscapeWindow newWindow =
+        new CytoscapeWindow  (parentApp, config, subGraph, expressionData, 
+                              bioDataServer, newNodeAttributes, newEdgeAttributes, 
+                              "dataSourceName", expressionDataFilename, title, 
+                              requestFreshLayout);
+    subwindows.add (newWindow);
+    graph.unselectAll ();
+    }
+  catch (Exception e00) {
+    System.err.println ("exception when creating new window");
+    e00.printStackTrace ();
+    }
+
+} // cloneWindow
+//------------------------------------------------------------------------------
 class SelectedSubGraphMaker {
 
   Graph2D parentGraph;
