@@ -222,7 +222,7 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
   private static PartialDerivatives calculatePartials
     (PartialDerivatives partials,
      List partialsList,
-     double potentialEnergy,
+     double[] potentialEnergy,
      boolean reversed,
      MutableGraphLayout graph)
   {
@@ -231,6 +231,15 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
     double nodeViewRadius = 0.0;
     double nodeX = graph.getNodePosition(node).getX();
     double nodeY = graph.getNodePosition(node).getY();
+    return null;
+  }
+
+  private static PartialDerivatives moveNode
+    (PartialDerivatives partials,
+     List partialsList,
+     double[] potentialEnergy,
+     MutableGraphLayout graph)
+  {
     return null;
   }
 
@@ -250,7 +259,7 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
       (int) (m_averageIterationsPerNode * m_nodeCount / m_numLayoutPasses);
 
     List partialsList = new ArrayList();
-    double potentialEnergy;
+    double[] potentialEnergy = new double[1];
 
     PartialDerivatives partials;
     PartialDerivatives furthestNodePartials = null;
@@ -293,7 +302,7 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
     for (m_layoutPass = 0; m_layoutPass < m_numLayoutPasses; m_layoutPass++)
     {
       // Initialize this layout pass.
-      potentialEnergy = 0.0;
+      potentialEnergy[0] = 0.0;
       partialsList.clear();
 
       // Calculate all node distances.  Keep track of the furthest.
@@ -301,7 +310,19 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
       {
         partials = new PartialDerivatives(nodeIndex);
         calculatePartials(partials, null, potentialEnergy, false, m_graph);
+        partialsList.add(partials);
+        if ((furthestNodePartials == null) ||
+            (partials.euclideanDistance >
+             furthestNodePartials.euclideanDistance)) {
+          furthestNodePartials = partials; }
       }
+      for (int iterations_i = 0; 
+           (iterations_i < numIterations) &&
+             (furthestNodePartials.euclideanDistance >=
+              euclideanDistanceThreshold);
+           iterations_i++) {
+        furthestNodePartials = moveNode(furthestNodePartials, partialsList,
+                                        potentialEnergy, m_graph); }
     }
   }
 
