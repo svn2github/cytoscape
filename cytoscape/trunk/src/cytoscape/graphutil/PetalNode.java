@@ -845,10 +845,11 @@ public void setLocation (double x, double y)
    * TODO: Reconcile with Border Methods
    * @param width the currently set width of this node
    */
-  public void setWidth ( double width ) {
+  public boolean setWidth ( double width ) {
     view.setNodeDoubleProperty( rootGraphIndex,
                                PGraphView.NODE_WIDTH,
                                width );
+    return true;
   }
 
   /**
@@ -863,10 +864,11 @@ public void setLocation (double x, double y)
    * TODO: Reconcile with Border Methods
    * @param height the currently set height of this node
    */
-  public void setHeight ( double height ) {
+  public boolean setHeight ( double height ) {
     view.setNodeDoubleProperty( rootGraphIndex,
                                PGraphView.NODE_HEIGHT,
                                height );
+    return true;
   }
 
   /**

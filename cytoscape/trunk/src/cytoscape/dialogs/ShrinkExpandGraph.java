@@ -38,7 +38,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import java.util.*;
 
-import giny.view.NodeView;
+import giny.view.*;
 
 import cytoscape.view.NetworkView;
 //--------------------------------------------------------------------------
@@ -50,65 +50,100 @@ import cytoscape.view.NetworkView;
 //    it translates the graph back to the original center
 //
 public class ShrinkExpandGraph extends AbstractAction {
-    protected NetworkView parent;
-    protected double m;
-    ShrinkExpandGraph(NetworkView networkView, String change, double m) {
-	super (change);
-	this.parent = networkView;
-	this.m = m;
+    
+  protected NetworkView parent;
+  protected double m;
+  
+  ShrinkExpandGraph ( NetworkView networkView, String change, double m ) {
+    super (change);
+    this.parent = networkView;
+    this.m = m;
+  }
+   
+  public void actionPerformed(ActionEvent e) {
+    // sum of coordinates
+    double sx = 0;
+    double sy = 0;
+    // coordinates of center of graph
+    double cx = 0;
+    double cy = 0;
+    // size of new graph
+    //double m = .75;
+    // coordinates with graph centered at (0,0)
+    double nx;
+    double ny;
+  
+    GraphView view = parent.getView();
+    int[] nodes = view.getGraphPerspective().getNodeIndicesArray();
+    for ( int i = 0; i < nodes.length; ++i ) {
+      sx += view.getNodeDoubleProperty( nodes[i], GraphView.NODE_X_POSITION ); 
+      sy += view.getNodeDoubleProperty( nodes[i], GraphView.NODE_Y_POSITION );
     }
-    public void actionPerformed(ActionEvent e) {
-	// sum of coordinates
-	double sx = 0;
-	double sy = 0;
-	// coordinates of center of graph
-	double cx = 0;
-	double cy = 0;
-	// size of new graph
-	//double m = .75;
-	// coordinates with graph centered at (0,0)
-	double nx;
-	double ny;
+  
+    // average all coordinates to find center of graph
+    int nodeCount = parent.getView().getNodeViewCount();
+    cx = sx/(nodeCount + 1);
+    cy = sy/(nodeCount + 1);
+
+
+    for ( int i = 0; i < nodes.length; ++i ) {
+      view.setNodeDoubleProperty( nodes[i], 
+                                  GraphView.NODE_X_POSITION, 
+                                  m*( ( view.getNodeDoubleProperty( nodes[i], GraphView.NODE_X_POSITION ) ) - cx ) + cx); 
+      view.setNodeDoubleProperty( nodes[i], 
+                                  GraphView.NODE_Y_POSITION,
+                                  m*( ( view.getNodeDoubleProperty( nodes[i], GraphView.NODE_Y_POSITION ) ) - cy ) + cy); 
+                                  
+    }
+
+    Iterator node_views = view.getNodeViewsIterator();
+    while ( node_views.hasNext() ) {
+      ( ( NodeView )node_views.next() ).setNodePosition( true );
+    }
+
+
+
+
+    // loop through each node to add up all x and all y coordinates
+    // for (Iterator i = parent.getView().getNodeViewsIterator(); i.hasNext(); ){
+// 	    NodeView nodeView = (NodeView)i.next();
+// 	    // get coordinates of node
+// 	    double ax = nodeView.getXPosition();
+// 	    double ay = nodeView.getYPosition();
+// 	    // sum up coordinates of all the nodes
+// 	    sx += ax;
+// 	    sy += ay;
+    //}
+    
+   
+  
+    
+    // set new coordinates of each node at center (0,0), shrink, then return to
+    //  original center at (cx, cy)
+    //for (Iterator i = parent.getView().getNodeViewsIterator(); i.hasNext(); ){
+    // NodeView nodeView = (NodeView)i.next();
+	  //  nodeView.setXPosition(m*((nodeView.getXPosition())-cx) + cx);
+	  //  nodeView.setYPosition(m*((nodeView.getYPosition())-cy) + cy);
+    //}
 	
+    
 
-	// loop through each node to add up all x and all y coordinates
-	for (Iterator i = parent.getView().getNodeViewsIterator(); i.hasNext(); ){
-	    NodeView nodeView = (NodeView)i.next();
-	    // get coordinates of node
-	    double ax = nodeView.getXPosition();
-	    double ay = nodeView.getYPosition();
-	    // sum up coordinates of all the nodes
-	    sx += ax;
-	    sy += ay;
-	}
 
-	// average all coordinates to find center of graph
-        int nodeCount = parent.getView().getNodeViewCount();
-	cx = sx/(nodeCount + 1);
-	cy = sy/(nodeCount + 1);
 
-	// set new coordinates of each node at center (0,0), shrink, then return to
-	//  original center at (cx, cy)
-	for (Iterator i = parent.getView().getNodeViewsIterator(); i.hasNext(); ){
-	    NodeView nodeView = (NodeView)i.next();
-	    nodeView.setXPosition(m*((nodeView.getXPosition())-cx) + cx);
-	    nodeView.setYPosition(m*((nodeView.getYPosition())-cy) + cy);
-	}
-	
-        // remove bends
-        //not clear how to do this in Giny
-        //EdgeCursor cursor = graph.edges();
-        //cursor.toFirst ();
-        //for (int i=0; i < cursor.size(); i++){
-        //    Edge target = cursor.edge();
-        //    EdgeRealizer er = graph.getRealizer(target);
-        //    er.clearBends();
-        //    cursor.cyclicNext();
-        //}
-
-        parent.redrawGraph(false, false);
-    }//Action Performed
-
+    // remove bends
+    //not clear how to do this in Giny
+    //EdgeCursor cursor = graph.edges();
+    //cursor.toFirst ();
+    //for (int i=0; i < cursor.size(); i++){
+    //    Edge target = cursor.edge();
+    //    EdgeRealizer er = graph.getRealizer(target);
+    //    er.clearBends();
+    //    cursor.cyclicNext();
+    //}
+    
+    //parent.redrawGraph(false, false);
+  }//Action Performed
+  
 }//ShrinkExpandGraph class
 
 

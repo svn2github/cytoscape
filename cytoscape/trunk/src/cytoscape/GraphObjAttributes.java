@@ -1298,7 +1298,7 @@ public HashMap getSummary ()
  *
  *  @see #getValue
  */
-public HashMap getAttributes (String canonicalName)
+public HashMap getAttributes  (String canonicalName)
 {
   HashMap bundle = new HashMap ();
   String [] allAttributes = getAttributeNames ();
