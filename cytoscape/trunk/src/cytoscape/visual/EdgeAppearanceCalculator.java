@@ -188,22 +188,29 @@ public class EdgeAppearanceCalculator {
 	    return defaultEdgeFont;
 	}
 	Font f;
+	float defaultSize = defaultEdgeFont.getSize2D();
 	if (edgeFontFaceCalculator == null) { // edgeFontSizeCalculator != null
-	    f = defaultEdgeFont.deriveFont(edgeFontSizeCalculator.calculateEdgeFontSize(edge, network));
-            return (f == null) ? defaultEdgeFont : f;
+	    float fontSize = edgeFontSizeCalculator.calculateEdgeFontSize(edge, network);
+	    if (fontSize == -1)
+		fontSize = defaultSize;
+	    f = defaultEdgeFont.deriveFont(fontSize);
+	    return (f == null) ? defaultEdgeFont : f;
 	}
 	else {
 	    Font g = edgeFontFaceCalculator.calculateEdgeFontFace(edge, network);
-            if (g == null) {
-                return defaultEdgeFont;
-            } else if (edgeFontSizeCalculator == null) {
-                float defaultSize = defaultEdgeFont.getSize2D();
-                f = g.deriveFont(defaultSize);
+	    if (g == null) {
+		g = defaultEdgeFont;
+	    }
+	    if (edgeFontSizeCalculator == null) {
+		f = g.deriveFont(defaultSize);
             } else {
-                f = g.deriveFont(edgeFontSizeCalculator.calculateEdgeFontSize(edge, network));
+		float fontSize = edgeFontSizeCalculator.calculateEdgeFontSize(edge, network);
+		if (fontSize == -1)
+		    fontSize = defaultSize;
+                f = g.deriveFont(fontSize);
             }
 	}
-	return (f == null) ? defaultEdgeFont : f;
+        return (f == null) ? defaultEdgeFont : f;
     }
 
     public String getDefaultEdgeToolTip() {return defaultEdgeToolTip;}
