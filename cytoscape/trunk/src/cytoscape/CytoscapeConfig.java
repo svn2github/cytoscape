@@ -545,11 +545,13 @@ protected void readProjectFile ()
   String [] gmlFiles = parseProjectFileText (lines, "gml");
   String [] noaFiles = parseProjectFileText (lines, "noa");
   String [] edaFiles = parseProjectFileText (lines, "eda");
+  String [] exprFiles = parseProjectFileText (lines, "expr");
   String [] dataServers = parseProjectFileText (lines, "dataServer");
   String [] speciesEntries = parseProjectFileText (lines, "species");
   String [] defaultLayouts = parseProjectFileText (lines, "layout");
   String [] propsFiles = parseProjectFileText (lines, "props");
   String [] vizmapPropsFiles = parseProjectFileText (lines, "vprops");
+  String [] otherArgs = parseProjectFileText (lines, "arg");
 
   if (sifFiles.length >= 1) {
     if (readingFromJar)
@@ -563,6 +565,13 @@ protected void readProjectFile ()
       geometryFilename = gmlFiles [0];
     else
       geometryFilename = absolutizeFilename (projectFileDirectoryAbsolute, gmlFiles [0]);
+    }
+
+  if (exprFiles.length >= 1) {
+    if (readingFromJar)
+      expressionFilename = exprFiles [0];
+    else
+      expressionFilename = absolutizeFilename (projectFileDirectoryAbsolute, exprFiles [0]);
     }
 
   for (int i=0; i < noaFiles.length; i++) {
@@ -612,6 +621,26 @@ protected void readProjectFile ()
 				       projectVizmapPropsFileName + "\n");
   }
 
+  // this is how to pass info on to a plugin.
+  if (otherArgs.length > 0) {
+      int lenOld = argsCopy.length;
+      int lenOther = otherArgs.length;
+      int lenNew = lenOld+lenOther;
+      // first make a copy that is exactly what we had before.
+      String[] argsCopy2;
+      argsCopy2 = new String [lenOld];
+      System.arraycopy (argsCopy, 0, argsCopy2, 0, lenOld);
+      // then make the new one.
+      argsCopy = new String[lenNew];
+      // then copy everything in.
+      System.arraycopy (argsCopy2, 0, argsCopy, 0, lenOld);
+      System.arraycopy (otherArgs, 0, argsCopy, lenOld, lenOther);
+      //
+      // arraycopy arguments, fyi:
+      //
+      // (Obj source, int sourceStart, Obj target, int targetStart, int size)
+      //
+  }
 
 } // readProjectFile
 //---------------------------------------------------------------------------------
