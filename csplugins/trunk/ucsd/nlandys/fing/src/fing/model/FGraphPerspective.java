@@ -849,11 +849,13 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
     return returnThis; }
 
   public boolean isMetaParent(Edge child, Node parent) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+    if (!(child.getRootGraph() == m_root && parent.getRootGraph() == m_root))
+      return false;
+    return isEdgeMetaParent(child.getRootGraphIndex(),
+                            parent.getRootGraphIndex()); }
 
-  public boolean isEdgeMetaParent(int perspChildEdgeInx,
-                                  int perspParentNodeInx) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+  public boolean isEdgeMetaParent(int childEdgeInx, int parentNodeInx) {
+    return isEdgeMetaChild(parentNodeInx, childEdgeInx); }
 
   public java.util.List metaParentsList(Edge edge) {
     throw new UnsupportedOperationException("meta nodes not yet supported"); }
@@ -865,11 +867,11 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
     throw new UnsupportedOperationException("meta nodes not yet supported"); }
 
   public boolean isMetaChild(Node parent, Edge child) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+    return isMetaParent(child, parent); }
 
-  public boolean isEdgeMetaChild(int perspParentNodeInx,
-                                 int perspChildEdgeInx) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+  public boolean isEdgeMetaChild(int parentNodeInx, int childEdgeInx) {
+    return containsNode(parentNodeInx) && containsEdge(childEdgeInx) &&
+      m_root.isEdgeMetaChild(parentNodeInx, childEdgeInx); }
 
   public java.util.List edgeMetaChildrenList(Node node) {
     throw new UnsupportedOperationException("meta nodes not yet supported"); }
