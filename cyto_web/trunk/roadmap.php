@@ -33,7 +33,7 @@
 			discussed. From that meeting, planning and further
 			analysis of goals and priorities has been conducted and
 			a roadmap and project plan are now available.
-			<H3>Cytoscape Roadmap</H2>
+			<H3>Roadmap</H2>
 			The features discussed at the NYC retreat are being
 			developed and made available in two releases,
 			currently scheduled for early February 2005 and 
@@ -50,7 +50,7 @@
 			identified at the retreat. Performance improvements
 			are also planned.  Cytoscape 2.2 is expected to be
 			released in June 2005.
-			<H3>Cytoscape Project Plan</H2>
+			<H3>Project Plan</H2>
 			The Cytoscape Project Plan is regularly updated, 
 			and is available in PDF and GIF formats.
 			<P>The current Project Plan, last updated 5 Nov 2004,
