@@ -9,7 +9,9 @@ class DynamicGraphRepresentation implements DynamicGraph
 
   private int m_nodeCount;
   private Node m_firstNode;
+  private int m_maxNode;
   private int m_edgeCount;
+  private int m_maxEdge;
   private final NodeArray m_nodes;
   private final EdgeArray m_edges;
   private final IntStack m_freeNodes;
@@ -25,7 +27,9 @@ class DynamicGraphRepresentation implements DynamicGraph
   {
     m_nodeCount = 0;
     m_firstNode = null;
+    m_maxNode = -1;
     m_edgeCount = 0;
+    m_maxEdge = -1;
     m_nodes = new NodeArray();
     m_edges = new EdgeArray();
     m_freeNodes = new IntStack();
@@ -83,6 +87,8 @@ class DynamicGraphRepresentation implements DynamicGraph
     final Node n = m_nodes.getNodeAtIndex(node);
     try { n.prevNode.nextNode = n.nextNode; }
     catch (NullPointerException exc) { m_firstNode = n.nextNode; }
+    try { n.nextNode.prevNode = n.prevNode; }
+    catch (NullPointerException exc) { }
     m_nodes.setNodeAtIndex(null, node);
     m_freeNodes.push(node);
     n.nextNode = null; n.prevNode = null;
@@ -94,7 +100,12 @@ class DynamicGraphRepresentation implements DynamicGraph
 
   public int createNode()
   {
-    return -1;
+//     final int returnThis;
+//     if (m_freeNodes.size() > 0) returnThis = m_freeNodes.pop();
+//     else returnThis = ++m_maxNode;
+//     final Node n = m_nodeDepot.getNode();
+//     n.nodeId = returnThis;
+    return -1
   }
 
   public boolean removeEdge(int edge)
@@ -109,8 +120,12 @@ class DynamicGraphRepresentation implements DynamicGraph
     final Node target = m_nodes.getNodeAtIndex(e.targetNode);
     try { e.prevOutEdge.nextOutEdge = e.nextOutEdge; }
     catch (NullPointerException exc) { source.firstOutEdge = e.nextOutEdge; }
+    try { e.nextOutEdge.prevOutEdge = e.prevOutEdge; }
+    catch (NullPointerException exc) { }
     try { e.prevInEdge.nextInEdge = e.nextInEdge; }
     catch (NullPointerException exc) { target.firstInEdge = e.nextInEdge; }
+    try { e.nextInEdge.prevInEdge = e.prevInEdge; }
+    catch (NullPointerException exc) { }
     if (e.directed) { source.outDegree--; target.inDegree--; }
     else { source.undDegree--; target.undDegree--; }
     m_edges.setEdgeAtIndex(null, edge);
