@@ -199,7 +199,7 @@ public class PreferencesDialog extends JDialog {
 	Box propsTableBox = Box.createVerticalBox();
 	propsTablePane.setBorder(BorderFactory.createEmptyBorder(2,9,4,9));
         propsTablePane.getViewport().add(prefsTable, null);
-	prefsTable.setPreferredScrollableViewportSize(new Dimension(400,80));
+	prefsTable.setPreferredScrollableViewportSize(new Dimension(400,100));
 	propsTableBox.add(propsTablePane);
 	propsTableBox.add(Box.createVerticalStrut(5));
         propsTableBox.add(propBtnPane);
