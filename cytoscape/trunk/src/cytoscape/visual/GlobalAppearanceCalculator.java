@@ -7,21 +7,27 @@ package cytoscape.visual;
 //----------------------------------------------------------------------------
 import java.util.Map;
 import java.util.Properties;
+import java.util.ArrayList;
 import java.awt.Color;
 
 import cytoscape.data.CyNetwork;
 import cytoscape.visual.parsers.ColorParser;
 import cytoscape.visual.parsers.ObjectToString;
+
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 //----------------------------------------------------------------------------
 /**
  * This class calculates global visual attributes such as the background
  * color of the graph window. Currently dynamic calculators for these
  * values are not supported, only default values.
  */
-public class GlobalAppearanceCalculator implements Cloneable {
-    
+public class GlobalAppearanceCalculator extends SubjectBase
+        implements Cloneable {
+
     Color defaultBackgroundColor = Color.WHITE;
     Color defaultSloppySelectionColor = Color.GRAY;
+    private ArrayList changeListeners = new ArrayList();
 
     /**
      * Make shallow copy of this object
@@ -38,7 +44,7 @@ public class GlobalAppearanceCalculator implements Cloneable {
      */
     public GlobalAppearanceCalculator(GlobalAppearanceCalculator toCopy) {
         if (toCopy == null) {return;}
-        
+
         setDefaultBackgroundColor( toCopy.getDefaultBackgroundColor() );
         setDefaultSloppySelectionColor( toCopy.getDefaultSloppySelectionColor() );
     }
@@ -50,7 +56,7 @@ public class GlobalAppearanceCalculator implements Cloneable {
                                       String baseKey, CalculatorCatalog catalog) {
         applyProperties(name, gProps, baseKey, catalog);
     }
-    
+
     /**
      * Constructs a new GlobalAppearance object containing the values for
      * the known global visual attributes.
@@ -60,7 +66,7 @@ public class GlobalAppearanceCalculator implements Cloneable {
         calculateGlobalAppearance(appr, network);
         return appr;
     }
-    
+
     /**
      * The supplied GlobalAppearance object will be changed to hold new
      * values for the known global visual attributes.
@@ -70,10 +76,13 @@ public class GlobalAppearanceCalculator implements Cloneable {
         appr.setSloppySelectionColor( calculateSloppySelectionColor(network) );
     }
 
-    
+
     public Color getDefaultBackgroundColor() {return defaultBackgroundColor;}
     public void setDefaultBackgroundColor(Color c) {
-        if (c != null) {defaultBackgroundColor = c;}
+        if (c != null) {
+            defaultBackgroundColor = c;
+            this.fireStateChanged();
+        }
     }
     /**
      * Currently no calculators are supported for global visual attributes,
@@ -82,10 +91,13 @@ public class GlobalAppearanceCalculator implements Cloneable {
     public Color calculateBackgroundColor(CyNetwork network) {
         return defaultBackgroundColor;
     }
-        
+
     public Color getDefaultSloppySelectionColor() {return defaultSloppySelectionColor;}
     public void setDefaultSloppySelectionColor(Color c) {
-        if (c != null) {defaultSloppySelectionColor = c;}
+        if (c != null) {
+            this.fireStateChanged();
+            defaultSloppySelectionColor = c;
+        }
     }
     /**
      * Currently no calculators are supported for global visual attributes,
@@ -121,7 +133,7 @@ public class GlobalAppearanceCalculator implements Cloneable {
     public void applyProperties(String name, Properties nacProps, String baseKey,
                                 CalculatorCatalog catalog) {
         String value = null;
-        
+
         //look for default values
         value = nacProps.getProperty(baseKey + ".defaultBackgroundColor");
         if (value != null) {
@@ -134,7 +146,7 @@ public class GlobalAppearanceCalculator implements Cloneable {
             if (c != null) {setDefaultSloppySelectionColor(c);}
         }
     }
-    
+
     /**
      * Returns a Properties description of this object, suitable for customization
      * by the applyProperties method.
@@ -143,7 +155,7 @@ public class GlobalAppearanceCalculator implements Cloneable {
         String key = null;
         String value = null;
         Properties newProps = new Properties();
-        
+
         //save default values
         key = baseKey + ".defaultBackgroundColor";
         value = ObjectToString.getStringValue( getDefaultBackgroundColor() );

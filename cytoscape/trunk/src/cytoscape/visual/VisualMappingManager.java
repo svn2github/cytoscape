@@ -7,6 +7,7 @@ package cytoscape.visual;
 //----------------------------------------------------------------------------
 import java.util.Iterator;
 import java.util.Properties;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import giny.model.Node;
@@ -18,6 +19,9 @@ import giny.view.EdgeView;
 import cytoscape.data.CyNetwork;
 import cytoscape.view.NetworkView;
 import cytoscape.visual.ui.VizMapUI;
+
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 //----------------------------------------------------------------------------
 /**
  * Top-level class for controlling the visual appearance of nodes and edges
@@ -37,14 +41,14 @@ import cytoscape.visual.ui.VizMapUI;
  * values are then applied to the network by calling the appropriate set
  * methods in the graph view API.
  */
-public class VisualMappingManager {
+public class VisualMappingManager extends SubjectBase {
 
     NetworkView networkView;      //the object displaying the network
     CalculatorCatalog catalog;    //catalog of visual styles and calculators
     VisualStyle visualStyle;      //the currently active visual style
     Logger logger;                //for reporting errors
     VizMapUI vizMapUI;            //the UI, to report visual style changes
-    
+
     public VisualMappingManager(NetworkView networkView,
                                 CalculatorCatalog catalog,
                                 VisualStyle style,
@@ -59,7 +63,7 @@ public class VisualMappingManager {
             setVisualStyle(defStyle);
         }
     }
-    
+
     /**
      * This method should be called after creating the user interface
      * to the vizmapper (which requires this object to be created first).
@@ -76,15 +80,15 @@ public class VisualMappingManager {
 
 
     public NetworkView getNetworkView() {return networkView;}
-    
+
     public CyNetwork getNetwork() {
       return networkView.getNetwork();
     }
-    
+
     public CalculatorCatalog getCalculatorCatalog() {return catalog;}
-    
+
     public VisualStyle getVisualStyle() {return visualStyle;}
-    
+
     /**
      * Sets a new visual style, and returns the old style. Also
      * notifies the UI to update to the new style.
@@ -101,6 +105,7 @@ public class VisualMappingManager {
               vizMapUI.getStyleSelector().setVisualStyle(vs);
             }
             //---
+            this.fireStateChanged();
             return tmp;
         } else {
             String s = "VisualMappingManager: Attempt to set null VisualStyle";
@@ -166,7 +171,7 @@ public class VisualMappingManager {
             Node node = nodeView.getNode();
             NodeAppearance na = new NodeAppearance();
             nodeAppearanceCalculator.calculateNodeAppearance(na,node,network);
-            
+
             nodeView.setUnselectedPaint(na.getFillColor());
             nodeView.setBorderPaint(na.getBorderColor());
             nodeView.setBorder(na.getBorderLineType().getStroke());
@@ -187,7 +192,7 @@ public class VisualMappingManager {
     public void applyEdgeAppearances() {
         CyNetwork network = getNetwork();
         GraphView graphView = networkView.getView();
-        
+
         EdgeAppearanceCalculator edgeAppearanceCalculator =
                 visualStyle.getEdgeAppearanceCalculator();
         for (Iterator i = graphView.getEdgeViewsIterator(); i.hasNext(); ) {
@@ -195,7 +200,7 @@ public class VisualMappingManager {
             Edge edge = edgeView.getEdge();
             EdgeAppearance ea = new EdgeAppearance();
             edgeAppearanceCalculator.calculateEdgeAppearance(ea,edge,network);
-            
+
             edgeView.setUnselectedPaint(ea.getColor());
             edgeView.setStroke(ea.getLineType().getStroke());
             edgeView.setSourceEdgeEnd(ea.getSourceArrow().getGinyArrow());
@@ -218,7 +223,7 @@ public class VisualMappingManager {
                 visualStyle.getGlobalAppearanceCalculator();
         GlobalAppearance ga =
                 globalAppearanceCalculator.calculateGlobalAppearance(network);
-        
+
         graphView.setBackgroundPaint(ga.getBackgroundColor());
         //will ignore sloppy selection color for now
     }
@@ -239,4 +244,3 @@ public class VisualMappingManager {
         /** we rely on the caller to redraw the graph as needed */
   }
 }
-
