@@ -225,11 +225,13 @@ public class ColorToDiscreteDialog extends JDialog {
 	extScrollPanel.add(listScrollPane);
 	c.gridx=0;
 	c.gridy=0;
+	c.gridwidth=2;
 	//c.gridheight=2;
 	gridbag.setConstraints(extScrollPanel,c);
 	popupPanel.add(extScrollPanel);
 
 
+	/*
 	JButton editButton = new JButton ("Edit");
 	editButton.addActionListener (new EditAction ());
 
@@ -239,7 +241,6 @@ public class ColorToDiscreteDialog extends JDialog {
 	gridbag.setConstraints(editButton,c);
 	popupPanel.add(editButton);
 
-	/*
 	JButton newButton = new JButton ("New");
 	newButton.addActionListener (new NewAction ());
 	
@@ -263,6 +264,7 @@ public class ColorToDiscreteDialog extends JDialog {
 
 	c.gridx=0;
 	c.gridy=3;
+	c.gridwidth=1;
 	//c.gridy=1;
 	gridbag.setConstraints(cancelButton,c);
 	popupPanel.add(cancelButton);
