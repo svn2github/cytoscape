@@ -707,6 +707,15 @@ public final class AllGraphPerspectiveMethodsTest
       throw new IllegalStateException("should have returned 0 as target node");
 
     // isEdgeDirected(int).
+    if (persp.isEdgeDirected(edgeInx[1]) ||
+        persp.isEdgeDirected(edgeInx[4]))
+      throw new IllegalStateException("edge is not directed");
+    if (!(persp.isEdgeDirected(edgeInx[0]) &&
+          persp.isEdgeDirected(edgeInx[2]) &&
+          persp.isEdgeDirected(edgeInx[3]) &&
+          persp.isEdgeDirected(edgeInx[5]) &&
+          persp.isEdgeDirected(edgeInx[6])))
+      throw new IllegalStateException("edge is directed");
 
     // isMetaParent(Node, Node).
 
