@@ -184,7 +184,7 @@ import cytoscape.util.Misc;
  * </ol>
  *
  */
-public class GraphObjAttributes implements Cloneable {
+public class GraphObjAttributes implements Cloneable, Serializable {
     // the main data object, a hash of hashes: (attributeName, hash (objName, objValue)).
   HashMap map;
     // map from a graphObject (a node or an edge) to its canonical name
