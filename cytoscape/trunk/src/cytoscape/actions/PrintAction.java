@@ -16,14 +16,7 @@ import phoebe.util.*;
 
 import cytoscape.view.NetworkView;
 
-import org.freehep.graphics2d.VectorGraphics;
 import org.freehep.util.export.ExportDialog;
-
-import org.freehep.graphicsio.pdf.PDFExportFileType;
-import org.freehep.graphicsio.ps.EPSExportFileType;
-import org.freehep.graphicsio.ps.PSExportFileType;
-import org.freehep.graphicsio.svg.SVGExportFileType;
-import org.freehep.graphicsio.java.JAVAExportFileType;
 
 //-------------------------------------------------------------------------
 public class PrintAction extends AbstractAction  {
