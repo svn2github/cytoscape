@@ -1,13 +1,14 @@
 package testPlugin;
 import java.util.*;
 import GenericPlugin.*;
+import cytoscape.Cytoscape;
 import java.io.File;
 import javax.swing.JOptionPane;
 import javax.swing.JFrame;
 
 public class testPlugin extends PluginUtil{
     public testPlugin(){
-	initialize();
+	initialize("testPlugin","this plugin illustrates the use of GenericPlugin");
     }
 
     public HashMap getActions(){
