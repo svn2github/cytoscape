@@ -32,6 +32,6 @@ ${EXP} \
 ../../data/all.edgeattr \
 ${EDGE} \
 testOut \
-test_full_${PATH}_${EXP}_${EDGE}_${TS} 
-#profile 
+test_full_${PATH}_${EXP}_${EDGE}_${TS} \
+profile 
 #STE12candidategenes.txt
