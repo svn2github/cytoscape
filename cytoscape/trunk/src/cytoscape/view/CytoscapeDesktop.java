@@ -159,15 +159,9 @@ public class CytoscapeDesktop
   protected void initialize () {
   
 
-    // try {
-//       Object o = null;
-//       o.toString();
-//     } catch ( Exception e ) {
-//       System.out.println( "GODDAM IT!!!" );
-//       e.printStackTrace();
-//     }
 
-    setIconImage( Toolkit.getDefaultToolkit().getImage( getClass().getResource("images/icon.gif") ) );
+
+    setIconImage( Toolkit.getDefaultToolkit().getImage( getClass().getResource("images/icon16.png") ) );
 
     JPanel main_panel = new JPanel();
 
