@@ -57,7 +57,9 @@ public class GraphProps {
     public String getName(Node node) {
 	String name = nodeAttributes.getCanonicalName(node);
 	if (name == null) {
-	    System.out.println("ERROR: getName for node was called before name attribute was initialized");
+	    // use node label as name
+	    Graph2DView gView = new Graph2DView(graph);
+	    name = graph.getLabelText(node);
 	}
 	return name;
     }

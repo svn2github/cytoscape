@@ -1598,18 +1598,18 @@ protected class SaveAsInteractionsAction extends AbstractAction
 //------------------------------------------------------------------------------
 protected class SaveAsGMLAction extends AbstractAction  
 {
-  SaveAsGMLAction () {super ("As GML..."); }
+  SaveAsGMLAction () {super ("GML..."); }
   public void actionPerformed (ActionEvent e) {
     File currentDirectory = new File (System.getProperty ("user.dir"));
     JFileChooser chooser = new JFileChooser (currentDirectory);
     if (chooser.showSaveDialog (CytoscapeWindow.this) == chooser.APPROVE_OPTION) {
       String name = chooser.getSelectedFile ().toString ();
       if (!name.endsWith (".gml")) name = name + ".gml";
-      GMLIOHandler ioh = new GMLIOHandler ();
-      ioh.write (graphView.getGraph2D (),name);
-      } // if
-    }
-
+      GraphProps props = new GraphProps(graph, nodeAttributes, edgeAttributes);
+      GMLWriter writer = new GMLWriter(props);
+      writer.write(name);
+    } // if
+  }
 } // SaveAsGMLAction
 //------------------------------------------------------------------------------
 protected class LoadGMLFileAction extends AbstractAction {
