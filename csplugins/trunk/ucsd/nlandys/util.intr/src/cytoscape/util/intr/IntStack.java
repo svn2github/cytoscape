@@ -1,5 +1,10 @@
 package cytoscape.util.intr;
 
+/**
+ * A first-in, last-out container of 32 bit integers.  In the underlying
+ * implementation, the memory consumed by an instance of this class may
+ * increase, but does never decrease.
+ */
 public final class IntStack
 {
 
@@ -9,23 +14,37 @@ public final class IntStack
   private int[] m_stack;
   private int m_currentSize;
 
+  /**
+   * Creates a new stack of integers.
+   */
   public IntStack()
   {
     m_stack = new int[DEFAULT_CAPACITY];
     m_currentSize = 0;
   }
 
+  /**
+   * Removes all integers from this stack.  This operation has constant time
+   * complexity.
+   */
   public final void empty()
   {
     m_currentSize = 0;
   }
 
+  /**
+   * Returns the number of integers that are currently on this stack.
+   */
   public final int size()
   {
     return m_currentSize;
   }
 
-  public final void push(int val)
+  /**
+   * Pushes a new integer onto this stack.  A successive peek() or pop()
+   * call will return the specified value.
+   */
+  public final void push(int value)
   {
     try { m_stack[m_currentSize++] = val; }
     catch (ArrayIndexOutOfBoundsException e) {
@@ -34,11 +53,23 @@ public final class IntStack
       m_stack[m_currentSize++] = val; }
   }
 
+  /**
+   * A non-mutating operation to retrieve the next integer on this stack.
+   * It is considered an error to call this method if there are no integers
+   * currently in this stack.  If size() returns zero immediately before this
+   * method is called, the results of this operation are undefined.
+   */
   public final int peek()
   {
     return m_stack[m_currentSize - 1];
   }
 
+  /**
+   * Removes and returns the next integer on this stack.<p>
+   * It is considered an error to call this method if there are no integers
+   * currently in this stack.  If size() returns zero immediately before this
+   * method is called, the results of this operation are undefined.
+   */
   public final int pop()
   {
     try { return m_stack[--m_currentSize]; }
