@@ -451,15 +451,13 @@ class FRootGraph implements RootGraph
   {
     m_hash.empty();
     final IntHash nodeBucket = m_hash;
-    for (int i = 0; i < edgeInx.length; i++)
-    {
+    for (int i = 0; i < edgeInx.length; i++) {
       final int positiveEdge = ~edgeInx[i];
-      if (m_graph.edgeType(positiveEdge) >= 0)
-      {
+      if (positiveEdge < 0) return null;
+      if (m_graph.edgeType(positiveEdge) >= 0) {
         nodeBucket.put(m_graph.sourceNode(positiveEdge));
-        nodeBucket.put(m_graph.targetNode(positiveEdge));
-      }
-    }
+        nodeBucket.put(m_graph.targetNode(positiveEdge)); }
+      else { return null; } }
     final IntEnumerator nodes = nodeBucket.elements();
     final int[] returnThis = new int[nodes.numRemaining()];
     for (int i = 0; i < returnThis.length; i++)
