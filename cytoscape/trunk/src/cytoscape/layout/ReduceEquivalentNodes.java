@@ -49,7 +49,7 @@ public class ReduceEquivalentNodes {
 	    n = nc.node();	
 	    String name = nodeAttributes.getCanonicalName(n);
 	    YList nameTypeList = new YList();
-	    System.out.println("Examining Node # " + i++ + " " + name);
+	    //	    System.out.println("Examining Node # " + i++ + " " + name);
 	    
 	    // examine all of this nodes neighbors
 	    for (EdgeCursor ec = n.edges(); ec.ok(); ec.next()) {
@@ -65,7 +65,7 @@ public class ReduceEquivalentNodes {
 	    
 	    // convert local topology (nameType string) to key
 	    String key = collapseToString(nameTypeList);
-	    System.out.println("  " + key);
+	    //	    System.out.println("  " + key);
 	    node2key.set(n, key);  // record in node map
 
 	    // add this node to hashtable entry for this key
@@ -93,8 +93,11 @@ public class ReduceEquivalentNodes {
 		YCursor yc = listOfNodes.cursor();
 		n = (Node) yc.current();
 		System.out.print(" " + graph.getLabelText(n));
+
 		//props.setName(n, groupString);
 		graph.setLabelText(n, groupString);
+		nodeAttributes.addNameMapping( groupString, n);
+
 		// remove other nodes
 		for (yc.next(); yc.ok(); yc.next()) {
 		    n = (Node) yc.current();

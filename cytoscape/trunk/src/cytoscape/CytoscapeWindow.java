@@ -1416,6 +1416,7 @@ protected class ReduceEquivalentNodesAction extends AbstractAction  {
     } // ctor
    public void actionPerformed (ActionEvent e) {
        new ReduceEquivalentNodes(nodeAttributes, edgeAttributes, graph);
+       redrawGraph();
    }
 }
 
