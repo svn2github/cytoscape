@@ -91,8 +91,7 @@ class DynamicGraphRepresentation implements DynamicGraph
     catch (NullPointerException exc) { }
     m_nodes.setNodeAtIndex(null, node);
     m_freeNodes.push(node);
-    n.nextNode = null; n.prevNode = null;
-    n.firstOutEdge = null; n.firstInEdge = null;
+    n.prevNode = null; n.firstOutEdge = null; n.firstInEdge = null;
     m_nodeDepot.recycleNode(n);
     m_nodeCount--;
     return true;
@@ -100,12 +99,18 @@ class DynamicGraphRepresentation implements DynamicGraph
 
   public int createNode()
   {
-//     final int returnThis;
-//     if (m_freeNodes.size() > 0) returnThis = m_freeNodes.pop();
-//     else returnThis = ++m_maxNode;
-//     final Node n = m_nodeDepot.getNode();
-//     n.nodeId = returnThis;
-    return -1
+    m_nodeCount++;
+    final Node n = m_nodeDepot.getNode();
+    final int returnThis;
+    if (m_freeNodes.size() > 0) returnThis = m_freeNodes.pop();
+    else returnThis = ++m_maxNode;
+    m_nodes.setNodeAtIndex(n, returnThis);
+    n.nextNode = m_firstNode;
+    try { m_firstNode.prevNode = n; } catch (NullPointerException e) { }
+    m_firstNode = n;
+    n.nodeId = returnThis;
+    n.outDegree = 0; n.inDegree = 0; n.undDegree = 0;
+    return returnThis;
   }
 
   public boolean removeEdge(int edge)
@@ -130,8 +135,7 @@ class DynamicGraphRepresentation implements DynamicGraph
     else { source.undDegree--; target.undDegree--; }
     m_edges.setEdgeAtIndex(null, edge);
     m_freeEdges.push(edge);
-    e.nextOutEdge = null; e.prevOutEdge = null;
-    e.nextInEdge = null; e.prevInEdge = null;
+    e.prevOutEdge = null; e.nextInEdge = null; e.prevInEdge = null;
     m_edgeDepot.recycleEdge(e);
     m_edgeCount--;
     return true;

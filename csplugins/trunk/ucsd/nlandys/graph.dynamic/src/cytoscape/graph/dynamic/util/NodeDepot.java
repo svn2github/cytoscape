@@ -12,6 +12,8 @@ final class NodeDepot
 
   // Gimme a node, darnit!
   // Don't forget to initialize the node's member variables!
+  // Node.nextNode is used internally and will point to some undefined node
+  // in the returned Node.
   Node getNode()
   {
     final Node returnThis = m_head.nextNode;
@@ -21,6 +23,7 @@ final class NodeDepot
   }
 
   // Deinitialize the object's members yourself if you need or want to.
+  // node.nextNode is used internally and does not need to be deinitialized.
   void recycleNode(Node node)
   {
     node.nextNode = m_head.nextNode;
