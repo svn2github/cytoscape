@@ -74,8 +74,14 @@ filtersDirectory:
 test: objs
 	(cd unitTests; make)
 	(cd vizmap/unitTests; make)
-	(cd data/unitTests; make)
 	(cd util/unitTests; make)
+	(cd data/unitTests; make)
+	(data/annotation/unitTests; make)
+	(data/annotation/readers/unitTests; make)
+	(data/readers/unitTests; make)
+	(data/servers/unitTests; make)
+	(data/synonyms/unitTests; make)
+	(data/synonyms/readers/unitTests; make)
 
 clean:
 	- rm *.class core
