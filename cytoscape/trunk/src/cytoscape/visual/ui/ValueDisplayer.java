@@ -564,7 +564,46 @@ public class ValueDisplayer extends JButton {
 	    throw new ClassCastException("ValueDisplayer didn't understand type flag " + type);
 	}
     }
-
+    
+    /**
+     * Get a blank or default display/input pair for the given sample object,
+     * which itself is ignored.
+     *
+     *	@param	parent
+     *		The parent dialog for the returned ValueDisplayer
+     *	@param	title
+     *		Title to display for input dialog
+     * @param   o
+     
+     *
+     *	@return	ValueDisplayer initialized for given input
+     *	@throws ClassCastException if you didn't pass in a known type
+     */
+    public static ValueDisplayer getBlankDisplayFor(JDialog parent, String title,
+    Object sampleObj) {
+        if (sampleObj instanceof Color) {
+            return getDisplayForColor(parent, title, null );
+        } else if (sampleObj instanceof LineType) {
+            return getDisplayForIcons(parent, title, null, LINETYPE);
+        } else if (sampleObj instanceof Byte) {
+            return getDisplayForIcons(parent, title, new Byte(ShapeNodeRealizer.ELLIPSE), NODESHAPE);
+        } else if (sampleObj instanceof Arrow) {
+            return getDisplayForIcons(parent, title, Arrow.NONE, ARROW);
+        } else if (sampleObj instanceof String) {
+            return getDisplayForString(parent, title, null );
+        } else if (sampleObj instanceof Number) {
+            if ( sampleObj instanceof Float || sampleObj instanceof Double ) {
+                return getDisplayForDouble(parent, title, 0 );
+            } else {
+                return getDisplayForInt(parent, title, 0 );
+            }	    
+        } else if (sampleObj instanceof Font) {
+	    return getDisplayForFont(parent, title, new Font(null, Font.PLAIN, 1));
+	} else {//don't know what to do this this
+            throw new ClassCastException("ValueDisplayer doesn't know how to display type " + sampleObj.getClass().getName());
+        }
+    }
+    
     /**
      *	Get a display/input pair initialized to a given type of input. If sending
      *	fonts, must send fonts as gotten from {@link java.awt.GraphicsEnvrionment#getAllFonts}
