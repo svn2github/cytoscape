@@ -31,21 +31,9 @@
 //-------------------------------------------------------------------------
 package cytoscape.plugin;
 //-------------------------------------------------------------------------
-import java.util.logging.Logger;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Iterator;
-import java.io.File;
-
-import cytoscape.data.servers.BioDataServer;
-import cytoscape.visual.CalculatorCatalog;
-import cytoscape.visual.CalculatorCatalogFactory;
-import cytoscape.visual.CalculatorIO;
-import cytoscape.jarLoader.JarLoaderCommandLineParser;
-import cytoscape.CyMain;
-import cytoscape.CytoscapeConfig;
-import cytoscape.AbstractPlugin;
-import cytoscape.PluginLoader;
 //-------------------------------------------------------------------------
 /**
  * User: sheridan

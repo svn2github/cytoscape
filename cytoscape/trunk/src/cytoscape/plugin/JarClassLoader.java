@@ -11,7 +11,7 @@ import java.lang.reflect.*;
 import java.util.jar.*;
 import java.util.*;
 
-import cytoscape.AbstractPlugin;
+import cytoscape.plugin.AbstractPlugin;
 import cytoscape.CytoscapeObj;
 import cytoscape.plugin.*;
 

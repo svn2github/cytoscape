@@ -40,6 +40,8 @@ import cytoscape.visual.CalculatorCatalogFactory;
 import cytoscape.visual.CalculatorIO;
 import cytoscape.jarLoader.JarLoaderCommandLineParser;
 import cytoscape.plugin.PluginRegistry;
+import cytoscape.plugin.PluginLoader;
+import cytoscape.plugin.AbstractPlugin;
 //-------------------------------------------------------------------------
 /**
  * An object representing a single instance of Cytoscape. This class holds
