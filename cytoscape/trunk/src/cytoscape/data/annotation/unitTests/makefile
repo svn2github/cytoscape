@@ -21,7 +21,7 @@ OBJS = Utils.class \
 
 default: $(OBJS) run
 
-run: 0 1 2 3 4 5
+run: 0 1 2 3 4
 
 clean:
 	- rm *.class
@@ -62,17 +62,6 @@ clean:
 
 4: AnnotationAndOntologyFullTest.class 
 	$(JI) $(PKG).AnnotationAndOntologyFullTest
-
-
-#------ 5
-#  test separate loading of ontology and annotations which depend on it
-#  also use flat file for annotation.
-#  both of these use attempts to solve the speed & memory problems vividly
-#  experienced when I tried (pshannon: 19 jan 2003) to load GO biological
-#  process annotation for 80,000 human proteins
-
-5: SeparateAnnotationAndOntologyTest.class 
-	$(JI) $(PKG).SeparateAnnotationAndOntologyTest
 
 
 
