@@ -1,0 +1,46 @@
+package cytoscape.graph.dynamic.util.test;
+
+import cytoscape.graph.dynamic.DynamicGraph;
+import cytoscape.graph.dynamic.util.DynamicGraphFactory;
+
+public class AddRemoveTest
+{
+
+  public static void main(String[] args)
+  {
+    final DynamicGraph graph = DynamicGraphFactory.instantiateDynamicGraph();
+    final int[][] nodesArr = new int[][] { new int[10000],
+                                           new int[9998],
+                                           new int[10001] };
+    final int[] edges = new int[100000];
+    final int iterations = 100000;
+    for (int foo = 0; foo < iterations; foo++)
+    {
+      boolean print = false;
+      if (foo % 1 == 0) print = true;
+      if (print) System.out.println("at add/remove iteration " + (foo + 1) +
+                                    " of " + iterations);
+      if (print) System.out.println("creating nodes");
+      final int[] nodes = nodesArr[foo % nodesArr.length];
+      for (int i = 0; i < nodes.length; i++) nodes[i] = graph.createNode();
+      if (print) System.out.println("creating edges");
+      for (int i = 0; i < edges.length; i++)
+        edges[i] = graph.createEdge(nodes[i % nodes.length],
+                                    nodes[(i * 3) % nodes.length],
+                                    true);
+      if (print) System.out.println
+                   ("in graph: " + graph.nodes().numRemaining() +
+                    " nodes and " + graph.edges().numRemaining() + " edges");
+      if (print) System.out.println();
+      if (print) System.out.println("removing edges");
+      for (int i = 0; i < edges.length; i++) graph.removeEdge(edges[i]);
+      if (print) System.out.println("removing nodes");
+      for (int i = 0; i < nodes.length; i++) graph.removeNode(nodes[i]);
+      if (print) System.out.println
+                   ("in graph: " + graph.nodes().numRemaining() +
+                    " nodes and " + graph.edges().numRemaining() + " edges");
+      if (print) System.out.println();
+    }
+  }
+
+}
