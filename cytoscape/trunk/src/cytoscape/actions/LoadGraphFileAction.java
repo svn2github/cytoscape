@@ -81,34 +81,33 @@ public class LoadGraphFileAction extends CytoscapeAction {
         graphFilter.setDescription("All graph files");
 
         // Get the file name
-        final String name;
-        try {
-            name = FileUtil.getFile("Load Graph File",
-                    FileUtil.LOAD,
-                    new CyFileFilter[]{graphFilter, intFilter, gmlFilter}).toString();
-        } catch (Exception exp) {
-            // this is because the selection was canceled
-            return;
-        }
+        File  file = FileUtil.getFile("Load Graph File",
+            FileUtil.LOAD, new CyFileFilter[]
+            {graphFilter, intFilter, gmlFilter});
 
         // if the name is not null, then load
-        if (name != null) {
+        if (file != null) {
             int fileType = Cytoscape.FILE_SIF;
 
             //  long enough to have a "gml" extension
-            if (name.length() > 4) {
+            if (file.getName().length() > 4) {
+                String name = file.getName();
                 String extension = name.substring(name.length() - 3);
                 if (extension.equalsIgnoreCase("gml"))
                     fileType = Cytoscape.FILE_GML;
             }
 
-            final boolean canonicalize = !CytoscapeInit.noCanonicalization();
-            LoadNetworkTask task = new LoadNetworkTask(name, fileType);
+            //  Create LoadNetwork Task
+            LoadNetworkTask task = new LoadNetworkTask(file, fileType);
+
+            //  Configure JTask Dialog Pop-Up Box
             JTaskConfig jTaskConfig = new JTaskConfig();
             jTaskConfig.setOwner(Cytoscape.getDesktop());
             jTaskConfig.displayCloseButton(true);
             jTaskConfig.displayStatus(true);
             jTaskConfig.setAutoDispose(false);
+
+            //  Execute Task in New Thread;  pop open JTask Dialog Box.
             TaskManager.executeTask(task, jTaskConfig);
         }
     }
@@ -118,19 +117,19 @@ public class LoadGraphFileAction extends CytoscapeAction {
  * Task to Load New Network Data.
  */
 class LoadNetworkTask implements Task {
-    private String fileName;
+    private File file;
     private int fileType;
     private TaskMonitor taskMonitor;
 
     /**
      * Constructor.
      *
-     * @param fileName     FileName.
+     * @param file         File.
      * @param fileType     FileType, e.g. Cytoscape.FILE_SIF or
      *                     Cytoscape.FILE_GML.
      */
-    public LoadNetworkTask(String fileName, int fileType) {
-        this.fileName = fileName;
+    public LoadNetworkTask(File file, int fileType) {
+        this.file = file;
         this.fileType = fileType;
     }
 
@@ -145,7 +144,7 @@ class LoadNetworkTask implements Task {
             int root_nodes = Cytoscape.getRootGraph().getNodeCount();
             int root_edges = Cytoscape.getRootGraph().getEdgeCount();
 
-            CyNetwork newNetwork = this.createNetwork(fileName,
+            CyNetwork newNetwork = this.createNetwork(file.getAbsolutePath(),
                     fileType, Cytoscape.getBioDataServer(),
                     CytoscapeInit.getDefaultSpeciesName());
 
@@ -153,11 +152,12 @@ class LoadNetworkTask implements Task {
                 informUserOfGraphStats(root_nodes, root_edges, newNetwork);
             } else {
                 StringBuffer sb = new StringBuffer();
-                sb.append("Could not read graph from file: " + fileName);
+                sb.append("Could not read graph from file: " + file.getName());
                 sb.append("\nThis file may not be a valid GML or SIF file.");
                 taskMonitor.setException(new IOException(sb.toString()),
                         sb.toString());
             }
+            taskMonitor.setPercentCompleted(100);
         } catch (IOException e) {
             taskMonitor.setException(e, "Unable to load graph file.");
         }
@@ -165,10 +165,6 @@ class LoadNetworkTask implements Task {
 
     /**
      * Inform User of Graph Stats.
-     *
-     * @param root_nodes
-     * @param root_edges
-     * @param newNetwork
      */
     private void informUserOfGraphStats(int root_nodes, int root_edges,
             CyNetwork newNetwork) {
@@ -177,8 +173,6 @@ class LoadNetworkTask implements Task {
         int ne = Cytoscape.getRootGraph().getEdgeCount() - root_edges;
 
         StringBuffer sb = new StringBuffer();
-
-        File file = new File(fileName);
 
         //  Give the user some confirmation
         sb.append("Succesfully loaded graph from:  " + file.getName());
@@ -190,7 +184,9 @@ class LoadNetworkTask implements Task {
         //  This code was supposed to display unique nodes, but I think
         //  it's a bit muddled, as it really shows # of nodes that are new
         //  to the root graph perspective, and I am not sure why a user
-        //  would care to know it.  Commented out for now.
+        //  would care to know it.  Commented out for now by
+        //  Ethan Cerami (1/20/05).
+        //
         //        if (newNetwork.getNodeCount() !=  nn
         //            || newNetwork.getEdgeCount() != ne) {
         //            sb.append("\nThere were " + formatter.format(nn)
@@ -207,11 +203,13 @@ class LoadNetworkTask implements Task {
         } else {
             sb.append("Graph is over "
                     + CytoscapeInit.getViewThreshold()
-                    + " nodes.  A view will be not be created."
+                    + " nodes.  A view has not been created."
                     + "  If you wish to view this graph, use "
                     + "\"Create View\" from the \"Edit\" menu.");
-        //            cytoscape.foo.RandomRenderableSubgraphLogic.justDoIt
-        //                    (newNetwork);
+        //  I don't know why we would ever want the feature below.
+        //  Commented out by Ethan Cerami (1/20/05).
+        //  cytoscape.foo.RandomRenderableSubgraphLogic.justDoIt
+        //    (newNetwork);
         }
         taskMonitor.setStatus(sb.toString());
     }
