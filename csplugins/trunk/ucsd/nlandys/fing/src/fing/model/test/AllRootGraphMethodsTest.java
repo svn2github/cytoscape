@@ -32,9 +32,9 @@ public final class AllRootGraphMethodsTest
     if (root.createGraphPerspective(twoNodes, null).getNodeCount() != 2)
       throw new IllegalStateException
         ("GraphPerspective does not have two nodes");
-    if (root.createGraphPerspective(null, twoEdges).getNodeCount() < 2)
+    if (root.createGraphPerspective(null, twoEdges).getEdgeCount() != 2)
       throw new IllegalStateException
-        ("GraphPerspective does not have two nodes");
+        ("GraphPerspective does not have two edges");
     if (root.createGraphPerspective(twoNodes, twoEdges).getNodeCount() < 2)
       throw new IllegalStateException
         ("GraphPerspective has less than two nodes");
@@ -66,9 +66,9 @@ public final class AllRootGraphMethodsTest
     if (root.createGraphPerspective(twoNodeInx, null).getNodeCount() != 2)
       throw new IllegalStateException
         ("GraphPerspective does not have two nodes");
-    if (root.createGraphPerspective(null, twoEdgeInx).getNodeCount() < 2)
+    if (root.createGraphPerspective(null, twoEdgeInx).getEdgeCount() != 2)
       throw new IllegalStateException
-        ("GraphPerspective does not have two nodes");
+        ("GraphPerspective does not have two edges");
     if (root.createGraphPerspective(twoNodeInx, twoEdgeInx).getNodeCount() < 2)
       throw new IllegalStateException
         ("GraphPerspective has less than two nodes");
@@ -88,13 +88,13 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("GraphPerspective is not null");
 
     // getNodeCount() and getEdgeCount().
-    if (root.getNodeCount() < 2 || root.getEdgeCount() < 2)
-      throw new IllegalStateException("too few nodes or edges in RootGraph");
+    if (root.getNodeCount() != 3 || root.getEdgeCount() != 5)
+      throw new IllegalStateException("incorrect nodes or edges count");
 
     // nodesList().
     java.util.List nodesList = root.nodesList();
-    if (nodesList.size() < 2)
-      throw new IllegalStateException("too few nodes in RootGraph");
+    if (nodesList.size() != 3)
+      throw new IllegalStateException("incorrect node List size");
     for (int i = 0; i < nodesList.size(); i++) {
       Node n = (Node) nodesList.get(i); }
 
@@ -108,8 +108,8 @@ public final class AllRootGraphMethodsTest
 
     // edgesList().
     java.util.List edgesList = root.edgesList();
-    if (edgesList.size() < 2)
-      throw new IllegalStateException("too few edges in RootGraph");
+    if (edgesList.size() != 5)
+      throw new IllegalStateException("incorrect edge List size");
     for (int i = 0; i < edgesList.size(); i++) {
       Edge e = (Edge) edgesList.get(i); }
 
@@ -137,6 +137,8 @@ public final class AllRootGraphMethodsTest
   }
 
   private static final void addNodesAndEdges(RootGraph root) {
+    // Don't change this!  Any change here implies re-reading all the test
+    // code above and making appropriate changes there.
     int[] nodeInx = new int[3];
     for (int i = 0; i < nodeInx.length; i++) nodeInx[i] = root.createNode();
     root.createEdge(nodeInx[0], nodeInx[1], true);
