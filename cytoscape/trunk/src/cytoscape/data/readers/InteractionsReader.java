@@ -95,11 +95,6 @@ public void read ()
     allInteractions.addElement (new Interaction (newLine, delimiter));
     }
 
-  //for (int i=0; i < interactions.size (); i++) {
-  //  Interaction inter = (Interaction) allInteractions.elementAt (i);
-  //  System.out.println (inter);
-  //  }
-
   createGraphFromInteractionData ();
 
 }  // readFromFile
