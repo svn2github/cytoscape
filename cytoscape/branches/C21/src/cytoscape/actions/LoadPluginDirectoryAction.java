@@ -78,8 +78,7 @@ public class LoadPluginDirectoryAction extends CytoscapeAction {
             if(!(fileList[i].endsWith(".jar"))) continue;
             String jarString = file.getPath() + slashString + fileList[i];
             try {
-                JarClassLoader jcl = new JarClassLoader("file:" + jarString,
-                        Cytoscape.getCytoscapeObj() );
+              JarClassLoader jcl = new JarClassLoader("file:" + jarString );
                 jcl.loadRelevantClasses();
             }
             catch (Exception e1) {

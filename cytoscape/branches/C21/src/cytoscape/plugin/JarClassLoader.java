@@ -12,7 +12,7 @@ import java.util.jar.*;
 import java.util.*;
 
 import cytoscape.plugin.AbstractPlugin;
-import cytoscape.CytoscapeObj;
+import cytoscape.Cytoscape;
 import cytoscape.plugin.*;
 
 /**
@@ -22,19 +22,18 @@ import cytoscape.plugin.*;
  */
 public class JarClassLoader extends URLClassLoader {
     private URL url;
-    private CytoscapeObj cyObj;
+  
     /**
      * Creates a new JarClassLoader for the specified url.
      *
      * @param urlString the url of the jar file
-     * @param cyObj the shared cytoscape object
      */
-    public JarClassLoader(String urlString, CytoscapeObj cyObj)
-            throws MalformedURLException {
+    public JarClassLoader(String urlString)
+      throws MalformedURLException {
       super(new URL[] { new URL(urlString) },
             JarClassLoader.class.getClassLoader()); 
-      this.cyObj = cyObj;
-        this.url = new URL("jar", "", urlString + "!/");
+      
+      this.url = new URL("jar", "", urlString + "!/");
     }
 
     /**
@@ -124,9 +123,12 @@ public class JarClassLoader extends URLClassLoader {
      */
     public void invokePlugin(String name)
     {
+      
+      System.out.println( "Invoking: "+name );
+
         try {
             Class pluginClass = loadClass(name);
-            cyObj.getPluginRegistry().addPluginToRegistry(pluginClass);
+            Cytoscape.getCytoscapeObj().getPluginRegistry().addPluginToRegistry(pluginClass);
             System.out.println("Loaded plugin: " + name);
         }
         catch (ClassNotFoundException e) {
@@ -138,6 +140,9 @@ public class JarClassLoader extends URLClassLoader {
         }
         catch (PluginAlreadyRegisteredException e) {
             System.err.println("Error: plugin class " + name + " already Registered.\n");
+        } catch ( Exception e ) {
+          System.out.println( "Error Invoking "+name);
+          e.printStackTrace();
         }
     }
 

@@ -117,10 +117,10 @@ public class LoadGraphFileAction extends CytoscapeAction {
         //         networkView.setWindowTitle(name);//and set a new title
 
         //hack to apply layout information from a GML file
-        //if( fileType == Cytoscape.FILE_GML ) {
+        if( fileType == Cytoscape.FILE_GML ) {
           //GMLReader reader = new GMLReader(name);
-        //   Cytoscape.getLastGraphReaderForDoingLayout().layout(networkView.getView());
-        //}
+          Cytoscape.getLastGraphReaderForDoingLayout().layout( Cytoscape.getCurrentNetworkView() );
+        }
 
         //give the user some confirmation
         String lineSep = System.getProperty("line.separator");

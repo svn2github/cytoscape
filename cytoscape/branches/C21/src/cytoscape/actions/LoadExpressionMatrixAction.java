@@ -41,7 +41,7 @@ public class LoadExpressionMatrixAction extends CytoscapeAction {
 	    currentDirectory = chooser.getCurrentDirectory();
       Cytoscape.getCytoscapeObj().setCurrentDirectory(currentDirectory);
 	    String expDataFilename = chooser.getSelectedFile().toString();
-      Cytoscape.loadExpressionData( expDataFilename );
+      Cytoscape.loadExpressionData( expDataFilename, chooser.getWhetherToCopyExpToAttribs() );
     } // if
   } // actionPerformed
     

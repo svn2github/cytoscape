@@ -41,8 +41,7 @@ public class LoadPluginAction extends CytoscapeAction {
       String jarString = file.getPath();
       System.out.println("Chose: " + jarString);
       try {
-        JarClassLoader jcl = new JarClassLoader("file:" + jarString,
-                                                 Cytoscape.getCytoscapeObj() );
+        JarClassLoader jcl = new JarClassLoader("file:" + jarString );
         jcl.loadRelevantClasses();
       }
       catch (Exception e1) {

@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
 import javax.swing.event.SwingPropertyChangeSupport;
 import java.beans.PropertyChangeEvent;
 
@@ -192,7 +193,7 @@ public abstract class Cytoscape {
 
   public static CytoscapeDesktop getDesktop() {
     if ( defaultDesktop == null ) {
-      //System.out.println( " cytoscape.Cytoscape requested Desktop: "+defaultDesktop );
+      System.out.println( " Defaultdesktop created: "+defaultDesktop );
       defaultDesktop = new CytoscapeDesktop( getCytoscapeObj().getConfiguration().getViewType() );
     }
     return defaultDesktop;
@@ -417,45 +418,41 @@ public abstract class Cytoscape {
     return edgeData;
   }
 
+  public static ExpressionData getExpressionData () {
+    return expressionData;
+  }
+
   /**
    * Load Expression Data
    */
-  public static void loadExpressionData ( String filename ) {
-   //  try {
-//       expressionData = new ExpressionData( filename );
-//     } catch (Exception e) {
-//       System.err.println( "Unable to Load Expression Data" );
-//     }
-  
-//      if (validLoad) {
-//         String callerID = "LoadExpressionMatrixAction.actionPerformed";
-//         networkView.getNetwork().beginActivity(callerID);
-//         networkView.getNetwork().setExpressionData(newData);
-//         // rather than depend on the configuration file,
-//         // depend on the ExpFileChooser's checkbox.
-//         //if(config.getWhetherToCopyExpToAttribs()) {
-//         if(chooser.getWhetherToCopyExpToAttribs()) {
-//           newData.copyToAttribs(networkView.getNetwork().getNodeAttributes());
-//           //graph appearances may depend on expression data attributes
-//           networkView.redrawGraph(false, true);
-//         }
-//         networkView.getNetwork().endActivity(callerID);
-//         //display a description of the data in a dialog
-//         String expDescript = newData.getDescription();
-//         String title = "Load Expression Data";
-//         JOptionPane.showMessageDialog(networkView.getMainFrame(),
-//                                       expDescript, title,
-//                                       JOptionPane.PLAIN_MESSAGE);
-//       } else {
-//         //show an error message in a dialog
-//         String errString = "Unable to load expression data from "
-//           + expDataFilename;
-//         String title = "Load Expression Data";
-//         JOptionPane.showMessageDialog(networkView.getMainFrame(),
-//                                       errString, title,
-//                                       JOptionPane.ERROR_MESSAGE);
-//       }
+  //TODO: remove the JOption Pane stuff 
+  public static boolean loadExpressionData ( String filename, boolean copy_atts ) {
+     try {
+       expressionData = new ExpressionData( filename );
+     } catch (Exception e) {
+       System.err.println( "Unable to Load Expression Data" );
+       String errString = "Unable to load expression data from "
+         + filename;
+       String title = "Load Expression Data";
+       JOptionPane.showMessageDialog( getDesktop(),
+                                      errString, 
+                                      title,
+                                      JOptionPane.ERROR_MESSAGE);
+       return false;
+     }
+       
+     if ( copy_atts ) {
+       expressionData.copyToAttribs( getNodeNetworkData() );
+     }
 
+     //display a description of the data in a dialog
+     String expDescript = expressionData.getDescription();
+     String title = "Load Expression Data";
+     JOptionPane.showMessageDialog( getDesktop(),
+                                    expDescript, 
+                                    title,
+                                    JOptionPane.PLAIN_MESSAGE );
+     return true;
   }
 
   /**

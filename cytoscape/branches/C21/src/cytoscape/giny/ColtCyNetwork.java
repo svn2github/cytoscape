@@ -34,12 +34,7 @@ public class ColtCyNetwork
 
   protected String identifier;
 
-  /**
-   * @deprecated
-   */
-  // TODO: replace functionality with NetworkData
-  protected ExpressionData expressionData;
-  
+   
   /**
    * The Network Listeners Set 
    */
@@ -303,7 +298,7 @@ public class ColtCyNetwork
    * Returns the expression data object associated with this network.
    */
   public ExpressionData getExpressionData () {
-    return expressionData;
+    return Cytoscape.getExpressionData();
   }
   
   /**
@@ -311,7 +306,8 @@ public class ColtCyNetwork
    * Sets the expression data object associated with this network.
    */
   public void setExpressionData ( ExpressionData newData ) {
-    this.expressionData = newData;
+    //null?
+    // use Cytoscape.loadExpressionData instead
   }
 
   

@@ -168,6 +168,16 @@ public class CytoscapeDesktop
   
   protected void initialize () {
   
+
+    // try {
+//       Object o = null;
+//       o.toString();
+//     } catch ( Exception e ) {
+//       System.out.println( "GODDAM IT!!!" );
+//       e.printStackTrace();
+//     }
+
+
     JPanel main_panel = new JPanel();
 
     main_panel.setLayout( new BorderLayout() );
@@ -265,6 +275,9 @@ public class CytoscapeDesktop
     // Set up the VizMapper
     setupVizMapper( main_panel );
     
+   //  System.out.println( "Cytoscape Desktop Setup Plugins Called..... " );
+//     setupPlugins();
+
     //------------------------------//
     // Window Closing, Program Shutdown
 
@@ -479,25 +492,8 @@ public class CytoscapeDesktop
   /**
    * Load in the Plugins
    */
-  protected void setupPlugins () {
-    //poll Plugin Registry for immediate plugin load set
-    PluginUpdateList pul = Cytoscape.getCytoscapeObj().getPluginRegistry().getPluginsLoadedSince(0);
-    Class neededPlugin[] = pul.getPluginArray();
-    for (int i = 0; i < neededPlugin.length; i++) {
-      if ( AbstractPlugin.class .isAssignableFrom( neededPlugin[i] ) ) {
-        AbstractPlugin.loadPlugin( neededPlugin[i], 
-                                   Cytoscape.getCytoscapeObj(), 
-                                   ( CyWindow )this);
-      } 
-
-      else if ( CytoscapePlugin.class.isAssignableFrom( neededPlugin[i] ) ) {
-        // System.out.println( "CytoscapePlugin Loaded" );
-        CytoscapePlugin.loadPlugin( neededPlugin[i] );
-      }
-    }
-    lastPluginRegistryUpdate = pul.getTimestamp();
-    //add self as listener to the PluginRegistry from the shared CytoscapeObj
-    Cytoscape.getCytoscapeObj().getPluginRegistry().addPluginListener(this);
+  public void setupPlugins () {
+    updatePlugins();
   }
 
   /**
@@ -505,8 +501,11 @@ public class CytoscapeDesktop
    * currently loaded plugins.
    */
   public void pluginRegistryChanged(PluginEvent event) {
+    updatePlugins();
+  }
+  protected void updatePlugins () {
 
-    System.out.println( "CD PluginRegistry Changed: "+event );
+    // System.out.println( "CD PluginRegistry Changed: "+event );
 
     //poll Plugin Registry for new plugins since last update
     PluginUpdateList pul = Cytoscape.getCytoscapeObj().getPluginRegistry().getPluginsLoadedSince(lastPluginRegistryUpdate);
@@ -514,7 +513,7 @@ public class CytoscapeDesktop
     for (int i = 0; i < neededPlugin.length; i++) {
 
       if ( AbstractPlugin.class .isAssignableFrom( neededPlugin[i] ) ) {
-         System.out.println( "AbstractPlugin Loaded" );
+        // System.out.println( "AbstractPlugin Loaded" );
         AbstractPlugin.loadPlugin( neededPlugin[i], 
                                    Cytoscape.getCytoscapeObj(), 
                                    ( CyWindow )this);

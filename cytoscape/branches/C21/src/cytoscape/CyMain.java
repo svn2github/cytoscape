@@ -116,7 +116,7 @@ public class CyMain implements WindowListener {
 
     //create the global CytoscapeObj object
     CytoscapeObj cytoscapeObj = new CytoscapeObj(this, config, logger, bioDataServer);
-    Cytoscape.setCytoscapeObj( cytoscapeObj );
+    
 
     //get some standard fields for doing name resolution
     boolean canonicalize = Semantics.getCanonicalize( cytoscapeObj );
@@ -138,6 +138,7 @@ public class CyMain implements WindowListener {
                                false,
                                null,
                                null );
+      Cytoscape.getLastGraphReaderForDoingLayout().layout( Cytoscape.getCurrentNetworkView() );
     }
 
     if ( interactionsFilename != null ) {
@@ -166,25 +167,22 @@ public class CyMain implements WindowListener {
     logger.info(" done");
 
 
-    Cytoscape.loadExpressionData( config.getExpressionFilename() );
+    
 
-    //load expression data if specified
-   //  String expDataFilename = config.getExpressionFilename();
-//     if (expDataFilename != null) {
-//       logger.info("reading " + expDataFilename + "...");
-//       try {
-//         ExpressionData expData = new ExpressionData(expDataFilename);
-//         network.setExpressionData(expData);
-//         if (config.getWhetherToCopyExpToAttribs()) {
-//           expData.copyToAttribs( Cytoscape.getNodeNetworkData() );
-//         }
-//       } catch (Exception e) {
-//         logger.severe("Exception reading expression data file '" + expDataFilename + "'");
-//         logger.severe(e.getMessage());
-//         e.printStackTrace();
-//       }
-//       logger.info("  done");
-//     }
+    // load expression data if specified
+    String expDataFilename = config.getExpressionFilename();
+    if (expDataFilename != null) {
+       logger.info("reading " + expDataFilename + "...");
+       try {
+         Cytoscape.loadExpressionData( expDataFilename, config.getWhetherToCopyExpToAttribs() );
+       } catch (Exception e) {
+         logger.severe("Exception reading expression data file '" + expDataFilename + "'");
+         logger.severe(e.getMessage());
+         e.printStackTrace();
+       }
+       logger.info("  done");
+    }
+
     if (splashScreen!=null) {splashScreen.advance(90);}
 
     //create the window
@@ -195,7 +193,9 @@ public class CyMain implements WindowListener {
 
     // cyWindow.showWindow();
 
-   
+
+    
+    Cytoscape.getDesktop().setupPlugins();
 
     if (splashScreen!=null) {splashScreen.advance(100);}
   } // ctor
