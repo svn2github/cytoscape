@@ -40,7 +40,7 @@ public final class IntIntHash
   private int m_prevInx;
 
   /**
-   * Create a new hashtable.
+   * Creates a new hashtable.
    */
   public IntIntHash()
   {
@@ -50,7 +50,7 @@ public final class IntIntHash
   }
 
   /**
-   * Removes all elements from this hashtable.  This operation has
+   * Removes all key/value pairs from this hashtable.  This operation has
    * O(1) time complexity.
    */
   public final void empty()
@@ -61,6 +61,14 @@ public final class IntIntHash
     for (int i = 0; i < m_size; i++) { m_keys[i] = -1; m_vals[i] = -1; }
     m_prevKey = -1;
     m_prevInx = -1;
+  }
+
+  /**
+   * Returns the number of key/value pairs currently in this hashtable.
+   */
+  public final int size()
+  {
+    return m_elements;
   }
 
   /**
@@ -120,10 +128,9 @@ public final class IntIntHash
   /**
    * Returns an enumeration of keys in this hashtable, ordered
    * arbitrarily.<p>
-   * The returned enumeration becomes "invalid" as soon as any other method
-   * on this hashtable instance is called; calling methods on an invalid
-   * enumeration will cause undefined behavior in the enumerator.  Actually,
-   * one method will not invalidate this enumeration: the get(int) method.
+   * The returned enumeration becomes "invalid" as soon as put(int, int) or
+   * empty() is called on this hashtable; calling methods on an invalid
+   * enumeration will cause undefined behavior in the enumerator.
    * The returned enumerator has absolutely no effect on the underlying
    * hashtable.<p>
    * This method returns in constant time.  The returned enumerator
@@ -137,10 +144,9 @@ public final class IntIntHash
   /**
    * Returns an enumeration of values in this hashtable, ordered
    * arbitrarily.<p>
-   * The returned enumeration becomes "invalid" as soon as any other method
-   * on this hashtable instance is called; calling methods on an invalid
-   * enumeration will cause undefined behavior in the enumerator.  Actually,
-   * one method will not invalidate this enumeration: the get(int) method.
+   * The returned enumeration becomes "invalid" as soon as put(int, int) or
+   * empty() is called on this hashtable; calling methods on an invalid
+   * enumeration will cause undefined behavior in the enumerator.
    * The returned enumerator has absolutely no effect on the underlying
    * hashtable.<p>
    * This method returns in constant time.  The returned enumerator
