@@ -39,7 +39,7 @@ import giny.model.*;
 import giny.view.*;
 
 import cytoscape.CytoscapeObj;
-import cytoscape.GraphObjAttributes;
+import cytoscape.data.GraphObjAttributes;
 import cytoscape.view.NetworkView;
 //-------------------------------------------------------------------------
 /**

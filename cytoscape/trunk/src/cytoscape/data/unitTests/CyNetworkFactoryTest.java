@@ -12,7 +12,7 @@ import java.util.*;
 import giny.model.*;
 
 import cytoscape.CyProject;
-import cytoscape.GraphObjAttributes;
+import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.CyNetworkFactory;
 import cytoscape.data.CyNetwork;
 import cytoscape.data.ExpressionData;

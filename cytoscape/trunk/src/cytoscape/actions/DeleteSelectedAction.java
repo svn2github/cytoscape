@@ -14,7 +14,7 @@ import giny.view.GraphView;
 
 import cytoscape.data.CyNetwork;
 import cytoscape.view.NetworkView;
-import cytoscape.GraphObjAttributes;
+import cytoscape.data.GraphObjAttributes;
 //-------------------------------------------------------------------------
 /**
  * Giny version of the original class. Note that the original version was

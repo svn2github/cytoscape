@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
 import java.util.HashMap;
 
 import cytoscape.view.NetworkView;
-import cytoscape.GraphObjAttributes;
+import cytoscape.data.GraphObjAttributes;
 //import cytoscape.dialogs.EdgeControlDialog;
 import cytoscape.dialogs.GinyEdgeControlDialog;
 //-------------------------------------------------------------------------

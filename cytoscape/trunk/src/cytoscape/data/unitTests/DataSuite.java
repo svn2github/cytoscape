@@ -50,6 +50,7 @@ public class DataSuite extends TestCase {
      */
     public static Test suite() {
         TestSuite suite = new TestSuite();
+        suite.addTestSuite(GraphObjAttributesTest.class);
         suite.addTestSuite(ExpressionDataTest.class);
         suite.addTestSuite(InteractionTest.class);
         suite.addTestSuite(mRNAMeasurementTest.class);

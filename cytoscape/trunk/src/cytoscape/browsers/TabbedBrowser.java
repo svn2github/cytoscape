@@ -45,7 +45,7 @@ import java.util.*;
 import java.io.*;
 import java.awt.datatransfer.*;
 
-import cytoscape.GraphObjAttributes;
+import cytoscape.data.GraphObjAttributes;
 import cytoscape.util.*;
 
 

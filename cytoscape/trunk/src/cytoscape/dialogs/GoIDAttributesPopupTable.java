@@ -61,7 +61,7 @@ import java.awt.event.*;
 
 import java.util.Vector;
 
-import cytoscape.GraphObjAttributes;
+import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.servers.*;
 import cytoscape.data.readers.TextFileReader;
 //---------------------------------------------------------------------------------------

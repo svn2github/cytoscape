@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
 import java.io.File;
 
 import cytoscape.CytoscapeObj;
-import cytoscape.GraphObjAttributes;
+import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.view.NetworkView;
 //-------------------------------------------------------------------------

@@ -63,7 +63,7 @@ import java.util.Vector;
 
 import cytoscape.data.*;
 import cytoscape.data.servers.*;
-import cytoscape.GraphObjAttributes;
+import cytoscape.data.GraphObjAttributes;
 //---------------------------------------------------------------------------------------
 public class NodeAttributesPopupTable extends JDialog {
   protected Frame mainFrame;

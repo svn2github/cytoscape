@@ -34,7 +34,7 @@ package cytoscape.data;
 import giny.model.RootGraph;
 
 import cytoscape.CyProject;
-import cytoscape.GraphObjAttributes;
+import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.readers.*;
 import cytoscape.data.servers.BioDataServer;
 import java.util.*;

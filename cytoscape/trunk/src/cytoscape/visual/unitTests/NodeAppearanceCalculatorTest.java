@@ -44,7 +44,7 @@ import giny.model.Node;
 import giny.model.RootGraph;
 import cytoscape.util.GinyFactory;
 
-import cytoscape.GraphObjAttributes;
+import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.CyNetwork;
 import cytoscape.visual.NodeAppearance;
 import cytoscape.visual.NodeAppearanceCalculator;

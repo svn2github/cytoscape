@@ -6,7 +6,7 @@ import java.awt.Color;
 import java.text.DecimalFormat;
 import giny.view.*;
 import giny.model.*;
-import cytoscape.GraphObjAttributes;
+import cytoscape.data.GraphObjAttributes;
 import cytoscape.view.NetworkView;
 /**
  * This class wraps around GMLNode and provides various methods for

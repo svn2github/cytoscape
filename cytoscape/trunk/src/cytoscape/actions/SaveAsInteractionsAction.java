@@ -16,7 +16,7 @@ import giny.model.RootGraph;
 import giny.model.GraphPerspective;
 
 import cytoscape.view.NetworkView;
-import cytoscape.GraphObjAttributes;
+import cytoscape.data.GraphObjAttributes;
 //-------------------------------------------------------------------------
 /**
  *  write out the current graph to the specified file, using the standard

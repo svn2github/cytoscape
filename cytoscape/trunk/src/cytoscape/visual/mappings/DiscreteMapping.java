@@ -14,7 +14,7 @@ import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 
-import cytoscape.GraphObjAttributes;
+import cytoscape.data.GraphObjAttributes;
 import cytoscape.dialogs.MiscGB;
 import cytoscape.dialogs.GridBagGroup;
 import cytoscape.data.CyNetwork;

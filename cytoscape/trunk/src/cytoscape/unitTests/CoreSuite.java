@@ -20,7 +20,6 @@ public class CoreSuite extends TestCase {
     public static Test suite() {
         TestSuite suite = new TestSuite();
         suite.addTestSuite(CytoscapeConfigTest.class);
-        suite.addTestSuite(GraphObjAttributesTest.class);
         suite.addTestSuite(PluginInfoTest.class);
         suite.addTestSuite(PluginLoaderTest.class);
         suite.setName("Core Cytoscape Tests");

@@ -46,7 +46,7 @@ import java.util.*;
 import giny.view.*;
 import giny.model.*;
 
-import cytoscape.GraphObjAttributes;
+import cytoscape.data.GraphObjAttributes;
 import cytoscape.view.NetworkView;
 import cytoscape.actions.GinyUtils;
 //--------------------------------------------------------------------------------------

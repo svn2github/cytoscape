@@ -44,7 +44,7 @@ import giny.model.RootGraph;
 
 import cytoscape.data.Interaction;
 import cytoscape.data.readers.InteractionsReader;
-import cytoscape.GraphObjAttributes;
+import cytoscape.data.GraphObjAttributes;
 import cytoscape.unitTests.AllTests;
 import cytoscape.data.servers.BioDataServer;
 //-----------------------------------------------------------------------------------------

@@ -36,7 +36,7 @@ import java.util.*;
 import giny.model.Edge;
 
 import cytoscape.CytoscapeObj;
-import cytoscape.GraphObjAttributes;
+import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.servers.BioDataServer;
 //-------------------------------------------------------------------------
 /**

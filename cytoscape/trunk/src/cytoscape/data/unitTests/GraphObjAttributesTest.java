@@ -32,14 +32,15 @@
 // $Date$
 // $Author$
 //------------------------------------------------------------------------------
-package cytoscape.unitTests;
+package cytoscape.data.unitTests;
 //------------------------------------------------------------------------------
 import junit.framework.*;
 import java.rmi.*;
 import java.io.*;
 import java.util.*;
 
-import cytoscape.GraphObjAttributes;
+import cytoscape.unitTests.AllTests;
+import cytoscape.data.GraphObjAttributes;
 //------------------------------------------------------------------------------
 public class GraphObjAttributesTest extends TestCase {
 

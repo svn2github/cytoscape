@@ -54,6 +54,7 @@ package cytoscape;
 //-----------------------------------------------------------------------------------
 import java.util.*;
 import java.lang.reflect.*;
+import cytoscape.data.GraphObjAttributes;
 import cytoscape.view.CyWindow;
 //-----------------------------------------------------------------------------------
 public class PluginLoader {

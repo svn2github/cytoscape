@@ -40,13 +40,12 @@
 // $Date$ 
 // $Author$
 //-----------------------------------------------------------------------------------
-package cytoscape;
+package cytoscape.data;
 //--------------------------------------------------------------------------------
 import java.util.*;
 import java.io.*;
 import java.lang.reflect.*;
 
-import cytoscape.data.*;
 import cytoscape.data.readers.*;
 import cytoscape.data.servers.*;
 import cytoscape.util.Misc;

@@ -34,7 +34,7 @@
 //-----------------------------------------------------------------------------
 package cytoscape.data.readers;
 //-----------------------------------------------------------------------------
-import cytoscape.GraphObjAttributes;
+import cytoscape.data.GraphObjAttributes;
 import giny.model.RootGraph;
 //-----------------------------------------------------------------------------
 public interface GraphReader {

@@ -41,7 +41,7 @@ import giny.view.*;
 import cytoscape.data.CyNetwork;
 import cytoscape.util.GinyFactory;
 
-import cytoscape.GraphObjAttributes;
+import cytoscape.data.GraphObjAttributes;
 //-------------------------------------------------------------------------------------
 public class GMLReader implements GraphReader {
     private String filename;

@@ -13,7 +13,7 @@ import giny.model.RootGraph;
 import giny.model.GraphPerspective;
 import giny.view.GraphView;
 
-import cytoscape.GraphObjAttributes;
+import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.CyNetwork;
 import cytoscape.view.CyWindow;
 //-------------------------------------------------------------------------

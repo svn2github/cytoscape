@@ -51,7 +51,7 @@ import giny.view.NodeView;
 import cytoscape.data.annotation.*;
 import cytoscape.data.servers.*;
 //import cytoscape.layout.*;
-import cytoscape.GraphObjAttributes;
+import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.CyNetwork;
 import cytoscape.data.Semantics;
 import cytoscape.view.CyWindow;

@@ -37,7 +37,7 @@ import giny.model.RootGraph;
 import giny.model.GraphPerspective;
 
 import cytoscape.util.GinyFactory; 
-import cytoscape.GraphObjAttributes;
+import cytoscape.data.GraphObjAttributes;
 //-------------------------------------------------------------------------
 /**
  * This object contains a graph and data associated with that graph, and

@@ -39,7 +39,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.event.*;
 
-import cytoscape.GraphObjAttributes;
+import cytoscape.data.GraphObjAttributes;
 import cytoscape.util.MutableString;
 //--------------------------------------------------------------------------------------
 public class LabelTextPanel extends JPanel {

@@ -43,7 +43,7 @@ import giny.model.RootGraph;
 import giny.model.GraphPerspective;
 import cytoscape.util.GinyFactory;
 
-import cytoscape.GraphObjAttributes;
+import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.Interaction;
 import cytoscape.data.*;
 import cytoscape.data.servers.*;

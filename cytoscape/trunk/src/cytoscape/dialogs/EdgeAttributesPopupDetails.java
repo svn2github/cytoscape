@@ -38,6 +38,7 @@
 package cytoscape.dialogs;
 
 import cytoscape.*;
+import cytoscape.data.GraphObjAttributes;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;

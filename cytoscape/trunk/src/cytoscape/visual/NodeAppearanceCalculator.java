@@ -15,7 +15,7 @@ import cytoscape.visual.LineType;
 import cytoscape.visual.Arrow;
 import cytoscape.visual.ShapeNodeRealizer;
 
-import cytoscape.GraphObjAttributes;
+import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.CyNetwork;
 import cytoscape.visual.calculators.*;
 import cytoscape.visual.parsers.*;

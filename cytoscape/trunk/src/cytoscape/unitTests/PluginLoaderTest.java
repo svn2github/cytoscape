@@ -43,7 +43,7 @@ import java.util.*;
 import cytoscape.PluginInfo;
 import cytoscape.PluginLoader;
 import cytoscape.CytoscapeConfig;
-import cytoscape.GraphObjAttributes;
+import cytoscape.data.GraphObjAttributes;
 //------------------------------------------------------------------------------
 public class PluginLoaderTest extends TestCase {
 
