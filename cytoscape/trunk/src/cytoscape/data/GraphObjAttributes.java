@@ -49,13 +49,14 @@ import java.lang.reflect.*;
 import cytoscape.data.readers.*;
 import cytoscape.data.servers.*;
 import cytoscape.util.Misc;
+import cytoscape.task.TaskMonitor;
 //--------------------------------------------------------------------------------
 /**
  * Store multiple attributes of multiple "graph objects" (usually graph nodes
  * or edges) for easy and flexible retrieval.  There are typically two
  * instances of this class associated with every cytoscape graph:  one set of
  * attributes for all of the nodes, and another set of attributes for all the
- * edges.  
+ * edges.
  * <p>
  * It may be useful to understand the implementation of this data structure, at
  * least at a high level, in order to use it effectively.  At the top level
@@ -87,9 +88,9 @@ import cytoscape.util.Misc;
  *   nodeAttributes.set ("gene product",      "GAL4",  "zinc finger transcription factor");
  *   nodeAttributes.set ("gene product",      "GAL80", "transcriptional regulator");
  *
- *   nodeAttributes.append ("SGD summary",       "GAL4", 
+ *   nodeAttributes.append ("SGD summary",       "GAL4",
  *                       "http://genome-www4.stanford.edu/cgi-bin/SGD/locus.pl?locus=gal4");
- *   nodeAttributes.append ("SGD summary",       "GAL4", 
+ *   nodeAttributes.append ("SGD summary",       "GAL4",
  *                       "http://genome-www4.stanford.edu/cgi-bin/SGD/locus.pl?locus=gal80");
  *
  * </pre>
@@ -106,7 +107,7 @@ import cytoscape.util.Misc;
  *   <li> <b>gene product</b>: &nbsp; java.lang.String
  *   <li> <b>SGD summary</b>:  &nbsp; java.net.URL
  * </ol>
- * 
+ *
  * These classes (Double, String, URL) are deduced from the data, but you may
  * also assign attribute classes explicitly:
  * <pre>
@@ -116,7 +117,7 @@ import cytoscape.util.Misc;
  * Each attribute also has a category, which by default is 'unknown', but which
  * may be given any String value.  There is as yet no controlled vocabulary
  * for category names, but here are some suggestions which may be useful:
- * <ul> 
+ * <ul>
  *   <li> <b>annotation</b>: &nbsp; useful if you want to do layout based on
  *        this attribute.  Annotation is an exception to the general rule about
  *        category names:  it is a privileged category, recognized elsewhere
@@ -126,7 +127,7 @@ import cytoscape.util.Misc;
  *   <li> <b>categorizer</b>
  *   <li> <b>static web page</b>
  * </ul>
- * <p> 
+ * <p>
  *  You may use cytoscape.props to specify attribute categories which
  *   are ignored by the NodeBrowser.
  * <p>
@@ -139,7 +140,7 @@ import cytoscape.util.Misc;
  *   int attributeCount = nodeAttributes.numberOfAttributes ();
  *   Vector gal4mRNAList = attributes.getList ("mRNA ratio", "GAL4")
  *     // though all attribute values are really lists, those lists
- *     // often have just one member; if you know in advance that 
+ *     // often have just one member; if you know in advance that
  *     // just a single mRNA ratio was stored for GAL4, and that it is
  *     // a Double, you can use this convenience method:
  *   Double gal4mRNA = attributes.getDoubleValue ("mRNA ratio", "GAL4");
@@ -159,11 +160,11 @@ import cytoscape.util.Misc;
  *
  * Attribute files have the following form:
  * <ol>
- *   <li> a header line, containing at least an attribute name, and optionally 
+ *   <li> a header line, containing at least an attribute name, and optionally
  *        class and category specifications
  *   <li> one or more data lines, of the form &lt;object name&gt; =
  *        &lt;object value&gt;; whitespace may be used for either the name or
- *        the value 
+ *        the value
  *   <li> &lt;object value&gt; may be a scalar (which, however, can include
  *        whitespace for strings) or a list, surrounded by parentheses, with
  *        each scalar delimited by "::"
@@ -173,7 +174,7 @@ import cytoscape.util.Misc;
  *
  * <h4> Attribute File Example 1 </h4>
  * Create a String attribute named "animal species" of unknown category, for
- * four nodes 
+ * four nodes
  * <p>
  * <pre>
  * animal species
@@ -182,11 +183,11 @@ import cytoscape.util.Misc;
  * c = yak
  * d = three-headed wolf
  * </pre>
- * 
+ *
  * <p>
  * <h4> Attribute File Example 2 </h4>
  * Create a URL attribute named "locusLink" of category annotation, for three
- * nodes 
+ * nodes
  * <p>
  * <pre>
  * locusLink (category=annotation) (class=java.net.URL)
@@ -220,6 +221,9 @@ import cytoscape.util.Misc;
  *
  */
 public class GraphObjAttributes implements Cloneable,Serializable {
+    //  Used to Monitor Loading of Attribute Files.
+    private TaskMonitor taskMonitor;
+
     // the main data object, a hash of hashes: (attributeName, hash (objName, objValue)).
     HashMap map;
     // map from a graphObject (a node or an edge) to its canonical name
@@ -230,7 +234,7 @@ public class GraphObjAttributes implements Cloneable,Serializable {
     // what kind of attribute is this?  staticWebPage, annotation, numerical, categorizer, ...
     // these types are -not- from a controlled vocabulary:  they are up to the whim
     // of the user (though standard usages may evolve)
-    HashMap categoryMap;   
+    HashMap categoryMap;
     // keep track of the java class of each of these attributes
     HashMap classMap;
     public final static String DEFAULT_CATEGORY = "unknown";
@@ -244,6 +248,15 @@ public GraphObjAttributes ()
   categoryMap = new HashMap ();
   classMap = new HashMap ();
 }
+
+/**
+ * Sets a TaskMonitor for tracking loading of node attribute files.
+ * @param taskMonitor
+ */
+public void setTaskMonitor(TaskMonitor taskMonitor) {
+    this.taskMonitor = taskMonitor;
+}
+
 //--------------------------------------------------------------------------------
 /**
  *  create an identical and unique copy, so that any subsequent changes to
@@ -280,7 +293,7 @@ public Object clone ()
           Vector list = (Vector) obj;
           Vector clonedList = (Vector) list.clone ();
           singleAttributeHashClone.put (graphObjectNames [j], clonedList);
-          } // if 
+          } // if
         } // for j
       } // for i
     attributesClone.nameFinder  = (HashMap) nameFinder.clone ();
@@ -313,10 +326,10 @@ public void inputAll(GraphObjAttributes newAttributes) {
 //--------------------------------------------------------------------------------
 /**
  *  establish mapping between a java object (a graph node or edge) and
- *  its canonical (standard) name.  
- *  <ul> 
+ *  its canonical (standard) name.
+ *  <ul>
  *    <li> clients of this class (CyWindow, or cytoscape plugins) usually
- *         deal with graph nodes and edges, and only secondarily with names; 
+ *         deal with graph nodes and edges, and only secondarily with names;
  *    <li> attributes are stored and retrieved by canonical name
  *    <li> the client must be able to translate from the node or edge object
  *         to the name, in order to get at the attributes
@@ -396,14 +409,14 @@ public HashMap getObjectMap()
 }
 //--------------------------------------------------------------------------------
 /**
- *  a wholesale addition of all entries in a <graphObject> -> <canonicalName> 
+ *  a wholesale addition of all entries in a <graphObject> -> <canonicalName>
  *  HashMap.
  */
 public void addNameMap (HashMap nameMapping)
 {
- 
+
   nameFinder.putAll (nameMapping);
-  
+
 
   Set keySet = nameMapping.keySet();
   Iterator it = keySet.iterator();
@@ -414,7 +427,7 @@ public void addNameMap (HashMap nameMapping)
       objectMap.put(canonical,graphObj);
   }
   addObjectMap(objectMap);
-  
+
 }
 //--------------------------------------------------------------------------------
 /**
@@ -433,7 +446,7 @@ public void addObjectMap(HashMap objectMapping)
  *  is returned.
  */
 public String getCanonicalName (Object graphObject)
-{ 
+{
   if(nameFinder == null){
     System.out.println("oh oh, nameFinder is NULL !!!!!!!!!!!!!!");
   }
@@ -483,8 +496,8 @@ public void set (GraphObjAttributes attributes)
  *         an exception is thrown if they do not agree
  *  </ul>
  */
-protected void initializeAttributeAsRequired (String attributeName,  
-                                              String graphObjectName, 
+protected void initializeAttributeAsRequired (String attributeName,
+                                              String graphObjectName,
                                               Object obj)
 {
 
@@ -513,11 +526,11 @@ protected void initializeAttributeAsRequired (String attributeName,
     Object first = objAsArray [0];
     actualClass = first.getClass ();
     }
-    
+
   if (actualClass != expectedClass)
     throw new IllegalArgumentException ("class mismatch during set for attribute " +
                                          attributeName + ",\n object: " + graphObjectName +
-                                        "\n expected " + expectedClass + 
+                                        "\n expected " + expectedClass +
                                         "\n got " + actualClass);
 
 } // initializeAttributeAsRequired
@@ -528,7 +541,7 @@ protected void initializeAttributeAsRequired (String attributeName,
  *  a primitive value nor an array of primitves.  if this attribute has not previously
  *  been assigned a class, either explicitly or implicitly, then the class is deduced from
  *  the object (or the first element in the array of objects).  once a class has been
- *  assigned for this attribute, every subsequent addition must be 
+ *  assigned for this attribute, every subsequent addition must be
  *  an object of that same class.
  *
  * @param attributeName    eg, "expression", "GO molecular function level 4", "tissue count"
@@ -554,13 +567,13 @@ public boolean set (String attributeName, String graphObjectName, Object obj)
 
     if (obj == null) return false;
     if(!implementsSerializable(obj.getClass())){
-	throw new IllegalArgumentException("The class " + obj.getClass().getName()+ " of the object that represents the value for the attribute \"" 
+	throw new IllegalArgumentException("The class " + obj.getClass().getName()+ " of the object that represents the value for the attribute \""
 					   + attributeName + "\" must implement java.io.Serializable.");
     }
     initializeAttributeAsRequired (attributeName, graphObjectName, obj);
     HashMap attributeMap = (HashMap) map.get (attributeName);
     attributeMap.put (graphObjectName, obj);
-    
+
     return true;
 
 } // set
@@ -580,7 +593,7 @@ public boolean append (String attributeName, String graphObjectName, Object obj)
     if (obj == null) return false;
 
     if(!implementsSerializable(obj.getClass())){
-	throw new IllegalArgumentException("The class " + obj.getClass().getName()+ " of the object that represents the value for the attribute \"" 
+	throw new IllegalArgumentException("The class " + obj.getClass().getName()+ " of the object that represents the value for the attribute \""
 					   + attributeName + "\" must implement java.io.Serializable.");
     }
   initializeAttributeAsRequired (attributeName, graphObjectName, obj);
@@ -611,7 +624,7 @@ public boolean append (String attributeName, String graphObjectName, Object obj)
 } // append
 //--------------------------------------------------------------------------------
 /**
- *  a convenience method; value will be promoted to Double 
+ *  a convenience method; value will be promoted to Double
  */
 public boolean set (String attributeName, String graphObjectName, double value)
 {
@@ -643,9 +656,9 @@ public boolean set (String graphObjectName, HashMap bundle)
   * @deprecated  use set instead
   * @see #set (GraphObjAttributes)
   */
-public void add (GraphObjAttributes attributes) 
-{ 
-  set (attributes); 
+public void add (GraphObjAttributes attributes)
+{
+  set (attributes);
 }
 //--------------------------------------------------------------------------------
  /**
@@ -654,9 +667,9 @@ public void add (GraphObjAttributes attributes)
   */
 //--------------------------------------------------------------------------------
 public boolean add (String attributeName, String graphObjectName, Object obj)
-{ 
+{
     return set (attributeName, graphObjectName, obj);
-    	
+
 }
 //--------------------------------------------------------------------------------
  /**
@@ -664,8 +677,8 @@ public boolean add (String attributeName, String graphObjectName, Object obj)
   * @see #set (String, String, double)
   */
 public boolean add (String attributeName, String graphObjectName, double value)
-{ 
-  return set (attributeName, graphObjectName, value); 
+{
+  return set (attributeName, graphObjectName, value);
 }
 //--------------------------------------------------------------------------------
  /**
@@ -673,8 +686,8 @@ public boolean add (String attributeName, String graphObjectName, double value)
   * @see #set (String, HashMap)
   */
 public boolean add (String graphObjectName, HashMap bundle)
-{ 
-  return set (graphObjectName, bundle); 
+{
+  return set (graphObjectName, bundle);
 }
 //--------------------------------------------------------------------------------
 /**
@@ -714,7 +727,7 @@ public String [] getObjectNames (String attributeName)
   HashMap attributeMap = getAttribute (attributeName);
   if (attributeMap == null)
     return new String [0];
-  
+
   return (String []) attributeMap.keySet().toArray (new String [0]);
 
 } // getObjectNames
@@ -761,7 +774,7 @@ public String [] getUniqueStringValues (String attributeName)
     return new String [0];
 
   String [] result = new String [objs.length];
-  for (int i=0; i < objs.length; i++) 
+  for (int i=0; i < objs.length; i++)
     result [i] = (String) objs [i];
 
   return result;
@@ -776,13 +789,13 @@ public int getObjectCount (String attributeName)
   HashMap attributeMap = getAttribute (attributeName);
   if (attributeMap == null)
     return 0;
-  
+
   return attributeMap.size ();
 
 } // getObjectCount
 //--------------------------------------------------------------------------------
 /**
- *  assign an arbitrary category name to the specified attribute  
+ *  assign an arbitrary category name to the specified attribute
  */
 public void setCategory (String attributeName, String newValue)
 {
@@ -798,7 +811,7 @@ public String getCategory (String attributeName)
 }
 //--------------------------------------------------------------------------------
 /**
- *  
+ *
  */
 public boolean hasAttribute (String attributeName)
 {
@@ -806,7 +819,7 @@ public boolean hasAttribute (String attributeName)
 }
 //--------------------------------------------------------------------------------
 /**
- *  
+ *
  */
 public boolean hasAttribute (String attributeName, String graphObjName)
 {
@@ -819,7 +832,7 @@ public boolean hasAttribute (String attributeName, String graphObjName)
 }
 //--------------------------------------------------------------------------------
 /**
- *  return a hash whose keys are graphObjectName Strings, and whose values are 
+ *  return a hash whose keys are graphObjectName Strings, and whose values are
  *  a Vector of java objects the class of these objects, and
  *  the category of the attribute (annotation, data, URL) may be learned
  *  by calling getClass and getCategory
@@ -829,7 +842,7 @@ public boolean hasAttribute (String attributeName, String graphObjName)
  *
  *  @see #getClass
  *  @see #getCategory
- *  
+ *
  */
 public HashMap getAttribute (String attributeName)
 {
@@ -868,7 +881,7 @@ public void deleteAttributeValue (String attributeName, String graphObjectName, 
 {
   if (!hasAttribute (attributeName)) return;
   Vector list = (Vector) getList (attributeName, graphObjectName);
- 
+
   if (list.contains (value))
      list.remove (value);
 
@@ -886,7 +899,7 @@ public boolean setClass (String attributeName, Class attributeClass)
     }else{
 	throw new IllegalArgumentException("Attribute class " + attributeClass.toString() + " must implement java.io.Serializable");
     }
-	
+
 }
 //--------------------------------------------------------------------------------
 /**
@@ -915,16 +928,16 @@ public Vector getList (String attributeName, String graphObjectName)
 
   if (!attributeMap.containsKey (graphObjectName))
     return new Vector ();
- 
+
    Object obj = attributeMap.get (graphObjectName);
    Vector tmp = new Vector ();
    if (obj.getClass() != tmp.getClass ()) {
      tmp.add (obj);
      return tmp;
      }
-   else 
+   else
      return (Vector) attributeMap.get (graphObjectName);
-    
+
 } // getList
 //--------------------------------------------------------------------------------
 /**
@@ -939,14 +952,14 @@ public Object getValue (String attributeName, String graphObjectName)
 }
 public Object get (String attributeName, String graphObjectName)
 {
-   
+
   HashMap attributeMap = (HashMap) map.get (attributeName);
   if (attributeMap == null)
     return null;
 
   if (!attributeMap.containsKey (graphObjectName))
     return null;
- 
+
    return attributeMap.get (graphObjectName);
 
 } // getValue
@@ -957,7 +970,7 @@ public Object get (String attributeName, String graphObjectName)
 public Object [] getArrayValues (String attributeName, String graphObjectName)
 {
   Vector list = (Vector) getList (attributeName, graphObjectName);
-  if (list == null) 
+  if (list == null)
      return new Object [0];
 
   Object [] result = (Object []) list.toArray (new Object [0]);
@@ -971,7 +984,7 @@ public Object [] getArrayValues (String attributeName, String graphObjectName)
 public String [] getStringArrayValues (String attributeName, String graphObjectName)
 {
   Vector list = (Vector) getList (attributeName, graphObjectName);
-  if (list == null) 
+  if (list == null)
      return new String [0];
 
   String [] result = (String []) list.toArray (new String [0]);
@@ -985,8 +998,8 @@ public String [] getStringArrayValues (String attributeName, String graphObjectN
  */
 public Double getDoubleValue (String attributeName, String graphObjectName)
 {
-  Object object = getValue (attributeName, graphObjectName); 
-  if (object == null) 
+  Object object = getValue (attributeName, graphObjectName);
+  if (object == null)
     return null;
 
   try {
@@ -1001,7 +1014,7 @@ public Double getDoubleValue (String attributeName, String graphObjectName)
    catch (ClassNotFoundException shouldNeverOccur) {;}
 
    return (Double) object;
-  
+
 } // getDoubleValue
 //--------------------------------------------------------------------------------
 /**
@@ -1010,8 +1023,8 @@ public Double getDoubleValue (String attributeName, String graphObjectName)
  */
 public Integer getIntegerValue (String attributeName, String graphObjectName)
 {
-  Object object = getValue (attributeName, graphObjectName); 
-  if (object == null) 
+  Object object = getValue (attributeName, graphObjectName);
+  if (object == null)
     return null;
 
   try {
@@ -1026,7 +1039,7 @@ public Integer getIntegerValue (String attributeName, String graphObjectName)
    catch (ClassNotFoundException shouldNeverOccur) {;}
 
    return (Integer) object;
-  
+
 } // getIntegerValue
 //--------------------------------------------------------------------------------
 /**
@@ -1074,8 +1087,8 @@ public String processFileHeader (String text)
 {
   String attributeName = "";
   String attributeCategory = DEFAULT_CATEGORY;
-  Class  attributeClass = null; 
-  
+  Class  attributeClass = null;
+
   if (text.indexOf ("(") < 0)
    attributeName = text.trim ();
   else {
@@ -1110,13 +1123,13 @@ public String processFileHeader (String text)
 } // processFileHeader
 //--------------------------------------------------------------------------------
 public void readAttributesFromFile (String filename)
-   throws FileNotFoundException, IllegalArgumentException, NumberFormatException
+   throws IOException, IllegalArgumentException, NumberFormatException
 {
   readAttributesFromFile (null, "unknown",  filename, true);
 }
 //--------------------------------------------------------------------------------
 public void readAttributesFromFile (File file)
-   throws FileNotFoundException, IllegalArgumentException, NumberFormatException
+   throws IOException, IllegalArgumentException, NumberFormatException
 {
   readAttributesFromFile (null, "unknown",  file.getPath (), true);
 }
@@ -1154,7 +1167,7 @@ static public Class deduceClass (String string)
       }
     } // for i
 
-  return null;   
+  return null;
 
 } // deduceClass
 //--------------------------------------------------------------------------------
@@ -1162,9 +1175,9 @@ static public Class deduceClass (String string)
  *  given a string and a class, dynamically create an instance of that class from
  *  the string
  */
-static public Object createInstanceFromString (Class requestedClass, String ctorArg) 
+static public Object createInstanceFromString (Class requestedClass, String ctorArg)
    throws Exception
-          
+
 {
   Class [] ctorArgsClasses = new Class [1];
   ctorArgsClasses [0] =  Class.forName ("java.lang.String");
@@ -1174,12 +1187,13 @@ static public Object createInstanceFromString (Class requestedClass, String ctor
   return ctor.newInstance (ctorArgs);
 
 } // createInstanceFromString
+
 //--------------------------------------------------------------------------------
 /**
- *  read attributes from a file.  there is one basic format for attribute files,
- *  but a few aspects of the format are flexible.
+ *  Reads attributes from a file.  There is one basic format for attribute
+ *  files, but a few aspects of the format are flexible.
  *
- *  the simplest form looks like this:
+ *  The simplest form looks like this:
  *  <pre>
  *  expresssion ratio
  *  geneA = 0.1
@@ -1187,99 +1201,118 @@ static public Object createInstanceFromString (Class requestedClass, String ctor
  *  ...
  *  geneZ = 23.2
  *  </pre>
- *  In this form, the reader
- *  <p>
- *
  */
-public void readAttributesFromFile (BioDataServer dataServer, String species, String filename, boolean canonicalize)
-   throws FileNotFoundException, IllegalArgumentException, NumberFormatException
-{
+public void readAttributesFromFile(BioDataServer dataServer, String species,
+        String filename, boolean canonicalize) throws IOException,
+        IllegalArgumentException, NumberFormatException {
 
-  String rawText;
-  try {
-    if (filename.trim().startsWith ("jar://")) {
-      TextJarReader reader = new TextJarReader (filename);
-      reader.read ();
-      rawText = reader.getText ();
-      }
-    else {
-      TextFileReader reader = new TextFileReader (filename);
-      reader.read ();
-      rawText = reader.getText ();
-      }
-    }
-  catch (Exception e0) {
-    System.err.println ("-- Exception while reading attributes file " + filename);
-    System.err.println (e0.getMessage ());
-    e0.printStackTrace();
-    return;
+    if (taskMonitor != null) {
+        taskMonitor.setStatus("Importing Attributes...");
     }
 
-  StringTokenizer lineTokenizer = new StringTokenizer (rawText, "\n");
-
-  int lineNumber = 0;
-  if (lineTokenizer.countTokens () < 2) 
-    throw new IllegalArgumentException (filename + " must have at least 2 lines");
-
-  String attributeName = processFileHeader (lineTokenizer.nextToken().trim ());
-  boolean extractingFirstValue = true; 
-  boolean attributeHasStringValue = true;   // he default
-
-  while (lineTokenizer.hasMoreElements ()) {
-    String newLine = (String) lineTokenizer.nextElement ();
-    if (newLine.trim().startsWith ("#")) continue;
-    lineNumber++;
-    StringTokenizer strtok2 = new StringTokenizer (newLine, "=");
-    if (strtok2.countTokens () < 2)
-      throw new IllegalArgumentException ("cannot parse line number " + lineNumber +
-                                          ":\n\t" + newLine);
-    String graphObjectName = strtok2.nextToken().trim();
-    if (canonicalize && dataServer != null){
-      graphObjectName = dataServer.getCanonicalName (species, graphObjectName);
-    }
-    // System.out.println ("--- reading attribute for graphObjectName: " + graphObjectName);
-    String rawString = newLine.substring (newLine.indexOf ("=") + 1).trim();
-    String [] rawList;
-    boolean isList = false;
-    if (Misc.isList (rawString, "(", ")", "::")) {
-      rawList = Misc.parseList (rawString, "(", ")", "::");
-      isList = true;
-      }
-    else {
-      rawList = new String [1];
-      rawList [0] = rawString;
-      }
-    if (extractingFirstValue && getClass (attributeName) == null) {
-      extractingFirstValue = false;  // henceforth
-      Class deducedClass = deduceClass (rawList [0]);
-      setClass (attributeName, deducedClass); // ***** Could fail ******* //
-      }
-    Object [] objs = new Object [rawList.length];
-    Class stringClass = (new String()).getClass();
-
-    if (getClass(attributeName).equals(stringClass)) {
-	for (int i=0; i < rawList.length; i++) {
-	    rawList[i] = rawList[i].replaceAll("\\\\n", "\n");
-	}
+    String rawText;
+    if (filename.trim().startsWith("jar://")) {
+        TextJarReader reader = new TextJarReader(filename);
+        reader.read();
+        rawText = reader.getText();
+    } else {
+        TextFileReader reader = new TextFileReader(filename);
+        reader.read();
+        rawText = reader.getText();
     }
 
-    for (int i=0; i < rawList.length; i++) {
-      try {
-	objs [i] = createInstanceFromString (getClass (attributeName), rawList [i]);
-        if (isList)
-          append (attributeName, graphObjectName, objs [i]);
-        else 
-          set (attributeName, graphObjectName, objs [i]);
+    StringTokenizer lineTokenizer = new StringTokenizer(rawText, "\n");
+
+    int lineNumber = 0;
+    if (lineTokenizer.countTokens() < 2) {
+        throw new IllegalArgumentException
+                (filename + " must have at least 2 lines");
+    }
+
+    String attributeName = processFileHeader
+            (lineTokenizer.nextToken().trim());
+    boolean extractingFirstValue = true;
+
+    int numTokens = lineTokenizer.countTokens();
+
+    while (lineTokenizer.hasMoreElements()) {
+        String newLine = (String) lineTokenizer.nextElement();
+
+        //  Track Progress
+        if (taskMonitor != null) {
+            double percent = ((double) lineNumber / numTokens) * 100.0;
+            taskMonitor.setPercentCompleted((int) percent);
         }
-      catch (Exception e) {
-        throw new IllegalArgumentException ("\tcould not create an instance of\n" +
-                                            getClass (attributeName) + " from\n" +
-                                            rawList [i]);
-        } // catch
-      } // for i
-    } // while strtok finds new lines
 
-} // readAttributesFromFile
+        if (newLine.trim().startsWith("#")) continue;
+        lineNumber++;
+        StringTokenizer strtok2 = new StringTokenizer(newLine, "=");
+        if (strtok2.countTokens() < 2) {
+            throw new IOException
+                    ("Cannot parse line number " + lineNumber
+                    + ":\n\t" + newLine + ".  This may not be a valid "
+                    + "attributes file.");
+        }
+        String graphObjectName = strtok2.nextToken().trim();
+        if (canonicalize && dataServer != null) {
+            graphObjectName = dataServer.getCanonicalName
+                    (species, graphObjectName);
+        }
+
+        String rawString = newLine.substring(newLine.indexOf("=") + 1).trim();
+        String[] rawList;
+        boolean isList = false;
+        if (Misc.isList(rawString, "(", ")", "::")) {
+            rawList = Misc.parseList(rawString, "(", ")", "::");
+            isList = true;
+        } else {
+            rawList = new String[1];
+            rawList[0] = rawString;
+        }
+        if (extractingFirstValue && getClass(attributeName) == null) {
+            extractingFirstValue = false;  // henceforth
+            Class deducedClass = deduceClass(rawList[0]);
+            setClass(attributeName, deducedClass); // ***** Could fail ******* //
+        }
+        Object[] objs = new Object[rawList.length];
+        Class stringClass = (new String()).getClass();
+
+        if (getClass(attributeName).equals(stringClass)) {
+            for (int i = 0; i < rawList.length; i++) {
+                rawList[i] = rawList[i].replaceAll("\\\\n", "\n");
+            }
+        }
+
+        for (int i = 0; i < rawList.length; i++) {
+            try {
+                objs[i] = createInstanceFromString
+                        (getClass(attributeName), rawList[i]);
+                if (isList) {
+                    append(attributeName, graphObjectName, objs[i]);
+                } else {
+                    set(attributeName, graphObjectName, objs[i]);
+                }
+            } catch (Exception e) {
+                throw new IllegalArgumentException
+                        ("Could not create an instance of " +
+                        getClass(attributeName) + " from " + rawList[i]);
+            }
+        }
+    }
+
+    //  Inform User of What Just Happened.
+    if (taskMonitor != null) {
+        File  file = new File (filename);
+        taskMonitor.setPercentCompleted (100);
+        StringBuffer sb = new StringBuffer();
+        sb.append("Succesfully loaded attributes from:  "
+                + file.getName());
+        sb.append("\n\nAttribute Name:  " + attributeName);
+        sb.append("\n\nNumber of Attributes:  " + lineNumber);
+        taskMonitor.setStatus(sb.toString());
+    }
+}
+
 //--------------------------------------------------------------------------------
 /**
  *  return attributeName/attributeClass pairs, for every known attribute
@@ -1329,7 +1362,7 @@ public HashMap getAttributes  (String canonicalName)
  *    VNG0382G (geneFusion) VNG1232G
  *  </pre>
  * the first pair encountered may be give the name
- *  
+ *
  *  <pre>
  *    VNG0382G (geneFusion) VNG1230G
  *  </pre>
@@ -1338,7 +1371,7 @@ public HashMap getAttributes  (String canonicalName)
  *  <pre>
  *    VNG0382G (geneFusion) VNG1230G_1
  *  </pre>
- * this method provides a count of matches based on 
+ * this method provides a count of matches based on
  * String.startsWith ("VNG0382G (geneFusion) VNG1230G") which solves the problem
  * of all subsequent duplicates simply append a number to the base name.
  * <p>
@@ -1346,19 +1379,19 @@ public HashMap getAttributes  (String canonicalName)
  * and then is expected to append "_N" where N is the value returned here
  * (and of course, if the result is 0, there is no need to append '_0'
  */
-public int countIdentical (String graphObjectName)  
+public int countIdentical (String graphObjectName)
 {
     if(countIdMap == null){
 	countIdMap = new HashMap();
     }
     Integer count = (Integer) countIdMap.get (graphObjectName);
-    if (count == null) 
+    if (count == null)
 	count = new Integer(0);
-    
+
     // update the counter as well
     countIdMap.put (graphObjectName, new Integer (count.intValue() + 1));
     return count.intValue();
-} 
+}
 //--------------------------------------------------------------------------------
 /**
  *  create a human readable version.
@@ -1374,7 +1407,7 @@ public String toString ()
     sb.append ("\n");
     sb.append (strtok.nextToken ());
     }
-  
+
   String [] names = getAttributeNames ();
   sb.append ("\n-- attributes: " + names.length + "\n");
   for (int i=0; i < names.length; i++) {
@@ -1407,17 +1440,17 @@ public String toString ()
  * Whether or not the given class implements java.io.Serializable
  */
 protected boolean implementsSerializable(Class objClass){
-    
+
     if(objClass == null){
 	return false;
     }
-    
+
     Class [] interfaces = objClass.getInterfaces();
     Class serializable = null;
     try{
 	serializable = Class.forName("java.io.Serializable");
     }catch(ClassNotFoundException e){;}
-	
+
     for(int i = 0; i < interfaces.length; i++){
 	if(serializable.isAssignableFrom(interfaces[i])){
 	    return true;
@@ -1426,7 +1459,7 @@ protected boolean implementsSerializable(Class objClass){
 
     // if we got here, that means that this class does not implement Serializable, but maybe its parent does
     return implementsSerializable(objClass.getSuperclass());
-	
+
 }//implementsSerializable
 //--------------------------------------------------------------------------------
 public static String [] unpackPossiblyCompoundStringAttributeValue (Object value)
@@ -1436,16 +1469,16 @@ public static String [] unpackPossiblyCompoundStringAttributeValue (Object value
     if (value.getClass () == Class.forName ("java.lang.String")) {
       result = new String [1];
       result [0] = (String) value;
-      }    
+      }
     else if (value.getClass () == Class.forName ("[Ljava.lang.String;")) {
-      result = (String []) value; 
+      result = (String []) value;
       }
     else if (value.getClass () == Class.forName ("java.util.Vector")) {
       Vector tmp = (Vector) value;
       result = (String []) tmp.toArray (new String [0]);
       }
     else {
-      String msg = "AnnotationGui.unpackPossiblyCompoundAttributeValue, unrecognized class: " + 
+      String msg = "AnnotationGui.unpackPossiblyCompoundAttributeValue, unrecognized class: " +
                    value.getClass ();
       System.err.println (msg);
       }
