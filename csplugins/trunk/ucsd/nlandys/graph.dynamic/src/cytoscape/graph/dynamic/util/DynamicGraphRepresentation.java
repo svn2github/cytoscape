@@ -227,15 +227,16 @@ class DynamicGraphRepresentation implements DynamicGraph
           while (edge == null) edge = edgeLists[++edgeListIndex];
           int returnThis = -1;
           if (edgeListIndex == 0) {
-            while (!((outgoing && edge.directed) ||
+            while (edge != null &&
+                   !((outgoing && edge.directed) ||
                      (undirected && !edge.directed))) {
+              edge = edge.nextOutEdge;
               if (edge == null) {
                 edge = edgeLists[++edgeListIndex];
-                break; }
-              edge = edge.nextOutEdge; }
-            // This may not be what we're returning.
-            returnThis = edge.edgeId;
-            edge = edge.nextOutEdge; }
+                break; } }
+            if (edge != null && edgeListIndex == 0) {
+              returnThis = edge.edgeId;
+              edge = edge.nextOutEdge; } }
           if (edgeListIndex == 1) {
             while (!((incoming && edge.directed) ||
                      (undirected && !edge.directed))) {
