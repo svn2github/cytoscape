@@ -87,16 +87,17 @@ public class AttributeLayout {
         RootGraph rootGraph = cyWindow.getNetwork().getRootGraph();
         if (categoryNodes != null) {
             for (int i=0; i<categoryNodes.length; i++) {
-              rootGraph.removeNode(categoryNodes[i]);
+                rootGraph.removeNode(categoryNodes[i]);
             }
             categoryNodes = null;//explicitly discard the array
         }
         if (createdEdges != null) {
             for (int i=0; i<createdEdges.length; i++) {
-              rootGraph.removeEdge(createdEdges[i]);
+                rootGraph.removeEdge(createdEdges[i]);
             }
             createdEdges = null;//explicitly discard the array
         }
+        cyWindow.redrawGraph(false, false); //forces update of the UI
     }
     
     /**
@@ -201,11 +202,9 @@ public class AttributeLayout {
         }
         for (Iterator vi = realView.getNodeViewsIterator(); vi.hasNext(); ) {
             NodeView nv = (NodeView)vi.next();
-            NodeView layoutV = layoutView.getNodeView( nv.getNode() );
             nv.setNodePosition( true );
         }
         
-
         cyWindow.redrawGraph(false, true);
         realView.fitContent();
     }
