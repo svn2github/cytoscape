@@ -155,8 +155,9 @@ public interface DynamicGraph
    * I assume that most implementations of this interface will implement
    * this method in terms of adjacentEdges().  Why, then, is this method
    * necessary?  Because some implementations may choose to optimize the
-   * implementation of this method by using a binary search tree, for
-   * example.  Therefore, this method is a hook to provide such optimization.
+   * implementation of this method by using a binary search tree or a
+   * hashtable, for example.  This method is a hook to provide such
+   * optimization.<p>
    * This method returns an IntIterator as opposed to an IntEnumerator
    * so that non-optimized implementations would not be required to
    * pre-compute the number of edges being returned.
@@ -180,6 +181,10 @@ public interface DynamicGraph
    *   specified by boolean input parameters or null if either of node0 or
    *   node1 does not exist in this graph.
    * @exception IllegalArgumentException if node0 or node1 is negative.
+   * @deprecated This method may go away at some point; please use
+   *   adjacentEdges(int, boolean, boolean, boolean) where it is reasonable
+   *   to do so.
+   * @see #adjacentEdges(int, boolean, boolean, boolean)
    */
   public IntIterator connectingEdges(int node0, int node1,
                                      boolean outgoing, boolean incoming,
