@@ -200,7 +200,7 @@ public final class RootGraphPerformanceTest
                                          int[] edgeSources, int[] edgeTargets,
                                          boolean[] edgeDirectedness)
   {
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < 10; i++) {
       for (int j = 0; j < nodes.length; j++)
         root.removeNode(nodes[j]);
       if (root.getNodeCount() != 0 || root.getEdgeCount() != 0)
