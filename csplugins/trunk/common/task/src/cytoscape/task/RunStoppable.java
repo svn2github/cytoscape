@@ -1,4 +1,4 @@
-package cytoscape.process;
+package cytoscape.task;
 
 /**
  * Creates a <code>Stoppable</code> out of a <code>Task</code>.

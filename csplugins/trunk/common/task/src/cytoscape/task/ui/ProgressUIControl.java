@@ -1,6 +1,6 @@
-package cytoscape.process.ui;
+package cytoscape.task.ui;
 
-import cytoscape.process.PercentCompletedCallback;
+import cytoscape.task.PercentCompletedCallback;
 import java.awt.EventQueue;
 import java.awt.Frame;
 import javax.swing.JDialog;

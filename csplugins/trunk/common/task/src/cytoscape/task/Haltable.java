@@ -1,4 +1,4 @@
-package cytoscape.process;
+package cytoscape.task;
 
 /**
  * A hook for requesting that a running process be halted.

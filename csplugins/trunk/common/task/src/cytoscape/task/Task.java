@@ -1,4 +1,4 @@
-package cytoscape.process;
+package cytoscape.task;
 
 /**
  * Represents a task that can be terminated prematurely by the same

@@ -1,4 +1,4 @@
-package cytoscape.process;
+package cytoscape.task;
 
 /**
  * A hook for stopping a running process and waiting for it to exit.

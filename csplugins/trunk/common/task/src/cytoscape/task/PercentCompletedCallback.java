@@ -1,4 +1,4 @@
-package cytoscape.process;
+package cytoscape.task;
 
                                                                              
 /**
