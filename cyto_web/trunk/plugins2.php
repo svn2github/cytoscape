@@ -191,6 +191,31 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 					[<a href="http://www.oracle.com/technology/industries/life_sciences/ls_sample_code.html">Download</a>]
 				</td>
 			</tr>
+			<tr>
+				<td colspan="3">
+					<hr>
+				</td>
+			</tr>
+			<tr>
+				<td width="20%" valign="top">
+					<b>Expression Correlation Network Plugin</b><font size="-1">
+						<br>
+						Version: 1
+						<br>
+						Release Date: January 19, 2005</font>
+				</td>
+				<td width="60%" valign="top">
+					<p>
+					This plugin enables Cytoscape users to correlate genes or conditions in an expression matrix file loaded into Cytoscape. The resulting correlations are visualized as a network in Cytoscape.  A condition correlation network is an alternate way of representing expression condition clustering results which can sometimes make it easier to notice clusters compared to the normal 'heat-map' view.
+					<p>
+						Released by: Sander Group, <a href="http://www.cbio.mskcc.org/">Computational Biology Center</a>, Memorial Sloan-Kettering Cancer Center.
+					</p>
+				</td>
+				<td width="20%" valign="top">
+					[<a href="http://www.cbio.mskcc.org/cytoscape/plugins/ExpressionCorrelationReadme.txt">Release Notes</a>]
+					[<a href="http://www.cbio.mskcc.org/cytoscape/plugins/ExpressionCorrelation.zip">Download</a>]
+				</td>
+			</tr>
 		</tbody>
 	</table>
 	</div>
