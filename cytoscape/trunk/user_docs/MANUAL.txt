@@ -11,7 +11,7 @@
 ################################################
 
 ######################################################################
-LICENSE AGREEMENT AND DISCLAIMER #####################################
+1. LICENSE AGREEMENT AND DISCLAIMER ##################################
 ######################################################################
 
 Cytoscape is a collaborative effort between the Institute for Systems
@@ -31,7 +31,22 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ######################################################################
-INTRODUCTION #########################################################
+2. CONTENTS ##########################################################
+######################################################################
+
+1. License
+2. Contents
+3. Introduction
+4. Launching Cytoscape
+5. Building and storing interaction networks
+6. Loading gene expression data
+7. Node and edge attributes
+8. Visualization
+9. Selection and filtering
+10. Finding active subsystems
+
+######################################################################
+3. INTRODUCTION ######################################################
 ######################################################################
 
 Cytoscape is a bioinformatics software platform for visualizing
@@ -105,7 +120,7 @@ Cytoscape provides the following key features:
    ISMB2002 and in Bioinformatics journal.
 
 ######################################################################
-LAUNCHING CYTOSCAPE ##################################################
+4. LAUNCHING CYTOSCAPE ###############################################
 ######################################################################
 
 Basic instructions for installing and launching Cytoscape are provided
@@ -131,7 +146,7 @@ plug-in included in this distribution). Please refer to the
 documentation for each specific plug-in for more details.
 
 ######################################################################
-BUILDING AND STORING INTERACTION NETWORKS ############################
+5. BUILDING AND STORING INTERACTION NETWORKS #########################
 ######################################################################
 
 Cytoscape reads an interaction network in two ways: from a simple
@@ -215,7 +230,7 @@ These editing features are still under development. Selected nodes
 and edges are deleted from the Edit menu.
 
 ######################################################################
-LOADING GENE EXPRESSION DATA #########################################
+6. LOADING GENE EXPRESSION DATA ######################################
 ######################################################################
 
 Interaction networks are certainly useful as stand-alone models.
@@ -258,7 +273,7 @@ sections, Cytoscape is now ready to integrate these data with the
 underlying molecular interaction network.
 
 ######################################################################
-NODE AND EDGE ATTRIBUTES #############################################
+7. NODE AND EDGE ATTRIBUTES ##########################################
 ######################################################################
 
 Node and edge attribute files are very simply formatted:
@@ -288,7 +303,7 @@ Note that the second and third edge attribute values refer to two
 different edges (source and target are different).
 
 ######################################################################
-VISUALIZATION ########################################################
+8. VISUALIZATION #####################################################
 ######################################################################
 
 BASIC FEATURES:
@@ -354,7 +369,7 @@ comma-separated RGB values.  Follow the model provided in the props
 file included with this distribution.
 
 ######################################################################
-SELECTION AND FILTERING ##############################################
+9. SELECTION AND FILTERING ###########################################
 ######################################################################
 
 It is often useful to view and operate on a selected subset of nodes
@@ -405,7 +420,7 @@ right of the main Cytoscape window, this operation takes the network
 from 329 nodes / 357 edges to 256 nodes / 299 edges.
 
 ######################################################################
-FINDING ACTIVE SUBSYSTEMS ############################################
+10. FINDING ACTIVE SUBSYSTEMS ########################################
 ######################################################################
 
 In model organisms such as yeast, large databases of protein-protein
