@@ -12,7 +12,7 @@ import cytoscape.data.GraphObjAttributes;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
-import cytoscape.view.CyNetworkView;
+import cytoscape.CyNetwork;
 
 import java.awt.event.ActionEvent;
 import java.io.FileWriter;
@@ -105,10 +105,7 @@ class SaveAsSifTask implements Task {
     public void run() {
         taskMonitor.setStatus("Saving Interactions...");
         try {
-            CyNetworkView networkView = Cytoscape.getCurrentNetworkView();
-            List nodeList = networkView.getNetwork().nodesList();
-
-            if (nodeList.size() == 0) {
+	    if (Cytoscape.getCurrentNetwork().getNodeCount() == 0) {
                 throw new IllegalArgumentException ("Network is empty.");
             }
             saveInteractions();
@@ -155,8 +152,8 @@ class SaveAsSifTask implements Task {
     private void saveInteractions() throws IOException {
         FileWriter fileWriter = new FileWriter(fileName);
         String lineSep = System.getProperty("line.separator");
-        CyNetworkView networkView = Cytoscape.getCurrentNetworkView();
-        List nodeList = networkView.getNetwork().nodesList();
+        CyNetwork network = Cytoscape.getCurrentNetwork();
+        List nodeList = network.nodesList();
 
         if (nodeList.size() == 0) {
             throw new IOException ("Network is empty.");
@@ -173,7 +170,7 @@ class SaveAsSifTask implements Task {
             StringBuffer sb = new StringBuffer();
             giny.model.Node node = nodes[i];
             String canonicalName = nodeAttributes.getCanonicalName(node);
-            List edges = networkView.getNetwork().getAdjacentEdgesList
+            List edges = network.getAdjacentEdgesList
                     (node, true, true, true);
 
             if (edges.size() == 0) {

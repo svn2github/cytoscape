@@ -2,7 +2,7 @@
 # WARNING: any changes you make to this file while Cytoscape is running may be overwritten.
 # Any changes may make these visual mappings unreadable.
 # Please make sure you know what you are doing before modifying this file by hand.
-#Fri Jan 21 00:35:30 PST 2005
+#Wed Feb 23 13:10:02 PST 2005
 
 edgeAppearanceCalculator.Sample1.defaultEdgeColor=0,0,0
 edgeAppearanceCalculator.Sample1.defaultEdgeFont=Default,plain,10
