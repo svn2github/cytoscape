@@ -1,11 +1,9 @@
 //
 // Subgraph.java
 //
-// class to map a graph representing a
-// (sub)set of nodes back to its parent
-// graph
-//
-// dramage : 2002.1.22
+// $Revision$
+// $Date$
+// $Author$
 //
 
 
@@ -18,24 +16,53 @@ import y.base.*;
 import y.layout.*;
 
 
+/**
+ * A special type of LayoutGraph which maps
+ * its nodes to corresponding nodes in a
+ * "parent" graph.
+ *
+ * Subgraph provides a mechanism to easily
+ * create a graph based on a set of nodes in
+ * another graph, manipulate their positions,
+ * and re-map the new locations back to the
+ * original graph.
+ *
+ * yFiles may provide better mechanisms to do
+ * this, but i haven't come across any.
+ *
+ * Note that <em>no node properties (other than
+ * location) are mapped</em>.
+ *
+ */
 public class Subgraph extends CopiedLayoutGraph {
-    LayoutGraph iFullGraph;
+    /**
+     * The parent graph on which Subgraph is based.
+     */
+    protected LayoutGraph iFullGraph;
 
-    // mapping table for iGraph Node => iFullGraph node
-    HashMap iSFNodeMap;
-    HashMap iFSNodeMap;
+    /**
+     * Mapping from nodes in Subgraph to nodes in
+     * <code>iFullGraph</code>.
+     */
+    protected HashMap iSFNodeMap;
+    /**
+     * Mapping from nodes in <code>iFullGraph</code>
+     * to nodes in Subgraph.
+     */
+    protected HashMap iFSNodeMap;
 
 
-    // constructor
-    //
-    // copy aGraph
+    /**
+     * Create a Subgraph based on aGraph.
+     */
     public Subgraph (LayoutGraph aGraph) {
 	this(aGraph, aGraph.nodes());
     }
 
-    // constructor
-    //
-    // create subset of aGraph
+    /**
+     * Create a Subgraph of aGraph, containing
+     * only the nodes found in aNodeSubset.
+     */
     public Subgraph (LayoutGraph aGraph, YCursor aNodeSubset) {
 	super (aGraph);
 	iFullGraph = aGraph;
@@ -74,11 +101,14 @@ public class Subgraph extends CopiedLayoutGraph {
 
 
 
-    // reInsert
-    //
-    // map graph back to iFullGraph
-    // NOTE!! only maps position
-    // NO OTHER NODE ATTRIBUTES MAPPED
+    /**
+     * Map the nodes contained in the Subgraph back
+     * to the original nodes from the full graph that
+     * they represent.
+     *
+     * Only the node center is affected. <em>No other
+     * node attributes are mapped.</em>
+     */
     public void reInsert() {
 	Node[] gList = getNodeArray();
 	int nC = nodeCount();
@@ -89,18 +119,28 @@ public class Subgraph extends CopiedLayoutGraph {
     }
 
 
-    // getFullGraph
-    //
-    // return iFullGraph
+    /**
+     * Retrieve the original graph that Subgraph was
+     * created from.
+     *
+     * @return The original graph
+     */
     public LayoutGraph getFullGraph() {
 	return iFullGraph;
     }
 
 
 
-    // createNode
-    //
-    // create a node, linked to a node in parent
+    /**
+     * Create a node in the Subgraph, and register it as
+     * being associated with <code>aParentNode</code>,
+     * which assumed to be an existing node in the
+     * {@link #getFullGraph()} parent graph.
+     *
+     * @param aParentNode Node in the parent graph with
+     *    which the new node will be associated.
+     * @return The newly created node in the Subgraph.
+     */
     public Node createNode(Node aParentNode) {
 	Node bob = createNode();
 
@@ -111,10 +151,30 @@ public class Subgraph extends CopiedLayoutGraph {
     }
 
 
-    // mergeNodes
-    //
-    // adjoin second node to first, keeping edges in tact.
-    // TEMP!! NEEDS MAJOR OPTIMIZATION
+
+    /**
+     * Merge the two given nodes into a single node, by
+     * removing removing <code>aChild</code> from the
+     * Subgraph (and the assiciated node in the parent
+     * graph).  All vertices connected to <code>aChild</code>
+     * are then connected to <code>aParent</code>.
+     *
+     * The parent graph is left unalterred.
+     *
+     * <em>Note:</em> Needs MAJOR optimization.  Currently,
+     * this function generates a full connectedness matrix
+     * (GroupingAlgorithm.gaConnected(this)) each time it is
+     * called.
+     *
+     * Also, all attributes of edges coming in to
+     * <code>aChild</code> are lost.
+     *
+     * @param aParent The Node in the Subgraph onto which
+     *    new edges will be added.
+     * @param aChild The Node in the Subgraph which will
+     *    be deleted.  Its edges will be reconstructed
+     *    using <code>aParent</code>.
+     */
     public void mergeNodes(Node aParent, Node aChild) {
 	// get connectedness list
 	int[][] connected = GroupingAlgorithm.gaConnected(this);
@@ -183,17 +243,26 @@ public class Subgraph extends CopiedLayoutGraph {
     }
 
 
-    // mapSubFullNode
-    //
-    // map a node from the subgraph to node in full
+
+    /**
+     * Map a node in Subgraph to the corresponding node
+     * in the full (parent) graph.
+     *
+     * @param aNode The Node in Subgraph.
+     * @return The corresponding Node in the full graph.
+     */
     public Node mapSubFullNode(Node aNode) {
 	return ((Node)iSFNodeMap.get(aNode));
     }
 
 
-    // mapFullSubNode
-    //
-    // map a node from the full graph to a subgraph node
+    /**
+     * Map a node in the full (parent) graph to the
+     * corresponding node kept in this SubGraph.
+     *
+     * @param aNode The node in the parent graph.
+     * @return The corresponding node in this Subgraph.
+     */
     public Node mapFullSubNode(Node aNode) {
 	return ((Node)iFSNodeMap.get(aNode));
     }
