@@ -30,7 +30,7 @@ import cytoscape.visual.calculators.*;
 public class OldStyleCalculatorIO {
     
     public static String packageHeader = "cytoscape.visual.calculators.";
-    public static String calcName = "oldStyle";
+    public static String calcName = "oldFormat";
 
     
     public static void loadCalculators(Properties props, CalculatorCatalog catalog) {
@@ -95,7 +95,9 @@ public class OldStyleCalculatorIO {
         Properties newProps =
             getNewProperties(props, oldBaseKey, newBaseKey, className, interpolator);
         if (newProps == null) {return;}
-        Calculator c = CalculatorFactory.newCalculator(calcName, newProps, newBaseKey,
+        //hack to get the right name for calculators with '2' after their name
+        String name = (newBaseKey.endsWith("2")) ? calcName + "2" : calcName;
+        Calculator c = CalculatorFactory.newCalculator(name, newProps, newBaseKey,
                                                        intClassName);
         if (c != null) {
             //CalculatorIO.removeDuplicate(c, catalog);

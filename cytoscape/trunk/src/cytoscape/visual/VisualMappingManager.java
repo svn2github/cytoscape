@@ -36,6 +36,17 @@ public class VisualMappingManager {
     public CytoscapeWindow getCytoscapeWindow() {
 	return cytoscapeWindow;
     }
+    
+    public VisualMappingManager(CytoscapeWindow cytoscapeWindow,
+                                NodeAppearanceCalculator nodeCalc,
+				EdgeAppearanceCalculator edgeCalc,
+                                CalculatorCatalog catalog) {
+        this.cytoscapeWindow = cytoscapeWindow;
+        this.network = new Network(cytoscapeWindow);
+        this.catalog = catalog;
+        setNodeAppearanceCalculator(nodeCalc);
+        setEdgeAppearanceCalculator(edgeCalc);
+    }
 
     public VisualMappingManager(CytoscapeWindow cytoscapeWindow,
 				NodeAppearanceCalculator nodeCalc,

@@ -215,48 +215,7 @@ public CytoscapeWindow (cytoscape parentApp,
   setGraph (graph);
 
   // load vizmapper after graph is available
-  NodeAppearanceCalculator nac = new NodeAppearanceCalculator();
-  /*addNodeShapeMapping(nac);
-  addNodeLineTypeMapping(nac);
-  addNodeBorderColorMapping(nac);
-  addNodeFillColorMapping(nac);
-  addNodeHeightMapping(nac);
-  addNodeWidthMapping(nac);
-  addDiscreteNodeLabelMapping(nac);
-  */
-  // node tool tip
-  EdgeAppearanceCalculator eac = new EdgeAppearanceCalculator();
-  /*addEdgeColorMapping(eac);
-  addEdgeLineTypeMapping(eac);
-  addEdgeSourceArrowMapping(eac);
-  addEdgeTargetArrowMapping(eac);
-  addDiscreteEdgeLabelMapping(eac);
-  */
-  // edge tool tip
-
-  this.vizMapper = new VisualMappingManager(this, nac, eac);
-  this.network = new Network(this);
-  this.vizMapUI = new VizMapUI(this.vizMapper);
-  CalculatorCatalog cc = this.vizMapper.getCalculatorCatalog();
-  cc.addNodeLabelCalculator(getPassThroughNLC());
-  cc.addNodeColorCalculator(getContinuousNFCC());
-  cc.addNodeColorCalculator(getMultipointContinuousNFCC());
-  cc.addEdgeLabelCalculator(getPassThroughELC());
-  cc.addNodeSizeCalculator(getMultipointContinuousNSC());
-  //load in calculators from file
-  Properties props = new Properties();
-  try {
-      InputStream is = new FileInputStream("vizmap.props");
-      props.load(is);
-      is.close();
-  } catch (Exception ioe) {
-      ioe.printStackTrace();
-  }
-  CalculatorIO.loadCalculators(props, cc);
-  // register mappings
-  cc.addMapping("Discrete Mapper", DiscreteMapping.class);
-  cc.addMapping("Continuous Mapper", ContinuousMapping.class);
-  cc.addMapping("Passthrough Mapper", PassThroughMapping.class);
+  loadVizMapper();
 
   annotationButton.setIcon (new ImageIcon (getClass().getResource("images/AnnotationGui.gif")));
   annotationButton.setToolTipText ("add annotation to nodes");
@@ -280,6 +239,71 @@ public CytoscapeWindow (cytoscape parentApp,
 
 } // ctor
     
+private void loadVizMapper() {
+  CalculatorCatalog cc = new CalculatorCatalog();
+  // register mappings
+  cc.addMapping("Discrete Mapper", DiscreteMapping.class);
+  cc.addMapping("Continuous Mapper", ContinuousMapping.class);
+  cc.addMapping("Passthrough Mapper", PassThroughMapping.class);
+  //set some standard attribute calculators
+  cc.addNodeLabelCalculator(getPassThroughNLC());
+  cc.addNodeColorCalculator(getContinuousNFCC());
+  cc.addNodeColorCalculator(getMultipointContinuousNFCC());
+  cc.addEdgeLabelCalculator(getPassThroughELC());
+  cc.addNodeSizeCalculator(getMultipointContinuousNSC());
+  //load in calculators from file
+  Properties props = new Properties();
+  try {
+      InputStream is = new FileInputStream("vizmap.props");
+      props.load(is);
+      is.close();
+  } catch (Exception ioe) {
+      ioe.printStackTrace();
+  }
+  CalculatorIO.loadCalculators(props, cc);
+  //load in old style vizmappings
+  Properties configProps = config.getProperties();
+  OldStyleCalculatorIO.loadCalculators(configProps, cc);
+  
+  //try to get appearance calculator names from properties
+  NodeAppearanceCalculator nac = null;
+  String nacName = configProps.getProperty("nodeAppearanceCalculator");
+  if (nacName != null) {nac = cc.getNodeAppearanceCalculator(nacName);}
+  if (nac == null) {//none specified, or not found
+      //we know the old style calculator reader created a suitable nac
+      nac = cc.getNodeAppearanceCalculator(OldStyleCalculatorIO.calcName);
+  }
+  EdgeAppearanceCalculator eac = null;
+  String eacName = configProps.getProperty("edgeAppearanceCalculator");
+  if (eacName != null) {eac = cc.getEdgeAppearanceCalculator(eacName);}
+  if (eac == null) {//none specified, or not found
+      //we know the old style calculator reader created a suitable eac
+      eac = cc.getEdgeAppearanceCalculator(OldStyleCalculatorIO.calcName);
+  }
+  
+  //for testing purposes
+  /*
+  addNodeShapeMapping(nac);
+  addNodeLineTypeMapping(nac);
+  addNodeBorderColorMapping(nac);
+  addNodeFillColorMapping(nac);
+  addNodeHeightMapping(nac);
+  addNodeWidthMapping(nac);
+  addDiscreteNodeLabelMapping(nac);
+  
+  addEdgeColorMapping(eac);
+  addEdgeLineTypeMapping(eac);
+  addEdgeSourceArrowMapping(eac);
+  addEdgeTargetArrowMapping(eac);
+  addDiscreteEdgeLabelMapping(eac);
+  */
+  
+  //create the vizMapping objects
+  this.vizMapper = new VisualMappingManager(this, nac, eac, cc);
+  this.network = new Network(this);
+  this.vizMapUI = new VizMapUI(this.vizMapper);
+}
+
     // various default definitions stolen from TestNewMappingsUI.java
 
     // this creates a random color and adds it to a map,
