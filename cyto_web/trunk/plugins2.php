@@ -33,7 +33,7 @@
 	<p><b>Note that PlugIns on this page will only work with Cytoscape 2.0</b>.  We also maintain a list of
 	<A HREF="plugins1.php">Cytoscape 1.1 PlugIns</A>.
 	<P>If you are interested in building your own Cytoscape 2.0 PlugIn, check out the
-		<a href="http://cytoscape.systemsbiology.net/Cytoscape2.0/plugin/pluginTutorial/pluginTutorial.html">Cytoscape 2.0 PlugIn Tutorial</A>,
+		<a href="pluginTutorial.php">Cytoscape 2.0 PlugIn Tutorial</A>,
 and the 
 <a href="http://cytoscape.systemsbiology.net/Cytoscape2.0/plugin/index.html">Cytoscape 2.0 PlugIn Writer Documentation</A>.
 	</p>
