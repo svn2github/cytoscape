@@ -20,9 +20,19 @@ edge.color.interaction.map.pd=255,0,0
 
 edge.targetDecoration.controller=interaction
 edge.targetDecoration.interaction.type=discrete
-edge.targetDecoration.interaction.map.pd=arrow
+edge.targetDecoration.interaction.map.pd=scalableArrow50
+
 #edge.sourceDecoration.controller=interaction
-#edge.sourceDecoration.interaction.map.pp=arrow
+#edge.sourceDecoration.interaction.type=discrete
+#edge.sourceDecoration.interaction.map.pd=scalableArrow20
+#edge.sourceDecoration.interaction.map.pp=scalableArrow10
+
+#edge.targetDecoration.interaction.map.pd=delta
+
+edge.linetype.controller=interaction
+edge.linetype.interaction.type=discrete
+edge.linetype.interaction.map.pd=line2
+edge.linetype.interaction.map.pp=dashed2
 
 #--------------------------------------------------------------------
 # window and graph defaults:
@@ -30,6 +40,9 @@ edge.targetDecoration.interaction.map.pd=arrow
 background.color.default=230,230,205
 node.fillColor.default=250,255,255
 node.borderColor.default=255,0,0
+node.height.default=20
+node.width.default=20
+node.shape.default=circle
 
 #--------------------------------------------------------------------
 # plugins. for each plugin, specify
