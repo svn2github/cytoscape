@@ -1,12 +1,12 @@
 package fing.util.test;
 
+import fing.util.IntEnumerator;
+import fing.util.IntHash;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
 
 public class HashtablePerformance
 {
@@ -21,6 +21,9 @@ public class HashtablePerformance
   public static void main(String[] args) throws Exception
   {
     int N = Integer.parseInt(args[0]);
+    boolean repeat = false;
+    if (args.length > 1 && args[1].equalsIgnoreCase("repeat"))
+      repeat = true;
     int[] elements = new int[N];
     InputStream in = System.in;
     byte[] buff = new byte[4];
@@ -57,17 +60,32 @@ public class HashtablePerformance
     long millisEnd = System.currentTimeMillis();
 
     // Print the time taken to standard error.
-    System.err.println(millisEnd - millisBegin);
-
-    // Sort the array.
-    ArrayList arrList = new ArrayList();
-    for (int i = 0; i < uniqueElements.length; i++)
-      arrList.add(new Integer(uniqueElements[i]));
-    Collections.sort(arrList);
+    if (!repeat) System.err.println(millisEnd - millisBegin);
 
     // Print sorted array to standard out.
-    for (int i = 0; i < arrList.size(); i++)
-      System.out.println(((Integer) arrList.get(i)).intValue());
+    if (!repeat) {
+      ArrayList arrList = new ArrayList();
+      for (int i = 0; i < uniqueElements.length; i++)
+        arrList.add(new Integer(uniqueElements[i]));
+      Collections.sort(arrList);
+      for (int i = 0; i < arrList.size(); i++)
+        System.out.println(((Integer) arrList.get(i)).intValue()); }
+
+    // Run repeated test if that's what the command line told us.
+    if (repeat)
+    {
+      for (int i = 0; i < uniqueElements.length; i++) uniqueElements[i] = 0;
+      millisBegin = System.currentTimeMillis();
+      _REPEAT_TEST_CASE_(elements, uniqueElements);
+      millisEnd = System.currentTimeMillis();
+      System.err.println((millisEnd - millisBegin) + " (repeated test)");
+      ArrayList arrList = new ArrayList();
+      for (int i = 0; i < uniqueElements.length; i++)
+        arrList.add(new Integer(uniqueElements[i]));
+      Collections.sort(arrList);
+      for (int i = 0; i < arrList.size(); i++)
+        System.out.println(((Integer) arrList.get(i)).intValue());
+    }
   }
 
   private static final int assembleInt(byte[] fourConsecutiveBytes)
@@ -81,20 +99,31 @@ public class HashtablePerformance
 
   // Keep a reference to our data structure so that we can determine how
   // much memory was consumed by our algorithm (may be implemented in future).
-  static HashMap _THE_HASHTABLE_ = null;
+  static IntHash _THE_HASHTABLE_ = null;
 
   private static final int[] _THE_TEST_CASE_(int[] elements)
   {
-    _THE_HASHTABLE_ = new HashMap();
+    _THE_HASHTABLE_ = new IntHash();
     for (int i = 0; i < elements.length; i++) {
-      Integer tehInt = new Integer(elements[i]);
-      _THE_HASHTABLE_.put(tehInt, tehInt); }
-    Collection c = _THE_HASHTABLE_.values();
-    Iterator iter = c.iterator();
-    final int[] returnThis = new int[c.size()];
+      _THE_HASHTABLE_.put(elements[i]); }
+    final IntEnumerator iter = _THE_HASHTABLE_.elements();
+    final int[] returnThis = new int[iter.numRemaining()];
     for (int i = 0; i < returnThis.length; i++)
-      returnThis[i] = ((Integer) iter.next()).intValue();
+      returnThis[i] = iter.nextInt();
     return returnThis;
+  }
+
+  private static final void _REPEAT_TEST_CASE_(final int[] elements,
+                                               final int[] output)
+  {
+    _THE_HASHTABLE_.empty();
+    for (int i = 0; i < elements.length; i++)
+      _THE_HASHTABLE_.put(elements[i]);
+    IntEnumerator iter = _THE_HASHTABLE_.elements();
+    if (iter.numRemaining() != output.length)
+      throw new IllegalStateException("output aray is incorrect size");
+    for (int i = 0; i < output.length; i++)
+      output[i] = iter.nextInt();
   }
 
 }
