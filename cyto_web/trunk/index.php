@@ -22,7 +22,7 @@
 				<div id="about">
 					<h1> Cytoscape </h1> Cytoscape is an open source bioinformatics software platform for <b> <i> visualizing </i> </b> molecular interaction networks and <b> <i> integrating </i> </b> these interactions with gene expression profiles and other state data. 
 					<br>
-					<a href="features.html"> Read more &raquo; </a> 
+					<a href="features.php"> Read more &raquo; </a> 
 			</div>
 		</td>
 		<td width="440" valign="bottom" align="right">
@@ -45,6 +45,9 @@
 </table>
 <? include "nav.php"; ?>
 <? include "detailed_nav.php"; ?>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=5 CELLSPACING=1>
+<TR VALIGN=TOP>
+<TD WIDTH=65%>
 <div id="contents">
 	<div id="content">
 		<div id="indent">
@@ -52,7 +55,7 @@
 				<h2> <I>New!</I>&nbsp;&nbsp;Announcing Cytoscape 2.0 </h2> 
 				<table width="100%">
 					<tr valign="top">
-						<td width="40%" valign="top" ">
+						<td width="47%" valign="top" ">
 							The Cytoscape Team is pleased to release Cytoscape 2.0.
 							<BR><BR>New Features include: 
 							<ul>
@@ -75,10 +78,7 @@
 							Try out Cytoscape 2.0, and let us know what you think. 
 							<ul>
 								<li>
-									Download Cytoscape 2.0 Binaries 
-								</li>
-								<li>
-									Download Cytoscape 2.0 Source 
+									<A HREF="download.php?file=cyto2">Download Cytoscape 2.0</A>.
 								</li>
 							</ul>
 							If you find a bug, please log it to the <a href="http://www.cbio.mskcc.org/cytoscape/bugs/main_page.php">Cytoscape Bug Tracker.</a> 
@@ -88,6 +88,9 @@
 						</td>
 					</tr>
 				</table>
+			</div>
+			<P>
+			<div class="item">
 				<h2> Genome Research article on Cytoscape 
 					<br>
 				</h2> 
@@ -97,6 +100,9 @@
 				<p>
 					<br>
 				</p>
+			</div>
+			<P>
+			<div class="item">
 				<h2> Research using Cytoscape </h2> 
 				<br>
 				<p>
@@ -133,50 +139,19 @@ Ideker T, Ozier O, Schwikowski B, Siegel A. Discovering regulatory and signaling
 <br>
 <br>
 For more information, please contact Benno Schwikowski (<a href="mailto:benno@pasteur.fr">benno@pasteur.fr</a>) or Trey Ideker (<a href="mailto:trey@bioeng.ucsd.edu">trey@bioeng.ucsd.edu</a>). 
-<div id="prefooter">
-<br>
-	The <b> Cytoscape </b> project is an ongoing collaboration between: 
-<br>
-<table cellpadding="2" cellspacing="2" border="0" width="100%" align="center">
-
-<tbody>
-	<tr>
-		<td width="10">
-			<br>
-		</td>
-		<td valign="middle">
-			<img border="0" align="middle" alt="ISB" height="60" width="60" src="images/isb60.gif"> <a href="http://www.systemsbiology.org"> Institute for Systems Biology </a> 
-	</td>
-</tr>
-<tr>
-	<td width="10">
-		<br>
-	</td>
-	<td valign="middle">
-		<img border="0" align="middle" alt="UCSD" height="60" width="60" src="images/ucsd60.gif"> <a href="http://www.ucsd.edu"> University of California at San Diego </a> 
+</div>
+</td>
+</div>
+</div>
+</div>
+<td>
+<? include "news.php"; ?>
+<P>
+<? include "collab.php"; ?>
 </td>
 </tr>
-<tr>
-	<td width="10">
-		<br>
-	</td>
-	<td valign="middle">
-		<img border="0" align="middle" alt="MSKCC" height="60" width="60" src="images/mskcc60.gif"> <a href="http://www.mskcc.org"> Memorial Sloan-Kettering Cancer Center </a> 
-</td>
-</tr>
-<tr>
-	<td width="10">
-		&nbsp; 
-	</td>
-	<td valign="middle">
-		<a href="http://www.pasteur.fr"> <img src="images/ip60.gif" width="60" height="60" border="0" alt="IP" align="middle"> </a> <a href="http://www.pasteur.fr"> Institut Pasteur </a> 
-	</td>
-</tr>
-</tbody>
 </table>
-</div>
-</div>
-</div>
+
 </div>
 <? include "footer.php"; ?>
 </div>
