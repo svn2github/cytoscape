@@ -51,6 +51,9 @@ public final class AllRootGraphMethodsTest
     for (int i = 0; i < edgeInx.length; i++)
       if (edgeInx[i] >= 0)
         throw new IllegalStateException("non-negative edge");
+//     if (root.isMetaParent(root.getEdge(edgeInx[1]),
+//                           root.getNode(nodeInx[3])))
+//       throw new IllegalStateException();
 
     // Test add/remove nodes and edges before other tests.
     // We leave the graph with the same topology after these tests as
@@ -80,12 +83,16 @@ public final class AllRootGraphMethodsTest
         root.createEdge(Integer.MIN_VALUE, Integer.MIN_VALUE, false) != 0 ||
         root.createEdge(0, 0, true) != 0)
       throw new IllegalStateException("creation failure failed - edge");
+//     int deleteThisNode0 = root.createNode();
     nodeInx[1] = root.createNode();
+//     root.removeNode(deleteThisNode);
+//     int deleteThisEdge = root.createEdge(nodeInx[4], nodeInx[1], true);
     edgeInx[0] = root.createEdge(nodeInx[0], nodeInx[1], true);
     edgeInx[1] = root.createEdge(nodeInx[1], nodeInx[2], false);
     edgeInx[4] = root.createEdge(nodeInx[1], nodeInx[1], false);
     edgeInx[5] = root.createEdge(nodeInx[1], nodeInx[0], true);
     edgeInx[6] = root.createEdge(nodeInx[3], nodeInx[2], true);
+//     root.removeEdge(deleteThisEdge);
     int deleteThisNode = root.createNode();
     int deleteThisEdge1 = root.createEdge(nodeInx[0], nodeInx[1], false);
     int deleteThisEdge2 = root.createEdge(nodeInx[4], nodeInx[2], false);
@@ -94,11 +101,17 @@ public final class AllRootGraphMethodsTest
     root.removeEdge(deleteThisEdge1);
     root.removeEdge(deleteThisEdge2);
     // Meta-nodes.  First restore what was there originally.
+//     if (root.isMetaParent(root.getEdge(edgeInx[1]),
+//                           root.getNode(nodeInx[3])))
+//       throw new IllegalStateException();
     if (!(root.addEdgeMetaChild(nodeInx[3], edgeInx[0]) &&
           root.addEdgeMetaChild(nodeInx[0], edgeInx[4]) &&
           root.addEdgeMetaChild(nodeInx[4], edgeInx[6]) &&
           root.addEdgeMetaChild(nodeInx[3], edgeInx[6])))
       throw new IllegalStateException("errors during restoration");
+//     if (root.isMetaParent(root.getEdge(edgeInx[1]),
+//                           root.getNode(nodeInx[3])))
+//       throw new IllegalStateException();
     if (root.addEdgeMetaChild(nodeInx[3], edgeInx[0]) ||
         root.addEdgeMetaChild(nodeInx[4], edgeInx[2]) ||
         root.addNodeMetaChild(nodeInx[3], nodeInx[1]) ||
@@ -139,6 +152,9 @@ public final class AllRootGraphMethodsTest
     for (int i = 0; i < edgeInx.length; i++)
       if (edgeInx[i] >= 0)
         throw new IllegalStateException("non-negative edge");
+//     if (root.isMetaParent(root.getEdge(edgeInx[1]),
+//                           root.getNode(nodeInx[3])))
+//       throw new IllegalStateException();
 
     // nodesIterator() and edgesIterator().
     Iterator nodesIter = root.nodesIterator();
@@ -1089,6 +1105,9 @@ public final class AllRootGraphMethodsTest
         root.isMetaParent(root.getEdge(edgeInx[6]),
                           root.getNode(nodeInx[2])))
       throw new IllegalStateException("wrong edge meta relationships");
+//     if (root.isMetaParent(root.getEdge(edgeInx[1]),
+//                           root.getNode(nodeInx[3])))
+//       throw new IllegalStateException("wrong edge meta relationships");
     if (!(root.isMetaParent(root.getEdge(edgeInx[0]),
                             root.getNode(nodeInx[3])) &&
           root.isMetaParent(root.getEdge(edgeInx[2]),
@@ -1133,6 +1152,34 @@ public final class AllRootGraphMethodsTest
 //       throw new IllegalStateException("wrong edge meta parents");
 
     // getEdgeMetaParentIndicesArray(int).
+//     if (root.getEdgeMetaParentIndicesArray(0) != null ||
+//         root.getEdgeMetaParentIndicesArray(Integer.MAX_VALUE) != null ||
+//         root.getEdgeMetaParentIndicesArray(Integer.MIN_VALUE) != null ||
+//         root.getEdgeMetaParentIndicesArray(minEdgeInx - 1) != null ||
+//         root.getEdgeMetaParentIndicesArray(66) != null)
+//       throw new IllegalStateException("expected null parent array");
+//     int[] edgeParentInx = root.getEdgeMetaParentIndicesArray(edgeInx[0]);
+//     if (edgeParentInx.length != 1)
+//       throw new IllegalStateException("wrong number of edge parents");
+//     edgeParentInx = root.getEdgeMetaParentIndicesArray(edgeInx[1]);
+//     if (edgeParentInx.length != 0) {
+//       System.out.println("length " + edgeParentInx.length);
+//       System.out.print("getEdgeMetaParentIndicesArray(edgeInx[1]) returns ");
+//       for (int i = 0;; i++) if (edgeParentInx[0] == nodeInx[i]) {
+//         System.out.println("nodeInx[" + i + "]"); break; }
+//       throw new IllegalStateException("wrong number of edge parents"); }
+//     edgeParentInx = root.getEdgeMetaParentIndicesArray(edgeInx[2]);
+//     if (edgeParentInx.length != 1)
+//       throw new IllegalStateException("wrong number of edge parents");
+//     edgeParentInx = root.getEdgeMetaParentIndicesArray(edgeInx[4]);
+//     if (edgeParentInx.length != 1)
+//       throw new IllegalStateException("wrong number of edge parents");
+//     edgeParentInx = root.getEdgeMetaParentIndicesArray(edgeInx[5]);
+//     if (edgeParentInx.length != 0)
+//       throw new IllegalStateException("wrong number of edge parents");
+//     edgeParentInx = root.getEdgeMetaParentIndicesArray(edgeInx[6]);
+//     if (edgeParentInx.length != 2)
+//       throw new IllegalStateException("wrong number of edge parents");
 
     // isMetaChild(Node, Edge).
 
