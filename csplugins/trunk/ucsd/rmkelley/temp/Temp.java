@@ -1,5 +1,6 @@
 package ucsd.rmkelley.Temp;
 import java.util.*;
+import edu.umd.cs.piccolo.activities.*;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
@@ -8,8 +9,8 @@ import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.view.CyNetworkView;
-
-
+import phoebe.PNodeView;
+import phoebe.PGraphView;
 /**
  * This is a sample Cytoscape plugin using Giny graph structures. For each
  * currently selected node in the graph view, the action method of this plugin
@@ -41,59 +42,182 @@ public class Temp extends CytoscapePlugin{
 	 * This method is called when the user selects the menu item.
 	 */
 	public void actionPerformed(ActionEvent ae) {
-	    try{
-		Thread t = new GunThread("AO");
-		t.run();
-		t.join();
-		t = new GunThread("CA");
-		t.run();
-		t.join();
-	    }catch(Exception e){
-		e.printStackTrace();
-	    }
-		    
+	    Thread t = new GunThread();
+	    t.run();
 	}
 
     }
 }
 
-class GunThread extends Thread{
+class GunThread extends Thread implements PActivity.PActivityDelegate {
     public static double CELL_WIDTH = 50;
     public static double CELL_HEIGHT = 50;
-    protected String disp;
-    
-    public GunThread(String disp){
-	this.disp = disp;
-    }
+    int index = 0;
+    int count = 0;
+    int total = Cytoscape.getCurrentNetworkView().getNodeViewCount();
+    boolean zooming = false;;
 
+    String [] displays = {"CYTOSCAPE","WILL","CRUSH","THE","CORPORATE","COMPETITION","WE","HAVE","THE","GUN","SHOW"};
     protected HashMap fontMap;
     public void run(){
 	setUpFontMap();
-	displayString(disp);
-	//displayString("CA");
+	displayString(displays[0]);
     }
+    
+    public void activityFinished(PActivity activity){
+	if(zooming){
+	    zooming = false;
+	    count = 0;
+	    try{
+		Thread.sleep(2000);
+	    }catch(Exception e){
+		e.printStackTrace();
+	    }
+	    if(index < displays.length){
+		displayString(displays[++index]);
+	    }
+	}
+	else{
+	    count++;
+	    if(count == total){
+		zooming = true;
+		PGraphView graphView = (PGraphView)Cytoscape.getCurrentNetworkView();
+		PTransformActivity zoomactivity = graphView.getCanvas().getCamera().animateViewToCenterBounds( graphView.getCanvas().getLayer().getFullBounds(), true, 500l );
+		zoomactivity.setDelegate(this);
+	    }
+	}
+    }
+    public void activityStarted(PActivity activity){}
+    public void activityStepped(PActivity activity){}
+
 
     public void setUpFontMap(){
 	fontMap = new HashMap();
+
 	HashSet cSet = new HashSet();
 	cSet.addAll(createVLine(0,0,4));
 	cSet.addAll(createVLine(4,0,4));
 	cSet.addAll(createHLine(0,0,4));
 	cSet.addAll(createHLine(2,0,4));
 	fontMap.put("A",new Vector(cSet));
+
 	cSet = new HashSet();
 	cSet.addAll(createVLine(0,0,4));
 	cSet.addAll(createVLine(4,0,4));
 	cSet.addAll(createHLine(4,0,4));
 	cSet.addAll(createHLine(0,0,4));
 	fontMap.put("O",new Vector(cSet));
+
 	cSet = new HashSet();
 	cSet.addAll(createHLine(0,0,4));
 	cSet.addAll(createHLine(4,0,4));
 	cSet.addAll(createVLine(0,0,4));
 	fontMap.put("C",new Vector(cSet));
 	
+	cSet = new HashSet();
+	cSet.addAll(createHLine(0,0,4));
+	cSet.addAll(createVLine(2,0,4));
+	fontMap.put("T",new Vector(cSet));
 
+	cSet = new HashSet();
+	cSet.addAll(createHLine(0,0,4));
+	cSet.addAll(createHLine(2,0,4));
+	cSet.addAll(createHLine(4,0,4));
+	cSet.add(new Coordinate(0,1));
+	cSet.add(new Coordinate(4,3));
+	fontMap.put("S",new Vector(cSet));
+
+	cSet = new HashSet();
+	cSet.addAll(createVLine(0,0,4));
+	cSet.addAll(createHLine(0,0,3));
+	cSet.addAll(createHLine(2,0,3));
+	cSet.add(new Coordinate(3,1));
+	fontMap.put("P",new Vector(cSet));
+	
+	cSet = new HashSet();
+	cSet.addAll(createHLine(0,0,4));
+	cSet.addAll(createHLine(4,0,4));
+	cSet.addAll(createVLine(0,0,4));
+	cSet.addAll(createHLine(2,0,2));
+	fontMap.put("E",new Vector(cSet));
+
+	cSet = new HashSet();
+	cSet.addAll(createVLine(2,2,4));
+	cSet.add(new Coordinate(0,0));
+	cSet.add(new Coordinate(1,1));
+	cSet.add(new Coordinate(4,0));
+	cSet.add(new Coordinate(3,1));
+	fontMap.put("Y",new Vector(cSet));
+	
+	cSet = new HashSet();
+	cSet.addAll(createVLine(0,0,4));
+	cSet.addAll(createVLine(2,2,4));
+	cSet.addAll(createVLine(4,0,4));
+	cSet.addAll(createHLine(4,0,4));
+	fontMap.put("W",new Vector(cSet));
+
+	cSet = new HashSet();
+	cSet.addAll(createVLine(0,0,4));
+	cSet.addAll(createVLine(4,0,4));
+	cSet.addAll(createHLine(2,0,4));
+	fontMap.put("H",new Vector(cSet));
+
+	cSet = new HashSet();
+	cSet.addAll(createVLine(0,0,2));
+	cSet.addAll(createVLine(4,0,2));
+	cSet.add(new Coordinate(1,3));
+	cSet.add(new Coordinate(3,3));
+	cSet.add(new Coordinate(2,4));
+	fontMap.put("V",new Vector(cSet));
+
+	cSet = new HashSet();
+	cSet.addAll(createHLine(0,0,4));
+	cSet.addAll(createVLine(0,0,4));
+	cSet.addAll(createHLine(4,0,4));
+	cSet.addAll(createHLine(2,2,4));
+	cSet.add(new Coordinate(4,3));
+	fontMap.put("G",new Vector(cSet));
+	
+	cSet = new HashSet();
+	cSet.addAll(createVLine(0,0,4));
+	cSet.addAll(createVLine(4,0,4));
+	cSet.addAll(createHLine(4,0,4));
+	fontMap.put("U",new Vector(cSet));
+
+	cSet = new HashSet();
+	cSet.addAll(createVLine(0,0,4));
+	cSet.addAll(createVLine(4,0,4));
+	cSet.add(new Coordinate(1,1));
+	cSet.add(new Coordinate(2,2));
+	cSet.add(new Coordinate(3,3));
+	fontMap.put("N",new Vector(cSet));
+	
+	cSet = new HashSet();
+	cSet.addAll(createVLine(2,0,4));
+	cSet.addAll(createHLine(0,0,4));
+	cSet.addAll(createHLine(4,0,4));
+	fontMap.put("I",new Vector(cSet));
+
+	cSet = new HashSet();
+	cSet.addAll(createVLine(0,0,4));
+	cSet.addAll(createHLine(4,0,4));
+	fontMap.put("L",new Vector(cSet));
+	
+	cSet = new HashSet();
+	cSet.addAll(createVLine(0,0,4));
+	cSet.addAll(createHLine(0,0,3));
+	cSet.addAll(createHLine(2,0,3));
+	cSet.add(new Coordinate(3,1));
+	cSet.add(new Coordinate(2,3));
+	cSet.add(new Coordinate(3,4));
+	fontMap.put("R",new Vector(cSet));
+
+	cSet = new HashSet();
+	cSet.addAll(createHLine(0,0,4));
+	cSet.addAll(createVLine(0,0,4));
+	cSet.addAll(createVLine(4,0,4));
+	cSet.addAll(createVLine(2,0,2));
+	fontMap.put("M",new Vector(cSet));
 
     }
 
@@ -114,16 +238,20 @@ class GunThread extends Thread{
 	for(Iterator viewIt = view.getNodeViewsIterator();viewIt.hasNext();){
 	    NodeView nodeView = (NodeView)viewIt.next();
 	    Coordinate coordinate = (Coordinate)coordinates.get(coordinateIndex);
-	    nodeView.setXPosition(coordinate.x*CELL_WIDTH,true);
-	    nodeView.setYPosition(coordinate.y*CELL_WIDTH,true);
+	    nodeView.setXPosition(coordinate.x*CELL_WIDTH,false);
+	    nodeView.setYPosition(coordinate.y*CELL_WIDTH,false);
 	    coordinateIndex++;
 	    coordinateIndex = coordinateIndex % coordinates.size();
 	}
 
-	//for(Iterator viewIt = view.getNodeViewsIterator();viewIt.hasNext();){
-	//    ((NodeView)viewIt.next()).setNodePosition(true);
-	//}
+	for(Iterator viewIt = view.getNodeViewsIterator();viewIt.hasNext();){
+	    PNodeView nodeView = (PNodeView)viewIt.next();
+	    PTransformActivity activity = nodeView.animateToPositionScaleRotation(nodeView.getXPosition(),nodeView.getYPosition(),1,0,2000);
+	    activity.setDelegate(this);
+	}
+	PGraphView graphView = (PGraphView)view;
 
+	
     }
 
     public List createVLine(int column, int start, int end){
