@@ -253,8 +253,7 @@
 
          <link href="http://java.sun.com/j2se/1.4.2/docs/api/" />
          <link href="http://csbi.sourceforge.net/API/" />
-         <doctitle>Cytoscape API</doctitle>
-
+         <doctitle>Cytoscape 2.1 API</doctitle>
          </javadoc>
     </target>
 
