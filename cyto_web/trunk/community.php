@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+		<title>
+			Cytoscape Community
+		</title>
+		<link rel="stylesheet" type="text/css" media="screen" href="css/cytoscape.css" />
+		<link rel="shortcut icon" href="images/cyto.ico" />
+	</head>
+	<body bgcolor="#FFFFFF">
+		<table id="feature" border="0" cellpadding="0" cellspacing="0" summary="">
+			<tr>
+				<td width="10">
+					&nbsp;
+				</td>
+				<td valign="center">
+					<h1>
+						Cytoscape Community
+					</h1>
+				</td>
+			</tr>
+		</table>
+<? include "nav.php"; ?>
+<div id="contents">
+	<div id="content">
+		<div id="indent">
+			<P>Cytoscape currently supports two mailing lists, both of which are hosted at 
+			<A HREF="http://groups-beta.google.com/">Google Groups</A>.
+		</div>
+	<table style="margin-left: 30;  border: dotted gray 1px;
+		padding-left: 10px;font-size:small" width=85%>
+	<tr>
+	<td>
+	<form action="http://groups-beta.google.com/group/Cytoscape/boxsubscribe">
+		<div class="item">
+		<H3>Cytoscape-Announce:</H3>
+		Description:  A low-volume mailing list used to announce new developments in Cytoscape.
+		<P>
+		Subscribe to Cytoscape-Announce:
+		<P>
+		Email: <input type=text name=email>
+       		<input type=submit name="sub" value="Subscribe">
+       		&nbsp;&nbsp;   <a href="http://groups-beta.google.com/group/Cytoscape">Browse Archives</a> 
+		</div>
+	</form>
+	</td>
+	</tr>
+	</table>
+
+<? include "footer.php"; ?>
+	</body>
+</html>
