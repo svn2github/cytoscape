@@ -34,6 +34,7 @@
 //----------------------------------------------------------------------------
 package cytoscape.data.readers;
 import java.io.*;
+import java.util.*;
 import java.util.jar.*;
 import java.net.*;
 import java.lang.IllegalStateException;
@@ -164,7 +165,7 @@ public static void initAttribs (BioDataServer dataServer,
 public static void initAttributes (BioDataServer dataServer,
                                 String species,
                                 CytoscapeConfig config,
-                                RootGraph graph,
+                                RootGraph rootGraph,
                                 GraphObjAttributes nodeAttributes,
                                 GraphObjAttributes edgeAttributes)
 {
@@ -201,9 +202,10 @@ public static void initAttributes (BioDataServer dataServer,
          excp.printStackTrace ();
          } 
         } // for i
-  //@@@@@@ add mapping for giny:
-   //if (nodeAttributes != null)
+  
+   if (nodeAttributes != null && rootGraph != null)
       //addNameMappingToAttributes (graph.getNodeArray (), nodeAttributes);
+	addNameMappingToAttributes(rootGraph.nodesList(), nodeAttributes);
     
     // no need to add name mapping for edge attributes -- it has already been
     // done, at the time when the interactions file (or gml file) was read
@@ -298,6 +300,32 @@ protected static void addNameMappingToAttributes (Object [] graphObjects,
     }
     attributes.addNameMapping (canonicalName, graphObj);
    }
+} // addNameMappingToAttributes
+
+ /**
+     * add node-to-canonical name mapping (and the same for edges) to giny RootGraph, so that
+     * node attributes can be retrieved by simply knowing the y.base.node,
+     * which is the basic view of data in this program.  
+     
+     * 
+     */
+protected static void addNameMappingToAttributes (List nodes,
+                                                  GraphObjAttributes attributes)
+{
+  
+  	Iterator i = nodes.iterator();
+	while (i.hasNext())
+	{
+		giny.model.Node node = (giny.model.Node) i.next();
+		String canonicalName = node.getIdentifier();
+		if(canonicalName == null || canonicalName.length() == 0){
+			throw new IllegalStateException("The Node object " + node + 
+		      " has a null or empty canonical name");
+		}
+		
+		attributes.addNameMapping (canonicalName, node);
+	}
+  
 } // addNameMappingToAttributes
 //----------------------------------------------------------------------------
 } // FileReadingAbstractions

@@ -51,8 +51,9 @@ public class LoadInteractionFileAction extends AbstractAction {
                 //set the new graph, don't erase old attributes
 		if ( networkView.getCytoscapeObj().getConfiguration().isYFiles())
 			networkView.getNetwork().setNewGraphFrom(newNetwork, false);
-		else
+		else {
 			networkView.setNewNetwork(newNetwork);
+		}
             } else {//give the user an error dialog
                 String lineSep = System.getProperty("line.separator");
                 StringBuffer sb = new StringBuffer();

@@ -172,8 +172,7 @@ protected void doInit(CytoscapeObj globalInstance, CyNetwork network, String tit
     this.globalInstance = globalInstance;
     this.network = network;
     this.isYFiles = globalInstance.getConfiguration().isYFiles();
-
-    
+     
     if (title == null) {
         this.windowTitle = defaultWindowTitle;
     } else {
@@ -802,7 +801,7 @@ public void setNewNetwork( CyNetwork newNetwork ) {
 	    //showWindow();
 	    getCyMenus().updateUndoRedoMenuItemStatus();
 	    //@@@@ for some reason the tool bar does not get painted correctly, look in to it later
-	    //dispalyNewGraph();
+	   //System.out.println("Node Attributes: " + network.getNodeAttributes().toString()); 
     }
 }
 //------------------------------------------------------------------------------

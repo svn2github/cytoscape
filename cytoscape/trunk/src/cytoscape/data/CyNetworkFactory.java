@@ -41,6 +41,7 @@ import cytoscape.CyProject;
 import cytoscape.GraphObjAttributes;
 import cytoscape.data.readers.*;
 import cytoscape.data.servers.BioDataServer;
+import java.util.*;
 //import cytoscape.data.ExpressionData;
 //-------------------------------------------------------------------------
 /**
@@ -246,14 +247,21 @@ protected static CyNetwork createNetworkFromGraphReader(GraphReader reader,
 	    //mapping from edges to edge canonical names. It does not provide
 	    //the mapping of nodes to names, so we do that here
 	    
-	    ////@@@@@ add for giny
-	   /* if (rootGraph != null) {
-		Node[] allNodes = graph.getNodeArray();
-		for (int i=0; i<allNodes.length; i++) {
-		    String canonicalName = allNodes[i].toString();
-		    nodeAttributes.addNameMapping(canonicalName, allNodes[i]);
-		} 
-	    }*/
+	   List nodes = rootGraph.nodesList();
+	    if (rootGraph != null) {
+		Iterator i = nodes.iterator();
+		while (i.hasNext())
+		{
+			giny.model.Node node = (giny.model.Node) i.next();
+			String canonicalName = node.getIdentifier();
+			if(canonicalName == null || canonicalName.length() == 0){
+				throw new IllegalStateException("The Node object " + node + 
+			      " has a null or empty canonical name");
+			}
+			
+			nodeAttributes.addNameMapping (canonicalName, node);
+		}
+	    }
 	    return new CyNetwork(rootGraph, nodeAttributes, edgeAttributes, null, false);
     }
 }
