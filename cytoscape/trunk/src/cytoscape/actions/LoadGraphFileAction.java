@@ -65,6 +65,7 @@ public class LoadGraphFileAction extends AbstractAction {
     CyFileFilter gmlFilter   = new CyFileFilter();
     CyFileFilter graphFilter = new CyFileFilter();
     CyNetwork newNetwork;
+
     gmlFilter.addExtension("gml");
     gmlFilter.setDescription("GML files");
     intFilter.addExtension("sif");
@@ -83,36 +84,26 @@ public class LoadGraphFileAction extends AbstractAction {
       //if(appendFlag) System.out.println("appending graph");
 
       String  name = chooser.getSelectedFile().toString();
-      boolean isGML = false;
+      int fileType = Cytoscape.FILE_SIF;
       if (name.length() > 4) {//long enough to have a "gml" extension
 	String extension = name.substring( name.length()-3 );
-	if (extension.equalsIgnoreCase("gml")) {isGML = true;}
+	if (extension.equalsIgnoreCase("gml"))
+	    fileType = Cytoscape.FILE_GML;
       }
 
       boolean canonicalize = Semantics.getCanonicalize(cytoscapeObj);
       String species = Semantics.getDefaultSpecies(networkView.getNetwork(), cytoscapeObj);
-      GraphReader reader = null;
-      if(isGML) {
+      //GraphReader reader = null;
 
-
-        newNetwork = Cytoscape.createNetwork( name,
-                                              Cytoscape.FILE_GML,
-                                              canonicalize,
-                                              cytoscapeObj.getBioDataServer(),
-                                              species );
+      newNetwork = Cytoscape.createNetwork( name,
+					    fileType,
+					    canonicalize,
+					    cytoscapeObj.getBioDataServer(),
+					    species );
         //reader = new GMLReader(name);
         //newNetwork = CyNetworkFactory.createNetworkFromGMLFile( name );
-      }
-      else {
+        //reader = new InteractionsReader(cytoscapeObj.getBioDataServer(),species,name);
 
-        newNetwork = Cytoscape.createNetwork( name,
-                                              Cytoscape.FILE_SIF,
-                                              canonicalize,
-                                              cytoscapeObj.getBioDataServer(),
-                                              species );
-
-        //	reader = new InteractionsReader(cytoscapeObj.getBioDataServer(),species,name);
-      } // end of else
       // newNetwork = CyNetworkFactory.createNetworkFromGraphReader(reader,canonicalize);
       //else {
       //    boolean canonicalize = Semantics.getCanonicalize(cytoscapeObj);
@@ -160,11 +151,11 @@ public class LoadGraphFileAction extends AbstractAction {
 	networkView.setWindowTitle(name);//and set a new title
 
 	//hack to apply layout information from a GML file
-	//if( name.endsWith("gml") || name.endsWith("GML") ) {
+	//if( fileType == Cytoscape.FILE_GML ) {
 	//    GMLReader reader = new GMLReader(name);
-	//    reader.layoutByGML(networkView.getView(), newNetwork);
+	//    reader.layout(networkView.getView());
 	//}
-	//reader.layout(networkView.getView());
+
 	//give the user some confirmation
 	String lineSep = System.getProperty("line.separator");
 	StringBuffer sb = new StringBuffer();
