@@ -90,7 +90,17 @@ public class AnimatedLayoutAction extends AbstractAction {
 
                     nv.setWidth( scale * 100 );
                     nv.setHeight( scale * 100 );
+                    gv.setNodeDoubleProperty( nv.getRootGraphIndex(), GraphView.NODE_Z_POSITION, scale * 100 );
                   }
+
+
+                  nvi = gv.getNodeViewsIterator();
+                  while ( nvi.hasNext() ) {
+                    NodeView nv = ( NodeView )nvi.next();
+                    gv.addNodeView( "phoebe.util.P3DNode", nv.getRootGraphIndex() );
+                  
+                  }
+
 
 
                 }

@@ -30,12 +30,12 @@ public class PrintAction extends AbstractAction  {
 
     public void actionPerformed(ActionEvent e) {
 
-	if ( System.getProperty("os.name").startsWith( "Windows" ) ) {
-	    // cytoscape.util.PrintUtilities.printComponent( ( (PGraphView)networkView.getView() ).getCanvas() );
-	} else {
+// 	if ( System.getProperty("os.name").startsWith( "Windows" ) ) {
+// 	    // cytoscape.util.PrintUtilities.printComponent( ( (PGraphView)networkView.getView() ).getCanvas() );
+// 	} else {
 	    PGraphView ginyView = (PGraphView)networkView.getView();
 	    ginyView.getCanvas().getLayer().print();
-	}
+      //	}
 	
     } // actionPerformed
 }
