@@ -8,42 +8,6 @@ public class ChildDataPropertyMap
    */
   protected DataPropertyMap parentDataPropertyMap;
 
-  /**
-   * Since every SharedIdentifiable object set is assigned 
-   * a uniqueID that is an int, we can store the data in
-   * cern.colt.matrix.impl.SparseMatrix2D.  This will allow
-   * for the easy return of 2-dimensional data sets, the
-   * returned data set can then be combined however the user
-   * feels is appropriate.
-   */
-  protected ObjectMatrix2D dataMatrix;
-
-  /**
-   * The names of the Attributes are stored in a 1D Matrix.  
-   * This will allow for the fast lookup of attribute names
-   * given the indices.  The normal use will be to find out which 
-   * attributes A SharedIdentifiable, or group of SharedIdentifiable
-   * objects has, find the non-null columns, and return the list of 
-   * available attributes.  This is always equal to the number of columns
-   * in the dataMatrix.
-   * 
-   * By having a colt matrix, it will also be easy to put a subset into
-   * a returned data set.
-   * 
-   * child --> parent
-   */ 
-  protected ObjectMatrix1D attributeIntNameMatrix;
-
-  /**
-   * The matrix of uids from the Parentdatapropertymap.  This provides the
-   * lookup for current index to parent index.  As well as keeping track of 
-   * all the available SharedIdentifiables.  Note that this is only necessary
-   * for child maps.
-   *
-   * child --> parent
-   */
-  protected ObjectMatrix1D identifierMatrix;
-
 
   /**
    * Child DataPropertyMaps need to be able to re-direct their 
@@ -150,94 +114,7 @@ public class ChildDataPropertyMap
     return parentChildAttributeHashMap;
   }
  
-  //----------------------------------------//
-  // Data Information Methods
-  //----------------------------------------//
 
-  /**
-   * @return all of the available attributes in this DataPropertyMap
-   */
-  public String[] getAttributes () {
-    return ( String[] )attributeIntNameMatrix.toArray();
-  }
-
-  /**
-   * Return the available attributes for the given 
-   * uniqueIDs
-   */
-  public String[] getAttributes ( int[] uniqueIDs ) {
-
-
-    // create a temporary Matrix2D that has the given
-    // uids, and all columns
-    int col_size = dataMatrix.columns();
-    int[] all_columns = new int[ col_size ];
-    int[] used_columns = new int[ col_size ];
-    Arrays.fill( used_columns, 0 );
-    for ( int i = 0; i < col_size; ++i ) {
-      all_columns[i] = i;
-    }
-    ObjectMatrix2D column_calc = dataMatrix.viewSelection( uniqueIDs, all_columns );
-    
-
-    // go through the non-zero values of the temporary matrix, and
-    // for every value, make sure that that column is included
-
-    IntArrayList row = new IntArrayList();
-    IntArrayList col = new IntArrayList();
-    ObjectArrayList values = new ObjectArrayList();
-    column_calc.getNonZeros( row, col, values );
-   
-    for ( int i = 0; i < col.size(); ++i ) {
-      used_columns[ col.get( i ) ] = 1;
-    }
-
-    col.clear();
-    
-    for ( int i = 0; i < used_columns.length; ++i ) {
-      if ( used_columns[i] == 1 ) {
-        col.add( i );
-      }
-    }
-    col.trimToSize();
-    
-    // take a view of just the used columns from the name matrix
-    ObjectMatrix1D used_attributes = attributeIntNameMatrix.viewSelection( col.elements() );
-    return ( String[] )used_attributes.toArray();
-     
-  }
-  
-  /**
-   * Return the number of Attributes
-   */
-  public int getAttributeCount () {
-    return dataMatrix.columns();
-  }
-
-  /**
-   * Return all of the uniqueID ints, since this is a child we actually
-   * return the parent indices.
-   */
-  public int[] getUniqueIDIndices () {
-
-    // just loop through and un-box the Integers
-    int[] uids = new int[ identifierMatrix.size() ];
-    for ( int i = 0; i < identifierMatrix.size(); ++i ) {
-      uids[i] = ( ( Integer )identifierMatrix.getQuick( i ) ).intValue();
-    }
-    return uids;
-  }
-    
-
-  /**
-   * Return all aliases of SharedIdentifiables, this array will
-   * return the most likely alias.
-   */
-  public String[] getSharedIndentifiableArray () {
-    return null;
-  }
-
-  
   //----------------------------------------//
   // Data Loading and Maintentance Methods
   //----------------------------------------//
