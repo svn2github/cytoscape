@@ -26,16 +26,16 @@ public class GraphStateAction extends CytoscapeAction {
     System.out.println( "++++++++++++++++GraphPerspective++++++++++++++++") ;
     
     System.out.println( "\t---------Nodes-------");
-    int[] p_nodes = perspective.getNodeIndicesArray();
+    int[] p_nodes = perspective.getNodeIndicesArray(); // These are RootGraph indices
     for ( int i = 0; i < p_nodes.length; ++i ) {
-      System.out.println( "\tPerspective Index: "+p_nodes[i] );//+" Root Index: "+perspective.getRootGraphNodeIndex( p_nodes[i] ) );
+      System.out.println( "\tRoot Index: "+p_nodes[i]+" Perspective Index: "+perspective.getNodeIndex(p_nodes[i]));
     }
     System.out.println( "\t---------edges-------");
-    int[] p_edges = perspective.getEdgeIndicesArray();
+    int[] p_edges = perspective.getEdgeIndicesArray(); // These are RootGraph indices
     for ( int i = 0; i < p_edges.length; ++i ) {
       int s = perspective.getEdgeSourceIndex( p_edges[i] );
       int t = perspective.getEdgeTargetIndex( p_edges[i] );
-      System.out.println( "\t Perspecitve Edge Index: "+p_edges[i] );//+" Root Index: "+perspective.getRootGraphEdgeIndex( p_edges[i] ) );
+      System.out.println( "\t Root Index: "+p_edges[i]+" Perspective Index: "+perspective.getEdgeIndex(p_edges[i]));
       System.out.println( "\t\tSource Perspecitve Index: "+s+" Root Index: "+perspective.getRootGraphNodeIndex( s ) );
       System.out.println( "\t\tTarget Perspecitve Index: "+t+" Root Index: "+perspective.getRootGraphNodeIndex( t ) );
     }

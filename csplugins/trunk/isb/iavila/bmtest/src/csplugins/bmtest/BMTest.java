@@ -32,15 +32,15 @@ public class BMTest extends AbstractPlugin {
     cyWindow.getCyMenus().getOperationsMenu().add(new HideSelectedNodesAction());
     cyWindow.getCyMenus().getOperationsMenu().add(new HideSelectedNodesEdgesAction());
     cyWindow.getCyMenus().getOperationsMenu().add(new RestoreHiddenNodesAction());
-    cyWindow.getCyMenus().getOperationsMenu().add(new CollapseSelectedNodes());
-    cyWindow.getCyMenus().getOperationsMenu().add(new UncollapseSelectedNodes());
+    //cyWindow.getCyMenus().getOperationsMenu().add(new CollapseSelectedNodes());
+    //cyWindow.getCyMenus().getOperationsMenu().add(new UncollapseSelectedNodes());
     cyWindow.getCyMenus().getOperationsMenu().add(new CreateMetaNode());
   }//BMTest
 
   public void createMetaNode (){
      
-    System.err.println("------------------------------------------------------");
-    System.err.println("In CreateMetaNodes.actionPerformed()");
+    //System.err.println("------------------------------------------------------");
+    //System.err.println("In createMetaNode()");
     
     GraphView graphView = cyWindow.getView();
     if(graphView.getSelectedNodes().size() == 0){
@@ -55,40 +55,40 @@ public class BMTest extends AbstractPlugin {
     java.util.List selectedNodeIndices = new ArrayList();
     while(it.hasNext()){
       NodeView nodeView = (NodeView)it.next();
-      Node node = nodeView.getNode();
-      int gpNodeIndex = node.getRootGraphIndex();
-      selectedNodeIndices.add(new Integer(gpNodeIndex));
+      int rgNodeIndex = mainGP.getRootGraphNodeIndex(nodeView.getGraphPerspectiveIndex());
+      selectedNodeIndices.add(new Integer(rgNodeIndex));
+      System.out.println("Selected node index = "+rgNodeIndex);
     }//while it
     int [] nodeIndices = new int [selectedNodeIndices.size()];
     for(int i = 0; i < selectedNodeIndices.size(); i++){
       nodeIndices[i] = ((Integer)selectedNodeIndices.get(i)).intValue();
     }//for i
-    GraphPerspective childGP = mainGP.createGraphPerspective(nodeIndices);
-    System.out.println("Created the childGP, which has " + 
-                       childGP.getNodeCount() + " nodes and " +
-                       childGP.getEdgeCount() + " edges.");
     RootGraph rootGraph = mainGP.getRootGraph();
-    int rgParentNodeIndex = rootGraph.createNode();
-    Node parentNode = rootGraph.getNode(rgParentNodeIndex);
-    System.out.println("Calling parentNode.setGraphPerspective()...");
-    parentNode.setGraphPerspective(childGP);
-    System.out.println("Created the parent node in root graph, with index = " + rgParentNodeIndex +
-                       " and graphPerspective = " + parentNode.getGraphPerspective());
-    GraphPerspective setGP = parentNode.getGraphPerspective();
-    
-    if(setGP.getNodeCount() != childGP.getNodeCount() ||
-       setGP.getEdgeCount() != childGP.getEdgeCount()){
-      
-      System.err.println("ERROR: The set graph perspective has " +
-                         setGP.getNodeCount() + " nodes, and the child gp has " +
-                         childGP.getNodeCount() + ", the set graph perspective has " +
-                         setGP.getEdgeCount() + " and the child gp has " + 
-                         childGP.getEdgeCount());
-      
+    int[] edgeIndices = mainGP.getConnectingEdgeIndicesArray(nodeIndices);
+    for(int i = 0; i < edgeIndices.length; i++){
+      if(edgeIndices[i] > 0){
+        int rootEdgeIndex = mainGP.getRootGraphEdgeIndex(edgeIndices[i]);
+        edgeIndices[i] = rootEdgeIndex;
+      }
+      System.out.println("Connecting edge index = " + edgeIndices[i]);
     }
+    int rgParentNodeIndex = rootGraph.createNode(nodeIndices, edgeIndices);
+    System.out.println("The newly created meta-node has index " + rgParentNodeIndex);
+    // Check that the creation of the meta-node worked
     
-    //TopLevelMetaNodeModel.applyModel(mainGP);
-    
+    int [] childrenNodeIndices = rootGraph.getNodeMetaChildIndicesArray(rgParentNodeIndex);
+    if(childrenNodeIndices.length != selectedNodeIndices.size()){
+      System.out.println("ERROR: The number of children nodes of the meta-node is " + 
+                         childrenNodeIndices.length + ", but the number of selected nodes was " +
+                         selectedNodeIndices.size());
+    }
+    int [] childrenEdgeIndices = rootGraph.getEdgeMetaChildIndicesArray(rgParentNodeIndex);
+    if(childrenEdgeIndices.length != edgeIndices.length){
+      System.out.println("ERROR: The number of children edges of the meta-node is " + 
+                         childrenEdgeIndices.length + 
+                         ", but the number of edges between children is " + edgeIndices.length); 
+    }
+       
   }// createMetaNode method
   
   public class CreateMetaNode extends AbstractAction{
@@ -116,7 +116,6 @@ public class BMTest extends AbstractPlugin {
       
       CyNetwork cyNetwork = cyWindow.getNetwork();
       GraphPerspective mainGraphPerspective = cyNetwork.getGraphPerspective();
-      
       // Get the selected nodes that are parent nodes
       java.util.List selectedNodeViewsList = graphView.getSelectedNodes();
       HashSet parentNodeViews = new HashSet();
@@ -124,14 +123,10 @@ public class BMTest extends AbstractPlugin {
       while(it.hasNext()){
         NodeView nodeView = (NodeView)it.next();
         Node node = nodeView.getNode();
-        System.out.println("Selected node = " + node);
-        // See if the node has a graph perspective
-        System.out.println("About to call node.getGraphPerspective()...");
-        // THIS CRASHES: 
-        // (apparently same cause as crashes in CollapseSelectedNodes.actionPerformed)
-        GraphPerspective nodeGP = node.getGraphPerspective();
+        int gpNodeIndex = nodeView.getGraphPerspectiveIndex();
+        int [] childrenNodeIndices = mainGraphPerspective.getNodeMetaChildIndicesArray(gpNodeIndex);
         System.out.println("...done");
-        if(nodeGP != null){
+        if(childrenNodeIndices != null && childrenNodeIndices.length > 0){
           parentNodeViews.add(nodeView);
           System.out.println("Node " + node + " is a parent node.");
         }else{

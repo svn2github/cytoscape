@@ -63,17 +63,17 @@ public class TopLevelMetaNodeModel{
    * @see #switch(GraphPerspective)
    */
   static public boolean applyModel (GraphPerspective graph_perspective){
-    Node [] metaNodes = getMetaNodes(graph_perspective);
+    int [] metaNodeRootIndices = getMetaNodeIndices(graph_perspective);
     boolean modified = false;
     
     //TODO: Remove
     System.err.println("In TopLevelMetaNodeModel.applyModel(GraphPerspective), num meta-nodes is " +
-                       metaNodes.length);
+                       metaNodeRootIndices.length);
     
-    for(int i = 0; i < metaNodes.length; i++){
+    for(int i = 0; i < metaNodeRootIndices.length; i++){
       //TODO: Remove
-      //System.err.println("metaNode = " + metaNodes[i]);
-      modified = modified || applyModel(graph_perspective, metaNodes[i]);
+      System.err.println("metaNode index = " + metaNodeRootIndices[i]);
+      modified = modified || applyModel(graph_perspective, metaNodeRootIndices[i]);
     }//for metaNodes
     //TODO: Remove
     System.err.println("Leaving TopLevelMetaNodeModel.applyModel(GraphPerspective), modified == " +
@@ -82,171 +82,254 @@ public class TopLevelMetaNodeModel{
   }//applyModel
 
   /**
-   * Transforms the given meta-node to the top level model.
+   * Transforms the meta-node with the given RootGraph index to the top level model.
    *
    * @param graph_perspective the <code>giny.model.GraphPerspective</code> in which 
    * the meta-node resides and that will be modified to meet this model
-   * @param meta_node the <code>giny.model.Node</code> that has a <code>GraphPerspective</code>
-   * inside it and that will be modified to meet this model
+   * @param meta_node_root_index the <code>RootGraph</code> index of the meta-node
    * @return true iff <code>graph_perspective</code> was modified
    */
   static public boolean applyModel (GraphPerspective graph_perspective,
-                                    Node meta_node){
+                                    int meta_node_root_index){
     //TODO: Remove
-    System.err.println("In TopLevelMetaNodeModel.applyModel(GraphPerspective," + meta_node.getRootGraphIndex() + ")");
+    //System.err.println("In TopLevelMetaNodeModel.applyModel(GraphPerspective,"+meta_node_root_index);
     
     //TODO: Check that the given Node is a meta-node
-    
-    int numNewEdges = 0;
-    int numHiddenGraphObjs = 0;
-    GraphPerspective childGP = meta_node.getGraphPerspective();
-    
+           
     //TODO: Remove
-    // System.err.print("Restoring meta_node in graph_perspective...");
+    //System.err.print("Restoring meta_node in graph_perspective...");
     //System.err.flush();
-    
     // Unhide the meta-node if hidden in graph_perspective
-    Node restoredMetaNode = graph_perspective.restoreNode(meta_node);
-    
-    //System.err.println("...done");
+    int restoredMetaNodeRootIndex = graph_perspective.restoreNode(meta_node_root_index);
+    //System.err.println("...done, restored node has index " + restoredMetaNodeRootIndex);
     
     // Add edges to the meta-node //
     //TODO: Remove
     //System.err.print("Adding edges to meta_node...");
     //System.err.flush();
+    int numNewEdges = 0;
+    int numHiddenGraphObjs = 0;
     RootGraph rootGraph = graph_perspective.getRootGraph();
-    List childrenNodes = childGP.nodesList();
-    Iterator nodesit = childrenNodes.iterator();
-    List edgesToRestore = new ArrayList();
-    while(nodesit.hasNext()){
-      Node node = (Node)nodesit.next();
-      // Undirected edges
-      List undirectedEdgesList = graph_perspective.getAdjacentEdgesList(node,true,false,false);
+    List edgeRootIndicesToRestore = new ArrayList();
+    List seenChildEdgeIndices = new ArrayList();
+    // These are GraphPerspective indices:
+    int [] childrenNodeIndices = graph_perspective.getNodeMetaChildIndicesArray(meta_node_root_index); 
+    for(int child_i = 0; child_i < childrenNodeIndices.length; child_i++){
+      int childNodeRootIndex = graph_perspective.getRootGraphNodeIndex(childrenNodeIndices[child_i]);
+      // Undirected edges (these are GraphPerspective indices)
+      int[] undirectedEdgeIndices = 
+        graph_perspective.getAdjacentEdgeIndicesArray(childNodeRootIndex,true, false, false);
       //TODO: Remove
-      //System.err.println("Node w/index " + node.getRootGraphIndex() + " has " +
-      //                 undirectedEdgesList.size() + " undirected edges");
-      Edge [] undirectedEdges = 
-        (Edge[])undirectedEdgesList.toArray(new Edge[undirectedEdgesList.size()]);
-      for(int j = 0; j < undirectedEdges.length; j++){
-        Edge edge = undirectedEdges[j];
-        if(childGP.containsEdge(edge, false)){
-          // The edge is inside
+      //System.err.println("Child node "+childNodeRootIndex+" has "+undirectedEdgeIndices.length+" undirected edges");
+      for(int edge_i = 0; edge_i < undirectedEdgeIndices.length; edge_i++){
+        int childEdgeIndex = undirectedEdgeIndices[edge_i];
+        if(// THIS CRASHES:
+           //graph_perspective.isEdgeMetaChild(
+           //                                meta_node_root_index,
+           //                                childEdgeIndex
+           //                                )
+           rootGraph.isEdgeMetaChild(
+                                     meta_node_root_index,
+                                     graph_perspective.getRootGraphEdgeIndex(childEdgeIndex)
+                                     )
+           
+           ){
+          // The edge is a child of the meta-node, so it should be hidden in graph_perspective
           //TODO: Remove
-          //System.err.println("childGP contains edge w/index " + edge.getRootGraphIndex());
+          //System.err.println("Child edge = " + undirectedEdgeIndices[edge_i]);
           continue;
         }
-        Node otherNode = null;
-        if(edge.getTarget() == node){
-          otherNode = edge.getSource();
-        }else if(edge.getSource() == node){
-          otherNode = edge.getTarget();
+        int otherNodeRootIndex = 0;
+        int targetRootIndex = 
+         graph_perspective.getRootGraphNodeIndex(graph_perspective.getEdgeTargetIndex(childEdgeIndex));
+        int sourceRootIndex = 
+         graph_perspective.getRootGraphNodeIndex(graph_perspective.getEdgeSourceIndex(childEdgeIndex));
+        if(targetRootIndex == childNodeRootIndex){
+          otherNodeRootIndex = sourceRootIndex;
+        }else if(sourceRootIndex == childNodeRootIndex){
+          otherNodeRootIndex = targetRootIndex;
         }
         //TODO: Remove
-        //System.err.println("otherNode index == " + otherNode.getRootGraphIndex());
-        // Create an undirected edge from the metanode to otherNode
-        int edgeIndex = rootGraph.createEdge(meta_node,otherNode,false);
-        System.err.println("Edge w/index " + edgeIndex + " was created in rootgraph");
-        //System.err.println("Restoring new edge in graph_perspective");
-        //graph_perspective.restoreEdge(edgeIndex);
-        edgesToRestore.add(new Integer(edgeIndex));
+        //System.err.println("otherNode == " + otherNodeRootIndex);
+        // Create an undirected edge from the meta-node to other node
+        int newEdgeRootIndex = 
+          rootGraph.createEdge(meta_node_root_index,
+                               otherNodeRootIndex,
+                               false);
+        //System.err.println("Edge w/index " + newEdgeRootIndex + " was created in rootgraph");
+        edgeRootIndicesToRestore.add(new Integer(newEdgeRootIndex));
+        seenChildEdgeIndices.add(new Integer(childEdgeIndex));
         numNewEdges++;
       }//for undirected edges
 
-      // Outgoing edges
-      List outgoingEdgesList = graph_perspective.getAdjacentEdgesList(node, false, false, true);
+      // Outgoing edges (GraphPerspective indices)
+      int [] outgoingEdgeIndices = 
+        graph_perspective.getAdjacentEdgeIndicesArray(childNodeRootIndex,false,false,true);
       //TODO: Remove
-      //System.err.println("Node w/index " + node.getRootGraphIndex() + " has " + 
-      //                 outgoingEdgesList.size() + " outgoing edges");
-      Edge [] outgoingEdges = (Edge[])outgoingEdgesList.toArray(new Edge[outgoingEdgesList.size()]);
-      for(int j = 0; j < outgoingEdges.length; j++){
-        Edge edge = outgoingEdges[j];
-        //System.err.println("Looking at edge w/index " + edge.getRootGraphIndex());
-        if(childGP.containsEdge(edge, false) || undirectedEdgesList.contains(edge)){
-          // This edge is inside, or it was already added
+      //System.err.println("Child node "+childNodeRootIndex+" has "+outgoingEdgeIndices.length+" outgoing edges");
+      for(int edge_i = 0; edge_i < outgoingEdgeIndices.length; edge_i++){
+        int childEdgeIndex = outgoingEdgeIndices[edge_i];
+        Integer childEdgeIndexInteger = new Integer(childEdgeIndex);
+        if(// THIS CRASHES:
+           //graph_perspective.isEdgeMetaChild(
+           //                                meta_node_root_index,
+           //                                childEdgeIndex
+           //                                )
+           rootGraph.isEdgeMetaChild(
+                                     meta_node_root_index,
+                                     graph_perspective.getRootGraphEdgeIndex(childEdgeIndex)
+                                     )
+           
+           ||
+           seenChildEdgeIndices.contains(childEdgeIndexInteger)
+           ){
+          // This edge is a child of meta-node, or it was already added
           //TODO: Remove
-          //System.err.println("Edge w/index " + edge.getRootGraphIndex() + " is in childGP");
+          //System.err.println("Child edge = " + childEdgeIndex);
           continue;
         }
-        //System.err.println("About to call edge.getTarget()...");
-        Node toNode = edge.getTarget();
+        int toNodeRootIndex =           
+         graph_perspective.getRootGraphNodeIndex(graph_perspective.getEdgeTargetIndex(childEdgeIndex));
         //TODO: Remove
-        //System.err.println("Edge w/index " + edge.getRootGraphIndex() +
-        //                 " has target node w/index " + toNode.getRootGraphIndex());
-        // Create a directed edge from the meta-node to the toNode
+        //System.err.println("Child edge "+childEdgeIndex+" has target node " + toNodeRootIndex);
+        // Create a directed edge from the meta-node to the toNodeRoot
         // TODO: Remove
-        int edgeIndex = rootGraph.createEdge(meta_node,toNode, true);
-        System.err.println("Edge w/index " + edgeIndex + " created in rootGraph");
+        int newEdgeRootIndex = 
+          rootGraph.createEdge(meta_node_root_index,
+                               toNodeRootIndex, 
+                               true);
+        //System.err.println("New edge " + newEdgeRootIndex + " created in rootGraph");
         numNewEdges++;
-        //TODO : Remove
-        //System.err.println("Restoring edge in graph_perspective...");
-        //graph_perspective.restoreEdge(edgeIndex);
-        edgesToRestore.add(new Integer(edgeIndex));
-        //System.err.println("...done");
+        edgeRootIndicesToRestore.add(new Integer(newEdgeRootIndex));
+        seenChildEdgeIndices.add(childEdgeIndexInteger);
       }//for outgoing edges
       
       //System.err.println("Done with outgoing edges, numNewEdges == " + numNewEdges);
       // Ingoing edges
-      List ingoingEdgesList = graph_perspective.getAdjacentEdgesList(node,false,true,false);
+      int [] ingoingEdgeIndices = 
+         graph_perspective.getAdjacentEdgeIndicesArray(childNodeRootIndex,false,true,false);
       //TODO: Remove
-      //System.err.println("Node w/index " + node.getRootGraphIndex() + " has " +
-      //                 ingoingEdgesList.size() + " ingoing edges");
-      Edge [] ingoingEdges = (Edge[])ingoingEdgesList.toArray(new Edge[ingoingEdgesList.size()]);
-      for(int j = 0; j < ingoingEdges.length; j++){
-        Edge edge = ingoingEdges[j];
-        if(childGP.containsEdge(edge, false) || undirectedEdgesList.contains(edge)){
-          // The edge is inside 
+      //System.err.println("Child node "+childNodeRootIndex+" has "+ingoingEdgeIndices.length+" ingoing edges");
+      for(int edge_i = 0; edge_i < ingoingEdgeIndices.length; edge_i++){
+        int childEdgeIndex = ingoingEdgeIndices[edge_i];
+        Integer childEdgeIndexInteger = new Integer(childEdgeIndex);
+        if(// THIS CRASHES:
+           //graph_perspective.isEdgeMetaChild(
+           //                                meta_node_root_index,
+           //                                childEdgeIndex
+           //                               )
+           rootGraph.isEdgeMetaChild(
+                                     meta_node_root_index,
+                                     graph_perspective.getRootGraphEdgeIndex(childEdgeIndex)
+                                     )
+           ||
+           seenChildEdgeIndices.contains(childEdgeIndexInteger)
+           ){
+          // This edge is a child of meta-node, or it was already added
           //TODO: Remove
-          //System.err.println("childGP contains edge w/root index" + edge.getRootGraphIndex());
+          //System.err.println("Child edge = " + childEdgeIndex);
           continue;
         }
-        Node fromNode = edge.getSource();
-        // Create a directed edge from the fromNode to the meta-node
-        int edgeIndex = rootGraph.createEdge(fromNode, meta_node, true);
-        System.err.println("Edge w/index " + edgeIndex + " created in rootGraph");
-        //System.err.println("Restoring new edge in graph_perspective");
-        //graph_perspective.restoreEdge(edgeIndex);
-        edgesToRestore.add(new Integer(edgeIndex));
+        int fromNodeRootIndex =
+         graph_perspective.getRootGraphNodeIndex(graph_perspective.getEdgeSourceIndex(childEdgeIndex));
+        // Create a directed edge from the from-node to the meta-node
+        int newEdgeRootIndex = 
+          rootGraph.createEdge(fromNodeRootIndex, 
+                               meta_node_root_index, 
+                               true);
+        //System.err.println("New edge " + newEdgeRootIndex + " created in rootGraph");
+        edgeRootIndicesToRestore.add(new Integer(newEdgeRootIndex));
         numNewEdges++;
       }//for ingoing edges
       //System.err.println("Done with ingoing edges, numNewEdges == " + numNewEdges);
     }//nodesit
     
-    if(edgesToRestore.size() > 0){
-      int [] newEdgeIndices = new int [edgesToRestore.size()];
-      for(int i = 0; i < newEdgeIndices.length; i++){
-        newEdgeIndices[i] = ((Integer)edgesToRestore.get(i)).intValue();
+    if(edgeRootIndicesToRestore.size() > 0){
+      int [] newEdgeRootIndices = new int [edgeRootIndicesToRestore.size()];
+      for(int i = 0; i < newEdgeRootIndices.length; i++){
+        newEdgeRootIndices[i] = ((Integer)edgeRootIndicesToRestore.get(i)).intValue();
       }
       // One event gets fired
-      int [] restoredEdges = graph_perspective.restoreEdges(newEdgeIndices);
-      System.err.println("Restored " + restoredEdges.length + " in graph_perspective");
-    }
+      int [] restoredEdges = graph_perspective.restoreEdges(newEdgeRootIndices);
+      //System.err.println("Restored " + restoredEdges.length + " in graph_perspective");
+    }//if there are new edges
     
     //TODO: Remove
     //System.err.println("...done");
     // Done adding edges to metanode //
 
-    System.err.println("Done adding edges to metanode, total numNewEdges == " + numNewEdges);
+    //System.err.println("Done adding edges to metanode, total numNewEdges == " + numNewEdges);
 
-    // Hide the nodes and edges that are in childGP
+    // Hide the child nodes and edges
     //TODO: Remove
-    //System.err.print("Hiding edges in graph_perspective...");
-    //System.err.flush();
-    List hiddenEdges = graph_perspective.hideEdges(childGP.edgesList());
-    //TODO: Remove
-    //System.err.println("...done");
     //System.err.print("Hiding nodes in graph_perspective...");
     //System.err.flush();
-    List hiddenNodes = graph_perspective.hideNodes(childrenNodes);
+    int [] hiddenNodes = graph_perspective.hideNodes(childrenNodeIndices);
     //TODO: Remove
-    //System.err.println("...done");
-    numHiddenGraphObjs += hiddenEdges.size();
-    numHiddenGraphObjs += hiddenNodes.size();
+    //System.err.println("...done, hid " + hiddenNodes.length + " nodes:");
+    //for(int i = 0; i < hiddenNodes.length; i++){
+      //System.err.println("Hidden node index = " + hiddenNodes[i]);
+    //}
+    numHiddenGraphObjs += hiddenNodes.length;
+    //TODO: Remove, this happen to be RootGraph indices
+    //int [] graphPerspectiveNodeIndices = graph_perspective.getNodeIndicesArray();
+    //System.out.println("After removing the children nodes, these are the graph_perspective nodes:");
+    //for(int i = 0; i < graphPerspectiveNodeIndices.length; i++){
+    //System.out.println("Index = " + graphPerspectiveNodeIndices[i] + " " + 
+    //                   graph_perspective.getNodeIndex(graphPerspectiveNodeIndices[i]));
+    //}
   
-    if(numNewEdges > 0 || numHiddenGraphObjs > 0 || restoredMetaNode != null){
+    if(numNewEdges > 0 || numHiddenGraphObjs > 0 || restoredMetaNodeRootIndex != 0){
       return true;
     }
     return false;
   }//applyMode
+  
+  /**
+   * @return an array of <code>giny.model.RootGraph</code> indices of nodes
+   * that are meta-nodes. A meta-node is defined as a node that has children
+   * nodes. meta-nodes that are in graph_perspective and whose children are
+   * hidden in it, are included, as well as meta-nodes that are hidden in 
+   * graph_perspective but whose children are not.
+   */
+  static public int [] getMetaNodeIndices (GraphPerspective graph_perspective){
+    RootGraph rootGraph = graph_perspective.getRootGraph();
+    int [] rgNodeIndices = rootGraph.getNodeIndicesArray();
+    ArrayList metaNodeIndices = new ArrayList();
+    for(int i = 0; i < rgNodeIndices.length; i++){
+      int rootNodeIndex = rgNodeIndices[i];
+      if(graph_perspective.getNodeIndex(rootNodeIndex) > 0){
+        // Since the children nodes are hidden in the graph_perspective, we need to use rootGraph
+        int [] childrenIndices = rootGraph.getNodeMetaChildIndicesArray(rootNodeIndex);
+        if(childrenIndices == null || childrenIndices.length == 0){
+          continue;
+        }
+        // This is a meta-node that is in the graph_perspective
+        metaNodeIndices.add(new Integer(rootNodeIndex));
+      }else{
+        // See if the children nodes of the meta_node are contained in graph_perspective
+        int [] childrenIndices = rootGraph.getNodeMetaChildIndicesArray(rootNodeIndex);
+        if(childrenIndices == null || childrenIndices.length == 0){
+          continue;
+        }
+        int j;
+        for(j = 0; j < childrenIndices.length; j++){
+          int gpNodeIndex = graph_perspective.getNodeIndex(childrenIndices[j]);
+          if(gpNodeIndex == 0){
+            break;
+          }
+        }//for j
+        if(j == childrenIndices.length){
+          metaNodeIndices.add(new Integer(rootNodeIndex));
+        }
+      }//Else if the rootNode is not contained in the graph_perspective
+    }//For each node index in the rootGraph
+    int [] indicesArray = new int [metaNodeIndices.size()];
+    for(int i = 0; i < indicesArray.length; i++){
+      indicesArray[i] = ((Integer)metaNodeIndices.get(i)).intValue();
+    }
+    return indicesArray;
+  }//getMetaNodeIndices
   
   /**
    * @return an array of <code>giny.model.Node</code> objects that are in
@@ -313,75 +396,103 @@ public class TopLevelMetaNodeModel{
   static public boolean undoModel (GraphPerspective graph_perspective,
                                    boolean recurse){
     
-    Node [] metaNodes = getMetaNodes(graph_perspective);
+    int [] metaNodeRootIndices = getMetaNodeIndices(graph_perspective);
     boolean modified = false;
     
     //TODO: Remove
-    System.err.println("In undoModel(GraphPerspective, boolean), total num meta-nodes == "+metaNodes.length);
+    System.err.println("In undoModel(GraphPerspective, boolean), total num meta-nodes == "+metaNodeRootIndices.length);
     
-    for(int i = 0; i < metaNodes.length; i++){
-      modified = modified || undoModel(graph_perspective, metaNodes[i], recurse);
+    for(int i = 0; i < metaNodeRootIndices.length; i++){
+      modified = modified || undoModel(graph_perspective, metaNodeRootIndices[i], recurse);
     }//for metanodes
     return modified;
   }//undoModel
 
   /**
-   * It undos a call to {@link #applyModel(GraphPerspective, Node)} or 
-   * {@link #applyModel(GraphPerspective)} for the given meta-node.
+   * It undos a call to {@link #applyModel(GraphPerspective, int)} or 
+   * {@link #applyModel(GraphPerspective)} for the meta-node with the given index.
    *
-   * @param graph_perspective the <code>GraphPerspective</code> in which <code>meta_node</code>
+   * @param graph_perspective the <code>GraphPerspective</code> in which the meta-node
    * resides and that will be modified
-   * @param meta_node the <code>Node</code> that contains a <code>GraphPerspective</code> inside
-   * it and that was previously modified to feet this model
-   * @param recurse whether or not the meta-nodes inside <code>meta_node</code> should also
+   * @param meta_node_root_index the <code>RootGraph</code> index of the meta-node
+   * @param recurse whether or not the meta-nodes inside the meta-node should also
    * be undone
    * @return true iff <code>graph_perspective</code> was modified
    */
   static public boolean undoModel (GraphPerspective graph_perspective,
-                                   Node meta_node,
+                                   int meta_node_root_index,
                                    boolean recurse){
     
-    int rootIndex = meta_node.getRootGraphIndex();
     RootGraph rootGraph = graph_perspective.getRootGraph();
-    int [] childrenIndices = rootGraph.getNodeMetaChildIndicesArray(rootIndex);
+    int [] childrenIndices = rootGraph.getNodeMetaChildIndicesArray(meta_node_root_index);
     if(childrenIndices == null || childrenIndices.length == 0){
       // This is not a metanode
       //TODO: Remove
-      //System.err.println("Node " + meta_node.getIdentifier() + " is not a meta-node");
+      //System.err.println("Node " + meta_node_root_index + " is not a meta-node");
       return false;
     }
-  
-    GraphPerspective childGP = meta_node.getGraphPerspective();
-    if(childGP == null || childGP.getNodeCount() == 0){
-      throw new IllegalStateException("Node " + meta_node.getIdentifier() + " has a non-empty array " +
-                                   " of children-node indices, but, it has no child GraphPerspective");
-    }
+    
+    //TODO: Remove
+    System.err.println("undoModel("+graph_perspective+","+meta_node_root_index+","+recurse+")");
+    
     
     // Remove the edges connected to the metanode
-    // NOTE: Sometimes returns an empty list, even though the node does have edges
-    List edgesList = graph_perspective.getAdjacentEdgesList(meta_node,true, true, true);
+    int [] edgeIndices = graph_perspective.getAdjacentEdgeIndicesArray(meta_node_root_index,
+                                                                       true,true,true
+                                                                       );
+    for(int i = 0; i < edgeIndices.length; i++){
+      edgeIndices[i] = graph_perspective.getRootGraphEdgeIndex(edgeIndices[i]);
+    }// for i
+    //TEST
+    //graph_perspective.hideEdges(edgeIndices);
+    //--
     //TODO: Remove
-    System.err.println("Got " + edgesList.size()+" adjacent edges to meta_node in graph_perspective");
-    List removedEdges = rootGraph.removeEdges(edgesList);
+    System.err.println("Got "+edgeIndices.length+" adjacent edges to meta-node in graph_perspective");
+    int[] removedEdgeIndices = rootGraph.removeEdges(edgeIndices);
     //TODO: Remove
-    System.err.println("Removed " + removedEdges.size() + " edges from rootGraph");
+    System.err.println("Removed "+removedEdgeIndices.length+" edges from rootGraph");
     // Unhide the metanode's children nodes and edges (this also restores incident edges)
-    List restoredNodes = graph_perspective.restoreNodes(childGP.nodesList(), true);
+    int[] restoredNodeIndices = graph_perspective.restoreNodes(childrenIndices, true);
+    // TEST:
+    // int [] rootGraphNodeIndices = rootGraph.getNodeIndicesArray();
+//     ArrayList edgeIndicesToRestore = new ArrayList();
+//     for(int i = 0; i < childrenIndices.length; i++){
+//       for(int j = 0; j < rootGraphNodeIndices.length; j++){
+//         int[] betweenEdges = rootGraph.getEdgeIndicesArray(childrenIndices[i],rootGraphNodeIndices[j],true);
+//         if(betweenEdges != null && betweenEdges.length > 0){
+//           for(int k = 0; k < betweenEdges.length; k++){
+//             edgeIndicesToRestore.add(new Integer(betweenEdges[k]));
+//           }// for k
+//         }// if
+//       }// for j
+//     }// for i
+//     if(edgeIndicesToRestore.size() == 0){
+//       System.err.println("NO EDGES BETWEEN CHILDREN NODES.");
+//     }
         
+//     int [] edgeIndicesToRestoreArray = new int [edgeIndicesToRestore.size()];
+//     for(int i = 0; i < edgeIndicesToRestoreArray.length; i++){
+//       edgeIndicesToRestoreArray[i] = ((Integer)edgeIndicesToRestore.get(i)).intValue();
+//     }
+//     graph_perspective.restoreEdges(edgeIndicesToRestoreArray);
+    
+    //----
     // Hide the meta-node, leave it alone in rootGraph since it was there to begin with
-    Node hiddenNode = graph_perspective.hideNode(meta_node);
+    int hiddenNodeIndex = graph_perspective.hideNode(meta_node_root_index);
     
     boolean recursivelyChanged = false;
     // Recurse
     if(recurse){
-      Iterator it = restoredNodes.iterator();
-      while(it.hasNext()){
-        Node childNode = (Node)it.next();
-        recursivelyChanged = recursivelyChanged || undoModel(graph_perspective,childNode,recurse);
-      }//while it
+      for(int i = 0; i < restoredNodeIndices.length; i++){
+        recursivelyChanged = recursivelyChanged || undoModel(graph_perspective,
+                                                             restoredNodeIndices[i],
+                                                             recurse);
+      }//for i
     }
 
-    if( (removedEdges.size() + restoredNodes.size()) > 0 || hiddenNode != null || recursivelyChanged){
+    if( (removedEdgeIndices.length + restoredNodeIndices.length) > 0 
+        || hiddenNodeIndex != 0 
+        || recursivelyChanged){
       return true;
     }
     return false;
