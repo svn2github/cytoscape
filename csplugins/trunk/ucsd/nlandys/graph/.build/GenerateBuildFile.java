@@ -25,6 +25,7 @@ public class GenerateBuildFile
     File classesDir = new File(args[2]);
     File littleJarsDir = new File(args[3]);
     String description = args[4];
+    String jarFile = args[5];
 
     out.println("<?xml version=\"1.0\"?>");
     out.println();
@@ -42,7 +43,7 @@ public class GenerateBuildFile
     String[] packageDirs = getAllDirsWithJavaFiles(sourceDir);
     writeProperties(out, sourceDir, tempSourceDir, classesDir, littleJarsDir);
     writePatternsets(out, packageDirs);
-    writeJarTarget(out, packageDirs);
+    writeJarTarget(out, jarFile, packageDirs);
     writeLittleJarsTarget(out, packageDirs);
     Hashtable deps = new Hashtable();
     for (int i = 0; i < packageDirs.length; i++)
@@ -107,9 +108,10 @@ public class GenerateBuildFile
   }
 
   private static void writeJarTarget(PrintStream printStream,
+                                     String jarFile,
                                      String[] packageDirs)
   {
-    printStream.println("  <target name=\"nwo.zip\"");
+    printStream.println("  <target name=\"" + jarFile + "\"");
     printStream.println("          depends=\"littlejars\">");
     printStream.println("    <mkdir dir=\"${" + LITTLE_JARS_DIR +
                         "}/all_classes\"/>");
@@ -121,8 +123,8 @@ public class GenerateBuildFile
       printStream.println("           dest=\"${" + LITTLE_JARS_DIR +
                           "}/all_classes\"/>");
     }
-    printStream.println("    <zip zipfile=\"${" + BUILD_DIR +
-                        "}/nwo.zip\"");
+    printStream.println("    <jar destfile=\"${" + BUILD_DIR +
+                        "}/" + jarFile + "\"");
     printStream.println("         basedir=\"${" + LITTLE_JARS_DIR +
                         "}/all_classes\"");
     printStream.println("         filesonly=\"true\"/>");
