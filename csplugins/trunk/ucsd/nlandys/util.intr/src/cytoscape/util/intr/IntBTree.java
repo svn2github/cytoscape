@@ -430,7 +430,23 @@ public final class IntBTree
                                 int xMin, int xMax,
                                 int minBound, int maxBound)
   {
-    return -1;
+    int count = 0;
+    if (isLeafNode(n)) {
+      for (int i = 0; i < n.sliceCount; i++)
+        if (xMin <= n.values[i]) {
+          if (n.values[i] <= xMax) count++;
+          else break; }
+      if (count > 0) nodeStack.push(n); }
+    else {
+//       int currentMax = maxBound;
+//       int currentMin;
+//       for (int i = n.sliceCount - 2; i >= -1; i--) {
+//         currentMin = ((i < 0) ? minBound : n.data.splitVals[i]);
+//         if (currentMin <= xMax) {
+//         }
+//         currentMax = currentMin; }
+    }
+    return count;
   }
 
   private  void debugPrint()
