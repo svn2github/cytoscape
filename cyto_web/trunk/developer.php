@@ -28,7 +28,7 @@
       <div class="roundbox blue"><big>Quick Links</big>
       <p><a href="concepts.php">Concepts Document</a>
       </p>
-      <p><a href="pluginTutorial/pluginTutorial.php"> Plugin Tutorial </a>
+      <p><a href="pluginTutorial.php"> Plugin Tutorial </a>
       </p>
       <p><a href="http://cbio.mskcc.org/cytoscape/javadoc/">Cytoscape
 API</a>
