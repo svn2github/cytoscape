@@ -10,7 +10,6 @@ import java.io.IOException;
 
 import cytoscape.Cytoscape;
 import cytoscape.view.CyNetworkView;
-import cytoscape.data.readers.GMLTree;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.data.AttributeSaverDialog;
 

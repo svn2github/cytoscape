@@ -23,7 +23,7 @@ import javax.swing.event.SwingPropertyChangeSupport;
 import cytoscape.data.ExpressionData;
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.Semantics;
-import cytoscape.data.readers.GMLReader;
+import cytoscape.data.readers.GMLReader2;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.InteractionsReader;
 import cytoscape.data.servers.BioDataServer;
@@ -813,7 +813,7 @@ public abstract class Cytoscape {
                                        location );
     } else if ( file_type == FILE_GML
                 || ( file_type == FILE_BY_SUFFIX && location.endsWith( "gml" ) ) ) {
-      reader = new GMLReader( location );
+	reader = new GMLReader2( location );
     } else {
       // TODO: come up with a really good way of supporting arbitrary 
       // file types via plugin support.

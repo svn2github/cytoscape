@@ -43,7 +43,7 @@ import java.util.Enumeration;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 
-import cytoscape.data.readers.GMLReader;
+import cytoscape.data.readers.GMLReader2;
 import cytoscape.unitTests.AllTests;
 //-----------------------------------------------------------------------------------------
 public class GMLReaderTest extends TestCase {
