@@ -122,6 +122,7 @@ public class CytoscapeWindow extends JPanel implements FilterDialogClient, Graph
   protected JFrame mainFrame;
   protected JMenuBar menuBar;
   protected JMenu opsMenu, vizMenu, selectMenu, layoutMenu;
+  protected JMenu fileMenu, editMenu, loadSubMenu, saveSubMenu;
   protected JToolBar toolbar;
   protected JLabel infoLabel;
 
@@ -244,13 +245,13 @@ public CytoscapeWindow (cytoscape parentApp,
   else
     this.windowTitle = defaultWindowTitle + title;
 
-  // moved up so that the jar loader would do okay.
-  //
-  // initializeWidgets calls createMenuBar which,
-  // at the end, constructs the JarLoader.
-  setGraph (graph);
-
+  // the order here is apparently quite delicate:
+  // initializeWidgets sets up the graphView and the loadSubMenu, among others.
+  // setGraph depends on graphView already being set up.
+  // the JarLoader depends on the graph already being set, which is setGraph.
   initializeWidgets ();
+  setGraph (graph);
+  JarLoaderUI jlu = new JarLoaderUI(CytoscapeWindow.this,loadSubMenu);
 
   JButton annotationButton = toolbar.add (new AnnotationGui (CytoscapeWindow.this));
 
@@ -1295,9 +1296,9 @@ public void setInteractivity (boolean newState)
 protected JMenuBar createMenuBar ()
 {
   menuBar = new JMenuBar ();
-  JMenu fileMenu = new JMenu ("File");
+  fileMenu = new JMenu ("File");
 
-  JMenu loadSubMenu = new JMenu ("Load");
+  loadSubMenu = new JMenu ("Load");
   fileMenu.add (loadSubMenu);
   JMenuItem mi = loadSubMenu.add (new LoadGMLFileAction ());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_G, ActionEvent.CTRL_MASK));
@@ -1311,7 +1312,7 @@ protected JMenuBar createMenuBar ()
   mi = loadSubMenu.add (new LoadEdgeAttributesAction ());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_J, ActionEvent.CTRL_MASK));
 
-  JMenu saveSubMenu = new JMenu ("Save");
+  saveSubMenu = new JMenu ("Save");
   fileMenu.add (saveSubMenu);
   saveSubMenu.add (new SaveAsGMLAction ());
   saveSubMenu.add (new SaveAsInteractionsAction ());
@@ -1330,7 +1331,7 @@ protected JMenuBar createMenuBar ()
 
   menuBar.add (fileMenu);
 
-  JMenu editMenu = new JMenu ("Edit");
+  editMenu = new JMenu ("Edit");
   menuBar.add (editMenu);
   // added by dramage 2002-08-21
   if (getConfiguration().enableUndo()) {
@@ -1460,7 +1461,8 @@ protected JMenuBar createMenuBar ()
   // fileMenu.add (new DisplayDebugLog ());
   menuBar.add (opsMenu);
   
-  JarLoaderUI jlu = new JarLoaderUI(CytoscapeWindow.this,loadSubMenu);
+  //this is removed so that it can happen later.
+  //JarLoaderUI jlu = new JarLoaderUI(CytoscapeWindow.this,loadSubMenu);
 
   return menuBar;
 
