@@ -315,7 +315,6 @@ public String getCanonicalNodeName (Node node)
 
 } // getCanonicalNodeName
 //------------------------------------------------------------------------------
-// changed from protected to public. -iliana
 protected void displayNewGraph (boolean doLayout)
 {
   if (graph == null) graph = new Graph2D ();
@@ -365,6 +364,7 @@ protected void applyVizmapSettings ()
       bgr.setColor(bgColor);
       //CytoscapeWindow.this.setBackground(bgColor);
   }
+ 
 
   for (int i=0; i < nodes.length; i++) {
     Node node = nodes [i];
