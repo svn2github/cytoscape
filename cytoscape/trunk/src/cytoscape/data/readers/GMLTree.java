@@ -71,6 +71,15 @@ public class GMLTree{
 	root.addMapping("graph",graph);
 	//for each node, add a mapping to the graph GMLNode
 	Iterator viewIt = myView.getNodeViewsIterator();
+	// Currently supported GML fields for "node"
+	// "id"      node ID (integer from getRootGraphIndex())
+	// "label"   node label
+	// "graphics" specify the following
+	//      "x", "y"  node x,y locations
+	//      "h", "w"  node height/width
+	//      "fill"    node fill color
+	//      "type"    node shape {"rectangle", "oval"}
+	// 
 	while(viewIt.hasNext()){
 	    NodeView currentView = (NodeView)viewIt.next();
 	    Node currentNode = currentView.getNode();
@@ -95,6 +104,15 @@ public class GMLTree{
 	    currentGML.addMapping("graphics",graphics);
 	    graph.addMapping("node",currentGML);
 	}
+	// Currently supported GML fields for "edge"
+	// "source"   node ID from getRootGraphIndex()
+	// "target"   node ID from getRootGraphIndex()
+	// "label"    edge label from edgeAttributes.getCanonicalName
+	// "graphics"
+	//      "width"   edge line width
+	//      "type"    currently only "line"
+	//      "fill"    edge color
+
 	viewIt = myView.getEdgeViewsIterator();
 	GraphObjAttributes edgeAttributes = networkView.getNetwork().getEdgeAttributes();
 	while(viewIt.hasNext()){
