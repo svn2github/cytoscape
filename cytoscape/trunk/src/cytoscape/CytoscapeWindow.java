@@ -174,8 +174,12 @@ public CytoscapeWindow (cytoscape parentApp,
 
 
   initializeWidgets ();
-  toolbar.add (new AnnotationGui (CytoscapeWindow.this));
+  JButton annotationButton = toolbar.add (new AnnotationGui (CytoscapeWindow.this));
+
   setGraph (graph);
+  annotationButton.setIcon (new ImageIcon (getClass().getResource("images/AnnotationGui.gif")));
+  annotationButton.setToolTipText ("add annotation to nodes");
+  annotationButton.setBorderPainted (false);
 
   assignSpeciesAttributeToAllNodes ();
   displayCommonNodeNames ();
@@ -1009,20 +1013,52 @@ protected JMenuBar createMenuBar ()
 protected JToolBar createToolBar ()
 {
   JToolBar bar = new JToolBar ();
-  bar.add (new ZoomAction (0.9));
-  bar.add (new ZoomAction (1.1));
-  bar.add (new ZoomSelectedAction ());
-  bar.add (new FitContentAction ());
-  bar.addSeparator ();
-  bar.add (new ShowAllAction ());
-  bar.add (new HideSelectedAction ());
-  // bar.add (new RenderAction ());
-  bar.addSeparator ();
-  bar.add (new MainFilterDialogAction());
-  // bar.add (new AnnotationGui (CytoscapeWindow.this));
+  JButton b;
+
+  b = bar.add (new ZoomAction (0.9));
+  b.setIcon (new ImageIcon (getClass().getResource("images/ZoomOut24.gif")));
+  b.setToolTipText ("Zoom Out");
+  b.setBorderPainted (false);
+  b.setRolloverEnabled (true);
+
+  b = bar.add (new ZoomAction (1.1));
+  b.setIcon (new ImageIcon (getClass().getResource("images/ZoomIn24.gif")));
+  b.setToolTipText ("Zoom In");
+  b.setBorderPainted (false);
+  
+  b = bar.add (new ZoomSelectedAction ());
+  b.setIcon (new ImageIcon (getClass().getResource("images/ZoomArea24.gif")));
+  b.setToolTipText ("Zoom Selected Region");
+  b.setBorderPainted (false);
+
+  b = bar.add (new FitContentAction ());
+  b.setIcon (new ImageIcon (getClass().getResource("images/overview.gif")));
+  b.setToolTipText ("Zoom out to display all of current graph");
+  b.setBorderPainted (false);
+
+  // bar.addSeparator ();
+
+  b = bar.add (new ShowAllAction ());
+  b.setIcon (new ImageIcon (getClass().getResource("images/overall.gif")));
+  b.setToolTipText ("Show all nodes and edges (unhiding as necessary)");
+  b.setBorderPainted (false);
+
+
+  b = bar.add (new HideSelectedAction ());
+  b.setIcon (new ImageIcon (getClass().getResource("images/Zoom24.gif")));
+  b.setToolTipText ("Hide Selected Region");
+  b.setBorderPainted (false);
+
 
   bar.addSeparator ();
-  // bar.add (new AppearanceControllerLauncherAction (nodeAttributes, edgeAttributes));
+  b = bar.add (new MainFilterDialogAction());
+  b.setIcon (new ImageIcon (getClass().getResource("images/Grid24.gif")));
+  b.setToolTipText ("Apply Filters to Graph");
+  b.setBorderPainted (false);
+
+
+  bar.addSeparator ();
+
     
   return bar;
 
@@ -2542,7 +2578,7 @@ protected class DeleteSelectionAction extends AbstractAction {
 protected class ZoomAction extends AbstractAction {
   double factor;
   ZoomAction (double factor) {
-    super ("Zoom " +  (factor > 1.0 ? "In" : "Out"));
+    super ();
     this.factor = factor;
     }
     
@@ -2553,7 +2589,7 @@ protected class ZoomAction extends AbstractAction {
   }
 //------------------------------------------------------------------------------
 protected class FitContentAction extends AbstractAction  {
-   FitContentAction () { super ("Fit Content"); }
+   FitContentAction () { super (); }
     public void actionPerformed (ActionEvent e) {
       graphView.fitContent ();
   redrawGraph ();
@@ -2561,7 +2597,7 @@ protected class FitContentAction extends AbstractAction  {
 }
 //------------------------------------------------------------------------------
 protected class ShowAllAction extends AbstractAction  {
-   ShowAllAction () { super ("Show All"); }
+   ShowAllAction () { super (); }
     public void actionPerformed (ActionEvent e) {
         graph.firePreEvent();
         graphHider.unhideAll ();
@@ -2573,7 +2609,7 @@ protected class ShowAllAction extends AbstractAction  {
       }
 }
 protected class HideSelectedAction extends AbstractAction  {
-    HideSelectedAction () { super ("Hide Selected"); }
+    HideSelectedAction () { super (); }
     public void actionPerformed (ActionEvent e) {
         graph.firePreEvent();
         hideSelectedNodes();
@@ -2583,7 +2619,7 @@ protected class HideSelectedAction extends AbstractAction  {
 }
 //------------------------------------------------------------------------------
 protected class ZoomSelectedAction extends AbstractAction  {
-  ZoomSelectedAction ()  { super ("Zoom Selected"); }
+  ZoomSelectedAction ()  { super (); }
   public void actionPerformed (ActionEvent e) {
     Graph2D g = graphView.getGraph2D ();
     NodeCursor nc = g.selectedNodes (); 
@@ -2748,7 +2784,7 @@ protected HashMap configureNewNode (Node node)
 
 protected class MainFilterDialogAction extends AbstractAction  {
     MainFilterDialogAction () {
-        super("Filters"); 
+        super(); 
     }
     MainFilterDialogAction (String title) {
         super(title);
