@@ -2868,7 +2868,7 @@ protected boolean loadGML (String filename)
     displayCommonNodeNames (); // fills in canonical name for blank common names
     geometryFilename = filename;
     setWindowTitle(filename);
-    loadPlugins();
+    //loadPlugins();  //don't reload plugins
     displayNewGraph (false);
     return true;
 
@@ -2883,7 +2883,7 @@ protected void loadInteraction (String filename)
   displayCommonNodeNames (); // fills in canonical name for blank common names
   geometryFilename = null;
   setWindowTitle(filename);
-  loadPlugins();
+  //loadPlugins();  //don't reload plugins
   displayNewGraph (true);
 } // loadInteraction
 
@@ -2903,7 +2903,7 @@ protected boolean loadExpressionData (String filename) {
 
         config.addNodeAttributeFilename(filename);
         // update plugin list
-        loadPlugins();
+        //loadPlugins();  //don't reload plugins
     }
     return validLoad;
 }
