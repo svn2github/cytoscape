@@ -1,6 +1,7 @@
 package cytoscape.process.ui;
 
 // Notice the dependency list here - no deps on legacy cytoscape.* code.
+import cytoscape.process.PercentCompletedCallback;
 import cytoscape.process.Stoppable;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
@@ -104,7 +105,7 @@ public final class ProgressUI
     panel.add(progress, BorderLayout.SOUTH);
     busyDialog.getContentPane().add(panel, BorderLayout.CENTER);
     final ProgressUIControl returnThis = new ProgressUIControl
-      (s_contrl, busyDialog, new PercentCompletedHook() {
+      (s_contrl, busyDialog, new PercentCompletedCallback() {
           public void setPercentCompleted(final int percent) {
             EventQueue.invokeLater(new Runnable() {
                 public void run() {

@@ -1,5 +1,6 @@
 package cytoscape.process.ui;
 
+import cytoscape.process.PercentCompletedCallback;
 import java.awt.EventQueue;
 import java.awt.Frame;
 import javax.swing.JDialog;
@@ -8,18 +9,18 @@ import javax.swing.JDialog;
  * Provides functionality to set percent completed, show, and dispose of
  * a progress dialog.
  **/
-public final class ProgressUIControl
+public final class ProgressUIControl implements PercentCompletedCallback
 {
 
   private final Object[] m_monitor;
   private final JDialog m_dialog;
-  private final PercentCompletedHook m_percentHook;
+  private final PercentCompletedCallback m_percentHook;
   private final Frame m_parent;
 
   /* Package visible only. */
   ProgressUIControl(Object[] monitor,
                     JDialog dialog,
-                    PercentCompletedHook percentHook,
+                    PercentCompletedCallback percentHook,
                     Frame parent)
   {
     m_monitor = monitor;
