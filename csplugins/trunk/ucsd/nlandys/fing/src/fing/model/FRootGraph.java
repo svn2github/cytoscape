@@ -230,6 +230,22 @@ class FRootGraph implements RootGraph
     return returnThis;
   }
 
+  public boolean containsNode(Node node)
+  {
+    return getNode(node.getRootGraphIndex()) != null;
+  }
+
+  public boolean containsEdge(Edge edge)
+  {
+    return getEdge(edge.getRootGraphIndex()) != null;
+  }
+
+  // This method has been marked deprecated in the Giny API.
+  public java.util.List neighborsList(Node node)
+  {
+    
+  }
+
   static class NodesIterator implements Iterator
   {
     public boolean hasNext() {
