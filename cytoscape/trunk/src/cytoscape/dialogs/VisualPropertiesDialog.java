@@ -57,38 +57,24 @@ public VisualPropertiesDialog (Frame parentFrame,
   GridBagConstraints c = new GridBagConstraints();
   mainPanel.setLayout (gridbag);
 
-  JButton applyButton = new JButton ("Apply");
-  applyButton.addActionListener (new ApplyAction ());
-  c.gridx=0;
-  c.gridy=0;
-  gridbag.setConstraints(applyButton,c);
-  mainPanel.add (applyButton);
-
-  JButton cancelButton = new JButton ("Cancel");
-  cancelButton.addActionListener (new CancelAction ());
-  c.gridx=1;
-  c.gridy=0;
-  gridbag.setConstraints(cancelButton,c);
-  mainPanel.add (cancelButton);
-
   JButton edgePPButton = new JButton ("Edge Coloring: PP");
   edgePPButton.addActionListener (new GeneralColorDialogListener(this,ppColor,"Choose a P-P Edge Color"));
   c.gridx=0;
-  c.gridy=1;
+  c.gridy=0;
   gridbag.setConstraints(edgePPButton,c);
   mainPanel.add (edgePPButton);
 
   JButton edgePDButton = new JButton ("Edge Coloring: PD");
   edgePDButton.addActionListener (new GeneralColorDialogListener(this,pdColor,"Choose a P-D Edge Color"));
   c.gridx=1;
-  c.gridy=1;
+  c.gridy=0;
   gridbag.setConstraints(edgePDButton,c);
   mainPanel.add (edgePDButton);
   
   JButton colorButton = new JButton("Choose Node Color");
   colorButton.addActionListener(new GeneralColorDialogListener(this,nColor,"Choose a Node Color"));
   c.gridx=0;
-  c.gridy=2;
+  c.gridy=1;
   gridbag.setConstraints(colorButton,c);
   mainPanel.add(colorButton);
 
@@ -96,26 +82,42 @@ public VisualPropertiesDialog (Frame parentFrame,
       = new JButton("Choose Background Color");
   bgColorButton.addActionListener(new GeneralColorDialogListener(this,bgColor,"Choose a Background Color"));
   c.gridx=0;
-  c.gridy=3;
+  c.gridy=2;
   gridbag.setConstraints(bgColorButton,c);
   mainPanel.add(bgColorButton);
 
   JPanel labelTextPanel
       = new LabelTextPanel(nodeAttribs,localNodeLabelKey);
   c.gridx=0;
-  c.gridy=4;
+  c.gridy=3;
   gridbag.setConstraints(labelTextPanel,c);
   mainPanel.add(labelTextPanel);
   
   shapeDefault = 
       new ShapePopupButton
-	  ("Default Node Shape...",
+	  ("Default Node Shape",
 	   ((Byte)aMapper.getDefaultValue(VizMapperCategories.NODE_SHAPE)).byteValue(),
 	   this);
   c.gridx=0;
-  c.gridy=5;
+  c.gridy=4;
   gridbag.setConstraints(shapeDefault,c);
   mainPanel.add(shapeDefault);
+
+
+  JButton applyButton = new JButton ("Apply");
+  applyButton.addActionListener (new ApplyAction ());
+  c.gridx=0;
+  c.gridy=5;
+  gridbag.setConstraints(applyButton,c);
+  mainPanel.add (applyButton);
+
+  JButton cancelButton = new JButton ("Cancel");
+  cancelButton.addActionListener (new CancelAction ());
+  c.gridx=1;
+  c.gridy=5;
+  gridbag.setConstraints(cancelButton,c);
+  mainPanel.add (cancelButton);
+
 
   setContentPane (mainPanel);
 } // PopupDialog ctor
