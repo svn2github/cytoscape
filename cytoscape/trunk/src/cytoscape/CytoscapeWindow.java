@@ -2916,7 +2916,7 @@ protected class LoadExpressionMatrixAction extends AbstractAction {
  *   whether to copy expression data to attributes.  The
  *   state of this box can be accessed using the method
  *   {@link
- *   cytoscape.CytoscapeWindow.ExpFileChooser.getWhetherToCopyExpToAttribs
+ *   getWhetherToCopyExpToAttribs
  *   getWhetherToCopyExpToAttribs()}.
  */
 protected class ExpFileChooser extends JFileChooser {
