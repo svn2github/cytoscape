@@ -40,6 +40,7 @@ public class IconPopupButton extends JPanel implements ActionListener {
 			    ImageIcon [] icons,
 			    Object startIconObject,
 			    JDialog parentDialog){
+	this.title = title;
 	if(icons.length==0)
 	    { setupErrorWindow(); return;}
 	if(icons[0]==null || icons[0].getIconWidth()<0)
@@ -51,7 +52,6 @@ public class IconPopupButton extends JPanel implements ActionListener {
 	this.stringToIconObject = stringToIconObject;
 	this.parentDialog = parentDialog;
 	iconList = new JList (icons);
-	this.title = title;
 	if(startIconObject!=null)
 	    this.setIconObject(startIconObject);
 	else {
@@ -84,6 +84,8 @@ public class IconPopupButton extends JPanel implements ActionListener {
     }
 
     private void setupErrorWindow() {
+	iconButton = new JButton(title + ": CYTOSCAPE_HOME error");
+	iconSelectionForPanel = new JLabel(" X ");
 	JLabel errorLabel = new JLabel("ERROR: No CYTOSCAPE_HOME specified on java command line.");
 	add(errorLabel);
     }
