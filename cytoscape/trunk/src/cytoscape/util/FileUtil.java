@@ -100,13 +100,13 @@ public abstract class FileUtil {
       if ( filters.length != 0 )
         chooser.setFilenameFilter( filters[0] );
 
-      chooser.setDirectory( start.toString() );
+      //chooser.setDirectory( start.toString() );
       chooser.show();
       
       if ( chooser.getFile() != null ) {
         File result = new File(chooser.getDirectory()+"/"+ chooser.getFile() );
-        if ( start_dir == null )
-          CytoscapeInit.setMRUD( new File( chooser.getDirectory() ) );
+        //if ( start_dir == null )
+        //  CytoscapeInit.setMRUD( new File( chooser.getDirectory() ) );
         return result;
       }
       return null;

@@ -1,9 +1,6 @@
-//--------------------------------------------------------------------------
-// $Revision$
-// $Date$
-// $Author$
-//--------------------------------------------------------------------------
 package cytoscape.plugin;
+
+import cytoscape.*;
 
 /**
  * A CytoscapePlugin is the new "Global" plugin. A CytoscapePlugin constructor
@@ -24,6 +21,45 @@ public abstract class CytoscapePlugin {
   public CytoscapePlugin () { 
   }
 
+
+  /**
+   * If true, this plugin is capable if accepting scripts, and we 
+   * will find out what its script name is
+   */
+  public boolean isScriptable () {
+    return false;
+  }
+
+  /**
+   * If this plugin is scriptable, then this will return a unique
+   * script name, that will come after the colon like:
+   * :name
+   */
+  public String getScriptName () {
+    return "default";
+  }
+
+  /**
+   * Take a CyNetwork as input along with some arguments, and return a CyNetwork,
+   * which can be the same, or different, it doesn't really matter, and is 
+   * up to the individual plugin.
+   */
+  public CyNetwork interpretScript ( String[] args, CyNetwork network ) {
+    return null;
+  }
+
+  /**
+   * If implemented, then this plugin will be activated after being initialized
+   */
+  public void activate () {
+  }
+
+  /**
+   * If implemented then this plugin can remove itself from the Menu system, and
+   * anything else, when the user decides to deactivate it.
+   */
+  public void deactivate () {
+  }
 
   /**
    * method returning a String description of the plugin.

@@ -881,6 +881,13 @@ public abstract class Cytoscape {
   
   /**
    * @deprecated
+   */
+  public static CytoscapeObj getCytoscapeObj () {
+    return new CytoscapeObj();
+  }
+
+  /**
+   * @deprecated
    * This should not be used by any user-code
    */
   public static GraphObjAttributes getNodeNetworkData () {

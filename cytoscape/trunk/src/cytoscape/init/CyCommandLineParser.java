@@ -29,8 +29,9 @@ public class CyCommandLineParser {
   boolean inProjects;
   boolean useView;
   Integer viewThreshold;
-  
-
+  ArrayList scripts;
+  boolean inScript;
+  ArrayList currentScript;
 
 
   boolean helpRequested = false;
@@ -62,6 +63,8 @@ public class CyCommandLineParser {
      inProjects = false;
      useView = true;
      viewThreshold = null;
+     inScript = false;
+     scripts = new ArrayList();
   }
 
 
@@ -343,6 +346,26 @@ public class CyCommandLineParser {
         i++;
       }
      
+      // scripts
+      else if ( Strings.isLike( args[i], "-script", 0, true ) ||
+                Strings.isLike( args[i], "--script", 0, true ) ) {
+        resetFalse();
+        inScript = true;
+        i++;
+        if ( badArgs(args, i ) ) 
+          return;
+
+        currentScript = new ArrayList();
+      }
+      
+      // scripts
+      else if ( Strings.isLike( args[i], "-end", 0, true ) ) {
+        inScript = false;
+        i++;
+        scripts.add( currentScript );
+      }
+     
+
       // plugins
       else if ( Strings.isLike( args[i], "-p", 0, true ) ||
                 Strings.isLike( args[i], "-plugin", 0, true ) ||
@@ -367,7 +390,12 @@ public class CyCommandLineParser {
 
       //////////////////////////////
       // Continuation Catches
-
+      else if ( inScript ) {
+        //System.out.println( "Adding "+args[i]+" to the Projects" );
+        currentScript.add( args[i] );
+        i++;
+       }
+      
       else if ( inProjects ) {
         //System.out.println( "Adding "+args[i]+" to the Projects" );
         projectFiles.add( args[i] );
@@ -393,12 +421,12 @@ public class CyCommandLineParser {
         //System.out.println( "Adding "+args[i]+" to the Graph files" );
         graphFiles.add( args[i] );
         i++;
-      } else if ( inPlugin ) {
+      } 
+      else if ( inPlugin ) {
         parsePluginArgs( args[i] );
         i++;
-      }
+      } 
 
-      
       else {        
         //System.err.println( "nothing matches, call for help" );
         //helpRequested = true;
@@ -491,6 +519,7 @@ public class CyCommandLineParser {
     inExpression = false;
     inNode = false;
     inEdge = false;
+    inScript = false;
   }
 
 } 
