@@ -673,13 +673,24 @@ class FGraphPerspective implements GraphPerspective
       m_lis = listener;
     }
 
-    private final int hideNode(Node node)
+    // RootGraphChangeSniffer is not to call this method.  We rely on
+    // the specified node still existing in the RootGraph in this method.
+    private final int hideNode(int rootGraphNodeInx)
     {
-      return -1;
+      final int returnThis = _hideNode(rootGraphNodeInx);
+      if (returnThis != 0) {
+        final GraphPerspectiveChangeListener listener = m_lis[0];
+        if (listener != null) {
+          final Node removedNode = m_root.getNode(rootGraphNodeInx);
+          listener.graphPerspectiveChanged
+            (new GraphPerspectiveNodesHiddenEvent
+             (m_root, new Node[] { removedNode })); } }
+      return returnThis;
     }
 
     // Don't call this method from outside this inner class.
     // Returns 0 if and only if hiding this node was unsuccessful.
+    // Otherwise returns the input parameter, the root node index.
     private int _hideNode(int rootGraphNodeInx)
     {
       final int nativeNodeIndex =
