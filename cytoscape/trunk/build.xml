@@ -582,6 +582,7 @@
                 <include name="cytoscape/graph/layout/util/*.java"/>
                 <include name="cytoscape/graph/util/*.java"/>
                 <include name="cytoscape/process/*.java"/>
+                <include name="cytoscape/process/ui/*.java"/>
             </fileset>
         </javadoc>
     </target>
