@@ -18,7 +18,6 @@ import cytoscape.data.readers.*;
 import cytoscape.plugin.*;
 import csplugins.jActiveModules.data.*;
 import csplugins.jActiveModules.dialogs.*;
-import cytoscape.plugin.AbstractPlugin;
 
 //------------------------------------------------------------------------------
 /**

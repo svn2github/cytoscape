@@ -15,7 +15,7 @@ import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import csplugins.ucsd.rmkelley.GeneticInteractions.GeneticInteractionsCommandLineParser;
-import cytoscape.AbstractPlugin;
+import cytoscape.plugin.AbstractPlugin;
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.view.CyWindow;
 

@@ -40,7 +40,7 @@
 
 package csplugins.pathdist;
 
-import cytoscape.AbstractPlugin;
+import cytoscape.plugin.AbstractPlugin;
 import cytoscape.view.CyWindow;
 import javax.swing.*;
 
