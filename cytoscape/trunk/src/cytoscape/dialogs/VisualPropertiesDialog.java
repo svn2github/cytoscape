@@ -26,6 +26,7 @@ import cytoscape.dialogs.NewSlider;
 import cytoscape.util.MutableColor;
 import cytoscape.util.MutableString;
 import cytoscape.dialogs.GeneralColorDialogListener;
+import cytoscape.dialogs.MiscGB;
 //--------------------------------------------------------------------------------------
 public class VisualPropertiesDialog extends JDialog {
 
@@ -64,14 +65,14 @@ public VisualPropertiesDialog (Frame parentFrame,
   JPanel mainPanel = new JPanel ();
   GridBagLayout gridbag = new GridBagLayout(); 
   GridBagConstraints c = new GridBagConstraints();
-  gbcPad(c,5,5);
+  MiscGB.pad(c,5,5);
   mainPanel.setLayout (gridbag);
 
   BorderedPanel defaultBP = new BorderedPanel("Defaults");
   JPanel defaultPanel = defaultBP.getPanel();
   GridBagLayout defaultLayout = defaultBP.getLayout();
   GridBagConstraints defaultC = defaultBP.getConstraints();
-  gbcPad(defaultC,5,5);
+  MiscGB.pad(defaultC,5,5);
 
 
   JButton colorButton = new JButton("Node Color");
@@ -81,10 +82,10 @@ public VisualPropertiesDialog (Frame parentFrame,
   colorButton.addActionListener(new
       GeneralColorDialogListener(this,nColor,colorLabel,
 				 "Choose a Node Color"));
-  gbcSet(defaultC,0,0,1,1,GridBagConstraints.HORIZONTAL);
-  gblPanelInsert(defaultPanel,colorButton,defaultLayout,defaultC);
-  gbcSet(defaultC,1,0);
-  gblPanelInsert(defaultPanel,colorLabel,defaultLayout,defaultC);
+  MiscGB.set(defaultC,0,0,1,1,GridBagConstraints.HORIZONTAL);
+  MiscGB.insert(defaultPanel,colorButton,defaultLayout,defaultC);
+  MiscGB.set(defaultC,1,0);
+  MiscGB.insert(defaultPanel,colorLabel,defaultLayout,defaultC);
 
   JButton borderColorButton = new JButton("Node Border Color");
   JLabel borderColorLabel = new JLabel("    ");
@@ -93,11 +94,11 @@ public VisualPropertiesDialog (Frame parentFrame,
   borderColorButton.addActionListener(new
       GeneralColorDialogListener(this,bColor,borderColorLabel,
 				 "Choose a Node Border Color"));
-  gbcSet(defaultC,1,2);
-  gblPanelInsert(defaultPanel,borderColorLabel,defaultLayout,defaultC);
+  MiscGB.set(defaultC,1,2);
+  MiscGB.insert(defaultPanel,borderColorLabel,defaultLayout,defaultC);
 
-  gbcSet(defaultC,0,2,1,1,GridBagConstraints.HORIZONTAL);
-  gblPanelInsert(defaultPanel,borderColorButton,defaultLayout,defaultC);
+  MiscGB.set(defaultC,0,2,1,1,GridBagConstraints.HORIZONTAL);
+  MiscGB.insert(defaultPanel,borderColorButton,defaultLayout,defaultC);
 
   JButton bgColorButton
       = new JButton("Background Color");
@@ -107,43 +108,43 @@ public VisualPropertiesDialog (Frame parentFrame,
   bgColorButton.addActionListener(new
       GeneralColorDialogListener(this,bgColor,bgColorLabel,
 				 "Choose a Background Color"));
-  gbcSet(defaultC,1,3);
-  gblPanelInsert(defaultPanel,bgColorLabel,defaultLayout,defaultC);
+  MiscGB.set(defaultC,1,3);
+  MiscGB.insert(defaultPanel,bgColorLabel,defaultLayout,defaultC);
 
-  gbcSet(defaultC,0,3,1,1,GridBagConstraints.HORIZONTAL);
-  gblPanelInsert(defaultPanel,bgColorButton,defaultLayout,defaultC);
+  MiscGB.set(defaultC,0,3,1,1,GridBagConstraints.HORIZONTAL);
+  MiscGB.insert(defaultPanel,bgColorButton,defaultLayout,defaultC);
 
   sizeDefault = 
       new IntegerEntryField
 	  ("Node Size",
 	   ((Integer)aMapper.getDefaultValue(VizMapperCategories.NODE_HEIGHT)).intValue(),
 	   500);
-  gbcSet(defaultC,0,4);
-  gblPanelInsert(defaultPanel,sizeDefault.getLabel(),defaultLayout,defaultC);
-  gbcSet(defaultC,1,4);
-  gblPanelInsert(defaultPanel,sizeDefault.getField(),defaultLayout,defaultC);
+  MiscGB.set(defaultC,0,4);
+  MiscGB.insert(defaultPanel,sizeDefault.getLabel(),defaultLayout,defaultC);
+  MiscGB.set(defaultC,1,4);
+  MiscGB.insert(defaultPanel,sizeDefault.getField(),defaultLayout,defaultC);
 
   initializeShapeDefault();
-  gbcSet(defaultC,0,5,1,1,GridBagConstraints.HORIZONTAL);
-  gblPanelInsert(defaultPanel,shapeDefault.getButton(),defaultLayout,defaultC);
-  gbcSet(defaultC,1,5);
-  gblPanelInsert(defaultPanel,shapeDefault.getLabel(),defaultLayout,defaultC);
+  MiscGB.set(defaultC,0,5,1,1,GridBagConstraints.HORIZONTAL);
+  MiscGB.insert(defaultPanel,shapeDefault.getButton(),defaultLayout,defaultC);
+  MiscGB.set(defaultC,1,5);
+  MiscGB.insert(defaultPanel,shapeDefault.getLabel(),defaultLayout,defaultC);
 
   initializeLineTypeDefault();
-  gbcSet(defaultC,0,6,1,1,GridBagConstraints.HORIZONTAL);
-  gblPanelInsert(defaultPanel,lineTypeDefault.getButton(),defaultLayout,defaultC);
-  gbcSet(defaultC,1,6);
-  gblPanelInsert(defaultPanel,lineTypeDefault.getLabel(),defaultLayout,defaultC);
+  MiscGB.set(defaultC,0,6,1,1,GridBagConstraints.HORIZONTAL);
+  MiscGB.insert(defaultPanel,lineTypeDefault.getButton(),defaultLayout,defaultC);
+  MiscGB.set(defaultC,1,6);
+  MiscGB.insert(defaultPanel,lineTypeDefault.getLabel(),defaultLayout,defaultC);
 
   initializeArrowDefault();
-  gbcSet(defaultC,0,7,1,1,GridBagConstraints.HORIZONTAL);
-  gblPanelInsert(defaultPanel,arrowDefault.getButton(),defaultLayout,defaultC);
-  gbcSet(defaultC,1,7);
-  gblPanelInsert(defaultPanel,arrowDefault.getLabel(),defaultLayout,defaultC);
+  MiscGB.set(defaultC,0,7,1,1,GridBagConstraints.HORIZONTAL);
+  MiscGB.insert(defaultPanel,arrowDefault.getButton(),defaultLayout,defaultC);
+  MiscGB.set(defaultC,1,7);
+  MiscGB.insert(defaultPanel,arrowDefault.getLabel(),defaultLayout,defaultC);
 
   //////////////////////////////////////////////
-  gbcSet(c,0,0,2,1,GridBagConstraints.HORIZONTAL);
-  gblPanelInsert(mainPanel,defaultPanel,gridbag,c);
+  MiscGB.set(c,0,0,2,1,GridBagConstraints.HORIZONTAL);
+  MiscGB.insert(mainPanel,defaultPanel,gridbag,c);
 
   //////////////////////////////////////////////
   BorderedPanel labelBP = new BorderedPanel("Node Label Mapping");
@@ -153,10 +154,10 @@ public VisualPropertiesDialog (Frame parentFrame,
 
   JPanel labelTextPanel
       = new LabelTextPanel(nodeAttribs,localNodeLabelKey);
-  gbcSet(labelConstraints,0,0);
-  gblPanelInsert(labelPanel,labelTextPanel,labelLayout,labelConstraints);
-  gbcSet(c,0,8,2,1,GridBagConstraints.HORIZONTAL);
-  gblPanelInsert(mainPanel,labelPanel,gridbag,c);
+  MiscGB.set(labelConstraints,0,0);
+  MiscGB.insert(labelPanel,labelTextPanel,labelLayout,labelConstraints);
+  MiscGB.set(c,0,8,2,1,GridBagConstraints.HORIZONTAL);
+  MiscGB.insert(mainPanel,labelPanel,gridbag,c);
 
   //////////////////////////////////////////////
   BorderedPanel edgeBP = new BorderedPanel("Edge Color Mapping");
@@ -167,20 +168,20 @@ public VisualPropertiesDialog (Frame parentFrame,
   if(localEdgeKey==null) localEdgeKey = new MutableString("temp");
   edgeTextPanel
       = new EdgeTextPanel(edgeAttribs,aMapper,parentFrame,localEdgeKey);
-  gbcSet(edgeConstraints,0,0);
-  gblPanelInsert(edgePanel,edgeTextPanel,edgeLayout,edgeConstraints);
-  gbcSet(c,0,9,2,1,GridBagConstraints.HORIZONTAL);
-  gblPanelInsert(mainPanel,edgePanel,gridbag,c);
+  MiscGB.set(edgeConstraints,0,0);
+  MiscGB.insert(edgePanel,edgeTextPanel,edgeLayout,edgeConstraints);
+  MiscGB.set(c,0,9,2,1,GridBagConstraints.HORIZONTAL);
+  MiscGB.insert(mainPanel,edgePanel,gridbag,c);
 
   JButton applyButton = new JButton ("Apply");
   applyButton.addActionListener (new ApplyAction ());
-  gbcSet(c,0,10);
-  gblPanelInsert(mainPanel,applyButton,gridbag,c);
+  MiscGB.set(c,0,10);
+  MiscGB.insert(mainPanel,applyButton,gridbag,c);
 
   JButton cancelButton = new JButton ("Cancel");
   cancelButton.addActionListener (new CancelAction ());
-  gbcSet(c,1,10);
-  gblPanelInsert(mainPanel,cancelButton,gridbag,c);
+  MiscGB.set(c,1,10);
+  MiscGB.insert(mainPanel,cancelButton,gridbag,c);
 
   setContentPane (mainPanel);
 } // PopupDialog ctor
