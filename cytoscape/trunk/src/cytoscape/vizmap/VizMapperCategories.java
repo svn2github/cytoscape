@@ -207,40 +207,40 @@ public class VizMapperCategories implements AttributeMapperCategories {
 	
 	boolean objectTypeError = false;
 	boolean unknownAttribute = false;
-	String className = (rangeAttributeValue.getClass()).getName();
 	
 	if ( vizAttribute.equals(NODE_FILL_COLOR) ||
 	     vizAttribute.equals(NODE_BORDER_COLOR) ||
 	     vizAttribute.equals(EDGE_COLOR) ||
 	     vizAttribute.equals(BG_COLOR)){
-	    if(className.equals("Color")){
+	    
+	    if( rangeAttributeValue instanceof Color){
 		return Misc.getRGBText((Color)rangeAttributeValue);
 	    }else{
 		objectTypeError = true;
 	    }
 	}else if ( vizAttribute.equals(NODE_HEIGHT) ||
 		   vizAttribute.equals(NODE_WIDTH) ){
-	    if(className.equals("Double")){ 
+	    if(rangeAttributeValue instanceof Double){ 
 		return rangeAttributeValue.toString();
 	    }else{
 		objectTypeError = true;
 	    }
 	}else if( vizAttribute.equals(NODE_SHAPE) ) {
-	    if(className.equals("Byte")){
+	    if(rangeAttributeValue instanceof Byte){
 		return Misc.getNodeShapeText(((Byte)(rangeAttributeValue)).byteValue());
 	    }else{
 		objectTypeError = true;
 	    }
 	}else if ( vizAttribute.equals(NODE_BORDER_LINETYPE) ||
 		   vizAttribute.equals(EDGE_LINETYPE) ) {
-	    if(className.equals("LineType")){
+	    if(rangeAttributeValue instanceof LineType){
 		return Misc.getLineTypeText((LineType)rangeAttributeValue);
 	    }else{
 		objectTypeError = true;	
 	    }
 	}else if ( vizAttribute.equals(EDGE_SOURCE_DECORATION) ||
 		   vizAttribute.equals(EDGE_TARGET_DECORATION) ) {
-	    if(className.equals("Arrow")){
+	    if(rangeAttributeValue instanceof Arrow){
 		return Misc.getArrowText((Arrow)rangeAttributeValue);
 	    }else{
 		objectTypeError = true;		
