@@ -6,7 +6,7 @@
 #--------------------------------------------------------------------------------------
 JC=javac -source 1.4
 JI=java
-PKG=csplugins.data.synonyms.unitTests
+PKG=cytoscape.data.synonyms.unitTests
 
 .SUFFIXES: .java .class
 .java.class: 

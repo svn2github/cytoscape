@@ -4,12 +4,12 @@
 // $Date$
 // $Author$
 //--------------------------------------------------------------------------------------
-package csplugins.data.synonyms.unitTests;
+package cytoscape.data.synonyms.unitTests;
 //--------------------------------------------------------------------------------------
 import junit.framework.*;
 import java.io.*;
 
-import csplugins.data.synonyms.*;
+import cytoscape.data.synonyms.*;
 //------------------------------------------------------------------------------
 /**
  * test the Thesaurus class
