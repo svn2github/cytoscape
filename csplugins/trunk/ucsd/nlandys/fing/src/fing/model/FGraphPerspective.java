@@ -377,8 +377,8 @@ class FGraphPerspective implements GraphPerspective
     final FGraphPerspective thisPersp = this;
     final FGraphPerspective otherPersp;
     try { otherPersp = (FGraphPerspective) persp; }
-    catch (ClassCastException e) { return this; }
-    if (otherPersp.m_root != thisPersp.m_root) return this;
+    catch (ClassCastException e) { return null; }
+    if (otherPersp.m_root != thisPersp.m_root) return null;
     final IntEnumerator thisNativeNodes = thisPersp.m_graph.nodes();
     final IntEnumerator otherNativeNodes = otherPersp.m_graph.nodes();
     final IntIterator rootGraphNodeInx = new IntIterator() {
