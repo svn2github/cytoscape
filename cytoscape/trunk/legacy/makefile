@@ -5,28 +5,26 @@
 # $Author$
 #-------------------------------------------------------------------------
 
-JC=javac
+JC=javac -source 1.4
+JAVA=java
 
 .SUFFIXES: .java .class
 .java.class: 
 	$(JC) $<
 
-OBJS =	ActivePathsFinderBridge.class \
-        ActivePathViewer.class \
-        CytoscapeConfig.class \
+OBJS = CytoscapeConfig.class \
         GraphObjAttributes.class \
-        VizAttributes.class \
-        VizChooserClient.class \
         CytoscapeVersion.class \
-        WindowFactory.class \
+        PluginInfo.class \
+        PluginLoader.class \
+        SelectedSubGraphFactory.class \
         CytoscapeWindow.class \
-        BioModulesWindow.class \
-        FilterDialogClient.class \
         cytoscape.class
+#        VizChooserClient.class \
 
 
-default: checkkEnv activePathsDirectory objs dataDirectories \
-         dialogsDirectory nativelib layoutDirectory
+default: checkkEnv objs dataDirectories \
+         vizmapDirectory dialogsDirectory layoutDirectory
 
 objs: $(OBJS)
 
@@ -45,26 +43,23 @@ dataDirectories:
 dataTest: data
 	(cd data/unitTests; make)
 
+vizmapDirectory: 
+	(cd vizmap; make)
+
 dialogsDirectory:
 	(cd dialogs; make)
-
-activePathsDirectory:
-	(cd activePathsNew; make)
-
-nativelib: activePathsNew
-	make -f libActivePaths.make
-
-nativelibTest: nativelib
-	(cd activePathsNew/unitTests; make)
 
 layoutDirectory:
 	(cd layout; make)
 
-test: dataTest currentDirTest nativelibTest
+test: objs
+	(cd unitTests; make)
+	(cd vizmap/unitTests; make)
+	(cd data/unitTests; make)
 
 clean:
-	- rm *.class libActivePaths.so core *.o
-	- (cd activePathsNew; make clean)
+	- rm *.class core
+	- (cd unitTests; make clean)
 	- (cd data; make clean)
 	- (cd data/unitTests; make clean)
 	- (cd data/readers; make clean)
@@ -73,6 +68,8 @@ clean:
 	- (cd data/servers/unitTests; make clean)
 	- (cd dialogs; make clean)
 	- (cd layout; make clean)
+	- (cd vizmap; make clean)
+	- (cd vizmap/unitTests; make clean)
 
 version:
 	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape  -v
@@ -94,19 +91,17 @@ doc:
             -windowtitle cytoscape \
     -doctitle "cytoscape"
 
+
+#NATIVE_LIB=-Djava.library.path=plugins/activePaths
+#JAVA=java -Xmx1024MB $(NATIVE_LIB) 
+
 #
 # --- run0
 # start the program without loading any data from the command line
 #
 
 run0:
-	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape
-
-run1o:
-	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
-          -g $(CYTOSCAPE_DATA)/galFiltered.gml \
-          -e /common/data/exp/gal/data_gal1-20.pvals \
-          -b $(CYTOSCAPE_DATA)/GO
+	$(JAVA) cytoscape.cytoscape
 
 #
 # --- run1
@@ -117,8 +112,9 @@ run1o:
 # 
 
 run1: 
-	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
-          -i testData/sample.intr \
+	$(JAVA) cytoscape.cytoscape \
+          -g $(CYTOSCAPE_DATA)/galFiltered.gml \
+          -e $(CYTOSCAPE_DATA)/gal.5936x20.mrna \
           -b $(CYTOSCAPE_DATA)/GO
 
 #
@@ -127,7 +123,7 @@ run1:
 #
 
 run1a: 
-	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
+	$(JAVA) cytoscape.cytoscape \
           -g $(CYTOSCAPE_DATA)/galFiltered.gml \
           -e $(CYTOSCAPE_DATA)/gal.5936x20.mrna
 
@@ -137,7 +133,7 @@ run1a:
 #
 
 run1b: 
-	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
+	$(JAVA) cytoscape.cytoscape \
           -g $(CYTOSCAPE_DATA)/galFiltered.gml
 
 #
@@ -147,7 +143,7 @@ run1b:
 #
 
 run1c: 
-	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
+	$(JAVA) cytoscape.cytoscape \
           -g $(CYTOSCAPE_DATA)/galFiltered.gml \
           -e $(CYTOSCAPE_DATA)/gal.5936x20.mrna \
           --APsig  40.5 \
@@ -160,29 +156,58 @@ run1c:
 #
 
 run1d:
-	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
+	$(JAVA) cytoscape.cytoscape \
           -g $(CYTOSCAPE_DATA)/galFiltered.gml \
           -e $(CYTOSCAPE_DATA)/gal.5936x20.mrna \
           -b rmi://localhost/biodata
 
 #
 # --- run1e
-# a small (32 gene) interactions dataset, with an RMI biodata server
+# a small (32 gene) interactions dataset, with a file-based data server
 #
 
 run1e: 
-	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
-          -i $(CYTOSCAPE_DATA)/tideker0/yeastSmall.intr \
-          -b rmi://localhost/biodata
+	$(JAVA) cytoscape.cytoscape \
+          -i $(CYTOSCAPE_DATA)/yeastSmall.intr \
+          -b $(CYTOSCAPE_DATA)/GO
 
 #
 # --- run1f
-# like run1, but with local RMI biodata server
+# like run1e, but with rmi server
 #
 
 run1f: 
-	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
-          -g $(CYTOSCAPE_DATA)/galFiltered.gml \
+	$(JAVA) cytoscape.cytoscape \
+          -i $(CYTOSCAPE_DATA)/yeastSmall.intr \
+          -b rmi://localhost/biodata
+
+#
+# --- run1f0
+# like run1e, but no GO data
+#
+
+run1f0: 
+	$(JAVA) cytoscape.cytoscape \
+          -i $(CYTOSCAPE_DATA)/yeastSmall.intr
+
+##
+## --- run1f1
+## like run1f, but uses a node attributes file, simple.bar
+##
+
+#run1f1: 
+#	$(JAVA) cytoscape.cytoscape \
+#          -i $(CYTOSCAPE_DATA)/yeastSmall.intr \
+#          -n $(HOME)/cytoscapeData/pluginSamples/simple.bar
+
+#
+# --- run1g
+# like run1, but with local RMI biodata server
+#
+
+run1g: 
+	$(JAVA) cytoscape.cytoscape \
+          -g $(CYTOSCAPE_DATA)/galFiltered.intr \
           -e $(CYTOSCAPE_DATA)/gal.5936x20.mrna \
           -b rmi://localhost/biodata
 
@@ -194,7 +219,7 @@ run1f:
 #
 
 run2:
-	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
+	$(JAVA) cytoscape.cytoscape \
           -g $(CYTOSCAPE_DATA)/galFiltered.gml \
           -n $(CYTOSCAPE_DATA)/galFiltered.fooB \
           -b $(CYTOSCAPE_DATA)/GO
@@ -203,7 +228,7 @@ run2:
 #  like run2, but without file-based biodata server
 
 run2a:
-	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
+	$(JAVA) cytoscape.cytoscape \
           -g $(CYTOSCAPE_DATA)/galFiltered.gml \
           -n $(CYTOSCAPE_DATA)/galFiltered.fooB 
 
@@ -215,8 +240,8 @@ run2a:
 #
 
 run3:
-	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
-          -i $(CYTOSCAPE_DATA)/tideker0/yeastSmall.intr \
+	$(JAVA) cytoscape.cytoscape \
+          -i $(CYTOSCAPE_DATA)/yeastSmall.intr \
           -e $(CYTOSCAPE_DATA)/gal.5936x20.mrna \
           -b $(CYTOSCAPE_DATA)/GO
 #
@@ -225,8 +250,8 @@ run3:
 #
 
 run3a:
-	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
-          -i $(CYTOSCAPE_DATA)/tideker0/yeastSmall.intr \
+	$(JAVA) cytoscape.cytoscape \
+          -i $(CYTOSCAPE_DATA)/yeastSmall.intr \
 #
 # --- run3b
 #  Demonstrates two things:
@@ -238,10 +263,10 @@ run3a:
 #
 
 run3b:
-	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
-          -i $(CYTOSCAPE_DATA)/tideker0/yeastSmall.intr \
-          -j $(CYTOSCAPE_DATA)/tideker0/yeastSmall.edgeAttr.0 \
-          -j $(CYTOSCAPE_DATA)/tideker0/yeastSmall.edgeAttr.1
+	$(JAVA) cytoscape.cytoscape \
+          -i $(CYTOSCAPE_DATA)/yeastSmall.intr \
+          -j $(CYTOSCAPE_DATA)/yeastSmall.edgeAttr.0 \
+          -j $(CYTOSCAPE_DATA)/yeastSmall.edgeAttr.1
 
 #
 # --- run4
@@ -249,7 +274,7 @@ run3b:
 #
 
 run4:
-	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
+	$(JAVA) cytoscape.cytoscape \
           -i $(CYTOSCAPE_DATA)/nitin/network.intr 
 #
 # --- run5
@@ -257,7 +282,7 @@ run4:
 #  matrix (does not yet work!)
 #     
 run5:
-	java -Xmx1024MB -Djava.library.path=. cytoscape.cytoscape \
+	$(JAVA) cytoscape.cytoscape \
           -g /users/tideker/cytoscape$(CYTOSCAPE_DATA)/network7000.gml \
           -e /users/tideker/cytoscape$(CYTOSCAPE_DATA)/Nov10_1.pvals \
           -b $(CYTOSCAPE_DATA)/GO
@@ -266,7 +291,7 @@ run5:
 #  tideker's 7000 node data set, with the 'usual' expression data
 #     
 run5a:
-	java -Xmx1024MB -Djava.library.path=. cytoscape.cytoscape \
+	$(JAVA) cytoscape.cytoscape \
           -g $(CYTOSCAPE_DATA)/tidekerBig/network7000.gml \
           -e $(CYTOSCAPE_DATA)/gal.5936x20.mrna \
           -b $(CYTOSCAPE_DATA)/GO
@@ -278,7 +303,7 @@ run5a:
 #     
 DIR=$(CYTOSCAPE_DATA)/import/biomodules/current
 run6:
-	java -Xmx1024MB -Djava.library.path=. cytoscape.cytoscape \
+	$(JAVA) cytoscape.cytoscape \
           -i $(DIR)/44.intr \
           -n $(DIR)/44.attr \
 #          -b $(CYTOSCAPE_DATA)/GO
@@ -289,22 +314,12 @@ run6:
 #     
 DIR=$(CYTOSCAPE_DATA)/import/biomodules/current
 run6a:
-	java -Xmx1024MB -Djava.library.path=. cytoscape.cytoscape \
+	$(JAVA) cytoscape.cytoscape \
           -i $(DIR)/ygl075c.intr \
           -j $(DIR)/ygl075c.force \
           -n $(DIR)/44.attr \
 #          -b $(CYTOSCAPE_DATA)/GO
 
-
-sga:
-	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
-          -i $(CYTOSCAPE_DATA)/sga.intr \
-          -b $(CYTOSCAPE_DATA)/GO
-
-sga-lethal:
-	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
-          -i $(CYTOSCAPE_DATA)/sga-lethal.intr \
-          -b $(CYTOSCAPE_DATA)/GO
 
 help:
 	egrep "^#" makefile | sed "s/^#//"
