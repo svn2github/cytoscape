@@ -6,9 +6,10 @@ import giny.model.Node;
 import giny.model.RootGraph;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 // Package visible class.  Use factory to get instance.
-class FRootGraph implements RootGraph
+class FRootGraph //implements RootGraph
 {
 
   // Package visible constructor.
@@ -57,7 +58,7 @@ class FRootGraph implements RootGraph
     final int[] returnThis = new int[getNodeCount()];
     NodesIterator nIter = (NodesIterator) nodesIterator();
     for (int i = 0; i < returnThis.length; i++)
-      returnThis[i] = nIter.next().getRootGraphIndex();
+      returnThis[i] = nIter.nextNode().getRootGraphIndex();
     return returnThis;
   }
 
@@ -82,7 +83,7 @@ class FRootGraph implements RootGraph
     final int[] returnThis = new int[getEdgeCount()];
     EdgesIterator eIter = (EdgesIterator) edgesIterator();
     for (int i = 0; i < returnThis.length; i++)
-      returnThis[i] = eIter.next().getRootGraphIndex();
+      returnThis[i] = eIter.nextEdge().getRootGraphIndex();
     return returnThis;
   }
 
@@ -220,8 +221,9 @@ class FRootGraph implements RootGraph
     // Instead of doing individual creations for every edge, there may be a
     // way to optimize by creating a block of edges.  Once this implementation
     // matures more, come back here and see if it's possible to optimize.
-    targetNodeIndices[sourceNodeIndices.length - 1];
-    sourceNodeIndices[targetNodeIndices.length - 1];
+    int foo = targetNodeIndices[sourceNodeIndices.length - 1];
+    foo = sourceNodeIndices[targetNodeIndices.length - 1];
+    foo = 0;
     final int[] returnThis = new int[sourceNodeIndices.length];
     for (int i = 0; i < returnThis.length; i++)
       returnThis[i] = createEdge(sourceNodeIndices[i],
@@ -232,26 +234,30 @@ class FRootGraph implements RootGraph
 
   public boolean containsNode(Node node)
   {
-    return getNode(node.getRootGraphIndex()) != null;
+    //return getNode(node.getRootGraphIndex()) != null;
+    return false;
   }
 
   public boolean containsEdge(Edge edge)
   {
-    return getEdge(edge.getRootGraphIndex()) != null;
+    //return getEdge(edge.getRootGraphIndex()) != null;
+    return false;
   }
 
   // This method has been marked deprecated in the Giny API.
   public java.util.List neighborsList(Node node)
   {
-    
+    return null;
   }
 
   static class NodesIterator implements Iterator
   {
     public boolean hasNext() {
       return false; }
-    public FNode next() {
+    public FNode nextNode() {
       throw new NoSuchElementException(); }
+    public Object next() {
+      return nextNode(); }
     public void remove() {
       throw new UnsupportedOperationException(); }
   }
@@ -260,8 +266,10 @@ class FRootGraph implements RootGraph
   {
     public boolean hasNext() {
       return false; }
-    public FEdge next() {
+    public FEdge nextEdge() {
       throw new NoSuchElementException(); }
+    public Object next() {
+      return nextEdge(); }
     public void remove() {
       throw new UnsupportedOperationException(); }
   }
