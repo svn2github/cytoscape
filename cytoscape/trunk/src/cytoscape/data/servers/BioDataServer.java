@@ -1,90 +1,244 @@
-// BioDataServer.java:  define the interface
-//------------------------------------------------------------------------------
+// BioDataServer
+//-----------------------------------------------------------------------------------------
 // $Revision$   
 // $Date$ 
 // $Author$
-//-----------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
 package cytoscape.data.servers;
-//-----------------------------------------------------------------------------------
-import java.rmi.Remote;
-import java.rmi.RemoteException;
-import java.util.Vector;
-import java.util.Hashtable;
-import cytoscape.data.GoTerm;
-//------------------------------------------------------------------------------
-public interface BioDataServer {
+//-----------------------------------------------------------------------------------------
+import java.util.*;
+import java.io.*;
+import java.rmi.*;
 
-  String getServerType () throws Exception;
-    //---------------------------------------------------------------
-    // load data into the server
-    //---------------------------------------------------------------
+import cytoscape.data.annotation.*;
+import cytoscape.data.annotation.readers.*;
+import cytoscape.data.synonyms.*;
+import cytoscape.data.synonyms.readers.*;
 
-  void addBindingPairs (Vector bindingPairs) throws Exception;
-  void addGeneProducts (Vector geneProducts) throws Exception;
-  void addGeneSynonyms (Vector geneSynonyms) throws Exception;
-  void addGoTerms (Vector terms) throws Exception;
-  void addBiologicalProcesses (Hashtable newHash) throws Exception;
-  void addMolecularFunctions (Hashtable newHash) throws Exception;
-  void addCellularComponents (Hashtable newHash) throws Exception;
+import cytoscape.data.readers.TextFileReader;
+//----------------------------------------------------------------------------------------
+public class BioDataServer {
+  protected BioDataServerInterface server;
+//----------------------------------------------------------------------------------------
+public BioDataServer (String serverName) throws Exception
+{
+  if (serverName.indexOf ("rmi://") >= 0)
+    server = (BioDataServerInterface) Naming.lookup (serverName);
+  else { // look for a readable file
+    server = new BioDataServerRmi ();  // actually runs in process
+    File fileTester = new File (serverName);
+    if (!fileTester.isDirectory () && fileTester.canRead ()) {
+      String [] annotationFilenames = parseLoadFile (serverName, "annotation");
+      loadAnnotationFiles (annotationFilenames);
+      String [] thesaurusFilenames = parseLoadFile (serverName, "synonyms");
+      loadThesaurusFiles (thesaurusFilenames);
+      } // if a plausible candidate load file
+    else {
+      System.err.println ("could not read BioDataServer load file '" + serverName + "'");
+      }
+    } // else: look for a readable file
 
-  void clearGoPathTerminators () throws Exception;
-  void addGoPathTerminators (Vector newTerminators) throws Exception;
 
-  String describe () throws Exception;
+} // ctor
+//----------------------------------------------------------------------------------------
+protected String [] parseLoadFile (String filename, String key)
+{
+  TextFileReader reader = new TextFileReader (filename);
+  reader.read ();
+  String rawText = reader.getText ();
+  String [] lines = rawText.split ("\n");
 
-    //---------------------------------------------------------------
-    // get genes for testing, based upon current contents of the server
-    //---------------------------------------------------------------
+  Vector list = new Vector ();
+  for (int i=0; i < lines.length; i++) {
+    String line = lines [i].trim ();
+    if (line.startsWith (key)) {
+      String fileToRead = line.substring (line.indexOf ("=") + 1);
+      list.add (fileToRead);
+      } // if 
+    } // for i
 
-    String getGeneWithHighestBiologicalProcessCount (boolean multipleParentage)
-           throws Exception;
-    String getBioProcessTestGene (int numberOfBioProcessesSought, 
-                                  boolean multipleParentage)
-           throws Exception;
+  return (String []) list.toArray (new String [0]);
+  
+} // parseLoadFile
+//----------------------------------------------------------------------------------------
+public BioDataServer () throws Exception
+{
+  server = new BioDataServerRmi ();
 
-    //---------------------------------------------------------------
-    // simple operations directly concerning genes
-    //---------------------------------------------------------------
+} // ctor
+//----------------------------------------------------------------------------------------
+public void loadAnnotationFiles (String [] annotationFilenames) throws Exception
+{
+  for (int i=0; i < annotationFilenames.length; i++) {
+    File xmlFile = new File (annotationFilenames [i]);
+    AnnotationXmlReader reader = new AnnotationXmlReader (xmlFile);
+    server.addAnnotation (reader.getAnnotation ());
+    }
 
-     String getCanonicalName (String geneName) throws Exception;
-  String [] getSynonyms (String geneName) throws Exception;
-  String [] getAllGenes () throws Exception;
-     String getGeneInfo (String geneName) throws Exception;
+} // loadAnnotationFiles
+//----------------------------------------------------------------------------------------
+public void loadThesaurusFiles (String [] thesaurusFilenames) throws Exception
+{
+  for (int i=0; i < thesaurusFilenames.length; i++) {
+    ThesaurusFlatFileReader reader = new ThesaurusFlatFileReader (thesaurusFilenames [i]);
+    Thesaurus thesaurus = reader.getThesaurus (); 
+    server.addThesaurus (thesaurus.getSpecies (), thesaurus);
+    }
 
-     String getGoTermName (int id) throws Exception;
+} // loadThesaurusFiles
+//----------------------------------------------------------------------------------------
+public void clear ()
+{
+  try {
+    server.clear ();
+    }
+  catch (Exception e) {
+    System.err.println ("Error!  failed to clear");
+    e.printStackTrace ();
+    }
 
-     int [] getBioProcessIDs (String geneName) throws Exception;
-     String getBioProcessName (int id) throws Exception;
+}
+//----------------------------------------------------------------------------------------
+public void addAnnotation (Annotation annotation)
+{
+  try {
+    server.addAnnotation (annotation);
+    }
+  catch (Exception e) {
+    System.err.println ("Error!  failed to add annotation " + annotation);
+    e.printStackTrace ();
+    }
 
-     int [] getMolecularFunctionIDs (String geneName) throws Exception;
-     String getMolecularFunctionName (int id) throws Exception;
+}
+//----------------------------------------------------------------------------------------
+public int getAnnotationCount ()
+{
+  try {
+    int count = server.getAnnotationCount ();
+    return count;
+    }
+  catch (Exception e) {
+    return 0;
+    }
 
-     int [] getCellularComponentIDs (String geneName) throws Exception;
-     String getCellularComponentName (int id) throws Exception;
-    //---------------------------------------------------------------
-    // operations concerning (possibly complicated) process hierarchies
-    // aka,  paths or ontologies
-    //---------------------------------------------------------------
-        // a Vector of Vectors of Integers, all the different, complete
-        // paths from the specified GO bio process ID to the root
-     Vector getAllGoHierarchyPaths (int goTermID) throws Exception;
-     Vector getAllBioProcessPaths (int bioProcessID) throws Exception;
-     Vector getAllMolecularFunctionPaths (int molecularFunctionID) 
-            throws Exception;
-     Vector getAllCellularComponentPaths (int molecularFunctionID) 
-            throws Exception;
+}
+//----------------------------------------------------------------------------------------
+public AnnotationDescription [] getAnnotationDescriptions () 
+{
+  try {
+    return server.getAnnotationDescriptions ();
+    }
+  catch (Exception e) {
+    return null;
+    }
+}
+//----------------------------------------------------------------------------------------
+public Annotation getAnnotation (String species, String curator, String type)
+{
+  try {
+    return server.getAnnotation (species, curator, type);
+    }
+  catch (Exception e) {
+    return null;
+    }
 
-        // take one of the Vectors of Integers from above, and return
-        // a truncated hierarchy (or a single category) according to
-        // the current mapping
-     String mapGoPathToSingleNode (Vector path) throws Exception;
-     //String mapBioProcessHierarchyToSingleCategory (Vector hierarchy) 
-     //   throws Exception;
+}
+//----------------------------------------------------------------------------------------
+public Annotation getAnnotation (AnnotationDescription description)
+{
+  try {
+    return server.getAnnotation (description);
+    }
+  catch (Exception e) {
+    return null;
+    }
 
-  String [] eliminateDuplicatePaths (Vector allMappedPaths) 
-            throws Exception;
-  String [] eliminateDuplicatePaths (String [] allMappedPaths) 
-            throws Exception;
+}
+//----------------------------------------------------------------------------------------
+public int [] getClassifications (String species, String curator, String type, String entity) 
+{
+  try {
+    return server.getClassifications (species, curator, type, entity);
+    }
+  catch (Exception e) {
+    return null;
+    }
+}
+//----------------------------------------------------------------------------------------
+public int [] getClassifications (AnnotationDescription description, String entity)
+{
+  try {
+    return server.getClassifications (description, entity);
+    }
+  catch (Exception e) {
+    return null;
+    }
+}
+//----------------------------------------------------------------------------------------
+public String [][] getAllAnnotations (AnnotationDescription description, String entity)
+{
+  try {
+    return server.getAllAnnotations (description, entity);
+    }
+  catch (Exception e) {
+    return null;
+    }
+} 
+//----------------------------------------------------------------------------------------
+public String describe ()
+{
+  try {
+    return server.describe ();
+    }
+  catch (Exception e) {
+    return "error connecting to data server";
+    }
+}
+//----------------------------------------------------------------------------------------
+public void addThesaurus (String species, Thesaurus thesaurus) 
+{
+  try {
+    server.addThesaurus (species, thesaurus);
+    }
+  catch (Exception e) {
+    return;
+    }
 
-//------------------------------------------------------------------------------
-}  
+}
+//----------------------------------------------------------------------------------------
+public String getCanonicalName (String species, String commonName)
+{
+  try {
+    return server.getCanonicalName (species, commonName);
+    }
+  catch (Exception e) {
+    return null;
+    }
+
+
+}
+//----------------------------------------------------------------------------------------
+public String [] getAllCommonNames (String species, String commonName)
+{
+  try {
+    return server.getAllCommonNames (species, commonName);
+    }
+  catch (Exception e) {
+    return null;
+    }
+
+
+}
+//----------------------------------------------------------------------------------------
+public String getCommonName (String species, String canonicalName)
+{
+  try {
+    return server.getCommonName (species, canonicalName);
+    }
+  catch (Exception e) {
+    return null;
+    }
+
+}
+//----------------------------------------------------------------------------------------
+} // BioDataServer
