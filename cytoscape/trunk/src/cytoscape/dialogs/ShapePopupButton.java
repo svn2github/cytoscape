@@ -32,8 +32,10 @@ public class ShapePopupButton extends JPanel implements ActionListener {
     int numberOfShapeItems;
     String rootPath;           // location of cytoscape class files
     JDialog parentDialog;
+    boolean alreadyConstructed;
 
     public ShapePopupButton (String title, String startShape, JDialog parentDialog){
+	alreadyConstructed = false;
 	this.parentDialog = parentDialog;
 	setupShapeMap();
 	this.title = title;
@@ -41,6 +43,7 @@ public class ShapePopupButton extends JPanel implements ActionListener {
 	setupWindow();
     }
     public ShapePopupButton (String title, byte startShapeByte, JDialog parentDialog){
+	alreadyConstructed = false;
 	this.parentDialog = parentDialog;
 	setupShapeMap();
 	this.title = title;
@@ -48,7 +51,20 @@ public class ShapePopupButton extends JPanel implements ActionListener {
 	setupWindow();
     }
     private void setupWindow(){
+	// default icon
 	ImageIcon icon = new ImageIcon(rootPath+"/dialogs/images/ellipse.jpg");
+
+	// find the right icon
+	ListModel theModel = shapeList.getModel();
+	int modelSize = theModel.getSize();
+	for (int modelIndex = 0; modelIndex < modelSize; modelIndex++) {
+	    ImageIcon indexedIcon = (ImageIcon)theModel.getElementAt(modelIndex);
+	    if(currentShape == indexedIcon.getDescription()) {
+		icon = indexedIcon;
+		shapeList.setSelectedValue(icon,true);
+	    }
+	}
+
 	shapeButton = new JButton(title);	
 	shapeButton.addActionListener(this);
 	mainPanel = new JPanel(new GridLayout(0,1));
@@ -100,6 +116,7 @@ public class ShapePopupButton extends JPanel implements ActionListener {
 
     // if button is pressed, launch window with list of choices
     public void actionPerformed(ActionEvent e){
+	if(!alreadyConstructed) {
 	mainDialog = new JDialog(parentDialog, this.title);
 
 	// create buttons
@@ -127,6 +144,7 @@ public class ShapePopupButton extends JPanel implements ActionListener {
         listScroller.setMinimumSize(new Dimension(150,50));
 	listScroller.setAlignmentX(LEFT_ALIGNMENT);
 	listScroller.setAlignmentY(BOTTOM_ALIGNMENT);
+	shapeList.ensureIndexIsVisible(shapeList.getSelectedIndex());
 
 	// Create a container so that we can add a title around the scroll pane
         JPanel listPane = new JPanel();
@@ -151,6 +169,9 @@ public class ShapePopupButton extends JPanel implements ActionListener {
 	mainPanel.add(listPane, BorderLayout.CENTER);
 	mainPanel.add(buttonPane, BorderLayout.SOUTH);
 	mainDialog.setContentPane (mainPanel);
+	alreadyConstructed = true;
+	}
+
 	mainDialog.pack ();
 	mainDialog.setLocationRelativeTo (parentDialog);
   	mainDialog.setVisible(true);

@@ -32,8 +32,10 @@ public class LineTypePopupButton extends JPanel implements ActionListener {
     int numberOfLineTypeItems;
     String rootPath;           // location of cytoscape class files
     JDialog parentDialog;
+    boolean alreadyConstructed;
 
     public LineTypePopupButton (String title, String startLineType, JDialog parentDialog){
+	alreadyConstructed = false;
 	this.parentDialog = parentDialog;
 	setupLineTypeMap();
 	this.title = title;
@@ -41,14 +43,27 @@ public class LineTypePopupButton extends JPanel implements ActionListener {
 	setupWindow();
     }
     public LineTypePopupButton (String title, LineType startLineType, JDialog parentDialog){
+	alreadyConstructed = false;
 	this.parentDialog = parentDialog;
 	setupLineTypeMap();
 	this.title = title;
 	this.setLineType(startLineType);
 	setupWindow();
     }
+
     private void setupWindow(){
+	// default icon
 	ImageIcon icon = new ImageIcon(rootPath+"/dialogs/images/line_1.jpg");
+	// find the right icon
+	ListModel theModel = lineTypeList.getModel();
+	int modelSize = theModel.getSize();
+	for (int modelIndex = 0; modelIndex < modelSize; modelIndex++) {
+	    ImageIcon indexedIcon = (ImageIcon)theModel.getElementAt(modelIndex);
+	    if(currentLineTypeName == indexedIcon.getDescription()) {
+		icon = indexedIcon;
+		lineTypeList.setSelectedValue(icon,true);
+	    }
+	}
 	shapeButton = new JButton(title);	
 	shapeButton.addActionListener(this);
 	mainPanel = new JPanel(new GridLayout(0,1));
@@ -118,6 +133,7 @@ public class LineTypePopupButton extends JPanel implements ActionListener {
 
     // if button is pressed, launch window with list of choices
     public void actionPerformed(ActionEvent e){
+	if(!alreadyConstructed) {
 	mainDialog = new JDialog(parentDialog, this.title);
 
 	// create buttons
@@ -145,6 +161,7 @@ public class LineTypePopupButton extends JPanel implements ActionListener {
         listScroller.setMinimumSize(new Dimension(150,50));
 	listScroller.setAlignmentX(LEFT_ALIGNMENT);
 	listScroller.setAlignmentY(BOTTOM_ALIGNMENT);
+	lineTypeList.ensureIndexIsVisible(lineTypeList.getSelectedIndex());
 
 	// Create a container so that we can add a title around the scroll pane
         JPanel listPane = new JPanel();
@@ -169,6 +186,9 @@ public class LineTypePopupButton extends JPanel implements ActionListener {
 	mainPanel.add(listPane, BorderLayout.CENTER);
 	mainPanel.add(buttonPane, BorderLayout.SOUTH);
 	mainDialog.setContentPane (mainPanel);
+	alreadyConstructed = true;
+	}
+	
 	mainDialog.pack ();
 	mainDialog.setLocationRelativeTo (parentDialog);
   	mainDialog.setVisible(true);
