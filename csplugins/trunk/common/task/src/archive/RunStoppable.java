@@ -1,6 +1,5 @@
 package archive;
 
-import cytoscape.task.Stoppable;
 import cytoscape.task.Task;
 
 /**

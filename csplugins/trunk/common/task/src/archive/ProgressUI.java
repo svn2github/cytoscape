@@ -2,7 +2,6 @@ package archive;
 
 // Notice the dependency list here - no deps on legacy cytoscape.* code.
 
-import cytoscape.task.Stoppable;
 import cytoscape.task.TaskMonitor;
 
 import javax.swing.*;
