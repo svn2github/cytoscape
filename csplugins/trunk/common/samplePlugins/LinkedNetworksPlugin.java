@@ -37,7 +37,7 @@ public class LinkedNetworksPlugin extends CytoscapePlugin {
     /**
      * Sets the set of networks to link. The argument is a Collection of
      * names of networks, and should be non-null and contain at least
-     * two entries. This method does nothing if the argumet is null.
+     * two entries. This method does nothing if the argument is null.
      */
     public void setLinkedNetworksByName(Collection networksByName) {
         if (networksByName == null || networksByName.size() < 2) {return;}
@@ -55,11 +55,19 @@ public class LinkedNetworksPlugin extends CytoscapePlugin {
         
         public LinkedNetworksAction() {super("Link Networks");}
         
+        /**
+         * This method gets run when the user selects the associated menu option.
+         */
         public void actionPerformed(ActionEvent ae) {
             showNetworkSelectionUI();
         }
     }
     
+    /**
+     * Creates a simple UI allowing the user to select from the current list
+     * of Cytoscape networks. This set will be installed as the group of
+     * networks to link together.
+     */
     public void showNetworkSelectionUI() {
             String titleString = "LinkNetworks";
             JDialog dialog = new JDialog(Cytoscape.getDesktop(), titleString, true);
@@ -95,6 +103,10 @@ public class LinkedNetworksPlugin extends CytoscapePlugin {
             dialog.show();
     }
     
+    /**
+     * Responds when the user hits the "OK" button in the UI. Gets the
+     * currently selected networks and passes them to setLinkedNetworksByName.
+     */
     public class OKButtonListener implements ActionListener {
         JDialog dialog;
         JList listUI;
@@ -109,6 +121,10 @@ public class LinkedNetworksPlugin extends CytoscapePlugin {
         }
     }
     
+    /**
+     * Responds when the user hits the "Cancel" button in the UI. Disposes
+     * of the UI without changing the current set of linked networks.
+     */
     public class CancelButtonListener implements ActionListener {
         JDialog dialog;
         public CancelButtonListener(JDialog dialog) {this.dialog = dialog;}
