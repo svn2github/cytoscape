@@ -452,7 +452,7 @@ public abstract class Cytoscape {
    * Return a List of all available CyNetworks
    */
   public static Set getNetworkSet () {
-    return  getNetworkMap().keySet();
+    return  new java.util.LinkedHashSet(((HashMap) getNetworkMap()).values());
   }
 
   /**
