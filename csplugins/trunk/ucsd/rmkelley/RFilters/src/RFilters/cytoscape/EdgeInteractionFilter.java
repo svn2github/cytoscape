@@ -38,6 +38,7 @@ public class EdgeInteractionFilter
   public static String FILTER_DESCRIPTION = "Select edges based on adjacent nodes";
   public static String SOURCE = "source";
   public static String TARGET = "target";
+  public static String EITHER = "source or target";
   //----------------------------------------//
   // Cytoscape specific Variables
   //----------------------------------------//
@@ -114,15 +115,14 @@ public class EdgeInteractionFilter
     //get the list of all relevant edges
     Node adjacentNode;
     if(target == SOURCE){
-    	adjacentNode = edge.getSource();
+    	return filter.passesFilter(edge.getSource());
+    }else if(target == TARGET){
+      return filter.passesFilter(edge.getTarget());
+    }else{
+      return filter.passesFilter(edge.getSource()) || filter.passesFilter(edge.getTarget());
     }
-    else{
-      adjacentNode = edge.getTarget();
-    }
-
-    return filter.passesFilter(adjacentNode);
   }
-
+  
   public Class[] getPassingTypes () {
     return null;
   }

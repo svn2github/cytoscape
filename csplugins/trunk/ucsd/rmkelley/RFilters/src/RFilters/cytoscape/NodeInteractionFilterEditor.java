@@ -75,6 +75,7 @@ public class NodeInteractionFilterEditor
     targetBox = new JComboBox();
     targetBox.addItem(NodeInteractionFilter.SOURCE);
     targetBox.addItem(NodeInteractionFilter.TARGET);
+    targetBox.addItem(NodeInteractionFilter.EITHER);
     targetBox.addItemListener(this);
     topPanel.add( targetBox );
 								

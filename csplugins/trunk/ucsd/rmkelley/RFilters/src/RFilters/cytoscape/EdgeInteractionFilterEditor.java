@@ -75,6 +75,7 @@ public class EdgeInteractionFilterEditor
     targetBox = new JComboBox();
     targetBox.addItem(EdgeInteractionFilter.SOURCE);
     targetBox.addItem(EdgeInteractionFilter.TARGET);
+    targetBox.addItem(EdgeInteractionFilter.EITHER);
     targetBox.addItemListener(this);
     topPanel.add( targetBox );
 								

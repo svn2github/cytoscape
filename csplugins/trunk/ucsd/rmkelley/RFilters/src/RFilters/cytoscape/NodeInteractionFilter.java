@@ -38,6 +38,7 @@ public class NodeInteractionFilter
   public static String FILTER_DESCRIPTION = "Select nodes based on adjacent edges";
   public static String SOURCE = "source";
   public static String TARGET = "target";
+  public static String EITHER = "source or target";
   //----------------------------------------//
   // Cytoscape specific Variables
   //----------------------------------------//
@@ -116,9 +117,10 @@ public class NodeInteractionFilter
     GraphPerspective myPerspective = Cytoscape.getCurrentNetwork();
     if(target == SOURCE){
       adjacentEdges = myPerspective.getAdjacentEdgesList(node, true, false, true);	
-    }
-    else{
+    }else if(target == TARGET){
       adjacentEdges = myPerspective.getAdjacentEdgesList(node,true,true,false);
+    }else{
+      adjacentEdges = adjacentEdges = myPerspective.getAdjacentEdgesList(node,true,true,true);
     }
 
     Iterator edgeIt = adjacentEdges.iterator();
