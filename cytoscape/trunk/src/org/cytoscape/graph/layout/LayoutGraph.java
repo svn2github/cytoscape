@@ -67,7 +67,12 @@ public interface LayoutGraph extends Graph
    * values of this method.  A graph's nodes will have positions even before
    * any layout is performed on the graph (maybe each node's position is
    * at the origin); therefore this method shall never return
-   * <code>null</code>.
+   * <code>null</code>.  The return value's X and Y coordinates may not
+   * necessarily fall in the interval
+   * <nobr><code>[0, getMaxWidth()]</code></nobr> and
+   * <nobr><code>[0, getMaxHeight()]</code></nobr>, respectively (for example
+   * if a node is not movable).  Must movable nodes fall within these
+   * bounds?  I have not made up my mind yet.
    * @exception IndexOutOfBoundsException if <code>nodeIndex</code> is not
    *   in the interval <nobr><code>[0, getNumNodes() - 1]</code></nobr>.
    */

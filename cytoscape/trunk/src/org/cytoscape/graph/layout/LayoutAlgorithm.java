@@ -10,6 +10,11 @@ package org.cytoscape.graph.layout;
 public abstract class LayoutAlgorithm implements Runnable
 {
 
+  /**
+   * The graph that this algorithm will lay out.
+   * By agreement, methods on <code>graph</code> will be called only from
+   * the thread that invokes <code>run()</code>.
+   **/
   protected final LayoutGraph graph;
 
   protected LayoutAlgorithm(LayoutGraph graph)
@@ -37,7 +42,14 @@ public abstract class LayoutAlgorithm implements Runnable
    * not block; it should return quickly.  If [an asynchronous] thread is
    * executing <code>run()</code> when <code>destroy()</code> is called,
    * a signal should be sent to the thread that is executing <code>run()</code>
-   * to abort and exit <code>run()</code>.
+   * to abort and exit <code>run()</code>.  If <code>run()</code> has not
+   * been called at the time that <code>destroy()</code> is invoked,
+   * a later call to <code>run()</code> should not actually
+   * &quot;run&quot; anything.  If <code>run()</code> has already been run
+   * and has exited by the time <code>destroy()</code> is called,
+   * <code>destroy()</code> should do nothing.
+   * There is no guarantee that <code>destroy()</code> will be called on
+   * and instance of this class.
    */
   public abstract void destroy();
 
