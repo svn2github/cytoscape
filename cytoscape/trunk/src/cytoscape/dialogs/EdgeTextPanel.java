@@ -26,7 +26,8 @@ public class EdgeTextPanel extends JPanel {
     String [] attributeNames;
     MutableString edgeKey;
     MutableString attribKey;
-    JList theList;
+    //JList theList;
+    JComboBox theBox;
     AttributeMapper aMapper;
     Frame parentFrame;
     Map theMap;
@@ -48,18 +49,32 @@ public EdgeTextPanel (GraphObjAttributes edgeAttribs,
   theMap = null;
   useThisMap=false;
 
-  GridBagLayout gridbag = new GridBagLayout(); 
-  GridBagConstraints c = new GridBagConstraints();
-  this.setLayout (gridbag);
+  //GridBagLayout gridbag = new GridBagLayout(); 
+  //GridBagConstraints c = new GridBagConstraints();
+  this.setLayout (new GridLayout(1,2,10,10));
+  //this.setLayout (gridbag);
 
-  DefaultListModel listModel = new DefaultListModel();
+  //DefaultListModel listModel = new DefaultListModel();
+  //for (int i=0; i < attributeNames.length; i++)
+  //    listModel.addElement(attributeNames [i]);
+  //theList = new JList(listModel);
+
+  DefaultComboBoxModel boxModel = new DefaultComboBoxModel();
   for (int i=0; i < attributeNames.length; i++)
-      listModel.addElement(attributeNames [i]);
-  theList = new JList(listModel);
+      boxModel.addElement(new String(attributeNames [i]));
+  theBox = new JComboBox(boxModel);
 
-  theList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-  theList.addListSelectionListener(new SharedListSelectionHandler(edgeKey));
-  theList.setSelectedValue(edgeKey.getString(),true);
+  //theList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+  //theList.addListSelectionListener(new SharedListSelectionHandler(edgeKey));
+  //theList.setSelectedValue(edgeKey.getString(),true);
+
+  theBox.addActionListener(new BoxAction(edgeKey));
+  if(boxModel.getSize()==1) {
+      theBox.setSelectedIndex(0);
+      edgeKey.setString((String)boxModel.getElementAt(0));
+  }
+  else
+      theBox.setSelectedItem(edgeKey.getString());
   /*
     for (int i=0; i < attributeNames.length; i++) {
     String attributeName = attributeNames [i];
@@ -67,16 +82,16 @@ public EdgeTextPanel (GraphObjAttributes edgeAttribs,
     }
   */
 
-  c.gridx=0;
-  c.gridy=0;
-  gridbag.setConstraints(theList,c);
-  this.add(theList);
+  //c.gridx=0;
+  //c.gridy=0;
+  //gridbag.setConstraints(theBox,c);
+  this.add(theBox);
 
-  JButton pickThisAttribute = new JButton ("OK");
+  JButton pickThisAttribute = new JButton ("Define Mapping");
   pickThisAttribute.addActionListener (new ColorToDiscreteListener());
-  c.gridx=0;
-  c.gridy=1;
-  gridbag.setConstraints(pickThisAttribute,c);
+  //c.gridx=1;
+  //c.gridy=0;
+  //gridbag.setConstraints(pickThisAttribute,c);
   this.add(pickThisAttribute);
 
   
@@ -104,9 +119,23 @@ public class SharedListSelectionHandler implements ListSelectionListener {
     }
 }
 
+
+public class BoxAction extends AbstractAction {
+    MutableString ms;
+    public BoxAction(MutableString ms) {
+	super();
+	this.ms = ms;
+    }
+    public void actionPerformed(ActionEvent e) {
+	JComboBox jcb = (JComboBox)e.getSource();
+	ms.setString((String)jcb.getSelectedItem());
+	//System.out.println(ms.getString());
+    }
+}
+
 public class ColorToDiscreteListener extends AbstractAction {
     public void actionPerformed (ActionEvent e) {
-	//System.out.println(edgeKey.getString());
+	//System.out.println("define " + edgeKey.getString());
 	ColorToDiscreteDialog ctdDialog =
 	    new ColorToDiscreteDialog();
     }

@@ -137,17 +137,17 @@ public VisualPropertiesDialog (Frame parentFrame,
 					TitledBorder.DEFAULT_POSITION);
   complexSubPanel.setBorder (complexSubPanelTitledBorder);
 
-  complexSubPanelConstraints.gridx=0;
-  complexSubPanelConstraints.gridy=0;
-  JLabel tempLabel = new JLabel("Select an attribute to map.");
-  complexSubPanelGridbag.setConstraints(tempLabel,complexSubPanelConstraints);
-  complexSubPanel.add(tempLabel);
+  //complexSubPanelConstraints.gridx=0;
+  //complexSubPanelConstraints.gridy=0;
+  //JLabel tempLabel = new JLabel("Define Mapping:");
+  //complexSubPanelGridbag.setConstraints(tempLabel,complexSubPanelConstraints);
+  //complexSubPanel.add(tempLabel);
 
   if(localEdgeKey==null) localEdgeKey = new MutableString("temp");
   edgeTextPanel
       = new EdgeTextPanel(edgeAttribs,aMapper,parentFrame,localEdgeKey);
   complexSubPanelConstraints.gridx=0;
-  complexSubPanelConstraints.gridy=4;
+  complexSubPanelConstraints.gridy=0;
   complexSubPanelGridbag.setConstraints(edgeTextPanel,complexSubPanelConstraints);
   complexSubPanel.add(edgeTextPanel);
 
