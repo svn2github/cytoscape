@@ -205,16 +205,15 @@ public String getStringValue (String attribute, String objectName)
   
 } // getStringValue
 //--------------------------------------------------------------------------------
-public void readFloatAttributesFromFile (String filename)
+public void readAttributesFromFile (String filename)
    throws FileNotFoundException, IllegalArgumentException, NumberFormatException
 {
-  readFloatAttributesFromFile (new File (filename));
+  readAttributesFromFile (new File (filename));
 }
 //--------------------------------------------------------------------------------
-public void readFloatAttributesFromFile (File file)
+public void readAttributesFromFile (File file)
    throws FileNotFoundException, IllegalArgumentException, NumberFormatException
 {
-
   TextFileReader reader = new TextFileReader (file.getPath ());
   reader.read ();
   String rawText = reader.getText ();
@@ -229,17 +228,32 @@ public void readFloatAttributesFromFile (File file)
     throw new IllegalArgumentException ("attribute name: '" + attributeName + 
                                         "' must have no embedded spaces");
 
+  boolean extractingFirstValue = true; 
+  boolean attributeHasStringValue = true;   // the default
+
   while (strtok.hasMoreElements ()) {
     String newLine = (String) strtok.nextElement ();
     lineNumber++;
     StringTokenizer strtok2 = new StringTokenizer (newLine);
     if (strtok2.countTokens () != 2)
       throw new IllegalArgumentException ("cannot parse line number " + lineNumber +
-                                          ": " + newLine);
+                                          ":\n\t" + newLine);
     String objectName = strtok2.nextToken ();
-    String doubleString = strtok2.nextToken ();
-    try {
-      Double value = new Double (doubleString);
+    String valueString = strtok2.nextToken ();
+    if (extractingFirstValue) {
+      extractingFirstValue = false;  // henceforth
+      try {
+        Double value = new Double (valueString);
+        attributeHasStringValue = false;
+        }
+      catch (NumberFormatException nfe) {
+        attributeHasStringValue = true;
+        }
+      } // if extractingFirstValue
+    if (attributeHasStringValue) 
+      add (attributeName, objectName, valueString);
+    else try {
+      Double value = new Double (valueString);
       add (attributeName, objectName, value);
       }
     catch (NumberFormatException nfe) {
@@ -249,7 +263,7 @@ public void readFloatAttributesFromFile (File file)
        }
     } // while strtok finds new lines
 
-} // readFloatAttributesFromFile
+} // readAttributesFromFile
 //--------------------------------------------------------------------------------
 public HashMap getAttributes (String canonicalName)
 {

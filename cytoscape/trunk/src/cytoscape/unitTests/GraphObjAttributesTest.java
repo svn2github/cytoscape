@@ -148,7 +148,7 @@ public void testTextFileReaderOnNodeAttributeData () throws Exception
   GraphObjAttributes attributes = new GraphObjAttributes ();
   assertTrue (attributes.size () == 0);
   String attributeName = "fooB";
-  attributes.readFloatAttributesFromFile (new File ("../testData/noLabels.fooB"));
+  attributes.readAttributesFromFile (new File ("../testData/noLabels.fooB"));
   assertTrue (attributes.size () == 1);
   HashMap fooB = attributes.getAttribute ("fooB");
   assertTrue (fooB.size () == 333);
@@ -161,7 +161,7 @@ public void testTextFileReaderOnEdgeAttributeData () throws Exception
   GraphObjAttributes attributes = new GraphObjAttributes ();
   assertTrue (attributes.size () == 0);
   File file = new File ("../testData/yeastSmall.edgeAttr.0");
-  attributes.readFloatAttributesFromFile (file);
+  attributes.readAttributesFromFile (file);
   assertTrue (attributes.size () == 1);
 
   String [] attributeNames = attributes.getAttributeNames ();
@@ -182,7 +182,7 @@ public void testAddAttributeHash () throws Exception
   GraphObjAttributes firstSet = new GraphObjAttributes ();
   assertTrue (firstSet.size () == 0);
   String attributeName = "fooB";
-  firstSet.readFloatAttributesFromFile (new File ("../testData/noLabels.fooB"));
+  firstSet.readAttributesFromFile (new File ("../testData/noLabels.fooB"));
   assertTrue (firstSet.size () == 1);
   HashMap fooB = firstSet.getAttribute ("fooB");
   assertTrue (fooB.size () == 333);
@@ -190,7 +190,7 @@ public void testAddAttributeHash () throws Exception
      // second: read in and add edge attributes 0
   File file = new File ("../testData/yeastSmall.edgeAttr.0");
   GraphObjAttributes secondSet = new GraphObjAttributes ();
-  secondSet.readFloatAttributesFromFile (file);
+  secondSet.readAttributesFromFile (file);
   assertTrue (secondSet.size () == 1);
   String [] attributeNames = secondSet.getAttributeNames ();
   HashMap edgeAttribute = secondSet.getAttribute (attributeNames [0]);
@@ -220,7 +220,7 @@ public void testNodeToNameMapping () throws Exception
   GraphObjAttributes nodeAttributes = new GraphObjAttributes ();
   assertTrue (nodeAttributes.size () == 0);
   String attributeName = "fooB";
-  nodeAttributes.readFloatAttributesFromFile (new File ("../testData/noLabels.fooB"));
+  nodeAttributes.readAttributesFromFile (new File ("../testData/noLabels.fooB"));
   assertTrue (nodeAttributes.size () == 1);
   HashMap fooB = nodeAttributes.getAttribute (attributeName);
   assertTrue (fooB.size () == 333);
@@ -389,7 +389,7 @@ public void testGetAndAddNameMapping () throws Exception
   GraphObjAttributes nodeAttributes = new GraphObjAttributes ();
   assertTrue (nodeAttributes.size () == 0);
   String attributeName = "fooB";
-  nodeAttributes.readFloatAttributesFromFile (new File ("../testData/noLabels.fooB"));
+  nodeAttributes.readAttributesFromFile (new File ("../testData/noLabels.fooB"));
   assertTrue (nodeAttributes.size () == 1);
   HashMap fooB = nodeAttributes.getAttribute (attributeName);
   assertTrue (fooB.size () == 333);

@@ -107,13 +107,13 @@ public cytoscape (String [] args) throws Exception
 
   if (nodeAttributeFilenames != null)
     for (int i=0; i < nodeAttributeFilenames.length; i++)
-      nodeAttributes.readFloatAttributesFromFile (nodeAttributeFilenames [i]);
+      nodeAttributes.readAttributesFromFile (nodeAttributeFilenames [i]);
 
   String [] edgeAttributeFilenames = config.getEdgeAttributeFilenames ();
 
   if (edgeAttributeFilenames != null)
     for (int i=0; i < edgeAttributeFilenames.length; i++)
-      edgeAttributes.readFloatAttributesFromFile (edgeAttributeFilenames [i]);
+      edgeAttributes.readAttributesFromFile (edgeAttributeFilenames [i]);
 
   if (graph == null)
     graph = new Graph2D ();

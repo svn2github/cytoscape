@@ -197,14 +197,14 @@ run1f0:
 	$(JAVA) cytoscape.cytoscape \
           -i $(CYTOSCAPE_DATA)/yeastSmall.intr
 
-##
-## --- run1f1
-## like run1f, but uses a node attributes file, simple.bar
-##
+#
+# --- run1f1
+# like run1f, but uses a node attributes file, simple.bar
+#
 
-#run1f1: 
-#	$(JAVA) cytoscape.cytoscape \
-#          -i $(CYTOSCAPE_DATA)/yeastSmall.intr \
+run1f1: 
+	$(JAVA) cytoscape.cytoscape \
+          -i $(CYTOSCAPE_DATA)/yeastSmall.intr \
 #          -n $(HOME)/cytoscapeData/pluginSamples/simple.bar
 
 #
