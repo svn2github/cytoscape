@@ -244,12 +244,15 @@ public CytoscapeWindow (cytoscape parentApp,
   else
     this.windowTitle = defaultWindowTitle + title;
 
+  // moved up so that the jar loader would do okay.
+  //
+  // initializeWidgets calls createMenuBar which,
+  // at the end, constructs the JarLoader.
+  setGraph (graph);
 
   initializeWidgets ();
 
   JButton annotationButton = toolbar.add (new AnnotationGui (CytoscapeWindow.this));
-
-  setGraph (graph);
 
   // load vizmapper after graph is available
   loadVizMapper();
