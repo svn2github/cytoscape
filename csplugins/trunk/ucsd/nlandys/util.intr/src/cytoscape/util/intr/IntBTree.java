@@ -467,10 +467,10 @@ public final class IntBTree
    *   holeInx: 1
    *
    *            +---+---+---+---+---+---+---+---+---+
-   *   thisArr: | 9 |   | 1 | 5 |   |   |   |   |   |
+   *   thisArr: | 9 |   | 1 | 5 |-2 |   |   |   |   |
    *            +---+---+---+---+---+---+---+---+---+
    *
-   *   thisOrigLen: 4
+   *   (The number of elements in thisArr is assumed to be m_minBranches.)
    *
    *            +---+---+---+---+---+---+---+---+---+
    *   leftArr: | 8 | 3 | 2 | 4 | 7 | 6 | 0 |-1 |   |
@@ -483,25 +483,26 @@ public final class IntBTree
    *   =======
    *
    *            +---+---+---+---+---+---+---+---+---+
-   *   thisArr: | 0 |-1 | 9 | 1 | 5 |   |   |   |   |
+   *   thisArr: | 0 |-1 | 9 | 1 | 5 |-2 |   |   |   |
    *            +---+---+---+---+---+---+---+---+---+
    *
    *            +---+---+---+---+---+---+---+---+---+
    *   leftArr: | 8 | 3 | 2 | 4 | 7 | 6 |   |   |   |
    *            +---+---+---+---+---+---+---+---+---+
    *
-   *   returns: 5 (the new size of thisArr)
+   *   returns: 6 (the new size of leftArr)
    *
    *   If I need to return more values, I can use thisArr[returnVal] for
    *   example.
    */
-  private final static int shiftFromLeftSibling(final int holeInx,
-                                                final int[] thisArr,
-                                                final int thisOrigLen,
-                                                final int[] leftArr,
-                                                final int leftLen)
+  private final int shiftFromLeftSibling(final int holeInx,
+                                         final int[] thisArr,
+                                         final int[] leftArr,
+                                         final int leftLen)
   {
-    return -1;
+    final int returnThis;
+    returnThis = m_minBranches + ((leftLen - m_minBranches) / 2);
+    return returnThis;
   }
                                                  
                                                  
