@@ -14,20 +14,19 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 
 /**
- * This class is a utility for providing popup dialogs which display progress
+ * This class is a utility for providing a popup dialog which displays progress
  * on a lengthy process.  Historically, Cytoscape tasks such as loading a
  * graph from a file or laying out a large graph were done in the AWT event
  * handling thread.  Such tasks take on the order of minutes sometimes; because
  * these tasks were computed by the AWT event handling thread, the Cytoscape
  * desktop would become unresponsive while these tasks were executing.
- * This here class was designed as a framework to ease the transition of
- * computing lengthy tasks in theads other than the AWT event handling
- * thread, as described in the next paragraph.<p>
+ * <code>ProgressUI</code> was designed as a framework to ease the transition
+ * of computing lengthy tasks in theads other than the AWT event handling
+ * thread; see next paragraph.<p>
  * Tasks which were initially forked as new threads to prevent the
  * unresponsive Cytoscape desktop problem touched parts of code which
  * invoked Swing and/or Piccolo libraries.  Therefore, it was necessary to
@@ -58,7 +57,11 @@ public final class ProgressUI
    * <code>stop</code> parameter to this method) and a progress animation with
    * a percent completed (the percent completed animation is triggered by
    * using the returned <code>ProgressUIControl</code> object).<p>
-   * This method <i>MUST</i> be called from the AWT queue handling thread.
+   * This method <i>MUST</i> be called from the AWT queue handling thread.<p>
+   * A progress UI can only be created once all previous progress UIs have been
+   * disposed of.  This method will throw an <code>IllegalStateException</code>
+   * if previous progress UI has not been disposed of at the time this method
+   * is called.
    *
    * @param title desired title of the dialog window; may not be
    *   <code>null</code>.
@@ -106,7 +109,7 @@ public final class ProgressUI
        frame);
     if (stop != null)
     {
-      JButton button = new JButton("Cancel");
+      JButton button = new JButton("Stop");
       button.addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             try { stop.stop(); }
