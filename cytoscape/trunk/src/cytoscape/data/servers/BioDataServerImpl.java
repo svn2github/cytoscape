@@ -891,6 +891,8 @@ public static void main (String [] args)
   //  }
 
  String name = "biodata";
+ if (args.length > 0) 
+   name = args [0];
 
   try {
     RMIBioDataServer server = new BioDataServerImpl ();

@@ -16,7 +16,11 @@ public class status {
 //------------------------------------------------------------------------------
 public static void main (String [] args) throws Exception
 {
-  String serverName = "rmi://localhost/biodata";
+  String serverShortName = "biodata";
+  if (args.length == 1)
+    serverShortName = args [0];
+
+  String serverName = "rmi://localhost/" + serverShortName;
   BioDataServer server = (BioDataServer) Naming.lookup (serverName);
   System.out.println (server.describe ());
 

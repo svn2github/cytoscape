@@ -17,15 +17,16 @@ public class loadSynonyms {
 //------------------------------------------------------------------------------
 public static void main (String [] args) throws Exception
 {
-  if (args.length != 1) {
-    System.out.println ("usage:  loadSynonyms <synonyms xml file>");
+  if (args.length != 2) {
+    System.out.println ("usage:  loadSynonyms <synonyms xml file> <serverName>");
     System.exit (1);
     }
 
-  String serverName = "rmi://localhost/biodata";
+  String filename = args [0];
+  String serviceName = args [1];
+  String serverName = "rmi://localhost/" + serviceName;
   BioDataServer server = (BioDataServer) Naming.lookup (serverName);
 
-  String filename = args [0];
   GeneSynonymXmlReader reader = new GeneSynonymXmlReader (new File (filename));
   Vector result = reader.read ();
   System.out.println ("loading " + result.size () + " gene synonyms...");
