@@ -200,6 +200,21 @@ public class CytoscapeInit
 
     loadPlugins( pluginURLs );
 
+    // attempt to load resource plugins
+    List rp = cli.getResourcePlugins();
+    for ( Iterator rpi = rp.iterator(); rpi.hasNext(); ) {
+      String resource = ( String )rpi.next();
+      // try to get the class
+      Class rclass = null;
+      try {
+        rclass = Class.forName( resource );
+      } catch ( Exception exc ) {
+        System.out.println( "Getting class: "+resource+" failed" );
+        exc.printStackTrace();
+      }
+      loadPlugin( rclass );
+    }
+
     if ( !isHeadless() ) {
       WindowUtilities.hideSplash();
     }    
@@ -659,3 +674,4 @@ public class CytoscapeInit
 
 }
   
+

@@ -33,6 +33,7 @@ public class CyCommandLineParser {
   boolean inScript;
   ArrayList currentScript;
   boolean suppressView;
+  ArrayList resourcePlugins;
 
   boolean helpRequested = false;
 
@@ -66,6 +67,7 @@ public class CyCommandLineParser {
      inScript = false;
      scripts = new ArrayList();
      suppressView = false;
+     resourcePlugins = new ArrayList();
   }
 
 
@@ -73,7 +75,7 @@ public class CyCommandLineParser {
     return helpRequested;
   }
 
-  public String getHelp() {
+  public String geHelp() {
     return HELP;
   }
 
@@ -81,6 +83,10 @@ public class CyCommandLineParser {
   ////////////////////////////////////////
   // Accessor methods for all possible command line options 
 
+  public ArrayList getResourcePlugins () {
+    return resourcePlugins;
+  }
+  
   /**
    * @return the location of a specifed props file, this will be converted to a URL
    */
@@ -379,6 +385,16 @@ public class CyCommandLineParser {
         scripts.add( currentScript );
       }
      
+      //resource plugins
+      else if (  Strings.isLike( args[i], "-rp", 0, true ) ||
+                 Strings.isLike( args[i], "-resourcePlugin", 0, true ) ) {
+        resetFalse();
+        i++;
+        if ( badArgs(args, i ) ) 
+          return;
+        resourcePlugins.add( args[i] );
+        i++;
+      }
 
       // plugins
       else if ( Strings.isLike( args[i], "-p", 0, true ) ||
@@ -478,6 +494,11 @@ public class CyCommandLineParser {
           System.out.println( "Adding single jar: "+plugin_file );
         } 
         
+        if ( plugin_file.toString().startsWith( "http:" ) || plugin_file.toString().startsWith( "jar:") ) {
+          pluginFiles.add( plugin_file.toString()  );
+          System.out.println( "Adding URL Jar: "+plugin_file );
+        }
+
         // not a jar or directory, assume it is a manifest
         else {
           try {
@@ -538,3 +559,4 @@ public class CyCommandLineParser {
 
 } 
   
+
