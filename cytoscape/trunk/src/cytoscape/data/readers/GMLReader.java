@@ -42,6 +42,9 @@ import cytoscape.data.CyNetwork;
 import cytoscape.util.GinyFactory;
 
 import cytoscape.data.GraphObjAttributes;
+
+// add text here
+
 //-------------------------------------------------------------------------------------
 public class GMLReader implements GraphReader {
     private String filename;
