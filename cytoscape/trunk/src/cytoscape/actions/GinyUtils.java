@@ -22,31 +22,33 @@ public class GinyUtils {
 	   if (view != null) {
 			java.util.List list = view.getSelectedNodes();
 			Iterator i = list.iterator();
-			while (i.hasNext())
-			{
+			while ( i.hasNext() ) {
 				NodeView nview =(NodeView) i.next();
-				Node n = nview.getNode();
+				//Node n = nview.getNode();
 				//ColtGraphPerspective gp = (ColtGraphPerspective)graphView.getGraphPerspective();
 				//gp.hideNode(n);
-				( ( PNode )nview ).setVisible( false );
-				//graphView.hideGraphObject( nview );
+				//( ( PNode )nview ).setVisible( false );
+
+
+        // use GINY methods
+				view.hideGraphObject( nview );
+
 				int[] na = view.getGraphPerspective().neighborsArray( nview.getGraphPerspectiveIndex() );
 				for ( int i2 = 0; i2 < na.length; ++i2 ) {
 					int[] edges = view.
-					getGraphPerspective().
-					getEdgeIndicesArray( nview.getGraphPerspectiveIndex(), na[i2], true, true );
-					//if( edges != null )
-					//System.out.println( "There are: "+edges.length+" edge between "+nview.getGraphPerspectiveIndex()+" and "+na[i2] );
+            getGraphPerspective().
+            getEdgeIndicesArray( nview.getGraphPerspectiveIndex(), na[i2], true, true );
+					if( edges != null )
+            //System.out.println( "There are: "+edges.length+" edge between "+nview.getGraphPerspectiveIndex()+" and "+na[i2] );
 					for ( int j = 0; j < edges.length; ++j ) {
-						PEdgeView ev = ( PEdgeView )view.getEdgeView( edges[j] );
-						ev.setVisible( false );
-						//graphView.hideGraphObject( ev );
+						//PEdgeView ev = ( PEdgeView )view.getEdgeView( edges[j] );
+						//ev.setVisible( false );
+
+            // use GINY methods
+						view.hideGraphObject( view.getEdgeView( edges[j] ) );
 					}
 				}
-		
-			
-			
-			}//while
+      }//while
 		}//if !null
        
     }
@@ -62,12 +64,15 @@ public class GinyUtils {
 			while (i.hasNext())
 			{
 				NodeView nview =(NodeView) i.next();
-				Node n = nview.getNode();
+				//Node n = nview.getNode();
 				//ColtGraphPerspective gp = (ColtGraphPerspective)graphView.getGraphPerspective();
 				//gp.hideNode(n);
-				( ( PNode )nview ).setVisible( true );
+				//( ( PNode )nview ).setVisible( true );
 				//graphView.hideGraphObject( nview );
-				int[] na = view.getGraphPerspective().neighborsArray( nview.getGraphPerspectiveIndex() );
+				
+        view.showGraphObject( nview );
+
+        int[] na = view.getGraphPerspective().neighborsArray( nview.getGraphPerspectiveIndex() );
 				for ( int i2 = 0; i2 < na.length; ++i2 ) {
 					int[] edges = view.
 					getGraphPerspective().
@@ -75,10 +80,12 @@ public class GinyUtils {
 					//if( edges != null )
 					//System.out.println( "There are: "+edges.length+" edge between "+nview.getGraphPerspectiveIndex()+" and "+na[i2] );
 					for ( int j = 0; j < edges.length; ++j ) {
-						PEdgeView ev = ( PEdgeView )view.getEdgeView( edges[j] );
-						ev.setVisible( true );
+						//PEdgeView ev = ( PEdgeView )view.getEdgeView( edges[j] );
+						//ev.setVisible( true );
 						//graphView.hideGraphObject( ev );
-					}
+            
+            view.showGraphObject( view.getEdgeView( edges[j] ) );
+          }
 				}
 		
 			
