@@ -142,6 +142,7 @@
                 <!-- Exclude unused classes in archive directories -->
                 <exclude name="cytoscape/actions/archive/*"/>
                 <exclude name="cytoscape/filters/dialogs/archive/*"/>
+                <exclude name="cytoscape/dialogs/archive/*"/>
 
     		<classpath refid="classpath"/>
     	</javac>
