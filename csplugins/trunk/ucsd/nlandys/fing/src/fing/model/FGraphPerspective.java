@@ -1004,11 +1004,12 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
     m_hash.empty();
     final IntHash nativeNodeBucket = m_hash;
     for (int i = 0; i < edgeInx.length; i++) {
-      try {
-        final int nativeEdgeIndex = m_rootToNativeEdgeInxMap.get(~edgeInx[i]);
+      if (!(edgeInx[i] < 0)) return null;
+      final int nativeEdgeIndex = m_rootToNativeEdgeInxMap.get(~edgeInx[i]);
+      if (m_graph.edgeType(nativeEdgeIndex) >= 0) {
         nativeNodeBucket.put(m_graph.edgeSource(nativeEdgeIndex));
         nativeNodeBucket.put(m_graph.edgeTarget(nativeEdgeIndex)); }
-      catch (IllegalArgumentException e) { } }
+      else return null; }
     final IntEnumerator nativeNodeEnum = nativeNodeBucket.elements();
     final int[] returnThis = new int[nativeNodeEnum.numRemaining()];
     for (int i = 0; i < returnThis.length; i++)
