@@ -29,7 +29,7 @@ package cytoscape.plugin;
 
 /**
  * Thrown to indicate that a class cannot be used as a plugin
- * becuase it does not extend AbstractPluginl.
+ * becuase it does not extend AbstractPlugin.
  */
 public class NotAPluginException extends Exception {
     /**

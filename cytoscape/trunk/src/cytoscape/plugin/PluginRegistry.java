@@ -39,7 +39,7 @@ import java.util.*;
  * Time: 11:43:36 PM
  * Maintain a central timestamped list of Plugins. Each running instance
  * of cytoscape maintains a single PluginRegistry object (as a member of
- * the shared CytoscpaeObj object). The registry holds classes which are
+ * the shared CytoscapeObj object). The registry holds classes which are
  * to be used as plugins by CyWindows. Each CyWindow's CyMenu can ask for
  * the set of plugins which have been added to the registry since a
  * timestamp (Using System.currentTimeMillis ()). By so doing, it can
