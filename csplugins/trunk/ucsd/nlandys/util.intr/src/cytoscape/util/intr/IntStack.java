@@ -48,7 +48,7 @@ public final class IntStack
   public IntStack()
   {
     m_stack = new int[DEFAULT_CAPACITY];
-    m_currentSize = 0;
+    empty();
   }
 
   /**
@@ -113,7 +113,7 @@ public final class IntStack
                                             ((long) m_stack.length) * 2l + 1l);
     if (newStackSize == m_stack.length)
       throw new IllegalStateException("cannot allocate large enough array");
-    final int[] newStack = new int[(int) newStackSize];
+    final int[] newStack = new int[newStackSize];
     System.arraycopy(m_stack, 0, newStack, 0, m_stack.length);
     m_stack = newStack;
   }
