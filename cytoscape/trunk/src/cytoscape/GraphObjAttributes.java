@@ -557,6 +557,38 @@ public String [] getObjectNames (String attributeName)
 } // getObjectNames
 //--------------------------------------------------------------------------------
 /**
+ * return the unique values among the values of all objects with a given attribute.
+ */
+public Object [] getUniqueValues (String attributeName)
+{
+  HashMap hash = getAttribute (attributeName);
+ if (hash == null)
+    return null;
+  Object [] allValues = (Object []) hash.values().toArray (new Object [0]);
+  Vector nonredundantList = new Vector ();
+  for (int i=0; i < allValues.length; i++)
+    if (!nonredundantList.contains (allValues [i]))
+      nonredundantList.add (allValues [i]);
+
+  return (Object []) nonredundantList.toArray (new Object [0]);
+
+} // getUniqueValues
+//--------------------------------------------------------------------------------
+/**
+ * return the unique Strings among the values of all objects with a given attribute.
+ */
+public String [] getUniqueStringValues (String attributeName)
+{
+  Object [] objs = getUniqueValues (attributeName);
+  String [] result = new String [objs.length];
+  for (int i=0; i < objs.length; i++) 
+    result [i] = (String) objs [i];
+
+  return result;
+
+} // getUniqueValues
+//--------------------------------------------------------------------------------
+/**
  * return the number of graph objects with the specified attribute.
  */
 public int getObjectCount (String attributeName)
