@@ -53,6 +53,14 @@ public class AttributeMapper {
 	}
     }
 
+    /** removes an attribute map entry */
+    public void removeAttributeMapEntry(Integer rangeAttribute) {
+	if (rangeAttribute != null) {
+	    rangeToDomainName.remove(rangeAttribute);
+	    rangeToValueMapper.remove(rangeAttribute);
+	}
+    }
+
     public String getControllingDomainAttributeName(Integer rangeAttribute) {
 	return (String)rangeToDomainName.get(rangeAttribute);
     }
