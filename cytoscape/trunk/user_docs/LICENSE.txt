@@ -1,11 +1,14 @@
-##################################################################
-# CYTOSCAPE LICENSE AGREEMENT                                    #
-# http://www.cytoscape.org                                       #
-#                                                                # 
-# Copyright (c) 2002 Whitehead Institute for Biomedical Research #
-# Copyright (c) 2002 Institute for Systems Biology               #
-#                                                                # 
-##################################################################
+################################################
+# CYTOSCAPE LICENSE AGREEMENT                  #
+# Cytoscape v. 0.9; November 2002              #
+# http://www.cytoscape.org                     #
+#                                              # 
+# (c) Paul Shannon, Owen Ozier,                #
+# Andrew Markiel, Daniel Ramage, Nada Amin,    #
+# Mindy Chang, Jonathan Wang,                  #
+# Benno Schwikowski and Trey Ideker 2002       #
+#                                              # 
+################################################
 
 Redistribution and use in source and binary forms are subject to the
 terms of the following license agreement:
@@ -28,8 +31,7 @@ consideration of the above, agree as follows:
 
 1. LICENSORS hereby grant to LICENSEE nonexclusive rights to use the
 PROGRAM from the EFFECTIVE DATE for non-commercial research and
-educational purposes only, without any rights whatsoever to
-redistribute the program, under the terms and conditions of the
+educational purposes only, under the terms and conditions of the
 AGREEMENT.  LICENSORS retain all ownership rights in the PROGRAM,
 including patent rights, copyrights and licensing rights.  No rights,
 express or implied, for use other than specified in this AGREEMENT are
@@ -47,9 +49,7 @@ the PROGRAM other than as specified by this AGREEMENT.
 
 4.  The names of the Institute for Systems Biology, the Whitehead
 Institute, or M.I.T. may not be used to endorse or promote products
-derived from this software.  LICENSEE agrees to acknowledge use of the
-PROGRAM in any publication resulting from use of the PROGRAM according
-to academic tradition.
+derived from this software.  
 
 5. LICENSEE acknowledges that title to the PROGRAM (including
 copyright) will remain with LICENSORS and that any copies of the
@@ -65,12 +65,7 @@ assist in the understanding or use of the PROGRAM.  The PROGRAM is a
 research program, and LICENSORS do not represent that it is free of
 errors or bugs or suitable for any particular tasks.
 
-7.  LICENSEE agrees to forward to LICENSORS any modifications,
-corrections or debugging of the PROGRAM; such alterations will be the
-property of LICENSORS.  Such information shall be sent by email to
-cytostaff@cytoscape.org.
-
-8. LICENSEE AGREES THAT THE RIGHTS GRANTED HEREUNDER ARE MADE
+7. LICENSEE AGREES THAT THE RIGHTS GRANTED HEREUNDER ARE MADE
 AVAILABLE WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED,
 INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
 MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE, AND FURTHER
@@ -87,7 +82,7 @@ AND LOST PROFITS, REGARDLESS OF WHETHER LICENSORS SHALL BE ADVISED,
 SHALL HAVE OTHER REASON TO KNOW, OR IN FACT SHALL KNOW OF THE
 POSSIBILITY.
 
-9. LICENSEE shall at all times during the term of this AGREEMENT and
+8. LICENSEE shall at all times during the term of this AGREEMENT and
 thereafter, indemnify, defend and hold harmless LICENSORS and their
 trustees, directors, officers, employees, agents and affiliates,
 against all claims, proceedings, demands, and liabilities of any kind
@@ -98,23 +93,15 @@ be liable for special, direct, indirect or consequential damages,
 losses, costs, charges, claims, demands, fees or expenses of any
 nature or kind.
 
-10.  This AGREEMENT shall be construed, governed, interpreted and
+9.  This AGREEMENT shall be construed, governed, interpreted and
 applied in accordance with the laws of the Commonwealth of
 Massachusetts, U.S.A.
 
-11.  The term of the AGREEMENT is one year (the "Term").  At the end
-of the Term, the AGREEMENT shall be automatically renewed under the
-same terms and conditions unless LICENSORS indicate otherwise.
-LICENSORS shall have the right to terminate this AGREEMENT for any
-reason by giving thirty (30) days written notice to LICENSEE.  Upon
-termination for any reason, LICENSEE agrees to destroy the original
-and all copies, including partial copies of the PROGRAM.
-
-12.  The parties agree that this AGREEMENT is the entire AGREEMENT,
+10.  The parties agree that this AGREEMENT is the entire AGREEMENT,
 and shall not be subject to any change or modification except in
 writing by both parties.
 
-13. The provisions of this AGREEMENT are severable, and if any
+11. The provisions of this AGREEMENT are severable, and if any
 provisions of this AGREEMENT are determined to be invalid or
 unenforceable, such determination shall not in any way affect the
 validity or enforceability of the remaining provisions.

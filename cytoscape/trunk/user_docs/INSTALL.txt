@@ -1,10 +1,11 @@
 ################################################
 # CYTOSCAPE INSTALLATION INSTRUCTIONS          #
-# Cytoscape v. 0.8; June 2002                  #
+# Cytoscape v. 0.9; November 2002              #
 # http://www.cytoscape.org                     #
 #                                              # 
-# Software (c) Paul Shannon, Owen Ozier,       #
+# (c) Paul Shannon, Owen Ozier,                #
 # Andrew Markiel, Daniel Ramage, Nada Amin,    #
+# Mindy Chang, Jonathan Wang,                  #
 # Benno Schwikowski and Trey Ideker 2002       #
 #                                              # 
 ################################################
@@ -61,7 +62,7 @@ libActivePathsNew.so ... C++ library plug-in to search for and identify
 sampleData/
    galFiltered.gml ..... Sample molecular interaction network file *
    galFiltered.sif ..... Identical network in Simple Interaction Format *
-   gal1-20.pvals ....... Sample gene expression matrix file *
+   galExpData.pvals .... Sample gene expression matrix file *
    BINDyeast.sif ....... Network of all yeast protein-protein
                          interactions in the BIND database as of 
                          February, 2002 **
