@@ -11,7 +11,7 @@
   <property name="test.out"  location="testOut"/>
   <property name="test.report"  location="test-report"/>
   <property name="grammar" location="grammar"/>
-  <property name="gsrc" location="${build}/src"/>
+  <property name="gsrc" location="${build}/src/fgraph/test"/>
 
    <path id="project.class.path">
        <fileset dir="${lib}">

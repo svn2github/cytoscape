@@ -1,3 +1,7 @@
+header {
+package fgraph.test;
+}
+
 class T extends TreeParser;
 
 walk: (message)+;
@@ -10,6 +14,11 @@ message
     ;
 
 {
+     import fgraph.State;
+    import fgraph.NodeFactory;
+    import fgraph.NodeType;
+    import fgraph.ProbTable;
+
     import java.util.List;
     import java.util.ArrayList;
     import java.util.LinkedHashMap;
@@ -232,7 +241,6 @@ v2fMessage returns [ TestMessage tm]
             )
 
     ;
-
 
 class L extends Lexer;
 options {

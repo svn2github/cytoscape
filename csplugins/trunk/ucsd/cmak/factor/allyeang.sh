@@ -16,7 +16,7 @@
 #
 set PATH=3
 set EXP=0.02
-set EDGE=0.001
+set EDGE=0
 
 set TS=`date +%F-%H.%M`
 
@@ -28,16 +28,16 @@ echo "### mp.sh expression pvalue threshold =  ${EXP}"
 echo "### mp.sh PD edge pvalue threshold = ${EDGE}"
 
 java  -Xmx512m -Djava.util.logging.config.file=./logging.properties \
-MPMain \
+fgraph.MPMain \
 ${PATH} \
-${DATA}/yall.sif \
+${DATA}/model.sif \
 ${DATA}/yeang-hughes.pvals \
 ${EXP} \
-${DATA}/yall.edgeattr \
+${DATA}/model.eda \
 ${EDGE} \
 testOut \
-test_yall_ste12_${PATH}_${EXP}_${EDGE} \
-3 \
-normal \
-${DATA}/STE12candidate-orfs.txt
+test_yeang_model_${PATH}_${EXP}_${EDGE} \
+3
+#normal \
+#${DATA}/STE12candidate-orfs.txt
 #

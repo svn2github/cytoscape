@@ -27,7 +27,7 @@ echo "### mp.sh MAX_PATH_LEN = ${PATH}"
 echo "### mp.sh expression pvalue threshold =  ${EXP}"
 echo "### mp.sh PD edge pvalue threshold = ${EDGE}"
 
-java  -Xmx512m MPMain \
+java  -Xmx512m fgraph.MPMain \
 ${PATH} \
 ${DATA}/all.sif \
 ${DATA}/data_full_subset_orfs.pvals \

@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-my $dir = "testOut";
+my $dir = shift @ARGV;
 my $run = shift @ARGV;
 
 opendir DIR, $dir || die "cannot open $dir\n";
