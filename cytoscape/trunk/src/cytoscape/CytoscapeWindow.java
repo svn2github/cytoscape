@@ -881,6 +881,17 @@ public ExpressionData getExpressionData ()
   return expressionData;
 }
 //------------------------------------------------------------------------------
+public void setExpressionData (ExpressionData expData) {
+  this.expressionData = expData;
+  if(this.expressionData != null){
+    this.expressionDataFilename = this.expressionData.getFileName();
+  }
+}
+//------------------------------------------------------------------------------
+public String getExpressionDataFileName (){
+  return this.expressionDataFilename;
+}
+//------------------------------------------------------------------------------
 public void setExpressionData(ExpressionData expData, String expressionDataFilename){
     this.expressionData = expData;
     this.expressionDataFilename = expressionDataFilename;
@@ -2941,8 +2952,9 @@ protected void loadInteraction (String filename)
  * added by dramage 2002-08-21
  * modified by owen 2003-03-03
  * modified by amarkiel 2003-04-09 to check for a valid read
+ * modified by iliana 2003-05-06 made it public (some plug-ins may want to reload expression data)
  */
-protected boolean loadExpressionData (String filename) {
+public boolean loadExpressionData (String filename) {
     ExpressionData newData = new ExpressionData();
     boolean validLoad = newData.loadData(filename);
     if (validLoad) {
