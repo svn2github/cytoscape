@@ -24,7 +24,7 @@ public class RunBareBones {
         JTaskConfig config = new JTaskConfig();
 
         //  Show Cancel/Close Buttons
-        config.displayUserButtons(true);
+        config.displayCancelButton(true);
 
         //  Execute Task via TaskManager
         //  This automatically pops-open a JTask Dialog Box

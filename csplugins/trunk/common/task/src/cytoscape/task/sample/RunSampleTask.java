@@ -86,7 +86,8 @@ public class RunSampleTask {
                 config.displayStatus(true);
                 config.displayTimeElapsed(true);
                 config.displayTimeRemaining(true);
-                config.displayUserButtons(true);
+                config.displayCancelButton(true);
+                config.displayCloseButton(true);
                 config.setAutoDispose(false);
 
                 //  Wait 1 second before displaying UI component
@@ -104,7 +105,8 @@ public class RunSampleTask {
 
                 //  Case 2 displays user buttons
             case 2:
-                config.displayUserButtons(true);
+                config.displayCancelButton(true);
+                config.displayCloseButton(true);
                 System.out.println("This demo illustrates exception handling.");
                 System.out.println("--  This task will end prematurely "
                         + "with an error.");
