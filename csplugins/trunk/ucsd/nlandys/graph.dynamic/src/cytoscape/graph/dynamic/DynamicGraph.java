@@ -71,19 +71,15 @@ public interface DynamicGraph
   public boolean removeEdge(int edge);
 
   /**
-   * Creates a new edge in this graph, having source and target nodes
+   * Creates a new edge in this graph, having source node, target node,
    * and directedness specified.  Returns the new edge, or -1 if either the
    * source or target node don't exist in this graph.<p>
    * Implementations should try to create edges with small values.
    * Implementation should try to prevent new edges from taking
    * ever-increasing values when edges are continually being removed and
    * created.
-   * @param sourceNode the source node that the new edge is to have; if
-   *   the new edge is undirected then swapping the source and target nodes
-   *   result in the same operation.
-   * @param targetNode the target node that the new edge is to have; if
-   *   the new edge is undirected then swapping the source and target nodes
-   *   result in the same operation.
+   * @param sourceNode the source node that the new edge is to have.
+   * @param targetNode the target node that the new edge is to have.
    * @param directed the new edge will be directed if and only if this value
    *   is true.
    * @return the newly created edge or -1 if either the source or target node
@@ -94,21 +90,21 @@ public interface DynamicGraph
   public int createEdge(int sourceNode, int targetNode, boolean directed);
 
   /**
-   * Answers the question: Does the given node exist?
+   * Determines whether or not a node exists in this graph.
    * Returns true if and only if the node specified exists.
-   * @param node the [potential] node in this graph whose existance we're
+   * @param node the [potential] node in this graph whose existence we're
    *   querying.
-   * @return the existance of specified node in this graph.
+   * @return the existence of specified node in this graph.
    * @exception IllegalArgumentException if node is not positive.
    */
   public boolean containsNode(int node);
 
   /**
-   * Answers the question: Does the given edge exist?
+   * Determines whether or not an edge exists in this graph.
    * Returns true if and only if the edge specified exists.
-   * @param edge the [potential] edge in this graph whose existance we're
+   * @param edge the [potential] edge in this graph whose existence we're
    *   querying.
-   * @return the existance of specified edge in this graph.
+   * @return the existence of specified edge in this graph.
    * @exception IllegalArgumentException if edge is not positive.
    */
   public boolean containsEdge(int edge);
