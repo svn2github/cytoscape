@@ -36,6 +36,7 @@ import biomodules.view.ViewUtils;
 import common.algorithms.hierarchicalClustering.*;
 import cytoscape.*;
 import cytoscape.view.*;
+import cytoscape.data.*;
 import cytoscape.util.SwingWorker;
 import metaNodeViewer.GPMetaNodeFactory;
 import javax.swing.*;
@@ -43,7 +44,7 @@ import java.awt.*;
 import java.util.*;
 import java.awt.event.ActionEvent;
 import java.text.NumberFormat;
-import javax.swing.text.*;
+import utils.*;
 
 public class RGAlgorithmGui extends JDialog {
   
@@ -52,6 +53,9 @@ public class RGAlgorithmGui extends JDialog {
   protected final static int BOUNDS_ERROR = -1;
   protected final static int NOT_A_NUM_ERROR = -2;
   protected final static int UNKNOWN_BOUNDS = -3;
+  protected final static boolean DEFAULT_VIEW_DATA = false;
+  protected final static int APSP_TABLE = 0;
+  protected final static int MD_TABLE = 1;
     
   protected RGAlgorithmData algorithmData;
   protected JTextField minSizeField;
@@ -64,6 +68,8 @@ public class RGAlgorithmGui extends JDialog {
   protected PlotListener numBiomodulesPlotListener;
   protected PlotListener distancesPlotListener;
   protected JRadioButton abstractRbutton;
+  protected DataTable apspTable;
+  protected DataTable mdTable;
 
   /**
    * Constructor, calls <code>create()</code>.
@@ -300,7 +306,25 @@ public class RGAlgorithmGui extends JDialog {
    * @return a <code>JPanel</code>
    */
   protected JPanel createDataPanel (){
-    return new JPanel();
+  	JPanel dataPanel = new JPanel();
+  	dataPanel.setLayout(new BoxLayout(dataPanel, BoxLayout.Y_AXIS));
+  	
+  	JRadioButton viewDataRadioButton = new JRadioButton("View data after it is calculated", this.algorithmData.getSaveIntermediaryData());
+  	dataPanel.add(viewDataRadioButton);
+  	
+  	JButton apspButton = new JButton("Display All-Pairs-Shortest-Paths");
+  	apspButton.addActionListener(new DisplayTableAction(APSP_TABLE));
+  	
+  	JButton distButton = new JButton("Display Manhattan Distances");
+  	distButton.addActionListener(new DisplayTableAction(MD_TABLE));
+  	
+  	JButton biomodsButton = new JButton("Display Biomodules Table");
+  	
+  	dataPanel.add(apspButton);
+  	dataPanel.add(distButton);
+  	dataPanel.add(biomodsButton);
+  	
+    return dataPanel;
   }//createDataPanel
 
   /**
@@ -656,5 +680,32 @@ public class RGAlgorithmGui extends JDialog {
     }//actionPerformed
   
   }//XFieldListener
+  
+  protected class DisplayTableAction extends AbstractAction {
+  	
+  	protected int type;
+  	
+  	DisplayTableAction (int type){
+  		this.type = type;
+  	}
+  	
+  	public void actionPerformed (ActionEvent event){
+  		if(this.type == APSP_TABLE){ 
+  			if(RGAlgorithmGui.this.apspTable == null){
+  				ArrayList orderedNodes = RGAlgorithmGui.this.algorithmData.getOrderedNodes();
+  				String [] nodeNames = new String[orderedNodes.size()];
+  				for(int i = 0; i < nodeNames.length; i++){
+  					CyNode node = (CyNode)orderedNodes.get(i);
+  					nodeNames[i] = (String)Cytoscape.getNodeAttributeValue(node, Semantics.CANONICAL_NAME);
+  				}
+  				int [][] apsp = RGAlgorithmGui.this.algorithmData.getAPSP();
+  				RGAlgorithmGui.this.apspTable = new DataTable(nodeNames,nodeNames,apsp);
+  			}//if apspTable = null
+  			RGAlgorithmGui.this.apspTable.pack();
+  			RGAlgorithmGui.this.apspTable.setVisible(true);
+  		}//apsp table
+  	}//actionPerformed
+  
+  }//DisplayTableAction
   
 }//class RGAlgorithmGui

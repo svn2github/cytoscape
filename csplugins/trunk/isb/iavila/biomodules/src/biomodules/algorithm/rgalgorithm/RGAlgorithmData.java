@@ -97,12 +97,18 @@ public class RGAlgorithmData {
    * in the <code>CyNetwork</code> contained in this <code>RGAlgorithmData</code>.
    */
   int [] metaNodeRindices;
+  /**
+   * Whether or not intermediary data should be saved in memory or not. False by default (saves memory).
+   */
+  boolean saveInterData;
   
   
   /**
    * Constructor.
    */
-  public RGAlgorithmData (){}//RGAlgorithmData
+  public RGAlgorithmData (){
+  	this.saveInterData = false;
+  }//RGAlgorithmData
 
   /**
    * Constructor with argument to set network.
@@ -111,6 +117,7 @@ public class RGAlgorithmData {
    */
   public RGAlgorithmData (CyNetwork network){
     setNetwork(network);
+    this.saveInterData = false;
   }//RGAlgorithmData
 
   /**
@@ -234,6 +241,23 @@ public class RGAlgorithmData {
   public void setMetaNodeRindices (int [] meta_node_root_indices){
     this.metaNodeRindices = meta_node_root_indices;
   }//setMetaNodeRindices
+  
+  /**
+   * Sets whether or not the intermediary data (APSP, Manhattan-Distances) should be kept in memory or not, false by default.
+   * 
+   * @param save true or false
+   */
+  public void setSaveIntermediaryData (boolean save){
+  	this.saveInterData = save;
+  }//setSaveIntermediaryData
+  
+  /**
+   * @return whether or not the intermediary data (APSP, Manhattan-Distances) will be kept in memory next time
+   * it is calculated.
+   */
+  public boolean getSaveIntermediaryData (){
+  	return this.saveInterData;
+  }//getSaveIntermediaryData
   
   /**
    * Gets the <code>CyNetwork</code> for which this <code>RGAlgorithmData</code> bundles data

@@ -181,7 +181,7 @@ public class HCPlot extends JFrame{
       lineFlatField.setSamples(lineVals);
         
       //----
-      display = new DisplayImplJ2D("Hierarchical Distances");
+      display = new DisplayImplJ2D("Hierarchical Distances");//name,width,height
       distanceMap = new ScalarMap(distanceType, Display.YAxis);
       joinNumMap = new ScalarMap(joinNumberType,Display.XAxis);
       joinNumRangeMap = new ScalarMap(joinNumberType,Display.SelectRange);
