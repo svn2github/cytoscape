@@ -60,9 +60,6 @@ public class LoadGraphFileAction extends CytoscapeAction {
 
   public void actionPerformed(ActionEvent e)  {
    
-    File currentDirectory = Cytoscape.getCytoscapeObj().getCurrentDirectory();
-    //JFileChooser chooser = new JFileChooser(currentDirectory);
-    
     boolean appendFlag = false;
     
     // create FileFilters
@@ -78,19 +75,7 @@ public class LoadGraphFileAction extends CytoscapeAction {
     graphFilter.addExtension("sif");
     graphFilter.addExtension("gml");
     graphFilter.setDescription("All graph files");
-    //chooser.addChoosableFileFilter(graphFilter);
-    //chooser.addChoosableFileFilter(intFilter);
-    //chooser.addChoosableFileFilter(gmlFilter);
-    //chooser.setFileFilter(graphFilter);
-    //if (chooser.showOpenDialog( Cytoscape.getDesktop() ) == chooser.APPROVE_OPTION) {
-    //currentDirectory = chooser.getCurrentDirectory();
-    //Cytoscape.getCytoscapeObj().setCurrentDirectory(currentDirectory);
-    //appendFlag = chooser.getCheckBoxState();
-    //if(appendFlag) System.out.println("appending graph");
-    
-    //final String  name = chooser.getSelectedFile().toString();
-    
-
+   
     // get the file name
     final String name;
     try {
@@ -111,13 +96,10 @@ public class LoadGraphFileAction extends CytoscapeAction {
           fileType = Cytoscape.FILE_GML;
       }
 
-      final boolean canonicalize = Semantics.getCanonicalize(Cytoscape.getCytoscapeObj());
+      final boolean canonicalize = !CytoscapeInit.noCanonicalization();
         
       //TODO: get species info on a per network basis
-      final String species = Semantics.getDefaultSpecies( Cytoscape.getCurrentNetwork(),Cytoscape.getCytoscapeObj() );
-      Cytoscape.setSpecies();
-      //GraphReader reader = null;
-      
+           
       int root_nodes = Cytoscape.getRootGraph().getNodeCount();
       int root_edges = Cytoscape.getRootGraph().getEdgeCount();
 
@@ -134,8 +116,8 @@ public class LoadGraphFileAction extends CytoscapeAction {
             newNetwork[0] = Cytoscape.createNetwork( name,
                                                      fileTypeF,
                                                      canonicalize,
-                                                     Cytoscape.getCytoscapeObj().getBioDataServer(),
-                                                     species );
+                                                     Cytoscape.getBioDataServer(),
+                                                     CytoscapeInit.getDefaultSpeciesName() );
             contrl.dispose();
           } // run()
         }; // new Runnable()
@@ -155,10 +137,10 @@ public class LoadGraphFileAction extends CytoscapeAction {
         sb.append(" edges."+lineSep);
         sb.append("There were "+nn+" unique nodes, and "+ne+" unique edges."+lineSep+lineSep);
         
-        if ( newNetwork[0].getNodeCount() < Cytoscape.getCytoscapeObj().getViewThreshold() ) {
-          sb.append( "Your Network is Under "+Cytoscape.getCytoscapeObj().getViewThreshold() +" nodes, a View  will be automatically created." );
+        if ( newNetwork[0].getNodeCount() < CytoscapeInit.getViewThreshold() ) {
+          sb.append( "Your Network is Under "+CytoscapeInit.getViewThreshold() +" nodes, a View  will be automatically created." );
         } else { 
-          sb.append( "Your Network is Over nodes "+Cytoscape.getCytoscapeObj().getViewThreshold() +", a View  will be not be created."+lineSep+"If you wish to view this Network use \"Create View\" from the \"Edit\" menu." );
+          sb.append( "Your Network is Over nodes "+CytoscapeInit.getViewThreshold() +", a View  will be not be created."+lineSep+"If you wish to view this Network use \"Create View\" from the \"Edit\" menu." );
         }
         JOptionPane.showMessageDialog( Cytoscape.getDesktop(),
                                       sb.toString(),

@@ -48,9 +48,7 @@ import java.util.*;
 
 import giny.view.*;
 
-import cytoscape.Cytoscape;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
+import cytoscape.*;
 
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.Semantics;
@@ -110,7 +108,7 @@ public class AnnotationGui extends CytoscapeAction {
     networkView = Cytoscape.getCurrentNetworkView();
     network = networkView.getNetwork();
 
-    dataServer = Cytoscape.getCytoscapeObj().getBioDataServer();
+    dataServer = Cytoscape.getBioDataServer();
     if (dataServer == null) {
       JOptionPane.showMessageDialog (null, "No annotations are available.",
                                      "Error!", JOptionPane.ERROR_MESSAGE);
@@ -126,9 +124,9 @@ public class AnnotationGui extends CytoscapeAction {
     if (this.attributeLayouter == null) {
       this.attributeLayouter = new AttributeLayout ( networkView );
     }
-    Semantics.applyNamingServices( network, Cytoscape.getCytoscapeObj() );
+    Semantics.applyNamingServices( network );
   
-    defaultSpecies = Semantics.getDefaultSpecies(  network, Cytoscape.getCytoscapeObj() );
+    defaultSpecies = CytoscapeInit.getDefaultSpeciesName();
     //if (this.mainDialog == null) {
     mainDialog = new Gui ("Annotation");
     mainDialog.pack();

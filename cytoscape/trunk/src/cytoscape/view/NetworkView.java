@@ -36,7 +36,7 @@ import javax.swing.JFrame;
 import giny.view.GraphView;
 //import phoebe.PGraphView;
 
-import cytoscape.CytoscapeObj;
+
 import cytoscape.CyNetwork;
 import cytoscape.visual.VisualMappingManager;
 //-------------------------------------------------------------------------
@@ -48,10 +48,7 @@ import cytoscape.visual.VisualMappingManager;
  */
 public interface NetworkView {
     
-    /**
-     * Returns the global object representing this instance of Cytoscape.
-     */
-    CytoscapeObj getCytoscapeObj();
+
     /**
      * Returns the network displayed by this object.
      */

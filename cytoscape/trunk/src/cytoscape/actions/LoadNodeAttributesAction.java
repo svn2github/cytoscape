@@ -13,8 +13,8 @@ import javax.swing.JOptionPane;
 import java.io.File;
 
 import cytoscape.Cytoscape;
-import cytoscape.util.CytoscapeAction;
-import cytoscape.util.CyFileFilter;
+import cytoscape.CytoscapeInit;
+import cytoscape.util.*;
 import cytoscape.data.Semantics;
 
 //-------------------------------------------------------------------------
@@ -28,28 +28,30 @@ public class LoadNodeAttributesAction extends CytoscapeAction {
   public LoadNodeAttributesAction () {
     super("Node Attributes...");
     setPreferredMenu( "File.Load" );
-    setAcceleratorCombo( KeyEvent.VK_N, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK );
   }
     
   public void actionPerformed(ActionEvent e)  {
-        
-    File currentDirectory = Cytoscape.getCytoscapeObj().getCurrentDirectory();
-    JFileChooser chooser = new JFileChooser(currentDirectory);
-    String dialogTitle = "Load Node Attributes";
-    chooser.setDialogTitle(dialogTitle);
-    if (chooser.showOpenDialog( Cytoscape.getDesktop() ) == chooser.APPROVE_OPTION) {
-      currentDirectory = chooser.getCurrentDirectory();
-      Cytoscape.getCytoscapeObj().setCurrentDirectory(currentDirectory);
-      String attrFilename = chooser.getSelectedFile().toString();
-           
-      Cytoscape.loadAttributes( new String[] { attrFilename },
-                                new String[] {},
-                                Semantics.getCanonicalize( Cytoscape.getCytoscapeObj() ),
-                                Cytoscape.getCytoscapeObj().getBioDataServer(),
-                                Semantics.getDefaultSpecies( Cytoscape.getCurrentNetwork(),
-                                                             Cytoscape.getCytoscapeObj() )
-                                );
-    } // if
+    
+    CyFileFilter nf = new CyFileFilter();
+    nf.addExtension("na");
+    nf.setDescription("Node Attribute files");
+
+    // get the file name
+    final String name;
+    try {
+      name = FileUtil.getFile( "Load Node Attributes",
+                               FileUtil.LOAD,
+                               new CyFileFilter[] { nf } ).toString();
+    } catch ( Exception exp ) {
+      // this is because the selection was canceled
+      return;
+    } 
+             
+    Cytoscape.loadAttributes( new String[] { name },
+                              new String[] {},
+                              !CytoscapeInit.noCanonicalization(),
+                              Cytoscape.getBioDataServer(),
+                              CytoscapeInit.getDefaultSpeciesName() ) ;
   } // actionPerformed
 }
 
