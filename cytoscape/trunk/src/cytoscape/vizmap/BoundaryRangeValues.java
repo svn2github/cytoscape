@@ -33,4 +33,10 @@ public class BoundaryRangeValues {
 	equalValue = o2;
 	greaterValue = o3;
     }
+    
+    public String toString() {
+        String returnVal = "{" + lesserValue.toString() + "," + equalValue.toString()
+            + "," + greaterValue.toString() + "}";
+        return returnVal;
+    }
 }

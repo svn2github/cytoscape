@@ -17,6 +17,7 @@ OBJS =  AttributeMapperPropertiesAdapterTest.class \
 	BoundaryRangeValuesTest.class \
 	ContinuousMapperTest.class \
 	DiscreteMapperTest.class \
+	FlatInterpolatorTest.class \
 	LinearNumberToColorInterpolatorTest.class \
 	VizMapperCategoriesTest.class
 
@@ -47,6 +48,7 @@ run: $(OBJS)
 	java $(PKG).BoundaryRangeValuesTest
 	java $(PKG).ContinuousMapperTest
 	java $(PKG).DiscreteMapperTest
+	java $(PKG).FlatInterpolatorTest
 	java $(PKG).LinearNumberToColorInterpolatorTest
 	java $(PKG).VizMapperCategoriesTest
 

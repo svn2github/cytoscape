@@ -18,6 +18,7 @@ OBJS =  AttributeMapper.class \
 	ContinuousMapper.class \
 	DiscreteMapper.class \
 	EdgeArrowColor.class \
+	FlatInterpolator.class \
 	Interpolator.class \
 	LinearNumberInterpolator.class \
 	LinearNumberToColorInterpolator.class \

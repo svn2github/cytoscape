@@ -181,11 +181,14 @@ public class VizMapperCategories implements AttributeMapperCategories {
 	    //fInt = new IntegerInterpolator();
 	} else if( vizAttribute.equals(NODE_SHAPE) ) {
 	    //fInt = new ShapeInterpolator();
+            fInt = new FlatInterpolator();
 	} else if ( vizAttribute.equals(EDGE_LINETYPE) ) {
 	    //fInt = new LineTypeInterpolator();
+            fInt = new FlatInterpolator();
 	} else if ( vizAttribute.equals(EDGE_SOURCE_DECORATION) ||
 		    vizAttribute.equals(EDGE_TARGET_DECORATION) ) {
 	    //fInt = new ArrowInterpolator();
+            fInt = new FlatInterpolator();
 	} else {//unknown attribute
 	    System.err.println("Error parsing range attribute value:");
 	    System.err.println("    unknown vizAttribute: "
