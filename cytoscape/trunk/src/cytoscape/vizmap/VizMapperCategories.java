@@ -62,6 +62,7 @@ public class VizMapperCategories implements AttributeMapperCategories {
     public static final Integer NODE_HEIGHT = new Integer(3);
     public static final Integer NODE_WIDTH = new Integer(4);
     public static final Integer NODE_SHAPE = new Integer(5);
+  public static final Integer NODE_SELECTED_COLOR = new Integer(6);
 
     public static final Integer EDGE_COLOR = new Integer(10);
     public static final Integer EDGE_LINETYPE = new Integer(11);
@@ -80,6 +81,11 @@ public class VizMapperCategories implements AttributeMapperCategories {
     public Color getNodeBorderColor(Map attrBundle, AttributeMapper mapper) {
 	return (Color)getRangeValue(attrBundle, mapper, NODE_BORDER_COLOR);
     }
+
+  public Color getNodeSelectedColor(AttributeMapper mapper){
+    return (Color)mapper.getDefaultValue(NODE_SELECTED_COLOR);
+    //return (Color)getRangeValue(attrBundle, mapper, NODE_SELECTED_COLOR);
+  }
     
     public LineType getNodeBorderLineType(Map attrBundle, AttributeMapper mapper) {
         return (LineType)getRangeValue(attrBundle, mapper, NODE_BORDER_LINETYPE);
@@ -168,7 +174,8 @@ public class VizMapperCategories implements AttributeMapperCategories {
 	Map returnVal = new HashMap();
 
 	returnVal.put( NODE_FILL_COLOR, new Color(255,255,255) );
-	returnVal.put( NODE_BORDER_COLOR, new Color(0,0,0) );
+	// how about selected color?
+  returnVal.put( NODE_BORDER_COLOR, new Color(0,0,0) );
         returnVal.put( NODE_BORDER_LINETYPE, LineType.LINE_1 );
 	returnVal.put( NODE_HEIGHT, new Double(30) );
 	returnVal.put( NODE_WIDTH, new Double(70) );
@@ -187,6 +194,7 @@ public class VizMapperCategories implements AttributeMapperCategories {
 
 	returnVal.put( NODE_FILL_COLOR, "node.fillColor" );
 	returnVal.put( NODE_BORDER_COLOR, "node.borderColor" );
+  returnVal.put( NODE_SELECTED_COLOR,"node.selectedColor");
         returnVal.put( NODE_BORDER_LINETYPE, "node.borderLinetype" );
 	returnVal.put( NODE_HEIGHT, "node.height" );
 	returnVal.put( NODE_WIDTH, "node.width" );
@@ -208,7 +216,8 @@ public class VizMapperCategories implements AttributeMapperCategories {
 	if ( vizAttribute.equals(NODE_FILL_COLOR) ||
 	     vizAttribute.equals(NODE_BORDER_COLOR) ||
 	     vizAttribute.equals(EDGE_COLOR) ||
-	     vizAttribute.equals(BG_COLOR)) {
+	     vizAttribute.equals(BG_COLOR) ||
+       vizAttribute.equals(NODE_SELECTED_COLOR)) {
 	    returnVal = Misc.parseRGBText(value);
 	} else if ( vizAttribute.equals(NODE_HEIGHT) ||
 		    vizAttribute.equals(NODE_WIDTH) ) {
@@ -239,7 +248,8 @@ public class VizMapperCategories implements AttributeMapperCategories {
 	if ( vizAttribute.equals(NODE_FILL_COLOR) ||
 	     vizAttribute.equals(NODE_BORDER_COLOR) ||
 	     vizAttribute.equals(EDGE_COLOR) ||
-	     vizAttribute.equals(BG_COLOR)){
+	     vizAttribute.equals(BG_COLOR) ||
+       vizAttribute.equals(NODE_SELECTED_COLOR)){
 	    
 	    if( rangeAttributeValue instanceof Color){
 		return Misc.getRGBText((Color)rangeAttributeValue);
@@ -300,7 +310,8 @@ public class VizMapperCategories implements AttributeMapperCategories {
 	if ( vizAttribute.equals(NODE_FILL_COLOR) ||
 	     vizAttribute.equals(NODE_BORDER_COLOR) ||
 	     vizAttribute.equals(EDGE_COLOR) ||
-	     vizAttribute.equals(BG_COLOR) ) {
+	     vizAttribute.equals(BG_COLOR) ||
+       vizAttribute.equals(NODE_SELECTED_COLOR)) {
 	    fInt = new LinearNumberToColorInterpolator();
 	} else if ( vizAttribute.equals(NODE_HEIGHT) ||
 		    vizAttribute.equals(NODE_WIDTH) ) {
