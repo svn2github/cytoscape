@@ -64,6 +64,7 @@ public class CytoscapeConfig {
   protected Vector edgeAttributeFilenames = new Vector ();
   protected String defaultSpeciesName = null;
   protected String projectPropsFileName = null;
+  protected String projectVizmapPropsFileName = null;
   protected File projectFileDirectoryAbsolute;
   protected boolean enableUndo = false;
   protected boolean copyExpToAttribs = true;
@@ -113,6 +114,11 @@ public String getExpressionFilename ()
 public String getProjectFilename ()
 {
   return projectFilename;
+}
+//------------------------------------------------------------------------------------------
+public String getProjectVizmapPropsFileName ()
+{
+  return projectVizmapPropsFileName;
 }
 //------------------------------------------------------------------------------------------
 public String getBioDataDirectory ()
@@ -543,6 +549,7 @@ protected void readProjectFile ()
   String [] speciesEntries = parseProjectFileText (lines, "species");
   String [] defaultLayouts = parseProjectFileText (lines, "layout");
   String [] propsFiles = parseProjectFileText (lines, "props");
+  String [] vizmapPropsFiles = parseProjectFileText (lines, "vprops");
 
   if (sifFiles.length >= 1) {
     if (readingFromJar)
@@ -593,11 +600,17 @@ protected void readProjectFile ()
 
   CytoscapeWindow.debugLog.append ("config.readProjectFile, propsFile count: " + propsFiles.length + "\n");
   if (propsFiles.length >= 1) {
-    projectPropsFileName = propsFiles [0];
-    CytoscapeWindow.debugLog.append ("config.readProjectFile, propsPropsFileName: " + 
-         projectPropsFileName + "\n");
-    projectPropsFileName = propsFiles [0];
-    }
+      projectPropsFileName = propsFiles [0];
+      CytoscapeWindow.debugLog.append ("config.readProjectFile, propsPropsFileName: " + 
+				       projectPropsFileName + "\n");
+  }
+
+  CytoscapeWindow.debugLog.append ("config.readProjectFile, vizmapPropsFile count: " + vizmapPropsFiles.length + "\n");
+  if (vizmapPropsFiles.length >= 1) {
+      projectVizmapPropsFileName = vizmapPropsFiles [0];
+      CytoscapeWindow.debugLog.append ("config.readProjectFile, vizmapPropsFileName: " + 
+				       projectVizmapPropsFileName + "\n");
+  }
 
 
 } // readProjectFile

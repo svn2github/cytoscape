@@ -319,6 +319,21 @@ private void loadVizMapper() {
   } catch (Exception ioe) {
       ioe.printStackTrace();
   }
+  if(config.getProjectVizmapPropsFileName()!=null) {
+      String projectVizmapPropsFileName = config.getProjectVizmapPropsFileName();
+      try {//load last from user's home directory, to which we write
+	  File projVizFile = new File(projectVizmapPropsFileName);
+	  if (projVizFile != null) {
+	      Properties loadProps = new Properties();
+	      InputStream is = new FileInputStream(projVizFile);
+	      loadProps.load(is);
+	      is.close();
+	      calcProps.putAll(loadProps);
+	  }
+      } catch (Exception ioe) {
+	  ioe.printStackTrace();
+      }
+  }
   //now load using the constructed Properties object
   CalculatorIO.loadCalculators(calcProps, cc);
   //load in old style vizmappings

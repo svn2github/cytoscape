@@ -6,7 +6,7 @@
 #
 # RetroGuard Bytecode Obfuscator, v1.1, a product of Retrologic Systems - www.retrologic.com
 #
-# Logfile created on Thu Mar 13 13:00:07 EST 2003
+# Logfile created on Tue Mar 18 17:46:52 EST 2003
 #
 # Jar file to be obfuscated:           cytoscape.jar
 # Target Jar file for obfuscated code: cytoscape-obf.jar
@@ -88,8 +88,8 @@
 #      Your class org/xml/sax/helpers/ParserFactory calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
 #      Your class org/xml/sax/helpers/XMLReaderFactory calls the java/lang/Class method forName(Ljava/lang/String;)Ljava/lang/Class;
 #
-# Memory in use after class data structure built: 8379896 bytes
-# Total memory available                        : 15081472 bytes
+# Memory in use after class data structure built: 8317864 bytes
+# Total memory available                        : 14979072 bytes
 #
 #
 # Obfuscated name overloading frequency:
@@ -309,10 +309,12 @@
 .field csplugins/activeModules/SubnetworkExpander/edgeAttributes Lcytoscape/GraphObjAttributes;
 .field csplugins/activeModules/SubnetworkExpander/paramDialog Lcsplugins/activeModules/dialogs/SubnetworkExpanderDialog;
 .field csplugins/activeModules/SubnetworkExpander/nodeAttributes Lcytoscape/GraphObjAttributes;
+.method csplugins/activeModules/SubnetworkExpander/describe ()Ljava/lang/String;
 .class csplugins/activeModules/ActiveModulesUI
 .field csplugins/activeModules/ActiveModulesUI/apfParams Lcsplugins/activeModules/data/ActivePathFinderParameters;
 .field csplugins/activeModules/ActiveModulesUI/activePaths Lcsplugins/activeModules/ActivePaths;
 .field csplugins/activeModules/ActiveModulesUI/cytoscapeWindow Lcytoscape/CytoscapeWindow;
+.method csplugins/activeModules/ActiveModulesUI/describe ()Ljava/lang/String;
 .method csplugins/activeModules/ActiveModulesUI/mcLoad ()Z
 .method csplugins/activeModules/ActiveModulesUI/getMontecarloFile ()Z
 .class csplugins/activeModules/ActivePathsFinderBridge
@@ -348,9 +350,10 @@
 .field csplugins/activeModules/ExpressionRandomizer/graph Ly/view/Graph2D;
 .field csplugins/activeModules/ExpressionRandomizer/graphHider Lcytoscape/undo/UndoableGraphHider;
 .method csplugins/activeModules/ExpressionRandomizer/access$000 (Lcsplugins/activeModules/ExpressionRandomizer;)V
+.method csplugins/activeModules/ExpressionRandomizer/describe ()Ljava/lang/String;
+.method csplugins/activeModules/ExpressionRandomizer/access$200 (Lcsplugins/activeModules/ExpressionRandomizer;)V
 .method csplugins/activeModules/ExpressionRandomizer/access$100 (Lcsplugins/activeModules/ExpressionRandomizer;)V
 .method csplugins/activeModules/ExpressionRandomizer/mcLoad ()Z
-.method csplugins/activeModules/ExpressionRandomizer/access$200 (Lcsplugins/activeModules/ExpressionRandomizer;)V
 .method csplugins/activeModules/ExpressionRandomizer/getMontecarloFile ()Z
 .class csplugins/activeModules/ActivePathViewer
 .method csplugins/activeModules/ActivePathViewer/displayPath (Lcsplugins/activeModules/data/ActivePath;Ljava/lang/String;)V
@@ -406,8 +409,6 @@
 .method csplugins/vectormath/VectorDataProvider/size ()I
 .method csplugins/vectormath/VectorDataProvider/setQuick (ID)V
 .method csplugins/vectormath/VectorDataProvider/getQuick (I)D
-.class csplugins/vectormath/VectorDataAdapter
-.method csplugins/vectormath/VectorDataAdapter/setQuick (ID)V
 .class csplugins/vectormath/MathVector
 .field csplugins/vectormath/MathVector/p Lcsplugins/vectormath/VectorDataProvider;
 .method csplugins/vectormath/MathVector/pow (D)Lcsplugins/vectormath/MathVector;
@@ -425,6 +426,8 @@
 .method csplugins/vectormath/MathVector/difference (Lcsplugins/vectormath/ReadOnlyMathVector;Lcsplugins/vectormath/ReadOnlyMathVector;)Lcsplugins/vectormath/MathVector;
 .method csplugins/vectormath/MathVector/magDiff (Lcsplugins/vectormath/ReadOnlyMathVector;Lcsplugins/vectormath/ReadOnlyMathVector;)D
 .method csplugins/vectormath/MathVector/set (ID)V
+.class csplugins/vectormath/VectorDataAdapter
+.method csplugins/vectormath/VectorDataAdapter/setQuick (ID)V
 .class csplugins/vectormath/DoubleArrayDataProvider
 .method csplugins/vectormath/DoubleArrayDataProvider/size ()I
 .method csplugins/vectormath/DoubleArrayDataProvider/setQuick (ID)V
@@ -697,7 +700,7 @@
 .method cytoscape/visual/ui/VizMapUI/refreshUI ()V
 .class cytoscape/visual/ui/DefaultPanel
 .method cytoscape/visual/ui/DefaultPanel/access$100 (Lcytoscape/visual/ui/DefaultPanel;)Lcytoscape/visual/ui/ValueDisplayer;
-.method cytoscape/visual/ui/DefaultPanel/access$200 (Lcytoscape/visual/ui/DefaultPanel;)Ly/view/DefaultBackgroundRenderer;
+.method cytoscape/visual/ui/DefaultPanel/access$200 (Lcytoscape/visual/ui/DefaultPanel;)Lcytoscape/visual/VisualMappingManager;
 .class cytoscape/visual/ui/FontRenderer
 .method cytoscape/visual/ui/FontRenderer/getListCellRendererComponent (Ljavax/swing/JList;Ljava/lang/Object;IZZ)Ljava/awt/Component;
 .class cytoscape/visual/ui/VizMapTab
@@ -795,6 +798,7 @@
 .field cytoscape/visual/mappings/ContinuousMapping/attrName Ljava/lang/String;
 .field cytoscape/visual/mappings/ContinuousMapping/defaultObj Ljava/lang/Object;
 .field cytoscape/visual/mappings/ContinuousMapping/fInt Lcytoscape/visual/mappings/Interpolator;
+.field cytoscape/visual/mappings/ContinuousMapping/class$java$awt$Color Ljava/lang/Class;
 .method cytoscape/visual/mappings/ContinuousMapping/applyProperties (Ljava/util/Properties;Ljava/lang/String;Lcytoscape/visual/parsers/ValueParser;)V
 .method cytoscape/visual/mappings/ContinuousMapping/clone ()Ljava/lang/Object;
 .method cytoscape/visual/mappings/ContinuousMapping/getUI (Ljavax/swing/JDialog;Lcytoscape/visual/Network;)Ljavax/swing/JPanel;
@@ -2562,40 +2566,42 @@
 .field cytoscape/CytoscapeConfig/helpRequested Z
 .field cytoscape/CytoscapeConfig/defaultSpeciesName Ljava/lang/String;
 .field cytoscape/CytoscapeConfig/defaultLayoutStrategy Ljava/lang/String;
+.field cytoscape/CytoscapeConfig/projectVizmapPropsFileName Ljava/lang/String;
 .field cytoscape/CytoscapeConfig/errorMessages Ljava/lang/StringBuffer;
 .field cytoscape/CytoscapeConfig/projectFileDirectoryAbsolute Ljava/io/File;
-.method cytoscape/CytoscapeConfig/getConfigurationsFromProperties ()V
-.method cytoscape/CytoscapeConfig/getArgs ()[Ljava/lang/String;
-.method cytoscape/CytoscapeConfig/helpRequested ()Z
-.method cytoscape/CytoscapeConfig/getExpressionFilename ()Ljava/lang/String;
-.method cytoscape/CytoscapeConfig/getProjectFilename ()Ljava/lang/String;
-.method cytoscape/CytoscapeConfig/addEdgeAttributeFilename (Ljava/lang/String;)V
-.method cytoscape/CytoscapeConfig/getWhetherToCopyExpToAttribs ()Z
-.method cytoscape/CytoscapeConfig/getNumberOfEdgeAttributeFiles ()I
-.method cytoscape/CytoscapeConfig/getAllDataFileNames ()[Ljava/lang/String;
-.method cytoscape/CytoscapeConfig/toString ()Ljava/lang/String;
 .method cytoscape/CytoscapeConfig/getNumberOfNodeAttributeFiles ()I
-.method cytoscape/CytoscapeConfig/getAllDataFileExtensions ()[Ljava/lang/String;
-.method cytoscape/CytoscapeConfig/enableUndo ()Z
+.method cytoscape/CytoscapeConfig/getNumberOfEdgeAttributeFiles ()I
+.method cytoscape/CytoscapeConfig/getDefaultLayoutStrategy ()Ljava/lang/String;
+.method cytoscape/CytoscapeConfig/helpRequested ()Z
+.method cytoscape/CytoscapeConfig/getWhetherToCopyExpToAttribs ()Z
+.method cytoscape/CytoscapeConfig/inputsError ()Z
+.method cytoscape/CytoscapeConfig/getBioDataDirectory ()Ljava/lang/String;
+.method cytoscape/CytoscapeConfig/getArgs ()[Ljava/lang/String;
+.method cytoscape/CytoscapeConfig/getConfigurationsFromProperties ()V
+.method cytoscape/CytoscapeConfig/getProjectFilename ()Ljava/lang/String;
+.method cytoscape/CytoscapeConfig/getExpressionFilename ()Ljava/lang/String;
+.method cytoscape/CytoscapeConfig/getNodeAttributeFilenames ()[Ljava/lang/String;
+.method cytoscape/CytoscapeConfig/parseProjectFileText ([Ljava/lang/String;Ljava/lang/String;)[Ljava/lang/String;
+.method cytoscape/CytoscapeConfig/getAllDataFileNames ()[Ljava/lang/String;
+.method cytoscape/CytoscapeConfig/getDefaultSpeciesName ()Ljava/lang/String;
+.method cytoscape/CytoscapeConfig/parseArgs ()V
+.method cytoscape/CytoscapeConfig/readProperties ()Ljava/util/Properties;
 .method cytoscape/CytoscapeConfig/addNodeAttributeFilename (Ljava/lang/String;)V
 .method cytoscape/CytoscapeConfig/absolutizeFilename (Ljava/io/File;Ljava/lang/String;)Ljava/lang/String;
-.method cytoscape/CytoscapeConfig/getGeometryFilename ()Ljava/lang/String;
-.method cytoscape/CytoscapeConfig/parseProjectFileText ([Ljava/lang/String;Ljava/lang/String;)[Ljava/lang/String;
-.method cytoscape/CytoscapeConfig/getDefaultSpeciesName ()Ljava/lang/String;
 .method cytoscape/CytoscapeConfig/getProperties ()Ljava/util/Properties;
-.method cytoscape/CytoscapeConfig/parseArgs ()V
-.method cytoscape/CytoscapeConfig/readProjectFile ()V
-.method cytoscape/CytoscapeConfig/getBioDataDirectory ()Ljava/lang/String;
-.method cytoscape/CytoscapeConfig/getNodeAttributeFilenames ()[Ljava/lang/String;
-.method cytoscape/CytoscapeConfig/readProperties ()Ljava/util/Properties;
-.method cytoscape/CytoscapeConfig/getErrorMessages ()Ljava/lang/String;
+.method cytoscape/CytoscapeConfig/toString ()Ljava/lang/String;
 .method cytoscape/CytoscapeConfig/getInteractionsFilename ()Ljava/lang/String;
-.method cytoscape/CytoscapeConfig/legalArguments ()Z
-.method cytoscape/CytoscapeConfig/getUsage ()Ljava/lang/String;
+.method cytoscape/CytoscapeConfig/addEdgeAttributeFilename (Ljava/lang/String;)V
 .method cytoscape/CytoscapeConfig/displayVersion ()Z
-.method cytoscape/CytoscapeConfig/inputsError ()Z
-.method cytoscape/CytoscapeConfig/getDefaultLayoutStrategy ()Ljava/lang/String;
+.method cytoscape/CytoscapeConfig/getProjectVizmapPropsFileName ()Ljava/lang/String;
+.method cytoscape/CytoscapeConfig/legalArguments ()Z
+.method cytoscape/CytoscapeConfig/getGeometryFilename ()Ljava/lang/String;
+.method cytoscape/CytoscapeConfig/getErrorMessages ()Ljava/lang/String;
+.method cytoscape/CytoscapeConfig/readProjectFile ()V
+.method cytoscape/CytoscapeConfig/getAllDataFileExtensions ()[Ljava/lang/String;
+.method cytoscape/CytoscapeConfig/enableUndo ()Z
 .method cytoscape/CytoscapeConfig/getEdgeAttributeFilenames ()[Ljava/lang/String;
+.method cytoscape/CytoscapeConfig/getUsage ()Ljava/lang/String;
 .class cytoscape/PluginInfo
 .field cytoscape/PluginInfo/attributeName Ljava/lang/String;
 .field cytoscape/PluginInfo/className Ljava/lang/String;
@@ -9402,8 +9408,8 @@
 .method_map csplugins/activeModules/ExpressionRandomizer$DoRandomizeAndRunAndTabulate/cancelActivePathsFinding ()V cancelActivePathsFinding
 .method_map csplugins/activeModules/ExpressionRandomizer$DoRandomizeAndRunAndTabulate/actionPerformed (Ljava/awt/event/ActionEvent;)V actionPerformed
 .method_map csplugins/activeModules/ExpressionRandomizer$DoRandomizeAndRunAndTabulate/setActivePathsParameters (Lcsplugins/activeModules/data/ActivePathFinderParameters;)V setActivePathsParameters
-.method_map csplugins/activeModules/ExpressionRandomizer/randomizeAndRunAndTabulate ()V a
-.method_map csplugins/activeModules/ExpressionRandomizer/randomizeGeneNames ()V if
+.method_map csplugins/activeModules/ExpressionRandomizer/randomizeGeneNames ()V a
+.method_map csplugins/activeModules/ExpressionRandomizer/randomizeAndRunAndTabulate ()V if
 .method_map csplugins/activeModules/ExpressionRandomizer/randomizeAndRun ()V do
 .field_map csplugins/activeModules/ActivePathsCommandLineParser/activePathParameters a
 .field_map csplugins/activeModules/ActivePathsCommandLineParser/activePathParametersPresent if
@@ -9713,7 +9719,7 @@
 .field_map cytoscape/visual/ui/DefaultPanel$BackColorListener/this$0 this$0
 .method_map cytoscape/visual/ui/DefaultPanel$BackColorListener/itemStateChanged (Ljava/awt/event/ItemEvent;)V itemStateChanged
 .field_map cytoscape/visual/ui/DefaultPanel/backColor a
-.field_map cytoscape/visual/ui/DefaultPanel/bgRender if
+.field_map cytoscape/visual/ui/DefaultPanel/vmm if
 .method_map cytoscape/visual/ui/MiscDialog/locateImage (Ljava/lang/String;)Ljava/net/URL; a
 .class_map cytoscape/visual/ui/VizMapAttrTab$NewCalcListener a
 .field_map cytoscape/visual/ui/VizMapAttrTab$NewCalcListener/this$0 this$0
@@ -9739,17 +9745,17 @@
 .method_map cytoscape/visual/ui/VizMapAttrTab$DefaultItemChangedListener/itemStateChanged (Ljava/awt/event/ItemEvent;)V itemStateChanged
 .field_map cytoscape/visual/ui/VizMapAttrTab/nodeCalc do
 .field_map cytoscape/visual/ui/VizMapAttrTab/calcComboBox for
-.field_map cytoscape/visual/ui/VizMapAttrTab/n int
-.field_map cytoscape/visual/ui/VizMapAttrTab/calcPanel new
-.field_map cytoscape/visual/ui/VizMapAttrTab/calculators try
-.field_map cytoscape/visual/ui/VizMapAttrTab/mapPanelGBG byte
-.field_map cytoscape/visual/ui/VizMapAttrTab/imageIcon case
-.field_map cytoscape/visual/ui/VizMapAttrTab/calcContainer char
-.field_map cytoscape/visual/ui/VizMapAttrTab/catalog else
-.field_map cytoscape/visual/ui/VizMapAttrTab/defaultValueDisplayer goto
-.field_map cytoscape/visual/ui/VizMapAttrTab/VMM long
-.field_map cytoscape/visual/ui/VizMapAttrTab/edgeCalc null
-.field_map cytoscape/visual/ui/VizMapAttrTab/c void
+.field_map cytoscape/visual/ui/VizMapAttrTab/currentCalculator int
+.field_map cytoscape/visual/ui/VizMapAttrTab/n new
+.field_map cytoscape/visual/ui/VizMapAttrTab/calcPanel try
+.field_map cytoscape/visual/ui/VizMapAttrTab/calculators byte
+.field_map cytoscape/visual/ui/VizMapAttrTab/mapPanelGBG case
+.field_map cytoscape/visual/ui/VizMapAttrTab/imageIcon char
+.field_map cytoscape/visual/ui/VizMapAttrTab/calcContainer else
+.field_map cytoscape/visual/ui/VizMapAttrTab/catalog goto
+.field_map cytoscape/visual/ui/VizMapAttrTab/defaultValueDisplayer long
+.field_map cytoscape/visual/ui/VizMapAttrTab/VMM null
+.field_map cytoscape/visual/ui/VizMapAttrTab/edgeCalc void
 .field_map cytoscape/visual/ui/VizMapAttrTab/type b
 .field_map cytoscape/visual/ui/VizMapAttrTab/defaultObj c
 .field_map cytoscape/visual/ui/VizMapAttrTab/mainUIDialog d
@@ -21026,6 +21032,7 @@
 # WARNING: java.lang.Number shouldn't be obfuscated: it is referenced as java.lang.Number.class from cytoscape/visual/calculators/GenericNodeFontSizeCalculator
 # WARNING: java.lang.String shouldn't be obfuscated: it is referenced as java.lang.String.class from cytoscape/visual/mappings/DiscreteMapping
 # WARNING: java.lang.Number shouldn't be obfuscated: it is referenced as java.lang.Number.class from cytoscape/visual/mappings/DiscreteMapping
+# WARNING: java.awt.Color shouldn't be obfuscated: it is referenced as java.awt.Color.class from cytoscape/visual/mappings/ContinuousMapping
 # WARNING: java.lang.Number shouldn't be obfuscated: it is referenced as java.lang.Number.class from cytoscape/visual/mappings/ContinuousMapping
 # WARNING: java.lang.Object shouldn't be obfuscated: it is referenced as java.lang.Object.class from cytoscape/visual/mappings/PassThroughMapping
 # WARNING: cytoscape.visual.mappings.DiscreteMapping shouldn't be obfuscated: it is referenced as cytoscape.visual.mappings.DiscreteMapping.class from cytoscape/visual/tests/TestNewMappingsUI$VizPropsUIAction
