@@ -84,6 +84,17 @@ public class AnimatedLayoutAction extends AbstractAction {
                 }
               } ); } } ) );
 
+     main.add(  new JButton (new AbstractAction( "ForceDirected" ) {
+          public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  PGraphView gv = ( PGraphView )networkView.getView();
+                  ForceDirectedLayout fdl = new ForceDirectedLayout( gv );
+                  fdl.doLayout();
+                }
+              } ); } } ) );
+
 
     main.add(  new JButton (new AbstractAction( "Sugiyama" ) {
         public void actionPerformed ( ActionEvent e ) {
