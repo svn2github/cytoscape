@@ -53,3 +53,4 @@ clean:
 	- (cd ui; make clean)
 	- (cd parsers; make clean)
 	- (cd tests; make clean)
+	- (cd unitTests; make clean)
