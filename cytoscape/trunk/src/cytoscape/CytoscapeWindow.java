@@ -371,6 +371,18 @@ public void redrawGraph() {
 //------------------------------------------------------------------------------
 public void redrawGraph (boolean doLayout)
 {
+  // added by iliana on 1.6.2003 (works with yFiles 2.01)
+  // Remove graph listeners: (including undoManager)
+  Iterator it = graph.getGraphListeners();
+  ArrayList gls = new ArrayList();
+  GraphListener gl;
+  while(it.hasNext()){
+    gl = (GraphListener)it.next();
+    gls.add(gl);
+  }
+  for(int i = 0; i < gls.size(); i++){
+    graph.removeGraphListener((GraphListener)gls.get(i));
+  }
   
   applyVizmapSettings();
   if (doLayout) {
@@ -380,6 +392,12 @@ public void redrawGraph (boolean doLayout)
   /* paintImmediately() is needed because sometimes updates can be buffered */
   graphView.paintImmediately(0,0,graphView.getWidth(),graphView.getHeight());
   updateStatusText();
+
+  // Add back graph listeners:
+  for(int i = 0; i < gls.size(); i++){
+    graph.addGraphListener((GraphListener)gls.get(i));
+  }
+  
 } // redrawGraph
 
 
@@ -624,6 +642,11 @@ protected void applyVizmapSettings ()
       DefaultBackgroundRenderer bgr = (DefaultBackgroundRenderer)graphView.getBackgroundRenderer();
       bgr.setColor(bgColor);
       //CytoscapeWindow.this.setBackground(bgColor);
+  }
+
+  Color nodeSelectedColor = vizMapperCategories.getNodeSelectedColor(vizMapper);
+  if(nodeSelectedColor != null){
+    NodeRealizer.setSloppySelectionColor(nodeSelectedColor);
   }
  
   boolean setTh = false;
@@ -1012,31 +1035,47 @@ protected JMenuBar createMenuBar ()
   layoutMenu.setToolTipText ("Apply new layout algorithm to graph");
   menuBar.add (layoutMenu);
 
+  String defaultLayoutStrategy = config.getDefaultLayoutStrategy ();
+  
   JRadioButtonMenuItem layoutButton;
   layoutButton = new JRadioButtonMenuItem("Circular");
   layoutGroup.add(layoutButton);
   layoutMenu.add(layoutButton);
   layoutButton.addActionListener(new CircularLayoutAction ());
+  if(defaultLayoutStrategy.equals("circular")){
+    layoutButton.setSelected(true);
+  }
   
   layoutButton = new JRadioButtonMenuItem("Hierarchicial");
   layoutGroup.add(layoutButton);
   layoutMenu.add(layoutButton);
   layoutButton.addActionListener(new HierarchicalLayoutAction ());
+  if(defaultLayoutStrategy.equals("hierarchical")){
+    layoutButton.setSelected(true);
+  }
   
   layoutButton = new JRadioButtonMenuItem("Organic");
   layoutGroup.add(layoutButton);
   layoutMenu.add(layoutButton);
-  layoutButton.setSelected(true);
+  if(defaultLayoutStrategy.equals("organic")){
+    layoutButton.setSelected(true);
+  }
   layoutButton.addActionListener(new OrganicLayoutAction ());
   
   layoutButton = new JRadioButtonMenuItem("Embedded");
   layoutGroup.add(layoutButton);
   layoutMenu.add(layoutButton);
+  if(defaultLayoutStrategy.equals("embedded")){
+    layoutButton.setSelected(true);
+  }
   layoutButton.addActionListener(new EmbeddedLayoutAction ());
 
   layoutButton = new JRadioButtonMenuItem("Random");
   layoutGroup.add(layoutButton);
   layoutMenu.add(layoutButton);
+  if(defaultLayoutStrategy.equals("random")){
+    layoutButton.setSelected(true);
+  }
   layoutButton.addActionListener(new RandomLayoutAction ());
   
   layoutMenu.addSeparator();
@@ -1439,19 +1478,6 @@ public void applyLayout (boolean animated)
 {
   if (graph.getNodeArray().length == 0) return;
   
-  // added by iliana on 1.6.2003 (works with yFiles 2.01)
-  // Remove graph listeners: (including undoManager)
-  Iterator it = graph.getGraphListeners();
-  ArrayList gls = new ArrayList();
-  GraphListener gl;
-  while(it.hasNext()){
-    gl = (GraphListener)it.next();
-    gls.add(gl);
-  }
-  for(int i = 0; i < gls.size(); i++){
-    graph.removeGraphListener((GraphListener)gls.get(i));
-  }
-  
   logger.warning ("starting layout...");
   setInteractivity (false);
   //System.out.println("CytoscapeWindow: doLayout");
@@ -1465,11 +1491,6 @@ public void applyLayout (boolean animated)
   setInteractivity (true);
   logger.info (" done");
   
-  // Add back graph listeners:
-  for(int i = 0; i < gls.size(); i++){
-    graph.addGraphListener((GraphListener)gls.get(i));
-  }
-
 } // applyLayout
 
 
