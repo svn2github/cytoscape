@@ -192,6 +192,15 @@ public Graph2D getGraph ()
   return graph;
 }
 //------------------------------------------------------------------------------
+public void setGraph (Graph2D graph) {
+    this.graph = graph;
+    setLayouterAndGraphView();
+}
+//-----------------------------------------------------------------------------
+public Graph2DView getGraphView(){
+    return graphView;
+}
+//------------------------------------------------------------------------------
 public GraphHider getGraphHider ()
 {  
   return graphHider;
@@ -293,6 +302,7 @@ public String getCanonicalNodeName (Node node)
 
 } // getCanonicalNodeName
 //------------------------------------------------------------------------------
+// changed from protected to public. -iliana
 protected void displayNewGraph (boolean doLayout)
 {
   if (graph == null) graph = new Graph2D ();
@@ -310,6 +320,25 @@ protected void displayNewGraph (boolean doLayout)
   graphView.setZoom (graphView.getZoom ()*0.9);
 
 } // displayGraph
+//------------------------------------------------------------------------------
+protected void setLayouterAndGraphView(){
+    
+    if(graph == null){
+	graph = new Graph2D ();
+    }
+	
+    
+    OrganicLayouter ol = new OrganicLayouter ();
+    ol.setActivateDeterministicMode (true);
+    ol.setPreferredEdgeLength (80);
+    layouter = ol;
+    graphView.setGraph2D (graph);
+    graphHider = new GraphHider (graph);
+    
+    graphView.fitContent ();
+    graphView.setZoom (graphView.getZoom ()*0.9); 
+}
+
 //------------------------------------------------------------------------------
 protected void applyVizmapSettings ()
 {
@@ -393,9 +422,17 @@ public GraphObjAttributes getNodeAttributes ()
   return nodeAttributes;
 }
 //------------------------------------------------------------------------------
+public void setNodeAttributes(GraphObjAttributes nodeAttributes){
+    this.nodeAttributes = nodeAttributes;
+}
+//------------------------------------------------------------------------------
 public GraphObjAttributes getEdgeAttributes ()
 {
   return edgeAttributes;
+}
+//------------------------------------------------------------------------------
+public void setEdgeAttributes(GraphObjAttributes edgeAttributes){
+    this.edgeAttributes = edgeAttributes;
 }
 //------------------------------------------------------------------------------
 /**
@@ -654,10 +691,9 @@ protected JToolBar createToolBar ()
 
 } // createToolBar
 //------------------------------------------------------------------------------
-public void selectNodesByName (String [] nodeNames)
-{
-  boolean clearAllSelectionsFirst = true;
-  selectNodesByName (nodeNames, clearAllSelectionsFirst);
+public void selectNodesByName (String [] nodeNames){
+    boolean clearAllSelectionsFirst = true;
+    selectNodesByName (nodeNames, clearAllSelectionsFirst);
 }
 //------------------------------------------------------------------------------
 /**
@@ -1542,9 +1578,12 @@ protected class SelectFirstNeighborsAction extends AbstractAction {
     Graph2D g = graphView.getGraph2D ();
     NodeCursor nc = g.selectedNodes (); 
     Vector newNodes = new Vector ();
+    
+    // for all selected nodes
     for (nc.toFirst (); nc.ok (); nc.next ()) {
       Node node = nc.node ();
       EdgeCursor ec = node.edges ();
+      
       for (ec.toFirst (); ec.ok (); ec.next ()) {
         Edge edge = ec.edge ();
         Node source = edge.source ();
@@ -1555,11 +1594,13 @@ protected class SelectFirstNeighborsAction extends AbstractAction {
           newNodes.add (target);
         } // for edges
       } // for selected nodes
+    
     for (int i=0; i < newNodes.size (); i++) {
       Node node = (Node) newNodes.elementAt (i);
       NodeRealizer realizer = graphView.getGraph2D().getRealizer (node);
       realizer.setSelected (true);
       }
+    
     redrawGraph ();
     } // actionPerformed
 
