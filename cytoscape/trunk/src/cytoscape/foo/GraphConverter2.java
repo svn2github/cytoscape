@@ -6,6 +6,11 @@ import cytoscape.graph.layout.algorithm.MutablePolyEdgeGraphLayout;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntIterator;
 import cytoscape.view.CyNetworkView;
+import giny.view.EdgeView;
+import giny.view.NodeView;
+import java.awt.geom.Point2D;
+import java.util.Iterator;
+import java.util.List;
 
 public final class GraphConverter2
 {
@@ -34,7 +39,47 @@ public final class GraphConverter2
     if (percentBorder < 0.0d)
       throw new IllegalArgumentException("percentBorder < 0.0");
 
+    double minX = Double.MAX_VALUE;
+    double maxX = Double.MIN_VALUE;
+    double minY = Double.MAX_VALUE;
+    double maxY = Double.MIN_VALUE;
     final CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
+    Iterator iter = graphView.getNodeViewsIterator();
+    while (iter.hasNext())
+    {
+      NodeView currentNodeView = (NodeView) iter.next();
+      minX = Math.min(minX, currentNodeView.getXPosition());
+      maxX = Math.max(maxX, currentNodeView.getXPosition());
+      minY = Math.min(minY, currentNodeView.getYPosition());
+      maxY = Math.max(maxY, currentNodeView.getYPosition());
+    }
+    iter = graphView.getEdgeViewsIterator();
+    final boolean noNodesSelected = (!onlySelectedNodesMovable) ||
+      (graphView.getSelectedNodeIndices().length == 0);
+    while (iter.hasNext())
+    {
+      EdgeView currentEdgeView = (EdgeView) iter.next();
+      if ((!preserveEdgeAnchors) &&
+          (noNodesSelected ||
+           graphView.getNodeView
+           (currentEdgeView.getEdge().getSource()).isSelected() ||
+           graphView.getNodeView
+           (currentEdgeView.getEdge().getTarget()).isSelected())) {
+        currentEdgeView.getBend().removeAllHandles(); }
+      else {
+        List handles = currentEdgeView.getBend().getHandles();
+        for (int h = 0; h < handles.size(); h++) {
+          Point2D point = (Point2D) handles.get(h);
+          minX = Math.min(minX, point.getX());
+          maxX = Math.max(maxX, point.getX());
+          minY = Math.min(minY, point.getY());
+          maxY = Math.max(maxY, point.getY()); } }
+    }
+    double border =
+      Math.max(maxX - minX, maxY - minY) * percentBorder * 0.5d;
+    final double width = maxX - minX + border + border;
+    final double height = maxY - minY + border + border;
+
     final FixedGraph fixedGraph = (FixedGraph) (graphView.getNetwork());
 
     return new MutablePolyEdgeGraphLayout()
@@ -56,8 +101,8 @@ public final class GraphConverter2
           return fixedGraph.edgesConnecting(node0, node1, out, in, undir); }
 
         // GraphLayout methods.
-        public double getMaxWidth() { return 0.0; }
-        public double getMaxHeight() { return 0.0; }
+        public double getMaxWidth() { return width; }
+        public double getMaxHeight() { return height; }
         public double getNodePosition(int node, boolean xPosition) {
           return 0.0; }
 
