@@ -28,23 +28,15 @@ public class DualLayoutTask extends Thread{
   CyWindow cyWindow;
   private static String TITLE1 = "Split Graph";
   private static String SPLIT_STRING = "\\|";
-  private static double SMALL_DISTANCE = 0.001;
-  private static double CUTOFF = 15;
-  private double SPRING_STIFFNESS = 10;
-  private double SPRING_LENGTH = 500;
-  private double HOMOLOGY_STIFFNESS = 50;
-  private double HOMOLOGY_LENGTH = 50;
-  private double MAX_DISTANCE = 50;
-  private int MAX_ITERATIONS = 100;
-  double increment = 0.02;
-  private double COOLING_DECREMENT = increment/100;
   private double GAP = 200;
-  private double electricalRepulsion = 50000000;
+  private double OFFSET = 500;
   DualLayoutCommandLineParser parser;
   private CyNetwork sifNetwork;
 
 
-
+  /**
+   * @param sifNetwork a subgraph of the compatability graph that is a conserved complex
+   */
   public DualLayoutTask(CyNetwork sifNetwork,CyWindow cyWindow,DualLayoutCommandLineParser parser){
     this.sifNetwork = sifNetwork;
     this.cyWindow = cyWindow;
@@ -60,8 +52,25 @@ public class DualLayoutTask extends Thread{
     //sifNetwork.beginActivity(callerID);
     //this is the graph structure; it should never be null,
     RootGraph sifRoot = sifNetwork.getRootGraph();
+    
+    //tryy to guess how many species we are tyring to align
+    int k = 0;
+    {
+      List nodes = sifRoot.nodesList();
+      if (nodes == null || nodes.size() <= 0) {
+	throw new IllegalArgumentException("No nodes in this graph");
+      } // end of if ()
+      Node firstNode = (Node)nodes.get(0);
+      String firstName = sifNetwork.getNodeAttributes().getCanonicalName(firstNode);
+      String [] splat = firstName.split("\\|");
+      k = splat.length;
+      if (k <= 1) {
+	throw new IllegalArgumentException("Must align at least 2 species");
+      } // end of if ()
+    } 
+    
 
-
+      
     //first make a new network in which to put the result 
     //and GraphObjAttributes to put the attributes associated
     //with the nodes
@@ -73,38 +82,51 @@ public class DualLayoutTask extends Thread{
     //don't use graphObjAttributes here because
     //I want to keep the left nodes separated from the right
     //nodes
-    HashMap left_name2node = new HashMap();
-    HashMap right_name2node = new HashMap();
-
-    //this hasmap maps from a node to a vector of nodes which have an established
-    //homology with that node
-    HashMap node2NodeVec = new HashMap();
-
+    //HashMap left_name2node = new HashMap();
+    //HashMap right_name2node = new HashMap();
+    //this is a vector of hashmap that map from the name of a node
+    //to the actual node for each species.
+    Vector name2Node_Vector = new Vector();
+    for (int  idx= 0;  idx<k ; idx++) {
+      name2Node_Vector.add(new HashMap());
+    } // end of for (int  = 0;  < ; ++)
+   
     GraphObjAttributes nodeAttributes = sifNetwork.getNodeAttributes();
     Iterator compatNodeIt = sifRoot.nodesList().iterator();
     NodePairSet homologyPairSet = new NodePairSet();
+    //this maps from a node to the species that node belongs
+    //to
+    HashMap node2Species = new HashMap();
     while(compatNodeIt.hasNext()){
       Node current = (Node)compatNodeIt.next();
       //String name = current.getIdentifier();
       String name = nodeAttributes.getCanonicalName(current);
       String [] names = name.split(SPLIT_STRING);
-      Node leftNode = (Node)left_name2node.get(names[0]);
-      if(leftNode == null){
-	leftNode = newRoot.getNode(newRoot.createNode());
-	leftNode.setIdentifier(names[0]);
-	newNodeAttributes.addNameMapping(names[0],leftNode);	
-	left_name2node.put(names[0],leftNode);
-      }
-
-      Node rightNode = (Node)right_name2node.get(names[1]);
-      if(rightNode == null){
-	rightNode = newRoot.getNode(newRoot.createNode());
-	rightNode.setIdentifier(names[1]);
-	newNodeAttributes.addNameMapping(names[1],rightNode);
-	right_name2node.put(names[1],rightNode);
-      }
-
-      homologyPairSet.add(leftNode,rightNode);
+      if (names.length != k) {
+	//awww, shit
+	throw new IllegalArgumentException("Incorrect value of k");
+      } // end of if ()
+      
+      Vector nodes = new Vector(k);
+      for (int idx = 0; idx < k ; idx++) {
+	HashMap name2Node = (HashMap)name2Node_Vector.get(idx);
+	Node idxNode = (Node)name2Node.get(names[idx]);
+	if (idxNode == null) {
+	  idxNode = newRoot.getNode(newRoot.createNode());
+	  idxNode.setIdentifier(names[idx]);
+	  newNodeAttributes.addNameMapping(names[idx],idxNode);
+	  name2Node.put(names[idx],idxNode);
+	  node2Species.put(idxNode,new Integer(idx));
+	} // end of if ()
+	nodes.add(idxNode);
+	
+      } // end of for (int  = 0;  < ; ++)
+      
+      for (int idx = 0;idx<k ;idx++) {
+	for (int idy = idx+1;idy<k;idy++) {
+	  homologyPairSet.add((Node)nodes.get(idx),(Node)nodes.get(idy));
+	} // end of for (int  = 0;  < ; ++)
+      } // end of for (int  = 0;  < ; ++)
     }
 
     
@@ -120,99 +142,70 @@ public class DualLayoutTask extends Thread{
 
 
       String compatInteraction = (String)compatEdgeAttributes.get("interaction",compatEdgeAttributes.getCanonicalName(current));
-      String leftInteraction,rightInteraction;	
-      if(compatInteraction.length() == 2){
-	leftInteraction = compatInteraction.substring(0,1)+"1";
-	rightInteraction = compatInteraction.substring(1,2)+"2";
+      //this is a vector of interaction types which stores the equivalent interaction for each of the species
+      Vector interactionTypes = new Vector(k);
+      if(compatInteraction.length() == k){
+	for (int idx = 0; idx < k; idx++) {
+	  interactionTypes.add(compatInteraction.substring(idx,idx+1)+idx);
+	} // end of for (int  = 0;  < ; ++)
       }
       else{
-	//I'm not sure what is in the interaction string
-	leftInteraction = "m1";
-	rightInteraction = "m2";
+	for (int idx = 0; idx < k; k++) {
+	  interactionTypes.add("?"+idx);
+	} // end of for (int  = 0;  < ; ++)
+	
       }
-      //create the new left edge and associate its attributes
-      //don't make self edges
-      //need to make a check here to see if this edge has already been
-      //added into the graph
-      if(!sourceSplat[0].equals(targetSplat[0])){
 
-	String leftName = sourceSplat[0]+" ("+leftInteraction+") "+targetSplat[0];
-	if(!newEdgeAttributes.getObjectMap().keySet().contains(leftName)){
-	  Edge leftEdge = newRoot.getEdge(newRoot.createEdge((Node)left_name2node.get(sourceSplat[0]),(Node)left_name2node.get(targetSplat[0]),true));
-	  leftEdge.setIdentifier(leftName);
-	  newEdgeAttributes.addNameMapping(leftName,leftEdge);
-	  newEdgeAttributes.add("interaction",leftName,leftInteraction);
-	}
-      }
-      //create the new right edge and associate its attributes
+
+      for (int idx = 0;idx  < k; idx++) {
+	//creat the new nedge
+	//don't make self edges
+	//need to make a check here to see iff this edge
+	//has already been added into the graph
+	if (!sourceSplat[idx].equals(targetSplat[idx])) {
+	  String idxName = sourceSplat[idx]+" ("+interactionTypes.get(idx)+") "+targetSplat[idx];
+	  if (!newEdgeAttributes.getObjectMap().keySet().contains(idxName)) {
+	    HashMap name2Node = (HashMap)name2Node_Vector.get(idx);
+	    Edge idxEdge = newRoot.getEdge(newRoot.createEdge((Node)name2Node.get(sourceSplat[idx]),(Node)name2Node.get(targetSplat[idx]),true));
+	    idxEdge.setIdentifier(idxName);
+	    newEdgeAttributes.addNameMapping(idxName,idxEdge);
+	    newEdgeAttributes.add("interaction",idxName,(String)interactionTypes.get(idx));
+	  } // end of if ()
+	  
+	} // end of if ()
+	
+      } // end of for (int this  = 0;  < ; ++)
       
-      if(!sourceSplat[1].equals(targetSplat[1])){
-	String rightName = sourceSplat[1]+" ("+rightInteraction+") "+targetSplat[1];
-	if(!newEdgeAttributes.getObjectMap().keySet().contains(rightName)){
-	  Edge rightEdge = newRoot.getEdge(newRoot.createEdge((Node)right_name2node.get(sourceSplat[1]),(Node)right_name2node.get(targetSplat[1]),true));
-	  rightEdge.setIdentifier(rightName);
-	  newEdgeAttributes.addNameMapping(rightName,rightEdge);
-	  newEdgeAttributes.add("interaction",rightName,rightInteraction);
-	}
-      }
     }
-
-
     //now that the root graph has been created, put it into a window
     //CyWindow newWindow = new CyWindow(cyWindow.getCytoscapeObj(), new CyNetwork(newRoot,newNodeAttributes,newEdgeAttributes), DualLayout.NEW_TITLE);
     CyNetwork gmlNetwork = new CyNetwork(newRoot,newNodeAttributes,newEdgeAttributes);
     cyWindow.getNetwork().setNewGraphFrom(gmlNetwork,false);
-    HashSet leftNodeSet = new HashSet(left_name2node.values());
-    HashSet rightNodeSet = new HashSet(right_name2node.values());
     GraphView newView = cyWindow.getView();
     cyWindow.getMainFrame().setVisible(false);
-    SpringEmbeddedLayouter layouter = new SpringEmbeddedLayouter(newView,leftNodeSet,rightNodeSet,homologyPairSet);
+    SpringEmbeddedLayouter layouter = new SpringEmbeddedLayouter(newView,node2Species,homologyPairSet);
     layouter.doLayout();
     gmlNetwork.setNeedsLayout(false);
     cyWindow.getMainFrame().setVisible(true);
     
-    //get all the node views for the nodes in the two different categories
-    Vector leftNodeViews = new Vector();
-    Iterator leftNodeIt = left_name2node.values().iterator();
-    while(leftNodeIt.hasNext()){
-      leftNodeViews.add(newView.getNodeView((Node)leftNodeIt.next()));
-    }
-    Vector rightNodeViews = new Vector();
-    Iterator rightNodeIt = right_name2node.values().iterator();
-    while(rightNodeIt.hasNext()){
-      Node rightNode = (Node)rightNodeIt.next();
-      rightNodeViews.add(newView.getNodeView(rightNode));
-    }
-
-    //probably need to calculate the offset here
-    double maxLeft = Double.NEGATIVE_INFINITY;
-    Iterator leftViewIt = leftNodeViews.iterator();
-    while(leftViewIt.hasNext()){
-      maxLeft = Math.max(maxLeft,((NodeView)leftViewIt.next()).getXPosition());
-    }
-
-    double minRight = Double.POSITIVE_INFINITY;
-    Iterator rightViewIt = rightNodeViews.iterator();
-    while(rightViewIt.hasNext()){
-      minRight = Math.min(minRight,((NodeView)rightViewIt.next()).getXPosition());
-    }
-
-
-    //move all the right nodes over by the offset
-    double offset = (maxLeft-minRight)+GAP;
-    rightViewIt = rightNodeViews.iterator();
-    while(rightViewIt.hasNext()){
-      NodeView rightView = (NodeView)rightViewIt.next();
-      rightView.setXPosition(rightView.getXPosition()+offset);
-    }
     
-    //make sure all the nodes have their position updated
+
+    //move all the nodes over an amount proportional to their species number
     Iterator nodeViewIt = newView.getNodeViewsIterator();
+    while (nodeViewIt.hasNext()) {
+      NodeView nodeView = (NodeView)nodeViewIt.next();
+      int species = ((Integer)node2Species.get(nodeView.getNode())).intValue();
+      nodeView.setXPosition(nodeView.getXPosition()+OFFSET*species);
+    } // end of while ()
+    
+    
+      //make sure all the nodes have their position updated
+    nodeViewIt = newView.getNodeViewsIterator();
     while(nodeViewIt.hasNext()){
       ((NodeView)nodeViewIt.next()).setNodePosition(true);
     }
-
-        
+    
+    
     if(parser.addEdges()){
       GraphPerspective newPerspective = newView.getGraphPerspective();
       HashMap outerMap = homologyPairSet.getOuterMap();
@@ -223,17 +216,8 @@ public class DualLayoutTask extends Thread{
 	    innerSetIt.hasNext();){
 	  Node innerNode = (Node)innerSetIt.next();
 	  //want to add a homology edge to the from the left node to the rightnode
-	  Node leftNode,rightNode;
-	  if(leftNodeSet.contains(outerNode)){
-	    leftNode = outerNode;
-	    rightNode = innerNode;
-	  }
-	  else{
-	    leftNode = innerNode;
-	    rightNode = outerNode;
-	  }
-	  Edge homologyEdge = newRoot.getEdge(newRoot.createEdge(leftNode,rightNode,false));
-	  String homologyName = ""+leftNode+" (hm) "+rightNode;
+	  Edge homologyEdge = newRoot.getEdge(newRoot.createEdge(outerNode,innerNode,false));
+	  String homologyName = ""+outerNode+" (hm) "+innerNode;
 	  homologyEdge.setIdentifier(homologyName);
 	  newEdgeAttributes.addNameMapping(homologyName,homologyEdge);
 	  newEdgeAttributes.add("interaction",homologyName,"hm");
@@ -244,7 +228,7 @@ public class DualLayoutTask extends Thread{
     
 
     if(parser.applyColor()){
-      System.out.println("Color option not implemeneted yet");
+      System.out.println("Color option not implemeneted");
     }
 
     if(parser.save()){

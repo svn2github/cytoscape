@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Random;
-
+import java.util.HashMap;
 /**
  * An implementation of Kamada and Kawai's spring embedded layout algorithm.
  */
@@ -63,19 +63,16 @@ public class SpringEmbeddedLayouter{
   protected int nodeCount;
   protected int edgeCount;
   protected int layoutPass;
-  protected Set setOne;
-  protected Set setTwo;
+  protected HashMap node2Species;
   protected NodePairSet homologyPairSet;
 
   /**
-   * @param setOne the first group of ndoes
-   * @param setTwo the second group of nodes
+   * @param node2Species a hashmap which maps from a node to a species number
    */
-  public SpringEmbeddedLayouter ( GraphView graph_view, Set setOne, Set setTwo, NodePairSet homologyPairSet ) {
+  public SpringEmbeddedLayouter ( GraphView graph_view, HashMap node2Species, NodePairSet homologyPairSet ) {
     setGraphView( graph_view );
+    this.node2Species = node2Species;
     //initializeSpringEmbeddedLayouter();
-    this.setOne = setOne;
-    this.setTwo = setTwo;
     this.homologyPairSet = homologyPairSet;
   }
 
@@ -200,8 +197,7 @@ public class SpringEmbeddedLayouter{
     List nodeList = graphView.getGraphPerspective().nodesList();
     for(int idx1=0,size=nodeList.size();idx1<size;idx1++){
       for(int idx2=idx1+1;idx2<size;idx2++){
-	if((setOne.contains(nodeList.get(idx1))&&setOne.contains(nodeList.get(idx2))) ||
-	   (setTwo.contains(nodeList.get(idx1))&&setTwo.contains(nodeList.get(idx2)))){
+	if(node2Species.get(nodeList.get(idx1)).equals(node2Species.get(nodeList.get(idx2)))){
 	  anticollisionSpringStrength[idx1][idx2] = DEFAULT_ANTICOLLISION_SPRING_STRENGTH;
 	  anticollisionSpringStrength[idx2][idx1] = DEFAULT_ANTICOLLISION_SPRING_STRENGTH;
 	}
