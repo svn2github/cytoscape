@@ -107,7 +107,7 @@ public class MinIntHeapPerformance
     long millisBegin = System.currentTimeMillis();
 
     // Run the test.  Quick, stopwatch is ticking!
-    int[] orderedElements = _THE_TEST_CASE_(elements);
+    int[] uniqueElements = _THE_TEST_CASE_(elements);
 
     // Stop timer.
     long millisEnd = System.currentTimeMillis();
@@ -116,8 +116,8 @@ public class MinIntHeapPerformance
     System.err.println(millisEnd - millisBegin);
 
     // Print sorted array to standard out.
-    for (int i = 0; i < orderedElements.length; i++)
-      System.out.println(orderedElements[i]);
+    for (int i = 0; i < uniqueElements.length; i++)
+      System.out.println(uniqueElements[i]);
   }
 
   private static final int assembleInt(byte[] fourConsecutiveBytes)
