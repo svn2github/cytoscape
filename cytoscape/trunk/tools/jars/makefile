@@ -1,10 +1,12 @@
 # jar.make:  make jars needed for the cytoscape program
 # type 'make help' to get a description of the targets
 
-AUXJAR_UNPACKED_DIR=$(PWD)/aux
+#AUXJAR_UNPACKED_DIR=$(PWD)/aux
+AUXJAR_UNPACKED_DIR=/common/aux
 JARFILE=$(PWD)/cytoscape.jar
 AUXJARFILE=$(PWD)/aux.jar
-YFILESDIR=/net/compbio/src/distributions/yfiles/jarUnpacked
+#YFILESDIR=/net/compbio/src/distributions/yfiles/jarUnpacked
+YFILESDIR=/common/yfiles1.4-unpacked
 
 default: help
 

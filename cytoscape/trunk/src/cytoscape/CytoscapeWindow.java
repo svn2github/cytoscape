@@ -113,6 +113,7 @@ public class CytoscapeWindow extends JPanel implements FilterDialogClient { // i
   protected Vector subwindows = new Vector ();
 
   protected String windowTitle;
+  protected File currentDirectory;
    // selected nodes can be displayed in a new window.  this next variable
    // provides a title for that new window
   protected String titleForCurrentSelection = null;
@@ -145,6 +146,8 @@ public CytoscapeWindow (cytoscape parentApp,
 
   if (edgeAttributes != null)
     this.edgeAttributes = edgeAttributes;
+
+  this.currentDirectory = new File (System.getProperty ("user.dir"));
 
   vizMapperCategories = new VizMapperCategories();
   vizMapper = new AttributeMapper( vizMapperCategories.getInitialDefaults() );
@@ -1738,10 +1741,10 @@ protected class SaveAsInteractionsAction extends AbstractAction
   SaveAsInteractionsAction () {super ("As Interactions..."); }
 
   public void actionPerformed (ActionEvent e) {
-    File currentDirectory = new File (System.getProperty ("user.dir"));
     JFileChooser chooser = new JFileChooser (currentDirectory);
     if (chooser.showSaveDialog (CytoscapeWindow.this) == chooser.APPROVE_OPTION) {
       String name = chooser.getSelectedFile ().toString ();
+      currentDirectory = chooser.getCurrentDirectory();
       if (!name.endsWith (".intr")) name = name + ".intr";
       try {
         FileWriter fileWriter = new FileWriter (name);
@@ -1779,9 +1782,9 @@ protected class SaveAsGMLAction extends AbstractAction
 {
   SaveAsGMLAction () {super ("As GML..."); }
   public void actionPerformed (ActionEvent e) {
-    File currentDirectory = new File (System.getProperty ("user.dir"));
     JFileChooser chooser = new JFileChooser (currentDirectory);
     if (chooser.showSaveDialog (CytoscapeWindow.this) == chooser.APPROVE_OPTION) {
+      currentDirectory = chooser.getCurrentDirectory();
       String name = chooser.getSelectedFile ().toString ();
       if (!name.endsWith (".gml")) name = name + ".gml";
       GraphProps props = new GraphProps(graph, nodeAttributes, edgeAttributes);
@@ -1795,9 +1798,9 @@ protected class LoadGMLFileAction extends AbstractAction {
   LoadGMLFileAction () { super ("GML..."); }
     
   public void actionPerformed (ActionEvent e)  {
-   File currentDirectory = new File (System.getProperty ("user.dir"));
    JFileChooser chooser = new JFileChooser (currentDirectory);
    if (chooser.showOpenDialog (CytoscapeWindow.this) == chooser.APPROVE_OPTION) {
+      currentDirectory = chooser.getCurrentDirectory();
       String name = chooser.getSelectedFile ().toString ();
       geometryFilename = name;
       loadGML (name);
@@ -1810,9 +1813,9 @@ protected class LoadInteractionFileAction extends AbstractAction {
   LoadInteractionFileAction() { super ("Interaction..."); }
     
   public void actionPerformed (ActionEvent e)  {
-   File currentDirectory = new File (System.getProperty ("user.dir"));
    JFileChooser chooser = new JFileChooser (currentDirectory);
    if (chooser.showOpenDialog (CytoscapeWindow.this) == chooser.APPROVE_OPTION) {
+      currentDirectory = chooser.getCurrentDirectory();
       String name = chooser.getSelectedFile ().toString ();
       loadInteraction (name);
       } // if
@@ -1824,9 +1827,9 @@ protected class LoadExpressionMatrixAction extends AbstractAction {
   LoadExpressionMatrixAction () { super ("Expression Matrix File..."); }
     
   public void actionPerformed (ActionEvent e)  {
-   File currentDirectory = new File (System.getProperty ("user.dir"));
    JFileChooser chooser = new JFileChooser (currentDirectory);
    if (chooser.showOpenDialog (CytoscapeWindow.this) == chooser.APPROVE_OPTION) {
+      currentDirectory = chooser.getCurrentDirectory();
       expressionDataFilename = chooser.getSelectedFile ().toString ();
       expressionData = new ExpressionData (expressionDataFilename);
       // incorporateExpressionData ();
@@ -2116,7 +2119,7 @@ protected class MainFilterDialogAction extends AbstractAction  {
 
 protected class MenuFilterAction extends MainFilterDialogAction  {
     MenuFilterAction () {
-	super("Nodes..."); 
+	super("Using filters..."); 
     }
 }
 
