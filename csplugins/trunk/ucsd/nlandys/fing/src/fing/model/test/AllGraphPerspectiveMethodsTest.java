@@ -668,11 +668,43 @@ public final class AllGraphPerspectiveMethodsTest
       throw new IllegalStateException("not null in getEdge(int)");
     if (persp.getEdge(Integer.MAX_VALUE) != null ||
         persp.getEdge(Integer.MIN_VALUE) != null)
-      throw new IllegalStateException("not null is getEdge(int)");
+      throw new IllegalStateException("not null in getEdge(int)");
 
     // getEdgeSourceIndex(int).
+    if (persp.getEdgeSourceIndex(edgeInx[0]) != nodeInx[0] ||
+        persp.getEdgeSourceIndex(edgeInx[1]) != nodeInx[1] ||
+        persp.getEdgeSourceIndex(edgeInx[2]) != nodeInx[2] ||
+        persp.getEdgeSourceIndex(edgeInx[3]) != nodeInx[2] ||
+        persp.getEdgeSourceIndex(edgeInx[4]) != nodeInx[1] ||
+        persp.getEdgeSourceIndex(edgeInx[5]) != nodeInx[1] ||
+        persp.getEdgeSourceIndex(edgeInx[6]) != nodeInx[3])
+      throw new IllegalStateException("wrong edge source");
+    if (persp.getEdgeSourceIndex(minEdgeInx - 1) != 0 ||
+        persp.getEdgeSourceIndex(0) != 0 ||
+        persp.getEdgeSourceIndex(23) != 0 ||
+        persp.getEdgeSourceIndex(edge1NotInPersp.getRootGraphIndex()) != 0 ||
+        persp.getEdgeSourceIndex(edge2NotInPersp.getRootGraphIndex()) != 0 ||
+        persp.getEdgeSourceIndex(Integer.MAX_VALUE) != 0 ||
+        persp.getEdgeSourceIndex(Integer.MIN_VALUE) != 0)
+      throw new IllegalStateException("should have returned 0 as source node");
 
     // getEdgeTargetIndex(int).
+    if (persp.getEdgeTargetIndex(edgeInx[0]) != nodeInx[1] ||
+        persp.getEdgeTargetIndex(edgeInx[1]) != nodeInx[2] ||
+        persp.getEdgeTargetIndex(edgeInx[2]) != nodeInx[0] ||
+        persp.getEdgeTargetIndex(edgeInx[3]) != nodeInx[2] ||
+        persp.getEdgeTargetIndex(edgeInx[4]) != nodeInx[1] ||
+        persp.getEdgeTargetIndex(edgeInx[5]) != nodeInx[0] ||
+        persp.getEdgeTargetIndex(edgeInx[6]) != nodeInx[2])
+      throw new IllegalStateException("wrong edge target");
+    if (persp.getEdgeTargetIndex(minEdgeInx - 1) != 0 ||
+        persp.getEdgeTargetIndex(0) != 0 ||
+        persp.getEdgeTargetIndex(22) != 0 ||
+        persp.getEdgeTargetIndex(edge1NotInPersp.getRootGraphIndex()) != 0 ||
+        persp.getEdgeTargetIndex(edge2NotInPersp.getRootGraphIndex()) != 0 ||
+        persp.getEdgeTargetIndex(Integer.MAX_VALUE) != 0 ||
+        persp.getEdgeTargetIndex(Integer.MIN_VALUE) != 0)
+      throw new IllegalStateException("should have returned 0 as target node");
 
     // isEdgeDirected(int).
 
