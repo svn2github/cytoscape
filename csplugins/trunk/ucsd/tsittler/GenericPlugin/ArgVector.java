@@ -94,11 +94,9 @@ public class ArgVector{
     public void set(Object name,Object arg){
 	int index=this.names.indexOf(name);
 	if (index==-1){
-	    System.out.println("adding "+name.toString());
 	    add(name,arg);
 	}
         else{
-	    System.out.println("setting arg "+names.get(index).toString());
 	    this.args.set(index,arg);
 	}
     }
