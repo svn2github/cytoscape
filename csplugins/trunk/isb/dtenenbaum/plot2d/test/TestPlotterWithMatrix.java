@@ -1,6 +1,6 @@
 // TestPlotterWithMatrix
 
-package csplugins.plot2d.test;
+package csplugins.isb.dtenenbaum.plot2d.test;
 
 import java.awt.event.*; // need this for the dismiss button listener
 import java.io.*; // need for reading matrix from file
@@ -10,9 +10,9 @@ import java.net.*;
 //import csplugins.expressionData.Plot2D; // the old way to do it. 
 //import csplugins.expressionData.ptpwrapper.*; // the newer, better way.
 
-import csplugins.plot2d.*; // the newest, best way
+import csplugins.isb.dtenenbaum.plot2d.*; // the newest, best way
 
-import csplugins.trial.pshannon.dataCube.*; // needed for DataMatrix
+import csplugins.isb.pshannon.dataMatrix.*; // needed for DataMatrix
 import org.jfree.chart.*; // need this for the event listener
 import org.jfree.chart.entity.*; // this too
 

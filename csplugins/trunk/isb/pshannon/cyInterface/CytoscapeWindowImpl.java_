@@ -1,3 +1,9 @@
+
+/*
+This file should really be removed from the source tree in cvsdir5. It only works with cy1
+and causes errors with cy2. For now I have renamed it with a java_ extension so it won't get built.
+*/
+
 package csplugins.isb.pshannon.cyInterface
 
 import java.util.*;

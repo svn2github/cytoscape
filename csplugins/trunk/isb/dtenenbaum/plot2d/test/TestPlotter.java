@@ -1,6 +1,6 @@
 // TestPlotter
 
-package csplugins.plot2d.test;
+package csplugins.isb.dtenenbaum.plot2d.test;
 
 import java.awt.event.*; // need this for the dismiss button listener
 
