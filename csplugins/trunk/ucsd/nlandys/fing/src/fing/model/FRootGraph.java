@@ -468,7 +468,35 @@ class FRootGraph //implements RootGraph
 
   public int[] getConnectingEdgeIndicesArray(int[] nodeInx)
   {
-    return null;
+    // There are more edges than nodes so we'll use m_hash for the edges.
+    final IntHash nodeBucket = new IntHash();
+    for (int i = 0; i < nodeInx.length; i++) {
+      final int positiveNodeIndex = ~nodeInx[i];
+      if (m_graph.containsNode(positiveNodeIndex))
+        nodeBucket.put(positiveNodeIndex); }
+    m_hash.empty();
+    final IntHash edgeBucket = m_hash;
+    final IntEnumerator nodeIter = nodeBucket.elements();
+    while (nodeIter.numRemaining() > 0)
+    {
+      final int theNode = nodeIter.nextInt();
+      final IntEnumerator edgeIter;
+      try { edgeIter = m_graph.adjacentEdges(theNode, true, false, true); }
+      catch (IllegalArgumentException e) { continue; }
+      while (edgeIter.numRemaining() > 0)
+      {
+        final int candidateEdge = edgeIter.nextInt();
+        final int otherEdgeNode = theNode ^ m_graph.sourceNode(candidateEdge) ^
+          m_graph.targetNode(candidateEdge);
+        if (otherEdgeNode == nodeBucket.get(otherEdgeNode))
+          edgeBucket.put(candidateEdge);
+      }
+    }
+    final IntEnumerator returnEdges = edgeBucket.elements();
+    final int[] returnThis = new int[returnEdges.numRemaining()];
+    for (int i = 0; i < returnThis.length; i++)
+      returnThis[i] = ~(returnEdges.nextInt());
+    return returnThis;
   }
 
   public Node getNode(int nodeInx)
