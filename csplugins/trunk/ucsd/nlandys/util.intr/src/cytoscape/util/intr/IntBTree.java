@@ -124,24 +124,38 @@ public final class IntBTree
           for (int i = MAX_BRANCHES - 1; i >= 0; i--) {
             if ((!found) && (i == foundPath)) {
               currentNode.data.children[--currentInx] = newChild;
-              if (currentInx > 0) {
-                currentNode.data.splitVals[currentInx - 1] = newSplit;
-              newNode.data.splitVals[newNode.sliceCount - 1] =
-                n.data.splitVals[i - 2];
               found = true;
               if (currentNode == n) break;
               i++; }
             else {
-              currentNode.data.children[--currentInx] = n.data.children[i];
-              if (currentInx > 0) {
-                currentNode.data.splitVals[currentInx - 1] =
-                  n.data.splitVals[i - 1]; } }
+              currentNode.data.children[--currentInx] = n.data.children[i]; }
             if (currentInx == 0) {
               if (found) break;
               currentNode = n;
               currentInx = currentNode.sliceCount; } }
           for (int i = n.splitCount; i < MAX_BRANCHES; i++)
             n.data.children[i] = null; // Remove pointers for garbage collect.
+          currentNode = newNode;
+          currentInx = currentNode.sliceCount - 1;
+          found = false;
+          for (int i = MAX_BRANCHES - 2; i >= 0; i--) {
+            if ((!found) && (newSplit >= n.data.splitVals[i])) {
+              currentNode.data.splitVals[--currentInx] = newSplit;
+              found = true;
+              if (currentNode == n) break;
+              i++; }
+            else {
+              currentNode.data.splitVals[--currentInx] = n.data.splitVals[i]; }
+            if (currentInx == 0) {
+              if (i == 0) {
+                newNode.data.splitVals[newNode.sliceCount - 1] = newSplit; }
+              else {
+                newNode.data.splitVals[newNode.sliceCount - 1] =
+                  n.data.splitVals[--i]; }
+              if (found) break;
+              currentNode = n;
+              currentInx = currentNode.sliceCount - 1; } }
+
           // Todo: Update deep counts.
           return newNode; }
 
@@ -180,6 +194,58 @@ public final class IntBTree
 //           return returnThis; }
       }
     }
+  }
+
+  /*
+   * It's tedious to rigorously define what this method does.  I give an
+   * example:
+   *
+   *
+   *   INPUTS
+   *   ======
+   *
+   *   newVal: 5
+   *
+   *             +---+---+---+---+---+---+---+
+   *   origBuff: | 0 | 2 | 3 | 6 | 6 | 8 | 9 |
+   *             +---+---+---+---+---+---+---+
+   *
+   *                 +---+---+---+---+---+---+---+
+   *   overflowBuff: | / | / | / | / | / | / | / |
+   *                 +---+---+---+---+---+---+---+
+   *
+   *   overflowCount: 4
+   *
+   *
+   *   OUTPUTS
+   *   =======
+   *
+   *             +---+---+---+---+---+---+---+
+   *   origBuff: | 0 | 2 | 3 | 5 | / | / | / |
+   *             +---+---+---+---+---+---+---+
+   *
+   *                 +---+---+---+---+---+---+---+
+   *   overflowBuff: | 6 | 6 | 8 | 9 | / | / | / |
+   *                 +---+---+---+---+---+---+---+
+   */
+  private void split(int newVal, int[] origBuff,
+                     int[] overflowBuff, int overflowCount)
+  {
+    int[] currentArr = overflowBuff;
+    int currentInx = overflowCount;
+    boolean found = false;
+    for (int i = origBuff.length - 1; i >= 0; i--) {
+      if ((!found) && (newVal >= origBuff[i])) {
+        currentArr[--currentInx] = newVal;
+        found = true;
+        if (currentArr == splitThis) break;
+        i++; }
+      else { currentArr[--currentInx] = origBuff[i]; }
+      if (currentInx == 0) {
+        if (found) break;
+        currentArr = origBuff;
+        currentInx = origBuff.length - overflowCount + 1; } }
+    if (!found) currentArr[0] = newVal;
   }
 
   /**
