@@ -112,8 +112,7 @@ run0:
 
 run1: 
 	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape \
-          -g $(CYTOSCAPE_DATA)/galFiltered.gml \
-          -e $(CYTOSCAPE_DATA)/gal.5936x20.mrna \
+          -i testData/sample.intr \
           -b $(CYTOSCAPE_DATA)/GO
 
 #
