@@ -64,7 +64,13 @@ import cytoscape.graph.dynamic.DynamicGraph;
  * <td>The target node of an edge is determined in constant time.</td>
  * </tr><tr>
  * <td>edgesAdjacent(int, boolean, boolean, boolean)</td>
- * <td></td>
+ * <td>An IntEnumerator is returned in constant time.  The enumerator
+ *     always reports the number of elements remaining in constant time.
+ *     The enumeration can be completely traversed in O(E) time, where E is
+ *     the number of edges touching the node in question.  Each individual
+ *     successive element is returned by the enumeration in average
+ *     O(E/F) time, where F is the total number of elements in this
+ *     enumeration.</td>
  * </tr><tr>
  * <td>edgesConnecting(int, int, boolean, boolean, boolean)</td>
  * <td></td>
