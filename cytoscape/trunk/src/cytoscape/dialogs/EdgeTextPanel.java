@@ -34,6 +34,8 @@ public class EdgeTextPanel extends JPanel {
     Map theMap;
     String theMapKey;
     boolean useThisMap;
+    boolean stateChanged;
+    boolean useMappingGenerally;
 
     public EdgeTextPanel (GraphObjAttributes edgeAttribs,
 			  AttributeMapper aMapper,
@@ -48,7 +50,9 @@ public class EdgeTextPanel extends JPanel {
 	attribKey = new MutableString("");
 	theMap = null;
 	useThisMap=false;
-	
+	stateChanged=false;
+	useMappingGenerally=true;
+
 	this.setLayout (new GridLayout(1,2,10,10));
 	
 	DefaultComboBoxModel boxModel = new DefaultComboBoxModel();
@@ -60,9 +64,21 @@ public class EdgeTextPanel extends JPanel {
 	if(boxModel.getSize()==1) {
 	    theBox.setSelectedIndex(0);
 	    edgeKey.setString((String)boxModel.getElementAt(0));
+	    setupTheMap();
 	}
-	else
-	    theBox.setSelectedItem(edgeKey.getString());
+	else {
+	    if(edgeKey.getString()!=null) {
+		theBox.setSelectedItem(edgeKey.getString());
+		setupTheMap();
+	    }
+	    else {
+		if(boxModel.getSize()>=1) {
+		    theBox.setSelectedIndex(0);
+		    edgeKey.setString((String)boxModel.getElementAt(0));
+		    setupTheMap();
+		}
+	    }
+	}
 	
 	this.add(theBox);
 	
@@ -75,6 +91,15 @@ public class EdgeTextPanel extends JPanel {
     public Map getMap() {
 	return theMap;
     }
+    /** records state changes */
+    public boolean didStateChange() {
+	return stateChanged;
+    }
+    /** returns the mapping bit */
+    public boolean useMappingGenerally() {
+	return useMappingGenerally;
+    }
+
     /** updates the colors on scalable arrows using EdgeArrowColor. */
     public void updateMapperScalableArrows() {
 	/** first loop through the map, making a copy. */
@@ -240,6 +265,7 @@ public class EdgeTextPanel extends JPanel {
 	    ApplyAction () { super (""); }
 	    public void actionPerformed (ActionEvent e) {
 		useThisMap=true;
+		stateChanged = true;
 		ColorToDiscreteDialog.this.dispose ();
 	    }
 	} // CancelAction

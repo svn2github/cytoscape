@@ -29,7 +29,8 @@ import cytoscape.util.MutableBool;
 import cytoscape.dialogs.MiscGB;
 //--------------------------------------------------------------------------------------
 public class VisualPropertiesDialog extends JDialog {
-
+    static Map backupMap=null;
+    static String backupKey=null;
     IconPopupButton shapeDefault;
     IconPopupButton lineTypeDefault;
     IconPopupButton arrowDefault;
@@ -192,16 +193,29 @@ public class ApplyAction extends AbstractAction {
 	if(arrow != null)
 	    o = aMapper.setDefaultValue(VizMapperCategories.EDGE_TARGET_DECORATION, arrow);
 
-	if(edgeTextPanel.getWhetherToUseTheMap()) {
-	    Map m = edgeTextPanel.getMap();
-	    if(m != null) {
-		aMapper.setAttributeMapEntry(VizMapperCategories.EDGE_COLOR,
-					     localEdgeKey.getString(),
-					     new DiscreteMapper(m));
-		
-	    }
-	    edgeTextPanel.updateMapperScalableArrows();
+	Map m = edgeTextPanel.getMap();
+	if(m != null) {
+	    backupMap = m;
+	    backupKey = localEdgeKey.getString();
 	}
+	if(edgeTextPanel.didStateChange()) {
+	    if(edgeTextPanel.getWhetherToUseTheMap()) {
+		if(m != null) {
+		    aMapper.setAttributeMapEntry(VizMapperCategories.EDGE_COLOR,
+						 localEdgeKey.getString(),
+						 new DiscreteMapper(m));
+		}
+		edgeTextPanel.updateMapperScalableArrows();
+	    }
+	    else if(edgeTextPanel.useMappingGenerally()) {
+		if(backupMap != null) {
+		    aMapper.setAttributeMapEntry(VizMapperCategories.EDGE_COLOR,
+						 backupKey,
+						 new DiscreteMapper(backupMap));
+		}
+	    }
+	}
+
 	parentNodeLabelKey.setString(localNodeLabelKey.getString());
 	applied.setBool(true);
 	VisualPropertiesDialog.this.dispose ();
