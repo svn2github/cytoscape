@@ -44,60 +44,60 @@ import cytoscape.data.readers.*;
 //--------------------------------------------------------------------
 /**
  * This class provides a reader for the common file format for expression
- * data and an interface to access the data.
+ * data and an interface to access the data.<P>
  *
  *
  * There are variations in the file format used; the following assumptions
  * about the file format are considered valid. Attempting to read a file
- * that does not satisfy these assumptions is not guaranteed to work.
+ * that does not satisfy these assumptions is not guaranteed to work.<P>
  *
  * 1. A token is a consecutive sequence of alphanumeric characters separated
- *    by whitespace.
+ *    by whitespace.<BR>
  * 2. The file consists of an arbitrary number of lines, each of which
  *    contains the same number of tokens (except for possibly the first line)
- *    and has a total length less than 8193 characters.
+ *    and has a total length less than 8193 characters.<BR>
  * 3. The first line of the file is a header line with one of the following
- *    three formats:
+ *    three formats:<P>
  *
- *    <text> <text> cond1 cond2 ... condN cond1 cond2 ... condN NumSigConds
+ *    <text> <text> cond1 cond2 ... condN cond1 cond2 ... condN NumSigConds<P>
  *
- *    <text> <text> cond1 cond2 ... condN
+ *    <text> <text> cond1 cond2 ... condN<P>
  * 
- *    <\t><\t>RATIOS<\t><\t>...LAMBDAS
+ *    <\t><\t>RATIOS<\t><\t>...LAMBDAS<P>
  *
  * Here cond1 through condN are the names of the conditions. In the first
  * case, the two sequences of condition names must match exactly in order
  * and lexicographically; each name among cond1 ... condN must be unique.
  * In the second case, each name must be unique, but need only appear once.
- * The last label, NumSigConds, is optional.
+ * The last label, NumSigConds, is optional.<BR>
  * The third case is the standard header for a MTX file. The numer of '\t' 
  * characters between the words "RATIOS" and "LAMBDAS" is equal to the number
  * of ratio columns in the file (which must be equal to the number of lambda 
- * columns).
+ * columns).<P>
  *
  * 4. Each successive line represents the measurements for a partcular gene,
- *    and has one of the following two formats, depending on the header:
+ *    and has one of the following two formats, depending on the header:<P>
  *
- *   <FNAME> <CNAME> E E ... E S S ... S I
+ *   <FNAME> <CNAME> E E ... E S S ... S I<P>
  *
- *   <FNAME> <CNAME> E E ... E
+ *   <FNAME> <CNAME> E E ... E<P>
  *
  *  where <FNAME> is the formal name of the gene, <CNAME> is the common name,
  *  the E's are tokens, parsable as doubles, representing the expression
  *  level change for each condition, the S's are tokens parsable as doubles
  *  representing the statistical significance of the expression level change,
  *  and I is an optional integer giving the number of conditions in which
- *  the expression level change was significant for this gene.
+ *  the expression level change was significant for this gene.<P>
  *
  *  The first format is used in conjuction with the first or third header formats.
- *  The second format is used in conjunction with the second header format.
+ *  The second format is used in conjunction with the second header format.<P>
  *
- * 5. An optional last line can be included with the following form:
+ * 5. An optional last line can be included with the following form:<P>
  *
- *  NumSigGenes: I I ... I
+ *  NumSigGenes: I I ... I<P>
  *
  *  where there are N I's, each an integer representing the number of
- *  significant genes in that condition.
+ *  significant genes in that condition.<P>
  */
 public class ExpressionData implements Serializable{
 
