@@ -15,6 +15,7 @@ import phoebe.*;
 import phoebe.util.*;
 
 import cytoscape.view.NetworkView;
+import cytoscape.util.*;
 
 import org.freehep.util.export.ExportDialog;
 
@@ -29,20 +30,13 @@ public class PrintAction extends AbstractAction  {
 
     public void actionPerformed(ActionEvent e) {
 
-   //    if ( System.getProperty("os.name").startsWith( "Windows" ) ) {
-//         cytoscape.util.PrintUtilities.printComponent( ( (PGraphView)networkView.getView() ).getCanvas() );
-//       } else {
-//         PGraphView ginyView = (PGraphView)networkView.getView();
-//         ginyView.getCanvas().getLayer().print();
-//       }
-
-      ( (PGraphView)networkView.getView() ).getCanvas().getCamera().addClientProperty( PrintingFixTextNode.PRINTING_CLIENT_PROPERTY_KEY, "true");
-
-      ExportDialog export = new ExportDialog();
-      export.showExportDialog( ( (PGraphView)networkView.getView() ).getCanvas(), "Export view as ...", ( (PGraphView)networkView.getView() ).getCanvas(), "export" );
-      
-      ( (PGraphView)networkView.getView() ).getCanvas().getCamera().addClientProperty( PrintingFixTextNode.PRINTING_CLIENT_PROPERTY_KEY, null);
-
+	if ( System.getProperty("os.name").startsWith( "Windows" ) ) {
+	    // cytoscape.util.PrintUtilities.printComponent( ( (PGraphView)networkView.getView() ).getCanvas() );
+	} else {
+	    PGraphView ginyView = (PGraphView)networkView.getView();
+	    ginyView.getCanvas().getLayer().print();
+	}
+	
     } // actionPerformed
 }
 
