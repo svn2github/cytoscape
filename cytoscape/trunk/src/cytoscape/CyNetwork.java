@@ -8,6 +8,7 @@ import java.util.*;
 import cytoscape.data.ExpressionData;
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.FlagFilter;
+import cytoscape.data.FlagEventListener;
 
 
 public interface CyNetwork extends GraphPerspective {
@@ -185,6 +186,10 @@ public interface CyNetwork extends GraphPerspective {
   public int[] getFlaggedNodeIndicesArray ()  ;
 
   public int[] getFlaggedEdgeIndicesArray ()  ;
+  
+  public void addFlagEventListener (FlagEventListener listener);
+  
+  public void removeFlagEventListener (FlagEventListener listener);
 
 
   //--------------------//

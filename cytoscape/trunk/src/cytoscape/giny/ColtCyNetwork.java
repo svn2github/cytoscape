@@ -16,6 +16,7 @@ import cytoscape.giny.*;
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.ExpressionData;
 import cytoscape.data.FlagFilter;
+import cytoscape.data.FlagEventListener;
 
 /**
  * ColtCyNetwork extends the GraphPerspective implementation found 
@@ -441,6 +442,14 @@ public class ColtCyNetwork
       edges[count] = ( ( Edge )i.next() ).getRootGraphIndex();
     }
     return edges;
+  }
+  
+  public void addFlagEventListener (FlagEventListener listener) {
+    flagger.addFlagEventListener(listener);
+  }
+  
+  public void removeFlagEventListener (FlagEventListener listener) {
+    flagger.removeFlagEventListener(listener);
   }
 
   
