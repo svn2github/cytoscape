@@ -27,10 +27,15 @@ import cytoscape.view.CyWindow;
  *nodes with a lethal annotation.
  */
 class LethalCoPPFinder{
+  
   /**
-   * The window in which we are looking for paths
+   * Set to quickly determine if two nodes are involved in genetic interaction
    */
-  private CyWindow cyWindow;
+  private NodePairSet geneticPairs;
+  /**
+   * See constructor
+   */
+  private HashMap physicalInteractions;
   /**
    * Contains all nodes known to be involved in genetic interactions
    */
@@ -45,14 +50,33 @@ class LethalCoPPFinder{
   private HashSet geneticInteractions;
   /**
    * Constructor.
-   * @param cyWindow The window in which we are looking for paths
-   * @param geneticInteractionNodes a HashSet containing all nodes involved in a genetic interaction.
+   * @param lethalNodes a list of all lethal nodes in hte network
+   * @param physicalInteractions a hashmap from node=> set of physical target
    * @param geneticInteractions a set of all lethal interactions in  the graph
    */
-  public LethalCoPPFinder(CyWindow cyWindow, HashSet geneticInteractionNodes, HashSet geneticInteractions){
-    this.cyWindow = cyWindow;
-    this.geneticInteractionNodes = geneticInteractionNodes;
+  public LethalCoPPFinder(List lethalNodes, HashMap physicalInteractions, HashSet geneticInteractions){
+    this.physicalInteractions = physicalInteractions;
+    this.lethalNodes = lethalNodes;
     this.geneticInteractions = geneticInteractions;	
+    this.geneticInteractionNodes = getGeneticInteractionNodes(geneticInteractions);
+    this.geneticPairs = new NodePairSet(geneticInteractions);
+  }
+
+
+  /**
+   * Make a set containing all the nodes involved in genetic interactions.
+   * @param geneticInteractions  A vector containing edges which are known to be genetic interactions
+   * @return A HashSet containing all the nodes involved in those interactions
+   */
+  private HashSet getGeneticInteractionNodes(Set geneticInteractions){
+    HashSet result = new HashSet();
+    Iterator giIt = geneticInteractions.iterator();
+    while(giIt.hasNext()){
+      Edge currentEdge = (Edge)giIt.next();
+      result.add(currentEdge.getSource());
+      result.add(currentEdge.getTarget());
+    }
+    return result;
   }
 
   //hacking this together to make it compile, this doesn't really work, just making it 
@@ -61,64 +85,15 @@ class LethalCoPPFinder{
   //the hashmap shoudl eventaully map each edge that is a genetic interaction to a list
   //of lethalCoPPs each of which represents the highest scoring
   public HashMap findLethalCoPPs(int distance, int min, int thread_count){
-    HashMap realResult = new HashMap();
-    RestrictedMinHeap result = new RestrictedMinHeap(GeneticInteractions.RESULTS);
+    HashMap result = new HashMap();
+    for (Iterator edgeIt = geneticInteractions.iterator();edgeIt.hasNext();) {
+      result.put(edgeIt.next(),new Vector());
+    } // end of for ()
+    
     Thread [] threads = new Thread [thread_count];
-    //create a hashmap that maps from each node to a set of physicall interacting nodes
-    HashMap node2Set = new HashMap();
-    GraphPerspective myPerspective = cyWindow.getView().getGraphPerspective();
-    Iterator nodeIt = myPerspective.nodesIterator();
-    GraphObjAttributes edgeAttributes = cyWindow.getNetwork().getEdgeAttributes();
-    while(nodeIt.hasNext()){
-      Node current = (Node)nodeIt.next();
-      Set currentSet = new HashSet();
-      node2Set.put(current,currentSet);
-      Iterator edgeIt = myPerspective.getAdjacentEdgesList(current, true, true, true).iterator();
-      while(edgeIt.hasNext()){
-	Edge currentEdge = (Edge)edgeIt.next();
-	String interaction = (String)edgeAttributes.get("interaction",edgeAttributes.getCanonicalName(currentEdge));
-	if(interaction.equals("pp") || interaction.equals("pd")){
-	  if(currentEdge.getSource() == current){
-	    currentSet.add(currentEdge.getTarget());
-	  }
-	  else{
-	    currentSet.add(currentEdge.getSource());
-	  }
-	}
-	if(interaction.equals("pd")){
-	  if(currentEdge.getTarget() == current){
-	    currentSet.add(currentEdge.getSource());
-	  }
-	}
-      }	
-    }
-
-    //create a list of all lethal nodes
-    lethalNodes = new Vector();
-    GraphObjAttributes nodeAttributes = cyWindow.getNetwork().getNodeAttributes();
-    nodeIt = cyWindow.getView().getGraphPerspective().nodesIterator();
-    while(nodeIt.hasNext()){
-      Node current = (Node)nodeIt.next();
-      String lethal = (String)nodeAttributes.get(GeneticInteractions.LETHAL,nodeAttributes.getCanonicalName(current));
-      if(lethal == null){
-	if(GeneticInteractions.DEBUG){
-	  System.out.println("Unable to lookup value for "+current);
-	}
-      }
-      else{
-	if(lethal.toLowerCase().equals(GeneticInteractions.YES)){
-	  lethalNodes.add(current);
-	}
-	else if(!lethal.toLowerCase().equals(GeneticInteractions.NO)){
-	  throw new RuntimeException("Expected "+GeneticInteractions.YES+" or "+GeneticInteractions.NO+" for attribute "+GeneticInteractions.LETHAL);
-	}
-      }
-    }
-
-
     Iterator lethalIt = lethalNodes.iterator();
     for(int i=0;i<thread_count;i++){
-      threads[i] = new LethalCoPPFinderThread(cyWindow,geneticInteractions,node2Set,lethalIt,geneticInteractionNodes,result,distance,min);
+      threads[i] = new LethalCoPPFinderThread(geneticPairs, geneticInteractions,physicalInteractions,lethalIt,geneticInteractionNodes,result,distance,min);
     }
     for(int i=0;i<thread_count;i++){
       threads[i].start();
@@ -134,7 +109,7 @@ class LethalCoPPFinder{
       }
     }
     //return result;
-    return realResult;
+    return result;
   }
 }
 
@@ -143,10 +118,12 @@ class LethalCoPPFinder{
  * to lethal nodes.
  */
 class LethalCoPPFinderThread extends Thread{
+  
+  private NodePairSet geneticPairs;
   /**
    * Maps from a node to a set of physical neighbors 
    */
-  private HashMap node2Set;
+  private HashMap physicalInteractions;
 
   /**
    * See constructor
@@ -160,7 +137,7 @@ class LethalCoPPFinderThread extends Thread{
   /**
    * See constructor
    */
-  private RestrictedMinHeap result;
+  private HashMap result;
   /**
    * See constructor
    */
@@ -207,10 +184,10 @@ class LethalCoPPFinderThread extends Thread{
    * @param depth The depth of the greedy search
    * @param min The minimum depth of the greedy search (ignore results closer than this)
    */
-  public LethalCoPPFinderThread(CyWindow cyWindow,HashSet geneticInteractions,HashMap node2Set,Iterator lethalIt, HashSet geneticInteractionNodes, RestrictedMinHeap result,int depth,int min){
-    this.cyWindow = cyWindow;
+  public LethalCoPPFinderThread(NodePairSet geneticPairs, HashSet geneticInteractions,HashMap physicalInteractions,Iterator lethalIt, HashSet geneticInteractionNodes, HashMap result,int depth,int min){
+    this.geneticPairs = geneticPairs;
     this.geneticInteractions = geneticInteractions;
-    this.node2Set = node2Set; 
+    this.physicalInteractions = physicalInteractions; 
     this.lethalIt = lethalIt;
     this.geneticInteractionNodes = geneticInteractionNodes;
     this.result = result;
@@ -253,7 +230,7 @@ class LethalCoPPFinderThread extends Thread{
 	Node source = lethal.getSource();
 	Node target = lethal.getTarget();
 	if(reachedNodes.contains(source) && reachedNodes.contains(target)){
-	  findCoPPs(source,target);
+	  findCoPPs(lethal,source,target);
 	}
       }
 
@@ -279,7 +256,7 @@ class LethalCoPPFinderThread extends Thread{
    * @param source the source node of a lethal interaction
    * @param target the target node of a genetic interaction
    */
-  private void findCoPPs(Node source, Node target){
+  private void findCoPPs(Edge lethal, Node source, Node target){
     List sourcePaths = (List)node2Paths.get(source);	
     List targetPaths = (List)node2Paths.get(target);
     //Iteratore through each possible combination of paths
@@ -303,9 +280,25 @@ class LethalCoPPFinderThread extends Thread{
 	  //there is no overlap between these two paths
 	  //create a new lethal copp and add it to the list
 	  //of results
-	  LethalCoPP lethalCoPP = new LethalCoPP(cyWindow,currentSearch,sourcePath,targetPath);
-	  synchronized(result){
-	    result.restrictedInsert(lethalCoPP);
+	  LethalCoPP lethalCoPP = new LethalCoPP(geneticPairs,currentSearch,sourcePath,targetPath);
+	  //synchronized(result){
+	  List bestCoPPs = (List)result.get(lethal);
+	  synchronized(bestCoPPs){
+	    if (bestCoPPs.size() == 0) {
+	      bestCoPPs.add(lethalCoPP);
+	    } // end of if ()
+	    else {
+	      int compare = lethalCoPP.compareTo(bestCoPPs.get(0));	      
+	      if (compare == 0) {
+		bestCoPPs.add(lethalCoPP);
+	      } // end of if ()
+	      else {
+		if (compare > 0) {
+		  bestCoPPs.clear();
+		  bestCoPPs.add(lethalCoPP);
+		}
+	      }
+	    }
 	  }
 	}
       }
@@ -336,7 +329,7 @@ class LethalCoPPFinderThread extends Thread{
       //get the list of next nodes and initiate a
       //search from each of those, if they have not 
       //already been seen
-      Iterator neighborIt = ((Set)node2Set.get(current)).iterator();
+      Iterator neighborIt = ((Set)physicalInteractions.get(current)).iterator();
       while(neighborIt.hasNext()){
 	Node neighbor = (Node)neighborIt.next();
 	if(!seenNodes.contains(neighbor)){

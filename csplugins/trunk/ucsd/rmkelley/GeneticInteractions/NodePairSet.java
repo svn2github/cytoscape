@@ -4,9 +4,12 @@ package csplugins.ucsd.rmkelley.GeneticInteractions;
 //java import statements
 import java.util.HashSet;
 import java.util.HashMap;
+import java.util.Set;
+import java.util.Iterator;
 
 //GINY import statements
 import giny.model.Node;
+import giny.model.Edge;
 
 /**
  * This class keeps track of a set of unordered pairs of nodes
@@ -15,6 +18,15 @@ public class NodePairSet{
   private HashMap node2NodeSet;
   public NodePairSet(){
     node2NodeSet = new HashMap();
+  }
+
+  public NodePairSet(Set edgeSet){
+    node2NodeSet = new HashMap();
+    for (Iterator edgeIt = edgeSet.iterator();edgeIt.hasNext();) {
+      Edge current = (Edge)edgeIt.next();
+      add(current.getSource(),current.getTarget());
+    } // end of for ()
+    
   }
 
   public void add(Node one,Node two){

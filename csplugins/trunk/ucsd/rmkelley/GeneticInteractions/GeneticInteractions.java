@@ -142,36 +142,36 @@ class FindAndScoreLethalCoPPThread extends Thread{
   }
 
   public void run(){
-    GraphPerspective myPerspective = cyWindow.getView().getGraphPerspective();
-    GraphObjAttributes edgeAttributes = cyWindow.getNetwork().getEdgeAttributes();
-    GraphObjAttributes nodeAttributes = cyWindow.getNetwork().getNodeAttributes(); 
     System.out.println("Starting run");
     Date before = new Date();
-    //create a set of all edges that represent genetic interactions
-    if(GeneticInteractions.DEBUG){
-      System.out.println("Finding all genetic interactions");
+    HashMap lethalCoPPs = null;
+    {
+      LethalCoPPFinder lpf = null;
+      //initialize the lethal CoPP finder
+      //create a set of all edges that represent genetic interactions
+      if(GeneticInteractions.DEBUG){
+	System.out.println("Finding all genetic interactions");
+      }
+      HashSet geneticInteractions = getGeneticInteractions(cyWindow);	
+      if (GeneticInteractions.DEBUG) {
+	System.out.println("Finding all physical interactions");
+      } // end of if ()
+      HashMap physicalInteractions = getPhysicalInteractions(cyWindow);
+      if (GeneticInteractions.DEBUG) {
+	System.out.println("Identifying all lethal deletions");
+      } // end of if ()
+      List lethalNodes = getLethalNodes(cyWindow);
+      lpf = new LethalCoPPFinder(lethalNodes,physicalInteractions,geneticInteractions);
+      lethalCoPPs = lpf.findLethalCoPPs(GeneticInteractions.MAX,GeneticInteractions.MIN,GeneticInteractions.THREAD_COUNT);
     }
-    HashSet geneticInteractions = getGeneticInteractions(cyWindow);	
+    for (Iterator keyIt = lethalCoPPs.keySet().iterator();keyIt.hasNext();) {
+      Edge edge = (Edge)keyIt.next();
+      System.out.print(edge + ": " + lethalCoPPs.get(edge)); 
+    } // end of for ()
     
-    //create a set of all nodes involved in some genetic interaction
-    if(GeneticInteractions.DEBUG){
-      System.out.println("Creating set of all nodes involved in genetic interaction");
-    }
-    HashSet geneticInteractionNodes = getGeneticInteractionNodes(geneticInteractions);
+    
+    
 
-    //for each node involved in a genetic interaction, create a hashmap that maps
-    //from lethal nodes to a vector of paths to that lethal
-    if(GeneticInteractions.DEBUG){
-      System.out.println("Finding all genetic interactions within "+GeneticInteractions.MAX+" of a lethal, using "+GeneticInteractions.THREAD_COUNT+" threads");
-      System.out.println("and identifying lethal CoPPs by finding non-overlapping paths");	
-    }
-    LethalCoPPFinder lpf = new LethalCoPPFinder(cyWindow,geneticInteractionNodes,geneticInteractions);
-    //RestrictedMinHeap lethalCoPPs = lpf.findLethalCoPPs(GeneticInteractions.MAX,GeneticInteractions.MIN,GeneticInteractions.THREAD_COUNT);
-    HashSet lethalCoPPs = lpf.findLethalCoPPs(GeneticInteractions.MAX,GeneticInteractions.MIN,GeneticInteractions.THREAD_COUNT);
-
-    LethalCoPPOverlapper lco = new LethalCoPPOverlapper();
-    lco.overlapPaths();
-    lco.getCount();
 }
     
 
@@ -236,21 +236,7 @@ class FindAndScoreLethalCoPPThread extends Thread{
 //   }
 
 
-  /**
-   * Make a set containing all the nodes involved in genetic interactions.
-   * @param geneticInteractions  A vector containing edges which are known to be genetic interactions
-   * @return A HashSet containing all the nodes involved in those interactions
-   */
-  private HashSet getGeneticInteractionNodes(Set geneticInteractions){
-    HashSet result = new HashSet();
-    Iterator giIt = geneticInteractions.iterator();
-    while(giIt.hasNext()){
-      Edge currentEdge = (Edge)giIt.next();
-      result.add(currentEdge.getSource());
-      result.add(currentEdge.getTarget());
-    }
-    return result;
-  }
+
 
   /**
    * Find all edges annotated as a genetic interaction.
@@ -269,6 +255,61 @@ class FindAndScoreLethalCoPPThread extends Thread{
       }
     }
     return result;
+  }
+
+  private HashMap getPhysicalInteractions(CyWindow cyWindow){
+    HashMap result = new HashMap();
+    GraphPerspective myPerspective = cyWindow.getView().getGraphPerspective();
+    Iterator nodeIt = myPerspective.nodesIterator();
+    GraphObjAttributes edgeAttributes = cyWindow.getNetwork().getEdgeAttributes();
+    while(nodeIt.hasNext()){
+      Node current = (Node)nodeIt.next();
+      Set currentSet = new HashSet();
+      result.put(current,currentSet);
+      Iterator edgeIt = myPerspective.getAdjacentEdgesList(current, true, true, true).iterator();
+      while(edgeIt.hasNext()){
+	Edge currentEdge = (Edge)edgeIt.next();
+	String interaction = (String)edgeAttributes.get("interaction",edgeAttributes.getCanonicalName(currentEdge));
+	if(interaction.equals("pp") || interaction.equals("pd")){
+	  if(currentEdge.getSource() == current){
+	    currentSet.add(currentEdge.getTarget());
+	  }
+	  else{
+	    currentSet.add(currentEdge.getSource());
+	  }
+	}
+	if(interaction.equals("pd")){
+	  if(currentEdge.getTarget() == current){
+	    currentSet.add(currentEdge.getSource());
+	  }
+	}
+      }	
+    }
+    return result;
+  }
+
+  private List getLethalNodes(CyWindow cyWindow){
+    Vector lethalNodes = new Vector();
+    GraphObjAttributes nodeAttributes = cyWindow.getNetwork().getNodeAttributes();
+    Iterator nodeIt = cyWindow.getView().getGraphPerspective().nodesIterator();
+    while(nodeIt.hasNext()){
+      Node current = (Node)nodeIt.next();
+      String lethal = (String)nodeAttributes.get(GeneticInteractions.LETHAL,nodeAttributes.getCanonicalName(current));
+      if(lethal == null){
+	if(GeneticInteractions.DEBUG){
+	  System.out.println("Unable to lookup value for "+current);
+	}
+      }
+      else{
+	if(lethal.toLowerCase().equals(GeneticInteractions.YES)){
+	  lethalNodes.add(current);
+	}
+	else if(!lethal.toLowerCase().equals(GeneticInteractions.NO)){
+	  throw new RuntimeException("Expected "+GeneticInteractions.YES+" or "+GeneticInteractions.NO+" for attribute "+GeneticInteractions.LETHAL);
+	}
+      }
+    }
+    return lethalNodes;
   }
 }
 

@@ -84,11 +84,11 @@
 	
 	<target name="test" depends="jar" description="Runs jar to debug">
 		<java classname="cytoscape.cytoscape" classpathref="classpath_run" fork="true">
-			<arg line="-n testData/small.attr -i testData/small.sif --JLD build/${plugin.name}.jar --GImin 2 --GImax 3 --GIdebug"/>
+			<arg line="-n testData/ryan.attr -i testData/ryan.sif --JLD build/${plugin.name}.jar --GImin 1 --GImax 4 --GIdebug"/>
 			<jvmarg value="-Xdebug"/>
 			<jvmarg value="-Xnoagent"/>
 			<jvmarg value="-Djava.compiler=NONE"/>
-			<jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,suspend=y"/>
+			<jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,suspend=n"/>
 		</java>
 	</target>
 	
