@@ -1,0 +1,215 @@
+<project name="layouter" default="layouter" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init-layouter">
+    <tstamp/>
+    <property name="layouter.Name" value="layouter"/>
+    <property name="layouter.name" value="layouter"/>
+    <property name="layouter.version" value="0.1"/>
+    <property name="layouter.year" value="200"/>
+
+    <echo message="Building ${layouter.name} version ${layouter.version}."/>
+
+    <!-- Inheritable properties -->
+    <property name="debug" value="on"/>
+    <property name="optimize" value="off"/>
+    <property name="deprecation" value="on"/>
+    <property name="nowarn" value="true"/>
+    <property name="fork" value="false"/>
+    <property name="layouter.root.dir" value="."/>
+    <property name="layouter.lib.dir" value="${layouter.root.dir}/lib"/>
+    <property name="cytoscape.lib.dir" value="${layouter.root.dir}/../../../../cytoscape/lib"/>
+    <property name="cytoscape.plugin.dir" value="${layouter.root.dir}/../../../../cytoscape/plugins"/>
+    <path id="project.class.path">
+      <pathelement path="${java.class.path}/"/>
+    </path>
+
+    <!-- Define the directories -->
+    <property name="layouter.root.dir" value="./"/>
+    <property name="layouter.src.dir" value="${layouter.root.dir}/src"/>
+    <property name="layouter.classes.dir" value="${layouter.root.dir}/classes"/>
+    <property name="layouter.javadoc.dir" value="${javadoc.dir}/layouter"/>
+    <property name="layouter.resources.dir" value="${layouter.root.dir}/resources"/>
+    <property name="layouter.manifest.dir" value="${layouter.root.dir}/manifest"/>
+    <property name="layouter.packages" value="layouter.*"/>
+    <!-- Subdirectory for test reports -->
+    <property name="layouter.tests.reports.dir" value="${layouter.root.dir}/reports/tests" />
+    <property name="cytoscape.lib" value="../../cytoscape/lib" />
+
+    <!-- Define the condition for compilation -->
+    <property name="cytoscape.jar" value="${layouter.lib.dir}/cytoscape.jar"/>
+    <property name="colt.jar" value="${layouter.lib.dir}/colt.jar"/>
+    
+
+    <condition property="cytoscape.present">
+      <and> 
+	  		<available file="${cytoscape.jar}"/> 
+				<available file="${colt.jar}"/> 
+		  </and>
+    </condition>
+
+    <!-- Define excludes for layouter compile and javadoc -->
+    <property name="layouter.excludes" value="**/notyet/*"/>
+    <property name="layouter.tests.excludes" value="**/notyet/*"/>
+    <property name="layouter.packages.excludes" value="**.test.*,**.notyet.*"/>
+
+    <path id="layouter.project.class.path">
+      <pathelement location="${layouter.classes.dir}"/>
+      <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape.jar"/>
+     
+      <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/piccolo.jar"/>
+       <pathelement location="${cytoscape.lib.dir}/piccolox.jar"/>
+      <pathelement path="${project.class.path}/"/>
+    </path>
+
+    <filter token="year" value="${year}"/>
+    <filter token="version" value="${version}"/>
+    <filter token="date" value="${TODAY}"/>
+
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the layouter project                                           -->
+  <!-- =================================================================== -->
+  <target name="compile-layouter" depends="init-layouter"  >
+
+   <echo message=" COMPILE layouter "/>
+
+    <mkdir dir="${layouter.classes.dir}"/>
+    <javac srcdir="${layouter.src.dir}"
+           excludes="${layouter.excludes}"
+           classpathref="layouter.project.class.path"
+           destdir="${layouter.classes.dir}"
+           debug="${debug}"
+           nowarn="${nowarn}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the layouter.jar file                                           -->
+  <!-- =================================================================== -->
+  <target name="layouter" depends="compile-layouter"  >
+    <jar destfile="layouter.jar" manifest="${layouter.manifest.dir}/layouter.manifest">
+      <fileset
+        dir="${layouter.classes.dir}"
+        includes="**"/>
+      <fileset
+        dir="${layouter.root.dir}/lib"
+        includes="resources/**"/>
+      <fileset 
+        dir="${layouter.root.dir}/images"/>
+    </jar>
+    <copy todir="${layouter.lib.dir}" file="layouter.jar"/>
+    <copy todir="${cytoscape.plugin.dir}" file="layouter.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the layouter tests                                             -->
+  <!-- =================================================================== -->
+  <target name="compile-tests" depends="layouter"  >
+    <mkdir dir="${layouter.classes.dir}"/>
+    <javac srcdir="${layouter.src.dir}"
+           includes="**/test/*"
+           excludes="${layouter.tests.excludes}"
+           classpathref="layouter.project.class.path"
+           destdir="${layouter.classes.dir}"
+           debug="${debug}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the layouter-tests.jar file                                     -->
+  <!-- =================================================================== -->
+  <target name="tests" depends="compile-tests"  >
+    <jar jarfile="layouter-tests.jar"
+         basedir="${layouter.classes.dir}"
+         includes="**/test/*"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Build all jars                                                      -->
+  <!-- =================================================================== -->
+  <target name="all" depends="layouter"/>
+
+   <!-- =================================================================== -->
+  <!-- Run the Plugin                                                      -->
+  <!-- =================================================================== -->
+  <target name="run" depends="layouter" >
+     
+     <java classname="cytoscape.cytoscape" 
+           classpathref="layouter.project.class.path"
+           fork="true"/>
+           <arg value = "--JLD"/>
+           <arg value = "${layouter.lib.dir}/layouter.jar"/>
+           
+
+  </target>
+
+
+
+  <!-- =================================================================== -->
+  <!-- Runs the tests in layouter-tests.jar                                    -->
+  <!-- =================================================================== -->
+  <target name="runtests" depends="tests"  >
+    <mkdir dir="${layouter.tests.reports.dir}"/>
+    <junit
+       printsummary="yes"
+       haltonfailure="no"
+       dir="${layouter.classes.dir}"
+       maxmemory="1G"
+    >
+      <formatter type="plain" usefile="true" />
+      <classpath refid="layouter.project.class.path"/>
+      <!-- The junit task doesn't support 'if' so we test for JUnit here -->
+      <batchtest fork="yes" todir="${layouter.tests.reports.dir}" if="junit.present">
+        <fileset
+           dir="${layouter.classes.dir}"
+           includes="**/test/*"
+           excludes="${layouter.tests.excludes}"
+        />
+      </batchtest>
+    </junit>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the API documentation                                       -->
+  <!-- =================================================================== -->
+  <target name="docs" depends="init-layouter" >
+    <mkdir dir="${layouter.javadoc.dir}"/>
+    <javadoc packagenames="${layouter.packages}"
+             excludepackagenames="${layouter.packages.excludes}"
+             sourcepath="${layouter.src.dir}"
+             destdir="${layouter.javadoc.dir}"
+             classpathref="layouter.project.class.path"
+             author="true"
+             version="true"
+             use="true"
+             splitindex="true"
+             noindex="false"
+             windowtitle="${layouter.Name} API"
+             doctitle="${layouter.Name}"
+    />
+  </target>
+ 
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init-layouter">
+    <delete dir="${layouter.classes.dir}"/>
+    <delete file="layouter.jar"/>
+    <delete file="layouter-tests.jar"/>
+  </target>
+
+</project>
+
+<!-- End of file -->
