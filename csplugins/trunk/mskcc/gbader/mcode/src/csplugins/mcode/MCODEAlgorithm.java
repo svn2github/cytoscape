@@ -1,12 +1,11 @@
 package csplugins.mcode;
 
-import cytoscape.data.GraphObjAttributes;
+import cytoscape.CyNetwork;
 import giny.model.GraphPerspective;
 
 import java.util.*;
 
-/** Copyright (c) 2003 Institute for Systems Biology, University of
- ** California at San Diego, and Memorial Sloan-Kettering Cancer Center.
+/** Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
  **
  ** Code written by: Gary Bader
  ** Authors: Gary Bader, Ethan Cerami, Chris Sander
@@ -45,6 +44,7 @@ import java.util.*;
  **/
 public class MCODEAlgorithm {
 
+    //data structure for storing information required for each node
 	private class NodeInfo {
 		double density;         //neighborhood density
 		int numNodeNeighbors;   //number of node nieghbors
@@ -65,113 +65,26 @@ public class MCODEAlgorithm {
 	private HashMap nodeInfoHashMap; //key is the node index, value is a NodeInfo instance
 	private TreeMap nodeScoreSortedMap; //key is node score, value is nodeIndex
 
-	//parameters
-	//used in scoring stage
-	private boolean includeLoops;
-	private int degreeCutOff;
-	//used in complex finding stage
-	private int maxDepthFromStart;
-	private double nodeScoreCutOff;
-	private boolean fluff;
-	private boolean haircut;
-	private double fluffNodeDensityCutOff;
-	//used in directed mode
-	private boolean preprocessNetwork;
+    private MCODEParameterSet params;   //the parameters used for this instance of the algorithm
 
 	public MCODEAlgorithm() {
-		//default parameters
-		includeLoops = false;
-		maxDepthFromStart = 100;  //effectively unlimited
-		degreeCutOff = 2; //don't count nodes of degree 1
-		nodeScoreCutOff = 0.2;    //user should change this as the main parameter
-		fluff = false;
-		haircut = true;
-		fluffNodeDensityCutOff = 0.1; //user should change this if fluffing
-
 		//init class members
 		nodeInfoHashMap = null;
 		nodeScoreSortedMap = null;
-	}
-
-	//parameter setting
-	public boolean isIncludeLoops() {
-		return includeLoops;
-	}
-
-	public void setIncludeLoops(boolean includeLoops) {
-		this.includeLoops = includeLoops;
-	}
-
-	public int getDegreeCutOff() {
-		return degreeCutOff;
-	}
-
-	public void setDegreeCutOff(int degreeCutOff) {
-		this.degreeCutOff = degreeCutOff;
-	}
-
-	public int getMaxDepthFromStart() {
-		return maxDepthFromStart;
-	}
-
-	public void setMaxDepthFromStart(int maxDepthFromStart) {
-		this.maxDepthFromStart = maxDepthFromStart;
-	}
-
-	public double getNodeScoreCutOff() {
-		return nodeScoreCutOff;
-	}
-
-	public void setNodeScoreCutOff(double nodeScoreCutOff) {
-		this.nodeScoreCutOff = nodeScoreCutOff;
-	}
-
-	public boolean isFluff() {
-		return fluff;
-	}
-
-	public void setFluff(boolean fluff) {
-		this.fluff = fluff;
-	}
-
-	public boolean isHaircut() {
-		return haircut;
-	}
-
-	public void setHaircut(boolean haircut) {
-		this.haircut = haircut;
-	}
-
-	public double getFluffNodeDensityCutOff() {
-		return fluffNodeDensityCutOff;
-	}
-
-	public void setFluffNodeDensityCutOff(double fluffNodeDensityCutOff) {
-		this.fluffNodeDensityCutOff = fluffNodeDensityCutOff;
-	}
-
-	public boolean isPreprocessNetwork() {
-		return preprocessNetwork;
-	}
-
-	public void setPreprocessNetwork(boolean preprocessNetwork) {
-		this.preprocessNetwork = preprocessNetwork;
+        //get current parameters
+        params = MCODECurrentParameters.getInstance().getParamsCopy();
 	}
 
 	//Step 1 - score the graph and save scores as node attributes
-	public void scoreGraph(GraphPerspective gpInputGraph, GraphObjAttributes nodeAttributes) {
+	public void scoreGraph(CyNetwork inputNetwork) {
 		String callerID = "MCODEAlgorithm.MCODEAlgorithm";
-		if (gpInputGraph == null) {
-			System.err.println("In " + callerID + ": gpInputGraph was null.");
-			return;
-		}
-		if (nodeAttributes == null) {
-			System.err.println("In " + callerID + ": nodeAttributes was null.");
+		if (inputNetwork == null) {
+			System.err.println("In " + callerID + ": inputNetwork was null.");
 			return;
 		}
 
 		//initialize
-		nodeInfoHashMap = new HashMap(gpInputGraph.getNodeCount());
+		nodeInfoHashMap = new HashMap(inputNetwork.getNodeCount());
 		nodeScoreSortedMap = new TreeMap(new Comparator() { //will store Doubles
 			//sort Doubles in descending order
 			public int compare(Object o1, Object o2) {
@@ -189,23 +102,23 @@ public class MCODEAlgorithm {
 		//iterate over all nodes and calculate MCODE score
 		NodeInfo nodeInfo = null;
 		double nodeScore;
-		for (int i = 1; i <= gpInputGraph.getNodeCount(); i++) {
-			nodeInfo = calcNodeInfo(gpInputGraph, i);
+		for (int i = 1; i <= inputNetwork.getNodeCount(); i++) {
+			nodeInfo = calcNodeInfo(inputNetwork, i);
 			nodeInfoHashMap.put(new Integer(i), nodeInfo);
 			//score node TODO: add support for other scoring functions (low priority)
 			nodeScore = scoreNode(nodeInfo);
 			//record score as a nodeAttribute
-			nodeAttributes.set("MCODE_SCORE", gpInputGraph.getNode(i).getIdentifier(), nodeScore);
+            inputNetwork.setNodeAttributeValue(i, "MCODE_SCORE", new Double(nodeScore));
 			//save score for later use in TreeMap
 			nodeScoreSortedMap.put(new Double(nodeScore), new Integer(i));
 		}
 	}
 
 	//Step 2: find all complexes given a scored graph
-	public ArrayList findComplexes(GraphPerspective gpInputGraph) {
+	public ArrayList findComplexes(CyNetwork inputNetwork) {
 		String callerID = "MCODEAlgorithm.findComplexes";
-		if (gpInputGraph == null) {
-			System.err.println("In " + callerID + ": gpInputGraph was null.");
+		if (inputNetwork == null) {
+			System.err.println("In " + callerID + ": inputNetwork was null.");
 			return (null);
 		}
 		if ((nodeInfoHashMap == null) || (nodeScoreSortedMap == null)) {
@@ -214,11 +127,11 @@ public class MCODEAlgorithm {
 		}
 
 		//initialization
-		boolean[] nodeSeenArray = new boolean[gpInputGraph.getNodeCount() + 1]; //+1 since node indices start at 1
+		boolean[] nodeSeenArray = new boolean[inputNetwork.getNodeCount() + 1]; //+1 since node indices start at 1
 		Arrays.fill(nodeSeenArray, false);
 		int currentNode = 0;
 		Collection values = nodeScoreSortedMap.values();
-		//stores the list of complexes as ArrayLists of node indices in the input GraphPerspective
+		//stores the list of complexes as ArrayLists of node indices in the input Network
 		ArrayList alComplexes = new ArrayList();
 		//iterate over node indices sorted descending by their score
 		for (Iterator iterator = values.iterator(); iterator.hasNext();) {
@@ -237,12 +150,12 @@ public class MCODEAlgorithm {
                         int nodeIndex = ((Integer) complex.get(i)).intValue();
                         complexArray[i] = nodeIndex;
                     }
-                    GraphPerspective gpComplexGraph = gpInputGraph.createGraphPerspective(complexArray);
+                    GraphPerspective gpComplexGraph = inputNetwork.createGraphPerspective(complexArray);
 					if (!filterComplex(gpComplexGraph)) {
-                        if (haircut) {
-                            haircutComplex(gpComplexGraph, complex, gpInputGraph);
+                        if (params.isHaircut()) {
+                            haircutComplex(gpComplexGraph, complex, inputNetwork);
                         }
-                        if (fluff) {
+                        if (params.isFluff()) {
                             fluffComplexBoundary(complex, nodeSeenArray);
                         }
                         //store detected complex for later
@@ -258,7 +171,7 @@ public class MCODEAlgorithm {
 	//score node using formula from original MCODE paper
 	//This formula selects for larger, denser cores
 	private double scoreNode(NodeInfo nodeInfo) {
-		if (nodeInfo.numNodeNeighbors > degreeCutOff) {
+		if (nodeInfo.numNodeNeighbors > params.getDegreeCutOff()) {
 			nodeInfo.score = nodeInfo.coreDensity * (double) nodeInfo.coreLevel;
 		} else {
 			nodeInfo.score = 0.0;
@@ -280,17 +193,17 @@ public class MCODEAlgorithm {
 
 	//Calculates node information for each node according to the original MCODE publication
 	//This information is used to score the nodes
-	private NodeInfo calcNodeInfo(GraphPerspective gpInputGraph, int nodeIndex) {
+	private NodeInfo calcNodeInfo(CyNetwork inputNetwork, int nodeIndex) {
 		int[] neighborhood;
 
 		String callerID = "MCODEAlgorithm.calcNodeInfo";
-		if (gpInputGraph == null) {
+		if (inputNetwork == null) {
 			System.err.println("In " + callerID + ": gpInputGraph was null.");
 			return null;
 		}
 
 		//get neighborhood of this node (including the node)
-		int[] neighbors = gpInputGraph.neighborsArray(nodeIndex);
+		int[] neighbors = inputNetwork.neighborsArray(nodeIndex);
 		if (neighbors.length < 2) {
 			//if there are no neighbors or just one neighbor, nodeInfo calculation is trivial
 			NodeInfo nodeInfo = new NodeInfo();
@@ -312,7 +225,7 @@ public class MCODEAlgorithm {
 		}
 
 		//extract neighborhood subgraph
-		GraphPerspective gpNodeNeighborhood = gpInputGraph.createGraphPerspective(neighborhood);
+		GraphPerspective gpNodeNeighborhood = inputNetwork.createGraphPerspective(neighborhood);
 		if (gpNodeNeighborhood == null) {
 			//this shouldn't happen
 			System.err.println("In " + callerID + ": gpNodeNeighborhood was null.");
@@ -323,7 +236,7 @@ public class MCODEAlgorithm {
 		NodeInfo nodeInfo = new NodeInfo();
 		//density
 		if (gpNodeNeighborhood != null) {
-			nodeInfo.density = calcDensity(gpNodeNeighborhood, includeLoops);
+			nodeInfo.density = calcDensity(gpNodeNeighborhood, params.isIncludeLoops());
 		}
 		nodeInfo.numNodeNeighbors = neighborhood.length;
 		//calculate the highest k-core
@@ -336,7 +249,7 @@ public class MCODEAlgorithm {
 		/*calculate the core density - amplifies the density of heavily interconnected regions and attenuates
 		that of less connected regions*/
 		if (gpCore != null) {
-			nodeInfo.coreDensity = calcDensity(gpCore, includeLoops);
+			nodeInfo.coreDensity = calcDensity(gpCore, params.isIncludeLoops());
 		}
 		//record neighbor array for later use in comkplex detection step
 		nodeInfo.nodeNeighbors = neighborhood;
@@ -356,7 +269,7 @@ public class MCODEAlgorithm {
 		if (nodeSeenArray[startNode] == true) {
 			return (true);  //don't recheck a node
 		}
-		if (currentDepth > maxDepthFromStart) {
+		if (currentDepth > params.getMaxDepthFromStart()) {
 			return (true);  //don't exceed given depth from start node
 		}
 
@@ -368,7 +281,8 @@ public class MCODEAlgorithm {
 			//go through all currentNode neighbors to check their core density for complex inclusion
 			currentNeighbor = ((NodeInfo) nodeInfoHashMap.get(new Integer(startNode))).nodeNeighbors[i];
 			if ((nodeSeenArray[currentNeighbor] == false) &&
-			        (((NodeInfo) nodeInfoHashMap.get(new Integer(currentNeighbor))).score >= (startNodeScore - startNodeScore * nodeScoreCutOff))) {
+			        (((NodeInfo) nodeInfoHashMap.get(new Integer(currentNeighbor))).score >=
+                    (startNodeScore - startNodeScore * params.getNodeScoreCutOff()))) {
 				//add current neighbor
                 if (!complex.contains(new Integer(currentNeighbor))) {
 				    complex.add(new Integer(currentNeighbor));
@@ -398,7 +312,7 @@ public class MCODEAlgorithm {
 			for (int j = 0; j < ((NodeInfo) nodeInfoHashMap.get(new Integer(currentNode))).numNodeNeighbors; j++) {
 				nodeNeighbor = ((NodeInfo) nodeInfoHashMap.get(new Integer(currentNode))).nodeNeighbors[j];
 				if ((nodeSeenArrayInternal[nodeNeighbor] == false) &&
-				        ((((NodeInfo) nodeInfoHashMap.get(new Integer(nodeNeighbor))).density) > fluffNodeDensityCutOff)) {
+				        ((((NodeInfo) nodeInfoHashMap.get(new Integer(nodeNeighbor))).density) > params.getFluffNodeDensityCutOff())) {
 					nodesToAdd.add(new Integer(nodeNeighbor));
 					nodeSeenArrayInternal[nodeNeighbor] = true;
 				}
@@ -444,7 +358,7 @@ public class MCODEAlgorithm {
         return (true);
     }
 
-	//TODO: move the following methods into GINY, since they are general for graphs
+	//calculate the density of a network
 	public double calcDensity(GraphPerspective gpInputGraph, boolean includeLoops) {
 		int possibleEdgeNum = 0, actualEdgeNum = 0, loopCount = 0;
 		double density = 0;

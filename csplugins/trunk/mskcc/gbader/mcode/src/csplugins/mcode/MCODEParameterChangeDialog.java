@@ -9,8 +9,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
 
-/** Copyright (c) 2003 Institute for Systems Biology, University of
- ** California at San Diego, and Memorial Sloan-Kettering Cancer Center.
+/** Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center.
  **
  ** Code written by: Gary Bader
  ** Authors: Gary Bader, Ethan Cerami, Chris Sander
@@ -51,17 +50,7 @@ public class MCODEParameterChangeDialog extends JDialog {
 	private MCODEAlgorithm alg;
 
     //Parameters for MCODE
-	//used in scoring stage
-	private boolean includeLoops;
-	private int degreeCutOff;
-	//used in cluster finding stage
-	private int maxDepthFromSeed;
-	private double nodeScoreCutOff;
-	private boolean fluff;
-	private boolean haircut;
-	private double fluffNodeDensityCutOff;
-	//used in directed mode
-	private boolean preprocessNetwork;
+    MCODEParameterSet currentParamsCopy;    //stores current parameters - populates dialog box fields
 
 	//resetable UI elements
     //scoring
@@ -80,9 +69,8 @@ public class MCODEParameterChangeDialog extends JDialog {
 		super(parentFrame, "MCODE Parameters", false);
 		setResizable(false);
 
-		//get MCODE algorithm instance
-		alg = MCODE.alg;
-		initParams(alg);
+		//get the current parameters
+        currentParamsCopy = MCODECurrentParameters.getInstance().getParamsCopy();
 
 		//main panel for dialog box
 		JPanel panel = new JPanel(new BorderLayout());
@@ -97,7 +85,7 @@ public class MCODEParameterChangeDialog extends JDialog {
 		includeLoopsCheckBox.addItemListener(new MCODEParameterChangeDialog.includeLoopsCheckBoxAction());
 		includeLoopsCheckBox.setToolTipText("If checked, MCODE will include loops (self-edges) in the neighborhood\n" +
 		        "density calculation.  This is expected to make a small difference in the results.");
-		includeLoopsCheckBox.setSelected(includeLoops);
+		includeLoopsCheckBox.setSelected(currentParamsCopy.isIncludeLoops());
 		scorePanel.add(includeLoopsCheckBox);
 
         DecimalFormat decFormat = new DecimalFormat();
@@ -114,7 +102,7 @@ public class MCODEParameterChangeDialog extends JDialog {
                 "By default this is set to 2. Valid values are 2 or higher to prevent singly connected nodes\n" +
                 "from getting an artificially high node score.";
         degreeCutOffFormattedTextField.setToolTipText(tipText1);
-        degreeCutOffFormattedTextField.setText((new Integer(degreeCutOff).toString()));
+        degreeCutOffFormattedTextField.setText((new Integer(currentParamsCopy.getDegreeCutOff()).toString()));
         JLabel degreeCutOffLabel = new JLabel("Degree Cutoff");
         JPanel labelFieldPanel1 = new JPanel() {
             public JToolTip createToolTip() {
@@ -144,7 +132,7 @@ public class MCODEParameterChangeDialog extends JDialog {
                 "This is the most important parameter to control the size of MCODE clusters,\n" +
                 "with smaller values creating smaller clusters.";
         nodeScoreCutOffFormattedTextField.setToolTipText(tipText3);
-        nodeScoreCutOffFormattedTextField.setText((new Double(nodeScoreCutOff).toString()));
+        nodeScoreCutOffFormattedTextField.setText((new Double(currentParamsCopy.getNodeScoreCutOff()).toString()));
         JLabel nodeScoreCutOffLabel = new JLabel("Node Score Cutoff");
         JPanel labelFieldPanel3 = new JPanel(new FlowLayout(FlowLayout.LEFT)) {
             public JToolTip createToolTip() {
@@ -164,7 +152,7 @@ public class MCODEParameterChangeDialog extends JDialog {
         haircutCheckBox.addItemListener(new MCODEParameterChangeDialog.haircutCheckBoxAction());
         haircutCheckBox.setToolTipText("If checked, MCODE will give clusters a haircut\n" +
                 "(remove singly connected nodes).");
-        haircutCheckBox.setSelected(haircut);
+        haircutCheckBox.setSelected(currentParamsCopy.isHaircut());
         mainOptionsSubPanel.add(haircutCheckBox, BorderLayout.EAST);
 
         fluffNodeDensityCutOffFormattedTextField  = new JFormattedTextField(new DecimalFormat("0.000")) {
@@ -179,8 +167,8 @@ public class MCODEParameterChangeDialog extends JDialog {
                 "This allows clusters to slightly overlap at their edges. This parameter is only valid if fluffing\n" +
                 "is turned on. A higher value will expand the cluster more.";
         fluffNodeDensityCutOffFormattedTextField.setToolTipText(tipText4);
-        fluffNodeDensityCutOffFormattedTextField.setText((new Double(fluffNodeDensityCutOff).toString()));
-        fluffNodeDensityCutOffFormattedTextField.setEnabled(fluff);
+        fluffNodeDensityCutOffFormattedTextField.setText((new Double(currentParamsCopy.getFluffNodeDensityCutOff()).toString()));
+        fluffNodeDensityCutOffFormattedTextField.setEnabled(currentParamsCopy.isFluff());
         JLabel fluffNodeDensityCutOffLabel = new JLabel("Fluff Node Density Cutoff");
         JPanel labelFieldPanel4 = new JPanel(new FlowLayout(FlowLayout.LEFT)) {
             public JToolTip createToolTip() {
@@ -201,7 +189,7 @@ public class MCODEParameterChangeDialog extends JDialog {
         fluffCheckBox.setToolTipText("If checked, MCODE will fluff clusters\n" +
                 "(expand core cluster one neighbour shell outwards according to fluff\n" +
                 "density cutoff). This is done after the optional haircut step.");
-        fluffCheckBox.setSelected(fluff);
+        fluffCheckBox.setSelected(currentParamsCopy.isFluff());
         fluffOptionsPanel.add(fluffCheckBox);
 
         mainOptionsPanel.setBorder(BorderFactory.createTitledBorder("Main Options"));
@@ -221,7 +209,7 @@ public class MCODEParameterChangeDialog extends JDialog {
                 "By default this is set to an arbitrarily large number. Set this to a small number\n" +
                 "to limit cluster size.";
         maxDepthFormattedTextField.setToolTipText(tipText2);
-        maxDepthFormattedTextField.setText((new Integer(maxDepthFromSeed).toString()));
+        maxDepthFormattedTextField.setText((new Integer(currentParamsCopy.getMaxDepthFromStart()).toString()));
         JLabel maxDepthLabel = new JLabel("Max. Depth");
         JPanel labelFieldPanel2 = new JPanel() {
             public JToolTip createToolTip() {
@@ -244,13 +232,13 @@ public class MCODEParameterChangeDialog extends JDialog {
 		processCheckBox.setToolTipText("If checked, MCODE will limit cluster expansion to the\n" +
 		        "direct neighborhood of the spawning node.  If unchecked, the cluster will be allowed\n" +
 		        "to branch out to denser regions of the network.");
-		processCheckBox.setSelected(preprocessNetwork);
+		processCheckBox.setSelected(currentParamsCopy.isPreprocessNetwork());
 		directedModePanel.add(processCheckBox);
 
 		JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.addTab("Network Scoring", null, scorePanel, "Set parameters for scoring stage (Stage 1)");
         tabbedPane.addTab("Find Clusters", null, findPanel, "Set parameters for cluster finding stage (Stage 2)");
-        //uncomment below when directed mode is implemented
+        //TODO: uncomment below when directed mode is implemented
 		//tabbedPane.addTab("Directed Mode", null, directedModePanel, "Set parameters for directed mode");
 		panel.add(tabbedPane, BorderLayout.CENTER);
 
@@ -269,32 +257,8 @@ public class MCODEParameterChangeDialog extends JDialog {
 		setContentPane(panel);
 	}
 
-	private void initParams(MCODEAlgorithm alg) {
-		//used in scoring stage
-		includeLoops = alg.isIncludeLoops();
-		degreeCutOff = alg.getDegreeCutOff();
-		//used in cluster finding stage
-		maxDepthFromSeed = alg.getMaxDepthFromStart();
-		nodeScoreCutOff = alg.getNodeScoreCutOff();
-		fluff = alg.isFluff();
-		haircut = alg.isHaircut();
-		fluffNodeDensityCutOff = alg.getFluffNodeDensityCutOff();
-		//used in directed mode
-		preprocessNetwork = alg.isPreprocessNetwork();
-	}
-
 	private void saveParams(MCODEAlgorithm alg) {
-		//used in scoring stage
-		alg.setIncludeLoops(includeLoops);
-		alg.setDegreeCutOff(degreeCutOff);
-		//used in cluster finding stage
-		alg.setMaxDepthFromStart(maxDepthFromSeed);
-		alg.setNodeScoreCutOff(nodeScoreCutOff);
-		alg.setFluff(fluff);
-		alg.setHaircut(haircut);
-		alg.setFluffNodeDensityCutOff(fluffNodeDensityCutOff);
-		//used in directed mode
-		alg.setPreprocessNetwork(preprocessNetwork);
+		MCODECurrentParameters.getInstance().setParams(currentParamsCopy);
 	}
 
 	private class OKAction extends AbstractAction {
@@ -327,9 +291,9 @@ public class MCODEParameterChangeDialog extends JDialog {
 	private class includeLoopsCheckBoxAction implements ItemListener {
 		public void itemStateChanged(ItemEvent e) {
 			if (e.getStateChange() == ItemEvent.DESELECTED) {
-				includeLoops = false;
+				currentParamsCopy.setIncludeLoops(false);
 			} else {
-				includeLoops = true;
+                currentParamsCopy.setIncludeLoops(true);
 			}
 		}
 	}
@@ -340,22 +304,22 @@ public class MCODEParameterChangeDialog extends JDialog {
             if (source == degreeCutOffFormattedTextField) {
                 Number value = (Number) degreeCutOffFormattedTextField.getValue();
                 if ((value != null) && (value.intValue() > 1)) {
-                    degreeCutOff = value.intValue();
+                    currentParamsCopy.setDegreeCutOff(value.intValue());
                 }
             } else if (source == maxDepthFormattedTextField) {
                 Number value = (Number) maxDepthFormattedTextField.getValue();
                 if ((value != null) && (value.intValue() > 0)) {
-                    maxDepthFromSeed = value.intValue();
+                    currentParamsCopy.setMaxDepthFromStart(value.intValue());
                 }
             } else if (source == nodeScoreCutOffFormattedTextField) {
                 Number value = (Number) nodeScoreCutOffFormattedTextField.getValue();
                 if ((value != null) && (value.doubleValue() >= 0.0)) {
-                    nodeScoreCutOff = value.doubleValue();
+                    currentParamsCopy.setNodeScoreCutOff(value.doubleValue());
                 }
             } else if (source == fluffNodeDensityCutOffFormattedTextField) {
                 Number value = (Number) fluffNodeDensityCutOffFormattedTextField.getValue();
                 if ((value != null) && (value.doubleValue() >= 0.0)) {
-                    fluffNodeDensityCutOff = value.doubleValue();
+                    currentParamsCopy.setFluffNodeDensityCutOff(value.doubleValue());
                 }
             }
         }
@@ -364,9 +328,9 @@ public class MCODEParameterChangeDialog extends JDialog {
 	private class haircutCheckBoxAction implements ItemListener {
 		public void itemStateChanged(ItemEvent e) {
 			if (e.getStateChange() == ItemEvent.DESELECTED) {
-				haircut = false;
+                currentParamsCopy.setHaircut(false);
 			} else {
-				haircut = true;
+                currentParamsCopy.setHaircut(true);
 			}
 		}
 	}
@@ -374,20 +338,20 @@ public class MCODEParameterChangeDialog extends JDialog {
 	private class fluffCheckBoxAction implements ItemListener {
 		public void itemStateChanged(ItemEvent e) {
 			if (e.getStateChange() == ItemEvent.DESELECTED) {
-				fluff = false;
-			} else {
-				fluff = true;
+                currentParamsCopy.setFluff(false);
+            } else {
+                currentParamsCopy.setFluff(true);
 			}
-            fluffNodeDensityCutOffFormattedTextField.setEnabled(fluff);
+            fluffNodeDensityCutOffFormattedTextField.setEnabled(currentParamsCopy.isFluff());
 		}
 	}
 
 	private class processCheckBoxAction implements ItemListener {
 		public void itemStateChanged(ItemEvent e) {
 			if (e.getStateChange() == ItemEvent.DESELECTED) {
-				preprocessNetwork = false;
-			} else {
-				preprocessNetwork = true;
+                currentParamsCopy.setPreprocessNetwork(false);
+            } else {
+                currentParamsCopy.setPreprocessNetwork(true);
 			}
 		}
 	}

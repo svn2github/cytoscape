@@ -1,5 +1,4 @@
-/** Copyright (c) 2003 Institute for Systems Biology, University of
- ** California at San Diego, and Memorial Sloan-Kettering Cancer Center.
+/** Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
  **
  ** Code written by: Gary Bader
  ** Authors: Gary Bader, Ethan Cerami, Chris Sander
@@ -40,8 +39,8 @@
 
 package csplugins.mcode;
 
-import cytoscape.plugin.AbstractPlugin;
-import cytoscape.view.CyWindow;
+import cytoscape.Cytoscape;
+import cytoscape.plugin.CytoscapePlugin;
 
 import javax.swing.*;
 
@@ -51,34 +50,37 @@ import javax.swing.*;
  *
  * @author Gary Bader
  */
-public class MCODEPlugin extends AbstractPlugin {
+public class MCODEPlugin extends CytoscapePlugin {
 	/**
 	 * Constructor.
-	 * @param cyWindow Main Cytoscape Window object.
 	 */
-	public MCODEPlugin(CyWindow cyWindow) {
+	public MCODEPlugin() {
 		//set-up menu options in plugins menu
-		JMenuItem item;
-		JMenu menu = cyWindow.getCyMenus().getOperationsMenu();
+		JMenu menu = Cytoscape.getDesktop().getCyMenus().getOperationsMenu();
+        JMenuItem item;
         //MCODE submenu
 		JMenu submenu = new JMenu("MCODE");
-        item = new JMenuItem("Run MCODE on current network.");
-        item.addActionListener(new MCODEScoreAndFindAction(cyWindow));
+        item = new JMenuItem("Run MCODE on current network");
+        item.addActionListener(new MCODEScoreAndFindAction());
         submenu.add(item);
         item = new JMenuItem("Set parameters");
-        item.addActionListener(new MCODEParameterChangeAction(cyWindow));
+        item.addActionListener(new MCODEParameterChangeAction());
         submenu.add(item);
         menu.add(submenu);
         //Advanced sub-sub menu
         JMenu subsubmenu = new JMenu("Advanced");
 		item = new JMenuItem("Step 1: Score Network");
-		item.addActionListener(new MCODEScoreAction(cyWindow));
+		item.addActionListener(new MCODEScoreAction());
         subsubmenu.add(item);
 		item = new JMenuItem("Step 2: Find Complexes");
-		item.addActionListener(new MCODEFindAction(cyWindow));
+		item.addActionListener(new MCODEFindAction());
         subsubmenu.add(item);
         submenu.add(subsubmenu);
-
+        //About box
+        item = new JMenuItem("About MCODE");
+        item.addActionListener(new MCODEAboutAction());
+        submenu.add(item);
+        menu.add(submenu);
 	}
 
 	/**
@@ -86,6 +88,6 @@ public class MCODEPlugin extends AbstractPlugin {
 	 * @return short plug in description.
 	 */
 	public String describe() {
-		return new String("Clusters a graph according to the MCODE algorithm.");
+		return new String("Clusters a network using the MCODE algorithm.");
 	}
 }

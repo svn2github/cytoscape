@@ -1,12 +1,11 @@
 package csplugins.mcode;
 
-import cytoscape.view.CyWindow;
+import cytoscape.Cytoscape;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-/** Copyright (c) 2003 Institute for Systems Biology, University of
- ** California at San Diego, and Memorial Sloan-Kettering Cancer Center.
+/** Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
  **
  ** Code written by: Gary Bader
  ** Authors: Gary Bader, Ethan Cerami, Chris Sander
@@ -44,19 +43,13 @@ import java.awt.event.ActionListener;
  ** Description
  **/
 public class MCODEParameterChangeAction implements ActionListener {
-	private CyWindow cyWindow;
-
-	public MCODEParameterChangeAction(CyWindow cyWindow) {
-		this.cyWindow = cyWindow;
-	}
-
 	/**
-	 * This method is called when the user selects the menu item.
+	 * This method is called when the user wants to change the MCODE parameters.
 	 * @param event Menu Item Selected.
 	 */
 	public void actionPerformed(ActionEvent event) {
 		//display complexes in a new non modal dialog box
-		MCODEParameterChangeDialog paramChangeDialog = new MCODEParameterChangeDialog(cyWindow.getMainFrame());
+		MCODEParameterChangeDialog paramChangeDialog = new MCODEParameterChangeDialog(Cytoscape.getDesktop());
 		paramChangeDialog.pack();
 		paramChangeDialog.setVisible(true);
 	}

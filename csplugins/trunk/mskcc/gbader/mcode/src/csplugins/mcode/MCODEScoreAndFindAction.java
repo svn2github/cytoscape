@@ -1,11 +1,11 @@
 package csplugins.mcode;
 
 import cytoscape.CyNetwork;
-import cytoscape.view.CyWindow;
+import cytoscape.Cytoscape;
 import giny.model.GraphPerspective;
-import giny.view.GraphView;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -50,19 +50,7 @@ import java.util.ArrayList;
  * * Description: simple score and find action for MCODE
  */
 public class MCODEScoreAndFindAction implements ActionListener {
-    /**
-     * Cytoscape Window.
-     */
-    private CyWindow cyWindow;
     private MCODEResultsDialog resultDialog;
-
-    /**
-     * Defines an <code>Action</code> object with a default
-     * description string and default icon.
-     */
-    public MCODEScoreAndFindAction(CyWindow cyWindow) {
-        this.cyWindow = cyWindow;
-    }
 
     /**
      * This method is called when the user selects the menu item.
@@ -70,53 +58,74 @@ public class MCODEScoreAndFindAction implements ActionListener {
      * @param event Menu Item Selected.
      */
     public void actionPerformed(ActionEvent event) {
-        //get the graph view object from the window.
-        GraphView graphView = cyWindow.getView();
-        //get the network object; this contains the graph
-        CyNetwork network = cyWindow.getNetwork();
-        //can't continue if either of these is null
-        if (graphView == null || network == null) {
-            return;
-        }
-
-        //inform listeners that we're doing an operation on the network
         String callerID = "MCODEScoreAction.actionPerformed";
-        network.beginActivity(callerID);
-        //this is the graph structure; it should never be null,
-        GraphPerspective gpInputGraph = network.getGraphPerspective();
-        if (gpInputGraph == null) {
+        //get the network object; this contains the graph
+        final CyNetwork network = Cytoscape.getCurrentNetwork();
+        if (network == null) {
             System.err.println("In " + callerID + ":");
-            System.err.println("Unexpected null gpInputGraph in network.");
-            network.endActivity(callerID);
-            return;
-        }
-        //and the view should be a view on this structure
-        if (graphView.getGraphPerspective() != gpInputGraph) {
-            System.err.println("In " + callerID + ":");
-            System.err.println("Graph view is not a view on network's graph perspective.");
-            network.endActivity(callerID);
+            System.err.println("Can't get current network.");
             return;
         }
 
-        if (gpInputGraph.getNodeCount() < 1) {
-            JOptionPane.showMessageDialog(cyWindow.getMainFrame(),
+        if (network.getNodeCount() < 1) {
+            JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
                     "You must have a network loaded to run this plugin.");
-            network.endActivity(callerID);
             return;
         }
 
-        //run MCODE scoring algorithm - node scores are saved as node attributes
-        long msTimeBefore = System.currentTimeMillis();
-        MCODE.alg.scoreGraph(gpInputGraph, network.getNodeAttributes());
-        long msTimeAfter = System.currentTimeMillis();
-        ArrayList complexes = MCODE.alg.findComplexes(gpInputGraph);
-        //display complexes in a new non modal dialog box
-        resultDialog = new MCODEResultsDialog(cyWindow.getMainFrame(), cyWindow, complexes);
-        resultDialog.pack();
-        resultDialog.setVisible(true);
-        System.err.println("Network was scored in " + (msTimeAfter - msTimeBefore) + " ms.");
+        resultDialog = (MCODEResultsDialog) network.getClientData("dialog");
+        if(resultDialog!=null) {
+            resultDialog.setVisible(true);
+        }
+        else {    
+            class ThreadReturnInfo {
+                ArrayList complexes;
+                Image imageList[];
 
-        //and tell listeners that we're done
-        network.endActivity(callerID);
+                public ThreadReturnInfo(ArrayList complexes, Image[] imageList) {
+                    this.complexes = complexes;
+                    this.imageList = imageList;
+                }
+            }
+
+            //threaded because MCODE may take a while
+            final SwingWorker worker = new SwingWorker() {
+                public Object construct() {
+                    //run MCODE scoring algorithm - node scores are saved as node attributes
+                    long msTimeBefore = System.currentTimeMillis();
+                    MCODEAlgorithm alg = new MCODEAlgorithm();
+                    alg.scoreGraph(network);
+                    long msTimeAfter = System.currentTimeMillis();
+                    ArrayList complexes = alg.findComplexes(network);
+                    //store this MCODE instance with the network to avoid duplicating the calculation
+                    network.putClientData("MCODE_alg", alg);
+                    System.err.println("Network was scored in " + (msTimeAfter - msTimeBefore) + " ms.");
+                    //also create all the images here for the complexes, since it can be a time consuming operation
+                    GraphPerspective gpComplexArray[] = MCODEUtil.convertComplexListToSortedNetworkList(complexes, network, alg);
+                    Image imageList[] = new Image[complexes.size()];
+                    int imageSize = MCODECurrentParameters.getInstance().getParamsCopy().getDefaultRowHeight();
+                    for (int i = 0; i < gpComplexArray.length; i++) {
+                        imageList[i] = MCODEUtil.convertNetworkToImage(gpComplexArray[i], imageSize, imageSize);
+                    }
+                    ThreadReturnInfo returnInfo = new ThreadReturnInfo(complexes, imageList);
+                    return returnInfo;
+                }
+
+                /**
+                 * Called on the event dispatching thread (not on the worker thread)
+                 * after the <code>construct</code> method has returned.
+                 */
+                public void finished() {
+                    //display complexes in a new non modal dialog box
+                    ThreadReturnInfo returnInfo = (ThreadReturnInfo) this.get();
+                    resultDialog = new MCODEResultsDialog(Cytoscape.getDesktop(), returnInfo.complexes, network, returnInfo.imageList);
+                    resultDialog.pack();
+                    //store the results dialog box if the user wants to see it later
+                    network.putClientData("dialog", resultDialog);
+                    resultDialog.setVisible(true);
+                }
+            };
+            worker.start();
+        }
     }
 }

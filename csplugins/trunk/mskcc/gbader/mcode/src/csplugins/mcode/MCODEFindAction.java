@@ -1,17 +1,14 @@
 package csplugins.mcode;
 
 import cytoscape.CyNetwork;
-import cytoscape.view.CyWindow;
-import giny.model.GraphPerspective;
-import giny.view.GraphView;
+import cytoscape.Cytoscape;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-/** Copyright (c) 2003 Institute for Systems Biology, University of
- ** California at San Diego, and Memorial Sloan-Kettering Cancer Center.
+/** Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
  **
  ** Code written by: Gary Bader
  ** Authors: Gary Bader, Ethan Cerami, Chris Sander
@@ -49,74 +46,41 @@ import java.util.ArrayList;
  ** Description
  **/
 public class MCODEFindAction implements ActionListener {
-	/**
-	 * Cytoscape Window.
-	 */
-	private CyWindow cyWindow;
 	private MCODEResultsDialog resultDialog;
-
 	/**
-	 * Defines an <code>Action</code> object with a default
-	 * description string and default icon.
-	 */
-	public MCODEFindAction(CyWindow cyWindow) {
-		this.cyWindow = cyWindow;
-	}
-
-	/**
-	 * This method is called when the user selects the menu item.
+	 * This method is called when the user selects to find complexes.
 	 * @param event Menu Item Selected.
 	 */
 	public void actionPerformed(ActionEvent event) {
-		//get the graph view object from the window.
-		GraphView graphView = cyWindow.getView();
-		//get the network object; this contains the graph
-		CyNetwork network = cyWindow.getNetwork();
-		//can't continue if either of these is null
-		if (graphView == null || network == null) {
+        String callerID = "MCODEScoreAction.actionPerformed";
+        //get the network object; this contains the graph
+		CyNetwork network = Cytoscape.getCurrentNetwork();
+		if (network == null) {
+            System.err.println("In " + callerID + ":");
+            System.err.println("Can't get current network.");
 			return;
 		}
 
-		//inform listeners that we're doing an operation on the network
-		String callerID = "MCODEScoreAction.actionPerformed";
-		network.beginActivity(callerID);
-		//this is the graph structure; it should never be null,
-		GraphPerspective gpInputGraph = network.getGraphPerspective();
-		if (gpInputGraph == null) {
-			System.err.println("In " + callerID + ":");
-			System.err.println("Unexpected null gpInputGraph in network.");
-			network.endActivity(callerID);
-			return;
-		}
-		//and the view should be a view on this structure
-		if (graphView.getGraphPerspective() != gpInputGraph) {
-			System.err.println("In " + callerID + ":");
-			System.err.println("Graph view is not a view on network's graph perspective.");
-			network.endActivity(callerID);
-			return;
-		}
-
-		if (gpInputGraph.getNodeCount() < 1) {
-			JOptionPane.showMessageDialog(cyWindow.getMainFrame(),
+		if (network.getNodeCount() < 1) {
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
 			        "You must have a network loaded to run this plugin.");
-			network.endActivity(callerID);
 			return;
 		}
 
 		//run MCODE complex finding algorithm after the nodes have been scored
-		ArrayList complexes = MCODE.alg.findComplexes(gpInputGraph);
-		if (complexes == null) {
-			JOptionPane.showMessageDialog(cyWindow.getMainFrame(),
+        //the score action saves the resulting alg as network client data for retrieval
+        MCODEAlgorithm alg = (MCODEAlgorithm) network.getClientData("MCODE_alg");
+		if (alg == null) {
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
 			        "The network has not been scored.  Please run the scoring step first.");
-			network.endActivity(callerID);
 			return;
 		}
-		//display complexes in a new non modal dialog box
-		resultDialog = new MCODEResultsDialog(cyWindow.getMainFrame(), cyWindow, complexes);
-		resultDialog.pack();
-		resultDialog.setVisible(true);
-
-		//and tell listeners that we're done
-		network.endActivity(callerID);
+        else {
+            ArrayList complexes = alg.findComplexes(network);
+            //display complexes in a new non modal dialog box
+            resultDialog = new MCODEResultsDialog(Cytoscape.getDesktop(), complexes, network, null);
+            resultDialog.pack();
+            resultDialog.setVisible(true);
+        }
 	}
 }

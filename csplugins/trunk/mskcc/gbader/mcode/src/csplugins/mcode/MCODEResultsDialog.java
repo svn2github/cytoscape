@@ -3,13 +3,10 @@ package csplugins.mcode;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.actions.GinyUtils;
-import cytoscape.util.GinyFactory;
-import cytoscape.view.CyWindow;
+import cytoscape.view.CyNetworkView;
 import giny.model.GraphPerspective;
 import giny.model.Node;
 import giny.util.SpringEmbeddedLayouter;
-import giny.view.EdgeView;
-import giny.view.GraphView;
 import giny.view.NodeView;
 import phoebe.PGraphView;
 
@@ -29,8 +26,7 @@ import java.text.NumberFormat;
 import java.util.*;
 import java.util.List;
 
-/** Copyright (c) 2003 Institute for Systems Biology, University of
- ** California at San Diego, and Memorial Sloan-Kettering Cancer Center.
+/** Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center.
  **
  ** Code written by: Gary Bader
  ** Authors: Gary Bader, Ethan Cerami, Chris Sander
@@ -77,29 +73,38 @@ public class MCODEResultsDialog extends JDialog {
 	protected MCODEResultsDialog.MCODEResultsTableModel model;
 	//table size parameters
 	protected final int defaultRowHeight = 80;
+    protected final int preferredTableHeight = defaultRowHeight * 3;
 	protected int preferredTableWidth = 0; // incremented below
 	//User preference
-	protected boolean openInNewWindow = false;
+	protected boolean openAsNewChild = false;
 	//Actual complex data
-	protected GraphPerspective[] gpComplexArray;    //The list of complexes, sorted when !null
-	//These are here so we can select complexes in the main window and open them in new windows
-	protected GraphView graphView;
-	protected GraphPerspective gpInputGraph;
-	protected CyWindow cyWindow;
+	protected GraphPerspective[] gpComplexArray;    //The list of complexes, sorted by score when !null
+    CyNetwork originalInputNetwork;                 //Keep a record of the original input record for use in the
+                                                    //table row selection listener
+    CyNetworkView originalInputNetworkView;         //Keep a record of this too, if it exists
+    HashMap hmNetworkNames;                         //Keep a record of network names we create from the table
+    //algorithm object for access to the complex scoring function
+    MCODEAlgorithm alg;
 
-	public MCODEResultsDialog(Frame parentFrame, CyWindow cyWindow, ArrayList complexes) {
+    //If imageList is present, will use those images for the complex display
+	public MCODEResultsDialog(Frame parentFrame, ArrayList complexes, CyNetwork network, Image imageList[]) {
 		super(parentFrame, "MCODE Results Summary", false);
-		this.graphView = cyWindow.getView();
-		this.gpInputGraph = cyWindow.getNetwork().getGraphPerspective();
-		this.cyWindow = cyWindow;
 		parentDialog = this;
+
+        //network data (currently focused network)
+        originalInputNetwork = network;
+        alg = (MCODEAlgorithm) network.getClientData("MCODE_alg");
+        //the view may not exist, but we only test for that when we need to (in the
+        //TableRowSelectionHandler below)
+        originalInputNetworkView = Cytoscape.getNetworkView(network.getIdentifier());
+        hmNetworkNames = new HashMap();
 
 		//main panel for dialog box
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
 
 		//main data table
-		model = new MCODEResultsDialog.MCODEResultsTableModel(gpInputGraph, complexes);
+		model = new MCODEResultsDialog.MCODEResultsTableModel(network, complexes, imageList);
 		table = new JTable(model) {
 			//Implement table cell tool tips.
 			public String getToolTipText(MouseEvent e) {
@@ -130,7 +135,7 @@ public class MCODEResultsDialog extends JDialog {
 		};
 		table.setRowHeight(defaultRowHeight);
 		initColumnSizes(table);
-		table.setPreferredScrollableViewportSize(new Dimension(preferredTableWidth, defaultRowHeight * 3));
+		table.setPreferredScrollableViewportSize(new Dimension(preferredTableWidth, preferredTableHeight));
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.setDefaultRenderer(String.class, new CenterAndBoldRenderer());
 		table.setDefaultRenderer(StringBuffer.class, new JTextAreaRenderer());
@@ -145,13 +150,13 @@ public class MCODEResultsDialog extends JDialog {
 
 		JPanel bottomPanel = new JPanel();
 		//new window preference checkbox
-		JCheckBox newWindowCheckBox = new JCheckBox("Open selected complex in new window.", false) {
+		JCheckBox newWindowCheckBox = new JCheckBox("Create a new child network.", false) {
 			public JToolTip createToolTip() {
 				return new JMultiLineToolTip();
 			}
 		};
 		newWindowCheckBox.addItemListener(new MCODEResultsDialog.newWindowCheckBoxAction());
-		newWindowCheckBox.setToolTipText("If checked, will open a new Cytoscape window with the selected complex.\n" +
+		newWindowCheckBox.setToolTipText("If checked, will create a new child network of the selected complex.\n" +
 		        "If not checked, will just select complexes in the main window.");
 		bottomPanel.add(newWindowCheckBox, BorderLayout.WEST);
 		//the OK button
@@ -169,96 +174,35 @@ public class MCODEResultsDialog extends JDialog {
 		String[] columnNames = {"Rank", "Score", "Size", "Names", "Complex"};
 		Object[][] data;    //the actual table data
 
-		public MCODEResultsTableModel(GraphPerspective gpInputGraph, ArrayList complexes) {
-			int[] complexArray;
+		public MCODEResultsTableModel(CyNetwork network, ArrayList complexes, Image imageList[]) {
 			GraphPerspective gpComplex;
 
 			//get GraphPerspectives for all complexes, score and rank them
-			//convert the ArrayList to an array of GraphPerspectives and sort it by score using a custom Comparator
-			gpComplexArray = new GraphPerspective[complexes.size()];
-			ArrayList complex;
-			for (int i = 0; i < complexes.size(); i++) {
-				complex = (ArrayList) complexes.get(i);
-				complexArray = convertIntArrayList2array(complex);
-				gpComplex = gpInputGraph.createGraphPerspective(complexArray);
-				gpComplexArray[i] = gpComplex;
-			}
-			Arrays.sort(gpComplexArray, new Comparator() {
-				//sorting GraphPerpectives by decreasing score
-				public int compare(Object o1, Object o2) {
-					double d1 = MCODE.alg.scoreComplex((GraphPerspective) o1);
-					double d2 = MCODE.alg.scoreComplex((GraphPerspective) o2);
-					if (d1 == d2) {
-						return 0;
-					} else if (d1 < d2) {
-						return 1;
-					} else {
-						return -1;
-					}
-				}
-			});
+			//convert the ArrayList to an array of GraphPerspectives and sort it by complex score
+			gpComplexArray = MCODEUtil.convertComplexListToSortedNetworkList(complexes, network, alg);
 
 			//copy information into the data array that represents the table
 			data = new Object[gpComplexArray.length][columnNames.length];
-			PGraphView view;
-			SpringEmbeddedLayouter lay;
-			Image image;
 			for (int i = 0; i < gpComplexArray.length; i++) {
 				gpComplex = gpComplexArray[i];
 				data[i][0] = new String((new Integer(i + 1)).toString()); //rank
 				NumberFormat nf = NumberFormat.getInstance();
 				nf.setMaximumFractionDigits(3);
-				data[i][1] = nf.format(MCODE.alg.scoreComplex(gpComplex));
+				data[i][1] = nf.format(alg.scoreComplex(gpComplex));
 				//complex size - format: (# prot, # intx)
 				data[i][2] = new String(gpComplex.getNodeCount() + "," + gpComplex.getEdgeCount());
 				//create a string of node names - this can be long
 				data[i][3] = getNodeNameList(gpComplex);
 				//create an image for each complex - make it a nice layout of the complex
-				view = (PGraphView) GinyFactory.createGraphView(gpComplex);
-                //TODO apply a visual style here instead of doing this manually - visual style calls init code that might not be called manually
-				for (Iterator in = view.getNodeViewsIterator(); in.hasNext();) {
-					NodeView nv = (NodeView) in.next();
-					String label = nv.getNode().getIdentifier();
-					nv.getLabel().setText(label);
-                    nv.setWidth(40);
-                    nv.setHeight(40);
-					nv.setShape(NodeView.ELLIPSE);
-					nv.setUnselectedPaint(Color.red);
-					nv.setBorderPaint(Color.black);
-					//randomize node positions before layout so that they don't all layout in a line
-					//(so they don't fall into a local minimum for the SpringEmbedder)
-					//If the SpringEmbedder implementation changes, this code may need to be removed
-					nv.setXPosition(view.getCanvas().getLayer().getGlobalFullBounds().getWidth() * Math.random());
-					//height is small for many default drawn graphs, thus +100
-					nv.setYPosition((view.getCanvas().getLayer().getGlobalFullBounds().getHeight() + 100) * Math.random());
-				}
-				for (Iterator ie = view.getEdgeViewsIterator(); ie.hasNext();) {
-					EdgeView ev = (EdgeView) ie.next();
-					ev.setUnselectedPaint(Color.blue);
-					ev.setTargetEdgeEnd(EdgeView.BLACK_ARROW);
-					ev.setTargetEdgeEndPaint(Color.CYAN);
-					ev.setSourceEdgeEndPaint(Color.CYAN);
-					ev.setStroke(new BasicStroke(5f));
-				}
-				lay = new SpringEmbeddedLayouter(view);
-				lay.doLayout();
-				image = view.getCanvas().getLayer().toImage(defaultRowHeight, defaultRowHeight, null);
-				double largestSide = view.getCanvas().getLayer().getFullBounds().width;
-				if (view.getCanvas().getLayer().getFullBounds().height > largestSide) {
-					largestSide = view.getCanvas().getLayer().getFullBounds().height;
-				}
+                Image image;
+                if(imageList!=null) {
+                    image = imageList[i];
+                }
+                else {
+                    image = MCODEUtil.convertNetworkToImage(gpComplex, defaultRowHeight, defaultRowHeight);
+                }
 				data[i][4] = new ImageIcon(image);
 			}
-		}
-
-		//Utility method - convert ArrayList to int[]
-		private int[] convertIntArrayList2array(ArrayList alInput) {
-			int[] outputNodeIndices = new int[alInput.size()];
-			int j = 0;
-			for (Iterator i = alInput.iterator(); i.hasNext(); j++) {
-				outputNodeIndices[j] = ((Integer) i.next()).intValue();
-			}
-			return (outputNodeIndices);
 		}
 
 		private StringBuffer getNodeNameList(GraphPerspective gpInput) {
@@ -327,9 +271,9 @@ public class MCODEResultsDialog extends JDialog {
 	private class newWindowCheckBoxAction implements ItemListener {
 		public void itemStateChanged(ItemEvent e) {
 			if (e.getStateChange() == ItemEvent.DESELECTED) {
-				openInNewWindow = false;
+				openAsNewChild = false;
 			} else {
-				openInNewWindow = true;
+				openAsNewChild = true;
 			}
 		}
 	}
@@ -340,61 +284,72 @@ public class MCODEResultsDialog extends JDialog {
 			//Ignore extra messages.
 			if (e.getValueIsAdjusting()) return;
 			ListSelectionModel lsm = (ListSelectionModel) e.getSource();
-			GraphPerspective gpComplex;
+			final GraphPerspective gpComplex;
+            NodeView nv;
 			if (!lsm.isSelectionEmpty()) {
-				//start with no selected nodes
-				GinyUtils.deselectAllNodes(graphView);
-				int selectedRow = lsm.getMinSelectionIndex();
-				gpComplex = gpComplexArray[selectedRow];
-				//go through graph and select nodes in the complex
-				List nodeList = gpComplex.nodesList();
-				NodeView nv;
-				for (int i = 0; i < nodeList.size(); i++) {
-					Node n = (Node) nodeList.get(i);
-					if (gpInputGraph.containsNode(n)) {
-						nv = graphView.getNodeView(n);
-						nv.setSelected(true);
-					}
-				}
-				if (openInNewWindow) {
-					//this code copied from Cytoscape NewWindowSelectedNodesEdgesAction.java on Feb.4.2004
-					//save the vizmapper catalog
-					cyWindow.getCytoscapeObj().saveCalculatorCatalog();
-					CyNetwork oldNetwork = cyWindow.getNetwork();
-
-                    CyNetwork newNetwork = Cytoscape.createNetwork(gpComplex.getNodeIndicesArray(),
-                            gpComplex.getEdgeIndicesArray());
-                    newNetwork.setExpressionData(oldNetwork.getExpressionData());
-
+                final int selectedRow = lsm.getMinSelectionIndex();
+                gpComplex = gpComplexArray[selectedRow];
+               //only do this if a view has been created on this network
+                if(originalInputNetworkView !=null) {
+                    //start with no selected nodes
+                    GinyUtils.deselectAllNodes(originalInputNetworkView);
+                    //go through graph and select nodes in the complex
+                    List nodeList = gpComplex.nodesList();
+                    for (int i = 0; i < nodeList.size(); i++) {
+                        Node n = (Node) nodeList.get(i);
+                        if (originalInputNetwork.containsNode(n)) {
+                            nv = originalInputNetworkView.getNodeView(n);
+                            nv.setSelected(true);
+                        }
+                    }
+                    if(!openAsNewChild) {
+                        //switch focus to the original network if not going to create a new network
+                        Cytoscape.getDesktop().setFocus(originalInputNetworkView.getIdentifier());
+                    }
+                }
+                else if(!openAsNewChild) {
+                    //Warn user that nothing will happen in this case because there is no view to select nodes with
+                    JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+                            "You must have a network view created to select nodes.");
+                }
+				if (openAsNewChild) {
 					NumberFormat nf = NumberFormat.getInstance();
 					nf.setMaximumFractionDigits(3);
-					String title = "Complex " + (selectedRow + 1) + " Score: " +
-					        nf.format(MCODE.alg.scoreComplex(gpComplex));
-					try {
-						//this call creates a WindowOpened event, which is caught by
-						//cytoscape.java, enabling that class to manage the set of windows
-						//and quit when the last window is closed
-                        Cytoscape.createNetworkView(newNetwork, title);
-						//CyWindow newWindow = new CyWindow(cyWindow.getCytoscapeObj(),
-						//        newNetwork, title);
-						//layout new complex and fit it to window
-						PGraphView view = (PGraphView) Cytoscape.getCurrentNetworkView();
-						//randomize node positions before layout so that they don't all layout in a line
-						//(so they don't fall into a local minimum for the SpringEmbedder)
-						//If the SpringEmbedder implementation changes, this code may need to be removed
-						for (Iterator in = view.getNodeViewsIterator(); in.hasNext();) {
-							nv = (NodeView) in.next();
-							nv.setXPosition(view.getCanvas().getLayer().getGlobalFullBounds().getWidth() * Math.random());
-							//height is small for many default drawn graphs, thus +100
-							nv.setYPosition((view.getCanvas().getLayer().getGlobalFullBounds().getHeight() + 100) * Math.random());
-						}
-						SpringEmbeddedLayouter lay = new SpringEmbeddedLayouter(view);
-						lay.doLayout();
-                        view.fitContent();
-					} catch (Exception e2) {
-						System.err.println("Exception when creating new window");
-						e2.printStackTrace();
-					}
+					final String title = "Complex " + (selectedRow + 1) + " Score: " +
+					        nf.format(alg.scoreComplex(gpComplex));
+                    //check if a network has already been created
+                    String id = (String) hmNetworkNames.get(new Integer(selectedRow + 1));
+                    if(id!=null) {
+                        //just switch focus to the already created network
+                        Cytoscape.getDesktop().setFocus(id);
+                    }
+                    else {
+                        //create the child network and view
+                        final SwingWorker worker = new SwingWorker() {
+                            public Object construct() {
+                                CyNetwork newNetwork = Cytoscape.createNetwork(gpComplex.getNodeIndicesArray(),
+                                        gpComplex.getEdgeIndicesArray(), title, originalInputNetwork);
+                                hmNetworkNames.put(new Integer(selectedRow + 1), newNetwork.getIdentifier());
+                                PGraphView view = (PGraphView) Cytoscape.createNetworkView(newNetwork);
+                                //layout new complex and fit it to window
+                                //randomize node positions before layout so that they don't all layout in a line
+                                //(so they don't fall into a local minimum for the SpringEmbedder)
+                                //If the SpringEmbedder implementation changes, this code may need to be removed
+                                NodeView nv;
+                                for (Iterator in = view.getNodeViewsIterator(); in.hasNext();) {
+                                    nv = (NodeView) in.next();
+                                    nv.setXPosition(view.getCanvas().getLayer().getGlobalFullBounds().getWidth() * Math.random());
+                                    //height is small for many default drawn graphs, thus +100
+                                    nv.setYPosition((view.getCanvas().getLayer().getGlobalFullBounds().getHeight() + 100) * Math.random());
+                                }
+                                SpringEmbeddedLayouter lay = new SpringEmbeddedLayouter(view);
+                                lay.doLayout();
+                                view.fitContent();
+                                return null;
+                            }
+                        };
+                        worker.start();
+                    }
 				}
 			}
 		}
@@ -447,4 +402,6 @@ public class MCODEResultsDialog extends JDialog {
 			return this;
 		}
 	}
+
+    
 }
