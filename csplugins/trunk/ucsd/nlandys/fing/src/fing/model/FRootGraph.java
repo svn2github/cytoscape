@@ -661,12 +661,16 @@ class FRootGraph implements RootGraph, DynamicGraph
     return true;
   }   
 
-  public boolean removeNodeMetaChild(int parentNodeInx, int childNodeInx)
+  public boolean removeNodeMetaChild(final int parentNodeInx, int childNodeInx)
   {
     final int nativeParent = ~parentNodeInx;
     final int nativeChildNode = ~childNodeInx;
     if (!(m_graph.nodeExists(nativeParent) &&
           m_graph.nodeExists(nativeChildNode))) return false;
+    final IntEnumerator nativeEdgesTouchingChild = m_graph.edgesAdjacent
+      (nativeChildNode, true, true, true);
+    while (nativeEdgesTouchingChild.numRemaining() > 0)
+      removeEdgeMetaChild(parentNodeInx, ~nativeEdgesTouchingChild.nextInt());
     final int metaParent = m_nativeToMetaNodeInxMap.get(nativeParent);
     final int metaChildNode = m_nativeToMetaNodeInxMap.get(nativeChildNode);
     final IntIterator metaRelationships = m_metaGraph.edgesConnecting
@@ -865,12 +869,13 @@ class FRootGraph implements RootGraph, DynamicGraph
         (currMeta, true, false, false);
       while (relationships.numRemaining() > 0) {
         final int aChild = m_metaGraph.edgeTarget(relationships.nextInt());
-        if (m_metaToNativeInxMap.getIntAtIndex(aChild) > 0) { // A node.
+        if (m_metaToNativeInxMap.getIntAtIndex(aChild) > 0 && // A node.
+            metaVisited.put(aChild) < 0) {
+          metaPending.push(aChild);
           if (m_metaGraph.edgesAdjacent
               (aChild, true, false, false).numRemaining() == 0)
             rootChildlessNodeBucket.put
-              (~(m_metaToNativeInxMap.getIntAtIndex(aChild) - 1));
-          if (metaVisited.put(aChild) < 0) metaPending.push(aChild); } } }
+              (~(m_metaToNativeInxMap.getIntAtIndex(aChild) - 1)); } } }
     final IntEnumerator returnElements = rootChildlessNodeBucket.elements();
     final int[] returnThis = new int[returnElements.numRemaining()];
     for (int i = 0; i < returnThis.length; i++)
@@ -884,7 +889,7 @@ class FRootGraph implements RootGraph, DynamicGraph
     return addEdgeMetaChild(parent.getRootGraphIndex(),
                             child.getRootGraphIndex()); }
 
-  public boolean addEdgeMetaChild(int parentNodeInx, int childEdgeInx)
+  public boolean addEdgeMetaChild(final int parentNodeInx, int childEdgeInx)
   {
     final int nativeParent = ~parentNodeInx;
     final int nativeChildEdge = ~childEdgeInx;
@@ -910,7 +915,28 @@ class FRootGraph implements RootGraph, DynamicGraph
 
   public boolean removeEdgeMetaChild(int parentNodeInx, int childEdgeInx)
   {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
+    final int nativeParent = ~parentNodeInx;
+    final int nativeChildEdge = ~childEdgeInx;
+    if (!(m_graph.nodeExists(nativeParent) &&
+          m_graph.edgeType(nativeChildEdge) >= 0)) return false;
+    final int metaParent = m_nativeToMetaNodeInxMap.get(nativeParent);
+    final int metaChildEdge = m_nativeToMetaEdgeInxMap.get(nativeChildEdge);
+    final IntIterator metaRelationships = m_metaGraph.edgesConnecting
+      (metaParent, metaChildEdge, true, false, false);
+    if (metaRelationships == null || !metaRelationships.hasNext())
+      return false;
+    m_metaGraph.edgeRemove(metaRelationships.nextInt());
+    if (m_metaGraph.edgesAdjacent(metaParent, true, true, false).
+        numRemaining() == 0) { // Remove disconnected meta-element.
+      m_nativeToMetaNodeInxMap.put(nativeParent, Integer.MAX_VALUE);
+      m_metaToNativeInxMap.setIntAtIndex(0, metaParent);
+      m_metaGraph.nodeRemove(metaParent); }
+    if (m_metaGraph.edgesAdjacent(metaChildEdge, false, true, false).
+        numRemaining() == 0) { // Remove disconnected meta-element.
+      m_nativeToMetaEdgeInxMap.put(nativeChildEdge, Integer.MAX_VALUE);
+      m_metaToNativeInxMap.setIntAtIndex(0, metaChildEdge);
+      m_metaGraph.nodeRemove(metaChildEdge); }
+    return true;
   }
 
   public boolean isMetaParent(Edge child, Node parent) {
@@ -919,10 +945,8 @@ class FRootGraph implements RootGraph, DynamicGraph
     return isEdgeMetaParent(child.getRootGraphIndex(),
                             parent.getRootGraphIndex()); }
 
-  public boolean isEdgeMetaParent(int childEdgeInx, int parentNodeInx)
-  {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
-  }
+  public boolean isEdgeMetaParent(int childEdgeInx, int parentNodeInx) {
+    return isEdgeMetaChild(parentNodeInx, childEdgeInx); }
 
   public java.util.List metaParentsList(Edge edge) {
     if (edge.getRootGraph() != this) return null;
@@ -939,14 +963,36 @@ class FRootGraph implements RootGraph, DynamicGraph
 
   public int[] getEdgeMetaParentIndicesArray(int edgeInx)
   {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
+    final int nativeChildEdge = ~edgeInx;
+    if (m_graph.edgeType(nativeChildEdge) < 0) return null;
+    final int metaChildEdge = m_nativeToMetaEdgeInxMap.get(nativeChildEdge);
+    final IntEnumerator metaRelationshipsEnum =
+      m_metaGraph.edgesAdjacent(metaChildEdge, false, true, false);
+    if (metaRelationshipsEnum == null) return new int[0];
+    final int[] returnThis = new int[metaRelationshipsEnum.numRemaining()];
+    for (int i = 0; i < returnThis.length; i++) {
+      final int metaRelationship = metaRelationshipsEnum.nextInt();
+      final int metaParent = m_metaGraph.edgeSource(metaRelationship);
+      returnThis[i] = m_metaToNativeInxMap.getIntAtIndex(metaParent); }
+    return returnThis;
   }
 
   public boolean isMetaChild(Node parent, Edge child) {
     return isMetaParent(child, parent); }
 
   public boolean isEdgeMetaChild(int parentNodeInx, int childEdgeInx) {
-    return isEdgeMetaParent(childEdgeInx, parentNodeInx); }
+    final int nativeParent = ~parentNodeInx;
+    final int nativeChildEdge = ~childEdgeInx;
+    if (!(m_graph.nodeExists(nativeParent) &&
+          m_graph.edgeType(nativeChildEdge) >= 0)) return false;
+    final int metaParent = m_nativeToMetaNodeInxMap.get(nativeParent);
+    final int metaChildEdge = m_nativeToMetaEdgeInxMap.get(nativeChildEdge);
+    final IntIterator metaRelationshipsIter = m_metaGraph.edgesConnecting
+      (metaParent, metaChildEdge, true, false, false);
+    if (metaRelationshipsIter == null || !metaRelationshipsIter.hasNext())
+      return false;
+    return true;
+  }
 
   public java.util.List edgeMetaChildrenList(Node node) {
     if (node.getRootGraph() != this) return null;
@@ -963,7 +1009,23 @@ class FRootGraph implements RootGraph, DynamicGraph
 
   public int[] getEdgeMetaChildIndicesArray(int parentNodeInx)
   {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
+    final int nativeParent = ~parentNodeInx;
+    if (!m_graph.nodeExists(nativeParent)) return null;
+    final int metaParent = m_nativeToMetaNodeInxMap.get(nativeParent);
+    final IntEnumerator metaRelationshipsEnum =
+      m_metaGraph.edgesAdjacent(metaParent, true, false, false);
+    if (metaRelationshipsEnum == null) return new int[0];
+    m_heap.empty();
+    final MinIntHeap childRootEdgeBucket = m_heap;
+    while (metaRelationshipsEnum.numRemaining() > 0) {
+      final int metaChild =
+        m_metaGraph.edgeTarget(metaRelationshipsEnum.nextInt());
+      if (m_metaToNativeInxMap.getIntAtIndex(metaChild) < 0)
+        childRootEdgeBucket.toss
+          (m_metaToNativeInxMap.getIntAtIndex(metaChild)); }
+    final int[] returnThis = new int[childRootEdgeBucket.size()];
+    childRootEdgeBucket.copyInto(returnThis, 0);
+    return returnThis;
   }
 
   // The relationship between indices (both node and edge) in this
