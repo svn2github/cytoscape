@@ -36,7 +36,7 @@ clean:
 
 0: BioDataServerTest.class
 	
-	$(JI) $(PKG).BioDataServerTest rmi://localhost/test
+	$(JI) $(PKG).BioDataServerTest 
 
 #------ reg
 #  try to start a rmi registry.  this will fail if one is already running
