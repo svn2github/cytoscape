@@ -53,12 +53,8 @@ public class BetweenPathway extends CytoscapePlugin{
 		dialog.show();
 		if(!dialog.isCancelled()){
 		  BetweenPathwayOptions options = dialog.getOptions();
-		  RandomizationDialog randomDialog = new RandomizationDialog(options.geneticNetwork,options);
-		  randomDialog.show();
-		  if(randomDialog.isCancelled()){
-		    throw new RuntimeException("Thresh-hold generation cancelled");
-		  }
-		  BetweenPathwayThread thread = new BetweenPathwayThread(options);
+		  
+		  BetweenPathwayThread2 thread = new BetweenPathwayThread2(options);
 		  //BetweenPathwayThread thread = new BetweenPathwayThread(options);
 		  try{
 		    thread.setPhysicalNetwork(options.physicalNetwork);
@@ -73,6 +69,11 @@ public class BetweenPathway extends CytoscapePlugin{
 		    if(options.generateCutoff){
 		      //use a randomization process to determine an appropriate
 		      //significant score cutoff.
+		      RandomizationDialog randomDialog = new RandomizationDialog(options.geneticNetwork,options);
+		      randomDialog.show();
+		      if(randomDialog.isCancelled()){
+			throw new RuntimeException("Thresh-hold generation cancelled");
+		      }
 		      options.cutoff = 0.0;
 		      CyNetwork geneticNetwork = options.geneticNetwork;
 		      double [] scores = new double[options.iterations];

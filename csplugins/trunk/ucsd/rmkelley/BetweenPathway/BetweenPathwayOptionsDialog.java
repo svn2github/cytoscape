@@ -88,7 +88,7 @@ public class BetweenPathwayOptionsDialog extends RyanDialog implements PropertyC
 	  options.geneticScores = geneticPanel.getScoreFile();
 	  options.physicalScores = physicalPanel.getScoreFile();
 	  BetweenPathwayOptionsDialog.this.options = options;
-	  
+	  	  
 	  /**
 	   * Unblock the thread waiting on the dialog
 	   */
