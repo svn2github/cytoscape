@@ -1,0 +1,10 @@
+sif=network.sif
+props=props
+noa=carrier.noa
+noa=picture.noa
+noa=roaming.noa
+noa=email.noa
+noa=hasCalled.noa
+noa=hasBeenCalled.noa
+noa=state.noa
+vprops=vizmap.props

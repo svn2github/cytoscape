@@ -18,7 +18,7 @@ import yfiles.YFilesLayoutPlugin;
  * @author dtenenba
  *
  */
-public class SetDefaultLayoutPlugin 
+public class CenterViewPlugin 
   extends 
     CytoscapePlugin 
   implements
@@ -26,7 +26,7 @@ public class SetDefaultLayoutPlugin
    
   YFilesLayoutPlugin plugin;
 
-  public SetDefaultLayoutPlugin () {
+  public CenterViewPlugin () {
     Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener( CytoscapeDesktop.NETWORK_VIEW_CREATED, this );
     
   }
@@ -36,12 +36,10 @@ public class SetDefaultLayoutPlugin
     if ( e.getPropertyName() ==  CytoscapeDesktop.NETWORK_VIEW_CREATED ) {
       CyNetworkView view = ( CyNetworkView )e.getNewValue();
 
-      System.out.println("trying to change view...");
-      YFilesLayout layout = new YFilesLayout(view);
-      layout.doLayout( YFilesLayout.ORGANIC, 0 );
-      System.out.println("done");
-      System.out.println("trying to redraw graph...");
-      view.redrawGraph(true,true);
+      System.out.println("trying to fit content....");
+      //PGraphView vue =(PGraphView) Cytoscape.getCurrentNetworkView();
+      PGraphView vue =(PGraphView) view;
+      vue.getCanvas().getCamera().animateViewToCenterBounds( vue.getCanvas().getLayer().getFullBounds(), true, 50l );
       System.out.println("done");
     }
   }

@@ -1,0 +1,8 @@
+defaultVisualStyle=cell phone
+visualStyle=cell phone
+#plugin.0.load=csplugins.trial.pshannon.spy.PyConsolePlugin
+##plugin.1.load=csplugins.isb.dtenenbaum.cellphone.CellPhonePlugin
+#plugin.2.load=csplugins.trial.pshannon.projectIO.ProjectIOPlugin
+plugin.ylayout.load=yfiles.YFilesLayoutPlugin
+plugin.setdefaultlayout.load=csplugins.isb.dtenenbaum.setDefaultLayout.SetDefaultLayoutPlugin
+plugin.centerView.load=csplugins.isb.dtenenbaum.setDefaultLayout.CenterViewPlugin
