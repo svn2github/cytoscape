@@ -216,5 +216,4 @@ the right way to accommodate this kind of behavior, though.
 
 References:
 -----------
-[1]  http://msdn.microsoft.com/library/default.asp?url=/library/en-us/
-vbcon98/html/vbconoptimizingperceivedspeed.asp
+[1]  http://msdn.microsoft.com/library/default.asp?url=/library/en-us/vbcon98/html/vbconoptimizingperceivedspeed.asp
