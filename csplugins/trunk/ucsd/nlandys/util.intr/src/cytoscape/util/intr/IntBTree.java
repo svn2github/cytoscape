@@ -43,13 +43,15 @@ public final class IntBTree
       m_root = newRoot; }
   }
 
-  // Returns a node being the newly created node if a split was performed;
-  // the node returned is the right sibling of node n.  If the returned node
-  // is a leaf node then the first value of the node is to be the new split
-  // index; if return value is internal node, then the split index to be used
-  // is n.data.splitVals[n.sliceCount - 1] (This is something that this
-  // method sets; it's this method saying "use this index in the higher
-  // levels".)
+  /*
+   * Returns a node being the newly created node if a split was performed;
+   * the node returned is the right sibling of node n.  If the returned node
+   * is a leaf node then the first value of the node is to be the new split
+   * index; if return value is internal node, then the split index to be used
+   * is n.data.splitVals[n.sliceCount - 1] (This is something that this
+   * method sets; it's this method saying "use this index in the higher
+   * levels".)
+   */
   private Node insert(Node n, int x)
   {
     if (isLeafNode(n))
@@ -106,7 +108,18 @@ public final class IntBTree
                 newNode.data.children, newNode.sliceCount);
           split(newSplit, n.data.splitVals,
                 newNode.data.splitVals, newNode.sliceCount - 1);
-          // Todo: Update deep counts.
+          n.data.deepCount = 0; // Update the deep count.
+          if (isLeafNode(newChild)) {
+            for (int i = 0; i < n.sliceCount; i++)
+              n.data.deepCount += n.data.children[i].sliceCount;
+            for (int i = 0; i < newNode.sliceCount; i++)
+              newNode.data.deepCount += newNode.data.children[i].sliceCount; }
+          else {
+            for (int i = 0; i < n.sliceCount; i++)
+              n.data.deepCount += n.data.children[i].data.deepCount;
+            for (int i = 0; i < newNode.sliceCount; i++)
+              newNode.data.deepCount +=
+                newNode.data.children[i].data.deepCount; }
           return newNode; }
       }
     }
@@ -327,6 +340,11 @@ public final class IntBTree
     while (true) {
       v = debugPrint_level(v);
       if (v.size() == 0) break; }
+    System.out.print("total count: ");
+    if (isLeafNode(m_root))
+      System.out.println(m_root.sliceCount);
+    else
+      System.out.println(m_root.data.deepCount);
   }
 
   private java.util.Vector debugPrint_level(java.util.Vector v)
