@@ -7,4 +7,4 @@ eda=edgeAttributes2.eda
 dataServer=rmi://hazel/yeast
 species=Saccharomyces cerevisiae
 layout=hierarchical
-props=/net/compbio/cytoscape/projects/galFiltered/cytoscape.props
+props=cytoscape.props
