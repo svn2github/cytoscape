@@ -6,13 +6,15 @@ package cytoscape.util.intr;
 public final class IntBTree
 {
 
-  // This quantity must be at least 5.
-  private final static int MAX_BRANCHES = 5;
+  // This quantity must be at least 3.
+  private final static int MAX_BRANCHES = 3;
 
+  private final int m_min_capacity;
   private Node m_root;
 
   public IntBTree()
   {
+    m_min_capacity = Math.max(2, (int) (MAX_BRANCHES / 2));
     m_root = new Node(MAX_BRANCHES, true);
   }
 
@@ -25,8 +27,8 @@ public final class IntBTree
   }
 
   /**
-   * Deletes exactly one instance of the integer x.  To delete all
-   * instances of the integer x, use deleteRange(x, 1).
+   * Deletes at most one entry of the integer x.  To delete all
+   * entries of the integer x, use deleteRange(x, 1).
    * @return true if and only if an entry was deleted (at most one entry is
    *   deleted by this method).
    */
@@ -36,7 +38,7 @@ public final class IntBTree
   }
 
   /**
-   * Deletes all instances of entries in the range [xStart, xStart + spanSize)
+   * Deletes all entries in the range [xStart, xStart + spanSize)
    * from this structure.
    * @param spanSize specifies how many consecutive integers, starting
    *   at xStart, to delete; spanSize cannot be negative (if spanSize is zero
