@@ -53,6 +53,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.FileReader;
 import java.io.LineNumberReader;
+import java.awt.Dimension;
+import javax.swing.Box;
+
+
 
 import java.util.*;
 import java.lang.Integer;
@@ -104,8 +108,9 @@ public class ColorNodesFromFileDialog extends JDialog{
     createUI();
   }//ColorNodesFromFile
   
+  // TODO: Remove. This method is no longer used.
   protected void setColorCalculator (){
-   
+    
     VisualMappingManager vmManager = cytoscapeWindow.getVizMapManager();
     NodeAppearanceCalculator nodeAppCalc = vmManager.getVisualStyle().getNodeAppearanceCalculator();
     NodeColorCalculator nfc = nodeAppCalc.getNodeFillColorCalculator();
@@ -162,22 +167,29 @@ public class ColorNodesFromFileDialog extends JDialog{
     fColor = new MutableColor(Color.CYAN);
     fColorLabel = MiscGB.createColorLabel(Color.CYAN);
     fColorLabel.addPropertyChangeListener("background",new UpdateFillColorListener());
-    fColorButton = MiscGB.buttonAndColor(this,fColor,this.fColorLabel,"Fill Color");
+    fColorButton = MiscGB.buttonAndColor(this,fColor,this.fColorLabel,"Choose Fill Color");
+    colorPanel.add(Box.createRigidArea(new Dimension(32,15)));
     colorPanel.add(fColorButton);
+    colorPanel.add(Box.createRigidArea(new Dimension (15, 15)));
     colorPanel.add(fColorLabel);
-    mainPanel.add(colorPanel);
+    
 
-    buttonPanel = new JPanel();
-    buttonPanel.setBorder(paneEdge);
-    buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+    //buttonPanel = new JPanel();
+    //buttonPanel.setBorder(paneEdge);
+    //buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
     applyButton = new JButton("Apply");
     applyButton.addActionListener(new ApplyAction());
-    buttonPanel.add(applyButton);
+    //buttonPanel.add(applyButton);
+    colorPanel.add(Box.createRigidArea(new Dimension(75,15)));
+    colorPanel.add(applyButton);
     dismissButton = new JButton("Dismiss");
     dismissButton.addActionListener(new DismissAction());
-    buttonPanel.add(dismissButton);
-    mainPanel.add(buttonPanel);
-		
+    //buttonPanel.add(dismissButton);
+    colorPanel.add(Box.createRigidArea(new Dimension (15, 15)));
+    colorPanel.add(dismissButton);
+    //mainPanel.add(buttonPanel);
+		mainPanel.add(colorPanel);
+    
     setContentPane(this.mainPanel);
 	
 	
@@ -190,24 +202,31 @@ public class ColorNodesFromFileDialog extends JDialog{
 
     public void actionPerformed(ActionEvent e){
 	    String file = fileNameField.getText();
-	    
+	    if(file.length() == 0){
+        return;
+      }
 	    try{
         FileReader fileReader = new FileReader(file);
         LineNumberReader lineReader = new LineNumberReader(fileReader);
         GraphObjAttributes nodeAttr = cytoscapeWindow.getNodeAttributes();
         Color fillC = fColor.getColor();
         String line = lineReader.readLine();
+        int numLines = 0;
+        
         while(line != null){
           Node n = (Node)nodeAttr.getGraphObject(line);
           if(n != null){
-            nodeAttr.set("nodeInFile",line,fillC.toString());
+            nodeAttr.set(NodeAppearanceCalculator.nodeFillColorBypass,line,fillC);
+            numLines++;
           }
           line = lineReader.readLine();
         }//while
-        setColorCalculator();
-        //cytoscapeWindow.redrawGraph();
-        
-	    }catch(Exception ex){
+        if(numLines > 0){
+          cytoscapeWindow.redrawGraph(false,true);
+        }
+      }catch(Exception ex){
+        System.err.println(ex);
+        ex.printStackTrace();
         JOptionPane.showMessageDialog(null,"Could not open or read file.\nCheck format and name.",
                                       "Error", JOptionPane.ERROR_MESSAGE); 
 	    }
