@@ -1,4 +1,4 @@
-package org.cytoscape.graph;
+package cytoscape.graph;
 
 /**
  * A bare-minimum definition of a graph.
