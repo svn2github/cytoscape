@@ -108,6 +108,11 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
     private boolean haltRequested = false;
 
     /**
+     * Estimated Time Remaining.
+     */
+    private long timeRemaining;
+
+    /**
      * Constructor.
      *
      * @param task   Task we are monitoring, and may need to cancel.
@@ -123,7 +128,6 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
     /**
      * Sets Percentage Complete.
      * Called by a child task thread.
-     * Safely queues changes to the Swing Event Dispatch Thread.
      *
      * @param percent Percentage Complete.
      */
@@ -132,21 +136,27 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
         if (!haltRequested) {
             if (percent < -1 || percent > 100) {
                 throw new IllegalArgumentException
-                        ("percent is outside range:  [-1, 100]");
+                        ("percent parameter is outside range:  [-1, 100]");
             }
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    if (percent == -1) {
-                        pBar.setIndeterminate(true);
-                        pBar.setStringPainted(false);
-                    } else {
-                        pBar.setIndeterminate(false);
-                        pBar.setStringPainted(true);
-                        pBar.setValue(percent);
-                        pBar.setString(Integer.toString(percent) + "%");
+
+            //  Update the UI
+            //  Only update when the new value != old value
+            //  This dramatically cuts down on the number of new events added
+            //  to the Event Dispatch Thread.
+            if (percent != pBar.getValue()) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        if (percent == -1) {
+                            pBar.setIndeterminate(true);
+                        } else {
+                            if (pBar.isIndeterminate()) {
+                                pBar.setIndeterminate(false);
+                            }
+                            pBar.setValue(percent);
+                        }
                     }
-                }
-            });
+                });
+            }
         }
     }
 
@@ -160,12 +170,20 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
     public void setEstimatedTimeRemaining(final long time) {
         //  Ignore events if user has requested to halt task.
         if (!haltRequested) {
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    timeRemainingValue.setText
-                            (StringUtils.getTimeString(time));
-                }
-            });
+
+            //  Update the UI
+            //  Only update when the new value != old value
+            //  This dramatically cuts down on the number of new events added
+            //  to the Event Dispatch Thread.
+            if (timeRemaining != time) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        timeRemainingValue.setText
+                                (StringUtils.getTimeString(time));
+                    }
+                });
+            }
+            timeRemaining = time;
         }
     }
 
@@ -175,26 +193,29 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
      * @param t                Throwable t.
      * @param userErrorMessage Human Readable Error Message.
      */
-    public void setException(Throwable t, String userErrorMessage) {
+    public void setException(final Throwable t, final String userErrorMessage) {
         //  Ignore events if user has requested to halt task.
         if (!haltRequested) {
             stopTimer();
 
-            //  Remove All UI Components
-            Container c = getContentPane();
-            c.removeAll();
+            //  Update the UI
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    //  Hide All Existing UI Components
+                    Container c = getContentPane();
+                    closeButton.setVisible(false);
+                    cancelButton.setVisible(false);
+                    progressPanel.setVisible(false);
 
-            //  Create Error Panel
-            JPanel errorPanel = new JErrorPanel
-                    ((Window) this, t, userErrorMessage);
-            c.add(errorPanel, BorderLayout.CENTER);
-            config.setAutoDispose(false);
-
-            //  Now make JFrame Resizable
-            setResizable(true);
-            pack();
-            validate();
-            this.setTitle("An Error Has Occurred");
+                    //  Create Error Panel
+                    JPanel errorPanel = new JErrorPanel (JTask.this, t,
+                            userErrorMessage);
+                    c.add(errorPanel, BorderLayout.CENTER);
+                    config.setAutoDispose(false);
+                    pack();
+                    setTitle("An Error Has Occurred");
+                }
+            });
         }
     }
 
@@ -202,10 +223,10 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
      * Indicates that the worker task is done processing.
      */
     public void setDone() {
+        //  Update the UI
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 stopTimer();
-                removeProgressBar();
                 if (config.getAutoDispose()) {
                     dispose();
                 } else {
@@ -219,8 +240,6 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
                         setCancelStatusMsg("Canceled by User");
                     }
                 }
-                pack();
-                validate();
             }
         });
     }
@@ -234,11 +253,11 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
      */
     public void setStatus(final String message) {
         if (!haltRequested) {
+            //  Update the UI
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
                     statusValue.setText (message);
                     pack();
-                    validate();
                 }
             });
         }
@@ -357,7 +376,6 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
         GridBagConstraints c = new GridBagConstraints();
         pBar = new JProgressBar();
         pBar.setIndeterminate(true);
-        pBar.setStringPainted(true);
         pBar.setMaximum(100);
         pBar.setValue(0);
         pBar.setBorder(new EmptyBorder(5, 0, 5, 0));
