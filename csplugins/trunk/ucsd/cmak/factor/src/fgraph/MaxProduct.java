@@ -46,6 +46,7 @@ public class MaxProduct
      */
     public void setDecomposeModel(boolean value)
     {
+        logger.info("Decompose final model into submodel: " + value);
         decomposeModel = value;
     }
     

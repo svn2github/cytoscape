@@ -13,6 +13,7 @@ my $base = "$dir/$run";
 
 $cmd .= " -l embedded ";
 $cmd .= " -n /cellar/users/cmak/data/orf2name.noa ";
+$cmd .= " -n /cellar/users/cmak/data/isTF.noa ";
 $cmd .= " -n /cellar/users/cmak/data/buffering/wt-mms-response.noa ";
 $cmd .= " -n ${base}_type.noa ";
 #$cmd .= " -n ${base}_ncount.noa ";
