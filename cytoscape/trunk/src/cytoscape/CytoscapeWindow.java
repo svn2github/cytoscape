@@ -948,6 +948,12 @@ protected class DisplayAttributesOfSelectedNodesAction extends AbstractAction {
       String canonicalName = nodeAttributes.getCanonicalName (nc.node ());
       System.out.println (canonicalName + ": " + nodeAttributes.getAttributes (canonicalName));
       } // for
+    EdgeCursor ec = g.selectedEdges (); 
+    System.out.println ("number of selected edges: " + ec.size ());
+    for (ec.toFirst (); ec.ok (); ec.next ()) { // get the canonical name of the old node
+      String edgeName = edgeAttributes.getCanonicalName (ec.edge ());
+      System.out.println (edgeName + ": " + edgeAttributes.getAttributes (edgeName));
+      } // for
     }
 }
 //------------------------------------------------------------------------------
