@@ -109,7 +109,6 @@ class FRootGraph implements RootGraph
           return rootGraph.getNode(~(nodes.nextInt())); } };
   }
 
-  // This method has been marked deprecated in the Giny API.
   public java.util.List nodesList() {
     final int nodeCount = getNodeCount();
     final java.util.ArrayList returnThis = new java.util.ArrayList(nodeCount);
@@ -117,7 +116,6 @@ class FRootGraph implements RootGraph
     for (int i = 0; i < nodeCount; i++) returnThis.add(iter.next());
     return returnThis; }
 
-  // This method has been marked deprecated in the Giny API.
   public int[] getNodeIndicesArray()
   {
     IntEnumerator nodes = m_graph.nodes();
@@ -141,7 +139,6 @@ class FRootGraph implements RootGraph
           return rootGraph.getEdge(~(edges.nextInt())); } };
   }
 
-  // This method has been marked deprecated in the Giny API.
   public java.util.List edgesList() {
     final int edgeCount = getEdgeCount();
     final java.util.ArrayList returnThis = new java.util.ArrayList(edgeCount);
@@ -149,7 +146,6 @@ class FRootGraph implements RootGraph
     for (int i = 0; i < edgeCount; i++) returnThis.add(iter.next());
     return returnThis; }
 
-  // This method has been marked deprecated in the Giny API.
   public int[] getEdgeIndicesArray()
   {
     IntEnumerator edges = m_graph.edges();
@@ -191,7 +187,6 @@ class FRootGraph implements RootGraph
     return nodeInx;
   }
 
-  // This method has been marked deprecated in the Giny API.
   public java.util.List removeNodes(java.util.List nodes) {
     final java.util.ArrayList returnThis = new java.util.ArrayList();
     for (int i = 0; i < nodes.size(); i++)
@@ -199,7 +194,6 @@ class FRootGraph implements RootGraph
         returnThis.add(nodes.get(i));
     return returnThis; }
 
-  // This method has been marked deprecated in the Giny API.
   public int[] removeNodes(int[] nodeIndices) {
     final int[] returnThis = new int[nodeIndices.length];
     for (int i = 0; i < returnThis.length; i++)
@@ -249,7 +243,6 @@ class FRootGraph implements RootGraph
     return edgeInx;
   }
 
-  // This method has been marked deprecated in the Giny API.
   public java.util.List removeEdges(java.util.List edges) {
     final java.util.ArrayList returnThis = new java.util.ArrayList();
     for (int i = 0; i < edges.size(); i++)
@@ -257,7 +250,6 @@ class FRootGraph implements RootGraph
         returnThis.add(edges.get(i));
     return returnThis; }
 
-  // This method has been marked deprecated in the Giny API.
   public int[] removeEdges(int[] edgeIndices) {
     final int[] returnThis = new int[edgeIndices.length];
     for (int i = 0; i < returnThis.length; i++)
@@ -312,7 +304,6 @@ class FRootGraph implements RootGraph
     return edge.getRootGraph() == this &&
       getEdge(edge.getRootGraphIndex()) != null; }
 
-  // This method has been marked deprecated in the Giny API.
   public java.util.List neighborsList(Node node) {
     if (node.getRootGraph() == this) {
       final int nodeIndex = node.getRootGraphIndex();
@@ -333,13 +324,11 @@ class FRootGraph implements RootGraph
       return list; }
     else { return null; } }
 
-  // This method has been marked deprecated in the Giny API.
   public boolean isNeighbor(Node a, Node b) {
     if (a.getRootGraph() == this && b.getRootGraph() == this)
       return isNeighbor(a.getRootGraphIndex(), b.getRootGraphIndex());
     else return false; }
 
-  // This method has been marked deprecated in the Giny API.
   public boolean isNeighbor(int nodeInxA, int nodeInxB)
   {
     final IntIterator connectingEdges = m_graph.connectingEdges
@@ -348,14 +337,12 @@ class FRootGraph implements RootGraph
     return connectingEdges.hasNext();
   }
 
-  // This method has been marked deprecated in the Giny API.
   public boolean edgeExists(Node from, Node to) {
     if (from.getRootGraph() == this && to.getRootGraph() == this)
       return edgeExists(from.getRootGraphIndex(),
                         to.getRootGraphIndex());
     else return false; }
 
-  // This method has been marked deprecated in the Giny API.
   public boolean edgeExists(int fromNodeInx, int toNodeInx)
   {
     final IntIterator connectingEdges =
@@ -364,7 +351,6 @@ class FRootGraph implements RootGraph
     return connectingEdges.hasNext();
   }
 
-  // This method has been marked deprecated in the Giny API.
   public int getEdgeCount(Node from, Node to, boolean countUndirectedEdges) {
     if (from.getRootGraph() == this && to.getRootGraph() == this)
       return getEdgeCount(from.getRootGraphIndex(),
@@ -372,7 +358,6 @@ class FRootGraph implements RootGraph
                           countUndirectedEdges);
     else return -1; }
 
-  // This method has been marked deprecated in the Giny API.
   public int getEdgeCount(int fromNodeInx, int toNodeInx,
                           boolean countUndirectedEdges) {
     final int[] connEdges = getEdgeIndicesArray(fromNodeInx, toNodeInx,
@@ -397,7 +382,6 @@ class FRootGraph implements RootGraph
 
   public int[] getConnectingEdgeIndicesArray(int[] nodeInx)
   {
-    // There are more edges than nodes so we'll use m_hash for the edges.
     m_hash2.empty();
     final IntHash nodeBucket = m_hash2;
     for (int i = 0; i < nodeInx.length; i++) {
@@ -408,21 +392,17 @@ class FRootGraph implements RootGraph
     m_hash.empty();
     final IntHash edgeBucket = m_hash;
     final IntEnumerator nodeIter = nodeBucket.elements();
-    while (nodeIter.numRemaining() > 0)
-    {
+    while (nodeIter.numRemaining() > 0) {
       final int thePositiveNode = nodeIter.nextInt();
       final IntEnumerator edgeIter =
         m_graph.adjacentEdges(thePositiveNode, true, false, true);
-      while (edgeIter.numRemaining() > 0)
-      {
+      while (edgeIter.numRemaining() > 0) {
         final int candidateEdge = edgeIter.nextInt();
         final int otherEdgeNode = (thePositiveNode ^
                                    m_graph.sourceNode(candidateEdge) ^
                                    m_graph.targetNode(candidateEdge));
         if (otherEdgeNode == nodeBucket.get(otherEdgeNode))
-          edgeBucket.put(candidateEdge);
-      }
-    }
+          edgeBucket.put(candidateEdge); } }
     final IntEnumerator returnEdges = edgeBucket.elements();
     final int[] returnThis = new int[returnEdges.numRemaining()];
     for (int i = 0; i < returnThis.length; i++)
