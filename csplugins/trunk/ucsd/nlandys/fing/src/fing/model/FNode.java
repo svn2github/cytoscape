@@ -4,8 +4,10 @@ import giny.model.GraphPerspective;
 import giny.model.Node;
 import giny.model.RootGraph;
 
+import cytoscape.CyNode;
+
 // Package visible class.
-class FNode implements Node
+class FNode implements Node, CyNode 
 {
 
   // Variables specific to public get/set methods.
