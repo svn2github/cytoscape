@@ -172,15 +172,15 @@ public class CyMain implements WindowListener {
 
 
     //load any specified data attribute files
-    logger.info("reading attribute files");
     Cytoscape.loadAttributes( config.getNodeAttributeFilenames(),
                               config.getEdgeAttributeFilenames(),
                               canonicalize, 
                               bioDataServer, 
                               defaultSpecies);
-    logger.info(" done");
+    
+    Cytoscape.firePropertyChange( Cytoscape.ATTRIBUTES_CHANGED, null, null );
 
-
+    
     
 
     // load expression data if specified
