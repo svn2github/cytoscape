@@ -8,7 +8,7 @@ else
   cd $1/temp
   cvs co cytoscape
   cvs co csplugins
-  javadoc -sourcepath $1/temp \
+  javadoc -source 1.4 -sourcepath $1/temp \
     -breakiterator \
     -d $1/cytodocs -use -doctitle "Cytoscape Core & Plugin API" \
     -splitIndex -group "Core Packages" "cytoscape*" \
