@@ -28,8 +28,9 @@ ADJACENT EDGES TEST:
       iteration 4: getAdjacentEdgeIndicesArray(int, false, false, false)
 
   Test circumstances:
-    Tests were performed on a 2.4GHz P4, with 512M RAM, and 256M memory
-    was allocated to the JVM.
+    Tests were performed on a 1.8GHz P4 (512K cache), with 512M RAM,
+    and 256M memory was allocated to the JVM.  Sun's 1.4.2_06 JVM
+    on Red Hat's 3ES Linux system.
 
   Test results:
 
@@ -37,24 +38,24 @@ ADJACENT EDGES TEST:
 
     graph size                          |  Fing  |  Luna  |
   --------------------------------------+--------+--------+
-       7 nodes,      20 edges           |      2 |      3 |
-     100 nodes,     500 edges           |      6 |     42 |
-     100 nodes,   10000 edges           |      8 |     84 |
-    1000 nodes,   20000 edges           |     25 |   1185 |
-    1000 nodes,   39998 edges           |     45 |   1700 |
-    2000 nodes,   20000 edges           |     30 |   3900 |
-    4000 nodes,   20000 edges           |     32 |  16300 |
-    8000 nodes,   20000 edges           |     42 |  64800 |
-   16000 nodes,   20000 edges           |     94 | 258300 |
-   39999 nodes,   39999 edges           |     93 |1743190 |
-   16000 nodes,  100000 edges           |    127 |   fail |
-   50000 nodes,  400000 edges           |    440 |   fail |
-  100000 nodes, 1000000 edges           |   1050 |   fail |
+       7 nodes,      20 edges           |        |        |
+     100 nodes,     500 edges           |        |        |
+     100 nodes,   10000 edges           |        |        |
+    1000 nodes,   20000 edges           |        |        |
+    1000 nodes,   39998 edges           |        |        |
+    2000 nodes,   20000 edges           |        |        |
+    4000 nodes,   20000 edges           |        |        |
+    8000 nodes,   20000 edges           |        |        |
+   16000 nodes,   20000 edges           |        |        |
+   39999 nodes,   39999 edges           |        |        |
+   16000 nodes,  100000 edges           |        |   fail |
+   50000 nodes,  400000 edges           |        |   fail |
+  100000 nodes, 1000000 edges           |        |   fail |
   --------------------------------------+--------+--------+
 
   Afterthoughts:
     The implementation could be really sped up if the interface
-    changes; instead of returning an array of integers, return
+    changes: instead of returning an array of integers, return
     an iteration over integers.  This would prevent a lot of
     unnecessary array allocation.
 
@@ -75,15 +76,16 @@ CONNECTING EDGES TEST:
     This test creates N nodes and E edges (an even mix of directed and
     undirected) in a RootGraph.  The topology of RootGraph created is
     defined by [random] bytes read from standard input.  For every pair
-    nodes whose order of creation was i, i+1, in the RootGraph,
+    of nodes whose order of creation was i, i+1, in the RootGraph,
     getEdgeIndicesArray() is called on that pair.  Because
     getEdgeIndicesArray() takes two boolean input parameters, this test
     is be repeated four times, each time with a different set of
     boolean input parameters.
 
   Test circumstances:
-    Tests were performed on a 2.4GHz P4, with 512M RAM, and 256M memory
-    was allocated to the JVM.
+    Tests were performed on a 1.8GHz P4 (512K cache), with 512M RAM,
+    and 256M memory was allocated to the JVM.  Sun's 1.4.2_06 JVM
+    on Red Hat's 3ES Linux system.
 
   Test results:
 
@@ -91,19 +93,19 @@ CONNECTING EDGES TEST:
 
     graph size                          |  Fing  |  Luna  |
   --------------------------------------+--------+--------+
-       7 nodes,      20 edges           |      3 |      2 |
-     100 nodes,     500 edges           |     12 |     13 |
-     100 nodes,   10000 edges           |     20 |      4 |
-    1000 nodes,   20000 edges           |     47 |     10 |
-    1000 nodes,   39998 edges           |     75 |     10 |
-    2000 nodes,   20000 edges           |     53 |     11 |
-    4000 nodes,   20000 edges           |     57 |     16 |
-    8000 nodes,   20000 edges           |     70 |     20 |
-   16000 nodes,   20000 edges           |    130 |     27 |
+       7 nodes,      20 edges           |        |        |
+     100 nodes,     500 edges           |        |        |
+     100 nodes,   10000 edges           |        |        |
+    1000 nodes,   20000 edges           |        |        |
+    1000 nodes,   39998 edges           |        |        |
+    2000 nodes,   20000 edges           |        |        |
+    4000 nodes,   20000 edges           |        |        |
+    8000 nodes,   20000 edges           |        |        |
+   16000 nodes,   20000 edges           |        |        |
    39999 nodes,   39999 edges           |        |        |
-   16000 nodes,  100000 edges           |    215 |   fail |
-   50000 nodes,  400000 edges           |    800 |   fail |
-  100000 nodes, 1000000 edges           |   2000 |   fail |
+   16000 nodes,  100000 edges           |        |   fail |
+   50000 nodes,  400000 edges           |        |   fail |
+  100000 nodes, 1000000 edges           |        |   fail |
   --------------------------------------+--------+--------+
 
   Afterthoughts:
@@ -142,8 +144,9 @@ NODE NEIGHBORS TEST:
     in the RootGraph, neighborsList() is called on that node.
 
   Test circumstances:
-    Tests were performed on a 2.4GHz P4, with 512M RAM, and 256M memory
-    was allocated to the JVM.
+    Tests were performed on a 1.8GHz P4 (512K cache), with 512M RAM,
+    and 256M memory was allocated to the JVM.  Sun's 1.4.2_06 JVM
+    on Red Hat's 3ES Linux system.
 
   Test results:
 
@@ -151,17 +154,74 @@ NODE NEIGHBORS TEST:
 
     graph size                          |  Fing  |  Luna  |
   --------------------------------------+--------+--------+
-       7 nodes,      20 edges           |      3 |      2 |
-     100 nodes,     500 edges           |     12 |     19 |
-     100 nodes,   10000 edges           |     25 |     14 |
-    1000 nodes,   20000 edges           |     52 |    285 |
-    1000 nodes,   39998 edges           |     83 |    300 |
-    2000 nodes,   20000 edges           |     61 |   1040 |
-    4000 nodes,   20000 edges           |     57 |   5000 |
-    8000 nodes,   20000 edges           |     68 |  21000 |
-   16000 nodes,   20000 edges           |    116 |  84000 |
-   39999 nodes,   39999 edges           |    170 | 563274 |
-   16000 nodes,  100000 edges           |    215 |   fail |
-   50000 nodes,  400000 edges           |    800 |   fail |
-  100000 nodes, 1000000 edges           |   2000 |   fail |
+       7 nodes,      20 edges           |        |        |
+     100 nodes,     500 edges           |        |        |
+     100 nodes,   10000 edges           |        |        |
+    1000 nodes,   20000 edges           |        |        |
+    1000 nodes,   39998 edges           |        |        |
+    2000 nodes,   20000 edges           |        |        |
+    4000 nodes,   20000 edges           |        |        |
+    8000 nodes,   20000 edges           |        |        |
+   16000 nodes,   20000 edges           |        |        |
+   39999 nodes,   39999 edges           |        |        |
+   16000 nodes,  100000 edges           |        |   fail |
+   50000 nodes,  400000 edges           |        |   fail |
+  100000 nodes, 1000000 edges           |        |   fail |
   --------------------------------------+--------+--------+
+
+
+=======================================================================
+CONNECTING WEB TEST:
+
+  Testing:
+    RootGraph.getConnectingEdgeIndicesArray(int[])
+
+  Importance:
+    This method is related to creating GraphPerspective objects (sub-
+    graphs).  Given a set of nodes in an original graph, find all
+    edges whose source and target are in this set (the subgraph
+    "induced" by this set of nodes).
+
+  Description of test:
+    This test creates N nodes and E edges (an even mix of directed and
+    undirected) in a RootGraph.  The topology of RootGraph created is
+    defined by [random] bytes read from standard input.  Select half of
+    the nodes in this RootGraph, and call
+    getConnectingEdgeIndicesArray() on this set.  Repeat 100 times,
+    each time choosing a different set containing exactly half of all
+    nodes.
+
+  Test circumstances:
+    Tests were performed on a 1.8GHz P4 (512K cache), with 512M RAM,
+    where 256M memory was allocated to the JVM.  Sun's 1.4.2_06 JVM
+    on Red Hat's 3ES Linux system.
+
+  Test results:
+
+             Milliseconds taken to perform test case:
+
+    graph size                          |  Fing  |  Luna  |
+  --------------------------------------+--------+--------+
+     200 nodes,    1000 edges           |     67 |    210 |
+     200 nodes,    5000 edges           |    200 |    295 |
+     200 nodes,   10000 edges           |    380 |    420 |
+     200 nodes,   39999 edges           |   1800 |   1130 |
+    1000 nodes,   10000 edges           |    480 |   5000 |
+    1000 nodes,   20000 edges           |    950 |   5000 |
+    1000 nodes,   39998 edges           |   2100 |   5500 |
+    2000 nodes,   20000 edges           |   1000 |  17600 |
+    4000 nodes,   20000 edges           |   1150 |  68611 |
+    8000 nodes,   20000 edges           |   1250 | 304403 |
+   16000 nodes,   20000 edges           |   1700 |        |
+   39999 nodes,   39999 edges           |        |        |
+   16000 nodes,  100000 edges           |        |   fail |
+   50000 nodes,  400000 edges           |        |   fail |
+  100000 nodes, 1000000 edges           |        |   fail |
+  --------------------------------------+--------+--------+
+
+  Afterthoughts:
+    The getConnectingEdgeIndicesArray() method returns a newly-
+    allocated array of integers containing edge indices.  Therefore,
+    with each call to this method a rather large array must be
+    allocated.  Performance could be improved if an iterator were
+    returned instead of an int array in the API definition.
