@@ -112,7 +112,6 @@
     <!-- ======================================================= -->
     <!-- Compile Cytoscape                                       -->
     <!-- ======================================================= -->
-
     <!--  Target to compile all code -->
     <target name="compile" depends="prepare"
             description="Compiles all source code.">
@@ -124,39 +123,7 @@
                optimize="on"
                includeAntRuntime="false">
             <classpath refid="classpath"/>
-
             <include name="cytoscape/**"/>
-
-            <!-- Deferred classes are never compiled -->
-            <!-- For details, see cytoscape/unitTests/makefile -->
-            <exclude name="cytoscape/unitTests/deferred/*"/>
-
-            <!-- data/util is never compiled, we don't know why-->
-            <!-- For details, see cytoscape/data/makefile -->
-            <exclude name="cytoscape/data/util/*"/>
-
-            <!-- ignore files moved to cytoscape/data/servers/archive -->
-            <!-- For details, see cytoscape/data/servers/makefile -->
-            <exclude name="cytoscape/data/servers/archive/*"/>
-            <!-- also ignore tests of the archived classes -->
-            <exclude name="cytoscape/data/servers/unitTests/archive/*"/>
-
-            <!-- data/annotation/reader/unitTests are never compiled -->
-            <!-- For details, see cytoscape/data/readers/makefile -->
-            <exclude name="cytoscape/data/annotation/readers/unitTests/*"/>
-
-            <!-- Exclude Dialog Files that do not currently compile -->
-            <exclude name="cytoscape/dialogs/GoDataServerPopupTable.java"/>
-            <exclude name="cytoscape/dialogs/GoIDAttributesPopupTable.java"/>
-            <exclude name="cytoscape/dialogs/NodeAttributesPopupTable.java"/>
-            <!-- Exclude obsolete visual package testing class -->
-            <exclude name="cytoscape/visual/tests/TestNewMappingsUI.java"/>
-
-            <!-- Exclude unused classes in archive directories -->
-            <exclude name="cytoscape/actions/archive/*"/>
-            <exclude name="cytoscape/filters/dialogs/archive/*"/>
-            <exclude name="cytoscape/dialogs/archive/*"/>
-
         </javac>
 
         <!-- Run RMIC for BioDataServer -->
