@@ -3,13 +3,14 @@ public class MPMain
     protected static String usage =
         "Usage: <max path len> \n" +
         "       <interaction sif file>\n" +
-        "       <expression pvals>\n" +
+        "       <expression pvals file>\n" +
         "       <expression pval threshold>\n" +
         "       <Cytoscape-format edge attribute file>\n" +
         "       <protein-DNA pvalue threshold: -1 to use all>\n" +
         "       <output directory>\n" +
         "       <output base filename>\n" +
-        "       [print|profile <optional]\n"
+        "       <ko cutoff>\n" +
+        "       [print|profile <optional>]\n"
         ;
     
     public static void main(String[] args)
@@ -29,17 +30,18 @@ public class MPMain
         double edgeThresh = Double.parseDouble(args[5]);
         String outdir = args[6];
         String outfile = args[7];
+        int explainCutoff = Integer.parseInt(args[8]);
 
         String type = "";
-        if(args.length >= 9)
+        if(args.length >= 10)
         {
-            type = args[8];
+            type = args[9];
         }
 
         String candidate=null;
-        if(args.length >= 10)
+        if(args.length >= 11)
         {
-            candidate = args[9];
+            candidate = args[10];
         }
         
         try
@@ -71,6 +73,7 @@ public class MPMain
             }
             
             mp.setMaxPathLength(pathLength);
+            mp.setKOExplainCutoff(explainCutoff);
             mp.setExpressionFile(exp, expThresh);
             mp.setEdgeFile(edge, edgeThresh);
             mp.run(outdir, outfile);

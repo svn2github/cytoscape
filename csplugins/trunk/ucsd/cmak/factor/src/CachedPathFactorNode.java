@@ -7,7 +7,7 @@ public class CachedPathFactorNode extends PathFactorNode
 {
     private static int MAX_PATH_LEN = 5;
     
-    private List _signCache;
+    //private List _signCache;
     private List _signCachePLUS;
     private List _signCacheMINUS;
     
@@ -22,19 +22,20 @@ public class CachedPathFactorNode extends PathFactorNode
     {
         super();
         
-        _signCache = new ArrayList(MAX_PATH_LEN);;
+        //_signCache = new ArrayList(MAX_PATH_LEN);;
         _signCachePLUS = new ArrayList(MAX_PATH_LEN);
         _signCacheMINUS = new ArrayList(MAX_PATH_LEN);
 
         for(int x=0; x <= MAX_PATH_LEN; x++)
         {
-            _signCache.add(super.enumerate(x));
+            // _signCache.add(super.enumerate(x));
             _signCachePLUS.add(super.enumerate(x, State.PLUS));
             _signCacheMINUS.add(super.enumerate(x, State.MINUS));
         }
             
     }
 
+    /*
     protected short[][] enumerate(int numSigns)
     {
         if(numSigns <= MAX_PATH_LEN)
@@ -45,7 +46,8 @@ public class CachedPathFactorNode extends PathFactorNode
         return super.enumerate(numSigns);
         
     }
-
+    */
+    
     protected short[] enumerate(int numSigns, State pORm)
     {
         if(numSigns <= MAX_PATH_LEN)

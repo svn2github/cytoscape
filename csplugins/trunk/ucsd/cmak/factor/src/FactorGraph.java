@@ -36,9 +36,12 @@ import java.util.logging.Level;
 public class FactorGraph
 {
     private static Logger logger = Logger.getLogger(FactorGraph.class.getName());
+    private static boolean INFO = logger.isLoggable(Level.INFO);
+    private static boolean FINE = logger.isLoggable(Level.FINE);
+    private static boolean FINER = logger.isLoggable(Level.FINER);
 
-    // filter submodels with fewer than 3 ko variables
-    private boolean filter3 = false;
+    // filter submodels that do not explain any knockout effects
+    private boolean filter = true;
     
     // used to compute the a priori probabilities of
     // knockout nodes
@@ -180,14 +183,12 @@ public class FactorGraph
         // use 4 edges per path = (3 + 12 = 15) * pathcount
         nE = 12 * nPaths;
 
-        System.out.println("Initializing factor graph. "
-                           + nV + " vars, "
-                           + nF + " factors, "
-                           + nN + " nodes, "
-                           + nE + " estimated edges.");
+        logger.info("Initializing factor graph. "
+                    + nV + " vars, "
+                    + nF + " factors, "
+                    + nN + " nodes, "
+                    + nE + " estimated edges.");
         
-        //_g.ensureCapacity(nN, nE);
-
         _nodeMap = new OpenIntObjectHashMap(nN);
         _pathMap = new OpenIntIntHashMap(nPaths);
         _pathFactor2sigmaMap = new OpenIntIntHashMap(nPaths);
@@ -275,7 +276,7 @@ public class FactorGraph
             }
         }
         
-        System.out.println("processed ko, OR, path nodes. cN=" + cN + ", cE=" + cE);
+        logger.info("processed ko, OR, path nodes. cN=" + cN + ", cE=" + cE);
         
         for(int i=0, Ne = edges.size(); i < Ne; i++)
         {
@@ -317,9 +318,10 @@ public class FactorGraph
             }
         }
 
-        System.out.println("processed edges. total cN=" + cN + ", cE=" + cE);
+        logger.info("processed edges. total cN=" + cN + ", cE=" + cE);
 
-        printInfluenceCnt();
+        //printInfluenceCnt();
+        
     }
 
 
@@ -328,8 +330,8 @@ public class FactorGraph
         IntArrayList facs = _factorInfluenceMap.keys();
         for(int x=0; x < facs.size(); x++)
         {
-            System.out.println("ic[" + facs.get(x) + "] = "
-                               + _factorInfluenceMap.get(facs.get(x)));
+            logger.info("ic[" + facs.get(x) + "] = "
+                        + _factorInfluenceMap.get(facs.get(x)));
         }
     }
 
@@ -729,8 +731,9 @@ public class FactorGraph
             }
         }
 
-        System.out.println("Found " + activePaths.length + " active paths");
-        System.out.println("Found " + activeEdges.size() + " active edges");
+        logger.info("updateEdgeAnnotation with "
+                    + activePaths.length + " active paths resulted in "
+                    + activeEdges.size() + " active edges");
         
         return activeEdges;
     }
@@ -780,9 +783,7 @@ public class FactorGraph
 
 
         // print out messages for debugging
-        Level ll = logger.getLevel(); 
-        if(ll != null &&
-           (ll.intValue() >= Level.FINE.intValue()))
+        if(FINE)
         {
             try
             {
@@ -804,7 +805,7 @@ public class FactorGraph
     /**
      * Run the max product algorithm.
      *
-     * FIX: termination condition. decompose degenerate networks.
+     * FIX: termination condition.
      */
     public void runMaxProductAndDecompose() throws AlgorithmException
     {
@@ -813,7 +814,8 @@ public class FactorGraph
         _runMaxProduct();
         Submodel invariant = fixUniqueVars();
         invariant.setInvariant(true);
-
+        invariant.setNumExplainedKO(countKO(invariant));
+        
         /*
         IntArrayList vars = invariant.getVars();
 
@@ -824,8 +826,6 @@ public class FactorGraph
         }
         */
         
-        //_submodels.add(invariant);
-
         logger.info("added invariant submodel with "
                     + invariant.size() + " vars");
         
@@ -850,13 +850,18 @@ public class FactorGraph
         // merge submodels
         mergeSubmodels(_submodels);
         
-        // filter submodels that explain fewer than 3 KO effects
-        if(filter3)
+        // filter submodels that do not explain any knockout effects
+        if(filter)
         {
             for(ListIterator it = _submodels.listIterator(); it.hasNext();)
             {
-                if( countKO((Submodel) it.next()) < 3 )
+                Submodel m = (Submodel) it.next(); 
+                int numKO = countKO(m);
+                m.setNumExplainedKO(numKO);
+                if( numKO < 1 )
                 {
+                    logger.info("Submodel " + m.getId() + " explains no KO's");
+                                
                     it.remove();
                 }
             }
@@ -870,9 +875,10 @@ public class FactorGraph
 
         // print submodels
         logger.info("### Decomposed models: " + _submodels.size());
+        
         for(Iterator it = _submodels.iterator(); it.hasNext();)
         {
-            System.out.println(toString((Submodel) it.next()));
+            logger.info(toString((Submodel) it.next()));
         }
         
         logger.info("### Found " + _submodels.size() + " submodels");
@@ -944,8 +950,8 @@ public class FactorGraph
 
                 if(mY.overlaps(mX))
                 {
-                    System.out.println("overlap found: m=" + x
-                                       + ", merged=" + y);
+                    logger.info("overlap found: m=" + x
+                                + ", merged=" + y);
                     mY.merge(mX);
                     isDistinct = false;
                     break;
@@ -954,7 +960,7 @@ public class FactorGraph
 
             if(isDistinct)
             {
-                System.out.println(mX + " is distinct model");
+                logger.info(mX + " is distinct submodel");
                 merged.add(mX);
             }
         }
@@ -968,6 +974,16 @@ public class FactorGraph
     {
         int x;
 
+        int notFixed = 0; 
+        for(int y=0; y < varNodes.size(); y++)
+        {
+            int v = varNodes.get(y);
+            
+            if(!getVarNode(v).isFixed())
+            {
+                notFixed++;
+            }
+        }
         
         // Even though we are not iterating through varNods,
         // this loop is more efficient than using allFixed(varNodes)
@@ -976,8 +992,6 @@ public class FactorGraph
         int N = varNodes.size();
         for(x=0; x < N; x++)
         {
-            System.out.println("### fix var loop: " + x);
-           
             // Get the node that is connected to the most number
             // of undetermined variables.
             int var = chooseMaxConnode(varNodes);
@@ -989,8 +1003,10 @@ public class FactorGraph
                 _runMaxProduct();
                 Submodel model = fixUniqueVars(var);
                 _submodels.add(model);
-                System.out.println("added submodel with "
-                                   + model.size() + " vars");
+                notFixed -= model.getNumDepVars();
+                logger.info("added submodel " + model.getId()
+                            + " with " + model.size() + " vars. "
+                            + notFixed + " vars still not fixed");
             }
             else
             {
@@ -1042,7 +1058,11 @@ public class FactorGraph
             }
         }
 
-        logger.fine("max influence = " + maxInfluence + " for node " + maxVar);
+        if(FINE)
+        {
+            logger.fine("max influence = " + maxInfluence
+                        + " for node " + maxVar);
+        }
         
         return maxVar;
     }
@@ -1095,7 +1115,9 @@ public class FactorGraph
 
         ct += addUniqueVarsToModel(model, _ko, depVars);
 
-        printInfluenceCnt();
+        model.setNumDepVars(ct);
+        
+        //printInfluenceCnt();
         
         if (!invariant)
         {
@@ -1107,10 +1129,6 @@ public class FactorGraph
                 addInferredVars(model, indepVar, v);
             }
         }
-        
-        System.out.println("fixed " + ct + " variables of " + _vars.size());
-
-        //printInfluenceCnt();
         
         return model;
     }
@@ -1129,16 +1147,18 @@ public class FactorGraph
             
             if(!vn.isFixed() && pt.hasUniqueMax())
             {
-                logger.fine("fixing var node " + vn + " type=" + vn.type());
                 if(vn.isType(NodeType.KO) && isExplained(v))
                 {
-                    logger.fine("  isKO and explained: " + pt.maxState());
+                    if(FINE)
+                    {
+                        logger.fine("  isKO and explained: " + vn);
+                    }
+                    
                     vn.fixState(pt.maxState());
                     ct++;
 
-                    //addToModel(model, v, vn);
                     model.addVar(v);
-                    //depVars.add(v);
+                    depVars.add(v);
                 }
                 else if(vn.isType(NodeType.EDGE) ||
                         vn.isType(NodeType.SIGN) ||
@@ -1146,22 +1166,29 @@ public class FactorGraph
                         )
                     // node is an EDGE, SIGN, or DIR variable
                 {
-                    vn.fixState(pt.maxState());
-                    logger.fine("fixing " + vn + " to " + pt.maxState());
-                    decrementInfluenceCount(v);
+                    if(FINE)
+                    {
+                        logger.fine("fixing " + vn
+                                    + " to state: " + pt.maxState());
+                    }
+                    fixEdgeSignDir(vn, pt.maxState(), v);
+                    depVars.add(v);
                     ct++;
 
                     if(model.acceptsType(vn.type()))
                     {
-                        //addToModel(model, v, vn);
                         model.addVar(v);
-                        depVars.add(v);
+
                     }
                 }
             }
             else
             {
-                logger.fine("## var node not fixed " + vn);
+                if(FINE)
+                {
+                    logger.fine("## skipping " + vn + " isFixed=" + vn.isFixed()
+                                + " uniqueMax=" + pt.hasUniqueMax());
+                }
             }
                 
         }
@@ -1171,15 +1198,22 @@ public class FactorGraph
 
     private void decrementInfluenceCount(int varNode)
     {
-        //logger.fine("decrementing influence of: " + varNode);
+        if(FINER)
+        {
+            logger.finer("decrementing influence of: " + varNode);
+        }
         
         IntArrayList facs = _var2fac.get(varNode);
 
         for(int x=0, N=facs.size(); x < N; x++)
         {
             int f = facs.get(x);
-            int cnt = _factorInfluenceMap.get(f);
-            _factorInfluenceMap.put(f, cnt - 1);
+            if(_factorInfluenceMap.containsKey(f))
+            {
+                int cnt = _factorInfluenceMap.get(f);
+
+                _factorInfluenceMap.put(f, cnt - 1);
+            }
         }
     }
     
@@ -1214,21 +1248,23 @@ public class FactorGraph
     {
         IntArrayList facs = _var2fac.get(koNode);
 
-        logger.fine("   isExplained called on: " + koNode);
+        //logger.finer("   isExplained called on: " + koNode);
+        
         // check all paths that could explain this knockout
         for(int x=0, Nf=facs.size(); x < Nf; x++)
         {
             int facNode = facs.get(x);
             FactorNode fn = getFacNode(facNode);
 
-            logger.fine("   checking : " + fn);
-            
             if(fn.isType(NodeType.PATH_FACTOR))
             {
-                logger.fine("   checking PATH_FACTOR: " + facNode
-                            + " isFixed=" + isPathFixed(facNode)
-                            + " isActive=" + isPathActive(facNode));
-      
+                if(FINER)
+                {
+                    logger.finer("   checking PATH_FACTOR: " + facNode
+                                + " isFixed=" + isPathFixed(facNode)
+                                + " isActive=" + isPathActive(facNode));
+                }
+                
                 if(isPathFixed(facNode) && isPathActive(facNode))
                 {
                     return true;
@@ -1239,6 +1275,12 @@ public class FactorGraph
         return false;
     }
 
+    private void fixEdgeSignDir(VariableNode vn, State maxState, int nodeIndex)
+    {
+        vn.fixState(maxState);
+        decrementInfluenceCount(nodeIndex);
+    }
+    
     private boolean isPathFixed(int facNode)
     {
         int cnt = _factorInfluenceMap.get(facNode);
@@ -1275,9 +1317,10 @@ public class FactorGraph
     private void addInferredVars(Submodel model,
                                  int indepVar, int depVar)
     {
-        logger.fine("addInferredVars: indep-var:" + indepVar
+        /*
+        logger.finer("addInferredVars: indep-var:" + indepVar
                      + ", dep-var:" + depVar);
-        
+        */
         
         /**
          * 1. Identify path-factor nodes that are connected to
@@ -1296,18 +1339,21 @@ public class FactorGraph
         {
             int fac = facs.get(x);
 
-            logger.fine("checking path " + fac);
             IntArrayList varsToAdd = getInfluencingVars(model, fac,
                                                         indepVar, depVar);
 
             for(int y=0; y < varsToAdd.size(); y++)
             {
                 int v = varsToAdd.getQuick(y);
-                System.out.println("adding var: " + v
-                                   + " from path " + fac
-                                   + " to model "
-                                   + model.getIndependentVar());
-                //addToModel(model, v, getVarNode(v));
+
+                if(FINE)
+                {
+                    logger.fine("adding var: " + v
+                                + " from path " + fac
+                                + " to model "
+                                + model.getId());
+                }
+                
                 model.addVar(v);
             }
         }
@@ -1336,15 +1382,15 @@ public class FactorGraph
         boolean isFixed = isPathFixed(facNode);
         boolean isActive = isPathActive(facNode);
 
-
-        
-        logger.fine("getInfluencingVars for: " + facNode
-                    + " isFixed=" + isFixed
-                    + " isActive=" + isActive
-                    + " #vars=" + vars.size()
-                    + " IV=" + indepVar
-                    + " DV=" + depVar);
-        
+        if(FINE)
+        {
+            logger.fine("getInfluencingVars for: " + facNode
+                        + " isFixed=" + isFixed
+                        + " isActive=" + isActive
+                        + " #vars=" + vars.size()
+                        + " IV=" + indepVar
+                        + " DV=" + depVar);
+        }
 
         if(isFixed && isActive)
         {
@@ -1372,6 +1418,11 @@ public class FactorGraph
         
         if (!containsIV || !containsDV)
         {
+            if(FINE)
+            {
+                logger.fine("  contains Indep Var=" + containsIV
+                            + "contains Dep Var=" + containsDV);
+            }
             newVars.clear();
         }
 
@@ -1465,41 +1516,15 @@ public class FactorGraph
     */
     
     /**
-     * @param sortedNodes nodes sorted by degree in ascending order
-     * 
-     * @return the root graph index of a degenerate variable, or zero if
-     * all variables are fixed.
-     */
-    private int chooseDegenerateVar(IntArrayList sortedNodes)
-    {
-        for(int x=sortedNodes.size() - 1; x >= 0; x--)
-        {
-            int v = sortedNodes.get(x);
-
-            if(!getVarNode(v).isFixed())
-            {
-                return v;
-            }
-        }
-
-        return 0;
-    }
-
-    
-    /**
      * Fix "var" to a specific state.  Choose the state randomly
      *
      * @param var the root graph index of the variable to fix
      */
     private void fixVar(int var)
     {
-        System.out.println("fixvar called on " + var);
-
         if(_nodeMap.containsKey(var))
         {
             VariableNode vn = getVarNode(var);
-            System.out.println("  " + vn);
-
             
             if(vn.isFixed())
             {
@@ -1509,51 +1534,70 @@ public class FactorGraph
             ProbTable pt = vn.getProbs();
             if(pt.hasUniqueMax())
             {
-                vn.fixState(pt.maxState());
+                if(vn.isType(NodeType.EDGE) ||
+                   vn.isType(NodeType.DIR) ||
+                   vn.isType(NodeType.SIGN))
+                {
+                    fixEdgeSignDir(vn, pt.maxState(), var);
+                }
+                else
+                {
+                    vn.fixState(pt.maxState());
+                }
             }
             else
             {
                 if(vn.isType(NodeType.PATH_ACTIVE))
                 {
                     vn.fixState(State.ZERO);
-                    System.out.println("fixing path active for path "
-                                       + vn.getId()
-                                       + " to " + vn.fixedState());
-                                        
+                    if(INFO)
+                    {
+                        logger.info("fixing path active for path "
+                                    + vn.getId()
+                                    + " to " + vn.fixedState());
+                    }
                 }
                 else if (vn.isType(NodeType.EDGE))
                 {
-                    vn.fixState(State.ZERO);
+                    fixEdgeSignDir(vn, State.ZERO, var);
 
-                    System.out.println("fixing edge value for "
-                                       + _ig.edgeName(vn.getId())
-                                       + " to " + vn.fixedState());
-                
+                    if(INFO)
+                    {
+                        logger.info("fixing edge value for "
+                                           + _ig.edgeName(vn.getId())
+                                           + " to " + vn.fixedState());
+                    }
                 }
                 else if (vn.isType(NodeType.SIGN))
                 {
-                    vn.fixState(State.PLUS);
-                    
-                    System.out.println("fixing sign for "
-                                       + _ig.edgeName(vn.getId())
-                                       + " to " + vn.fixedState());
-                                    
+                    fixEdgeSignDir(vn, State.PLUS, var);
+
+                    if(INFO)
+                    {
+                        logger.info("fixing sign for "
+                                    + _ig.edgeName(vn.getId())
+                                    + " to " + vn.fixedState());
+                    }
                 }
                 else if (vn.isType(NodeType.DIR))
                 {
-                    vn.fixState(State.PLUS);
-
-                    System.out.println("fixing dir for "
-                                       + _ig.edgeName(vn.getId())
-                                       + " to " + vn.fixedState());
-                        
+                    fixEdgeSignDir(vn, State.PLUS, var);
+                    if(INFO)
+                    {
+                        logger.info("fixing dir for "
+                                    + _ig.edgeName(vn.getId())
+                                    + " to " + vn.fixedState());
+                    }
                 }
                 else if(vn.isType(NodeType.KO))
                 {
-                    System.out.println("fixing ko for "
-                                       + _ig.node2Name(vn.getId())
-                                       + " - "
-                                       + _ig.node2Name(vn.getId2()));
+                    if(INFO)
+                    {
+                        logger.info("fixing ko for "
+                                    + _ig.node2Name(vn.getId())
+                                    + " - "
+                                    + _ig.node2Name(vn.getId2()));
+                    }
                     
                     // if P(+1) == P(-1) -> choose +1
                     if(Math.abs(pt.prob(State.PLUS) - pt.prob(State.MINUS)) > 1e-20)
@@ -1886,6 +1930,30 @@ public class FactorGraph
         
         return b.toString();
     }
+
+
+    /**
+     * @param sortedNodes nodes sorted by degree in ascending order
+     * 
+     * @return the root graph index of a degenerate variable, or zero if
+     * all variables are fixed.
+     *
+    private int chooseDegenerateVar(IntArrayList sortedNodes)
+    {
+        for(int x=sortedNodes.size() - 1; x >= 0; x--)
+        {
+            int v = sortedNodes.get(x);
+
+            if(!getVarNode(v).isFixed())
+            {
+                return v;
+            }
+        }
+
+        return 0;
+    }
+    */
+    
     
     /*
     private void partitionFactorGraph()

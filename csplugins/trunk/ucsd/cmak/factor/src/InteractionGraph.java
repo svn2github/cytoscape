@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
 
+import java.util.logging.Logger;
+
 //import cytoscape.data.CachedExpressionData;
 import cytoscape.data.ExpressionData;
 import cytoscape.data.mRNAMeasurement;
@@ -29,6 +31,8 @@ import cern.colt.map.OpenIntObjectHashMap;
  */
 public class InteractionGraph
 {
+    private static Logger logger = Logger.getLogger(FactorGraph.class.getName());
+
     private double PVAL_THRESH = 0.8;
 
     private int _edgeCount;
@@ -243,7 +247,7 @@ public class InteractionGraph
         }
         toRemove.trimToSize();
         
-        System.out.println("Removing " + toRemove.size() +
+        logger.info("Removing " + toRemove.size() +
                            " protein-DNA edges. pvalue threshold = " + pvalue);
         _graph.removeEdges(toRemove.elements());
     }
@@ -447,23 +451,46 @@ public class InteractionGraph
      * Methods for writing the graph to files.
      * Should these be in another class?
      *
+     * @param filter only write submodels that explain at least this many
+     * knockout experiments (NOTE: not knockout effects. need to fix?)
+     * @param filename the base filename used to write each submodel.
+     * @see #writeSubmodel()
      */ 
 
-    public void writeGraphAsSubmodels(String filename) throws IOException
+    public void writeGraphAsSubmodels(String filename, int filter)
+        throws IOException
     {
+        logger.info("writing submodels explaining >= " + filter
+                    + " ko experiments");
+
+        int cnt = 0;
         for(int x=0; x < _submodels.size(); x++)
         {
-            writeSubmodel((Submodel) _submodels.get(x), filename, x);
+            Submodel m = (Submodel) _submodels.get(x);
+            if(m.getNumExplainedKO() >= filter)
+            {
+                writeSubmodel(m, filename, cnt);
+                cnt++;
+            }
         }
 
         writeAttributes(filename);
     }
 
+    /**
+     *
+     * @param m the submodel to write
+     * @param modelNum the number used to label this submodel
+     * @param filename the base filename.  Submodel "m" will be written
+     * to a file named "{filename}-{modelNum}.sif"
+     *
+     * @throws
+     */
     private void writeSubmodel(Submodel m, String filename, int modelNum) throws IOException
     {
+        logger.info("writing submodel: " + m.getId());
         PrintStream out = new PrintStream(new FileOutputStream(filename
                                                                + "-"
-                                                               //+ m.getId()
                                                                + modelNum
                                                                + ".sif"));
         writeEdges(out, m.getEdges(), 1);

@@ -43,6 +43,7 @@ public class MaxProductTest extends AbstractPathTest
         MaxProduct mp = new MaxProduct();
         mp.setInteractionFile("fgtest.sif");
         mp.setMaxPathLength(5);
+        mp.setKOExplainCutoff(2);
         mp.setExpressionFile("fg2.pvals", 1e-2);
         mp.setEdgeFile("fgtest.eda", -1);
         mp.run(outputDir, "fgtest_fg2");

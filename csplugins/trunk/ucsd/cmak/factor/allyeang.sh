@@ -10,6 +10,7 @@
 # protien-DNA edge pvalue threshold
 # output directory
 # base output file name
+# ko cutoff. print models that explain >= cutoff knockout experiments#
 #
 # -Xrunhprof:cpu=samples,depth=8
 #
@@ -26,7 +27,8 @@ echo "### mp.sh MAX_PATH_LEN = ${PATH}"
 echo "### mp.sh expression pvalue threshold =  ${EXP}"
 echo "### mp.sh PD edge pvalue threshold = ${EDGE}"
 
-java  -Xmx512m MPMain \
+java  -Xmx512m -Djava.util.logging.config.file=./logging.properties \
+MPMain \
 ${PATH} \
 ${DATA}/yall.sif \
 ${DATA}/yeang-hughes.pvals \
@@ -34,7 +36,8 @@ ${EXP} \
 ${DATA}/yall.edgeattr \
 ${EDGE} \
 testOut \
-test_yall_maxcon_${PATH}_${EXP}_${EDGE}
+test_yall_maxcon_${PATH}_${EXP}_${EDGE} \
+3
 #profile 
 #STE12candidategenes.txt
 #

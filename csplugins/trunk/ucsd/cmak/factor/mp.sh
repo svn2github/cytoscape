@@ -10,6 +10,7 @@
 # protien-DNA edge pvalue threshold
 # output directory
 # base output file name
+# ko cutoff. print models that explain >= cutoff knockout experiments
 #
 # -Xrunhprof:cpu=samples,depth=8
 #
@@ -34,6 +35,7 @@ ${EXP} \
 ${DATA}/all.edgeattr \
 ${EDGE} \
 testOut \
-test_full_${PATH}_${EXP}_${EDGE}
+test_full_${PATH}_${EXP}_${EDGE} \
+3
 #profile 
 #STE12candidategenes.txt

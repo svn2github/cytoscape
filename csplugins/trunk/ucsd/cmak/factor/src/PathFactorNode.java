@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
-import cern.colt.bitvector.BitVector;
-
 import java.lang.Math;
 
 public class PathFactorNode extends FactorNode
@@ -14,8 +12,7 @@ public class PathFactorNode extends FactorNode
     private static Logger logger = Logger.getLogger(PathFactorNode.class.getName());
 
 
-    private static final boolean LOG_FINE = (logger.getLevel() != null &&
-                                             logger.getLevel().intValue() <= Level.FINE.intValue());
+    private static boolean FINE = logger.isLoggable(Level.FINE);
     
     protected static final double ep1 = 0.7; // epsilon 1
     protected static final double ep2 = 0.299; // epsilon 2
@@ -31,31 +28,21 @@ public class PathFactorNode extends FactorNode
         return __singleton;
     }
 
-    /*
-    private int maxPathLen;
-    private ArrayList plusComboCache;
-    private ArrayList minusComboCache;
-    private ArrayList comboCache;
-    */
-    
     protected PathFactorNode()
     {
         super(NodeType.PATH_FACTOR);
-        /*
-        this.maxPathLen = maxPathLen;
-        plusComboCache = new ArrayList();
-        minusComboCache = new ArrayList();
-        comboCache = new ArrayList();
-
-        for(int x=1; x <= maxPathLen; x++)
-        {
-            plusComboCache.add(enumerate(x, State.PLUS));
-            minusComboCache.add(enumerate(x, State.MINUS));
-            comboCache.add(enumerate(x));
-        }
-        */
     }
 
+    private ProbTable[] makePTArray(List items)
+    {
+        ProbTable[] pt = new ProbTable[items.size()];
+        for(int x=0; x < items.size(); x++)
+        {
+            pt[x] = (ProbTable) items.get(x);
+        }
+        return pt;
+    }
+    
     /**
      * @param allMsgs a list of EdgeMessage objects.
      * @param tIndex the index of the EdgeMessage in the allMsgs list
@@ -65,11 +52,11 @@ public class PathFactorNode extends FactorNode
     public ProbTable maxProduct(List allMsgs, int tIndex)
         throws AlgorithmException
     {
-        List incoming = new ArrayList();
-        List x = new ArrayList();
-        List d = new ArrayList();
-        List dirStates = new ArrayList();
-        List s = new ArrayList();
+        //List incomingList = new ArrayList();
+        List xList = new ArrayList();
+        List dList = new ArrayList();
+        List dirStatesList = new ArrayList();
+        List sList = new ArrayList();
         ProbTable sigma = null;
         ProbTable k = null;
 
@@ -77,6 +64,7 @@ public class PathFactorNode extends FactorNode
         int numSig = 0;
         int numK = 0;
         NodeType tt = null;
+
         
         for(int m=0, N = allMsgs.size(); m < N; m++)
         {
@@ -89,21 +77,21 @@ public class PathFactorNode extends FactorNode
             }
 
             ProbTable p = em.v2f();
-            incoming.add(p);
+            //incomingList.add(p);
             
             StateSet si = p.stateSet();
             if( si == StateSet.EDGE)
             {
-                x.add(p);
+                xList.add(p);
             }
             else if (si == StateSet.DIR)
             {
-                dirStates.add(em.getDir());
-                d.add(p);
+                dirStatesList.add(em.getDir());
+                dList.add(p);
             }
             else if (si == StateSet.SIGN)
             {
-                s.add(p);
+                sList.add(p);
             }
             else if (si == StateSet.PATH_ACTIVE)
             {
@@ -121,6 +109,18 @@ public class PathFactorNode extends FactorNode
             }
         }
 
+        //ProbTable[] incoming = (ProbTable[]) incomingList.toArray();
+        ProbTable[] x = makePTArray(xList);
+
+        ProbTable[] d = makePTArray(dList);
+        ProbTable[] s = makePTArray(sList);
+
+        State[] dirStates = new State[dirStatesList.size()];
+        for(int i=0; i < dirStatesList.size(); i++)
+        {
+            dirStates[i] = (State) dirStatesList.get(i);
+        }
+        
         if(numSig > 1 || numK > 1)
         {
             throw new AlgorithmException("> 1 message received from path-active or KO node");
@@ -141,19 +141,22 @@ public class PathFactorNode extends FactorNode
             double pathNotExplains = computePathNotExplains(maxDSX, k, sigma);
             
             double[] probs = new double[ss.size()];
-            //probs[ss.getIndex(State.ZERO)] = maximize(incoming, ep1);
+
             probs[ss.getIndex(State.ZERO)] = Math.max(pathUnconstrained, pathNotExplains);
             probs[ss.getIndex(State.ONE)] = maximize(pathExplains, 
                                                      pathUnconstrained, 
                                                      pathNotExplains);
             pt.init(probs);
 
-            logger.fine("P(0)=" + probs[ss.getIndex(State.ZERO)]);
-            logger.fine("P(1)=" + probs[ss.getIndex(State.ONE)]);
-            logger.fine("pe=" + pathExplains);
-            logger.fine("pu=" + pathUnconstrained);
-            logger.fine("pne=" + pathNotExplains);
-
+            if(FINE)
+            {
+                logger.fine("P(0)=" + probs[ss.getIndex(State.ZERO)]);
+                logger.fine("P(1)=" + probs[ss.getIndex(State.ONE)]);
+                logger.fine("pe=" + pathExplains);
+                logger.fine("pu=" + pathUnconstrained);
+                logger.fine("pne=" + pathNotExplains);
+            }
+            
             return pt;
         }
         else if (tt == NodeType.DIR)
@@ -167,10 +170,6 @@ public class PathFactorNode extends FactorNode
             // if explanatory is PLUS, the other state is MINUS, and vice versa.
             State other = (explanatory == State.PLUS ? State.MINUS : State.PLUS);
             
-            //double pathExplains = computePathExplains(x, d, dirStates, k, sigma, s);
-            //double unconstrained = k.max() * maximize(x, 1) * maximize(d, 1) * maximize(s, 1);
-            //double pathInactive = ep1 * sigma.prob(State.ZERO) * unconstrained;
-            //double pathViolates = ep2 * sigma.prob(State.ONE) * unconstrained;
 
             double pathExplains = ep1*computeExplains_XDKSigmaS(x, d, dirStates, k, sigma, s);
             double maxDSX = maximize(x) * maximize(d) * maximize(s);
@@ -178,14 +177,14 @@ public class PathFactorNode extends FactorNode
             double pathNotExplains = computePathNotExplains(maxDSX, k, sigma);
             
             double[] probs = new double[ss.size()];
-            //probs[ss.getIndex(other)] = maximize(incoming, ep1); // constraint violated
+
             probs[ss.getIndex(other)] = Math.max(pathUnconstrained, pathNotExplains);
             probs[ss.getIndex(explanatory)] = maximize(pathExplains, 
                                                        pathUnconstrained, 
                                                        pathNotExplains);
             pt.init(probs);
 
-            if(LOG_FINE)
+            if(FINE)
             {
                 logger.fine("P(" + other + ") other=" + probs[ss.getIndex(other)]);
                 logger.fine("P(" + explanatory + ") explanatory=" + probs[ss.getIndex(explanatory)]);
@@ -214,9 +213,6 @@ public class PathFactorNode extends FactorNode
             double pathUnconstrained = computePathUnconstrained(maxDSX, k, sigma);
             double pathNotExplains = computePathNotExplains(maxDSX, k, sigma);
             
-            //double pathInactive = ep1 * sigma.prob(State.ZERO) * unconstrained;
-            //double pathViolates = ep2 * sigma.prob(State.ONE) * unconstrained;
-
             double[] probs = new double[ss.size()];
             probs[ss.getIndex(State.MINUS)] = maximize(pathExplainsMinus, 
                                                       pathUnconstrained, 
@@ -228,7 +224,7 @@ public class PathFactorNode extends FactorNode
                                                       
             pt.init(probs);
 
-            if(LOG_FINE)
+            if(FINE)
             {
                 logger.fine("pe+ =" + pathExplainsPlus);
                 logger.fine("pe- =" + pathExplainsMinus);
@@ -248,7 +244,7 @@ public class PathFactorNode extends FactorNode
             double pathUnconstrained = ep2 * k.prob(State.ZERO) * maxDSX;
 
             double[] probs = new double[ss.size()];
-            //probs[ss.getIndex(State.ZERO)] = maximize(incoming, ep1);
+
             probs[ss.getIndex(State.ZERO)] = Math.max(pathUnconstrained,
                                                       ep2 * k.max() * maxDSX);
             
@@ -258,7 +254,7 @@ public class PathFactorNode extends FactorNode
  
             pt.init(probs);
 
-            if(LOG_FINE)
+            if(FINE)
             {
                 logger.fine("P(0)=" + probs[ss.getIndex(State.ZERO)]);
                 logger.fine("P(1)=" + probs[ss.getIndex(State.ONE)]);
@@ -287,13 +283,13 @@ public class PathFactorNode extends FactorNode
             
 
             double[] probs = new double[ss.size()];
-            probs[ss.getIndex(State.ZERO)] = maximize(incoming, ep2);
+            probs[ss.getIndex(State.ZERO)] = ep2 * maxDSX * sigma.max();
             probs[ss.getIndex(State.PLUS)] = Math.max(pathExplainsPlus, pathNotExplains); 
             probs[ss.getIndex(State.MINUS)] = Math.max(pathExplainsMinus, pathNotExplains); 
  
             pt.init(probs);
 
-            if(LOG_FINE)
+            if(FINE)
             {
                 logger.fine("P(0)=" + probs[ss.getIndex(State.ZERO)]);
                 logger.fine("pe+ =" + pathExplainsPlus);
@@ -369,9 +365,10 @@ public class PathFactorNode extends FactorNode
      * @param sigma message from knockout effect node
      * @param State state that the KO will be fixed
      */
-    protected double computeExplains_FixKO(List x, List d, List dirStates,
+    protected double computeExplains_FixKO(ProbTable[] x, ProbTable[] d,
+                                           State[] dirStates,
                                            ProbTable sigma, 
-                                           List s, State fixed)
+                                           ProbTable[] s, State fixed)
     {
         if((sigma.maxState() == State.ZERO) && (sigma.max() == 0))
         {
@@ -416,10 +413,11 @@ public class PathFactorNode extends FactorNode
      * @param fixedSign State.PLUS | State.MINUS that the target sign variable
      *  will be fixed to.
      */
-    protected double computeExplains_FixSign(List x, List d, List dirStates,
-                                                ProbTable k, 
-                                                ProbTable sigma, 
-                                                List s, State fixedSign)
+    protected double computeExplains_FixSign(ProbTable[] x, ProbTable[] d,
+                                             State[] dirStates,
+                                             ProbTable k, 
+                                             ProbTable sigma, 
+                                             ProbTable[] s, State fixedSign)
     {
         if(k.maxState() == State.ZERO)
         {
@@ -466,9 +464,10 @@ public class PathFactorNode extends FactorNode
      * @param sigma messages from sigma node
      * @param k messages from knockout effect node
      */
-    protected double computeExplains_XDKSigmaS(List x, List d, List dirStates,
+    protected double computeExplains_XDKSigmaS(ProbTable[] x, ProbTable[] d,
+                                               State[] dirStates,
                                                ProbTable k, ProbTable sigma, 
-                                               List s)
+                                               ProbTable[] s)
     {
         if(k.maxState() == State.ZERO)
         {
@@ -512,8 +511,9 @@ public class PathFactorNode extends FactorNode
      * @param s messages from sign nodes
      * @param k messages from knockout effect node
      */
-    protected double computeExplains_XDKS(List x, List d, List dirStates,
-                                          ProbTable k, List s)
+    protected double computeExplains_XDKS(ProbTable[] x, ProbTable[] d,
+                                          State[] dirStates,
+                                          ProbTable k, ProbTable[] s)
     {
         if(k.maxState() == State.ZERO)
         {
@@ -538,13 +538,13 @@ public class PathFactorNode extends FactorNode
 
     
     // directions must match dir implied by path
-    protected double computeProbDir(List d, List dirStates)
+    protected double computeProbDir(ProbTable[] d, State[] dirStates)
     {
         double m = 1;
 
-        for(int y=0, n=d.size(); y < n; y++)
+        for(int y=0, n=d.length; y < n; y++)
         {
-            m *= ((ProbTable) d.get(y)).prob((State) dirStates.get(y));
+            m *= d[y].prob( dirStates[y] );
         }
         return m;
     }
@@ -556,35 +556,36 @@ public class PathFactorNode extends FactorNode
      *
      * @param fixed the state
      */
-    protected double computeProbFixState(List p, State fixed)
+    protected double computeProbFixState(ProbTable[] p, State fixed)
     {
         double m = 1;
-        for(int y=0, n=p.size(); y < n; y++)
+        for(int y=0, n=p.length; y < n; y++)
         {
-            // fix this later
-            m *= ((ProbTable) p.get(y)).prob(fixed);
+            m *= p[y].prob(fixed);
         }
         return m;
     }
 
-    protected double maximizeSign(List signs, ProbTable k)
+    protected double maximizeSign(ProbTable[] signs, ProbTable k)
     {
         return maximizeSign(signs, k, null);
     }
     
     /**
-     * @param signs a list of ProbTables of sign variables
+     * @param signs a list of ProbTables of sign variables.
+     * Does not include the fixed sign. 
      * @param k the ProbTable of the knockout node
      * @param fixedSign If we should compute the max under the condition that
      * one of the sign vars (not in the input list) is fixed to a specific
      * state: either State.PLUS or State.MINUS.  Or null if no signs are
      * externally fixed.
      */
-    protected double maximizeSign(List signs, ProbTable k, State fixedSign)
+    protected double maximizeSign(ProbTable[] signs, ProbTable k,
+                                  State fixedSign)
     {
-        int numSign = signs.size();
+        int numSign = signs.length;
 
-        // signs.size() == 0 only if a factor node is connected to one
+        // numSign == 0 only if a factor node is connected to one
         // sign variable and that sign variable is the target.
         // Hence, its max value is determined by k and fixedSign.
         if(! (numSign > 0))
@@ -603,185 +604,66 @@ public class PathFactorNode extends FactorNode
         
         // Generate all combinations of valid signs given
         // the number of sign variables
-        short[][] validCombos = enumerate(numSign);
+        short[] plusCombos;
+        short[] minusCombos;
 
-        short[] plusCombos = validCombos[0];
-        short[] minusCombos = validCombos[1];
-
-        // if one of the signs is fixed to be -1, then the
-        // of signs is flipped, hence the validCombos are swapped
-        //
-        // fixing one of the signs to +1 does not change the set
-        // of valid combos
+        /* If one of the signs is fixed to -1, then the product
+         * of all signs will be -1 * product(other signs).
+         * Hence, the swap plusCombos and minusCombos.
+         *
+         * Fixing one of the signs to +1 does not change the set
+         * of valid combos
+         */
         if(fixedSign == State.MINUS)
         {
-            plusCombos = validCombos[1];
-            minusCombos = validCombos[0];
+            plusCombos = enumerate(numSign, State.MINUS);
+            minusCombos = enumerate(numSign, State.PLUS);;
+        }
+        else
+        {
+            plusCombos = enumerate(numSign, State.PLUS);
+            minusCombos = enumerate(numSign, State.MINUS);
         }
         
         // Copy sign probabilities into an array for better performance
         double[] probPlus = new double[numSign];
         double[] probMinus = new double[numSign];
-        for(int x=0, n=signs.size(); x < n; x++)
+        for(int x=0, n=numSign; x < n; x++)
         {
-            ProbTable pt = (ProbTable) signs.get(x);
+            ProbTable pt = signs[x];
             probPlus[x] = pt.prob(State.PLUS);
             probMinus[x] = pt.prob(State.MINUS);
         }
                 
         // compute the probability of each combo of signs
 
-        double maxPlus = _maxComboProb(k.prob(State.PLUS), plusCombos, numSign,
+        double maxPlus = _maxComboProb(k.prob(State.PLUS),
+                                       plusCombos, numSign,
                                        probPlus, probMinus);
 
-        double maxMinus = _maxComboProb(k.prob(State.MINUS), minusCombos, numSign,
+        double maxMinus = _maxComboProb(k.prob(State.MINUS),
+                                        minusCombos, numSign,
                                         probPlus, probMinus);
 
         // return the max value.
         return Math.max(maxPlus, maxMinus);
     }
 
-
-    /**
-     * Compute the probability of each on the combos and return
-     * the max. Each combo is a BitVector.
-     * <p>
-     * The length of the probPlus and probMinus must be equal to the number
-     * of bits in each combo.
-     * 
-     * @param initialProb The initial probability of each combo
-     * @param combos the combiniations
-     * @param probPlus the probability vector for the sign variables.
-     *        The i-th element is the probability that i-th bit in the combo is 1
-     * @param probMinus the probability vector for the sign variables.
-     *        The i-th element is the probability that i-th bit in the combo is 0
-     * @return the probability of the most likely combi
-     */
-    private double _maxComboProb(double initialProb, short[] combos, int numSign,
-                                 double[] probPlus, double[] probMinus)
-    {
-        double[] vals = new double[combos.length];
-        Arrays.fill(vals, initialProb);
-        int i = 0;
-        // compute the probability of each sign combo
-        for(int v=0; v < combos.length; v++)
-        {
-            logger.fine("combo: " + combos[v]);
-            
-            // if the i-th bit in a combo is 1, then multiply the i-th
-            // val by the i-th plus probability.  If the bit is 0, multiply
-            // the i-th val by the i-th minus probability
-            int combo = combos[v];
-            for(i=0; i < numSign; i++)
-            {
-                logger.fine("i=" + i + " combo=" + combo);
-
-                if((0x1 & combo) == 1)
-                {
-                    vals[i] = probPlus[i];
-                }
-                else
-                {
-                    vals[i] = probMinus[i];
-                }
-
-                combo = combo>>1;
-            }
-
-            /*
-            for(int bit=0, numBits=numSign; bit < numBits; bit++)
-            {
-                if(combos[v].getQuick(bit) == true)
-                {
-                    vals[v] *= probMinus[bit];
-                }
-                else
-                {
-                    vals[v] *= probPlus[bit];
-                }
-            }
-            */
-        }
-        
-        // Sort values into ascending numerical order
-        Arrays.sort(vals);
-        
-        // return the max
-        return vals[vals.length - 1];
-    }
-
-    /**
-     * @param numSigns the number of sign variables
-     *
-     * @return an array of 2 arrays of cern.colt.BitVector
-     * Each nested array of cern.colt.bitvector.BitVector's represent 
-     * configurations of sign variables that satisfy the constraint
-     * that the product of signs is -1 if pORm == PLUS, or +1 if pORm == MINUS.
-     * <p>
-     * Element 0 is the array of configurations that satisfy k=+1
-     * Element 1 is the array of configurations that satisfy k=-1
-     * <p>
-     * The i-th bit a BitVector is set to 1 if the i-th sign variable is
-     * -1 in the configuration.  The i-th bit is 0 if the i-th sign variable
-     * is +1 in the configuration.
-     */
-    protected short[][] enumerate(int numSigns)
-    {
-        
-        /*
-        if(numSigns <= maxPathLen)
-        {
-            return (BitVector[][]) comboCache.get(numSigns);
-        }
-        */
-        short numCombos = (short) Math.pow(2, numSigns - 1);
-
-        short[][] combos = new short[2][numCombos];
-        short[] plusCombos = combos[0];
-        short[] minusCombos = combos[1];
-
-        for(short x=0, n=(short) (2*numCombos), p=0, m=0; x < n; x++)
-        {
-            int par = parity(x);
-            if(par == ODD)
-            {
-                
-                logger.finest("adding odd  combo: x=" + x + 
-                                   " p=" + p + " n=" + n +
-                                   " parity=" + parity(x));
-                
-                plusCombos[p] = x;
-                p++;
-                
-            }
-            else
-            {
-                logger.finest("adding even combo: x=" + x + 
-                                   " m=" + m + " n=" + n +
-                                   " parity=" + parity(x));
-                
-                minusCombos[m] = x;
-                m++;
-            
-            }
-        }
-        
-        return combos;
-    }
     
     /**
-     * @throws IllegalArgumentException if pORm is not State.PLUS or State.MINUS
+     * @throws IllegalArgumentException if pORm is not State.PLUS
+     *                                  or State.MINUS
      */
-    protected double maximizeSign(List signs, State pORm)
+    protected double maximizeSign(ProbTable[] signs, State pORm)
     {
-        int numSign = signs.size();
+        int numSign = signs.length;
         
         if(pORm != State.PLUS && pORm != State.MINUS)
         {
             throw new IllegalArgumentException(pORm + " is not PLUS or MINUS");
         }
 
-        if(! (signs.size() > 0))
+        if(! (signs.length > 0))
         {
             return 1;
         }
@@ -793,9 +675,9 @@ public class PathFactorNode extends FactorNode
         // Copy sign probabilities into an array for better performance
         double[] probPlus = new double[numSign];
         double[] probMinus = new double[numSign];
-        for(int x=0, n=signs.size(); x < n; x++)
+        for(int x=0, n=numSign; x < n; x++)
         {
-            ProbTable pt = (ProbTable) signs.get(x);
+            ProbTable pt = signs[x];
             probPlus[x] = pt.prob(State.PLUS);
             probMinus[x] = pt.prob(State.MINUS);
         }
@@ -804,34 +686,91 @@ public class PathFactorNode extends FactorNode
                                    probPlus, probMinus);
         return max;
     }
+
+
+    /**
+     * Compute the probability of each on the combos and return
+     * the max.
+     * <p>
+     * The length of the probPlus and probMinus must be equal to the number
+     * of bits in each combo.
+     * 
+     * @param initialProb The initial probability of each combo
+     * @param combos the combiniations
+     * @param probPlus the probability vector for the sign variables.
+     *        The i-th element is the probability that i-th sign is PLUS.
+     * @param probMinus the probability vector for the sign variables.
+     *        The i-th element is the probability that i-th sign is MINUS.
+     *        
+     * @return the probability of the most likely combination of signs
+     */
+    private double _maxComboProb(double initialProb, short[] combos,
+                                 int numSign,
+                                 double[] probPlus, double[] probMinus)
+    {
+        double[] vals = new double[combos.length];
+        Arrays.fill(vals, initialProb);
+        int i = 0;
+        
+        // compute the probability of each sign combo
+        for(int c=0; c < combos.length; c++)
+        {
+            //logger.fine("combo: " + combos[c]);
+            
+            // if the i-th bit in a combo is 1, then multiply the c-th
+            // val by the i-th minus probability.  If the bit is 0, multiply
+            // the i-th val by the i-th plus probability
+            int combo = combos[c];
+            for(i=0; i < numSign; i++)
+            {
+                if((0x1 & combo) == 1)
+                {
+                    vals[c] *= probMinus[i];
+                    //logger.fine("  bit=" + i + " => "
+                    //+ (0x1 &combo) + " P(minus)=" + probMinus[i]);
+                                
+                }
+                else
+                {
+                    vals[c] *= probPlus[i];
+                    //logger.fine("  bit=" + i + " => "
+                    //+ (0x1 &combo) + " P(plus)=" + probPlus[i]);
+                }
+
+                combo = combo>>1;
+            }
+        }
+        
+        // Sort values into ascending numerical order
+        Arrays.sort(vals);
+        
+        // return the max
+        return vals[vals.length - 1];
+    }
+
     
     /**
-     * @param numSigns the number of sign variables
+     * @param numSigns the number of sign variables.
+     *                 Assumption: numSigns < 16.
      * @param pORm either State.PLUS or State.MINUS
      *
-     * @return an array of cern.colt.bitvector.BitVector's that represent 
-     * configurations of sign variables that satisfy the constraint
-     * that the product of signs is -1 if pORm == PLUS, or +1 if pORm == MINUS.
-     * The i-th bit in the vector is set to 1 if the i-th sign variable is
-     * -1 in the configuration.  The i-th bit is 0 if the i-th sign variable
-     * is +1 in the configuration.
+     * @return an array of 16 bit numbers (type short) that represent 
+     * configurations of sign variables.
+     * <p>
+     * Each short is one configuration of sign variables.
+     * Bit 0 (the least-significant bit) holds the state of sign 0.
+     * Bit 1 holds the state of sign 1.  Bit 2 represents sign 2, and so on.
+     *  <p>
+     * If a bit is 1, the state if the sign variable is -1 in the
+     * configuration.  If a bit bit is 0, the state of the is +1
+     * in the configuration.
+     * <p>
+     * Each configuration satisfies the constraint
+     * that the product of signs is -1 if "pORm" == PLUS,
+     * or +1 if "pORm" == MINUS.
      */
     protected short[] enumerate(int numSigns, State pORm)
     {
-        /*
-        if(numSigns <= maxPathLen)
-        {
-            if(pORm == State.PLUS)
-            {
-                return (BitVector[]) plusComboCache.get(numSigns);
-            }
-            else
-            {
-                return (BitVector[]) minusComboCache.get(numSigns);
-            }
-        }
-        */
-        
         short numCombos = (short) Math.pow(2, numSigns - 1);
         short[] combos = new short[numCombos];
 
@@ -912,7 +851,7 @@ public class PathFactorNode extends FactorNode
      *
      * @param messages a List of ProbTable objects
      */ 
-    private double maximize(List messages)
+    private double maximize(ProbTable[] messages)
     {
         return maximize(messages, 1);
     }
@@ -925,7 +864,7 @@ public class PathFactorNode extends FactorNode
      * @param messages a List of ProbTable objects
      * @param weight multiplied by the product of the max probabilities
      */ 
-    private double maximize(List messages, double weight)
+    private double maximize(ProbTable[] messages, double weight)
     {
         double m = weight;
 
@@ -934,10 +873,9 @@ public class PathFactorNode extends FactorNode
             m = 1;
         }
 
-        for(int x=0, n=messages.size(); x < n; x++)
+        for(int x=0, n=messages.length; x < n; x++)
         {
-            ProbTable pt = (ProbTable) messages.get(x);
-            m *= pt.max();
+            m *= messages[x].max();
         }
 
         return m;
@@ -950,7 +888,7 @@ public class PathFactorNode extends FactorNode
      *  @param messages a list of ProbTables
      *  @param weight weighting factor
      */
-    private double maximize(int skip, List messages, double weight)
+    private double maximize(int skip, ProbTable[] messages, double weight)
     {
         double m = weight;
 
@@ -959,16 +897,69 @@ public class PathFactorNode extends FactorNode
             m = 1;
         }
 
-        for(int x=0, n=messages.size(); x < n; x++)
+        for(int x=0, n=messages.length; x < n; x++)
         {
             if(x == skip)  continue;
             
-            ProbTable pt = (ProbTable) messages.get(x);
-            m *= pt.max();
+            m *= messages[x].max();
         }
 
         return m;
     }
+
+
+    /**
+     * @param numSigns the number of sign variables
+     *
+     * @return an array of 2 arrays of cern.colt.BitVector
+     * Each nested array of cern.colt.bitvector.BitVector's represent 
+     * configurations of sign variables that satisfy the constraint
+     * that the product of signs is -1 if pORm == PLUS, or +1 if pORm == MINUS.
+     * <p>
+     * Element 0 is the array of configurations that satisfy k=+1
+     * Element 1 is the array of configurations that satisfy k=-1
+     * <p>
+     * The i-th bit a BitVector is set to 1 if the i-th sign variable is
+     * -1 in the configuration.  The i-th bit is 0 if the i-th sign variable
+     * is +1 in the configuration.
+     *
+    protected short[][] enumerate(int numSigns)
+    {
+        short numCombos = (short) Math.pow(2, numSigns - 1);
+
+        short[][] combos = new short[2][numCombos];
+        short[] plusCombos = combos[0];
+        short[] minusCombos = combos[1];
+
+        for(short x=0, n=(short) (2*numCombos), p=0, m=0; x < n; x++)
+        {
+            int par = parity(x);
+            if(par == ODD)
+            {
+                
+                logger.finest("adding odd  combo: x=" + x + 
+                                   " p=" + p + " n=" + n +
+                                   " parity=" + parity(x));
+                
+                plusCombos[p] = x;
+                p++;
+                
+            }
+            else
+            {
+                logger.finest("adding even combo: x=" + x + 
+                                   " m=" + m + " n=" + n +
+                                   " parity=" + parity(x));
+                
+                minusCombos[m] = x;
+                m++;
+            
+            }
+        }
+        
+        return combos;
+    }
+    */
 
     
 }

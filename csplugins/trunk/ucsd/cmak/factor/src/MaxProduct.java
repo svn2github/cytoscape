@@ -1,5 +1,7 @@
 import java.util.Arrays;
 
+import java.util.logging.Logger;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.FileNotFoundException;
@@ -8,6 +10,8 @@ import cern.colt.list.IntArrayList;
 
 public class MaxProduct
 {
+    
+    private static Logger logger = Logger.getLogger(MaxProduct.class.getName());
     String _interaction;
     String _candidateGenes;
     String _expressionData;
@@ -17,6 +21,7 @@ public class MaxProduct
     private InteractionGraph _ig;
 
     private int MAX_PATH_LEN = 3;
+    private int KO_EXPLAIN_CUTOFF = 3;
 
     private long start;
 
@@ -29,7 +34,7 @@ public class MaxProduct
     {
         _interaction = interaction;
 
-        System.out.println("Reading interaction file: " + _interaction);
+        logger.info("Reading interaction file: " + _interaction);
         _ig = InteractionGraphFactory.createFromSif(_interaction);
     }
 
@@ -39,8 +44,8 @@ public class MaxProduct
         _interaction = interaction;
         _candidateGenes = candidateGenes;
 
-        System.out.println("Reading interaction file: " + _interaction);
-        System.out.println("Candidate gene file: " + _candidateGenes);
+        logger.info("Reading interaction file: " + _interaction);
+        logger.info("Candidate gene file: " + _candidateGenes);
         _ig = InteractionGraphFactory.createFromSif(_interaction, _candidateGenes);
     }
 
@@ -50,12 +55,30 @@ public class MaxProduct
         if( i > 0)
         {
             MAX_PATH_LEN = i;
+
+            logger.info("Set max path len to: " + MAX_PATH_LEN);
         }
         else
         {
-            System.out.println("Warning: MAX_PATH_LENGTH [" + i + "] < 0.");
+            logger.warning("Warning: MAX_PATH_LENGTH [" + i + "] < 0.");
         }
     }
+
+    
+    public void setKOExplainCutoff(int i)
+    {
+        if( i > 0)
+        {
+            KO_EXPLAIN_CUTOFF = i;
+
+            logger.info("Set ko explain cutoff to: " + KO_EXPLAIN_CUTOFF);
+        }
+        else
+        {
+            logger.warning("Warning: KO_EXPLAIN_CUTOFF [" + i + "] <= 0.");
+        }
+    }
+
     
     public void setExpressionFile(String e, double pvalThreshold)
         throws FileNotFoundException
@@ -121,7 +144,9 @@ public class MaxProduct
         fg.updateInteractionGraph();
 
         log("Writing interaction graph sif file: " + fname);
-        ig.writeGraphAsSubmodels(fname);
+        log("Filtering submodels that explain fewer than: " + KO_EXPLAIN_CUTOFF
+            + " KO experiments");
+        ig.writeGraphAsSubmodels(fname, KO_EXPLAIN_CUTOFF);
 
         log("Done. ");
     }
@@ -162,6 +187,6 @@ public class MaxProduct
     protected void log(String s)
     {
         double t = (System.currentTimeMillis() - start)/1000d;
-        System.out.println(s + ". [" + t + "]");
+        logger.info(s + ". [" + t + "]");
     }
 }

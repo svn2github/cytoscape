@@ -12,6 +12,8 @@ public class Submodel
     private boolean _isInvariant;
     private int _independentVar;
     private List _edges;
+    private int _explainedKO;
+    private int _depVars;
     
     public Submodel()
     {
@@ -20,9 +22,41 @@ public class Submodel
         _isInvariant = false;
         _independentVar = 0;
         _id = Submodel.ID;
+        _explainedKO = 0;
+        _depVars = 0;
+        
         Submodel.ID++;
     }
 
+    public void setNumExplainedKO(int x)
+    {
+        _explainedKO = x;
+    }
+    
+    /**
+     *
+     * @return the number of knockout experiments explained by this model
+     */
+    public int getNumExplainedKO()
+    {
+        return _explainedKO;
+    }
+
+    public void setNumDepVars(int x)
+    {
+        _depVars = x;
+    }
+    
+    /**
+     *
+     * @return the number of knockout experiments explained by this model
+     */
+    public int getNumDepVars()
+    {
+        return _depVars;
+    }
+
+    
     public int getId() {return _id;}
     
     /**
@@ -188,5 +222,10 @@ public class Submodel
                 }
             }
         }
+    }
+
+    public String toString()
+    {
+        return Integer.toString(getId());
     }
 }

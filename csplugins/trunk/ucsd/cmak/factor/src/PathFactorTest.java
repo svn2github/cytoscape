@@ -154,42 +154,46 @@ public class PathFactorTest extends AbstractNodeTest
         ProbTable k1 = createKO(.23, .67, .1);
         ProbTable sigma = createPathActive(.85, .15);
 
-        double pe = f.computeExplains_XDKSigmaS(x, d, dirStates, k1, sigma, s);
+        ProbTable[] xx = (ProbTable[]) x.toArray();
+        ProbTable[] dd = (ProbTable[]) d.toArray();
+        State[] states = (State[]) dirStates.toArray();
+        ProbTable[] ss = (ProbTable[]) s.toArray();
+
+        double pe = f.computeExplains_XDKSigmaS(xx, dd, states, k1, sigma, ss);
 
         assertEquals("path explains", 1*.55*.35*.2*.6*.8*.6*.67*.85, pe, 0.000000000001);
 
         ProbTable k2 = createKO(.67, .23, .1);
-        pe = f.computeExplains_XDKSigmaS(x, d, dirStates, k2, sigma, s);
+        pe = f.computeExplains_XDKSigmaS(xx, dd, states, k2, sigma, ss);
 
         assertEquals("path explains", 1*.55*.35*.2*.6*.8*.4*.67*.85, pe, 0.000000000001);
         
     }
-    
-
+    */
     
     public void testMaximizeSignK()
     {
-        ProbTable kM = createKO(.15, .75, .1);
-        ProbTable kP = createKO(.75, .15, .1);
+        ProbTable kM = NodeFactory.createKO(.1, .15, .75);
+        ProbTable kP = NodeFactory.createKO(.1, .75, .15);
 
         List l = new ArrayList();
-        l.add(createSign(.2, .8));
+        l.add(NodeFactory.createSign(.2, .8));
 
-        maxSignHelperK(l, kM, 0.75*.2);
-        maxSignHelperK(l, kP, 0.75*.8);
+        maxSignHelperK(l, kM, 0.75*.8);
+        maxSignHelperK(l, kP, 0.75*.2);
         
-        l.add(createSign(.4, .6));
+        l.add(NodeFactory.createSign(.4, .6));
 
         maxSignHelperK(l, kP, .75*0.8 * 0.4);
         maxSignHelperK(l, kM, .75*0.8 * 0.6);
 
-        l.add(createSign(.7, .3));
+        l.add(NodeFactory.createSign(.7, .3));
 
-        maxSignHelperK(l, kP, .75*0.8 * 0.4 * .7);
-        maxSignHelperK(l, kM, .75*0.8 * 0.6 * .7);
+        maxSignHelperK(l, kP, .75*0.8 * 0.6 * .7);
+        maxSignHelperK(l, kM, .75*0.8 * 0.4 * .7);
 
 
-        l.add(createSign(.5, .5));
+        l.add(NodeFactory.createSign(.5, .5));
         
         maxSignHelperK(l, kP, .75*0.8 * 0.6 * .7 *.5);
         maxSignHelperK(l, kM, .75*0.8 * 0.6 * .7*.5);
@@ -198,34 +202,43 @@ public class PathFactorTest extends AbstractNodeTest
 
     private void maxSignHelperK(List signs, ProbTable k, double expected)
     {
-        double max = f.maximizeSign(signs, k);
+        System.out.println("maxSignHelper: " + signs.size() + " signs"
+                           + " KO=" + k);
+
+        ProbTable[] pt = new ProbTable[signs.size()];
+
+        for(int x=0; x < signs.size(); x++)
+        {
+            pt[x] = (ProbTable) signs.get(x);
+            System.out.println(" sign[" + x + "] " + (ProbTable) signs.get(x));
+        }
+
+        double max = f.maximizeSign(pt, k);
 
         System.out.print("max is " + max);
         assertEquals("numsigns=" + signs.size(), expected, max, .0001);
         System.out.println(" ok");
     }
-    
-    */
 
-    
+    /*
     public void testMaximizeSign()
     {
         List l = new ArrayList();
-        l.add(createSign(.2, .8));
+        l.add(NodeFactory.createSign(.2, .8));
         maxSignHelper(l, State.PLUS, 0.2);
         maxSignHelper(l, State.MINUS, 0.8);
         
-        l.add(createSign(.4, .6));
+        l.add(NodeFactory.createSign(.4, .6));
      
-        maxSignHelper(l, State.PLUS, 0.8 * 0.6);
-        maxSignHelper(l, State.MINUS, 0.8 * 0.4);
+        maxSignHelper(l, State.PLUS, 0.8 * 0.4);
+        maxSignHelper(l, State.MINUS, 0.8 * 0.6);
 
-        l.add(createSign(.7, .3));
+        l.add(NodeFactory.createSign(.7, .3));
 
         maxSignHelper(l, State.PLUS, 0.8*0.6*0.7);
         maxSignHelper(l, State.MINUS, 0.8*0.4*0.7);
 
-        l.add(createSign(.5, .5));
+        l.add(NodeFactory.createSign(.5, .5));
 
         maxSignHelper(l, State.PLUS, 0.8*0.6*0.7*0.5);
         maxSignHelper(l, State.MINUS, 0.8*0.6*0.7*0.5);
@@ -233,13 +246,25 @@ public class PathFactorTest extends AbstractNodeTest
 
     private void maxSignHelper(List signs, State s, double expected)
     {
-        double max = f.maximizeSign(signs, s);
+    System.out.println("maxSignHelper: " + signs.size() + " signs"
+    + "KO=" + s);
+        ProbTable[] pt = new ProbTable[signs.size()];
 
-        System.out.println("max is " + max);
+        for(int x=0; x < signs.size(); x++)
+        {
+            pt[x] = (ProbTable) signs.get(x);
+            System.out.println(" sign[" + x + "] " + (ProbTable) signs.get(x));
+        }
+        
+        double max = f.maximizeSign(pt, s);
+
+        System.out.println("max is " + max + " expecting  " + expected
+                           + " numSigns=" + signs.size());
         assertEquals("max sz=" + signs.size(), expected, max, .0001);
     }
+    */
 
-    /*    
+    /*
     private void _checkCombo(int num, short[] combos, int expectedCardinality)
     {
         System.out.println("checking combo num-sign-vars=" + num
@@ -258,27 +283,17 @@ public class PathFactorTest extends AbstractNodeTest
         }
     }
     
-    public void testEnumerate2()
-    {
-        for(int num=1; num < 6; num++)
-        {
-            short[][] combos = f.enumerate(num);
-
-            System.out.println(combos.length);
-            
-            _checkCombo(num, combos[0], 1);
-            _checkCombo(num, combos[1], 0);
-        }
-    }
-
     public void testEnumerate()
     {
         for(int num=1; num < 6; num++)
         {
+            System.out.println("testEnumerate: checking PLUS combos num-sign-vars=" + num);
+        
             short[] combos = f.enumerate(num, State.PLUS);
 
             _checkCombo(num, combos, 1);
 
+            System.out.println("testEnumerate: checking MINUS combos num-sign-vars=" + num);
             combos = f.enumerate(num, State.MINUS);
             _checkCombo(num, combos, 0);
         }
