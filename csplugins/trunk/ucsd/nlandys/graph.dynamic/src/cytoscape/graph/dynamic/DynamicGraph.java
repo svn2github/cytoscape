@@ -73,10 +73,11 @@ public interface DynamicGraph extends FixedGraph
   /**
    * Creates a new node in this graph.  Returns the new node.  Nodes are
    * always non-negative.<p>
-   * Implementations should try to create nodes with small values.
-   * Implementations should try to prevent new nodes from taking
-   * ever-increasing values when nodes are continually being removed and
-   * created.
+   * Implementations may create nodes with arbitrarily large values.
+   * Even if implementations initially create nodes with small values,
+   * nodes may take ever-increasing values when nodes are continually being
+   * removed and created.  Or, implementations may choose to re-use node values
+   * as nodes are removed and added again.
    *
    * @return the newly created node.
    */
@@ -101,10 +102,11 @@ public interface DynamicGraph extends FixedGraph
    * and directedness specified.  Returns the new edge, or -1 if either the
    * source or target node does not exist in this graph.  Edges are always
    * non-negative.<p>
-   * Implementations should try to create edges with small values.
-   * Implementations should try to prevent new edges from taking
-   * ever-increasing values when edges are continually being removed and
-   * created.
+   * Implementations may create edges with arbitrarily large values.
+   * Even if implementations initially create edges with small values,
+   * edges may take ever-increasing values when edges are continually being
+   * removed and created.  Or, implementations may choose to re-use edge values
+   * as edges are removed and added again.
    *
    * @param sourceNode the source node that the new edge is to have.
    * @param targetNode the target node that the new edge is to have.
@@ -136,7 +138,7 @@ public interface DynamicGraph extends FixedGraph
    * it could be removed without losing any functionality), because
    * edgesAdjacent(int, boolean, boolean, boolean) can be used to test
    * the presence of a node.  However, because nodeExists(int) does not
-   * return a complicated object, its performance may be much better
+   * return a complicated object, its performance may be better
    * than that of edgesAdjacent().
    *
    * @param node the [potentially existing] node in this graph whose existence
