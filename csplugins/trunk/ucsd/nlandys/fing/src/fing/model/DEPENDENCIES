@@ -1,2 +1,3 @@
-lib:giny.jar
+lib:cytoscape-graph-dynamic.jar
 lib:cytoscape-util-intr.jar
+lib:giny.jar

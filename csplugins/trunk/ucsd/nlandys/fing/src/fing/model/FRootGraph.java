@@ -1,5 +1,6 @@
 package fing.model;
 
+import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntHash;
 import cytoscape.util.intr.MinIntHeap;
@@ -666,9 +667,9 @@ class FRootGraph implements RootGraph
     throw new UnsupportedOperationException("meta nodes not yet supported"); }
 
   // The relationship between indices (both node and edge) in this
-  // RootGraph and in the UnderlyingRootGraph is "flip the bits":
-  // rootGraphIndex == ~(underlyingRootGraphIndex)
-  final UnderlyingRootGraph m_graph;
+  // RootGraph and in the DynamicGraph is "flip the bits":
+  // rootGraphIndex == ~(dynamicGraphIndex)
+  final DynamicGraph m_graph;
 
   // This hash is re-used by many methods.  Make sure to empty() it before
   // using it.  You can use it as a bag of integers or to filter integer
@@ -693,7 +694,7 @@ class FRootGraph implements RootGraph
   final EdgeArray m_edges = new EdgeArray();
 
   // Package visible constructor.
-  FRootGraph(UnderlyingRootGraph graph) { m_graph = graph; }
+  FRootGraph(DynamicGraph graph) { m_graph = graph; }
 
   private RootGraph getThisRootGraph()
   {
