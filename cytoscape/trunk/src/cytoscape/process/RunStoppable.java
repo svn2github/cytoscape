@@ -1,22 +1,22 @@
 package cytoscape.process;
 
 /**
- * Creates a <code>Stoppable</code> out of a <code>Haltable</code>.
+ * Creates a <code>Stoppable</code> out of a <code>Task</code>.
  **/
 public final class RunStoppable implements Runnable, Stoppable
 {
 
-  private final Haltable m_halt;
+  private final Task m_task;
   private final Object m_lock = new Object();
   private boolean m_ran = false;
   private boolean m_running = false;
   private boolean m_stop = false;
 
-  public RunStoppable(Haltable haltable)
+  public RunStoppable(Task task)
   {
-    if (haltable == null)
-      throw new NullPointerException("haltable is null");
-    m_halt = haltable;
+    if (task == null)
+      throw new NullPointerException("task is null");
+    m_task = task;
   }
 
   /**
@@ -34,7 +34,7 @@ public final class RunStoppable implements Runnable, Stoppable
     synchronized (m_lock) {
       if (m_stop) return;
       m_running = true; }
-    try { m_halt.run(); }
+    try { m_task.run(); }
     finally
     {
       synchronized (m_lock) {
@@ -66,7 +66,7 @@ public final class RunStoppable implements Runnable, Stoppable
     // By this line of code, regardless of thread, the run() method
     // will have been called.  It may or may not still be executing by this
     // time.
-    if (mustCallHalt) m_halt.halt(); // This isn't necessary, but we do it
+    if (mustCallHalt) m_task.halt(); // This isn't necessary, but we do it
                                      // anyways: limit calling halt() at most
                                      // once.
     synchronized (m_lock)

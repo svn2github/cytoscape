@@ -1,15 +1,15 @@
 package cytoscape.process;
 
 /**
- * Represents a process that can be terminated prematurely by the same
+ * Represents a task that can be terminated prematurely by the same
  * entity that started the process.
  **/
-public interface Haltable extends Runnable
+public interface Task extends Runnable
 {
 
   /**
    * <code>run()</code> is called by an external entity.
-   * Process computations should be
+   * Task process computations should be
    * executed in this method, by the same thread that calls this method.
    * <code>run()</code> shall only be called once for a given instance.
    * If an asynchronous call to <code>halt()</code> is made while

@@ -5,7 +5,7 @@ package cytoscape.graph.layout.algorithm;
 // At least, put this class in a package with as little code as possible so
 // that other code wouldn't necessitate this dependency also; dependencies are
 // a per-package concept.
-import cytoscape.process.Haltable;
+import cytoscape.process.Task;
 
 /**
  * This class encapsulates the logic needed to perform a layout on a graph.
@@ -14,7 +14,7 @@ import cytoscape.process.Haltable;
  * should be so concise that it would be a simple effort to
  * provide layout algorithms as web services using this layout framework.
  */
-public abstract class LayoutAlgorithm implements Haltable
+public abstract class LayoutAlgorithm implements Task
 {
 
   /**
