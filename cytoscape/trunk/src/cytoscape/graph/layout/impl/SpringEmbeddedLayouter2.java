@@ -235,7 +235,9 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
    */
   private static int[][] calculateNodeDistances(GraphTopology graph)
   {
-    final GraphCompiler graphUtils = new GraphCompiler(graph);
+    final GraphCompiler graphUtils =
+      new GraphCompiler(graph,
+                        GraphCompiler.COMPILE_NODE_NEIGHBORS);
     int[][] distances = new int[graph.getNumNodes()][];
     Object[] nodes = new Object[graph.getNumNodes()];
     for (int i = 0; i < nodes.length; i++)

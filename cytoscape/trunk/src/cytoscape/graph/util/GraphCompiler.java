@@ -6,12 +6,44 @@ import java.util.Hashtable;
 
 /**
  * An instance of this class &quot;compiles&quot; a <code>GraphTopology</code>
- * and provides several computations on the graph.<p>
+ * and provides several bits of useful information about the graph.<p>
  * An instance of this class is meant to be used by a single thread only.<p>
- * This class is very tentative at this point - it may go away soon.
  **/
 public final class GraphCompiler
 {
+
+  /**
+   * No compiler hints.
+   **/
+  public static final long NO_COMPILER_HINTS =              0x0000000000000000;
+
+  /**
+   * The compiler compiles flagged functionalality in the constructor if this
+   * flag is set; otherwise compilation is triggered only the first time
+   * corresponding functionality is asked for.
+   **/
+  public static final long IMMEDIATE_COMPILE =              0x0000000000000001;
+
+  /**
+   * Hints to the compiler that <code>getNeighboringNodeIndices()</code>
+   * will be used so that node neighbors lists should be compiled.
+   **/
+  public static final long COMPILE_NODE_NEIGHBORS =         0x0000000000000002;
+
+  /**
+   * Hints to the compiler that <code>getShortestPaths()</code> will be
+   * used so that shortest path information should be compiled.
+   **/
+  public static final long COMPILE_SHORTEST_PATHS =         0x0000000000000004;
+
+  /**
+   * Hints to the compiler that pretty much all functionality provided by this
+   * class will be used.
+   **/
+  public static final long COMPILE_ALL =
+    COMPILE_NODE_NEIGHBORS |
+    COMPILE_SHORTEST_PATHS;
+    
 
   /**
    * I'm not sure whether or not having this method is a good idea.  If it is
@@ -39,17 +71,22 @@ public final class GraphCompiler
    **/
   public final GraphTopology graph;
 
-  private boolean m_compiled = false;
-
   /**
    * <font color="#ff0000">IMPORTANT:</font> The <code>GraphTopology</code>
    * object passed to this constructor must have a non-mutable topology.  The
    * implementation of <code>GraphCompiler</code> may do incremental
    * compilation
    * of the graph; if graph topology changes over time, bad things could
-   * happen.
+   * happen.<p>
+   * The <code>hints</code> value should be bitwise or-ed together static
+   * member variables whose names contain <code>'COMPILE'</code>.
+   * For example, if
+   * you plan to use <code>getNeighboringNodeIndices()</code> and
+   * <code>getShortestPaths()</code>, you could set the <code>hints</code>
+   * parameter to
+   * <nobr><code>COMPILE_NODE_NEIGHBORS | COMPILE_SHORTEST_PATHS</code></nobr>.
    **/
-  public GraphCompiler(GraphTopology graph)
+  public GraphCompiler(GraphTopology graph, long hints)
   {
     if (graph == null) throw new NullPointerException("graph is null");
     this.graph = graph;
@@ -99,42 +136,79 @@ public final class GraphCompiler
   public int[] getNeighboringNodeIndices(int nodeIndex,
                                          boolean honorDirectedEdges)
   {
-    ensureCompileGraph();
+    compileNodeNeighbors();
 
-    // Compute using the brute-force method; optimize when this class
-    // evolves more.  We could optimize A LOT if we were required to
-    // compute the neighbors of every node in the graph.
     if (nodeIndex < 0 || nodeIndex >= graph.getNumNodes())
       throw new IndexOutOfBoundsException
         ("nodeIndex is out of range with value " + nodeIndex);
-    final Hashtable nodeNeighInx = new Hashtable();
-    for (int edgeIndex = 0; edgeIndex < graph.getNumEdges(); edgeIndex++)
+
+    if (honorDirectedEdges)
     {
-      boolean nodeIsSource = false;
-      if (((nodeIndex == graph.getEdgeNodeIndex(edgeIndex, true)) &&
-           (nodeIsSource = true)) ||
-          (((!graph.isDirectedEdge(edgeIndex)) || (!honorDirectedEdges)) &&
-           (nodeIndex == graph.getEdgeNodeIndex(edgeIndex, false))))
-      {
-        Integer neighborToPut =
-          new Integer(graph.getEdgeNodeIndex(edgeIndex, !nodeIsSource));
-        // We're using Hashtable to automatically filter duplicates for us.
-        nodeNeighInx.put(neighborToPut, neighborToPut);
-      }
+      Hashtable specificNeighbors =
+        (Hashtable) m_nodeNeighbors.get(new Integer(nodeIndex));
+      if (specificNeighbors == null)
+        specificNeighbors = m_dummyEmptyHashtable;
+      final int[] returnThis = new int[specificNeighbors.size()];
+      Enumeration values = specificNeighbors.elements();
+      for (int i = 0; i < returnThis.length; i++)
+        returnThis[i] = ((Integer) values.nextElement()).intValue();
+      return returnThis;
     }
-    final int[] returnThis = new int[nodeNeighInx.size()];
-    Enumeration values = nodeNeighInx.elements();
-    for (int i = 0; i < returnThis.length; i++)
-      returnThis[i] = ((Integer) values.nextElement()).intValue();
-    return returnThis;
+    else
+    {
+      Hashtable specificRealNeighbors =
+        (Hashtable) m_nodeNeighbors.get(new Integer(nodeIndex));
+      Hashtable specificFakeNeighbors =
+        (Hashtable) m_negNodeNeighbors.get(new Integer(nodeIndex));
+      if (specificRealNeighbors == null)
+        specificRealNeighbors = m_dummyEmptyHashtable;
+      if (specificFakeNeighbors == null)
+        specificFakeNeighbors = m_dummyEmptyHashtable;
+      final int[] returnThis =
+        new int[specificRealNeighbors.size() + specificFakeNeighbors.size()];
+      Enumeration values = specificRealNeighbors.elements();
+      for (int i = 0; i < specificRealNeighbors.size(); i++)
+        returnThis[i] = ((Integer) values.nextElement()).intValue();
+      values = specificFakeNeighbors.elements();
+      for (int i = specificRealNeighbors.size(); i < returnThis.length; i++)
+        returnThis[i] = ((Integer) values.nextElement()).intValue();
+      return returnThis;
+    }
   }
 
-  private void ensureCompileGraph()
+  private Hashtable m_nodeNeighbors;
+  private Hashtable m_negNodeNeighbors;
+  private final Hashtable m_dummyEmptyHashtable = new Hashtable();
+  private boolean m_nodeNeighborsCompiled = false;
+
+  private void compileNodeNeighbors()
   {
-    // As this class matures more we should implement a single compilation
-    // to avoid overhead on every method call.
-    if (m_compiled) return;
-    m_compiled = true;
+    if (m_nodeNeighborsCompiled) return;
+    m_nodeNeighbors = new Hashtable(graph.getNumNodes());
+    m_negNodeNeighbors = new Hashtable(graph.getNumNodes());
+    for (int edgeIndex = 0; edgeIndex < graph.getNumEdges(); edgeIndex++)
+    {
+      Integer sourceNode =
+        new Integer(graph.getEdgeNodeIndex(edgeIndex, true));
+      Integer targetNode =
+        new Integer(graph.getEdgeNodeIndex(edgeIndex, false));
+      Hashtable specificNeighbors =
+        (Hashtable) m_nodeNeighbors.get(sourceNode);
+      boolean newTable = false;
+      if (specificNeighbors == null) {
+        specificNeighbors = new Hashtable(); newTable = true; }
+      specificNeighbors.put(targetNode, targetNode);
+      if (newTable) m_nodeNeighbors.put(sourceNode, specificNeighbors);
+      Hashtable oppositePut;
+      if (graph.isDirectedEdge(edgeIndex)) oppositePut = m_negNodeNeighbors;
+      else oppositePut = m_nodeNeighbors;
+      newTable = false;
+      specificNeighbors = (Hashtable) oppositePut.get(targetNode);
+      if (specificNeighbors == null) {
+        specificNeighbors = new Hashtable(); newTable = true; }
+      specificNeighbors.put(sourceNode, sourceNode);
+      if (newTable) oppositePut.put(targetNode, specificNeighbors);
+    }
   }
 
 }
