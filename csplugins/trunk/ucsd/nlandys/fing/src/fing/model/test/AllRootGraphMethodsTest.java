@@ -628,6 +628,34 @@ public final class AllRootGraphMethodsTest
         root.getEdge(0) != null ||
         root.getEdge(37) != null)
       throw new IllegalStateException("not null");
+
+    // getEdgeSourceIndex(int).
+    if (root.getEdgeSourceIndex(minEdgeInx - 1) != 0 ||
+        root.getEdgeSourceIndex(0) != 0 ||
+        root.getEdgeSourceIndex(97) != 0)
+      throw new IllegalStateException("edge source not 0");
+    if (root.getEdgeSourceIndex(edgeInx[3]) != nodeInx[2] ||
+        root.getEdgeSourceIndex(edgeInx[6]) != nodeInx[3] ||
+        root.getEdgeSourceIndex(edgeInx[1]) != nodeInx[1] ||
+        root.getEdgeSourceIndex(edgeInx[4]) != nodeInx[1])
+      throw new IllegalStateException("wrong edge source node");
+
+    // getEdgeTargetIndex(int).
+    if (root.getEdgeTargetIndex(minEdgeInx - 1) != 0 ||
+        root.getEdgeTargetIndex(0) != 0 ||
+        root.getEdgeTargetIndex(93) != 0)
+      throw new IllegalStateException("wrong edge target node");
+    if (root.getEdgeTargetIndex(edgeInx[2]) != nodeInx[0] ||
+        root.getEdgeTargetIndex(edgeInx[0]) != nodeInx[1] ||
+        root.getEdgeTargetIndex(edgeInx[5]) != nodeInx[0])
+      throw new IllegalStateException("wrong edge target node");
+
+    // isEdgeDirected(int).
+    if ((!root.isEdgeDirected(edgeInx[0])) ||
+        root.isEdgeDirected(edgeInx[1]) ||
+        root.isEdgeDirected(edgeInx[4]) ||
+        (!root.isEdgeDirected(edgeInx[5])))
+      throw new IllegalStateException("wrong edge directedness");
   }
 
 }
