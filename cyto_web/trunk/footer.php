@@ -3,10 +3,6 @@
 		Cytoscape home 
 	</a>
 	| 
-	<a href="people.php">
-		Dev team 
-	</a>
-	| 
 	<a href="http://www.systemsbiology.org">
 		ISB 
 	</a>
