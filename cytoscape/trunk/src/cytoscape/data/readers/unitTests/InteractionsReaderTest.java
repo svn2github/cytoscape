@@ -136,7 +136,7 @@ public void testGetGraphAndEdgeAttributes () throws Exception
   assertTrue ("edge count", edgeCursor.size () == 27);
 
   GraphObjAttributes edgeProps = reader.getEdgeAttributes ();
-  assertTrue ("attribute count", edgeProps.size () == 1);
+  assertTrue ("attribute count", edgeProps.size () == 2);
 
   HashMap interactions = edgeProps.getAttribute ("interaction");
   assertTrue ("non-null interactions", interactions != null);
