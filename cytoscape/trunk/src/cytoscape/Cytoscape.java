@@ -1118,6 +1118,7 @@ public abstract class Cytoscape {
                          null,
                          view );
      view.fitContent();
+     view.redrawGraph( false, false );
      return view;
   }
   

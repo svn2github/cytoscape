@@ -65,7 +65,7 @@ public class CytoscapeObj
   protected long lastPluginRegistryUpdate;
 
   protected int viewThreshold;
-
+  protected String defaultVisualStyle;
 
   /**
    * Constructor taking just a CytoscapeConfig object. The constructor
@@ -151,6 +151,11 @@ public class CytoscapeObj
     viewThreshold = v;
   }
 
+  public String getDefaultVisualStyle () {
+    return config.getDefaultVisualStyle();
+  }
+
+ 
 
   /**
    * @return the directory ".cytoscape" in the users home directory.

@@ -194,7 +194,7 @@ public class Semantics {
 
     Cytoscape.setNodeAttributeValue( node, CANONICAL_NAME, cname );
       
-    System.out.println( "Name: "+name+" cname: "+cname +" species: "+species);
+    // System.out.println( "Name: "+name+" cname: "+cname +" species: "+species);
 
     String[] synonyms = bds.getAllCommonNames(species, cname);
     StringBuffer concat = new StringBuffer();

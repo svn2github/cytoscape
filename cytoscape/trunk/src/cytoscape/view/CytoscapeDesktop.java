@@ -247,20 +247,20 @@ public class CytoscapeDesktop
       main_panel.add(cyMenus.getToolBar(), BorderLayout.EAST);
       
 
-      if ( !System.getProperty("os.name").startsWith( "Mac" ) ) {
-        JFrame menuFrame = new JFrame("Cytoscape Menus");
-        menuFrame.setJMenuBar(cyMenus.getMenuBar());
-        menuFrame.setSize( 400, 60 );
-        menuFrame.setVisible( true );
-      } else {
+      //if ( !System.getProperty("os.name").startsWith( "Mac" ) ) {
+      //  JFrame menuFrame = new JFrame("Cytoscape Menus");
+      //  menuFrame.setJMenuBar(cyMenus.getMenuBar());
+      //  menuFrame.setSize( 400, 60 );
+      //  menuFrame.setVisible( true );
+      //} else {
         setJMenuBar(cyMenus.getMenuBar());
-      }
+        //}
       
     }
 
     //------------------------------//
     // Set up the VizMapper
-    setupVizMapper( main_panel );
+   setupVizMapper( main_panel );
     
     //------------------------------//
     // Window Closing, Program Shutdown
@@ -554,13 +554,16 @@ public class CytoscapeDesktop
     
     CalculatorCatalog calculatorCatalog = Cytoscape.getCytoscapeObj().getCalculatorCatalog();
 
-    //try to get visual style from properties
+//     //try to get visual style from properties
     Properties configProps = Cytoscape.getCytoscapeObj().getConfiguration().getProperties();
     VisualStyle vs = null;
-    String vsName = configProps.getProperty("visualStyle");
-    if (vsName != null) {vs = calculatorCatalog.getVisualStyle(vsName);}
-    if (vs == null) {//none specified, or not found; use the default
-        vs = calculatorCatalog.getVisualStyle("default");
+    String vsName = configProps.getProperty("defaultVisualStyle", "default");
+    //if (vsName != null) {
+    System.out.println( "VS Name: "+vsName );
+    vs = calculatorCatalog.getVisualStyle(vsName);
+    if (vs == null) {
+      //none specified, or not found; use the default
+      vs = calculatorCatalog.getVisualStyle("default");
     }
 
     // create the VisualMappingManager using default values for now
@@ -571,9 +574,7 @@ public class CytoscapeDesktop
                                                vs,
                                                Cytoscape.getCytoscapeObj().getLogger());
     
-    defaultVisualStyle = calculatorCatalog.getVisualStyle("default");
-
-    // craete the VizMapUI
+    // create the VizMapUI
     this.vizMapUI = new VizMapUI( this.vizMapper, 
                                   this );
     
@@ -655,9 +656,11 @@ public class CytoscapeDesktop
         vizmap_enabled = new Boolean( true );
       
       vizMapper.setNetworkView( new_view );
-      vizMapper.setVisualStyle( new_style );
-      vizMapUI.getStyleSelector().getToolbarComboBox().setSelectedItem( new_style );
-     
+      if ( new_style != null ) {
+        vizMapper.setVisualStyle( new_style );
+        vizMapUI.getStyleSelector().getToolbarComboBox().setSelectedItem( new_style );
+      }     
+
       cyMenus.setNodesRequiredItemsEnabled();
       cyMenus.setVisualMapperItemsEnabled( vizmap_enabled.booleanValue() );
       if ( vizmap_enabled.booleanValue() ) {

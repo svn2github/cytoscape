@@ -64,17 +64,13 @@ public class VisualMappingManager extends SubjectBase {
 
   public VisualMappingManager( CyNetworkView networkView,
                                CalculatorCatalog catalog,
-                               VisualStyle style,
+                               VisualStyle vs,
                                Logger logger) {
     this.networkView = networkView;
     this.catalog = catalog;
     this.logger = logger;
-    if (style != null) {
-      setVisualStyle(style);
-    } else {//get a default from the catalog
-      VisualStyle defStyle = catalog.getVisualStyle("default");
-      setVisualStyle(defStyle);
-    }
+    setVisualStyle( vs );
+   
   }
 
   
@@ -109,9 +105,11 @@ public class VisualMappingManager extends SubjectBase {
       this.fireStateChanged();
       return tmp;
     } else {
-      String s = "VisualMappingManager: Attempt to set null VisualStyle";
-      logger.severe(s);
-      return null;
+      //String s = "VisualMappingManager: Attempt to set null VisualStyle";
+      //logger.severe(s);
+      //return null;
+      //Thread.dumpStack();
+      return visualStyle;
     }
   }
 
@@ -128,9 +126,10 @@ public class VisualMappingManager extends SubjectBase {
     if (vs != null) {
       return setVisualStyle(vs);
     } else {
-      String s = "VisualMappingManager: unknown VisualStyle: " + name;
-      logger.severe(s);
-      return null;
+      //String s = "VisualMappingManager: unknown VisualStyle: " + name;
+      //logger.severe(s);
+      //return null;
+      return visualStyle;
     }
   }
 

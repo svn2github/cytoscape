@@ -498,16 +498,18 @@ class MyMouseListener implements MouseListener
 //-------------------------------------------------------------------------------
 protected void displayWebPage (URL url)
 {
-  try {
-    BasicService bs = (BasicService) ServiceManager.lookup ("javax.jnlp.BasicService");
-    bs.showDocument (url);
-    }
-  catch (Exception ex) {
-    String msg = "<html>You need to invoke Cytsocape through Java Web Start <br>" + 
-                 "in order to make use of your web browser from within the program.<br><br>" +
-                 "Error message: " + ex.getMessage () + "</html>";
-    JOptionPane.showMessageDialog (TabbedBrowser.this, msg);
-    }
+ //  try {
+//     BasicService bs = (BasicService) ServiceManager.lookup ("javax.jnlp.BasicService");
+//     bs.showDocument (url);
+//     }
+//   catch (Exception ex) {
+//     String msg = "<html>You need to invoke Cytsocape through Java Web Start <br>" + 
+//                  "in order to make use of your web browser from within the program.<br><br>" +
+//                  "Error message: " + ex.getMessage () + "</html>";
+//     JOptionPane.showMessageDialog (TabbedBrowser.this, msg);
+//     }
+  cytoscape.util.OpenBrowser.openURL( url.toString() );
+
 
 } // displayWebPage
 //-------------------------------------------------------------------------------

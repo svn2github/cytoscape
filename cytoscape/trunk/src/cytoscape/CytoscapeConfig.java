@@ -42,6 +42,7 @@ public class CytoscapeConfig
   protected boolean yfiles = true;
   protected String graphLibrary = null;
   protected String viewType = "tabbed";
+  public String defaultVisualStyle = "default";
   //protected File projectPropsFile = null;
 
   protected String [] layoutStrategies = {"organic", "hierarchical", "embedded", "circular"};
@@ -92,6 +93,10 @@ public class CytoscapeConfig
  
   public boolean getLoadUserClasspath () {
     return loadUserClasspath;
+  }
+
+  public String getDefaultVisualStyle () {
+    return defaultVisualStyle;
   }
 
   public int getViewThreshold () {
@@ -337,6 +342,9 @@ public class CytoscapeConfig
       props.setProperty("viewThreshold", viewThreshold.toString() );
     if ( bioDataDirectory != null )
       props.setProperty( "bioDataDirectory", bioDataDirectory );
+    if ( defaultVisualStyle != null )
+      props.setProperty( "defaultVisualStyle", Cytoscape.getDesktop().getVizMapManager().getVisualStyle().getName() );
+
 
     try {
       File file = Cytoscape.getCytoscapeObj().getConfigFile( "cytoscape.props" );
@@ -366,8 +374,10 @@ public class CytoscapeConfig
     viewType = props.getProperty( "viewType", "tabbed" );
     defaultSpeciesName = props.getProperty("defaultSpeciesName", "unknown" );
     bioDataDirectory = props.getProperty( "bioDataDirectory", "testData/annotation/manifest");
+    defaultVisualStyle = props.getProperty( "defaultVisualStyle", "default" );
+    
 
-    //System.out.println( "vt: "+viewThreshold );
+    //System.out.println( "vs:: "+defaultVisualStyle );
     // System.out.println( "view type: "+viewType );
     //System.out.println( "dsn: "+defaultSpeciesName );
     //System.out.println( "bdd: "+bioDataDirectory );
@@ -581,7 +591,7 @@ public class CytoscapeConfig
     LongOpt[] longopts = new LongOpt[] {
       new LongOpt ("VT",  LongOpt.REQUIRED_ARGUMENT, null, 0) ,
       new LongOpt ("classpath",  LongOpt.REQUIRED_ARGUMENT, null, 1),
-      new LongOpt ("help", LongOpt.REQUIRED_ARGUMENT, null, 2)
+      new LongOpt ("VS", LongOpt.REQUIRED_ARGUMENT, null, 2)
     };
     Getopt g = new Getopt ("cytoscape", commandLineArguments, argSpecificationString, longopts);
     g.setOpterr(false); // We'll do our own error handling
@@ -596,7 +606,8 @@ public class CytoscapeConfig
         loadUserClasspath = true;
         break;
       case 2:
-        helpRequested = true;
+        defaultVisualStyle = g.getOptarg();
+        props.setProperty( "defaultVisualStyle", defaultVisualStyle );
         break;
       case 't':
         viewType = g.getOptarg();
@@ -937,7 +948,7 @@ public class CytoscapeConfig
     sb.append ("      ------------------\n\n");
     sb.append ("--multiple parameters allowed--\n");
     sb.append (" -g  <graph file names>        :  \".gml\" or \".sif\")\n");
-    sb.append (" -i  <interactions filenames>  :  will load any file as a \".sif\", i.e. \".txt\"\n");
+    sb.append (" -i  <interactions filenames>  :  will load any file as a \".sif\", i.e. a \".txt\"\n");
     sb.append (" -n  <nodeAttributes filename> :  of the \"name = value\" style\n");
     sb.append (" -j  <edgeAttributes filename> :  of the \"source ('type') target = value\" style\n");
     sb.append ("\n--single parameter only--\n");

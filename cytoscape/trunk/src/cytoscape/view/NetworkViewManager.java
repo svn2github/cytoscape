@@ -331,6 +331,7 @@ public class NetworkViewManager
       componentMap.put( frame, view.getNetwork().getIdentifier() );
       networkViewMap.put( view.getNetwork().getIdentifier(), frame );
       frame.addWindowFocusListener( this );
+      frame.setJMenuBar( cytoscapeDesktop.getCyMenus().getMenuBar());
     }
 
     firePropertyChange( CytoscapeDesktop.NETWORK_VIEW_FOCUSED,

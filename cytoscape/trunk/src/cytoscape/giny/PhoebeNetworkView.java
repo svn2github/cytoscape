@@ -62,6 +62,9 @@ public class PhoebeNetworkView
   protected Map clientData;
 
   protected PBasicInputEventHandler keyEventHandler;
+//   protected PBasicInputEventHandler changeCursorHandler;
+//   protected Cursor zuiCursor;
+
 
   public PhoebeNetworkView ( CyNetwork network,
                              String title ) {
@@ -88,12 +91,33 @@ public class PhoebeNetworkView
     //TODO:
     //     Add NetworkView specific ToolBars
 
+    // System.out.println( "Image::::: "+ getClass().getResource("images/new/zui_cursor.gif") );
+
+   //  try {
+//       Toolkit toolkit = Toolkit.getDefaultToolkit();
+//       Image image = toolkit.createImage( getClass().getResource("images/zui_cursor.gif") );
+//       zuiCursor = toolkit.createCustomCursor(image , new Point(0,0), "ZUI");
+//     } catch ( Exception e ) {
+//       // set the zui cursor to the default cursor.
+//       zuiCursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
+//     }
+  
   }
    
   protected void initializeEventHandlers() {
     super.initializeEventHandlers();
 
-   
+    
+  //   changeCursorHandler = new PBasicInputEventHandler () {
+//         public void mousePressed (PInputEvent event) {
+//           getCanvas().setCursor( zuiCursor );
+//         }
+//         public void	mouseReleased(PInputEvent event) {
+//           getCanvas().setCursor( Cursor.getPredefinedCursor( Cursor.DEFAULT_CURSOR ) );
+//         }
+//       };
+//     changeCursorHandler.setEventFilter( new PInputEventFilter(InputEvent.BUTTON1_MASK) );
+//     getCanvas().addInputEventListener( changeCursorHandler );
 
     keyEventHandler = new PBasicInputEventHandler () {
    
