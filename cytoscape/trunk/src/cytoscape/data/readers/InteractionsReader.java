@@ -125,10 +125,10 @@ public Interaction [] getAllInteractions ()
 protected String canonicalizeName (String name)
 {
   String canonicalName = name;
-  // System.out.println ("canonicalize, dataServer = " + dataServer);
   if (dataServer != null) {
     canonicalName = dataServer.getCanonicalName (species, name);
-    //System.out.println (" -- canonicalizeName from server: " + canonicalName);
+    if (canonicalName == null)
+      return name;
     }
 
   return canonicalName;
