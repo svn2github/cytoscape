@@ -1239,10 +1239,59 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("missing meta relationship");
 
     // edgeMetaChildrenList(Node).
+    if (root.edgeMetaChildrenList(root2Node) != null)
+      throw new IllegalStateException("expected null return value");
+    edgesList = root.edgeMetaChildrenList(root.getNode(nodeInx[3]));
+    if (edgesList.size() != 2)
+      throw new IllegalStateException("wrong number of edge children");
+    for (int i = 0;; i++)
+      if (((Edge) edgesList.get(i)).getRootGraphIndex() == edgeInx[0]) break;
+    for (int i = 0;; i++)
+      if (((Edge) edgesList.get(i)).getRootGraphIndex() == edgeInx[6]) break;
 
     // edgeMetaChildrenList(int).
+    if (root.edgeMetaChildrenList(0) != null ||
+        root.edgeMetaChildrenList(1) != null ||
+        root.edgeMetaChildrenList(Integer.MAX_VALUE) != null ||
+        root.edgeMetaChildrenList(Integer.MIN_VALUE) != null ||
+        root.edgeMetaChildrenList(minNodeInx - 1) != null)
+      throw new IllegalStateException("expected null return value");
+    edgesList = root.edgeMetaChildrenList(nodeInx[1]);
+    if (edgesList.size() != 0)
+      throw new IllegalStateException("wrong number of edge children");
+    edgesList = root.edgeMetaChildrenList(nodeInx[0]);
+    if (edgesList.size() != 1)
+      throw new IllegalStateException("wrong number of edge children");
+    for (int i = 0;; i++)
+      if (((Edge) edgesList.get(i)).getRootGraphIndex() == edgeInx[4]) break;
 
     // getEdgeMetaChildIndicesArray(int).
+    if (root.getEdgeMetaChildIndicesArray(0) != null ||
+        root.getEdgeMetaChildIndicesArray(1) != null ||
+        root.getEdgeMetaChildIndicesArray(Integer.MAX_VALUE) != null ||
+        root.getEdgeMetaChildIndicesArray(Integer.MIN_VALUE) != null ||
+        root.getEdgeMetaChildIndicesArray(minNodeInx - 1) != null)
+      throw new IllegalStateException("expected null return value");
+    int[] edgeChildInx = root.getEdgeMetaChildIndicesArray(nodeInx[0]);
+    if (edgeChildInx.length != 1)
+      throw new IllegalStateException("wrong number of edge children");
+    for (int i = 0;; i++) if (edgeChildInx[i] == edgeInx[4]) break;
+    edgeChildInx = root.getEdgeMetaChildIndicesArray(nodeInx[1]);
+    if (edgeChildInx.length != 0)
+      throw new IllegalStateException("wrong number of edge children");
+    edgeChildInx = root.getEdgeMetaChildIndicesArray(nodeInx[2]);
+    if (edgeChildInx.length != 0)
+      throw new IllegalStateException("wrong number of edge children");
+    edgeChildInx = root.getEdgeMetaChildIndicesArray(nodeInx[3]);
+    if (edgeChildInx.length != 2)
+      throw new IllegalStateException("wrong number of edge children");
+    for (int i = 0;; i++) if (edgeChildInx[i] == edgeInx[0]) break;
+    for (int i = 0;; i++) if (edgeChildInx[i] == edgeInx[6]) break;
+    edgeChildInx = root.getEdgeMetaChildIndicesArray(nodeInx[4]);
+    if (edgeChildInx.length != 2)
+      throw new IllegalStateException("wrong number of edge children");
+    for (int i = 0;; i++) if (edgeChildInx[i] == edgeInx[2]) break;
+    for (int i = 0;; i++) if (edgeChildInx[i] == edgeInx[6]) break;
   }
 
 }
