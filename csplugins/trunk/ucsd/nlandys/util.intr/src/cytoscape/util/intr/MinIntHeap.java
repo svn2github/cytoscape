@@ -28,7 +28,7 @@ public final class MinIntHeap
   private boolean m_orderOK;
 
   /**
-   * Creates a new heap; a new heap is ordered.
+   * Creates a new heap.  A new heap is ordered.
    */
   public MinIntHeap()
   {
@@ -88,17 +88,19 @@ public final class MinIntHeap
    *   tossing elements onto this heap.
    * @param length the number of contiguous elements in the elements array
    *   to toss onto this heap.
+   * @exception IndexOutOfBoundsException if the combination of the
+   *   input parameters (elements, beginIndex, and length) don't make sense.
    */
   public final void toss(int[] elements, int beginIndex, int length)
   {
     // Do some extra error checking just so that we don't create an
     // extremely large array if incorrect parameters are passed.
     if (beginIndex < 0)
-      throw new IllegalArgumentException("beginIndex is less than zero");
+      throw new IndexOutOfBoundsException("beginIndex is less than zero");
     if (length < 0)
-      throw new IllegalArgumentException("length is less than zero");
+      throw new IndexOutOfBoundsException("length is less than zero");
     if (((long) beginIndex) + (long) length > (long) elements.length)
-      throw new IllegalArgumentException
+      throw new IndexOutOfBoundsException
         ("combination of beginIndex and length exceed length of array");
     checkSize(length);
     System.arraycopy(elements, beginIndex,
@@ -138,7 +140,6 @@ public final class MinIntHeap
    * in the heap.  This method leaves the heap in an ordered state.<p>
    * If there are no elements in this heap, results of this operation
    * are undefined.
-   * @see #size()
    */
   public final int findMin()
   {
@@ -160,7 +161,6 @@ public final class MinIntHeap
    * state.<p>
    * If there are no elements in this heap, results of this operation
    * are undefined.
-   * @see #size()
    */
   public final int deleteMin()
   {
@@ -290,7 +290,7 @@ public final class MinIntHeap
    * the order of elements in the returned enumeration is undefined.<p>
    * If other methods in this heap are called while enumerating through
    * the return value, behavior of the enumerator is undefined.<p>
-   * This enumerator has no effect on the set of element in this heap.  This
+   * This enumerator has no effect on the set of elements in this heap.  This
    * enumeration has no effect on the ordered state of this heap.
    * @see #orderedElements(boolean)
    */
@@ -306,17 +306,18 @@ public final class MinIntHeap
 
   /**
    * Copies the elements of this heap into the specified output array.
-   * The order in which element are copied is undefined.  Element are copied
+   * The order in which elements are copied is undefined.  Elements are copied
    * into the output array starting at beginIndex in the output array.  The
-   * output array must be big enough to hold all the elements in this heap.<p>
+   * output array must be large enough to hold all the elements in this
+   * heap.<p>
    * NOTE: This method has been deprecated ever since it was added to this
    * class.  This method will be taken out of this class definition at
    * liberty.
    * @param output the array into which the elements of this heap get copied.
    * @param beginIndex an index in the output array which is the beginning
    *   of where elements are copied to.
-   * @exception IndexOutOfBoundsException if the output array is not large
-   *   enough to store all elements in this heap.
+   * @exception IndexOutOfBoundsException if copying would cause access of
+   *   data outside array bounds.
    * @deprecated Use elements() instead.
    * @see #elements()
    */
@@ -344,8 +345,8 @@ public final class MinIntHeap
    * @param output the array into which the elements of this heap get copied.
    * @param beginIndex an index in the output array which is the beginning
    *   of where elements are copied to.
-   * @exception IndexOutOfBoundsException if the output array is not large
-   *   enough to store all elements in this heap.
+   * @exception IndexOutOfBoundsException if copying would cause access of
+   *   data outside array bounds.
    * @deprecated Use orderedElements(boolean) or deleteMin() instead.
    * @see #orderedElements(boolean)
    * @see #deleteMin()
