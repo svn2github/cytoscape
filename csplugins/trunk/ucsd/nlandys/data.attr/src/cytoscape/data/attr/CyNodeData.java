@@ -6,4 +6,18 @@ package cytoscape.data.attr;
  */
 public interface CyNodeData
 {
+
+  /**
+   * @exception UnsupportedOperationException 
+   */
+  public void defineNodeAttribute(String attrName, byte attrType);
+
+  /**
+   * The "un"-define of an attribute node.
+   * @exception UnsupportedOperationException if the specified attribute domain
+   *   exists but permission to delete it is not granted; for example, the
+   *   "nodeName" attribute domain always exists and can never be deleted.
+   */
+  public void removeNodeAttribute(String attrName);
+
 }
