@@ -59,6 +59,7 @@ import cytoscape.util.MutableBool;
 
 import cytoscape.filters.*;
 import cytoscape.filters.dialogs.*;
+import csplugins.graphAlgo.MetaNode;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -315,7 +316,19 @@ public void setGraph (Graph2D graph)
     
   setLayouterAndGraphView();
   // displayCommonNodeNames ();
-
+  
+  // register the window as a selection listener - dramage 2002.08.16
+  graph.addGraph2DSelectionListener(this);
+  
+  // create a new UndoManager for this graph
+  undoManager = new CytoscapeUndoManager(this, graph);
+  graph.addGraphListener(undoManager);
+  updateUndoRedoMenuItemStatus();
+  
+  // create the graph hider
+  graphHider = new UndoableGraphHider (graph, undoManager);
+  
+  setLayouterAndGraphView();
 } // setGraph
 //-----------------------------------------------------------------------------
 public Graph2DView getGraphView(){
@@ -587,7 +600,7 @@ protected void applyVizmapSettings ()
       //CytoscapeWindow.this.setBackground(bgColor);
   }
  
-
+  boolean setTh = false;
   for (int i=0; i < nodes.length; i++) {
     Node node = nodes [i];
     String canonicalName = nodeAttributes.getCanonicalName (node);
@@ -605,6 +618,17 @@ protected void applyVizmapSettings ()
     byte nodeShape =
         vizMapperCategories.getNodeShape(bundle, vizMapper);
     
+    if(!setTh &&  nodeShape != ShapeNodeRealizer.RECT){
+	// added by iliana on 10/04/2002
+	// yFiles contains a "feature" that consists on drawing non-rectangle shapes
+	// as rectangles at certain zoom levels
+	// the following gets rid of this feature
+	// (I assume that if some plug-in set the shape of a node to be non-rectangular
+	// there is an important reason why, at any zoom level)
+	graphView.setPaintDetailThreshold(0.0);
+	setTh = true;
+    }
+    
     NodeRealizer nr = graphView.getGraph2D().getRealizer(node);
     nr.setFillColor (nodeColor);
     nr.setLineColor(nodeBorderColor);
@@ -615,6 +639,9 @@ protected void applyVizmapSettings ()
         ShapeNodeRealizer snr = (ShapeNodeRealizer)nr;
         snr.setShapeType(nodeShape);
     }
+    // System.out.println(canonicalName + " " + nodeColor + " " + nodeBorderColor + " " + nodeBorderLinetype + " " + nodeHeight + " " 
+    //	       + nodeShape);
+    //System.out.flush();
   } // for i
 
   EdgeCursor cursor = graphView.getGraph2D().edges();
@@ -675,7 +702,7 @@ public void setNodeAttributes (GraphObjAttributes newValue)
   
 }
 //------------------------------------------------------------------------------
-public void setNodeAttributes (GraphObjAttributes newValue, boolean skipAddNameMapping)
+public void setNodeAttributes(GraphObjAttributes newValue, boolean skipAddNameMapping)
 {
   nodeAttributes = newValue;
   if (!skipAddNameMapping) {
@@ -704,9 +731,19 @@ public void setEdgeAttributes(GraphObjAttributes edgeAttributes){
 /**
  * 
  */
-public void displayCommonNodeNames ()
+public void displayCommonNodeNames()
 {
-  if (bioDataServer == null) return;
+    // common names may have been already loaded using
+    // an attributes file
+    // if bioDataServer is null, shouldn't we make sure common names do not
+    // exist before returning?
+    // -iliana 10/21/2002
+    
+    if (bioDataServer == null){ 
+	System.out.println("\nCytoscapeWindow: the bioDataServer is down");
+	System.out.flush();
+	return;
+    }
 
   Node [] nodes = graph.getNodeArray ();
 
@@ -718,8 +755,14 @@ public void displayCommonNodeNames ()
     try {
       String [] synonyms = bioDataServer.getAllCommonNames (getDefaultSpecies (), canonicalName);
       if (synonyms.length > 0) {
-        newName = synonyms [0];
-        }
+	  newName = synonyms [0];
+      }
+      // added by iliana 11.5.2002
+      // the label of the node may have no text
+      if(newName == null || newName.length() == 0){
+	  newName = canonicalName;
+      }
+      
       nodeAttributes.set ("commonName", canonicalName, newName);
       // System.out.println ("setting node attribute commonName for " + canonicalName + " to " + newName);
       r.setLabelText (newName);
@@ -978,6 +1021,7 @@ protected JMenuBar createMenuBar ()
   vizMenu = new JMenu ("Visualization"); // always create the viz menu
   menuBar.add (vizMenu);
   vizMenu.add (new SetVisualPropertiesAction ());
+  vizMenu.add( new ColorNodesFromFile());
   //  vizMenu.add (new PrintPropsAction ());
 
   opsMenu = new JMenu ("PlugIns"); // always create the plugins menu
@@ -1124,7 +1168,6 @@ public void selectNodesByName (String [] nodeNames, boolean clearAllSelectionsFi
   //nodeRealizer.setSelected (true);
   //} // for i
   //redrawGraph ();
-
 } // selectNodesByName
 //------------------------------------------------------------------------------
 // added by jtwang 30 Sep 2002
@@ -1224,29 +1267,39 @@ protected void selectNodesStartingWith (String key)
   redrawGraph ();
 
   Node [] nodes = graphView.getGraph2D().getNodeArray();
-
-  for (int i=0; i < nodes.length; i++) {
-    String nodeName = graphView.getGraph2D().getLabelText (nodes [i]);
-    boolean matched = false;
-    if (nodeName.toLowerCase().startsWith (key))
-      matched = true;
-    else if (bioDataServer != null) {
-      try {
-        String [] synonyms = bioDataServer.getAllCommonNames (getSpecies (nodes [i]), nodeName);
-        for (int s=0; s < synonyms.length; s++)
-          if (synonyms [s].toLowerCase().startsWith (key)) {
-            matched = true;
-            break;
-         } // for s
-       }
-      catch (Exception ignoreForNow) {;}
-      } // else if: checking synonyms
-    setNodeSelected (nodes [i], matched);
-    } // for i
-
+  
+  for(int i = 0; i < nodes.length; i++){
+      String nodeName = graphView.getGraph2D().getLabelText (nodes [i]);
+      boolean matched = false;
+      if (nodeName.toLowerCase().startsWith (key))
+	  matched = true;
+      else if (bioDataServer != null) {
+	  try {
+	      String [] synonyms = bioDataServer.getAllCommonNames (getSpecies (nodes [i]), nodeName);
+	      for (int s=0; s < synonyms.length; s++)
+		  if (synonyms [s].toLowerCase().startsWith (key)) {
+		      matched = true;
+		      break;
+		  } // for s
+	  }catch (Exception ignoreForNow) {;}
+      }
+      // added by iliana 10/28/2002 (for metaNodes)
+      // if a gene is a member of a MetaNode, and the MetaNode is collapsed, 
+      // select the MetaNode
+      if(!matched && MetaNode.isMetaNode(nodes[i],nodeAttributes)){
+	  MetaNode mNode = MetaNode.getMetaNode(nodes[i],nodeAttributes);
+	  if(mNode.containsNode(key)){
+	      matched = true;
+	  }
+      } // else if: the node is member of a meta-node
+      
+      //} // else if: checking synonyms
+      setNodeSelected (nodes [i], matched);
+  } // for i
+  
   setInteractivity (true);
   redrawGraph ();
-
+  
 } // selectDisplyToNodesStartingWith ...
 //------------------------------------------------------------------------------
 protected void additionallySelectNodesMatching (String key)
@@ -1302,9 +1355,13 @@ protected String findCanonicalName(String key) {
 
 protected void setNodeSelected (Node node, boolean visible)
 {
-  NodeRealizer r = graphView.getGraph2D().getRealizer(node);
-  r.setSelected (visible);
-
+    if(visible){
+	System.out.println("setNodeSelected " + node);
+	System.out.flush();
+    }
+    NodeRealizer r = graphView.getGraph2D().getRealizer(node);
+    r.setSelected (visible);
+    
 } // setNodeSelected
 //------------------------------------------------------------------------------
 protected void updateEdgeVisibilityFromNodeVisibility ()
@@ -1478,6 +1535,24 @@ protected class PrintPropsAction extends AbstractAction   {
 */
 
 
+//------------------------------------------------------------------------------
+// added by iliana 10/28/2002
+// Pops up a dialog that allows the user to enter a file with ORfs, and choose
+// a color. Nodes in the graph with the given ORFs will be colored.
+protected class ColorNodesFromFile extends AbstractAction{
+    ColorNodesFromFile(){
+	super("Color Nodes From File");
+    }
+
+    public void actionPerformed(ActionEvent e){
+	JDialog dialog = new ColorNodesFromFileDialog(CytoscapeWindow.this);
+	dialog.pack ();
+	dialog.setLocationRelativeTo (mainFrame);
+	dialog.setVisible (true);
+
+    }
+
+}//ColorNodesFromFile
 //------------------------------------------------------------------------------
 protected class SetVisualPropertiesAction extends AbstractAction   {
     MutableString labelKey;
@@ -2319,7 +2394,6 @@ protected void loadExpressionData (String filename) {
     // update plugin list
     loadPlugins();
 }
-
 
 //------------------------------------------------------------------------------
 protected class ExitAction extends AbstractAction  {
