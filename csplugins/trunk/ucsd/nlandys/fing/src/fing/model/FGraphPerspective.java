@@ -471,9 +471,8 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
 
   public GraphPerspective join(GraphPerspective persp) {
     final FGraphPerspective thisPersp = this;
-    final FGraphPerspective otherPersp;
-    try { otherPersp = (FGraphPerspective) persp; }
-    catch (ClassCastException e) { return null; }
+    if (!(persp instanceof FGraphPerspective)) return null;
+    final FGraphPerspective otherPersp = (FGraphPerspective) persp;
     if (otherPersp.m_root != thisPersp.m_root) return null;
     final IntEnumerator thisNativeNodes = thisPersp.m_graph.nodes();
     final IntEnumerator otherNativeNodes = otherPersp.m_graph.nodes();
@@ -619,9 +618,10 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
 
   public int getEdgeCount(int fromNodeInx, int toNodeInx,
                           boolean countUndirectedEdges) {
-    try { return getEdgeIndicesArray(fromNodeInx, toNodeInx,
-                                     countUndirectedEdges).length; }
-    catch (NullPointerException e) { return -1; } }
+    final int[] edgeIndicesArray = getEdgeIndicesArray
+      (fromNodeInx, toNodeInx, countUndirectedEdges);
+    if (edgeIndicesArray == null) return -1;
+    return edgeIndicesArray.length; }
 
   public java.util.List edgesList(Node from, Node to) {
     if (from.getRootGraph() == m_root && to.getRootGraph() == m_root)
