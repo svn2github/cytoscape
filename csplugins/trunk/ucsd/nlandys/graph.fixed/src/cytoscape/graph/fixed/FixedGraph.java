@@ -12,32 +12,22 @@ public interface FixedGraph
 {
 
   /**
-   * Returns an enumeration of all nodes currently in this graph.
-   * Every node in this graph is a unique non-negative integer.  A given
-   * node and a given edge in one graph may be the same integer.<p>
-   * The returned enumeration becomes invalid as soon as any
-   * graph-topology-modifying method on this graph is called.  Calling
-   * methods on an invalid enumeration will result in undefined behavior
-   * of that enumeration.  Enumerating through a graph's nodes will
-   * never have any effect on the graph.
+   * Returns an enumeration of all nodes in this graph.  Every node in this
+   * graph is a unique non-negative integer.  A given node and a given edge
+   * in one graph may be the same integer.
    *
-   * @return an enumeration over all nodes currently in this graph; null
-   *   is never returned.
+   * @return an enumeration over all nodes in this graph; null is never
+   *   returned.
    */
   public IntEnumerator nodes();
 
   /**
-   * Returns an enumeration of all edges currently in this graph.
-   * Every edge in this graph is a unique non-negative integer.  A given
-   * node and a given edge in one graph may be the same integer.<p>
-   * The returned enumeration becomes invalid as soon as any
-   * graph-topology-modifying method on this graph is called.  Calling
-   * methods on an invalid enumeration will result in undefined behavior
-   * of that enumeration.  Enumerating through a graph's edges will
-   * never have any effect on the graph.
+   * Returns an enumeration of all edges in this graph.  Every edge in this
+   * graph is a unique non-negative integer.  A given node and a given edge
+   * in one graph may be the same integer.
    *
-   * @return an enumeration over all edges currently in this graph; null
-   *   is never returned.
+   * @return an enumeration over all edges in this graph; null is never
+   *   returned.
    */
   public IntEnumerator edges();
 
@@ -97,10 +87,6 @@ public interface FixedGraph
    * The three boolean input parameters define what is meant by "adjacent
    * edge".  If all three boolean input parameters are false, the returned
    * enumeration will have zero elements.<p>
-   * The returned enumeration becomes invalid as soon as any
-   * graph-topology-modifying method on this graph is called.  Calling
-   * methods on an invalid enumeration will result in undefined behavior
-   * of that enumeration.<p>
    * This method returns null if and only if the specified node does not
    * exist in this graph.  Therefore, this method can be used to test
    * the existence of a node in this graph.
@@ -129,10 +115,6 @@ public interface FixedGraph
    * The three boolean input parameters define what is meant by "connecting
    * edge".  If all three boolean input parameters are false, the returned
    * iteration will have no elements.<p>
-   * The returned iteration becomes invalid as soon as any
-   * graph-topology-modifying method on this graph is called.  Calling
-   * methods on an invalid iteration will result in undefined behavior
-   * of that iteration.<p>
    * I'd like to discuss the motivation behind this interface method.
    * I assume that most implementations of this interface will implement
    * this method in terms of edgesAdjacent().  Why, then, is this method
