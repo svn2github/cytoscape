@@ -808,8 +808,43 @@ public final class AllGraphPerspectiveMethodsTest
       throw new IllegalStateException("expected null for meta-parents");
 
     // isMetaChild(Node, Node).
+    if (!(persp.isMetaChild(persp.getNode(nodeInx[3]),
+                            persp.getNode(nodeInx[0])) &&
+          persp.isMetaChild(persp.getNode(nodeInx[3]),
+                            persp.getNode(nodeInx[2]))))
+      throw new IllegalStateException("expected meta-child relationship");
+    if (persp.isMetaChild(persp.getNode(nodeInx[1]),
+                          persp.getNode(nodeInx[4])) ||
+        persp.isMetaChild(persp.getNode(nodeInx[3]),
+                          persp.getNode(nodeInx[4])))
+      throw new IllegalStateException("did not expect meta-child");
+    if (persp.isMetaChild(nodeNotInPersp, persp.getNode(nodeInx[2])) ||
+        persp.isMetaChild(persp.getNode(nodeInx[2]), nodeNotInPersp) ||
+        persp.isMetaChild(persp.getNode(nodeInx[4]), nodeNotInPersp) ||
+        persp.isMetaChild(nodeNotInPersp, persp.getNode(nodeInx[4])) ||
+        persp.isMetaChild(root2Node, persp.getNode(nodeInx[0])) ||
+        persp.isMetaChild(persp.getNode(nodeInx[0]), root2Node))
+      throw new IllegalStateException("totally wrong meta-relationship");
 
     // isNodeMetaChild(int, int).
+    if (!(persp.isNodeMetaChild(nodeInx[0], nodeInx[4]) &&
+          persp.isNodeMetaChild(nodeInx[4], nodeInx[2]) &&
+          persp.isNodeMetaChild(nodeInx[4], nodeInx[4]) &&
+          persp.isNodeMetaChild(nodeInx[4], nodeInx[3]) &&
+          persp.isNodeMetaChild(nodeInx[3], nodeInx[0])))
+      throw new IllegalStateException("expected meta-relationship");
+    if (persp.isNodeMetaChild(nodeInx[2], nodeInx[2]) ||
+        persp.isNodeMetaChild(nodeInx[1], nodeInx[3]) ||
+        persp.isNodeMetaChild(nodeInx[0], nodeInx[3]) ||
+        persp.isNodeMetaChild(nodeInx[3], nodeInx[4]))
+      throw new IllegalStateException("unexpected meta-relationship");
+    if (persp.isNodeMetaChild(0, 1) ||
+        persp.isNodeMetaChild(nodeNotInPersp.getRootGraphIndex(),
+                              nodeInx[2]) ||
+        persp.isNodeMetaChild(nodeInx[2],
+                              nodeNotInPersp.getRootGraphIndex()) ||
+        persp.isNodeMetaChild(Integer.MIN_VALUE, nodeInx[3]))
+      throw new IllegalStateException("totally wrong meta-relationship");
 
     // nodeMetaChildrenList(Node).
 
