@@ -71,8 +71,75 @@ public class ComplexFinder extends CytoscapePlugin{
 		  }
 		}
 	      }}).start();
-	} 
+	}
+
+	
       });
+
+     Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add( new AbstractAction("Load previous results"){
+	public void actionPerformed(ActionEvent ae){
+	  new Thread(new Runnable(){
+	      public void run(){
+		JFileChooser chooser = new JFileChooser();
+		int returnVal = chooser.showOpenDialog(Cytoscape.getDesktop());
+		if(returnVal == JFileChooser.APPROVE_OPTION) {
+		  try{
+		    ComplexFinderResultDialog results = new ComplexFinderResultDialog(chooser.getSelectedFile());
+		    results.show();
+		  }catch(Exception e){
+		    JOptionPane.showMessageDialog(Cytoscape.getDesktop(),e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);	    
+		  }
+		}
+	      }
+	    }).start();
+	}
+      });
+
+     
+     Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add( new AbstractAction("Generate cutoff"){
+	public void actionPerformed(ActionEvent ae){
+	  new Thread(new Runnable(){
+	      public void run(){
+		ComplexFinderOptionsDialog dialog = new ComplexFinderOptionsDialog();
+		dialog.show();
+		ComplexFinderOptions options = dialog.getOptions();
+		ComplexFinderThread thread = new ComplexFinderThread(options);
+		RandomizationDialog randomDialog = new RandomizationDialog(options.physicalNetwork,options);
+		randomDialog.show();
+		if(randomDialog.isCancelled()){
+		  return;
+		}
+		CyNetwork physicalNetwork = options.physicalNetwork;
+		double [] scores = new double[options.iterations];
+		EdgeRandomizer randomizer = new EdgeRandomizer(physicalNetwork,options.directedTypes);
+		int [] old_edges = physicalNetwork.getEdgeIndicesArray();
+		Cytoscape.destroyNetwork(physicalNetwork);
+		Cytoscape.getRootGraph().removeEdges(old_edges);
+		for(int idx=0; idx<options.iterations; idx++){
+		  System.err.println(idx);
+		  CyNetwork randomNetwork = randomizer.randomizeNetwork();
+		  thread.setPhysicalNetwork(randomNetwork);
+		  thread.run();
+		  Vector results = thread.getResults();
+		  if(results.size() > 0){
+		    scores[idx] = ((NetworkModel)results.firstElement()).score;
+		    System.err.println(scores[idx]);
+		  }
+		  old_edges = randomNetwork.getEdgeIndicesArray();
+		  Cytoscape.destroyNetwork(randomNetwork);
+		  Cytoscape.getRootGraph().removeEdges(old_edges);
+		  
+		}
+		Arrays.sort(scores);
+		double cutoff = scores[(int)Math.floor((1-options.alpha)*options.iterations)];
+		JOptionPane.showMessageDialog(Cytoscape.getDesktop(),"Cutoff is: "+options.cutoff);
+	      }
+	    }).start();
+	}
+      });
+
+     
+
   }
 }
 

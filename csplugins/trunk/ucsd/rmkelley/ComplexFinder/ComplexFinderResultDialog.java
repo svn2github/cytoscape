@@ -22,7 +22,8 @@ import java.awt.event.*;
 import cytoscape.layout.*;
 import java.awt.Dimension;
 import javax.swing.border.TitledBorder;
-import ucsd.rmkelley.Util.RyanDialog;
+import ucsd.rmkelley.Util.*;
+
 
 class ComplexFinderResultDialog extends RyanDialog implements ListSelectionListener{
   Vector results;
@@ -98,7 +99,7 @@ class ComplexFinderResultDialog extends RyanDialog implements ListSelectionListe
 	public void actionPerformed(ActionEvent ae){
 	  NetworkModel model = (NetworkModel)ComplexFinderResultDialog.this.results.get(table.getSelectionModel().getMinSelectionIndex());
 	  List allNodes = new Vector();
-	  allNodes.addAll(model.one);
+	  allNodes.addAll(model.nodes);
 
 	  
 	  List allEdges = new Vector();
@@ -107,7 +108,7 @@ class ComplexFinderResultDialog extends RyanDialog implements ListSelectionListe
 	  CyNetwork newNetwork = Cytoscape.createNetwork(allNodes,allEdges,"Network Model: "+model.ID);
 	  CyNetworkView newView = Cytoscape.getNetworkView(newNetwork.getIdentifier());
 	  if(newView != null){
-	    CircleGraphLayout layout = new CircleGraphLayout(newView,model.one);
+	    CircleGraphLayout layout = new CircleGraphLayout(newView,model.nodes);
 	    layout.construct();
 	  }
 	}
@@ -129,8 +130,16 @@ class ComplexFinderResultDialog extends RyanDialog implements ListSelectionListe
 	  ComplexFinderResultDialog.this.enableInput();
 	}
       });
+
+    JButton validateButton = new JButton("Cross Validation");
+    validateButton.addActionListener(new ActionListener(){
+	    public void actionPerformed(ActionEvent ae){
+	      GOprediction prediction = new GOprediction(new File("GOID2orfs.txt"),new File("GOID2parents.txt"),results);
+	    }
+      });
     southPanel.add(viewButton);
     southPanel.add(saveButton);
+    southPanel.add(validateButton);
     getContentPane().add(southPanel,BorderLayout.SOUTH);
     pack();
   }
@@ -156,7 +165,7 @@ class ComplexFinderResultDialog extends RyanDialog implements ListSelectionListe
     if(index > -1){
       viewButton.setEnabled(true);
       NetworkModel model = (NetworkModel)results.get(index);
-      physicalNetwork.setFlaggedNodes(model.one,true);
+      physicalNetwork.setFlaggedNodes(model.nodes,true);
     }
     else{
       viewButton.setEnabled(false);
@@ -170,7 +179,7 @@ class ComplexFinderResultDialog extends RyanDialog implements ListSelectionListe
     for(Iterator modelIt = results.iterator();modelIt.hasNext();){
       NetworkModel model = (NetworkModel)modelIt.next();
       stream.print(model.ID);
-      stream.print("\t"+nodeSet2String(model.one));
+      stream.print("\t"+nodeCollection2String(model.nodes));
       stream.println("\t"+model.score);
     }
     stream.close();
@@ -202,11 +211,11 @@ class ComplexFinderResultDialog extends RyanDialog implements ListSelectionListe
    * Create a colon delimited list of node names
    * from a set of nodes
    */
-  protected String nodeSet2String(Set nodes){
+  protected String nodeCollection2String(Collection nodes){
     String result = "";
     Iterator nodeIt = nodes.iterator();
     if(nodes.size() > 0){
-      Node node = (Node)nodes.iterator().next();
+      Node node = (Node)nodeIt.next();
       result = node.getIdentifier();
     }
     if(nodes.size() > 1){

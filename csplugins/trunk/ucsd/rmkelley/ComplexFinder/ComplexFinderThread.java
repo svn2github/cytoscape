@@ -1,4 +1,5 @@
 package  ucsd.rmkelley.ComplexFinder;
+import ucsd.rmkelley.Util.*;
 import java.io.*;
 import java.util.*;
 import edu.umd.cs.piccolo.activities.*;
@@ -74,7 +75,6 @@ class ComplexFinderThread extends Thread{
     }
     myMonitor.setMillisToPopup(0);
     while(nodeIt.hasNext()){
-      System.err.println(""+progress);
       Node seedNode = (Node)nodeIt.next();
       /*
        * I need to correct this, the model starts
@@ -83,7 +83,7 @@ class ComplexFinderThread extends Thread{
        * Don't need to check for the edge
        * because it already has to be there
        */
-      double score = Double.NEGATIVE_INFINITY;
+      double score = 0;
       
       /*
        * Initialize the set that represents 
@@ -95,7 +95,7 @@ class ComplexFinderThread extends Thread{
       /*
        * Initialize the set that represents the neighbors in the 
        * physical network
-       */
+       */ 
       Set neighbors = new HashSet();
       for(Iterator neighborIt = physicalNetwork.neighborsList(seedNode).iterator();neighborIt.hasNext();){
 	Node neighbor = (Node)neighborIt.next();
@@ -137,6 +137,7 @@ class ComplexFinderThread extends Thread{
 	if(improved){
 	  score += best_increase;
 	  members.add(bestCandidate);
+	  neighbors.remove(bestCandidate);
 	  for(Iterator neighborIt = physicalNetwork.neighborsList(bestCandidate).iterator();neighborIt.hasNext();){
 	    Node neighbor = (Node)neighborIt.next();
 	    if(!members.contains(neighbor)){
@@ -150,6 +151,7 @@ class ComplexFinderThread extends Thread{
        * Here we calculate the number of potential
        * edges for each type of edges (physical vs genetic
        */
+      System.err.println("Found model with score: "+score);
       results.add(new NetworkModel(progress,
 				   members,
 				   score));
@@ -162,6 +164,8 @@ class ComplexFinderThread extends Thread{
     myMonitor.close();
     Collections.sort(results);
     results = prune(results);
+
+    
   }
 
   public Vector getResults(){
@@ -184,10 +188,10 @@ class ComplexFinderThread extends Thread{
       }
       NetworkModel current = (NetworkModel)modelIt.next();
       boolean model_added = false;
-      if(current.one.size() < 2 || current.score < options.cutoff){
+      if(current.nodes.size() < 2 || current.score < options.cutoff){
 	continue;
       }
-      for(Iterator nodeIt = current.one.iterator();nodeIt.hasNext();){
+      for(Iterator nodeIt = current.nodes.iterator();nodeIt.hasNext();){
 	Object node = nodeIt.next();
 	if(!foundNodes.contains(node)){
 	  foundNodes.add(node);
