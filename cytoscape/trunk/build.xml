@@ -261,7 +261,7 @@
         </echo>
 
         <jar destfile="${build.dir}/just-cytoscape.jar"
-             manifest="${manifest.dir}/cytoscape.manifest">
+             manifest="${manifest.dir}/just-cytoscape.manifest">
             <fileset dir="${build.classes}"/>
         </jar>
 
@@ -318,7 +318,9 @@
               todir="${dist.dir}/temp/META-INF/services"/>
         <copy file="tools/jars/org.freehep.util.export.ExportFileType"
               todir="${dist.dir}/temp/META-INF/services"/>
-        <jar destfile="${release.dir}/cytoscape.jar" update="true">
+        <jar destfile="${release.dir}/cytoscape.jar"
+             update="true"
+             manifest="${basedir}/manifest/cytoscape.manifest">
             <fileset dir="${dist.dir}/temp"/>
         </jar>
         <delete dir="${dist.dir}/temp"/>
