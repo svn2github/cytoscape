@@ -12,7 +12,7 @@ import java.io.IOException;
 public abstract class OpenBrowser {
 
   static String UNIX_PROTOCOL = "file:";
-  static String UNIX_PATH = "netscape";
+  static String UNIX_PATH = "gnome-moz-remote";
   static String UNIX_FLAG = "-remote openURL";
 
   static String WINDOWS_PATH = "cmd.exe /c start";
@@ -26,7 +26,8 @@ public abstract class OpenBrowser {
       if ( osName.startsWith("Windows") ) {
         cmd =  WINDOWS_PATH + " " + url;
       } else {
-        cmd = UNIX_PATH + " " + UNIX_FLAG + "(" + url + ")";
+        //cmd = UNIX_PATH + " " + UNIX_FLAG + "(" + url + ")";
+        cmd = UNIX_PATH + " " + url;
       }
       System.out.println("cmd=" + cmd);
       Process p = Runtime.getRuntime().exec(cmd);

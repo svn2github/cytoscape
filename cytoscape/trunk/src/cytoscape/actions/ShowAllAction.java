@@ -20,7 +20,7 @@ public class ShowAllAction extends AbstractAction {
     
     public void actionPerformed(ActionEvent e) {
         GinyUtils.unHideAll(networkView.getView());
-        networkView.redrawGraph(false, true);
+        //networkView.redrawGraph(false, true);
     }
 }
 
