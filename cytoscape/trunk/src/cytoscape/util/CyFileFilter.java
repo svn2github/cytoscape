@@ -34,6 +34,7 @@ import java.lang.Runtime;
 import java.io.File;
 import java.util.Hashtable;
 import java.util.Enumeration;
+import java.util.Set;
 import java.io.FilenameFilter;
 import javax.swing.*;
 import javax.swing.filechooser.*;
@@ -276,5 +277,13 @@ public class CyFileFilter
      */
     public boolean isExtensionListInDescription() {
 	return useExtensionsInDescription;
+    }
+
+    /**
+     * Returns the Set of file extension names.
+     *
+     */
+    public Set getExtensionSet() {
+      return filters.keySet();
     }
 }
