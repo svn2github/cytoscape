@@ -358,7 +358,7 @@ public String getUsage ()
    sb.append ("\n      optional arguments\n");
    sb.append ("      ------------------\n");
    sb.append (" -g  <geometry file name>          (xxxx.gml)\n");
-   sb.append (" -b  <bioData directory>           (./biodata\n");
+   sb.append (" -b  <bioData directory>           (./biodata)\n");
    sb.append (" -i  <interactions filename>       (yyyy.intr)\n");
    sb.append (" -e  <expression filename>         (zzz.mrna)\n");
    sb.append (" -s  <default species name>        (\"Saccharomyces cerevisiae\")\n");
@@ -366,7 +366,7 @@ public String getUsage ()
    sb.append (" -j  <edgeAttributes filename>     (zero or more)\n");
    sb.append ("\n");
 
-   sb.append (" -h  (display usage\n");
+   sb.append (" -h  (display usage)\n");
    sb.append (" -v  (display version)\n");
 
    return sb.toString ();
