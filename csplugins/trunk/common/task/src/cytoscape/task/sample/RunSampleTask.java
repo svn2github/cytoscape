@@ -5,6 +5,8 @@ import cytoscape.task.ui.JTask;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 
+import javax.swing.*;
+
 /**
  * Runs the Sample Task and demonstrate various UI options.
  */
@@ -16,6 +18,8 @@ public class RunSampleTask {
      * @param args Command Line Arguments.
      */
     public static void main(String[] args) {
+        JFrame frame = createJFrame();
+
         System.out.println("Running Task Demo");
         System.out.println("Press CTRL-C to end...");
 
@@ -39,14 +43,41 @@ public class RunSampleTask {
 
         //  Configure the JTask UI Component
         JTaskConfig config = new JTaskConfig();
+        config.setOwner(frame);
+        configureJTask(option, config);
 
+        //  Execute Task via TaskManager Utility
+        //  Automatically pops up a JTask UI Component for visually
+        //  monitoring the task
+        JTask jTask = TaskManager.executeTask(task, config);
+    }
+
+    /**
+     * Creates a Dummy JFrame, to illustrate modality of JTask.
+     *
+     * @return JFrame Object.
+     */
+    private static JFrame createJFrame() {
+        JFrame frame = new JFrame();
+        JPanel panel = new JPanel();
+        JLabel label = new JLabel("A Dummy Cytoscape Desktop");
+        panel.add(label);
+        frame.getContentPane().add(panel);
+        frame.setSize(400, 400);
+        frame.setLocationRelativeTo(null);
+        frame.show();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        return frame;
+    }
+
+    private static void configureJTask(int option, JTaskConfig config) {
         switch (option) {
             //  Case 0 is the bare bones version.
             case 0:
                 System.out.println("This demo illustrates a Bare Bones "
                         + "JTask PopUp.");
                 System.out.println("--  Description and progress are "
-                    + "displayed");
+                        + "displayed");
                 System.out.println("--  Task cannot be cancelled.");
                 break;
 
@@ -63,8 +94,8 @@ public class RunSampleTask {
 
                 System.out.println("This demo illustrates a customized "
                         + "JTask PopUp.");
-                System.out.println("-- JTask will wait 1 second before " +
-                        "popping up.");
+                System.out.println("-- JTask will wait 1 second before "
+                        + "popping up.");
                 System.out.println("-- All time fields are displayed.");
                 System.out.println("-- Description Field is displayed.");
                 System.out.println("-- Status Field is displayed.");
@@ -78,10 +109,5 @@ public class RunSampleTask {
                 System.out.println("--  This task will end prematurely "
                         + "with an error.");
         }
-
-        //  Execute Task via TaskManager Utility
-        //  Automatically pops up a JTask UI Component for visually
-        //  monitoring the task
-        JTask jTask = TaskManager.executeTask(task, config);
     }
 }
