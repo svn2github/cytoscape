@@ -3,6 +3,11 @@
 # Master Configuration File for Cytoscape.org Web Site
 # Author:  Ethan Cerami, MSKCC
 
+# Absolute Location to cytocape data file
+$cyto_data = "data/cyto_data.txt";
+#  Correct Location for cytoscape.og
+#$cyto_data = "/usr/local/www/virtual3/66/175/24/126/data/cyto_data.txt";
+
 # Base URLs for ISB and cBio
 $isb_base = "http://db.systemsbiology.net:8080/cytoscape/download/";
 $cbio_base = "http://www.cbio.mskcc.org/cytoscape/";
