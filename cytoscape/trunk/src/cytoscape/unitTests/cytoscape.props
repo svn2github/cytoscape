@@ -42,6 +42,6 @@ node.border.color=255,0,0
 #      tells cytoscape to load the plugin
 #--------------------------------------------------------------------
 plugin.foo.className=cytoscape.plugins.demo.Foo
-plugin.foo.fileExtension=foo
+plugin.foo.fileExtension=mrna
 plugin.foo.attributeName=foo
 plugin.bar.load=cytoscape.plugins.demo.Bar
