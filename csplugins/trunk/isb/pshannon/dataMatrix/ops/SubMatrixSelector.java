@@ -12,7 +12,7 @@ import java.io.*;
 import y.base.*;
 import y.view.*;
 
-import cytoscape.GraphObjAttributes;
+///import cytoscape.GraphObjAttributes;
 import csplugins.isb.pshannon.dataMatrix.*;
 //------------------------------------------------------------------------------
 /**

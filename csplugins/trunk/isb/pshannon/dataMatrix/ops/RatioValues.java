@@ -9,7 +9,7 @@ package csplugins.isb.pshannon.dataMatrix.ops;
 import java.util.Vector;
 import cytoscape.GraphObjAttributes;
 import cytoscape.data.mRNAMeasurement;
-import csplugins.vectormath.ReadOnlyVectorDataProvider;
+import csplugins.common.vectormath.ReadOnlyVectorDataProvider;
 import csplugins.graphAlgo.MetaNode;
 
 import csplugins.isb.pshannon.dataMatrix.*;

@@ -7,14 +7,13 @@
 package csplugins.isb.pshannon.dataMatrix.ops;
 //------------------------------------------------------------------------------
 import java.util.*;
-import java.io.*;
 
 //import y.base.*;
 // import y.view.*;
 
-import cytoscape.GraphObjAttributes;
+///import cytoscape.GraphObjAttributes;
 // import cytoscape.data.ExpressionData;
-import csplugins.vectormath.*;
+import csplugins.common.vectormath.*;
 
 import csplugins.isb.pshannon.dataMatrix.*;
 //------------------------------------------------------------------------------
@@ -40,7 +39,7 @@ public class CorrelationFinder {
     //private DataMatrix matrix;
   private DataMatrixLens lens;
   private Map myTable = new HashMap ();
-  private GraphObjAttributes nodeAttributes;
+  ///private GraphObjAttributes nodeAttributes;
   
 //----------------------------------------------------------------------------------------------
 public CorrelationFinder() {}
@@ -55,11 +54,13 @@ public void setDataMatrixLens (DataMatrixLens lens)
   this.lens = lens;
 }
 //----------------------------------------------------------------------------------------------
+/*///
 public void setNodeAttributes (GraphObjAttributes node_attributes)
 {
  this.nodeAttributes = node_attributes;
 
 } // setNodeAttributes
+*/
 //----------------------------------------------------------------------------------------------
 /**
   * Find the correlation of all gene expression vectors with the expression vector
