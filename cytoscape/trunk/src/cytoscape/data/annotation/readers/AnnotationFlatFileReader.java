@@ -55,7 +55,6 @@ public AnnotationFlatFileReader (File file) throws Exception
 //-------------------------------------------------------------------------
 public AnnotationFlatFileReader (String filename) throws Exception
 {
-  System.out.println ("AFFR, filename: " + filename);
   this.filename = filename;
   try {
     if (filename.trim().startsWith ("jar://")) {
