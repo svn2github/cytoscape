@@ -26,7 +26,7 @@ public final class FingRootGraphFactory
    * secretly implement cytoscape.graph.fixed.FixedGraph.  In other words,
    * all GraphPerspective objects that are part of this RootGraph system
    * can be cast to FixedGraph.  The relationship between GraphPerspective
-   * node/edge indices (which are identical to RootGraph indeices) and
+   * node/edge indices (which are identical to RootGraph indices) and
    * FixedGraph nodes and edges is they are complements of each other.
    */
   public final static RootGraph instantiateRootGraph()
