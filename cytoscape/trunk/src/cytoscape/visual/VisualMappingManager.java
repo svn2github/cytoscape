@@ -131,12 +131,14 @@ public class VisualMappingManager {
         bgRender.setColor( ga.getBackgroundColor() );
         NodeRealizer.setSloppySelectionColor( ga.getSloppySelectionColor() );
 
+        //don't repaint here; instead, rely on caller to call redrawGraph()
+        //in CytoscapeWindow, which will call this method
 	/** finally, have CytoscapeWindow update. */
-	graphView.updateView(); // forces the view to update its contents
+	//graphView.updateView(); // forces the view to update its contents
 	// paintImmediately() needed because sometimes updates can be buffered
-	graphView.paintImmediately(0,0,graphView.getWidth(),
-				   graphView.getHeight());
-	cytoscapeWindow.updateStatusText();
+	//graphView.paintImmediately(0,0,graphView.getWidth(),
+	//			   graphView.getHeight());
+	//cytoscapeWindow.updateStatusText();
     }
 }
 

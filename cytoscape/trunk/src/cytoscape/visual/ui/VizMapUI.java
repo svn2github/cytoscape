@@ -397,7 +397,8 @@ public class VizMapUI extends JDialog {
 		    if (newStyle != currentStyle && newStyle != null) {
 			currentStyle = newStyle;
 			VMM.setVisualStyle(currentStyle);
-			VMM.applyAppearances();
+                        //this call will apply the new visual style
+			VMM.getCytoscapeWindow().redrawGraph();
 			if (styleDefUI.isShowing())
 			    visualStyleChanged();
 			else
@@ -504,7 +505,7 @@ public class VizMapUI extends JDialog {
     // apply button action listener
     private class ApplyAction extends AbstractAction {
 	public void actionPerformed(ActionEvent e) {
-	    VMM.applyAppearances();
+	    VMM.getCytoscapeWindow().redrawGraph();
 	}
     }
 

@@ -515,7 +515,7 @@ public class VizMapAttrTab extends VizMapTab {
      */
     protected class CalculatorUIListener implements ChangeListener {
 	public void stateChanged(ChangeEvent e) {
-	    VMM.applyAppearances();
+	    VMM.getCytoscapeWindow().redrawGraph();
 	}
     }
 
@@ -669,7 +669,7 @@ public class VizMapAttrTab extends VizMapTab {
 	refreshUI();
 	//mainUIDialog.pack();
 	//mainUIDialog.repaint();
-	VMM.applyAppearances();
+	VMM.getCytoscapeWindow().redrawGraph();
     }
 
     /**
@@ -758,7 +758,7 @@ public class VizMapAttrTab extends VizMapTab {
 	    nodeCalc.setDefaultNodeFontSize(((Double) c).floatValue());
 	    break;
 	}
-	VMM.applyAppearances();
+	VMM.getCytoscapeWindow().redrawGraph();
     }	
 
     /**
