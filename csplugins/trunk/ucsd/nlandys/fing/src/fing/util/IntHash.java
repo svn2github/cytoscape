@@ -74,10 +74,10 @@ public final class IntHash
     final int size = m_size;
     int index;
     // The one thing about ths 'for' loop that I don't like is that we're
-    // calculating (value % (size - 1)) more than once potentially.
+    // calculating (1 + (value % (size - 1))) more than once potentially.
     for (index = value % size;
          m_arr[index] >= 0 && m_arr[index] != value;
-         index = (index + 1 + (value % (size - 1))) % size) { }
+         index = (index + (1 + (value % (size - 1)))) % size) { }
     return m_arr[index];
   }
 
