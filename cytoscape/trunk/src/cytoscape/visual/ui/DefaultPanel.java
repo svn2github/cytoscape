@@ -14,6 +14,7 @@ import y.view.Graph2D;
 import y.view.Graph2DView;
 import y.view.DefaultBackgroundRenderer;
 import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualStyle;
 //----------------------------------------------------------------------------
 /**
  * Defines a class to provide the interface for specifying global defaults such as background color.
@@ -26,9 +27,6 @@ public class DefaultPanel extends JPanel {
 	super(false);
         this.vmm = vmm;
 
-	// this is evil
-	//this.bgRender = (DefaultBackgroundRenderer) ((Graph2DView) graph.getCurrentView()).getBackgroundRenderer();
-
 	// this is really really evil
 	GridBagGroup def = new GridBagGroup();
 	def.panel = this;
@@ -37,11 +35,8 @@ public class DefaultPanel extends JPanel {
 	MiscGB.inset(def.constraints, 3);
 	
 	// background color
-        Graph2DView view = vmm.getCytoscapeWindow().getGraphView();
-        DefaultBackgroundRenderer bgRender =
-            (DefaultBackgroundRenderer)view.getBackgroundRenderer();
-        //now we can finally get at the color
-        Color initColor = bgRender.getColor();
+        VisualStyle vs = vmm.getVisualStyle();
+        Color initColor = vs.getGlobalAppearanceCalculator().getDefaultBackgroundColor();
 	this.backColor = ValueDisplayer.getDisplayFor(parentDialog, "Background Color", initColor);
 	backColor.addItemListener(new BackColorListener());
 	JButton backColorBut = new JButton("Background Color");
@@ -54,11 +49,8 @@ public class DefaultPanel extends JPanel {
 	public void itemStateChanged(ItemEvent e) {
 	    if (e.getStateChange() == ItemEvent.SELECTED) {
 		Color newBG = (Color) backColor.getValue();
-                //must grab the current background renderer from the current graphView
-                Graph2DView view = vmm.getCytoscapeWindow().getGraphView();
-                DefaultBackgroundRenderer bgRender =
-                    (DefaultBackgroundRenderer)view.getBackgroundRenderer();
-		bgRender.setColor(newBG);
+                VisualStyle vs = vmm.getVisualStyle();
+                vs.getGlobalAppearanceCalculator().setDefaultBackgroundColor(newBG);
 	    }
 	}
     }
