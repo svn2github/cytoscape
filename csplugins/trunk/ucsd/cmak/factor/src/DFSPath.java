@@ -1,8 +1,11 @@
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import cern.colt.bitvector.BitVector;
+import cern.colt.bitvector.BitMatrix;
+
 import cern.colt.map.OpenIntIntHashMap;
 import cern.colt.map.OpenIntObjectHashMap;
 import cern.colt.list.IntArrayList;
@@ -12,8 +15,11 @@ import giny.model.RootGraph;
 
 /**
  * A class that uses Depth First Search to efficiently
- * enumerate paths in an InteractionGraph
- * 
+ * enumerate paths from knockout nodes to affected nodes
+ * in an InteractionGraph.
+ * <p>
+ * Adapted from Depth first search described in
+ * Cormen,Rivest,Leiseson. Intro to Algorithms.
  */ 
 public class DFSPath
 {
@@ -27,20 +33,22 @@ public class DFSPath
     final static int NIL = 0;
     
     private InteractionGraph ig;
+
+    // the InteractionGraph's underlying RootGraph
     private RootGraph g;
     private int numNodes;
     private int numEdges;
-        
-    private int infinity;
 
+    // root graph node indices
     private int[] nodes;
 
-    // map graph node indices to a label in the set [0,numNodes]
+    // map root graph node indices to an integer label in the set [0,numNodes]
     private OpenIntIntHashMap _nodeLabelMap;
 
-    // map graph edge indices to a label in the set [0, numEdges]
+    // map root graph edge indices to an integer label in the set [0, numEdges]
     private OpenIntIntHashMap _edgeLabelMap;
 
+    // array of edge source and target nodes, indexed by edge label.
     private int[][] _edges;
     
     // map target node to IntArrayList path
@@ -50,45 +58,60 @@ public class DFSPath
     //private OpenIntObjectHashMap adjMap;
     private ObjectArrayList _adjacentEdges;
     
-    // bits indicating whether a gene is affected by
-    // the current koNode
-    // if(_affected.get(n) == true) then the gene with label n is affected.
-    private BitVector _affected;
+    // bits indicating genes that are affected by a knockout.
+    // 
+    // if(_affected.get(k, n) == true) then the gene with label n
+    // is affected by the knockout node with label k.
+    private BitMatrix _affected;
+        
+    // bits indicating whether a gene is a knockout node
+    // if(_isKO.get(n) == true) then the gene with label n is a KO.
+    private BitVector _isKO;
     
     // data structure that holds results of path search
     private PathResult result;
 
     private int[] color; // tracks node status
-    private int[] pred; // predecessor
-    private int[] dt; // discovery time
-    private int[] ft; // finish time
-        
-    private int _koNode;
+
+    //private int infinity;
+    //private int[] pred; // predecessor
+    //private int[] dt; // discovery time
+    //private int[] ft; // finish time
+
+    // number of paths that satisfy criteria
     private int pathCount;
 
+    // number of paths not counted
     private int notCounted;
     
+    /**
+     * Create a new search object that will find paths on "graph"
+     *
+     * @param graph an InteractionGraph that contains expression data.
+     */
     public DFSPath(InteractionGraph graph)
     {
         ig = graph;
         g = ig.getRootGraph();
         numNodes = g.getNodeCount();
         numEdges = g.getEdgeCount();
-        
-        infinity = numEdges + 1;
+
         nodes = g.getNodeIndicesArray();
 
         // map graph indices to a label in the set [0,numNodes]
         _nodeLabelMap = new OpenIntIntHashMap(numNodes);
 
         color = new int[numNodes];
+
+        //infinity = numEdges + 1;
         //pred = new int[numNodes]; // predecessor
         //dt = new int[numNodes]; // discovery time
         //ft = new int[numNodes]; // finish time
 
         //adjMap = new OpenIntObjectHashMap(numNodes);
         _adjacentEdges = new ObjectArrayList(numNodes);
-        _affected = new BitVector(numNodes);
+        _affected = new BitMatrix(0,0);
+        _isKO = new BitVector(numNodes);
     }
     
     /**
@@ -106,7 +129,14 @@ public class DFSPath
     /**
      * Find paths from multiple sources to all of their targets.
      * All paths will consist of less that or equal to "maxDepth" edges.
+     *
+     * @param sources an array of node root graph indicies that should
+     * be used as sources for the search.  These should be the knockouts.
+     * The InteractionGraph should contain expression data for each of the
+     * source nodes.
      * 
+     * @param maxDepth the maxDepth to stop the search.
+     *
      * @return a PathResult object
      */
     public PathResult findPaths(int[] sources, int maxDepth)
@@ -116,33 +146,49 @@ public class DFSPath
         
         // initialize data structures
         result = new PathResult(maxDepth, numNodes, numEdges);
+
         _nodeLabelMap.clear();
         _adjacentEdges.clear();
-
+        _isKO.clear();
+        
         for(int n = 0; n < numNodes; n++)
         {
-            _nodeLabelMap.put(nodes[n], n);
+            int node = nodes[n];
+            _nodeLabelMap.put(node, n);
 
             color[n] = WHITE;
 
-            int[] adj = g.getAdjacentEdgeIndicesArray(nodes[n], true, false, true);
+            int[] adj = g.getAdjacentEdgeIndicesArray(node, true, false, true);
             if(adj == null)
             {
                 adj = new int[0];
             }
             _adjacentEdges.add(adj);
+
+            if(Arrays.binarySearch(sources, node) >= 0)
+            {
+                _isKO.set(n);
+            }
         }
 
         _initEdges();
+
+        _initIsAffected(sources);
         
         pathCount = 0;
         notCounted = 0;
-        
+
+        // array that will record the labels of all nodes along the current
+        // path.  Used to check that intermediate genes that are
+        // deleted along the path also affect the last node.
+        int[] curPath = new int[maxDepth + 1];
+
+        // Do a DFS starting at each source node.
+        // The paths that start at each source are stored in a
+        // Target2PathMap object in the PathResults.
         for(int s=0; s < sources.length; s++)
         {
             int sourceNode = sources[s];
-
-            _initIsAffected(sourceNode);
 
             if(!_nodeLabelMap.containsKey(sourceNode))
             {
@@ -157,16 +203,18 @@ public class DFSPath
             
             int depth = 0;
             int[] adj = _getAdjacentEdges(l);
+            curPath[0] = l;
+            
             for(int e=0; e < adj.length; e++)
             {
                 int edgeLabel = _edgeLabelMap.get(adj[e]);
-                dfsVisit(adj[e], edgeLabel, sourceNode, depth, maxDepth);
+                dfsVisit(adj[e], edgeLabel, sourceNode, depth, maxDepth, curPath);
             }
             color[l] = WHITE; // unmark the source.
 
-            System.out.println("DFSPath finished: " + sourceNode + " total paths = "
-                               + pathCount + ". Paths not counted = " +
-                               notCounted);
+            System.out.println("DFSPath finished: " + sourceNode
+                               + " total paths = " + pathCount
+                               + ". Paths not counted = " + notCounted);
         }
 
         result.setPathCount(pathCount);
@@ -176,18 +224,33 @@ public class DFSPath
 
     
     /**
-     * 
+     * Do a recursive depth first visit along "edge"
+     *
+     * @param edge the edge to start the visit (a root graph index)
+     * @param edgeLabel the integer label for edge
+     * @param source the source node of the edge
+     * @param depth the current depth of the search
+     * @param maxDepth the depth at which to stop the search.
+     *  (e.g. if maxDepth = 5, paths with 5 or fewer edges will be found.
+     *        
+     * @param curPath an array of node labels that are on the current path.
+     * Invariant: the nodes in curPath should always be GREY.
+     * Invariant: curPath[0] is the knockout node for the path
      */
-    protected void dfsVisit(int edge, int edgeLabel,
-                            int source, int depth, int maxDepth) 
+    protected void dfsVisit(int edge, int edgeLabel, int source,
+                            int depth, int maxDepth,
+                            int[] curPath) 
     {
-        int target;
-        State dir;
 
-        // how to return the dir from _getRelativeTarget
+        // duplicate code from _getRelativeTarget
+        // can this be fixed?
+        // how to return direction and target
         int s = _edges[edgeLabel][SOURCE];
         int t = _edges[edgeLabel][TARGET];
 
+        int target;
+        State dir;
+        
         if(source == s)
         {
             dir = State.PLUS;
@@ -203,13 +266,16 @@ public class DFSPath
             System.err.println("dfsVisit ERROR edge=" + edge + " src=" + source);
             return;
         }
+
+        depth++;
         
         int tLabel = _nodeLabelMap.get(target);
 
         color[tLabel] = GREY; // GREY == node is in the current path
-        depth++;
 
-        int ct1 = pathCount;
+        curPath[depth] = tLabel;
+
+        int startCount = pathCount;
 
         /* isAffected: enforce constraint that the expression of the target
          *             changes
@@ -217,19 +283,26 @@ public class DFSPath
          * isProteinDNA: enforce constraint that the last edge in a path
          *               is a protein-DNA edge
          *
+         * checkIntermediateKOs: enforce constraint if intermediate nodes
+         *                       on the path are knocked out, they must
+         *                       affected the last node in the path.
+         *               
          * If constraints satisfied, then "pathCount" identifies a path from
          * the knockout to "target".
          */
-        if(isAffected(tLabel) && isProteinDNA(edge))
+        if(isAffected(curPath[0], tLabel) &&
+           isProteinDNA(edge) &&
+           checkIntermediateKOs(curPath, depth))
         { 
             target2pathMap.addPath(target, pathCount);
             pathCount++;
         }
         else
         {
-            notCounted += 1;
+            notCounted++;
         }
-        
+
+        // recursively visit each adjacent edge
         if(depth < maxDepth)
         {
             int[] adj = _getAdjacentEdges(tLabel);
@@ -239,9 +312,10 @@ public class DFSPath
                 int adjLabel = _edgeLabelMap.get(adj[e]);
                 int neighbor = _getRelativeTarget(adjLabel, target);
                 int nLabel = _nodeLabelMap.get(neighbor);
+                // GREY nodes are already on this path
                 if(color[nLabel] != GREY)
                 {
-                    dfsVisit(adj[e], adjLabel, target, depth, maxDepth);
+                    dfsVisit(adj[e], adjLabel, target, depth, maxDepth, curPath);
                 }
             }
         }
@@ -250,53 +324,121 @@ public class DFSPath
         // vertex in other paths.
         color[tLabel] = WHITE;
 
-        if(ct1 != pathCount)
+        if(startCount != pathCount)
         {
-            // paths # ct through pathCount pass through or terminate at
-            // this node.  
+            // paths # startCount through pathCount pass through, or
+            // terminate at, this node.  
             PathResult.Interval i = result.addInterval(edge);
-            i.setStart(ct1);
+            i.setStart(startCount);
             i.setEnd(pathCount);
             i.setDir(dir);
         }
     }
 
+    /**
+     *
+     *
+     * @param curPath nodes along the current path
+     *        curPath[0] is the starting knockout node
+     *        curPath[depth] is the target node
+     *        curPath[1 through (depth-1)] are intermediate nodes.
+     * @param depth the current depth
+     * 
+     * @return For each of the intermediate nodes in curPath
+     * that are knockouts, return true iff the knockout affects
+     * the target node.
+     */
+    protected boolean checkIntermediateKOs(int[] curPath, int depth)
+    {
+        for(int x=1; x < depth; x++)
+        {
+            if(isKO(curPath[x]))
+            {
+                if(!isAffected(curPath[x], curPath[depth]))
+                {
+                    return false;
+                }
+            }
+        }
+        
+        return true;
+    }
 
+    boolean isKO(int nodeLabel)
+    {
+        return _isKO.getQuick(nodeLabel);
+    }
+
+    
+    
+    /**
+     * @param edge the root graph index of an edge
+     * @return true if edge is a protein-DNA edge.
+     */
     protected boolean isProteinDNA(int edge)
     {
         return ig.isProteinDNA(edge);
     }
 
-    
-    protected boolean isAffected(int nodeLabel)
+
+    /**
+     * @param nodeLabel the node
+     * @return true if the node label nodeLabel is affected by
+     * the current knockout gene.
+     */
+    protected boolean isAffected(int koLabel, int nodeLabel)
     {
-        return _affected.get(nodeLabel);
+        return _affected.getQuick(koLabel, nodeLabel);
     }
 
 
     /**
-     * Initialize the affected BitVector.
+     * Initialize the "_affected" BitVector.
+     * <p>
      * The _nodeLabelMap maps each node to an integer label, i (0<=i< numNodes)
      * The i-th bit in "affected" is set if the gene corresponding to
      * label, i, is affected by knocking out "knockoutNode".
      */
-    private void _initIsAffected(int knockoutNode)
+    private void _initIsAffected(int[] kos)
     {
-        _koNode = knockoutNode;
-
+        // ~640kb used for 6400 yeast proteins.
+        // potentially inefficient if numNodes is larger.
+        _affected = new BitMatrix(numNodes, numNodes);
         _affected.clear();
-        
-        for(int n = 0; n < nodes.length; n++)
+
+        int[] koLabel = new int[kos.length];
+        for(int x=0; x < kos.length; x++)
         {
+            koLabel[x] = _nodeLabelMap.get(kos[x]);
+        }
+        
+        for(int n = 0; n < numNodes; n++)
+        {
+            // not really needed since nodes are mapped to their
+            // index in nodes[], but better to be safe.
+            // e.g. int node = n;
             int node = nodes[n];
-            
-            if(ig.expressionChanges(_koNode, node))
+            int nodeLabel = _nodeLabelMap.get(node);
+
+            for(int x=0; x < kos.length; x++)
             {
-                _affected.set(_nodeLabelMap.get(node));
+                if(ig.expressionChanges(kos[x], node))
+                {
+                    _affected.put(koLabel[x], nodeLabel, true);
+                }
             }
         }
     }
 
+    /**
+     * Initialize the _edgeLabelMap and the _edges array.
+     * _edgeLabelMap maps each root graph edge index to an
+     * edgeLabel (an integer on [0, numEdges))
+     *
+     * _edges is an array indexed by edgeLabel that provides
+     * fast access to the source and target nodes of each edge.
+     * 
+     */
     private void _initEdges()
     {
         int[] edges = g.getEdgeIndicesArray();
@@ -313,7 +455,14 @@ public class DFSPath
         }
     }
 
-    
+
+    /**
+     * 
+     *
+     * @param edgeLabel the edge
+     * @param source the source node
+     * @return the other endpoint of the edge that is not "source"
+     */
     private int _getRelativeTarget(int edgeLabel, int source)
     {
         int s = _edges[edgeLabel][SOURCE];
@@ -336,16 +485,21 @@ public class DFSPath
         }
     }
 
+    /**
+     * Get the outgoing and undirected edges that are adjacent
+     * to a node.
+     *
+     * @param nodeLabel the integer label of a node
+     * @return an array of root graph edge indicies that are
+     *         adjacent to the node.
+     */
     private int[] _getAdjacentEdges(int nodeLabel)
     {
         return (int[]) _adjacentEdges.get(nodeLabel);
     }
 
-    void trace()
-    {
 
-    }
-    
+    // methods for testing
     private String colorOf(int c)
     {
         switch(c)
@@ -374,4 +528,10 @@ public class DFSPath
 
         return true;
     }
+
+    void trace()
+    {
+
+    }
+
 }
