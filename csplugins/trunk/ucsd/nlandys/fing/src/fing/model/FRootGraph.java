@@ -324,6 +324,8 @@ class FRootGraph implements RootGraph
     return returnThis; }
 
   public int[] removeEdges(int[] edgeIndices) {
+    // Assume that m_lis is not null, because in practice, this will
+    // almost always be the case (GraphPerspective listening).
     m_heap.empty();
     final MinIntHeap successes = m_heap;
     final Edge[] removedEdges = new Edge[edgeIndices.length];
@@ -335,11 +337,15 @@ class FRootGraph implements RootGraph
     if (successes.size() > 0) {
       final RootGraphChangeListener listener = m_lis;
       if (listener != null) {
-        final Edge[] successArr = new Edge[successes.size()];
-        final IntEnumerator enum = successes.elements();
-        int index = -1;
-        while (enum.numRemaining() > 0)
-          successArr[++index] = removedEdges[enum.nextInt()];
+        final Edge[] successArr;
+        if (successes.size() == removedEdges.length) {
+          successArr = removedEdges; }
+        else {
+          successArr = new Edge[successes.size()];
+          final IntEnumerator enum = successes.elements();
+          int index = -1;
+          while (enum.numRemaining() > 0)
+            successArr[++index] = removedEdges[enum.nextInt()]; }
         listener.rootGraphChanged
           (new RootGraphEdgesRemovedEvent(this, successArr)); } }
     return returnThis; }
