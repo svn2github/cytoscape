@@ -170,10 +170,14 @@ public boolean getCanonicalize ()
  * If the -y option specified and it is not "y-files"
  * then it returns false; otherwise true;
  * Added by Larissa Kamenkovich on September 26, 2003.
+ *
+ * This method now always returns false, because yFiles is
+ * no longer supported. -AM 12-30-2003
  */
 public boolean isYFiles ()
 {
-  return yfiles;
+  //return yfiles;
+  return false;
 }
 //------------------------------------------------------------------------------------------
 /**

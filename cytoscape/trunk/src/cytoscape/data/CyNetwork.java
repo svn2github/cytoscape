@@ -33,8 +33,6 @@ package cytoscape.data;
 //-------------------------------------------------------------------------
 import java.util.*;
 
-import y.view.Graph2D;
-
 import giny.model.RootGraph;
 import giny.model.GraphPerspective;
 
@@ -66,15 +64,7 @@ public class CyNetwork {
      * CyNetwork((RootGraph)null, null, null, null).
      */
      public CyNetwork() {this((RootGraph)null, null, null, null);}
-     
-     /**
-      * Dummy implementation of old constructor; will remove once other
-      * classes no longer reference this method.
-      */
-     public CyNetwork(Graph2D graph,
-                      GraphObjAttributes nodeAttributes,
-                      GraphObjAttributes edgeAttributes,
-                      ExpressionData expressionData) {}
+
      /**
       * Constructor specifying no expression data. Equivalent to
       * CyNetwork(rootGraph, nodeAttributes, edgeAttributes, null).
@@ -174,15 +164,6 @@ public class CyNetwork {
     
     
     //methods to get each member
-    /**
-     * Return a null Graph2D; will delete once all the dependent classes no
-     * longer reference this method.
-     */
-    public Graph2D getGraph() {return null;}
-    /**
-     * Empty implementation of the old setGraph method.
-     */
-    public void setGraph(Graph2D newGraph) {}
     /**
     * Returns the Root Graph of this network
     */

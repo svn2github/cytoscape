@@ -49,8 +49,6 @@ import giny.model.*;
 import cytoscape.GraphObjAttributes;
 import cytoscape.view.NetworkView;
 import cytoscape.actions.GinyUtils;
-
-import cytoscape.undo.UndoableGraphHider;
 //--------------------------------------------------------------------------------------
 /**
  * present a JTree with edge attributes names as top level nodes, and attribute values
@@ -65,7 +63,6 @@ public class GinyEdgeControlDialog extends JDialog {
   HashMap edgeNamesHash;
   TreePath [] selectedTreePaths;
   GraphObjAttributes edgeAttributes;
-  //UndoableGraphHider graphHider;
   JTree tree;
 //--------------------------------------------------------------------------------------
 public GinyEdgeControlDialog (NetworkView networkView, 

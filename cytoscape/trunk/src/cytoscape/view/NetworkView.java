@@ -33,14 +33,11 @@ package cytoscape.view;
 //-------------------------------------------------------------------------
 import javax.swing.JFrame;
 
-import y.view.Graph2DView;
-import y.layout.Layouter;
 import giny.view.GraphView;
 //import phoebe.PGraphView;
 
 import cytoscape.CytoscapeObj;
 import cytoscape.data.CyNetwork;
-import cytoscape.undo.UndoableGraphHider;
 import cytoscape.visual.VisualMappingManager;
 //-------------------------------------------------------------------------
 /**
@@ -64,18 +61,10 @@ public interface NetworkView {
     void setNewNetwork(CyNetwork newNetwork);
     
     /**
-    *
-    */
+     *
+     */
     void setWindowTitle(String title);
-    /**
-     * Returns the utility object for hiding graph objects for the above network.
-     */
-    UndoableGraphHider getGraphHider();
-    /**
-     * Returns the view object for the graph display.
-     */
-    Graph2DView getGraphView();
-    
+
     /**
      * @return A GINY GraphView
      */
@@ -86,14 +75,7 @@ public interface NetworkView {
      * dialogs dependent on this frame.
      */
     JFrame getMainFrame();
-    /**
-     * Returns the current layouter for the displayed graph.
-     */
-    Layouter getLayouter();
-    /**
-     * Sets a new layouter to be used for future layout operations.
-     */
-    void setLayouter(Layouter newLayouter);
+
     /**
      * Returns the visual mapper associated with this display.
      */

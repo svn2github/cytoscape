@@ -14,7 +14,6 @@ import giny.model.GraphPerspective;
 import giny.view.GraphView;
 
 import cytoscape.GraphObjAttributes;
-import cytoscape.SelectedSubGraphFactory;
 import cytoscape.data.CyNetwork;
 import cytoscape.view.CyWindow;
 //-------------------------------------------------------------------------
