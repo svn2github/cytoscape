@@ -133,6 +133,9 @@ public class VizUIUtilities {
 	case VizMapUI.NODE_LABEL:
 	    nodeCalc.setDefaultNodeLabel((String) c);
 	    break;
+        case VizMapUI.NODE_LABEL_COLOR:
+            nodeCalc.setDefaultNodeLabelColor((Color) c);
+            break;
 	case VizMapUI.NODE_TOOLTIP:
 	    nodeCalc.setDefaultNodeToolTip((String) c);
 	    break;
@@ -205,6 +208,9 @@ public class VizUIUtilities {
 	case VizMapUI.NODE_LABEL:
 	    currentCalculator = nodeCalc.getNodeLabelCalculator();
 	    break;
+        case VizMapUI.NODE_LABEL_COLOR:
+            currentCalculator = nodeCalc.getNodeLabelColorCalculator();
+            break;
 	case VizMapUI.NODE_TOOLTIP:
 	    currentCalculator = nodeCalc.getNodeToolTipCalculator();
 	    break;
@@ -268,6 +274,9 @@ public class VizUIUtilities {
 	case VizMapUI.NODE_LABEL:
 	    nodeCalc.setNodeLabelCalculator((NodeLabelCalculator) c);
 	    break;
+        case VizMapUI.NODE_LABEL_COLOR:
+            nodeCalc.setNodeLabelColorCalculator((NodeLabelColorCalculator) c);
+            break;
 	case VizMapUI.NODE_HEIGHT:
 	    nodeCalc.setNodeHeightCalculator((NodeSizeCalculator) c);
 	    break;
