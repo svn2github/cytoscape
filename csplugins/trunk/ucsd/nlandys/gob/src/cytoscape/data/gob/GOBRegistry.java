@@ -52,7 +52,26 @@ public class GOBRegistry
     return false;
   }
 
-  public void assignAttribute(int objID, int attrID, Object attrValue)
+  /**
+   * NOTE: Instead of using this method, you are encouraged to use one of the
+   * assignXXXAttribute() methods that take a specific type of object as input.
+   * @param objID an object identifier; assigned attribute values belong
+   *   to objects, and objects are abstracted as integers by this API.
+   * @param attrID an identifier of an attribute definition that was created
+   *   using defineAttribute().
+   * @param attrValue the attribute value that is to be assigned to the
+   *   specified object, in the specified attribute definition domain; the
+   *   class of the Object must be java.lang.Boolean for ATTR_TYPE_BOOLEAN,
+   *   java.lang.Double for ATTR_TYPE_DOUBLE, java.lang.Long for
+   *   ATTR_TYPE_LONG, and java.lang.String for ATTR_TYPE_STRING.
+   * @return false if and only if no attribute definition with specified
+   *   ID exists.
+   * @exception ClassCastException if the specified attribute definition
+   *   (attrID) exists but the specified attribute value (attrValue) is
+   *   not of the class implied by the type (ATTR_TYPE_*) of specified
+   *   attribute definition.
+   */
+  public boolean assignAttribute(int objID, int attrID, Object attrValue)
   {
   }
 
@@ -126,7 +145,7 @@ public class GOBRegistry
   }
 
   /**
-   * You are strongly encouraged to not use this method; use one of the
+   * NOTE: You are strongly encouraged to not use this method; use one of the
    * access methods that return a specific type instead.
    */
   public Object attributeValue(int objID, int attrID)
