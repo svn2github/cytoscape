@@ -10,7 +10,7 @@ package fing.model;
 public class FingExtendableRootGraph extends FRootGraph
 {
 
-  public FingExtendableRootGraph() { }
+  public FingExtendableRootGraph(FingNodeDepot nodeDepot) { }
 
 //   /**
 //    * This method is here so that subclasses can gain control of the exact

@@ -1168,7 +1168,7 @@ class FRootGraph implements RootGraph, DynamicGraph
   private final MinIntHeap m_heap = new MinIntHeap();
 
   // This is our "node factory" and "node recyclery".
-  private final NodeDepository m_nodeDepot = new NodeDepository();
+  private final FingNodeDepot m_nodeDepot;
 
   // This is our "edge factory" and "edge recyclery".
   private final EdgeDepository m_edgeDepot = new EdgeDepository();
@@ -1201,6 +1201,13 @@ class FRootGraph implements RootGraph, DynamicGraph
   private final IntIntHash m_nativeToMetaEdgeInxMap = new IntIntHash();
 
   // Package visible constructor.
-  FRootGraph() { }
+  FRootGraph() { this(new NodeDepository()); }
+
+  // Package visible constructor.
+  FRootGraph(FingNodeDepot nodeDepot)
+  {
+    if (nodeDepot == null) throw new NullPointerException("nodeDepot is null");
+    m_nodeDepot = nodeDepot;
+  }
 
 }
