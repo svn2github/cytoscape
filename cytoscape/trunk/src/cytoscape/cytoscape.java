@@ -140,6 +140,8 @@ public cytoscape (String [] args) throws Exception {
         splashScreen.noGraph = true;
         title = "(Untitled)";
     }
+    //add the semantics we usually expect
+    Semantics.applyNamingServices(network, cytoscapeObj);
     
     //load any specified data attribute files
     logger.info("reading attribute files");

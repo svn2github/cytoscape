@@ -133,6 +133,7 @@ public static Set getSpeciesInNetwork(CyNetwork network) {
     if (nodeAttributes == null) {return returnSet;}
     //in the following map, keys are objects names and values are the species
     Map speciesAttribute = nodeAttributes.getAttribute(SPECIES);
+    if (speciesAttribute == null) {return returnSet;}
     //we will return each unique value stored in this map, without worrying
     //about the type; thus, for example, if some node has several species
     //defined as an array of Strings, we'll quietly add the array to our set
