@@ -169,8 +169,10 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
           nodePos = graph.getNodePosition(nodeIx);
         graph.setNodePosition
           (nodeIx,
-           (nodePos.getX() - minX) * xScaleFactor,
-           (nodePos.getY() - minY) * yScaleFactor); }
+           Math.min(Math.max(0, (nodePos.getX() - minX) * xScaleFactor),
+                    graph.getMaxWidth()),
+           Math.min(Math.max(0, (nodePos.getY() - minY) * yScaleFactor),
+                    graph.getMaxHeight())); }
       movedNodes = null;
       graph = null; }
   }
