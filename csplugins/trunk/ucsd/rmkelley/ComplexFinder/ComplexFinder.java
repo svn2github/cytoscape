@@ -43,7 +43,9 @@ public class ComplexFinder extends CytoscapePlugin{
    */
   
   public ComplexFinder(){
-    Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add( new AbstractAction("Find Complexes"){
+    JMenu topMenu = new JMenu("Complex Finder");
+    Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add(topMenu);
+    topMenu.add( new AbstractAction("Find Complexes"){
 	public void actionPerformed(ActionEvent ae) {
 	  if(dialog == null){
 	    dialog = new ComplexFinderOptionsDialog();
@@ -76,7 +78,7 @@ public class ComplexFinder extends CytoscapePlugin{
 	
       });
 
-     Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add( new AbstractAction("Load previous results"){
+     topMenu.add( new AbstractAction("Load previous results"){
 	public void actionPerformed(ActionEvent ae){
 	  new Thread(new Runnable(){
 	      public void run(){
@@ -97,7 +99,7 @@ public class ComplexFinder extends CytoscapePlugin{
 
     
      
-     Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add( new AbstractAction("Generate cutoff"){
+     topMenu.add( new AbstractAction("Generate cutoff"){
 	public void actionPerformed(ActionEvent ae){
 	  new Thread(new Runnable(){
 	      public void run(){

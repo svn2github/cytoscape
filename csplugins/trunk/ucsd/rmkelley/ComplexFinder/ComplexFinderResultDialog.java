@@ -131,10 +131,11 @@ class ComplexFinderResultDialog extends RyanDialog implements ListSelectionListe
 	}
       });
 
-    JButton validateButton = new JButton("Cross Validation");
+    JButton validateButton = new JButton("Make predictions");
     validateButton.addActionListener(new ActionListener(){
 	    public void actionPerformed(ActionEvent ae){
-	      GOprediction prediction = new GOprediction(new File("GOID2orfs.txt"),new File("GOID2parents.txt"),results);
+	      GOprediction prediction = new GOprediction(new File("GOID2orfs.txt"),new File("GOID2parents.txt"));
+	      prediction.makePredictions(results,(List)null);
 	    }
       });
     southPanel.add(viewButton);

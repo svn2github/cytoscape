@@ -136,8 +136,27 @@ class BetweenPathwayResultDialog extends RyanDialog implements ListSelectionList
 	  BetweenPathwayResultDialog.this.enableInput();
 	}
       });
+
+    JButton predictButton = new JButton("Make Predictions");
+    predictButton.addActionListener(new ActionListener(){
+	public void actionPerformed(ActionEvent ae){
+	  Vector pathways = new Vector();
+	  for(Iterator resultIt = results.iterator();resultIt.hasNext();){
+	    NetworkModel model = (NetworkModel)resultIt.next();
+	    Pathway pathway_one = new Pathway();
+	    Pathway pathway_two = new Pathway();
+	    pathway_one.nodes = model.one;
+	    pathway_two.nodes = model.two;
+	    pathway_one.score = pathway_two.score = model.score;
+	  }
+	  GOpredictions prediction = new GOprediction(new File("GOID2orfs.txt"),new File("GOID2parents.txt"));
+	  prediction.makePredictions(pathways);
+	}});
+				
+	
     southPanel.add(viewButton);
     southPanel.add(saveButton);
+    southPanel.add(predictButton);
     getContentPane().add(southPanel,BorderLayout.SOUTH);
     pack();
   }

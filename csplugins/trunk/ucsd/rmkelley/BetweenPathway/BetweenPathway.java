@@ -80,6 +80,9 @@ public class BetweenPathway extends CytoscapePlugin{
 		      //EdgeRandomizer randomizer = new EdgeRandomizer(geneticNetwork,options.directedTypes);
 		      EdgeRandomizer randomizer = new EdgeRandomizer(physicalNetwork,options.directedTypes);
 		      ProgressMonitor myMonitor = new ProgressMonitor(Cytoscape.getDesktop(),"Thresh-hold determination","Iteration 1 of "+options.iterations,1,options.iterations);
+		      int [] physical_edges = physicalNetwork.getEdgeIndicesArray();
+		      Cytoscape.destroyNetwork(physicalNetwork);
+		      Cytoscape.getRootGraph().removeEdges(physical_edges);
 		      for(int idx=0 ; idx<options.iterations ; idx++){
 			if(myMonitor.isCanceled()){
 			  throw new RuntimeException("Thresh-hold generation cancelled");
@@ -122,7 +125,8 @@ public class BetweenPathway extends CytoscapePlugin{
 		      JOptionPane.showMessageDialog(Cytoscape.getDesktop(),"Calculated cutoff is: "+options.cutoff);
 		      options.generateCutoff = false;
 		      //thread.setGeneticNetwork(options.geneticNetwork);
-		      thread.setPhysicalNetwork(options.physicalNetwork);
+		      //thread.setPhysicalNetwork(options.physicalNetwork);
+		      return;
 		    }
 		    thread.run();
 		    JDialog betweenPathwayDialog = new BetweenPathwayResultDialog(options.geneticNetwork, options.physicalNetwork, thread.getResults());
