@@ -20,6 +20,7 @@ import cytoscape.GraphObjAttributes;
 import cytoscape.util.MutableString;
 import cytoscape.util.MutableColor;
 import cytoscape.vizmap.*;
+import cytoscape.dialogs.MiscGB;
 //--------------------------------------------------------------------------------------
 public class EdgeTextPanel extends JPanel {
 
@@ -225,13 +226,8 @@ public class ColorToDiscreteDialog extends JDialog {
 	listScrollPane.setPreferredSize(new Dimension(150,150));
 	extScrollPanel = new JPanel(new GridLayout(1,1));
 	extScrollPanel.add(listScrollPane);
-	c.gridx=0;
-	c.gridy=0;
-	c.gridwidth=2;
-	//c.gridheight=2;
-	gridbag.setConstraints(extScrollPanel,c);
-	popupPanel.add(extScrollPanel);
-
+	MiscGB.set(c,0,0,2,1);
+	MiscGB.insert(popupPanel,extScrollPanel,gridbag,c);
 
 	/*
 	JButton editButton = new JButton ("Edit");
@@ -263,22 +259,13 @@ public class ColorToDiscreteDialog extends JDialog {
 
 	JButton cancelButton = new JButton ("Cancel");
 	cancelButton.addActionListener (new CancelAction ());
-
-	c.gridx=0;
-	c.gridy=3;
-	c.gridwidth=1;
-	//c.gridy=1;
-	gridbag.setConstraints(cancelButton,c);
-	popupPanel.add(cancelButton);
+	MiscGB.set(c,0,3);
+	MiscGB.insert(popupPanel,cancelButton,gridbag,c);
 
 	JButton applyButton = new JButton ("Apply");
 	applyButton.addActionListener (new ApplyAction ());
-
-	c.gridx=1;
-	c.gridy=3;
-	//c.gridy=1;
-	gridbag.setConstraints(applyButton,c);
-	popupPanel.add(applyButton);
+	MiscGB.set(c,1,3);
+	MiscGB.insert(popupPanel,applyButton,gridbag,c);
 	
 	setContentPane(popupPanel);
 	pack ();
