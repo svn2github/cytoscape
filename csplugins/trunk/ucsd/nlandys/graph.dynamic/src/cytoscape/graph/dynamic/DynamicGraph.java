@@ -119,24 +119,24 @@ public interface DynamicGraph
    * parameters are false, then an "adjacent edge" cannot possibly be in
    * the returned enumeration.
    * @param node the node in this graph whose adjacent edges we're seeking.
-   * @param undirected all undirected edges touching the specified node
-   *   are included in the returned enumeration if this value is true;
+   * @param outgoing all directed edges whose source is the node specified
+   *   are included in the returned enumeration if ths value is true;
    *   otherwise, not a single such edge is included in the returned
    *   enumeration.
    * @param incoming all directed edges whose target is the node specified
    *   are included in the returned enumeration if this value is true;
    *   otherwise, not a single such edge is included in the returned
    *   enumeration.
-   * @param outgoing all directed edges whose source is the node specified
-   *   are included in the returned enumeration if ths value is true;
+   * @param undirected all undirected edges touching the specified node
+   *   are included in the returned enumeration if this value is true;
    *   otherwise, not a single such edge is included in the returned
    *   enumeration.
    * @return an enumeration of edges adjacent to the node specified
    *   or null if specified node does not exist in this graph.
    * @exception IllegalArgumentException if node is not positive.
    */
-  public IntEnumerator adjacentEdges(int node, boolean undirected,
-                                     boolean incoming, boolean outgoing);
+  public IntEnumerator _adjacentEdges(int node, boolean outgoing,
+                                      boolean incoming, boolean undirected);
 
   /**
    * Determines the source node of an edge.

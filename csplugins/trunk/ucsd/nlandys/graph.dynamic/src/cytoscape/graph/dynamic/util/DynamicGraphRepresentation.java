@@ -79,7 +79,7 @@ class DynamicGraphRepresentation implements DynamicGraph
 
   public boolean removeNode(int node)
   {
-    IntEnumerator edges = adjacentEdges(node, true, true, true);
+    IntEnumerator edges = _adjacentEdges(node, true, true, true);
     if (edges == null) return false;
     m_stack.empty();
     while (edges.numRemaining() > 0) m_stack.push(edges.nextInt());
@@ -193,8 +193,8 @@ class DynamicGraphRepresentation implements DynamicGraph
       throw new IllegalArgumentException("edge is negative"); }
   }
 
-  public IntEnumerator adjacentEdges(int node, boolean undirected,
-                                     boolean incoming, boolean outgoing)
+  public IntEnumerator _adjacentEdges(int node, boolean outgoing,
+                                      boolean incoming, boolean undirected)
   {
     return null;
   }
