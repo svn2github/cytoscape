@@ -94,7 +94,7 @@ public interface DynamicGraph
   /**
    * Determines whether or not a node exists in this graph.
    * Returns true if and only if the node specified exists.
-   * @param node the [potential existing] node in this graph whose existence
+   * @param node the [potentially existing] node in this graph whose existence
    *   we're querying.
    * @return the existence of specified node in this graph.
    * @exception IllegalArgumentException if node is not positive.
@@ -104,7 +104,7 @@ public interface DynamicGraph
   /**
    * Determines whether or not an edge exists in this graph.
    * Returns true if and only if the edge specified exists.
-   * @param edge the [potential existing] edge in this graph whose existence
+   * @param edge the [potentially existing] edge in this graph whose existence
    *   we're querying.
    * @return the existence of specified edge in this graph.
    * @exception IllegalArgumentException if edge is not positive.
