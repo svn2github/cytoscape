@@ -112,33 +112,33 @@ public class SimpleClassLoader extends ClassLoader {
     byte buf[] = (byte []) rawClasses.get(name);
     rawClasses.remove(name); // release the bytecodes...
     if (buf == null) {
-	    return null;
+        return null;
     } else {
-	    Class c = null;
-	    try {
-        c = super.defineClass(null, buf, 0, buf.length);
-        if (c != null && resolve) {
-          resolveClass(c);
+        Class c = null;
+        try {
+            c = super.defineClass(null, buf, 0, buf.length);
+            if (c != null && resolve) {
+                resolveClass(c);
+            }
+        } catch (ClassFormatError e) {
+            System.err.println("The definition for "+name+" in the JAR file");
+            System.err.println("has a format error.");
+            return null;
+        } catch (NoClassDefFoundError e) {
+            // We will print a message higher up, possibly before or earlier than
+            // in this invocation pass through applyDefinition.
+            return null;
         }
-	    } catch (ClassFormatError e) {
-        System.err.println("The definition for "+name+" in the JAR file");
-        System.err.println("has a format error.");
-        return null;
-	    } catch (NoClassDefFoundError e) {
-        // We will print a message higher up, possibly before or earlier than
-        // in this invocation pass through applyDefinition.
-        return null;
-	    }
-	    // Check that the loaded class has the name we expect
-	    if (!c.getName().equals(name)) {
-        System.err.println("\nWARNING: file name versus class name mismatch");
-        String fname = name.replace('.', '/') + ".class";
-        System.err.println("    JAR entry \"" + fname + "\" was expected "
-                           + "to contain class \"" + name + "\"");
-        System.err.println("    but instead contained class \"" + c.getName() + "\"");
-        System.err.println("    This may cause future class-loading problems.\n");
-	    }
-	    return c;
+        // Check that the loaded class has the name we expect
+        if (!c.getName().equals(name)) {
+            System.err.println("\nWARNING: file name versus class name mismatch");
+            String fname = name.replace('.', '/') + ".class";
+            System.err.println("    JAR entry \"" + fname + "\" was expected "
+            + "to contain class \"" + name + "\"");
+            System.err.println("    but instead contained class \"" + c.getName() + "\"");
+            System.err.println("    This may cause future class-loading problems.\n");
+        }
+        return c;
     }
   }
 
@@ -215,12 +215,28 @@ public class SimpleClassLoader extends ClassLoader {
 
     // If the class isn't in the JAR, try the system classloader:
     if (cl == null) {
-	    try {
-        cl = findSystemClass(name);
-        return cl;
-	    } catch (ClassNotFoundException e) {
-        // Drop through.
-	    }
+        try {
+            cl = findSystemClass(name);
+            return cl;
+        } catch (ClassNotFoundException e) {
+            // Drop through.
+        }
+    }
+    //try the parent of this classloader
+    if (cl == null && getParent() != null) {
+        try {
+            cl = getParent().loadClass(name);
+        } catch (ClassNotFoundException e) {
+            //drop through
+        }
+    }
+    //try the classloader that loaded this class
+    if (cl == null) {
+        try {
+            cl = SimpleClassLoader.class.getClassLoader().loadClass(name);
+        } catch (ClassNotFoundException e) {
+            //drop through
+        }
     }
     if (cl == null) {
 	    throw new ClassNotFoundException(name);
