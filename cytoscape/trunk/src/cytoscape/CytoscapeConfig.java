@@ -79,6 +79,11 @@ public class CytoscapeConfig {
   protected Properties props;
 
 //------------------------------------------------------------------------------------------
+public CytoscapeConfig ()
+{ 
+  this (new String [0]);
+}
+//------------------------------------------------------------------------------------------
 public CytoscapeConfig (String [] args)
 {
     // make a copy of the args to parse here (getopt can mangle the array it parses)
@@ -566,7 +571,9 @@ protected void readProjectFile ()
   String [] defaultLayouts = parseProjectFileText (lines, "layout");
   String [] propsFiles = parseProjectFileText (lines, "props");
   String [] vizmapPropsFiles = parseProjectFileText (lines, "vprops");
-  String [] canonicalization = parseProjectFileText (lines, "canonicalizeNames"); // whether or not canonicalization should be done
+  String [] canonicalization = parseProjectFileText (lines, "canonicalizeNames"); 
+           // whether or not canonicalization should be done
+  String [] matrixFiles = parseProjectFileText (lines, "matrix");
   String [] otherArgs = parseProjectFileText (lines, "arg");
 
   if (sifFiles.length >= 1) {
@@ -604,10 +611,12 @@ protected void readProjectFile ()
        edgeAttributeFilenames.add (absolutizeFilename (projectFileDirectoryAbsolute, edaFiles [i]));
     }
     
+    
   if (dataServers.length >= 1) {
     String tmp = dataServers [0];
     if ((!tmp.startsWith ("rmi://")) && 
-        (!tmp.startsWith ("jar://"))) {
+        (!tmp.startsWith ("jar://")) &&
+        (!tmp.startsWith ("http://"))) {
       bioDataDirectory = absolutizeFilename (projectFileDirectoryAbsolute, tmp);
       }
     else
@@ -723,6 +732,56 @@ public String getErrorMessages ()
 
 }
 //---------------------------------------------------------------------------------
+public void setGeometryFilename (String newValue)
+{
+  geometryFilename = newValue;
+}
+//---------------------------------------------------------------------------------
+public void setExpressionFilename (String newValue)
+{
+  expressionFilename = newValue;
+}
+//---------------------------------------------------------------------------------
+public void setProjectFilename (String newValue)
+{
+  projectFilename = newValue;
+}
+//---------------------------------------------------------------------------------
+public void setProjectVizmapPropsFileName (String newValue)
+{
+  projectVizmapPropsFileName = newValue;
+}
+//---------------------------------------------------------------------------------
+public void setBioDataDirectory (String newValue)
+{
+  bioDataDirectory = newValue;
+}
+//---------------------------------------------------------------------------------
+public void setInteractionsFilename (String newValue)
+{
+  interactionsFilename = newValue;
+}
+//---------------------------------------------------------------------------------
+public void setDefaultSpecies (String newValue)
+{
+  defaultSpeciesName = newValue;
+}
+//---------------------------------------------------------------------------------
+public void setDefaultLayoutStrategy (String newValue)
+{
+  defaultLayoutStrategy = newValue;
+}
+//---------------------------------------------------------------------------------
+public void setProperties (Properties newProps)
+{
+  props = newProps;
+}
+//---------------------------------------------------------------------------------
+public void setWhetherToCopyExpToAttribs (boolean newValue) 
+{
+  copyExpToAttribs = newValue;
+}
+//-------------------------------------------------------------------------------------------------
 public String getUsage ()
 {
    StringBuffer sb = new StringBuffer ();
