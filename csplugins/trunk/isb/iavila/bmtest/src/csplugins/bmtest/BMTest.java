@@ -16,6 +16,7 @@ import giny.model.Edge;
 import giny.view.GraphView;
 import giny.view.NodeView;
 import giny.model.RootGraph;
+//import metaNodeViewer.model.TopLevelMetaNodeModel;
 
 public class BMTest extends AbstractPlugin {
     
@@ -33,11 +34,77 @@ public class BMTest extends AbstractPlugin {
     cyWindow.getCyMenus().getOperationsMenu().add(new RestoreHiddenNodesAction());
     cyWindow.getCyMenus().getOperationsMenu().add(new CollapseSelectedNodes());
     cyWindow.getCyMenus().getOperationsMenu().add(new UncollapseSelectedNodes());
+    cyWindow.getCyMenus().getOperationsMenu().add(new CreateMetaNode());
   }//BMTest
+
+  public void createMetaNode (){
+     
+    System.err.println("------------------------------------------------------");
+    System.err.println("In CreateMetaNodes.actionPerformed()");
+    
+    GraphView graphView = cyWindow.getView();
+    if(graphView.getSelectedNodes().size() == 0){
+      JOptionPane.showMessageDialog(cyWindow.getMainFrame(),
+                                    "Please select one or more nodes.");
+      return;
+    }
+    CyNetwork cyNetwork = cyWindow.getNetwork();
+    GraphPerspective mainGP = cyNetwork.getGraphPerspective();
+    java.util.List selectedNVlist = graphView.getSelectedNodes();
+    Iterator it = selectedNVlist.iterator();
+    java.util.List selectedNodeIndices = new ArrayList();
+    while(it.hasNext()){
+      NodeView nodeView = (NodeView)it.next();
+      Node node = nodeView.getNode();
+      int gpNodeIndex = node.getRootGraphIndex();
+      selectedNodeIndices.add(new Integer(gpNodeIndex));
+    }//while it
+    int [] nodeIndices = new int [selectedNodeIndices.size()];
+    for(int i = 0; i < selectedNodeIndices.size(); i++){
+      nodeIndices[i] = ((Integer)selectedNodeIndices.get(i)).intValue();
+    }//for i
+    GraphPerspective childGP = mainGP.createGraphPerspective(nodeIndices);
+    System.out.println("Created the childGP, which has " + 
+                       childGP.getNodeCount() + " nodes and " +
+                       childGP.getEdgeCount() + " edges.");
+    RootGraph rootGraph = mainGP.getRootGraph();
+    int rgParentNodeIndex = rootGraph.createNode();
+    Node parentNode = rootGraph.getNode(rgParentNodeIndex);
+    System.out.println("Calling parentNode.setGraphPerspective()...");
+    parentNode.setGraphPerspective(childGP);
+    System.out.println("Created the parent node in root graph, with index = " + rgParentNodeIndex +
+                       " and graphPerspective = " + parentNode.getGraphPerspective());
+    GraphPerspective setGP = parentNode.getGraphPerspective();
+    
+    if(setGP.getNodeCount() != childGP.getNodeCount() ||
+       setGP.getEdgeCount() != childGP.getEdgeCount()){
+      
+      System.err.println("ERROR: The set graph perspective has " +
+                         setGP.getNodeCount() + " nodes, and the child gp has " +
+                         childGP.getNodeCount() + ", the set graph perspective has " +
+                         setGP.getEdgeCount() + " and the child gp has " + 
+                         childGP.getEdgeCount());
+      
+    }
+    
+    //TopLevelMetaNodeModel.applyModel(mainGP);
+    
+  }// createMetaNode method
+  
+  public class CreateMetaNode extends AbstractAction{
+    public CreateMetaNode (){super("Create meta-node from selected nodes");}
+    
+    public void actionPerformed (ActionEvent event){
+      BMTest.this.createMetaNode();
+    }//actionPerformed
+    
+  }//class CreateMetaNode
 
   public class UncollapseSelectedNodes extends AbstractAction {
     public UncollapseSelectedNodes (){super("Uncollapse Selected Nodes");}
     public void actionPerformed (ActionEvent event){
+      
+      System.out.println("-------------------------------------------------------");
       System.out.println("In UncollapseSelectedNodes.actionPerformed()");
       GraphView graphView = cyWindow.getView();
       //put up a dialog if there are no selected nodes
@@ -83,10 +150,16 @@ public class BMTest extends AbstractPlugin {
         System.out.println("About to unhide nodes and edges in mainGraphPerspective...");
         java.util.List nodesList = childGP.nodesList();
         java.util.List edgesList = childGP.edgesList();
+        System.err.println("-!-!-!-!");
         mainGraphPerspective.restoreNodes(nodesList);
+        System.err.println("-!-!-!-!");
+        // This call seems to fire two events, the first one hides the nodes connected
+        // to the edges (told Rowan)
         mainGraphPerspective.restoreEdges(edgesList);
+        System.err.println("-!-!-!-!");
         System.out.println("...done unhiding nodes and edges in mainGraphPerspective.");
         // Hide the parent node
+        // THIS CRASHES. Rowan seems to know what the problem is, so I will wait for him.
         System.out.println("About to hide the parent node in mainGraphPerspective" + pNode + " ...");
         mainGraphPerspective.hideNode(pNode);
         System.out.println("...done hiding parent node");
@@ -101,6 +174,8 @@ public class BMTest extends AbstractPlugin {
   public class CollapseSelectedNodes extends AbstractAction {
     public CollapseSelectedNodes (){super("Collapse Selected Nodes");}
     public void actionPerformed (ActionEvent event){
+      
+      System.out.println("-------------------------------------------------------");
       System.out.println("In CollapseSelectedNodes.actionPerformed()");
       GraphView graphView = cyWindow.getView();
       //put up a dialog if there are no selected nodes
@@ -181,6 +256,8 @@ public class BMTest extends AbstractPlugin {
     public AddEdgesAction() {super("Add clique edges between selected nodes");}
 
     public void actionPerformed (ActionEvent event){
+
+      System.out.println("-------------------------------------------------------");
       System.err.println("In AddEdgesAction.actionPerformed()");
       
       GraphView graphView = cyWindow.getView();
@@ -253,6 +330,7 @@ public class BMTest extends AbstractPlugin {
      */
     public void actionPerformed (ActionEvent ae) {
 
+      System.out.println("-------------------------------------------------------");
       System.err.println("In AddNodesAction.actionPerformed()");
       
       GraphView graphView = cyWindow.getView();
@@ -338,6 +416,7 @@ public class BMTest extends AbstractPlugin {
      */
     public void actionPerformed (ActionEvent ae) {
 
+      System.out.println("-------------------------------------------------------");
       System.err.println("In HideSelectedNodesAction.actionPerformed()");
       
       GraphView graphView = cyWindow.getView();
@@ -452,7 +531,8 @@ public class BMTest extends AbstractPlugin {
      * This method is called when the user selects the menu item.
      */
     public void actionPerformed (ActionEvent ae) {
-
+      
+      System.out.println("-------------------------------------------------------");
       System.err.println("In HideSelectedNodesEdgesAction.actionPerformed()");
       
       GraphView graphView = cyWindow.getView();
@@ -538,7 +618,9 @@ public class BMTest extends AbstractPlugin {
       if(hiddenSelectedNodes == null && hiddenEdges == null){
         return;
       }
-
+      System.out.println("-------------------------------------------------------");
+      System.out.println("In RestoreHiddenNodesAction.actionPerformed()");
+      
       GraphPerspective graphPerspective = cyWindow.getNetwork().getGraphPerspective();
       CyNetwork cyNetwork = cyWindow.getNetwork();
       String callerID = "RestoreHiddenNodesAction.actionPerformed";
