@@ -7,9 +7,9 @@ package cytoscape.actions;
 //-------------------------------------------------------------------------
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
-import phoebe.*;
+import phoebe.PGraphView;
 
-import phoebe.util.*;
+//import phoebe.util.*;
 import giny.model.*;
 import giny.view.*;
 import java.util.*;

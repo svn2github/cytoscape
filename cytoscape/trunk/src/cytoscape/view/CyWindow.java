@@ -59,8 +59,8 @@ import giny.view.EdgeView;
 import giny.view.NodeView;
 
 import phoebe.*;
-import phoebe.util.*;
-import phoebe.event.*;
+//import phoebe.util.*;
+//import phoebe.event.*;
 
 import cytoscape.*;
 import cytoscape.graphutil.*;
