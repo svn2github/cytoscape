@@ -37,6 +37,20 @@ public final class AllRootGraphMethodsTest
     nodeInx[nodeInx.length - 1] = root.createNode
       (null, new int[] { edgeInx[6], edgeInx[2] }); // Should have nodes
       // nodeInx[0], nodeInx[2], and nodeInx[3].
+    if (!(root.addNodeMetaChild(nodeInx[0], nodeInx[1]) &&
+          root.addNodeMetaChild(nodeInx[0], nodeInx[4]) &&
+          root.addNodeMetaChild(nodeInx[3], nodeInx[1]) &&
+          root.addNodeMetaChild(nodeInx[4], nodeInx[4]) &&
+          root.addEdgeMetaChild(nodeInx[3], edgeInx[6]) &&
+          root.addEdgeMetaChild(nodeInx[3], edgeInx[0]) &&
+          root.addEdgeMetaChild(nodeInx[0], edgeInx[4])))
+      throw new IllegalStateException("unable to create meta relationship");
+    for (int i = 0; i < nodeInx.length; i++)
+      if (nodeInx[i] >= 0)
+        throw new IllegalStateException("non-negative node");
+    for (int i = 0; i < edgeInx.length; i++)
+      if (edgeInx[i] >= 0)
+        throw new IllegalStateException("non-negative edge");
 
     // Test add/remove nodes and edges before other tests.
     // We leave the graph with the same topology after these tests as
@@ -79,6 +93,37 @@ public final class AllRootGraphMethodsTest
     root.removeNode(deleteThisNode);
     root.removeEdge(deleteThisEdge1);
     root.removeEdge(deleteThisEdge2);
+    // Meta-nodes.  First restore what was there originally.
+    if (!(root.addEdgeMetaChild(nodeInx[3], edgeInx[0]) &&
+          root.addEdgeMetaChild(nodeInx[0], edgeInx[4]) &&
+          root.addEdgeMetaChild(nodeInx[4], edgeInx[6]) &&
+          root.addEdgeMetaChild(nodeInx[3], edgeInx[6])))
+      throw new IllegalStateException("errors during restoration");
+    if (root.addEdgeMetaChild(nodeInx[3], edgeInx[0]) ||
+        root.addEdgeMetaChild(nodeInx[4], edgeInx[2]) ||
+        root.addNodeMetaChild(nodeInx[3], nodeInx[1]))
+      throw new IllegalStateException("failure of failure during creation");
+    // Meta-nodes.  Create and remove extra meta-relationships.
+    if (!root.addNodeMetaChild(nodeInx[2], nodeInx[1]))
+      throw new IllegalStateException("failed to create relationship");
+    if (root.addNodeMetaChild(nodeInx[2], nodeInx[1]) ||
+        root.addNodeMetaChild(nodeInx[4], nodeInx[0]))
+      throw new IllegalStateException("was able to create duplicate meta");
+    if (!(root.addEdgeMetaChild(nodeInx[4], edgeInx[5]) &&
+          root.addNodeMetaChild(nodeInx[2], nodeInx[2])))
+      throw new IllegalStateException("failed to create meta relationship");
+    if (root.addNodeMetaChild(nodeInx[2], nodeInx[2]))
+      throw new IllegalStateException("was able to create duplicate meta");
+    if (!(root.removeNodeMetaChild(nodeInx[2], nodeInx[1]) &&
+          root.removeNodeMetaChild(nodeInx[4], nodeInx[1]) &&
+          root.removeNodeMetaChild(nodeInx[2], nodeInx[2])))
+      throw new IllegalStateException("could not delete meta relationship");
+    for (int i = 0; i < nodeInx.length; i++)
+      if (nodeInx[i] >= 0)
+        throw new IllegalStateException("non-negative node");
+    for (int i = 0; i < edgeInx.length; i++)
+      if (edgeInx[i] >= 0)
+        throw new IllegalStateException("non-negative edge");
 
     // nodesIterator() and edgesIterator().
     Iterator nodesIter = root.nodesIterator();
