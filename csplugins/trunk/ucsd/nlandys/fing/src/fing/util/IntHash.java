@@ -3,8 +3,9 @@ package fing.util;
 /**
  * An insert-only hashtable that has non-negative 32 bit integer elements;
  * no "satellite data" is stored in this hashtable.  An instance of this class
- * is well-suited for detecting collisions between integers or determining
- * the presence of an integer in a set of integers.<p>
+ * is well-suited for efficiently detecting collisions between integers,
+ * removing duplicates from a list of integers, or determining the presence of
+ * an integer in a list of integers.<p>
  * In the underlying implementation, this hashtable increases in size to adapt
  * to elements being added (the underlying size of the hashtable is invisible
  * to the programmer).  In the underlying implementation, this hashtable never
@@ -43,13 +44,26 @@ public final class IntHash
   }
 
   /**
+   * Removes all elements from this hashtable.  This operation has
+   * O(1) time complexity.
+   */
+  public final void empty()
+  {
+    m_elements = 0;
+    m_size = INITIAL_SIZE;
+    m_thresholdSize = (int) (THRESHOLD_FACTOR * (double) m_size);
+    for (int i = 0; i < m_size; i++) m_arr[i] = -1;
+  }
+
+  /**
    * Puts a new value into this hashtable if that value is not already in
    * this hashtable; otherwise does nothing.  Returns the input value if this
    * value was already in this hashtable; returns -1 if the input value was
    * not in this hashtable prior to this call.<p>
    * Only non-negative values can be passed to this method.
    * Behavior is undefined if negative values are passed to put(int).<p>
-   * Insertions into the hashtable are performed in [amortized] constant time.
+   * Insertions into the hashtable are performed in [amortized] time
+   * complexity O(1).
    */
   public final int put(int value)
   {
@@ -61,10 +75,11 @@ public final class IntHash
          index = (index + incr) % m_size) {
       // Caching increment, which is an expensive operation, at the expense
       // of having an if statement.  I don't want to compute the increment
-      // before this for loop in case we get an immediate hit.
+      // before this 'for' loop in case we get an immediate hit.
       if (incr == 0) { incr = 1 + (value % (m_size - 1)); } }
-    int returnVal = m_arr[index];
+    final int returnVal = m_arr[index];
     m_arr[index] = value;
+    m_elements += (returnVal >>> 31);
     return returnVal;
   }
 
@@ -75,7 +90,8 @@ public final class IntHash
    * It is an error to pass negative values to this method.  Passing
    * negative values to this method will result in undefined behavior of
    * this hashtable.<p>
-   * Searches of this hashtable are performed in [amortized] constant time.
+   * Searches in this hashtable are performed in [amortized] time
+   * complexity O(1).
    */
   public final int get(final int value)
   {
@@ -86,21 +102,9 @@ public final class IntHash
          index = (index + incr) % m_size) {
       // Caching increment, which is an expensive operation, at the expense
       // of having an if statement.  I don't want to compute the increment
-      // before this for loop in case we get an immediate hit.
+      // before this 'for' loop in case we get an immediate hit.
       if (incr == 0) { incr = 1 + (value % (m_size - 1)); } }
     return m_arr[index];
-  }
-
-  /**
-   * Removes all elements from this hashtable.  This is a constant time
-   * operation.
-   */
-  public final void empty()
-  {
-    m_elements = 0;
-    m_size = INITIAL_SIZE;
-    m_thresholdSize = (int) (THRESHOLD_FACTOR * (double) m_size);
-    for (int i = 0; i < m_size; i++) m_arr[i] = -1;
   }
 
   /**
@@ -112,7 +116,7 @@ public final class IntHash
    * The returned enumerator has absolutely no effect on the underlying
    * hashtable.<p>
    * This method returns a value in constant time.  The returned enumerator
-   * returns successive elements in [amortized] constant time.
+   * returns successive elements in [amortized] time complexity O(1).
    */
   public final IntEnumerator elements()
   {
@@ -148,13 +152,23 @@ public final class IntHash
         m_arr[index] = -1; }
       if (m_arr.length < newSize) {
         final int[] newArr = new int[newSize];
+        System.arraycopy(m_arr, 0, newArr, 0, m_arr.length);
         m_arr = newArr; }
       for (int i = m_size; i < newSize; i++) m_arr[i] = -1;
-      m_elements = 0;
       m_size = newSize;
       m_thresholdSize = (int) (THRESHOLD_FACTOR * (double) m_size);
-      for (int i = 0; i < dump.length; i++) put(dump[i]);
+      int incr;
+      for (int i = 0; i < dump.length; i++) {
+        incr = 0;
+        for (index = dump[i] % m_size;
+             m_arr[index] >= 0 && m_arr[index] != dump[i];
+             index = (index + incr) % m_size) {
+          // Caching increment, which is an expensive operation, at the expense
+          // of having an if statement.  I don't want to compute the increment
+          // before this 'for' loop in case we get an immediate hit.
+          if (incr == 0) { incr = 1 + (dump[i] % (m_size - 1)); } }
+        m_arr[index] = dump[i]; }
     }
-  } 
+  }
 
 }
