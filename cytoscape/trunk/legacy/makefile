@@ -28,7 +28,7 @@ default: checkkEnv objs subdirectories
 subdirectories: dataDirectories \
          vizmapDirectory dialogsDirectory \
          layoutDirectory utilDirectory \
-	 viewmodesDirectory filtersDirectory
+	 viewDirectory filtersDirectory
 
 objs: $(OBJS)
 
@@ -59,8 +59,8 @@ layoutDirectory:
 utilDirectory:
 	(cd util; make)
 
-viewmodesDirectory:
-	(cd viewmodes; make)
+viewDirectory:
+	(cd view; make)
 
 filtersDirectory: 
 	(cd filters; make)

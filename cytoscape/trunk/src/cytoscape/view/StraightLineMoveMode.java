@@ -6,7 +6,7 @@
 // $Author$
 //
 
-package cytoscape.viewmodes;
+package cytoscape.view;
 
 import y.view.*;
 import java.awt.event.*;

@@ -50,7 +50,7 @@ import cytoscape.data.servers.*;
 import cytoscape.dialogs.*;
 import cytoscape.layout.*;
 import cytoscape.vizmap.*;
-import cytoscape.viewmodes.*;
+import cytoscape.view.*;
 import cytoscape.util.MutableString;
 import cytoscape.util.MutableBool;
 
