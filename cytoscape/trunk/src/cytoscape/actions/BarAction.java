@@ -3,6 +3,7 @@ package cytoscape.actions;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CyNetworkView;
+import giny.view.Bend;
 import giny.view.EdgeView;
 import giny.view.NodeView;
 
@@ -68,7 +69,8 @@ public class BarAction extends CytoscapeAction
                     nodes[i].setOffset(nodes[i].getXPosition() + offset,
                                        nodes[i].getYPosition() + offset); }
                   for (int i = 0; i < edges.length; i++) {
-                    List handles = edges[i].bend.getHandles();
+                    Bend bend = edges[i].getBend();
+                    List handles = bend.getHandles();
                     for (int j = 0; j < handles.size(); j++) {
                       Point2D point = (Point2D) handles.get(j);
                       bend.moveHandle
