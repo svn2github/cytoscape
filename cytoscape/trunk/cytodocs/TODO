@@ -5,6 +5,12 @@ $Date$
 $Author$
 *-----------------------------------------------------------------------------
 
+Owen Ozier adds 8/29/02:
+
+* Undo features should be checked in.
+
+* unit testing for the new Graph Hider should be added.
+
 
 TASKS  Trey Ideker and Dan Ramage 6/24/02
 
