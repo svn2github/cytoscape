@@ -313,6 +313,38 @@ public void setAttributes (String canonicalName, HashMap bundle)
  * String.startsWith ("VNG0382G -> VNG1230G") which solves the problem
  * of all subsequent duplicates simply append a number to the base name.
  */
+
+/**
+ * A hash to keep a count of how many times a certain name has been used.
+ */
+private Hashtable countIdMap = null;
+
+/**
+ * Initialize the counter map
+ */
+public void initCountMap() {
+    countIdMap = new Hashtable();
+}
+
+/**
+ * Destroy the counter map
+ */
+public void finalCountMap() {
+    countIdMap = null;
+}
+
+public int countIdentical(String objectName)  {
+    Integer count = (Integer) countIdMap.get(objectName);
+    if (count == null) {
+	count = new Integer(0);
+    }
+    // update the counter as well
+    countIdMap.put(objectName, new Integer(count.intValue() + 1));
+    return count.intValue();
+} 
+
+
+/*
 public int countIdentical (String attribute, String objectName) 
 {
   String [] knownNames = getObjectNames (attribute);
@@ -325,8 +357,8 @@ public int countIdentical (String attribute, String objectName)
     } // for i
 
   return matches;
-    
 } // countIdentical
+*/
 //--------------------------------------------------------------------------------
 /**
  *  return attributeName/attributeClass pairs, for every known attribute

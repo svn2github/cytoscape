@@ -34,6 +34,8 @@ public void read ()
   // erase the labels serving this purpose
   // while creating the edge names (the hard way)
   Graph2DView gView = new Graph2DView(graph);
+
+  edgeAttributes.initCountMap();
   for (EdgeCursor ec = graph.edges(); ec.ok(); ec.next()) {
       Edge edge = ec.edge();
       String interactionType = graph.getLabelText(edge);
@@ -41,14 +43,14 @@ public void read ()
       String sourceName = gView.getGraph2D().getLabelText(edge.source());
       String targetName = gView.getGraph2D().getLabelText(edge.target());
       String edgeName =  sourceName + " (" + interactionType + ") " + targetName;
-      int previousMatchingEntries = edgeAttributes.countIdentical("interaction", edgeName);
+      int previousMatchingEntries = edgeAttributes.countIdentical(edgeName);
       if (previousMatchingEntries > 0)
 	  edgeName = edgeName + "_" + previousMatchingEntries;
       edgeAttributes.add("interaction", edgeName, interactionType);
       edgeAttributes.addNameMapping(edgeName, edge);
       edgeAttributes.add("interaction", edgeName, interactionType);      
   }
-
+  edgeAttributes.finalCountMap();
   
 } // read
 public Graph2D getGraph ()

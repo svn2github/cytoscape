@@ -111,6 +111,7 @@ protected void createGraphFromInteractionData ()
     //   interactionHash [sourceNode::targetNode] = "pd"
     //---------------------------------------------------------------------------
 
+  edgeAttributes.initCountMap();
   for (int i=0; i < interactions.length; i++) {
     Interaction interaction = interactions [i];
     String nodeName = interaction.getSource ();
@@ -122,14 +123,15 @@ protected void createGraphFromInteractionData ()
       Edge edge = graph.createEdge (sourceNode, targetNode);
       //String edgeName = nodeName + " -> " + targets [t];
       String edgeName = nodeName + " (" + interactionType + ") " + targets [t];
-      int previousMatchingEntries = edgeAttributes.countIdentical ("interaction", edgeName);
+      int previousMatchingEntries = edgeAttributes.countIdentical(edgeName);
       if (previousMatchingEntries > 0)
         edgeName = edgeName + "_" + previousMatchingEntries;
       edgeAttributes.add ("interaction", edgeName, interactionType);
       edgeAttributes.addNameMapping (edgeName, edge);
       } // for t
    } // for i
-
+  edgeAttributes.finalCountMap();
+  
 } // createGraphFromInteractionData
 //-------------------------------------------------------------------------------------------
 public Graph2D getGraph ()
