@@ -937,8 +937,10 @@ protected JMenuBar createMenuBar ()
 
   mi = fileMenu.add (new CloseWindowAction ());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_W, ActionEvent.CTRL_MASK));
-  mi = fileMenu.add (new ExitAction ());
-  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
+  if (parentApp != null) {
+    mi = fileMenu.add (new ExitAction ());
+    mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
+    }
 
 
   menuBar.add (fileMenu);
