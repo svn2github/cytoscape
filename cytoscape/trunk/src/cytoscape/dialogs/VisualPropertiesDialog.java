@@ -26,16 +26,17 @@ import java.util.Map;
 import cytoscape.data.*;
 import cytoscape.vizmap.*;
 import cytoscape.dialogs.NewSlider;
+import cytoscape.dialogs.MutableColor;
 //import csplugins.activePathsNew.data.ActivePathFinderParameters;
 //--------------------------------------------------------------------------------------
 public class VisualPropertiesDialog extends JDialog {
 
     JTextField readout;
     AttributeMapper aMapper;
-    Color nColor;
-    Color ppColor;
-    Color pdColor;
-    Color bgColor;
+    MutableColor nColor;
+    MutableColor ppColor;
+    MutableColor pdColor;
+    MutableColor bgColor;
 //--------------------------------------------------------------------------------------
 public VisualPropertiesDialog (Frame parentFrame,
 			       String title,
@@ -45,12 +46,12 @@ public VisualPropertiesDialog (Frame parentFrame,
   setTitle (title);
 
   aMapper = mapper;
-  nColor = getNodeColor();
+  nColor = new MutableColor(getBasicColor(VizMapperCategories.NODE_FILL_COLOR));
   //ppColor = new Color(0,0,255);
   //pdColor = new Color(255,0,0);
-  ppColor = getPPColor();
-  pdColor = getPDColor();
-  bgColor = getBGColor();
+  ppColor = new MutableColor(getDMColor(VizMapperCategories.EDGE_COLOR, "pp"));
+  pdColor = new MutableColor(getDMColor(VizMapperCategories.EDGE_COLOR, "pd"));
+  bgColor = new MutableColor(getBasicColor(VizMapperCategories.BG_COLOR));
 
   JPanel mainPanel = new JPanel ();
   GridBagLayout gridbag = new GridBagLayout();   // see note below
@@ -65,22 +66,21 @@ public VisualPropertiesDialog (Frame parentFrame,
   mainPanel.add (applyButton);
 
   JButton edgePPButton = new JButton ("Edge Coloring: PP");
-  edgePPButton.addActionListener (new EdgePPAction ());
+  edgePPButton.addActionListener (new SpawnGeneralColorDialogListener(ppColor,"Choose a P-P Edge Color"));
   c.gridx=0;
   c.gridy=1;
   gridbag.setConstraints(edgePPButton,c);
   mainPanel.add (edgePPButton);
 
   JButton edgePDButton = new JButton ("Edge Coloring: PD");
-  edgePDButton.addActionListener (new EdgePDAction ());
+  edgePDButton.addActionListener (new SpawnGeneralColorDialogListener(pdColor,"Choose a P-D Edge Color"));
   c.gridx=1;
   c.gridy=1;
   gridbag.setConstraints(edgePDButton,c);
   mainPanel.add (edgePDButton);
   
-  JButton colorButton
-      = new JButton("Choose Node Color");
-  colorButton.addActionListener(new SpawnNodeColorDialogListener());
+  JButton colorButton = new JButton("Choose Node Color");
+  colorButton.addActionListener(new SpawnGeneralColorDialogListener(nColor,"Choose a Node Color"));
   c.gridx=0;
   c.gridy=2;
   gridbag.setConstraints(colorButton,c);
@@ -88,17 +88,11 @@ public VisualPropertiesDialog (Frame parentFrame,
 
   JButton bgColorButton
       = new JButton("Choose Background Color");
-  bgColorButton.addActionListener(new BGColorDialogListener());
+  bgColorButton.addActionListener(new SpawnGeneralColorDialogListener(bgColor,"Choose a Background Color"));
   c.gridx=0;
   c.gridy=3;
   gridbag.setConstraints(bgColorButton,c);
   mainPanel.add(bgColorButton);
-
-  ///////////////////////////////////////////
-
-  //ColorChooserDialog ccd = new ColorChooserDialog(this,"whatever");
-  //ccd.pack();
-  //ccd.setVisible(true);
 
   setContentPane (mainPanel);
 } // PopupDialog ctor
@@ -110,79 +104,81 @@ public class ApplyAction extends AbstractAction {
   }
 
   public void actionPerformed (ActionEvent e) {
-      //Color c = new Color(0,0,0);
-      Object o1 = aMapper.setDefaultValue(VizMapperCategories.NODE_FILL_COLOR, nColor);
-      Object o2 = aMapper.setDefaultValue(VizMapperCategories.BG_COLOR, bgColor);
 
-	  /*
-	    setAttributeMapEntry(VizMapperCategories.NODE_FILL_COLOR,
-			   String domainAttributeName,
-			   mapper);
-	  */
+      Object o1 = aMapper.setDefaultValue(VizMapperCategories.NODE_FILL_COLOR, nColor.getColor());
+      Object o2 = aMapper.setDefaultValue(VizMapperCategories.BG_COLOR, bgColor.getColor());
 
-      /*
-      DiscreteMapper dm =
-	  (DiscreteMapper)
-	  aMapper.getValueMapper(VizMapperCategories.EDGE_COLOR);
-
-      Map valueMap = dm.getValueMap();
-      valueMap.remove("pp");
-      valueMap.remove("pd");
-      valueMap.put("pp",ppColor);
-      valueMap.put("pd",pdColor);
-      */
-      EdgeArrowColor.removeThenAddEdgeColor(aMapper,"pp",ppColor);
-      EdgeArrowColor.removeThenAddEdgeColor(aMapper,"pd",pdColor);
-      //DiscreteMapper dm = new DiscreteMapper(valueMap);
-      //aMapper.setAttributeMapEntry(VizMapperCategories.EDGE_COLOR,
-      //				   "interaction",
-      //				   dm);
+      EdgeArrowColor.removeThenAddEdgeColor(aMapper,"pp",ppColor.getColor());
+      EdgeArrowColor.removeThenAddEdgeColor(aMapper,"pd",pdColor.getColor());
 
       VisualPropertiesDialog.this.dispose ();
   }
 
 } // QuitAction
+
+
+class SpawnGeneralColorDialogListener implements ActionListener {
+    private MutableColor returnColor;
+    private String title;
+    public SpawnGeneralColorDialogListener(MutableColor writeToThisColor, String title) {
+	super ();
+	//System.out.println("writecolor:" + writeToThisColor);
+	returnColor = writeToThisColor;
+	this.title = title;
+    }
+    
+    public void actionPerformed(ActionEvent e) {
+	// Args are parent component, title, initial color
+	Color tempColor = JColorChooser.showDialog(VisualPropertiesDialog.this,
+						   title,
+						   returnColor.getColor());
+	if (tempColor != null)
+	    returnColor.setColor(tempColor);
+	//System.out.println("after: returncolor:" + returnColor);
+    }
+}
+
+    private Color getBasicColor(Integer category) {
+	Color tempColor;
+	try {
+	    tempColor = 
+		(Color)aMapper.getDefaultValue(category);
+	} catch (NullPointerException ex) {
+	    tempColor = new Color(255,255,255);
+	}
+	if(tempColor != null)
+	    return tempColor;
+	else {
+	    return new Color(255,255,255);
+	}
+    }
+
+    private Color getDMColor(Integer category, String key) {
+	Color tempColor;
+
+	DiscreteMapper dm =
+	    (DiscreteMapper)
+	    aMapper.getValueMapper(category);
+
+	Map valueMap = dm.getValueMap();
+	tempColor = (Color)valueMap.get(key);
+
+	if(tempColor != null)
+	    return tempColor;
+	else {
+	    return new Color(255,255,255);
+	}
+    }
+
+} // class VisualPropertiesDialog
+
+
+
+
+
 //-----------------------------------------------------------------------------
 
-public class EdgePPAction extends AbstractAction {
-  EdgePPAction () {
-      super ("");
-  }
-  public void actionPerformed (ActionEvent e) {
-      Color tempColor = JColorChooser.showDialog(VisualPropertiesDialog.this,
-						 "Choose Color for PP",
-						 ppColor);
-      if (tempColor != null)
-	  ppColor = tempColor;
-  }
-    /*
-  public void actionPerformed (ActionEvent e) {
-      Map valueMap = new HashMap();
-      valueMap.put("pp",new Color(255,0,0));
-      valueMap.put("pd",new Color(0,0,255));
-
-      DiscreteMapper dm = new DiscreteMapper(valueMap);
-      aMapper.setAttributeMapEntry(VizMapperCategories.EDGE_COLOR,
-				   "interaction",
-				   dm);
-  }
-    */
-}
-
-public class EdgePDAction extends AbstractAction {
-  EdgePDAction () {
-      super ("");
-  }
-
-  public void actionPerformed (ActionEvent e) {
-      Color tempColor = JColorChooser.showDialog(VisualPropertiesDialog.this,
-						 "Choose Color for PD",
-						 pdColor);
-      if (tempColor != null)
-	  pdColor = tempColor;
-  }
-}
-
+/*
 public class ColorChooserDialog extends JDialog {
     public ColorChooserDialog(JDialog parentDialog, String whatFor) {
         super(parentDialog, "Choose Color for " + whatFor);
@@ -206,7 +202,6 @@ public class ColorChooserDialog extends JDialog {
             new ChangeListener() {
                 public void stateChanged(ChangeEvent e) {
                     Color newColor = tcc.getColor();
-		    //System.out.println("hello!");
                     banner.setForeground(newColor);
                 }
             }
@@ -222,98 +217,4 @@ public class ColorChooserDialog extends JDialog {
     
 }
     
-
-
-    
-    
-class SpawnNodeColorDialogListener implements ActionListener {
-    
-    public void actionPerformed(ActionEvent e) {
-	// Args are parent component, title, initial color
-	Color tempColor = JColorChooser.showDialog(VisualPropertiesDialog.this,
-						   "Choose Color",
-						   nColor);
-	if (tempColor != null)
-	    nColor = tempColor;
-    }
-}
-
-class BGColorDialogListener implements ActionListener {
-    
-    public void actionPerformed(ActionEvent e) {
-	Color tempColor = JColorChooser.showDialog(VisualPropertiesDialog.this,
-						   "Choose Color",
-						   bgColor);
-	if (tempColor != null)
-	    bgColor = tempColor;
-    }
-}
-
-
-    private Color getNodeColor() {
-	Color tempColor;
-	try {
-	    tempColor = 
-		(Color)aMapper.getDefaultValue(VizMapperCategories.NODE_FILL_COLOR);
-	    //System.out.println("get: found real color");
-	} catch (NullPointerException ex) {
-	    System.out.println("get: made up color");
-	    tempColor = new Color(255,255,255);
-	}
-	//if(tempColor != null)
-	return tempColor;
-	//else {
-	//return
-	//}
-    }
-    private Color getBGColor() {
-	Color tempColor;
-	try {
-	    tempColor = 
-		(Color)aMapper.getDefaultValue(VizMapperCategories.BG_COLOR);
-	} catch (NullPointerException ex) {
-	    tempColor = new Color(255,255,255);
-	}
-	if(tempColor != null)
-	    return tempColor;
-	else {
-	    return new Color(255,255,255);
-	}
-    }
-
-    private Color getPPColor() {
-	Color tempColor;
-
-	DiscreteMapper dm =
-	    (DiscreteMapper)
-	    aMapper.getValueMapper(VizMapperCategories.EDGE_COLOR);
-
-	Map valueMap = dm.getValueMap();
-	tempColor = (Color)valueMap.get("pp");
-
-	if(tempColor != null)
-	    return tempColor;
-	else {
-	    return new Color(0,0,255);
-	}
-    }
-
-    private Color getPDColor() {
-	Color tempColor;
-
-	DiscreteMapper dm =
-	    (DiscreteMapper)
-	    aMapper.getValueMapper(VizMapperCategories.EDGE_COLOR);
-
-	Map valueMap = dm.getValueMap();
-	tempColor = (Color)valueMap.get("pd");
-
-	if(tempColor != null)
-	    return tempColor;
-	else {
-	    return new Color(255,255,0);
-	}
-    }
-
-} // class VisualPropertiesDialog
-
+*/
