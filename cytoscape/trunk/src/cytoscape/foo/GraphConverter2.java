@@ -106,20 +106,23 @@ public final class GraphConverter2
         public double getMaxWidth() { return width; }
         public double getMaxHeight() { return height; }
         public double getNodePosition(int node, boolean xPosition) {
-          NodeView nodeView = graphView.getNodeView(node);
-          if (nodeView == null) throw new IllegalArgumentException
-                                  ("node " + node + " not in this graph");
+          NodeView nodeView = getNodeView(node);
           if (xPosition) return nodeView.getXPosition() - xOff;
           return nodeView.getYPosition() - yOff; }
 
         // MutableGraphLayout methods.
         public boolean isMovableNode(int node) {
-          NodeView nodeView = graphView.getNodeView(node);
-          if (nodeView == null) throw new IllegalArgumentException
-                                  ("node " + node + " not in this graph");
+          NodeView nodeView = getNodeView(node);
           if (noNodesSelected) return true;
           return nodeView.isSelected(); }
-        public void setNodePosition(int node, double xPos, double yPos) {}
+        public void setNodePosition(int node, double xPos, double yPos) {
+          NodeView nodeView = getNodeView(node);
+          checkPosition(xPos, yPos);
+          if (!isMovableNode(node))
+            throw new UnsupportedOperationException
+              ("node " + node + " is not movable");
+          nodeView.setXPosition(xPos + xOff);
+          nodeView.setYPosition(yPos + yOff); }
 
         // PolyEdgeGraphLayout methods.
         public int getNumAnchors(int edge) { return 0; }
@@ -132,6 +135,18 @@ public final class GraphConverter2
         public void createAnchor(int edge, int anchorIndex) {}
         public void setAnchorPosition(int edge, int anchorIndex,
                                       double xPos, double yPos) {}
+
+        // Helper methods.
+        private NodeView getNodeView(int node) {
+          NodeView nodeView = graphView.getNodeView(~node);
+          if (nodeView == null) throw new IllegalArgumentException
+                                  ("node " + node + " not in this graph");
+          return nodeView; }
+        private void checkPosition(double xPos, double yPos) {
+          if (xPos < 0.0d || xPos > getMaxWidth())
+            throw new IllegalArgumentException("X position out of bounds");
+          if (yPos < 0.0d || yPos > getMaxHeight())
+            throw new IllegalArgumentException("Y position out of bounds"); }
       };
   }
 
