@@ -38,7 +38,7 @@ public class SaveAsGMLAction extends AbstractAction {
           if (!name.endsWith (".gml")) name = name + ".gml";
           try {
               FileWriter fileWriter = new FileWriter(name);
-	      GMLTree result = new GMLTree(networkView.getView());
+	      GMLTree result = new GMLTree(networkView);
 	      fileWriter.write(result.toString());
 	      fileWriter.close();
 	  }
