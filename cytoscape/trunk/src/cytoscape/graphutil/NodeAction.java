@@ -84,7 +84,7 @@ public class NodeAction {
           public void actionPerformed ( ActionEvent e ) {
             SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
-                  ( ( PGraphView )network.getView() ).openNodeEditing();
+                  //( ( PGraphView )network.getView() ).openNodeEditing();
                 } } ); } } );
   }
 
