@@ -32,7 +32,7 @@ public class LoadEdgeAttributesAction extends CytoscapeAction {
   public void actionPerformed(ActionEvent e)  {
     
     CyFileFilter nf = new CyFileFilter();
-    nf.addExtension("na");
+    nf.addExtension("ea");
     nf.setDescription("Edge Attribute files");
 
     // get the file name
