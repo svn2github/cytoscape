@@ -3,6 +3,7 @@ package fing.model;
 import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntHash;
+import cytoscape.util.intr.IntIterator;
 import cytoscape.util.intr.MinIntHeap;
 
 import giny.model.Edge;
@@ -157,7 +158,7 @@ class FRootGraph implements RootGraph
     // and use a bit array to mark indices of nodes which aren't
     // instantiated yet.  This would complicate the code somewhat.
     FNode newNode = m_nodeDepot.getNode();
-    newNode.m_rootGraph = getThisRootGraph();
+    newNode.m_rootGraph = this;
     newNode.m_rootGraphIndex = returnThis;
     newNode.m_identifier = null;
     m_nodes.setNodeAtIndex(newNode, positiveNodeIndex);
@@ -237,7 +238,7 @@ class FRootGraph implements RootGraph
     // and use a bit array to mark indices of edges which aren't
     // instantiated yet.  This would complicate the code somewhat.
     FEdge newEdge = m_edgeDepot.getEdge();
-    newEdge.m_rootGraph = getThisRootGraph();
+    newEdge.m_rootGraph = this;
     newEdge.m_rootGraphIndex = returnThis;
     newEdge.m_identifier = null;
     m_edges.setEdgeAtIndex(newEdge, positiveEdgeIndex);
@@ -695,10 +696,5 @@ class FRootGraph implements RootGraph
 
   // Package visible constructor.
   FRootGraph(DynamicGraph graph) { m_graph = graph; }
-
-  private RootGraph getThisRootGraph()
-  {
-    return null;
-  }
 
 }
