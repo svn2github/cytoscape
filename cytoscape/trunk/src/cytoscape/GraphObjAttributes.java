@@ -336,7 +336,7 @@ public String toString ()
 {
   StringBuffer sb = new StringBuffer ();
   sb.append ("-- canonicalNames\n" + nameFinder + "\n");
-  sb.append ("-- atributes\n");
+  sb.append ("-- attributes\n");
   String [] names = getAttributeNames ();
   for (int i=0; i < names.length; i++) {
     sb.append ("attribute " + i + ": " + names [i] + "\n");
