@@ -23,7 +23,9 @@ OBJS = CytoscapeConfig.class \
 #        VizChooserClient.class \
 
 
-default: checkkEnv objs dataDirectories \
+default: checkkEnv objs subdirectories
+
+subdirectories: dataDirectories \
          vizmapDirectory dialogsDirectory \
          layoutDirectory utilDirectory
 
