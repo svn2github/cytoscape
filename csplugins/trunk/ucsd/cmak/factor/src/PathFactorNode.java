@@ -582,10 +582,12 @@ public class PathFactorNode extends FactorNode
      */
     protected double maximizeSign(List signs, ProbTable k, State fixedSign)
     {
+        int numSign = signs.size();
+
         // signs.size() == 0 only if a factor node is connected to one
         // sign variable and that sign variable is the target.
         // Hence, its max value is determined by k and fixedSign.
-        if(! (signs.size() > 0))
+        if(! (numSign > 0))
         {
             if(fixedSign == State.PLUS)
             {
@@ -601,10 +603,10 @@ public class PathFactorNode extends FactorNode
         
         // Generate all combinations of valid signs given
         // the number of sign variables
-        BitVector[][] validCombos = enumerate(signs.size());
+        short[][] validCombos = enumerate(numSign);
 
-        BitVector[] plusCombos = validCombos[0];
-        BitVector[] minusCombos = validCombos[1];
+        short[] plusCombos = validCombos[0];
+        short[] minusCombos = validCombos[1];
 
         // if one of the signs is fixed to be -1, then the
         // of signs is flipped, hence the validCombos are swapped
@@ -618,8 +620,8 @@ public class PathFactorNode extends FactorNode
         }
         
         // Copy sign probabilities into an array for better performance
-        double[] probPlus = new double[signs.size()];
-        double[] probMinus = new double[signs.size()];
+        double[] probPlus = new double[numSign];
+        double[] probMinus = new double[numSign];
         for(int x=0, n=signs.size(); x < n; x++)
         {
             ProbTable pt = (ProbTable) signs.get(x);
@@ -629,10 +631,10 @@ public class PathFactorNode extends FactorNode
                 
         // compute the probability of each combo of signs
 
-        double maxPlus = _maxComboProb(k.prob(State.PLUS), plusCombos,
+        double maxPlus = _maxComboProb(k.prob(State.PLUS), plusCombos, numSign,
                                        probPlus, probMinus);
 
-        double maxMinus = _maxComboProb(k.prob(State.MINUS), minusCombos,
+        double maxMinus = _maxComboProb(k.prob(State.MINUS), minusCombos, numSign,
                                         probPlus, probMinus);
 
         // return the max value.
@@ -655,15 +657,39 @@ public class PathFactorNode extends FactorNode
      *        The i-th element is the probability that i-th bit in the combo is 0
      * @return the probability of the most likely combi
      */
-    private double _maxComboProb(double initialProb, BitVector[] combos,
+    private double _maxComboProb(double initialProb, short[] combos, int numSign,
                                  double[] probPlus, double[] probMinus)
     {
         double[] vals = new double[combos.length];
         Arrays.fill(vals, initialProb);
-        
+        int i = 0;
+        // compute the probability of each sign combo
         for(int v=0; v < combos.length; v++)
         {
-            for(int bit=0, numBits=combos[v].size(); bit < numBits; bit++)
+            logger.fine("combo: " + combos[v]);
+            
+            // if the i-th bit in a combo is 1, then multiply the i-th
+            // val by the i-th plus probability.  If the bit is 0, multiply
+            // the i-th val by the i-th minus probability
+            int combo = combos[v];
+            for(i=0; i < numSign; i++)
+            {
+                logger.fine("i=" + i + " combo=" + combo);
+
+                if((0x1 & combo) == 1)
+                {
+                    vals[i] = probPlus[i];
+                }
+                else
+                {
+                    vals[i] = probMinus[i];
+                }
+
+                combo = combo>>1;
+            }
+
+            /*
+            for(int bit=0, numBits=numSign; bit < numBits; bit++)
             {
                 if(combos[v].getQuick(bit) == true)
                 {
@@ -674,6 +700,7 @@ public class PathFactorNode extends FactorNode
                     vals[v] *= probPlus[bit];
                 }
             }
+            */
         }
         
         // Sort values into ascending numerical order
@@ -698,41 +725,42 @@ public class PathFactorNode extends FactorNode
      * -1 in the configuration.  The i-th bit is 0 if the i-th sign variable
      * is +1 in the configuration.
      */
-    protected BitVector[][] enumerate(int numSigns)
+    protected short[][] enumerate(int numSigns)
     {
+        
         /*
         if(numSigns <= maxPathLen)
         {
             return (BitVector[][]) comboCache.get(numSigns);
         }
         */
-        int numCombos = (int) Math.pow(2, numSigns - 1);
+        short numCombos = (short) Math.pow(2, numSigns - 1);
 
-        BitVector[][] combos = new BitVector[2][numCombos];
-        BitVector[] plusCombos = combos[0];
-        BitVector[] minusCombos = combos[1];
+        short[][] combos = new short[2][numCombos];
+        short[] plusCombos = combos[0];
+        short[] minusCombos = combos[1];
 
-        for(int x=0, n=2*numCombos, p=0, m=0; x < n; x++)
+        for(short x=0, n=(short) (2*numCombos), p=0, m=0; x < n; x++)
         {
             int par = parity(x);
             if(par == ODD)
             {
-                /*
+                
                 logger.finest("adding odd  combo: x=" + x + 
                                    " p=" + p + " n=" + n +
                                    " parity=" + parity(x));
-                */
-                plusCombos[p] = new BitVector(new long[] {x}, numSigns);
+                
+                plusCombos[p] = x;
                 p++;
                 
             }
             else
             {
-                /*logger.finest("adding even combo: x=" + x + 
+                logger.finest("adding even combo: x=" + x + 
                                    " m=" + m + " n=" + n +
                                    " parity=" + parity(x));
-                */
-                minusCombos[m] = new BitVector(new long[] {x}, numSigns);
+                
+                minusCombos[m] = x;
                 m++;
             
             }
@@ -746,6 +774,8 @@ public class PathFactorNode extends FactorNode
      */
     protected double maximizeSign(List signs, State pORm)
     {
+        int numSign = signs.size();
+        
         if(pORm != State.PLUS && pORm != State.MINUS)
         {
             throw new IllegalArgumentException(pORm + " is not PLUS or MINUS");
@@ -758,11 +788,11 @@ public class PathFactorNode extends FactorNode
         
         // Generate all combinations of valid signs given
         // the state pORm
-        BitVector[] validCombos = enumerate(signs.size(), pORm);
+        short[] validCombos = enumerate(numSign, pORm);
 
         // Copy sign probabilities into an array for better performance
-        double[] probPlus = new double[signs.size()];
-        double[] probMinus = new double[signs.size()];
+        double[] probPlus = new double[numSign];
+        double[] probMinus = new double[numSign];
         for(int x=0, n=signs.size(); x < n; x++)
         {
             ProbTable pt = (ProbTable) signs.get(x);
@@ -770,7 +800,7 @@ public class PathFactorNode extends FactorNode
             probMinus[x] = pt.prob(State.MINUS);
         }
         
-        double max = _maxComboProb(1, validCombos,
+        double max = _maxComboProb(1, validCombos, numSign,
                                    probPlus, probMinus);
         return max;
     }
@@ -786,7 +816,7 @@ public class PathFactorNode extends FactorNode
      * -1 in the configuration.  The i-th bit is 0 if the i-th sign variable
      * is +1 in the configuration.
      */
-    protected BitVector[] enumerate(int numSigns, State pORm)
+    protected short[] enumerate(int numSigns, State pORm)
     {
         /*
         if(numSigns <= maxPathLen)
@@ -802,8 +832,8 @@ public class PathFactorNode extends FactorNode
         }
         */
         
-        int numCombos = (int) Math.pow(2, numSigns - 1);
-        BitVector[] combos = new BitVector[numCombos];
+        short numCombos = (short) Math.pow(2, numSigns - 1);
+        short[] combos = new short[numCombos];
 
         int par;
 
@@ -816,11 +846,11 @@ public class PathFactorNode extends FactorNode
             par = EVEN;
         }
 
-        for(int x=0, n=2*numCombos, i=0; x < n; x++)
+        for(short x=0, n=(short) (2*numCombos), i=0; x < n; x++)
         {
             if(parity(x) == par)
             {
-                combos[i] = new BitVector(new long[] {x}, numSigns);
+                combos[i] = x;
                 i++;
             }
         }
@@ -865,7 +895,7 @@ public class PathFactorNode extends FactorNode
       w ^= w>>4;
       w ^= w>>8;
       w ^= w>>16;
-
+      
       return w & 1;
     }
 

@@ -1,7 +1,7 @@
 import java.util.List;
 import java.util.ArrayList;
 
-import cern.colt.bitvector.BitVector;
+//import cern.colt.bitvector.BitVector;
 
 public class CachedPathFactorNode extends PathFactorNode
 {
@@ -35,28 +35,28 @@ public class CachedPathFactorNode extends PathFactorNode
             
     }
 
-    protected BitVector[][] enumerate(int numSigns)
+    protected short[][] enumerate(int numSigns)
     {
         if(numSigns <= MAX_PATH_LEN)
         {
-            return (BitVector[][]) _signCache.get(numSigns);
+            return (short[][]) _signCache.get(numSigns);
         }
 
         return super.enumerate(numSigns);
         
     }
 
-    protected BitVector[] enumerate(int numSigns, State pORm)
+    protected short[] enumerate(int numSigns, State pORm)
     {
         if(numSigns <= MAX_PATH_LEN)
         {
             if(pORm == State.PLUS)
             {
-                return (BitVector[]) _signCachePLUS.get(numSigns);
+                return (short[]) _signCachePLUS.get(numSigns);
             }
             else if(pORm == State.MINUS)
             {
-                return (BitVector[]) _signCacheMINUS.get(numSigns);
+                return (short[]) _signCacheMINUS.get(numSigns);
             }
         }
         return super.enumerate(numSigns, pORm);

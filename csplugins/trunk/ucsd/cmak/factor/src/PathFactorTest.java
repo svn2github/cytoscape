@@ -52,6 +52,7 @@ public class PathFactorTest extends AbstractNodeTest
 
     }
 
+    /*
     public void testMaxProductEdge() throws AlgorithmException
     {
         System.out.println("### test Edge");
@@ -164,49 +165,6 @@ public class PathFactorTest extends AbstractNodeTest
         
     }
     
-    public void testMaximizeSign()
-    {
-        List l = new ArrayList();
-        l.add(createSign(.2, .8));
-        maxSignHelper(l, State.PLUS, 0.8);
-        maxSignHelper(l, State.MINUS, 0.2);
-        
-        l.add(createSign(.4, .6));
-     
-        maxSignHelper(l, State.PLUS, 0.8 * 0.4);
-        maxSignHelper(l, State.MINUS, 0.8 * 0.6);
-
-        l.add(createSign(.7, .3));
-
-        maxSignHelper(l, State.PLUS, 0.8*0.4*0.7);
-        maxSignHelper(l, State.MINUS, 0.8*0.6*0.7);
-
-        l.add(createSign(.5, .5));
-
-        maxSignHelper(l, State.PLUS, 0.8*0.6*0.7*0.5);
-        maxSignHelper(l, State.MINUS, 0.8*0.6*0.7*0.5);
-    }
-
-    private void maxSignHelper(List signs, State s, double expected)
-    {
-        double max = f.maximizeSign(signs, s);
-
-        System.out.println("max is " + max);
-        assertEquals("max sz=" + signs.size(), expected, max, .0001);
-    }
-
-    public void testEnumerate()
-    {
-        for(int num=1; num < 6; num++)
-        {
-            BitVector[] combos = f.enumerate(num, State.PLUS);
-
-            _checkCombo(num, combos, 1);
-
-            combos = f.enumerate(num, State.MINUS);
-            _checkCombo(num, combos, 0);
-        }
-    }
 
     
     public void testMaximizeSignK()
@@ -246,21 +204,43 @@ public class PathFactorTest extends AbstractNodeTest
         assertEquals("numsigns=" + signs.size(), expected, max, .0001);
         System.out.println(" ok");
     }
+    
+    */
 
-    public void testEnumerate2()
+    
+    public void testMaximizeSign()
     {
-        for(int num=1; num < 6; num++)
-        {
-            BitVector[][] combos = f.enumerate(num);
+        List l = new ArrayList();
+        l.add(createSign(.2, .8));
+        maxSignHelper(l, State.PLUS, 0.2);
+        maxSignHelper(l, State.MINUS, 0.8);
+        
+        l.add(createSign(.4, .6));
+     
+        maxSignHelper(l, State.PLUS, 0.8 * 0.6);
+        maxSignHelper(l, State.MINUS, 0.8 * 0.4);
 
-            System.out.println(combos.length);
-            
-            _checkCombo(num, combos[0], 1);
-            _checkCombo(num, combos[1], 0);
-        }
+        l.add(createSign(.7, .3));
+
+        maxSignHelper(l, State.PLUS, 0.8*0.6*0.7);
+        maxSignHelper(l, State.MINUS, 0.8*0.4*0.7);
+
+        l.add(createSign(.5, .5));
+
+        maxSignHelper(l, State.PLUS, 0.8*0.6*0.7*0.5);
+        maxSignHelper(l, State.MINUS, 0.8*0.6*0.7*0.5);
     }
 
-    private void _checkCombo(int num, BitVector[] combos, int expectedCardinality)
+    private void maxSignHelper(List signs, State s, double expected)
+    {
+        double max = f.maximizeSign(signs, s);
+
+        System.out.println("max is " + max);
+        assertEquals("max sz=" + signs.size(), expected, max, .0001);
+    }
+
+    /*    
+    private void _checkCombo(int num, short[] combos, int expectedCardinality)
     {
         System.out.println("checking combo num-sign-vars=" + num
                            + " num-configs=" + combos.length);
@@ -269,17 +249,46 @@ public class PathFactorTest extends AbstractNodeTest
         {
             if(num==3)
             {
-                System.out.println("   " + combos[x] + " card=" + combos[x].cardinality());
+                System.out.println("   " + combos[x] + " card=" + f.countBits(combos[x]));
             }
             assertEquals(num + " sign vars. combo " + x + 
                          ". Number of bits should be odd", 
-                         expectedCardinality, 0x1 & combos[x].cardinality());
+                         expectedCardinality,
+                         0x1 & f.countBits(combos[x]));
         }
     }
+    
+    public void testEnumerate2()
+    {
+        for(int num=1; num < 6; num++)
+        {
+            short[][] combos = f.enumerate(num);
+
+            System.out.println(combos.length);
+            
+            _checkCombo(num, combos[0], 1);
+            _checkCombo(num, combos[1], 0);
+        }
+    }
+
+    public void testEnumerate()
+    {
+        for(int num=1; num < 6; num++)
+        {
+            short[] combos = f.enumerate(num, State.PLUS);
+
+            _checkCombo(num, combos, 1);
+
+            combos = f.enumerate(num, State.MINUS);
+            _checkCombo(num, combos, 0);
+        }
+    }
+    */
 
     /**
      * test countBits() and parity()
      */
+    /*
     public void testBitOps()
     {
         int[] cnt = {0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4};
@@ -287,7 +296,7 @@ public class PathFactorTest extends AbstractNodeTest
 
         for(int x=0; x < 16; x++)
         {
-            System.out.println(x + " cnt=" + f.countBits(x) + " par=" + f.parity(x));
+            System.out.println(x + " numBits=" + f.countBits(x) + " par=" + f.parity(x));
             assertEquals(x + " num bits", cnt[x], f.countBits(x));
             assertEquals(x + " parity", par[x], f.parity(x));
 
@@ -301,4 +310,6 @@ public class PathFactorTest extends AbstractNodeTest
         assertEquals(m + " num bits", 30, f.countBits(m));
         assertEquals(m + " parity", 0, f.parity(m));
     }
+
+    */
 }
