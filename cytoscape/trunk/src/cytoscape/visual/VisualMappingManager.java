@@ -171,12 +171,14 @@ public class VisualMappingManager extends SubjectBase {
                 }
                 double existingHeight = nodeView.getHeight();
                 double newHeight = myNodeApp.getHeight();
-                if (newHeight - existingHeight > .99) {
+                double difference = newHeight - existingHeight;
+                if (Math.abs(difference) > .1) {
                     nodeView.setHeight(newHeight);
                 }
                 double existingWidth = nodeView.getWidth();
                 double newWidth = myNodeApp.getWidth();
-                if (newWidth - existingWidth > .99) {
+                difference = newWidth - existingWidth;
+                if (Math.abs(difference) > .1) {
                     nodeView.setWidth(newWidth);
                 }
                 int existingShape = nodeView.getShape();
