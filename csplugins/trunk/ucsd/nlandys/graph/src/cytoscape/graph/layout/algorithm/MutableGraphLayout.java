@@ -36,8 +36,8 @@ public interface MutableGraphLayout extends GraphLayout
    * <blockquote><code>setNodePosition(nodeIndex, x, y)</code></blockquote>
    * then the subsequent expressions
    * <blockquote>
-   * <nobr><code>x == getNodePosition(nodeIndex).getX()</code></nobr><br />
-   * <nobr><code>y == getNodePosition(nodeIndex).getY()</code></nobr>
+   * <nobr><code>x == getNodePosition(nodeIndex, true)</code></nobr><br />
+   * <nobr><code>y == getNodePosition(nodeIndex, false)</code></nobr>
    * </blockquote>
    * both evaluate to <code>true</code> (assuming that <code>nodeIndex</code>,
    * <code>x</code>, and <code>y</code> are allowable parameters).<p>
