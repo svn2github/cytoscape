@@ -492,7 +492,7 @@ public final class IntBTree
    *
    *   returns: 6 (the new size of leftArr)
    *
-   *   If I need to return more values, I can use thisArr[returnVal] for
+   *   If I need to return more values, I can use leftArr[returnVal] for
    *   example.
    */
   private final int shiftFromLeftSibling(final int holeInx,
@@ -504,8 +504,54 @@ public final class IntBTree
     returnThis = m_minBranches + ((leftLen - m_minBranches) / 2);
     return returnThis;
   }
-                                                 
-                                                 
+
+  /*
+   * I give an example:
+   *
+   *
+   *   INPUTS
+   *   ======
+   *
+   *   holeInx: 1
+   *
+   *            +---+---+---+---+---+---+---+---+---+
+   *   thisArr: | 9 |   | 1 | 5 |-2 |   |   |   |   |
+   *            +---+---+---+---+---+---+---+---+---+
+   *
+   *   (The number of elements in thisArr is assumed to be m_minBranches.)
+   *
+   *             +---+---+---+---+---+---+---+---+---+
+   *   rightArr: | 8 | 3 | 2 | 4 | 7 | 6 | 0 |-1 |   |
+   *             +---+---+---+---+---+---+---+---+---+
+   *
+   *   rightLen: 8
+   *
+   *
+   *   OUTPUTS
+   *   =======
+   *
+   *            +---+---+---+---+---+---+---+---+---+
+   *   thisArr: | 9 | 1 | 5 |-2 | 8 | 3 |   |   |   |
+   *            +---+---+---+---+---+---+---+---+---+
+   *
+   *             +---+---+---+---+---+---+---+---+---+
+   *   rightArr: | 2 | 4 | 7 | 6 | 0 |-1 |   |   |   |
+   *             +---+---+---+---+---+---+---+---+---+
+   *
+   *   returns: 6 (the new size of rightArr)
+   *
+   *   If I need to return more values, I can use rightArr[returnVal] for
+   *   example.
+   */
+  private final int shiftFromRightSibling(final int holeInx,
+                                          final int[] thisArr,
+                                          final int[] rightArr,
+                                          final int rightLen)
+  {
+    final int returnThis;
+    returnThis = m_minBranches + ((rightLen - m_minBranches) / 2);
+    return returnThis;
+  }
 
   /**
    * Returns the number of entries of the integer x in this tree.
