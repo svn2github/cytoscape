@@ -41,11 +41,15 @@ private void read () throws Exception
   thesaurus = new Thesaurus (species);
 
   for (int i=1; i < lines.length; i++) {
-    if (lines [i].trim().startsWith ("#")) continue;
+    String line = lines [i].trim();
+    if (line.startsWith ("#")) continue;
+    if (line.length () < 3) continue;
     String [] tokens = lines [i].split ("\\s+", 0);
     if (tokens.length < 2) continue;  
     String canonicalName = tokens [0].trim();
     String commonName = tokens [1].trim();
+    if (canonicalName.length () == 0) continue;
+    if (commonName.length () == 0) continue;
     thesaurus.add (canonicalName, commonName);
     for (int t=2; t < tokens.length; t++) 
       thesaurus.addAlternateCommonName (canonicalName, tokens [t].trim());
