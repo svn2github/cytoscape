@@ -6,6 +6,7 @@
    <property name = "build.compiler" value = "modern"/>
    <property name = "lib" location = "../../../../cytoscape/lib"/>
    <property name = "jar"  location = "jar"/>
+   <property name = "doc" location = "doc"/>
 
    <property name="cytoscape.plugin.dir" value="../../../../cytoscape/plugins"/>
 
@@ -53,4 +54,13 @@
           <arg file = "${jar}/metanode.jar"/>
       </java>
     </target>
+
+   <!-- Target to Run JavaDoc -->
+    <target name="doc" description="Runs JavaDoc.">
+        <javadoc packagenames="metaNodeViewer.*" sourcepath="src" source="1.4" destdir="doc">
+        <link href = "http://java.sun.com/j2se/1.4.2/docs/api/"/>
+        <link href = "http://csbi.sourceforge.net/API/"/>
+       </javadoc>
+    </target>
+
 </project>

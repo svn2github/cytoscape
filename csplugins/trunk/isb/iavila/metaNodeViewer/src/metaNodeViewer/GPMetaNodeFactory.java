@@ -27,6 +27,7 @@
  * @since 2.0
  */
 package metaNodeViewer;
+
 import metaNodeViewer.data.*;
 import java.util.*;
 import giny.model.*;
