@@ -77,7 +77,7 @@ public interface TaskMonitor {
      * in a catch block).
      *
      * @param t                an exception that occurred while processing of
-     *                         the task; may be <code>null</code>.
+     *                         the task.
      * @param userErrorMessage a user-presentable error message describing the
      *                         nature of the exception; may be
      *                         <code>null</code>.
