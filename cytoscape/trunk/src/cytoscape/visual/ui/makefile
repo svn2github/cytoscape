@@ -9,7 +9,7 @@ JC=javac
 
 .SUFFIXES: .java .class
 .java.class: 
-	$(JC) -g $<
+	$(JC) $<
 
 OBJS = 	VizMapTab.class \
 	VizMapUI.class \

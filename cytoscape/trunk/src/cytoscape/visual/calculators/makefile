@@ -9,7 +9,7 @@ JC=javac
 
 .SUFFIXES: .java .class
 .java.class: 
-	$(JC) -source 1.4 -g $<
+	$(JC) -source 1.4 $<
 
 OBJS = GenericEdgeArrowCalculator.class \
        GenericEdgeColorCalculator.class \
