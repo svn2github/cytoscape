@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import y.view.LineType;
+import y.view.Arrow;
 
 import cytoscape.GraphObjAttributes;
 import cytoscape.data.*;
@@ -31,6 +32,7 @@ public class VisualPropertiesDialog extends JDialog {
     ShapePopupButton shapeDefault;
     IntegerEntryField sizeDefault;
     LineTypePopupButton lineTypeDefault;
+    IconPopupButton arrowDefault;
     AttributeMapper aMapper;
     MutableColor nColor;
     MutableColor bColor;
@@ -136,18 +138,23 @@ public VisualPropertiesDialog (Frame parentFrame,
   gridbag.setConstraints(sizeDefault,c);
   mainPanel.add(sizeDefault);
 
+  initializeArrowDefault();
+  c.gridx=0;
+  c.gridy=8;
+  gridbag.setConstraints(arrowDefault,c);
+  mainPanel.add(arrowDefault);
 
   JButton applyButton = new JButton ("Apply");
   applyButton.addActionListener (new ApplyAction ());
   c.gridx=0;
-  c.gridy=8;
+  c.gridy=9;
   gridbag.setConstraints(applyButton,c);
   mainPanel.add (applyButton);
 
   JButton cancelButton = new JButton ("Cancel");
   cancelButton.addActionListener (new CancelAction ());
   c.gridx=1;
-  c.gridy=8;
+  c.gridy=9;
   gridbag.setConstraints(cancelButton,c);
   mainPanel.add (cancelButton);
 
@@ -170,6 +177,7 @@ public class ApplyAction extends AbstractAction {
       Object o5 = aMapper.setDefaultValue(VizMapperCategories.NODE_HEIGHT, sizeDefault.getInteger());
       Object o6 = aMapper.setDefaultValue(VizMapperCategories.NODE_WIDTH, sizeDefault.getInteger());
       Object o7 = aMapper.setDefaultValue(VizMapperCategories.NODE_BORDER_COLOR, bColor.getColor());
+      Object o8 = aMapper.setDefaultValue(VizMapperCategories.EDGE_TARGET_DECORATION, (Arrow)arrowDefault.getIconObject());
 
       EdgeArrowColor.removeThenAddEdgeColor(aMapper,"pp",ppColor.getColor());
       EdgeArrowColor.removeThenAddEdgeColor(aMapper,"pd",pdColor.getColor());
@@ -221,6 +229,23 @@ public class CancelAction extends AbstractAction {
 	}
     }
 
+
+    private void initializeArrowDefault() {
+	int ns = ((Integer)aMapper.getDefaultValue(VizMapperCategories.NODE_HEIGHT)).intValue();
+	Object currentArrow =  aMapper.getDefaultValue(VizMapperCategories.EDGE_SOURCE_DECORATION);
+	HashMap arrowToString = MiscDialog.getArrowToStringHashMap(ns);
+	HashMap stringToArrow = MiscDialog.getStringToArrowHashMap(ns);
+	ImageIcon [] icons = MiscDialog.getArrowIcons();
+	arrowDefault =
+	    new IconPopupButton ("Default Arrow",
+				 "Arrow",
+				 arrowToString,
+				 stringToArrow,
+				 icons,
+				 currentArrow,
+				 this);
+    }
+    
 } // class VisualPropertiesDialog
 
 

@@ -24,7 +24,9 @@ OBJS = ColorPopupButton.class \
         GeneralColorDialogListener.class \
         ShapePopupButton.class \
         IntegerEntryField.class \
-        LineTypePopupButton.class
+        LineTypePopupButton.class \
+        IconPopupButton.class \
+        MiscDialog.class
 
 
 default: objs 
