@@ -20,8 +20,9 @@ public interface Stoppable {
      * multiple concurrent calls to <code>stop()</code> should all block until
      * the underlying process finishes.<p>
      * The difference between <code>Haltable.halt()</code> and
-     * <code>Stoppable.stop()</code> is that <code>halt()</code> is non-blocking;
-     * <code>halt()</code> does not wait for a process to stop before it returns.
+     * <code>Stoppable.stop()</code> is that <code>halt()</code> is
+     * non-blocking; <code>halt()</code> does not wait for a process to stop
+     * before it returns.
      */
     public void stop();
 
