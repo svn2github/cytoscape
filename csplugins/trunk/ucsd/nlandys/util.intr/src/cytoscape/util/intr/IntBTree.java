@@ -375,9 +375,10 @@ public final class IntBTree
           if (wholeLeafNodes > 0)
             returnThis = currentLeafNode.values[currentNodeInx];
           else
-            for (int i = currentNodeInx; i < currentLeafNode.sliceCount; i++)
-              if (currentLeafNode.values[i] >= xMin) { // Don't check max.
-                returnThis = currentLeafNode.values[i]; break; }
+            for (; currentNodeInx < currentLeafNode.sliceCount;
+                 currentNodeInx++)
+              if (currentLeafNode.values[currentNodeInx] >= xMin) {
+                returnThis = currentLeafNode.values[currentNodeInx]; break; }
           if (++currentNodeInx == currentLeafNode.sliceCount) {
             if (wholeLeafNodes > 0) wholeLeafNodes--;
             currentLeafNode = computeNextLeafNode(); currentNodeInx = 0; }
