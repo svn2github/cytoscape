@@ -26,7 +26,13 @@ final class NodeDepository
   void recycleNode(FNode node)
   {
     if (m_size == m_nodeStack.length) {
-      FNode[] newArr = new FNode[m_nodeStack * 2 + 1];
+      final int newArrSize = (int)
+        Math.min((long) Integer.MAX_VALUE,
+                 ((long) m_nodeStack.length) * 2l + 1l);
+      if (newArrSize == m_nodeStack.length)
+        throw new IllegalStateException
+          ("unable to allocate large enough array");
+      FNode[] newArr = new FNode[newArrSize];
       System.arraycopy(m_nodeStack, 0, newArr, 0, m_nodeStack.length);
       m_nodeStack = newArr; }
     m_nodeStack[m_size++] = node;

@@ -26,7 +26,13 @@ final class EdgeDepository
   void recycleEdge(FEdge edge)
   {
     if (m_size == m_edgeStack.length) {
-      FEdge[] newArr = new FEdge[m_edgeStack * 2 + 1];
+      final int newArrSize = (int)
+        Math.min((long) Integer.MAX_VALUE,
+                 ((long) m_edgeStack.length) * 2l + 1l);
+      if (newArrSize == m_edgeStack.length)
+        throw new IllegalStateException
+          ("unable to allocate large enough array");
+      FEdge[] newArr = new FEdge[newArrSize];
       System.arraycopy(m_edgeStack, 0, newArr, 0, m_edgeStack.length);
       m_edgeStack = newArr; }
     m_edgeStack[m_size++] = edge;
