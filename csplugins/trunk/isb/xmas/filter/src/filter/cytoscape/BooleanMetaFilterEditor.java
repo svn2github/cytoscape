@@ -37,6 +37,7 @@ public class BooleanMetaFilterEditor
   protected JList filterList;
 		protected JComboBox comparisonBox;
 		protected Set filters;
+		protected Vector listModel;
 		protected BooleanMetaFilter filter;	
   protected String DEFAULT_FILTER_NAME = "BooleanMeta: ";
   protected String RESET_FITLER_NAME;
@@ -107,15 +108,15 @@ public class BooleanMetaFilterEditor
 
 		private void updateFilterList(){
 						//filterBox.removeAllItems();
-						Vector filterVector = new Vector();
+						listModel = new Vector();
 						Iterator filterNameIt = this.filters.iterator();
 						while(filterNameIt.hasNext()){
 										Filter nextFilter = FilterManager.defaultManager().getFilter((String)filterNameIt.next());
 										if(nextFilter != null){
-														filterVector.add(nextFilter);
+														listModel.add(nextFilter);
 										}
 						}
-						filterList.setListData(filterVector);
+						filterList.setListData(listModel);
 						filterList.addListSelectionListener(this);
 						filterList.clearSelection();	
 		}
@@ -210,12 +211,14 @@ public class BooleanMetaFilterEditor
 
 		public void setFilters(Object [] array){
 						updateFilterList();
-						filterList.setValueIsAdjusting(true);
+						//filterList.setValueIsAdjusting(true);
 						for(int idx=0;idx<array.length;idx++){
-										System.out.println(array[idx]);
-										filterList.setSelectedValue(array[idx],false);
+										int index = listModel.indexOf(array[idx]);
+										if(index > -1){
+														filterList.addSelectionInterval(index,index);
+										}
 						}
-						filterList.setValueIsAdjusting(false);
+						//filterList.setValueIsAdjusting(false);
 		}
 
 		public String getComparison(){
