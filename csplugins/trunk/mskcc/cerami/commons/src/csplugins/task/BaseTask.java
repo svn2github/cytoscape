@@ -262,9 +262,8 @@ public abstract class BaseTask extends Thread implements Task {
 
     /**
      * Sets the Done Flag to True.
-     * This method is protected, and may only be called by the task itself.
      */
-    protected void setDone() {
+    public void setDone() {
         this.taskIsDone = true;
     }
 
@@ -272,11 +271,10 @@ public abstract class BaseTask extends Thread implements Task {
      * Sets the indeterminate flag.
      * Set this to true if you have no idea how long the task will take
      * to complete.
-     * This method is protected, and may only be called by the task itself.
      *
      * @param indeterminate Indeterminate Flag.
      */
-    protected void setIndeterminate(boolean indeterminate) {
+    public void setIndeterminate(boolean indeterminate) {
         this.indeterminate = indeterminate;
     }
 
@@ -284,11 +282,10 @@ public abstract class BaseTask extends Thread implements Task {
      * Sets current value of progress.
      * For example, if maxProgressValue is 10, and progressValue is 5,
      * the task is 50% complete.
-     * This method is protected, and may only be called by the task itself.
      *
      * @param progressValue Current Progress Value.
      */
-    protected void setProgressValue(int progressValue) {
+    public void setProgressValue(int progressValue) {
         this.progressValue = progressValue;
         this.setIndeterminate(false);
     }
@@ -297,11 +294,10 @@ public abstract class BaseTask extends Thread implements Task {
      * Sets maxium value of progress.
      * For example, if maxProgressValue is 10, and progressValue is 5,
      * the task is 50% complete.
-     * This method is protected, and may only be called by the task itself.
      *
      * @param maxProgressValue Maximum Progress Value.
      */
-    protected void setMaxProgressValue(int maxProgressValue) {
+    public void setMaxProgressValue(int maxProgressValue) {
         this.maxProgressValue = maxProgressValue;
         this.setIndeterminate(false);
     }
@@ -312,11 +308,10 @@ public abstract class BaseTask extends Thread implements Task {
      * For example, a long-running task that parses XML data might have a
      * progress message, such as, "Validating XML document against XML Schema.",
      * followed by a second message, such as "Validation Passed."
-     * This method is protected, and may only be called by the task itself.
      *
      * @param progressMessage Progress Message String.
      */
-    protected void setProgressMessage(String progressMessage) {
+    public void setProgressMessage(String progressMessage) {
         this.progressMessage = progressMessage;
     }
 
@@ -325,7 +320,7 @@ public abstract class BaseTask extends Thread implements Task {
      *
      * @param taskTitle Human Readable Task Title.
      */
-    protected void setTaskTitle (String taskTitle) {
+    public void setTaskTitle (String taskTitle) {
         this.taskTitle = taskTitle;
     }
 
@@ -333,21 +328,19 @@ public abstract class BaseTask extends Thread implements Task {
      * Sets estimated amount of time remaining (in milli-seconds).
      * This value can be displayed to the end-user, but note that the value
      * is only an esimate.
-     * This method is protected, and may only be called by the task itself.
      *
      * @param estimatedTimeRemaining Estimated Time Remaining.
      */
-    protected void setEstimatedTimeRemaining(long estimatedTimeRemaining) {
+    public void setEstimatedTimeRemaining(long estimatedTimeRemaining) {
         this.estimatedTimeRemaining = estimatedTimeRemaining;
     }
 
     /**
      * Sets the error flag.
-     * This method is protected, and may only be called by the task itself.
      *
      * @param flag Error Flag.
      */
-    protected void setErrorOccured(boolean flag) {
+    public void setErrorOccured(boolean flag) {
         this.errorFlag = flag;
     }
 
@@ -356,7 +349,7 @@ public abstract class BaseTask extends Thread implements Task {
      *
      * @param errorMsg Human Readable Error Message.
      */
-    protected void setHumanReadableErrorMessage(String errorMsg) {
+    public void setHumanReadableErrorMessage(String errorMsg) {
         this.humanErrorMessage = errorMsg;
     }
 
@@ -365,11 +358,10 @@ public abstract class BaseTask extends Thread implements Task {
      * Since the task is running in a separate thread, we need a convenient
      * way to capture exceptions.  Any exception thrown by the task is
      * available via this method.
-     * This method is protected, and may only be called by the task itself.
      *
      * @param internalException Throwable Object.
      */
-    protected void setException(Throwable internalException) {
+    public void setException(Throwable internalException) {
         this.internalException = internalException;
     }
 
