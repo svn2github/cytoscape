@@ -1,7 +1,7 @@
 package cytoscape.util.intr;
 
 /**
- * This is actually a B*-tree.
+ * This is actually a B+-tree.
  */
 public final class IntBTree
 {
@@ -9,13 +9,13 @@ public final class IntBTree
   // This quantity must be at least 3.
   private final static int MAX_BRANCHES = 3;
 
-  private final int m_min_capacity;
+//   private final int m_min_capacity;
   private final int[] m_buff; // Poor man's algorithms; optimize later.
   private Node m_root;
 
   public IntBTree()
   {
-    m_min_capacity = (int) Math.ceil(((double) MAX_BRANCHES) / 2.0d);
+//     m_min_capacity = (int) Math.ceil(((double) MAX_BRANCHES) / 2.0d);
     m_buff = new int[MAX_BRANCHES + 1];
     m_root = new Node(MAX_BRANCHES, true);
   }
@@ -233,6 +233,42 @@ public final class IntBTree
   private boolean isLeafNode(Node n)
   {
     return n.data == null;
+  }
+
+  public void debugPrint()
+  {
+    java.util.Vector v = new java.util.Vector();
+    v.add(m_root);
+    while (true) {
+      v = debugPrint_level(v);
+      if (v.size() == 0) break; }
+  }
+
+  private java.util.Vector debugPrint_level(java.util.Vector v)
+  {
+    java.util.Vector returnThis = new java.util.Vector();
+    while (v.size() > 0) {
+      Node n = (Node) v.remove(0);
+      if (!isLeafNode(n)) {
+        for (int i = 0; i < n.sliceCount; i++) {
+          returnThis.add(n.data.children[i]); } }
+      debugPrint_node(n); }
+    System.out.println();
+    return returnThis;
+  }
+
+  private void debugPrint_node(Node n)
+  {
+    if (isLeafNode(n)) {
+      System.out.print(" [.");
+      for (int i = 0; i < n.sliceCount; i++) {
+        System.out.print(n.values[i] + "."); }
+      System.out.print("]"); }
+    else {
+      System.out.print(" <.");
+      for (int i = 0; i < n.sliceCount - 1; i++) {
+        System.out.print(n.data.splitVals[i] + "."); }
+      System.out.print(">"); }
   }
 
   private final static class Node
