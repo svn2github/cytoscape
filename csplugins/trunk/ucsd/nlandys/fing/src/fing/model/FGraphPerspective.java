@@ -482,9 +482,12 @@ class FGraphPerspective implements GraphPerspective
     throw new IllegalStateException("not implemented yet");
   }
 
-  public Node getNode(int perspNodeInx)
+  public Node getNode(int rootGraphNodeInx)
   {
-    throw new IllegalStateException("not implemented yet");
+    if (!(rootGraphNodeInx < 0)) return null;
+    final int nativeNodeInx = m_rootToNativeNodeInxMap.get(~rootGraphNodeInx);
+    if (nativeNodeInx < 0 || nativeNodeInx == Integer.MAX_VALUE) return null;
+    return m_root.getNode(rootGraphNodeInx);
   }
 
   public int getIndex(Edge edge)

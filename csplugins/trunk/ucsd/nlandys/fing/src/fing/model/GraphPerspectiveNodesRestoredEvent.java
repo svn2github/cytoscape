@@ -30,7 +30,7 @@ final class GraphPerspectiveNodesRestoredEvent
   {
     final Node[] returnThis = new Node[m_restoredNodeInx.length];
     for (int i = 0; i < returnThis.length; i++)
-      returnThis[i] = m_persp.getNode(m_restoredNodeInx[i]);
+      returnThis[i] = m_persp.getRootGraph().getNode(m_restoredNodeInx[i]);
     return returnThis;
   }
 

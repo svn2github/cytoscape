@@ -30,7 +30,7 @@ final class GraphPerspectiveEdgesRestoredEvent
   {
     final Edge[] returnThis = new Edge[m_restoredEdgeInx.length];
     for (int i = 0; i < returnThis.length; i++)
-      returnThis[i] = m_persp.getEdge(m_restoredEdgeInx[i]);
+      returnThis[i] = m_persp.getRootGraph().getEdge(m_restoredEdgeInx[i]);
     return returnThis;
   }
 
