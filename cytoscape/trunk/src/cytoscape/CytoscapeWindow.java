@@ -431,6 +431,11 @@ protected JMenuBar createMenuBar ()
   deleteSelectionMenuItem = editMenu.add (new DeleteSelectedAction ());
   deleteSelectionMenuItem.setEnabled (false);
 
+  JMenu viewMenu = new JMenu ("View");
+  viewMenu.add (new HideEdgesAction ());
+  viewMenu.add (new ShowEdgesAction ());
+  menuBar.add (viewMenu);
+
   JMenu selectiveDisplayMenu = new JMenu ("Select");
   selectiveDisplayMenu.setToolTipText ("Select nodes by different criteria");
   menuBar.add (selectiveDisplayMenu);
@@ -708,11 +713,13 @@ class PrintAction extends AbstractAction
     printJob.setPrintable (gprinter, pageFormat);
       
     if (printJob.printDialog ()) try {
+      setInteractivity (false);
       printJob.print ();  
       }
     catch (Exception ex) {
       ex.printStackTrace ();
       }
+    setInteractivity (true);
     } // actionPerformed
 
 } // inner class PrintAction
@@ -725,6 +732,24 @@ protected class RenderAction extends AbstractAction
      }
 
 } // inner class RenderAction
+//------------------------------------------------------------------------------
+protected class HideEdgesAction extends AbstractAction   {
+  HideEdgesAction () { super ("Hide Edges"); }
+
+  public void actionPerformed (ActionEvent e) {
+    graphHider.hideEdges ();
+    redrawGraph ();
+    }
+}
+//------------------------------------------------------------------------------
+protected class ShowEdgesAction extends AbstractAction   {
+  ShowEdgesAction () { super ("Show Edges"); }
+
+  public void actionPerformed (ActionEvent e) {
+    graphHider.unhideEdges ();
+    redrawGraph ();
+    }
+}
 //------------------------------------------------------------------------------
 protected class DeleteSelectedAction extends AbstractAction   {
   DeleteSelectedAction () { super ("Delete Selected Nodes and Edges"); }
