@@ -81,8 +81,8 @@ public class CyMain implements WindowListener {
   public CyMain ( String [] args ) throws Exception {
     
 
-    CytoscapeInit init = new CytoscapeInit();
-    init.parseCommandLine( args );
+    //CytoscapeInit init = new CytoscapeInit();
+    //ßinit.parseCommandLine( args );
 
     // setup the Splash Screen
 
