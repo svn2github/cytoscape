@@ -1,6 +1,7 @@
 package fing.model;
 
 import cytoscape.graph.dynamic.DynamicGraph;
+import cytoscape.graph.dynamic.util.DynamicGraphFactory;
 import cytoscape.util.intr.IntArray;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntIntHash;
@@ -23,13 +24,13 @@ class FGraphPerspective implements GraphPerspective
   public void addGraphPerspectiveChangeListener
     (GraphPerspectiveChangeListener listener)
   { // This method is not thread safe; synchronize on an object to make it so.
-    m_lis = GraphPerspectiveChangeListenerChain.add(m_lis, listener);
+    m_lis[0] = GraphPerspectiveChangeListenerChain.add(m_lis[0], listener);
   }
 
   public void removeGraphPerspectiveChangeListener
     (GraphPerspectiveChangeListener listener)
   { // This method is not thread safe; synchronize on an object to make it so.
-    m_lis = GraphPerspectiveChangeListenerChain.remove(m_lis, listener);
+    m_lis[0] = GraphPerspectiveChangeListenerChain.remove(m_lis[0], listener);
   }
 
   // The object returned shares the same RootGraph with this object.
@@ -40,13 +41,15 @@ class FGraphPerspective implements GraphPerspective
         private int index = 0;
         public int numRemaining() { return numNodes - index; }
         public int nextInt() {
-          return m_perspToRootNodeInxMap.getIntAtIndex(index++); } };
+          // Fill this in.
+          return -1; } };
     final int numEdges = m_numEdges;
     final IntEnumerator rootGraphEdgeInx = new IntEnumerator() {
         private int index = 0;
         public int numRemaining() { return numEdges - index; }
         public int nextInt() {
-          return m_perspToRootEdgeInxMap.getIntAtIndex(index++); } };
+          // Fill this in.
+          return -1; } };
     return new FGraphPerspective(m_root, rootGraphNodeInx, rootGraphEdgeInx);
   }
 
@@ -540,14 +543,30 @@ class FGraphPerspective implements GraphPerspective
     throw new IllegalStateException("not implemented yet");
   }
 
+  // Nodes and edges in this graph are called "native indices" throughout
+  // this class.
+  private final DynamicGraph m_graph =
+    DynamicGraphFactory.instantiateDynamicGraph();
+
   private final FRootGraph m_root;
-  private GraphPerspectiveChangeListener m_lis;
+
+  // This is an array of length 1 - we need an array as an extra reference
+  // to a reference because some other inner classes need to know what the
+  // current listener is.
+  private final GraphPerspectiveChangeListener[] m_lis =
+    new GraphPerspectiveChangeListener[1];
+
   private int m_numNodes;
   private int m_numEdges;
-  private final IntArray m_perspToRootNodeInxMap;
-  private final IntArray m_perspToRootEdgeInxMap;
-  private final IntIntHash m_rootToPerspNodeInxMap;
-  private final IntIntHash m_rootToPerspEdgeInxMap;
+
+  // RootGraph indices are negative in these arrays.
+  private final IntArray m_nativeToRootNodeInxMap = new IntArray();
+  private final IntArray m_nativeToRootEdgeInxMap = new IntArray();
+
+  // RootGraph indices are ~ (complements) of the real RootGraph indices
+  // in these hashtables.
+  private final IntIntHash m_rootToNativeNodeInxMap = new IntIntHash();
+  private final IntIntHash m_rootToNativeEdgeInxMap = new IntIntHash();
 
   // Package visible constructor.  rootGraphNodeInx
   // must contain all endpoint nodes corresponding to edges in
@@ -558,21 +577,16 @@ class FGraphPerspective implements GraphPerspective
                     IntEnumerator rootGraphEdgeInx)
   {
     m_root = root;
-    m_lis = null;
     m_numNodes = rootGraphNodeInx.numRemaining();
     m_numEdges = rootGraphEdgeInx.numRemaining();
-    m_perspToRootNodeInxMap = new IntArray();
-    m_rootToPerspNodeInxMap = new IntIntHash();
     for (int i = 0; i < m_numNodes; i++) {
       final int rootGraphInx = rootGraphNodeInx.nextInt();
-      m_perspToRootNodeInxMap.setIntAtIndex(rootGraphInx, i);
-      m_rootToPerspNodeInxMap.put(rootGraphInx, i); }
-    m_perspToRootEdgeInxMap = new IntArray();
-    m_rootToPerspEdgeInxMap = new IntIntHash();
+      // Fill this in.
+    }
     for (int i = 0; i < m_numEdges; i++) {
       final int rootGraphInx = rootGraphEdgeInx.nextInt();
-      m_perspToRootEdgeInxMap.setIntAtIndex(rootGraphInx, i);
-      m_rootToPerspEdgeInxMap.put(rootGraphInx, i); }
+      // Fill this in.
+    }
   }
 
   // Cannot have any recursize reference to a FGraphPerspective in this
@@ -599,7 +613,7 @@ class FGraphPerspective implements GraphPerspective
 
     private final DynamicGraph m_graph;
 
-    // This is an array of length 0 - we need an array as an extra reference
+    // This is an array of length 1 - we need an array as an extra reference
     // to a reference because the surrounding GraphPerspective will be
     // modifying the entry at index 0 in this array.
     private final GraphPerspectiveChangeListener[] m_lis;
