@@ -1,9 +1,9 @@
 // FileReadingAbstractions.java
-//-------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 // $Revision$   
 // $Date$ 
 // $Author$
-//-----------------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 package cytoscape.data.readers;
 import java.io.FileNotFoundException;
 import y.view.Graph2D;
@@ -18,17 +18,17 @@ public class FileReadingAbstractions {
 	return loadBasic(reader,edgeAttributes);
     }
 
-    public static Graph2D loadInteractionBasic (String filename,
-						GraphObjAttributes edgeAttributes) {
+    public static Graph2D loadIntrBasic (String filename,
+					 GraphObjAttributes edgeAttributes) {
 	InteractionsReader reader = new InteractionsReader (filename);
 	return loadBasic(reader,edgeAttributes);
     }
     public static Graph2D loadBasic(GraphReader reader,
 				    GraphObjAttributes edgeAttributes) {
 	reader.read ();
-	GraphObjAttributes interactionEdgeAttributes = reader.getEdgeAttributes ();
-	edgeAttributes.add (interactionEdgeAttributes);
-	edgeAttributes.addNameMap (interactionEdgeAttributes.getNameMap ());
+	GraphObjAttributes newEdgeAttributes = reader.getEdgeAttributes ();
+	edgeAttributes.add (newEdgeAttributes);
+	edgeAttributes.addNameMap (newEdgeAttributes.getNameMap ());
 	return reader.getGraph();
     }
 
@@ -36,11 +36,11 @@ public class FileReadingAbstractions {
 				   Graph2D graph,
 				   GraphObjAttributes nodeAttributes,
 				   GraphObjAttributes edgeAttributes) {
-	String [] nodeAttributeFilenames = config.getNodeAttributeFilenames ();
-	if (nodeAttributeFilenames != null)
-	    for (int i=0; i < nodeAttributeFilenames.length; i++) {
+	String [] nAFilenames = config.getNodeAttributeFilenames ();
+	if (nAFilenames != null)
+	    for (int i=0; i < nAFilenames.length; i++) {
 		try {
-		    nodeAttributes.readAttributesFromFile (nodeAttributeFilenames [i]);
+		    nodeAttributes.readAttributesFromFile (nAFilenames[i]);
 		} catch (NumberFormatException nfe) {
 		    continue;
 		} catch (IllegalArgumentException iae) {
@@ -51,11 +51,11 @@ public class FileReadingAbstractions {
 	    }
 
 	
-	String [] edgeAttributeFilenames = config.getEdgeAttributeFilenames ();
-	if (edgeAttributeFilenames != null)
-	    for (int i=0; i < edgeAttributeFilenames.length; i++) {
+	String [] eAFilenames = config.getEdgeAttributeFilenames ();
+	if (eAFilenames != null)
+	    for (int i=0; i < eAFilenames.length; i++) {
 		try {
-		    edgeAttributes.readAttributesFromFile (edgeAttributeFilenames [i]);
+		    edgeAttributes.readAttributesFromFile (eAFilenames [i]);
 		} catch (NumberFormatException nfe) {
 		    continue;
 		} catch (IllegalArgumentException iae) {
@@ -77,7 +77,7 @@ public class FileReadingAbstractions {
      *  for (nc.toFirst (); nc.ok (); nc.next ()) {
      *    Node node = nc.node ();
      *    String canonicalName = nodeAttributes.getCanonicalName (node);
-     *    HashMap attribBundle = nodeAttributes.getAllAttributes (canonicalName);
+     *    HashMap bundle = nodeAttributes.getAllAttributes (canonicalName);
      *    }
      * 
      * 
