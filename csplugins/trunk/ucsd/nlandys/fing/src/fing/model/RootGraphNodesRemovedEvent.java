@@ -14,7 +14,7 @@ final class RootGraphNodesRemovedEvent extends RootGraphChangeEventAdapter
   // must contain valid RootGraph indices at the time this constructor is
   // called; further behavior of the Node objects is not too important
   // becuase the getRemovedNodes() method has been deprecated in both
-  // GraphPerspective and in RootGraph listener systems.
+  // GraphPerspective and RootGraph listener systems.
   RootGraphNodesRemovedEvent(RootGraph rootGraph, Node[] removedNodes)
   {
     super(rootGraph);
