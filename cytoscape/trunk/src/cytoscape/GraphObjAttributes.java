@@ -182,6 +182,13 @@ public HashMap getAttribute (String attributeName)
   return (HashMap) map.get (attributeName);
 }
 //--------------------------------------------------------------------------------
+public void deleteAttribute (String attributeName)
+{
+  if (hasAttribute (attributeName))
+    map.remove (attributeName);
+
+}
+//--------------------------------------------------------------------------------
 public Class getClass (String attributeName)
 {
   String firstObjectName = getObjectNames (attributeName)[0];

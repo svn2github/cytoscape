@@ -572,6 +572,44 @@ public void testCloning () throws Exception
 
 } // testCloning
 //-------------------------------------------------------------------------
+/**
+ *  can we delete an attribute by name?
+ */
+public void testDeleteAttribute () throws Exception
+{
+  System.out.println ("testDeleteAttribute");
+
+  GraphObjAttributes attributes = new GraphObjAttributes ();
+
+  Double homology = new Double (99.32);
+  Integer count = new Integer (33);
+  String magicWord = "abracadabra";
+  
+  String nodeName = "GAL4";
+
+  HashMap bundle = new HashMap ();
+  bundle.put ("homology", homology);
+  bundle.put ("count",  count);
+  bundle.put ("magic",  magicWord);
+
+  attributes.add (nodeName, bundle);
+  System.out.println ("size: " + attributes.size ());
+  assertTrue (attributes.size () == 3);
+
+  attributes.deleteAttribute ("homology");
+  assertTrue (attributes.size () == 2);
+  assertTrue (attributes.hasAttribute ("homology") == false);
+
+  attributes.deleteAttribute ("count");
+  assertTrue (attributes.size () == 1);
+  assertTrue (attributes.hasAttribute ("count") == false);
+
+  attributes.deleteAttribute ("magic");
+  assertTrue (attributes.size () == 0);
+  assertTrue (attributes.hasAttribute ("magic") == false);
+
+} // testDeleteAttribute
+//-------------------------------------------------------------------------
 public static void main (String [] args) 
 {
   junit.textui.TestRunner.run (new TestSuite (GraphObjAttributesTest.class));
