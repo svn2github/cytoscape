@@ -19,13 +19,13 @@ public interface MutableGraphLayout extends GraphLayout
    */
   public boolean isMovableNode(int nodeIndex);
 
-  /**
+  /*
    * Returns <code>true</code> if and only if
    * <code>isMovableNode(nodeIx)</code> returns <code>true</code> for every
    * <code>nodeIx</code> in the interval
    * <nobr><code>[0, getNumNodes() - 1]</code></nobr>.
   public boolean areAllNodesMovable();
-  **/
+   */
 
   /**
    * Sets the X,Y position of a node at index <code>nodeIndex</code>.
@@ -63,7 +63,7 @@ public interface MutableGraphLayout extends GraphLayout
    *
    * @see #getMaxWidth()
    * @see #getMaxHeight()
-   * @see #getNodePosition(int)
+   * @see #getNodePosition(int, boolean)
    * @see #isMovableNode(int)
    */
   public void setNodePosition(int nodeIndex, double xPos, double yPos);
