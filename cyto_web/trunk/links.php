@@ -30,8 +30,9 @@
 <P>
 <big><b>Cytoscape Dependencies</b></big>
 <P>
-<a href="http://www.cs.umd.edu/hcil/piccolo/>Piccolo</a>
-Piccolo provides the graphics engine used by Cytoscape. Piccolo is a Zoomable User Interface(ZUI) that provides a powerful framework for user interaction and data display.
+<a href="http://www.cs.umd.edu/hcil/piccolo/">Piccolo</a>
+provides the graphics engine used by Cytoscape, has a Zoomable User Interface(ZUI) <br>
+and provides a powerful framework for user interaction and data display.
 <br><br>
 
 <P>
