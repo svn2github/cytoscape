@@ -15,6 +15,7 @@ import java.util.*;
 import y.base.*;
 import y.geom.*;
 import y.layout.*;
+import y.view.*;
 import y.layout.transformer.GraphTransformer;
 import y.layout.circular.CircularLayouter;
 
@@ -97,10 +98,9 @@ public class EmbeddedLayouter implements Layouter {
     /**
      * Layout the graph in two stages.
      *
-     * The first stage is a simple spring force model.
-     * The second phase adds the complexity of
-     * "binning," during which nodes only feel forces
-     * locally.
+     * The first stage is a simple spring force model.  The second
+     * phase adds the complexity of "binning," during which nodes only
+     * feel forces locally.  Also, bends are removed from the graph.
      */
     public void doLayout(LayoutGraph graph) {
 	// first initialize useful variables
@@ -219,6 +219,10 @@ public class EmbeddedLayouter implements Layouter {
 	scaler.setScaleFactor((sx < sy ? sx : sy));
 	scaler.setScaleNodeSize(true);
 	scaler.doLayoutCore(graph);
+
+	// step 6: remove bends
+	for (EdgeCursor ec = graph.edges(); ec.ok(); ec.next())
+	    graph.setPoints(ec.edge(), new YPointPath());
     }
 
 
