@@ -1,0 +1,221 @@
+<project name="goginy" default="goginy" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init-goginy">
+    <tstamp/>
+    <property name="goginy.Name" value="goginy"/>
+    <property name="goginy.name" value="goginy"/>
+    <property name="goginy.version" value="0.1"/>
+    <property name="goginy.year" value="200"/>
+
+    <echo message="Building ${goginy.name} version ${goginy.version}."/>
+
+    <!-- Inheritable properties -->
+    <property name="debug" value="on"/>
+    <property name="optimize" value="off"/>
+    <property name="deprecation" value="on"/>
+    <property name="nowarn" value="true"/>
+    <property name="fork" value="false"/>
+    <property name="goginy.root.dir" value="."/>
+    <property name="goginy.lib.dir" value="${goginy.root.dir}/lib"/>
+    <property name="cytoscape.lib.dir" value="${goginy.root.dir}/../../../../cytoscape/lib"/>
+    <property name="cytoscape.plugin.dir" value="${goginy.root.dir}/../../../../cytoscape/plugins"/>
+    <path id="project.class.path">
+      <pathelement path="${java.class.path}/"/>
+    </path>
+
+    <!-- Define the directories -->
+    <property name="goginy.root.dir" value="./"/>
+    <property name="goginy.src.dir" value="${goginy.root.dir}/src"/>
+    <property name="goginy.classes.dir" value="${goginy.root.dir}/classes"/>
+    <property name="goginy.javadoc.dir" value="${javadoc.dir}/goginy"/>
+    <property name="goginy.resources.dir" value="${goginy.root.dir}/resources"/>
+    <property name="goginy.manifest.dir" value="${goginy.root.dir}/manifest"/>
+    <property name="goginy.packages" value="goginy.*"/>
+    <!-- Subdirectory for test reports -->
+    <property name="goginy.tests.reports.dir" value="${goginy.root.dir}/reports/tests" />
+    <property name="cytoscape.lib" value="../../cytoscape/lib" />
+
+    <!-- Define the condition for compilation -->
+    <property name="cytoscape.jar" value="${goginy.lib.dir}/cytoscape.jar"/>
+    <property name="colt.jar" value="${goginy.lib.dir}/colt.jar"/>
+    
+
+    <condition property="cytoscape.present">
+      <and> 
+	  		<available file="${cytoscape.jar}"/> 
+				<available file="${colt.jar}"/> 
+		  </and>
+    </condition>
+
+    <!-- Define excludes for goginy compile and javadoc -->
+    <property name="goginy.excludes" value="**/notyet/*"/>
+    <property name="goginy.tests.excludes" value="**/notyet/*"/>
+    <property name="goginy.packages.excludes" value="**.test.*,**.notyet.*"/>
+
+    <path id="goginy.project.class.path">
+      <pathelement location="${goginy.classes.dir}"/>
+      <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/tclib.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/com-nerius-math-xform.jar"/> 
+      <pathelement location="${cytoscape.lib.dir}/concurrent.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-dynamic.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-fixed.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-layout.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-graph-legacy.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-task.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/violinstrings-1.0.2.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-util-intr.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/fing.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/piccolo.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/piccolox.jar"/>
+      <pathelement path="${project.class.path}/"/>
+    </path>
+
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the goginy project                                           -->
+  <!-- =================================================================== -->
+  <target name="compile-goginy" depends="init-goginy"  >
+
+   <echo message=" COMPILE goginy "/>
+
+    <mkdir dir="${goginy.classes.dir}"/>
+    <javac srcdir="${goginy.src.dir}"
+           excludes="${goginy.excludes}"
+           classpathref="goginy.project.class.path"
+           destdir="${goginy.classes.dir}"
+           debug="${debug}"
+           nowarn="${nowarn}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the goginy.jar file                                           -->
+  <!-- =================================================================== -->
+  <target name="goginy" depends="compile-goginy"  >
+    <jar destfile="goginy.jar" manifest="${goginy.manifest.dir}/goginy.manifest">
+      <fileset
+        dir="${goginy.classes.dir}"
+        includes="**"/>
+      <fileset
+        dir="${goginy.root.dir}/lib"
+        includes="resources/**"/>
+      <fileset 
+        dir="${goginy.root.dir}/images"/>
+    </jar>
+    <copy todir="${goginy.lib.dir}" file="goginy.jar"/>
+    <copy todir="${cytoscape.plugin.dir}" file="goginy.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the goginy tests                                             -->
+  <!-- =================================================================== -->
+  <target name="compile-tests" depends="goginy"  >
+    <mkdir dir="${goginy.classes.dir}"/>
+    <javac srcdir="${goginy.src.dir}"
+           includes="**/test/*"
+           excludes="${goginy.tests.excludes}"
+           classpathref="goginy.project.class.path"
+           destdir="${goginy.classes.dir}"
+           debug="${debug}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the goginy-tests.jar file                                     -->
+  <!-- =================================================================== -->
+  <target name="tests" depends="compile-tests"  >
+    <jar jarfile="goginy-tests.jar"
+         basedir="${goginy.classes.dir}"
+         includes="**/test/*"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Build all jars                                                      -->
+  <!-- =================================================================== -->
+  <target name="all" depends="goginy"/>
+
+   <!-- =================================================================== -->
+  <!-- Run the Plugin                                                      -->
+  <!-- =================================================================== -->
+  <target name="run" depends="goginy" >
+     
+
+     <java classname="goginy.GoParser" 
+           classpathref="goginy.project.class.path"
+           fork="true">
+           <arg line = "goginy.jar gene_ontology.obo"/>
+     </java>      
+
+  </target>
+
+
+
+  <!-- =================================================================== -->
+  <!-- Runs the tests in goginy-tests.jar                                    -->
+  <!-- =================================================================== -->
+  <target name="runtests" depends="tests"  >
+    <mkdir dir="${goginy.tests.reports.dir}"/>
+    <junit
+       printsummary="yes"
+       haltonfailure="no"
+       dir="${goginy.classes.dir}"
+       maxmemory="1G"
+    >
+      <formatter type="plain" usefile="true" />
+      <classpath refid="goginy.project.class.path"/>
+      <!-- The junit task doesn't support 'if' so we test for JUnit here -->
+      <batchtest fork="yes" todir="${goginy.tests.reports.dir}" if="junit.present">
+        <fileset
+           dir="${goginy.classes.dir}"
+           includes="**/test/*"
+           excludes="${goginy.tests.excludes}"
+        />
+      </batchtest>
+    </junit>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the API documentation                                       -->
+  <!-- =================================================================== -->
+  <target name="docs" depends="init-goginy" >
+    <mkdir dir="${goginy.javadoc.dir}"/>
+    <javadoc packagenames="${goginy.packages}"
+             excludepackagenames="${goginy.packages.excludes}"
+             sourcepath="${goginy.src.dir}"
+             destdir="${goginy.javadoc.dir}"
+             classpathref="goginy.project.class.path"
+             author="true"
+             version="true"
+             use="true"
+             splitindex="true"
+             noindex="false"
+             windowtitle="${goginy.Name} API"
+             doctitle="${goginy.Name}"
+    />
+  </target>
+ 
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init-goginy">
+    <delete dir="${goginy.classes.dir}"/>
+    <delete file="goginy.jar"/>
+    <delete file="goginy-tests.jar"/>
+  </target>
+
+</project>
+
+<!-- End of file -->
