@@ -40,8 +40,8 @@ public class IconPopupButton extends JPanel implements ActionListener {
 			    ImageIcon [] icons,
 			    Object startIconObject,
 			    JDialog parentDialog){
-	if(startIconObject==null || icons.length==0)
-	    { setupErrorWindow();  return; }
+	if(icons.length==0)
+	    { setupErrorWindow(); return;}
 	if(icons[0]==null || icons[0].getIconWidth()<0)
 	    { System.out.println(icons[0].getImage().getWidth(parentDialog)); setupErrorWindow();  return; }
 	    
@@ -52,7 +52,14 @@ public class IconPopupButton extends JPanel implements ActionListener {
 	this.parentDialog = parentDialog;
 	iconList = new JList (icons);
 	this.title = title;
-	this.setIconObject(startIconObject);
+	if(startIconObject!=null)
+	    this.setIconObject(startIconObject);
+	else {
+	    System.out.println("starticon null " + title);
+	    ImageIcon icon = (ImageIcon)iconList.getModel().getElementAt(0); // default icon
+	    setIconName(icon.getDescription());
+	}
+
 	setupWindow();
     }
 
@@ -173,5 +180,10 @@ public class IconPopupButton extends JPanel implements ActionListener {
 	currentIcon = iconObject;
 	currentIconName = (String) iconObjectToString.get(iconObject);
     }
-
+    public JLabel getLabel() {
+	return iconSelectionForPanel;
+    }
+    public JButton getButton() {
+	return iconButton;
+    }
 }//class IconPopupButton

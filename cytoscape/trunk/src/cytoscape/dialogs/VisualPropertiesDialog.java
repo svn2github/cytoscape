@@ -64,6 +64,7 @@ public VisualPropertiesDialog (Frame parentFrame,
   JPanel mainPanel = new JPanel ();
   GridBagLayout gridbag = new GridBagLayout(); 
   GridBagConstraints c = new GridBagConstraints();
+  gbcPad(c,5,5);
   mainPanel.setLayout (gridbag);
 
 
@@ -113,19 +114,27 @@ public VisualPropertiesDialog (Frame parentFrame,
 	   ((Integer)aMapper.getDefaultValue(VizMapperCategories.NODE_HEIGHT)).intValue(),
 	   500);
   gbcSet(c,0,4);
-  gblPanelInsert(mainPanel,sizeDefault,gridbag,c);
+  gblPanelInsert(mainPanel,sizeDefault.getLabel(),gridbag,c);
+  gbcSet(c,1,4);
+  gblPanelInsert(mainPanel,sizeDefault.getField(),gridbag,c);
 
   initializeShapeDefault();
-  gbcSet(c,0,5);
-  gblPanelInsert(mainPanel,shapeDefault,gridbag,c);
+  gbcSet(c,0,5,1,1,GridBagConstraints.HORIZONTAL);
+  gblPanelInsert(mainPanel,shapeDefault.getButton(),gridbag,c);
+  gbcSet(c,1,5);
+  gblPanelInsert(mainPanel,shapeDefault.getLabel(),gridbag,c);
 
   initializeLineTypeDefault();
-  gbcSet(c,0,6);
-  gblPanelInsert(mainPanel,lineTypeDefault,gridbag,c);
+  gbcSet(c,0,6,1,1,GridBagConstraints.HORIZONTAL);
+  gblPanelInsert(mainPanel,lineTypeDefault.getButton(),gridbag,c);
+  gbcSet(c,1,6);
+  gblPanelInsert(mainPanel,lineTypeDefault.getLabel(),gridbag,c);
 
   initializeArrowDefault();
-  gbcSet(c,0,7);
-  gblPanelInsert(mainPanel,arrowDefault,gridbag,c);
+  gbcSet(c,0,7,1,1,GridBagConstraints.HORIZONTAL);
+  gblPanelInsert(mainPanel,arrowDefault.getButton(),gridbag,c);
+  gbcSet(c,1,7);
+  gblPanelInsert(mainPanel,arrowDefault.getLabel(),gridbag,c);
 
   //////////////////////////////////////////////
   JPanel labelMapPanel = new JPanel();
@@ -188,6 +197,9 @@ public VisualPropertiesDialog (Frame parentFrame,
 } // PopupDialog ctor
 
     // sets GridBagConstraints.
+    private void gbcPad(GridBagConstraints c, int padx, int pady) {
+	c.ipadx = padx;	c.ipady = pady;
+    }
     private void gbcSet(GridBagConstraints c, int x, int y, int w, int h, int f) {
 	c.gridx = x;	c.gridy = y;
 	c.gridwidth = w;	c.gridheight = h;
@@ -202,6 +214,10 @@ public VisualPropertiesDialog (Frame parentFrame,
 				 Component comp,
 				 GridBagLayout bag,
 				 GridBagConstraints c) {
+	if(bag==null) System.out.println("bag is null");
+	if(comp==null) System.out.println("comp is null");
+	if(c==null) System.out.println("c is null");
+	if(panel==null) System.out.println("panel is null");
 	bag.setConstraints(comp,c);
 	panel.add(comp);
     }

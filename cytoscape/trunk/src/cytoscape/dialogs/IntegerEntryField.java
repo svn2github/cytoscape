@@ -91,5 +91,11 @@ public class IntegerEntryField extends JPanel {
 	}
 	
     } // PositiveIntegerListener
+    public JTextField getField() {
+	return sizeField;
+    }
+    public JLabel getLabel() {
+	return sizeLabel;
+    }
     
 }//class IntegerEntryField
