@@ -17,7 +17,12 @@ public final class AllRootGraphMethodsTest
   public static final void main(String[] args)
   {
     final RootGraph root = FingRootGraphFactory.instantiateRootGraph();
+    runTest(root);
+  }
 
+  // Package visible so other classes can call this.
+  static final void runTest(RootGraph root)
+  {
     // Don't change this!  Any change here implies re-reading all the test
     // code below and making appropriate changes there.
     int[] nodeInx = new int[5];
@@ -1270,6 +1275,18 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("wrong number of edge children");
     for (int i = 0;; i++) if (edgeChildInx[i] == edgeInx[2]) break;
     for (int i = 0;; i++) if (edgeChildInx[i] == edgeInx[6]) break;
+
+    // Finally we remove all nodes and edges.
+    if (root.removeEdge(edgeInx[2]) != edgeInx[2])
+      throw new IllegalStateException("failed to remove edge");
+    if (root.removeEdge(edgeInx[4]) != edgeInx[4])
+      throw new IllegalStateException("failed to remove edge");
+    for (int i = 0; i < nodeInx.length; i++)
+      if (root.removeNode(nodeInx[i]) != nodeInx[i])
+        throw new IllegalStateException("failed to remove node");
+    for (int i = 0; i < edgeInx.length; i++)
+      if (root.removeEdge(edgeInx[i]) != 0)
+        throw new IllegalStateException("edge should already be removed");
   }
 
 }
