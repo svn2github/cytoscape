@@ -2,6 +2,7 @@ package fing.model;
 
 import fing.util.IntEnumerator;
 import fing.util.IntHash;
+import fing.util.MinIntHeap;
 
 import giny.model.Edge;
 import giny.model.GraphPerspective;
@@ -113,12 +114,13 @@ class FRootGraph //implements RootGraph
     try { edgeInxEnum = m_graph.adjacentEdges
             (positiveNodeIndex, true, true, true); }
     catch (IllegalArgumentException e) { return 0; }
-    m_hash.empty();
+    m_heap.empty();
+    final MinIntHeap edgeBucket = m_heap;
     while (edgeInxEnum.numRemaining() > 0)
-      // Toss edges to be removed onto the hash; assume that the edge iteration
+      // Toss edges to be removed onto the heap; assume that the edge iteration
       // becomes invalid if we remove edges while iterating through.
-      m_hash.put(edgeInxEnum.nextInt());
-    edgeInxEnum = m_hash.elements();
+      edgeBucket.toss(edgeInxEnum.nextInt());
+    edgeInxEnum = edgeBucket.elements();
     // Remove adjacent edges using method defined on this instance.
     while (edgeInxEnum.numRemaining() > 0)
       removeEdge(~(edgeInxEnum.nextInt()));
@@ -273,12 +275,13 @@ class FRootGraph //implements RootGraph
       int[] adjacentEdgeIndices =
         getAdjacentEdgeIndicesArray(nodeIndex, true, true, true);
       m_hash.empty();
+      final IntHash neighbors = m_hash;
       for (int i = 0; i < adjacentEdgeIndices.length; i++) {
         int neighborIndex = nodeIndex ^
           getEdgeSourceIndex(adjacentEdgeIndices[i]) ^
           getEdgeTargetIndex(adjacentEdgeIndices[i]);
-        m_hash.put(~neighborIndex); }
-      IntEnumerator enum = m_hash.elements();
+        neighbors.put(~neighborIndex); }
+      IntEnumerator enum = neighbors.elements();
       java.util.ArrayList list = new java.util.ArrayList(enum.numRemaining());
       while (enum.numRemaining() > 0)
         list.add(getNode(~(enum.nextInt())));
@@ -452,13 +455,13 @@ class FRootGraph //implements RootGraph
       ((theAdj == fromAdj) ? positiveFromNodeInx : positiveToNodeInx);
     final int neighPositiveNode =
       ((theAdj == fromAdj) ? positiveToNodeInx : positiveFromNodeInx);
-    m_hash.empty();
-    final IntHash edgeBucket = m_hash;
+    m_heap.empty();
+    final MinIntHeap edgeBucket = m_heap;
     while (theAdj.numRemaining() > 0) {
       final int adjEdge = theAdj.nextInt();
       if ((m_graph.sourceNode(adjEdge) ^ m_graph.targetNode(adjEdge) ^
            adjPositiveNode) == neighPositiveNode)
-        edgeBucket.put(adjEdge); }
+        edgeBucket.toss(adjEdge); }
     final IntEnumerator edges = edgeBucket.elements();
     final int[] returnThis = new int[edges.numRemaining()];
     for (int i = 0; i < returnThis.length; i++)
@@ -590,6 +593,11 @@ class FRootGraph //implements RootGraph
   // using it.  You can use it as a bag of integers or to filter integer
   // duplicates.  You don't need to empty() it after usage.
   final IntHash m_hash = new IntHash();
+
+  // This heap is re-used by several methods.  It's used primarily as a bucket
+  // of integers; sorting with this heap is [probably] not done at all.
+  // Make sure to empty() it before using it.
+  final MinIntHeap m_heap = new MinIntHeap();
 
   // This is our "node factory" and "node recyclery".
   final NodeDepository m_nodeDepot = new NodeDepository();
