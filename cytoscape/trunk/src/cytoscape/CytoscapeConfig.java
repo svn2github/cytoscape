@@ -544,7 +544,7 @@ protected void readProjectFile ()
 
   if (gmlFiles.length >= 1) {
     if (readingFromJar)
-      geometryFilename = sifFiles [0];
+      geometryFilename = gmlFiles [0];
     else
       geometryFilename = absolutizeFilename (projectFileDirectoryAbsolute, gmlFiles [0]);
     }
@@ -587,10 +587,7 @@ protected void readProjectFile ()
     projectPropsFileName = propsFiles [0];
     CytoscapeWindow.debugLog.append ("config.readProjectFile, propsPropsFileName: " + 
          projectPropsFileName + "\n");
-    //if (readingFromJar)
-      projectPropsFileName = propsFiles [0];
-    //else
-    //  projectPropsFile = new File (absolutizeFilename (projectFileDirectoryAbsolute, propsFiles [0]));
+    projectPropsFileName = propsFiles [0];
     }
 
 
