@@ -1,7 +1,20 @@
 package fing.util;
 
 /**
- * A heap can have two states: ordered and unordered.
+ * A heap is an implementation of a priority queue.  A priority queue is a
+ * special kind of queue where the next value on the queue is the least
+ * element in the queue.  A heap can be used to order N elements in
+ * O(n*log(N)) time complexity.  Because of some of the propeties of a heap,
+ * heaps are especially good at returning the M least elements from a set
+ * of N elements, where M < N.  In particular, if M is less than or equal to
+ * N/log(N), then the first M least elements from a set of N elements can be
+ * computed in O(N) time complexity (linear time).<p>
+ * A heap can have two states: ordered and unordered.  The time complexity of
+ * certain operations is dependent on the state of the heap.  Certain
+ * operation will effect the state of the heap.  Please read
+ * the documentation of each method to better understand the time
+ * complexity of each operation and its relationship to the state of the
+ * heap.
  */
 public final class MinIntHeap
 {
@@ -40,6 +53,16 @@ public final class MinIntHeap
   }
 
   /**
+   * Empties this heap of all elements.  The heap is ordered after this
+   * operation.
+   */
+  public final void empty()
+  {
+    m_currentSize = 0;
+    m_orderOK = true;
+  }
+
+  /**
    * Returns the number of elements currently in this heap.
    */
   public final int numElements()
@@ -69,7 +92,7 @@ public final class MinIntHeap
   /**
    * If this heap is ordered prior to calling this operation, adds
    * specified element to heap such that the heap will remain ordered after
-   * this operation, taking O(log(n)) time where n is the number of
+   * this operation, taking O(log(N)) time where N is the number of
    * elements in this heap (average time is actually constant regardless of
    * size of heap).  If this heap is not ordered when this operation is called,
    * adds specified element to heap in constant time.
@@ -85,7 +108,7 @@ public final class MinIntHeap
    * Returns the minimum element in this heap.  This is a constant time
    * operation if the heap is ordered.  If the heap is not ordered, this
    * operation will first order the entire heap.  The time complexity of
-   * ordering an unordered heap is O(n) where n is the number of elements
+   * ordering an unordered heap is O(N) where N is the number of elements
    * in the heap.  This method leaves the heap in an ordered state.<p>
    * If there are no elements in this heap, results of this operation
    * are undefined.
@@ -102,11 +125,11 @@ public final class MinIntHeap
 
   /**
    * Deletes and returns the minimum element in this heap.  This operation
-   * has time complexity O(log(n)) where n is the number of elements
+   * has time complexity O(log(N)) where N is the number of elements
    * currently in this heap, assuming that the heap is ordered.  If the
    * heap is not ordered at the time this operation is invoked, this
    * operation will first order the entire heap.  The time complexity of
-   * ordering an unordered heap is O(n), where n is the number of elements
+   * ordering an unordered heap is O(N), where N is the number of elements
    * in the heap.  When this method returns, this heap is in an ordered
    * state.<p>
    * If there are no elements in this heap, results of this operation
@@ -168,9 +191,9 @@ public final class MinIntHeap
    * duplicate elements is enabled by setting pruneDuplicates to true.<p>
    * If pruneDuplicates is false, this method returns in constant
    * time (unless this heap is unordered when this method is called, in
-   * which case this method returns in O(n) time), and the returned iterator
-   * takes O(log(n)) time complexity to return each successive element.
-   * If pruneDuplicates is true, this method takes O(n*log(n)) time
+   * which case this method returns in O(N) time), and the returned iterator
+   * takes O(log(N)) time complexity to return each successive element.
+   * If pruneDuplicates is true, this method takes O(N*log(N)) time
    * complexity to come up with the return value, and
    * the retuned iterator takes constant time to return each successive
    * element.<p>
