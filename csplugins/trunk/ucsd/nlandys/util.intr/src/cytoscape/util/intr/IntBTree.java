@@ -432,10 +432,11 @@ public final class IntBTree
   {
     int count = 0;
     if (isLeafNode(n)) {
-      for (int i = 0; i < n.sliceCount; i++)
-        if (xMin <= n.values[i]) {
-          if (n.values[i] <= xMax) count++;
-          else break; }
+      int i = 0;
+      for (; i < n.sliceCount; i++) if (xMin <= n.values[i]) break;
+      for (int j = i; j < n.sliceCount; j++) {
+        if (n.values[j] <= xMax) count++;
+        else break; }
       if (count > 0) nodeStack.push(n); }
     else {
 //       int currentMax = maxBound;
