@@ -81,10 +81,10 @@ public void testCtor () throws Exception
   Node [] nodes = subGraph.getNodeArray ();
   Edge [] edges = subGraph.getEdgeArray ();
 
-  assertTrue (nodes.length == 0);
-  assertTrue (edges.length == 0);
-  assertTrue (newNodeAttributes.size () == 0);
-  assertTrue (newEdgeAttributes.size () == 0);
+  assert nodes.length == 0;
+  assert edges.length == 0;
+  assert newNodeAttributes.size () == 0;
+  assert newEdgeAttributes.size () == 0;
 
 } // testCtor
 //-------------------------------------------------------------------------
@@ -101,8 +101,8 @@ private void  createEdgeAndAttribute (String nodeName1, String nodeName2,
 {
   Node source = (Node) nameToNodeMap.get (nodeName1);
   Node target = (Node) nameToNodeMap.get (nodeName2);
-  assertTrue (source != null);
-  assertTrue (target != null);
+  assert source != null;
+  assert target != null;
   Edge edge = graph.createEdge (source, target);
 
   String edgeName = nodeName1 + " (" + interactionValue + ") " + nodeName2;
@@ -142,7 +142,7 @@ public void testSubGraphOperation () throws Exception
                               "gatB2",
                               "gltS"};
 
-  assertTrue (canonicalNames.length == commonNames.length);
+  assert canonicalNames.length == commonNames.length;
 
   Double [] expression =    {new Double (0.39), 
                              new Double (-0.144),
@@ -152,7 +152,7 @@ public void testSubGraphOperation () throws Exception
                              null, 
                              null};
 
-  assertTrue (canonicalNames.length == expression.length);
+  assert canonicalNames.length == expression.length;
 
   HashMap nameToNodeMap = new HashMap ();
   Node [] allNodes = new Node [canonicalNames.length];
@@ -249,16 +249,16 @@ public void testSubGraphOperation () throws Exception
   Node [] nodes = subGraph.getNodeArray ();
   Edge [] edges = subGraph.getEdgeArray ();
 
-  assertTrue (nodes.length == 3);
-  assertTrue (edges.length == 3);
-  assertTrue (newNodeAttributes.size () == 3);  // commonName, canonicalName, expression
-  assertTrue (newEdgeAttributes.size () == 2);  // interaction, canonicalName
+  assert nodes.length == 3;
+  assert edges.length == 3;
+  assert newNodeAttributes.size () == 3;  // commonName, canonicalName, expression
+  assert newEdgeAttributes.size () == 2;  // interaction, canonicalName
 
   for (int i=0; i < selectedNodeNames.length; i++) {
-    assertTrue (expectedCommonNames [i] == 
-                (String) nodeAttributes.getValue ("commonName", selectedNodeNames [i]));
-    assertTrue (expectedExpressionValues[i] == 
-                (Double) nodeAttributes.getValue ("expression", selectedNodeNames [i]));
+    assert expectedCommonNames [i] == 
+                (String) nodeAttributes.getValue ("commonName", selectedNodeNames [i]);
+    assert expectedExpressionValues[i] == 
+      (Double) nodeAttributes.getValue ("expression", selectedNodeNames [i]);
     } // for i
 
   String []    selectedEdgeNames  = {"g3 (geneFusion) g1", 
@@ -271,7 +271,7 @@ public void testSubGraphOperation () throws Exception
 
   for (int i=0; i < selectedEdgeNames.length; i++) {
     String interactionType = (String) edgeAttributes.getValue ("interaction", selectedEdgeNames [i]);
-    assertTrue (interactionType.equals (edgeInteractionValues [i]));
+    assert interactionType.equals (edgeInteractionValues [i]);
     }
     
 } // testSubGraphOperation
@@ -316,10 +316,80 @@ public void testForSurplusEdges () throws Exception
   Node [] nodes = subGraph.getNodeArray ();
   Edge [] edges = subGraph.getEdgeArray ();
 
-  assertTrue (nodes.length == 2);
-  assertTrue (edges.length == 1);
+  assert nodes.length == 2;
+  assert edges.length == 1;
 
 } // testNoSurplusEdges
+//-------------------------------------------------------------------------
+/**
+ * Creates a simple graph with no node labels, and makes sure that the
+ * resulting graph has edges.
+ */
+public void testGraphWithoutLabels () throws Exception
+{
+  System.out.println ("testGraphWithoutLabels");
+
+  Graph2D graph = new Graph2D ();
+  
+  //Create nodes with no labels
+  Node nodeA = graph.createNode ();
+  Node nodeB = graph.createNode ();
+  Node nodeC = graph.createNode ();
+  Node nodeD = graph.createNode ();
+  
+  GraphObjAttributes nodeAttributes = new GraphObjAttributes ();
+  nodeAttributes.addNameMapping ("A", nodeA);
+  nodeAttributes.addNameMapping ("B", nodeB);
+  nodeAttributes.addNameMapping ("C", nodeC);
+  nodeAttributes.addNameMapping ("D", nodeD);
+
+  GraphObjAttributes edgeAttributes = new GraphObjAttributes ();
+  // (A,B)
+  Edge edge = graph.createEdge (nodeA, nodeB);
+  String edgeName = "A (test) B";
+  edgeAttributes.add ("interaction", edgeName, "test");
+  edgeAttributes.addNameMapping (edgeName, edge);
+  // (A,C)
+  edge = graph.createEdge (nodeA, nodeC);
+  edgeName = "A (test) C";
+  edgeAttributes.add ("interaction", edgeName, "test");
+  edgeAttributes.addNameMapping (edgeName, edge);
+  // (A,D)
+  edge = graph.createEdge (nodeA, nodeD);
+  edgeName = "A (test) D";
+  edgeAttributes.add ("interaction", edgeName, "test");
+  edgeAttributes.addNameMapping (edgeName, edge);
+  // (B,D)
+  edge = graph.createEdge (nodeB, nodeD);
+  edgeName = "B (test) D";
+  edgeAttributes.add ("interaction", edgeName, "test");
+  edgeAttributes.addNameMapping (edgeName, edge);
+  // (C,D)
+  edge = graph.createEdge (nodeC, nodeD);
+  edgeName = "C (test) D";
+  edgeAttributes.add ("interaction", edgeName, "test");
+  edgeAttributes.addNameMapping (edgeName, edge);
+
+  // Select nodes A,B, and C
+  NodeRealizer realizer = graph.getRealizer (nodeA);
+  realizer.setSelected (true);
+  realizer = graph.getRealizer (nodeB);
+  realizer.setSelected (true);
+  realizer = graph.getRealizer (nodeC);
+  realizer.setSelected (true);
+  
+
+  SelectedSubGraphFactory factory = 
+      new SelectedSubGraphFactory (graph, nodeAttributes, edgeAttributes);
+
+  Graph2D subGraph = factory.getSubGraph ();
+  Node [] nodes = subGraph.getNodeArray ();
+  Edge [] edges = subGraph.getEdgeArray ();
+
+  assert nodes.length == 3;
+  assert edges.length == 2;
+
+}//testGraphWithoutLabels
 //-------------------------------------------------------------------------
 public static void main (String[] args) 
 {
