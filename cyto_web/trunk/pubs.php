@@ -19,6 +19,18 @@
 </table>
 <? include "nav.php"; ?>
 <div id="indent">
+    <br>
+	<p>
+		<b>Genome Research, November 2004 (cover article)</b>
+		<br>
+		Baliga NS, Bonneau R, Facciotti MT, Pan M, Glusman G, Deutsch EW, Shannon P, Chiu Y, Weng RS, Gan RR, Hung P, Date SV, Marcotte E, Hood L, Ng WV
+		<br>
+        Genome sequence of Haloarcula marismortui: a halophilic archaeon from the Dead Sea
+		<br>
+		Genome Res. 2004 Nov;14(11):2221-34
+		<br>
+		[<a href="http://www.genome.org/cgi/content/abstract/14/11/2221">Abstract</a>] [<a href="http://www.genome.org/cgi/reprint/14/11/2221">PDF</a>]
+
 	<p>
 		<b>Bioinformatics August 2004</b>
 		<br>
@@ -48,7 +60,7 @@
 		<br>
 		Systems level insights into the stress ersponds to UV radiation in the halophilic archaeon Halobacterium NRC-1.
 		<br>
-		Genome Res. 2004 14: 1025-35.
+		Genome Res. 2004 14: 1025-35
 		<br>
 		[<a href="http://www.genome.org/cgi/content/abstract/14/6/1025" class="Textlink">Abstract</a>][<a href="http://www.genome.org/cgi/reprint/14/6/1025.pdf" class="Textlink">PDF</a>][<a href="http://www.genome.org/cgi/content/full/1993504/DC1" class="Textlink">Supplemental Research Data</a>]
 

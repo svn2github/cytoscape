@@ -57,6 +57,8 @@
 					<tr>
 						<td valign="Top" width="250">
 							<div id="indent">
+							Mark Anderson
+							<br>
 							Iliana Avila-Campillo
 							<br>
 							Gary Bader
@@ -68,6 +70,8 @@
 							Trey Ideker
 							<br>
 							Ryan Kelley
+							<br>
+							Nerius Landys
 							<br>
 							Robert Sheridan
 							<br>
@@ -107,9 +111,11 @@
 			</table>
 			</div>
 		<br>
-		<img src="/images/2004Aug_devteam-updated.gif">
+		<div id="indent">
+		<img src="/images/2004Dec_devteam-updated.gif">
 		<br>
 		Image created with Cytoscape
+		</div>
 		</div>
 		<br>
 <? include "footer.php"; ?>

@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
-	<title>Cytoscape 2.0 PlugIns</title> 
+	<title>Cytoscape 2.0 Plugins</title>
 	<link rel="stylesheet" type="text/css" media="screen" href="css/cytoscape.css">
 	<link rel="shortcut icon" href="images/cyto.ico">
 </head>
@@ -11,10 +11,10 @@
 	<tbody>
 		<tr>
 			<td width="10">
-				&nbsp; 
+				&nbsp;
 			</td>
 			<td valign="bottom">
-				<h1>Cytoscape 2.0 PlugIns</h1> 
+				<h1>Cytoscape 2.0 Plugins</h1>
 			</td>
 		</tr>
 	</tbody>
@@ -22,18 +22,18 @@
 <? include "nav.php"; ?>
 <br>
 <div id="indent">
-	<big><b>About Cytoscape PlugIns:</b></big> 
+	<big><b>About Cytoscape Plugins:</b></big>
 	<p>
-		Cytoscape includes a flexible PlugIn architecture that enables developers to add extra functionality beyond that provided in the core. PlugIns also provide a convenient place for testing out new Cytoscape features. As more PlugIns become available, they will be listed on this page. Check back often! 
-    </p> 
+		Cytoscape includes a flexible Plugin architecture that enables developers to add extra functionality beyond that provided in the core. Plugins also provide a convenient place for testing out new Cytoscape features. As more Plugins become available, they will be listed on this page. Check back often!
+    </p>
 	<p>
-	<b>Note that PlugIns on this page will only work with Cytoscape 2.0</b>. We also maintain a list of <a href="plugins1.php">Cytoscape 1.1 PlugIns</a>.
+	<b>Note that Plugins on this page will only work with Cytoscape 2.0</b>. We also maintain a list of <a href="plugins1.php">Cytoscape 1.1 Plugins</a>.
 	</p>
 	<p>
-	If you are interested in building your own Cytoscape 2.0 PlugIn, check out the <a href="pluginTutorial.php">Cytoscape 2.0 PlugIn Tutorial</a>, and the <a href="http://cytoscape.systemsbiology.net/Cytoscape2.0/plugin/index.html">Cytoscape 2.0 PlugIn Writer Documentation</a>. 
+	If you are interested in building your own Cytoscape 2.0 Plugin, check out the <a href="pluginTutorial.php">Cytoscape 2.0 Plugin Tutorial</a>, and the <a href="http://cytoscape.systemsbiology.net/Cytoscape2.0/plugin/index.html">Cytoscape 2.0 Plugin Writer Documentation</a>. <a href="#policy">Plugin license policy</a>.
 	</p>
 	<p>
-		<big><b>Current Cytoscape 2.0 PlugIns:</b></big> 
+		<big><b>Current Cytoscape 2.0 Plugins:</b></big>
 		<br>
 	</p>
 </div>
@@ -42,29 +42,29 @@
 		<tbody>
 			<tr>
 				<td width="20%" valign="top">
-					<b>cPath PlugIn</b> <font size="-1"> 
+					<b>cPath Plugin</b> <font size="-1">
 						<br>
-						Version: 2 Beta 
+						Version: 2 Beta
 						<br>
-						Release Date: November 9, 2004</font> 
+						Release Date: November 9, 2004</font>
 				</td>
 				<td width="60%" valign="top">
-					The cPath PlugIn enables Cytoscape users to query, retrieve and visualize interactions retrieved from the <a href="http://cbio.mskcc.org/cpath">cPath database</a>.  For a complete list of new features / bug fixes in the Beta 2 release, 
+					The cPath Plugin enables Cytoscape users to query, retrieve and visualize interactions retrieved from the <a href="http://cbio.mskcc.org/cpath">cPath database</a>.  For a complete list of new features / bug fixes in the Beta 2 release,
 please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/README.txt">Release Notes</a>.
 
 					<p>
-						This product includes software developed by the Apache Software Foundation (<a href="http://www.apache.org/">http://www.apache.org</a>). 
+						This product includes software developed by the Apache Software Foundation (<a href="http://www.apache.org/">http://www.apache.org</a>).
 					</p>
 					<p>
-						Released by: Sander Group, <a href="http://www.cbio.mskcc.org/">Computational Biology Center</a>, Memorial Sloan-Kettering Cancer Center. 
+						Released by: Sander Group, <a href="http://www.cbio.mskcc.org/">Computational Biology Center</a>, Memorial Sloan-Kettering Cancer Center.
 					</p>
 				</td>
 				<td width="20%" valign="top">
-					[<a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/README.txt">Release Notes</a>] 
+					[<a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/README.txt">Release Notes</a>]
 					<br>
-					[<a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/cpath-beta2.tar.gz">Download .tar.gz</a>] 
+					[<a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/cpath-beta2.tar.gz">Download .tar.gz</a>]
 					<br>
-					[<a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/cpath-beta2.zip">Download .zip</a>] 
+					[<a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/cpath-beta2.zip">Download .zip</a>]
 				</td>
 			</tr>
 			<tr>
@@ -74,22 +74,22 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 			</tr>
 			<tr>
 				<td width="20%" valign="top">
-					<b>MCODE PlugIn</b><font size="-1"> 
+					<b>MCODE Plugin</b><font size="-1">
 						<br>
-						Version: 1 
+						Version: 1
 						<br>
-						Release Date: July 15, 2004</font> 
+						Release Date: July 15, 2004</font>
 				</td>
 				<td width="60%" valign="top">
-					The MCODE Cytoscape PlugIn finds clusters (highly interconnected regions) in any network loaded into Cytoscape. Depending on the type of network, clusters may mean different things. For instance, clusters in a protein-protein interaction network have been shown to be protein complexes and parts of pathways. Clusters in a protein similarity network represent protein families. 
+					The MCODE Cytoscape Plugin finds clusters (highly interconnected regions) in any network loaded into Cytoscape. Depending on the type of network, clusters may mean different things. For instance, clusters in a protein-protein interaction network have been shown to be protein complexes and parts of pathways. Clusters in a protein similarity network represent protein families.
 					<p>
-						Released by: Gary Bader, Sander Group, <a href="http://www.cbio.mskcc.org/">Computational Biology Center</a>, Memorial Sloan-Kettering Cancer Center. 
+						Released by: Gary Bader, Sander Group, <a href="http://www.cbio.mskcc.org/">Computational Biology Center</a>, Memorial Sloan-Kettering Cancer Center.
 					</p>
 				</td>
 				<td width="20%" valign="top">
-					[<a href="http://www.cbio.mskcc.org/~bader/software/mcode/index.html">MCODE PlugIn Web Site</a>] 
+					[<a href="http://www.cbio.mskcc.org/~bader/software/mcode/index.html">MCODE Plugin Web Site</a>]
 					<br>
-					[<a href="http://www.cbio.mskcc.org/~bader/software/mcode/mcode_v1.zip">Download .zip</a>] 
+					[<a href="http://www.cbio.mskcc.org/~bader/software/mcode/mcode_v1.zip">Download .zip</a>]
 				</td>
 			</tr>
 			<tr>
@@ -99,33 +99,33 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 			</tr>
 			<tr>
 				<td width="20%" valign="top">
-					<b>PSI-MI Import/Export PlugIn</b><font size="-1"> 
+					<b>PSI-MI Import/Export Plugin</b><font size="-1">
 						<br>
-						Version: 2 
+						Version: 2
 						<br>
-						Release Date: November 8, 2004</font> 
+						Release Date: November 8, 2004</font>
 				</td>
 				<td width="60%" valign="top">
 					<p>
-					This plugin enables Cytoscape to import/export to the 
-					<A HREF="http://psidev.sourceforge.net/">Proteomics 	
-					Standards Initiative Molecular Interaction (PSI-MI)</A> XML Format.  
+					This plugin enables Cytoscape to import/export to the
+					<A HREF="http://psidev.sourceforge.net/">Proteomics
+					Standards Initiative Molecular Interaction (PSI-MI)</A> XML Format.
 					PSI-MI is a XML format used to represent and exchange protein-protein
 					interaction data.
-					
-					<P>For an earlier version of this PlugIn, which
-					works in Cytoscape 1.1, refer to the Data Services PlugIn
-					on the <A HREF="plugins1.php">Cytoscape 1.1 PlugIns</A> page.
+
+					<P>For an earlier version of this Plugin, which
+					works in Cytoscape 1.1, refer to the Data Services Plugin
+					on the <A HREF="plugins1.php">Cytoscape 1.1 Plugins</A> page.
 					<p>
-						Released by: Sander Group, <a href="http://www.cbio.mskcc.org/">Computational Biology Center</a>, Memorial Sloan-Kettering Cancer Center. 
+						Released by: Sander Group, <a href="http://www.cbio.mskcc.org/">Computational Biology Center</a>, Memorial Sloan-Kettering Cancer Center.
 					</p>
 				</td>
 				<td width="20%" valign="top">
-					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/psi/version2/README.txt">Release Notes</a>] 
+					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/psi/version2/README.txt">Release Notes</a>]
 					<br>
-					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/psi/version2/psi-2.tar.gz">Download .tar.gz</a>] 
+					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/psi/version2/psi-2.tar.gz">Download .tar.gz</a>]
 <br>
-					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/psi/version2/psi-2.zip">Download .zip</a>] 
+					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/psi/version2/psi-2.zip">Download .zip</a>]
 
 				</td>
 			</tr>
@@ -136,32 +136,54 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 			</tr>
 			<tr>
 				<td width="20%" valign="top">
-					<b>SOFT Import PlugIn</b><font size="-1"> 
+					<b>SOFT Import Plugin</b><font size="-1">
 						<br>
-						Version: 2 
+						Version: 2
 						<br>
-						Release Date: November 8, 2004</font> 
+						Release Date: November 8, 2004</font>
 				</td>
 				<td width="60%" valign="top">
 					<p>
-					This plugin enables Cytoscape to import data formatted in the 
+					This plugin enables Cytoscape to import data formatted in the
 					<A HREF="http://www.ncbi.nlm.nih.gov/projects/geo/info/soft2.html">
-					GEO Simple Omnibus Format in Text (SOFT)</A>.  SOFT is a text file 
-					format 	used to represent and exchange Gene Expression Data.  
-					<P>For an earlier version of this PlugIn, which
-					works in Cytoscape 1.1, refer to the Data Services PlugIn
-					on the <A HREF="plugins1.php">Cytoscape 1.1 PlugIns</A> page.
+					GEO Simple Omnibus Format in Text (SOFT)</A>.  SOFT is a text file
+					format 	used to represent and exchange Gene Expression Data.
+					<P>For an earlier version of this Plugin, which
+					works in Cytoscape 1.1, refer to the Data Services Plugin
+					on the <A HREF="plugins1.php">Cytoscape 1.1 Plugins</A> page.
 					<p>
-						Released by: Sander Group, <a href="http://www.cbio.mskcc.org/">Computational Biology Center</a>, Memorial Sloan-Kettering Cancer Center. 
+						Released by: Sander Group, <a href="http://www.cbio.mskcc.org/">Computational Biology Center</a>, Memorial Sloan-Kettering Cancer Center.
 					</p>
 				</td>
 				<td width="20%" valign="top">
-					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/soft/version2/README.txt">Release Notes</a>] 
+					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/soft/version2/README.txt">Release Notes</a>]
 					<br>
-					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/soft/version2/soft-2.tar.gz">Download .tar.gz</a>] 
+					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/soft/version2/soft-2.tar.gz">Download .tar.gz</a>]
 <br>
-					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/soft/version2/soft-2.zip">Download .zip</a>] 
+					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/soft/version2/soft-2.zip">Download .zip</a>]
 
+				</td>
+			</tr>
+			<tr>
+				<td width="20%" valign="top">
+					<b>Oracle Spatial Network Data Model Plugin</b><font size="-1">
+						<br>
+						Version: 1
+						<br>
+						Release Date: November 30, 2004</font>
+				</td>
+				<td width="60%" valign="top">
+					<p>
+					This plugin enables Cytoscape users to visualize and analyze network data stored in
+					Oracle Spatial Network Data Model. In order to use the plugin, users need to install
+					<a href="http://www.oracle.com/technology/products/database/oracle10g/index.html">Oracle Database 10g</a>
+					(with the <a href="http://www.oracle.com/technology/products/spatial/index.html">Spatial option</a>) and Cytoscape.
+					<p>
+						Released by: <a href="http://www.oracle.com/technology/industries/life_sciences/index.html">Life Sciences Group, Oracle Corporation</a>
+					</p>
+				</td>
+				<td width="20%" valign="top">
+					[<a href="http://www.oracle.com/technology/industries/life_sciences/ls_sample_code.html">Download</a>]
 				</td>
 			</tr>
 		</tbody>
@@ -169,20 +191,20 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 	</div>
 	<div id="indent">
 	<br>
-	<big><b>Experimental Cytoscape 2.0 PlugIns:</b></big> 
+	<big><b>Experimental Cytoscape 2.0 Plugins:</b></big>
 	<P></P>
 	<table style="border: dotted gray 1px;padding-left: 10px;font-size:small" cellpadding="5" cellspacing="5" width="92%" bgcolor="#ebebff">
 	<tbody>
 			<tr>
 				<td width="20%" valign="top">
-					<b>Extras PlugIn</b><font size="-1"> 
+					<b>Extras Plugin</b><font size="-1">
 						<br>
-						Version: .1 BETA 
+						Version: .1 BETA
 						<br>
-						Release Date: August 2, 2004</font> 
+						Release Date: August 2, 2004</font>
 				</td>
 				<td width="60%" valign="top">
-					This PlugIn is a testing ground for what will likely later become separate plugins. Any code should be considered highly experimental and full of bugs. However, bugs that are reported will likely be fixed, though perhaps not in a timely fashion. Currently this plugin provides the following:
+					This Plugin is a testing ground for what will likely later become separate plugins. Any code should be considered highly experimental and full of bugs. However, bugs that are reported will likely be fixed, though perhaps not in a timely fashion. Currently this plugin provides the following:
 					<br>
 					<ul>
 						<li>
@@ -196,11 +218,11 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 						</li>
 					</ul>
 					<p>
-						Released by: Rowan Christmas, Aitchison Group, <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>. 
+						Released by: Rowan Christmas, Aitchison Group, <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>.
 					</p>
 				</td>
 				<td width="20%" valign="top">
-					[<a href="ftp://baker.systemsbiology.net/pub/xmas/plugins/rowan.jar">Download PlugIn .jar</a>] 
+					[<a href="ftp://baker.systemsbiology.net/pub/xmas/plugins/rowan.jar">Download Plugin .jar</a>]
 				</td>
 			</tr>
 			<tr>
@@ -210,25 +232,25 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 			</tr>
 			<tr>
 				<td width="20%" valign="top">
-					<b>Save PlugIn</b><font size="-1"> 
+					<b>Save Plugin</b><font size="-1">
 						<br>
-						Version: .1 BETA 
+						Version: .1 BETA
 						<br>
-						Release Date: August 3, 2004</font> 
+						Release Date: August 3, 2004</font>
 				</td>
 				<td width="60%" valign="top">
-					This plugin implements the saving of Cytoscape session. Specifically it saves all of the networks that you have open, and the layout of all the networks that have views. It also saves all of the data for all the nodes and edges in your networks, even those nodes and edges that are not in any network. It saves files as a zip file, and the contents are easily inspected after unzipping. The files "nodes.txt" and "edges.txt" contain all of the data for nodes and edges. 
+					This plugin implements the saving of Cytoscape session. Specifically it saves all of the networks that you have open, and the layout of all the networks that have views. It also saves all of the data for all the nodes and edges in your networks, even those nodes and edges that are not in any network. It saves files as a zip file, and the contents are easily inspected after unzipping. The files "nodes.txt" and "edges.txt" contain all of the data for nodes and edges.
 					<br>
 					<br>
-					Also included is a spreadsheet importer. 
+					Also included is a spreadsheet importer.
 					<p>
-						Released by: Rowan Christmas, Aitchison Group, <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>. 
+						Released by: Rowan Christmas, Aitchison Group, <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>.
 					</p>
 				</td>
 				<td width="20%" valign="top">
-					[<a href="ftp://baker.systemsbiology.net/pub/xmas/plugins/loader.jar">Download PlugIn .jar</a>]
+					[<a href="ftp://baker.systemsbiology.net/pub/xmas/plugins/loader.jar">Download Plugin .jar</a>]
 					<br>
-					[<a href="ftp://baker.systemsbiology.net/pub/xmas/plugins/course.cytoproj.zip">Download Test Project</a>] 
+					[<a href="ftp://baker.systemsbiology.net/pub/xmas/plugins/course.cytoproj.zip">Download Test Project</a>]
 				</td>
 			</tr>
 			<tr>
@@ -238,14 +260,14 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 			</tr>
 			<tr>
 				<td width="20%" valign="top">
-					<b>DataMatrix PlugIn</b><font size="-1"> 
+					<b>DataMatrix Plugin</b><font size="-1">
 						<br>
-						Version: .8 BETA 
+						Version: .8 BETA
 						<br>
-						Release Date: August 15, 2004</font> 
+						Release Date: August 15, 2004</font>
 				</td>
 				<td width="60%" valign="top">
-					This plugin provides a number of integrated tools for exploring and visualizing experimental data in association with the Cytoscape network view. Read in tab-delimited text files, in which there is one row for each gene or protein, and as many columns as there are experimental conditions. The following operations are then possible: 
+					This plugin provides a number of integrated tools for exploring and visualizing experimental data in association with the Cytoscape network view. Read in tab-delimited text files, in which there is one row for each gene or protein, and as many columns as there are experimental conditions. The following operations are then possible:
 					<ol>
 						<li>examine the numerical data in a spreadsheet display</li>
 						<li>view x-y plots of selected rows</li>
@@ -255,13 +277,13 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 						<li>animate the Cytoscape network based upon the experimental data, mapping (for instance) log10 ratios to node color, and statistical significance to node size</li>
 						<li>for the skilled user: use the python console, and write scripts to create custom operations on, or selections from, the data</li>
 					</ol>
-					Full documentation is <a href="http://db.systemsbiology.net/cytoscape/tutorial/cy2/DataMatrixPlugin"> here</a>. 
+					Full documentation is <a href="http://db.systemsbiology.net/cytoscape/tutorial/cy2/DataMatrixPlugin"> here</a>.
 					<p>
-						Released by: Paul Shannon, Baliga Group, <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>. 
+						Released by: Paul Shannon, Baliga Group, <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>.
 					</p>
 				</td>
 				<td width="20%" valign="top">
-					[<a href="http://db.systemsbiology.net/cytoscape/ftp/DataMatrixPlugin.jar">Download PlugIn .jar</a>]
+					[<a href="http://db.systemsbiology.net/cytoscape/ftp/DataMatrixPlugin.jar">Download Plugin .jar</a>]
 					<br>
 				</td>
 			</tr>
@@ -280,34 +302,34 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 					<br>
 					<font size="-1">Version: .1 BETA
 						<br>
-						Release Date: Sept. 3, 2004</font> 
+						Release Date: Sept. 3, 2004</font>
 				</td>
 				<td width="60%" valign="top">
 					Dynamically retrieve remote biological information for selected nodes in the current network.
 					<br>
 					<br>
-					This plugin fetches and adds biological information from a remote server/database and adds them as additional edges or attributes to the current network. Currently implemented data include: protein/gene synonyms, orthologs, sequences (gene/protein/upstream) and interactions/associations. This information is available to varying degrees for several species including yeast, human, mouse, fruit fly, and worm. Some of this information is integrated, for example, retrieved synonym information may be used to expand the possible interactions that are retrieved, and retrieved ortholog information may be used to fetch interlogs for the species listed above. Available interaction data sets include <a href="http://www.blueprint.org/bind/bind.php">BIND</a>, <a href="http://dip.doe-mbi.ucla.edu">DIP</a>, <a href="http://hprd.org">HPRD</a>, <a href="http://www.blueprint.org/products/prebind/prebind.html">PreBIND</a>, and several others. 
+					This plugin fetches and adds biological information from a remote server/database and adds them as additional edges or attributes to the current network. Currently implemented data include: protein/gene synonyms, orthologs, sequences (gene/protein/upstream) and interactions/associations. This information is available to varying degrees for several species including yeast, human, mouse, fruit fly, and worm. Some of this information is integrated, for example, retrieved synonym information may be used to expand the possible interactions that are retrieved, and retrieved ortholog information may be used to fetch interlogs for the species listed above. Available interaction data sets include <a href="http://www.blueprint.org/bind/bind.php">BIND</a>, <a href="http://dip.doe-mbi.ucla.edu">DIP</a>, <a href="http://hprd.org">HPRD</a>, <a href="http://www.blueprint.org/products/prebind/prebind.html">PreBIND</a>, and several others.
 					<br>
 					<br>
-					Additional notes: 
+					Additional notes:
 					<ul>
 						<li>
 							Some data sources are currently not allowed for "public use" (such as HPRD which is free for non-profit use only) and will require a password to allow access. Please email me for a password and do not share it with anyone.
 						</li>
 						<li>
-							A (somewhat outdated) tutorial for many of the features of this plugin are available <a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/getInteractions"> here</a>. Note that the web start (and screenshots) on this tutorial page still use Cytoscape v1.1.1. 
+							A (somewhat outdated) tutorial for many of the features of this plugin are available <a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/getInteractions"> here</a>. Note that the web start (and screenshots) on this tutorial page still use Cytoscape v1.1.1.
 						</li>
 						<li>
-							The structure of the plugins were written to allow easy expansion of the type of information that may be fetched, and may be extended in the future to various types of annotations and public microarray datasets, for example. 
+							The structure of the plugins were written to allow easy expansion of the type of information that may be fetched, and may be extended in the future to various types of annotations and public microarray datasets, for example.
 						</li>
 						<li>
-							Also included in the plugin jar are all necessary classes required to run a local version of the information server (not including, of course, the database). The server may be run locally as a stand-alone XML-RPC server, or behind an external web server such as Apache Tomcat. 
+							Also included in the plugin jar are all necessary classes required to run a local version of the information server (not including, of course, the database). The server may be run locally as a stand-alone XML-RPC server, or behind an external web server such as Apache Tomcat.
 						</li>
 					</ul>
-					Released by: David J. Reiss, Galitski and Schwikowski Groups, <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>. 
+					Released by: David J. Reiss, Galitski and Schwikowski Groups, <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>.
 				</td>
 				<td width="20%" valign="top">
-					[<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/httpdata_all.jar">Download PlugIn .jar</a>]
+					[<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/httpdata_all.jar">Download Plugin .jar</a>]
 					<br>
 				</td>
 			</tr>
@@ -322,25 +344,25 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 					<br>
 					<font size="-1">Version: .1 BETA
 						<br>
-						Release Date: Sept. 3, 2004</font> 
+						Release Date: Sept. 3, 2004</font>
 				</td>
 				<td width="60%" valign="top">
 					Dynamically interact with and manipulate the current network from an external process.
 					<br>
 					<br>
-					This plugin runs a simple internal XML-RPC server from within Cytoscape that allows the current network and its various attributes to be manipulated from an external process that is XML-RPC capable. Examples include external <a href="http://perl.org">Perl</a>, <a href="http://python.org">Python</a>, <a href="http://www.r-project.org">the R statistical language</a>, UNIX shell scripts, C or C++ programs, or external Java processes. It even allows for other "plugins" to be written in these languages. The external process may be run on the same machine as Cytoscape, or anywhere else on the network. 
+					This plugin runs a simple internal XML-RPC server from within Cytoscape that allows the current network and its various attributes to be manipulated from an external process that is XML-RPC capable. Examples include external <a href="http://perl.org">Perl</a>, <a href="http://python.org">Python</a>, <a href="http://www.r-project.org">the R statistical language</a>, UNIX shell scripts, C or C++ programs, or external Java processes. It even allows for other "plugins" to be written in these languages. The external process may be run on the same machine as Cytoscape, or anywhere else on the network.
 					<ul>
 						<li>
-							<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/cytoTalk/CytoTalkHandler.html"> JavaDoc documentation of the client functions are available.</a></li> 
+							<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/cytoTalk/CytoTalkHandler.html"> JavaDoc documentation of the client functions are available.</a></li>
 							<li>
 								<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/cytoTalk/CytoTalkClient.R">R</a> and <a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/cytoTalk/CytoTalkClient.pm">Perl</a> client classes are also available. </li>
 							<li>
 								Some simple <a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/cytoTalk/examples"> example Perl, Python, and R scripts</a> have been written. </li>
 			</ul>
-			Released by: David J. Reiss, Schwikowski Group, <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>. 
+			Released by: David J. Reiss, Schwikowski Group, <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>.
 		</td>
 		<td width="20%" valign="top">
-			[<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/cytoTalk/cytoTalk.jar">Download PlugIn .jar</a>]
+			[<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/cytoTalk/cytoTalk.jar">Download Plugin .jar</a>]
 			<br>
 		</td>
 	</tr>
@@ -355,21 +377,21 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 			<br>
 			<font size="-1">Version: .1 BETA
 				<br>
-				Release Date: Sept. 3, 2004</font> 
+				Release Date: Sept. 3, 2004</font>
 		</td>
 		<td width="60%" valign="top">
 			Run a Gibbs sampling motif detector on sequences corresponding to the selected nodes in the current network. This currently implements the most basic of the motif detection algorithms available from the <a href="http://sf.net/projects/netmotsa">Gibbs sampling motif detection library</a> described in <a href="http://bioinformatics.oupjournals.org/cgi/content/abstract/20/suppl_1/i274">Bioinformatics</a>.
 			<br>
-			This plugin requires that the "sequence fetcher" (part of the HTTP Data plugin) be run first, to fetch the sequences, or they may be pre-loaded as node attributes. It may be used on protein or DNA sequences (detected automatically). Various types of information such as motif logos, alignment tables, and motif positions are displayed at the end of the detection run (<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/motifFinder/software.jpg">screenshot</a>). 
+			This plugin requires that the "sequence fetcher" (part of the HTTP Data plugin) be run first, to fetch the sequences, or they may be pre-loaded as node attributes. It may be used on protein or DNA sequences (detected automatically). Various types of information such as motif logos, alignment tables, and motif positions are displayed at the end of the detection run (<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/motifFinder/software.jpg">screenshot</a>).
 			<br>
 			<br>
-			At some point, I hope to implement the fully network-informed version of the motif finder as described in the article. 
+			At some point, I hope to implement the fully network-informed version of the motif finder as described in the article.
 			<br>
 			<br>
-			Released by: David J. Reiss, Schwikowski Group, <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>. 
+			Released by: David J. Reiss, Schwikowski Group, <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>.
 		</td>
 		<td width="20%" valign="top">
-			[<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/motifFinder/motifFinder.jar">Download PlugIn .jar</a>]
+			[<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/motifFinder/motifFinder.jar">Download Plugin .jar</a>]
 			<br>
 		</td>
 	</tr>
@@ -384,13 +406,13 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 			<br>
 			<font size="-1">Version: 1.0 BETA
 				<br>
-				Release Date: Oct. 9, 2004</font> 
+				Release Date: Oct. 9, 2004</font>
 		</td>
 		<td width="60%" valign="top">
-			This plugin enables Cytoscape to search for significant networks as described in <a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&amp;db=PubMed&amp;list_uids=12169552&amp;dopt=Abstract">Bioinformatics. 2002 Jul;18 Suppl 1:S233-40.</a> 
+			This plugin enables Cytoscape to search for significant networks as described in <a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&amp;db=PubMed&amp;list_uids=12169552&amp;dopt=Abstract">Bioinformatics. 2002 Jul;18 Suppl 1:S233-40.</a>
 			<br>
 			<br>
-			Released by: <a href="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab/">The Ideker Lab</a>, Department of Bioengineering, UCSD 
+			Released by: <a href="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab/">The Ideker Lab</a>, Department of Bioengineering, UCSD
 		</td>
 		<td width="20%" valign="top">
 			[<a href="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab/plugins/jActiveModules2/README.txt">Release Notes</a>]
@@ -403,6 +425,16 @@ please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/REA
 	</tr>
 </tbody>
 </table>
+
+<a name="policy">
+Cytoscape Plugin License Policy:  Although the Cytoscape core
+application is distributed under a Library GNU Public License (LGPL),
+plugins are separate works which use Cytoscape as a Java code library.
+Plugins are therefore governed by independent software licenses
+distributed with and specific to each plugin.  The Cytoscape project
+has no intent to capture plugins under the license terms of the core
+Cytoscape LGPL.
+
 <br>
 <p></p>
 </div>

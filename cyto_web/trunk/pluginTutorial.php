@@ -31,7 +31,7 @@
 </center>
 
 Cytoscape allows programmers to write plugins that access the core
-data structures and windows of Cytoscape to do a wide variety of 
+data structures and windows of Cytoscape to do a wide variety of
 operations. This tutorial explains how to write a plugin and how to get
 Cytoscape to load and use your plugin.
 
@@ -39,7 +39,7 @@ Cytoscape to load and use your plugin.
 It is assumed that the reader is familiar with the basics of the Java
 programming language and has some kind of programming environment available.
 See
-<a href="http://java.sun.com/docs/books/tutorial/index.html">the Java Tutorial</a> 
+<a href="http://java.sun.com/docs/books/tutorial/index.html">the Java Tutorial</a>
 for an excellent introduction and handy reference guide for Java.
 You will also want to check out the
 <a href="http://www.cbio.mskcc.org/cytoscape/alpha/javadoc/index.html">Cytoscape core API documentation</a>.
@@ -48,11 +48,14 @@ You will also want to check out the
 
 <p>
 Each plugin tutorial includes the Java source code and a jar file containing
-the compiled classes. To run Cytoscape via Java WebStart with all of these 
-plugins automatically loaded, click here: 
-<a href="pluginTutorial/webStart/cy.jnlp">WEB START</a>. 
+the compiled classes. To run Cytoscape via Java WebStart with all of these
+plugins automatically loaded, click here:
+<a href="pluginTutorial/webStart/cy.jnlp">WEB START</a>.
 (See the <a href="http://cytoscape.systemsbiology.net/Cytoscape2.0/user/JavaWebStart/index.html">
  Cytoscape Web Start documentation</a> for information on running Cytoscape via Java Web Start).
+</p>
+<p>
+<a href="plugins2.php#policy">Plugin license policy</a>.
 </p>
 
 <hr>
@@ -61,7 +64,7 @@ plugins automatically loaded, click here:
 
 <h3><a name="CytoscapePlugin">The CytoscapePlugin class</a></h3>
 
-The CytoscapePlugin class is very simple. It defines a default constructor and 
+The CytoscapePlugin class is very simple. It defines a default constructor and
 one instance method: <code>describe</code>,
 which can be overridden to describe what the plugin does. A static
 method also exists that is used by Cytoscape to load plugins. Since

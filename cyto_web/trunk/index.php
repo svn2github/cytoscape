@@ -4,7 +4,7 @@
 <html>
 	<head>
 		<title>
-			Cytoscape: Analyzing and Visualizing Biological Network Data 
+			Cytoscape: Analyzing and Visualizing Biological Network Data
 		</title>
 		<link href="css/cytoscape.css" media="screen" type="text/css" rel="stylesheet">
 		<link href="images/cyto.ico" rel="shortcut icon">
@@ -20,29 +20,29 @@
 			<tbody>
 				<tr>
 					<td width="10">
-						&nbsp; 
+						&nbsp;
 					</td>
 					<td width="200" valign="top">
 						<div id="about">
 							<h1>
-								Cytoscape 
+								Cytoscape
 							</h1>
-							Cytoscape is an open source bioinformatics software platform for 
+							Cytoscape is an open source bioinformatics software platform for
 							<b>
 								<i>
-									visualizing 
+									visualizing
 								</i>
 							</b>
-							molecular interaction networks and 
+							molecular interaction networks and
 							<b>
 								<i>
-									integrating 
+									integrating
 								</i>
 							</b>
-							these interactions with gene expression profiles and other state data. 
+							these interactions with gene expression profiles and other state data.
 							<br>
 							<a href="features.php">
-								Read more &raquo; 
+								Read more &raquo;
 							</a>
 						</div>
 					</td>
@@ -50,14 +50,14 @@
 						<div id="article">
 							<h2>
 								<a href="download.php?file=cyto2">
-									Download Cytoscape 2.0! 
+									Download Cytoscape 2.0!
 								</a>
 							</h2>
 							<p>
-								New!&nbsp; Cytoscape 2.0 is now available. 
+								New!&nbsp; Cytoscape 2.0 is now available.
 								<br>
 								<a href="download.php?file=cyto2">
-									Download &raquo; 
+									Download &raquo;
 								</a>
 								<br>
 							</p>
@@ -83,41 +83,41 @@
 									<big>
 										<b>
 											<i>
-												New!</i>&nbsp;&nbsp;Announcing Cytoscape 2.0 
+												New!</i>&nbsp;&nbsp;Announcing Cytoscape 2.0
 										</b>
 									</big>
 									<table width="100%">
 										<tr valign="top">
 											<td width="47%" valign="top">
-												The Cytoscape Team is pleased to release Cytoscape 2.0. 
+												The Cytoscape Team is pleased to release Cytoscape 2.0.
 												<br>
 												<br>
-												New Features include: 
+												New Features include:
 												<ul>
 													<li>
-														100% Open Source Implementation. 
+														100% Open Source Implementation.
 													</li>
 													<li>
-														Bird's Eye View for Viewing Large Networks. 
+														Bird's Eye View for Viewing Large Networks.
 													</li>
 													<li>
-														Improved Performance for Viewing Large Networks. 
+														Improved Performance for Viewing Large Networks.
 													</li>
 													<li>
-														Improved PlugIn Framework and PlugIn API. 
+														Improved PlugIn Framework and PlugIn API.
 													</li>
 													<li>
-														Numerous Bug Fixes. 
+														Numerous Bug Fixes.
 													</li>
 												</ul>
-												Try out Cytoscape 2.0, and let us know what you think. 
+												Try out Cytoscape 2.0, and let us know what you think.
 												<ul>
 													<li>
 														<a href="download.php?file=cyto2">
-															Download Cytoscape 2.0</a>. 
+															Download Cytoscape 2.0</a>.
 													</li>
 												</ul>
-												If you find a bug, please log it to the 
+												If you find a bug, please log it to the
 												<a href="http://www.cbio.mskcc.org/cytoscape/bugs/main_page.php">
 													Cytoscape Bug Tracker.
 												</a>
@@ -132,20 +132,20 @@
 								<div class="item">
 									<big>
 										<b>
-											Genome Research article on Cytoscape 
+											Genome Research article on Cytoscape
 										</b>
 									</big>
 									<br>
 									<p>
-										Genome Research has published a journal article on Cytoscape 
+										Genome Research has published a journal article on Cytoscape
 										<a href="http://www.genome.org/cgi/content/full/13/11/2498">
-											[Abstract] 
+											[Abstract]
 										</a>
 										<a href="http://www.genome.org/cgi/reprint/13/11/2498">
-											[PDF] 
+											[PDF]
 										</a>
 										<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&amp;db=PubMed&amp;list_uids=14597658&amp;dopt=Abstract">
-											[PubMed entry]</a>. 
+											[PubMed entry]</a>.
 									</p>
 									<p>
 										<br>
@@ -157,50 +157,71 @@
 										<b>
 											Research using Cytoscape</b>
 									</big>
-									&nbsp;&nbsp; [<a href="pubs.php">View All Publications</a>] 
+									&nbsp;&nbsp; [<a href="pubs.php">View All Publications</a>]
 									<p>
 									<br>
 									<br>
 									<p>
+		                                    <b>Genome Research, November 2004 (cover article)</b>
+                                    		<br>
+                                    		Baliga NS, Bonneau R, Facciotti MT, Pan M, Glusman G, Deutsch EW, Shannon P, Chiu Y, Weng RS, Gan RR, Hung P, Date SV, Marcotte E, Hood L, Ng WV
+                                    		<br>
+                                            Genome sequence of Haloarcula marismortui: a halophilic archaeon from the Dead Sea
+                                    		<br>
+                                    		Genome Res. 2004 Nov;14(11):2221-34
+                                    		<br>
+                                    		[<a href="http://www.genome.org/cgi/content/abstract/14/11/2221">Abstract</a>] [<a href="http://www.genome.org/cgi/reprint/14/11/2221">PDF</a>]
+
+                                    	<p>
+                                    		<b>Bioinformatics August 2004</b>
+                                    		<br>
+                                    		Reiss David, Schwikowski Benno
+                                    		<br>
+                                    		Predicting protein–peptide interactions via a network-based motif sampler
+                                    		<br>
+                                    		Bioinformatics. 2004 Aug 4;20 Suppl 1:I274-I282
+                                    		<br>
+                                    		[<a href="http://bioinformatics.oupjournals.org/cgi/content/abstract/20/suppl_1/i274">Abstract</a>] [<a href="http://bioinformatics.oupjournals.org/cgi/reprint/20/suppl_1/i274">PDF</a>]
+									
 										<b>
 											Genome Biology, July 2004
 										</b>
 										<br>
-										Bonneau, Richard, Baliga Nitin S, Deutsch, Eric W, Shannon Paul and Hood, Leroy 
+										Bonneau, Richard, Baliga Nitin S, Deutsch, Eric W, Shannon Paul and Hood, Leroy
 										<br>
-										Comprehensive de novo structure prediction in a systems-biology context for the archaea Halobacterium sp. NRC-1 
+										Comprehensive de novo structure prediction in a systems-biology context for the archaea Halobacterium sp. NRC-1
 										<br>
-										Genome Biology 2004, 5:R52 
+										Genome Biology 2004, 5:R52
 										<br>
-										[<a href="http://genomebiology.com/2004/5/8/r52/abstract">Abstract</a>] [<a href="http://genomebiology.com/2004/5/8/r52">Full Text</a>] [<a href="http://genomebiology.com/content/pdf/gb-2004-5-8-r52.pdf">PDF</a>] 
+										[<a href="http://genomebiology.com/2004/5/8/r52/abstract">Abstract</a>] [<a href="http://genomebiology.com/2004/5/8/r52">Full Text</a>] [<a href="http://genomebiology.com/content/pdf/gb-2004-5-8-r52.pdf">PDF</a>]
 										<br>
-										&nbsp; 
+										&nbsp;
 									<p>
 										<b>
-											Genome Research, June 2004 (cover article) 
+											Genome Research, June 2004 (cover article)
 										</b>
 										<br>
-										Baliga, NS, Bjork, SJ, Bonneau, R, Pan, M, Iloanusi, C, Kottemann, MCH, Hood, L, and DiRuggiero, J. 
+										Baliga, NS, Bjork, SJ, Bonneau, R, Pan, M, Iloanusi, C, Kottemann, MCH, Hood, L, and DiRuggiero, J.
 										<br>
-										Systems level insights into the stress ersponds to UV radiation in the halophilic archaeon Halobacterium NRC-1. 
+										Systems level insights into the stress ersponds to UV radiation in the halophilic archaeon Halobacterium NRC-1.
 										<br>
-										Genome Res. 2004 14: 1025-35. 
+										Genome Res. 2004 14: 1025-35.
 										<br>
-										[<a href="http://www.genome.org/cgi/content/abstract/14/6/1025" class="Textlink">Abstract</a>][<a href="http://www.genome.org/cgi/reprint/14/6/1025.pdf" class="Textlink">PDF</a>][<a href="http://www.genome.org/cgi/content/full/1993504/DC1" class="Textlink">Supplemental Research Data</a>] 
+										[<a href="http://www.genome.org/cgi/content/abstract/14/6/1025" class="Textlink">Abstract</a>][<a href="http://www.genome.org/cgi/reprint/14/6/1025.pdf" class="Textlink">PDF</a>][<a href="http://www.genome.org/cgi/content/full/1993504/DC1" class="Textlink">Supplemental Research Data</a>]
 									<p>
 										<br>
 									<p>
 										<b>
-											Genome Research, March 2004 
+											Genome Research, March 2004
 										</b>
 										<br>
-										Prinz S, Avila-Campillo I, Aldridge C, Srinivasan A, Dimitrov K, Siegel AF, and Galitski T. 
+										Prinz S, Avila-Campillo I, Aldridge C, Srinivasan A, Dimitrov K, Siegel AF, and Galitski T.
 										<br>
-										Control of Yeast Filamentous-Form Growth by Modules in an Integrated Molecular Network. 
+										Control of Yeast Filamentous-Form Growth by Modules in an Integrated Molecular Network.
 										<br>
-										Genome Res. 2004 14: 380-390. 
+										Genome Res. 2004 14: 380-390.
 										<br>
-										[<a href="http://www.genome.org/cgi/content/abstract/14/3/380" class="Textlink">Abstract</a>][<a href="http://www.genome.org/cgi/reprint/14/3/380.pdf" class="Textlink">PDF</a>] [<a href="http://www.genome.org/cgi/content/full/14/3/380/DC1" class="Textlink">Supplemental Research Data</a>] 
+										[<a href="http://www.genome.org/cgi/content/abstract/14/3/380" class="Textlink">Abstract</a>][<a href="http://www.genome.org/cgi/reprint/14/3/380.pdf" class="Textlink">PDF</a>] [<a href="http://www.genome.org/cgi/content/full/14/3/380/DC1" class="Textlink">Supplemental Research Data</a>]
 									</p>
 									<p>
 										<br>
@@ -209,22 +230,22 @@
 											Science, Feb 2004
 										</b>
 										<br>
-										Tong AH, et al., Global mapping of the yeast genetic interaction network. 
+										Tong AH, et al., Global mapping of the yeast genetic interaction network.
 										<br>
-										Science. 2004 Feb 6;303(5659):808-13. 
+										Science. 2004 Feb 6;303(5659):808-13.
 										<br>
-										[<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&amp;db=pubmed&amp;dopt=Abstract&amp;list_uids=14764870">Pub Med Entry</a>] [<a href="http://www.sciencemag.org/cgi/content/full/303/5659/808">Full Text</a>] 
+										[<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&amp;db=pubmed&amp;dopt=Abstract&amp;list_uids=14764870">Pub Med Entry</a>] [<a href="http://www.sciencemag.org/cgi/content/full/303/5659/808">Full Text</a>]
 										<br>
-										&nbsp; 
+										&nbsp;
 									<p>
 										<b>
 											Note:
 										</b>
-										If you have a publication which makes use of Cytoscape, please let us know by sending an email to the 
+										If you have a publication which makes use of Cytoscape, please let us know by sending an email to the
 										<a href="http://groups-beta.google.com/group/cytoscape-discuss">
 											cytoscape-discuss
 										</a>
-										mailing list. 
+										mailing list.
 								</div>
 							</div>
 						</div>
@@ -239,9 +260,9 @@
 		include "news.php";
 		include "community_box.php";
 	}
-	echo "<P>"; 
+	echo "<P>";
 	include "collab.php";
-?> 
+?>
 				</td>
 			</tr>
 		</table>
