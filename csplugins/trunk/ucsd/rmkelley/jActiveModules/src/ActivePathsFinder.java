@@ -58,9 +58,11 @@ public class ActivePathsFinder{
   //HashSet bestNeighborhood;
   ExpressionData expressionData;
   JFrame parentFrame;
+  protected boolean convertToPval;
   protected static int DISPLAY_STEP = 50;
   protected static double MIN_SIG = 0.0000000000001;
   protected static double MAX_SIG = 1-MIN_SIG;
+
   /**
    * This is the only constructor for ActivePathsFinder. In order to find the paths, we need certain information.
    * @param attrNames The names of hte attributes which correspond to significance
@@ -74,6 +76,12 @@ public class ActivePathsFinder{
     this.attrNames = attrNames;
     this.cyNetwork = cyNetwork;
     apfParams = apfp;
+     if(expressionData.getSignificanceType() == ExpressionData.LAMBDA){
+       convertToPval = true;
+      expressionData.convertLambdasToPvals();
+    }else{
+      convertToPval = false;
+    }
   }
     
   /**
