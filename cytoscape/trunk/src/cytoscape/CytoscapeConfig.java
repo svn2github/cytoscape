@@ -66,11 +66,11 @@ public class CytoscapeConfig
     System.arraycopy (args, 0, argsCopy, 0, args.length);
 
     props = readProperties ();
-    loadProperties();
 
     parseArgs ();
-    readProjectFile ();
+    //readProjectFile (); //project file is read immediately when found
    
+    loadProperties();
     getConfigurationsFromProperties ();
 
     Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(Cytoscape.CYTOSCAPE_EXIT, this );
@@ -620,6 +620,7 @@ public class CytoscapeConfig
         break;
       case 'p':
         projectFilename = g.getOptarg();
+        readProjectFile();  //read this project file immediately
         break;
       case 's':
         defaultSpeciesName = g.getOptarg();
@@ -804,6 +805,9 @@ public class CytoscapeConfig
     this.debugLog.append ("config.readProjectFile, propsFile count: " + propsFiles.length + "\n");
     if (propsFiles.length >= 1) {
       projectPropsFileName = propsFiles [0];
+      //parse and import this properties file right now
+      Properties projectProps = readPropertyFileAsText(projectPropsFileName);
+      this.props.putAll(projectProps);
       this.debugLog.append ("config.readProjectFile, propsPropsFileName: " + 
                             projectPropsFileName + "\n");
     }
