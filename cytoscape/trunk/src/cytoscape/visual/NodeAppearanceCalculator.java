@@ -270,19 +270,20 @@ public class NodeAppearanceCalculator {
 	Font f;
 	if (nodeFontFaceCalculator == null) { // nodeFontSizeCalculator != null
 	    f = defaultNodeFont.deriveFont(nodeFontSizeCalculator.calculateNodeFontSize(node, network));
-	    if (f == null)
-		return defaultNodeFont;
-	    else
-		return f;
+	    return (f == null) ? defaultNodeFont : f;
 	}
-	else { // nodeFontSizeCalculator == null
-	    float defaultSize = defaultNodeFont.getSize2D();
-	    f = nodeFontFaceCalculator.calculateNodeFontFace(node, network);
-	    if (f == null)
+	else {
+	    Font g = nodeFontFaceCalculator.calculateNodeFontFace(node, network);
+	    if (g == null) {
 		return defaultNodeFont;
-	    else
-		return f.deriveFont(defaultSize);
+	    } else if (nodeFontSizeCalculator == null) {
+                float defaultSize = defaultNodeFont.getSize2D();
+		f = g.deriveFont(defaultSize);
+            } else {
+                f = g.deriveFont(nodeFontSizeCalculator.calculateNodeFontSize(node, network));
+            }
 	}
+        return (f == null) ? defaultNodeFont : f;
     }
     
     /**

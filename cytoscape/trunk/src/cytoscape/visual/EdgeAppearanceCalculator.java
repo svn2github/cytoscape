@@ -190,12 +190,20 @@ public class EdgeAppearanceCalculator {
 	Font f;
 	if (edgeFontFaceCalculator == null) { // edgeFontSizeCalculator != null
 	    f = defaultEdgeFont.deriveFont(edgeFontSizeCalculator.calculateEdgeFontSize(edge, network));
+            return (f == null) ? defaultEdgeFont : f;
 	}
-	else { // edgeFontSizeCalculator == null
-	    float defaultSize = defaultEdgeFont.getSize2D();
-	    f = edgeFontFaceCalculator.calculateEdgeFontFace(edge, network).deriveFont(defaultSize);
+	else {
+	    Font g = edgeFontFaceCalculator.calculateEdgeFontFace(edge, network);
+            if (g == null) {
+                return defaultEdgeFont;
+            } else if (edgeFontSizeCalculator == null) {
+                float defaultSize = defaultEdgeFont.getSize2D();
+                f = g.deriveFont(defaultSize);
+            } else {
+                f = g.deriveFont(edgeFontSizeCalculator.calculateEdgeFontSize(edge, network));
+            }
 	}
-	return f;
+	return (f == null) ? defaultEdgeFont : f;
     }
 
     public String getDefaultEdgeToolTip() {return defaultEdgeToolTip;}
