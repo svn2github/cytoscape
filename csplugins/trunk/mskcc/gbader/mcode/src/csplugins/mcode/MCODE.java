@@ -38,7 +38,7 @@ package csplugins.mcode;
  ** Time: 2:44:30 PM
  ** Description: Singleton class for running MCODE - saves network scoring calculations between runs
  **/
-class MCODE {
+public class MCODE {
 
 	private static final MCODE objMCODE = new MCODE();
 	public static final MCODEAlgorithm alg = new MCODEAlgorithm();

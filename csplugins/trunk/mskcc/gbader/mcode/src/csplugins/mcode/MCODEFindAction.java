@@ -1,16 +1,14 @@
 package csplugins.mcode;
 
-import cytoscape.view.CyWindow;
 import cytoscape.data.CyNetwork;
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-
-import giny.view.GraphView;
+import cytoscape.view.CyWindow;
 import giny.model.GraphPerspective;
+import giny.view.GraphView;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 /** Copyright (c) 2003 Institute for Systems Biology, University of
  ** California at San Diego, and Memorial Sloan-Kettering Cancer Center.
@@ -107,7 +105,7 @@ public class MCODEFindAction implements ActionListener {
 
 		//run MCODE complex finding algorithm after the nodes have been scored
 		ArrayList complexes = MCODE.getInstance().alg.findComplexes(gpInputGraph);
-		if(complexes==null) {
+		if (complexes == null) {
 			JOptionPane.showMessageDialog(cyWindow.getMainFrame(),
 			        "The network has not been scored.  Please run the scoring step first.");
 			network.endActivity(callerID);
@@ -116,7 +114,6 @@ public class MCODEFindAction implements ActionListener {
 		//display complexes in a new non modal dialog box
 		resultDialog = new MCODEResultsDialog(cyWindow.getMainFrame(), cyWindow, complexes);
 		resultDialog.pack();
-		resultDialog.setSize(200, 100);
 		resultDialog.setVisible(true);
 
 		//and tell listeners that we're done

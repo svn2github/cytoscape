@@ -42,6 +42,7 @@ package csplugins.mcode;
 
 import cytoscape.AbstractPlugin;
 import cytoscape.view.CyWindow;
+
 import javax.swing.*;
 
 /**
@@ -51,29 +52,29 @@ import javax.swing.*;
  * @author Gary Bader
  */
 public class MCODEPlugin extends AbstractPlugin {
-    /**
-     * Constructor.
-     * @param cyWindow Main Cytoscape Window object.
-     */
-    public MCODEPlugin(CyWindow cyWindow) {
-	    //set-up menu options in plugins menu
-	    JMenuItem item;
-	    JMenu menu = cyWindow.getCyMenus().getOperationsMenu();
-	    JMenu submenu = new JMenu("MCODE");
-	    item = new JMenuItem("Step 1: Score Network");
-	    submenu.add(item);
-	    item.addActionListener(new MCODEScoreAction(cyWindow));
-	    item = new JMenuItem("Step 2: Find Complexes");
-	    submenu.add(item);
-	    item.addActionListener(new MCODEFindAction(cyWindow));
-	    menu.add(submenu);
-    }
+	/**
+	 * Constructor.
+	 * @param cyWindow Main Cytoscape Window object.
+	 */
+	public MCODEPlugin(CyWindow cyWindow) {
+		//set-up menu options in plugins menu
+		JMenuItem item;
+		JMenu menu = cyWindow.getCyMenus().getOperationsMenu();
+		JMenu submenu = new JMenu("MCODE");
+		item = new JMenuItem("Step 1: Score Network");
+		submenu.add(item);
+		item.addActionListener(new MCODEScoreAction(cyWindow));
+		item = new JMenuItem("Step 2: Find Complexes");
+		submenu.add(item);
+		item.addActionListener(new MCODEFindAction(cyWindow));
+		menu.add(submenu);
+	}
 
-    /**
-     * Describes the plug in.
-     * @return short plug in description.
-     */
-    public String describe() {
-        return new String("Clusters a graph according to the MCODE algorithm.");
-    }
+	/**
+	 * Describes the plug in.
+	 * @return short plug in description.
+	 */
+	public String describe() {
+		return new String("Clusters a graph according to the MCODE algorithm.");
+	}
 }

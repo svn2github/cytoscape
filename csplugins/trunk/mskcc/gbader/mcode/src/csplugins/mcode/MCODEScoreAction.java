@@ -93,7 +93,7 @@ public class MCODEScoreAction implements ActionListener {
 			return;
 		}
 
-		if(gpInputGraph.getNodeCount() < 1) {
+		if (gpInputGraph.getNodeCount() < 1) {
 			JOptionPane.showMessageDialog(cyWindow.getMainFrame(),
 			        "You must have a network loaded to run this plugin.");
 			network.endActivity(callerID);
@@ -105,7 +105,7 @@ public class MCODEScoreAction implements ActionListener {
 		MCODE.getInstance().alg.scoreGraph(gpInputGraph, network.getNodeAttributes());
 		long msTimeAfter = System.currentTimeMillis();
 		JOptionPane.showMessageDialog(cyWindow.getMainFrame(),
-		        "Network was scored in "+(msTimeAfter-msTimeBefore)+" ms.");
+		        "Network was scored in " + (msTimeAfter - msTimeBefore) + " ms.");
 
 		//and tell listeners that we're done
 		network.endActivity(callerID);
