@@ -38,9 +38,9 @@ public class JErrorPanel extends JPanel {
     private JScrollPane detailsPane;
 
     /**
-     * Window Owner.
+     * JDialog Owner.
      */
-    private Window owner;
+    private JDialog owner;
 
     private static final String SHOW_TEXT = "Show Error Details";
     private static final String HIDE_TEXT = "Hide Error Details";
@@ -52,7 +52,7 @@ public class JErrorPanel extends JPanel {
      * @param t                Throwable Object. May be null.
      * @param userErrorMessage User Readable Error Message. May be null.
      */
-    JErrorPanel(Window owner, Throwable t, String userErrorMessage) {
+    JErrorPanel(JDialog owner, Throwable t, String userErrorMessage) {
         if (owner == null) {
             throw new IllegalArgumentException("owner parameter is null.");
         }
@@ -98,12 +98,13 @@ public class JErrorPanel extends JPanel {
         }
 
         //  Add an Error Icon
-        Icon icon = UIManager.getIcon("OptionPane.errorIcon");
-        JLabel l = new JLabel(icon);
-        panel.add(l);
+        //      Icon icon = UIManager.getIcon("OptionPane.errorIcon");
+        //      JLabel l = new JLabel(icon);
+        //      l.setAlignmentY(Component.TOP_ALIGNMENT);
+        //      panel.add(l);
 
-        //  Create Left Margin
-        panel.add(Box.createHorizontalStrut(10));
+        //      Create Left Margin
+        //      panel.add(Box.createHorizontalStrut(10));
 
         //  Add Error Message with Custom Font Properties
         JLabel errorLabel = new JLabel(StringUtils.truncateOrPadString
@@ -112,10 +113,15 @@ public class JErrorPanel extends JPanel {
         Font font = errorLabel.getFont();
         errorLabel.setFont(new Font(font.getFamily(), Font.BOLD,
                 font.getSize()));
+        errorLabel.setAlignmentY(Component.TOP_ALIGNMENT);
+        errorLabel.setBorder(new EmptyBorder (10,10,10,10));
         panel.add(errorLabel);
 
         //  Conditionally Add Details Button
-        conditionallyAddDetailsButton(panel);
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new GridLayout (2,1));
+        buttonPanel.setAlignmentY(Component.TOP_ALIGNMENT);
+        conditionallyAddDetailsButton(buttonPanel);
 
         //  Create a Close Button
         JButton closeButton = new JButton ("Close");
@@ -124,7 +130,8 @@ public class JErrorPanel extends JPanel {
                 owner.dispose();
             }
         });
-        panel.add(closeButton);
+        buttonPanel.add(closeButton);
+        panel.add(buttonPanel);
 
         return panel;
     }
@@ -189,6 +196,7 @@ public class JErrorPanel extends JPanel {
                 public void actionPerformed(ActionEvent e) {
                     showDetails = !showDetails;
                     detailsPane.setVisible(showDetails);
+                    owner.setResizable(showDetails);
 
                     if (showDetails) {
                         detailsButton.setText(HIDE_TEXT);
@@ -199,28 +207,8 @@ public class JErrorPanel extends JPanel {
                     owner.validate();
                 }
             });
-            panel.add(Box.createHorizontalGlue());
             detailsButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
             panel.add(detailsButton);
-        }
-    }
-
-    /**
-     * Main Method.
-     * Used for testing purposes only.
-     *
-     * @param args Command Line Arguments.
-     */
-    public static void main(String[] args) {
-        JFrame frame = new JFrame();
-        try {
-            frame.add(new JPanel(), null);
-        } catch (Error e) {
-            JErrorPanel errorPanel = new JErrorPanel(frame, e,
-                    "User Interface Error");
-            frame.getContentPane().add(errorPanel, BorderLayout.CENTER);
-            frame.pack();
-            frame.show();
         }
     }
 }
