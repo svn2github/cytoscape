@@ -217,7 +217,7 @@ public class VizMapUI extends JDialog {
 	    this.styleDefUI = styleDef;
 	    this.catalog = VMM.getCalculatorCatalog();
 	    styles = catalog.getVisualStyles();
-	    this.styleGBG = new GridBagGroup("Style");
+	    this.styleGBG = new GridBagGroup("Visual Styles");
 	    this.myself = this;
 	    // attach listener
 	    StyleSelectionListener listen = new StyleSelectionListener();
@@ -225,6 +225,9 @@ public class VizMapUI extends JDialog {
 	    //the duplicate styleComboBox doesn't need a listener because
 	    //JComboBox fires ItemEvents when the underlying model changes.
 	    //this.styleComboBoxDupe.addItemListener(listen);
+	    String comboBoxHelp = "Change the current visual style";
+	    this.styleComboBox.setToolTipText(comboBoxHelp);
+	    this.styleComboBoxDupe.setToolTipText(comboBoxHelp);
 	    MiscGB.pad(styleGBG.constraints, 2, 2);
 	    MiscGB.inset(styleGBG.constraints, 3);
 	    
@@ -234,26 +237,31 @@ public class VizMapUI extends JDialog {
 	    JButton newStyle = new JButton("New");
 	    newStyle.addActionListener(new NewStyleListener());
 	    MiscGB.insert(styleGBG, newStyle, 0, 1, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
+	    newStyle.setToolTipText("Create a new style");
 
 	    // duplicate style button
 	    JButton dupeStyle = new JButton("Duplicate");
 	    dupeStyle.addActionListener(new DupeStyleListener());
 	    MiscGB.insert(styleGBG, dupeStyle, 1, 1, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
+	    dupeStyle.setToolTipText("Duplicate the current style");
 
 	    // rename style button
 	    JButton renStyle = new JButton("Rename");
 	    renStyle.addActionListener(new RenStyleListener());
 	    MiscGB.insert(styleGBG, renStyle, 2, 1, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
+	    renStyle.setToolTipText("Rename the current style");
 
 	    // remove style button
-	    JButton rmStyle = new JButton("Remove");
+	    JButton rmStyle = new JButton("Delete");
 	    rmStyle.addActionListener(new RmStyleListener());
 	    MiscGB.insert(styleGBG, rmStyle, 3, 1, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
+	    rmStyle.setToolTipText("Delete the current style");
 
 	    // define style button
 	    JButton defStyle = new JButton("Define");
 	    defStyle.addActionListener(new DefStyleListener());
 	    MiscGB.insert(styleGBG, defStyle, 4, 0, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
+	    defStyle.setToolTipText("Change the current style's settings");
 
 	    // close button
 	    JButton closeBut = new JButton("Close");
@@ -265,8 +273,11 @@ public class VizMapUI extends JDialog {
 		}
 		);
 	    MiscGB.insert(styleGBG, closeBut, 4, 1, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
+	    closeBut.setToolTipText("Close this dialog");
+	    
 	    MiscGB.insert(this.styleGBG, this.styleComboBox, 0, 0, 4, 1, 1, 0, GridBagConstraints.HORIZONTAL);
 	    setContentPane(styleGBG.panel);
+	    styleGBG.panel.setToolTipText("Visual styles are a collection of attribute mappings.");
 	    pack();
 	}
 	
