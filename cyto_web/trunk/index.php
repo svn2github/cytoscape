@@ -137,17 +137,23 @@
 <br>
 Ideker T, Ozier O, Schwikowski B, Siegel A. Discovering regulatory and signaling circuits in molecular interaction networks. <a href="http://bioinformatics.oupjournals.org/"> Bioinformatics </a> 18, S233 (2002). <a href="http://bioinformatics.oupjournals.org/cgi/content/abstract/18/suppl_1/S233"> [Abstract] </a> <a href="http://bioinformatics.oupjournals.org/cgi/reprint/18/suppl_1/S233.pdf"> [PDF] </a> <a target="_blank" href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&amp;db=PubMed&amp;list_uids=12169552&amp;dopt=Abstract"> [PubMed entry] </a> <a href="ISMB2002/index.html"> [Supplementary Material] </a> 
 <br>
-<br>
-For more information, please contact Benno Schwikowski (<a href="mailto:benno@pasteur.fr">benno@pasteur.fr</a>) or Trey Ideker (<a href="mailto:trey@bioeng.ucsd.edu">trey@bioeng.ucsd.edu</a>). 
 </div>
 </td>
 </div>
 </div>
 </div>
 <td>
-<? include "news.php"; ?>
 <P>
-<? include "collab.php"; ?>
+<?php
+	$option = $_REQUEST["option"];
+	if ($option == "2") { 
+		include "feed.php"; 
+	} else {
+		include "news.php"; 
+	}
+	echo "<P>";
+	include "collab.php";
+?>
 </td>
 </tr>
 </table>

@@ -134,7 +134,7 @@ body {
 #content .item {
  margin-bottom: 0px;
  font-size: 12px;
- border: dotted gray 1px;
+ #border: dotted gray 1px;
  padding-left: 10px;
  padding-bottom: 10px;
 }

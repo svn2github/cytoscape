@@ -32,16 +32,38 @@
 		padding-left: 10px;font-size:small" width=85%>
 	<tr>
 	<td>
-	<form action="http://groups-beta.google.com/group/Cytoscape/boxsubscribe">
+	<form action="http://groups-beta.google.com/group/cytoscape-announce/boxsubscribe">
 		<div class="item">
-		<H3>Cytoscape-Announce:</H3>
+		<H3>cytoscape-announce:</H3>
 		Description:  A low-volume mailing list used to announce new developments in Cytoscape.
 		<P>
-		Subscribe to Cytoscape-Announce:
+		Subscribe to cytoscape-announce:
 		<P>
 		Email: <input type=text name=email>
        		<input type=submit name="sub" value="Subscribe">
-       		&nbsp;&nbsp;   <a href="http://groups-beta.google.com/group/Cytoscape">Browse Archives</a> 
+       		&nbsp;&nbsp;   <a href="http://groups-beta.google.com/group/cytoscape-announce">Browse Archives</a> 
+		</div>
+	</form>
+	</td>
+	</tr>
+	</table>
+	
+	<P>
+	
+	<table style="margin-left: 30;  border: dotted gray 1px;
+		padding-left: 10px;font-size:small" width=85%>
+	<tr>
+	<td>
+	<form action="http://groups-beta.google.com/group/cytoscape-discuss/boxsubscribe">
+		<div class="item">
+		<H3>cytoscape-discuss:</H3>
+		Description:  Open forum for discussing Cytoscape, asking questions, and suggesting new features.
+		<P>
+		Subscribe to cytoscape-discuss:
+		<P>
+		Email: <input type=text name=email>
+       		<input type=submit name="sub" value="Subscribe">
+       		&nbsp;&nbsp;   <a href="http://groups-beta.google.com/group/cytoscape-discuss">Browse Archives</a> 
 		</div>
 	</form>
 	</td>
