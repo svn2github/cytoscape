@@ -10,14 +10,13 @@ public final class IntBTree
   private final static int MAX_BRANCHES = 3;
 
   private final int m_min_capacity;
-  private final int[] m_buff; // Poor man's algorithm; optimize later.
+  private final int[] m_buff; // Poor man's algorithms; optimize later.
   private Node m_root;
 
   public IntBTree()
   {
     m_min_capacity = (int) Math.ceil(((double) MAX_BRANCHES) / 2.0d);
     m_buff = new int[MAX_BRANCHES + 1];
-    m_buff[0] = Integer.MIN_VALUE; // This ought to never be changed.
     m_root = new Node(MAX_BRANCHES, true);
   }
 
@@ -52,10 +51,54 @@ public final class IntBTree
         n.sliceCount++;
         return null; }
       else { // No room for another value in this leaf node; perform split.
-        return null;
+        // Perform poor man's correct end inefficient algorithm.
+        System.arraycopy(n.values, 0, m_buff, 0, n.sliceCount);
+        boolean found = false;
+        for (int i = 0; i < n.sliceCount; i++) {
+          if (x < m_buff[i]) {
+            for (int j = n.sliceCount; j > i; j--) {
+              m_buff[j] = m_buff[j - 1]; }
+            m_buff[i] = x;
+            found = true;
+            break; } }
+        if (!found) {
+          m_buff[n.sliceCount] = x; }
+        Node newNode = new Node(MAX_BRANCHES, true);
+        int combinedCount = n.sliceCount + 1;
+        int middleInx = combinedCount / 2;
+        System.arraycopy(m_buff, 0, n.values, 0, middleInx);
+        n.sliceCount = middleInx;
+        System.arraycopy(m_buff, middleInx, newNode.values, 0,
+                         combinedCount - middleInx);
+        newNode.sliceCount = combinedCount - middleInx;
+        return newNode;
       }
     }
-    return null;
+    else { // Not a leaf node.
+      // Poor man's algorithm; optimize later.
+      m_buff[0] = Integer.MIN_VALUE;
+      System.arraycopy(n.data.splitVals, 0, m_buff, 1, n.sliceCount - 1);
+      m_buff[n.sliceCount] = Integer.MAX_VALUE;
+      for (int i = 0; i < n.sliceCount; i++)
+      {
+        if (x >= m_buff[i] && x <= m_buff[i + 1]) { // Found path.
+          Node newNode = insert(n.data.children[i], x);
+          if (newNode != null) { // A split was performed at one deeper level.
+            int newSplit;
+            if (isLeafNode(newNode)) newSplit = newNode.values[0];
+            else newSplit = newNode.data.splitVals[0];
+            if (n.sliceCount < n.data.children.length) { // There's room here.
+              for (int j = n.sliceCount; j < i + 1; j--) {
+                n.data.children[j] = n.data.children[j - 1];
+                n.data.splitVals[j - 1] = n.data.splitVals[j - 2]; }
+              n.data.children[i + 1] = newNode;
+              n.data.splitVals[i] = newSplit; }
+            else { // No room in this internal node; perform split.
+            }
+          break; }
+      }
+      return null;
+    }
   }
 
   /**
@@ -109,6 +152,7 @@ public final class IntBTree
       return count; }
     else {
       // Poor man's algorithm; optimize later.
+      m_buff[0] = Integer.MIN_VALUE;
       System.arraycopy(n.data.splitVals, 0, m_buff, 1, n.sliceCount - 1);
       m_buff[n.sliceCount] = Integer.MAX_VALUE;
       int count = 0;
