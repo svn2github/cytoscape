@@ -860,6 +860,7 @@ class FGraphPerspective implements GraphPerspective
 
   public void finalize()
   {
+    System.out.println("now in FGraphPerspective.finalize()");
     m_root.removeRootGraphChangeListener(m_changeSniffer);
   }
 
