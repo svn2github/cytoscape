@@ -2,6 +2,10 @@ package cytoscape.graph.layout.algorithm;
 
 import cytoscape.graph.layout.PolyEdgeGraphLayout;
 
+/**
+ * This class extends <code>MutableGraphLayout</code> to offer the possibility
+ * of defining poly-line edges (as opposed to just straight-line edges).
+ **/
 public interface MutablePolyEdgeGraphLayout
   extends PolyEdgeGraphLayout, MutableGraphLayout
 {

@@ -47,7 +47,7 @@ package cytoscape.graph;
  * not mean, however, that instances of this interface are not mutable.  A
  * sub-interface extending <code>GraphTopology</code> could be defined which
  * exposes mutable functionality.
- */
+ **/
 public interface GraphTopology
 {
 
@@ -62,7 +62,7 @@ public interface GraphTopology
    * then <code>getNumNodes()</code> must return a value greater than zero.
    *
    * @return number of nodes in this graph.
-   */
+   **/
   public int getNumNodes();
 
   /**
@@ -76,7 +76,7 @@ public interface GraphTopology
    * then <code>getNumNodes()</code> must return a value greater than zero.
    *
    * @return number of edges in this graph.
-   */
+   **/
   public int getNumEdges();
 
   /**
@@ -87,7 +87,7 @@ public interface GraphTopology
    *   undirected edge.
    * @exception IndexOutOfBoundsException if <code>edgeIndex</code> is not
    *   in the interval <nobr><code>[0, getNumEdges() - 1]</code></nobr>.
-   */
+   **/
   public boolean isDirectedEdge(int edgeIndex);
 
   /*
@@ -112,7 +112,7 @@ public interface GraphTopology
    *   <nobr><code>[0, getNumNodes() - 1]</code></nobr>.
    * @exception IndexOutOfBoundsException if <code>edgeIndex</code> is not
    *   in the interval <nobr><code>[0, getNumEdges() - 1]</code></nobr>.
-   */
+   **/
   public int getEdgeNodeIndex(int edgeIndex, boolean sourceNode);
 
 }
