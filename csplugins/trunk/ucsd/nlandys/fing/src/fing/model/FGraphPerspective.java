@@ -204,10 +204,12 @@ class FGraphPerspective implements GraphPerspective
     return rootGraphNodeInx;
   }
 
-  public java.util.List restoreNodes(java.util.List nodes)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  public java.util.List restoreNodes(java.util.List nodes) {
+    final java.util.ArrayList returnThis = new java.util.ArrayList();
+    for (int i = 0; i < nodes.size(); i++)
+      if (restoreNode((Node) nodes.get(i)) != null)
+        returnThis.add(nodes.get(i));
+    return returnThis; }
 
   public java.util.List restoreNodes(java.util.List nodes,
                                      boolean restoreIncidentEdges)
@@ -279,10 +281,12 @@ class FGraphPerspective implements GraphPerspective
     return -1;
   }
 
-  public java.util.List restoreEdges(java.util.List edges)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  public java.util.List restoreEdges(java.util.List edges) {
+    final java.util.ArrayList returnThis = new java.util.ArrayList();
+    for (int i = 0; i < edges.size(); i++)
+      if (restoreEdge((Edge) edges.get(i)) != null)
+        returnThis.add(edges.get(i));
+    return returnThis; }
 
   public int[] restoreEdges(int[] perspEdgeInx)
   {
