@@ -287,7 +287,18 @@ public final class GraphConverter
     while (edgeIterator.hasNext())
     {
       EdgeView currentEdgeView = (EdgeView) edgeIterator.next();
-      if (preserveEdgeAnchors) {
+      if ((!preserveEdgeAnchors) &&
+          (noNodesSelected || nodeTranslation
+           [((Integer) nodeIndexTranslation.get
+             (new Integer
+              (currentEdgeView.getEdge().getSource().
+               getRootGraphIndex()))).intValue()].isSelected() ||
+           nodeTranslation
+           [((Integer) nodeIndexTranslation.get
+             (new Integer
+              (currentEdgeView.getEdge().getTarget().
+               getRootGraphIndex()))).intValue()].isSelected())) {}
+      else {
         List anchors = currentEdgeView.getBend().getHandles();
         for (int a = 0; a < anchors.size(); a++) {
           Point2D point = (Point2D) anchors.get(a);
@@ -344,9 +355,21 @@ public final class GraphConverter
       nodeYPositions[i] = nodeTranslation[i].getYPosition() - yOff; }
     final double[][] edgeAnchorXPositions = new double[numEdgesInTopology][];
     final double[][] edgeAnchorYPositions = new double[numEdgesInTopology][];
-    if (preserveEdgeAnchors) {
-      for (int e = 0; e < edgeTranslation.length; e++) {
-        List anchors = edgeTranslation[e].getBend().getHandles();
+    for (int e = 0; e < edgeTranslation.length; e++) {
+      EdgeView currentEdge = edgeTranslation[e];
+      if ((!preserveEdgeAnchors) &&
+          (noNodesSelected || nodeTranslation
+           [((Integer) nodeIndexTranslation.get
+             (new Integer
+              (currentEdge.getEdge().getSource().
+               getRootGraphIndex()))).intValue()].isSelected() ||
+           nodeTranslation
+           [((Integer) nodeIndexTranslation.get
+             (new Integer
+              (currentEdge.getEdge().getTarget().
+               getRootGraphIndex()))).intValue()].isSelected())) {}
+      else {
+        List anchors = currentEdge.getBend().getHandles();
         edgeAnchorXPositions[e] = new double[anchors.size()];
         edgeAnchorYPositions[e] = new double[anchors.size()];
         for (int a = 0; a < anchors.size(); a++) {
@@ -486,7 +509,19 @@ public final class GraphConverter
     {
       EdgeView currentEdge = (EdgeView) edgeIterator.next();
       edgeTranslation[edgeIndex] = currentEdge;
-      if (preserveEdgeAnchors) {
+      if ((!preserveEdgeAnchors) &&
+          (noNodesSelected || nodeTranslation
+           [((Integer) nodeIndexTranslation.get
+             (new Integer
+              (currentEdge.getEdge().getSource().
+               getRootGraphIndex()))).intValue()].isSelected() ||
+           nodeTranslation
+           [((Integer) nodeIndexTranslation.get
+             (new Integer
+              (currentEdge.getEdge().getTarget().
+               getRootGraphIndex()))).intValue()].isSelected())) {
+        currentEdge.getBend().removeAllHandles(); }
+      else {
         List handles = currentEdge.getBend().getHandles();
         for (int h = 0; h < handles.size(); h++) {
           Point2D point = (Point2D) handles.get(h);
@@ -494,8 +529,6 @@ public final class GraphConverter
           maxX = Math.max(maxX, point.getX());
           minY = Math.min(minY, point.getY());
           maxY = Math.max(maxY, point.getY()); } }
-      else {
-        currentEdge.getBend().removeAllHandles(); }
       edgeIndex++;
     }
     if (edgeIndex != numEdgesInTopology)
