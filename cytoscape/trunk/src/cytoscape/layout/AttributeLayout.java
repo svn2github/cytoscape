@@ -39,7 +39,6 @@ import java.util.*;
 import giny.model.*;
 import giny.view.*;
 import giny.util.SpringEmbeddedLayouter;
-import cytoscape.util.GinyFactory;
 
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.Semantics;
@@ -182,7 +181,7 @@ public class AttributeLayout {
         //for now, we do the highly non-optimal thing of creating a new view
         //and computing the layout on that view. We'll change this to only
         //computing on the layout perspective when that's supported.
-        GraphView layoutView = GinyFactory.createGraphView(layoutGP);
+        GraphView layoutView = new phoebe.PGraphView(layoutGP);
         SpringEmbeddedLayouter layouter = new SpringEmbeddedLayouter(layoutView);
         layouter.doLayout();
         
