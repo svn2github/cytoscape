@@ -1,0 +1,211 @@
+<project name="picnode" default="picnode" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init-picnode">
+    <tstamp/>
+    <property name="picnode.Name" value="picnode"/>
+    <property name="picnode.name" value="picnode"/>
+    <property name="picnode.version" value="0.1"/>
+    <property name="picnode.year" value="200"/>
+
+    <echo message="Building ${picnode.name} version ${picnode.version}."/>
+
+    <!-- Inheritable properties -->
+    <property name="debug" value="on"/>
+    <property name="optimize" value="off"/>
+    <property name="deprecation" value="on"/>
+    <property name="nowarn" value="true"/>
+    <property name="fork" value="false"/>
+    <property name="picnode.root.dir" value="."/>
+    <property name="picnode.lib.dir" value="${picnode.root.dir}/lib"/>
+    <property name="cytoscape.lib.dir" value="${picnode.root.dir}/../../../../cytoscape/lib"/>
+    <property name="cytoscape.plugin.dir" value="${picnode.root.dir}/../../../../cytoscape/plugins"/>
+    <path id="project.class.path">
+      <pathelement path="${java.class.path}/"/>
+    </path>
+
+    <!-- Define the directories -->
+    <property name="picnode.root.dir" value="./"/>
+    <property name="picnode.src.dir" value="${picnode.root.dir}/src"/>
+    <property name="picnode.classes.dir" value="${picnode.root.dir}/classes"/>
+    <property name="picnode.javadoc.dir" value="${javadoc.dir}/picnode"/>
+    <property name="picnode.resources.dir" value="${picnode.root.dir}/resources"/>
+    <property name="picnode.manifest.dir" value="${picnode.root.dir}/manifest"/>
+    <property name="picnode.packages" value="picnode.*"/>
+    <!-- Subdirectory for test reports -->
+    <property name="picnode.tests.reports.dir" value="${picnode.root.dir}/reports/tests" />
+    <property name="cytoscape.lib" value="../../cytoscape/lib" />
+
+    <!-- Define the condition for compilation -->
+    <property name="cytoscape.jar" value="${picnode.lib.dir}/cytoscape.jar"/>
+    <property name="colt.jar" value="${picnode.lib.dir}/colt.jar"/>
+    
+
+    <condition property="cytoscape.present">
+      <and> 
+	  		<available file="${cytoscape.jar}"/> 
+				<available file="${colt.jar}"/> 
+		  </and>
+    </condition>
+
+    <!-- Define excludes for picnode compile and javadoc -->
+    <property name="picnode.excludes" value="**/notyet/*"/>
+    <property name="picnode.tests.excludes" value="**/notyet/*"/>
+    <property name="picnode.packages.excludes" value="**.test.*,**.notyet.*"/>
+
+    <path id="picnode.project.class.path">
+      <pathelement location="${picnode.classes.dir}"/>
+      <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/y.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/piccolo.jar"/>
+      <pathelement path="${project.class.path}/"/>
+    </path>
+
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the picnode project                                           -->
+  <!-- =================================================================== -->
+  <target name="compile-picnode" depends="init-picnode"  >
+
+   <echo message=" COMPILE picnode "/>
+
+    <mkdir dir="${picnode.classes.dir}"/>
+    <javac srcdir="${picnode.src.dir}"
+           excludes="${picnode.excludes}"
+           classpathref="picnode.project.class.path"
+           destdir="${picnode.classes.dir}"
+           debug="${debug}"
+           nowarn="${nowarn}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the picnode.jar file                                           -->
+  <!-- =================================================================== -->
+  <target name="picnode" depends="compile-picnode"  >
+    <jar destfile="picnode.jar" manifest="${picnode.manifest.dir}/picnode.manifest">
+      <fileset
+        dir="${picnode.classes.dir}"
+        includes="**"/>
+      <fileset
+        dir="${picnode.root.dir}/lib"
+        includes="resources/**"/>
+      <fileset 
+        dir="${picnode.root.dir}/images"/>
+    </jar>
+    <copy todir="${picnode.lib.dir}" file="picnode.jar"/>
+    <copy todir="${cytoscape.plugin.dir}" file="picnode.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the picnode tests                                             -->
+  <!-- =================================================================== -->
+  <target name="compile-tests" depends="picnode"  >
+    <mkdir dir="${picnode.classes.dir}"/>
+    <javac srcdir="${picnode.src.dir}"
+           includes="**/test/*"
+           excludes="${picnode.tests.excludes}"
+           classpathref="picnode.project.class.path"
+           destdir="${picnode.classes.dir}"
+           debug="${debug}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the picnode-tests.jar file                                     -->
+  <!-- =================================================================== -->
+  <target name="tests" depends="compile-tests"  >
+    <jar jarfile="picnode-tests.jar"
+         basedir="${picnode.classes.dir}"
+         includes="**/test/*"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Build all jars                                                      -->
+  <!-- =================================================================== -->
+  <target name="all" depends="picnode"/>
+
+   <!-- =================================================================== -->
+  <!-- Run the Plugin                                                      -->
+  <!-- =================================================================== -->
+  <target name="run" depends="picnode" >
+     
+     <java classname="cytoscape.cytoscape" 
+           classpathref="picnode.project.class.path"
+           fork="true"/>
+           <arg line = "-y giny"/>
+           <arg line = "--JLD"/>
+           <arg line = "${picnode.lib.dir}/picnode.jar"/>
+           
+
+  </target>
+
+
+
+  <!-- =================================================================== -->
+  <!-- Runs the tests in picnode-tests.jar                                    -->
+  <!-- =================================================================== -->
+  <target name="runtests" depends="tests"  >
+    <mkdir dir="${picnode.tests.reports.dir}"/>
+    <junit
+       printsummary="yes"
+       haltonfailure="no"
+       dir="${picnode.classes.dir}"
+       maxmemory="1G"
+    >
+      <formatter type="plain" usefile="true" />
+      <classpath refid="picnode.project.class.path"/>
+      <!-- The junit task doesn't support 'if' so we test for JUnit here -->
+      <batchtest fork="yes" todir="${picnode.tests.reports.dir}" if="junit.present">
+        <fileset
+           dir="${picnode.classes.dir}"
+           includes="**/test/*"
+           excludes="${picnode.tests.excludes}"
+        />
+      </batchtest>
+    </junit>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the API documentation                                       -->
+  <!-- =================================================================== -->
+  <target name="docs" depends="init-picnode" >
+    <mkdir dir="${picnode.javadoc.dir}"/>
+    <javadoc packagenames="${picnode.packages}"
+             excludepackagenames="${picnode.packages.excludes}"
+             sourcepath="${picnode.src.dir}"
+             destdir="${picnode.javadoc.dir}"
+             classpathref="picnode.project.class.path"
+             author="true"
+             version="true"
+             use="true"
+             splitindex="true"
+             noindex="false"
+             windowtitle="${picnode.Name} API"
+             doctitle="${picnode.Name}"
+    />
+  </target>
+ 
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init-picnode">
+    <delete dir="${picnode.classes.dir}"/>
+    <delete file="picnode.jar"/>
+    <delete file="picnode-tests.jar"/>
+  </target>
+
+</project>
+
+<!-- End of file -->

@@ -1,0 +1,213 @@
+<project name="context" default="context" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init-context">
+    <tstamp/>
+    <property name="context.Name" value="context"/>
+    <property name="context.name" value="context"/>
+    <property name="context.version" value="0.1"/>
+    <property name="context.year" value="200"/>
+
+    <echo message="Building ${context.name} version ${context.version}."/>
+
+    <!-- Inheritable properties -->
+    <property name="debug" value="on"/>
+    <property name="optimize" value="off"/>
+    <property name="deprecation" value="on"/>
+    <property name="nowarn" value="true"/>
+    <property name="fork" value="false"/>
+    <property name="context.root.dir" value="."/>
+    <property name="context.lib.dir" value="${context.root.dir}/lib"/>
+    <property name="cytoscape.lib.dir" value="${context.root.dir}/../../../../cytoscape/lib"/>
+    <property name="cytoscape.plugin.dir" value="${context.root.dir}/../../../../cytoscape/plugins"/>
+    <path id="project.class.path">
+      <pathelement path="${java.class.path}/"/>
+    </path>
+
+    <!-- Define the directories -->
+    <property name="context.root.dir" value="./"/>
+    <property name="context.src.dir" value="${context.root.dir}/src"/>
+    <property name="context.classes.dir" value="${context.root.dir}/classes"/>
+    <property name="context.javadoc.dir" value="${javadoc.dir}/context"/>
+    <property name="context.resources.dir" value="${context.root.dir}/resources"/>
+    <property name="context.manifest.dir" value="${context.root.dir}/manifest"/>
+    <property name="context.packages" value="context.*"/>
+    <!-- Subdirectory for test reports -->
+    <property name="context.tests.reports.dir" value="${context.root.dir}/reports/tests" />
+    <property name="cytoscape.lib" value="../../cytoscape/lib" />
+
+    <!-- Define the condition for compilation -->
+    <property name="cytoscape.jar" value="${context.lib.dir}/cytoscape.jar"/>
+    <property name="colt.jar" value="${context.lib.dir}/colt.jar"/>
+    
+
+    <condition property="cytoscape.present">
+      <and> 
+	  		<available file="${cytoscape.jar}"/> 
+				<available file="${colt.jar}"/> 
+		  </and>
+    </condition>
+
+    <!-- Define excludes for context compile and javadoc -->
+    <property name="context.excludes" value="**/notyet/*"/>
+    <property name="context.tests.excludes" value="**/notyet/*"/>
+    <property name="context.packages.excludes" value="**.test.*,**.notyet.*"/>
+
+    <path id="context.project.class.path">
+      <pathelement location="${context.classes.dir}"/>
+      <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/y.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/piccolo.jar"/>
+      <pathelement path="${project.class.path}/"/>
+    </path>
+
+ 
+
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the context project                                           -->
+  <!-- =================================================================== -->
+  <target name="compile-context" depends="init-context"  >
+
+   <echo message=" COMPILE context "/>
+
+    <mkdir dir="${context.classes.dir}"/>
+    <javac srcdir="${context.src.dir}"
+           excludes="${context.excludes}"
+           classpathref="context.project.class.path"
+           destdir="${context.classes.dir}"
+           debug="${debug}"
+           nowarn="${nowarn}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the context.jar file                                           -->
+  <!-- =================================================================== -->
+  <target name="context" depends="compile-context"  >
+    <jar destfile="yeast-context.jar" manifest="${context.manifest.dir}/context.manifest">
+      <fileset
+        dir="${context.classes.dir}"
+        includes="**"/>
+      <fileset
+        dir="${context.root.dir}/lib"
+        includes="resources/**"/>
+      <fileset 
+        dir="${context.root.dir}/images"/>
+    </jar>
+    <copy todir="${context.lib.dir}" file="yeast-context.jar"/>
+    <copy todir="${cytoscape.plugin.dir}" file="yeast-context.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the context tests                                             -->
+  <!-- =================================================================== -->
+  <target name="compile-tests" depends="context"  >
+    <mkdir dir="${context.classes.dir}"/>
+    <javac srcdir="${context.src.dir}"
+           includes="**/test/*"
+           excludes="${context.tests.excludes}"
+           classpathref="context.project.class.path"
+           destdir="${context.classes.dir}"
+           debug="${debug}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the context-tests.jar file                                     -->
+  <!-- =================================================================== -->
+  <target name="tests" depends="compile-tests"  >
+    <jar jarfile="context-tests.jar"
+         basedir="${context.classes.dir}"
+         includes="**/test/*"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Build all jars                                                      -->
+  <!-- =================================================================== -->
+  <target name="all" depends="context"/>
+
+   <!-- =================================================================== -->
+  <!-- Run the Plugin                                                      -->
+  <!-- =================================================================== -->
+  <target name="run" depends="context" >
+     
+     <java classname="cytoscape.CyMain" 
+           classpathref="context.project.class.path"
+           fork="true"/>
+           <arg line = "-y giny"/>
+           <arg line = "--JLD"/>
+           <arg line = "${context.lib.dir}/context.jar"/>
+           
+
+  </target>
+
+
+
+  <!-- =================================================================== -->
+  <!-- Runs the tests in context-tests.jar                                    -->
+  <!-- =================================================================== -->
+  <target name="runtests" depends="tests"  >
+    <mkdir dir="${context.tests.reports.dir}"/>
+    <junit
+       printsummary="yes"
+       haltonfailure="no"
+       dir="${context.classes.dir}"
+       maxmemory="1G"
+    >
+      <formatter type="plain" usefile="true" />
+      <classpath refid="context.project.class.path"/>
+      <!-- The junit task doesn't support 'if' so we test for JUnit here -->
+      <batchtest fork="yes" todir="${context.tests.reports.dir}" if="junit.present">
+        <fileset
+           dir="${context.classes.dir}"
+           includes="**/test/*"
+           excludes="${context.tests.excludes}"
+        />
+      </batchtest>
+    </junit>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the API documentation                                       -->
+  <!-- =================================================================== -->
+  <target name="docs" depends="init-context" >
+    <mkdir dir="${context.javadoc.dir}"/>
+    <javadoc packagenames="${context.packages}"
+             excludepackagenames="${context.packages.excludes}"
+             sourcepath="${context.src.dir}"
+             destdir="${context.javadoc.dir}"
+             classpathref="context.project.class.path"
+             author="true"
+             version="true"
+             use="true"
+             splitindex="true"
+             noindex="false"
+             windowtitle="${context.Name} API"
+             doctitle="${context.Name}"
+    />
+  </target>
+ 
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init-context">
+    <delete dir="${context.classes.dir}"/>
+    <delete file="context.jar"/>
+    <delete file="context-tests.jar"/>
+  </target>
+
+</project>
+
+<!-- End of file -->
