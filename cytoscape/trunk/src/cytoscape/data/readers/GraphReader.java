@@ -43,6 +43,7 @@ public interface GraphReader {
     public void read(boolean canonicalizeNodeNames);
     public Graph2D getGraph ();
     public RootGraph getRootGraph();
+    public GraphObjAttributes getNodeAttributes ();
     public GraphObjAttributes getEdgeAttributes ();
 }
 
