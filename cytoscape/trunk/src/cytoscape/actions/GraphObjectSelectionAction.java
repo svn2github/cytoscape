@@ -5,14 +5,17 @@ import javax.swing.*;
 
 import cytoscape.view.NetworkView;
 import cytoscape.dialogs.GraphObjectSelection;
+import cytoscape.util.CytoscapeAction;
 
-public class GraphObjectSelectionAction extends AbstractAction {
+public class GraphObjectSelectionAction extends CytoscapeAction {
 
   NetworkView networkView;
 
   public GraphObjectSelectionAction ( NetworkView networkView ) {
-    super("By Any Attribute...");
+    super("Node Selection based on Attributes" );
     this.networkView = networkView;
+    setPreferredMenu( "Select.Nodes" );
+    setAcceleratorCombo( java.awt.event.KeyEvent.VK_T, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK );
   }
 
   public void actionPerformed (ActionEvent e) {

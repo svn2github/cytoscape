@@ -40,6 +40,8 @@ import cytoscape.CytoscapeObj;
 import cytoscape.actions.*;
 import cytoscape.dialogs.ShrinkExpandGraphUI;
 import cytoscape.data.annotation.AnnotationGui;
+import cytoscape.util.CytoscapeMenuBar;
+
 //------------------------------------------------------------------------------
 /**
  * This class creates the menu and tool bars for a Cytoscape window object. It
@@ -48,7 +50,7 @@ import cytoscape.data.annotation.AnnotationGui;
 public class CyMenus {
   CyWindow cyWindow;
   boolean menusInitialized = false;
-  JMenuBar menuBar;
+  CytoscapeMenuBar menuBar;
   JMenu fileMenu, loadSubMenu, saveSubMenu;
   JMenu editMenu;
   JMenuItem undoMenuItem, redoMenuItem, deleteSelectionMenuItem;
@@ -149,31 +151,43 @@ public class CyMenus {
    * defers filling those menus with items until later.
    */
   private void createMenuBar() {
-    menuBar = new JMenuBar();
-    fileMenu = new JMenu("File");
-    {
-      loadSubMenu = new JMenu("Load");
-      fileMenu.add(loadSubMenu);
-      saveSubMenu = new JMenu("Save");
-      fileMenu.add(saveSubMenu);
-    }
-    menuBar.add(fileMenu);
+    // menuBar = new JMenuBar();
+//     fileMenu = new JMenu("File");
+//     {
+//       loadSubMenu = new JMenu("Load");
+//       fileMenu.add(loadSubMenu);
+//       saveSubMenu = new JMenu("Save");
+//       fileMenu.add(saveSubMenu);
+//     }
+//     menuBar.add(fileMenu);
         
-    editMenu = new JMenu("Edit");
-    menuBar.add(editMenu);
+//     editMenu = new JMenu("Edit");
+//     menuBar.add(editMenu);
         
-    selectMenu = new JMenu("Select");
-    menuBar.add(selectMenu);
+//     selectMenu = new JMenu("Select");
+//     menuBar.add(selectMenu);
         
-    layoutMenu = new JMenu("Layout");
-    layoutMenu.setToolTipText("Apply new layout algorithm to graph");
-    menuBar.add(layoutMenu);
+//     layoutMenu = new JMenu("Layout");
+//     layoutMenu.setToolTipText("Apply new layout algorithm to graph");
+//     menuBar.add(layoutMenu);
 
-    vizMenu = new JMenu("Visualization"); // always create the viz menu
-    menuBar.add(vizMenu);
+//     vizMenu = new JMenu("Visualization"); // always create the viz menu
+//     menuBar.add(vizMenu);
         
-    opsMenu = new JMenu("PlugIns"); // always create the plugins menu
-    menuBar.add(opsMenu);
+//     opsMenu = new JMenu("PlugIns"); // always create the plugins menu
+//     menuBar.add(opsMenu);
+
+    menuBar = new CytoscapeMenuBar();
+    fileMenu = menuBar.getMenu( "File" );
+    loadSubMenu = menuBar.getMenu( "File.Load" );
+    saveSubMenu = menuBar.getMenu( "File.Save" );
+    editMenu = menuBar.getMenu( "Edit" );
+    selectMenu = menuBar.getMenu( "Select" );
+    layoutMenu = menuBar.getMenu( "Layout" );
+    vizMenu = menuBar.getMenu( "Visualization" );
+    opsMenu = menuBar.getMenu( "Plugins" );
+
+
   }
     
   /**
@@ -298,7 +312,8 @@ public class CyMenus {
     mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK));
 
     // RHC Added Menu Items
-    selectNodesSubMenu.add(new GraphObjectSelectionAction(networkView));
+    //selectNodesSubMenu.add(new GraphObjectSelectionAction(networkView));
+    menuBar.addAction( new GraphObjectSelectionAction( networkView ) );
     if ( !networkView.getCytoscapeObj().getConfiguration().isYFiles() ) {
       editMenu.add( new SquiggleAction( networkView ) ); 
       vizMenu.add( new BirdsEyeViewAction( networkView ) );

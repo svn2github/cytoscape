@@ -8,7 +8,7 @@ import cytoscape.dialogs.GraphObjectSelection;
 
 import phoebe.*;
 import phoebe.util.*;
-
+import phoebe.event.*;
 import java.util.*;
 
 import giny.model.*;
@@ -27,6 +27,18 @@ public class AnimatedLayoutAction extends AbstractAction {
 
     JDialog dialog = new JDialog();
     JPanel main = new JPanel();
+
+    main.add(  new JButton (new AbstractAction( "Grand Tour" ) {
+          public void actionPerformed ( ActionEvent e ) {
+            // Do this in the GUI Event Dispatch thread...
+            SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                  PGraphView gv = ( PGraphView )networkView.getView();
+                  PGrandTour tour = new PGrandTour( gv );
+                  tour.takeTour();
+                }
+              } ); } } ) );
+
     main.add(  new JButton (new AbstractAction( "Force" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
@@ -46,18 +58,14 @@ public class AnimatedLayoutAction extends AbstractAction {
                   PGraphView gv = ( PGraphView )networkView.getView();
                   int[] sel = gv.getSelectedNodeIndices();
                   TreeLayout tl = new TreeLayout();
-                  GraphPerspective p;
-                  if ( sel.length == 0 ) {
-                    p = tl.doLayout( gv, 1 );
-                  } else {
-                    p = tl.doLayout( gv, sel[0] );
+                  GraphPerspective p = tl.doLayout( gv ) ;
+                  int[] edges = p.getEdgeIndicesArray();
+                  for ( int i = 0; i < p.getEdgeCount(); ++i ) {
+                    //System.out.println( "Index of Edge is: "+edges[i] );
+                    EdgeView ev = gv.getEdgeView( edges[i] );
+                    ev.setSelected( true );
                   }
-                  
-                  Iterator n = p.edgesList().iterator();
-                  while ( n.hasNext() ) {
-                    EdgeView nv = gv.getEdgeView( ( Edge )n.next() );
-                    nv.setSelected( true );
-                  }
+
 
                 }
               } ); } } ) );
@@ -71,11 +79,7 @@ public class AnimatedLayoutAction extends AbstractAction {
                 PGraphView gv = ( PGraphView )networkView.getView();
                 int[] sel = gv.getSelectedNodeIndices();
                  TreeLayout tl = new TreeLayout();
-                 if ( sel.length == 0 ) {
-                  tl.doLayout( gv, 1 );
-                 } else {
-                   tl.doLayout( gv, sel[0] );
-                 }
+                 tl.doLayout( gv ) ;
               }
             } ); } } ) );
     
