@@ -353,6 +353,13 @@ public class HierarchicalLayoutListener implements ActionListener {
 				}
 			}
 		}
+
+                /* Delete edge anchors */
+                iter = networkView.getEdgeViewsIterator();
+                while (iter.hasNext()) {
+                  ((EdgeView) iter.next()).getBend().removeAllHandles();
+                } /* Done removing edge anchors */
+
 		for (nodeIndex=0; nodeIndex<numLayoutNodes; nodeIndex++) {
 			HierarchyFlowLayoutOrderNode node = flowLayoutOrder[nodeIndex];
 			NodeView currentView = node.nodeView;
