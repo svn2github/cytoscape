@@ -36,6 +36,7 @@ import giny.model.GraphPerspective;
 import giny.model.GraphPerspectiveChangeEvent;
 import giny.model.GraphPerspectiveChangeListener;
 import giny.view.GraphView;
+import cern.colt.list.IntArrayList;
 
 //TODO: Remove when possible:
 import coltginy.ColtGraphPerspective;
@@ -383,6 +384,8 @@ public class GraphViewController
    *
    * @see #resumeListening(GraphView)
    */
+  // TODO: Catch all change events even of stopListening has been called, and when
+  // listening is resumed, update the graph view
   public void stopListening (GraphView graph_view){
     GraphPerspective graphPerspective = graph_view.getGraphPerspective();
     //TODO: Put back when in GINY
@@ -399,7 +402,9 @@ public class GraphViewController
   /**
    * It adds this <code>GraphViewController</code> as a listener for
    * all <code>giny.model.GraphPerspective</code> that were temporarily
-   * "removed" by calling <code>stopListening()</code>
+   * "removed" by calling <code>stopListening()</code>, it updates the <code>GraphViews</code>
+   * of the <code>GraphPerspectives</code> so that they are synchronized to reflect changes that
+   * may have occured while not listening.
    *
    * @see #stopListening() stopListening
    */
@@ -407,6 +412,8 @@ public class GraphViewController
     GraphView [] graphViews = getGraphViews();
     for(int i = 0; i < graphViews.length; i++){
       GraphPerspective graphPerspective = graphViews[i].getGraphPerspective();
+      GraphViewHandler handler = (GraphViewHandler)this.graphViewToHandler.get(graphViews[i]);
+      handler.updateGraphView(graphViews[i]);
       //TODO: Put back when in GINY
       //graphPerspective.addGraphPerspectiveChangeListener(this);
       // TODO: When GINY has above method, don't do this:
@@ -423,11 +430,15 @@ public class GraphViewController
   /**
    * It adds this <code>GraphViewController</code> listener to the
    * <code>giny.model.GraphPerspective</code> of the given <code>giny.view.GraphView</code>
-   * that was temporarily "removed" by a call to <code>stopListening(GraphView)</code>
+   * that was temporarily "removed" by a call to <code>stopListening(GraphView)</code>, it updates
+   * <code>graph_view</code> so that it's synchronized to its <code>GraphPerspective</code> 
+   * due to changes that may have occured while not listening.
    *
    * @see #stopListening(GraphView)
    */
   public void resumeListening (GraphView graph_view){
+    GraphViewHandler handler = (GraphViewHandler)this.graphViewToHandler.get(graph_view);
+    handler.updateGraphView(graph_view);
     GraphPerspective graphPerspective = graph_view.getGraphPerspective();
     //TODO: Put back when in GINY
     //graphPerspective.addGraphPerspectiveChangeListener(this);
