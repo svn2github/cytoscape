@@ -32,6 +32,7 @@ import java.util.*;
 import giny.model.*;
 import cern.colt.list.IntArrayList;
 import cern.colt.map.OpenIntObjectHashMap;
+import cern.colt.list.ObjectArrayList;
 
 /**
  * TODO: Class description
@@ -41,10 +42,10 @@ import cern.colt.map.OpenIntObjectHashMap;
  */
 public class AbstractMetaNodeModeler {
 
-  public final boolean DEBUG = true;
+  protected static final boolean DEBUG = true;
   protected RootGraph rootGraph;
   
-  // A map from node RootGraph index to IntArrayList
+  // A map from node RootGraph indeces to IntArrayList objects
   // Each node index is the index of a meta-node, and the IntArrayList contains
   // edge RootGraph indices of edges that have been percolated through the RootGraph
   // to model an "abstract" model
@@ -82,7 +83,13 @@ public class AbstractMetaNodeModeler {
     this.metaEdgesRindices.clear();
   }//setRootGraph
 
-  
+  /**
+   * @return the RootGraph that this AbstractMetaNodeModeler models
+   */
+  public RootGraph getRootGraph (){
+    return this.rootGraph;
+  }//getRootGraph
+
   /**
    * Applies the model to the <code>GraphPerspective</code>.
    *
@@ -554,7 +561,7 @@ public class AbstractMetaNodeModeler {
    * connected to the <code>Node</code> with index <code>meta_node_index</code>
    *
    * @param recursive if true, edges for meta-node descendants of the given node are 
-   * also removed
+   * also removed (except for those connected to the descendatns with no children)
    */
   protected void removeMetaEdges(int meta_node_index, boolean recursive){
     
@@ -569,35 +576,53 @@ public class AbstractMetaNodeModeler {
       return;
     }
     
+    // If not a meta-node, then return
+    if(!isMetaNode(meta_node_index)){
+      if(DEBUG){
+        System.err.println("----- removeMetaEdges returning, node " + meta_node_index + 
+                           " is not a meta node -----");
+      }
+      return;
+    }
+  
+    // If recursive, get all the descendants of this meta-node, and remove their meta-edges
     if(recursive){
-      // Get all the descendants of this meta-node, and remove their meta-edges
       int [] descendants = this.rootGraph.getNodeMetaChildIndicesArray(meta_node_index,true);
-      if(descendants == null || descendants.length == 0){
-        if(DEBUG){
-          System.err.println("----- removeMetaEdges node " + meta_node_index + 
-                             " has no descendants -----");
-        }
-      }else{
-        for(int i = 0; i < descendants.length; i++){
-          removeMetaEdges(descendants[i], false);
-        }// for i
-      }// else the node does have descendants
+      for(int i = 0; i < descendants.length; i++){
+        removeMetaEdges(descendants[i], false);
+      }// for i
     }// if recursive
     
     IntArrayList adjacentEdgeRindices = 
       new IntArrayList(this.rootGraph.getAdjacentEdgeIndicesArray(meta_node_index,true, true,true));
-    
     adjacentEdgeRindices.trimToSize();
-    if(adjacentEdgeRindices.size() == 0){
-      System.err.println("----- removeMetaEdges returning, node " + meta_node_index +
-                         " has no adjacent edges -----");
-      return;
+    
+    // Remember that this meta-node has no processed edges anymore so that if applyModel
+    // is called, new edges are created once more
+    if(DEBUG){
+      System.err.println("metaNodeToProcessedEdges.containsKey(" + meta_node_index + ") = " +
+                         this.metaNodeToProcessedEdges.containsKey(meta_node_index));
+    }
+    this.metaNodeToProcessedEdges.removeKey(meta_node_index);
+    if(DEBUG){
+      System.err.println("after removal, metaNodeToProcessedEdges.containsKey(" + meta_node_index + 
+                         ") = " +
+                         this.metaNodeToProcessedEdges.containsKey(meta_node_index));
     }
     
-    // Only keep the indices of adjacent edges that *we* created
+    // Make sure we are not going to remove edges that were there originally
     adjacentEdgeRindices.retainAll(this.metaEdgesRindices);
-    // Remove from RootGraph
     adjacentEdgeRindices.trimToSize();
+    
+    if(adjacentEdgeRindices.size() == 0){
+      if(DEBUG){
+        System.err.println("----- removeMetaEdges returning, node " + meta_node_index +
+                           " has no adjacent edges -----");
+      }
+      return;
+    } 
+    
+    // Remove the edges that are connected to this meta-node and that *we* created
     if(DEBUG){
       System.err.println("before removing edges, num e = " + this.rootGraph.getEdgeCount());
     }
@@ -605,14 +630,26 @@ public class AbstractMetaNodeModeler {
     if(DEBUG){
       System.err.println("after removing edges, num e = " + this.rootGraph.getEdgeCount());
     }
-    // Remember that we removed the edges
-    this.metaEdgesRindices.removeAll(adjacentEdgeRindices);
-    this.metaNodeToProcessedEdges.removeKey(meta_node_index);
+    // Update metaEdgesRindices
     if(DEBUG){
-      System.err.println("----- removeMetaEdges returning, removed " + adjacentEdgeRindices.size() + 
-                         " edges from RootGraph");
+      System.err.println("metaEdgesRindices.size = " + this.metaEdgesRindices.size());
     }
-    
+    this.metaEdgesRindices.removeAll(adjacentEdgeRindices);
+    if(DEBUG){
+      System.err.println("after removing, metaEdgesRindices.size = " + this.metaEdgesRindices.size());
+    }
+    // Remove the edges from the lists of processed edges
+    ObjectArrayList lists = this.metaNodeToProcessedEdges.values();
+    for(int i = 0; i < lists.size(); i++){
+      IntArrayList processedEdges = (IntArrayList)lists.get(i);
+      if(processedEdges == null){
+        if(DEBUG){
+          System.err.println("processedEdges is null");
+        }
+        continue;
+      }// processedEdges == null
+      processedEdges.removeAll(adjacentEdgeRindices);
+    }// for i
   }//removeMetaEdges
 
   /**
@@ -665,5 +702,6 @@ public class AbstractMetaNodeModeler {
     }
     return gpNodeRindices.elements();
   }//getNodeRindicesInGP
+
   
 }//class AbstractMetaNodeModeler
