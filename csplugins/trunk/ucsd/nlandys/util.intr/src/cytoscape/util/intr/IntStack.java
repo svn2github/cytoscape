@@ -82,9 +82,9 @@ public final class IntStack
   }
 
   /**
-   * A non-mutating operation to retrieve the next integer on this stack.
+   * A non-mutating operation that retrieves the next integer on this stack.<p>
    * It is considered an error to call this method if there are no integers
-   * currently in this stack.  If size() returns zero immediately before this
+   * currently on this stack.  If size() returns zero immediately before this
    * method is called, the results of this operation are undefined.
    */
   public final int peek()
@@ -95,7 +95,7 @@ public final class IntStack
   /**
    * Removes and returns the next integer on this stack.<p>
    * It is considered an error to call this method if there are no integers
-   * currently in this stack.  If size() returns zero immediately before this
+   * currently on this stack.  If size() returns zero immediately before this
    * method is called, the results of this operation are undefined.
    */
   public final int pop()
