@@ -8,24 +8,25 @@ package cytoscape.actions;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.view.NetworkView;
 //-------------------------------------------------------------------------
 public class HideSelectedAction extends AbstractAction  {
-    CytoscapeWindow cytoscapeWindow;
+    NetworkView networkView;
     
-    public HideSelectedAction (CytoscapeWindow cytoscapeWindow) {
+    public HideSelectedAction(NetworkView networkView) {
         super ();
-        this.cytoscapeWindow = cytoscapeWindow;
+        this.networkView = networkView;
     }
     
-    public void actionPerformed (ActionEvent e) {
-        cytoscapeWindow.setInteractivity(false);
-        GraphUtils.hideSelectedNodes( cytoscapeWindow.getGraph(),
-                                      cytoscapeWindow.getGraphHider() );
-        GraphUtils.hideSelectedEdges( cytoscapeWindow.getGraph(),
-                                      cytoscapeWindow.getGraphHider() );
-        cytoscapeWindow.redrawGraph(false, false);
-        cytoscapeWindow.setInteractivity(true);
+    public void actionPerformed(ActionEvent e) {
+        String callerID = "HideSelectedAction.actionPerformed";
+        networkView.getNetwork().beginActivity(callerID);
+        GraphUtils.hideSelectedNodes( networkView.getNetwork().getGraph(),
+                                      networkView.getGraphHider() );
+        GraphUtils.hideSelectedEdges( networkView.getNetwork().getGraph(),
+                                      networkView.getGraphHider() );
+        networkView.redrawGraph(false, false);
+        networkView.getNetwork().endActivity(callerID);;
     }
 }
 

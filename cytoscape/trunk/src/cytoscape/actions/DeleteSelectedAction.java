@@ -11,49 +11,48 @@ import javax.swing.AbstractAction;
 import y.base.*;
 import y.view.Graph2D;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.data.CyNetwork;
+import cytoscape.view.NetworkView;
 import cytoscape.GraphObjAttributes;
 //-------------------------------------------------------------------------
 public class DeleteSelectedAction extends AbstractAction {
-    CytoscapeWindow cytoscapeWindow;
+    NetworkView networkView;
     
-    public DeleteSelectedAction(CytoscapeWindow cytoscapeWindow) {
+    public DeleteSelectedAction(NetworkView networkView) {
         super("Delete Selected Nodes and Edges");
-        this.cytoscapeWindow = cytoscapeWindow;
+        this.networkView = networkView;
     }
     
     public void actionPerformed(ActionEvent e) {
-        Graph2D graph = cytoscapeWindow.getGraph();
-        GraphObjAttributes nodeAttributes = cytoscapeWindow.getNodeAttributes();
-        GraphObjAttributes edgeAttributes = cytoscapeWindow.getEdgeAttributes();
+        String callerID = "DeleteSelectedAction.actionPerformed";
         
-        // added by dramage 2002-08-23
-        graph.firePreEvent();
-        
-        int nodeNum = 0;
+        CyNetwork network = networkView.getNetwork();
+        network.beginActivity(callerID); //also fires a graph pre-event
+        Graph2D graph = network.getGraph();
+        GraphObjAttributes nodeAttributes = network.getNodeAttributes();
+        GraphObjAttributes edgeAttributes = network.getEdgeAttributes();
+             
         NodeCursor nc = graph.selectedNodes(); 
-        Node node;
+        EdgeCursor ec = graph.selectedEdges();
+        if (nc.size() == 0 && ec.size() == 0) {//nothing to do
+            networkView.getNetwork().endActivity(callerID);
+            return;
+        }
+
         while (nc.ok()) {
-            node = nc.node();
+            Node node = nc.node();
             graph.removeNode(node);
-            nodeNum++;
             nodeAttributes.removeObjectMapping(node);
-            //System.out.println("Removed node " + nodeNum);
-            //System.out.flush();
             nc.next();
         } // while
-        EdgeCursor ec = graph.selectedEdges();
-        Edge edge;
         while (ec.ok()) {
-            edge = ec.edge();
+            Edge edge = ec.edge();
             graph.removeEdge(edge);
             ec.next();
             edgeAttributes.removeObjectMapping(edge);
         }
         
-        // added by dramage 2002-08-23
-        graph.firePostEvent();
-        
-        cytoscapeWindow.redrawGraph(false, false);
+        networkView.redrawGraph(false, false);
+        network.endActivity(callerID);
     } // actionPerformed
 } // inner class DeleteSelectedAction

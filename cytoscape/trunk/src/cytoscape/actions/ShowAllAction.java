@@ -8,26 +8,27 @@ package cytoscape.actions;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.view.NetworkView;
 //-------------------------------------------------------------------------
 public class ShowAllAction extends AbstractAction {
-    CytoscapeWindow cytoscapeWindow;
+    NetworkView networkView;
     
-    public ShowAllAction(CytoscapeWindow cytoscapeWindow) {
+    public ShowAllAction(NetworkView networkView) {
         super();
-        this.cytoscapeWindow = cytoscapeWindow;
+        this.networkView = networkView;
     }
     
     public void actionPerformed(ActionEvent e) {
-        cytoscapeWindow.getGraph().firePreEvent();
-        cytoscapeWindow.getGraphHider().unhideAll();
-        cytoscapeWindow.getGraph().firePostEvent();
+        String callerID = "ShowAllAction.actionPerformed";
+        networkView.getNetwork().beginActivity(callerID);
+        networkView.getGraphHider().unhideAll();
         
-        cytoscapeWindow.getGraphView().fitContent();
-        double zoom = 0.9*cytoscapeWindow.getGraphView().getZoom();
-        cytoscapeWindow.getGraphView().setZoom(zoom);
+        networkView.getGraphView().fitContent();
+        double zoom = 0.9*networkView.getGraphView().getZoom();
+        networkView.getGraphView().setZoom(zoom);
         // the apps may have changed dynamically
-        cytoscapeWindow.redrawGraph(false, true);
+        networkView.redrawGraph(false, true);
+        networkView.getNetwork().endActivity(callerID);
     }
 }
 

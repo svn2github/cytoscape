@@ -8,19 +8,19 @@ package cytoscape.actions;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.view.CyWindow;
 //-------------------------------------------------------------------------
 public class ExitAction extends AbstractAction {
-    CytoscapeWindow cytoscapeWindow;
+    CyWindow cyWindow;
     
-    public ExitAction(CytoscapeWindow cytoscapeWindow) {
+    public ExitAction(CyWindow cyWindow) {
         super("Exit");
-        this.cytoscapeWindow = cytoscapeWindow;
+        this.cyWindow = cyWindow;
     }
     
     public void actionPerformed (ActionEvent e) {
-        cytoscapeWindow.saveCalculatorCatalog();
-        cytoscapeWindow.getParentApp().exit(0);
+        cyWindow.getCytoscapeObj().saveCalculatorCatalog();
+        cyWindow.getCytoscapeObj().getParentApp().exit(0);
     }
 }
 

@@ -31,13 +31,16 @@
 //-------------------------------------------------------------------------
 package cytoscape.data;
 //-------------------------------------------------------------------------
+import java.util.*;
 import java.io.*;
 import javax.swing.JOptionPane;
 
 import y.base.*;
 import y.view.Graph2D;
 
+import cytoscape.CytoscapeObj;
 import cytoscape.GraphObjAttributes;
+import cytoscape.data.servers.BioDataServer;
 //-------------------------------------------------------------------------
 /**
  * This class provides static methods that operate on a CyNetwork to perform
@@ -45,54 +48,122 @@ import cytoscape.GraphObjAttributes;
  * data types that are available in the node and edge attributes of the network.
  */
 public class CyNetworkUtilities {
-    
-    /**
-     * Returns an array containing all of the unique interaction types present
-     * in the network. Formally, gets from the edge attributes all of the unique
-     * values for the "interaction" attribute.
-     */
-    public static String[] getInteractionTypes(CyNetwork network) {
-        return network.getEdgeAttributes().getUniqueStringValues("interaction");
+//-------------------------------------------------------------------------
+/**
+ * Returns an array containing all of the unique interaction types present
+ * in the network. Formally, gets from the edge attributes all of the unique
+ * values for the "interaction" attribute.
+ */
+public static String[] getInteractionTypes(CyNetwork network) {
+    if (network == null) {return new String[0];}
+    return network.getEdgeAttributes().getUniqueStringValues(Semantics.INTERACTION);
+}
+//-------------------------------------------------------------------------
+/**
+ * Returns the interaction type of the given edge. Formally, gets from the
+ * edge attributes the value for the "interaction" attribute".
+ */
+public static String getInteractionType(CyNetwork network, Edge e) {
+    if (network == null || e == null) {
+        return null;
     }
+    String canonicalName = network.getEdgeAttributes().getCanonicalName(e);
+    return network.getEdgeAttributes().getStringValue(Semantics.INTERACTION, canonicalName);
+}
+//-------------------------------------------------------------------------   
+/**
+ * Saves all selected nodes in the network to a file with the given name.
+ */
+public static boolean saveSelectedNodeNames(CyNetwork network, String filename) {
+    if (network == null || filename == null) {return false;}
     
-    /**
-     * Returns the interaction type of the given edge. Formally, gets from the
-     * edge attributes the value for the "interaction" attribute".
-     */
-    public static String getInteractionType(CyNetwork network, Edge e) {
-        String canonicalName = network.getEdgeAttributes().getCanonicalName(e);
-        return network.getEdgeAttributes().getStringValue("interaction", canonicalName);
+    String callerID = "CyNetworkUtilities.saveSelectedNodeNames";
+    network.beginActivity(callerID);
+    Graph2D theGraph = network.getGraph();
+    Node[] nodes = theGraph.getNodeArray();
+    GraphObjAttributes nodeAttributes = network.getNodeAttributes();
+    File file = new File(filename);
+    try {
+        FileWriter fout = new FileWriter(file);
+        for (int i=0; i < nodes.length; i++) {
+            Node node = nodes[i];
+            if(theGraph.isSelected(node)) {
+                String canonicalName = nodeAttributes.getCanonicalName(node);
+                fout.write(canonicalName + "\n");
+            }
+        } // for i
+        fout.close();
+        network.endActivity(callerID);
+        return true;
+    }  catch (IOException e) {
+        JOptionPane.showMessageDialog(null, e.toString(),
+        "Error Writing to \"" + file.getName()+"\"",
+        JOptionPane.ERROR_MESSAGE);
+        network.endActivity(callerID);
+        return false;
     }
+} // saveSelectedNodeNames
+//-------------------------------------------------------------------------
+public static boolean saveVisibleNodeNames(CyNetwork network, String filename) {
+    if (network == null || filename == null) {return false;}
     
-    /**
-     * Saves all selected nodes in the network to a file with the given name.
-     */
-    public static boolean saveSelectedNodeNames(CyNetwork network, String filename) {
-        String callerID = "CyNetworkUtilities.saveSelectedNodeNames";
-        network.beginActivity(callerID);
-        Graph2D theGraph = network.getGraph();
-        Node[] nodes = theGraph.getNodeArray();
-        GraphObjAttributes nodeAttributes = network.getNodeAttributes();
-        File file = new File(filename);
-        try {
-            FileWriter fout = new FileWriter(file);
-            for (int i=0; i < nodes.length; i++) {
-                Node node = nodes[i];
-                if(theGraph.isSelected(node)) {
-                    String canonicalName = nodeAttributes.getCanonicalName(node);
-                    fout.write(canonicalName + "\n");
+    String callerID = "CyNetworkUtilities.saveVisibleNodeNames";
+    network.beginActivity(callerID);
+    
+    Graph2D theGraph = network.getGraph();
+    Node [] nodes = theGraph.getNodeArray();
+    GraphObjAttributes nodeAttributes = network.getNodeAttributes();
+    File file = new File(filename);
+    try {
+        FileWriter fout = new FileWriter(file);
+        for (int i=0; i < nodes.length; i++) {
+            Node node = nodes[i];
+            String canonicalName = nodeAttributes.getCanonicalName(node);
+            fout.write(canonicalName + "\n");
+        } // for i
+        fout.close();
+        network.endActivity(callerID);
+        return true;
+    }  catch (IOException e) {
+        JOptionPane.showMessageDialog(null, e.toString(),
+                                      "Error Writing to \"" + file.getName()+"\"",
+                                      JOptionPane.ERROR_MESSAGE);
+        network.endActivity(callerID);
+        return false;
+    }
+}
+//-------------------------------------------------------------------------
+public static void selectNodesStartingWith(CyNetwork network, String key,
+                                           CytoscapeObj cytoscapeObj) {
+    if (network == null || key == null) {return;}
+    key = key.toLowerCase();
+    
+    String callerID = "CyNetworkUtilities.selectNodesStartingWith";
+    network.beginActivity(callerID);
+    Graph2D theGraph = network.getGraph();
+    Node[] nodes = theGraph.getNodeArray();
+    GraphObjAttributes nodeAttributes = network.getNodeAttributes();
+    
+    for(int i = 0; i < nodes.length; i++){
+        String nodeLabel = theGraph.getLabelText(nodes[i]);
+        String canonicalName = nodeAttributes.getCanonicalName(nodes[i]);
+        boolean matched = false;
+        if (nodeLabel != null && nodeLabel.toLowerCase().startsWith(key)) {
+            matched = true;
+        } else {
+            List synonyms = Semantics.getAllSynonyms(canonicalName, network, cytoscapeObj);
+            for (Iterator synI = synonyms.iterator(); synI.hasNext(); ) {
+                String synonym = (String)synI.next();
+                if ( synonym.toLowerCase().startsWith(key) ) {
+                    matched = true;
+                    break;
                 }
-            } // for i
-            fout.close();
-            network.endActivity(callerID);
-            return true;
-        }  catch (IOException e) {
-            JOptionPane.showMessageDialog(null, e.toString(),
-                                          "Error Writing to \"" + file.getName()+"\"",
-                                          JOptionPane.ERROR_MESSAGE);
-            network.endActivity(callerID);
-            return false;
+            }
         }
-    } // saveSelectedNodeNames
+        theGraph.setSelected(nodes[i], matched);
+    } // for i
+    network.endActivity(callerID);
+}
+//-------------------------------------------------------------------------
 }
 

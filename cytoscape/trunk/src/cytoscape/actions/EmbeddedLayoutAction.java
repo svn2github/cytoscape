@@ -10,18 +10,18 @@ import javax.swing.AbstractAction;
 
 import cytoscape.layout.EmbeddedLayouter;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.view.NetworkView;
 //-------------------------------------------------------------------------
 public class EmbeddedLayoutAction extends AbstractAction {
-    CytoscapeWindow cytoscapeWindow;
+    NetworkView networkView;
     
-    public EmbeddedLayoutAction(CytoscapeWindow cytoscapeWindow) {
+    public EmbeddedLayoutAction(NetworkView networkView) {
         super("Embedded");
-        this.cytoscapeWindow = cytoscapeWindow;
+        this.networkView = networkView;
     }
 
     public void actionPerformed(ActionEvent e) {
-        cytoscapeWindow.setLayouter( new EmbeddedLayouter() );
+        networkView.setLayouter( new EmbeddedLayouter() );
     }
 }
 

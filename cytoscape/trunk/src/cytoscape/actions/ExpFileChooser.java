@@ -39,7 +39,7 @@ public class ExpFileChooser extends JFileChooser {
     }
     /** inner class for listening to the JCheckBox jcb
      *  and updating the boolean copyToAttribs when appropriate.
-     *  {@link cytoscape.CytoscapeWindow.ExpFileChooser.copyToAttribs
+     *  {@link cytoscape.view.NetworkView.ExpFileChooser.copyToAttribs
      *  copyToAttribs} when appropriate. 
      */
     private class CopyExpListener implements ItemListener {

@@ -37,6 +37,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import cytoscape.CytoscapeWindow;
+import cytoscape.CytoscapeObj;
 import cytoscape.actions.*;
 import cytoscape.dialogs.ShrinkExpandGraphUI;
 import cytoscape.data.annotation.AnnotationGui;
@@ -55,7 +56,6 @@ public class CytoscapeMenus {
     JMenu layoutMenu;
     JMenu vizMenu;
     JMenu opsMenu;
-    JMenu helpMenu;    // 20030915 cworkman
     JToolBar toolBar;
     
     /**
@@ -102,11 +102,6 @@ public class CytoscapeMenus {
      * menu option.
      */
     public JMenu getOperationsMenu() {return opsMenu;}
-    /**
-     * Returns the submenu holding menu items associated with
-     * the help menu.
-     */
-    public JMenu getHelpMenu() {return helpMenu;}
     
     /**
      * Returns the toolbar object constructed by this class.
@@ -174,115 +169,118 @@ public class CytoscapeMenus {
      * menu items that trigger attached action listener objects.
      */
     private void createMenuBar() {
-        menuBar = new JMenuBar ();
-        fileMenu = new JMenu ("File");
+        CyWindow cyWindow = cytoscapeWindow.getCyWindow();
+        NetworkView networkView = cyWindow;  //restricted interface
+        CytoscapeObj cytoscapeObj = cyWindow.getCytoscapeObj();
+        menuBar = new JMenuBar();
+        fileMenu = new JMenu("File");
         
-        loadSubMenu = new JMenu ("Load");
-        fileMenu.add (loadSubMenu);
-        JMenuItem mi = loadSubMenu.add (new LoadGMLFileAction (cytoscapeWindow));
-        mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_G, ActionEvent.CTRL_MASK));
-        mi = loadSubMenu.add (new LoadInteractionFileAction (cytoscapeWindow));
-        mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_I, ActionEvent.CTRL_MASK));
-        mi = loadSubMenu.add (new LoadExpressionMatrixAction (cytoscapeWindow));
-        mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_E, ActionEvent.CTRL_MASK));
-        mi = loadSubMenu.add (new LoadBioDataServerAction (cytoscapeWindow));
-        mi = loadSubMenu.add (new LoadNodeAttributesAction (cytoscapeWindow));
-        mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_N, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK));
-        mi = loadSubMenu.add (new LoadEdgeAttributesAction (cytoscapeWindow));
-        mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_J, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK));
+        loadSubMenu = new JMenu("Load");
+        fileMenu.add(loadSubMenu);
+        JMenuItem mi = loadSubMenu.add(new LoadGMLFileAction(cytoscapeWindow));
+        mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.CTRL_MASK));
+        mi = loadSubMenu.add(new LoadInteractionFileAction(cytoscapeWindow));
+        mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.CTRL_MASK));
+        mi = loadSubMenu.add(new LoadExpressionMatrixAction(networkView));
+        mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.CTRL_MASK));
+        mi = loadSubMenu.add(new LoadBioDataServerAction(networkView));
+        mi = loadSubMenu.add(new LoadNodeAttributesAction(networkView));
+        mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK));
+        mi = loadSubMenu.add(new LoadEdgeAttributesAction(networkView));
+        mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_J, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK));
         
-        saveSubMenu = new JMenu ("Save");
-        fileMenu.add (saveSubMenu);
-        saveSubMenu.add (new SaveAsGMLAction (cytoscapeWindow));
-        saveSubMenu.add (new SaveAsInteractionsAction (cytoscapeWindow));
-        saveSubMenu.add (new SaveVisibleNodesAction(cytoscapeWindow));
-        saveSubMenu.add (new SaveSelectedNodesAction(cytoscapeWindow));
+        saveSubMenu = new JMenu("Save");
+        fileMenu.add(saveSubMenu);
+        saveSubMenu.add(new SaveAsGMLAction(networkView));
+        saveSubMenu.add(new SaveAsInteractionsAction(networkView));
+        saveSubMenu.add(new SaveVisibleNodesAction(networkView));
+        saveSubMenu.add(new SaveSelectedNodesAction(networkView));
         
-        fileMenu.add (new PrintAction (cytoscapeWindow));
+        fileMenu.add(new PrintAction(networkView));
         
-        mi = fileMenu.add (new CloseWindowAction (cytoscapeWindow));
-        mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_W, ActionEvent.CTRL_MASK));
+        mi = fileMenu.add(new CloseWindowAction(cyWindow));
+        mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
         if (cytoscapeWindow.getParentApp() != null) {
-            mi = fileMenu.add (new ExitAction (cytoscapeWindow));
-            mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
+            mi = fileMenu.add(new ExitAction(cyWindow));
+            mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
         }
         
         
-        menuBar.add (fileMenu);
+        menuBar.add(fileMenu);
         
-        editMenu = new JMenu ("Edit");
-        menuBar.add (editMenu);
+        editMenu = new JMenu("Edit");
+        menuBar.add(editMenu);
         // added by dramage 2002-08-21
-        if (cytoscapeWindow.getConfiguration().enableUndo()) {
-            undoMenuItem = editMenu.add (new UndoAction (cytoscapeWindow));
-            undoMenuItem.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_Z, ActionEvent.CTRL_MASK));
-            redoMenuItem = editMenu.add (new RedoAction (cytoscapeWindow));
-            redoMenuItem.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_Y, ActionEvent.CTRL_MASK));
+        if (cytoscapeObj.getConfiguration().enableUndo()) {
+            undoMenuItem = editMenu.add(new UndoAction(cyWindow));
+            undoMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, ActionEvent.CTRL_MASK));
+            redoMenuItem = editMenu.add(new RedoAction(cyWindow));
+            redoMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, ActionEvent.CTRL_MASK));
             editMenu.addSeparator();
         }
         
-        ButtonGroup modeGroup = new ButtonGroup ();
-        JRadioButtonMenuItem readOnlyModeButton = new JRadioButtonMenuItem ("Read-only mode");
-        JRadioButtonMenuItem editModeButton = new JRadioButtonMenuItem ("Edit mode for nodes and edges");
-        modeGroup.add (readOnlyModeButton);
-        modeGroup.add (editModeButton);
-        editMenu.add (readOnlyModeButton);
-        editMenu.add (editModeButton);
-        readOnlyModeButton.setSelected (true);
-        readOnlyModeButton.addActionListener (new ReadOnlyModeAction (cytoscapeWindow));
-        editModeButton.addActionListener (new EditModeAction (cytoscapeWindow));
-        editMenu.addSeparator ();
+        ButtonGroup modeGroup = new ButtonGroup();
+        JRadioButtonMenuItem readOnlyModeButton = new JRadioButtonMenuItem("Read-only mode");
+        JRadioButtonMenuItem editModeButton = new JRadioButtonMenuItem("Edit mode for nodes and edges");
+        modeGroup.add(readOnlyModeButton);
+        modeGroup.add(editModeButton);
+        editMenu.add(readOnlyModeButton);
+        editMenu.add(editModeButton);
+        readOnlyModeButton.setSelected(true);
+        readOnlyModeButton.addActionListener(new ReadOnlyModeAction(cyWindow));
+        editModeButton.addActionListener(new EditModeAction(cyWindow));
+        editMenu.addSeparator();
         
-        deleteSelectionMenuItem = editMenu.add (new DeleteSelectedAction (cytoscapeWindow));
-        deleteSelectionMenuItem.setEnabled (false);
+        deleteSelectionMenuItem = editMenu.add(new DeleteSelectedAction(networkView));
+        deleteSelectionMenuItem.setEnabled(false);
         
-        selectMenu = new JMenu ("Select");
-        menuBar.add    (selectMenu);
+        selectMenu = new JMenu("Select");
+        menuBar.add(selectMenu);
         JMenu selectNodesSubMenu = new JMenu("Nodes");
-        selectMenu.add (selectNodesSubMenu);
+        selectMenu.add(selectNodesSubMenu);
         JMenu selectEdgesSubMenu = new JMenu("Edges");
-        selectMenu.add (selectEdgesSubMenu);
+        selectMenu.add(selectEdgesSubMenu);
         JMenu displayNWSubMenu = new JMenu("To New Window");
-        selectMenu.add (displayNWSubMenu);
+        selectMenu.add(displayNWSubMenu);
         
-        // mi = selectEdgesSubMenu.add (new EdgeTypeDialogAction ());
+        // mi = selectEdgesSubMenu.add(new EdgeTypeDialogAction());
         
-        mi = selectNodesSubMenu.add(new InvertSelectedNodesAction(cytoscapeWindow));
-        mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_V, ActionEvent.CTRL_MASK));
-        mi = selectNodesSubMenu.add(new HideSelectedNodesAction(cytoscapeWindow));
-        mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_H, ActionEvent.CTRL_MASK));
+        mi = selectNodesSubMenu.add(new InvertSelectedNodesAction(networkView));
+        mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK));
+        mi = selectNodesSubMenu.add(new HideSelectedNodesAction(networkView));
+        mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, ActionEvent.CTRL_MASK));
         
-        //mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_D, ActionEvent.CTRL_MASK));
-        mi = selectEdgesSubMenu.add(new InvertSelectedEdgesAction(cytoscapeWindow));
-        mi = selectEdgesSubMenu.add(new HideSelectedEdgesAction(cytoscapeWindow));
-        mi = selectEdgesSubMenu.add (new EdgeManipulationAction(cytoscapeWindow));
+        //mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.CTRL_MASK));
+        mi = selectEdgesSubMenu.add(new InvertSelectedEdgesAction(networkView));
+        mi = selectEdgesSubMenu.add(new HideSelectedEdgesAction(networkView));
+        mi = selectEdgesSubMenu.add(new EdgeManipulationAction(cytoscapeWindow));
         
-        mi = selectNodesSubMenu.add (new SelectFirstNeighborsAction (cytoscapeWindow));
-        mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_F, ActionEvent.CTRL_MASK));
+        mi = selectNodesSubMenu.add(new SelectFirstNeighborsAction(networkView));
+        mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK));
         
-        selectNodesSubMenu.add (new AlphabeticalSelectionAction (cytoscapeWindow));
-        selectNodesSubMenu.add (new ListFromFileSelectionAction (cytoscapeWindow));
-        selectNodesSubMenu.add (new MenuFilterAction (cytoscapeWindow));
+        selectNodesSubMenu.add(new AlphabeticalSelectionAction(networkView));
+        selectNodesSubMenu.add(new ListFromFileSelectionAction(networkView));
+        selectNodesSubMenu.add(new MenuFilterAction(cytoscapeWindow));
         
         mi = displayNWSubMenu.add(new NewWindowSelectedNodesOnlyAction(cytoscapeWindow));
-        mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_N, ActionEvent.CTRL_MASK));
+        mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
         mi = displayNWSubMenu.add(new NewWindowSelectedNodesEdgesAction(cytoscapeWindow));
-        mi = displayNWSubMenu.add (new CloneGraphInNewWindowAction (cytoscapeWindow));
-        mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_K, ActionEvent.CTRL_MASK));
+        mi = displayNWSubMenu.add(new CloneGraphInNewWindowAction(cytoscapeWindow));
+        mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, ActionEvent.CTRL_MASK));
         
-        ButtonGroup layoutGroup = new ButtonGroup ();
-        layoutMenu = new JMenu ("Layout");
-        layoutMenu.setToolTipText ("Apply new layout algorithm to graph");
-        menuBar.add (layoutMenu);
+        ButtonGroup layoutGroup = new ButtonGroup();
+        layoutMenu = new JMenu("Layout");
+        layoutMenu.setToolTipText("Apply new layout algorithm to graph");
+        menuBar.add(layoutMenu);
         
         String defaultLayoutStrategy =
-                cytoscapeWindow.getConfiguration().getDefaultLayoutStrategy ();
+                cytoscapeWindow.getConfiguration().getDefaultLayoutStrategy();
         
         JRadioButtonMenuItem layoutButton;
         layoutButton = new JRadioButtonMenuItem("Circular");
         layoutGroup.add(layoutButton);
         layoutMenu.add(layoutButton);
-        layoutButton.addActionListener(new CircularLayoutAction (cytoscapeWindow));
+        layoutButton.addActionListener(new CircularLayoutAction(networkView));
         if(defaultLayoutStrategy.equals("circular")){
             layoutButton.setSelected(true);
         }
@@ -290,7 +288,7 @@ public class CytoscapeMenus {
         layoutButton = new JRadioButtonMenuItem("Hierarchicial");
         layoutGroup.add(layoutButton);
         layoutMenu.add(layoutButton);
-        layoutButton.addActionListener(new HierarchicalLayoutAction (cytoscapeWindow));
+        layoutButton.addActionListener(new HierarchicalLayoutAction(networkView));
         if(defaultLayoutStrategy.equals("hierarchical")){
             layoutButton.setSelected(true);
         }
@@ -301,7 +299,7 @@ public class CytoscapeMenus {
         if(defaultLayoutStrategy.equals("organic")){
             layoutButton.setSelected(true);
         }
-        layoutButton.addActionListener(new OrganicLayoutAction (cytoscapeWindow));
+        layoutButton.addActionListener(new OrganicLayoutAction(networkView));
         
         layoutButton = new JRadioButtonMenuItem("Embedded");
         layoutGroup.add(layoutButton);
@@ -309,7 +307,7 @@ public class CytoscapeMenus {
         if(defaultLayoutStrategy.equals("embedded")){
             layoutButton.setSelected(true);
         }
-        layoutButton.addActionListener(new EmbeddedLayoutAction (cytoscapeWindow));
+        layoutButton.addActionListener(new EmbeddedLayoutAction(networkView));
         
         layoutButton = new JRadioButtonMenuItem("Random");
         layoutGroup.add(layoutButton);
@@ -317,88 +315,83 @@ public class CytoscapeMenus {
         if(defaultLayoutStrategy.equals("random")){
             layoutButton.setSelected(true);
         }
-        layoutButton.addActionListener(new RandomLayoutAction (cytoscapeWindow));
+        layoutButton.addActionListener(new RandomLayoutAction(networkView));
         
         layoutMenu.addSeparator();
-        mi = layoutMenu.add (new LayoutAction (cytoscapeWindow));
-        mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_L, ActionEvent.CTRL_MASK));
-        layoutMenu.add (new LayoutSelectionAction (cytoscapeWindow));
+        mi = layoutMenu.add(new LayoutAction(networkView));
+        mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.CTRL_MASK));
+        layoutMenu.add(new LayoutSelectionAction(cyWindow));
         
         layoutMenu.addSeparator();
-        JMenu alignSubMenu = new JMenu ("Align Selected Nodes");
+        JMenu alignSubMenu = new JMenu("Align Selected Nodes");
         layoutMenu.add(alignSubMenu);
-        alignSubMenu.add (new AlignHorizontalAction (cytoscapeWindow));
-        alignSubMenu.add (new AlignVerticalAction   (cytoscapeWindow));
-        layoutMenu.add(new RotateSelectedNodesAction(cytoscapeWindow));
-        layoutMenu.add(new ReduceEquivalentNodesAction(cytoscapeWindow));
+        alignSubMenu.add(new AlignHorizontalAction(networkView));
+        alignSubMenu.add(new AlignVerticalAction(networkView));
+        layoutMenu.add(new RotateSelectedNodesAction(networkView));
+        layoutMenu.add(new ReduceEquivalentNodesAction(networkView));
         
         ShrinkExpandGraphUI shrinkExpand =
-                new ShrinkExpandGraphUI(cytoscapeWindow.getCyWindow(), layoutMenu);  
-        vizMenu = new JMenu ("Visualization"); // always create the viz menu
-        menuBar.add (vizMenu);
-        vizMenu.add (new SetVisualPropertiesAction (cytoscapeWindow));
+                new ShrinkExpandGraphUI(cyWindow, layoutMenu);  
+        vizMenu = new JMenu("Visualization"); // always create the viz menu
+        menuBar.add(vizMenu);
+        vizMenu.add(new SetVisualPropertiesAction(cyWindow));
         
-        opsMenu = new JMenu ("PlugIns"); // always create the plugins menu
-        menuBar.add (opsMenu);
-
-	// 2003.07.25 cworkman 
-	helpMenu = new JMenu ("Help"); // to display the version number and build date
-	menuBar.add (helpMenu, -1);
-	helpMenu.add (new HelpSelectionAction (cytoscapeWindow));
- 	helpMenu.add ("FAQ");
-   }
+        opsMenu = new JMenu("PlugIns"); // always create the plugins menu
+        menuBar.add(opsMenu);
+    }
     
     /**
      * Creates the toolbar for easy access to commonly used actions.
      */
     private void createToolBar() {
+        NetworkView networkView = cytoscapeWindow.getCyWindow();
         toolBar = new JToolBar();
         JButton b;
         
-        b = toolBar.add (new ZoomAction (cytoscapeWindow, 0.9));
-        b.setIcon (new ImageIcon (getClass().getResource("images/ZoomOut24.gif")));
-        b.setToolTipText ("Zoom Out");
-        b.setBorderPainted (false);
-        b.setRolloverEnabled (true);
+        b = toolBar.add(new ZoomAction(networkView, 0.9));
+        b.setIcon(new ImageIcon(getClass().getResource("images/ZoomOut24.gif")));
+        b.setToolTipText("Zoom Out");
+        b.setBorderPainted(false);
+        b.setRolloverEnabled(true);
         
-        b = toolBar.add (new ZoomAction (cytoscapeWindow, 1.1));
-        b.setIcon (new ImageIcon (getClass().getResource("images/ZoomIn24.gif")));
-        b.setToolTipText ("Zoom In");
-        b.setBorderPainted (false);
+        b = toolBar.add(new ZoomAction(networkView, 1.1));
+        b.setIcon(new ImageIcon(getClass().getResource("images/ZoomIn24.gif")));
+        b.setToolTipText("Zoom In");
+        b.setBorderPainted(false);
         
-        b = toolBar.add (new ZoomSelectedAction (cytoscapeWindow));
-        b.setIcon (new ImageIcon (getClass().getResource("images/ZoomArea24.gif")));
-        b.setToolTipText ("Zoom Selected Region");
-        b.setBorderPainted (false);
+        b = toolBar.add(new ZoomSelectedAction(networkView));
+        b.setIcon(new ImageIcon(getClass().getResource("images/ZoomArea24.gif")));
+        b.setToolTipText("Zoom Selected Region");
+        b.setBorderPainted(false);
         
-        b = toolBar.add (new FitContentAction (cytoscapeWindow));
-        b.setIcon (new ImageIcon (getClass().getResource("images/overview.gif")));
-        b.setToolTipText ("Zoom out to display all of current graph");
-        b.setBorderPainted (false);
+        b = toolBar.add(new FitContentAction(networkView));
+        b.setIcon(new ImageIcon(getClass().getResource("images/overview.gif")));
+        b.setToolTipText("Zoom out to display all of current graph");
+        b.setBorderPainted(false);
         
-        // toolBar.addSeparator ();
+        // toolBar.addSeparator();
         
-        b = toolBar.add (new ShowAllAction (cytoscapeWindow));
-        b.setIcon (new ImageIcon (getClass().getResource("images/overall.gif")));
-        b.setToolTipText ("Show all nodes and edges (unhiding as necessary)");
-        b.setBorderPainted (false);
+        b = toolBar.add(new ShowAllAction(networkView));
+        b.setIcon(new ImageIcon(getClass().getResource("images/overall.gif")));
+        b.setToolTipText("Show all nodes and edges (unhiding as necessary)");
+        b.setBorderPainted(false);
         
         
-        b = toolBar.add (new HideSelectedAction (cytoscapeWindow));
-        b.setIcon (new ImageIcon (getClass().getResource("images/Zoom24.gif")));
-        b.setToolTipText ("Hide Selected Region");
-        b.setBorderPainted (false);
+        b = toolBar.add(new HideSelectedAction(networkView));
+        b.setIcon(new ImageIcon(getClass().getResource("images/Zoom24.gif")));
+        b.setToolTipText("Hide Selected Region");
+        b.setBorderPainted(false);
         
-        toolBar.addSeparator ();
-        b = toolBar.add (new MainFilterDialogAction(cytoscapeWindow));
-        b.setIcon (new ImageIcon (getClass().getResource("images/Grid24.gif")));
-        b.setToolTipText ("Apply Filters to Graph");
-        b.setBorderPainted (false);
+        toolBar.addSeparator();
+        b = toolBar.add(new MainFilterDialogAction(cytoscapeWindow));
+        b.setIcon(new ImageIcon(getClass().getResource("images/Grid24.gif")));
+        b.setToolTipText("Apply Filters to Graph");
+        b.setBorderPainted(false);
         
-        b = toolBar.add (new AnnotationGui (cytoscapeWindow));
-        b.setIcon (new ImageIcon (getClass().getResource("images/AnnotationGui.gif")));
-        b.setToolTipText ("add annotation to nodes");
-        b.setBorderPainted (false);
+        b = toolBar.add(new AnnotationGui(cytoscapeWindow));
+        b.setIcon(new ImageIcon(getClass().getResource("images/AnnotationGui.gif")));
+        b.setToolTipText("add annotation to nodes");
+        b.setBorderPainted(false);
     }//createToolBar
 }
 

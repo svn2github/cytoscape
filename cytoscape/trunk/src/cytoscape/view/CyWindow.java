@@ -339,10 +339,10 @@ private void loadVizMapper() {
   // add vizmapper to toolbar
   JToolBar toolBar = getCytoscapeMenus().getToolBar();
   toolBar.addSeparator();
-  JButton b = toolBar.add(new SetVisualPropertiesAction(cytoscapeWindow, false));
-  b.setIcon (new ImageIcon (getClass().getResource("images/ColorVisual.gif")));
-  b.setToolTipText ("Set Visual Properties");
-  b.setBorderPainted (false);
+  JButton b = toolBar.add(new SetVisualPropertiesAction(this, false));
+  b.setIcon(new ImageIcon(getClass().getResource("images/ColorVisual.gif")));
+  b.setToolTipText("Set Visual Properties");
+  b.setBorderPainted(false);
 
   // easy-access visual styles changer
   toolBar.add(vizMapUI.getStyleSelector().getToolbarComboBox());

@@ -1041,38 +1041,17 @@ public void deselectAllNodes ()
 
 } // deselectAllNodes
 //------------------------------------------------------------------------------
-public void selectNodesStartingWith (String key)
-{
-  this.setInteractivity(false);
-  key = key.toLowerCase();
-
-  Graph2D theGraph = this.getGraph();
-  Node[] nodes = theGraph.getNodeArray();
-  BioDataServer theBioDataServer = this.getBioDataServer();
-  
-  for(int i = 0; i < nodes.length; i++){
-      String nodeName = theGraph.getLabelText(nodes[i]);
-      boolean matched = false;
-      if (nodeName.toLowerCase().startsWith (key))
-	  matched = true;
-      else if (theBioDataServer != null) {
-	  try {
-	      String [] synonyms = theBioDataServer.getAllCommonNames(getSpecies(nodes[i]), nodeName);
-	      for (int s=0; s < synonyms.length; s++)
-		  if (synonyms[s].toLowerCase().startsWith(key)) {
-		      matched = true;
-		      break;
-		  } // for s
-	  }catch (Exception ignoreForNow) {;}
-      }
-      setNodeSelected(nodes [i], matched);
-  } // for i
-  
-  this.setInteractivity(true);
-  this.redrawGraph(false, false); // no need to layout or reapply apps
-  
-} // selectDisplyToNodesStartingWith ...
+/**
+ * @deprecated Moved to CyNetworkUtilities.selectNodesStartingWith, with the
+ * network and bioDataServer as arguments.
+ */
+public void selectNodesStartingWith (String key) {
+    CyNetworkUtilities.selectNodesStartingWith(this.getNetwork(), key, this.getCytoscapeObj());
+}
 //------------------------------------------------------------------------------
+/**
+ * @deprecated This method is not used anywhere.
+ */
 protected void additionallySelectNodesMatching (String key)
 {
   this.setInteractivity(false);
@@ -1106,6 +1085,11 @@ protected void additionallySelectNodesMatching (String key)
 
 } // selectDisplyToNodesStartingWith ...
 //------------------------------------------------------------------------------
+/**
+ * @deprecated This method is no longer used, and has an awkward implementation of
+ * searching for name matches. Instead, use the static methods provided by the
+ * cytoscape.data.Semantics class to search for name matches.
+ */
 public String findCanonicalName(String key) {
     String canonicalName = key;
     BioDataServer theBioDataServer = this.getBioDataServer();
@@ -1124,6 +1108,9 @@ public String findCanonicalName(String key) {
     return canonicalName;
 } // else if: checking synonyms
 //------------------------------------------------------------------------------
+/**
+ * @deprecated Use yFiles built-in method graph.setSelected(node, boolean) instead.
+ */
 protected void setNodeSelected (Node node, boolean visible)
 {
     NodeRealizer r = this.getGraph().getRealizer(node);
@@ -1131,38 +1118,31 @@ protected void setNodeSelected (Node node, boolean visible)
     
 } // setNodeSelected
 //------------------------------------------------------------------------------
-// this is public so activePaths can get at it;
-// active paths depends on saveVisibleNodeNames () to save state periodically.
+// 
+/**
+ * @deprecated This method hardcodes a filename into Cytoscape, and the method
+ * it delegates to has been moved. Use CyNetworkUtilities.saveVisibleNodeNames
+ * instead and provide a suitable filename as an argument.
+ *
+ * this is public so activePaths can get at it;
+ * active paths depends on saveVisibleNodeNames () to save state periodically.
+ */
 public boolean saveVisibleNodeNames () { 
     return saveVisibleNodeNames("visibleNodes.txt"); 
 }
 //------------------------------------------------------------------------------
-public boolean saveVisibleNodeNames (String filename)
-{
-    Graph2D theGraph = this.getGraph();
-    Node [] nodes = theGraph.getNodeArray();
-    GraphObjAttributes nodeAttributes = this.getNodeAttributes();
-    File file = new File(filename);
-    try {
-        FileWriter fout = new FileWriter(file);
-        for (int i=0; i < nodes.length; i++) {
-            Node node = nodes [i];
-            NodeRealizer r = theGraph.getRealizer(node);
-            String defaultName = r.getLabelText ();
-            String canonicalName = nodeAttributes.getCanonicalName (node);
-            fout.write(canonicalName + "\n");
-        } // for i
-        fout.close();
-        return true;
-    }  catch (IOException e) {
-        JOptionPane.showMessageDialog(null, e.toString(),
-                                      "Error Writing to \"" + file.getName()+"\"",
-                                      JOptionPane.ERROR_MESSAGE);
-        return false;
-    }
-          
+/**
+ * @deprecated Moved to CyNetworkUtilities.saveVisibleNodeNames, with the
+ * network as an argument.
+ */
+public boolean saveVisibleNodeNames (String filename) {
+    return CyNetworkUtilities.saveVisibleNodeNames(this.getNetwork(), filename);
 } // saveVisibleNodeNames
 //------------------------------------------------------------------------------
+/**
+ * @deprecated Moved to CyNetworkUtilities.saveSelectedNodeNames, with the
+ * network as an argument.
+ */
 public boolean saveSelectedNodeNames(String filename) {
     return CyNetworkUtilities.saveSelectedNodeNames(this.getNetwork(), filename);
 } // saveSelectedNodeNames
@@ -1214,27 +1194,11 @@ public HashMap configureNewNode (Node node)
 } // configureNode
 //----------------------------------------------------------------------------------------
 /**
- * @deprecated Use CyNetworkUtilities.getInteractionTypes() instead.
+ * @deprecated Moved to CyNetworkUtilities.getInteractionTypes, with the
+ * network as an argument.
  */
 public String[] getInteractionTypes() {
-
-    if (this.getEdgeAttributes() == null)
-      return new String [0];
-
-    String[] interactionTypes = this.getEdgeAttributes().getUniqueStringValues("interaction");
-    /******************************
-    // figure out the interaction types dynamically
-    DiscreteMapper typesColor = (DiscreteMapper) vizMapper.getValueMapper(VizMapperCategories.EDGE_COLOR);
-    Map typeMap = new HashMap(typesColor.getValueMap());
-    Set typeIds = typeMap.keySet();
-    interactionTypes = new String[typeIds.size()];
-    Iterator iter = typeIds.iterator();
-    for(int i = 0; iter.hasNext(); i++) {
-        String type = (String)iter.next();
-        interactionTypes[i] = type;
-    }
-    ******************************/
-    return interactionTypes;
+    return CyNetworkUtilities.getInteractionTypes(this.getNetwork());
 }
 //------------------------------------------------------------------------------
 } // CytoscapeWindow

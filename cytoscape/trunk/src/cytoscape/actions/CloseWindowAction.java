@@ -8,19 +8,19 @@ package cytoscape.actions;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.view.CyWindow;
 //-------------------------------------------------------------------------
 public class CloseWindowAction extends AbstractAction {
-    CytoscapeWindow cytoscapeWindow;
+    CyWindow cyWindow;
     
-    public CloseWindowAction(CytoscapeWindow cytoscapeWindow) {
+    public CloseWindowAction(CyWindow cyWindow) {
         super("Close");
-        this.cytoscapeWindow = cytoscapeWindow;
+        this.cyWindow = cyWindow;
     }
     
     public void actionPerformed(ActionEvent e) {
-        cytoscapeWindow.saveCalculatorCatalog();
-        cytoscapeWindow.getMainFrame().dispose();
+        cyWindow.getCytoscapeObj().saveCalculatorCatalog();
+        cyWindow.getMainFrame().dispose();
     }
 }
 

@@ -8,9 +8,10 @@ package cytoscape.actions;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import java.io.File;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.view.NetworkView;
 import cytoscape.data.readers.FileReadingAbstractions;
 //-------------------------------------------------------------------------
 /* 
@@ -18,35 +19,50 @@ import cytoscape.data.readers.FileReadingAbstractions;
  * to allow loading of node / edge attributes from the GUI
  */
 
-public class LoadEdgeAttributesAction extends AbstractAction {
-  CytoscapeWindow cytoscapeWindow;
-  
-  public LoadEdgeAttributesAction(CytoscapeWindow cytoscapeWindow) {
-    super("Edge Attributes...");
-    this.cytoscapeWindow = cytoscapeWindow;
-  }
+ public class LoadEdgeAttributesAction extends AbstractAction {
+     NetworkView networkView;
+     
+     public LoadEdgeAttributesAction(NetworkView networkView) {
+         super("Edge Attributes...");
+         this.networkView = networkView;
+     }
     
-  public void actionPerformed (ActionEvent e)  {
-    File currentDirectory = cytoscapeWindow.getCurrentDirectory();
-    JFileChooser chooser = new JFileChooser (currentDirectory);
-    chooser.setDialogTitle("Load Edge Attributes");
-    if (chooser.showOpenDialog (cytoscapeWindow) == chooser.APPROVE_OPTION) {
-      currentDirectory = chooser.getCurrentDirectory();
-      cytoscapeWindow.setCurrentDirectory(currentDirectory);
-      String [] attrFileNames = new String [1]; 
-      attrFileNames[0] = chooser.getSelectedFile ().toString ();
-      FileReadingAbstractions.readAttribs(cytoscapeWindow.getBioDataServer(),
-                                          cytoscapeWindow.getDefaultSpecies(), 
-                                          cytoscapeWindow.getGraph(),
-                                          null,
-                                          cytoscapeWindow.getEdgeAttributes(),
-                                          null, attrFileNames,
-                                          cytoscapeWindow.getConfiguration().getCanonicalize());
-      // Added by iliana on May, 2003
-      // We need to reapply appearances since this attribute could be 
-      // mapped to a visual property
-      cytoscapeWindow.redrawGraph(false, true);
-    } // if
-  } // actionPerformed
-}
+    public void actionPerformed(ActionEvent e)  {
+        File currentDirectory = networkView.getCytoscapeObj().getCurrentDirectory();
+        JFileChooser chooser = new JFileChooser(currentDirectory);
+        String dialogTitle = "Load Edge Attributes";
+        chooser.setDialogTitle(dialogTitle);
+        if (chooser.showOpenDialog(networkView.getMainFrame()) == chooser.APPROVE_OPTION) {
+            currentDirectory = chooser.getCurrentDirectory();
+            networkView.getCytoscapeObj().setCurrentDirectory(currentDirectory);
+            String attrFilename = chooser.getSelectedFile().toString();
+            String callerID = "LoadEdgeAttributesAction.actionPerformed";
+            networkView.getNetwork().beginActivity(callerID);
+            try {
+                networkView.getNetwork().getEdgeAttributes().readAttributesFromFile(attrFilename);
+                String lineSep = System.getProperty("line.separator");
+                String okMessage = "Successfully read edge attributes from file"
+                                   + lineSep + attrFilename;
+                JOptionPane.showMessageDialog(networkView.getMainFrame(),
+                                              okMessage, dialogTitle,
+                                              JOptionPane.PLAIN_MESSAGE);
+            } catch (Exception excp) {
+                excp.printStackTrace();
+                String lineSep = System.getProperty("line.separator");
+                StringBuffer sb = new StringBuffer();
+                sb.append("Exception when reading from edge attributes file");
+                sb.append(lineSep + attrFilename + lineSep);
+                sb.append(excp.getMessage() + lineSep);
+                JOptionPane.showMessageDialog(networkView.getMainFrame(),
+                                              sb.toString(), dialogTitle,
+                                              JOptionPane.ERROR_MESSAGE);
+            }
+            // Added by iliana on May, 2003
+            // We need to reapply appearances since this attribute could be 
+            // mapped to a visual property
+            networkView.redrawGraph(false, true);
+            networkView.getNetwork().endActivity(callerID);
+        } // if
+    } // actionPerformed
+ }
 

@@ -10,8 +10,9 @@ import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 import java.io.File;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.view.NetworkView;
 import cytoscape.data.servers.BioDataServer;
+import cytoscape.data.Semantics;
 //-------------------------------------------------------------------------
 /**
  * Action allows the loading of a BioDataServer from the gui.
@@ -19,35 +20,39 @@ import cytoscape.data.servers.BioDataServer;
  * added by dramage 2002-08-20
  */
 public class LoadBioDataServerAction extends AbstractAction {
-    CytoscapeWindow cytoscapeWindow;
+    NetworkView networkView;
     
-    public LoadBioDataServerAction(CytoscapeWindow cytoscapeWindow) {
+    public LoadBioDataServerAction(NetworkView networkView) {
         super("Bio Data Server...");
-        this.cytoscapeWindow = cytoscapeWindow;
+        this.networkView = networkView;
     }
 
     public void actionPerformed(ActionEvent e) {
-        File currentDirectory = cytoscapeWindow.getCurrentDirectory();
+        File currentDirectory = networkView.getCytoscapeObj().getCurrentDirectory();
         JFileChooser chooser = new JFileChooser(currentDirectory);
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-        if (chooser.showOpenDialog (cytoscapeWindow) == chooser.APPROVE_OPTION) {
+        if (chooser.showOpenDialog (networkView.getMainFrame()) == chooser.APPROVE_OPTION) {
             currentDirectory = chooser.getCurrentDirectory();
-            cytoscapeWindow.setCurrentDirectory(currentDirectory);
+            networkView.getCytoscapeObj().setCurrentDirectory(currentDirectory);
             String bioDataDirectory = chooser.getSelectedFile().toString();
             BioDataServer bioDataServer = null;
             //bioDataServer = BioDataServerFactory.create (bioDataDirectory);
             try {
                 bioDataServer = new BioDataServer (bioDataDirectory);
-                cytoscapeWindow.setBioDataServer(bioDataServer);
+                networkView.getCytoscapeObj().setBioDataServer(bioDataServer);
             } catch (Exception e0) {
                 String es = "cannot create new biodata server at " + bioDataDirectory;
-                cytoscapeWindow.getLogger().warning(es);
+                networkView.getCytoscapeObj().getLogger().warning(es);
+                return;
             }
-            /* this really shouldn't be here; labels should be controlled
-             * via the vizmapper */
-            cytoscapeWindow.displayCommonNodeNames();
-            cytoscapeWindow.redrawGraph(false, true);
+            //now that we have a bioDataServer, we probably want to use it to
+            //provide naming services for the objects in the network. We delegate
+            //to a static method that can handle this
+            Semantics.applyNamingServices(networkView.getNetwork(), bioDataServer);
+            //recalculating the appearances may be necessary if the above method
+            //assigned new attributes 
+            networkView.redrawGraph(false, true);
         }
     }
 }

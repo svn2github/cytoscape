@@ -16,14 +16,17 @@ import java.io.*;
 import y.base.Node;
 import y.view.Graph2D;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.view.NetworkView;
+import cytoscape.CytoscapeObj;
+import cytoscape.data.CyNetwork;
+import cytoscape.data.Semantics;
 //-------------------------------------------------------------------------
 public class ListFromFileSelectionAction extends AbstractAction {
-    CytoscapeWindow cytoscapeWindow;
+    NetworkView networkView;
     
-    public  ListFromFileSelectionAction (CytoscapeWindow cytoscapeWindow) {
+    public  ListFromFileSelectionAction (NetworkView networkView) {
         super("From File...");
-        this.cytoscapeWindow = cytoscapeWindow;
+        this.networkView = networkView;
     }
 
     public void actionPerformed (ActionEvent e) {
@@ -31,60 +34,62 @@ public class ListFromFileSelectionAction extends AbstractAction {
     }
 
     private boolean useSelectionFile() {
-        File currentDirectory = cytoscapeWindow.getCurrentDirectory();
+        CytoscapeObj cytoscapeObj = networkView.getCytoscapeObj();
+        File currentDirectory = cytoscapeObj.getCurrentDirectory();
         JFileChooser fChooser = new JFileChooser(currentDirectory);     
         fChooser.setDialogTitle("Load Gene Selection File");
-        switch (fChooser.showOpenDialog(null)) {
+        switch (fChooser.showOpenDialog(networkView.getMainFrame())) {
                 
         case JFileChooser.APPROVE_OPTION:
             File file = fChooser.getSelectedFile();
             currentDirectory = fChooser.getCurrentDirectory();
-            cytoscapeWindow.setCurrentDirectory(currentDirectory);
-            String s;
-
+            cytoscapeObj.setCurrentDirectory(currentDirectory);
+            
+            CyNetwork network = networkView.getNetwork();
+            String callerID = "ListFromFileSelectionAction.useSelectionFile";
+            network.beginActivity(callerID);
+            
             try {
                 FileReader fin = new FileReader(file);
                 BufferedReader bin = new BufferedReader(fin);
-                // create a hash of all the nodes in the file
-                Hashtable fileNodes = new Hashtable();
+                List fileNodes = new ArrayList();
+                String s;
                 while ((s = bin.readLine()) != null) {
-                    StringTokenizer st = new StringTokenizer(s);
-                    String name = st.nextToken();
-                    String trimname = name.trim();
-                    if(trimname.length() > 0) {
-                        String canonicalName =
-                                cytoscapeWindow.findCanonicalName(trimname);
-                        fileNodes.put(canonicalName, Boolean.TRUE);
-                    }
+                    String trimName = s.trim();
+                    if (trimName.length() > 0) {fileNodes.add(trimName);}
                 }
                 fin.close();
 
                 // loop through all the node of the graph
                 // selecting those in the file
-                Graph2D graph = cytoscapeWindow.getGraph();
+
+                Graph2D graph = networkView.getNetwork().getGraph();
                 Node [] nodes = graph.getNodeArray();
                 for (int i=0; i < nodes.length; i++) {
                     Node node = nodes[i];
+                    boolean select = false;
                     String canonicalName =
-                        cytoscapeWindow.getNodeAttributes().getCanonicalName(node);
-                    if (canonicalName == null) {
-                        // use node label as canonical name
-                        canonicalName = graph.getLabelText(node);
+                            network.getNodeAttributes().getCanonicalName(node);
+                    List synonyms =
+                            Semantics.getAllSynonyms(canonicalName, network, cytoscapeObj);
+                    for (Iterator synI=synonyms.iterator(); synI.hasNext(); ) {
+                        if ( fileNodes.contains( (String)synI.next() ) ) {
+                            select = true;
+                            break;
+                        }
                     }
-                    Boolean select = (Boolean) fileNodes.get(canonicalName);
-                    if (select != null) {
-                        graph.getRealizer(node).setSelected(true);
-                    }
+                    if (select) {graph.setSelected(node, true);}
                 }
-                cytoscapeWindow.redrawGraph(false, false);
-                  
+                networkView.redrawGraph(false, true);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, e.toString(),
                                  "Error Reading \"" + file.getName()+"\"",
                                                JOptionPane.ERROR_MESSAGE);
+                network.endActivity(callerID);
                 return false;
             }
 
+            network.endActivity(callerID);
             return true;
 
         default:

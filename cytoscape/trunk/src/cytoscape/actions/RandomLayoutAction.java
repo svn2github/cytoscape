@@ -10,18 +10,18 @@ import javax.swing.AbstractAction;
 
 import y.layout.random.RandomLayouter;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.view.NetworkView;
 //-------------------------------------------------------------------------
 public class RandomLayoutAction extends AbstractAction {
-    CytoscapeWindow cytoscapeWindow;
+    NetworkView networkView;
     
-    public RandomLayoutAction(CytoscapeWindow cytoscapeWindow) {
+    public RandomLayoutAction(NetworkView networkView) {
         super("Random");
-        this.cytoscapeWindow = cytoscapeWindow;
+        this.networkView = networkView;
     }
     
     public void actionPerformed(ActionEvent e) {
-        cytoscapeWindow.setLayouter( new RandomLayouter() );
+        networkView.setLayouter( new RandomLayouter() );
     }
 }
 

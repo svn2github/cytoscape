@@ -8,19 +8,19 @@ package cytoscape.actions;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.view.NetworkView;
 //-------------------------------------------------------------------------
 public class LayoutAction extends AbstractAction   {
-    CytoscapeWindow cytoscapeWindow;
+    NetworkView networkView;
     
-    public LayoutAction (CytoscapeWindow cytoscapeWindow) {
+    public LayoutAction(NetworkView networkView) {
         super("Layout whole graph");
-        this.cytoscapeWindow = cytoscapeWindow;
+        this.networkView = networkView;
     }
     
-    public void actionPerformed (ActionEvent e) {
+    public void actionPerformed(ActionEvent e) {
         /* this forces a layout, but doesn't reapply the appearances */
-        cytoscapeWindow.redrawGraph(true, false);
+        networkView.redrawGraph(true, false);
     }
 }
 

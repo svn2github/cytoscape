@@ -13,21 +13,21 @@ import y.base.*;
 import y.view.Graph2D;
 import y.view.NodeRealizer;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.view.NetworkView;
 //-------------------------------------------------------------------------
 /**
  *  select every first neighbor (directly connected nodes) of the currently
  *  selected nodes.
  */
 public class SelectFirstNeighborsAction extends AbstractAction {
-    CytoscapeWindow cytoscapeWindow;
+    NetworkView networkView;
     
-    public SelectFirstNeighborsAction (CytoscapeWindow cytoscapeWindow) { 
+    public SelectFirstNeighborsAction (NetworkView networkView) { 
         super ("First neighbors of selected nodes"); 
-        this.cytoscapeWindow = cytoscapeWindow;
+        this.networkView = networkView;
     }
     public void actionPerformed (ActionEvent e) {
-        Graph2D graph = cytoscapeWindow.getGraph ();
+        Graph2D graph = networkView.getNetwork().getGraph ();
         NodeCursor nc = graph.selectedNodes (); 
         Vector newNodes = new Vector ();
         
@@ -53,7 +53,7 @@ public class SelectFirstNeighborsAction extends AbstractAction {
             realizer.setSelected (true);
         }
         
-        cytoscapeWindow.redrawGraph (false, false);
+        networkView.redrawGraph (false, false);
     } // actionPerformed
     
 } // SelectFirstNeighborsAction

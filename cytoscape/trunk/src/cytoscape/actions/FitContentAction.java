@@ -8,19 +8,19 @@ package cytoscape.actions;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.view.NetworkView;
 //-------------------------------------------------------------------------
 public class FitContentAction extends AbstractAction {
-    CytoscapeWindow cytoscapeWindow;
+    NetworkView networkView;
     
-    public FitContentAction(CytoscapeWindow cytoscapeWindow) {
+    public FitContentAction(NetworkView networkView) {
         super();
-        this.cytoscapeWindow = cytoscapeWindow;
+        this.networkView = networkView;
     }
     
     public void actionPerformed(ActionEvent e) {
-        cytoscapeWindow.getGraphView().fitContent();
-        cytoscapeWindow.redrawGraph(false, false);
+        networkView.getGraphView().fitContent();
+        networkView.redrawGraph(false, false);
     }
 }
 

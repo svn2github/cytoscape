@@ -8,7 +8,7 @@ package cytoscape.actions;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.view.NetworkView;
 import cytoscape.dialogs.RotateSelectionDialog;
 //-------------------------------------------------------------------------
 /**
@@ -17,24 +17,20 @@ import cytoscape.dialogs.RotateSelectionDialog;
  * added by dramage 2002-08-20
  */
 public class RotateSelectedNodesAction extends AbstractAction {
-    CytoscapeWindow cytoscapeWindow;
+    NetworkView networkView;
     
-    public RotateSelectedNodesAction (CytoscapeWindow cytoscapeWindow) {
+    public RotateSelectedNodesAction (NetworkView networkView) {
         super("Rotate Selected Nodes");
-        this.cytoscapeWindow = cytoscapeWindow;
+        this.networkView = networkView;
     }
 
     public void actionPerformed (ActionEvent e) {
-        cytoscapeWindow.getUndoManager().saveRealizerState();
-        cytoscapeWindow.getUndoManager().pause();
-        RotateSelectionDialog d =
-            new RotateSelectionDialog(cytoscapeWindow.getMainFrame(),
-                                      cytoscapeWindow,
-                                      cytoscapeWindow.getGraph());
-        /* Once again, isn't this going to cause problems since the above
-         * method doesn't block, thus this method continues before it should?
-         */
-        cytoscapeWindow.getUndoManager().resume();
+        String callerID = "RotateSelectedNodesAction.actionPerformed";
+        networkView.getNetwork().beginActivity(callerID);
+        RotateSelectionDialog d = new RotateSelectionDialog(networkView);
+        /* the above dialog is a modal dialog, so it blocks this thread
+         * until it finishes -AM 09-16-03 */
+        networkView.getNetwork().endActivity(callerID);
     }
 }
 

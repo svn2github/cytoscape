@@ -13,28 +13,31 @@ import y.base.NodeCursor;
 import y.view.Graph2D;
 import y.view.Graph2DView;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.view.NetworkView;
 //-------------------------------------------------------------------------
 public class ZoomSelectedAction extends AbstractAction {
-    CytoscapeWindow cytoscapeWindow;
+    NetworkView networkView;
     
-    public ZoomSelectedAction(CytoscapeWindow cytoscapeWindow)  {
+    public ZoomSelectedAction(NetworkView networkView)  {
         super();
-        this.cytoscapeWindow = cytoscapeWindow;
+        this.networkView = networkView;
     }
     
     public void actionPerformed(ActionEvent e) {
-        Graph2D graph = cytoscapeWindow.getGraph();
+        String callerID = "ZoomSelectedAction.actionPerformed";
+        networkView.getNetwork().beginActivity(callerID);
+        Graph2D graph = networkView.getNetwork().getGraph();
         NodeCursor nc = graph.selectedNodes(); 
-        if (nc.ok ()) { //selected nodes present? 
+        if (nc.ok()) { //selected nodes present? 
             Rectangle2D box = graph.getRealizer(nc.node()).getBoundingBox();
             for (nc.next(); nc.ok(); nc.next()) {
                 graph.getRealizer(nc.node()).calcUnionRect(box);
             }
-            Graph2DView graphView = cytoscapeWindow.getGraphView();
+            Graph2DView graphView = networkView.getGraphView();
             graphView.zoomToArea(box.getX(),box.getY(),box.getWidth(),box.getHeight());
             if (graphView.getZoom() > 2.0) graphView.setZoom(2.0);
-            cytoscapeWindow.redrawGraph(false, false);
+            networkView.redrawGraph(false, false);
         }
+        networkView.getNetwork().endActivity(callerID);
     }
 }

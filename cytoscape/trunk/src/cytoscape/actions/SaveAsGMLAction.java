@@ -10,27 +10,29 @@ import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 import java.io.File;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.view.NetworkView;
 import cytoscape.data.GraphProps;
 import cytoscape.data.readers.GMLWriter;
 //-------------------------------------------------------------------------
 public class SaveAsGMLAction extends AbstractAction {
-    CytoscapeWindow cytoscapeWindow;
+    NetworkView networkView;
     
-    public SaveAsGMLAction (CytoscapeWindow cytoscapeWindow) {
+    public SaveAsGMLAction (NetworkView networkView) {
         super("As GML...");
-        this.cytoscapeWindow = cytoscapeWindow;
+        this.networkView = networkView;
     }
     
     public void actionPerformed(ActionEvent e) {
-        File currentDirectory = cytoscapeWindow.getCurrentDirectory();
+        File currentDirectory = networkView.getCytoscapeObj().getCurrentDirectory();
         JFileChooser chooser = new JFileChooser(currentDirectory);
-        if (chooser.showSaveDialog(cytoscapeWindow) == chooser.APPROVE_OPTION) {
+        if (chooser.showSaveDialog(networkView.getMainFrame()) == chooser.APPROVE_OPTION) {
             currentDirectory = chooser.getCurrentDirectory();
-            cytoscapeWindow.setCurrentDirectory(currentDirectory);
+            networkView.getCytoscapeObj().setCurrentDirectory(currentDirectory);
             String name = chooser.getSelectedFile().toString();
             if (!name.endsWith(".gml")) name = name + ".gml";
-            GraphProps props = cytoscapeWindow.getProps();
+            GraphProps props = new GraphProps(networkView.getNetwork().getGraph(),
+                                              networkView.getNetwork().getNodeAttributes(),
+                                              networkView.getNetwork().getEdgeAttributes());
             GMLWriter writer = new GMLWriter(props);
             writer.write(name);
         } // if

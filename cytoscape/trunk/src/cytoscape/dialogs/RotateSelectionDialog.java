@@ -45,9 +45,11 @@ import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
 
-import cytoscape.*;
-import cytoscape.data.*;
-import cytoscape.layout.*;
+//import cytoscape.*;
+//import cytoscape.data.*;
+//import cytoscape.layout.*;
+import cytoscape.view.NetworkView;
+import cytoscape.layout.RotateLayoutHelper;
 
 
 /**
@@ -57,9 +59,8 @@ import cytoscape.layout.*;
 public class RotateSelectionDialog extends JDialog {
     JDialog thisDialog;
 	
-    public RotateSelectionDialog (JFrame parentFrame, CytoscapeWindow window,
-				  Graph2D graph) {
-	super (parentFrame, "Rotate Selected Nodes", true);
+    public RotateSelectionDialog (NetworkView networkView) {
+	super (networkView.getMainFrame(), "Rotate Selected Nodes", true);
 
 	thisDialog = this;
 
@@ -82,8 +83,7 @@ public class RotateSelectionDialog extends JDialog {
 	sliderPanel.add(angle);
 	angle.setMajorTickSpacing(90);
 	angle.setPaintLabels(true);
-	angle.addChangeListener(new RotateSelectionAngleListener(window,
-								 graph));
+	angle.addChangeListener(new RotateSelectionAngleListener(networkView));
 	    
 	JPanel panel = new JPanel();
 	panel.setLayout(new BorderLayout());
@@ -92,32 +92,30 @@ public class RotateSelectionDialog extends JDialog {
 
 	setContentPane(panel);
 	pack();
-	this.setLocation(parentFrame.getLocationOnScreen());
+	this.setLocation(networkView.getMainFrame().getLocationOnScreen());
 	pack();
 	setVisible(true);
     }
 
     protected class RotateSelectionAngleListener implements ChangeListener {
-	CytoscapeWindow window;
-	Graph2D graph;
+        NetworkView networkView;
 	double last = 0.0;
 	    
-	RotateSelectionAngleListener (CytoscapeWindow window,
-				      Graph2D graph) {
-	    this.window = window;
-	    this.graph = graph;
+	RotateSelectionAngleListener (NetworkView networkView) {
+	    this.networkView = networkView;
 	}
 
 	public void stateChanged(ChangeEvent e) {
 	    JSlider source = (JSlider)e.getSource();
 		
 	    double angle = (source.getValue() / 180.0 * Math.PI);
-	    RotateLayoutHelper.rotate(graph, graph.selectedNodes(),
+	    RotateLayoutHelper.rotate(networkView.getNetwork().getGraph(),
+                                      networkView.getNetwork().getGraph().selectedNodes(),
 				      angle - last);
 
 	    last = angle;
 
-	    window.redrawGraph();
+	    networkView.redrawGraph(false, false);
 	}
     }
 

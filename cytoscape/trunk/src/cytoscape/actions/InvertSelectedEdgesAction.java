@@ -8,21 +8,22 @@ package cytoscape.actions;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.view.NetworkView;
 //-------------------------------------------------------------------------
 public class InvertSelectedEdgesAction extends AbstractAction {
-    CytoscapeWindow cytoscapeWindow;
+    NetworkView networkView;
     
-    public InvertSelectedEdgesAction(CytoscapeWindow cytoscapeWindow) {
+    public InvertSelectedEdgesAction(NetworkView networkView) {
         super("Invert selection");
-        this.cytoscapeWindow = cytoscapeWindow;
+        this.networkView = networkView;
     }
 
     public void actionPerformed (ActionEvent e) {
-        cytoscapeWindow.setInteractivity(false);
-        GraphUtils.invertSelectedEdges( cytoscapeWindow.getGraph() );
-        cytoscapeWindow.redrawGraph(false, false);
-        cytoscapeWindow.setInteractivity(true);
+        String callerID = "InvertSelectedEdgesAction.actionPerformed";
+        networkView.getNetwork().beginActivity(callerID);
+        GraphUtils.invertSelectedEdges( networkView.getNetwork().getGraph() );
+        networkView.redrawGraph(false, false);
+        networkView.getNetwork().endActivity(callerID);
     }
 }
 

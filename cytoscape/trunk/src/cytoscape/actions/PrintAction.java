@@ -14,40 +14,40 @@ import java.awt.print.PrinterJob;
 import y.view.Graph2DPrinter;
 import y.option.OptionHandler;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.view.NetworkView;
 //-------------------------------------------------------------------------
 public class PrintAction extends AbstractAction  {
-  CytoscapeWindow cytoscapeWindow;
-  PageFormat pageFormat;
-  OptionHandler printOptions;
+    NetworkView networkView;
+    PageFormat pageFormat;
+    OptionHandler printOptions;
     
-  public PrintAction (CytoscapeWindow cytoscapeWindow) {
-    super ("Print...");
-    this.cytoscapeWindow = cytoscapeWindow;
-    printOptions = new OptionHandler ("Print Options");
-    printOptions.addInt ("Poster Rows",1);
-    printOptions.addInt ("Poster Columns",1);
-    printOptions.addBool ("Add Poster Coords",false);
-    final String[] area = {"View","Graph"};
-    printOptions.addEnum ("Clip Area",area,1);
+    public PrintAction(NetworkView networkView) {
+        super ("Print...");
+        this.networkView = networkView;
+        printOptions = new OptionHandler("Print Options");
+        printOptions.addInt("Poster Rows",1);
+        printOptions.addInt("Poster Columns",1);
+        printOptions.addBool("Add Poster Coords",false);
+        final String[] area = {"View","Graph"};
+        printOptions.addEnum ("Clip Area",area,1);
     }
-
-  public void actionPerformed (ActionEvent e) {
-
-    Graph2DPrinter gprinter = new Graph2DPrinter (cytoscapeWindow.getGraphView());
-    PrinterJob printJob = PrinterJob.getPrinterJob ();
-    if (pageFormat == null) pageFormat = printJob.defaultPage ();
-    printJob.setPrintable (gprinter, pageFormat);
-      
-    if (printJob.printDialog ()) try {
-      cytoscapeWindow.setInteractivity (false);
-      printJob.print ();  
-      }
-    catch (Exception ex) {
-      ex.printStackTrace ();
-      }
-    cytoscapeWindow.setInteractivity (true);
+    
+    public void actionPerformed(ActionEvent e) {
+        String callerID = "PrintAction.actionPerformed";
+        networkView.getNetwork().beginActivity(callerID);
+        Graph2DPrinter gprinter = new Graph2DPrinter(networkView.getGraphView());
+        PrinterJob printJob = PrinterJob.getPrinterJob();
+        if (pageFormat == null) pageFormat = printJob.defaultPage();
+        printJob.setPrintable(gprinter, pageFormat);
+        
+        if (printJob.printDialog()) try {
+            printJob.print ();  
+        }
+        catch (Exception ex) {
+            ex.printStackTrace ();
+        }
+        networkView.getNetwork().endActivity(callerID);
     } // actionPerformed
-
+    
 }
 

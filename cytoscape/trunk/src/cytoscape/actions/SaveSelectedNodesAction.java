@@ -11,24 +11,26 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import java.io.File;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.data.CyNetworkUtilities;
+import cytoscape.view.NetworkView;
 //-------------------------------------------------------------------------
 public class SaveSelectedNodesAction extends AbstractAction {
-    CytoscapeWindow cytoscapeWindow;
+    NetworkView networkView;
     
-    public SaveSelectedNodesAction (CytoscapeWindow cytoscapeWindow) {
+    public SaveSelectedNodesAction (NetworkView networkView) {
         super("Selected Nodes");
-        this.cytoscapeWindow = cytoscapeWindow;
+        this.networkView = networkView;
     }
 
     public void actionPerformed(ActionEvent e) {
-        File currentDirectory = cytoscapeWindow.getCurrentDirectory();
-	JFileChooser chooser = new JFileChooser (currentDirectory);
-	if (chooser.showSaveDialog(cytoscapeWindow) == chooser.APPROVE_OPTION) {
+        File currentDirectory = networkView.getCytoscapeObj().getCurrentDirectory();
+	JFileChooser chooser = new JFileChooser(currentDirectory);
+	if (chooser.showSaveDialog(networkView.getMainFrame()) == chooser.APPROVE_OPTION) {
 	    String name = chooser.getSelectedFile().toString();
 	    currentDirectory = chooser.getCurrentDirectory();
-            cytoscapeWindow.setCurrentDirectory(currentDirectory);
-	    boolean itWorked = cytoscapeWindow.saveSelectedNodeNames(name);
+            networkView.getCytoscapeObj().setCurrentDirectory(currentDirectory);
+	    boolean itWorked =
+                CyNetworkUtilities.saveSelectedNodeNames(networkView.getNetwork(),name);
 	    Object[] options = {"OK"};
 	    if(itWorked) {
 		JOptionPane.showOptionDialog(null,

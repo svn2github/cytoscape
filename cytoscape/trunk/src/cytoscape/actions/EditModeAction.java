@@ -8,18 +8,18 @@ package cytoscape.actions;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.view.CyWindow;
 //-------------------------------------------------------------------------
 public class EditModeAction extends AbstractAction {
-    CytoscapeWindow cytoscapeWindow;
+    CyWindow cyWindow;
     
-    public EditModeAction(CytoscapeWindow cytoscapeWindow) {
+    public EditModeAction(CyWindow cyWindow) {
         super("Edit Mode for Nodes and Edges");
-        this.cytoscapeWindow = cytoscapeWindow;
+        this.cyWindow = cyWindow;
     }
     
     public void actionPerformed(ActionEvent e) {
-        cytoscapeWindow.switchToEditMode();
+        cyWindow.switchToEditMode();
     }
 }
 

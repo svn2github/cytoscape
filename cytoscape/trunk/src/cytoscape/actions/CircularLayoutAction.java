@@ -10,18 +10,18 @@ import javax.swing.AbstractAction;
 
 import y.layout.circular.CircularLayouter;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.view.NetworkView;
 //-------------------------------------------------------------------------
 public class CircularLayoutAction extends AbstractAction   {
-    CytoscapeWindow cytoscapeWindow;
+    NetworkView networkView;
     
-    public CircularLayoutAction (CytoscapeWindow cytoscapeWindow) {
+    public CircularLayoutAction (NetworkView networkView) {
         super("Circular");
-        this.cytoscapeWindow = cytoscapeWindow;
+        this.networkView = networkView;
     }
     
     public void actionPerformed(ActionEvent e) {
-        cytoscapeWindow.setLayouter( new CircularLayouter() );
+        networkView.setLayouter( new CircularLayouter() );
     }
 }
 

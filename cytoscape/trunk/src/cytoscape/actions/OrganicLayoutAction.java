@@ -10,21 +10,21 @@ import javax.swing.AbstractAction;
 
 import y.layout.organic.OrganicLayouter;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.view.NetworkView;
 //-------------------------------------------------------------------------
 public class OrganicLayoutAction extends AbstractAction {
-    CytoscapeWindow cytoscapeWindow;
+    NetworkView networkView;
     
-    public OrganicLayoutAction (CytoscapeWindow cytoscapeWindow) {
+    public OrganicLayoutAction (NetworkView networkView) {
         super("Organic");
-        this.cytoscapeWindow = cytoscapeWindow;
+        this.networkView = networkView;
     }
     
     public void actionPerformed (ActionEvent e) {
         OrganicLayouter ol = new OrganicLayouter();
         ol.setActivateDeterministicMode(true);
         ol.setPreferredEdgeLength(80);
-        cytoscapeWindow.setLayouter(ol);
+        networkView.setLayouter(ol);
     }
 }
 

@@ -15,7 +15,7 @@ import java.io.IOException;
 import y.base.*;
 import y.view.Graph2D;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.view.NetworkView;
 import cytoscape.GraphObjAttributes;
 //-------------------------------------------------------------------------
 /**
@@ -29,57 +29,57 @@ import cytoscape.GraphObjAttributes;
  *  </code>  
  */
 public class SaveAsInteractionsAction extends AbstractAction {
-    CytoscapeWindow cytoscapeWindow;
+    NetworkView networkView;
     
-  public SaveAsInteractionsAction(CytoscapeWindow cytoscapeWindow) {
+  public SaveAsInteractionsAction(NetworkView networkView) {
       super("As Interactions...");
-      this.cytoscapeWindow = cytoscapeWindow;
+      this.networkView = networkView;
   }
 
-  public void actionPerformed (ActionEvent e) {
-    File currentDirectory = cytoscapeWindow.getCurrentDirectory();
+  public void actionPerformed(ActionEvent e) {
+    File currentDirectory = networkView.getCytoscapeObj().getCurrentDirectory();
     JFileChooser chooser = new JFileChooser (currentDirectory);
-    if (chooser.showSaveDialog (cytoscapeWindow) == chooser.APPROVE_OPTION) {
+    if (chooser.showSaveDialog (networkView.getMainFrame()) == chooser.APPROVE_OPTION) {
       String name = chooser.getSelectedFile ().toString ();
       currentDirectory = chooser.getCurrentDirectory();
-      cytoscapeWindow.setCurrentDirectory(currentDirectory);
+      networkView.getCytoscapeObj().setCurrentDirectory(currentDirectory);
       if (!name.endsWith (".sif")) name = name + ".sif";
       try {
-        FileWriter fileWriter = new FileWriter (name);
-        Node [] nodes = cytoscapeWindow.getGraph().getNodeArray();
-        GraphObjAttributes nodeAttributes = cytoscapeWindow.getNodeAttributes();
-        GraphObjAttributes edgeAttributes = cytoscapeWindow.getEdgeAttributes();
+        FileWriter fileWriter = new FileWriter(name);
+        Node [] nodes = networkView.getNetwork().getGraph().getNodeArray();
+        GraphObjAttributes nodeAttributes = networkView.getNetwork().getNodeAttributes();
+        GraphObjAttributes edgeAttributes = networkView.getNetwork().getEdgeAttributes();
         for (int i=0; i < nodes.length; i++) {
           StringBuffer sb = new StringBuffer ();
-          Node node = nodes [i];
-          String canonicalName = nodeAttributes.getCanonicalName (node);
+          Node node = nodes[i];
+          String canonicalName = nodeAttributes.getCanonicalName(node);
           if (node.edges().size() == 0)
-            sb.append (canonicalName + "\n");
+            sb.append(canonicalName + "\n");
           else {
-            EdgeCursor ec = node.outEdges ();
-            for (ec.toFirst (); ec.ok (); ec.next ()) {
-              Edge edge = ec.edge ();
-              Node target = edge.target ();
-              String canonicalTargetName = nodeAttributes.getCanonicalName (target);
+            EdgeCursor ec = node.outEdges();
+            for (ec.toFirst(); ec.ok(); ec.next()) {
+              Edge edge = ec.edge();
+              Node target = edge.target();
+              String canonicalTargetName = nodeAttributes.getCanonicalName(target);
               String edgeName = edgeAttributes.getCanonicalName(edge);
               String interactionName =
                  (String)(edgeAttributes.getValue("interaction", edgeName));
               if (interactionName == null) {interactionName = "xx";}
-              sb.append (canonicalName);
-              sb.append (" ");
-              sb.append (interactionName);
-              sb.append (" ");
-              sb.append (canonicalTargetName);
-              sb.append ("\n");
+              sb.append(canonicalName);
+              sb.append(" ");
+              sb.append(interactionName);
+              sb.append(" ");
+              sb.append(canonicalTargetName);
+              sb.append("\n");
               } // for ec
              } // else: this node has edges, write out one line for every out edge (if any)
-           fileWriter.write (sb.toString ());
+           fileWriter.write(sb.toString());
           }  // for i
-          fileWriter.close ();
+          fileWriter.close();
         } 
       catch (IOException ioe) {
-        System.err.println ("Error while writing " + name);
-        ioe.printStackTrace ();
+        System.err.println("Error while writing " + name);
+        ioe.printStackTrace();
         } // catch
       } // if
     }  // actionPerformed

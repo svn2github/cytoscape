@@ -8,7 +8,7 @@ package cytoscape.actions;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.view.CyWindow;
 //-------------------------------------------------------------------------
 /**
  * Uses the UndoManager to undo changes.
@@ -16,17 +16,17 @@ import cytoscape.CytoscapeWindow;
  * added by dramage 2002-08-21
  */
 public class UndoAction extends AbstractAction {
-    CytoscapeWindow cytoscapeWindow;
+    CyWindow cyWindow;
     
-    public UndoAction(CytoscapeWindow cytoscapeWindow) {
+    public UndoAction(CyWindow cyWindow) {
         super("Undo");
-        this.cytoscapeWindow = cytoscapeWindow;
+        this.cyWindow = cyWindow;
     }
     
     public void actionPerformed(ActionEvent e) {
-      cytoscapeWindow.getUndoManager().undo();
-      cytoscapeWindow.updateUndoRedoMenuItemStatus();
-      cytoscapeWindow.redrawGraph(false, true);
+      cyWindow.getUndoManager().undo();
+      cyWindow.getCytoscapeMenus().updateUndoRedoMenuItemStatus();
+      cyWindow.redrawGraph(false, true);
     }
 }
 

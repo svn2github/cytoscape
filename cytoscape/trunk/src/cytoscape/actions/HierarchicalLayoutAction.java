@@ -10,36 +10,27 @@ import javax.swing.AbstractAction;
 
 import y.layout.hierarchic.HierarchicLayouter;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.view.NetworkView;
 import cytoscape.layout.HierarchicalLayoutDialog;
 //-------------------------------------------------------------------------
 public class HierarchicalLayoutAction extends AbstractAction {
-    CytoscapeWindow cytoscapeWindow;
+    NetworkView networkView;
     HierarchicalLayoutDialog hDialog;
     
-    public HierarchicalLayoutAction(CytoscapeWindow cytoscapeWindow) {
+    public HierarchicalLayoutAction(NetworkView networkView) {
         super("Hierarchical");
-        this.cytoscapeWindow = cytoscapeWindow;
+        this.networkView = networkView;
     }
     
     public void actionPerformed(ActionEvent e) {
         if (hDialog == null)
-            hDialog = new HierarchicalLayoutDialog(cytoscapeWindow.getMainFrame());
+            hDialog = new HierarchicalLayoutDialog(networkView.getMainFrame());
         hDialog.pack();
-        hDialog.setLocationRelativeTo(cytoscapeWindow.getMainFrame());
+        hDialog.setLocationRelativeTo(networkView.getMainFrame());
         hDialog.setVisible(true);
-        /* This looks suspicious. Won't the dialog run in a different thread,
-         * and thus the following line end up setting a default layouter?
-         * I think an explicit block needs to go here to wait until the
-         * dialog is closed to set the layouter, but we'll worry about
-         * that later. -AM 2003/06/11
-         */
-        cytoscapeWindow.setLayouter( hDialog.getLayouter() );
-        /* The following line wasn't commented out before; this is bizarre
-         * since the effect is to discard the layouter that was constructed
-         * through the dialog above. I'm assuming this is a bug. -AM 2003/06/11
-         */
-      //layouter = new HierarchicLayouter ();
+        /* the above method blocks this thread, ensuring that the dialog
+         * finishes customizing the layouter before it gets set below */
+        networkView.setLayouter( hDialog.getLayouter() );
     }
 }
 

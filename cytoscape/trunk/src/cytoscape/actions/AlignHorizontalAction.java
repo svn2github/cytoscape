@@ -11,22 +11,25 @@ import javax.swing.AbstractAction;
 import y.base.*;
 import y.view.Graph2D;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.view.NetworkView;
 //-------------------------------------------------------------------------
 public class AlignHorizontalAction extends AbstractAction {
-    CytoscapeWindow cytoscapeWindow;
+    NetworkView networkView;
     
-    public AlignHorizontalAction(CytoscapeWindow cytoscapeWindow) {
+    public AlignHorizontalAction(NetworkView networkView) {
         super("Horizontal");
-        this.cytoscapeWindow = cytoscapeWindow;
+        this.networkView = networkView;
     }
 
     public void actionPerformed (ActionEvent e) {
         // remember state for undo - dramage 2002-08-22
-        cytoscapeWindow.getUndoManager().saveRealizerState();
-        cytoscapeWindow.getUndoManager().pause();
+        //networkView.getUndoManager().saveRealizerState();
+        //networkView.getUndoManager().pause();
+        //now we just notify the network
+        String callerID = "AlignHorizontalAction.actionPerformed";
+        networkView.getNetwork().beginActivity(callerID);
 
-        Graph2D graph = cytoscapeWindow.getGraph();
+        Graph2D graph = networkView.getNetwork().getGraph();
         // compute average Y coordinate
         double avgYcoord=0;
         int numSelected=0;
@@ -47,9 +50,10 @@ public class AlignHorizontalAction extends AbstractAction {
         }
 
         // resume undo manager's listener - dramage
-        cytoscapeWindow.getUndoManager().resume();
+        //networkView.getUndoManager().resume();
 
-        cytoscapeWindow.redrawGraph(false, false);
+        networkView.redrawGraph(false, false);
+        networkView.getNetwork().endActivity(callerID);
     }
 }
 

@@ -8,22 +8,22 @@ package cytoscape.actions;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.view.NetworkView;
 //-------------------------------------------------------------------------
 public class ZoomAction extends AbstractAction {
-    CytoscapeWindow cytoscapeWindow;
+    NetworkView networkView;
     double factor;
     
-    public ZoomAction(CytoscapeWindow cytoscapeWindow, double factor) {
+    public ZoomAction(NetworkView networkView, double factor) {
         super ();
-        this.cytoscapeWindow = cytoscapeWindow;
+        this.networkView = networkView;
         this.factor = factor;
     }
     
     public void actionPerformed (ActionEvent e) {
-        double newZoom = factor*cytoscapeWindow.getGraphView().getZoom();
-        cytoscapeWindow.getGraphView().setZoom(newZoom);
-        cytoscapeWindow.redrawGraph(false,false);
+        double newZoom = factor*networkView.getGraphView().getZoom();
+        networkView.getGraphView().setZoom(newZoom);
+        networkView.redrawGraph(false,false);
     }
 }
 

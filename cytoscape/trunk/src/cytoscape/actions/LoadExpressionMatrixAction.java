@@ -10,19 +10,20 @@ import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 import java.io.File;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.data.ExpressionData;
+import cytoscape.view.NetworkView;
 import cytoscape.util.CyFileFilter;
 //-------------------------------------------------------------------------
 public class LoadExpressionMatrixAction extends AbstractAction {
-    CytoscapeWindow cytoscapeWindow;
+    NetworkView networkView;
     
-    public LoadExpressionMatrixAction (CytoscapeWindow cytoscapeWindow) {
+    public LoadExpressionMatrixAction (NetworkView networkView) {
         super("Expression Matrix File...");
-        this.cytoscapeWindow = cytoscapeWindow;
+        this.networkView = networkView;
     }
     
     public void actionPerformed(ActionEvent e)  {
-        File currentDirectory = cytoscapeWindow.getCurrentDirectory();
+        File currentDirectory = networkView.getCytoscapeObj().getCurrentDirectory();
 	ExpFileChooser chooser = new ExpFileChooser(currentDirectory);
 	CyFileFilter filter = new CyFileFilter();
 	filter.addExtension("mrna");
@@ -31,25 +32,30 @@ public class LoadExpressionMatrixAction extends AbstractAction {
 	filter.setDescription("Expression Matrix files");
 	chooser.setFileFilter(filter);
 	chooser.addChoosableFileFilter(filter);
-	if (chooser.showOpenDialog (cytoscapeWindow) == chooser.APPROVE_OPTION) {
+	if (chooser.showOpenDialog (networkView.getMainFrame()) == chooser.APPROVE_OPTION) {
 	    currentDirectory = chooser.getCurrentDirectory();
-            cytoscapeWindow.setCurrentDirectory(currentDirectory);
+            networkView.getCytoscapeObj().setCurrentDirectory(currentDirectory);
 	    String expDataFilename = chooser.getSelectedFile().toString();
-	    boolean validLoad = cytoscapeWindow.loadExpressionData(expDataFilename);
+            ExpressionData newData = new ExpressionData();
+	    boolean validLoad = newData.loadData(expDataFilename);
 	    
             if (validLoad) {
+                String callerID = "LoadExpressionMatrixAction.actionPerformed";
+                networkView.getNetwork().beginActivity(callerID);
+                networkView.getNetwork().setExpressionData(newData);
                 // rather than depend on the configuration file,
                 // depend on the ExpFileChooser's checkbox.
                 //if(config.getWhetherToCopyExpToAttribs()) {
                 if(chooser.getWhetherToCopyExpToAttribs()) {
-                    cytoscapeWindow.getExpressionData().copyToAttribs(
-                                            cytoscapeWindow.getNodeAttributes());
+                    newData.copyToAttribs(networkView.getNetwork().getNodeAttributes());
+                    //graph appearances may depend on expression data attributes
+                    networkView.redrawGraph(false, true);
                 }
+                networkView.getNetwork().endActivity(callerID);
                 //display a description of the data in a dialog
-                String expDescript =
-                        cytoscapeWindow.getExpressionData().getDescription();
+                String expDescript = newData.getDescription();
                 String title = "Load Expression Data";
-                JOptionPane.showMessageDialog(cytoscapeWindow.getMainFrame(),
+                JOptionPane.showMessageDialog(networkView.getMainFrame(),
                                               expDescript, title,
                                               JOptionPane.PLAIN_MESSAGE);
             } else {
@@ -57,7 +63,7 @@ public class LoadExpressionMatrixAction extends AbstractAction {
                 String errString = "Unable to load expression data from "
                     + expDataFilename;
                 String title = "Load Expression Data";
-                JOptionPane.showMessageDialog(cytoscapeWindow.getMainFrame(),
+                JOptionPane.showMessageDialog(networkView.getMainFrame(),
                                               errString, title,
                                               JOptionPane.ERROR_MESSAGE);
             }

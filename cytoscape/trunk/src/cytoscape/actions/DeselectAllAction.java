@@ -8,18 +8,25 @@ package cytoscape.actions;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.view.NetworkView;
 //-------------------------------------------------------------------------
 public class DeselectAllAction extends AbstractAction {
-    CytoscapeWindow cytoscapeWindow;
+    NetworkView networkView;
     
-    public DeselectAllAction (CytoscapeWindow cytoscapeWindow) {
+    public DeselectAllAction (NetworkView networkView) {
         super("Deselect All");
-        this.cytoscapeWindow = cytoscapeWindow;
+        this.networkView = networkView;
     }
 
     public void actionPerformed(ActionEvent e) {
-        cytoscapeWindow.deselectAllNodes();
+        String callerID = "DeselectAllAction.actionPerformed";
+        networkView.getNetwork().beginActivity(callerID);
+        
+        networkView.getNetwork().getGraph().unselectAll();
+
+        //no new layout, but appearances may need to change
+        networkView.redrawGraph(false, true);
+        networkView.getNetwork().endActivity(callerID);
     }
 }
 

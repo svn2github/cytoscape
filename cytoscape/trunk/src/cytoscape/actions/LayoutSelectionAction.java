@@ -8,26 +8,22 @@ package cytoscape.actions;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
-import cytoscape.CytoscapeWindow;
+import cytoscape.view.CyWindow;
 //-------------------------------------------------------------------------
 public class LayoutSelectionAction extends AbstractAction {
-    CytoscapeWindow cytoscapeWindow;
+    CyWindow cyWindow;
     
-    public LayoutSelectionAction (CytoscapeWindow cytoscapeWindow) {
+    public LayoutSelectionAction (CyWindow cyWindow) {
         super("Layout current selection");
-        this.cytoscapeWindow = cytoscapeWindow;
+        this.cyWindow = cyWindow;
     }
 
   public void actionPerformed (ActionEvent e) {
-      cytoscapeWindow.setInteractivity(false);
-      
-      cytoscapeWindow.getUndoManager().saveRealizerState();
-      cytoscapeWindow.getUndoManager().pause();
-      cytoscapeWindow.applyLayoutSelection();
-      cytoscapeWindow.getUndoManager().resume();
-      
-      cytoscapeWindow.redrawGraph(false, false);
-      cytoscapeWindow.setInteractivity(true);
+      String callerID = "LayoutSelectionAction.actionPerformed";
+      cyWindow.getNetwork().beginActivity(callerID);
+      cyWindow.applyLayoutSelection();
+      cyWindow.redrawGraph(false, false);
+      cyWindow.getNetwork().endActivity(callerID);
     }
 }
 
