@@ -123,8 +123,8 @@ public final class IntBTree
         return newLeafSibling; } }
     else { // Not a leaf node.
       int foundPath = 0;
-      for (int i = n.sliceCount - 2; i >= 0; i--) {
-        if (x >= n.data.splitVals[i]) { foundPath = i + 1; break; } }
+      for (int i = n.sliceCount - 2; i >= 0; i--)
+        if (x >= n.data.splitVals[i]) { foundPath = i + 1; break; }
       final Node oldChild = n.data.children[foundPath];
       final Node newChild = insert(oldChild, x);
       if (newChild == null) {
@@ -330,7 +330,16 @@ public final class IntBTree
       else { // We must perform a merge.
       }
     }
-    else { // Not a leaf node.
+    else { // Internal node.
+      int foundPath = 0;
+      for (int i = n.sliceCount - 2; i >= 0; i--)
+        if (x >= n.data.splitVals[i]) { foundPath = i + 1; break; }
+      final Node foo = n.data.children[foundPath];
+      final int lowerDelete = delete // The recursive step.
+        (foo,
+         foundPath > 0 ? n.data.children[foundPath - 1] : null,
+         foundPath < n.sliceCount - 1 ? n.data.children[foundPath + 1] : null,
+         x);
     }
     return 0x00;
   }
