@@ -4,6 +4,13 @@
 
 #error_reporting (E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 
+################################################
+#  Specifies the News Option for the Home Page
+#  If set to "rss", we use the RSS Feed from the Cytoscape Announce List.
+#  If set to "statis", we use the Static News Feed
+################################################
+$news_option = "rss";
+
 #################################################
 #  Specifies the Current Cytoscape Release Version
 #  Update this version number after each release.
