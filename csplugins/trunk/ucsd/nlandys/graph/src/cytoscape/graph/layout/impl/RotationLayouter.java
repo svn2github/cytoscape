@@ -28,6 +28,7 @@ public final class RotationLayouter
       yMin = Math.min(yMin, nodePosition.getY());
       yMax = Math.max(yMax, nodePosition.getY());
     }
+    if (xMax < 0) return; // No nodes are movable.
     final double xRectCenter = (xMin + xMax) / 2.0d;
     final double yRectCenter = (yMin + yMax) / 2.0d;
     final Translation3D toOrig =
@@ -50,16 +51,19 @@ public final class RotationLayouter
       xMin = Math.min(xMin, p.x); xMax = Math.max(xMax, p.x);
       yMin = Math.min(yMin, p.y); yMax = Math.max(yMax, p.y); }
     double scaleFactor = 1.0d;
-    scaleFactor = Math.min(scaleFactor,
-                           (xRectCenter - 0.0d) / (xRectCenter - xMin));
-    scaleFactor = Math.min(scaleFactor,
-                           (xRectCenter - graph.getMaxWidth()) /
-                           (xRectCenter - xMax));
-    scaleFactor = Math.min(scaleFactor,
-                           (yRectCenter - 0.0d) / (yRectCenter - yMin));
-    scaleFactor = Math.min(scaleFactor,
-                           (yRectCenter - graph.getMaxHeight()) /
-                           (yRectCenter - yMax));
+    if (xMin < 0.0d)
+      scaleFactor = (xRectCenter - 0.0d) / (xRectCenter - xMin);
+    if (xMax > graph.getMaxWidth())
+      scaleFactor = Math.min(scaleFactor,
+                             (xRectCenter - graph.getMaxWidth()) /
+                             (xRectCenter - xMax));
+    if (yMin < 0.0d)
+      scaleFactor = Math.min(scaleFactor,
+                             (yRectCenter - 0.0d) / (yRectCenter - yMin));
+    if (yMax > graph.getMaxHeight())
+      scaleFactor = Math.min(scaleFactor,
+                             (yRectCenter - graph.getMaxHeight()) /
+                             (yRectCenter - yMax));
     final Scale3D scale = new Scale3D(scaleFactor, scaleFactor, 1.0d);
     final AffineTransform3D realTransform =
       toOrig.concatenatePost(rotation.concatenatePost(scale.concatenatePost
