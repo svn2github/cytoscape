@@ -105,6 +105,23 @@ public interface DynamicGraph
   public boolean removeEdge(int edge);
 
   /**
+   * Determines whether or not a node exists in this graph.
+   * Returns true if and only if the node specified exists.<p>
+   * Note that this method is superfluous in this interface (that is,
+   * it could be removed without losing any functionality), because
+   * adjacentEdges(int, boolean, boolean, boolean) can be used to test
+   * the presence of a node.  However, because containsNode(int) does not
+   * return a complicated object, its performance may be much better
+   * than that of adjacentEdges().
+   *
+   * @param node the [potentially existing] node in this graph whose existence
+   *   we're querying.
+   * @return the existence of specified node in this graph.
+   * @exception IllegalArgumentException if node is negative.
+   */
+  public boolean containsNode(int node);
+
+  /**
    * Determines the existence and directedness of an edge.
    * Returns -1 if specified edge does not exist in this graph,
    * returns 1 if specified edge is directed, and returns 0 if specified edge
