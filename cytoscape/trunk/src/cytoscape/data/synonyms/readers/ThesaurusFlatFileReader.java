@@ -41,18 +41,30 @@ import java.util.ListIterator;
 
 import cytoscape.data.synonyms.*;
 import cytoscape.data.readers.TextFileReader;
+import cytoscape.data.readers.TextJarReader;
 //-------------------------------------------------------------------------
 public class ThesaurusFlatFileReader { 
-  File textFile;
   Thesaurus thesaurus;
+  String fullText;
 //-------------------------------------------------------------------------
 public ThesaurusFlatFileReader (String filename) throws Exception
 {
-  textFile = new File (filename);
-  if (!textFile.canRead ()) {
-    String msg = "---- data.synonyms.readers.ThesaurusFlatFileReader error, cannot read: " +
-                  textFile;
-    throw new Exception (msg);
+  try {
+    if (filename.trim().startsWith ("jar://")) {
+      TextJarReader reader = new TextJarReader (filename);
+      reader.read ();
+      fullText = reader.getText ();
+      }
+    else {
+      TextFileReader reader = new TextFileReader (filename);
+      reader.read ();
+      fullText = reader.getText ();
+      }
+    }
+  catch (Exception e0) {
+    System.err.println ("-- Exception while reading ontology flat file " + filename);
+    System.err.println (e0.getMessage ());
+    return;
     }
 
   read ();
@@ -60,9 +72,6 @@ public ThesaurusFlatFileReader (String filename) throws Exception
 //-------------------------------------------------------------------------
 private void read () throws Exception
 {
-  TextFileReader reader = new TextFileReader (textFile.getPath ());
-  reader.read ();
-  String fullText = reader.getText ();
   String [] lines = fullText.split ("\n");
 
   String species = lines [0].trim();
