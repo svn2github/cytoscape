@@ -19,6 +19,7 @@ package cytoscape.graph;
  * into a donut shape.  In topology, distances do not matter but connectedness
  * does.  Therefore, a topological definition of a graph should not
  * contain any notion of a &quot;distance along edge&quot;.<p>
+ * <!--
  * If the graph definition defined in this object were translated into
  * a language suitable for an elementary mathematics textbook on set theory,
  * it would read something like this (our version of set theory treats
@@ -41,6 +42,7 @@ package cytoscape.graph;
  * Notice that
  * in the second example above, {d,e} is equal to {e,d}; this graph
  * has 3 &quot;undirected edges&quot; &quot;between nodes&quot; d and e.<p>
+ * -->
  * The methods on this interface do not expose any mutable behavior; this does
  * not mean, however, that instances of this interface are not mutable.  A
  * sub-interface extending <code>GraphTopology</code> could be defined which
