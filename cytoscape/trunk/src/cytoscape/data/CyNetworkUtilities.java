@@ -41,6 +41,9 @@ import giny.view.*;
 import cytoscape.CytoscapeObj;
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.view.NetworkView;
+
+import ViolinStrings.Strings;
+
 //-------------------------------------------------------------------------
 /**
  * This class provides static methods that operate on a CyNetwork to perform
@@ -135,7 +138,7 @@ public static boolean selectNodesStartingWith(CyNetwork network, String key,
         String nodeLabel = node.getIdentifier();
         String canonicalName = nodeAttributes.getCanonicalName(node);
         boolean matched = false;
-        if (nodeLabel != null && nodeLabel.toLowerCase().startsWith(key)) {
+        if (nodeLabel != null &&  Strings.isLike(  nodeLabel, key, 0, true ) ) {
             matched = true;
 	    found = true;
         } else {
@@ -143,7 +146,7 @@ public static boolean selectNodesStartingWith(CyNetwork network, String key,
             List synonyms = Semantics.getAllSynonyms(canonicalName, network, cytoscapeObj);
             for (Iterator synI = synonyms.iterator(); synI.hasNext(); ) {
                 String synonym = (String)synI.next();
-                if ( synonym.toLowerCase().startsWith(key) ) {
+                if ( Strings.isLike(synonym, key, 0, true ) ) {
                     matched = true;
 		    found = true;
                     break;

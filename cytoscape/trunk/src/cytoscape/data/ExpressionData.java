@@ -38,6 +38,7 @@ import java.util.*;
 import java.io.*;
 
 import cytoscape.*;
+import cytoscape.data.*;
 
 import cytoscape.data.readers.*;
 //--------------------------------------------------------------------
@@ -100,7 +101,17 @@ import cytoscape.data.readers.*;
  */
 public class ExpressionData implements Serializable{
 
-    public static final int MAX_LINE_SIZE = 8192;
+  public static final int MAX_LINE_SIZE = 8192;
+  
+  /**
+   * Kinds of significance values
+   */
+  public static final int PVAL = 0;
+  public static final int LAMBDA = 1;
+  public static final int NONE = 2;
+  public static final int UNKNOWN = 3;
+ 
+  protected int significanceType = 3;
 
     String filename;
     int numGenes;
@@ -126,7 +137,7 @@ public class ExpressionData implements Serializable{
 	numGenes = 0;
 	numConds = 0;
 	extraTokens = 0;
-        haveSigValues = false;
+  haveSigValues = false;
 	this.initDataStructures();
     }
     public ExpressionData(String filename) {
@@ -322,10 +333,19 @@ public boolean loadData (String filename)
   String headerLine = lines [lineCount++];
   if (headerLine == null || headerLine.length () == 0)
     return false;
-  if (isHeaderLineMTXHeader (headerLine))
-      headerLine = lines [lineCount++];
+  
+  if (isHeaderLineMTXHeader (headerLine)){
+    // for sure we know that the file contains lambdas
+    this.significanceType = this.LAMBDA;
+    headerLine = lines [lineCount++];
+  }
 
   boolean expectPvals = doesHeaderLineHaveDuplicates(headerLine);
+  if(this.significanceType != this.LAMBDA && !expectPvals){
+    // we know that we don't have a lambda header and we don't
+    // have significance values
+    this.significanceType = this.NONE;
+  }
   StringTokenizer headerTok = new StringTokenizer(headerLine);
   int numTokens = headerTok.countTokens();
 
@@ -485,7 +505,7 @@ public boolean loadData (String filename)
     private void parseOneLine(String oneLine, int lineCount) {
 	parseOneLine(oneLine,lineCount,true);
     }
-    private void parseOneLine(String oneLine, int lineCount, boolean pvals) {
+    private void parseOneLine(String oneLine, int lineCount, boolean sig_vals) {
 	StringTokenizer strtok = new StringTokenizer(oneLine);
 	int numTokens = strtok.countTokens();
 
@@ -494,8 +514,8 @@ public boolean loadData (String filename)
 	String gName = strtok.nextToken();
 	if ( gName.startsWith("NumSigGenes") ) {return;}
 
-	if ( (pvals && (numTokens < 2*numConds + 2)) ||
-	     ((!pvals)&&numTokens<numConds+2) ) {
+	if ( (sig_vals && (numTokens < 2*numConds + 2)) ||
+	     ((!sig_vals)&&numTokens<numConds+2) ) {
 	    System.out.println("Warning: parse error on line " + lineCount
 			       + "  tokens read: " + numTokens);
 	    return;
@@ -510,7 +530,7 @@ public boolean loadData (String filename)
 	    expData[i] = strtok.nextToken();
 	}
 	String[] sigData = new String[numConds];
-	if(pvals) {
+	if(sig_vals) {
 	    for (int i=0; i<numConds; i++) {
 		sigData[i] = strtok.nextToken();
 	    }
@@ -530,13 +550,74 @@ public boolean loadData (String filename)
 	    if (ratio < minExp) {minExp = ratio;}
 	    if (ratio > maxExp) {maxExp = ratio;}
 	    if (signif < minSig) {minSig = signif;}
-	    if (signif > maxSig) {maxSig = signif;}
+	    if (signif > maxSig) {
+        maxSig = signif;
+        if(this.significanceType != this.LAMBDA && 
+           sig_vals && 
+           maxSig > 1){
+          this.significanceType = this.LAMBDA;
+        }
+      }
 	}
+  
+  if(this.significanceType != this.LAMBDA && sig_vals && minSig > 0){
+    // We are probably not looking at lambdas, since no significance value was > 1
+    // and the header is not a LAMBDA header
+    this.significanceType = this.PVAL;
+  }
 
 	allMeasurements.add(measurements);
     }//parseOneLine
 
 //--------------------------------------------------------------------
+  
+  /**
+   * Converts all lambdas to p-values.
+   * Lambdas are lost after this call.
+   */
+  public void convertLambdasToPvals (){
+    Iterator it = this.allMeasurements.iterator();
+    while(it.hasNext()){
+      Vector v = (Vector)it.next();
+      Iterator it2 = v.iterator();
+      while(it2.hasNext()){
+        mRNAMeasurement m = (mRNAMeasurement)it2.next();
+        double pval = ExpressionData.getPvalueFromLambda(m.getSignificance());
+        m.setSignificance(pval);
+      }//while it2
+    }//while it
+  }//convertPValsToLambdas
+
+  /**
+   * @return a very close approximation of the pvalue that corresponds to the
+   * given lambda value
+   */
+  static public double getPvalueFromLambda (double lambda){
+    double x = StrictMath.sqrt(lambda)/2.0;
+    double t = 1.0/(1.0 + 0.3275911*x);
+    double erfc = 
+      StrictMath.exp(-(x*x)) * ( 
+                                0.254829592  * t + 
+                                -0.284496736 * StrictMath.pow(t,2.0) +
+                                1.421413741  * StrictMath.pow(t,3.0) +
+                                -1.453152027 * StrictMath.pow(t,4.0) +
+                                1.061405429  * StrictMath.pow(t,5.0)
+                                );
+    erfc = erfc/2.0;
+    if(erfc < 0 || erfc > 1){
+      // P-value must be >= 0 and <= 1
+      throw new IllegalStateException("The calculated pvalue for lambda = " + lambda + " is " + erfc);
+    }
+    return erfc;
+  }//getPvalueFromLambda
+
+  /**
+   * @return one of NONE, UNKNOWN, PVAL, LAMBDA
+   */
+  public int getSignificanceType (){
+    return this.significanceType;
+  }//getSignificanceType
+
 
     /**
      * Returns a text description of this data object.
@@ -553,7 +634,18 @@ public boolean loadData (String filename)
         sb.append(lineSep).append(lineSep);
         sb.append("MinExp: " + minExp + "    MaxExp: " + maxExp + lineSep);
         if (this.haveSigValues) {
-            sb.append("MinSig: " + minSig + "    MaxSig: " + maxSig + lineSep);
+          sb.append("MinSig: " + minSig + "    MaxSig: " + maxSig + lineSep);
+          String sigType = null;
+          if(this.significanceType == this.UNKNOWN){
+            sigType = "unknown";
+          }else if(this.significanceType == this.LAMBDA){
+            sigType = "lambda values";
+          }else if(this.significanceType == this.PVAL){
+            sigType = "p-values";
+          }else if(this.significanceType == this.NONE){
+            sigType = "none";
+          }
+          sb.append("Type of significance: " + sigType + lineSep);
         }
         return sb.toString();
     }
@@ -579,6 +671,9 @@ public boolean loadData (String filename)
     public String[] getConditionNames() {
 	return (String[])condNames.toArray(new String[0]);
     }
+  public int getConditionIndex (String condition){
+    return ((Integer)this.condNameToIndex.get(condition)).intValue();
+  }
 
     public double[][] getExtremeValues() {
 	double[][] maxVals = new double[2][2];
@@ -610,7 +705,7 @@ public boolean loadData (String filename)
 	return measurements;
     }
 
-    public mRNAMeasurement getMeasurement (String gene, String condition) {
+  public mRNAMeasurement getMeasurement (String gene, String condition) {
 	Integer condIndex = (Integer)condNameToIndex.get(condition);
 	if (condIndex == null) {
 	    return null;}

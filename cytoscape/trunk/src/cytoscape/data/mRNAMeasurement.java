@@ -74,6 +74,16 @@ public String toString ()
 
 } // toString
 //-------------------------------------------------------------------------------------------
+public void setRatio (double new_ratio)
+{
+  this.expressionRatio = new_ratio;
+}
+//-------------------------------------------------------------------------------------------
+public void setSignificance (double new_significance)
+{
+  this.significance = new_significance;
+}
+//-------------------------------------------------------------------------------------------
 } // mRNAMeasurement
 
 
