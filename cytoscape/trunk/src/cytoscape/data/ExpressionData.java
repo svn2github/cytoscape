@@ -618,7 +618,9 @@ public boolean loadData (String filename) throws IOException {
     public String getDescription() {
         String lineSep = System.getProperty("line.separator");
         StringBuffer sb = new StringBuffer();
-        sb.append("Data read from: " + filename + lineSep);
+        File file = new File (filename);
+
+        sb.append("Data read from: " + file.getName() + lineSep);
         sb.append(lineSep);
         sb.append("Number of genes = " + getNumberOfGenes() + lineSep);
         sb.append("Number of conditions = " + getNumberOfConditions() + lineSep);
