@@ -224,13 +224,11 @@
     <target name="doc" description="Runs JavaDoc." depends="compile">
         <javadoc destdir="${javadoc.public.dir}"
                  source="1.4"
-                 Windowtitle="Cytoscape2.0 API"
-                 header="Cytoscape2.0 (c)2004 ISB, MSKCC, UCSD"
+                 Windowtitle="Cytoscape 2.1 API"
+                 header="Cytoscape 2.1 (c) 2004 ISB, MSKCC, UCSD"
                  footer="www.cytoscape.org"
                  classpathref="classpath"
-                 access="public"
-                 overview="${src.dir}/org/mskcc/dataservices/overview.html">
-
+		 access="public">
 
             <fileset dir="${src.dir}">
                 <include name="cytoscape/*.java" />
@@ -249,6 +247,9 @@
                 <include name="cytoscape/layout/*.java" />
                 <include name="cytoscape/data/servers/BioDataServer*.java" />
             </fileset>
+	    <packageset dir="${src.dir}" defaultexcludes="yes">
+		    <include name="cytoscape/task/**" />
+    	    </packageset>      
 
          <link href="http://java.sun.com/j2se/1.4.2/docs/api/" />
          <link href="http://csbi.sourceforge.net/API/" />
