@@ -2,6 +2,7 @@ package cytoscape.graph.util;
 
 import cytoscape.graph.GraphTopology;
 import cytoscape.graph.IndexIterator;
+import cytoscape.graph.NodeNeighbors;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
@@ -10,7 +11,7 @@ import java.util.Hashtable;
  * and provides several bits of useful information about the graph.<p>
  * An instance of this class is meant to be used by a single thread only.<p>
  **/
-public final class GraphCompiler
+public final class GraphCompiler implements NodeNeighbors
 {
 
   /**
