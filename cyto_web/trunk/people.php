@@ -123,7 +123,7 @@
 
 		<br>
 
-		<img src="/images/2004Dec_devteam-updated.gif">
+		<img src="images/2004Dec_devteam-updated.gif">
 		<br>
 		Image created with Cytoscape
 
