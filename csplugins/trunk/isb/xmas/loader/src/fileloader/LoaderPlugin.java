@@ -58,7 +58,14 @@ public class LoaderPlugin extends CytoscapePlugin {
                       byte[] buf = new byte[1024];
                       int len;
                       while ( (len = zis.read(buf) ) > 0) {
-                        entry_buffer.append( new String( buf ) );
+                        if ( len < 1024 ) {
+                          byte[] last = new byte[len];
+                          for ( int i = 0; i < len; ++i ) {
+                            last[i] = buf[i];
+                          }
+                          entry_buffer.append( new String( last ) );
+                        } else 
+                          entry_buffer.append( new String( buf ) );
                       }
 
                       // use SpreadSheet loading stuff to load
@@ -99,7 +106,7 @@ public class LoaderPlugin extends CytoscapePlugin {
                   ZipInputStream zis = new  ZipInputStream(new BufferedInputStream(fis));
                   ZipEntry entry;
                   while( (entry = zis.getNextEntry()) != null) {
-                    System.out.println("Extracting: " +entry);
+                    //System.out.println("Extracting: " +entry);
                     
                     if ( entry.getName().equals("edges.txt") ) {
                      
@@ -109,7 +116,14 @@ public class LoaderPlugin extends CytoscapePlugin {
                       byte[] buf = new byte[1024];
                       int len;
                       while ( (len = zis.read(buf) ) > 0) {
-                        entry_buffer.append( new String( buf ) );
+                        if ( len < 1024 ) {
+                          byte[] last = new byte[len];
+                          for ( int i = 0; i < len; ++i ) {
+                            last[i] = buf[i];
+                          }
+                          entry_buffer.append( new String( last ) );
+                        } else 
+                          entry_buffer.append( new String( buf ) );
                       }
 
                       // use SpreadSheet loading stuff to load
@@ -153,16 +167,22 @@ public class LoaderPlugin extends CytoscapePlugin {
                       continue;
                     }
 
-                    System.out.println("Extracting: " +entry);
-                    
-
+                    System.out.println("Extracting Network: " +entry);
                     
 
                     StringBuffer entry_buffer = new StringBuffer();
                     byte[] buf = new byte[1024];
                     int len;
                     while ( (len = zis.read(buf) ) > 0) {
-                      entry_buffer.append( new String( buf ) );
+                      if ( len < 1024 ) {
+                        byte[] last = new byte[len];
+                        for ( int i = 0; i < len; ++i ) {
+                          last[i] = buf[i];
+                        }
+                        entry_buffer.append( new String( last ) );
+                      } else 
+                        entry_buffer.append( new String( buf ) );
+                      
                     }
 
                     GraphReader reader = null;
@@ -170,7 +190,7 @@ public class LoaderPlugin extends CytoscapePlugin {
                       // gml file found
                       // pass the whole string to the GMLTree for reading
                       reader = new GMLReader( entry_buffer.toString(), true );
-                        // have the GraphReader read the given file
+                      // have the GraphReader read the given file
                       
                     } else if ( entry.getName().endsWith( "sif" ) ) {
                       // create the sif file reader
@@ -319,39 +339,36 @@ public class LoaderPlugin extends CytoscapePlugin {
                       // create SIF file from the network
                       zip.putNextEntry( new ZipEntry(network.getTitle()+".sif" ));
                    
-                    
-                      List nodeList = network.nodesList();
-                      Node[] nodes = (Node[]) nodeList.toArray ( new Node[0] );
-                      for (int i=0; i < nodes.length; i++) {
-                        StringBuffer sb = new StringBuffer ();
-                        Node node = nodes[i];
-                        String canonicalName = Cytoscape.getNodeAttributeValue( node, Semantics.CANONICAL_NAME ).toString();
-                        List edges = network.getAdjacentEdgesList(node, true, true, true); 
-                  
-                        if (edges.size() == 0) {
-                          sb.append(canonicalName + lineSep);
-                        } else {
-                          Iterator it = edges.iterator();
-                          while ( it.hasNext() ) {
-                            Edge edge = (Edge)it.next();
-                            if (node == edge.getSource()){ //do only for outgoing edges
-                              Node target = edge.getTarget();
-                              String canonicalTargetName = Cytoscape.getNodeAttributeValue( target, Semantics.CANONICAL_NAME ).toString();
-                              String edgeName = Cytoscape.getEdgeAttributeValue( edge, Semantics.CANONICAL_NAME ).toString();
-                              String interactionName =  Cytoscape.getEdgeAttributeValue( edge, Semantics.INTERACTION ).toString();
+                      Set connected_nodes = new HashSet();
+                      List edge_list = network.edgesList();
+                      for ( Iterator e_iter = edge_list.iterator(); e_iter.hasNext(); ) {
 
-                              if (interactionName == null) {interactionName = "xx";}
-                              sb.append(canonicalName);
-                              sb.append(";");
-                              sb.append(interactionName);
-                              sb.append(";");
-                              sb.append(canonicalTargetName);
-                              sb.append(lineSep);
-                            }
-                          } 
-                        } 
+                        Edge edge = ( Edge )e_iter.next();
+                        StringBuffer sb = new StringBuffer ();
+                        String source_name = ( String )network.getNodeAttributeValue( edge.getSource(),
+                                                                            Semantics.CANONICAL_NAME );
+                        String target_name = ( String )network.getNodeAttributeValue( edge.getTarget(),
+                                                                            Semantics.CANONICAL_NAME );
+                        String interaction_name = ( String )network.getEdgeAttributeValue( edge, 
+                                                                                 Semantics.INTERACTION );
+                        sb.append( source_name +" ");
+                        sb.append( interaction_name+" ");
+                        sb.append( target_name);
+                        sb.append(lineSep);
+                        connected_nodes.add( edge.getTarget() );
+                        connected_nodes.add( edge.getSource() );
+
                         bytes = sb.toString().getBytes();
                         zip.write( bytes, 0, bytes.length );
+                      }
+
+                      List node_list = network.nodesList();
+                      for ( Iterator n_iter = node_list.iterator(); n_iter.hasNext(); ) {
+                        Node node = ( Node )n_iter.next();
+                        if ( !connected_nodes.contains( node ) ) {
+                          bytes = ( ( String )network.getNodeAttributeValue( node, Semantics.CANONICAL_NAME ) ).getBytes();
+                          zip.write(  bytes, 0, bytes.length );
+                        }
                       }
                     } else {
                       // view exits, create GML from the network view
