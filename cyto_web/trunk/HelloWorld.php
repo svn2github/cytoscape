@@ -71,7 +71,7 @@ import cytoscape.Cytoscape;
 
 <ul>
 <li>
-All plugins must extend the class <code>cytoscape.plugin.CytoscapePlugin</code>. 
+All plugins must extend the class <code>cytoscape.plugin.CytoscapePlugin</code>.
 The specific class that extends <code>CytoscapePlugin</code>
 doesn't need to stand alone; it can reference any number of other
 classes and libraries. This "main" class is simply Cytoscape's entry
@@ -105,21 +105,13 @@ create an instance of your plugin class.
 
 </p>
 <p>
-To load this plugin into Cytoscape, first save the jar file at the above
-link to your local disk. Then start Cytoscape and select the 
-<code>Plugin-&gt;Load Plugin from Jar File</code>
-menu option. Use the file browser to find and select this jar file;
-Cytoscape will then load the plugin from the jar. You should see the
+To load this plugin into Cytoscape, save the jar file at the above
+link to your local disk in the Cytoscape plugins folder. Then start Cytoscape
+which will then load the plugin from the jar. You should see the
 "Hello World" dialog appear above your main Cytoscape window.
-</p><p>
-If you run Cytoscape using one of the scripts that comes with the
-standard Cytoscape distribution, you can place the jar file in the
-plugins directory of the cytoscape distribution, and Cytoscape will find it
-automatically. In this case you won't need to load the plugin via the
-menu.
 </p>
 
-<!-- <p> This page last modified August 25, 2004. </p> -->
+<!-- <p> This page last modified $Date$. </p> -->
 
     </div>
     <? include "footer.php"; ?>

@@ -31,18 +31,17 @@
 </center>
 
 <p>
-This example plugin uses the Cytoscape network and attributes 
-data structures to perform a simple node selection operation. 
+This example plugin uses the Cytoscape network and attributes
+data structures to perform a simple node selection operation.
 When the user selects one or more nodes in the graph and
 then activates the plugin, it will iterate over each selected node and
 additionally select all neighbors of that node.
 </p>
 <p>
 To run the plugin, save the jar file below to your local
-disk. Then run Cytoscape and load in a sample yeast network (for
+disk in the Cytoscape plugins directory. Then run Cytoscape and load in a sample yeast network (for
 example, <code>galFiltered.sif</code>
-in the testData directory of the public Cytoscape distribution). Then,
-load the plugin as before. Select one or more nodes, then activate the
+in the testData directory of the public Cytoscape distribution). Select one or more nodes, then activate the
 plugin via the <code>Plugins-&gt;SamplePlugin</code> menu option.</p><p>
 
 
@@ -69,7 +68,7 @@ one possible operation. What actually happens is that the plugin defines an
 extension of the CytoscapeAction class, which is an extension of the Swing
 AbstractAction class. The code in this extension class gets called whenever
 the user selects the item that appears in the menu. (See the
-<a href="http://java.sun.com/docs/books/tutorial/uiswing/index.html">Swing section</a> 
+<a href="http://java.sun.com/docs/books/tutorial/uiswing/index.html">Swing section</a>
 of the Java tutorial and the
 <a href="http://java.sun.com/j2se/1.4.2/docs/api/index.html">Java API</a>
 for more information).
@@ -78,7 +77,7 @@ for more information).
 The plugin works with several core objects. The CyNetwork object is a
 graph and also contains the associated data. The plugin uses the
 network to find the neighbors of the currently selected nodes.
-The CyNetworkView contains information on what node views are 
+The CyNetworkView contains information on what node views are
 currently selected.
 </p>
 
@@ -89,7 +88,7 @@ redraw the graph (for example, to update the appearance of newly selected
 nodes).
 </p>
 
-<!-- <p> This page last modified August 25, 2004. </p> -->
+<!-- <p> This page last modified $Date$. </p> -->
 
 
     </div>
