@@ -46,7 +46,7 @@ import cytoscape.data.annotation.AnnotationGui;
  * This class creates the menu and tool bars for a Cytoscape window object. It
  * also provides access to individual menus and items.
  */
-public class CytoscapeMenus {
+public class CyMenus {
     CytoscapeWindow cytoscapeWindow;
     JMenuBar menuBar;
     JMenu fileMenu, loadSubMenu, saveSubMenu;
@@ -64,7 +64,7 @@ public class CytoscapeMenus {
      * we'll convert all the actions to use the new classes instead,
      * and then change this constructor as well.
      */
-    public CytoscapeMenus(CytoscapeWindow cytoscapeWindow) {
+    public CyMenus(CytoscapeWindow cytoscapeWindow) {
         this.cytoscapeWindow = cytoscapeWindow;//not technically needed
         //the following methods can't go here, because the actions created
         //try to access this object before the constructor is finished

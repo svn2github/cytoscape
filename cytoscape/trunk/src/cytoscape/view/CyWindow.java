@@ -80,7 +80,7 @@ CyNetworkListener, NetworkView {
     protected CytoscapeWindow cytoscapeWindow;
     
     protected JFrame mainFrame;
-    protected CytoscapeMenus cytoscapeMenus;
+    protected CyMenus cyMenus;
     protected JLabel infoLabel;
     
     protected String defaultWindowTitle = "Cytoscape " + CytoscapeVersion.version + "     ";
@@ -302,12 +302,12 @@ private void detachGraphListeners() {
  * to avoid this circularity problem.
  */
 public void decorateWindow() {
-    this.cytoscapeMenus = new CytoscapeMenus(cytoscapeWindow);
-    cytoscapeMenus.createMenus();
-    add(cytoscapeMenus.getToolBar(), BorderLayout.NORTH);
-    mainFrame.setJMenuBar(cytoscapeMenus.getMenuBar());
+    this.cyMenus = new CyMenus(cytoscapeWindow);
+    cyMenus.createMenus();
+    add(cyMenus.getToolBar(), BorderLayout.NORTH);
+    mainFrame.setJMenuBar(cyMenus.getMenuBar());
     //this does nothing if undo is disabled
-    cytoscapeMenus.updateUndoRedoMenuItemStatus();
+    cyMenus.updateUndoRedoMenuItemStatus();
     // load vizmapper after graph is available
     loadVizMapper();
 }
@@ -337,7 +337,7 @@ private void loadVizMapper() {
   vizMapper.setUI(vizMapUI);
 
   // add vizmapper to toolbar
-  JToolBar toolBar = getCytoscapeMenus().getToolBar();
+  JToolBar toolBar = getCyMenus().getToolBar();
   toolBar.addSeparator();
   JButton b = toolBar.add(new SetVisualPropertiesAction(this, false));
   b.setIcon(new ImageIcon(getClass().getResource("images/ColorVisual.gif")));
@@ -466,7 +466,7 @@ public void setWindowTitle(String newTitle) {
  * Returns the object that holds references to the menu bars and
  * several of the major submenus.
  */
-public CytoscapeMenus getCytoscapeMenus() {return cytoscapeMenus;}
+public CyMenus getCyMenus() {return cyMenus;}
 //------------------------------------------------------------------------------
 /**
  * Sets the popup mode - a yFiles specific thing that deals with
@@ -529,7 +529,7 @@ public void setNewGraph(Graph2D newGraph, boolean doLayout) {
     connectGraphAndView();
     attachGraphListeners();
     displayNewGraph(doLayout);
-    getCytoscapeMenus().updateUndoRedoMenuItemStatus();
+    getCyMenus().updateUndoRedoMenuItemStatus();
     setInteractivity(true);
 }
 //------------------------------------------------------------------------------
@@ -550,7 +550,7 @@ public void setNewNetwork(CyNetwork newNetwork, boolean doLayout) {
     connectGraphAndView();
     attachGraphListeners();
     displayNewGraph(doLayout);
-    getCytoscapeMenus().updateUndoRedoMenuItemStatus();
+    getCyMenus().updateUndoRedoMenuItemStatus();
     setInteractivity(true);
 }
 //------------------------------------------------------------------------------
@@ -607,13 +607,13 @@ public void setInteractivity (boolean newState) {
     }
 
     // disable/enable UI components - added by iliana 2003-03-03
-    MenuElement [] menuBarEls = getCytoscapeMenus().getMenuBar().getSubElements();
+    MenuElement [] menuBarEls = getCyMenus().getMenuBar().getSubElements();
     for(int i = 0; i < menuBarEls.length; i++) {
         Component comp = menuBarEls[i].getComponent();
         comp.setEnabled(newState);
     }
     
-    getCytoscapeMenus().getToolBar().setEnabled(newState);
+    getCyMenus().getToolBar().setEnabled(newState);
 } // setInteractivity
 //------------------------------------------------------------------------------
 /**
@@ -865,7 +865,7 @@ public void switchToEditMode() {
     getGraphView().removeViewMode(currentGraphMode);
     currentGraphMode = editGraphMode;
     getGraphView().addViewMode(currentGraphMode);
-    getCytoscapeMenus().enableDeleteSelectionMenuItem();
+    getCyMenus().enableDeleteSelectionMenuItem();
 }
 //------------------------------------------------------------------------------
 /**
@@ -876,7 +876,7 @@ public void switchToReadOnlyMode() {
     getGraphView().removeViewMode(currentGraphMode);
     currentGraphMode = readOnlyGraphMode;
     getGraphView().addViewMode(currentGraphMode);
-    getCytoscapeMenus().disableDeleteSelectionMenuItem();
+    getCyMenus().disableDeleteSelectionMenuItem();
 }
 //------------------------------------------------------------------------------
 }

@@ -25,7 +25,7 @@ public class UndoAction extends AbstractAction {
     
     public void actionPerformed(ActionEvent e) {
       cyWindow.getUndoManager().undo();
-      cyWindow.getCytoscapeMenus().updateUndoRedoMenuItemStatus();
+      cyWindow.getCyMenus().updateUndoRedoMenuItemStatus();
       cyWindow.redrawGraph(false, true);
     }
 }

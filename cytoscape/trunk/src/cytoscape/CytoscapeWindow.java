@@ -326,7 +326,7 @@ public void loadPlugins() {
         getOperationsMenu().add(none);
     }
     JarLoaderUI jlu = new JarLoaderUI(this,
-                      this.getCytoscapeMenus().getLoadSubMenu() );
+                      this.getCyMenus().getLoadSubMenu() );
 
 }
 
@@ -503,32 +503,32 @@ public void setWindowTitle(String newTitle) {
     getCyWindow().setWindowTitle(newTitle);
 }
 //------------------------------------------------------------------------------
-public CytoscapeMenus getCytoscapeMenus() {
-    return getCyWindow().getCytoscapeMenus();
+public CyMenus getCyMenus() {
+    return getCyWindow().getCyMenus();
 }
 //------------------------------------------------------------------------------
 public JMenuBar getMenuBar() {
-    return getCyWindow().getCytoscapeMenus().getMenuBar();
+    return getCyWindow().getCyMenus().getMenuBar();
 }
 //------------------------------------------------------------------------------
 public JToolBar getToolBar() {
-    return getCyWindow().getCytoscapeMenus().getToolBar();
+    return getCyWindow().getCyMenus().getToolBar();
 }
 //------------------------------------------------------------------------------
 public JMenu getSelectMenu() {
-    return getCyWindow().getCytoscapeMenus().getSelectMenu();
+    return getCyWindow().getCyMenus().getSelectMenu();
 }
 //------------------------------------------------------------------------------
 public JMenu getLayoutMenu() {
-    return getCyWindow().getCytoscapeMenus().getLayoutMenu();
+    return getCyWindow().getCyMenus().getLayoutMenu();
 }
 //------------------------------------------------------------------------------
 public JMenu getVizMenu() {
-    return getCyWindow().getCytoscapeMenus().getVizMenu();
+    return getCyWindow().getCyMenus().getVizMenu();
 }
 //------------------------------------------------------------------------------
 public JMenu getOperationsMenu() {
-    return getCyWindow().getCytoscapeMenus().getOperationsMenu();
+    return getCyWindow().getCyMenus().getOperationsMenu();
 }
 
 //------------------------------------------------------------------------------
@@ -590,7 +590,7 @@ public void updateStatusText(int nodeAdjust, int edgeAdjust) {
  * added by dramage 2002-08-21
  */
 public void updateUndoRedoMenuItemStatus() {
-    getCyWindow().getCytoscapeMenus().updateUndoRedoMenuItemStatus();
+    getCyWindow().getCyMenus().updateUndoRedoMenuItemStatus();
 }
 //------------------------------------------------------------------------------
 public boolean loadGML(String filename) {
