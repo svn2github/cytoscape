@@ -12,9 +12,7 @@ import javax.swing.JOptionPane;
 import java.io.File;
 
 import cytoscape.CytoscapeObj;
-import cytoscape.data.CyNetwork;
-import cytoscape.data.CyNetworkFactory;
-import cytoscape.data.Semantics;
+import cytoscape.data.*;
 import cytoscape.view.NetworkView;
 import cytoscape.util.CyFileFilter;
 import cytoscape.actions.CheckBoxFileChooser;
@@ -59,36 +57,60 @@ public class LoadGraphFileAction extends AbstractAction {
         chooser.setFileFilter(graphFilter);
         if (chooser.showOpenDialog(networkView.getMainFrame()) == chooser.APPROVE_OPTION) {
             currentDirectory = chooser.getCurrentDirectory();
-	    
-	    //String fileType = chooser.getDescription(chooser.getSelectedFile());
-	    //System.out.println("FILETYPE: " + fileType);
             networkView.getCytoscapeObj().setCurrentDirectory(currentDirectory);
 	    //appendFlag = chooser.getCheckBoxState();
 	    //if(appendFlag) System.out.println("appending graph");
 
             String  name = chooser.getSelectedFile().toString();
-            boolean canonicalize = Semantics.getCanonicalize(cytoscapeObj);
-            String  species = Semantics.getDefaultSpecies( networkView.getNetwork(), cytoscapeObj );
-
-	    if( name.endsWith("gml") || name.endsWith("GML") ) {
-		//newNetwork = CyNetworkFactory.createNetworkFromGraphReader(reader, false);
-		//if (newNetwork != null) { newNetwork.setNeedsLayout(false); } // NEED THIS??
+            boolean isGML = false;
+            if (name.length() > 4) {//long enough to have a "gml" extension
+                String extension = name.substring( name.length()-3 );
+                if (extension.equalsIgnoreCase("gml")) {isGML = true;}
+            }
+	    if(isGML) {
 		newNetwork = CyNetworkFactory.createNetworkFromGMLFile( name );
 	    }
- 	    else
+ 	    else {
+                boolean canonicalize = Semantics.getCanonicalize(cytoscapeObj);
+                String  species = Semantics.getDefaultSpecies( networkView.getNetwork(), cytoscapeObj );
 		newNetwork =
 		    CyNetworkFactory.createNetworkFromInteractionsFile( name, 
 									canonicalize,
 									cytoscapeObj.getBioDataServer(), 
 									species );
+            }
             if (newNetwork != null) {//valid read
                 //apply the semantics we usually expect
                 Semantics.applyNamingServices(newNetwork, networkView.getCytoscapeObj());
-                //since we don't want to erase the old attributes or expression data,
-                //we copy the new network into the existing one, replacing the graph
-                networkView.getNetwork().setNewGraphFrom(newNetwork, false);
-                networkView.setWindowTitle(name);
-
+                //we want to preserve the old attributes or expression data. Expression
+                //data is read-only, so we can just reference the same object, but we
+                //need to make copies of the attributes objects so future changes only
+                //affect the copies. So, we
+                //1. make a copy of the old attributes objects
+                //2. wipe the old object-to-name mappings
+                //3. import the new attributes into the copy of the old, which overwrites
+                //   any duplicated attributes
+                //4. put this merged attributes object into the new network
+                GraphObjAttributes newNodeAttributes = new GraphObjAttributes();
+                newNodeAttributes.inputAll( networkView.getNetwork().getNodeAttributes() );
+                newNodeAttributes.clearNameMap();
+                newNodeAttributes.clearObjectMap();
+                newNodeAttributes.inputAll( newNetwork.getNodeAttributes() );
+                newNetwork.setNodeAttributes(newNodeAttributes);
+                
+                GraphObjAttributes newEdgeAttributes = new GraphObjAttributes();
+                newEdgeAttributes.inputAll( networkView.getNetwork().getEdgeAttributes() );
+                newEdgeAttributes.clearNameMap();
+                newEdgeAttributes.clearObjectMap();
+                newEdgeAttributes.inputAll( newNetwork.getEdgeAttributes() );
+                newNetwork.setEdgeAttributes(newEdgeAttributes);
+                
+                newNetwork.setExpressionData( networkView.getNetwork().getExpressionData() );
+                //now we switch the window to the new network
+                networkView.setNewNetwork(newNetwork);
+                networkView.setWindowTitle(name);//and set a new title
+                
+                //hack to apply layout information from a GML file
 		if( name.endsWith("gml") || name.endsWith("GML") ) {
 		    GMLReader reader = new GMLReader(name);
 		    reader.layoutByGML(networkView.getView(), newNetwork);

@@ -35,7 +35,7 @@ public class CloneGraphInNewWindowAction extends AbstractAction {
                                              oldNetwork.getNodeAttributes(),
                                              oldNetwork.getEdgeAttributes(),
                                              oldNetwork.getExpressionData() );
-        newNetwork.setNeedsLayout(true);
+        newNetwork.setNeedsLayout(false);
       
         oldNetwork.endActivity(callerID);
         
