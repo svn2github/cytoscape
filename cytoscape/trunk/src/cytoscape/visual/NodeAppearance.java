@@ -23,7 +23,7 @@ import cytoscape.visual.LineType;
     String label;
     String toolTip;
     Font font;
-    Color fontColor;
+    Color fontColor = Color.black;
     
     public NodeAppearance() {}
     
