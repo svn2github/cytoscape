@@ -401,6 +401,39 @@ public final class AllGraphPerspectiveMethodsTest
     if (persp.getEdgeCount(nodeInx[1], nodeInx[3], true) != 0 ||
         !(root.getEdgeCount(nodeInx[1], nodeInx[3], true) > 0))
       throw new IllegalStateException("bad edge count between 2 nodes");
+
+    // edgesList(Node, Node).
+    edgesList = persp.edgesList
+      (persp.getNode(nodeInx[3]), persp.getNode(nodeInx[1]));
+    if (edgesList.size() != 0)
+      throw new IllegalStateException("edges List not of size 0");
+    edgesList = persp.edgesList(persp.getNode(nodeInx[0]), root2Node);
+    if (edgesList != null) throw new IllegalStateException("not null");
+    edgesList = persp.edgesList
+      (persp.getNode(nodeInx[0]), persp.getNode(nodeInx[1]));
+    if (edgesList.size() != 1)
+      throw new IllegalStateException("edges List not of size 1");
+    if (((Edge) edgesList.get(0)).getRootGraphIndex() != edgeInx[0])
+      throw new IllegalStateException("wrong edge");
+    edgesList = persp.edgesList
+      (persp.getNode(nodeInx[2]), persp.getNode(nodeInx[1]));
+    if (edgesList.size() != 1)
+      throw new IllegalStateException("edges List not of size 1");
+    if (((Edge) edgesList.get(0)).getRootGraphIndex() != edgeInx[1])
+      throw new IllegalStateException("wrong edge");
+    edgesList = persp.edgesList
+      (persp.getNode(nodeInx[2]), persp.getNode(nodeInx[2]));
+    if (edgesList.size() != 1)
+      throw new IllegalStateException("edges List not of size 1");
+    if (((Edge) edgesList.get(0)).getRootGraphIndex() != edgeInx[3])
+      throw new IllegalStateException("wrong edge");
+    edgesList = persp.edgesList
+      (persp.getNode(nodeInx[1]), persp.getNode(nodeInx[4]));
+    if (edgesList.size() != 0)
+      throw new IllegalStateException("edges List not of size 0");
+    edgesList = persp.edgesList(persp.getNode(nodeInx[3]), nodeNotInPersp);
+    if (edgesList != null)
+      throw new IllegalStateException("expected null");
   }
 
 }
