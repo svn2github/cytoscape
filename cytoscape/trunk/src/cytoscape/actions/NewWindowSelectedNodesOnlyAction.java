@@ -5,24 +5,20 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 //-------------------------------------------------------------------------
-import java.awt.event.ActionEvent;
-import javax.swing.AbstractAction;
-
-
-import cytoscape.data.GraphObjAttributes;
-import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
-import cytoscape.view.CyNetworkView;
+import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
-
+import cytoscape.view.CyNetworkView;
 import giny.model.Node;
+
+import java.awt.event.ActionEvent;
 import java.util.Iterator;
 
 public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 
     public NewWindowSelectedNodesOnlyAction () {
         super("Selected nodes, All edges");
-        setPreferredMenu( "Select.To New Window" );
+        setPreferredMenu( "Select.To New Network" );
         setAcceleratorCombo(java.awt.event. KeyEvent.VK_N, ActionEvent.CTRL_MASK );
     }
 
@@ -33,7 +29,7 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
       CyNetwork current_network = current_network_view.getNetwork();
 
       int [] nodes = current_network_view.getSelectedNodeIndices();
-      
+
       CyNetwork new_network = Cytoscape.createNetwork( nodes, current_network.getConnectingEdgeIndicesArray( nodes ) , current_network.getTitle()+"->child", current_network );
       new_network.setExpressionData( current_network.getExpressionData() );
 
@@ -50,8 +46,8 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 
 
     }
-      
-     
+
+
 }
 
 

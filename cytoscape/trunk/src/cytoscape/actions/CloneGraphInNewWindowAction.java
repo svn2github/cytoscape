@@ -6,23 +6,21 @@
 
 package cytoscape.actions;
 
-import java.util.*;
-import java.awt.event.ActionEvent;
-import javax.swing.AbstractAction;
-
-import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 
+import java.awt.event.ActionEvent;
+
 public class CloneGraphInNewWindowAction extends CytoscapeAction {
-    
+
   public CloneGraphInNewWindowAction () {
     super("Whole graph");
-    setPreferredMenu( "Select.To New Window" );
+    setPreferredMenu( "Select.To New Network" );
   }
 
   public void actionPerformed(ActionEvent e) {
-     
+
     CyNetwork current_network = Cytoscape.getCurrentNetwork();
     CyNetwork new_network = Cytoscape.createNetwork( current_network.getNodeIndicesArray(),
                                                      current_network.getEdgeIndicesArray(),
@@ -31,7 +29,7 @@ public class CloneGraphInNewWindowAction extends CytoscapeAction {
 
     String title = " selection";
     Cytoscape.createNetworkView( new_network, title );
-     
+
   }
 
 }

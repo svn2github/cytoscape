@@ -5,22 +5,19 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 //-------------------------------------------------------------------------
-import java.util.*;
-import java.awt.event.ActionEvent;
-import javax.swing.AbstractAction;
-
-import cytoscape.data.GraphObjAttributes;
-import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
-import cytoscape.view.CyNetworkView;
+import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CyNetworkView;
+
+import java.awt.event.ActionEvent;
 
 //-------------------------------------------------------------------------
 public class NewWindowSelectedNodesEdgesAction extends CytoscapeAction {
 
     public NewWindowSelectedNodesEdgesAction () {
         super("Selected nodes, Selected edges");
-        setPreferredMenu( "Select.To New Window" );
+        setPreferredMenu( "Select.To New Network" );
         setAcceleratorCombo(  java.awt.event.KeyEvent.VK_N, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK  );
     }
 
@@ -39,7 +36,7 @@ public class NewWindowSelectedNodesEdgesAction extends CytoscapeAction {
 
       String title = " selection";
       Cytoscape.createNetworkView( new_network, title );
-     
+
     }
 }
 
