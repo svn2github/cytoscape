@@ -44,7 +44,7 @@ The methods get/setNode/EdgeAttributeValue allow you to assocate data with nodes
 public abstract class Cytoscape {
   
   public static String NETWORK_CREATED = "NETWORK_CREATED";
-  public static String ATTRIBUTES_ADDED = "ATTRIBUTES_ADDED";
+  public static String ATTRIBUTES_CHANGED = "ATTRIBUTES_CHANGED";
   public static String NETWORK_DESTROYED = "NETWORK_DESTROYED";
   public static String CYTOSCAPE_EXIT = "CYTOSCAPE_EXIT";
 
@@ -995,7 +995,7 @@ public abstract class Cytoscape {
 	    }
     }
 
-    firePropertyChange( ATTRIBUTES_ADDED,
+    firePropertyChange( ATTRIBUTES_CHANGED,
                         null,
                         null );
 
