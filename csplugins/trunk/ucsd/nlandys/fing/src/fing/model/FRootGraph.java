@@ -655,29 +655,29 @@ class FRootGraph implements RootGraph
   // The relationship between indices (both node and edge) in this
   // RootGraph and in the DynamicGraph is "flip the bits":
   // rootGraphIndex == ~(dynamicGraphIndex)
-  final DynamicGraph m_graph;
+  private final DynamicGraph m_graph;
 
   // This hash is re-used by many methods.  Make sure to empty() it before
   // using it.  You can use it as a bag of integers or to filter integer
   // duplicates.  You don't need to empty() it after usage.
-  final IntHash m_hash = new IntHash();
+  private final IntHash m_hash = new IntHash();
 
   // This heap is re-used by several methods.  It's used primarily as a bucket
   // of integers; sorting with this heap is [probably] not done at all.
   // Make sure to empty() it before using it.
-  final MinIntHeap m_heap = new MinIntHeap();
+  private final MinIntHeap m_heap = new MinIntHeap();
 
   // This is our "node factory" and "node recyclery".
-  final NodeDepository m_nodeDepot = new NodeDepository();
+  private final NodeDepository m_nodeDepot = new NodeDepository();
 
   // This is our "edge factory" and "edge recyclery".
-  final EdgeDepository m_edgeDepot = new EdgeDepository();
+  private final EdgeDepository m_edgeDepot = new EdgeDepository();
 
   // This is our index-to-node mapping.
-  final NodeArray m_nodes = new NodeArray();
+  private final NodeArray m_nodes = new NodeArray();
 
   // This is our index-to-edge mapping.
-  final EdgeArray m_edges = new EdgeArray();
+  private final EdgeArray m_edges = new EdgeArray();
 
   // Package visible constructor.
   FRootGraph(DynamicGraph graph) { m_graph = graph; }
