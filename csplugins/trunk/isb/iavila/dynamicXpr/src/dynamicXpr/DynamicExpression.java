@@ -417,8 +417,8 @@ public class DynamicExpression extends AbstractAction {
       cyNetwork.setNodeAttributeValue(nodes[i],EXPRESSION_ATTR,new Double(ratio)); 
     }//for c
     VisualMappingManager vmManager = Cytoscape.getDesktop().getVizMapManager();
-    //vmManager.applyNodeAppearances();
-    vmManager.applyNodeFillColor(); // just apply color calculator instead of all node apps!
+    vmManager.applyNodeAppearances();
+    //vmManager.applyNodeFillColor(); // just apply color calculator instead of all node apps!
     Cytoscape.getCurrentNetworkView().redrawGraph(false,false);
   }//displayCondition
   
