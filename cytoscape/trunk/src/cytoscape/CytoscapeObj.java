@@ -46,7 +46,7 @@ import cytoscape.visual.CalculatorIO;
  */
 public class CytoscapeObj {
     
-    protected cytoscape parentApp;
+    protected CyMain parentApp;
     protected CytoscapeConfig config;
     protected Logger logger;
     protected BioDataServer bioDataServer;
@@ -89,7 +89,7 @@ public class CytoscapeObj {
      * arguments may be null; a new Logger will be constructed if that
      * argument is null.
      */
-    public CytoscapeObj(cytoscape parentApp, CytoscapeConfig config,
+    public CytoscapeObj(CyMain parentApp, CytoscapeConfig config,
                         Logger logger, BioDataServer bioDataServer) {
         this.parentApp = parentApp;
         this.config = config;
@@ -110,7 +110,7 @@ public class CytoscapeObj {
  * then this method returns a reference to that parent object;
  * else returns null.
  */
-public cytoscape getParentApp() {return parentApp;}
+public CyMain getParentApp() {return parentApp;}
 //------------------------------------------------------------------------------
 /**
  * Returns the global config object. Almost always non-null.
