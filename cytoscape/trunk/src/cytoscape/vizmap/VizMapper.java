@@ -102,6 +102,8 @@ protected Color calculateColor (Object dataValue, Integer attribute, HashMap col
     double maxValue = ((Double) max.number).doubleValue ();
     double value = ((Double) dataValue).doubleValue ();
     double fraction = (value - minValue) / (maxValue - minValue);
+    if (fraction > 1.0) fraction = 1.0;
+    if (fraction < 0.0) fraction = 0.0;
     //System.out.println ("min: " + min + "    max: " + max +  "  value: " + value);
     //System.out.println ("fraction: " + fraction);
 
@@ -110,14 +112,26 @@ protected Color calculateColor (Object dataValue, Integer attribute, HashMap col
     //System.out.println ("new red: " + newRed);
 
     int greenRange = maxColor.getGreen () - minColor.getGreen ();
+    //System.out.println ("greenRange: " + greenRange);
+    //System.out.println ("min green: " + minColor.getGreen ());
+    //System.out.println ("max green: " + maxColor.getGreen ());
+    //System.out.println ("fraction: " + fraction);
     int newGreen = (int) (greenRange * fraction) + minColor.getGreen ();
     //System.out.println ("new green: " + newGreen);
 
     int blueRange = maxColor.getBlue () - minColor.getBlue ();
     int newBlue = (int) (blueRange * fraction) + minColor.getBlue ();
     //System.out.println ("new blue: " + newBlue);
-    result = new Color (newRed, newGreen, newBlue);
-    }
+    
+    try {
+      result = new Color (newRed, newGreen, newBlue);
+      }
+    catch (IllegalArgumentException iae) {
+      System.err.println ("exception calculating color for attrribute: " +
+                           attribute + " with value " + dataValue);
+      System.err.println ("new color RGB: " + newRed + " " + newGreen + " " + newBlue);
+      }
+    } // if continuousData
   else {
     //System.out.println (" -- discrete data");
     result = (Color) colorMap.get (dataValue);

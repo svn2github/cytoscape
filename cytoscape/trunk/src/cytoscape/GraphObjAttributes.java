@@ -115,6 +115,20 @@ public boolean add (String attributeName, String objectName, String value)
 
 } // add
 //--------------------------------------------------------------------------------
+public boolean add (String objectName, HashMap bundle)
+{
+  String [] keys = (String []) bundle.keySet().toArray (new String [0]);
+  
+  for (int i=0; i < keys.length; i++) {
+    String attributeName = keys [i];
+    Object value = bundle.get (attributeName);
+    add (attributeName, objectName, value);
+    }
+
+  return true;
+
+} // add
+//--------------------------------------------------------------------------------
 public int size ()
 {
   return map.size ();
@@ -143,6 +157,13 @@ public boolean hasAttribute (String attributeName)
 public HashMap getAttribute (String attributeName)
 {
   return (HashMap) map.get (attributeName);
+}
+//--------------------------------------------------------------------------------
+public Class getClass (String attributeName)
+{
+  String firstObjectName = getObjectNames (attributeName)[0];
+  Object firstValue = getValue (attributeName, firstObjectName);
+  return firstValue.getClass ();
 }
 //--------------------------------------------------------------------------------
 public Object getValue (String attribute, String objectName)
@@ -245,6 +266,18 @@ public HashMap getAttributes (String canonicalName)
 
 } // getAttributes
 //--------------------------------------------------------------------------------
+public void setAttributes (String canonicalName, HashMap bundle)
+{
+  String [] allAttributes = getAttributeNames ();
+  for (int i=0; i < allAttributes.length; i++) {
+    String attribute = allAttributes [i];
+    Object value = getValue (attribute, canonicalName);
+    if (value != null)
+       bundle.put (attribute, value);
+    } // for i
+
+} // getAttributes
+//--------------------------------------------------------------------------------
 /**
  *  multiple GraphObj's (edges in particular) may have the same name; this method
  *  counts names which begin with the same string.  for instance
@@ -279,6 +312,25 @@ public int countIdentical (String attribute, String objectName)
   return matches;
     
 } // countIdentical
+//--------------------------------------------------------------------------------
+/**
+ *  return attributeName/attributeClass pairs, for every known attribute
+ */
+public HashMap getSummary ()
+{
+  HashMap result = new HashMap ();
+  String [] attributeNames = getAttributeNames ();
+
+  for (int i=0; i < attributeNames.length; i++) {
+    String attributeName = attributeNames [i];
+    String firstObjectName = getObjectNames (attributeName)[0];
+    Object firstValue = getValue (attributeName, firstObjectName);
+    result.put (attributeName, firstValue.getClass ());
+    } // for i
+
+  return result;
+
+} // getSummary
 //--------------------------------------------------------------------------------
 public String toString ()
 {

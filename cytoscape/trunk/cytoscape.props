@@ -38,14 +38,14 @@ node.border.color=255,0,0
 #   3. the attribute name which, if present in node or edge attributes,
 #      tells cytoscape to load the plugin
 #--------------------------------------------------------------------
-plugin.bar.className=cytoscape.plugins.demo.Bar
+plugin.bar.className=csplugins.demo.Bar
 plugin.bar.fileExtension=bar
 plugin.bar.attributeName=bar
-plugin.foo.load=cytoscape.plugins.demo.Foo
+#plugin.foo.load=csplugins.demo.Foo
 
 # to force unconditional load of the active paths code
-#plugin.activePaths.load=cytoscape.plugins.activePaths.ActivePaths
+#plugin.activePaths.load=csplugins.activePaths.ActivePaths
 
 # optional load, based on the presence of an "xxx.mrna" file
-plugin.activePaths.className=cytoscape.plugins.activePaths.ActivePaths
+plugin.activePaths.className=csplugins.activePaths.ActivePaths
 plugin.activePaths.fileExtension=mrna

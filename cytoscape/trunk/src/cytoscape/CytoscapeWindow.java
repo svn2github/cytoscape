@@ -66,7 +66,7 @@ public class CytoscapeWindow extends JPanel { // implements VizChooserClient {
   protected JMenuBar menuBar;
   protected JMenu opsMenu;
   protected JToolBar toolbar;
-   protected JLabel infoLabel;
+  protected JLabel infoLabel;
 
 
   protected Cursor defaultCursor = Cursor.getPredefinedCursor (Cursor.DEFAULT_CURSOR);
@@ -75,7 +75,9 @@ public class CytoscapeWindow extends JPanel { // implements VizChooserClient {
   protected Layouter layouter;
 
   protected Graph2DView graphView;
-  protected ViewMode disabledEditingMode = new DisabledEditMode ();
+  protected ViewMode editGraphMode  = new EditGraphMode ();
+  protected ViewMode readOnlyGraphMode = new ReadOnlyGraphMode ();
+  protected ViewMode currentGraphMode = readOnlyGraphMode;
   protected ViewMode nodeAttributesPopupMode = new NodeAttributesPopupMode ();
   protected boolean viewModesInstalled = false;
 
@@ -106,6 +108,8 @@ public class CytoscapeWindow extends JPanel { // implements VizChooserClient {
    // provides a title for that new window
   protected String titleForCurrentSelection = null;
   protected CytoscapeConfig config;
+
+  protected JMenuItem deleteSelectionMenuItem;
 //------------------------------------------------------------------------------
 public CytoscapeWindow (cytoscape parentApp,
                         CytoscapeConfig config,
@@ -364,7 +368,7 @@ public void setInteractivity (boolean newState)
 {
   if (newState == true) { // turn interactivity ON
     if (!viewModesInstalled) {
-      graphView.addViewMode (disabledEditingMode);
+      graphView.addViewMode (currentGraphMode);
       graphView.addViewMode (nodeAttributesPopupMode);
       viewModesInstalled = true;
       }
@@ -373,7 +377,7 @@ public void setInteractivity (boolean newState)
     }
   else {  // turn interactivity OFF
     if (viewModesInstalled) {
-      graphView.removeViewMode (disabledEditingMode);
+      graphView.removeViewMode (currentGraphMode);
       graphView.removeViewMode (nodeAttributesPopupMode); 
       viewModesInstalled = false;
       }
@@ -407,6 +411,34 @@ protected JMenuBar createMenuBar ()
 
   menuBar.add (fileMenu);
 
+  JMenu editMenu = new JMenu ("Edit");
+  menuBar.add (editMenu);
+
+  //JMenu modeMenu = new JMenu ("Mode");
+  //menuBar.add (modeMenu);
+  ButtonGroup modeGroup = new ButtonGroup ();
+  JRadioButtonMenuItem readOnlyModeButton = new JRadioButtonMenuItem ("Read-only mode");
+  JRadioButtonMenuItem editModeButton = new JRadioButtonMenuItem ("Edit mode for nodes and edges");
+  modeGroup.add (readOnlyModeButton);
+  modeGroup.add (editModeButton);
+  //modeMenu.add (readOnlyModeButton);
+  //modeMenu.add (editModeButton);
+  editMenu.add (readOnlyModeButton);
+  editMenu.add (editModeButton);
+  readOnlyModeButton.setSelected (true);
+  readOnlyModeButton.addActionListener (new ReadOnlyModeAction ());
+  editModeButton.addActionListener (new EditModeAction ());
+  editMenu.addSeparator ();
+
+  deleteSelectionMenuItem = editMenu.add (new DeleteSelectedAction ());
+  deleteSelectionMenuItem.setEnabled (false);
+
+
+  JMenu selectiveDisplayMenu = new JMenu ("Select");
+  selectiveDisplayMenu.setToolTipText ("Select nodes by different criteria");
+  menuBar.add (selectiveDisplayMenu);
+  selectiveDisplayMenu.add (new DeselectAllAction ());
+
   JMenu layoutMenu = new JMenu ("Layout");
   layoutMenu.setToolTipText ("Apply new layout algorithm to graph");
   menuBar.add (layoutMenu);
@@ -417,15 +449,9 @@ protected JMenuBar createMenuBar ()
   // layoutMenu.add (new GroupWiseLayoutAction ());
   layoutMenu.add (new LayoutAction ());
 
-  JMenu selectiveDisplayMenu = new JMenu ("Select");
-  selectiveDisplayMenu.setToolTipText ("Select nodes by different criteria");
-  menuBar.add (selectiveDisplayMenu);
-  selectiveDisplayMenu.add (new DeselectAllAction ());
-
   opsMenu = new JMenu ("Ops"); // always create the ops menu
   menuBar.add (opsMenu);
 
-  // if (bioDataServer != null) selectiveDisplayMenu.add (new GoIDSelectAction ());
   selectiveDisplayMenu.add (new AlphabeticalSelectionAction ());
   mi = selectiveDisplayMenu.add (new DisplaySelectedInNewWindowAction ());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_S, ActionEvent.CTRL_MASK));
@@ -659,6 +685,28 @@ protected class RenderAction extends AbstractAction
 
 } // inner class RenderAction
 //------------------------------------------------------------------------------
+protected class DeleteSelectedAction extends AbstractAction   {
+  DeleteSelectedAction () { super ("Delete Selected Nodes and Edges"); }
+
+  public void actionPerformed (ActionEvent e) {
+    Graph2D g = graphView.getGraph2D ();
+    NodeCursor nc = g.selectedNodes (); 
+    while (nc.ok ()) {
+      Node node = nc.node ();
+      g.removeNode (node);
+      nc.next ();
+      } // while
+    EdgeCursor ec = g.selectedEdges ();
+    while (ec.ok ()) {
+      g.removeEdge (ec.edge ());
+      ec.next ();
+      }
+    redrawGraph ();
+    } // actionPerformed
+  
+
+} // inner class DeleteSelectedAction
+//------------------------------------------------------------------------------
 protected class LayoutAction extends AbstractAction   {
   LayoutAction () { super ("Refresh"); }
     
@@ -713,8 +761,6 @@ protected class RandomLayoutAction extends AbstractAction   {
     redrawGraph ();
     }
 }
-
-
 //-----------------------------------------------------------------------------
 protected class AlphabeticalSelectionAction extends AbstractAction   {
   AlphabeticalSelectionAction () { super ("By Name"); }
@@ -736,8 +782,34 @@ protected class DeselectAllAction extends AbstractAction   {
     }
 }
 //------------------------------------------------------------------------------
+protected class ReadOnlyModeAction extends AbstractAction   {
+  ReadOnlyModeAction () { super ("Read only Mode"); }
+
+  public void actionPerformed (ActionEvent e) {
+    graphView.removeViewMode (currentGraphMode);
+    currentGraphMode = readOnlyGraphMode;
+    graphView.addViewMode (currentGraphMode);
+    deleteSelectionMenuItem.setEnabled (false);
+    }
+}
+//------------------------------------------------------------------------------
+protected class EditModeAction extends AbstractAction   {
+  EditModeAction () { super ("Edit Mode for Nodes and Edges"); }
+
+  public void actionPerformed (ActionEvent e) {
+    graphView.removeViewMode (currentGraphMode);
+    currentGraphMode = editGraphMode;
+    graphView.addViewMode (currentGraphMode);
+    deleteSelectionMenuItem.setEnabled (true);
+    }
+}
+//------------------------------------------------------------------------------
+/**
+ * a temporary debugging aid (pshannon, mar 2002): all attributes of the 
+ * selected nodes are printed to stdout.
+ */
 protected class DisplayAttributesOfSelectedNodesAction extends AbstractAction {
-  DisplayAttributesOfSelectedNodesAction () { super ("Attributes"); }
+  DisplayAttributesOfSelectedNodesAction () { super ("DEBUG: display attributes of selected nodes"); }
   public void actionPerformed (ActionEvent e) {
     Graph2D g = graphView.getGraph2D ();
     NodeCursor nc = g.selectedNodes (); 
@@ -1012,20 +1084,55 @@ protected class CursorTesterAction extends AbstractAction  {
 
 } // CursorTester
 //------------------------------------------------------------------------------
-protected EditMode createDisabledEditingMode ()
-{
-  EditMode mode = new EditMode ();
-  mode.allowNodeCreation (false);
-  mode.allowEdgeCreation (false);
-  mode.allowBendCreation (false);
-  mode.showNodeTips (true);
-  mode.showEdgeTips (true);
-  return mode;
+class EditGraphMode extends EditMode {
+  EditGraphMode () { 
+   super (); 
+   allowNodeCreation (true);
+   allowEdgeCreation (true);
+   allowBendCreation (true);
+   showNodeTips (true);
+   showEdgeTips (true);
+   }
+  protected String getNodeTip (Node node) {
+    String geneName = graphView.getGraph2D().getRealizer(node).getLabelText();
+    String canonicalName = getCanonicalNodeName (node);
+    if (canonicalName != null && canonicalName.length () > 0 && !canonicalName.equals (geneName))
+      return geneName + " " + canonicalName;
+    return geneName;
+    } // getNodeTip
 
-} // createDisabledEditingMode
+  protected void nodeCreated (Node node) {
+    String defaultName = graphView.getGraph2D().getLabelText (node);
+    HashMap nodeAttributeBundle = configureNewNode (node);
+    String commonNameKey = "commonName";
+    String commonName = defaultName;
+    if (nodeAttributeBundle.containsKey (commonNameKey)) {
+      commonName = (String) nodeAttributeBundle.get (commonNameKey);
+      NodeRealizer r = graphView.getGraph2D().getRealizer(node);
+      r.setLabelText (commonName);
+      }
+    String canonicalName = (String) nodeAttributeBundle.get ("canonicalName");
+    if (canonicalName == null || canonicalName.length () < 1)
+      canonicalName = commonName;
+
+    if (canonicalName == null || canonicalName.length () < 1)
+      canonicalName = defaultName;
+   
+    nodeAttributes.add (canonicalName, nodeAttributeBundle);
+    } // nodeCreated
+
+  protected void edgeCreated (Edge e) {
+    System.out.println ("edge created: " + e);
+    }
+
+  protected String getEdgeTip (Edge edge) {
+    return edgeAttributes.getCanonicalName (edge);
+    } // getEdgeTip
+
+} // inner class EditGraphMode
 //------------------------------------------------------------------------------
-class DisabledEditMode extends EditMode {
-  DisabledEditMode () { 
+class ReadOnlyGraphMode extends EditMode {
+  ReadOnlyGraphMode () { 
    super (); 
    allowNodeCreation (false);
    allowEdgeCreation (false);
@@ -1045,7 +1152,7 @@ class DisabledEditMode extends EditMode {
     return edgeAttributes.getCanonicalName (edge);
     } // getEdgeTip
 
-} // inncer class DisabledEditMode
+} // inncer class ReadOnlyGraphMode
 //------------------------------------------------------------------------------
 protected class NodeAttributesPopupMode extends PopupMode {
 
@@ -1098,5 +1205,42 @@ protected class NodeAttributesPopupMode extends PopupMode {
     }
 
 } // inner class NodeAttributesPopupMode
+//---------------------------------------------------------------------------------------
+protected HashMap configureNewNode (Node node)
+{
+  OptionHandler options = new OptionHandler ("New Node");
+
+  String [] attributeNames = nodeAttributes.getAttributeNames ();
+  System.out.println ("attributes: " + attributeNames.length);
+
+  for (int i=0; i < attributeNames.length; i++) {
+    String attributeName = attributeNames [i];
+    Class attributeClass = nodeAttributes.getClass (attributeName);
+    if (attributeClass.equals ("string".getClass ()))
+      options.addString (attributeName, "");
+    else if (attributeClass.equals (new Double (0.0).getClass ()))
+      options.addDouble (attributeName, 0);
+    else if (attributeClass.equals (new Integer (0).getClass ()))
+      options.addInt (attributeName, 0);
+    } // for i
+  
+  options.showEditor ();
+
+  HashMap result = new HashMap ();
+
+  for (int i=0; i < attributeNames.length; i++) {
+    String attributeName = attributeNames [i];
+    Class attributeClass = nodeAttributes.getClass (attributeName);
+    if (attributeClass.equals ("string".getClass ()))
+       result.put (attributeName, (String) options.get (attributeName));
+    else if (attributeClass.equals (new Double (0.0).getClass ()))
+       result.put (attributeName, (Double) options.get (attributeName));
+    else if (attributeClass.equals (new Integer (0).getClass ()))
+       result.put (attributeName, (Integer) options.get (attributeName));
+    } // for i
+
+  return result;
+
+} // configureNode
 //---------------------------------------------------------------------------------------
 } // CytoscapeWindow

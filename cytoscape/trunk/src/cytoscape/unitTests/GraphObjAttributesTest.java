@@ -257,7 +257,7 @@ public void testNodeToNameMapping () throws Exception
 } // testNodeToNameMapping
 //-------------------------------------------------------------------------
 /**
- * client program need to a hashmap of attribute/attributeValue pairs
+ * client programs may need a hashmap of attribute/attributeValue pairs
  * for each graphObj (each node or edge).  
  * test that here.
  */
@@ -297,6 +297,51 @@ public void testGetAttributesBundle () throws Exception
   assertTrue (s.equals (magic));
 
 } // testGetAttributesBundle
+//-------------------------------------------------------------------------
+/**
+ * client programs may need to supply a hashmap of attribute/attributeValue 
+ * for a new or existing node or edge.
+ * test that here.
+ */
+public void testAddAttributesBundle () throws Exception
+{
+  System.out.println ("testAddAttributesBundle");
+
+  GraphObjAttributes attributes = new GraphObjAttributes ();
+
+  Double homology = new Double (99.32);
+  Integer count = new Integer (33);
+  String magic = "abracadabra";
+  
+  String nodeName = "GAL4";
+
+  HashMap bundle = new HashMap ();
+  bundle.put ("homology", homology);
+  bundle.put ("count",  count);
+  bundle.put ("magic",  magic);
+
+  attributes.add (nodeName, bundle);
+
+  HashMap bundleRetrieved = attributes.getAttributes (nodeName);
+
+  assertTrue (bundleRetrieved.size () == 3);
+
+  Object homologyResult = bundleRetrieved.get ("homology");
+  assertTrue (homologyResult.getClass() == (new Double (0)).getClass ());
+  Double h = (Double) homologyResult;
+  assertTrue (h.equals (homology));
+
+  Object countResult = bundleRetrieved.get ("count");
+  assertTrue (countResult.getClass() == (new Integer (0)).getClass ());
+  Integer c = (Integer) countResult;
+  assertTrue (c.equals (count));
+
+  Object magicResult = bundleRetrieved.get ("magic");
+  assertTrue (magicResult.getClass() == "".getClass ());
+  String s = (String) magicResult;
+  assertTrue (s.equals (magic));
+
+} // testAddAttributesBundle
 //-------------------------------------------------------------------------
 /**
  *  multiple GraphObj's (edges in particular) may have the same name; this method
@@ -410,7 +455,67 @@ public void testGetAndAddNameMapping () throws Exception
 
 } // testGetAndAddNameMapping
 //-------------------------------------------------------------------------
-public static void main (String[] args) 
+/**
+ * client programs may need a list of all attributes: their name, their
+ * type, and -- maybe someday -- their range.
+ * test that here.
+ */
+public void testGetAttributeSummary () throws Exception
+{
+  System.out.println ("testGetAttributeSummary");
+
+  GraphObjAttributes attributes = new GraphObjAttributes ();
+
+  Double homology = new Double (99.32);
+  Integer count = new Integer (33);
+  String magic = "abracadabra";
+  
+  String nodeName = "GAL4";
+
+  HashMap bundle = new HashMap ();
+  bundle.put ("homology", homology);
+  bundle.put ("count",  count);
+  bundle.put ("magic",  magic);
+
+  attributes.add (nodeName, bundle);
+  HashMap summary = attributes.getSummary ();
+
+  assertTrue (summary.size () == 3);
+  assertTrue (summary.get ("homology") == homology.getClass ());
+  assertTrue (summary.get ("count") == count.getClass ());
+  assertTrue (summary.get ("magic") == magic.getClass ());
+
+} // testGetAttributeSummary
+//-------------------------------------------------------------------------
+/**
+ * can we get back exactly the java class of an attribute?
+ */
+public void testGetAttributeClass () throws Exception
+{
+  System.out.println ("testGetAttributeClass");
+
+  GraphObjAttributes attributes = new GraphObjAttributes ();
+
+  Double homology = new Double (99.32);
+  Integer count = new Integer (33);
+  String magic = "abracadabra";
+  
+  String nodeName = "GAL4";
+
+  HashMap bundle = new HashMap ();
+  bundle.put ("homology", homology);
+  bundle.put ("count",  count);
+  bundle.put ("magic",  magic);
+
+  attributes.add (nodeName, bundle);
+
+  assertTrue (attributes.getClass ("homology") == (new Double (0.0)).getClass ());
+  assertTrue (attributes.getClass ("count") == (new Integer (0)).getClass ());
+  assertTrue (attributes.getClass ("magic") == "string".getClass ());
+
+} // testGetAttributeClass
+//-------------------------------------------------------------------------
+public static void main (String [] args) 
 {
   junit.textui.TestRunner.run (new TestSuite (GraphObjAttributesTest.class));
 }

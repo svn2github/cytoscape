@@ -47,7 +47,7 @@ public cytoscape (String [] args) throws Exception
   if (config.helpRequested ()) {
     System.out.println (version);
     System.out.println (config.getUsage ());
-    System.exit (0);
+    exit ();
     }    
   else if (config.inputsError ()) {
     System.out.println (version);
@@ -58,7 +58,7 @@ public cytoscape (String [] args) throws Exception
     }
   else if (config.displayVersion ()) {
     System.out.println (version);
-    System.exit (0);
+    exit ();
     }
 
     //------------------------- run the program
@@ -175,7 +175,7 @@ public void windowClosed (WindowEvent e)
 
   if (windows.size () == 0) {
     System.out.println ("all windows closed, exiting...");
-    System.exit (0);
+    exit ();
     }
 
 } // windowListener.windowClosed	
@@ -186,7 +186,10 @@ public void exit ()
     Window w = (Window) windows.elementAt (i);
     w.dispose ();
     }
-}
+
+  System.exit (0);
+
+} // exit
 //------------------------------------------------------------------------------
 public static void main (String args []) throws Exception
 {
