@@ -139,15 +139,13 @@ public class GinyUtils {
         
         GraphPerspective graphPerspective = view.getGraphPerspective();
         Set nodeViewsToSelect = new HashSet();
-        for (Iterator i = view.getNodeViewsIterator(); i.hasNext(); ) {
+        for (Iterator i = view.getSelectedNodes().iterator(); i.hasNext(); ) {
             NodeView nview =(NodeView) i.next();
-            if (nview.isSelected() ) {
-                Node n = graphPerspective.getNode(nview.getGraphPerspectiveIndex());
-                for (Iterator ni = graphPerspective.neighborsList(n).iterator(); ni.hasNext(); ) {
-                    Node neib =(Node) ni.next();
-                    NodeView neibview = (NodeView)view.getNodeView(neib.getRootGraphIndex());
-                    nodeViewsToSelect.add(neibview);
-                }
+            Node n = nview.getNode();
+            for (Iterator ni = graphPerspective.neighborsList(n).iterator(); ni.hasNext(); ) {
+                Node neib =(Node) ni.next();
+                NodeView neibview = view.getNodeView(neib);
+                nodeViewsToSelect.add(neibview);
             }
         }
         for (Iterator si = nodeViewsToSelect.iterator(); si.hasNext(); ) {
