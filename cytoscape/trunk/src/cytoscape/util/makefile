@@ -16,8 +16,7 @@ OBJS =  Misc.class \
         MutableString.class \
         MutableInt.class \
         MutableBool.class \
-        Exec.class \
-        BrowserLauncher.class
+        Exec.class
 
 default: objs 
 
