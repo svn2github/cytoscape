@@ -40,9 +40,9 @@ public class VizMapSizeTab extends VizMapTab {
      *
      *	@param	VMM	VisualMappingManager for the window
      *	@param	n	Underlying network
-     *	@param	type	Must be {@link VizMapUI.NODE_SIZE}
+     *	@param	type	Must be {@link VizMapUI#NODE_SIZE}
      *
-     *  @throws IllegalArgumentException if type is not {@link VizMapUI.NODE_SIZE}
+     *  @throws IllegalArgumentException if type is not {@link VizMapUI#NODE_SIZE}
      */
     public VizMapSizeTab (VizMapUI mainUI, VisualMappingManager VMM, byte type) throws IllegalArgumentException {
 	this(mainUI, VMM, type, true);
@@ -54,11 +54,11 @@ public class VizMapSizeTab extends VizMapTab {
      *
      *	@param	VMM	VisualMappingManager for the window
      *	@param	n	Underlying network
-     *	@param	type	Must be {@link VizMapUI.NODE_SIZE}
+     *	@param	type	Must be {@link VizMapUI#NODE_SIZE}
      *  @param	locked	true to lock node height/width to the same calculator,
      *			false otherwise.
      *
-     *  @throws IllegalArgumentException if type is not {@link VizMapUI.NODE_SIZE}
+     *  @throws IllegalArgumentException if type is not {@link VizMapUI#NODE_SIZE}
      */
 
     public VizMapSizeTab (VizMapUI mainUI, VisualMappingManager VMM, byte type, boolean locked) throws IllegalArgumentException {

@@ -187,7 +187,7 @@ public abstract class AbstractCalculator implements Calculator {
      * @param   network         the Network on which this attribute is defined
      * @deprecated Only supports one mapping, use
      *		{@link #updateAttribute(String, ObjectMapping)} or
-     *		{@link #updateAttribute(String, int)) instead.
+     *		{@link #updateAttribute(String, int)} instead.
      */
     void updateAttribute(String attrName, Network network) {
 	this.getMapping().setControllingAttributeName(attrName, network, false);

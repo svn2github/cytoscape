@@ -67,8 +67,8 @@ public class DiscreteMapping extends TreeMap implements ObjectMapping {
      * Call whenever the controlling attribute changes. If preserveMapping
      * is true, all the currently stored mappings are unchanged; otherwise
      * all the mappings are cleared. In either case, this method calls
-     * {@link getUI} to rebuild the UI for this mapping, which in turn calls
-     * {@link loadKeys} to load the current data values for the new attribute.
+     * {@link #getUI} to rebuild the UI for this mapping, which in turn calls
+     * {@link #loadKeys} to load the current data values for the new attribute.
      * <p>
      * Called by event handler from AbstractCalculator
      * {@link AbstractCalculator#AttributeSelectorListener}.
@@ -92,7 +92,7 @@ public class DiscreteMapping extends TreeMap implements ObjectMapping {
      * attribute from the appropriate GraphObjAttributes member of the
      * supplied network. Any data value that is not already a key in this
      * mapping is added with a null visual attribute value.
-     * This method is called by the {@link getUI} method before building
+     * This method is called by the {@link #getUI} method before building
      * the UI.
      */
     public void loadKeys(Network network) {

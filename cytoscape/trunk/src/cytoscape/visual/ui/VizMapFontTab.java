@@ -30,10 +30,10 @@ public class VizMapFontTab extends VizMapTab {
      *
      *	@param	VMM	VisualMappingManager for the window
      *	@param	n	Underlying network
-     *	@param	type	Must be {@link VizMapUI.NODE_LABEL_FONT} or
-     *                  {@link VizMapUI.EDGE_LABEL_FONT}
+     *	@param	type	Must be {@link VizMapUI#NODE_LABEL_FONT} or
+     *                  {@link VizMapUI#EDGE_LABEL_FONT}
      *
-     *  @throws IllegalArgumentException if type is not {@link VizMapUI.NODE_LABEL_FONT} or {@link VizMapUI.EDGE_LABEL_FONT}
+     *  @throws IllegalArgumentException if type is not {@link VizMapUI#NODE_LABEL_FONT} or {@link VizMapUI#EDGE_LABEL_FONT}
      */
     public VizMapFontTab (VizMapUI mainUI, VisualMappingManager VMM, byte type) throws IllegalArgumentException {
 	super(false);
