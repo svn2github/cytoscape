@@ -1,7 +1,7 @@
 package cytoscape.graph.dynamic.util.test;
 
 import cytoscape.graph.dynamic.DynamicGraph;
-import cytoscape.graph.dynamic.util.DynamicGraphRepresentation;
+import cytoscape.graph.dynamic.util.DynamicGraphFactory;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntIterator;
 
@@ -10,7 +10,7 @@ public class GraphTest
 
   public static void main(String[] args)
   {
-    final DynamicGraph graph = new DynamicGraphRepresentation();
+    final DynamicGraph graph = DynamicGraphFactory.instantiateDynamicGraph();
     System.out.println("Creating 10 nodes...");
     for (int i = 0; i < 10; i++) graph.createNode();
     IntEnumerator nodesEnum = graph.nodes();

@@ -5,7 +5,7 @@ import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntIterator;
 import cytoscape.util.intr.IntStack;
 
-public class DynamicGraphRepresentation implements DynamicGraph
+final class DynamicGraphRepresentation implements DynamicGraph
 {
 
   private int m_nodeCount;
@@ -24,7 +24,7 @@ public class DynamicGraphRepresentation implements DynamicGraph
   // empty() it before using it.
   private final IntStack m_stack;
 
-  public DynamicGraphRepresentation()
+  DynamicGraphRepresentation()
   {
     m_nodeCount = 0;
     m_firstNode = null;
