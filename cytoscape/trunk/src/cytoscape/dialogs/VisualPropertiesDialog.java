@@ -120,6 +120,7 @@ public class ApplyAction extends AbstractAction {
 			   mapper);
 	  */
 
+      /*
       DiscreteMapper dm =
 	  (DiscreteMapper)
 	  aMapper.getValueMapper(VizMapperCategories.EDGE_COLOR);
@@ -129,7 +130,9 @@ public class ApplyAction extends AbstractAction {
       valueMap.remove("pd");
       valueMap.put("pp",ppColor);
       valueMap.put("pd",pdColor);
-
+      */
+      EdgeArrowColor.removeThenAddEdgeColor(aMapper,"pp",ppColor);
+      EdgeArrowColor.removeThenAddEdgeColor(aMapper,"pd",pdColor);
       //DiscreteMapper dm = new DiscreteMapper(valueMap);
       //aMapper.setAttributeMapEntry(VizMapperCategories.EDGE_COLOR,
       //				   "interaction",
