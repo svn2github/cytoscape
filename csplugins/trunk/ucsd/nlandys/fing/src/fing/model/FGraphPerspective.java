@@ -404,16 +404,30 @@ class FGraphPerspective implements GraphPerspective
               (otherNativeEdges.nextInt()); } };
     return new FGraphPerspective(m_root, rootGraphNodeInx, rootGraphEdgeInx); }
 
-  public GraphPerspective createGraphPerspective(Node[] nodes, Edge[] edges)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  public GraphPerspective createGraphPerspective(Node[] nodes, Edge[] edges) {
+    for (int i = 0; i < nodes.length; i++)
+      if (!containsNode(nodes[i])) return null;
+    for (int i = 0; i < edges.length; i++)
+      if (!containsEdge(edges[i])) return null;
+    return m_root.createGraphPerspective(nodes, edges); }
 
-  public GraphPerspective createGraphPerspective(int[] perspNodeInx,
-                                                 int[] perspEdgeInx)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  public GraphPerspective createGraphPerspective(int[] rootGraphNodeInx,
+                                                 int[] rootGraphEdgeInx) {
+    for (int i = 0; i < rootGraphNodeInx.length; i++) {
+      final int rootGraphNodeIndex = rootGraphNodeInx[i];
+      if (!(rootGraphNodeIndex < 0)) return null;
+      final int nativeNodeIndex =
+        m_rootToNativeNodeInxMap.get(~rootGraphNodeIndex);
+      if (nativeNodeIndex < 0 || nativeNodeIndex == Integer.MAX_VALUE)
+        return null; }
+    for (int i = 0; i < rootGraphEdgeInx.length; i++) {
+      final int rootGraphEdgeIndex = rootGraphEdgeInx[i];
+      if (!(rootGraphEdgeIndex < 0)) return null;
+      final int nativeEdgeIndex =
+        m_rootToNativeEdgeInxMap.get(~rootGraphEdgeIndex);
+      if (nativeEdgeIndex < 0 || nativeEdgeIndex == Integer.MAX_VALUE)
+        return null; }
+    return m_root.createGraphPerspective(rootGraphNodeInx, rootGraphEdgeInx); }
 
   public GraphPerspective createGraphPerspective(final Filter filter) {
     m_heap.empty();
