@@ -289,7 +289,8 @@ public class VizMapAttrTab extends VizMapTab {
 		//_setDefault(defaultValueDisplayer.getValue());
                 Object newDefault = defaultValueDisplayer.getValue();
                 VizUIUtilities.setDefault(VMM.getVisualStyle(), type, newDefault);
-                VMM.getNetworkView().redrawGraph(false, true);
+                // Commented out to prevent auto-updates
+                // VMM.getNetworkView().redrawGraph(false, true);
 	    }
 	}
     }
@@ -369,8 +370,8 @@ public class VizMapAttrTab extends VizMapTab {
 
         //get the view of the new calculator
 	    refreshUI();
-        //redraw the graph
-	    VMM.getNetworkView().redrawGraph(false, true);
+        // Commented out to prevent auto-updates
+	    // VMM.getNetworkView().redrawGraph(false, true);
     }
 
     /**
