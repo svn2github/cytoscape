@@ -2,11 +2,13 @@ package cytoscape.foo;
 
 import cytoscape.Cytoscape;
 import cytoscape.graph.layout.algorithm.MutableGraphLayout;
+import cytoscape.graph.layout.algorithm.MutablePolyEdgeGraphLayout;
 import cytoscape.graph.layout.algorithm.util.MutableGraphLayoutRepresentation;
 import cytoscape.view.CyNetworkView;
 import giny.model.Edge;
 import giny.view.EdgeView;
 import giny.view.NodeView;
+import java.awt.geom.Point2D;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Vector;
@@ -64,7 +66,7 @@ public final class GraphConverter
   }
 
   private static class MyRMutableGraphLayout
-    implements MutableGraphLayout
+    implements MutablePolyEdgeGraphLayout
   {
     // Definiition of m_nodeTranslation:
     // m_nodeTranslation[i] defines, for node at index i in our
@@ -73,8 +75,8 @@ public final class GraphConverter
 
     // Definition of m_edgeTranslation:
     // m_edgeTranslation[i] defines, for edge at index i in our
-    // GraphTopology object, the corresponding EdgeView's Edge in Giny.
-    private final Edge[] m_edgeTranslation;
+    // GraphTopology object, the corresponding EdgeView in Giny.
+    private final EdgeView[] m_edgeTranslation;
 
     // Definiton of m_nodeIndexTranslation:
     // Both keys and values of this hashtable are java.lang.Integer objects.
@@ -91,7 +93,7 @@ public final class GraphConverter
     private final boolean m_allMovable;
 
     private MyRMutableGraphLayout(NodeView[] nodeTranslation,
-                                  Edge[] edgeTranslation,
+                                  EdgeView[] edgeTranslation,
                                   Hashtable nodeIndexTranslation,
                                   double width,
                                   double height,
@@ -112,9 +114,9 @@ public final class GraphConverter
     public int getNumNodes() { return m_nodeTranslation.length; }
     public int getNumEdges() { return m_edgeTranslation.length; }
     public boolean isDirectedEdge(int edgeIndex) {
-      return m_edgeTranslation[edgeIndex].isDirected(); }
+      return m_edgeTranslation[edgeIndex].getEdge().isDirected(); }
     public int getEdgeNodeIndex(int edgeIndex, boolean sourceNode) {
-      Edge edge = m_edgeTranslation[edgeIndex];
+      Edge edge = m_edgeTranslation[edgeIndex].getEdge();
       int ginyNInx;
       if (sourceNode) ginyNInx = edge.getSource().getRootGraphIndex();
       else ginyNInx = edge.getTarget().getRootGraphIndex();
@@ -131,16 +133,71 @@ public final class GraphConverter
       NodeView node = m_nodeTranslation[nodeIndex];
       if (m_allMovable) return true;
       else return node.isSelected(); }
+    private void checkPosition(double xPos, double yPos) {
+      if (xPos < 0.0d || xPos > getMaxWidth())
+        throw new IllegalArgumentException("X position is out of bounds");
+      if (yPos < 0.0d || yPos > getMaxHeight())
+        throw new IllegalArgumentException("Y position is out of bounds"); }
     public void setNodePosition(int nodeIndex, double xPos, double yPos) {
       NodeView node = m_nodeTranslation[nodeIndex];
-      if (xPos < 0.0d || xPos > getMaxWidth())
-        throw new IllegalArgumentException("xPos is out of bounds");
-      if (yPos < 0.0d || yPos > getMaxHeight())
-        throw new IllegalArgumentException("yPos is out of bounds");
+      checkPosition(xPos, yPos);
       if (!isMovableNode(nodeIndex))
         throw new UnsupportedOperationException
           ("node at index " + nodeIndex + " is not movable");
       node.setOffset(xPos + m_xOff, yPos + m_yOff); }
+    public int getNumAnchors(int edgeIndex) {
+      return m_edgeTranslation[edgeIndex].getBend().getHandles().size(); }
+    public double getAnchorPosition(int edgeIndex, int anchorIndex,
+                                    boolean xPosition) {
+      Point2D point = (Point2D)
+        m_edgeTranslation[edgeIndex].getBend().getHandles().get(anchorIndex);
+      return (xPosition ? (point.getX() - m_xOff): (point.getY() - m_yOff)); }
+    private void checkAnchorIndexBounds(int edgeIndex, int anchorIndex,
+                                        boolean create) {
+      final int numAnchors = getNumAnchors(edgeIndex) + (create ? 0 : -1);
+      if (anchorIndex < 0 || anchorIndex > numAnchors)
+        throw new IndexOutOfBoundsException("anchor index out of bounds"); }
+    private void checkMutableAnchor(int edgeIndex) {
+      final int srcNode = getEdgeNodeIndex(edgeIndex, true);
+      final int trgNode = getEdgeNodeIndex(edgeIndex, false);
+      if ((!isMovableNode(srcNode)) && (!isMovableNode(trgNode)))
+        throw new UnsupportedOperationException
+          ("anchors at specified edge cannot be changed"); }
+    public void deleteAnchor(int edgeIndex, int anchorIndex) {
+      checkAnchorIndexBounds(edgeIndex, anchorIndex, false);
+      checkMutableAnchor(edgeIndex);
+      m_edgeTranslation[edgeIndex].getBend().removeHandle(anchorIndex); }
+    public void createAnchor(int edgeIndex, int anchorIndex) {
+      checkAnchorIndexBounds(edgeIndex, anchorIndex, true);
+      checkMutableAnchor(edgeIndex);
+      m_edgeTranslation[edgeIndex].getBend().addHandle
+        (anchorIndex, new Point2D.Double());
+      Point2D src =
+        ((anchorIndex == 0) ?
+         (new Point2D.Double
+          (getNodePosition(getEdgeNodeIndex(edgeIndex, true), true),
+           getNodePosition(getEdgeNodeIndex(edgeIndex, true), false))) :
+         (new Point2D.Double
+          (getAnchorPosition(edgeIndex, anchorIndex - 1, true),
+           getAnchorPosition(edgeIndex, anchorIndex - 1, false))));
+      Point2D trg =
+        ((anchorIndex == getNumAnchors(edgeIndex) - 1) ?
+         (new Point2D.Double
+          (getNodePosition(getEdgeNodeIndex(edgeIndex, false), true),
+           getNodePosition(getEdgeNodeIndex(edgeIndex, false), false))) :
+         (new Point2D.Double
+          (getAnchorPosition(edgeIndex, anchorIndex + 1, true),
+           getAnchorPosition(edgeIndex, anchorIndex + 1, false))));
+      setAnchorPosition(edgeIndex, anchorIndex,
+                        (src.getX() + trg.getX()) / 2.0d,
+                        (src.getY() + trg.getY()) / 2.0d); }
+    public void setAnchorPosition(int edgeIndex, int anchorIndex,
+                                  double xPos, double yPos) {
+      checkAnchorIndexBounds(edgeIndex, anchorIndex, false);
+      checkMutableAnchor(edgeIndex);
+      checkPosition(xPos, yPos);
+      m_edgeTranslation[edgeIndex].getBend().moveHandle
+        (anchorIndex, new Point2D.Double(xPos + m_xOff, yPos + m_yOff)); }
   }
 
   /**
@@ -301,7 +358,8 @@ public final class GraphConverter
    * reason why it's important to &quot;lock&quot; the Cytoscape desktop
    * while operating on this return object.
    **/
-  public static MutableGraphLayout getGraphReference(double percentBorder)
+  public static MutablePolyEdgeGraphLayout getGraphReference
+    (double percentBorder)
   {
     if (percentBorder < 0.0d)
       throw new IllegalArgumentException("percentBorder < 0.0");
@@ -317,8 +375,8 @@ public final class GraphConverter
 
     // Definition of edgeTranslation:
     // edgeTranslation[i] defines, for edge at index i in our
-    // GraphTopology object, the corresponding EdgeView's Edge in Giny.
-    final Edge[] edgeTranslation = new Edge[numEdgesInTopology];
+    // GraphTopology object, the corresponding EdgeView in Giny.
+    final EdgeView[] edgeTranslation = new EdgeView[numEdgesInTopology];
 
     // Definiton of nodeIndexTranslation:
     // Both keys and values of this hashtable are java.lang.Integer objects.
@@ -357,7 +415,7 @@ public final class GraphConverter
     int edgeIndex = 0;
     while (edgeIterator.hasNext())
     {
-      Edge currentEdge = ((EdgeView) edgeIterator.next()).getEdge();
+      EdgeView currentEdge = (EdgeView) edgeIterator.next();
       edgeTranslation[edgeIndex] = currentEdge;
       edgeIndex++;
     }

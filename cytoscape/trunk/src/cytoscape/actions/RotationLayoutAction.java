@@ -2,7 +2,7 @@ package cytoscape.actions;
 
 import cytoscape.Cytoscape;
 import cytoscape.foo.GraphConverter;
-import cytoscape.graph.layout.algorithm.MutableGraphLayout;
+import cytoscape.graph.layout.algorithm.MutablePolyEdgeGraphLayout;
 import cytoscape.graph.layout.impl.RotationLayouter;
 import cytoscape.util.CytoscapeAction;
 import java.awt.BorderLayout;
@@ -28,7 +28,7 @@ public class RotationLayoutAction extends CytoscapeAction
 
   public void actionPerformed(ActionEvent e)
   {
-    final MutableGraphLayout nativeGraph =
+    final MutablePolyEdgeGraphLayout nativeGraph =
       GraphConverter.getGraphReference(1.0d);
     final RotationLayouter rotation = new RotationLayouter(nativeGraph);
     Frame cyFrame = Cytoscape.getDesktop();
