@@ -6,6 +6,7 @@ import giny.model.Node;
 import giny.model.RootGraph;
 
 import java.util.Iterator;
+import java.util.List;
 
 public final class AllRootGraphMethodsTest
 {
@@ -109,7 +110,7 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("incorrect nodes or edges count");
 
     // nodesList().
-    java.util.List nodesList = root.nodesList();
+    List nodesList = root.nodesList();
     if (nodesList.size() != 5)
       throw new IllegalStateException("incorrect node List size");
     for (int i = 0; i < nodesList.size(); i++) {
@@ -124,7 +125,7 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("GraphPerspective is null");
 
     // edgesList().
-    java.util.List edgesList = root.edgesList();
+    List edgesList = root.edgesList();
     if (edgesList.size() != 7)
       throw new IllegalStateException("incorrect edge List size");
     for (int i = 0; i < edgesList.size(); i++) {
@@ -153,7 +154,7 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("RootGraph contains edge from other");
 
     // neighborsList(Node).
-    java.util.List neighList = root.neighborsList(root.getNode(nodeInx[0]));
+    List neighList = root.neighborsList(root.getNode(nodeInx[0]));
     if (neighList.size() != 2)
       throw new IllegalStateException("wrong number of neighbors");
     neighList = root.neighborsList(root.getNode(nodeInx[1]));
@@ -430,6 +431,36 @@ public final class AllRootGraphMethodsTest
     connEdges = root.getEdgeIndicesArray(nodeInx[0], minNodeInx - 1,
                                          true, false);
     if (connEdges != null) throw new IllegalStateException("not null");
+
+    // edgesList(Node, Node).
+    edgesList = root.edgesList
+      (root.getNode(nodeInx[3]), root.getNode(nodeInx[1]));
+    if (edgesList.size() != 0)
+      throw new IllegalStateException("edges List not of size 0");
+    edgesList = root.edgesList(root.getNode(nodeInx[0]), root2Node);
+    if (edgesList != null) throw new IllegalStateException("not null");
+    edgesList = root.edgesList
+      (root.getNode(nodeInx[0]), root.getNode(nodeInx[1]));
+    if (edgesList.size() != 1)
+      throw new IllegalStateException("edges List not of size 1");
+    if (((Edge) edgesList.get(0)).getRootGraphIndex() != edgeInx[0])
+      throw new IllegalStateException("wrong edge");
+    edgesList = root.edgesList
+      (root.getNode(nodeInx[2]), root.getNode(nodeInx[1]));
+    if (edgesList.size() != 1)
+      throw new IllegalStateException("edges List not of size 1");
+    if (((Edge) edgesList.get(0)).getRootGraphIndex() != edgeInx[1])
+      throw new IllegalStateException("wrong edge");
+    edgesList = root.edgesList
+      (root.getNode(nodeInx[2]), root.getNode(nodeInx[2]));
+    if (edgesList.size() != 1)
+      throw new IllegalStateException("edges List not of size 1");
+    if (((Edge) edgesList.get(0)).getRootGraphIndex() != edgeInx[3])
+      throw new IllegalStateException("wrong edge");
+    edgesList = root.edgesList
+      (root.getNode(nodeInx[1]), root.getNode(nodeInx[4]));
+    if (edgesList.size() != 0)
+      throw new IllegalStateException("edges List not of size 0");
   }
 
 }
