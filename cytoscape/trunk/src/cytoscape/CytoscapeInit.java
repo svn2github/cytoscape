@@ -16,7 +16,7 @@ import javax.swing.ImageIcon;
 
 /**
  * Cytoscape Init is responsible for starting Cytoscape in a way that makes sense.
- * 
+ *
  * The two main modes of running Cytoscape are either in "headless" mode or in "script" mode. This class will use the command-line options to figure out which mode is desired, and run things accordingly.
  *
  * The order for doing things will be the following:
@@ -29,13 +29,13 @@ import javax.swing.ImageIcon;
  * 7. Initialize all plugins, in order if specified.
  * 8. Start Desktop/ Print Output exit.
  */
-public class CytoscapeInit 
+public class CytoscapeInit
   implements
     PropertyChangeListener {
-  
+
   private static String[] args;
 
-  
+
   private static Properties properties;
   private static String propertiesLocation;
 
@@ -45,7 +45,7 @@ public class CytoscapeInit
   private static File mrud;
   private static File mruf;
 
-  private static Set pluginURLs; 
+  private static Set pluginURLs;
 
   // Data variables
   private static String bioDataServer;
@@ -55,7 +55,7 @@ public class CytoscapeInit
   private static Set edgeAttributes;
   private static Set nodeAttributes;
   private static String defaultSpeciesName;
-  
+
   // Configuration variables
   private static boolean useView = true;
   private static boolean suppressView = false;
@@ -66,7 +66,7 @@ public class CytoscapeInit
   private static String vizmapPropertiesLocation;
   private static String defaultVisualStyle = "default";
 
-  // project parsing 
+  // project parsing
   private static final String fWHITESPACE_AND_QUOTES = " \t\r\n\"";
   private static final String fQUOTES_ONLY ="\"";
   private static final String fDOUBLE_QUOTE = "\"";
@@ -111,15 +111,15 @@ public class CytoscapeInit
     edgeAttributes = new HashSet();
     nodeAttributes = new HashSet();
     pluginURLs = new HashSet();
-     
-   
-    
+
+
+
 
     // parse the command line
     CyCommandLineParser cli = new CyCommandLineParser();
     cli.parseCommandLine( args );
 
-   
+
 
     // see if help is requested
     if ( cli.helpRequested() ) {
@@ -130,7 +130,7 @@ public class CytoscapeInit
     // read in properties, and assign variables from them
     CyPropertiesReader propReader = new CyPropertiesReader();
     propReader.readProperties( cli.getSpecifiedPropsFile() );
-    
+
     properties = propReader.getProperties();
     propertiesLocation = propReader.getPropertiesLocation();
     setVariablesFromProperties();
@@ -138,7 +138,7 @@ public class CytoscapeInit
     setVariablesFromCommandLine( cli );
     // this loads project files, whic are essentially an extension of the command line
     loadProjectFiles( cli.getProjectFiles() );
-    
+
     useView = cli.useView();
     if ( System.getProperty( "java.awt.headless" ) == "true" ) {
       useView = false;
@@ -146,7 +146,7 @@ public class CytoscapeInit
     suppressView = cli.suppressView();
 
 
-    
+
 
 
     // see if we are in headless mode
@@ -157,7 +157,7 @@ public class CytoscapeInit
       Cytoscape.getDesktop();
     }
 
-    //now that we are properly set up, 
+    //now that we are properly set up,
     //load all data, then load all plugins
 
     //Load the BioDataServer(s)
@@ -179,9 +179,9 @@ public class CytoscapeInit
     Cytoscape.loadAttributes( ( String[] )getNodeAttributes().toArray( new String[] {} ),
                               ( String[] )getEdgeAttributes().toArray( new String[] {} ),
                               !noCanonicalization(),
-                              bds, 
+                              bds,
                               getDefaultSpeciesName() );
-    
+
     Cytoscape.firePropertyChange( Cytoscape.ATTRIBUTES_CHANGED, null, null );
 
     // load expression data if specified
@@ -217,13 +217,13 @@ public class CytoscapeInit
 
     if ( !isHeadless() ) {
       WindowUtilities.hideSplash();
-    }    
+    }
 
 
     return true;
   }
 
-  
+
   public String getHelp () {
     return CyCommandLineParser.getHelp();
   }
@@ -239,11 +239,11 @@ public class CytoscapeInit
   public static boolean suppressView () {
     return suppressView;
   }
-  
+
   private boolean isDoubleQuote( String aToken ){
     return aToken.equals(fDOUBLE_QUOTE);
   }
-  
+
   private String flipDelimiters( String aCurrentDelims ) {
     String result = null;
     if ( aCurrentDelims.equals(fWHITESPACE_AND_QUOTES) ) {
@@ -254,7 +254,7 @@ public class CytoscapeInit
     }
     return result;
   }
- 
+
   public static String[] getArgs () {
     return args;
   }
@@ -262,7 +262,7 @@ public class CytoscapeInit
   public static Properties getProperties () {
     return properties;
   }
-  
+
   public static String getPropertiesLocation () {
     return propertiesLocation;
   }
@@ -279,33 +279,33 @@ public class CytoscapeInit
   public static String getBioDataServer () {
     return bioDataServer;
   }
- 
+
   public static boolean noCanonicalization () {
     return noCanonicalization;
   }
-  
+
   public static Set getExpressionFiles () {
     return expressionFiles;
   }
-  
+
   public static Set getGraphFiles () {
     return graphFiles;
   }
-  
+
   public static Set getEdgeAttributes () {
     return edgeAttributes;
   }
-  
+
   public static Set getNodeAttributes () {
     return nodeAttributes;
   }
-   
+
   public static String getDefaultSpeciesName () {
     return defaultSpeciesName;
   }
-  
+
   // Configuration variables
- 
+
   public static int getViewType () {
     if ( viewType == "internal" ) {
       return CytoscapeDesktop.INTERNAL_VIEW;
@@ -346,7 +346,7 @@ public class CytoscapeInit
   }
 
   private void loadProjectFiles ( List project_files ) {
- 
+
     ArrayList tokens = new ArrayList();
     for ( Iterator i = project_files.iterator(); i.hasNext(); ) {
       String file = ( String )i.next();
@@ -354,12 +354,12 @@ public class CytoscapeInit
         BufferedReader in = new BufferedReader( new FileReader( file ) );
         String oneLine = in.readLine();
         while (oneLine != null) {
-         
+
           if (oneLine.startsWith("#")) {
             // comment
           } else {
 
-            boolean returnTokens = true;    
+            boolean returnTokens = true;
             String currentDelims = fWHITESPACE_AND_QUOTES;
             StringTokenizer parser = new StringTokenizer( oneLine,
                                                           currentDelims,
@@ -367,13 +367,13 @@ public class CytoscapeInit
 
             while ( parser.hasMoreTokens() ) {
               String token = parser.nextToken(currentDelims);
-              if ( !isDoubleQuote(token) ){  
+              if ( !isDoubleQuote(token) ){
                 if ( !token.trim().equals("") ) {
                   tokens.add( token );
                 }
               }
               else {
-                currentDelims = flipDelimiters(currentDelims);    
+                currentDelims = flipDelimiters(currentDelims);
               }
             }
           }
@@ -406,7 +406,7 @@ public class CytoscapeInit
     nodeAttributes.addAll( parser.getNodeAttributeFiles() );
     edgeAttributes.addAll( parser.getEdgeAttributeFiles() );
     pluginURLs.addAll( parser.getPluginURLs() );
-    
+
     if ( parser.getViewThreshold() != null )
       viewThreshold = parser.getViewThreshold().intValue();
   }
@@ -422,7 +422,7 @@ public class CytoscapeInit
       String[] pargs = properties.getProperty( "plugins" ).split(",");
       for ( int i = 0; i < pargs.length; i++ ) {
         String plugin = pargs[i];
-        URL url; 
+        URL url;
         try {
           if ( plugin.startsWith( "http" ) ) {
             plugin = plugin.replaceAll( "http:/" ,"http://" );
@@ -440,17 +440,17 @@ public class CytoscapeInit
 
     // Data variables
     defaultSpeciesName = properties.getProperty("defaultSpeciesName", "unknown" );
-    bioDataServer = properties.getProperty( "bioDataServer", "annotation/manifest");
+    bioDataServer = properties.getProperty( "bioDataServer", "unknown");
 
 
     // Configuration variables
     viewThreshold = (new Integer(properties.getProperty( "viewThreshold", "500" ) ) ).intValue();
     viewType = properties.getProperty( "viewType", "tabbed" );
 
-   
+
     // View Only Variables
     defaultVisualStyle = properties.getProperty( "defaultVisualStyle", "default" );
-   
+
     mrud = new File( properties.getProperty( "mrud", System.getProperty( "user.dir") ) );
 
   }
@@ -463,11 +463,11 @@ public class CytoscapeInit
    * loading them all on one URLClassLoader, then interating through
    * each Jar file looking for classes that are CytoscapePlugins
    *
-   * Optionally, iterate through all classes on the classpath, and 
-   * try to find plugins that way as well. 
+   * Optionally, iterate through all classes on the classpath, and
+   * try to find plugins that way as well.
    */
   private void loadPlugins ( Set plugin_urls) {
-    
+
     URL[] urls = new URL[ plugin_urls.size() ];
     int count = 0;
     for ( Iterator iter = plugin_urls.iterator(); iter.hasNext(); ) {
@@ -476,7 +476,7 @@ public class CytoscapeInit
     }
 
     // the creation of the class loader automatically loads the plugins
-    classLoader = new URLClassLoader( urls, 
+    classLoader = new URLClassLoader( urls,
                                       Cytoscape.class.getClassLoader() );
 
 
@@ -486,15 +486,15 @@ public class CytoscapeInit
     //System.out.println( "controlaction: "+Controlaction );
 
 
-    // iterate through the given jar files and find classes that are assignable 
+    // iterate through the given jar files and find classes that are assignable
     // from CytoscapePlugin
     for ( int i = 0; i < urls.length; ++i ) {
-      
+
       try {
         // create the jar file from the list of plugin jars
         //System.out.println( "Create jarfile from: "+plugin_strings.get(i) );
-        
-        
+
+
         //System.out.println(  urls[i].getFile()+"protocol: "+urls[i].getProtocol() );
 
         JarFile jar = null;
@@ -511,25 +511,25 @@ public class CytoscapeInit
         if ( jar == null ) {
           continue;
         }
-        
+
         //System.out.println("- - - - entries begin");
         Enumeration entries = jar.entries();
         if ( entries == null ) {
           continue;
         }
-        
+
         //System.out.println("entries is not null");
-        
+
         int totalEntries=0;
         int totalClasses=0;
         int totalPlugins=0;
-        
+
         while(entries.hasMoreElements()) {
           totalEntries++;
 
           // get the entry
           String entry = entries.nextElement().toString();
-          
+
           //URL resource = classLoader.getResource( entry );
           //System.out.println( "Entry: "+entry+ " is "+resource );
 
@@ -538,7 +538,7 @@ public class CytoscapeInit
             //convert the entry to an assignable class name
             entry = entry.replaceAll( "\\.class$" ,"" );
             entry = entry.replaceAll( "/" ,"." );
-            
+
             //System.out.println(" CLASS: " + entry);
             if(!(isClassPlugin(entry))) {
               //System.out.println(" not plugin.");
@@ -552,14 +552,14 @@ public class CytoscapeInit
         //System.out.println("- - - - entries finis");
         //System.out.println(".jar summary: " +
         //                   " entries=" + totalEntries +
-        //                   " classes=" + totalClasses + 
-        //                   " plugins=" + totalPlugins); 
+        //                   " classes=" + totalClasses +
+        //                   " plugins=" + totalPlugins);
       }
       catch (Exception e) {
         System.err.println ("Error thrown: " + e.getMessage ());
         e.printStackTrace();
       }
-      
+
     }
   }
   /**
@@ -580,17 +580,17 @@ public class CytoscapeInit
   public void loadPlugin ( Class plugin ) {
 
     System.out.println( "Plugin to be loaded: "+plugin );
-    
+
     if ( AbstractPlugin.class .isAssignableFrom( plugin ) ) {
       System.out.println( "AbstractPlugin Loaded" );
       try {
-        AbstractPlugin.loadPlugin( plugin, 
+        AbstractPlugin.loadPlugin( plugin,
                                    ( cytoscape.view.CyWindow ) Cytoscape.getDesktop() );
       } catch ( Exception e ) {
         e.printStackTrace();
       }
-    } 
-    
+    }
+
     else if ( CytoscapePlugin.class.isAssignableFrom( plugin ) ) {
       System.out.println( "CytoscapePlugin Loaded" );
       try {
@@ -644,7 +644,7 @@ public class CytoscapeInit
   public static void setMRUD ( File mrud_new ) {
     mrud = mrud_new;
   }
-  
+
   /**
    * @param mruf the most recently used file
    */
@@ -662,7 +662,7 @@ public class CytoscapeInit
     File dir = null;
     try {
       File parent_dir = new File(System.getProperty ("user.home"), ".cytoscape" );
-      if ( parent_dir.mkdir() ) 
+      if ( parent_dir.mkdir() )
         System.err.println( "Parent_Dir: "+parent_dir+ " created." );
 
       return parent_dir;
@@ -689,5 +689,5 @@ public class CytoscapeInit
 
 
 }
-  
+
 

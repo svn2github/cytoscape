@@ -1,6 +1,7 @@
 #Cytoscape Property File
 #Fri Jan 21 00:35:30 PST 2005
 viewType=tabbed
-bioDataDirectory=annotation/manifest
-defaultSpeciesName=Saccharomyces cerevisiae
 viewThreshold=500
+#Uncomment to have Cytoscape load biodata server and set default species name by default
+#bioDataDirectory=annotation/manifest
+#defaultSpeciesName=Saccharomyces cerevisiae
