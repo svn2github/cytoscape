@@ -45,7 +45,6 @@ import java.awt.event.*;
 import java.util.*;
 import java.lang.reflect.Array;
 
-import y.base.*;
 import cytoscape.GraphObjAttributes;
 //---------------------------------------------------------------------------------------
 public class BrowserTableModel extends AbstractTableModel {

@@ -48,7 +48,7 @@ import java.awt.datatransfer.*;
 import cytoscape.GraphObjAttributes;
 import cytoscape.util.*;
 
-import y.base.*;
+
 //---------------------------------------------------------------------------------------
 /**
  * create a table in a tab for every attribute; each table has 2 columns:  canonical name,

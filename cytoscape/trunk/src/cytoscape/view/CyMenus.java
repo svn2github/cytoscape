@@ -267,6 +267,7 @@ public class CyMenus {
     // added by larissa 10/09/03
     mi = selectMenu.add(new SelectAllAction(networkView));
     mi = selectMenu.add(new DeselectAllAction(networkView));
+    mi = selectMenu.add(new DisplayBrowserAction(networkView));
         
     // mi = selectEdgesSubMenu.add(new EdgeTypeDialogAction());
         

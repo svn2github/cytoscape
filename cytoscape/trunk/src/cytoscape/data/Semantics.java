@@ -89,7 +89,7 @@ public static void assignSpecies(CyNetwork network, CytoscapeObj cytoscapeObj) {
     if (defaultSpecies == null) {return;} //we have no value to set
     
     String callerID = "Semantics.assignSpecies";
-    //network.beginActivity(callerID);
+    network.beginActivity(callerID);
     GraphObjAttributes nodeAttributes = network.getNodeAttributes();
     String[] canonicalNames = nodeAttributes.getObjectNames(CANONICAL_NAME);
     for (int i=0; i<canonicalNames.length; i++) {
@@ -99,7 +99,7 @@ public static void assignSpecies(CyNetwork network, CytoscapeObj cytoscapeObj) {
             nodeAttributes.set(SPECIES, canonicalName, defaultSpecies);
         }
     }
-    //network.endActivity(callerID);
+    network.endActivity(callerID);
 }
 //-------------------------------------------------------------------------
 /**
@@ -140,7 +140,7 @@ public static void assignCommonNames(CyNetwork network, BioDataServer bioDataSer
     if (network == null || bioDataServer == null) {return;}
     
     String callerID = "Semantics.assignCommonNames";
-    //network.beginActivity(callerID); commented out to work in giny
+    network.beginActivity(callerID);
     GraphObjAttributes nodeAttributes = network.getNodeAttributes();
     String[] canonicalNames = nodeAttributes.getObjectNames(CANONICAL_NAME);
     for (int i=0; i<canonicalNames.length; i++) {
@@ -154,7 +154,7 @@ public static void assignCommonNames(CyNetwork network, BioDataServer bioDataSer
             nodeAttributes.set(COMMON_NAME, canonicalName, synonyms[0]);
         }
     }
-    //network.endActivity(callerID);
+    network.endActivity(callerID);
 }
 //-------------------------------------------------------------------------
 /**

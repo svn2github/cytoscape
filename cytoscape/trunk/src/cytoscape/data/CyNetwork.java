@@ -55,6 +55,7 @@ public class CyNetwork {
     RootGraph rootGraph;                   //giny root graph
     GraphPerspective graphPerspective; 
     boolean needsLayout = false;           //is layout required before displaying graph
+    boolean isYFiles = true;
     GraphObjAttributes nodeAttributes;     //attributes for nodes
     GraphObjAttributes edgeAttributes;     //attributes for edges
     ExpressionData expressionData;         //expression data
@@ -129,6 +130,7 @@ public class CyNetwork {
                      GraphObjAttributes nodeAttributes,
                      GraphObjAttributes edgeAttributes,
                      ExpressionData expressionData, boolean isYFiles) {
+	this.isYFiles	 = isYFiles;	     
         //not completely sure how to handle null arguments
         if (rootGraph != null) {
             this.rootGraph = rootGraph;
@@ -321,6 +323,7 @@ public class CyNetwork {
      * an algorithm forgets to provide a matching end method for each begin.
      */
     public void beginActivity(String callerID) {
+	if (!isYFiles) { return;} //not implemented for giny yet    
         activityCount++;
         if (activityCount == 1) {fireEvent(CyNetworkEvent.BEGIN);}
         getGraph().firePreEvent();
@@ -341,6 +344,7 @@ public class CyNetwork {
      * The argument is a String for identifying the caller of this method.
      */
     public void endActivity(String callerID) {
+	if (!isYFiles) { return;} //not implemented for giny yet        
         if (activityCount == 0) {return;} //discard calls without a matching begin
         activityCount--;
         getGraph().firePostEvent();
