@@ -293,17 +293,47 @@ public class SimpleClassLoader extends ClassLoader {
   public URL getResource(String name) {
     URL back = getSystemResource(name);
     if (back != null) {
-	    return back;
+      return back;
     }
-    return getLocalResource(name);
+    //return getLocalResource(name);
+    URL local = getLocalResource(name);
+    if (local != null) {
+      return local;
+    }
+    //try the parent class loader; this should be done automatically,
+    //but we're exhausting every possibility
+    URL fromParent = getParent().getResource(name);
+    if (fromParent != null) {
+      return fromParent;
+    }
+    //try the loader that loaded this class
+    URL fromMyLoader = SimpleClassLoader.class.getClassLoader().getResource(name);
+    if (fromMyLoader != null) {
+      return fromMyLoader;
+    }
+    return null; //we're out of options
   }
 
   public InputStream getResourceAsStream(String name) {
     InputStream back = getSystemResourceAsStream(name);
     if (back != null) {
-	    return back;
+      return back;
     }
-    return getLocalResourceAsStream(name);
+    InputStream local = getLocalResourceAsStream(name);
+    if (local != null) {
+      return local;
+    }
+    //try the parent class loader
+    InputStream fromParent = getParent().getResourceAsStream(name);
+    if (fromParent != null) {
+      return fromParent;
+    }
+    //try the loader that loaded this class
+    InputStream fromMyLoader = SimpleClassLoader.class.getClassLoader().getResourceAsStream(name);
+    if (fromMyLoader != null) {
+      return fromMyLoader;
+    }
+    return null; //we're out of options
   }
 
 
@@ -321,7 +351,7 @@ public class SimpleClassLoader extends ClassLoader {
     if (o == null) {
 	    // Check on the JAR objects
 	    o = resourceHash.get(name);
-      System.out.println( "getLocalResource got: "+o );
+      //System.out.println( "getLocalResource got: "+o );
     }
     if (o == null && localResourceDirectory != null) {
 	    // Try in localResourceDirectory
@@ -338,7 +368,7 @@ public class SimpleClassLoader extends ClassLoader {
                           "/"+urlPrefix+
                           cookie+"/+/"+name);
 
-        System.out.println( "Returninr URL :"+url );
+        //System.out.println( "Returninr URL :"+url );
 
         return url;
 	    } catch (Exception e) {

@@ -38,6 +38,8 @@ import java.io.*;
 import java.util.*;
 import java.util.jar.*;
 import java.net.*;
+
+import cytoscape.plugin.jar.*;
 //---------------------------------------------------------------------------
 public class TextJarReader {
   String filename;
@@ -48,7 +50,12 @@ public TextJarReader (String URI) throws Exception
 {
   sb = new StringBuffer ();
   filename = URI.substring (6);
-  ClassLoader cl = this.getClass().getClassLoader();
+  //we've created a new class loader that is used to load plugins and also
+  //should bootstrap to the class loader that loads the Cytoscape core classes
+  //However, we can't use it until it's been instantiated, so if we get a null
+  //reference then we'll fall back to the class loader that loaded this class
+  ClassLoader cl = JarLoader.getLoader();
+  if (cl == null) {cl = this.getClass().getClassLoader();}
   URL url = cl.getResource (filename);
   JarURLConnection juc = (JarURLConnection) url.openConnection ();
   JarFile jarFile = juc.getJarFile();
