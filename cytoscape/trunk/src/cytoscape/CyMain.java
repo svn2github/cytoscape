@@ -81,6 +81,9 @@ public class CyMain implements WindowListener {
   public CyMain ( String [] args ) throws Exception {
     
 
+    CytoscapeInit init = new CytoscapeInit();
+    init.parseCommandLine( args );
+
     // setup the Splash Screen
 
     ImageIcon image = new ImageIcon( getClass().getResource("/cytoscape/images/CytoscapeSplashScreen.png") );

@@ -142,6 +142,7 @@ public class CytoscapeObj
   public void propertyChange ( PropertyChangeEvent e ) {
     if ( e.getPropertyName() == Cytoscape.CYTOSCAPE_EXIT ) {
       // TODO: other state saving info
+      System.out.println( "Saving VizMap calculators" );
       saveCalculatorCatalog();
     }
   }
