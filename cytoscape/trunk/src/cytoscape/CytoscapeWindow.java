@@ -1614,6 +1614,7 @@ protected void loadGML (String filename)
 {
     graph=FileReadingAbstractions.loadGMLBasic(filename,edgeAttributes);
     FileReadingAbstractions.initAttribs(config,graph,nodeAttributes,edgeAttributes);
+    displayCommonNodeNames (); // fills in canonical name for blank common names
     displayNewGraph (false);
 } // loadGML
 //------------------------------------------------------------------------------
@@ -1621,6 +1622,7 @@ protected void loadInteraction (String filename)
 {
     graph = FileReadingAbstractions.loadIntrBasic(filename,edgeAttributes);
     FileReadingAbstractions.initAttribs(config,graph,nodeAttributes,edgeAttributes);
+    displayCommonNodeNames (); // fills in canonical name for blank common names
     displayNewGraph (true);
 } // loadInteraction
 //------------------------------------------------------------------------------
