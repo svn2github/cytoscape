@@ -128,7 +128,7 @@ public class PreferenceValueDialog extends JDialog {
 						selection);
 			motherRef.value.setText(plugins);
 		}  else if (motherRef.preferenceName.equals(
-						"bioDataDirectory")) {
+						"bioDataServer")) {
 				motherRef.preferenceValue = selection;
 			motherRef.value.setText(motherRef.preferenceValue);
 		}  else if (motherRef.preferenceName.equals("mrud")) {
