@@ -27,7 +27,7 @@ public class AlphabeticalSelectionAction extends AbstractAction {
         if (answer != null && answer.length() > 0) {
             CyNetworkUtilities.selectNodesStartingWith(networkView.getNetwork(),
                                                        answer.trim(),
-                                                       networkView.getCytoscapeObj() );
+                                                       networkView.getCytoscapeObj(), networkView );
             networkView.redrawGraph(false, true);
         }
     }
