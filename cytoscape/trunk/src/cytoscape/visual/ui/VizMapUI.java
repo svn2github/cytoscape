@@ -25,14 +25,14 @@ public class VizMapUI extends JDialog {
     public static final byte NODE_SIZE = 4;
     public static final byte NODE_LABEL = 5;
     public static final byte NODE_LABEL_FONT = 6;
-    public static final byte NODE_TOOLTIP = 7;
-    public static final byte EDGE_COLOR = 8;
-    public static final byte EDGE_LINETYPE = 9;
-    public static final byte EDGE_SRCARROW = 10;
-    public static final byte EDGE_TGTARROW = 11;
-    public static final byte EDGE_LABEL = 12;
-    public static final byte EDGE_LABEL_FONT = 13;
-    public static final byte EDGE_TOOLTIP = 14;
+    //public static final byte NODE_TOOLTIP = 7;
+    public static final byte EDGE_COLOR = 7;
+    public static final byte EDGE_LINETYPE = 8;
+    public static final byte EDGE_SRCARROW = 9;
+    public static final byte EDGE_TGTARROW = 10;
+    public static final byte EDGE_LABEL = 11;
+    public static final byte EDGE_LABEL_FONT = 12;
+    //public static final byte EDGE_TOOLTIP = 14;
     
     // for creating VizMapTabs with font face/size on one page
     public static final byte NODE_FONT_FACE = 122;
@@ -71,7 +71,7 @@ public class VizMapUI extends JDialog {
 	
 	this.VMM = VMM;
 	this.mainPane = new JPanel(new BorderLayout(), false);
-	this.tabs = new VizMapTab[EDGE_TOOLTIP + 1];
+	this.tabs = new VizMapTab[EDGE_LABEL_FONT + 1];
 	this.tabPaneContainer = new JPanel(false);
 	
 	// get appearance calculator references
@@ -82,7 +82,7 @@ public class VizMapUI extends JDialog {
 	JTabbedPane edgePane = new JTabbedPane();
 	
 	// add panes to tabbed panes
-	for (byte i = NODE_COLOR; i <= NODE_TOOLTIP; i++) {
+	for (byte i = NODE_COLOR; i <= NODE_LABEL_FONT; i++) {
 	    VizMapTab tab;
 	    if (i == NODE_SIZE)
 		tab = new VizMapSizeTab(this, VMM, i);
@@ -93,7 +93,7 @@ public class VizMapUI extends JDialog {
 	    nodePane.add(tab);
 	    tabs[i] = tab;
 	}
-	for (byte i = EDGE_COLOR; i <= EDGE_TOOLTIP; i++) {
+	for (byte i = EDGE_COLOR; i <= EDGE_LABEL_FONT; i++) {
 	    VizMapTab tab;
 	    if (i == EDGE_LABEL_FONT)
 		tab = new VizMapFontTab(this, VMM, i);
