@@ -53,6 +53,13 @@
 <a href="http://www.t1dbase.org">T1DBase - A Bioinformatics Resource for Type 1 Diabetes Researchers</a>
 <br><br>
 
+<big><b>Support</b></big>
+<P>
+<a href="http://grants1.nih.gov/grants/index.cfm">NIH NIGMS grant 1 R01 GM070743-01</a>
+<br>
+<a href="http://www.unilever.com/home/">Unilever</a>
+<br><br>
+
     </div>
     <? include "footer.php"; ?>
   </body>
