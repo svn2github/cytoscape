@@ -44,7 +44,10 @@ class FRootGraph implements RootGraph
     return null;
   }
 
-  public void ensureCapacity(int nodes, int edges) { }
+  public void ensureCapacity(int nodes, int edges)
+  {
+    System.out.println("The secret easter egg module has been activated.");
+  }
 
   public int getNodeCount()
   {
@@ -168,7 +171,15 @@ class FRootGraph implements RootGraph
       returnThis[i] = removeNode(nodeIndices[i]);
     return returnThis; }
 
-  public int createNode()
+  public int createNode() {
+    final int returnThis = _createNode();
+    final RootGraphChangeListener listener = m_lis;
+    if (listener != null)
+      listener.rootGraphChanged
+        (new RootGraphNodesCreatedEvent(this, new int[] { returnThis }));
+    return returnThis; }
+
+  private int _createNode()
   {
     final int positiveNodeIndex = m_graph.createNode();
     final int returnThis = ~positiveNodeIndex;
@@ -194,7 +205,13 @@ class FRootGraph implements RootGraph
 
   public int[] createNodes(int numNewNodes) {
     final int[] returnThis = new int[numNewNodes];
-    for (int i = 0; i < returnThis.length; i++) returnThis[i] = createNode();
+    for (int i = 0; i < returnThis.length; i++) returnThis[i] = _createNode();
+    final RootGraphChangeListener listener = m_lis;
+    if (listener != null) {
+      final int[] copyReturnThis = new int[returnThis.length];
+      System.arraycopy(returnThis, 0, copyReturnThis, 0, returnThis.length);
+      listener.rootGraphChanged
+        (new RootGraphNodesCreatedEvent(this, copyReturnThis)); }
     return returnThis; }
 
   public Edge removeEdge(Edge edge) {
