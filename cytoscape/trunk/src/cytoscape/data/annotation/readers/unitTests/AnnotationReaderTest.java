@@ -32,7 +32,7 @@
 // $Date$
 // $Author$
 //--------------------------------------------------------------------------------------
-package cytoscape.data.readers.unitTests;
+package cytoscape.data.annotation.readers.unitTests;
 //--------------------------------------------------------------------------------------
 import junit.framework.*;
 import java.io.*;
