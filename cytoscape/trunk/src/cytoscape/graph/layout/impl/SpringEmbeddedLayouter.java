@@ -1,14 +1,23 @@
 package cytoscape.graph.layout.impl;
 
+import cytoscape.graph.GraphTopology;
 import cytoscape.graph.layout.algorithm.LayoutAlgorithm;
 import cytoscape.graph.layout.algorithm.MutableGraphLayout;
 import cytoscape.process.PercentCompletedCallback;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
- * An implementation of Kamada and Kawai's spring embedded layout algorithm.
+ * An implementation of Kamada and Kawai's spring embedded layout algorithm.<p>
+ * Note from Nerius Landys on Wed Oct  6 11:07:24 PDT 2004: The algorithm in
+ * this code has been adapted from an existing algorithm in the Cytoscape
+ * project.  As little as possible has been done to change the algorithmic
+ * logic, even where flaws might have been found.  The legacy class which
+ * this class borrows code from is
+ * <code>cytoscape.layout.SpringEmbeddedLayouter</code>.
  **/
 public final class SpringEmbeddedLayouter extends LayoutAlgorithm
 {
@@ -137,10 +146,59 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
 
   /*
    * Some notes:
-   * - Nodes that are disconnected have distance -1 between them.
    */
-  private static int[][] calculateNodeDistances()
+  private static int[][] calculateNodeDistances(GraphTopology graph)
   {
+    int[][] distances = new int[graph.getNumNodes()][];
+    Object[] nodes = new Object[graph.getNumNodes()];
+    for (int i = 0; i < nodes.length; i++)
+      nodes[i] = new Object();
+    LinkedList queue = new LinkedList();
+    boolean[] completedNodes = new boolean[graph.getNumNodes()];
+    Iterator neighbors;
+    int toNode;
+    int neighbor;
+    int toNodeDistance;
+    int neighborDistance;
+    for (int fromNode = 0; fromNode < graph.getNumNodes(); fromNode++)
+    {
+      if (distances[fromNode] == null)
+        distances[fromNode] = new int[nodes.length];
+      Arrays.fill(distances[fromNode], Integer.MAX_VALUE);
+      distances[fromNode][fromNode] = 0;
+      Arrays.fill(completedNodes, false);
+      queue.add(new Integer(fromNode));
+      while (!(queue.isEmpty()))
+      {
+        int index = ((Integer) queue.removeFirst()).intValue();
+        if (completedNodes[index]) continue;
+        completedNodes[index] = true;
+        toNode = index;
+        toNodeDistance = distances[fromNode][index];
+        if (index < fromNode)
+        {
+          // Oh boy.  We've already got every distance from/to this node.
+          int distanceThroughToNode;
+          for (int i = 0; i < nodes.length; i++)
+          {
+            if (distances[index][i] == Integer.MAX_VALUE) continue;
+            distanceThroughToNode = toNodeDistance  + distances[index][i];
+            if (distanceThroughToNode <= distances[fromNode][i]) {
+              // Any immediate neighbor of a node that's already been
+              // calculated for that does not already have a shorter path
+              // calculated from fromNode never will, and is thus complete.
+              if (distances[index][i] == 1) completedNodes[i] = true;
+              distances[fromNode][i] = distanceThroughToNode;
+            }
+          }
+          // End for every node, update the distance using the distance
+          // from tuNode.  So now we don't need to put any neighbors on the
+          // queue or anything, since they've already been taken care of by
+          // the previous calculation.
+          continue;
+        } // End if toNode has already had all of its distances calculated.
+      }
+    }
     return null;
   }
 
@@ -170,7 +228,7 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
     m_nodeDistanceSpringRestLengths = new double[m_nodeCount][m_nodeCount];
     m_nodeDistanceSpringStrengths = new double[m_nodeCount][m_nodeCount];
 
-    int[][] nodeDistances = calculateNodeDistances();
+    int[][] nodeDistances = calculateNodeDistances(m_graph);
 
     // Calculate rest lengths and strengths based on node distance data.
     for (int node_i = 0; node_i < m_nodeCount; node_i++)
