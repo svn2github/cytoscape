@@ -151,7 +151,6 @@ public class InteractionsReader implements GraphReader {
         percentUtil = new PercentUtil (6);
     }
 
-    System.out.println("****START");
     for (int i=0; i<lines.length; i++) {
 
       if (taskMonitor != null) {
@@ -162,7 +161,6 @@ public class InteractionsReader implements GraphReader {
       Interaction newInteraction = new Interaction (newLine, delimiter);
       allInteractions.addElement (newInteraction);
     }
-    System.out.println("****END");
     createRootGraphFromInteractionData (canonicalize);
 
   }
