@@ -1255,9 +1255,17 @@ public void readAttributesFromFile (BioDataServer dataServer, String species, St
       setClass (attributeName, deducedClass); // ***** Could fail ******* //
       }
     Object [] objs = new Object [rawList.length];
+    Class stringClass = (new String()).getClass();
+
+    if (getClass(attributeName).equals(stringClass)) {
+	for (int i=0; i < rawList.length; i++) {
+	    rawList[i] = rawList[i].replaceAll("\\\\n", "\n");
+	}
+    }
+
     for (int i=0; i < rawList.length; i++) {
       try {
-        objs [i] = createInstanceFromString (getClass (attributeName), rawList [i]);
+	objs [i] = createInstanceFromString (getClass (attributeName), rawList [i]);
         if (isList)
           append (attributeName, graphObjectName, objs [i]);
         else 
