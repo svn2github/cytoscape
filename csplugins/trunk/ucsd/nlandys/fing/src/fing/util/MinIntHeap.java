@@ -163,6 +163,7 @@ public final class MinIntHeap
    * Calling this function automatically causes this heap to become
    * unordered.  No elements are added or removed from this heap as a
    * result of using the returned iterator.
+   * @see #elements()
    */
   public final IntIterator orderedElements(boolean pruneDuplicates,
                                            boolean reverseOrder)
@@ -190,7 +191,7 @@ public final class MinIntHeap
 
   /**
    * Returns an iteration over all the elements currently in this heap;
-   * the order of elements in the retruned iteration is undefined.<p>
+   * the order of elements in the returned iteration is undefined.<p>
    * If other methods in this heap are called while iterating through
    * the return value, behavior of the iterator is undefined.
    * @see #orderedElements(boolean, boolean)
