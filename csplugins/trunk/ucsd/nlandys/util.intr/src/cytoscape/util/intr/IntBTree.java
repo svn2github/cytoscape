@@ -1,7 +1,24 @@
 package cytoscape.util.intr;
 
+/**
+ * This is actually a B+-tree.
+ */
 public final class IntBTree
 {
+
+  // This quantity must be at least 4.
+  private final static int MAX_BRANCHES = 4;
+
+  private Node m_root;
+
+  public IntBTree()
+  {
+    m_root = new Node(MAX_BRANCHES, true);
+  }
+
+  public void insert(int x)
+  {
+  }
 
   private final static class Node
   {
