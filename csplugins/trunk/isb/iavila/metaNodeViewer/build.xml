@@ -50,8 +50,8 @@
    <target name = "run" depends="jar" description = "Run">
       <java classname = "cytoscape.CyMain" classpathref = "classpath_run"
           fork = "true" maxmemory = "1g">
-          <arg line = "--JLD"/>
-          <arg file = "${jar}/metanode.jar"/>
+      	  <arg line = "--JLD"/>
+      	  <arg line = "${cytoscape.plugin.dir}"/>
       </java>
     </target>
 

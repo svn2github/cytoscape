@@ -37,6 +37,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import cytoscape.*;
+import edu.umd.cs.piccolo.PNode;
 
 public class MNcollapserDialog extends JDialog {
 
@@ -46,6 +47,10 @@ public class MNcollapserDialog extends JDialog {
   protected CollapseSelectedNodesAction collapseAction;
   protected UncollapseSelectedNodesAction expandAction;
   protected UncollapseSelectedNodesAction destroyMetaNodeAction;
+  protected static final String CREATE_MN_TITLE = "Create Meta-Node";
+  protected static final String DESTROY_MN_TITLE = "Destroy Meta-Node(s)";
+  protected static final String COLLAPSE_MN_TITLE = "Collapse to Meta-Node(s)";
+  protected static final String EXPAND_MN_TITLE = "Expand Children";
   
   /**
    * Constructor
@@ -54,6 +59,7 @@ public class MNcollapserDialog extends JDialog {
     super(Cytoscape.getDesktop(), title, false);
     initialize();
     setRecursiveOperations(false);
+    AbstractMetaNodeMenu.setCollapserDialog(this);
   }//MNcollapserDialog
 
   /**
@@ -75,29 +81,32 @@ public class MNcollapserDialog extends JDialog {
   
   protected void initialize (){
 
-  	
-  	  JButton createMetaNodeButton = new JButton("Create Meta-Node");
+  	  JButton createMetaNodeButton = new JButton(CREATE_MN_TITLE);
   	  createMetaNodeButton.setToolTipText("Creates a new meta-node with selected nodes as its children and collapses it.");
-  	  JButton destroyMetaNodeButton = new JButton("Destroy Meta-Node(s)");
+  	  JButton destroyMetaNodeButton = new JButton(DESTROY_MN_TITLE);
   	  destroyMetaNodeButton.setToolTipText("Permanently removes the selected meta-nodes and expands them.");
-      JButton collapseButton = new JButton("Collapse to Meta-Node(s)");
+      JButton collapseButton = new JButton(COLLAPSE_MN_TITLE);
       collapseButton.setToolTipText("Finds existing parent meta-nodes of selected nodes and collapses them.");
-      JButton expandButton = new JButton("Expand Children");
+      JButton expandButton = new JButton(EXPAND_MN_TITLE);
       expandButton.setToolTipText("Displays the children of selected meta-nodes.");
       if(this.recursiveCheckBox == null){
       	this.recursiveCheckBox = new JCheckBox("Apply operations recursively");
       }
       this.recursiveCheckBox.setToolTipText("Meta-nodes can have meta-nodes as children.");
-      this.createMetaNodeAction = (CollapseSelectedNodesAction)ActionFactory.createCollapseSelectedNodesAction(false,areOperationsRecursive());
+      this.createMetaNodeAction = (CollapseSelectedNodesAction)ActionFactory.createCollapseSelectedNodesAction(false,
+      		areOperationsRecursive(), CREATE_MN_TITLE);
       createMetaNodeButton.addActionListener(this.createMetaNodeAction);
       
-      this.destroyMetaNodeAction = (UncollapseSelectedNodesAction)ActionFactory.createUncollapseSelectedNodesAction(areOperationsRecursive(),false);
+      this.destroyMetaNodeAction = (UncollapseSelectedNodesAction)ActionFactory.createUncollapseSelectedNodesAction(areOperationsRecursive(),
+      		false,DESTROY_MN_TITLE);
       destroyMetaNodeButton.addActionListener(this.destroyMetaNodeAction);
       
-      this.collapseAction = (CollapseSelectedNodesAction)ActionFactory.createCollapseSelectedNodesAction(true,areOperationsRecursive());
+      this.collapseAction = (CollapseSelectedNodesAction)ActionFactory.createCollapseSelectedNodesAction(true,
+      		areOperationsRecursive(),COLLAPSE_MN_TITLE);
       collapseButton.addActionListener(this.collapseAction);
     
-      this.expandAction = (UncollapseSelectedNodesAction)ActionFactory.createUncollapseSelectedNodesAction(areOperationsRecursive(),true);
+      this.expandAction = (UncollapseSelectedNodesAction)ActionFactory.createUncollapseSelectedNodesAction(areOperationsRecursive(),
+      		true,EXPAND_MN_TITLE);
       expandButton.addActionListener(this.expandAction);
       
       this.recursiveCheckBox.addActionListener(
@@ -145,4 +154,32 @@ public class MNcollapserDialog extends JDialog {
     setContentPane(mainPanel);
     
   }//initialize
+  
+  public AbstractAction getCreateMetaNodeAction (){
+  	return this.createMetaNodeAction;
+  }//getCreateMetaNodeAction
+  
+  public AbstractAction getDestroyMetaNodeAction (){
+  	return this.destroyMetaNodeAction;
+  }//getDestroyMetaNodeAction
+  
+  public AbstractAction getCollapseMetaNodesAction (){
+  	return this.collapseAction;
+  }//getCollapseMetaNodesAction
+  
+  public AbstractAction getExpandChildrenAction (){
+  	return this.expandAction;
+  }//getExpandChildrenAction
+  
+  /**
+   * @return a JMenu with operations to create new meta-nodes, destroy meta-nodes, collapse to meta-nodes and expand children.
+   */
+  public JMenu getMenu (Object[] args, PNode node){
+  	JMenu menu = new JMenu("Meta-Node Operations");
+  	menu.add(this.createMetaNodeAction);
+  	menu.add(this.destroyMetaNodeAction);
+  	menu.add(this.collapseAction);
+  	menu.add(this.expandAction);
+  	return menu;
+  }//getMenu
 }//class MNcollapserDialog

@@ -44,9 +44,6 @@ public class ActionFactory {
   
   private static AbstractMetaNodeModeler abstractingModeler;
   private static MetaNodeAttributesHandler defaultAttributesHandler = MetaNodeModelerFactory.DEFAULT_MN_ATTRIBUTES_HANDLER;
-  private static final String COLLAPSE_SELECTED_TITLE = "Collapse selected";
-  private static final String UNCOLLAPSE_SELECTED_R_TITLE = "Uncollapse selected recursively";
-  private static final String UNCOLLAPSE_SELECTED_TITLE = "Uncollapse selected";
   
   private static void initialize (){
   	ActionFactory.abstractingModeler = MetaNodeModelerFactory.getCytoscapeAbstractMetaNodeModeler();
@@ -76,9 +73,12 @@ public class ActionFactory {
    * should be collapsed instead of creating new meta-nodes for them
    * @param collapse_recursively if collapse_existent_parents is true, whether to find the top-level parents
    * of the selected nodes and collapse them, or just find the immediate parents and collapse them
+   * @param title the title of the action (displayed on buttons, menus, etc)
    * @return an AbstractAction that collapses selected nodes and edges contained in the given CyWindow
    */
-  public static AbstractAction createCollapseSelectedNodesAction (boolean collapse_existent_parents, boolean collapse_recursively){
+  public static AbstractAction createCollapseSelectedNodesAction (boolean collapse_existent_parents, 
+  		boolean collapse_recursively,
+  		String title){
     // Get the RootGraph and create or update abstractingModeler
     RootGraph rootGraph = Cytoscape.getRootGraph();
     if(ActionFactory.abstractingModeler == null || 
@@ -93,7 +93,7 @@ public class ActionFactory {
     return new CollapseSelectedNodesAction(ActionFactory.abstractingModeler,
                                            collapse_existent_parents,
 										   collapse_recursively,
-                                           ActionFactory.COLLAPSE_SELECTED_TITLE);
+                                           title);
     
   }//getCollapseSelectedNodesAction
   
@@ -103,9 +103,10 @@ public class ActionFactory {
    * @param recursive whether or not the selected meta-nodes should be uncollapsed
    * all the way down to their leaves
    * @param temporary if false, the meta-nodes will be permanently removed after they are uncollapsed
+   * @param title the title of the action (displayed on buttons, menus, etc).
    * @return an AbstractAction that uncollapses selected nodes
    */
-  public static AbstractAction createUncollapseSelectedNodesAction (boolean recursive, boolean temporary){
+  public static AbstractAction createUncollapseSelectedNodesAction (boolean recursive, boolean temporary, String title){
     // Get the RootGraph and create or update abstractingModeler
     RootGraph rootGraph = Cytoscape.getRootGraph();
     if(ActionFactory.abstractingModeler == null){
@@ -119,8 +120,7 @@ public class ActionFactory {
     return new UncollapseSelectedNodesAction(ActionFactory.abstractingModeler,
                                              recursive,
                                              temporary,
-                                             (recursive)?ActionFactory.UNCOLLAPSE_SELECTED_R_TITLE
-                                             :ActionFactory.UNCOLLAPSE_SELECTED_TITLE);
+                                             title);
     
   }//getUncollapseSelectedNodesAction
 
