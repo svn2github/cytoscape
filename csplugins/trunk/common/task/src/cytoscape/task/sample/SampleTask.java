@@ -90,6 +90,9 @@ public class SampleTask implements Task {
                 Thread.sleep(countDelay);
                 i++;
             }
+            taskMonitor.setStatus("Task is now complete."
+                + "\n\nThis is a long message used to demonstrate that status "
+                + "messages can be long, and can span multiple lines.");
         } catch (InterruptedException e) {
             taskMonitor.setException(e, "Counting interrupted");
         } catch (IOException e) {
