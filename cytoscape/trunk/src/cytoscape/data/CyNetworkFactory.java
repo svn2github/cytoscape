@@ -34,7 +34,7 @@ package cytoscape.data;
 import y.base.Node;
 import y.view.Graph2D;
 
-import cytoscape.Project;
+import cytoscape.CyProject;
 import cytoscape.GraphObjAttributes;
 import cytoscape.data.readers.InteractionsReader;
 import cytoscape.data.readers.GMLReader;
@@ -44,10 +44,10 @@ import cytoscape.data.servers.BioDataServer;
 /**
  * Defines static methods to construct a Network object.
  */
-public class NetworkFactory {
+public class CyNetworkFactory {
     
     /**
-     * This method constructs a network using information from a Project
+     * This method constructs a network using information from a CyProject
      * argument, which contains information on the location of the graph
      * file, any node/edge attribute files, and a possible expression
      * data file.
@@ -55,9 +55,9 @@ public class NetworkFactory {
      * canonicalization, the data server will be used for name resolution
      * given the names in the graph/attributes files.
      *
-     * @see Project
+     * @see CyProject
      */
-    public static CyNetwork createNetworkFromProject(Project project,
+    public static CyNetwork createNetworkFromProject(CyProject project,
                                                      BioDataServer bioDataServer) {
         if (project == null) {return null;}
         Graph2D graph = null;

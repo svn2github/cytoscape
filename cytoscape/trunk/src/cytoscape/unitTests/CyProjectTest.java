@@ -9,11 +9,11 @@ import junit.framework.*;
 import java.io.*;
 import java.util.*;
 
-import cytoscape.Project;
+import cytoscape.CyProject;
 //-----------------------------------------------------------------------------------------
-public class ProjectTest extends TestCase {
+public class CyProjectTest extends TestCase {
 //------------------------------------------------------------------------------
-public ProjectTest(String name) {super(name);}
+public CyProjectTest(String name) {super(name);}
 //------------------------------------------------------------------------------
 public void setUp() throws Exception {}
 //------------------------------------------------------------------------------
@@ -23,7 +23,7 @@ public void testAll() throws Exception {
     String filename = "src/cytoscape/unitTests/sampleProject.pro";
     File projectFile = new File(filename);
     File directory = projectFile.getAbsoluteFile().getParentFile();
-    Project project = new Project(filename);
+    CyProject project = new CyProject(filename);
     
     assertTrue( project.getProjectFilename().equals(filename) );
     String intName = (new File(directory, "network.sif")).getPath();
@@ -55,7 +55,7 @@ public void testAll() throws Exception {
 }
 //-------------------------------------------------------------------------
 public static void main (String[] args)  {
-    junit.textui.TestRunner.run(new TestSuite(ProjectTest.class));
+    junit.textui.TestRunner.run(new TestSuite(CyProjectTest.class));
 }
 //-------------------------------------------------------------------------
 }

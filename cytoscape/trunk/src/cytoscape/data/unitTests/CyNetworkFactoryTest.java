@@ -12,23 +12,23 @@ import java.util.*;
 import y.base.Node;
 import y.base.Edge;
 
-import cytoscape.Project;
+import cytoscape.CyProject;
 import cytoscape.GraphObjAttributes;
-import cytoscape.data.NetworkFactory;
+import cytoscape.data.CyNetworkFactory;
 import cytoscape.data.CyNetwork;
 import cytoscape.data.ExpressionData;
 //-----------------------------------------------------------------------------------------
-public class NetworkFactoryTest extends TestCase {
+public class CyNetworkFactoryTest extends TestCase {
 //------------------------------------------------------------------------------
-public NetworkFactoryTest(String name) {super(name);}
+public CyNetworkFactoryTest(String name) {super(name);}
 //------------------------------------------------------------------------------
 public void setUp() throws Exception {}
 //------------------------------------------------------------------------------
 public void tearDown() throws Exception {}
 //------------------------------------------------------------------------------
 public void testCreateNetworkFromProject() throws Exception {
-    Project project = new Project("testData/networkProject.pro");
-    CyNetwork network = NetworkFactory.createNetworkFromProject(project, null);
+    CyProject project = new CyProject("testData/networkProject.pro");
+    CyNetwork network = CyNetworkFactory.createNetworkFromProject(project, null);
     
     assertTrue( network.getGraph() != null );
     assertTrue( network.getGraph().nodeCount() == 331 );
@@ -61,7 +61,7 @@ public void testCreateNetworkFromProject() throws Exception {
 }
 //-------------------------------------------------------------------------
 public static void main (String[] args)  {
-    junit.textui.TestRunner.run(new TestSuite(NetworkFactoryTest.class));
+    junit.textui.TestRunner.run(new TestSuite(CyNetworkFactoryTest.class));
 }
 //-------------------------------------------------------------------------
 }

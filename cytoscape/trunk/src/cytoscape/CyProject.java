@@ -45,7 +45,7 @@ import cytoscape.data.readers.TextJarReader;
  * See the documentation for the readProjectFile method for the
  * recognized file formats.
  */
-public class Project {
+public class CyProject {
     protected String projectFilename = null;
 
     protected String interactionsFilename = null;
@@ -67,7 +67,7 @@ public class Project {
  * Constructs a Project object by reading the file at the supplied
  * location, by calling readProjectFile with the argument.
  */
-public Project(String fileLocation) {
+public CyProject(String fileLocation) {
     readProjectFile(fileLocation);
 }
 //-------------------------------------------------------------------------
