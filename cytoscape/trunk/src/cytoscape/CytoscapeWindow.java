@@ -135,20 +135,36 @@ public class CytoscapeWindow extends JPanel implements FilterDialogClient, Graph
   protected ViewMode nodeAttributesPopupMode = new NodeBrowsingMode ();
   protected ViewMode currentPopupMode = nodeAttributesPopupMode;
   protected boolean viewModesInstalled = false;
-
-  protected String defaultSpecies;
+    
+    /** default species for all genes in the CytoscapeWindow */
+    protected String defaultSpecies;
 
   protected BioDataServer bioDataServer;
   protected String bioDataServerName;
 
-  protected GraphObjAttributes nodeAttributes = new GraphObjAttributes ();
-  protected GraphObjAttributes edgeAttributes = new GraphObjAttributes ();
+    /** stores the attributes of nodes */
+    protected GraphObjAttributes nodeAttributes = new GraphObjAttributes ();
 
-  protected VizMapUI vizMapUI;
+    /** stores the attributes of edges */
+    protected GraphObjAttributes edgeAttributes = new GraphObjAttributes ();
+
+    /** user interface to the 
+     *  {@link cytoscape.visual.VisualMappingManager VisualMappingManager}
+     *  {@link #vizMapper vizMapper}.
+     */
+    protected VizMapUI vizMapUI;
+
+    /** contains mappings from network properties and attributes to visual
+     *  properties such as the sizes and colors of nodes and edges.
+     */
     protected VisualMappingManager vizMapper;
-  protected Network network;
 
-  protected ExpressionData expressionData = null;
+    protected Network network;
+
+    /** any set of loaded expression data is stored in this
+     *  variable; only a single set of expression data can be
+     *  stored at any given time. */
+    protected ExpressionData expressionData = null;
 
   protected final String goModeMenuLabel = "Show GeneOntology Info";
   protected final String expressionModeMenuLabel = "Show mRNA Expression";
