@@ -19,14 +19,6 @@ import java.io.PrintStream;
 public class PrintableFactorGraph extends FactorGraph
 {
     // Lists of node indicies.
-    // Used to create the "NodeType" Cytoscape node attribute file.
-    private IntArrayList _edge;
-    private IntArrayList _sign;
-    private IntArrayList _dir;
-    private IntArrayList _ko;
-    private IntArrayList _pathActive;
-    private IntArrayList _orFactor;
-    private IntArrayList _pathFactor;
 
     // map node index to label used for Cytoscape visualization
     private OpenIntObjectHashMap _nodeLabel;
@@ -55,6 +47,7 @@ public class PrintableFactorGraph extends FactorGraph
         IntArrayList edges = pathResults.getEdge2PathMap().keys();
 
         // for Cytoscape
+        /*
         _edge = new IntArrayList(edges.size());
         _sign = new IntArrayList(edges.size());
         _dir = new IntArrayList(edges.size());
@@ -62,7 +55,7 @@ public class PrintableFactorGraph extends FactorGraph
         _orFactor = new IntArrayList(kos.size());
         _pathActive = new IntArrayList(pathResults.getPathCount());
         _pathFactor = new IntArrayList(pathResults.getPathCount());
-
+        */
         int nN = 2 * kos.size() + 2 * pathResults.getPathCount() + 3 * edges.size();
         _nodeLabel = new OpenIntObjectHashMap(nN);
 
@@ -87,7 +80,6 @@ public class PrintableFactorGraph extends FactorGraph
     {
         int node = super.createOR(koNodeIndex, targetNodeIndex);
         _nodeLabel.put(node, makeKOLabel(koNodeIndex, targetNodeIndex));
-        _orFactor.add(node);
         return node;
     }
     
@@ -95,7 +87,7 @@ public class PrintableFactorGraph extends FactorGraph
     {
         int node = super.createPathFactor(pathNumber);
         _nodeLabel.put(node, String.valueOf(pathNumber));
-        _pathFactor.add(node);
+
         return node;
     }
     
@@ -104,7 +96,7 @@ public class PrintableFactorGraph extends FactorGraph
         int node = super.createEdge(interactionEdgeIndex);
 
         _nodeLabel.put(node, _ig.edgeLabel(interactionEdgeIndex));
-        _edge.add(node);
+
         return node;
     }
 
@@ -112,7 +104,7 @@ public class PrintableFactorGraph extends FactorGraph
     {
         int node = super.createSign(interactionEdgeIndex);
         _nodeLabel.put(node, _ig.edgeLabel(interactionEdgeIndex));
-        _sign.add(node);
+
         return node;
     }
 
@@ -120,7 +112,7 @@ public class PrintableFactorGraph extends FactorGraph
     {
         int node = super.createDir(interactionEdgeIndex);
         _nodeLabel.put(node, _ig.edgeLabel(interactionEdgeIndex));
-        _dir.add(node);
+
         return node;
     }
 
@@ -129,7 +121,6 @@ public class PrintableFactorGraph extends FactorGraph
         int node = super.createPathActive(pathNumber);
 
         _nodeLabel.put(node, String.valueOf(pathNumber));
-        _pathActive.add(node);
         
         return node;
     }
@@ -138,7 +129,7 @@ public class PrintableFactorGraph extends FactorGraph
     {
         int node = super.createKO(koNodeIndex, targetNodeIndex);
         _nodeLabel.put(node, makeKOLabel(koNodeIndex, targetNodeIndex));
-        _ko.add(node);
+
         return node;
     }
 
