@@ -85,8 +85,8 @@ then, cd to csplugins, and type:
 
   make
 
-V.  Obfuscating Cytocape 
-========================
+V.  Obfuscating Cytoscape 
+=========================
 
 YFiles requires that we obfuscate the Cytoscape JAR file.  This is now fully automated via Ant.  You only
 need to obfuscate Cytoscape if you are making an official Cytoscape release, that you intend to release
