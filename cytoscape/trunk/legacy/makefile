@@ -142,6 +142,12 @@ run1:
           -e $(CYTOSCAPE_DATA)/gal.5936x20.mrna \
           -b $(CYTOSCAPE_DATA)/GO
 
+runAndrea: 
+	$(JAVA)-Xmx1042M cytoscape.cytoscape \
+          -i /common/users/trey/results/andrea/andrea999.sif \
+          -e /common/users/trey/results/andrea/andrea.pvals \
+          -b $(CYTOSCAPE_DATA)/GO
+
 
 run1o:
 	$(JAVA) cytoscape.cytoscape \
@@ -372,6 +378,8 @@ metabolic:
 	$(JAVA) cytoscape.cytoscape \
           -i /common/users/nada/pub/metabolic.intr \
           -b $(CYTOSCAPE_DATA)/GO
+
+
 help:
 	egrep "^#" makefile | sed "s/^#//"
 
