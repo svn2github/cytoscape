@@ -1,0 +1,71 @@
+# makefile for the csplugin.data.annotation unitTests
+#--------------------------------------------------------------------------------------
+# $Revision$
+# $Date$
+# $Author$
+#--------------------------------------------------------------------------------------
+JC=javac -source 1.4
+JI=java
+PKG=csplugins.data.annotation.unitTests
+
+.SUFFIXES: .java .class
+.java.class: 
+	$(JC) $<
+
+OBJS = Utils.class \
+       AnnotationDescriptionTest.class \
+       AnnotationTest.class \
+       OntologyTermTest.class \
+       OntologyTest.class \
+       AnnotationAndOntologyFullTest.class
+
+default: $(OBJS) run
+
+run: 0 1 2 3
+
+clean:
+	- rm *.class
+
+
+#------ 0
+#  run the AnnotationDescriptionTest
+# 
+
+0: AnnotationDescriptionTest.class
+	java $(PKG).AnnotationDescriptionTest
+
+#------ 1
+#  run the AnnotationTest
+# 
+
+1: AnnotationTest.class
+	java $(PKG).AnnotationTest
+
+#------ 2
+#  run the OntologyTermTest
+# 
+
+2: OntologyTermTest.class
+	java $(PKG).OntologyTermTest
+
+
+#------ 3
+#  run the OntologyTest
+# 
+
+3: OntologyTest.class Utils.class
+	java $(PKG).OntologyTest
+
+#------ 4
+#  run a full test of a large annotation:  kegg pathways for halobacterium
+# 
+
+4: AnnotationAndOntologyFullTest.class 
+	java $(PKG).AnnotationAndOntologyFullTest
+
+
+
+help:
+	egrep "^#" makefile | sed "s/^#//"
+
+
