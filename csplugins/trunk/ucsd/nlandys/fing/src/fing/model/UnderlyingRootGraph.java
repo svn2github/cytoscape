@@ -5,12 +5,8 @@ import fing.util.IntEnumerator;
 // Indices of edges and nodes are non-negative.
 interface UnderlyingRootGraph
 {
-  int nodeCount();
-  int edgeCount();
-  // Note: Rename to nodes().
-  // This iterator remains valid even while doing add/removes?
-  IntIterator nodeIndices();
-  IntIterator edgeIndices();
+  IntEnumerator nodes();
+  IntEnumerator edges();
   boolean removeNode(int nodeIndex);
   int createNode();
   boolean removeEdge(int edgeIndex);
@@ -19,6 +15,6 @@ interface UnderlyingRootGraph
   boolean containsNode(int nodeIndex);
   boolean containsEdge(int edgeIndex);
   // Throws IllegalArgumentException
-  IntIterator adjacentEdgeIndices(int nodeIndex, boolean undirected,
-                                  boolean incoming, boolean outgoing);
+  IntEnumerator adjacentEdges(int nodeIndex, boolean undirected,
+                              boolean incoming, boolean outgoing);
 }
