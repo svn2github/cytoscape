@@ -274,6 +274,24 @@ public final class AllGraphPerspectiveMethodsTest
     neighList = persp.neighborsList(nodeNotInPersp);
     if (neighList != null)
       throw new IllegalStateException("neighbors List isn't null");
+
+    // neighborsArray(int).
+    neighInx = persp.neighborsArray(nodeInx[1]);
+    if (neighInx.length != 3)
+      throw new IllegalStateException("wrong number of neighbors");
+    for (int i = 0;; i++) if (neighInx[i] == nodeInx[0]) break;
+    for (int i = 0;; i++) if (neighInx[i] == nodeInx[1]) break;
+    for (int i = 0;; i++) if (neighInx[i] == nodeInx[2]) break;
+    neighInx = persp.neighborsArray(nodeInx[4]);
+    if (neighInx.length != 0)
+      throw new IllegalStateException("wrong number of neighbors");
+    if (persp.neighborsArray(nodeNotInPersp.getRootGraphIndex()) != null ||
+        persp.neighborsArray(Integer.MIN_VALUE) != null ||
+        persp.neighborsArray(Integer.MAX_VALUE) != null ||
+        persp.neighborsArray(0) != null ||
+        persp.neighborsArray(1) != null ||
+        persp.neighborsArray(minNodeInx - 1) != null)
+      throw new IllegalStateException("expected null");
   }
 
 }
