@@ -56,15 +56,15 @@ public class ProbTable
         {
             double diff = _probs[x] - _probs[_indOfMax];
 
+            // probs[x] is greater than the old max
             if( diff > EPSILON)
-            //if(_probs[x] > _probs[_indOfMax])
             {
-                // probs[x] is the new max
                 _indOfMax = x;
+                _uniqueMax = true;
             }
-
-            //if(_probs[x] == _probs[_indOfMax] && x != _indOfMax)
-            if(Math.abs(diff) < EPSILON && x != _indOfMax)
+            // probs[x] is within epsilon of the old max
+            // and x is not the index of the old max
+            else if((Math.abs(diff) < EPSILON) && (x != _indOfMax))
             {
                 _uniqueMax = false;
             }
@@ -95,7 +95,14 @@ public class ProbTable
 
     public State maxState()
     {
-        return _ss.getState(_indOfMax);
+        if(hasUniqueMax())
+        {
+            return _ss.getState(_indOfMax);
+        }
+        else
+        {
+            return _ss.defaultState();
+        }
     }
 
     public double max()

@@ -453,17 +453,18 @@ public class InteractionGraph
     {
         for(int x=0; x < _submodels.size(); x++)
         {
-            writeSubmodel((Submodel) _submodels.get(x), filename);
+            writeSubmodel((Submodel) _submodels.get(x), filename, x);
         }
 
         writeAttributes(filename);
     }
 
-    private void writeSubmodel(Submodel m, String filename) throws IOException
+    private void writeSubmodel(Submodel m, String filename, int modelNum) throws IOException
     {
         PrintStream out = new PrintStream(new FileOutputStream(filename
                                                                + "-"
-                                                               + m.getId()
+                                                               //+ m.getId()
+                                                               + modelNum
                                                                + ".sif"));
         writeEdges(out, m.getEdges());
         out.close();

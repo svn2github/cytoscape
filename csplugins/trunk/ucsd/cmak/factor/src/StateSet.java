@@ -8,30 +8,40 @@ import java.util.Arrays;
  */
 public class StateSet
 {
-    public static final StateSet PATH_ACTIVE = new StateSet("pathActive_ss", State.ZERO, State.ONE);
-    public static final StateSet EDGE = new StateSet("edge_ss", State.ZERO, State.ONE);
-    public static final StateSet SIGN = new StateSet("sign_ss", State.MINUS, State.PLUS);
-    public static final StateSet DIR = new StateSet("dir_ss", State.MINUS, State.PLUS);
+    public static final StateSet PATH_ACTIVE = new StateSet("pathActive_ss",
+                                                            State.ZERO, State.ONE, State.ONE);
+    
+    public static final StateSet EDGE = new StateSet("edge_ss",
+                                                     State.ZERO, State.ONE, State.ONE);
 
-    public static final StateSet KO = new StateSet("ko_ss", State.ZERO, State.PLUS, State.MINUS);
-
+    public static final StateSet SIGN = new StateSet("sign_ss",
+                                                     State.MINUS, State.PLUS, State.MINUS);
+    
+    public static final StateSet DIR = new StateSet("dir_ss",
+                                                    State.MINUS, State.PLUS, State.MINUS);
+    
+    public static final StateSet KO = new StateSet("ko_ss",
+                                                   State.ZERO, State.PLUS, State.MINUS, State.ZERO);
+    
     private State[] _s;
     private int _sz;
     private String _name;
-
+    private State _default;
+    
     private static final double[] _default2 = {1, 1};
     private static final double[] _default3 = {1, 1, 1};
     
-    private StateSet(String name, State s1, State s2)
+    private StateSet(String name, State s1, State s2, State def)
     {
         _name = name;
         _sz = 2;
         _s = new State[_sz];
         _s[0] = s1;
         _s[1] = s2;
+        _default = def;
     }
 
-    private StateSet(String name, State s1, State s2, State s3)
+    private StateSet(String name, State s1, State s2, State s3, State def)
     {
         _name = name;
         _sz = 3;
@@ -39,8 +49,14 @@ public class StateSet
         _s[0] = s1;
         _s[1] = s2;
         _s[2] = s3;
+        _default = def;
     }
-
+    
+    public State defaultState()
+    {
+        return _default;
+    }
+    
     public double[] defaultProbs()
     {
         if(_sz == 2)
@@ -108,7 +124,7 @@ public class StateSet
     {
         return new StateIterator();
     }
-
+    
     class StateIterator implements Iterator
     {
         int i;

@@ -9,6 +9,7 @@ import cytoscape.util.GinyFactory;
 import cytoscape.data.mRNAMeasurement;
 
 import java.util.List;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.ListIterator;
@@ -18,6 +19,7 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 
 import java.util.logging.Logger;
+import java.util.logging.Level;
 
 /**
  * A bipartite graph of Variable and Factor nodes that represents
@@ -53,7 +55,9 @@ public class FactorGraph
     protected OpenIntObjectHashMap _nodeMap;
 
     // map path number to path-factor node index
-    private OpenIntIntHashMap _pathMap; 
+    private OpenIntIntHashMap _pathMap;
+
+    private OpenIntIntHashMap _pathFactor2sigmaMap; 
 
     protected IntArrayList _vars;
     protected IntArrayList _factors;
@@ -146,6 +150,7 @@ public class FactorGraph
 
         _nodeMap = new OpenIntObjectHashMap(nN);
         _pathMap = new OpenIntIntHashMap(pathResults.getPathCount());
+        _pathFactor2sigmaMap = new OpenIntIntHashMap(pathResults.getPathCount());
 
         _edgeMap = new OpenIntObjectHashMap(edges.size());
         _x2aeMap = new OpenIntObjectHashMap(edges.size());
@@ -214,7 +219,7 @@ public class FactorGraph
                 {
                     int path = paths.get(j);
                     int pa = createPathActive(path);
-                    int pf = createPathFactor(path);
+                    int pf = createPathFactor(path, pa);
 
                     cN += 2;
                     cE += 3;
@@ -481,7 +486,7 @@ public class FactorGraph
      * @return the newly created index of the node in this FactorGraph's
      * RootGraph
      */
-    protected int createPathFactor(int pathNumber)
+    protected int createPathFactor(int pathNumber, int sigmaNode)
     {
         int node = _g.createNode();
 
@@ -489,6 +494,7 @@ public class FactorGraph
         _factors.add(node);
         _nodeMap.put(node, CachedPathFactorNode.getInstance());
         _pathMap.put(pathNumber, node);
+        _pathFactor2sigmaMap.put(node, sigmaNode);
 
         return node;
     }
@@ -557,6 +563,24 @@ public class FactorGraph
         return vn;
     }
 
+    private FactorNode getFacNode(int facIndex)
+    {
+        FactorNode vn = (FactorNode) _nodeMap.get(facIndex);
+
+        return vn;
+    }
+
+    private VariableNode getSigmaForFactor(int facIndex)
+    {
+        if(_pathFactor2sigmaMap.containsKey(facIndex))
+        {
+            int s = _pathFactor2sigmaMap.get(facIndex);
+
+            return getVarNode(s);
+        }
+
+        return null;
+    }
     /*
     private boolean isInvariant(int node)
     {
@@ -690,18 +714,23 @@ public class FactorGraph
             computeFactor2Var(f);
         }
 
-        try
+        Level ll = logger.getLevel(); 
+        if(ll != null &&
+           (ll.intValue() >= Level.FINE.intValue()))
         {
-            PrintStream pathFactorOut = new PrintStream(new FileOutputStream("pathFactor.msg"));
-            pathFactorOut.println(printAdjOfType(NodeType.PATH_FACTOR));
-
-
-            PrintStream orOut = new PrintStream(new FileOutputStream("orFactor.msg"));
-            orOut.println(printAdjOfType(NodeType.OR_FACTOR));
-        }
-        catch(IOException e)
-        {
-            logger.info(e.getMessage());
+            try
+            {
+                PrintStream pathFactorOut = new PrintStream(new FileOutputStream("pathFactor.msg"));
+                pathFactorOut.println(printAdjOfType(NodeType.PATH_FACTOR));
+                
+                
+                PrintStream orOut = new PrintStream(new FileOutputStream("orFactor.msg"));
+                orOut.println(printAdjOfType(NodeType.OR_FACTOR));
+            }
+            catch(IOException e)
+            {
+                logger.info(e.getMessage());
+            }
         }
     }
 
@@ -918,6 +947,35 @@ public class FactorGraph
         IntArrayList sortedNodes = new IntArrayList(nodes.size());
         map.keysSortedByValue(sortedNodes);
         return sortedNodes;
+    }
+
+        
+    /**
+     * @return the list of nodes sorted by degree
+     */
+    private int chooseMaxConnode(IntArrayList nodes)
+    {
+        OpenIntIntHashMap map = new OpenIntIntHashMap(nodes.size());
+
+        int[] influence = new int[nodes.size()];
+        Arrays.fill(influence, 0);
+        
+        for(int x=0; x < nodes.size(); x++)
+        {
+            int v = nodes.get(x);
+
+            List messages = _adjacencyMap.get(v);
+
+            for(int y=0; y < messages.size(); y++)
+            {
+                EdgeMessage em = (EdgeMessage) messages.get(y);
+                int fac = em.getFactorIndex();
+                
+            }
+
+        }
+
+        return influence[0];
     }
 
     /**

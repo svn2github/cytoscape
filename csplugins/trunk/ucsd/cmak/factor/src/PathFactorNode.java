@@ -112,7 +112,7 @@ public class PathFactorNode extends FactorNode
             //double pathInactive = ep1 * sigma.prob(State.ZERO) * unconstrained;
             //double pathViolates = ep2 * sigma.prob(State.ONE) * unconstrained;
 
-            double pathExplains = computeExplains_XDKSigmaS(x, d, dirStates, k, sigma, s);
+            double pathExplains = ep1*computeExplains_XDKSigmaS(x, d, dirStates, k, sigma, s);
             double maxDSX = maximize(x) * maximize(d) * maximize(s);
             double pathUnconstrained = computePathUnconstrained(maxDSX, k, sigma);
             double pathNotExplains = computePathNotExplains(maxDSX, k, sigma);
@@ -149,7 +149,7 @@ public class PathFactorNode extends FactorNode
             //double pathInactive = ep1 * sigma.prob(State.ZERO) * unconstrained;
             //double pathViolates = ep2 * sigma.prob(State.ONE) * unconstrained;
 
-            double pathExplains = computeExplains_XDKSigmaS(x, d, dirStates, k, sigma, s);
+            double pathExplains = ep1*computeExplains_XDKSigmaS(x, d, dirStates, k, sigma, s);
             double maxDSX = maximize(x) * maximize(d) * maximize(s);
             double pathUnconstrained = computePathUnconstrained(maxDSX, k, sigma);
             double pathNotExplains = computePathNotExplains(maxDSX, k, sigma);
@@ -175,11 +175,11 @@ public class PathFactorNode extends FactorNode
             StateSet ss = StateSet.SIGN;
             ProbTable pt = new ProbTable(ss);
 
-            double pathExplainsMinus = computeExplains_FixSign(x, d, dirStates,
+            double pathExplainsMinus = ep1*computeExplains_FixSign(x, d, dirStates,
                                                                   k, sigma, 
                                                                   s, State.MINUS);
 
-            double pathExplainsPlus = computeExplains_FixSign(x, d, dirStates,
+            double pathExplainsPlus = ep1*computeExplains_FixSign(x, d, dirStates,
                                                                  k, sigma, 
                                                                  s, State.PLUS);
 
@@ -213,7 +213,7 @@ public class PathFactorNode extends FactorNode
             StateSet ss = StateSet.PATH_ACTIVE;
             ProbTable pt = new ProbTable(ss);
 
-            double pathExplains = computeExplains_XDKS(x, d, dirStates, k, s);
+            double pathExplains = ep1*computeExplains_XDKS(x, d, dirStates, k, s);
             double maxDSX = maximize(x) * maximize(d) * maximize(s);
             double pathUnconstrained = ep2 * k.prob(State.ZERO) * maxDSX;
 
@@ -240,13 +240,13 @@ public class PathFactorNode extends FactorNode
             StateSet ss = StateSet.KO;
             ProbTable pt = new ProbTable(ss);
 
-            double pathExplainsPlus = computeExplains_FixKO(x, d, dirStates,
-                                                               sigma, 
-                                                               s, State.PLUS);
-
-            double pathExplainsMinus = computeExplains_FixKO(x, d, dirStates,
+            double pathExplainsPlus = ep1*computeExplains_FixKO(x, d, dirStates,
                                                                 sigma, 
-                                                                s, State.MINUS);
+                                                                s, State.PLUS);
+
+            double pathExplainsMinus = ep1*computeExplains_FixKO(x, d, dirStates,
+                                                                 sigma, 
+                                                                 s, State.MINUS);
 
             double maxDSX = maximize(x) * maximize(d) * maximize(s);
             double pathNotExplains = Math.max(ep2 * sigma.prob(State.ZERO) * maxDSX,
@@ -278,7 +278,14 @@ public class PathFactorNode extends FactorNode
                                               ProbTable k, 
                                               ProbTable sigma)
     {
-        return ep2 * k.prob(State.ZERO) * sigma.max() * maxDSX;
+        if(k.maxState() == State.ZERO)
+        {
+            return ep2 * sigma.max() * maxDSX;
+        }
+        else
+        {
+            return ep2 * k.prob(State.ZERO) * sigma.max() * maxDSX;
+        }
     }
 
     
@@ -287,12 +294,19 @@ public class PathFactorNode extends FactorNode
     {
         double pathNotExplains = 0;
         
-        if(k.hasUniqueMax() && (k.maxState() == State.ZERO))
+        if(k.maxState() == State.ZERO)
         {
+            logger.fine("kmax is zero: 0=" + k.prob(State.ZERO) + " +=" + k.prob(State.PLUS)
+                        + " -=" + k.prob(State.MINUS)
+                        + " unique=" + k.hasUniqueMax());
             pathNotExplains = 0;
         }
         else
         {
+            logger.fine("kmax is: " + k.max() + " 0=" + k.prob(State.ZERO) + " +=" + k.prob(State.PLUS)
+                        + " -=" + k.prob(State.MINUS)
+                        + " maxState=" + k.maxState()
+                        + " unique=" + k.hasUniqueMax());
             pathNotExplains = Math.max(ep2 * sigma.prob(State.ZERO) * maxDSX * k.max(),
                                        ep3 * sigma.prob(State.ONE) * maxDSX * k.max());
         }
@@ -315,10 +329,16 @@ public class PathFactorNode extends FactorNode
      * @param State state that the KO will be fixed
      */
     protected double computeExplains_FixKO(List x, List d, List dirStates,
-                                              ProbTable sigma, 
-                                              List s, State fixed)
+                                           ProbTable sigma, 
+                                           List s, State fixed)
     {
-        double m = ep1;
+        if((sigma.maxState() == State.ZERO) && (sigma.max() == 0))
+        {
+            return 0;
+            
+        }
+        
+        double m = 1;
 
         // all edge presences must be 1
         m *= computeProbFixState(x, State.ONE);
@@ -360,7 +380,19 @@ public class PathFactorNode extends FactorNode
                                                 ProbTable sigma, 
                                                 List s, State fixedSign)
     {
-        double m = ep1;
+        if(k.maxState() == State.ZERO)
+        {
+            return 0;
+        }
+
+        if((sigma.maxState() == State.ZERO) && (sigma.max() == 0))
+        {
+            return 0;
+            
+        }
+        
+        
+        double m = 1;
 
         // all edge presences must be 1
         m *= computeProbFixState(x, State.ONE);
@@ -397,7 +429,22 @@ public class PathFactorNode extends FactorNode
                                                ProbTable k, ProbTable sigma, 
                                                List s)
     {
-        double m = ep1;
+        if(k.maxState() == State.ZERO)
+        {
+            logger.fine("kmax is zero: 0=" + k.prob(State.ZERO) + " +=" + k.prob(State.PLUS)
+                        + " -=" + k.prob(State.MINUS)
+                        + " unique=" + k.hasUniqueMax());
+            return 0;
+        }
+
+        if((sigma.maxState() == State.ZERO) && (sigma.max() == 0))
+        {
+            logger.fine("sigma is zero");
+            return 0;
+            
+        }
+                
+        double m = 1;
 
         // sigma must be 1
         m *= sigma.prob(State.ONE);
@@ -425,7 +472,12 @@ public class PathFactorNode extends FactorNode
     protected double computeExplains_XDKS(List x, List d, List dirStates,
                                           ProbTable k, List s)
     {
-        double m = ep1;
+        if(k.maxState() == State.ZERO)
+        {
+            return 0;
+        }
+
+        double m = 1;
 
         // all edge presences must be 1
         m *= computeProbFixState(x, State.ONE);
