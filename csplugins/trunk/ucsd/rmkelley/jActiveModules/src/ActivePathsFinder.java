@@ -56,12 +56,9 @@ public class ActivePathsFinder{
    * The neighborhood for the current best component
    */
   //HashSet bestNeighborhood;
-  ExpressionData expressionData;
+  HashMap expressionMap;
   JFrame parentFrame;
-  protected boolean convertToPval;
   protected static int DISPLAY_STEP = 50;
-  protected static double MIN_SIG = 0.0000000000001;
-  protected static double MAX_SIG = 1-MIN_SIG;
 
   /**
    * This is the only constructor for ActivePathsFinder. In order to find the paths, we need certain information.
@@ -70,18 +67,13 @@ public class ActivePathsFinder{
    * @param apfp The object specifying the parameters for this run
    * @param parentFrame The JFrame which is our parent window, if this is null, then we won't display any progress information
    */     
-  public ActivePathsFinder(ExpressionData expressionData , String [] attrNames,CyNetwork cyNetwork, ActivePathFinderParameters apfp,JFrame parentFrame){
-    this.expressionData = expressionData;
+  public ActivePathsFinder(HashMap expressionMap , String [] attrNames,CyNetwork cyNetwork, ActivePathFinderParameters apfp,JFrame parentFrame){
+    this.expressionMap = expressionMap;
     this.parentFrame = parentFrame;
     this.attrNames = attrNames;
     this.cyNetwork = cyNetwork;
     apfParams = apfp;
-     if(expressionData.getSignificanceType() == ExpressionData.LAMBDA){
-       convertToPval = true;
-      expressionData.convertLambdasToPvals();
-    }else{
-      convertToPval = false;
-    }
+
   }
     
   /**
@@ -124,24 +116,11 @@ public class ActivePathsFinder{
     //to a particular node
     node2edges = new HashMap();	
     for(int i = 0;i<nodes.length;i++){
-      //EdgeCursor edges = nodes[i].edges();
-      //e_array = new Edge[edges.size()];
-      //for(int j = 0;j<e_array.length;j++,edges.next()){
-      //	e_array[j] = edges.edge();
-      //}
       Edge [] temp = new Edge[0];
       node2edges.put(nodes[i],perspective.getAdjacentEdgesList(nodes[i],true,true,true).toArray(temp));
     }
+
     Component.node2edges = node2edges;
-	
-    //set up the HashMap which is used to map from nodes
-    //to z values. At this point, we are mapping from the
-    //p values for expression to z values
-    System.out.println("Processing Expression Data into Hash");
-    HashMap tempHash = new HashMap();
-    //sort the conditionNames so everybody agrees what order the condition names should be in
-    Arrays.sort(attrNames);
-	
     //Component needs the condition names to return which conditions
     //yield significant scores
     Component.attrNames = attrNames;
@@ -149,46 +128,7 @@ public class ActivePathsFinder{
     //of active paths
     Component.monteCorrection = apfParams.getMCboolean();
     Component.regionScoring = apfParams.getRegionalBoolean();
-	
-    //double max_zvalue = Double.NEGATIVE_INFINITY;
-    GraphObjAttributes nodeAttributes = cyNetwork.getNodeAttributes();
-    for(int i = 0;i<nodes.length;i++){
-      double [] tempArray = new double[attrNames.length];
-      for(int j = 0;j<attrNames.length;j++){
-	mRNAMeasurement tempmRNA = expressionData.getMeasurement(nodeAttributes.getCanonicalName(nodes[i]),attrNames[j]);
-	//Double significance = nodeAttributes.getDoubleValue(attrNames[i], nodeAttributes.getCanonicalName(nodes[i]));
-	if(tempmRNA == null){
-	  //if (significance == null) {
-	  //we were unable to find any data for this node, something funny going on here, but we correct
-	  //by pretending there was a p-value of 0.5
-	  tempArray[j] = Component.zStats.oneMinusNormalCDFInverse(.5);
-	}
-	else{
-	  double sigValue = tempmRNA.getSignificance();
-	  if (sigValue < MIN_SIG) {
-	    sigValue = MIN_SIG;
-	    System.out.println("Warning: value for "+nodeAttributes.getCanonicalName(nodes[i])+" adjusted to "+MIN_SIG); 
-	  } // end of if ()
-	  if (sigValue > MAX_SIG) {
-	    sigValue = MAX_SIG;
-	    System.out.println("Warning: value for "+nodeAttributes.getCanonicalName(nodes[i])+" adjusted to "+MAX_SIG); 
-	  } // end of if ()
-	  //transform the p-value into a z-value and store it in the array of z scores for this particular node
-	  tempArray[j] = Component.zStats.oneMinusNormalCDFInverse(sigValue);
-	  //tempArray[j] = Component.zStats.oneMinusNormalCDFInverse(significance.doubleValue());
-	  //if(tempArray[j] > max_zvalue){
-	  //  max_zvalue = tempArray[j];
-	  //}
-	}
-      }
-      tempHash.put(nodes[i],tempArray);
-    }
-    //This hash is used by Component to be able to determine the significance
-    //for a particular gene
-    Component.exHash = tempHash;
-    System.out.println("Done processing into Hash");
-    
-     
+    Component.exHash = expressionMap; 
     //Initialize the param statistics object. The pStats object uses randomized methods ot determine the 
     //mean and standard deviation for networks of size 1 through n.
     Component.pStats = new ParamStatistics(new Random(apfParams.getRandomSeed()),Component.zStats);

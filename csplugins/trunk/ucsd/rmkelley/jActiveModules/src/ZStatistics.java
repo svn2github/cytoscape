@@ -127,14 +127,14 @@ public class ZStatistics implements Serializable{
     //I copied them from statistics.c and the activeModules
     //plugin
 
-    public double rankAdjustedZ(double rawZ, int n, int m) {
+    public static double rankAdjustedZ(double rawZ, int n, int m) {
 	
 	double pval = pValueForNormalOrderStatistic(rawZ, n, n + 1 - m);
 	return oneMinusNormalCDFInverse(pval);
 	
     }
 
-    public double rankAdjustedZUsingLog(double rawZ, int n,int m){
+    public static double rankAdjustedZUsingLog(double rawZ, int n,int m){
 	// step 1.
 	double projZ = oneMinusNormalCDFInverse(((float)(m)-0.5)/((float)(n)));
 	
@@ -154,7 +154,7 @@ public class ZStatistics implements Serializable{
     //from 26.2.17, page 932, Handbook of Mathematical Functions, NBS, 1964
     //requires x >= 0; as implemented, requires x > 0
 
-    private double OneMinusNormalCDFForPositive(double x) {
+    private static double OneMinusNormalCDFForPositive(double x) {
   
 	double t, temp;
   
@@ -176,7 +176,7 @@ public class ZStatistics implements Serializable{
     //requires Zin >= 0; as implemented, requires Zin > 0
     //now computations done in log form
 
-    private double LogOneMinusNormalCDFForPositive(double Zin) {
+    private static double LogOneMinusNormalCDFForPositive(double Zin) {
   
 	double t, templog, returnlog=0, tprod=1;
   
@@ -205,7 +205,7 @@ public class ZStatistics implements Serializable{
 
     /*******************************************************************/
 
-    private double oneMinusNormalCDF(double x) {
+    private static double oneMinusNormalCDF(double x) {
 	if (x > 0)  return OneMinusNormalCDFForPositive(x);
 	if (x < 0)  return 1 - OneMinusNormalCDFForPositive(-x);
 	if (x == 0) return 0.5;
@@ -214,7 +214,7 @@ public class ZStatistics implements Serializable{
 
     /*******************************************************************/
 
-    private double LogOneMinusNormalCDF(double x) {
+    private static double LogOneMinusNormalCDF(double x) {
 	if (x > 0)  return LogOneMinusNormalCDFForPositive(x);
 	if (x < 0)  return 1 - Math.exp(LogOneMinusNormalCDFForPositive(-x));
 	if (x == 0) return -0.6931472;  // fixed 2002.01.07
@@ -229,7 +229,7 @@ public class ZStatistics implements Serializable{
     //"orderStatistic" as fixed and given) the kth order statistic will
     //exceed the given value for orderStatistic
 
-    private double pValueForNormalOrderStatistic(double orderStatistic, int n, int k) {
+    private static double pValueForNormalOrderStatistic(double orderStatistic, int n, int k) {
 
 	double zeta, tempSum, lnRatio, prob, lnProb;
 	int i;
@@ -249,7 +249,7 @@ public class ZStatistics implements Serializable{
     }
 
 
-    private double LogPValueForNormalOrderStatistic(double orderStatistic, int n, int k) {
+    private static double LogPValueForNormalOrderStatistic(double orderStatistic, int n, int k) {
 
 	double logzeta, tempLogSum, lnRatio, lnProb;
 	int i;
@@ -272,7 +272,7 @@ public class ZStatistics implements Serializable{
     }
 
  
-    private double LogPValueForNormalOrderStatisticWithFlag(double orderStatistic, int n, int k, int OneMinusAnswer) {
+    private static double LogPValueForNormalOrderStatisticWithFlag(double orderStatistic, int n, int k, int OneMinusAnswer) {
 
 	double logzeta, logphi, tempLogSum, lnRatio, lnProb;
 	int i;
@@ -322,7 +322,7 @@ public class ZStatistics implements Serializable{
     //from 26.2.23, page 933, Handbook of Mathematical Functions, NBS, 1964
     //Requires 0 < p <= 0.5
 
-    private double oneMinusNormalCDFInversePLT5(double p) {
+    private static double oneMinusNormalCDFInversePLT5(double p) {
 
 	double t, temp;
 
@@ -344,7 +344,7 @@ public class ZStatistics implements Serializable{
     //from 26.2.23, page 933, Handbook of Mathematical Functions, NBS, 1964
     //Requires -inf < p <= -0.6931472
 
-    private double oneMinusNormalCDFInversePLT5Log(double logp) {
+    private static double oneMinusNormalCDFInversePLT5Log(double logp) {
 
 	double t, temp;
 
@@ -361,7 +361,7 @@ public class ZStatistics implements Serializable{
 
     /*******************************************************************/
 
-    public double oneMinusNormalCDFInverse(double p) {
+    public static double oneMinusNormalCDFInverse(double p) {
 	if (p <= 0.5) {
 	    if (p > 0) return oneMinusNormalCDFInversePLT5(p);
 	    else       return Double.POSITIVE_INFINITY;
@@ -374,7 +374,7 @@ public class ZStatistics implements Serializable{
 
     /*******************************************************************/
 
-    private double oneMinusNormalCDFInverseLog(double logp) {
+    private static double oneMinusNormalCDFInverseLog(double logp) {
 	if (logp <= -0.6931472) {
 	    return oneMinusNormalCDFInversePLT5Log(logp);
 	}
@@ -386,7 +386,7 @@ public class ZStatistics implements Serializable{
 
     /*******************************************************************/
 
-    private double oneMinusNormalCDFInverseLogWithFlag(double logp, int OneMinusP) {
+    private static double oneMinusNormalCDFInverseLogWithFlag(double logp, int OneMinusP) {
 	if ((logp < -0.693147)&&(logp > -0.693148)) {
 	    //cout << "boundary" << endl;
 	    logp = -0.6931472;
@@ -410,7 +410,7 @@ public class ZStatistics implements Serializable{
 
     /*******************************************************************/
 
-    private double normalCDFInverse(double p) {
+    private static double normalCDFInverse(double p) {
 	return -oneMinusNormalCDFInverse(p);
     }
 

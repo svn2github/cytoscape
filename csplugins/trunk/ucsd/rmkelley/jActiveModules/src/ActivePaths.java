@@ -31,7 +31,6 @@ import cytoscape.data.CyNetworkFactory;
 //-----------------------------------------------------------------------------------
 public class ActivePaths implements ActivePathViewer, Runnable {
 
-  protected CyWindow cytoscapeWindow;
   protected boolean showTable = true;
   protected boolean hideOthers = true;
   protected ExpressionData expressionData = null;
@@ -44,21 +43,27 @@ public class ActivePaths implements ActivePathViewer, Runnable {
   protected static boolean activePathsFindingIsAvailable;
   protected JButton activePathToolbarButton;
   protected JFrame mainFrame;
-  protected GraphPerspective perspective;
+  protected CyNetwork cyNetwork;
   protected String titleForCurrentSelection;
   protected ActivePathFinderParameters apfParams;
+  protected static double MIN_SIG = 0.0000000000001;
+  protected static double MAX_SIG = 1-MIN_SIG;
+
 
 
   //----------------------------------------------------------------
-  public ActivePaths (CyWindow cytoscapeWindow, ActivePathFinderParameters apfParams)
+  public ActivePaths (CyNetwork cyNetwork, ActivePathFinderParameters apfParams)
   {
-    this.cytoscapeWindow = cytoscapeWindow;
     this.apfParams = apfParams;
-    expressionData = cytoscapeWindow.getNetwork().getExpressionData ();
+    expressionData = cyNetwork.getExpressionData ();
     attrNames = expressionData.getConditionNames ();
-    menubar = cytoscapeWindow.getCyMenus().getMenuBar ();
-    mainFrame = cytoscapeWindow.getMainFrame ();
-    perspective = cytoscapeWindow.getView().getGraphPerspective();
+    Arrays.sort(attrNames);
+    menubar = Cytoscape.getDesktop().getCyMenus().getMenuBar ();
+    mainFrame = Cytoscape.getDesktop();
+    this.cyNetwork = cyNetwork;
+    if(expressionData.getSignificanceType() == ExpressionData.LAMBDA){
+      expressionData.convertLambdasToPvals();
+    }
   } // ctor
 
   //--------------------------------------------------------------
@@ -67,22 +72,19 @@ public class ActivePaths implements ActivePathViewer, Runnable {
   
   public void run()
   {
-    String callerID = "jActiveModules";
-    cytoscapeWindow.getNetwork().beginActivity(callerID);
     System.gc();
-    GraphViewController gvc = cytoscapeWindow.getGraphViewController();
+    GraphViewController gvc = Cytoscape.getDesktop().getGraphViewController();
     gvc.stopListening();
     long start = System.currentTimeMillis ();
-
+    HashMap expressionMap = generateExpressionMap();
     //run the path finding algorithm
-    ActivePathsFinder apf = new ActivePathsFinder(expressionData,attrNames,cytoscapeWindow.getNetwork(),apfParams,mainFrame);
+    ActivePathsFinder apf = new ActivePathsFinder(expressionMap,attrNames,cyNetwork,apfParams,mainFrame);
     activePaths = apf.findActivePaths();
 
     long duration = System.currentTimeMillis () - start;
     int numberOfPathsFound = activePaths.length;
     System.out.println ("-------------- back from finderBridge: "+numberOfPathsFound+" paths, "+duration+" msecs");
     tableDialog = null;
-    cytoscapeWindow.getNetwork().endActivity(callerID);
     gvc.resumeListening();
     if(apfParams.getExit()){
       System.exit(0);
@@ -100,10 +102,46 @@ public class ActivePaths implements ActivePathViewer, Runnable {
   protected Component getHighScoringPath(){
     return activePaths[0];
   }
+
+  protected HashMap generateExpressionMap(){
+    //set up the HashMap which is used to map from nodes
+    //to z values. At this point, we are mapping from the
+    //p values for expression to z values
+    System.out.println("Processing Expression Data into Hash");
+    HashMap tempHash = new HashMap();
+    GraphObjAttributes nodeAttributes = cyNetwork.getNodeAttributes();
+    for (Iterator nodeIt = cyNetwork.nodesIterator();nodeIt.hasNext();) {
+      double [] tempArray = new double[attrNames.length];
+      Node current = (Node)nodeIt.next();
+      for(int j = 0;j<attrNames.length;j++){
+	mRNAMeasurement tempmRNA = expressionData.getMeasurement(nodeAttributes.getCanonicalName(current),attrNames[j]);
+	if(tempmRNA == null){
+	  tempArray[j] = ZStatistics.oneMinusNormalCDFInverse(.5);
+	}
+	else{
+	  double sigValue = tempmRNA.getSignificance();
+	  if (sigValue < MIN_SIG) {
+	    sigValue = MIN_SIG;
+	    System.out.println("Warning: value for "+nodeAttributes.getCanonicalName(current)+" adjusted to "+MIN_SIG); 
+	  } // end of if ()
+	  if (sigValue > MAX_SIG) {
+	    sigValue = MAX_SIG;
+	    System.out.println("Warning: value for "+nodeAttributes.getCanonicalName(current)+" adjusted to "+MAX_SIG); 
+	  } // end of if ()
+	  //transform the p-value into a z-value and store it in the array of z scores for this particular node
+	  tempArray[j] = ZStatistics.oneMinusNormalCDFInverse(sigValue);
+	}
+      }
+      tempHash.put(current,tempArray);
+    }
+    System.out.println("Done processing into Hash");
+    return tempHash;
+  }
  
+
   protected void showConditionsVsPathwaysTable () {
-     tableDialog = new ConditionsVsPathwaysTable (cytoscapeWindow.getMainFrame(),
-						  cytoscapeWindow,
+     tableDialog = new ConditionsVsPathwaysTable (mainFrame,
+						  cyNetwork,
 						  attrNames, 
 						  activePaths, 
 						  this);
@@ -125,15 +163,13 @@ public class ActivePaths implements ActivePathViewer, Runnable {
   protected void scoreActivePath ()  
   {
     String callerID = "jActiveModules";
-    cytoscapeWindow.getNetwork().beginActivity(callerID);
-    ActivePathsFinder apf = new ActivePathsFinder(expressionData,attrNames,cytoscapeWindow.getNetwork(),apfParams,mainFrame);
+    ActivePathsFinder apf = new ActivePathsFinder(generateExpressionMap(),attrNames,cyNetwork,apfParams,mainFrame);
 
     long start = System.currentTimeMillis ();
-    cytoscapeWindow.redrawGraph ();
     Vector result = new Vector();
-    Iterator it = cytoscapeWindow.getView().getSelectedNodes().iterator();
+    Iterator it = cyNetwork.getFlaggedNodes().iterator();
     while(it.hasNext()){
-      result.add(((NodeView)it.next()).getNode());
+      result.add(it.next());
     }
 	
     double score = apf.scoreList(result);
@@ -141,7 +177,6 @@ public class ActivePaths implements ActivePathViewer, Runnable {
     System.out.println ("-------------- back from score: " + duration + " msecs");
     System.out.println ("-------------- score: " + score + " \n");
     JOptionPane.showMessageDialog (mainFrame, "Score: " + score);
-    cytoscapeWindow.getNetwork().endActivity(callerID);
   } // scoreActivePath
 
 
@@ -171,11 +206,11 @@ public class ActivePaths implements ActivePathViewer, Runnable {
   
   protected void addActivePathToolbarButton ()
   {
-    if (activePathToolbarButton != null)
-      cytoscapeWindow.getCyMenus().getToolBar().remove (activePathToolbarButton);
+    //if (activePathToolbarButton != null)
+    //  cytoscapeWindow.getCyMenus().getToolBar().remove (activePathToolbarButton);
 
-    activePathToolbarButton = 
-      cytoscapeWindow.getCyMenus().getToolBar().add (new ActivePathControllerLauncherAction ());
+    //activePathToolbarButton = 
+    //  cytoscapeWindow.getCyMenus().getToolBar().add (new ActivePathControllerLauncherAction ());
 
   } // addActivePathToolbarButton 
     //------------------------------------------------------------------------------
@@ -184,17 +219,12 @@ public class ActivePaths implements ActivePathViewer, Runnable {
   {
     titleForCurrentSelection = pathTitle;
     //cytoscapeWindow.selectNodesByName (activePath.getNodes (), clearOthersFirst);
-    Vector nodes = activePath.getNodes();
-    GraphView view = cytoscapeWindow.getView();
-    Iterator nodeViewIt = view.getSelectedNodes().iterator();
-    while(nodeViewIt.hasNext()){
-      ((NodeView)nodeViewIt.next()).setSelected(false);
+    if(clearOthersFirst){
+      cyNetwork.unFlagAllNodes();
     }
-    for(int i=0;i<nodes.size();i++){
-      NodeView nodeview= view.getNodeView((Node)nodes.get(i));
-      nodeview.setSelected(!nodeview.isSelected());
-    } 
-    }
+    cyNetwork.setFlaggedNodes(activePath.getNodes(),true);
+    
+  }
   //------------------------------------------------------------------------------
   public void displayPath (Component activePath, String pathTitle)
   {

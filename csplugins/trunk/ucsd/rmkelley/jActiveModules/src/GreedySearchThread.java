@@ -21,10 +21,23 @@ public class GreedySearchThread extends Thread{
   MyProgressMonitor pm;
   HashMap node2BestComponent;
   /**
-   * Track the best component generated from the current
+   * Track the best score generated from the current
    * starting point
    */
-  Component currentBestComponent;
+  double bestScore;
+
+  /**
+   * Map from a node to the number of nodes which are dependent
+   * on this node for connectivity into the graph
+   */
+  HashMap node2DependentCount;
+
+  /**
+   * Map from a node to it's predecessor in the search tree
+   * When we remove this node, that predecessor may be optionally added
+   * to the list of removable nodes, dependending if it has any other predecessors
+   */
+  HashMap node2Predecessor;
 
   /**
    * Lets us know if we need to repeat the greedy search from a new
@@ -46,6 +59,8 @@ public class GreedySearchThread extends Thread{
     node2BestComponent = temp_hash;
     nodes = node_array;
     this.graph = graph;
+    System.err.println("Max Depth: "+max_depth);
+    System.err.println("Search Depth: "+search_depth);
   }
   /**
    * Recursively find the nodes within a max depth
@@ -88,7 +103,7 @@ public class GreedySearchThread extends Thread{
       //depth, just add every node into the max depth
       //hash, thus all nodes are accepted as possible
       //additions
-      if(max_depth < 1){
+      if(max_depth < 0){
 	for(int j=0;j<nodes.length;j++){
 	  withinMaxDepth.add(nodes[j]);
 	}
@@ -100,40 +115,26 @@ public class GreedySearchThread extends Thread{
 	    
       //set the neighborhood of nodes to initially be only
       //the single node we are starting the search from
-      currentBestComponent = new Component();
-      currentBestComponent.addNode(seed);
-	    
-	    
-      //we are done when the recursive call yields no better
-      //scoring components, the done 
-      //System.out.println("Starting greedy search, seeding from node "+seedCursor.node());
-      do{
-	greedyDone = true;
-	Component component = new Component(currentBestComponent.getNodes());
-	//HashSet neighborhood = (HashSet)bestNeighborhood.clone();
-	HashSet neighborhood = new HashSet();
-	Iterator it = component.getNodes().iterator();
-	while(it.hasNext()){
-	  Node compNode = (Node)it.next();
-	  Iterator nodeIt = graph.neighborsList(compNode).iterator();
-	  while(nodeIt.hasNext()){
-	    Node myNode = (Node)nodeIt.next();
-	    if(withinMaxDepth.contains(myNode)&&!component.contains(myNode)){
-	      neighborhood.add(myNode);
-	    }
-	  }
-	}
-	runGreedySearchRecursive(search_depth,component,neighborhood);
-      }while(!greedyDone);
-	    
-      Iterator it = currentBestComponent.getNodes().iterator();
+      Component component = new Component();
+      component.addNode(seed);
+      //make sure that the seed is never added to the list of removables
+      node2DependentCount = new HashMap();
+      node2Predecessor = new HashMap();
+      node2DependentCount.put(seed, new Integer(1));
+      //we don't need to make a predecessor entry for the seed,
+      //since it should never be added to the list of removable nodes
+      HashSet removableNodes = new HashSet();
+      bestScore = Double.NEGATIVE_INFINITY;
+      runGreedySearchRecursive(search_depth,component,seed,removableNodes);    
+      runGreedyRemovalSearch(component,removableNodes);
+      Iterator it = component.getNodes().iterator();
 	    
       synchronized (node2BestComponent){
 	while(it.hasNext()){
 	  Node current = (Node)it.next();
 	  Component oldBest = (Component)node2BestComponent.get(current);
-	  if(oldBest == null || oldBest.getScore() < currentBestComponent.getScore()){
-	    node2BestComponent.put(current,currentBestComponent);
+	  if(oldBest == null || oldBest.getScore() < component.getScore()){
+	    node2BestComponent.put(current,component);
 	  }
 	}
       }
@@ -168,77 +169,80 @@ public class GreedySearchThread extends Thread{
    * @param component The current component we are branching from
    * @param neighborhood The set of all nodes in the neighborhood of component (distance 1)
    */
-  private void runGreedySearchRecursive(int depth, Component component, HashSet neighborhood){
-	
+  private boolean runGreedySearchRecursive(int depth, Component component, Node lastAdded, HashSet removableNodes){
+    boolean improved = false;
     //score this component, check and see if the global top scores should
     //be updated, if we have found a better score, then return true
-    if(component.getScore() > currentBestComponent.getScore()){
-      currentBestComponent = new Component(component.getNodes());
-      greedyDone = false;
+    if(component.getScore() > bestScore){
+      depth = search_depth;
+      improved = true;
+      bestScore = component.getScore();
     }
 
     if(depth > 0){
       //if depth > 0, otherwise we are out of depth and the recursive calls will end
-      //get an iterator for the neighborhood
-	    
-      //foreach member of the neighborhood, add it to the current component
-      //make the recursive call, and then remove it from the current component
-      //we also have to add the appropriate nodes to the neighborhood, and 
-      //remove them when we are done
-      Vector neighborVector = new Vector(neighborhood);
-      Iterator it = neighborVector.iterator();
-      while(it.hasNext()){
-	Node nextNeighbor = (Node)it.next();
-	//add to the component and remove from the neighborhood
-	
-	component.addNode(nextNeighbor);
-	neighborhood.remove(nextNeighbor);
-	//for each neighbor, see if it
-	//is a new neighbor
-	Iterator nodeIt = graph.neighborsList(nextNeighbor).iterator();
-	Vector newNeighbors = new Vector();
-	while(nodeIt.hasNext()){
-	  Node newNeighbor = (Node)nodeIt.next(); 
-	  //this node is only a new neighbor if it is not currently
-	  //in either the component or the neighborhood, we don't want
-	  //to see it twice, we need (ed., that's a weird ass sentence). This component contains() call
-	  //needs to be backed up by a hash (done), or I could add an additional
-	  //hash which keeps track up the members of the component.
-	  if(withinMaxDepth.contains(newNeighbor) && !component.contains(newNeighbor)&&!neighborhood.contains(newNeighbor)){
-	    neighborhood.add(newNeighbor);
-	    //we also need to keep track of the nodes we added in so
-	    //they can be removed afterwards
-	    newNeighbors.add(newNeighbor);
-	  }
-	}
-		
-	//now that we have updated the component to contain the nextNeighbor
-	//and updated neighbors to contain its new neighbors, we can make
-	//the recursive call
-	runGreedySearchRecursive(depth-1,component,neighborhood);
-		
-	//after the recursive call we need to clean up after ourselves by
-	//fixing up the component and the neighbors hash to undo the changes
-	//we made
-	component.removeNode(nextNeighbor);
-		
-	//don't add the neighbor back in yet, otherwise
-	//all the the subsequent recursive calls will duplicate
-	//some of the work we just did
-	//neighborhood.add(nextNeighbor);
-		
-	Iterator newNeighborIt = newNeighbors.iterator();
-	while(newNeighborIt.hasNext()){
-	  neighborhood.remove(newNeighborIt.next());
-	}
+      //Get an iterator of nodes which are next to the 
+      Iterator nodeIt = graph.neighborsList(lastAdded).iterator();
+      boolean anyCallImproved = false;
+      removableNodes.remove(lastAdded);
+      int dependentCount = 0;
+      while(nodeIt.hasNext()){
+	Node newNeighbor = (Node)nodeIt.next(); 
+	//this node is only a new neighbor if it is not currently
+	//in the component. 
+	if(withinMaxDepth.contains(newNeighbor) && !component.contains(newNeighbor)){
+	  component.addNode(newNeighbor);
+	  removableNodes.add(newNeighbor);
+	  boolean thisCallImproved = runGreedySearchRecursive(depth-1,component,newNeighbor,removableNodes);
+	  if ( !thisCallImproved ) {
+	    component.removeNode(newNeighbor);
+	    removableNodes.remove(newNeighbor);
+	  } // end of if ()
+	  else {
+	    dependentCount += 1;
+	    anyCallImproved = true;
+	    node2Predecessor.put(newNeighbor,lastAdded);
+	  } // end of else
+	} // end of if ()
       }
-	
-      //add all the neighbors back in at the end so they are now
-      //available to subsequent recursive calls
-      it = neighborVector.iterator();
-      while(it.hasNext()){
-	neighborhood.add(it.next());
-      }
+      improved |= anyCallImproved;
+      if ( dependentCount > 0) {
+	removableNodes.remove(lastAdded);
+	node2DependentCount.put(lastAdded,new Integer(dependentCount));
+      } // end of if ()
+      
     }
+    return improved;
+  }
+  
+  public void runGreedyRemovalSearch(Component component, HashSet removableNodes){
+    LinkedList list = new LinkedList(removableNodes);
+    while (!list.isEmpty()) {
+      Node current = (Node)list.removeFirst();
+      component.removeNode(current);
+      double score = component.getScore();
+      if (score > bestScore) {
+	bestScore = score;
+	Node predecessor = (Node)node2Predecessor.get(current);
+	int dependentCount = ((Integer)node2DependentCount.get(predecessor)).intValue();
+	dependentCount -= 1;
+	if ( dependentCount == 0 ) {
+	  removableNodes.add(predecessor);
+	} // end of if ()
+	else {
+	  node2DependentCount.put(predecessor,new Integer(dependentCount));
+	} // end of else
+	
+      } // end of if ()
+      else {
+	component.addNode(current);
+      } // end of else
+      
+      
+      
+    } // end of while ()
+    
   }
 }
+
+

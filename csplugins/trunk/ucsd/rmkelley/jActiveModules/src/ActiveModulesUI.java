@@ -23,29 +23,27 @@ import csplugins.jActiveModules.dialogs.*;
 /**
  * UI for Active Modules. Manages the various menu items
  */
-public class ActiveModulesUI extends AbstractPlugin {
+public class ActiveModulesUI extends CytoscapePlugin {
 
-  protected CyWindow cytoscapeWindow;
   protected ActivePaths activePaths;
   protected ActivePathFinderParameters apfParams;
 
-  public ActiveModulesUI (CyWindow cytoscapeWindow) {
-    System.out.println("Starting jActiveModules plugin!\n");
+  public ActiveModulesUI () {
+    System.err.println("Starting jActiveModules plugin!\n");
     /* initialize variables */
-    this.cytoscapeWindow = cytoscapeWindow;
-	
+    	
     /* Add function calls to Cytoscape menus */
-    cytoscapeWindow.getCyMenus().getOperationsMenu().add ( new SetParametersAction() );
-    cytoscapeWindow.getCyMenus().getOperationsMenu().add ( new FindActivePathsAction () );
-    cytoscapeWindow.getCyMenus().getOperationsMenu().add ( new ScoreSubComponentAction () );
-    cytoscapeWindow.getCyMenus().getOperationsMenu().add ( new RandomizeAndRunAction () );
+    Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add ( new SetParametersAction() );
+    Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add ( new FindActivePathsAction () );
+    //cytoscapeWindow.getCyMenus().getOperationsMenu().add ( new ScoreSubComponentAction () );
+    //cytoscapeWindow.getCyMenus().getOperationsMenu().add ( new RandomizeAndRunAction () );
 
     /* check for command line arguments to run right away */
-    String[] args = cytoscapeWindow.getCytoscapeObj().getConfiguration().getArgs();
+    String[] args = Cytoscape.getCytoscapeObj().getConfiguration().getArgs();
     ActivePathsCommandLineParser parser = new ActivePathsCommandLineParser(args);
     apfParams = parser.getActivePathFinderParameters();
     if (parser.shouldRunActivePaths()) {
-      activePaths = new ActivePaths(cytoscapeWindow,apfParams);
+      activePaths = new ActivePaths(Cytoscape.getCurrentNetwork(),apfParams);
       Thread t = new Thread(activePaths);
       t.start();
     }
@@ -71,7 +69,7 @@ public class ActiveModulesUI extends AbstractPlugin {
     }
 
     public void actionPerformed(ActionEvent e){
-      JFrame mainFrame = cytoscapeWindow.getMainFrame ();
+      JFrame mainFrame = Cytoscape.getDesktop();
       JDialog paramsDialog = new ActivePathsParametersPopupDialog 
 	(mainFrame, "Find Active Modules Parameters", apfParams);
       paramsDialog.pack ();
@@ -88,7 +86,7 @@ public class ActiveModulesUI extends AbstractPlugin {
     FindActivePathsAction () { super ("Active Modules: Find Modules"); }
 	
     public void actionPerformed (ActionEvent e) {
-      activePaths = new ActivePaths(cytoscapeWindow,apfParams);  
+      activePaths = new ActivePaths(Cytoscape.getCurrentNetwork(),apfParams);  
       Thread t = new Thread(activePaths);
       t.start();
     } 
@@ -98,24 +96,24 @@ public class ActiveModulesUI extends AbstractPlugin {
    * This action will generate a score for the currently selected
    * nodes in the view
    */
-  protected class ScoreSubComponentAction extends AbstractAction {
+  // protected class ScoreSubComponentAction extends AbstractAction {
 	
-    ScoreSubComponentAction () { super ("Active Modules: Score Selected Nodes"); }
-    public void actionPerformed (ActionEvent e) {
-      activePaths = new ActivePaths(cytoscapeWindow,apfParams);  
-      activePaths.scoreActivePath ();
-    } 
-  }
+//     ScoreSubComponentAction () { super ("Active Modules: Score Selected Nodes"); }
+//     public void actionPerformed (ActionEvent e) {
+//       activePaths = new ActivePaths(cytoscapeWindow,apfParams);  
+//       activePaths.scoreActivePath ();
+//     } 
+//   }
 
 
-  protected class RandomizeAndRunAction extends AbstractAction{  
+//   protected class RandomizeAndRunAction extends AbstractAction{  
 
-    public RandomizeAndRunAction () { super ("Active Modules: Score Distribution"); }
+//     public RandomizeAndRunAction () { super ("Active Modules: Score Distribution"); }
 
-    public void actionPerformed (ActionEvent e) {
-      JFrame mainFrame = cytoscapeWindow.getMainFrame ();
-      Thread t = new ScoreDistributionThread(cytoscapeWindow,activePaths,apfParams);
-      t.start();	
-    }
-  }
+//     public void actionPerformed (ActionEvent e) {
+//       JFrame mainFrame = cytoscapeWindow.getMainFrame ();
+//       Thread t = new ScoreDistributionThread(cytoscapeWindow,activePaths,apfParams);
+//       t.start();	
+//     }
+//   }
 }

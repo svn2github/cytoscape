@@ -440,9 +440,11 @@ public class Component implements Comparable{
 	double nodeSqrt;
 	if(regionScoring){
 	    nodeSqrt = Math.sqrt(nodes.size()+neighborhood.size());
+					//nodeSqrt = nodes.size()+neighborhood.size();	
 	}
 	else{
 	    nodeSqrt = Math.sqrt(nodes.size());
+					//nodeSqrt = nodes.size();	
 	}
 	//sort the array of summed zscores
 	for(int i = 0;i<zSums.length;i++){

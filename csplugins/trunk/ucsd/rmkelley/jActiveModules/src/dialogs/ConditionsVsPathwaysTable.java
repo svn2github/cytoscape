@@ -20,7 +20,9 @@ import java.util.*;
 import csplugins.jActiveModules.Component;
 import csplugins.jActiveModules.ActivePathViewer;
 import cytoscape.view.*;
+import cytoscape.CyNetwork;
 import cytoscape.data.readers.TextJarReader;
+import cytoscape.Cytoscape;
 //---------------------------------------------------------------------------------------
 public class ConditionsVsPathwaysTable extends JDialog {
 
@@ -28,15 +30,15 @@ public class ConditionsVsPathwaysTable extends JDialog {
     JPanel topTable, bottomTable;
     csplugins.jActiveModules.Component [] activePaths;
     String [] conditionNames;
-    CyWindow cytoscapeWindow;
+    CyNetwork cyNetwork;
 
 //-----------------------------------------------------------------------------------------
-public ConditionsVsPathwaysTable (Frame parentFrame, CyWindow cw,
+public ConditionsVsPathwaysTable (Frame parentFrame, CyNetwork cyNetwork,
 				  String [] conditionNames,
                                   Component [] activePaths, ActivePathViewer pathViewer)
 {
   super (parentFrame, false);  
-  this.cytoscapeWindow = cw;
+  this.cyNetwork = cyNetwork;
   this.activePaths = activePaths;
   this.conditionNames = conditionNames;
   init (parentFrame, pathViewer);
@@ -132,7 +134,7 @@ public void saveState(String filename) {
 //--------------------------------------------------------------------------------
 
 public void saveState() {
-    JFileChooser chooser = new JFileChooser (cytoscapeWindow.getCytoscapeObj().getCurrentDirectory());
+    JFileChooser chooser = new JFileChooser (Cytoscape.getCytoscapeObj().getCurrentDirectory()); 
     if (chooser.showSaveDialog (null) == chooser.APPROVE_OPTION) {
 	String name = chooser.getSelectedFile ().toString ();
 	saveState(name);
