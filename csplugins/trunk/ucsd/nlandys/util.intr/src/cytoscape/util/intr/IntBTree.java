@@ -20,6 +20,24 @@ public final class IntBTree
   {
   }
 
+  public void delete(int x)
+  {
+  }
+
+  public void deleteRange(int minX, int maxX)
+  {
+  }
+
+  public int count(int x)
+  {
+    return 0;
+  }
+
+  public IntEnumerator searchRange(int minX, int maxX)
+  {
+    return null;
+  }
+
   private final static class Node
   {
 
