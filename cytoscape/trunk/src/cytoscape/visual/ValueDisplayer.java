@@ -377,12 +377,10 @@ public class ValueDisplayer extends JButton {
 	    int iconIndex = 0;
 	    for ( ; icons[iconIndex].getDescription() != ltName; iconIndex++) {
 	    }
-	    if (iconIndex > icons.length) { // didn't find the icon
+	    currentIcon = icons[iconIndex];
+	    if (iconIndex == icons.length) { // didn't find the icon
 		System.err.println("Icon for object " + startObject + " not found!");
 		currentIcon = icons[0];
-	    }
-	    else {
-		currentIcon = icons[iconIndex];
 	    }
 	}
 	// set currentIcon
