@@ -1,0 +1,7 @@
+#Cytoscape Property File
+#Wed Feb 23 13:10:02 PST 2005
+secondaryViewThreshold=2000
+viewType=tabbed
+defaultSpeciesName=PleaseSpecify
+bioDataServer=PleaseSpecify
+viewThreshold=500
