@@ -937,6 +937,7 @@ public abstract class Cytoscape {
        
      if ( copy_atts ) {
        expressionData.copyToAttribs( getNodeNetworkData() );
+       firePropertyChange( ATTRIBUTES_CHANGED,null,null );
      }
 
      //display a description of the data in a dialog
