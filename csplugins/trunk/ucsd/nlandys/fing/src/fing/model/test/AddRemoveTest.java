@@ -8,10 +8,13 @@ import giny.model.RootGraph;
 
 import java.util.Iterator;
 
-public class AddRemoveTest
+public final class AddRemoveTest
 {
 
-  public static void main(String[] args)
+  // No constructor.
+  private AddRemoveTest() { }
+
+  public static final void main(String[] args)
     throws ClassNotFoundException, InstantiationException,
            IllegalAccessException
   {
@@ -24,7 +27,7 @@ public class AddRemoveTest
     for (int foo = 0; foo < iterations; foo++)
     {
       boolean print = true;
-      if (!(foo % 10 == 0))  print = false;
+      if (!(foo % 10 == 0)) print = false;
       if (print) System.out.println("at add/remove iteration " + (foo + 1) + 
                                     " of " + iterations);
       final int numNodes = nodeNums[foo % nodeNums.length];
