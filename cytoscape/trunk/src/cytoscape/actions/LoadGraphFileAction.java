@@ -6,6 +6,7 @@ package cytoscape.actions;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.giny.PhoebeNetworkView;
 import cytoscape.data.readers.GMLReader2;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.InteractionsReader;
@@ -28,6 +29,10 @@ import java.io.File;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.DecimalFormat;
+
+import edu.umd.cs.piccolo.PCanvas;
+import edu.umd.cs.piccolo.PLayer;
+import phoebe.PGraphView;
 
 /**
  * User has requested loading of an Expression Matrix File.
@@ -109,7 +114,7 @@ public class LoadGraphFileAction extends CytoscapeAction {
             jTaskConfig.setAutoDispose(false);
 
             //  Execute Task in New Thread;  pops open JTask Dialog Box.
-            boolean success = TaskManager.executeTask(task, jTaskConfig);
+            TaskManager.executeTask(task, jTaskConfig);
         }
     }
 }
@@ -255,22 +260,71 @@ class LoadNetworkTask implements Task {
 
         // Create a new cytoscape.data.CyNetwork from these nodes and edges
         taskMonitor.setStatus("Creating Cytoscape Network...");
-        final CyNetwork network[] = new CyNetwork[1];
 
-        //  This call will trigger the creation of the CyNetworkView
-        network[0] = Cytoscape.createNetwork(nodes, edges,
+        //  Create the CyNetwork
+        //  First, set the view threshold to 0.  By doing so, we can disable
+        //  the auto-creating of the CyNetworkView.
+        int realThreshold = CytoscapeInit.getViewThreshold();
+        CytoscapeInit.setViewThreshold(0);
+        CyNetwork network = Cytoscape.createNetwork(nodes, edges,
             CyNetworkNaming.getSuggestedNetworkTitle (title));
+
+        //  Reset back to the real View Threshold
+        CytoscapeInit.setViewThreshold(realThreshold);
 
         //  Store GML Data as a Network Attribute
         if (file_type == Cytoscape.FILE_GML) {
-            network[0].putClientData("GML", reader);
+            network.putClientData("GML", reader);
         }
 
-        //  Layout Network
-        if (Cytoscape.getNetworkView(network[0].getIdentifier()) != null) {
-            reader.layout(Cytoscape.getNetworkView
-                    (network[0].getIdentifier()));
+        //  Conditionally, Create the CyNetworkView
+        if (network.getNodeCount() < CytoscapeInit.getViewThreshold()  ) {
+            createCyNetworkView(network);
+
+            //  Layout Network
+            if (Cytoscape.getNetworkView(network.getIdentifier()) != null) {
+                reader.layout(Cytoscape.getNetworkView
+                   (network.getIdentifier()));
+            }
+
+            //  Lastly, make the GraphView Canvas Visible.
+            SwingUtilities.invokeLater(new Runnable () {
+                public void run() {
+                    PGraphView view =(PGraphView)
+                            Cytoscape.getCurrentNetworkView();
+                    PCanvas pCanvas = view.getCanvas();
+                    pCanvas.setVisible(true);
+                }
+            });
         }
-        return network[0];
+        return network;
+    }
+
+    /**
+     * Creates the CyNetworkView.
+     * Most of this code is copied directly from Cytoscape.createCyNetworkView.
+     * However, it requires a bit of a hack to actually hide the network
+     * view from the user, and I didn't want to use this hack in the core
+     * Cytoscape.java class.
+     */
+    private void createCyNetworkView (CyNetwork cyNetwork) {
+        final PhoebeNetworkView view = new PhoebeNetworkView(cyNetwork,
+                cyNetwork.getTitle());
+
+      //  Start of Hack:  Hide the View
+      PCanvas pCanvas = view.getCanvas();
+      pCanvas.setVisible(false);
+      //  End of Hack
+
+      view.setIdentifier(cyNetwork.getIdentifier());
+      Cytoscape.getNetworkViewMap().put(cyNetwork.getIdentifier(), view);
+      view.setTitle(cyNetwork.getTitle());
+
+      Cytoscape.firePropertyChange
+              (cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED,null, view);
+
+      //  Instead of calling fitContent(), access PGraphView directly.
+      view.getCanvas().getCamera().animateViewToCenterBounds
+                    (view.getCanvas().getLayer().getFullBounds(), true, 0);
     }
 }
