@@ -339,6 +339,14 @@ private void loadVizMapper() {
       vs = cc.getVisualStyle("default");
       if (vs == null) {//catalog doesn't have a default
           vs = new VisualStyle("default");
+          //setup the default to at least put canonical names on the nodes
+          String cName = "canonical names as node labels";
+          NodeLabelCalculator nlc = cc.getNodeLabelCalculator(cName);
+          if (nlc == null) {
+              ObjectMapping m = new PassThroughMapping(new String(), "canonicalName");
+              nlc = new GenericNodeLabelCalculator(cName, m);
+          }
+          vs.getNodeAppearanceCalculator().setNodeLabelCalculator(nlc);
           cc.addVisualStyle(vs);
       }
   }
