@@ -423,7 +423,7 @@ operation takes the network from 329 nodes / 357 edges to 256 nodes / 299 edges.
 10. FINDING ACTIVE SUBSYSTEMS ########################################
 ######################################################################
 
-Note: Only Linux
+Note: Only available for Linux
 
 In model organisms such as yeast, large databases of protein-protein
 and protein-DNA interactions have become an extremely important
@@ -470,11 +470,85 @@ that results in the highest score overall.
 
 The Active Paths dialog contains several options that control how
 high-scoring paths are found via a simulated annealing algorithm.
+
+"Number of Paths", "Iterations", "Display Interval":
 Starting from the specified "Number of Paths" (randomly seeded), the
-algorithm anneals over the specified "Number of Iterations".  The top
+algorithm anneals over the specified number of "Iterations".  The top
 scoring paths are displayed in the Cytoscape window at regular
 intervals of iterations, controlled by the "Display Interval".
 Specific options are discussed in more detail in the publication.  
+
+"Start Temp" and "End Temp"
+The annealing algorithm runs according to a decaying temperature
+schedule; a typical starting temperature is around 1.0 or 2.0;
+a typical ending temperature is around 0.01 or 0.001.
+
+Annealing Extensions
+
+"Quenching" is a final check that can run after annealing to ensure
+  that the algorithm has found a local maximum.  It checks all
+  one-node changes to the graph to see that none of them has a higher
+  score than the current configuration.  If there is a better
+  configuration, it takes that change, and quenches again iteratively
+  until a local maximum is reached.
+
+"Edges (not Nodes)" runs annealing, but instead of toggling nodes on
+  and off, it toggles edges (and their pairs of relevant nodes) on
+  and off.  This prevents single nodes from ever being considered as
+  subnetworks.
+
+"Hubfinding", "Hub Penalty", and "Regional Scoring" are three ways to
+  counteract a topology problem in networks with high-degree nodes.
+  "Hubfinding" turns off all low-scoring neighbors of hubs, so that
+  the region around a hub will have a chance to be optimized.  The
+  threshold for what defines a hub is set by the user.
+  "Hub Penalty" subtracts a penalty from the score of a hub, which
+  could be proportional to the expected value of the score of the
+  optimal subset of its immediate neighbors under uniformly
+  distributed p-values.  The empirical value for this case, under one
+  experimental condition, is 0.406.
+  "Regional Scoring" is the most elegant solution of the three:
+  instead of penalizing the hubs in some way, regional scoring
+  restricts anneling to score "regions" of components.  For example:
+  in a star-shaped network with hub H and leaf nodes A,B,C,D,E all
+  connected to H, traditional annealing could find network A-H-C,
+  among many others.  "Regional" annealing could not, though, because
+  the region of A-H-C includes B, D, and E as well.  Thus in normal
+  annealing, this network would have 6 one-node subnets, 5 two-node
+  subnets, (5 choose 2) = 10 three-node subnets, (5 choose 3) = 10
+  four-node subnets, (5 choose 4) = 5 five-node subnets, and one
+  six-node subnet.  In contrast, regional annealing only permits
+  5 two-node regions (the regions of the leaf nodes) and 1 six-node
+  region (the region of the hub).
+
+  If you use regional scoring, the algorithm will return only the
+  "core" of the region.  To see the entire region, you must first
+  show all nodes, select the subnet of interest, then press Ctrl-F
+  to select the region surrounding it.
+
+Seed Graph Options
+
+"Non-Random Starting Graph" versus "Random Based on Current Time":
+  During annealing, an integer is used to seed a pseudo-random number
+  generator.  To reproduce an annealing run exactly, type the same
+  number into the "seed:" text area.  To pick a random number, click
+  the "Random Based on Current Time" button, and Cytoscape will put
+  a numeric representation of the current time into the "seed:" area.
+
+"Rather than annealing, Search depth:" instead of annealing, this
+will greedily search for local optima in the graph, starting from all
+pairs of nodes in the graph.  The depth specifies the number of moves
+required to consider an area a local maximum.  The greater the depth,
+the better the optima, and the longer the algorithm takes.  Typical
+depths are 1 or 2.  Searching (rather than annealing) will return the
+set of all optima it found, in the order that it found them.  They
+may overlap.
+
+"Search from selected nodes?" this option is only relevant when
+searching, rather than annealing.  If you have a large graph, and the
+number of pairs of nodes (and thus starting points for searching) is
+quite large, you might consider selecting nodes that are likely to be
+near local optima, and starting the greedy search from there.
 
 Once options are set, press "Apply" to begin active path finding.
 Another dialog appears requesting whether MonteCarlo statistics should
@@ -507,15 +581,22 @@ by specifying the following options:
 
     --APt0 <double>         initial temperature
     --APtf <double>         final temperature
+    --APha <double>         hub adjustment
     --APni <integer>        number of iterations
     --APnp <integer>        number of paths
     --APdi <integer>        display interval
     --APhs <integer>        minimum hub size
     --APrs <integer>        random seed
+    --APsd <integer>        search depth
     --APqu <true|false>     apply quenching
-    --APmc <string>         monte-carlo file name
+    --APed <true|false>     edges not nodes
+    --APmcb <true|false>    use mc correction at all
+    --APmc <string>         monte carlo file name
+    --APsig <double>        significance threshold
+    --APreg <true|false>    regional scoring true/false
     --APexit                save and exit after run
-    --APhelp                prints these options
+    --APhelp                prints this help
+
 
 These options are used to automatically start ActivePaths once
 Cytoscape is running.  It requires that a network file and expression
@@ -538,6 +619,10 @@ values as options:
    Display Interval ......... 10
    Quenching ................ (on)
    Hubfinding ............... (off)
+   Hub penalty .............. (off)
+   Regional scoring ......... (off)
+   Rather than annealing... . (off)
+   Search from selected... .. (off)
    Seed Graph ............... Non-Random
 
 Press "Apply" and then "Generate" in the next dialog.  Annealing will
