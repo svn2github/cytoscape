@@ -26,7 +26,8 @@ public class RunBareBones {
         config.displayCancelButton(true);
 
         //  Execute Task via TaskManager
-        //  This automatically pops-open a JTask Dialog Box
+        //  This automatically pops-open a JTask Dialog Box.
+        //  This method will block until the JTask Dialog Box is disposed.
         boolean success = TaskManager.executeTask(task, config);
     }
 }
