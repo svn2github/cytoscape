@@ -26,6 +26,7 @@ import cytoscape.*;
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.ExpressionData;
 import cytoscape.data.Semantics;
+import cytoscape.process.ui.ProgressUI;
 import cytoscape.view.NetworkView;
 import cytoscape.view.CyMenus;
 import cytoscape.util.CyFileFilter;
@@ -129,16 +130,21 @@ public class LoadGraphFileAction extends CytoscapeAction {
       busyDialog.pack();
       busyDialog.move((f.size().width - busyDialog.size().width) / 2 + f.location().x,
                       (f.size().height - busyDialog.size().height) / 2 + f.location().y);
+      final CyNetwork[] newNetwork = new CyNetwork[1];
       Runnable loadGraph = new Runnable() {
         public void run()
     {
-      CyNetwork newNetwork = Cytoscape.createNetwork( name,
+      newNetwork[0] = Cytoscape.createNetwork( name,
                                             fileTypeF,
                                             canonicalize,
                                             Cytoscape.getCytoscapeObj().getBioDataServer(),
                                             species );
-     
-      if ( newNetwork != null ) {//valid read
+      busyDialog.dispose();
+    } // run()
+    }; // new Runnable()
+      (new Thread(loadGraph)).start();
+      busyDialog.show(); // This blocks until busyDialog.dispose() is called, see JDK API spec.
+      if ( newNetwork[0] != null ) {//valid read
         //apply the semantics we usually expect
         //Semantics.applyNamingServices( newNetwork, Cytoscape.getCytoscapeObj() );
         //  networkView.getGraphViewController().stopListening();
@@ -156,18 +162,16 @@ public class LoadGraphFileAction extends CytoscapeAction {
         int nn = Cytoscape.getRootGraph().getNodeCount()- root_nodes;
         int ne = Cytoscape.getRootGraph().getEdgeCount()- root_edges;
         
-        busyDialog.dispose();
-
         StringBuffer sb = new StringBuffer();
         String lineSep = System.getProperty("line.separator");
         //give the user some confirmation
         sb.append("Succesfully loaded graph from " + name + lineSep);
-        sb.append("Graph contains " + newNetwork.getNodeCount());
-        sb.append(" nodes and " + newNetwork.getEdgeCount());
+        sb.append("Graph contains " + newNetwork[0].getNodeCount());
+        sb.append(" nodes and " + newNetwork[0].getEdgeCount());
         sb.append(" edges."+lineSep);
         sb.append("There were "+nn+" unique nodes, and "+ne+" unique edges."+lineSep+lineSep);
         
-        if ( newNetwork.getNodeCount() < Cytoscape.getCytoscapeObj().getViewThreshold() ) {
+        if ( newNetwork[0].getNodeCount() < Cytoscape.getCytoscapeObj().getViewThreshold() ) {
           sb.append( "Your Network is Under "+Cytoscape.getCytoscapeObj().getViewThreshold() +" nodes, a View  will be automatically created." );
         } else { 
           sb.append( "Your Network is Over nodes "+Cytoscape.getCytoscapeObj().getViewThreshold() +", a View  will be not be created."+lineSep+"If you wish to view this Network use \"Create View\" from the \"Edit\" menu." );
@@ -187,10 +191,7 @@ public class LoadGraphFileAction extends CytoscapeAction {
                                       "Error loading graph",
                                       JOptionPane.ERROR_MESSAGE);
       }
-    } // run()
-    }; // new Runnable()
-      (new Thread(loadGraph)).start();
-      busyDialog.show();
+
     } // if
     //networkView.getView().addGraphViewChangeListener(windowMenu);
   } // actionPerformed
