@@ -973,7 +973,7 @@ class FRootGraph implements RootGraph, DynamicGraph
     for (int i = 0; i < returnThis.length; i++) {
       final int metaRelationship = metaRelationshipsEnum.nextInt();
       final int metaParent = m_metaGraph.edgeSource(metaRelationship);
-      returnThis[i] = m_metaToNativeInxMap.getIntAtIndex(metaParent); }
+      returnThis[i] = ~(m_metaToNativeInxMap.getIntAtIndex(metaParent) - 1); }
     return returnThis;
   }
 
