@@ -579,8 +579,28 @@ public final class AllGraphPerspectiveMethodsTest
       throw new IllegalStateException("not out degree -1");
 
     // getDegree(Node).
+    if (persp.getDegree(root2Node) != -1 ||
+        persp.getDegree(nodeNotInPersp) != -1)
+      throw new IllegalStateException("not degree -1 for other node");
+    if (persp.getDegree(persp.getNode(nodeInx[0])) != 3)
+      throw new IllegalStateException("not degree 3");
+    if (persp.getDegree(persp.getNode(nodeInx[1])) != 4)
+      throw new IllegalStateException("not degree 4");
 
     // getDegree(int).
+    if (persp.getDegree(minNodeInx - 2) != -1 ||
+        persp.getDegree(0) != -1 ||
+        persp.getDegree(13) != -1)
+      throw new IllegalStateException("not degree -1");
+    if (persp.getDegree(nodeInx[2]) != 4)
+      throw new IllegalStateException("not degree 4");
+    if (persp.getDegree(nodeInx[3]) != 1)
+      throw new IllegalStateException("not degree 1");
+    if (persp.getDegree(nodeInx[4]) != 0)
+      throw new IllegalStateException("not degree 0");
+    if (persp.getDegree(Integer.MAX_VALUE) != -1 ||
+        persp.getDegree(Integer.MIN_VALUE) != -1)
+      throw new IllegalStateException("not degree -1");
 
     // getIndex(Node).
 
