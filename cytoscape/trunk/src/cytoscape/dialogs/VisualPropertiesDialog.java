@@ -37,10 +37,6 @@ public class VisualPropertiesDialog extends JDialog {
     Frame parentFrame;
     MutableColor nColor;
     MutableColor bColor;
-    /*
-    MutableColor ppColor;
-    MutableColor pdColor;
-    */
     MutableColor bgColor;
     MutableString localNodeLabelKey;
     MutableString parentNodeLabelKey;
@@ -61,11 +57,6 @@ public VisualPropertiesDialog (Frame parentFrame,
   aMapper = mapper;
   nColor = new MutableColor(getBasicColor(VizMapperCategories.NODE_FILL_COLOR));
   bColor = new MutableColor(getBasicColor(VizMapperCategories.NODE_BORDER_COLOR));
-
-  /*
-  ppColor = new MutableColor(getDMColor(VizMapperCategories.EDGE_COLOR, "pp"));
-  pdColor = new MutableColor(getDMColor(VizMapperCategories.EDGE_COLOR, "pd"));
-  */
   bgColor = new MutableColor(getBasicColor(VizMapperCategories.BG_COLOR));
   localNodeLabelKey = new MutableString(nodeLabelKey.getString());
   parentNodeLabelKey = nodeLabelKey;
@@ -75,22 +66,6 @@ public VisualPropertiesDialog (Frame parentFrame,
   GridBagConstraints c = new GridBagConstraints();
   mainPanel.setLayout (gridbag);
 
-  /*
-  JButton edgePPButton = new JButton ("Edge Coloring: PP");
-  edgePPButton.addActionListener (new GeneralColorDialogListener(this,ppColor,"Choose a P-P Edge Color"));
-  c.gridx=0;
-  c.gridy=0;
-  gridbag.setConstraints(edgePPButton,c);
-  mainPanel.add (edgePPButton);
-
-  JButton edgePDButton = new JButton ("Edge Coloring: PD");
-  edgePDButton.addActionListener (new GeneralColorDialogListener(this,pdColor,"Choose a P-D Edge Color"));
-  c.gridx=1;
-  c.gridy=0;
-  gridbag.setConstraints(edgePDButton,c);
-  mainPanel.add (edgePDButton);
-  */
-  
   JButton colorButton = new JButton("Choose Node Color");
   colorButton.addActionListener(new GeneralColorDialogListener(this,nColor,"Choose a Node Color"));
   c.gridx=0;
