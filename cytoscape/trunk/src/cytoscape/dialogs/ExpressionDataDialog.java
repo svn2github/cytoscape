@@ -33,7 +33,12 @@ import cytoscape.GraphObjAttributes;
 //--------------------------------------------------------------------------------------
 public class ExpressionDataDialog extends JDialog {
 
+    public static final int RSNA_R = 0;
+    public static final int RSNA_S = 1;
+    public static final int RSNA_N = 2;
+
     int expressionConditionNumber;
+    int rsnState;
     AttributeMapper aMapper;
     Node[] nodes;
     ExpressionData eData;
@@ -56,32 +61,67 @@ public ExpressionDataDialog (Frame parentFrame,
   nAttrib = nodeAttributes;
 
   JPanel mainPanel = new JPanel ();
-  GridBagLayout gridbag = new GridBagLayout();   // see note below
-  GridBagConstraints c = new GridBagConstraints();  // see note below
+  GridBagLayout gridbag = new GridBagLayout();
+  GridBagConstraints c = new GridBagConstraints();
   mainPanel.setLayout (gridbag);
 
 
-  condNames = eData.getConditionNames();
+  // begin condPanel
+  JPanel condPanel = createCondPanel ();
 
-  ButtonGroup buttonGroup = new ButtonGroup ();
-  int condNum;
-  for(condNum=0; condNum<condNames.length; condNum++) {
-      JRadioButton condButton = new JRadioButton (condNames[condNum]);
-      condButton.addActionListener(new CondAction (condNum));
-      buttonGroup.add (condButton);
-      c.gridx = 0;
-      c.gridy = condNum+1;
-      gridbag.setConstraints(condButton,c);
-      mainPanel.add (condButton);
-  }
+  // begin rsnPanel = expression / significance / none Panel
+  JPanel rsnPanel = createRSNPanel ();
 
+  // begin colorPanel
+  JPanel colorPanel = new JPanel ();
+  GridBagLayout colorGridbag = new GridBagLayout();
+  GridBagConstraints colorConstraints = new GridBagConstraints();
+  colorPanel.setLayout (colorGridbag);
+
+
+  // begin adPanel = apply / dismiss Panel
+  JPanel adPanel = new JPanel ();
+  GridBagLayout adGridbag = new GridBagLayout();
+  GridBagConstraints adConstraints = new GridBagConstraints();
+  adPanel.setLayout (adGridbag);
 
   JButton applyButton = new JButton ("Apply");
   applyButton.addActionListener (new ApplyAction ());
+  adConstraints.gridx=0;
+  adConstraints.gridy=0;
+  adGridbag.setConstraints(applyButton,adConstraints);
+  adPanel.add (applyButton);
+
+  JButton dismissButton = new JButton ("Dismiss");
+  dismissButton.addActionListener (new DismissAction ());
+  adConstraints.gridx=1;
+  adConstraints.gridy=0;
+  adGridbag.setConstraints(dismissButton,adConstraints);
+  adPanel.add (dismissButton);
+
   c.gridx=0;
   c.gridy=0;
-  gridbag.setConstraints(applyButton,c);
-  mainPanel.add (applyButton);
+  gridbag.setConstraints(condPanel,c);
+  mainPanel.add (condPanel);
+
+
+  c.gridx=1;
+  c.gridy=0;
+  c.gridheight = 3;
+  gridbag.setConstraints(rsnPanel,c);
+  mainPanel.add (rsnPanel);
+
+  c.gridx=1;
+  c.gridy=1;
+  c.gridheight = 1;
+  gridbag.setConstraints(colorPanel,c);
+  mainPanel.add (colorPanel);
+
+  c.gridx=1;
+  c.gridy=2;
+  gridbag.setConstraints(adPanel,c);
+  mainPanel.add (adPanel);
+  
 
   setContentPane (mainPanel);
 } // PopupDialog ctor
@@ -100,13 +140,29 @@ public class ApplyAction extends AbstractAction {
 	  Node node = nodes [i];
 	  String canName = nAttrib.getCanonicalName (node);
 	  mRNAMeasurement mm =  eData.getMeasurement(canName,condName);
-	  if(mm!=null)
-	      nAttrib.add("expression",canName,mm.getSignificance());
-	  //System.out.println(canName + " " + mm);
+	  if(mm!=null) {
+	      if(rsnState==RSNA_R)
+		  nAttrib.add("expression",canName,mm.getRatio());
+	      else if (rsnState==RSNA_S) 
+		  nAttrib.add("expression",canName,mm.getSignificance());
+	      //else
+		  // this would be ideal: nAttrib.remove("expression",canName);
+	  }
       }
 
       ExpressionDataDialog.this.dispose ();
 
+  }
+
+} // QuitAction
+//--------------------------------------------------------------------------------------
+public class DismissAction extends AbstractAction {
+  DismissAction () {
+      super ("");
+  }
+
+  public void actionPerformed (ActionEvent e) {
+      ExpressionDataDialog.this.dispose ();
   }
 
 } // QuitAction
@@ -120,6 +176,18 @@ public class CondAction extends AbstractAction {
     }
     public void actionPerformed (ActionEvent e) {
 	expressionConditionNumber = condNum;
+    }
+}
+
+
+public class RSNAction extends AbstractAction {
+    private int rsnNum;
+    RSNAction (int num) {
+	super ("");
+	rsnNum = num;
+    }
+    public void actionPerformed (ActionEvent e) {
+	rsnState = rsnNum;
     }
 }
 
@@ -177,6 +245,67 @@ class SpawnNodeColorDialogListener implements ActionListener {
 	    nColor = tempColor;
     }
 }
+
+private JPanel createCondPanel() {
+
+  JPanel condPanel = new JPanel ();
+  GridBagLayout condGridbag = new GridBagLayout();
+  GridBagConstraints condConstraints = new GridBagConstraints();
+  condPanel.setLayout (condGridbag);
+
+  condNames = eData.getConditionNames();
+
+  ButtonGroup buttonGroup = new ButtonGroup ();
+  int condNum;
+  for(condNum=0; condNum<condNames.length; condNum++) {
+      JRadioButton condButton = new JRadioButton (condNames[condNum]);
+      condButton.addActionListener(new CondAction (condNum));
+      buttonGroup.add (condButton);
+      condConstraints.gridx = 0;
+      condConstraints.gridy = condNum+1;
+      condGridbag.setConstraints(condButton,condConstraints);
+      condPanel.add (condButton);
+  }
+  return condPanel;
+
+}
+
+private JPanel createRSNPanel() {
+  JPanel rsnPanel = new JPanel ();
+  GridBagLayout rsnGridbag = new GridBagLayout();
+  GridBagConstraints rsnConstraints = new GridBagConstraints();
+  rsnPanel.setLayout (rsnGridbag);
+
+  ButtonGroup buttonGroup = new ButtonGroup ();
+  JRadioButton rButton = new JRadioButton ("Expression");
+  rButton.addActionListener(new RSNAction (RSNA_R));
+  JRadioButton sButton = new JRadioButton ("Significance");
+  sButton.addActionListener(new RSNAction (RSNA_S));
+  JRadioButton nButton = new JRadioButton ("None");
+  nButton.addActionListener(new RSNAction (RSNA_N));
+
+  buttonGroup.add (rButton);
+  buttonGroup.add (sButton);
+  buttonGroup.add (nButton);
+
+  rsnConstraints.gridx = 0;
+  rsnConstraints.gridy = 0;
+  rsnGridbag.setConstraints(rButton,rsnConstraints);
+  rsnPanel.add (rButton);
+
+  rsnConstraints.gridx = 1;
+  rsnConstraints.gridy = 0;
+  rsnGridbag.setConstraints(sButton,rsnConstraints);
+  rsnPanel.add (sButton);
+
+  rsnConstraints.gridx = 2;
+  rsnConstraints.gridy = 0;
+  rsnGridbag.setConstraints(nButton,rsnConstraints);
+  rsnPanel.add (nButton);
+  
+  return rsnPanel;
+}
+
 
 class BGColorDialogListener implements ActionListener {
     
