@@ -143,6 +143,8 @@ public class CollapseSelectedNodesAction
       IntArrayList parentRootGraphIndices = new IntArrayList();
       for(int i = 0; i < nodeIndices.length; i++){
         int [] parents = rootGraph.getNodeMetaParentIndicesArray(nodeIndices[i]);
+        // Iliana left here:
+        // Was about to check that the parent node belongs to the mainGP...
         if(parents.length == 1){
           parentRootGraphIndices.add(parents[0]);
         }else if(parents.length > 1){
@@ -162,7 +164,7 @@ public class CollapseSelectedNodesAction
       }
       int [] parents = parentRootGraphIndices.elements();      
       for(int i = 0; i < parents.length; i++){
-        abstractModeler.applyModel(mainGP,parents[i]);
+        abstractModeler.applyModel(cyNetwork,parents[i]);
       }//for i
       return;
     }
@@ -179,7 +181,7 @@ public class CollapseSelectedNodesAction
       return;
     }
     // Finally, collapse it
-    abstractModeler.applyModel(mainGP,rgParentNodeIndex);
+    abstractModeler.applyModel(cyNetwork,rgParentNodeIndex);
   }//collapseSelectedNodes
   
 }//class CollapseSelectedNodesAction

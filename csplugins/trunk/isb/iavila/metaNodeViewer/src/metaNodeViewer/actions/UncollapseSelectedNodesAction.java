@@ -120,7 +120,7 @@ public class UncollapseSelectedNodesAction
     
     // Finally, uncollapse each node (if it is not a metanode, nothing happens)
     for(int i = 0; i < nodeIndices.length; i++){
-      abstractModeler.undoModel(mainGP,nodeIndices[i],recursive,temporary);
+      abstractModeler.undoModel(cyNetwork,nodeIndices[i],recursive,temporary);
     }//for i
   }//uncollapseSelectedNodes
   

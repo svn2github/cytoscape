@@ -76,7 +76,7 @@ public class MNcollapserDialog extends JDialog {
     JButton collapseButton = new JButton("Collapse Selected Nodes");
     this.collapseAction = 
       (CollapseSelectedNodesAction)ActionFactory.createCollapseSelectedNodesAction(cy_window, false);
-    collapseButton.addActionListener(collapseAction);
+    collapseButton.addActionListener(this.collapseAction);
     
     JButton expandButton = new JButton("Expand Selected Nodes");
     this.expandAction =

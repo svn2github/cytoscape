@@ -40,6 +40,18 @@ import cern.colt.map.AbstractIntIntMap;
 
 public interface MetaNodeAttributesHandler {
 
+  /**
+   * Creates a unique name for the Node with the given index, and adds
+   * a Node-name mapping to GraphObjAttributes for nodes (contained in the given
+   * CyNetwork).
+   *
+   * @param cy_net the CyNetwork that contains the GraphObjAttributes for nodes and
+   * the RootGraph that contains the given node
+   * @param metanode_root_index the RootGraph index of the meta-node for which a name
+   * will be set
+   * @return the name, or null if something went wrong
+   */
+  public String assignName (CyNetwork cy_net, int metanode_root_index);
 
   /**
    * Sets the node and edge attributes of the meta-node with the given RootGraph index
@@ -108,11 +120,27 @@ public interface MetaNodeAttributesHandler {
    * and edges from which the meta-node and meta-edges will be removed
    * @param metanode_root_index the RootGraph index of the meta-node that will be
    * removed from the GraphObjAttributes
-   * @param meta_edge_to_child_edge the RootGraph indices of the edges connected
+   * @param meta_edge_root_indices the RootGraph indices of the edges connected
    * to the meta-node that should be removed from the GraphObjAttributes for edges
    * @return true if all went well, false otherwise
    */
   public boolean removeFromAttributes (CyNetwork cy_network,
                                        int metanode_root_index,
                                        int [] meta_edge_root_indices);
+
+  /**
+   * Remove from the GraphObjAttributes for edges in CyNetwork the edges in
+   * the given array, but don't change the node attributes for metanode_root_index
+   *
+   * @param cy_network the CyNetwork that contains the GraphObjAttributes for
+   * edges from which the  meta-edges will be removed
+   * @param metanode_root_index the RootGraph index of the meta-node to which the
+   * meta-edges are connected
+   * @param meta_edge_root_indices the RootGraph indices of the edges connected
+   * to the meta-node that should be removed from the GraphObjAttributes for edges
+   * @return true if all went well, false otherwise
+   */
+  public boolean removeMetaEdgesFromAttributes (CyNetwork cy_network,
+                                                int metanode_root_index,
+                                                int [] meta_edge_root_indices);
 }//MetaNodeAttributesHandler

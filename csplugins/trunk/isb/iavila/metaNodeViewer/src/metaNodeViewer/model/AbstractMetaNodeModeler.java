@@ -30,19 +30,33 @@
 package metaNodeViewer.model;
 import java.util.*;
 import giny.model.*;
+import cytoscape.data.CyNetwork;
+import metaNodeViewer.data.MetaNodeAttributesHandler;
 import cern.colt.list.IntArrayList;
 import cern.colt.map.OpenIntObjectHashMap;
 import cern.colt.list.ObjectArrayList;
+import cern.colt.map.AbstractIntIntMap;
+import cern.colt.map.OpenIntIntHashMap;
 
 /**
  * TODO: Class description
  * TODO: Implements an interface and GraphPerspectiveChangeListener
  * TODO: Name? 'Abstract' may get confused with 'abstract class' in java
  * TODO: Update comments
+ * TODO: Optimize
  */
 public class AbstractMetaNodeModeler {
 
   protected static final boolean DEBUG = true;
+  
+  /**
+   * An object that tranfers node and edge attributes
+   * to a meta-node from its children nodes and edges and
+   * that assigns a unique name to it that can be used
+   * to identify it in a GraphObjAttributes instance
+   */
+  protected MetaNodeAttributesHandler attributesHandler;
+  
   protected RootGraph rootGraph;
   
   // A map from node RootGraph indeces to IntArrayList objects
@@ -62,27 +76,52 @@ public class AbstractMetaNodeModeler {
   /**
    * Constructor.
    *
-   * @param graph_perspective the <code>GraphPerspective</code> instance
+   * @param root_graph the <code>RootGraph</code> of the <code>GraphPerspective</code>s
    * that will be modeled
+   * @param atts_handler the <code>MetaNodeAttributesHandler</code> that will be used
+   * to transfer node and edges attributes from a meta-node's children to that meta-node
    */
-  public AbstractMetaNodeModeler (RootGraph root_graph){
+  public AbstractMetaNodeModeler (RootGraph root_graph,
+                                  MetaNodeAttributesHandler atts_handler){
     this.rootGraph = root_graph;
+    this.attributesHandler = atts_handler;
     this.metaNodeToProcessedEdges = new OpenIntObjectHashMap();
     this.metaEdgesRindices = new IntArrayList();
   }//constructor
 
   /**
+   * Sets the MetaNodeAttributesHandler that should be used from now on 
+   * to transfer node and edge attributes from children nodes and edges to 
+   * meta-nodes
+   *
+   * @param MetaNodeAttributesHandler the handler
+   */
+  public void setAttributesHandler (MetaNodeAttributesHandler handler){
+    this.attributesHandler = handler;
+  }//setAttributesHandler
+
+   /**
+    * Gets the MetaNodeAttributesHandler that is being used to transfer node 
+    * and edge attributes from children nodes and edges to meta-nodes
+    */
+  public MetaNodeAttributesHandler getAttributesHandler (){
+    return this.attributesHandler;
+  }//getAttributesHandler
+
+  /**
    * Sets the RootGraph whose GraphPerspectives will be changed
    * so that their meta-nodes can be collapsed and expanded.
-   * Resets internal data-structures for the current RootGraph before
-   * it sets the new one.
+   * Clears internal data-structures for the current RootGraph.
+   * TODO: If a new RootGraph is set, the core should handle 
+   * the GraphObjAttributes. But, do we need to do anything for
+   * the MetaNodeAttributesHandler?
    */
   public void setRootGraph (RootGraph new_root_graph){
     this.rootGraph = new_root_graph;
     this.metaNodeToProcessedEdges.clear();
     this.metaEdgesRindices.clear();
   }//setRootGraph
-
+  
   /**
    * @return the RootGraph that this AbstractMetaNodeModeler models
    */
@@ -95,7 +134,8 @@ public class AbstractMetaNodeModeler {
    *
    * @return false if the model could not be applied, maybe because the model
    * had already been applied previously, true otherwise
-   */
+   * TODO: Implement? Is this method necessary?
+  */
   public boolean applyModel (){
     return false;
   }//model
@@ -109,6 +149,7 @@ public class AbstractMetaNodeModeler {
    *
    * @return false if the undo was not successful, maybe because the model
    * was already undone for <code>graphPerspective</code>, true otherwise
+   * TODO: Implement? Is this method necessary?
    */
   public boolean undoModel (boolean temporary_undo){
     return false;
@@ -119,72 +160,74 @@ public class AbstractMetaNodeModeler {
    * <code>GraphPerspective</code> index.
    *
    * @param node_index the index of the <code>Node</code>, if the node is not contained in
-   * <code>graphPerspective</code> (and is contained in <code>graphPerspective</code>'s 
+   * <code>cy_network</code> (and is contained in <code>cy_network</code>'s 
    * <code>RootGraph</code>) then the <code>RootGraph</code> index should be given
    *
    * @return true if the node was successfuly abstracted, false otherwise (maybe the node 
    * is not a meta-node, or the node has already been abstracted)
    */
   public boolean applyModel (
-                             GraphPerspective graph_perspective,
+                             CyNetwork cy_network,
                              int node_index
                              ){
     if(DEBUG){
       System.err.println("----- applyModel (GraphPerspective,"+node_index+") -----");
     }
     
-    if(graph_perspective.getRootGraph() != this.rootGraph){
+    GraphPerspective graphPerspective = cy_network.getGraphPerspective();
+    
+    if(graphPerspective.getRootGraph() != this.rootGraph){
       // This could be caused by the user loading a new graph into Cytoscape
       // since a new RootGraph gets created when that happens
       if(DEBUG){
-        System.err.println("----- applyModel (GraphPerspective,"+node_index+
-                           ") leaving, graph_perspective's RootGraph != this.rootGraph -----");
+        System.err.println("----- applyModel (CyNetwork,"+node_index+
+                           ") leaving, graphPerspective's RootGraph != this.rootGraph -----");
       }
       return false;
     }
     
     int rootNodeIndex = 0;
     if(node_index > 0){
-      rootNodeIndex = graph_perspective.getRootGraphNodeIndex(node_index);
+      rootNodeIndex = graphPerspective.getRootGraphNodeIndex(node_index);
     }else if(node_index < 0){
       rootNodeIndex = node_index;
     }
     
     if(rootNodeIndex == 0){
       if(DEBUG){
-        System.err.println("----- applyModel (GraphPerspective,"+node_index+") returning" +
+        System.err.println("----- applyModel (CyNetwork,"+node_index+") returning" +
                            " false because root index is 0 -----"); 
       }
       return false;
     }
     
-    this.gpNodeRindices = new IntArrayList(getNodeRindicesInGP(graph_perspective));
+    this.gpNodeRindices = new IntArrayList(getNodeRindicesInGP(graphPerspective));
     
-    if(!prepareNodeForModel(graph_perspective,rootNodeIndex)){
+    if(!prepareNodeForModel(cy_network,rootNodeIndex)){
       if(DEBUG){
-        System.err.println("----- applyModel (GraphPerspective,"+node_index+") returning, "+
+        System.err.println("----- applyModel (CyNetwork,"+node_index+") returning, "+
                            "prepareNodeForModel returned false, returning false -----");
       }
       return false;
     }
         
     // Restore the meta-node, in case that it is not showing
-    int restoredNodeIndex = graph_perspective.restoreNode(rootNodeIndex);
+    int restoredNodeIndex = graphPerspective.restoreNode(rootNodeIndex);
     if(DEBUG){
       System.err.println("Restored node w/rindex " + rootNodeIndex + " and got back index " +
                          restoredNodeIndex);
     }
     // Hide the meta-node's descendants and connected edges
     int [] descendants = this.rootGraph.getNodeMetaChildIndicesArray(rootNodeIndex,true);
-    int [] hiddenNodes = graph_perspective.hideNodes(descendants);
+    int [] hiddenNodes = graphPerspective.hideNodes(descendants);
     if(DEBUG){
       System.err.println("Hid " + hiddenNodes.length + " descendant nodes of node " + rootNodeIndex + 
                          ", from a total of " + descendants.length + " descendants");
     }
-    // Restore the edges connecting the meta-node and nodes that are in graph_perspective
-    int [] gpNodes = graph_perspective.getNodeIndicesArray();
+    // Restore the edges connecting the meta-node and nodes that are in graphPerspective
+    int [] gpNodes = graphPerspective.getNodeIndicesArray();
     if(DEBUG){
-      System.err.println("graph_perspective has " + gpNodes.length + " nodes");
+      System.err.println("graphPerspective has " + gpNodes.length + " nodes");
     }
     int numRestoredEdges = 0;
     for(int node_i = 0; node_i < gpNodes.length; node_i++){
@@ -232,7 +275,7 @@ public class AbstractMetaNodeModeler {
                            " edges between nodes " + rootNodeIndex + " and " +
                            gpNodes[node_i]);
       }
-      int [] restoredRindices = graph_perspective.restoreEdges(connectingEdgesRindices);
+      int [] restoredRindices = graphPerspective.restoreEdges(connectingEdgesRindices);
       if(DEBUG){
         System.err.println("Restored " + restoredRindices.length + "/" + 
                            connectingEdgesRindices.length + " edges connecting " + rootNodeIndex +
@@ -243,12 +286,12 @@ public class AbstractMetaNodeModeler {
 
     if(restoredNodeIndex != 0 || hiddenNodes.length > 0 || numRestoredEdges > 0){
       if(DEBUG){
-        System.err.println("----- applyModel (GraphPerspective,"+node_index+") returning true -----");
+        System.err.println("----- applyModel (CyNetwork,"+node_index+") returning true -----");
       }
       return true;
     }
     if(DEBUG){
-      System.err.println("----- applyModel (GraphPerspective,"+node_index+") returning false -----");
+      System.err.println("----- applyModel (CyNetwork,"+node_index+") returning false -----");
     }
     return false;
     
@@ -257,7 +300,7 @@ public class AbstractMetaNodeModeler {
   /**
    * It undos the model for the <code>Node</code> with the given index.
    *
-   * @param graph_perspective the <code>GraphPerspective</code> whose <code>RootGraph</code>
+   * @param cy_network the <code>CyNetwork</code> whose <code>RootGraph</code>
    * should be the one set in the constructor (or through <code>setRootGraph</code>)and in which the 
    * <code>Node</code> with index <code>node_index</code> should reside
    * @param node_index the <code>RootGraph</code> or <code>GraphPerspective</code> index
@@ -265,29 +308,31 @@ public class AbstractMetaNodeModeler {
    * @param recursive_undo whether or not any existing meta-nodes inside the meta-node being
    * undone should also be undone
    * @param temporary_undo whether or not the "undo" is temporary, if not temporary, then, the
-   * <code>graph_perspective</code>'s <code>RootGraph</code> will also be modified so that it is
+   * <code>cy_network</code>'s <code>RootGraph</code> will also be modified so that it is
    * in the same state as it was before any calls to <code>applyModel()</code> (for the given Node)
    */
-  public boolean undoModel (GraphPerspective graph_perspective, 
+  public boolean undoModel (CyNetwork cy_network, 
                             int node_index, 
                             boolean recursive_undo,
                             boolean temporary_undo){
 
     if(DEBUG){
-      System.err.println("----- undoModel (GraphPerspective," + node_index + "," + recursive_undo + 
+      System.err.println("----- undoModel (CyNetwork," + node_index + "," + recursive_undo + 
                          "," + temporary_undo + ") -----");
     }
+
+    GraphPerspective graphPerspective = cy_network.getGraphPerspective();
 
     // Get the RootIndex and make sure it is not 0
     int metaNodeRindex = 0;
     if(node_index < 0){
       metaNodeRindex = node_index;
     }else if(node_index > 0){
-      metaNodeRindex = graph_perspective.getRootGraphNodeIndex(node_index);
+      metaNodeRindex = graphPerspective.getRootGraphNodeIndex(node_index);
     }
     if(metaNodeRindex == 0){
       if(DEBUG){
-        System.err.println("----- undoModel (GraphPerspective," + node_index + "," + recursive_undo + 
+        System.err.println("----- undoModel (CyNetwork," + node_index + "," + recursive_undo + 
                            ") returning false since the root index of " +
                            node_index + " is zero -----");
       }
@@ -300,7 +345,7 @@ public class AbstractMetaNodeModeler {
       if(!temporary_undo){
         // Remove edges that *we* created in the RootGraph for this meta-node and 
         // its descendant meta-nodes
-        removeMetaEdges(metaNodeRindex, true);
+        removeMetaEdges(cy_network,metaNodeRindex, true);
       }
       
       // Get the descendants with no children of this meta-node, since they will
@@ -322,7 +367,7 @@ public class AbstractMetaNodeModeler {
       // not recursive
       if(!temporary_undo){
         // Remove edges that *we* created in the RootGraph for this meta-node (only)
-        removeMetaEdges(metaNodeRindex, false);
+        removeMetaEdges(cy_network,metaNodeRindex, false);
       }
       // Not recursive, so just get the immediate children
       childrenRindices = this.rootGraph.getNodeMetaChildIndicesArray(metaNodeRindex);
@@ -330,7 +375,7 @@ public class AbstractMetaNodeModeler {
      
     if(childrenRindices == null || childrenRindices.length == 0){
       if(DEBUG){
-        System.err.println("----- undoModel (GraphPerspective," + node_index + "," + recursive_undo + 
+        System.err.println("----- undoModel (CyNetwork," + node_index + "," + recursive_undo + 
                            ") returning false since the given node is not a " +
                            " meta-node -----");
       }
@@ -338,29 +383,29 @@ public class AbstractMetaNodeModeler {
     }
     
     // Restore the children nodes and their adjacent edges that connect to other nodes
-    // currently contained in graph_perspective
-    int [] restoredNodeRindices = graph_perspective.restoreNodes(childrenRindices, true);
+    // currently contained in graphPerspective
+    int [] restoredNodeRindices = graphPerspective.restoreNodes(childrenRindices, true);
     if(DEBUG){
       System.err.println("Restored " + restoredNodeRindices.length + " children nodes of meta-node" 
-                         + metaNodeRindex + " in graph_perspective");
+                         + metaNodeRindex + " in graphPerspective");
     }
     // Hide the meta-node and adjacent edges
-    int hiddenNodeRindex = graph_perspective.hideNode(metaNodeRindex);
+    int hiddenNodeRindex = graphPerspective.hideNode(metaNodeRindex);
     if(DEBUG){
       System.err.println("Hid node " + metaNodeRindex + 
-                         " in graph_perspective and got back node index " + hiddenNodeRindex);
+                         " in graphPerspective and got back node index " + hiddenNodeRindex);
     }
     
     if(restoredNodeRindices.length > 0 || hiddenNodeRindex != 0){
       if(DEBUG){
-        System.err.println("----- undoModel (GraphPerspective," + node_index + "," + recursive_undo + 
+        System.err.println("----- undoModel (CyNetwork," + node_index + "," + recursive_undo + 
                            ") returning true -----");
       }
       return true;
     }
     
     if(DEBUG){
-      System.err.println("----- undoModel (GraphPerspective," + node_index + "," + recursive_undo + 
+      System.err.println("----- undoModel (CyNetwork," + node_index + "," + recursive_undo + 
                          ") returning false -----");
     }
     return false;
@@ -372,18 +417,19 @@ public class AbstractMetaNodeModeler {
    * non-meta-nodes, or meta-nodes and meta-nodes), will be there for hiding or unhiding
    * as necessary.
    *
-   * @param graph_perspective edges will be created in the RootGraph of this graph_perspective
+   * @param cy_network edges will be created in the RootGraph of the graph_perspective of
+   * this CyNetwork
    *
    * @param node_rindex the RootGraph index of the Node to be prepared
    *
    * @return false if the node does not have any descendatns in graph_perspective
    */
   protected boolean prepareNodeForModel (
-                                         GraphPerspective graph_perspective,
+                                         CyNetwork cy_network,
                                          int node_rindex
                                          ){
     if(DEBUG){
-      System.err.println("----- prepareNodeForModel (GraphPerspective,"+node_rindex+") -----");
+      System.err.println("----- prepareNodeForModel (CyNetwork,"+node_rindex+") -----");
     }
     
     if(!isMetaNode(node_rindex)){
@@ -394,8 +440,8 @@ public class AbstractMetaNodeModeler {
         returnBool = false;
       }
       if(DEBUG){
-        System.err.println("----- prepareNodeForModel (GraphPerspective,"+node_rindex+
-                           ") leaving, node is not a meta-node, returning is in graph_perspective = " 
+        System.err.println("----- prepareNodeForModel (CyNetwork,"+node_rindex+
+                           ") leaving, node is not a meta-node, returning is in graphPerspective = " 
                            + returnBool + "-----");
       }
       return returnBool;
@@ -415,24 +461,26 @@ public class AbstractMetaNodeModeler {
     if(childrenRindices != null){
       // Recursively prepare each child node
       for(int i = 0; i < childrenRindices.length; i++){
-        boolean temp = prepareNodeForModel(graph_perspective,childrenRindices[i]);
+        boolean temp = prepareNodeForModel(cy_network,childrenRindices[i]);
         hasDescendantInGP = hasDescendantInGP || temp;
       }//for i
     }
     
-    // If the meta-node does not have a single descendant in graph_perspective,
+    // If the meta-node does not have a single descendant in graphPerspective,
     // then skip it
     if(!hasDescendantInGP){
       if(DEBUG){
-        System.err.println("----- prepareNodeForModel (GraphPerspective,"+node_rindex+
+        System.err.println("----- prepareNodeForModel (CyNetwork,"+node_rindex+
                            ") leaving, meta-node does not have a descendant contained "+
-                           "in graph_perspective, returning false -----");
+                           "in graphPerspective, returning false -----");
       }
       return false;
     }
     
     // Add edges to the meta-node in this.rootGraph, respect directionality
     int numNewEdges = 0;
+    // For attributesHandler:
+    AbstractIntIntMap metaEdgeToChildEdge = new OpenIntIntHashMap();
     for(int child_i = 0; child_i < childrenRindices.length; child_i++){
       
       int childNodeRindex = childrenRindices[child_i];
@@ -514,6 +562,7 @@ public class AbstractMetaNodeModeler {
         }
         processedEdgeRindices.add(childEdgeRindex);
         this.metaNodeToProcessedEdges.put(node_rindex,processedEdgeRindices);
+        metaEdgeToChildEdge.put(newEdgeRindex, childEdgeRindex);
         numNewEdges++;
         // Remember that *we* created this edge, so that later, we can reset RootGraph
         // to its original state if needed by removing edges we created
@@ -548,8 +597,20 @@ public class AbstractMetaNodeModeler {
       
     }// for each child of node_rindex
     
+    // Transfer node and edge attributes to the meta-node as needed
+    metaEdgeToChildEdge.trimToSize();
+    boolean attributesSet = this.attributesHandler.setAttributes(cy_network,
+                                                                 node_rindex,
+                                                                 childrenRindices,
+                                                                 metaEdgeToChildEdge);
+    if(!attributesSet){
+      if(DEBUG){
+        System.out.println("----- prepareNodeForModel (CyNetwork," + node_rindex + 
+                           "): error,  attributesHandler.setAttributes returned false!!! -----");
+      }
+    }
     if(DEBUG){
-      System.out.println("----- prepareNodeForModel (GraphPerspective," + node_rindex + 
+      System.out.println("----- prepareNodeForModel (CyNetwork," + node_rindex + 
                          ") returning true -----");
     }
     return true;
@@ -558,12 +619,14 @@ public class AbstractMetaNodeModeler {
 
   /**
    * Removes the edges that were created by <code>prepareNodeForModel()</code> that are
-   * connected to the <code>Node</code> with index <code>meta_node_index</code>
+   * connected to the <code>Node</code> with index <code>meta_node_index</code> and their
+   * attributes from the GraphObjAttributes in the given CyNetwork
    *
+   * @param cy_net the CyNetwork that contains the meta-node
    * @param recursive if true, edges for meta-node descendants of the given node are 
    * also removed (except for those connected to the descendatns with no children)
    */
-  protected void removeMetaEdges(int meta_node_index, boolean recursive){
+  protected void removeMetaEdges(CyNetwork cy_net, int meta_node_index, boolean recursive){
     
     if(DEBUG){
       System.err.println("----- removeMetaEdges (" + meta_node_index + "," + recursive + ")-----");
@@ -589,7 +652,7 @@ public class AbstractMetaNodeModeler {
     if(recursive){
       int [] descendants = this.rootGraph.getNodeMetaChildIndicesArray(meta_node_index,true);
       for(int i = 0; i < descendants.length; i++){
-        removeMetaEdges(descendants[i], false);
+        removeMetaEdges(cy_net, descendants[i], false);
       }// for i
     }// if recursive
     
@@ -650,6 +713,17 @@ public class AbstractMetaNodeModeler {
       }// processedEdges == null
       processedEdges.removeAll(adjacentEdgeRindices);
     }// for i
+    
+    // And finally, remove the attributes for these edges
+    boolean r = this.attributesHandler.removeMetaEdgesFromAttributes(cy_net,
+                                                                     meta_node_index,
+                                                                     adjacentEdgeRindices.elements());
+    if(!r){
+      if(DEBUG){
+        System.err.println("----- AbstractMetaNodeModeler.removeMetaEdges: error, could not remove" +
+                           " attributes for meta-edges");
+      }
+    }
   }//removeMetaEdges
 
   /**

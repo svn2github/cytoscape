@@ -29,6 +29,7 @@
 package metaNodeViewer.actions;
 import java.util.*;
 import metaNodeViewer.model.AbstractMetaNodeModeler;
+import metaNodeViewer.data.MetaNodeAttributesHandler;
 import metaNodeViewer.MetaNodeFactory;
 import metaNodeViewer.GPMetaNodeFactory;
 import cytoscape.view.CyWindow;
@@ -42,21 +43,26 @@ import giny.model.*;
 
 public class ActionFactory {
   
-  // In theory, there should only be one RootGraph and one AbstractMetaNodeModeler for it
   private static AbstractMetaNodeModeler abstractingModeler;
-  // Only one meta node factory as well
   private static MetaNodeFactory mnFactory;
+  private static MetaNodeAttributesHandler attributesHandler;
   private static final String COLLAPSE_SELECTED_TITLE = "Collapse selected";
   private static final String UNCOLLAPSE_SELECTED_R_TITLE = "Uncollapse selected recursively";
   private static final String UNCOLLAPSE_SELECTED_TITLE = "Uncollapse selected";
   
   /**
    * Creates the AbstractMetaNodeModeler and a listener for CyNetwork that replaces
-   * AbstractMetaNodeModeler's RootGraph when a new RootGraph is loaded.
+   * AbstractMetaNodeModeler's RootGraph and clears the MetaNodeFactory 
+   * when a new RootGraph is loaded
    */
   private static void initialize (CyWindow cy_window){
+    if(ActionFactory.attributesHandler == null){
+      // TODO: Instantiate a default MetaNodeAttributesHandler:
+      // ActionFactory.attributesHandler = new something;
+    }
     RootGraph rootGraph = cy_window.getNetwork().getRootGraph();
-    ActionFactory.abstractingModeler = new AbstractMetaNodeModeler(rootGraph);
+    ActionFactory.abstractingModeler = new AbstractMetaNodeModeler(rootGraph,
+                                                                   ActionFactory.attributesHandler);
     cy_window.getNetwork().addCyNetworkListener(
                                                 new CyNetworkListener(){
                                                   public void onCyNetworkEvent (CyNetworkEvent e){
@@ -64,12 +70,27 @@ public class ActionFactory {
                                                        CyNetworkEvent.GRAPH_REPLACED){
                                                       RootGraph r = e.getNetwork().getRootGraph();
                                                       ActionFactory.abstractingModeler.setRootGraph(r);
+                                                      ActionFactory.mnFactory.clear();
                                                     }//if
                                                   }//onCyNetworkEvent
                                                 }//end anonymous class
                                                 );
-    ActionFactory.mnFactory = new GPMetaNodeFactory();
+    ActionFactory.mnFactory = new GPMetaNodeFactory(ActionFactory.attributesHandler);
   }//intialize
+  
+  /**
+   * Sets the MetaNodeAttributesHandler that should be used to transfer node and edge
+   * attributes from children nodes and edges to meta-nodes
+   *
+   * @param MetaNodeAttributesHandler the handler
+   */
+  public static void setMetaNodeAttributesHandler (MetaNodeAttributesHandler handler){
+    ActionFactory.attributesHandler = handler;
+    if(ActionFactory.abstractingModeler != null){
+      ActionFactory.abstractingModeler.setAttributesHandler(ActionFactory.attributesHandler);
+    }
+  }//setMetaNodeAttributesHandler
+
   
   /**
    * @param cy_window the CyWindow that contains the CyNetwork that contains the GraphPerspective
@@ -85,7 +106,9 @@ public class ActionFactory {
      ){
     // Get the RootGraph and create or update abstractingModeler
     RootGraph rootGraph = cy_window.getNetwork().getRootGraph();
-    if(ActionFactory.abstractingModeler == null || ActionFactory.mnFactory == null){
+    if(ActionFactory.abstractingModeler == null || 
+       ActionFactory.mnFactory == null ||
+       ActionFactory.attributesHandler == null){
       initialize(cy_window);
     }else if(ActionFactory.abstractingModeler.getRootGraph() != rootGraph){
       // Currently, Cytoscape only supports ONE RootGraph. If we get here,

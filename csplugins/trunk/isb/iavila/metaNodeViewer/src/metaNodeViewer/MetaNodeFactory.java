@@ -28,6 +28,7 @@
  */
 package metaNodeViewer;
 import cytoscape.data.CyNetwork;
+import giny.model.GraphPerspective;
 
 public interface MetaNodeFactory {
   
@@ -53,5 +54,16 @@ public interface MetaNodeFactory {
    * Whether or not default names are being assigned to newly created meta-nodes
    */
   public boolean getAssignDefaultNames ();
+
+  /**
+   * Clears this Factory.
+   */
+  public void clear ();
+
+  /**
+   * @return the RootGraph indices of the nodes that are parent nodes of nodes
+   * in the given graph and that were created using this factory
+   */
+  public int [] getParentNodesInNet (GraphPerspective graphPerspective);
     
 }//MetaNodeFactory
