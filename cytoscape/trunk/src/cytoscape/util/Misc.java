@@ -321,10 +321,17 @@ static public String [] parseList (String listString, String startToken, String 
                                    String delimiter)
 {
   String s = listString.trim ();
-  Vector list = new Vector ();
-
   if (s.startsWith (startToken) && s.endsWith (endToken)) {
-    String deparenthesizedString = s.substring (1, s.length()-1); 
+    s = s.substring (1, s.length()-1); 
+    return s.split (delimiter);
+    }
+  else {
+    String [] unparseableResult = new String [1];
+    unparseableResult [0] = listString;
+    return unparseableResult;
+    }
+    
+  /*********************
     StringTokenizer strtok = new StringTokenizer (deparenthesizedString, delimiter);
     int count = strtok.countTokens ();
     for (int i=0; i < count; i++)
@@ -334,6 +341,8 @@ static public String [] parseList (String listString, String startToken, String 
     list.add (listString);
 
   return (String []) list.toArray (new String [0]);
+  **********************/
+
 
 } // parseList
 //----------------------------------------------------------------------------------------

@@ -78,6 +78,7 @@ public void testParseList () throws Exception
   sb.append ("   ");
 
   String [] tokens = Misc.parseList (sb.toString (), startToken, endToken, delimiter);
+
   assertTrue (tokens.length == 4);
   assertTrue (tokens [0].equals (a));
   assertTrue (tokens [1].equals (b));
@@ -147,6 +148,32 @@ public void testParseList () throws Exception
   tokens = Misc.parseList (sb.toString (), startToken, endToken, delimiter);
   assertTrue (tokens.length == 1);
 
+    // --------------------------------------------------------------------------
+    // 5) test some url's, which have embedded ":"
+    // --------------------------------------------------------------------------
+  a = "http://www.genome.ad.jp/dbget-bin/get_pathway?org_name=hsa&mapno=00600";
+  b = "http://www.genome.ad.jp/dbget-bin/get_pathway?org_name=hsa&mapno=00562";
+  c = "http://www.genome.ad.jp/dbget-bin/get_pathway?org_name=hsa&mapno=00500";
+  d = "http://www.genome.ad.jp/dbget-bin/get_pathway?org_name=hsa&mapno=00860";
+  String e = "http://www.genome.ad.jp/dbget-bin/get_pathway?org_name=hsa&mapno=00760";
+
+  sb = new StringBuffer ();
+  sb.append (startToken);
+  sb.append (a + delimiter);
+  sb.append (b + delimiter);
+  sb.append (c + delimiter);
+  sb.append (d + delimiter);
+  sb.append (e);
+  sb.append (endToken);
+
+  tokens = Misc.parseList (sb.toString (), startToken, endToken, delimiter);
+  assertTrue (tokens.length == 5);
+
+  assertTrue (tokens [0].equals (a));
+  assertTrue (tokens [1].equals (b));
+  assertTrue (tokens [2].equals (c));
+  assertTrue (tokens [3].equals (d));
+  assertTrue (tokens [4].equals (e));
 
 } // testParseList
 //------------------------------------------------------------------------------
