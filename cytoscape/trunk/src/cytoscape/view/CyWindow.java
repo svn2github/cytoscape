@@ -483,7 +483,7 @@ protected void attachGraphListeners() {
 protected void attachGraphViewListener() {
     if (getNetwork() == null || getView() == null) {return;}
     getNetwork().addCyNetworkListener(this);
-    System.out.println( " Attaching itself as a GraphViewListener" );
+    System.out.println( " CyWindow attaching itself as a GraphViewListener" );
     view.addGraphViewChangeListener(this);
 }
 //-----------------------------------------------------------------------------
