@@ -218,12 +218,11 @@ protected void loadPlugin (String className, CyWindow cyWindow)
 {
  try {
     Class pluginClass = Class.forName (className);
-    AbstractPlugin.loadPlugin(pluginClass, null, cyWindow);
-    }
-  catch (Exception e) {
+    cyWindow.getCytoscapeObj().addPluginToRegistry(pluginClass);
+ } catch (Exception e) {
     e.printStackTrace ();
     System.err.println (e.getMessage ());
-    }
+ }
 
 } // loadPlugin
 //------------------------------------------------------------------------------

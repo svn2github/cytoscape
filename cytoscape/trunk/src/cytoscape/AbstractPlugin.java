@@ -26,15 +26,14 @@ public abstract class AbstractPlugin {
      */
     public AbstractPlugin() { }
     /**
-     * Standard constructor with a single {@link cytoscape.view.CyWindow CyWindow}
-     * argument.
+     * Standard constructor with a single {@link CyWindow} argument.
      */
     public AbstractPlugin(CyWindow cyWindow) { }
     /**
      * method returning a String description of the plugin.
      */
     public String describe() { return new String("No description."); }
-    
+
     /**
      * Attempts to instantiate a plugin of the class defined by the
      * first argument. The other arguments to this method are used as
@@ -50,7 +49,7 @@ public abstract class AbstractPlugin {
     public static boolean loadPlugin(Class pluginClass, CytoscapeObj cytoscapeObj,
                                      CyWindow cyWindow) {
         if (pluginClass == null) {return false;}
-        
+
         //look for constructor with CyWindow argument
         if (cyWindow != null) {
             Constructor ctor = null;
@@ -70,8 +69,7 @@ public abstract class AbstractPlugin {
                 try {
                     Object[] args = new Object[1];
                     args[0] = cyWindow;
-                    Object plugin = ctor.newInstance(args);
-                    return true;
+                    return ctor.newInstance(args) != null;
                 } catch (Exception e) {
                     System.err.println("In AbstractPlugin.loadPlugin:");
                     System.err.println("Exception while constructing plugin instance:");
@@ -81,8 +79,6 @@ public abstract class AbstractPlugin {
                 }
             }
         }
-        
-        //no longer look for constructor with CytoscapeWindow argument
         return false;
     }
 }

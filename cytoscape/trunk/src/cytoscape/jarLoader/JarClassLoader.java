@@ -20,10 +20,8 @@ import cytoscape.view.CyWindow;
  * http://java.sun.com/docs/books/tutorial/jar/api/jarclassloader.html
  */
 public class JarClassLoader extends URLClassLoader {
-  private String urlString;
   private URL url;
   private CyWindow cyWindow;
-  private static HashSet loadedPluginSet = new HashSet();
   /**
    * Creates a new JarClassLoader for the specified url.
    *
@@ -34,7 +32,6 @@ public class JarClassLoader extends URLClassLoader {
   public JarClassLoader(String urlString,CyWindow cyWindow)
     throws MalformedURLException {
     super(new URL[] { new URL(urlString) });
-    this.urlString = urlString;
     this.cyWindow = cyWindow;
     this.url = new URL("jar", "", urlString + "!/");
   }
@@ -134,17 +131,15 @@ public class JarClassLoader extends URLClassLoader {
     try {
 	    if(!(isClassPlugin(new_name)))
         throw(new Exception("not plugin: " + new_name));
-        if (loadedPluginSet.contains(new_name))
+        if (cyWindow.getCytoscapeObj().pluginRegistryContains(new_name))
         throw(new Exception("plugin already loaded: " + new_name));
-	    Class pluginClass = loadClass (new_name);
-        AbstractPlugin.loadPlugin(pluginClass, cyWindow.getCytoscapeObj(),
-                                cyWindow );
-        loadedPluginSet.add(new String(new_name));
+        Class pluginClass = loadClass (new_name);
+        cyWindow.getCytoscapeObj().addPluginToRegistry(pluginClass);
 	    System.out.println("Loaded plugin: " + new_name);
     }
     catch (Exception e) {
 	    System.err.println ("Error instantiating plugin: "
-                          + e.getMessage ());
+                + e.getMessage());
     }
   }
 

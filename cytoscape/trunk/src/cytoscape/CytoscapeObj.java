@@ -32,6 +32,9 @@
 package cytoscape;
 //-------------------------------------------------------------------------
 import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Iterator;
 import java.io.File;
 
 import cytoscape.data.servers.BioDataServer;
@@ -50,9 +53,14 @@ public class CytoscapeObj {
     protected CytoscapeConfig config;
     protected Logger logger;
     protected BioDataServer bioDataServer;
+    protected class PluginRegistryNode {
+        public Class plugin;
+        public long loadTime;
+    }
+    protected ArrayList pluginRegistry;
+    protected long lastPluginRegistryChange;
     protected static CalculatorCatalog calculatorCatalog;
     protected File currentDirectory;
-
     //List networks = new ArrayList();
     //List cyWindows = new ArrayList();
 
@@ -68,6 +76,8 @@ public class CytoscapeObj {
         this.config = config;
         this.logger = Logger.getLogger("global");
         this.bioDataServer = null;
+        this.pluginRegistry = new ArrayList();
+        markPluginRegistryChangeTime();
         if (config.getBioDataDirectory() != null) {
             try {
                 this.bioDataServer = new BioDataServer(config.getBioDataDirectory());
@@ -99,6 +109,8 @@ public class CytoscapeObj {
             this.logger = logger;
         }
         this.bioDataServer = bioDataServer;
+        this.pluginRegistry = new ArrayList();
+        markPluginRegistryChangeTime();
         //eventually should wait until a window requests the catalog
         loadCalculatorCatalog();
         this.currentDirectory = new File(System.getProperty("user.dir"));
@@ -121,6 +133,55 @@ public CytoscapeConfig getConfiguration() {return config;}
  * Returns the global logging object; guaranteed to be non-null.
  */
 public Logger getLogger() {return logger;}
+//------------------------------------------------------------------------------
+/**
+ * Update the last time of change to the plugin registry.
+ */
+public void markPluginRegistryChangeTime() {
+    lastPluginRegistryChange = System.currentTimeMillis();
+}
+//------------------------------------------------------------------------------
+ /**
+ * Returns all plugins loaded since a time (in milliseconds).
+ */
+ public Class[] getPluginsLoadedSince(long time) {
+     if (time >= lastPluginRegistryChange) return new Class[0];
+     LinkedList newPlugins = new LinkedList();
+     Iterator iter;
+     for (iter = pluginRegistry.iterator(); iter.hasNext();) {
+         PluginRegistryNode node = (PluginRegistryNode)iter.next();
+         if (node.loadTime >= time) {
+             newPlugins.add(node.plugin);
+         }
+     }
+     Class newPlugin[] = new Class[newPlugins.size()];
+     newPlugins.toArray(newPlugin);
+     return newPlugin;
+ }
+//------------------------------------------------------------------------------
+ /**
+ * Adds a plugin class to the plugin registry.
+ */
+public void addPluginToRegistry(Class plugin) {
+    PluginRegistryNode newNode = new PluginRegistryNode();
+    newNode.plugin = plugin;
+    long now = System.currentTimeMillis();
+    newNode.loadTime = now;
+    pluginRegistry.add(newNode);
+    lastPluginRegistryChange = now;
+}
+//------------------------------------------------------------------------------
+ /**
+ * Tests if plugin is in registry.
+ */
+public boolean pluginRegistryContains(String pluginName) {
+    Iterator iter;
+    for (iter = pluginRegistry.iterator(); iter.hasNext();) {
+        PluginRegistryNode node = (PluginRegistryNode)iter.next();
+        if (node.plugin.getName().equals(pluginName)) return true;
+    }
+    return false;
+}
 //------------------------------------------------------------------------------
 /**
  * Returns the (possibly null) bioDataServer.

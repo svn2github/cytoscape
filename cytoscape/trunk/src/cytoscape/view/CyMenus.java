@@ -34,8 +34,11 @@ package cytoscape.view;
 //------------------------------------------------------------------------------
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.event.MenuListener;
+import javax.swing.event.MenuEvent;
 
 import cytoscape.CytoscapeObj;
+import cytoscape.AbstractPlugin;
 import cytoscape.actions.*;
 import cytoscape.dialogs.ShrinkExpandGraphUI;
 import cytoscape.data.annotation.AnnotationGui;
@@ -67,7 +70,7 @@ public class CyMenus  implements GraphViewChangeListener {
   JButton saveButton;
   JButton vizButton;
   JMenu opsMenu;
-  JMenuItem NO_OPERATIONS;
+  long lastOpsMenuRefresh;
   CytoscapeToolBar toolBar;
   boolean nodesRequiredItemsEnabled;
 
@@ -77,9 +80,6 @@ public class CyMenus  implements GraphViewChangeListener {
     //don't fill them with menu items and associated action listeners
     createMenuBar();
     toolBar = new CytoscapeToolBar();
-    //default menu item used when the operations menu is empty
-    NO_OPERATIONS = new JMenuItem("No operations available");
-    NO_OPERATIONS.setEnabled(false);
   }
 
   /**
@@ -131,23 +131,9 @@ public class CyMenus  implements GraphViewChangeListener {
    * @deprecated This method is no longer needed now that we don't
    * use the NO_OPERATIONS menu placeholder.
    *
-   * Checks the operations menu for existing items. If there
-   * are none, adds a default item indicating that no plugin
-   * menu operations are available. If there is more than one
-   * menu item, then this method removes the default item if
-   * it exists.
+   * This method does nothing.
    */
   public void refreshOperationsMenu() {
-      /*
-      if (opsMenu.getItemCount() == 0) {//no real items exist
-          opsMenu.add(NO_OPERATIONS);   //so add the default item
-      } else if (opsMenu.getItemCount() > 1) {//one real item exists
-          //the default item will always be first if it's there
-          if (opsMenu.getItem(0) == NO_OPERATIONS) {
-              opsMenu.remove(0);  //remove the default item
-          }
-      }
-      */
   }
 
   /**
@@ -276,16 +262,29 @@ public class CyMenus  implements GraphViewChangeListener {
    */
   public void initializeMenus() {
       if (!menusInitialized) {
-	    menusInitialized = true;
-	    fillMenuBar();
-	    fillToolBar();
-        nodesRequiredItemsEnabled = false;
-        saveButton.setEnabled(false);
-        saveSubMenu.setEnabled(false);
-        menuPrintAction.setEnabled(false);
-        displayNWSubMenu.setEnabled(false);
-        setNodesRequiredItemsEnabled();
-        cyWindow.getView().addGraphViewChangeListener(this);
+          menusInitialized = true;
+          fillMenuBar();
+          fillToolBar();
+          nodesRequiredItemsEnabled = false;
+          saveButton.setEnabled(false);
+          saveSubMenu.setEnabled(false);
+          menuPrintAction.setEnabled(false);
+          displayNWSubMenu.setEnabled(false);
+          setNodesRequiredItemsEnabled();
+          opsMenu.addMenuListener(new MenuListener() {
+              public void menuCanceled(MenuEvent e) {}
+              public void menuDeselected(MenuEvent e) {}
+              public void menuSelected(MenuEvent e) {
+                  Class neededPlugin[] = cyWindow.getCytoscapeObj().getPluginsLoadedSince(lastOpsMenuRefresh);
+                  for (int i = 0; i < neededPlugin.length; i++) {
+                          AbstractPlugin.loadPlugin(neededPlugin[i], cyWindow.getCytoscapeObj(),
+                                                  cyWindow );
+                  }
+                  lastOpsMenuRefresh = System.currentTimeMillis();
+              }
+          });
+          lastOpsMenuRefresh = 0; // Force immediate refresh
+          cyWindow.getView().addGraphViewChangeListener(this);
       }
   }
   /**
