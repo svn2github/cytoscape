@@ -178,6 +178,7 @@ public class CytoscapeWindow extends JPanel implements FilterDialogClient, Graph
   protected UndoableGraphHider graphHider;
   protected Vector subwindows = new Vector ();
 
+  protected String defaultWindowTitle = "Cytoscape " + CytoscapeVersion.version + "     ";
   protected String windowTitle;
 
     /**  keeps track of the current directory being browsed */
@@ -229,9 +230,9 @@ public CytoscapeWindow (cytoscape parentApp,
 
 
   if (title == null)
-    this.windowTitle = "";
+    this.windowTitle = defaultWindowTitle;
   else
-    this.windowTitle = title;
+    this.windowTitle = defaultWindowTitle + title;
 
 
   initializeWidgets ();
@@ -816,7 +817,7 @@ public String getWindowTitle() {
 }
 //------------------------------------------------------------------------------
 public void setWindowTitle(String newTitle) {
-    windowTitle = newTitle;
+    windowTitle = defaultWindowTitle +  newTitle;
     mainFrame.setTitle(windowTitle);
 }
 //------------------------------------------------------------------------------

@@ -35,6 +35,9 @@
 package cytoscape;
 //-----------------------------------------------------------------------------------
 public class CytoscapeVersion {
+
+  /** */
+  public static String version = "1.0";	
   private String versionString = "1.0";
   private String dateString = "2003/03/05";
 
