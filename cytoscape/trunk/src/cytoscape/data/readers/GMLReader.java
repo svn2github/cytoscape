@@ -193,7 +193,7 @@ public class GMLReader implements GraphReader {
       //edgeAttributes.addNameMapping(edgeName, edge);
     }
     rootGraph.createEdges(sources,targets,false);
-    for ( Iterator edgeIt = rootGraph.edgesIterator(),sourceIt = edgeSources.iterator(),targetIt = edgeTargets.iterator(),labelIt = edgeLabels.iterator();labelIt.hasNext();) {
+    for ( Iterator edgeIt = rootGraph.edgesList().iterator(),sourceIt = edgeSources.iterator(),targetIt = edgeTargets.iterator(),labelIt = edgeLabels.iterator();edgeIt.hasNext();) {
       interactionType = (String)labelIt.next();
       String edgeName = ""+nodeNameMap.get(sourceIt.next())+" ("+interactionType+") "+nodeNameMap.get(targetIt.next());
       int previousMatchingEntries = edgeAttributes.countIdentical(edgeName);
