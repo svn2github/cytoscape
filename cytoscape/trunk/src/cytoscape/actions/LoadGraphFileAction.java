@@ -51,8 +51,8 @@ public class LoadGraphFileAction extends AbstractAction {
     public void actionPerformed(ActionEvent e)  {
         CytoscapeObj cytoscapeObj = networkView.getCytoscapeObj();
         File currentDirectory = networkView.getCytoscapeObj().getCurrentDirectory();
-        //JFileChooser chooser = new JFileChooser(currentDirectory);
-        JFileChooser chooser = new CheckBoxFileChooser(currentDirectory, "append graph? (not implemented)");
+        JFileChooser chooser = new JFileChooser(currentDirectory);
+        //JFileChooser chooser = new CheckBoxFileChooser(currentDirectory, "append graph? (not implemented)");
 	boolean appendFlag = false;
         //chooser.setApproveButtonText("TEST TEXT");
         CyFileFilter intFilter   = new CyFileFilter();
