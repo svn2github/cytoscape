@@ -20,9 +20,8 @@
     </tr>
   </tbody>
 </table>
-<div id="indent">
-<div id="indent">
-<table style="width: 145px; height: 125px;">
+<? include "nav.php"; ?>
+<table id="indent" style="width: 145px; height: 125px;">
   <tbody>
     <tr>
       <td>
@@ -39,6 +38,7 @@ API</a>
     </tr>
   </tbody>
 </table>
+<div id="indent">
 <p>
 <big><b>Getting Started</b></big>
 </p>
@@ -160,6 +160,7 @@ discussion list if you have any problems.
 </div>
 <br>
 <br>
+<? include "footer.php"; ?>
 </div>
 </body>
 </html>
