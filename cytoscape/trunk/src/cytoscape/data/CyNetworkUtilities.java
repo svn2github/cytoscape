@@ -48,28 +48,6 @@ import cytoscape.data.servers.BioDataServer;
  * data types that are available in the node and edge attributes of the network.
  */
 public class CyNetworkUtilities {
-//-------------------------------------------------------------------------
-/**
- * Returns an array containing all of the unique interaction types present
- * in the network. Formally, gets from the edge attributes all of the unique
- * values for the "interaction" attribute.
- */
-public static String[] getInteractionTypes(CyNetwork network) {
-    if (network == null) {return new String[0];}
-    return network.getEdgeAttributes().getUniqueStringValues(Semantics.INTERACTION);
-}
-//-------------------------------------------------------------------------
-/**
- * Returns the interaction type of the given edge. Formally, gets from the
- * edge attributes the value for the "interaction" attribute".
- */
-public static String getInteractionType(CyNetwork network, Edge e) {
-    if (network == null || e == null) {
-        return null;
-    }
-    String canonicalName = network.getEdgeAttributes().getCanonicalName(e);
-    return network.getEdgeAttributes().getStringValue(Semantics.INTERACTION, canonicalName);
-}
 //-------------------------------------------------------------------------   
 /**
  * Saves all selected nodes in the network to a file with the given name.

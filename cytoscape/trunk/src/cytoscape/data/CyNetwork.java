@@ -48,12 +48,19 @@ import cytoscape.GraphObjAttributes;
 public class CyNetwork {
     
     Graph2D graph;                         //the graph
+    boolean needsLayout = false;           //is layout required before displaying graph
     GraphObjAttributes nodeAttributes;     //attributes for nodes
     GraphObjAttributes edgeAttributes;     //attributes for edges
     ExpressionData expressionData;         //expression data
     
     Set listeners = new HashSet();
     int activityCount = 0;
+    
+    /**
+     * Default constructor. Equivalent to
+     * CyNetwork(null, null, null, null).
+     */
+    public CyNetwork() {this(null, null, null, null);}
     
     /**
      * Constructor specifying no expression data. Equivalent to
@@ -66,8 +73,10 @@ public class CyNetwork {
     }
     
     /**
-     * Constructor that ensures that a valid graph and attributes objects
-     * exist. The ExpressionData argument may be null.
+     * Standard CyNetwork constructor. Ensures that a valid graph and
+     * attributes objects exist; any of the arguments may be null, but
+     * this constructor will construct default objects for any missing
+     * arguments, except for expression data.
      *
      * WARNING: many methods expect that the node attributes hold a canonical
      * name and common name attribute for every node in the graph, and the
@@ -109,12 +118,70 @@ public class CyNetwork {
      *
      * @deprecated This method does not guarantee that the new graph is
      *             synchronized with the data attribute structures. Instead,
-     *             one should construct a completely new Network object
-     *             with the new graph and appropriate node and edge attributes.
+     *             one should call setNewGraphFrom with a properly constructed
+     *             network, or just construct and use a new network object.
      */
     public void setGraph(Graph2D newGraph) {
-        if (newGraph != null) {this.graph = newGraph;}
+        if (newGraph != null) {
+            this.graph = newGraph;
+            fireEvent(CyNetworkEvent.GRAPH_REPLACED);
+        }
     }
+    /**
+     * Sets a new graph for this network by replacing this object's graph
+     * with the graph from the network argument. If the boolean flag
+     * replaceAttributes is true, then the node and edge attribute objects
+     * will also be replaced with the coresponding objects from the network
+     * argument; if this flag is false, the attributes from the network
+     * argument will be copied into the attributes of this object.
+     * If the network argument is null, this method does nothing.
+     *
+     * To load a new graph, first create a new network for that graph using
+     * the utilities of CyNetworkFactory, then call this method with that
+     * new network. This ensures that the attributes that are constructed
+     * when the graph is read are properly installed in this network along
+     * with the new graph.
+     *
+     * This method will fire an event of type CyNetworkEvent.GRAPH_REPLACED
+     * to all registered listeners. Note that it is the responsibility of
+     * the caller to make sure that no one is currently operating on this
+     * network before changing the graph.
+     */
+    public void setNewGraphFrom(CyNetwork newNetwork, boolean replaceAttributes) {
+        if (newNetwork == null) {return;}
+        this.graph = newNetwork.getGraph();
+        this.setNeedsLayout( newNetwork.getNeedsLayout() );
+        if (replaceAttributes) {
+            this.nodeAttributes = newNetwork.getNodeAttributes();
+            this.edgeAttributes = newNetwork.getEdgeAttributes();
+        } else {
+            this.nodeAttributes.inputAll( newNetwork.getNodeAttributes() );
+            this.edgeAttributes.inputAll( newNetwork.getEdgeAttributes() );
+        }
+        fireEvent(CyNetworkEvent.GRAPH_REPLACED);
+    }
+    
+    /**
+     * Indicates whether a layout operation should be performed on the graph
+     * before displaying it in a window. This may mean that no layout information
+     * is available (i.e., all nodes at coordinates (0,0)), or that someone
+     * wants a new layout performed.
+     *
+     * This field is an artifact of the fact that yFiles stores graph connectivity
+     * information and layout information in the same object, so that this object
+     * is the logical choice to keep track of this flag. One can expect this
+     * flag to be moved from this class to a view class at some later time.
+     */
+    public boolean getNeedsLayout() {return needsLayout;}
+    /**
+     * Sets the flag indicating whether a layout operation on the graph is needed.
+     * This flag is initialized to false upon construction. Usually the object
+     * that calls the constructor will also set this flag, and the view object
+     * should check this flag and, if true, do the layout and then set this
+     * flag back to false.
+     */
+    public void setNeedsLayout(boolean needsLayout) {this.needsLayout = needsLayout;}
+    
     /**
      * Returns the node attributes data object for this network.
      */
@@ -240,7 +307,7 @@ public class CyNetwork {
      * close its beginActivity calls without matching endActivity calls. If
      * the current state is not clear, this method resets this object to the
      * state of no activity, makes the graph fire a POST_EVENT, and fires a
-     * CynetworkEvent of type CyNetworkEvent.END to all registered listeners.
+     * CyNetworkEvent of type CyNetworkEvent.END to all registered listeners.
      *
      * If the current state is clear (i.e., there are no calls to beginActivity
      * without matching endActivity calls), then this method does nothing.

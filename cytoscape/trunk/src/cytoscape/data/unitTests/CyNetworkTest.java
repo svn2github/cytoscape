@@ -9,6 +9,8 @@ import junit.framework.*;
 import java.io.*;
 import java.util.*;
 
+import y.base.Node;
+import y.base.Edge;
 import y.view.Graph2D;
 
 import cytoscape.GraphObjAttributes;
@@ -37,6 +39,12 @@ public void tearDown() throws Exception {}
 public void testBasic() throws Exception { 
     System.out.println ("testBasic");
     
+    CyNetwork defaultNetwork = new CyNetwork();
+    assertTrue( defaultNetwork.getGraph() != null );
+    assertTrue( defaultNetwork.getNodeAttributes() != null );
+    assertTrue( defaultNetwork.getEdgeAttributes() != null );
+    assertTrue( defaultNetwork.getExpressionData() == null );
+    
     Graph2D graph = new Graph2D();
     GraphObjAttributes nodeAttributes = new GraphObjAttributes();
     GraphObjAttributes edgeAttributes = new GraphObjAttributes();
@@ -48,6 +56,11 @@ public void testBasic() throws Exception {
     assertTrue( network.getNodeAttributes() == nodeAttributes );
     assertTrue( network.getEdgeAttributes() == edgeAttributes );
     assertTrue( network.getExpressionData() == startData );
+    assertTrue( network.getNeedsLayout() == false );
+    network.setNeedsLayout(true);
+    assertTrue( network.getNeedsLayout() == true );
+    network.setNeedsLayout(false);
+    assertTrue( network.getNeedsLayout() == false );
     
     Graph2D newGraph = new Graph2D();
     network.setGraph(newGraph);
@@ -67,12 +80,53 @@ public void testBasic() throws Exception {
     assertTrue( noExpNetwork.getNodeAttributes() == nodeAttributes );
     assertTrue( noExpNetwork.getEdgeAttributes() == edgeAttributes );
     assertTrue( noExpNetwork.getExpressionData() == null );
+    assertTrue( noExpNetwork.getNeedsLayout() == false );
+    //test setting new graph, removing old attributes
+    CyNetwork newNetwork = new CyNetwork(newGraph, newNodeAttributes, newEdgeAttributes);
+    newNetwork.setNeedsLayout(true);
+    noExpNetwork.setNewGraphFrom(newNetwork, true);
+    assertTrue( noExpNetwork.getGraph() == newGraph );
+    assertTrue( noExpNetwork.getNodeAttributes() == newNodeAttributes );
+    assertTrue( noExpNetwork.getEdgeAttributes() == newEdgeAttributes );
+    assertTrue( noExpNetwork.getNeedsLayout() == true );
     
     CyNetwork nullNetwork = new CyNetwork(null, null, null, null);
     assertTrue(nullNetwork.getGraph() != null);
     assertTrue(nullNetwork.getNodeAttributes() != null);
     assertTrue(nullNetwork.getEdgeAttributes() != null);
     assertTrue(nullNetwork.getExpressionData() == null);
+    //test setting new graph, preserving old attributes
+    //first install some attributes so we can do the test
+    GraphObjAttributes nullNodeAttributes = nullNetwork.getNodeAttributes();
+    GraphObjAttributes nullEdgeAttributes = nullNetwork.getEdgeAttributes();
+    Node n1 = graph.createNode();
+    nullNodeAttributes.addNameMapping("YGR074W", n1);
+    Node n2 = newGraph.createNode();
+    newNodeAttributes.addNameMapping("YBR043C", n2);
+    Edge e1 = graph.createEdge(n1, graph.createNode());
+    nullEdgeAttributes.addNameMapping("YDR277C (pp) YDL124W", e1);
+    Edge e2 = newGraph.createEdge(n2, newGraph.createNode());
+    newEdgeAttributes.addNameMapping("YBL026W (pp) YOR127C", e2);
+    nullNodeAttributes.readAttributesFromFile("testData/galFiltered.nodeAttrs1");
+    nullEdgeAttributes.readAttributesFromFile("testData/galFiltered.edgeAttrs1");
+    newNodeAttributes.readAttributesFromFile("testData/galFiltered.nodeAttrs2");
+    newEdgeAttributes.readAttributesFromFile("testData/galFiltered.edgeAttrs2");
+    nullNetwork.setNeedsLayout(true);
+    newNetwork.setNeedsLayout(false);
+    //now do the test
+    nullNetwork.setNewGraphFrom(newNetwork, false);
+    assertTrue( nullNetwork.getGraph() == newGraph );
+    assertTrue( nullNetwork.getNeedsLayout() == false );
+    assertTrue( nullNetwork.getNodeAttributes() == nullNodeAttributes );
+    assertTrue( nullNetwork.getEdgeAttributes() == nullEdgeAttributes );
+    assertTrue( nullNodeAttributes.hasAttribute("TestNodeAttribute1") );
+    assertTrue( nullNodeAttributes.hasAttribute("TestNodeAttribute2") );
+    assertTrue( nullEdgeAttributes.hasAttribute("TestEdgeAttributes1") );
+    assertTrue( nullEdgeAttributes.hasAttribute("TestEdgeAttributes2") );
+    assertTrue( nullNodeAttributes.getCanonicalName(n1).equals("YGR074W") );
+    assertTrue( nullNodeAttributes.getCanonicalName(n2).equals("YBR043C") );
+    assertTrue( nullEdgeAttributes.getCanonicalName(e1).equals("YDR277C (pp) YDL124W") );
+    assertTrue( nullEdgeAttributes.getCanonicalName(e2).equals("YBL026W (pp) YOR127C") );
 }
 //-------------------------------------------------------------------------
 public void testListeners() throws Exception {

@@ -50,13 +50,17 @@ public class CyNetworkEvent {
      * Indicates that someone is done working with the network.
      */
     public static final int END = 1;
+    /**
+     * Indicates that a new graph has been installed in the network.
+     */
+    public static final int GRAPH_REPLACED = 10;
     
     private CyNetwork network;
     private int type;
     
     public CyNetworkEvent(CyNetwork source, int type) {
         network = source;
-        if (type == this.BEGIN || type == this.END) {
+        if (type == this.BEGIN || type == this.END || type == this.GRAPH_REPLACED) {
             this.type = type;
         } else {
             this.type = this.UNKNOWN;

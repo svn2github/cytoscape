@@ -33,13 +33,21 @@ public void testBasic() throws Exception {
     assertTrue( e1.getNetwork() == network );
     assertTrue( e1.getType() == CyNetworkEvent.END );
     //test null network
-    CyNetworkEvent e2 = new CyNetworkEvent(null, CyNetworkEvent.BEGIN);
-    assertTrue( e2.getNetwork() == null );
-    assertTrue( e2.getType() == CyNetworkEvent.BEGIN );
-    //test invalid type
-    CyNetworkEvent e3 = new CyNetworkEvent(network, -7);
+    CyNetworkEvent eNull = new CyNetworkEvent(null, CyNetworkEvent.BEGIN);
+    assertTrue( eNull.getNetwork() == null );
+    assertTrue( eNull.getType() == CyNetworkEvent.BEGIN );
+    //test graph replaced event
+    CyNetworkEvent e2 = new CyNetworkEvent(network, CyNetworkEvent.GRAPH_REPLACED);
+    assertTrue( e2.getNetwork() == network );
+    assertTrue( e2.getType() == CyNetworkEvent.GRAPH_REPLACED );
+    //test unknown event
+    CyNetworkEvent e3 = new CyNetworkEvent(network, CyNetworkEvent.UNKNOWN);
     assertTrue( e3.getNetwork() == network );
     assertTrue( e3.getType() == CyNetworkEvent.UNKNOWN );
+    //test invalid type
+    CyNetworkEvent eBad = new CyNetworkEvent(network, -7);
+    assertTrue( eBad.getNetwork() == network );
+    assertTrue( eBad.getType() == CyNetworkEvent.UNKNOWN );
 }
 //-------------------------------------------------------------------------
 public static void main (String[] args)  {
