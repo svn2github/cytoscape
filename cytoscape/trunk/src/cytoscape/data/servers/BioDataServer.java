@@ -44,20 +44,26 @@ import cytoscape.data.synonyms.*;
 import cytoscape.data.synonyms.readers.*;
 
 import cytoscape.data.readers.TextFileReader;
+import cytoscape.data.readers.TextJarReader;
 //----------------------------------------------------------------------------------------
 public class BioDataServer {
   protected BioDataServerInterface server;
 //----------------------------------------------------------------------------------------
 public BioDataServer (String serverName) throws Exception
 {
+  System.out.println ("starting BioDataServer with servername '" + serverName + "'");
   if (serverName.indexOf ("rmi://") >= 0)
     server = (BioDataServerInterface) Naming.lookup (serverName);
   else { // look for a readable file
     server = new BioDataServerRmi ();  // actually runs in process
     File fileTester = new File (serverName);
-    if (!fileTester.isDirectory () && fileTester.canRead ()) {
+    System.out.println (" serverName.startsWith (jar://)? " +
+        serverName.startsWith ("jar://"));
+    if ((serverName.startsWith ("jar://")) ||
+        (!fileTester.isDirectory () && fileTester.canRead ())) {
+      String [] ontologyFiles = parseLoadFile (serverName, "ontology");
       String [] annotationFilenames = parseLoadFile (serverName, "annotation");
-      loadAnnotationFiles (annotationFilenames);
+      loadAnnotationFiles (annotationFilenames, ontologyFiles);
       String [] thesaurusFilenames = parseLoadFile (serverName, "synonyms");
       loadThesaurusFiles (thesaurusFilenames);
       } // if a plausible candidate load file
@@ -71,9 +77,26 @@ public BioDataServer (String serverName) throws Exception
 //----------------------------------------------------------------------------------------
 protected String [] parseLoadFile (String filename, String key)
 {
-  TextFileReader reader = new TextFileReader (filename);
-  reader.read ();
-  String rawText = reader.getText ();
+  String rawText;
+
+  try {
+    if (filename.trim().startsWith ("jar://")) {
+      TextJarReader reader = new TextJarReader (filename);
+      reader.read ();
+      rawText = reader.getText ();
+      }
+    else {
+      TextFileReader reader = new TextFileReader (filename);
+      reader.read ();
+      rawText = reader.getText ();
+      }
+    }
+  catch (Exception e0) {
+    System.err.println ("-- Exception while reading annotation server load file " + filename);
+    System.err.println (e0.getMessage ());
+    return new String [0];
+    }
+
   String [] lines = rawText.split ("\n");
 
   Vector list = new Vector ();
@@ -95,22 +118,56 @@ public BioDataServer () throws Exception
 
 } // ctor
 //----------------------------------------------------------------------------------------
-public void loadAnnotationFiles (String [] annotationFilenames) throws Exception
+public Ontology readOntologyFlatFile (String [] ontologyFilenames) throws Exception
+// a quick hack.  this is called only if annotation & ontology are each flat files,
+// which means they must be read separately.  and xml annotation file names its own
+// ontology file, and the annotationXmlReader is responsible for loading its ontology.
 {
+  Ontology ontology = null;
+
+  for (int i=0; i < ontologyFilenames.length; i++) {
+    String filename = ontologyFilenames [i];
+    System.out.println ("BioDataServer, loading ontology flat file: " + filename);
+    if (filename.endsWith (".txt")) {
+      OntologyFlatFileReader reader = new OntologyFlatFileReader (filename);
+      ontology = reader.getOntology ();
+      }
+    } // for i
+
+  return ontology;
+
+} // loadOntologyFiles
+//----------------------------------------------------------------------------------------
+public void loadAnnotationFiles (String [] annotationFilenames, String [] ontologyFilenames) throws Exception
+{
+  Ontology ontology = readOntologyFlatFile (ontologyFilenames);
+
   for (int i=0; i < annotationFilenames.length; i++) {
-    File xmlFile = new File (annotationFilenames [i]);
-    System.out.println ("--- loading annotation: " + xmlFile.getPath ());
-    AnnotationXmlReader reader = new AnnotationXmlReader (xmlFile);
-    server.addAnnotation (reader.getAnnotation ());
-    }
+    Annotation annotation;
+    String filename = annotationFilenames [i];
+    System.out.println ("BioDataServer.LAS: " + filename);
+    if (filename.endsWith (".txt")) {
+      AnnotationFlatFileReader reader = new AnnotationFlatFileReader (filename);
+      annotation = reader.getAnnotation ();
+      annotation.setOntology (ontology);
+      }
+    else {
+      File xmlFile = new File (annotationFilenames [i]);
+      System.out.println ("--- loading annotation: " + xmlFile.getPath ());
+      AnnotationXmlReader reader = new AnnotationXmlReader (xmlFile);
+      annotation = reader.getAnnotation ();
+      }
+    server.addAnnotation (annotation);
+    } // for i
 
 } // loadAnnotationFiles
 //----------------------------------------------------------------------------------------
 public void loadThesaurusFiles (String [] thesaurusFilenames) throws Exception
 {
   for (int i=0; i < thesaurusFilenames.length; i++) {
-    System.out.println ("--- loading synonyms: " + thesaurusFilenames [i]);
-    ThesaurusFlatFileReader reader = new ThesaurusFlatFileReader (thesaurusFilenames [i]);
+    String filename = thesaurusFilenames [i];
+    System.out.println ("--- loading synonyms: " + filename);
+    ThesaurusFlatFileReader reader = new ThesaurusFlatFileReader (filename);
     Thesaurus thesaurus = reader.getThesaurus (); 
     server.addThesaurus (thesaurus.getSpecies (), thesaurus);
     }
