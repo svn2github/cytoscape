@@ -65,6 +65,7 @@ import com.jgoodies.plaf.plastic.Plastic3DLookAndFeel;
  */
 public class CyMain implements WindowListener {
   protected Vector windows = new Vector ();
+  protected CyWindow cyWindow;
   protected CytoscapeVersion version = new CytoscapeVersion();
   protected Logger logger;
   protected SplashScreen splashScreen;
@@ -184,7 +185,7 @@ public CyMain (String [] args) throws Exception {
     if (splashScreen!=null) {splashScreen.advance(90);}
     
     //create the window
-    CyWindow cyWindow = new CyWindow(cytoscapeObj, network, title);
+    cyWindow = new CyWindow(cytoscapeObj, network, title);
 
     if (geometryFilename != null) {
 	GMLReader reader = new GMLReader(geometryFilename);
@@ -240,6 +241,7 @@ public void windowClosing     (WindowEvent e) {windowClosed (e);}
 public void windowDeactivated (WindowEvent e) {}
 public void windowDeiconified (WindowEvent e) {}
 public void windowIconified   (WindowEvent e) {}
+
 //------------------------------------------------------------------------------
 public void windowOpened      (WindowEvent e) {  
     if(splashScreen != null) {
@@ -259,6 +261,11 @@ public void windowClosed     (WindowEvent e) {
         exit(0);
     }
 }	
+
+public CyWindow getMainWindow()
+{
+	return cyWindow;
+}
 //------------------------------------------------------------------------------
 public void exit(int exitCode) {
     for (int i=0; i < windows.size (); i++) {
