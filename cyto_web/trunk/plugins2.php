@@ -153,7 +153,6 @@ Also included is a spreadsheet importer.
 				</tr>        
 					</td>
 				</tr>                                                                                      
-<!----------------------
     	<tr><td colspan=3><HR></TD></TR>
 
 				<tr>
@@ -163,7 +162,7 @@ Also included is a spreadsheet importer.
 							<br>
 							Version: .8 BETA
 							<br>
-							Release Date: August 12, 2004</font>
+							Release Date: August 15, 2004</font>
 					</td>
 					<td width="60%" valign="top">
 This plugin provides a number of integrated tools for exploring and visualizing experimental data in association with the Cytoscape network view.  
@@ -179,7 +178,7 @@ Read in tab-delimited text files, in which there is one row for each gene or pro
        significance to node size
   <li> for the skilled user:  use the python console, and write scripts to create custom operations on, or selections from, the data
 </ol>
-
+Full documentation is <a href="http://db.systemsbiology.org/cytoscape/tutorial/cy2/DataMatrixPlugin"> here</a>.
 
 						<p>
 							Released by: Paul Shannon, Baliga Group, <a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>.
@@ -189,6 +188,7 @@ Read in tab-delimited text files, in which there is one row for each gene or pro
 					 [<a href="http://db.systemsbiology.net/cytoscape/ftp/DataMatrixPlugin.jar">Download PlugIn .jar</a>]<br>
 					</td>
 				</tr>        
+<!----------------------
     	<tr><td colspan=3><HR></TD></TR>
 
 				<tr>
