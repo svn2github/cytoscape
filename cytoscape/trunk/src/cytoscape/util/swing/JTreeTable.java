@@ -34,9 +34,12 @@ package cytoscape.util.swing;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.util.EventObject;
 
+import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
@@ -97,6 +100,49 @@ public class JTreeTable extends JTable {
         // Metal looks better like this.
         setRowHeight(18);
     }
+    }
+
+    /**
+     * The code in this method is copy and pasted from source code
+     * to the same method in
+     * javax.swing.JTable, except for one value change on one line.
+     * If you'd like to see the change, please read the source code below.
+     */
+    public String getToolTipText(MouseEvent event) {
+        String tip = null;
+        Point p = event.getPoint();
+                                                                                                                                       
+        // Locate the renderer under the event location
+        int hitColumnIndex = columnAtPoint(p);
+        int hitRowIndex = rowAtPoint(p);
+                                                                                                                                       
+        if ((hitColumnIndex != -1) && (hitRowIndex != -1)) {
+            TableCellRenderer renderer = getCellRenderer(hitRowIndex, hitColumnIndex);
+            Component component = prepareRenderer(renderer, hitRowIndex, hitColumnIndex);
+                                                                                                                                       
+            // Now have to see if the component is a JComponent before
+            // getting the tip
+            if (component instanceof JComponent) {
+                // Convert the event to the renderer's coordinate system
+                Rectangle cellRect = getCellRect(hitRowIndex, hitColumnIndex, false);
+                // HERE IS THE MODIFICATION FROM javax.swing.JTable:
+                //p.translate(-cellRect.x, -cellRect.y);
+                p.translate(-cellRect.x, 0);
+                // END OF MODIFICATION
+                MouseEvent newEvent = new MouseEvent(component, event.getID(),
+                                          event.getWhen(), event.getModifiers(),
+                                          p.x, p.y, event.getClickCount(),
+                                          event.isPopupTrigger());
+                                                                                                                                       
+                tip = ((JComponent)component).getToolTipText(newEvent);
+            }
+        }
+                                                                                                                                       
+        // No tip from the renderer get our own tip
+        if (tip == null)
+            tip = getToolTipText();
+                                                                                                                                       
+        return tip;
     }
 
     /**
