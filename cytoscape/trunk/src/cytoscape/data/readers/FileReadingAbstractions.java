@@ -86,25 +86,27 @@ public static InputStream getInputStream(String filename) {
 }
 //----------------------------------------------------------------------------
 public static Graph2D loadGMLBasic (String filename, 
-                                    GraphObjAttributes edgeAttributes) 
+                                    GraphObjAttributes edgeAttributes,
+                                    boolean canonicalize) 
 {
   GMLReader reader = new GMLReader (filename);
-  return loadBasic (reader, edgeAttributes);
+  return loadBasic (reader, edgeAttributes, canonicalize);
 }
 //----------------------------------------------------------------------------
 public static Graph2D loadIntrBasic (BioDataServer dataServer,
                                      String species,
                                      String filename, 
-                                     GraphObjAttributes edgeAttributes) 
+                                     GraphObjAttributes edgeAttributes,
+                                     boolean canonicalize) 
 {
   InteractionsReader reader = new InteractionsReader (dataServer, species, filename);
-  return loadBasic (reader, edgeAttributes);
+  return loadBasic (reader, edgeAttributes, canonicalize);
 
 }
 //----------------------------------------------------------------------------
-public static Graph2D loadBasic (GraphReader reader, GraphObjAttributes edgeAttributes) 
+public static Graph2D loadBasic (GraphReader reader, GraphObjAttributes edgeAttributes, boolean canonicalize) 
 {
-  reader.read ();
+  reader.read (canonicalize);
   Graph2D graph = reader.getGraph();
   if (graph == null) {return null;} //reader couldn't read the file
   
@@ -125,8 +127,9 @@ public static void initAttribs (BioDataServer dataServer,
 {
   String [] edgeAttributeFilenames = config.getEdgeAttributeFilenames ();
   String [] nodeAttributeFilenames = config.getNodeAttributeFilenames ();
+  boolean canonicalize = config.getCanonicalize();
   initAttribs (dataServer, species, graph, nodeAttributes, edgeAttributes,
-               nodeAttributeFilenames, edgeAttributeFilenames);
+               nodeAttributeFilenames, edgeAttributeFilenames, canonicalize);
 
 }
 //----------------------------------------------------------------------------
@@ -136,13 +139,14 @@ public static void initAttribs (BioDataServer dataServer,
                                 GraphObjAttributes nodeAttributes,
                                 GraphObjAttributes edgeAttributes,
                                 String [] nodeAttributeFilenames,
-                                String [] edgeAttributeFilenames)
+                                String [] edgeAttributeFilenames,
+                                boolean canonicalize)
 
 {
     readAttribs(dataServer, species, graph, nodeAttributes, edgeAttributes,
-		nodeAttributeFilenames, edgeAttributeFilenames);
+                nodeAttributeFilenames, edgeAttributeFilenames, canonicalize);
     if (nodeAttributes != null)
-	addNameMappingToAttributes (graph.getNodeArray (), nodeAttributes);
+      addNameMappingToAttributes (graph.getNodeArray (), nodeAttributes);
     
     // no need to add name mapping for edge attributes -- it has already been
     // done, at the time when the interactions file (or gml file) was read
@@ -155,12 +159,13 @@ public static void readAttribs (BioDataServer dataServer,
                                 GraphObjAttributes nodeAttributes,
                                 GraphObjAttributes edgeAttributes,
                                 String [] nodeAttributeFilenames,
-                                String [] edgeAttributeFilenames)
+                                String [] edgeAttributeFilenames,
+                                boolean canonicalize)
 {
   if (nodeAttributeFilenames != null)
     for (int i=0; i < nodeAttributeFilenames.length; i++) {
        try {
-         nodeAttributes.readAttributesFromFile (dataServer, species, nodeAttributeFilenames[i]);
+         nodeAttributes.readAttributesFromFile (dataServer, species, nodeAttributeFilenames[i], canonicalize);
          } 
        catch (NumberFormatException nfe) {
          System.err.println (nfe.getMessage ());
