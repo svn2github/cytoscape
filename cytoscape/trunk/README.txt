@@ -124,10 +124,11 @@ of Cytoscape is rather involved.  Some of the tasks are automated and some are m
 
 		The final release files are all placed in cytoscape/zip_release.
 
-		This includes three files:
+		This includes two files:
 			a.  a binary .tar.gz file (for Linux / Mac OS X)
 			b.  a binary .zip file (for Windows)
-			c.  a source .tar.gz file (for Linux / Mac OS X)
+
+	To generate the source distribution, run:  ant source
 
 	Deploy the new release files.
 		Currently, we are hosting the release files on cbio.mskcc.org only.
