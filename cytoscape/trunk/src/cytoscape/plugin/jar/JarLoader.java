@@ -32,11 +32,17 @@ public class JarLoader {
    *
    * Loading is started with loadIt()
    */
-  public JarLoader(String jarName) throws FileNotFoundException {
+  public JarLoader(String jarName) throws IOException, MalformedURLException {
     // wil check that this file exists, and that is about it.
     debug("("+jarName+")");
     this.jarName = jarName;
-    InputStream is = new FileInputStream(jarName);
+    InputStream is = null;
+    if (jarName.startsWith("http://") || jarName.startsWith("file://") ) {
+        URL url = new URL(jarName);
+        is = url.openStream();
+    } else {
+        is = new FileInputStream(jarName);
+    }
     jarStream = new BufferedInputStream(is);
     loader = SimpleClassLoader.ourLoader;
   }
