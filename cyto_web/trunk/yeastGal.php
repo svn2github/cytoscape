@@ -39,7 +39,7 @@ will learn how to display changes in expression, and how to discover
 correlations in gene expression.<p>
 Begin by clicking here:  
 <font size="+1">
-<a href="galactoseInduction/cy.jnlp">WEB START</a>.</font> This starts Cytoscape on your own computer, after downloading the 
+<a href="tut/yeastGal/yeastGal.jnlp">WEB START</a>.</font> (download size: 7 MB) This starts Cytoscape on your own computer, after downloading the 
 program and annotation from our website. (On subsequent runs, the program or 
 annotation will not be downloaded again unless we have new versions or new 
 annotation for you to use.) If Cytoscape does not start, please look at the

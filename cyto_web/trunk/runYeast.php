@@ -41,8 +41,8 @@ for all genes.    See below for how to load your own data.
 <p>
 Begin by clicking here: &nbsp;
 <font size=+1>
-<a href="tut/yeastBasic.jnlp">
-WEB START</a> </font>&nbsp;
+<a href="tut/runYeast/runYeast.jnlp">
+WEB START</a> </font>&nbsp; (download size: 7 MB)
 
 This starts Cytoscape on your own computer, after downloading the program and annotation
 from our website.  (On subsequent runs, 
