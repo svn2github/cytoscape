@@ -8,7 +8,7 @@
 #  Specifies the Current Cytoscape Release Version
 #  Update this version number after each release.
 #################################################
-$version = "v2.0ALPHA4";
+$version = "v2.00";
 
 
 #################################################
