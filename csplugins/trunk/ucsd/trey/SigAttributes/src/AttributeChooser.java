@@ -49,7 +49,7 @@ public class AttributeChooser extends JDialog implements ActionListener{
 	JScrollPane scrollPane = new JScrollPane(nameSelector, 
 						 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 						 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-	nameSelector.setVisibleRowCount(1);
+	nameSelector.setVisibleRowCount(3);
 	nameSelector.setSelectedIndex(0);
 	cutoffPane.add(cutoffLabel);
 	cutoffPane.add(cutoffField);

@@ -14,7 +14,7 @@ import giny.model.RootGraphChangeListener;
 import giny.model.RootGraphChangeEvent;
 
 import cytoscape.CytoscapeObj;
-import cytoscape.plugin.AbstractPlugin;
+import cytoscape.plugin.*;
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.CyNetwork;
 import cytoscape.view.CyWindow;
@@ -152,7 +152,9 @@ public class SigAttributes extends AbstractPlugin {
 	    // create and clear a node attribute for significant functions
 	    GraphObjAttributes nodeAttr = network.getNodeAttributes();
 	    String newAttrName = "Significant Attributes";
+	    String newAttrName2 = "Significant Proteins";
 	    nodeAttr.deleteAttribute(newAttrName);
+	    nodeAttr.deleteAttribute(newAttrName2);
 	    
 	    //iterate over each selected node unless nodes are grouped (the default)
 	    for (int k=0; k<selectedNodeIDs.length; k++) {
@@ -184,8 +186,12 @@ public class SigAttributes extends AbstractPlugin {
 		    String [] geneNames = convertIDtoNames(nodeID, chosenNames);
 		    for (Iterator it2 = sigFunctions.iterator(); it2.hasNext(); ) {
 			String function = (String) it2.next();
-			if (hasAttributeValue(nodeAttr, chosenAttr, geneNames, function))
+			String [] genesWithAttr = getGenesWithAttributeValue(nodeAttr, chosenAttr,
+									     geneNames, function);
+			if (genesWithAttr.length > 0) {
 			    nodeAttr.append(newAttrName, nodeID, function);
+			    if (!groupNodes) nodeAttr.append(newAttrName2, nodeID, genesWithAttr);
+			}
 		    }
 		}
 		if (groupNodes) break;  // do not iterate if grouping all nodes as one cluster
@@ -213,8 +219,10 @@ public class SigAttributes extends AbstractPlugin {
 
 	    // create and clear a node attribute for significant functions
 	    GraphObjAttributes nodeAttr = network.getNodeAttributes();
-	    String newAttrName = "Significant Attributes";
+	    String newAttrName  = "Significant Attributes";
+	    String newAttrName2 = "Significant Proteins";
 	    nodeAttr.deleteAttribute(newAttrName);
+	    nodeAttr.deleteAttribute(newAttrName2);
 	    
 	    //iterate over each selected node unless nodes are grouped (the default)
 	    for (int k=0; k<selectedNodeIDs.length; k++) {
@@ -234,7 +242,7 @@ public class SigAttributes extends AbstractPlugin {
 		
 		// compute histogram of functions across considered gene names
 		HashMap thisFunctionCount = getFunctionCount(consideredGeneNames, annotation);
-		
+
 		// compute significances of enrichment for each function
 		Vector sigFunctions = getSignificance(thisFunctionCount, allFunctionCount, 
 						      pvalueCutoff, maxNum, annotation);
@@ -249,10 +257,12 @@ public class SigAttributes extends AbstractPlugin {
 		    for (Iterator it = sigFunctions.iterator(); it.hasNext(); ) {
 			String function = (String) it.next();
 			// check to see if any of this node's gene names have this func.
-			if (hasAttributeValue(annotation, geneNames, function)) {
+			String [] genesWithAttr=getGenesWithAttributeValue(annotation, geneNames, function);
+			if (genesWithAttr.length > 0) {
 			    OntologyTerm term = 
 				annotation.getOntology().getTerm(Integer.parseInt(function));
-			    nodeAttr.append(newAttrName, nodeID, term.getName());
+			    nodeAttr.append(newAttrName, nodeID, term.getName() );
+			    if (!groupNodes) nodeAttr.append(newAttrName2, nodeID, genesWithAttr);
 			    //System.err.println("nodeAttr.append " + newAttrName + " " 
 			    //+ nodeID + " " + term.getName());
 			}
@@ -383,6 +393,7 @@ public class SigAttributes extends AbstractPlugin {
 	    
 	    double n = (double) sumFunctionCounts(thisFunctionCount);
 	    double t = (double) sumFunctionCounts(allFunctionCount);
+	    int numTests = thisFunctionCount.size();
 	    Vector funAndPvals = new Vector();
 	    for (Iterator it = thisFunctionCount.keySet().iterator(); it.hasNext();) {
 		String function = (String) it.next();
@@ -391,7 +402,8 @@ public class SigAttributes extends AbstractPlugin {
 		double NB = t - NR;
 		double pvalue = 1 - hypergeometric.cumulative(x, NR, NB, n);
 		if (x <= 1) pvalue = 1;  // hack to correct for small sample sizes
-		funAndPvals.add(new FunAndPval (function, pvalue, x, NR, NB, n));
+		double pvalueCorrected = pvalue * numTests;   // Bonferroni for now
+		funAndPvals.add(new FunAndPval (function, pvalue, pvalueCorrected, x, NR, NB, n));
 	    }
 	    Collections.sort(funAndPvals);
 
@@ -415,6 +427,7 @@ public class SigAttributes extends AbstractPlugin {
 	    
 	    Ontology ontology = annotation.getOntology();
 	    Vector funAndPvals = new Vector();
+	    int numTests = thisFunctionCount.size();
 	    
 	    // iterate over each functional ID in ontology
 	    for (Iterator it = thisFunctionCount.keySet().iterator(); it.hasNext();) {
@@ -445,8 +458,9 @@ public class SigAttributes extends AbstractPlugin {
 		
 		// compute hypergeometric pvalue
 		double pvalue = 1 - hypergeometric.cumulative(x-1, NR, t-NR, n);
+		double pvalueCorrected = pvalue * numTests;   // Bonferroni for now
 		if (x <= 1) pvalue = 1;  // hack to correct for small sample sizes
-		funAndPvals.add(new FunAndPval (function, pvalue, x, NR, t-NR, n));
+		funAndPvals.add(new FunAndPval (function, pvalue, pvalueCorrected, x, NR, t-NR, n));
 	    }
 	    Collections.sort(funAndPvals);
 	    
@@ -490,6 +504,43 @@ public class SigAttributes extends AbstractPlugin {
 		}
 	    }
 	    return false;
+	}
+
+	// checks to see if the given node has been assigned the given value of chosenAttr
+	private String [] getGenesWithAttributeValue(GraphObjAttributes nodeAttr, String chosenAttr,
+						     String [] geneNames, String value) {
+	    
+	    Vector genesWithAttr = new Vector ();
+	    for (int k=0; k<geneNames.length; k++) {
+		String [] attrValues = nodeAttr.getStringArrayValues(chosenAttr, geneNames[k]);
+		for (int i=0; i<attrValues.length; i++)
+		    if (attrValues[i].equals(value)) {
+			genesWithAttr.add(geneNames[k]);
+			break;
+		    }
+	    }
+	    return (String []) genesWithAttr.toArray(new String [0]);
+	}
+
+
+	// Polymorphic to the above function, used for annotations instead of attributes
+	// REALLY INEFFICIENT RIGHT NOW-- SHOULD BE HASHED LATER
+	private String [] getGenesWithAttributeValue(Annotation annotation, 
+						     String [] geneNames, String value) {
+	    
+	    Vector genesWithAttr = new Vector ();
+	    Ontology ontology = annotation.getOntology();
+	    for (int k=0; k<geneNames.length; k++) {
+		int [] allIDs = flatten(annotation.getClassifications(geneNames[k]), ontology);
+		for (int j=0; j<allIDs.length; j++) {
+		    String idValue = Integer.toString(allIDs[j]);
+		    if (idValue.equals(value)) {
+			genesWithAttr.add(geneNames[k]);
+			break;
+		    }
+		}
+	    }
+	    return (String []) genesWithAttr.toArray(new String [0]);
 	}
 
 	// Input HashMap of functions to counts and compute total counts over all functions
