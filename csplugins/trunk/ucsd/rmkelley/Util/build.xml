@@ -11,7 +11,11 @@
   	<property name="src.dir" value="."/>
 
 	<!--  The directory containing library jar files -->	
-	<property name="lib.dir" value="../../../../cytoscape/lib"/>
+
+	<property name="local.lib.dir" value="lib"/>
+    <property name="cyto.dir" value="../../../../cytoscape"/>
+	<property name="lib.dir" value="${cyto.dir}/lib"/>
+
 
   	<!-- Temporary build directories -->
  	<property name="build.dir" value="build"/>
@@ -24,8 +28,13 @@
 	<!-- Classpath with all lib JAR Files and all Cytoscape Core classes -->
 	<path id="classpath">
 		<pathelement path="${build.classes}"/>	
-		<pathelement path="../../../../cytoscape/build/classes"/>
-		<fileset dir="${lib.dir}">
+        <fileset dir="${cyto.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+        <fileset dir="${lib.dir}">
+			<include name="**/*.jar"/>
+		</fileset>
+		<fileset dir="${local.lib.dir}">
 			<include name="**/*.jar"/>
 		</fileset>
 	</path>
@@ -34,8 +43,9 @@
   	<target name="prepare">
     		<mkdir dir="${build.dir}"/>
     		<mkdir dir="${build.classes}"/>
-                <mkdir dir="${doc.dir}"/>
-  	</target>
+            <mkdir dir="${doc.dir}"/>
+  	        <mkdir dir="${local.lib.dir}"/>
+    </target>
 
 	<!--  Target to clean out all directories -->
   	<target name="clean" description="Removes all generated files.">
@@ -47,30 +57,26 @@
 		<fileset dir="${lib.dir}">
 			<include name="**/*.jar"/>
 		</fileset>
-		<pathelement location="${lib.dir}/../build/cytoscape.jar"/>
+		<pathelement location="${cyto.dir}/cytoscape.jar"/>
 	</path>
 
-
-
-        <!-- Target to create the javadoc information -->
-        <target name="doc" depends="prepare">
-          <echo>${src.dir}</echo>
-          <javadoc destdir="${doc.dir}" Private="yes">
-            <fileset dir="${src.dir}" defaultexcludes="no"/>
-          </javadoc>
-       </target>
 
         
 	<!--  Target to compile all Plug In Code -->
   	<target name="compile" depends="prepare" 
 		description="Compiles all PlugIn source code.">
-		<javac debug="Yes" srcdir="${src.dir}" destdir="${build.classes}">
+		<javac debug="Yes" excludes="${build.dir}/**" srcdir="${src.dir}" destdir="${build.classes}">
 			<classpath refid="classpath"/>
 		</javac>
 	</target>
   	
 	<!--  Create PlugIn Jar File (Unobfuscated) -->
    	<target name="jar" depends="compile" description="Creates PlugIn Jar File.">
+	   <unjar overwrite="Yes" dest="${build.classes}">
+	   	<fileset dir="${local.lib.dir}">
+			<include name="**/*.jar"/>
+		</fileset>
+	   </unjar>
 	   <jar destfile="${build.dir}/${plugin.name}.jar">
 			<fileset dir="${build.classes}"/>
 	   </jar>
