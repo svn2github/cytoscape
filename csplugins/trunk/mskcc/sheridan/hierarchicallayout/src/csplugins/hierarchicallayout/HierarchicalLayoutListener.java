@@ -137,19 +137,14 @@ public class HierarchicalLayoutListener implements ActionListener {
 		if (networkView == null || network == null) {
 			return;
 		}
-		//inform listeners that we're doing an operation on the network
-		final String callerID = "HierarchicalLayoutListener.actionPerformed";
-		network.beginActivity(callerID);
 		//and the view should be a view on this structure
 		if (networkView.getNetwork() != network) {
-			System.err.println("In " + callerID + ":");
+			System.err.println("In HierarchicalLayoutListener.actionPerformed: ");
 			System.err.println("Current CyNetworkView is not a view on the current CyNetwork.");
-			network.endActivity(callerID);
 			return;
 		}
 		//Select all nodes as the default action if none are selected
 		if(network.getNodeCount() <= 0) {
-			network.endActivity(callerID);
 			return;
 		}
 		/* construct node list with selected nodes first */
@@ -186,9 +181,8 @@ public class HierarchicalLayoutListener implements ActionListener {
 			Integer edgeFrom = (Integer)ginyIndex2Index.get(new Integer(ev.getEdge().getSource().getRootGraphIndex()));
 			Integer edgeTo = (Integer)ginyIndex2Index.get(new Integer(ev.getEdge().getTarget().getRootGraphIndex()));
 			if (edgeFrom == null || edgeTo == null) {
-				System.err.println("In " + callerID + ":");
+			System.err.println("In HierarchicalLayoutListener.actionPerformed: ");
 				System.err.println("Error in internal edge representation.");
-				network.endActivity(callerID);
 				return;
 			}
 			if (numSelectedNodes <= 1
@@ -376,7 +370,5 @@ public class HierarchicalLayoutListener implements ActionListener {
 				nodeView[x].setYPosition(nodeView[x].getYPosition() + shiftY,true);
 			}
 		}
-		//networkView.updateView();
-		network.endActivity(callerID);
 	}
 }
