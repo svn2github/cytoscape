@@ -33,7 +33,9 @@ public final class IntBTree
   }
 
   // Return a Node being the newly created node if a split was performed.
-  // The first value of the Node is to be the new split index.
+  // The first value of the Node is to be the new split index if return value
+  // is leaf node.  If return value is internal node, then the split index
+  // to be used is returnValue.data.splitVals[returnValue.data.sliceCount].
   private Node insert(Node n, int x)
   {
     if (isLeafNode(n)) {
@@ -86,7 +88,7 @@ public final class IntBTree
           if (newNode != null) { // A split was performed at one deeper level.
             int newSplit;
             if (isLeafNode(newNode)) newSplit = newNode.values[0];
-            else newSplit = newNode.data.splitVals[0];
+            else newSplit = newNode.data.splitVals[newNode.sliceCount];
             if (n.sliceCount < n.data.children.length) { // There's room here.
               for (int j = n.sliceCount; j < i + 1; j--) {
                 n.data.children[j] = n.data.children[j - 1];
@@ -94,7 +96,33 @@ public final class IntBTree
               n.data.children[i + 1] = newNode;
               n.data.splitVals[i] = newSplit; }
             else { // No room in this internal node; perform split.
-            }
+              // Being poor but correct, we're going to use poor man's m_buff.
+              System.arraycopy(n.data.splitVals, 0, m_buff, 0, i);
+              m_buff[i] = newSplit;
+              System.arraycopy(n.data.splitVals, i, m_buff, i + 1,
+                               n.sliceCount - (i + 1));
+              Node[] nodeBuff = new Node[n.sliceCount + 1];
+              System.arraycopy(n.data.children, 0, nodeBuff, 0, i + 1);
+              nodeBuff[i + 1] = newNode;
+              System.arraycopy(n.data.children, i + 1,
+                               nodeBuff, i + 2, n.sliceCount - (i + 2));
+              int combinedSplitCount = n.sliceCount;
+              int middleInx = combinedSplitCount / 2;
+              Node returnThis = new Node(MAX_BRANCHES, false);
+              System.arraycopy(m_buff, 0, n.data.splitVals, 0, middleInx);
+              System.arraycopy(nodeBuff, 0, n.data.children, 0, middleInx + 1);
+              n.data.sliceCount = middleInx + 1;
+              System.arraycopy(m_buff, middleInx + 1,
+                               returnThis.data.splitVals, 0,
+                               combinedSplitCount - (middleInx + 1));
+              System.arraycopy(nodeBuff, middleInx + 1,
+                               returnThis.data.children, 0,
+                               combinedSplitCount - middleInx);
+              returnThis.data.sliceCount = combinedSplitCount - middleInx;
+              returnThis.data.splitVals[combinedSplitCount - (middleInx + 1)] =
+                m_buff[middleInx];
+              return returnThis; }
+          }
           break; }
       }
       return null;
