@@ -1065,13 +1065,6 @@ protected class SetVisualPropertiesAction extends AbstractAction   {
 	    displayNodeLabels(labelKey.getString());
 
         redrawGraph();
-	// owo 20020523
-	//System.out.println( labelKey.getString());
-	//Node [] nodes = graphView.getGraph2D().getNodeArray();
-	//for (int i=0; i < nodes.length; i++) {
-	//    System.out.println( nodeAttributes.getCanonicalName (nodes[i]) );
-	//}
-
     }
 
 }
@@ -1719,11 +1712,6 @@ protected void loadInteraction (String filename)
     FileReadingAbstractions.initAttribs(config,graph,nodeAttributes,edgeAttributes);
     displayCommonNodeNames (); // fills in canonical name for blank common names
     displayNewGraph (true);
-    // owo 20020523
-    //Node [] nodes = graphView.getGraph2D().getNodeArray();
-    //for (int i=0; i < nodes.length; i++) {
-    //System.out.println( nodeAttributes.getCanonicalName (nodes[i]) );
-    //}
 } // loadInteraction
 //------------------------------------------------------------------------------
 protected class ExitAction extends AbstractAction  {

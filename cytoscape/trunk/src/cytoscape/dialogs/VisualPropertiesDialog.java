@@ -83,7 +83,7 @@ public VisualPropertiesDialog (Frame parentFrame,
   JLabel colorLabel = MiscGB.createColorLabel(nColor.getColor());
   colorButton.addActionListener(new
       GeneralColorDialogListener(this,nColor,colorLabel,
-				 "Choose a Node Color"));
+  				 "Choose a Node Color"));
   MiscGB.set(defaultC,0,0,1,1,GridBagConstraints.HORIZONTAL);
   MiscGB.insert(defaultPanel,colorButton,defaultLayout,defaultC);
   MiscGB.set(defaultC,1,0);
@@ -93,7 +93,7 @@ public VisualPropertiesDialog (Frame parentFrame,
   JLabel borderColorLabel = MiscGB.createColorLabel(bColor.getColor());
   borderColorButton.addActionListener(new
       GeneralColorDialogListener(this,bColor,borderColorLabel,
-				 "Choose a Node Border Color"));
+  				 "Choose a Node Border Color"));
   MiscGB.set(defaultC,1,2);
   MiscGB.insert(defaultPanel,borderColorLabel,defaultLayout,defaultC);
 
@@ -105,7 +105,7 @@ public VisualPropertiesDialog (Frame parentFrame,
   JLabel bgColorLabel = MiscGB.createColorLabel(bgColor.getColor());
   bgColorButton.addActionListener(new
       GeneralColorDialogListener(this,bgColor,bgColorLabel,
-				 "Choose a Background Color"));
+  				 "Choose a Background Color"));
   MiscGB.set(defaultC,1,3);
   MiscGB.insert(defaultPanel,bgColorLabel,defaultLayout,defaultC);
 
@@ -204,7 +204,7 @@ public class ApplyAction extends AbstractAction {
 	    o = aMapper.setDefaultValue(VizMapperCategories.NODE_SHAPE, shape);
 	LineType line = (LineType)lineTypeDefault.getIconObject();
 	if(line != null)
-	    o = aMapper.setDefaultValue(VizMapperCategories.EDGE_LINETYPE, null);
+	    o = aMapper.setDefaultValue(VizMapperCategories.EDGE_LINETYPE, line);
 	Integer size = sizeDefault.getInteger();
 	if(size != null) {
 	    o = aMapper.setDefaultValue(VizMapperCategories.NODE_HEIGHT, size);
