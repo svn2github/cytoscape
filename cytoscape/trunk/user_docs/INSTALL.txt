@@ -1,9 +1,9 @@
 ################################################
 # CYTOSCAPE INSTALLATION INSTRUCTIONS          #
-# Cytoscape v. 2.0, July, 2004                 #
+# Cytoscape v. 2.1, Feb., 2005                 #
 # http://www.cytoscape.org                     #
 #                                              # 
-# (c) The Cytoscape Development Team           #
+# (c) The Cytoscape Collaboration              #
 #                                              # 
 ################################################
 
@@ -41,7 +41,7 @@ species such as the yeast S. cerevisiae.
 a compressed archive containing the following files and directories:
 
 INSTALL.txt ............ Quick-start installation instructions (this file)
-Cytoscape2_0Manual.pdf.. Overview and details of Cytoscape functionality
+Cytoscape2_1Manual.pdf.. Overview and details of Cytoscape functionality
 LICENSE.txt ............ The license agreement
 
 cytoscape.jar .......... Main Cytoscape application (Java archive)
@@ -77,10 +77,10 @@ annotation/ ............ Directory containing Gene Ontology database
 ** Obtained from data hosted at http://www.bind.ca/
 
 (2) If not already installed on your computer, download and install
-the Java 2 Runtime Environment, version 1.4.1 or higher.  It can be
+the Java 2 Runtime Environment, version 1.4.2 or higher.  It can be
 found at:
 
-http://java.sun.com/j2se/1.4.1/download.html.
+http://java.sun.com/j2se/1.4.2/download.html.
 
 (3) Launch the application by running "cytoscape.sh" from the command
 line (Linux) or double-clicking "cytoscape.bat" (Windows) or double-
