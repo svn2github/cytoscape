@@ -155,6 +155,7 @@ protected void doInit(CytoscapeObj globalInstance, CyNetwork network, String tit
     mainFrame.setJMenuBar(cyMenus.getMenuBar());
     // load vizmapper after menus are done and graph is available
     loadVizMapper();
+    redrawGraph(false, true);
 
     setInteractivity(true);
 
@@ -256,7 +257,7 @@ protected void updateGraphView() {
     addViewContextMenus();
     view.fitContent();
     view.setZoom(view.getZoom()*0.9);
-    redrawGraph(false, true);
+    //redrawGraph(false, true);
     if (oldDisplay != null){
         this.remove(oldDisplay);
     }
@@ -386,7 +387,8 @@ protected void loadVizMapper() {
     this.vizMapper = new VisualMappingManager(this, calculatorCatalog, vs,
                                               getCytoscapeObj().getLogger());
     this.vizMapUI = new VizMapUI(this.vizMapper, this.mainFrame);
-    vizMapper.setUI(vizMapUI);
+    //make UI a listener on the manager
+    vizMapper.addChangeListener( vizMapUI.getStyleSelector() );
 
     // easy-access visual styles changer
     JToolBar toolBar = getCyMenus().getToolBar();
@@ -519,6 +521,7 @@ public void setNewNetwork( CyNetwork newNetwork ) {
 
     updateGraphView();
     //applyLayout();
+    redrawGraph(false, true);
     updateStatusLabel(0, 0);
 
     //this call forces the window to revalidate itself

@@ -18,6 +18,7 @@ import giny.view.EdgeView;
 import giny.view.Label;
 
 import cytoscape.data.CyNetwork;
+import cytoscape.data.GraphObjAttributes;
 import cytoscape.view.NetworkView;
 import cytoscape.visual.ui.VizMapUI;
 
@@ -48,7 +49,6 @@ public class VisualMappingManager extends SubjectBase {
     CalculatorCatalog catalog;    //catalog of visual styles and calculators
     VisualStyle visualStyle;      //the currently active visual style
     Logger logger;                //for reporting errors
-    VizMapUI vizMapUI;            //the UI, to report visual style changes
 
     //reusable appearance objects
     NodeAppearance myNodeApp = new NodeAppearance();
@@ -70,20 +70,6 @@ public class VisualMappingManager extends SubjectBase {
         }
     }
 
-    /**
-     * This method should be called after creating the user interface
-     * to the vizmapper (which requires this object to be created first).
-     * This is needed when setting a new visual style, to tell the UI
-     * to update to the new style.
-     *
-     * It would be better to set up a listener architecture, and then
-     * change this method to addListener. The UI would then receive
-     * an event when the visual style is changed here.
-     */
-    public void setUI(VizMapUI vizMapUI) {
-        this.vizMapUI = vizMapUI;
-    }
-
 
     public NetworkView getNetworkView() {return networkView;}
 
@@ -96,8 +82,8 @@ public class VisualMappingManager extends SubjectBase {
     public VisualStyle getVisualStyle() {return visualStyle;}
 
     /**
-     * Sets a new visual style, and returns the old style. Also
-     * notifies the UI to update to the new style.
+     * Sets a new visual style, and returns the old style. Also fires
+     * an event to attached listeners.
      *
      * If the argument is null, no change is made, an error message
      * is passed to the logger, and null is returned.
@@ -106,11 +92,6 @@ public class VisualMappingManager extends SubjectBase {
         if (vs != null) {
             VisualStyle tmp = visualStyle;
             visualStyle = vs;
-            // Added by iliana
-            if (vizMapUI != null && vizMapUI.getStyleSelector() != null) {
-              vizMapUI.getStyleSelector().setVisualStyle(vs);
-            }
-            //---
             this.fireStateChanged();
             return tmp;
         } else {
@@ -142,12 +123,6 @@ public class VisualMappingManager extends SubjectBase {
     /**
      * Recalculates and reapplies just the fill color visual attribute
      * to all nodes.
-     *
-     * I suspect this is intended for performance reasons if one only
-     * wants to reset the fill color, but the gain is limited since the
-     * node appearance calculator still recalculates all of the visual
-     * attributes. It would be better to change things to only recalculate
-     * the fill color.
      */
     public void applyNodeFillColor() {
         CyNetwork network = getNetwork();
@@ -188,7 +163,6 @@ public class VisualMappingManager extends SubjectBase {
 
             Label label = nodeView.getLabel();
             label.setFont(myNodeApp.getFont());
-
             //can't set tooltip yet
         }
     }
@@ -216,7 +190,6 @@ public class VisualMappingManager extends SubjectBase {
             Label label = edgeView.getLabel();
             label.setText(myEdgeApp.getLabel());
             label.setFont(myEdgeApp.getFont());
-            //can't set tooltip yet
         }
     }
 
