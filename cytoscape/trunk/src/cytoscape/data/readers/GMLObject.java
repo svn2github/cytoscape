@@ -47,10 +47,20 @@ public class GMLObject {
 
     //-----------------------------------------------------------------
     /**
-     * Constructor for GMLObject.
+     * Constructor for the default GMLObject.
      */
-    public GMLObject() {	
-	GMLToken rootToken = new GMLToken("root", "ROOT", 0);
+    public GMLObject() {
+	//GMLObject("gml"); //why can't we just do this???
+	GMLToken rootToken = new GMLToken("gml", "ROOT", 0);
+	rootPair = new GMLPair(rootToken, 0);
+	LineNumber = 0;
+	scope = 0;
+    }
+    /**
+     * Constructor for a named GMLObject.
+     */
+    public GMLObject(String name) {	
+	GMLToken rootToken = new GMLToken(name, "ROOT", 0);
 	rootPair = new GMLPair(rootToken, 0);
 	LineNumber = 0;
 	scope = 0;
@@ -67,7 +77,21 @@ public class GMLObject {
 	    rootPair.loadString(buf);
 	return buf.toString();
     }
-    /**
+    //-----------------------------------------------------------------
+     /**
+     * Get all concatonated string keys and their object values.
+     * Each key will contain keys from all parent levels of the GML tree.
+     * @param keys Vector of strings to be loaded
+     * @param vals Vector of corresponding objects {Integer, Double, String}
+     * to be loaded
+     */
+    public void flatPairs(Vector keys, Vector vals) {
+	String pre = "";
+	if(rootPair != null)
+	    rootPair.flattenPairs(pre, keys, vals);
+    }
+    //-----------------------------------------------------------------
+   /**
     * Number of GMLPairs in the GMLObject
     * @return values.size()
     */
@@ -83,7 +107,7 @@ public class GMLObject {
      */
     public void read(String fileName) {
 	LinkedList tokenList = new LinkedList();
-	System.out.println("You have choosen to open this file: " + fileName);
+	//System.out.println("You have choosen to open this file: " + fileName);
 
 	rootPair.clear();
 	// read the text file 
@@ -95,7 +119,6 @@ public class GMLObject {
 
 	//System.out.println("lines list done");
 	// slow from here ----->
-
 	while (lines.hasMoreTokens()) {
 	    StringTokenizer tokens = new StringTokenizer(lines.nextToken());
 	    LineNumber++;
@@ -103,7 +126,6 @@ public class GMLObject {
 		tokenList.add(getGMLToken(tokens, lines));
 	}
 	tokenList.add(new GMLToken(0, "EOF", LineNumber));
-
 	// <----- to here
 	//System.out.println("token list done");
 
@@ -142,7 +164,7 @@ public class GMLObject {
      * @param key String for a key found at the GML root level
      * @return GMLObject containing the key values
      */
-    public GMLObject getItems(String key) {
+    public GMLObject getGML(String key) {
 	GMLPair p;
 	GMLObject items = new GMLObject();
 
@@ -162,7 +184,7 @@ public class GMLObject {
      * @param key2 String for a key found at the GML root +1 level
      * @return GMLObject containing a [key1 [key2]+]+ tree
      */
-    public GMLObject getItems(String key1, String key2) {
+    public GMLObject getGML(String key1, String key2) {
 	GMLPair rp, p;
 	GMLObject items = new GMLObject();
 	Vector rps = new Vector();
@@ -184,45 +206,54 @@ public class GMLObject {
     }
     /**
      * Get the values {Integer, Double, String} associated with the string "key"
-     * @return Vector of values for "key". Will be empty if "key" does not exist at the root level
+     * @return Vector of values for "key". Will be empty if "key" does not exist 
+     * at the root level
      */
     public Vector getVector(String key) {
-	GMLObject items = getItems(key) ;
+	GMLObject items = getGML(key) ;
 	Vector v = new Vector();
 	Iterator ri = items.rootPair.values.iterator();
 	while(ri.hasNext()) {
 	    GMLPair p  = (GMLPair) ri.next();
 	    GMLPair vp = (GMLPair) p.values.firstElement();
-	    if(vp.key.GMLtype == "integer")     v.add(new Integer(vp.key.GMLinteger));
-	    else if(vp.key.GMLtype == "double") v.add(new Double(vp.key.GMLdouble));
+	    //if(vp.key.GMLtype == "integer")     v.add(new Integer(vp.key.GMLinteger));
+	    //else if(vp.key.GMLtype == "double") v.add(new Double(vp.key.GMLdouble));
+	    if(vp.key.GMLtype == "integer")     v.add(vp.key.GMLinteger);
+	    else if(vp.key.GMLtype == "double") v.add(vp.key.GMLdouble);
+
 	    else                                v.add(vp.key.GMLstring);
 	}
 	return v;
     }
     /**
      * Get the values {Integer, Double, String} associated with the string "key1" and "key2"
-     * @return Vector of values for "key". Will be empty if "key" does not exist at the root level
+     * @return Vector of values for "key". Will be empty if "key" does not exist 
+     * at the root level
      */
     public Vector getVector(String key1, String key2) {
-	GMLObject items = getItems(key1, key2) ;
+	GMLObject items = getGML(key1, key2) ;
 	Vector v = new Vector();
 	Iterator ri = items.rootPair.values.iterator();
 	while(ri.hasNext()) {
 	    GMLPair p  = (GMLPair) ri.next();
 	    GMLPair vp = (GMLPair) p.values.firstElement();
 
-	    if(vp.key.GMLtype == "integer")     v.add(new Integer(vp.key.GMLinteger));
-	    else if(vp.key.GMLtype == "double") v.add(new Double(vp.key.GMLdouble));
+	    //if(vp.key.GMLtype == "integer")     v.add(new Integer(vp.key.GMLinteger));
+	    //else if(vp.key.GMLtype == "double") v.add(new Double(vp.key.GMLdouble));
+	    if(vp.key.GMLtype == "integer")     v.add(vp.key.GMLinteger);
+	    else if(vp.key.GMLtype == "double") v.add(vp.key.GMLdouble);
 	    else                                v.add(vp.key.GMLstring);
 	}
 	return v;
     }
-    //---------------------------------
-    // polymorphic value class
+
+    //------------------------------------------------------------
+    // polymorphic token class
+    //------------------------------------------------------------
     protected class GMLToken {
-	protected int    GMLinteger;
-	protected double GMLdouble;
-	protected String GMLstring;
+	protected Integer GMLinteger;
+	protected Double  GMLdouble;
+	protected String  GMLstring;
 
 	//{"double", "integer", "key", "string", "EOF", "comment"}
 	protected String GMLtype;
@@ -231,22 +262,30 @@ public class GMLObject {
 	protected int    LineFound;
 
 	public GMLToken() {
-	    GMLinteger = 0;
+	    GMLinteger = new Integer(0);
+	    GMLdouble  = new Double(0.0);
+	    GMLstring  = new String();
 	    GMLtype = "empty";
 	    LineFound = 0;
 	}
 	public GMLToken(int i, String type, int line) {
-	    GMLinteger = i;
+	    GMLinteger = new Integer(i);
+	    GMLdouble  = new Double(0.0);
+	    GMLstring  = new String();
 	    GMLtype = type;
 	    LineFound = line;
 	}
 	public GMLToken(double i, String type, int line) {
-	    GMLdouble = i;
+	    GMLinteger = new Integer(0);
+	    GMLdouble  = new Double(i);
+	    GMLstring  = new String();
 	    GMLtype = type;
 	    LineFound = line;
 	}
 	public GMLToken(String i, String type, int line) {
-	    GMLstring = i;
+	    GMLinteger = new Integer(0);
+	    GMLdouble = new Double(0.0);
+	    GMLstring = new String(i);
 	    GMLtype = type;
 	    LineFound = line;
 	}
@@ -254,30 +293,15 @@ public class GMLObject {
 	    return GMLtype;
 	}
 	public String toString() {
-	    if(GMLtype == "integer")
-		return Integer.toString(GMLinteger);
-	    else if(GMLtype == "double")
-		return Double.toString(GMLdouble);
-	    else if(GMLtype == "string")
-		return GMLstring;
-	    else
-		return GMLstring;
+	    return( this.value().toString() );
 	}
-	public void print(String pre) {
-	    if(GMLtype == "key")
-		System.out.print(pre + GMLstring);
-	    else if(GMLtype == "integer")
-		System.out.println(pre + GMLinteger);
+	public Object value() {
+	    if(GMLtype == "integer")
+		return(GMLinteger);
 	    else if(GMLtype == "double")
-		System.out.println(pre + GMLdouble);
-	    else if(GMLtype == "GML_L_BRACKET")
-		System.out.println(pre + GMLstring);
-	    else if(GMLtype == "GML_R_BRACKET")
-		System.out.println(pre + GMLstring);
-	    else if(GMLtype == "string")
-		System.out.println(pre + GMLstring);
-	    //else { // better be the ROOT or comment value
-	    //}
+		return(GMLdouble);
+	    else 
+		return(GMLstring);
 	}
     }
 
@@ -345,8 +369,37 @@ public class GMLObject {
 	    else
 		buf.append("\n");
 	}
-    }
 
+ 	//--------------------------------------------
+	protected void flattenPairs(String pre, Vector keys, Vector vals) {
+	    GMLPair pairValue;
+	    StringBuffer newpre = new StringBuffer(pre);
+
+	    // if a the key GMLtoken is actually a value 
+	    if ( (key.GMLtype == "integer") ||
+		 (key.GMLtype == "double") || 
+		 (key.GMLtype == "string") 
+		 ) {
+		//System.out.println("VALUES SIZE " + values.size());
+		keys.add(pre);
+		vals.add(key.value());
+	    }
+            else {
+		if( (key.GMLtype == "key") || (key.GMLtype =="ROOT") )
+		    if(pre.length()>0) 
+			newpre.append("." + key.toString());
+		    else
+			newpre.append(key.toString());
+	    }
+	    if(values.size()>0) {
+		Iterator vi = values.iterator();
+		while(vi.hasNext()) {
+		    pairValue = (GMLPair) vi.next();
+		    pairValue.flattenPairs(newpre.toString(), keys, vals);
+		}
+	    }
+	}
+    }
 
     //-----------------------------------------------------------------
     protected void getGMLPairs(LinkedList tokens, GMLPair thisPair) {
@@ -420,9 +473,9 @@ public class GMLObject {
 
     //-----------------------------------------------------------------
     protected GMLToken getGMLToken(StringTokenizer tokens, StringTokenizer lines) {
-	double doubleValue = 0.0;
-	int    intValue    = 0; 
-	int    initLine    = LineNumber;
+	double  doubleValue = 0.0;
+	int     intValue    = 0; 
+	int     initLine    = LineNumber;
 
 	String more, clipped;
 	//String gmlError = "";
