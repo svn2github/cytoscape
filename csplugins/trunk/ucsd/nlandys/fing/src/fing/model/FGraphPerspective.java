@@ -798,10 +798,16 @@ class FGraphPerspective implements GraphPerspective
   public java.util.List getAdjacentEdgesList(Node node,
                                              boolean undirected,
                                              boolean incoming,
-                                             boolean outgoing)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+                                             boolean outgoing) {
+    if (node.getRootGraph() != m_root) return null;
+    final int[] adjEdgeInx = getAdjacentEdgeIndicesArray
+      (node.getRootGraphIndex(), undirected, incoming, outgoing);
+    if (adjEdgeInx == null) return null;
+    final java.util.ArrayList returnThis =
+      new java.util.ArrayList(adjEdgeInx.length);
+    for (int i = 0; i < adjEdgeInx.length; i++)
+      returnThis.add(getEdge(adjEdgeInx[i]));
+    return returnThis; }
 
   public int[] getAdjacentEdgeIndicesArray(int nodeInx,
                                            boolean undirected,
