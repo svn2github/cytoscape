@@ -18,6 +18,7 @@ public class CreateAddNetwork extends CytoscapeAction {
   public CreateAddNetwork ( ImageIcon icon ) {
     super( "Network +/-", icon );
     setPreferredMenu( "Filters" );
+    setAcceleratorCombo( java.awt.event.KeyEvent.VK_F8, 0) ;
   }
 
   public void actionPerformed ( ActionEvent e ) {

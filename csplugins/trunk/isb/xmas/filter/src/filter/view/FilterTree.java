@@ -173,9 +173,9 @@ public class FilterTree extends JTree implements Filter {
   public Object clone () {
 
     FilterNode new_root = ( FilterNode )root.clone();
-    Enumeration enum = root.children();
-    while ( enum.hasMoreElements() ) {
-      FilterNode child = ( FilterNode )enum.nextElement();
+    Enumeration enm = root.children();
+    while ( enm.hasMoreElements() ) {
+      FilterNode child = ( FilterNode )enm.nextElement();
       FilterNode new_child = ( FilterNode )child.clone();
       new_root.add( new_child );
       cloneChildren( child, new_child );
@@ -184,9 +184,9 @@ public class FilterTree extends JTree implements Filter {
   }
 
   private void  cloneChildren ( FilterNode parent, FilterNode new_parent ) {
-    Enumeration enum = parent.children();
-    while ( enum.hasMoreElements() ) {
-      FilterNode child = ( FilterNode )enum.nextElement();
+    Enumeration enm = parent.children();
+    while ( enm.hasMoreElements() ) {
+      FilterNode child = ( FilterNode )enm.nextElement();
       FilterNode new_child = ( FilterNode )child.clone();
       new_parent.add( new_child );
       cloneChildren( child, new_child );

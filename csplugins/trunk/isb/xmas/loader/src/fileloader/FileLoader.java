@@ -62,7 +62,7 @@ public class FileLoader {
     
   }
 
-  private static boolean loadRow ( String[] row, Vector titles, boolean is_nodes ) {
+  public static boolean loadRow ( String[] row, Vector titles, boolean is_nodes ) {
 
     if ( is_nodes ) {
       CyNode node = null;
@@ -115,7 +115,11 @@ public class FileLoader {
           // not a number, leave as string
           attribute = row[i];
         }
-        Cytoscape.setEdgeAttributeValue( edge, (String)titles.get( i ), attribute );
+        try {
+          Cytoscape.setEdgeAttributeValue( edge, (String)titles.get( i ), attribute );
+        } catch ( Exception E ) {
+          Cytoscape.setEdgeAttributeValue( edge, (String)titles.get( i ), attribute.toString() );
+        }
       }
       return true;
       

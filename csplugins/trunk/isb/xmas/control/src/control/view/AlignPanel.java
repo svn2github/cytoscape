@@ -31,9 +31,10 @@ public class AlignPanel extends JPanel {
     VAlignBottom vab = new VAlignBottom( window, vabi );
 
     JPanel h_panel = new JPanel();
-    h_panel.add( createJButton( har, "Horizontal Right") );
+    h_panel.add( createJButton( hal, "Horizontal Left") );   
     h_panel.add( createJButton( hac, "Horizontal Center") );
-    h_panel.add( createJButton( hal, "Horizontal Left") );
+    h_panel.add( createJButton( har, "Horizontal Right") );
+ 
     JPanel v_panel = new JPanel();
     v_panel.add( createJButton( vat, "Vertical Top") );
     v_panel.add( createJButton( vac, "Vertical Center") );
@@ -43,7 +44,7 @@ public class AlignPanel extends JPanel {
     add( h_panel, BorderLayout.EAST );
     add( v_panel, BorderLayout.WEST );
 
-    setBorder( new TitledBorder( "Align Objects" ) );
+    setBorder( new TitledBorder( "Align Nodes" ) );
 
   }
 

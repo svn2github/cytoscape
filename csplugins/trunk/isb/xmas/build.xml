@@ -47,7 +47,6 @@
     <echo message="   all        -> creates all the jars"/>
     <echo message="   sbw        -> Compile the SBW plugin"/>
     <echo message="   control    -> Compile the Control plugin"/>
-    <echo message="   yfiles     -> Compile the yFiles plugin"/>
     <echo message="   datamap    -> Compile the DataPropertyMap plugin"/>
     <echo message="   filter     -> Compile the Filter plugin"/>
     <echo message="   integration-> Compile the Integration Test plugin"/>

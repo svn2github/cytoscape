@@ -43,7 +43,7 @@ public class DistPanel extends JPanel {
     add( h_panel, BorderLayout.EAST );
     add( v_panel, BorderLayout.WEST );
 
-    setBorder( new TitledBorder( "Dist Objects" ) );
+    setBorder( new TitledBorder( "Dist Nodes" ) );
 
   }
 

@@ -61,12 +61,15 @@ public class NetworkManagement
     add_to_panel.add( networkBox, BorderLayout.CENTER );
     add_to_panel.setBorder( new TitledBorder("") );
 
+    JPanel add_remove_panel = new JPanel();
     ButtonGroup add_remove = new ButtonGroup();
     addNodes = new JRadioButton( "Add Nodes" );
     addNodes.setSelected( true );
     removeNodes = new JRadioButton( "RemoveNodes" );
     add_remove.add( addNodes );
     add_remove.add( removeNodes );
+    add_remove_panel.add( addNodes );
+    add_remove_panel.add( removeNodes );
 
 
     JPanel create_new_panel = new JPanel();
@@ -86,7 +89,11 @@ public class NetworkManagement
     group.add( create );
 
 
+    JPanel tab_panel = new JPanel();
+    tab_panel.setLayout( new BorderLayout() );
     JTabbedPane tabs = new JTabbedPane();
+    tab_panel.add( tabs, BorderLayout.CENTER );
+    tab_panel.add( add_remove_panel, BorderLayout.SOUTH );
 
     JPanel filter = new JPanel();
     filter.setLayout( new BorderLayout() );
@@ -127,7 +134,7 @@ public class NetworkManagement
     file.add( fileApply, BorderLayout.SOUTH );
     tabs.addTab("File", file );
 
-    main_panel.add( tabs, BorderLayout.SOUTH );
+    main_panel.add( tab_panel, BorderLayout.SOUTH );
 
 
     setContentPane( main_panel );
@@ -166,12 +173,25 @@ public class NetworkManagement
     
 
   protected void getMatchingNodes ( String function ) {
-
+    Iterator edges_i = Cytoscape.getRootGraph().edgesList().iterator();
     Iterator nodes_i = Cytoscape.getRootGraph().nodesList().iterator();
     Set nodes = new HashSet();
+    Set edges = new HashSet();
     CyNode node;
+    CyEdge edge;
     if ( function.equals("filter") && filterListPanel.getSelectedFilter() != null ) {
       Filter filter = filterListPanel.getSelectedFilter();
+      while ( edges_i.hasNext() ) {
+        edge = ( CyEdge )edges_i.next();
+        try {
+          if ( filter.passesFilter(edge) ) {
+            edges.add( edge );
+          }
+        } catch(StackOverflowError soe){
+          return ;
+        }
+      }
+
       while ( nodes_i.hasNext() ) {
         node = ( CyNode )nodes_i.next();
         try {
@@ -222,29 +242,34 @@ public class NetworkManagement
       System.out.println( node_array[i].getIdentifier() );
     } 
 
-    operateOnNetwork( new ArrayList( nodes ), true );
+    operateOnNetwork( new ArrayList( nodes ), true, new ArrayList( edges )  );
 
   }
 
-  protected void operateOnNetwork ( List nodes, boolean restore_incident_edges )  {
+  protected void operateOnNetwork ( List nodes, boolean restore_incident_edges, List edges )  {
 
     if ( append.isSelected() && addNodes.isSelected() ) {
       String network_id = ( String )titleIdMap.get( networkBox.getSelectedItem() );
       if ( network_id == null && networkBox.getSelectedItem().equals( "Current Network" ) ) {
         Cytoscape.getCurrentNetwork().restoreNodes( nodes, restore_incident_edges );
+        Cytoscape.getCurrentNetwork().restoreEdges( edges );
       }
       Cytoscape.getNetwork( network_id ).restoreNodes( nodes, restore_incident_edges );
+      Cytoscape.getNetwork( network_id ).restoreEdges( edges );
     } else if ( append.isSelected() && removeNodes.isSelected() ) {
       String network_id = ( String )titleIdMap.get( networkBox.getSelectedItem() );
       if ( network_id == null && networkBox.getSelectedItem().equals( "Current Network" ) ) {
         Cytoscape.getCurrentNetwork().hideNodes( nodes );
+        Cytoscape.getCurrentNetwork().hideEdges( edges );
       }
       Cytoscape.getNetwork( network_id ).hideNodes( nodes );
+      Cytoscape.getNetwork( network_id ).hideEdges( edges );
     } else {
       // create
       String network_title = newNetworkField.getText();
       CyNetwork network = Cytoscape.createNetwork( network_title );
       network.restoreNodes( nodes, restore_incident_edges );
+      network.restoreEdges( edges );
     }
     
   }

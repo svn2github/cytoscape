@@ -18,6 +18,7 @@ public class FilterDataView extends CytoscapeAction {
   public FilterDataView ( ImageIcon icon ) {
     super( "Attributes Browser if passed Filter", icon );
     setPreferredMenu( "Data" );
+    setAcceleratorCombo( java.awt.event.KeyEvent.VK_F5, ActionEvent.CTRL_MASK) ;
   }
 
   public void actionPerformed ( ActionEvent e ) {

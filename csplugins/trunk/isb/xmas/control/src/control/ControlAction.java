@@ -26,7 +26,7 @@ public class ControlAction extends CytoscapeAction {
 
   public void actionPerformed (ActionEvent e) {
     if ( frame == null ) {
-      frame = new JFrame( "Align" );
+      frame = new JFrame( "Align and Distribute" );
 
       JPanel panel = new JPanel();
       panel.setLayout( new BorderLayout() );

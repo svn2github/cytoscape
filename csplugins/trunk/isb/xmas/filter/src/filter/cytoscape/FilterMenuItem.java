@@ -21,7 +21,7 @@ public class FilterMenuItem extends CytoscapeAction {
     this.window = window;
     this.csfilter = csfilter;
     setPreferredMenu( "Filters" );
-    setAcceleratorCombo( java.awt.event.KeyEvent.VK_A, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK );
+    setAcceleratorCombo( java.awt.event.KeyEvent.VK_F7, 0 );
   }
 
   public FilterUsePanel getFilterUsePanel () {

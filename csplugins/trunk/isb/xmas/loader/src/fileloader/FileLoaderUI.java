@@ -258,11 +258,11 @@ public class FileLoaderUI
       ex.printStackTrace();
     }
 
-    if ( titles.size() < data.size() ) {
-      for ( int i = titles.size(); i < data.size(); ++i ) {
-        titles.add( file.toString()+" col "+i );
-      }
-    }
+  //   if ( titles.size() < data.size() ) {
+//       for ( int i = titles.size(); i < data.size(); ++i ) {
+//         titles.add( file.toString()+" col "+i );
+//       }
+//     }
 
     previewModel.setDataVector( data, titles );
 

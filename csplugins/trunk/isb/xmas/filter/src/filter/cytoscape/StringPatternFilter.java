@@ -242,8 +242,7 @@ public class StringPatternFilter
   }
 
   public void setClassType(String classString){
-    System.out.println( "Class String: "+classString );
-
+    
     if(classString == NODE || classString.equals( "Node" ) ){
       classType = NODE_CLASS;
     }

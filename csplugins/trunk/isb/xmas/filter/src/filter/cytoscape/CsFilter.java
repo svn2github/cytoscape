@@ -104,44 +104,44 @@ public class CsFilter
     FilterDataView fdv = new FilterDataView( null );
     window.getCyMenus().addCytoscapeAction( fdv );
 
-    JMenuItem spew = new JMenuItem( new AbstractAction( "spew" ) {
-         public void actionPerformed ( ActionEvent e ) {
-           // Do this in the GUI Event Dispatch thread...
-           SwingUtilities.invokeLater( new Runnable() {
-               public void run() {
-                 Set filters = FilterManager.defaultManager().getFilters( true );
-                 Iterator i = filters.iterator();
-                 int count = 0;
-                 while ( i.hasNext() ) {
-                   System.out.println( "Filter: "+count+" "+
-                                       FilterManager.defaultManager().getFilter( ( String )i.next() ).output() );
-                   count++;
-                 }
+  //   JMenuItem spew = new JMenuItem( new AbstractAction( "spew" ) {
+//          public void actionPerformed ( ActionEvent e ) {
+//            // Do this in the GUI Event Dispatch thread...
+//            SwingUtilities.invokeLater( new Runnable() {
+//                public void run() {
+//                  Set filters = FilterManager.defaultManager().getFilters( true );
+//                  Iterator i = filters.iterator();
+//                  int count = 0;
+//                  while ( i.hasNext() ) {
+//                    System.out.println( "Filter: "+count+" "+
+//                                        FilterManager.defaultManager().getFilter( ( String )i.next() ).output() );
+//                    count++;
+//                  }
                  
 
-               } } ); } } );
-    window.getCyMenus().getMenuBar().getMenu( "Filters" ).add( spew );
+//                } } ); } } );
+//     window.getCyMenus().getMenuBar().getMenu( "Filters" ).add( spew );
 
 
-     JMenuItem make = new JMenuItem( new AbstractAction( "make" ) {
-         public void actionPerformed ( ActionEvent e ) {
-           // Do this in the GUI Event Dispatch thread...
-           SwingUtilities.invokeLater( new Runnable() {
-               public void run() {
-                 FilterManager.defaultManager().createFilterFromString( "filter.cytoscape.StringPatternFilter,Edge,canonicalName,hello,hello" );
-                 FilterManager.defaultManager().createFilterFromString( "filter.cytoscape.StringPatternFilter,Node,canonicalName,2134324,Regex: 32" );
-                 FilterManager.defaultManager().createFilterFromString( "filter.cytoscape.StringPatternFilter,Node,canonicalName,YD*4*W,Custom Filter from typing it in" );
-                 FilterManager.defaultManager().createFilterFromString( "filter.cytoscape.NumericAttributeFilter,<,Node,gal1RG.sigexp,0.02,LT 2" );
-                 FilterManager.defaultManager().createFilterFromString( "filter.cytoscape.NumericAttributeFilter,=,Node,gal1RG.sigexp,0.02,EQ 2" );
-                 FilterManager.defaultManager().createFilterFromString( "filter.cytoscape.NodeTopologyFilter,3,4,hello,Topo1" );
-                 FilterManager.defaultManager().createFilterFromString( "filter.cytoscape.BooleanMetaFilter,LT 2:Custom Filter from typing it in:Topology Filter mine,AT LEAST ONE,Boolean Filter test1" );
+//      JMenuItem make = new JMenuItem( new AbstractAction( "make" ) {
+//          public void actionPerformed ( ActionEvent e ) {
+//            // Do this in the GUI Event Dispatch thread...
+//            SwingUtilities.invokeLater( new Runnable() {
+//                public void run() {
+//                  FilterManager.defaultManager().createFilterFromString( "filter.cytoscape.StringPatternFilter,Edge,canonicalName,hello,hello" );
+//                  FilterManager.defaultManager().createFilterFromString( "filter.cytoscape.StringPatternFilter,Node,canonicalName,2134324,Regex: 32" );
+//                  FilterManager.defaultManager().createFilterFromString( "filter.cytoscape.StringPatternFilter,Node,canonicalName,YD*4*W,Custom Filter from typing it in" );
+//                  FilterManager.defaultManager().createFilterFromString( "filter.cytoscape.NumericAttributeFilter,<,Node,gal1RG.sigexp,0.02,LT 2" );
+//                  FilterManager.defaultManager().createFilterFromString( "filter.cytoscape.NumericAttributeFilter,=,Node,gal1RG.sigexp,0.02,EQ 2" );
+//                  FilterManager.defaultManager().createFilterFromString( "filter.cytoscape.NodeTopologyFilter,3,4,hello,Topo1" );
+//                  FilterManager.defaultManager().createFilterFromString( "filter.cytoscape.BooleanMetaFilter,LT 2:Custom Filter from typing it in:Topology Filter mine,AT LEAST ONE,Boolean Filter test1" );
 
 
                 
-           } } ); } } );
+//            } } ); } } );
      
     
-     window.getCyMenus().getMenuBar().getMenu( "Filters" ).add( make );
+//      window.getCyMenus().getMenuBar().getMenu( "Filters" ).add( make );
 
      
      //FilterManager.defaultManager().addEditor( new DefaultFilterEditor() );
@@ -150,12 +150,15 @@ public class CsFilter
      //FilterManager.defaultManager().addEditor( new CsEdgeTypeFilterEditor( window.getNetwork() ) );
      //FilterManager.defaultManager().addEditor( new CsNodeInteractionFilterEditor( window.getNetwork() ) );
      //FilterManager.defaultManager().addEditor( new CsAttributeValueFilterEditor( window.getNetwork() ) );
-				FilterManager.defaultManager().addEditor( new NumericAttributeFilterEditor( window ) );
-				FilterManager.defaultManager().addEditor( new StringPatternFilterEditor (window)); 
-			 FilterManager.defaultManager().addEditor( new InteractionFilterEditor( window,FilterManager.defaultManager().getFilters(false)));	
-				FilterManager.defaultManager().addEditor( new NodeTopologyFilterEditor(window,FilterManager.defaultManager().getFilters(false))); 
-				FilterManager.defaultManager().addEditor( new BooleanMetaFilterEditor (FilterManager.defaultManager().getFilters(false)));
-		}
+		
+    FilterManager.defaultManager().addEditor( new InteractionFilterEditor( window,FilterManager.defaultManager().getFilters(false)));	
+    FilterManager.defaultManager().addEditor( new NodeTopologyFilterEditor(window,FilterManager.defaultManager().getFilters(false))); 
+    FilterManager.defaultManager().addEditor( new BooleanMetaFilterEditor (FilterManager.defaultManager().getFilters(false)));
+    FilterManager.defaultManager().addEditor( new NumericAttributeFilterEditor( window ) );
+    FilterManager.defaultManager().addEditor( new StringPatternFilterEditor (window)); 
+
+
+  }
 
   public String describe () {
     return "New Filters";

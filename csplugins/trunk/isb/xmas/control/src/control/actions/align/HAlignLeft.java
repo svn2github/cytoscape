@@ -8,24 +8,27 @@ import cytoscape.data.*;
 import giny.view.*;
 import giny.model.*;
 
+import cytoscape.Cytoscape;
+import cytoscape.CyNetwork;
+import cytoscape.view.CyNetworkView;
+
 import java.util.*;
 import java.awt.event.*;
 import javax.swing.*;
 
 public class HAlignLeft extends CytoscapeAction {
 
- protected CyWindow window;
-
+ 
   public HAlignLeft ( CyWindow window, ImageIcon icon ) {
     super( "", icon );
-    this.window = window;
   }
 
   public void actionPerformed ( ActionEvent e ) {
    
-    GraphView view = window.getView();
+    GraphView view = Cytoscape.getCurrentNetworkView();
     
-    double min, max;
+    double min = Double.MAX_VALUE; 
+    double max = Double.MIN_VALUE;
     double h, w;
     double value;
     NodeView node_view;
@@ -36,12 +39,6 @@ public class HAlignLeft extends CytoscapeAction {
       // cancel if no selected nodes
       return;
     }
-
-    node_view = ( NodeView )sel_nodes.next();
-    w = node_view.getWidth();
-    h = node_view.getHeight();
-    min = node_view.getXPosition();
-    max = min; 
 
     while ( sel_nodes.hasNext() ) {
       node_view = ( NodeView )sel_nodes.next();
