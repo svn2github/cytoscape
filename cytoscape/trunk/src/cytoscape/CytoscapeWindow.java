@@ -125,6 +125,8 @@ public class CytoscapeWindow extends JPanel implements FilterDialogClient, Graph
   protected ViewMode currentPopupMode = nodeAttributesPopupMode;
   protected boolean viewModesInstalled = false;
 
+  protected String defaultSpecies;
+
   protected BioDataServer bioDataServer;
   protected String bioDataServerName;
 
@@ -553,6 +555,11 @@ protected void assignSpeciesAttributeToAllNodes ()
                         getSpecies (nodes [i]));
 
 } // assignSpeciesAttributeToAllNodes
+//------------------------------------------------------------------------------
+public void setDefaultSpecies (String newValue)
+{
+  defaultSpecies = newValue;
+}
 //------------------------------------------------------------------------------
 public String getDefaultSpecies ()
 {
