@@ -514,6 +514,30 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("not in degree 3");
     if (root.getInDegree(nodeInx[0]) != 2)
       throw new IllegalStateException("not in degree 2");
+
+    // getInDegree(Node, boolean).
+    if (root.getInDegree(root2Node, true) != -1)
+      throw new IllegalStateException("not in degree -1 for other node");
+    if (root.getInDegree(root.getNode(nodeInx[1]), false) != 1)
+      throw new IllegalStateException("not in degree 1");
+    if (root.getInDegree(root.getNode(nodeInx[2]), false) != 2)
+      throw new IllegalStateException("not in degree 2");
+    if (root.getInDegree(root.getNode(nodeInx[2]), true) != 3)
+      throw new IllegalStateException("not in degree 3");
+
+    // getInDegree(int, boolean).
+    if (root.getInDegree(minNodeInx - 1, false) != -1 ||
+        root.getInDegree(0, true) != -1 ||
+        root.getInDegree(99, false) != -1)
+      throw new IllegalStateException("not in degree -1");
+    if (root.getInDegree(nodeInx[0], true) != 2)
+      throw new IllegalStateException("not in degree 2");
+    if (root.getInDegree(nodeInx[0], false) != 2)
+      throw new IllegalStateException("not in degree 2");
+    if (root.getInDegree(nodeInx[4], true) != 0)
+      throw new IllegalStateException("not in degree 0");
+    if (root.getInDegree(nodeInx[1], false) != 1)
+      throw new IllegalStateException("not in degree 1");
   }
 
 }
