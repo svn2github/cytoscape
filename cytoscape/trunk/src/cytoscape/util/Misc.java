@@ -62,9 +62,15 @@ public static Color parseRGBText (String text)
     }  
 
 } // parseRGBText
+//------------------------------------------------------------------------------
+public static String getRGBText(Color color){
+    Integer red = new Integer(color.getRed());
+    Integer green = new Integer (color.getGreen());
+    Integer blue = new Integer(color.getBlue());
+    return new String(red.toString() + "," + green.toString() + "," + blue.toString());
+
+}//getRGBText
 //--------------------------------------------------------------------------------------
-
-
 public static Arrow parseArrowText (String text)
 {
   StringTokenizer strtok = new StringTokenizer (text, ",");
@@ -104,6 +110,21 @@ public static Arrow parseArrowText (String text)
       return Arrow.NONE;
 } // parseArrowText
 
+public static String getArrowText(Arrow arrow){
+    
+    byte arrowType = arrow.getType();
+    
+    if(arrowType == Arrow.DELTA_TYPE){return "delta";}
+    if(arrowType == Arrow.STANDARD_TYPE){return "standard";}
+    if(arrowType == Arrow.DIAMOND_TYPE){return "diamond";}
+    if(arrowType == Arrow.SHORT_TYPE){return "short";}
+    if(arrowType == Arrow.WHITE_DELTA_TYPE){return "white_delta";}
+    if(arrowType == Arrow.WHITE_DIAMOND_TYPE){return "white_diamond";}
+    if(arrowType == Arrow.NONE_TYPE){return "none";}
+    if(arrow.getCustomName() != null){return arrow.getCustomName();}
+    
+    return "none";
+}//getArrowText
 
 public static LineType parseLineTypeText (String text)
 {
@@ -144,10 +165,29 @@ public static LineType parseLineTypeText (String text)
       return LineType.LINE_1;
 } // parseLineTypeText
 
+public static String getLineTypeText(LineType lineType){
+
+    if(lineType.equals(LineType.DASHED_1)){return "dashed1";}
+    if(lineType.equals(LineType.DASHED_2)){return "dashed2";}
+    if(lineType.equals(LineType.DASHED_3)){return "dashed3";}
+    if(lineType.equals(LineType.DASHED_4)){return "dashed4";}
+    if(lineType.equals(LineType.DASHED_5)){return "dashed5";}
+    if(lineType.equals(LineType.LINE_1)){return "line1";}
+    if(lineType.equals(LineType.LINE_2)){return "line2";}
+    if(lineType.equals(LineType.LINE_3)){return "line3";}
+    if(lineType.equals(LineType.LINE_4)){return "line4";}
+    if(lineType.equals(LineType.LINE_5)){return "line5";}
+    if(lineType.equals(LineType.LINE_6)){return "line6";}
+    if(lineType.equals(LineType.LINE_7)){return "line7";}
+    
+    return "line1";
+}//getLineTypeText
+
 
 public static Byte parseNodeShapeTextIntoByte (String text) {
     return new Byte(parseNodeShapeText(text));
 }
+
 
 public static byte parseNodeShapeText (String text)
 {
@@ -185,5 +225,21 @@ public static byte parseNodeShapeText (String text)
   else
       return ShapeNodeRealizer.RECT;
 } // parseNodeShapeText
+
+public static String getNodeShapeText(byte shape){
+    
+    if(shape == ShapeNodeRealizer.RECT){return "rect";}
+    if(shape == ShapeNodeRealizer.ROUND_RECT){return "roundrect";}
+    if(shape == ShapeNodeRealizer.RECT_3D){return "rect3d";}
+    if(shape == ShapeNodeRealizer.TRAPEZOID){return "trapezoid";}
+    if(shape == ShapeNodeRealizer.TRAPEZOID_2){return "trapezoid2";}
+    if(shape == ShapeNodeRealizer.TRIANGLE){return "triangle";}
+    if(shape == ShapeNodeRealizer.PARALLELOGRAM){return "parallelogram";}
+    if(shape == ShapeNodeRealizer.ELLIPSE){return "ellipse";}
+    if(shape == ShapeNodeRealizer.HEXAGON){return "hexagon";}
+    if(shape == ShapeNodeRealizer.OCTAGON){return "octagon";}
+    
+    return "rect";
+}//getNodeShapeText
 
 }
