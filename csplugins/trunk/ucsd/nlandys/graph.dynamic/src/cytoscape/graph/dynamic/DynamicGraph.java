@@ -17,7 +17,8 @@ public interface DynamicGraph
    * methods on an invalid enumeration will result in undefined behavior
    * of that enumeration.  Enumerating through a graph's nodes will
    * never have any effect on the graph.
-   * @return an enumeration over all nodes currently in this graph.
+   * @return an enumeration over all nodes currently in this graph; null
+   *   is never returned.
    */
   public IntEnumerator nodes();
 
@@ -30,7 +31,8 @@ public interface DynamicGraph
    * methods on an invalid enumeration will result in undefined behavior
    * of that enumeration.  Enumerating through a graph's edges will
    * never have any effect on the graph.
-   * @return an enumeration over all edges currently in this graph.
+   * @return an enumeration over all edges currently in this graph; null
+   *   is never returned.
    */
   public IntEnumerator edges();
 
@@ -92,8 +94,8 @@ public interface DynamicGraph
   /**
    * Determines whether or not a node exists in this graph.
    * Returns true if and only if the node specified exists.
-   * @param node the [potential] node in this graph whose existence we're
-   *   querying.
+   * @param node the [potential existing] node in this graph whose existence
+   *   we're querying.
    * @return the existence of specified node in this graph.
    * @exception IllegalArgumentException if node is not positive.
    */
@@ -102,18 +104,72 @@ public interface DynamicGraph
   /**
    * Determines whether or not an edge exists in this graph.
    * Returns true if and only if the edge specified exists.
-   * @param edge the [potential] edge in this graph whose existence we're
-   *   querying.
+   * @param edge the [potential existing] edge in this graph whose existence
+   *   we're querying.
    * @return the existence of specified edge in this graph.
    * @exception IllegalArgumentException if edge is not positive.
    */
   public boolean containsEdge(int edge);
-  // Throws IllegalArgumentException.
+
+  /**
+   * Returns an enumeration of edges adjacent to a node.
+   * The three boolean input parameters define what is meant by "adjacent
+   * edge".  Notice that the three boolean input parameters define three
+   * disjoint sets of edges.  Notice also that if all three boolean input
+   * parameters are false, then an "adjacent edge" cannot possibly be in
+   * the returned enumeration.
+   * @param node the node in this graph whose adjacent edges we're seeking.
+   * @param undirected all undirected edges touching the specified node
+   *   are included in the returned enumeration if this value is true;
+   *   otherwise, not a single undirected edge is included in the returned
+   *   enumeration.
+   * @param incoming all directed edges whose target is the node specified
+   *   are included in the returned enumeration if this value is true;
+   *   otherwise, not a single such edge is included in the returned
+   *   enumeration.
+   * @param outgoing all directed edges whose source is the node specified
+   *   are included in the returned enumeration if ths value is true;
+   *   otherwise, not a single such edge is included in the returned
+   *   enumeration.
+   * @return an enumeration of edges adjacent to the node specified
+   *   or null if specified node does not exist in this graph.
+   * @exception IllegalArgumentException if node is not positive.
+   */
   public IntEnumerator adjacentEdges(int node, boolean undirected,
                                      boolean incoming, boolean outgoing);
-  // Returns -1 if edge specified is invalid.
+
+  /**
+   * Determines the source node of an edge.
+   * Returns the source node of specified edge or -1 if specified edge does
+   * not exist in this graph.
+   * @param edge the edge in this graph whose source node we're seeking.
+   * @return the source node of specified edge or -1 if specified edge does
+   *   not exist in this graph.
+   * @exception IllegalArgumentException if edge is not positive.
+   */
   public int sourceNode(int edge);
+
+  /**
+   * Determines the target node of an edge.
+   * Returns the target node of specified edge or -1 if specified edge does
+   * not exist in this graph.
+   * @param edge the edge in this graph whose target node we're seeking.
+   * @return the target node of specified edge or -1 if specified edge does
+   *   not exist in this graph.
+   * @exception IllegalArgumentException if edge is not positive.
+   */
   public int targetNode(int edge);
-  // Throws IllegalArgumentException.
-  public boolean isDirectedEdge(int edge);
+
+  /**
+   * Determines the directedness of and edge.
+   * Returns 1 if specified edge is directed, returns 0 if specified edge
+   * is undirected, and returns -1 if specified edge does not exist in this
+   * graph.
+   * @param edge the edge in this graph whose directedness we're seeking.
+   * @return 1 if specified edge is directed, 0 if specified edge is
+   *   undirected, and -1 if specified edge does not exist in this graph.
+   * @exception IllegalArgumentException if edge is not positive.
+   */
+  public byte isDirectedEdge(int edge);
+
 }
