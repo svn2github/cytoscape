@@ -41,6 +41,22 @@ public final class AllRootGraphMethodsTest
     if (root.createGraphPerspective(twoNodes, twoEdges).getEdgeCount() < 2)
       throw new IllegalStateException
         ("GraphPerspective has less than two edges");
+    if (root.createGraphPerspective((Node[]) null, (Edge[]) null) == null)
+      throw new IllegalStateException("GraphPerspective is null");
+    if (root.createGraphPerspective(new Node[0], new Edge[0]) == null)
+      throw new IllegalStateException("GraphPerspective is null");
+    RootGraph root2 = getRootGraph(args);
+    addNodesAndEdges(root2);
+    Node root2Node = (Node) root2.nodesIterator().next();
+    Edge root2Edge = (Edge) root2.edgesIterator().next();
+    if (root.createGraphPerspective(new Node[] { root2Node }, null) != null)
+      throw new IllegalStateException("GraphPerspective is not null");
+    if (root.createGraphPerspective(null, new Edge[] { root2Edge }) != null)
+      throw new IllegalStateException("GraphPerspective is not null");
+    if (root.createGraphPerspective(new Node[] { twoNodes[0], root2Node },
+                                    new Edge[] { twoEdges[0], root2Edge })
+        != null)
+      throw new IllegalStateException("GraphPerspective is not null");
 
     // createGraphPerspective(int[], int[]).
     int[] twoNodeInx = new int[] { twoNodes[0].getRootGraphIndex(),
@@ -59,6 +75,17 @@ public final class AllRootGraphMethodsTest
     if (root.createGraphPerspective(twoNodeInx, twoEdgeInx).getEdgeCount() < 2)
       throw new IllegalStateException
         ("GraphPerspective has less than two edges");
+    if (root.createGraphPerspective((int[]) null, (int[]) null) == null)
+      throw new IllegalStateException("GraphPerspective is null");
+    if (root.createGraphPerspective(new int[0], new int[0]) == null)
+      throw new IllegalStateException("GraphPerspective is null");
+    if (root.createGraphPerspective(new int[] { 0 }, null) != null)
+      throw new IllegalStateException("GraphPerspective is not null");
+    if (root.createGraphPerspective(null, new int[] { 0 }) != null)
+      throw new IllegalStateException("GraphPerspective is not null");
+    if (root.createGraphPerspective(new int[] { twoNodeInx[0], 0 },
+                                    new int[] { twoEdgeInx[0], 9999 }) != null)
+      throw new IllegalStateException("GraphPerspective is not null");
 
     // getNodeCount() and getEdgeCount().
     if (root.getNodeCount() < 2 || root.getEdgeCount() < 2)
@@ -76,6 +103,8 @@ public final class AllRootGraphMethodsTest
     if (nodeIndicesArray.length != nodesList.size())
       throw new IllegalStateException
         ("size of nodes List and length of node indices array don't match");
+    if (root.createGraphPerspective(nodeIndicesArray, null) == null)
+      throw new IllegalStateException("GraphPerspective is null");
 
     // edgesList().
     java.util.List edgesList = root.edgesList();
@@ -89,6 +118,8 @@ public final class AllRootGraphMethodsTest
     if (edgeIndicesArray.length != edgesList.size())
       throw new IllegalStateException
         ("size of edges List and length of edge indices array don't match");
+    if (root.createGraphPerspective(null, edgeIndicesArray) == null)
+      throw new IllegalStateException("GraphPerspective is null");
   }
 
   private static final RootGraph getRootGraph(String[] mainArgs)
