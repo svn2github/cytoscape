@@ -407,11 +407,6 @@ public class NetworkPanel
 	    //display the popup
 	    popup.show(e.getComponent(),e.getX(), e.getY());
 	  } 
-          // if no network is selected, disable the menu
-          if (treeTable.getSelectedRow() == -1) {
-	      createViewItem.setEnabled(false);
-	      destroyViewItem.setEnabled(false);
-          }
 
 	}
       }
@@ -450,7 +445,7 @@ class PopupActionListener implements ActionListener{
       Cytoscape.destroyNetworkView(cyNetwork);
     } // end of if ()
     else if ( label == CREATE_VIEW ) {
-      CreateNetworkViewAction.createViewFromCurrentNetwork(cyNetwork);
+      Cytoscape.createNetworkView(cyNetwork);
     } // end of if ()
     else if ( label == DESTROY_NETWORK) {
       Cytoscape.destroyNetwork(cyNetwork);
