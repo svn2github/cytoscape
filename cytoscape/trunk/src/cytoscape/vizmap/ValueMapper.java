@@ -40,6 +40,10 @@ import java.util.Map;
  * Interface to classes that provide a mapping from domain to range values.
  */
 public interface ValueMapper {
+    // Constants to describe mapping type
+    public static final int NO_MAPPING = 0;
+    public static final int DISCRETE_MAPPING = 1;
+    public static final int CONTINUOUS_MAPPING = 2; 
 
     public Object getRangeValue(Object domainValue);
 }
