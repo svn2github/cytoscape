@@ -7,8 +7,8 @@ package cytoscape.util.intr;
  * to key/value pairs being added (the underlying size of the hashtable is
  * invisible to the programmer).  In the underlying implementation, this
  * hashtable never decreases in size.  As a hashtable increases in size,
- * it takes at most 2.66 times as much memory as it would take
- * to store the hashtable's elements in a perfectly-sized array.
+ * it takes at most four times as much memory as it would take
+ * to store the hashtable's keys and values in a perfectly-sized array.
  * Underlying size expansions are implemented such that the operation of
  * expanding in size is amortized over the contstant time complexity needed to
  * insert new elements.
@@ -109,6 +109,9 @@ public final class IntIntHash
     return m_vals[index];
   }
 
+  private int[] m_keyDump = null;
+  private int[] m_valDump = null;
+
   private final void checkSize()
   {
     if (m_elements >= m_thresholdSize)
@@ -121,38 +124,29 @@ public final class IntIntHash
       catch (ArrayIndexOutOfBoundsException e) {
         throw new IllegalStateException
           ("too many elements in this hashtable"); }
-      int[] keyDump = new int[m_elements];
-      int[] valDump = new int[m_elements];
-      int index = -1;
-      for (int i = 0; i < keyDump.length; i++) {
-        while (m_keys[++index] < 0) { }
-        keyDump[i] = m_keys[index];
-        valDump[i] = m_vals[index];
-        m_keys[index] = -1;
-        m_vals[index] = -1; }
       if (m_keys.length < newSize) {
         final int[] newKeys = new int[newSize];
         final int[] newVals = new int[newSize];
-        System.arraycopy(m_keys, 0, newKeys, 0, m_keys.length);
-        System.arraycopy(m_vals, 0, newVals, 0, m_vals.length);
-        m_keys = newKeys;
-        m_vals = newVals; }
-      for (int i = m_size; i < newSize; i++) {
-        m_keys[i] = -1; m_vals[i] = -1; }
+        m_keyDump = m_keys;
+        m_valDump = m_vals; }
+      else {
+        System.arraycopy(m_keys, 0, m_keyDump, 0, m_size);
+        System.arraycopy(m_vals, 0, m_valDump, 0, m_size); }
+      for (int i = 0; i < newSize; i++) { m_keys[i] = -1; m_vals[i] = -1; }
       m_size = newSize;
       m_thresholdSize = (int) (THRESHOLD_FACTOR * (double) m_size);
       int incr;
-      for (int i = 0; i < keyDump.length; i++) {
+      int newIndex;
+      int oldIndex = -1;
+      for (int i = 0; i < m_elements; i++) {
+        while (m_keyDump[++oldIndex] < 0) { }
         incr = 0;
-        for (index = keyDump[i] % m_size;
-             m_keys[index] >= 0 && m_keys[index] != keyDump[i];
-             index = (index + incr) % m_size) {
-          // Caching increment, which is an expensive operation, at the expense
-          // of having an if statement.  I don't want to compute the increment
-          // before this 'for' loop in case we get an immediate hit.
-          if (incr == 0) { incr = 1 + (keyDump[i] % (m_size - 1)); } }
-        m_keys[index] = keyDump[i];
-        m_vals[index] = valDump[i]; }
+        for (newIndex = m_keyDump[oldIndex] % m_size;
+             m_keys[newIndex] >= 0;
+             newIndex = (newIndex + incr) % m_size) {
+          if (incr == 0) { incr = 1 + (m_keyDump[oldIndex] % (m_size - 1)); } }
+        m_keys[newIndex] = m_keyDump[oldIndex];
+        m_vals[newIndex] = m_valDump[oldIndex]; }
     }
   }
 
