@@ -647,23 +647,8 @@ class PrintAction extends AbstractAction
   public void actionPerformed (ActionEvent e) {
 
     Graph2DPrinter gprinter = new Graph2DPrinter (graphView);
-    if (!printOptions.showEditor ()) 
-       return;
-    gprinter.setPosterRows (printOptions.getInt ("Poster Rows"));
-    gprinter.setPosterColumns (printOptions.getInt ("Poster Columns"));
-    gprinter.setPrintPosterCoords (printOptions.getBool ("Add Poster Coords"));
-
-    if (printOptions.get ("Clip Area").equals ("Graph"))
-      gprinter.setClipType (Graph2DPrinter.CLIP_GRAPH);
-    else
-      gprinter.setClipType (Graph2DPrinter.CLIP_VIEW);
-      
     PrinterJob printJob = PrinterJob.getPrinterJob ();
     if (pageFormat == null) pageFormat = printJob.defaultPage ();
-    PageFormat pf = printJob.pageDialog (pageFormat);
-    if (pf == pageFormat) return;
-    else pageFormat = pf;
-      
     printJob.setPrintable (gprinter, pageFormat);
       
     if (printJob.printDialog ()) try {
@@ -1092,6 +1077,9 @@ class EditGraphMode extends EditMode {
    allowBendCreation (true);
    showNodeTips (true);
    showEdgeTips (true);
+   System.out.println ("EditGraphMode, createEdgeMode: " + getCreateEdgeMode ());
+   // setCreateEdgeMode (new CreateEdgeMode ());
+   System.out.println ("EditGraphMode, createEdgeMode: " + getCreateEdgeMode ());
    }
   protected String getNodeTip (Node node) {
     String geneName = graphView.getGraph2D().getRealizer(node).getLabelText();
@@ -1131,6 +1119,16 @@ class EditGraphMode extends EditMode {
     } // getEdgeTip
 
 } // inner class EditGraphMode
+//------------------------------------------------------------------------------
+class CreateEdgeMode extends ViewMode {
+  CreateEdgeMode () {
+    super ();
+    }
+  protected void edgeCreated (Edge e) {
+    System.out.println ("edge created: " + e);
+    }
+
+} // CreateEdgeMode 
 //------------------------------------------------------------------------------
 class ReadOnlyGraphMode extends EditMode {
   ReadOnlyGraphMode () { 
