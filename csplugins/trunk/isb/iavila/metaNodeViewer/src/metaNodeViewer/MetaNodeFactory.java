@@ -27,7 +27,7 @@
  * @since 2.0
  */
 package metaNodeViewer;
-import cytoscape.data.CyNetwork;
+import cytoscape.CyNetwork;
 import giny.model.GraphPerspective;
 
 public interface MetaNodeFactory {

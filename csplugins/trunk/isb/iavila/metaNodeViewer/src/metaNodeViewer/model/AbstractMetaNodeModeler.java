@@ -30,7 +30,7 @@
 package metaNodeViewer.model;
 import java.util.*;
 import giny.model.*;
-import cytoscape.data.CyNetwork;
+import cytoscape.CyNetwork;
 import metaNodeViewer.data.MetaNodeAttributesHandler;
 import cern.colt.list.IntArrayList;
 import cern.colt.map.OpenIntObjectHashMap;

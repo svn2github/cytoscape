@@ -36,7 +36,7 @@ import javax.swing.AbstractAction;
 import java.awt.event.ActionEvent;
 import cern.colt.list.IntArrayList;
 import cytoscape.data.GraphObjAttributes;
-import cytoscape.data.*;
+import cytoscape.*;
 import cytoscape.view.CyWindow;
 import giny.view.*;
 import giny.model.*;

@@ -28,7 +28,7 @@
  */
 
 package metaNodeViewer.data;
-import cytoscape.data.CyNetwork;
+import cytoscape.CyNetwork;
 import cern.colt.map.AbstractIntIntMap;
 
 /**

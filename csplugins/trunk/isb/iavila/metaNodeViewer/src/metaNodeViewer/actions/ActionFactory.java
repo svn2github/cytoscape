@@ -33,6 +33,7 @@ import metaNodeViewer.data.MetaNodeAttributesHandler;
 import metaNodeViewer.MetaNodeFactory;
 import metaNodeViewer.GPMetaNodeFactory;
 import cytoscape.view.CyWindow;
+import cytoscape.*;
 import cytoscape.data.*;
 import javax.swing.AbstractAction;
 import giny.model.*;

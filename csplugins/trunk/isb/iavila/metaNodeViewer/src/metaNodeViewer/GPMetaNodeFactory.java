@@ -31,6 +31,7 @@ import metaNodeViewer.data.MetaNodeAttributesHandler;
 import java.util.*;
 import giny.model.*;
 import cytoscape.data.*;
+import cytoscape.*;
 import cern.colt.list.IntArrayList;
 
 /**

@@ -52,7 +52,7 @@ public class MNcollapserDialog extends JDialog {
    * Constructor
    */
   public MNcollapserDialog (CyWindow cy_window){
-    super(cy_window.getMainFrame(), title);
+    super( ( JFrame )null, title, false);
     initialize(cy_window);
   }//MNcollapserDialog
 
