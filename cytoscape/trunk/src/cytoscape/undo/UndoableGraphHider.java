@@ -77,8 +77,14 @@ public class UndoableGraphHider {
 	// save node and edges
 	nodes.add(v);
 	EdgeList list = new EdgeList();
-	for (EdgeCursor ec = v.edges(); ec.ok(); ec.next())
+	// to avoid counting loops twice, only count loop as out edge
+	for (EdgeCursor ec = v.inEdges(); ec.ok(); ec.next()) {
+	    Edge e = ec.edge();
+	    if (!e.source().equals(e.target())) list.add(ec.edge());
+	}
+	for (EdgeCursor ec = v.outEdges(); ec.ok(); ec.next()) 
 	    list.add(ec.edge());
+
 	edgesPerNode.put(v, list);
 
 	graph.removeNode(v);
@@ -109,8 +115,13 @@ public class UndoableGraphHider {
 	// save node and edges
 	nodes.add(v);
 	EdgeList list = new EdgeList();
-	for (EdgeCursor ec = v.edges(); ec.ok(); ec.next())
+	for (EdgeCursor ec = v.inEdges(); ec.ok(); ec.next()) {
+	    Edge e = ec.edge();
+	    if (!e.source().equals(e.target())) list.add(ec.edge());
+	}
+	for (EdgeCursor ec = v.outEdges(); ec.ok(); ec.next()) 
 	    list.add(ec.edge());
+
 	edgesPerNode.put(v, list);
 
 	graph.removeNode(v);
@@ -145,8 +156,13 @@ public class UndoableGraphHider {
 	// save node and edges
 	nodes.add(v);
 	EdgeList list = new EdgeList();
-	for (EdgeCursor ec = v.edges(); ec.ok(); ec.next())
+	for (EdgeCursor ec = v.inEdges(); ec.ok(); ec.next()) {
+	    Edge e = ec.edge();
+	    if (!e.source().equals(e.target())) list.add(ec.edge());
+	}
+	for (EdgeCursor ec = v.outEdges(); ec.ok(); ec.next()) 
 	    list.add(ec.edge());
+
 	edgesPerNode.put(v, list);
 
 	graph.removeNode(v);
@@ -180,6 +196,16 @@ public class UndoableGraphHider {
 	undoManager.resume();
     }
 
+    /** 
+     * Hides all edges that are self loops.
+     */
+    public void hideSelfLoops() {
+	for (EdgeCursor ec = graph.edges(); ec.ok(); ec.next()) {
+	    Edge e = ec.edge();
+	    if ( e.source().equals(e.target()) ) hide(e);
+	}
+    }
+    
     /**
      * Undo an edge hide
      */
