@@ -6,6 +6,10 @@ import cytoscape.util.intr.IntEnumerator;
 class DynamicGraphRepresentation implements DynamicGraph
 {
 
+  private int m_nodeCount;
+  private Node m_firstNode;
+  private int m_edgeCount;
+
   DynamicGraphRepresentation() { }
 
   public IntEnumerator nodes()
