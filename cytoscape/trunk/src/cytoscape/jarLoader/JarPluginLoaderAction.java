@@ -15,7 +15,7 @@ public class JarPluginLoaderAction extends AbstractAction {
     protected CytoscapeWindow cytoscapeWindow;
     protected File file;
     JarPluginLoaderAction(CytoscapeWindow cytoscapeWindow) {
-	super ("Jar Plugin Loader");
+	super ("Plugin Jar File");
 	this.cytoscapeWindow = cytoscapeWindow;
     }
     public void actionPerformed (ActionEvent e) {

@@ -32,7 +32,7 @@ public class JarLoaderCommandLineParser {
                 
         LongOpt [] longOpts = new LongOpt [2];
         longOpts[0] = new LongOpt ("JLD",  LongOpt.REQUIRED_ARGUMENT, null, 0);
-        longOpts[1] = new LongOpt ("JLH",  LongOpt.REQUIRED_ARGUMENT, null, 1);
+        longOpts[1] = new LongOpt ("JLH",  LongOpt.NO_ARGUMENT, null, 1);
 
         Getopt g = new Getopt ("jarLoader", args, "", longOpts);
         g.setOpterr (false); // We'll do our own error handling

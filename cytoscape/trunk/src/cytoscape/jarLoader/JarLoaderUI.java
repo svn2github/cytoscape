@@ -7,19 +7,19 @@
 package cytoscape.jarLoader;
 //--------------------------------------------------------------------------
 import cytoscape.*;
+import javax.swing.*;
 
 //--------------------------------------------------------------------------
 public class JarLoaderUI {
     protected CytoscapeWindow cytoscapeWindow;
-    public JarLoaderUI (CytoscapeWindow cytoscapeWindow)
+    public JarLoaderUI (CytoscapeWindow cytoscapeWindow, JMenu theMenu)
     {
-	super(cytoscapeWindow);
 	this.cytoscapeWindow = cytoscapeWindow;
-	cytoscapeWindow.getOperationsMenu().add
-	    (new JarLoaderAction (cytoscapeWindow));
-	cytoscapeWindow.getOperationsMenu().add
+	//cytoscapeWindow.getOperationsMenu().add
+	theMenu.add
 	    (new JarPluginLoaderAction (cytoscapeWindow));
-	cytoscapeWindow.getOperationsMenu().add
+	//cytoscapeWindow.getOperationsMenu().add
+	theMenu.add
 	    (new JarPluginDirectoryAction (cytoscapeWindow));
 	String[] args = cytoscapeWindow.getConfiguration().getArgs();
 	JarLoaderCommandLineParser parser =

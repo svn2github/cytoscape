@@ -31,7 +31,7 @@ subdirectories: dataDirectories browserDirectory \
          vizmapDirectory dialogsDirectory \
          layoutDirectory utilDirectory \
 	 viewDirectory undoDirectory filtersDirectory \
-	 visualDirectory
+	 visualDirectory jarLoader
 
 objs: $(OBJS)
 

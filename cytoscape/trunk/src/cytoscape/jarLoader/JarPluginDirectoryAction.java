@@ -16,7 +16,7 @@ public class JarPluginDirectoryAction extends AbstractAction {
     protected File file;
     protected boolean ready=false;
     JarPluginDirectoryAction(CytoscapeWindow cytoscapeWindow) {
-	super ("Jar Plugin Directory");
+	super ("Plugin Jar Directory");
 	this.cytoscapeWindow = cytoscapeWindow;
     }
     public void actionPerformed (ActionEvent e) {

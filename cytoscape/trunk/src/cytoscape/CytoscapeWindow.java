@@ -81,6 +81,7 @@ import cytoscape.data.servers.*;
 import cytoscape.dialogs.*;
 import cytoscape.browsers.*;
 import cytoscape.layout.*;
+import cytoscape.jarLoader.*;
 import cytoscape.visual.*;
 import cytoscape.visual.ui.VizMapUI;
 import cytoscape.visual.mappings.*;
@@ -1451,6 +1452,8 @@ protected JMenuBar createMenuBar ()
   opsMenu = new JMenu ("PlugIns"); // always create the plugins menu
   // fileMenu.add (new DisplayDebugLog ());
   menuBar.add (opsMenu);
+  
+  JarLoaderUI jlu = new JarLoaderUI(CytoscapeWindow.this,loadSubMenu);
 
   return menuBar;
 
