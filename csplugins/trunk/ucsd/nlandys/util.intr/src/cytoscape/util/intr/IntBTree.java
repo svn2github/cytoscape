@@ -13,6 +13,7 @@ public final class IntBTree
   public final static int DEFAULT_MAX_BRANCHES = 45;
 
   private final int m_maxBranches;
+  private final int m_minBranches;
   private Node m_root;
 
   /**
@@ -21,6 +22,7 @@ public final class IntBTree
   public IntBTree()
   {
     m_maxBranches = DEFAULT_MAX_BRANCHES;
+    m_minBranches = (m_maxBranches + 1) / 2;
     m_root = new Node(m_maxBranches, true);
   }
 
@@ -36,6 +38,7 @@ public final class IntBTree
     if (maxBranches < 3) throw new IllegalArgumentException
                            ("maxBranches is less than three");
     m_maxBranches = maxBranches;
+    m_minBranches = (m_maxBranches + 1) / 2;
     m_root = new Node(m_maxBranches, true);
   }
 
@@ -295,13 +298,26 @@ public final class IntBTree
    *          this bit is set).
    *   0x80 - If entries have been shifted from sibling nodes into n (if
    *          this bit is set then at least one of 0x02 and 0x04 is also set).
-   *   0x02 - If entries have been shifted from left sibling into n.
-   *   0x04 - If entries have been shifted from right sibling into n.
+   *   0x40 - If two nodes have been merged into one (this is exclusive with
+   *          respect to 0x80 -- at least one of 0x02 and 0x04 is also set).
+   *   0x02 - Left sibling.
+   *   0x04 - Right sibling.
    */
   private final byte delete(final Node n, final Node leftSibling,
                             final Node rightSibling, final int x)
   {
     if (isLeafNode(n)) {
+      int i = 0;
+      for (; i < n.sliceCount; i++) {
+        if (x >= n.values[i]) {
+          if (x == n.values[i]) break; // Found.
+          else return 0x0b; } }
+      if (n.sliceCount != m_minBranches) { // Simple deletion.
+        final int newSliceCount = --n.sliceCount;
+        for (int j = i; j < newSliceCount;) n.values[j] = n.values[++j];
+        return 0x01; }
+      else { // Complex deletion, either shifting or merging.
+      }
     }
     else { // Not a leaf node.
     }
