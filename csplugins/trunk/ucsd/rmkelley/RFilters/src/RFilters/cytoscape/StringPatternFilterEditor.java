@@ -25,7 +25,7 @@ import ViolinStrings.Strings;
 
 public class StringPatternFilterEditor 
   extends FilterEditor 
-  implements ActionListener,FocusListener {
+  implements ActionListener,FocusListener,ItemListener {
          
   /**
    * This is the Name that will go in the Tab 
@@ -92,7 +92,7 @@ public class StringPatternFilterEditor
     classBox.addItem(StringPatternFilter.NODE);
     classBox.addItem(StringPatternFilter.EDGE);
     classBox.setEditable( false );
-    classBox.addActionListener(this);
+    classBox.addItemListener(this);
     topPanel.add(classBox);
 				
     JPanel middlePanel = new JPanel();
@@ -100,7 +100,7 @@ public class StringPatternFilterEditor
     
     attributeBox = new JComboBox();
     attributeBox.setEditable(false);
-    attributeBox.addActionListener(this);
+    attributeBox.addItemListener(this);
     middlePanel.add(attributeBox);
 
     JPanel bottomPanel = new JPanel();
@@ -201,7 +201,9 @@ public class StringPatternFilterEditor
 
   public void setSelectedAttribute ( String new_attr ) {
     filter.setSelectedAttribute(new_attr);
+    attributeBox.removeItemListener(this);
     attributeBox.setSelectedItem(new_attr);
+    attributeBox.addItemListener(this);
   }
 
   public String getSelectedClass(){
@@ -210,14 +212,19 @@ public class StringPatternFilterEditor
 
   public void setSelectedClass(String newClass){
     filter.setClassType(newClass);
+    attributeBox.removeItemListener(this);
     if ( newClass == NumericAttributeFilter.NODE) {
       attributeBox.setModel(nodeAttributeModel);
       attributeBox.setSelectedItem(filter.getSelectedAttribute());    
     } // end of if ()
     else {
       attributeBox.setModel(edgeAttributeModel);
-    } // end of else    
+      attributeBox.setSelectedItem(filter.getSelectedAttribute());
+    } // end of else
+    attributeBox.addItemListener(this);
+    classBox.removeItemListener(this);
     classBox.setSelectedItem(newClass);
+    classBox.addItemListener(this);
     setSelectedAttribute((String)attributeBox.getSelectedItem());
   }
 
@@ -241,6 +248,10 @@ public class StringPatternFilterEditor
 
   public void actionPerformed(ActionEvent ae){
     handleEvent(ae);
+  }
+
+  public void itemStateChanged(ItemEvent e){
+    handleEvent(e);
   }
 
   public void focusGained(FocusEvent e){};

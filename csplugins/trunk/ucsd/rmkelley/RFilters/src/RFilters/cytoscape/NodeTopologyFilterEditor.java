@@ -28,7 +28,7 @@ import ViolinStrings.Strings;
 
 public class NodeTopologyFilterEditor 
   extends FilterEditor 
-  implements ActionListener,FocusListener {
+  implements ActionListener,FocusListener,ItemListener {
 
   /**
    * This is the Name that will go in the Tab 
@@ -43,13 +43,11 @@ public class NodeTopologyFilterEditor
   protected JComboBox filterBox;
   protected JTextField distanceField;
   protected JTextField countField;
-  protected CyWindow cyWindow;
- 
   
   protected String DEFAULT_FILTER_NAME = "NodeTopology: ";
   protected Integer DEFAULT_DISTANCE = new Integer(1);
   protected Integer DEFAULT_COUNT = new Integer(1);
-  protected Filter DEFAULT_FILTER = null; 
+  protected int DEFAULT_FILTER = -1; 
   
   protected Class NODE_CLASS;
   protected Class EDGE_CLASS;
@@ -57,14 +55,13 @@ public class NodeTopologyFilterEditor
   protected Class DEFAULT_CLASS; 
   protected Class filterClass;
 
-  public NodeTopologyFilterEditor ( CyWindow cyWindow) {
+  public NodeTopologyFilterEditor () {
     super();
     try{
       filterClass = Class.forName("filter.cytoscape.NodeTopologyFilter");
     }catch(Exception e){
       e.printStackTrace();
     }
-    this.cyWindow = cyWindow; 
     identifier = "Topology Filter";
     setBorder( new TitledBorder( "Node Topology Filter") );
     setLayout(new BorderLayout());
@@ -105,10 +102,11 @@ public class NodeTopologyFilterEditor
     JPanel bottomPanel = new JPanel();
     bottomPanel.add(new JLabel("that pass the filter "));
     filterBox = new JComboBox();
-    filterBox.addActionListener(this);
+    filterBox.addItemListener(this);
     filterBox.setModel(FilterManager.defaultManager().getComboBoxModel());
     filterBox.setEditable(false);
     bottomPanel.add(filterBox);
+
     all_panel.add(topPanel);
     all_panel.add(middlePanel);
     all_panel.add(bottomPanel);
@@ -139,7 +137,7 @@ public class NodeTopologyFilterEditor
   }
 
   public Filter createDefaultFilter(){
-    return new NodeTopologyFilter(cyWindow, DEFAULT_COUNT, DEFAULT_DISTANCE, DEFAULT_FILTER, DEFAULT_FILTER_NAME);
+    return new NodeTopologyFilter(DEFAULT_COUNT, DEFAULT_DISTANCE, DEFAULT_FILTER, DEFAULT_FILTER_NAME);
   }
 
   /**
@@ -151,10 +149,10 @@ public class NodeTopologyFilterEditor
     if ( filter instanceof NodeTopologyFilter ) {
       // good, this Filter is of the right type
       this.filter = (NodeTopologyFilter)filter;
-      nameField.setText(this.filter.toString());
-      filterBox.setSelectedItem(this.filter.getFilter());
-      distanceField.setText(this.filter.getDistance().toString());
-      countField.setText(this.filter.getCount().toString());
+      setFilterName(this.filter.toString());
+      setSelectedFilter(this.filter.getFilter());
+      setDistance(this.filter.getDistance());
+      setCount(this.filter.getCount());
     }
   }
 
@@ -180,14 +178,16 @@ public class NodeTopologyFilterEditor
 
   // Search String /////////////////////////////////////
 
-  public Filter getSelectedFilter(){
+  public int getSelectedFilter(){
     return filter.getFilter();
   }
 
-  public void setSelectedFilter(Filter newFilter){
+  public void setSelectedFilter(int newFilter){
     if(filter != null){
       filter.setFilter(newFilter);
-      filterBox.setSelectedItem(newFilter);
+      filterBox.removeItemListener(this);
+      filterBox.setSelectedItem(FilterManager.defaultManager().getFilter(newFilter));
+      filterBox.addItemListener(this);
     }
   }
 
@@ -220,11 +220,15 @@ public class NodeTopologyFilterEditor
     handleEvent(e);
   }
 
+  public void itemStateChanged(ItemEvent e){
+    handleEvent(e);
+  }
+
   public void handleEvent(AWTEvent e){
     if ( e.getSource() == nameField ) {
       setFilterName(nameField.getText());
     } else if ( e.getSource() == filterBox ) {
-      setSelectedFilter((Filter)filterBox.getSelectedItem());
+      setSelectedFilter(FilterManager.defaultManager().getFilterID((Filter)filterBox.getSelectedItem()));
     } else if( e.getSource() == countField){
       Integer count = null;
       try{

@@ -27,7 +27,7 @@ public class BooleanMetaFilter
   //----------------------------------------//
   // Filter specific properties 
   //----------------------------------------//
-  protected Object [] filters;
+  protected int [] filters;
   protected String comparison;
   public static String AND = "ALL";
   public static String OR = "AT LEAST ONE";
@@ -54,11 +54,15 @@ public class BooleanMetaFilter
   /**
    * Creates a new BooleanMetaFilter
    */  
-  public BooleanMetaFilter (Object [] filters, 
+  public BooleanMetaFilter (int [] filters, 
                             String comparison, String identifier ) {
     this.filters = filters;
     this.comparison = comparison;
     this.identifier =identifier;
+  }
+
+  public BooleanMetaFilter(String desc){
+    input(desc);
   }
   
   //----------------------------------------//
@@ -79,8 +83,8 @@ public class BooleanMetaFilter
    * sets a new name for this filter
    */
   public void setIdentifier ( String new_id ) {
-     this.identifier = new_id;
-     pcs.firePropertyChange(FILTER_NAME_EVENT,null,new_id);
+    this.identifier = new_id;
+    pcs.firePropertyChange(FILTER_NAME_EVENT,null,new_id);
   }
 
   /**
@@ -101,7 +105,12 @@ public class BooleanMetaFilter
     int count = 0;
     for(int idx=0;idx<filters.length;idx++){
       //System.out.println(""+filters[idx]);
-      boolean filterResult = ((Filter)(filters[idx])).passesFilter(object);
+      Filter f = FilterManager.defaultManager().getFilter(filters[idx]);
+      boolean filterResult = false;
+      if ( f != null) {
+	filterResult = f.passesFilter(object);
+      } // end of if ()
+      
       if(comparison == AND && !filterResult){
 	return false;
       }
@@ -150,11 +159,11 @@ public class BooleanMetaFilter
     return comparison;
   }
 
-  public void setFilters(Object [] filters){
+  public void setFilters(int [] filters){
     this.filters = filters;
     pcs.firePropertyChange(FILTER_BOX_EVENT,null,filters);
   }
-  public Object [] getFilters(){
+  public int [] getFilters(){
     return filters;
   }
 		
@@ -168,9 +177,8 @@ public class BooleanMetaFilter
 
   public String output () {
     StringBuffer buffer = new StringBuffer();
-    buffer.append( "filter.cytoscape.BooleanMetaFilter,");
     for ( int i = 0; i < filters.length; ++i ) {
-      buffer.append(filters[i].toString());
+      buffer.append(filters[i]);
       if ( i != filters.length - 1 ) 
         buffer.append(":");
     }
@@ -180,7 +188,15 @@ public class BooleanMetaFilter
   }
   
   public void input ( String desc ) {
-
+    String [] array = desc.split(",");
+    String [] filterStrings = array[0].split(":");
+    int [] selectedFilters = new int[filterStrings.length];
+    for ( int idx = 0;idx < selectedFilters.length;idx++) {
+      selectedFilters[idx] = (new Integer(filterStrings[idx])).intValue();
+    } // end of for ()
+    setFilters(selectedFilters);
+    setComparison(array[1]);
+    setIdentifier(array[2]);
   }
 
 }

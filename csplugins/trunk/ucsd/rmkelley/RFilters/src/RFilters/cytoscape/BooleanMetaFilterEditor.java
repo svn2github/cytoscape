@@ -26,7 +26,7 @@ import ViolinStrings.Strings;
 
 public class BooleanMetaFilterEditor 
   extends FilterEditor 
-  implements FocusListener, ActionListener, ListSelectionListener {
+  implements ItemListener, FocusListener, ActionListener, ListSelectionListener {
          
   /**
    * This is the Name that will go in the Tab 
@@ -42,7 +42,7 @@ public class BooleanMetaFilterEditor
   protected BooleanMetaFilter filter;	
   protected String DEFAULT_FILTER_NAME = "BooleanMeta: ";
   protected String DEFAULT_COMPARISON = BooleanMetaFilter.AND;
-  protected Object [] DEFAULT_FILTERS = new Object[0];
+  protected int [] DEFAULT_FILTERS = new int[0];
   protected Class filterClass;
  
   public BooleanMetaFilterEditor () {
@@ -82,7 +82,7 @@ public class BooleanMetaFilterEditor
     comparisonBox.addItem(BooleanMetaFilter.XOR);
     comparisonBox.setSelectedIndex(0);
     comparisonBox.setEditable(false);
-    comparisonBox.addActionListener(this);
+    comparisonBox.addItemListener(this);
     comparisonPanel.add(comparisonBox);
     comparisonPanel.add(new JLabel(" of the selected filters"));
 				
@@ -146,21 +146,28 @@ public class BooleanMetaFilterEditor
 
   // Search String /////////////////////////////////////
  
-  public Object [] getFilters(){
+  public int [] getFilters(){
     return filter.getFilters();
   }
 
-  public void setFilters(Object [] array){
+  public void setFilters(int [] array){
     filterList.removeListSelectionListener(this);
     filterList.clearSelection();
     for(int idx=0;idx<array.length;idx++){
-      int index = FilterManager.defaultManager().indexOf(array[idx]);
+      int index = FilterManager.defaultManager().indexOf(FilterManager.defaultManager().getFilter(array[idx]));
       if(index > -1){
 	filterList.addSelectionInterval(index,index);
       }
     }
-    filter.setFilters(filterList.getSelectedValues());
     filterList.addListSelectionListener(this);
+    
+    Object [] selectedObjects = filterList.getSelectedValues();
+    int [] selectedFilters = new int[selectedObjects.length];
+    for ( int idx = 0;idx < selectedFilters.length;idx++) {
+      selectedFilters[idx] = FilterManager.defaultManager().getFilterID((Filter)selectedObjects[idx]);
+    } // end of for ()
+    filter.setFilters(selectedFilters);
+    
   }
 
   public String getComparison(){
@@ -169,7 +176,9 @@ public class BooleanMetaFilterEditor
 
   public void setComparison(String comparison){
     filter.setComparison(comparison);
+    comparisonBox.removeItemListener(this);
     comparisonBox.setSelectedItem(comparison);
+    comparisonBox.addItemListener(this);
   }
 
 
@@ -181,12 +190,22 @@ public class BooleanMetaFilterEditor
   public void focusLost(FocusEvent e){
     handleEvent(e);
   }
+
+  public void itemStateChanged(ItemEvent e){
+    handleEvent(e);
+  }
   
   public void handleEvent(EventObject e){
     if ( e.getSource() == nameField ) {
       setFilterName(nameField.getText());
     } else if ( e.getSource() == filterList ) {
-      setFilters(filterList.getSelectedValues());
+      Object [] selectedObjects = filterList.getSelectedValues();
+      int [] selectedFilters = new int[selectedObjects.length];
+      for ( int idx=0;idx<selectedFilters.length;idx++) {
+	selectedFilters[idx] = FilterManager.defaultManager().getFilterID((Filter)selectedObjects[idx]);
+      } // end of for ()
+      
+      setFilters(selectedFilters);
     } else if( e.getSource() == comparisonBox){
       setComparison((String)comparisonBox.getSelectedItem());
     }

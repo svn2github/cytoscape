@@ -25,7 +25,7 @@ import cytoscape.CyNetwork;
 
 public class NumericAttributeFilterEditor 
   extends FilterEditor 
-  implements ActionListener,FocusListener {
+  implements ActionListener,FocusListener, ItemListener {
          
   /**
    * This is the Name that will go in the Tab 
@@ -95,7 +95,7 @@ public class NumericAttributeFilterEditor
     classBox.addItem(NumericAttributeFilter.NODE);
     classBox.addItem(NumericAttributeFilter.EDGE);
     classBox.setEditable( false );
-    classBox.addActionListener(this);
+    classBox.addItemListener(this);
     topPanel.add(classBox);
     
     JPanel middlePanel = new JPanel();
@@ -103,7 +103,7 @@ public class NumericAttributeFilterEditor
 				
     attributeBox = new JComboBox();
     attributeBox.setEditable(false);
-    attributeBox.addActionListener(this);
+    attributeBox.addItemListener(this);
     middlePanel.add(attributeBox);
 
     JPanel bottomPanel = new JPanel();	
@@ -115,7 +115,7 @@ public class NumericAttributeFilterEditor
     comparisonBox.addItem(NumericAttributeFilter.GREATER);
     comparisonBox.setSelectedIndex(0);
     comparisonBox.setEditable(false);
-    comparisonBox.addActionListener(this);
+    comparisonBox.addItemListener(this);
     bottomPanel.add(comparisonBox);
     
     searchField = new JTextField(10);
@@ -215,7 +215,9 @@ public class NumericAttributeFilterEditor
 
   public void setSelectedAttribute ( String new_attr ) {
     filter.setSelectedAttribute(new_attr);
+    attributeBox.removeItemListener(this);
     attributeBox.setSelectedItem(new_attr);
+    attributeBox.addItemListener(this);
   }
 
   public String getSelectedClass(){
@@ -224,6 +226,7 @@ public class NumericAttributeFilterEditor
 
   public void setSelectedClass(String newClass){
     filter.setClassType(newClass);
+    attributeBox.removeItemListener(this);
     if ( newClass == NumericAttributeFilter.NODE) {
       attributeBox.setModel(nodeAttributeModel);
       attributeBox.setSelectedItem(getSelectedAttribute());
@@ -232,7 +235,10 @@ public class NumericAttributeFilterEditor
       attributeBox.setModel(edgeAttributeModel);
       attributeBox.setSelectedItem(getSelectedAttribute());
     } // end of else
+    attributeBox.addItemListener(this);
+    classBox.removeItemListener(this);
     classBox.setSelectedItem(newClass);
+    classBox.addItemListener(this);
     setSelectedAttribute((String)attributeBox.getSelectedItem());
   }
 
@@ -242,10 +248,16 @@ public class NumericAttributeFilterEditor
 
   public void setSelectedComparison(String comparison){
     filter.setComparison(comparison);
+    comparisonBox.removeItemListener(this);
     comparisonBox.setSelectedItem(comparison);
+    comparisonBox.addItemListener(this);
   }
 
   public void actionPerformed ( ActionEvent e ) {
+    handleEvent(e);
+  }
+
+  public void itemStateChanged(ItemEvent e){
     handleEvent(e);
   }
 
@@ -288,26 +300,5 @@ public class NumericAttributeFilterEditor
     buffer.append( getSearchNumber() );
     setFilterName(buffer.toString());
   }
-
-
-  public void fireSearchNumberChanged () {
-    pcs.firePropertyChange( NumericAttributeFilter.SEARCH_NUMBER_EVENT, null, getSearchNumber() );
-  }
-
-  public void fireFilterNameChanged () {
-    pcs.firePropertyChange( NumericAttributeFilter.FILTER_NAME_EVENT, null, getFilterName() );
-  }
-
-  public void fireComparisonChanged(){
-    pcs.firePropertyChange(NumericAttributeFilter.COMPARISON_EVENT, null, getSelectedComparison() );
-  }
-  public void fireClassChanged(){
-    pcs.firePropertyChange( NumericAttributeFilter.CLASS_TYPE_EVENT,null, getSelectedClass());
-  }
-  public void fireAttributeChanged () {
-    pcs.firePropertyChange( NumericAttributeFilter.SELECTED_ATTRIBUTE_EVENT, null, getSelectedAttribute() );
-  }
-
   
- 
 }

@@ -28,11 +28,10 @@ public class NodeTopologyFilter
   //----------------------------------------//
   // Filter specific properties 
   //----------------------------------------//
-  protected Filter filter;
+  protected int filter;
   protected Integer count;
   protected Integer distance;
   protected HashSet seenNodes;
-  protected CyWindow cyWindow;
   protected GraphPerspective myPerspective;
   public static String FILTER_NAME_EVENT = "FILTER_NAME_EVENT";
   public static String FILTER_ID = "Node Topology Filter";
@@ -55,12 +54,10 @@ public class NodeTopologyFilter
   /**
    * Creates a new NodeTopologyFilter
    */  
-  public NodeTopologyFilter (CyWindow cyWindow, 
-			     Integer count,
+  public NodeTopologyFilter (Integer count,
 			     Integer distance,
-			     Filter filter,
+			     int filter,
 			     String identifier) {
-    this.cyWindow = cyWindow;
     this.count = count;
     this.distance = distance;
     this.filter = filter;
@@ -70,21 +67,11 @@ public class NodeTopologyFilter
   /**
    * Creates a new NodeTopologyFilter
    */  
-  public NodeTopologyFilter (	String count,
-				String distance,
-				Filter filter,
-				String identifier) {
-    this.cyWindow = Cytoscape.getDesktop();
-    this.count = new Integer( count );
-    this.distance = new Integer( distance );
-    this.filter = filter;
-    this.identifier =identifier;
-
-    //System.out.println( "created topology filter: "+count+" "+distance+" "+filter+" "+identifier );
-
+  public NodeTopologyFilter (	String desc ){
+    input(desc);
   }
-
-
+  
+  
 
   //----------------------------------------//
   // Implements Filter
@@ -123,7 +110,7 @@ public class NodeTopologyFilter
   public boolean passesFilter ( Object object ) {
     if(object instanceof Node){
       seenNodes = new HashSet();
-      myPerspective = cyWindow.getView().getGraphPerspective();
+      myPerspective = Cytoscape.getCurrentNetwork();
       int totalSum = countNeighbors((Node)object,0);
       return totalSum >= count.intValue();
     }else{
@@ -133,6 +120,11 @@ public class NodeTopologyFilter
   }
 
   private int countNeighbors(Node currentNode,int currentDistance){
+    Filter filter = FilterManager.defaultManager().getFilter(this.filter);
+    if (filter == null) {
+      return 0;
+    } 
+    
     if(currentDistance == distance.intValue()){
       if(filter.passesFilter(currentNode)){
 	return 1;
@@ -172,7 +164,7 @@ public class NodeTopologyFilter
   }
 
   public Object clone () {
-    return new NodeTopologyFilter ( cyWindow,count,distance,filter,identifier+"_new" );
+    return new NodeTopologyFilter ( count,distance,filter,identifier+"_new" );
   }
 
   public SwingPropertyChangeSupport getSwingPropertyChangeSupport() {
@@ -183,11 +175,12 @@ public class NodeTopologyFilter
   // NodeTopologyFilter methods
   //----------------------------------------//
 
-  public void setFilter(Filter filter){
+  public void setFilter(int filter){
+    int oldvalue = this.filter;
     this.filter = filter;
-    pcs.firePropertyChange(FILTER_BOX_EVENT,null,filter);
+    pcs.firePropertyChange(FILTER_BOX_EVENT,oldvalue,filter);
   }
-  public Filter getFilter(){
+  public int getFilter(){
     return filter;
   }
 
@@ -218,15 +211,19 @@ public class NodeTopologyFilter
 
   public String output () {
     StringBuffer buffer = new StringBuffer();
-    buffer.append( "filter.cytoscape.NodeTopologyFilter,");
     buffer.append( getCount()+"," );
     buffer.append( getDistance()+"," );
-    buffer.append( getFilter().toString()+"," );
+    buffer.append( getFilter()+"," );
     buffer.append( toString() );
     return buffer.toString();
   }
 
   public void input ( String desc ) {
+    String [] array = desc.split(",");
+    setCount(new Integer(array[0]));
+    setDistance(new Integer(array[1]));
+    setFilter((new Integer(array[2])).intValue());
+    setIdentifier(array[3]);
   }
 
 }

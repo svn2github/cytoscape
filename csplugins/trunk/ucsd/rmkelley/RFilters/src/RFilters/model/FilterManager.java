@@ -175,7 +175,16 @@ import cern.colt.map.OpenIntObjectHashMap;
 	Filter new_filter = new filter.cytoscape.InteractionFilter( array[2] );
 	addFilter( new_filter, (new Integer(array[0])).intValue());
 	return new_filter;
-      }
+      } else if ( array[1].equals("class filter.cytoscape.NodeTopologyFilter" )) {
+	Filter new_filter = new filter.cytoscape.NodeTopologyFilter( array[2] );
+	addFilter( new_filter, (new Integer(array[0])).intValue());
+	return new_filter;
+      } else if ( array[1].equals("class filter.cytoscape.BooleanMetaFilter" )) {
+	Filter new_filter = new filter.cytoscape.BooleanMetaFilter( array[2] );
+	addFilter(new_filter, (new Integer(array[0])).intValue());
+	return new_filter;
+      } // end of if ()
+          
       return null;
     }
 

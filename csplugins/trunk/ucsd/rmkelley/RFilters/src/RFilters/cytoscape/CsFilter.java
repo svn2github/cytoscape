@@ -98,8 +98,9 @@ public class CsFilter
 
     FilterEditorManager.defaultManager().addEditor( new NumericAttributeFilterEditor( window ) );
     FilterEditorManager.defaultManager().addEditor( new StringPatternFilterEditor (window)); 
-    FilterEditorManager.defaultManager().addEditor( new NodeTopologyFilterEditor (window));
+    FilterEditorManager.defaultManager().addEditor( new NodeTopologyFilterEditor ());
     FilterEditorManager.defaultManager().addEditor( new BooleanMetaFilterEditor ());
+    FilterEditorManager.defaultManager().addEditor( new InteractionFilterEditor());
   }
 
   public String describe () {

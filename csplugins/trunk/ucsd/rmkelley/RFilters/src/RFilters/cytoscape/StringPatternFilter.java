@@ -269,7 +269,6 @@ public class StringPatternFilter
 
   public String output () {
     StringBuffer buffer = new StringBuffer();
-    buffer.append( "filter.cytoscape.StringPatternFilter,");
     buffer.append( getClassType()+"," );
     buffer.append( getSelectedAttribute()+"," );
     buffer.append( getSearchString()+"," );

@@ -26,7 +26,7 @@ import ViolinStrings.Strings;
 
 public class InteractionFilterEditor 
   extends FilterEditor
-  implements ActionListener,FocusListener {
+  implements ActionListener,FocusListener,ItemListener {
 
   /**
    * This is the Name that will go in the Tab 
@@ -42,28 +42,27 @@ public class InteractionFilterEditor
   protected InteractionFilter filter;
 
   
-  protected CyWindow cyWindow;
 
   protected String DEFAULT_FILTER_NAME = "Node Interaction: ";
   protected int DEFAULT_FILTER = -1;
   protected String DEFAULT_TARGET = InteractionFilter.SOURCE;
 
-  public InteractionFilterEditor ( CyWindow cyWindow ) {
+  public InteractionFilterEditor ( ) {
     super();
     try{
       filterClass = Class.forName("filter.cytoscape.InteractionFilter");
     }catch(Exception e){
       e.printStackTrace();
     }
-    this.cyWindow = cyWindow;
     identifier = "Node Interactions";
     setBorder( new TitledBorder( "Node Interaction Filter"));
     setLayout( new BorderLayout() );
-    setPreferredSize(new Dimension(600,250));	
+    setPreferredSize(new Dimension(450,125));	
     JPanel namePanel = new JPanel();
     nameField = new JTextField(15);
     nameField.addActionListener(this);
     nameField.addFocusListener(this);
+    
     namePanel.add( new JLabel( "Filter Name" ) );
     namePanel.add( nameField );
     add( namePanel, BorderLayout.NORTH  );
@@ -76,14 +75,14 @@ public class InteractionFilterEditor
     targetBox = new JComboBox();
     targetBox.addItem(InteractionFilter.SOURCE);
     targetBox.addItem(InteractionFilter.TARGET);
-    targetBox.addActionListener(this);
+    targetBox.addItemListener(this);
     topPanel.add( targetBox );
 								
     JPanel bottomPanel = new JPanel();
     bottomPanel.add(new JLabel("of at least one edge which passes the filter "));	
 								
     filterBox = new JComboBox(FilterManager.defaultManager().getComboBoxModel());
-    filterBox.addActionListener(this);
+    filterBox.addItemListener(this);
     bottomPanel.add(filterBox);
 								
     all_panel.add(topPanel);
@@ -92,7 +91,7 @@ public class InteractionFilterEditor
     add( all_panel, BorderLayout.CENTER );
   }
 
-    //----------------------------------------//
+  //----------------------------------------//
   // Implements Filter Editor
   //----------------------------------------//
 
@@ -122,6 +121,10 @@ public class InteractionFilterEditor
    * by this Filter editor. 
    */
   public void editFilter ( Filter filter ) {
+    if ( this.filter == null) {
+      
+    } // end of if ()
+    
     if ( filter instanceof InteractionFilter ) {
       // good, this Filter is of the right type
       this.filter = ( InteractionFilter )filter;
@@ -159,7 +162,9 @@ public class InteractionFilterEditor
 
   public void setTarget(String target){
     filter.setTarget(target);
+    targetBox.removeItemListener(this);
     targetBox.setSelectedItem(target);
+    targetBox.addItemListener(this);
   }
 
 
@@ -168,11 +173,19 @@ public class InteractionFilterEditor
   }
 
   public void setSelectedFilter(int  newFilter){
-    filterBox.setSelectedItem(FilterManager.defaultManager().getFilter(newFilter));
-    filter.setFilter(FilterManager.defaultManager().getFilterID((Filter)filterBox.getSelectedItem()));
+    if ( filter != null) {
+      filterBox.removeItemListener(this);
+      filterBox.setSelectedItem(FilterManager.defaultManager().getFilter(newFilter));
+      filterBox.addItemListener(this);
+      filter.setFilter(FilterManager.defaultManager().getFilterID((Filter)filterBox.getSelectedItem()));
+    }
   }
 
   public void actionPerformed ( ActionEvent e ) {
+    handleEvent(e);
+  }
+
+  public void itemStateChanged(ItemEvent e){
     handleEvent(e);
   }
 
