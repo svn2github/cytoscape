@@ -1,7 +1,7 @@
 package cytoscape.util.intr;
 
 /**
- * This is a B+-tree that stores integers.
+ * A B<sup>+</sup>-Tree that stores integers.
  */
 public final class IntBTree
 {
@@ -14,13 +14,18 @@ public final class IntBTree
 
   private Node m_root;
 
+  /**
+   * Creates a new tree structure.
+   */
   public IntBTree()
   {
     m_root = new Node(MAX_BRANCHES, true);
   }
 
   /**
-   * Empties this structure of all elements.
+   * Empties this structure of all elements.  This method returns in constant
+   * time (note however that garbage collection will take place in the
+   * background).
    */
   public final void empty()
   {
@@ -29,7 +34,8 @@ public final class IntBTree
 
   /**
    * Returns the number of elements currently in this structure.  Duplicate
-   * entries are counted however many times they are present.
+   * entries are counted however many times they are present.  This method
+   * returns in constant time.
    */
   public final int size()
   {
@@ -45,7 +51,9 @@ public final class IntBTree
   }
 
   /**
-   * Inserts a new entry into this structure.  Duplicate entries are allowed.
+   * Inserts a new entry into this tree structure; duplicate entries may be
+   * entered.  This method has a time complexity of O(log(N)) where N is the
+   * number of entries currently stored in this tree structure.
    * @param x the new entry to insert.
    */
   public final void insert(final int x)
@@ -264,17 +272,20 @@ public final class IntBTree
 
   /**
    * Returns the number of entries of the integer x in this tree.
-   * This method is superfluous because we can use searchRange() to
-   * get the same information.
+   * This method has a time complexity of O(log(N)) where N is the total
+   * number of entries currently in this tree structure.<p>
+   * This method is superfluous because we can use searchRange(x, x) to
+   * get the same information, paying the same hit in time complexity.
    * @param x the integer whose count to query.
    * @return the number of entries x currently in this structure.
    */
-  public final int count(int x)
+  public final int count(final int x)
   {
     return count(m_root, x, Integer.MIN_VALUE, Integer.MAX_VALUE);
   }
 
-  private final int count(Node n, int x, int minBound, int maxBound)
+  private final int count(final Node n, final int x,
+                          final int minBound, final int maxBound)
   {
     int count = 0;
     if (isLeafNode(n)) {
