@@ -243,7 +243,7 @@ class FRootGraph implements RootGraph
   public int removeEdge(int edgeInx)
   {
     final int nativeEdgeInx = ~edgeInx;
-    if (m_graph.removeEdge(nativeEdgeInx) < 0) return 0;
+    if (!(m_graph.removeEdge(nativeEdgeInx))) return 0;
     final FEdge removedEdge = m_edges.getEdgeAtIndex(nativeEdgeInx);
     m_edges.setEdgeAtIndex(null, nativeEdgeInx);
     m_edgeDepot.recycleEdge(removedEdge);
