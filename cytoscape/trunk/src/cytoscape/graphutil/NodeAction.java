@@ -29,19 +29,19 @@ import javax.swing.*;
 import java.awt.event.*;
 
 public class NodeAction {
-	
+
   public NodeAction () {
   }
 
   /**
-   * get the Title for PNodeView which is just the "getIdentifier()" method 
+   * get the Title for PNodeView which is just the "getIdentifier()" method
    * from Node
    */
   public static String getTitle ( Object[] args, PNode node ) {
     //System.out.println( "Getting Title" );
     final NetworkView nv = ( NetworkView )args[0];
     //return nv.getNetwork().getNodeAttributes().getCanonicalName( node );
-   
+
     if ( node instanceof PNodeView ) {
       return nv.getNetwork().getGraphPerspective().
         getNode( ( (PNodeView)node).getGraphPerspectiveIndex() ).
@@ -51,7 +51,7 @@ public class NodeAction {
   }
 
   /**
-   * This will open a Node Attribute browser 
+   * This will open a Node Attribute browser
    */
   public static JMenuItem viewNodeAttributeBrowser ( Object[] args, PNode node ) {
     final NetworkView network = ( NetworkView )args[0];
@@ -76,12 +76,12 @@ public class NodeAction {
                     objects = new Object[] { view.getNode() };
                   }
 
-    TabbedBrowser nodeBrowser = new TabbedBrowser ( objects, 
+    TabbedBrowser nodeBrowser = new TabbedBrowser ( objects,
                                                     network.getNetwork().getNodeAttributes(),
                                                     new Vector(),
                                                     network.getCytoscapeObj().
                                                     getConfiguration().getProperties().
-                                                    getProperty("webBrowserScript", 
+                                                    getProperty("webBrowserScript",
                                                                  "noScriptDefined") ,
                                                     TabbedBrowser.BROWSING_NODES );
      } } ); } } );
@@ -95,10 +95,10 @@ public class NodeAction {
     final NetworkView network = ( NetworkView )args[0];
     final GraphView v = network.getView();
     final PNodeView nv = ( PNodeView )node;
-    
+
     JMenu edit_menu = new JMenu( "<html>Node Editing <I><small>(short-term)</I></small></html>");
 
-  
+
     edit_menu.add( new JMenuItem( new AbstractAction( "Color" ) {
          public void actionPerformed ( ActionEvent e ) {
            // Do this in the GUI Event Dispatch thread...
@@ -108,59 +108,72 @@ public class NodeAction {
                  nv.setUnselectedPaint( color.showDialog( v.getComponent() , "Choose a Node Color", (java.awt.Color)nv.getUnselectedPaint() ) );
                } } ); } } ) );
 
-
+    JMenuItem jmi;
     JMenu shape_menu = new JMenu( "Shape" );
-    shape_menu.add( new JMenuItem( new AbstractAction( "Diamond" ) {
+    jmi = new JCheckBoxMenuItem( new AbstractAction( "Diamond") {
          public void actionPerformed ( ActionEvent e ) {
            // Do this in the GUI Event Dispatch thread...
            SwingUtilities.invokeLater( new Runnable() {
                public void run() {
                  nv.setShape( PNodeView.DIAMOND );
-               } } ); } } ) );
-
-    shape_menu.add( new JMenuItem( new AbstractAction( "Ellipse" ) {
+               } } ); } } );
+    jmi.setSelected(nv.getShape() == PNodeView.DIAMOND);
+    shape_menu.add(jmi);
+    jmi = new JCheckBoxMenuItem( new AbstractAction( "Ellipse" ) {
          public void actionPerformed ( ActionEvent e ) {
            // Do this in the GUI Event Dispatch thread...
            SwingUtilities.invokeLater( new Runnable() {
                public void run() {
                  nv.setShape( PNodeView.ELLIPSE );
-               } } ); } } ) );
-    shape_menu.add( new JMenuItem( new AbstractAction( "Hexagon" ) {
+               } } ); } } );
+    jmi.setSelected(nv.getShape() == PNodeView.ELLIPSE);
+    shape_menu.add(jmi);
+    jmi = new JCheckBoxMenuItem( new AbstractAction( "Hexagon" ) {
          public void actionPerformed ( ActionEvent e ) {
            // Do this in the GUI Event Dispatch thread...
            SwingUtilities.invokeLater( new Runnable() {
                public void run() {
                  nv.setShape( PNodeView.HEXAGON );
-               } } ); } } ) );
-    shape_menu.add( new JMenuItem( new AbstractAction( "Octagon" ) {
+               } } ); } } );
+    jmi.setSelected(nv.getShape() == PNodeView.HEXAGON);
+    shape_menu.add(jmi);
+    jmi = new JCheckBoxMenuItem( new AbstractAction( "Octagon" ) {
          public void actionPerformed ( ActionEvent e ) {
            // Do this in the GUI Event Dispatch thread...
            SwingUtilities.invokeLater( new Runnable() {
                public void run() {
                  nv.setShape( PNodeView.OCTAGON );
-               } } ); } } ) );
-    shape_menu.add( new JMenuItem( new AbstractAction( "Triangle" ) {
+               } } ); } } );
+    jmi.setSelected(nv.getShape() == PNodeView.OCTAGON);
+    shape_menu.add(jmi);
+    jmi = new JCheckBoxMenuItem( new AbstractAction( "Triangle" ) {
          public void actionPerformed ( ActionEvent e ) {
            // Do this in the GUI Event Dispatch thread...
            SwingUtilities.invokeLater( new Runnable() {
                public void run() {
                  nv.setShape( PNodeView.TRIANGLE );
-               } } ); } } ) );
-    shape_menu.add( new JMenuItem( new AbstractAction( "Parallelogram" ) {
+               } } ); } } );
+    jmi.setSelected(nv.getShape() == PNodeView.TRIANGLE);
+    shape_menu.add(jmi);
+    jmi = new JCheckBoxMenuItem( new AbstractAction( "Parallelogram" ) {
          public void actionPerformed ( ActionEvent e ) {
            // Do this in the GUI Event Dispatch thread...
            SwingUtilities.invokeLater( new Runnable() {
                public void run() {
                  nv.setShape( PNodeView.PARALELLOGRAM );
-               } } ); } } ) );
-    shape_menu.add( new JMenuItem( new AbstractAction( "Rectangle" ) {
+               } } ); } } );
+    jmi.setSelected(nv.getShape() == PNodeView.PARALELLOGRAM);
+    shape_menu.add(jmi);
+    jmi = new JCheckBoxMenuItem( new AbstractAction( "Rectangle" ) {
          public void actionPerformed ( ActionEvent e ) {
            // Do this in the GUI Event Dispatch thread...
            SwingUtilities.invokeLater( new Runnable() {
                public void run() {
                  nv.setShape( PNodeView.RECTANGLE );
-               } } ); } } ) );
-	     
+               } } ); } } );
+    jmi.setSelected(nv.getShape() == PNodeView.RECTANGLE);
+    shape_menu.add(jmi);
+
     edit_menu.add( shape_menu );
     return edit_menu;
 }
@@ -183,7 +196,7 @@ public class NodeAction {
                   String gene = null;
                   if ( nv instanceof PNodeView ) {
                     gene = ( ( PNodeView ) nv).getLabel().getText();
-                  } 
+                  }
                   //System.out.println( "Node: "+nv.getLabel() );
                   //System.out.println( "GEne: "+gene );
                   if ( gene == null ) {
@@ -191,7 +204,7 @@ public class NodeAction {
                     //System.out.println( "Gene: "+gene );
                   }
                   OpenBrowser.openURL( "http://db.yeastgenome.org/cgi-bin/SGD/locus.pl?locus="+gene );
-               
+
                 } } ); } } ) );
 
     web_menu.add(  new JMenuItem( new AbstractAction( "Google" ) {
@@ -202,7 +215,7 @@ public class NodeAction {
                   String gene = null;
                   if ( nv instanceof PNodeView ) {
                     gene = ( ( PNodeView ) nv).getLabel().getText();
-                  } 
+                  }
                   //System.out.println( "Node: "+nv.getLabel() );
                   //System.out.println( "GEne: "+gene );
                   if ( gene == null ) {
@@ -210,10 +223,10 @@ public class NodeAction {
                     //System.out.println( "Gene: "+gene );
                   }
                   OpenBrowser.openURL( "http://www.google.com/search?q="+gene);
-               
+
                 } } ); } } ) );
 
-   
+
     JMenu gn_menu = new JMenu( "GenomeNet" );
     web_menu.add( gn_menu );
     gn_menu.add(  new JMenuItem( new AbstractAction( "Pathway" ) {
@@ -224,7 +237,7 @@ public class NodeAction {
                   String gene = null;
                   if ( nv instanceof PNodeView ) {
                     gene = ( ( PNodeView ) nv).getLabel().getText();
-                  } 
+                  }
                   //System.out.println( "Node: "+nv.getLabel() );
                   //System.out.println( "GEne: "+gene );
                   if ( gene == null ) {
@@ -232,7 +245,7 @@ public class NodeAction {
                     //System.out.println( "Gene: "+gene );
                   }
                   OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=pathway&keywords="+gene );
-               
+
                 } } ); } } ));
 
     gn_menu.add(  new JMenuItem( new AbstractAction( "KO" ){
@@ -243,7 +256,7 @@ public class NodeAction {
                   String gene = null;
                   if ( nv instanceof PNodeView ) {
                     gene = ( ( PNodeView ) nv).getLabel().getText();
-                  } 
+                  }
                   //System.out.println( "Node: "+nv.getLabel() );
                   //System.out.println( "GEne: "+gene );
                   if ( gene == null ) {
@@ -251,7 +264,7 @@ public class NodeAction {
                     //System.out.println( "Gene: "+gene );
                   }
                   OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=ko&keywords="+gene );
-               
+
                 } } ); } } ));
 
     gn_menu.add(  new JMenuItem( new AbstractAction( "Genes" ){
@@ -262,7 +275,7 @@ public class NodeAction {
                   String gene = null;
                   if ( nv instanceof PNodeView ) {
                     gene = ( ( PNodeView ) nv).getLabel().getText();
-                  } 
+                  }
                   //System.out.println( "Node: "+nv.getLabel() );
                   //System.out.println( "GEne: "+gene );
                   if ( gene == null ) {
@@ -270,7 +283,7 @@ public class NodeAction {
                     //System.out.println( "Gene: "+gene );
                   }
                   OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=genes&keywords="+gene );
-               
+
                 } } ); } } ));
 
     gn_menu.add(  new JMenuItem( new AbstractAction( "Genome" ){
@@ -281,7 +294,7 @@ public class NodeAction {
                   String gene = null;
                   if ( nv instanceof PNodeView ) {
                     gene = ( ( PNodeView ) nv).getLabel().getText();
-                  } 
+                  }
                   //System.out.println( "Node: "+nv.getLabel() );
                   //System.out.println( "GEne: "+gene );
                   if ( gene == null ) {
@@ -289,7 +302,7 @@ public class NodeAction {
                     //System.out.println( "Gene: "+gene );
                   }
                   OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=genome&keywords="+gene );
-               
+
                 } } ); } } ));
 
     gn_menu.add(  new JMenuItem( new AbstractAction( "Ligand" ){
@@ -300,7 +313,7 @@ public class NodeAction {
                   String gene = null;
                   if ( nv instanceof PNodeView ) {
                     gene = ( ( PNodeView ) nv).getLabel().getText();
-                  } 
+                  }
                   //System.out.println( "Node: "+nv.getLabel() );
                   //System.out.println( "GEne: "+gene );
                   if ( gene == null ) {
@@ -308,7 +321,7 @@ public class NodeAction {
                     //System.out.println( "Gene: "+gene );
                   }
                   OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=ligand&keywords="+gene );
-               
+
                 } } ); } } ));
 
     gn_menu.add(  new JMenuItem( new AbstractAction( "Compound" ){
@@ -319,7 +332,7 @@ public class NodeAction {
                   String gene = null;
                   if ( nv instanceof PNodeView ) {
                     gene = ( ( PNodeView ) nv).getLabel().getText();
-                  } 
+                  }
                   //System.out.println( "Node: "+nv.getLabel() );
                   //System.out.println( "GEne: "+gene );
                   if ( gene == null ) {
@@ -327,7 +340,7 @@ public class NodeAction {
                     //System.out.println( "Gene: "+gene );
                   }
                   OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=compound&keywords="+gene );
-               
+
                 } } ); } } ));
 
     gn_menu.add(  new JMenuItem( new AbstractAction( "Glycan" ){
@@ -338,7 +351,7 @@ public class NodeAction {
                   String gene = null;
                   if ( nv instanceof PNodeView ) {
                     gene = ( ( PNodeView ) nv).getLabel().getText();
-                  } 
+                  }
                   //System.out.println( "Node: "+nv.getLabel() );
                   //System.out.println( "GEne: "+gene );
                   if ( gene == null ) {
@@ -346,7 +359,7 @@ public class NodeAction {
                       //System.out.println( "Gene: "+gene );
                   }
                   OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=glycan&keywords="+gene );
-               
+
                 } } ); } } ));
 
     gn_menu.add(  new JMenuItem( new AbstractAction( "Reaction" ){
@@ -357,7 +370,7 @@ public class NodeAction {
                   String gene = null;
                   if ( nv instanceof PNodeView ) {
                     gene = ( ( PNodeView ) nv).getLabel().getText();
-                  } 
+                  }
                   //System.out.println( "Node: "+nv.getLabel() );
                   //System.out.println( "GEne: "+gene );
                   if ( gene == null ) {
@@ -365,7 +378,7 @@ public class NodeAction {
                     //System.out.println( "Gene: "+gene );
                   }
                   OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=reaction&keywords="+gene );
-               
+
                 } } ); } } ));
 
     gn_menu.add(  new JMenuItem( new AbstractAction( "Enzyme" ){
@@ -376,7 +389,7 @@ public class NodeAction {
                   String gene = null;
                   if ( nv instanceof PNodeView ) {
                     gene = ( ( PNodeView ) nv).getLabel().getText();
-                  } 
+                  }
                   //System.out.println( "Node: "+nv.getLabel() );
                   //System.out.println( "GEne: "+gene );
                   if ( gene == null ) {
@@ -384,11 +397,11 @@ public class NodeAction {
                     //System.out.println( "Gene: "+gene );
                   }
                   OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=enzyme&keywords="+gene );
-               
+
                 } } ); } }) );
 
            gn_menu.addSeparator();
-           
+
            gn_menu.add(  new JMenuItem( new AbstractAction( "Swiss-Prot" ){
             public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
@@ -397,7 +410,7 @@ public class NodeAction {
                   String gene = null;
                   if ( nv instanceof PNodeView ) {
                     gene = ( ( PNodeView ) nv).getLabel().getText();
-                  } 
+                  }
                   //System.out.println( "Node: "+nv.getLabel() );
                   //System.out.println( "GEne: "+gene );
                   if ( gene == null ) {
@@ -405,10 +418,10 @@ public class NodeAction {
                     //System.out.println( "Gene: "+gene );
                   }
                   OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=swissprot&keywords="+gene );
-               
+
                 } } ); } }) );
 
-         
+
 
            gn_menu.add(  new JMenuItem( new AbstractAction( "Ref-Seq" ){
             public void actionPerformed ( ActionEvent e ) {
@@ -418,7 +431,7 @@ public class NodeAction {
                   String gene = null;
                   if ( nv instanceof PNodeView ) {
                     gene = ( ( PNodeView ) nv).getLabel().getText();
-                  } 
+                  }
                   //System.out.println( "Node: "+nv.getLabel() );
                   //System.out.println( "GEne: "+gene );
                   if ( gene == null ) {
@@ -426,7 +439,7 @@ public class NodeAction {
                     //System.out.println( "Gene: "+gene );
                   }
                   OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=refseq&keywords="+gene );
-               
+
                 } } ); } } ));
 
            gn_menu.add(  new JMenuItem( new AbstractAction( "GenBank" ){
@@ -437,7 +450,7 @@ public class NodeAction {
                   String gene = null;
                   if ( nv instanceof PNodeView ) {
                     gene = ( ( PNodeView ) nv).getLabel().getText();
-                  } 
+                  }
                   //System.out.println( "Node: "+nv.getLabel() );
                   //System.out.println( "GEne: "+gene );
                   if ( gene == null ) {
@@ -445,7 +458,7 @@ public class NodeAction {
                     //System.out.println( "Gene: "+gene );
                   }
                   OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=genbank&keywords="+gene );
-               
+
                 } } ); } } ));
 
            gn_menu.add(  new JMenuItem( new AbstractAction( "Embl" ){
@@ -456,7 +469,7 @@ public class NodeAction {
                   String gene = null;
                   if ( nv instanceof PNodeView ) {
                     gene = ( ( PNodeView ) nv).getLabel().getText();
-                  } 
+                  }
                   //System.out.println( "Node: "+nv.getLabel() );
                   //System.out.println( "GEne: "+gene );
                   if ( gene == null ) {
@@ -464,14 +477,14 @@ public class NodeAction {
                     //System.out.println( "Gene: "+gene );
                   }
                   OpenBrowser.openURL("http://www.genome.ad.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=embl&keywords="+gene );
-               
+
                 } } ); } } ));
 
            return web_menu;
 
    }
 
-  
+
 
   public static JMenuItem showData ( Object[] args, PNode node ) {
 
@@ -485,9 +498,9 @@ public class NodeAction {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
-		
+
                  PNode node = (PNode)v.addNodeView( "cytoscape.graphutil.StarNode",nv.getIndex());
-                  
+
                 } } ); } } ) );
 
 
@@ -496,17 +509,17 @@ public class NodeAction {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
-                  
+
                   PNode node = (PNode) v.addNodeView( "cytoscape.graphutil.GridNode",nv.getIndex());
                 } } ); } } ) );
 
-  
+
     datashow_menu.add( new JMenuItem( new AbstractAction( "As a Petal Node" ) {
           public void actionPerformed ( ActionEvent e ) {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
-                 
+
                   PNode node = (PNode) v.addNodeView( "cytoscape.graphutil.PetalNode",nv.getIndex());
                 } } ); } } ) );
 
@@ -515,7 +528,7 @@ public class NodeAction {
             // Do this in the GUI Event Dispatch thread...
             SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
-                  
+
                   PNode node = (PNode) v.addNodeView( "cytoscape.graphutil.RadarNode",nv.getIndex());
                 } } ); } } ) );
 
@@ -525,14 +538,14 @@ public class NodeAction {
             SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
                   //set nv to Clip Radar Node
-		  
+
                   PNode node = (PNode) v.addNodeView( "cytoscape.graphutil.ClipRadarNode",nv.getIndex());
                 } } ); } } ) );
-     
-     
+
+
      return datashow_menu;
    }//end of datashow menu
-   
+
    public static JMenuItem changeFirstNeighbors (Object[] args, PNode node)
    {
 	  //final PNode thenode = node;
@@ -541,8 +554,8 @@ public class NodeAction {
 	  final GraphPerspective graphPerspective = v.getGraphPerspective();
 
     JMenu firstn_menu = new JMenu( "<html>Set First Neighbors <I><small>(short-term)</I></small></html>");
- 
-	 
+
+
     firstn_menu.add( new JMenuItem( new AbstractAction( "Color" ) {
          public void actionPerformed ( ActionEvent e ) {
            // Do this in the GUI Event Dispatch thread...
@@ -551,7 +564,7 @@ public class NodeAction {
                  JColorChooser color = new JColorChooser();
 		 java.awt.Color custom = color.showDialog( v.getComponent() , "Choose a Node Color", (java.awt.Color)nv.getUnselectedPaint() );
 		 Node n = graphPerspective.getNode(nv.getIndex());
-		 
+
 		 List list = graphPerspective.neighborsList(n);
 		 Iterator i = list.iterator();
 		 while (i.hasNext())
@@ -561,8 +574,8 @@ public class NodeAction {
 			neibview.setUnselectedPaint( custom);
 		}
 	 } } ); } } ) );
-	 
-	 
+
+
     JMenu shape_menu = new JMenu( "Shape" );
     firstn_menu.add( shape_menu );
 	 shape_menu.add( new JMenuItem( new AbstractAction( "To parallelogram" ) {
@@ -571,7 +584,7 @@ public class NodeAction {
            SwingUtilities.invokeLater( new Runnable() {
                public void run() {
 		 Node n = graphPerspective.getNode(nv.getIndex());
-		 
+
 		 List list = graphPerspective.neighborsList(n);
 		 Iterator i = list.iterator();
 		 while (i.hasNext())
@@ -580,16 +593,16 @@ public class NodeAction {
 			NodeView neibview = (NodeView)v.getNodeView(neib.getRootGraphIndex());
 			neibview.setShape( NodeView.PARALELLOGRAM );
 		}
-                  
+
                } } ); } } ) );
-	 
+
 	 shape_menu.add( new JMenuItem( new AbstractAction( "To circles" ) {
          public void actionPerformed ( ActionEvent e ) {
            // Do this in the GUI Event Dispatch thread...
            SwingUtilities.invokeLater( new Runnable() {
                public void run() {
 		 Node n = graphPerspective.getNode(nv.getIndex());
-		 
+
 		 List list = graphPerspective.neighborsList(n);
 		 Iterator i = list.iterator();
 		 while (i.hasNext())
@@ -598,16 +611,16 @@ public class NodeAction {
 			NodeView neibview = (NodeView)v.getNodeView(neib.getRootGraphIndex());
 			neibview.setShape( PNodeView.ELLIPSE );
 		}
-                  
-               } } ); } } ) ); 
-	       
+
+               } } ); } } ) );
+
 	 shape_menu.add( new JMenuItem( new AbstractAction( "To triangles" ) {
          public void actionPerformed ( ActionEvent e ) {
            // Do this in the GUI Event Dispatch thread...
            SwingUtilities.invokeLater( new Runnable() {
                public void run() {
 		 Node n = graphPerspective.getNode(nv.getIndex());
-		 
+
 		 List list = graphPerspective.neighborsList(n);
 		 Iterator i = list.iterator();
 		 while (i.hasNext())
@@ -616,16 +629,16 @@ public class NodeAction {
 			NodeView neibview = (NodeView)v.getNodeView(neib.getRootGraphIndex());
 			neibview.setShape( PNodeView.TRIANGLE );
 		}
-                  
+
                } } ); } } ) );
-	       
+
 	  shape_menu.add( new JMenuItem( new AbstractAction( "To diamonds" ) {
          public void actionPerformed ( ActionEvent e ) {
            // Do this in the GUI Event Dispatch thread...
            SwingUtilities.invokeLater( new Runnable() {
                public void run() {
 		 Node n = graphPerspective.getNode(nv.getIndex());
-		 
+
 		 List list = graphPerspective.neighborsList(n);
 		 Iterator i = list.iterator();
 		 while (i.hasNext())
@@ -634,15 +647,15 @@ public class NodeAction {
 			NodeView neibview = (NodeView)v.getNodeView(neib.getRootGraphIndex());
 			neibview.setShape( PNodeView.DIAMOND );
 		}
-                  
-               } } ); } } ) );        
+
+               } } ); } } ) );
 
      return firstn_menu;
    }//end of changeFirstNeighbors
-   
+
     public static JMenuItem zoomToNode ( Object[] args, PNode node ) {
     final PNode n = ( PNode )node;
-    
+
      final PGraphView v = ( PGraphView )args[0];
     return new  JMenuItem( new AbstractAction( "Zoom To" ) {
          public void actionPerformed ( ActionEvent e ) {
@@ -654,7 +667,7 @@ public class NodeAction {
   }
   public static JMenuItem zoomToNeighbors ( Object[] args, PNode node ) {
     final PNode n = ( PNode )node;
-    
+
      final PGraphView v = ( PGraphView )args[0];
     return new  JMenuItem( new AbstractAction( "Zoom To Neghbors" ) {
          public void actionPerformed ( ActionEvent e ) {
@@ -662,7 +675,7 @@ public class NodeAction {
            SwingUtilities.invokeLater( new Runnable() {
                public void run() {
                  PTransformActivity activity =  v.getCanvas().getCamera().animateViewToCenterBounds( n.getUnionOfChildrenBounds(n.getFullBounds()), true, 500 );
-                  
+
 		       //PTransformActivity activity =  v.getCanvas().getCamera().animateViewToCenterBounds( n.getGlobalFullBounds(), true, 500 );
                } } ); } } );
   }
