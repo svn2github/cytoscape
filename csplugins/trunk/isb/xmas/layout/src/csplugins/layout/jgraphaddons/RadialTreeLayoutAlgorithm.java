@@ -135,11 +135,14 @@ public class RadialTreeLayoutAlgorithm extends AbstractLayout {
   CyNetwork parent;
   OpenIntIntHashMap radialTreeVisited;
   int layoutStep;
-
-
+  List partions;
+  
   public RadialTreeLayoutAlgorithm ( CyNetworkView view ) {
     super( view );
     this.network = view.getNetwork();
+    parent = ( CyNetwork )network;
+    partions = GraphPartition.partition( parent );
+    lengthOfTask = partions.size();
   }
 
   protected void initialize_local() {}
@@ -148,6 +151,7 @@ public class RadialTreeLayoutAlgorithm extends AbstractLayout {
 
   public String getName () {
     return "RadialTreeLayoutAlgorithm";
+    
   }
 
   /**
@@ -156,15 +160,12 @@ public class RadialTreeLayoutAlgorithm extends AbstractLayout {
   public Object construct () {
     
 
-    parent = ( CyNetwork )network;
-    List partions = GraphPartition.partition( parent );
-    Iterator i = partions.iterator();
-
+   
     double last_x = 0;
     double last_y = 0;
     double sum_x = 0;
     double sum_y = 0;
-
+    Iterator i = partions.iterator();
     double node_count = ( double )parent.getNodeCount();
     node_count = Math.sqrt( node_count );
     // now we know how many nodes on a side
@@ -184,37 +185,54 @@ public class RadialTreeLayoutAlgorithm extends AbstractLayout {
          continue;
        }
       network = parent.createGraphPerspective( nodes, parent.getConnectingEdgeIndicesArray( nodes ) );
-
-      //System.out.println( "Net size: "+network.getNodeCount()+ " parnet size: "+parent.getNodeCount() );
-
-      initialize();
-    
-      radialTreeVisited = new OpenIntIntHashMap( network.getNodeCount() );
-  
-      // search all roots
-      int[] roots = getRoots();
-      TreeNode tree = getSpanningTree( roots);
+      
+      if ( nodes.length != 1 ) {
+        initialize();
+        radialTreeVisited = new OpenIntIntHashMap( network.getNodeCount() );
+ 
+        // search all roots
+        int[] roots = getRoots();
+        TreeNode tree = getSpanningTree( roots);
         
-      if (null == tree) {
-        return null;
+        if (null == tree) {
+          return null;
+        }
+        
+        double depth = tree.getDepth();
+        
+        double WIDTH = getCurrentSize().getWidth();
+        
+        ROOTX = WIDTH / 2.0;
+        RADIUSX = ROOTX / depth;
+        
+        double HEIGHT = getCurrentSize().getHeight();
+        ROOTY = HEIGHT / 2.0;
+        RADIUSY = ROOTY / depth;
+        
+        layoutTree0( tree);
+                
+        move( sum_x, sum_y );
+        sum_x += currentSize.getWidth();
+
+      } else {
+        if ( !ones ) {
+          ones = true;
+          incr = 20;
+          _x = 0;
+          _y = sum_y + last_y;
+          if ( small_x == Double.MAX_VALUE )
+            small_x = 0;
+        }
+        if ( _x > node_count ) {
+          _y += incr;
+          _x = 0;;
+        } else {
+          _x += incr;
+        } 
+        
+        setSingle( _x, _y );
+
       }
-
-      double depth = tree.getDepth();
-      
-      double WIDTH = getCurrentSize().getWidth();
-      
-      ROOTX = WIDTH / 2.0;
-      RADIUSX = ROOTX / depth;
-      
-      double HEIGHT = getCurrentSize().getHeight();
-      ROOTY = HEIGHT / 2.0;
-      RADIUSY = ROOTY / depth;
-      
-      layoutTree0( tree);
-
-      move( sum_x, sum_y );
-      sum_x += currentSize.getWidth();
-
       
       if ( currentSize.getHeight() > last_y ) {
         //System.out.println( "new y is: "+currentSize.getHeight() );
@@ -222,7 +240,6 @@ public class RadialTreeLayoutAlgorithm extends AbstractLayout {
 
       }
      
-
       if ( sum_x > node_count ) {
         sum_x = 0;
         sum_y+= last_y;
@@ -230,6 +247,9 @@ public class RadialTreeLayoutAlgorithm extends AbstractLayout {
       }
 
     }
+
+
+    
 
       Iterator n = networkView.getNodeViewsIterator();
       while ( n.hasNext() ) {

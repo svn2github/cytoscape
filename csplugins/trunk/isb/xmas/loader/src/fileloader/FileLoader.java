@@ -10,6 +10,14 @@ import cytoscape.*;
 import cytoscape.data.Semantics;
 public class FileLoader {
 
+  public static void saveAttributesToFile ( String file_name,
+                                            boolean is_nodes,
+                                            String[] attributes ) {
+
+
+  }
+
+
   public static void loadFileToAttributes ( String file_name,
                                             boolean is_nodes,
                                             boolean is_delimted,
@@ -71,7 +79,7 @@ public class FileLoader {
       if ( node == null )
         node = Cytoscape.getCyNode( row[0], true );
 
-      //System.out.println( "Loading data for: "+node.getIdentifier() );
+      System.out.println( "Loading data for: "+node.getIdentifier() );
 
 
       

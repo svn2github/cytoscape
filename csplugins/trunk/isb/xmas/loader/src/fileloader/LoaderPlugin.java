@@ -23,6 +23,16 @@ public class LoaderPlugin extends CytoscapePlugin {
             } ); } } ) );
 
 
+    Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.save").add( new JMenuItem ( new AbstractAction( "Save Spread Sheet" ) {
+        public void actionPerformed ( java.awt.event.ActionEvent e ) {
+          // Do this in the GUI Event Dispatch thread...
+          SwingUtilities.invokeLater( new Runnable() {
+              public void run() {
+                FileLoaderUI ui = new FileLoaderUI();
+              }
+            } ); } } ) );
+
+
   }
 
 
