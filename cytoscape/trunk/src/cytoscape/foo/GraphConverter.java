@@ -30,39 +30,36 @@ public final class GraphConverter
     // GraphTopology object, the corresponding NodeView in Giny.
     final NodeView[] m_nodeTranslation;
 
-    final double m_minX;
-    final double m_maxX;
-    final double m_minY;
-    final double m_maxY;
-    final double m_percentBorder;
+    final double m_xOff;
+    final double m_yOff;
 
     private MyCMutableGraphLayout(int numNodes,
-                                 int[] directedEdgeSourceNodeIndices,
-                                 int[] directedEdgeTargetNodeIndices,
-                                 int[] undirectedEdgeNode0Indices,
-                                 int[] undirectedEdgeNode1Indices,
-                                 double maxWidth,
-                                 double maxHeight,
-                                 double[] nodeXPositions,
-                                 double[] nodeYPositions,
-                                 boolean[] isMovableNode,
-                                 NodeView[] nodeTranslation,
-                                 double minX,
-                                 double maxX,
-                                 double minY,
-                                 double maxY,
-                                 double percentBorder)
+                                  int[] directedEdgeSourceNodeIndices,
+                                  int[] directedEdgeTargetNodeIndices,
+                                  int[] undirectedEdgeNode0Indices,
+                                  int[] undirectedEdgeNode1Indices,
+                                  double width,
+                                  double height,
+                                  double[] nodeXPositions,
+                                  double[] nodeYPositions,
+                                  boolean[] isMovableNode,
+                                  NodeView[] nodeTranslation,
+                                  double xOff,
+                                  double yOff)
     {
-      super(numNodes, directedEdgeSourceNodeIndices,
-            directedEdgeTargetNodeIndices, undirectedEdgeNode0Indices,
-            undirectedEdgeNode1Indices, maxWidth, maxHeight,
-            nodeXPositions, nodeYPositions, isMovableNode);
+      super(numNodes,
+            directedEdgeSourceNodeIndices,
+            directedEdgeTargetNodeIndices,
+            undirectedEdgeNode0Indices,
+            undirectedEdgeNode1Indices,
+            width,
+            height,
+            nodeXPositions,
+            nodeYPositions,
+            isMovableNode);
       m_nodeTranslation = nodeTranslation;
-      m_minX = minX;
-      m_maxX = maxX;
-      m_minY = minY;
-      m_maxY = maxY;
-      m_percentBorder = percentBorder;
+      m_xOff = xOff;
+      m_yOff = yOff;
     }
   }
 
@@ -150,19 +147,8 @@ public final class GraphConverter
    * not the AWT dispatch thread.  Use <code>updateCytoscapeLayout()</code>,
    * passing as an argument the return value of <code>getGraphCopy()</code>,
    * to move nodes in the underlying Cytoscape network view.
-   * <code>getMaxWidth()</code> of the return object is the product of
-   * {the width of the Cytoscape graph (as measured from node with minimum X
-   * value to node with maximum X value)} and {<code>percentBorder</code>
-   * plus one}.  Likewise, <code>getMaxHeight()</code> of the return object
-   * is the product of {the height of the Cytoscape graph (as measured from
-   * node with minimum Y value to node with maximum Y value)} and
-   * {<code>percentBorder</code> plus one}.  All distances are preserved from
-   * to Cytoscape graph to the return object.  In the return object, the
-   * node with minimum X position will have an X position of
-   * {<code>percentBorder</code> times half of the width of the Cytoscape
-   * graph}, and the node with minimum Y position will have a Y position of
-   * {<code>percentBorder</code> times half of the height of the Cytoscape
-   * graph}.
+   * <code>getMaxWidth()</code> of the return object is ...
+   * All distances are preserved from to Cytoscape graph to the return object.
    **/
   public static MutableGraphLayout getGraphCopy(double percentBorder)
   {
@@ -250,23 +236,26 @@ public final class GraphConverter
       undirectedEdgeTargetNodeIndices[i] = edge[1]; }
     final double[] nodeXPositions = new double[numNodesInTopology];
     final double[] nodeYPositions = new double[numNodesInTopology];
-    final double xOff = -minX + ((maxX - minX) * percentBorder * 0.5d);
-    final double yOff = -minY + ((maxY - minY) * percentBorder * 0.5d);
+    final double border =
+      Math.max(maxX - minX, maxY - minY) * percentBorder * 0.5d;
+    final double xOff = minX - border;
+    final double yOff = minY - border;
     for (int i = 0; i < numNodesInTopology; i++) {
-      nodeXPositions[i] = nodeTranslation[i].getXPosition() + xOff;
-      nodeYPositions[i] = nodeTranslation[i].getYPosition() + yOff; }
+      nodeXPositions[i] = nodeTranslation[i].getXPosition() - xOff;
+      nodeYPositions[i] = nodeTranslation[i].getYPosition() - yOff; }
     return new MyCMutableGraphLayout(numNodesInTopology,
                                      directedEdgeSourceNodeIndices,
                                      directedEdgeTargetNodeIndices,
                                      undirectedEdgeSourceNodeIndices,
                                      undirectedEdgeTargetNodeIndices,
-                                     (maxX - minX) * (percentBorder + 1.0d),
-                                     (maxY - minY) * (percentBorder + 1.0d),
+                                     maxX - minX + border + border,
+                                     maxY - minY + border + border,
                                      nodeXPositions,
                                      nodeYPositions,
                                      mobility,
                                      nodeTranslation,
-                                     minX, maxX, minY, maxY, percentBorder);
+                                     xOff,
+                                     yOff);
   }
 
   /**
@@ -288,13 +277,10 @@ public final class GraphConverter
       throw new IllegalArgumentException
         ("layout is not a previous return value of getGraphCopy()"); }
     NodeView[] nodeTranslation = myLayout.m_nodeTranslation;
-    final double xOff = myLayout.m_minX -
-      ((myLayout.m_maxX - myLayout.m_minX) * myLayout.m_percentBorder * 0.5d);
-    final double yOff = myLayout.m_minY -
-      ((myLayout.m_maxY - myLayout.m_minY) * myLayout.m_percentBorder * 0.5d);
     for (int i = 0; i < nodeTranslation.length; i++)
-      nodeTranslation[i].setOffset(layout.getNodePosition(i, true) + xOff,
-                                   layout.getNodePosition(i, false) + yOff);
+      nodeTranslation[i].setOffset
+        (layout.getNodePosition(i, true) + myLayout.m_xOff,
+         layout.getNodePosition(i, false) + myLayout.m_yOff);
   }
 
   /**
