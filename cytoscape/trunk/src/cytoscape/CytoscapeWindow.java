@@ -57,7 +57,7 @@ public class CytoscapeWindow extends JPanel { // implements VizChooserClient {
   protected static final int DEFAULT_WIDTH = 700;
   protected static final int DEFAULT_HEIGHT = 700;
 
-  protected WindowListener windowListener;
+  protected cytoscape parentApp;
   protected Graph2D graph;
   protected String geometryFilename;
   protected String expressionDataFilename;
@@ -107,7 +107,7 @@ public class CytoscapeWindow extends JPanel { // implements VizChooserClient {
   protected String titleForCurrentSelection = null;
   protected CytoscapeConfig config;
 //------------------------------------------------------------------------------
-public CytoscapeWindow (WindowListener windowListener,
+public CytoscapeWindow (cytoscape parentApp,
                         CytoscapeConfig config,
                         Graph2D graph, 
                         ExpressionData expressionData,
@@ -120,7 +120,7 @@ public CytoscapeWindow (WindowListener windowListener,
                         boolean doFreshLayout)
    throws Exception
 {
-  this.windowListener = windowListener;
+  this.parentApp = parentApp;
   this.graph = graph;
   this.geometryFilename = geometryFilename;
   this.expressionDataFilename = expressionDataFilename;
@@ -148,10 +148,12 @@ public CytoscapeWindow (WindowListener windowListener,
   this.config = config;
 
   initializeWidgets ();
+
   displayCommonNodeNames ();
   displayGraph (doFreshLayout);
 
   mainFrame.setVisible (true);
+  mainFrame.addWindowListener (parentApp);
 
     // load plugins last, after the main window is setup, since they will
     // often need access to all of the parts of a fully instantiated CytoscapeWindow
@@ -160,6 +162,11 @@ public CytoscapeWindow (WindowListener windowListener,
   pluginLoader.load ();
 
 } // ctor
+//------------------------------------------------------------------------------
+public void windowStateChanged (WindowEvent e)
+{
+  System.out.println ("--- windowStateChanged: " + e);
+}
 //------------------------------------------------------------------------------
 public Graph2D getGraph ()
 {  
@@ -224,11 +231,6 @@ protected void initializeWidgets ()
   add (infoLabel, BorderLayout.SOUTH);
 
   mainFrame = new JFrame (windowTitle);
-  mainFrame.addWindowListener (windowListener);
- //mainFrame.addWindowListener (new WindowAdapter () {
- //   public void windowClosing (WindowEvent e) {System.out.println ("bye!");System.exit (0);}}
- //   );
-
     
   mainFrame.setJMenuBar (createMenuBar ());
   mainFrame.setContentPane (this);
@@ -761,7 +763,7 @@ protected class DisplaySelectedInNewWindowAction extends AbstractAction   {
     try {
       boolean requestFreshLayout = true;
       CytoscapeWindow newWindow =
-          new CytoscapeWindow  (windowListener, config, subGraph, expressionData, 
+          new CytoscapeWindow  (parentApp, config, subGraph, expressionData, 
                                 bioDataServer, newNodeAttributes, newEdgeAttributes, 
                                 "dataSourceName", expressionDataFilename, title, 
                                 requestFreshLayout);
@@ -868,7 +870,7 @@ protected class ExitAction extends AbstractAction  {
   ExitAction () { super ("Exit"); }
 
   public void actionPerformed (ActionEvent e) {
-    exit();
+    parentApp.exit ();
   }
 }
 //------------------------------------------------------------------------------
@@ -876,7 +878,7 @@ protected class CloseWindowAction extends AbstractAction  {
   CloseWindowAction () { super ("Close"); }
 
   public void actionPerformed (ActionEvent e) {
-    quit();
+    mainFrame.dispose ();
   }
 }
 //------------------------------------------------------------------------------
@@ -1096,25 +1098,5 @@ protected class NodeAttributesPopupMode extends PopupMode {
     }
 
 } // inner class NodeAttributesPopupMode
-//---------------------------------------------------------------------------------------
-/**
- * Close this window.
- */
-public void quit () {
-  mainFrame.dispose();  
-}
-//---------------------------------------------------------------------------------------
-/**
- * Close this window and all subwindows.
- */
-public void exit () {
-  if( subwindows != null ) {
-    Enumeration subwindows_enum = subwindows.elements();
-    while( subwindows_enum.hasMoreElements() ) {
-      ( ( CytoscapeWindow )subwindows_enum.nextElement() ).exit();
-    }
-  }
-  quit();
-}
 //---------------------------------------------------------------------------------------
 } // CytoscapeWindow

@@ -154,7 +154,10 @@ protected void addNameMappingToAttributes (Object [] graphObjects, GraphObjAttri
 } // addNameMappingToAttributes
 //------------------------------------------------------------------------------
 public void windowActivated   (WindowEvent e) {}
-public void windowClosing     (WindowEvent e) {}
+/**
+ * on linux (at least) a killed window generates a 'windowClosed' event; trap that here
+ */
+public void windowClosing     (WindowEvent e) {windowClosed (e);}
 public void windowDeactivated (WindowEvent e) {}
 public void windowDeiconified (WindowEvent e) {}
 public void windowIconified   (WindowEvent e) {}
@@ -166,7 +169,9 @@ public void windowOpened (WindowEvent e)
 //------------------------------------------------------------------------------
 public void windowClosed (WindowEvent e) 
 { 
-  windows.remove (e.getWindow ());
+  Window window = e.getWindow ();
+  if (windows.contains (window))
+    windows.remove (window);
 
   if (windows.size () == 0) {
     System.out.println ("all windows closed, exiting...");
@@ -174,6 +179,14 @@ public void windowClosed (WindowEvent e)
     }
 
 } // windowListener.windowClosed	
+//------------------------------------------------------------------------------
+public void exit ()
+{
+  for (int i=0; i < windows.size (); i++) {
+    Window w = (Window) windows.elementAt (i);
+    w.dispose ();
+    }
+}
 //------------------------------------------------------------------------------
 public static void main (String args []) throws Exception
 {
