@@ -50,6 +50,8 @@ public abstract class Cytoscape {
 
   protected static Map storedLayouts = new HashMap();;
 
+  protected static GraphReader reader = null;
+
 
   //--------------------//
   // Root Graph Methods
@@ -200,8 +202,7 @@ public abstract class Cytoscape {
     if ( location == null )  
       return null;
 
-    // create the GraphReader
-    GraphReader reader;
+    
 
     //set the reader according to what file type was passed.
     if ( file_type == FILE_SIF 
@@ -244,6 +245,14 @@ public abstract class Cytoscape {
     // Create a new cytoscape.data.CyNetwork from these nodes and edges
     return createNetwork( nodes, edges );
   }
+
+  /**
+   * @deprecated
+   */
+  public static GraphReader getLastGraphReaderForDoingLayout () {
+    return reader;
+  }
+
 
   //--------------------//
   // Network Data Methods

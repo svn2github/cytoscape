@@ -152,10 +152,10 @@ public class LoadGraphFileAction extends AbstractAction {
 	networkView.setWindowTitle(name);//and set a new title
 
 	//hack to apply layout information from a GML file
-	//if( fileType == Cytoscape.FILE_GML ) {
-	//    GMLReader reader = new GMLReader(name);
-	//    reader.layout(networkView.getView());
-	//}
+	if( fileType == Cytoscape.FILE_GML ) {
+    //GMLReader reader = new GMLReader(name);
+	    Cytoscape.getLastGraphReaderForDoingLayout().layout(networkView.getView());
+	}
 
 	//give the user some confirmation
 	String lineSep = System.getProperty("line.separator");
