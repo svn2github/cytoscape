@@ -1030,15 +1030,14 @@ class FGraphPerspective implements GraphPerspective
       if (!(rootGraphNodeInx < 0)) return 0;
       final int nativeNodeIndex =
         m_rootToNativeNodeInxMap.get(~rootGraphNodeInx);
-      final IntEnumerator edgeInxEnum;
-      try { edgeInxEnum = m_graph.adjacentEdges
-              (nativeNodeIndex, true, true, true); }
-      catch (IllegalArgumentException e) { return 0; }
-      if (edgeInxEnum == null) return 0;
-      final Edge[] edgeRemoveArr = new Edge[edgeInxEnum.numRemaining()];
+      if (nativeNodeIndex < 0) return 0;
+      final IntEnumerator nativeEdgeInxEnum =
+        m_graph.adjacentEdges(nativeNodeIndex, true, true, true);
+      if (nativeEdgeInxEnum == null) return 0;
+      final Edge[] edgeRemoveArr = new Edge[nativeEdgeInxEnum.numRemaining()];
       for (int i = 0; i < edgeRemoveArr.length; i++) {
         final int rootGraphEdgeInx =
-          m_nativeToRootEdgeInxMap.getIntAtIndex(edgeInxEnum.nextInt());
+          m_nativeToRootEdgeInxMap.getIntAtIndex(nativeEdgeInxEnum.nextInt());
         // The edge returned by the RootGraph won't be null even if this
         // hideNode operation is triggered by a node being removed from
         // the underlying RootGraph - this is because when a node is removed
@@ -1083,7 +1082,7 @@ class FGraphPerspective implements GraphPerspective
     // This method is to be called by RootGraphChangeSniffer.
     private final void hideNodes(Object source, Node[] nodes)
     {
-      // We can't use m_heap here because it's used be every _hideNode().
+      // We can't use m_heap here because it's used by every _hideNode().
       final MinIntHeap successes = new MinIntHeap();
       for (int i = 0; i < nodes.length; i++) {
         if (_hideNode(source, nodes[i].getRootGraphIndex()) != 0)
