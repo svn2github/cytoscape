@@ -20,7 +20,7 @@ public class EdgeManipulationAction extends AbstractAction {
     NetworkView networkView;
     
     public EdgeManipulationAction(NetworkView networkView) {
-        super ("Select or hide by attributes...");
+        super ("Edge select or hide by attributes...");
         this.networkView = networkView;
     }
     
