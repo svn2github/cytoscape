@@ -1108,7 +1108,9 @@ protected class ListFromFileSelectionAction extends AbstractAction   {
 }
 
 //------------------------------------------------------------------------------
-protected boolean saveVisibleNodeNames ()
+// this is public so activePaths can get at it;
+// active paths depends on saveVisibleNodeNames () to save state periodically.
+public boolean saveVisibleNodeNames ()
 {
     Graph2D g = graphView.getGraph2D();
     Node [] nodes = graphView.getGraph2D().getNodeArray();
