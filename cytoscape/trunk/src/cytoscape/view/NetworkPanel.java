@@ -10,6 +10,10 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.view.CyNodeView;
 import cytoscape.view.CyEdgeView;
 
+import cytoscape.actions.CreateNetworkViewAction;
+import cytoscape.actions.DestroyNetworkViewAction;
+import cytoscape.actions.DestroyNetworkAction;
+
 import cytoscape.giny.*;
 
 import cytoscape.util.swing.*;
@@ -36,6 +40,11 @@ public class NetworkPanel
   JTreeTable treeTable;
   NetworkTreeNode root;
   JPanel navigatorPanel;
+  JPopupMenu popup;
+  PopupActionListener popupActionListener;
+  JMenuItem createViewItem;
+  JMenuItem destroyViewItem;
+  JMenuItem destroyNetworkItem;
 
   private CytoscapeDesktop cytoscapeDesktop;
 
@@ -65,10 +74,24 @@ public class NetworkPanel
     navigatorPanel = new JPanel();
 
     JScrollPane scroll = new JScrollPane( treeTable );
-    
-    
     JSplitPane split = new JSplitPane( JSplitPane.VERTICAL_SPLIT, scroll, navigatorPanel );
     add( split );
+
+ 
+    treeTable.addMouseListener(new PopupListener());
+    popup = new JPopupMenu();
+    createViewItem = new JMenuItem(PopupActionListener.CREATE_VIEW);
+    destroyViewItem = new JMenuItem(PopupActionListener.DESTROY_VIEW);
+    destroyNetworkItem = new JMenuItem(PopupActionListener.DESTROY_NETWORK);
+    popupActionListener = new PopupActionListener();
+    createViewItem.addActionListener(popupActionListener);
+    destroyViewItem.addActionListener(popupActionListener);
+    destroyNetworkItem.addActionListener(popupActionListener);
+    popup.add(createViewItem);
+    popup.add(destroyViewItem);
+    popup.add(destroyNetworkItem);
+    
+    
 
   }
 
@@ -151,13 +174,12 @@ public class NetworkPanel
   }
 
   public void valueChanged ( TreeSelectionEvent e ) {
-
     NetworkTreeNode node = (NetworkTreeNode)
       treeTable.getTree().getLastSelectedPathComponent();
     
     if (node == null ) return;
     if (node.getUserObject() == null ) return;
-    fireFocus( (String)node.getNetworkID() );
+    fireFocus((String)node.getNetworkID());
                                                      
   }
 
@@ -257,38 +279,38 @@ public class NetworkPanel
   }
 
   private class MyRenderer extends DefaultTreeCellRenderer {
-        Icon tutorialIcon;
+    Icon tutorialIcon;
 
-        public MyRenderer() {
+    public MyRenderer() {
             
-        }
+    }
 
-        public Component getTreeCellRendererComponent(
-                            JTree tree,
-                            Object value,
-                            boolean sel,
-                            boolean expanded,
-                            boolean leaf,
-                            int row,
-                            boolean hasFocus) {
+    public Component getTreeCellRendererComponent(
+						  JTree tree,
+						  Object value,
+						  boolean sel,
+						  boolean expanded,
+						  boolean leaf,
+						  int row,
+						  boolean hasFocus) {
 
-            super.getTreeCellRendererComponent(
-                            tree, value, sel,
-                            expanded, leaf, row,
-                            hasFocus);
+      super.getTreeCellRendererComponent(
+					 tree, value, sel,
+					 expanded, leaf, row,
+					 hasFocus);
             
-            if ( hasView(value) ) {
-              //setIcon(tutorialIcon);
-              setBackgroundNonSelectionColor( java.awt.Color.green.brighter() );
-              //setBackgroundSelectionColor( java.awt.Color.green.darker() );
-            } else {
-              setBackgroundNonSelectionColor( java.awt.Color.pink.brighter() );
-              //setBackgroundSelectionColor( java.awt.Color.pink.darker() );
+      if ( hasView(value) ) {
+	//setIcon(tutorialIcon);
+	setBackgroundNonSelectionColor( java.awt.Color.green.brighter() );
+	//setBackgroundSelectionColor( java.awt.Color.green.darker() );
+      } else {
+	setBackgroundNonSelectionColor( java.awt.Color.pink.brighter() );
+	//setBackgroundSelectionColor( java.awt.Color.pink.darker() );
                
-            }
+      }
 
-            return this;
-        }
+      return this;
+    }
 
 
     private boolean hasView ( Object value ) {
@@ -302,4 +324,102 @@ public class NetworkPanel
   }
 
 
+  /**
+   * This class listens to mouse events from the TreeTable, if the mouse event
+   * is one that is canonically associated with a popup menu (ie, a left click)
+   * it will pop up the menu with option for destroying view, creating view, and 
+   * destroying network
+   */
+  protected class PopupListener extends MouseAdapter{
+    /**
+     * Don't know why you need both of these, but this is how they did it in the example
+     */
+    public void mousePressed(MouseEvent e){
+      maybeShowPopup(e);
+    }
+
+    /**
+     * Don't know why you need both of these, but this is how they did it in hte example
+     */
+    public void mouseReleased(MouseEvent e){
+      maybeShowPopup(e);
+    }
+
+    /**
+     * if the mouse press is of the correct type, this function will
+     * maybe display hte popup
+     */
+    private void maybeShowPopup(MouseEvent e){
+      //check for the popup type
+      if (e.isPopupTrigger()) {
+	//get the path where the mouse event originated
+	JTree tree = treeTable.getTree();
+	TreePath treePath= tree.getPathForLocation(e.getX(), e.getY());
+	if ( treePath != null ) {
+	  //get the network and network id corresponding to that path
+	  String networkID = (String)((NetworkTreeNode)treePath.getLastPathComponent()).getNetworkID();
+	  CyNetwork cyNetwork = Cytoscape.getNetwork(networkID);
+	  if ( cyNetwork != null) {
+	    //disable or enable specific options with respect to the actual network
+	    //that is selected
+	    if ( Cytoscape.viewExists(networkID)) {
+	      //disable the view creation item
+	      createViewItem.setEnabled(false);
+	      destroyViewItem.setEnabled(true);
+	    } // end of if ()
+	    else {
+	      createViewItem.setEnabled(true);
+	      destroyViewItem.setEnabled(false);
+	    } // end of else
+	    //let the actionlistener know which network it should be operating
+	    //on when (if) it is called
+	    popupActionListener.setActiveNetwork(cyNetwork);
+	    //display the popup
+	    popup.show(e.getComponent(),e.getX(), e.getY());
+	  } 
+	}
+      }
+    }
+  }
+
+  
+}
+
+/**
+ * This class listens for actions from the popup menu, it is responsible for performing
+ * actions related to destroying and creating views, and destroying the network.
+ */
+class PopupActionListener implements ActionListener{
+  /**
+   * Constants for JMenuItem labels
+   */
+  public static String DESTROY_VIEW = "Destroy View";
+  public static String CREATE_VIEW = "Create View";
+  public static String DESTROY_NETWORK = "Destroy Network";
+  protected CyNetwork cyNetwork;
+  public void actionPerformed(ActionEvent ae){
+    String label = ((JMenuItem)ae.getSource()).getText();
+    //Figure out the appropriate action
+    if ( label == DESTROY_VIEW) {
+      Cytoscape.destroyNetworkView(cyNetwork);
+    } // end of if ()
+    else if ( label == CREATE_VIEW ) {
+      Cytoscape.createNetworkView(cyNetwork);
+    } // end of if ()
+    else if ( label == DESTROY_NETWORK) {
+      Cytoscape.destroyNetwork(cyNetwork);
+    } // end of if ()
+    else {
+      System.err.println("Unexpected network panel popup option");
+    } // end of else
+  }
+  
+  /**
+   *Right before the popup menu is displayed, this function is called 
+   *so we know which network the user is clicking on to call for the 
+   *popup menu
+   */
+  public void setActiveNetwork(CyNetwork cyNetwork){
+    this.cyNetwork = cyNetwork;
+  }
 }
