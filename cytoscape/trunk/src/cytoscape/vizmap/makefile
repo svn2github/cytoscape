@@ -11,14 +11,18 @@ JC=javac -source 1.4
 .java.class: 
 	$(JC) $<
 
-OBJS =  DomainInfo.class \
-	DomainBoundary.class \
-        VizMapper.class \
-	NodeVizMapper.class \
-        EdgeVizMapper.class \
-        VizMapperPropertiesAdapter.class \
-        EdgeVizMapperPropertiesAdapter.class \
-        NodeVizMapperPropertiesAdapter.class \
+OBJS =  AttributeMapper.class \
+	AttributeMapperCategories.class \
+	AttributeMapperPropertiesAdapter.class \
+	BoundaryRangeValues.class \
+	ContinuousMapper.class \
+	DiscreteMapper.class \
+	Interpolator.class \
+	LinearNumberInterpolator.class \
+	LinearNumberToColorInterpolator.class \
+	NumberInterpolator.class \
+	ValueMapper.class \
+	VizMapperCategories.class \
 
 default: objs 
 
@@ -26,5 +30,3 @@ objs: $(OBJS)
 
 clean:
 	- rm *.class 
-
-

@@ -19,6 +19,7 @@ edge.color.interaction.map.pd=255,0,0
 # and source decorators (no decoration) is used everywhere else
 
 edge.targetDecoration.controller=interaction
+edge.targetDecoration.interaction.type=discrete
 edge.targetDecoration.interaction.map.pd=arrow
 #edge.sourceDecoration.controller=interaction
 #edge.sourceDecoration.interaction.map.pp=arrow
@@ -26,9 +27,9 @@ edge.targetDecoration.interaction.map.pd=arrow
 #--------------------------------------------------------------------
 # window and graph defaults:
 
-background.color=230,230,205
-node.fill.color=250,255,255
-node.border.color=255,0,0
+background.color.default=230,230,205
+node.fill.color.default=250,255,255
+node.border.color.default=255,0,0
 
 #--------------------------------------------------------------------
 # plugins. for each plugin, specify

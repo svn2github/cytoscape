@@ -88,8 +88,10 @@ public class CytoscapeWindow extends JPanel { // implements VizChooserClient {
   protected GraphObjAttributes nodeAttributes = new GraphObjAttributes ();
   protected GraphObjAttributes edgeAttributes = new GraphObjAttributes ();
 
-  protected NodeVizMapper nodeVizMapper;
-  protected EdgeVizMapper edgeVizMapper;
+    protected AttributeMapper vizMapper;
+    protected VizMapperCategories vizMapperCategories;
+  //protected NodeVizMapper nodeVizMapper;
+  //protected EdgeVizMapper edgeVizMapper;
   // protected WindowVizMapper windowVizMapper;
 
 
@@ -139,13 +141,11 @@ public CytoscapeWindow (cytoscape parentApp,
   if (edgeAttributes != null)
     this.edgeAttributes = edgeAttributes;
 
-  NodeVizMapperPropertiesAdapter nodePropsReader = 
-       new NodeVizMapperPropertiesAdapter (config.getProperties ());
-  nodeVizMapper = nodePropsReader.createNodeVizMapper ();
-
-  EdgeVizMapperPropertiesAdapter edgePropsReader = 
-      new EdgeVizMapperPropertiesAdapter (config.getProperties ());
-  edgeVizMapper = edgePropsReader.createEdgeVizMapper ();
+  vizMapperCategories = new VizMapperCategories();
+  vizMapper = new AttributeMapper( vizMapperCategories.getInitialDefaults() );
+  AttributeMapperPropertiesAdapter adapter =
+      new AttributeMapperPropertiesAdapter(vizMapper, vizMapperCategories);
+  adapter.applyAllRangeProperties( config.getProperties() );
 
   if (title == null)
     this.windowTitle = "";
@@ -213,14 +213,14 @@ public ExpressionData getExpressionData ()
   return expressionData;
 }
 //------------------------------------------------------------------------------
-public NodeVizMapper getNodeVizMapper ()
+public AttributeMapper getVizMapper ()
 {
-  return nodeVizMapper;
+  return vizMapper;
 }
 //------------------------------------------------------------------------------
-public EdgeVizMapper getEdgeVizMapper ()
+public VizMapperCategories getVizMapperCategories ()
 {
-  return edgeVizMapper;
+  return vizMapperCategories;
 }
 //------------------------------------------------------------------------------
 protected void initializeWidgets ()
@@ -269,7 +269,8 @@ public void displayGraph (boolean doLayout)
   graphView.fitContent ();
   graphView.setZoom (graphView.getZoom ()*0.9);
 
-  redrawGraph ();
+  //redrawGraph ();  commented out 4/9/02 AM
+  renderNodesAndEdges();    //implicitly calls redrawGraph()
 
 } // displayGraph
 //------------------------------------------------------------------------------
@@ -281,10 +282,27 @@ public void renderNodesAndEdges ()
     Node node = nodes [i];
     String canonicalName = nodeAttributes.getCanonicalName (node);
     HashMap bundle = nodeAttributes.getAttributes (canonicalName);
-    Color nodeColor = nodeVizMapper.getNodeFillColor (bundle);
+    Color nodeColor =
+	vizMapperCategories.getNodeFillColor(bundle, vizMapper);
+    Color nodeBorderColor =
+	vizMapperCategories.getNodeBorderColor(bundle, vizMapper);
+    int nodeHeight =
+	vizMapperCategories.getNodeHeight(bundle, vizMapper);
+    int nodeWidth =
+	vizMapperCategories.getNodeWidth(bundle, vizMapper);
+    byte nodeShape =
+	vizMapperCategories.getNodeShape(bundle, vizMapper);
+
     NodeRealizer nr = graphView.getGraph2D().getRealizer(node);
     nr.setFillColor (nodeColor);
-    } // for i
+    nr.setLineColor(nodeBorderColor);
+    nr.setHeight(nodeHeight);
+    nr.setWidth(nodeWidth);
+    if (nr instanceof ShapeNodeRealizer) {
+	ShapeNodeRealizer snr = (ShapeNodeRealizer)nr;
+	snr.setShapeType(nodeShape);
+    }
+  } // for i
 
   EdgeCursor cursor = graphView.getGraph2D().edges();
   cursor.toFirst ();
@@ -293,17 +311,19 @@ public void renderNodesAndEdges ()
     Edge edge = cursor.edge ();
     String canonicalName = edgeAttributes.getCanonicalName (edge);
     HashMap bundle = edgeAttributes.getAttributes (canonicalName);
-    Color color = edgeVizMapper.getEdgeColor (bundle);
+    Color color = vizMapperCategories.getEdgeColor(bundle, vizMapper);
+    LineType line = vizMapperCategories.getEdgeLineType(bundle, vizMapper);
+    Arrow sourceArrow =
+      vizMapperCategories.getEdgeSourceDecoration(bundle, vizMapper);
+    Arrow targetArrow =
+      vizMapperCategories.getEdgeTargetDecoration(bundle, vizMapper);
     EdgeRealizer er = graphView.getGraph2D().getRealizer(edge);
-    String sourceDecoration = edgeVizMapper.getSourceDecoration (bundle);
-    if (sourceDecoration.equals ("arrow"))
-       er.setSourceArrow (Arrow.STANDARD);
-    String targetDecoration = edgeVizMapper.getTargetDecoration (bundle);
-    if (targetDecoration.equals ("arrow"))
-       er.setTargetArrow (Arrow.STANDARD);
     er.setLineColor (color);
+    er.setLineType(line);
+    er.setSourceArrow(sourceArrow);
+    er.setTargetArrow(targetArrow);
     cursor.cyclicNext ();
-    } // for i
+  } // for i
 
   redrawGraph ();
 

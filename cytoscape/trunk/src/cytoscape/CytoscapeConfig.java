@@ -186,17 +186,16 @@ protected Properties readProperties ()
 
   File userSpecialPropsFile = createFile  (System.getProperty ("user.dir"), propsFileName);
   if (userSpecialPropsFile != null)
-    userGeneralProps = readOnePropertyFile (userGeneralProps, userSpecialPropsFile);
+    userSpecialProps = readOnePropertyFile (userGeneralProps, userSpecialPropsFile);
 
-  if (userSpecialProps != null)
-    return userSpecialProps;
-  else if (userGeneralProps != null)
-    return userGeneralProps;
-  else if (systemProps != null)
-    return systemProps;
-  else
-    return new Properties ();
-
+  /* we will return a valid Properties object; if any properties files
+   * were found and read, we copy them in sequentially so that duplicate
+   * keys in the users file overwrite the sytems defaults */
+  Properties returnVal = new Properties();
+  if (systemProps != null) {returnVal.putAll(systemProps);}
+  if (userGeneralProps != null) {returnVal.putAll(userGeneralProps);}
+  if (userSpecialProps != null) {returnVal.putAll(userSpecialProps);}
+  return returnVal;
 
 } // readProperties
 //------------------------------------------------------------------------------------------
