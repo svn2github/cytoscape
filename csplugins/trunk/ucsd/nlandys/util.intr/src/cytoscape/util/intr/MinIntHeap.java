@@ -264,7 +264,7 @@ public final class MinIntHeap
    * time if this heap is in an ordered state when this method is called.)
    * The retuned enumeration takes constant time to return each successive
    * element.<p>
-   * The returned enumeration becomes "invalid" as soon as any other method
+   * The returned enumeration becomes invalid as soon as any other method
    * on this heap instance is called; calling methods on an invalid enumeration
    * will cause undefined behavior in both the enumerator and in the underlying
    * heap.<p>

@@ -156,7 +156,7 @@ public final class IntIntHash
   /**
    * Returns an enumeration of keys in this hashtable, ordered
    * arbitrarily.<p>
-   * The returned enumeration becomes "invalid" as soon as put(int, int) or
+   * The returned enumeration becomes invalid as soon as put(int, int) or
    * empty() is called on this hashtable; calling methods on an invalid
    * enumeration will cause undefined behavior in the enumerator.
    * The returned enumerator has absolutely no effect on the underlying
@@ -172,7 +172,7 @@ public final class IntIntHash
   /**
    * Returns an enumeration of values in this hashtable, ordered
    * arbitrarily.<p>
-   * The returned enumeration becomes "invalid" as soon as put(int, int) or
+   * The returned enumeration becomes invalid as soon as put(int, int) or
    * empty() is called on this hashtable; calling methods on an invalid
    * enumeration will cause undefined behavior in the enumerator.
    * The returned enumerator has absolutely no effect on the underlying
