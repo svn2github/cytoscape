@@ -94,25 +94,44 @@ class FGraphPerspective implements GraphPerspective
   public int[] getNodeIndicesArray()
   {
     IntEnumerator nodes = m_graph.nodes();
-    final int[] returnThis = new int[nodes.numRemaining()];
-    for (int i = 0; i < returnThis.length; i++)
+    // According to the API spec, we must return an array with 0 at index 0.
+    final int[] returnThis = new int[nodes.numRemaining() + 1];
+    for (int i = 1; i < returnThis.length; i++)
       returnThis[i] = m_nativeToRootNodeInxMap.getIntAtIndex(nodes.nextInt());
     return returnThis;
   }
 
   public Iterator edgesIterator()
   {
-    throw new IllegalStateException("not implemented yet");
+    final IntEnumerator edges = m_graph.edges();
+    return new Iterator() {
+        public void remove() {
+          throw new UnsupportedOperationException(); }
+        public boolean hasNext() {
+          return edges.numRemaining() > 0; }
+        public Object next() {
+          if (!hasNext()) throw new NoSuchElementException();
+          return m_root.getEdge
+            (m_nativeToRootEdgeInxMap.getIntAtIndex(edges.nextInt())); } };
   }
 
-  public java.util.List edgesList()
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  // This method has been marked deprecated in the Giny API.
+  public java.util.List edgesList() {
+    final int edgeCount = getEdgeCount();
+    final java.util.ArrayList returnThis = new java.util.ArrayList(edgeCount);
+    Iterator iter = edgesIterator();
+    for (int i = 0; i < edgeCount; i++) returnThis.add(iter.next());
+    return returnThis; }
 
+  // This method has been marked deprecated in the Giny API.
   public int[] getEdgeIndicesArray()
   {
-    throw new IllegalStateException("not implemented yet");
+    IntEnumerator edges = m_graph.edges();
+    // According to the API spec, we must return an array with 0 at index 0.
+    final int[] returnThis = new int[edges.numRemaining() + 1];
+    for (int i = 1; i < returnThis.length; i++)
+      returnThis[i] = m_nativeToRootEdgeInxMap.getIntAtIndex(edges.nextInt());
+    return returnThis;
   }
 
   public int[] getEdgeIndicesArray(int perspFromNodeInx,
