@@ -619,7 +619,7 @@
         <delete dir="${nwo.classes.dir}/buildgen"/>
     </target>
 
-    <target name="nwo-compile" depends="prepare">
+    <target name="nwo-compile" depends="nwo-prepare">
         <ant antfile="${nwo.dir}/build.xml" target="littlejars"/>
     </target>
 
