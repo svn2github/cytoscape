@@ -169,9 +169,11 @@
 	
 	<!-- Target to Run JavaDoc -->
 	<target name="doc" description="Runs JavaDoc.">
-		<javadoc destdir="API" source="1.4" classpathref="classpath"
-			overview="${src.dir}/org/mskcc/dataservices/overview.html"
-      link="http://java.sun.com/j2se/1.4.2/docs/api/">
+		<javadoc destdir="API" 
+             source="1.4" 
+             classpathref="classpath"
+			       overview="${src.dir}/org/mskcc/dataservices/overview.html"
+             link="http://java.sun.com/j2se/1.4.2/docs/api/">
     			<packageset dir="${src.dir}">
       				<include name="cytoscape/**"/>
               <exclude name="**test/**"/>
