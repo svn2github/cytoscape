@@ -40,7 +40,7 @@ import javax.swing.border.EmptyBorder;
 public final class ProgressUI
 {
 
-  private static final Object[] s_contrl = new Object[1];
+  private static final boolean[] s_contrl = new boolean[1];
 
   // No constructor for this class.
   private ProgressUI() {}
@@ -62,7 +62,15 @@ public final class ProgressUI
    * A progress UI can only be created once all previous progress UIs have been
    * disposed of.  This method will throw an <code>IllegalStateException</code>
    * if previous progress UI has not been disposed of at the time this method
-   * is called.
+   * is called.<p>
+   * A few notes on the <code>stop</code> parameter passed to this method.
+   * If you're using a <code>Stoppable</code>, a &quot;Stop&quot; button will
+   * appear on the modal dialog.  pushing this button will trigger, in the
+   * AWT event dispatch thread, <code>stop.stop()</code> to be called.
+   * Therefore, if <code>stop()</code> blocks for a while, the UI will become
+   * unresponsive during this time.  Programmers should be aware of ths and
+   * should prevent passing <code>Stoppable</code> objects which block for
+   * long periods.
    *
    * @param parent the parent frame that will show this modal dialog; in most
    *   cases this will be <code>Cytoscape.getDesktop()</code>; this class uses
@@ -118,7 +126,7 @@ public final class ProgressUI
       JButton button = new JButton("Stop");
       button.addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            try { stop.stop(); }
+            try { stop.stop(); } // AWT thread will block here!
             finally { returnThis.dispose(); } } } );
       JPanel panel2 = new JPanel(new FlowLayout());
       panel2.setBorder(new EmptyBorder(0, 20, 20, 20));
@@ -130,7 +138,7 @@ public final class ProgressUI
       busyDialog.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
     }
     synchronized (s_contrl) {
-      if (s_contrl[0] == null) s_contrl[0] = new Object();
+      if (!s_contrl[0]) s_contrl[0] = true;
       else throw new IllegalStateException
              ("another progress dialog is currently being shown"); }
     return returnThis;

@@ -12,13 +12,13 @@ import javax.swing.JDialog;
 public final class ProgressUIControl implements PercentCompletedCallback
 {
 
-  private final Object[] m_monitor;
+  private final boolean[] m_monitor;
   private final JDialog m_dialog;
   private final PercentCompletedCallback m_percentHook;
   private final Frame m_parent;
 
   /* Package visible only. */
-  ProgressUIControl(Object[] monitor,
+  ProgressUIControl(boolean[] monitor,
                     JDialog dialog,
                     PercentCompletedCallback percentHook,
                     Frame parent)
@@ -31,11 +31,12 @@ public final class ProgressUIControl implements PercentCompletedCallback
 
   /**
    * This is a hook to set the percent completed in a progress bar UI.
-   * This method can be called from any thread.  If this method is never
-   * called, the progress UI will have an animating generic progress bar
-   * with no percent completed marker.
+   * This method can be called from any thread, but repeated calls should
+   * happen from the same thread.  If this method is never
+   * called, the progress UI will have a generic animating progress bar
+   * with no &quot;percent completed&quot; information.
    *
-   * @param value represents percent completed of a task - must
+   * @param percent represents percent completed of a task - must
    *   be in the range <nobr><code>[0, 100]</code></nobr>.
    * @exception IllegalArgumentException if <code>percent</code> is not in
    *   the interval <nobr><code>[0, 100]</code></nobr>.
@@ -81,7 +82,7 @@ public final class ProgressUIControl implements PercentCompletedCallback
     // event dispatching thread.
     Runnable dispose = new Runnable() {
         public void run() {
-          m_monitor[0] = null;
+          m_monitor[0] = false;
           m_dialog.dispose(); } };
     if (!EventQueue.isDispatchThread())
       EventQueue.invokeLater(dispose);
