@@ -1,0 +1,212 @@
+<project name="loader" default="loader" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init-loader">
+    <tstamp/>
+    <property name="loader.Name" value="loader"/>
+    <property name="loader.name" value="loader"/>
+    <property name="loader.version" value="0.1"/>
+    <property name="loader.year" value="200"/>
+
+    <echo message="Building ${loader.name} version ${loader.version}."/>
+
+    <!-- Inheritable properties -->
+    <property name="debug" value="on"/>
+    <property name="optimize" value="off"/>
+    <property name="deprecation" value="on"/>
+    <property name="nowarn" value="true"/>
+    <property name="fork" value="false"/>
+    <property name="loader.root.dir" value="."/>
+    <property name="loader.lib.dir" value="${loader.root.dir}/lib"/>
+    <property name="cytoscape.lib.dir" value="${loader.root.dir}/../../../../cytoscape/lib"/>
+    <property name="cytoscape.plugin.dir" value="${loader.root.dir}/../../../../cytoscape/plugins"/>
+    <path id="project.class.path">
+      <pathelement path="${java.class.path}/"/>
+    </path>
+
+    <!-- Define the directories -->
+    <property name="loader.root.dir" value="./"/>
+    <property name="loader.src.dir" value="${loader.root.dir}/src"/>
+    <property name="loader.classes.dir" value="${loader.root.dir}/classes"/>
+    <property name="loader.javadoc.dir" value="${javadoc.dir}/loader"/>
+    <property name="loader.resources.dir" value="${loader.root.dir}/resources"/>
+    <property name="loader.manifest.dir" value="${loader.root.dir}/manifest"/>
+    <property name="loader.packages" value="loader.*"/>
+    <!-- Subdirectory for test reports -->
+    <property name="loader.tests.reports.dir" value="${loader.root.dir}/reports/tests" />
+    <property name="cytoscape.lib" value="../../cytoscape/lib" />
+
+    <!-- Define the condition for compilation -->
+    <property name="cytoscape.jar" value="${loader.lib.dir}/cytoscape.jar"/>
+    <property name="colt.jar" value="${loader.lib.dir}/colt.jar"/>
+    
+
+    <condition property="cytoscape.present">
+      <and> 
+	  		<available file="${cytoscape.jar}"/> 
+				<available file="${colt.jar}"/> 
+		  </and>
+    </condition>
+
+    <!-- Define excludes for loader compile and javadoc -->
+    <property name="loader.excludes" value="**/notyet/*"/>
+    <property name="loader.tests.excludes" value="**/notyet/*"/>
+    <property name="loader.packages.excludes" value="**.test.*,**.notyet.*"/>
+
+    <path id="loader.project.class.path">
+      <pathelement location="${loader.classes.dir}"/>
+      <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/y.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/piccolo.jar"/>
+      <pathelement path="${project.class.path}/"/>
+    </path>
+
+
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the loader project                                           -->
+  <!-- =================================================================== -->
+  <target name="compile-loader" depends="init-loader"  >
+
+   <echo message=" COMPILE loader "/>
+
+    <mkdir dir="${loader.classes.dir}"/>
+    <javac srcdir="${loader.src.dir}"
+           excludes="${loader.excludes}"
+           classpathref="loader.project.class.path"
+           destdir="${loader.classes.dir}"
+           debug="${debug}"
+           nowarn="${nowarn}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the loader.jar file                                           -->
+  <!-- =================================================================== -->
+  <target name="loader" depends="compile-loader"  >
+    <jar destfile="loader.jar" manifest="${loader.manifest.dir}/loader.manifest">
+      <fileset
+        dir="${loader.classes.dir}"
+        includes="**"/>
+      <fileset
+        dir="${loader.root.dir}/lib"
+        includes="resources/**"/>
+      <fileset 
+        dir="${loader.root.dir}/images"/>
+    </jar>
+    <copy todir="${loader.lib.dir}" file="loader.jar"/>
+    <copy todir="${cytoscape.plugin.dir}" file="loader.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the loader tests                                             -->
+  <!-- =================================================================== -->
+  <target name="compile-tests" depends="loader"  >
+    <mkdir dir="${loader.classes.dir}"/>
+    <javac srcdir="${loader.src.dir}"
+           includes="**/test/*"
+           excludes="${loader.tests.excludes}"
+           classpathref="loader.project.class.path"
+           destdir="${loader.classes.dir}"
+           debug="${debug}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the loader-tests.jar file                                     -->
+  <!-- =================================================================== -->
+  <target name="tests" depends="compile-tests"  >
+    <jar jarfile="loader-tests.jar"
+         basedir="${loader.classes.dir}"
+         includes="**/test/*"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Build all jars                                                      -->
+  <!-- =================================================================== -->
+  <target name="all" depends="loader"/>
+
+   <!-- =================================================================== -->
+  <!-- Run the Plugin                                                      -->
+  <!-- =================================================================== -->
+  <target name="run" depends="loader" >
+     
+     <java classname="cytoscape.cytoscape" 
+           classpathref="loader.project.class.path"
+           fork="true"/>
+           <arg line = "-y giny"/>
+           <arg line = "--JLD"/>
+           <arg line = "${loader.lib.dir}/loader.jar"/>
+           
+
+  </target>
+
+
+
+  <!-- =================================================================== -->
+  <!-- Runs the tests in loader-tests.jar                                    -->
+  <!-- =================================================================== -->
+  <target name="runtests" depends="tests"  >
+    <mkdir dir="${loader.tests.reports.dir}"/>
+    <junit
+       printsummary="yes"
+       haltonfailure="no"
+       dir="${loader.classes.dir}"
+       maxmemory="1G"
+    >
+      <formatter type="plain" usefile="true" />
+      <classpath refid="loader.project.class.path"/>
+      <!-- The junit task doesn't support 'if' so we test for JUnit here -->
+      <batchtest fork="yes" todir="${loader.tests.reports.dir}" if="junit.present">
+        <fileset
+           dir="${loader.classes.dir}"
+           includes="**/test/*"
+           excludes="${loader.tests.excludes}"
+        />
+      </batchtest>
+    </junit>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the API documentation                                       -->
+  <!-- =================================================================== -->
+  <target name="docs" depends="init-loader" >
+    <mkdir dir="${loader.javadoc.dir}"/>
+    <javadoc packagenames="${loader.packages}"
+             excludepackagenames="${loader.packages.excludes}"
+             sourcepath="${loader.src.dir}"
+             destdir="${loader.javadoc.dir}"
+             classpathref="loader.project.class.path"
+             author="true"
+             version="true"
+             use="true"
+             splitindex="true"
+             noindex="false"
+             windowtitle="${loader.Name} API"
+             doctitle="${loader.Name}"
+    />
+  </target>
+ 
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init-loader">
+    <delete dir="${loader.classes.dir}"/>
+    <delete file="loader.jar"/>
+    <delete file="loader-tests.jar"/>
+  </target>
+
+</project>
+
+<!-- End of file -->
