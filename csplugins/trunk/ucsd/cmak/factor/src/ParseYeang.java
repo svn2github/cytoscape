@@ -12,17 +12,19 @@ class ParseYeang extends ParseMain
     private static Logger logger = Logger.getLogger(ParseYeang.class.getName());
 
     // return a list of lists of edge messages
-    protected static List processMessages(LinkedHashMap[] maps)
+    protected static List processMessages(MessageBlock maps)
     {
-        LinkedHashMap vMap = maps[0];
-        LinkedHashMap fMap = maps[1];
+        LinkedHashMap vMap = maps.getV2f(); // var2factor messages
+        LinkedHashMap fMap = maps.getF2v(); // factor2var messages
         
         if(vMap.size() != fMap.size())
         {
-            logger.warning("variable-to-factor and factor-to-variable maps are different sizes");
+            logger.warning("variable-to-factor and factor-to-variable maps are different sizes: v.size()="
+                           + vMap.size()
+                           + " f.size()=" + fMap.size());
+            return new ArrayList();
         }
         
-        //Map edgeMessages = new HashMap();
         List edgeMessages = new ArrayList();
 
         String curFactor = "";
@@ -37,7 +39,6 @@ class ParseYeang extends ParseMain
             {
                 if(!curFactor.equals(""))
                 {
-                    //edgeMessages.put(curFactor, curEm);
                     edgeMessages.add(curEm);
                     logger.fine("adding em list size " + curEm.size()
                                 + " for factor "
@@ -52,11 +53,16 @@ class ParseYeang extends ParseMain
             EdgeMessage em = null;
             if(v2fm.getType() == NodeType.DIR)
             {
-                em = new EdgeMessage(v2fm.getType(), 0, 0, v2fm.getDir());
+                em = new EdgeMessage(v2fm.getType(),
+                                     nodeId(v2fm.getFrom()),
+                                     nodeId(v2fm.getTo()),
+                                     v2fm.getDir());
             }
             else
             {
-                em = new EdgeMessage(v2fm.getType(), 0, 0);
+                em = new EdgeMessage(v2fm.getType(),
+                                     nodeId(v2fm.getFrom()),
+                                     nodeId(v2fm.getTo()));
             }
             
             String key = v2fm.getTo() + v2fm.getFrom(); 
@@ -79,7 +85,23 @@ class ParseYeang extends ParseMain
         }
         return edgeMessages;
     }
-    
+
+
+    /**
+     * Expect a file format:
+     * ( node path_factor {
+     *   v2f ...
+     *   v2f ...
+     *   f2v ...
+     *   f2v...
+     *  }
+     * )+
+     *
+     * Where each block of v2f and f2v messages correspond to
+     * the messages sent during one iteration of the MaxProduct
+     * algorithm on a factor graph.  ie. processMessages must
+     * group the messages into EdgeMessage lists for each factor node.
+     */
     public static void main(String[] args) {
         try {
             L lexer = new L(new DataInputStream(System.in));
@@ -88,11 +110,23 @@ class ParseYeang extends ParseMain
             
             for(int y=0; y < data.size(); y++)
             {
-                List emList = processMessages((LinkedHashMap[]) data.get(y));
+                MessageBlock mb = (MessageBlock) data.get(y);
+                List emList = processMessages(mb);
+                NodeType type = (NodeType) mb.getType();
+
+                FactorNode fn;
+                if(type == NodeType.PATH_FACTOR)
+                {
+                    fn = PathFactorNode.getInstance();
+                }
+                else
+                {
+                    fn = OrFactorNode.getInstance();
+                }
                 
                 for(int x=0; x < emList.size(); x++)
                 {
-                    testMaxProduct((List) emList.get(x));
+                    testMaxProduct(fn, (List) emList.get(x));
                 }
             }
         } catch(Exception e) {

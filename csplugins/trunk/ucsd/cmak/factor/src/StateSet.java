@@ -10,8 +10,8 @@ public class StateSet
 {
     public static final StateSet PATH_ACTIVE = new StateSet("pathActive_ss", State.ZERO, State.ONE);
     public static final StateSet EDGE = new StateSet("edge_ss", State.ZERO, State.ONE);
-    public static final StateSet SIGN = new StateSet("sign_ss", State.PLUS, State.MINUS);
-    public static final StateSet DIR = new StateSet("dir_ss", State.PLUS, State.MINUS);
+    public static final StateSet SIGN = new StateSet("sign_ss", State.MINUS, State.PLUS);
+    public static final StateSet DIR = new StateSet("dir_ss", State.MINUS, State.PLUS);
 
     public static final StateSet KO = new StateSet("ko_ss", State.ZERO, State.PLUS, State.MINUS);
 

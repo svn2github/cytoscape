@@ -72,7 +72,7 @@ table3 returns [ double[] vals]
 parseMessages returns [List l]
 {
     l = new ArrayList();
-    LinkedHashMap[] m;
+    MessageBlock m;
 }
     : (m=messageBlock {l.add(m);} )+
     ;
@@ -89,24 +89,26 @@ parseMessages returns [List l]
 * node concatenated with the "to" node.  This allows you to look up the
 * factor2var TestMessage associated with a given var2factor TestMessage.
 */
-messageBlock returns [LinkedHashMap[] messages]
+messageBlock returns [MessageBlock messages]
 {
-    messages = new LinkedHashMap[2];
-    messages[0] = new LinkedHashMap();
-    messages[1] = new LinkedHashMap();
+    messages = new MessageBlock();
+    LinkedHashMap vMap = messages.getV2f();
+    LinkedHashMap fMap = messages.getF2v();
+
     TestMessage f2v;
     TestMessage v2f;
 }
-    : n:NODE (NODE_TEXT)+ LCURLY (v2f=v2fMessage 
+    : n:NODE type:FACTOR_TYPE LCURLY (v2f=v2fMessage 
             {
-                messages[0].put(v2f.getFrom() + v2f.getTo(), v2f);
+                vMap.put(v2f.getFrom() + v2f.getTo(), v2f);
             }
         | f2v=f2vMessage 
             {
-                messages[1].put(f2v.getFrom() + f2v.getTo(), f2v);
+                fMap.put(f2v.getFrom() + f2v.getTo(), f2v);
             } 
       )+ RCURLY
 	{
+        messages.setType(type.getText());    
 	    System.out.println("parsed node: " + n.getText());
 	}
     ;
@@ -234,7 +236,7 @@ v2fMessage returns [ TestMessage tm]
 
 class L extends Lexer;
 options {
-  k = 2;
+  k = 3;
   testLiterals = true;
 }
 
@@ -251,7 +253,7 @@ RPAREN: ')';
 LCURLY: '{';
 RCURLY: '}';
 
-NODE_TEXT: ("path_factor" | "Factor");
+FACTOR_TYPE: ("path_factor" | "or_factor");
 
 NODE: '-' ID;
 

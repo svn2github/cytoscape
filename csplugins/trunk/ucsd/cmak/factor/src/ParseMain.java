@@ -18,21 +18,21 @@ class ParseMain
      * The first map contains the variable2factor messages in the same order
      * that they appear in the input file.
      * <p>
-     * The second map contains the factor2variable messages in the se same order
-     * that they appear in the input file.
+     * The second map contains the factor2variable messages in the
+     * same order that they appear in the input file.
      * <p>
      * For each map the map key is a String of the "from"
      * node concatenated with the "to" node for the message.
      * This allows you to associate var2fac and fac2var messages sent between
      * pairs of nodes.
      */
-    protected static List processMessages(LinkedHashMap[] maps)
+    protected static List processMessages(MessageBlock maps)
     {
         List edgeMessages = new ArrayList();
         // convert data into EdgeMessages
 
-        LinkedHashMap vMap = maps[0]; // var2factor messages
-        LinkedHashMap fMap = maps[1]; // factor2var messages
+        LinkedHashMap vMap = maps.getV2f(); // var2factor messages
+        LinkedHashMap fMap = maps.getF2v(); // factor2var messages
         
         if(vMap.size() != fMap.size())
         {
@@ -59,11 +59,16 @@ class ParseMain
             
             if(v2f.getDir() != null)
             {
-                em = new EdgeMessage(v2f.getType(), 0, 0, v2f.getDir());
+                em = new EdgeMessage(v2f.getType(),
+                                     nodeId(v2f.getFrom()),
+                                     nodeId(v2f.getTo()),
+                                     v2f.getDir());
             }
             else
             {
-                em = new EdgeMessage(v2f.getType(), 0, 0);
+                em = new EdgeMessage(v2f.getType(),
+                                     nodeId(v2f.getFrom()),
+                                     nodeId(v2f.getTo()));
             }
             em.v2f(v2f.getProbTable());
             em.f2v(f2v.getProbTable());
@@ -77,27 +82,75 @@ class ParseMain
         
     }
 
-    protected static void testMaxProduct(List edgeMessages)
+    protected static int nodeId(String s)
     {
-        PathFactorNode pf = PathFactorNode.getInstance();
-        
+        if(s.startsWith("-"))
+        {
+            return Integer.parseInt(s.substring(1));
+        }
+        else
+        {
+            return Integer.parseInt(s);
+        }
+    }
+    
+    private static class Failure
+    {
+        int index;
+        ProbTable computed;
+        ProbTable expected;
+        boolean sameMax;
+
+        Failure(int i, ProbTable c, ProbTable e, boolean sameMax)
+        {
+            index = i;
+            computed = c;
+            expected = e;
+            this.sameMax = sameMax;
+        }
+    }
+    
+    /**
+     * Verify the factor to variable messages using the MaxProduct algorithm
+     * @param edgeMessages a list of EdgeMessage objects
+     */
+    protected static void testMaxProduct(FactorNode factor, List edgeMessages)
+    {
+        OpenIntObjectHashMap failures = new OpenIntObjectHashMap();
+        int pass = 0;
+        int fail = 0;
+        int diffmax = 0;
         for(int x=0; x < edgeMessages.size() ;x++)
         {
             try
             {
                 EdgeMessage em = (EdgeMessage) edgeMessages.get(x);
                 
-                ProbTable pt = pf.maxProduct(edgeMessages, x);
+                ProbTable pt = factor.maxProduct(edgeMessages, x);
+                ProbTable expected = em.f2v();
+                logger.fine("   maxProduct: " + pt);
                 
-                logger.info("   maxProduct: " + pt);
-                
-                if(pt.equals(em.f2v(), 1e-5))
+                if(pt.equals(expected, 1e-4))
                 {
-                    logger.info(" OK");
+                    pass++;
+                    logger.fine(" OK");
                 }
                 else
                 {
-                    logger.info(" FAIL");
+                    fail++;
+                    // b = do the prob tables have the same max?
+                    boolean b = (pt.hasUniqueMax() == expected.hasUniqueMax());
+                    b = b && pt.hasUniqueMax()
+                        && (pt.maxState() == expected.maxState());
+
+                    if(!b)
+                    {
+                        diffmax++;
+                    }
+                    
+                    failures.put(x, new Failure(x, pt, expected, b));
+
+                    logger.fine(" FAIL");
                 }
             }
             catch(AlgorithmException e)
@@ -106,9 +159,46 @@ class ParseMain
                 e.printStackTrace();
             }
         }
+
+        logger.info(pass + " passed. " + fail + " failed. "
+                    + diffmax + " had different max.");
+        
+        if(fail > 0)
+        {
+            logger.info(" ");
+            for(int x=0; x < edgeMessages.size() ;x++)
+            {
+                EdgeMessage em = (EdgeMessage) edgeMessages.get(x);
+
+                if(failures.containsKey(x))
+                {
+                    Failure f = (Failure) failures.get(x);
+                    logger.info(em.toString()
+                                + " FAIL f2v=" + f.computed
+                                + " SAME_MAX=" + f.sameMax);
+                }
+                else
+                {
+                    logger.info(em.toString());
+                }
+            }
+        }
     }
     
-    
+
+    /**
+     * Expect a file format:
+     * ( node path_factor {
+     *   v2f ...
+     *   v2f ...
+     *   f2v ...
+     *   f2v...
+     *  }
+     * )+
+     *
+     * Where each block of v2f and f2v messages correspond to
+     * the messages sent to and from a single path_factor node.
+     */
     public static void main(String[] args) {
         try {
             L lexer = new L(new DataInputStream(System.in));
@@ -116,14 +206,27 @@ class ParseMain
             List data = parser.parseMessages();
 
             List emList = new ArrayList();
+            List typeList = new ArrayList();
             for(int x=0; x < data.size(); x++)
             {
-                emList.add(processMessages((LinkedHashMap[]) data.get(x)));
+                emList.add(processMessages((MessageBlock) data.get(x)));
+                typeList.add(((MessageBlock) data.get(x)).getType());
             }
 
             for(int x=0; x < emList.size(); x++)
             {
-                testMaxProduct((List) emList.get(x));
+                FactorNode fn;
+                NodeType type = (NodeType) typeList.get(x);
+                if(type == NodeType.PATH_FACTOR)
+                {
+                    fn = PathFactorNode.getInstance();
+                }
+                else
+                {
+                    fn = OrFactorNode.getInstance();
+                }
+
+                testMaxProduct(fn, (List) emList.get(x));
             }
         } catch(Exception e) {
             System.err.println("exception: "+e);

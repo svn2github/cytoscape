@@ -79,71 +79,27 @@ public abstract class AbstractNodeTest extends TestCase
         
     protected ProbTable createSign(double p, double m)
     {
-        return createPlusMinus(StateSet.SIGN, p, m);
+        return NodeFactory.createSign(m ,p);
     }
 
     protected ProbTable createDir(double p, double m)
     {
-        return createPlusMinus(StateSet.DIR, p, m);
+        return NodeFactory.createDir(m, p);
     }
 
     protected ProbTable createPathActive(double p0, double p1)
     {
-        return createZeroOne(StateSet.PATH_ACTIVE, p0, p1);
+        return NodeFactory.createPathActive(p0, p1);
     }
 
     protected ProbTable createEdge(double p0, double p1)
     {
-        return createZeroOne(StateSet.EDGE, p0, p1);
+        return NodeFactory.createEdge(p0, p1);
     }
 
     protected ProbTable createKO(double z, double p, double m)
     {
-        ProbTable s1 = new ProbTable(StateSet.KO);
-        double[] d = new double[3];
-        d[StateSet.KO.getIndex(State.ZERO)] = z;
-        d[StateSet.KO.getIndex(State.PLUS)] = p;
-        d[StateSet.KO.getIndex(State.MINUS)] = m;
-        s1.init(d);
-
-        return s1;
+        return NodeFactory.createKO(z, p, m);
     }
-
-    private ProbTable createPlusMinus(StateSet ss, double p, double m)
-    {
-        ProbTable s1 = new ProbTable(ss);
-        double[] d = new double[2];
-        d[ss.getIndex(State.PLUS)] = p;
-        d[ss.getIndex(State.MINUS)] = m;
-        s1.init(d);
-
-        return s1;
-    }
-
-    private ProbTable createOneZero(StateSet ss, double one, double zero)
-    {
-        ProbTable s1 = new ProbTable(ss);
-        double[] d = new double[2];
-        d[ss.getIndex(State.ONE)] = one;
-        d[ss.getIndex(State.ZERO)] = zero;
-        s1.init(d);
-
-        return s1;
-    }
-
-
-    
-    private ProbTable createZeroOne(StateSet ss, double zero, double one)
-    {
-        ProbTable s1 = new ProbTable(ss);
-        double[] d = new double[2];
-        d[ss.getIndex(State.ZERO)] = zero;
-        d[ss.getIndex(State.ONE)] = one;
-        s1.init(d);
-
-        return s1;
-    }
-
-   
 
 }

@@ -687,12 +687,16 @@ public class FactorGraph
             computeVar2Factor(v);
         }
 
-        System.out.println(printAdj());
+        //System.out.println(printAdj());
 
         try
         {
             PrintStream pathFactorOut = new PrintStream(new FileOutputStream("pathFactor.msg"));
             pathFactorOut.println(printAdjOfType(NodeType.PATH_FACTOR));
+
+
+            PrintStream orOut = new PrintStream(new FileOutputStream("orFactor.msg"));
+            orOut.println(printAdjOfType(NodeType.OR_FACTOR));
         }
         catch(IOException e)
         {

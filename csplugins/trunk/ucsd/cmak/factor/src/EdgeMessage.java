@@ -30,14 +30,16 @@ public class EdgeMessage
     
     public String toString()
     {
-        StringBuffer b = new StringBuffer("{");
-        b.append("f2v: ");// + f2v.stateSet() + " ");
+        StringBuffer b = new StringBuffer();
+        b.append("(" + v + " " + f + ") ");
+        b.append("{");
+        b.append("f2v=");// + f2v.stateSet() + " ");
         b.append(f2v.toString());
-        b.append(" v2f: ");// + v2f.stateSet() + " ");
+        b.append(" v2f=");// + v2f.stateSet() + " ");
         b.append(v2f.toString());
+        b.append(" " + varNode + " ");
         if(dir != null)
         {
-            b.append(" dir: ");
             b.append(dir);
         }
         b.append("}");

@@ -11,7 +11,8 @@ public class NodeFactory
     private NodeFactory()
     {
     }
-    
+
+    /*
     public static EdgeMessage pt2em(ProbTable pt)
     {
         EdgeMessage em = new EdgeMessage(null, 0, 0);
@@ -29,15 +30,16 @@ public class NodeFactory
 
         return em;
     }
-
-    public static ProbTable createSign(double p, double m)
+    */
+    
+    public static ProbTable createSign(double m, double p)
     {
-        return createPlusMinus(StateSet.SIGN, p, m);
+        return createMinusPlus(StateSet.SIGN, m, p);
     }
 
-    public static ProbTable createDir(double p, double m)
+    public static ProbTable createDir(double m, double p)
     {
-        return createPlusMinus(StateSet.DIR, p, m);
+        return createMinusPlus(StateSet.DIR, m, p);
     }
 
     public static ProbTable createPathActive(double p0, double p1)
@@ -64,7 +66,7 @@ public class NodeFactory
 
 
     
-    private static ProbTable createPlusMinus(StateSet ss, double p, double m)
+    private static ProbTable createMinusPlus(StateSet ss, double m, double p)
     {
         ProbTable s1 = new ProbTable(ss);
         double[] d = new double[2];
@@ -75,16 +77,6 @@ public class NodeFactory
         return s1;
     }
 
-    private static ProbTable createOneZero(StateSet ss, double one, double zero)
-    {
-        ProbTable s1 = new ProbTable(ss);
-        double[] d = new double[2];
-        d[ss.getIndex(State.ONE)] = one;
-        d[ss.getIndex(State.ZERO)] = zero;
-        s1.init(d);
-
-        return s1;
-    }
 
     private static ProbTable createZeroOne(StateSet ss, double zero, double one)
     {
