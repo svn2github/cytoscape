@@ -390,11 +390,11 @@ public final class IntBTree
         private int currentNodeInx;
         public int numRemaining() { return count; }
         public int nextInt() {
-          // This is guaranteed to bard if nextInt() is called when there
-          // are no element remaining, albeit in an unpredictable way.  Also,
+          // This is guaranteed to barf if nextInt() is called when there
+          // are no elements remaining, albeit in an unpredictable way.  Also,
           // terrible things will happen if the tree is mutated while we
           // iterate.
-          int returnThis;
+          int returnThis = 0xffffffff; // To keep compiler from complaining.
           if (currentLeafNode == null) {
             while (true) {
               currentLeafNode = nodeStack.pop();
@@ -404,12 +404,13 @@ public final class IntBTree
               if (isLeafNode(currentLeafNode.data.children[0]))
                 wholeLeafNodes += currentLeafNode.sliceCount; } }
           if (wholeLeafNodes > 0) {
-            returnThis = currentLeafNode.values[currentNodeInx++]; }
+            returnThis = currentLeafNode.values[currentNodeInx]; }
           else {
             for (int i = currentNodeInx; i < currentLeafNode.sliceCount; i++)
-              if (currentLeafNode.values[i] >= xMin) // Don't check max.
-                returnThis = currentLeafNode.values[i]; }
-          if (currentNodeInx == currentLeafNode.sliceCount) {
+              if (currentLeafNode.values[i] >= xMin) { // Don't check max.
+                returnThis = currentLeafNode.values[i];
+                break; } }
+          if (currentNodeInx++ == currentLeafNode.sliceCount) {
             currentLeafNode = null;
             if (wholeLeafNodes > 0) wholeLeafNodes--; }
           count--;
