@@ -62,7 +62,7 @@ layoutDirectory:
 test: dataTest currentDirTest nativelibTest 
 
 clean:
-	- rm *.class libActivePaths.so core
+	- rm *.class libActivePaths.so core *.o
 	- (cd activePathsNew; make clean)
 	- (cd data; make clean)
 	- (cd data/unitTests; make clean)
