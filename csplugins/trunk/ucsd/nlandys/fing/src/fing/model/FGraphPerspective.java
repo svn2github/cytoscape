@@ -745,9 +745,19 @@ class FGraphPerspective implements GraphPerspective
       return returnThis;          
     }
 
-    private final int hideEdge(Edge edge)
+    // RootGraphChangeSniffer is not to call this method.  We rely on
+    // the specified edge still existing in the RootGraph in this method.
+    private final int hideEdge(GraphPerspective source, int rootGraphEdgeInx)
     {
-      return 0;
+      final int returnThis = _hideEdge(rootGraphEdgeInx);
+      if (returnThis != 0) {
+        final GraphPerspectiveChangeListener listener = m_lis[0];
+        if (listener != null) {
+          final Edge removedEdge = m_root.getEdge(rootGraphEdgeInx);
+          listener.graphPerspectiveChanged
+            (new GraphPerspectiveEdgesHiddenEvent
+             (source, new Edge[] { removedEdge })); } }
+      return returnThis;
     }
 
     // Don't call this method from outside this inner class.
