@@ -33,18 +33,18 @@ Cytoscape Developer Documentation
 <hr>
 <big><b>Concept 1: Networks</big></b>
 <P>
-	Cytoscape is written using the Java programming language, and therefore uses the 
-Object-Oriented paradigm.  The central object in Cytoscape is a CyNetwork.  The 
-CyNetwork is a combination of a graph, consisting of Nodes and Edges, and the data that is 
-associated with individual graph elements, or the graph itself.  
+	Cytoscape is written using the Java programming language, and therefore uses the
+Object-Oriented paradigm.  The central object in Cytoscape is a CyNetwork.  The
+CyNetwork is a combination of a graph, consisting of Nodes and Edges, and the data that is
+associated with individual graph elements, or the graph itself.
 <P>
-	CyNetworks inherit from the GraphPerspective which is part of the underlying 
-GINY graph library.  All CyNetworks operate on the same set of Nodes and Edges, 
-although not all Nodes and Edges will be in every CyNetwork.  This means that if you 
-create a Node in one CyNetwork, it can be added to another CyNetwork, and will have all of 
+	CyNetworks inherit from the GraphPerspective which is part of the underlying
+GINY graph library.  All CyNetworks operate on the same set of Nodes and Edges,
+although not all Nodes and Edges will be in every CyNetwork.  This means that if you
+create a Node in one CyNetwork, it can be added to another CyNetwork, and will have all of
 its data and connections associated with it.
 <P>
-	The following diagram shows the classes and their relationships that will be used 
+	The following diagram shows the classes and their relationships that will be used
 most.
  <P>
 <img src="images/image001.gif">
@@ -52,20 +52,20 @@ most.
 <hr>
 <big><b>Concept 2: Creating and Modifying and Destroying Networks</big></b>
 <P>
-	The creation of CyNetworks is handled by factory methods found in the 
-cytoscape.Cytoscape class.  Cytoscape is an abstract static class and cannot be instantiated. 
-It does however handle all of the creation methods and fires the appropriate events to its 
-listeners.  CyNetworks can be created in a variety of ways, but they all work in a similar 
-fashion.  What they will do is, given a set of nodes and edges, will create the nodes and 
-edges if necessary in the shared set of nodes and edges that all CyNetworks use, and then 
-return a CyNetwork that only has the requested nodes and edges.  The following are the 
+	The creation of CyNetworks is handled by factory methods found in the
+cytoscape.Cytoscape class.  Cytoscape is an abstract static class and cannot be instantiated.
+It does however handle all of the creation methods and fires the appropriate events to its
+listeners.  CyNetworks can be created in a variety of ways, but they all work in a similar
+fashion.  What they will do is, given a set of nodes and edges, will create the nodes and
+edges if necessary in the shared set of nodes and edges that all CyNetworks use, and then
+return a CyNetwork that only has the requested nodes and edges.  The following are the
 methods for creating a CyNetwork:
 <P>
 <table width=50%>
 <TR><TD>
 <div class="codebox lightyellow">
 // return an empty network<br>
-CyNetwork network = Cytoscape.createNetwork();<br>
+CyNetwork network = Cytoscape.createNetwork("My Network");<br>
 <br>
 // return a new Network from a SIF file<br>
 CyNetwork network = Cytoscape.createNetwork( file_name, <br>
@@ -90,29 +90,29 @@ edges, child_title, parent_network );<br>
 </TABLE>
 <P>
 
-	When modifying a CyNetwork, it is necessary to operate directly on that 
-CyNetwork, rather than using the Cytoscape class.  There are two types of removal that can 
-be done.  Using the "removeNode/Edge" method Cytoscape will attempt to completely 
-remove the Node/Edge from both the CyNetwork and the shared set of Nodes and Edges 
-that all CyNetworks have access to.  A Node/Edge will not be removed completely if 
-another CyNetwork has a reference to it.  The removal can be forced by passing a Boolean 
+	When modifying a CyNetwork, it is necessary to operate directly on that
+CyNetwork, rather than using the Cytoscape class.  There are two types of removal that can
+be done.  Using the "removeNode/Edge" method Cytoscape will attempt to completely
+remove the Node/Edge from both the CyNetwork and the shared set of Nodes and Edges
+that all CyNetworks have access to.  A Node/Edge will not be removed completely if
+another CyNetwork has a reference to it.  The removal can be forced by passing a Boolean
 "true" to force the removal.
 <P>
 <table width=50%>
 <TR><TD>
 <div class="codebox lightyellow">
 // remove the node, unless used by another CyNetwork<br>
-network.removeNode( node, false );<br>
+network.removeNode( nodeIndex, false );<br>
 <br>
 // remove the node, even if used by another CyNetwork<br>
-network.removeNode( node, true );<br>
+network.removeNode( nodeIndex, true );<br>
 </div>
 </TD>
 </TR>
 </TABLE>
 <P>
-	If you want the Node/Edge only removed the current CyNetwork, but still available 
-for other CyNetworks ( or even the one it was removed from ) at a later time.  The "hide" 
+	If you want the Node/Edge only removed the current CyNetwork, but still available
+for other CyNetworks ( or even the one it was removed from ) at a later time.  The "hide"
 methods are used.  These methods are part of the GINY API, but are linked in the JavaDoc.
 <P>
 <table width=50%>
@@ -120,15 +120,15 @@ methods are used.  These methods are part of the GINY API, but are linked in the
 <div class="codebox lightyellow">
 // remove the node from this CyNetwork, but allow it to<br>
 // be re-used later.<br>
-network.hideNode( node )<br>
+network.hideNode( node );<br>
 </div>
 </TD>
 </TR>
 </TABLE>
 <P>
-	Creating Nodes/Edges can happen in several ways.  Since there is a set of 
-Nodes/Edges that are available to all CyNetworks, there is nothing wrong with creating 
-Nodes/Edges that are not a part of any CyNetwork.  This is done using the static Cytoscape 
+	Creating Nodes/Edges can happen in several ways.  Since there is a set of
+Nodes/Edges that are available to all CyNetworks, there is nothing wrong with creating
+Nodes/Edges that are not a part of any CyNetwork.  This is done using the static Cytoscape
 class, just like CyNetwork creation.
 <P>
 <table width=50%>
@@ -136,14 +136,14 @@ class, just like CyNetwork creation.
 <div class="codebox lightyellow">
 // create a CyNode, Boolean passed so the "create" flag<br>
 // is enabled<br>
-CyNode node = Cytoscape.getCyNode( identifier, true )<br>
+CyNode node = Cytoscape.getCyNode( identifier, true );<br>
 </div>
 </TD>
 </TR>
 </TABLE>
 <P>
-	The same function can also be used to query if a CyNode exists for a particular 
-alias. This is the default behavior, or can be explicitly used by passing a "false" value for 
+	The same function can also be used to query if a CyNode exists for a particular
+alias. This is the default behavior, or can be explicitly used by passing a "false" value for
 the create flag.
 <P>
 <table width=50%>
@@ -158,9 +158,9 @@ if ( node == null ) <br>
 </TR>
 </TABLE>
 <P>
-	Destroying a CyNetwork is also done via the static Cytoscape class using the 
-"destroyNetwork" methods.  When a CyNetwork is destroyed all of the Nodes/Edges are 
-hidden, so they are still available for other CyNetworks.  Destroying a CyNetwork will also 
+	Destroying a CyNetwork is also done via the static Cytoscape class using the
+"destroyNetwork" methods.  When a CyNetwork is destroyed all of the Nodes/Edges are
+hidden, so they are still available for other CyNetworks.  Destroying a CyNetwork will also
 destroy any CyNetworkView that is was created to view this CyNetwork.
 <P>
 <table width=50%>
@@ -170,7 +170,7 @@ destroy any CyNetworkView that is was created to view this CyNetwork.
 Cytoscape.destroyNetwork( network );<br>
 <br>
 // Destroy a CyNetwork using its "getIdentifier" method<br>
-Cytoscape.destroyNetwork( network.getIdentifer() );<br>
+Cytoscape.destroyNetwork( network.getIdentifier() );<br>
 </div>
 </TD>
 </TR>
@@ -179,9 +179,9 @@ Cytoscape.destroyNetwork( network.getIdentifer() );<br>
 <P>
 <big><b>Concept 3: NetworkView Creation, Modifying and Destruction</big></b>
 <P>
-	While CyNetworks represent the unification of the graph and data, the 
-CyNetworkView is the Visualization of the CyNetwork.  Working with CyNetworkViews is 
-very similar to working with CyNetworks.  As with the CyNetwork, a CyNetworkView is 
+	While CyNetworks represent the unification of the graph and data, the
+CyNetworkView is the Visualization of the CyNetwork.  Working with CyNetworkViews is
+very similar to working with CyNetworks.  As with the CyNetwork, a CyNetworkView is
 created using the static Cytoscape class, and destroyed in the same way.
 <P>
 <table width=50%>
@@ -195,34 +195,34 @@ CyNetwork network;<br>
 CyNetworkView view;<br>
 <br>
 Cytoscape.destroyNetworkView( view );<br>
-Cytoscape.destroyNetworkView( view.getIdentifier );<br>
+Cytoscape.destroyNetworkView( view.getIdentifier() );<br>
 Cytoscape.destroyNetworkView( network );<br>
 <br>
 // implicit destruction by destroying the network<br>
 // it is based on<br>
 Cytoscape.destroyNetwork( network );<br>
-Cytoscape.destroyNetwork( network.getIdentifer() );<br>
+Cytoscape.destroyNetwork( network.getIdentifier() );<br>
 </div>
 </TD>
 </TR>
 </TABLE>
 <P>
 
-	Modification of a CyNetworkView is not directly possible.  It is a WYSIWYG view 
-on a CyNetwork, so hiding a NodeView in a CyNetworkView only makes that NodeView 
-temporarily invisible.  To actually remove a NodeView from a CyNetworkView, the Node 
-that it is a view on must be hidden/removed from the CyNetwork.  This behavior can be 
+	Modification of a CyNetworkView is not directly possible.  It is a WYSIWYG view
+on a CyNetwork, so hiding a NodeView in a CyNetworkView only makes that NodeView
+temporarily invisible.  To actually remove a NodeView from a CyNetworkView, the Node
+that it is a view on must be hidden/removed from the CyNetwork.  This behavior can be
 changed, but is beyond the scope of this document.
 <P>
 <hr>
 <big><b>Concept 4: CyNetwork(View) Client Data</big></b>
 <P>
-	CyNetworks and CyNetworkViews will be used by a variety of plugins, and plugins 
-will use a variety of CyNetworks and CyNetworkViews.  Therefore, the concept of client 
-data allows a plugin to store information that it needs about a particular CyNetwork(View), 
+	CyNetworks and CyNetworkViews will be used by a variety of plugins, and plugins
+will use a variety of CyNetworks and CyNetworkViews.  Therefore, the concept of client
+data allows a plugin to store information that it needs about a particular CyNetwork(View),
 with that Object.<P>
-	An example of this is a plugin that calculates an APSP matrix, and runs an analysis 
-on it.  Obviously each CyNetwork has a different APSP matrix, so if a new CyNetwork is 
+	An example of this is a plugin that calculates an APSP matrix, and runs an analysis
+on it.  Obviously each CyNetwork has a different APSP matrix, so if a new CyNetwork is
 being used, then a new matrix needs to be calculated.
 <P>
 <table width=50%>
@@ -250,30 +250,30 @@ doSomething( matrix );<br>
 <hr>
 <big><b>Concept 5: Loading, and Using Data</big></b>
 <P>
-	Data can be thought of in many different ways.  Usually we refer to data as specific 
-attributes loaded by the user, that refer to one specific Node or Edge.  Common attributes 
-are Expression data from Microarray experiments, other laboratory measurements, and 
-ontology information. <P> 
-	Data can be loaded in a variety of ways, from a variety of sources.  We will only 
-discuss loading from files, and from a calculation.  Database conections and other things are 
+	Data can be thought of in many different ways.  Usually we refer to data as specific
+attributes loaded by the user, that refer to one specific Node or Edge.  Common attributes
+are Expression data from Microarray experiments, other laboratory measurements, and
+ontology information. <P>
+	Data can be loaded in a variety of ways, from a variety of sources.  We will only
+discuss loading from files, and from a calculation.  Database conections and other things are
 handled via other methods such as the Data Servives Plugin from MSKCC.
-	The most common way to load Node and Edge attributes is from Node and Edge 
-attributes files, and from expression "matrix" files.  Both are possible using the static 
+	The most common way to load Node and Edge attributes is from Node and Edge
+attributes files, and from expression "matrix" files.  Both are possible using the static
 Cytoscape class.  <P>
 <table width=50%>
 <TR><TD>
 <div class="codebox lightyellow">
 // load Node and Edge Attributes from a set of files.<br>
-String[] node_atts = new String{ "file1", "file2" };<br>
-String[] edge_atts = new String{ "file3", "file4" };<br>
+String[] node_atts = { "file1", "file2" };<br>
+String[] edge_atts = { "file3", "file4" };<br>
 Cytoscape.loadAttributes( node_atts, edge_atts );<br>
 <br>
 // load Expression Data<br>
-Cytoscape.laodExpressionData( file_name, true );<br>
+Cytoscape.loadExpressionData( file_name, true );<br>
 <br>
 // right now setting individual attributes is a little<br>
 // hacky, since we just use the old GraphObjAttributes <br>
-class.<br>
+//class.<br>
 // @deprecated DO NOT USE!!!! ( unless you have to )<br>
 Cytoscape.getNodeNetworkData().set( attribute, node, value <br>
 );<br>
@@ -281,8 +281,8 @@ Cytoscape.getNodeNetworkData().set( attribute, node, value <br>
 </TR>
 </TABLE>
 <P>
-The more supported way for adding attributes for individual Nodes and Edges (e.g. a 
-calcualted value from a Plugin ), is to use the method provided by CyNetwork.
+The more supported way for adding attributes for individual Nodes and Edges (e.g. a
+calculated value from a Plugin ), is to use the method provided by CyNetwork.
 <P>
 <table width=50%>
 <TR><TD>
@@ -297,7 +297,7 @@ network.setNodeAttributeValue( node, attribute, value );<br>
 </TR>
 </TABLE>
 <P>
-	CyNetwork also provides methods for getting attributes for nodes.  The methods are 
+	CyNetwork also provides methods for getting attributes for nodes.  The methods are
 structured the same as for setting.
 <P>
 <table width=50%>
@@ -313,15 +313,15 @@ attribute );<br>
 </TR>
 </TABLE>
 <P>
-Several convience methods are also available, look at the API.  What methods are here are 
-open for debate. Please let me know what you want/need/like/use.
+Several convience methods are also available, look at the API.  What methods are here are
+open for debate. Please let us know what you want/need/like/use.
 <P>
 <hr>
 <big><b>Concept 6: Focus</big></b>
 <P>
-Since many CyNetworks can exist in one Cytoscape instance it is necessary to 
-know which CyNetwork and CyNetworkView you are working with.  For a plugin that 
-operates when a button/menu is selected, and wants to use whichever CyNetwork and 
+Since many CyNetworks can exist in one Cytoscape instance it is necessary to
+know which CyNetwork and CyNetworkView you are working with.  For a plugin that
+operates when a button/menu is selected, and wants to use whichever CyNetwork and
 CyNetworkView the user chose, then the following methods should be used:
 <P>
 <table width=50%>
@@ -330,21 +330,21 @@ CyNetworkView the user chose, then the following methods should be used:
 //action method<br>
 public void actionPerformed ( ActionEvent e ) {<br>
 	CyNetwork network = Cytoscape.getCurrentNetwork();<br>
-	CyNetwork view = Cytoscape.getCurrentNetworkView();<br>
+	CyNetworkView view = Cytoscape.getCurrentNetworkView();<br>
 }<br>
 </TD>
 </TR>
 </TABLE>
 <P>
-Note that if a CyNetworkView was last focused then the current CyNetwork will always be 
-the CyNetwork of that CyNetworkView.  However if a CyNetwork was last focused with no 
-view, then the current CyNetworkView will return Cytoscape.nullNetworkView. 
+Note that if a CyNetworkView was last focused then the current CyNetwork will always be
+the CyNetwork of that CyNetworkView.  However if a CyNetwork was last focused with no
+view, then the current CyNetworkView will return Cytoscape.nullNetworkView.
 <P>
 <hr>
 <big><b>Concept 7: CytoscapeDesktop</big></b>
 <P>
-	The CytoscapeDesktop is responsible for managing all of the CyNetworkViews and 
-for updating the focus.  There is only one instance of CytoscapDesktop and it is available 
+	The CytoscapeDesktop is responsible for managing all of the CyNetworkViews and
+for updating the focus.  There is only one instance of CytoscapeDesktop and it is available
 via:
 <P>
 <table width=50%>
@@ -356,39 +356,46 @@ Cytoscape.getDesktop();<br>
 </TR>
 </TABLE>
 <P>
-The CytoscapeDesktop will not normally be used, but is useful for being the parent for 
+The CytoscapeDesktop will not normally be used, but is useful for being the parent for
 Dialogs, since it is a JFrame.
 <P>
 <hr>
 <big><b>Concept 8: Events</big></b>
 <P>
-	Events are a useful way to update an Object when a property changes. Any event 
-listener needs to implements java.beans.PropertyChangeListener. Here are the available 
+	Events are a useful way to update an Object when a property changes. Any event
+listener needs to implements java.beans.PropertyChangeListener. Here are the available
 events:
 <P>
 <table  style="margin-left: 30;  border: dotted gray 1px;
 		padding-left: 10px;font-size:small" width=20%>
 <tr>
 <td>Event</td>
-<td>Firing Class</td><tr>
+<td>Firing Class</td>
+</tr><tr>
 <td>CYTOSCAPE_EXIT</td>
-<td>Cytoscape</td><tr>
+<td>Cytoscape</td>
+</tr><tr>
 <td>NETWORK_CREATED</td>
-<td>Cytoscape</td><tr>
+<td>Cytoscape</td>
+</tr><tr>
 <td>NETWORK_DESTROYED</td>
-<td>Cytoscape</td><tr>
-<td>ATTRIBUTES_LOADED</td>
-<td>Cytoscape</td><tr>
+<td>Cytoscape</td>
+</tr><tr>
+<td>ATTRIBUTES_CHANGED</td>
+<td>Cytoscape</td>
+</tr><tr>
 <td>NETWORK_VIEW_CREATED</td>
-<td>CytoscapeDesktop</td><tr>
+<td>CytoscapeDesktop</td>
+</tr><tr>
 <td>NETWORK_VIEW_DESTROYED</td>
-<td>CytoscapeDesktop</td><tr>
+<td>CytoscapeDesktop</td>
+</tr><tr>
 <td>NETWORK_VIEW_FOCUS</td>
-<td>CytoscapeDesktop</td><tr>
+<td>CytoscapeDesktop</td>
+</tr><tr>
 <td>NETWORK_VIEW_FOCUSED</td>
-<td>CytoscapeDesktop</td><tr>
-<td>NETWORK_VIEW_FOCUSED</td>
-<td>CytoscapeDesktop</td><tr>
+<td>CytoscapeDesktop</td>
+</tr>
 </table>
 <P>
 This is an example implementation of a class that is a listener to both Cytoscape and CytoscapeDesktop.
@@ -408,7 +415,7 @@ java.beans.PropertyChangeListener {<br>
                            addPropertyChangeListener(this);<br>
   }<br>
 <br>
-  public void propertyChanged ( PropertyChangedEvent e ) {<br>
+  public void propertyChange ( PropertyChangeEvent e ) {<br>
     //respond<br>
   }<br>
 }<br>
