@@ -22,9 +22,23 @@ public class CytoscapeObj {
         return new CytoscapeConfig();
     }
 
-
+    /**
+     * Get the view threshold.
+     *
+     * @return The view threshold
+     * @deprecated As of Cytoscape 2.1, replaced by {@link CytoscapeInit#getViewThreshold()};
+     */
     public int getViewThreshold() {
-        return 500;
+        return CytoscapeInit.getViewThreshold();
+    }
+
+    /**
+     * Set the view threshold.
+     *
+     * @deprecated As of Cytoscape 2.1, replaced by {@link CytoscapeInit#setViewThreshold(int)};
+     */
+    public void setViewThreshold(int threshold) {
+        CytoscapeInit.setViewThreshold(threshold);
     }
 
     /**
