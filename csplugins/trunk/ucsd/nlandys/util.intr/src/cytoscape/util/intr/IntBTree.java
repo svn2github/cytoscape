@@ -367,14 +367,19 @@ public final class IntBTree
    * regions of the tree which can be included, as whole, as part of the
    * range query.  Every node on the returned stack will have at least one
    * leaf entry counting towards the enumeration in the range query (this
-   * statement is important for leaf nodes).  There shall be at most two
-   * leaf nodes on this stack -- one at the beginning and one at the end.
+   * statement is important for leaf nodes).
    */
   private final int searchRange(Node n, NodeStack nodeStack,
                                 int xMin, int xMax,
                                 int minBound, int maxBound)
   {
     int count = 0;
+
+    if (minBound >= xMin && maxBound <= xMax) { // Trivially include node.
+      count += (isLeafNode(n) ? n.sliceCount : n.data.deepCount);
+      nodeStack.push(n); }
+    else { // Cannot trivially include node; must recurse.
+
     if (isLeafNode(n)) {
       int i = 0;
       for (; i < n.sliceCount; i++) if (xMin <= n.values[i]) break;
@@ -424,10 +429,11 @@ public final class IntBTree
 
 
     }
+    }
     return count;
   }
 
-  private  void debugPrint()
+  public void debugPrint()
   {
     java.util.Vector v = new java.util.Vector();
     v.add(m_root);

@@ -85,6 +85,11 @@ public class IntBTreePerformance
     _THE_STACK_ = new IntStack();
     for (int i = 0; i < elements.length; i++)
       _THE_TREE_.insert(elements[i]);
+
+    System.out.println();
+    _THE_TREE_.debugPrint();
+    System.out.println();
+
     final IntEnumerator iter =
       _THE_TREE_.searchRange(Integer.MIN_VALUE, Integer.MAX_VALUE);
     int prevVal = -1;
