@@ -51,11 +51,9 @@ public class ShapePopupButton extends JPanel implements ActionListener {
 	setupWindow();
     }
     private void setupWindow(){
-	// default icon
-	ImageIcon icon = new ImageIcon(rootPath+"/dialogs/images/ellipse.jpg");
-
 	// find the right icon
 	ListModel theModel = shapeList.getModel();
+	ImageIcon icon = (ImageIcon)theModel.getElementAt(0); // default icon
 	int modelSize = theModel.getSize();
 	for (int modelIndex = 0; modelIndex < modelSize; modelIndex++) {
 	    ImageIcon indexedIcon = (ImageIcon)theModel.getElementAt(modelIndex);
@@ -92,19 +90,19 @@ public class ShapePopupButton extends JPanel implements ActionListener {
 	byte2shape.put(new Byte (ShapeNodeRealizer.TRAPEZOID), "TRAPEZOID");
 	byte2shape.put(new Byte (ShapeNodeRealizer.TRIANGLE), "TRIANGLE");
 	
-	rootPath = System.getProperty ("java.library.path"); // get class directory root
+	rootPath = System.getProperty ("CYTOSCAPE_HOME"); // get class directory root
 	if (rootPath.endsWith("/")) rootPath = rootPath.substring(0,rootPath.length()-1);
-	rootPath = rootPath + "/cytoscape";
+	rootPath = rootPath + "/cytoscape/dialogs/images/";
 	rootPath = rootPath.substring(rootPath.lastIndexOf(":")+1);
 	String p = rootPath;
 	ImageIcon [] shapeIcons = new ImageIcon [6];  // Array of icons for the list
 	//System.out.println(p+"/dialogs/images/rectangle.jpg");
-	shapeIcons[0] = new ImageIcon(p+"/dialogs/images/rectangle.jpg", "RECTANGLE");
-	shapeIcons[1] = new ImageIcon(p+"/dialogs/images/diamond.jpg", "DIAMOND");
-	shapeIcons[2] = new ImageIcon(p+"/dialogs/images/ellipse.jpg", "ELLIPSE");
-	shapeIcons[3] = new ImageIcon(p+"/dialogs/images/hexagon.jpg", "HEXAGON");
-	shapeIcons[4] = new ImageIcon(p+"/dialogs/images/trapezoid.jpg", "TRAPEZOID");
-	shapeIcons[5] = new ImageIcon(p+"/dialogs/images/triangle.jpg", "TRIANGLE");
+	shapeIcons[0] = new ImageIcon(p+"rectangle.jpg", "RECTANGLE");
+	shapeIcons[1] = new ImageIcon(p+"diamond.jpg", "DIAMOND");
+	shapeIcons[2] = new ImageIcon(p+"ellipse.jpg", "ELLIPSE");
+	shapeIcons[3] = new ImageIcon(p+"hexagon.jpg", "HEXAGON");
+	shapeIcons[4] = new ImageIcon(p+"trapezoid.jpg", "TRAPEZOID");
+	shapeIcons[5] = new ImageIcon(p+"triangle.jpg", "TRIANGLE");
 
 	numberOfShapeItems = shape2byte.keySet().size();
 	String shapeStrings [];

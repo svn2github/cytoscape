@@ -52,10 +52,9 @@ public class LineTypePopupButton extends JPanel implements ActionListener {
     }
 
     private void setupWindow(){
-	// default icon
-	ImageIcon icon = new ImageIcon(rootPath+"/dialogs/images/line_1.jpg");
 	// find the right icon
 	ListModel theModel = lineTypeList.getModel();
+	ImageIcon icon = (ImageIcon)theModel.getElementAt(0); // default icon
 	int modelSize = theModel.getSize();
 	for (int modelIndex = 0; modelIndex < modelSize; modelIndex++) {
 	    ImageIcon indexedIcon = (ImageIcon)theModel.getElementAt(modelIndex);
@@ -103,26 +102,25 @@ public class LineTypePopupButton extends JPanel implements ActionListener {
 	byte2shape.put(LineType.LINE_6, "LINE_6");
 	byte2shape.put(LineType.LINE_7, "LINE_7");
 
-	rootPath = System.getProperty ("java.library.path"); // get class directory root
-	System.out.println(rootPath+"/dialogs/images/rectangle.jpg");
+	rootPath = System.getProperty ("CYTOSCAPE_HOME");
 	if (rootPath.endsWith("/")) rootPath = rootPath.substring(0,rootPath.length()-1);
-	rootPath = rootPath + "/cytoscape";
-	rootPath = rootPath.substring(rootPath.lastIndexOf(":")+1);
+	rootPath = rootPath + "/cytoscape/dialogs/images/";
+	//rootPath = rootPath.substring(rootPath.lastIndexOf(":")+1);
 	String p = rootPath;
 	ImageIcon [] shapeIcons = new ImageIcon [12];  // Array of icons for the list
 	//System.out.println(p+"/dialogs/images/rectangle.jpg");
-	shapeIcons[0] = new ImageIcon(p+"/dialogs/images/line_1.jpg", "LINE_1");
-	shapeIcons[1] = new ImageIcon(p+"/dialogs/images/line_2.jpg", "LINE_2");
-	shapeIcons[2] = new ImageIcon(p+"/dialogs/images/line_3.jpg", "LINE_3");
-	shapeIcons[3] = new ImageIcon(p+"/dialogs/images/line_4.jpg", "LINE_4");
-	shapeIcons[4] = new ImageIcon(p+"/dialogs/images/line_5.jpg", "LINE_5");
-	shapeIcons[5] = new ImageIcon(p+"/dialogs/images/line_6.jpg", "LINE_6");
-	shapeIcons[6] = new ImageIcon(p+"/dialogs/images/line_7.jpg", "LINE_7");
-	shapeIcons[7] = new ImageIcon(p+"/dialogs/images/dashed_1.jpg", "DASHED_1");
-	shapeIcons[8] = new ImageIcon(p+"/dialogs/images/dashed_2.jpg", "DASHED_2");
-	shapeIcons[9] = new ImageIcon(p+"/dialogs/images/dashed_3.jpg", "DASHED_3");
-	shapeIcons[10] = new ImageIcon(p+"/dialogs/images/dashed_4.jpg", "DASHED_4");
-	shapeIcons[11] = new ImageIcon(p+"/dialogs/images/dashed_5.jpg", "DASHED_5");
+	shapeIcons[0] = new ImageIcon(p+"line_1.jpg", "LINE_1");
+	shapeIcons[1] = new ImageIcon(p+"line_2.jpg", "LINE_2");
+	shapeIcons[2] = new ImageIcon(p+"line_3.jpg", "LINE_3");
+	shapeIcons[3] = new ImageIcon(p+"line_4.jpg", "LINE_4");
+	shapeIcons[4] = new ImageIcon(p+"line_5.jpg", "LINE_5");
+	shapeIcons[5] = new ImageIcon(p+"line_6.jpg", "LINE_6");
+	shapeIcons[6] = new ImageIcon(p+"line_7.jpg", "LINE_7");
+	shapeIcons[7] = new ImageIcon(p+"dashed_1.jpg", "DASHED_1");
+	shapeIcons[8] = new ImageIcon(p+"dashed_2.jpg", "DASHED_2");
+	shapeIcons[9] = new ImageIcon(p+"dashed_3.jpg", "DASHED_3");
+	shapeIcons[10] = new ImageIcon(p+"dashed_4.jpg", "DASHED_4");
+	shapeIcons[11] = new ImageIcon(p+"dashed_5.jpg", "DASHED_5");
 
 	numberOfLineTypeItems = shape2byte.keySet().size();
 	String shapeStrings [];
