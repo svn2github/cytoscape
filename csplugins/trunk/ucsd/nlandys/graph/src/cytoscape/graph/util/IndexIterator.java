@@ -5,6 +5,6 @@ public interface IndexIterator
 
   public int nextIndex();
 
-  public int numIndexesRemaining();
+  public int numIndicesRemaining();
 
 }
