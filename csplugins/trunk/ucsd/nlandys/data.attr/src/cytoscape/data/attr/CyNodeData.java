@@ -21,12 +21,24 @@ public interface CyNodeData
   public void defineNodeAttribute(String attrName, byte attrType);
 
   /**
+   * The last entry in the dimNames input variable becomes the name of this
+   * attribute definition.
+   */
+  public void defineMultiNodeAttribute(String[] dimNames, byte[] attrTypes);
+
+  /**
    * @return an enumeration of java.lang.String, the set of strings returned
    *   is a list of unique node attribute names that are currently defined.
    */
   public Enumeration definedNodeAttributes();
 
   public byte nodeAttributeType(String attrName);
+
+  /**
+   * The last entry in the returned array is the string attrName (the input
+   * parameter).
+   */
+  public String[] multiNodeAttributeDimensionNames(String attrName);
 
   public byte[] multiNodeAttributeType(String attrName);
 
