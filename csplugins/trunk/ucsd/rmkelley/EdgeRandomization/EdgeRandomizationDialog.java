@@ -20,7 +20,7 @@ import javax.swing.event.*;
 import java.awt.BorderLayout;
 import java.awt.event.*;
 import cytoscape.layout.*;
-
+import javax.swing.border.TitledBorder;
 
 public class EdgeRandomizationDialog extends JDialog{
   JTable table;
@@ -61,6 +61,7 @@ public class EdgeRandomizationDialog extends JDialog{
     getContentPane().setLayout(new BorderLayout());
     
     JPanel northPanel = new JPanel();
+    northPanel.setBorder(new TitledBorder("Set number of iterations"));
     northPanel.add(new JLabel("Iterations: "));
     iterationText = new JTextField((new Integer(iterations)).toString());
     iterationText.addFocusListener(new FocusListener(){
@@ -69,6 +70,10 @@ public class EdgeRandomizationDialog extends JDialog{
 	  try{
 	    Integer temp = new Integer(iterationText.getText());
 	    iterations = temp.intValue();
+	    if(iterations < 100){
+	      iterations = 100;
+	      throw new RuntimeException("Value too small");
+	    }
 	  }catch(Exception except){
 	    iterationText.setText((new Integer(iterations)).toString());
 	  }}});
@@ -76,10 +81,14 @@ public class EdgeRandomizationDialog extends JDialog{
     getContentPane().add(northPanel,BorderLayout.NORTH);
 
 
-
+    JPanel centerPanel = new JPanel();
+    centerPanel.setLayout(new BorderLayout());
+    centerPanel.setBorder(new TitledBorder("Choose directed interaction types"));
+    
     tableModel = new EdgeRandomizationTableModel(types);
     table = new JTable(tableModel);
-    getContentPane().add(new JScrollPane(table),BorderLayout.CENTER);
+    centerPanel.add(new JScrollPane(table),BorderLayout.CENTER);
+    getContentPane().add(centerPanel,BorderLayout.CENTER);
     
     JPanel southPanel = new JPanel();
     JButton ok = new JButton("Begin Randomization");
@@ -105,7 +114,16 @@ public class EdgeRandomizationDialog extends JDialog{
 	  }
 	  options.iterations = iterations;
 	  options.currentNetwork = EdgeRandomizationDialog.this.currentNetwork;
-	  
+	  JFileChooser chooser = new JFileChooser(Cytoscape.getCytoscapeObj().getCurrentDirectory());
+	  chooser.setApproveButtonText("OK");
+	  chooser.setDialogTitle("Choose Destination File");
+	  int returnVal = chooser.showSaveDialog(Cytoscape.getDesktop());
+	  if(returnVal == JFileChooser.APPROVE_OPTION){
+	    options.saveFile = chooser.getSelectedFile();
+	  }
+	  else{
+	    cancelled = true;
+	  }
 	  /*
 	   * Get rid of the dialog
 	   */

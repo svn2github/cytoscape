@@ -86,8 +86,7 @@ public class EdgeRandomizationThread extends Thread{
       updateCountMatrix(currentNetwork, type, edges, directed, counts, adjacencyMatrix);
     }
     
-    String filename = currentNetwork.getTitle()+".rand";
-    scoreFile = new File(filename);
+    scoreFile = options.saveFile;
     try{
       ProgressMonitor myMonitor =  new ProgressMonitor(Cytoscape.getDesktop(),null, "Writing file to disk",0,currentNetwork.getNodeCount());
       myMonitor.setMillisToPopup(50);
@@ -113,7 +112,7 @@ public class EdgeRandomizationThread extends Thread{
       e.printStackTrace();
       System.exit(-1);
     }
-    JOptionPane.showMessageDialog(Cytoscape.getDesktop(),"Result stored in file: "+filename,"Randomization complete",JOptionPane.INFORMATION_MESSAGE);
+    JOptionPane.showMessageDialog(Cytoscape.getDesktop(),"Result stored in file: "+scoreFile.getName(),"Randomization complete",JOptionPane.INFORMATION_MESSAGE);
   }
 
 

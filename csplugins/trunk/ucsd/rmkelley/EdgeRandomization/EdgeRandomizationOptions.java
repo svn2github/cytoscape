@@ -25,4 +25,5 @@ public class EdgeRandomizationOptions{
   public int iterations;
   public Vector directedTypes;
   public CyNetwork currentNetwork;
+  public File saveFile;
 }
