@@ -122,7 +122,17 @@ public final class GraphCompiler
    *         But this is incorrect.  Therefore our assumption is false - that
    *         is, A is <i>not</i> a directed neighbor of A.  Therefore A
    *         will not be returned in the list of neighboring nodes of A.</li>
-   * </ul>
+   * </ul><p>
+   * <font color="#ff0000">IMPORTANT EDITORIAL NOTE:</font> The author of this
+   * algorithm needs to modify the interface to the algorithm to allow
+   * developers to provide custom definitions of <i>directed
+   * neighbor</i>; this definition should be an interface, which, if not
+   * provided by a programmer, will default to the definition stated above.
+   * Providing this &quot;hook&quot; for this definition will also make
+   * the <code>honorDirectedEdges</code> parameter go away -
+   * <code>honorDirectedEdges</code> is just trying to provide more
+   * flexibility for defining <code>directed neighbor</code> without
+   * providing full ability to define this.
    *
    * @param nodeIndex the index of the node whose neighbors we're trying
    *   to find.
