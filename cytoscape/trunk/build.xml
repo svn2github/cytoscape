@@ -312,7 +312,6 @@
         <mkdir dir="${dist.dir}/temp"/>
         <unjar dest="${dist.dir}/temp">
             <fileset dir="${lib.dir}">
-                <exclude name="retroguard.jar"/>
             </fileset>
         </unjar>
         <copy file="tools/jars/javax.imageio.spi.ImageWriterSpi"
