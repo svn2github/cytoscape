@@ -41,6 +41,31 @@ public class EdgeAppearanceCalculator {
     EdgeFontSizeCalculator edgeFontSizeCalculator;
 
     public EdgeAppearanceCalculator() {}
+    
+    /**
+     * Copy constructor. Returns a default object if the argument is null.
+     */
+    public EdgeAppearanceCalculator(EdgeAppearanceCalculator toCopy) {
+        if (toCopy == null) {return;}
+        
+        setDefaultEdgeColor( toCopy.getDefaultEdgeColor() );
+        setDefaultEdgeLineType( toCopy.getDefaultEdgeLineType() );
+        setDefaultEdgeSourceArrow( toCopy.getDefaultEdgeSourceArrow() );
+        setDefaultEdgeTargetArrow( toCopy.getDefaultEdgeTargetArrow() );
+        setDefaultEdgeLabel( toCopy.getDefaultEdgeLabel() );
+        setDefaultEdgeToolTip( toCopy.getDefaultEdgeToolTip() );
+        setDefaultEdgeFont( toCopy.getDefaultEdgeFont() );
+        
+        setEdgeColorCalculator( toCopy.getEdgeColorCalculator() );
+        setEdgeLineTypeCalculator( toCopy.getEdgeLineTypeCalculator() );
+        setEdgeSourceArrowCalculator( toCopy.getEdgeSourceArrowCalculator() );
+        setEdgeTargetArrowCalculator( toCopy.getEdgeTargetArrowCalculator() );
+        setEdgeLabelCalculator( toCopy.getEdgeLabelCalculator() );
+        setEdgeToolTipCalculator( toCopy.getEdgeToolTipCalculator() );
+        setEdgeFontFaceCalculator( toCopy.getEdgeFontFaceCalculator() );
+        setEdgeFontSizeCalculator( toCopy.getEdgeFontSizeCalculator() );
+    }
+    
     /**
      * Creates a new EdgeAppearanceCalculator and immediately customizes it
      * by calling applyProperties with the supplied arguments.

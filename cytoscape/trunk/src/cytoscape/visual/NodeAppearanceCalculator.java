@@ -59,6 +59,35 @@ public class NodeAppearanceCalculator {
     }
     
     /**
+     * Copy constructor. Returns a default object if the argument is null.
+     */
+    public NodeAppearanceCalculator(NodeAppearanceCalculator toCopy) {
+        if (toCopy == null) {return;}
+        
+        setDefaultNodeFillColor( toCopy.getDefaultNodeFillColor() );
+        setDefaultNodeBorderColor( toCopy.getDefaultNodeBorderColor() );
+        setDefaultNodeLineType( toCopy.getDefaultNodeLineType() );
+        setDefaultNodeShape( toCopy.getDefaultNodeShape() );
+        setDefaultNodeWidth( toCopy.getDefaultNodeWidth() );
+        setDefaultNodeHeight( toCopy.getDefaultNodeHeight() );
+        setDefaultNodeLabel( toCopy.getDefaultNodeLabel() );
+        setDefaultNodeToolTip( toCopy.getDefaultNodeToolTip() );
+        setDefaultNodeFont( toCopy.getDefaultNodeFont() );
+        
+        setNodeSizeLocked( toCopy.getNodeSizeLocked() );
+        
+        setNodeFillColorCalculator( toCopy.getNodeFillColorCalculator() );
+        setNodeBorderColorCalculator( toCopy.getNodeBorderColorCalculator() );
+        setNodeLineTypeCalculator( toCopy.getNodeLineTypeCalculator() );
+        setNodeShapeCalculator( toCopy.getNodeShapeCalculator() );
+        setNodeWidthCalculator( toCopy.getNodeWidthCalculator() );
+        setNodeHeightCalculator( toCopy.getNodeHeightCalculator() );
+        setNodeLabelCalculator( toCopy.getNodeLabelCalculator() );
+        setNodeToolTipCalculator( toCopy.getNodeToolTipCalculator() );
+        setNodeFontFaceCalculator( toCopy.getNodeFontFaceCalculator() );
+        setNodeFontSizeCalculator( toCopy.getNodeFontSizeCalculator() );
+    }
+    /**
      * Using the rules defined by the default values and calculators in this
      * object, compute an appearance for the requested Node in the supplied
      * Network. A new NodeApperance object will be created.

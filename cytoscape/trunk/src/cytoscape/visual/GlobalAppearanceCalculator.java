@@ -30,6 +30,15 @@ public class GlobalAppearanceCalculator {
 
     public GlobalAppearanceCalculator() {}
     /**
+     * Copy constructor. Returns a default object if the argument is null.
+     */
+    public GlobalAppearanceCalculator(GlobalAppearanceCalculator toCopy) {
+        if (toCopy == null) {return;}
+        
+        setDefaultBackgroundColor( toCopy.getDefaultBackgroundColor() );
+        setDefaultSloppySelectionColor( toCopy.getDefaultSloppySelectionColor() );
+    }
+    /**
      * Creates a new GlobalAppearanceCalculator and immediately customizes it
      * by calling applyProperties with the supplied arguments.
      */
