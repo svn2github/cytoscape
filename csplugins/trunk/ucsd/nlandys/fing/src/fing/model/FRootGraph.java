@@ -9,6 +9,7 @@ import cytoscape.util.intr.IntIntHash;
 import cytoscape.util.intr.IntIterator;
 import cytoscape.util.intr.IntHash;
 import cytoscape.util.intr.IntIterator;
+import cytoscape.util.intr.IntStack;
 import cytoscape.util.intr.MinIntHeap;
 
 import giny.model.Edge;
@@ -683,9 +684,6 @@ class FRootGraph implements RootGraph, DynamicGraph
       m_nativeToMetaNodeInxMap.put(nativeChildNode, Integer.MAX_VALUE);
       m_metaToNativeInxMap.setIntAtIndex(0, metaChildNode);
       m_metaGraph.nodeRemove(metaChildNode); }
-    // Remove this line later on when everything works.
-    if (metaRelationships.hasNext())
-      throw new IllegalStateException("internal error");
     return true;
   }
 
@@ -722,8 +720,6 @@ class FRootGraph implements RootGraph, DynamicGraph
     final int[] returnThis = new int[metaRelationshipsEnum.numRemaining()];
     for (int i = 0; i < returnThis.length; i++) {
       final int metaRelationship = metaRelationshipsEnum.nextInt();
-      // Something that is the source of a meta-relationship edge is a node
-      // in the original graph.
       final int metaParent = m_metaGraph.edgeSource(metaRelationship);
       returnThis[i] = ~(m_metaToNativeInxMap.getIntAtIndex(metaParent) - 1); }
     return returnThis;
@@ -747,12 +743,37 @@ class FRootGraph implements RootGraph, DynamicGraph
     return true;
   }
 
+  private final IntStack m_stack = new IntStack();
+
   public boolean isNodeMetaChild(int parentNodeInx, int childNodeInx,
                                  boolean recursive)
   {
     if (!recursive) return isNodeMetaChild(parentNodeInx, childNodeInx);
-    throw new UnsupportedOperationException
-      ("recursive meta node method not yet supported");
+    final int nativeParent = ~parentNodeInx;
+    final int nativeChildNode = ~childNodeInx;
+    if (!(m_graph.nodeExists(nativeParent) &&
+          m_graph.nodeExists(nativeChildNode))) return false;
+    final int metaParent = m_nativeToMetaNodeInxMap.get(nativeParent);
+    final int metaChildNode = m_nativeToMetaNodeInxMap.get(nativeChildNode);
+    if (metaParent < 0 || metaParent == Integer.MAX_VALUE ||
+        metaChildNode < 0 || metaChildNode == Integer.MAX_VALUE) return false;
+    // Depth first search.
+    m_hash.empty();
+    final IntHash metaVisited = m_hash;
+    m_stack.empty();
+    final IntStack metaPending = m_stack;
+    m_hash.put(metaParent);
+    m_stack.push(metaParent);
+    while (m_stack.size() > 0) {
+      final int currMeta = m_stack.pop();
+      final IntEnumerator relationships = m_metaGraph.edgesAdjacent
+        (currMeta, true, false, false);
+      while (relationships.numRemaining() > 0) {
+        final int aChild = m_metaGraph.edgeTarget(relationships.nextInt());
+        if (m_hash.put(aChild) < 0) {
+          if (aChild == metaChildNode) return true;
+          m_stack.push(aChild); } } }
+    return false;
   }
 
   public java.util.List nodeMetaChildrenList(Node node) {
