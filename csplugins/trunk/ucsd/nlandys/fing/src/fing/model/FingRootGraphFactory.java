@@ -319,13 +319,22 @@ public final class FingRootGraphFactory
    * <td>The directedness of an edge is determined in constant time.</td>
    * </tr><tr>
    * <td>addMetaChild(Node, Node)</td>
-   * <td></td>
+   * <td>Adding a node->node meta-relationship has time complexity
+   *     O(min(P, C)), where P is the number of pre-existing children the
+   *     soon-to-be parent has, and C is the number of pre-existing parents
+   *     the soon-to-be child has.</td>
    * </tr><tr>
    * <td>addNodeMetaChild(int, int)</td>
-   * <td></td>
+   * <td>Adding a node->node meta-relationship has time complexity
+   *     O(min(P, C)), where P is the number of pre-existing children the
+   *     soon-to-be parent has, and C is the number of pre-existing parents
+   *     the soon-to-be child has.</td>
    * </tr><tr>
    * <td>removeNodeMetaChild(int, int)</td>
-   * <td></td>
+   * <td>Grrr.  This is complicated.  In the simplest case (and in the
+   *     case that will occur frequently), this is much like removing
+   *     a node from a graph -- the time complexity is O(E), where E is the
+   *     number of edges touching the child node.</td>
    * </tr><tr>
    * <td>isMetaParent(Node, Node)</td>
    * <td></td>
@@ -346,19 +355,34 @@ public final class FingRootGraphFactory
    * <td></td>
    * </tr><tr>
    * <td>isNodeMetaChild(int, int)</td>
-   * <td></td>
+   * <td>The operation of determining whether or not a given node is the
+   *     meta-parent of another given node has time complexity O(min(P, C)),
+   *     where P is the number of children (both nodes and edges) the potential
+   *     parent has, and C is the number of parents the potential child
+   *     has.</td>
    * </tr><tr>
    * <td>isNodeMetaChild(int, int, boolean)</td>
-   * <td></td>
+   * <td>The recursive version of this method does a depth-first search of
+   *     the meta-graph structure starting at the specified parent node;
+   *     therefore, the time complexity of this recursive operation is
+   *     O(M), where M is the size of set (including both nodes and edges)
+   *     "reachable" be following meta-paths from parent to child, starting
+   *     at specified parent node.</td>
    * </tr><tr>
    * <td>nodeMetaChildrenList(Node)</td>
-   * <td></td>
+   * <td>The operation of getting all node children of a given parent node
+   *     has time complexity O(C), where C is the number of children of the
+   *     given parent node, including both nodes and edges.</td>
    * </tr><tr>
    * <td>nodeMetaChildrenList(int)</td>
-   * <td></td>
+   * <td>The operation of getting all node children of a given parent node
+   *     has time complexity O(C), where C is the number of children of the
+   *     given parent node, including both nodes and edges.</td>
    * </tr><tr>
    * <td>getNodeMetaChildIndicesArray(int)</td>
-   * <td></td>
+   * <td>The operation of getting all node children of a given parent node
+   *     has time complexity O(C), where C is the number of children of the
+   *     given parent node, including both nodes and edges.</td>
    * </tr><tr>
    * <td>getNodeMetaChildIndicesArray(int, boolean)</td>
    * <td></td>
