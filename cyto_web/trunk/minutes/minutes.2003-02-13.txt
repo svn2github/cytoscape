@@ -1,0 +1,83 @@
+February 13th, 2003
+Cytoscape Meeting
+
+In attendance:
+Paul, Gary, Owen, Andrew, Trey
+
+Scribe: Trey
+
+############################################################
+
+(1) Visualization mapper- committing it into the Core
+
+* Andrew has finished loading calculators from vizmap.props file
+
+* We would also like to be able to save UI-configured
+  mappings back to vizmap.props.  Owen asks if this could
+  be backwards compatible with the old cytoscape.props
+  file format?  Could be a fair bit of work, Andrew
+  concludes, but he offers to take a try.
+
+* When should we prompt the user to save the mappings?
+    - on CytoscapeWindow close
+    - from a save button in the vizmapper
+  Paul suggests that cytoscape.props and vizmap.props
+  can be given any arbitrary name if it is specified
+  in a project file with the -p command line option.
+
+* At Owen's request, we agree to move vizmapper to the Core.
+
+* Gary asks about how easy vizmapper is to use, and if
+  we can make it more accessible to casual users.
+  Owen/Jonathan are currently working on a toolbar giving access
+  to node and edge property "defaults" and are also making
+  available common visual mapping schemes as predefined,
+  selectable items. 
+
+############################################################
+
+(2) Paul gets feedback about the tutorial website
+
+* Paul has now produced a relatively mature first
+  tutorial using WebStart.
+
+* At Paul's proposal, we agree that the next release of
+  Cytoscape be primarily based on Java WebStart.
+
+* Owen asks how we can track downloads with Java WebStart.
+  We agree to let this go, if we can track the IP
+  address of the downloader, and perhaps get them to
+  agree to a LGPL license at download time.
+
+* The best was to promote Cytoscape are through:
+  - Publishing the Cytoscape paper
+  - Referencing Cytoscape in other papers
+  - Mentioning Cytoscape in talks and posters
+  - Linking to websites such as BIND
+
+############################################################
+
+(3) Cytoscape.org website
+
+* The Whitehead has a team of programmers that are revamping
+  people's websites. We agree to let them have a go at
+  redesigning Cytoscape's website over the next few weeks.
+
+* What about documentation?  Paul's tutorial will handle
+  a lot of this.  In addition, we have the Cytoscape
+  paper, and Trey will convert the old manual into a pdf
+  form.
+
+* We will upload and link the existing JavaDoc to the
+  cytoscape.org website.  This will be nasty and incomplete,
+  but will provide people with some documentation now,
+  while motivating us to fix the glaring holes.
+
+############################################################
+
+(4) Gary talks about SeqHound
+
+* Paul waits for BIND'a API update, Java, etc.
+  Or at least an update on the progress of said API.
+
+############################################################

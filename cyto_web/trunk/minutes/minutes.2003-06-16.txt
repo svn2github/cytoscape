@@ -1,0 +1,45 @@
+Hi Everybody:
+
+Here are the minutes from last week's meeting:
+
+1.  Graph Package:  the group is busy implementing the y-file wrappers;
+things are moving along, and hope to have a version completed by early
+next week (e.g. week of June 16).  The group discussed the overall need to
+do more performance testing, especially on very large graphs.
+
+2.  Core Refactoring:  work has begun on the CytoscapeWindor refactoring;
+CytoscapeWindow is now broken into several other classes, and the class is
+down to 1900 lines, from the original 3600 lines.  Steady progress being
+made, but still lots of work to be done.
+
+3.  CVS Server:  Trey is moving to San Diego in July.  CVS server @ MIT is
+being unplugged this coming Monday (June 16.)  ISB can support a CVS
+server, but the IT staff at ISB needs to place it on a dedicated server.
+Benno is willing to purchase the new server, but wants to talk to Trey
+first.  If this is just a stop-gap measure for a few weeks, it may not be
+worth purchasing a whole server.  Benno to follow-up with Trey.
+
+4.  Community Outreach:  General discussion about creating a community
+portion of the cytoscape.org site.  This might include mailing lists,
+bulletin boards, list of plug-ins, etc.  This led to a general discussion
+about how to replace Owen, and all the work he did on the cytoscape.org
+web site, and the build distribution.  Benno currently has access to the
+cytoscape.org site, and will share the access as needed to others.  No
+real resolution on community outreach, except everyone agreed that we
+should look into it further.
+
+5.  Osprey:  Gary went to Toronto, and met with the Osprey group.  Gary
+told them about the latest cytoscape plans, including the refactoring,
+data services, etc.  The Osprey group is on board for supporting
+Cytoscape, and would like to create a plan for integrating osprey features
+into cytoscape.  They will begin by looking into how to create cytoscape
+plug-ins.  Major concerns of the osprey group:  Mac OS X compatibility,
+caching performance, performance of big graphs, and multiple colors on
+individual nodes, e.g. pie charts.
+
+6.  Data Services:  Ethan gave a quick update on the data services, Phase
+2.  Phase 2 is now wrapping up.  Newest feature includes the ability to
+read in PSI-MI (Proteomics Standards Initiative, Molecular Interaction)
+XML.  You can now read in PSI from 1) file; 2) URL; or 3) via the new CBio
+Data service.  Planning for Phase 3 will start in the next few days.
+

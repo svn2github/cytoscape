@@ -1,0 +1,49 @@
+Cytoscape Meeting Minutes, December 18, 2003
+---------------------------------------------
+Present:  Gary, Rob, Ethan, Trey, Chris, Benno, Rowan, Larissa, Iliana,
+Phil.
+
+1.  Refactoring update
+
+Rowan has fixed 2 significant bugs:  a) edge direction now fixed b)
+disappearing edges now fixed.  Both are wow ready for an Alpha Release 2.
+Ethan will do Alpha 2 release on Friday.
+
+Andrew is working on removing Y-Files.  Will be done by end of next week.
+
+2.  Collaborations
+
+Trey has been talking to several different groups about Cytoscape
+collaborations.  Here is a summary:
+
+Bruce Conklin (GenMAPP)
+Ron Shamir (PIVOT: Protein Interactions VisualizatiOn Tool)
+Ken Buetow (NCI Ca BIO database)
+Teri Klein and Russ Altman (PharmGKB)
+Mike Waters (NIEHS CEBS database)
+
+Ken Buetow is particularly interested in integrating caBIO/caCORE with
+Cytoscape.  For example, NCI now provides access to BioCarta Pathway
+diagrams in SVG format.  Ken is interested in adding a link for these
+diagrams, such as "View this pathway in Cytoscape." Rowan mentioned that
+it will take a lot of work to expand Cytoscape into a full pathway
+browser.
+
+Benno also talked to a group at BioMedNet, and Gary mentioned
+BioMedCentral.  Gary suggested that ISMB would be a good venue for meeting
+with new collaborators.
+
+3.  Bug Parade
+
+We went through most of the new bugs (mostly logged by Ethan).  Main point
+of discussion concerned which layout algorithms must be in Cytoscape 2.0.
+These are:  Hierarchical, Circular, and Spring Embedded Layout.
+
+4.  Grant
+
+We got initial reviews on the Cytoscape grant.  Cytoscape was reviewed in
+the middle of the pack.  This might have been good enough last year, but
+with funding cuts, nothing is certain.  Benno, Gary and Trey met
+separately after the conference call to dicsuss specific grant issues.
+
+

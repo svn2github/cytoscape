@@ -1,0 +1,90 @@
+Cytoscape Meeting Minutes:  April 15, 2004
+Present:  Benno, Trey, Iliana, Andrew, Rowan, Ethan, Rob
+
+Agenda Items:
+----------------------
+0.  Welcome back to Benno (all the way from Paris!)
+
+1.  Anonymous CVS Access
+
+Rowan would like outsiders to be able to do anonymous CVS checkouts.
+There was general agreement that this would be a good idea.  Trey will
+look into it and discuss with Chris, and report back to the entire group.
+
+2.  Cytoscape Release / API Discussion
+
+The problem, as seen from a Cytoscape PlugIn writer (as defined in Rowan's
+email):  1)  maintenance; 2) backward compatilbility; 3)  reducing the
+number of classes that a plugin writer needs to deal with;  4)  stability
+of API.
+
+Anrew:  Everything in the Cytoscape API is currently public, nothing is
+protected.  PlugIn writers have access to everything.
+
+Benno:  What do other groups do?  Rowan indicated that Adobe solicits
+feedback from plugin writers, and tries to solicit feedback before major
+changes.
+
+Iliana urged us to create well-defined interfaces -- plugin writers only
+write to interfaces.  Implementations are hidden.  Rowan has already
+started writing some interfaces.
+
+Trey:  Cyto 2.0 will be a beta for several months.  We can release a beta
+version now, but clearly indicate that the API is still in flux.
+
+Benno:  How about we offer two versions of the API:  1)  a stable set of
+interfaces, and 2)  we still allow plugin writers to access internal
+classes.  Interfaces are stable;  other classes are not necessarily
+stable.
+
+Rowan:  all interfaces should be in the main cytoscape package.
+
+Ethan: let's proceed with the release.  We have momementum, and it may
+take a long time to finalize the interface API.  If we introduce major
+changes now, we may inadvertently break bugs which have been resolved over
+the past few months.
+
+Iliana:  What's the rush?  People will pay the most attention to our first
+release.  We want to get the API stabilized before releasing it, and get
+it right.  If we are very eager to show progress, we could make a web site
+with screenshots.
+
+Andrew:  Lots of people are eager to try out Cytoscape 2.0.  We have
+promised them a release in Feb, March, and now April.  At some point, we
+need to show them we have made real progress.
+
+Trey:  let's spend two weeks on interface design.
+
+***Final Decision***
+1.  Do Alpha release Friday 4/16 with disclaimer that API is in flux.
+
+We will use the following disclaimer:
+
+DISCLAIMER FOR PLUG-IN DEVELOPERS:  The Application Programmer's
+Interface (API) for Cytoscape Version 2.0Alpha1 is currently under
+revision.  Accordingly, we currently do not recommend writing Cytoscape
+plug-ins against this API.  We expect the API to stabilize as of the
+next code release.
+
+2.  Work on interfaces over next 2-3 weeks.  Continue interface discussion
+on mailing list.
+
+3.  Ethan to modify the cytoscape.org web site; Andrew has some content,
+and will email it to Ethan.
+
+Rob:  we should do a tag of this release in cvs;  Cytoscape 2.0 alpha1
+release.
+
+Trey will check in the JActive Module plugin for the alpha release.
+
+----  Meeting adjourned....
+
+
+---------------------------------------
+Computational Biology Center
+Memorial Sloan-Kettering Cancer Center
+http://cbio.mskcc.org
+Email:  cerami@cbio.mskcc.org
+Direct phone:  (646) 735-8082
+----------------------------------------
+

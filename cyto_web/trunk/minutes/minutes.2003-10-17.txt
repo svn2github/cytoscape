@@ -1,0 +1,50 @@
+
+Attendees:
+Andrew, Bill(?), Rowan, Gary, Ethan, Rob, Phil, Larissa, Trey, Chris
+
+Agenda:
+1. Bugs
+2. Cytoscape release
+3. GINY
+
+Bugs:
+- #67 cytoscape.sh script, Invalid maximum heap size: -Xmx512MB
+  Ethan will handle the "MB" to "M" change needed
+- Vizmapper re-draws graph for each tab constructed
+  Andrew to communicate with Jonathan as necessary
+
+Release:
+- version 1.1 or 1.101 based on cvsdir4
+- API defined, needed by plugin writers
+    Andrew is working on it
+- javadoc for new API
+   will enable 'ant doc' rule
+- all things in release need to be checked in to cvsdir4 and 5
+- should wait for Illiana's return? (biomodules)
+    (should the release of the core depend on plugins?)
+- make sure old active modules code is removed
+- manual needs to be purged of all references to active modules
+    done by Trey, emailed .doc to Ethan
+- /user_docs/MANUAL.txt to be removed (?)
+- test data to distribute, update BINDyeast.sif
+- GO files (Paul will know where to get newest?)
+- Ethan to package the new release
+
+GINY:
+- 2-3 week goals
+    GINY compatible vizmapper
+    filters
+    project files
+    interaction files
+    status bar
+    selection actions (nodes, edges)
+- things for next round
+    undo manager
+    GML read/writer
+    GO annotation
+    (and a few more I'm sure)
+
+___________________________________________________________________________
+ Christopher Workman, Ph.D         Department of Bioengineering
+ phone: 858 822-4706               University of California San Diego
+

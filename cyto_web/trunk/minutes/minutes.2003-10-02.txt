@@ -1,0 +1,29 @@
+Present: EC, GB, PS, AM, RC, LK, PE
+
+ 
+
+Agenda:
+
+-refactor update
+
+-plugin for data cube
+
+-GINY update
+
+-bugs skipped until next week
+
+ 
+
+Refactor (AM): Andrew was out for a couple days, estimate of completion pushed out one week (end of next week).  He’s currently working on graph loading
+
+ 
+
+Data Cube Plugin (PS): Paul is working on data that contains interactions, microarray measurements, and proteomics info—which earnestly calls for a data cube.  Separate planes will represent different visual attributes, and he will also work on the ‘view’ of the data cube data (improving on the tabbed node browser).
+
+Proposed: two webpages for downloads--one for ‘blessed’ code, the other containing beta-version material.
+
+Gary brought up the fact that the grant mentions three specific plugins.  One is in a ready state (Active Modules), one is in the core, and one is a possible (SBML reader).  Others plugins may also be put up in light of the grant review (e.g., SBML export, Andrew’s Expression Profile Viewer and Expression Correlation Viewer).  Build details to be put together by plugin owners, GB & EC will do obfuscation and deploy.
+
+ 
+
+GINY (LK): the hybrid is not yet ready, but Larissa has two working versions: one using YFiles and one using GINY.  (And Rowan has a working wrapper.)  Next week, source should be available for a bake off.  A final decision will be left to Benno and Trey.

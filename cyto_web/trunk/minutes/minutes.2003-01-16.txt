@@ -1,0 +1,78 @@
+Minutes: Owen
+
+1. Old visualization
+   owen reports progress; it may not be finished in
+   a releasable state before the new visualization is
+   ready, but have a look anyway, because it is an
+   indicator of what is to come.  besides that, it's
+   useful.  owen will send out email (done)
+
+2. New visualization
+   Andrew has led the effort to redesign the vizmapper,
+   and he has coded it himself.  This work is very far
+   along; most classes are written, the only things
+   that remain are cytoscape.props writing and reading,
+   as well as UI's (which owen will be involved in).
+
+   The design includes a catalog of mappers (henceforth,
+   "calculators") which calculate values of visual
+   attributes based on values of node and edge attrib's,
+   as well as perhaps the graph.  paul's suggestion of
+   the "Network" object consisting of the graph and the
+   attributes is the input to a calculator.  the calc's
+   keep track of which attrib(s) they are mapping from.
+
+3. sourceforge
+   Paul has forged ahead, so to speak, and the core is up
+   as "org.cytoscape.core" as discussed.  the web ui to
+   cvs is not up by default, and paul indicates it will
+   take a little while before we're ready to use it.  Gary
+   offers assistance.
+
+(intermezzo: benno mentions the possibility of jGraph and
+   piccolo.  these are great, because they would mean no
+   code obfuscation and anyone can write a plugin.  the
+   drawback is development time to make one of these free
+   alternatives to yFiles meet the same API as yFiles does,
+   at least to the extent that we use it.)
+
+4. UndoableGraphHider
+   Iliana discusses the slowness that users are experiencing,
+   and we conclude that the best short-term fix is a mod to
+   the UndoableGraphHider that allows two constructors, one
+   which preserves undoability and the other which does not.
+   The cytoscape.props file would control whether your window
+   has the undo feature.  Longer term, we should make undo
+   work better.
+
+   Andrew says he'll look at it in the next couple of days,
+   and either succeed at this change, or report some kind of
+   problem with succeeding.
+
+5. a good online demo
+   Paul asks that we think of data sets and cytoscape
+   walk-throughs that would make good javastart intro's.
+
+6. database plugin
+   This seems like a good idea; Paul has already
+   implemented something related to this and the SBW;
+   gary and paul will talk offline about it. (sorry, my
+   notes aren't very good here)
+
+7. bug doug
+   Owen reports that he doesn't know what's wrong with doug
+   and the bug.  Doug has redhat 8, and owen has tried it
+   with redhat 8, but not reproducing the bug. owen asks
+   for ideas, and Paul suggests the JVM version.
+   (epilogue: owen emails doug, doug replies that the JVM
+    version is 1.4.1; owen installs 1.4.1 and replicates
+    the crash.  owen tells doug to use 1.4.0, as per the
+    cytoscape webpage.)
+
+8. West Coast Downloads
+   progress is underway; gary offers a second east coast
+   site, and it sounds like a good idea, so owen emails
+   gary the scripts and pertinent HTML.
+
+that's the news.
+

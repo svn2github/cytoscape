@@ -1,0 +1,41 @@
+Present:
+
+Seattle: Me (Rowan), Benno, Larissa, Phil, Andrew, Iliana
+NY: Gary, Ethan, Rob
+UCSD: Chris
+
+1. GINY-Files Simul-Cyto ( Larissa, Me, Andrew )
+cvsdir5 now contains a version of Cytoscape that can use Y-Files ( ant 
+run ), or GINY ( ant giny ).
+
+new plugins should use GINY.
+
+Chris is working on a GML r/w.
+
+To get working, get GINY:
+http://csbi.sourceforge.net/
+
+either get the release from the download page, or get the CVS version( 
+preffered )
+
+gbader added as developer.
+ecerami and cerami did not work.
+
+2. Refactor. ( Andrew )
+CytoscapeWindow re-org is done.  Andrew now just wants to do some 
+clean-up and documentation which should take another week.
+Specifically startup needs to be changed.
+
+
+3. UI ( Gary )
+Gary will send around UI problems.  They will then get fixed at some point.
+
+This discussion led to the need for some discussion about where we want 
+to go.
+
+4. Obfuscateion
+Is still a PITA, may be better by using YGuard.  We don't know if we can 
+add things to the classpath after downloading Cytoscape1.1.
+
+
+

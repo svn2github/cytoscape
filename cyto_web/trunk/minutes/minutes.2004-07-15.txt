@@ -1,0 +1,81 @@
+Minutes for Cytoscape conference call Thursday, July 15, 2004
+
+Attendance:
+Rowan, Ethan, Gary, Rob
+
+Agenda:
+Release status
+Mailing lists
+Minimum requirements
+
+
+Release status
+The release is progressing. Gary will be updating the web starts, signing
+them with our Verisign certificate (they will have to be made available from
+cbio.mskcc.org for this).  If this works, it will get rid of the security
+message.  The features page, manual, and website still need to be finished
+as well as the Mac release.  Rowan has created the install anywhere site,
+but will look into getting the Cytoscape icon incorporated.
+
+The GO directory will be removed from the release, since it is now in the
+annotation directory.
+
+Ethan has changed the website to PHP and has created an ant script to deploy
+it to the server (you will need the password to do this).  The website will
+be stored in CVS.
+
+The advantage of this setup is:
+1.	Anyone can edit the website from CVS and it is centrally stored and
+managed
+2.	The ant file handles deployment
+3.	PHP means that the header and footer need to be edited only once
+4.	Dynamic content can be put on the homepage (e.g. an Atom or RSS
+feed)
+
+The current proposed website is here, but not finished yet.
+http://cytoscape.org/new/index.php
+
+When we get this all of the above done, we should announce Cytoscape 2.0 and
+discuss moving to a stable release cycle (e.g. every 6 months) with an
+automated daily or weekly build to provide the latest development version.
+
+Mailing lists
+We would like to use Google groups for all of our mailing lists (including
+Cytostaff).  The advantages are that they are easy to subscribe, manage and
+the archives are easy to search.  The proposal that we came up with is as
+follows (please read and comment, since we should agree on this before we
+implement).
+
+1.	Have a page on Cytoscape.org describing the lists
+2.	Have a cytoscape-discuss@googlegroups.com
+This would be a public, member posting only list that is publicly advertised
+on Google and our website that would serve as public discussion for all
+bugs, tech support, etc. (we would stop using bugs@cytoscape.org for this)
+We could also make the archive available from a sub page of cytoscape.org
+with pointer to Google for searching.
+3.	cytoscape-announce@googlegroups.com
+This would be a public announce list that anyone could subscribe to, but
+only moderators could post to and also be moderated by us.
+There is a way to set up our home page to automatically show the messages on
+this list (via an atom news feed) that Ethan figured out - see
+http://cytoscape.org/new/. We would also put the latest news item on the
+header of the page.  So when you want to update the news on Cytoscape, you
+just post to the mailing list via e-mail or via the web interface for the
+google group.  This will allow us all to keep the news up to date in a much
+easier way, which would also automatically send out news items to the
+announce mailing list (since it would really be the same thing).
+4.	cytoscape-dev@googlegroups.com
+This would be member posting only, invite only, advertised only on our
+website - not through Google.  The archive would be publicly readable.  We
+would use this to replace the current Cytostaff@cytoscape.org mailing list.
+The archive would then be nice and searchable and we could easily invite new
+people to join.
+
+
+What should the recommended screen resolution be for Cytoscape?
+Proposal is to have it be minimum 1024x768 screen resolution, at least
+500MHz CPU and at least 256MB free physical RAM.  We would recommend as much
+RAM as possible to work with larger networks (Rob will look into a network
+size/memory relationship that we can report for estimating)
+
+

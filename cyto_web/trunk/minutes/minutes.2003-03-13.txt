@@ -1,0 +1,127 @@
+Cytoscape meeting minutes for March 13, 2003
+
+Present:
+
+Whitehead: Owen
+MSKCC: Gary, Ethan
+ISB: Benno, Paul, Andrew
+
+minutes: Andrew
+
+Agenda items:
+
+0. personnel changes
+1. new web release fixing earlier listakes
+2. jar loader
+3. obfuscated jars
+4. renaming of cytoscape packages
+5. vizmapper completeness
+6. other issues
+
+
+0. personnel
+
+Ethan is a new programmer in Gary's group: welcome to the group!
+Also, Owen notes that Trey is planning to move to San Diego around
+June, at which point Owen will cease to work on the project. Thanks
+to Owen for all his hard work so far, and best of luck on new
+endeavors.
+
+2. new web release
+
+Owen made a few mistakes in the initial release of Cytoscape to the
+web last week. These included a file permission error and some
+malformed references to directories available to Owen but not to
+the generic user. These errors have been fixed and a new version
+uploaded; Gary has installed the new version on his site and Paul
+will do so soon. We agree to send a suitable email to the ~dozen
+people who downloaded the new version and provide fixed versions
+of the affected files. For the future, will try to have more testing
+of the release before making it truly publicly available; Owen
+agrees to test on a completely separate machine from his normal
+work, and if possible others can also test the new version.
+
+3. jar loader
+
+Owen has made great progress on loading plugins from jars, and
+we agreed to move the functionality of his plugin into the core.
+An extended discussion ensued over how to load and activate
+plugins. Issues include which plugins to load at startup by
+default; how to change that; how to handle conditional loading
+(i.e., checking for needed data); how to grab and activate new
+plugins.
+
+The general scheme is to have a plugin manager that knows where
+to find plugins. These include an index on the web site that lists
+the known plugins, and a local repository of plugins that the
+user has downloaded. This manager should allow the user to browse
+the plugins that exist, download on demand, and control the list
+of plugins to activate on startup. The implementation of all this
+remains to be determined.
+
+4. obfuscated jars
+
+Owen figured out how to obfuscate a jar which is separate from
+the cytoscape jar, but allow them to work together by having the
+same obfuscation. The trick is that the obfuscator (RetroGuard)
+saves the obfuscation table when it runs. Then, when you get a
+new jar you want to obfuscate the same way, you combine the
+classes in the new jar with the unobfuscated cytoscape core
+classes, and obfuscate the whole thing using the saved table.
+Then you can extract the new (now obfuscated) classes from that
+combined jar and put only the new classes in a separate jar, and
+use that separate jar with the originally obfuscated cytoscape jar.
+We're all impressed that Owen worked all this out.
+
+On a related note, Paul will meet later today with Rowan for an
+update on the progress on an open-source yFiles replacement. The
+suggestion is that we could remove yFiles from the Cytoscape core
+and replace it with this open-source version to represent the
+core graph structures, and then supply yFiles graph operations
+via obfuscated plugins that convert between the open source and
+yFiles graph format and run the yFiles algorithms on suitably
+converted versions. This would allow access to yFiles operations
+without requiring plugin writers to have a yFiles license. Note
+that such plugins could only allow prepackaged yFiles operations,
+and not calls to the yFiles API.
+
+4. package renaming
+
+Currently the Cytoscape packages are referrred to by the "common names"
+of cytoscape and csplugins. Owen notes that the "canonical names"
+would be org.cytoscape.core and org.cytoscape.csplugins, and suggests
+doing the renaming by applying a suitably complex script to change
+the package names in the classes, the import statements, and the
+references in the makefiles. Paul passionately argues for doing
+this in conjunction with the upcoming refactoring of the core, and
+the motion passes.
+
+5. completing the vizmapper
+
+Paul notes that the code for the vizmapper is complete, but there
+is currently no documentation or tutorials for it, and no
+suitable defaults. Owen points out that he actually did a lot of
+work to create suitable predefined calculators and a sensible
+set of defaults. Owen and Paul agreed to grab a fresh version of
+the code and see what is actually there by default. Andrew is
+currently working on a manual/tutorial for the vizmapper which
+should be ready by next week. (Later note: Iliana requests
+documentation for plugin writers in addition to documentation
+for using the user interface to the vizmapper).
+
+
+6. Other issues:
+
+A report surfaces that Java 1.4.1 for Mac is out. Paul agrees to
+look into this. If true we should add instructions for Mac users
+to the manual next to the unix/windows instructions.
+
+It's agreed that the minutes of the meetings should be archived
+on the web site. Andrew agrees to check with Owen soon on this.
+
+Post-meeting note: Benno and Hamid at ISB are currently seeking
+to hire a person who would work ~6 months over the next year on
+Cytoscape, principally on web site/tutorials/help/documentation,
+possibly additionally on user interface improvements. Candidates
+were interviewed this week, and a hire should be authorized
+shortly.

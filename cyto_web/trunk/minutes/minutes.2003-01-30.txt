@@ -1,0 +1,132 @@
+Minutes for Cytoscape meeting Thursday, January 30.2003:
+
+Present:
+Whitehead: Trey, Owen, Jonathan
+ISB: Andrew, Paul
+MSKCC: Gary
+
+Minutes: Gary
+
+1. New demos
+2. Osprey
+3. New vizMapper
+4. Plugins as jar files
+
+1. Paul brought up building demos for Yeast
+Paul is on the GO friends mailing list, which recently announce SGD
+improved annotation for yeast.  One thing to do here would be to have
+that as a web start feature, then any yeast biologist could get that
+data just by clicking on a link.
+
+Paul would like to grow the number of tutorials as well.  Paul would be
+glad to put up tutorials at a rate of 1/week.  This would add user
+friendliness to Cytoscape and make things clearer.
+
+We then looked at the Halo demo as an example of this.
+http://db.systemsbiology.net:8080/cytoscape/halo/index.html
+
+(This wasn't working for Gary, but a new version of Java fixed the
+problem)
+
+Paul then asked "What is a good yeast demo?"
+Trey suggested the classical Gal filtered GML file with expression data
+and GO, maybe KEGG markup would be a good start.  Then a few brief
+pointers on how to get your own data in to Cytoscape on top of that.
+
+We also need to find a good place from cytoscape.org to put these
+tutorials and demos.
+
+Trey wondered when would be a good time to link to the Halo demo?  When
+it's ready, it should be linked right away.
+
+---
+
+2. Osprey
+Paul asked Gary to talk about Osprey.
+
+The Tyers lab has limited resources to take Osprey to the next versions
+(with all of the features that they want to put in).  Cytoscape already
+has a lot of these features, like expression data integration.  Osprey
+has a lot of good user interface features because this is what they
+concentrate on.  The Tyers lab is open to work together to create the
+tool that all biologists need :)
+
+The practicality of working together would have to be addressed, as the
+group may be growing too fast, but it should work if we take it slow and
+steady. (Added from discussion with Trey and Benno yesterday)
+
+One plan to move forward on this would be to have Osprey as a plugin for
+Cytoscape and maybe integrate the Cytoscape graph library into Osprey.
+Then Osprey could further be integrated over time.
+Paul suggested having the mouse over feature integrated into Cytoscape
+as a test.  When the mouse moves over a node, the annotation appears in
+a frame window.  Paul could coordinate with the Osprey guys (Bobby-Joe
+Breitkreutz and Chris Stark in Toronto).
+This feature could be implemented in Cytoscape using a separate window.
+
+Trey suggests prioritizing features according to the Tyers' lab
+requirements and some of these features could be worked on by the
+Cytoscape team, since Cytoscape would eventually need them in any case.
+This would be a way to meet them half way.
+
+Gary mentioned that Bobby-Joe might want to come to Seattle to meet
+people there.  This seems to be a good idea.
+
+The details of all of this would have to be worked out on a conference
+call.
+
+---
+
+3. Andrew and Owen then brought up the new visual mapper.  It is
+awesome!
+Jonathan, Owen and Andrew have put in a huge amount of work. Andrew
+mentioned that core part is functional and would likely be done in a
+couple of days.
+
+Owen mentioned that the UI has come a long way.  Features are all there,
+but not guaranteed bug free yet.  You can do continuous and discrete
+mappings, colors, other features of arrows, arrowheads and nodes, etc.
+
+Andrew wanted Owen to please send out instructions on using this as a
+plugin again.  This has now been done.
+
+One problem is that colour schemes are not persistent.  Jonathan may
+have fixed this already.
+
+A redraw issue would be solved by putting it into the core. Owen is
+super eager to put this into the core.  Paul is hesitant, but may have a
+solution.  It may be able to replace the old vizmapper with a single
+method call.  Eventually we would like to see this in the core.
+
+Action item:  Gary and other's check out the vizmapper and approve
+integration into the core.
+
+Trey asks if font size and font style can be done soon.  Might be
+possible to change the font as well.  Paul will check into this.
+
+Owen mentioned that one problem with vizMapper is that there are 14
+tabs, one for each visual attribute.  This is too many!  What about
+pull-down menus.  Any suggestions are welcome to making this look nicer.
+
+---
+
+4. Trey brought up that he would very much like to have plugins as
+separate JARs from the core.  This would enable people to more easily
+trade plugins. A website or web service could be eventually built that
+Cytoscape could poll for plugins.
+
+But, obfuscation may be a major problem for this feature.  One solution
+may be to pass the graph itself between plugins.  Once the plugin has
+the graph, it could use its own graph library to deal with it.
+
+Trey felt that there definitely needs more time spent investigating this
+before moving forward on the feature.
+
+______________________________________________
+Gary Bader, Ph.D. - baderg@mskcc.org
+Sander Lab, Computational Biology Center
+Memorial Sloan-Kettering Cancer Center
+http://www.cbio.mskcc.org/~bader/
+1275 York Avenue, Box 460, New York, NY, 10021
+
+

@@ -1,0 +1,35 @@
+Cytoscape Meeting:  Thursday Feb 12, 2004
+Present:  Trey, Chris, Ethan, Rob, Andrew, and Rowan
+
+1.  GML Reader/Writer:  Chris has checked in a working version of the GML
+Reader/Writer.  Not everything is enabled, and he is still working on a
+few remaining items.  Primary item is mapping node attributes, including
+color, shape, etc.  Chris encountered some problems with the Viz Mapper --
+specifically could not get the continuous mapper to work for node/edge
+colors.  Chris and Andrew will take this up off line.
+
+2.  Hierarchical Layout:  Rob has the core layout algorithm complete, and
+is currently integrating with GINY.  Rob plans to release a beta version
+of the algorithm as a plugin either on Friday or this coming Monday.
+
+3.  Filters:  Rowan has a beta version of the Filter plugin, that he made
+available in his Mac app distribution.  Based on feedback from Gary,
+Rowan is working on fixing the UI so that everything fits within a smaller
+screen.
+
+4.  Mac OS X Distribution:  Rowan has made a "Macified" version of
+Cytoscape using the Mac OS X Jar Bundler.  The application now looks and
+feels like a regular Mac application.  Cool!  Ethan will look into
+automating the Mac version as part of our regular ant release process.
+
+5.  Documentation:  Ethan checked in the Cytoscape 2.0 manual.  Andrew is
+working on updating the Cytoscape tutorials on the cytoscape.org web site.
+
+---------------------------------------
+Computational Biology Center
+Memorial Sloan-Kettering Cancer Center
+http://cbio.mskcc.org
+Email:  cerami@cbio.mskcc.org
+Direct phone:  (646) 735-8082
+----------------------------------------
+

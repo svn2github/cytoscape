@@ -1,0 +1,97 @@
+Cytoscape meeting 06/26/03
+
+ 
+
+Present: Gary, Ethan, Benno, Andrew, Larissa, Iliana, Rowan
+
+ 
+
+Graph Library Update (Rowan) 
+Refactoring update (Andrew) 
+Data services update (Ethan) 
+ 
+
+CVS sever status? Right now we don’t have CVS server so people don’t check files in.
+
+Hopefully in the middle of July we will have it back on Trey’s side. 
+
+Benno is going to call Trey and send us an e-mail update on that regard.
+
+ 
+
+Public Graph Library Implementation.  Some problems evolved so Rowan et al. hade to come up with the new design for node/edge instantiation. 
+That slowed down implementation, but the new design will work better for the large graphs and subgraphs.
+
+ 
+
+Rowan is looking in to the graph layout algorithms implementation that Fedor Kolpakov (BIO UML) wrote, and probably will include that to our graph library
+
+(as a standout library).  So, before creating new layout algorithms, we should coordinate, so there will be compatible way to do layouts.
+
+ 
+
+Question: Will be there a GML writer/reader in the new graph library.  We will have to write our own GML writer/reader instead of y.files one. May be we should have same 
+
+standart of reading GML data from file or URL as the Data Services do. Also we should include more visual information in our GML reader.
+
+How much work is to create a GML reader? Rowan will look in to it, may be search for an open source GML parser on the web and update us on that.
+
+ 
+
+ 
+
+Benno met with y-files guys and talked about the licensing of y-files and the Cytoscape distribution. There should not be any licensing issues because 
+
+we are planning to distribute only open source graph library, and if a user wants to use y files he/she will have to buy a copy.
+
+Why would one want to use y-files over public graph? It could be faster, or better functionality, or more convenient, or they already wrote some plugin code with y-files 
+
+and used to it… 
+
+ 
+
+The goal is to make public graph library better and more flexible than y-files….
+
+Ask Rowan if you want to have more info on the new graph package.
+
+ 
+
+Refactoring. 
+Refactoring of the core is going very well. Andrew is slicing the CytoscapeWindow class and not changing anything else right now.
+
+The CytoscapeWindow is now ½ of it’s original size and a lot of the code is redirected to another modules. In a couple of days we will be done with this phase and will move in to creating new
+
+CytoscapeNetwork and other classes.
+
+ 
+
+Data Services. 0.02 Beta version is available for download. It reads PSI (xml) file from local file or url. Phase 2 is completed. 
+Now the plan is: 1.)to refactor the code a little to make a plugin stretcher, so people could write their
+
+      own data services as plugins. 2.)add other  formats of data by creating another data service. 
+
+ 
+
+Benno rises the question about dealing with synonyms (canonicalization and identifiers, name resolution). In fact it is a big problem and is solved for the yeast but not for everything else.
+
+There are several solutions out there (“Match Maker”, “Gem Card” web services) and we will evaluate them. 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 

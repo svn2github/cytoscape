@@ -1,0 +1,103 @@
+Present: Benno, Andrew, Rowan, Larissa, Iliana, Phil, Paul, Gary, Ethan, 
+Trey, Chris
+
+
+Agenda:
+1) Giny update.
+2) Bugs
+3) Undo Manager.
+4) Core Data Model
+5) Grant update
+
+
+1.)Giny update. Rowan is writing more deprecated classes for Giny. There 
+are few left.
+ Larissa changed import statements in CVS dir 5 and so far having 100 
+errors and 600 warnings.
+A lot of errors coming from the classes that we will not immidiately 
+support in giny ( Layouts, GML Write/reader etc)
+Larissa planning to write stab classes for those to make the code to 
+compile. The goal is to have a compilable version of cvs dir5 using giny 
+by next Friday.
+Meanwhile  we had an additions to our giny test and now customizable 
+nodes represent real data, you can load your expression data and view it 
+in the star plot
+representation. This code is checked in at cvs dir5 under gtest and you 
+can check it out.
+Rowan is also working on the hierarchical layout and half done, the node 
+ranking algorithm is still not implemented.
+We will have a Bio Java layout to incorporate in the layouts, donated by 
+Antony ??.
+The code will be sent to Rowan to evaluate...
+
+What  Chris will work on ? He has a choice of GML reader/writer to use 
+with the new graph library, layout algorithms, level of details.
+   
+Layouts. So what layout will we have? Ideally we would like to release 
+new cytoscape with the same set of layouts that y-files provide.
+We have spring-embedded and will have hierarchical. Still missing the 
+circular (the one that creates circles based on the degree of the node, 
+might be tricky to write).
+
+2.) Bugs.
+
+Bug #61 in GML reader assigned to Chris
+Bug # 49 node selection causes crach. May be caused by undo manager. 
+Trey is going to look to it.
+Bug # 60 Cytoscape config test fails in cvs dir 5. Assigned to  Andrew.
+Bug 58  Vismapper set default shape node fails. Assigned to Andrew.
+
+
+3) Undo manager.
+Paul proposes to turn off the Undo Manager by default, since it turned 
+out to be the significant source of performance problems.
+Ethan did some performance tests on Mac and the results show that the 
+difference in time running cytoscape with and without Undo Manager is 
+significant.
+Layouts took 4 times longer with the undo manager on.
+We decided to turn the undo manager off in both dir 4 and 5.
+Current undo manager is quite intimately involved with y-files events 
+and is seems logical to rewrite the undo manager with the use of the new 
+graph library.
+
+4) Core Data Model. We have 4 essential attributes rigt now :
+-canonical name
+-common name
+-interaction type (for edges)
+- species
+We need to decide what kind of assumptions we want to make and how we 
+want to implement those assumptions.
+Currently we are using canonical names as a key identifiers to retrieve 
+attributes and expression data.
+We need to agree on the common vocabulary (separate module) so different 
+plugins could access the same attribute
+using the vocabulary. Each attribute will have a reasonable default value.
+We can also use utility functions and indices for the nodes and don't 
+care about some of the attributes.
+Vocabulary will have a separate API.
+The only assumptions is the canonical name or string identifier.
+Iliana mentions that we need a database key because the canonical name 
+is not unique.
+In the future we will access the databases using common vocabulary 
+unique identifiers. Data Services importing it from other data models.
+We need to make sure we handle nulls properly for species and common names.
+Also that would be nice to be able to write the network to a file with 
+the data attributes and layouts. May be BioPax can do that?
+Not quite...
+
+Benno and Rowan thinking about the way to impone more modular structure 
+on Cytoscape, when we will not nesessarily need graph but can load an
+expression data and some  nodes (not in a graph context). They will need 
+to discuss it farther with Andrew.
+
+5.) Grant update? Trey is gone by now, and we don't have any info on 
+grant. Perhaps Trey can send an e-mail on how are thing going.
+How is the picture for the cover worked out? We have added some new 
+features to the customized nodes, and can send new pictures to Trey if 
+ist is not too late...
+
+
+ 
+
+
+

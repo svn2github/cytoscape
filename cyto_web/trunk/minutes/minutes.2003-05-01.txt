@@ -1,0 +1,149 @@
+meeting minutes, 01 may 2003
+
+Transcribed by Gary Bader
+
+Minutes for Cytoscape conference call Thursday, May 1, 2003
+
+Attendance:
+Andrew, Benno, Owen, Gary, Trey, Ethan, Paul, Larissa, Iliana, Rowan
+
+Agenda
+1. Brief grant update (Trey)
+2. GUI tester for vizmapper (Paul)
+3. Bug handling (Andrew)
+4. Graph package working group update (Benno)
+5. NCGR Santa Fe Plugin access (Paul)
+6. Data service layer (Ethan and Gary)
+7. Report on Andrey Finney and Mike Hucka meeting in Seattle (Paul)
+8. Cytoscape Doppelganger -Iobion/Stratagene commercial package (Paul)
+
+
+1. Benno, Trey and Gary have been planning the grant.  It's due June 1.  We
+have a rough outline of the grant and ~ 10 pages of scattered text.
+Priority 1, letters of support request to ~10 organizations to hit up for
+support describing how it is useful or how they have plans to use Cytoscape.
+This helps us create a strong basis for grant.  We need some forms to be
+filled out.  We're all going to hit it hard next week.  Andrew expressed
+interest in helping with the grant.  The grant writers would love help, so
+Trey suggested if people are interested, they should contact Benno, Trey or
+Gary to get the latest notes, read over them and then suggest if they want
+to write up any part of the grant and/or make new suggestions.
+
+
+2. GUI tester for VizMapper - suggestion from Paul.  Paul suggests writing
+unit tests for vizmapper.  Paul has been using the vizmapper a lot and
+thinks it's great, but has a few bugs - some are annoyances, but some are
+larger.  Paul recommends writing unit tests while the code is being written,
+which is easier to do now rather than later.  There is an SF tool called
+Abbot (http://abbot.sourceforge.net/) that allows you to write JUnit tests
+that test the behavior of the GUI - Paul assumes it sends events to widgets
+and tests states of widgets afterwards.  Owen supports this idea fully.
+Some discussion on long rendering time ensued - people agree that the
+current bugs pointed out are a high priority to fix.  Bottom line from Paul:
+create unit tests for code more.  Owen mentions we also should be working on
+documentation for the API.  This then moved into a more general discussion
+on unit tests with the following result:
+
+Moving forward: unit tests are slightly higher priority than API
+documentation and we need them written.
+1. Make sure we are writing unit tests (Andrew suggests budget writing
+unit test time at start of code writing, Ethan suggests that since we don't
+have time to test everything, we should prioritize and one way to do this is
+to do backend/infrastructure stuff first)
+2. We should look into Abbot for GUI testing.
+3. Look into non-developer testers if we can find some volunteers - A
+quality assurance person.
+
+
+3: Bug handling (Andrew): Bug reporting has grown to a point where they're
+coming in too fast.  Need some software to help track, prioritize, decide
+who owns the bug.  We can provide support via RT.  MSKCC people volunteer to
+host the bug-tracking software on our machine.  They are using something
+called RT (www.bestpractical.com)  Step one: speak to Andrew to see if he
+likes the RT software and step 2: decide on the best way to migrate over to
+this system if we decide it's good.
+
+
+4. Graph package (Benno) - Iliana, Benno and Rowan have been working on
+this.  A draft API is available that is interchangeable between yFiles and
+an open-source layout library.  Have done speed tests.  One library
+candidate is pretty good.  The list will be informed next week as to the API
+that supports a couple of libraries.  Overall, nice progress has been made
+e.g. hierarchical graphs, collapsing multimode graphs, etc.
+Other news: responsibility for core refactoring has moved to Andrew.  Want
+to do this in a smaller group.  Anyone interested is welcome to participate
+in that group, then results are sent out for critique.  Andrew, Paul and
+others would be working closely as part of the group.  Iliana wants to
+volunteer for core coding.  Rowan has been doing some stress testing before
+e.g. memory runs out with yFiles.  It turns out yFiles is not the most
+efficient because each edge is its own object, so doesn't scale well when
+there are lots of edges e.g. 1000 node fully connected graph.
+
+
+5. NCGR Santa Fe Plugin access (Paul): What is our policy about giving out
+our plugins?  NCGR is interested in expression data analysis.  Andrew
+suggests that the author gets to pick if the plugin is public.  Benno
+vouches for default policy that plugins are open-source.  Some grants
+require open-source release of plugins.  General consensus is that we would
+like to release plugins as open-source, at a minimum of publishing first,
+though.
+Owen notes that active paths plugin is being re-written as Java by some
+students at MIT.
+Owen is managing this project, but won't be able to complete it before he
+leaves, but this will help the usefulness of this valuable plugin.
+Iliana suggests that people comment their plugin in the header to say
+whether it should be available for general release or when it is expected to
+be published/released.  Paul suggests putting the GPL license in if that is
+the proper license. Andrew requested people put the author in header.  Owen
+requested that plugins should conform to the latest design principles, be
+JARs, etc. (Owen).
+
+CVS server:  Where should it be moved.  We need to ask Trey what his plan
+is.  MSKCC volunteers a server if the need arises, but are a little low on
+sys admin resources right now.
+
+
+6. Data services layer update (Ethan and Gary) - We currently have a few
+small data services that talk to GRID and SeqHound.  Caching features are
+being developed.  Mantis tech docs site has been updated every ~2days or so.
+The Javadoc for all code so far is up there.  Plan is to have this first
+phase iteration done by next Friday at which point we will report.
+
+
+7. Report on Andrey Finney and Mike Hucka meeting in Seattle (Paul).  They
+were here last Friday and spent the whole day talking to all the ISB people.
+They are not firmly wed to SBW (partly because not that many people have
+used it), so started talking about Cytoscape and SBW cooperation some way in
+some plugin code relationship.  One way to do this is to build up informal
+personal communication relationship between SBW and Cytoscape - Paul will
+coordinate on Cytoscape side.  One main point that came out is a scripting
+resource that gives access to all the various tools that people want to use
+e.g. Cytoscape, SBW, as well as other tools even in other languages.
+Cytoscape could be opened up as a toolkit component (graph analysis and
+visualization).
+Trey wants to know the minimum change to Cytoscape that would be needed.
+Rowan responded that it would be to replace the current plugin loader with a
+more general one.  Gary asked how data would be passed - via standard API.
+API would evolve over time.  Similar to API that BioSPICE has or
+NetBeans/Eclipse loader.  Current plugin loader addresses some simple use
+cases, so we should make sure all of our use cases are addressed if we
+replace it.  Trey mentioned that keeping involved in the SBML, SBW team is
+really great.  So we'd like to find out the minimum requirements for
+Cytoscape change to be useful initially.  E.g. SBML writer for Cytoscape,
+Hamid volunteered a person.
+
+7b. Dataservices layer (Gary): Gary requests that he would like to have I/O
+issues coordinated among the people that are dealing with I/O infrastructure
+e.g. DataServices layer that Ethan is building.  Eventually the Data
+Services layer should be the one stop shop for I/O issues and by
+coordinating e.g. what libraries we use for XML parsing, etc., we will be
+able to better re-use existing code and get it built faster.
+
+
+8. Cytoscape Doppelganger -Iobion/Stratagene commercial package (Paul).  The
+tool is nice and reminds is that we would like to get more analysis examples
+out on webstart.  Would like to release plugins so people can better use
+Cytoscape as their network analysis platform.
+
+Rowan wants to be added to the cytostaff list. xmas@systemsbiology.org
+

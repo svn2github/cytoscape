@@ -1,0 +1,33 @@
+Almost all bugs that are high priority are taken care of. Seems
+         to be that no crash bugs are left.
+
+bug 270 - workaround found by rowan - dependant on what you choose to
+         click on. If you click away on another name or tab and
+         back, it then works
+
+issue: saving multiple attributes in one file. Should show all the
+         attributes that you are saving at the bottom. This functionality
+         will be put in the core now .. and debugged before release.
+
+Release date: This will be the official 2.0 release. We should be
+         thinking about where to post announcements. Maybe wait a week:
+         next Thursday we will release and coordinate this with the
+         website update. We will keep the user form. Keep the 1.1.1
+         version available as old.
+
+Paul Spellman writing a grant. Supporting cluster and tree-view --
+         suggested linking this to cytoscape. (Cluster gene expression
+         data in his software, click on cluster, then launch cytoscpae
+         to visualize that cluster)
+
+Another collaboration: Andre Califano?
+
+layout: anyone working on them?
+
+Student --- looking for jobs -- maybe layout would be a type of job
+         that didn't require deep knowledge of cytoscape architecture.
+         (bio layout?) Spring embedded layout not based on edges but
+         on any shared numeric attributes. Also maybe principal
+         component based layout or self organizing maps layout?
+         Network analyis plugins: power law, path distance, ...
+

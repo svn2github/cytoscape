@@ -1,0 +1,37 @@
+1. Cytoscape grant:
+It's out! Thanks to everyone who helped! Everyone else should check out the final version -> Available locally.
+Trey: It'll be late fall until the NIH has reviewed this grant. The official funding start date would be 07/04, would be running for 5 years.
+Benno: Total amount is on the order of 1 person/team.
+ 
+2. CVS server at ISB
+It is highly desirable to have a CVS server running at ISB during the transition of the Whitehead server to San Diego.
+Owen: Shutdown of the Whitehead server will be on June 16.
+Andrew: Agrees to take care of setting up an ISB server by the end of next week (June 13). Will send e-mail just before the transition to the ISB server so everyone can check code in that's in the air.
+ 
+3. Core refactoring and the Graph package interface
+Short discussion of the strategy for the core refactoring:
+Andrew outlines his plans for the redesign process, illustrates difficulties with two parallel processes of refactoring core and switching to the new graph interface at the same time (cf. Andrew's last e-mail and Web-link).
+It is agreed that we need to put a timeline on the refactoring. 
+Paul: Thinks it'll be October 1st
+Trey: Christopher Workman (new postdoc-programmer) has already started working on Cytoscape, Jonathan will join during the summer.
+Based on discussions and insights, the ISB group will polish and evolve the design documents on the Web.
+Trey is concerned about speed hit from redesign. Rowan will send the tests he conducted when we examined the issue at ISB.
+Trey: Who will take care of bugs in the summer?
+Ethan: Has set up bug tracking system for Cytoscape, will include logins for all.
+ 
+4. Techdocs site
+Ethan: Has set up Sloan Kettering- (CVS-based) techdocs site with simplified process for handling it, will send documentation tomorrow.
+Ethan: Owen and Ethan have written new documentation on plugin writing, posted that to the techdocs site.
+Benno: We'd like to evolve the user manual
+Owen: Will send 
+ 
+5. Cytoscape 1.0 in some Java Webstarts
+Larissa: We've got comments from some users that our WebStart examples contain Cytoscape 1.0 executables. Larissa will fix these (with Paul's assistance).
+ 
+6. Cytoscape in Africa
+Cytoscape has come to the point where we need a Kenia subsidiary. 
+An approach from the Uganda border is suggested. 
+On-site, we will find out the translations for "Cytoscape", "best of luck", and "beer" in Swaheli. 
+Owen agrees to take this on, will keep everyone posted about his progress. 
+Everyone agrees that Owen is the man.
+ 

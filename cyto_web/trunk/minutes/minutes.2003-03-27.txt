@@ -1,0 +1,47 @@
+meeting minutes, 27 march 2003
+Scribe: Paul
+
+present:  gary, ethan, owen, jonathan, trey, iliana, larissa, andrew, paul
+
+1) Gary, Trey & Benno are working on a grant proposal, which might yield $500k
+   for 3-5 years.
+   Three areas of work will be proposed:  database, core, plugins
+
+2) UI for visual styles:  Jonathan and Andrew have been working on this; it's
+   ready to be used.  A style is a named collection of visual attributes and
+   appearance calculators.  Jonathan has added a style chooser as a drop down
+   menu on the main menubar.
+
+2a) Everyone agrees we need better help & documentation, for developers and
+    users.  Trey offers to put in some time on this in mid-April.  The help
+    could be published in 3 ways:  available directly within the program
+    (perhaps via Java Help); one a website, in a PDF document.  It would be
+    nice if we could maintain the help 'source' in a single form, and create
+    all 3 published formats automatically.  Do we use latex?  Word?  Something
+    else?  Proposed:  that we experiment with one small sample of help
+    information, and explore the least annoying way to 'maintain once,
+    publish thrice'.
+
+3) Owen will send Larissa an image that we can use as a splash screen.
+
+4) Gary proposes that we have (something like) a new package for biological
+   data classes.  Perhaps "org.cytoscape.lib".
+
+5) Iliana needs graph hide events which issue events, so that her biomodules
+   plugin can keep track of the current state of the graph.  On the other
+   hand, Trey is concerned about the slowdown we will see if event-less hides
+   are no longer possible.  Propsed:  that the Seattle group modifies the
+   undoableGraphHider to use 'remove' rather than hide, and to see how much
+   extra time a massive removal of nodes actually consumes.  Trey will send
+   a suitably daunting case to experiment on.
+
+6) CVS mailing list, to notify anyone interested of every cvs commit.  Gary and
+   Owen will work on this
+
+7) Paul reported his concerns about Rowan's use of CSBI classes underlying
+   the new abstract Graph.  (It should be said, though, that Rowan is making
+   a lot of effort to cooperate.)   Not mentioned during the meeting, but
+   a good illustration of Paul's concerns, is that shadegrown.graph.Graph
+   implements nine interfaces.
+
+

@@ -1,0 +1,73 @@
+Conference call: 5pm.Feb.5.2004
+Andrea, Larissa, Rowan, Benno, Iliana, Trey, Chris, Ethan, Rob, Gary
+
+1. Collaboration - Ron Shamir - we think he'd like to work on Cytoscape, but
+we're still waiting to hear back from him.
+2. Cytoscape status.
+
+The following features are to be shipped in v2.0:
+-Layout algorithm picking (Rowan):  Pick a slow and a fast force-directed
+algorithm and present these to the users as 'slow' and 'fast' menu items in
+the Layout menu.  Slow one will likely be Kamada-Kawai (SpringEmbedder),
+fast one yet to be chosen.  Extras: we should try to do easy optimizations
+on the code (low hanging fruit).  Heavy optimizations can wait.
+Time estimate: 1 week.
+
+-Hierarchy layout (Rob): A basic feature hierarchical layout is being built
+for v2.0 with extended features to be added later.  Rowan expressed interest
+in using the connected component detection code, if it was available, for
+use in other layout algorithms, although this can wait until after v2.0
+Estimate: layer assignment: this week, next steps and link with giny: next
+week.  
+
+-Read only / edit-delete (Rowan):  There are problems with creating nodes
+since you need to implement a UI for node attribute creation and letting the
+user create nodes without the proper attributes can sometimes wreck
+algorithms that expect certain attributes. So we will leave node creation
+until later.  Deleting nodes doesn't have this problem and should be
+implemented in the node context sensitive menu of the node.  Extras: other
+features of the context sensitive node menu are useful for groups of
+selected nodes - this may be implemented for v2.0.  Generally we would like
+to have Cytoscape be WYSIWYG, so deleting a node should mean it is really
+deleted (not hidden).  Implementation may vary on this to support future
+undo features, etc.
+
+-GML reading (Chris):  Revisit this issue from last week.  Issue: Putting
+view info into the graph view doesn't allow you to keep them around
+(vizmapper overwrites it).  Solution: store layout and view information from
+the GML file in a GraphObjAttributes type object that only stores layout and
+view information (not the main GraphObjAttributes object for other node
+objects).  Extras: put a GML option in the layout menu to layout how the GML
+file specifies (info will be read from special layout GraphObjAttributes
+instance).
+Timeline: 1 week (including GML writer)
+
+-Sif files - Any changes to the file format will be left until after 2.0
+
+-Icons (Rowan) - They look cool, but we should redo all the icons.  They are
+similar to the mozilla Firebird look.
+
+-Java 1.5 support.  Because it's new and also because Mac won't support it,
+probably not a good idea to only support it, but let's do a dual release -
+both 1.4 and 1.5 versions for v2.0.  One source code change in JarLoader
+needs to be made in code for 1.5 support (Rowan)
+
+-Documentation, API
+-Source code level documentation will not be changed.
+-User guide (Ethan) - PDF will be updated.
+-Plugin writer targeted Javadoc.  Plugin writers only need a small part of
+Cytoscape API for common operations, Rowan suggests we have this option for
+creating Javadoc (Gary suggests adding another target in the ant build
+file).  These source code directories are:
+Cytoscape, Cytoscape/data, Cytoscape/view
+-Let's put all documentation in one place on Cytoscape.org
+
+-Filters (Rowan): we will ship this feature as a plugin for v2.0
+
+-Custom node shapes not working (Andrew, Rowan, Larissa) - nice to have as a
+plugin - ship for 2.0.
+
+Bugs, features:
+New v2.0 bug category for reporting pre-release v2.0 specific bugs.
+
+

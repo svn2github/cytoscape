@@ -1,0 +1,65 @@
+Hi guys,
+	Here are my notes:
+
+Cytoscape notes - conference call Mar.11.2004
+
+Phil, Larissa, Rowan, Andrew, Trey, Ryan, Chris, Ethan, Rob, Gary, Benno
+
+Agenda:
+Bugs!
+
+1. Java printing
+Mac and Linux print nicely - Windows doesn't deal with this well.
+Rowan will look into Batik SVG toolkit for possible remedy (via Piccolo
+list)
+
+2. Context menu for nodes and edges
+-Useful names now come up for these
+-Web links - don't work on Mozilla
+	-SGD is species specific. - Would prefer something more general
+(MSKCC is looking into a generic URL database solution)
+	-Decision: Drop this from v2.0.  ISB can implement this as a plugin
+and provide to users who like this feature.
+-Changing color and shape
+	-Issue with visual mapper - it is not clear how context sensitive
+menu color changes affect the visual mapper.
+	-Decision: It is useful in its current state, thus leave it as it is
+for now and document that color changes are temporary and are overwritten by
+a change in visual styles.
+	
+Align and distribute
+	-Current functionality is fine
+
+3. Node and edge selection
+	-Selection is an important issue to get right - we're not sure what
+the best way to implement it is.
+	-Decision: Let's implement the drag select with modifier keys to
+select nodes, edges and both (Trey's idea) to test it out and see how we
+like it.
+
+4. Font changes from the vizmapper - Rowan changed this so nodes and edges
+have labels and you can change the font through the label.
+
+5. Continuous mapper - breaking it up into classes - and adding tests.  Who
+can do code-review?  Andrew will help with this.
+
+Chris will help test the continuous mapper stuff after Ethan checks it in.
+Ethan will coordinate with Chris on this.
+
+6. Confusion with two places to change background.
+	-Ethan will check in the fix and people can see if the 2 BG change
+options work - now that it is synchronized.  Otherwise, we can re-evaluate
+this implementation.
+
+7. BDS server loading bug is mostly found and fixed by Ryan
+
+Who can help with bugs?
+-Ethan and Rob can have bugs assigned to them - not Gary
+-Ryan has a little time to work on bugs, not Chris
+
+We'll prioritize while we're assigning, but Larissa mentioned that we should
+deal with more important bugs first.  We can reevaluate our progress on this
+next week.
+
+
+

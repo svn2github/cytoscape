@@ -1,0 +1,97 @@
+
+2003-05-15
+Present: Gary, Ethan, Owen, Andrew, Paul, Larissa (Rowan joins later)
+Scribe: Owen
+
+1. Data Services
+   (Ethan)
+
+   It's still available, they changed the password to GRID
+   over the weekend, but the new version of the plugin
+   has the new password in it.
+
+   Next up: mirroring the GRID database off of MSKCC servers
+   rather than hitting the original with all our requests.
+
+   Only Paul has looked at it, says its good, want to perhaps
+   look at the code; Ethan and Paul liase over this.
+
+   Gary: the way Osprey speaks to GRID is over the insecure
+   MySQL port; they now don't like the idea of Cytoscape
+   accessing GRID.  They're happy with us for revealing the
+   risk, but they want to limit that risk.  Gary will visit
+   them in Toronto on June 3rd.  Tell Gary to ask your questions.
+
+2. Redesign Status
+   (Andrew)
+
+   Design has converged for the replacement for yFiles.
+   Coming up is the API/description, which we'll be able to
+   review.  There was going to be a proposal for Cytoscape
+   integration today, but it's not here.  Maybe by next week?
+
+   Probably involves dividing CytoscapeWindow into other
+   classes, and converting from yFiles to GINY
+
+   (brief interlude:
+      A woman, believed to be in New York, attempts to leave
+      voicemail for someone, explaining that she is going
+      home now, and detailing how things aren't working.
+      It is unclear why she joined our conference call
+      during this time, but we weren't able to establish
+      bidirectional communication; she eventually concluded
+      her message to whomever, and the meeting continued.
+   ) 
+
+   Giny Is Not Yfiles
+   Graph INterface librarY
+   The ideas is to support the yFiles API, so that it's easy
+   for other people to make the switch.
+
+   Paul asks Andrew about collaboration with Hamid's group.
+   Something fuzzy about scripting cytoscape commands.
+   Paul warns of potential overambition that destroys
+   flexibility of architecture.
+   Discussion of javabeans?  possibility of simple (text-file)
+   means of calling cytoscape.  Paul doesn't want things to
+   depend on something too complicated.  People seem to like
+   command-line interface.
+
+   Gary on the grant: Writing to Trey and Benno to find out
+   what's going on.  Andrew has seen nothing from Benno yet.
+   Gary resolves to send Andrew
+
+3. Build 1.1 Status
+   (Owen)
+
+   If you load expression, then interaction, you get an error.
+   Something in the reader.  Andrew will do it tonight.
+   Also, there is a bug pertaining to a class that was never
+   checked in; it is now checked in.
+
+   Paul has put the files up, Owen will link them.
+   Pending Andrew's resolution or delcaration of irresolvability
+   of the bug Larissa noticed, Owen will rebuild and post.
+   Otherwise, v1.1 is up.
+
+
+4. Annotation Server Description / Bug Handling
+   (Paul)
+
+   Thanks to David Goode's pushing, the document is on its way.
+   Can it go on MSKCC?  Sure!  Brief misunderstanding about
+   a server.
+   
+   Also: Hamid Bolouri found some bugs in the interaction
+   reader, something about tabs and spaces.  Not really a bug,
+   just a totally undocumented feature?  The bug was that if
+   you use tabs to delimit, then space characters are not
+   trimmed.  Paul's suggestion is to make unit tests out of
+   bugs.  Good idea.
+
+   Ethan mentions a bug tracker.  Andrew found a bug in the
+   bug tracker.  Irony is unresolved.
+
+   Also Owen is going to Africa, finishing at Whitehead on
+   June 6th, and landing in Nairobi on June 25th.
+

@@ -1,0 +1,127 @@
+Cytoscape Meeting, 7/17/03
+
+Pressent: Rowan, Iliana, Paul, Larissa, Benno, Andrew, Ethan, Jonathon, 
+Trey, Chris
+
+This meeting was focused on the re-org.
+
+1. ) Stuff
+Thanks to Ethan for doing this much needed task. To accomplish the 
+re-org Ethan wrote a perl script to move everything around, and back it up.
+Things to note:
+--OLD Cytoscape: cvsdir2
+--NEW Cytoscape: cvsdir4
+There were a few now-fixed ant issues, 1) dialogs not compiling, 2) data 
+server stuff.  The new scripts work on OS X, Win32, and IA32.  There 
+were some issues with an Itanium, Rowan is going to try to run it on a 
+Sun UltraSparcIII, this should tell us if the problem is a 64-bit 
+problem, or an Itanium problem, if anyone has an Opteron lying around we 
+could try that to.
+
+2.) Plugins
+Lots of discussion on how to do plugins.  What was decided is that 
+plugins will continue to live in csplugins, but will be changed to use 
+ant for building.  Each plugin that makes use of Y-Files and needs to 
+obfuscate will be given a boilerplate build.xml file to get one 
+started.  Ethan will provide an example plugin that has this build.xml 
+file.
+<Rowan Thoughts>
+I feel that each plugin should be able to make their own jar file, and 
+put it into the common cytoscape/lib directory.  The dist builder could 
+then put all of them into cytoscape.jar for distribution, or not.
+</Rowan Thoughts>
+
+2.A) Plugins that don't compile
+There are 38 plugins, 14 don't compile.  Everyone needs to claim their 
+plugins or they will be taken out of active development.  One should 
+email the list which are yours, Iliana will then compile those lists.
+
+2.B) Future Plugin re-org
+A few ideas for re-organizing plugins.
+1: Put them under cytoscape:
+/cytoscape/plugins/
+/cytoscape/plugins/myplugin/
+/cytoscape/plugins/myplugin/build.xml
+/cytoscape/plugins/myplugin/src/
+/cytoscape/plugins/myplugin/src/myplugin/
+/cytoscape/plugins/myplugin/src/myplugin/*.java
+--The namespace for your plugin would be:
+package myplugin;
+
+
+2: As they are now:
+/csplugins/
+/csplugins/myplugin/
+/csplugins/myplugin/build.xml
+/csplugins/myplugin/*.java
+--The namespace for your plugin would be:
+package csplugins.myplugin;
+
+3: With user dirs
+/csplugins/
+/csplugins/xmas/
+/csplugins/xmas/myplugin/
+/csplugins/xmas/myplugin/build.xml
+/csplugins/xmas/myplugin/src/
+/csplugins/xmas/myplugin/src/xmas/
+/csplugins/xmas/myplugin/src/xmas/myplugin/
+/csplugins/xmas/myplugin/src/xmas/myplugin/*.java
+--The namespace for your plugin would be:
+package xmas.myplugin
+
+Option 3 would have a common "csplugins" dir for common plugins, where 
+"csplugins" would be like "xmas" in the above example.
+
+3) A Few ant questions
+Paul and Ethan will add in RMI stuff, which is Ethan assures us is easy 
+to do.  Paul/Ethan/Andrew/( maybe Rowan) will look into making more ant 
+targets to be able to test individual tests ( i.e. just the dialog test ).
+
+Ethan noted that *some* people like to use "IDE's", the rest of the 
+group was unsure what he was talking about and retreated back to using 
+checking their E-mail on Emacs, writing their code on Emacs, using the 
+Emacs terminal, and then getting help from the Emacs Psychiatrist ( 
+R:"I'm sick, Dave." EP:"Maybe your life have something to do with this." 
+).  Ethan was then able to run tests in directories and do other neat stuff.
+
+4) CLI Cytoscape
+Chris asked about how people used the command line, Iliana loaded files 
+and stuff with it.  Rowan shared that he has though about how to make 
+Cytoscape more command line friendly.  Trey mentioned that he would like 
+to be able to run stuff all on the command line and then choose between 
+interactive and non-interactive views ( maybe Post-Script? ).
+
+5) Ethan Mentioned that ant --projecthelp will list all the ant targets.
+
+6) Re-factor
+Andrew will be using cvsdir5 for his refactor stuff, it will be a 
+cvsdir4 copy initially.  Andrew has made the current "CytoscapeWindow" 
+class be more of a list of pointers to other objects.  He is still 
+working on it and hopes to be done in a few weeks, at which time we will 
+begin replacing Y-Files.
+
+7) GINY Graph INterface librarY
+Rowan is working on this, do a "cvs co giny" from 
+sourceforge.net/projects/csbi, ask him for help, phone (206) 732-1328, 
+IM: rowanxmas.
+
+8) Retreat
+29-30 of August
+Trey and Chris will stay with Benno.
+Gary and Ethan will stay with Rowan, who hopes that they like beer.
+
+9) First annual Cytoscape Bug Parade
+Jonathon will take the Vizmapper bug, since he wrote the code.  It'll 
+take at least a week for him to really do anything about it due to 
+slave-driving from Trey.
+DataServices bugs will be assinged to Ethan and Gary
+Star nodes to Larissa
+and some Did-Not-Compile ones to Paul.
+
+--rowan
+
+
+
+
+
+

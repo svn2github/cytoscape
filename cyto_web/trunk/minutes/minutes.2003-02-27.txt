@@ -1,0 +1,44 @@
+Present: Owen, Trey, Iliana, Andrew, Paul
+Minutes: Paul
+
+--------------- new release of source from cytoscape.org
+There have been many important additions since the last release:
+
+   - vizmzpper with calculators
+   - new annotation GUI
+   - improved active modules UI
+   - pdf manual
+
+Owen & Jonathan have made good progress on loading plugins from a jar,
+but we won't include this quite yet.
+
+We will include some compiled plugins with the cytoscape.jar provided with this
+release.
+
+We agreed to call this "release 1.0" and to get it up on the website by
+next Monday (or so).
+
+The website will also include a prominent javaws link (to java webstart cytoscape
+without a network), and a easily found link to the two examples created
+so far for the tutorial.
+
+--------------- yfiles obfuscation
+
+Owen, Jonathan, and Roland have been exchaning email to sort out how much or how
+little obfuscation yfiles actually needs.  Roland indicated (but has not yet confirmed)
+that simply wrapping the yfiles calls may be okay.  Since this contradicts our
+reading of the license, we won't act on this unless Roland explicitly confirms it.
+
+--------------- Iliana proposes a 'metagraph' extension to cytoscape
+
+Briefly, this allows any subgraph, at any logical level, to become a node.
+This is a substantial project, which may mesh well with the April-May refactoring
+of the core Paul plans to do.  Iliana will send out a short, prose-only proposal
+soon.
+
+--------------- Andrew on saving visual mappings to a file
+Andrew has the flu this week, but predicts that this job can be completed with
+a couple of days work once he returns to good health.
+Related to this, and tied to the release of version 1.0, Trey suggests that some of the mapping
+names can be improved.
+

@@ -1,0 +1,64 @@
+meeting minutes, 08 may 2003
+Andrew, Larissa, Trey, Owen, Ethan (and Benno for a minute at the end)
+
+######################################################################
+Cytoscape Team Meeting Notes
+Date: May 8, 2003
+Scribe: Trey Ideker
+######################################################################
+
+Today was a relatively short meeting.  Two major topics were covered:
+
+(1) Progress on data services - Ethan
+
+Has created a plugin that replicates how Osprey talks to the GRID
+database.  In Osprey, the user typically selects a protein in the
+network and gets data associated with that protein.  In general, three
+different data items are retrieved:
+
+a) NCBI to get the genbank flatfile- parsed with BioJava
+b) Grid to get the GO terms associated with that particular protein
+c) Grid to get a list of proteins that interact with that particular protein
+
+A button press adds these interactions to the current working graph.
+Ethan has implemented this core functionality and will send us a
+tarfile on Monday for examination.  Mike Tyers et al. have given us
+permission to talk directly to GRID using direct SQL calls via JDBC.
+
+######################################################################
+
+(2) Progress on plugin loader and next Cytoscape release - Owen
+
+The last piece of plugin-loading functionality was added to the Core
+this week.  Owen wonders if we can therefore do a build and update
+Cytoscape on the website.  However, Larissa points out that there is
+no documentation for the plugin loader yet.  Owen points out there are
+two manuals that should be written: information for users and for
+developers.  Ethan offers to help Owen with this offline.  They should
+have this documentation online next week.
+
+Once the jar loader is made available on the website, then any user
+will be able to write plugins separately from the Cytoscape core,
+provided that they have the correct "obfuscation table".  This will be
+distributed only within the Cytoscape core development team.
+
+*** IMPORTANT-- LOOK HERE *** The current obfuscation table is checked
+into CVS under cytoscape/tools/jars.  Ethan says that when he releases
+his data services plugin (see 1 above) he will use the obfuscation
+table to obfuscate the plugin.
+
+######################################################################
+
+(3) Proposal / concrete plan for replacing yFiles with an open-source
+graph package, as well as a refactoring of the core.
+
+This is currently being investigated by the ISB team with aid from
+Rowan.  They are aiming to have a proposal on the table by this next
+week, at the next meeting.
+
+-- 
+Trey Ideker
+Whitehead Institute for Biomedical Research
+EMAIL: trey@wi.mit.edu OFFICE: 617.258.5787
+
+

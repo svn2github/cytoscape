@@ -1,0 +1,109 @@
+
+Minutes for Cytoscape conference call Thursday, July 10, 2003
+
+Attendance:
+Benno, Paul, Larissa, Iliana, Rowan, Trey, Jonathan, Gary, Ethan
+
+Agenda
+Build process
+Vizmapper bug
+Bug tracker
+
+Build process
+
+Ethan has completed the ant script that builds Cytoscape.  It can either
+build, creates the jar file, run the program or create a distribution file.
+It has been tested on Mac, Windows, Linux and it seems to work fine.  There
+is a refactoring perl script to rearrange the CVS repository on the server
+to the new directory structure on our decided switch date. The current plan
+is for everyone to check in all of their current code on a specific data,
+run perl refactoring script on the CVS server, then everyone must check out
+a fresh copy of the cytoscape from CVS and use that from that point on.  The
+Perl refactoring script will be run on a copy of the current cvsdir2 (called
+cvsdir4) at the specified date/time, at which point everyone must switch to
+using cvsdir4 as the current repository.  Cvsdir2 will still exist as a
+backup.
+
+There was a question about the status of Andrew's refactoring code.  Since
+Andrew had a bike accident, and is recuperating (Get well soon!).  We will
+find out the status of this code once he returns.  Because of this, we are
+pushing the CVS refactoring date to next Wednesday (tentatively) and will
+finalize this date on the list.
+
+Paul mentions that he has accumulated a lot of small changes in the past few
+weeks, which might break the build.  So people should build from a fresh
+copy, to test that they're not breaking the build.  If you know you're going
+to break the build, maybe you should move those changes over manually later.
+
+Trey asked for an overview of the new directory structure.  Ethan replied
+that all source files are now in src, new dir called lib will contain all
+jar files, a config directory wil contain all configuration files, doc was
+changed to user_docs because it contains user documentation.  This will
+hopefully make it easier to find things, run ant scripts and use existing
+Java IDEs. 
+
+Plugins are all their own projects, so will not be affected by this CVS
+refactoring.  Later, Ethan will create some template ant scripts for plugins
+that take care of the obfuscation step that people can copy for their own
+plugins if they need to.
+
+There were some problems with ANT. Jonathan mentioned that it was hard to
+install.  This is because ANT buries its install documentation deeply.
+Ethan dug out the install file and sent it to the cytoscape list.  Rowan
+suggested that you can have a build script that runs ant to make thing more
+convenient.
+
+Rowan asked about the final location of the CVS server.  It would be nice to
+have all developer services on the same machine e.g. Maven, bug tracker,
+CVS, CVSWeb, documentation, etc.  This way the site could be auto-generated
+regularly and all docs, etc. would always be up to date.  This topic was
+postponed for future discussion because so far the new CVS server at Trey's
+lab works fine.
+
+Vizmapper bug
+
+With the new build, new visualization mappers all show as default.   Larissa
+tried a fresh checkout and built it with make and it still seemed to be a
+bug.  Basically, there seem to be some technical problems with changing
+vizmappers.  Jonathan suggests it may be related to the order of the classes
+of the vizmapper called in CytoscapeWindow.  Paul and Larissa will check
+their respective files to see if they can see anything obvious.
+
+Bug tracker
+
+Benno likes the bug tracking site.  Comments: Rowan would like e-mail
+notification.  This is a user preference, so you can change this to suit
+your needs.  The default is to e-mail, but Ethan and Gary will double check
+to make sure this works. Rowan would like a way to assign a bug to a group.
+This is not available in Mantis.  Benno suggests that the owner should deal
+with the bug and if they find it is not in their code, then they can contact
+the code owner and reassign the bug.
+
+The method for assigning bugs should be: People claim them if they're
+interested, otherwise, we can decide about ownership for all open bugs at
+the weekly meetings.
+
+It would be nice to have some level of  public access to the bug tracker.
+Right now, anyone can sign up and they become a reporter so they can report
+bugs.  Anyone on the Cytoscape team will be upgraded to developer, which
+means they can assign bugs to people, etc.  If you want more privileges if
+you find you need to do something you can't, Ethan will be happy to change
+your account status.
+
+We should have read only access to the bugs for users to check before they
+report.  Currently, the system is not set up like this, but Ethan and Gary
+can look into this.
+
+We decided that we should make a link from the main web page to the bug
+tracker, just like many other open source projects.  E.g. Jonathan mentioned
+that Bugzilla is completely open
+
+Tentative dates for Cytoscape meeting - Aug28 (travel), Full day on
+29th-Aug30 (social outing).  We should invite the Osprey and SBML people.
+Gary will ask the Osprey guys if they're interested.  The Seattle folks will
+ask the SBMLers that they know.
+We need to check these dates with Chris Workman over e-mail.
+cworkman@bioeng.ucsd.edu
+
+Trey notes that Chris needs to be signed up to the cytostaff list.
+

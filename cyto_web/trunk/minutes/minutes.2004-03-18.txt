@@ -1,0 +1,77 @@
+Cytoscape meeting minutes for March18, 2004
+
+Present:
+   ISB: Benno, Rowan, Larissa, Andrew, Phil
+   SD: Trey, Chris, Ryan
+   MSKCC: Gary, Ethan
+
+Major topics:
+
+1) Hiding/unhiding nodes/edges
+2) bug status
+3) vizmapper
+4) new meeting time
+
+
+1) Hiding/unhiding nodes/edges
+
+We have three levels of "state" of a node/edge.
+   a) It's either in the RootGraph or not.
+   b) If in the RootGraph, it's either in the GraphPerspective or not.
+   c) If in the GraphPerspective, it's either in the GraphView or not.
+
+The current terminology for the related operations are
+RootGraph: create/remove
+GraphPerpsective: hide/restore
+GraphView: add/hide/show
+
+Issues:
+   Should the GraphPerspective and GraphView be always synchronized?
+   What UI should be presented for these operations?
+
+
+We agreed that whatever we do, we should make sure that the UI is
+clear. We also agreed to survey existing programs to see how they
+handle this issue.
+
+Several ideas were discussed. Karel has an object maanger tool for
+keeping track of existing objects. Benno has an idea where a slide
+could be used to control how visible a hidden node or edge is in
+the view - fully visible at far right and fully removed at far left.
+Trey put forth the use case of a layout algorithm that should
+ignore currently hidden nodes/edges. Eventually we'll want a tool
+for creating/deleting nodes and edges from the RootGraph, but we've
+decided not to pursue this for 2.0.
+
+I think we decided to pursue providing a single hide/unhide pair
+of operations that work on both the GraphPerspective and GraphView
+and keep them synchronized.
+
+Ryan has some code that can quickly be customized to do what we want,
+and Iliana's existing code also is applicable here.
+
+On a related note, we discussed the menu options and decided to get
+rid of "Unhide selection" as being confusing. The operation "undo
+last hide" was deferred for a future undo manager.
+
+
+2) Bug status
+
+We're making excellent progress on fixing bugs. We have about 20-30
+left, including about 12 unassigned bugs. Andrew/Phil will work on
+assigning the remaining bugs. We agreed to spend another week on
+fixing bugs and then prepare a new release candidate for intense
+testing to close fixed bugs and identify any newly created ones.
+
+
+3) Ethan is working industriously on the vizmapper, particularly the
+Continuous and Discrete mapping classes. Eventually an "Apply to Graph"
+operation will be provided for the full vizmapper.
+
+
+4) When Benno moves to Paris, we'll need to move the meeting time
+to fit everyone's schedule. The times 9am PT/12pm ET/6pm Paris
+and 10am PT/1pm ET/7pm Paris were considered. We agreed to set
+the April 8th meeting at 10am PT and consider changing it later
+as the activity from Paris becomes more clear.
+

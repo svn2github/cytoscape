@@ -1,0 +1,59 @@
+
+Meeting Minutes for 8/14/2003:
+-----------------------------
+In attendance:  Trey, Paul, Andrew, Rowan, Larissa, Chris, Jonathan, Phil,
+Ryan.
+(let me know if I missed anyone here. I'm still putting voices to names.)
+
+I. Active Modules:
+  Much of this functionality has been ported to java by Ryan Kelley.
+  A jar file will soon be placed on the plugins page for testing by the
+  development team.
+
+II. Java Compilers:
+  With regard to active modules and time performance in Java, the
+  suggestion was made to test IBM's java compiler. Two versions
+  available, "jikes"(?) version resulting in faster code. Would require
+  IBM's RTE?
+
+III. Cytoscape Meeting in Seattle:
+  Meeting is in two weeks (8/29,30), Rowan agreed to help Benno with
+  organization.
+
+IV. Bugs List:
+  Needs more categories.
+  Vizmapper bug relating to image location has been documented by
+  Jonathan.
+
+V. New Data Structures:
+  General discussion of Paul's mail from 8/10. All agreed that a
+  datacube class should evolve to replace the current expression data
+  class. One data cube for both node and edge data or one for node data
+  and one for edge data? Will be discussed further in the meeting.
+
+VI. Meeting Minutes:
+  Minutes should be put online. Probably not for the world to see but
+  would be helpful for the development team. Owen was performing this
+  task. Who will start this up again?
+
+VII. Refactoring: (by Andrew)
+  Vizmapper has been refactored. Few more weeks needed for core
+  refactoring. Plugins will be the next target for this effort.
+
+VIII. Graph Library:
+  Will be demonstrated (by Rowan?) at the meeting.
+
+IX. SBML Reader:
+  Paul would like a reviewer for his new class (Ethan or Gary?).
+
+
+___________________________________________________________________________
+ Christopher Workman, Ph.D         Department of Bioengineering
+ phone: 858 822-4706               University of California San Diego
+
+
+
+
+
+
+

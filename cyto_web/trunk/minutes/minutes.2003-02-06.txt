@@ -1,0 +1,75 @@
+Editors note: no actual meeting today. Enclosed are some emails
+covering Cytoscape issues, first from Trey responding to Gary.
+------------------------------------------------------------------
+
+This is great that you have hired a programmer, Gary. 
+I must actually also apologize that my group will not be
+able to meet today- there is an all day Whitehead shindig
+that we have to attend, unfortunately.  Owen is out of
+town today anyway, but will be back next week.
+
+My issues to report are that:
+
+(1) Benno, Gary, and I are making progress off-line on identifying 
+a suitable grant application.  Depending on which one we go for,
+it looks like the submission deadline for this will be June 1st,
+which means we should be writing this thing by mid April.
+
+(2) Can we agree on a time for the next major release of
+the Core? It would hopefully be between now and the time
+the Cytoscape paper will come out (assuming it makes it through
+the remaining hoops) at the beginning of April. 
+
+(3) I would like to agree on what should be in that release.
+I would imagine it including the tutorials Paul is working on,
+the new visual mapping system, and, in response to some of
+Gary's comments, an extensive help system,
+accessible from the website and the application itself,
+javadoc for the code, ... shall I keep dreaming?  ;)
+
+(4) Speaking of the visual mapper, check it out!!
+
+(5) Paul, I thought the tutorial looked like a good start. 
+You have somehow fixed the bug I was getting before with
+launching javastart. The only comment I currently have is that
+I think calling Cytoscape "a software platform for
+computational biology and bioinformatics" is too general. In
+fact, since we are talking about linking this page from the main
+cytoscape website anyway, what about titling this page
+"Cytoscape Tutorials" or something like that?
+
+Cheers, Trey
+
+Gary Bader wrote:
+>
+> Hi guys,
+>         I might be a little late for today's conference call, since we
+> have a job candidate seminar at 3:30-4:30.  You can check if I'm in the
+> office for the conference call using our webcam at
+> http://www.cbio.mskcc.org/webcam/
+>
+> Also, I'm happy to announce that we hired a java programmer, Ethan
+> Cerami, who will spend a significant part of his time on Cytoscape.  He
+> starts of Mar.10 and his expertise is XML and web services, so I hope we
+> could attack the database backend aspect pretty quickly.  He also has
+> worked with graph layout libraries like Tom Sawyer for a project related
+> to BIND called SigPath.  Eventually I'd like to chat to prioritize the
+> features you guys would like implemented out of all of the many that
+> we've discussed.  Also, I really haven't been able to get under the hood
+> of Cytoscape so far because of the hectic schedule here with setting up
+> our group, which is disappointing for me - and I apologize for it so
+> far, but I will have some time starting next week.
+>
+> Gary
+>
+> ______________________________________________
+> Gary Bader, Ph.D. - baderg@mskcc.org
+> Sander Lab, Computational Biology Center
+> Memorial Sloan-Kettering Cancer Center
+> http://www.cbio.mskcc.org/~bader/
+> 1275 York Avenue, Box 460, New York, NY, 10021
+
+--
+Trey Ideker
+Whitehead Institute for Biomedical Research
+EMAIL: trey@wi.mit.edu OFFICE: 617.258.5787

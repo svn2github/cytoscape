@@ -1,0 +1,29 @@
+
+meeting minutes: 07/08/04
+Ryan, Chris, Rowan, Gary, Ethan, Rob
+
+Next release data, July 12th: (tentative)
+
+  things to be done:
+   - fix vizmapper bugs (done, Ethan)
+   - disable-vizmapper debugged (?)
+   - ramp up testing of new features
+      (attribute saver, state saver, filters)
+   - feature freeze today or tomorrow
+   - tag version
+   - define plugins to be included
+     (remove JActiveModules, showExpressioData)
+   - announced on BioSPICE, PSIdev, SysBio, BioBB
+   - update web site v1.1.1 v2.0
+   - build 3 distribution types for windows, unix, mac
+      (ZIP, tgz,  Install Anywhere)
+
+Bugs:
+ changing node shape effects edge anchors
+
+Features for future releases:
+ Undo Manager, will be a considerable coding effort
+ start with a limited set of steps that can be undone/redone (maybe
+ layout)
+
+-Chris

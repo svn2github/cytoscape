@@ -1,0 +1,41 @@
+Present,
+NY: Rob, Ethan
+ISB: Rowan, Benno, Andrew, Iliana, Larissa
+SD: Chris, Ryan
+
+1. Cytoscape 2.0 feature freeze
+    Cytoscape 2.0 will be released when the following criteria are met:
+       1. Hierarchical Layout
+       2. GML I/O
+       3. Filter Completion
+       4. Thorough testing/profiling optimization.
+      
+    Ethan will be releasing periodic releases to 
+cytoscape.org/alpha.html, everyone is encouraged to try these out and 
+log all bugs. 
+
+2. cyto-aux, deprecated
+    The old "cyto-aux.jar" will be replaced by the actual pacakges that 
+went into it, this way future updates will be easier since we will have 
+a better idea of which versions we are using.  A new ant target will be 
+created for automatically launching Cytoscape with plugins and graphs 
+and data loaded.  The manifest/cytoscape.manifest file will be updated 
+so that "java -jar lib/cytoscape.jar" will launch Cytoscape without 
+having to specify a classpath on the command line.
+
+3. Bugs
+    Some bugs involving not being able to reach the download page.  This 
+was atributed to the server.
+
+4. MetaNode plugin
+    Iliana is working on a metanode plugin for general use that will 
+allow people to make and manipulate metanodes.  It is extendable and 
+will be used in her future re-implementation of Biomodules.
+
+5. Headless Mode
+    Iliana's "GraphViewController" class will be modified so that when 
+"resumeControlling" is called, the GraphView will figure out all of the 
+changes on the Perspective since it stopled listening.  During this 
+time, Cytoscape will essentially be in the often discussed 
+"headless-mode".  Iliana will let us know when this is done.
+
