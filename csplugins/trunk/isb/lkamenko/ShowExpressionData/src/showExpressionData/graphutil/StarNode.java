@@ -36,51 +36,9 @@ import javax.swing.event.*;
 
 
 /**
- * This Class is the BasicPNodeView. 
- * It has very limited support. Go look at plain old @see PNodeView.
-  
- * If you are going to make your own NodeView then you might be in the
- * in the right place.  Because we are using Piccolo, it becomes
- * both appropriate and necessary to add only "PNode" Objects
- * to the SceneGraph.  At this point, if you are not familiar with
- * Piccolo, become that way, possibly by reading on.
-  
- * So PNode is the Base class in Piccolo, and every viewable
- * object inherits from it.  There are a number of very useful
- * Piccolo provided nodes, like PClip, P3DRect, PPath, PText,
- * PImage and PLens. The phoebe default class, PNodeView is 
- * in fact a PClip. 
- 
- * So, to role your own node, you have two options:
- * 1. Extend this class and overide the 
- * <code>paint( PPaintContext )</code> method.  You will
- * find the PPaintContext is REALLY cool. It provides a lot
- * of information about the scene being displayed, in addition to
- * the Graphics2D Object.  Other methods of note are the 
- * animate* methods and the layout methods.
-
- * As a note, the "DataRose" plugin that PShannon wrote, should be
- * "just work" by extending this class instead of the Y-Files one.
- 
- * Don't forget that any number of child nodes can be added onto
- * this node, and they will by default move and scale and get
- * painted and all that goodeness at the same time as this one.
- * This should make it really easy to add complex displays, and
- * is one of the reasons why I really think that Piccolo is a good fit
- * for the Cytoscape Project.
-
- * 2. If you want to use one of the above mentioned Piccolo 
- * provided nodes, then it will be necessary to extend from
- * that node, and not this one.  Multiple inheritance might 
- * solve the problem, but in the meantime, by simple copying
- * all of the code from this class into your new class, it 
- * should just work(tm).  Since that is what I did to get the
- * PNodeView class.
-
- * Any and all questions should be directed to me.
- 
- * @author Rowan Christmas
- */
+  * Any and all questions should be directed to me.
+  * @author Rowan Christmas
+  */
 public class StarNode extends PClip
   implements NodeView,
              PropertyChangeListener {
@@ -98,7 +56,6 @@ public class StarNode extends PClip
   
   /**
    * Our label 
-   * TODO: more extendable
    */
   protected PLabel label;
 

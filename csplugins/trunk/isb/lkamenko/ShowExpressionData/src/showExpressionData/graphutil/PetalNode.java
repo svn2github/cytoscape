@@ -332,10 +332,10 @@ public class PetalNode extends PPath
     // set the Stroke
     setStroke( new BasicStroke( .7f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1f )  );
 
-    setPaint( ( Paint )view.getNodeObjectProperty( rootGraphIndex,
-                                                   PGraphView.NODE_PAINT ) );
+   //  setPaint( ( Paint )view.getNodeObjectProperty( rootGraphIndex,
+//                                                    PGraphView.NODE_PAINT ) );
     
-
+    setPaint( null );
     
 
 
