@@ -27,13 +27,17 @@
 					<a href="download_list.php">
 						Download
 					</a>
-					| 
-					<a href="http://www.cbio.mskcc.org/cytoscape/bugs/">
-						Bug Tracker
+					|
+					<a href="tutorial.php">
+						Tutorial
 					</a>
 					| 
 					<a href="links.php">
 						Links
+					</a>
+					| 
+					<a href="http://www.cbio.mskcc.org/cytoscape/bugs/">
+						Bug Tracker
 					</a>
 				</h1>
 			</td>
