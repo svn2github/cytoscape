@@ -76,7 +76,7 @@ version:
 
 
 doc:
-	javadoc -d ./htdocs \
+	javadoc -source 1.4 -d ./htdocs \
                 -private \
                 -overview ./overview.html \
                 -sourcepath .. \
