@@ -545,7 +545,7 @@ public abstract class Cytoscape {
   /**
    * This Map has keys that are Strings ( network_ids ) and values that are networkviews.
    */
-  protected static Map getNetworkViewMap () {
+  public static Map getNetworkViewMap () {
     if ( networkViewMap == null ) {
       networkViewMap = new HashMap();
     }
