@@ -43,7 +43,9 @@ public class BetweenPathway extends CytoscapePlugin{
    */
   
   public BetweenPathway(){
-    Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add( new AbstractAction("Find Between Pathway Models"){
+    JMenu topMenu = new JMenu("BetweenPathway");
+    Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add( topMenu);
+    topMenu.add(new AbstractAction("Find Between Pathway Models"){
 	public void actionPerformed(ActionEvent ae) {
 	  if(dialog == null){
 	    dialog = new BetweenPathwayOptionsDialog();
@@ -74,25 +76,35 @@ public class BetweenPathway extends CytoscapePlugin{
 			throw new RuntimeException("Thresh-hold generation cancelled");
 		      }
 		      options.cutoff = 0.0;
-		      //CyNetwork geneticNetwork = options.geneticNetwork;
 		      CyNetwork physicalNetwork = options.physicalNetwork;
+		      EdgeRandomizer physicalRandomizer = new EdgeRandomizer(physicalNetwork,options.directedTypes);
+
+		      randomDialog = new RandomizationDialog(options.geneticNetwork,options);
+		      randomDialog.show();
+		      if(randomDialog.isCancelled()){
+			throw new RuntimeException("Thresh-hold generation cancelled");
+		      }
+		      CyNetwork geneticNetwork = options.geneticNetwork;
+		      EdgeRandomizer geneticRandomizer = new EdgeRandomizer(geneticNetwork,options.directedTypes);
+
 		      double [] scores = new double[options.iterations];
-		      //EdgeRandomizer randomizer = new EdgeRandomizer(geneticNetwork,options.directedTypes);
-		      EdgeRandomizer randomizer = new EdgeRandomizer(physicalNetwork,options.directedTypes);
 		      ProgressMonitor myMonitor = new ProgressMonitor(Cytoscape.getDesktop(),"Thresh-hold determination","Iteration 1 of "+options.iterations,1,options.iterations);
 		      int [] physical_edges = physicalNetwork.getEdgeIndicesArray();
+		      int [] genetic_edges = geneticNetwork.getEdgeIndicesArray();
 		      Cytoscape.destroyNetwork(physicalNetwork);
+		      Cytoscape.destroyNetwork(geneticNetwork);
 		      Cytoscape.getRootGraph().removeEdges(physical_edges);
+		      Cytoscape.getRootGraph().removeEdges(genetic_edges);
 		      for(int idx=0 ; idx<options.iterations ; idx++){
 			if(myMonitor.isCanceled()){
 			  throw new RuntimeException("Thresh-hold generation cancelled");
 			}
 			myMonitor.setProgress(idx+1);
 			myMonitor.setNote("Iteration "+(idx+1)+" of "+options.iterations);
-			//CyNetwork randomNetwork = randomizer.randomizeNetwork();
-			//thread.setGeneticNetwork(randomNetwork);	
-			CyNetwork randomNetwork = randomizer.randomizeNetwork();
-			thread.setPhysicalNetwork(randomNetwork);
+			CyNetwork randomGeneticNetwork = geneticRandomizer.randomizeNetwork();
+			thread.setGeneticNetwork(randomGeneticNetwork);	
+			CyNetwork randomPhysicalNetwork = physicalRandomizer.randomizeNetwork();
+			thread.setPhysicalNetwork(randomPhysicalNetwork);
 
 			thread.run();
 			Vector results = thread.getResults(); 
@@ -103,9 +115,12 @@ public class BetweenPathway extends CytoscapePlugin{
 			else{
 			  scores[idx] = 0.0;
 			}
-			int [] old_edges = randomNetwork.getEdgeIndicesArray();
-			Cytoscape.destroyNetwork(randomNetwork);
-			Cytoscape.getRootGraph().removeEdges(old_edges);
+			int [] old_physical_edges = randomPhysicalNetwork.getEdgeIndicesArray();
+			int [] old_genetic_edges = randomGeneticNetwork.getEdgeIndicesArray();
+			Cytoscape.destroyNetwork(randomPhysicalNetwork);
+			Cytoscape.destroyNetwork(randomGeneticNetwork);
+			Cytoscape.getRootGraph().removeEdges(old_physical_edges);
+			Cytoscape.getRootGraph().removeEdges(old_genetic_edges);
 		      }
 		      myMonitor.close();
 		      /*
@@ -145,7 +160,7 @@ public class BetweenPathway extends CytoscapePlugin{
 	} 
       });
 
-    Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add( new AbstractAction("Load previous results"){
+    topMenu.add( new AbstractAction("Load previous results"){
 	public void actionPerformed(ActionEvent ae){
 	  new Thread(new Runnable(){
 	      public void run(){

@@ -99,7 +99,7 @@
 	<!--  Target to compile all Plug In Code -->
   	<target name="compile" depends="prepare,build_cytoscape,build_EdgeRandomization,build_Util" 
 		description="Compiles all PlugIn source code.">
-		<javac debug="Yes" srcdir="${src.dir}" destdir="${build.classes}">
+		<javac debug="Yes" excludes="${build.dir}/**" srcdir="${src.dir}" destdir="${build.classes}">
 			<classpath refid="classpath"/>
 		</javac>
 	</target>

@@ -22,7 +22,13 @@ import java.awt.event.*;
 import cytoscape.layout.*;
 import java.awt.Dimension;
 import javax.swing.border.TitledBorder;
-import ucsd.rmkelley.Util.RyanDialog;
+import ucsd.rmkelley.Util.*;
+
+//to export images
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import phoebe.PGraphView;
+
 
 class BetweenPathwayResultDialog extends RyanDialog implements ListSelectionListener{
   Vector results;
@@ -137,7 +143,7 @@ class BetweenPathwayResultDialog extends RyanDialog implements ListSelectionList
 	}
       });
 
-    JButton predictButton = new JButton("Make Predictions");
+    JButton predictButton = new JButton("Make GO Predictions");
     predictButton.addActionListener(new ActionListener(){
 	public void actionPerformed(ActionEvent ae){
 	  Vector pathways = new Vector();
@@ -148,15 +154,66 @@ class BetweenPathwayResultDialog extends RyanDialog implements ListSelectionList
 	    pathway_one.nodes = model.one;
 	    pathway_two.nodes = model.two;
 	    pathway_one.score = pathway_two.score = model.score;
+	    pathways.add(pathway_one);
+	    pathways.add(pathway_two);
 	  }
-	  GOpredictions prediction = new GOprediction(new File("GOID2orfs.txt"),new File("GOID2parents.txt"));
-	  prediction.makePredictions(pathways);
+	  GOprediction prediction = new GOprediction(new File("GOID2orfs.txt"),new File("GOID2parents.txt"));
+	  prediction.makePredictions(pathways,new File("physical-predictions.txt"));
 	}});
+
+    JButton predictProteinButton = new JButton("Make Protein Predictions");
+    predictProteinButton.addActionListener(new ActionListener(){
+	public void actionPerformed(ActionEvent ae){
+	  ProteinInteractionPrediction predictor = new ProteinInteractionPrediction(physicalNetwork,geneticNetwork,results);
+	  HashMap results = predictor.makePredictions();
+	  try{
+	    FileWriter writer = new FileWriter("proteinPredictions.txt",false);
+	    for(Iterator pairIt = results.keySet().iterator();pairIt.hasNext();){
+	      UnorderedPair pair = (UnorderedPair)pairIt.next();
+	      writer.write(""+pair+"\t"+((Set)results.get(pair)).size()+"\n");
+	    }
+	    writer.close();
+	  }catch(Exception e){
+	    e.printStackTrace();
+	    System.exit(-1);
+	  }
+	}});
+
+    JButton pictureButton = new JButton("Click");
+    pictureButton.addActionListener(new ActionListener(){
+	public void actionPerformed(ActionEvent ae){
+	  for(Iterator resultIt = results.iterator();resultIt.hasNext();){
+	    NetworkModel model = (NetworkModel)resultIt.next();
+	    List allNodes = new Vector();
+	    allNodes.addAll(model.one);
+	    allNodes.addAll(model.two);
+	    
+	    List allEdges = new Vector();
+	    allEdges.addAll(BetweenPathwayResultDialog.this.geneticNetwork.getConnectingEdges(allNodes));
+	    allEdges.addAll(BetweenPathwayResultDialog.this.physicalNetwork.getConnectingEdges(allNodes));
+	    
+	    CyNetwork newNetwork = Cytoscape.createNetwork(allNodes,allEdges,"Network Model: "+model.ID);
+	    CyNetworkView newView = Cytoscape.getNetworkView(newNetwork.getIdentifier());
+	    if(newView != null){
+	      CircleGraphLayout layout = new CircleGraphLayout(newView,model.one,model.two);
+	      layout.construct();
+	      try{
+		ImageIO.write((BufferedImage)((PGraphView)newView).getCanvas().getLayer().toImage(),"png",new File(""+model.ID+".png"));  
+	      } catch ( Exception e) {
+		e.printStackTrace();
+	      } // end of try-catch
+	      Cytoscape.destroyNetwork(newNetwork);
+	    }
+	  }
+	}
+      });
 				
 	
     southPanel.add(viewButton);
     southPanel.add(saveButton);
     southPanel.add(predictButton);
+    southPanel.add(predictProteinButton);
+    southPanel.add(pictureButton);
     getContentPane().add(southPanel,BorderLayout.SOUTH);
     pack();
   }
@@ -202,9 +259,9 @@ class BetweenPathwayResultDialog extends RyanDialog implements ListSelectionList
       stream.print(model.ID);
       stream.print("\t"+nodeSet2String(model.one));
       stream.print("\t"+nodeSet2String(model.two));
-      stream.println("\t"+model.score);
-      stream.println("\t"+model.physical_source_score);
-      stream.println("\t"+model.physical_target_score);
+      stream.print("\t"+model.score);
+      stream.print("\t"+model.physical_source_score);
+      stream.print("\t"+model.physical_target_score);
       stream.println("\t"+model.genetic_score);
     }
     stream.close();
@@ -240,7 +297,7 @@ class BetweenPathwayResultDialog extends RyanDialog implements ListSelectionList
     String result = "";
     Iterator nodeIt = nodes.iterator();
     if(nodes.size() > 0){
-      Node node = (Node)nodes.iterator().next();
+      Node node = (Node)nodeIt.next();
       result = node.getIdentifier();
     }
     if(nodes.size() > 1){
