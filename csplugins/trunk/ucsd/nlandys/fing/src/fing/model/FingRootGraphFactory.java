@@ -597,7 +597,133 @@ public final class FingRootGraphFactory
    * </tr><tr>
    * <td>createGraphPerspective(int[])</td>
    * <td></td>
-   * </tr></table</blockquote>
+   * </tr></table><br /><table border=1 cellspacing=0 cellpadding=5>
+   * <tr><th colspan=2>Node</th></tr>
+   * <tr><th>method</th><th>time complexity</th></tr>
+   * <tr>
+   * <td>getGraphPerspective()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>setGraphPerspective(GraphPerspective)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getRootGraph()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getRootGraphIndex()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getIdentifier()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>setIdentifier(String)</td>
+   * <td></td>
+   * </tr></table><br /><table border=1 cellspacing=0 cellpadding=5>
+   * <tr><th colspan=2>Edge</th></tr>
+   * <tr><th>method</th><th>time complexity</th></tr>
+   * <tr>
+   * <td>getSource()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getTarget()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>isDirected()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getRootGraph()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getRootGraphIndex()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getIdentifier()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>setIdentifier(String)</td>
+   * <td></td>
+   * </tr></table><br /><table border=1 cellspacing=0 cellpadding=5>
+   * <tr><th colspan=2>GraphPerspectiveChangeEvent</th></tr>
+   * <tr><th>method</th><th>time complexity</th></tr>
+   * <tr>
+   * <td>getSource()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getType()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>isNodesRestoredType()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>isEdgesRestoredType()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>isNodesHiddenType()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>isEdgesHiddenType()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>isNodesSelectedType()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>isNodesUnselectedType()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>isEdgesSelectedType()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>isEdgesUnselectedType()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getRestoredNodes()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getRestoredEdges()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getHiddenNodes()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getHiddenEdges()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getSelectedNodes()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getUnselectedNodes()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getSelectedEdges()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getUnselectedEdges()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getRestoredNodeIndices()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getRestoredEdgeIndices()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getHiddenNodeIndices()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getHiddenEdgeIndices()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getSelectedNodeIndices()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getUnselectedNodeIndices()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getSelectedEdgeIndices()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getUnselectedEdgeIndices()</td>
+   * <td></td>
+   * </tr></table></blockquote>
    */
   public final static RootGraph instantiateRootGraph()
   {
