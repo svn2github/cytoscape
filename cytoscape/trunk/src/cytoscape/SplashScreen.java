@@ -81,7 +81,7 @@ public class SplashScreen extends Canvas implements Runnable
 		while (progress < 100)
 		{
 			try {
-			    t.sleep(200);
+			    t.sleep(100);
 			    progressBar.setValue(progress);
 			    progress++;
 			}
@@ -91,8 +91,10 @@ public class SplashScreen extends Canvas implements Runnable
 				
 			}
 		}
-		progressBar.setIndeterminate(true);
-		progressBar.setString("Loading and laying out the graph...");
+		if (!noGraph) {
+			progressBar.setIndeterminate(true);
+			progressBar.setString("Loading and laying out the graph...");
+		}
          }
      
  
@@ -107,13 +109,11 @@ public class SplashScreen extends Canvas implements Runnable
 	public void advance(int progress)
 	{
 		this.progress = progress;
-		if( progress == 100 )
-			toTheEnd = true;
 	}
 
 	public void dispose()
 	{
-		toTheEnd = true;
+		t.stop();
 		if(win != null)
 			win.dispose();
 	}
@@ -159,6 +159,6 @@ public class SplashScreen extends Canvas implements Runnable
 	Image offscreenImg;
 	Graphics offscreenGfx;
 	int progress;
-	boolean toTheEnd = false;
+	public boolean noGraph = false;
 	JProgressBar progressBar;
 }

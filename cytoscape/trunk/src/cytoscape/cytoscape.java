@@ -140,7 +140,8 @@ public cytoscape (String [] args) throws Exception
     
 
   if (graph == null) {
-    splashScreen.advance(90);			  
+    splashScreen.advance(90);
+    splashScreen.noGraph = true;				  
     graph = new Graph2D ();
   }
 		
