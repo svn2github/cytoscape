@@ -1,0 +1,210 @@
+<project name="xmas" default="usage" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init">
+    <tstamp/>
+    <property name="Name" value="Rowan Christmas Plugins"/>
+    <property name="name" value="xmas"/>
+    <property name="version" value="0.1"/>
+    <property name="year" value="2004"/>
+
+    <echo message="Building ${name} version ${version}."/>
+
+    <!-- Properties to be inherited by subprojects -->
+    <property name="xmas.root.dir" value="./"/>
+    <property name="debug" value="on"/>
+    <property name="optimize" value="off"/>
+    <property name="deprecation" value="on"/>
+    <property name="fork" value="false"/>
+    <property name="javadoc.dir" value="${xmas.root.dir}/doc/api"/>
+    <property name="shared.lib.dir" value="${xmas.root.dir}/lib"/>
+    <path id="project.class.path">
+      <pathelement path="${java.class.path}/"/>
+    </path>
+
+    <!-- Define excludes for javadoc -->
+    <property name="packages.excludes" value="**.test.*,**.notyet.*"/>
+
+    <filter token="year" value="${year}"/>
+    <filter token="version" value="${version}"/>
+    <filter token="date" value="${TODAY}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Help on usage                                                       -->
+  <!-- =================================================================== -->
+  <target name="usage">
+    <echo message="--------------------------------------------------"/>
+    <echo message=" Rowan Christmas Plugins "/>
+    <echo message="       Build System      "/>
+    <echo message="--------------------------------------------------"/>
+    <echo message="  Usage:"/>
+    <echo message="     build &lt;target&gt;+"/>
+    <echo message=""/>
+    <echo message=" Available targets are:"/>
+    <echo message="   all        -> creates all the jars"/>
+    <echo message="   datamap    -> Compile the DataPropertyMap plugin"/>
+    <echo message="   filter     -> Compile the Filter plugin"/>
+    <echo message="   integration-> Compile the Integration Test plugin"/>
+    <echo message="   metaviz    -> Compile the MetaNode Viz plugin"/>
+    <echo message="   weka       -> Compile the WEKA plugin"/>
+    <echo message="   tests      -> creates the *-test jar files"/>
+    <echo message="   runtests   -> runs the test cases in the *-test jar"/>
+    <echo message="                 files"/>
+    <echo message="   fix        -> changes the file types to be "/>
+    <echo message="                 consistent with the OS"/>
+    <echo message="   docs       -> generates the javadoc documentation"/>
+    <echo message="                 in ./doc/api"/>
+    <echo message="   clean      -> restores the giny project to its"/>
+    <echo message="                 original and clean state"/>
+    <echo message="   usage      -> (default) displays this screen"/>
+    <echo message="--------------------------------------------------"/>
+    <echo message=" See also the build.xml file header for more help."/>
+    <echo message="--------------------------------------------------"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Create the datamap/datamap.jar file                                 -->
+  <!-- =================================================================== -->
+  <target name="datamap" depends="init">
+    <ant dir="datamap" target="datamap"/>
+    <copy todir="./lib" file="datamap/datamap.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Create the API documentation for datamap                            -->
+  <!-- =================================================================== -->
+  <target name="docs-datamap" depends="init">
+    <ant dir="datamap" target="docs"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Clean the datamap directory                                         -->
+  <!-- =================================================================== -->
+  <target name="clean-datamap" depends="init">
+    <ant dir="datamap" target="clean"/>
+  </target>
+  
+  <!-- =================================================================== -->
+  <!-- Create the filter/filter.jar file                                   -->
+  <!-- =================================================================== -->
+  <target name="filter" depends="init">
+    <ant dir="filter" target="filter"/>
+    <copy todir="${shared.lib.dir}" file="filter/filter.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Create and run the tests for filter                                 -->
+  <!-- =================================================================== -->
+  <target name="runtests-filter" depends="filter">
+    <ant dir="filter" target="runtests"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Create the API documentation for filter                             -->
+  <!-- =================================================================== -->
+  <target name="docs-filter" depends="init">
+    <ant dir="filter" target="docs"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Clean the filter directory                                          -->
+  <!-- =================================================================== -->
+  <target name="clean-filter" depends="init">
+    <ant dir="filter" target="clean"/>
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Create the integration/integration.jar file                         -->
+  <!-- =================================================================== -->
+  <target name="integration" depends="init">
+    <ant dir="integration" target="integration"/>
+    <copy todir="${shared.lib.dir}" file="integration/integration.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Create the API documentation for integration                        -->
+  <!-- =================================================================== -->
+  <target name="docs-integration" depends="init">
+    <ant dir="integration" target="docs"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Clean the integration directory                                     -->
+  <!-- =================================================================== -->
+  <target name="clean-integration" depends="init">
+    <ant dir="integration" target="clean"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Create the metaviz/metaviz.jar file                                   -->
+  <!-- =================================================================== -->
+  <target name="metaviz" depends="init">
+    <ant dir="metaviz" target="metaviz"/>
+    <copy todir="${shared.lib.dir}" file="metaviz/metaviz.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Create the API documentation for metaviz                             -->
+  <!-- =================================================================== -->
+  <target name="docs-metaviz" depends="init">
+    <ant dir="metaviz" target="docs"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Clean the metaviz directory                                          -->
+  <!-- =================================================================== -->
+  <target name="clean-metaviz" depends="init">
+    <ant dir="metaviz" target="clean"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Create and run the tests for metaviz                                 -->
+  <!-- =================================================================== -->
+  <target name="runtests-metaviz" depends="metaviz">
+    <ant dir="metaviz" target="runtests"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Create the weka/weka.jar file                                       -->
+  <!-- =================================================================== -->
+  <target name="weka" depends="init">
+    <ant dir="weka" target="weka"/>
+    <copy todir="${shared.lib.dir}" file="weka/weka.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Create the API documentation for weka                               -->
+  <!-- =================================================================== -->
+  <target name="docs-weka" depends="init">
+    <ant dir="weka" target="docs"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Clean the weka directory                                            -->
+  <!-- =================================================================== -->
+  <target name="clean-weka" depends="init">
+    <ant dir="weka" target="clean"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Build all jars                                                      -->
+  <!-- =================================================================== -->
+  <target name="all" depends="datamap, integration, filter, metaviz, weka"/>
+
+  <!-- =================================================================== -->
+  <!-- Create all API documentation                                        -->
+  <!-- =================================================================== -->
+  <target name="docs" depends="docs-datamap, docs-integration, docs-filter, docs-metaviz, docs-weka"/>
+
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="clean-datamap, clean-integration, clean-filter, clean-metaviz, clean-weka"/>
+
+</project>
+
+<!-- End of file -->

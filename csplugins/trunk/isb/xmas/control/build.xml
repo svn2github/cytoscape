@@ -1,0 +1,213 @@
+<project name="control" default="control" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init-control">
+    <tstamp/>
+    <property name="control.Name" value="control"/>
+    <property name="control.name" value="control"/>
+    <property name="control.version" value="0.1"/>
+    <property name="control.year" value="200"/>
+
+    <echo message="Building ${control.name} version ${control.version}."/>
+
+    <!-- Inheritable properties -->
+    <property name="debug" value="on"/>
+    <property name="optimize" value="off"/>
+    <property name="deprecation" value="on"/>
+    <property name="nowarn" value="true"/>
+    <property name="fork" value="false"/>
+    <property name="control.root.dir" value="."/>
+    <property name="control.lib.dir" value="${control.root.dir}/lib"/>
+    <property name="cytoscape.lib.dir" value="${control.root.dir}/../../../../cytoscape/lib"/>
+    <property name="cytoscape.plugin.dir" value="${control.root.dir}/../../../../cytoscape/plugins"/>
+    <path id="project.class.path">
+      <pathelement path="${java.class.path}/"/>
+    </path>
+
+    <!-- Define the directories -->
+    <property name="control.root.dir" value="./"/>
+    <property name="control.src.dir" value="${control.root.dir}/src"/>
+    <property name="control.classes.dir" value="${control.root.dir}/classes"/>
+    <property name="control.javadoc.dir" value="${javadoc.dir}/control"/>
+    <property name="control.resources.dir" value="${control.root.dir}/resources"/>
+    <property name="control.manifest.dir" value="${control.root.dir}/manifest"/>
+    <property name="control.packages" value="control.*"/>
+    <!-- Subdirectory for test reports -->
+    <property name="control.tests.reports.dir" value="${control.root.dir}/reports/tests" />
+    <property name="cytoscape.lib" value="../../cytoscape/lib" />
+
+    <!-- Define the condition for compilation -->
+    <property name="cytoscape.jar" value="${control.lib.dir}/cytoscape.jar"/>
+    <property name="colt.jar" value="${control.lib.dir}/colt.jar"/>
+    
+
+    <condition property="cytoscape.present">
+      <and> 
+	  		<available file="${cytoscape.jar}"/> 
+				<available file="${colt.jar}"/> 
+		  </and>
+    </condition>
+
+    <!-- Define excludes for control compile and javadoc -->
+    <property name="control.excludes" value="**/notyet/*"/>
+    <property name="control.tests.excludes" value="**/notyet/*"/>
+    <property name="control.packages.excludes" value="**.test.*,**.notyet.*"/>
+
+    <path id="control.project.class.path">
+      <pathelement location="${control.classes.dir}"/>
+      <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/y.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/piccolo.jar"/>
+      <pathelement path="${project.class.path}/"/>
+    </path>
+
+   
+
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the control project                                           -->
+  <!-- =================================================================== -->
+  <target name="compile-control" depends="init-control"  >
+
+   <echo message=" COMPILE control "/>
+
+    <mkdir dir="${control.classes.dir}"/>
+    <javac srcdir="${control.src.dir}"
+           excludes="${control.excludes}"
+           classpathref="control.project.class.path"
+           destdir="${control.classes.dir}"
+           debug="${debug}"
+           nowarn="${nowarn}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the control.jar file                                           -->
+  <!-- =================================================================== -->
+  <target name="control" depends="compile-control"  >
+    <jar destfile="control.jar" manifest="${control.manifest.dir}/control.manifest">
+      <fileset
+        dir="${control.classes.dir}"
+        includes="**"/>
+      <fileset
+        dir="${control.root.dir}/lib"
+        includes="resources/**"/>
+      <fileset 
+        dir="${control.root.dir}/images"/>
+    </jar>
+    <copy todir="${control.lib.dir}" file="control.jar"/>
+    <copy todir="${cytoscape.plugin.dir}" file="control.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the control tests                                             -->
+  <!-- =================================================================== -->
+  <target name="compile-tests" depends="control"  >
+    <mkdir dir="${control.classes.dir}"/>
+    <javac srcdir="${control.src.dir}"
+           includes="**/test/*"
+           excludes="${control.tests.excludes}"
+           classpathref="control.project.class.path"
+           destdir="${control.classes.dir}"
+           debug="${debug}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the control-tests.jar file                                     -->
+  <!-- =================================================================== -->
+  <target name="tests" depends="compile-tests"  >
+    <jar jarfile="control-tests.jar"
+         basedir="${control.classes.dir}"
+         includes="**/test/*"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Build all jars                                                      -->
+  <!-- =================================================================== -->
+  <target name="all" depends="control"/>
+
+   <!-- =================================================================== -->
+  <!-- Run the Plugin                                                      -->
+  <!-- =================================================================== -->
+  <target name="run" depends="control" >
+     
+     <java classname="cytoscape.cytoscape" 
+           classpathref="control.project.class.path"
+           fork="true"/>
+           <arg line = "-y giny"/>
+           <arg line = "--JLD"/>
+           <arg line = "${control.lib.dir}/control.jar"/>
+           
+
+  </target>
+
+
+
+  <!-- =================================================================== -->
+  <!-- Runs the tests in control-tests.jar                                    -->
+  <!-- =================================================================== -->
+  <target name="runtests" depends="tests"  >
+    <mkdir dir="${control.tests.reports.dir}"/>
+    <junit
+       printsummary="yes"
+       haltonfailure="no"
+       dir="${control.classes.dir}"
+       maxmemory="1G"
+    >
+      <formatter type="plain" usefile="true" />
+      <classpath refid="control.project.class.path"/>
+      <!-- The junit task doesn't support 'if' so we test for JUnit here -->
+      <batchtest fork="yes" todir="${control.tests.reports.dir}" if="junit.present">
+        <fileset
+           dir="${control.classes.dir}"
+           includes="**/test/*"
+           excludes="${control.tests.excludes}"
+        />
+      </batchtest>
+    </junit>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the API documentation                                       -->
+  <!-- =================================================================== -->
+  <target name="docs" depends="init-control" >
+    <mkdir dir="${control.javadoc.dir}"/>
+    <javadoc packagenames="${control.packages}"
+             excludepackagenames="${control.packages.excludes}"
+             sourcepath="${control.src.dir}"
+             destdir="${control.javadoc.dir}"
+             classpathref="control.project.class.path"
+             author="true"
+             version="true"
+             use="true"
+             splitindex="true"
+             noindex="false"
+             windowtitle="${control.Name} API"
+             doctitle="${control.Name}"
+    />
+  </target>
+ 
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init-control">
+    <delete dir="${control.classes.dir}"/>
+    <delete file="control.jar"/>
+    <delete file="control-tests.jar"/>
+  </target>
+
+</project>
+
+<!-- End of file -->

@@ -1,0 +1,2 @@
+Class-Path: .  cytoscape.jar
+Main-Class: control.ControlPlugin
