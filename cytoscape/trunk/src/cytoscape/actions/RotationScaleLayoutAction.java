@@ -38,7 +38,7 @@ public class RotationScaleLayoutAction extends CytoscapeAction
       (Cytoscape.getCurrentNetworkView().getSelectedNodeIndices().length == 0);
     final MutablePolyEdgeGraphLayout[] nativeGraph =
       new MutablePolyEdgeGraphLayout[] {
-        GraphConverter.getGraphCopy(16.0d, true, false) };
+        GraphConverter.getGraphReference(16.0d, true, false) };
     final RotationLayouter[] rotation = new RotationLayouter[] {
       new RotationLayouter(nativeGraph[0]) };
     final ScaleLayouter[] scale = new ScaleLayouter[] {
@@ -65,7 +65,6 @@ public class RotationScaleLayoutAction extends CytoscapeAction
           double radians = ((double) (rotSlider.getValue() - prevValue)) *
             2.0d * Math.PI / 360.0d;
           rotation[0].rotateGraph(radians);
-          GraphConverter.updateCytoscapeLayout(nativeGraph[0]);
           prevValue = rotSlider.getValue(); } });
     rotPanel.add(rotSlider, BorderLayout.CENTER);
 
@@ -102,7 +101,6 @@ public class RotationScaleLayoutAction extends CytoscapeAction
           double neededIncrementalScaleFactor =
             currentAbsoluteScaleFactor / prevAbsoluteScaleFactor;
           scale[0].scaleGraph(neededIncrementalScaleFactor);
-          GraphConverter.updateCytoscapeLayout(nativeGraph[0]);
           prevValue = sclSlider.getValue(); } });
     sclPanel.add(sclSlider, BorderLayout.CENTER);
 
@@ -113,7 +111,7 @@ public class RotationScaleLayoutAction extends CytoscapeAction
     if (noNodesSelected) chx.setEnabled(false);
     chx.addChangeListener(new ChangeListener() {
         public void stateChanged(ChangeEvent e) {
-          nativeGraph[0] = GraphConverter.getGraphCopy
+          nativeGraph[0] = GraphConverter.getGraphReference
             (128.0d, true, chx.isSelected());
           rotation[0] = new RotationLayouter(nativeGraph[0]);
           scale[0] = new ScaleLayouter(nativeGraph[0]); } } );
