@@ -1,8 +1,9 @@
 package cytoscape.graph.layout.algorithm;
 
-import cytoscape.graph.layout.PolyEdges;
+import cytoscape.graph.layout.PolyEdgeGraphLayout;
 
-public interface MutablePolyEdges extends PolyEdges
+public interface MutablePolyEdgeGraphLayout
+  extends PolyEdgeGraphLayout, MutableGraphLayout
 {
 
   public void deleteAnchor(int anchorIndex);

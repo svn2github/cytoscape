@@ -2,7 +2,7 @@ package cytoscape.graph.layout;
 
 import cytoscape.graph.IndexIterator;
 
-public interface PolyEdges
+public interface PolyEdgeGraphLayout extends GraphLayout
 {
 
   /**
