@@ -1,40 +1,46 @@
-<!-- WARNING: YOU MUST EDIT THIS FILE BY HAND FOR THE runWithCytoscape
-     TARGET TO WORK. YOU MUST CHANGE A LINE BELOW TO POINT TO A COMPLETE
-     AND UNOBFUSCATED CYTOSCAPE.JAR. THIS BUILD FILE ALSO ASSUMES THAT YOU ARE
-     WORKING IN A COMPLETE CSPLUGINS TREE. -->	
-
-<project name="plot2d" default="run" basedir="../..">
+<project name="plot2d" default="runWithCytoscape" basedir="../../../../">
 
 
     <description>
-        build file for Plotter (csplugins.plot2d)
+        build file for Plotter (csplugins.isb.dtenenbaum.plot2d)
     </description>
   <!-- set global properties for this build -->
   <property name="src" location="."/>
-  <property name="pkg" location="csplugins/plot2d"/>
-  <property name="pkg_name" value="csplugins/plot2d"/>
-  <property name="pkg.name" value="csplugins.plot2d"/>
-  <property name="datacube" value="csplugins/trial/pshannon/dataCube"/>
+  <property name="pkg" location="csplugins/isb/dtenenbaum/plot2d"/>
+  <property name="pkg_name" value="csplugins/isb/dtenenbaum/plot2d"/>
+  <property name="pkg.name" value="csplugins.isb.dtenenbaum.plot2d"/>
+  <property name="datacube" value="csplugins/isb/pshannon/dataMatrix"/>
 
-  <!-- EDIT HERE TO POINT TO COMPLETE AND UNOBFUSCATED CYTOSCAPE.JAR: -->
-  <property name="cytoscape_jar_location" 
-    location="c:/eclipse/workspace/datacube/lib"/>
-  <property name="global_lib" location="csplugins/lib"/>
+<!-- this file contains the value of cytoscape.location which
+     is the full path to a jar or class directory. it also contains
+     various paths to libraries needed by datamatrix -->
+<property file="${pkg}/build.properties"/>
 
-  <property name="bin"  location="../bin"/>
+  
+  
+<property name="global_lib" location="csplugins/lib"/>
+
+  <property name="build"  location="${pkg}/build"/>
   <property name="lib"  location="${pkg}/lib"/>
   <property name="dist"  location="."/>
   
 
    <path id="project.class.path">
            <pathelement location="${java.class.path}"/>
-           <pathelement location="${lib}/jcommon-0.9.0.jar"/>
-           <pathelement location="${lib}/jfreechart-0.9.15.jar"/>
+           <pathelement location="${lib}/jcommon-0.9.5.jar"/>
+           <pathelement location="${lib}/jfreechart-0.9.20.jar"/>
            <pathelement location="${dist}"/>
            <pathelement location="${bin}"/>
            <pathelement location="${bin}"/>
-           <pathelement location="${cytoscape_jar_location}/cytoscape.jar"/>
+           <pathelement location="${cytoscape.location}"/>
            <pathelement location="${global_lib}/cyto-aux.jar"/>
+           <pathelement location="${jython.jar.location}/jython.jar"/>
+           <pathelement location="${spyconsole.jar.location}/spyconsole.jar"/>
+           <pathelement location="${y.jar.location}/y.jar"/>
+           <pathelement location="${jnlp.jar.location}/jnlp.jar"/>
+           <pathelement location="${junit.jar.location}/junit.jar"/>
+           <pathelement location="${giny.jar.location}/giny.jar"/>
+	   
   </path>
 
   
@@ -45,14 +51,22 @@
     <!-- Create the build directory structure used by compile -->
   </target>
 
+
+
+
   <target name="compile" depends="init"
         description="compile the source " >
-    <!-- Compile the java code from ${src} into ${bin} -->
-    <mkdir dir="${bin}"/>
-    <javac srcdir="${pkg}" destdir="${bin}">
+    <!-- Compile the java code from ${src} into ${build} -->
+    <mkdir dir="${build}"/>
+    <javac deprecation="on" sourcepath="" srcdir="." destdir="${build}"
+       includes="csplugins/isb/pshannon/dataMatrix/**,
+       csplugins/isb/dtenenbaum/plot2d/**,csplugins/isb/pshannon/cyInterface/**"
+       excludes="csplugins/isb/dtenenbaum/plot2d/test/TestPlotter.*">
     	<classpath refid="project.class.path"/>
     </javac>
   </target>
+  
+  <!-- <target name="mkpluginjar"/> -->
 
   <target name="run"  depends="compile"
         description="run the test program" >
@@ -72,62 +86,15 @@
   <target name="runWithCytoscape" depends="compile"
     description="Run cytoscape with the datacube browser available">
       <java classname="cytoscape.cytoscape" fork="true"
-        dir="csplugins/trial/pshannon/dataCube/demo/mflory">
+        dir="${pkg}/test">
         <classpath refid="project.class.path"/>
-        <arg value="-i"/>
-        <arg value="network.sif"/>
+        <arg value="-p"/>
+        <arg value="project"/>
         <arg value="--matrix"/>
         <arg value="matrix.expression"/>
-        <arg value="--matrix"/>
-        <arg value="matrix.icat"/>
       </java>
   </target>
 
-  <target name="dist" depends="compile"
-    description="make a tarball">
-    	
-      <tar destfile="${dist}/plotter.tar.gz" compression="gzip">
-      	<tarfileset dir="${dist}" >
-      		<include name="build.xml"/>
-      	</tarfileset>
-      	<tarfileset dir="${pkg}" 
-      	  prefix="${pkg_name}">
-      		<include name="*.*"/>
-      	</tarfileset>
-      	<tarfileset dir="${pkg}/test" 
-      	  prefix="${pkg_name}/test">
-      		<include name="*.*"/>
-      	</tarfileset>
-
-      	<tarfileset dir="${lib}" prefix="lib">
-      		<include name="jfreechart-0.9.15.jar"/>
-      		<include name="jcommon-0.9.0.jar"/>
-      	</tarfileset>
-      </tar>
-  </target>
-  
-
-  <target name="srcdist" depends="compile"
-    description="make a source-only tarball (no jars)">
-    	
-      <tar destfile="${dist}/plotter-src-only.tar.gz" compression="gzip">
-      	<tarfileset dir="${dist}" >
-      		<include name="build.xml"/>
-      	</tarfileset>
-      	<tarfileset dir="${pkg}" 
-      	  prefix="${pkg_name}">
-      		<include name="*.*"/>
-      	</tarfileset>
-      	<tarfileset dir="${pkg}/test" 
-      	  prefix="${pkg_name}/test">
-      		<include name="*.*"/>
-      	</tarfileset>
-
-      </tar>
-  </target>
-
-  <target name="alldist" depends="dist,srcdist"
-    description="make both source-only and full tarballs" />
 
   <target name="clean"
         description="clean up" >
