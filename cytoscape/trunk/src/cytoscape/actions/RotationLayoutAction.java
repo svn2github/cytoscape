@@ -124,8 +124,8 @@ public class RotationLayoutAction extends CytoscapeAction
     RotationLayouter.rotateGraph(nativeGraph, 0.1d);
     for (int i = 0; i < nodeTranslation.length; i++) {
       nodeTranslation[i].setOffset
-        (nativeGraph.getNodePosition(i).getX() + minX - ((maxX - minX) / 2),
-         nativeGraph.getNodePosition(i).getY() + minY - ((maxY - minY) / 2)); }
+        (nativeGraph.getNodePosition(i, true) + minX - ((maxX - minX) / 2),
+         nativeGraph.getNodePosition(i, false) + minY - ((maxY - minY) / 2)); }
   }
 
 }

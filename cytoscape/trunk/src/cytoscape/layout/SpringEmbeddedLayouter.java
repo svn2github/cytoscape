@@ -155,8 +155,8 @@ public class SpringEmbeddedLayouter extends AbstractLayout  {
                                            null);
     (new SpringEmbeddedLayouter2(nativeGraph)).run();
     for (int i = 0; i < nodeTranslation.length; i++) {
-      nodeTranslation[i].setOffset(nativeGraph.getNodePosition(i).getX(),
-                                   nativeGraph.getNodePosition(i).getY()); }
+      nodeTranslation[i].setOffset(nativeGraph.getNodePosition(i, true),
+                                   nativeGraph.getNodePosition(i, false)); }
     return null;
   }
 

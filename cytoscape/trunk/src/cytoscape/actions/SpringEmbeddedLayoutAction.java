@@ -173,8 +173,8 @@ public class SpringEmbeddedLayoutAction extends CytoscapeAction
 
     for (int i = 0; i < nodeTranslation.length; i++)
       nodeTranslation[i].setOffset
-        (nativeGraph.getNodePosition(i).getX() + minX,
-         nativeGraph.getNodePosition(i).getY() + minY);
+        (nativeGraph.getNodePosition(i, true) + minX,
+         nativeGraph.getNodePosition(i, false) + minY);
   }
 
 }
