@@ -878,6 +878,35 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("missing a meta relationship");
     if (!(root.isNodeMetaParent(nodeInx[0], nodeInx[3])))
       throw new IllegalStateException("missing a meta relationship");
+
+    // metaParentsList(Node).
+    if (root.metaParentsList(root2Node) != null)
+      throw new IllegalStateException("expected null for other node");
+    nodesList = root.metaParentsList(root.getNode(nodeInx[0]));
+    if (nodesList.size() != 2)
+      throw new IllegalStateException("wrong number of parent nodes");
+    for (int i = 0; i < nodesList.size(); i++) {
+      Node foo = (Node) (nodesList.get(i)); }
+    nodesList = root.metaParentsList(root.getNode(nodeInx[1]));
+    if (nodesList.size() != 2)
+      throw new IllegalStateException("wrong number of parent nodes");
+
+    // nodeMetaParentsList(int).
+    if (root.nodeMetaParentsList(0) != null ||
+        root.nodeMetaParentsList(Integer.MAX_VALUE) != null ||
+        root.nodeMetaParentsList(Integer.MIN_VALUE) != null ||
+        root.nodeMetaParentsList(99) != null ||
+        root.nodeMetaParentsList(minNodeInx - 1) != null)
+      throw new IllegalStateException("expected null for meta parents");
+    nodesList = root.nodeMetaParentsList(nodeInx[2]);
+    if (nodesList.size() != 2)
+      throw new IllegalStateException("wrong number of parent nodes");
+    nodesList = root.nodeMetaParentsList(nodeInx[3]);
+    if (nodesList.size() != 2)
+      throw new IllegalStateException("wrong number of parent nodes");
+    nodesList = root.nodeMetaParentsList(nodeInx[4]);
+    if (nodesList.size() != 2)
+      throw new IllegalStateException("wrong number of parent nodes");
   }
 
 }
