@@ -225,7 +225,8 @@ public final class GraphConverter
    * <code>getMaxWidth()</code> of the return object is ...
    * All distances are preserved from to Cytoscape graph to the return object.
    **/
-  public static MutablePolyEdgeGraphLayout getGraphCopy(double percentBorder)
+  public static MutablePolyEdgeGraphLayout getGraphCopy
+    (double percentBorder, boolean preserveEdgeAnchors)
   {
     if (percentBorder < 0.0d)
       throw new IllegalArgumentException("percentBorder < 0.0");
@@ -286,14 +287,14 @@ public final class GraphConverter
     while (edgeIterator.hasNext())
     {
       EdgeView currentEdgeView = (EdgeView) edgeIterator.next();
-      List anchors = currentEdgeView.getBend().getHandles();
-      for (int a = 0; a < anchors.size(); a++) {
-        System.out.println("anchor");
-        Point2D point = (Point2D) anchors.get(a);
-        minX = Math.min(minX, point.getX());
-        maxX = Math.max(maxX, point.getX());
-        minY = Math.min(minY, point.getY());
-        maxY = Math.max(maxY, point.getY()); }
+      if (preserveEdgeAnchors) {
+        List anchors = currentEdgeView.getBend().getHandles();
+        for (int a = 0; a < anchors.size(); a++) {
+          Point2D point = (Point2D) anchors.get(a);
+          minX = Math.min(minX, point.getX());
+          maxX = Math.max(maxX, point.getX());
+          minY = Math.min(minY, point.getY());
+          maxY = Math.max(maxY, point.getY()); } }
       Edge currentEdge = currentEdgeView.getEdge();
       int ginySourceNodeIndex = currentEdge.getSource().getRootGraphIndex();
       int ginyTargetNodeIndex = currentEdge.getTarget().getRootGraphIndex();
@@ -343,14 +344,15 @@ public final class GraphConverter
       nodeYPositions[i] = nodeTranslation[i].getYPosition() - yOff; }
     final double[][] edgeAnchorXPositions = new double[numEdgesInTopology][];
     final double[][] edgeAnchorYPositions = new double[numEdgesInTopology][];
-    for (int e = 0; e < edgeTranslation.length; e++) {
-      List anchors = edgeTranslation[e].getBend().getHandles();
-      edgeAnchorXPositions[e] = new double[anchors.size()];
-      edgeAnchorYPositions[e] = new double[anchors.size()];
-      for (int a = 0; a < anchors.size(); a++) {
-        Point2D point = (Point2D) anchors.get(a);
-        edgeAnchorXPositions[e][a] = point.getX() - xOff;
-        edgeAnchorYPositions[e][a] = point.getY() - yOff; } }
+    if (preserveEdgeAnchors) {
+      for (int e = 0; e < edgeTranslation.length; e++) {
+        List anchors = edgeTranslation[e].getBend().getHandles();
+        edgeAnchorXPositions[e] = new double[anchors.size()];
+        edgeAnchorYPositions[e] = new double[anchors.size()];
+        for (int a = 0; a < anchors.size(); a++) {
+          Point2D point = (Point2D) anchors.get(a);
+          edgeAnchorXPositions[e][a] = point.getX() - xOff;
+          edgeAnchorYPositions[e][a] = point.getY() - yOff; } } }
     return new MyCMutableGraphLayout(numNodesInTopology,
                                      directedEdgeSourceNodeIndices,
                                      directedEdgeTargetNodeIndices,
@@ -426,7 +428,7 @@ public final class GraphConverter
    * while operating on this return object.
    **/
   public static MutablePolyEdgeGraphLayout getGraphReference
-    (double percentBorder)
+    (double percentBorder, boolean preserveEdgeAnchors)
   {
     if (percentBorder < 0.0d)
       throw new IllegalArgumentException("percentBorder < 0.0");
@@ -484,13 +486,16 @@ public final class GraphConverter
     {
       EdgeView currentEdge = (EdgeView) edgeIterator.next();
       edgeTranslation[edgeIndex] = currentEdge;
-      List handles = currentEdge.getBend().getHandles();
-      for (int h = 0; h < handles.size(); h++) {
-        Point2D point = (Point2D) handles.get(h);
-        minX = Math.min(minX, point.getX());
-        maxX = Math.max(maxX, point.getX());
-        minY = Math.min(minY, point.getY());
-        maxY = Math.max(maxY, point.getY()); }
+      if (preserveEdgeAnchors) {
+        List handles = currentEdge.getBend().getHandles();
+        for (int h = 0; h < handles.size(); h++) {
+          Point2D point = (Point2D) handles.get(h);
+          minX = Math.min(minX, point.getX());
+          maxX = Math.max(maxX, point.getX());
+          minY = Math.min(minY, point.getY());
+          maxY = Math.max(maxY, point.getY()); } }
+      else {
+        currentEdge.getBend().removeAllHandles(); }
       edgeIndex++;
     }
     if (edgeIndex != numEdgesInTopology)

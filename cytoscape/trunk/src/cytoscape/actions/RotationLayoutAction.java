@@ -29,7 +29,7 @@ public class RotationLayoutAction extends CytoscapeAction
   public void actionPerformed(ActionEvent e)
   {
     final MutablePolyEdgeGraphLayout nativeGraph =
-      GraphConverter.getGraphReference(1.0d);
+      GraphConverter.getGraphReference(1.0d, true);
     final RotationLayouter rotation = new RotationLayouter(nativeGraph);
     Frame cyFrame = Cytoscape.getDesktop();
     JDialog dialog = new JDialog(cyFrame, "Rotate", true);
