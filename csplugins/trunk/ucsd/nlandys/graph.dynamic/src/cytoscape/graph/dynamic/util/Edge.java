@@ -4,14 +4,14 @@ package cytoscape.graph.dynamic.util;
 class Edge
 {
 
-  int m_edgeId;
-  Edge m_nextOutEdge;
-  Edge m_prevOutEdge;
-  Edge m_nextInEdge;
-  Edge m_prevInEdge;
-  boolean m_directed;
-  int m_sourceNode;
-  int m_targetNode;
+  int edgeId;
+  Edge nextOutEdge;
+  Edge prevOutEdge;
+  Edge nextInEdge;
+  Edge prevInEdge;
+  boolean directed;
+  int sourceNode;
+  int targetNode;
 
   Edge() { }
 

@@ -37,8 +37,8 @@ class DynamicGraphRepresentation implements DynamicGraph
         private Node node = firstNode;
         public int numRemaining() { return numRemaining; }
         public int nextInt() {
-          final int returnThis = node.m_nodeId;
-          node = node.m_nextNode;
+          final int returnThis = node.nodeId;
+          node = node.nextNode;
           numRemaining--;
           return returnThis; } };
   }
@@ -54,14 +54,14 @@ class DynamicGraphRepresentation implements DynamicGraph
         public int numRemaining() { return numRemaining; }
         public int nextInt() {
           int returnThis;
-          try { returnThis = edge.m_edgeId; }
+          try { returnThis = edge.edgeId; }
           catch (NullPointerException e) {
-            for (edge = node.m_firstOutEdge;
+            for (edge = node.firstOutEdge;
                  edge == null;
-                 node = node.m_nextNode, edge = node.m_firstOutEdge) { }
-            node = node.m_nextNode;
-            returnThis = edge.m_edgeId; }
-          edge = edge.m_nextOutEdge;
+                 node = node.nextNode, edge = node.firstOutEdge) { }
+            node = node.nextNode;
+            returnThis = edge.edgeId; }
+          edge = edge.nextOutEdge;
           numRemaining--;
           return returnThis; } };
   }
@@ -86,15 +86,14 @@ class DynamicGraphRepresentation implements DynamicGraph
     if (e == null) return false;
     m_edges.setEdgeAtIndex(null, edge);
     m_freeEdges.push(edge);
-    try { e.m_prevOutEdge.m_nextOutEdge = e.m_nextOutEdge; }
-    catch (NullPointerException exc) { // e.m_prevOutEdge is null.
-      m_nodes.getNodeAtIndex(e.m_sourceNode).m_firstOutEdge =
-        e.m_nextOutEdge; }
-    try { e.m_prevInEdge.m_nextInEdge = e.m_nextInEdge; }
-    catch (NullPointerException exc) { // e.m_prevInEdge is null.
-      m_nodes.getNodeAtIndex(e.m_targetNode).m_firstInEdge = e.m_nextInEdge; }
-    e.m_nextOutEdge = null; e.m_prevOutEdge = null;
-    e.m_nextInEdge = null; e.m_prevInEdge = null;
+    try { e.prevOutEdge.nextOutEdge = e.nextOutEdge; }
+    catch (NullPointerException exc) { // e.prevOutEdge is null.
+      m_nodes.getNodeAtIndex(e.sourceNode).firstOutEdge = e.nextOutEdge; }
+    try { e.prevInEdge.nextInEdge = e.nextInEdge; }
+    catch (NullPointerException exc) { // e.prevInEdge is null.
+      m_nodes.getNodeAtIndex(e.targetNode).firstInEdge = e.nextInEdge; }
+    e.nextOutEdge = null; e.prevOutEdge = null;
+    e.nextInEdge = null; e.prevInEdge = null;
     m_edgeDepot.recycleEdge(e);
     return true;
   }

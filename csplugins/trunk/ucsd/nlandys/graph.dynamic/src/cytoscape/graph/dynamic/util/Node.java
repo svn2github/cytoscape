@@ -4,20 +4,20 @@ package cytoscape.graph.dynamic.util;
 class Node
 {
 
-  int m_nodeId;
-  Node m_nextNode;
-  Node m_prevNode;
-  Edge m_firstOutEdge;
-  Edge m_firstInEdge;
+  int nodeId;
+  Node nextNode;
+  Node prevNode;
+  Edge firstOutEdge;
+  Edge firstInEdge;
 
   // The number of directed edges whose target is this node.
-  int m_inDegree;
+  int inDegree;
 
   // The number of directed edges whose source is this node.
-  int m_outDegree;
+  int outDegree;
 
   // The number of undirected edges which touch this node.
-  int m_undDegree;
+  int undDegree;
 
   Node() { }
 
