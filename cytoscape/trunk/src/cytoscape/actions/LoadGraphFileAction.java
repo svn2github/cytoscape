@@ -23,6 +23,7 @@ import cytoscape.view.NetworkView;
 import cytoscape.view.CyMenus;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.CytoscapeAction;
+import cytoscape.util.FileUtil;
 import cytoscape.actions.CheckBoxFileChooser;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.InteractionsReader;
@@ -60,7 +61,7 @@ public class LoadGraphFileAction extends CytoscapeAction {
   public void actionPerformed(ActionEvent e)  {
    
     File currentDirectory = Cytoscape.getCytoscapeObj().getCurrentDirectory();
-    JFileChooser chooser = new JFileChooser(currentDirectory);
+    //JFileChooser chooser = new JFileChooser(currentDirectory);
     
     boolean appendFlag = false;
     
@@ -77,17 +78,24 @@ public class LoadGraphFileAction extends CytoscapeAction {
     graphFilter.addExtension("sif");
     graphFilter.addExtension("gml");
     graphFilter.setDescription("All graph files");
-    chooser.addChoosableFileFilter(graphFilter);
-    chooser.addChoosableFileFilter(intFilter);
-    chooser.addChoosableFileFilter(gmlFilter);
-    chooser.setFileFilter(graphFilter);
-    if (chooser.showOpenDialog( Cytoscape.getDesktop() ) == chooser.APPROVE_OPTION) {
-      currentDirectory = chooser.getCurrentDirectory();
-      Cytoscape.getCytoscapeObj().setCurrentDirectory(currentDirectory);
+    //chooser.addChoosableFileFilter(graphFilter);
+    //chooser.addChoosableFileFilter(intFilter);
+    //chooser.addChoosableFileFilter(gmlFilter);
+    //chooser.setFileFilter(graphFilter);
+    //if (chooser.showOpenDialog( Cytoscape.getDesktop() ) == chooser.APPROVE_OPTION) {
+    //currentDirectory = chooser.getCurrentDirectory();
+    //Cytoscape.getCytoscapeObj().setCurrentDirectory(currentDirectory);
       //appendFlag = chooser.getCheckBoxState();
       //if(appendFlag) System.out.println("appending graph");
 
-      final String  name = chooser.getSelectedFile().toString();
+      //final String  name = chooser.getSelectedFile().toString();
+    
+   
+    final String  name = FileUtil.getFile( "Load Graph File",
+                                           FileUtil.LOAD,
+                                           new CyFileFilter[] { graphFilter, intFilter, gmlFilter } ).toString();
+  
+    if ( name != null ) {
       int fileType = Cytoscape.FILE_SIF;
       if (name.length() > 4) {//long enough to have a "gml" extension
         String extension = name.substring( name.length()-3 );

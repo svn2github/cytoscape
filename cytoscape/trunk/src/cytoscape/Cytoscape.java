@@ -321,11 +321,15 @@ public abstract class Cytoscape {
     //System.out.print( "*" );
     CyNode source = getCyNode( source_alias );
     CyNode target = getCyNode( target_alias );
-    edge =  ( CyEdge )Cytoscape.getRootGraph().getEdge( Cytoscape.getRootGraph().createEdge (source, target));
 
-    Cytoscape.getEdgeNetworkData().add ("interaction", edge_name, interaction_type);
-    Cytoscape.getEdgeNetworkData().addNameMapping (edge_name, edge);
-    return edge;
+    return getCyEdge( source, target, Semantics.INTERACTION, interaction_type, true );
+
+
+//     edge =  ( CyEdge )Cytoscape.getRootGraph().getEdge( Cytoscape.getRootGraph().createEdge (source, target));
+
+//     Cytoscape.getEdgeNetworkData().add ("interaction", edge_name, interaction_type);
+//     Cytoscape.getEdgeNetworkData().addNameMapping (edge_name, edge);
+//     return edge;
   }
    
    /**
@@ -1158,7 +1162,7 @@ public abstract class Cytoscape {
   
 
   
-  protected static void firePropertyChange ( String property_type,
+  public static void firePropertyChange ( String property_type,
                                              Object old_value,
                                              Object new_value ) {
 

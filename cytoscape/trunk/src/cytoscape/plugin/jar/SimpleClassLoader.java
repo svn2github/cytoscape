@@ -31,7 +31,7 @@ import java.net.*;
 import java.awt.*;
 
 
-public class SimpleClassLoader extends ClassLoader {
+public class SimpleClassLoader extends URLClassLoader {
   public final static String urlPrefix = "SIMPLE";
   private static final String protocolPathProp = "java.protocol.handler.pkgs";
   private static boolean debug = false; // debugging
@@ -65,7 +65,7 @@ public class SimpleClassLoader extends ClassLoader {
    * Create a SipleClassLoader.  It is identified by a cookie string
    */
   private SimpleClassLoader(String cookie, String dir) {
-    super( Cytoscape.class.getClassLoader() );
+    super( new URL[] {}, Cytoscape.class.getClassLoader() );
     this.cookie = cookie;
     this.localResourceDirectory = dir;
     loaders.put(cookie, this);

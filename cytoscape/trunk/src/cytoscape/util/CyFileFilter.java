@@ -30,11 +30,14 @@
 
 package cytoscape.util;
 //---------------------------------------------------------------------------
-import java.lang.Runtime;import java.io.File;
+import java.lang.Runtime;
+import java.io.File;
 import java.util.Hashtable;
 import java.util.Enumeration;
+import java.io.FilenameFilter;
 import javax.swing.*;
 import javax.swing.filechooser.*;
+
 
 /**
  * A convenience implementation of FileFilter that filters out
@@ -46,7 +49,11 @@ import javax.swing.filechooser.*;
  * @version 1.0 05/02/03
  * @author Larissa Kamenkovich
  */
-public class CyFileFilter extends FileFilter {
+public class CyFileFilter 
+  extends 
+    FileFilter
+  implements 
+    FilenameFilter {
 
     private static String TYPE_UNKNOWN = "Type Unknown";
     private static String HIDDEN_FILE = "Hidden File";
@@ -142,6 +149,18 @@ public class CyFileFilter extends FileFilter {
 	}
 	return false;
     }
+
+  /**
+   * In order to implement the AWT version of this class 
+   * "FileNameFilter", the following method must also be 
+   * implemented.
+   *
+   */
+  public boolean accept ( File dir, String name ) {
+
+    return accept( new File( name ) );
+  }
+
 
     /**
      * Return the extension portion of the file's name .
