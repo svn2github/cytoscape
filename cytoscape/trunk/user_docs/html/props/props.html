@@ -35,10 +35,17 @@
    and severe messages.
   <a name="nodeshape">
   <br><br>
+
+  <!--  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+  <!--                                       NODE SHAPE                                   -->
+  <!--  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
   <li> <b>NODE SHAPE</b><br<> specify which node attribute controls node shape, and
      what the mapping should be.
    <p><p>
   <b><pre>
+node.shape.default=circle
+
 node.shape.controller=&lt;attributeName&gt;
 node.shape.categorizer.type=discrete
 node.shape.categorizer.map.&lt;attributeValue&gt;=&lt;shape&gt;
@@ -50,6 +57,30 @@ node.shape.categorizer.map.&lt;attributeValue&gt;=&lt;shape&gt;
    <li> <b>&lt;attributeValue&gt;</b> is any value it may
    take on; and  
    <li><b>&lt;shape&gt;</b> may be <i> circle, square,  </i> or ...
+    </ol>
+
+  <!--  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+  <!--                                       NODE BORDER COLOR                            -->
+  <!--  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+  <br><br>
+  <li> <b>NODE BORDER COLOR</b><br<> specify which node attribute controls node border color, and
+     what the mapping should be.
+   <p><p>
+  <b><pre>
+node.borderColor.default=255,0,0
+
+
+node.borderColor.controller=&lt;attributeName&gt;
+node.borderColor.categorizer.type=discrete
+node.borderColor.categorizer.map.&lt;attributeValue&gt;=&lt;borderColor&gt;
+  </pre></b>
+  <p> where 
+  <ol>
+  <li><b> &lt;attributeName&gt;</b> may be the name of any attribute defined 
+   on nodes in your graph; 
+   <li> <b>&lt;attributeValue&gt;</b> is any value it may
+   take on; and  
+   <li><b>&lt;borderColor&gt;</b> is an RGB triple..
     </ol>
 
 
