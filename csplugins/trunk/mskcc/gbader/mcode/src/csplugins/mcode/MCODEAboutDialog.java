@@ -5,7 +5,7 @@ import javax.swing.text.html.HTMLEditorKit;
 import java.awt.*;
 
 /**
- * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
+ * * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
  * *
  * * Code written by: Gary Bader
  * * Authors: Gary Bader, Ethan Cerami, Chris Sander
@@ -38,6 +38,10 @@ import java.awt.*;
  * * Date: Jun 25, 2004
  * * Time: 5:47:31 PM
  * * Description: An about dialog box for MCODE
+ */
+
+/**
+ * An about dialog box for MCODE
  */
 public class MCODEAboutDialog extends JDialog {
 

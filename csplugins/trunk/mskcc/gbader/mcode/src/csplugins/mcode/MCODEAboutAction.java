@@ -6,7 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
+ * * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
  * *
  * * Code written by: Gary Bader
  * * Authors: Gary Bader, Ethan Cerami, Chris Sander
@@ -39,6 +39,10 @@ import java.awt.event.ActionListener;
  * * Date: Jun 25, 2004
  * * Time: 5:38:52 PM
  * * Description: The action to show the About dialog box
+ */
+
+/**
+ * The action to show the About dialog box
  */
 public class MCODEAboutAction implements ActionListener {
     /**

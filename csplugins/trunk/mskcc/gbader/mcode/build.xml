@@ -52,11 +52,22 @@
 		</javac>
 	</target>
 
-	<!--  Create PlugIn Jar File (Unobfuscated) -->
+	<!--  Create PlugIn Jar File -->
    	<target name="jar" depends="compile" description="Creates PlugIn Jar File.">
 	   <jar destfile="${build.dir}/${plugin.name}.jar">
 			<fileset dir="${build.classes}"/>
 		</jar>
 		<echo message="${plugin.name}.jar is now complete.  It is located in build/ directory"/>
+	</target>
+
+	<!-- Target to Run JavaDoc -->
+	<target name="doc" description="Runs JavaDoc.">
+		<javadoc destdir="javadoc" source="1.4" classpathref="classpath"
+		link="http://java.sun.com/j2se/1.4.2/docs/api/">
+
+		<packageset dir="${src.dir}">
+			<include name="csplugins/**"/>
+		</packageset>
+		</javadoc>
 	</target>
 </project>

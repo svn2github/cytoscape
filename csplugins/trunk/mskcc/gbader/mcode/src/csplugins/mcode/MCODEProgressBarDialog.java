@@ -5,7 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 
 /**
- * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
+ * * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
  * *
  * * Code written by: Gary Bader
  * * Authors: Gary Bader, Ethan Cerami, Chris Sander
@@ -38,6 +38,10 @@ import java.awt.event.ActionEvent;
  * * Date: Jul 7, 2004
  * * Time: 3:35:11 PM
  * * Description: Progress bar for long MCODE tasks (more than 0.5 seconds)
+ */
+
+/**
+ * Progress bar for long MCODE tasks (more than 0.5 seconds)
  */
 public class MCODEProgressBarDialog extends JDialog {
     private JProgressBar progressBar;

@@ -46,7 +46,6 @@ public class AllTests {
 
     /**
      * The main test suite for MCODE
-     * @return
      */
     public static Test suite() {
 

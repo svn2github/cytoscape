@@ -19,7 +19,7 @@ import java.text.NumberFormat;
 import java.util.*;
 
 /**
- * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
+ * * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
  * *
  * * Code written by: Gary Bader
  * * Authors: Gary Bader, Ethan Cerami, Chris Sander
@@ -186,7 +186,7 @@ public class MCODEUtil {
      * @param complexes The list of complexes
      * @param network The network source of the complexes
      * @param fileName The file name to write to
-     * @return
+     * @return True if the file was written, false otherwise
      */
     public static boolean saveMCODEResults(MCODEAlgorithm alg, ArrayList complexes, CyNetwork network, String fileName) {
         if (alg==null || complexes == null || network == null || fileName == null) {

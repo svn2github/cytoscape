@@ -11,8 +11,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 /**
- * Copyright (c) 2003 Institute for Systems Biology, University of
- * * California at San Diego, and Memorial Sloan-Kettering Cancer Center.
+ * * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
  * *
  * * Code written by: Gary Bader
  * * Authors: Gary Bader, Ethan Cerami, Chris Sander
@@ -25,19 +24,16 @@ import java.util.ArrayList;
  * * This library is distributed in the hope that it will be useful, but
  * * WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
  * * MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
- * * documentation provided hereunder is on an "as is" basis, and the
- * * Institute for Systems Biology, the University of California at San Diego
- * * and/or Memorial Sloan-Kettering Cancer Center
- * * have no obligations to provide maintenance, support,
+ * * documentation provided hereunder is on an "as is" basis, and
+ * * Memorial Sloan-Kettering Cancer Center
+ * * has no obligations to provide maintenance, support,
  * * updates, enhancements or modifications.  In no event shall the
- * * Institute for Systems Biology, the University of California at San Diego
- * * and/or Memorial Sloan-Kettering Cancer Center
+ * * Memorial Sloan-Kettering Cancer Center
  * * be liable to any party for direct, indirect, special,
  * * incidental or consequential damages, including lost profits, arising
- * * out of the use of this software and its documentation, even if the
- * * Institute for Systems Biology, the University of California at San
- * * Diego and/or Memorial Sloan-Kettering Cancer Center
- * * have been advised of the possibility of such damage.  See
+ * * out of the use of this software and its documentation, even if
+ * * Memorial Sloan-Kettering Cancer Center
+ * * has been advised of the possibility of such damage.  See
  * * the GNU Lesser General Public License for more details.
  * *
  * * You should have received a copy of the GNU Lesser General Public License
