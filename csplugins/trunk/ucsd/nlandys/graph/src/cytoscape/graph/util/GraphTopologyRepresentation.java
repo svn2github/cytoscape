@@ -152,15 +152,6 @@ public class GraphTopologyRepresentation implements GraphTopology
          " edges, yet edgeIndex has value " + edgeIndex);
     return edgeIndex < m_directedEdgeSourceNodeIndices.length; }
 
-  /**
-   * Returns <code>true</code> if and only if edges in this graph are either
-   * all directed or all undirected.
-   **/
-  public final boolean areAllEdgesSimilar() {
-    return
-      m_directedEdgeSourceNodeIndices.length == 0 ||
-      m_undirectedEdgeNode0Indices.length == 0; }
-
   public final int getEdgeNodeIndex(int edgeIndex, boolean sourceNode) {
     if (edgeIndex < 0 ||
         edgeIndex >= getNumEdges())
@@ -175,5 +166,19 @@ public class GraphTopologyRepresentation implements GraphTopology
               m_undirectedEdgeNode1Indices)
         [edgeIndex - m_directedEdgeSourceNodeIndices.length]; } }
 
+  /**
+   * Returns <code>true</code> if and only if edges in this graph are either
+   * all directed or all undirected.
+   **/
+  public final boolean areAllEdgesSimilar() {
+    return
+      m_directedEdgeSourceNodeIndices.length == 0 ||
+      m_undirectedEdgeNode0Indices.length == 0; }
+
+  public final int getNumDirectedEdges() {
+    return m_directedEdgeSourceNodeIndices.length; }
+
+  public final int getNumUndirectedEdges() {
+    return m_undirectedEdgeNode0Indices.length; }
 
 }
