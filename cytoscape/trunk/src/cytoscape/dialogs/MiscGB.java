@@ -49,6 +49,11 @@ public class MiscGB {
 	panel.add(comp);
     }
 
-
-
+    public static JLabel createColorLabel(Color c) {
+	JLabel label = new JLabel("    ");
+	label.setOpaque(true);
+	label.setBackground(c);
+	return label;
+    }
 }
+

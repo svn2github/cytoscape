@@ -76,9 +76,7 @@ public VisualPropertiesDialog (Frame parentFrame,
 
 
   JButton colorButton = new JButton("Node Color");
-  JLabel colorLabel = new JLabel("    ");
-  colorLabel.setOpaque(true);
-  colorLabel.setBackground(nColor.getColor());
+  JLabel colorLabel = MiscGB.createColorLabel(nColor.getColor());
   colorButton.addActionListener(new
       GeneralColorDialogListener(this,nColor,colorLabel,
 				 "Choose a Node Color"));
@@ -88,9 +86,7 @@ public VisualPropertiesDialog (Frame parentFrame,
   MiscGB.insert(defaultPanel,colorLabel,defaultLayout,defaultC);
 
   JButton borderColorButton = new JButton("Node Border Color");
-  JLabel borderColorLabel = new JLabel("    ");
-  borderColorLabel.setOpaque(true);
-  borderColorLabel.setBackground(bColor.getColor());
+  JLabel borderColorLabel = MiscGB.createColorLabel(bColor.getColor());
   borderColorButton.addActionListener(new
       GeneralColorDialogListener(this,bColor,borderColorLabel,
 				 "Choose a Node Border Color"));
@@ -102,9 +98,7 @@ public VisualPropertiesDialog (Frame parentFrame,
 
   JButton bgColorButton
       = new JButton("Background Color");
-  JLabel bgColorLabel = new JLabel("    ");
-  bgColorLabel.setOpaque(true);
-  bgColorLabel.setBackground(bgColor.getColor());
+  JLabel bgColorLabel = MiscGB.createColorLabel(bgColor.getColor());
   bgColorButton.addActionListener(new
       GeneralColorDialogListener(this,bgColor,bgColorLabel,
 				 "Choose a Background Color"));

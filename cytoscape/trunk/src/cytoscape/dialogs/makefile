@@ -25,6 +25,7 @@ OBJS = ColorPopupButton.class \
         IntegerEntryField.class \
         IconPopupButton.class \
         MiscDialog.class \
+        MiscGB.class \
         EdgeTextPanel.class \
 	NewStringPopupDialog.class \
 
