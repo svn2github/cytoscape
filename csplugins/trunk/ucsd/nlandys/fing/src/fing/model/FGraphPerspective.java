@@ -1071,7 +1071,7 @@ class FGraphPerspective implements GraphPerspective
           edgeRemoveArr[i] = m_root.getEdge(rootGraphEdgeInx); }
         hideEdges(source, edgeRemoveArr); }
       // nativeNodeIndex tested for validity with adjacentEdges() above.
-      if (m_graph.removeNode(nativeNodeIndex) >= 0) {
+      if (m_graph.removeNode(nativeNodeIndex)) {
         m_rootToNativeNodeInxMap.put(~rootGraphNodeInx, Integer.MAX_VALUE);
         m_nativeToRootNodeInxMap.setIntAtIndex(0, nativeNodeIndex);
         return rootGraphNodeInx; }
@@ -1157,7 +1157,7 @@ class FGraphPerspective implements GraphPerspective
       final int nativeEdgeIndex =
         m_rootToNativeEdgeInxMap.get(~rootGraphEdgeInx);
       if (nativeEdgeIndex < 0) return 0;
-      if (m_graph.removeEdge(nativeEdgeIndex) >= 0) {
+      if (m_graph.removeEdge(nativeEdgeIndex)) {
         m_rootToNativeEdgeInxMap.put(~rootGraphEdgeInx, Integer.MAX_VALUE);
         m_nativeToRootEdgeInxMap.setIntAtIndex(0, nativeEdgeIndex);
         return rootGraphEdgeInx; }
