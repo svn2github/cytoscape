@@ -41,9 +41,13 @@ public LabelTextPanel (GraphObjAttributes nodeAttribs,
   theBox.setSelectedItem(nodeLabelKey.getString());
   theBox.addActionListener(new BoxAction());
 
+  JLabel label = new JLabel("Node Label: ");
   c.gridx=0;
   c.gridy=0;
-
+  gridbag.setConstraints(label,c);
+  this.add(label);
+  c.gridx=1;
+  c.gridy=0;
   gridbag.setConstraints(theBox,c);
   this.add(theBox);
   
