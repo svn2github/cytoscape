@@ -549,17 +549,21 @@ class FRootGraph //implements RootGraph
     return adj.numRemaining();
   }
 
-  public Node getNode(int nodeInx)
-  {
-    if (nodeInx < 0) return m_nodes.getNodeAtIndex(~nodeInx);
-    else return null;
-  }
+  public int getIndex(Node node) {
+    if (node.getRootGraph() == this) return node.getRootGraphIndex();
+    else return 0; }
 
-  public Edge getEdge(int edgeInx)
-  {
+  public Node getNode(int nodeInx) {
+    if (nodeInx < 0) return m_nodes.getNodeAtIndex(~nodeInx);
+    else return null; }
+
+  public int getIndex(Edge edge) {
+    if (edge.getRootGraph() == this) return edge.getRootGraphIndex();
+    else return 0; }
+
+  public Edge getEdge(int edgeInx) {
     if (edgeInx < 0) return m_edges.getEdgeAtIndex(~edgeInx);
-    else return null;
-  }
+    else return null; }
 
   public int getEdgeSourceIndex(int edgeInx)
   {
@@ -569,6 +573,12 @@ class FRootGraph //implements RootGraph
   public int getEdgeTargetIndex(int edgeInx)
   {
     return ~(m_graph.targetNode(~edgeInx));
+  }
+
+  // Throws IllegalArgumentException.
+  public boolean isEdgeDirected(int edgeInx)
+  {
+    return m_graph.isDirectedEdge(~edgeInx);
   }
 
   // The relationship between indices (both node and edge) in this
