@@ -282,11 +282,283 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
       if (!reversed) partials.x += incrementalChange;
       if (otherPartials != null)
       {
+        incrementalChange =
+          (m_nodeDistanceSpringScalars[m_layoutPass] *
+           (m_nodeDistanceSpringStrengths[otherNode][node] *
+            (-deltaX -
+             (
+              (m_nodeDistanceSpringRestLengths[otherNode][node] *
+               -deltaX) /
+              euclideanDistance
+              )
+             )
+            )
+           );
+        if (reversed) otherPartials.x -= incrementalChange;
+        else otherPartials.x += incrementalChange;
+      }
+      if (distanceFromTouching < 0.0)
+      {
+        incrementalChange =
+          (m_anticollisionSpringScalars[m_layoutPass] *
+           (m_anticollisionSpringStrength *
+            (deltaX -
+             (
+              ((nodeRadius + otherNodeRadius) *
+               deltaX) /
+              euclideanDistance
+              )
+             )
+            )
+           );
+        if (!reversed) partials.x += incrementalChange;
+        if (otherPartials != null)
+        {
+          incrementalChange =
+            (m_anticollisionSpringScalars[m_layoutPass] *
+             (m_anticollisionSpringStrength *
+              (-deltaX -
+               (
+                ((nodeRadius + otherNodeRadius) *
+                 -deltaX) /
+                euclideanDistance
+                )
+               )
+              )
+             );
+          if (reversed) otherPartials.x -= incrementalChange;
+          else otherPartials.x += incrementalChange;
+        }
+      }
+      incrementalChange =
+        (m_nodeDistanceSpringScalars[m_layoutPass] *
+         (m_nodeDistanceSpringStrengths[node][otherNode] *
+          (deltaY -
+           (
+            (m_nodeDistanceSpringRestLengths[node][otherNode] *
+             deltaY) /
+            euclideanDistance
+            )
+           )
+          )
+         );
+      if (!reversed) partials.y += incrementalChange;
+      if (otherPartials != null)
+      {
+        incrementalChange =
+          (m_nodeDistanceSpringScalars[m_layoutPass] *
+           (m_nodeDistanceSpringStrengths[otherNode][node] *
+            (-deltaY -
+             (
+              (m_nodeDistanceSpringRestLengths[otherNode][node] *
+               -deltaY) /
+              euclideanDistance
+              )
+             )
+            )
+           );
+        if (reversed) otherPartials.y -= incrementalChange;
+        else otherPartials.y += incrementalChange;
+      }
+      if (distanceFromTouching < 0.0)
+      {
+        incrementalChange =
+          (m_anticollisionSpringScalars[m_layoutPass] *
+           (m_anticollisionSpringStrength *
+            (deltaY -
+             (
+              ((nodeRadius + otherNodeRadius) *
+               deltaY) /
+              euclideanDistance
+              )
+             )
+            )
+           );
+        if (!reversed) partials.y += incrementalChange;
+        if (otherPartials != null)
+        {
+          incrementalChange =
+            (m_anticollisionSpringScalars[m_layoutPass] *
+             (m_anticollisionSpringStrength *
+              (-deltaY -
+               (
+                ((nodeRadius + otherNodeRadius) *
+                 -deltaY) /
+                euclideanDistance
+                )
+               )
+              )
+             );
+          if (reversed) otherPartials.y -= incrementalChange;
+          else otherPartials.y += incrementalChange;
+        }
+      }
+      incrementalChange =
+        (m_nodeDistanceSpringScalars[m_layoutPass] *
+         (m_nodeDistanceSpringStrengths[node][otherNode] *
+          (1.0 -
+           (
+            (m_nodeDistanceSpringRestLengths[node][otherNode] *
+             (deltaY * deltaY)
+             ) /
+            euclideanDistanceCubed
+            )
+           )
+          )
+         );
+      if (reversed) {
+        if (otherPartials != null) otherPartials.xx -= incrementalChange; }
+      else {
+        partials.xx += incrementalChange;
+        if (otherPartials != null) otherPartials.xx += incrementalChange; }
+      if (distanceFromTouching < 0.0)
+      {
+        incrementalChange =
+          (m_anticollisionSpringScalars[m_layoutPass] *
+           (m_anticollisionSpringStrength *
+            (1.0 -
+             (
+              ((nodeRadius + otherNodeRadius) *
+               (deltaY * deltaY)
+               ) /
+              euclideanDistanceCubed
+              )
+             )
+            )
+           );
+        if (reversed) {
+          if (otherPartials != null) otherPartials.xx -= incrementalChange; }
+        else {
+          partials.xx += incrementalChange;
+          if (otherPartials != null) otherPartials.xx += incrementalChange; }
+      }
+      incrementalChange =
+        (m_nodeDistanceSpringScalars[m_layoutPass] *
+         (m_nodeDistanceSpringStrengths[node][otherNode] *
+          (1.0 -
+           (
+            (m_nodeDistanceSpringRestLengths[node][otherNode] *
+             (deltaX * deltaX)
+             ) /
+            euclideanDistanceCubed
+            )
+           )
+          )
+         );
+      if (reversed) {
+        if (otherPartials != null) otherPartials.yy -= incrementalChange; }
+      else {
+        partials.yy += incrementalChange;
+        if (otherPartials != null) otherPartials.yy += incrementalChange; }
+      if (distanceFromTouching < 0.0)
+      {
+        incrementalChange =
+          (m_anticollisionSpringScalars[m_layoutPass] *
+           (m_anticollisionSpringStrength *
+            (1.0 -
+             (
+              ((nodeRadius * otherNodeRadius) *
+               (deltaX * deltaX)
+               ) /
+              euclideanDistanceCubed
+              )
+             )
+            )
+           );
+        if (reversed) {
+          if (otherPartials != null) otherPartials.yy -= incrementalChange; }
+        else {
+          partials.yy += incrementalChange;
+          if (otherPartials != null) otherPartials.yy += incrementalChange; }
+      }
+      incrementalChange =
+        (m_nodeDistanceSpringScalars[m_layoutPass] *
+         (m_nodeDistanceSpringStrengths[node][otherNode] *
+          ((m_nodeDistanceSpringRestLengths[node][otherNode] *
+            (deltaX * deltaY)
+            ) /
+           euclideanDistanceCubed
+           )
+          )
+         );
+      if (reversed) {
+        if (otherPartials != null) otherPartials.xy -= incrementalChange; }
+      else {
+        partials.xy += incrementalChange;
+        if (otherPartials != null) otherPartials.xy += incrementalChange; }
+      if (distanceFromTouching < 0.0)
+      {
+        incrementalChange =
+          (m_anticollisionSpringScalars[m_layoutPass] *
+           (m_anticollisionSpringStrength *
+            (
+             ((nodeRadius * otherNodeRadius) *
+              (deltaX * deltaY)
+              ) /
+             euclideanDistanceCubed
+             )
+            )
+           );
+        if (reversed) {
+          if (otherPartials != null) otherPartials.xy -= incrementalChange; }
+        else {
+          partials.xy += incrementalChange;
+          if (otherPartials != null) otherPartials.xy += incrementalChange;
+        }
+      }
+      distanceFromRest =
+        (euclideanDistance -
+         m_nodeDistanceSpringRestLengths[node][otherNode]
+         );
+      incrementalChange =
+        (m_nodeDistanceSpringScalars[m_layoutPass] *
+         ((m_nodeDistanceSpringStrengths[node][otherNode] *
+           (distanceFromRest * distanceFromRest)
+           ) /
+          2
+          )
+         );
+      if (reversed) {
+        if (otherPartials != null) potentialEnergy[0] -= incrementalChange; }
+      else {
+        potentialEnergy[0] += incrementalChange;
+        if (otherPartials != null) potentialEnergy[0] += incrementalChange; }
+      if (distanceFromTouching < 0.0)
+      {
+        incrementalChange =
+          (m_anticollisionSpringScalars[m_layoutPass] *
+           ((m_anticollisionSpringStrength *
+             (distanceFromTouching * distanceFromTouching)
+             ) /
+            2
+            )
+           );
+        if (reversed) {
+          if (otherPartials != null) potentialEnergy[0] -= incrementalChange; }
+        else {
+          potentialEnergy[0] += incrementalChange;
+          if (otherPartials != null) potentialEnergy[0] += incrementalChange; }
+      }
+      if (otherPartials != null)
+      {
+        otherPartials.euclideanDistance =
+          Math.sqrt((otherPartials.x * otherPartials.x) *
+                    (otherPartials.y * otherPartials.y));
+        if ((furthestPartials == null) ||
+            (otherPartials.euclideanDistance >
+             furthestPartials.euclideanDistance))
+          furthestPartials = otherPartials;
       }
     }
-
-
-    return null;
+    if (!reversed)
+      partials.euclideanDistance =
+        Math.sqrt((partials.x * partials.x) +
+                  (partials.y * partials.y));
+    if ((furthestPartials == null) ||
+        (partials.euclideanDistance >
+         furthestPartials.euclideanDistance))
+      furthestPartials = partials;
+    return furthestPartials;
   }
 
   private static PartialDerivatives moveNode
