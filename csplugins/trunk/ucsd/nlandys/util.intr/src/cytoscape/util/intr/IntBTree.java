@@ -285,6 +285,7 @@ public final class IntBTree
    */
   public final boolean delete(final int x)
   {
+    final byte deleted = delete(m_root, null, null, x);
     return false;
   }
 
@@ -300,6 +301,10 @@ public final class IntBTree
   private final byte delete(final Node n, final Node leftSibling,
                             final Node rightSibling, final int x)
   {
+    if (isLeafNode(n)) {
+    }
+    else { // Not a leaf node.
+    }
     return 0x0b;
   }
 
