@@ -1,0 +1,3 @@
+cytoscape.graph.layout.algorithm
+lib:com-nerius-math-xform.jar
+lib:cytoscape-util-intr.jar
