@@ -1,10 +1,18 @@
+<html>
+<head>
+  <!-- $Revision$
+       $Date$
+       $Author$
+    -->
+</head>
+<body>
 This package implements a framework for one-to-one mappings between
 attributes. The variable mapped from is called the <em>domain</em>
 attributes, while the variable mapped to is called the <em>range</em>
 attributes. The set of known range attributes is specified, and the
 domain attribute to map to a given range attribute is dynamically
 specified and can be changed.
-
+<p>
 Consider the following special case. Nodes and edges have various visual
 properties, such as color, size, style, etc. In addition, each node and
 edge has some data associated with it. We want each visual property to be
@@ -12,6 +20,7 @@ controlled by one of the data attributes (or to take some default value),
 and want to be able to change this dynamically. Here the data attributes
 are the domain attributes and the visual attributes are the range attributes.
 
+<p>
 The attributes for nodes and edges come as a Map where the keys are
 Strings (the name of the attribute) and the value is either a Number
 or a String (in either case, the value of the attribute for that node/edge).
@@ -22,6 +31,7 @@ for every visual attribute, plus a set of default values, and uses this to
 return a visual attribute value when given a Map of data attributes and the
 particular visual attribute desired.
 
+<p>
 The classes that actually perform the mapping implement the ValueMapper
 interface.  This interface has one method: given an Object to map from, it
 returns the Object mapped to. There are two different types of mappings:
@@ -38,6 +48,7 @@ interpolating between the visual values for the bracketing boundary values.
 The BoundaryRangeValues class and the Interpolator heirarchy are used by
 the ContinuousMapper to do its work.
 
+<p>
 Note that one can map from a continuous data attribute to a discrete visual
 attribute, such as node shape; here "interpolation" simply has a different
 meaning since averaging range values does not necessarily make sense. A
@@ -45,6 +56,7 @@ sensible implementation would be an interpolator that simply returns one
 of the adjacent boundary values; this represents "binning" the continuous
 data attribute so that each bin maps to a particular visual value.
 
+<p>
 Note that all of the above is quite abstract; in fact, most of the classes
 mentioned so far operate only on abstract objects without any knowledge of
 their type, and use the terms "domainAttribute" and "rangeAttribute" rather
@@ -60,6 +72,7 @@ value via a cast operation. Additionally, for each visual attribute a
 special Interpolator class must be written to interpolate the specific
 values (see, for example, LinearNumberToColorInterpolator).
 
+<p>
 Finally, at some point the mapping of data attributes to visual attributes,
 including the mapping of specific data attribute values to specific visual
 attribute values, must be built. This is done through Properties objects
@@ -73,6 +86,7 @@ a suitable AttributeMapper object, using a VizMapperCategories object to
 provide specific information such as the key String for each visual attribute
 and how to parse a String into an appropriate value Object.
 
+<p>
 Because of the difficulties of building the mapping structure, currently
 the only supported constructs are discrete mappings from a String domain
 attribute to any class of range attribute, and continuous mappings from a
@@ -86,4 +100,8 @@ the range attributes since these are predefined by an object implementing
 the AttributeMapperCategories interface, such as VizMapperCategories.
 
 
+<p>
 See the documentation for each class for more information.
+
+</body>
+</html>
