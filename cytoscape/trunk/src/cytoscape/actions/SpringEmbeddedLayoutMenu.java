@@ -2,8 +2,8 @@ package cytoscape.actions;
 
 import cytoscape.Cytoscape;
 import cytoscape.foo.GraphConverter;
-import cytoscape.graph.layout.algorithm.MutablePolyEdgeGraphLayout;
-import cytoscape.graph.layout.impl.SpringEmbeddedLayouter2;
+import cytoscape.graph.legacy.layout.algorithm.MutablePolyEdgeGraphLayout;
+import cytoscape.graph.legacy.layout.impl.SpringEmbeddedLayouter2;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;

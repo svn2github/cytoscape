@@ -1,7 +1,7 @@
 package cytoscape.layout;
 
-import cytoscape.graph.layout.algorithm.util.MutableGraphLayoutRepresentation;
-import cytoscape.graph.layout.impl.SpringEmbeddedLayouter2;
+import cytoscape.graph.legacy.layout.algorithm.util.MutableGraphLayoutRepresentation;
+import cytoscape.graph.legacy.layout.impl.SpringEmbeddedLayouter2;
 import cytoscape.view.CyNetworkView;
 import giny.model.Edge;
 import giny.view.EdgeView;

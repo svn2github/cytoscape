@@ -1,7 +1,7 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
-import cytoscape.foo.GraphConverter;
+import cytoscape.foo.GraphConverter2;
 import cytoscape.graph.layout.algorithm.MutablePolyEdgeGraphLayout;
 import cytoscape.graph.layout.impl.RotationLayouter;
 import cytoscape.graph.layout.impl.ScaleLayouter;
@@ -38,7 +38,7 @@ public class RotationScaleLayoutAction extends CytoscapeAction
       (Cytoscape.getCurrentNetworkView().getSelectedNodeIndices().length == 0);
     final MutablePolyEdgeGraphLayout[] nativeGraph =
       new MutablePolyEdgeGraphLayout[] {
-        GraphConverter.getGraphReference(16.0d, true, false) };
+        GraphConverter2.getGraphReference(16.0d, true, false) };
     final RotationLayouter[] rotation = new RotationLayouter[] {
       new RotationLayouter(nativeGraph[0]) };
     final ScaleLayouter[] scale = new ScaleLayouter[] {
@@ -111,7 +111,7 @@ public class RotationScaleLayoutAction extends CytoscapeAction
     if (noNodesSelected) chx.setEnabled(false);
     chx.addChangeListener(new ChangeListener() {
         public void stateChanged(ChangeEvent e) {
-          nativeGraph[0] = GraphConverter.getGraphReference
+          nativeGraph[0] = GraphConverter2.getGraphReference
             (128.0d, true, chx.isSelected());
           rotation[0] = new RotationLayouter(nativeGraph[0]);
           scale[0] = new ScaleLayouter(nativeGraph[0]); } } );

@@ -1,8 +1,8 @@
 package cytoscape.foo;
 
 import cytoscape.Cytoscape;
-import cytoscape.graph.layout.algorithm.MutablePolyEdgeGraphLayout;
-import cytoscape.graph.layout.algorithm.util.MutablePolyEdgeGraphLayoutRepresentation;
+import cytoscape.graph.legacy.layout.algorithm.MutablePolyEdgeGraphLayout;
+import cytoscape.graph.legacy.layout.algorithm.util.MutablePolyEdgeGraphLayoutRepresentation;
 import cytoscape.view.CyNetworkView;
 import giny.model.Edge;
 import giny.view.Bend;
