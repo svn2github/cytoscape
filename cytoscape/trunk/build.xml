@@ -213,9 +213,9 @@
             Windowtitle="Cytoscape2.0 API"
             header="Cytoscape2.0 (c)2004 ISB, MSKCC, UCSD"
             footer="www.cytoscape.org"
-classpathref="classpath"
-            overview="${src.dir}/org/mskcc/dataservices/overview.html"
-            link="http://csbi.sourceforge.net/api/">
+            classpathref="classpath"
+            overview="${src.dir}/org/mskcc/dataservices/overview.html">
+           
 
             <fileset dir="${src.dir}">
               <include name="cytoscape/*.java" />
@@ -234,8 +234,9 @@ classpathref="classpath"
               <include name="cytoscape/layout/*.java" />
               <include name="cytoscape/data/servers/BioDataServer*.java" />
             </fileset>
-
-        
+         
+         <link href="http://java.sun.com/j2se/1.4.2/docs/api/" />
+         <link href="http://csbi.sourceforge.net/API/" />
          <doctitle>Cytoscape API</doctitle>
         
          </javadoc>
