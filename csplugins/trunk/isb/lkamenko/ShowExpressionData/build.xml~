@@ -1,0 +1,215 @@
+<project name="showExpressionData" default="showExpressionData" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init-showExpressionData">
+    <tstamp/>
+    <property name="showExpressionData.Name" value="showExpressionData"/>
+    <property name="showExpressionData.name" value="showExpressionData"/>
+    <property name="showExpressionData.version" value="0.1"/>
+    <property name="showExpressionData.year" value="200"/>
+
+    <echo message="Building ${showExpressionData.name} version ${showExpressionData.version}."/>
+
+    <!-- Inheritable properties -->
+    <property name="debug" value="on"/>
+    <property name="optimize" value="off"/>
+    <property name="deprecation" value="on"/>
+    <property name="nowarn" value="true"/>
+    <property name="fork" value="false"/>
+    <property name="showExpressionData.root.dir" value="."/>
+    <property name="showExpressionData.lib.dir" value="${showExpressionData.root.dir}/lib"/>
+    <property name="cytoscape.lib.dir" value="${showExpressionData.root.dir}/../../../../cytoscape/lib"/>
+    <property name="cytoscape.plugin.dir" value="${showExpressionData.root.dir}/../../../../cytoscape/plugins"/>
+    <path id="project.class.path">
+      <pathelement path="${java.class.path}/"/>
+    </path>
+
+    <!-- Define the directories -->
+    <property name="showExpressionData.root.dir" value="./"/>
+    <property name="showExpressionData.src.dir" value="${showExpressionData.root.dir}/src"/>
+    <property name="showExpressionData.classes.dir" value="${showExpressionData.root.dir}/classes"/>
+    <property name="showExpressionData.javadoc.dir" value="${javadoc.dir}/showExpressionData"/>
+    <property name="showExpressionData.resources.dir" value="${showExpressionData.root.dir}/resources"/>
+    <property name="showExpressionData.manifest.dir" value="${showExpressionData.root.dir}/manifest"/>
+    <property name="showExpressionData.packages" value="showExpressionData.*"/>
+    <!-- Subdirectory for test reports -->
+    <property name="showExpressionData.tests.reports.dir" value="${showExpressionData.root.dir}/reports/tests" />
+    <property name="cytoscape.lib" value="../../cytoscape/lib" />
+
+    <!-- Define the condition for compilation -->
+    <property name="cytoscape.jar" value="${showExpressionData.lib.dir}/cytoscape.jar"/>
+    <property name="colt.jar" value="${showExpressionData.lib.dir}/colt.jar"/>
+    
+
+    <condition property="cytoscape.present">
+      <and> 
+	  		<available file="${cytoscape.jar}"/> 
+				<available file="${colt.jar}"/> 
+		  </and>
+    </condition>
+
+    <!-- Define excludes for showExpressionData compile and javadoc -->
+    <property name="showExpressionData.excludes" value="**/notyet/*"/>
+    <property name="showExpressionData.tests.excludes" value="**/notyet/*"/>
+    <property name="showExpressionData.packages.excludes" value="**.test.*,**.notyet.*"/>
+
+    <path id="showExpressionData.project.class.path">
+      <pathelement location="${showExpressionData.classes.dir}"/>
+      <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/y.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/piccolo.jar"/>
+      <pathelement path="${project.class.path}/"/>
+    </path>
+
+    <filter token="year" value="${year}"/>
+    <filter token="version" value="${version}"/>
+    <filter token="date" value="${TODAY}"/>
+
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the showExpressionData project                                           -->
+  <!-- =================================================================== -->
+  <target name="compile-showExpressionData" depends="init-showExpressionData"  >
+
+   <echo message=" COMPILE showExpressionData "/>
+
+    <mkdir dir="${showExpressionData.classes.dir}"/>
+    <javac srcdir="${showExpressionData.src.dir}"
+           excludes="${showExpressionData.excludes}"
+           classpathref="showExpressionData.project.class.path"
+           destdir="${showExpressionData.classes.dir}"
+           debug="${debug}"
+           nowarn="${nowarn}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the showExpressionData.jar file                                           -->
+  <!-- =================================================================== -->
+  <target name="showExpressionData" depends="compile-showExpressionData"  >
+    <jar destfile="showExpressionData.jar" manifest="${showExpressionData.manifest.dir}/showExpressionData.manifest">
+      <fileset
+        dir="${showExpressionData.classes.dir}"
+        includes="**"/>
+      <fileset
+        dir="${showExpressionData.root.dir}/lib"
+        includes="resources/**"/>
+      <fileset 
+        dir="${showExpressionData.root.dir}/images"/>
+    </jar>
+    <copy todir="${showExpressionData.lib.dir}" file="showExpressionData.jar"/>
+    <copy todir="${cytoscape.plugin.dir}" file="showExpressionData.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the showExpressionData tests                                             -->
+  <!-- =================================================================== -->
+  <target name="compile-tests" depends="showExpressionData"  >
+    <mkdir dir="${showExpressionData.classes.dir}"/>
+    <javac srcdir="${showExpressionData.src.dir}"
+           includes="**/test/*"
+           excludes="${showExpressionData.tests.excludes}"
+           classpathref="showExpressionData.project.class.path"
+           destdir="${showExpressionData.classes.dir}"
+           debug="${debug}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the showExpressionData-tests.jar file                                     -->
+  <!-- =================================================================== -->
+  <target name="tests" depends="compile-tests"  >
+    <jar jarfile="showExpressionData-tests.jar"
+         basedir="${showExpressionData.classes.dir}"
+         includes="**/test/*"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Build all jars                                                      -->
+  <!-- =================================================================== -->
+  <target name="all" depends="showExpressionData"/>
+
+   <!-- =================================================================== -->
+  <!-- Run the Plugin                                                      -->
+  <!-- =================================================================== -->
+  <target name="run" depends="showExpressionData" >
+     
+     <java classname="cytoscape.cytoscape" 
+           classpathref="showExpressionData.project.class.path"
+           fork="true"/>
+           <arg line = "-y giny"/>
+           <arg line = "--JLD"/>
+           <arg line = "${showExpressionData.lib.dir}/showExpressionData.jar"/>
+           
+
+  </target>
+
+
+
+  <!-- =================================================================== -->
+  <!-- Runs the tests in showExpressionData-tests.jar                                    -->
+  <!-- =================================================================== -->
+  <target name="runtests" depends="tests"  >
+    <mkdir dir="${showExpressionData.tests.reports.dir}"/>
+    <junit
+       printsummary="yes"
+       haltonfailure="no"
+       dir="${showExpressionData.classes.dir}"
+       maxmemory="1G"
+    >
+      <formatter type="plain" usefile="true" />
+      <classpath refid="showExpressionData.project.class.path"/>
+      <!-- The junit task doesn't support 'if' so we test for JUnit here -->
+      <batchtest fork="yes" todir="${showExpressionData.tests.reports.dir}" if="junit.present">
+        <fileset
+           dir="${showExpressionData.classes.dir}"
+           includes="**/test/*"
+           excludes="${showExpressionData.tests.excludes}"
+        />
+      </batchtest>
+    </junit>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the API documentation                                       -->
+  <!-- =================================================================== -->
+  <target name="docs" depends="init-showExpressionData" >
+    <mkdir dir="${showExpressionData.javadoc.dir}"/>
+    <javadoc packagenames="${showExpressionData.packages}"
+             excludepackagenames="${showExpressionData.packages.excludes}"
+             sourcepath="${showExpressionData.src.dir}"
+             destdir="${showExpressionData.javadoc.dir}"
+             classpathref="showExpressionData.project.class.path"
+             author="true"
+             version="true"
+             use="true"
+             splitindex="true"
+             noindex="false"
+             windowtitle="${showExpressionData.Name} API"
+             doctitle="${showExpressionData.Name}"
+    />
+  </target>
+ 
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init-showExpressionData">
+    <delete dir="${showExpressionData.classes.dir}"/>
+    <delete file="showExpressionData.jar"/>
+    <delete file="showExpressionData-tests.jar"/>
+  </target>
+
+</project>
+
+<!-- End of file -->

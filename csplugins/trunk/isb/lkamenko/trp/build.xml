@@ -1,0 +1,215 @@
+<project name="trp" default="trp" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init-trp">
+    <tstamp/>
+    <property name="trp.Name" value="trp"/>
+    <property name="trp.name" value="trp"/>
+    <property name="trp.version" value="0.1"/>
+    <property name="trp.year" value="200"/>
+
+    <echo message="Building ${trp.name} version ${trp.version}."/>
+
+    <!-- Inheritable properties -->
+    <property name="debug" value="on"/>
+    <property name="optimize" value="off"/>
+    <property name="deprecation" value="on"/>
+    <property name="nowarn" value="true"/>
+    <property name="fork" value="false"/>
+    <property name="trp.root.dir" value="."/>
+    <property name="trp.lib.dir" value="${trp.root.dir}/lib"/>
+    <property name="cytoscape.lib.dir" value="${trp.root.dir}/../../../../cytoscape/lib"/>
+    <property name="cytoscape.plugin.dir" value="${trp.root.dir}/../../../../cytoscape/plugins"/>
+    <path id="project.class.path">
+      <pathelement path="${java.class.path}/"/>
+    </path>
+
+    <!-- Define the directories -->
+    <property name="trp.root.dir" value="./"/>
+    <property name="trp.src.dir" value="${trp.root.dir}/src"/>
+    <property name="trp.classes.dir" value="${trp.root.dir}/classes"/>
+    <property name="trp.javadoc.dir" value="${javadoc.dir}/trp"/>
+    <property name="trp.resources.dir" value="${trp.root.dir}/resources"/>
+    <property name="trp.manifest.dir" value="${trp.root.dir}/manifest"/>
+    <property name="trp.packages" value="trp.*"/>
+    <!-- Subdirectory for test reports -->
+    <property name="trp.tests.reports.dir" value="${trp.root.dir}/reports/tests" />
+    <property name="cytoscape.lib" value="../../cytoscape/lib" />
+
+    <!-- Define the condition for compilation -->
+    <property name="cytoscape.jar" value="${trp.lib.dir}/cytoscape.jar"/>
+    <property name="colt.jar" value="${trp.lib.dir}/colt.jar"/>
+    
+
+    <condition property="cytoscape.present">
+      <and> 
+	  		<available file="${cytoscape.jar}"/> 
+				<available file="${colt.jar}"/> 
+		  </and>
+    </condition>
+
+    <!-- Define excludes for trp compile and javadoc -->
+    <property name="trp.excludes" value="**/notyet/*"/>
+    <property name="trp.tests.excludes" value="**/notyet/*"/>
+    <property name="trp.packages.excludes" value="**.test.*,**.notyet.*"/>
+
+    <path id="trp.project.class.path">
+      <pathelement location="${trp.classes.dir}"/>
+      <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape.jar"/>
+     
+      <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/piccolo.jar"/>
+       <pathelement location="${cytoscape.lib.dir}/piccolox.jar"/>
+      <pathelement path="${project.class.path}/"/>
+    </path>
+
+    <filter token="year" value="${year}"/>
+    <filter token="version" value="${version}"/>
+    <filter token="date" value="${TODAY}"/>
+
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the trp project                                           -->
+  <!-- =================================================================== -->
+  <target name="compile-trp" depends="init-trp"  >
+
+   <echo message=" COMPILE trp "/>
+
+    <mkdir dir="${trp.classes.dir}"/>
+    <javac srcdir="${trp.src.dir}"
+           excludes="${trp.excludes}"
+           classpathref="trp.project.class.path"
+           destdir="${trp.classes.dir}"
+           debug="${debug}"
+           nowarn="${nowarn}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the trp.jar file                                           -->
+  <!-- =================================================================== -->
+  <target name="trp" depends="compile-trp"  >
+    <jar destfile="trp.jar" manifest="${trp.manifest.dir}/trp.manifest">
+      <fileset
+        dir="${trp.classes.dir}"
+        includes="**"/>
+      <fileset
+        dir="${trp.root.dir}/lib"
+        includes="resources/**"/>
+      <fileset 
+        dir="${trp.root.dir}/images"/>
+    </jar>
+    <copy todir="${trp.lib.dir}" file="trp.jar"/>
+    <copy todir="${cytoscape.plugin.dir}" file="trp.jar"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the trp tests                                             -->
+  <!-- =================================================================== -->
+  <target name="compile-tests" depends="trp"  >
+    <mkdir dir="${trp.classes.dir}"/>
+    <javac srcdir="${trp.src.dir}"
+           includes="**/test/*"
+           excludes="${trp.tests.excludes}"
+           classpathref="trp.project.class.path"
+           destdir="${trp.classes.dir}"
+           debug="${debug}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the trp-tests.jar file                                     -->
+  <!-- =================================================================== -->
+  <target name="tests" depends="compile-tests"  >
+    <jar jarfile="trp-tests.jar"
+         basedir="${trp.classes.dir}"
+         includes="**/test/*"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Build all jars                                                      -->
+  <!-- =================================================================== -->
+  <target name="all" depends="trp"/>
+
+   <!-- =================================================================== -->
+  <!-- Run the Plugin                                                      -->
+  <!-- =================================================================== -->
+  <target name="run" depends="trp" >
+     
+     <java classname="cytoscape.cytoscape" 
+           classpathref="trp.project.class.path"
+           fork="true"/>
+           <arg value = "--JLD"/>
+           <arg value = "${trp.lib.dir}/trp.jar"/>
+           
+
+  </target>
+
+
+
+  <!-- =================================================================== -->
+  <!-- Runs the tests in trp-tests.jar                                    -->
+  <!-- =================================================================== -->
+  <target name="runtests" depends="tests"  >
+    <mkdir dir="${trp.tests.reports.dir}"/>
+    <junit
+       printsummary="yes"
+       haltonfailure="no"
+       dir="${trp.classes.dir}"
+       maxmemory="1G"
+    >
+      <formatter type="plain" usefile="true" />
+      <classpath refid="trp.project.class.path"/>
+      <!-- The junit task doesn't support 'if' so we test for JUnit here -->
+      <batchtest fork="yes" todir="${trp.tests.reports.dir}" if="junit.present">
+        <fileset
+           dir="${trp.classes.dir}"
+           includes="**/test/*"
+           excludes="${trp.tests.excludes}"
+        />
+      </batchtest>
+    </junit>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the API documentation                                       -->
+  <!-- =================================================================== -->
+  <target name="docs" depends="init-trp" >
+    <mkdir dir="${trp.javadoc.dir}"/>
+    <javadoc packagenames="${trp.packages}"
+             excludepackagenames="${trp.packages.excludes}"
+             sourcepath="${trp.src.dir}"
+             destdir="${trp.javadoc.dir}"
+             classpathref="trp.project.class.path"
+             author="true"
+             version="true"
+             use="true"
+             splitindex="true"
+             noindex="false"
+             windowtitle="${trp.Name} API"
+             doctitle="${trp.Name}"
+    />
+  </target>
+ 
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init-trp">
+    <delete dir="${trp.classes.dir}"/>
+    <delete file="trp.jar"/>
+    <delete file="trp-tests.jar"/>
+  </target>
+
+</project>
+
+<!-- End of file -->
