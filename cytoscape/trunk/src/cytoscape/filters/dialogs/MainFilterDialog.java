@@ -33,6 +33,7 @@ public class MainFilterDialog extends JDialog {
     GraphObjAttributes edgeAttributes;
     ExpressionData expressionData;
     GraphHider graphHider;
+    String[] interactionTypes;
 
     Vector dialogs = new Vector();
 
@@ -62,7 +63,8 @@ public class MainFilterDialog extends JDialog {
 			     GraphObjAttributes nodeAttributes,
 			     GraphObjAttributes edgeAttributes,
 			     ExpressionData expressionData,
-			     GraphHider graphHider) {
+			     GraphHider graphHider,
+			     String[] interactionTypes) {
 	
 	super(parent,false);
 	setTitle("Filters");
@@ -75,6 +77,7 @@ public class MainFilterDialog extends JDialog {
 	this.nodeAttributes = nodeAttributes;
 	this.edgeAttributes = edgeAttributes;
 	this.graphHider = graphHider;
+	this.interactionTypes = interactionTypes;
 
 	initCounters();
 
@@ -195,7 +198,7 @@ public class MainFilterDialog extends JDialog {
 	} else if (type == FilterDialog.CENTER) {
 	    dialog = new CenterDialog(parent, graph);
 	} else if (type == FilterDialog.INTERACTION) {
-	    dialog = new InteractionDialog(edgeAttributes);
+	    dialog = new InteractionDialog(edgeAttributes, interactionTypes);
 	} else if (type == FilterDialog.NODE_TYPE) {
 	    dialog = new NodeTypeDialog(nodeAttributes);
 	} else {

@@ -25,12 +25,15 @@ public class InteractionDialog extends FilterDialog {
     public static String DESC = "Select nodes that are in any interaction of the selected types.";
     GraphObjAttributes edgeAttributes;
     JList typeList;
+    String[] interactionTypes;
 
-    public InteractionDialog(GraphObjAttributes edgeAttributes) {
+    public InteractionDialog(GraphObjAttributes edgeAttributes,
+			     String[] interactionTypes) {
 	super(FilterDialog.INTERACTION);
 	panel.setName("Interaction");
 	panel.add(createDescPanel(DESC));
 	this.edgeAttributes = edgeAttributes;
+	this.interactionTypes = interactionTypes;
 
 	typeList = new JList(getTypes());
 	JPanel listPanel = new JPanel();
@@ -66,18 +69,7 @@ public class InteractionDialog extends FilterDialog {
     }
 
     public String[] getTypes() {
-	String[] types = {
-	    "pd", // protein-dna
-	    "pp", // protein-protein
-	    "gl", // genetic, synthetic lethal
-	    "gd", // genetic, synthetic growth defect
-	    "cr", // compound-reaction
-	    "rc", // reaction-compound
-	    "pr", // protein-reaction
-	    "rr", // reaction-reaction
-	    "gp", // genetic, predicted
-	};
-	return types;
+	return interactionTypes;
     }
 }
 

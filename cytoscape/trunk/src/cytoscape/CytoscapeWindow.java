@@ -2099,11 +2099,13 @@ protected class MainFilterDialogAction extends AbstractAction  {
     }
 
    public void actionPerformed (ActionEvent e) {
+       String[] interactionTypes = getInteractionTypes();
        new MainFilterDialog (CytoscapeWindow.this,
 			     mainFrame,
 			     graph, nodeAttributes, edgeAttributes,
 			     expressionData,
-			     graphHider);
+			     graphHider,
+			     interactionTypes);
    }
 }
 
@@ -2112,5 +2114,20 @@ protected class MenuFilterAction extends MainFilterDialogAction  {
 	super("Custom..."); 
     }
 }
+protected String[] getInteractionTypes() {
+    String[] interactionTypes = {
+	    "pd", // protein-dna
+	    "pp", // protein-protein
+	    "gl", // genetic, synthetic lethal
+	    "gd", // genetic, synthetic growth defect
+	    "cr", // compound-reaction
+	    "rc", // reaction-compound
+	    "pr", // protein-reaction
+	    "rr", // reaction-reaction
+	    "gp", // genetic, predicted
+	};
+    return interactionTypes;
+}
+
 //---------------------------------------------------------------------------------------
 } // CytoscapeWindow
