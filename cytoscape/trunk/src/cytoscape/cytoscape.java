@@ -83,7 +83,7 @@ public cytoscape (String [] args) throws Exception
   else if (interactionsFilename != null) {
     System.out.print ("reading " + interactionsFilename + "...");
     System.out.flush ();
-    graph=FileReadingAbstractions.loadInteractionBasic(interactionsFilename,edgeAttributes);
+    graph=FileReadingAbstractions.loadIntrBasic(interactionsFilename,edgeAttributes);
     System.out.println ("  done");
     title = interactionsFilename;
     }

@@ -1619,7 +1619,7 @@ protected void loadGML (String filename)
 //------------------------------------------------------------------------------
 protected void loadInteraction (String filename)
 {
-    graph = FileReadingAbstractions.loadInteractionBasic(filename,edgeAttributes);
+    graph = FileReadingAbstractions.loadIntrBasic(filename,edgeAttributes);
     FileReadingAbstractions.initAttribs(config,graph,nodeAttributes,edgeAttributes);
     displayNewGraph (true);
 } // loadInteraction
