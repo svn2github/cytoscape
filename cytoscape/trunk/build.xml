@@ -270,6 +270,7 @@
                 <include name="cytoscape/data/servers/BioDataServer*.java" />
                 <include name="cytoscape/process/*.java"/>
                 <include name="cytoscape/process/ui/*.java"/>
+                <include name="cytoscape/graph/*.java"/>
             </fileset>
 
          <link href="http://java.sun.com/j2se/1.4.2/docs/api/" />
