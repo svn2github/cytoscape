@@ -846,7 +846,36 @@ class FRootGraph implements RootGraph, DynamicGraph
 
   public int[] getChildlessMetaDescendants(int nodeInx)
   {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
+    final int nativeParent = ~nodeInx;
+    if (!m_graph.nodeExists(nativeParent)) return null;
+    final int metaParent = m_nativeToMetaNodeInxMap.get(nativeParent);
+    if (metaParent < 0 || metaParent == Integer.MAX_VALUE) return new int[0];
+    // Depth first search.
+    m_hash.empty();
+    final IntHash metaVisited = m_hash;
+    m_stack.empty();
+    final IntStack metaPending = m_stack;
+    m_hash2.empty();
+    final IntHash rootChildlessNodeBucket = m_hash2;
+    metaVisited.put(metaParent);
+    metaPending.push(metaParent);
+    while (metaPending.size() > 0) {
+      final int currMeta = metaPending.pop();
+      final IntEnumerator relationships = m_metaGraph.edgesAdjacent
+        (currMeta, true, false, false);
+      while (relationships.numRemaining() > 0) {
+        final int aChild = m_metaGraph.edgeTarget(relationships.nextInt());
+        if (m_metaToNativeInxMap.getIntAtIndex(aChild) > 0) { // A node.
+          if (m_metaGraph.edgesAdjacent
+              (aChild, true, false, false).numRemaining() == 0)
+            rootChildlessNodeBucket.put
+              (~(m_metaToNativeInxMap.getIntAtIndex(aChild) - 1));
+          if (metaVisited.put(aChild) < 0) metaPending.push(aChild); } } }
+    final IntEnumerator returnElements = rootChildlessNodeBucket.elements();
+    final int[] returnThis = new int[returnElements.numRemaining()];
+    for (int i = 0; i < returnThis.length; i++)
+      returnThis[i] = returnElements.nextInt();
+    return returnThis;
   }
 
   public boolean addMetaChild(Node parent, Edge child) {
@@ -857,7 +886,26 @@ class FRootGraph implements RootGraph, DynamicGraph
 
   public boolean addEdgeMetaChild(int parentNodeInx, int childEdgeInx)
   {
-    throw new UnsupportedOperationException("meta nodes not yet supported");
+    final int nativeParent = ~parentNodeInx;
+    final int nativeChildEdge = ~childEdgeInx;
+    if (!(m_graph.nodeExists(nativeParent) &&
+          m_graph.edgeType(nativeChildEdge) >= 0)) return false;
+    addNodeMetaChild(parentNodeInx, ~m_graph.edgeSource(nativeChildEdge));
+    addNodeMetaChild(parentNodeInx, ~m_graph.edgeTarget(nativeChildEdge));
+    int metaParent = m_nativeToMetaNodeInxMap.get(nativeParent);
+    if (metaParent < 0 || metaParent == Integer.MAX_VALUE) {
+      metaParent = m_metaGraph.nodeCreate();
+      m_metaToNativeInxMap.setIntAtIndex(nativeParent + 1, metaParent);
+      m_nativeToMetaNodeInxMap.put(nativeParent, metaParent); }
+    int metaChildEdge = m_nativeToMetaEdgeInxMap.get(nativeChildEdge);
+    if (metaChildEdge < 0 || metaChildEdge == Integer.MAX_VALUE) {
+      metaChildEdge = m_metaGraph.nodeCreate();
+      m_metaToNativeInxMap.setIntAtIndex(~nativeChildEdge, metaChildEdge);
+      m_nativeToMetaEdgeInxMap.put(nativeChildEdge, metaChildEdge); }
+    if (m_metaGraph.edgesConnecting(metaParent, metaChildEdge, true, false,
+                                    false).hasNext()) return false;
+    m_metaGraph.edgeCreate(metaParent, metaChildEdge, true);
+    return true;
   }
 
   public boolean removeEdgeMetaChild(int parentNodeInx, int childEdgeInx)
