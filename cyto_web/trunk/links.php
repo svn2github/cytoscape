@@ -19,32 +19,30 @@
         </td>
         <td valign="center">
           <h1>
-            Cytoscape Online Tutorial
+            Cytoscape Links
           </h1>
         </td>
       </tr>
     </table>
     <? include "nav.php"; ?>
-    <? include "nav_tut.php"; ?>
     <div id="indent">
-
-<center>
-<h2>Links</h2>
-</center>
-
-<h2>Software</h2>
+<P>
+<big><b>Software</b></big> 
+<P>
 <a href="http://www.genmapp.org/">GenMAPP</a>
 <br>
 <a href="http://biodata.mshri.on.ca/osprey/servlet/Index">Osprey</a>
 <br><br>
 
-<h2>Network Databases</h2>
+<big><b>Network Databases</b></big> 
+<P>
 <a href="%20http:/bind.ca">Biomolecular Interaction Network Database (BIND)</a>
 <br>
 <a href="%20http:/www.cbio.mskcc.org/bpd">BioPAX Directory</a>
 <br><br>
 
-<h2>Data Exchange Formats</h2>
+<big><b>Data Exchange Formats</b></big> 
+<P>
 <a href="http://www.biopax.org">BioPAX (Biological Pathway Exchange)</a>
 <br>
 <a href="http://psidev.sourceforge.net">PSI-MI (Proteomics Standards Initiative - Molecular Interaction)</a>
