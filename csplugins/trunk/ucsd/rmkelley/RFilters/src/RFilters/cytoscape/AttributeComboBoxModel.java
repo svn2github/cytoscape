@@ -58,3 +58,53 @@ public abstract class AttributeComboBoxModel implements ComboBoxModel, PropertyC
 
 }
 
+<<<<<<< AttributeComboBoxModel.java
+class NodeAttributeComboBoxModel extends AttributeComboBoxModel{
+  Class attributeClass;
+  GraphObjAttributes nodeAttributes;
+  public NodeAttributeComboBoxModel(Class attributeClass){
+    super();
+    nodeAttributes = Cytoscape.getNodeNetworkData();
+    this.attributeClass = attributeClass;
+    updateAttributes();
+  }
+  public void propertyChange(PropertyChangeEvent pce){
+    updateAttributes();
+  }
+
+  protected void updateAttributes(){
+    String [] nodeAttributes = Cytoscape.getNodeAttributesList();
+    attributeList = new Vector();
+    for ( int idx = 0; idx < nodeAttributes.length; idx++) {
+      if (attributeClass.isAssignableFrom(this.nodeAttributes.getClass(nodeAttributes[idx]))) {
+	attributeList.add(nodeAttributes[idx]);
+      } // end of for ()
+      notifyListeners();
+    }
+  }
+}
+
+class EdgeAttributeComboBoxModel extends AttributeComboBoxModel{
+  Class attributeClass;
+  GraphObjAttributes edgeAttributes;
+  public EdgeAttributeComboBoxModel(Class attributeClass){
+    super();
+    edgeAttributes = Cytoscape.getEdgeNetworkData();
+    this.attributeClass = attributeClass;
+    updateAttributes();
+  }
+  public void propertyChange(PropertyChangeEvent pce){
+    updateAttributes();
+  }
+  
+  protected void updateAttributes(){
+    String [] edgeAttributes = Cytoscape.getEdgeAttributesList();
+    attributeList = new Vector();
+    for ( int idx = 0; idx < edgeAttributes.length; idx++) {
+      if (attributeClass.isAssignableFrom(this.edgeAttributes.getClass(edgeAttributes[idx]))) {
+	attributeList.add(edgeAttributes[idx]);
+      } // end of for ()
+      notifyListeners();
+    }
+  }
+}
