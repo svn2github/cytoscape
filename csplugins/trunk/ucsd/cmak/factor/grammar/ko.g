@@ -21,14 +21,15 @@ parse returns [List l]
 
 edgeAttr returns [String[] data]
 {
-    data = new String[4];
+    data = new String[5];
 }
-    : source:ORF type:EDGE_TYPE target:ORF EQUAL v:VALUE
+    : source:WORD type:WORD target:WORD EQUAL pval:VALUE logratio:VALUE
       {
             data[0] = source.getText();
             data[1] = type.getText();
             data[2] = target.getText();
-            data[3] = v.getText();
+            data[3] = pval.getText();
+            data[4] = logratio.getText();
       }
     ;
 
@@ -40,11 +41,11 @@ options {
   testLiterals = true;
 }
 
-ORF: ( 'a'..'z' | 'A'..'Z' | '0'..'9')+ ;
+WORD: ( 'a'..'z' | 'A'..'Z') ( 'a'..'z' | 'A'..'Z' | '0'..'9' | '-')+;
 
-EDGE_TYPE: ( 'a'..'z' | 'A'..'Z' )+ ;
+//VALUE: '0' '.' ('0'..'9')+;    
 
-VALUE: '0' '.' ('0'..'9')+;    
+VALUE: ('-')* ('0'..'9')  '.' ('0'..'9')+;    
 
 EQUAL: '=';
 

@@ -16,9 +16,7 @@ import java.util.Iterator;
 
 import java.util.logging.Logger;
 
-import cytoscape.data.ExpressionData;
 import cytoscape.data.mRNAMeasurement;
-
 import cytoscape.util.GinyFactory;
 
 import giny.model.RootGraph;
@@ -63,7 +61,7 @@ public class InteractionGraph
      */
     private ObjectIntMap _name2node; 
 
-    private ExpressionData _expressionData;
+    private ExpressionDataIF _expressionData;
 
     // paths found on this interaction graph using the _expressionData
     private PathResult _paths;
@@ -311,14 +309,10 @@ public class InteractionGraph
         }
     }
 
-    /**
-     * Load expression data from the file
-     */ 
-    public void loadExpressionData(String filename)
+    public void setExpressionData(ExpressionDataIF data)
     {
-        _expressionData = new ExpressionData(filename);
+        _expressionData = data;
     }
-
     
     /**
      * @return true if knocking out "koNode" causes the expression of
@@ -328,66 +322,37 @@ public class InteractionGraph
     {
         if(_expressionData != null)
         {
-            mRNAMeasurement m = _expressionData.getMeasurement(node2Name(targetNode), 
-                                                               node2Name(koNode));
-            if(m != null)
-            {
-                return m.getSignificance() <= PVAL_THRESH;
-            }
+            return _expressionData.isPvalueBelowThreshold(node2Name(koNode),
+                                                          node2Name(targetNode));
         }
-        
+
         return false;
     }
 
+
     /**
-     * @return true if knocking out "koNode" causes the expression of
-     * "targetNode" to change.  Use PVAL_THRESH as a cutoff.
      */
     public double getExprPval(int koNode, int targetNode)
     {
         if(_expressionData != null)
         {
-            mRNAMeasurement m = _expressionData.getMeasurement(node2Name(targetNode), 
-                                                               node2Name(koNode));
-            if(m != null)
-            {
-                return m.getSignificance();
-            }
+            return _expressionData.getPvalue(node2Name(koNode),
+                                             node2Name(targetNode));
         }
-        
-        return -1;
-    }
 
-    
-    public String[] getConditionNames()
-    {
-        return _expressionData.getConditionNames();
-    }
-
-    
-    /**
-     * Set the threshold used by expressionChanges to determine whether
-     * a knockout causes a target gene's expression to change.
-     */
-    public void setExpressionPvalThreshold(double d)
-    {
-        PVAL_THRESH = d;
+        return 1;
     }
 
     public mRNAMeasurement getExpression(int koNode, int targetNode)
     {
         if(_expressionData != null)
         {
-            
-            mRNAMeasurement m = _expressionData.getMeasurement(node2Name(targetNode), 
-                                                               node2Name(koNode));
-
-            return m;
+            return _expressionData.getExpression(node2Name(koNode),
+                                                 node2Name(targetNode));
         }
         
         return null;
     }
-
     
     public void setPaths(PathResult paths)
     {
@@ -468,6 +433,7 @@ public class InteractionGraph
             
         }
 
+        /*
         if(_expressionData != null)
         {
             
@@ -510,6 +476,8 @@ public class InteractionGraph
                 }
             }
         }
+        */
+        
         return buf.toString();
     }
     

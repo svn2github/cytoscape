@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.logging.LogManager;
 
 import fgraph.AlgorithmException;
+import fgraph.BadInputException;
 import fgraph.MaxProduct;
 import fgraph.InteractionGraph;
 import fgraph.SubmodelOutputFiles;
@@ -288,6 +289,11 @@ public class RunDialog extends JDialog implements ActionListener
                 System.err.println("AlgorithmExeption while runnnig max product");
                 ae.printStackTrace();
             }
+            catch(BadInputException ae)
+            {
+                System.err.println("BadInputExeption while runnnig max product");
+                ae.printStackTrace();
+            }
             catch(IOException ioe)
             {
                 System.err.println("IOExeption while runnnig max product");
@@ -299,7 +305,7 @@ public class RunDialog extends JDialog implements ActionListener
     }
 
     private SubmodelOutputFiles runMaxProduct()
-        throws AlgorithmException, IOException
+        throws AlgorithmException, BadInputException, IOException
     {
         String sif = sifField.getText();
         int pathLen = ((Number) pathLenField.getValue()).intValue();

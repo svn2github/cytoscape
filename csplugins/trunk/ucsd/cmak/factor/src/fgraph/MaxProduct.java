@@ -16,12 +16,14 @@ public class MaxProduct
     private static Logger logger = Logger.getLogger(MaxProduct.class.getName());
     private String _interaction;
     private String _candidateGenes;
-    private String _expressionData;
+    private String _expressionDataFile;
     private String _edgeData;
     private double _thresh;
 
     private InteractionGraph _ig;
 
+    private ExpressionDataIF _expressionData;
+    
     private int MAX_PATH_LEN = 3;
     private int KO_EXPLAIN_CUTOFF = 3;
 
@@ -102,14 +104,21 @@ public class MaxProduct
 
     
     public void setExpressionFile(String e, double pvalThreshold)
-        throws FileNotFoundException
+        throws FileNotFoundException, BadInputException
     {
-        _expressionData = e;
+        _expressionDataFile = e;
         _thresh = pvalThreshold;
 
+        if(e.endsWith(".eda"))
+        {
+            _expressionData = EdgeExpressionData.load(e, pvalThreshold);
+        }
+        else
+        {
+            _expressionData = CytoscapeExpressionData.load(e, pvalThreshold);
+        }
         
-        _ig.loadExpressionData(_expressionData);
-        _ig.setExpressionPvalThreshold(_thresh);
+        _ig.setExpressionData(_expressionData);
 
         //logger.info("  " + _ig.toString());
     }
@@ -199,7 +208,7 @@ public class MaxProduct
 
     protected PathResult findPaths()
     {
-        String[] conds = _ig.getConditionNames();
+        String[] conds = _expressionData.getConditionNames();
         log("conditions: " + Arrays.asList(conds));
         
         IntArrayList ko = new IntArrayList(conds.length);

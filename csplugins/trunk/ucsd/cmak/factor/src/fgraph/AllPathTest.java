@@ -23,8 +23,10 @@ public class AllPathTest extends AbstractPathTest
         InteractionGraph ig = InteractionGraphFactory.createFromSif(_all);
 
         System.out.println("Reading pvals: " + _allPvals);
-        ig.loadExpressionData(_allPvals);
-        ig.setExpressionPvalThreshold(.8);
+
+        ig.setExpressionData(CytoscapeExpressionData.load(_allPvals, 0.8));
+        
+        
         //System.out.println(ig.toString());
 
         System.out.println("Running DFS");

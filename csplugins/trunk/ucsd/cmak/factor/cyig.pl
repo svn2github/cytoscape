@@ -18,8 +18,11 @@ $cmd .= " -n $datadir/orf2name.noa ";
 $cmd .= " -n $datadir/isTF.noa ";
 $cmd .= " -n $datadir/buffering/wt-mms-response.noa ";
 $cmd .= " -n ${base}_type.noa ";
-$cmd .= " -n $datadir/cell-cycle/cell-cycle.noa ";
+
 $cmd .= " -n $datadir/metabolic-map/metabolic-path.noa ";
+$cmd .= " -n $datadir/cell-cycle/cell-cycle-Jelinsky-Spellman.noa ";
+#$cmd .= " -n $datadir/cell-cycle/cell-cycle.noa ";
+#$cmd .= " -n $datadir/cell-cycle/Jelinsky-stat-vs-mms.noa ";
 #$cmd .= " -n ${base}_ncount.noa ";
 $cmd .= " -j ${base}_dir.eda ";
 $cmd .= " -j ${base}_sign.eda ";

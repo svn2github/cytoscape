@@ -34,9 +34,34 @@ public class ExpressionTest extends TestCase
         assertEquals("gene=YHR007C, cond=ade16: ratio", 0.793, m.getSignificance(), 0.001);
     }
 
-    public void testEdgeData() throws Exception
+    public void testEdgeExpression() throws Exception
     {
-        EdgeData ed = new EdgeData("yeang-ko.eda");
+        EdgeExpressionData ed = EdgeExpressionData.load("yeang-ko.eda", 0.02);
+        
+        String n1 = "YBR245C";
+        String n2 = "YHR139C";
+        String n3 = "YIL015C-A";
+        
+        assertEquals("num edges", ed.getNumEdges(), 24457);
+
+        assertEquals(n1 + " " + n2 + " pval", 0.006120, 
+                     ed.getPvalue(n1, n2), 0.0000001);
+        
+        assertEquals(n1 + " " + n3 + " pval", 0.003130,
+                     ed.getPvalue(n1, n3),  0.0000001);
+        
+        assertTrue(n1 + " " + n2 + " below 0.02",
+                   ed.isPvalueBelowThreshold(n1, n2));
+
+        assertTrue(n1 + " " + n3 + " below 0.02",
+                   ed.isPvalueBelowThreshold(n1, n3));
+
+        assertEquals("bad nodes", -1, ed.getPvalue(n1, n3+"xxx"), 0.01);
+            
+
+        mRNAMeasurement m12 = ed.getExpression(n1, n2);
+        assertEquals(n1 + " " + n2 + " ratio", 0.337000, m12.getRatio(), 0.0001);
+        assertEquals(n1 + " " + n2 + " pval", 0.006120, m12.getSignificance(), 0.0001);
     }
     
     /*

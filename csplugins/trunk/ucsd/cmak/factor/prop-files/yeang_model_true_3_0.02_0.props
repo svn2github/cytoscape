@@ -1,6 +1,6 @@
 max.path.length=3
 interaction.network=/cellar/users/cmak/data/yeang-data/model.sif
-expression.file=/cellar/users/cmak/data/yeang-data/yeang-hughes.pvals
+expression.file=/cellar/users/cmak/data/yeang-data/yeang-ko.eda
 expression.threshold=0.02
 edge.attributes=/cellar/users/cmak/data/yeang-data/model.eda
 protein-DNA.threshold=0

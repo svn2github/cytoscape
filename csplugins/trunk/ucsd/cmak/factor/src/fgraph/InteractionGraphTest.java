@@ -37,8 +37,8 @@ public class InteractionGraphTest extends TestCase
         System.out.println("Loading: " + sif +", " + pv);
 
         InteractionGraph ig = InteractionGraphFactory.createFromSif(sif);
-        ig.loadExpressionData(pv);
-        ig.setExpressionPvalThreshold(1e-2);
+
+        ig.setExpressionData(CytoscapeExpressionData.load(pv, 1e-2));
 
         System.out.println(ig.toString());
         
@@ -47,10 +47,17 @@ public class InteractionGraphTest extends TestCase
         int f = ig.name2Node("F");
         int z = ig.name2Node("Z");
 
-        assertTrue("expression changes a z", ig.expressionChanges(a, z));
-        assertTrue("expression changes f z", ig.expressionChanges(f, z));
-        assertFalse("expression changes b z", ig.expressionChanges(b, z));
-        assertFalse("expression changes a b", ig.expressionChanges(a, b));
+        assertTrue("expression changes a z",
+                   ig.expressionChanges(a, z));
+
+        assertTrue("expression changes f z",
+                   ig.expressionChanges(f, z));
+
+        assertFalse("expression changes b z",
+                    ig.expressionChanges(b, z));
+
+        assertFalse("expression changes a b",
+                    ig.expressionChanges(a, b));
     }
     
     public void testPDThreshold() throws Exception
