@@ -212,7 +212,7 @@
     	</javac>
 	
     <!-- Run RMIC for BioDataServer -->
-    <rmic classname="cytoscape/data/servers/BioDataServerRmi" base="${build.classes}" classpathref="classpath"/>
+    <rmic classname="cytoscape.data.servers.BioDataServerRmi" base="${build.classes}" classpathref="classpath"/>
     </target>
   	
   <!-- ======================================================= -->
