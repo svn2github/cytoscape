@@ -591,6 +591,28 @@ class FRootGraph //implements RootGraph
                                includeUndirectedEdges, false);
   }
 
+  public int getInDegree(Node node)
+  {
+    if (node.getRootGraph() == this)
+    {
+      return getInDegree(node.getRootGraphIndex());
+    }
+    else
+    {
+      return -1;
+    }
+  }
+
+  public int getInDegree(int nodeInx)
+  {
+    final int positiveNodeInx = ~nodeInx;
+    final IntEnumerator adj;
+    try {
+      adj = m_graph.adjacentEdges(positiveNodeInx, true, true, false); }
+    catch (IllegalArgumentException e) { return -1; }
+    return adj.numRemaining();
+  }
+
   public Node getNode(int nodeInx)
   {
     if (nodeInx < 0) return m_nodes.getNodeAtIndex(~nodeInx);
