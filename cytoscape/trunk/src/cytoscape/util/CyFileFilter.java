@@ -221,7 +221,7 @@ public class CyFileFilter
 		// build the description from the extension list
 		Enumeration extensions = filters.keys();
 		if(extensions != null) {
-                  fullDescription += "*." + (String) (extensions.hasMoreElements() ? extensions.nextElement() : "foo");
+                  fullDescription += "*." + (String) (extensions.hasMoreElements() ? extensions.nextElement() : "*");
 		    while (extensions.hasMoreElements()) {
 			fullDescription += ", *." + (String) extensions.nextElement();
 		    }
