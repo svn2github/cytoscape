@@ -1,138 +1,124 @@
+# makefile for csplugins.data.servers
+#-------------------------------------------------------------------------
+# $Revision$
+# $Date$
+# $Author$
+#-------------------------------------------------------------------------
 PKG=cytoscape.data.servers
-DATA_DIR=$(CYTOSCAPE_DATA)
+JC=javac -source 1.4
+JI=java -DCYTOSCAPE_HOME=$(CYTOSCAPE_HOME)
 
 .SUFFIXES: .java .class
 .java.class: 
 	$(JC) $<
 
-JC=javac
-
-OBJS = FlattenIntVectors.class \
+OBJS = BioDataServerInterface.class \
+       BioDataServerRmi.class \
        BioDataServer.class \
-       BioDataServerImpl.class \
-       IPBioDataServer.class \
-       BioDataServerFactory.class \
-       loadBind.class  \
-       loadGo.class  \
-       loadSynonyms.class  \
-       loadGoTerms.class  \
-       loadBiologicalProcesses.class  \
-       loadMolecularFunctions.class  \
-       loadCellularComponents.class  \
-       loadGoPathTerminators.class  \
-       clearGoPathTerminators.class  \
-       biologicalProcess.class  \
-       getPathsForTerm.class  \
-       canonicalName.class  \
-       status.class
+       loadAnnotation.class \
+       loadThesaurus.class \
+       status.class \
+       clear.class
 
-#
-# --- default 
-# objs & rmic:  compile all changed java files; run 'rmic' to generate new rmi
-# stubs & skeletons
-#
+default: objs rmic
 
-default: objs  rmic
+#------ objs
+#  compile all java files
+# 
 
-#
-# --- objs
-# compile all java files newer than the corresponding class files
-#
+objs: $(OBJS)
 
-objs:  $(OBJS)
-
-#
-# --- rmic: 
+#------ rmic: 
 # run the RMI compiler, rmic, to generate new rmi stubs & skeletons
 #
 
-rmic: BioDataServerImpl_Skel.class
+rmic: BioDataServerRmi_Skel.class
 
-BioDataServerImpl_Skel.class: BioDataServerImpl.class
-	rmic -d ../../.. $(PKG).BioDataServerImpl
+BioDataServerRmi_Skel.class: BioDataServerRmi.class
+	rmic -d ../../.. $(PKG).BioDataServerRmi
 
+#------ reg
+#  try to start a rmi registry.  this will fail if one is already running
+#  on the default port
 #
-# --- init
-# after updating all class files (via objs & rmic targets):
-#
-#   - kill the current rmiregistry and RMI server
-#   - sleep awhile
-#   - restart the registry
-#   - sleep awhile
+reg:
+	- rmiregistry& 
+
+#------ start
+#  start the data server with name defined by $(CSDS_NAME)
 # 
-#  you must 'make restartYeast|restartHalo' to start the appropriate
-#  server; then 'make yeast' for yeast data; 'make halo' for halobacterium data
 
-init:
+start: objs rmic
+	java $(PKG).BioDataServerRmi  $(CSDS_NAME) &
+
+#------ test
+#  start the data server with name 'test'
+# 
+
+test: objs rmic
+	java $(PKG).BioDataServerRmi test &
+
+#------ threads
+# what rmiregistry and servers are running?
+#
+threads:
+	ps -efl |egrep rmiregistry |egrep -v egrep 
+	ps -efl |egrep BioDataServerRmi | egrep -v egrep 
+
+
+#------ status
+# ask the dataserver  to report on itself
+#
+status: $(OBJS)
+	java $(PKG).status $(CSDS_HOST) $(CSDS_NAME)
+
+
+#------ clear
+# ask the dataserver to clear itself
+#
+clear: $(OBJS)
+	java $(PKG).clear $(CSDS_HOST) $(CSDS_NAME)
+
+
+
+#------ killreg
+#  kill the rmi registry.  don't do this if you are on a machine that provides
+#  an operational biodata server!
+#
+killreg:
 	- kill -9 `ps -efl |egrep rmiregistry |egrep -v egrep |awk '{print $$4}'`
-	- kill -9 `ps -efl |egrep BioDataServerImpl |egrep -v egrep |awk '{print $$4}'`
-	sleep 5
-	rmiregistry &
-	sleep 10
 
+#------ killtest
+#  kill the data server which runs with name 'test'
 #
-# --- restartYeast
-#  start the yeast (and default) biodata server.  it's name (known to the rmiregistry)
-#  is simply 'biodata'
+
+killtest:
+	- kill -9 `ps -efl |egrep BioDataServerRmi | egrep test | egrep -v egrep |awk '{print $$4}'`
+
+#------ killproduction
+#  kill the data server which runs with name biodata
 #
-#   - restart the RMI server
+
+killproduction:
+	- kill -9 `ps -efl |egrep BioDataServerRmi | egrep $(CSDS_NAME) | egrep -v egrep |awk '{print $$4}'`
+
+#------ clean
+#  delete all compiled files in the current directory, and in subdirectories
 # 
-#  you must 'make load' to get data into the server
-
-restartYeast:  objs rmic
-	java $(PKG).BioDataServerImpl &
-
-#
-# --- restartHalo
-#  start the halo biodata server.  it's name (known to the rmiregistry)
-#  is simply 'biodata'
-#
-#   - restart the RMI server
-# 
-#  you must 'make load' to get data into the server
-
-restartHalo:  objs rmic
-	java $(PKG).BioDataServerImpl halo &
-
-#
-# --- loadYeast
-# load the standard yeast data into the RMI server
-#
-
-loadYeast:
-	java $(PKG).loadSynonyms $(DATA_DIR)/GO/synonyms.xml biodata
-#	java $(PKG).loadBind bindingPairs.xml
-#	java $(PKG).loadGo geneProducts.xml
-	java $(PKG).loadGoTerms $(DATA_DIR)/GO/goTerms.xml
-	java $(PKG).loadBiologicalProcesses $(DATA_DIR)/GO/yeastGenesAndBiologicalProcessIDs.txt
-	java $(PKG).loadMolecularFunctions $(DATA_DIR)/GO/yeastGenesAndMolecularFunctionIDs.txt
-	java $(PKG).loadCellularComponents $(DATA_DIR)/GO/yeastGenesAndCellularComponentIDs.txt
-	java $(PKG).loadGoPathTerminators $(DATA_DIR)/GO/goPathTerminators.txt
-
-#
-# --- loadHalo
-# load the standard halo bacterium data into the RMI server
-#
-
-loadHalo:
-	java $(PKG).loadSynonyms $(DATA_DIR)/haloSynonyms.xml halo
-
-#
-# --- status
-# get a descritpion of the data, and some status information (requests, start time)
-#
-
-status: status.class
-	java $(PKG).status
-	java $(PKG).status halo
-
-#
-# --- clean
-# delete all class files
-#
 
 clean:
-	- rm *.class
+	- rm *.class */*.class
+
+#------ load
+#  load all appropriate data into the server
+# 
+
+load: loadAnnotation
+
+loadAnnotation:  $(OBJS)
+	java $(PKG).loadAnnotation rmi://localhost/data ../kegg/haloMetabolicPathway.xml
+	java $(PKG).loadAnnotation rmi://localhost/data ../go/d16s3098.xml
+	java $(PKG).loadAnnotation rmi://localhost/data ../go/prostasomes39.xml
 
 help:
 	egrep "^#" makefile | sed "s/^#//"
