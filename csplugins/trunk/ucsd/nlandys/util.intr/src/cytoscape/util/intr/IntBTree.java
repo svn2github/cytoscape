@@ -183,7 +183,7 @@ public final class IntBTree
    *             +---+---+---+---+---+---+---+
    *
    *                 +---+---+---+---+---+---+---+
-   *   overflowBuff: | / | / | / | / | / | / | / |
+   *   overflowBuff: |   |   |   |   |   |   |   |
    *                 +---+---+---+---+---+---+---+
    *
    *   overflowCount: 4
@@ -193,11 +193,11 @@ public final class IntBTree
    *   =======
    *
    *             +---+---+---+---+---+---+---+
-   *   origBuff: | 0 | 2 | 3 | 5 | / | / | / |
+   *   origBuff: | 0 | 2 | 3 | 5 |   |   |   |
    *             +---+---+---+---+---+---+---+
    *
    *                 +---+---+---+---+---+---+---+
-   *   overflowBuff: | 6 | 6 | 8 | 9 | / | / | / |
+   *   overflowBuff: | 6 | 6 | 8 | 9 |   |   |   |
    *                 +---+---+---+---+---+---+---+
    */
   private final static void split(final int newVal, final int[] origBuff,
@@ -235,7 +235,7 @@ public final class IntBTree
    *              +---+---+---+---+---+---+---+
    *
    *                  +---+---+---+---+---+---+---+
-   *   overflowNodes: | / | / | / | / | / | / | / |
+   *   overflowNodes: |   |   |   |   |   |   |   |
    *                  +---+---+---+---+---+---+---+
    *
    *   overflowCount: 4
@@ -249,7 +249,7 @@ public final class IntBTree
    *             +---+---+---+---+---+---+---+
    *
    *                 +---+---+---+---+---+---+---+
-   *   overflowBuff: | Y | N | Z | W | / | / | / |
+   *   overflowBuff: | Y | N | Z | W |   |   |   |
    *                 +---+---+---+---+---+---+---+
    *
    *   In addition, the "unused" entries in origBuff are nulled out (remove
@@ -326,25 +326,66 @@ public final class IntBTree
     return 0x0b;
   }
 
-//   private final static void shiftFromLesser(final int[] 
-//   {
-//   }
-
-  // All of these micro helper methods can be inlined later.
-
+  /*
+   * I give an example:
+   *
+   *
+   *   INPUTS
+   *   ======
+   *
+   *   holeInx: 5
+   *
+   *        +---+---+---+---+---+---+---+---+---+---+
+   *   arr: | 1 | 2 | 8 | 5 | 9 |   | 4 | 0 |   |   |
+   *        +---+---+---+---+---+---+---+---+---+---+
+   *
+   *   newLen: 7
+   *
+   *
+   *   OUTPUTS
+   *   =======
+   *
+   *        +---+---+---+---+---+---+---+---+---+---+
+   *   arr: | 1 | 2 | 8 | 5 | 9 | 4 | 0 |   |   |   |
+   *        +---+---+---+---+---+---+---+---+---+---+
+   */
   private final static void fillHole(final int holeInx, final int[] arr,
-                                     int origLen)
+                                     final int newLen)
   {
-    origLen--;
-    for (int i = holeInx; i < origLen;) arr[i] = arr[++i];
+    for (int i = holeInx; i < newLen;) arr[i] = arr[++i];
   }
 
+  /*
+   * I give an example:
+   *
+   *
+   *   INPUTS
+   *   ======
+   *
+   *   holeInx: 1
+   *
+   *        +---+---+---+---+---+---+
+   *   arr: | H |   | L | P | Z |   |
+   *        +---+---+---+---+---+---+
+   *
+   *   newLen: 4
+   *
+   *
+   *   OUTPUTS
+   *   =======
+   *
+   *        +---+---+---+---+---+---+
+   *   arr: | H | L | P | Z | / |   |
+   *        +---+---+---+---+---+---+
+   *
+   *   The last entry (after 'Z' in example) is nulled out so that
+   *   garbage collection would not be obstructed.
+   */
   private final static void fillHole(final int holeInx, final Node[] arr,
-                                     int origLen)
+                                     final int newLen)
   {
-    origLen--;
     int i = holeInx;
-    while (i < origLen) arr[i] = arr[++i];
+    while (i < newLen) arr[i] = arr[++i];
     arr[i] = null;
   }
 
@@ -375,20 +416,8 @@ public final class IntBTree
                                              final int startInx,
                                              final int origLen)
   {
-    for (int i = startInx; i < origLen; i++) arr[i - startInx] = arr[i];
+    for (int i = startInx, o = 0; i < origLen;) arr[o++] = arr[i++];
   }
-
-//   private final static void shift(final int shiftAmount, final int[] arr,
-//                                   final int startInx, final int len)
-//   {
-//     if (shiftAmount < 0) { // Start with entry at lowest index.
-//       final int endInx = startInx + len;
-//       for (int i = startInx; i < endInx; i++) {
-//         arr[i]
-//     }
-//     else {
-//     }
-//   }
 
   /**
    * Returns the number of entries of the integer x in this tree.
