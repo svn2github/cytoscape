@@ -172,6 +172,7 @@ public class FileLoaderUI
                                        nodes.isSelected(),
                                        delimited.isSelected(),
                                        delim.toString() );
+      Cytoscape.firePropertyChange( Cytoscape.ATTRIBUTES_CHANGED, null, null );
       return;
     }
     

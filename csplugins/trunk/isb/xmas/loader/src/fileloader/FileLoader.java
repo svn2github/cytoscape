@@ -310,7 +310,7 @@ public class FileLoader {
       Set networks = Cytoscape.getNetworkSet();
       for ( Iterator iter = networks.iterator(); iter.hasNext(); ) {
         CyNetwork network = ( CyNetwork )iter.next();
-        if ( Cytoscape.getNetworkView( id ) == null ) {
+        if ( Cytoscape.getNetworkView( network.getIdentifier() ) == null ) {
           // create SIF file from the network
           zip.putNextEntry( new ZipEntry(network.getIdentifier()+". "+network.getTitle()+".sif" ));
                    
@@ -348,7 +348,7 @@ public class FileLoader {
         } else {
           // view exits, create GML from the network view
           zip.putNextEntry( new ZipEntry(network.getTitle()+".gml") );
-          GMLTree result = new GMLTree( Cytoscape.getNetworkView(id) );
+          GMLTree result = new GMLTree( Cytoscape.getNetworkView( network.getIdentifier() ) );
           bytes = result.toString().getBytes();
           zip.write( bytes, 0, bytes.length );
         }
@@ -443,7 +443,7 @@ public class FileLoader {
         node = Cytoscape.getCyNode( row[0], true );
 
       }
-      //      System.out.println( "Loading data for: "+node.getIdentifier() );
+      //System.out.println( "Loading data for: "+node.getIdentifier() );
 
 
       
@@ -457,8 +457,10 @@ public class FileLoader {
           attribute = row[i];
         }
         try {
-          if ( !attribute.equals( null_att ) )
+          if ( !attribute.equals( null_att ) ) {
             Cytoscape.setNodeAttributeValue( node, (String)titles.get( i ), attribute );
+            System.out.println( "Loading data for: "+node.getIdentifier()+" att:"+titles.get( i )+" val: "+attribute );
+          }
         } catch ( Exception ex ) {
           ex.printStackTrace();
           System.out.print( "Error Loading node: "+node.getIdentifier() );

@@ -26,9 +26,11 @@ public class LoaderPlugin extends CytoscapePlugin {
       if ( args[i].startsWith( "-ss" ) ) {
         i++;
         FileLoader.loadFileToAttributes( args[i], true, true, "\t" );
+        Cytoscape.firePropertyChange( Cytoscape.ATTRIBUTES_CHANGED, null, null );
       } else if ( args[i].startsWith( "-edge" ) ) {
         i++;
         FileLoader.loadFileToAttributes( args[i], false, true, "\t" );
+        Cytoscape.firePropertyChange( Cytoscape.ATTRIBUTES_CHANGED, null, null );
       }
     }
 
@@ -41,6 +43,7 @@ public class LoaderPlugin extends CytoscapePlugin {
           SwingUtilities.invokeLater( new Runnable() {
               public void run() {
                 FileLoaderUI ui = new FileLoaderUI();
+                Cytoscape.firePropertyChange( Cytoscape.ATTRIBUTES_CHANGED, null, null );
               }
             } ); } } ) );
 
@@ -61,6 +64,7 @@ public class LoaderPlugin extends CytoscapePlugin {
                   file = chooser.getSelectedFile();
                 }
                 FileLoader.loadCytoscape( file.toString() );
+                Cytoscape.firePropertyChange( Cytoscape.ATTRIBUTES_CHANGED, null, null );
               }
             } ); } } ) );
 
@@ -81,6 +85,7 @@ public class LoaderPlugin extends CytoscapePlugin {
                   file = chooser.getSelectedFile();
                 }
                 FileLoader.saveCytoscape( file.toString() );
+                Cytoscape.firePropertyChange( Cytoscape.ATTRIBUTES_CHANGED,null, null );
               }
             } ); } } ) );
 
