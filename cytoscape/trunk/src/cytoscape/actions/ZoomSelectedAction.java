@@ -30,6 +30,10 @@ public class ZoomSelectedAction extends CytoscapeAction {
     
     public void actionPerformed(ActionEvent e) {
         
+      zoomSelected();
+    }
+
+  public static void zoomSelected () {
       CyNetworkView view = Cytoscape.getCurrentNetworkView();
         List selected_nodes = view.getSelectedNodes();
 
@@ -67,7 +71,7 @@ public class ZoomSelectedAction extends CytoscapeAction {
           }
         }
         
-        PBounds zoomToBounds = new PBounds( smallX, smallY, ( bigX - smallX + 50 ), ( bigY - smallY + 50 ) );
+        PBounds zoomToBounds = new PBounds( smallX - 100 , smallY -100 , ( bigX - smallX + 100 ), ( bigY - smallY + 100 ) );
         PTransformActivity activity =  ( ( PhoebeNetworkView )view).getCanvas().getCamera().animateViewToCenterBounds( zoomToBounds, true, 500 );
     }
 }
