@@ -214,7 +214,7 @@ public final class AllRootGraphMethodsTest
     if (!root.edgeExists(root.getNode(nodeInx[1]), root.getNode(nodeInx[2])))
       throw new IllegalStateException("edge does not exist");
 
-    // edgeExists(int, int)
+    // edgeExists(int, int).
     if (root.edgeExists(0, 0)) throw new IllegalStateException("0 -> 0");
     if (root.edgeExists(nodeInx[2], nodeInx[3]))
       throw new IllegalStateException("edge exists in opposite direction");
@@ -230,6 +230,26 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("edge does not exist");
     if (!root.edgeExists(nodeInx[1], nodeInx[0]))
       throw new IllegalStateException("edge does not exist");
+
+    // getEdgeCount(Node, Node, boolean).
+    if (root.getEdgeCount(root.getNode(nodeInx[0]), root.getNode(nodeInx[1]),
+                          true) != 1)
+      throw new IllegalStateException("wrong number in edge count");
+    if (root.getEdgeCount(root.getNode(nodeInx[0]), root2Node, true) != -1)
+      throw new IllegalStateException("edge count not -1");
+    if (root.getEdgeCount(root.getNode(nodeInx[1]), root.getNode(nodeInx[1]),
+                          false) != 0)
+      throw new IllegalStateException("edge count not 0");
+
+    // getEdgeCount(int, int, boolean).
+    if (root.getEdgeCount(nodeInx[3], nodeInx[2], true) != 1)
+      throw new IllegalStateException("edge count not 1");
+    if (root.getEdgeCount(nodeInx[2], nodeInx[3], true) != 0)
+      throw new IllegalStateException("edge count not 0");
+    if (root.getEdgeCount(nodeInx[1], nodeInx[2], false) != 0)
+      throw new IllegalStateException("edge count not 0");
+    if (root.getEdgeCount(nodeInx[1], nodeInx[1], true) != 1)
+      throw new IllegalStateException("edge count not 1 for und. self edge");
   }
 
 }
