@@ -215,7 +215,112 @@ adds to Cytoscape; an inventory of these, along with demonstrations and tutorial
 					 [<a href="http://db.systemsbiology.net/cytoscape/ftp/PythonConsolePlugin.jar">Download PlugIn .jar</a>]<br>
 					</td>
 				</tr>        
----------------------->
+--------------------------->
+  <tr><td colspan=3><HR></TD></TR>
+    <tr>
+     <td width="20%" valign="top">
+      <b>HTTP Data and<br>Interaction Fetcher<br>Plugins</b><br>
+      <font size="-1">Version: .1 BETA<br>
+       Release Date: Sept. 3, 2004</font>
+     </td>
+     <td width="60%" valign="top">
+Dynamically retrieve remote biological information for selected nodes in the current network.<br><br>
+This plugin fetches and adds biological information from a remote server/database and adds them as 
+additional edges or attributes to the current network. Currently implemented data include: 
+protein/gene synonyms, orthologs, sequences (gene/protein/upstream) and interactions/associations. This 
+information is available to varying degrees for several species including yeast, human, 
+mouse, fruitly, and worm. Some of this information is integrated, for example, 
+retrieved synonym information may be used to expand the possible interactions that are retrieved, and
+retrieved ortholog information may be used to fetch interlogs for the species listed above.
+Available interaction data sets include BIND, DIP, HPRD, PreBIND, and several others.
+<br><br>
+A (somewhat outdated) tutorial for many of the features of this plugin are available at 
+<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/getInteractions">
+http://db.systemsbiology.net/cytoscape/projects/static/dreiss/getInteractions</a>. Note that
+the web start on this tutorial page still uses Cytoscape v1.1.1.
+<br><br>
+The structure of the plugins were written to allow easy expansion of the type of information that is
+fetched, and may be extended in the future to various types of annotations and public microarray data,
+for example.
+<br><br>
+Also included in the plugin jar are all necessary classes required to run a local version of the 
+information server (not including, of course, the database). The server may be run locally as a stand-
+alone XML-RPC server, or behind an external web server such as Apache Tomcat.
+<br><br>
+Released by: David J. Reiss, Galitski and Schwikowski Groups, 
+<a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>.
+     </td>
+     <td width="20%" valign="top">
+      [<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/httpdata_all.jar">Download PlugIn .jar</a>]<br>
+     </td>
+    </tr>        
+     </td>
+    </tr>           
+
+  <tr><td colspan=3><HR></TD></TR>
+    <tr>
+     <td width="20%" valign="top">
+      <b>CytoTalk Plugin</b><br>
+      <font size="-1">Version: .1 BETA<br>
+       Release Date: Sept. 3, 2004</font>
+     </td>
+     <td width="60%" valign="top">
+Dynamically interact with and manipulate the current network from an external process.<br><br>
+This plugin runs a simple internal XML-RPC server from within Cytoscape that allows the current
+network and its various attributes to be manipulated from an external process that is XML-RPC 
+capable. Examples include external Perl, Python, R or UNIX shell scripts, C or C++ programs, 
+or external Java processes. It even allows other "plugins" to be written in these languages.
+The external process may be run on the same machine as Cytoscape, or anywhere else on the network.
+<br><br>
+<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/cytoTalk/CytoTalkHandler.html">
+JavaDoc documentation of the client functions are available.<br>
+<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/cytoTalk/CytoTalkClient.R">R</a> and
+<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/cytoTalk/CytoTalkClient.pm">Perl</a> 
+client classes are also available.<br>
+Some simple <a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/cytoTalk/examples">
+example Perl, Python, and R scripts</a> have been written.
+<br><br>
+Released by: David J. Reiss, Schwikowski Group, 
+<a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>.
+     </td>
+     <td width="20%" valign="top">
+      [<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/cytoTalk/cytoTalk.jar">Download PlugIn .jar</a>]<br>
+     </td>
+    </tr>        
+     </td>
+    </tr>           
+
+  <tr><td colspan=3><HR></TD></TR>
+    <tr>
+     <td width="20%" valign="top">
+      <b>Motif Finder Plugin</b><br>
+      <font size="-1">Version: .1 BETA<br>
+       Release Date: Sept. 3, 2004</font>
+     </td>
+     <td width="60%" valign="top">
+Run a Gibbs sampling motif detector on sequences corresponding to the selected nodes in the
+current network. This currently implements the most basic of the motif detection algorithms
+available from the <a href="http://sf.net/projects/netmotsa">Gibbs sampling motif detection
+library</a> described in 
+<a href="http://bioinformatics.oupjournals.org/cgi/content/abstract/20/suppl_1/i274">Bioinformatics</a>.<br>
+This plugin requires that the "sequence fetcher" (part of the HTTP Data plugin) be run first, 
+to fetch the sequences, or they may be pre-loaded as node attributes. It may be used on protein 
+or DNA sequences (detected automatically). Various types of information such as motif logos, 
+alignment tables, and motif positions are displayed at the end of the detection run 
+(<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/motifFinder/software.jpg">screenshot</a>).
+<br><br>
+At some point, I hope to implement the fully network-informed version of the motif finder as described 
+in the article.
+<br><br>
+Released by: David J. Reiss, Schwikowski Group, 
+<a href="http://www.systemsbiology.org/">Institute for Systems Biology</a>.
+     </td>
+     <td width="20%" valign="top">
+      [<a href="http://db.systemsbiology.net/cytoscape/projects/static/dreiss/motifFinder/motifFinder.jar">Download PlugIn .jar</a>]<br>
+     </td>
+    </tr>        
+     </td>
+
       </tbody>
 		</table>
 
