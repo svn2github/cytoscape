@@ -147,7 +147,12 @@ public class CytoscapeInit
     suppressView = cli.suppressView();
 
 
-
+    // store key property values into main Properties object for
+    // for visual (via Preferences Dialog) communication and later storage
+    //
+    // project -overrides- command line -overrides- cytoscape.props...
+    // hence it is now safe to store those values
+    storeVariablesInProperties();
 
 
     // see if we are in headless mode
@@ -223,6 +228,19 @@ public class CytoscapeInit
 
     return true;
   }
+
+
+  // store value of key variables in Properties object
+  // for access in PreferencesDialog and eventual saving on exit
+  private void storeVariablesInProperties() {
+    if (bioDataServer != null)
+      properties.setProperty( "bioDataServer", bioDataServer);
+    if (defaultSpeciesName != null)
+      properties.setProperty("defaultSpeciesName", defaultSpeciesName);
+    properties.setProperty( "viewThreshold",""+viewThreshold);
+    properties.setProperty( "secondaryViewThreshold",""+secondaryViewThreshold);
+  }
+
 
 
   public String getHelp () {
@@ -448,8 +466,6 @@ public class CytoscapeInit
         URL url;
         try {
           if ( plugin.startsWith( "http" ) ) {
-// MDA - don't want that extra '/' after http: -- causes URL exceptions later
-// MDA          plugin = plugin.replaceAll( "http:/" ,"http://" );
             plugin = "jar:"+plugin+"!/";
             url = new URL( plugin );
           } else {
