@@ -4,6 +4,12 @@ import cytoscape.graph.layout.GraphLayout;
 import cytoscape.graph.util.GraphTopologyRepresentation;
 import java.awt.geom.Point2D;
 
+/**
+ * This class provides an implementation of <code>GraphLayout</code>
+ * whose only purpose is to represent a graph layout based on structure
+ * defined in arrays of integer and floating-point numbers.
+ * Methods on an instance of this class have no hooks into outside code.
+ **/
 public class GraphLayoutRepresentation
   extends GraphTopologyRepresentation
   implements GraphLayout
@@ -39,14 +45,12 @@ public class GraphLayoutRepresentation
    * <blockquote><pre>
    *((GraphLayoutRepresentation) obj).getClass().equals(cytoscape.graph.layout.util.GraphLayoutRepresentation.class)
    * </pre></blockquote><p>
-   * This constructor calls
-   * <blockquote><pre>
+   * This constructor calls<blockquote><pre>
    *super(numNodes,
    *      directedEdgeSourceNodeIndices,
    *      directedEdgeTargetNodeIndices,
    *      undirectedEdgeNode0Indices,
-   *      undirectedEdgeNode1Indices);
-   * </pre></blockquote>
+   *      undirectedEdgeNode1Indices);</pre></blockquote>
    * - for the sake of preventing the same documentation from existing in
    * two different source code files, please refer to
    * <code>GraphTopologyRepresentation</code> for a definition of these
