@@ -1,7 +1,6 @@
 package cytoscape.task.sample;
 
 import cytoscape.task.Task;
-import cytoscape.task.ui.JTask;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 
@@ -35,8 +34,8 @@ public class RunSampleTask {
         if (option != 2) {
             task = new SampleTask(100, 100);
 
-        //  For Case 2:  throw an exception when we get to XX.
-        //  Used to illustrate exception handling / error display.
+            //  For Case 2:  throw an exception when we get to XX.
+            //  Used to illustrate exception handling / error display.
         } else {
             task = new SampleTask(100, 100, 10);
         }
@@ -49,7 +48,14 @@ public class RunSampleTask {
         //  Execute Task via TaskManager Utility
         //  Automatically pops up a JTask UI Component for visually
         //  monitoring the task
-        JTask jTask = TaskManager.executeTask(task, config);
+        boolean success = TaskManager.executeTask(task, config);
+
+        if (success) {
+            System.out.println("Task completed successfully");
+        } else {
+            System.out.println
+                    ("Task aborted due to user request or task error.");
+        }
     }
 
     /**
@@ -90,13 +96,8 @@ public class RunSampleTask {
                 config.displayCloseButton(true);
                 config.setAutoDispose(false);
 
-                //  Wait 1 second before displaying UI component
-                config.setMillisToDecideToPopup(1000);
-
                 System.out.println("This demo illustrates a customized "
                         + "JTask PopUp.");
-                System.out.println("-- JTask will wait 1 second before "
-                        + "popping up.");
                 System.out.println("-- All time fields are displayed.");
                 System.out.println("-- Description Field is displayed.");
                 System.out.println("-- Status Field is displayed.");

@@ -1,9 +1,8 @@
 package cytoscape.task.sample;
 
 import cytoscape.task.Task;
-import cytoscape.task.util.TaskManager;
 import cytoscape.task.ui.JTaskConfig;
-import cytoscape.task.ui.JTask;
+import cytoscape.task.util.TaskManager;
 
 /**
  * Illustrates how to execute a sample task via the TaskManager.
@@ -18,7 +17,7 @@ public class RunBareBones {
     public static void main(String[] args) {
 
         //  Create a Sample Task
-        Task task = new SampleTask (100, 100);
+        Task task = new SampleTask(100, 100);
 
         //  Configure JTask
         JTaskConfig config = new JTaskConfig();
@@ -28,6 +27,6 @@ public class RunBareBones {
 
         //  Execute Task via TaskManager
         //  This automatically pops-open a JTask Dialog Box
-        JTask jTask = TaskManager.executeTask(task, config);
+        boolean success = TaskManager.executeTask(task, config);
     }
 }

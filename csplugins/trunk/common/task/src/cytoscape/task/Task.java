@@ -71,7 +71,6 @@ public interface Task extends Runnable, Haltable {
      * that invokes <code>run()</code>.
      *
      * @param monitor TaskMonitor Object.
-     *
      * @throws IllegalThreadStateException Indicates that the TaskMonitor has
      *                                     already been set.
      */
