@@ -21,7 +21,7 @@ public final class AllRootGraphMethodsTest
 
     // Don't change this!  Any change here implies re-reading all the test
     // code below and making appropriate changes there.
-    int[] nodeInx = new int[4];
+    int[] nodeInx = new int[5];
     for (int i = 0; i < nodeInx.length; i++) nodeInx[i] = root.createNode();
     int[] edgeInx = new int[7];
     edgeInx[0] = root.createEdge(nodeInx[0], nodeInx[1], true);
@@ -103,12 +103,12 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("GraphPerspective is not null");
 
     // getNodeCount() and getEdgeCount().
-    if (root.getNodeCount() != 4 || root.getEdgeCount() != 7)
+    if (root.getNodeCount() != 5 || root.getEdgeCount() != 7)
       throw new IllegalStateException("incorrect nodes or edges count");
 
     // nodesList().
     java.util.List nodesList = root.nodesList();
-    if (nodesList.size() != 4)
+    if (nodesList.size() != 5)
       throw new IllegalStateException("incorrect node List size");
     for (int i = 0; i < nodesList.size(); i++) {
       Node n = (Node) nodesList.get(i); }
@@ -154,6 +154,21 @@ public final class AllRootGraphMethodsTest
     java.util.List neighList = root.neighborsList(root.getNode(nodeInx[0]));
     if (neighList.size() != 2)
       throw new IllegalStateException("wrong number of neighbors");
+    neighList = root.neighborsList(root.getNode(nodeInx[1]));
+    if (neighList.size() != 3)
+      throw new IllegalStateException("wrong number of neighbors");
+    neighList = root.neighborsList(root.getNode(nodeInx[2]));
+    if (neighList.size() != 4)
+      throw new IllegalStateException("wrong number of neighbors");
+    neighList = root.neighborsList(root.getNode(nodeInx[3]));
+    if (neighList.size() != 1)
+      throw new IllegalStateException("wrong number of neighbors");
+    neighList = root.neighborsList(root.getNode(nodeInx[4]));
+    if (neighList.size() != 0)
+      throw new IllegalStateException("wrong number of neighbors");
+    neighList = root.neighborsList(root2Node);
+    if (neighList != null)
+      throw new IllegalStateException("neighbors List isn't null");
   }
 
 }
