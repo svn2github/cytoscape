@@ -18,7 +18,19 @@ public final class AllRootGraphMethodsTest
            IllegalAccessException
   {
     final RootGraph root = FingRootGraphFactory.instantiateRootGraph();
-    addNodesAndEdges(root);
+
+    // Don't change this!  Any change here implies re-reading all the test
+    // code below and making appropriate changes there.
+    int[] nodeInx = new int[4];
+    for (int i = 0; i < nodeInx.length; i++) nodeInx[i] = root.createNode();
+    int[] edgeInx = new int[7];
+    edgeInx[0] = root.createEdge(nodeInx[0], nodeInx[1], true);
+    edgeInx[1] = root.createEdge(nodeInx[1], nodeInx[2], false);
+    edgeInx[2] = root.createEdge(nodeInx[2], nodeInx[0], true);
+    edgeInx[3] = root.createEdge(nodeInx[2], nodeInx[2], true);
+    edgeInx[4] = root.createEdge(nodeInx[1], nodeInx[1], false);
+    edgeInx[5] = root.createEdge(nodeInx[1], nodeInx[0], true);
+    edgeInx[6] = root.createEdge(nodeInx[3], nodeInx[2], true);
 
     // nodesIterator() and edgesIterator().
     Iterator nodesIter = root.nodesIterator();
@@ -46,7 +58,10 @@ public final class AllRootGraphMethodsTest
     if (root.createGraphPerspective(new Node[0], new Edge[0]) == null)
       throw new IllegalStateException("GraphPerspective is null");
     RootGraph root2 = FingRootGraphFactory.instantiateRootGraph();
-    addNodesAndEdges(root2);
+    root2.createNode();
+    root2.createEdge
+      (((Node) root2.nodesIterator().next()).getRootGraphIndex(),
+       ((Node) root2.nodesIterator().next()).getRootGraphIndex());
     Node root2Node = (Node) root2.nodesIterator().next();
     Edge root2Edge = (Edge) root2.edgesIterator().next();
     if (root.createGraphPerspective(new Node[] { root2Node }, null) != null)
@@ -88,12 +103,12 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("GraphPerspective is not null");
 
     // getNodeCount() and getEdgeCount().
-    if (root.getNodeCount() != 3 || root.getEdgeCount() != 5)
+    if (root.getNodeCount() != 4 || root.getEdgeCount() != 7)
       throw new IllegalStateException("incorrect nodes or edges count");
 
     // nodesList().
     java.util.List nodesList = root.nodesList();
-    if (nodesList.size() != 3)
+    if (nodesList.size() != 4)
       throw new IllegalStateException("incorrect node List size");
     for (int i = 0; i < nodesList.size(); i++) {
       Node n = (Node) nodesList.get(i); }
@@ -108,7 +123,7 @@ public final class AllRootGraphMethodsTest
 
     // edgesList().
     java.util.List edgesList = root.edgesList();
-    if (edgesList.size() != 5)
+    if (edgesList.size() != 7)
       throw new IllegalStateException("incorrect edge List size");
     for (int i = 0; i < edgesList.size(); i++) {
       Edge e = (Edge) edgesList.get(i); }
@@ -134,17 +149,11 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("RootGraph does not contain edge");
     if (root.containsEdge(root2Edge))
       throw new IllegalStateException("RootGraph contains edge from other");
-  }
 
-  private static final void addNodesAndEdges(RootGraph root) {
-    // Don't change this!  Any change here implies re-reading all the test
-    // code above and making appropriate changes there.
-    int[] nodeInx = new int[3];
-    for (int i = 0; i < nodeInx.length; i++) nodeInx[i] = root.createNode();
-    root.createEdge(nodeInx[0], nodeInx[1], true);
-    root.createEdge(nodeInx[1], nodeInx[2], false);
-    root.createEdge(nodeInx[2], nodeInx[0], true);
-    root.createEdge(nodeInx[0], nodeInx[0], true);
-    root.createEdge(nodeInx[1], nodeInx[1], false); }
+    // neighborsList(Node)
+    java.util.List neighList = root.neighborsList(root.getNode(nodeInx[0]));
+    if (neighList.size() != 2)
+      throw new IllegalStateException("wrong number of neighbors");
+  }
 
 }
