@@ -389,12 +389,15 @@ protected void displayCommonNodeNames ()
     NodeRealizer r = graphView.getGraph2D().getRealizer(node);
     String defaultName = r.getLabelText ();
     String newName = defaultName;
+    String canonicalName = getCanonicalNodeName(node);
     try {
-      String [] synonyms = bioDataServer.getSynonyms (defaultName);
+      //String [] synonyms = bioDataServer.getSynonyms (defaultName);
+      String [] synonyms = bioDataServer.getSynonyms (canonicalName);
       if (synonyms.length > 0) {
         newName = synonyms [0];
         }
-      nodeAttributes.add ("commonName", defaultName, newName);
+      //nodeAttributes.add ("commonName", defaultName, newName);
+      nodeAttributes.add ("commonName", canonicalName, newName);
       r.setLabelText (newName);
       }
     catch (Exception ignoreForNow) {;}
@@ -1509,9 +1512,13 @@ protected class SaveAsInteractionsAction extends AbstractAction
              Edge edge = ec.edge ();
              Node target = edge.target ();
              String canonicalTargetName = getCanonicalNodeName (target);
-             fileWriter.write (canonicalName);
-             fileWriter.write (" xx ");
-             fileWriter.write (canonicalTargetName);
+	     String edgeName = (String)edgeAttributes.getCanonicalName(edge);
+	     String interactionName =
+	    	 (String)(edgeAttributes.getValue("interaction", edgeName));
+	     if (interactionName == null) {interactionName = "xx";}
+	     fileWriter.write (canonicalName + " ");
+	     fileWriter.write (interactionName);
+	     fileWriter.write (" " + canonicalTargetName);
              fileWriter.write ("\n");
              } // for ec
           }  // for i
