@@ -36,24 +36,56 @@ class FRootGraph implements RootGraph
   }
 
   public GraphPerspective createGraphPerspective(Node[] nodes, Edge[] edges) {
-//     if (nodes == null) nodes = new Node[0];
-//     if (edges == null) edges = new Edge[0];
-    return null;
-  }
+    if (nodes == null) nodes = new Node[0];
+    if (edges == null) edges = new Edge[0];
+    m_heap.empty();
+    final MinIntHeap nodeInxBucket = m_heap;
+    for (int i = 0; i < nodes.length; i++) {
+      if (nodes[i] != null && nodes[i].getRootGraph() == this)
+        nodeInxBucket.toss(nodes[i].getRootGraphIndex());
+      else return null; }
+    final int[] nodeInxArr = new int[nodeInxBucket.size()];
+    nodeInxBucket.copyInto(nodeInxArr, 0);
+    m_heap.empty();
+    final MinIntHeap edgeInxBucket = m_heap;
+    for (int i = 0; i < edges.length; i++) {
+      if (edges[i] != null && edges[i].getRootGraph() == this)
+        edgeInxBucket.toss(edges[i].getRootGraphIndex());
+      else return null; }
+    final int[] edgeInxArr = new int[edgeInxBucket.size()];
+    edgeInxBucket.copyInto(edgeInxArr, 0);
+    return createGraphPerspective(nodeInxArr, edgeInxArr); }
 
   public GraphPerspective createGraphPerspective(int[] nodeInx,
                                                  int[] edgeInx) {
-//     if (nodeInx == null) nodeInx = new int[0];
-//     if (edgeInx == null) edgeInx = new int[0];
-//     // There are more edges than nodes so we'll use m_hash for the edges.
-//     final IntHash nodeBucket = new IntHash();
-//     m_hash.empty();
-//     final IntHash edgeBucket = m_hash;
-//     for (int i = 0; i < nodeInx.length; i++) {
-//       final int rootNodeInxCandidate = nodeInx[i];
-//     }
-    return null;
-  }
+    if (nodeInx == null) nodeInx = new int[0];
+    if (edgeInx == null) edgeInx = new int[0];
+    // There are more edges than nodes so we'll use m_hash for the edges.
+    final IntHash nodeBucket = new IntHash();
+    m_hash.empty();
+    final IntHash edgeBucket = m_hash;
+    for (int i = 0; i < nodeInx.length; i++) {
+      final int rootNodeInxCandidate = nodeInx[i];
+      if (getNode(rootNodeInxCandidate) != null)
+        nodeBucket.put(~rootNodeInxCandidate);
+      else return null; }
+    for (int i = 0; i < edgeInx.length; i++) {
+      final int rootEdgeInxCandidate = edgeInx[i];
+      if (getEdge(rootEdgeInxCandidate) != null) {
+        edgeBucket.put(~rootEdgeInxCandidate);
+        nodeBucket.put(~(getEdgeSourceIndex(rootEdgeInxCandidate)));
+        nodeBucket.put(~(getEdgeTargetIndex(rootEdgeInxCandidate))); }
+      else return null; }
+    final IntEnumerator nodesEnum = nodeBucket.elements();
+    final IntEnumerator edgesEnum = edgeBucket.elements();
+    return new FGraphPerspective
+      (this,
+       new IntEnumerator() {
+         public int numRemaining() { return nodesEnum.numRemaining(); }
+         public int nextInt() { return ~(nodesEnum.nextInt()); } },
+       new IntEnumerator() {
+         public int numRemaining() { return edgesEnum.numRemaining(); }
+         public int nextInt() { return ~(edgesEnum.nextInt()); } }); }
 
   public void ensureCapacity(int nodes, int edges)
   {
