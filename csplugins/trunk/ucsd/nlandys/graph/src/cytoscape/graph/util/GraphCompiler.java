@@ -1,6 +1,7 @@
 package cytoscape.graph.util;
 
 import cytoscape.graph.GraphTopology;
+import cytoscape.graph.IndexIterator;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
@@ -129,15 +130,15 @@ public final class GraphCompiler
    *   and only if this is <code>false</code>.
    * @return a non-repeating list of indices of all nodes B such that
    *   <i>B is a directed neighbor of node at index
-   *   <code>nodeIndex</code></i>; every entry in the returned array will
+   *   <code>nodeIndex</code></i>; every entry in the returned iterator will
    *   lie in the interval
    *   <nobr><code>[0, graph.getNumNodex() - 1]</code></nobr>; this method
    *   never returns <code>null</code>.
    * @exception IndexOutOfBoundsException if <code>nodeIndex</code> is not
    *   in the interval <nobr><code>[0, graph.getNumNodes() - 1]</code></nobr>.
    **/
-  public int[] getNeighboringNodeIndices(int nodeIndex,
-                                         boolean honorDirectedEdges)
+  public IndexIterator getNeighboringNodeIndices(int nodeIndex,
+                                                 boolean honorDirectedEdges)
   {
     compileNodeNeighbors();
 
@@ -154,7 +155,7 @@ public final class GraphCompiler
       Enumeration values = specificNeighbors.elements();
       for (int i = 0; i < returnThis.length; i++)
         returnThis[i] = ((Integer) values.nextElement()).intValue();
-      return returnThis;
+      return new ArrayIterator(returnThis);
     }
     else
     {
@@ -179,7 +180,7 @@ public final class GraphCompiler
       values = returnValues.elements();
       for (int i = 0; i < returnThis.length; i++)
         returnThis[i] = ((Integer) values.nextElement()).intValue();
-      return returnThis;
+      return new ArrayIterator(returnThis);
     }
   }
 
