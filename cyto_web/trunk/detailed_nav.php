@@ -31,12 +31,12 @@
 			</td>
 			<td width="120">
 				<h1>
-					<a href="http://cbio.mskcc.org/cytoscape/Cytoscape2_0Manual.pdf">
+					<a href="manual/Cytoscape2_0Manual.pdf">
 						Manual 
 					</a>
 				</h1>
 				<p>
-					<a href="http://cbio.mskcc.org/cytoscape/Cytoscape2_0Manual.pdf">
+					<a href="manual/Cytoscape2_0Manual.pdf">
 						PDF format</a>, explains all basic features of Cytoscape. 
 					<a href="http://www.adobe.com/products/acrobat/readstep2.html">
 						Get Acrobat reader 
