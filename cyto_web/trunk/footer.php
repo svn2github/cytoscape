@@ -19,7 +19,7 @@
 		Pasteur 
 	</a>
 	| 
-	<a href="http://www.cbio.mskcc.org/cytoscape/bugs/">
+	<a href="http://www.cbio.mskcc.org/cytoscape/bugs/set_project.php?project_id=5">
 		Report a bug 
 	</a>
 	| &copy; 2001-2004 Cytoscape. 

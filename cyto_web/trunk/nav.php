@@ -36,7 +36,7 @@
 						Links
 					</a>
 					| 
-					<a href="http://www.cbio.mskcc.org/cytoscape/bugs/">
+					<a href="http://www.cbio.mskcc.org/cytoscape/bugs/set_project.php?project_id=5">
 						Bug Tracker
 					</a>
 				</h1>

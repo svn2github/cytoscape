@@ -63,7 +63,7 @@
 			<td width="120">
 				<h1>
 					<a href="developer.php">
-						Developer Docs
+						Developers
 					</a>
 				</h1>
 				<p>
@@ -75,6 +75,10 @@
 					<a href="http://csbi.sourceforge.net/">
 						Graph INterface librarY (GINY)
 					</a>
+				</p>
+				<p>
+					<a href="download_list.php#cvs">
+					Download Source from CVS</A>
 				</p>
 			</td>
 		</tr>

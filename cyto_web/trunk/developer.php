@@ -54,7 +54,7 @@ that are used by plugins. In addtion we have tried to make our <a
 possible. Remember that you need not be limited to the API, you can use
 the API from any plugin in your plugin as well. Notably, Filters are
 only available as a plugin. If you need a jump start, there is a simple
-"Hello World" style plugin <a href="pluginTutorial/pluginTutorial.php">
+"Hello World" style plugin <a href="pluginTutorial.php">
 tutorial </a> available.
 </p>
 <p> Also, possibly the best source of information is the Cytoscape <a

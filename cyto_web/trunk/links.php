@@ -45,9 +45,9 @@ and provides a powerful framework for user interaction and data display.
 
 <big><b>Network Databases</b></big>
 <P>
-<a href="http:/bind.ca">Biomolecular Interaction Network Database (BIND)</a>
+<a href="http://bind.ca">Biomolecular Interaction Network Database (BIND)</a>
 <br>
-<a href="http:/www.cbio.mskcc.org/prl">BioPAX Directory</a>
+<a href="http://www.cbio.mskcc.org/prl">BioPAX Directory</a>
 <br><br>
 
 <big><b>Data Exchange Formats</b></big>

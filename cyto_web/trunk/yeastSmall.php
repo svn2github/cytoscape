@@ -116,7 +116,7 @@ in a way which causes them to stand out to let the user know that the nodes are
 selected.<p>
 Some of the things you can do with selected nodes are: zoom in to show only those nodes; popup a Node Browser to examine data
 associated with them; hide them; display them in a new network.
-Many Cytoscape <a target="body" href="../plugins2.php">plugins</a> do calculations
+Many Cytoscape <a target="body" href="plugins2.php">plugins</a> do calculations
 on networks and individual nodes, and on completion, leave certain nodes, edges,
 or their attributes in a new state.
 
@@ -184,8 +184,8 @@ of any node or nodes by
 </center>
 <br>
 
-Several large projects, including the <a href="www.geneontology.org">Gene
-Ontology Consortium</a> (GO) and the <a href="www.genome.ac.jp">Kyoto
+Several large projects, including the <a href="http://www.geneontology.org">Gene
+Ontology Consortium</a> (GO) and the <a href="http://www.genome.ac.jp">Kyoto
 Encyclopedia of Genes and Genomes</a> (KEGG), provide annotation information
 for genes and proteins for many different species using a controlled
 vocabulary. Cytoscape is able to integrate this information with the

@@ -24,7 +24,8 @@
 <? include "nav.php"; ?>
 <div  id="indent">
 			<P>
-			You can download Cytoscape from the links below.
+			<big><b>For Users:  Download Cytoscape Releases</b></big>
+			<P>You can download Cytoscape from the links below.
 			
 			<P>To download Cytoscape, you will be required to read and agree with 
 			our license terms, and supply basic contact information, including name,
@@ -37,6 +38,16 @@
 			<LI><A HREF="download.php?file=cyto1">Download Cytoscape 1.1</A>
 				[Binaries and/or Source Files]
 			</UL>
+			
+			<P>
+			<big><A NAME="cvs"><b>For Developers:  Download Latest Source Code from our CVS Server</A></b></big>			
+			<P>Instructions for downloading the latest Cytoscape source code
+			from our CVS server are provided below.
+			When prompted for a password for anonymous, simply press the
+			Enter key.
+			<P>cvs -d :pserver:anonymous@bordeaux.ucsd.edu:/common/cvsdir5 login
+			<BR>cvs -d :pserver:anonymous@bordeaux.ucsd.edu:/common/cvsdir5 co cytoscape
+			</P>
 </div>
 <? include "footer.php"; ?>
 	</body>
