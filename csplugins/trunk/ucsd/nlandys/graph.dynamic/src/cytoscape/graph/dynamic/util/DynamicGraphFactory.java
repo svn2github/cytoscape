@@ -73,7 +73,10 @@ import cytoscape.graph.dynamic.DynamicGraph;
  *     enumeration.</td>
  * </tr><tr>
  * <td>edgesConnecting(int, int, boolean, boolean, boolean)</td>
- * <td></td>
+ * <td>An IntIterator is returned in constant time.  The iteration can be
+ *     completely traversed in O(min(E, F)) time, where E is the total number
+ *     of edges touching one node and F is the total number of edges touching
+ *     the other node.</td>
  * </tr></table></blockquote>
  */
 public final class DynamicGraphFactory
