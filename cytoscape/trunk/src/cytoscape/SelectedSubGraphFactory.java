@@ -75,7 +75,7 @@ protected void createSubgraph ()
   NodeCursor nc = parentGraph.selectedNodes (); 
   
   // There must be a canonicalName -> node entry for every node in the graph
-  assert (parentNodeAttributes.getNameMap().size() == parentGraph.nodeCount ());
+  assert parentNodeAttributes.getNameMap().size() == parentGraph.nodeCount ();
   
   subgraph = new Graph2D();
   
@@ -113,7 +113,7 @@ protected void createSubgraph ()
 protected void createEdgesWithAttributes ()
 {   
     // there must be a canonicalName -> edge entry for every edge in the graph
-  assert (parentEdgeAttributes.getNameMap().size() == parentGraph.edgeCount ());
+  assert parentEdgeAttributes.getNameMap().size() == parentGraph.edgeCount ();
 
   newEdgeAttributes = new GraphObjAttributes ();
 
