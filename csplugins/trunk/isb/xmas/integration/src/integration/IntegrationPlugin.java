@@ -1,6 +1,7 @@
 package integration;
 
 import cytoscape.*;
+import cytoscape.plugin.*;
 import integration.view.IntegrationWindow;
 import javax.swing.*;
 

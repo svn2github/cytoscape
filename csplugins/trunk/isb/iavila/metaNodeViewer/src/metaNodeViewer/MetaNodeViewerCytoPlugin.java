@@ -9,7 +9,7 @@ import giny.view.*;
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.CyNetwork;
 import cytoscape.view.CyWindow;
-import cytoscape.AbstractPlugin;
+import cytoscape.plugin.AbstractPlugin;
 import cytoscape.util.*;
 
 public class MetaNodeViewerCytoPlugin extends AbstractPlugin{

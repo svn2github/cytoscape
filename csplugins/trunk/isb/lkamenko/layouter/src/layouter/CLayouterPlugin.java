@@ -12,7 +12,7 @@ import giny.model.Node;
 import giny.view.GraphView;
 import giny.view.NodeView;
 
-import cytoscape.AbstractPlugin;
+import cytoscape.plugin.AbstractPlugin;
 import cytoscape.GraphObjAttributes;
 import cytoscape.data.CyNetwork;
 import cytoscape.view.CyWindow;
