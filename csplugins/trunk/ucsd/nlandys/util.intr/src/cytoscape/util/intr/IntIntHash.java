@@ -59,28 +59,33 @@ public final class IntIntHash
    * an existing value whose key is the same as the one specified.
    * Returns the old value associated with the specified key or -1 if no value
    * is associated with specified key at the time of this call.<p>
-   * Only non-negative keys and values can be passed to this method.
-   * Behavior is undefined if negative values are passed to put(int, int).<p>
    * Insertions into the hashtable are performed in [amortized] time
    * complexity O(1).
+   * @exception IllegalArgumentException if either key or value is negative.
    */
   public final int put(final int key, final int value)
   {
     checkSize();
     int incr = 0;
     int index;
-    for (index = key % (((~key) >>> 31) * m_size);
-         m_keys[index] >= 0 && m_keys[index] != key;
-         index = (index + incr) % m_size) {
-      // Caching increment, which is an expensive operation, at the expense
-      // of having an if statement.  I don't want to compute the increment
-      // before this 'for' loop in case we get an immediate hit.
-      if (incr == 0) { incr = 1 + (key % (m_size - 1)); } }
+    try {
+      for (index = key % (((~key) >>> 31) * m_size);
+           m_keys[index] >= 0 && m_keys[index] != key;
+           index = (index + incr) % m_size) {
+        // Caching increment, which is an expensive operation, at the expense
+        // of having an if statement.  I don't want to compute the increment
+        // before this 'for' loop in case we get an immediate hit.
+        if (incr == 0) { incr = 1 + (key % (m_size - 1)); } } }
+    catch (ArithmeticException exc) {
+      throw new IllegalArgumentException("key is negative"); }
     final int returnVal = m_vals[index];
     // One if and only if value is non-negative.
     final int oneOrZero = (~value) >>> 31;
-    // Make this throw ArrayIndexOutOfBoundException if value is negative.
-    m_vals[(index * oneOrZero) + (oneOrZero - 1)] = value;
+    try {
+      // Make this throw ArrayIndexOutOfBoundException if value is negative.
+      m_vals[(index * oneOrZero) + (oneOrZero - 1)] = value; }
+    catch (ArrayIndexOutOfBoundsException exc) {
+      throw new IllegalArgumentException("value is negative"); }
     m_keys[index] = key;
     m_elements += (returnVal >>> 31);
     return returnVal;
@@ -89,20 +94,21 @@ public final class IntIntHash
   /**
    * Returns the value bound to the specified key or -1 if no value is
    * currently bound to the specified key.<p>
-   * It is an error to pass negative keys to this method.  Passing
-   * negative values to this method will result in undefined behavior of
-   * this hashtable.<p>
    * Searches in this hashtable are performed in [amortized] time
    * complexity O(1).
+   * @exception IllegalArgumentException if key is negative.
    */
   public final int get(final int key)
   {
     int incr = 0;
     int index;
-    for (index = key % (((~key) >>> 31) * m_size);
-         m_keys[index] >= 0 && m_keys[index] != key;
-         index = (index + incr) % m_size) {
-      if (incr == 0) { incr = 1 + (key % (m_size - 1)); } }
+    try {
+      for (index = key % (((~key) >>> 31) * m_size);
+           m_keys[index] >= 0 && m_keys[index] != key;
+           index = (index + incr) % m_size) {
+        if (incr == 0) { incr = 1 + (key % (m_size - 1)); } } }
+    catch (ArithmeticException exc) {
+      throw new IllegalArgumentException("key is negative"); }
     return m_vals[index];
   }
 
@@ -115,7 +121,7 @@ public final class IntIntHash
    * one method will not invalidate this enumeration: the get(int) method.
    * The returned enumerator has absolutely no effect on the underlying
    * hashtable.<p>
-   * This method returns a value in constant time.  The returned enumerator
+   * This method returns in constant time.  The returned enumerator
    * returns successive keys in [amortized] time complexity O(1).
    */
   public final IntEnumerator keys()
@@ -132,7 +138,7 @@ public final class IntIntHash
    * one method will not invalidate this enumeration: the get(int) method.
    * The returned enumerator has absolutely no effect on the underlying
    * hashtable.<p>
-   * This method returns a value in constant time.  The returned enumerator
+   * This method returns in constant time.  The returned enumerator
    * returns successive values in [amortized] time complexity O(1).
    */
   public final IntEnumerator values()
