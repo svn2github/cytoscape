@@ -461,6 +461,18 @@ public final class AllRootGraphMethodsTest
       (root.getNode(nodeInx[1]), root.getNode(nodeInx[4]));
     if (edgesList.size() != 0)
       throw new IllegalStateException("edges List not of size 0");
+
+    // edgesList(int, int, boolean).
+    edgesList = root.edgesList(nodeInx[2], nodeInx[0], true);
+    if (edgesList.size() != 1)
+      throw new IllegalStateException("edges List not of size 1");
+    if (((Edge) edgesList.get(0)).getRootGraphIndex() != edgeInx[2])
+      throw new IllegalStateException("wrong edge");
+    edgesList = root.edgesList(nodeInx[4], nodeInx[3], false);
+    if (edgesList.size() != 0)
+      throw new IllegalStateException("edges List not of size 0");
+    edgesList = root.edgesList(99, minNodeInx - 1, true);
+    if (edgesList != null) throw new IllegalStateException("not null");
   }
 
 }
