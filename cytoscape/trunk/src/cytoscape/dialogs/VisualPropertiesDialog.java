@@ -33,6 +33,7 @@ public class VisualPropertiesDialog extends JDialog {
     LineTypePopupButton lineTypeDefault;
     AttributeMapper aMapper;
     MutableColor nColor;
+    MutableColor bColor;
     MutableColor ppColor;
     MutableColor pdColor;
     MutableColor bgColor;
@@ -50,6 +51,7 @@ public VisualPropertiesDialog (Frame parentFrame,
 
   aMapper = mapper;
   nColor = new MutableColor(getBasicColor(VizMapperCategories.NODE_FILL_COLOR));
+  bColor = new MutableColor(getBasicColor(VizMapperCategories.NODE_BORDER_COLOR));
   ppColor = new MutableColor(getDMColor(VizMapperCategories.EDGE_COLOR, "pp"));
   pdColor = new MutableColor(getDMColor(VizMapperCategories.EDGE_COLOR, "pd"));
   bgColor = new MutableColor(getBasicColor(VizMapperCategories.BG_COLOR));
@@ -82,18 +84,25 @@ public VisualPropertiesDialog (Frame parentFrame,
   gridbag.setConstraints(colorButton,c);
   mainPanel.add(colorButton);
 
+  JButton borderColorButton = new JButton("Choose Node Border Color");
+  borderColorButton.addActionListener(new GeneralColorDialogListener(this,bColor,"Choose a Node Border Color"));
+  c.gridx=0;
+  c.gridy=2;
+  gridbag.setConstraints(borderColorButton,c);
+  mainPanel.add(borderColorButton);
+
   JButton bgColorButton
       = new JButton("Choose Background Color");
   bgColorButton.addActionListener(new GeneralColorDialogListener(this,bgColor,"Choose a Background Color"));
   c.gridx=0;
-  c.gridy=2;
+  c.gridy=3;
   gridbag.setConstraints(bgColorButton,c);
   mainPanel.add(bgColorButton);
 
   JPanel labelTextPanel
       = new LabelTextPanel(nodeAttribs,localNodeLabelKey);
   c.gridx=0;
-  c.gridy=3;
+  c.gridy=4;
   gridbag.setConstraints(labelTextPanel,c);
   mainPanel.add(labelTextPanel);
   
@@ -103,7 +112,7 @@ public VisualPropertiesDialog (Frame parentFrame,
 	   ((Byte)aMapper.getDefaultValue(VizMapperCategories.NODE_SHAPE)).byteValue(),
 	   this);
   c.gridx=0;
-  c.gridy=4;
+  c.gridy=5;
   gridbag.setConstraints(shapeDefault,c);
   mainPanel.add(shapeDefault);
 
@@ -113,7 +122,7 @@ public VisualPropertiesDialog (Frame parentFrame,
 	   (LineType)aMapper.getDefaultValue(VizMapperCategories.EDGE_LINETYPE),
 	   this);
   c.gridx=0;
-  c.gridy=5;
+  c.gridy=6;
   gridbag.setConstraints(lineTypeDefault,c);
   mainPanel.add(lineTypeDefault);
 
@@ -123,7 +132,7 @@ public VisualPropertiesDialog (Frame parentFrame,
 	   ((Integer)aMapper.getDefaultValue(VizMapperCategories.NODE_HEIGHT)).intValue(),
 	   500);
   c.gridx=0;
-  c.gridy=6;
+  c.gridy=7;
   gridbag.setConstraints(sizeDefault,c);
   mainPanel.add(sizeDefault);
 
@@ -131,14 +140,14 @@ public VisualPropertiesDialog (Frame parentFrame,
   JButton applyButton = new JButton ("Apply");
   applyButton.addActionListener (new ApplyAction ());
   c.gridx=0;
-  c.gridy=7;
+  c.gridy=8;
   gridbag.setConstraints(applyButton,c);
   mainPanel.add (applyButton);
 
   JButton cancelButton = new JButton ("Cancel");
   cancelButton.addActionListener (new CancelAction ());
   c.gridx=1;
-  c.gridy=7;
+  c.gridy=8;
   gridbag.setConstraints(cancelButton,c);
   mainPanel.add (cancelButton);
 
@@ -160,7 +169,7 @@ public class ApplyAction extends AbstractAction {
       Object o4 = aMapper.setDefaultValue(VizMapperCategories.EDGE_LINETYPE, lineTypeDefault.getLineType());
       Object o5 = aMapper.setDefaultValue(VizMapperCategories.NODE_HEIGHT, sizeDefault.getInteger());
       Object o6 = aMapper.setDefaultValue(VizMapperCategories.NODE_WIDTH, sizeDefault.getInteger());
-
+      Object o7 = aMapper.setDefaultValue(VizMapperCategories.NODE_BORDER_COLOR, bColor.getColor());
 
       EdgeArrowColor.removeThenAddEdgeColor(aMapper,"pp",ppColor.getColor());
       EdgeArrowColor.removeThenAddEdgeColor(aMapper,"pd",pdColor.getColor());
