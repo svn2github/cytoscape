@@ -207,7 +207,9 @@ public void redrawGraph (boolean doLayout)
   if (doLayout) {
     applyLayout(false);
   }
-  graphView.updateView();
+  graphView.updateView(); //forces the view to update it's contents
+  /* paintImmediately() is needed because sometimes updates can be buffered */
+  graphView.paintImmediately(0,0,graphView.getWidth(),graphView.getHeight());
   int nodeCount = graphView.getGraph2D().nodeCount();
   int edgeCount = graphView.getGraph2D().edgeCount();
   infoLabel.setText ("  Nodes: " + nodeCount + " Edges: " + edgeCount);
