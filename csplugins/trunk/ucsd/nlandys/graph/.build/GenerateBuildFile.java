@@ -44,7 +44,7 @@ public class GenerateBuildFile
     out.println();
     out.println("=========================================================================== -->");
     out.println();
-    out.println("<project name=\"" + description + "\" default=\"jarTarget\">");
+    out.println("<project name=\"" + description + "\" default=\"" + jarTarget + "\">");
     out.println();
 
     writeProperties(out, sourceDir, libDir, jarFile,
