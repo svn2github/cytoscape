@@ -453,28 +453,30 @@ class FGraphPerspective implements GraphPerspective
 
   public java.util.List neighborsList(Node node) {
     if (node.getRootGraph() == m_root) {
-      final int nodeIndex = node.getRootGraphIndex();
-      int[] adjacentEdgeIndices =
-        getAdjacentEdgeIndicesArray(nodeIndex, true, true, true);
-      if (adjacentEdgeIndices == null) return null;
-      m_hash.empty();
-      final IntHash neighbors = m_hash;
-      for (int i = 0; i < adjacentEdgeIndices.length; i++) {
-        int neighborIndex = (nodeIndex ^
-                             getEdgeSourceIndex(adjacentEdgeIndices[i]) ^
-                             getEdgeTargetIndex(adjacentEdgeIndices[i]));
-        neighbors.put(~neighborIndex); }
-      IntEnumerator enum = neighbors.elements();
-      java.util.ArrayList list = new java.util.ArrayList(enum.numRemaining());
-      while (enum.numRemaining() > 0)
-        list.add(getNode(~(enum.nextInt())));
-      return list; }
+      final int[] neighInx = neighborsArray(node.getRootGraphIndex());
+      final java.util.ArrayList returnThis =
+        new java.util.ArrayList(neighInx.length);
+      for (int i = 0; i < neighInx.length; i++)
+        returnThis.add(getNode(neighInx[i]));
+      return returnThis; }
     else { return null; } }
 
-  public int[] neighborsArray(int perspNodeInx)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  public int[] neighborsArray(final int nodeIndex) {
+    int[] adjacentEdgeIndices =
+      getAdjacentEdgeIndicesArray(nodeIndex, true, true, true);
+    if (adjacentEdgeIndices == null) return null;
+    m_hash.empty();
+    final IntHash neighbors = m_hash;
+    for (int i = 0; i < adjacentEdgeIndices.length; i++) {
+      int neighborIndex = (nodeIndex ^
+                           getEdgeSourceIndex(adjacentEdgeIndices[i]) ^
+                           getEdgeTargetIndex(adjacentEdgeIndices[i]));
+      neighbors.put(~neighborIndex); }
+    IntEnumerator enum = neighbors.elements();
+    final int[] returnThis = new int[enum.numRemaining()];
+    int index = -1;
+    while (enum.numRemaining() > 0) returnThis[++index] = ~(enum.nextInt());
+    return returnThis; }
 
   public boolean isNeighbor(Node aNodel, Node anotherNode)
   {
