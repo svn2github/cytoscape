@@ -39,7 +39,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import java.text.*;
-import java.lang.Math.*;
+import java.lang.Math;
 
 public class NewSlider extends JPanel{
     private int minimum,maximum,current, sigFigs;

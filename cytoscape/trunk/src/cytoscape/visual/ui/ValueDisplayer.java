@@ -4,7 +4,7 @@
 // $Author$
 //----------------------------------------------------------------------------
 package cytoscape.visual.ui;
-//----------------------------------------------------------------------------
+
 import cytoscape.visual.Arrow;
 import cytoscape.visual.LineType;
 import cytoscape.visual.ShapeNodeRealizer;
@@ -17,7 +17,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.text.DecimalFormat;
 import java.util.HashMap;
-//----------------------------------------------------------------------------
+
 /**
  * Given an Object, figures out the class of the object and creates a JButton
  * suitable for displaying the value of that object. When the button is

@@ -48,7 +48,8 @@ public class DisplayBrowserAction extends CytoscapeAction  {
     Iterator ni = nvlist.iterator();
     while ( ni.hasNext() ) {
       NodeView nview = ( NodeView )ni.next();
-      giny.model.Node n = nview.getNode();
+      //giny.model.Node n = nview.getNode();
+      giny.model.Node n = Cytoscape.getRootGraph().getNode( nview.getRootGraphIndex() );
       nodeList.add(n);
     }//while
         
@@ -60,7 +61,8 @@ public class DisplayBrowserAction extends CytoscapeAction  {
     Iterator ei = evList.iterator();
     while (ei.hasNext()) {
       EdgeView eview =(EdgeView) ei.next();
-      giny.model.Edge e = eview.getEdge();
+      //giny.model.Edge e = eview.getEdge();
+      giny.model.Edge e = Cytoscape.getRootGraph().getEdge( eview.getRootGraphIndex() );
       edgeList.add(e);
     }//while
         

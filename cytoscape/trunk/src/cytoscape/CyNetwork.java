@@ -59,6 +59,9 @@ public class CyNetwork
   }
 
 
+  ////////////////////////////////////////
+  // GraphPerspectiveChangeListener
+
 
   ////////////////////
   // CyNetwork methods
@@ -702,7 +705,8 @@ public class CyNetwork
   /**
    * Adds a edge to this Network, by looking it up via the 
    * given attribute and value
-   * @return the Network Index of this edge
+   * @return the Network Ind 
+ex of this edge
    */
   public int addEdge ( String attribute, Object value ) {
     return 0;
@@ -727,11 +731,11 @@ public class CyNetwork
   // GraphPerspective methods
 
   public void addGraphPerspectiveChangeListener ( GraphPerspectiveChangeListener listener ) {
-    listeners.add( listener );
+    gp.addGraphPerspectiveChangeListener( listener );
   }
   
   public void removeGraphPerspectiveChangeListener ( GraphPerspectiveChangeListener listener ) {
-    listeners.remove( listener );
+    gp.removeGraphPerspectiveChangeListener( listener );
   }
 
   /**
