@@ -354,15 +354,21 @@ class FGraphPerspective implements GraphPerspective
     return returnThis; }
 
   public boolean containsNode(Node node) {
+    int nativeInx;
     return node.getRootGraph() == m_root &&
-      !(m_rootToNativeNodeInxMap.get(~(node.getRootGraphIndex())) < 0); }
+      (nativeInx = m_rootToNativeNodeInxMap.get
+       (~(node.getRootGraphIndex()))) >= 0 &&
+      nativeInx != Integer.MAX_VALUE; }
 
   public boolean containsNode(Node node, boolean recurse) {
     throw new UnsupportedOperationException("meta nodes not yet supported"); }
 
   public boolean containsEdge(Edge edge) {
+    int nativeInx;
     return edge.getRootGraph() == m_root &&
-      !(m_rootToNativeEdgeInxMap.get(~(edge.getRootGraphIndex())) < 0); }
+      (nativeInx = m_rootToNativeEdgeInxMap.get
+       (~(edge.getRootGraphIndex()))) >= 0 &&
+      nativeInx != Integer.MAX_VALUE; }
 
   public boolean containsEdge(Edge edge, boolean recurse) {
     throw new UnsupportedOperationException("meta nodes not yet supported"); }
