@@ -327,6 +327,47 @@ public final class AllGraphPerspectiveMethodsTest
         persp.isNeighbor(minNodeInx - 1, nodeInx[0]) ||
         persp.isNeighbor(0, 1))
       throw new IllegalStateException("extreme neighbors");
+
+    // edgeExists(Node, Node).
+    if (persp.edgeExists(persp.getNode(nodeInx[3]), persp.getNode(nodeInx[1])))
+      throw new IllegalStateException("edge exists");
+    if (persp.edgeExists(persp.getNode(nodeInx[0]), root2Node))
+      throw new IllegalStateException("edge exists with node of other graph");
+    if (!persp.edgeExists(persp.getNode(nodeInx[0]),
+                          persp.getNode(nodeInx[1])))
+      throw new IllegalStateException("edge does not exist");
+    if (!persp.edgeExists(persp.getNode(nodeInx[1]),
+                          persp.getNode(nodeInx[2])))
+      throw new IllegalStateException("edge does not exist");
+    if (persp.edgeExists(persp.getNode(nodeInx[2]), nodeNotInPersp) ||
+        !root.edgeExists(persp.getNode(nodeInx[2]), nodeNotInPersp))
+      throw new IllegalStateException("bad edgeExists");
+
+    // edgeExists(int, int).
+    if (persp.edgeExists(nodeInx[1], nodeInx[3]))
+      throw new IllegalStateException("edge exists in RootGraph, not persp");
+    if (persp.edgeExists(minNodeInx - 1, nodeInx[1]))
+      throw new IllegalStateException("bad edgeExists()");
+    if (persp.edgeExists(0, 0)) throw new IllegalStateException("0 -> 0");
+    if (persp.edgeExists(nodeInx[2], nodeInx[3]))
+      throw new IllegalStateException("edge exists in opposite direction");
+    if (persp.edgeExists(nodeInx[4], nodeInx[2]))
+      throw new IllegalStateException("edge exists on node with no edge");
+    if (persp.edgeExists(nodeInx[0], nodeInx[0]))
+      throw new IllegalStateException("self-edge exists");
+    if (persp.edgeExists(98, 99))
+      throw new IllegalStateException("edge exists between positive nodes");
+    if (!persp.edgeExists(nodeInx[1], nodeInx[1]))
+      throw new IllegalStateException("self-edge does not exist [undirected]");
+    if (!persp.edgeExists(nodeInx[2], nodeInx[2]))
+      throw new IllegalStateException("self-edge does not exist [directed]");
+    if (!persp.edgeExists(nodeInx[3], nodeInx[2]))
+      throw new IllegalStateException("edge does not exist");
+    if (!persp.edgeExists(nodeInx[1], nodeInx[0]))
+      throw new IllegalStateException("edge does not exist");
+    if (persp.edgeExists(Integer.MAX_VALUE, Integer.MIN_VALUE) ||
+        persp.edgeExists(Integer.MIN_VALUE, Integer.MAX_VALUE))
+      throw new IllegalStateException("MIN_VALUE and MAX_VALUE edge exists");
   }
 
 }
