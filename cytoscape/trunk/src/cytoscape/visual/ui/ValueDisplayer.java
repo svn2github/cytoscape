@@ -354,9 +354,12 @@ public class ValueDisplayer extends JButton {
 	ImageIcon[] icons = null;
 	HashMap iToS = null;
 	HashMap sToI = null;
+
+  MiscDialog md = new MiscDialog();
+
 	switch (type) {
 	case ARROW:
-	    icons = MiscDialog.getArrowIcons();
+	    icons = md.getArrowIcons();
 	    iToS = MiscDialog.getArrowToStringHashMap(25);
 	    sToI = MiscDialog.getStringToArrowHashMap(25);
 	    break;
@@ -551,7 +554,7 @@ public class ValueDisplayer extends JButton {
 				      new Byte(ShapeNodeRealizer.ELLIPSE),
 				      NODESHAPE);
 	case ARROW:
-	    return getDisplayForIcons(parent, title, Arrow.STANDARD, ARROW);
+	    return getDisplayForIcons(parent, title, Arrow.NONE, ARROW);
 	case STRING:
 	    return getDisplayForString(parent, title, null);
 	case DOUBLE:

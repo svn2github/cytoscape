@@ -23,7 +23,7 @@ public class GenericEdgeArrowCalculator extends EdgeCalculator implements EdgeAr
 
         Class c = null;
 	//c = Arrow.class;  // this line won't obfuscate; the one below does.
-	c = Arrow.STANDARD.getClass();
+	c = Arrow.NONE.getClass();
 	if (!c.isAssignableFrom(m.getRangeClass()) ) {
             String s = "Invalid Calculator: Expected class " + c.toString()
 		+ ", got " + m.getRangeClass().toString();

@@ -24,7 +24,7 @@
  ** along with this library; if not, write to the Free Software Foundation,
  ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  **/
- //----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 // $Revision$
 // $Date$
 // $Author$
@@ -39,64 +39,135 @@ import giny.view.EdgeView;
  */
 public class Arrow implements Serializable {
     
-    public static final Arrow NONE = new Arrow("NONE");
-    public static final Arrow STANDARD = new Arrow("STANDARD");
-    public static final Arrow DELTA = new Arrow("DELTA");
-    public static final Arrow DIAMOND = new Arrow("DIAMOND");
-    public static final Arrow SHORT = new Arrow("SHORT");
-    public static final Arrow WHITE_DELTA = new Arrow("WHITE_DELTA");
-    public static final Arrow WHITE_DIAMOND = new Arrow("WHITE_DIAMOND");
-    public static final Arrow SCALABLE = new Arrow("SCALABLE");
+  public static final Arrow NONE = new Arrow("NONE");
+
+  public static final Arrow BLACK_DIAMOND = new Arrow("BLACK_DIAMOND");
+  public static final Arrow WHITE_DIAMOND = new Arrow("WHITE_DIAMOND");
+  public static final Arrow COLOR_DIAMOND = new Arrow("COLOR_DIAMOND");
+
+  public static final Arrow BLACK_DELTA = new Arrow("BLACK_DELTA");
+  public static final Arrow WHITE_DELTA = new Arrow("WHITE_DELTA");
+  public static final Arrow COLOR_DELTA = new Arrow("COLOR_DELTA");
+
+  public static final Arrow BLACK_ARROW = new Arrow("BLACK_ARROW");
+  public static final Arrow WHITE_ARROW = new Arrow("WHITE_ARROW");
+  public static final Arrow COLOR_ARROW = new Arrow("COLOR_ARROW");
+
+  public static final Arrow BLACK_T = new Arrow("BLACK_T");
+  public static final Arrow WHITE_T = new Arrow("WHITE_T");
+  public static final Arrow COLOR_T = new Arrow("COLOR_T");
+
+  public static final Arrow BLACK_CIRCLE = new Arrow("BLACK_CIRCLE");
+  public static final Arrow WHITE_CIRCLE = new Arrow("WHITE_CIRCLE");
+  public static final Arrow COLOR_CIRCLE = new Arrow("COLOR_CIRCLE");
+
+
+  String name;
     
-    String name;
+  public Arrow(String name) {this.name = name;}
     
-    public Arrow(String name) {this.name = name;}
-    
-    public int getGinyArrow() {
-        if (name.equals("DIAMOND") || name.equals("WHITE_DIAMOND")) {
-          return EdgeView.BLACK_DIAMOND;
-        } else if (name.equalsIgnoreCase("short")) {
-          return EdgeView.BLACK_ARROW;
-        } else if (name.equalsIgnoreCase("none")) {
-            //should be none, but Giny doesn't have a none yet
-          return EdgeView.NO_END;
-        } else {
-          return EdgeView.BLACK_DELTA;
-        }
+  public int getGinyArrow() {
+
+    if (  name.equals("WHITE_DIAMOND")) {
+      return EdgeView.WHITE_DIAMOND;
+    } else if (  name.equals("BLACK_DIAMOND")) {
+      return EdgeView.BLACK_DIAMOND;
+    } else if (  name.equals("WHITE_DIAMOND")) {
+      return EdgeView.EDGE_COLOR_DIAMOND;
+    } 
+
+    else if (  name.equals("WHITE_DELTA")) {
+      return EdgeView.WHITE_DELTA;
+    } else if (  name.equals("BLACK_DELTA")) {
+      return EdgeView.BLACK_DELTA;
+    } else if (  name.equals("WHITE_DELTA")) {
+      return EdgeView.EDGE_COLOR_DELTA;
+    } 
+
+    else if (  name.equals("WHITE_ARROW")) {
+      return EdgeView.WHITE_ARROW;
+    } else if (  name.equals("BLACK_ARROW")) {
+      return EdgeView.BLACK_ARROW;
+    } else if (  name.equals("WHITE_ARROW")) {
+      return EdgeView.EDGE_COLOR_ARROW;
+    } 
+
+    else if (  name.equals("WHITE_T")) {
+      return EdgeView.WHITE_T;
+    } else if (  name.equals("BLACK_T")) {
+      return EdgeView.BLACK_T;
+    } else if (  name.equals("WHITE_T")) {
+      return EdgeView.EDGE_COLOR_T;
+    } 
+
+
+    else if (  name.equals("WHITE_CIRCLE")) {
+      return EdgeView.WHITE_CIRCLE;
+    } else if (  name.equals("BLACK_CIRCLE")) {
+      return EdgeView.BLACK_CIRCLE;
+    } else if (  name.equals("WHITE_CIRCLE")) {
+      return EdgeView.EDGE_COLOR_CIRCLE;
+    } 
+
+    else {
+      return EdgeView.NO_END;
     }
+      
+  }
     
-    public String getName() {return name;}
-    public String toString() {return getName();}
+  public String getName() {return name;}
+  public String toString() {return getName();}
     
-    public static Arrow parseArrowText(String text) {
-        String arrowtext = text.trim();
+  public static Arrow parseArrowText(String text) {
+    String arrowtext = text.trim();
         
-        if(arrowtext.equalsIgnoreCase("delta")) {
-            return Arrow.DELTA;
-        } else if(arrowtext.equalsIgnoreCase("standard")) {
-            return Arrow.STANDARD;
-        } else if(arrowtext.equalsIgnoreCase("arrow")) {
-            return Arrow.STANDARD;
-        }  else if(arrowtext.equalsIgnoreCase("diamond")) {
-            return Arrow.DIAMOND;
-        } else if(arrowtext.equalsIgnoreCase("short")) {
-            return Arrow.SHORT;
-        } else if(arrowtext.equalsIgnoreCase("white_delta")) {
-            return Arrow.WHITE_DELTA;
-        } else if(arrowtext.equalsIgnoreCase("whitedelta")) {
-            return Arrow.WHITE_DELTA;
-        } else if(arrowtext.equalsIgnoreCase("white_diamond")) {
-            return Arrow.WHITE_DIAMOND;
-        } else if(arrowtext.equalsIgnoreCase("whitediamond")) {
-            return Arrow.WHITE_DIAMOND;
-        } else if(arrowtext.equalsIgnoreCase("none")) {
-            return Arrow.NONE;
-        } else if(arrowtext.startsWith("scalableArrow")) {
-            return Arrow.SCALABLE;
-        }
-        else {
-            return Arrow.NONE;
-        }
-    } // parseArrowText
+      if (  arrowtext.equals("WHITE_DIAMOND")) {
+      return Arrow.WHITE_DIAMOND;
+    } else if (  arrowtext.equals("BLACK_DIAMOND")) {
+      return Arrow.BLACK_DIAMOND;
+    } else if (  arrowtext.equals("WHITE_DIAMOND")) {
+      return Arrow.COLOR_DIAMOND;
+    } 
+
+    else if (  arrowtext.equals("WHITE_DELTA")) {
+      return Arrow.WHITE_DELTA;
+    } else if (  arrowtext.equals("BLACK_DELTA")) {
+      return Arrow.BLACK_DELTA;
+    } else if (  arrowtext.equals("WHITE_DELTA")) {
+      return Arrow.COLOR_DELTA;
+    } 
+
+    else if (  arrowtext.equals("WHITE_ARROW")) {
+      return Arrow.WHITE_ARROW;
+    } else if (  arrowtext.equals("BLACK_ARROW")) {
+      return Arrow.BLACK_ARROW;
+    } else if (  arrowtext.equals("WHITE_ARROW")) {
+      return Arrow.COLOR_ARROW;
+    } 
+
+    else if (  arrowtext.equals("WHITE_T")) {
+      return Arrow.WHITE_T;
+    } else if (  arrowtext.equals("BLACK_T")) {
+      return Arrow.BLACK_T;
+    } else if (  arrowtext.equals("WHITE_T")) {
+      return Arrow.COLOR_T;
+    } 
+
+
+    else if (  arrowtext.equals("WHITE_CIRCLE")) {
+      return Arrow.WHITE_CIRCLE;
+    } else if (  arrowtext.equals("BLACK_CIRCLE")) {
+      return Arrow.BLACK_CIRCLE;
+    } else if (  arrowtext.equals("WHITE_CIRCLE")) {
+      return Arrow.COLOR_CIRCLE;
+    } 
+
+    else {
+      return Arrow.NONE;
+    }
+
+
+  
+  } // parseArrowText
 }
 
