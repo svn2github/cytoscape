@@ -13,6 +13,7 @@ import giny.model.GraphPerspectiveChangeListener;
 import giny.model.GraphPerspectiveChangeEvent;
 import giny.model.Node;
 import giny.model.Edge;
+import giny.model.RootGraph;
 import giny.filter.Filter;
 //---------------------------------------------------------------------------
 /**
@@ -300,10 +301,15 @@ public class FlagFilter implements Filter, GraphPerspectiveChangeListener {
             //GINY bug: sometimes we get an event that has valid edge indices
             //but the Edge array contains null objects
             //for now, get around this by converting indices to edges ourselves
-            GraphPerspective source = (GraphPerspective)event.getSource();
+            Object eventSource = event.getSource();
+            RootGraph root;
+            if (eventSource instanceof RootGraph)
+              root = (RootGraph) eventSource;
+            else
+              root = ((GraphPerspective) eventSource).getRootGraph();
             int[] indices = event.getHiddenEdgeIndices();
             for (int index = 0; index < indices.length; index++) {
-                Edge edge = source.getRootGraph().getEdge(indices[index]);
+                Edge edge = root.getEdge(indices[index]);
                 boolean setChanged = flaggedEdges.remove(edge);
                 if (setChanged) {//the hidden edge was actually flagged
                     if (edgeChanges == null) {edgeChanges = new HashSet();}
