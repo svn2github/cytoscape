@@ -14,7 +14,7 @@ edge.color.interaction.map.pd=255,0,0
 edge.color.interaction.map.gl=0,225,0
 edge.color.interaction.map.gd=0,225,255
 edge.color.interaction.map.cr=225,150,0
-edge.color.interaction.map.rc=150,150,50
+edge.color.interaction.map.rc=150,150,5
 edge.color.interaction.map.pr=255,0,255
 
 #---------------------------------------------------------------------

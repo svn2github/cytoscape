@@ -58,6 +58,10 @@ import cytoscape.util.MutableString;
 import cytoscape.filters.*;
 import cytoscape.filters.dialogs.*;
 
+import java.util.Iterator;
+import java.util.Set;
+import java.util.Map;
+import java.util.HashMap;
 //-----------------------------------------------------------------------------------
 public class CytoscapeWindow extends JPanel implements FilterDialogClient { // implements VizChooserClient {
 
@@ -2115,17 +2119,17 @@ protected class MenuFilterAction extends MainFilterDialogAction  {
     }
 }
 protected String[] getInteractionTypes() {
-    String[] interactionTypes = {
-	    "pd", // protein-dna
-	    "pp", // protein-protein
-	    "gl", // genetic, synthetic lethal
-	    "gd", // genetic, synthetic growth defect
-	    "cr", // compound-reaction
-	    "rc", // reaction-compound
-	    "pr", // protein-reaction
-	    "rr", // reaction-reaction
-	    "gp", // genetic, predicted
-	};
+    String[] interactionTypes;
+    // figure out the interaction types dynamically
+    DiscreteMapper typesColor = (DiscreteMapper) vizMapper.getValueMapper(VizMapperCategories.EDGE_COLOR);
+    Map typeMap = new HashMap(typesColor.getValueMap());
+    Set typeIds = typeMap.keySet();
+    interactionTypes = new String[typeIds.size()];
+    Iterator iter = typeIds.iterator();
+    for(int i = 0; iter.hasNext(); i++) {
+	String type = (String)iter.next();
+	interactionTypes[i] = type;
+    }
     return interactionTypes;
 }
 
