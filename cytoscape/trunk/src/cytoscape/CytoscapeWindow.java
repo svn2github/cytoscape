@@ -912,6 +912,8 @@ public VisualMappingManager getVizMapManager ()
   return this.vizMapper;
 }
 //------------------------------------------------------------------------------
+public VizMapUI getVizMapUI() {return vizMapUI;}
+//------------------------------------------------------------------------------
 /*
 public VizMapperCategories getVizMapperCategories ()
 {
