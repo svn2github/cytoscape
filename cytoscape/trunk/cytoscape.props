@@ -9,8 +9,13 @@
 
 edge.color.controller=interaction
 edge.color.interaction.type=discrete
-edge.color.interaction.map.pp=0,0,255
+edge.color.interaction.map.pp=0,0,225
 edge.color.interaction.map.pd=255,0,0
+edge.color.interaction.map.gl=0,225,0
+edge.color.interaction.map.gd=0,225,255
+edge.color.interaction.map.cr=225,150,0
+edge.color.interaction.map.rc=150,150,50
+edge.color.interaction.map.pr=255,0,255
 
 #---------------------------------------------------------------------
 # interaction values also control the decoration at the end of
@@ -38,9 +43,9 @@ edge.linetype.interaction.map.pp=dashed2
 #--------------------------------------------------------------------
 # window and graph defaults:
 
-background.color.default=230,230,205
-node.fillColor.default=250,255,255
-node.borderColor.default=255,0,0
+background.color.default=225,225,225
+node.fillColor.default=200,200,200
+node.borderColor.default=25,25,25
 node.height.default=20
 node.width.default=20
 node.shape.default=circle
@@ -67,7 +72,6 @@ node.fillColor.expression.bv2.domainvalue=1.0
 node.fillColor.expression.bv2.lesser=0,0,255
 node.fillColor.expression.bv2.equal=0,0,255
 node.fillColor.expression.bv2.greater=0,255,255
-
 
 #--------------------------------------------------------------------
 # plugins. for each plugin, specify

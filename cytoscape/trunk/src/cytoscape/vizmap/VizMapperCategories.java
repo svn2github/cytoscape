@@ -113,6 +113,7 @@ public class VizMapperCategories implements AttributeMapperCategories {
 	returnVal.put( NODE_WIDTH, new Integer(70) );
 	returnVal.put( NODE_SHAPE, new Byte(ShapeNodeRealizer.RECT) );
 	returnVal.put( EDGE_COLOR, new Color(0,0,0) );
+	returnVal.put( BG_COLOR, new Color(255,255,255) );
 	returnVal.put( EDGE_LINETYPE, LineType.LINE_1 );
 	returnVal.put( EDGE_SOURCE_DECORATION, Arrow.NONE );
 	returnVal.put( EDGE_TARGET_DECORATION, Arrow.NONE );
@@ -129,6 +130,7 @@ public class VizMapperCategories implements AttributeMapperCategories {
 	returnVal.put( NODE_WIDTH, "node.width" );
 	returnVal.put( NODE_SHAPE, "node.shape" );
 	returnVal.put( EDGE_COLOR, "edge.color" );
+	returnVal.put( BG_COLOR, "background.color" );
 	returnVal.put( EDGE_LINETYPE, "edge.linetype" );
 	returnVal.put( EDGE_SOURCE_DECORATION, "edge.sourceDecoration" );
 	returnVal.put( EDGE_TARGET_DECORATION, "edge.targetDecoration" );
@@ -143,7 +145,8 @@ public class VizMapperCategories implements AttributeMapperCategories {
 	Object returnVal = null;
 	if ( vizAttribute.equals(NODE_FILL_COLOR) ||
 	     vizAttribute.equals(NODE_BORDER_COLOR) ||
-	     vizAttribute.equals(EDGE_COLOR) ) {
+	     vizAttribute.equals(EDGE_COLOR) ||
+	     vizAttribute.equals(BG_COLOR)) {
 	    returnVal = Misc.parseRGBText(value);
 	} else if ( vizAttribute.equals(NODE_HEIGHT) ||
 		    vizAttribute.equals(NODE_WIDTH) ) {
@@ -170,7 +173,8 @@ public class VizMapperCategories implements AttributeMapperCategories {
 	Interpolator fInt = null;
 	if ( vizAttribute.equals(NODE_FILL_COLOR) ||
 	     vizAttribute.equals(NODE_BORDER_COLOR) ||
-	     vizAttribute.equals(EDGE_COLOR) ) {
+	     vizAttribute.equals(EDGE_COLOR) ||
+	     vizAttribute.equals(BG_COLOR) ) {
 	    fInt = new LinearNumberToColorInterpolator();
 	} else if ( vizAttribute.equals(NODE_HEIGHT) ||
 		    vizAttribute.equals(NODE_WIDTH) ) {
