@@ -466,6 +466,10 @@ class FRootGraph //implements RootGraph
     return returnThis;
   }
 
+  public int[] getConnectingEdgeIndicesArray(int[] nodeInx)
+  {
+  }
+
   public Node getNode(int nodeInx)
   {
     if (nodeInx < 0) return m_nodes.getNodeAtIndex(~nodeInx);
