@@ -281,13 +281,13 @@ public class HierarchicalClustering
     this.hcAnimator = null;
     if( dimension == ROWS ) {
       count = rowCount;
-      if(this.createAnimator){
-        this.hcAnimator = new HCAnimator (this.rowEisenClusterLeaves);
-      }
+      //if(this.createAnimator){
+        //this.hcAnimator = new HCAnimator (this.rowEisenClusterLeaves);
+      //}
     } else if( dimension == COLS ) {
-      if(this.createAnimator){
-        this.hcAnimator = new HCAnimator (this.colEisenClusterLeaves);
-      }
+      //if(this.createAnimator){
+        //this.hcAnimator = new HCAnimator (this.colEisenClusterLeaves);
+      //}
       count = colCount;
     } else {
       throw new IllegalArgumentException( "The dimension argument must be either ROWS or COLS.  "+
@@ -295,10 +295,10 @@ public class HierarchicalClustering
                                           + dimension + ", is not valid." );
     }
     
-    if(this.hcAnimator != null && this.showAnimator){
-      this.hcAnimator.setVisible(true);
-      this.hcAnimator.drawHCTree(true);
-    }
+   // if(this.hcAnimator != null && this.showAnimator){
+     // this.hcAnimator.setVisible(true);
+      //this.hcAnimator.drawHCTree(true);
+    //}
    
     // we will measure our progress by the number of joins accomplished, 
     // plus initialization of the queue
@@ -377,12 +377,12 @@ public class HierarchicalClustering
     }
     */
     //if(this.showAnimator){
-    if(!this.canceled){
-      if(this.hcAnimator != null){
-        this.hcAnimator.setVisible(true);
-        this.hcAnimator.drawHCTree(true);
-      }
-    }
+   // if(!this.canceled){
+     // if(this.hcAnimator != null){
+       // this.hcAnimator.setVisible(true);
+        //this.hcAnimator.drawHCTree(true);
+      //}
+    //}
     //}
   } // cluster( int )
 
@@ -558,12 +558,12 @@ public class HierarchicalClustering
       redraw = true;
     }
     
-    if(this.hcAnimator != null){
-      this.hcAnimator.joinNodes( new_node.toString(),
-                                 node_pair.nodeOne.toString(),
-                                 node_pair.nodeTwo.toString(),
-                                 redraw);
-    }
+    //if(this.hcAnimator != null){
+      //this.hcAnimator.joinNodes( new_node.toString(),
+        //                         node_pair.nodeOne.toString(),
+          //                       node_pair.nodeTwo.toString(),
+            //                     redraw);
+    //}
     
     // Get needed variables depending on the current dimension
     JoiningCondition joining_condition;

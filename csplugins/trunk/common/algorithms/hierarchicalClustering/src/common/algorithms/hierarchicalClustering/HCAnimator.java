@@ -26,6 +26,7 @@ package common.algorithms.hierarchicalClustering;
 /**
  * This class provides methods that allow the drawing of the Hierarchical Tree
  * as it is being built.
+ * TODO: Reimplement for GINY
  *
  * @author Iliana Avila-Campillo iavila@systemsbiology.org
  */
@@ -34,62 +35,67 @@ import java.util.*;
 import java.lang.*;
 import javax.swing.*;
 import java.awt.*;
-import y.base.*;
-import y.view.*;
-import y.layout.*;
-import y.layout.tree.TreeLayouter;
+//import y.base.*;
+//import y.view.*;
+//import y.layout.*;
+//import y.layout.tree.TreeLayouter;
 import java.awt.event.*;
-import cytoscape.view.StraightLineMoveMode;
+//import cytoscape.view.StraightLineMoveMode;
 import java.awt.geom.Rectangle2D;
 
-public class HCAnimator extends JPanel implements Graph2DSelectionListener{
+public class HCAnimator extends JPanel {
+	public HCAnimator (){}
 
-  /**
+}
+
+/*public class HCAnimator extends JPanel implements Graph2DSelectionListener{
+
+  *//**
    * The default width of the UI that shows the hierarchical-tree.
-   */
+   *//*
   public final static int DEFAULT_WIDTH = 350;
   
-  /**
+  *//**
    * The default height of the UI that shows the hierarchical-tree.
-   */
+   *//*
   public final static int DEFAULT_HEIGHT = 200;
 
-  /**
+  *//**
    * A map of <code>y.base.Node</code> objects to their unique IDs
-   */
+   *//*
   protected Map nodeToID;
   
-  /**
+  *//**
    * A map of unique IDs to <code>y.base.Node</code>
-   */
+   *//*
   protected Map IDtoNode;
   
-  /**
+  *//**
    * The graphicical representation of the Hierarchical-Tree
-   */
+   *//*
   protected Graph2D hcTree;
 
-  /**
+  *//**
    * Viewer of the <code>y.view.Graph2D</code> object that represents
    * the Hierarchical-Tree.
-   */
+   *//*
   protected Graph2DView g2dView;
 
-  /**
+  *//**
    * The layouter for the hierarchical-tree.
-   */
+   *//*
   protected Layouter treeLayouter;
 
-  /**
+  *//**
    * The main frame.
-   */
+   *//*
   protected JFrame mainFrame;
 
   protected ZoomSelectedAction zoomSelectedAction;
   
-  /**
+  *//**
    * Constructor.
-   */
+   *//*
   public HCAnimator (){
     this.nodeToID = new HashMap();
     this.IDtoNode = new HashMap();
@@ -97,12 +103,12 @@ public class HCAnimator extends JPanel implements Graph2DSelectionListener{
     createUI();
   }//HCAnimator
 
-  /**
+  *//**
    * Constructor.
    *
    * @param leaves an array of leaves of the Hierarchical-Tree. Their toString()
    * method will be used to label the leaves of the <code>y.view.Graph2D</code>tree.
-   */
+   *//*
   public HCAnimator (Object [] leaves){
     this.nodeToID = new HashMap();
     this.IDtoNode = new HashMap();
@@ -111,12 +117,12 @@ public class HCAnimator extends JPanel implements Graph2DSelectionListener{
     createUI();
   }//HCAnimator
 
-  /**
+  *//**
    * Creates a <code>y.base.Node</code> for each object in the array.
    * The label of the nodes is the toString() calue of the objects in the array.
    *
    * @return an array of <code>y.base.Node</code> objects created.
-   */
+   *//*
   public Node [] createLeaves (Object [] leaves){
     Node newNode;
     String id;
@@ -134,10 +140,10 @@ public class HCAnimator extends JPanel implements Graph2DSelectionListener{
     return (Node[])newNodes.toArray(new Node[newNodes.size()]);
   }//createLeaves
   
-  /**
+  *//**
    * Creates the user interface where the hierarchical-tree will be
    * displayed.
-   */
+   *//*
   protected void createUI (){
     setLayout(new BorderLayout());
     this.g2dView = new Graph2DView(this.hcTree);
@@ -153,23 +159,23 @@ public class HCAnimator extends JPanel implements Graph2DSelectionListener{
     this.mainFrame.pack();
   }//createUI
 
-  /**
+  *//**
    * Sets the dialog that displays the hierarchical tree visible (if true) or not visible (if false).
-   */
+   *//*
   public void setVisible (boolean visible){
     this.mainFrame.setVisible(visible);
   }//setVisible
 
-  /**
+  *//**
    * Zooms into the selected nodes.
-   */
+   *//*
   public void zoomSelected (){
     this.zoomSelectedAction.actionPerformed(null);
   }//zoomSelected
 
-  /**
+  *//**
    * Creates a tool-bar.
-   */
+   *//*
   protected JToolBar createToolBar (){
     JToolBar bar = new JToolBar ();
     JButton zoomInButton = new JButton("Zoom In");
@@ -194,11 +200,11 @@ public class HCAnimator extends JPanel implements Graph2DSelectionListener{
     return bar;
   }//createToolBar
 
-  /**
+  *//**
    * Re-draws the hierarchical-tree.
    *
    * @param doLayout whether or not to layout the tree.
-   */
+   *//*
   public void drawHCTree (boolean doLayout){
     if(doLayout){
       this.treeLayouter.doLayout(this.g2dView.getGraph2D());
@@ -208,7 +214,7 @@ public class HCAnimator extends JPanel implements Graph2DSelectionListener{
     this.g2dView.paintImmediately(0,0,this.g2dView.getWidth(),this.g2dView.getHeight());
   }//drawHCTree
 
-  /**
+  *//**
    * Joins the two given nodes by creating a parent node that is connected to them,
    * and then redraws the hierarchical-tree.
    *
@@ -216,7 +222,7 @@ public class HCAnimator extends JPanel implements Graph2DSelectionListener{
    * @param child1ID the ID of the first child
    * @param child2ID the ID of the second child
    * @param redrawTree whether or not the tree should be redrawn
-   */
+   *//*
   public void joinNodes (String parentID, 
                          String child1ID, 
                          String child2ID, 
@@ -243,9 +249,9 @@ public class HCAnimator extends JPanel implements Graph2DSelectionListener{
     }
   }//joinNodes
 
-  /**
+  *//**
    * Selects the node whose name is given as an argument.
-   */
+   *//*
   public void selectNode(String name){
     this.hcTree.unselectAll();
     Node node = (Node)this.IDtoNode.get(name.toUpperCase());
@@ -257,10 +263,10 @@ public class HCAnimator extends JPanel implements Graph2DSelectionListener{
     }
   }//selectNode
   
-  /**
+  *//**
    * Implements Graph2DSelectionListener.onGraph2DSelectionEvent()
    * Invoked when the structure of the graph has changed.
-   */
+   *//*
   public void onGraph2DSelectionEvent(Graph2DSelectionEvent e){}
 
   // ------------------------- Internal Classes -----------------------------------//
@@ -338,3 +344,4 @@ public class HCAnimator extends JPanel implements Graph2DSelectionListener{
     }//actionPerformed
   }//FitGraphAction
 }//HCAnimator
+*/
