@@ -10,6 +10,7 @@
 package csplugins.isb.dtenenbaum.plot2d;
 
 
+
 // TODO - get rid of legacy UI and LegendPanel code
 
 // TODO - Can some public stuff be made private or protected?
@@ -59,6 +60,7 @@ import javax.swing.event.*;
 import javax.swing.table.*;
 
 import csplugins.isb.pshannon.dataMatrix.DataMatrixLens;
+import csplugins.isb.pshannon.dataMatrix.gui.DataMatrixBrowser;
 
 /**
  * A rewrite of the csplugins.expressionData.Plot2D class that uses 
@@ -70,7 +72,7 @@ import csplugins.isb.pshannon.dataMatrix.DataMatrixLens;
  * 
  * @author Dan Tenenbaum
  */
-public class Plot2D extends JFrame  {
+public class Plot2D extends JFrame  implements ActionListener {
 
   private String[] xLabels;
   private JComboBox cb;
@@ -113,7 +115,9 @@ public class Plot2D extends JFrame  {
   private int populateCount = 0;
   
   private DataMatrixLens dm = null;
+  private DataMatrixBrowser dmb = null;
   
+  private JButton selectionChangedButton;
   
   
   
@@ -132,7 +136,7 @@ public class Plot2D extends JFrame  {
    */
 
 public Plot2D (String title, String xAxisLabel, String yAxisLabel,
- boolean showStatus, boolean allowLiveUpdate, DataMatrixLens dm) {
+ boolean showStatus, boolean allowLiveUpdate, DataMatrixLens dm, DataMatrixBrowser dmb) {
 	super(title);
 	
 	this.title = title;
@@ -141,7 +145,11 @@ public Plot2D (String title, String xAxisLabel, String yAxisLabel,
 	this.showStatus = showStatus;
 	this.allowLiveUpdate = allowLiveUpdate;
 	this.dm = dm;
-
+	this.dmb = dmb;
+	
+	selectionChangedButton = dmb.getChangeButton();
+	selectionChangedButton.addActionListener(this);
+	
 	initUI();
 	
  }
@@ -161,8 +169,8 @@ public Plot2D (String title, String xAxisLabel, String yAxisLabel,
   * @param dm The DataMatrix containing the data to plot
   */
  public Plot2D (String title, String xAxisLabel, String yAxisLabel,
-  boolean showStatus, DataMatrixLens dm) {
-    this(title, xAxisLabel, yAxisLabel, showStatus, false, dm);
+  boolean showStatus, DataMatrixLens dm, DataMatrixBrowser dmb) {
+    this(title, xAxisLabel, yAxisLabel, showStatus, false, dm, dmb);
  }
 
 
@@ -179,10 +187,16 @@ public Plot2D (String title, String xAxisLabel, String yAxisLabel,
 
  public Plot2D (String title, String xAxisLabel, String yAxisLabel,
   DataMatrixLens dm) {
-	this(title, xAxisLabel, yAxisLabel, true, dm);
+	this(title, xAxisLabel, yAxisLabel, true, dm, null);
  }
 
 
+ public Plot2D (String title, String xAxisLabel, String yAxisLabel,
+ 		  DataMatrixLens dm, DataMatrixBrowser dmb) {
+ 			this(title, xAxisLabel, yAxisLabel, true, dm, dmb);
+ 		 }
+
+ 
 /**
  * Constructs a new Plot2D object, ready for data,
  * with a flag determining whether to show the status panel.
@@ -194,7 +208,7 @@ public Plot2D (String title, String xAxisLabel, String yAxisLabel,
  */
 public Plot2D (String title, String xAxisLabel, String yAxisLabel, 
   boolean showStatus) {
-	this(title, xAxisLabel, yAxisLabel, showStatus, null);
+	this(title, xAxisLabel, yAxisLabel, showStatus, null, null);
 } //ctor
 
 /**
@@ -210,6 +224,13 @@ public Plot2D (String title, String xAxisLabel, String yAxisLabel) {
 } // ctor
 
 
+
+
+public void actionPerformed(ActionEvent e) {
+	if (e.getActionCommand() == "selectionChanged") {
+		System.out.println("selection changed!");
+	}
+}
 
 /**
  * 
@@ -271,15 +292,21 @@ private void initUI() {
 	chart = createChart(dataset);
 		
 	chartPanel = new ChartPanel(chart);
-	chartPanel.setHorizontalZoom(true); // this doesn't enable zoom
-	chartPanel.setVerticalZoom(true); // find out what does. or do we want zoom?
+	chartPanel.setMouseZoomable(true,true);
+
+	
+	chartPanel.setHorizontalZoom(true); // this doesn't seem to work....
+	chartPanel.setVerticalZoom(true); 
 	
 	Border b = new LineBorder(Color.BLACK,5);
 	chartPanel.setBorder(b);
 	chartPanel.addChartMouseListener(new ML());
   
-	chartPanel.setHorizontalZoom(false);
-	chartPanel.setVerticalZoom(false);
+	
+	//chartPanel.setHorizontalAxisTrace(true);
+	//chartPanel.setVerticalAxisTrace(true);
+	
+	
 	chartPanel.setSize(200,200); 
 	chartPanel.setPreferredSize(new Dimension(200, 200)); 
 	
@@ -411,10 +438,9 @@ private void initUI() {
 			public void actionPerformed (ActionEvent e) {
 				JCheckBox checkedBox = (JCheckBox)e.getSource();
 				allowLiveUpdate = checkedBox.isSelected();
-				/*// start updating right now. (do we want to do this?)
+				// start updating right now. (do we want to do this?)
 				if (allowLiveUpdate)
 				   populateFromLens(dm);
-			    */
 			}
 		});
 		JLabel lblLiveUpdate = new JLabel("Enable Live Update");
@@ -793,7 +819,7 @@ private JFreeChart createChart(CategoryDataset dataset) {
 
 	//plot.getDomainAxis().setVerticalCategoryLabels(true);
 	//CategoryLabelPositions cip = CategoryLabelPositions.createUpRotationLabelPositions(10);
-	CategoryLabelPositions cip = new CategoryLabelPositions();
+	CategoryLabelPositions cip = CategoryLabelPositions.createUpRotationLabelPositions(1)	;
 	
 	plot.getDomainAxis().setCategoryLabelPositions(cip);
 	
@@ -954,11 +980,10 @@ class ML implements ChartMouseListener {
 	
 	
 	private void resetColors() {
-		if (true)return;//TODO remove this
-		//XYItemRenderer ren = plot.getRenderer();
-		//for (int i = 0; i < dataset.getSeriesCount(); i++) {
-		//	ren.setSeriesPaint(i, (Paint)savedPaints.get(i));
-		//}
+		CategoryItemRenderer ren = plot.getRenderer();
+		for (int i = 0; i < dataset.getRowCount(); i++) {
+			ren.setSeriesPaint(i, (Paint)savedPaints.get(i));
+		}
 	}
 	
 	

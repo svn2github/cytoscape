@@ -143,6 +143,7 @@ public DataMatrixBrowser runBrowser () throws Exception
   DataMatrix [] dma = (DataMatrix []) matrices.toArray (new DataMatrix [0]);
   DataMatrixBrowser browser = new DataMatrixBrowser (dma); 
   browserFrame = new JFrame ();
+  browserFrame.setTitle("Data Matrix Browser");
   browserFrame.getContentPane().add (browser);   
   browserFrame.pack ();
   if (Cytoscape.getCytoscapeObj () != null)

@@ -41,7 +41,7 @@ class PlotSelectedRowsAction extends AbstractAction {
       plotter = null;
       try {
         String dataName = lens.getMatrixName ();
-        plotter = new Plot2D (dataName + " Profiles", "Condition", dataName, lens);
+        plotter = new Plot2D (dataName + " Profiles", "Condition", dataName, lens, browser);
         // resetPlotter ();
         class CML implements ChartMouseListener {
            public void chartMouseMoved (ChartMouseEvent e) {}

@@ -50,6 +50,8 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.StandardLegend;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
@@ -171,6 +173,10 @@ public class Hooper extends ApplicationFrame {
 
 		// customise the range axis...
 		final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+		
+		final CategoryAxis valueAxis = plot.getDomainAxis();
+		CategoryLabelPositions clp = CategoryLabelPositions.createUpRotationLabelPositions(1);
+		valueAxis.setCategoryLabelPositions(clp);
 
 		rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 		rangeAxis.setAutoRangeIncludesZero(true);

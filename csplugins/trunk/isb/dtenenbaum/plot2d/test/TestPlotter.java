@@ -5,12 +5,7 @@ package csplugins.isb.dtenenbaum.plot2d.test;
 import java.awt.event.*; // need this for the dismiss button listener
 
 
-
-
-//import csplugins.expressionData.Plot2D; // the old way to do it. 
-//import csplugins.expressionData.ptpwrapper.*; // the newer, better way.
-
-import csplugins.plot2d.*; // the newest, best way
+import csplugins.isb.dtenenbaum.plot2d.*; 
 
 
 import org.jfree.chart.*; // need this for the event listener
@@ -26,7 +21,7 @@ import org.jfree.chart.entity.*; // this too
 
 public class TestPlotter {
 
-	Plot2D plotter = null;
+	Plot2D plot = null;
 	private static final String title = "expression profiles";
 	private static final String xLabel = "Condition";
 	private static final String yLabel = "Expression";
@@ -37,10 +32,10 @@ public class TestPlotter {
 	 *
 	 */
 	public TestPlotter() {
-		plotter = new Plot2D(title, xLabel, yLabel, true);
-		plotter.addChartMouseListener(new PlotListener());
-		plotter.addDismissListener(new AL());
-		plotter.setDefaultCloseOperation(plotter.EXIT_ON_CLOSE);
+		plot = new Plot2D(title, xLabel, yLabel, true);
+		plot.addChartMouseListener(new PlotListener());
+		plot.addDismissListener(new AL());
+		plot.setDefaultCloseOperation(plotter.EXIT_ON_CLOSE);
 		
 	} //ctor
 	
@@ -50,7 +45,7 @@ public class TestPlotter {
 	 * @return an instance of Plot2D for tests.
 	 */
 	public Plot2D getPlotter() {
-		return plotter;
+		return plot;
 	} // getPlotter
 	
 
