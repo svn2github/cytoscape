@@ -106,7 +106,7 @@ public final class SpringEmbeddedLayouter2 implements Task
 
   public String getTitle()
   {
-    return "Spring Embedded Graph Layout";
+    return "Spring Embedded Network Layout";
   }
 
   /**
@@ -840,7 +840,7 @@ public final class SpringEmbeddedLayouter2 implements Task
 
     if (m_halt) return;
     m_taskMonitor.setPercentCompleted((int) percentCompletedAfterPasses);
-    m_taskMonitor.setStatus("Moving nodes in underlying graph");
+    m_taskMonitor.setStatus("Moving nodes in underlying network");
 
     // The last thing we do is trigger node movement in the underlying graph.
     m_autoScaleGraph.moveUnderlyingNodes();
