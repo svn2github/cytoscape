@@ -460,7 +460,6 @@ class FRootGraph implements RootGraph
       returnList.add(getEdge(edgeInx[i]));
     return returnList; }
 
-  // This method has been marked deprecated in the Giny API.
   public int[] getEdgeIndicesArray(int fromNodeInx, int toNodeInx,
                                    boolean includeUndirectedEdges) {
     return getEdgeIndicesArray(fromNodeInx, toNodeInx,
