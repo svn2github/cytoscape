@@ -290,7 +290,7 @@ public final class IntBTree
    */
   public final boolean delete(final int x)
   {
-    final byte deleted = delete(m_root, null, null, x);
+    final int deleted = delete(m_root, null, null, x);
     return false;
   }
 
@@ -305,22 +305,34 @@ public final class IntBTree
    *   0x02 - left sibling.
    *   0x04 - right sibling.
    */
-  private final byte delete(final Node n, final Node leftSibling,
-                            final Node rightSibling, final int x)
+  private final int delete(final Node n, final Node leftSib,
+                           final Node rightSib, final int x)
   {
     if (isLeafNode(n)) {
       final int foundInx = findMatch(x, n.values, n.sliceCount);
       if (foundInx < 0) {
-        return 0x0b; }
-      else if (n.sliceCount != m_minBranches) { // Simple deletion.
+        return 0x00; }
+      else if (n.sliceCount > m_minBranches || n == m_root) { // Simple.
         fillHole(foundInx, n.values, --n.sliceCount);
         return 0x01; }
-      else { // Complex deletion, either shifting or merging.
+      else if (leftSib != null && leftSib.sliceCount > m_minBranches) {
+        // We could shift values from sibling that has greater count.
+        // Might want to optimize in this way later.
+        leftSib.sliceCount = shiftFromLeftSibling
+          (foundInx, n.values, leftSib.values, leftSib.sliceCount);
+        n.sliceCount = leftSib.values[leftSib.sliceCount];
+        return 0x01 | 0x80 | 0x02; }
+      else if (rightSib != null && rightSib.sliceCount > m_minBranches) {
+        rightSib.sliceCount = shiftFromRightSibling
+          (foundInx, n.values, rightSib.values, rightSib.sliceCount);
+        n.sliceCount = rightSib.values[rightSib.sliceCount];
+        return 0x01 | 0x80 | 0x04; }
+      else { // We must perform a merge.
       }
     }
     else { // Not a leaf node.
     }
-    return 0x0b;
+    return 0x00;
   }
 
   /*
@@ -502,10 +514,9 @@ public final class IntBTree
    *   leftArr: | 8 | 3 | 2 | 4 | 7 | 6 |   |   |   |
    *            +---+---+---+---+---+---+---+---+---+
    *
-   *   returns: 6 (the new size of leftArr)
+   *   returnVal: 6 (the new size of leftArr)
    *
-   *   If I need to return more values, I can use leftArr[returnVal] for
-   *   example.
+   *   Also, the entry leftArr[returnVal] is set to the new size of thisArr.
    */
   private final int shiftFromLeftSibling(final int holeInx,
                                          final int[] thisArr,
@@ -550,10 +561,9 @@ public final class IntBTree
    *   rightArr: | 2 | 4 | 7 | 6 | 0 |-1 |   |   |   |
    *             +---+---+---+---+---+---+---+---+---+
    *
-   *   returns: 6 (the new size of rightArr)
+   *   returnVal: 6 (the new size of rightArr)
    *
-   *   If I need to return more values, I can use rightArr[returnVal] for
-   *   example.
+   *   Also, the entry rightArr[returnVal] is set to the new size of thisArr.
    */
   private final int shiftFromRightSibling(final int holeInx,
                                           final int[] thisArr,
