@@ -67,6 +67,7 @@ public class VizMapFontTab extends VizMapTab {
     public void refreshUI() {
 	this.faceTab.refreshUI();
 	this.sizeTab.refreshUI();
+	validate();
     }
 
     public void visualStyleChanged() {

@@ -557,7 +557,7 @@ public class VizMapAttrTab extends VizMapTab {
 	}
 	else
 	    this.calcPanel = null;
-	validate();
+	//validate();
     }
     
     /**
@@ -651,8 +651,8 @@ public class VizMapAttrTab extends VizMapTab {
 	    break;
 	}
 	refreshUI();
-	mainUIDialog.pack();
-	mainUIDialog.repaint();
+	//mainUIDialog.pack();
+	//mainUIDialog.repaint();
 	VMM.applyAppearances();
     }
 

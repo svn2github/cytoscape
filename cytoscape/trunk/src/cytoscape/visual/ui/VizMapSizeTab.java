@@ -171,9 +171,9 @@ public class VizMapSizeTab extends VizMapTab {
 	    
 	    // redraw the panel
 	    validate();
-	    repaint();
-	    mainUIDialog.pack();
-	    mainUIDialog.repaint();
+	    //repaint();
+	    //mainUIDialog.pack();
+	    //mainUIDialog.repaint();
 	    
 	}
     }

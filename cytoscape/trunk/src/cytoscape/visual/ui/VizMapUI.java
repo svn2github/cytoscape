@@ -370,12 +370,8 @@ public class VizMapUI extends JDialog {
 	
 	protected class StyleSelectionListener implements ItemListener {
 	    public void itemStateChanged(ItemEvent e) {
-		System.out.println("StyleSelectionListener itemStateChanged!");
 		if (e.getStateChange() == ItemEvent.SELECTED) {
 		    VisualStyle newStyle = (VisualStyle) ((JComboBox) e.getSource()).getSelectedItem();
-
-		    System.out.println("newStyle = " + newStyle + ", currentstyle = " + currentStyle);
-
 		    if (newStyle != currentStyle && newStyle != null) {
 			currentStyle = newStyle;
 			VMM.setVisualStyle(currentStyle);
@@ -426,7 +422,6 @@ public class VizMapUI extends JDialog {
 	 *  Update the style combo box model
 	 */
 	protected void refreshStyleComboBox() {
-	    System.out.println("refreshStyleComboBox()");
 	    Iterator styleIter = styles.iterator();
 	    
 	    this.styleComboModel.removeAllElements();
@@ -496,6 +491,8 @@ public class VizMapUI extends JDialog {
 	for (int i = 0; i < tabs.length; i++) {
 	    tabs[i].refreshUI();
 	}
+	validate();
+	repaint();
     }
 
     /**
@@ -503,11 +500,11 @@ public class VizMapUI extends JDialog {
      * with their corresponding interfaces must be switched into the UI.
      */
     public void visualStyleChanged() {
-	System.out.println("Visual style changed!");
 	for (int i = 0; i < tabs.length; i++) {
 	    tabs[i].visualStyleChanged();
 	}
 	validate();
+	pack();
 	repaint();
     }
 
