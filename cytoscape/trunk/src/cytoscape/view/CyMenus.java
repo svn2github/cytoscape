@@ -219,6 +219,7 @@ public class CyMenus  implements GraphViewChangeListener {
    */
   public void setNodesRequiredItemsEnabled() {
       boolean newState = cyWindow.getView().getGraphPerspective().getNodeCount() > 0;
+newState = true; //TODO: remove this once the GraphViewChangeListener system is working
       if (newState == nodesRequiredItemsEnabled) return;
       saveButton.setEnabled(newState);
       saveSubMenu.setEnabled(newState);
