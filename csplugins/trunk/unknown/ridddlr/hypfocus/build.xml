@@ -5,6 +5,9 @@
 
   <path id="hypfocus.classpath">
     <pathelement location="${cytoscape.lib.dir}/../cytoscape.jar"/>
+    <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
+    <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
+    <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
   </path>
 
   <target name="hypfocus2.jar">
@@ -16,7 +19,7 @@ CVS project.
     </echo>
     <mkdir dir="${basedir}/build/classes"/>
     <javac srcdir="${basedir}/src"
-           includes="csplugins/layout/Foo.java"
+           includes="csplugins/layout/LayoutPlugin2.java"
            classpathref="hypfocus.classpath"
            destdir="${basedir}/build/classes"/>
     <jar filesonly="true"
