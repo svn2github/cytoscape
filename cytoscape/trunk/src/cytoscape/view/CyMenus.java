@@ -318,10 +318,13 @@ public class CyMenus  implements GraphViewChangeListener {
         public void menuDeselected(MenuEvent e) {}
         public void menuSelected(MenuEvent e)
         {
-          CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
-          boolean inactive = false;
-          if (graphView == null || graphView.nodeCount() == 0) inactive = true;
-          MenuElement[] popup = f_dataMenu.getSubElements();
+          // CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
+//           boolean inactive = false;
+//           if (graphView == null || graphView.nodeCount() == 0) inactive = true;
+          CyNetwork graph = Cytoscape.getCurrentNetwork();
+	  boolean inactive = false;
+	  if (graph == null || graph.getNodeCount() == 0) inactive = true;
+	  MenuElement[] popup = f_dataMenu.getSubElements();
           if (popup[0] instanceof JPopupMenu) {
             MenuElement[] submenus =
               ((JPopupMenu) popup[0]).getSubElements();
