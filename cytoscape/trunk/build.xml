@@ -314,6 +314,8 @@
                 <exclude name="retroguard.jar"/>
             </fileset>
         </unjar>
+	<copy file="tools/jars/javax.imageio.spi.ImageWriterSpi" todir="${dist.dir}/temp/META-INF/services"/>
+	<copy file="tools/jars/org.freehep.util.export.ExportFileType" todir="${dist.dir}/temp/META-INF/services"/>
         <jar destfile="${release.dir}/cytoscape.jar" update="true">
             <fileset dir="${dist.dir}/temp"/>
         </jar>
