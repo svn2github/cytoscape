@@ -11,6 +11,7 @@ import cytoscape.data.GraphObjAttributes;
 import cytoscape.view.CyNetworkView;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.task.TaskMonitor;
 import cytoscape.data.Semantics;
 
 
@@ -20,7 +21,7 @@ import cytoscape.data.Semantics;
  * tree out into a file
  */
 public class GMLWriter{
-
+  
   /**
    * It is possible that nodes have been added to the graph since it was loaded.
    * This set will keep track of nodes and edges that are currently in the perspective
@@ -39,74 +40,74 @@ public class GMLWriter{
    * same update functions must be able to create all relevant key-value pairs
    * as well then.
    */
-  public void writeGML(CyNetwork network, CyNetworkView view, List oldList){
-    /*
-     * Initially all the nodes and edges have not been seen
-     */
-    newNodes = new HashSet(network.getNodeCount());
-    newEdges = new HashSet(network.getEdgeCount());
-    for(Iterator it = network.nodesIterator();it.hasNext();){
-      newNodes.add(new Integer(((Node)it.next()).getRootGraphIndex()));
-    }
-    for(Iterator it = network.edgesIterator();it.hasNext();){
-      newEdges.add(new Integer(((Edge)it.next()).getRootGraphIndex()));
-    }
-    
-    /*
-     * We are going to make sure the keys graph,creator,and version
-     * are present and update them fi they are already present
-     */
-    KeyValue graph = null, creator = null, version = null;
-    for(Iterator it = oldList.iterator();it.hasNext();){
-      KeyValue keyVal = (KeyValue)it.next();
-      if(keyVal.key.equals(GMLReader2.GRAPH)){
-	graph = keyVal;
-      }else if(keyVal.key.equals(GMLReader2.CREATOR)){
-	creator = keyVal;
-      }else if(keyVal.key.equals(GMLReader2.VERSION)){
-	version = keyVal;
+  public void writeGML(CyNetwork network, CyNetworkView view, List oldList) {
+      /*
+       * Initially all the nodes and edges have not been seen
+       */
+      newNodes = new HashSet(network.getNodeCount());
+      newEdges = new HashSet(network.getEdgeCount());
+      for (Iterator it = network.nodesIterator(); it.hasNext();) {
+          newNodes.add(new Integer(((Node) it.next()).getRootGraphIndex()));
       }
-    }
-    if(creator == null){
-      creator = new KeyValue(GMLReader2.CREATOR,null);
-      oldList.add(creator);
-    }
-    if(version == null){
-      version = new KeyValue(GMLReader2.VERSION,null);
-      oldList.add(version);
-    }
-    if(graph == null){
-      graph = new KeyValue(GMLReader2.GRAPH,new Vector());
-      oldList.add(graph);
-    }
-    /*
-     * Update the list associated with the graph
-     * pair
-     */
-    writeGraph(network,view,(List)graph.value);
-    creator.value = "Cytoscape";
-    version.value = new Double(1.0);
+      for (Iterator it = network.edgesIterator(); it.hasNext();) {
+          newEdges.add(new Integer(((Edge) it.next()).getRootGraphIndex()));
+      }
+
+      /*
+       * We are going to make sure the keys graph,creator,and version
+       * are present and update them fi they are already present
+       */
+      KeyValue graph = null, creator = null, version = null;
+      for (Iterator it = oldList.iterator(); it.hasNext();) {
+          KeyValue keyVal = (KeyValue) it.next();
+          if (keyVal.key.equals(GMLReader2.GRAPH)) {
+              graph = keyVal;
+          } else if (keyVal.key.equals(GMLReader2.CREATOR)) {
+              creator = keyVal;
+          } else if (keyVal.key.equals(GMLReader2.VERSION)) {
+              version = keyVal;
+          }
+      }
+      if (creator == null) {
+          creator = new KeyValue(GMLReader2.CREATOR, null);
+          oldList.add(creator);
+      }
+      if (version == null) {
+          version = new KeyValue(GMLReader2.VERSION, null);
+          oldList.add(version);
+      }
+      if (graph == null) {
+          graph = new KeyValue(GMLReader2.GRAPH, new Vector());
+          oldList.add(graph);
+      }
+      /*
+       * Update the list associated with the graph
+       * pair
+       */
+      writeGraph(network, view, (List) graph.value);
+      creator.value = "Cytoscape";
+      version.value = new Double(1.0);
 
 
-    /*
-     * After update all of the graph objects that were already present in the object tree
-     * check and see if there are any objects in the current perspective that were not updated
-     * For these objects, create an empty key-value mapping and then update it
-     */
-    List graph_list = (List)graph.value;
-    while(!newNodes.isEmpty()){
-      KeyValue nodePair = new KeyValue(GMLReader2.NODE,new Vector());
-      graph_list.add(nodePair);
-      ((List)nodePair.value).add(new KeyValue(GMLReader2.ROOT_INDEX,newNodes.iterator().next()));
-      writeGraphNode(network,view,(List)nodePair.value);
-    }
-    while(!newEdges.isEmpty()){
-      KeyValue edgePair = new KeyValue(GMLReader2.EDGE,new Vector());
-      graph_list.add(edgePair);
-      ((List)edgePair.value).add(new KeyValue(GMLReader2.ROOT_INDEX,newEdges.iterator().next()));
-      writeGraphEdge(network,view,(List)edgePair.value);
-    }
-    
+      /*
+       * After update all of the graph objects that were already present in the object tree
+       * check and see if there are any objects in the current perspective that were not updated
+       * For these objects, create an empty key-value mapping and then update it
+       */
+      List graph_list = (List) graph.value;
+      while (!newNodes.isEmpty()) {
+          KeyValue nodePair = new KeyValue(GMLReader2.NODE, new Vector());
+          graph_list.add(nodePair);
+          ((List) nodePair.value).add(new KeyValue(GMLReader2.ROOT_INDEX, newNodes.iterator().next()));
+          writeGraphNode(network, view, (List) nodePair.value);
+      }
+      while (!newEdges.isEmpty()) {
+          KeyValue edgePair = new KeyValue(GMLReader2.EDGE, new Vector());
+          graph_list.add(edgePair);
+          ((List) edgePair.value).add(new KeyValue(GMLReader2.ROOT_INDEX, newEdges.iterator().next()));
+          writeGraphEdge(network, view, (List) edgePair.value);
+      }
+
   }
   
   /**

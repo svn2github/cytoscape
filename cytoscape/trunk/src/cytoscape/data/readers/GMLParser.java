@@ -11,7 +11,6 @@ import java.util.Iterator;
 import java.io.Writer;
 import java.text.ParseException;
 
-
 /**
  * The purpose of hte class is to translate gml into an object tree, and print out an object treee
  * into GML
@@ -94,50 +93,43 @@ public class GMLParser{
    * Public method to print out a given object tree(list)
    * using the supplied filewriter
    */
-  public static void printList(List list,Writer writer) throws IOException{
+  public static void printList(List list,Writer writer) throws IOException {
     printList(list,"",writer);
   }
 
   /**
    * Protected recurive helper method to print out an object tree
    */
-  protected static void printList(List list,String indent,Writer writer) throws IOException{
-    for(Iterator it = list.iterator();it.hasNext();){
-      KeyValue keyVal = (KeyValue)it.next();
-      if(keyVal.value instanceof List){
-	/*
-	 * If the value is a list, print that list recursively
-	 * surrounded by the list open and close characters
-	 */
-	writer.write(indent+keyVal.key+"\t");
-	writer.write(LIST_OPEN+"\n");
-	printList((List)keyVal.value,indent+"\t",writer);
-	writer.write(indent+LIST_CLOSE+"\n");
-      }else if(keyVal.value instanceof String){
-	/*
-	 * Surround a string with the quote characters
-	 */
-	writer.write(indent+keyVal.key+"\t");
-	writer.write(QUOTE_STRING+keyVal.value+QUOTE_STRING+"\n");
-      }else if(keyVal.value instanceof Double){
-	/*
-	 * If the double contains a non-number, we will refuse to write it out
-	 * because the result will be invalid gml
-	 */
-	Double value = (Double)keyVal.value;
-	if(!(value.isNaN() || value.isInfinite())){
-	  writer.write(indent+keyVal.key+"\t");
-	  writer.write(keyVal.value+"\n");
-	} 
-      }else if(keyVal.value instanceof Integer){
-      	/*
-	 * Everything else (Integer, double) relies upon the default toString() method
-	 * of hte object
-	 */
-	writer.write(indent+keyVal.key+"\t");
-	writer.write(keyVal.value+"\n");
+  protected static void printList(List list, String indent, Writer writer)
+          throws IOException {
+      for (Iterator it = list.iterator(); it.hasNext();) {
+          KeyValue keyVal = (KeyValue) it.next();
+          if (keyVal.value instanceof List) {
+              //  If the value is a list, print that list recursively
+              //  surrounded by the list open and close characters
+              writer.write(indent + keyVal.key + "\t");
+              writer.write(LIST_OPEN + "\n");
+              printList((List) keyVal.value, indent + "\t", writer);
+              writer.write(indent + LIST_CLOSE + "\n");
+          } else if (keyVal.value instanceof String) {
+              //  Surround a string with the quote characters
+              writer.write(indent + keyVal.key + "\t");
+              writer.write(QUOTE_STRING + keyVal.value + QUOTE_STRING + "\n");
+          } else if (keyVal.value instanceof Double) {
+               //  If the double contains a non-number, we will refuse to write
+               //  it out because the result will be invalid gml
+              Double value = (Double) keyVal.value;
+              if (!(value.isNaN() || value.isInfinite())) {
+                  writer.write(indent + keyVal.key + "\t");
+                  writer.write(keyVal.value + "\n");
+              }
+          } else if (keyVal.value instanceof Integer) {
+              //  Everything else (Integer, double) relies upon the default
+              //  toString() method  of the object
+              writer.write(indent + keyVal.key + "\t");
+              writer.write(keyVal.value + "\n");
+          }
       }
-    }
   }
 
   /**
