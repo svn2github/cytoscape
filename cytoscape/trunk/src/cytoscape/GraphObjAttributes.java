@@ -29,12 +29,32 @@ public GraphObjAttributes ()
   countIdMap = new HashMap ();
 }
 //--------------------------------------------------------------------------------
+/**
+ *  create an identical and unrelated copy, so that any subsequent changes to
+ *  the clone will not affect the original, and vice versa.
+ */
 public Object clone ()
+// cloning can be a little tricky.  see
+//   http://java.sun.com/docs/books/tutorial/java/javaOO/objectclass.html
+// for a discussion.  
+// for cloning to work, every container data structure (HashMap's in our case)
+// must be clone 'all the way down'.  in particular, the core data structure
+// of this class -- 'map' -- is a HashMap of HashMap's.  for a true clone, then,
+// each one of those second-level HashMaps must be extracted, cloned, and added
+// to the toplevel HashMap, which itself must be cloned.
 {
   GraphObjAttributes attributesClone = null;
 
   try {
-   attributesClone =  (GraphObjAttributes) super.clone ();
+    attributesClone =  (GraphObjAttributes) super.clone ();
+    attributesClone.map = (HashMap) map.clone ();
+    String [] keys = (String []) map.keySet().toArray(new String [0]);
+    for (int i=0; i < keys.length; i++) {
+      HashMap singleAttributeHash = (HashMap) map.get (keys [i]);
+      attributesClone.map.put (keys [i], (HashMap) singleAttributeHash.clone ());
+      }
+    attributesClone.nameFinder = (HashMap) nameFinder.clone ();
+    attributesClone.countIdMap = (HashMap) countIdMap.clone ();
     }
   catch (CloneNotSupportedException cnse) {
     System.err.println (" --- error in GraphObjAttributes.clone");

@@ -523,6 +523,55 @@ public void testGetAttributeClass () throws Exception
 
 } // testGetAttributeClass
 //-------------------------------------------------------------------------
+/**
+ * does the clone method return a true copy, with no real identity?
+ * a simple way to check this is to change an attribute in either the
+ * original or the clone, and then make sure that the other is unchanged.
+ */
+public void testCloning () throws Exception
+{
+  System.out.println ("testCloning");
+
+  GraphObjAttributes original = new GraphObjAttributes ();
+
+  Double homology = new Double (99.32);
+  Integer count = new Integer (33);
+  String magicWord = "abracadabra";
+  
+  String nodeName = "GAL4";
+
+  HashMap bundle = new HashMap ();
+  bundle.put ("homology", homology);
+  bundle.put ("count",  count);
+  bundle.put ("magic",  magicWord);
+
+  original.add (nodeName, bundle);
+
+  GraphObjAttributes clone = (GraphObjAttributes) original.clone ();
+  //System.out.println ("-- original: " + original);
+  //System.out.println ("-- clone: " + clone);
+  assertTrue (original != clone);
+
+  String magicWordRetrievedFromOriginal = (String) original.getValue ("magic", "GAL4");
+  String magicWordRetrievedFromClone  = (String) clone.getValue ("magic", "GAL4");
+
+  assertTrue (magicWordRetrievedFromOriginal.equals (magicWord));
+  assertTrue (magicWordRetrievedFromClone.equals (magicWord));
+
+   // now change magic word in the clone.  is the original affected?
+
+  String newMagicWord = "shazam!";
+
+  clone.add ("magic", "GAL4", newMagicWord);
+  magicWordRetrievedFromClone  = (String) clone.getValue ("magic", "GAL4");
+  assertTrue (magicWordRetrievedFromClone.equals (newMagicWord));
+
+  magicWordRetrievedFromOriginal = (String) original.getValue ("magic", "GAL4");
+  assertTrue (!magicWordRetrievedFromOriginal.equals (newMagicWord));
+
+
+} // testCloning
+//-------------------------------------------------------------------------
 public static void main (String [] args) 
 {
   junit.textui.TestRunner.run (new TestSuite (GraphObjAttributesTest.class));
