@@ -1,6 +1,6 @@
 package fing.util;
 
-public final class MaxIntHeap
+public final class MinIntHeap
 {
 
   private int[] m_heap;
@@ -11,10 +11,10 @@ public final class MaxIntHeap
   /**
    * A new heap is ordered.
    */
-  public MaxIntHeap()
+  public MinIntHeap()
   {
     m_heap = new int[DEFAULT_CAPACITY];
-    m_heap[0] = Integer.MAX_VALUE;
+    m_heap[0] = Integer.MIN_VALUE;
     m_currentSize = 0;
     m_orderOK = true;
   }
@@ -64,13 +64,13 @@ public final class MaxIntHeap
   private final void percolateUp(int childIndex)
   {
     for (int parentIndex = childIndex / 2;
-         m_heap[childIndex] > m_heap[parentIndex];
+         m_heap[childIndex] < m_heap[parentIndex];
          childIndex = parentIndex, parentIndex = parentIndex / 2)
       swap(m_heap, parentIndex, childIndex);
   }
 
   /**
-   * Returns the maximum element in this heap.  This is a constant time
+   * Returns the minimum element in this heap.  This is a constant time
    * operation if the heap is ordered.  If the heap is not ordered, this
    * operation will first order the entire heap.  The time complexity of
    * ordering an unordered heap is O(n) where n is the number of elements
@@ -79,14 +79,14 @@ public final class MaxIntHeap
    * are undefined.
    * @see #numElements()
    */
-  public final int findMax()
+  public final int findMin()
   {
     if (!m_orderOK) fixHeap();
     return m_heap[((m_currentSize == 0) ? -1 : 1)];
   }
 
   /**
-   * Deletes and returns the maximum element in this heap.  This operation
+   * Deletes and returns the minimum element in this heap.  This operation
    * has time complexity O(log(n)) where n is the number of elements
    * currently in this heap, assuming that the heap is ordered.  If the
    * heap is not ordered at the time this operation is invoked, this
@@ -97,9 +97,9 @@ public final class MaxIntHeap
    * are undefined.
    * @see #numElements()
    */
-  public final int deleteMax()
+  public final int deleteMin()
   {
-    final int returnThis = findMax();
+    final int returnThis = findMin();
     m_heap[1] = m_heap[m_currentSize--];
     percolateDown(1);
     return returnThis;
@@ -110,9 +110,9 @@ public final class MaxIntHeap
     for (int childIndex = parentIndex * 2; childIndex <= m_currentSize;
          parentIndex = childIndex, childIndex = childIndex * 2) {
       if (childIndex + 1 <= m_currentSize &&
-          m_heap[childIndex + 1] > m_heap[childIndex])
+          m_heap[childIndex + 1] < m_heap[childIndex])
         childIndex++;
-      if (m_heap[childIndex] > m_heap[parentIndex])
+      if (m_heap[childIndex] < m_heap[parentIndex])
         swap(m_heap, parentIndex, childIndex);
       else break; }
   }
