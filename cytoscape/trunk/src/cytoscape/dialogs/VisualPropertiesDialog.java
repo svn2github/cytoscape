@@ -66,27 +66,70 @@ public VisualPropertiesDialog (Frame parentFrame,
   GridBagConstraints c = new GridBagConstraints();
   mainPanel.setLayout (gridbag);
 
-  JButton colorButton = new JButton("Choose Node Color");
-  colorButton.addActionListener(new GeneralColorDialogListener(this,nColor,"Choose a Node Color"));
+
+  JButton colorButton = new JButton("Node Color");
+  JLabel colorLabel = new JLabel("    ");
+  colorLabel.setOpaque(true);
+  colorLabel.setBackground(nColor.getColor());
+  colorButton.addActionListener(new
+      GeneralColorDialogListener(this,nColor,colorLabel,
+				 "Choose a Node Color"));
+  colorButton.setSize(new Dimension(400,100));
+  c.gridx=1;
+  c.gridy=1;
+  c.fill=GridBagConstraints.NONE;
+  gridbag.setConstraints(colorLabel,c);
+  mainPanel.add(colorLabel);
+
   c.gridx=0;
   c.gridy=1;
+  c.fill=GridBagConstraints.HORIZONTAL;
   gridbag.setConstraints(colorButton,c);
   mainPanel.add(colorButton);
 
-  JButton borderColorButton = new JButton("Choose Node Border Color");
-  borderColorButton.addActionListener(new GeneralColorDialogListener(this,bColor,"Choose a Node Border Color"));
+  JButton borderColorButton = new JButton("Node Border Color");
+  JLabel borderColorLabel = new JLabel("    ");
+  borderColorLabel.setOpaque(true);
+  borderColorLabel.setBackground(bColor.getColor());
+  borderColorButton.addActionListener(new
+      GeneralColorDialogListener(this,bColor,borderColorLabel,
+				 "Choose a Node Border Color"));
+  c.gridx=1;
+  c.gridy=2;
+  c.fill=GridBagConstraints.NONE;
+  gridbag.setConstraints(borderColorLabel,c);
+  mainPanel.add(borderColorLabel);
+
   c.gridx=0;
   c.gridy=2;
+  c.fill=GridBagConstraints.HORIZONTAL;
   gridbag.setConstraints(borderColorButton,c);
   mainPanel.add(borderColorButton);
 
+
   JButton bgColorButton
-      = new JButton("Choose Background Color");
-  bgColorButton.addActionListener(new GeneralColorDialogListener(this,bgColor,"Choose a Background Color"));
+      = new JButton("Background Color");
+  JLabel bgColorLabel = new JLabel("    ");
+  bgColorLabel.setOpaque(true);
+  bgColorLabel.setBackground(bgColor.getColor());
+  bgColorButton.addActionListener(new
+      GeneralColorDialogListener(this,bgColor,bgColorLabel,
+				 "Choose a Background Color"));
+  c.gridx=1;
+  c.gridy=3;
+  c.fill=GridBagConstraints.NONE;
+  gridbag.setConstraints(bgColorLabel,c);
+  mainPanel.add(bgColorLabel);
+
+
   c.gridx=0;
   c.gridy=3;
+  c.fill=GridBagConstraints.HORIZONTAL;
   gridbag.setConstraints(bgColorButton,c);
   mainPanel.add(bgColorButton);
+
+  c.gridheight=1;
+  c.fill=GridBagConstraints.NONE;
 
   JPanel labelTextPanel
       = new LabelTextPanel(nodeAttribs,localNodeLabelKey);
