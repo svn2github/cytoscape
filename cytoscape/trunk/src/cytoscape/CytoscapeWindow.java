@@ -2334,7 +2334,7 @@ protected class EdgeTypeDialogAction extends AbstractAction  {
 			   mainFrame,
 			   graph,  edgeAttributes,
 			   graphHider,
-			   interactionTypes);
+       			   getInteractionTypes());
    }
 }
 
