@@ -306,7 +306,298 @@ public final class FingRootGraphFactory
    * </table><br /><table border=1 cellspacing=0 cellpadding=5>
    * <tr><th colspan=2>GraphPerspective</th></tr>
    * <tr><th>method</th><th>time complexity</th></tr>
-   * </table</blockquote>
+   * <tr>
+   * <td>addGraphPerspectiveChangeListener(GraphPerspectiveChangeListener)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>removeGraphPerspectiveChangeListener(GraphPerspectiveChangeListener)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>clone()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getRootGraph()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getNodeCount()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getEdgeCount()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>nodesIterator()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>nodesList()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getNodeIndicesArray()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>edgesIterator()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>edgesList()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getEdgeIndicesArray()</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getEdgeIndicesArray(int, int, boolean, boolean)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>hideNode(Node)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>hideNode(int)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>hideNodes(List)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>hideNodes(int[])</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>restoreNode(Node)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>restoreNode(int)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>restoreNodes(List)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>restoreNodes(List, boolean)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>restoreNodes(int[], boolean)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>restoreNodes(int[])</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>hideEdge(Edge)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>hideEdge(int)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>hideEdges(List)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>hideEdges(int[])</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>restoreEdge(Edge)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>restoreEdge(int)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>restoreEdges(List)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>restoreEdges(int[])</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>containsNode(Node)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>containsNode(Node, boolean)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>containsEdge(Edge)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>containsEdge(Edge, boolean)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>join(GraphPerspective)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>createGraphPerspective(Node[], Edge[])</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>createGraphPerspective(int[], int[])</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>createGraphPerspective(Filter)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>neighborsList(Node)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>neighborsArray(int)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>isNeighbor(Node, Node)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>isNeighbor(int, int)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>edgeExists(Node, Node)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>edgeExists(int, int)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getEdgeCount(Node, Node, boolean)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getEdgeCount(int, int, boolean)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>edgesList(Node, Node)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>edgesList(int, int, boolean)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getEdgeIndicesArray(int, int, boolean)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getInDegree(Node)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getInDegree(int)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getInDegree(Node, boolean)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getInDegree(int, boolean)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getOutDegree(Node)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getOutDegree(int)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getOutDegree(Node, boolean)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getOutDegree(int, boolean)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getDegree(Node)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getDegree(int)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getIndex(Node)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getNodeIndex(int)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getRootGraphNodeIndex(int)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getNode(int)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getIndex(Edge)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getEdgeIndex(int)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getRootGraphEdgeIndex(int)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getEdge(int)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getEdgeSourceIndex(int)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getEdgeTargetIndex(int)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>isEdgeDirected(int)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>isMetaParent(Node, Node)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>isNodeMetaParent(int, int)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>metaParentsList(Node)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>nodeMetaParentsList(int)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getNodeMetaParentIndicesArray(int)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>isMetaChild(Node, Node)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>isNodeMetaChild(int, int)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>nodeMetaChildrenList(Node)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>nodeMetaChildrenList(int)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getNodeMetaChildrenIndicesArray(int)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>isMetaParent(Edge, Node)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>isEdgeMetaParent(int, int)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>metaParentsList(Edge)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>edgeMetaParentsList(int)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getEdgeMetaParentIndicesArray(int)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>isMetaChild(Node, Edge)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>isEdgeMetaChild(int, int)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>edgeMetaChildrenList(Node)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>edgeMetaChildrenList(int)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getEdgeMetaChildIndicesArray(int)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getAdjacentEdgesList(Node, boolean, boolean, boolean)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getConnectingEdges(List)</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getConnectingEdgeIndicesArray(int[])</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>getConnectingNodeIndicesArray(int[])</td>
+   * <td></td>
+   * </tr><tr>
+   * <td>createGraphPerspective(int[])</td>
+   * <td></td>
+   * </tr></table</blockquote>
    */
   public final static RootGraph instantiateRootGraph()
   {
