@@ -13,7 +13,8 @@ JC=javac
 
 OBJS =  Misc.class \
         MutableColor.class \
-        MutableString.class
+        MutableString.class \
+        Exec.class
 
 default: objs 
 
