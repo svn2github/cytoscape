@@ -499,6 +499,26 @@ class FRootGraph //implements RootGraph
     return returnThis;
   }
 
+  public int[] getConnectingNodeIndicesArray(int[] edgeInx)
+  {
+    m_hash.empty();
+    final IntHash nodeBucket = m_hash;
+    for (int i = 0; i < edgeInx.length; i++)
+    {
+      final int positiveEdge = ~edgeInx[i];
+      if (m_graph.containsEdge(positiveEdge))
+      {
+        nodeBucket.put(m_graph.sourceNode(positiveEdge));
+        nodeBucket.put(m_graph.targetNode(positiveEdge));
+      }
+    }
+    final IntEnumerator nodes = nodeBucket.elements();
+    final int[] returnThis = new int[nodes.numRemaining()];
+    for (int i = 0; i < returnThis.length; i++)
+      returnThis[i] = ~(nodes.nextInt());
+    return returnThis;
+  }
+
   public Node getNode(int nodeInx)
   {
     if (nodeInx < 0) return m_nodes.getNodeAtIndex(~nodeInx);
