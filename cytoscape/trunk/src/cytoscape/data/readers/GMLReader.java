@@ -47,6 +47,8 @@ public class GMLReader implements GraphReader {
     private String filename;
     GraphObjAttributes edgeAttributes = new GraphObjAttributes ();
     GraphObjAttributes nodeAttributes = new GraphObjAttributes ();
+    GraphObjAttributes gmlGraphicsAtt = new GraphObjAttributes ();
+
     RootGraph rootGraph;
     GMLTree gmlTree;
 
@@ -78,21 +80,17 @@ public class GMLReader implements GraphReader {
        
        Vector nodeIds = gmlTree.getVector("graph|node|id","|",GMLTree.INTEGER);
        Vector nodeLabels = gmlTree.getVector("graph|node|label","|",GMLTree.STRING);
-      	
+
        // in case gml node ids are not ordered consecutively (0..n)
        Hashtable nodeNameMap  = new Hashtable(nodeIds.size());
        for(int i=0; i<nodeIds.size(); i++) {
         	nodeNameMap.put(nodeIds.get(i), nodeLabels.get(i));
        }
-       
+
        Vector edgeSources = gmlTree.getVector("graph|edge|source","|",GMLTree.INTEGER);
        Vector edgeTargets = gmlTree.getVector("graph|edge|target","|",GMLTree.INTEGER);
-       Vector edgeLabels = gmlTree.getVector("graph|edge|label|","|",GMLTree.STRING);
-
-       
-       //GMLObject gmlNodeGraphics = gmlNodes.getGML("node", "graphics");
-       //GMLObject gmlEdgeGraphics = gmlEdges.getGML("edge", "graphics");
-       
+       Vector edgeLabels  = gmlTree.getVector("graph|edge|label|","|",GMLTree.STRING);
+              
        //---------------------------------------------------------------------------
        // set a default edge type if it's not defined in the GML file
        // need a better system for defining the default...
@@ -120,6 +118,22 @@ public class GMLReader implements GraphReader {
                nodeAttributes.addNameMapping(nodeName, node);
            }
        }
+
+       Vector nodeHeight = gmlTree.getVector("graph|node|graphics|h","|",GMLTree.DOUBLE);
+       Vector nodeWidth  = gmlTree.getVector("graph|node|graphics|w","|",GMLTree.DOUBLE);
+       Vector nodeType   = gmlTree.getVector("graph|node|graphics|type","|",GMLTree.STRING);
+       if( (nodeHeight.size() == nodeIds.size())  &&
+	   (nodeWidth.size()  == nodeIds.size()) &&
+	   (nodeType.size()   == nodeIds.size())
+	 ) {
+	   for(int i=0; i<nodeIds.size(); i++) {
+	       nodeName = (String) nodeNameMap.get(nodeIds.get(i));
+	       gmlGraphicsAtt.set("node.h", nodeName, (Double) nodeHeight.get(i));
+	       gmlGraphicsAtt.set("node.w", nodeName, (Double) nodeWidth.get(i));
+	       gmlGraphicsAtt.set("node.type", nodeName, (String) nodeType.get(i));
+	 }
+       }
+
        //---------------------------------------------------------------------------
        // loop over the interactions creating edges between all sources and their 
        // respective targets.
@@ -167,6 +181,12 @@ public class GMLReader implements GraphReader {
   public GraphObjAttributes getEdgeAttributes () {
     return edgeAttributes;
   }
+  /**
+   * @return the gmlGraphics attributes that were read in from the GML file.
+   */
+  public GraphObjAttributes getGMLAttributes () {
+    return gmlGraphicsAtt;
+  }
    //------------------------------------------------------------------------------
   // called only when we have a CyWindow
   //
@@ -182,12 +202,16 @@ public class GMLReader implements GraphReader {
 	  Vector nodeLabels  = gmlTree.getVector("graph|node|label","|",GMLTree.STRING);
 	  Vector nodeX = gmlTree.getVector("graph|node|graphics|x","|",GMLTree.DOUBLE);
 	  Vector nodeY = gmlTree.getVector("graph|node|graphics|y","|",GMLTree.DOUBLE);
+
+	  Vector nodeHeight = gmlTree.getVector("graph|node|graphics|h","|",GMLTree.DOUBLE);
+	  Vector nodeWidth  = gmlTree.getVector("graph|node|graphics|w","|",GMLTree.DOUBLE);
+	  Vector nodeType   = gmlTree.getVector("graph|node|graphics|type","|",GMLTree.STRING);
 	  
 	  if( (nodeLabels.size() == myNetwork.getRootGraph().getNodeCount()) &&
 	      (nodeX.size() == myNetwork.getRootGraph().getNodeCount()) &&
 	      (nodeY.size() == myNetwork.getRootGraph().getNodeCount()) ) {
 	      
-	      Iterator it = nodeLabels.iterator();
+	      //Iterator it = nodeLabels.iterator();
 	      GraphObjAttributes nodeAttributes = myNetwork.getNodeAttributes();
 	      for(int i=0;i<nodeLabels.size();i++){
 		  String nodeName = (String)nodeLabels.get(i);
@@ -198,6 +222,15 @@ public class GMLReader implements GraphReader {
 		  NodeView currentView = myView.getNodeView(current);
 		  currentView.setXPosition(X.doubleValue());
 		  currentView.setYPosition(Y.doubleValue());
+		  if( nodeHeight.size() == nodeLabels.size() )
+		      currentView.setHeight( ((Double) nodeHeight.get(i)).doubleValue());
+		  if( nodeWidth.size() == nodeLabels.size() )
+		      currentView.setWidth( ((Double) nodeWidth.get(i)).doubleValue());
+		  if( nodeType.size() == nodeLabels.size() ) {
+		      String nType = (String) nodeType.get(i);
+		      if( nType.compareTo("ellipse")==0 ) currentView.setShape(NodeView.ELLIPSE);
+		      if( nType.compareTo("rectangle")==0 ) currentView.setShape(NodeView.RECTANGLE);		      
+		  }
 	      }
 	  }
       }
