@@ -135,6 +135,15 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
 
   }
 
+  /*
+   * Some notes:
+   * - Nodes that are disconnected have distance -1 between them.
+   */
+  private static int[][] calculateNodeDistances()
+  {
+    return null;
+  }
+
   /**
    * This starts the layout process.  This method is called by a parent
    * application using this layout algorithm.
@@ -157,6 +166,42 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
     PartialDerivatives furthestNodePartials = null;
     double currentProgressTemp;
     double setupProgress = 0.0;
+
+    m_nodeDistanceSpringRestLengths = new double[m_nodeCount][m_nodeCount];
+    m_nodeDistanceSpringStrengths = new double[m_nodeCount][m_nodeCount];
+
+    int[][] nodeDistances = calculateNodeDistances();
+
+    // Calculate rest lengths and strengths based on node distance data.
+    for (int node_i = 0; node_i < m_nodeCount; node_i++)
+    {
+      for (int node_j = (node_i + 1); node_j < m_nodeCount; node_j++)
+      {
+        // BEGIN: Compute spring rest lengths.
+        if (nodeDistances[node_i][node_j] < 0) { // disconnected
+          m_nodeDistanceSpringRestLengths[node_i][node_j] =
+            m_disconnectedNodeDistanceSpringRestLength; }
+        else {
+          m_nodeDistanceSpringRestLengths[node_i][node_j] =
+            m_nodeDistanceRestLengthConstant * nodeDistances[node_i][node_j]; }
+        m_nodeDistanceSpringRestLengths[node_j][node_i] =
+          m_nodeDistanceSpringRestLengths[node_i][node_j];
+        // END: Compute spring rest lengths.
+
+        // BEGIN: Compute spring strengths.
+        if (nodeDistances[node_i][node_j] < 0) { // disconnected
+          m_nodeDistanceSpringStrengths[node_i][node_j] =
+            m_disconnectedNodeDistanceSpringStrength; }
+        else {
+          m_nodeDistanceSpringStrengths[node_i][node_j] =
+            m_nodeDistanceStrengthConstant /
+            nodeDistances[node_i][node_j] * nodeDistances[node_i][node_j]; }
+        m_nodeDistanceSpringStrengths[node_j][node_i] =
+          m_nodeDistanceSpringStrengths[node_i][node_j];
+        // END: Compute spring strengths.
+      }
+    }
+
     for (m_layoutPass = 0; m_layoutPass < m_numLayoutPasses; m_layoutPass++)
     {
     }
@@ -226,90 +271,6 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
     } // End for each layout pass
     return null;
   } // doLayout()
-
-  // Called at the beginning of each layoutPass iteration.
-  protected void setupForLayoutPass () {
-    setupNodeDistanceSprings();
-  } // setupForLayoutPass()
-
-  protected void setupNodeDistanceSprings () {
-    // We only have to do this once.
-    if( layoutPass != 0 ) {
-      return;
-    }
-
-    nodeDistanceSpringRestLengths = new double[ nodeCount ][ nodeCount ];
-    nodeDistanceSpringStrengths = new double[ nodeCount ][ nodeCount ];
-
-    if( nodeDistanceSpringScalars[ layoutPass ] == 0.0 ) {
-      return;
-    }
-
-
-    
-    NodeDistances ind = new NodeDistances( graphView.getGraphPerspective().nodesList(), null, graphView.getGraphPerspective() );
-    int[][] node_distances = ( int[][] )ind.calculate();
-
-    if( node_distances == null ) {
-      return;
-    }
-
-    // TODO: A good strength_constant is the characteristic path length of the
-    // graph.  For now we'll just use nodeDistanceStrengthConstant.
-    double node_distance_strength_constant = nodeDistanceStrengthConstant;
-
-    // TODO: rest_length_constant can be chosen to scale the whole graph.
-    // To make it the size of the current view, try
-    // rest_length_constant = Math.sqrt( ( ( graphView.getViewRect().width / graphView.getViewRect.height() ) / 4 ) / graphView.getGraphDiameter() );
-    // To make it bigger, try
-    // rest_length_constant = graphView.averageEdgeLength();
-    // To make it smaller, try
-    // rest_length_constant = Math.sqrt( ( graphView.getViewRect().width * graphView.getViewRect.height() ) / graphView.getGraphDiameter() );
-    // For now we'll just use nodeDistanceRestLengthConstant.
-    double node_distance_rest_length_constant = nodeDistanceRestLengthConstant;
-
-    // Calculate the rest lengths and strengths based on the node distance data
-    for( int node_i = 0; node_i < nodeCount; node_i++ ) {
-      for( int node_j = ( node_i + 1 ); node_j < nodeCount; node_j++ ) {
-
-
-        //System.out.println( "APSP: node_i: "+node_i+ " node_j: "+ node_j+" == "+node_distances[ node_i ][node_j ] );
-
-        if( node_distances[ node_i ][ node_j ] == Integer.MAX_VALUE ) {
-          nodeDistanceSpringRestLengths[ node_i ][ node_j ] =
-            disconnectedNodeDistanceSpringRestLength;
-          //System.out.println( "disconnectedNodeDistanceSpringRestLength 1: "+ disconnectedNodeDistanceSpringRestLength );
-        } else {
-          nodeDistanceSpringRestLengths[ node_i ][ node_j ] =
-            ( node_distance_rest_length_constant *
-              node_distances[ node_i ][ node_j ] );
-          //System.out.println( " ELSE 1: "+nodeDistanceSpringRestLengths[ node_i ][ node_j ] );
-        }
-        // Mirror over the diagonal.
-        nodeDistanceSpringRestLengths[ node_j ][ node_i ] =
-          nodeDistanceSpringRestLengths[ node_i ][ node_j ];
-
-        if( node_distances[ node_i ][ node_j ] == Integer.MAX_VALUE ) {
-          nodeDistanceSpringStrengths[ node_i ][ node_j ] =
-            disconnectedNodeDistanceSpringStrength;
-        } else {
-          nodeDistanceSpringStrengths[ node_i ][ node_j ] =
-            ( node_distance_strength_constant /
-              ( node_distances[ node_i ][ node_j ] *
-                node_distances[ node_i ][ node_j ] )
-            );
-        }
-        // Mirror over the diagonal.
-        nodeDistanceSpringStrengths[ node_j ][ node_i ] =
-          nodeDistanceSpringStrengths[ node_i ][ node_j ];
-
-     
-      }
-     
-    }
-    // currentProgress has been increased by ( nodeCount * nodeCount ).
-
-  } // setupNodeDistanceSprings()
 
   // If partials_list is given, adjust all partials (bidirectional) for the
   // current location of the given partials and return the new furthest node's
