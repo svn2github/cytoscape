@@ -736,16 +736,19 @@ class FRootGraph implements RootGraph, DynamicGraph
     final int nativeChildNode = ~childNodeInx;
     if (!(m_graph.nodeExists(nativeParent) &&
           m_graph.nodeExists(nativeChildNode))) return false;
+    final int metaParent = m_nativeToMetaNodeInxMap.get(nativeParent);
+    final int metaChildNode = m_nativeToMetaNodeInxMap.get(nativeChildNode);
+    IntIterator metaRelationships = m_metaGraph.edgesConnecting
+      (metaParent, metaChildNode, true, false, false);
+    if (metaRelationships == null || !metaRelationships.hasNext())
+      return false;
     final IntEnumerator nativeEdgesTouchingChild = m_graph.edgesAdjacent
       (nativeChildNode, true, true, true);
     while (nativeEdgesTouchingChild.numRemaining() > 0)
       removeEdgeMetaChild(parentNodeInx, ~nativeEdgesTouchingChild.nextInt());
-    final int metaParent = m_nativeToMetaNodeInxMap.get(nativeParent);
-    final int metaChildNode = m_nativeToMetaNodeInxMap.get(nativeChildNode);
-    final IntIterator metaRelationships = m_metaGraph.edgesConnecting
+    // Must re-initialize this iteration because we've mutated graph since.
+    metaRelationships = m_metaGraph.edgesConnecting
       (metaParent, metaChildNode, true, false, false);
-    if (metaRelationships == null || !metaRelationships.hasNext())
-      return false;
     final int relationshipToRemove = metaRelationships.nextInt();
     if (metaRelationships.hasNext())
       throw new IllegalStateException("internal error - need to debug");
