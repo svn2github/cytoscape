@@ -1,34 +1,39 @@
-# makefile for cytoscape.data package
+# makefile for csplugins.data.readers
 #-------------------------------------------------------------------------
 # $Revision$
 # $Date$
 # $Author$
 #-------------------------------------------------------------------------
 
-JC=javac
+JC=javac -source 1.4
+JI=java -DCYTOSCAPE_HOME=$(CYTOSCAPE_HOME)
 
 .SUFFIXES: .java .class
 .java.class: 
 	$(JC) $<
 
-OBJS =  BindingPairXmlReader.class \
-        GeneAndGoTermTextReader.class \
-        GeneProductXmlReader.class \
-        GeneSynonymXmlReader.class \
-        GMLReader.class \
-	GMLWriter.class \
-        GoPathTerminatorTextReader.class \
-        GoTermXmlReader.class \
-        InteractionsReader.class \
-        TextFileReader.class \
-        FileReadingAbstractions.class \
-        GraphReader.class \
+OBJS = TextFileReader.class \
+       FileReadingAbstractions.class \
+       GMLReader.class \
+       GMLWriter.class \
+       InteractionsReader.class \
+       GraphReader.class
 
 default: objs 
 
+
+#------ objs
+#  compile all out-of-date java files
+#
 objs: $(OBJS)
 
+#------ clean
+#  delete all compiled files in the current directory, and in subdirectories
+#
 clean:
 	- rm *.class 
+
+help:
+	egrep "^#" makefile | sed "s/^#//"
 
 

@@ -39,7 +39,8 @@ public void testSmallGraphRead () throws Exception
 { 
   System.out.println ("testSmallGraphRead");
   GMLReader reader = new GMLReader (testDataDir + "/gal.gml");
-  Graph2D graph = reader.read ();
+  reader.read ();
+  Graph2D graph = reader.getGraph ();
   assertTrue ("node count", graph.nodeCount () == 11);
   assertTrue ("edge count",  graph.edgeCount () == 10);
 
@@ -49,7 +50,8 @@ public void testMediumGraphRead () throws Exception
 { 
   System.out.println ("testMediumGraphRead");
   GMLReader reader = new GMLReader (testDataDir + "/noLabels.gml");
-  Graph2D graph = reader.read ();
+  reader.read ();
+  Graph2D graph = reader.getGraph ();
   assertTrue ("node count", graph.nodeCount () == 332);
   assertTrue ("edge count",  graph.edgeCount () == 362);
 

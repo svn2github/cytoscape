@@ -18,11 +18,13 @@ import y.view.Graph2D;
 import cytoscape.data.Interaction;
 import cytoscape.data.readers.InteractionsReader;
 import cytoscape.GraphObjAttributes;
+import cytoscape.data.servers.BioDataServer;
 //-----------------------------------------------------------------------------------------
 public class InteractionsReaderTest extends TestCase {
 
   private static String testDataDir;
-
+  private BioDataServer nullServer = null;
+  private String species = "unknown";
 //------------------------------------------------------------------------------
 public InteractionsReaderTest (String name) 
 {
@@ -41,7 +43,7 @@ public void testReadFromTypicalFile () throws Exception
 // 'typical' means that all lines have the form "node1 pd node2 [node3 node4 ...]
 { 
   System.out.println ("testFromTypicalFile");
-  InteractionsReader reader = new InteractionsReader (testDataDir + "/sample.intr");
+  InteractionsReader reader = new InteractionsReader (nullServer, species, testDataDir + "/sample.intr");
   reader.read ();
   assertTrue (reader.getCount () == 25);
   Interaction [] interactions = reader.getAllInteractions ();
@@ -60,7 +62,7 @@ public void testReadFileWithNoInteractions () throws Exception
 // that is, with no interaction type and no target
 { 
   System.out.println ("testReadFileWithNoInteractions");
-  InteractionsReader reader = new InteractionsReader (testDataDir + "/degenerate.intr");
+  InteractionsReader reader = new InteractionsReader (nullServer, species, testDataDir + "/degenerate.intr");
   reader.read ();
   assertTrue (reader.getCount () == 9);
   Interaction [] interactions = reader.getAllInteractions ();
@@ -76,7 +78,7 @@ public void testReadFileWithNoInteractions () throws Exception
 public void testGetGraph () throws Exception
 { 
   System.out.println ("testGetGraph");
-  InteractionsReader reader = new InteractionsReader (testDataDir + "/sample.intr");
+  InteractionsReader reader = new InteractionsReader (nullServer, species, testDataDir + "/sample.intr");
   reader.read ();
   assertTrue (reader.getCount () == 25);
 
@@ -96,7 +98,7 @@ public void testGetGraphAndEdgeAttributes () throws Exception
 // look like "node1::node2", and that the values are simple strings
 { 
   System.out.println ("testGetGraphAndEdgeAttributes");
-  InteractionsReader reader = new InteractionsReader (testDataDir + "/sample.intr");
+  InteractionsReader reader = new InteractionsReader (nullServer, species, testDataDir + "/sample.intr");
   reader.read ();
   assertTrue (reader.getCount () == 25);
 
@@ -116,7 +118,7 @@ public void testGetGraphAndEdgeAttributes () throws Exception
   assertTrue ("edgeNames count", edgeNames.length == 27);
 
   for (int i=0; i < edgeNames.length; i++) {
-    assertTrue ("looking for double colon", edgeNames[i].indexOf ("::") > 0);
+    assertTrue ("looking for ' (pd) '", edgeNames[i].indexOf (" (pd) ") > 0);
     String interactionType = (String) edgeProps.getValue ("interaction", edgeNames [i]);
     assertTrue (interactionType.equals ("pd"));
     }
