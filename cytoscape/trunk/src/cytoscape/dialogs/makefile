@@ -14,10 +14,7 @@ JC=javac
 OBJS = ColorPopupButton.class \
         ColorScaleTable.class \
         ExpressionDataPopupTable.class \
-        GoDataServerPopupTable.class \
-        GoIDAttributesPopupTable.class \
         NewSlider.class \
-        NodeAttributesPopupTable.class \
         PopupTextArea.class \
         VisualPropertiesDialog.class \
         LabelTextPanel.class \
@@ -34,7 +31,8 @@ OBJS = ColorPopupButton.class \
         EdgePopupMenu.class \
         EdgeAttributesPopupDetails.class \
         ShrinkExpandGraph.class \
-        ShrinkExpandGraphUI.class
+        ShrinkExpandGraphUI.class \
+        EdgeControlDialog.class
 
 
 
