@@ -49,6 +49,10 @@ import java.util.ArrayList;
  * * Time: 8:46:19 PM
  * * Description: simple score and find action for MCODE
  */
+
+/**
+ * Simple score and find action for MCODE. This should be the default for general users.
+ */
 public class MCODEScoreAndFindAction implements ActionListener {
     private MCODEResultsDialog resultDialog;
 

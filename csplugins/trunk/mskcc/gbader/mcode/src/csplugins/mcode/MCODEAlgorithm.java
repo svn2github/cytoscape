@@ -40,7 +40,7 @@ import java.util.*;
  ** User: Gary Bader
  ** Date: Jan 20, 2004
  ** Time: 6:18:03 PM
- ** Description
+ ** Description: An implementation of the MCODE algorithm
  **/
 public class MCODEAlgorithm {
 
@@ -69,15 +69,16 @@ public class MCODEAlgorithm {
     //stats
     private long lastScoreTime;
     private long lastFindTime;
-    //progress
-    private String statusMessage;
 
     /**
-     * Called from ProgressBarDemo to find out how much work needs
-     * to be done.
+     * The constructor.  Use this to get an instance of MCODE to run.
      */
-    public String getStatusMessage() {
-        return statusMessage;
+    public MCODEAlgorithm() {
+        //init class members
+        nodeInfoHashMap = null;
+        nodeScoreSortedMap = null;
+        //get current parameters
+        params = MCODECurrentParameters.getInstance().getParamsCopy();
     }
 
     /**
@@ -94,15 +95,11 @@ public class MCODEAlgorithm {
         return lastFindTime;
     }
 
-	public MCODEAlgorithm() {
-		//init class members
-		nodeInfoHashMap = null;
-		nodeScoreSortedMap = null;
-        //get current parameters
-        params = MCODECurrentParameters.getInstance().getParamsCopy();
-	}
-
-	//Step 1 - score the graph and save scores as node attributes
+	/**
+     * Step 1: Score the graph and save scores as node attributes.  Scores are also
+     * saved internally in your instance of MCODEAlgorithm.
+     * @param inputNetwork - The network that will be scored
+     */
 	public void scoreGraph(CyNetwork inputNetwork) {
 		String callerID = "MCODEAlgorithm.MCODEAlgorithm";
 		if (inputNetwork == null) {
@@ -144,7 +141,13 @@ public class MCODEAlgorithm {
         lastScoreTime = msTimeAfter - msTimeBefore;
 	}
 
-	//Step 2: find all complexes given a scored graph
+	/**
+     * Step 2: Find all complexes given a scored graph.  If the input network has not been scored,
+     * this method will return null.
+     * @param inputNetwork - The scored network to find complexes in.
+     * @return An ArrayList containing an ArrayList for each complex. Each complex is stored as a simple list
+     * of node IDs of the nodes in the input network that are part of the complex.
+     */
 	public ArrayList findComplexes(CyNetwork inputNetwork) {
 		String callerID = "MCODEAlgorithm.findComplexes";
 		if (inputNetwork == null) {
@@ -201,8 +204,13 @@ public class MCODEAlgorithm {
 		return (alComplexes);
 	}
 
-	//score node using formula from original MCODE paper
-	//This formula selects for larger, denser cores
+	/**
+     * Score node using the formula from original MCODE paper.
+     * This formula selects for larger, denser cores.
+     * This is a utility function for the algorithm.
+     * @param nodeInfo The internal data structure to fill with node information
+     * @return The score of this node.
+     */
 	private double scoreNode(NodeInfo nodeInfo) {
 		if (nodeInfo.numNodeNeighbors > params.getDegreeCutOff()) {
 			nodeInfo.score = nodeInfo.coreDensity * (double) nodeInfo.coreLevel;
@@ -212,7 +220,12 @@ public class MCODEAlgorithm {
 		return (nodeInfo.score);
 	}
 
-	//Score a complex - currently ranks larger, denser complexes higher
+	/**
+     * Score a complex.  Currently this ranks larger, denser complexes higher, although
+     * in the future other scoring functions could be created
+     * @param gpComplex - The GINY GraphPerspective version of the complex
+     * @return The score of the complex
+     */
 	public double scoreComplex(GraphPerspective gpComplex) {
 		int numNodes = 0;
 		double density = 0.0, score = 0.0;
@@ -224,8 +237,14 @@ public class MCODEAlgorithm {
 		return (score);
 	}
 
-	//Calculates node information for each node according to the original MCODE publication
-	//This information is used to score the nodes
+	/**
+     * Calculates node information for each node according to the original MCODE publication.
+     * This information is used to score the nodes in the scoring stage.
+     * This is a utility function for the algorithm.
+     * @param inputNetwork The input network for reference
+     * @param nodeIndex The index of the node in the input network to score
+     * @return A NodeInfo object containing node information required for the algorithm
+     */
 	private NodeInfo calcNodeInfo(CyNetwork inputNetwork, int nodeIndex) {
 		int[] neighborhood;
 
@@ -290,13 +309,28 @@ public class MCODEAlgorithm {
 		return (nodeInfo);
 	}
 
-	//Find the high-scoring central region of the complex
+	/**
+     * Find the high-scoring central region of the complex.
+     * This is a utility function for the algorithm.
+     * @param startNode The node that is the seed of the complex
+     * @param nodeSeenArray The list of nodes seen already
+     * @return A list of node IDs representing the core of the complex
+     */
 	private ArrayList getComplexCore(int startNode, boolean[] nodeSeenArray) {
 		ArrayList complex = new ArrayList(); //stores Integer nodeIndices
 		getComplexCoreInternal(startNode, nodeSeenArray, ((NodeInfo) nodeInfoHashMap.get(new Integer(startNode))).score, 1, complex);
 		return (complex);
 	}
 
+    /**
+     * An internal function that does the real work of getComplexCore, implemented to enable recursion.
+     * @param startNode The node that is the seed of the complex
+     * @param nodeSeenArray The list of nodes seen already
+     * @param startNodeScore The score of the seed node
+     * @param currentDepth The depth away from the seed node that we are currently at
+     * @param complex The complex to add to if we find a complex node in this method
+     * @return true
+     */
 	private boolean getComplexCoreInternal(int startNode, boolean[] nodeSeenArray, double startNodeScore, int currentDepth, ArrayList complex) {
 		//base cases for recursion
 		if (nodeSeenArray[startNode] == true) {
@@ -328,7 +362,13 @@ public class MCODEAlgorithm {
 		return (true);
 	}
 
-	//Fluff up the complex at the boundary by adding lower scoring, non complex-core neighbors
+	/**
+     * Fluff up the complex at the boundary by adding lower scoring, non complex-core neighbors
+     * This implements the complex fluff feature.
+     * @param complex The complex to fluff
+     * @param nodeSeenArray The list of nodes seen already
+     * @return true
+     */
 	private boolean fluffComplexBoundary(ArrayList complex, boolean[] nodeSeenArray) {
 		int currentNode = 0, nodeNeighbor = 0;
 		//create a temp list of nodes to add to avoid concurrently modifying 'complex'
@@ -360,7 +400,11 @@ public class MCODEAlgorithm {
 		return (true);
 	}
 
-	/*Checks if the complex needs to be filtered according to heuristics in this method*/
+	/**
+     * Checks if the complex needs to be filtered according to heuristics in this method
+     * @param gpComplexGraph The complex to check if it passes the filter
+     * @return true if complex should be filtered, false otherwise
+     */
 	private boolean filterComplex(GraphPerspective gpComplexGraph) {
 		if (gpComplexGraph == null) {
 			return (true);
@@ -375,7 +419,13 @@ public class MCODEAlgorithm {
 		return (false);
 	}
 
-    /*Checks if the complex needs to be filtered according to heuristics in this method*/
+    /**
+     * Gives the complex a haircut (removed singly connected nodes by taking a 2-core)
+     * @param gpComplexGraph The complex graph
+     * @param complex The complex node ID list (in the original graph)
+     * @param gpInputGraph The original input graph
+     * @return true
+     */
     private boolean haircutComplex(GraphPerspective gpComplexGraph, ArrayList complex, GraphPerspective gpInputGraph) {
         //get 2-core
         GraphPerspective gpCore = getKCore(gpComplexGraph, 2);
@@ -391,7 +441,14 @@ public class MCODEAlgorithm {
         return (true);
     }
 
-	//calculate the density of a network
+	/**
+     * Calculate the density of a network
+     * The density is defined as the number of edges/the number of possible edges
+     * @param gpInputGraph The input graph to calculate the density of
+     * @param includeLoops Include the possibility of loops when determining the number of
+     * possible edges.
+     * @return The density of the network
+     */
 	public double calcDensity(GraphPerspective gpInputGraph, boolean includeLoops) {
 		int possibleEdgeNum = 0, actualEdgeNum = 0, loopCount = 0;
 		double density = 0;
@@ -420,7 +477,12 @@ public class MCODEAlgorithm {
 		return (density);
 	}
 
-	//find a k-core - returns a subgraph with the core, if any was found at given k
+	/**
+     * Find a k-core of a network. A k-core is a subgraph of minimum degree k
+     * @param gpInputGraph The input network
+     * @param k The k of the k-core to find e.g. 4 will find a 4-core
+     * @return Returns a subgraph with the core, if any was found at given k
+     */
 	public GraphPerspective getKCore(GraphPerspective gpInputGraph, int k) {
 		String callerID = "MCODEAlgorithm.getKCore";
 		if (gpInputGraph == null) {
@@ -467,7 +529,13 @@ public class MCODEAlgorithm {
 		return (gpOutputGraph);
 	}
 
-	//find the highest k-core in the input graph.  Returns the k-value and the core as an Object array.
+	/**
+     * Find the highest k-core in the input graph.
+     * @param gpInputGraph The input network
+     * @return Returns the k-value and the core as an Object array.
+     * The first object is the highest k value i.e. objectArray[0]
+     * The second object is the highest k-core as a GraphPerspective i.e. objectArray[1]
+     */
 	public Object[] getHighestKCore(GraphPerspective gpInputGraph) {
 		String callerID = "MCODEAlgorithm.getHighestKCore";
 		if (gpInputGraph == null) {

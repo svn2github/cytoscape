@@ -43,7 +43,7 @@ import java.util.ArrayList;
  ** User: Gary Bader
  ** Date: Jan 22, 2004
  ** Time: 9:04:33 PM
- ** Description
+ ** Description Action to only find complexes given a previously scored network
  **/
 public class MCODEFindAction implements ActionListener {
 	private MCODEResultsDialog resultDialog;

@@ -1,8 +1,7 @@
-package csplugins.mcode;
+package csplugins.mcode.test;
 
-import javax.swing.*;
-import javax.swing.text.html.HTMLEditorKit;
-import java.awt.*;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
  * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
@@ -35,27 +34,36 @@ import java.awt.*;
  * * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  * *
  * * User: Gary Bader
- * * Date: Jun 25, 2004
- * * Time: 5:47:31 PM
- * * Description: An about dialog box for MCODE
+ * * Date: Jul 9, 2004
+ * * Time: 1:46:16 PM
+ * * Description: The test suite for MCODE
  */
-public class MCODEAboutDialog extends JDialog {
 
-    public MCODEAboutDialog(Frame parentFrame) {
-        super(parentFrame, "About MCODE", false);
-        setResizable(false);
+/**
+ * The main test suite for MCODE
+ */
+public class AllTests {
 
-        //main panel for dialog box
-        JEditorPane editorPane = new JEditorPane();
-        editorPane.setEditable(false);
-        editorPane.setEditorKit(new HTMLEditorKit());
-        //TODO: add a link to Cytoscape and the paper (see http://java.sun.com/j2se/1.4.2/docs/api/javax/swing/JEditorPane.html)
-        editorPane.setText("<html><body><P align=center>MCODE (Molecular Complex Detection) v1.0 (July 2004)<BR>" +
-                "A Cytoscape plugin<BR>written by Gary Bader<BR><BR>\n" +
-                "If you use this plugin in your research, please cite:<BR>\n" +
-                "Bader GD, Hogue CW<BR>\n" +
-                "An automated method for finding molecular complexes<BR>in large protein interaction networks.<BR>\n" +
-                "BMC Bioinformatics. 2003 Jan 13;4(1):2</P></body></html>");
-        setContentPane(editorPane);
+    /**
+     * The main test suite for MCODE
+     * @return
+     */
+    public static Test suite() {
+
+        TestSuite suite = new TestSuite();
+        suite.addTestSuite(MCODETest.class);
+        suite.setName("MCODE Tests");
+
+        return suite;
+    }
+
+    /**
+     * In case people want to run the tests from the command line
+     * @param args
+     */
+    public static void main(String args[]) {
+        junit.textui.TestRunner.run(suite());
     }
 }
+
+

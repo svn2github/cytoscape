@@ -53,6 +53,12 @@ public class MCODEParameterSet {
     //result viewing parameters (only used for dialog box of results)
     private int defaultRowHeight;
 
+    /**
+     * Constructor for the parameter set object. Default parameters are:
+     * loops=false, degree cutoff=2, max depth=100, node score cutoff=0.2, fluff=false, haircut=true
+     * fluff node density cutoff=0.1, preprocess network (directed mode)=true, default row height for
+     * results table=80 pixels.
+     */
 	public MCODEParameterSet() {
         //default parameters
         includeLoops = false;
@@ -67,6 +73,44 @@ public class MCODEParameterSet {
         defaultRowHeight = 80;
 	}
 
+    /**
+     * Constructor for no default algorithm parameters.
+     * Results dialog box row height is still default 80 pixels.
+     */
+    public MCODEParameterSet(boolean includeLoops, int degreeCutOff, int maxDepthFromStart, double nodeScoreCutOff,
+                             boolean fluff, boolean haircut, double fluffNodeDensityCutOff) {
+        this.setAllAlgorithmParams(includeLoops, degreeCutOff, maxDepthFromStart, nodeScoreCutOff, fluff, haircut,
+                fluffNodeDensityCutOff);
+        this.preprocessNetwork = true;
+        //results dialog box
+        defaultRowHeight = 80;
+    }
+
+    /**
+     * Convenience method to set all the main algorithm parameters
+     * @param includeLoops
+     * @param degreeCutOff
+     * @param maxDepthFromStart
+     * @param nodeScoreCutOff
+     * @param fluff
+     * @param haircut
+     * @param fluffNodeDensityCutOff
+     */
+    public void setAllAlgorithmParams(boolean includeLoops, int degreeCutOff, int maxDepthFromStart, double nodeScoreCutOff,
+        boolean fluff, boolean haircut, double fluffNodeDensityCutOff) {
+        this.includeLoops = includeLoops;
+        this.degreeCutOff = degreeCutOff;
+        this.maxDepthFromStart = maxDepthFromStart;
+        this.nodeScoreCutOff = nodeScoreCutOff;
+        this.fluff = fluff;
+        this.haircut = haircut;
+        this.fluffNodeDensityCutOff = fluffNodeDensityCutOff;
+    }
+
+    /**
+     * Copies a parameter set object
+     * @return A copy of the parameter set
+     */
     public MCODEParameterSet copy() {
         MCODEParameterSet newParam = new MCODEParameterSet();
         newParam.setIncludeLoops(this.includeLoops);
@@ -82,7 +126,7 @@ public class MCODEParameterSet {
         return newParam;
     }
 
-    //parameter setting
+    //parameter getting and setting
     public boolean isIncludeLoops() {
         return includeLoops;
     }

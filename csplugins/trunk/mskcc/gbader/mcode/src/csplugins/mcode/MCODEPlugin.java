@@ -52,7 +52,7 @@ import javax.swing.*;
  */
 public class MCODEPlugin extends CytoscapePlugin {
 	/**
-	 * Constructor.
+	 * Constructor for the MCODE plugin.
 	 */
 	public MCODEPlugin() {
 		//set-up menu options in plugins menu

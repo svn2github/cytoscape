@@ -40,7 +40,7 @@ import java.awt.event.ActionListener;
  ** User: Gary Bader
  ** Date: Feb 6, 2004
  ** Time: 4:54:53 PM
- ** Description
+ ** Description Action to change the current parameters
  **/
 public class MCODEParameterChangeAction implements ActionListener {
 	/**

@@ -34,24 +34,40 @@
  **/
 package csplugins.mcode;
 
+/**
+ * Stores the current parameters for MCODE.  Parameters are set in the MCODEParameterChangeDialog
+ */
 public class MCODECurrentParameters {
     private static MCODECurrentParameters ourInstance = new MCODECurrentParameters();
     private static MCODEParameterSet params = new MCODEParameterSet();
 
+    /**
+     * Get the one instance of this singleton class that stores the current parameters internally.
+     */
     public static MCODECurrentParameters getInstance() {
         return ourInstance;
     }
 
-    //Anyone who asks should get a copy of the current param object to avoid side effects
+    /**
+     * Get a copy of the current parameters. Only a copy of the current param object is
+     * returned to avoid side effects.  The user should use the following code to get their
+     * own copy of the current parameters:
+     * MCODECurrentParameters.getInstance().getParamsCopy();
+     *
+     * Note: parameters can be changed by the user after you have your own copy,
+     * so if you always need the latest, you should get the updated parameters again.
+     * @return A copy of the parameters
+     */
     public MCODEParameterSet getParamsCopy() {
         return params.copy();
     }
 
-    //current parameters can only be updated using this method
+    /**
+     * Current parameters can only be updated using this method.
+     * This method is called by MCODEParameterChangeDialog
+     * @param newParams The new current parameters to set
+     */
     public void setParams(MCODEParameterSet newParams) {
         params = newParams;
-    }
-
-    private MCODECurrentParameters() {
     }
 }

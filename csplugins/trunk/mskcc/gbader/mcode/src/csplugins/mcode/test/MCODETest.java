@@ -1,8 +1,14 @@
-package csplugins.mcode;
+package csplugins.mcode.test;
 
-import javax.swing.*;
-import javax.swing.text.html.HTMLEditorKit;
-import java.awt.*;
+import csplugins.mcode.MCODEAlgorithm;
+import csplugins.mcode.MCODEParameterSet;
+import csplugins.mcode.MCODEUtil;
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import junit.framework.TestCase;
+
+import java.io.File;
+import java.util.ArrayList;
 
 /**
  * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
@@ -35,27 +41,38 @@ import java.awt.*;
  * * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  * *
  * * User: Gary Bader
- * * Date: Jun 25, 2004
- * * Time: 5:47:31 PM
- * * Description: An about dialog box for MCODE
+ * * Date: Jul 9, 2004
+ * * Time: 11:57:55 AM
+ * * Description  JUnit testing for MCODE
  */
-public class MCODEAboutDialog extends JDialog {
 
-    public MCODEAboutDialog(Frame parentFrame) {
-        super(parentFrame, "About MCODE", false);
-        setResizable(false);
+/**
+ * Test for the MCODE algorithm
+ */
+public class MCODETest extends TestCase {
+    MCODEAlgorithm alg;
+    CyNetwork networkSmall;
+    MCODEParameterSet params;
 
-        //main panel for dialog box
-        JEditorPane editorPane = new JEditorPane();
-        editorPane.setEditable(false);
-        editorPane.setEditorKit(new HTMLEditorKit());
-        //TODO: add a link to Cytoscape and the paper (see http://java.sun.com/j2se/1.4.2/docs/api/javax/swing/JEditorPane.html)
-        editorPane.setText("<html><body><P align=center>MCODE (Molecular Complex Detection) v1.0 (July 2004)<BR>" +
-                "A Cytoscape plugin<BR>written by Gary Bader<BR><BR>\n" +
-                "If you use this plugin in your research, please cite:<BR>\n" +
-                "Bader GD, Hogue CW<BR>\n" +
-                "An automated method for finding molecular complexes<BR>in large protein interaction networks.<BR>\n" +
-                "BMC Bioinformatics. 2003 Jan 13;4(1):2</P></body></html>");
-        setContentPane(editorPane);
+    /**
+     * Set up a few things for this test set
+     * @throws Exception
+     */
+    public void setUp() throws Exception {
+        alg = new MCODEAlgorithm();
+        params = new MCODEParameterSet();
+        networkSmall = Cytoscape.createNetworkFromFile("testData" + File.separator + "smallTest.sif");
+    }
+
+    /**
+     * Run MCODE on a small test network with some default parameters
+     */
+    public void testMCODEAlgorithmSmall() {
+        params.setAllAlgorithmParams(false, 2, 100, 0.2, false, true, 0.1);
+        alg.scoreGraph(networkSmall);
+        ArrayList complexes = alg.findComplexes(networkSmall);
+        assertEquals(complexes.size(), 1);
+        double score = alg.scoreComplex(MCODEUtil.convertComplexToNetwork((ArrayList) complexes.get(0), networkSmall));
+        assertEquals(score, (double) 1.5, 0);
     }
 }

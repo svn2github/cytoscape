@@ -11,10 +11,10 @@ import java.awt.*;
 
 
 /**
+ * Implements a multi line tooltip for GUI components
+ * Copied from http://www.codeguru.com/java/articles/122.shtml
  * @author Zafir Anjum
  */
-
-
 public class JMultiLineToolTip extends JToolTip {
 	private static final String uiClassID = "ToolTipUI";
 
@@ -52,6 +52,9 @@ public class JMultiLineToolTip extends JToolTip {
 }
 
 
+/**
+ * UI for multi line tool tip
+ */
 class MultiLineToolTipUI extends BasicToolTipUI {
 	static MultiLineToolTipUI sharedInstance = new MultiLineToolTipUI();
 	Font smallFont;

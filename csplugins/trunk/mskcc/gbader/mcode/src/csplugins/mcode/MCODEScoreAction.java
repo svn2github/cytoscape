@@ -43,6 +43,9 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Action to only score a network
+ */
 public class MCODEScoreAction implements ActionListener {
 	/**
 	 * This method is called when the user selects the menu item.

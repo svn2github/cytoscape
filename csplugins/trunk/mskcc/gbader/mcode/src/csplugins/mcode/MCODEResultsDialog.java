@@ -61,11 +61,12 @@ import java.util.List;
  ** User: Gary Bader
  ** Date: Jan 30, 2004
  ** Time: 11:45:02 AM
- ** Description
+ ** Description Draws the dialog box that shows the results of MCODE
  **/
 
-//Reports the results of MCODE complex finding
-
+/**
+ * Reports the results of MCODE complex finding. This class sets up the UI.
+ */
 public class MCODEResultsDialog extends JDialog {
 	MCODEResultsDialog parentDialog;
 	protected JTable table;
@@ -168,6 +169,9 @@ public class MCODEResultsDialog extends JDialog {
 		setContentPane(panel);
 	}
 
+    /**
+     * Handles the data to be displayed in the table in this dialog box
+     */
 	private class MCODEResultsTableModel extends AbstractTableModel {
 
 		//Create column headings
@@ -205,6 +209,11 @@ public class MCODEResultsDialog extends JDialog {
 			}
 		}
 
+        /**
+         * Utility method to get the names of all the nodes in a GraphPerspective
+         * @param gpInput The input graph perspective to get the names from
+         * @return A concatenated set of all node names (separated by a comma)
+         */
 		private StringBuffer getNodeNameList(GraphPerspective gpInput) {
 			Iterator i = gpInput.nodesIterator();
 			StringBuffer sb = new StringBuffer();
@@ -239,6 +248,10 @@ public class MCODEResultsDialog extends JDialog {
 		}
 	}
 
+    /**
+     * Utility method to initialize the column sizes of the table
+     * @param table Table to initialize sizes for
+     */
 	private void initColumnSizes(JTable table) {
 		TableColumn column = null;
 
@@ -255,6 +268,9 @@ public class MCODEResultsDialog extends JDialog {
 		}
 	}
 
+    /**
+     * Handles the OK press for this dialog (makes the dialog disappear)
+     */
 	private class OKAction extends AbstractAction {
 		private JDialog dialog;
 
@@ -269,6 +285,9 @@ public class MCODEResultsDialog extends JDialog {
 		}
 	}
 
+    /**
+     * Handles the new window parameter choice
+     */
 	private class newWindowCheckBoxAction implements ItemListener {
 		public void itemStateChanged(ItemEvent e) {
 			if (e.getStateChange() == ItemEvent.DESELECTED) {
@@ -279,7 +298,11 @@ public class MCODEResultsDialog extends JDialog {
 		}
 	}
 
-	//Selects nodes in graph when a row is selected
+	/**
+     * Handler to selects nodes in graph or create a new network when a row is selected
+     * Note: There is some fairly detailed logic in here to deal with all the cases that a user can interact
+     * with this dialog box.  Be careful when editing this code.
+     */
 	private class TableRowSelectionHandler implements ListSelectionListener {
 		public void valueChanged(ListSelectionEvent e) {
 			//Ignore extra messages.
@@ -356,7 +379,9 @@ public class MCODEResultsDialog extends JDialog {
 		}
 	}
 
-	//Center the item in the cell
+	/**
+     * A table cell rendered that centers the item in the cell
+     */
 	private class CenterAndBoldRenderer extends DefaultTableCellRenderer {
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 		                                               boolean hasFocus, int row, int column) {
@@ -367,15 +392,32 @@ public class MCODEResultsDialog extends JDialog {
 		}
 	}
 
-	//Render a JTextArea
+	/**
+     * A text area renderer that creates a line wrapped, non-editable text area
+     */
 	private class JTextAreaRenderer extends JTextArea implements TableCellRenderer {
 
+        /**
+         * Constructor
+         */
 		public JTextAreaRenderer() {
 			this.setLineWrap(true);
 			this.setWrapStyleWord(true);
 			this.setEditable(false);
 		}
 
+        /**
+         * Used to render a table cell.  Handles selection color and cell heigh and width.
+         * Note: Be careful changing this code as there could easily be infinite loops created
+         * when calculating preferred cell size as the user changes the dialog box size.
+         * @param table Parent table of cell
+         * @param value Value of cell
+         * @param isSelected True if cell is selected
+         * @param hasFocus True if cell has focus
+         * @param row The row of this cell
+         * @param column The column of this cell
+         * @return The cell to render by the calling code
+         */
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 		                                               boolean hasFocus, int row, int column) {
 			StringBuffer sb = (StringBuffer) value;

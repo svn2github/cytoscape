@@ -44,7 +44,7 @@ import java.text.DecimalFormat;
  ** User: Gary Bader
  ** Date: Feb 6, 2004
  ** Time: 5:00:00 PM
- ** Description
+ ** Description The parameter change dialog which the user can use to change the parameters
  **/
 public class MCODEParameterChangeDialog extends JDialog {
     //Parameters for MCODE
@@ -63,6 +63,10 @@ public class MCODEParameterChangeDialog extends JDialog {
     //directed mode
 	JCheckBox processCheckBox;
 
+    /**
+     * The actual parameter change dialog that builds the UI
+     * @param parentFrame The parent frame for this dialog
+     */
 	public MCODEParameterChangeDialog(Frame parentFrame) {
 		super(parentFrame, "MCODE Parameters", false);
 		setResizable(false);
@@ -255,10 +259,16 @@ public class MCODEParameterChangeDialog extends JDialog {
 		setContentPane(panel);
 	}
 
+    /**
+     * Saves the currently set parameters
+     */
 	private void saveParams() {
 		MCODECurrentParameters.getInstance().setParams(currentParamsCopy);
 	}
 
+    /**
+     * Action for the OK button (saves parameters)
+     */
 	private class OKAction extends AbstractAction {
 		private JDialog dialog;
 
@@ -273,6 +283,9 @@ public class MCODEParameterChangeDialog extends JDialog {
 		}
 	}
 
+    /**
+     * Action for the cancel button (does not save parameters)
+     */
 	private class cancelAction extends AbstractAction {
 		private JDialog dialog;
 
@@ -286,6 +299,9 @@ public class MCODEParameterChangeDialog extends JDialog {
 		}
 	}
 
+    /**
+     * Handles setting of the include loops parameter
+     */
 	private class includeLoopsCheckBoxAction implements ItemListener {
 		public void itemStateChanged(ItemEvent e) {
 			if (e.getStateChange() == ItemEvent.DESELECTED) {
@@ -296,6 +312,10 @@ public class MCODEParameterChangeDialog extends JDialog {
 		}
 	}
 
+    /**
+     * Handles setting for the text field parameters that are numbers.
+     * Makes sure that the numbers make sense.
+     */
     private class formattedTextFieldAction implements PropertyChangeListener {
         public void propertyChange(PropertyChangeEvent e) {
             Object source = e.getSource();
@@ -323,6 +343,9 @@ public class MCODEParameterChangeDialog extends JDialog {
         }
     }
 
+    /**
+     * Handles setting of the haircut parameter
+     */
 	private class haircutCheckBoxAction implements ItemListener {
 		public void itemStateChanged(ItemEvent e) {
 			if (e.getStateChange() == ItemEvent.DESELECTED) {
@@ -333,6 +356,9 @@ public class MCODEParameterChangeDialog extends JDialog {
 		}
 	}
 
+    /**
+     * Handles setting of the fluff parameter
+     */
 	private class fluffCheckBoxAction implements ItemListener {
 		public void itemStateChanged(ItemEvent e) {
 			if (e.getStateChange() == ItemEvent.DESELECTED) {
@@ -344,6 +370,9 @@ public class MCODEParameterChangeDialog extends JDialog {
 		}
 	}
 
+    /**
+     * Handles setting of the preprocess network parameter
+     */
 	private class processCheckBoxAction implements ItemListener {
 		public void itemStateChanged(ItemEvent e) {
 			if (e.getStateChange() == ItemEvent.DESELECTED) {

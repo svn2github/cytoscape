@@ -46,7 +46,7 @@ public class MCODEProgressBarDialog extends JDialog {
 
     /**
      * Progress bar for MCODE - determinate with a cancel button
-     * @param parentFrame - parent of this dialog
+     * @param parentFrame Parent of this dialog
      */
     public MCODEProgressBarDialog(Frame parentFrame) {
         super(parentFrame, "MCODE Progress", false);
@@ -73,7 +73,7 @@ public class MCODEProgressBarDialog extends JDialog {
 
     /**
      * Set the maximum value for the progress bar
-     * @param lengthOfTask
+     * @param lengthOfTask The length of the task (maximum of the progress bar)
      */
     public void setLengthOfTask(int lengthOfTask) {
         progressBar.setMaximum(lengthOfTask);
@@ -81,7 +81,7 @@ public class MCODEProgressBarDialog extends JDialog {
 
     /**
      * Set the value for the progress bar
-     * @param n - value to set for the progress bar - should be larger than the current value
+     * @param n Value to set for the progress bar - should be larger than the current value
      */
     public void setValue(int n) {
         progressBar.setValue(n);
@@ -97,7 +97,7 @@ public class MCODEProgressBarDialog extends JDialog {
 
     /**
      * Sets the message string of the progress bar
-     * @param s
+     * @param s String to be displayed on the progress bar
      */
     public void setString(String s) {
         progressBar.setString(s);
@@ -106,7 +106,7 @@ public class MCODEProgressBarDialog extends JDialog {
     /**
      * Returns true if user has pressed the cancel button.  Task should periodically check this and
      * cancel itself at the next safe opportunity.
-     * @return
+     * @return True if cancelled, false if not
      */
     public boolean isCancelled() {
         return cancelled;
@@ -119,6 +119,8 @@ public class MCODEProgressBarDialog extends JDialog {
         public void actionPerformed(ActionEvent e) {
             progressBar.setString("Cancelling. Please wait...");
             cancelled=true;
+            /*doesn't actually do anything here, the calling code has the responsibility to cancel itself
+              if it sees that the cancel button has been pressed, by a call to isCancelled()*/
         }
     }
 }
