@@ -31,6 +31,10 @@
 					<a href="http://www.cbio.mskcc.org/cytoscape/bugs/">
 						Bug Tracker
 					</a>
+					| 
+					<a href="links.php">
+						Links
+					</a>
 				</h1>
 			</td>
 		</tr>
