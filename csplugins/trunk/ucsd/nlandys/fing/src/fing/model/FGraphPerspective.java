@@ -210,7 +210,13 @@ class FGraphPerspective implements GraphPerspective
 
   private int _restoreNode(int rootGraphNodeInx)
   {
-    return -1;
+    if (!(rootGraphNodeInx < 0)) return 0;
+    int nativeNodeInx = m_rootToNativeNodeInxMap.get(~rootGraphNodeInx);
+    if (!(nativeNodeInx < 0 || nativeNodeInx == Integer.MAX_VALUE)) return 0;
+    nativeNodeInx = m_graph.createNode();
+    m_rootToNativeNodeInxMap.put(~rootGraphNodeInx, nativeNodeInx);
+    m_nativeToRootNodeInxMap.setIntAtIndex(rootGraphNodeInx, nativeNodeInx);
+    return rootGraphNodeInx;
   }
 
   public java.util.List restoreNodes(java.util.List nodes)
@@ -805,6 +811,7 @@ class FGraphPerspective implements GraphPerspective
     // Otherwise returns the input parameter, the root node index.
     private int _hideNode(Object source, int rootGraphNodeInx)
     {
+      if (!(rootGraphNodeInx < 0)) return 0;
       final int nativeNodeIndex =
         m_rootToNativeNodeInxMap.get(~rootGraphNodeInx);
       final IntEnumerator edgeInxEnum;
@@ -897,6 +904,7 @@ class FGraphPerspective implements GraphPerspective
     // Otherwise returns the input parameter, the root edge index.
     private int _hideEdge(int rootGraphEdgeInx)
     {
+      if (!(rootGraphEdgeInx < 0)) return 0;
       final int nativeEdgeIndex =
         m_rootToNativeEdgeInxMap.get(~rootGraphEdgeInx);
       try {
@@ -904,7 +912,7 @@ class FGraphPerspective implements GraphPerspective
           m_rootToNativeEdgeInxMap.put(~rootGraphEdgeInx, Integer.MAX_VALUE);
           m_nativeToRootEdgeInxMap.setIntAtIndex(0, nativeEdgeIndex);
           return rootGraphEdgeInx; } }
-      catch (IllegalArgumentException e) { }
+      catch (IllegalArgumentException e) { } // Thrown by m_graph.removeEdge().
       return 0;
     }
 
