@@ -213,7 +213,7 @@ public interface DynamicGraph
   public int targetNode(int edge);
 
   /**
-   * Determines the directedness of and edge.
+   * Determines the directedness of an edge.
    * Returns 1 if specified edge is directed, returns 0 if specified edge
    * is undirected, and returns -1 if specified edge does not exist in this
    * graph.
