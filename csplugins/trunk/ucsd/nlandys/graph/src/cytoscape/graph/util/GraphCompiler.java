@@ -99,25 +99,26 @@ public final class GraphCompiler
   /**
    * Returns a neighboring nodes list.<p>
    * Let's define a binary relation on nodes in a graph, called
-   * <i>directed neighbor</i>: Node B is a <i>directed neighbor</i> of node
-   * A if and only if at least one of the following is true:
-   * <ol><li>There exists a directed edge whose target node is B and whose
-   *         source node is A.</li>
-   *     <li>There exists an undirected edge whose end nodes are A and B.</li>
-   * </ol><p>
+   * <i>neighbor</i>: Node A is a <i>neighbor</i> of node
+   * B if and only if at least one of the following is true:
+   * <ol><li>There exists a directed edge E such that B is the source node of
+   *         E and such that A is the target node of E.</li>
+   *     <li>There exists an undirected edge F such that A and B are endpoints
+   *         of F.</li></ol><p>
    * If node N is the node at index <code>nodeIndex</code> then this method
-   * returns indices of all nodes Q such that Q is a directed neighbor of
+   * returns indices of all nodes Q such that Q is a neighbor of
    * node N.<p>
    * Let's now look at some examples so that we get a feeling for how
    * this method behaves (referring back to the definition).
    * <ul><li>A graph has exactly 2 [unique] nodes A and B and exactly one edge
-   *         E which is undirected; A and B are end-nodes of E.  if we ask
+   *         E which is undirected; A is &quot;node 0&quot; of E and B is
+   *         &quot;node 1&quot; of E.  if we ask
    *         to get neighbors of A with this method, it should (and will)
    *         return a list of length 1, containing only node B.  Let's
    *         prove why A is not returned as a neighboring node of A.
-   *         Assume A is a directed neighbor of A.  There exist no directed
+   *         Assume A is a neighbor of A.  There exist no directed
    *         edges in this graph, therefore condition 2 in the definition
-   *         of <i>directed neighbor</i> must hold true.  This implies that
+   *         of <i>neighbor</i> must hold true.  That is,
    *         there exists an undirected edge whose end nodes are A and A.
    *         But this is incorrect.  Therefore our assumption is false - that
    *         is, A is <i>not</i> a directed neighbor of A.  Therefore A
