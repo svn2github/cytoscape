@@ -50,7 +50,7 @@ import giny.view.NodeView;
 
 import cytoscape.data.annotation.*;
 import cytoscape.data.servers.*;
-//import cytoscape.layout.*;
+import cytoscape.layout.*;
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.CyNetwork;
 import cytoscape.data.Semantics;
@@ -70,12 +70,13 @@ public class AnnotationGui extends AbstractAction {
   int actionListBoxCurrentSelection;
   TreePath annotationPath;
   String currentAnnotationCategory;
-  //AttributeLayout attributeLayouter;
+  AttributeLayout attributeLayouter;
 
   JDialog mainDialog;
   JButton annotateNodesButton;
   JButton layoutByAnnotationButton;
   JButton addSharedAnnotationEdgesButton;
+  JButton deleteCreatedObjectsButton;
 
 //----------------------------------------------------------------------------------------
 public AnnotationGui (CyWindow cyWindow)
@@ -106,9 +107,9 @@ public void actionPerformed (ActionEvent e)
     annotationDescriptions = dataServer.getAnnotationDescriptions();
   }
   
-  //if (this.attributeLayouter == null) {
-  //    this.attributeLayouter = new AttributeLayout (cyWindow);
-  //}
+  if (this.attributeLayouter == null) {
+      this.attributeLayouter = new AttributeLayout (cyWindow);
+  }
   Semantics.applyNamingServices(cyWindow.getNetwork(), cyWindow.getCytoscapeObj());
   
   defaultSpecies = Semantics.getDefaultSpecies(cyWindow.getNetwork(),cyWindow.getCytoscapeObj() );
@@ -162,7 +163,7 @@ private JPanel createWidgets ()
   topPanel.add (chooserPanel);  
 
   JPanel currentAnnotationsButtonPanel = new JPanel ();
-  currentAnnotationsButtonPanel.setLayout (new GridLayout (0,2));
+  currentAnnotationsButtonPanel.setLayout (new GridLayout (0,3));
   layoutByAnnotationButton = new JButton ("Layout");
   layoutByAnnotationButton.setEnabled (false);
   currentAnnotationsButtonPanel.add (layoutByAnnotationButton);
@@ -171,6 +172,10 @@ private JPanel createWidgets ()
   currentAnnotationsButtonPanel.add (addSharedAnnotationEdgesButton);
   addSharedAnnotationEdgesButton.setEnabled (false);
   addSharedAnnotationEdgesButton.addActionListener (new DrawSharedEdgesAnnotationAction ());
+  deleteCreatedObjectsButton = new JButton("Delete created nodes/edges");
+  deleteCreatedObjectsButton.setEnabled(false);
+  currentAnnotationsButtonPanel.add(deleteCreatedObjectsButton);
+  deleteCreatedObjectsButton.addActionListener(new DeleteCreatedObjectsAction());
 
   JScrollPane currentChoicesScrollPane = new JScrollPane (currentAnnotationsTree);
   currentChoicesScrollPane.setPreferredSize (chooserScrollPane.getPreferredSize ());
@@ -397,11 +402,14 @@ public class LayoutByAnnotationAction  extends AbstractAction
   LayoutByAnnotationAction () {super ("");}
 
   public void actionPerformed (ActionEvent e) {
+      /*
       String title = "Operation not supported";
       String message = "This operation is not yet supported.";
       JOptionPane.showMessageDialog(cyWindow.getMainFrame(), message,
                                     title, JOptionPane.ERROR_MESSAGE);
-    //attributeLayouter.doCallback (currentAnnotationCategory, AttributeLayout.DO_LAYOUT);
+    */
+    attributeLayouter.doCallback (currentAnnotationCategory, AttributeLayout.DO_LAYOUT);
+    deleteCreatedObjectsButton.setEnabled(true);
     }
 
 } // LayoutByAnnotationAction
@@ -411,14 +419,27 @@ public class DrawSharedEdgesAnnotationAction extends AbstractAction
   DrawSharedEdgesAnnotationAction  () {super ("");}
 
   public void actionPerformed (ActionEvent e) {
+      /*
       String title = "Operation not supported";
       String message = "This operation is not yet supported.";
       JOptionPane.showMessageDialog(cyWindow.getMainFrame(), message,
                                     title, JOptionPane.ERROR_MESSAGE);
-    //attributeLayouter.doCallback (currentAnnotationCategory, AttributeLayout.CREATE_EDGES);
+      */
+    attributeLayouter.doCallback (currentAnnotationCategory, AttributeLayout.CREATE_EDGES);
+    deleteCreatedObjectsButton.setEnabled(true);
     }
 
 } // DrawSharedEdgesAnnotationAction
+//-----------------------------------------------------------------------------
+public class DeleteCreatedObjectsAction extends AbstractAction
+{
+  DeleteCreatedObjectsAction() {super("");}
+  
+  public void actionPerformed(ActionEvent e) {
+      attributeLayouter.doCallback(currentAnnotationCategory, AttributeLayout.CLEAR_OBJECTS);
+      deleteCreatedObjectsButton.setEnabled(false);
+  }
+}
 //-----------------------------------------------------------------------------
 } // inner class Gui
 //-----------------------------------------------------------------------------------
