@@ -29,23 +29,26 @@ class FRootGraph //implements RootGraph
 
   public int getNodeCount()
   {
-    return m_graph.nodeCount();
+    return m_graph.nodes().numRemaining();
   }
 
   public int getEdgeCount()
   {
-    return m_graph.edgeCount();
+    return m_graph.edges().numRemaining();
   }
 
   public Iterator nodesIterator()
   {
-    final IntEnumerator nodes = m_graph.nodeIndices();
+    final IntEnumerator nodes = m_graph.nodes();
+    final FRootGraph rootGraph = this;
     return new Iterator() {
+        public void remove() {
+          throw new UnsupportedOperationException(); }
         public boolean hasNext() {
           return nodes.numRemaining() > 0; }
         public Object next() {
           if (!hasNext()) throw new NoSuchElementException();
-          return getNode(~(nodes.nextInt())); } };
+          return rootGraph.getNode(~(nodes.nextInt())); } };
   }
 
   // This method has been marked deprecated in the Giny API.
@@ -61,7 +64,7 @@ class FRootGraph //implements RootGraph
   // This method has been marked deprecated in the Giny API.
   public int[] getNodeIndicesArray()
   {
-    IntEnumerator nodes = m_graph.nodeIndices();
+    IntEnumerator nodes = m_graph.nodes();
     final int[] returnThis = new int[nodes.numRemaining()];
     for (int i = 0; i < returnThis.length; i++)
       returnThis[i] = nodes.nextInt();
@@ -70,13 +73,16 @@ class FRootGraph //implements RootGraph
 
   public Iterator edgesIterator()
   {
-    final IntEnumerator edges = m_graph.edgeIndices();
+    final IntEnumerator edges = m_graph.edges();
+    final FRootGraph rootGraph = this;
     return new Iterator() {
+        public void remove() {
+          throw new UnsupportedOperationException(); }
         public boolean hasNext() {
           return edges.numRemaining() > 0; }
         public Object next() {
           if (!hasNext()) throw new NoSuchElementException();
-          return getEdge(~(edges.nextInt())); } };
+          return rootGraph.getEdge(~(edges.nextInt())); } };
   }
 
   // This method has been marked deprecated in the Giny API.
@@ -92,7 +98,7 @@ class FRootGraph //implements RootGraph
   // This method has been marked deprecated in the Giny API.
   public int[] getEdgeIndicesArray()
   {
-    IntEnumerator edges = m_graph.edgeIndices();
+    IntEnumerator edges = m_graph.edges();
     final int[] returnThis = new int[edges.numRemaining()];
     for (int i = 0; i < returnThis.length; i++)
       returnThis[i] = edges.nextInt();
@@ -110,17 +116,24 @@ class FRootGraph //implements RootGraph
   {
     final int positiveNodeIndex = ~nodeInx;
     IntEnumerator edgeInxEnum;
-    try { edgeInxEnum = m_graph.adjacentEdgeIndices
+    try { edgeInxEnum = m_graph.adjacentEdges
             (positiveNodeIndex, true, true, true); }
     catch (IllegalArgumentException e) { return 0; }
+    m_heap.empty();
     while (edgeInxEnum.numRemaining() > 0)
-      // Does this iteration remain valid even while doing add/remove?
+      // Toss edges to be removed onto the heap; assume that the edge iteration
+      // becomes invalid if we remove edges while iterating through.
+      m_heap.toss(edgeInxEnum.nextInt());
+    edgeInxEnum = m_heap.elements();
+    // Remove adjacent edges using method defined on this instance.
+    while (edgeInxEnum.numRemaining() > 0)
       removeEdge(~(edgeInxEnum.nextInt()));
+    // Remove node from underlying graph.
     if (m_graph.removeNode(positiveNodeIndex)) {
+      // Remove node from our node array.
       m_nodes.setNodeAtIndex(null, positiveNodeIndex);
-      
       return nodeInx; }
-    else { return 0; }
+    else return 0;
   }
 
   // This method has been marked deprecated in the Giny API.
@@ -148,18 +161,16 @@ class FRootGraph //implements RootGraph
   public int createNode()
   {
     final int positiveNodeIndex = m_graph.createNode();
-    if (positiveNodeIndex < 0) { return 0; }
-    else {
-      final int returnThis = ~positiveNodeIndex;
-      // Theoretically I could postpone the creation of this object
-      // and use a bit array to mark indices of nodes which aren't
-      // instantiated yet.  This would complicate the code somewhat.
-      FNode newNode = m_nodeDepo.getNode();
-      newNode.m_rootGraph = this;
-      newNode.m_rootGraphIndex = returnThis;
-      newNode.m_identifier = null;
-      m_nodes.setNodeAtIndex(newNode, positiveNodeIndex);
-      return returnThis; }
+    final int returnThis = ~positiveNodeIndex;
+    // Theoretically I could postpone the creation of this object
+    // and use a bit array to mark indices of nodes which aren't
+    // instantiated yet.  This would complicate the code somewhat.
+    FNode newNode = m_nodeDepot.getNode();
+    newNode.m_rootGraph = getThisRootGraph();
+    newNode.m_rootGraphIndex = returnThis;
+    newNode.m_identifier = null;
+    m_nodes.setNodeAtIndex(newNode, positiveNodeIndex);
+    return returnThis;
   }
 
   public int createNode(Node[] nodes, Edge[] edges)
@@ -199,7 +210,7 @@ class FRootGraph //implements RootGraph
   {
     final int positiveEdgeIndex = ~edgeInx;
     if (m_graph.removeEdge(positiveEdgeIndex)) {
-      m_edges.setNodeAtIndex(null, positiveEdgeIndex);
+      m_edges.setEdgeAtIndex(null, positiveEdgeIndex);
       return edgeInx; }
     else { return 0; }
   }
@@ -250,7 +261,22 @@ class FRootGraph //implements RootGraph
   public int createEdge(int sourceNodeIndex, int targetNodeIndex,
                         boolean directed)
   {
-    return 0;
+    final int positiveSourceNodeIndex = ~sourceNodeIndex;
+    final int positiveTargetNodeIndex = ~targetNodeIndex;
+    final int positiveEdgeIndex = m_graph.createEdge
+      (positiveSourceNodeIndex, positiveTargetNodeIndex, directed);
+    final int returnThis;
+    if (positiveEdgeIndex < 0) return 0;
+    else returnThis = ~positiveEdgeIndex;
+    // Theoretically I could postpone the creation of this object
+    // and use a bit array to mark indices of edges which aren't
+    // instantiated yet.  This would complicate the code somewhat.
+    FEdge newEdge = m_edgeDepot.getEdge();
+    newEdge.m_rootGraph = getThisRootGraph();
+    newEdge.m_rootGraphIndex = returnThis;
+    newEdge.m_identifier = null;
+    m_edges.setEdgeAtIndex(newEdge, positiveEdgeIndex);
+    return returnThis;
   }
 
   public int[] createEdges(int[] sourceNodeIndices, int[] targetNodeIndices,
@@ -308,6 +334,26 @@ class FRootGraph //implements RootGraph
     }
   }
 
+  public int[] getAdjacentEdgeIndicesArray(int nodeInx,
+                                           boolean a,
+                                           boolean b,
+                                           boolean c)
+  {
+    return null;
+  }
+
+  public Node getNode(int nodeInx)
+  {
+    if (nodeInx < 0) return m_nodes.getNodeAtIndex(~nodeInx);
+    else return null;
+  }
+
+  public Edge getEdge(int edgeInx)
+  {
+    if (edgeInx < 0) return m_edges.getEdgeAtIndex(~edgeInx);
+    else return null;
+  }
+
   // The relationship between indices (both node and edge) in this
   // RootGraph and in the UnderlyingRootGraph is "flip the bits":
   // rootGraphIndex == ~(underlyingRootGraphIndex)
@@ -315,14 +361,14 @@ class FRootGraph //implements RootGraph
 
   // This heap is re-used by many methods.  Make sure to empty() it before
   // using it.  You can use it as a bag of integers, to sort integers, or
-  // to filter integer duplicates.
+  // to filter integer duplicates.  You don't need to empty() it after usage.
   final MinIntHeap m_heap = new MinIntHeap();
 
   // This is our "node factory" and "node recyclery".
-  final NodeDepository m_nodeDepo = new NodeDepository();
+  final NodeDepository m_nodeDepot = new NodeDepository();
 
   // This is our "edge factory" and "edge recyclery".
-  final EdgeDepository m_edgeDepo = new EdgeDepository();
+  final EdgeDepository m_edgeDepot = new EdgeDepository();
 
   // This is our index-to-node mapping.
   final NodeArray m_nodes = new NodeArray();
@@ -332,5 +378,10 @@ class FRootGraph //implements RootGraph
 
   // Package visible constructor.
   FRootGraph(UnderlyingRootGraph graph) { m_graph = graph; }
+
+  private RootGraph getThisRootGraph()
+  {
+    return null;
+  }
 
 }
