@@ -28,7 +28,7 @@ public class RotationScaleLayoutAction extends CytoscapeAction
 
   public RotationScaleLayoutAction()
   {
-    super("Rotate/Scale Graph");
+    super("Rotate/Scale Network");
     setPreferredMenu("Layout");
   }
 

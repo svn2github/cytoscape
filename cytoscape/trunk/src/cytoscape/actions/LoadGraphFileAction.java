@@ -47,7 +47,7 @@ public class LoadGraphFileAction extends CytoscapeAction {
      * @param windowMenu WindowMenu Object.
      */
     public LoadGraphFileAction(CyMenus windowMenu) {
-        super("Graph...");
+        super("Network...");
         setPreferredMenu("File.Load");
         setAcceleratorCombo(java.awt.event.KeyEvent.VK_L,
                 ActionEvent.CTRL_MASK);
@@ -84,10 +84,10 @@ public class LoadGraphFileAction extends CytoscapeAction {
         intFilter.setDescription("Interaction files");
         graphFilter.addExtension("sif");
         graphFilter.addExtension("gml");
-        graphFilter.setDescription("All graph files");
+        graphFilter.setDescription("All network files");
 
         // Get the file name
-        File  file = FileUtil.getFile("Load Graph File",
+        File  file = FileUtil.getFile("Load Network File",
             FileUtil.LOAD, new CyFileFilter[]
             {graphFilter, intFilter, gmlFilter});
 
@@ -144,7 +144,7 @@ class LoadNetworkTask implements Task {
      * Executes Task.
      */
     public void run() {
-        taskMonitor.setStatus("Reading in Graph Data...");
+        taskMonitor.setStatus("Reading in Network Data...");
 
         try {
             cyNetwork = this.createNetwork(file.getAbsolutePath(),
@@ -155,40 +155,40 @@ class LoadNetworkTask implements Task {
                 informUserOfGraphStats(cyNetwork);
             } else {
                 StringBuffer sb = new StringBuffer();
-                sb.append("Could not read graph from file: " + file.getName());
+                sb.append("Could not read network from file: " + file.getName());
                 sb.append("\nThis file may not be a valid GML or SIF file.");
                 taskMonitor.setException(new IOException(sb.toString()),
                         sb.toString());
             }
             taskMonitor.setPercentCompleted(100);
         } catch (IOException e) {
-            taskMonitor.setException(e, "Unable to load graph file.");
+            taskMonitor.setException(e, "Unable to load network file.");
         }
     }
 
     /**
-     * Inform User of Graph Stats.
+     * Inform User of Network Stats.
      */
     private void informUserOfGraphStats(CyNetwork newNetwork) {
         NumberFormat formatter = new DecimalFormat("#,###,###");
         StringBuffer sb = new StringBuffer();
 
         //  Give the user some confirmation
-        sb.append("Succesfully loaded graph from:  " + file.getName());
+        sb.append("Succesfully loaded network from:  " + file.getName());
         sb.append("\n\nGraph contains " + formatter.format
                 (newNetwork.getNodeCount()));
         sb.append(" nodes and " + formatter.format(newNetwork.getEdgeCount()));
         sb.append(" edges.\n\n");
 
         if (newNetwork.getNodeCount() < CytoscapeInit.getViewThreshold()) {
-            sb.append("Graph is under "
+            sb.append("Network is under "
                     + CytoscapeInit.getViewThreshold()
                     + " nodes.  A view will be automatically created.");
         } else {
-            sb.append("Graph is over "
+            sb.append("Network is over "
                     + CytoscapeInit.getViewThreshold()
                     + " nodes.  A view will not been created."
-                    + "  If you wish to view this graph, use "
+                    + "  If you wish to view this network, use "
                     + "\"Create View\" from the \"Edit\" menu.");
         }
         taskMonitor.setStatus(sb.toString());
@@ -217,7 +217,7 @@ class LoadNetworkTask implements Task {
      * @return Task Title.
      */
     public String getTitle() {
-        return new String("Loading Graph");
+        return new String("Loading Network");
     }
 
     /**

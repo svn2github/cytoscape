@@ -37,7 +37,7 @@ public class SaveAsInteractionsAction extends CytoscapeAction {
      * Constructor.
      */
     public SaveAsInteractionsAction() {
-        super("Graph as Interactions...");
+        super("Network as Interactions...");
         setPreferredMenu("File.Save");
     }
 
@@ -48,7 +48,7 @@ public class SaveAsInteractionsAction extends CytoscapeAction {
     public void actionPerformed(ActionEvent e) {
 
         // get the file name
-        File file = FileUtil.getFile("Save Graph as Interactions",
+        File file = FileUtil.getFile("Save Network as Interactions",
                     FileUtil.SAVE, new CyFileFilter[]{});
 
         if (file != null) {
@@ -109,16 +109,16 @@ class SaveAsSifTask implements Task {
             List nodeList = networkView.getNetwork().nodesList();
 
             if (nodeList.size() == 0) {
-                throw new IllegalArgumentException ("Graph is empty.");
+                throw new IllegalArgumentException ("Network is empty.");
             }
             saveInteractions();
             taskMonitor.setPercentCompleted (100);
-            taskMonitor.setStatus("Graph successfully saved to:  "
+            taskMonitor.setStatus("Network successfully saved to:  "
                     + fileName);
         } catch (IllegalArgumentException e) {
-            taskMonitor.setException(e, "Graph is Empty.  Cannot be saved.");
+            taskMonitor.setException(e, "Network is Empty.  Cannot be saved.");
         } catch (IOException e) {
-            taskMonitor.setException(e, "Unable to save graph.");
+            taskMonitor.setException(e, "Unable to save network.");
         }
     }
 
@@ -145,7 +145,7 @@ class SaveAsSifTask implements Task {
      * @return Task Title.
      */
     public String getTitle() {
-        return new String ("Saving Graph");
+        return new String ("Saving Network");
     }
 
     /**

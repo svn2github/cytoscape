@@ -6,22 +6,22 @@
  ** under the terms of the GNU Lesser General Public License as published
  ** by the Free Software Foundation; either version 2.1 of the License, or
  ** any later version.
- ** 
+ **
  ** This library is distributed in the hope that it will be useful, but
  ** WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
  ** MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
  ** documentation provided hereunder is on an "as is" basis, and the
- ** Institute for Systems Biology and the Whitehead Institute 
+ ** Institute for Systems Biology and the Whitehead Institute
  ** have no obligations to provide maintenance, support,
  ** updates, enhancements or modifications.  In no event shall the
- ** Institute for Systems Biology and the Whitehead Institute 
+ ** Institute for Systems Biology and the Whitehead Institute
  ** be liable to any party for direct, indirect, special,
  ** incidental or consequential damages, including lost profits, arising
  ** out of the use of this software and its documentation, even if the
- ** Institute for Systems Biology and the Whitehead Institute 
+ ** Institute for Systems Biology and the Whitehead Institute
  ** have been advised of the possibility of such damage.  See
  ** the GNU Lesser General Public License for more details.
- ** 
+ **
  ** You should have received a copy of the GNU Lesser General Public License
  ** along with this library; if not, write to the Free Software Foundation,
  ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
@@ -65,7 +65,7 @@ import cytoscape.util.CytoscapeAction;
 /**
  */
 public class AnnotationGui extends CytoscapeAction {
- 
+
   protected BioDataServer dataServer;
   protected String defaultSpecies;
   AnnotationDescription [] annotationDescriptions;
@@ -92,16 +92,16 @@ public class AnnotationGui extends CytoscapeAction {
   public AnnotationGui ()
   {
     super ();
-  
+
     /*dataServer = cyWindow.getCytoscapeObj().getBioDataServer ();
       if (dataServer != null)
       annotationDescriptions = dataServer.getAnnotationDescriptions ();*/
-  
+
     //defaultSpecies = Semantics.getDefaultSpecies(cyWindow.getNetwork(),cyWindow.getCytoscapeObj() );
 
   } // ctor
   //----------------------------------------------------------------------------------------
-  public void actionPerformed (ActionEvent e) 
+  public void actionPerformed (ActionEvent e)
   {
 
     networkView = Cytoscape.getCurrentNetworkView();
@@ -113,18 +113,18 @@ public class AnnotationGui extends CytoscapeAction {
                                      "Error!", JOptionPane.ERROR_MESSAGE);
       return;
     } else if ( network.getNodeCount() == 0) {
-      JOptionPane.showMessageDialog(null, "No nodes in graph to annotate.",
+      JOptionPane.showMessageDialog(null, "No nodes in network to annotate.",
                                     "Error!", JOptionPane.ERROR_MESSAGE);
       return;
     } else {
       annotationDescriptions = dataServer.getAnnotationDescriptions();
     }
-  
+
     if (this.attributeLayouter == null) {
       this.attributeLayouter = new AttributeLayout ( networkView );
     }
     Semantics.applyNamingServices( network );
-  
+
     defaultSpecies = CytoscapeInit.getDefaultSpeciesName();
     //if (this.mainDialog == null) {
     mainDialog = new Gui ("Annotation");
@@ -137,7 +137,7 @@ public class AnnotationGui extends CytoscapeAction {
   //----------------------------------------------------------------------------------------
   protected class Gui extends JDialog {
 
-    Gui (String title) 
+    Gui (String title)
     {
       super ( Cytoscape.getDesktop(), false);
       setTitle (title);
@@ -173,7 +173,7 @@ public class AnnotationGui extends CytoscapeAction {
                                                                   BorderFactory.createEmptyBorder(10,10,10,10)));
 
       annotateNodesButton.addActionListener (new ApplyAnnotationAction ());
-      topPanel.add (chooserPanel);  
+      topPanel.add (chooserPanel);
 
       JPanel currentAnnotationsButtonPanel = new JPanel ();
       currentAnnotationsButtonPanel.setLayout (new GridLayout (0,3));
@@ -204,17 +204,17 @@ public class AnnotationGui extends CytoscapeAction {
       topPanel.add (panel3);
 
       mainPanel.add (topPanel, BorderLayout.CENTER);
-      JPanel dismissButtonPanel = new JPanel ();
-      JButton dismissButton = new JButton ("Dismiss");
-      dismissButton.addActionListener (new DismissAction ());
-      dismissButtonPanel.add (dismissButton);
-      mainPanel.add (dismissButtonPanel, BorderLayout.SOUTH);
+      JPanel okButtonPanel = new JPanel ();
+      JButton okButton = new JButton ("OK");
+      okButton.addActionListener (new OKAction ());
+      okButtonPanel.add (okButton);
+      mainPanel.add (okButtonPanel, BorderLayout.SOUTH);
 
       return mainPanel;
 
     } // createWidgets
     //------------------------------------------------------------------------------
-    private void expandAll (JTree tree, TreePath parent, boolean expand) 
+    private void expandAll (JTree tree, TreePath parent, boolean expand)
     {
       TreeNode node = (TreeNode) parent.getLastPathComponent ();
       if (node.getChildCount() >= 0) {
@@ -259,7 +259,7 @@ public class AnnotationGui extends CytoscapeAction {
     class AddAnnotationTreeSelectionListener implements TreeSelectionListener {
 
       public void valueChanged (TreeSelectionEvent e) {
-        DefaultMutableTreeNode node = 
+        DefaultMutableTreeNode node =
           (DefaultMutableTreeNode) availableAnnotationsTree.getLastSelectedPathComponent ();
         if (node == null) return;
         if (!node.isLeaf ()) return;
@@ -273,15 +273,15 @@ public class AnnotationGui extends CytoscapeAction {
     class SelectNodesTreeSelectionListener implements TreeSelectionListener {
 
       public void valueChanged (TreeSelectionEvent e) {
-        DefaultMutableTreeNode node = 
+        DefaultMutableTreeNode node =
           (DefaultMutableTreeNode) currentAnnotationsTree.getLastSelectedPathComponent ();
         if (node == null) return;
         layoutByAnnotationButton.setEnabled (!node.isLeaf ());
         addSharedAnnotationEdgesButton.setEnabled (!node.isLeaf ());
         if (!node.isLeaf ()) return;
-   
+
         GraphObjAttributes nodeAttributes = Cytoscape.getNodeNetworkData();
-  
+
         //unselect every node in the graph
         for (Iterator nvi = networkView.getNodeViewsIterator(); nvi.hasNext(); ) {
           ((NodeView)nvi.next()).setSelected(false);
@@ -321,18 +321,18 @@ public class AnnotationGui extends CytoscapeAction {
         }
 
         networkView.redrawGraph(false, false);
-    
+
       } // valueChanged
 
       //-----------------------------------------------------------------------------
       /**
-       * create a hashmap, <String, String []>: 
+       * create a hashmap, <String, String []>:
        *
        *   "KEGG Metabolic Pathway (level 1)" -> (Genetic Information Processing)
        *   "KEGG Metabolic Pathway (level 2)" -> (Amino Acid Metabolism, Nucleotide Metabolism)
        *
        * this method is brittle, and will fail if the structure of the tree changes:
-       * it expects 
+       * it expects
        *    level 0: root
        *    level 1: a standard annotation name (see above)
        *    level 2: standard annotation category name (also see above)
@@ -361,9 +361,9 @@ public class AnnotationGui extends CytoscapeAction {
       //----------------------------------------------------------------------------------------
     } // inner class SelectNodesTreeSelectionListener
     //-----------------------------------------------------------------------------------
-    protected void createTreeNodes (DefaultMutableTreeNode root, 
+    protected void createTreeNodes (DefaultMutableTreeNode root,
                                     AnnotationDescription [] descriptions)
-      // for each of the descriptions, and only if the description is of a species in the 
+      // for each of the descriptions, and only if the description is of a species in the
       // current graph:  create a 'topLevelName' which will be the branch of the JTree,
       // and a set of leaves for each logical level in that description's ontology
     {
@@ -385,29 +385,29 @@ public class AnnotationGui extends CytoscapeAction {
                                descriptions[i].getSpecies ());
         branch = new DefaultMutableTreeNode (descriptions [i]);
         Annotation annotation = dataServer.getAnnotation (descriptions [i]);
-   
+
         if (annotation == null) {
           continue;
         }
         int maxDepth = annotation.maxDepth ();
-        for (int level=0; level < maxDepth; level++) 
+        for (int level=0; level < maxDepth; level++)
           branch.add (new DefaultMutableTreeNode (new Integer (level + 1)));
         root.add (branch);
       }
 
     } // createTreeNodes
     //-----------------------------------------------------------------------------------
-    public class DismissAction extends AbstractAction 
+    public class OKAction extends AbstractAction
     {
-      DismissAction () {super ("");}
+      OKAction () {super ("");}
 
       public void actionPerformed (ActionEvent e) {
         Gui.this.setVisible(false);
       }
 
-    } // DismissAction
+    } // OKAction
     //-----------------------------------------------------------------------------
-    public class LayoutByAnnotationAction  extends AbstractAction 
+    public class LayoutByAnnotationAction  extends AbstractAction
     {
       LayoutByAnnotationAction () {super ("");}
 
@@ -424,7 +424,7 @@ public class AnnotationGui extends CytoscapeAction {
 
     } // LayoutByAnnotationAction
     //-----------------------------------------------------------------------------
-    public class DrawSharedEdgesAnnotationAction extends AbstractAction 
+    public class DrawSharedEdgesAnnotationAction extends AbstractAction
     {
       DrawSharedEdgesAnnotationAction  () {super ("");}
 
@@ -444,7 +444,7 @@ public class AnnotationGui extends CytoscapeAction {
     public class DeleteCreatedObjectsAction extends AbstractAction
     {
       DeleteCreatedObjectsAction() {super("");}
-  
+
       public void actionPerformed(ActionEvent e) {
         attributeLayouter.doCallback(currentAnnotationCategory, AttributeLayout.CLEAR_OBJECTS);
         deleteCreatedObjectsButton.setEnabled(false);
@@ -456,7 +456,7 @@ public class AnnotationGui extends CytoscapeAction {
   public String addAnnotationToNodes (AnnotationDescription aDesc, int level)
   {
     String callerID = "AnnotationGui.addAnnotationToNodes";
- 
+
     GraphObjAttributes nodeAttributes = Cytoscape.getNodeNetworkData();
     // something like "GO biological process" or "KEGG metabolic pathway"
     String baseAnnotationName = aDesc.getCurator () + " " + aDesc.getType ();
@@ -492,13 +492,13 @@ public class AnnotationGui extends CytoscapeAction {
 
     nodeAttributes.setCategory (annotationNameAtLevel, "annotation");
     network.endActivity(callerID);
-  
+
     return annotationNameAtLevel;
 
   } // addAnnotationToNodes
   //----------------------------------------------------------------------------------------
   /**
-   *  return only the unique categories (typically representing gene annotations) 
+   *  return only the unique categories (typically representing gene annotations)
    *  which exist at the specified level.
    *  genes (for example) may be annotated as belonging to two or more different categories,
    *  but at a higher logical level, these different categories may merge.  for example,
@@ -539,7 +539,7 @@ public class AnnotationGui extends CytoscapeAction {
   //----------------------------------------------------------------------------------------
   class ApplyAnnotationAction extends AbstractAction {
     ApplyAnnotationAction () {
-      super (""); 
+      super ("");
     }
 
     public void actionPerformed (ActionEvent e) {
@@ -559,8 +559,8 @@ public class AnnotationGui extends CytoscapeAction {
       currentAnnotationCategory = addAnnotationToNodes (aDesc, level);
       Object [] uniqueAnnotationValues =
         Cytoscape.getNodeNetworkData().getUniqueValues (currentAnnotationCategory);
-      if (uniqueAnnotationValues != null && 
-          uniqueAnnotationValues.length > 0 && 
+      if (uniqueAnnotationValues != null &&
+          uniqueAnnotationValues.length > 0 &&
           uniqueAnnotationValues [0].getClass() == "string".getClass ()) {
         java.util.Arrays.sort (uniqueAnnotationValues, ( Comparator )String.CASE_INSENSITIVE_ORDER);
         appendToSelectionTree (currentAnnotationCategory, uniqueAnnotationValues);
@@ -569,7 +569,7 @@ public class AnnotationGui extends CytoscapeAction {
     }
 
     //--------------------------------------------------------------------------------------
-    protected void appendToSelectionTree (String currentAnnotationCategory, 
+    protected void appendToSelectionTree (String currentAnnotationCategory,
                                           Object [] uniqueAnnotationValues)
     {
       DefaultMutableTreeNode branch = new DefaultMutableTreeNode (currentAnnotationCategory);

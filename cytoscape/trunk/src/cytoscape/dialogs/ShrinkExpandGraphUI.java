@@ -38,8 +38,8 @@ import cytoscape.view.CyMenus;
 
 public class ShrinkExpandGraphUI {
     public static void makeShrinkExpandGraphUI( CyMenus cymenus ) {
-        cymenus.addAction(new ShrinkExpandGraph( "Shrink Graph", 0.8 ) );
-        cymenus.addAction(new ShrinkExpandGraph( "Expand Graph", 1.25 ) );
+        cymenus.addAction(new ShrinkExpandGraph( "Shrink Network", 0.8 ) );
+        cymenus.addAction(new ShrinkExpandGraph( "Expand Network", 1.25 ) );
     }
 } // class
 

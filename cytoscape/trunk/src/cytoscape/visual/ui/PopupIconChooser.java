@@ -23,7 +23,7 @@ public class PopupIconChooser {
     private JPanel mainPanel;
     private JList iconList;
     private boolean alreadyConstructed = false;
-    
+
     /**
      * Create a PopupIconChooser with the supplied attributes.
      *
@@ -60,9 +60,9 @@ public class PopupIconChooser {
 
 	    // create buttons
 	    final JButton setButton = new JButton("Apply");
-	    JButton cancelButton = new JButton("Dismiss");
+	    JButton cancelButton = new JButton("Cancel");
 	    setButton.addActionListener    (new ApplyIconAction());
-	    cancelButton.addActionListener (new DismissIconAction()); 
+	    cancelButton.addActionListener (new CancelIconAction());
 
 	    // create list
 	    iconList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
@@ -110,7 +110,7 @@ public class PopupIconChooser {
 	    mainDialog.setContentPane (mainPanel);
 	    alreadyConstructed = true;
 	}
-	
+
 	mainDialog.pack ();
 	mainDialog.setLocationRelativeTo (parentDialog);
   	mainDialog.show(); // blocks until user makes selection
@@ -118,7 +118,7 @@ public class PopupIconChooser {
 	return currentIcon;
     }
 
-    public class ApplyIconAction extends AbstractAction{   
+    public class ApplyIconAction extends AbstractAction{
 	public void actionPerformed(ActionEvent e){
 	    //setIcon((String) iconList.getSelectedValue());
 	    ImageIcon icon = (ImageIcon) iconList.getSelectedValue();
@@ -126,8 +126,8 @@ public class PopupIconChooser {
 	    mainDialog.dispose();
 	}
     }
-    public class DismissIconAction extends AbstractAction{
-	DismissIconAction(){super ("");}
+    public class CancelIconAction extends AbstractAction{
+	CancelIconAction(){super ("");}
 	public void actionPerformed (ActionEvent e){
 	    currentIcon = null;
 	    mainDialog.dispose();

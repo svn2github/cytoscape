@@ -6,22 +6,22 @@
  ** under the terms of the GNU Lesser General Public License as published
  ** by the Free Software Foundation; either version 2.1 of the License, or
  ** any later version.
- ** 
+ **
  ** This library is distributed in the hope that it will be useful, but
  ** WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
  ** MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
  ** documentation provided hereunder is on an "as is" basis, and the
- ** Institute for Systems Biology and the Whitehead Institute 
+ ** Institute for Systems Biology and the Whitehead Institute
  ** have no obligations to provide maintenance, support,
  ** updates, enhancements or modifications.  In no event shall the
- ** Institute for Systems Biology and the Whitehead Institute 
+ ** Institute for Systems Biology and the Whitehead Institute
  ** be liable to any party for direct, indirect, special,
  ** incidental or consequential damages, including lost profits, arising
  ** out of the use of this software and its documentation, even if the
- ** Institute for Systems Biology and the Whitehead Institute 
+ ** Institute for Systems Biology and the Whitehead Institute
  ** have been advised of the possibility of such damage.  See
  ** the GNU Lesser General Public License for more details.
- ** 
+ **
  ** You should have received a copy of the GNU Lesser General Public License
  ** along with this library; if not, write to the Free Software Foundation,
  ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
@@ -65,7 +65,7 @@ public class GinyEdgeControlDialog extends JDialog {
   GraphObjAttributes edgeAttributes;
   JTree tree;
 //--------------------------------------------------------------------------------------
-public GinyEdgeControlDialog (NetworkView networkView, 
+public GinyEdgeControlDialog (NetworkView networkView,
                           HashMap edgeNamesHash, String title)
 
 {
@@ -84,7 +84,7 @@ JPanel createTreeViewGui ()
 {
   JPanel contentPane = new JPanel ();
   contentPane.setLayout (new BorderLayout ());
- 
+
   JScrollPane scrollPane = new JScrollPane (createTreeView (edgeNamesHash));
 
   contentPane.add (scrollPane, BorderLayout.CENTER);
@@ -102,7 +102,7 @@ JPanel createTreeViewGui ()
   JButton selectAllButton= new JButton ("Select All");
   JButton deselectAllButton= new JButton ("Deselect All");
 
-  JButton dismissButton= new JButton ("Dismiss");
+  JButton okButton= new JButton ("OK");
 
 
   actionButtonPanel.add (selectButton);
@@ -127,12 +127,12 @@ JPanel createTreeViewGui ()
   deselectAllButton.addActionListener (new DeselectAllAction ());
   selectOthersButton.addActionListener (new SelectOthersAction ());
 
-  dismissButton.addActionListener (new DismissAction ());
+  okButton.addActionListener (new OKAction ());
 
   JPanel allButtonsPanel = new JPanel ();
   allButtonsPanel.setLayout (new BorderLayout ());
   allButtonsPanel.add (actionButtonPanel, BorderLayout.CENTER);
-  allButtonsPanel.add (dismissButton, BorderLayout.SOUTH);
+  allButtonsPanel.add (okButton, BorderLayout.SOUTH);
 
   contentPane.add (allButtonsPanel, BorderLayout.SOUTH);
 
@@ -153,7 +153,7 @@ protected JTree createTreeView (HashMap edgeNamesHash)
 class MyTreeSelectionListener implements TreeSelectionListener {
 
   public void valueChanged (TreeSelectionEvent e) {
-    DefaultMutableTreeNode node = 
+    DefaultMutableTreeNode node =
        (DefaultMutableTreeNode) tree.getLastSelectedPathComponent ();
     selectedTreePaths = tree.getSelectionPaths ();
     } // valueChanged
@@ -171,7 +171,7 @@ protected void createTreeNodes (DefaultMutableTreeNode root, HashMap edgeNamesHa
     branch = new DefaultMutableTreeNode (topLevelNames [i]);
     String [] children = (String []) edgeNamesHash.get (topLevelNames [i]);
     java.util.Arrays.sort (children, String.CASE_INSENSITIVE_ORDER);
-    for (int j=0; j < children.length; j++) 
+    for (int j=0; j < children.length; j++)
       branch.add (new DefaultMutableTreeNode (children [j]));
     root.add (branch);
     } // for i
@@ -185,7 +185,7 @@ class SelectAction extends AbstractAction {
       GinyEdgeControlDialog.this.getToolkit().beep ();
       return;
       }
-    
+
     GinyUtils.deselectAllEdges(view);
     for (int i=0; i < selectedTreePaths.length; i++)
       selectEdgesByName (selectedTreePaths [i]);
@@ -201,7 +201,7 @@ class HideAction extends AbstractAction {
       GinyEdgeControlDialog.this.getToolkit().beep ();
       return;
       }
-    
+
     GinyUtils.unHideAllEdges(view);
     String action = e.getActionCommand ();
     for (int i=0; i < selectedTreePaths.length; i++)
@@ -221,7 +221,7 @@ boolean pathMatchesEdge (String edgeName, TreePath treePath, GraphObjAttributes 
 
   int pathLength = pathNames.length;
 
-  if (pathLength < 2) 
+  if (pathLength < 2)
     return false;
 
   if (!edgeAttributes.hasAttribute (pathNames [1], edgeName))
@@ -244,10 +244,10 @@ boolean pathMatchesEdge (String edgeName, TreePath treePath, GraphObjAttributes 
 protected void hideEdgesByName (TreePath treePath)
 {
   java.util.List list = view.getEdgeViewsList();
-  
+
   for (Iterator i = list.iterator(); i.hasNext(); ) {
     EdgeView ev = (EdgeView)i.next();
-    		
+
     String edgeName = edgeAttributes.getCanonicalName (ev.getEdge());
     if (pathMatchesEdge (edgeName, treePath, edgeAttributes))
       view.hideGraphObject( ev );
@@ -260,20 +260,20 @@ protected void hideOtherEdges ()
 
   if (selectedTreePaths == null) return;
   java.util.List list = view.getEdgeViewsList();
-  
+
   for (Iterator i = list.iterator(); i.hasNext(); ) {
     EdgeView ev = (EdgeView)i.next();
-	  
+
     String canonicalName = edgeAttributes.getCanonicalName (ev.getEdge());
     for (int p=0; p < selectedTreePaths.length; p++) {
       TreePath treePath = selectedTreePaths [p];
-      if (pathMatchesEdge (canonicalName, treePath, edgeAttributes)) 
+      if (pathMatchesEdge (canonicalName, treePath, edgeAttributes))
         keepVisibleList.add (ev);
       } // for p
    } // for ec
 
   list = view.getEdgeViewsList();
-  
+
   for (Iterator i = list.iterator(); i.hasNext(); ) {
     EdgeView ev = (EdgeView)i.next();
     if (!keepVisibleList.contains (ev))
@@ -285,15 +285,15 @@ protected void hideOtherEdges ()
 protected void inverseHideEdgesByName (TreePath treePath)
 { // this is the same as hideEdgesByName action ... Bug?
   java.util.List list = view.getEdgeViewsList();
-  
+
   for (Iterator i = list.iterator(); i.hasNext(); ) {
     EdgeView ev = (EdgeView)i.next();
-	
+
     String edgeName = edgeAttributes.getCanonicalName (ev.getEdge());
     if (!pathMatchesEdge (edgeName, treePath, edgeAttributes))
       view.hideGraphObject( ev );
     } // for ec
- 
+
 } // inverseHideEdgesByName
 //------------------------------------------------------------------------------
 protected void selectEdgesByName (TreePath treePath)
@@ -303,7 +303,7 @@ protected void selectEdgesByName (TreePath treePath)
   for (Iterator i = list.iterator(); i.hasNext(); ) {
     EdgeView ev = (EdgeView)i.next();
     String canonicalName = edgeAttributes.getCanonicalName (ev.getEdge());
-    if (pathMatchesEdge (canonicalName, treePath, edgeAttributes)) 
+    if (pathMatchesEdge (canonicalName, treePath, edgeAttributes))
       vector.add (ev);
     } // for ec
 
@@ -312,7 +312,7 @@ protected void selectEdgesByName (TreePath treePath)
        edge.setSelected(true);
    }
 
- 
+
 } // selectEdgesByName
 //------------------------------------------------------------------------------
 class SelectOthersAction extends AbstractAction {
@@ -378,9 +378,9 @@ class ShowAllAction extends AbstractAction {
 //------------------------------------------------------------------------------
 protected void selectAllEdges ()
 {
-  
+
   GinyUtils.selectAllEdges(view);
-  
+
 
 }
 //------------------------------------------------------------------------------
@@ -394,26 +394,26 @@ protected void selectOtherEdges ()
   Vector keepUnselectedList = new Vector ();
 
   java.util.List list = view.getEdgeViewsList();
-  
+
   for (Iterator i = list.iterator(); i.hasNext(); ) {
     EdgeView ev = (EdgeView)i.next();
     String canonicalName = edgeAttributes.getCanonicalName (ev.getEdge());
     for (int p=0; p < selectedTreePaths.length; p++) {
       TreePath treePath = selectedTreePaths [p];
-      if (pathMatchesEdge (canonicalName, treePath, edgeAttributes)) 
+      if (pathMatchesEdge (canonicalName, treePath, edgeAttributes))
         keepUnselectedList.add (ev);
       } // for p
    } // for ec
 
   Vector selectList = new Vector ();
   list = view.getEdgeViewsList();
-  
+
   for (Iterator i = list.iterator(); i.hasNext(); ) {
     EdgeView ev = (EdgeView)i.next();
-    
+
     ev.setSelected (!keepUnselectedList.contains (ev));
     }
-  
+
 
 } // selectOtherEdges
 //------------------------------------------------------------------------------
@@ -434,15 +434,15 @@ private void placeInCenter ()
 
 } // placeInCenter
 //------------------------------------------------------------------------------
-public class DismissAction extends AbstractAction 
+public class OKAction extends AbstractAction 
 {
-  DismissAction () {super ("");}
+  OKAction () {super ("");}
 
   public void actionPerformed (ActionEvent e) {
     GinyEdgeControlDialog.this.dispose ();
     }
 
-} // DismissAction
+} // OKAction
 //-----------------------------------------------------------------------------
 } // class EdgeControlDialog
 

@@ -13,12 +13,12 @@ import cytoscape.view.NetworkView;
 //-------------------------------------------------------------------------
 public class LayoutAction extends AbstractAction   {
     NetworkView networkView;
-    
+
     public LayoutAction(NetworkView networkView) {
-        super("Layout whole graph");
+        super("Layout whole network");
         this.networkView = networkView;
     }
-    
+
     public void actionPerformed(ActionEvent e) {
         networkView.applyLayout(networkView.getView());
         networkView.redrawGraph(false, false);

@@ -41,7 +41,7 @@ public class CyCommandLineParser {
 "java -Xmx1G -server -jar cytoscape.jar [options]\n"+
     "-h : display this help message\n"+
     "-p [file+]: load a jar from the local file system or from a http address, or specify a manifest of jar files to load\n"+
-    "-g [file+]: specifies any number of graph files to load ";
+    "-g [file+]: specifies any number of network files to load ";
 
   ////////////////////////////////////////
   // Constructor
@@ -81,12 +81,12 @@ public class CyCommandLineParser {
 
 
   ////////////////////////////////////////
-  // Accessor methods for all possible command line options 
+  // Accessor methods for all possible command line options
 
   public ArrayList getResourcePlugins () {
     return resourcePlugins;
   }
-  
+
   /**
    * @return the location of a specifed props file, this will be converted to a URL
    */
@@ -97,7 +97,7 @@ public class CyCommandLineParser {
   public boolean suppressView () {
     return suppressView;
   }
-                                  
+
 
   public boolean useView () {
     return useView;
@@ -169,7 +169,7 @@ public class CyCommandLineParser {
     ArrayList urls = new ArrayList( pluginFiles.size() );
     for ( int i = 0; i < pluginFiles.size(); i++ ) {
       String plugin = ( String )pluginFiles.get(i);
-      URL url; 
+      URL url;
       try {
         if ( plugin.startsWith( "http" ) ) {
           plugin = plugin.replaceAll( "http:/" ,"http://" );
@@ -183,7 +183,7 @@ public class CyCommandLineParser {
         System.err.println( "Jar: "+pluginFiles.get(i)+ "was not a valid URL" );
       }
     }
- 
+
     return urls;
   }
 
@@ -192,7 +192,7 @@ public class CyCommandLineParser {
    *<ol>
    * <li> b : BioDataServer : BDS [manifest file]| location of BioDataServer manifest file
    * <li> c : noCanonicalization  | suppress automatic canonicalization
-   * <li> e : expression [file name] | expression 
+   * <li> e : expression [file name] | expression
    * <li> g : graph [graph files] | gml, sif, cyf files
    * <li> h : help | shows help and exits
    * <li> i : interaction [interaction files] | sif files
@@ -227,7 +227,7 @@ public class CyCommandLineParser {
       else if ( Strings.isLike( args[i], "-props",0, true ) ) {
         i++;
         //System.out.println( "Props file specified" );
-        if ( badArgs(args, i ) ) 
+        if ( badArgs(args, i ) )
           return;
         specifiedPropsFileLocation = args[i];
         i++;
@@ -238,19 +238,19 @@ public class CyCommandLineParser {
            Strings.isLike( args[i], "-bioDataServer",0, true ) ||
            Strings.isLike( args[i], "-BDS",0, true ) ) {
         i++;
-        if ( badArgs(args, i ) ) 
+        if ( badArgs(args, i ) )
           return;
 
         //System.out.println( "BDS: "+args[i] );
         bioDataServer = args[i];
         i++;
-      } 
-      
+      }
+
       // species
       else if ( Strings.isLike( args[i], "-s", 0, true ) ||
                 Strings.isLike( args[i], "-species", 0, true ) ) {
         i++;
-        if ( badArgs(args, i ) ) 
+        if ( badArgs(args, i ) )
           return;
         //System.out.println( "Species set to: "+args[i] );
         species = args[i];
@@ -264,7 +264,7 @@ public class CyCommandLineParser {
         //System.out.println( "there will be no canonicalization" );
         noCanonicalization = true;
       }
-       
+
       // useView
       else if ( Strings.isLike( args[i], "-headless", 0, true ) ||
                 Strings.isLike( args[i], "-noView", 0, true ) ) {
@@ -285,7 +285,7 @@ public class CyCommandLineParser {
       else if ( Strings.isLike( args[i], "--VT", 0, true ) ||
                 Strings.isLike( args[i], "-vt", 0, true ) ) {
         i++;
-        if ( badArgs(args, i ) ) 
+        if ( badArgs(args, i ) )
           return;
         viewThreshold = new Integer( args[i] );
         i++;
@@ -298,13 +298,13 @@ public class CyCommandLineParser {
         resetFalse();
         inProjects = true;
         i++;
-        if ( badArgs(args, i ) ) 
+        if ( badArgs(args, i ) )
           return;
         //System.out.println( "Project file specified" );
         projectFiles.add( args[i] );
         i++;
       }
-      
+
       // graph files
       else if ( Strings.isLike( args[i], "-g", 0, true ) ||
                 Strings.isLike( args[i], "-i", 0, true ) ||
@@ -313,21 +313,21 @@ public class CyCommandLineParser {
         resetFalse();
         inGraph = true;
         i++;
-        if ( badArgs(args, i ) ) 
+        if ( badArgs(args, i ) )
           return;
 
         //System.out.println( "Adding "+args[i]+" to the Graph files" );
         graphFiles.add( args[i] );
         i++;
       }
-     
+
 
       // expression files
       else if ( Strings.isLike( args[i], "-e", 0, true ) ||
                 Strings.isLike( args[i], "-expression", 0, true ) ) {
         resetFalse();
         i++;
-        if ( badArgs(args, i ) ) 
+        if ( badArgs(args, i ) )
           return;
 
         inExpression = true;
@@ -335,7 +335,7 @@ public class CyCommandLineParser {
         expressionFiles.add( args[i] );
         i++;
       }
-     
+
 
       // node attributes
       else if ( Strings.isLike( args[i], "-n", 0, true ) ||
@@ -343,14 +343,14 @@ public class CyCommandLineParser {
         resetFalse();
         inNode = true;
         i++;
-        if ( badArgs(args, i ) ) 
+        if ( badArgs(args, i ) )
           return;
 
         //System.out.println( "Adding "+args[i]+" to the Nodeattributes" );
         nodeAttributes.add( args[i] );
         i++;
       }
-     
+
 
       // edge attributes
       else if ( Strings.isLike( args[i], "-j", 0, true ) ||
@@ -358,39 +358,39 @@ public class CyCommandLineParser {
         resetFalse();
         inEdge = true;
         i++;
-        if ( badArgs(args, i ) ) 
+        if ( badArgs(args, i ) )
           return;
 
         //System.out.println( "Adding "+args[i]+" to the Edgeattributes" );
         edgeAttributes.add( args[i] );
         i++;
       }
-     
+
       // scripts
       else if ( Strings.isLike( args[i], "-script", 0, true ) ||
                 Strings.isLike( args[i], "--script", 0, true ) ) {
         resetFalse();
         inScript = true;
         i++;
-        if ( badArgs(args, i ) ) 
+        if ( badArgs(args, i ) )
           return;
 
         currentScript = new ArrayList();
       }
-      
+
       // scripts
       else if ( Strings.isLike( args[i], "-end", 0, true ) ) {
         inScript = false;
         i++;
         scripts.add( currentScript );
       }
-     
+
       //resource plugins
       else if (  Strings.isLike( args[i], "-rp", 0, true ) ||
                  Strings.isLike( args[i], "-resourcePlugin", 0, true ) ) {
         resetFalse();
         i++;
-        if ( badArgs(args, i ) ) 
+        if ( badArgs(args, i ) )
           return;
         resourcePlugins.add( args[i] );
         i++;
@@ -405,13 +405,13 @@ public class CyCommandLineParser {
         resetFalse();
         inPlugin = true;
         i++;
-        if ( badArgs(args, i ) ) 
+        if ( badArgs(args, i ) )
           return;
         parsePluginArgs( args[i] );
         i++;
-      } 
+      }
 
-      
+
       else if ( args[i].startsWith( "-" ) ) {
         // flag for plugin perhaps
         resetFalse();
@@ -425,7 +425,7 @@ public class CyCommandLineParser {
         currentScript.add( args[i] );
         i++;
        }
-      
+
       else if ( inProjects ) {
         //System.out.println( "Adding "+args[i]+" to the Projects" );
         projectFiles.add( args[i] );
@@ -451,13 +451,13 @@ public class CyCommandLineParser {
         //System.out.println( "Adding "+args[i]+" to the Graph files" );
         graphFiles.add( args[i] );
         i++;
-      } 
+      }
       else if ( inPlugin ) {
         parsePluginArgs( args[i] );
         i++;
-      } 
+      }
 
-      else {        
+      else {
         //System.err.println( "nothing matches, call for help" );
         //helpRequested = true;
         i++;
@@ -468,7 +468,7 @@ public class CyCommandLineParser {
   }
 
   private void parsePluginArgs ( String arg ) {
-    
+
      File plugin_file = new File( arg );
 
         // test for directory
@@ -492,8 +492,8 @@ public class CyCommandLineParser {
           // add single jar file
           pluginFiles.add( plugin_file.toString()  );
           System.out.println( "Adding single jar: "+plugin_file );
-        } 
-        
+        }
+
         if ( plugin_file.toString().startsWith( "http:" ) || plugin_file.toString().startsWith( "jar:") ) {
           pluginFiles.add( plugin_file.toString()  );
           System.out.println( "Adding URL Jar: "+plugin_file );
@@ -509,7 +509,7 @@ public class CyCommandLineParser {
             String[] allLines = text.split(lineSep);
             for (int j=0; j < allLines.length; j++) {
               String pluginLoc = allLines[j];
-              
+
               if ( pluginLoc.endsWith( ".jar" ) ) {
                 System.out.println( "Pluign found from manifest file: "+pluginLoc );
                 pluginFiles.add( pluginLoc );
@@ -530,19 +530,19 @@ public class CyCommandLineParser {
    * @param i the counter;
    */
   private boolean badArgs ( String[] args, int i ) {
-    
+
     // test to see if we are at then end of the arg list
     if ( args.length == i ) {
       System.out.println( "Too few arguments" );
       helpRequested = true;
       return true;
-    } 
+    }
     // test to see if next is a flag
     else if ( args[i].startsWith( "-" ) ) {
       System.out.println( "Flag where there should be a value" );
       helpRequested = true;
       return true;
-    } 
+    }
     return false;
   }
 
@@ -557,6 +557,6 @@ public class CyCommandLineParser {
     inScript = false;
   }
 
-} 
-  
+}
+
 

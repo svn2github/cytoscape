@@ -29,7 +29,7 @@ public class ExpFileChooser extends JFileChooser {
     }
     protected JDialog createDialog(Component parent) throws HeadlessException {
 	JDialog jd = super.createDialog(parent);
-	jcb = new JCheckBox("Copy Expression Data to Graph Attributes?");
+	jcb = new JCheckBox("Copy Expression Data to Network Attributes?");
 	jcb.setSelected(copyToAttribs);
 	jcb.addItemListener(new CopyExpListener());
         Container contentPane = jd.getContentPane();
@@ -40,7 +40,7 @@ public class ExpFileChooser extends JFileChooser {
     /** inner class for listening to the JCheckBox jcb
      *  and updating the boolean copyToAttribs when appropriate.
      *  {@link cytoscape.view.NetworkView.ExpFileChooser.copyToAttribs
-     *  copyToAttribs} when appropriate. 
+     *  copyToAttribs} when appropriate.
      */
     private class CopyExpListener implements ItemListener {
 	public void itemStateChanged(ItemEvent e) {

@@ -97,7 +97,7 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 
     JTabbedPane nodePane = new JTabbedPane();
     JTabbedPane edgePane = new JTabbedPane();
-	
+
     // add panes to tabbed panes
     for (byte i = NODE_COLOR; i <= NODE_LABEL_COLOR; i++) {
 	    VizMapTab tab;
@@ -119,10 +119,10 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 	    edgePane.add(tab, i-EDGE_COLOR);
 	    tabs[i] = tab;
     }
-	
+
     // global default pane
     JPanel defaultPane = new DefaultPanel(this, VMM);
-	
+
     // node/edge/default selector
     ButtonGroup grp = new ButtonGroup();
 
@@ -136,7 +136,7 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
     nodeSelect.addActionListener(new AttrSelector(nodePane));
     edgeSelect.addActionListener(new AttrSelector(edgePane));
     defSelect.addActionListener(new AttrSelector(defaultPane));
-	
+
     this.attrSelectorPanel = new JPanel(new FlowLayout(), false);
     attrSelectorPanel.add(nodeSelect);
     attrSelectorPanel.add(edgeSelect);
@@ -148,20 +148,20 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
     //MiscGB.insert(mainGBG, vizStylePanel, 0, 0, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
     MiscGB.insert(mainGBG, attrSelectorPanel, 0, 0, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
     MiscGB.insert(mainGBG, tabPaneContainer, 0, 1, 1, 1, 1, 1, GridBagConstraints.BOTH);
-	
+
     // add apply & cancel button
     this.actionButtonsPanel = new JPanel();
 
-    JButton applyButton = new JButton("Apply to Graph");
+    JButton applyButton = new JButton("Apply to Network");
     applyButton.addActionListener(new ApplyAction());
     JButton closeButton = new JButton("Close");
 
     closeButton.addActionListener(new CloseAction());
     actionButtonsPanel.add(applyButton);
     actionButtonsPanel.add(closeButton);
-	
+
     MiscGB.insert(mainGBG, actionButtonsPanel, 0, 3, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
-	
+
     setContentPane(mainPane);
     pack();
     nodeSelect.doClick();
@@ -224,12 +224,12 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
      *  Lazily create visual style parameter UI.
      */
     protected boolean styleDefNeedsUpdate = true;
-        
+
     /**
      * Flag to trap events triggered by myself
      */
     protected boolean rebuilding = false;
-	
+
     protected StyleSelector(VizMapUI styleDef, JFrame mainFrame) {
 	    super(mainFrame, "Visual Styles");
       this.currentStyle = VMM.getVisualStyle();
@@ -249,7 +249,7 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 	    this.styleComboBoxDupe.setToolTipText(comboBoxHelp);
 	    MiscGB.pad(styleGBG.constraints, 2, 2);
 	    MiscGB.inset(styleGBG.constraints, 3);
-	    
+
 	    resetStyles();
 
 	    // new style button
@@ -293,13 +293,13 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
                                  );
 	    MiscGB.insert(styleGBG, closeBut, 4, 1, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
 	    closeBut.setToolTipText("Close this dialog");
-	    
+
 	    MiscGB.insert(this.styleGBG, this.styleComboBox, 0, 0, 4, 1, 1, 0, GridBagConstraints.HORIZONTAL);
 	    setContentPane(styleGBG.panel);
 	    styleGBG.panel.setToolTipText("Visual styles are a collection of attribute mappings.");
 	    pack();
     }
-	
+
     public String getStyleName(VisualStyle s) {
 	    String suggestedName = null;
 	    if (s != null)
@@ -426,7 +426,7 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
         VMM.getNetworkView().redrawGraph(false, true);
 	    }
     }
-	
+
     protected class StyleSelectionListener implements ItemListener {
       /**
        * There's three ways this method can get called. First, it's triggered
@@ -473,7 +473,7 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
      *  Update the style combo box model. This method only rebuilds the
      * combo box: it does not trigger any events.
      */
-    protected void refreshStyleComboBox() {	    
+    protected void refreshStyleComboBox() {
       /* When we remove and add the elements in the following code, it
        * triggers events caught by the StyleSelectionListener.
        * To get around this, we set a boolean flag to tell the listener
@@ -487,7 +487,7 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
       this.styleComboModel.setSelectedItem(currentStyle);
       this.rebuilding = false;
     }
-	    
+
 
     /**
      *  Reset the style selection controls.
@@ -520,7 +520,7 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
     }
 
   } // StyleSelector
-    
+
   private class AttrSelector implements ActionListener {
     private JComponent myTab;
 
@@ -534,7 +534,7 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 	    repaint();
     }
   }
-    
+
   // apply button action listener
   private class ApplyAction extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
@@ -548,7 +548,7 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
 	    dispose();
     }
   }
-    
+
   /**
    * When the data structures (eg. NodeAttributes, EdgeAttributes) change,
    * refresh the UI.
@@ -598,7 +598,7 @@ public class VizMapUI extends JDialog implements CyNetworkListener {
   /**
    * Ensure that the calculator to be removed isn't used in other visual styles.
    * If it is, return the names of visual styles that are currently using it.
-   * 
+   *
    * @param	c	calculator to check usage for
    * @return	names of visual styles using the calculator
    */

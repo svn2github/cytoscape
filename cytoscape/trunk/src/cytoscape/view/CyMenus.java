@@ -65,7 +65,7 @@ import giny.view.GraphViewChangeEvent;
  * also provides access to individual menus and items.
  */
 public class CyMenus  implements GraphViewChangeListener {
-  
+
   boolean menusInitialized = false;
   CytoscapeMenuBar menuBar;
   JMenu fileMenu, loadSubMenu, saveSubMenu;
@@ -85,14 +85,14 @@ public class CyMenus  implements GraphViewChangeListener {
 		helpAboutMenuItem;
 
   JButton loadButton, saveButton, zoomInButton, zoomOutButton,
-	zoomSelectedButton, zoomDisplayAllButton, showAllButton, 
+	zoomSelectedButton, zoomDisplayAllButton, showAllButton,
 	hideSelectedButton, annotationButton, vizButton;
   JMenu opsMenu;
   CytoscapeToolBar toolBar;
   boolean nodesRequiredItemsEnabled;
 
   public CyMenus(){
-   
+
     //the following methods construct the basic bar objects, but
     //don't fill them with menu items and associated action listeners
     createMenuBar();
@@ -180,7 +180,7 @@ public class CyMenus  implements GraphViewChangeListener {
     if ( action.isInToolBar() ) {
       getToolBar().addAction( action );
     }
-    
+
 
   }
 
@@ -233,7 +233,7 @@ public class CyMenus  implements GraphViewChangeListener {
     boolean newState = Cytoscape.getCurrentNetwork().getNodeCount() > 0;
     newState = true; //TODO: remove this once the GraphViewChangeListener system is working
     if (newState == nodesRequiredItemsEnabled) return;
-    
+
     saveButton.setEnabled(newState);
     saveSubMenu.setEnabled(newState);
     menuPrintAction.setEnabled(newState);
@@ -297,7 +297,7 @@ public class CyMenus  implements GraphViewChangeListener {
       menuExportAction.setEnabled(false);
       displayNWSubMenu.setEnabled(false);
       setNodesRequiredItemsEnabled();
-      
+
     }
   }
   /**
@@ -305,7 +305,7 @@ public class CyMenus  implements GraphViewChangeListener {
    * items with attached action listener objects.
    */
   private void fillMenuBar() {
-     
+
     //fill the Load submenu
     addAction( new LoadGraphFileAction( this ) );
     addAction( new LoadNodeAttributesAction() );
@@ -319,9 +319,9 @@ public class CyMenus  implements GraphViewChangeListener {
     addAction( new SaveNodeAttributesAction() );
     addAction( new SaveEdgeAttributesAction() );
 
-      
+
     // Print Actions
-    
+
     menuPrintAction = new PrintAction();
     menuExportAction = new ExportAction();
     addAction( menuPrintAction );
@@ -329,7 +329,7 @@ public class CyMenus  implements GraphViewChangeListener {
 
     //Exit
     addAction( new ExitAction() );
-    
+
 
     //fill the Edit menu
     //TODO: make the Squiggle Stuff be better
@@ -342,7 +342,7 @@ public class CyMenus  implements GraphViewChangeListener {
     //fill the Data menu
     addAction( new DisplayBrowserAction() );
     //addAction( new GraphObjectSelectionAction() );
-   
+
     //fill the Select menu
     selectMenu.add( new SelectionModeAction() );
 
@@ -376,7 +376,7 @@ public class CyMenus  implements GraphViewChangeListener {
     layoutMenu.addSeparator();
 
     //fill the Visualization menu
-    
+
     // TODO: move to a plugin, and/or fix
     addAction( new BirdsEyeViewAction() );
     addAction( new BackgroundColorAction() );
@@ -405,23 +405,23 @@ public class CyMenus  implements GraphViewChangeListener {
     helpMenu.add( helpContextSensitiveMenuItem );
     helpMenu.addSeparator();
     helpMenu.add( helpAboutMenuItem );
-     
+
   }
 
   /**
    * Fills the toolbar for easy access to commonly used actions.
    */
   private void fillToolBar() {
-    
+
     loadButton = toolBar.add( new LoadGraphFileAction(  this, false ) );
     loadButton.setIcon( new ImageIcon(getClass().getResource("images/new/load36.gif") ) );
-    loadButton.setToolTipText("Load Graph");
+    loadButton.setToolTipText("Load Network");
     loadButton.setBorderPainted(false);
     loadButton.setRolloverEnabled(true);
 
     saveButton = toolBar.add( new SaveAsGMLAction(false ) );
     saveButton.setIcon( new ImageIcon(getClass().getResource("images/new/save36.gif") ) );
-    saveButton.setToolTipText("Save Graph as GML");
+    saveButton.setToolTipText("Save Network as GML");
     saveButton.setBorderPainted(false);
     saveButton.setRolloverEnabled(true);
     saveButton.setEnabled(false);
@@ -499,7 +499,7 @@ public class CyMenus  implements GraphViewChangeListener {
 
     zoomDisplayAllButton = toolBar.add( new FitContentAction() );
     zoomDisplayAllButton.setIcon(new ImageIcon(getClass().getResource("images/new/fit36.gif")));
-    zoomDisplayAllButton.setToolTipText("Zoom out to display all of current Graph");
+    zoomDisplayAllButton.setToolTipText("Zoom out to display all of current Network");
     zoomDisplayAllButton.setBorderPainted(false);
 
     // toolBar.addSeparator();

@@ -6,22 +6,22 @@
  ** under the terms of the GNU Lesser General Public License as published
  ** by the Free Software Foundation; either version 2.1 of the License, or
  ** any later version.
- ** 
+ **
  ** This library is distributed in the hope that it will be useful, but
  ** WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
  ** MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
  ** documentation provided hereunder is on an "as is" basis, and the
- ** Institute for Systems Biology and the Whitehead Institute 
+ ** Institute for Systems Biology and the Whitehead Institute
  ** have no obligations to provide maintenance, support,
  ** updates, enhancements or modifications.  In no event shall the
- ** Institute for Systems Biology and the Whitehead Institute 
+ ** Institute for Systems Biology and the Whitehead Institute
  ** be liable to any party for direct, indirect, special,
  ** incidental or consequential damages, including lost profits, arising
  ** out of the use of this software and its documentation, even if the
- ** Institute for Systems Biology and the Whitehead Institute 
+ ** Institute for Systems Biology and the Whitehead Institute
  ** have been advised of the possibility of such damage.  See
  ** the GNU Lesser General Public License for more details.
- ** 
+ **
  ** You should have received a copy of the GNU Lesser General Public License
  ** along with this library; if not, write to the Free Software Foundation,
  ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
@@ -79,7 +79,7 @@ public class TabbedBrowser extends JFrame implements ClipboardOwner {
   /**
    * Made this a global reference for consistency's sake
    */
-  protected JButton dismissButton;
+  protected JButton okButton;
   /**
    * Need a global reference to this so we can check
    * if the tabbed pane has been switched to this tab
@@ -96,7 +96,7 @@ public class TabbedBrowser extends JFrame implements ClipboardOwner {
   public static final int BROWSING_EDGES = 2;
 
 //---------------------------------------------------------------------------------------
-public TabbedBrowser (Object [] graphObjects, GraphObjAttributes attributes, 
+public TabbedBrowser (Object [] graphObjects, GraphObjAttributes attributes,
                       Vector attributeCategoriesToIgnore,
                       String webBrowserScript, int browseObjectClass)
 {
@@ -122,13 +122,13 @@ public TabbedBrowser (Object [] graphObjects, GraphObjAttributes attributes,
     }
 
   String [] attributeNames = attributes.getAttributeNames ();
-  
+
 
   getContentPane().setLayout (new BorderLayout ());
-  
-  getContentPane().add (createButtons (), BorderLayout.SOUTH);  
+
+  getContentPane().add (createButtons (), BorderLayout.SOUTH);
   getContentPane().add (createGui(attributes), BorderLayout.CENTER);
-  
+
   pack ();
   placeInCenter ();
   setVisible (true);
@@ -139,9 +139,9 @@ JTabbedPane createGui (GraphObjAttributes attributes)
   tabbedPane = new JTabbedPane ( JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT );
   tabbedPane.addChangeListener(new TabbedPaneListener());
   String [] attributeNames = attributes.getAttributeNames ();
-  
+
   customizeTab = createCustomizerTab(attributeNames);
-  tabbedPane.add ("Customize", customizeTab);  
+  tabbedPane.add ("Customize", customizeTab);
 
   for (int i=0; i < attributeNames.length; i++) {
     String attributeName = attributeNames [i];
@@ -157,7 +157,7 @@ JTabbedPane createGui (GraphObjAttributes attributes)
     String [] requestedAttibuteNames = {attributeName};
     BrowserTableModel model = new BrowserTableModel (graphObjects, attributes, requestedAttibuteNames);
     JTable table = new JTable (model);
-    setPreferredColumnWidths (table);    
+    setPreferredColumnWidths (table);
     table.setCellSelectionEnabled (true);
     table.addMouseListener (new MyMouseListener (table));
     table.setPreferredScrollableViewportSize (new Dimension (preferredTableWidth, preferredTableHeight));
@@ -165,7 +165,7 @@ JTabbedPane createGui (GraphObjAttributes attributes)
     tabbedPane.add (attributeNames [i], scrollPane);
     } // for i
 
-   
+
   String [] customTabNames = (String []) customAttributes.keySet().toArray (new String [0]);
 
   for (int i=0; i < customTabNames.length; i++) {
@@ -246,7 +246,7 @@ class TabbedPaneListener implements ChangeListener{
    */
   public TabbedPaneListener(){
   }
-  
+
   /**
    * Called when a different tab is selected
    */
@@ -286,11 +286,11 @@ JPanel createButtons ()
   JPanel panel = new JPanel ();
   saveButton = new JButton("Save Table");
   saveButton.setEnabled(false);
-  dismissButton = new JButton ("Dismiss");
+  okButton = new JButton ("OK");
   saveButton.addActionListener (new SaveTableAction (this));
-  dismissButton.addActionListener (new DismissAction (this));
+  okButton.addActionListener (new OKAction (this));
   panel.add (saveButton, BorderLayout.CENTER);
-  panel.add (dismissButton, BorderLayout.CENTER);
+  panel.add (okButton, BorderLayout.CENTER);
   return panel;
 
 } // createButtons
@@ -312,10 +312,10 @@ public class CreateNewPanelAction extends AbstractAction {
 //-----------------------------------------------------------------------------------
 private void createNewPanel (Vector customAttributesList, String title) {
     String [] requestedAttributeNames = (String []) customAttributesList.toArray (new String [0]);
-    BrowserTableModel model = 
+    BrowserTableModel model =
 	new BrowserTableModel (graphObjects, attributes, requestedAttributeNames);
     JTable table = new JTable (model);
-    setPreferredColumnWidths (table);    
+    setPreferredColumnWidths (table);
     table.setCellSelectionEnabled (true);
     table.addMouseListener (new MyMouseListener (table));
     table.setPreferredScrollableViewportSize (new Dimension (preferredTableWidth, preferredTableHeight));
@@ -370,18 +370,18 @@ public class SaveTableAction extends AbstractAction {
 } // SaveTableAction
 //-----------------------------------------------------------------------------------
 
-public class DismissAction extends AbstractAction {
+public class OKAction extends AbstractAction {
 
   private JFrame frame;
 
-  DismissAction (JFrame frame) {super (""); this.frame = frame;}
+  OKAction (JFrame frame) {super (""); this.frame = frame;}
 
   public void actionPerformed (ActionEvent e) {
-    // System.out.println ("dismiss, customAttributes: " + customAttributes);
+    // System.out.println ("cancel, customAttributes: " + customAttributes);
     frame.dispose ();
     }
 
-} // DismissAction
+} // OKAction
 //-----------------------------------------------------------------------------------
 private void setPreferredColumnWidths (JTable table)
 {
@@ -435,7 +435,7 @@ class RowListener implements ListSelectionListener {
 
 } // RowListener
 //------------------------------------------------------------------------------
-class MyMouseListener implements MouseListener 
+class MyMouseListener implements MouseListener
 {
   private JTable table;
 
@@ -447,7 +447,7 @@ class MyMouseListener implements MouseListener
      TableColumnModel columnModel = table.getColumnModel ();
      int column = columnModel.getColumnIndexAtX (e.getX ());
       int row  = e.getY() / table.getRowHeight();
-      if (row >= table.getRowCount () || row < 0 || 
+      if (row >= table.getRowCount () || row < 0 ||
         column >= table.getColumnCount() || column < 0)
       return;
       Object cellValue = table.getValueAt (row, column);
@@ -469,7 +469,7 @@ class MyMouseListener implements MouseListener
    public void mouseReleased (MouseEvent e) {
        // if the customizer tab is selected, do nothing
        if (tabbedPane.getSelectedIndex() == 0) return;
-       
+
        // get currently selected table and table size
        JScrollPane scrollPane = (JScrollPane) tabbedPane.getSelectedComponent();
        JTable table = (JTable) scrollPane.getViewport().getView();
@@ -503,7 +503,7 @@ protected void displayWebPage (URL url)
 //     bs.showDocument (url);
 //     }
 //   catch (Exception ex) {
-//     String msg = "<html>You need to invoke Cytsocape through Java Web Start <br>" + 
+//     String msg = "<html>You need to invoke Cytsocape through Java Web Start <br>" +
 //                  "in order to make use of your web browser from within the program.<br><br>" +
 //                  "Error message: " + ex.getMessage () + "</html>";
 //     JOptionPane.showMessageDialog (TabbedBrowser.this, msg);
@@ -520,7 +520,7 @@ protected void oldDisplayWebPage (URL url)
   //cmd [0] = "./web";
   cmd [0] = webBrowserScript;
   cmd [1] = url.toString ();
-   
+
   // System.out.println ("about to run: " + cmd [0] + "  " + cmd [1]);
   Exec exec = new Exec (cmd);
   exec.run ();

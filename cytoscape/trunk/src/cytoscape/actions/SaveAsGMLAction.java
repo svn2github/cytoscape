@@ -31,7 +31,7 @@ import java.util.Vector;
 public class SaveAsGMLAction extends CytoscapeAction {
 
     public SaveAsGMLAction() {
-        super("Graph as GML...");
+        super("Network as GML...");
         setPreferredMenu("File.Save");
     }
 
@@ -42,7 +42,7 @@ public class SaveAsGMLAction extends CytoscapeAction {
     public void actionPerformed(ActionEvent e) {
         String name;
         try {
-            name = FileUtil.getFile("Save Graph as GML",
+            name = FileUtil.getFile("Save Network as GML",
                     FileUtil.SAVE,
                     new CyFileFilter[]{}).toString();
         } catch (Exception exp) {
@@ -98,21 +98,21 @@ class SaveAsGMLTask implements Task {
      * Executes Task
      */
     public void run() {
-        taskMonitor.setStatus("Saving Graph...");
+        taskMonitor.setStatus("Saving Network...");
         taskMonitor.setPercentCompleted(-1);
         try {
             List nodeList = network.nodesList();
             if (nodeList.size() == 0) {
-                throw new IllegalArgumentException("Graph is empty.");
+                throw new IllegalArgumentException("Network is empty.");
             }
             saveGraph();
             taskMonitor.setPercentCompleted (100);
-            taskMonitor.setStatus("Graph successfully saved to:  "
+            taskMonitor.setStatus("Network successfully saved to:  "
                     + fileName);
         } catch (IllegalArgumentException e) {
-            taskMonitor.setException(e, "Graph is Empty.  Cannot be saved.");
+            taskMonitor.setException(e, "Network is Empty.  Cannot be saved.");
         } catch (IOException e) {
-            taskMonitor.setException(e, "Unable to save graph.");
+            taskMonitor.setException(e, "Unable to save network.");
         }
     }
 
@@ -139,7 +139,7 @@ class SaveAsGMLTask implements Task {
      * @return Task Title.
      */
     public String getTitle() {
-        return new String("Saving Graph");
+        return new String("Saving Network");
     }
 
     /**

@@ -6,22 +6,22 @@
  ** under the terms of the GNU Lesser General Public License as published
  ** by the Free Software Foundation; either version 2.1 of the License, or
  ** any later version.
- ** 
+ **
  ** This library is distributed in the hope that it will be useful, but
  ** WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
  ** MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
  ** documentation provided hereunder is on an "as is" basis, and the
- ** Institute for Systems Biology and the Whitehead Institute 
+ ** Institute for Systems Biology and the Whitehead Institute
  ** have no obligations to provide maintenance, support,
  ** updates, enhancements or modifications.  In no event shall the
- ** Institute for Systems Biology and the Whitehead Institute 
+ ** Institute for Systems Biology and the Whitehead Institute
  ** be liable to any party for direct, indirect, special,
  ** incidental or consequential damages, including lost profits, arising
  ** out of the use of this software and its documentation, even if the
- ** Institute for Systems Biology and the Whitehead Institute 
+ ** Institute for Systems Biology and the Whitehead Institute
  ** have been advised of the possibility of such damage.  See
  ** the GNU Lesser General Public License for more details.
- ** 
+ **
  ** You should have received a copy of the GNU Lesser General Public License
  ** along with this library; if not, write to the Free Software Foundation,
  ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
@@ -67,13 +67,13 @@ public class ExpressionDataPopupTable extends JDialog {
   ExpressionDataPopupTable popupTable;
   private JTable table;
   ExpressionData geneExpressionInfo = null;
-  
+
 //---------------------------------------------------------------------------------------
 /*
  *  a ctor for single condition, multiple genes
 **/
-public ExpressionDataPopupTable (Frame parentFrame, String [] geneNames, 
-                                 String conditionName, 
+public ExpressionDataPopupTable (Frame parentFrame, String [] geneNames,
+                                 String conditionName,
                                  ExpressionData geneExpressionInfo)
 {
   super (parentFrame, false);
@@ -98,9 +98,9 @@ public ExpressionDataPopupTable (Frame parentFrame, String [] geneNames,
   panel.add (scrollPane, BorderLayout.CENTER);
 
   JPanel buttonPanel = new JPanel ();
-  JButton dismissButton = new JButton ("Dismiss");
-  dismissButton.addActionListener (new DismissAction (this));
-  buttonPanel.add (dismissButton, BorderLayout.CENTER);
+  JButton okButton = new JButton ("OK");
+  okButton.addActionListener (new OKAction (this));
+  buttonPanel.add (okButton, BorderLayout.CENTER);
   pack ();
   panel.add (buttonPanel, BorderLayout.SOUTH);
 
@@ -133,19 +133,19 @@ public ExpressionDataPopupTable (Frame parentFrame, String geneName,
   panel.add (scrollPane, BorderLayout.CENTER);
 
   JPanel buttonPanel = new JPanel ();
-  JButton dismissButton = new JButton ("Dismiss");
-  dismissButton.addActionListener (new DismissAction (this));
-  buttonPanel.add (dismissButton, BorderLayout.CENTER);
+  JButton okButton = new JButton ("OK");
+  okButton.addActionListener (new OKAction (this));
+  buttonPanel.add (okButton, BorderLayout.CENTER);
   panel.add (buttonPanel, BorderLayout.SOUTH);
 
   setContentPane (panel);
 
 } // ExpressionDataPopupTable ctor
 //------------------------------------------------------------------------------------
-public class DismissAction extends AbstractAction {
+public class OKAction extends AbstractAction {
   private JDialog dialog;
 
-  DismissAction (JDialog popup) {super (""); this.dialog = popup;}
+  OKAction (JDialog popup) {super (""); this.dialog = popup;}
 
   public void actionPerformed (ActionEvent e) {
     dialog.dispose ();
@@ -165,13 +165,13 @@ class MultipleGenesTableModel extends AbstractTableModel {
     int geneCount = geneNames.length;
     data = new Object [geneCount][3];
     for (int i=0; i < geneNames.length; i++) {
-      mRNAMeasurement measurement = 
+      mRNAMeasurement measurement =
          geneExpressionInfo.getMeasurement (geneNames [i], conditionName);
       final String condition = conditionName;
       final String name = geneNames [i];
       if (measurement != null) {
         data [i][1] = new Double (measurement.getRatio ());
-        data [i][2] = new Double (measurement.getSignificance ()); 
+        data [i][2] = new Double (measurement.getSignificance ());
         }
       JButton button = new JButton (geneNames [i]);
       button.setToolTipText ("display expression values for all conditions");
@@ -181,7 +181,7 @@ class MultipleGenesTableModel extends AbstractTableModel {
         //PopupTextArea text = new PopupTextArea (popupTable, name, name);
         //text.setLocationRelativeTo (popupTable);
          String [] conditions = geneExpressionInfo.getConditionNames ();
-         ExpressionDataPopupTable crossConditionsTable = 
+         ExpressionDataPopupTable crossConditionsTable =
            new ExpressionDataPopupTable (mainFrame, name, conditions, geneExpressionInfo);
          crossConditionsTable.pack ();
          crossConditionsTable.setLocationRelativeTo (mainFrame);
@@ -211,7 +211,7 @@ class MultipleConditionsTableModel extends AbstractTableModel {
     int conditionCount = conditionNames.length;
     data = new Object [conditionCount][3];
     for (int i=0; i < conditionNames.length; i++) {
-      mRNAMeasurement measurement = 
+      mRNAMeasurement measurement =
          geneExpressionInfo.getMeasurement (geneName, conditionNames [i]);
       final String condition = conditionNames [i];
       data [i][0] = condition;
@@ -221,7 +221,7 @@ class MultipleConditionsTableModel extends AbstractTableModel {
         }
       else {
         data [i][1] = new Double (measurement.getRatio ());
-        data [i][2] = new Double (measurement.getSignificance ()); 
+        data [i][2] = new Double (measurement.getSignificance ());
         }
       //JButton button = new JButton (geneNames [i]);
       //data [i][0] = button;
@@ -264,7 +264,7 @@ class ButtonCellRenderer implements TableCellRenderer {
 
 } // inner class ButtonCellRenderer
 //-------------------------------------------------------------------------------
-class MyMouseListener implements MouseListener 
+class MyMouseListener implements MouseListener
 {
   private JTable table;
 
@@ -279,7 +279,7 @@ class MyMouseListener implements MouseListener
     Object value;
     JButton button;
     MouseEvent buttonEvent;
-    if (row >= table.getRowCount () || row < 0 || 
+    if (row >= table.getRowCount () || row < 0 ||
         column >= table.getColumnCount() || column < 0)
       return;
     value = table.getValueAt (row, column);
