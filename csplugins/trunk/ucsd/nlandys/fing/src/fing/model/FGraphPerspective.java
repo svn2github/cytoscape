@@ -900,12 +900,16 @@ class FGraphPerspective implements GraphPerspective
   private final RootGraphChangeSniffer m_changeSniffer;
 
   // Package visible constructor.  rootGraphNodeInx
-  // must contain all endpoint nodes corresponding to edges in
-  // rootGraphEdgeInx.  All indices must correspond to existing nodes
-  // and edges.  The indices lists must be non-repeating.
+  // need not contain all endpoint nodes corresponding to edges in
+  // rootGraphEdgeInx - this is calculated automatically by this constructor.
+  // If any index does not correspond to an existing node or edge, an
+  // IllegalArgumentException is thrown.  The indices lists need not be
+  // non-repeating - the logic in this constructor handles duplicate
+  // filtering.
   FGraphPerspective(FRootGraph root,
                     IntIterator rootGraphNodeInx,
                     IntIterator rootGraphEdgeInx)
+    throws IllegalArgumentException // If any index is not in RootGraph.
   {
     m_graph = DynamicGraphFactory.instantiateDynamicGraph();
     m_root = root;
@@ -924,23 +928,36 @@ class FGraphPerspective implements GraphPerspective
     m_changeSniffer = new RootGraphChangeSniffer(m_weeder);
     while (rootGraphNodeInx.hasNext()) {
       final int rootNodeInx = rootGraphNodeInx.nextInt();
-      final int nativeNodeInx = m_graph.createNode();
-      m_nativeToRootNodeInxMap.setIntAtIndex(rootNodeInx, nativeNodeInx);
-      m_rootToNativeNodeInxMap.put(~rootNodeInx, nativeNodeInx); }
+      if (m_root.getNode(rootNodeInx) != null) {
+        if (m_rootToNativeNodeInxMap.get(~rootNodeInx) >= 0) continue;
+        final int nativeNodeInx = m_graph.createNode();
+        m_rootToNativeNodeInxMap.put(~rootNodeInx, nativeNodeInx);
+        m_nativeToRootNodeInxMap.setIntAtIndex(rootNodeInx, nativeNodeInx); }
+      else throw new IllegalArgumentException
+             ("node with index " + rootNodeInx + " not in RootGraph"); }
     while (rootGraphEdgeInx.hasNext()) {
       final int rootEdgeInx = rootGraphEdgeInx.nextInt();
-      final int rootEdgeSourceInx = m_root.getEdgeSourceIndex(rootEdgeInx);
-      final int rootEdgeTargetInx = m_root.getEdgeTargetIndex(rootEdgeInx);
-      final boolean rootEdgeDirected = m_root.isEdgeDirected(rootEdgeInx);
-      final int nativeEdgeSourceInx =
-        m_rootToNativeNodeInxMap.get(~rootEdgeSourceInx);
-      final int nativeEdgeTargetInx =
-        m_rootToNativeNodeInxMap.get(~rootEdgeTargetInx);
-      final int nativeEdgeInx =
-        m_graph.createEdge(nativeEdgeSourceInx, nativeEdgeTargetInx,
-                           rootEdgeDirected);
-      m_nativeToRootEdgeInxMap.setIntAtIndex(rootEdgeInx, nativeEdgeInx);
-      m_rootToNativeEdgeInxMap.put(~rootEdgeInx, nativeEdgeInx); }
+      if (m_root.getEdge(rootEdgeInx) != null) {
+        if (m_rootToNativeEdgeInxMap.get(~rootEdgeInx) >= 0) continue;
+        final int rootSrcInx = m_root.getEdgeSourceIndex(rootEdgeInx);
+        final int rootTrgInx = m_root.getEdgeTargetIndex(rootEdgeInx);
+        final boolean edgeDirected = m_root.isEdgeDirected(rootEdgeInx);
+        int nativeSrcInx = m_rootToNativeNodeInxMap.get(~rootSrcInx);
+        if (nativeSrcInx < 0) {
+          nativeSrcInx = m_graph.createNode();
+          m_rootToNativeNodeInxMap.put(~rootSrcInx, nativeSrcInx);
+          m_nativeToRootNodeInxMap.setIntAtIndex(rootSrcInx, nativeSrcInx); }
+        int nativeTrgInx = m_rootToNativeNodeInxMap.get(~rootTrgInx);
+        if (nativeTrgInx < 0) {
+          nativeTrgInx = m_graph.createNode();
+          m_rootToNativeNodeInxMap.put(~rootTrgInx, nativeTrgInx);
+          m_nativeToRootNodeInxMap.setIntAtIndex(rootTrgInx, nativeTrgInx); }
+        final int nativeEdgeInx =
+          m_graph.createEdge(nativeSrcInx, nativeTrgInx, edgeDirected);
+        m_rootToNativeEdgeInxMap.put(~rootEdgeInx, nativeEdgeInx);
+        m_nativeToRootEdgeInxMap.setIntAtIndex(rootEdgeInx, nativeEdgeInx); }
+      else throw new IllegalArgumentException
+             ("edge with index " + rootEdgeInx + " not in RootGraph"); }
     m_root.addRootGraphChangeListener(m_changeSniffer);
   }
 
