@@ -182,12 +182,11 @@ public CytoscapeWindow (cytoscape parentApp,
   mainFrame.setVisible (true);
   mainFrame.addWindowListener (parentApp);
 
-    // load plugins last, after the main window is setup, since they will
-    // often need access to all of the parts of a fully instantiated CytoscapeWindow
+  // load plugins last, after the main window is setup, since they
+  // will often need access to all of the parts of a fully
+  // instantiated CytoscapeWindow
 
-  PluginLoader pluginLoader = new PluginLoader (this, config, nodeAttributes, edgeAttributes);
-  pluginLoader.load ();
-  logger.info (pluginLoader.getMessages ());
+  loadPlugins();
 
 } // ctor
 //------------------------------------------------------------------------------
@@ -218,6 +217,35 @@ public Logger getLogger ()
 {
   return logger;
 }
+
+
+/**
+ * Uses the plugin loader to load the appropriate plugins.  Ensures
+ * that the operations menu contains only relevant items.
+ *
+ * added by dramage 2002-08-21
+ */
+public void loadPlugins () {
+
+    // clear the operations menu
+    opsMenu.removeAll();
+
+    // load plugins
+    PluginLoader pluginLoader
+	= new PluginLoader (this, config, nodeAttributes, edgeAttributes);
+
+    pluginLoader.load ();
+    logger.info (pluginLoader.getMessages ());
+
+    // add default unselectable "no plugins loaded" if none loaded
+    if (opsMenu.getItemCount() == 0) {
+	JMenuItem none = new JMenuItem("No plugins loaded");
+	none.setEnabled(false);
+	opsMenu.add(none);
+    }
+}
+
+
 //------------------------------------------------------------------------------
 public void windowStateChanged (WindowEvent e)
 {
@@ -2023,6 +2051,7 @@ protected void loadGML (String filename)
     displayCommonNodeNames (); // fills in canonical name for blank common names
     geometryFilename = filename;
     setWindowTitle(filename);
+    loadPlugins();
     displayNewGraph (false);
 } // loadGML
 //------------------------------------------------------------------------------
@@ -2033,6 +2062,7 @@ protected void loadInteraction (String filename)
     displayCommonNodeNames (); // fills in canonical name for blank common names
     geometryFilename = null;
     setWindowTitle(filename);
+    loadPlugins();
     displayNewGraph (true);
 } // loadInteraction
 //------------------------------------------------------------------------------
