@@ -35,12 +35,15 @@
 package cytoscape.data.readers;
 //------------------------------
 import java.util.*;
+import java.io.IOException;
+
 import giny.view.GraphView;
 import giny.model.*;
 
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.Interaction;
 import cytoscape.*;
+import cytoscape.task.TaskMonitor;
 import cytoscape.data.servers.*;
 import cytoscape.data.readers.*;
 
@@ -51,6 +54,7 @@ import cern.colt.map.OpenIntIntHashMap;
  * provides the graph and attributes objects constructed from the file.
  */
 public class InteractionsReader implements GraphReader {
+  private TaskMonitor taskMonitor;
 
   /**
    * The File to be loaded
@@ -87,6 +91,23 @@ public class InteractionsReader implements GraphReader {
     this.species = species;
   }
 
+  /**
+   * Interactions Reader Constructor
+   * Creates a new Interactions Reader
+   * This constructor assumes a Y-Files graph is wanted. If not
+   * then use the other constructor to say so.
+   * @param dataServer  a BioDataServer
+   * @param species the species of the network being loaded
+   * @param filename the file to load the network from
+   */
+  public InteractionsReader (BioDataServer dataServer,
+    String species, String filename, TaskMonitor taskMonitor) {
+    this.filename = filename;
+    this.dataServer = dataServer;
+    this.species = species;
+    this.taskMonitor = taskMonitor;
+  }
+
   public InteractionsReader ( BioDataServer dataServer,
                               String species,
                               String zip_entry,
@@ -100,11 +121,10 @@ public class InteractionsReader implements GraphReader {
 
   public void layout(GraphView view){}
   //----------------------------------------------------------------------------------------
-  public void read ( boolean canonicalize ) {
+  public void read ( boolean canonicalize ) throws IOException {
 
     String rawText;
     if ( !is_zip ) {
-      try {
         if (filename.trim().startsWith ("jar://")) {
           TextJarReader reader = new TextJarReader (filename);
           reader.read ();
@@ -115,40 +135,37 @@ public class InteractionsReader implements GraphReader {
           reader.read ();
           rawText = reader.getText ();
         }
-      }
-      catch (Exception e0) {
-        System.err.println ("-- Exception while reading interaction file " + filename);
-        System.err.println (e0.getMessage ());
-        return;
-      }
     } else {
       rawText = zip_entry;
     }
 
-
-
     String delimiter = " ";
     if (rawText.indexOf ("\t") >= 0)
       delimiter = "\t";
-    StringTokenizer strtok = new StringTokenizer (rawText, "\n");
 
-    // commented out by iliana on 11.26.2002 :
-    // Vector interactions = new Vector ();
- 
-    while (strtok.hasMoreElements ()) {
-      String newLine = (String) strtok.nextElement ();
+    String lineSeperator = System.getProperty("line.separator");
+    String [] lines = rawText.split (lineSeperator);
+
+    if (taskMonitor != null) {
+        taskMonitor.setStatus("Reading in Data...");
+    }
+    for (int i=0; i<lines.length; i++) {
+
+      if (taskMonitor != null) {
+          double percent = ((double) i / lines.length) * 100.0;
+          taskMonitor.setPercentCompleted((int) percent);
+      }
+      String newLine = lines[i];
       Interaction newInteraction = new Interaction (newLine, delimiter);
       allInteractions.addElement (newInteraction);
     }
     createRootGraphFromInteractionData (canonicalize);
-
   }
   //-----------------------------------------------------------------------------------------
   /**
    * Calls read(true)
    */
-  public void read ()
-  {
+  public void read () throws IOException {
     read(true);
   }  // readFromFile
   //-------------------------------------------------------------------------------------------
@@ -194,6 +211,11 @@ public class InteractionsReader implements GraphReader {
     //this improves performance for large graphs
     Set nodeNameSet = new HashSet();
     int edgeCount = 0;
+
+    if (taskMonitor != null) {
+        taskMonitor.setStatus("Creating Cytoscape Network");
+    }
+
     for (int i=0; i<interactions.length; i++) {
       Interaction interaction = interactions [i];
       String sourceName = interaction.getSource();
@@ -207,6 +229,10 @@ public class InteractionsReader implements GraphReader {
         nodeNameSet.add(targetNodeName); //does nothing if already there
         edgeCount++;
       }
+      if (taskMonitor != null) {
+          double percent = ((double) i / interactions.length) * 100.0;
+          taskMonitor.setPercentCompleted((int) percent);
+      }
     }
 
 
@@ -216,9 +242,19 @@ public class InteractionsReader implements GraphReader {
 
     //now create all of the nodes, storing a hash from name to node
     // Map nodes = new HashMap();
+
+    if (taskMonitor != null) {
+        taskMonitor.setStatus("Adding Nodes to Network");
+    }
+    int counter = 0;
     for (Iterator si = nodeNameSet.iterator(); si.hasNext(); ) {
       String nodeName = (String)si.next();
-      
+
+      if (taskMonitor != null) {
+          double percent = ((double)counter / nodeNameSet.size()) * 100.0;
+          taskMonitor.setPercentCompleted((int) percent);
+          counter++;
+      }
 
       // use the static method
       Node node = ( Node )Cytoscape.getCyNode( nodeName, true );
@@ -243,8 +279,18 @@ public class InteractionsReader implements GraphReader {
     //   interactionHash [sourceNode::targetNode] = "pd"
     //---------------------------------------------------------------------------
 
+    if (taskMonitor != null) {
+        taskMonitor.setStatus("Adding Edges to Network");
+    }
+
     String targetNodeName;
     for (int i=0; i < interactions.length; i++) {
+
+      if (taskMonitor != null) {
+          double percent = ((double) i / interactions.length) * 100.0;
+          taskMonitor.setPercentCompleted((int) percent);
+      }
+
       Interaction interaction = interactions [i];
       String nodeName = interaction.getSource();
       if(canonicalize) nodeName = canonicalizeName (interaction.getSource ());
@@ -266,11 +312,10 @@ public class InteractionsReader implements GraphReader {
         //Node targetNode = (Node) nodes.get (targetNodeName);
         String edgeName = nodeName + " (" + interactionType + ") " + targetNodeName;
         Edge edge = ( Edge )Cytoscape.getCyEdge( nodeName, edgeName, targetNodeName, interactionType );
-        //System.out.println( "edge: "+edge.getRootGraphIndex() );
         edges.put( edge.getRootGraphIndex(), 0 );
        
 
-        
+        //System.out.println( "edge: "+edge.getRootGraphIndex() );
 
         //int previousMatchingEntries = Cytoscape.getEdgeNetworkData().countIdentical(edgeName);
         //        Edge edge = Cytoscape.getRootGraph().getEdge(Cytoscape.getRootGraph().createEdge (sourceNode, targetNode));
