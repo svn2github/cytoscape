@@ -40,10 +40,10 @@ import cytoscape.CytoscapeObj;
 /**
  * AbstractPlugin is the class that all Cytoscape plugins must subclass.
  * The plugin should provide a one-argument constructor where the argument
- * is an instance of @link{cytoscape.view.CyWindow CyWindow}.
+ * is an instance of {@link cytoscape.view.CyWindow CyWindow}.<P>
  *
  * It is encouraged, but not mandatory, for plugins to override the
- * @link{#describe describe} method to state what the plugin does and how it
+ * {@link#describe describe} method to state what the plugin does and how it
  * should be used.
  */
 public abstract class AbstractPlugin {
