@@ -37,12 +37,14 @@ package cytoscape.data.readers;
 import cytoscape.data.GraphObjAttributes;
 import giny.model.RootGraph;
 import giny.view.GraphView;
+
+import java.io.IOException;
 //-----------------------------------------------------------------------------
 public interface GraphReader {
 
-  public void read();
+  public void read() throws IOException;
 
-  public void read(boolean canonicalizeNodeNames);
+  public void read(boolean canonicalizeNodeNames) throws IOException;
 
   public RootGraph getRootGraph();
 
