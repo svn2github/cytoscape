@@ -250,6 +250,40 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("edge count not 0");
     if (root.getEdgeCount(nodeInx[1], nodeInx[1], true) != 1)
       throw new IllegalStateException("edge count not 1 for und. self edge");
+
+    // getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean).
+    int[] adjEdges = root.getAdjacentEdgeIndicesArray
+      (nodeInx[0], true, true, true);
+    if (adjEdges.length != 3) throw new IllegalStateException("not 3 adj.");
+    for (int i = 0;; i++) if (adjEdges[i] == edgeInx[0]) break;
+    for (int i = 0;; i++) if (adjEdges[i] == edgeInx[5]) break;
+    for (int i = 0;; i++) if (adjEdges[i] == edgeInx[2]) break;
+    adjEdges = root.getAdjacentEdgeIndicesArray
+      (nodeInx[4], true, true, true);
+    if (adjEdges.length != 0) throw new IllegalStateException("not 0 adj.");
+    adjEdges = root.getAdjacentEdgeIndicesArray
+      (nodeInx[2], true, false, true);
+    if (adjEdges.length != 3) throw new IllegalStateException("not 3 adj.");
+    for (int i = 0;; i++) if (adjEdges[i] == edgeInx[1]) break;
+    for (int i = 0;; i++) if (adjEdges[i] == edgeInx[2]) break;
+    for (int i = 0;; i++) if (adjEdges[i] == edgeInx[3]) break;
+    adjEdges = root.getAdjacentEdgeIndicesArray
+      (nodeInx[2], true, true, true);
+    if (adjEdges.length != 4) throw new IllegalStateException("not 4 adj.");
+    for (int i = 0;; i++) if (adjEdges[i] == edgeInx[6]) break;
+    adjEdges = root.getAdjacentEdgeIndicesArray
+      (nodeInx[1], true, false, false);
+    if (adjEdges.length != 2) throw new IllegalStateException("not 2 adj.");
+    for (int i = 0;; i++) if (adjEdges[i] == edgeInx[1]) break;
+    for (int i = 0;; i++) if (adjEdges[i] == edgeInx[4]) break;
+    adjEdges = root.getAdjacentEdgeIndicesArray
+      (nodeInx[1], false, true, true);
+    if (adjEdges.length != 2) throw new IllegalStateException("not 2 adj.");
+    for (int i = 0;; i++) if (adjEdges[i] == edgeInx[0]) break;
+    for (int i = 0;; i++) if (adjEdges[i] == edgeInx[5]) break;
+    adjEdges = root.getAdjacentEdgeIndicesArray
+      (nodeInx[3], true, true, false);
+    if (adjEdges.length != 0) throw new IllegalStateException("not 0 adj.");
   }
 
 }
