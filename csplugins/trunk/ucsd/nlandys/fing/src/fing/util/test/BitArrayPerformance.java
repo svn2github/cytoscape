@@ -130,7 +130,7 @@ public class BitArrayPerformance
         _THE_BIT_ARRAY_.set(elements[i]); }
     if (_THE_HEAP_.size() != output.length)
       throw new IllegalStateException("output array is incorrect size");
-    _THE_HEAP_.copyInto(output);
+    _THE_HEAP_.copyInto(output, 0);
   }
 
 }
