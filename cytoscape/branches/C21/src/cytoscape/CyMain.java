@@ -131,27 +131,24 @@ public class CyMain implements WindowListener {
     Cytoscape.getDesktop();
  
     // Load all requested networks
-    String geometryFilename = config.getGeometryFilename();
-    String interactionsFilename = config.getInteractionsFilename();
-    
-
-    if ( geometryFilename != null ) {
-      CyNetwork network = Cytoscape.createNetwork( geometryFilename,
-                               Cytoscape.FILE_GML,
-                               false,
-                               null,
-                               null );
-      //Cytoscape.getLastGraphReaderForDoingLayout().layout( Cytoscape.getCurrentNetworkView() );
+    Iterator gi = config.getGeometryFilenames().iterator();
+    Iterator ii = config.getInteractionsFilenames().iterator();
+    while ( gi.hasNext() ) {
+      CyNetwork network = Cytoscape.createNetwork( (String)gi.next(),
+                                                   Cytoscape.FILE_GML,
+                                                   false,
+                                                   null,
+                                                   null );
       network.putClientData( "GML", Cytoscape.getLastGraphReaderForDoingLayout() );
     }
-
-    if ( interactionsFilename != null ) {
-      Cytoscape.createNetwork( interactionsFilename,
+    while ( ii.hasNext() ) {
+      Cytoscape.createNetwork( (String)ii.next(),
                                Cytoscape.FILE_SIF,
                                canonicalize,
                                bioDataServer,
                                defaultSpecies );
     }
+
     if ( splashScreen != null )
       splashScreen.advance(80);
 

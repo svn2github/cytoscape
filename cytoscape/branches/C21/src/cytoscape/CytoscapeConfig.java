@@ -22,11 +22,11 @@ public class CytoscapeConfig {
   protected boolean helpRequested = false;
   protected boolean inputsError = false;
   protected boolean displayVersion = false;
-  protected String geometryFilename = null;
+  protected List geometryFilenames = null;
   protected String bioDataDirectory = null;
   protected String expressionFilename = null;
   protected String projectFilename = null;
-  protected String interactionsFilename = null;
+  protected List interactionsFilenames = null;
   protected Vector nodeAttributeFilenames = new Vector ();
   protected Vector edgeAttributeFilenames = new Vector ();
   protected String defaultSpeciesName = null;
@@ -89,15 +89,19 @@ public class CytoscapeConfig {
   /**
    * @return the given location of a passed GML file
    */
-  public String getGeometryFilename () {
-    return geometryFilename;
+  public List getGeometryFilenames () {
+    if ( geometryFilenames == null )
+      geometryFilenames = new ArrayList(0);
+    return geometryFilenames;
   }
 
   /**
    * @return the given location of a passed SIF file
    */
-  public String getInteractionsFilename () {
-    return interactionsFilename;
+  public List getInteractionsFilenames () {
+    if ( interactionsFilenames == null )
+      interactionsFilenames = new ArrayList(0);
+    return interactionsFilenames;
   }
 
   /**
@@ -181,6 +185,19 @@ public class CytoscapeConfig {
     return false;
   }
  
+
+  public void addGeometryFilename ( String filename ) {
+    if ( geometryFilenames == null )
+      geometryFilenames = new ArrayList();
+    geometryFilenames.add( filename );
+  }
+
+  public void addInteractionsFilename ( String filename ) {
+    if ( interactionsFilenames == null )
+      interactionsFilenames = new ArrayList();
+    interactionsFilenames.add( filename );
+  }
+
   /**
    * Add the given node attributes filename (as per opened in gui).
    *
@@ -212,11 +229,11 @@ public class CytoscapeConfig {
     for (int e=0; e < edgeAttributeFiles.length; e++)
       allFileNames.add (edgeAttributeFiles [e]);
 
-    if (geometryFilename != null)
-      allFileNames.add (geometryFilename);
+    if (geometryFilenames != null)
+      allFileNames.addAll( geometryFilenames );
 
-    if (interactionsFilename != null)
-      allFileNames.add (interactionsFilename);
+    if (interactionsFilenames != null)
+      allFileNames.addAll( interactionsFilenames );
 
     if (expressionFilename != null)
       allFileNames.add (expressionFilename);
@@ -437,40 +454,40 @@ public class CytoscapeConfig {
     g.setOpterr(false); // We'll do our own error handling
 
     int c;
-    while ((c = g.getopt ()) != -1) {
+    while ( ( c = g.getopt() ) != -1 ) {
       switch (c) {
       case 't':
         viewType = g.getOptarg();
         break;
       case 'n':
-        nodeAttributeFilenames.add (g.getOptarg ());
+        nodeAttributeFilenames.add ( g.getOptarg() );
         break;
       case 'j':
-        edgeAttributeFilenames.add (g.getOptarg ());
+        edgeAttributeFilenames.add ( g.getOptarg () );
         break;
       case 'g':
-        geometryFilename = g.getOptarg ();
+        addGeometryFilename( g.getOptarg() );
         break;
       case 'b':
-        bioDataDirectory = g.getOptarg ();
+        bioDataDirectory = g.getOptarg();
         break;
       case 'i':
-        interactionsFilename = g.getOptarg ();
+        addInteractionsFilename( g.getOptarg() );
         break;
       case 'l':
-        defaultLayoutStrategy = g.getOptarg ();
+        defaultLayoutStrategy = g.getOptarg();
         break;
       case 'e':
-        expressionFilename = g.getOptarg ();
+        expressionFilename = g.getOptarg();
         break;
       case 'h':
         helpRequested = true;
         break;
       case 'p':
-        projectFilename = g.getOptarg ();
+        projectFilename = g.getOptarg();
         break;
       case 's':
-        defaultSpeciesName = g.getOptarg ();
+        defaultSpeciesName = g.getOptarg();
         break;
       case 'x':
         copyExpToAttribs = false;
@@ -480,7 +497,7 @@ public class CytoscapeConfig {
         break;
       case 'y':
         //y-files or giny switch
-        graphLibrary = g.getOptarg ();
+        graphLibrary = g.getOptarg();
         if (graphLibrary != "y-files")
           yfiles = false;
         break;
@@ -594,18 +611,19 @@ public class CytoscapeConfig {
     String [] otherArgs = parseProjectFileText (lines, "arg");
     String [] graphMode = parseProjectFileText ( lines, "graphMode");
 
-    if (sifFiles.length >= 1) {
-      if (readingFromJar)
-        interactionsFilename = sifFiles [0];
-      else
-        interactionsFilename = absolutizeFilename (projectFileDirectoryAbsolute, sifFiles [0]);
+
+    for ( int i = 0 ; i < sifFiles.length; ++i ) {
+      if ( readingFromJar ) 
+        addInteractionsFilename( sifFiles[i] );
+      else 
+        addInteractionsFilename( absolutizeFilename( projectFileDirectoryAbsolute, sifFiles[i] ) );
     }
 
-    if (gmlFiles.length >= 1) {
-      if (readingFromJar)
-        geometryFilename = gmlFiles [0];
-      else
-        geometryFilename = absolutizeFilename (projectFileDirectoryAbsolute, gmlFiles [0]);
+    for ( int i = 0; i < gmlFiles.length; ++i ) {
+      if ( readingFromJar )
+        addGeometryFilename( gmlFiles[i] );
+      else 
+        addGeometryFilename( absolutizeFilename( projectFileDirectoryAbsolute, gmlFiles[i] ) );
     }
 
     if (exprFiles.length >= 1) {
@@ -731,11 +749,12 @@ public class CytoscapeConfig {
   {
     boolean legal = true;
   
-    // make sure there is just one source for the graph
-    if ((geometryFilename != null) && (interactionsFilename != null)) {
-      errorMessages.append (" -  geometry & interactions both specify a graph: use only one\n");
-      legal = false;
-    }
+    // multiple networks now supported
+    //   // make sure there is just one source for the graph
+    //     if ( (geometryFilename != null) && (interactionsFilename != null)) {
+    //  errorMessages.append (" -  geometry & interactions both specify a graph: use only one\n");
+    //       legal = false;
+    //     }
 
     boolean illegalLayoutSelected = true;
     for (int i=0; i < layoutStrategies.length; i++) {
@@ -793,8 +812,8 @@ public class CytoscapeConfig {
   {
     StringBuffer sb = new StringBuffer ();
     sb.append ("---------- requested options:\n");
-    sb.append ("            geometry file: " + geometryFilename + "\n");
-    sb.append ("        interactions file: " + interactionsFilename + "\n");
+    sb.append ("            geometry files: " + geometryFilenames + "\n");
+    sb.append ("        interactions files: " + interactionsFilenames + "\n");
     sb.append ("          expression file: " + expressionFilename + "\n");
     sb.append ("         bioDataDirectory: " + bioDataDirectory + "\n");
     sb.append ("       defaultSpeciesName: " + defaultSpeciesName + "\n");

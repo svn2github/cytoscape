@@ -25,7 +25,7 @@ public abstract class Cytoscape {
   
   public static String NETWORK_CREATED = "NETWORK_CREATED";
   public static String ATTRIBUTES_ADDED = "ATTRIBUTES_ADDED";
- 
+  public static String NETWORK_DESTROYED = "NETWORK_DESTROYED";
 
   /**
    * When creating a network, use one of the standard suffixes
@@ -106,6 +106,14 @@ public abstract class Cytoscape {
   // Root Graph Methods
   //--------------------//
 
+  /**
+   * Bound events are:
+   * <ol>
+   * <li>NETWORK_CREATED
+   * <li>NETWORK_DESTROYED
+   * <li>ATTRIBUTES_ADDED
+   * </ol>
+   */
   public static SwingPropertyChangeSupport getSwingPropertyChangeSupport () {
     return pcs;
   }
@@ -142,6 +150,9 @@ public abstract class Cytoscape {
     }
 
     getRootGraph().removeNodes( getRootGraph().getNodeIndicesArray() );
+    nodeData = new GraphObjAttributes();
+    edgeData = new GraphObjAttributes();
+
   }
 
   public static CyNode getCyNode ( String alias ) {
@@ -302,7 +313,7 @@ public abstract class Cytoscape {
   /**
    * @deprecated
    */
-  public static void setCurrentNetwork ( String id) {
+  public static void setCurrentNetwork ( String id ) {
     if ( getNetworkMap().containsKey( id ) )
       currentNetworkID = id;
 
@@ -312,10 +323,14 @@ public abstract class Cytoscape {
 
   /**
    * @deprecated
+   * @return true if there is network view, false if not
    */
-  public static void setCurrentNetworkView ( String id) {
-    if ( getNetworkViewMap().containsKey( id ) )
+  public static boolean setCurrentNetworkView ( String id ) {
+    if ( getNetworkViewMap().containsKey( id ) ) {
       currentNetworkViewID = id;
+      return true;
+    }
+    return false;
   }
 
 
@@ -686,12 +701,13 @@ public abstract class Cytoscape {
                     species);
 	
     //load expression data
-    ExpressionData expData = null;
-    if (project.getExpressionFilename() != null) {
-	    expData = new ExpressionData( project.getExpressionFilename() );
-	    network.setExpressionData(expData);
-    }
-	
+    //ExpressionData expData = null;
+    //if (project.getExpressionFilename() != null) {
+	  //  expData = new ExpressionData( project.getExpressionFilename() );
+	  //  network.setExpressionData(expData);
+    //}
+    loadExpressionData( project.getExpressionFilename(), true );
+
     return network;
   }
 

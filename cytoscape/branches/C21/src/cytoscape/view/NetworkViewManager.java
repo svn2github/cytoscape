@@ -152,7 +152,7 @@ public class NetworkViewManager
 
     String network_id = ( String )componentMap.get( e.getWindow() );
    
-    System.out.println( " Window Gained Focus: "+ network_id );
+    // System.out.println( " Window Gained Focus: "+ network_id );
  
     if ( network_id == null ) {
       return;

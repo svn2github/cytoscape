@@ -98,8 +98,8 @@ public class CytoscapeConfigTest extends TestCase {
         CytoscapeConfig config = new CytoscapeConfig(args);
 
         assertTrue(config.getBioDataDirectory().equals(bioDataDirectory));
-        assertTrue(config.getGeometryFilename().equals(geometryFilename));
-        assertTrue(config.getInteractionsFilename().equals(interactionsFilename));
+        assertTrue(config.getGeometryFilenames().get(0).equals(geometryFilename));
+        assertTrue(config.getInteractionsFilenames().get(0).equals(interactionsFilename));
         assertTrue(config.getExpressionFilename().equals(expressionFilename));
         assertTrue(config.getWhetherToCopyExpToAttribs() == false);
 
@@ -165,8 +165,8 @@ public class CytoscapeConfigTest extends TestCase {
         CytoscapeConfig config = new CytoscapeConfig(args);
 
         assertTrue(config.getProjectFilename().equals(projectFilename));
-        assertTrue(config.getGeometryFilename().equals(dir + "/galFiltered.gml"));
-        assertTrue(config.getInteractionsFilename().equals(dir + "/galFiltered.sif"));
+        assertTrue(config.getGeometryFilenames().get(0).equals(dir + "/galFiltered.gml"));
+        assertTrue(config.getInteractionsFilenames().get(0).equals(dir + "/galFiltered.sif"));
 
         //assertTrue (config.getExpressionFilename().equals (expressionFilename));
 
@@ -205,9 +205,9 @@ public class CytoscapeConfigTest extends TestCase {
 
         CytoscapeConfig config = new CytoscapeConfig(args);
 
-        assertTrue(config.getProjectFilename().equals(projectFilename));
-        assertTrue(config.getGeometryFilename().equals(dir + "/galFiltered.gml"));
-        assertTrue(config.getInteractionsFilename() == null);
+        assertTrue( config.getProjectFilename().equals(projectFilename) );
+        assertTrue( config.getGeometryFilenames().get(0).equals(dir + "/galFiltered.gml") );
+        assertTrue( config.getInteractionsFilenames().size() == 0 );
 
         //assertTrue (config.getExpressionFilename().equals (expressionFilename));
 
@@ -246,8 +246,8 @@ public class CytoscapeConfigTest extends TestCase {
 
         CytoscapeConfig config = new CytoscapeConfig(args);
         assertTrue(config.getBioDataDirectory() == null);
-        assertTrue(config.getGeometryFilename() == null);
-        assertTrue(config.getInteractionsFilename() == null);
+        assertTrue( config.getGeometryFilenames().size() == 0 );
+        assertTrue( config.getInteractionsFilenames().size() == 0 );
         assertTrue(config.getExpressionFilename() == null);
         assertTrue(config.getAllDataFileNames().length == 0);
         assertTrue(config.getDefaultSpeciesName() == null);
@@ -258,24 +258,24 @@ public class CytoscapeConfigTest extends TestCase {
 
     } // testForExpectedNullValues
 
-    /**
-     *  ensure that multiple sources of the input graph (e.g., a gml file, and
-     *  an interactions file) are detected and reported as an error
-     */
-    public void testLegalArgs0() throws Exception {
-        AllTests.standardOut ("testLegalArgs0");
+  //   /**
+//      *  ensure that multiple sources of the input graph (e.g., a gml file, and
+//      *  an interactions file) are detected and reported as an error
+//      */
+//     public void testLegalArgs0() throws Exception {
+//         AllTests.standardOut ("testLegalArgs0");
 
-        String geometryFilename = "../data/galFiltered.gml";
-        String interactionsFilename = "../data/tideker0/yeastSmall.intr";
+//         String geometryFilename = "../data/galFiltered.gml";
+//         String interactionsFilename = "../data/tideker0/yeastSmall.intr";
 
-        String[] args = {"-g", geometryFilename,
-                         "-i", interactionsFilename};
+//         String[] args = {"-g", geometryFilename,
+//                          "-i", interactionsFilename};
 
-        CytoscapeConfig config = new CytoscapeConfig(args);
+//         CytoscapeConfig config = new CytoscapeConfig(args);
 
-        assertTrue(config.inputsError());
+//         assertTrue(config.inputsError());
 
-    } // testLegalArgs0
+//     } // testLegalArgs0
 
     /**
      * make sure that system properties are read, and that user props can
