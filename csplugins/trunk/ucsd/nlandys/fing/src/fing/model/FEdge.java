@@ -9,32 +9,27 @@ class FEdge implements Edge
 {
 
   // Variables specific to public get/set methods.
-  Node m_sourceNode = null;
-  Node m_targetNode = null;
-  boolean m_directed = false;
   RootGraph m_rootGraph = null;
   int m_rootGraphIndex = 0;
   String m_identifier = null;
-
-  // Variables for internal data structure.
-  FEdge m_nextInEdge = null;
-  FEdge m_nextOutEdge = null;
 
   FEdge() {}
 
   public Node getSource()
   {
-    return m_sourceNode;
+    return m_rootGraph.getNode
+      (m_rootGraph.getEdgeSourceIndex(m_rootGraphIndex));
   }
 
   public Node getTarget()
   {
-    return m_targetNode;
+    return m_rootGraph.getNode
+      (m_rootGraph.getEdgeTargetIndex(m_rootGraphIndex));
   }
 
   public boolean isDirected()
   {
-    return m_directed;
+    return m_rootGraph.isEdgeDirected(m_rootGraphIndex);
   }
 
   public RootGraph getRootGraph()
