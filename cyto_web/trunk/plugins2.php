@@ -44,25 +44,27 @@
 				<td width="20%" valign="top">
 					<b>cPath PlugIn</b> <font size="-1"> 
 						<br>
-						Version: 1 Beta 
+						Version: 2 Beta 
 						<br>
-						Release Date: July 13, 2004</font> 
+						Release Date: November 9, 2004</font> 
 				</td>
 				<td width="60%" valign="top">
-					The cPath PlugIn enables Cytoscape users to query, retrieve and visualize interactions retrieved from the <a href="http://cbio.mskcc.org/cpath">cPath database</a>. 
+					The cPath PlugIn enables Cytoscape users to query, retrieve and visualize interactions retrieved from the <a href="http://cbio.mskcc.org/cpath">cPath database</a>.  For a complete list of new features / bug fixes in the Beta 2 release, 
+please refer to the <a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/README.txt">Release Notes</a>.
+
 					<p>
 						This product includes software developed by the Apache Software Foundation (<a href="http://www.apache.org/">http://www.apache.org</a>). 
 					</p>
 					<p>
-						Released by: Sander Group, <a href="http://www.cbio.mskcc.org/">Computational Biology Center</a>, Memorial Sloan Kettering Cancer Center. 
+						Released by: Sander Group, <a href="http://www.cbio.mskcc.org/">Computational Biology Center</a>, Memorial Sloan-Kettering Cancer Center. 
 					</p>
 				</td>
 				<td width="20%" valign="top">
-					[<a href="http://www.cbio.mskcc.org/cytoscape/cpath/README.txt">Release Notes</a>] 
+					[<a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/README.txt">Release Notes</a>] 
 					<br>
-					[<a href="http://www.cbio.mskcc.org/cytoscape/cpath/cpath.tar.gz">Download .tar.gz</a>] 
+					[<a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/cpath-beta2.tar.gz">Download .tar.gz</a>] 
 					<br>
-					[<a href="http://www.cbio.mskcc.org/cytoscape/cpath/cpath.zip">Download .zip</a>] 
+					[<a href="http://www.cbio.mskcc.org/cytoscape/cpath/beta2/cpath-beta2.zip">Download .zip</a>] 
 				</td>
 			</tr>
 			<tr>
@@ -81,13 +83,85 @@
 				<td width="60%" valign="top">
 					The MCODE Cytoscape PlugIn finds clusters (highly interconnected regions) in any network loaded into Cytoscape. Depending on the type of network, clusters may mean different things. For instance, clusters in a protein-protein interaction network have been shown to be protein complexes and parts of pathways. Clusters in a protein similarity network represent protein families. 
 					<p>
-						Released by: Gary Bader, Sander Group, <a href="http://www.cbio.mskcc.org/">Computational Biology Center</a>, Memorial Sloan Kettering Cancer Center. 
+						Released by: Gary Bader, Sander Group, <a href="http://www.cbio.mskcc.org/">Computational Biology Center</a>, Memorial Sloan-Kettering Cancer Center. 
 					</p>
 				</td>
 				<td width="20%" valign="top">
 					[<a href="http://www.cbio.mskcc.org/~bader/software/mcode/index.html">MCODE PlugIn Web Site</a>] 
 					<br>
 					[<a href="http://www.cbio.mskcc.org/~bader/software/mcode/mcode_v1.zip">Download .zip</a>] 
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3">
+					<hr>
+				</td>
+			</tr>
+			<tr>
+				<td width="20%" valign="top">
+					<b>PSI-MI Import/Export PlugIn</b><font size="-1"> 
+						<br>
+						Version: 2 
+						<br>
+						Release Date: November 8, 2004</font> 
+				</td>
+				<td width="60%" valign="top">
+					<p>
+					This plugin enables Cytoscape to import/export to the 
+					<A HREF="http://psidev.sourceforge.net/">Proteomics 	
+					Standards Initiative Molecular Interaction (PSI-MI)</A> XML Format.  
+					PSI-MI is a XML format used to represent and exchange protein-protein
+					interaction data.
+					
+					<P>For an earlier version of this PlugIn, which
+					works in Cytoscape 1.1, refer to the Data Services PlugIn
+					on the <A HREF="plugins1.php">Cytoscape 1.1 PlugIns</A> page.
+					<p>
+						Released by: Sander Group, <a href="http://www.cbio.mskcc.org/">Computational Biology Center</a>, Memorial Sloan-Kettering Cancer Center. 
+					</p>
+				</td>
+				<td width="20%" valign="top">
+					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/psi/version2/README.txt">Release Notes</a>] 
+					<br>
+					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/psi/version2/psi-2.tar.gz">Download .tar.gz</a>] 
+<br>
+					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/psi/version2/psi-2.zip">Download .zip</a>] 
+
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3">
+					<hr>
+				</td>
+			</tr>
+			<tr>
+				<td width="20%" valign="top">
+					<b>SOFT Import PlugIn</b><font size="-1"> 
+						<br>
+						Version: 2 
+						<br>
+						Release Date: November 8, 2004</font> 
+				</td>
+				<td width="60%" valign="top">
+					<p>
+					This plugin enables Cytoscape to import data formatted in the 
+					<A HREF="http://www.ncbi.nlm.nih.gov/projects/geo/info/soft2.html">
+					GEO Simple Omnibus Format in Text (SOFT)</A>.  SOFT is a text file 
+					format 	used to represent and exchange Gene Expression Data.  
+					<P>For an earlier version of this PlugIn, which
+					works in Cytoscape 1.1, refer to the Data Services PlugIn
+					on the <A HREF="plugins1.php">Cytoscape 1.1 PlugIns</A> page.
+					<p>
+						Released by: Sander Group, <a href="http://www.cbio.mskcc.org/">Computational Biology Center</a>, Memorial Sloan-Kettering Cancer Center. 
+					</p>
+				</td>
+				<td width="20%" valign="top">
+					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/soft/version2/README.txt">Release Notes</a>] 
+					<br>
+					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/soft/version2/soft-2.tar.gz">Download .tar.gz</a>] 
+<br>
+					[<a href="http://www.cbio.mskcc.org/cytoscape/ds/soft/version2/soft-2.zip">Download .zip</a>] 
+
 				</td>
 			</tr>
 		</tbody>
@@ -108,11 +182,11 @@
 						Release Date: August 2, 2004</font> 
 				</td>
 				<td width="60%" valign="top">
-					This PlugIn is a testing ground for what will likely later become seperate plugins. Any code should be considered highly experimental and full of bugs. However, bugs that are reported will likely be fixed, though perhaps not in a timely fashion. Currently this plugin provides the following:
+					This PlugIn is a testing ground for what will likely later become separate plugins. Any code should be considered highly experimental and full of bugs. However, bugs that are reported will likely be fixed, though perhaps not in a timely fashion. Currently this plugin provides the following:
 					<br>
 					<ul>
 						<li>
-							"destroy" -- tests removal of a netwwork and all nodes and edges not referenced by any other networks.
+							"destroy" -- tests removal of a network and all nodes and edges not referenced by any other networks.
 						</li>
 						<li>
 							"Group" -- creates a box around a group of nodes that will always contain those nodes. Operates on the selected nodes
@@ -177,7 +251,7 @@
 						<li>view x-y plots of selected rows</li>
 						<li>find other rows (other genes) with correlated profiles</li>
 						<li>selectively enable or disable columns of data</li>
-						<li>get selections from, or propogate selections to, the Cytoscape network</li>
+						<li>get selections from, or propagate selections to, the Cytoscape network</li>
 						<li>animate the Cytoscape network based upon the experimental data, mapping (for instance) log10 ratios to node color, and statistical significance to node size</li>
 						<li>for the skilled user: use the python console, and write scripts to create custom operations on, or selections from, the data</li>
 					</ol>
@@ -212,7 +286,7 @@
 					Dynamically retrieve remote biological information for selected nodes in the current network.
 					<br>
 					<br>
-					This plugin fetches and adds biological information from a remote server/database and adds them as additional edges or attributes to the current network. Currently implemented data include: protein/gene synonyms, orthologs, sequences (gene/protein/upstream) and interactions/associations. This information is available to varying degrees for several species including yeast, human, mouse, fruitly, and worm. Some of this information is integrated, for example, retrieved synonym information may be used to expand the possible interactions that are retrieved, and retrieved ortholog information may be used to fetch interlogs for the species listed above. Available interaction data sets include <a href="http://www.blueprint.org/bind/bind.php">BIND</a>, <a href="http://dip.doe-mbi.ucla.edu">DIP</a>, <a href="http://hprd.org">HPRD</a>, <a href="http://www.blueprint.org/products/prebind/prebind.html">PreBIND</a>, and several others. 
+					This plugin fetches and adds biological information from a remote server/database and adds them as additional edges or attributes to the current network. Currently implemented data include: protein/gene synonyms, orthologs, sequences (gene/protein/upstream) and interactions/associations. This information is available to varying degrees for several species including yeast, human, mouse, fruit fly, and worm. Some of this information is integrated, for example, retrieved synonym information may be used to expand the possible interactions that are retrieved, and retrieved ortholog information may be used to fetch interlogs for the species listed above. Available interaction data sets include <a href="http://www.blueprint.org/bind/bind.php">BIND</a>, <a href="http://dip.doe-mbi.ucla.edu">DIP</a>, <a href="http://hprd.org">HPRD</a>, <a href="http://www.blueprint.org/products/prebind/prebind.html">PreBIND</a>, and several others. 
 					<br>
 					<br>
 					Additional notes: 
