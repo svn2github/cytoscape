@@ -17,6 +17,8 @@ import giny.model.RootGraphChangeEvent;
 import cytoscape.AbstractPlugin;
 import cytoscape.GraphObjAttributes;
 import cytoscape.data.CyNetwork;
+import cytoscape.util.GinyFactory;
+import cytoscape.data.Semantics;
 import cytoscape.view.CyWindow;
 import cytoscape.view.GraphViewController;
 /**
@@ -85,13 +87,13 @@ class DualLayoutTask extends Thread{
     	CyWindow cyWindow;
 	private static String TITLE1 = "Split Graph";
 	private static String SPLIT_STRING = "|";
-	private double  springLength = 30;
-  	private double  stiffness = 30;
-  	//private double  electricalRepulsion = 200;
-	private double electricalRepulsion = 10000;
-  	private double	homologyLength = 10;
-  	double increment  = .5;
-
+	private static double SMALL_DISTANCE = 0.001;
+  	private static double CUTOFF = 0.5;
+  	private double stiffness = 10;
+	
+	//private double  electricalRepulsion = 200;
+	private double electricalRepulsion = 10000000;
+	double increment = .02;
 
 
 
@@ -115,123 +117,101 @@ class DualLayoutTask extends Thread{
 	
 
 		//first make a new network in which to put the result 
-		CyWindow newWindow = new CyWindow(cyWindow.getCytoscapeObj(),new CyNetwork(),TITLE1);
-		//CyWindow newWindow = cyWindow;
-		RootGraph newRoot = newWindow.getNetwork().getRootGraph();
-
+		//and GraphObjAttributes to put the attributes associated
+		//with the nodes
+		RootGraph newRoot = GinyFactory.createRootGraph();
+		GraphObjAttributes newNodeAttributes = new GraphObjAttributes();
+		GraphObjAttributes newEdgeAttributes = new GraphObjAttributes();
 	
-		//turn off the graph listener	
-		//GraphViewController newController = newWindow.getGraphViewController();	
-		//newController.stopListening();
-		//newWindow.showWindow();
-		//Map from the name of a node to the node itself
+		//These are maps from the name of a node to the node itself
 		//don't use graphObjAttributes here because
 		//I want to keep the left nodes separated from the right
 		//nodes
 		HashMap left_name2node = new HashMap();
 		HashMap right_name2node = new HashMap();
-		//the view of a node a vector of node views that that node
-		//has an established homologous relationship with
-		HashMap view2ViewVec = new HashMap();
+		
+		//this hasmap maps from a node to a vector of nodes which have an established
+		//homology with that node
+		HashMap node2NodeVec = new HashMap();
+		
 		GraphObjAttributes nodeAttributes = network.getNodeAttributes();
 		Iterator compatNodeIt = graphPerspective.nodesList().iterator();
-		GraphView newView = newWindow.getView();
-		GraphPerspective newPerspective = newView.getGraphPerspective();
-
 		while(compatNodeIt.hasNext()){
 			Node current = (Node)compatNodeIt.next();
 			String name = nodeAttributes.getCanonicalName(current);
 			String [] names = split(name,SPLIT_STRING);
 			Node leftNode = (Node)left_name2node.get(names[0]);
 			if(leftNode == null){
-				int nodeint = newRoot.createNode();
-				newPerspective.restoreNode(nodeint);
-				leftNode = newPerspective.getNode(newPerspective.getNodeIndex(nodeint));
+				//int nodeint = newRoot.createNode();
+				//newPerspective.restoreNode(nodeint);
+				//leftNode = newPerspective.getNode(newPerspective.getNodeIndex(nodeint));
+				leftNode = newRoot.getNode(newRoot.createNode());
+				leftNode.setIdentifier(names[0]);
+				newNodeAttributes.addNameMapping(names[0],leftNode);	
 				left_name2node.put(names[0],leftNode);
 			}
 
 			Node rightNode = (Node)right_name2node.get(names[1]);
 			if(rightNode == null){
-				int nodeint = newRoot.createNode();
-				newPerspective.restoreNode(nodeint);
-				rightNode = newPerspective.getNode(newPerspective.getNodeIndex(nodeint));
+				//int nodeint = newRoot.createNode();
+				//newPerspective.restoreNode(nodeint);
+				//rightNode = newPerspective.getNode(newPerspective.getNodeIndex(nodeint));
+				rightNode = newRoot.getNode(newRoot.createNode());
+				rightNode.setIdentifier(names[1]);
+				newNodeAttributes.addNameMapping(names[1],rightNode);
 				right_name2node.put(names[1],rightNode);
 			}
 
 			//have to remember the homologies here, map from
-			//a node view to a vector of associated node views
-		
-			NodeView leftView = newView.getNodeView(leftNode);
-			NodeView rightView = newView.getNodeView(rightNode);
-			if(view2ViewVec.get(leftView) == null){
-				view2ViewVec.put(leftView, new Vector());
+			//a node to a vector of associated nodes, will probably
+			//hold off on adding the edges until after everything is layed
+			//out to keep it simple
+			Vector homologousNodes;
+			if(node2NodeVec.get(leftNode) == null){
+				node2NodeVec.put(leftNode,new Vector());
 			}
-			Vector temp = (Vector)view2ViewVec.get(leftView);
-			temp.add(rightView);
+			homologousNodes = (Vector)node2NodeVec.get(leftNode);
+			homologousNodes.add(rightNode);
 
-			
-			if(view2ViewVec.get(rightView) == null){
-				view2ViewVec.put(rightView, new Vector());
+			if(node2NodeVec.get(rightNode) == null){
+				node2NodeVec.put(rightNode,new Vector());
 			}
-			temp = (Vector)view2ViewVec.get(rightView);
-			temp.add(leftView);
-			
+			homologousNodes = (Vector)node2NodeVec.get(rightNode);
+			homologousNodes.add(leftNode);
 		}
 
+
+		//for each edge in the compatability graph, split it into two edges
+		//and add each of these edges to the new root graph 
 		Iterator compatEdgeIt = graphPerspective.edgesList().iterator();
 		while(compatEdgeIt.hasNext()){
 			Edge current = (Edge)compatEdgeIt.next();
-			//get the end points for the edge and add the appropriate
-			//edges into the other graph
+			//figure out the names of the four end points for the two edges
 			String [] sourceSplat = split(nodeAttributes.getCanonicalName(current.getSource()),SPLIT_STRING);
 			String [] targetSplat = split(nodeAttributes.getCanonicalName(current.getTarget()),SPLIT_STRING);
 			
-			newRoot.createEdge((Node)left_name2node.get(sourceSplat[0]),(Node)left_name2node.get(targetSplat[0]),true);
-			newRoot.createEdge((Node)right_name2node.get(sourceSplat[1]),(Node)right_name2node.get(targetSplat[1]),true);
+			//create the new left edge and associate its attributes
+			Edge leftEdge = newRoot.getEdge(newRoot.createEdge((Node)left_name2node.get(sourceSplat[0]),(Node)left_name2node.get(targetSplat[0]),true));
+			String leftName = sourceSplat[0]+" (pp) "+targetSplat[0];
+			leftEdge.setIdentifier(leftName);
+			newEdgeAttributes.addNameMapping(leftName,leftEdge);
+			newEdgeAttributes.add("interaction",leftName,"pp");
 
+			//create the new right edge and associate its attributes
+			Edge rightEdge = newRoot.getEdge(newRoot.createEdge((Node)right_name2node.get(sourceSplat[1]),(Node)right_name2node.get(targetSplat[1]),true));
+			String rightName = sourceSplat[1]+" (pp) "+targetSplat[1];
+			rightEdge.setIdentifier(rightName);
+			newEdgeAttributes.addNameMapping(rightName,rightEdge);
+			newEdgeAttributes.add("interaction",rightName,"pp");
 		}
 
-		//all the stuff I've done hasn't actually been updated in the current graph perspective, I probably need to add them to my graphPerspective
-		//before I can run around and do things with the view
-		//first get a list of all nodes from the root graph
-		
-		//GraphPerspective newPerspective = newWindow.getView().getGraphPerspective();
-		//int [] nodeIndices = newRoot.getNodeIndicesArray();
-		//for(int i=0;i<nodeIndices.length;i++){
-		//	newPerspective.restoreNode(nodeIndices[i]);
-		//}
 
-		int [] edgeIndices = newRoot.getEdgeIndicesArray();
-		for(int i=0;i<edgeIndices.length;i++){
-			newPerspective.restoreEdge(edgeIndices[i]);
-		}
-		//now we also need to associate some canonical names here or it gets upset
-		//and calls everything null; acutally, it seems to get upset anyway, I give up
-		//on this for right now
-		//GraphObjAttributes newAttributes = newWindow.getNetwork().getNodeAttributes();
-		//Iterator nameIt = left_name2int.keySet().iterator();
-		//while(nameIt.hasNext()){
-		//	String name = (String)nameIt.next();
-		//	newAttributes.addNameMapping(name,newRoot.getNode(((Integer)left_name2int.get(name)).intValue()));
-		//}
-		//nameIt = right_name2int.keySet().iterator();
-		//while(nameIt.hasNext()){
-		//	String name = (String)nameIt.next();
-		//	newAttributes.addNameMapping(name,newRoot.getNode(((Integer)right_name2int.get(name)).intValue()));
-		//}
-		
-		
+		//now that the root graph has been created, put it into a window
+		CyWindow newWindow = new CyWindow(cyWindow.getCytoscapeObj(), new CyNetwork(newRoot,newNodeAttributes,newEdgeAttributes), "Split Graph");
+		GraphView newView = newWindow.getView();
 		
 
-		//have to make sure all the display stuff is initialized here
-		//so I have something to work with when it is being layed out
 
-		//newController.resumeListening();
-		//newWindow.showWindow();
-		//this is the amount the two graphs should be separated by, I should probably try to change
-		//this value dynamically so everything looks pretty.
-
-		//maybe move all the right nodes over by the offset to get things startedj?
 		Vector leftNodeViews = new Vector();
 		Iterator leftNodeIt = left_name2node.values().iterator();
 		while(leftNodeIt.hasNext()){
@@ -246,26 +226,22 @@ class DualLayoutTask extends Thread{
 
 		//initialize positions randomly
 		initializePositions(newView,leftNodeViews);
-		//initializePositions(newView,rightNodeViews);
-		for(int i=0;i<1000;i++){
-			System.out.println(""+i);
-			//(stupidly) calculate the offset
-			double offset = 0;
-			Iterator viewIt = leftNodeViews.iterator();
-			while(viewIt.hasNext()){
-				offset = Math.max(offset,((NodeView)viewIt.next()).getXPosition());
-			}
-			offset *=2;
-			//advancePositions(newView,rightNodeViews,view2ViewVec,false,offset);
-			advancePositions(newView,leftNodeViews,view2ViewVec,true,offset);
+		initializePositions(newView,rightNodeViews);
+		
+		double leftMovement = CUTOFF + 1;
+		double rightMovement = CUTOFF + 1;
+		double offset = 500;
+		newWindow.showWindow();
+		while(leftMovement > CUTOFF || rightMovement > CUTOFF){
+			//keep moving until there is not much movement going on
+			leftMovement = advancePositions(newView,rightNodeViews,node2NodeVec,false,offset);
+			rightMovement = advancePositions(newView,leftNodeViews,node2NodeVec,true,offset);
 		}	
-			Iterator nodeViewIt = newView.getNodeViewsIterator();
-			while(nodeViewIt.hasNext()){
-				((NodeView)nodeViewIt.next()).setNodePosition(true);
-			}
-
-			
-		newWindow.showWindow();			
+		//actually move all the nodes to their correct location
+		Iterator nodeViewIt = newView.getNodeViewsIterator();
+		while(nodeViewIt.hasNext()){
+			((NodeView)nodeViewIt.next()).setNodePosition(true);
+		}
 		network.endActivity(callerID);
    	}
 
@@ -276,26 +252,20 @@ class DualLayoutTask extends Thread{
 			NodeView v = (NodeView)viewIt.next();
 			v.setXPosition(500*rnd.nextDouble());
 			v.setYPosition(500*rnd.nextDouble());
-			System.out.println(""+graphView.getNodeDoubleProperty(v.getGraphPerspectiveIndex(),GraphView.NODE_X_POSITION));
-
 		}
 	      		
 	}
 
 	/**
-	 * Relaxation step. Moves all nodes a smidge.
+	 * Relaxation step. Moves all nodes a smidge. Returns the maximum amount a ndoe has moved.
 	 */
-  	public void advancePositions(GraphView graphView, Vector nodeViews,HashMap view2ViewVec, boolean left,double offset) {
-    		
+  	public double advancePositions(GraphView graphView, Vector nodeViews,HashMap node2NodeVec, boolean left,double offset) {
+    		double maxMovement = 0;	
 		for (Iterator iter = nodeViews.iterator();iter.hasNext();){
 			NodeView v = ( NodeView ) iter.next();
       			double xForce = 0;
       			double yForce = 0;
 
-      			double distance;
-      			double spring;
-      			double repulsion;
-			double homology;
       			double xSpring = 0;
       			double ySpring = 0;
       			double xRepulsion = 0;
@@ -303,13 +273,8 @@ class DualLayoutTask extends Thread{
 			double xHomology = 0;
 			double yHomology = 0;
 
-      			double adjacentDistance = 0;
-
-     			
       			double thisX = v.getXPosition();
       			double thisY = v.getYPosition();
-     		 	double adjX = thisX;
-      			double adjY = thisY;
 
 			//here we are going to calculate the offset to use in determining
 			//the spring force between homologous nodes
@@ -318,32 +283,39 @@ class DualLayoutTask extends Thread{
 			}
 
       			int[] adjacent_nodes;
-     			NodeView adjacent_node_view;
-      
       			// Get the spring force between all of its adjacent vertices.
       			adjacent_nodes = graphView.getGraphPerspective().neighborsArray( v.getGraphPerspectiveIndex() );
       			for( int i = 0; i < adjacent_nodes.length; ++i ) {
-        			adjacent_node_view = graphView.getNodeView( adjacent_nodes[i] );
+        			NodeView adjacent_node_view = graphView.getNodeView( adjacent_nodes[i] );
                
-	       			adjX = adjacent_node_view.getXPosition();
-           			adjY = adjacent_node_view.getYPosition(); 
-        			
-				distance = Point2D.distance( adjX, adjY, thisX, thisY );
-        			if( distance == 0 )
-          			distance = .0001;
-        
-        			//spring = this.stiffness * ( distance - this.springLength ) *
-        			//    (( thisX - adjX ) / ( distance ));
-        			spring = this.stiffness * Math.log( distance / this.springLength ) * (( thisX - adjX ) / ( distance ));
-        
-        			xSpring += spring;
-        
-        			//spring = this.stiffness * ( distance - this.springLength ) *
-        			//    (( thisY - adjY ) / ( distance ));
-        			spring = this.stiffness * Math.log( distance / this.springLength ) *
-          			(( thisY - adjY ) / ( distance ));
-        
-        			ySpring += spring;
+	       			double xdiff = adjacent_node_view.getXPosition() - thisX;
+        			double ydiff = adjacent_node_view.getYPosition() - thisY;	
+				
+				if(xdiff == 0){
+					xdiff = SMALL_DISTANCE;
+				}
+				if(ydiff == 0){
+					ydiff = SMALL_DISTANCE;
+				}
+
+				double distance = Point2D.distance( 0, 0, xdiff,ydiff );
+				double force = this.stiffness*distance;
+				//calculate the magnitude of the x component
+				double spring = force/Math.sqrt( ((ydiff*ydiff)/(xdiff*xdiff))+1);
+				//calculate the direction of the x component
+				if(xdiff < 0){
+					spring = -spring;
+				}
+				xSpring += spring;
+
+				//calculate the magnitude of the y component
+				spring = force/Math.sqrt(((xdiff*xdiff)/(ydiff*ydiff))+1);
+				//calculate the direction of the y component
+				if(ydiff < 0){
+					spring = -spring;
+				}
+				ySpring += spring;
+				
         
       			}
 
@@ -356,19 +328,28 @@ class DualLayoutTask extends Thread{
         			if( v == other_v )
           				continue;
         
-        			adjX = other_v.getXPosition();
-				adjY = other_v.getYPosition();
-        
-        			distance = Point2D.distance( adjX, adjY, thisX, thisY );
-        			if( distance == 0 ){
-          				distance = .0001;
+        			double xdiff = other_v.getXPosition()-thisX;
+				double ydiff = other_v.getYPosition()-thisY;
+        			if(xdiff == 0){
+					xdiff = SMALL_DISTANCE;
 				}
-        
-        			repulsion = ( this.electricalRepulsion / distance ) * (( thisX - adjX ) / ( distance ));
-        
+				if(ydiff == 0){
+					ydiff = SMALL_DISTANCE;
+				}
+
+        			double distance = Point2D.distance( 0,0, xdiff, ydiff );
+        			double force = this.electricalRepulsion/(distance*distance);
+				
+				double repulsion = force/Math.sqrt(((ydiff*ydiff)/(xdiff*xdiff))+1);
+				if(xdiff > 0){
+					repulsion = -repulsion;
+				}
         			xRepulsion += repulsion;
-        
-        			repulsion = ( this.electricalRepulsion / distance ) * (( thisY - adjY ) / ( distance ));
+       
+       				repulsion = force/Math.sqrt(((xdiff*xdiff)/(ydiff*ydiff))+1);
+				if(ydiff > 0){
+					repulsion = -repulsion;
+				}
         			yRepulsion += repulsion;
       			}
 
@@ -376,68 +357,62 @@ class DualLayoutTask extends Thread{
 			//Calculate the homology attraction force, here we calculate
 			//an attractive force between each node and all of the nodes it has 
 			//a homology with
-			/*for(Iterator ite = ((Vector)view2ViewVec.get(v)).iterator();ite.hasNext();){
-				NodeView other_v = (NodeView)ite.next();
+			if(!left){
+				for(Iterator ite = ((Vector)node2NodeVec.get(v.getNode())).iterator();ite.hasNext();){
+					NodeView other_v = graphView.getNodeView((Node)ite.next());
 				
-				adjX = other_v.getXPosition()+offset;
-        			adjY = other_v.getYPosition();
+					double xdiff = other_v.getXPosition()+offset-thisX;
+        				double ydiff = other_v.getYPosition()-thisY;
+					if(xdiff == 0){
+						xdiff = SMALL_DISTANCE;
+					}
+					if(ydiff == 0){
+						ydiff = SMALL_DISTANCE;
+					}
        				
-       				distance = Point2D.distance( adjX, adjY, thisX, thisY );
-        			if( distance == 0 )
-          			distance = .0001;
-        
-        			//spring = this.stiffness * ( distance - this.springLength ) *
-        			//    (( thisX - adjX ) / ( distance ));
-        			homology = this.stiffness * Math.log( distance / this.homologyLength ) * (( thisX - adjX ) / ( distance ));
-        
-        			xHomology += homology;
-        
-        			//spring = this.stiffness * ( distance - this.springLength ) *
-        			//    (( thisY - adjY ) / ( distance ));
-        			homology = this.stiffness * Math.log( distance / this.homologyLength ) * (( thisY - adjY ) / ( distance ));
-        
-        			yHomology += homology;
-
-			}*/
+       					double distance = Point2D.distance( 0,0, xdiff,ydiff );
+					double force = this.stiffness*distance;
+					
+					//calculate the magnitude of the xcomponent
+					double homology = force/Math.sqrt(((ydiff*ydiff)/(xdiff*xdiff))+1);
+					//calculate the direction of the x component
+					if(xdiff < 0){
+						homology = -homology;
+					}
+        				xHomology += homology;
+       
+       					//calculate the magnitude of the ycomponent
+					homology = force/Math.sqrt(((xdiff*xdiff)/(ydiff*ydiff))+1);
+					//calculate the direction of the y component
+					if(ydiff < 0){
+						homology = -homology;
+					}
+        				yHomology += homology;
+				}
+			}
 
 
       			// Combine the two to produce the total force exerted on the vertex.
-      			xForce = xSpring - xRepulsion + xHomology;
-      			yForce = ySpring - yRepulsion + yHomology;
+      			xForce = (xSpring + xRepulsion + xHomology);
+      			yForce = (ySpring + yRepulsion + yHomology);
 
-      			// Move the vertex in the direction of "the force" --- thinking of star wars :-)
-      			// by a small proportion
-      			double xadj = 0 - ( xForce * this.increment );
-      			double yadj = 0 - ( yForce * this.increment );
-
-      			double newX = thisX + adjX;
-      			double newY = thisY + adjY;
+      			// Move the vertex in the direction of the force 
+      			double xadj =  ( xForce * this.increment );
+      			double yadj =  ( yForce * this.increment );
+			maxMovement = Math.max(maxMovement,Point2D.distance(0,0,xadj,yadj));
+			
+      			double newX = thisX + xadj;
+      			double newY = thisY + yadj;
       
-      			// Ensure the vertex's position is never negative.
-      			if( newX >= 0 && newY >= 0 ) {
-				v.setXPosition(xadj);
-				v.setYPosition(yadj);
+			v.setXPosition(newX);
+			v.setYPosition(newY);
       
-    	  		} else if( newX < 0 && newY >= 0 ) {
-        			if( thisX > 0 ) {
-          				xadj = 0 - thisX;
-        			}  else { 
-          				xadj = 0;
-	      				v.setXPosition(xadj);
-					v.setYPosition(yadj);
-				}
-      			} else if( newY < 0 && newX >= 0 ) {
-        			if ( thisY > 0 ) {
-          				yadj = 0 - thisY;
-        			} else {
-          				yadj = 0;
-       	 			}
-				v.setXPosition(xadj);
-				v.setYPosition(yadj);
-      			}
 		}
+		return maxMovement;
 	}
 
+	//split the name of a node in the compatability graph into the names of
+	//the component nodes
 	private String [] split(String s,String split){
 		String [] result = new String [2];
 		int index = s.indexOf(split);
