@@ -71,13 +71,15 @@ public final class IntHash
    */
   public final int get(final int value)
   {
-    final int size = m_size;
+    int incr = 0;
     int index;
-    // The one thing about ths 'for' loop that I don't like is that we're
-    // calculating (1 + (value % (size - 1))) more than once potentially.
-    for (index = value % size;
+    for (index = value % m_size;
          m_arr[index] >= 0 && m_arr[index] != value;
-         index = (index + (1 + (value % (size - 1)))) % size) { }
+         index = (index + incr) % m_size) {
+      // Caching increment, which is an expensive operation, at the expense
+      // of having an if statement.  I don't want to compute the increment
+      // before this for loop in case we get an immediate hit.
+      if (incr == 0) { incr = 1 + (value % (m_size - 1)); } }
     return m_arr[index];
   }
 
