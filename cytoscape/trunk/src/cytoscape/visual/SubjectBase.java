@@ -44,7 +44,7 @@ public abstract class SubjectBase {
      * Notifies all listeners that have registered interest for
      * notification on this event type.
      */
-    protected void fireStateChanged() {
+    public void fireStateChanged() {
         // Process the listeners last to first, notifying
         // those that are interested in this event
         for (int i = this.observers.size() - 1; i >= 0; i--) {
