@@ -260,7 +260,7 @@
             ***********************************************
         </echo>
 
-        <jar destfile="${build.dir}/cytoscape.jar"
+        <jar destfile="${build.dir}/just-cytoscape.jar"
              manifest="${manifest.dir}/cytoscape.manifest">
             <fileset dir="${build.classes}"/>
         </jar>
@@ -304,7 +304,8 @@
             ---------------------------------------
         </echo>
 
-        <copy file="${build.dir}/cytoscape.jar" todir="${release.dir}"/>
+        <copy file="${build.dir}/just-cytoscape.jar"
+              tofile="${release.dir}/cytoscape.jar"/>
 
         <!-- Add All other JARs to Cytoscape Jar File -->
         <delete dir="${dist.dir}/temp"/>
