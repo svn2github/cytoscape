@@ -165,6 +165,83 @@ public void testAdd () throws Exception
 
 } // testAdd
 //-------------------------------------------------------------------------
+/**
+ *  make sure that everything is done properly when we call
+ *  GraphObjAttributes.set (GraphObjAttributes attributes)
+ *  where that method is explained:
+ *
+ *  copy all attributes in the supplied GraphObjAttributes object into this
+ *  GraphObjAttributes.  any pre-existing attributes survive intact as long
+ *  as they do not have the same attribute name as the attributes passed in
+ */
+public void testAddGraphObjAttributes () throws Exception
+{
+  System.out.println ("testAddGraphObjAttributes");
+  GraphObjAttributes original = new GraphObjAttributes ();
+  original.set ("expressionLevel", "GAL4", 1.8);
+  original.set ("expressionLevel", "GAL80", 0.01);
+  original.set ("foo", "GAL4", 321.23);
+  original.set ("bar", "GAL4", "The Columbia City Ale House");
+
+  assertTrue (original.hasAttribute ("expressionLevel"));
+  assertTrue (original.hasAttribute ("foo"));
+  assertTrue (original.hasAttribute ("bar"));
+  assertTrue (!original.hasAttribute ("BAR"));
+
+  assertTrue (original.getClass ("expressionLevel") == (new Double (0.0)).getClass ());
+  assertTrue (original.getClass ("foo") == (new Double (0.0)).getClass ());
+  assertTrue (original.getClass ("bar") == "string".getClass ());
+
+  assertTrue (original.getDoubleValue ("expressionLevel", "GAL4").equals (new Double (1.8)));
+  assertTrue (original.getDoubleValue ("expressionLevel", "GAL80").equals (new Double (0.01)));
+  assertTrue (original.getDoubleValue ("foo", "GAL4").equals (new Double (321.23)));
+  assertTrue (original.getStringValue ("bar", "GAL4").equals ("The Columbia City Ale House"));
+
+  GraphObjAttributes additional = new GraphObjAttributes ();
+  Double homology = new Double (99.32);
+  Integer count = new Integer (33);
+  String magic = "abracadabra";
+  String nodeName = "GAL4";
+
+  additional.set ("homology", nodeName, homology);
+  additional.set ("count", nodeName, count);
+  additional.set ("magic", nodeName, magic);
+
+  assertTrue (additional.getClass ("homology") == (new Double (0.0)).getClass ());
+  assertTrue (additional.getClass ("count") == (new Integer (0)).getClass ());
+  assertTrue (additional.getClass ("magic") == "string".getClass ());
+
+  assertTrue (additional.getDoubleValue ("homology", nodeName).equals (homology));
+  assertTrue (additional.getIntegerValue ("count", nodeName).equals (count));
+  assertTrue (additional.getStringValue ("magic", nodeName).equals (magic));
+
+  original.add (additional);
+  assertTrue (original.hasAttribute ("expressionLevel"));
+  assertTrue (original.hasAttribute ("foo"));
+  assertTrue (original.hasAttribute ("bar"));
+  assertTrue (!original.hasAttribute ("BAR"));
+
+  assertTrue (original.getClass ("expressionLevel") == (new Double (0.0)).getClass ());
+  assertTrue (original.getClass ("foo") == (new Double (0.0)).getClass ());
+  assertTrue (original.getClass ("bar") == "string".getClass ());
+
+  assertTrue (original.getDoubleValue ("expressionLevel", "GAL4").equals (new Double (1.8)));
+  assertTrue (original.getDoubleValue ("expressionLevel", "GAL80").equals (new Double (0.01)));
+  assertTrue (original.getDoubleValue ("foo", "GAL4").equals (new Double (321.23)));
+  assertTrue (original.getStringValue ("bar", "GAL4").equals ("The Columbia City Ale House"));
+
+  assertTrue (original.getClass ("homology") == (new Double (0.0)).getClass ());
+  assertTrue (original.getClass ("count") == (new Integer (0)).getClass ());
+  assertTrue (original.getClass ("magic") == "string".getClass ());
+
+  assertTrue (original.getDoubleValue ("homology", nodeName).equals (homology));
+  assertTrue (original.getIntegerValue ("count", nodeName).equals (count));
+  assertTrue (original.getStringValue ("magic", nodeName).equals (magic));
+
+
+
+} // testAddGraphObjAttributes
+//-------------------------------------------------------------------------
 public void testHasAttribute () throws Exception
 {
   System.out.println ("testHasAttribute");

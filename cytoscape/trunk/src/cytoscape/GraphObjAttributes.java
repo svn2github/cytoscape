@@ -310,17 +310,18 @@ public String getCanonicalName (Object graphObject)
 /**
  *  copy all attributes in the supplied GraphObjAttributes object into this
  *  GraphObjAttributes.  any pre-existing attributes survive intact as long
- *  as they do not have the same attribute name as the attributes passed
- *  in
+ *  as they do not have the same attribute name as the attributes passed in
  */
-public void set (GraphObjAttributes attributes)
+public void set (GraphObjAttributes newAttributes)
 {
-  String [] newAttributeNames = attributes.getAttributeNames ();
+  String [] newAttributeNames = newAttributes.getAttributeNames ();
 
   for (int i=0; i < newAttributeNames.length; i++) {
     String name =  newAttributeNames [i];
-    HashMap hash = attributes.getAttribute (newAttributeNames [i]);
+    HashMap hash = newAttributes.getAttribute (newAttributeNames [i]);
     map.put (name, hash);
+    Class classOfNewAttributes = newAttributes.getClass (name);
+    setClass (name, classOfNewAttributes);
     }
 
 } // add
@@ -639,6 +640,7 @@ public void deleteAttribute (String attributeName)
  */
 public void setClass (String attributeName, Class attributeClass)
 {
+  //System.out.println ("setting class for '" + attributeName + "' -> " + attributeClass);
   classMap.put (attributeName, attributeClass);
 }
 //--------------------------------------------------------------------------------
@@ -648,6 +650,8 @@ public void setClass (String attributeName, Class attributeClass)
  */
 public Class getClass (String attributeName)
 {
+  //System.out.print ("getting class for '" + attributeName + "' -> ");
+  //System.out.println (classMap.get (attributeName));
   return (Class) classMap.get (attributeName);
 
 } // getClass
@@ -756,6 +760,31 @@ public Double getDoubleValue (String attributeName, String graphObjectName)
    return (Double) object;
   
 } // getDoubleValue
+//--------------------------------------------------------------------------------
+/**
+ *  construe the possibly multiple values of the attribute as a scalar Integer,
+ *  if possible
+ */
+public Integer getIntegerValue (String attributeName, String graphObjectName)
+{
+  Object object = getValue (attributeName, graphObjectName); 
+  if (object == null) 
+    return null;
+
+  try {
+    if (object.getClass() == Class.forName ("java.util.Vector")) {
+      Vector tmp = (Vector) object;
+      if (tmp.size () < 1)
+        object = null;
+      else
+        object = tmp.get (0);
+      }
+    }
+   catch (ClassNotFoundException shouldNeverOccur) {;}
+
+   return (Integer) object;
+  
+} // getIntegerValue
 //--------------------------------------------------------------------------------
 /**
  *  construe the possibly multiple values of the attribute as a scalar String
