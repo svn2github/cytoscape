@@ -385,9 +385,20 @@ public final class IntBTree
                                        Integer.MIN_VALUE, Integer.MAX_VALUE);
     return new IntEnumerator() {
         private int count = totalCount;
+        private Node currentLeafNode = null;
+        private int currentNodeInx;
+        private boolean wholeLeafNode;
         public int numRemaining() { return count; }
         public int nextInt() {
-          int returnThis = -1;
+          int returnThis;
+          if (currentLeafNode == null) {
+          }
+          if (wholeLeafNode) {
+            returnThis = currentLeafNode.values[currentNodeInx++]; }
+          else {
+          }
+          if (currentNodeInx == currentLeafNode.sliceCount)
+            currentLeafNode = null;
           count--;
           return returnThis; } };
   }
@@ -397,7 +408,9 @@ public final class IntBTree
    * The elements added to the node stack -- leaf nodes should be iterated
    * through and appropriate values examined; internal nodes represent
    * regions of the tree which can be included, as whole, as part of the
-   * range query.
+   * range query.  Every node on the returned stack will have at least one
+   * leaf entry counting towards the enumeration in the range query (this
+   * statement is important for leaf nodes).
    */
   private final int searchRange(Node n, NodeStack nodeStack
                                 int xMin, int xMax,
