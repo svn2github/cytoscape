@@ -26,7 +26,7 @@ import cytoscape.dialogs.GeneralColorDialogListener;
 //--------------------------------------------------------------------------------------
 public class VisualPropertiesDialog extends JDialog {
 
-    JTextField readout;
+    ShapePopupButton shapeDefault;
     AttributeMapper aMapper;
     MutableColor nColor;
     MutableColor ppColor;
@@ -64,6 +64,13 @@ public VisualPropertiesDialog (Frame parentFrame,
   gridbag.setConstraints(applyButton,c);
   mainPanel.add (applyButton);
 
+  JButton cancelButton = new JButton ("Cancel");
+  cancelButton.addActionListener (new CancelAction ());
+  c.gridx=1;
+  c.gridy=0;
+  gridbag.setConstraints(cancelButton,c);
+  mainPanel.add (cancelButton);
+
   JButton edgePPButton = new JButton ("Edge Coloring: PP");
   edgePPButton.addActionListener (new GeneralColorDialogListener(this,ppColor,"Choose a P-P Edge Color"));
   c.gridx=0;
@@ -100,6 +107,16 @@ public VisualPropertiesDialog (Frame parentFrame,
   gridbag.setConstraints(labelTextPanel,c);
   mainPanel.add(labelTextPanel);
   
+  shapeDefault = 
+      new ShapePopupButton
+	  ("Default Node Shape...",
+	   ((Byte)aMapper.getDefaultValue(VizMapperCategories.NODE_SHAPE)).byteValue(),
+	   this);
+  c.gridx=0;
+  c.gridy=5;
+  gridbag.setConstraints(shapeDefault,c);
+  mainPanel.add(shapeDefault);
+
   setContentPane (mainPanel);
 } // PopupDialog ctor
 
@@ -113,16 +130,24 @@ public class ApplyAction extends AbstractAction {
 
       Object o1 = aMapper.setDefaultValue(VizMapperCategories.NODE_FILL_COLOR, nColor.getColor());
       Object o2 = aMapper.setDefaultValue(VizMapperCategories.BG_COLOR, bgColor.getColor());
+      Object o3 = aMapper.setDefaultValue(VizMapperCategories.NODE_SHAPE, shapeDefault.getShapeByte());
 
       EdgeArrowColor.removeThenAddEdgeColor(aMapper,"pp",ppColor.getColor());
       EdgeArrowColor.removeThenAddEdgeColor(aMapper,"pd",pdColor.getColor());
 
-      System.out.println(localNodeLabelKey.getString());
+      //System.out.println(localNodeLabelKey.getString());
       parentNodeLabelKey.setString(localNodeLabelKey.getString());
       VisualPropertiesDialog.this.dispose ();
   }
 
 } // ApplyAction
+
+public class CancelAction extends AbstractAction {
+  CancelAction () { super (""); }
+  public void actionPerformed (ActionEvent e) {
+      VisualPropertiesDialog.this.dispose ();
+  }
+} // CancelAction
 
 
     private Color getBasicColor(Integer category) {
