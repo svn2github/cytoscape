@@ -9,7 +9,7 @@ public final class IntBTree
   // This quantity must be at least 3.
   // The author prefers that this quantity be odd because that way nodes
   // are split evenly when they get full.
-  private final static int MAX_BRANCHES = 3;
+  private final static int MAX_BRANCHES = 29;
 
   private Node m_root;
 
