@@ -9,10 +9,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
+import java.util.Properties;
 import cytoscape.GraphObjAttributes;
 import cytoscape.dialogs.GridBagGroup;
 import cytoscape.dialogs.MiscGB;
 import cytoscape.visual.mappings.ObjectMapping;
+import cytoscape.visual.mappings.MappingFactory;
 import cytoscape.visual.Network;
 //------------------------------------------------------------------------------
 /**
@@ -164,6 +166,18 @@ public abstract class AbstractCalculator implements Calculator {
      */
     public void setName(String newName) {
 	this.name = newName;
+    }
+
+    /**
+     * Returns a properties description of this calculator. Adds the
+     * keyword ".mapping" to the supplied base key and calls the
+     * getProperties method of MappingFactory with the ObjectMapping
+     * and the augmented base key.
+     */ 
+    public Properties getProperties(String baseKey) {
+        String mapBaseKey = baseKey + ".mapping";
+        ObjectMapping m = getMapping(0);
+        return MappingFactory.getProperties(m, mapBaseKey);
     }
 
     /**

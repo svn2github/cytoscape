@@ -114,5 +114,20 @@ public class CalculatorFactory {
             
         return calculator;
     }
+
+    /**
+     * Get a properties description of the caclulator argument. This
+     * method calls the getProperties method of the calculator and
+     * then adds a property giving the calculator class name as recognized
+     * by the newCalculator method.
+     */
+    public static Properties getProperties(Calculator c, String baseKey) {
+        if (c == null) {return null;}
+        Properties newProps = c.getProperties(baseKey);
+        String classKey = baseKey + ".class";
+        String className = c.getClass().getName();
+        newProps.setProperty(classKey, className);
+        return newProps;
+    }
 }
 

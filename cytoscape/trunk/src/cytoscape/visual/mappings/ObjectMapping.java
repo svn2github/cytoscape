@@ -66,5 +66,7 @@ public interface ObjectMapping extends Cloneable {
     Object clone();
     
     void applyProperties(Properties props, String baseKey, ValueParser parser);
+
+    Properties getProperties(String baseKey);
 }
 

@@ -118,5 +118,17 @@ public class PassThroughMapping implements ObjectMapping {
         String contValue = props.getProperty(contKey);
         if (contValue != null) {setControllingAttributeName(contValue, null, false);}
     }
+    
+    /**
+     * Return a Properties object with entries suitable for customizing this
+     * object via the applyProperties method.
+     */
+    public Properties getProperties(String baseKey) {
+        Properties newProps = new Properties();
+        String contKey = baseKey + ".controller";
+        String contValue = getControllingAttributeName();
+        newProps.setProperty(contKey, contValue);
+        return newProps;
+    }
 }
 

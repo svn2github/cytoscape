@@ -37,4 +37,25 @@ public class InterpolatorFactory {
             return null;
         }
     }
+
+    /**
+     * Given an Interpolator, returns an identifying name as recognized
+     * by the newInterpolator method. null will be returned if the argument
+     * is null or of an unrecognized class type.
+     */
+    public static String getName(Interpolator fInt) {
+        if (fInt == null) {
+            return null;
+        } else if (fInt instanceof LinearNumberToColorInterpolator) {
+            return new String("LinearNumberToColorInterpolator");
+        } else if (fInt instanceof LinearNumberToNumberInterpolator) {
+            return new String("LinearNumberToNumberInterpolator");
+        } else if (fInt instanceof FlatInterpolator) {
+            return new String("FlatInterpolator");
+        } else {
+            String c = fInt.getClass().getName();
+            System.err.println("Unknown Interpolator type: " + c);
+            return null;
+        }
+    }
 }

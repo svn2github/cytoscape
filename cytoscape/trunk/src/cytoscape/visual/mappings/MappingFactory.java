@@ -52,5 +52,28 @@ public class MappingFactory {
             return null;
         }
     }
+    
+    /**
+     * Gets a description of the supplied ObjectMapping as properties.
+     * This method calls the getProperties() method of the ObjectMapping
+     * argument and then adds a property to identify the mapping class,
+     * in a form recognized by the newMapping method.
+     */
+    public static Properties getProperties(ObjectMapping m, String baseKey) {
+        if (m == null) {return null;}
+        Properties newProps = m.getProperties(baseKey);
+        if (m instanceof DiscreteMapping) {
+            newProps.setProperty(baseKey + ".type", "DiscreteMapping");
+        } else if (m instanceof ContinuousMapping) {
+            newProps.setProperty(baseKey + ".type", "ContinuousMapping");
+        } else if (m instanceof PassThroughMapping) {
+            newProps.setProperty(baseKey + ".type", "PassThroughMapping");
+        } else {//highly unexpected type
+            String c = m.getClass().getName();
+            System.err.println("MappingFactory: unknown Mapping type: " + c);
+            return null;
+        }
+        return newProps;
+    }
 }
 

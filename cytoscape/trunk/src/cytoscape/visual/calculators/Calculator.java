@@ -5,6 +5,7 @@
 //------------------------------------------------------------------------------
 package cytoscape.visual.calculators;
 //------------------------------------------------------------------------------
+import java.util.Properties;
 import javax.swing.JPanel;
 import javax.swing.JDialog;
 import cytoscape.visual.Network;
@@ -41,4 +42,9 @@ public interface Calculator extends Cloneable {
      *  Clone the calculator.
      */
     public Object clone() throws CloneNotSupportedException;
+
+    /**
+     * Get a description of this calculator as a Properties object.
+     */
+    public Properties getProperties(String baseKey);
 }

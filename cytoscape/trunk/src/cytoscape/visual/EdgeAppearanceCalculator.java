@@ -14,10 +14,8 @@ import y.base.Edge;
 import y.view.LineType;
 import y.view.Arrow;
 
-import cytoscape.util.Misc;
-
 import cytoscape.visual.calculators.*;
-import cytoscape.visual.parsers.FontParser;
+import cytoscape.visual.parsers.*;
 //----------------------------------------------------------------------------
 /**
  * This class calculates the appearance of an Edge. It holds a default value
@@ -227,11 +225,11 @@ public class EdgeAppearanceCalculator {
         StringBuffer sb = new StringBuffer();
         sb.append("EdgeAppearanceCalculator:" + lineSep);
         sb.append("defaultEdgeColor = ").append(defaultEdgeColor).append(lineSep);
-        String edgeLineTypeText = Misc.getLineTypeText(defaultEdgeLineType);
+        String edgeLineTypeText = ObjectToString.getStringValue(defaultEdgeLineType);
         sb.append("defaultEdgeLineType = ").append(edgeLineTypeText).append(lineSep);
-        String sourceArrowText = Misc.getArrowText(defaultEdgeSourceArrow);
+        String sourceArrowText = ObjectToString.getStringValue(defaultEdgeSourceArrow);
         sb.append("defaultEdgeSourceArrow = ").append(sourceArrowText).append(lineSep);
-        String targetArrowText = Misc.getArrowText(defaultEdgeTargetArrow);
+        String targetArrowText = ObjectToString.getStringValue(defaultEdgeTargetArrow);
         sb.append("defaultEdgeTargetArrow = ").append(targetArrowText).append(lineSep);
         sb.append("defaultEdgeLabel = ").append(defaultEdgeLabel).append(lineSep);
         sb.append("defaultEdgeToolTip = ").append(defaultEdgeToolTip).append(lineSep);
@@ -239,7 +237,7 @@ public class EdgeAppearanceCalculator {
         sb.append("edgeColorCalculator = ").append(edgeColorCalculator).append(lineSep);
         sb.append("edgeLineTypeCalculator = ").append(edgeLineTypeCalculator).append(lineSep);
         sb.append("edgeSourceArrowCalculator = ").append(edgeSourceArrowCalculator).append(lineSep);
-        sb.append("edgeTargetCalculator = ").append(edgeTargetArrowCalculator).append(lineSep);
+        sb.append("edgeTargetArrowCalculator = ").append(edgeTargetArrowCalculator).append(lineSep);
         sb.append("edgeLabelCalculator = ").append(edgeLabelCalculator).append(lineSep);
         sb.append("edgeToolTipCalculator = ").append(edgeToolTipCalculator).append(lineSep);
         sb.append("edgeFontFaceCalculator = ").append(edgeFontFaceCalculator).append(lineSep);
@@ -262,22 +260,22 @@ public class EdgeAppearanceCalculator {
         //look for default values
         value = eacProps.getProperty(baseKey + ".defaultEdgeColor");
         if (value != null) {
-            Color c = Misc.parseRGBText(value);
+            Color c = (new ColorParser()).parseColor(value);
             if (c != null) {setDefaultEdgeColor(c);}
         }
         value = eacProps.getProperty(baseKey + ".defaultEdgeLineType");
         if (value != null) {
-            LineType lt = Misc.parseLineTypeText(value);
+            LineType lt = (new LineTypeParser()).parseLineType(value);
             if (lt != null) {setDefaultEdgeLineType(lt);}
         }
         value = eacProps.getProperty(baseKey + ".defaultEdgeSourceArrow");
         if (value != null) {
-            Arrow a = Misc.parseArrowText(value);
+            Arrow a = (new ArrowParser()).parseArrow(value);
             if (a != null) {setDefaultEdgeSourceArrow(a);}
         }
         value = eacProps.getProperty(baseKey + ".defaultEdgeTargetArrow");
         if (value != null) {
-            Arrow a = Misc.parseArrowText(value);
+            Arrow a = (new ArrowParser()).parseArrow(value);
             if (a != null) {setDefaultEdgeTargetArrow(a);}
         }
         value = eacProps.getProperty(baseKey + ".defaultEdgeLabel");
@@ -290,8 +288,7 @@ public class EdgeAppearanceCalculator {
         }
         value = eacProps.getProperty(baseKey + ".defaultEdgeFont");
         if (value != null) {
-	    FontParser parser = new FontParser();
-	    Font f = parser.parseFont(value);
+	    Font f = (new FontParser()).parseFont(value);
             if (f != null) {
 		setDefaultEdgeFont(f);
 	    }
@@ -299,45 +296,111 @@ public class EdgeAppearanceCalculator {
         
         //look for calculators
         value = eacProps.getProperty(baseKey + ".edgeColorCalculator");
-        if (value != null) {
+        if (value != null && !value.equals("null")) {
             EdgeColorCalculator c = catalog.getEdgeColorCalculator(value);
             if (c != null) {setEdgeColorCalculator(c);}
         }
         value = eacProps.getProperty(baseKey + ".edgeLineTypeCalculator");
-        if (value != null) {
+        if (value != null && !value.equals("null")) {
             EdgeLineTypeCalculator c = catalog.getEdgeLineTypeCalculator(value);
             if (c != null) {setEdgeLineTypeCalculator(c);}
         }
         value = eacProps.getProperty(baseKey + ".edgeSourceArrowCalculator");
-        if (value != null) {
+        if (value != null && !value.equals("null")) {
             EdgeArrowCalculator c = catalog.getEdgeArrowCalculator(value);
             if (c != null) {setEdgeSourceArrowCalculator(c);}
         }
         value = eacProps.getProperty(baseKey + ".edgeTargetArrowCalculator");
-        if (value != null) {
+        if (value != null && !value.equals("null")) {
             EdgeArrowCalculator c = catalog.getEdgeArrowCalculator(value);
             if (c != null) {setEdgeTargetArrowCalculator(c);}
         }
         value = eacProps.getProperty(baseKey + ".edgeLabelCalculator");
-        if (value != null) {
+        if (value != null && !value.equals("null")) {
             EdgeLabelCalculator c = catalog.getEdgeLabelCalculator(value);
             if (c != null) {setEdgeLabelCalculator(c);}
         }
         value = eacProps.getProperty(baseKey + ".edgeToolTipCalculator");
-        if (value != null) {
+        if (value != null && !value.equals("null")) {
             EdgeToolTipCalculator c = catalog.getEdgeToolTipCalculator(value);
             if (c != null) {setEdgeToolTipCalculator(c);}
         }
         value = eacProps.getProperty(baseKey + ".edgeFontFaceCalculator");
-        if (value != null) {
+        if (value != null && !value.equals("null")) {
             EdgeFontFaceCalculator c = catalog.getEdgeFontFaceCalculator(value);
             if (c != null) {setEdgeFontFaceCalculator(c);}
         }
 	value = eacProps.getProperty(baseKey + ".edgeFontSizeCalculator");
-	if (value != null) {
+	if (value != null && !value.equals("null")) {
 	    EdgeFontSizeCalculator c = catalog.getEdgeFontSizeCalculator(value);
 	    if (c != null) {setEdgeFontSizeCalculator(c);}
 	}
+    }
+    
+    public Properties getProperties(String baseKey) {
+        String key = null;
+        String value = null;
+        Properties newProps = new Properties();
+        
+        //save default values
+        key = baseKey + ".defaultEdgeColor";
+        value = ObjectToString.getStringValue( getDefaultEdgeColor() );
+        newProps.setProperty(key, value);
+        key = baseKey + ".defaultEdgeLineType";
+        value = ObjectToString.getStringValue( getDefaultEdgeLineType() );
+        newProps.setProperty(key, value);
+        key = baseKey + ".defaultEdgeSourceArrow";
+        value = ObjectToString.getStringValue( getDefaultEdgeSourceArrow() );
+        newProps.setProperty(key, value);
+        key = baseKey + ".defaultEdgeTargetArrow";
+        value = ObjectToString.getStringValue( getDefaultEdgeTargetArrow() );
+        newProps.setProperty(key, value);
+        key = baseKey + ".defaultEdgeLabel";
+        value = ObjectToString.getStringValue( getDefaultEdgeLabel() );
+        newProps.setProperty(key, value);
+        key = baseKey + ".defaultEdgeToolTip";
+        value = ObjectToString.getStringValue( getDefaultEdgeToolTip() );
+        newProps.setProperty(key, value);
+        key = baseKey + ".defaultEdgeFont";
+        value = ObjectToString.getStringValue( getDefaultEdgeFont() );
+        newProps.setProperty(key, value);
+        
+        //save an entry for all calculators, including null values
+        Calculator c = null;
+        key = baseKey + ".edgeColorCalculator";
+        c = getEdgeColorCalculator();
+        value = (c == null) ? "null" : c.toString();
+        newProps.setProperty(key, value);
+        key = baseKey + ".edgeLineTypeCalculator";
+        c = getEdgeLineTypeCalculator();
+        value = (c == null) ? "null" : c.toString();
+        newProps.setProperty(key, value);
+        key = baseKey + ".edgeSourceArrowCalculator";
+        c = getEdgeSourceArrowCalculator();
+        value = (c == null) ? "null" : c.toString();
+        newProps.setProperty(key, value);
+        key = baseKey + ".edgeTargetArrowCalculator";
+        c = getEdgeTargetArrowCalculator();
+        value = (c == null) ? "null" : c.toString();
+        newProps.setProperty(key, value);
+        key = baseKey + ".edgeLabelCalculator";
+        c = getEdgeLabelCalculator();
+        value = (c == null) ? "null" : c.toString();
+        newProps.setProperty(key, value);
+        key = baseKey + ".edgeToolTipCalculator";
+        c = getEdgeToolTipCalculator();
+        value = (c == null) ? "null" : c.toString();
+        newProps.setProperty(key, value);
+        key = baseKey + ".edgeFontFaceCalculator";
+        c = getEdgeFontFaceCalculator();
+        value = (c == null) ? "null" : c.toString();
+        newProps.setProperty(key, value);
+        key = baseKey + ".edgeFontSizeCalculator";
+        c = getEdgeFontSizeCalculator();
+        value = (c == null) ? "null" : c.toString();
+        newProps.setProperty(key, value);
+        
+        return newProps;
     }
 }
 

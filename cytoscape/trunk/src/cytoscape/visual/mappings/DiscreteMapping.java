@@ -17,6 +17,7 @@ import cytoscape.dialogs.GridBagGroup;
 import cytoscape.GraphObjAttributes;
 import cytoscape.visual.Network;
 import cytoscape.visual.parsers.ValueParser;
+import cytoscape.visual.parsers.ObjectToString;
 //----------------------------------------------------------------------------
 /**
  * Implements a lookup table mapping data to values of a particular class.
@@ -197,17 +198,37 @@ public class DiscreteMapping extends TreeMap implements ObjectMapping {
         String contValue = props.getProperty(contKey);
         if (contValue != null) {setControllingAttributeName(contValue, null, false);}
         
-        String mapKey = baseKey + ".map";
+        String mapKey = baseKey + ".map.";
 	Enumeration eProps = props.propertyNames();
 	while (eProps.hasMoreElements()) {
 	    String key = (String)eProps.nextElement();
 	    if (key.startsWith(mapKey)) {
 		String value = props.getProperty(key);
-		String domainVal = key.substring(mapKey.length() + 1);
+		String domainVal = key.substring(mapKey.length());
                 Object parsedVal = parser.parseStringValue(value);
 		put(domainVal,parsedVal);
 	    }
 	}
+    }
+    
+    /**
+     * Return a Properties object with entries suitable for customizing this
+     * object via the applyProperties method.
+     */
+    public Properties getProperties(String baseKey) {
+        Properties newProps = new Properties();
+        String contKey = baseKey + ".controller";
+        String contValue = getControllingAttributeName();
+        newProps.setProperty(contKey, contValue);
+        
+        String mapKey = baseKey + ".map.";
+        for (Iterator si = this.keySet().iterator(); si.hasNext(); ) {
+            String key = (String)si.next();
+            Object value = this.get(key);
+            String stringValue = ObjectToString.getStringValue(value);
+            newProps.setProperty(mapKey + key, stringValue);
+        }
+        return newProps;
     }
     
     public Object clone() {

@@ -673,7 +673,10 @@ public class CalculatorCatalog {
 	}
 	return newName;
     }
-    
+
+    public Set getNodeAppearanceCalculatorNames() {
+        return nodeAppearanceCalculators.keySet();
+    }   
     public Collection getNodeAppearanceCalculators() {
         return nodeAppearanceCalculators.values();
     }
@@ -728,6 +731,9 @@ public class CalculatorCatalog {
         return (NodeAppearanceCalculator)nodeAppearanceCalculators.get(name);
     }
     
+    public Set getEdgeAppearanceCalculatorNames() {
+        return edgeAppearanceCalculators.keySet();
+    }
     public Collection getEdgeAppearanceCalculators() {
         return edgeAppearanceCalculators.values();
     }

@@ -11,7 +11,9 @@ import cytoscape.visual.calculators.*;
 //----------------------------------------------------------------------------
 /**
  * This class defines static methods for reading calculator definitions from
- * a properties object and installing them into a CalculatorCatalog.
+ * a properties object and installing them into a CalculatorCatalog, and for
+ * constructing a properties object that describes all the calculators in a
+ * CalculatorCatalog.
  */
 public class CalculatorIO {
     
@@ -208,6 +210,68 @@ public class CalculatorIO {
                 new EdgeAppearanceCalculator(name, eacProps, baseKey, catalog);
             catalog.removeEdgeAppearanceCalculator(name);
             catalog.addEdgeAppearanceCalculator(name, eac);
+        }
+    }
+    
+    /**
+     * Given a CalculatorCatalog, assembles a Properties object representing all of the
+     * calculators contained in the catalog. The resulting Properties object, if passed
+     * to the loadCalculators method, would reconstruct all the calculators. This method
+     * works by getting each set of calculators from the catalog and calling the
+     * getProperties method on each calculator with the proper header for the property key.
+     */
+    public static Properties getProperties(CalculatorCatalog catalog) {
+        Properties newProps = new Properties();
+        
+        //gather properties for node calculators
+        addProperties(newProps, catalog.getNodeColorCalculators(), nodeColorBaseKey);
+        addProperties(newProps, catalog.getNodeLineTypeCalculators(), nodeLineTypeBaseKey);
+        addProperties(newProps, catalog.getNodeShapeCalculators(), nodeShapeBaseKey);
+        addProperties(newProps, catalog.getNodeSizeCalculators(), nodeSizeBaseKey);
+        addProperties(newProps, catalog.getNodeLabelCalculators(), nodeLabelBaseKey);
+        addProperties(newProps, catalog.getNodeToolTipCalculators(), nodeToolTipBaseKey);
+        addProperties(newProps, catalog.getNodeFontFaceCalculators(), nodeFontFaceBaseKey);
+        addProperties(newProps, catalog.getNodeFontSizeCalculators(), nodeFontSizeBaseKey);
+        //gather properties for edge calculators
+        addProperties(newProps, catalog.getEdgeColorCalculators(), edgeColorBaseKey);
+        addProperties(newProps, catalog.getEdgeLineTypeCalculators(), edgeLineTypeBaseKey);
+        addProperties(newProps, catalog.getEdgeArrowCalculators(), edgeArrowBaseKey);
+        addProperties(newProps, catalog.getEdgeLabelCalculators(), edgeLabelBaseKey);
+        addProperties(newProps, catalog.getEdgeToolTipCalculators(), edgeToolTipBaseKey);
+        addProperties(newProps, catalog.getEdgeFontFaceCalculators(), edgeFontFaceBaseKey);
+        addProperties(newProps, catalog.getEdgeFontSizeCalculators(), edgeFontSizeBaseKey);
+        
+        //node appearance calculators
+        Collection nacNames = catalog.getNodeAppearanceCalculatorNames();
+        for (Iterator i = nacNames.iterator(); i.hasNext(); ) {
+            String name = (String)i.next();
+            NodeAppearanceCalculator nac = catalog.getNodeAppearanceCalculator(name);
+            String baseKey = nodeAppearanceBaseKey + "." + name;
+            Properties props = nac.getProperties(baseKey);
+            newProps.putAll(props);
+        }
+        Collection eacNames = catalog.getEdgeAppearanceCalculatorNames();
+        for (Iterator i = eacNames.iterator(); i.hasNext(); ) {
+            String name = (String)i.next();
+            EdgeAppearanceCalculator eac = catalog.getEdgeAppearanceCalculator(name);
+            String baseKey = edgeAppearanceBaseKey + "." + name;
+            Properties props = eac.getProperties(baseKey);
+            newProps.putAll(props);
+        }
+        
+        return newProps;
+    }
+    
+    /**
+     * Given a collection of calculators and a base key, gets the properties description from
+     * each calculator and adds all the properties to the supplied Properties argument.
+     */
+    private static void addProperties(Properties newProps, Collection calcs, String baseKey) {
+        for (Iterator i = calcs.iterator(); i.hasNext(); ) {
+            Calculator c = (Calculator)i.next();
+            String calcBaseKey = baseKey + "." + c.toString();
+            Properties props = CalculatorFactory.getProperties(c, calcBaseKey);
+            newProps.putAll(props);
         }
     }
     

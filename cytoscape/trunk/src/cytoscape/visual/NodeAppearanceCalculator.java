@@ -15,10 +15,8 @@ import y.view.LineType;
 import y.view.Arrow;
 import y.view.ShapeNodeRealizer;
 
-import cytoscape.util.Misc;
-
 import cytoscape.visual.calculators.*;
-import cytoscape.visual.parsers.FontParser;
+import cytoscape.visual.parsers.*;
 //----------------------------------------------------------------------------
 /**
  * This class calculates the appearance of a Node. It holds a default value
@@ -297,9 +295,10 @@ public class NodeAppearanceCalculator {
         sb.append("NodeAppearanceCalculator:" + lineSep);
         sb.append("defaultNodeFillColor = ").append(defaultNodeFillColor).append(lineSep);
         sb.append("defaultNodeBorderColor = ").append(defaultNodeBorderColor).append(lineSep);
-        String nodeLineTypeText = Misc.getLineTypeText(defaultNodeLineType);
+        String nodeLineTypeText = ObjectToString.getStringValue(defaultNodeLineType);
         sb.append("defaultNodeLineType = ").append(nodeLineTypeText).append(lineSep);
-        String nodeShapeText = Misc.getNodeShapeText(defaultNodeShape);
+        Byte nodeShapeByte = new Byte(defaultNodeShape);
+        String nodeShapeText = ObjectToString.getStringValue(nodeShapeByte);
         sb.append("defaultNodeShape = ").append(nodeShapeText).append(lineSep);
         sb.append("defaultNodeWidth = ").append(defaultNodeWidth).append(lineSep);
         sb.append("defaultNodeHeight = ").append(defaultNodeHeight).append(lineSep);
@@ -335,41 +334,42 @@ public class NodeAppearanceCalculator {
         //look for default values
         value = nacProps.getProperty(baseKey + ".defaultNodeFillColor");
         if (value != null) {
-            Color c = Misc.parseRGBText(value);
+            Color c = (new ColorParser()).parseColor(value);
             if (c != null) {setDefaultNodeFillColor(c);}
         }
         value = nacProps.getProperty(baseKey + ".defaultNodeBorderColor");
         if (value != null) {
-            Color c = Misc.parseRGBText(value);
+            Color c = (new ColorParser()).parseColor(value);
             if (c != null) {setDefaultNodeBorderColor(c);}
         }
         value = nacProps.getProperty(baseKey + ".defaultNodeLineType");
         if (value != null) {
-            LineType lt = Misc.parseLineTypeText(value);
+            LineType lt = (new LineTypeParser()).parseLineType(value);
             if (lt != null) {setDefaultNodeLineType(lt);}
         }
         value = nacProps.getProperty(baseKey + ".defaultNodeShape");
         if (value != null) {
-            byte b = Misc.parseNodeShapeText(value);
-            if (isValidShape(b)) {setDefaultNodeShape(b);}
+            Byte bObj = (new NodeShapeParser()).parseNodeShape(value);
+            if (bObj != null) {
+                byte b = bObj.byteValue();
+                if (isValidShape(b)) {setDefaultNodeShape(b);}
+            }
         }
         value = nacProps.getProperty(baseKey + ".defaultNodeWidth");
         if (value != null) {
-            double d = 0.0;
-            try {
-                d = Double.parseDouble(value);
-            } catch (NumberFormatException nfe) {
+            Double dObj = (new DoubleParser()).parseDouble(value);
+            if (dObj != null) {
+                double d = dObj.doubleValue();
+                if (d > 0) {setDefaultNodeWidth(d);}
             }
-            if (d > 0) {setDefaultNodeWidth(d);}
         }
         value = nacProps.getProperty(baseKey + ".defaultNodeHeight");
         if (value != null) {
-            double d = 0.0;
-            try {
-                d = Double.parseDouble(value);
-            } catch (NumberFormatException nfe) {
+            Double dObj = (new DoubleParser()).parseDouble(value);
+            if (dObj != null) {
+                double d = dObj.doubleValue();
+                if (d > 0) {setDefaultNodeHeight(d);}
             }
-            if (d > 0) {setDefaultNodeHeight(d);}
         }
         value = nacProps.getProperty(baseKey + ".defaultNodeLabel");
         if (value != null) {
@@ -381,8 +381,7 @@ public class NodeAppearanceCalculator {
         }
         value = nacProps.getProperty(baseKey + ".defaultNodeFont");
         if (value != null) {
-	    FontParser parser = new FontParser();
-	    Font f = parser.parseFont(value);
+	    Font f = (new FontParser()).parseFont(value);
             if (f != null) {
 		setDefaultNodeFont(f);
 	    }
@@ -395,57 +394,145 @@ public class NodeAppearanceCalculator {
             setNodeSizeLocked(b);
         }
         
-        //look for calculators
+        //look for calculators; skip if the name is "null" (means no calculator)
         value = nacProps.getProperty(baseKey + ".nodeFillColorCalculator");
-        if (value != null) {
+        if (value != null && !value.equals("null")) {
             NodeColorCalculator c = catalog.getNodeColorCalculator(value);
             if (c != null) {setNodeFillColorCalculator(c);}
         }
         value = nacProps.getProperty(baseKey + ".nodeBorderColorCalculator");
-        if (value != null) {
+        if (value != null && !value.equals("null")) {
             NodeColorCalculator c = catalog.getNodeColorCalculator(value);
             if (c != null) {setNodeBorderColorCalculator(c);}
         }
         value = nacProps.getProperty(baseKey + ".nodeLineTypeCalculator");
-        if (value != null) {
+        if (value != null && !value.equals("null")) {
             NodeLineTypeCalculator c = catalog.getNodeLineTypeCalculator(value);
             if (c != null) {setNodeLineTypeCalculator(c);}
         }
         value = nacProps.getProperty(baseKey + ".nodeShapeCalculator");
-        if (value != null) {
+        if (value != null && !value.equals("null")) {
             NodeShapeCalculator c = catalog.getNodeShapeCalculator(value);
             if (c != null) {setNodeShapeCalculator(c);}
         }
         value = nacProps.getProperty(baseKey + ".nodeWidthCalculator");
-        if (value != null) {
+        if (value != null && !value.equals("null")) {
             NodeSizeCalculator c = catalog.getNodeSizeCalculator(value);
             if (c != null) {setNodeWidthCalculator(c);}
         }
         value = nacProps.getProperty(baseKey + ".nodeHeightCalculator");
-        if (value != null) {
+        if (value != null && !value.equals("null")) {
             NodeSizeCalculator c = catalog.getNodeSizeCalculator(value);
             if (c != null) {setNodeHeightCalculator(c);}
         }
         value = nacProps.getProperty(baseKey + ".nodeLabelCalculator");
-        if (value != null) {
+        if (value != null && !value.equals("null")) {
             NodeLabelCalculator c = catalog.getNodeLabelCalculator(value);
             if (c != null) {setNodeLabelCalculator(c);}
         }
         value = nacProps.getProperty(baseKey + ".nodeToolTipCalculator");
-        if (value != null) {
+        if (value != null && !value.equals("null")) {
             NodeToolTipCalculator c = catalog.getNodeToolTipCalculator(value);
             if (c != null) {setNodeToolTipCalculator(c);}
         }
         value = nacProps.getProperty(baseKey + ".nodeFontFaceCalculator");
-        if (value != null) {
+        if (value != null && !value.equals("null")) {
             NodeFontFaceCalculator c = catalog.getNodeFontFaceCalculator(value);
             if (c != null) {setNodeFontFaceCalculator(c);}
         }
 	value = nacProps.getProperty(baseKey + ".nodeFontSizeCalculator");
-	if (value != null) {
+	if (value != null && !value.equals("null")) {
 	    NodeFontSizeCalculator c = catalog.getNodeFontSizeCalculator(value);
 	    if (c != null) {setNodeFontSizeCalculator(c);}
 	}
+    }
+    
+    public Properties getProperties(String baseKey) {
+        String key = null;
+        String value = null;
+        Properties newProps = new Properties();
+        
+        //save default values
+        key = baseKey + ".defaultNodeFillColor";
+        value = ObjectToString.getStringValue( getDefaultNodeFillColor() );
+        newProps.setProperty(key, value);
+        key = baseKey + ".defaultNodeBorderColor";
+        value = ObjectToString.getStringValue( getDefaultNodeBorderColor() );
+        newProps.setProperty(key, value);
+        key = baseKey + ".defaultNodeLineType";
+        value = ObjectToString.getStringValue( getDefaultNodeLineType() );
+        newProps.setProperty(key, value);
+        key = baseKey + ".defaultNodeShape";
+        Byte nodeShapeByte = new Byte( getDefaultNodeShape() );
+        value = ObjectToString.getStringValue(nodeShapeByte);
+        newProps.setProperty(key, value);
+        key = baseKey + ".defaultNodeWidth";
+        Double nodeWidthDouble = new Double( getDefaultNodeWidth() );
+        value = ObjectToString.getStringValue(nodeWidthDouble);
+        newProps.setProperty(key, value);
+        key = baseKey + ".defaultNodeHeight";
+        Double nodeHeightDouble = new Double( getDefaultNodeHeight() );
+        value = ObjectToString.getStringValue(nodeHeightDouble);
+        newProps.setProperty(key, value);
+        key = baseKey + ".defaultNodeLabel";
+        value = ObjectToString.getStringValue( getDefaultNodeLabel() );
+        newProps.setProperty(key, value);
+        key = baseKey + ".defaultNodeToolTip";
+        value = ObjectToString.getStringValue( getDefaultNodeToolTip() );
+        newProps.setProperty(key, value);
+        key = baseKey + ".defaultNodeFont";
+        value = ObjectToString.getStringValue( getDefaultNodeFont() );
+        newProps.setProperty(key, value);
+        
+        //save node size locked flag
+        key = baseKey + ".nodeSizeLocked";
+        value = Boolean.toString( getNodeSizeLocked() );
+        newProps.setProperty(key, value);
+        
+        //save all calculator fields, including nulls
+        Calculator c = null;
+        key = baseKey + ".nodeFillColorCalculator";
+        c = getNodeFillColorCalculator();
+        value = (c == null) ? "null" : c.toString();
+        newProps.setProperty(key, value);
+        key = baseKey + ".nodeBorderColorCalculator";
+        c = getNodeBorderColorCalculator();
+        value = (c == null) ? "null" : c.toString();
+        newProps.setProperty(key, value);
+        key = baseKey + ".nodeLineTypeCalculator";
+        c = getNodeLineTypeCalculator();
+        value = (c == null) ? "null" : c.toString();
+        newProps.setProperty(key, value);
+        key = baseKey + ".nodeShapeCalculator";
+        c = getNodeShapeCalculator();
+        value = (c == null) ? "null" : c.toString();
+        newProps.setProperty(key, value);
+        key = baseKey + ".nodeWidthCalculator";
+        c = getNodeWidthCalculator();
+        value = (c == null) ? "null" : c.toString();
+        newProps.setProperty(key, value);
+        key = baseKey + ".nodeHeightCalculator";
+        c = getNodeHeightCalculator();
+        value = (c == null) ? "null" : c.toString();
+        newProps.setProperty(key, value);
+        key = baseKey + ".nodeLabelCalculator";
+        c = getNodeLabelCalculator();
+        value = (c == null) ? "null" : c.toString();
+        newProps.setProperty(key, value);
+        key = baseKey + ".nodeToolTipCalculator";
+        c = getNodeToolTipCalculator();
+        value = (c == null) ? "null" : c.toString();
+        newProps.setProperty(key, value);
+        key = baseKey + ".nodeFontFaceCalculator";
+        c = getNodeFontFaceCalculator();
+        value = (c == null) ? "null" : c.toString();
+        newProps.setProperty(key, value);
+        key = baseKey + ".nodeFontSizeCalculator";
+        c = getNodeFontSizeCalculator();
+        value = (c == null) ? "null" : c.toString();
+        newProps.setProperty(key, value);
+        
+        return newProps;
     }
 }
 

@@ -17,6 +17,7 @@ import cytoscape.vizmap.BoundaryRangeValues;
 import cytoscape.vizmap.Interpolator;
 import cytoscape.visual.Network;
 import cytoscape.visual.parsers.ValueParser;
+import cytoscape.visual.parsers.ObjectToString;
 //----------------------------------------------------------------------------
 /**
  * Implements an interpolation table mapping data to values of a particular class.
@@ -309,6 +310,53 @@ public class ContinuousMapping extends TreeMap implements ObjectMapping {
 
 	    put(dVal,bv);
 	}
+    }
+    
+    /**
+     * Return a Properties object with entries suitable for customizing this
+     * object via the applyProperties method.
+     */
+    public Properties getProperties(String baseKey) {
+        Properties newProps = new Properties();
+        //save the controlling attribute name
+        String contKey = baseKey + ".controller";
+        String contValue = getControllingAttributeName();
+        newProps.setProperty(contKey, contValue);
+        
+        //save the interpolator
+        String intKey = baseKey + ".interpolator";
+        String intName = InterpolatorFactory.getName( this.getInterpolator() );
+        newProps.setProperty(intKey, intName);
+        
+        //save the number of boundary values
+        String bvNumKey = baseKey + ".boundaryvalues";
+        int numBV = this.keySet().size();
+        String numString = Integer.toString(numBV);
+        newProps.setProperty(bvNumKey, numString);
+        
+        //save each of the boundary values
+        int count=0;
+        for (Iterator si = this.keySet().iterator(); si.hasNext(); count++) {
+            String bvBase = baseKey + ".bv" + count;
+            //save the domain value
+            String bvKey = bvBase + ".domainvalue";
+            Double dVal = (Double)si.next();
+            String dValString = dVal.toString();
+            newProps.setProperty(bvKey, dValString);
+            
+            //save the fields of the brv object
+            BoundaryRangeValues brv = (BoundaryRangeValues)this.get(dVal);
+            String lKey = bvBase + ".lesser";
+            String lString = ObjectToString.getStringValue(brv.lesserValue);
+            newProps.setProperty(lKey, lString);
+            String eKey = bvBase + ".equal";
+            String eString = ObjectToString.getStringValue(brv.equalValue);
+            newProps.setProperty(eKey, eString);
+            String gKey = bvBase + ".greater";
+            String gString = ObjectToString.getStringValue(brv.greaterValue);
+            newProps.setProperty(gKey, gString);
+        }
+        return newProps;
     }
         
     /////////////////// begin interface code.
