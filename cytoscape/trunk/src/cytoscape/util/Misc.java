@@ -243,4 +243,98 @@ public static String getNodeShapeText(byte shape){
     return "rect";
 }//getNodeShapeText
 
-}
+//----------------------------------------------------------------------------------------
+/**
+ * return the (possibly multiple) value of the specified property as a vector.
+ * property values (which typically come from cytoscape.prop files)
+ * are usually scalar strings,  but may be a list of such strings, surrounded by 
+ * parentheses, and delimited by the value of a property 
+ * called 'property.delimiter' (whose value is usually "::")
+ * get the property value; check to see if it is a list; parse it if necessary
+ */
+static public Vector getPropertyValues (Properties props, String propName)
+{
+  String propertyDelimiterName = "property.token.delimiter";
+  String delimiter = props.getProperty (propertyDelimiterName, "::");
+
+  String listStartTokenName = "list.startToken";
+  String listStartToken = props.getProperty (listStartTokenName, "(");
+
+  String listEndTokenName = "list.endToken";
+  String listEndToken = props.getProperty (listEndTokenName, ")");
+
+  Vector result = new Vector ();
+  String propString = props.getProperty (propName);
+  if (propString == null)
+    return result;
+  String propStringTrimmed = propString.trim ();
+  String [] tokens = Misc.parseList (propStringTrimmed, listStartToken, listEndToken, delimiter);
+
+  for (int i=0; i < tokens.length; i++)
+    result.add (tokens [i]);
+
+  return result;
+
+} // getPropertyValues
+//----------------------------------------------------------------------------------------
+/**
+ * determine whether a string encodes a list
+ *
+ * @param listString    a string containing one or more substrings
+ * @param startToken    marks the beginning of the list; must be at the very start (except
+ *                      for possible leading whitespace
+ * @param endToken      marks the end of the list; must be at the very end (except
+ *                      for possible trailing whitespace
+ * @param delimiter     the string (e.g., "::") which separates the substrings
+ *
+ * @returns             true or false
+ *
+ */
+static public boolean isList (String listString, String startToken, String endToken,
+                                    String delimiter)
+{
+  String s = listString.trim ();
+  Vector list = new Vector ();
+
+  if (s.startsWith (startToken) && s.endsWith (endToken)) 
+    return true;
+  else
+    return false;
+
+
+} // isList
+//----------------------------------------------------------------------------------------
+/**
+ * parse and return an array of strings
+ *
+ * @param listString    a string containing one or more substrings
+ * @param startToken    marks the beginning of the list; must be at the very start (except
+ *                      for possible leading whitespace
+ * @param endToken      marks the end of the list; must be at the very end (except
+ *                      for possible trailing whitespace
+ * @param delimiter     the string (e.g., "::") which separates the substrings
+ *
+ * @returns             an array made up of the substrings 
+ *
+ */
+static public String [] parseList (String listString, String startToken, String endToken,
+                                   String delimiter)
+{
+  String s = listString.trim ();
+  Vector list = new Vector ();
+
+  if (s.startsWith (startToken) && s.endsWith (endToken)) {
+    String deparenthesizedString = s.substring (1, s.length()-1); 
+    StringTokenizer strtok = new StringTokenizer (deparenthesizedString, delimiter);
+    int count = strtok.countTokens ();
+    for (int i=0; i < count; i++)
+      list.add (strtok.nextToken ());
+    }
+  else
+    list.add (listString);
+
+  return (String []) list.toArray (new String [0]);
+
+} // parseList
+//----------------------------------------------------------------------------------------
+} // class Misc
