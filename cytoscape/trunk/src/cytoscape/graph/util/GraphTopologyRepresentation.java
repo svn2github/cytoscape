@@ -80,8 +80,6 @@ public class GraphTopologyRepresentation implements GraphTopology
                                      int[] undirectedEdgeNode1Indices)
   {
     // Preliminary parameter checking.
-    if (numNodes < 0) throw new IllegalArgumentException
-                        ("cannot have a negative number of nodes");
     if (directedEdgeSourceNodeIndices == null)
       directedEdgeSourceNodeIndices = new int[0];
     if (directedEdgeTargetNodeIndices == null)
@@ -92,6 +90,8 @@ public class GraphTopologyRepresentation implements GraphTopology
       undirectedEdgeNode1Indices = new int[0];
 
     // Real parameter checking.  Set member variables.
+    if (numNodes < 0) throw new IllegalArgumentException
+                        ("cannot have a negative number of nodes");
     m_numNodes = numNodes;
     if (directedEdgeSourceNodeIndices.length !=
         directedEdgeTargetNodeIndices.length)
