@@ -691,6 +691,7 @@ public class FactorGraph
 
 
     private int recursivelyFixVars(IntArrayList varNodes)
+        throws AlgorithmException
     {
         int x=0;
         while(!allFixed(varNodes))
