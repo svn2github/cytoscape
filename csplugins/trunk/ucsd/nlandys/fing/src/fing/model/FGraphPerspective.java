@@ -552,6 +552,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph
   public java.util.List neighborsList(Node node) {
     if (node.getRootGraph() == m_root) {
       final int[] neighInx = neighborsArray(node.getRootGraphIndex());
+      if (neighInx == null) return null;
       final java.util.ArrayList returnThis =
         new java.util.ArrayList(neighInx.length);
       for (int i = 0; i < neighInx.length; i++)
