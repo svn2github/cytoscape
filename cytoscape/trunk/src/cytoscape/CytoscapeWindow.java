@@ -547,6 +547,8 @@ protected JMenuBar createMenuBar ()
   mi = viewNodeSubMenu.add(new HideSelectedNodesAction());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_H, ActionEvent.CTRL_MASK));
   viewNodeSubMenu.add(new DisplaySelectedInNewWindowAction());
+  mi = viewNodeSubMenu.add (new DisplayAttributesOfSelectedNodesAction ());
+  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_D, ActionEvent.CTRL_MASK));
   JMenu viewEdgeSubMenu = new JMenu("Edge Selection");
   viewMenu.add(viewEdgeSubMenu);
   viewEdgeSubMenu.add(new InvertSelectedEdgesAction());
@@ -562,9 +564,6 @@ protected JMenuBar createMenuBar ()
   if (bioDataServer != null) selectMenu.add (new GoIDSelectAction ());
   mi = viewMenu.add (new CloneGraphInNewWindowAction ());
   mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_K, ActionEvent.CTRL_MASK));
-  viewMenu.add(new ReduceEquivalentNodesAction());
-  mi = viewMenu.add (new DisplayAttributesOfSelectedNodesAction ());
-  mi.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_D, ActionEvent.CTRL_MASK));
 
   ButtonGroup layoutGroup = new ButtonGroup ();
   layoutMenu = new JMenu ("Layout");
@@ -603,17 +602,18 @@ protected JMenuBar createMenuBar ()
   layoutMenu.add (new LayoutSelectionAction ());
 
   layoutMenu.addSeparator();
-  JMenu alignSubMenu = new JMenu ("Align Nodes");
+  JMenu alignSubMenu = new JMenu ("Align Selected Nodes");
   layoutMenu.add(alignSubMenu);
   alignSubMenu.add (new AlignHorizontalAction ());
   alignSubMenu.add (new AlignVerticalAction   ());
+  layoutMenu.add(new ReduceEquivalentNodesAction());
 
   vizMenu = new JMenu ("Visualization"); // always create the viz menu
   menuBar.add (vizMenu);
   vizMenu.add (new SetVisualPropertiesAction ());
   //  vizMenu.add (new PrintPropsAction ());
 
-  opsMenu = new JMenu ("Ops"); // always create the ops menu
+  opsMenu = new JMenu ("PlugIns"); // always create the plugins menu
   menuBar.add (opsMenu);
 
   return menuBar;
@@ -1203,7 +1203,7 @@ protected class DeleteSelectedAction extends AbstractAction   {
 } // inner class DeleteSelectedAction
 //------------------------------------------------------------------------------
 protected class LayoutAction extends AbstractAction   {
-  LayoutAction () { super ("Whole graph"); }
+  LayoutAction () { super ("Layout whole graph"); }
     
   public void actionPerformed (ActionEvent e) {
     applyLayout (false);
@@ -1213,7 +1213,7 @@ protected class LayoutAction extends AbstractAction   {
 
 // lay out selected nodes only - dramage
 protected class LayoutSelectionAction extends AbstractAction {
-    LayoutSelectionAction () { super ("Current selection"); }
+    LayoutSelectionAction () { super ("Layout current selection"); }
 
   public void actionPerformed (ActionEvent e) {
       applyLayoutSelection ();
@@ -1557,7 +1557,7 @@ protected class SelectFirstNeighborsAction extends AbstractAction {
  * selected nodes are printed to stdout.
  */
 protected class DisplayAttributesOfSelectedNodesAction extends AbstractAction {
-  DisplayAttributesOfSelectedNodesAction () { super ("DEBUG: display attributes of selected nodes"); }
+  DisplayAttributesOfSelectedNodesAction () { super ("Display attributes"); }
   public void actionPerformed (ActionEvent e) {
     Graph2D g = graphView.getGraph2D ();
     NodeCursor nc = g.selectedNodes (); 

@@ -150,7 +150,7 @@ runAP:
           -b $(CYTOSCAPE_DATA)/GO \
 	--APt0 10.0 --APtf 0.01 --APni 2500 --APnp 5 \
 	--APdi 500 --APhs 10 --APqu true --APrs 17 \
-	--APmc current.mc --APexit
+	--APmc current.mc --APexit --APhelp
 
 run1o2:
 	$(JAVA) cytoscape.cytoscape \
