@@ -822,6 +822,17 @@ public void deleteAttribute (String attributeName)
 }
 //--------------------------------------------------------------------------------
 /**
+ *  remove the specified attribute for the specified node or edge
+ */
+public void deleteAttribute (String attributeName, String graphObjectName)
+{
+  if (!hasAttribute (attributeName)) return;
+  HashMap oneAttributeMap = getAttribute (attributeName);
+  oneAttributeMap.remove (graphObjectName);
+
+}
+//--------------------------------------------------------------------------------
+/**
  *  specify the class of this attribute.  all subsequently added attribute
  *  values must be of the exactly this class
  */

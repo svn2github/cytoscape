@@ -794,6 +794,35 @@ public void testDeleteAttribute () throws Exception
 } // testDeleteAttribute
 //-------------------------------------------------------------------------
 /**
+ *  can we delete an attribute by name?
+ */
+public void testDeleteAttributeForOneGraphObject () throws Exception
+{
+  System.out.println ("testDeleteAttributeForOneGraphObject");
+
+  GraphObjAttributes attributes = new GraphObjAttributes ();
+
+  Double homology = new Double (99.32);
+  Integer count = new Integer (33);
+  String magicWord = "abracadabra";
+  
+  String nodeName = "GAL4";
+
+  HashMap bundle = new HashMap ();
+  bundle.put ("homology", homology);
+  bundle.put ("count",  count);
+  bundle.put ("magic",  magicWord);
+
+  attributes.set (nodeName, bundle);
+  assertTrue (attributes.numberOfAttributes () == 3);
+
+  assertTrue (attributes.hasAttribute ("homology", "GAL4"));
+  attributes.deleteAttribute ("homology", "GAL4");
+  assertTrue (!attributes.hasAttribute ("homology", "GAL4"));
+
+} // testDeleteAttributeForOneGraphObject
+//-------------------------------------------------------------------------
+/**
  *  can we set and get attribute category?  numerical, annotation, categorizer, temporary, ...
  */
 public void testAttributeCategories () throws Exception
