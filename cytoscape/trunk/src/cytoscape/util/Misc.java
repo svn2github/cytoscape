@@ -235,6 +235,7 @@ public static String getNodeShapeText(byte shape){
     if(shape == ShapeNodeRealizer.TRAPEZOID_2){return "trapezoid2";}
     if(shape == ShapeNodeRealizer.TRIANGLE){return "triangle";}
     if(shape == ShapeNodeRealizer.PARALLELOGRAM){return "parallelogram";}
+    if(shape == ShapeNodeRealizer.DIAMOND){return "diamond";}
     if(shape == ShapeNodeRealizer.ELLIPSE){return "ellipse";}
     if(shape == ShapeNodeRealizer.HEXAGON){return "hexagon";}
     if(shape == ShapeNodeRealizer.OCTAGON){return "octagon";}
