@@ -41,9 +41,6 @@ class EdgeArray
           Math.min((long) Integer.MAX_VALUE,
                    Math.max(((long) m_edgeArr.length) * 2l + 1l,
                             ((long) index) + 1l + (long) INITIAL_CAPACITY));
-        if (newArrSize == m_edgeArr.length)
-          throw new IllegalStateException
-            ("unable to allocate large enough array");
         FEdge[] newArr = new FEdge[newArrSize];
         System.arraycopy(m_edgeArr, 0, newArr, 0, m_edgeArr.length);
         m_edgeArr = newArr;

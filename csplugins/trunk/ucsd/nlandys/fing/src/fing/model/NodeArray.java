@@ -41,9 +41,6 @@ class NodeArray
           Math.min((long) Integer.MAX_VALUE,
                    Math.max(((long) m_nodeArr.length) * 2l + 1l,
                             ((long) index) + 1l + (long) INITIAL_CAPACITY));
-        if (newArrSize == m_nodeArr.length)
-          throw new IllegalStateException
-            ("unable to allocate large enough array");
         FNode[] newArr = new FNode[newArrSize];
         System.arraycopy(m_nodeArr, 0, newArr, 0, m_nodeArr.length);
         m_nodeArr = newArr;
