@@ -3,6 +3,9 @@
 <!-- Created by Ethan Cerami, cerami@cbio.mskcc.org	-->
 <!-- To get a quick listing of all ant targets, type: 	-->
 <!-- ant -projecthelp                                   -->
+<!-- $Revision$       -->
+<!-- $Date$           -->
+<!-- $Author$         -->
 <project name="Cytoscape" default="compile" basedir=".">
 
 	<!--  The directory containing library jar files -->	
@@ -77,6 +80,9 @@
 		<copy todir="${build.classes}/cytoscape/images">
 			<fileset dir="${basedir}/images"/>
 		</copy>
+		<copy todir="${build.classes}/cytoscape/view/images">
+			<fileset dir="${basedir}/images"/>
+		</copy>
 		<copy todir="${build.classes}/cytoscape/dialogs/images">
 			<fileset dir="${src.dir}/cytoscape/dialogs/images"/>
 		</copy>
@@ -144,7 +150,7 @@
 	
 	<!-- Target to Run JavaDoc -->
 	<target name="doc" description="Runs JavaDoc.">
-		<javadoc destdir="${build.dir}/docs" classpathref="classpath"
+		<javadoc destdir="${build.dir}/docs" source="1.4" classpathref="classpath"
 			overview="${src.dir}/org/mskcc/dataservices/overview.html">
     			<packageset dir="${src.dir}">
       				<include name="cytoscape/**" />
