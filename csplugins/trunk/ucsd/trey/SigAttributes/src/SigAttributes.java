@@ -30,11 +30,8 @@ public class SigAttributes extends AbstractPlugin {
     CyWindow cyWindow;
     GraphView graphView;
     CyNetwork network;
-    CytoscapeObj cyObj;
     GraphPerspective graphPerspective;
-    GraphObjAttributes nodeAttr;
-    BioDataServer bds;
-    Annotation annotation;
+    CytoscapeObj cyObj;
 
     /**
      * This constructor saves the cyWindow argument (the window to which this
@@ -42,12 +39,12 @@ public class SigAttributes extends AbstractPlugin {
      */
     public SigAttributes(CyWindow cyWindow) {
         this.cyWindow = cyWindow;
-	this.graphView = cyWindow.getView();
-        this.network = cyWindow.getNetwork();
 	this.cyObj = cyWindow.getCytoscapeObj();
+
+	this.graphView = cyWindow.getView();
 	this.graphPerspective = graphView.getGraphPerspective();
-	this.nodeAttr = network.getNodeAttributes();
-	this.bds = cyObj.getBioDataServer();
+        this.network = cyWindow.getNetwork();
+
 	cyWindow.getCyMenus().getOperationsMenu().add( new MainPluginAction() );
     }
     
@@ -78,6 +75,11 @@ public class SigAttributes extends AbstractPlugin {
         public void actionPerformed(ActionEvent ae) {
 
 	    System.err.println("Starting Attribute Chooser");
+	    
+	    // update globals to ensure they are current
+	    graphView = cyWindow.getView();
+	    graphPerspective = graphView.getGraphPerspective();
+	    network = cyWindow.getNetwork();
 
             //can't continue if either of these is null
             if (graphView == null || network == null) {return;}
@@ -109,10 +111,11 @@ public class SigAttributes extends AbstractPlugin {
 
 	public void run(){
             //get all of the required data
-	    String [] attrs = nodeAttr.getAttributeNames();
+	    String [] attrs = network.getNodeAttributes().getAttributeNames();
 	    String [] annots;
 	    try { 
-		AnnotationDescription [] annotD = bds.getAnnotationDescriptions();
+		AnnotationDescription [] annotD = 
+		    cyObj.getBioDataServer().getAnnotationDescriptions();
 		annots = new String [annotD.length];
 		for (int i=0; i<annotD.length; i++) annots[i] = annotD[i].toString();
 	    } catch (NullPointerException ex) { annots = new String [0]; }
@@ -134,28 +137,31 @@ public class SigAttributes extends AbstractPlugin {
 				   double pvalueCutoff, int maxNum) {
 	    
 	    // get all genes and selected genes
-	    String [] allFunctions = nodeAttr.getUniqueStringValues(chosenAttr);
-	    String [] allGeneNames = nodeAttr.getObjectNames(chosenAttr);
+	    String [] allFunctions = network.getNodeAttributes().getUniqueStringValues(chosenAttr);
+	    String [] allGeneNames = network.getNodeAttributes().getObjectNames(chosenAttr);
 	    String [] nodeNames = getSelectedNames(chosenNames);	    
 	    System.err.println("Attribute has " + allFunctions.length + 
 			       " values over " + allGeneNames.length + " genes");
 	    
 	    // get # occurrences of each function across all genes and selected genes
-	    HashMap allFunctionCount = getFunctionCount(allGeneNames, chosenAttr, nodeAttr);
-	    HashMap thisFunctionCount = getFunctionCount(nodeNames, chosenAttr, nodeAttr);
+	    HashMap allFunctionCount = getFunctionCount(allGeneNames, chosenAttr, 
+							network.getNodeAttributes());
+	    HashMap thisFunctionCount = getFunctionCount(nodeNames, chosenAttr, 
+							 network.getNodeAttributes());
 
 	    // compute significances of enrichment for each function
 	    Vector sigFunctions = getSignificance(thisFunctionCount, allFunctionCount, 
-						  pvalueCutoff, maxNum);
+						  pvalueCutoff, maxNum, null);
 
 	    // create new node attribute for significant functions
 	    String newAttrName = "Significant Attributes";
-	    nodeAttr.deleteAttribute(newAttrName);
+	    network.getNodeAttributes().deleteAttribute(newAttrName);
 	    for (int i=0; i<nodeNames.length; i++) {
 		for (Iterator it = sigFunctions.iterator(); it.hasNext(); ) {
 		    String function = (String) it.next();
-		    if (hasAttributeValue(nodeAttr, chosenAttr, nodeNames[i], function))
-			nodeAttr.append(newAttrName, nodeNames[i], function);
+		    if (hasAttributeValue(network.getNodeAttributes(), chosenAttr, 
+					  nodeNames[i], function))
+			network.getNodeAttributes().append(newAttrName, nodeNames[i], function);
 		}
 	    }
 	}
@@ -164,14 +170,15 @@ public class SigAttributes extends AbstractPlugin {
 				     double pvalueCutoff, int maxNum) {
 
 	    // cannot run unless annotations exist
-	    if (bds == null) return;
+	    if (cyObj.getBioDataServer() == null) return;
 
 	    // get annotations from BioDataServer and ensure not null
-	    AnnotationDescription [] annotDesc = bds.getAnnotationDescriptions();
+	    AnnotationDescription [] annotDesc = 
+		cyObj.getBioDataServer().getAnnotationDescriptions();
 	    int i=0;
 	    while (!annotDesc[i].toString().equals(chosenAnnot) && (i < annotDesc.length)) i++; 
 	    if (annotDesc[i] == null) return;
-	    annotation = bds.getAnnotation(annotDesc[i]);
+	    Annotation annotation = cyObj.getBioDataServer().getAnnotation(annotDesc[i]);
 
 	    // get all genes and selected genes
 	    String [] allGeneNames = annotation.getNames();
@@ -183,18 +190,19 @@ public class SigAttributes extends AbstractPlugin {
 	    
 	    // compute significances of enrichment for each function
 	    Vector sigFunctions = getSignificance(thisFunctionCount, allFunctionCount, 
-						  pvalueCutoff, maxNum);
+						  pvalueCutoff, maxNum, annotation);
 	    
 	    // create new node attribute for significant functions
 	    String newAttrName = "Significant Annotations";
-	    nodeAttr.deleteAttribute(newAttrName);
+	    network.getNodeAttributes().deleteAttribute(newAttrName);
 	    for (i=0; i<nodeNames.length; i++) {
 		for (Iterator it = sigFunctions.iterator(); it.hasNext(); ) {
 		    String function = (String) it.next();
 		    if (hasAttributeValue(annotation, nodeNames[i], function)) {
 			OntologyTerm term = 
 			    annotation.getOntology().getTerm(Integer.parseInt(function));
-			nodeAttr.append(newAttrName, nodeNames[i], term.getName());
+			network.getNodeAttributes().append(newAttrName, 
+							   nodeNames[i], term.getName());
 		    }
 		}
 	    }
@@ -272,6 +280,7 @@ public class SigAttributes extends AbstractPlugin {
 
 	private String [] getSelectedNames(String [] nameAttrs) {
 	    // make an array of selected names, allowing more than one name per node
+	    GraphObjAttributes nodeAttr = network.getNodeAttributes();
 	    int [] nodeIndices = graphView.getSelectedNodeIndices();
 	    HashSet nodeNames = new HashSet();  // ensures nodes only occur once
 	    for (int i=0; i<nodeIndices.length; i++) {
@@ -285,7 +294,7 @@ public class SigAttributes extends AbstractPlugin {
 	} // end getSelectedNames
 
 	private Vector getSignificance (HashMap thisFunctionCount, HashMap allFunctionCount,
-					double pvalueCutoff, int maxNumber) {
+					double pvalueCutoff, int maxNumber, Annotation annotation) {
 	    
 	    double n = (double) sumFunctionCounts(thisFunctionCount);
 	    double t = (double) sumFunctionCounts(allFunctionCount);
@@ -308,7 +317,7 @@ public class SigAttributes extends AbstractPlugin {
 		System.err.print(funAndPval);
 		if (annotation != null) {
 		    OntologyTerm term = 
-		     annotation.getOntology().getTerm(Integer.parseInt(funAndPval.getFunction()));
+		      annotation.getOntology().getTerm(Integer.parseInt(funAndPval.getFunction()));
 		    System.err.print(" " + term.getName());
 		}
 		System.err.println();
