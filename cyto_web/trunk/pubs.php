@@ -20,6 +20,12 @@
 <? include "nav.php"; ?>
 <div id="indent">
     <br>
+<p><b>Proc Natl Acad Sci U S A. Feb 8, 2005</b><BR>
+    Sharan R, Suthram S, Kelley RM, Kuhn T, McCuine S, Uetz P, Sittler T, Karp RM, Ideker T.<br>Conserved patterns of protein interaction in multiple species.
+<br>
+Proc Natl Acad Sci U S A. 2005 Feb 8;102(6):1974-9. Epub 2005 Feb 01. 
+									<br>
+									[<A HREF="http://www.pnas.org/cgi/content/abstract/102/6/1974?maxtoshow=&HITS=10&hits=10&RESULTFORMAT=&fulltext=ideker&searchid=1109093476283_4753&stored_search=&FIRSTINDEX=0&journalcode=pnas">Abstract</a>] [<A HREF="http://www.pnas.org/cgi/content/full/102/6/1974?maxtoshow=&HITS=10&hits=10&RESULTFORMAT=&fulltext=ideker&searchid=1109093562510_4765&stored_search=&FIRSTINDEX=0&journalcode=pnas">Full Text</A>] [<A HREF="http://www.pnas.org/cgi/reprint/102/6/1974?maxtoshow=&HITS=10&hits=10&RESULTFORMAT=&fulltext=ideker&searchid=1109093578097_4770&stored_search=&FIRSTINDEX=0&journalcode=pnas">PDF</A>]<br>    
 	<p>
 		<b>Genome Research, November 2004 (cover article)</b>
 		<br>
