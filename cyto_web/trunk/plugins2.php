@@ -327,6 +327,29 @@ Released by: David J. Reiss, Schwikowski Group,
     </tr>        
      </td>
 
+<tr><td colspan=3><HR></TD></TR>
+    <tr>
+     <td width="20%" valign="top">
+      <b>jActiveModules</b><br>
+      <font size="-1">Version: 1.0 BETA<br>
+       Release Date: Oct. 9, 2004</font>
+     </td>
+     <td width="60%" valign="top">
+
+This plugin enables Cytoscape to search for significant networks as described in <a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&list_uids=12169552&dopt=Abstract">Bioinformatics. 2002 Jul;18 Suppl 1:S233-40.</a>
+<br><br>
+Released by: <a href="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab/">The Ideker Lab</a>, Department of Bioengineering, UCSD
+     </td>
+
+
+		<td width="20%" valign="top">
+			[<a href="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab/plugins/jActiveModules2/README.txt">Release Notes</a>]<br>
+			[<a href="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab/plugins/jActiveModules2/jActiveModules.jar">Download Jar</a>]<br>
+			[<a href="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab/plugins/jActiveModules2/jActiveModules.tgz">Download Source</a>]<br>
+		</td>
+		</tr>
+		</td>
+		</tr>
       </tbody>
 		</table>
 
