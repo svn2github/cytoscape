@@ -78,6 +78,22 @@ final class DynamicGraphRepresentation implements DynamicGraph
           return returnThis; } };
   }
 
+  public int createNode()
+  {
+    m_nodeCount++;
+    final Node n = m_nodeDepot.getNode();
+    final int returnThis;
+    if (m_freeNodes.size() > 0) returnThis = m_freeNodes.pop();
+    else returnThis = ++m_maxNode;
+    m_nodes.setNodeAtIndex(n, returnThis);
+    n.nextNode = m_firstNode;
+    try { m_firstNode.prevNode = n; } catch (NullPointerException exc) { }
+    m_firstNode = n;
+    n.nodeId = returnThis;
+    n.outDegree = 0; n.inDegree = 0; n.undDegree = 0; n.selfEdges = 0;
+    return returnThis;
+  }
+
   public boolean removeNode(int node)
   {
     IntEnumerator edges = adjacentEdges(node, true, true, true);
@@ -95,54 +111,6 @@ final class DynamicGraphRepresentation implements DynamicGraph
     n.prevNode = null; n.firstOutEdge = null; n.firstInEdge = null;
     m_nodeDepot.recycleNode(n);
     m_nodeCount--;
-    return true;
-  }
-
-  public int createNode()
-  {
-    m_nodeCount++;
-    final Node n = m_nodeDepot.getNode();
-    final int returnThis;
-    if (m_freeNodes.size() > 0) returnThis = m_freeNodes.pop();
-    else returnThis = ++m_maxNode;
-    m_nodes.setNodeAtIndex(n, returnThis);
-    n.nextNode = m_firstNode;
-    try { m_firstNode.prevNode = n; } catch (NullPointerException exc) { }
-    m_firstNode = n;
-    n.nodeId = returnThis;
-    n.outDegree = 0; n.inDegree = 0; n.undDegree = 0; n.selfEdges = 0;
-    return returnThis;
-  }
-
-  public boolean removeEdge(int edge)
-  {
-    final Edge e;
-    try { e = m_edges.getEdgeAtIndex(edge); }
-    catch (ArrayIndexOutOfBoundsException exc) {
-      // edge is negative or Integer.MAX_VALUE.
-      if (edge == Integer.MAX_VALUE) return false;
-      throw new IllegalArgumentException("edge is negative"); }
-    if (e == null) return false;
-    final Node source = m_nodes.getNodeAtIndex(e.sourceNode);
-    final Node target = m_nodes.getNodeAtIndex(e.targetNode);
-    try { e.prevOutEdge.nextOutEdge = e.nextOutEdge; }
-    catch (NullPointerException exc) { source.firstOutEdge = e.nextOutEdge; }
-    try { e.nextOutEdge.prevOutEdge = e.prevOutEdge; }
-    catch (NullPointerException exc) { }
-    try { e.prevInEdge.nextInEdge = e.nextInEdge; }
-    catch (NullPointerException exc) { target.firstInEdge = e.nextInEdge; }
-    try { e.nextInEdge.prevInEdge = e.prevInEdge; }
-    catch (NullPointerException exc) { }
-    if (e.directed) { source.outDegree--; target.inDegree--; }
-    else { source.undDegree--; target.undDegree--; }
-    if (source == target) { // Self-edge.
-      if (e.directed) source.selfEdges--;
-      else source.undDegree++; }
-    m_edges.setEdgeAtIndex(null, edge);
-    m_freeEdges.push(edge);
-    e.prevOutEdge = null; e.nextInEdge = null; e.prevInEdge = null;
-    m_edgeDepot.recycleEdge(e);
-    m_edgeCount--;
     return true;
   }
 
@@ -187,22 +155,73 @@ final class DynamicGraphRepresentation implements DynamicGraph
     return returnThis;
   }
 
-  public boolean containsNode(int node)
+  public boolean removeEdge(int edge)
   {
-    try { return m_nodes.getNodeAtIndex(node) != null; }
-    catch (ArrayIndexOutOfBoundsException exc) {
-      // node is negative or Integer.MAX_VALUE.
-      if (node == Integer.MAX_VALUE) return false;
-      throw new IllegalArgumentException("node is negative"); }
-  }
-
-  public boolean containsEdge(int edge)
-  {
-    try { return m_edges.getEdgeAtIndex(edge) != null; }
+    final Edge e;
+    try { e = m_edges.getEdgeAtIndex(edge); }
     catch (ArrayIndexOutOfBoundsException exc) {
       // edge is negative or Integer.MAX_VALUE.
       if (edge == Integer.MAX_VALUE) return false;
       throw new IllegalArgumentException("edge is negative"); }
+    if (e == null) return false;
+    final Node source = m_nodes.getNodeAtIndex(e.sourceNode);
+    final Node target = m_nodes.getNodeAtIndex(e.targetNode);
+    try { e.prevOutEdge.nextOutEdge = e.nextOutEdge; }
+    catch (NullPointerException exc) { source.firstOutEdge = e.nextOutEdge; }
+    try { e.nextOutEdge.prevOutEdge = e.prevOutEdge; }
+    catch (NullPointerException exc) { }
+    try { e.prevInEdge.nextInEdge = e.nextInEdge; }
+    catch (NullPointerException exc) { target.firstInEdge = e.nextInEdge; }
+    try { e.nextInEdge.prevInEdge = e.prevInEdge; }
+    catch (NullPointerException exc) { }
+    if (e.directed) { source.outDegree--; target.inDegree--; }
+    else { source.undDegree--; target.undDegree--; }
+    if (source == target) { // Self-edge.
+      if (e.directed) source.selfEdges--;
+      else source.undDegree++; }
+    m_edges.setEdgeAtIndex(null, edge);
+    m_freeEdges.push(edge);
+    e.prevOutEdge = null; e.nextInEdge = null; e.prevInEdge = null;
+    m_edgeDepot.recycleEdge(e);
+    m_edgeCount--;
+    return true;
+  }
+
+  public byte edgeType(int edge)
+  {
+    final Edge e;
+    try { e = m_edges.getEdgeAtIndex(edge); }
+    catch (ArrayIndexOutOfBoundsException exc) {
+      // edge is negative or Integer.MAX_VALUE.
+      if (edge == Integer.MAX_VALUE) return -1;
+      throw new IllegalArgumentException("edge is negative"); }
+    if (e == null) return -1;
+    else if (e.directed) return 1;
+    else return 0;
+  }
+
+  public int sourceNode(int edge)
+  {
+    final Edge e;
+    try { e = m_edges.getEdgeAtIndex(edge); }
+    catch (ArrayIndexOutOfBoundsException exc) {
+      // edge is negative or Integer.MAX_VALUE.
+      if (edge == Integer.MAX_VALUE) return -1;
+      throw new IllegalArgumentException("edge is negative"); }
+    try { return e.sourceNode; }
+    catch (NullPointerException exc) { return -1; }
+  }
+
+  public int targetNode(int edge)
+  {
+    final Edge e;
+    try { e = m_edges.getEdgeAtIndex(edge); }
+    catch (ArrayIndexOutOfBoundsException exc) {
+      // edge is negative or Integer.MAX_VALUE.
+      if (edge == Integer.MAX_VALUE) return -1;
+      throw new IllegalArgumentException("edge is negative"); }
+    try { return e.targetNode; }
+    catch (NullPointerException exc) { return -1; }
   }
 
   public IntEnumerator adjacentEdges(int node,
@@ -300,43 +319,6 @@ final class DynamicGraphRepresentation implements DynamicGraph
           final int returnThis = nextEdge;
           nextEdge = -1;
           return returnThis; } };
-  }
-
-  public int sourceNode(int edge)
-  {
-    final Edge e;
-    try { e = m_edges.getEdgeAtIndex(edge); }
-    catch (ArrayIndexOutOfBoundsException exc) {
-      // edge is negative or Integer.MAX_VALUE.
-      if (edge == Integer.MAX_VALUE) return -1;
-      throw new IllegalArgumentException("edge is negative"); }
-    try { return e.sourceNode; }
-    catch (NullPointerException exc) { return -1; }
-  }
-
-  public int targetNode(int edge)
-  {
-    final Edge e;
-    try { e = m_edges.getEdgeAtIndex(edge); }
-    catch (ArrayIndexOutOfBoundsException exc) {
-      // edge is negative or Integer.MAX_VALUE.
-      if (edge == Integer.MAX_VALUE) return -1;
-      throw new IllegalArgumentException("edge is negative"); }
-    try { return e.targetNode; }
-    catch (NullPointerException exc) { return -1; }
-  }
-
-  public byte isDirectedEdge(int edge)
-  {
-    final Edge e;
-    try { e = m_edges.getEdgeAtIndex(edge); }
-    catch (ArrayIndexOutOfBoundsException exc) {
-      // edge is negative or Integer.MAX_VALUE.
-      if (edge == Integer.MAX_VALUE) return -1;
-      throw new IllegalArgumentException("edge is negative"); }
-    if (e == null) return -1;
-    else if (e.directed) return 1;
-    else return 0;
   }
 
 }

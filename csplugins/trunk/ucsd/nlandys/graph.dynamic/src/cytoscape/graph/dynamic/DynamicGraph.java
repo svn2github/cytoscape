@@ -5,7 +5,8 @@ import cytoscape.util.intr.IntIterator;
 
 /**
  * A graph whose topology can be modified.
- * Edges and nodes are non-negative.
+ * Edges and nodes are non-negative integers; a given node and a given edge
+ * in a single graph can be the same integer.
  */
 public interface DynamicGraph
 {
@@ -41,6 +42,18 @@ public interface DynamicGraph
   public IntEnumerator edges();
 
   /**
+   * Creates a new node in this graph.  Returns the new node.  Nodes are
+   * always non-negative.<p>
+   * Implementations should try to create nodes with small values.
+   * Implementations should try to prevent new nodes from taking
+   * ever-increasing values when nodes are continually being removed and
+   * created.
+   *
+   * @return the newly created node.
+   */
+  public int createNode();
+
+  /**
    * Removes the specified node from this graph.  Returns true if and only
    * if the specified node was in this graph at the time this method was
    * called.  A return value of true implies that the specified node has
@@ -56,35 +69,12 @@ public interface DynamicGraph
   public boolean removeNode(int node);
 
   /**
-   * Creates a new node in this graph.  Returns the new node.<p>
-   * Implementations should try to create nodes with small values.
-   * Implementations should try to prevent new nodes from taking
-   * ever-increasing values when nodes are continually being removed and
-   * created.
-   *
-   * @return the newly created node.
-   */
-  public int createNode();
-
-  /**
-   * Removes the specified edge from this graph.  Returns true if and only
-   * if the specified edge was in this graph at the time this method was
-   * called.  A return value of true implies that the specified edge has
-   * been successfully removed from this graph.
-   *
-   * @param edge the edge that is to be removed from this graph.
-   * @return true if and only if the specified edge existed in this graph
-   *   at the time this operation was started.
-   * @exception IllegalArgumentException if edge is negative.
-   */
-  public boolean removeEdge(int edge);
-
-  /**
    * Creates a new edge in this graph, having source node, target node,
    * and directedness specified.  Returns the new edge, or -1 if either the
-   * source or target node don't exist in this graph.<p>
+   * source or target node don't exist in this graph.  Edges are always
+   * non-negative.<p>
    * Implementations should try to create edges with small values.
-   * Implementation should try to prevent new edges from taking
+   * Implementations should try to prevent new edges from taking
    * ever-increasing values when edges are continually being removed and
    * created.
    *
@@ -100,26 +90,57 @@ public interface DynamicGraph
   public int createEdge(int sourceNode, int targetNode, boolean directed);
 
   /**
-   * Determines whether or not a node exists in this graph.
-   * Returns true if and only if the node specified exists.
+   * Removes the specified edge from this graph.  Returns true if and only
+   * if the specified edge was in this graph at the time this method was
+   * called.  A return value of true implies that the specified edge has
+   * been successfully removed from this graph.<p>
+   * Note that removing an edge does not cause that edge's endpoint nodes
+   * to be removed from this graph.
    *
-   * @param node the [potentially existing] node in this graph whose existence
-   *   we're querying.
-   * @return the existence of specified node in this graph.
-   * @exception IllegalArgumentException if node is negative.
-   */
-  public boolean containsNode(int node);
-
-  /**
-   * Determines whether or not an edge exists in this graph.
-   * Returns true if and only if the edge specified exists.
-   *
-   * @param edge the [potentially existing] edge in this graph whose existence
-   *   we're querying.
-   * @return the existence of specified edge in this graph.
+   * @param edge the edge that is to be removed from this graph.
+   * @return true if and only if the specified edge existed in this graph
+   *   at the time this operation was started.
    * @exception IllegalArgumentException if edge is negative.
    */
-  public boolean containsEdge(int edge);
+  public boolean removeEdge(int edge);
+
+  /**
+   * Determines the existence and directedness of an edge.
+   * Returns -1 if specified edge does not exist in this graph,
+   * returns 1 if specified edge is directed, and returns 0 if specified edge
+   * is undirected.
+   *
+   * @param edge the edge in this graph whose existence and/or
+   *   directedness we're seeking.
+   * @return 1 if specified edge is directed, 0 if specified edge is
+   *   undirected, and -1 if specified edge does not exist in this graph.
+   * @exception IllegalArgumentException if edge is negative.
+   */
+  public byte edgeType(int edge);
+
+  /**
+   * Determines the source node of an edge.
+   * Returns the source node of specified edge or -1 if specified edge does
+   * not exist in this graph.
+   *
+   * @param edge the edge in this graph whose source node we're seeking.
+   * @return the source node of specified edge or -1 if specified edge does
+   *   not exist in this graph.
+   * @exception IllegalArgumentException if edge is negative.
+   */
+  public int sourceNode(int edge);
+
+  /**
+   * Determines the target node of an edge.
+   * Returns the target node of specified edge or -1 if specified edge does
+   * not exist in this graph.
+   *
+   * @param edge the edge in this graph whose target node we're seeking.
+   * @return the target node of specified edge or -1 if specified edge does
+   *   not exist in this graph.
+   * @exception IllegalArgumentException if edge is negative.
+   */
+  public int targetNode(int edge);
 
   /**
    * Returns a non-repeating enumeration of edges adjacent to a node.
@@ -129,7 +150,10 @@ public interface DynamicGraph
    * The returned enumeration becomes invalid as soon as any
    * graph-topology-modifying method on this graph is called.  Calling
    * methods on an invalid enumeration will result in undefined behavior
-   * of that enumeration.
+   * of that enumeration.<p>
+   * This method returns null if and only if the specified node does not
+   * exist in this graph.  Therefore, this method can be used to test
+   * the existence of a node in this graph.
    *
    * @param node the node in this graph whose adjacent edges we're seeking.
    * @param outgoing all directed edges whose source is the node specified
@@ -199,42 +223,5 @@ public interface DynamicGraph
   public IntIterator connectingEdges(int node0, int node1,
                                      boolean outgoing, boolean incoming,
                                      boolean undirected);
-
-  /**
-   * Determines the source node of an edge.
-   * Returns the source node of specified edge or -1 if specified edge does
-   * not exist in this graph.
-   *
-   * @param edge the edge in this graph whose source node we're seeking.
-   * @return the source node of specified edge or -1 if specified edge does
-   *   not exist in this graph.
-   * @exception IllegalArgumentException if edge is negative.
-   */
-  public int sourceNode(int edge);
-
-  /**
-   * Determines the target node of an edge.
-   * Returns the target node of specified edge or -1 if specified edge does
-   * not exist in this graph.
-   *
-   * @param edge the edge in this graph whose target node we're seeking.
-   * @return the target node of specified edge or -1 if specified edge does
-   *   not exist in this graph.
-   * @exception IllegalArgumentException if edge is negative.
-   */
-  public int targetNode(int edge);
-
-  /**
-   * Determines the directedness of an edge.
-   * Returns 1 if specified edge is directed, returns 0 if specified edge
-   * is undirected, and returns -1 if specified edge does not exist in this
-   * graph.
-   *
-   * @param edge the edge in this graph whose directedness we're seeking.
-   * @return 1 if specified edge is directed, 0 if specified edge is
-   *   undirected, and -1 if specified edge does not exist in this graph.
-   * @exception IllegalArgumentException if edge is negative.
-   */
-  public byte isDirectedEdge(int edge);
 
 }
