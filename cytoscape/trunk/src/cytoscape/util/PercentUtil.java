@@ -28,7 +28,6 @@ public class PercentUtil {
             int maxValue) {
         double currentPercent = calcCurrentPercent(currentValue, maxValue);
         double value = (stepMultiple * currentStep) + currentPercent;
-        System.out.println(value);
         return (int) value;
     }
 
