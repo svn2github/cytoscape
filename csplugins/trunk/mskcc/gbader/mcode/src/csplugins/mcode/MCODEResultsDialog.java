@@ -8,7 +8,6 @@ import cytoscape.util.FileUtil;
 import cytoscape.view.CyNetworkView;
 import giny.model.GraphPerspective;
 import giny.model.Node;
-import giny.util.SpringEmbeddedLayouter;
 import giny.view.NodeView;
 import phoebe.PGraphView;
 
@@ -68,7 +67,7 @@ import java.util.List;
 /**
  * Reports the results of MCODE complex finding. This class sets up the UI.
  */
-public class MCODEResultsDialog extends JDialog {
+public class MCODEResultsDialog extends JFrame {
     MCODEResultsDialog parentDialog;
     protected JTable table;
     JScrollPane scrollPane;
@@ -90,7 +89,7 @@ public class MCODEResultsDialog extends JDialog {
 
     //If imageList is present, will use those images for the complex display
     public MCODEResultsDialog(Frame parentFrame, ArrayList complexes, CyNetwork network, Image imageList[]) {
-        super(parentFrame, "MCODE Results Summary", false);
+        super("MCODE Results Summary");
         parentDialog = this;
 
         //network data (currently focused network)
@@ -260,9 +259,9 @@ public class MCODEResultsDialog extends JDialog {
      * Handles the OK press for this dialog (makes the dialog disappear)
      */
     private class OKAction extends AbstractAction {
-        private JDialog dialog;
+        private JFrame dialog;
 
-        OKAction(JDialog popup) {
+        OKAction(JFrame popup) {
             super("");
             this.dialog = popup;
         }
@@ -277,7 +276,7 @@ public class MCODEResultsDialog extends JDialog {
      * Handles the Save press for this dialog (save results to a file)
      */
     private class SaveAction extends AbstractAction {
-        private JDialog popup;
+        private JFrame popup;
         private ArrayList complexes;
         private CyNetwork network;
 
@@ -288,7 +287,7 @@ public class MCODEResultsDialog extends JDialog {
          * @param complexes Complexes to save
          * @param network   Network complexes are from for information about complex components
          */
-        SaveAction(JDialog popup, ArrayList complexes, CyNetwork network) {
+        SaveAction(JFrame popup, ArrayList complexes, CyNetwork network) {
             super("");
             this.popup = popup;
             this.complexes = complexes;

@@ -3,7 +3,6 @@ package csplugins.mcode;
 import cytoscape.CyNetwork;
 import giny.model.GraphPerspective;
 import giny.model.Node;
-import giny.util.SpringEmbeddedLayouter;
 import giny.view.EdgeView;
 import giny.view.NodeView;
 import phoebe.PGraphView;
