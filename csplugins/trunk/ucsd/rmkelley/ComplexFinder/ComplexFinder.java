@@ -95,6 +95,7 @@ public class ComplexFinder extends CytoscapePlugin{
 	}
       });
 
+    
      
      Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add( new AbstractAction("Generate cutoff"){
 	public void actionPerformed(ActionEvent ae){
@@ -104,6 +105,8 @@ public class ComplexFinder extends CytoscapePlugin{
 		dialog.show();
 		ComplexFinderOptions options = dialog.getOptions();
 		ComplexFinderThread thread = new ComplexFinderThread(options);
+		thread.setPhysicalNetwork(options.physicalNetwork);
+		thread.loadPhysicalScores(options.physicalScores);
 		RandomizationDialog randomDialog = new RandomizationDialog(options.physicalNetwork,options);
 		randomDialog.show();
 		if(randomDialog.isCancelled()){
@@ -132,7 +135,7 @@ public class ComplexFinder extends CytoscapePlugin{
 		}
 		Arrays.sort(scores);
 		double cutoff = scores[(int)Math.floor((1-options.alpha)*options.iterations)];
-		JOptionPane.showMessageDialog(Cytoscape.getDesktop(),"Cutoff is: "+options.cutoff);
+		JOptionPane.showMessageDialog(Cytoscape.getDesktop(),"Cutoff is: "+cutoff);
 	      }
 	    }).start();
 	}

@@ -56,7 +56,7 @@ public class EdgeRandomizer{
     perspective2root = new OpenIntIntHashMap(seedNetwork.getNodeCount());
     nodeIndices = seedNetwork.getNodeIndicesArray();
     for(int idx = 0;idx<nodeIndices.length;idx++){
-      perspective2root.put(idx+1,nodeIndices[idx]);
+      perspective2root.put(idx,nodeIndices[idx]);
     }
     HashMap type2EdgeList = createType2EdgeListMap(seedNetwork);
     type2SourceArray = new HashMap();
