@@ -1,0 +1,34 @@
+<project name="sourav-plugin" default="sourav-plugin.jar" basedir=".">
+
+  <property name="cytoscape.lib.dir"
+            value="${basedir}/../../../../cytoscape/lib"/>
+
+  <path id="sourav.plugin.classpath">
+    <pathelement location="${cytoscape.lib.dir}/../cytoscape.jar"/>
+  </path>
+
+  <target name="sourav-plugin.jar">
+    <echo>
+For this build to work, you must have 'csplugins' and
+'cytoscape' CVS projects in the same top-level directory;
+you also must execute the 'jar' target in the 'cytoscape'
+CVS project.
+    </echo>
+    <mkdir dir="${basedir}/build/classes"/>
+    <javac srcdir="${basedir}/src"
+           includes="csplugins/layout/SouravPlugin.java"
+           classpathref="sourav.plugin.classpath"
+           destdir="${basedir}/build/classes"
+           debug="true"
+           includeAntRuntime="no"/>
+    <jar filesonly="true"
+         destfile="${basedir}/build/sourav-plugin.jar">
+      <fileset dir="${basedir}/build/classes"/>
+    </jar>
+  </target>
+
+  <target name="clean">
+    <delete dir="${basedir}/build"/>
+  </target>
+
+</project>
