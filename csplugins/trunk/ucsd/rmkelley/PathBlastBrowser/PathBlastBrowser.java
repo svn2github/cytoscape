@@ -156,10 +156,11 @@ class LoadPathBlastGMLTask extends Thread{
     CyNetwork newNetwork = createOverlapGraph(cyNetwork2Name,cyNetwork2NameSet);	
     //set up the canonicalName mapping here
     //create a new window and add this network to that window
-    CyWindow newWindow = new CyWindow(cyWindow.getCytoscapeObj(), newNetwork, "Overlap Graph");
+    cyWindow.getNetwork().setNewGraphFrom(newNetwork, false);
+    //CyWindow newWindow = new CyWindow(cyWindow.getCytoscapeObj(), newNetwork, "Overlap Graph");
     //create a new menu item and actionlistener for that window
-    newWindow.getCyMenus().getOperationsMenu().add(new ShowGMLAction(newWindow,node2CyNetwork));	 	
-    newWindow.showWindow();
+    cyWindow.getCyMenus().getOperationsMenu().add(new ShowGMLAction(cyWindow,node2CyNetwork));	 	
+    //newWindow.showWindow();
     
   }
 
@@ -350,7 +351,7 @@ class ShowGMLThread extends Thread{
     synchronized (overlapWindow){									
       
       if (newWindow == null) {
-	newWindow = new CyWindow(overlapWindow.getCytoscapeObj(),CyNetworkFactory.createEmptyNetwork(),"Split Graph");
+	newWindow = new CyWindow(overlapWindow.getCytoscapeObj(),new CyNetwork(GinyFactory.createRootGraph(),overlapWindow.getNetwork().getNodeAttributes(),overlapWindow.getNetwork().getEdgeAttributes()),"Split Graph");
 	newWindow.showWindow();
       } // end of if ()
       DualLayoutCommandLineParser parser = new DualLayoutCommandLineParser(overlapWindow.getCytoscapeObj().getConfiguration().getArgs());
