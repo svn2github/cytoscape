@@ -35,6 +35,7 @@
 package metaNodeViewer.data;
 
 import cytoscape.*;
+import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.*;
 import giny.model.*;
 import cern.colt.map.AbstractIntIntMap;
