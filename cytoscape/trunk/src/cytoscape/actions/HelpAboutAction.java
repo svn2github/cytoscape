@@ -25,7 +25,7 @@ public class HelpAboutAction extends AbstractAction   {
                   lines.append("\n Cytoscape is a collaboration \n" );
                   lines.append("between the Institute for Systems\n" );
                   lines.append("Biology, University of California,\n" );
-                  lines.append("San Diaego, Memorial Sloan Kettering\n" );
+                  lines.append("San Diego, Memorial Sloan Kettering\n" );
                   lines.append("Cancer Center and the\n" );
                   lines.append("Institute Pasteur\n" );
                   lines.append(" \n" );

@@ -28,6 +28,7 @@ import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.InteractionsReader;
 import cytoscape.data.servers.BioDataServer;
 import cytoscape.giny.CytoscapeRootGraph;
+import cytoscape.giny.CytoscapeColtRootGraph;
 import cytoscape.giny.PhoebeNetworkView;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.view.CyNetworkView;
@@ -148,7 +149,7 @@ public abstract class Cytoscape {
    */
   public static CytoscapeRootGraph getRootGraph () {
     if ( cytoscapeRootGraph == null ) 
-      cytoscapeRootGraph = new CytoscapeRootGraph();
+      cytoscapeRootGraph = new CytoscapeColtRootGraph();
     
     return cytoscapeRootGraph;
   }

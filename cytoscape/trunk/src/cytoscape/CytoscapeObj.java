@@ -24,5 +24,14 @@ public class CytoscapeObj {
     return Cytoscape.getBioDataServer();
   }
 
+  public CytoscapeConfig getConfiguration () {
+    return new CytoscapeConfig();
+  }
+
+
+  public int getViewThreshold () {
+    return 500;
+  }
+
 }
 
