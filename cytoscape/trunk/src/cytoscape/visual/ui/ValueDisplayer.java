@@ -5,17 +5,18 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual.ui;
 //----------------------------------------------------------------------------
-import javax.swing.JButton;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.text.*;
-import javax.swing.event.*;
-import java.util.HashMap;
 import cytoscape.visual.Arrow;
 import cytoscape.visual.LineType;
 import cytoscape.visual.ShapeNodeRealizer;
+
+import javax.swing.*;
+import javax.swing.plaf.metal.MetalButtonUI;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.text.DecimalFormat;
+import java.util.HashMap;
 //----------------------------------------------------------------------------
 /**
  * Given an Object, figures out the class of the object and creates a JButton
@@ -30,13 +31,13 @@ public class ValueDisplayer extends JButton {
     /**
      *  Formatting for numeric types.
      */
-    public static DecimalFormat formatter = new DecimalFormat("0.0####");    
+    public static DecimalFormat formatter = new DecimalFormat("0.0####");
 
     /**
      *	Display and get input for a color
      */
     public static final byte COLOR = 0;
-    
+
     /**
      *	Display and get input for a linetype
      */
@@ -46,7 +47,7 @@ public class ValueDisplayer extends JButton {
      *	Display and get input for an arrowhead
      */
     public static final byte ARROW = 2;
-    
+
     /**
      *	Display and get input for a string
      */
@@ -129,7 +130,7 @@ public class ValueDisplayer extends JButton {
     public ActionListener getInputListener() {
 	return inputListener;
     }
-    
+
     /**
      *	Returns the type of input this ValueDisplayer displays/gets input for
      */
@@ -146,7 +147,7 @@ public class ValueDisplayer extends JButton {
 	this.enabled = b;
 	super.setEnabled(b);
     }
-    
+
     /**
      *	This private constructor is used to create all ValueDisplayers.
      *	Use the static method getDisplayFor (@link #getDisplayFor) to
@@ -165,11 +166,13 @@ public class ValueDisplayer extends JButton {
 	// can't find proper icon/label until later, so set label to null for now
 	this(parent, null, title, dispType);
     }
-    
+
     public static ValueDisplayer getDisplayForColor(JDialog parent, String title,
 						    Color c) {
 	String dispString = "   "; // just display the color
         ValueDisplayer v = new ValueDisplayer(parent, dispString, title, COLOR);
+        //gbader Jul12/04 - force the Metal L&F here, since the windows L&F doesn't color the button
+        v.setUI(new MetalButtonUI());
 	if (c != null) {
 	    v.setOpaque(true);
 	    v.setBackground(c);
@@ -266,7 +269,7 @@ public class ValueDisplayer extends JButton {
 	setFont(f.deriveFont(12F));
 	setText(dispFontName);
     }
-    
+
     private void setInputFontListener() {
 	this.inputListener = new FontListener(this);
 	addActionListener(this.inputListener);
@@ -280,7 +283,7 @@ public class ValueDisplayer extends JButton {
 	    super("ValueDisplayer FontListener");
 	    this.parent = parent;
 	}
-	
+
 	public void actionPerformed(ActionEvent e) {
 	    if (enabled) {
 		FontChooser chooser = new FontChooser(((Font) inputObj).deriveFont(1F));
@@ -289,9 +292,9 @@ public class ValueDisplayer extends JButton {
 					    true);
 		JComboBox face = chooser.getFaceComboBox();
 		face.setSelectedItem(parent.inputObj);
-		
+
 		JPanel butPanel = new JPanel(false);
-		
+
 		// buttons - OK/Cancel
 		JButton okBut = new JButton("OK");
 		okBut.addActionListener(new OKListener(chooser));
@@ -304,7 +307,7 @@ public class ValueDisplayer extends JButton {
 
 		Container content = popup.getContentPane();
 		content.setLayout(new BorderLayout());
-		
+
 		content.add(chooser, BorderLayout.CENTER);
 		content.add(butPanel, BorderLayout.SOUTH);
 		popup.pack();
@@ -393,19 +396,19 @@ public class ValueDisplayer extends JButton {
             this.setIcon(currentIcon);
             this.inputObj = sToI.get(currentIcon.getDescription());
 	}
-	
+
 	this.inputListener = new IconListener(title, objectName, icons, sToI,
 					      currentIcon, parentDialog, this);
 	addActionListener(this.inputListener);
     }
 
-    
+
     // internal class IconListener. Calls PopupIconChooser to get an icon from
     // the user.
     private class IconListener extends AbstractAction {
 	private PopupIconChooser chooser;
 	private ValueDisplayer parent;
-	private HashMap sToI; // map from the image icon description to type	
+	private HashMap sToI; // map from the image icon description to type
 
 	IconListener(String title, String objectName, ImageIcon[] icons,
 		     HashMap sToI, ImageIcon startIconObject, JDialog parentDialog,
@@ -441,7 +444,7 @@ public class ValueDisplayer extends JButton {
 	this.inputListener = new StringListener(prompt, type);
 	addActionListener(this.inputListener);
     }
-	
+
     private static ValueDisplayer getDisplayForString(JDialog parent,
 						      String title,
 						      String init) {
@@ -524,7 +527,7 @@ public class ValueDisplayer extends JButton {
 	JOptionPane.showMessageDialog(parent, errorMsg, "Bad Input",
 				      JOptionPane.ERROR_MESSAGE);
     }
-    
+
     /**
      *	Get a blank or default display/input pair for a given type of input.
      *
@@ -565,7 +568,7 @@ public class ValueDisplayer extends JButton {
 	    throw new ClassCastException("ValueDisplayer didn't understand type flag " + type);
 	}
     }
-    
+
     /**
      * Get a blank or default display/input pair for the given sample object,
      * which itself is ignored.
@@ -575,7 +578,7 @@ public class ValueDisplayer extends JButton {
      *	@param	title
      *		Title to display for input dialog
      * @param   o
-     
+
      *
      *	@return	ValueDisplayer initialized for given input
      *	@throws ClassCastException if you didn't pass in a known type
@@ -597,14 +600,14 @@ public class ValueDisplayer extends JButton {
                 return getDisplayForDouble(parent, title, 0 );
             } else {
                 return getDisplayForInt(parent, title, 0 );
-            }	    
+            }
         } else if (sampleObj instanceof Font) {
 	    return getDisplayForFont(parent, title, new Font(null, Font.PLAIN, 1));
 	} else {//don't know what to do this this
             throw new ClassCastException("ValueDisplayer doesn't know how to display type " + sampleObj.getClass().getName());
         }
     }
-    
+
     /**
      *	Get a display/input pair initialized to a given type of input. If sending
      *	fonts, must send fonts as gotten from {@link java.awt.GraphicsEnvrionment#getAllFonts}
@@ -636,7 +639,7 @@ public class ValueDisplayer extends JButton {
                 return getDisplayForDouble(parent, title, ((Number)o).doubleValue() );
             } else {
                 return getDisplayForInt(parent, title, ((Number)o).intValue() );
-            }	    
+            }
         } else if (o instanceof Font) {
 	    return getDisplayForFont(parent, title, (Font) o);
 	} else {//don't know what to do this this
