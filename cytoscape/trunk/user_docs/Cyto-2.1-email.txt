@@ -1,0 +1,38 @@
+Subject: Announcing Cytoscape Version 2.1
+
+Greetings,
+
+Cytoscape is an open-source bioinformatics software platform for visualizing
+molecular interaction networks and integrating these interactions with gene
+expression profiles and other state data.
+
+http://www.cytoscape.org
+
+New version 2.1 Features:
+
+For users:
+-Major performance improvements
+-Complete on-line help system
+-cPath plugin for downloading protein interactions
+-Better network filtering including large network support
+-Layout and rotate selected nodes
+-Progress bars on long tasks
+-Support for very large networks (>100K nodes, edges)
+-Numerous Bug Fixes.
+-Numerous plugins available for feature expansion and network analysis
+	E.g. Active Modules, MCODE, LitSearch
+	See http://www.cytoscape.org/plugins2.php
+
+For programmers:
+-Significantly expanded core technical documentation
+-New task framework for long-term tasks
+-Headless mode (command line only operation)
+
+Cytoscape is jointly developed by the groups of Benno Schwikowski (Pasteur
+Institute, Paris), Trey Ideker (University of California San Diego), Chris
+Sander (Memorial Sloan-Kettering Cancer Center), Annette Adler (Agilent
+Laboratories) and the Institute of Systems Biology, Seattle.
+
+Best regards,
+The Cytoscape Collaboration
+
