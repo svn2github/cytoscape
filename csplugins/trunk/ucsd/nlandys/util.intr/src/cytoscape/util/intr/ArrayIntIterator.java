@@ -2,7 +2,7 @@ package cytoscape.util.intr;
 
 /**
  * A utility class which conveniently converts an array of integers into
- * an IntIterator (and iteration of integers).
+ * an IntIterator (an iteration of integers).
  */
 public final class ArrayIntIterator implements IntIterator
 {
