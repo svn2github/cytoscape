@@ -112,7 +112,7 @@ class FRootGraph implements RootGraph
   {
     final int positiveNodeIndex = ~nodeInx;
     IntEnumerator edgeInxEnum;
-    try { edgeInxEnum = m_graph.adjacentEdges
+    try { edgeInxEnum = m_graph._adjacentEdges
             (positiveNodeIndex, true, true, true); }
     catch (IllegalArgumentException e) { return 0; }
     m_heap.empty();
@@ -297,8 +297,8 @@ class FRootGraph implements RootGraph
     final IntEnumerator aAdj;
     final IntEnumerator bAdj;
     try {
-      aAdj = m_graph.adjacentEdges(positiveNodeInxA, true, true, true);
-      bAdj = m_graph.adjacentEdges(positiveNodeInxB, true, true, true); }
+      aAdj = m_graph._adjacentEdges(positiveNodeInxA, true, true, true);
+      bAdj = m_graph._adjacentEdges(positiveNodeInxB, true, true, true); }
     catch (IllegalArgumentException e) { return false; }
     final IntEnumerator theAdj =
       ((aAdj.numRemaining() < bAdj.numRemaining()) ? aAdj : bAdj);
@@ -329,8 +329,8 @@ class FRootGraph implements RootGraph
     final IntEnumerator fromAdj;
     final IntEnumerator toAdj;
     try {
-      fromAdj = m_graph.adjacentEdges(positiveFromNodeInx, true, false, true);
-      toAdj = m_graph.adjacentEdges(positiveToNodeInx, true, true, false); }
+      fromAdj = m_graph._adjacentEdges(positiveFromNodeInx, true, false, true);
+      toAdj = m_graph._adjacentEdges(positiveToNodeInx, false, true, true); }
     catch (IllegalArgumentException e) { return false; }
     final IntEnumerator theAdj =
       ((fromAdj.numRemaining() < toAdj.numRemaining()) ? fromAdj : toAdj);
@@ -366,8 +366,8 @@ class FRootGraph implements RootGraph
   {
     final int positiveNodeInx = ~nodeInx;
     final IntEnumerator adj;
-    try { adj = m_graph.adjacentEdges(positiveNodeInx, undirected,
-                                      incomingDirected, outgoingDirected); }
+    try { adj = m_graph._adjacentEdges(positiveNodeInx, outgoingDirected,
+                                       incomingDirected, undirected); }
     catch (IllegalArgumentException e) { return new int[0]; }
     final int[] returnThis = new int[adj.numRemaining()];
     for (int i = 0; i < returnThis.length; i++) returnThis[i] = ~adj.nextInt();
@@ -389,7 +389,7 @@ class FRootGraph implements RootGraph
     {
       final int theNode = nodeIter.nextInt();
       final IntEnumerator edgeIter;
-      try { edgeIter = m_graph.adjacentEdges(theNode, true, false, true); }
+      try { edgeIter = m_graph._adjacentEdges(theNode, true, false, true); }
       catch (IllegalArgumentException e) { continue; }
       while (edgeIter.numRemaining() > 0)
       {
@@ -439,10 +439,10 @@ class FRootGraph implements RootGraph
     final IntEnumerator fromAdj;
     final IntEnumerator toAdj;
     try {
-      fromAdj = m_graph.adjacentEdges(positiveFromNodeInx,
-                                      undirectedEdges, bothDirections, true);
-      toAdj = m_graph.adjacentEdges(positiveToNodeInx,
-                                    undirectedEdges, true, bothDirections); }
+      fromAdj = m_graph._adjacentEdges(positiveFromNodeInx,
+                                       true, bothDirections, undirectedEdges);
+      toAdj = m_graph._adjacentEdges(positiveToNodeInx,
+                                     bothDirections, true, undirectedEdges); }
     catch (IllegalArgumentException e) { return new int[0]; }
     final IntEnumerator theAdj =
       ((fromAdj.numRemaining() < toAdj.numRemaining()) ? fromAdj : toAdj);
@@ -502,8 +502,8 @@ class FRootGraph implements RootGraph
   {
     final int positiveNodeInx = ~nodeInx;
     final IntEnumerator adj;
-    try { adj = m_graph.adjacentEdges
-            (positiveNodeInx, countUndirectedEdges, true, false); }
+    try { adj = m_graph._adjacentEdges
+            (positiveNodeInx, false, true, countUndirectedEdges); }
     catch (IllegalArgumentException e) { return -1; }
     return adj.numRemaining();
   }
@@ -525,8 +525,8 @@ class FRootGraph implements RootGraph
   {
     final int positiveNodeInx = ~nodeInx;
     final IntEnumerator adj;
-    try { adj = m_graph.adjacentEdges
-            (positiveNodeInx, countUndirectedEdges, false, true); }
+    try { adj = m_graph._adjacentEdges
+            (positiveNodeInx, true, false, countUndirectedEdges); }
     catch (IllegalArgumentException e) { return -1; }
     return adj.numRemaining();
   }
@@ -540,7 +540,7 @@ class FRootGraph implements RootGraph
   {
     final int positiveNodeInx = ~nodeInx;
     final IntEnumerator adj;
-    try { adj = m_graph.adjacentEdges(positiveNodeInx, true, true, true); }
+    try { adj = m_graph._adjacentEdges(positiveNodeInx, true, true, true); }
     catch (IllegalArgumentException e) { return -1; }
     return adj.numRemaining();
   }
