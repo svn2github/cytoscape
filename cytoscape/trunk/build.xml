@@ -278,8 +278,8 @@
 
     <!-- ======================================================= -->
     <!-- Create Cytoscape Distribution                           -->
-    <!-- Final releases are made available in zip_release/ dir   -->
-    <!-- Questions?  email:  cerami@cbio.mskcc.org	       -->
+    <!-- Use the 'zip_release' target to build zipped releases   -->
+    <!-- Questions?  email:  cerami@cbio.mskcc.org	         -->
     <!-- ======================================================= -->
     <target name="release" depends="jar" description="Creates Cytoscape Release">
 
@@ -294,7 +294,8 @@
         <mkdir dir="${release.dir}/plugins"/>
         <mkdir dir="${release.dir}/GO"/>
         <mkdir dir="${release.dir}/sampleData"/>
-        <mkdir dir="${zip_release.dir}"/>
+        <!-- delete the dependent zip_release directory -->
+        <delete dir="${zip_release.dir}"/>
 
         <echo>
             ---------------------------------------
@@ -404,14 +405,23 @@
                 <include name="*.jar"/>
             </fileset>
         </copy>
+    </target>
 
-        <!-- Create Windows Zip Distribution -->
+    <!-- ======================================================= -->
+    <!-- Create Cytoscape Distribution                           -->
+    <!-- Final releases are made available in zip_release/ dir   -->
+    <!-- Questions?  email:  cerami@cbio.mskcc.org	         -->
+    <!-- ======================================================= -->
+    <target name="zip_release" depends="release" description="Creates Zipped Cytoscape Release Bundles">
+
         <echo>
             ---------------------------------------
             Creating zip/tar.gz files.
             ---------------------------------------
         </echo>
+        <mkdir dir="${zip_release.dir}"/>
 
+        <!-- Create Windows Zip Distribution -->
         <zip destfile="${zip_release.dir}/cytoscape-v${version}.zip"
             basedir="${release.dir}"/>
 
