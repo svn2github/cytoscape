@@ -604,6 +604,30 @@ public final class AllRootGraphMethodsTest
       throw new IllegalStateException("not degree 1");
     if (root.getDegree(nodeInx[4]) != 0)
       throw new IllegalStateException("not degree 0");
+
+    // getIndex(Node).
+    if (root.getIndex(root2Node) != 0)
+      throw new IllegalStateException("index not 0");
+    if (root.getIndex(root.getNode(nodeInx[2])) != nodeInx[2])
+      throw new IllegalStateException("wrong node index");
+
+    // getNode(int).
+    if (root.getNode(minNodeInx - 1) != null ||
+        root.getNode(0) != null ||
+        root.getNode(23) != null)
+      throw new IllegalStateException("not null");
+
+    // getIndex(Edge).
+    if (root.getIndex(root2Edge) != 0)
+      throw new IllegalStateException("index not 0");
+    if (root.getIndex(root.getEdge(edgeInx[3])) != edgeInx[3])
+      throw new IllegalStateException("wrong edge index");
+
+    // getEdge(int).
+    if (root.getEdge(minEdgeInx - 1) != null ||
+        root.getEdge(0) != null ||
+        root.getEdge(37) != null)
+      throw new IllegalStateException("not null");
   }
 
 }
