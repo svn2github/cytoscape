@@ -847,10 +847,68 @@ public final class AllGraphPerspectiveMethodsTest
       throw new IllegalStateException("totally wrong meta-relationship");
 
     // nodeMetaChildrenList(Node).
+    List nodeChildrenList =
+      persp.nodeMetaChildrenList(persp.getNode(nodeInx[4]));
+    if (nodeChildrenList.size() != 4)
+      throw new IllegalStateException("wrong number of children nodes");
+    for (int i = 0;; i++)
+      if (((Node) nodeChildrenList.get(i)).getRootGraphIndex() == nodeInx[4])
+        break;
+    for (int i = 0;; i++)
+      if (((Node) nodeChildrenList.get(i)).getRootGraphIndex() == nodeInx[0])
+        break;
+    for (int i = 0;; i++)
+      if (((Node) nodeChildrenList.get(i)).getRootGraphIndex() == nodeInx[2])
+        break;
+    for (int i = 0;; i++)
+      if (((Node) nodeChildrenList.get(i)).getRootGraphIndex() == nodeInx[3])
+        break;
+    if (persp.nodeMetaChildrenList(root2Node) != null ||
+        persp.nodeMetaChildrenList(nodeNotInPersp) != null)
+      throw new IllegalStateException("expected null node children list");
 
     // nodeMetaChildrenList(int).
+    nodeChildrenList = persp.nodeMetaChildrenList(nodeInx[0]);
+    if (nodeChildrenList.size() != 2)
+      throw new IllegalStateException("expected 2 children nodes");
+    for (int i = 0;; i++)
+      if (((Node) nodeChildrenList.get(i)).getRootGraphIndex() == nodeInx[1])
+        break;
+    for (int i = 0;; i++)
+      if (((Node) nodeChildrenList.get(i)).getRootGraphIndex() == nodeInx[4])
+        break;
+    nodeChildrenList = persp.nodeMetaChildrenList(nodeInx[1]);
+    if (nodeChildrenList.size() != 0)
+      throw new IllegalStateException("expected 0 children nodes");
+    if (persp.nodeMetaChildrenList(0) != null ||
+        persp.nodeMetaChildrenList(1) != null ||
+        persp.nodeMetaChildrenList(minNodeInx - 1) != null ||
+        persp.nodeMetaChildrenList
+        (nodeNotInPersp.getRootGraphIndex()) != null ||
+        persp.nodeMetaChildrenList(Integer.MIN_VALUE) != null ||
+        persp.nodeMetaChildrenList(Integer.MAX_VALUE) != null ||
+        persp.nodeMetaChildrenList(Integer.MIN_VALUE + 1) != null)
+      throw new IllegalStateException("expected null node children list");
 
     // getNodeMetaChildIndicesArray(int).
+    int[] childNodeInx = persp.getNodeMetaChildIndicesArray(nodeInx[2]);
+    if (childNodeInx.length != 0)
+      throw new IllegalStateException("expected 0 child nodes");
+    childNodeInx = persp.getNodeMetaChildIndicesArray(nodeInx[3]);
+    if (childNodeInx.length != 4)
+      throw new IllegalStateException("expected 4 child nodes");
+    for (int i = 0;; i++) if (childNodeInx[i] == nodeInx[3]) break;
+    for (int i = 0;; i++) if (childNodeInx[i] == nodeInx[1]) break;
+    for (int i = 0;; i++) if (childNodeInx[i] == nodeInx[0]) break;
+    for (int i = 0;; i++) if (childNodeInx[i] == nodeInx[2]) break;
+    if (persp.getNodeMetaChildIndicesArray(0) != null ||
+        persp.getNodeMetaChildIndicesArray(23) != null ||
+        persp.getNodeMetaChildIndicesArray(minNodeInx - 1) != null ||
+        persp.getNodeMetaChildIndicesArray(Integer.MAX_VALUE) != null ||
+        persp.getNodeMetaChildIndicesArray(Integer.MIN_VALUE) != null ||
+        persp.getNodeMetaChildIndicesArray
+        (nodeNotInPersp.getRootGraphIndex()) != null)
+      throw new IllegalStateException("expected null children nodes");
 
     // isMetaParent(Edge, Node).
 
