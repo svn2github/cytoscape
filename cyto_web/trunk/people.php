@@ -55,20 +55,35 @@
 <table cellpadding="8" cellspacing="0" border="0">
   <tr><!-- Stupid table wants to put itself all the way to the left lol! -->
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
-    <td>Mark Anderson<br /><br /><img src="people_photos/mark.jpg"></img></td>
-    <td>Iliana<br />Avila-Campillo<br /><br /><img src="people_photos/iliana.jpg"></img></td>
-    <td>Gary Bader<br /><br /><img src="people_photos/gary.jpg"></img></td>
-    <td>Ethan Cerami<br /><br /><img src="people_photos/ethan.jpg"></img></td>
-    <td>Rowan Christmas<br /><br /><img src="people_photos/rowan.jpg"></img></td>
+    <td>Mark Anderson<br /></td>
+    <td>Iliana<br />Avila-Campillo</td>
+    <td>Gary Bader</td>
+    <td>Ethan Cerami</td>
+    <td>Rowan Christmas</td>
   </tr>
-  <tr><td colspan=5>&nbsp;</td></tr>
   <tr>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
-    <td>Trey Ideker<br /><br /><img src="people_photos/trey.jpg"></img></td>
-    <td>Ryan Kelley<br /><br /><img src="people_photos/ryan.jpg"></img></td>
-    <td>Nerius Landys<br /><br /><img src="people_photos/nerius.jpg"></img></td>
-    <td>Robert Sheridan<br /><br /><img src="people_photos/robert.jpg"></img></td>
-    <td colspan=3>Chris Workman<br /><br /><img src="people_photos/chris.jpg"></img></td>
+    <td><img src="people_photos/mark.jpg"></img></td>
+    <td><img src="people_photos/iliana.jpg"></img></td>
+    <td><img src="people_photos/gary.jpg"></img></td>
+    <td><img src="people_photos/ethan.jpg"></img></td>
+    <td><img src="people_photos/rowan.jpg"></img></td>
+  <tr><td colspan=6>&nbsp;</td></tr>
+  <tr>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
+    <td>Trey Ideker</td>
+    <td>Ryan Kelley</td>
+    <td>Nerius Landys</td>
+    <td>Robert Sheridan</td>
+    <td colspan=3>Chris Workman</td>
+  </tr>
+  <tr>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
+    <td><img src="people_photos/trey.jpg"></img></td>
+    <td><img src="people_photos/ryan.jpg"></img></td>
+    <td><img src="people_photos/nerius.jpg"></img></td>
+    <td><img src="people_photos/robert.jpg"></img></td>
+    <td><img src="people_photos/chris.jpg"></img></td>
   </tr>
 </table>
 <blockquote>
