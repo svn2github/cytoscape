@@ -31,7 +31,7 @@
  ** along with this library; if not, write to the Free Software Foundation,
  ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  **/
-package cytoscape.data.unitTests;
+package cytoscape.view.unitTests;
 
 import junit.framework.TestCase;
 import junit.framework.Test;
@@ -42,7 +42,7 @@ import junit.framework.TestSuite;
  *
  * @author Ethan Cerami
  */
-public class DataSuite extends TestCase {
+public class ViewSuite extends TestCase {
 
     /**
      * The suite method runs all the tests.
@@ -50,15 +50,8 @@ public class DataSuite extends TestCase {
      */
     public static Test suite() {
         TestSuite suite = new TestSuite();
-        suite.addTestSuite(GraphObjAttributesTest.class);
-        suite.addTestSuite(ExpressionDataTest.class);
-        suite.addTestSuite(InteractionTest.class);
-        suite.addTestSuite(mRNAMeasurementTest.class);
-        suite.addTestSuite(CyNetworkEventTest.class);
-        suite.addTestSuite(CyNetworkTest.class);
-        suite.addTestSuite(CyNetworkFactoryTest.class);
-        suite.addTestSuite(FlagEventTest.class);
-        suite.addTestSuite(FlagFilterTest.class);
+        suite.addTestSuite(FlagAndSelectionHandlerTest.class);
+        suite.addTestSuite(CytoscapeViewTests.class);
         suite.setName("Date Core Tests");
         return suite;
     }

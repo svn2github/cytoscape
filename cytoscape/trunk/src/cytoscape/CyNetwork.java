@@ -5,6 +5,7 @@ import java.util.*;
 
 import cytoscape.data.ExpressionData;
 import cytoscape.data.GraphObjAttributes;
+import cytoscape.data.FlagFilter;
 /*
 // save for linking 
 //javadoc -d API -link file:///users/xmas/CSBI/giny/API/ -private `find . -name "*.java" -print`
@@ -145,6 +146,10 @@ public interface CyNetwork extends GraphPerspective {
    */
   public GraphPerspective getGraphPerspective();
 
+  /**
+   * Returns the default object for flagging graph objects.
+   */
+  public FlagFilter getFlagger();
 
   
 

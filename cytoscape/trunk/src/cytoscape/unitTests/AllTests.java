@@ -11,6 +11,7 @@ import cytoscape.data.unitTests.DataSuite;
 import cytoscape.data.readers.unitTests.DataReaderSuite;
 import cytoscape.data.annotation.unitTests.AnnotationSuite;
 import cytoscape.data.synonyms.unitTests.SynonymSuite;
+import cytoscape.view.unitTests.ViewSuite;
 
 /**
  * Runs all Cytoscape Unit Tests.
@@ -69,6 +70,7 @@ public class AllTests extends TestCase {
         suite.addTest(VisualSuite.suite());
         suite.addTest(ContinuousMappingTestSuite.suite());
         suite.addTest(DiscreteMappingTestSuite.suite());
+        suite.addTest(ViewSuite.suite());
 
         suite.setName("Cytoscape JUnit Tests");
         return suite;

@@ -92,13 +92,13 @@ public abstract class Cytoscape {
   protected static CyNetworkView nullNetworkView =  new PhoebeNetworkView ( nullNetwork, "null" );
 
 
-  protected static CytoscapeObj cytoscapeobj;
+  protected static CytoscapeObj cytoscapeobj = new CytoscapeObj(new CytoscapeConfig(new String[0]));
 
   public static CytoscapeObj getCytoscapeObj () {
     return cytoscapeobj;
   }
 
-  protected static void setCytoscapeObj ( CytoscapeObj obj ) {
+  public static void setCytoscapeObj ( CytoscapeObj obj ) {
     cytoscapeobj = obj;
   }
 

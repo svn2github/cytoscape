@@ -38,9 +38,6 @@ import giny.model.GraphPerspectiveChangeListener;
 import giny.view.GraphView;
 import cern.colt.list.IntArrayList;
 
-//TODO: Remove when possible:
-import coltginy.ColtGraphPerspective;
-
 public class GraphViewController 
   implements giny.model.GraphPerspectiveChangeListener{
   
@@ -106,16 +103,7 @@ public class GraphViewController
     removeAllGraphViews();
     for(int i = 0; i < graph_views.length; i++){
       GraphPerspective graphPerspective = graph_views[i].getGraphPerspective();
-      // THIS MAY NOT COMPILE (SEE ROWAN):
-      //graphPerspective.addGraphPerspectiveChangeListener(this);
-      // TODO: When GINY has above method, don't do this:
-      if(graphPerspective instanceof coltginy.ColtGraphPerspective){
-        ((coltginy.ColtGraphPerspective)graphPerspective).addGraphPerspectiveChangeListener(this);
-      }else{
-        System.err.println("Oops! The graph perspective is not an instance of ColtGraphPerspective " +
-                           " so we can't add this graph listener");
-        continue;
-      }
+      graphPerspective.addGraphPerspectiveChangeListener(this);
       this.gpToGv.put(graphPerspective, graph_views[i]);
       this.graphViewToHandler.put(graph_views[i], DEFAULT_GRAPH_VIEW_HANDLER);
     }//for i
@@ -140,16 +128,7 @@ public class GraphViewController
     removeAllGraphViews();
     for(int i = 0; i < graph_views.length; i++){
       GraphPerspective graphPerspective = graph_views[i].getGraphPerspective();
-      // THIS MAY NOT COMPILE (SEE ROWAN):
-      //graphPerspective.addGraphPerspectiveChangeListener(this);
-      // TODO: When GINY has above method, don't do this:
-      if(graphPerspective instanceof coltginy.ColtGraphPerspective){
-        ((coltginy.ColtGraphPerspective)graphPerspective).addGraphPerspectiveChangeListener(this);
-      }else{
-        System.err.println("Oops! The graph perspective is not an instance of ColtGraphPerspective " +
-                           " so we can't add this graph listener");
-        continue;
-      }
+      graphPerspective.addGraphPerspectiveChangeListener(this);
       this.gpToGv.put(graphPerspective, graph_views[i]);
       GraphViewHandler handler = (GraphViewHandler)gv_to_handler.get(graph_views[i]);
       if(handler == null){
@@ -211,16 +190,7 @@ public class GraphViewController
   public GraphViewHandler removeGraphView (GraphView graph_view){
     if(this.graphViewToHandler.containsKey(graph_view)){
       GraphPerspective graphPerspective = graph_view.getGraphPerspective();
-      //TODO: This is how it should be:
-      //graphPerspective.removeGraphPerspectiveChangeListener(this);
-      //TODO: Remove when above method is in GINY
-      if(graphPerspective instanceof coltginy.ColtGraphPerspective){
-        ((coltginy.ColtGraphPerspective)graphPerspective).removeGraphPerspectiveChangeListener(this);
-      }else{
-        System.err.println("Oops! The graph perspective is not an instance of ColtGraphPerspective " +
-                           " so we can't remove this graph listener");
-        return null;
-      }
+      graphPerspective.removeGraphPerspectiveChangeListener(this);
       this.gpToGv.remove(graphPerspective);
       GraphViewHandler gvHandler = 
         (GraphViewHandler)this.graphViewToHandler.remove(graph_view);
@@ -245,16 +215,7 @@ public class GraphViewController
       return false;
     }
     GraphPerspective graphPerspective = graph_view.getGraphPerspective();
-    //TODO: Put back when in GINY
-    //graphPerspective.addGraphPerspectiveChangeListener(this);
-    // TODO: When GINY has above method, don't do this:
-    if(graphPerspective instanceof coltginy.ColtGraphPerspective){
-      ((coltginy.ColtGraphPerspective)graphPerspective).addGraphPerspectiveChangeListener(this);
-    }else{
-      System.err.println("Oops! The graph perspective is not an instance of ColtGraphPerspective " +
-                         " so we can't add this graph listener");
-      return false;
-    }
+    graphPerspective.addGraphPerspectiveChangeListener(this);
     this.gpToGv.put(graphPerspective, graph_view);
     this.graphViewToHandler.put(graph_view,DEFAULT_GRAPH_VIEW_HANDLER);
     return true;
@@ -279,16 +240,7 @@ public class GraphViewController
       return false;
     }
     GraphPerspective graphPerspective = graph_view.getGraphPerspective();
-    //TODO: Put back when in GINY
-    //graphPerspective.addGraphPerspectiveChangeListener(this);
-    // TODO: When GINY has above method, don't do this:
-    if(graphPerspective instanceof coltginy.ColtGraphPerspective){
-      ((coltginy.ColtGraphPerspective)graphPerspective).addGraphPerspectiveChangeListener(this);
-    }else{
-      System.err.println("Oops! The graph perspective is not an instance of ColtGraphPerspective " +
-                         " so we can't add this graph listener");
-      return false;
-    }
+    graphPerspective.addGraphPerspectiveChangeListener(this);
     this.gpToGv.put(graphPerspective, graph_view);
     this.graphViewToHandler.put(graph_view, gv_handler);
     return true;
@@ -326,16 +278,7 @@ public class GraphViewController
     GraphView [] gViews = getGraphViews();
     for(int i = 0; i < gViews.length; i++){
       GraphPerspective graphPerspective = gViews[i].getGraphPerspective();
-      //TODO: Put back when in GINY
-      //graphPerspective.removeGraphPerspectiveChangeListener(this);
-      // TODO: When GINY has above method, don't do this:
-      if(graphPerspective instanceof coltginy.ColtGraphPerspective){
-        ((coltginy.ColtGraphPerspective)graphPerspective).removeGraphPerspectiveChangeListener(this);
-      }else{
-        System.err.println("Oops! The graph perspective is not an instance of ColtGraphPerspective " +
-                           " so we can't add this graph listener");
-        continue;
-      }
+      graphPerspective.removeGraphPerspectiveChangeListener(this);
     }//for i
     this.gpToGv.clear();
     this.graphViewToHandler.clear();
@@ -364,16 +307,7 @@ public class GraphViewController
     GraphView [] graphViews = getGraphViews();
     for(int i = 0; i < graphViews.length; i++){
       GraphPerspective graphPerspective = graphViews[i].getGraphPerspective();
-      //TODO: Put back when in GINY
-      //graphPerspective.removeGraphPerspectiveChangeListener(this);
-    // TODO: When GINY has above method, don't do this:
-      if(graphPerspective instanceof coltginy.ColtGraphPerspective){
-        ((coltginy.ColtGraphPerspective)graphPerspective).removeGraphPerspectiveChangeListener(this);
-      }else{
-        System.err.println("Oops! The graph perspective is not an instance of ColtGraphPerspective " +
-                           " so we can't add this graph listener");
-        continue;
-      }
+      graphPerspective.removeGraphPerspectiveChangeListener(this);
     }//for i
   }//stopListening
   
@@ -388,15 +322,7 @@ public class GraphViewController
   // listening is resumed, update the graph view
   public void stopListening (GraphView graph_view){
     GraphPerspective graphPerspective = graph_view.getGraphPerspective();
-    //TODO: Put back when in GINY
-    //graphPerspective.removeGraphPerspectiveChangeListener(this);
-    // TODO: When GINY has above method, don't do this:
-    if(graphPerspective instanceof coltginy.ColtGraphPerspective){
-      ((coltginy.ColtGraphPerspective)graphPerspective).removeGraphPerspectiveChangeListener(this);
-    }else{
-      System.err.println("Oops! The graph perspective is not an instance of ColtGraphPerspective " +
-                         " so we can't add this graph listener");
-    }
+    graphPerspective.removeGraphPerspectiveChangeListener(this);
   }//stopListening
   
   /**
@@ -414,16 +340,7 @@ public class GraphViewController
       GraphPerspective graphPerspective = graphViews[i].getGraphPerspective();
       GraphViewHandler handler = (GraphViewHandler)this.graphViewToHandler.get(graphViews[i]);
       handler.updateGraphView(graphViews[i]);
-      //TODO: Put back when in GINY
-      //graphPerspective.addGraphPerspectiveChangeListener(this);
-      // TODO: When GINY has above method, don't do this:
-      if(graphPerspective instanceof coltginy.ColtGraphPerspective){
-        ((coltginy.ColtGraphPerspective)graphPerspective).addGraphPerspectiveChangeListener(this);
-      }else{
-        System.err.println("Oops! The graph perspective is not an instance of ColtGraphPerspective " +
-                           " so we can't add this graph listener");
-        continue;
-      }
+      graphPerspective.addGraphPerspectiveChangeListener(this);
     }//for i
   }//resumeListening
 
@@ -440,15 +357,7 @@ public class GraphViewController
     GraphViewHandler handler = (GraphViewHandler)this.graphViewToHandler.get(graph_view);
     handler.updateGraphView(graph_view);
     GraphPerspective graphPerspective = graph_view.getGraphPerspective();
-    //TODO: Put back when in GINY
-    //graphPerspective.addGraphPerspectiveChangeListener(this);
-    // TODO: When GINY has above method, don't do this:
-    if(graphPerspective instanceof coltginy.ColtGraphPerspective){
-      ((coltginy.ColtGraphPerspective)graphPerspective).addGraphPerspectiveChangeListener(this);
-    }else{
-      System.err.println("Oops! The graph perspective is not an instance of ColtGraphPerspective " +
-                         " so we can't add this graph listener");
-    }
+    graphPerspective.addGraphPerspectiveChangeListener(this);
   }//resumeListening
   
   /**

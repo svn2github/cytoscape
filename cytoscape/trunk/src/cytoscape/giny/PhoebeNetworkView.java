@@ -46,6 +46,13 @@ public class PhoebeNetworkView
   protected GraphViewController graphViewController;
   
   /**
+   * The FlagAndSelectionHandler keeps the selection state of view objects
+   * inthe CyNetworkView nsync with the flagged state of those objects in
+   * the default flagger of the associated CyNetwork.
+   */
+  protected FlagAndSelectionHandler flagAndSelectionHandler;
+  
+  /**
    * The ClientData map
    */
   protected Map clientData;
@@ -70,6 +77,10 @@ public class PhoebeNetworkView
     enableNodeSelection();
     disableEdgeSelection();
     
+    GraphView[] graphViews = {this};
+    graphViewController = new GraphViewController(graphViews);
+    flagAndSelectionHandler =
+            new FlagAndSelectionHandler(getNetwork().getFlagger(), this);
     //TODO:
     //     Add NetworkView specific ToolBars
     

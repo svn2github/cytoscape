@@ -13,6 +13,7 @@ import cytoscape.giny.*;
 
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.data.ExpressionData;
+import cytoscape.data.FlagFilter;
 
 /**
  * ColtCyNetwork extends the GraphPerspective implementation found 
@@ -45,6 +46,11 @@ public class ColtCyNetwork
    * The ClientData map
    */
   protected Map clientData;
+  
+  /**
+   * The default object for flagging graph objects
+   */
+  protected FlagFilter flagger;
 
   //TODO: remove
   int activityCount = 0;
@@ -85,6 +91,7 @@ public class ColtCyNetwork
     uid_counter++;
 
     clientData = new HashMap();
+    flagger = new FlagFilter(this);
   }
 
   /**
@@ -326,6 +333,11 @@ public class ColtCyNetwork
     //null?
     // use Cytoscape.loadExpressionData instead
   }
+  
+  /**
+   * Returns the default object for flagging graph objects.
+   */
+  public FlagFilter getFlagger() {return flagger;}
 
   
    //----------------------------------------//
