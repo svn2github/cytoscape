@@ -35,10 +35,10 @@ public class RunSampleTask {
         if (option != 2) {
             task = new SampleTask(100, 100);
 
-        //  For Case 2:  throw an exception when we get to 10.
+        //  For Case 2:  throw an exception when we get to XX.
         //  Used to illustrate exception handling / error display.
         } else {
-            task = new SampleTask(100, 100, 10);
+            task = new SampleTask(100, 100, 50);
         }
 
         //  Configure the JTask UI Component
@@ -108,6 +108,7 @@ public class RunSampleTask {
                 System.out.println("This demo illustrates exception handling.");
                 System.out.println("--  This task will end prematurely "
                         + "with an error.");
+                System.out.println("--  This task can be canceled");
         }
     }
 }

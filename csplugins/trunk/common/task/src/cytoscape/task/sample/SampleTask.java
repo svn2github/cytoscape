@@ -91,7 +91,7 @@ public class SampleTask implements Task {
                 i++;
             }
         } catch (InterruptedException e) {
-            taskMonitor.setException(e, "Counting cancelled");
+            taskMonitor.setException(e, "Counting interrupted");
         } catch (IOException e) {
             taskMonitor.setException(e, "Counting aborted by fake exception");
         }
