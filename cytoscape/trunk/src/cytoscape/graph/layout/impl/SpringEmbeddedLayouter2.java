@@ -65,6 +65,7 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
   private int m_layoutPass;
 
   private boolean m_halt = false;
+  private final PercentCompletedCallback m_percentComplete;
 
   private final AutoScalingGraphLayout m_autoScaleGraph;
 
@@ -98,6 +99,10 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
       throw new UnsupportedOperationException
         ("this algirithm only works with graphs whose nodes are all " +
          "movable");
+    m_percentComplete =
+      ((percentComplete != null) ? percentComplete :
+       new PercentCompletedCallback() {
+         public void setPercentCompleted(int percent) {} });
     m_numLayoutPasses = DEFAULT_NUM_LAYOUT_PASSES;
     m_averageIterationsPerNode = DEFAULT_AVERAGE_ITERATIONS_PER_NODE;
     m_nodeDistanceSpringScalars = DEFAULT_NODE_DISTANCE_SPRING_SCALARS;
@@ -702,6 +707,7 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
   public void run()
   {
     if (m_halt) return;
+    m_percentComplete.setPercentCompleted(0);
 
     // Stop if all nodes are closer together than this euclidean distance.
     final double euclideanDistanceThreshold =
@@ -720,7 +726,13 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
     m_nodeDistanceSpringRestLengths = new double[m_nodeCount][m_nodeCount];
     m_nodeDistanceSpringStrengths = new double[m_nodeCount][m_nodeCount];
 
+    if (m_halt) return;
+    m_percentComplete.setPercentCompleted(1);
+
     int[][] nodeDistances = calculateNodeDistances(m_graph);
+
+    if (m_halt) return;
+    m_percentComplete.setPercentCompleted(3);
 
     // Calculate rest lengths and strengths based on node distance data.
     for (int node_i = 0; node_i < m_nodeCount; node_i++)
@@ -752,8 +764,21 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
       }
     }
 
+    final double percentCompletedBeforePasses = 5.0d;
+    final double percentCompletedAfterPasses = 95.0d;
+
+    // Wow!  Four 'p' words in a row!
+    final double percentProgressPerPass =
+      (percentCompletedAfterPasses - percentCompletedBeforePasses) /
+      (double) m_numLayoutPasses;
+
     for (m_layoutPass = 0; m_layoutPass < m_numLayoutPasses; m_layoutPass++)
     {
+      double currentProgress = percentCompletedBeforePasses +
+        percentProgressPerPass * (double) m_layoutPass;
+      final double percentProgressPerIter =
+        percentProgressPerPass / (double) (m_nodeCount + numIterations);
+
       // Initialize this layout pass.
       potentialEnergy[0] = 0.0;
       partialsList.clear();
@@ -761,6 +786,9 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
       // Calculate all node distances.  Keep track of the furthest.
       for (int nodeIndex = 0; nodeIndex < m_nodeCount; nodeIndex++)
       {
+        if (m_halt) return;
+        m_percentComplete.setPercentCompleted((int) currentProgress);
+
         partials = new PartialDerivatives(nodeIndex);
         calculatePartials(partials, null, potentialEnergy, false,
                           m_autoScaleGraph);
@@ -769,18 +797,33 @@ public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
             (partials.euclideanDistance >
              furthestNodePartials.euclideanDistance)) {
           furthestNodePartials = partials; }
+
+        currentProgress += percentProgressPerIter;
       }
       for (int iterations_i = 0; 
            (iterations_i < numIterations) &&
              (furthestNodePartials.euclideanDistance >=
               euclideanDistanceThreshold);
-           iterations_i++) {
+           iterations_i++)
+      {
+        if (m_halt) return;
+        m_percentComplete.setPercentCompleted((int) currentProgress);
+        
         furthestNodePartials = moveNode(furthestNodePartials, partialsList,
                                         potentialEnergy,
-                                        m_autoScaleGraph); }
+                                        m_autoScaleGraph);
+
+        currentProgress += percentProgressPerIter;
+      }
     }
+
+    if (m_halt) return;
+    m_percentComplete.setPercentCompleted((int) percentCompletedAfterPasses);
+
     // The last thing we do is trigger node movement in the underlying graph.
     m_autoScaleGraph.moveUnderlyingNodes();
+
+    m_percentComplete.setPercentCompleted(100);
   }
 
   /**
