@@ -2,3 +2,4 @@ cytoscape.graph
 cytoscape.graph.layout.algorithm
 cytoscape.graph.util
 lib:cytoscape_process.jar
+lib:com-nerius-math-xform.jar
