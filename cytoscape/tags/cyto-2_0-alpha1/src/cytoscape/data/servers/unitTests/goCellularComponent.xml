@@ -1,0 +1,1525 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- $Revision$
+     $Date$
+     $Author$
+  -->
+
+<annotation species="Homo sapiens" 
+            type="Cellular Component"
+            ontology="go.xml">
+
+
+  <term>
+     <entity> NM_000086 </entity>
+     <id> 0005739 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_000101 </entity>
+     <id> 0016020 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_000101 </entity>
+     <id> 0005739 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_000135 </entity>
+     <id> 0005634 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_000135 </entity>
+     <id> 0005737 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_000218 </entity>
+     <id> 0005624 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_000218 </entity>
+     <id> 0008076 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_000229 </entity>
+     <id> 0005576 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_000296 </entity>
+     <id> 0016021 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_000296 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_000336 </entity>
+     <id> 0005624 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_000336 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_000339 </entity>
+     <id> 0005624 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_000339 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_000418 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_000512 </entity>
+     <id> 0005764 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_000544 </entity>
+     <id> 0005624 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_000544 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_000592 </entity>
+     <id> 0005615 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_000593 </entity>
+     <id> 0005624 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_000593 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_000632 </entity>
+     <id> 0008305 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_000833 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_000887 </entity>
+     <id> 0008305 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_000903 </entity>
+     <id> 0005737 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_000920 </entity>
+     <id> 0005739 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_000977 </entity>
+     <id> 0005830 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001019 </entity>
+     <id> 0005843 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001039 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001042 </entity>
+     <id> 0005624 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001042 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001043 </entity>
+     <id> 0005624 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001043 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001114 </entity>
+     <id> 0005886 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001114 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001128 </entity>
+     <id> 0005737 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001128 </entity>
+     <id> 0005794 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001128 </entity>
+     <id> 0005906 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001136 </entity>
+     <id> 0005886 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001136 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001144 </entity>
+     <id> 0005624 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001144 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001169 </entity>
+     <id> 0005886 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001169 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001171 </entity>
+     <id> 0005886 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001171 </entity>
+     <id> 0005624 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001192 </entity>
+     <id> 0005886 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001192 </entity>
+     <id> 0016021 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001266 </entity>
+     <id> 0005615 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001297 </entity>
+     <id> 0005624 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001297 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001307 </entity>
+     <id> 0005923 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001307 </entity>
+     <id> 0016021 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001361 </entity>
+     <id> 0005739 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001424 </entity>
+     <id> 0016021 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001502 </entity>
+     <id> 0005624 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001502 </entity>
+     <id> 0005804 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001520 </entity>
+     <id> 0000127 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001527 </entity>
+     <id> 0005634 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001605 </entity>
+     <id> 0005737 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001605 </entity>
+     <id> 0005625 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001751 </entity>
+     <id> 0005737 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001751 </entity>
+     <id> 0005625 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001795 </entity>
+     <id> 0005886 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001795 </entity>
+     <id> 0005624 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001881 </entity>
+     <id> 0005634 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001907 </entity>
+     <id> 0005615 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001909 </entity>
+     <id> 0005764 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_001970 </entity>
+     <id> 0005737 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_002080 </entity>
+     <id> 0005739 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_002119 </entity>
+     <id> 0005886 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_002153 </entity>
+     <id> 0005789 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_002209 </entity>
+     <id> 0008305 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_002386 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_002428 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_002474 </entity>
+     <id> 0005859 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_002555 </entity>
+     <id> 0005886 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_002555 </entity>
+     <id> 0016021 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_002582 </entity>
+     <id> 0005634 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_002582 </entity>
+     <id> 0005737 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_002694 </entity>
+     <id> 0005665 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_002738 </entity>
+     <id> 0005737 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_002738 </entity>
+     <id> 0005886 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_002761 </entity>
+     <id> 0005654 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_002762 </entity>
+     <id> 0005654 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_002773 </entity>
+     <id> 0005576 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_002773 </entity>
+     <id> 0005886 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_002773 </entity>
+     <id> 0005615 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_002801 </entity>
+     <id> 0005837 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_002811 </entity>
+     <id> 0005837 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_002811 </entity>
+     <id> 0005838 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_002990 </entity>
+     <id> 0005615 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_002996 </entity>
+     <id> 0005886 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_002996 </entity>
+     <id> 0005615 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_003031 </entity>
+     <id> 0005737 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_003041 </entity>
+     <id> 0016021 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_003119 </entity>
+     <id> 0005739 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_003123 </entity>
+     <id> 0016020 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_003123 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_003166 </entity>
+     <id> 0005737 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_003361 </entity>
+     <id> 0005615 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_003361 </entity>
+     <id> 0000157 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_003366 </entity>
+     <id> 0005743 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_003460 </entity>
+     <id> 0005615 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_003470 </entity>
+     <id> 0005634 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_003486 </entity>
+     <id> 0005886 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_003561 </entity>
+     <id> 0005576 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_003586 </entity>
+     <id> 0005803 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_003609 </entity>
+     <id> 0005634 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_003745 </entity>
+     <id> 0005737 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_003752 </entity>
+     <id> 0005852 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_003869 </entity>
+     <id> 0005783 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_003905 </entity>
+     <id> 0005737 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_003946 </entity>
+     <id> 0005829 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_003946 </entity>
+     <id> 0005730 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_003983 </entity>
+     <id> 0005886 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_003983 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_004159 </entity>
+     <id> 0005837 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_004197 </entity>
+     <id> 0005634 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_004356 </entity>
+     <id> 0005886 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_004356 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_004413 </entity>
+     <id> 0000157 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_004422 </entity>
+     <id> 0005737 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_004438 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_004483 </entity>
+     <id> 0005739 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_004483 </entity>
+     <id> 0005960 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_004530 </entity>
+     <id> 0005615 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_004557 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_004594 </entity>
+     <id> 0016021 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_004604 </entity>
+     <id> 0016020 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_004614 </entity>
+     <id> 0005739 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_004691 </entity>
+     <id> 0005886 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_004691 </entity>
+     <id> 0000219 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_004933 </entity>
+     <id> 0005886 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_004960 </entity>
+     <id> 0005634 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_004996 </entity>
+     <id> 0005624 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_004996 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_005003 </entity>
+     <id> 0005624 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_005003 </entity>
+     <id> 0005748 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_005048 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_005072 </entity>
+     <id> 0005624 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_005072 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_005115 </entity>
+     <id> 0005634 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_005115 </entity>
+     <id> 0005737 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_005133 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_005200 </entity>
+     <id> 0005578 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_005329 </entity>
+     <id> 0016021 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_005329 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_005360 </entity>
+     <id> 0005717 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_005548 </entity>
+     <id> 0005737 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_005548 </entity>
+     <id> 0005625 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_005550 </entity>
+     <id> 0005871 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_005652 </entity>
+     <id> 0005696 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_005682 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_005752 </entity>
+     <id> 0005615 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_005752 </entity>
+     <id> 0005578 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_005796 </entity>
+     <id> 0005829 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_005796 </entity>
+     <id> 0005643 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_005849 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_005881 </entity>
+     <id> 0005739 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_005881 </entity>
+     <id> 0005947 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_005886 </entity>
+     <id> 0008352 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_005886 </entity>
+     <id> 0005634 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_005886 </entity>
+     <id> 0005813 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_005969 </entity>
+     <id> 0005737 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_005969 </entity>
+     <id> 0005678 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_006043 </entity>
+     <id> 0016021 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_006086 </entity>
+     <id> 0005856 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_006110 </entity>
+     <id> 0005737 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_006141 </entity>
+     <id> 0005868 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_006411 </entity>
+     <id> 0005783 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_006565 </entity>
+     <id> 0005634 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_006599 </entity>
+     <id> 0005634 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_006750 </entity>
+     <id> 0005624 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_006750 </entity>
+     <id> 0016010 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_007006 </entity>
+     <id> 0005634 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_007014 </entity>
+     <id> 0000151 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_007039 </entity>
+     <id> 0005856 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_007039 </entity>
+     <id> 0000157 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_007074 </entity>
+     <id> 0015629 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_007074 </entity>
+     <id> 0005765 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_007117 </entity>
+     <id> 0005625 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_007242 </entity>
+     <id> 0005737 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_007242 </entity>
+     <id> 0005643 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_007278 </entity>
+     <id> 0005886 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_007285 </entity>
+     <id> 0005856 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_007317 </entity>
+     <id> 0005634 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_007317 </entity>
+     <id> 0005699 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_012126 </entity>
+     <id> 0016021 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_012201 </entity>
+     <id> 0000139 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_012426 </entity>
+     <id> 0005681 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_013241 </entity>
+     <id> 0005634 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_013241 </entity>
+     <id> 0005737 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_013245 </entity>
+     <id> 0005829 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_013263 </entity>
+     <id> 0005634 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_013263 </entity>
+     <id> 0005737 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_013278 </entity>
+     <id> 0005625 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_013278 </entity>
+     <id> 0005615 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_013292 </entity>
+     <id> 0005859 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_013302 </entity>
+     <id> 0005737 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_014316 </entity>
+     <id> 0005737 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_014382 </entity>
+     <id> 0016021 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_014555 </entity>
+     <id> 0016021 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_014567 </entity>
+     <id> 0005737 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_014567 </entity>
+     <id> 0005624 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_015927 </entity>
+     <id> 0008357 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_016138 </entity>
+     <id> 0005739 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_016256 </entity>
+     <id> 0016021 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_016280 </entity>
+     <id> 0005783 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_016561 </entity>
+     <id> 0005624 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_016561 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_017458 </entity>
+     <id> 0005634 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_017458 </entity>
+     <id> 0005737 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_018667 </entity>
+     <id> 0005624 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_018690 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_018723 </entity>
+     <id> 0005794 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_018833 </entity>
+     <id> 0005624 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_018833 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_018975 </entity>
+     <id> 0000228 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_019619 </entity>
+     <id> 0005923 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_019862 </entity>
+     <id> 0005624 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_019862 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_019898 </entity>
+     <id> 0005624 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_019898 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_019899 </entity>
+     <id> 0005624 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_019899 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_019900 </entity>
+     <id> 0005624 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_019900 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_019901 </entity>
+     <id> 0005624 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_019901 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_019902 </entity>
+     <id> 0005624 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_019902 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_020988 </entity>
+     <id> 0000157 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_021005 </entity>
+     <id> 0005634 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_022172 </entity>
+     <id> 0005739 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_022555 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_022844 </entity>
+     <id> 0005859 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_022870 </entity>
+     <id> 0005859 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_032454 </entity>
+     <id> 0005634 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_032741 </entity>
+     <id> 0005783 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_032940 </entity>
+     <id> 0005665 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_033251 </entity>
+     <id> 0005830 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_130845 </entity>
+     <id> 0005624 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_130845 </entity>
+     <id> 0016010 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_138612 </entity>
+     <id> 0016021 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_138612 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_138713 </entity>
+     <id> 0005634 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_138714 </entity>
+     <id> 0005634 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_138958 </entity>
+     <id> 0005624 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_138958 </entity>
+     <id> 0005887 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_139273 </entity>
+     <id> 0005737 </id>
+     <name> </name>
+  </term>
+
+  <term>
+     <entity> NM_139273 </entity>
+     <id> 0005625 </id>
+     <name> </name>
+  </term>
+
+</annotation>
