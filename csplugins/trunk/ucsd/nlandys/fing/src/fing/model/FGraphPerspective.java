@@ -530,24 +530,28 @@ class FGraphPerspective implements GraphPerspective
                                      countUndirectedEdges).length; }
     catch (NullPointerException e) { return -1; } }
 
-  public java.util.List edgesList(Node from, Node to)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  public java.util.List edgesList(Node from, Node to) {
+    if (from.getRootGraph() == m_root && to.getRootGraph() == m_root)
+      return edgesList(from.getRootGraphIndex(),
+                       to.getRootGraphIndex(), true);
+    else return null; }
 
-  public java.util.List edgesList(int perspFromNodeInx,
-                                  int perspToNodeInx,
-                                  boolean includeUndirectedEdges)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  public java.util.List edgesList(int fromNodeInx,
+                                  int toNodeInx,
+                                  boolean includeUndirectedEdges) {
+    final int[] edgeInx = getEdgeIndicesArray(fromNodeInx, toNodeInx,
+                                              includeUndirectedEdges);
+    if (edgeInx == null) return null;
+    java.util.ArrayList returnList = new java.util.ArrayList(edgeInx.length);
+    for (int i = 0; i < edgeInx.length; i++)
+      returnList.add(getEdge(edgeInx[i]));
+    return returnList; }
 
-  public int[] getEdgeIndicesArray(int perspFromNodeInx,
-                                   int perspToNodeInx,
-                                   boolean includeUndirectedEdges)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  public int[] getEdgeIndicesArray(int fromNodeInx,
+                                   int toNodeInx,
+                                   boolean includeUndirectedEdges) {
+    return getEdgeIndicesArray(fromNodeInx, toNodeInx,
+                               includeUndirectedEdges, false); }
 
   public int getInDegree(Node node)
   {
