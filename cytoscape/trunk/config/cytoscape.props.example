@@ -1,3 +1,4 @@
+species=Saccharomyces cerevisiae
 #------------------------------------------------------------------------------------
 # interaction will determine the edge color.  this is the middle term in
 # an intr file, where the form is (by example)
