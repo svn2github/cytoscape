@@ -69,7 +69,7 @@
 	<!--  Target to compile all Plug In Code -->
   	<target name="compile" depends="prepare, build_cytoscape" 
 		description="Compiles all PlugIn source code.">
-                <javac debug="Yes" srcdir="${src.dir}" destdir="${build.classes}">
+                <javac listfiles="Yes" debug="Yes" srcdir="${src.dir}" destdir="${build.classes}">
 			<classpath refid="classpath"/>
 		</javac>
 	</target>
@@ -84,11 +84,18 @@
 	
 	<target name="test" depends="jar" description="Runs jar to debug">
 		<java classname="cytoscape.cytoscape" classpathref="classpath_run" fork="true">
-			<arg line="-n testData/lethal.attr -i testData/test.sif --JLD build/${plugin.name}.jar"/>
+			<arg line="-n testData/small.attr -i testData/small.sif --JLD build/${plugin.name}.jar --GImin 2 --GImax 3 --GIdebug"/>
 			<jvmarg value="-Xdebug"/>
 			<jvmarg value="-Xnoagent"/>
 			<jvmarg value="-Djava.compiler=NONE"/>
 			<jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,suspend=n"/>
+		</java>
+	</target>
+	
+	<target name="run" depends="jar" description="Runs jar">
+		<java classname="cytoscape.cytoscape" classpathref="classpath_run" fork="true">
+			<arg line="-n testData/lethal.attr -i testData/current.sif --JLD build/${plugin.name}.jar --GImin 3 --GImax 4 --GIthreads 2"/>
+			<jvmarg value="-Xmx1024m"/>
 		</java>
 	</target>
 
