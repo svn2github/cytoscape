@@ -44,7 +44,7 @@ import cytoscape.visual.CalculatorIO;
  * references to globally unique objects like the CytoscapeConfig and the
  * bioDataServer.
  */
-public class Cytoscape {
+public class CytoscapeObj {
     
     protected cytoscape parentApp;
     protected CytoscapeConfig config;
@@ -63,7 +63,7 @@ public class Cytoscape {
      *
      * @throws NullPointerException  if the argument is null
      */
-    public Cytoscape(CytoscapeConfig config) {
+    public CytoscapeObj(CytoscapeConfig config) {
         this.parentApp = null;
         this.config = config;
         this.logger = Logger.getLogger("global");
@@ -89,8 +89,8 @@ public class Cytoscape {
      * arguments may be null; a new Logger will be constructed if that
      * argument is null.
      */
-    public Cytoscape(cytoscape parentApp, CytoscapeConfig config,
-                     Logger logger, BioDataServer bioDataServer) {
+    public CytoscapeObj(cytoscape parentApp, CytoscapeConfig config,
+                        Logger logger, BioDataServer bioDataServer) {
         this.parentApp = parentApp;
         this.config = config;
         if (logger == null) {
@@ -106,8 +106,8 @@ public class Cytoscape {
     
 //------------------------------------------------------------------------------
 /**
- * If this Cytoscape object was constructed from cytoscape.java, then
- * this method returns a reference to that parent object;
+ * If this CytoscapeObj object was constructed from cytoscape.java,
+ * then this method returns a reference to that parent object;
  * else returns null.
  */
 public cytoscape getParentApp() {return parentApp;}

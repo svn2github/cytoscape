@@ -122,7 +122,7 @@ public class CytoscapeWindow extends JPanel implements FilterDialogClient, Graph
     //this object holds data members
     protected CyNetwork network;
     //this object holds objects that are unique in a Cytoscape instance
-    protected Cytoscape globalInstance;
+    protected CytoscapeObj globalInstance;
     //this object contains all the window and view stuff
     protected CyWindow cyWindow;
 
@@ -133,7 +133,7 @@ public class CytoscapeWindow extends JPanel implements FilterDialogClient, Graph
     protected String expressionDataFilename;
     
 //------------------------------------------------------------------------------
-public CytoscapeWindow(Cytoscape globalInstance, CyNetwork network,
+public CytoscapeWindow(CytoscapeObj globalInstance, CyNetwork network,
 String title) {
     this.geometryFilename = null;
     this.expressionDataFilename = null;
@@ -171,7 +171,7 @@ public CytoscapeWindow (cytoscape parentApp,
   this.geometryFilename = geometryFilename;
   this.expressionDataFilename = expressionDataFilename;
 
-  this.globalInstance = new Cytoscape(parentApp, config, logger, bioDataServer);
+  this.globalInstance = new CytoscapeObj(parentApp, config, logger, bioDataServer);
   
   this.network = new CyNetwork(graph, nodeAttributes,
                                edgeAttributes, expressionData);
@@ -202,7 +202,7 @@ public CytoscapeWindow (cytoscape parentApp,
  * home directory.
  */
 public void saveCalculatorCatalog() {
-    getCytoscape().saveCalculatorCatalog();
+    getCytoscapeObj().saveCalculatorCatalog();
 }
 //------------------------------------------------------------------------------
 //NOTE: the following two methods are redundant now that the new vizmapper
@@ -414,22 +414,22 @@ public void setExpressionData(ExpressionData expData, String expressionDataFilen
     this.expressionDataFilename = expressionDataFilename;
 }
 //------------------------------------------------------------------------------
-public Cytoscape getCytoscape() {return globalInstance;}
+public CytoscapeObj getCytoscapeObj() {return globalInstance;}
 //------------------------------------------------------------------------------
-public cytoscape getParentApp() {return getCytoscape().getParentApp();}
+public cytoscape getParentApp() {return getCytoscapeObj().getParentApp();}
 //------------------------------------------------------------------------------
-public Logger getLogger() {return getCytoscape().getLogger();}
+public Logger getLogger() {return getCytoscapeObj().getLogger();}
 //------------------------------------------------------------------------------
 public CytoscapeConfig getConfiguration() {
-    return getCytoscape().getConfiguration();
+    return getCytoscapeObj().getConfiguration();
 }
 //------------------------------------------------------------------------------
 public BioDataServer getBioDataServer() {
-    return getCytoscape().getBioDataServer();
+    return getCytoscapeObj().getBioDataServer();
 }
 //------------------------------------------------------------------------------
 public void setBioDataServer(BioDataServer newBioDataServer) {
-    getCytoscape().setBioDataServer(newBioDataServer);
+    getCytoscapeObj().setBioDataServer(newBioDataServer);
 }
 //------------------------------------------------------------------------------
 public String getDefaultSpecies() {
@@ -478,7 +478,7 @@ public UndoableGraphHider getGraphHider() {
  *   getCurrentDirectory() to begin browsing for files.
  */
 public File getCurrentDirectory() {
-    return getCytoscape().getCurrentDirectory();
+    return getCytoscapeObj().getCurrentDirectory();
 }
 //------------------------------------------------------------------------------
 /**  Cytoscape keeps track of the current directory being browsed;
@@ -487,7 +487,7 @@ public File getCurrentDirectory() {
  *   future browsing.
  */
 public void setCurrentDirectory(File dir) {
-    getCytoscape().setCurrentDirectory(dir);
+    getCytoscapeObj().setCurrentDirectory(dir);
 }
 //------------------------------------------------------------------------------
 public JFrame getMainFrame() {

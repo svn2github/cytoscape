@@ -73,7 +73,7 @@ NetworkView {
     protected static final int DEFAULT_WIDTH = 700;
     protected static final int DEFAULT_HEIGHT = 700;
 
-    protected Cytoscape globalInstance;
+    protected CytoscapeObj globalInstance;
     protected CyNetwork network;
     //this reference is needed for now since many things expect
     //a CytoscapeWindow reference. Eventually this will go away.
@@ -128,7 +128,7 @@ NetworkView {
  * @param cytoscapeWindow  reference to the encapsulating instance
  *                         of CYtoscapeWindow. Eventually will go away.
  */
-public CyWindow(Cytoscape globalInstance, CyNetwork network,
+public CyWindow(CytoscapeObj globalInstance, CyNetwork network,
                 String title, boolean doFreshLayout,
                 CytoscapeWindow cytoscapeWindow) {
     this.globalInstance = globalInstance;
@@ -157,10 +157,10 @@ public CyWindow(Cytoscape globalInstance, CyNetwork network,
     //add a listener to save the visual mapping catalog on exit
     //this should eventually be replaced by a method in Cytoscape.java itself
     //to save the catalog just before exiting the program
-    final Cytoscape theCytoscape = globalInstance;
+    final CytoscapeObj theCytoscapeObj = globalInstance;
     mainFrame.addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent we) {
-            theCytoscape.saveCalculatorCatalog();
+            theCytoscapeObj.saveCalculatorCatalog();
         }
     });
     //add the parent app as a listener, to manage the session when this window closes
@@ -206,7 +206,7 @@ protected void initializeWidgets() {
  */
 protected void setInitialLayouter() {
     String defaultLayoutStrategy =
-            getCytoscape().getConfiguration().getDefaultLayoutStrategy();
+            getCytoscapeObj().getConfiguration().getDefaultLayoutStrategy();
     if (defaultLayoutStrategy.equals("hierarchical")) {
         setLayouter( new HierarchicLayouter() );
     } else if (defaultLayoutStrategy.equals("circular")) {
@@ -246,7 +246,7 @@ private void attachGraphListeners() {
     if (getNetwork() == null || getNetwork().getGraph() == null) {return;}
     Graph2D theGraph = getNetwork().getGraph();
     theGraph.addGraph2DSelectionListener(this);
-    if (getCytoscape().getConfiguration().enableUndo()) {
+    if (getCytoscapeObj().getConfiguration().enableUndo()) {
         undoManager = new CytoscapeUndoManager(cytoscapeWindow, theGraph);
         theGraph.addGraphListener(undoManager);
     } else {
@@ -317,9 +317,9 @@ private void loadVizMapper() {
   
   // BUG: vizMapper.applyAppearances() gets called twice here
 
-  CalculatorCatalog calculatorCatalog = getCytoscape().getCalculatorCatalog();
+  CalculatorCatalog calculatorCatalog = getCytoscapeObj().getCalculatorCatalog();
   //try to get visual style from properties
-  Properties configProps = getCytoscape().getConfiguration().getProperties();
+  Properties configProps = getCytoscapeObj().getConfiguration().getProperties();
   VisualStyle vs = null;
   String vsName = configProps.getProperty("visualStyle");
   if (vsName != null) {vs = calculatorCatalog.getVisualStyle(vsName);}
@@ -329,7 +329,7 @@ private void loadVizMapper() {
   
   //create the vizMapping objects
   this.vizMapper = new VisualMappingManager(this, calculatorCatalog, vs,
-                                            getCytoscape().getLogger());
+                                            getCytoscapeObj().getLogger());
   this.vizMapUI = new VizMapUI(this.vizMapper, this.mainFrame);
   vizMapper.setUI(vizMapUI);
 
@@ -380,7 +380,7 @@ public void showWindow() {
 /**
  * Returns a reference to the global Cytoscape object.
  */
-public Cytoscape getCytoscape() {return globalInstance;}
+public CytoscapeObj getCytoscapeObj() {return globalInstance;}
 //------------------------------------------------------------------------------
 /**
  * returns the network displayed in this window.
@@ -687,13 +687,13 @@ public void applyLayout(boolean animated) {
     getUndoManager().saveRealizerState();
     getUndoManager().pause();
     
-    getCytoscape().getLogger().warning ("starting layout...");
+    getCytoscapeObj().getLogger().warning ("starting layout...");
     
     getLayouter().doLayout( graphView.getGraph2D() );
     graphView.fitContent();
     graphView.setZoom(graphView.getZoom()*0.9);
     
-    getCytoscape().getLogger().info(" done");
+    getCytoscapeObj().getLogger().info(" done");
     
     getUndoManager().resume();
     setInteractivity(true);
@@ -759,7 +759,7 @@ public void applyLayoutSelection() {
 
     // other layouters
     else {
-        getCytoscape().getLogger().warning ("starting layout..."); 
+        getCytoscapeObj().getLogger().warning ("starting layout..."); 
         setInteractivity(false);
 
         Subgraph subgraph = new Subgraph(theGraph, theGraph.selectedNodes());
@@ -777,7 +777,7 @@ public void applyLayoutSelection() {
         }
 
         setInteractivity(true);
-        getCytoscape().getLogger().info("  done");
+        getCytoscapeObj().getLogger().info("  done");
     }
 }
 //------------------------------------------------------------------------------
