@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
-<!-- build.xml - Build file for Cytoscape -->
+<!-- Build file for Cytoscape 			        -->
+<!-- Created by Ethan Cerami, cerami@cbio.mskcc.org	-->
+<!-- To get a quick listing of all ant targets, type: 	-->
+<!-- ant -projecthelp                                   -->
 <project name="Cytoscape" default="compile" basedir=".">
 
 	<!--  The directory containing library jar files -->	
@@ -43,9 +46,28 @@
 		</fileset>
 		<pathelement location="${dist.dir}/cytoscape-obfuscated.jar"/>
 	</path>
-	
+
+	<!-- Target to Query Environment -->
+	<!-- Checks if y.jar exists -->
+	<!-- This check in necessary because we cannot check y.jar into cvs. -->
+	<target name="query_environment">
+		<condition property="environment.configured">
+			<available file="${lib.dir}/y.jar"/>
+		</condition>
+	</target>
+
+	<!-- Stop build if Environment is not configured correctly -->
+	<target name="check_environment" depends="query_environment" unless="environment.configured">
+		<fail>Build aborted:  Make sure that y.jar is available within your lib directory.</fail>
+	</target>
+
+	<target name="show_cp">
+		<property name="temp" refid="classpath.compile"/>
+		<echo message="Classpath:  ${temp}"/>
+	</target>
+
   	<!-- Target to create the build directories prior to compilation -->
-  	<target name="prepare">
+  	<target name="prepare" depends="check_environment">
     		<mkdir dir="${build.dir}"/>
 		<mkdir dir="${build.dir}/docs"/>
     		<mkdir dir="${build.classes}"/>
@@ -53,6 +75,12 @@
 		<!-- copy over images -->
 		<copy todir="${build.classes}/cytoscape/images">
 			<fileset dir="${basedir}/images"/>
+		</copy>
+		<copy todir="${build.classes}/cytoscape/dialogs/images">
+			<fileset dir="${src.dir}/cytoscape/dialogs/images"/>
+		</copy>
+		<copy todir="${build.classes}/cytoscape/visual/ui/images">
+			<fileset dir="${src.dir}/cytoscape/visual/ui/images"/>
 		</copy>
 		<mkdir dir="${dist.dir}"/>
   	</target>
@@ -68,7 +96,7 @@
 
 	<!--  Target to compile all code -->
   	<target name="compile" depends="prepare" description="Compiles all source code.">
-    	<javac srcdir="${src.dir}" destdir="${build.classes}" nowarn="on" source="1.4">
+    	<javac srcdir="${src.dir}" destdir="${build.classes}" nowarn="on" source="1.4" includeAntRuntime="false">
 		<include name="cytoscape/**"/>
 		
 		<!-- Deferred classes are never compiled -->
