@@ -131,13 +131,17 @@ public VisualPropertiesDialog (Frame parentFrame,
   c.gridheight=1;
   c.fill=GridBagConstraints.NONE;
 
-  JPanel labelTextPanel
-      = new LabelTextPanel(nodeAttribs,localNodeLabelKey);
+  
+  sizeDefault = 
+      new IntegerEntryField
+	  ("Default Node Size",
+	   ((Integer)aMapper.getDefaultValue(VizMapperCategories.NODE_HEIGHT)).intValue(),
+	   500);
   c.gridx=0;
   c.gridy=4;
-  gridbag.setConstraints(labelTextPanel,c);
-  mainPanel.add(labelTextPanel);
-  
+  gridbag.setConstraints(sizeDefault,c);
+  mainPanel.add(sizeDefault);
+
   initializeShapeDefault();
   c.gridx=0;
   c.gridy=5;
@@ -150,49 +154,77 @@ public VisualPropertiesDialog (Frame parentFrame,
   gridbag.setConstraints(lineTypeDefault,c);
   mainPanel.add(lineTypeDefault);
 
-  sizeDefault = 
-      new IntegerEntryField
-	  ("Default Node Size",
-	   ((Integer)aMapper.getDefaultValue(VizMapperCategories.NODE_HEIGHT)).intValue(),
-	   500);
-  c.gridx=0;
-  c.gridy=7;
-  gridbag.setConstraints(sizeDefault,c);
-  mainPanel.add(sizeDefault);
-
   initializeArrowDefault();
   c.gridx=0;
-  c.gridy=8;
+  c.gridy=7;
   gridbag.setConstraints(arrowDefault,c);
   mainPanel.add(arrowDefault);
 
-  //////////////////////////////////////////////
-  JPanel complexSubPanel = new JPanel();
-  GridBagLayout complexSubPanelGridbag = new GridBagLayout(); 
-  GridBagConstraints complexSubPanelConstraints = new GridBagConstraints();
-  complexSubPanel.setLayout (complexSubPanelGridbag);
 
-  Border complexSubPanelBorder = BorderFactory.createLineBorder (Color.black);
-  Border complexSubPanelTitledBorder = 
-      BorderFactory.createTitledBorder (complexSubPanelBorder,
+  //////////////////////////////////////////////
+  JPanel labelMappingSubPanel = new JPanel();
+  GridBagLayout labelMappingSubPanelGridbag = new GridBagLayout(); 
+  GridBagConstraints labelMappingSubPanelConstraints = new GridBagConstraints();
+  labelMappingSubPanel.setLayout (labelMappingSubPanelGridbag);
+  
+  Border labelMappingSubPanelBorder = BorderFactory.createLineBorder (Color.black);
+  Border labelMappingSubPanelTitledBorder = 
+      BorderFactory.createTitledBorder (labelMappingSubPanelBorder,
+					"Node Label Mapping", 
+					TitledBorder.CENTER, 
+					TitledBorder.DEFAULT_POSITION);
+  labelMappingSubPanel.setBorder (labelMappingSubPanelTitledBorder);
+
+  JPanel labelTextPanel
+      = new LabelTextPanel(nodeAttribs,localNodeLabelKey);
+  /*
+  c.gridx=0;
+  c.gridy=8;
+  gridbag.setConstraints(labelTextPanel,c);
+  mainPanel.add(labelTextPanel);
+  */
+  labelMappingSubPanelConstraints.gridx=0;
+  labelMappingSubPanelConstraints.gridy=0;
+  labelMappingSubPanelGridbag.setConstraints(labelTextPanel,labelMappingSubPanelConstraints);
+  labelMappingSubPanel.add(labelTextPanel);
+
+
+  //////////////////////////////////////////////
+  c.gridwidth = 2;
+  c.gridx=0;
+  c.gridy=8;
+  c.fill=GridBagConstraints.HORIZONTAL;
+  gridbag.setConstraints(labelMappingSubPanel,c);
+  mainPanel.add(labelMappingSubPanel);
+
+
+  //////////////////////////////////////////////
+  JPanel edgeMappingSubPanel = new JPanel();
+  GridBagLayout edgeMappingSubPanelGridbag = new GridBagLayout(); 
+  GridBagConstraints edgeMappingSubPanelConstraints = new GridBagConstraints();
+  edgeMappingSubPanel.setLayout (edgeMappingSubPanelGridbag);
+
+  Border edgeMappingSubPanelBorder = BorderFactory.createLineBorder (Color.black);
+  Border edgeMappingSubPanelTitledBorder = 
+      BorderFactory.createTitledBorder (edgeMappingSubPanelBorder,
 					"Edge Color Mapping", 
 					TitledBorder.CENTER, 
 					TitledBorder.DEFAULT_POSITION);
-  complexSubPanel.setBorder (complexSubPanelTitledBorder);
+  edgeMappingSubPanel.setBorder (edgeMappingSubPanelTitledBorder);
 
-  //complexSubPanelConstraints.gridx=0;
-  //complexSubPanelConstraints.gridy=0;
+  //edgeMappingSubPanelConstraints.gridx=0;
+  //edgeMappingSubPanelConstraints.gridy=0;
   //JLabel tempLabel = new JLabel("Define Mapping:");
-  //complexSubPanelGridbag.setConstraints(tempLabel,complexSubPanelConstraints);
-  //complexSubPanel.add(tempLabel);
+  //edgeMappingSubPanelGridbag.setConstraints(tempLabel,edgeMappingSubPanelConstraints);
+  //edgeMappingSubPanel.add(tempLabel);
 
   if(localEdgeKey==null) localEdgeKey = new MutableString("temp");
   edgeTextPanel
       = new EdgeTextPanel(edgeAttribs,aMapper,parentFrame,localEdgeKey);
-  complexSubPanelConstraints.gridx=0;
-  complexSubPanelConstraints.gridy=0;
-  complexSubPanelGridbag.setConstraints(edgeTextPanel,complexSubPanelConstraints);
-  complexSubPanel.add(edgeTextPanel);
+  edgeMappingSubPanelConstraints.gridx=0;
+  edgeMappingSubPanelConstraints.gridy=0;
+  edgeMappingSubPanelGridbag.setConstraints(edgeTextPanel,edgeMappingSubPanelConstraints);
+  edgeMappingSubPanel.add(edgeTextPanel);
 
   
 
@@ -200,8 +232,9 @@ public VisualPropertiesDialog (Frame parentFrame,
   c.gridwidth = 2;
   c.gridx=0;
   c.gridy=9;
-  gridbag.setConstraints(complexSubPanel,c);
-  mainPanel.add(complexSubPanel);
+  c.fill=GridBagConstraints.HORIZONTAL;
+  gridbag.setConstraints(edgeMappingSubPanel,c);
+  mainPanel.add(edgeMappingSubPanel);
 
 
   JButton applyButton = new JButton ("Apply");
@@ -209,6 +242,7 @@ public VisualPropertiesDialog (Frame parentFrame,
   c.gridwidth = 1;
   c.gridx=0;
   c.gridy=10;
+  c.fill=GridBagConstraints.NONE;
   gridbag.setConstraints(applyButton,c);
   mainPanel.add (applyButton);
 
