@@ -27,6 +27,10 @@ public class MiscGB {
 	c.gridwidth = w;	c.gridheight = h;
 	c.fill = f;
     }
+    public static void set(GridBagConstraints c,
+			   int x, int y, int w, int h) {
+	set(c,x,y,w,h,GridBagConstraints.NONE);
+    }
     public static void set(GridBagConstraints c, int x, int y) {
 	set(c,x,y,1,1,GridBagConstraints.NONE);
     }
