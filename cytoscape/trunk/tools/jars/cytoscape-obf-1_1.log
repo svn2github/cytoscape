@@ -1,6 +1,33 @@
 # If this log is to be used for incremental obfuscation / patch generation, 
 # add any '.class', '.method', '.field' and '.attribute' restrictions here:
 
+.class cytoscape/* protected
+.class cytoscape/*/* protected
+.class cytoscape/*/*/* protected
+.class cytoscape/*/*/*/* protected
+.class cytoscape/*/*/*/*/* protected
+.class cytoscape/*/*/*/*/*/* protected
+.class cytoscape/*/*/*/*/*/*/* protected
+.class csplugins/* protected
+.class csplugins/*/* protected
+.class csplugins/*/*/* protected
+.class csplugins/*/*/*/* protected
+.class csplugins/*/*/*/*/* protected
+.class csplugins/*/*/*/*/*/* protected
+.class csplugins/*/*/*/*/*/*/* protected
+.class gnu/* protected
+.class gnu/*/* protected
+.class gnu/*/*/* protected
+.class gnu/*/*/*/* protected
+.class gnu/*/*/*/*/* protected
+.class org/* protected
+.class org/*/* protected
+.class org/*/*/* protected
+.class org/*/*/*/* protected
+.class org/*/*/*/*/* protected
+.class org/*/*/*/*/*/* protected
+.class org/*/*/*/*/*/*/* protected
+.class org/*/*/*/*/*/*/*/* protected
 
 #-DO-NOT-EDIT-BELOW-THIS-LINE------------------DO-NOT-EDIT-BELOW-THIS-LINE--
 #
