@@ -78,6 +78,7 @@ public Annotation (String species, String type, Ontology ontology)
   this.ontology = ontology;
   this.species = species;
   this.type = type;
+  this.curator = ontology.getCurator ();
   hash = new HashMap ();
 
 } // ctor
