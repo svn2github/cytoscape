@@ -26,7 +26,7 @@ class BetweenPathwayResultModel extends AbstractTableModel{
   String [] columnNames;
   List data;
   public BetweenPathwayResultModel(List data){
-    columnNames = new String[]{"ID","Score"};
+    columnNames = new String[]{"Network Model ID","Network Model Score"};
     this.data = data;
   }
   public int getColumnCount(){

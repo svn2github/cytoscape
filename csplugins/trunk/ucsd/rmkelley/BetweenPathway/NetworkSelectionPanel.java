@@ -5,6 +5,7 @@ import edu.umd.cs.piccolo.activities.*;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
+import javax.swing.border.TitledBorder;
 import giny.view.NodeView;
 import giny.model.*;
 import cytoscape.plugin.CytoscapePlugin;
@@ -24,6 +25,7 @@ import java.awt.Dimension;
 import ucsd.rmkelley.EdgeRandomization.EdgeRandomizationThread;
 import ucsd.rmkelley.EdgeRandomization.EdgeRandomizationDialog;
 import ucsd.rmkelley.EdgeRandomization.EdgeRandomizationOptions;
+import java.beans.*;
 
 class NetworkSelectionPanel extends JPanel{
   File scoreFile;
@@ -31,6 +33,7 @@ class NetworkSelectionPanel extends JPanel{
   JList list;
   BetweenPathwayOptionsDialog dialog;
   EdgeRandomizationDialog randomDialog;
+  PropertyChangeSupport pcs;
   /**
    * This button will bring up dialog to generate a new score file
    */
@@ -38,24 +41,33 @@ class NetworkSelectionPanel extends JPanel{
   public NetworkSelectionPanel(BetweenPathwayOptionsDialog dialog){
     setLayout(new BorderLayout());
     this.dialog = dialog;
+    pcs = new PropertyChangeSupport(this);
     Vector model = new Vector();
     for(Iterator networkIt = Cytoscape.getNetworkSet().iterator();networkIt.hasNext();){
       model.add(new NetworkContainer((CyNetwork)networkIt.next()));
     }
+
+    JPanel centerPanel = new JPanel();
+    centerPanel.setBorder(new TitledBorder("Select one of the following available networks"));
+    centerPanel.setLayout(new BorderLayout());
     list = new JList(model);
-    list.setSelectedIndex(0);
+    list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     list.addListSelectionListener(new ListSelectionListener(){
 	public void valueChanged(ListSelectionEvent e){
 	  if(list.getSelectedIndex() > -1){
-	    generate.setEnabled(true);
+	    setGenerationEnabled(true);
 	  }
 	  else{
-	    generate.setEnabled(false);
+	    setGenerationEnabled(false);
 	  }
+	  pcs.firePropertyChange("",null,null);
 	}});
 
-    add(list,BorderLayout.CENTER);
+    centerPanel.add(new JScrollPane(list),BorderLayout.CENTER);
+    add(centerPanel,BorderLayout.CENTER);
+    
     JPanel southPanel = new JPanel();
+    southPanel.setBorder(new TitledBorder("Edge score file"));
     southPanel.add(new JLabel("Score file"));
     fileText = new JTextField("No selected score file");
     fileText.setEditable(false);
@@ -64,15 +76,20 @@ class NetworkSelectionPanel extends JPanel{
     change.addActionListener(new ActionListener(){
 	public void actionPerformed(ActionEvent ae){
 	  JFileChooser chooser = new JFileChooser(NetworkSelectionPanel.this.dialog.getCurrentDirectory());
+	  NetworkSelectionPanel.this.dialog.disableInput();
 	  int returnVal = chooser.showOpenDialog(Cytoscape.getDesktop());
 	  if(returnVal == JFileChooser.APPROVE_OPTION) {
 	    scoreFile = chooser.getSelectedFile();
 	    fileText.setText(scoreFile.getName());
 	    NetworkSelectionPanel.this.dialog.pack();
 	    NetworkSelectionPanel.this.dialog.setCurrentDirectory(chooser.getCurrentDirectory());
+	    pcs.firePropertyChange("",null,null);
 	  }
+	  NetworkSelectionPanel.this.dialog.enableInput();
+	  NetworkSelectionPanel.this.dialog.toFront();
 	}});
     generate = new JButton("Generate new score file");
+    setGenerationEnabled(false);
     /*
      * Add an action listener here which will wait for the button press and then
      * create a new EdgeRandomization Dialog. This will create a score file for the network
@@ -106,6 +123,7 @@ class NetworkSelectionPanel extends JPanel{
 		    thread.run();
 		    scoreFile = thread.getScoreFile();
 		    fileText.setText(scoreFile.getName());
+		    pcs.firePropertyChange("",null,null);
 		  }
 		  catch(Exception e){
 		    JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Failed to generate score file","Error", JOptionPane.ERROR_MESSAGE);
@@ -114,7 +132,6 @@ class NetworkSelectionPanel extends JPanel{
 		    JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Out of memory","Error", JOptionPane.ERROR_MESSAGE);
 		  }
 		}
-		System.err.println("Enabling input");
 		NetworkSelectionPanel.this.dialog.enableInput();
 		NetworkSelectionPanel.this.dialog.pack();
 	      }}).start();
@@ -124,6 +141,53 @@ class NetworkSelectionPanel extends JPanel{
     add(southPanel,BorderLayout.NORTH);
   }
   
+
+  /**
+   * Determine whether the current state of the input in this network selection panel
+   * is valid, includes whether a network has been selected and if a score file has been
+   * selected, this information is used to determine where the begin search button should
+   * be enabled
+   */
+  public boolean validateInput(){
+    return scoreFile != null && list.getSelectedIndex() > -1;
+  }
+
+  /**
+   * Return an array detailing hte current problems with the input
+   */
+  public Vector getErrors(){
+    Vector errors = new Vector();
+    if(scoreFile == null){
+      errors.add("No score file specified");
+    }
+    if(list.getSelectedIndex()< 0){
+      errors.add("No network selected");
+    }
+    return errors;
+  }
+
+
+  /**
+   * Get teh object which manages monitoring property changes
+   */
+  public PropertyChangeSupport getPropertyChangeSupport(){
+    return pcs;
+  }
+
+  /**
+   * Enable the generation of a score file
+   */
+  protected void setGenerationEnabled(boolean flag){
+    if( flag ){
+      generate.setEnabled(true);
+      generate.setToolTipText("<html>This action will create a new<br>edge score file for the network "+((NetworkContainer)list.getSelectedValue()));
+    }
+    else{
+      generate.setEnabled(false);
+      generate.setToolTipText("<html>A network must be selected<br>for this action to be available");
+    }
+  }
+    
   /**
    * Return the network that is currently selected in this panel
    */

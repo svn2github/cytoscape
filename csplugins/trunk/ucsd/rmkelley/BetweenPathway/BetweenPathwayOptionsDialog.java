@@ -21,9 +21,9 @@ import java.awt.BorderLayout;
 import java.awt.event.*;
 import cytoscape.layout.*;
 import java.awt.Dimension;
+import java.beans.*;
 
-
-public class BetweenPathwayOptionsDialog extends RyanDialog{
+public class BetweenPathwayOptionsDialog extends RyanDialog implements PropertyChangeListener{
   NetworkSelectionPanel geneticPanel,physicalPanel;
   JCheckBox selectedSearch;
   boolean cancelled = true;
@@ -40,9 +40,17 @@ public class BetweenPathwayOptionsDialog extends RyanDialog{
    */
   public BetweenPathwayOptionsDialog(){
     currentDirectory = Cytoscape.getCytoscapeObj().getCurrentDirectory();
-    setTitle("BetweenPathway Search Options");
+    setTitle("Between-Pathway Search Options");
     geneticPanel = new NetworkSelectionPanel(this);
     physicalPanel = new NetworkSelectionPanel(this);
+    
+    /*
+     * Register this dialog as a listener to its sub-panels
+     */
+    geneticPanel.getPropertyChangeSupport().addPropertyChangeListener(this);
+    physicalPanel.getPropertyChangeSupport().addPropertyChangeListener(this);
+
+
     JTabbedPane tabbedPane = new JTabbedPane();
     tabbedPane.add("Select Genetic Network",geneticPanel);
     tabbedPane.add("Select Physical Network",physicalPanel);
@@ -51,6 +59,8 @@ public class BetweenPathwayOptionsDialog extends RyanDialog{
     
 
     ok = new JButton("Start search");
+    ok.setEnabled(false);
+    setSearchToolTipText();
     JPanel southPanel = new JPanel();
     selectedSearch = new JCheckBox("Search only from selected interactions?");
     southPanel.add(selectedSearch);
@@ -91,6 +101,8 @@ public class BetweenPathwayOptionsDialog extends RyanDialog{
   public boolean isCancelled(){
     return cancelled;
   }
+
+    
   
   /**
    * Get the options
@@ -114,7 +126,60 @@ public class BetweenPathwayOptionsDialog extends RyanDialog{
     this.currentDirectory = currentDirectory;
     Cytoscape.getCytoscapeObj().setCurrentDirectory(currentDirectory);
   }
+
   
+  boolean physicalValidated = false,geneticValidated;
+  /**
+   * Implemented as part of PropertyChangeListener contract
+   */
+  public void propertyChange(PropertyChangeEvent pce){
+    if(pce.getSource() == geneticPanel){
+      geneticValidated = geneticPanel.validateInput();
+    }
+    else if(pce.getSource() == physicalPanel){
+      physicalValidated = physicalPanel.validateInput();
+    }
+    else{
+      throw new RuntimeException("Unexpected source of property change");
+    }
+    if(geneticValidated && physicalValidated){
+      ok.setEnabled(true);
+    }
+    else{
+      ok.setEnabled(false);
+    }
+    setSearchToolTipText();
+  }
+
+
+  /**
+   * Generates an informative tooltiptext for the "Begin Search" button
+   */
+
+  protected void setSearchToolTipText(){
+    if(ok.isEnabled()){
+      ok.setToolTipText("<html>This action will begin the<br> search for network models");
+    }
+    else{
+      String text = "<html>In order to begin the search,<br>the following errors must be corrected<br>";
+      Vector geneticErrors = geneticPanel.getErrors();
+      if(geneticErrors.size() > 0){
+	text += "<UL>";
+	for(Iterator errorIt = geneticErrors.iterator();errorIt.hasNext();){
+	  text += "<LI>" + errorIt.next() + " (genetic network)</LI><br>";
+	}
+      }
+      Vector physicalErrors = physicalPanel.getErrors();
+      if(physicalErrors.size() > 0){
+	for(Iterator errorIt = physicalErrors.iterator();errorIt.hasNext();){
+	  text += "<LI>" + errorIt.next() + " (physical network)</LI><br>";
+	}
+      }
+      text += "</UL>";
+      ok.setToolTipText(text);
+    }
+
+  }
   public void hide(){
     super.hide();
     synchronized(this){

@@ -64,6 +64,7 @@ class BetweenPathwayThread extends Thread{
     Vector results = new Vector();
     //start a search from each individual genetic interactions
     ProgressMonitor myMonitor = new ProgressMonitor(Cytoscape.getDesktop(),null,"Searching for Network Models",0,geneticNetwork.getEdgeCount());
+    myMonitor.setMillisToPopup(50);
     int progress = 0;
     Iterator geneticIt = null;
     if(options.selectedSearch){
@@ -74,7 +75,7 @@ class BetweenPathwayThread extends Thread{
     }
     while(geneticIt.hasNext()){
       if(myMonitor.isCanceled()){
-										throw new RuntimeException("Search cancelled");
+	throw new RuntimeException("Search cancelled");
       }
       myMonitor.setProgress(progress++);
       Edge seedInteraction = (Edge)geneticIt.next();
@@ -180,6 +181,7 @@ class BetweenPathwayThread extends Thread{
   public Vector prune(Vector old){
     Vector results = new Vector();
     ProgressMonitor myMonitor = new ProgressMonitor(Cytoscape.getDesktop(),"Pruning results",null,0,100);
+    myMonitor.setMillisToPopup(50);
     int update_interval = (int)Math.ceil(old.size()/100.0);
     int count = 0;
     for(Iterator modelIt = old.iterator();modelIt.hasNext();){

@@ -21,22 +21,49 @@ import java.awt.BorderLayout;
 import java.awt.event.*;
 import cytoscape.layout.*;
 import java.awt.Dimension;
+import javax.swing.border.TitledBorder;
 
 class BetweenPathwayResultDialog extends JDialog implements ListSelectionListener{
   Vector results;
   JTable table;
+  JButton viewButton;
   CyNetwork geneticNetwork,physicalNetwork;
   public BetweenPathwayResultDialog(CyNetwork geneticNetwork, CyNetwork physicalNetwork, Vector results){
     this.results = results;
     this.geneticNetwork = geneticNetwork;
     this.physicalNetwork = physicalNetwork;
+
+
+    setTitle("Results");
+    /*
+     * Initialize the table which is usedto display the results
+     */
     table = new JTable(new BetweenPathwayResultModel(results));
     table.getSelectionModel().addListSelectionListener(this);
+    table.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     getContentPane().setLayout(new BorderLayout());
+    
+
+    /*
+     * Create the center panel containing the results
+     */
+    JPanel centerPanel = new JPanel();
+    centerPanel.setBorder(new TitledBorder("Result Table"));
+    centerPanel.setLayout(new BorderLayout());
     JScrollPane scroller = new JScrollPane(table);
-    scroller.setPreferredSize(new Dimension(30,100));
-    getContentPane().add(scroller,BorderLayout.CENTER);
-    JButton viewButton = new JButton("view");
+    scroller.setPreferredSize(new Dimension(300,200));
+    centerPanel.add(scroller,BorderLayout.CENTER);
+    getContentPane().add(centerPanel,BorderLayout.CENTER);
+    
+
+    /**
+     * Create the bottom panel containg the action buttons
+     */
+    JPanel southPanel = new JPanel();
+    southPanel.setBorder(new TitledBorder("Actions"));
+    
+    viewButton = new JButton("Display selected model");
+    viewButton.setEnabled(false);
     viewButton.addActionListener(new ActionListener(){
 	public void actionPerformed(ActionEvent ae){
 	  NetworkModel model = (NetworkModel)BetweenPathwayResultDialog.this.results.get(table.getSelectionModel().getMinSelectionIndex());
@@ -56,17 +83,24 @@ class BetweenPathwayResultDialog extends JDialog implements ListSelectionListene
 	  }
 	}
       });
-    getContentPane().add(viewButton,BorderLayout.SOUTH);
+    southPanel.add(viewButton);
+    getContentPane().add(southPanel,BorderLayout.SOUTH);
     pack();
   }
 
   public void valueChanged(ListSelectionEvent e){
-    int index = e.getFirstIndex();
-    NetworkModel model = (NetworkModel)results.get(index);
-    geneticNetwork.setFlaggedNodes(model.one,true);
-    geneticNetwork.setFlaggedNodes(model.two,true);
-    physicalNetwork.setFlaggedNodes(model.one,true);
-    physicalNetwork.setFlaggedNodes(model.two,true);
+    int index = table.getSelectedRow();
+    if(index > -1){
+      viewButton.setEnabled(true);
+      NetworkModel model = (NetworkModel)results.get(index);
+      geneticNetwork.setFlaggedNodes(model.one,true);
+      geneticNetwork.setFlaggedNodes(model.two,true);
+      physicalNetwork.setFlaggedNodes(model.one,true);
+      physicalNetwork.setFlaggedNodes(model.two,true);
+    }
+    else{
+      viewButton.setEnabled(false);
+    }
   }
   
 }
