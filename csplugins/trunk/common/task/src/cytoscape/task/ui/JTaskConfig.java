@@ -43,12 +43,6 @@ public class JTaskConfig {
     private boolean modal = true;
 
     /**
-     * Specifies the amount of time to wait before deciding whether or not
-     * to show the TaskMonitorUI component.
-     */
-    private int millisToDecideToPopup = 0;
-
-    /**
      * Owner, such as a JFrame.
      * Primarily used to center the JTask component relative to the owner.
      */
@@ -57,6 +51,7 @@ public class JTaskConfig {
     /**
      * Enables/Disables Display of the Status Field.
      * <P>By default, this value is set to false.
+     *
      * @param flag boolean value.
      */
     public void displayStatus(boolean flag) {
@@ -66,6 +61,7 @@ public class JTaskConfig {
     /**
      * Enables/Disables Display of the Time Elapsed Field.
      * <P>By default, this value is set to false.
+     *
      * @param flag boolean value.
      */
     public void displayTimeElapsed(boolean flag) {
@@ -75,6 +71,7 @@ public class JTaskConfig {
     /**
      * Enables/Disables Display of the Time Remaining Field.
      * <P>By default, this value is set to false.
+     *
      * @param flag boolean value.
      */
     public void displayTimeRemaining(boolean flag) {
@@ -84,6 +81,7 @@ public class JTaskConfig {
     /**
      * Enables/Disables Display of the Cancel Button.
      * <P>By default, this value is set to false.
+     *
      * @param flag boolean value.
      */
     public void displayCancelButton(boolean flag) {
@@ -93,6 +91,7 @@ public class JTaskConfig {
     /**
      * Enables/Disables Display of the Close Button.
      * <P>By default, this value is set to false.
+     *
      * @param flag boolean value.
      */
     public void displayCloseButton(boolean flag) {
@@ -107,20 +106,11 @@ public class JTaskConfig {
      * When set to false, the JTask dialog box will persist until the user
      * dismissed it.
      * <P>By default, this value is set to true.
+     *
      * @param flag boolean value.
      */
     public void setAutoDispose(boolean flag) {
         this.autoDispose = flag;
-    }
-
-    /**
-     * Specifies how long to wait before popping open the JTask Dialog box.
-     * <P>By default, this value is set to 0.
-     *
-     * @param ms milliseconds to wait before popping open the JTask component.
-     */
-    public void setMillisToDecideToPopup(int ms) {
-        this.millisToDecideToPopup = ms;
     }
 
     /**
@@ -149,14 +139,16 @@ public class JTaskConfig {
      * <P>
      * By default, this value is set to true.
      * <P>
+     *
      * @param modal modality flag.
      */
-    public void setModal (boolean modal) {
+    public void setModal(boolean modal) {
         this.modal = modal;
     }
 
     /**
      * Gets Display Options for Status Field.
+     *
      * @return boolean value.
      */
     boolean getStatusFlag() {
@@ -165,6 +157,7 @@ public class JTaskConfig {
 
     /**
      * Gets Display Options for Time Elapsed Field.
+     *
      * @return boolean value.
      */
     boolean getTimeElapsedFlag() {
@@ -173,6 +166,7 @@ public class JTaskConfig {
 
     /**
      * Gets Display Options for Time Remaining Field.
+     *
      * @return boolean value.
      */
     boolean getTimeRemainingFlag() {
@@ -181,6 +175,7 @@ public class JTaskConfig {
 
     /**
      * Gets Display Options for Cancel Button Field.
+     *
      * @return boolean value.
      */
     boolean getCancelButtonFlag() {
@@ -189,6 +184,7 @@ public class JTaskConfig {
 
     /**
      * Gets Display Options for Close Button Field.
+     *
      * @return boolean value.
      */
     boolean getCloseButtonFlag() {
@@ -197,6 +193,7 @@ public class JTaskConfig {
 
     /**
      * Gets AutoDispose Flag.
+     *
      * @return boolean value.
      */
     boolean getAutoDispose() {
@@ -204,15 +201,8 @@ public class JTaskConfig {
     }
 
     /**
-     * Gets milliseconds to decide to popup JTask Dialog box.
-     * @return time in millseconds.
-     */
-    int getMillisToDecideToPopup() {
-        return millisToDecideToPopup;
-    }
-
-    /**
      * Gets JTask Owner object.
+     *
      * @return Container owner object.
      */
     Container getOwner() {
@@ -221,9 +211,10 @@ public class JTaskConfig {
 
     /**
      * Gets Modality flag.
+     *
      * @return boolean value.
      */
-    boolean getModal () {
+    boolean getModal() {
         return this.modal;
     }
 }
