@@ -5,7 +5,7 @@ import y.view.*;
 
 import java.util.Hashtable;
 
-import y.algo.GraphHider;
+import cytoscape.undo.UndoableGraphHider;
 
 import cytoscape.data.*;
 /**
@@ -101,7 +101,7 @@ public abstract class Filter {
      * @param hidden A list of nodes assumed already hidden
      * @return The number of nodes hidden
      */
-    protected int hide(GraphHider graphHider, NodeList hidden) {
+    protected int hide(UndoableGraphHider graphHider, NodeList hidden) {
 	NodeList flagged = get(hidden);
 	
 	int counter = 0;
@@ -140,10 +140,10 @@ public abstract class Filter {
     }
 
     /**
-     * Shortcut to {@link #hide(GraphHider graphHider, NodeList hidden)}
+     * Shortcut to {@link #hide(UndoableGraphHider graphHider, NodeList hidden)}
      * which assumes no nodes are hidden.
      */
-    public int hide(GraphHider graphHider) {
+    public int hide(UndoableGraphHider graphHider) {
 	return hide(graphHider, new NodeList());
     }
 

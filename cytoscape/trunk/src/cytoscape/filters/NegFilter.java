@@ -3,7 +3,7 @@ package cytoscape.filters;
 import y.base.*;
 import y.view.*;
 
-import y.algo.GraphHider;
+import cytoscape.undo.UndoableGraphHider;
 
 import cytoscape.data.*;
 

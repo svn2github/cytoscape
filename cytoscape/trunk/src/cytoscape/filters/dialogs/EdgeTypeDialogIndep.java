@@ -3,7 +3,7 @@ package cytoscape.filters.dialogs;
 import y.base.*;
 import y.view.*;
 
-import y.algo.GraphHider;
+import cytoscape.undo.UndoableGraphHider;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -30,7 +30,7 @@ public class EdgeTypeDialogIndep extends JDialog {
     Frame parent;
     Graph2D graph;
     GraphObjAttributes edgeAttributes;
-    GraphHider graphHider;
+    UndoableGraphHider graphHider;
     String[] interactionTypes;
 
     EdgeTypeDialog edgeTypeDialog;
@@ -38,7 +38,7 @@ public class EdgeTypeDialogIndep extends JDialog {
 			   Frame parent,
 			   Graph2D graph,
 			   GraphObjAttributes edgeAttributes,
-			   GraphHider graphHider,
+			   UndoableGraphHider graphHider,
 			   String[] interactionTypes) {
 
 	super(parent,false);
@@ -123,11 +123,13 @@ public class EdgeTypeDialogIndep extends JDialog {
 
     public class HideAction extends AbstractAction {
 	public void actionPerformed (ActionEvent e) {
+	    graph.firePreEvent();
 	    EdgeCursor edges = graph.selectedEdges(); 
 	    while (edges.ok()) {
 		graphHider.hide (edges.edge());
 		edges.next();
 	    }
+	    graph.firePostEvent();
 
 	    client.redrawGraph ();
 	}

@@ -3,7 +3,7 @@ package cytoscape.filters.dialogs;
 import y.base.*;
 import y.view.*;
 
-import y.algo.GraphHider;
+import cytoscape.undo.UndoableGraphHider;
 
 import javax.swing.*;
 import javax.swing.event.*;

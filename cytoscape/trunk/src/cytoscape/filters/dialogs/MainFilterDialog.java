@@ -3,7 +3,7 @@ package cytoscape.filters.dialogs;
 import y.base.*;
 import y.view.*;
 
-import y.algo.GraphHider;
+import cytoscape.undo.UndoableGraphHider;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -32,7 +32,7 @@ public class MainFilterDialog extends JDialog {
     GraphObjAttributes nodeAttributes;
     GraphObjAttributes edgeAttributes;
     ExpressionData expressionData;
-    GraphHider graphHider;
+    UndoableGraphHider graphHider;
     String[] interactionTypes;
 
     Vector dialogs = new Vector();
@@ -63,7 +63,7 @@ public class MainFilterDialog extends JDialog {
 			     GraphObjAttributes nodeAttributes,
 			     GraphObjAttributes edgeAttributes,
 			     ExpressionData expressionData,
-			     GraphHider graphHider,
+			     UndoableGraphHider graphHider,
 			     String[] interactionTypes) {
 	
 	super(parent,false);

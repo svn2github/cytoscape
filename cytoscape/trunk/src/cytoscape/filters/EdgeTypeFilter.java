@@ -5,7 +5,7 @@ import y.view.*;
 
 import java.util.Hashtable;
 
-import y.algo.GraphHider;
+import cytoscape.undo.UndoableGraphHider;
 
 import cytoscape.data.*;
 import cytoscape.*;
@@ -74,7 +74,7 @@ public class EdgeTypeFilter extends Filter {
 	return new NodeList();	
     }
 
-    public int hide(GraphHider graphHider) {
+    public int hide(UndoableGraphHider graphHider) {
 	return 0;
     }
 
