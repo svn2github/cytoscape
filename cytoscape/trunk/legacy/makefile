@@ -95,15 +95,24 @@ clean:
 	- (cd vizmap; make clean)
 	- (cd vizmap/unitTests; make clean)
 
-version:
-	java -Xmx512MB -Djava.library.path=. cytoscape.cytoscape  -v
+#
+# --- version
+# report the current version of cytoscape
+#
 
+version:
+	java cytoscape.cytoscape  -v
+
+
+#
+# --- doc
+# generate javadoc
+#
 
 doc:
 	javadoc \
                 -source 1.4 \
                 -d ./htdocs\
-                -private \
                 -overview ./overview.html \
                 -sourcepath .. \
                 cytoscape.data \
@@ -116,7 +125,11 @@ doc:
                 cytoscape.layout \
                 cytoscape.vizmap \
                 cytoscape.vizmap.unitTests \
-                -link http://java.sun.com/j2se/1.4/docs/api \
+                cytoscape.browsers \
+                cytoscape.filters \
+                cytoscape.undo \
+                cytoscape.util \
+                cytoscape.view \
             -windowtitle cytoscape \
     -doctitle "cytoscape"
 
