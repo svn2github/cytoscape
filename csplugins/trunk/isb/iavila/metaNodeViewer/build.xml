@@ -7,6 +7,8 @@
    <property name = "lib" location = "../../../../cytoscape/lib"/>
    <property name = "jar"  location = "jar"/>
 
+   <property name="cytoscape.plugin.dir" value="../../../../cytoscape/plugins"/>
+
    <path id = "classpath_compile">
       <pathelement path = "${build}"/>
       <pathelement path = "../../../../cytoscape/build/cytoscape.jar"/>
@@ -45,6 +47,7 @@
    <jar jarfile="${jar}/metanode.jar">
       <fileset dir="${build}"/>
    </jar>
+    <copy todir="${cytoscape.plugin.dir}" file="jar/metanode.jar"/>
    </target>
 
    <target name = "run" depends="jar" description = "Run">

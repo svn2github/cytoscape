@@ -6,8 +6,11 @@
    <property name = "build.compiler" value = "modern"/>
    <property name = "lib" location = "../../../../cytoscape/lib"/>
    <property name = "jar"  location = "jar"/>
+   
+ <property name="cytoscape.plugin.dir" value="../../../../cytoscape/plugins"/>
 
-   <path id = "classpath_compile">
+ <path   id = "classpath_compile">
+   
       <pathelement path = "${build}"/>
       <pathelement path = "../../../../cytoscape/build/classes"/>
       <pathelement path = "../metaNodeViewer/jar/metanode.jar"/>
@@ -47,6 +50,7 @@
    <jar jarfile="${jar}/bmtest.jar">
       <fileset dir="${build}"/>
    </jar>
+      <copy todir="${cytoscape.plugin.dir}" file="jar/bmtest.jar"/>
    </target>
 
    <target name = "run" depends="jar" description = "Run">
