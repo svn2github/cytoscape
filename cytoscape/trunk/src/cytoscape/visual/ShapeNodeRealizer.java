@@ -51,6 +51,41 @@ public class ShapeNodeRealizer {
     public static final byte HEXAGON = (byte)9;
     public static final byte OCTAGON = (byte)10;
     
+    public static Byte parseNodeShapeTextIntoByte(String text) {
+        return new Byte(parseNodeShapeText(text));
+    }
+    
+    public static byte parseNodeShapeText(String text) {
+        String nstext = text.trim();
+        nstext = nstext.replaceAll("_",""); // ditch all underscores
+        
+        if(nstext.equalsIgnoreCase("rect")) {
+            return ShapeNodeRealizer.RECT;
+        } else if(nstext.equalsIgnoreCase("roundrect")) {
+            return ShapeNodeRealizer.ROUND_RECT;
+        } else if(nstext.equalsIgnoreCase("rect3d")) {
+            return ShapeNodeRealizer.RECT_3D;
+        } else if(nstext.equalsIgnoreCase("trapezoid")) {
+            return ShapeNodeRealizer.TRAPEZOID;
+        } else if(nstext.equalsIgnoreCase("trapezoid2")) {
+            return ShapeNodeRealizer.TRAPEZOID_2;
+        } else if(nstext.equalsIgnoreCase("triangle")) {
+            return ShapeNodeRealizer.TRIANGLE;
+        } else if(nstext.equalsIgnoreCase("parallelogram")) {
+            return ShapeNodeRealizer.PARALLELOGRAM;
+        } else if(nstext.equalsIgnoreCase("diamond")) {
+            return ShapeNodeRealizer.DIAMOND;
+        } else if(nstext.equalsIgnoreCase("ellipse") || nstext.equalsIgnoreCase("circle")) {
+            return ShapeNodeRealizer.ELLIPSE;
+        } else if(nstext.equalsIgnoreCase("hexagon")) {
+            return ShapeNodeRealizer.HEXAGON;
+        } else if(nstext.equalsIgnoreCase("octagon")) {
+            return ShapeNodeRealizer.OCTAGON;
+        } else {
+            return ShapeNodeRealizer.RECT;
+        }
+    }
+    
     public static String getNodeShapeText(byte shape) {
         if(shape == RECT){return "rect";}
         if(shape == ROUND_RECT){return "roundrect";}

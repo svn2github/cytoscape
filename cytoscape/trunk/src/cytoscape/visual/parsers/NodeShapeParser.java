@@ -5,7 +5,7 @@
 //----------------------------------------------------------------------------
 package cytoscape.visual.parsers;
 //----------------------------------------------------------------------------
-import cytoscape.util.Misc;
+import cytoscape.visual.ShapeNodeRealizer;
 //----------------------------------------------------------------------------
 /**
  * Parses a String into a yFiles shape, which is represented by a byte
@@ -18,7 +18,7 @@ public class NodeShapeParser implements ValueParser {
         return parseNodeShape(value);
     }
     public Byte parseNodeShape(String value) {
-        return Misc.parseNodeShapeTextIntoByte(value);
+        return ShapeNodeRealizer.parseNodeShapeTextIntoByte(value);
     }
 }
 
