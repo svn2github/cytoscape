@@ -128,25 +128,25 @@ class FRootGraph implements RootGraph
         removeNode(node.getRootGraphIndex()) < 0) return node;
     else return null; }
 
-  public int removeNode(int nodeInx)
-  {
-    final int returnThis = _removeNode(nodeInx);
-    if (returnThis != 0) {
+  public int removeNode(int nodeInx) {
+    final Node removedNode = _removeNode(nodeInx);
+    if (removedNode != null) {
       final RootGraphChangeListener listener = m_lis;
       if (listener != null)
         listener.rootGraphChanged
-          (new RootGraphNodesRemovedEvent(this, new int[] { returnThis })); }
-    return returnThis;
-  }
+          (new RootGraphNodesRemovedEvent(this, new Node[] { removedNode }));
+      return nodeInx; }
+    else { return 0; } }
 
-  private int _removeNode(int nodeInx)
+  // Returns the Node that was removed or null if unsuccessful.
+  private Node _removeNode(int nodeInx)
   {
     final int positiveNodeIndex = ~nodeInx;
     final IntEnumerator edgeInxEnum;
     try { edgeInxEnum = m_graph.adjacentEdges
             (positiveNodeIndex, true, true, true); }
-    catch (IllegalArgumentException e) { return 0; }
-    if (edgeInxEnum == null) return 0;
+    catch (IllegalArgumentException e) { return null; }
+    if (edgeInxEnum == null) return null;
     m_heap.empty();
     final MinIntHeap edgeBucket = m_heap;
     while (edgeInxEnum.numRemaining() > 0)
@@ -156,10 +156,10 @@ class FRootGraph implements RootGraph
     removeEdges(edgeRemoveArr);
     // positiveNodeIndex tested for validity with adjacentEdges() above.
     if (m_graph.removeNode(positiveNodeIndex)) {
-      FNode garbage = m_nodes.getNodeAtIndex(positiveNodeIndex);
+      final FNode garbage = m_nodes.getNodeAtIndex(positiveNodeIndex);
       m_nodes.setNodeAtIndex(null, positiveNodeIndex);
       m_nodeDepot.recycleNode(garbage);
-      return nodeInx; }
+      return garbage; }
     else throw new IllegalStateException("cannot remove node " + nodeInx +
                                          " from underlying graph");
   }
@@ -175,15 +175,20 @@ class FRootGraph implements RootGraph
   public int[] removeNodes(int[] nodeIndices) {
     // Can't use m_heap because it's being used at each _removeNode(int).
     final MinIntHeap successes = new MinIntHeap();
+    final Node[] removedNodes = new Node[nodeIndices.length];
     final int[] returnThis = new int[nodeIndices.length];
     for (int i = 0; i < nodeIndices.length; i++) {
-      returnThis[i] = _removeNode(nodeIndices[i]);
-      if (returnThis[i] != 0) successes.toss(returnThis[i]); }
+      removedNodes[i] = _removeNode(nodeIndices[i]);
+      if (removedNodes[i] == null) { returnThis[i] = 0; }
+      else { returnThis[i] = nodeIndices[i]; successes.toss(i); } }
     if (successes.size() > 0) {
       final RootGraphChangeListener listener = m_lis;
       if (listener != null) {
-        final int[] successArr = new int[successes.size()];
-        successes.copyInto(successArr, 0);
+        final Node[] successArr = new Node[successes.size()];
+        final IntEnumerator enum = successes.elements();
+        int index = -1;
+        while (enum.numRemaining() > 0)
+          successArr[++index] = removedNodes[enum.nextInt()];
         listener.rootGraphChanged
           (new RootGraphNodesRemovedEvent(this, successArr)); } }
     return returnThis; }
@@ -236,28 +241,28 @@ class FRootGraph implements RootGraph
         removeEdge(edge.getRootGraphIndex()) < 0) return edge;
     else return null; }
 
-  public int removeEdge(int edgeInx)
-  {
-    final int returnThis = _removeEdge(edgeInx);
-    if (returnThis != 0) {
+  public int removeEdge(int edgeInx) {
+    final Edge removedEdge = _removeEdge(edgeInx);
+    if (removedEdge != null) {
       final RootGraphChangeListener listener = m_lis;
       if (listener != null)
         listener.rootGraphChanged
-          (new RootGraphEdgesRemovedEvent(this, new int[] { returnThis })); }
-    return returnThis;
-  }
+          (new RootGraphEdgesRemovedEvent(this, new Edge[] { removedEdge }));
+      return edgeInx; }
+    else { return 0; } }
 
-  private int _removeEdge(int edgeInx)
+  // Returns the Edge that was removed or null if unsuccessful.
+  private Edge _removeEdge(int edgeInx)
   {
     final int positiveEdgeIndex = ~edgeInx;
     try {
       if (m_graph.removeEdge(positiveEdgeIndex)) {
-        FEdge garbage = m_edges.getEdgeAtIndex(positiveEdgeIndex);
+        final FEdge garbage = m_edges.getEdgeAtIndex(positiveEdgeIndex);
         m_edges.setEdgeAtIndex(null, positiveEdgeIndex);
         m_edgeDepot.recycleEdge(garbage);
-        return edgeInx; } }
+        return garbage; } }
     catch (IllegalArgumentException e) { }
-    return 0;
+    return null;
   }
 
   // This method has been marked deprecated in the Giny API.
@@ -271,15 +276,20 @@ class FRootGraph implements RootGraph
   public int[] removeEdges(int[] edgeIndices) {
     m_heap.empty();
     final MinIntHeap successes = m_heap;
+    final Edge[] removedEdges = new Edge[edgeIndices.length];
     final int[] returnThis = new int[edgeIndices.length];
     for (int i = 0; i < edgeIndices.length; i++) {
-      returnThis[i] = _removeEdge(edgeIndices[i]);
-      if (returnThis[i] != 0) successes.toss(returnThis[i]); }
+      removedEdges[i] = _removeEdge(edgeIndices[i]);
+      if (removedEdges[i] == null) { returnThis[i] = 0; }
+      else { returnThis[i] = edgeIndices[i]; successes.toss(i); } }
     if (successes.size() > 0) {
       final RootGraphChangeListener listener = m_lis;
       if (listener != null) {
-        final int[] successArr = new int[successes.size()];
-        successes.copyInto(successArr, 0);
+        final Edge[] successArr = new Edge[successes.size()];
+        final IntEnumerator enum = successes.elements();
+        int index = -1;
+        while (enum.numRemaining() > 0)
+          successArr[++index] = removedEdges[enum.nextInt()];
         listener.rootGraphChanged
           (new RootGraphEdgesRemovedEvent(this, successArr)); } }
     return returnThis; }

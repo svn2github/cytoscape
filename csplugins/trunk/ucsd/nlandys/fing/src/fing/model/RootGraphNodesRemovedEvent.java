@@ -7,16 +7,23 @@ final class RootGraphNodesRemovedEvent extends RootGraphChangeEventAdapter
 {
 
   private final RootGraph m_rootGraph;
+  private final Node[] m_removedNodes;
   private final int[] m_removedNodeInx;
 
-  // Note that no copy of the array removedNodeInx is made - the exact
+  // Note that no copy of the array removedNodes is made - the exact
   // array reference is kept.  However, copies are made in the return values
-  // of methods of this class.
-  RootGraphNodesRemovedEvent(RootGraph rootGraph, int[] removedNodeInx)
+  // of methods of this class.  Note that the Node objects in the input array
+  // must contain valid RootGraph indices at the time this constructor is
+  // called; further behavior of the Node objects is not too important
+  // becuase the getRemovedNodes() method has been deprecated.
+  RootGraphNodesRemovedEvent(RootGraph rootGraph, Node[] removedNodes)
   {
     super(rootGraph);
     m_rootGraph = rootGraph;
-    m_removedNodeInx = removedNodeInx;
+    m_removedNodes = removedNodes;
+    m_removedNodeInx = new int[m_removedNodes.length];
+    for (int i = 0; i < m_removedNodeInx.length; i++)
+      m_removedNodeInx[i] = m_removedNodes[i].getRootGraphIndex();
   }
 
   public final int getType()
@@ -24,11 +31,11 @@ final class RootGraphNodesRemovedEvent extends RootGraphChangeEventAdapter
     return NODES_REMOVED_TYPE;
   }
 
+  // This method has been deprecated in the Giny API.
   public final Node[] getRemovedNodes()
   {
-    final Node[] returnThis = new Node[m_removedNodeInx.length];
-    for (int i = 0; i < returnThis.length; i++)
-      returnThis[i] = m_rootGraph.getNode(m_removedNodeInx[i]);
+    final Node[] returnThis = new Node[m_removedNodes.length];
+    System.arraycopy(m_removedNodes, 0, returnThis, 0, m_removedNodes.length);
     return returnThis;
   }
 

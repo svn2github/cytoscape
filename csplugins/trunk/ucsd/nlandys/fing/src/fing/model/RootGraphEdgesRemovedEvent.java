@@ -7,16 +7,23 @@ final class RootGraphEdgesRemovedEvent extends RootGraphChangeEventAdapter
 {
 
   private final RootGraph m_rootGraph;
+  private final Edge[] m_removedEdges;
   private final int[] m_removedEdgeInx;
 
-  // Note that no copy of the array removedEdgeInx is made - the exact
+  // Note that no copy of the array removedEdges is made - the exact
   // array reference is kept.  However, copies are made in the return values
-  // of methods of this class.
-  RootGraphEdgesRemovedEvent(RootGraph rootGraph, int[] removedEdgeInx)
+  // of methods of this class.  Note that the Edge objects in the input array
+  // must contain valid RootGraph indices at the time this constructor is
+  // called; further behavior of the Edge objects is not too important
+  // because the getRemovedEdges() method has been deprecated.
+  RootGraphEdgesRemovedEvent(RootGraph rootGraph, Edge[] removedEdges)
   {
     super(rootGraph);
     m_rootGraph = rootGraph;
-    m_removedEdgeInx = removedEdgeInx;
+    m_removedEdges = removedEdges;
+    m_removedEdgeInx = new int[m_removedEdges.length];
+    for (int i = 0; i < m_removedEdgeInx.length; i++)
+      m_removedEdgeInx[i] = m_removedEdges[i].getRootGraphIndex();
   }
 
   public final int getType()
@@ -26,9 +33,8 @@ final class RootGraphEdgesRemovedEvent extends RootGraphChangeEventAdapter
 
   public final Edge[] getRemovedEdges()
   {
-    final Edge[] returnThis = new Edge[m_removedEdgeInx.length];
-    for (int i = 0; i < returnThis.length; i++)
-      returnThis[i] = m_rootGraph.getEdge(m_removedEdgeInx[i]);
+    final Edge[] returnThis = new Edge[m_removedEdges.length];
+    System.arraycopy(m_removedEdges, 0, returnThis, 0, m_removedEdges.length);
     return returnThis;
   }
 
