@@ -15,7 +15,6 @@ import javax.swing.event.*;
 import javax.swing.border.Border;
 import java.util.HashMap;
 
-import csplugins.jActiveModules.data.ActivePath;
 import csplugins.jActiveModules.ActivePathViewer;
 import csplugins.jActiveModules.Component;
 //------------------------------------------------------------------------

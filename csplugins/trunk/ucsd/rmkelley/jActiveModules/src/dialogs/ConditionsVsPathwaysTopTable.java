@@ -13,7 +13,6 @@ import java.awt.event.*;
 
 import javax.swing.event.*;
 
-import csplugins.jActiveModules.data.ActivePath;
 import csplugins.jActiveModules.ActivePathViewer;
 import csplugins.jActiveModules.Component;
 //------------------------------------------------------------------------
