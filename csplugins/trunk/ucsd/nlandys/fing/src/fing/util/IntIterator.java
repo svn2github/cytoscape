@@ -1,5 +1,8 @@
 package fing.util;
 
+/**
+ * An iteration over a set of 32 bit integers.
+ */
 public interface IntIterator
 {
 
