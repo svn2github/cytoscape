@@ -57,6 +57,10 @@ public AnnotationGui (CytoscapeWindow cytoscapeWindow)
   if (dataServer != null)
     annotationDescriptions = dataServer.getAnnotationDescriptions ();
 
+  System.out.println ("----- AnnotationGui.ctor, annotationDescriptions");
+  for (int i=0; i < annotationDescriptions.length; i++)
+    System.out.println (annotationDescriptions [i]);
+
   this.cytoscapeWindow = cytoscapeWindow;
   //this.nodeAttributes = cytoscapeWindow.getNodeAttributes ();
   //this.edgeAttributes = cytoscapeWindow.getEdgeAttributes ();
@@ -334,24 +338,19 @@ protected void createTreeNodes (DefaultMutableTreeNode root,
 
   for (int i=0; i < descriptions.length; i++) {
     String species = descriptions[i].getSpecies ();
-    if (!speciesInGraph.contains (species)) continue;
+    if (!speciesInGraph.contains (species)) {
+      continue;
+      }
     topLevelNamesList.add (descriptions[i].getCurator () + ", " +
                            descriptions[i].getType () + ", " +
                            descriptions[i].getSpecies ());
-    }
-  
-  String [] topLevelNames = (String []) topLevelNamesList.toArray (new String [0]);
-  java.util.Arrays.sort (topLevelNames, String.CASE_INSENSITIVE_ORDER);
-
-  for (int i=0; i < topLevelNames.length; i++) {
-    if (!speciesInGraph.contains (descriptions [i].getSpecies())) continue;
     branch = new DefaultMutableTreeNode (descriptions [i]);
     Annotation annotation = dataServer.getAnnotation (descriptions [i]);
     int maxDepth = annotation.maxDepth ();
     for (int level=0; level < maxDepth; level++) 
       branch.add (new DefaultMutableTreeNode (new Integer (level + 1)));
     root.add (branch);
-    } // for i
+    }
 
 } // createTreeNodes
 //-----------------------------------------------------------------------------------
