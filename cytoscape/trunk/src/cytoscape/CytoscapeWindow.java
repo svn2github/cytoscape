@@ -372,6 +372,17 @@ private void loadVizMapper() {
   this.vizMapper = new VisualMappingManager(this, cc, vs);
   this.network = new Network(this);
   this.vizMapUI = new VizMapUI(this.vizMapper);
+
+  // add vizmapper to tooltoolbar
+  toolbar.addSeparator ();
+  JButton b = toolbar.add (new SetVisualPropertiesAction(false));
+  b.setIcon (new ImageIcon (getClass().getResource("images/ColorVisual.gif")));
+  b.setToolTipText ("Set Visual Properties");
+  b.setBorderPainted (false);
+
+  // easy-access visual styles changer
+  toolbar.add(vizMapUI.getStyleSelector().getToolbarComboBox());
+  toolbar.addSeparator ();
 }
 
 /**
@@ -1416,17 +1427,17 @@ protected JToolBar createToolBar ()
   b.setToolTipText ("Apply Filters to Graph");
   b.setBorderPainted (false);
 
-
+  /*
   bar.addSeparator ();
   b = bar.add (new SetVisualPropertiesAction(false));
   b.setIcon (new ImageIcon (getClass().getResource("images/ColorVisual.gif")));
   b.setToolTipText ("Set Visual Properties");
   b.setBorderPainted (false);
 
-
+  // easy-access visual styles changer
+  bar.add(vizMapUI.getStyleSelector().getToolbarComboBox());
   bar.addSeparator ();
-
-    
+  */
   return bar;
 
 } // createToolBar
@@ -1955,7 +1966,8 @@ protected class SetVisualPropertiesAction extends AbstractAction   {
     }
     public void actionPerformed (ActionEvent e) {
 	vizMapUI.refreshUI();
-	vizMapUI.show();
+	vizMapUI.getStyleSelector().show();
+	//vizMapUI.show();
     }
 
 }
