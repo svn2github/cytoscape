@@ -3182,7 +3182,7 @@ protected class LoadExpressionMatrixAction extends AbstractAction {
 	CyFileFilter filter = new CyFileFilter();
 	filter.addExtension("mrna");
 	filter.addExtension("mRNA");
-	filter.addExtension("pdls");
+	filter.addExtension("pvals");
 	filter.setDescription("Expression Matrix files");
 	chooser.setFileFilter(filter);
 	chooser.addChoosableFileFilter(filter);
