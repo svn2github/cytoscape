@@ -284,6 +284,8 @@ public abstract class AbstractCalculator implements Calculator {
 	public CalculatorUI(GraphObjAttributes attr, JDialog parent, CyNetwork network) {
 	    this.myGBG = new GridBagGroup(this);
 	    String[] attrNames = attr.getAttributeNames();
+            // 20030916 cworkman added Arrays.sort()
+            Arrays.sort(attrNames);
 	    int i, yPos;
 	    for (i = yPos = 0; i < mappings.size(); i++, yPos++) {
 		MiscGB.insert(this.myGBG, new JLabel("Map Attribute:", SwingConstants.RIGHT),
