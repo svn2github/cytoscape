@@ -1,8 +1,8 @@
-This directory contains plugins which are loaded when cytoscape starts
+This directory contains plugins which are loaded when Cytoscape starts
 up. Adding plugin .jar files to this directory will cause them to be
-automatically loaded whenever cytoscape is run.
+automatically loaded whenever Cytoscape is run.
 
-The current version of cytoscape comes preconfigured with the following
+The current version of Cytoscape comes preconfigured with the following
 plugin files in this directory:
 
 HierarchicalLayout.jar
@@ -20,11 +20,14 @@ layed out separately from the rest of the graph.
 
 MCODE.jar
 ---------
-This plugin add a choice to the Plugins menu labelled "MCODE". Through
+This plugin adds a choice to the Plugins menu labelled "MCODE". Through
 this menu you can access the MCODE analysis routines ("Molecular Complex
-Detection"), that detect densely connected regions in large
-protein-protein interaction networks that may represent molecular
-complexes. The method is based on vertex weighting by local neighborhood
+Detection"), that detect densely connected regions in large networks.
+Depending on the type of network, clusters may mean different things.
+For instance, clusters in a protein-protein interaction network have
+been shown to be protein complexes and parts of pathways. Clusters
+in a protein similarity network represent protein families. The
+method is based on vertex weighting by local neighborhood
 density and outward traversal from a locally dense seed protein to isolate
 the dense regions according to given parameters. The algorithm has the
 advantage over other graph clustering methods of having a directed mode
@@ -35,8 +38,8 @@ which is relevant for protein networks.
 SigAttributes.jar
 -----------------
 This plugin add a choice to the Plugins menu labelled "Find Enriched
-Attributes". This item allows you to scan for significant functions
-based on loaded attribute data. The scan can be performed by Attribute
+Attributes". This item allows you to scan for significant attributes
+loaded onto the network. The scan can be performed by Attribute
 or by Annotation, and is based on a group of selected nodes.
 
 control.jar
@@ -65,25 +68,18 @@ subsets of the currently viewed network.
 
 jgraphLayout.jar
 ----------------
-This plugin add a new choice to the Layout menu labelled "JGraph".
+This plugin adds a new choice to the Layout menu labelled "JGraph".
 Through this submenu, the user can apply several layout algorithms
 to the currently viewed network. Circle (all nodes in a single circle),
 Radial (nodes in concentric circles), Spring (embedded spring energy
-minimization), and Sugiyama (layered hierarchical) are all possible
-choices. 
+minimization), and Sugiyama (layered hierarchical) are possible
+choices.
 
 layout.jar
 ----------
 This plugin adds several new layout choices to the Layout menu: 
 ISOM (spring embedded), Radial (polar coordinates), Circle (all nodes
 in a single circle), Spring (local spring embedded optimization)
-
-showExpressionData.jar
-----------------------
-This plugin add a new choice to the Visualization menu labelled
-"Show Expression Data". Through this submenu, several methods of
-displaying expression data are available, including Star Plots,
-Grid Nodes, Petal Nodes, and Radar Nodes.
 
 yLayouts.jar
 ------------
@@ -94,5 +90,6 @@ Random, Tree, MirrorX, MirrorY, Rotate, and Orthogonal.
 
 yeast-context.jar
 -----------------
-This plugin does not add any choices to the menus or toolbar. Its
-effect on Cytoscape is unknown.
+This plugin adds a context sensitive menu to Cytoscape that enables
+links to Saccharomyces cerevisiae web resources. It can be accessed by
+right-clicking on any node, but is only relevant for budding yeast networks.

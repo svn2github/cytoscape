@@ -361,7 +361,7 @@
             ---------------------------------------
         </echo>
 
-        <copy file="testData/sampleDataContents" todir="${release.dir}/sampleData"/>
+        <copy file="testData/sampleDataContents.txt" todir="${release.dir}/sampleData"/>
         <copy file="testData/BINDyeast.sif" todir="${release.dir}/sampleData"/>
         <copy file="testData/BINDhuman.sif" todir="${release.dir}/sampleData"/>
         <copy file="testData/galExpData.pvals" todir="${release.dir}/sampleData"/>
@@ -408,6 +408,7 @@
                 <include name="*.jar"/>
             </fileset>
         </copy>
+        <copy file="plugins/pluginsContents.txt" todir="${release.dir}/plugins"/>
     </target>
 
     <!-- ======================================================= -->
