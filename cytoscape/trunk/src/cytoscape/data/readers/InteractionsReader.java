@@ -318,7 +318,7 @@ public class InteractionsReader implements GraphReader {
 		giny.model.Node node = rootGraph.getNode(rootGraph.createNode ());
 		node.setIdentifier(targetNodeName);
 		nodes.put (targetNodeName, node);
-		nodeAttributes.addNameMapping(nodeName, node);
+		nodeAttributes.addNameMapping(targetNodeName, node);
 	    } // if target node is previously unknown
 	} // for t
     } // i
