@@ -30,7 +30,7 @@ public class LoadBioDataServerAction extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
         File currentDirectory = networkView.getCytoscapeObj().getCurrentDirectory();
         JFileChooser chooser = new JFileChooser(currentDirectory);
-        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        //chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
         if (chooser.showOpenDialog (networkView.getMainFrame()) == chooser.APPROVE_OPTION) {
             currentDirectory = chooser.getCurrentDirectory();
