@@ -271,11 +271,11 @@ private void loadVizMapper() {
   cc.addMapping("Continuous Mapper", ContinuousMapping.class);
   cc.addMapping("Passthrough Mapper", PassThroughMapping.class);
   //set some standard attribute calculators
-  cc.addNodeLabelCalculator(getPassThroughNLC());
-  cc.addNodeColorCalculator(getContinuousNFCC());
-  cc.addNodeColorCalculator(getMultipointContinuousNFCC());
-  cc.addEdgeLabelCalculator(getPassThroughELC());
-  cc.addNodeSizeCalculator(getMultipointContinuousNSC());
+  //cc.addNodeLabelCalculator(getPassThroughNLC());
+  //cc.addNodeColorCalculator(getContinuousNFCC());
+  //cc.addNodeColorCalculator(getMultipointContinuousNFCC());
+  //cc.addEdgeLabelCalculator(getPassThroughELC());
+  //cc.addNodeSizeCalculator(getMultipointContinuousNSC());
   //load in calculators from file
   Properties props = new Properties();
   try {
@@ -351,6 +351,7 @@ private void loadVizMapper() {
 	m.put(s,new Double(20+Math.random()*40));
     }
 
+    /*
     private GenericNodeColorCalculator getContinuousNFCC() {
 	Interpolator fInt = new LinearNumberToColorInterpolator();
 	ContinuousMapping m =
@@ -486,7 +487,8 @@ private void loadVizMapper() {
 	PassThroughMapping m =
 	    new PassThroughMapping(new String(""),"interaction");
 	return new GenericEdgeLabelCalculator("Exaple Edge Label PassThru",m);
-}
+    }
+    */
 
     // end vizmapper defaults
 
