@@ -986,12 +986,35 @@ public void selectNodesByName (String [] nodeNames, boolean clearAllSelectionsFi
 
 } // selectNodesByName
 //------------------------------------------------------------------------------
+// added by jtwang 30 Sep 2002
+public void selectEdges (Edge[] edgesToSelect, boolean clearAllSelectionsFirst) {
+    if (clearAllSelectionsFirst)
+	graph.unselectEdges();
+    
+    for (int i = 0; i < edgesToSelect.length; i++) {
+	EdgeRealizer eR = graph.getRealizer(edgesToSelect[i]);
+	eR.setSelected(true);
+    }
+
+    redrawGraph();
+}
+
 /**
  *  quadratic (in)efficiency:  make this smarter (pshannon, 24 may 2002)
+
+    fixed by jtwang to be linear 30 Sep 2002
  */
 public void selectNodes (Node [] nodesToSelect, boolean clearAllSelectionsFirst)
 {
-  Graph2D g = graphView.getGraph2D();
+  if (clearAllSelectionsFirst)
+      graph.unselectNodes();
+
+  for (int i = 0; i < nodesToSelect.length; i++) {
+      NodeRealizer nR = graph.getRealizer(nodesToSelect[i]);
+      nR.setSelected(true);
+  }
+
+  /* Replaced by jtwang 30 Sep 2002
   Node [] nodes = graphView.getGraph2D().getNodeArray();
 
   for (int i=0; i < nodes.length; i++) {
@@ -1008,6 +1031,7 @@ public void selectNodes (Node [] nodesToSelect, boolean clearAllSelectionsFirst)
     else if (matched)
       nodeRealizer.setSelected (true);
     } // for i
+  */
 
   redrawGraph ();
 
@@ -1017,6 +1041,9 @@ public void deselectAllNodes(boolean redrawGraph){
     if(redrawGraph){
 	deselectAllNodes();
     }else{
+	// fixed by jtwang 30 Sep 2002
+	graph.unselectNodes();
+	/*
 	//Graph2D g = graphView.getGraph2D();
 	//Node [] nodes = graphView.getGraph2D().getNodeArray();
 	Node [] nodes = graph.getNodeArray();
@@ -1024,13 +1051,18 @@ public void deselectAllNodes(boolean redrawGraph){
 	    //NodeRealizer nodeRealizer = graphView.getGraph2D().getRealizer(nodes [i]);
 	    //nodeRealizer.setSelected (false);
 	    this.graph.setSelected(nodes[i],false);
-	} // for i
+	    } // for i */
     }
     
 }
 //------------------------------------------------------------------------------
 public void deselectAllNodes ()
 {
+    // fixed by jtwang 30 Sep 2002
+
+    graph.unselectNodes();
+
+    /*
   Graph2D g = graphView.getGraph2D();
   Node [] nodes = graphView.getGraph2D().getNodeArray();
 
@@ -1038,7 +1070,7 @@ public void deselectAllNodes ()
     NodeRealizer nodeRealizer = graphView.getGraph2D().getRealizer(nodes [i]);
     nodeRealizer.setSelected (false);
     } // for i
-
+    */
   redrawGraph ();
 
 } // deselectAllNodes
