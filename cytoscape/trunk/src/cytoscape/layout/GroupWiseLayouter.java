@@ -173,7 +173,7 @@ public class GroupWiseLayouter implements Layouter {
 			    10*(Math.random()-.5),
 			    10*(Math.random()-.5));
 
-	WeightedLayouter mule = new WeightedLayouter(width, height);
+	EmbeddedLayouter mule = new EmbeddedLayouter(width, height);
       	mule.doLayout(graph);
     }
 
@@ -195,7 +195,7 @@ public class GroupWiseLayouter implements Layouter {
 	
 	// do a circular layout on them
 	//CircularLayouter bob = new CircularLayouter();
-	WeightedLayouter bob = new WeightedLayouter(width, height);
+	EmbeddedLayouter bob = new EmbeddedLayouter(width, height);
 	bob.doLayout(cluster);
     }
 }
