@@ -6,22 +6,22 @@
  ** under the terms of the GNU Lesser General Public License as published
  ** by the Free Software Foundation; either version 2.1 of the License, or
  ** any later version.
- ** 
+ **
  ** This library is distributed in the hope that it will be useful, but
  ** WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
  ** MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
  ** documentation provided hereunder is on an "as is" basis, and the
- ** Institute for Systems Biology and the Whitehead Institute 
+ ** Institute for Systems Biology and the Whitehead Institute
  ** have no obligations to provide maintenance, support,
  ** updates, enhancements or modifications.  In no event shall the
- ** Institute for Systems Biology and the Whitehead Institute 
+ ** Institute for Systems Biology and the Whitehead Institute
  ** be liable to any party for direct, indirect, special,
  ** incidental or consequential damages, including lost profits, arising
  ** out of the use of this software and its documentation, even if the
- ** Institute for Systems Biology and the Whitehead Institute 
+ ** Institute for Systems Biology and the Whitehead Institute
  ** have been advised of the possibility of such damage.  See
  ** the GNU Lesser General Public License for more details.
- ** 
+ **
  ** You should have received a copy of the GNU Lesser General Public License
  ** along with this library; if not, write to the Free Software Foundation,
  ** Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
@@ -30,7 +30,7 @@
 //
 /**
  * a plugin is loaded based upon information in the java.util.Properties 'props',
- * which is a data member of this class. there are three mechanisms, all of which 
+ * which is a data member of this class. there are three mechanisms, all of which
  * operate via those properties:
  * <ol>
  *    <li> a data file with a recognized file extension (via properties) is loaded
@@ -46,14 +46,13 @@
  * </code>
  */
 //------------------------------------------------------------------------------
-// $Revision$   
-// $Date$ 
+// $Revision$
+// $Date$
 // $Author$
 //-----------------------------------------------------------------------------------
 package cytoscape;
 //-----------------------------------------------------------------------------------
 import java.util.*;
-import java.lang.reflect.*;
 import cytoscape.data.GraphObjAttributes;
 import cytoscape.view.CyWindow;
 //-----------------------------------------------------------------------------------
@@ -113,21 +112,21 @@ protected void findUnconditionallyLoadedClasses (String [] pluginProps)
       String className = props.getProperty (propName);
       messageBuffer.append (" PluginLoader, unconditional: " + className + "\n");
       addClassForLoading (className);
-      } // if endswith 
+      } // if endswith
     } // for
-  
+
 } // findUnconditionallyLoadedClasses
 //-----------------------------------------------------------------------------------
 protected void findConditionallyLoadedClasses (String [] pluginProps)
 {
-  HashMap pluginHash = new HashMap ();  //  a hash of (pluginName, PluginInfo) 
+  HashMap pluginHash = new HashMap ();  //  a hash of (pluginName, PluginInfo)
 
   for (int i=0; i < pluginProps.length; i++) {
     String propName = pluginProps [i];
     if (!propName.endsWith (".load")) {
       try {
         int start = "plugin.".length ();
-        int end = propName.indexOf (".", start + 1); 
+        int end = propName.indexOf (".", start + 1);
         String pluginName = propName.substring (start, end);
         String category = propName.substring (end + 1);
         messageBuffer.append (" PluginLoader, conditional: " + pluginName + " category: " + category + "\n");
@@ -159,7 +158,7 @@ protected void findConditionallyLoadedClasses (String [] pluginProps)
   for (int i=0; i < allDataFileExtensions.length; i++) {
     extensions.add (allDataFileExtensions [i]);
     }
-  
+
   for (int i=0; i < pluginNameKeys.length; i++) {
     PluginInfo pluginInfo = (PluginInfo) pluginHash.get (pluginNameKeys [i]);
     if (extensions.contains (pluginInfo.getFileExtension ()))
@@ -178,7 +177,7 @@ protected void findConditionallyLoadedClasses (String [] pluginProps)
 
   for (int i=0; i < edgeAttributeNames.length; i++)
     attributes.add (edgeAttributeNames [i]);
-  
+
   for (int i=0; i < pluginNameKeys.length; i++) {
     PluginInfo pluginInfo = (PluginInfo) pluginHash.get (pluginNameKeys [i]);
     if (attributes.contains (pluginInfo.getFileExtension ()))
@@ -194,8 +193,8 @@ protected void addClassForLoading (String className)
   if (className != null && className.length () > 0 && !classesToLoad.contains (className)) {
     classesToLoad.add (className);
     messageBuffer.append (" PluginLoader, by file extension: " + className + "\n");
-    } // if 
- 
+    } // if
+
 } // addClassForLoading
 //-----------------------------------------------------------------------------------
 public String [] getClassesToLoad ()

@@ -10,7 +10,6 @@ import java.net.*;
 import java.lang.reflect.*;
 import java.util.jar.*;
 import java.util.*;
-import javax.swing.*;
 
 import cytoscape.AbstractPlugin;
 import cytoscape.view.CyWindow;
@@ -24,6 +23,7 @@ public class JarClassLoader extends URLClassLoader {
   private String urlString;
   private URL url;
   private CyWindow cyWindow;
+  private static HashSet loadedPluginSet = new HashSet();
   /**
    * Creates a new JarClassLoader for the specified url.
    *
@@ -38,7 +38,7 @@ public class JarClassLoader extends URLClassLoader {
     this.cyWindow = cyWindow;
     this.url = new URL("jar", "", urlString + "!/");
   }
-    
+
   /**
    * browses the jar file for any classes that extend AbstractPlugin;
    * upon finding such classes, constructs them with their single
@@ -49,49 +49,39 @@ public class JarClassLoader extends URLClassLoader {
     try {
 	    uc = (JarURLConnection)url.openConnection();
 	    if(uc==null) throw(new Exception("null URL Connection"));
-	    
+
 	    JarFile jf = uc.getJarFile();
 	    if(jf==null) throw(new Exception("null JarFile from URL"));
-	    
-	    //System.out.println("- - - - entries begin");
+
 	    Enumeration entries = jf.entries();
 	    if(entries==null) throw(new Exception("null jar entries"));
-	    //System.out.println("entries is not null");
-	    
+
 	    int totalEntries=0;
 	    int totalClasses=0;
 	    int totalPlugins=0;
-	    
+
 	    while(entries.hasMoreElements()) {
-        totalEntries++;
-        Object entry_o = entries.nextElement();
-        String entry_s = entry_o.toString();
-        //System.out.println(entry_s);
-        if(!(entry_s.endsWith(".class"))) continue;
-        totalClasses++;
-        //System.out.println(" CLASS: " + entry_s);
-        String entry_s2 = entry_s.replaceAll("\\.class$","");
-        //System.out.println(" CLASS: " + entry_s2);
-        if(!(isClassPlugin(entry_s2))) {
-          //System.out.println(" not plugin.");
-          continue;
-        }
-        //System.out.println(" PLUGIN!");
-        totalPlugins++;
-        invokePlugin(entry_s2);
+            totalEntries++;
+            Object entry_o = entries.nextElement();
+            String entry_s = entry_o.toString();
+            if(!(entry_s.endsWith(".class"))) continue;
+            totalClasses++;
+            String entry_s2 = entry_s.replaceAll("\\.class$","");
+            if(!(isClassPlugin(entry_s2))) continue;
+            totalPlugins++;
+            invokePlugin(entry_s2);
 	    }
-	    //System.out.println("- - - - entries finis");
 	    System.out.println(".jar summary: " +
                          " entries=" + totalEntries +
-                         " classes=" + totalClasses + 
-                         " plugins=" + totalPlugins); 
+                         " classes=" + totalClasses +
+                         " plugins=" + totalPlugins);
     }
     catch (Exception e) {
 	    System.err.println ("Error thrown: " + e.getMessage ());
 	    if(uc==null) System.out.println("uc is null 4e");
     }
   }
-    
+
   /**
    * Invokes the application in this jar file given the name of the
    * main class and an array of arguments. The class must define a
@@ -126,7 +116,7 @@ public class JarClassLoader extends URLClassLoader {
 	    // This should not happen, as we have disabled access checks
     }
   }
-    
+
   /**
    * Invokes the application in this jar file given the name of the
    * main class and assuming it is a plugin.
@@ -141,23 +131,24 @@ public class JarClassLoader extends URLClassLoader {
     for ( int i = 1; i < tokens.length; ++i ) {
       new_name = new_name.concat( "."+tokens[i] );
     }
-    name = new_name;
-    
     try {
-	    if(!(isClassPlugin(name)))
-        throw(new Exception("not plugin: " + name));
-	    Class pluginClass = loadClass (name);
-      AbstractPlugin.loadPlugin(pluginClass, cyWindow.getCytoscapeObj(),
+	    if(!(isClassPlugin(new_name)))
+        throw(new Exception("not plugin: " + new_name));
+        if (loadedPluginSet.contains(new_name))
+        throw(new Exception("plugin already loaded: " + new_name));
+	    Class pluginClass = loadClass (new_name);
+        AbstractPlugin.loadPlugin(pluginClass, cyWindow.getCytoscapeObj(),
                                 cyWindow );
-	    System.out.println("Loaded plugin: " + name);
+        loadedPluginSet.add(new String(new_name));
+	    System.out.println("Loaded plugin: " + new_name);
     }
     catch (Exception e) {
 	    System.err.println ("Error instantiating plugin: "
                           + e.getMessage ());
     }
   }
-    
-    
+
+
   /**
    * Determines whether the class with a particular name
    * extends AbstractPlugin.
@@ -169,7 +160,7 @@ public class JarClassLoader extends URLClassLoader {
            NoSuchMethodException,
            InvocationTargetException
   {
- 
+
     String[] tokens = name.split( "/" );
     String new_name = tokens[0];
     for ( int i = 1; i < tokens.length; ++i ) {
@@ -179,22 +170,20 @@ public class JarClassLoader extends URLClassLoader {
 
     Class c = loadClass(name);
     Class p = AbstractPlugin.class;
-    if ( p.isAssignableFrom( c ) ) { 
-      return true; 
+    if ( p.isAssignableFrom( c ) ) {
+      return true;
     }
-    else { 
-      return false; 
+    else {
+      return false;
     }
-  
+
   }
-	
+
   /**
    * Returns the class you request, or throws an exception.
    */
   public Class getClass(String name)
     throws ClassNotFoundException
   { return findClass(name); }
-	
-} // JarClassLoader
 
-	
+} // JarClassLoader
