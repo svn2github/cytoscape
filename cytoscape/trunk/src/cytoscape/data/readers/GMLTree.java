@@ -185,7 +185,7 @@ public class GMLTree{
    * @param filename The name of the file used to create this GMLTree
    */
   public GMLTree(String filename){
-    LinkedList tokenList = new LinkedList();
+   
     StringTokenizer quotes = null;
     if (filename.startsWith("jar://")) {//in a startup jar file
         try {
@@ -202,6 +202,17 @@ public class GMLTree{
         quotes = new StringTokenizer(reader.getText(),"\"",true);
     }
     //note: no handling of error cases here
+    parse( quotes );
+  }
+
+  public GMLTree ( String text, boolean zip_entry ) {
+    StringTokenizer quotes = new StringTokenizer( text,"\"",true);
+    parse( quotes );
+  }
+
+  protected void parse ( StringTokenizer quotes ) {
+
+    LinkedList tokenList = new LinkedList();
 
     // handle the quotes -> build GMLToken list
     //find the quoted strings first so we can preserve their white space

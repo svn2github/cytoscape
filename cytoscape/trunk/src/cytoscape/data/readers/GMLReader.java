@@ -70,9 +70,9 @@ public class GMLReader implements GraphReader {
   }
 
 
- //  public GMLReader ( String zip_entry, boolean is_zip ) {
-//     gmlTree = new GMLTree( zip_entry, is_zip );
-//   }
+  public GMLReader ( String zip_entry, boolean is_zip ) {
+     gmlTree = new GMLTree( zip_entry, is_zip );
+  }
 
   /**
    * Equivalent to read(), as names in a GML file are not currently canonicalized.

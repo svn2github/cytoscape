@@ -580,7 +580,8 @@ public class CytoscapeConfig
 
     LongOpt[] longopts = new LongOpt[] {
       new LongOpt ("VT",  LongOpt.REQUIRED_ARGUMENT, null, 0) ,
-      new LongOpt ("classpath",  LongOpt.REQUIRED_ARGUMENT, null, 1) 
+      new LongOpt ("classpath",  LongOpt.REQUIRED_ARGUMENT, null, 1),
+      new LongOpt ("help", LongOpt.REQUIRED_ARGUMENT, null, 2)
     };
     Getopt g = new Getopt ("cytoscape", commandLineArguments, argSpecificationString, longopts);
     g.setOpterr(false); // We'll do our own error handling
@@ -593,6 +594,9 @@ public class CytoscapeConfig
         break;
       case 1:
         loadUserClasspath = true;
+        break;
+      case 2:
+        helpRequested = true;
         break;
       case 't':
         viewType = g.getOptarg();
@@ -930,23 +934,23 @@ public class CytoscapeConfig
     sb.append ("\n\n");
 
     sb.append ("\n      optional arguments\n");
-    sb.append ("      ------------------\n");
-    sb.append (" -g  <geometry file name>          (xxxx.gml)\n");
-    sb.append (" -b  <bioData directory>           (./biodata)\n");
-    sb.append (" -i  <interactions filename>       (yyyy.intr)\n");
-    sb.append (" -e  <expression filename>         (zzz.mrna)\n");
-    sb.append (" -x  (causes Cytoscape not to copy expression to attribs)\n");
-    sb.append (" -s  <default species name>        (\"Saccharomyces cerevisiae\")\n");
-    sb.append (" -n  <nodeAttributes filename>     (zero or more)\n");
-    sb.append (" -j  <edgeAttributes filename>     (zero or more)\n");
-    sb.append (" -l  <layout strategy>             (organic|hierarchical|embedded|circular)\n");
-    sb.append (" -c  (suppresses automatic canonicalization of node names in input graph files)\n");
+    sb.append ("      ------------------\n\n");
+    sb.append ("--multiple parameters allowed--\n");
+    sb.append (" -g  <graph file names>        :  \".gml\" or \".sif\")\n");
+    sb.append (" -i  <interactions filenames>  :  will load any file as a \".sif\", i.e. \".txt\"\n");
+    sb.append (" -n  <nodeAttributes filename> :  of the \"name = value\" style\n");
+    sb.append (" -j  <edgeAttributes filename> :  of the \"source ('type') target = value\" style\n");
+    sb.append ("\n--single parameter only--\n");
+    sb.append (" -e  <expression filename>     : \".mrna\" or \".mtx\"\n");
+    sb.append ("                                 (this is the ouput of mergeConds\n");
+    sb.append (" -x  : causes Cytoscape not to copy expression to attribs)\n");
+    sb.append (" -c  : suppresses automatic canonicalization of node names in input graph files\n");
+    sb.append ("\n--single parameter only, stored on use--\n");
+    sb.append (" -b  <bioData directory>       :   \"annotaion/manifest\"\n");
+    sb.append (" -s  <default species name>    :   \"Saccharomyces cerevisiae\"\n");
     sb.append ("\n");
-
     sb.append (" -h  (display usage)\n");
     sb.append (" -v  (display version)\n");
-    sb.append (" -y  <graph library>                (default: \"y-files\")\n");
-
 
     return sb.toString ();
 
