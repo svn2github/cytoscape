@@ -269,10 +269,13 @@ ADD REMOVE TEST:
     starts here - after the RootGraph is created.  The timed test
     consists of removing all nodes from the RootGraph (which, as a
     documented and expected side-effect, removes all edges from the
-    RootGraph) and then reconstructing the RootGraph as it originally
-    was when the timed test began.  This deconstruction/reconstruction
-    is repeated 10 times.  The timer stops after the 10th
-    reconstruction.
+    RootGraph).  A quick test is performed to ensure that no nodes or
+    edges remain in the RootGraph.  The test then reconstructs the
+    RootGraph as it originally was when the timed test began.  A quick
+    test is performed to ensure that the correct number of nodes and
+    edges exists in the RootGraph at this point.  This
+    deconstruction/reconstruction is repeated 10 times.  The timer stops
+    after the 10th reconstruction.
 
   Test circumstances:
     Tests were performed on a 1.8GHz P4 (512K cache), with 512M RAM,
