@@ -330,6 +330,8 @@ public final class IntBTree
       return count; }
   }
 
+  
+
   /*
    * Recursively enumerates all values under this node.  Enumerate in
    * non-descending order.
@@ -374,6 +376,31 @@ public final class IntBTree
 //   {
 //     return null;
 //   }
+
+  public final IntEnumerator searchRange(int xMin, int xMax)
+  {
+    final NodeStack nodeStack = new NodeStack();
+    final int totalCount = searchRange(m_root, nodeStack,
+                                       xMin, xMax,
+                                       Integer.MIN_VALUE, Integer.MAX_VALUE);
+    return new IntEnumerator() {
+        public int numRemaining() {
+          return 0;
+        }
+        public int nextInt() {
+          return -1;
+        } };
+  }
+
+  /*
+   * returns the count.
+   */
+  private final int searchRange(Node n, NodeStack nodeStack,
+                                int xMin, int xMax,
+                                int minBound, int maxBound)
+  {
+    return -1;
+  }
 
   private  void debugPrint()
   {
