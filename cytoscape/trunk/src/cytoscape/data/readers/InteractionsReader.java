@@ -37,6 +37,7 @@ package cytoscape.data.readers;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.Hashtable;
+import java.util.Iterator;
 
 import y.base.Node;
 import y.base.Edge;
@@ -62,9 +63,10 @@ public InteractionsReader (BioDataServer dataServer, String species, String file
   this.dataServer = dataServer;
   this.species = species;
 }
-//-----------------------------------------------------------------------------------------
-public void read ()
+//----------------------------------------------------------------------------------------
+public void read (boolean canonicalize)
 {
+  
   String rawText;
   try {
     if (filename.trim().startsWith ("jar://")) {
@@ -88,15 +90,25 @@ public void read ()
   if (rawText.indexOf ("\t") >= 0)
     delimiter = "\t";
   StringTokenizer strtok = new StringTokenizer (rawText, "\n");
-
-  Vector interactions = new Vector ();
+  
+  // commented out by iliana on 11.26.2002 :
+  // Vector interactions = new Vector ();
+  
   while (strtok.hasMoreElements ()) {
     String newLine = (String) strtok.nextElement ();
     allInteractions.addElement (new Interaction (newLine, delimiter));
     }
 
-  createGraphFromInteractionData ();
+  createGraphFromInteractionData (canonicalize);
 
+}
+//-----------------------------------------------------------------------------------------
+/**
+ * Calls read(true)
+ */
+public void read ()
+{
+  read(true);
 }  // readFromFile
 //-------------------------------------------------------------------------------------------
 public int getCount ()
@@ -111,7 +123,7 @@ public Interaction [] getAllInteractions ()
   for (int i=0; i < allInteractions.size (); i++) {
     Interaction inter = (Interaction) allInteractions.elementAt (i);
     result [i] = inter;
-    }
+  }
 
   return result;
 
@@ -119,18 +131,22 @@ public Interaction [] getAllInteractions ()
 //-------------------------------------------------------------------------------------------
 protected String canonicalizeName (String name)
 {
+    
   String canonicalName = name;
   if (dataServer != null) {
     canonicalName = dataServer.getCanonicalName (species, name);
-    if (canonicalName == null)
-      return name;
-    }
-
+    // added by iliana 11.14.2002
+    // for some strange reason the server returned a null canonical name
+    if(canonicalName == null){canonicalName = name;} 
+    //System.out.println (" -- canonicalizeName from server: " + canonicalName);
+  }
+  //System.out.println("the canonicalName for " + name + " is " + canonicalName);
+  //System.out.flush();
   return canonicalName;
 
 } // canonicalizeName
 //-------------------------------------------------------------------------------------------
-protected void createGraphFromInteractionData ()
+protected void createGraphFromInteractionData (boolean canonicalize)
 {
   graph = new Graph2D ();
   Interaction [] interactions = getAllInteractions ();
@@ -144,25 +160,34 @@ protected void createGraphFromInteractionData ()
     // for each source and target
     // in addition,
     //---------------------------------------------------------------------------
-
+  String nodeName, targetNodeName;
   for (int i=0; i < interactions.length; i++) {
     Interaction interaction = interactions [i];
     //System.out.println ("source: " + interaction.getSource ());
-    String nodeName = canonicalizeName (interaction.getSource ());
-    //System.out.println ("canonicalized: " + nodeName);    
+    if(canonicalize){
+      nodeName = canonicalizeName (interaction.getSource ());
+    }else{
+      nodeName = interaction.getSource();
+    }
+    //System.out.println ("---- canonicalized:[" + nodeName + "] ------");    
+    //System.out.flush();
     if (!nodes.containsKey (nodeName)) {
       Node node = graph.createNode (0.0, 0.0, 70.0, 30.0, nodeName);
       nodes.put (nodeName, node);
-      }
+    }
     String [] targets = interaction.getTargets ();
     for (int t=0; t < targets.length; t++) {
-      String targetNodeName = canonicalizeName (targets [t]);
+      if(canonicalize){
+        targetNodeName = canonicalizeName (targets [t]);
+      }else{
+        targetNodeName = targets[t];
+      }
       if (!nodes.containsKey (targetNodeName)) {
         Node targetNode = graph.createNode (0.0, 0.0, 70.0, 30.0, targetNodeName);
         nodes.put (targetNodeName, targetNode);
-        } // if target node is previously unknown
-      } // for t
-    } // i
+      } // if target node is previously unknown
+    } // for t
+  } // i
 
 
     //---------------------------------------------------------------------------
@@ -176,18 +201,32 @@ protected void createGraphFromInteractionData ()
 
   for (int i=0; i < interactions.length; i++) {
     Interaction interaction = interactions [i];
-    String nodeName = canonicalizeName (interaction.getSource ());
+    if(canonicalize){
+      nodeName = canonicalizeName (interaction.getSource ());
+    }else{
+      nodeName = interaction.getSource();
+    }
+    //System.out.println("node "+ nodeName);
+    //System.out.flush();
     String interactionType = interaction.getType ();
     Node sourceNode = (Node) nodes.get (nodeName);
     String [] targets = interaction.getTargets ();
     for (int t=0; t < targets.length; t++) {
-      String targetName = canonicalizeName (targets [t]);
-      Node targetNode = (Node) nodes.get (targetName);
+      if(canonicalize){
+        targetNodeName = canonicalizeName (targets [t]);
+      }else{
+        targetNodeName = targets[t];
+      }
+      //System.out.println("target " + targetName);
+      //System.out.flush();
+      Node targetNode = (Node) nodes.get (targetNodeName);
       Edge edge = graph.createEdge (sourceNode, targetNode);
-      String edgeName = nodeName + " (" + interactionType + ") " + targetName;
+      String edgeName = nodeName + " (" + interactionType + ") " + targetNodeName;
       int previousMatchingEntries = edgeAttributes.countIdentical(edgeName);
       if (previousMatchingEntries > 0)
         edgeName = edgeName + "_" + previousMatchingEntries;
+      //System.out.println(edgeName);
+      //System.out.flush();
       edgeAttributes.add ("interaction", edgeName, interactionType);
       edgeAttributes.addNameMapping (edgeName, edge);
       } // for t
