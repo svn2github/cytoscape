@@ -40,6 +40,10 @@ public class ExpressionDataDialog extends JDialog {
     public static final int RSNA_S = 1;
     public static final int RSNA_N = 2;
 
+    public static final int LESSER_RANGE = 0;
+    public static final int EQUAL_RANGE = 1;
+    public static final int GREATER_RANGE = 2;
+
     int expressionConditionNumber;
     int rsnState;
     AttributeMapper aMapper;
@@ -122,11 +126,11 @@ public ExpressionDataDialog (Frame parentFrame,
 
 
     private void initializeColors() {
-	pt0ColorLT = getMinLTColor();
-	pt0Color = getMinColor();
-	pt1Color = getMidColor();
-	pt2Color = getMaxColor();
-	pt2ColorGT = getMaxGTColor();
+	pt0ColorLT = getPointColor(0,LESSER_RANGE);
+	pt0Color = getPointColor(0,GREATER_RANGE);
+	pt1Color = getPointColor(1,GREATER_RANGE);
+	pt2Color = getPointColor(2,LESSER_RANGE);
+	pt2ColorGT = getPointColor(2,GREATER_RANGE);
     }
 
     private void initializePoints() {
@@ -531,11 +535,7 @@ private JPanel createADPanel() {
   return adPanel;
 }
 
-
-
-
-
-    private Color getMinLTColor() {
+    private Color getPointColor(int point, int whichBoundaryRange) {
 	Color tempColor;
 
 	ContinuousMapper cm =
@@ -546,15 +546,22 @@ private JPanel createADPanel() {
 	SortedMap valueMap = cm.getBoundaryRangeValuesMap();
 	Iterator i = valueMap.keySet().iterator();
 
-	//for ( ; i.hasNext(); ) {
 	Double doubleBVal = (Double)i.next();
-	//}
+	for (int j = 0; j<point; j++)
+	    doubleBVal = (Double)i.next();
 	
 	BoundaryRangeValues bvObj = (BoundaryRangeValues)valueMap.get(doubleBVal);
 	
 	if(bvObj!=null) {
-	    tempColor = (Color)bvObj.lesserValue;
-	    
+
+	    tempColor=null;
+	    if(whichBoundaryRange == LESSER_RANGE)
+		tempColor = (Color)bvObj.lesserValue;
+	    else if(whichBoundaryRange == EQUAL_RANGE)
+		tempColor = (Color)bvObj.equalValue;
+	    else if(whichBoundaryRange == GREATER_RANGE)
+		tempColor = (Color)bvObj.greaterValue;
+
 	    if(tempColor != null)
 		return tempColor;
 	    else {
@@ -566,135 +573,6 @@ private JPanel createADPanel() {
 	}
     }
 
-    private Color getMinColor() {
-	Color tempColor;
-
-	ContinuousMapper cm =
-	    (ContinuousMapper)
-	    aMapper.getValueMapper(VizMapperCategories.NODE_FILL_COLOR);
-
-	//Map valueMap = cm.getValueMap();
-	SortedMap valueMap = cm.getBoundaryRangeValuesMap();
-	Iterator i = valueMap.keySet().iterator();
-
-	//for ( ; i.hasNext(); ) {
-	Double doubleBVal = (Double)i.next();
-	//}
-	
-	BoundaryRangeValues bvObj = (BoundaryRangeValues)valueMap.get(doubleBVal);
-	
-	if(bvObj!=null) {
-	    tempColor = (Color)bvObj.greaterValue;
-	    
-	    if(tempColor != null)
-		return tempColor;
-	    else {
-		return new Color(255,255,0);
-	    }
-	}
-	else {
-	    return new Color(255,255,0);
-	}
-    }
-
-
-    private Color getMidColor() {
-	Color tempColor;
-
-	ContinuousMapper cm =
-	    (ContinuousMapper)
-	    aMapper.getValueMapper(VizMapperCategories.NODE_FILL_COLOR);
-
-	//Map valueMap = cm.getValueMap();
-	SortedMap valueMap = cm.getBoundaryRangeValuesMap();
-	Iterator i = valueMap.keySet().iterator();
-
-	//for ( ; i.hasNext(); ) {
-	Double doubleBVal = (Double)i.next();
-	doubleBVal = (Double)i.next();
-	//}
-	
-	BoundaryRangeValues bvObj = (BoundaryRangeValues)valueMap.get(doubleBVal);
-	
-	if(bvObj!=null) {
-	    tempColor = (Color)bvObj.greaterValue;
-	    
-	    if(tempColor != null)
-		return tempColor;
-	    else {
-		return new Color(255,255,0);
-	    }
-	}
-	else {
-	    return new Color(255,255,0);
-	}
-    }
-
-    private Color getMaxColor() {
-	Color tempColor;
-
-	ContinuousMapper cm =
-	    (ContinuousMapper)
-	    aMapper.getValueMapper(VizMapperCategories.NODE_FILL_COLOR);
-
-	//Map valueMap = cm.getValueMap();
-	SortedMap valueMap = cm.getBoundaryRangeValuesMap();
-	Iterator i = valueMap.keySet().iterator();
-
-	//for ( ; i.hasNext(); ) {
-	Double doubleBVal = (Double)i.next();
-	doubleBVal = (Double)i.next();
-	doubleBVal = (Double)i.next();
-	//}
-	
-	BoundaryRangeValues bvObj = (BoundaryRangeValues)valueMap.get(doubleBVal);
-	
-	if(bvObj!=null) {
-	    tempColor = (Color)bvObj.lesserValue;
-	    
-	    if(tempColor != null)
-		return tempColor;
-	    else {
-		return new Color(255,255,0);
-	    }
-	}
-	else {
-	    return new Color(255,255,0);
-	}
-    }
-
-    private Color getMaxGTColor() {
-	Color tempColor;
-
-	ContinuousMapper cm =
-	    (ContinuousMapper)
-	    aMapper.getValueMapper(VizMapperCategories.NODE_FILL_COLOR);
-
-	//Map valueMap = cm.getValueMap();
-	SortedMap valueMap = cm.getBoundaryRangeValuesMap();
-	Iterator i = valueMap.keySet().iterator();
-
-	//for ( ; i.hasNext(); ) {
-	Double doubleBVal = (Double)i.next();
-	doubleBVal = (Double)i.next();
-	doubleBVal = (Double)i.next();
-	//}
-	
-	BoundaryRangeValues bvObj = (BoundaryRangeValues)valueMap.get(doubleBVal);
-	
-	if(bvObj!=null) {
-	    tempColor = (Color)bvObj.greaterValue;
-	    
-	    if(tempColor != null)
-		return tempColor;
-	    else {
-		return new Color(255,255,0);
-	    }
-	}
-	else {
-	    return new Color(255,255,0);
-	}
-    }
 
 
 
