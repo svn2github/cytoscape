@@ -185,43 +185,15 @@ public class CyMenus {
    * defers filling those menus with items until later.
    */
   private void createMenuBar() {
-    // menuBar = new JMenuBar();
-//     fileMenu = new JMenu("File");
-//     {
-//       loadSubMenu = new JMenu("Load");
-//       fileMenu.add(loadSubMenu);
-//       saveSubMenu = new JMenu("Save");
-//       fileMenu.add(saveSubMenu);
-//     }
-//     menuBar.add(fileMenu);
-        
-//     editMenu = new JMenu("Edit");
-//     menuBar.add(editMenu);
-        
-//     selectMenu = new JMenu("Select");
-//     menuBar.add(selectMenu);
-        
-//     layoutMenu = new JMenu("Layout");
-//     layoutMenu.setToolTipText("Apply new layout algorithm to graph");
-//     menuBar.add(layoutMenu);
-
-//     vizMenu = new JMenu("Visualization"); // always create the viz menu
-//     menuBar.add(vizMenu);
-        
-//     opsMenu = new JMenu("PlugIns"); // always create the plugins menu
-//     menuBar.add(opsMenu);
-
     menuBar = new CytoscapeMenuBar();
-    fileMenu = menuBar.getMenu( "File" );
+    fileMenu    = menuBar.getMenu( "File" );
     loadSubMenu = menuBar.getMenu( "File.Load" );
     saveSubMenu = menuBar.getMenu( "File.Save" );
-    editMenu = menuBar.getMenu( "Edit" );
-    selectMenu = menuBar.getMenu( "Select" );
-    layoutMenu = menuBar.getMenu( "Layout" );
-    vizMenu = menuBar.getMenu( "Visualization" );
-    opsMenu = menuBar.getMenu( "Plugins" );
-
-
+    editMenu    = menuBar.getMenu( "Edit" );
+    selectMenu  = menuBar.getMenu( "Select" );
+    layoutMenu  = menuBar.getMenu( "Layout" );
+    vizMenu     = menuBar.getMenu( "Visualization" );
+    opsMenu     = menuBar.getMenu( "Plugins" );
   }
     
   /**
@@ -235,45 +207,43 @@ public class CyMenus {
    * Any calls to this method after the first will do nothing.
    */
   public void initializeMenus() {
-    if (!menusInitialized) {
-      menusInitialized = true;
-      fillMenuBar();
-      fillToolBar();
-    }
+      if (!menusInitialized) {
+	  menusInitialized = true;
+	  fillMenuBar();
+	  fillToolBar();
+      }
   }
   /**
    * Fills the previously created menu bar with a large number of
    * items with attached action listener objects.
    */
   private void fillMenuBar() {
-    NetworkView networkView = cyWindow;  //restricted interface
-    CytoscapeObj cytoscapeObj = cyWindow.getCytoscapeObj();
+      NetworkView networkView = cyWindow;  //restricted interface
+      CytoscapeObj cytoscapeObj = cyWindow.getCytoscapeObj();
 
-    //first fill the File menu
-    //fill the Load submenu
-    
-    JMenuItem mi = loadSubMenu.add(new LoadInteractionFileAction(networkView));
-    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.CTRL_MASK));
-    if ( networkView.getCytoscapeObj().getConfiguration().isYFiles() ) {
-	    mi = loadSubMenu.add(new LoadGMLFileAction(networkView));
-	    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.CTRL_MASK));
-    }
-    mi = loadSubMenu.add(new LoadExpressionMatrixAction(networkView));
-    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.CTRL_MASK));
-    mi = loadSubMenu.add(new LoadBioDataServerAction(networkView));
-    mi = loadSubMenu.add(new LoadNodeAttributesAction(networkView));
-    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK));
-    mi = loadSubMenu.add(new LoadEdgeAttributesAction(networkView));
-    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_J, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK));
-        
-    //fill the Save submenu
-    if ( networkView.getCytoscapeObj().getConfiguration().isYFiles() )
-	    saveSubMenu.add(new SaveAsGMLAction(networkView));
-    saveSubMenu.add(new SaveAsInteractionsAction(networkView));
-    saveSubMenu.add(new SaveVisibleNodesAction(networkView));
-    saveSubMenu.add(new SaveSelectedNodesAction(networkView));
-        
-    fileMenu.add(new PrintAction(networkView));
+      //fill the Load submenu
+      JMenuItem mi = loadSubMenu.add(new LoadGraphFileAction(networkView));
+      //mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.CTRL_MASK));
+      //JMenuItem mi = loadSubMenu.add(new LoadInteractionFileAction(networkView));
+      //mi = loadSubMenu.add(new LoadGMLFileAction(networkView));
+      //mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.CTRL_MASK));
+      mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.CTRL_MASK));
+      mi = loadSubMenu.add(new LoadExpressionMatrixAction(networkView));
+      mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.CTRL_MASK));
+      mi = loadSubMenu.add(new LoadBioDataServerAction(networkView));
+      mi = loadSubMenu.add(new LoadNodeAttributesAction(networkView));
+      mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK));
+      mi = loadSubMenu.add(new LoadEdgeAttributesAction(networkView));
+      mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_J, ActionEvent.CTRL_MASK|ActionEvent.SHIFT_MASK));
+      
+      //fill the Save submenu
+      if ( networkView.getCytoscapeObj().getConfiguration().isYFiles() )
+	  saveSubMenu.add(new SaveAsGMLAction(networkView));
+      saveSubMenu.add(new SaveAsInteractionsAction(networkView));
+      saveSubMenu.add(new SaveVisibleNodesAction(networkView));
+      saveSubMenu.add(new SaveSelectedNodesAction(networkView));
+      
+      fileMenu.add(new PrintAction(networkView));
         
     mi = fileMenu.add(new CloseWindowAction(cyWindow));
     mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));

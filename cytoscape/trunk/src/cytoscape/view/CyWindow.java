@@ -308,7 +308,7 @@ protected void updateGraphView() {
 	
 	GraphPerspective gp = network.getGraphPerspective();
 	
-	view = (GraphView)new PGraphView(network.getGraphPerspective());
+	view = (GraphView) new PGraphView(network.getGraphPerspective());
 	display = view.getComponent();
 	add( display, BorderLayout.CENTER);
 
@@ -574,8 +574,8 @@ protected void displayNewGraph(boolean doLayout) {
 	    getGraphView().setZoom(getGraphView().getZoom()*0.9);
     }
     else {
-	    //view.fitContent();
-	    //view.setZoom(view.getZoom()*0.9);
+	    view.fitContent();
+	    view.setZoom(view.getZoom()*0.9);
     }
 }
 /**
@@ -699,7 +699,7 @@ public String getWindowTitle() {return windowTitle;}
 /**
  * Sets the window title. The actual title (as displayed on the
  * frame title bar, and returned by a call to getWindowTitle)
- * is a concatenation of a default header string and the argument.
+ * is a concatenation of a default header string and the argument
  */
 public void setWindowTitle(String newTitle) {
     windowTitle = defaultWindowTitle +  newTitle;
@@ -789,32 +789,30 @@ public void setNewGraph(Graph2D newGraph, boolean doLayout) {
 public void setNewNetwork( CyNetwork newNetwork ) {
     if (newNetwork == null) {return;}
     if ( isYFiles ) {
-	    setInteractivity(false);
-	    detachGraphListeners();
-	    this.network = newNetwork;
-	    connectGraphAndView();
-	    attachGraphListeners();
-	    displayNewGraph( network.getNeedsLayout() );
-	    getCyMenus().updateUndoRedoMenuItemStatus();
-	    setInteractivity(true);
-    }
-    else {
-	    //setInteractivity(false);
-	    //using giny update the view
-	    if (view != null)
-		    view.removeGraphViewChangeListener(this);
-	    this.network = newNetwork;
-	   
-	    updateGraphView();
-	    attachGraphViewListener();
-	    //applyLayout();
-	    fitGraphView();
-	    updateStatusLabel(0, 0);
-	    add(cyMenus.getToolBar(), BorderLayout.NORTH);
-	    
-	    showWindow();
-	     //setInteractivity(true);
-	   
+	setInteractivity(false);
+	detachGraphListeners();
+	this.network = newNetwork;
+	connectGraphAndView();
+	attachGraphListeners();
+	displayNewGraph( network.getNeedsLayout() );
+	getCyMenus().updateUndoRedoMenuItemStatus();
+	setInteractivity(true);
+    } else {
+	//setInteractivity(false);
+	//using giny update the view
+	if (view != null)
+	    view.removeGraphViewChangeListener(this);
+	this.network = newNetwork;
+	
+	updateGraphView();
+	attachGraphViewListener();
+	//applyLayout();
+	fitGraphView();
+	updateStatusLabel(0, 0);
+	add(cyMenus.getToolBar(), BorderLayout.NORTH);
+	
+	showWindow();
+	//setInteractivity(true);
     }
 }
 //------------------------------------------------------------------------------
