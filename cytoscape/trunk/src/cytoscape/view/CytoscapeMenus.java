@@ -55,6 +55,7 @@ public class CytoscapeMenus {
     JMenu layoutMenu;
     JMenu vizMenu;
     JMenu opsMenu;
+    JMenu helpMenu;    // 20030915 cworkman
     JToolBar toolBar;
     
     /**
@@ -101,6 +102,11 @@ public class CytoscapeMenus {
      * menu option.
      */
     public JMenu getOperationsMenu() {return opsMenu;}
+    /**
+     * Returns the submenu holding menu items associated with
+     * the help menu.
+     */
+    public JMenu getHelpMenu() {return helpMenu;}
     
     /**
      * Returns the toolbar object constructed by this class.
@@ -334,7 +340,13 @@ public class CytoscapeMenus {
         
         opsMenu = new JMenu ("PlugIns"); // always create the plugins menu
         menuBar.add (opsMenu);
-    }
+
+	// 2003.07.25 cworkman 
+	helpMenu = new JMenu ("Help"); // to display the version number and build date
+	menuBar.add (helpMenu, -1);
+	helpMenu.add (new HelpSelectionAction (cytoscapeWindow));
+ 	helpMenu.add ("FAQ");
+   }
     
     /**
      * Creates the toolbar for easy access to commonly used actions.
