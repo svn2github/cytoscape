@@ -12,7 +12,7 @@ package csplugins.isb.dtenenbaum.jython;
 import csplugins.isb.pshannon.py.*;
 
 /**
- * A subclass of SPyConsole that implements the Runnable interace so that it can be used as a thread.
+ * A subclass of SPyConsole that implements the Runnable interface so that it can be used as a thread.
  * SPyconsole was released by Thomas Maxwell (http://www.uvm.edu/giee/SME3/ftp/JConsole/).
  *
  * @author Olivier Dameron  (dameron@smi.stanford.edu)
