@@ -1,7 +1,7 @@
 package fing.util;
 
 /**
- * The purpose of this class is to handle to logic of keeping a pool of
+ * The purpose of this class is to handle the logic of keeping a pool of
  * free integer 'slots'.  In reality, the definition of this
  * class was motivated by the implementation fing.model.FRootGraph, which
  * provides index-to-node mappings via array of nodes.  We want to find
