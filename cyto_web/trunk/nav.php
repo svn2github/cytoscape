@@ -1,5 +1,4 @@
 <table cellspacing="0" cellpadding="2" border="0" summary="" id="links">
-	<tbody>
 		<tr>
 			<td colspan="6" id="caption">
 				<h1>

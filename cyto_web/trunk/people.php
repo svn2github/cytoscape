@@ -22,8 +22,7 @@
 			</tr>
 		</table>
 <? include "nav.php"; ?>
-
-		<div id="indent">
+<blockquote>
 			<P><big>
 				<b>
 					Principal Investigators:</b>
@@ -52,37 +51,27 @@
 					Software Developers:</b></big>
 			<br>
 			<br>
-			<table cellpadding="2" cellspacing="2" border="0" width="100%">
-				<tbody>
-					<tr>
-						<td valign="Top" width="250">
-							<div id="indent">
-							Mark Anderson
-							<br>
-							Iliana Avila-Campillo
-							<br>
-							Gary Bader
-							<br>
-							Ethan Cerami
-							<br>
-							Rowan Christmas
-							<br>
-							Trey Ideker
-							<br>
-							Ryan Kelley
-							<br>
-							Nerius Landys
-							<br>
-							Robert Sheridan
-							<br>
-							Chris Workman
-							<br>
-							</div>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-			<div id="indent">
+</blockquote>
+<table cellpadding="8" cellspacing="0" border="0">
+  <tr><!-- Stupid table wants to put itself all the way to the left lol! -->
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
+    <td>Mark Anderson<br /><br /><img src="people_photos/mark.jpg"></img></td>
+    <td>Iliana<br />Avila-Campillo<br /><br /><img src="people_photos/iliana.jpg"></img></td>
+    <td>Gary Bader<br /><br /><img src="people_photos/gary.jpg"></img></td>
+    <td>Ethan Cerami<br /><br /><img src="people_photos/ethan.jpg"></img></td>
+    <td>Rowan Christmas<br /><br /><img src="people_photos/rowan.jpg"></img></td>
+  </tr>
+  <tr><td colspan=5>&nbsp;</td></tr>
+  <tr>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
+    <td>Trey Ideker<br /><br /><img src="people_photos/trey.jpg"></img></td>
+    <td>Ryan Kelley<br /><br /><img src="people_photos/ryan.jpg"></img></td>
+    <td>Nerius Landys<br /><br /><img src="people_photos/nerius.jpg"></img></td>
+    <td>Robert Sheridan<br /><br /><img src="people_photos/robert.jpg"></img></td>
+    <td colspan=3>Chris Workman<br /><br /><img src="people_photos/chris.jpg"></img></td>
+  </tr>
+</table>
+<blockquote>
 			<hr width="100%" size="2">
 			<big>
 				<b>
@@ -109,15 +98,16 @@
 					</tr>
 				</tbody>
 			</table>
-			</div>
+
 		<br>
-		<div id="indent">
+
 		<img src="/images/2004Dec_devteam-updated.gif">
 		<br>
 		Image created with Cytoscape
-		</div>
-		</div>
+
+
 		<br>
+</blockquote>
 <? include "footer.php"; ?>
 	</body>
 </html>
