@@ -1,8 +1,8 @@
 package cytoscape.view;
 
 import cytoscape.*;
-import giny.view.GraphView;
-import giny.util.AbstractLayout;
+import giny.view.*;
+import cytoscape.layout.*;
 import java.util.*;
 import cytoscape.visual.*;
 
@@ -24,7 +24,40 @@ public interface CyNetworkView extends GraphView {
    */
   public String getTitle ();
   
+  public void redrawGraph( boolean layout, boolean vizmap );
+
+  public CyNetworkView getView ();
  
+  public VisualMappingManager getVizMapManager();
+
+  public cytoscape.visual.ui.VizMapUI getVizMapUI();
+  
+  public void toggleVisualMapperEnabled();
+
+  public void setVisualMapperEnabled ( boolean state );
+
+  public boolean getVisualMapperEnabled ();
+
+  //--------------------//
+  // Network Client Data
+  
+  /**
+   * Networks can support client data.
+   * @param data_name the name of this client data
+   */
+  public void putClientData ( String data_name, Object data );
+
+  /**
+   * Get a list of all currently available ClientData objects
+   */
+  public Collection getClientDataNames ();
+  
+  /**
+   * Get Some client data
+   * @param data_name the data to get
+   */
+  public Object getClientData ( String data_name );
+    
 
   /**
    * Sets the Given nodes Selected
@@ -34,23 +67,10 @@ public interface CyNetworkView extends GraphView {
   /**
    * Sets the Given nodes Selected
    */
-  public boolean setSelected ( CyNodeView[] node_views );
+  public boolean setSelected ( NodeView[] node_views );
 
-  /**
-   * Returns the selection as CyNodes
-   */
-  public List getSelectedNodes ();
-  
-  /**
-   * Returns the selection as ints
-   */
-  public int[] getSelectedNodeIndices ();
+ 
 
-  /**
-   * Returns the selection as CyNodeViews
-   */
-  public List getSelectedNodeViews ();
-  
   /**
    * Applies the given edge to the given vizmapper
    */
@@ -59,7 +79,7 @@ public interface CyNetworkView extends GraphView {
   /**
    * Applies the given edge to the given vizmapper
    */
-  public boolean applyVizMap ( CyEdgeView edge_view );
+  public boolean applyVizMap ( EdgeView edge_view );
 
 
   /**
@@ -70,7 +90,7 @@ public interface CyNetworkView extends GraphView {
   /**
    * Applies the given node to the given vizmapper
    */
-  public boolean applyVizMap ( CyNodeView node_view );
+  public boolean applyVizMap ( NodeView node_view );
 
    /**
    * Applies the given edge to the given vizmapper
@@ -80,7 +100,7 @@ public interface CyNetworkView extends GraphView {
   /**
    * Applies the given edge to the given vizmapper
    */
-  public boolean applyVizMap ( CyEdgeView edge_view, VisualStyle style );
+  public boolean applyVizMap ( EdgeView edge_view, VisualStyle style );
 
 
   /**
@@ -91,7 +111,7 @@ public interface CyNetworkView extends GraphView {
   /**
    * Applies the given node to the given vizmapper
    */
-  public boolean applyVizMap ( CyNodeView node_view, VisualStyle style );
+  public boolean applyVizMap ( NodeView node_view, VisualStyle style );
 
 
   /**
@@ -102,22 +122,9 @@ public interface CyNetworkView extends GraphView {
   /**
    * Sets the Given edges Selected
    */
-  public boolean setSelected ( CyEdgeView[] edge_views );
+  public boolean setSelected ( EdgeView[] edge_views );
 
-  /**
-   * Returns the selection as CyEdges
-   */
-  public List getSelectedEdges ();
   
-  /**
-   * Returns the selection as ints
-   */
-  public int[] getSelectedEdgeIndices ();
-
-  /**
-   * Returns the selection as CyEdgeViews
-   */
-  public List getSelectedEdgeViews ();
 
   /**
    * @param applyAppearances  if true, the vizmapper will recalculate
@@ -128,38 +135,38 @@ public interface CyNetworkView extends GraphView {
   /**
    * Applies the given layout to the entire CyNetworkView
    */
-  public void applyLayout ( AbstractLayout layout );
+  public void applyLayout ( LayoutAlgorithm layout );
 
   /**
    * Applies the given layout to the entire CyNetworkView,
    * but locks the given Nodes and Edges in place
    */
-  public void applyLockedLayout ( AbstractLayout layout, CyNode[] nodes, CyEdge[] edges );
+  public void applyLockedLayout ( LayoutAlgorithm layout, CyNode[] nodes, CyEdge[] edges );
 
   /**
    * Applies the  given layout to only the given Nodes and Edges
    */
-  public void applyLayout ( AbstractLayout layout, CyNode[] nodes, CyEdge[] edges );
+  public void applyLayout ( LayoutAlgorithm layout, CyNode[] nodes, CyEdge[] edges );
 
   /**
    * Applies the given layout to the entire CyNetworkView,
    * but locks the given NodeViews and EdgeViews in place
    */
-  public void applyLockedLayout ( AbstractLayout layout, CyNodeView[] nodes, CyEdgeView[] edges );
+  public void applyLockedLayout ( LayoutAlgorithm layout, CyNodeView[] nodes, CyEdgeView[] edges );
 
   /**
    * Applies the  given layout to only the given NodeViews and EdgeViews
    */
-  public void applyLayout ( AbstractLayout layout, CyNodeView[] nodes, CyEdgeView[] edges );
+  public void applyLayout ( LayoutAlgorithm layout, CyNodeView[] nodes, CyEdgeView[] edges );
 
   /**
    * Applies the given layout to the entire CyNetworkView,
    * but locks the given Nodes and Edges in place
    */
-  public void applyLockedLayout ( AbstractLayout layout, int[] nodes, int[] edges );
+  public void applyLockedLayout ( LayoutAlgorithm layout, int[] nodes, int[] edges );
 
   /**
    * Applies the  given layout to only the given Nodes and Edges
    */
-  public void applyLayout ( AbstractLayout layout, int[] nodes, int[] edges );
+  public void applyLayout ( LayoutAlgorithm layout, int[] nodes, int[] edges );
 }

@@ -3,43 +3,35 @@
 // $Date$
 // $Author$
 //-------------------------------------------------------------------------
+
 package cytoscape.actions;
-//-------------------------------------------------------------------------
+
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
 
-import phoebe.*;
-import phoebe.util.*;
+import cytoscape.giny.*;
 
-import cytoscape.view.NetworkView;
+import cytoscape.Cytoscape;
+import cytoscape.view.CyNetworkView;
 import cytoscape.util.*;
+import cytoscape.util.CytoscapeAction;
 
-import org.freehep.util.export.ExportDialog;
-
-//-------------------------------------------------------------------------
-public class PrintAction extends AbstractAction  {
-    NetworkView networkView;
+public class PrintAction extends CytoscapeAction  {
     
-    public PrintAction(NetworkView networkView) {
+    
+    public PrintAction () {
         super ("Print...");
-        this.networkView = networkView;
+        setPreferredMenu( "File" );
     }
 
     public void actionPerformed(ActionEvent e) {
 
-// 	if ( System.getProperty("os.name").startsWith( "Windows" ) ) {
-// 	    // cytoscape.util.PrintUtilities.printComponent( ( (PGraphView)networkView.getView() ).getCanvas() );
-// 	} else {
-      
-      //  ( (PGraphView)networkView.getView() ).getCanvas().getCamera().addClientProperty( PrintingFixTextNode.PRINTING_CLIENT_PROPERTY_KEY, null);
-      
-	    PGraphView ginyView = (PGraphView)networkView.getView();
-	    ginyView.getCanvas().getLayer().print();
-      //	}
-	
+	    PhoebeNetworkView phoebeView = ( PhoebeNetworkView )Cytoscape.getCurrentNetworkView();
+	    phoebeView.getCanvas().getLayer().print();
+     	
     } // actionPerformed
 }
 

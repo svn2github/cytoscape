@@ -9,25 +9,26 @@ package cytoscape.actions;
 import java.awt.event.*;
 import javax.swing.*;
 import java.io.*;
-import cytoscape.CytoscapeObj;
-import cytoscape.plugin.JarClassLoader;
+import cytoscape.Cytoscape;
+import cytoscape.util.CytoscapeAction;
+import cytoscape.plugin.jar.*;
 
 /**
  * This class provides an action for loading Cytoscape plugins from a jar file.
  * When triggered, it prompts the user to select a jar file and passes this file
  * to a new instance of JarClassLoader to search for plugins in that jar file.
  */
-public class LoadPluginAction extends AbstractAction {
-    protected CytoscapeObj cyObj;
-    protected File file;  //the jar file selected by the user
+public class LoadPluginAction extends CytoscapeAction {
+   
+  protected File file;  //the jar file selected by the user
 
     /**
      * create an instance linked to the shared plugin registry.
      * @param cyObj
      */
-    public LoadPluginAction(CytoscapeObj cyObj) {
-	super ("Load Plugins from Jar File");
-	this.cyObj = cyObj;
+    public LoadPluginAction () {
+      super ("Load Plugins from Jar File");
+      setPreferredMenu( "Plugins" );
     }
 
     /**
@@ -36,16 +37,16 @@ public class LoadPluginAction extends AbstractAction {
      * @param e
      */
     public void actionPerformed (ActionEvent e) {
-	if(!getFile()) return;
-	String jarString = file.getPath();
-	System.out.println("Chose: " + jarString);
-	try {
-	    JarClassLoader jcl = new JarClassLoader("file:" + jarString,
-						    cyObj);
-	    jcl.loadRelevantClasses();
-	}
-	catch (Exception e1) {
-	    System.err.println ("Error 1: " + e1.getMessage ());
+      if(!getFile()) return;
+      String jarString = file.getPath();
+      System.out.println("Chose: " + jarString);
+      try {
+        //JarClassLoader jcl = new JarClassLoader("file:" + jarString );
+        //jcl.loadRelevantClasses();
+        JarLoader.loadJar( jarString );
+      }
+      catch (Exception e1) {
+        System.err.println ("Error 1: " + e1.getMessage ());
 	}
     }
 
@@ -57,7 +58,7 @@ public class LoadPluginAction extends AbstractAction {
      */
     private boolean getFile() {
         JFileChooser fChooser =
-	    new JFileChooser(cyObj.getCurrentDirectory());
+	    new JFileChooser( Cytoscape.getCytoscapeObj().getCurrentDirectory());
         fChooser.setDialogTitle("Load Plugin from Jar");
         switch (fChooser.showOpenDialog(null)) {
 
@@ -74,7 +75,7 @@ public class LoadPluginAction extends AbstractAction {
 					      JOptionPane.ERROR_MESSAGE);
                 return false;
             }
-	        cyObj.setCurrentDirectory(file);
+	        Cytoscape.getCytoscapeObj().setCurrentDirectory(file);
             return true;
         default:
             // cancel or error

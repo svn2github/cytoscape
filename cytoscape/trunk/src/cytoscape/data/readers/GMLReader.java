@@ -44,6 +44,7 @@ import cytoscape.util.GinyFactory;
 
 import cytoscape.data.GraphObjAttributes;
 import cern.colt.list.IntArrayList;
+import cern.colt.map.OpenIntIntHashMap;
 // add text here
 
 //-------------------------------------------------------------------------------------
@@ -57,8 +58,8 @@ public class GMLReader implements GraphReader {
   GMLTree gmlTree;
 
   IntArrayList nodes;
-  int[] edge_indices_array;
-
+  //int[] edge_indices_array;
+  OpenIntIntHashMap edgeMap;
   /**
    * @param filename The GML file to be read in
    */
@@ -104,14 +105,15 @@ public class GMLReader implements GraphReader {
     //(since every edge must have some source node)
     Cytoscape.ensureCapacity( nodeIds.size(), edgeSources.size() );
     nodes = new IntArrayList( nodeIds.size() );
-   
+    edgeMap = new OpenIntIntHashMap( edgeSources.size() );
+
     //---------------------------------------------------------------------------
     // set a default edge type if it's not defined in the GML file
     // need a better system for defining the default...
     String et = "pp";
     if(edgeLabels.isEmpty()) {
       for(int i=0; i < edgeSources.size(); i++) {
-	edgeLabels.add(et);
+        edgeLabels.add(et);
       }
     }
        
@@ -123,30 +125,35 @@ public class GMLReader implements GraphReader {
     //Hashtable nodeHash = new Hashtable ();
     Hashtable gmlId2GINYId = new Hashtable();
     String nodeName, interactionType;
-    int[] new_nodes = Cytoscape.getRootGraph().createNodes(nodeIds.size());
+
+    // removed to do name check, yes I know its not as fast :( RHV
+    //    int[] new_nodes = Cytoscape.getRootGraph().createNodes(nodeIds.size());
   
     //System.out.println( "GML: "+nodeIds.size()+" nodes created"+ " RG: "+Cytoscape.getRootGraph().nodesList().size() );
     
-
-    //for(int i=0; i<nodeIds.size(); i++) {
-    //for (Iterator nodeIt = Cytoscape.getRootGraph().nodesIterator(),idIt = nodeIds.iterator();nodeIt.hasNext();) {
     Iterator idIt = nodeIds.iterator();
-    for ( int i = 0; i < new_nodes.length; ++i ) {
+    for(int i=0; i<nodeIds.size(); i++) {
+      //for (Iterator nodeIt = Cytoscape.getRootGraph().nodesIterator(),idIt = nodeIds.iterator();nodeIt.hasNext();) {
+     
+      //for ( int i = 0; i < new_nodes.length; ++i ) {
 
-    //nodeName = (String) nodeNameMap.get(nodeIds.get(i));
+      //nodeName = (String) nodeNameMap.get(nodeIds.get(i));
       Integer gmlId = (Integer)idIt.next();
       nodeName = (String)nodeNameMap.get(gmlId);
       //if(canonicalize) nodeName = canonicalizeName(nodeName);	      
       //if (!nodeHash.containsKey(nodeName)) {
       //Node node = Cytoscape.getRootGraph().getNode(Cytoscape.getRootGraph().createNode());
       //Node node = (Node)nodeIt.next();
-      Node node = Cytoscape.getRootGraph().getNode( new_nodes[i] );
+      
+      Node node = ( Node )Cytoscape.getCyNode( nodeName, true );
+
+      //Node node = Cytoscape.getRootGraph().getNode( new_nodes[i] );
       nodes.add( node.getRootGraphIndex() );
-      node.setIdentifier(nodeName);
+      //node.setIdentifier(nodeName);
       //nodeHash.put(nodeName, node);
       gmlId2GINYId.put(gmlId,new Integer(node.getRootGraphIndex()));
-      Cytoscape.getNodeNetworkData().addNameMapping(nodeName, node);
-	//}
+      //Cytoscape.getNodeNetworkData().addNameMapping(nodeName, node);
+      //}
     }
 
     //Vector nodeHeight = gmlTree.getVector("graph|node|graphics|h","|",GMLTree.DOUBLE);
@@ -201,22 +208,33 @@ public class GMLReader implements GraphReader {
       //Cytoscape.getEdgeNetworkData().addNameMapping(edgeName, edge);
     }
 
-    edge_indices_array = Cytoscape.getRootGraph().createEdges(sources,targets,false);
+    //edge_indices_array = Cytoscape.getRootGraph().createEdges(sources,targets,false);
+    
     Iterator sourceIt = edgeSources.iterator();
     Iterator labelIt = edgeLabels.iterator();
     Iterator targetIt = edgeTargets.iterator();
-    for ( int i = 0; i < edge_indices_array.length; ++i ) {
-    //for ( Iterator edgeIt = Cytoscape.getRootGraph().edgesList().iterator(),sourceIt = edgeSources.iterator(),targetIt = edgeTargets.iterator(),labelIt = edgeLabels.iterator();edgeIt.hasNext();) {
+    //for ( int i = 0; i < edge_indices_array.length; ++i ) {
+    for ( int i = 0; i < edgeSources.size(); ++i ) {
+      //for ( Iterator edgeIt = Cytoscape.getRootGraph().edgesList().iterator(),sourceIt = edgeSources.iterator(),targetIt = edgeTargets.iterator(),labelIt = edgeLabels.iterator();edgeIt.hasNext();) {
 
       interactionType = (String)labelIt.next();
-      String edgeName = ""+nodeNameMap.get(sourceIt.next())+" ("+interactionType+") "+nodeNameMap.get(targetIt.next());
-      int previousMatchingEntries = Cytoscape.getEdgeNetworkData().countIdentical(edgeName);
-      if (previousMatchingEntries > 0){
-	edgeName = edgeName + "_" + previousMatchingEntries;
-      }
-      Cytoscape.getEdgeNetworkData().add("interaction", edgeName, interactionType);
+      String sourceName = ( String )nodeNameMap.get(sourceIt.next());
+      String targetName = ( String )nodeNameMap.get(targetIt.next());
+      String edgeName = ""+sourceName+" ("+interactionType+") "+targetName;
+
+      Edge edge = ( Edge )Cytoscape.getCyEdge( sourceName, 
+                                               edgeName, 
+                                               targetName,
+                                               interactionType );
+      edgeMap.put( edge.getRootGraphIndex(), 0 );
+
+      //int previousMatchingEntries = Cytoscape.getEdgeNetworkData().countIdentical(edgeName);
+      //if (previousMatchingEntries > 0){
+      //edgeName = edgeName + "_" + previousMatchingEntries;
+      //}
+      //Cytoscape.getEdgeNetworkData().add("interaction", edgeName, interactionType);
       //Cytoscape.getEdgeNetworkData().addNameMapping(edgeName, edgeIt.next());
-      Cytoscape.getEdgeNetworkData().addNameMapping(edgeName, Cytoscape.getRootGraph().getEdge( edge_indices_array[i] ) );
+      //Cytoscape.getEdgeNetworkData().addNameMapping(edgeName, Cytoscape.getRootGraph().getEdge( edge_indices_array[i] ) );
     } // end of for ()
     
   } // read
@@ -255,82 +273,86 @@ public class GMLReader implements GraphReader {
   //public static void layoutByGML(String geometryFilename, GraphView myView, CyNetwork myNetwork){
   public void layout(GraphView myView){
     
-      if(gmlTree == null){
-	throw new RuntimeException("Failed to read gml file on initialization");
-      }
-      else {
-	Vector nodeLabels  = gmlTree.getVector("graph|node|label","|",GMLTree.STRING);
-	Vector nodeX = gmlTree.getVector("graph|node|graphics|x","|",GMLTree.DOUBLE);
-	Vector nodeY = gmlTree.getVector("graph|node|graphics|y","|",GMLTree.DOUBLE);
+    if ( myView == null || myView.nodeCount() == 0 ) {
+      return;
+    }
 
-	Vector nodeHeight = gmlTree.getVector("graph|node|graphics|h","|",GMLTree.DOUBLE);
-	Vector nodeWidth  = gmlTree.getVector("graph|node|graphics|w","|",GMLTree.DOUBLE);
-	Vector nodeType   = gmlTree.getVector("graph|node|graphics|type","|",GMLTree.STRING);
+    if(gmlTree == null){
+      throw new RuntimeException("Failed to read gml file on initialization");
+    }
+    else {
+      Vector nodeLabels  = gmlTree.getVector("graph|node|label","|",GMLTree.STRING);
+      Vector nodeX = gmlTree.getVector("graph|node|graphics|x","|",GMLTree.DOUBLE);
+      Vector nodeY = gmlTree.getVector("graph|node|graphics|y","|",GMLTree.DOUBLE);
+
+      Vector nodeHeight = gmlTree.getVector("graph|node|graphics|h","|",GMLTree.DOUBLE);
+      Vector nodeWidth  = gmlTree.getVector("graph|node|graphics|w","|",GMLTree.DOUBLE);
+      Vector nodeType   = gmlTree.getVector("graph|node|graphics|type","|",GMLTree.STRING);
 
 
-	if( (nodeLabels.size() == myView.getRootGraph().getNodeCount()) &&
-	    (nodeX.size() == myView.getRootGraph().getNodeCount()) &&
-	    (nodeY.size() == myView.getRootGraph().getNodeCount()) ) {
+      if( (nodeLabels.size() == myView.getRootGraph().getNodeCount()) &&
+          (nodeX.size() == myView.getRootGraph().getNodeCount()) &&
+          (nodeY.size() == myView.getRootGraph().getNodeCount()) ) {
 	      
-	  //Iterator it = nodeLabels.iterator();
-	  //GraphObjAttributes Cytoscape.getNodeNetworkData() = myNetwork.getNodeAttributes();
-	  //for(int i=0;i<nodeLabels.size();i++){
-	  String ELLIPSE = "ellipse";
-	  String RECTANGLE = "rectangle";
+        //Iterator it = nodeLabels.iterator();
+        //GraphObjAttributes Cytoscape.getNodeNetworkData() = myNetwork.getNodeAttributes();
+        //for(int i=0;i<nodeLabels.size();i++){
+        String ELLIPSE = "ellipse";
+        String RECTANGLE = "rectangle";
 
-	  int i=0;
-	  for (Iterator nodeIt = Cytoscape.getRootGraph().nodesIterator();nodeIt.hasNext();i++) {
+        int i=0;
+        for (Iterator nodeIt = Cytoscape.getRootGraph().nodesIterator();nodeIt.hasNext();i++) {
 
-	    Node current = (Node)nodeIt.next();
-	    String nodeName = (String)nodeLabels.get(i);
-	    if ( !current.getIdentifier().equals(nodeName)) {
-	      throw new RuntimeException("Unexpected node ordering when laying out");
-	    } // end of if ()
-	    Number X = (Number) nodeX.get(i);
-	    Number Y = (Number) nodeY.get(i);
-	    //get the node associated with that node label
-	    //Node current = (Node)Cytoscape.getNodeNetworkData().getGraphObject(nodeName);
-	    NodeView currentView = myView.getNodeView(current);
-	    currentView.setXPosition(X.doubleValue());
-	    currentView.setYPosition(Y.doubleValue());
-	    if( nodeHeight.size() == nodeLabels.size() )
-	      currentView.setHeight( ((Double) nodeHeight.get(i)).doubleValue());
-	    if( nodeWidth.size() == nodeLabels.size() )
-	      currentView.setWidth( ((Double) nodeWidth.get(i)).doubleValue());
-	    if( nodeType.size() == nodeLabels.size() ) {
-	      String nType = (String) nodeType.get(i);
-	      if( nType.equals(ELLIPSE) ) currentView.setShape(NodeView.ELLIPSE);
-	      else if( nType.equals(RECTANGLE) ) currentView.setShape(NodeView.RECTANGLE);		      
-	    }
-	  }
-	}
-        // vector of GMLTrees rooted at "edge" 
-	Vector edgeGML  = gmlTree.getVector("graph|edge","|",GMLTree.GMLTREE);
-
-	if( edgeGML.size() == myView.getRootGraph().getEdgeCount() ) {
-
-	    // ASSUMING THE ORDER IN THE GML IS THE SAME AS THAT RETURNED BY THE ITERATOR!!!!
-	    int i = 0;
-	    for (Iterator edgeIt = Cytoscape.getRootGraph().edgesIterator(); edgeIt.hasNext(); i++) {
-		Edge current = (Edge)edgeIt.next();
-		GMLTree tmpGML = (GMLTree)edgeGML.get(i);
-		Vector tmpLine = tmpGML.getVector("graphics|Line", "|", GMLTree.GMLTREE);
-		if(tmpLine.size()==1) {
-		    GMLTree Line = (GMLTree)tmpLine.get(0); 
-		    EdgeView currentView = myView.getEdgeView(current);
-		    currentView.getBend().removeAllHandles();
-		    //currentView.getBend().setHandles(); // we want to do this
-		    Vector tmpXs = Line.getVector("point|x", "|",GMLTree.DOUBLE);
-		    Vector tmpYs = Line.getVector("point|y", "|",GMLTree.DOUBLE);
-		    // Edge Handles are reversed for some reason??
-		    for(int j=tmpXs.size()-2; j>0; j--) {
-			Point2D.Double pt = new Point2D.Double(((Double)tmpXs.get(j)).doubleValue(), ((Double)tmpYs.get(j)).doubleValue());
-			currentView.getBend().addHandle( pt );
-		    }
-		} // END if(tmpLine.size()==1)
-	    } // END for(Iterator...
-	} // END if( edgeGML.size()...
+          Node current = (Node)nodeIt.next();
+          String nodeName = (String)nodeLabels.get(i);
+          if ( !current.getIdentifier().equals(nodeName)) {
+            throw new RuntimeException("Unexpected node ordering when laying out");
+          } // end of if ()
+          Number X = (Number) nodeX.get(i);
+          Number Y = (Number) nodeY.get(i);
+          //get the node associated with that node label
+          //Node current = (Node)Cytoscape.getNodeNetworkData().getGraphObject(nodeName);
+          NodeView currentView = myView.getNodeView(current);
+          currentView.setXPosition(X.doubleValue());
+          currentView.setYPosition(Y.doubleValue());
+          if( nodeHeight.size() == nodeLabels.size() )
+            currentView.setHeight( ((Double) nodeHeight.get(i)).doubleValue());
+          if( nodeWidth.size() == nodeLabels.size() )
+            currentView.setWidth( ((Double) nodeWidth.get(i)).doubleValue());
+          if( nodeType.size() == nodeLabels.size() ) {
+            String nType = (String) nodeType.get(i);
+            if( nType.equals(ELLIPSE) ) currentView.setShape(NodeView.ELLIPSE);
+            else if( nType.equals(RECTANGLE) ) currentView.setShape(NodeView.RECTANGLE);		      
+          }
+        }
       }
+      // vector of GMLTrees rooted at "edge" 
+      Vector edgeGML  = gmlTree.getVector("graph|edge","|",GMLTree.GMLTREE);
+
+      if( edgeGML.size() == myView.getRootGraph().getEdgeCount() ) {
+
+        // ASSUMING THE ORDER IN THE GML IS THE SAME AS THAT RETURNED BY THE ITERATOR!!!!
+        int i = 0;
+        for (Iterator edgeIt = Cytoscape.getRootGraph().edgesIterator(); edgeIt.hasNext(); i++) {
+          Edge current = (Edge)edgeIt.next();
+          GMLTree tmpGML = (GMLTree)edgeGML.get(i);
+          Vector tmpLine = tmpGML.getVector("graphics|Line", "|", GMLTree.GMLTREE);
+          if(tmpLine.size()==1) {
+            GMLTree Line = (GMLTree)tmpLine.get(0); 
+            EdgeView currentView = myView.getEdgeView(current);
+            currentView.getBend().removeAllHandles();
+            //currentView.getBend().setHandles(); // we want to do this
+            Vector tmpXs = Line.getVector("point|x", "|",GMLTree.DOUBLE);
+            Vector tmpYs = Line.getVector("point|y", "|",GMLTree.DOUBLE);
+            // Edge Handles are reversed for some reason??
+            for(int j=tmpXs.size()-2; j>0; j--) {
+              Point2D.Double pt = new Point2D.Double(((Double)tmpXs.get(j)).doubleValue(), ((Double)tmpYs.get(j)).doubleValue());
+              currentView.getBend().addHandle( pt );
+            }
+          } // END if(tmpLine.size()==1)
+        } // END for(Iterator...
+      } // END if( edgeGML.size()...
+    }
   }
 
 
@@ -342,7 +364,11 @@ public class GMLReader implements GraphReader {
 
   public int[] getEdgeIndicesArray() {
     //System.out.println( "GML: edges array size: "+edge_indices_array.length );
-    return edge_indices_array;
+    // return edge_indices_array;
+    IntArrayList edge_indices = new IntArrayList( edgeMap.size() );
+    edgeMap.keys( edge_indices );
+    edge_indices.trimToSize();
+    return edge_indices.elements();
   }
 
 }

@@ -9,22 +9,22 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import java.util.Vector;
 
-import cytoscape.view.NetworkView;
+import cytoscape.util.CytoscapeAction;
+import cytoscape.Cytoscape;
 //-------------------------------------------------------------------------
 /**
  *  select every first neighbor (directly connected nodes) of the currently
  *  selected nodes.
  */
-public class SelectFirstNeighborsAction extends AbstractAction {
-    NetworkView networkView;
+public class SelectFirstNeighborsAction extends CytoscapeAction {
     
-    public SelectFirstNeighborsAction (NetworkView networkView) { 
+    public SelectFirstNeighborsAction () { 
         super ("First neighbors of selected nodes"); 
-        this.networkView = networkView;
+        setPreferredMenu( "Select.Nodes" );
+        setAcceleratorCombo( java.awt.event.KeyEvent.VK_F, ActionEvent.CTRL_MASK );
     }
     public void actionPerformed (ActionEvent e) {
-        GinyUtils.selectFirstNeighbors(networkView.getView());
-        networkView.redrawGraph(false, false);
+        GinyUtils.selectFirstNeighbors( Cytoscape.getCurrentNetworkView() );
     } // actionPerformed
 } // SelectFirstNeighborsAction
 

@@ -8,22 +8,21 @@ package cytoscape.actions;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
-import cytoscape.view.NetworkView;
+import cytoscape.Cytoscape;
+import cytoscape.util.CytoscapeAction;
 //-------------------------------------------------------------------------
-public class HideSelectedEdgesAction extends AbstractAction {
-    NetworkView networkView;
+public class HideSelectedEdgesAction extends CytoscapeAction {
     
-    public HideSelectedEdgesAction(NetworkView networkView) {
+    
+    public HideSelectedEdgesAction() {
         super("Hide selection");
-        this.networkView = networkView;
+        setPreferredMenu( "Select.Edges" );
     }
 
     public void actionPerformed (ActionEvent e) {
-        String callerID = "HideSelectedEdgesAction.actionPerformed";
-        networkView.getNetwork().beginActivity(callerID);
-        GinyUtils.hideSelectedEdges(networkView.getView());
-        networkView.redrawGraph(false, false);
-        networkView.getNetwork().endActivity(callerID);
+       
+      GinyUtils.hideSelectedEdges( Cytoscape.getCurrentNetworkView() );
+       
     }
 }
 

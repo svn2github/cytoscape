@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
 import cytoscape.view.NetworkView;
+
 //-------------------------------------------------------------------------
 public class LayoutAction extends AbstractAction   {
     NetworkView networkView;

@@ -11,30 +11,30 @@ import javax.swing.AbstractAction;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
 
-import phoebe.*;
 import phoebe.util.*;
 
-import cytoscape.view.NetworkView;
-
+import cytoscape.giny.*;
+import cytoscape.view.CyNetworkView;
+import cytoscape.util.CytoscapeAction;
+import cytoscape.Cytoscape;
 import org.freehep.util.export.ExportDialog;
 
 //-------------------------------------------------------------------------
-public class ExportAction extends AbstractAction  {
-    NetworkView networkView;
-    
-    public ExportAction(NetworkView networkView) {
+public class ExportAction extends CytoscapeAction  {
+        
+    public ExportAction () {
         super ("Export As...");
-        this.networkView = networkView;
+        setPreferredMenu( "File" );
     }
 
     public void actionPerformed(ActionEvent e) {
 	
-	( (PGraphView)networkView.getView() ).getCanvas().getCamera().addClientProperty( PrintingFixTextNode.PRINTING_CLIENT_PROPERTY_KEY, "true");
+      ( (PhoebeNetworkView)Cytoscape.getCurrentNetworkView() ).getCanvas().getCamera().addClientProperty( PrintingFixTextNode.PRINTING_CLIENT_PROPERTY_KEY, "true");
 
-	ExportDialog export = new ExportDialog();
-	export.showExportDialog( ( (PGraphView)networkView.getView() ).getCanvas(), "Export view as ...", ( (PGraphView)networkView.getView() ).getCanvas(), "export" );
-	
-	( (PGraphView)networkView.getView() ).getCanvas().getCamera().addClientProperty( PrintingFixTextNode.PRINTING_CLIENT_PROPERTY_KEY, null);
+      ExportDialog export = new ExportDialog();
+      export.showExportDialog( ( (PhoebeNetworkView)Cytoscape.getCurrentNetworkView() ).getCanvas(), "Export view as ...", ( (PhoebeNetworkView)Cytoscape.getCurrentNetworkView() ).getCanvas(), "export" );
+      
+      ( (PhoebeNetworkView)Cytoscape.getCurrentNetworkView() ).getCanvas().getCamera().addClientProperty( PrintingFixTextNode.PRINTING_CLIENT_PROPERTY_KEY, null);
 	
     } // actionPerformed
 }

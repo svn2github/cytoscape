@@ -9,25 +9,28 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import java.awt.geom.Rectangle2D;
 
-import giny.view.*;
+
 import edu.umd.cs.piccolo.util.PBounds;
 import edu.umd.cs.piccolo.activities.PTransformActivity;
 import java.util.List;
 import java.util.Iterator;
-import phoebe.PGraphView;
 
-import cytoscape.view.NetworkView;
+import giny.view.*;
+import cytoscape.giny.*;
+import cytoscape.Cytoscape;
+import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CyNetworkView;
+
 //-------------------------------------------------------------------------
-public class ZoomSelectedAction extends AbstractAction {
-    NetworkView networkView;
-    
-    public ZoomSelectedAction(NetworkView networkView)  {
+public class ZoomSelectedAction extends CytoscapeAction {
+       
+    public ZoomSelectedAction ()  {
         super();
-        this.networkView = networkView;
     }
     
     public void actionPerformed(ActionEvent e) {
-        PGraphView view = (PGraphView)networkView.getView();
+        
+      CyNetworkView view = Cytoscape.getCurrentNetworkView();
         List selected_nodes = view.getSelectedNodes();
 
         if ( selected_nodes.size() == 0 ) {return;}
@@ -65,6 +68,6 @@ public class ZoomSelectedAction extends AbstractAction {
         }
         
         PBounds zoomToBounds = new PBounds( smallX, smallY, ( bigX - smallX + 50 ), ( bigY - smallY + 50 ) );
-        PTransformActivity activity =  ( ( PGraphView )view).getCanvas().getCamera().animateViewToCenterBounds( zoomToBounds, true, 500 );
+        PTransformActivity activity =  ( ( PhoebeNetworkView )view).getCanvas().getCamera().animateViewToCenterBounds( zoomToBounds, true, 500 );
     }
 }

@@ -11,6 +11,30 @@ import cytoscape.data.GraphObjAttributes;
 
 public interface CyNetwork extends GraphPerspective {
 
+  /**
+   * Can Change
+   */
+  public String getTitle ();
+
+  
+  /**
+   * Can Change
+   */
+  public void setTitle ( String new_id );
+
+   /**
+   * Can't Change
+   */
+  public String getIdentifier ();
+
+  
+  /**
+   * Can't Change
+   */
+  public String setIdentifier ( String new_id );
+
+
+
   //----------------------------------------//
   // Network Methods
   //----------------------------------------//
@@ -160,7 +184,7 @@ public interface CyNetwork extends GraphPerspective {
    * Networks can support client data.
    * @param data_name the name of this client data
    */
-  public void setClientData ( String data_name, Object data );
+  public void putClientData ( String data_name, Object data );
 
   /**
    * Get a list of all currently available ClientData objects

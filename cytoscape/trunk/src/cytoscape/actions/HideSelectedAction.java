@@ -12,26 +12,24 @@ import giny.model.*;
 import giny.view.*;
 import java.util.*;
 
-
-
-import cytoscape.view.NetworkView;
+import cytoscape.Cytoscape;
+import cytoscape.util.CytoscapeAction;
 //-------------------------------------------------------------------------
-public class HideSelectedAction extends AbstractAction  {
+public class HideSelectedAction extends CytoscapeAction  {
 
-    NetworkView networkView;
+    public HideSelectedAction () {
+        super( "Hide Selected" );
+        setPreferredMenu( "Select.Edges" );
+    }
 
-    public HideSelectedAction(NetworkView networkView) {
-        super();
-        this.networkView = networkView;
+   public HideSelectedAction ( boolean label) {
+        super(  );
+        
     }
     
     public void actionPerformed (ActionEvent e) {
-        String callerID = "HideSelectedAction.actionPerformed";
-        networkView.getNetwork().beginActivity(callerID);
-        GinyUtils.hideSelectedNodes(networkView.getView());
-        GinyUtils.hideSelectedEdges(networkView.getView());
-        networkView.redrawGraph(false, false);
-        networkView.getNetwork().endActivity(callerID);
+        GinyUtils.hideSelectedNodes( Cytoscape.getCurrentNetworkView() );
+        GinyUtils.hideSelectedEdges( Cytoscape.getCurrentNetworkView() );
     }//action performed
 }
 

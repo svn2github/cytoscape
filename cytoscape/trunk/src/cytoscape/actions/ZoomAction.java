@@ -4,30 +4,29 @@
 // $Author$
 //-------------------------------------------------------------------------
 package cytoscape.actions;
-//-------------------------------------------------------------------------
+
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
-import giny.view.GraphView;
+import cytoscape.view.CyNetworkView;
+import cytoscape.Cytoscape;
+import cytoscape.util.CytoscapeAction;
 
-import cytoscape.view.NetworkView;
-//-------------------------------------------------------------------------
-public class ZoomAction extends AbstractAction {
-    NetworkView networkView;
+public class ZoomAction extends CytoscapeAction {
+  
     double factor;
     
-    public ZoomAction(NetworkView networkView, double factor) {
+    public ZoomAction( double factor) {
         super ();
-        this.networkView = networkView;
         this.factor = factor;
     }
     
   public void zoom () {
-    networkView.getView().setZoom( factor );
+    Cytoscape.getCurrentNetworkView().setZoom( factor );
   }
 
     public void actionPerformed (ActionEvent e) {
-      networkView.getView().setZoom( factor );
+      Cytoscape.getCurrentNetworkView().setZoom( factor );
     }
 }
 

@@ -7,23 +7,25 @@ package cytoscape.actions;
 //-------------------------------------------------------------------------
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
-
-import cytoscape.view.NetworkView;
+import cytoscape.Cytoscape;
+import cytoscape.view.CyNetworkView;
+import cytoscape.util.CytoscapeAction;
 //-------------------------------------------------------------------------
-public class HideSelectedNodesAction extends AbstractAction   {
-    NetworkView networkView;
+public class HideSelectedNodesAction extends CytoscapeAction   {
     
-    public HideSelectedNodesAction (NetworkView networkView) {
+    public HideSelectedNodesAction () {
         super("Hide selection");
-        this.networkView = networkView;
+        setPreferredMenu( "Select.Nodes" );
+        setAcceleratorCombo( java.awt.event.KeyEvent.VK_H, ActionEvent.CTRL_MASK );
     }
 
-    public void actionPerformed (ActionEvent e) {
-        String callerID = "HideSelectedNodesAction.actionPerformed";
-        networkView.getNetwork().beginActivity(callerID);
-        GinyUtils.hideSelectedNodes(networkView.getView());
-        networkView.redrawGraph(false, false);
-        networkView.getNetwork().endActivity(callerID);
+  public HideSelectedNodesAction ( boolean label ) {
+    super();
+       
+  }
+
+    public void actionPerformed ( ActionEvent e ) {
+      GinyUtils.hideSelectedNodes( Cytoscape.getCurrentNetworkView() );
     }
+
 }
-

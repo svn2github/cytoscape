@@ -1,14 +1,17 @@
 //JarLoaderCommandLineParser
 //----------------------------------------------------------------------------
+
 // $Revision$
 // $Date$
 // $Author$
+
 //----------------------------------------------------------------------------
 package cytoscape.plugin;
 
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
 import cytoscape.CytoscapeObj;
+import cytoscape.plugin.jar.JarLoader;
 import cytoscape.actions.LoadPluginDirectoryAction;
 import cytoscape.actions.LoadPluginListAction;
 //----------------------------------------------------------------------------
@@ -73,16 +76,14 @@ public class JarLoaderCommandLineParser {
                     tmp = g.getOptarg();
                     // try to load the jars.
                     messageBuffer.append("Command line to load jars from directory: "+tmp);
-                    LoadPluginDirectoryAction lpda = new LoadPluginDirectoryAction(cyObj);;
+                    LoadPluginDirectoryAction lpda = new LoadPluginDirectoryAction();
                     lpda.setDir(tmp);
                     lpda.tryDirectory();
                     break;
                 case 1:
                     tmp = g.getOptarg();
-                    JarClassLoader jcl;
                     try {
-                        jcl = new JarClassLoader(tmp, cyObj);
-                        jcl.loadRelevantClasses();
+                      JarLoader.loadJar( tmp );
                     } catch (Exception e) {
                         System.err.println("Error loading jar: " + e.getMessage());
                     }

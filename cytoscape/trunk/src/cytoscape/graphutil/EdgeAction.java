@@ -5,6 +5,7 @@
 //-------------------------------------------------------------------------
 package cytoscape.graphutil;
 
+import cytoscape.*;
 import cytoscape.view.*;
 import cytoscape.browsers.*;
 import java.util.*;
@@ -109,7 +110,7 @@ public class EdgeAction {
 
   public static String getTitle ( Object[] args, PNode node ) {
     //System.out.println( "Getting Title" );
-    final NetworkView nv = ( NetworkView )args[0];
+    final CyNetworkView nv = ( CyNetworkView )args[0];
     //return nv.getNetwork().getNodeAttributes().getCanonicalName( node );
 
     if ( node instanceof PEdgeView ) {
@@ -126,7 +127,7 @@ public class EdgeAction {
   }
 
   public static JMenuItem viewEdgeAttributeBrowser ( Object[] args, PNode node ) {
-    final NetworkView network = ( NetworkView )args[0];
+    final CyNetworkView network = ( CyNetworkView )args[0];
     final PEdgeView view = ( PEdgeView )node;
     return new JMenuItem( new AbstractAction( "Attribute Browser" ) {
           public void actionPerformed ( ActionEvent e ) {
@@ -151,7 +152,7 @@ public class EdgeAction {
                   TabbedBrowser nodeBrowser = new TabbedBrowser (objects,
                                                     network.getNetwork().getEdgeAttributes(),
                                                     new Vector(),
-                                                    network.getCytoscapeObj().
+                                                    Cytoscape.getCytoscapeObj().
                                                     getConfiguration().getProperties().
                                                     getProperty("webBrowserScript",
                                                                  "noScriptDefined") ,
@@ -160,7 +161,7 @@ public class EdgeAction {
   }
 
   public static JMenuItem editEdge ( Object[] args, PNode node ) {
-    final NetworkView network = ( NetworkView )args[0];
+    final CyNetworkView network = ( CyNetworkView )args[0];
     final GraphView v = network.getView();
     final PEdgeView ev = ( PEdgeView )node;
 

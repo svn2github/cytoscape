@@ -33,15 +33,13 @@
 // $Author$
 //--------------------------------------------------------------------------
 package cytoscape.dialogs;
-//--------------------------------------------------------------------------
-import javax.swing.JMenu;
 
-import cytoscape.view.NetworkView;
-//--------------------------------------------------------------------------
+import cytoscape.view.CyMenus;
+
 public class ShrinkExpandGraphUI {
-    public static void makeShrinkExpandGraphUI(NetworkView networkView, JMenu layoutMenu) {
-        layoutMenu.add(new ShrinkExpandGraph(networkView,"Shrink Graph", 0.8));
-        layoutMenu.add(new ShrinkExpandGraph(networkView,"Expand Graph", 1.25));
+    public static void makeShrinkExpandGraphUI( CyMenus cymenus ) {
+        cymenus.addAction(new ShrinkExpandGraph( "Shrink Graph", 0.8 ) );
+        cymenus.addAction(new ShrinkExpandGraph( "Expand Graph", 1.25 ) );
     }
 } // class
 

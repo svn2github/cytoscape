@@ -6,23 +6,23 @@ import java.awt.event.*;
 import javax.swing.event.*;
 
 import java.awt.Dimension;
-import cytoscape.view.NetworkView;
+import cytoscape.view.CyNetworkView;
 import phoebe.PGraphView;
 import cytoscape.dialogs.GraphObjectSelection;
+import cytoscape.util.CytoscapeAction;
+import cytoscape.Cytoscape;
 
-public class BirdsEyeViewAction extends AbstractAction {
+public class BirdsEyeViewAction extends CytoscapeAction {
 
-  NetworkView networkView;
-
-  public BirdsEyeViewAction ( NetworkView networkView ) {
+  public BirdsEyeViewAction () {
     super("Birds Eye View");
-    this.networkView = networkView;
+    setPreferredMenu( "Visualization" );
   }
 
   public void actionPerformed (ActionEvent e) {
-	if (networkView.getView() == null) return;  
+	
     JFrame dialog = new JFrame("Navigator");
-     final PGraphView pview = (PGraphView)networkView.getView();
+    final PGraphView pview = (PGraphView)Cytoscape.getCurrentNetworkView();
     
      dialog.getContentPane().add( pview.getBirdsEyeView() );
     

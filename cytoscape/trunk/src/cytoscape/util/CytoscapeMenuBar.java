@@ -188,6 +188,7 @@ public class CytoscapeMenuBar
       actionMenuItemMap = createActionMenuItemMap();
     }
     actionMenuItemMap.put( action, menu_item );
+    //updateUI();
     return true;
   } // addAction( menu_name, action )
 

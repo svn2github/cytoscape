@@ -10,7 +10,7 @@ import javax.swing.*;
 import java.io.*;
 import java.util.*;
 import cytoscape.CytoscapeObj;
-import cytoscape.plugin.JarClassLoader;
+import cytoscape.plugin.jar.JarLoader;
 import cytoscape.data.readers.TextHttpReader;
 //--------------------------------------------------------------------------
 /**
@@ -52,8 +52,9 @@ public class LoadPluginListAction extends AbstractAction {
             for (int i=0; i<allLines.length; i++) {
                 String pluginLoc = allLines[i];
                 try {
-                    JarClassLoader jcl = new JarClassLoader(pluginLoc, cyObj);
-                    jcl.loadRelevantClasses();
+                  JarLoader.loadJar( pluginLoc );
+                  //JarClassLoader jcl = new JarClassLoader(pluginLoc, cyObj);
+                  //  jcl.loadRelevantClasses();
                 } catch (Exception e) {
                     System.err.println("Error loading jar: " + e.getMessage());
                 }

@@ -80,6 +80,7 @@ public CytoscapeObj(CytoscapeConfig config) {
             e.printStackTrace();
         }
     }
+    Cytoscape.setCytoscapeObj( this );
     registerCommandLinePlugins();
     //eventually should wait until a window requests the catalog
     loadCalculatorCatalog();
@@ -106,8 +107,9 @@ public CytoscapeObj(CyMain parentApp, CytoscapeConfig config,
     }
     this.bioDataServer = bioDataServer;
     this.pluginRegistry = new PluginRegistry();
+    Cytoscape.setCytoscapeObj( this );
     registerCommandLinePlugins();
-    //eventually should wait until a window requests the catalog
+    //TODO: eventually should wait until a window requests the catalog
     loadCalculatorCatalog();
     this.currentDirectory = new File(System.getProperty("user.dir"));
 }

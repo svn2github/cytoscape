@@ -136,7 +136,7 @@ public TabbedBrowser (Object [] graphObjects, GraphObjAttributes attributes,
 //---------------------------------------------------------------------------------------
 JTabbedPane createGui (GraphObjAttributes attributes)
 {
-  tabbedPane = new JTabbedPane ();
+  tabbedPane = new JTabbedPane ( JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT );
   tabbedPane.addChangeListener(new TabbedPaneListener());
   String [] attributeNames = attributes.getAttributeNames ();
   

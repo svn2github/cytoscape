@@ -3,24 +3,27 @@
 // $Date$
 // $Author$
 //-------------------------------------------------------------------------
-package cytoscape.actions;
-//-------------------------------------------------------------------------
-import java.awt.event.ActionEvent;
-import javax.swing.AbstractAction;
 
-import cytoscape.view.CyWindow;
+package cytoscape.actions;
+
+import java.awt.event.ActionEvent;
+
+import cytoscape.Cytoscape;
+import cytoscape.util.CytoscapeAction;
+
 //-------------------------------------------------------------------------
-public class ExitAction extends AbstractAction {
-    CyWindow cyWindow;
+public class ExitAction extends CytoscapeAction {
+       
+  public ExitAction () {
+    super("Exit");
+    setPreferredMenu( "File" );
+    setAcceleratorCombo( java.awt.event.KeyEvent.VK_Q, ActionEvent.CTRL_MASK );
+  }
     
-    public ExitAction(CyWindow cyWindow) {
-        super("Exit");
-        this.cyWindow = cyWindow;
-    }
-    
-    public void actionPerformed (ActionEvent e) {
-        cyWindow.getCytoscapeObj().saveCalculatorCatalog();
-        cyWindow.getCytoscapeObj().getParentApp().exit(0);
-    }
+  public void actionPerformed (ActionEvent e) {
+    //TODO: Other Exit stuff....
+    Cytoscape.getCytoscapeObj().saveCalculatorCatalog();
+    Cytoscape.getCytoscapeObj().getParentApp().exit(0);
+  }
 }
 
