@@ -553,24 +553,29 @@ class FGraphPerspective implements GraphPerspective
     return getEdgeIndicesArray(fromNodeInx, toNodeInx,
                                includeUndirectedEdges, false); }
 
-  public int getInDegree(Node node)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  public int getInDegree(Node node) {
+    if (node.getRootGraph() == m_root)
+      return getInDegree(node.getRootGraphIndex());
+    else return -1; }
 
-  public int getInDegree(int perspNodeInx)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  public int getInDegree(int nodeInx) {
+    return getInDegree(nodeInx, true); }
 
-  public int getInDegree(Node node, boolean countUndirectedEdges)
-  {
-    throw new IllegalStateException("not implemented yet");
-  }
+  public int getInDegree(Node node, boolean countUndirectedEdges) {
+    if (node.getRootGraph() == m_root)
+      return getInDegree(node.getRootGraphIndex(), countUndirectedEdges);
+    else return -1; }
 
-  public int getInDegree(int perspNodeInx, boolean countUndirectedEdges)
+  public int getInDegree(final int nodeInx, boolean countUndirectedEdges)
   {
-    throw new IllegalStateException("not implemented yet");
+    if (!(nodeInx < 0)) return -1;
+    final int nativeNodeInx = m_rootToNativeNodeInxMap.get(~nodeInx);
+    final IntEnumerator adj;
+    try { adj = m_graph.adjacentEdges
+            (nativeNodeInx, false, true, countUndirectedEdges); }
+    catch (IllegalArgumentException e) { return -1; }
+    if (adj == null) return -1;
+    return adj.numRemaining();
   }
 
   public int getOutDegree(Node node)
