@@ -11,7 +11,8 @@ JC=javac
 .java.class: 
 	$(JC) $<
 
-OBJS =  Misc.class
+OBJS =  Misc.class \
+        MutableColor.class
 
 default: objs 
 
