@@ -104,6 +104,7 @@ public class LineTypePopupButton extends JPanel implements ActionListener {
 	byte2shape.put(LineType.LINE_7, "LINE_7");
 
 	rootPath = System.getProperty ("java.library.path"); // get class directory root
+	System.out.println(rootPath+"/dialogs/images/rectangle.jpg");
 	if (rootPath.endsWith("/")) rootPath = rootPath.substring(0,rootPath.length()-1);
 	rootPath = rootPath + "/cytoscape";
 	rootPath = rootPath.substring(rootPath.lastIndexOf(":")+1);
