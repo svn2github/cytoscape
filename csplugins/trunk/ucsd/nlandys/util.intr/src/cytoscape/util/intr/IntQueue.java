@@ -35,9 +35,6 @@ package cytoscape.util.intr;
  * While other container classes in this package are able to hold up
  * to Integer.MAX_VALUE elements, this class is only able to hold
  * Integer.MAX_VALUE-1 elements.
- * @deprecated This implementation has not undergone adequate testing yet;
- *   deprecation will go away once this class is adequately tested; code
- *   is in an un-optimized state.
  */
 public final class IntQueue
 {
