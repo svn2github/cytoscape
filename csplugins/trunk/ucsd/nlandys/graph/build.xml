@@ -26,6 +26,11 @@
         <include name="cytoscape/graph/layout/util/*.java"/>
         <include name="cytoscape/graph/util/*.java"/>
       </fileset>
+      <classpath>
+        <fileset dir="${lib.dir}">
+          <include name="*.jar"/>
+        </fileset>
+      </classpath>
     </javadoc>
   </target>
 
