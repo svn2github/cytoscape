@@ -111,9 +111,9 @@ public final class AllRootGraphMethodsTest
 //         root.createEdge(Integer.MIN_VALUE, Integer.MIN_VALUE, false) != 0 ||
 //         root.createEdge(0, 0, true) != 0)
 //       throw new IllegalStateException("creation failure failed - edge");
-//     int deleteThisNode0 = root.createNode();
+    int deleteThisNode0 = root.createNode();
 //     nodeInx[1] = root.createNode();
-//     root.removeNode(deleteThisNode0);
+    root.removeNode(deleteThisNode0);
     int deleteThisEdge = root.createEdge(nodeInx[4], nodeInx[1], true);
 //     edgeInx[0] = root.createEdge(nodeInx[0], nodeInx[1], true);
 //     edgeInx[1] = root.createEdge(nodeInx[1], nodeInx[2], false);
