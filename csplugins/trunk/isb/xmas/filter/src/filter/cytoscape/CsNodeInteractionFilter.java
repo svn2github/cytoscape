@@ -117,17 +117,27 @@ public class CsNodeInteractionFilter
       return false;
     }
     
+    System.out.println( "Network: "+network );
+
     boolean passes = false;
     List adjacent_edges = network.getGraphPerspective().getAdjacentEdgesList( node, true, targetNode, sourceNode );
+    if ( adjacent_edges == null ) {
+      System.out.println( "Was NUll" );
+      return true;
+    }
     Iterator aei = adjacent_edges.iterator();
     while ( aei.hasNext() && !passes ) {
       Edge edge = ( Edge )aei.next();
       Object value;
       value = edgeAttributes.getValue( selectedEdgeAttribute, edge.getIdentifier() );
+     
+       System.out.println( "Testing node: "+node+" against edge: "+edge+" value: "+value+" of attr: "+selectedEdgeAttribute +" ss: "+searchString);
       
       if ( value instanceof String == false ) {
         continue;
       }
+      
+     
 
       String[] pattern = searchString.split("\\s");
       for ( int p = 0; p < pattern.length; ++p ) {

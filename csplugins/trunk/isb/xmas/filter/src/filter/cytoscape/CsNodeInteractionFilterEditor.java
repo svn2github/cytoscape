@@ -53,7 +53,7 @@ public class CsNodeInteractionFilterEditor
   protected String DEFAULT_SEARCH_STRING = "";
   protected String RESET_SEARCH_STRING;
 
-  protected String DEFAULT_FILTER_NAME = "NodeType: ";
+  protected String DEFAULT_FILTER_NAME = "NodeInteraction: ";
   protected String RESET_FITLER_NAME;
 
   protected String DEFAULT_SELECTED_EDGE_ATTRIBUTE = "";

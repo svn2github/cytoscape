@@ -55,6 +55,11 @@ public class FilterNode extends DefaultMutableTreeNode implements Filter {
     return getFilter().toString();
   }
   
+  public String getFilterID () {
+    return getFilter().toString();
+  }
+  
+
   public Object clone () {
     return super.clone();
   }

@@ -215,6 +215,8 @@ public class FilterUsePanel extends JPanel
       if ( object instanceof Node ) {
         NodeView nv =   window.getView().getNodeView( ( Node )object );
         
+        System.out.println( "Node: "+nv+" passes" );
+
         // things to do if passes
         if ( select.isSelected() ) {
           nv.setSelected( true );
@@ -230,6 +232,30 @@ public class FilterUsePanel extends JPanel
           }
         }
       } 
+
+      else if ( object instanceof Edge ) {
+        EdgeView nv =   window.getView().getEdgeView( ( Edge )object );
+        
+        System.out.println( "Edge: "+nv+" passes" );
+
+        // things to do if passes
+        if ( select.isSelected() ) {
+          nv.setSelected( true );
+        }
+      
+        if ( overwrite.isSelected() ) {
+          // things to overwrite if passes
+          if ( gray.isSelected() ) {
+            // nv.setTransparency( 1f );
+          } 
+          if ( hide.isSelected() ) {
+            ( ( phoebe.PGraphView )window.getView() ).showEdgeView( nv );
+          }
+        }
+      } 
+
+
+
     } else {
       if ( object instanceof Node ) {
         NodeView nv =   window.getView().getNodeView( ( Node )object );
@@ -249,6 +275,27 @@ public class FilterUsePanel extends JPanel
         }
         
       }
+
+      else if ( object instanceof Edge ) {
+         EdgeView nv =   window.getView().getEdgeView( ( Edge )object );
+        
+         // things to do if failed
+         if ( gray.isSelected() ) {
+           //nv.setTransparency( 0.5f );
+         } 
+         if ( hide.isSelected() ) {
+           ( ( phoebe.PGraphView )window.getView() ).hideEdgeView( nv );
+         }
+         if ( overwrite.isSelected() ) {
+          // things to overwrite if failed
+           if ( select.isSelected() ) {
+             nv.setSelected( false );
+           }
+         }
+        
+      }
+
+
     }
   }
 

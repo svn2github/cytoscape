@@ -106,7 +106,7 @@ public class CsEdgeTypeFilter
     if ( object instanceof Edge ) {
       edge = ( Edge )object;
       value = edgeAttributes.getValue( selectedAttribute, edge.getIdentifier() );
-      //System.out.println( "Value returned for edge: "+edge.getIdentifier()+" attribute: "+selectedAttribute+" was: "+value );
+      System.out.println( "Value returned for edge: "+edge.getIdentifier()+" attribute: "+selectedAttribute+" was: "+value );
     }
 
 

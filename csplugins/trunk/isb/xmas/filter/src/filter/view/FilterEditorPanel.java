@@ -38,21 +38,11 @@ public class FilterEditorPanel
     editorIndexMap = new HashMap();
     editorCount = 0;
 
-   //  JPanel editorPanel = new JPanel();
-//     editorPanel.setPreferredSize( new Dimension( 500, 100 ) );
-//     editorPanel.setBorder( new BevelBorder( BevelBorder.RAISED ) );
-
     JPanel controlPanel = new JPanel();
     controlPanel.setBorder( new TitledBorder( "Filter Control" ) );
     controlPanel.setLayout( new GridLayout( 0, 1 ) );
 
-   //  DefaultFilterEditor dfe = new DefaultFilterEditor();
-//     dfe.setPreferredSize( new Dimension( 500, 100 ) );
     editorTabs = new JTabbedPane();
-//     editorTabs.addTab( dfe.toString(), dfe );
-
-    //editorPanel.add( editorTabs );
-
 
     addButton = new JButton( "Add" );
     removeButton = new JButton( "Remove" );
@@ -96,16 +86,10 @@ public class FilterEditorPanel
     return ( FilterEditor )editorTabs.getSelectedComponent();
   }
 
-//   protected void addEditor ( FilterEditor fe ) {
-//     Set editors = FilterManager.defaultManager().getEditors();
-    
-//   }
 
   public void propertyChange ( PropertyChangeEvent e ) {
     // get notified when new Filter is up for Editing
-    //System.out.println( "PCS:::: "+e.getPropertyName() );
     if ( e.getPropertyName() == FilterManager.EDITOR_ADDED ) {
-      //System.out.println( "FilterEditorPanel received EDITOR_ADDED Event" );
       addEditor( ( FilterEditor )e.getNewValue() );
     } else if ( e.getPropertyName() == FilterListPanel.FILTER_SELECTED ) {
       Filter f = FilterManager.defaultManager().getFilter( ( String )e.getNewValue() );
@@ -114,14 +98,7 @@ public class FilterEditorPanel
       }
       setEditorActive( f.getFilterID() );
       FilterEditor fe = ( FilterEditor )editorTabs.getSelectedComponent();
-      //FilterEditor fe = FilterManager.defaultManager().getEditor( f.getEditorName() );
       fe.editFilter( f );
-      // System.out.println( "Editing Filter: "+f+" with editor:"+fe );
-      //  System.out.println( "FilterEditor is editing: "+fe.getFilter() );
-      //fe.editFilter( f );
-      //editorTabs.setSelectedComponent( fe );
-      //setEditorActive
-
     }
    
   } 
