@@ -212,6 +212,11 @@ protected void setupLogging ()
     logger.setLevel (Level.CONFIG);
 
 } // setupLogging
+
+//------------------------------------------------------------------------------
+public BioDataServer getBioDataServer(){
+    return this.bioDataServer;
+}//getBioDataServer 
 //------------------------------------------------------------------------------
 public Logger getLogger ()
 {
@@ -420,6 +425,11 @@ public ExpressionData getExpressionData ()
   return expressionData;
 }
 //------------------------------------------------------------------------------
+public void setExpressionData(ExpressionData expData, String expressionDataFilename){
+    this.expressionData = expData;
+    this.expressionDataFilename = expressionDataFilename;
+}
+//------------------------------------------------------------------------------
 public AttributeMapper getVizMapper ()
 {
   return vizMapper;
@@ -543,16 +553,19 @@ protected void applyVizmapSettings ()
 	vizMapperCategories.getNodeFillColor(bundle, vizMapper);
     Color nodeBorderColor =
 	vizMapperCategories.getNodeBorderColor(bundle, vizMapper);
+    LineType nodeBorderLinetype = 
+	vizMapperCategories.getNodeBorderLineType(bundle,vizMapper);
     double nodeHeight =
 	vizMapperCategories.getNodeHeight(bundle, vizMapper);
     double nodeWidth =
 	vizMapperCategories.getNodeWidth(bundle, vizMapper);
     byte nodeShape =
 	vizMapperCategories.getNodeShape(bundle, vizMapper);
-
+    
     NodeRealizer nr = graphView.getGraph2D().getRealizer(node);
     nr.setFillColor (nodeColor);
     nr.setLineColor(nodeBorderColor);
+    nr.setLineType(nodeBorderLinetype);
     nr.setHeight(nodeHeight);
     nr.setWidth(nodeWidth);
     if (nr instanceof ShapeNodeRealizer) {
@@ -696,6 +709,8 @@ public JMenu getLayoutMenu ()
 {
   return layoutMenu;
 }
+//------------------------------------------------------------------------------
+public Layouter getLayouter(){return this.layouter;}
 //------------------------------------------------------------------------------
 public void setPopupMode (PopupMode newMode)
 {
