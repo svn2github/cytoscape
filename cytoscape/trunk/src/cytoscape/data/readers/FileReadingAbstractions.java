@@ -82,7 +82,7 @@ public static void initAttribs (BioDataServer dataServer,
   String [] edgeAttributeFilenames = config.getEdgeAttributeFilenames ();
   String [] nodeAttributeFilenames = config.getNodeAttributeFilenames ();
   initAttribs (dataServer, species, graph, nodeAttributes, edgeAttributes,
-               edgeAttributeFilenames, nodeAttributeFilenames);
+               nodeAttributeFilenames, edgeAttributeFilenames);
 
 }
 //----------------------------------------------------------------------------
