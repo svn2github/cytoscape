@@ -96,6 +96,30 @@ public String [] getEdgeAttributeFilenames ()
 {
   return (String []) edgeAttributeFilenames.toArray (new String [0]);
 }
+
+
+
+/**
+ * Add the given node attributes filename (as per opened in gui).
+ *
+ * added by dramage 2002-08-21
+ */
+public void addNodeAttributeFilename (String filename) {
+    if (!nodeAttributeFilenames.contains(filename))
+	nodeAttributeFilenames.add(filename);
+}
+
+/**
+ * Add the given edge attributes filename (as per opened in gui).
+ *
+ * added by dramage 2002-08-21
+ */
+public void addEdgeAttributeFilename (String filename) {
+    if (!edgeAttributeFilenames.contains(filename))
+	edgeAttributeFilenames.add(filename);
+}
+
+
 //------------------------------------------------------------------------------------------
 public String [] getAllDataFileNames ()
 {
