@@ -375,6 +375,44 @@ class FRootGraph //implements RootGraph
     return false;
   }
 
+  public boolean edgeExists(Node from, Node to)
+  {
+    if (source.getRootGraph() == this && target.getRootGraph() == this)
+    {
+      return edgeExists(source.getRootGraphIndex(),
+                        target.getRootGraphIndex());
+    }
+    else
+    {
+      return false;
+    }
+  }
+
+  public boolean edgeExists(int fromNodeInx, int toNodeInx)
+  {
+    final int positiveFromNodeInx = ~fromNodeInx;
+    final int positiveToNodeInx = ~toNodeInx;
+    final IntEnumerator fromAdj;
+    final IntEnumerator toAdj;
+    try
+    {
+      fromAdj = m_graph.adjacentEdges(positiveFromNodeInx, true, false, true);
+      toAdj = m_graph.adjacentEdges(positiveToNodeInx, true, true, false);
+    }
+    catch (IllegalArgumentException e) { return false; }
+    final IntEnumerator theAdj =
+      ((fromAdj.numRemaining() < toAdj.numRemaining()) ? fromAdj : toAdj);
+    final int adjPositiveNode =
+      ((theAdj == fromAdj) ? positiveFromNodeInx : positiveToNodeInx);
+    final int neighPositiveNode =
+      ((theAdj == fromAdj) ? positiveToNodeInx : positiveFromNodeInx);
+    while (theAdj.numRemaining() > 0) {
+      final int adjEdge = theAdj.nextInt();
+      if ((m_graph.sourceNode(adjEdge) ^ m_graph.targetNode(adjEdge) ^
+           adjPositiveNode) == neighPositiveNode) return true; }
+    return false;
+  }
+
   public int[] getAdjacentEdgeIndicesArray(int nodeInx,
                                            boolean a,
                                            boolean b,
