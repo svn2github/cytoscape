@@ -2,17 +2,13 @@ package csplugins.mcode;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-import cytoscape.task.Task;
 import cytoscape.task.ui.JTask;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
-import giny.model.GraphPerspective;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 /**
  * * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
@@ -80,24 +76,22 @@ public class MCODEScoreAndFindAction implements ActionListener {
 
         //check if MCODE is already running on this network
         Boolean isRunning = (Boolean) network.getClientData("MCODE_running");
-        if((isRunning!=null)&&(isRunning.booleanValue())) {
+        if ((isRunning != null) && (isRunning.booleanValue())) {
             //MCODE is already running - tell user and exit
             JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
                     "MCODE is already running on this network. Please wait for it to complete.");
             return;
-        }
-        else {
+        } else {
             //MCODE is about to run - mark network that we are using it
             network.putClientData("MCODE_running", new Boolean(true));
         }
 
         //check if MCODE has already been run on this network
         resultDialog = (MCODEResultsDialog) network.getClientData("MCODE_dialog");
-        if(resultDialog!=null) {
+        if (resultDialog != null) {
             resultDialog.setVisible(true);
             network.putClientData("MCODE_running", new Boolean(false));
-        }
-        else {
+        } else {
             //run MCODE
             MCODEScoreAndFindTask MCODEScoreAndFindTask = new MCODEScoreAndFindTask(network);
             //Configure JTask

@@ -58,6 +58,7 @@ public class AllTests {
 
     /**
      * In case people want to run the tests from the command line
+     *
      * @param args
      */
     public static void main(String args[]) {

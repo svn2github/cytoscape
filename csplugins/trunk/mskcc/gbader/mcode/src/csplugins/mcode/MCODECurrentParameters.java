@@ -54,9 +54,10 @@ public class MCODECurrentParameters {
      * returned to avoid side effects.  The user should use the following code to get their
      * own copy of the current parameters:
      * MCODECurrentParameters.getInstance().getParamsCopy();
-     *
+     * <p/>
      * Note: parameters can be changed by the user after you have your own copy,
      * so if you always need the latest, you should get the updated parameters again.
+     *
      * @return A copy of the parameters
      */
     public MCODEParameterSet getParamsCopy() {
@@ -66,6 +67,7 @@ public class MCODECurrentParameters {
     /**
      * Current parameters can only be updated using this method.
      * This method is called by MCODEParameterChangeDialog
+     *
      * @param newParams The new current parameters to set
      */
     public void setParams(MCODEParameterSet newParams) {

@@ -54,8 +54,8 @@ public class MCODEAboutDialog extends JDialog {
         editorPane.setEditable(false);
         editorPane.setEditorKit(new HTMLEditorKit());
         //TODO: add a link to Cytoscape and the paper (see http://java.sun.com/j2se/1.4.2/docs/api/javax/swing/JEditorPane.html)
-        editorPane.setText("<html><body><P align=center>MCODE (Molecular Complex Detection) v1.0 (July 2004)<BR>" +
-                "A Cytoscape plugin<BR>written by Gary Bader<BR><BR>\n" +
+        editorPane.setText("<html><body><P align=center>MCODE (Molecular Complex Detection) v1.1 (Jan 2005)<BR>" +
+                "A Cytoscape plugin<BR>written by Gary Bader (Sander group, MSKCC)<BR><BR>\n" +
                 "If you use this plugin in your research, please cite:<BR>\n" +
                 "Bader GD, Hogue CW<BR>\n" +
                 "An automated method for finding molecular complexes<BR>in large protein interaction networks.<BR>\n" +

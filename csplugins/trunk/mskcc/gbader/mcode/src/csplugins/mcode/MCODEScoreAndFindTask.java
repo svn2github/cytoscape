@@ -1,14 +1,12 @@
 package csplugins.mcode;
 
+import cytoscape.CyNetwork;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-import cytoscape.Cytoscape;
-import cytoscape.CyNetwork;
-
-import java.util.ArrayList;
-import java.awt.*;
-
 import giny.model.GraphPerspective;
+
+import java.awt.*;
+import java.util.ArrayList;
 
 /**
  * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
@@ -56,6 +54,7 @@ public class MCODEScoreAndFindTask implements Task {
 
     /**
      * Scores and finds clusters in a given network
+     *
      * @param network The network to cluster
      */
     public MCODEScoreAndFindTask(CyNetwork network) {
@@ -101,9 +100,9 @@ public class MCODEScoreAndFindTask implements Task {
                     return;
                 }
                 imageList[i] = MCODEUtil.convertNetworkToImage(gpComplexArray[i], imageSize, imageSize);
-                taskMonitor.setPercentCompleted((i*100)/gpComplexArray.length);
+                taskMonitor.setPercentCompleted((i * 100) / gpComplexArray.length);
             }
-            completedSuccessfully=true;
+            completedSuccessfully = true;
         } catch (Exception e) {
             //TODO: ask Ethan if interrupt exception should be thrown from within code or should 'return' just be used?
             network.putClientData("MCODE_running", new Boolean(false));
@@ -120,6 +119,7 @@ public class MCODEScoreAndFindTask implements Task {
 
     /**
      * Get computed clusters once MCODE has been run.  Will be null if not computed.
+     *
      * @return ArrayList of computed clusters
      */
     public ArrayList getClusters() {
@@ -128,6 +128,7 @@ public class MCODEScoreAndFindTask implements Task {
 
     /**
      * Get image list of computed clusters to be used for display
+     *
      * @return Array of images
      */
     public Image[] getImageList() {

@@ -45,14 +45,15 @@ import java.awt.event.ActionListener;
  * Action to change the current parameters
  */
 public class MCODEParameterChangeAction implements ActionListener {
-	/**
-	 * This method is called when the user wants to change the MCODE parameters.
-	 * @param event Menu Item Selected.
-	 */
-	public void actionPerformed(ActionEvent event) {
-		//display complexes in a new non modal dialog box
-		MCODEParameterChangeDialog paramChangeDialog = new MCODEParameterChangeDialog(Cytoscape.getDesktop());
-		paramChangeDialog.pack();
-		paramChangeDialog.setVisible(true);
-	}
+    /**
+     * This method is called when the user wants to change the MCODE parameters.
+     *
+     * @param event Menu Item Selected.
+     */
+    public void actionPerformed(ActionEvent event) {
+        //display complexes in a new non modal dialog box
+        MCODEParameterChangeDialog paramChangeDialog = new MCODEParameterChangeDialog(Cytoscape.getDesktop());
+        paramChangeDialog.pack();
+        paramChangeDialog.setVisible(true);
+    }
 }

@@ -1,7 +1,6 @@
 package csplugins.mcode;
 
 
-
 /**
  * * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
  * *
@@ -63,7 +62,7 @@ public class MCODEParameterSet {
      * fluff node density cutoff=0.1, preprocess network (directed mode)=true, default row height for
      * results table=80 pixels.
      */
-	public MCODEParameterSet() {
+    public MCODEParameterSet() {
         //default parameters
         includeLoops = false;
         degreeCutOff = 2;               //don't count nodes of degree 1
@@ -75,7 +74,7 @@ public class MCODEParameterSet {
         preprocessNetwork = true;       //change in directed mode if inter complex connectivity desired
         //results dialog box
         defaultRowHeight = 80;
-	}
+    }
 
     /**
      * Constructor for no default algorithm parameters.
@@ -92,6 +91,7 @@ public class MCODEParameterSet {
 
     /**
      * Convenience method to set all the main algorithm parameters
+     *
      * @param includeLoops
      * @param degreeCutOff
      * @param maxDepthFromStart
@@ -101,7 +101,7 @@ public class MCODEParameterSet {
      * @param fluffNodeDensityCutOff
      */
     public void setAllAlgorithmParams(boolean includeLoops, int degreeCutOff, int maxDepthFromStart, double nodeScoreCutOff,
-        boolean fluff, boolean haircut, double fluffNodeDensityCutOff) {
+                                      boolean fluff, boolean haircut, double fluffNodeDensityCutOff) {
         this.includeLoops = includeLoops;
         this.degreeCutOff = degreeCutOff;
         this.maxDepthFromStart = maxDepthFromStart;
@@ -113,6 +113,7 @@ public class MCODEParameterSet {
 
     /**
      * Copies a parameter set object
+     *
      * @return A copy of the parameter set
      */
     public MCODEParameterSet copy() {
@@ -206,10 +207,10 @@ public class MCODEParameterSet {
     public String toString() {
         String lineSep = System.getProperty("line.separator");
         StringBuffer sb = new StringBuffer();
-        sb.append("Scoring Step: Include Loops: "+includeLoops+" Degree Cutoff: "+degreeCutOff+ lineSep);
-        sb.append("Cluster Finding Step: Node Score Cutoff: "+nodeScoreCutOff+" Haircut: "+haircut+" Fluff: "+fluff
-        + ((fluff) ? (" Fluff Density Cutoff "+fluffNodeDensityCutOff) : "")+" Max. Depth from Seed: "+
-                maxDepthFromStart+lineSep);
+        sb.append("Scoring Step: Include Loops: " + includeLoops + " Degree Cutoff: " + degreeCutOff + lineSep);
+        sb.append("Cluster Finding Step: Node Score Cutoff: " + nodeScoreCutOff + " Haircut: " + haircut + " Fluff: " + fluff
+                + ((fluff) ? (" Fluff Density Cutoff " + fluffNodeDensityCutOff) : "") + " Max. Depth from Seed: " +
+                maxDepthFromStart + lineSep);
         return sb.toString();
     }
 }

@@ -56,6 +56,7 @@ public class MCODETest extends TestCase {
 
     /**
      * Set up a few things for this test set
+     *
      * @throws Exception
      */
     public void setUp() throws Exception {

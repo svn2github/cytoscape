@@ -43,13 +43,14 @@ import java.awt.event.ActionListener;
  * Action to only score a network
  */
 public class MCODEScoreAction implements ActionListener {
-	/**
-	 * This method is called when the user selects the menu item.
-	 * @param event Menu Item Selected.
-	 */
-	public void actionPerformed(ActionEvent event) {
+    /**
+     * This method is called when the user selects the menu item.
+     *
+     * @param event Menu Item Selected.
+     */
+    public void actionPerformed(ActionEvent event) {
         String callerID = "MCODEScoreAction.actionPerformed";
-        //get the network object; this contains the graph
+//get the network object; this contains the graph
         CyNetwork network = Cytoscape.getCurrentNetwork();
         if (network == null) {
             System.err.println("In " + callerID + ":");
@@ -63,13 +64,13 @@ public class MCODEScoreAction implements ActionListener {
             return;
         }
 
-		//run MCODE scoring algorithm - node scores are saved as node attributes
-		long msTimeBefore = System.currentTimeMillis();
+        //run MCODE scoring algorithm - node scores are saved as node attributes
+        long msTimeBefore = System.currentTimeMillis();
         MCODEAlgorithm alg = new MCODEAlgorithm();
-		alg.scoreGraph(network);
+        alg.scoreGraph(network);
         network.putClientData("MCODE_alg", alg);
-		long msTimeAfter = System.currentTimeMillis();
-		JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-		        "Network was scored in " + (msTimeAfter - msTimeBefore) + " ms.");
-	}
+        long msTimeAfter = System.currentTimeMillis();
+        JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+                "Network was scored in " + (msTimeAfter - msTimeBefore) + " ms.");
+    }
 }

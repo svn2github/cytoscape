@@ -1,4 +1,4 @@
- /**
+/**
  * * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
  * *
  * * Code written by: Gary Bader
@@ -49,15 +49,15 @@ import javax.swing.*;
  * @author Gary Bader
  */
 public class MCODEPlugin extends CytoscapePlugin {
-	/**
-	 * Constructor for the MCODE plugin.
-	 */
-	public MCODEPlugin() {
-		//set-up menu options in plugins menu
-		JMenu menu = Cytoscape.getDesktop().getCyMenus().getOperationsMenu();
+    /**
+     * Constructor for the MCODE plugin.
+     */
+    public MCODEPlugin() {
+        //set-up menu options in plugins menu
+        JMenu menu = Cytoscape.getDesktop().getCyMenus().getOperationsMenu();
         JMenuItem item;
-        //MCODE submenu
-		JMenu submenu = new JMenu("MCODE");
+//MCODE submenu
+        JMenu submenu = new JMenu("MCODE");
         item = new JMenuItem("Run MCODE on current network");
         item.addActionListener(new MCODEScoreAndFindAction());
         submenu.add(item);
@@ -65,27 +65,28 @@ public class MCODEPlugin extends CytoscapePlugin {
         item.addActionListener(new MCODEParameterChangeAction());
         submenu.add(item);
         menu.add(submenu);
-        //Advanced sub-sub menu
+//Advanced sub-sub menu
         JMenu subsubmenu = new JMenu("Advanced");
-		item = new JMenuItem("Step 1: Score Network");
-		item.addActionListener(new MCODEScoreAction());
+        item = new JMenuItem("Step 1: Score Network");
+        item.addActionListener(new MCODEScoreAction());
         subsubmenu.add(item);
-		item = new JMenuItem("Step 2: Find Complexes");
-		item.addActionListener(new MCODEFindAction());
+        item = new JMenuItem("Step 2: Find Complexes");
+        item.addActionListener(new MCODEFindAction());
         subsubmenu.add(item);
         submenu.add(subsubmenu);
-        //About box
+//About box
         item = new JMenuItem("About MCODE");
         item.addActionListener(new MCODEAboutAction());
         submenu.add(item);
         menu.add(submenu);
-	}
+    }
 
-	/**
-	 * Describes the plug in.
-	 * @return short plug in description.
-	 */
-	public String describe() {
-		return new String("Clusters a network using the MCODE algorithm.");
-	}
+    /**
+     * Describes the plug in.
+     *
+     * @return short plug in description.
+     */
+    public String describe() {
+        return new String("Clusters a network using the MCODE algorithm.");
+    }
 }

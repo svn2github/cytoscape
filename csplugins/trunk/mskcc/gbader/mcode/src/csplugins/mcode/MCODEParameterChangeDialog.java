@@ -52,45 +52,46 @@ public class MCODEParameterChangeDialog extends JDialog {
     //Parameters for MCODE
     MCODEParameterSet currentParamsCopy;    //stores current parameters - populates dialog box fields
 
-	//resetable UI elements
-    //scoring
-	JCheckBox includeLoopsCheckBox;
+    //resetable UI elements
+//scoring
+    JCheckBox includeLoopsCheckBox;
     JFormattedTextField degreeCutOffFormattedTextField;
     //cluster finding
     JFormattedTextField maxDepthFormattedTextField;
     JFormattedTextField nodeScoreCutOffFormattedTextField;
-	JCheckBox haircutCheckBox;
-	JCheckBox fluffCheckBox;
+    JCheckBox haircutCheckBox;
+    JCheckBox fluffCheckBox;
     JFormattedTextField fluffNodeDensityCutOffFormattedTextField;
     //directed mode
-	JCheckBox processCheckBox;
+    JCheckBox processCheckBox;
 
     /**
      * The actual parameter change dialog that builds the UI
+     *
      * @param parentFrame The parent frame for this dialog
      */
-	public MCODEParameterChangeDialog(Frame parentFrame) {
-		super(parentFrame, "MCODE Parameters", false);
-		setResizable(false);
+    public MCODEParameterChangeDialog(Frame parentFrame) {
+        super(parentFrame, "MCODE Parameters", false);
+        setResizable(false);
 
-		//get the current parameters
+        //get the current parameters
         currentParamsCopy = MCODECurrentParameters.getInstance().getParamsCopy();
 
-		//main panel for dialog box
-		JPanel panel = new JPanel(new BorderLayout());
+        //main panel for dialog box
+        JPanel panel = new JPanel(new BorderLayout());
 
-		//network scoring panel
+        //network scoring panel
         JPanel scorePanel = new JPanel();
-		includeLoopsCheckBox = new JCheckBox("Include loops", false) {
-			public JToolTip createToolTip() {
-				return new JMultiLineToolTip();
-			}
-		};
-		includeLoopsCheckBox.addItemListener(new MCODEParameterChangeDialog.includeLoopsCheckBoxAction());
-		includeLoopsCheckBox.setToolTipText("If checked, MCODE will include loops (self-edges) in the neighborhood\n" +
-		        "density calculation.  This is expected to make a small difference in the results.");
-		includeLoopsCheckBox.setSelected(currentParamsCopy.isIncludeLoops());
-		scorePanel.add(includeLoopsCheckBox);
+        includeLoopsCheckBox = new JCheckBox("Include loops", false) {
+            public JToolTip createToolTip() {
+                return new JMultiLineToolTip();
+            }
+        };
+        includeLoopsCheckBox.addItemListener(new MCODEParameterChangeDialog.includeLoopsCheckBoxAction());
+        includeLoopsCheckBox.setToolTipText("If checked, MCODE will include loops (self-edges) in the neighborhood\n" +
+                "density calculation.  This is expected to make a small difference in the results.");
+        includeLoopsCheckBox.setSelected(currentParamsCopy.isIncludeLoops());
+        scorePanel.add(includeLoopsCheckBox);
 
         DecimalFormat decFormat = new DecimalFormat();
         decFormat.setParseIntegerOnly(true);
@@ -118,11 +119,11 @@ public class MCODEParameterChangeDialog extends JDialog {
         labelFieldPanel1.add(degreeCutOffFormattedTextField);
         scorePanel.add(labelFieldPanel1);
 
-		//find clusters panel
+        //find clusters panel
         JPanel findPanel = new JPanel(new BorderLayout());
 
         JPanel mainOptionsPanel = new JPanel(new BorderLayout());
-        JPanel mainOptionsSubPanel = new JPanel(new BorderLayout(15,2));
+        JPanel mainOptionsSubPanel = new JPanel(new BorderLayout(15, 2));
         JPanel fluffOptionsPanel = new JPanel();
 
         nodeScoreCutOffFormattedTextField = new JFormattedTextField(new DecimalFormat("0.000")) {
@@ -159,7 +160,7 @@ public class MCODEParameterChangeDialog extends JDialog {
         haircutCheckBox.setSelected(currentParamsCopy.isHaircut());
         mainOptionsSubPanel.add(haircutCheckBox, BorderLayout.EAST);
 
-        fluffNodeDensityCutOffFormattedTextField  = new JFormattedTextField(new DecimalFormat("0.000")) {
+        fluffNodeDensityCutOffFormattedTextField = new JFormattedTextField(new DecimalFormat("0.000")) {
             public JToolTip createToolTip() {
                 return new JMultiLineToolTip();
             }
@@ -225,94 +226,94 @@ public class MCODEParameterChangeDialog extends JDialog {
         labelFieldPanel2.add(maxDepthFormattedTextField);
         findPanel.add(labelFieldPanel2, BorderLayout.SOUTH);
 
-		//directed mode panel
+        //directed mode panel
         JPanel directedModePanel = new JPanel();
-		processCheckBox = new JCheckBox("Preprocess network", false) {
-			public JToolTip createToolTip() {
-				return new JMultiLineToolTip();
-			}
-		};
-		processCheckBox.addItemListener(new MCODEParameterChangeDialog.processCheckBoxAction());
-		processCheckBox.setToolTipText("If checked, MCODE will limit cluster expansion to the\n" +
-		        "direct neighborhood of the spawning node.  If unchecked, the cluster will be allowed\n" +
-		        "to branch out to denser regions of the network.");
-		processCheckBox.setSelected(currentParamsCopy.isPreprocessNetwork());
-		directedModePanel.add(processCheckBox);
+        processCheckBox = new JCheckBox("Preprocess network", false) {
+            public JToolTip createToolTip() {
+                return new JMultiLineToolTip();
+            }
+        };
+        processCheckBox.addItemListener(new MCODEParameterChangeDialog.processCheckBoxAction());
+        processCheckBox.setToolTipText("If checked, MCODE will limit cluster expansion to the\n" +
+                "direct neighborhood of the spawning node.  If unchecked, the cluster will be allowed\n" +
+                "to branch out to denser regions of the network.");
+        processCheckBox.setSelected(currentParamsCopy.isPreprocessNetwork());
+        directedModePanel.add(processCheckBox);
 
-		JTabbedPane tabbedPane = new JTabbedPane();
+        JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.addTab("Network Scoring", null, scorePanel, "Set parameters for scoring stage (Stage 1)");
         tabbedPane.addTab("Find Clusters", null, findPanel, "Set parameters for cluster finding stage (Stage 2)");
         //TODO: uncomment below when directed mode is implemented
-		//tabbedPane.addTab("Directed Mode", null, directedModePanel, "Set parameters for directed mode");
-		panel.add(tabbedPane, BorderLayout.CENTER);
+        //tabbedPane.addTab("Directed Mode", null, directedModePanel, "Set parameters for directed mode");
+        panel.add(tabbedPane, BorderLayout.CENTER);
 
-		JPanel bottomPanel = new JPanel(new FlowLayout());
+        JPanel bottomPanel = new JPanel(new FlowLayout());
 
-		JButton OKButton = new JButton("OK");
-		OKButton.addActionListener(new MCODEParameterChangeDialog.OKAction(this));
-		bottomPanel.add(OKButton);
+        JButton OKButton = new JButton("OK");
+        OKButton.addActionListener(new MCODEParameterChangeDialog.OKAction(this));
+        bottomPanel.add(OKButton);
 
-		JButton cancelButton = new JButton("Cancel");
-		cancelButton.addActionListener(new MCODEParameterChangeDialog.cancelAction(this));
-		bottomPanel.add(cancelButton);
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.addActionListener(new MCODEParameterChangeDialog.cancelAction(this));
+        bottomPanel.add(cancelButton);
 
-		panel.add(bottomPanel, BorderLayout.SOUTH);
+        panel.add(bottomPanel, BorderLayout.SOUTH);
 
-		setContentPane(panel);
-	}
+        setContentPane(panel);
+    }
 
     /**
      * Saves the currently set parameters
      */
-	private void saveParams() {
-		MCODECurrentParameters.getInstance().setParams(currentParamsCopy);
-	}
+    private void saveParams() {
+        MCODECurrentParameters.getInstance().setParams(currentParamsCopy);
+    }
 
     /**
      * Action for the OK button (saves parameters)
      */
-	private class OKAction extends AbstractAction {
-		private JDialog dialog;
+    private class OKAction extends AbstractAction {
+        private JDialog dialog;
 
-		OKAction(JDialog popup) {
-			super();
-			this.dialog = popup;
-		}
+        OKAction(JDialog popup) {
+            super();
+            this.dialog = popup;
+        }
 
-		public void actionPerformed(ActionEvent e) {
-			saveParams();
-			dialog.dispose();
-		}
-	}
+        public void actionPerformed(ActionEvent e) {
+            saveParams();
+            dialog.dispose();
+        }
+    }
 
     /**
      * Action for the cancel button (does not save parameters)
      */
-	private class cancelAction extends AbstractAction {
-		private JDialog dialog;
+    private class cancelAction extends AbstractAction {
+        private JDialog dialog;
 
-		cancelAction(JDialog popup) {
-			super();
-			this.dialog = popup;
-		}
+        cancelAction(JDialog popup) {
+            super();
+            this.dialog = popup;
+        }
 
-		public void actionPerformed(ActionEvent e) {
-			dialog.dispose();
-		}
-	}
+        public void actionPerformed(ActionEvent e) {
+            dialog.dispose();
+        }
+    }
 
     /**
      * Handles setting of the include loops parameter
      */
-	private class includeLoopsCheckBoxAction implements ItemListener {
-		public void itemStateChanged(ItemEvent e) {
-			if (e.getStateChange() == ItemEvent.DESELECTED) {
-				currentParamsCopy.setIncludeLoops(false);
-			} else {
+    private class includeLoopsCheckBoxAction implements ItemListener {
+        public void itemStateChanged(ItemEvent e) {
+            if (e.getStateChange() == ItemEvent.DESELECTED) {
+                currentParamsCopy.setIncludeLoops(false);
+            } else {
                 currentParamsCopy.setIncludeLoops(true);
-			}
-		}
-	}
+            }
+        }
+    }
 
     /**
      * Handles setting for the text field parameters that are numbers.
@@ -348,40 +349,40 @@ public class MCODEParameterChangeDialog extends JDialog {
     /**
      * Handles setting of the haircut parameter
      */
-	private class haircutCheckBoxAction implements ItemListener {
-		public void itemStateChanged(ItemEvent e) {
-			if (e.getStateChange() == ItemEvent.DESELECTED) {
+    private class haircutCheckBoxAction implements ItemListener {
+        public void itemStateChanged(ItemEvent e) {
+            if (e.getStateChange() == ItemEvent.DESELECTED) {
                 currentParamsCopy.setHaircut(false);
-			} else {
+            } else {
                 currentParamsCopy.setHaircut(true);
-			}
-		}
-	}
+            }
+        }
+    }
 
     /**
      * Handles setting of the fluff parameter
      */
-	private class fluffCheckBoxAction implements ItemListener {
-		public void itemStateChanged(ItemEvent e) {
-			if (e.getStateChange() == ItemEvent.DESELECTED) {
+    private class fluffCheckBoxAction implements ItemListener {
+        public void itemStateChanged(ItemEvent e) {
+            if (e.getStateChange() == ItemEvent.DESELECTED) {
                 currentParamsCopy.setFluff(false);
             } else {
                 currentParamsCopy.setFluff(true);
-			}
+            }
             fluffNodeDensityCutOffFormattedTextField.setEnabled(currentParamsCopy.isFluff());
-		}
-	}
+        }
+    }
 
     /**
      * Handles setting of the preprocess network parameter
      */
-	private class processCheckBoxAction implements ItemListener {
-		public void itemStateChanged(ItemEvent e) {
-			if (e.getStateChange() == ItemEvent.DESELECTED) {
+    private class processCheckBoxAction implements ItemListener {
+        public void itemStateChanged(ItemEvent e) {
+            if (e.getStateChange() == ItemEvent.DESELECTED) {
                 currentParamsCopy.setPreprocessNetwork(false);
             } else {
                 currentParamsCopy.setPreprocessNetwork(true);
-			}
-		}
-	}
+            }
+        }
+    }
 }
