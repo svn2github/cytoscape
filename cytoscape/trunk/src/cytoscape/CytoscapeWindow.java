@@ -462,6 +462,7 @@ protected JMenuBar createMenuBar ()
   JMenu viewMenu = new JMenu ("View");
   viewMenu.add (new HideEdgesAction ());
   viewMenu.add (new ShowEdgesAction ());
+  viewMenu.add (new HideSelectedNodesAction ());
   menuBar.add (viewMenu);
 
   JMenu selectiveDisplayMenu = new JMenu ("Select");
@@ -894,6 +895,21 @@ protected class HideEdgesAction extends AbstractAction   {
     graphHider.hideEdges ();
     redrawGraph ();
     }
+}
+//------------------------------------------------------------------------------
+protected class HideSelectedNodesAction extends AbstractAction   {
+  HideSelectedNodesAction () { super ("Hide Selected Nodes"); }
+
+  public void actionPerformed (ActionEvent e) {
+      Graph2D g = graphView.getGraph2D ();
+      NodeCursor nc = g.selectedNodes (); 
+      while (nc.ok ()) {
+	  Node node = nc.node ();
+	  graphHider.hide (node);
+	  nc.next ();
+      } // while
+      redrawGraph ();
+  } // actionPerformed
 }
 //------------------------------------------------------------------------------
 protected class ShowEdgesAction extends AbstractAction   {
