@@ -15,6 +15,8 @@ class NodeArray
 
   // Understand that this method will not increase the size of the underlying
   // array, no matter what.
+  // Throws ArrayIndexOutOfBoundsException if index is negative or
+  // Integer.MAX_VALUE.
   FNode getNodeAtIndex(int index)
   {
     try { return m_nodeArr[index]; }
@@ -27,6 +29,8 @@ class NodeArray
   // underlying array, but only if two conditions hold:
   //   1. node is not null and
   //   2. index is greater than or equal to the length of the array.
+  // Throws ArrayIndexOutOfBoundsException if index is negative or
+  // Integer.MAX_VALUE.
   void setNodeAtIndex(FNode node, int index)
   {
     try { m_nodeArr[index] = node; }
