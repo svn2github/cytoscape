@@ -11,6 +11,8 @@ public final class RootGraphPerformanceTest
   // No constructor.
   private RootGraphPerformanceTest() { }
 
+  // Args:
+  //   <numNodes> <numDirectedEdges> <numUndirectedEdges> [luna]
   public static final void main(String[] args)
     throws ClassNotFoundException, InstantiationException,
            IllegalAccessException, IOException
@@ -60,7 +62,8 @@ public final class RootGraphPerformanceTest
       int node1 = Math.abs(randomInt1) % nodes.length;
       int node2 = Math.abs(randomInt2) % nodes.length;
       returnThis[inx++] =
-        root.createEdge(nodes[node1], nodes[node2], directed); }
+        root.createEdge(nodes[node1], nodes[node2],
+                        directed && (node1 != node2)); }
     if (inx < numEdges) throw new IOException("premature end of input");
     return returnThis;
   }
