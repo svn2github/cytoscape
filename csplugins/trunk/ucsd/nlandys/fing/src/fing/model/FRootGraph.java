@@ -638,11 +638,46 @@ class FRootGraph implements RootGraph, DynamicGraph
     return addNodeMetaChild(parent.getRootGraphIndex(),
                             child.getRootGraphIndex()); }
 
-  public boolean addNodeMetaChild(int parentNodeInx, int childNodeInx) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+  public boolean addNodeMetaChild(int parentNodeInx, int childNodeInx)
+  {
+    final int nativeParent = ~parentNodeInx;
+    final int nativeChildNode = ~childNodeInx;
+    if (!(m_graph.nodeExists(nativeParent) &&
+          m_graph.nodeExists(nativeChildNode))) return false;
+    int metaParent = m_nativeToMetaNodeInxMap.get(nativeParent);
+    if (metaParent < 0 || metaParent == Integer.MAX_VALUE) {
+      metaParent = m_metaGraph.nodeCreate();
+      m_metaToNativeInxMap.setIntAtIndex(nativeParent + 1, metaParent);
+      m_nativeToMetaNodeInxMap.put(nativeParent, metaParent); }
+    int metaChildNode = m_nativeToMetaNodeInxMap.get(nativeChildNode);
+    if (metaChildNode < 0 || metaChildNode == Integer.MAX_VALUE) {
+      metaChildNode = m_metaGraph.nodeCreate();
+      m_metaToNativeInxMap.setIntAtIndex(nativeChildNode + 1, metaChildNode);
+      m_nativeToMetaNodeInxMap.put(nativeChildNode, metaChildNode); }
+    if (m_metaGraph.edgesConnecting(metaParent, metaChildNode, true, false,
+                                    false).hasNext()) return false;
+    m_metaGraph.edgeCreate(metaParent, metaChildNode, true);
+    return true;
+  }   
 
-  public boolean removeNodeMetaChild(int parentNodeInx, int childNodeInx) {
-    throw new UnsupportedOperationException("meta nodes not yet supported"); }
+  public boolean removeNodeMetaChild(int parentNodeInx, int childNodeInx)
+  {
+    final int nativeParent = ~parentNodeInx;
+    final int nativeChildNode = ~childNodeInx;
+    if (!(m_graph.nodeExists(nativeParent) &&
+          m_graph.nodeExists(nativeChildNode))) return false;
+    final int metaParent = m_nativeToMetaNodeInxMap.get(nativeParent);
+    final int metaChildNode = m_nativeToMetaNodeInxMap.get(nativeChildNode);
+    final IntIterator metaRelationships = m_metaGraph.edgesConnecting
+      (metaParent, metaChildNode, true, false, false);
+    if (metaRelationships == null || !metaRelationships.hasNext())
+      return false;
+    m_metaGraph.edgeRemove(metaRelationships.nextInt());
+    // Remove this line later on when everything works.
+    if (metaRelationships.hasNext())
+      throw new IllegalStateException("internal error");
+    return true;
+  }
 
   public boolean isMetaParent(Node child, Node parent) {
     if (child.getRootGraph() != this || parent.getRootGraph() != this)
