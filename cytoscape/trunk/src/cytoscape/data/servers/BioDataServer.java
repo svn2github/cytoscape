@@ -37,18 +37,24 @@ package cytoscape.data.servers;
 import java.util.*;
 import java.io.*;
 import java.rmi.*;
+import java.net.URL;
 
 import cytoscape.data.annotation.*;
 import cytoscape.data.annotation.readers.*;
 import cytoscape.data.synonyms.*;
 import cytoscape.data.synonyms.readers.*;
 
-import cytoscape.data.readers.TextFileReader;
-import cytoscape.data.readers.TextJarReader;
+import cytoscape.data.readers.*;
 //----------------------------------------------------------------------------------------
 public class BioDataServer {
   protected BioDataServerInterface server;
 //----------------------------------------------------------------------------------------
+/**
+ * serverName is either an RMI URI, or a manifest file which says what files to load
+ * into an in-process server; the manifest, the annotations, and the ontologies,
+ * may be files on a filesystem, files in a jar, or files retrieved by HTTP
+ *
+ */
 public BioDataServer (String serverName) throws Exception
 {
   if (serverName.indexOf ("rmi://") >= 0)
@@ -57,6 +63,7 @@ public BioDataServer (String serverName) throws Exception
     server = new BioDataServerRmi ();  // actually runs in process
     File fileTester = new File (serverName);
     if ((serverName.startsWith ("jar://")) ||
+        (serverName.startsWith ("http://")) ||
         (!fileTester.isDirectory () && fileTester.canRead ())) {
       String [] ontologyFiles = parseLoadFile (serverName, "ontology");
       String [] annotationFilenames = parseLoadFile (serverName, "annotation");
@@ -73,20 +80,49 @@ public BioDataServer (String serverName) throws Exception
 } // ctor
 //----------------------------------------------------------------------------------------
 protected String [] parseLoadFile (String filename, String key)
+// todo (pshannon 2003/07/01): there is some ugly special casing here, as we figure
+// todo: out if the manifest file path is jar, http, or a regular file system
+// todo: file.  this should be refactored.
 {
   String rawText;
+    // when annotation files are loaded from a filesystem, the manifest will probably
+    // use names which are relative to the manifest. so (for this case, but not when
+    // reading from jar files) get the absolute path to the manifest, and prepend
+    // that path to the names found in the manifest.  somewhat clunkily, track that
+    // information with these next two variables
+  File absoluteDirectory = null;
+  String httpUrlPrefix = null; 
+  boolean readingFromFileSystem = false;
+  boolean readingFromWeb = false;
 
   try {
     if (filename.trim().startsWith ("jar://")) {
       TextJarReader reader = new TextJarReader (filename);
       reader.read ();
       rawText = reader.getText ();
-      }
+      } // if 
+    else if (filename.trim().startsWith ("http://")) {
+      TextHttpReader reader = new TextHttpReader (filename);
+      reader.read ();
+      rawText = reader.getText ();
+      readingFromWeb = true;
+      try {
+        URL url = new URL (filename);
+        String fullUrlString = url.toString ();
+        httpUrlPrefix = fullUrlString.substring (0, fullUrlString.lastIndexOf ("/"));
+        }
+      catch (Exception e) {
+        httpUrlPrefix = "url parsing error!";
+        }
+      } // else: http
     else {
+      File file = new File (filename);
+      readingFromFileSystem = true;
+      absoluteDirectory = file.getAbsoluteFile().getParentFile();
       TextFileReader reader = new TextFileReader (filename);
       reader.read ();
       rawText = reader.getText ();
-      }
+      } // else: regular filesystem file
     }
   catch (Exception e0) {
     System.err.println ("-- Exception while reading annotation server load file " + filename);
@@ -99,8 +135,13 @@ protected String [] parseLoadFile (String filename, String key)
   Vector list = new Vector ();
   for (int i=0; i < lines.length; i++) {
     String line = lines [i].trim ();
+    if (line.trim().startsWith ("#")) continue;
     if (line.startsWith (key)) {
       String fileToRead = line.substring (line.indexOf ("=") + 1);
+      if (readingFromFileSystem) 
+        fileToRead = (new File (absoluteDirectory, fileToRead)).getPath ();
+      else if (readingFromWeb)
+        fileToRead = httpUrlPrefix + "/" + fileToRead;
       list.add (fileToRead);
       } // if 
     } // for i
@@ -115,36 +156,47 @@ public BioDataServer () throws Exception
 
 } // ctor
 //----------------------------------------------------------------------------------------
-public Ontology readOntologyFlatFile (String [] ontologyFilenames) throws Exception
+public Ontology [] readOntologyFlatFiles (String [] ontologyFilenames) throws Exception
 // a quick hack.  this is called only if annotation & ontology are each flat files,
 // which means they must be read separately.  and xml annotation file names its own
 // ontology file, and the annotationXmlReader is responsible for loading its ontology.
 {
-  Ontology ontology = null;
+  Vector list = new Vector ();
 
   for (int i=0; i < ontologyFilenames.length; i++) {
     String filename = ontologyFilenames [i];
-    if (filename.endsWith (".txt")) {
+    if (!filename.endsWith (".xml")) {
       OntologyFlatFileReader reader = new OntologyFlatFileReader (filename);
-      ontology = reader.getOntology ();
+      list.add (reader.getOntology ());
       }
     } // for i
 
-  return ontology;
+  return (Ontology []) list.toArray (new Ontology [0]);
 
 } // loadOntologyFiles
 //----------------------------------------------------------------------------------------
-public void loadAnnotationFiles (String [] annotationFilenames, String [] ontologyFilenames) throws Exception
+protected Ontology pickOntology (Ontology [] ontologies, Annotation annotation)
 {
-  Ontology ontology = readOntologyFlatFile (ontologyFilenames);
+  for (int i=0; i < ontologies.length; i++)
+    if (ontologies [i].getCurator().equalsIgnoreCase (annotation.getCurator ()))
+      return ontologies [i];
+
+  return null;
+  
+} // pickOntology
+//----------------------------------------------------------------------------------------
+public void loadAnnotationFiles (String [] annotationFilenames, String [] ontologyFilenames) 
+       throws Exception
+{
+  Ontology [] ontologies = readOntologyFlatFiles (ontologyFilenames);
 
   for (int i=0; i < annotationFilenames.length; i++) {
     Annotation annotation;
     String filename = annotationFilenames [i];
-    if (filename.endsWith (".txt")) {
+    if (!filename.endsWith (".xml")) {
       AnnotationFlatFileReader reader = new AnnotationFlatFileReader (filename);
       annotation = reader.getAnnotation ();
-      annotation.setOntology (ontology);
+      annotation.setOntology (pickOntology (ontologies, annotation));
       }
     else {
       File xmlFile = new File (annotationFilenames [i]);
