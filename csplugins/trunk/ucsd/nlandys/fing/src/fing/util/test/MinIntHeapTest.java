@@ -27,6 +27,15 @@ public class MinIntHeapTest
     while (iter.numRemaining() > 1)
       System.out.print(iter.nextInt() + ", ");
     System.out.println(iter.nextInt() + " }.");
+    iter = heap.orderedElements(false);
+    System.out.println
+      ("Got an IntIterator by calling orderedElements(false) on heap.");
+    System.out.println("The iterator's numRemaining() method returns " +
+                       iter.numRemaining() + ".");
+    System.out.print("The iterator looks like this: { ");
+    while (iter.numRemaining() > 1)
+      System.out.print(iter.nextInt() + ", ");
+    System.out.println(iter.nextInt() + " }.");
   }
 
 }
