@@ -9,10 +9,6 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import java.awt.geom.Rectangle2D;
 
-import y.base.NodeCursor;
-import y.view.Graph2D;
-import y.view.Graph2DView;
-
 import giny.view.*;
 import edu.umd.cs.piccolo.util.PBounds;
 import edu.umd.cs.piccolo.activities.PTransformActivity;
@@ -31,30 +27,10 @@ public class ZoomSelectedAction extends AbstractAction {
     }
     
     public void actionPerformed(ActionEvent e) {
-      // Y-Files check
-      if ( networkView.getCytoscapeObj().getConfiguration().isYFiles() ) {
-        String callerID = "ZoomSelectedAction.actionPerformed";
-        networkView.getNetwork().beginActivity(callerID);
-        Graph2D graph = networkView.getNetwork().getGraph();
-        NodeCursor nc = graph.selectedNodes(); 
-        if (nc.ok()) { //selected nodes present? 
-            Rectangle2D box = graph.getRealizer(nc.node()).getBoundingBox();
-            for (nc.next(); nc.ok(); nc.next()) {
-                graph.getRealizer(nc.node()).calcUnionRect(box);
-            }
-            Graph2DView graphView = networkView.getGraphView();
-            graphView.zoomToArea(box.getX(),box.getY(),box.getWidth(),box.getHeight());
-            if (graphView.getZoom() > 2.0) graphView.setZoom(2.0);
-            networkView.redrawGraph(false, false);
-        }
-        networkView.getNetwork().endActivity(callerID);
-      } else {
-        // GINY
         PGraphView view = (PGraphView)networkView.getView();
         List selected_nodes = view.getSelectedNodes();
 
-        if ( selected_nodes.size() == 0 ) 
-          return;
+        if ( selected_nodes.size() == 0 ) {return;}
 
         Iterator selected_nodes_iterator = selected_nodes.iterator();
         double bigX;
@@ -88,8 +64,5 @@ public class ZoomSelectedAction extends AbstractAction {
         
         PBounds zoomToBounds = new PBounds( smallX, smallY, ( bigX - smallX + 50 ), ( bigY - smallY + 50 ) );
         PTransformActivity activity =  ( ( PGraphView )view).getCanvas().getCamera().animateViewToCenterBounds( zoomToBounds, true, 500 );
-
-      }
-
     }
 }

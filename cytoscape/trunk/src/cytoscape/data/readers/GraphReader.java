@@ -35,13 +35,11 @@
 package cytoscape.data.readers;
 //-----------------------------------------------------------------------------
 import cytoscape.GraphObjAttributes;
-import y.view.Graph2D;
 import giny.model.RootGraph;
 //-----------------------------------------------------------------------------
 public interface GraphReader {
     public void read();
     public void read(boolean canonicalizeNodeNames);
-    public Graph2D getGraph ();
     public RootGraph getRootGraph();
     public GraphObjAttributes getNodeAttributes ();
     public GraphObjAttributes getEdgeAttributes ();

@@ -40,7 +40,6 @@ import javax.swing.*;
 import javax.swing.event.*;
 import java.text.*;
 import java.util.*;
-import y.view.*;
 
 //---------------------------------------------------------------------------------------
 

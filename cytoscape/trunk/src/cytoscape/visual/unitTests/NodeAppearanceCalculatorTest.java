@@ -42,7 +42,7 @@ import java.awt.Font;
 
 import giny.model.Node;
 import giny.model.RootGraph;
-import luna.LunaRootGraph;
+import cytoscape.util.GinyFactory;
 
 import cytoscape.GraphObjAttributes;
 import cytoscape.data.CyNetwork;
@@ -71,7 +71,7 @@ public class NodeAppearanceCalculatorTest extends TestCase {
         String toolTip = "testToolTip";
         Font font = new Font("SansSerif", Font.ITALIC, 10);
         
-        RootGraph graph = new LunaRootGraph();
+        RootGraph graph = GinyFactory.createRootGraph();
         int index1 = graph.createNode();
         Node first = graph.getNode(index1);
         int index2 = graph.createNode();
@@ -104,9 +104,9 @@ public class NodeAppearanceCalculatorTest extends TestCase {
         secondNodeAttr.set("node.font", secondName, "SansSerif,italic,10");
         
         CyNetwork network1 = new CyNetwork(graph, firstNodeAttr, new GraphObjAttributes(),
-                                           null, false);
+                                           null);
         CyNetwork network2 = new CyNetwork(graph, secondNodeAttr, new GraphObjAttributes(),
-                                           null, false);
+                                           null);
         NodeAppearanceCalculator nac = new NodeAppearanceCalculator();
         nac.setNodeSizeLocked(false);
         

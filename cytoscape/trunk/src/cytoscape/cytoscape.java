@@ -124,7 +124,7 @@ public cytoscape (String [] args) throws Exception {
     }
     if (geometryFilename != null) {
 	logger.info("reading " + geometryFilename + "...");
-	network = CyNetworkFactory.createNetworkFromGMLFile(geometryFilename, config.isYFiles());
+	network = CyNetworkFactory.createNetworkFromGMLFile(geometryFilename);
 	logger.info("  done");
 	title = geometryFilename;
     } 
@@ -134,14 +134,13 @@ public cytoscape (String [] args) throws Exception {
             CyNetworkFactory.createNetworkFromInteractionsFile( interactionsFilename,
                                                                 canonicalize,
                                                                 bioDataServer,
-                                                                defaultSpecies,
-                                                                config.isYFiles() );
+                                                                defaultSpecies );
 	logger.info("  done");
         title = interactionsFilename;
     }
     if (network == null) {//none specified, or failed to read
         logger.info("no graph read, creating empty network");
-        network = CyNetworkFactory.createEmptyNetwork(config.isYFiles());
+        network = CyNetworkFactory.createEmptyNetwork();
         splashScreen.noGraph = true;
         title = "(Untitled)";
     }

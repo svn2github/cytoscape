@@ -33,7 +33,7 @@ package cytoscape.data;
 //-------------------------------------------------------------------------
 import java.util.*;
 
-import y.base.Edge;
+import giny.model.Edge;
 
 import cytoscape.CytoscapeObj;
 import cytoscape.GraphObjAttributes;

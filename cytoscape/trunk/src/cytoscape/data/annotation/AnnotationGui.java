@@ -46,12 +46,11 @@ import javax.swing.JOptionPane;
 import java.io.*;
 import java.util.*;
 
-import y.base.Node;
 import giny.view.NodeView;
 
 import cytoscape.data.annotation.*;
 import cytoscape.data.servers.*;
-import cytoscape.layout.*;
+//import cytoscape.layout.*;
 import cytoscape.GraphObjAttributes;
 import cytoscape.data.CyNetwork;
 import cytoscape.data.Semantics;
@@ -71,7 +70,7 @@ public class AnnotationGui extends AbstractAction {
   int actionListBoxCurrentSelection;
   TreePath annotationPath;
   String currentAnnotationCategory;
-  AttributeLayout attributeLayouter;
+  //AttributeLayout attributeLayouter;
 
   JDialog mainDialog;
   JButton annotateNodesButton;
@@ -100,9 +99,9 @@ public void actionPerformed (ActionEvent e)
     return;
     }
   
-  if (this.attributeLayouter == null) {
-      this.attributeLayouter = new AttributeLayout (cyWindow);
-  }
+  //if (this.attributeLayouter == null) {
+  //    this.attributeLayouter = new AttributeLayout (cyWindow);
+  //}
   if (this.mainDialog == null) {
       mainDialog = new Gui ("Annotation");
       mainDialog.pack ();
@@ -253,18 +252,13 @@ class SelectNodesTreeSelectionListener implements TreeSelectionListener {
     addSharedAnnotationEdgesButton.setEnabled (!node.isLeaf ());
     if (!node.isLeaf ()) return;
 
-    String callerID = "SelectNodesTreeSelectionListener.valueChanged";
+    String callerID = "AnnotationGui.SelectNodesTreeSelectionListener.valueChanged";
     CyNetwork network = cyWindow.getNetwork();
     GraphObjAttributes nodeAttributes = network.getNodeAttributes();
     network.beginActivity(callerID);
-    boolean isYFiles = cyWindow.getCytoscapeObj().getConfiguration().isYFiles();
     //unselect every node in the graph
-    if (isYFiles) {
-        network.getGraph().unselectNodes();
-    } else {
-        for (Iterator nvi = cyWindow.getView().getNodeViewsIterator(); nvi.hasNext(); ) {
-            ((NodeView)nvi.next()).setSelected(false);
-        }
+    for (Iterator nvi = cyWindow.getView().getNodeViewsIterator(); nvi.hasNext(); ) {
+        ((NodeView)nvi.next()).setSelected(false);
     }
     TreePath [] selectedPaths = currentAnnotationsTree.getSelectionPaths();
     HashMap selectionHash = extractAnnotationsFromSelection (selectedPaths);
@@ -272,38 +266,20 @@ class SelectNodesTreeSelectionListener implements TreeSelectionListener {
     for (int i=0; i < annotationNames.length; i++) {
       String name = annotationNames [i];
       Vector categoryList = (Vector) selectionHash.get (name);
-      if (isYFiles) {
-          Node[] allNodes = network.getGraph().getNodeArray();
-          for (int n = 0; n<allNodes.length; n++) {
-              Node theNode = allNodes[n];
-              String canonicalName = nodeAttributes.getCanonicalName(theNode);
-              if (canonicalName == null) {continue;}
-              Object attributeValue = nodeAttributes.getValue(name, canonicalName);
-              if (attributeValue == null) {continue;}
-              String [] parsedCategories = 
-                  GraphObjAttributes.unpackPossiblyCompoundStringAttributeValue (attributeValue);
-              for (int pc=0; pc<parsedCategories.length; pc++) {
-                  if (categoryList.contains(parsedCategories[pc])) {
-                      network.getGraph().setSelected(theNode, true);
-                  }
+      for (Iterator nvi = cyWindow.getView().getNodeViewsIterator(); nvi.hasNext(); ) {
+          NodeView nv = (NodeView)nvi.next();
+          String canonicalName = nodeAttributes.getCanonicalName(nv.getNode());
+          if (canonicalName == null) {continue;}
+          Object attributeValue = nodeAttributes.getValue(name, canonicalName);
+          if (attributeValue == null) {continue;}
+          String [] parsedCategories = 
+          GraphObjAttributes.unpackPossiblyCompoundStringAttributeValue (attributeValue);
+          for (int pc=0; pc<parsedCategories.length; pc++) {
+              if (categoryList.contains(parsedCategories[pc])) {
+                  nv.setSelected(true);
               }
           }
-      } else {//Giny mode
-          for (Iterator nvi = cyWindow.getView().getNodeViewsIterator(); nvi.hasNext(); ) {
-              NodeView nv = (NodeView)nvi.next();
-              String canonicalName = nodeAttributes.getCanonicalName(nv.getNode());
-              if (canonicalName == null) {continue;}
-              Object attributeValue = nodeAttributes.getValue(name, canonicalName);
-              if (attributeValue == null) {continue;}
-              String [] parsedCategories = 
-                  GraphObjAttributes.unpackPossiblyCompoundStringAttributeValue (attributeValue);
-              for (int pc=0; pc<parsedCategories.length; pc++) {
-                  if (categoryList.contains(parsedCategories[pc])) {
-                      nv.setSelected(true);
-                  }
-              }
-          }
-      }//end if isYFiles
+      }
     }//end for
     cyWindow.redrawGraph(false, true);
 
@@ -397,7 +373,11 @@ public class LayoutByAnnotationAction  extends AbstractAction
   LayoutByAnnotationAction () {super ("");}
 
   public void actionPerformed (ActionEvent e) {
-    attributeLayouter.doCallback (currentAnnotationCategory, AttributeLayout.DO_LAYOUT);
+      String title = "Operation not supported";
+      String message = "This operation is not yet supported.";
+      JOptionPane.showMessageDialog(cyWindow.getMainFrame(), message,
+                                    title, JOptionPane.ERROR_MESSAGE);
+    //attributeLayouter.doCallback (currentAnnotationCategory, AttributeLayout.DO_LAYOUT);
     }
 
 } // LayoutByAnnotationAction
@@ -407,7 +387,11 @@ public class DrawSharedEdgesAnnotationAction extends AbstractAction
   DrawSharedEdgesAnnotationAction  () {super ("");}
 
   public void actionPerformed (ActionEvent e) {
-    attributeLayouter.doCallback (currentAnnotationCategory, AttributeLayout.CREATE_EDGES);
+      String title = "Operation not supported";
+      String message = "This operation is not yet supported.";
+      JOptionPane.showMessageDialog(cyWindow.getMainFrame(), message,
+                                    title, JOptionPane.ERROR_MESSAGE);
+    //attributeLayouter.doCallback (currentAnnotationCategory, AttributeLayout.CREATE_EDGES);
     }
 
 } // DrawSharedEdgesAnnotationAction

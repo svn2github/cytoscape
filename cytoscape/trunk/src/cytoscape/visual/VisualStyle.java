@@ -162,6 +162,29 @@ public class VisualStyle implements Cloneable {
         setGlobalAppearanceCalculator(
             new GlobalAppearanceCalculator(toCopy.getGlobalAppearanceCalculator()) );
     }
+    
+    /**
+     * Copy constructor with new name. Creates a default object if the first
+     * argument is null, otherwise copies the members of the first argument.
+     * The name of this new VisualStyle will be equal to the second argument;
+     * the caller should ensure that this is a unique name.
+     *
+     * @throws NullPointerException if the second argument is null
+     */
+    public VisualStyle(VisualStyle toCopy, String newName) {
+        if (newName == null) {
+            String s = "Unexpected null name in VisualStyle constructor";
+            throw new NullPointerException(s);
+        }
+        setName(newName);
+        if (toCopy == null) {return;}
+        setNodeAppearanceCalculator(
+            new NodeAppearanceCalculator(toCopy.getNodeAppearanceCalculator()) );
+        setEdgeAppearanceCalculator(
+            new EdgeAppearanceCalculator(toCopy.getEdgeAppearanceCalculator()) );
+        setGlobalAppearanceCalculator(
+            new GlobalAppearanceCalculator(toCopy.getGlobalAppearanceCalculator()) );
+    }
         
     /**
      * Returns the name of this object, as returned by getName.

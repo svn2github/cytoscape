@@ -17,20 +17,13 @@ public class HideSelectedEdgesAction extends AbstractAction {
         super("Hide selection");
         this.networkView = networkView;
     }
-    
 
     public void actionPerformed (ActionEvent e) {
-	if (networkView.getCytoscapeObj().getConfiguration().isYFiles()) {          
-	  String callerID = "HideSelectedEdgesAction.actionPerformed";
+        String callerID = "HideSelectedEdgesAction.actionPerformed";
         networkView.getNetwork().beginActivity(callerID);
-        GraphUtils.hideSelectedEdges( networkView.getNetwork().getGraph(),
-                                      networkView.getGraphHider() );
+        GinyUtils.hideSelectedEdges(networkView.getView());
         networkView.redrawGraph(false, false);
         networkView.getNetwork().endActivity(callerID);
-	}
-	else {
-		GinyUtils.hideSelectedEdges(networkView.getView());
-	}
     }
 }
 

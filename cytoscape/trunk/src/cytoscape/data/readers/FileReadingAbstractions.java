@@ -92,15 +92,7 @@ public static Graph2D loadGMLBasic (String filename,
                                     GraphObjAttributes edgeAttributes,
                                     boolean canonicalize) 
 {
-    return loadGMLBasic(filename, edgeAttributes, canonicalize);
-}
-//----------------------------------------------------------------------------
-public static Graph2D loadGMLBasic (String filename, 
-                                    GraphObjAttributes edgeAttributes,
-                                    boolean canonicalize,
-				    boolean isYFiles) 
-{
-  GMLReader reader = new GMLReader (filename, isYFiles);
+  GMLReader reader = new GMLReader (filename);
   return loadBasic (reader, edgeAttributes, canonicalize);
 }
 //----------------------------------------------------------------------------
@@ -108,10 +100,9 @@ public static Graph2D loadIntrBasic (BioDataServer dataServer,
                                      String species,
                                      String filename, 
                                      GraphObjAttributes edgeAttributes,
-                                     boolean canonicalize, 
-				     boolean isYFiles) 
+                                     boolean canonicalize) 
 {
-  InteractionsReader reader = new InteractionsReader (dataServer, species, filename, isYFiles);
+  InteractionsReader reader = new InteractionsReader (dataServer, species, filename);
   return loadBasic (reader, edgeAttributes, canonicalize);
   
 }
@@ -123,9 +114,9 @@ public static RootGraph loadInteractionsBasic (BioDataServer dataServer,
                                      String species,
                                      String filename, 
                                      GraphObjAttributes edgeAttributes,
-                                     boolean canonicalize, boolean isYFiles) 
+                                     boolean canonicalize) 
 {
-  InteractionsReader reader = new InteractionsReader (dataServer, species, filename, isYFiles);
+  InteractionsReader reader = new InteractionsReader (dataServer, species, filename);
   reader.read(canonicalize);
   RootGraph rootGraph = reader.getRootGraph();
   if (rootGraph == null) {System.out.println ( " Interaction reader returned null root graph"); return null;} //reader couldn't read the file
@@ -143,7 +134,8 @@ public static Graph2D loadBasic (GraphReader reader, GraphObjAttributes edgeAttr
 {
     
   reader.read (canonicalize);
-  Graph2D graph = reader.getGraph();
+  //Graph2D graph = reader.getGraph();
+  Graph2D graph = null;
   if (graph == null) {return null;} //reader couldn't read the file
   
   GraphObjAttributes newEdgeAttributes = reader.getEdgeAttributes ();

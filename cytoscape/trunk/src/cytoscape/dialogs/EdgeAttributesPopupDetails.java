@@ -39,8 +39,6 @@ package cytoscape.dialogs;
 
 import cytoscape.*;
 import javax.swing.*;
-import y.base.*;
-import y.view.*;
 import java.awt.*;
 import java.awt.event.*;
 

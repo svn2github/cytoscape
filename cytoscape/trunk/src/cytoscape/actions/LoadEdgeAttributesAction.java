@@ -12,7 +12,6 @@ import javax.swing.JOptionPane;
 import java.io.File;
 
 import cytoscape.view.NetworkView;
-import cytoscape.data.readers.FileReadingAbstractions;
 //-------------------------------------------------------------------------
 /* 
  * Added by T. Ideker April 16, 2003

@@ -37,13 +37,13 @@ import y.view.Graph2D;
 
 import giny.model.RootGraph;
 import giny.model.GraphPerspective;
-import luna.*; 
 
+import cytoscape.util.GinyFactory; 
 import cytoscape.GraphObjAttributes;
 //-------------------------------------------------------------------------
 /**
  * This object contains a graph and data associated with that graph, and
- * is the central data object of Cytoscape.
+ * is the central data object of Cytoscape.<P>
  *
  * This class supports listener objects that are notified when someone is
  * operating on the network. Algorithms should call the beginActivity
@@ -51,11 +51,9 @@ import cytoscape.GraphObjAttributes;
  */
 public class CyNetwork {
     
-    Graph2D graph;                         //the graph
     RootGraph rootGraph;                   //giny root graph
     GraphPerspective graphPerspective; 
     boolean needsLayout = false;           //is layout required before displaying graph
-    boolean isYFiles = true;
     GraphObjAttributes nodeAttributes;     //attributes for nodes
     GraphObjAttributes edgeAttributes;     //attributes for edges
     ExpressionData expressionData;         //expression data
@@ -65,68 +63,34 @@ public class CyNetwork {
     
     /**
      * Default constructor. Equivalent to
-     * CyNetwork(null, null, null, null).
+     * CyNetwork((RootGraph)null, null, null, null).
      */
-     public CyNetwork() {this(null, null, null, null);}
-    
-    /**
-     * Constructor specifying no expression data. Equivalent to
-     * CyNetwork(graph, nodeAttributes, edgeAttributes, null).
-     */
-    public CyNetwork(Graph2D graph,
-                     GraphObjAttributes nodeAttributes,
-                     GraphObjAttributes edgeAttributes) {
-        this(graph, nodeAttributes, edgeAttributes, null);
-    }
-    
+     public CyNetwork() {this((RootGraph)null, null, null, null);}
+     
+     /**
+      * Dummy implementation of old constructor; will remove once other
+      * classes no longer reference this method.
+      */
+     public CyNetwork(Graph2D graph,
+                      GraphObjAttributes nodeAttributes,
+                      GraphObjAttributes edgeAttributes,
+                      ExpressionData expressionData) {}
+     /**
+      * Constructor specifying no expression data. Equivalent to
+      * CyNetwork(rootGraph, nodeAttributes, edgeAttributes, null).
+      */
+     public CyNetwork(RootGraph rootGraph, GraphObjAttributes nodeAttributes,
+                      GraphObjAttributes edgeAttributes) {
+         this(rootGraph, nodeAttributes, edgeAttributes, null);
+     }
+
     /**
      * Standard CyNetwork constructor. Ensures that a valid graph and
      * attributes objects exist; any of the arguments may be null, but
      * this constructor will construct default objects for any missing
-     * arguments, except for expression data.
-     *
-     * WARNING: many methods expect that the node attributes hold a canonical
-     * name and common name attribute for every node in the graph, and the
-     * edge attributes hold an interaction attribute for every edge. This
-     * constructor does not guarantee these fields are present. Most users
-     * should instead use a factory method to construct their network.
-     */
-    public CyNetwork(Graph2D graph,
-                     GraphObjAttributes nodeAttributes,
-                     GraphObjAttributes edgeAttributes,
-                     ExpressionData expressionData) {
-        //not completely sure how to handle null arguments
-        if (graph != null) {
-            this.graph = graph;
-        } else {
-            this.graph = new Graph2D();
-        }
-        if (nodeAttributes != null) {
-            this.nodeAttributes = nodeAttributes;
-        } else {
-            this.nodeAttributes = new GraphObjAttributes();
-        }
-        if (edgeAttributes != null) {
-            this.edgeAttributes = edgeAttributes;
-        } else {
-            this.edgeAttributes = new GraphObjAttributes();
-        }
-        //null expression data is OK
-        this.expressionData = expressionData;
-    }
-    
-    /**
-     * Default constructor for Giny network. Equivalent to
-     * CyNetwork(new LunaRootGraph(), null, null, null, isYFiles).
-     */
-    public CyNetwork(boolean isYFiles) {
-        this(new LunaRootGraph(), null, null, null, isYFiles);
-    }
-    
-    
-     /**
-     * Constructor that ensures that a valid graph and attributes objects
-     * exist. The ExpressionData argument may be null.
+     * arguments, except for expression data. A new GraphPerspective
+     * will be created from the RootGraph; this perspective will be
+     * returned by the getGraphPerspective method.<P>
      *
      * WARNING: many methods expect that the node attributes hold a canonical
      * name and common name attribute for every node in the graph, and the
@@ -137,15 +101,13 @@ public class CyNetwork {
     public CyNetwork(RootGraph rootGraph,
                      GraphObjAttributes nodeAttributes,
                      GraphObjAttributes edgeAttributes,
-                     ExpressionData expressionData, boolean isYFiles) {
-	this.isYFiles	 = isYFiles;	     
-        //not completely sure how to handle null arguments
+                     ExpressionData expressionData) {
         if (rootGraph != null) {
             this.rootGraph = rootGraph;
-	    graphPerspective = rootGraph.createGraphPerspective( rootGraph.getNodeIndicesArray(), rootGraph.getEdgeIndicesArray() ); 
         } else {
-            this.rootGraph = new LunaRootGraph();
+            this.rootGraph = GinyFactory.createRootGraph();
         }
+        this.graphPerspective = GinyFactory.createGraphPerspective(this.rootGraph); 
         if (nodeAttributes != null) {
             this.nodeAttributes = nodeAttributes;
         } else {
@@ -158,14 +120,26 @@ public class CyNetwork {
         }
         //null expression data is OK
         this.expressionData = expressionData;
-	 
-	
-    }//cr
-    
+    }
+     
+     /**
+      * Constructor specifying no expression data. Equivalent to
+      * CyNetwork(graphPerspective, nodeAttributes, edgeAttributes, null).
+      */
+     public CyNetwork(GraphPerspective graphPerspective,
+                      GraphObjAttributes nodeAttributes,
+                      GraphObjAttributes edgeAttributes) {
+         this(graphPerspective, nodeAttributes, edgeAttributes, null);
+     }
     
     /**
-     * Constructor that ensures that a valid graph and attributes objects
-     * exist. The ExpressionData argument may be null.
+     * Alternate constructor specifying a particular GraphPerspective.
+     * If the first argument is not null, it specifies the perspective
+     * returned by the getGraphPerspective method, and implicitly defines
+     * the RootGraph held by this object. If the first argument is null,
+     * then a new RootGraph and GraphPerspective will be created. Any of
+     * the remaining arguments may also be null, but default attributes
+     * objects will be created if not specified.<P>
      *
      * WARNING: many methods expect that the node attributes hold a canonical
      * name and common name attribute for every node in the graph, and the
@@ -176,15 +150,13 @@ public class CyNetwork {
     public CyNetwork(GraphPerspective graphPerspective,
                      GraphObjAttributes nodeAttributes,
                      GraphObjAttributes edgeAttributes,
-                     ExpressionData expressionData, boolean isYFiles) {
-	this.isYFiles	 = isYFiles;	     
-        //not completely sure how to handle null arguments
+                     ExpressionData expressionData) {
         if (graphPerspective != null) {
             this.graphPerspective = graphPerspective;
-	    //graphPerspective = rootGraph.createGraphPerspective( rootGraph.getNodeIndicesArray(), rootGraph.getEdgeIndicesArray() ); 
 	    this.rootGraph = graphPerspective.getRootGraph();
 	} else {
-            this.rootGraph = new LunaRootGraph();
+            this.rootGraph = GinyFactory.createRootGraph();
+            graphPerspective = GinyFactory.createGraphPerspective(rootGraph);
         }
         if (nodeAttributes != null) {
             this.nodeAttributes = nodeAttributes;
@@ -198,38 +170,52 @@ public class CyNetwork {
         }
         //null expression data is OK
         this.expressionData = expressionData;
-	 
-	
     }//cr
     
     
     //methods to get each member
     /**
-     * Returns the graph object for this network.
+     * Return a null Graph2D; will delete once all the dependent classes no
+     * longer reference this method.
      */
-    public Graph2D getGraph() {return graph;}
+    public Graph2D getGraph() {return null;}
     /**
-    * Returns a Root Graph of this network
+     * Empty implementation of the old setGraph method.
+     */
+    public void setGraph(Graph2D newGraph) {}
+    /**
+    * Returns the Root Graph of this network
     */
     public RootGraph getRootGraph() {return rootGraph;}
     /**
-    * returns graphPerspective of this networks root graph
+    * Returns the primary graph perspective of this network's root graph.
     */
     public GraphPerspective getGraphPerspective() {return graphPerspective;}
     /**
-     * Sets the graph for this network.
+     * Sets a new primary graph perspective for this network. Does nothing
+     * if the argument is null. Throws an exception if the argument is not a
+     * perspective on the RootGraph currently held by this object. To change
+     * both the root graph and the graph perspective held by this object,
+     * create a new network with the new graph and then call the
+     * setNewGraphFrom method.<P>
      *
-     * @deprecated This method does not guarantee that the new graph is
-     *             synchronized with the data attribute structures. Instead,
-     *             one should call setNewGraphFrom with a properly constructed
-     *             network, or just construct and use a new network object.
+     * If the perspective is changed, an event of type CyNetworkEvent.GRAPH_REPLACED
+     * will be fired to all registered listeners.
+     *
+     * @throws IllegalArgumentException  if the argument is a perspective on a
+     *                                   different RootGraph
      */
-    public void setGraph(Graph2D newGraph) {
-        if (newGraph != null) {
-            this.graph = newGraph;
-            fireEvent(CyNetworkEvent.GRAPH_REPLACED);
+    public void setGraphPerspective(GraphPerspective newPerspective) {
+        if (newPerspective == null) {return;}
+        if (newPerspective.getRootGraph() != this.rootGraph) {
+            String s = "In CyNetwork.setGraphPerspective: argument is a"
+            +  "perspective on a different root graph.";
+            throw new IllegalArgumentException(s);
         }
+        this.graphPerspective = newPerspective;
+        fireEvent(CyNetworkEvent.GRAPH_REPLACED);
     }
+
     /**
      * Sets a new graph for this network by replacing this object's graph
      * with the graph from the network argument. If the boolean flag
@@ -237,13 +223,15 @@ public class CyNetwork {
      * will also be replaced with the coresponding objects from the network
      * argument; if this flag is false, the attributes from the network
      * argument will be copied into the attributes of this object.
-     * If the network argument is null, this method does nothing.
+     * The expression data member is not copied or modified; the caller
+     * should explicitly perform this operation if desired.
+     * If the network argument is null, this method does nothing.<P>
      *
      * To load a new graph, first create a new network for that graph using
      * the utilities of CyNetworkFactory, then call this method with that
      * new network. This ensures that the attributes that are constructed
      * when the graph is read are properly installed in this network along
-     * with the new graph.
+     * with the new graph.<P>
      *
      * This method will fire an event of type CyNetworkEvent.GRAPH_REPLACED
      * to all registered listeners. Note that it is the responsibility of
@@ -252,7 +240,8 @@ public class CyNetwork {
      */
     public void setNewGraphFrom(CyNetwork newNetwork, boolean replaceAttributes) {
         if (newNetwork == null) {return;}
-        this.graph = newNetwork.getGraph();
+        this.rootGraph = newNetwork.getRootGraph();
+        this.graphPerspective = newNetwork.getGraphPerspective();
         this.setNeedsLayout( newNetwork.getNeedsLayout() );
         if (replaceAttributes) {
             this.nodeAttributes = newNetwork.getNodeAttributes();
@@ -355,47 +344,33 @@ public class CyNetwork {
     
     /**
      * This method should be called before reading or changing the data held
-     * in this network object. There are two consequences:
-     *
-     * 1) First, A CyNetworkEvent of type CyNetworkEvent.BEGIN will be fired to all
-     * listeners attached to this object, *only* if this is the first begin of
-     * a nested stack of begin/end methods. No event will be fired if a previous
-     * beginActivity call hasn't been closed by a matching endActivity call.
-     *
-     * 2) Second, a PRE_EVENT will be fired by the graph member of this object
-     * (i.e., graph.firePreEvent();), regardless of whether a CyNetworkEvent
-     * was fired.
+     * in this network object. A CyNetworkEvent of type CyNetworkEvent.BEGIN
+     * will be fired to all listeners attached to this object, *only* if this
+     * is the first begin of a nested stack of begin/end methods. No event
+     * will be fired if a previous beginActivity call hasn't been closed by
+     * a matching endActivity call.<P>
      *
      * The argument is simply a String that is useful for identifying the
      * caller of this method. This is provided for debugging purposes, in case
      * an algorithm forgets to provide a matching end method for each begin.
      */
     public void beginActivity(String callerID) {
-	if (!isYFiles) { return;} //not implemented for giny yet    
         activityCount++;
         if (activityCount == 1) {fireEvent(CyNetworkEvent.BEGIN);}
-        getGraph().firePreEvent();
     }
     
     /**
      * This method should be called when an algorithm is finished reading
-     * or changing the data held in this network object. There are two
-     * consequences:
-     *
-     * 1) First, a POST_EVENT will be fired by the graph member of this object
-     * (i.e., graph.firePostEvent();)
-     *
-     * 2) Second, a CyNetworkEvent of type CyNetworkEvent.END will be fired to
-     * listeners attached to this object, *only* if this is the last end in a nested
-     * block of begin/end calls.
+     * or changing the data held in this network object. A CyNetworkEvent
+     * of type CyNetworkEvent.END will be fired to listeners attached to
+     * this object, *only* if this is the last end in a nested block of
+     * begin/end calls.<P>
      *
      * The argument is a String for identifying the caller of this method.
      */
     public void endActivity(String callerID) {
-	if (!isYFiles) { return;} //not implemented for giny yet        
         if (activityCount == 0) {return;} //discard calls without a matching begin
         activityCount--;
-        getGraph().firePostEvent();
         if (activityCount == 0) {fireEvent(CyNetworkEvent.END);}
     }
     
@@ -411,18 +386,17 @@ public class CyNetwork {
      * This method is provided as a failsafe in case an algorithm fails to
      * close its beginActivity calls without matching endActivity calls. If
      * the current state is not clear, this method resets this object to the
-     * state of no activity, makes the graph fire a POST_EVENT, and fires a
-     * CyNetworkEvent of type CyNetworkEvent.END to all registered listeners.
+     * state of no activity and fires a CyNetworkEvent of type
+     * CyNetworkEvent.END to all registered listeners.<P>
      *
      * If the current state is clear (i.e., there are no calls to beginActivity
-     * without matching endActivity calls), then this method does nothing.
+     * without matching endActivity calls), then this method does nothing.<P>
      *
      * The argument is a String for identifying the caller of this method.
      */
     public void forceClear(String callerID) {
         if (activityCount > 0) {
             activityCount = 0;
-            getGraph().firePostEvent();
             fireEvent(CyNetworkEvent.END);
         }
     }

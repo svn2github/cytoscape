@@ -62,29 +62,22 @@ public class LoadGraphFileAction extends AbstractAction {
             String  name = chooser.getSelectedFile().toString();
             boolean canonicalize = Semantics.getCanonicalize(cytoscapeObj);
             String  species = Semantics.getDefaultSpecies( networkView.getNetwork(), cytoscapeObj );
-	    boolean isYFiles = networkView.getCytoscapeObj().getConfiguration().isYFiles();
 
 	    if( name.endsWith("gml") || name.endsWith("GML") )
-		newNetwork = CyNetworkFactory.createNetworkFromGMLFile( name, isYFiles );
+		newNetwork = CyNetworkFactory.createNetworkFromGMLFile( name );
 	    else
 		newNetwork =
 		    CyNetworkFactory.createNetworkFromInteractionsFile( name, 
 									canonicalize,
 									cytoscapeObj.getBioDataServer(), 
-									species, 
-									isYFiles );
+									species );
             if (newNetwork != null) {//valid read
                 //apply the semantics we usually expect
                 Semantics.applyNamingServices(newNetwork, networkView.getCytoscapeObj());
-                //set the new graph, don't erase old attributes
-		if ( isYFiles ) {
-		    networkView.getNetwork().setNewGraphFrom(newNetwork, false);
-		    networkView.setWindowTitle(name);
-		}
-		else {
-		    networkView.setNewNetwork(newNetwork);
-		    networkView.setWindowTitle(name);
-		}
+                //since we don't want to erase the old attributes or expression data,
+                //we copy the new network into the existing one, replacing the graph
+                networkView.getNetwork().setNewGraphFrom(newNetwork, false);
+                networkView.setWindowTitle(name);
              } else {//give the user an error dialog
                 String lineSep = System.getProperty("line.separator");
                 StringBuffer sb = new StringBuffer();

@@ -473,8 +473,8 @@ public class OldStyleCalculatorIO {
         }
         String defaultShapeString = props.getProperty("node.shape.default");
         if (defaultShapeString != null) {
-            nac.setDefaultNodeShape( Misc.parseNodeShapeText(defaultShapeString) );
-            defNAC.setDefaultNodeShape( Misc.parseNodeShapeText(defaultShapeString) );
+            nac.setDefaultNodeShape( ShapeNodeRealizer.parseNodeShapeText(defaultShapeString) );
+            defNAC.setDefaultNodeShape( ShapeNodeRealizer.parseNodeShapeText(defaultShapeString) );
         }
         
         //note that null values from the catalog are acceptable for the new nac,

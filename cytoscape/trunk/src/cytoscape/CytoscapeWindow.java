@@ -222,7 +222,7 @@ public CytoscapeWindow (cytoscape parentApp,
   CytoscapeObj globalInstance = new CytoscapeObj(parentApp, config, logger, bioDataServer);
   
   CyNetwork network = new CyNetwork(rootGraph, nodeAttributes,
-                               edgeAttributes, expressionData, false);
+                               edgeAttributes, expressionData);
 
   this.cyWindow = new CyWindow(globalInstance, network, title, this);
   
@@ -637,8 +637,7 @@ public void updateUndoRedoMenuItemStatus() {
 public boolean loadGML(String filename) {
     Graph2D newGraph = FileReadingAbstractions.loadGMLBasic(filename,
                                                this.getEdgeAttributes(),
-					       this.getConfiguration().getCanonicalize(),
-					       this.getConfiguration().isYFiles());
+					       this.getConfiguration().getCanonicalize());
     if (newGraph == null) {return false;}//couldn't read the graph
     
     //set graph after initializing data attributes
@@ -669,7 +668,7 @@ public void loadInteraction(String filename) {
 							   this.getDefaultSpecies(), 
 							   filename,
 							   this.getEdgeAttributes(), 
-							   this.getConfiguration().getCanonicalize(), this.getConfiguration().isYFiles());
+							   this.getConfiguration().getCanonicalize());
 	  
 	  
 	  
@@ -693,7 +692,7 @@ public void loadInteraction(String filename) {
 							   this.getDefaultSpecies(), 
 							   filename,
 							   this.getEdgeAttributes(), 
-							   this.getConfiguration().getCanonicalize(), this.getConfiguration().isYFiles());
+							   this.getConfiguration().getCanonicalize());
 	 					   
 	  FileReadingAbstractions.initAttributes(this.getBioDataServer(),
 					       this.getDefaultSpecies(),
@@ -703,7 +702,7 @@ public void loadInteraction(String filename) {
 					       this.getEdgeAttributes());
 	  geometryFilename = null;
 	  getCyWindow().setWindowTitle(filename);
-	  CyNetwork newNetwork = new CyNetwork(newRootGraph, this.getNodeAttributes(), this.getEdgeAttributes(), null, false);//@@@@@@@@ how to get ExpressionData?);
+	  CyNetwork newNetwork = new CyNetwork(newRootGraph, this.getNodeAttributes(), this.getEdgeAttributes(), null);
 	  getCyWindow().setNewNetwork(newNetwork);
   }
 } // loadInteraction
@@ -1200,7 +1199,7 @@ public boolean saveVisibleNodeNames () {
  * network as an argument.
  */
 public boolean saveVisibleNodeNames (String filename) {
-    return CyNetworkUtilities.saveVisibleNodeNames(this.getNetwork(), filename, this.getCytoscapeObj().getConfiguration().isYFiles());
+    return CyNetworkUtilities.saveVisibleNodeNames(this.getNetwork(), filename);
 } // saveVisibleNodeNames
 //------------------------------------------------------------------------------
 /**

@@ -9,8 +9,7 @@ import junit.framework.*;
 import java.io.*;
 import java.util.*;
 
-import y.base.Node;
-import y.base.Edge;
+import giny.model.*;
 
 import cytoscape.CyProject;
 import cytoscape.GraphObjAttributes;
@@ -20,7 +19,6 @@ import cytoscape.data.ExpressionData;
 import cytoscape.data.Semantics;
 //-----------------------------------------------------------------------------------------
 public class CyNetworkFactoryTest extends TestCase {
-    boolean yFilesFlag = true;
     //------------------------------------------------------------------------------
     public CyNetworkFactoryTest(String name) {super(name);}
     //------------------------------------------------------------------------------
@@ -28,34 +26,51 @@ public class CyNetworkFactoryTest extends TestCase {
     //------------------------------------------------------------------------------
     public void tearDown() throws Exception {}
     //------------------------------------------------------------------------------
+/*
     public void testBadFiles() throws Exception {
-	//none of these should throw exceptions, but all should return null
+	//this call should return null
 	CyNetwork nullInt = CyNetworkFactory.createNetworkFromInteractionsFile(null);
 	assertTrue( nullInt == null );
-	System.err.println("CyNetworkFactory.testBadFiles:" +
-			   "Trying to load missing interactions file, expect FileNotFoundException");
-	CyNetwork noInt = CyNetworkFactory.createNetworkFromInteractionsFile("notThere");
-	assertTrue( nullInt == null );
-	//note that almost any file can be parsed as an interactions file, thus
+        //this call should generate a FileNotFoundException
+        System.err.println("CyNetworkFactoryTest.testBadFiles: expect FileNotFoundException");
+        CyNetwork noInt = CyNetworkFactory.createNetworkFromInteractionsFile("notThere");
+        assertTrue( noInt == null );
+        //note that almost any file can be parsed as an interactions file, thus
 	//testing for parse errors isn't needed
 	
-	CyNetwork nullGML = CyNetworkFactory.createNetworkFromGMLFile(null, yFilesFlag);
+        //this call should return null
+	CyNetwork nullGML = CyNetworkFactory.createNetworkFromGMLFile(null);
 	assertTrue( nullGML == null );
-	System.err.println("CyNetworkFactory.testBadFiles:" +
-			   "Trying to load missing GML file, expect FileNotFoundException");
-	CyNetwork noGML = CyNetworkFactory.createNetworkFromGMLFile("notThere", yFilesFlag);
-	assertTrue( noGML == null );
-	System.err.println("CyNetworkFactory.testBadFiles:" +
-			   "Trying to read interactions file as GML, expect ParseException");
-	String sifFile = "testData/galFiltered.sif";
-	CyNetwork sifGML = CyNetworkFactory.createNetworkFromGMLFile(sifFile, yFilesFlag);
-	assertTrue( sifGML == null );
+        //this call should generate a FileNotFoundException
+        System.err.println("CyNetworkFactoryTest.testBadFiles: expect FileNotFoundException");
+        CyNetwork noGML = CyNetworkFactory.createNetworkFromGMLFile("notThere");
+        
+        String sifFile = "testData/galFiltered.sif";
+        //this call should generate a ParseException
+        System.err.println("CyNetworkFactoryTest.testBadFiles: expect ParseException");
+        CyNetwork sifGML = CyNetworkFactory.createNetworkFromGMLFile(sifFile);
+    }
+*/
+    //------------------------------------------------------------------------------
+    public void testCreateEmptyNetwork() throws Exception {
+        CyNetwork network = CyNetworkFactory.createEmptyNetwork();
+        assertTrue( network != null );
+        assertTrue( network.getRootGraph() != null );
+        assertTrue( network.getRootGraph().getNodeCount() == 0 );
+        assertTrue( network.getRootGraph().getEdgeCount() == 0 );
+        assertTrue( network.getGraphPerspective() != null );
+        assertTrue( network.getGraphPerspective().getNodeCount() == 0 );
+        assertTrue( network.getGraphPerspective().getEdgeCount() == 0 );
+        assertTrue( network.getNodeAttributes() != null );
+        assertTrue( network.getEdgeAttributes() != null );
+        assertTrue( network.getExpressionData() == null );
+        assertTrue( network.getNeedsLayout() == false );
     }
     //------------------------------------------------------------------------------
     public void testCreateNetworkFromInteractionsFile() throws Exception {
 	String filename = "testData/galFiltered.sif";
 	CyNetwork network = CyNetworkFactory.createNetworkFromInteractionsFile(filename);
-	verifyNetworkBasics(network);
+        verifyNetworkBasics(network);
 	verifyInteractionAttribute(network);
 	assertTrue( network.getNeedsLayout() == true );
     }
@@ -71,14 +86,14 @@ public class CyNetworkFactoryTest extends TestCase {
     //------------------------------------------------------------------------------
     public void testCreateNetworkFromGMLFile() throws Exception {
 	String filename = "testData/galFiltered.gml";
-	CyNetwork network = CyNetworkFactory.createNetworkFromGMLFile(filename, yFilesFlag);
+	CyNetwork network = CyNetworkFactory.createNetworkFromGMLFile(filename);
 	verifyNetworkBasics(network);
 	assertTrue( network.getNeedsLayout() == false );
     }
     //------------------------------------------------------------------------------
     public void testLoadAttributes() throws Exception {
 	String filename = "testData/galFiltered.gml";
-	CyNetwork network = CyNetworkFactory.createNetworkFromGMLFile(filename, yFilesFlag);
+	CyNetwork network = CyNetworkFactory.createNetworkFromGMLFile(filename);
 	verifyNetworkBasics(network);
 	String[] nodeAttrLocations = { "testData/galFiltered.nodeAttrs1",
 				       "testData/galFiltered.nodeAttrs2" };
@@ -90,7 +105,7 @@ public class CyNetworkFactoryTest extends TestCase {
     //------------------------------------------------------------------------------
     public void testLoadAttributes2() throws Exception {
 	String filename = "testData/galFiltered.gml";
-	CyNetwork network = CyNetworkFactory.createNetworkFromGMLFile(filename, yFilesFlag);
+	CyNetwork network = CyNetworkFactory.createNetworkFromGMLFile(filename);
 	verifyNetworkBasics(network);
 	String[] nodeAttrLocations = { "testData/galFiltered.nodeAttrs1",
 				       "testData/galFiltered.nodeAttrs2" };
@@ -117,18 +132,22 @@ public class CyNetworkFactoryTest extends TestCase {
      */
     private void verifyNetworkBasics(CyNetwork network) {
 	assertTrue( network != null );
-	assertTrue( network.getGraph() != null );
-	assertTrue( network.getGraph().nodeCount() == 331 );
-	assertTrue( network.getGraph().edgeCount() == 362 );
+	assertTrue( network.getRootGraph() != null );
+	assertTrue( network.getRootGraph().getNodeCount() == 331 );
+	assertTrue( network.getRootGraph().getEdgeCount() == 362 );
+        assertTrue( network.getGraphPerspective() != null );
+        assertTrue( network.getGraphPerspective().getRootGraph() == network.getRootGraph() );
+        assertTrue( network.getGraphPerspective().getNodeCount() == 331 );
+        assertTrue( network.getGraphPerspective().getEdgeCount() == 362 );
 	GraphObjAttributes nodeAttributes = network.getNodeAttributes();
-	Node[] allNodes = network.getGraph().getNodeArray();
-	for (int i=0; i<allNodes.length; i++) {
-	    assertTrue( nodeAttributes.getCanonicalName(allNodes[i]) != null );
+        for (Iterator i = network.getRootGraph().nodesIterator(); i.hasNext(); ) {
+            Node node = (Node)i.next();
+	    assertTrue( nodeAttributes.getCanonicalName(node) != null );
 	}
 	GraphObjAttributes edgeAttributes = network.getEdgeAttributes();
-	Edge[] allEdges = network.getGraph().getEdgeArray();
-	for (int i=0; i<allEdges.length; i++) {
-	    assertTrue( edgeAttributes.getCanonicalName(allEdges[i]) != null );
+        for (Iterator i = network.getRootGraph().edgesList().iterator(); i.hasNext(); ) {
+            Edge edge = (Edge)i.next();
+	    assertTrue( edgeAttributes.getCanonicalName(edge) != null );
 	}
     }
     //------------------------------------------------------------------------------
@@ -141,10 +160,9 @@ public class CyNetworkFactoryTest extends TestCase {
 	GraphObjAttributes edgeAttributes = network.getEdgeAttributes();
 	assertTrue( edgeAttributes != null );
 	assertTrue( edgeAttributes.hasAttribute(Semantics.INTERACTION) );
-	Edge[] allEdges = network.getGraph().getEdgeArray();
-	assertTrue( allEdges != null );
-	for (int i=0; i<allEdges.length; i++) {
-	    String canonicalName = edgeAttributes.getCanonicalName(allEdges[i]);
+        for (Iterator i = network.getRootGraph().edgesList().iterator(); i.hasNext(); ) {
+            Edge edge = (Edge)i.next();
+	    String canonicalName = edgeAttributes.getCanonicalName(edge);
 	    String type = edgeAttributes.getStringValue(Semantics.INTERACTION, canonicalName);
 	    assertTrue(type != null);
 	}

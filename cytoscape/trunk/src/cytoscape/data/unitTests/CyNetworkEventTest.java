@@ -9,8 +9,6 @@ import junit.framework.*;
 import java.io.*;
 import java.util.*;
 
-import y.view.Graph2D;
-
 import cytoscape.data.CyNetwork;
 import cytoscape.data.CyNetworkEvent;
 //-----------------------------------------------------------------------------------------
@@ -23,7 +21,7 @@ public void setUp() throws Exception {}
 public void tearDown() throws Exception {}
 //------------------------------------------------------------------------------
 public void testBasic() throws Exception { 
-    CyNetwork network = new CyNetwork(null, null, null, null);
+    CyNetwork network = new CyNetwork();
     //test begin event
     CyNetworkEvent e0 = new CyNetworkEvent(network, CyNetworkEvent.BEGIN);
     assertTrue( e0.getNetwork() == network );

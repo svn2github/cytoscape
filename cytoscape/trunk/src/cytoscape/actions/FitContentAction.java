@@ -19,15 +19,10 @@ public class FitContentAction extends AbstractAction {
     }
     
     public void actionPerformed(ActionEvent e) {
-      // Y-Files check
-      if ( networkView.getCytoscapeObj().getConfiguration().isYFiles() ) {
-        networkView.getGraphView().fitContent();
-        networkView.redrawGraph(false, false);
-      } else {
-        // GINY
+        //we have to do it this way because PGraphView.fitContent()
+        //currently appears to do nothing -AM 12-17-2003
         PGraphView view =(PGraphView) networkView.getView();
         view.getCanvas().getCamera().animateViewToCenterBounds( view.getCanvas().getLayer().getGlobalFullBounds(), true, 500l );
-      }
     }
 }
 

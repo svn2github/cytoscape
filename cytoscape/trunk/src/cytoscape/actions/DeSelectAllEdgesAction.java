@@ -8,11 +8,6 @@ package cytoscape.actions;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
-import giny.model.*;
-import giny.view.*;
-import java.util.*;
-
-
 import cytoscape.view.NetworkView;
 //-------------------------------------------------------------------------
 public class DeSelectAllEdgesAction extends AbstractAction  {
@@ -22,23 +17,10 @@ public class DeSelectAllEdgesAction extends AbstractAction  {
     public DeSelectAllEdgesAction(NetworkView networkView) {
         super ("Deselect all edges");
         this.networkView = networkView;
-
     }
-    
 
     public void actionPerformed (ActionEvent e) {
-	if (networkView.getCytoscapeObj().getConfiguration().isYFiles()) {    
-	  //not implemented for y files
-	}
-	else { // using giny
-		
-			//GinyUtils.deselectAllNodes(networkView.getView());
-			GinyUtils.deselectAllEdges(networkView.getView());
-		
-	}//!Yfiles
-			
-		
+        GinyUtils.deselectAllEdges(networkView.getView());
     }//action performed
-
 }
 

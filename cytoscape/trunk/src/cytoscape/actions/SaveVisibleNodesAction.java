@@ -30,7 +30,7 @@ public class SaveVisibleNodesAction extends AbstractAction {
             currentDirectory = chooser.getCurrentDirectory();
             networkView.getCytoscapeObj().setCurrentDirectory(currentDirectory);
             boolean itWorked =
-                    CyNetworkUtilities.saveVisibleNodeNames(networkView.getNetwork(), name, networkView.getCytoscapeObj().getConfiguration().isYFiles());
+                    CyNetworkUtilities.saveVisibleNodeNames(networkView.getNetwork(), name);
             Object[] options = {"OK"};
             if(itWorked) {
                 JOptionPane.showOptionDialog(null,

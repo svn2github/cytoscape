@@ -9,9 +9,8 @@ import junit.framework.*;
 import java.io.*;
 import java.util.*;
 
-import y.base.Node;
-import y.base.Edge;
-import y.view.Graph2D;
+import giny.model.*;
+import cytoscape.util.GinyFactory;
 
 import cytoscape.GraphObjAttributes;
 import cytoscape.data.CyNetwork;
@@ -40,19 +39,22 @@ public void testBasic() throws Exception {
     System.out.println ("testBasic");
     
     CyNetwork defaultNetwork = new CyNetwork();
-    assertTrue( defaultNetwork.getGraph() != null );
+    assertTrue( defaultNetwork.getRootGraph() != null );
+    assertTrue( defaultNetwork.getGraphPerspective() != null );
     assertTrue( defaultNetwork.getNodeAttributes() != null );
     assertTrue( defaultNetwork.getEdgeAttributes() != null );
     assertTrue( defaultNetwork.getExpressionData() == null );
     
-    Graph2D graph = new Graph2D();
+    RootGraph rootGraph = GinyFactory.createRootGraph();
     GraphObjAttributes nodeAttributes = new GraphObjAttributes();
     GraphObjAttributes edgeAttributes = new GraphObjAttributes();
     ExpressionData startData = new ExpressionData("testData/gal1.10x20.mRNA");
-    CyNetwork network = new CyNetwork(graph, nodeAttributes,
+    CyNetwork network = new CyNetwork(rootGraph, nodeAttributes,
                                       edgeAttributes, startData);
     
-    assertTrue( network.getGraph() == graph );
+    assertTrue( network.getRootGraph() == rootGraph );
+    assertTrue( network.getGraphPerspective() != null );
+    assertTrue( network.getGraphPerspective().getRootGraph() == rootGraph );
     assertTrue( network.getNodeAttributes() == nodeAttributes );
     assertTrue( network.getEdgeAttributes() == edgeAttributes );
     assertTrue( network.getExpressionData() == startData );
@@ -62,9 +64,9 @@ public void testBasic() throws Exception {
     network.setNeedsLayout(false);
     assertTrue( network.getNeedsLayout() == false );
     
-    Graph2D newGraph = new Graph2D();
-    network.setGraph(newGraph);
-    assertTrue( network.getGraph() == newGraph );
+    GraphPerspective newPerspective = GinyFactory.createGraphPerspective(rootGraph);
+    network.setGraphPerspective(newPerspective);
+    assertTrue( network.getGraphPerspective() == newPerspective );
     GraphObjAttributes newNodeAttributes = new GraphObjAttributes();
     network.setNodeAttributes(newNodeAttributes);
     assertTrue( network.getNodeAttributes() == newNodeAttributes );
@@ -75,23 +77,47 @@ public void testBasic() throws Exception {
     network.setExpressionData(expData);
     assertTrue( network.getExpressionData() == expData );
     
-    CyNetwork noExpNetwork = new CyNetwork(graph, nodeAttributes, edgeAttributes);
-    assertTrue( noExpNetwork.getGraph() == graph );
+    CyNetwork gpNetwork = new CyNetwork(newPerspective, nodeAttributes,
+                                        edgeAttributes, startData);
+    assertTrue( gpNetwork.getRootGraph() == rootGraph );
+    assertTrue( gpNetwork.getGraphPerspective() == newPerspective );
+    assertTrue( gpNetwork.getNodeAttributes() == nodeAttributes );
+    assertTrue( gpNetwork.getEdgeAttributes() == edgeAttributes );
+    assertTrue( gpNetwork.getExpressionData() == startData );
+    assertTrue( gpNetwork.getNeedsLayout() == false );
+    
+    CyNetwork gpNetwork2 = new CyNetwork(newPerspective, nodeAttributes,
+                                         edgeAttributes);
+    assertTrue( gpNetwork2.getRootGraph() == rootGraph );
+    assertTrue( gpNetwork2.getGraphPerspective() == newPerspective );
+    assertTrue( gpNetwork2.getNodeAttributes() == nodeAttributes );
+    assertTrue( gpNetwork2.getEdgeAttributes() == edgeAttributes );
+    assertTrue( gpNetwork2.getExpressionData() == null );
+    assertTrue( gpNetwork2.getNeedsLayout() == false );
+    
+    CyNetwork noExpNetwork = new CyNetwork(rootGraph, nodeAttributes, edgeAttributes);
+    assertTrue( noExpNetwork.getRootGraph() == rootGraph );
+    assertTrue( noExpNetwork.getGraphPerspective() != null );
+    assertTrue( noExpNetwork.getGraphPerspective().getRootGraph() == rootGraph );
     assertTrue( noExpNetwork.getNodeAttributes() == nodeAttributes );
     assertTrue( noExpNetwork.getEdgeAttributes() == edgeAttributes );
     assertTrue( noExpNetwork.getExpressionData() == null );
     assertTrue( noExpNetwork.getNeedsLayout() == false );
     //test setting new graph, removing old attributes
+    RootGraph newGraph = GinyFactory.createRootGraph();
     CyNetwork newNetwork = new CyNetwork(newGraph, newNodeAttributes, newEdgeAttributes);
     newNetwork.setNeedsLayout(true);
     noExpNetwork.setNewGraphFrom(newNetwork, true);
-    assertTrue( noExpNetwork.getGraph() == newGraph );
+    assertTrue( noExpNetwork.getRootGraph() == newGraph );
+    assertTrue( noExpNetwork.getGraphPerspective() != null );
+    assertTrue( noExpNetwork.getGraphPerspective().getRootGraph() == newGraph );
     assertTrue( noExpNetwork.getNodeAttributes() == newNodeAttributes );
     assertTrue( noExpNetwork.getEdgeAttributes() == newEdgeAttributes );
     assertTrue( noExpNetwork.getNeedsLayout() == true );
     
-    CyNetwork nullNetwork = new CyNetwork(null, null, null, null);
-    assertTrue(nullNetwork.getGraph() != null);
+    CyNetwork nullNetwork = new CyNetwork((RootGraph)null, null, null, null);
+    assertTrue(nullNetwork.getRootGraph() != null);
+    assertTrue(nullNetwork.getGraphPerspective() != null);
     assertTrue(nullNetwork.getNodeAttributes() != null);
     assertTrue(nullNetwork.getEdgeAttributes() != null);
     assertTrue(nullNetwork.getExpressionData() == null);
@@ -99,13 +125,15 @@ public void testBasic() throws Exception {
     //first install some attributes so we can do the test
     GraphObjAttributes nullNodeAttributes = nullNetwork.getNodeAttributes();
     GraphObjAttributes nullEdgeAttributes = nullNetwork.getEdgeAttributes();
-    Node n1 = graph.createNode();
+    Node n1 = rootGraph.getNode( rootGraph.createNode() );
     nullNodeAttributes.addNameMapping("YGR074W", n1);
-    Node n2 = newGraph.createNode();
+    Node n2 = newGraph.getNode( newGraph.createNode() );
     newNodeAttributes.addNameMapping("YBR043C", n2);
-    Edge e1 = graph.createEdge(n1, graph.createNode());
+    Node n3 = rootGraph.getNode( rootGraph.createNode() );
+    Node n4 = newGraph.getNode( newGraph.createNode() );
+    Edge e1 = rootGraph.getEdge( rootGraph.createEdge(n1, n3) );
     nullEdgeAttributes.addNameMapping("YDR277C (pp) YDL124W", e1);
-    Edge e2 = newGraph.createEdge(n2, newGraph.createNode());
+    Edge e2 = newGraph.getEdge( newGraph.createEdge(n2, n4) );
     newEdgeAttributes.addNameMapping("YBL026W (pp) YOR127C", e2);
     nullNodeAttributes.readAttributesFromFile("testData/galFiltered.nodeAttrs1");
     nullEdgeAttributes.readAttributesFromFile("testData/galFiltered.edgeAttrs1");
@@ -115,7 +143,7 @@ public void testBasic() throws Exception {
     newNetwork.setNeedsLayout(false);
     //now do the test
     nullNetwork.setNewGraphFrom(newNetwork, false);
-    assertTrue( nullNetwork.getGraph() == newGraph );
+    assertTrue( nullNetwork.getRootGraph() == newGraph );
     assertTrue( nullNetwork.getNeedsLayout() == false );
     assertTrue( nullNetwork.getNodeAttributes() == nullNodeAttributes );
     assertTrue( nullNetwork.getEdgeAttributes() == nullEdgeAttributes );
@@ -131,8 +159,7 @@ public void testBasic() throws Exception {
 //-------------------------------------------------------------------------
 public void testListeners() throws Exception {
     String callerID = "CyNetworkTest.testListeners";
-    CyNetwork network = new CyNetwork(new Graph2D(), new GraphObjAttributes(),
-                                      new GraphObjAttributes(), null);
+    CyNetwork network = new CyNetwork();
     network.addCyNetworkListener(listener);
     
     network.beginActivity(callerID); //this should fire a begin event

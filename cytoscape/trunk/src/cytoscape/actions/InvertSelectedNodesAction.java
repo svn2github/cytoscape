@@ -19,18 +19,11 @@ public class InvertSelectedNodesAction extends AbstractAction {
     }
 
     public void actionPerformed (ActionEvent e) {
-
-	if (networkView.getCytoscapeObj().getConfiguration().isYFiles()) {
-	    String callerID = "InvertSelectedNodesAction.actionPerformed";
-	    networkView.getNetwork().beginActivity(callerID);
-	    GraphUtils.invertSelectedNodes( networkView.getNetwork().getGraph() );
-	    networkView.redrawGraph(false, false);
-	    networkView.getNetwork().endActivity(callerID);
-	}
-	else {
-	    GinyUtils.invertSelectedNodes(networkView.getView());
-	}
-
+        String callerID = "InvertSelectedNodesAction.actionPerformed";
+        networkView.getNetwork().beginActivity(callerID);
+        GinyUtils.invertSelectedNodes(networkView.getView());
+        networkView.redrawGraph(false, false);
+        networkView.getNetwork().endActivity(callerID);
     }
 }
 

@@ -40,8 +40,7 @@ import java.util.Vector;
 import java.util.HashMap;
 import java.util.Enumeration;
 
-import y.base.*;
-import y.view.Graph2D;
+import giny.model.RootGraph;
 
 import cytoscape.data.Interaction;
 import cytoscape.data.readers.InteractionsReader;
@@ -112,11 +111,9 @@ public void testGetGraph () throws Exception
   reader.read ();
   assertTrue (reader.getCount () == 25);
 
-  Graph2D graph = reader.getGraph ();
-  NodeCursor nodeCursor = graph.nodes ();
-  assertTrue ("node count", nodeCursor.size () == 31);
-  EdgeCursor edgeCursor = graph.edges ();
-  assertTrue ("edge count", edgeCursor.size () == 27);
+  RootGraph graph = reader.getRootGraph ();
+  assertTrue ("node count", graph.getNodeCount () == 31);
+  assertTrue ("edge count", graph.getEdgeCount () == 27);
 
 } // testGetGraph
 //-------------------------------------------------------------------------
@@ -132,11 +129,9 @@ public void testGetGraphAndEdgeAttributes () throws Exception
   reader.read ();
   assertTrue (reader.getCount () == 25);
 
-  Graph2D graph = reader.getGraph ();
-  NodeCursor nodeCursor = graph.nodes ();
-  assertTrue ("node count", nodeCursor.size () == 31);
-  EdgeCursor edgeCursor = graph.edges ();
-  assertTrue ("edge count", edgeCursor.size () == 27);
+  RootGraph graph = reader.getRootGraph ();
+  assertTrue ("node count", graph.getNodeCount () == 31);
+  assertTrue ("edge count", graph.getEdgeCount () == 27);
 
   GraphObjAttributes edgeProps = reader.getEdgeAttributes ();
   assertTrue ("attribute count", edgeProps.size () == 2);

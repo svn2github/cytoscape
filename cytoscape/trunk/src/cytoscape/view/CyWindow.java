@@ -261,6 +261,7 @@ protected void initializeWidgets() {
 * the graph view object and initializes graph and graph view using giny
 */
 protected void initialize() {
+    getNetwork().addCyNetworkListener(this);
 	GraphPerspective gp = network.getGraphPerspective();
 	setLayout( new BorderLayout() );  
 	if (gp != null) {
@@ -276,7 +277,8 @@ protected void initialize() {
 	    //this.view = new PGraphView();
     	   // add(graphView, BorderLayout.CENTER);
 	   this.setBackground(Color.WHITE);
-	   
+	   display = new JPanel();
+           add(display, BorderLayout.CENTER);
 		
 	}	
 	
@@ -534,7 +536,6 @@ protected void attachGraphListeners() {
  */
 protected void attachGraphViewListener() {
     if (getNetwork() == null || getView() == null) {return;}
-    getNetwork().addCyNetworkListener(this);
     System.out.println( " CyWindow attaching itself as a GraphViewListener" );
     view.addGraphViewChangeListener(this);
 }
@@ -627,8 +628,8 @@ protected void displayNewGraph(boolean doLayout) {
     }
 }
 /**
-*
-*/
+ *
+ */
 protected void fitGraphView() {
 	//@@@@@ does not work for some reason, zooms out to infinity...
 	//view.getCanvas().getCamera().animateViewToCenterBounds( view.getCanvas().getLayer().getGlobalFullBounds(), true, 5001 );
@@ -643,18 +644,16 @@ protected void fitGraphView() {
  * This method does nothing on any call after the first.
  */
 public void showWindow() {
-
-
-        //draw the graph for the first time
-        displayNewGraph( network.getNeedsLayout() );
-	mainFrame.setContentPane(this);
-        mainFrame.pack();
-	mainFrame.setSize (new Dimension (DEFAULT_WIDTH, DEFAULT_HEIGHT));
-        this.setVisible(true);
-        mainFrame.setVisible(true);
-	//mainFrame.pack();
-        //setInteractivity(true);
-        windowDisplayed = true;
+    //draw the graph for the first time
+    displayNewGraph( network.getNeedsLayout() );
+    mainFrame.setContentPane(this);
+    mainFrame.pack();
+    mainFrame.setSize (new Dimension (DEFAULT_WIDTH, DEFAULT_HEIGHT));
+    this.setVisible(true);
+    mainFrame.setVisible(true);
+    //mainFrame.pack();
+    //setInteractivity(true);
+    windowDisplayed = true;
 }
 
 //------------------------------------------------------------------------------
@@ -885,6 +884,7 @@ public void setNewNetwork( CyNetwork newNetwork ) {
  * on by the showWindow method.
  */
 public void setInteractivity (boolean newState) {
+    if (!this.isYFiles) {return;} //not supported in Giny
     if (currentInteractivityState == newState) {return;}
     if (newState == true) { // turn interactivity ON
         if (!viewModesInstalled) {
@@ -1169,7 +1169,12 @@ public void onCyNetworkEvent(CyNetworkEvent event) {
     } else if (event.getType() == CyNetworkEvent.END) {
         setInteractivity(true);
     } else if (event.getType() == CyNetworkEvent.GRAPH_REPLACED) {
-        setNewGraph( getNetwork().getGraph(), getNetwork().getNeedsLayout() );
+        if (this.isYFiles) {
+            setNewGraph( getNetwork().getGraph(), getNetwork().getNeedsLayout() );
+        } else {
+            updateGraphView();
+            showWindow();
+        }
     }
 }
 //------------------------------------------------------------------------------

@@ -36,13 +36,10 @@ package cytoscape.dialogs;
 //--------------------------------------------------------------------------
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
+import java.util.*;
 
-import y.base.*;
-import y.view.Graph2D;
-import y.view.NodeRealizer;
-import y.view.EdgeRealizer;
+import giny.view.NodeView;
 
-import cytoscape.GraphObjAttributes;
 import cytoscape.view.NetworkView;
 //--------------------------------------------------------------------------
 //
@@ -61,11 +58,6 @@ public class ShrinkExpandGraph extends AbstractAction {
 	this.m = m;
     }
     public void actionPerformed(ActionEvent e) {
-	Graph2D graph = parent.getNetwork().getGraph();
-	GraphObjAttributes edgeAttributes =
-                parent.getNetwork().getEdgeAttributes();
-	Node [] nodes = graph.getNodeArray();
-	
 	// sum of coordinates
 	double sx = 0;
 	double sy = 0;
@@ -80,39 +72,39 @@ public class ShrinkExpandGraph extends AbstractAction {
 	
 
 	// loop through each node to add up all x and all y coordinates
-	for (int node_i=0; node_i < nodes.length; node_i++){
-	    Node node = nodes[node_i];
-	    NodeRealizer nr = graph.getRealizer(node);
+	for (Iterator i = parent.getView().getNodeViewsIterator(); i.hasNext(); ){
+	    NodeView nodeView = (NodeView)i.next();
 	    // get coordinates of node
-	    double ax = nr.getCenterX();
-	    double ay = nr.getCenterY();
+	    double ax = nodeView.getXPosition();
+	    double ay = nodeView.getYPosition();
 	    // sum up coordinates of all the nodes
 	    sx += ax;
 	    sy += ay;
 	}
 
 	// average all coordinates to find center of graph
-	cx = sx/(nodes.length + 1);
-	cy = sy/(nodes.length + 1);
+        int nodeCount = parent.getView().getNodeViewCount();
+	cx = sx/(nodeCount + 1);
+	cy = sy/(nodeCount + 1);
 
 	// set new coordinates of each node at center (0,0), shrink, then return to
 	//  original center at (cx, cy)
-	for (int node_i=0; node_i < nodes.length; node_i++){
-	    Node node = nodes[node_i];
-	    NodeRealizer nr = graph.getRealizer(node);
-	    nr.setCenterX(m*((nr.getCenterX())-cx) + cx);
-	    nr.setCenterY(m*((nr.getCenterY())-cy) + cy);
+	for (Iterator i = parent.getView().getNodeViewsIterator(); i.hasNext(); ){
+	    NodeView nodeView = (NodeView)i.next();
+	    nodeView.setXPosition(m*((nodeView.getXPosition())-cx) + cx);
+	    nodeView.setYPosition(m*((nodeView.getYPosition())-cy) + cy);
 	}
 	
         // remove bends
-        EdgeCursor cursor = graph.edges();
-        cursor.toFirst ();
-        for (int i=0; i < cursor.size(); i++){
-            Edge target = cursor.edge();
-            EdgeRealizer er = graph.getRealizer(target);
-            er.clearBends();
-            cursor.cyclicNext();
-        }
+        //not clear how to do this in Giny
+        //EdgeCursor cursor = graph.edges();
+        //cursor.toFirst ();
+        //for (int i=0; i < cursor.size(); i++){
+        //    Edge target = cursor.edge();
+        //    EdgeRealizer er = graph.getRealizer(target);
+        //    er.clearBends();
+        //    cursor.cyclicNext();
+        //}
 
         parent.redrawGraph(false, false);
     }//Action Performed

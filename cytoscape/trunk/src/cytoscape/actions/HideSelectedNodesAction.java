@@ -19,18 +19,11 @@ public class HideSelectedNodesAction extends AbstractAction   {
     }
 
     public void actionPerformed (ActionEvent e) {
-
-	if (networkView.getCytoscapeObj().getConfiguration().isYFiles()) {        
-	  String callerID = "HideSelectedNodesAction.actionPerformed";
-	  networkView.getNetwork().beginActivity(callerID);
-	  GraphUtils.hideSelectedNodes( networkView.getNetwork().getGraph(),
-					networkView.getGraphHider() );
-	  networkView.redrawGraph(false, false);
-	  networkView.getNetwork().endActivity(callerID);
-	}
-	else {
-		GinyUtils.hideSelectedNodes(networkView.getView());
-	}
+        String callerID = "HideSelectedNodesAction.actionPerformed";
+        networkView.getNetwork().beginActivity(callerID);
+        GinyUtils.hideSelectedNodes(networkView.getView());
+        networkView.redrawGraph(false, false);
+        networkView.getNetwork().endActivity(callerID);
     }
 }
 

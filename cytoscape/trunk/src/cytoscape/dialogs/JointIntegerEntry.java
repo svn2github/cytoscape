@@ -41,7 +41,6 @@ import javax.swing.event.*;
 import java.text.*;
 import java.util.*;
 import cytoscape.dialogs.IntegerEntryField;
-import y.view.*;
 //---------------------------------------------------------------------------------------
 
 public class JointIntegerEntry extends JPanel {
