@@ -25,7 +25,7 @@ import java.util.List;
  * movable - no subgraph layout is supported.  Subgraph layouts will be
  * supported very soon.
  **/
-public final class SpringEmbeddedLayouter extends LayoutAlgorithm
+public final class SpringEmbeddedLayouter2 extends LayoutAlgorithm
 {
 
   private static final
@@ -90,8 +90,8 @@ public final class SpringEmbeddedLayouter extends LayoutAlgorithm
    * @exception UnsupportedOperationException
    *   if <code>graph.areAllNodesMovable()</code> returns <code>false</code>.
    **/
-  public SpringEmbeddedLayouter(MutableGraphLayout graph,
-                                PercentCompletedCallback percentComplete)
+  public SpringEmbeddedLayouter2(MutableGraphLayout graph,
+                                 PercentCompletedCallback percentComplete)
   {
     super(graph);
     if (!m_graph.areAllNodesMovable())
