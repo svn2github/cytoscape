@@ -255,14 +255,13 @@ class FRootGraph implements RootGraph, DynamicGraph
     for (int i = 0; i < removedEdgeArr.length; i++) {
       final int nativeEdgeInx = ~(removedEdgeArr[i].getRootGraphIndex());
       m_graph.edgeRemove(nativeEdgeInx);
-      final FEdge removedEdge = m_edges.getEdgeAtIndex(nativeEdgeInx);
+      final FingEdge removedEdge = m_edges.getEdgeAtIndex(nativeEdgeInx);
       m_edges.setEdgeAtIndex(null, nativeEdgeInx);
       m_edgeDepot.recycleEdge(removedEdge); }
     final FingNode removedNode = m_nodes.getNodeAtIndex(nativeNodeInx);
     m_graph.nodeRemove(nativeNodeInx);
     m_nodes.setNodeAtIndex(null, nativeNodeInx);
-    if (m_nodeDepot.isRecyclery())
-      m_nodeDepot.recycleNode(removedNode);
+    m_nodeDepot.recycleNode(removedNode);
     if (removedEdgeArr.length > 0)
       m_lis.rootGraphChanged
         (new RootGraphEdgesRemovedEvent(this, removedEdgeArr));
@@ -385,7 +384,7 @@ class FRootGraph implements RootGraph, DynamicGraph
       m_metaGraph.nodeRemove(metaEdge); }
     // END: Remove edge from meta structure.
     m_graph.edgeRemove(nativeEdgeInx);
-    final FEdge removedEdge = m_edges.getEdgeAtIndex(nativeEdgeInx);
+    final FingEdge removedEdge = m_edges.getEdgeAtIndex(nativeEdgeInx);
     m_edges.setEdgeAtIndex(null, nativeEdgeInx);
     m_edgeDepot.recycleEdge(removedEdge);
     m_lis.rootGraphChanged
@@ -428,10 +427,10 @@ class FRootGraph implements RootGraph, DynamicGraph
       m_graph.edgeCreate(~sourceNodeIndex, ~targetNodeIndex, directed);
     if (nativeEdgeInx < 0) return 0;
     final int returnThis = ~nativeEdgeInx;
-    FEdge newEdge = m_edgeDepot.getEdge();
-    newEdge.m_rootGraph = this;
-    newEdge.m_rootGraphIndex = returnThis;
-    newEdge.m_identifier = null;
+    FingEdge newEdge = m_edgeDepot.getEdge();
+    newEdge._setRootGraph(this);
+    newEdge._setRootGraphIndex(returnThis);
+    newEdge._setIdentifier(null);
     m_edges.setEdgeAtIndex(newEdge, nativeEdgeInx);
     return returnThis;
   }

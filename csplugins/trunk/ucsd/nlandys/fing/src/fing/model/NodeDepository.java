@@ -14,11 +14,6 @@ final class NodeDepository implements FingNodeDepot
     m_size = 0;
   }
 
-  public boolean isRecyclery()
-  {
-    return true;
-  }
-
   // Gimme a node, darnit!
   // Don't forget to initialize the node's member variables!
   public FingNode getNode()

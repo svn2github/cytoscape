@@ -7,20 +7,20 @@ package fing.model;
  * @deprecated Use FingRootGraphFactory and ignore this class.
  * @see FingRootGraphFactory
  **/
-public interface FingNodeDepot
+public interface FingEdgeDepot
 {
 
   /**
-   * This either instantiates a new node or gets one from the recyclery.
+   * This either instantiates a new edge or gets one from the recyclery.
    **/
-  public FingNode getNode();
+  public FingEdge getEdge();
 
   /**
-   * Recycles a node.  Implementations may choose to do nothing in this
-   * method and instantiate a new node in each call to getNode().  This method
-   * is simply a hook for Fing to tell the depository "I'm done using this node
+   * Recycles an edge.  Implementations may choose to do nothing in this
+   * method and instantiate a new edge in each call to getEdge().  This method
+   * is simply a hook for Fing to tell the depository "I'm done using this edge
    * object -- it's no longer part of a RootGraph".
    **/
-  public void recycleNode(FingNode node);
+  public void recycleEdge(FingEdge node);
 
 }

@@ -1,19 +1,19 @@
 package fing.model;
 
-import giny.model.Edge;
 import giny.model.Node;
 import giny.model.RootGraph;
 
 // Package visible class.
-class FEdge implements Edge
+class FEdge implements FingEdge
 {
 
   // Variables specific to public get/set methods.
-  RootGraph m_rootGraph = null;
-  int m_rootGraphIndex = 0;
-  String m_identifier = null;
+  private RootGraph m_rootGraph = null;
+  private int m_rootGraphIndex = 0;
+  private String m_identifier = null;
 
-  FEdge() {}
+  // Package visible constructor.
+  FEdge() { }
 
   public Node getSource()
   {
@@ -51,6 +51,21 @@ class FEdge implements Edge
   {
     m_identifier = new_id;
     return true;
+  }
+
+  public void _setRootGraph(RootGraph root)
+  {
+    m_rootGraph = root;
+  }
+
+  public void _setRootGraphIndex(int index)
+  {
+    m_rootGraphIndex = index;
+  }
+
+  public void _setIdentifier(String id)
+  {
+    m_identifier = id;
   }
 
 }
