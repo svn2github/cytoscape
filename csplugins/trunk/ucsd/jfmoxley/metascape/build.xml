@@ -8,7 +8,7 @@
 	<property name="plugin.name" value="metascape"/>
 
   	<!-- The directory containing source code -->
-  	<property name="src.dir" value="."/>
+  	<property name="src.dir" value="src"/>
 
 	<!--  The directory containing library jar files -->	
 	<property name="lib.dir" value="../../../../cytoscape/lib"/>
@@ -44,6 +44,25 @@
     		<delete dir="${build.dir}"/>
 		<delete dir="${dist.dir}"/>
   	</target>
+
+	<path id="classpath_run">
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar"/>
+		</fileset>
+		<pathelement location="${lib.dir}/../build/cytoscape.jar"/>
+	</path>
+
+	<!-- Target to debug with socket debugger -->
+	<target name="run" depends="jar" description="Runs jar to debug">
+		<java classname="cytoscape.CyMain" classpathref="classpath_run" fork="true">
+			<arg line="--JLD build/${plugin.name}.jar"/>
+			<jvmarg value="-Xdebug"/>
+			<jvmarg value="-Xmx512m"/>
+			<jvmarg value="-Xnoagent"/>
+			<jvmarg value="-Djava.compiler=NONE"/>
+			<jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,suspend=n"/>
+		</java>
+	</target>
 	
 	<!-- Target to create Cytoscape Jar File  -->
 	<target name="build_cytoscape">
@@ -62,7 +81,7 @@
 	<!--  Target to compile all Plug In Code -->
   	<target name="compile" depends="prepare, build_cytoscape" 
 		description="Compiles all PlugIn source code.">
-                <javac debug="Yes" srcdir="${src.dir}" destdir="${build.classes}">
+                <javac deprecation="Yes" debug="Yes" srcdir="${src.dir}" destdir="${build.classes}">
 			<classpath refid="classpath"/>
 		</javac>
 	</target>
