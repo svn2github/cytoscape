@@ -984,6 +984,88 @@ public final class AllRootGraphMethodsTest
           root.isNodeMetaChild(nodeInx[4], nodeInx[1], true) &&
           root.isNodeMetaChild(nodeInx[3], nodeInx[4], true)))
       throw new IllegalStateException("missing recursive meta child");
+
+    // nodeMetaChildrenList(Node).
+    if (root.nodeMetaChildrenList(root2Node) != null)
+      throw new IllegalStateException("expected null for other node children");
+    nodesList = root.nodeMetaChildrenList(root.getNode(nodeInx[2]));
+    if (nodesList.size() != 0)
+      throw new IllegalStateException("expected no children");
+    nodesList = root.nodeMetaChildrenList(root.getNode(nodeInx[4]));
+    if (nodesList.size() != 4)
+      throw new IllegalStateException("wrong number of children");
+    for (int i = 0; i < nodesList.size(); i++) {
+      Node foo = (Node) nodesList.get(i); }
+
+    // nodeMetaChildrenList(int).
+    if (root.nodeMetaChildrenList(0) != null ||
+        root.nodeMetaChildrenList(Integer.MAX_VALUE) != null ||
+        root.nodeMetaChildrenList(Integer.MIN_VALUE) != null ||
+        root.nodeMetaChildrenList(minNodeInx - 1) != null ||
+        root.nodeMetaChildrenList(77) != null)
+      throw new IllegalStateException("expected null children list");
+    nodesList = root.nodeMetaChildrenList(nodeInx[3]);
+    if (nodesList.size() != 4)
+      throw new IllegalStateException("wrong number of children");
+    int[] nodeChildInx = new int[nodesList.size()];
+    for (int i = 0; i < nodesList.size(); i++) {
+      Node foo = (Node) nodesList.get(i);
+      nodeChildInx[i] = foo.getRootGraphIndex(); }
+    for (int i = 0;; i++) if (nodeChildInx[i] == nodeInx[0]) break;
+    for (int i = 0;; i++) if (nodeChildInx[i] == nodeInx[1]) break;
+    for (int i = 0;; i++) if (nodeChildInx[i] == nodeInx[2]) break;
+    for (int i = 0;; i++) if (nodeChildInx[i] == nodeInx[3]) break;
+
+    // getNodeMetaChildIndicesArray(int).
+    if (root.getNodeMetaChildIndicesArray(0) != null ||
+        root.getNodeMetaChildIndicesArray(Integer.MAX_VALUE) != null ||
+        root.getNodeMetaChildIndicesArray(Integer.MIN_VALUE) != null ||
+        root.getNodeMetaChildIndicesArray(minNodeInx - 1) != null ||
+        root.getNodeMetaChildIndicesArray(66) != null)
+      throw new IllegalStateException("expected null children array");
+    nodeChildInx = root.getNodeMetaChildIndicesArray(nodeInx[0]);
+    if (nodeChildInx.length != 2)
+      throw new IllegalStateException("wrong number of children in array");
+    for (int i = 0;; i++) if (nodeChildInx[i] == nodeInx[1]) break;
+    for (int i = 0;; i++) if (nodeChildInx[i] == nodeInx[4]) break;
+    nodeChildInx = root.getNodeMetaChildIndicesArray(nodeInx[1]);
+    if (nodeChildInx.length != 0)
+      throw new IllegalStateException("wrong number of children in array");
+    nodeChildInx = root.getNodeMetaChildIndicesArray(nodeInx[4]);
+    if (nodeChildInx.length != 4)
+      throw new IllegalStateException("wrong number of children in array");
+    for (int i = 0;; i++) if (nodeChildInx[i] == nodeInx[0]) break;
+    for (int i = 0;; i++) if (nodeChildInx[i] == nodeInx[2]) break;
+    for (int i = 0;; i++) if (nodeChildInx[i] == nodeInx[3]) break;
+    for (int i = 0;; i++) if (nodeChildInx[i] == nodeInx[4]) break;
+
+    // getNodeMetaChildIndicesArray(int, boolean).
+    if (root.getNodeMetaChildIndicesArray(0, true) != null ||
+        root.getNodeMetaChildIndicesArray(Integer.MAX_VALUE, true) != null ||
+        root.getNodeMetaChildIndicesArray(Integer.MIN_VALUE, true) != null ||
+        root.getNodeMetaChildIndicesArray(minNodeInx - 1, true) != null ||
+        root.getNodeMetaChildIndicesArray(66, true) != null)
+      throw new IllegalStateException("expected null children array");
+    nodeChildInx = root.getNodeMetaChildIndicesArray(nodeInx[0], true);
+    if (nodeChildInx.length != 5)
+      throw new IllegalStateException("wrong # recursive children");
+    nodeChildInx = root.getNodeMetaChildIndicesArray(nodeInx[1], true);
+    if (nodeChildInx.length != 0)
+      throw new IllegalStateException("wrong # recursive children");
+    nodeChildInx = root.getNodeMetaChildIndicesArray(nodeInx[2], true);
+    if (nodeChildInx.length != 0)
+      throw new IllegalStateException("wrong # recursive children");
+    nodeChildInx = root.getNodeMetaChildIndicesArray(nodeInx[3], true);
+    if (nodeChildInx.length != 5)
+      throw new IllegalStateException("wrong # recursive children");
+    nodeChildInx = root.getNodeMetaChildIndicesArray(nodeInx[4], true);
+    if (nodeChildInx.length != 5)
+      throw new IllegalStateException("wrong # recursive children");
+    for (int i = 0;; i++) if (nodeChildInx[i] == nodeInx[0]) break;
+    for (int i = 0;; i++) if (nodeChildInx[i] == nodeInx[1]) break;
+    for (int i = 0;; i++) if (nodeChildInx[i] == nodeInx[2]) break;
+    for (int i = 0;; i++) if (nodeChildInx[i] == nodeInx[3]) break;
+    for (int i = 0;; i++) if (nodeChildInx[i] == nodeInx[4]) break;
   }
 
 }
