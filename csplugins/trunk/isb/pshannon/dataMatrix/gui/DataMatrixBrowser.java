@@ -53,6 +53,7 @@ private Vector colOrder = new Vector();
 private Vector enabled = new Vector();
 private Vector colMap = new Vector();
 
+private ArrayList listeners = new ArrayList();
 
 protected boolean updateSelectionsToCytoscapeWindow = true;
 protected JToolBar toolbar;
@@ -85,11 +86,20 @@ setVisible (true);
 
 } // ctor
 
-public JButton getChangeButton() {
-	return plotChangeButton;
+//-----------------------------------------------------------------------------------
+
+public synchronized void addBrowserListener(DataMatrixBrowserListener l) {
+	listeners.add(l);
 }
 
+public synchronized void removeBrowserListener(DataMatrixBrowserListener l) {
+	listeners.remove(l);
+}
+
+
+
 //-----------------------------------------------------------------------------------
+
 protected void addActions ()
 {
 plotter = new SelectionPlotter (this);
@@ -501,15 +511,21 @@ setLocation ((screenWidth-windowWidth)/2, (screenHeight-windowHeight)/2);
 } // placeInCenter
 //----------------------------------------------------------------------
 /***********************/
-private void resetPlotter() 
+private synchronized void resetPlotter() 
 {
 if (null != plotter) {
   JTable table = (JTable)tableList.get(getCurrentTabAndTableIndex());
   DataMatrixLens lens = (DataMatrixLens) lensList.get (getCurrentTabAndTableIndex ());
   lens.setSelectedRows (table.getSelectedRows());
   System.out.println("in resetPlotter()");
-  plotChangeButton.doClick();
-  // plotter.populateFromLens (lens);
+  // fire event to listeners
+  DataMatrixBrowserEvent evt = new DataMatrixBrowserEvent(lens);
+  Iterator it = listeners.iterator();
+		  while( it.hasNext() ) {
+			  ( (DataMatrixBrowserListener) it.next() ).browserSelectionChanged( evt );
+		  }
+
+  
   }
 
 } // resetPlotter

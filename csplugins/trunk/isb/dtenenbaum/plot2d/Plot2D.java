@@ -60,7 +60,7 @@ import javax.swing.event.*;
 import javax.swing.table.*;
 
 import csplugins.isb.pshannon.dataMatrix.DataMatrixLens;
-import csplugins.isb.pshannon.dataMatrix.gui.DataMatrixBrowser;
+import csplugins.isb.pshannon.dataMatrix.gui.*;
 
 /**
  * A rewrite of the csplugins.expressionData.Plot2D class that uses 
@@ -72,7 +72,7 @@ import csplugins.isb.pshannon.dataMatrix.gui.DataMatrixBrowser;
  * 
  * @author Dan Tenenbaum
  */
-public class Plot2D extends JFrame  implements ActionListener {
+public class Plot2D extends JFrame  implements DataMatrixBrowserListener {
 
   private String[] xLabels;
   private JComboBox cb;
@@ -147,8 +147,9 @@ public Plot2D (String title, String xAxisLabel, String yAxisLabel,
 	this.dm = dm;
 	this.dmb = dmb;
 	
-	selectionChangedButton = dmb.getChangeButton();
-	selectionChangedButton.addActionListener(this);
+	if (null != dmb) {
+		dmb.addBrowserListener(this);
+	}
 	
 	initUI();
 	
@@ -226,10 +227,11 @@ public Plot2D (String title, String xAxisLabel, String yAxisLabel) {
 
 
 
-public void actionPerformed(ActionEvent e) {
-	if (e.getActionCommand() == "selectionChanged") {
-		System.out.println("selection changed!");
-	}
+public void browserSelectionChanged(DataMatrixBrowserEvent e) {
+	//System.out.println("caught event, source = " + e.getSource().getClass().getName());
+	DataMatrixLens dmlens = (DataMatrixLens)e.getSource();
+	if (allowLiveUpdate)
+		populateFromLens(dmlens);
 }
 
 /**
@@ -439,8 +441,8 @@ private void initUI() {
 				JCheckBox checkedBox = (JCheckBox)e.getSource();
 				allowLiveUpdate = checkedBox.isSelected();
 				// start updating right now. (do we want to do this?)
-				if (allowLiveUpdate)
-				   populateFromLens(dm);
+				//if (allowLiveUpdate)
+				//   populateFromLens(dm);
 			}
 		});
 		JLabel lblLiveUpdate = new JLabel("Enable Live Update");

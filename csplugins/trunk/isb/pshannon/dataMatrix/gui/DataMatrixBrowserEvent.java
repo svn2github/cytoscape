@@ -8,7 +8,6 @@ public class DataMatrixBrowserEvent extends EventObject {
     
     public DataMatrixBrowserEvent( Object source) {
         super( source );
-        Cytoscape.getSwingPropertyChangeSupport().
     }
 
     
