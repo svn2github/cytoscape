@@ -29,6 +29,7 @@ OBJS = ColorPopupButton.class \
         GridBagGroup.class \
         EdgeTextPanel.class \
 	NewStringPopupDialog.class \
+        JointIntegerEntry.class \
 
 
 

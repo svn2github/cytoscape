@@ -28,6 +28,8 @@ import cytoscape.util.MutableString;
 import cytoscape.util.MutableBool;
 import cytoscape.dialogs.MiscGB;
 import cytoscape.dialogs.EdgeTextPanel;
+import cytoscape.dialogs.IntegerEntryField;
+import cytoscape.dialogs.JointIntegerEntry;
 //--------------------------------------------------------------------------------------
 public class VisualPropertiesDialog extends JDialog {
     static Map backupMap=null;
@@ -36,7 +38,7 @@ public class VisualPropertiesDialog extends JDialog {
     IconPopupButton shapeDefault;
     IconPopupButton lineTypeDefault;
     IconPopupButton arrowDefault;
-    IntegerEntryField sizeDefault;
+    JointIntegerEntry sizeDefaults;
     AttributeMapper aMapper;
     Frame parentFrame;
     MutableColor nColor;
@@ -105,13 +107,20 @@ public VisualPropertiesDialog (Frame parentFrame,
   MiscGB.insert(defGBG,eColorButton,0,yDef,1,1,GridBagConstraints.HORIZONTAL);
   yDef++;
 
-  sizeDefault = 
-      new IntegerEntryField
-	  ("Node Size",
+  sizeDefaults =
+      new JointIntegerEntry
+	  ("Node","Height","Width",
 	   ((Integer)aMapper.getDefaultValue(VizMapperCategories.NODE_HEIGHT)).intValue(),
-	   500);
-  MiscGB.insert(defGBG,sizeDefault.getLabel(),0,yDef);
-  MiscGB.insert(defGBG,sizeDefault.getField(),1,yDef);
+	   ((Integer)aMapper.getDefaultValue(VizMapperCategories.NODE_WIDTH)).intValue(),
+	   500,500);
+  MiscGB.insert(defGBG,sizeDefaults.getConstraintLabel(),0,yDef);
+  MiscGB.insert(defGBG,sizeDefaults.getConstraintBox(),1,yDef);
+  yDef++;
+  MiscGB.insert(defGBG,sizeDefaults.getLabel("Height"),0,yDef);
+  MiscGB.insert(defGBG,sizeDefaults.getField("Height"),1,yDef);
+  yDef++;
+  MiscGB.insert(defGBG,sizeDefaults.getLabel("Width"),0,yDef);
+  MiscGB.insert(defGBG,sizeDefaults.getField("Width"),1,yDef);
   yDef++;
 
   initializeShapeDefault();
@@ -184,11 +193,12 @@ public class ApplyAction extends AbstractAction {
 	LineType line = (LineType)lineTypeDefault.getIconObject();
 	if(line != null)
 	    o = aMapper.setDefaultValue(VizMapperCategories.EDGE_LINETYPE, line);
-	Integer size = sizeDefault.getInteger();
-	if(size != null) {
-	    o = aMapper.setDefaultValue(VizMapperCategories.NODE_HEIGHT, size);
-	    o = aMapper.setDefaultValue(VizMapperCategories.NODE_WIDTH, size);
-	}
+	Integer height = sizeDefaults.getInteger("Height");
+	if(height != null)
+	    o = aMapper.setDefaultValue(VizMapperCategories.NODE_HEIGHT, height);
+	Integer width = sizeDefaults.getInteger("Width");
+	if(width != null)
+	    o = aMapper.setDefaultValue(VizMapperCategories.NODE_WIDTH, width);
 	Color border = bColor.getColor();
 	if(border != null)
 	    o = aMapper.setDefaultValue(VizMapperCategories.NODE_BORDER_COLOR, border);
@@ -204,7 +214,6 @@ public class ApplyAction extends AbstractAction {
 	if(edgeTextPanel.didStateChange()) {
 	    useMapping = edgeTextPanel.useMappingGenerally();
 	    if(useMapping && edgeTextPanel.getWhetherToUseTheMap()) {
-		System.out.println("using new entry");
 		if(m != null) {
 		    aMapper.setAttributeMapEntry(VizMapperCategories.EDGE_COLOR,
 						 localEdgeKey.getString(),
@@ -213,7 +222,6 @@ public class ApplyAction extends AbstractAction {
 		edgeTextPanel.updateMapperScalableArrows();
 	    }
 	    else if(useMapping) {
-		System.out.println("using old entry");
 		if(backupMap != null) {
 		    aMapper.setAttributeMapEntry(VizMapperCategories.EDGE_COLOR,
 						 backupKey,
@@ -221,7 +229,6 @@ public class ApplyAction extends AbstractAction {
 		}
 	    }
 	    else {
-		System.out.println("removing entry");
 		aMapper.removeAttributeMapEntry(VizMapperCategories.EDGE_COLOR);
 	    }
 	}
