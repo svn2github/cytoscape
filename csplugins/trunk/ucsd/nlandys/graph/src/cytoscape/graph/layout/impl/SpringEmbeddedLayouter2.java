@@ -23,7 +23,9 @@ import java.util.List;
  * this class borrows code from is
  * <code>cytoscape.layout.SpringEmbeddedLayouter</code>.<p>
  * This layout algorithm does support subgraph layout - that is, it respects
- * <code>MutableGraphLayout</code> objects whose nodes are not all movable.
+ * <code>MutableGraphLayout</code> objects whose nodes are not all movable.<p>
+ * This class is seriously due for a complete re-write.  The algorithm is
+ * slow as heck.
  **/
 public final class SpringEmbeddedLayouter2 implements Task
 {
