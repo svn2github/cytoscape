@@ -370,6 +370,7 @@ public abstract class AbstractCalculator implements Calculator {
 		    remove(this.mapperUI);
 		    this.mapperUI = ((ObjectMapping) mappings.get(mapIndex)).getUI(this.parent, network);
 		    MiscGB.insert(myGBG, this.mapperUI, 0, this.yPos, 3, 1, 2, 2, GridBagConstraints.BOTH);
+            parent.validate();
 		}
 	    }
 	}
