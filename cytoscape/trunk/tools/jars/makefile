@@ -12,6 +12,7 @@ JARFILE=$(PWD)/cytoscape.jar
 AUXJARFILE=$(PWD)/aux.jar
 #YFILESDIR=/net/compbio/src/distributions/yfiles/jarUnpacked
 YFILESDIR=/common/yfiles1.4-unpacked
+VISADDIR=/common/visad-unpacked
 
 default: help
 
@@ -51,7 +52,7 @@ jar:
 	(cd $(AUXJAR_UNPACKED_DIR); jar uvf $(JARFILE) `find gnu/* -name "*.properties" -print`)
 	(cd $(YFILESDIR); jar uvf $(JARFILE) `find y/* -name "*.class"`)
 	(cd $(AUXJAR_UNPACKED_DIR); jar uvf $(JARFILE) `find org/* -name "*.class"`)
-
+	(cd $(VISADDIR); jar uvf $(JARFILE) `find visad/* -name "*.class"`)
 
 #  
 #  --- auxjar
