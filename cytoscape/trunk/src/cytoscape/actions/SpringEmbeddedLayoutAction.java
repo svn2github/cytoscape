@@ -4,12 +4,12 @@ import cytoscape.Cytoscape;
 import cytoscape.foo.GraphConverter;
 import cytoscape.graph.layout.algorithm.MutableGraphLayout;
 import cytoscape.graph.layout.impl.SpringEmbeddedLayouter2;
-import cytoscape.process.PercentCompletedCallback;
-import cytoscape.process.RunStoppable;
-import cytoscape.process.Stoppable;
-import cytoscape.process.Task;
-import cytoscape.process.ui.ProgressUI;
-import cytoscape.process.ui.ProgressUIControl;
+import cytoscape.task.PercentCompletedCallback;
+import cytoscape.task.RunStoppable;
+import cytoscape.task.Stoppable;
+import cytoscape.task.Task;
+import cytoscape.task.ui.ProgressUI;
+import cytoscape.task.ui.ProgressUIControl;
 import cytoscape.util.CytoscapeAction;
 import java.awt.event.ActionEvent;
 
