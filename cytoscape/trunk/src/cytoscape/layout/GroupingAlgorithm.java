@@ -1,9 +1,9 @@
 //
 // GroupingAlgorithm.java
 //
-// interface to grouping algorithms
-//
-// dramage : 2002.2.15
+// $Revision$
+// $Date$
+// $Author$
 //
 
 
@@ -14,37 +14,58 @@ import java.util.*;
 import y.base.*;
 import y.layout.*;
 
+
+/**
+ * An abstract base class providing an interface
+ * used by <code>GroupWiseNodeGrouper</code>.
+ *
+ * GroupingAlgorithm provides the basis for
+ * algorithms to partition an input graph into
+ * (disjoing) node subsets.
+ *
+ */
 public abstract class GroupingAlgorithm {
-    // the graph
+    /**
+     * The graph
+     */
     LayoutGraph iGraph;
-    
-    // static values for connectedness table
-    final static int NOT_CONNECTED = 0;
+
+    /**
+     * Static values for connectedness table
+     */
     final static int CONNECTED_TO = 1;
     final static int CONNECTED_FROM = 2;
     final static int CONNECTED_BI = 3;
+    final static int NOT_CONNECTED = 0;
 
 
-    // Node -> Node hash linking each node in
-    // iGraph to its logical parent node, as
-    // determined by getNodeGrouping()
-    // (subclasses are responsible for
-    // making this vectory)
+    /**
+     * <code>Node -> Node</code> hash linking
+     * each node in iGraph to its logical
+     * parent node, as determined by
+     * <code>getNodeGrouping()</code>.
+     *
+     * Subclasses are responsible for keeping
+     * this up to date.
+     */
     HashMap iParentMap;
 
-    // Node -> NodeList hash linking each
-    // node in iGraph to its logical child
-    // nodes, again as determined by
-    // getNodeGrouping()
+
+
+    /**
+     * <code>Node -> NodeList</code> hash
+     * linking each node in iGraph to its
+     * logical child nodes, again as determined
+     * by <code>getNodeGrouping()</code>
+     */
     HashMap iChildMap;
 
 
 
-    // GroupingAlgorithm()
-    //
-    // default constructor - sit around happily
-    public GroupingAlgorithm() {
-    }
+    /**
+     * Default constructor
+     */
+    public GroupingAlgorithm() {}
 
 
 
@@ -54,12 +75,29 @@ public abstract class GroupingAlgorithm {
     //
     ////
 
-    // get a SubGraph where each node represents a cluster
-    // of nodes in the original
+    /**
+     * Calculate and return a <em>Grouping</em>.
+     * A Grouping is a <code>Subgraph</code> where each node
+     * represents a <em>Cluster</em> of nodes in the original.
+     *
+     * @param groupCount Number of nodes to which
+     *   <code>iGraph</code> should be condensed.  i.e. the
+     *   the number of groups to partition the graph into.
+     * @return The newly created <code>Subgraph</code>.
+     */
     public abstract Subgraph getNodeGrouping(int groupCount);
 
-    // get a cluster as a Subgraph by node from grouping
+    /**
+     * Return the <em>Cluster</em> of nodes associated
+     * with the given <code>groupNode</code> in the
+     * Grouping pointed at by <code>group</code>
+     *
+     * @return The <code>Subgraph</code> coresponding
+     * to the nodes in the requested Cluster.
+     */
     public abstract Subgraph getClusterByNode(Node groupNode, Subgraph group);
+
+
 
 
 
@@ -69,9 +107,10 @@ public abstract class GroupingAlgorithm {
     //
     ////
 
-    // useGraph(LayoutGraph aGraph)
-    //
-    // instruct the class to examine given graph
+    /**
+     * Tell the class instance to refer to the given
+     * <code>aGraph</code> on subsequent calls
+     */
     public void useGraph(LayoutGraph aGraph) {
 	// save graph object
 	iGraph = aGraph;
@@ -80,12 +119,20 @@ public abstract class GroupingAlgorithm {
 	iChildMap = new HashMap();
     }
 
-    // remap the node grouping back to the original graph
+    /**
+     * Re-map the node grouping back to the
+     * original graph.  Uses <code>Subgraph</code>'s
+     * <code>reInsert()</code> method
+     */
     public void putNodeGrouping(Subgraph aGroup) {
 	aGroup.reInsert();
     }
 
-    // remap the cluster back to the original graph
+    /**
+     * Re-map the cluster back to the original
+     * graph, using <code>Subgraph</code>'s
+     * <code>reInsert()/code> method
+     */
     public void putClusterByNode(Subgraph aCluster) {
 	aCluster.reInsert();
     }
@@ -99,9 +146,12 @@ public abstract class GroupingAlgorithm {
     //
     ////
 
-    // update logical HashMap mappings to
-    // show that aChild is now a child of
-    // aParent)
+    /**
+     * Utility function: update logical
+     * HashMap mappings to show that
+     * <code>aChild</code> is now a child
+     * of <code>aParent</code>.
+     */
     void joinNodes(Node aParent, Node aChild) {
 	if (aParent == aChild) return;
 
@@ -139,7 +189,27 @@ public abstract class GroupingAlgorithm {
     //
     ////
 
-    // return a connectedness table for the graph
+    /**
+     * Calculate and return a connectedness
+     * table for <code>graph</code>.  The table is
+     * an array of n x n integers, corresponding
+     * to the indeces of the nodes in
+     * <code>graph.getNodeArray()</code>.
+     *
+     * <p>Values in the array at (u,v) take one of
+     * the static values defined by this class.  They
+     * are:
+     * <ul>
+     *  <li><code>NOT_CONNECTED</code>:
+     *      u and v are not connected
+     *  <li><code>CONNECTED_FROM</code>:
+     *      v is connected to u
+     *  <li><code>CONNECTED_TO</code>:
+     *      u is connected to v
+     *  <li><code>CONNECTED_BI</code>:
+     *      u and v are recipricolly connected
+     * </ul>
+     */
     static int[][] gaConnected(LayoutGraph graph) {
 	Node[] nodeList = graph.getNodeArray();
 	int nC = graph.nodeCount();
